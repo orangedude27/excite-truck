@@ -40,12 +40,13 @@ void fn_802BC3DC(void) {
     fn_802BC39C();
 }
 
+#pragma scheduling invalid_target
 void fn_802BC3E0(short arg0, short arg1, short arg2, char *arg3) {
     char *obj = fn_802BE844(arg0, arg1, arg2);
     *(char **)arg3 = *(char **)(obj + 4);
     *(char **)(obj + 4) = arg3;
 }
-
+#pragma scheduling on
 short fn_802BC424(int arg0) {
     short value = arg0 + 0x200;
     int mask = 0x1FF;
@@ -88,134 +89,131 @@ void fn_801EA18C(void *, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
 void fn_802BC588(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
-    volatile float sp14[3];
-    volatile float sp8[3];
-    register float *m0;
-    register float *m1;
-    register float *v;
-    register float *in;
-    register float *basis;
-    float zero, f5, f3, f2, f1, one;
+volatile float sp14[3];
+volatile float sp8[3];
+float *m0 = (float *)arg0;
+float *m1 = (float *)arg1;
+float *v = (float *)arg2;
+float *in = (float *)arg3;
+float *basis = (float *)arg4;
+float one, f1, f2, f3, zero, f5;
 
-    zero = lbl_80564D14;
-    m1 = (float *)arg1;
-    f5 = ((float *)arg3)[0];
-    m0 = (float *)arg0;
-    f3 = ((float *)arg3)[1];
-    f2 = ((float *)arg3)[2];
-    v = (float *)arg2;
-    f1 = ((float *)arg3)[3];
-    in = (float *)arg3;
-    one = lbl_80564D18;
+zero = lbl_80564D14;
+f5 = ((float *)arg3)[0];
+f3 = ((float *)arg3)[1];
+f2 = ((float *)arg3)[2];
+f1 = ((float *)arg3)[3];
+one = lbl_80564D18;
 
-    m0[9] = f5;
-    m0[10] = zero;
-    m0[11] = f3;
-    m0[6] = f2;
-    m0[7] = zero;
-    m0[8] = f1;
-    m0[3] = zero;
-    m0[4] = one;
-    m0[5] = zero;
-    basis = (float *)arg4;
-    PSVECCrossProduct((Vec *)(m0 + 3), (Vec *)(m0 + 6), (Vec *)m0);
+m0[9] = f5;
+m0[10] = zero;
+m0[11] = f3;
+m0[6] = f2;
+m0[7] = zero;
+m0[8] = f1;
+m0[3] = zero;
+m0[4] = one;
+m0[5] = zero;
+PSVECCrossProduct((Vec *)(m0 + 3), (Vec *)(m0 + 6), (Vec *)m0);
 
-    sp14[0] = lbl_80564D14;
-    sp14[1] = lbl_80564D18;
-    sp14[2] = lbl_80564D14;
-    fn_801EA18C(m0 + 9, (s32)sp14, 0);
-    v[0] = sp14[0];
-    v[1] = sp14[1];
-    v[2] = sp14[2];
-    m0[10] = m0[10] - fn_802BC540((void *)sp14, basis[21]);
+sp14[0] = lbl_80564D14;
+sp14[1] = lbl_80564D18;
+sp14[2] = lbl_80564D14;
+fn_801EA18C(m0 + 9, (s32)sp14, 0);
+v[0] = sp14[0];
+v[1] = sp14[1];
+v[2] = sp14[2];
+m0[10] -= fn_802BC540((void *)sp14, basis[21]);
 
-    if ((u32)sp8 == (u32)((char *)arg4 + 0x34)) {
-        float a = basis[13];
-        float b = basis[14];
-        float c = basis[15];
-        float x3 = m0[3];
-        float x4 = m0[4];
-        float x5 = m0[5];
-        float x0 = m0[0];
-        float x1 = m0[1];
-        float x2 = m0[2];
-        float x6 = m0[6];
-        float x7 = m0[7];
-        float x8 = m0[8];
-        float q0 = b * x3;
-        float q1 = b * x4;
-        float q2 = b * x5;
-        float p0 = a * x0;
-        float p1 = a * x1;
-        float p2 = a * x2;
-        float r0 = c * x6;
-        float r1 = c * x7;
-        float r2 = c * x8;
-        sp8[0] = r0 + (p0 + q0);
-        sp8[1] = r1 + (p1 + q1);
-        sp8[2] = r2 + (p2 + q2);
-    } else {
-        sp8[0] = basis[15] * m0[6] + (basis[13] * m0[0] + basis[14] * m0[3]);
-        sp8[1] = basis[15] * m0[7] + (basis[13] * m0[1] + basis[14] * m0[4]);
-        sp8[2] = basis[15] * m0[8] + (basis[13] * m0[2] + basis[14] * m0[5]);
-    }
-    sp8[0] *= in[4];
-    sp8[1] *= in[4];
-    sp8[2] *= in[4];
-    m1[9] = m0[9] + sp8[0];
-    m1[10] = m0[10] + sp8[1];
-    m1[11] = m0[11] + sp8[2];
+if ((u32)sp8 == (u32)((char *)arg4 + 0x34)) {
+float a, b, c, x3, x4, x5, x0, x1, x2, x6, x7, x8;
+float q0, q1, q2, p0, p1, p2, r0, r1, r2;
+x3 = m0[3];
+b = basis[14];
+x4 = m0[4];
+x5 = m0[5];
+q0 = b * x3;
+x0 = m0[0];
+q1 = b * x4;
+a = basis[13];
+x1 = m0[1];
+p0 = a * x0;
+x2 = m0[2];
+p1 = a * x1;
+x6 = m0[6];
+q2 = b * x5;
+x7 = m0[7];
+p2 = a * x2;
+x8 = m0[8];
+c = basis[15];
+r0 = c * x6;
+r1 = c * x7;
+r2 = c * x8;
+sp8[0] = r0 + (p0 + q0);
+sp8[1] = r1 + (p1 + q1);
+sp8[2] = r2 + (p2 + q2);
+} else {
+sp8[0] = basis[15] * m0[6] + (basis[13] * m0[0] + basis[14] * m0[3]);
+sp8[1] = basis[15] * m0[7] + (basis[13] * m0[1] + basis[14] * m0[4]);
+sp8[2] = basis[15] * m0[8] + (basis[13] * m0[2] + basis[14] * m0[5]);
+}
+sp8[0] *= in[4];
+sp8[1] *= in[4];
+sp8[2] *= in[4];
+m1[9] = m0[9] + sp8[0];
+m1[10] = m0[10] + sp8[1];
+m1[11] = m0[11] + sp8[2];
 
-    if ((u32)(m1 + 6) == (u32)((char *)arg4 + 0x40)) {
-        float a = basis[16];
-        float b = basis[17];
-        float c = basis[18];
-        float x3 = m0[3];
-        float x4 = m0[4];
-        float x5 = m0[5];
-        float x0 = m0[0];
-        float x1 = m0[1];
-        float x2 = m0[2];
-        float x6 = m0[6];
-        float x7 = m0[7];
-        float x8 = m0[8];
-        float q0 = b * x3;
-        float q1 = b * x4;
-        float q2 = b * x5;
-        float p0 = a * x0;
-        float p1 = a * x1;
-        float p2 = a * x2;
-        float r0 = c * x6;
-        float r1 = c * x7;
-        float r2 = c * x8;
-        m1[6] = r0 + (p0 + q0);
-        m1[7] = r1 + (p1 + q1);
-        m1[8] = r2 + (p2 + q2);
-    } else {
-        m1[6] = basis[18] * m0[6] + (basis[16] * m0[0] + basis[17] * m0[3]);
-        m1[7] = basis[18] * m0[7] + (basis[16] * m0[1] + basis[17] * m0[4]);
-        m1[8] = basis[18] * m0[8] + (basis[16] * m0[2] + basis[17] * m0[5]);
-    }
-    m1[1] = lbl_80564D14;
-    m1[0] = lbl_80564D18;
-    m1[2] = lbl_80564D14;
-    PSVECCrossProduct((Vec *)(m1 + 6), (Vec *)m1, (Vec *)(m1 + 3));
-    PSVECCrossProduct((Vec *)(m1 + 3), (Vec *)(m1 + 6), (Vec *)m1);
-    PSVECNormalize((Vec *)(m1 + 3), (Vec *)(m1 + 3));
-    PSVECNormalize((Vec *)m1, (Vec *)m1);
+if ((u32)(m1 + 6) == (u32)((char *)arg4 + 0x40)) {
+float m1v = basis[17];
+float m0v = basis[16];
+float m2v = basis[18];
+float x3 = m0[3];
+float x4 = m0[4];
+float x5 = m0[5];
+float x0 = m0[0];
+float x1 = m0[1];
+float x2 = m0[2];
+float x6 = m0[6];
+float x7 = m0[7];
+float x8 = m0[8];
+float q0 = m1v * x3;
+float q1 = m1v * x4;
+float q2 = m1v * x5;
+float p0 = m0v * x0;
+float p1 = m0v * x1;
+float p2 = m0v * x2;
+float r0 = m2v * x6;
+float r1 = m2v * x7;
+float r2 = m2v * x8;
+m1[6] = r0 + (p0 + q0);
+m1[7] = r1 + (p1 + q1);
+m1[8] = r2 + (p2 + q2);
+} else {
+m1[6] = basis[18] * m0[6] + (basis[16] * m0[0] + basis[17] * m0[3]);
+m1[7] = basis[18] * m0[7] + (basis[16] * m0[1] + basis[17] * m0[4]);
+m1[8] = basis[18] * m0[8] + (basis[16] * m0[2] + basis[17] * m0[5]);
+}
+m1[1] = lbl_80564D14;
+m1[0] = lbl_80564D18;
+m1[2] = lbl_80564D14;
+PSVECCrossProduct((Vec *)(m1 + 6), (Vec *)m1, (Vec *)(m1 + 3));
+PSVECCrossProduct((Vec *)(m1 + 3), (Vec *)(m1 + 6), (Vec *)m1);
+PSVECNormalize((Vec *)(m1 + 3), (Vec *)(m1 + 3));
+PSVECNormalize((Vec *)m1, (Vec *)m1);
 
-    {
-        float scale = in[4];
-        m0[0] = m0[0] * scale;
-        m0[1] = m0[1] * scale;
-        m0[2] = m0[2] * scale;
-        m0[3] = m0[3] * scale;
-        m0[4] = m0[4] * scale;
-        m0[5] = m0[5] * scale;
-        m0[6] = m0[6] * scale;
-        m0[7] = m0[7] * scale;
-        m0[8] = m0[8] * scale;
-    }
+{
+float scale = in[4];
+m0[0] *= scale;
+m0[1] *= scale;
+m0[2] *= scale;
+m0[3] *= scale;
+m0[4] *= scale;
+m0[5] *= scale;
+m0[6] *= scale;
+m0[7] *= scale;
+m0[8] *= scale;
+}
 }
 
 #pragma push
@@ -781,8 +779,15 @@ void fn_802BDFBC(void *arg0, int arg1, float farg0) {
     float value;
     void *node;
     value = farg0;
-    if (arg1 < 8) value = lbl_80564D18;
-    else if (arg1 > 8) value = lbl_80564D14;
+    if (arg1 >= 8) goto check;
+    value = lbl_80564D18;
+    goto selected;
+check:
+    if (arg1 != 8) goto high;
+    goto selected;
+high:
+    value = lbl_80564D14;
+selected:
     node = *(void **)((char *)arg0 + 4);
     while (node != 0) {
         *(float *)((char *)node + 0xC) = value;
