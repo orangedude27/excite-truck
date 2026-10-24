@@ -161,21 +161,27 @@ void fn_80207D8C(void* arg0) { if (fn_80207D40(arg0)) { fn_80207C80(arg0); (*(vo
 extern void fn_80207C80(void*);
 extern void* lbl_802F9DC8[];
 extern char lbl_8033BE20[];
-void fn_80207DE0(void* arg0) {
+#pragma cplusplus on
+extern "C" void fn_80207DE0(void* arg0) {
+    class Item {
+    public:
+        virtual void f2(signed long);
+    };
     void* var_r28; void* var_r30; signed long var_r29; signed long var_r31;
-    var_r31=0; var_r29=0; var_r28=arg0; var_r30=var_r28;
-    while (var_r29 < *(signed long*)(((signed char*)var_r28)+0x114)) {
-        void** temp_r3=(void**)((signed char*)var_r30+0x94);
+    var_r31 = 0; var_r29 = 0; var_r28 = arg0; var_r30 = var_r28;
+    while (var_r29 < *(signed long*)(((signed char*)var_r28) + 0x114)) {
+        void** temp_r3 = (void**)((signed char*)var_r30 + 0x94);
         if (*temp_r3 != 0) {
-            void* obj=*temp_r3;
-            void** vt = *(void***)obj;
-            ((void (*)(void*, signed long))vt[2])(obj, 1);
+            Item* obj = (Item*)*temp_r3;
+            obj->f2(1);
         }
-        *temp_r3=(void*)var_r31; var_r30=(void*)(((signed char*)var_r30)+4); var_r29+=1;
+        *temp_r3 = (void*)var_r31;
+        var_r30 = (void*)(((signed char*)var_r30) + 4);
+        var_r29 += 1;
     }
-    *(signed long*)(((signed char*)var_r28)+0x114)=0;
+    *(signed long*)(((signed char*)var_r28) + 0x114) = 0;
 }
-
+#pragma cplusplus reset
 extern void* memmove(void*, const void*, unsigned long);
 #pragma push
 #pragma use_lmw_stmw off
