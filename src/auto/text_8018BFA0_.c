@@ -4,7 +4,7 @@
 extern void PSVECCrossProduct(float *, float *, int *);
 extern float PSVECDotProduct(int *, float *);
 extern void *__AXFXGetLfoSinTable_801769CC(int);
-extern void fn_80015A20(void *, void *, ...);
+extern void fn_80015A20(void *, void *);
 extern void fn_80015B20(float *, int *, float *);
 extern int fn_80129D18(int, int);
 extern void fn_8014452C(int *, float, float, float);
