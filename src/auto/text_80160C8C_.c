@@ -513,9 +513,9 @@ void fn_80161DE4(void) {
 #pragma dont_inline off
 int fn_80161ECC(void) {
     int i = 0;
-    do {
+    while (fn_80161E40(i) >= 0) {
         i++;
-    } while (fn_80161E40(i) >= 0);
+    }
     return i;
 }
 
