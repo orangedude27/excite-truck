@@ -26,6 +26,7 @@ extern f32 lbl_80562E58;
 extern f32 lbl_80562E5C;
 extern u8 lbl_8055EB59;
 extern u8 lbl_8055EB60[5];
+extern char lbl_8055EB58;
 
 void fn_801EA1FC(void) {
     float x = lbl_80562E38;
