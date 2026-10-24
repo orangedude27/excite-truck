@@ -2262,6 +2262,117 @@ extern "C" void *fn_80220E48(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     return arg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
+    class Vf78Arg {
+    public:
+        virtual void a0() = 0; virtual void a1() = 0; virtual void a2() = 0; virtual void a3() = 0;
+        virtual void a4() = 0; virtual void a5() = 0; virtual void a6() = 0; virtual void a7() = 0;
+        virtual void a8() = 0; virtual void a9() = 0; virtual void a10() = 0; virtual void a11() = 0;
+        virtual void a12() = 0; virtual void a13() = 0; virtual void a14() = 0; virtual void a15() = 0;
+        virtual void a16() = 0; virtual void a17() = 0; virtual void a18() = 0; virtual void a19() = 0;
+        virtual void a20() = 0; virtual void a21() = 0; virtual void a22() = 0; virtual void a23() = 0;
+        virtual void a24() = 0; virtual void a25() = 0; virtual void a26() = 0; virtual void a27() = 0;
+        virtual s32 get(void *) = 0;
+    };
+    f32 scale;
+    f32 scale2;
+    f32 factor;
+    f32 distance;
+    f32 adjusted;
+    s32 width;
+    s32 end;
+    s32 end2;
+    s32 end3;
+    s32 end4;
+    s32 end5;
+    s32 end6;
+    s32 begin;
+    s32 begin2;
+    s32 begin3;
+    s32 begin4;
+    s32 size;
+    s32 size2;
+    s32 childBase;
+    s32 childEnd;
+    void *child;
+    void *child2;
+
+    *(s8 *)((u8 *)arg0 + 0x250) = 1;
+    if (*(s32 *)((u8 *)arg0 + 0x254) == 0) {
+        child = *(void **)((u8 *)arg0 + 0x244);
+        scale = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8)) / (f32)*(s32 *)child;
+        begin = *(s32 *)((u8 *)arg0 + 8) + (s32)(scale * (f32)(*(s32 *)((u8 *)child + 8))) + 5;
+        end = *(s32 *)((u8 *)arg0 + 8) + (s32)(scale * (f32)((*(s32 *)((u8 *)child + 8)) + *(s32 *)((u8 *)child + 4))) - 5;
+        if (arg2 >= begin && arg2 <= end) {
+            *(s32 *)((u8 *)arg0 + 0x25C) = (s32)(scale * (f32)(*(s32 *)((u8 *)child + 8))) - arg2;
+            return;
+        }
+        if (arg2 < begin) {
+            size2 = (s32)((f32)(*(s32 *)((u8 *)child + 8)) - ((lbl_805634A4 / scale) * (f32)((end - begin) + 5)));
+            *(s32 *)((u8 *)child + 8) = size2;
+            end2 = *(s32 *)child - *(s32 *)((u8 *)child + 4);
+            if (size2 > end2) {
+                *(s32 *)((u8 *)child + 8) = end2;
+            }
+            if (*(s32 *)((u8 *)child + 8) < 0) {
+                *(s32 *)((u8 *)child + 8) = 0;
+            }
+        } else {
+            factor = lbl_805634A4 / scale;
+            distance = (f32)((end - begin) + 5);
+            adjusted = factor * distance;
+            size2 = (s32)(adjusted + (f32)(*(s32 *)((u8 *)child + 8)));
+            *(s32 *)((u8 *)child + 8) = size2;
+            end2 = *(s32 *)child - *(s32 *)((u8 *)child + 4);
+            if (size2 > end2) {
+                *(s32 *)((u8 *)child + 8) = end2;
+            }
+            if (*(s32 *)((u8 *)child + 8) < 0) {
+                *(s32 *)((u8 *)child + 8) = 0;
+            }
+        }
+        *(s8 *)((u8 *)arg0 + 0x250) = 0;
+        return;
+    }
+
+    child2 = *(void **)((u8 *)arg0 + 0x244);
+    childBase = *(s32 *)child2;
+    scale2 = (f32)((Vf78Arg *)arg0)->get(child2) / (f32)childBase;
+    child = *(void * volatile *)((u8 *)arg0 + 0x244);
+    begin2 = *(s32 *)((u8 *)arg0 + 4) + (s32)(scale2 * (f32)*(s32 *)((u8 *)child + 8)) + 5;
+    end3 = *(s32 *)((u8 *)arg0 + 4) + (s32)(scale2 * (f32)(*(s32 *)((u8 *)child + 8) + *(s32 *)((u8 *)child + 4))) - 5;
+    if (arg1 >= begin2 && arg1 <= end3) {
+        *(s32 *)((u8 *)arg0 + 0x258) = (s32)(scale2 * (f32)*(s32 *)((u8 *)child + 8)) - arg1;
+        return;
+    }
+    if (arg1 < begin2) {
+        size2 = (s32)((f32)*(s32 *)((u8 *)child + 8) - ((lbl_805634A4 / scale2) * (f32)((end3 - begin2) + 5)));
+        *(s32 *)((u8 *)child + 8) = size2;
+        end4 = *(s32 *)child - *(s32 *)((u8 *)child + 4);
+        if (size2 > end4) {
+            *(s32 *)((u8 *)child + 8) = end4;
+        }
+        if (*(s32 *)((u8 *)child + 8) < 0) {
+            *(s32 *)((u8 *)child + 8) = 0;
+        }
+    } else {
+        factor = lbl_805634A4 / scale2;
+        distance = (f32)((end3 - begin2) + 5);
+        size2 = (s32)((factor * distance) + (f32)*(s32 *)((u8 *)child + 8));
+        *(s32 *)((u8 *)child + 8) = size2;
+        end5 = *(s32 *)child - *(s32 *)((u8 *)child + 4);
+        if (size2 > end5) {
+            *(s32 *)((u8 *)child + 8) = end5;
+        }
+        if (*(s32 *)((u8 *)child + 8) < 0) {
+            *(s32 *)((u8 *)child + 8) = 0;
+        }
+    }
+    *(s8 *)((u8 *)arg0 + 0x250) = 0;
+}
+#pragma pop
 extern "C" void fn_802213A4(void *arg0, s32 arg1, s32 arg2) {
     s32 value;
     s32 limit;
@@ -2612,25 +2723,27 @@ extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80222C8C(void *arg0, s32 
 
 #pragma push
 #pragma scheduling invalid_target
-#pragma small_data on
 extern "C" void fn_80222CFC(void *arg0, s32 arg1) {
     struct Matrix { f32 m[12]; };
+    struct TransformArgs { s32 x, y; f32 z; };
     Matrix sp38;
-    struct TransformArgs { s32 x, y; f32 z; } sp20;
-    f32 sp34, sp30, sp2C;
-    s32 sp24;
-    f32 sp1C, sp18, sp14, sp10, spC;
-    char sp8[4];
+    struct Scratch {
+        char sp8[4];
+        f32 spC, sp10, sp14, sp18, sp1C;
+        TransformArgs sp20;
+        f32 sp2C, sp30, sp34;
+    } stack;
     register f32 temp_f31;
     register f32 temp_f30;
     register f32 temp_f29;
     register f32 temp_f28;
+    register f32 var_f28_2;
     register f32 temp_f1;
+    register f32 temp_f0;
     register f32 temp_f1_2;
     register f32 temp_f2;
     register f32 temp_f3;
     register s32 temp_r31;
-    register s32 var_r21;
     register s32 var_r26;
     register s32 var_r30;
     register void *temp_r25;
@@ -2641,29 +2754,33 @@ extern "C" void fn_80222CFC(void *arg0, s32 arg1) {
     register void *temp_r3;
     u32 *copyDst;
     u32 *copySrc;
-    f32 *var_r22 = &sp14;
-    f32 *var_r23 = &sp2C;
+    s32 callWidth;
+    s32 callHeight;
+    f32 callScale;
+    f32 *var_r22;
+    f32 *var_r23;
 
     (void)arg1;
     temp_r25 = arg0;
     temp_r3 = *(void **)((u8 *)arg0 + 0x244);
     temp_r31 = *(s32 *)((u8 *)temp_r3 + 8);
     temp_f1 = ((f32 (*)(void *))fn_8023659C)(arg0);
-    temp_f31 = -*(f32 *)((u8 *)arg0 + 0x254);
-    temp_f31 *= temp_f1;
+    temp_f0 = *(f32 *)((u8 *)arg0 + 0x254);
+    temp_f0 = -temp_f0;
+    temp_f31 = temp_f0 * temp_f1;
     if (temp_r31 <= 0) return;
 
     temp_f28 = lbl_805634A8;
-    var_r21 = 0;
+    var_r30 = 0;
     goto loop3_test;
 loop3_body:
     temp_r3 = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
-        *(s32 *)((u8 *)temp_r25 + 0x244), var_r21, 0);
+        *(s32 *)((u8 *)temp_r25 + 0x244), var_r30, 0);
     temp_f28 += fn_8023293C(*(s32 *)((u8 *)temp_r25 + 0x248),
         (s32)temp_r3, lbl_805634A4);
-    var_r21++;
+    var_r30++;
 loop3_test:
-    if (var_r21 < temp_r31) goto loop3_body;
+    if (var_r30 < temp_r31) goto loop3_body;
 
     temp_f3 = lbl_805634D8 * *(f32 *)((u8 *)temp_r25 + 0x250);
     temp_f3 -= temp_f28;
@@ -2672,14 +2789,15 @@ loop3_test:
     temp_f1 += temp_f28;
     temp_f29 = lbl_80563528 / temp_f1;
     ((void (*)(f32 *, f32 *, s32, s32, f32, f32))fn_80230C30)(
-        &sp10, &spC, *(s32 *)((u8 *)temp_r25 + 4),
+        &stack.sp10, &stack.spC, *(s32 *)((u8 *)temp_r25 + 4),
         *(s32 *)((u8 *)temp_r25 + 8), temp_f1, temp_f3);
     temp_r29 = (void *)fn_8022EDC4();
     temp_r28 = fn_8022EDE4(*(f32 *)((u8 *)temp_r29 + 0x30));
+    var_r22 = &stack.sp14;
+    var_r23 = &stack.sp2C;
 
-    temp_f28 = lbl_805634A8;
+    var_f28_2 = lbl_805634A8;
     var_r30 = 0;
-    var_r21 = 0;
     goto outer_test;
 outer_body:
     temp_r3 = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
@@ -2689,87 +2807,89 @@ outer_body:
     var_r26 = 0;
     goto inner_test;
 inner_body:
-    sprintf(sp8, lbl_8055B8A8, (s32)(s8)*temp_r24);
+    sprintf(stack.sp8, lbl_8055B8A8, (s32)(s8)*temp_r24);
     copyDst = (u32 *)temp_r28;
     copySrc = (u32 *)temp_r29;
-    copyDst[0] = copySrc[0];
-    copyDst[1] = copySrc[1];
-    copyDst[2] = copySrc[2];
-    copyDst[3] = copySrc[3];
-    copyDst[4] = copySrc[4];
-    copyDst[5] = copySrc[5];
-    copyDst[6] = copySrc[6];
-    copyDst[7] = copySrc[7];
-    copyDst[8] = copySrc[8];
-    copyDst[9] = copySrc[9];
-    copyDst[10] = copySrc[10];
-    copyDst[11] = copySrc[11];
-    *(volatile u32 *)&sp2C = 0;
-    *(volatile u32 *)&sp30 = 0;
-    *(volatile u32 *)&sp34 = 0;
-    *(volatile f32 *)&sp2C = sp10;
-    *(volatile f32 *)&sp30 = spC;
+    {
+        u32 a = copySrc[0], b = copySrc[1];
+        copyDst[0] = a; copyDst[1] = b;
+        a = copySrc[2]; b = copySrc[3];
+        copyDst[2] = a; copyDst[3] = b;
+        a = copySrc[4]; b = copySrc[5];
+        copyDst[4] = a; copyDst[5] = b;
+        a = copySrc[6]; b = copySrc[7];
+        copyDst[6] = a; copyDst[7] = b;
+        a = copySrc[8]; b = copySrc[9];
+        copyDst[8] = a; copyDst[9] = b;
+        a = copySrc[10]; b = copySrc[11];
+        copyDst[10] = a; copyDst[11] = b;
+    }
+    *(volatile u32 *)&stack.sp2C = 0;
+    *(volatile u32 *)&stack.sp30 = 0;
+    *(volatile u32 *)&stack.sp34 = 0;
+    *(volatile f32 *)&stack.sp2C = stack.sp10;
+    *(volatile f32 *)&stack.sp30 = stack.spC;
 
-    if (var_r22 == var_r23) {
-        sp14 = (*(volatile f32 *)&sp34) * ((Matrix *)temp_r28)->m[6] +
-            (sp10 * ((Matrix *)temp_r28)->m[0] +
-             spC * ((Matrix *)temp_r28)->m[3]);
-        sp18 = sp34 * ((Matrix *)temp_r28)->m[7] +
-            (sp10 * ((Matrix *)temp_r28)->m[1] +
-             spC * ((Matrix *)temp_r28)->m[4]);
-        sp1C = sp34 * ((Matrix *)temp_r28)->m[8] +
-            (sp10 * ((Matrix *)temp_r28)->m[2] +
-             spC * ((Matrix *)temp_r28)->m[5]);
+    if (var_r23 == var_r22) {
+        stack.sp14 = (*(volatile f32 *)&stack.sp34) * ((Matrix *)temp_r28)->m[6] +
+            (stack.sp10 * ((Matrix *)temp_r28)->m[0] +
+             stack.spC * ((Matrix *)temp_r28)->m[3]);
+        stack.sp18 = stack.sp34 * ((Matrix *)temp_r28)->m[7] +
+            (stack.sp10 * ((Matrix *)temp_r28)->m[1] +
+             stack.spC * ((Matrix *)temp_r28)->m[4]);
+        stack.sp1C = stack.sp34 * ((Matrix *)temp_r28)->m[8] +
+            (stack.sp10 * ((Matrix *)temp_r28)->m[2] +
+             stack.spC * ((Matrix *)temp_r28)->m[5]);
     } else {
-        sp14 = sp34 * ((Matrix *)temp_r28)->m[6] +
-            (sp10 * ((Matrix *)temp_r28)->m[0] +
-             spC * ((Matrix *)temp_r28)->m[3]) +
+        stack.sp14 = stack.sp34 * ((Matrix *)temp_r28)->m[6] +
+            (stack.sp10 * ((Matrix *)temp_r28)->m[0] +
+             stack.spC * ((Matrix *)temp_r28)->m[3]) +
             ((Matrix *)temp_r28)->m[9];
-        sp18 = sp34 * ((Matrix *)temp_r28)->m[7] +
-            (sp10 * ((Matrix *)temp_r28)->m[1] +
-             spC * ((Matrix *)temp_r28)->m[4]) +
+        stack.sp18 = stack.sp34 * ((Matrix *)temp_r28)->m[7] +
+            (stack.sp10 * ((Matrix *)temp_r28)->m[1] +
+             stack.spC * ((Matrix *)temp_r28)->m[4]) +
             ((Matrix *)temp_r28)->m[10];
-        sp1C = sp34 * ((Matrix *)temp_r28)->m[8] +
-            (sp10 * ((Matrix *)temp_r28)->m[2] +
-             spC * ((Matrix *)temp_r28)->m[5]) +
+        stack.sp1C = stack.sp34 * ((Matrix *)temp_r28)->m[8] +
+            (stack.sp10 * ((Matrix *)temp_r28)->m[2] +
+             stack.spC * ((Matrix *)temp_r28)->m[5]) +
             ((Matrix *)temp_r28)->m[11];
     }
 
-    ((Matrix *)temp_r28)->m[9] += sp14;
-    ((Matrix *)temp_r28)->m[10] += sp18;
+    ((Matrix *)temp_r28)->m[9] += stack.sp14;
+    ((Matrix *)temp_r28)->m[10] += stack.sp18;
     temp_f2 = ((Matrix *)temp_r28)->m[11];
-    temp_f1_2 = temp_f2 + sp1C;
+    temp_f1_2 = temp_f2 + stack.sp1C;
     ((Matrix *)temp_r28)->m[11] = temp_f1_2;
 
-    sp20.z = 0.0f;
-    sp20.x = 0;
-    sp20.y = 0;
-    sp20.z = temp_f29 * temp_f28 + temp_f31;
+    stack.sp20.z = 0.0f;
+    stack.sp20.x = 0;
+    stack.sp20.y = 0;
+    stack.sp20.z = temp_f29 * var_f28_2 + temp_f31;
     ((void (*)(void *, void *, f32, f32))fn_80015A20)(
-        &sp38, &sp20, temp_f1_2, temp_f2);
+        &sp38, &stack.sp20, temp_f1_2, temp_f2);
     fn_80015B20(temp_r28, &sp38, temp_r28);
     fn_8022ED00(temp_r28);
 
-    fn_80232BA4(sp8, *(s32 *)((u8 *)temp_r25 + 0x248),
-        *(s32 *)((u8 *)temp_r25 + 0x24C), 9,
-        lbl_805634A8, *(f32 *)((u8 *)temp_r25 + 0x250),
-        lbl_805634A4, lbl_805634A8, lbl_805634A4);
+    callWidth = *(s32 *)((u8 *)temp_r25 + 0x248);
+    callScale = *(f32 *)((u8 *)temp_r25 + 0x250);
+    callHeight = *(s32 *)((u8 *)temp_r25 + 0x24C);
+    fn_80232BA4(stack.sp8, callWidth, callHeight, 9,
+        lbl_805634A8, callScale, lbl_805634A4, lbl_805634A8, lbl_805634A4);
     fn_8022EDB8();
-    temp_f28 += fn_8023293C(*(s32 *)((u8 *)temp_r25 + 0x248),
-        (s32)sp8, lbl_805634A4);
+    var_f28_2 += fn_8023293C(*(s32 *)((u8 *)temp_r25 + 0x248),
+        (s32)stack.sp8, lbl_805634A4);
     var_r26++;
     temp_r24++;
 inner_test:
     if (var_r26 < strlen((char *)temp_r27)) goto inner_body;
 
-    temp_f28 += temp_f30;
+    var_f28_2 += temp_f30;
     var_r30++;
 outer_test:
     if (var_r30 < temp_r31) goto outer_body;
     fn_8022EE98(temp_r28);
 }
 #pragma scheduling on
-#pragma small_data off
 #pragma pop
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
 
@@ -3758,6 +3878,241 @@ extern "C" void fn_80227244(void *arg0, s32 arg1) {
         fn_80128668(obj);
 }
 
+extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
+#pragma scheduling invalid_target
+extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
+    if (arg0) {
+        {
+            f32 var_f25 = lbl_805634A8;
+            s32 var_r31 = 8;
+            f32 temp_f26 = lbl_805634A4;
+            do {
+                do {
+                    f32 temp_f1 = fn_80235EF0(arg0, var_r31);
+                    f32 temp_f27 = temp_f1;
+                    if (temp_f1 - temp_f26 < farg2 - var_f25) {
+                        fn_802353F4(arg0, var_r31, farg0 + var_f25, farg1, lbl_805634A8);
+                    } else {
+                        f32 temp_f29 = fn_80235F64(arg0, var_r31);
+                        fn_802354A0(arg0, var_r31, -1, farg0 + var_f25, farg1, lbl_805634A8, farg2 - var_f25, temp_f29);
+                    }
+                    var_f25 += temp_f27 - temp_f26;
+                    var_r31++;
+                } while (var_r31 < 10);
+                var_r31 = 8;
+            } while (var_f25 < farg2);
+        }
+        {
+            f32 var_f25 = lbl_805634A8;
+            s32 var_r31 = 10;
+            f32 temp_f0;
+            f32 temp_f23;
+            f32 temp_f24 = fn_80235F64(arg0, 10);
+            temp_f0 = farg1 - farg3;
+            f32 temp_f26 = lbl_805634A4;
+            temp_f23 = temp_f24 + temp_f0;
+            do {
+                do {
+                    f32 temp_f1 = fn_80235EF0(arg0, var_r31);
+                    f32 temp_f27 = temp_f1;
+                    if (temp_f1 - temp_f26 < farg2 - var_f25) {
+                        fn_802353F4(arg0, var_r31, farg0 + var_f25, temp_f23, lbl_805634A8);
+                    } else {
+                        fn_802354A0(arg0, var_r31, -1, farg0 + var_f25, temp_f23, lbl_805634A8, farg2 - var_f25, temp_f24);
+                    }
+                    var_f25 += temp_f27 - temp_f26;
+                    var_r31++;
+                } while (var_r31 < 12);
+                var_r31 = 10;
+            } while (var_f25 < farg2);
+        }
+        {
+            f32 var_f23 = lbl_805634A8;
+            s32 var_r31 = 4;
+            f32 temp_f26 = lbl_805634A4;
+            do {
+                do {
+                    f32 temp_f1 = fn_80235F64(arg0, var_r31);
+                    f32 temp_f27 = temp_f1;
+                    if (temp_f1 - temp_f26 < farg3 - var_f23) {
+                        fn_802353F4(arg0, var_r31, farg0, farg1 - var_f23, lbl_805634A8);
+                    } else {
+                        f32 temp_f29 = fn_80235EF0(arg0, var_r31);
+                        fn_802354A0(arg0, var_r31, -1, farg0, farg1 - var_f23, lbl_805634A8, temp_f29, farg3 - var_f23);
+                    }
+                    var_f23 += temp_f27 - temp_f26;
+                    var_r31++;
+                } while (var_r31 < 6);
+                var_r31 = 4;
+            } while (var_f23 < farg3);
+        }
+        {
+            f32 var_f23 = lbl_805634A8;
+            s32 var_r31 = 4;
+            f32 temp_f1;
+            f32 temp_f0;
+            temp_f1 = fn_80235EF0(arg0, 4);
+            temp_f0 = farg0 + farg2;
+            f32 temp_f27 = lbl_805634A4;
+            f32 temp_f24 = temp_f0 - temp_f1;
+            do {
+                var_r31 = 4;
+                do {
+                    f32 temp_f1 = fn_80235F64(arg0, var_r31);
+                    f32 temp_f26 = temp_f1;
+                    if (temp_f1 - temp_f27 < farg3 - var_f23) {
+                        fn_802353F4(arg0, var_r31, temp_f24, farg1 - var_f23, lbl_805634A8);
+                    } else {
+                        f32 temp_f29 = fn_80235EF0(arg0, var_r31);
+                        fn_802354A0(arg0, var_r31, -1, temp_f24, farg1 - var_f23, lbl_805634A8, temp_f29, farg3 - var_f23);
+                    }
+                    var_f23 += temp_f26 - temp_f27;
+                    var_r31++;
+                } while (var_r31 < 8);
+                var_r31 = 6;
+            } while (var_f23 < farg3);
+        }
+        fn_802353F4(arg0, 0, farg0 - lbl_805634EC, lbl_805634EC + farg1, lbl_805634A8);
+        {
+            f32 offset = fn_80235EF0(arg0, 1);
+            f32 width = farg0 + farg2;
+            f32 x = (lbl_805634EC + width) - offset;
+            fn_802353F4(arg0, 1, x, lbl_805634EC + farg1, lbl_805634A8);
+        }
+        {
+            f32 offset = fn_80235F64(arg0, 2);
+            f32 difference = farg1 - farg3;
+            f32 y = (difference - lbl_805634EC) + offset;
+            fn_802353F4(arg0, 2, farg0 - lbl_805634EC, y, lbl_805634A8);
+        }
+        {
+            f32 offset = fn_80235F64(arg0, 3);
+            f32 difference = farg1 - farg3;
+            f32 y = (difference - lbl_805634EC) + offset;
+            f32 xoffset = fn_80235EF0(arg0, 3);
+            f32 width = farg0 + farg2;
+            f32 x = (lbl_805634EC + width) - xoffset;
+            fn_802353F4(arg0, 3, x, y, lbl_805634A8);
+        }
+    }
+}
+
+extern "C" s32 fn_8022DD80(s32);
+extern "C" s32 fn_8022DD88(s32);
+extern "C" s32 fn_8022DD90(s32, s32);
+extern "C" void fn_80227880(s32, f32, f32, f32, f32);
+extern f32 lbl_805634EC;
+extern f32 lbl_80563564;
+extern f32 lbl_80563568;
+extern f32 lbl_8056356C;
+extern f32 lbl_80563570;
+extern f32 lbl_80563574;
+extern f32 lbl_80563578;
+#pragma scheduling invalid_target
+extern "C" void fn_80228010(void* arg0) {
+register void *obj = arg0;
+if (*(s32*)((u8*)obj + 0x250) == 0)
+return;
+if (*(s32*)((u8*)obj + 0x254) == 0)
+return;
+
+if (*(s32*)((u8*)obj + 0x258) != 0) goto active;
+    goto finish;
+active: {
+
+f32 duration = fn_80235EF0(*(s32*)((u8*)obj + 0x254), 0);
+f32 initial = fn_80235EF0(*(s32*)((u8*)obj + 0x254), 2);
+f32 radius = fn_80235F64(*(s32*)((u8*)obj + 0x254), 1);
+s32 lastIndex = fn_8022DD88(*(s32*)((u8*)obj + 0x248));
+f32 negRadius = -radius;
+f32 spC = lbl_80563564;
+f32 sp8 = lbl_80563568;
+volatile f32 *sp8Read = (volatile f32 *)&sp8;
+if (*(u8*)((u8*)obj + 0x244) == 0) {
+fn_80230C30(&spC, (f32 *)&sp8, *(s32*)((u8*)obj + 4),
+*(s32*)((u8*)obj + 8));
+sp8 -= negRadius;
+spC -= lbl_8056356C;
+}
+
+s32 count = fn_8022DD80(*(s32*)((u8*)obj + 0x248));
+s32 temp = count ^ 1;
+u32 flag = (u32)((temp >> 1) - (temp & count)) >> 31;
+f32 progress = lbl_805634EC + spC;
+
+if (flag != 0) {
+f32 scale = lbl_805634C4;
+s32 index = 0;
+f32 radiusScale = radius * scale;
+f32 step = lbl_80563570 + initial;
+f32 charWidthDefault = lbl_805634A8;
+do {
+s32 isLast = index == lastIndex;
+s32 glyph = fn_8022DD90(*(s32*)((u8*)obj + 0x248), index);
+f32 width = fn_8023293C(*(s32*)((u8*)obj + 0x250), glyph,
+lbl_805634A4);
+f32 charWidth = charWidthDefault > width ? charWidthDefault : width;
+f32 y = sp8;
+fn_802353F4(*(s32*)((u8*)obj + 0x254), 0, progress, y,
+lbl_805634A8);
+progress += duration;
+fn_802354A0(*(s32*)((u8*)obj + 0x254), 1, -1, progress, y,
+lbl_805634A8, charWidth, radius);
+
+u32 color = 0xFF707070;
+if (isLast != 0)
+color = 0xFFFFFFFF;
+fn_80232BA4((char*)glyph, *(s32*)((u8*)obj + 0x250), color, 0x14,
+progress + charWidth * scale, y - radiusScale,
+lbl_805634A4, lbl_805634A8, lbl_805634A4);
+progress += charWidth;
+fn_802353F4(*(s32*)((u8*)obj + 0x254), 2, progress, y,
+lbl_805634A8);
+progress += step;
+index++;
+} while (index < count);
+}
+
+f32 endPos = lbl_8056356C + spC;
+f32 negTop = sp8 + negRadius;
+f32 virtualPos = (f32)((VfObj*)obj)->vf28();
+f32 top = sp8 - radius;
+f32 topAdjusted = top - lbl_80563574;
+f32 offset3 = fn_80235EF0(*(s32*)((u8*)obj + 0x254), 3);
+f32 offset4 = fn_80235EF0(*(s32*)((u8*)obj + 0x254), 4);
+f32 padding = flag != 0 ? offset3 + offset4 : lbl_805634A8;
+f32 remaining = virtualPos - padding;
+f32 width5 = fn_80235F64(*(s32*)((u8*)obj + 0x254), 5);
+s32 span = *(s32*)((u8*)obj + 0x10) - *(s32*)((u8*)obj + 8);
+fn_80227880(span, endPos, sp8 - radius, virtualPos, (f32)span);
+
+f32 phase3Pos = endPos;
+if (flag != 0) {
+fn_802353F4(*(s32*)((u8*)obj + 0x254), 3, endPos, topAdjusted,
+lbl_805634A8);
+phase3Pos = endPos + offset3;
+}
+fn_802354A0(*(s32*)((u8*)obj + 0x254), 5, -1, phase3Pos, topAdjusted,
+lbl_805634A8, remaining, width5);
+
+f32 finalX = phase3Pos + lbl_805634C4 * remaining;
+s32 text = *(s32*)((u8*)obj + 0x24C);
+if (text == 0)
+text = fn_8022DD90(*(s32*)((u8*)obj + 0x248), lastIndex);
+fn_80232BA4((char*)text, *(s32*)((u8*)obj + 0x250), -1, 0x14, finalX,
+(lbl_805634E0 + topAdjusted) - lbl_805634C4 * width5,
+lbl_80563578, lbl_805634A8, lbl_805634A4);
+
+if (flag != 0)
+fn_802353F4(*(s32*)((u8*)obj + 0x254), 4, phase3Pos + remaining,
+topAdjusted, lbl_805634A8);
+
+fn_802278F0(*(s32*)((u8*)obj + 0x258), endPos, negTop, virtualPos,
+(f32)span);
+
+    }
+finish: ;
+}
 extern "C" void *fn_80228418(void *p,void *q,s32 a){s32 r;fn_80218F80();*(s32*)((u8*)p+0x244)=0;*(void**)p=lbl_8033DE28;*(u8*)((u8*)p+0x248)=0;if(a){*(s32*)((u8*)p+0x244)=a;}else{r=fn_801284F8(0x18,lbl_8033DCDC);if(r)r=fn_8023964C();*(s32*)((u8*)p+0x244)=r;*(u8*)((u8*)p+0x248)=1;}fn_80239784(*(s32*)((u8*)p+0x244),(u8*)q+0x40);return p;}
 
 extern "C" void *fn_802284BC(void *p,s32 a){if(p){*(void**)p=lbl_8033DE28;fn_8023986C(*(s32*)((u8*)p+0x244));if(*(u8*)((u8*)p+0x248))fn_8023967C(*(s32*)((u8*)p+0x244),1);*(s32*)((u8*)p+0x244)=0;register void *q=p;fn_8021915C(q,0);if(a>0)fn_80128668(p);}return p;}
