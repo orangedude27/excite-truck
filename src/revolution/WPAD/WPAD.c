@@ -3586,19 +3586,19 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
         WPADiPushCommandInline((pQueue), command); \
     }
 
-#define WPADiSendWriteDataInline(pQueue, sourceData, dataLength, addressValue, callbackValue) \
+#define WPADiSendWriteDataInline(pQueue, sourceData, argLength, addressValue, callbackValue) \
     { \
         WPADCommand command; \
         u8 packedLength; \
         u32 address; \
-        packedLength = (dataLength) & 31; \
+        packedLength = (argLength) & 31; \
         address = (addressValue); \
         command.reportID = RPTID_WRITE_DATA; \
         command.dataLength = RPT16_SIZE; \
         command.cmdCB = (callbackValue); \
         memcpy(&command.dataBuf[RPT16_DATA_DST_ADDRESS], &address, sizeof(u32)); \
         memcpy(&command.dataBuf[RPT16_DATA_LENGTH], &packedLength, sizeof(u8)); \
-        memcpy(&command.dataBuf[RPT16_DATA], (sourceData), (dataLength)); \
+        memcpy(&command.dataBuf[RPT16_DATA], (sourceData), (argLength)); \
         WPADiPushCommandInline((pQueue), command); \
     }
 
