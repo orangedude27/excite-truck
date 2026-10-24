@@ -874,7 +874,7 @@ loop_80:
                     } else if (temp_r0_2 >= 9) {
                         temp_r3_10 = M2C_FIELD(arg0, void ***, 0x270);
                         if (M2C_FIELD(*temp_r3_10, int (**)(void **), 0x38)(temp_r3_10) == 0) {
-                            fn_802E30C8(&lbl_80332758 + 0x6CC, M2C_FIELD(arg0, int *, 0x1EC));
+                            fn_802E30C8((char *)&lbl_80332758 + 0x6CC, M2C_FIELD(arg0, int *, 0x1EC));
                             var_r17_2 = 1;
                         }
                     }
