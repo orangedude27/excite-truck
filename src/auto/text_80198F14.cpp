@@ -167,7 +167,7 @@ public:
 class Fn80199894VTab20 {
 public:
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v4(); virtual void v5();
     virtual void Call(void*, f32*, f32*, s32, f32*, void*, f32);
 };
 class Fn80199894VTab20Wide {
