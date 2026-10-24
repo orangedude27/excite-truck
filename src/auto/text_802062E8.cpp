@@ -508,9 +508,11 @@ extern "C" void fn_80207490(void *arg0, void *arg1, int arg2) {
 }
 
 #pragma dont_inline reset
+#pragma dont_inline on
 extern "C" void fn_8020769C(void* arg0, int arg1, int arg2) {
 	fn_802073A4(arg0, arg1, arg2);
 }
+#pragma dont_inline reset
 
 extern "C" void *fn_802066C8(void*, u32);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
