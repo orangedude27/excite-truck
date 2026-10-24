@@ -44,7 +44,7 @@ typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
 struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
-struct SetupGXFontType { virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3(); virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7(); virtual int f8(); virtual int f9(); virtual int f10(); virtual int f11(); virtual int GetType(); };
+struct SetupGXFontType { virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3(); virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7(); virtual int f8(); virtual int f9(); virtual int GetType(); };
 namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); void SetFontSize(float, float); void SetupGX(); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
@@ -382,7 +382,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     int var_r9;
     int var_r10;
     int var_r5_2;
-    void **temp_r3_2;
+    SetupGXFontType *temp_r3_2;
 
     var_r5 = 1;
     var_r6 = 1;
@@ -433,9 +433,9 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
         SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color((unsigned int)&sp20[0], (unsigned int)&sp1C[0]);
         return;
     }
-    temp_r3_2 = (*(void ***)((signed char*)(arg0) + (0x48)));
+    temp_r3_2 = (SetupGXFontType *)(*(void ***)((signed char*)(arg0) + (0x48)));
     if (temp_r3_2 != 0) {
-        temp_r3_3 = (*(int (**)())((signed char*)(*temp_r3_2) + (0x30)))();
+        temp_r3_3 = temp_r3_2->GetType();
         switch (temp_r3_3) {
         case 0:
         case 1:
