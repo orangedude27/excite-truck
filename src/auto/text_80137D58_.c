@@ -1,10 +1,45 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+void fn_80137D58(void *arg0, int arg_sp0) {
+    int sp18, sp14, sp10, spC, sp8;
+    unsigned char *p = (unsigned char *)arg0;
+    unsigned char temp_r0, temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5;
+    unsigned char temp_r15, temp_r16, temp_r17, temp_r18, temp_r19, temp_r20, temp_r21, temp_r22, temp_r23, temp_r24, temp_r25, temp_r26, temp_r27, temp_r28, temp_r29, temp_r30;
+    unsigned char temp_r4, temp_r4_2, temp_r4_3, temp_r4_4, temp_r4_5, temp_r4_6, temp_r4_7, temp_r4_8;
+    temp_r4=p[0]; p[0]=p[3]; p[3]=temp_r4;
+    temp_r4_2=p[1]; p[1]=p[2]; p[2]=temp_r4_2;
+    temp_r4_3=p[4]; p[4]=p[7]; p[7]=temp_r4_3;
+    temp_r4_4=p[5]; p[5]=p[6]; p[6]=temp_r4_4;
+    temp_r4_5=p[8]; p[8]=p[11]; p[11]=temp_r4_5;
+    temp_r4_6=p[9]; p[9]=p[10]; p[10]=temp_r4_6;
+    temp_r4_7=p[12]; p[12]=p[15]; p[15]=temp_r4_7;
+    temp_r4_8=p[13]; p[13]=p[14]; p[14]=temp_r4_8;
+    temp_r0=p[0x2a]; temp_r17=p[0x29]; sp18=temp_r0;
+    temp_r0_2=p[0x2f]; temp_r24=p[0x2c]; sp8=temp_r0_2;
+    temp_r0_3=p[0x2e]; temp_r16=p[0x2d]; spC=temp_r0_3;
+    temp_r0_4=p[0x33]; temp_r23=p[0x30]; sp10=temp_r0_4;
+    temp_r0_5=p[0x32]; temp_r15=p[0x31]; sp14=temp_r0_5;
+    temp_r30=p[0x10]; p[0x29]=temp_r0;
+    temp_r22=p[0x11]; p[0x2c]=temp_r0_2;
+    temp_r29=p[0x18]; p[0x2d]=temp_r0_3;
+    temp_r21=p[0x19]; p[0x30]=temp_r0_4;
+    temp_r28=p[0x1c]; temp_r20=p[0x1d]; temp_r27=p[0x20]; temp_r19=p[0x21];
+    temp_r26=p[0x24]; temp_r18=p[0x25]; temp_r25=p[0x28];
+    p[0x10]=p[0x13]; p[0x13]=temp_r30; p[0x11]=p[0x12]; p[0x12]=temp_r22;
+    p[0x18]=p[0x1b]; p[0x1b]=temp_r29; p[0x19]=p[0x1a]; p[0x1a]=temp_r21;
+    p[0x1c]=p[0x1f]; p[0x1f]=temp_r28; p[0x1d]=p[0x1e]; p[0x1e]=temp_r20;
+    p[0x20]=p[0x23]; p[0x23]=temp_r27; p[0x21]=p[0x22]; p[0x22]=temp_r19;
+    p[0x24]=p[0x27]; p[0x27]=temp_r26; p[0x25]=p[0x26]; p[0x26]=temp_r18;
+    p[0x28]=p[0x2b]; p[0x2b]=temp_r25; p[0x2a]=temp_r17; p[0x2f]=temp_r24;
+    p[0x2e]=temp_r16; p[0x33]=temp_r23; p[0x31]=temp_r0_5; p[0x32]=temp_r15;
+}
+
 void fn_80137F2C(void) {
 
 }
 
+#pragma dont_inline on
 void fn_80137F30(void *arg0) {
     unsigned char *base = (unsigned char *)arg0;
     unsigned char a = base[8];
@@ -20,6 +55,7 @@ void fn_80137F30(void *arg0) {
     base[0xd] = base[0xe];
     base[0xe] = d;
 }
+#pragma dont_inline reset
 
 void fn_80137F74(void *arg0) {
     unsigned char a0 = ((unsigned char *)arg0)[0];
@@ -215,21 +251,35 @@ void fn_80138594(void *arg0) {
 
 extern float lbl_80561398, lbl_8056139C, lbl_805613A0, lbl_805613A4, lbl_805613A8, lbl_805613AC;
 extern float __fabsf(float);
+extern double __fabs(double);
 float fn_801385F0(float arg0, float arg1, float arg2, float arg3) {
     float diff = arg0 - arg2;
-    float value;
-    if (__fabsf(diff) > arg1 * lbl_80561398) {
+    register float value;
+    if ((float)__fabs((double)diff) > arg1 * lbl_80561398) {
         float adjust = diff > lbl_805613A4 ? lbl_8056139C : lbl_805613A0;
         diff -= arg1 * adjust;
     }
-    value = lbl_8056139C - __fabsf(diff) / arg3;
-    if (lbl_8056139C < value) value = lbl_8056139C;
-    if (lbl_805613A4 > value) value = lbl_805613A4;
+    value = lbl_8056139C - (float)__fabs((double)diff) / arg3;
+    value = (lbl_8056139C < value) ? lbl_8056139C : value;
+    value = (value < lbl_805613A4) ? lbl_805613A4 : value;
     if (value < lbl_805613A0) return lbl_805613A0;
     if (value > lbl_8056139C) return lbl_8056139C;
-    if (value > lbl_805613A4)
-        return lbl_805613A8 * value * value * value + lbl_805613AC * value * value;
-    return lbl_805613A8 * value * value * value - lbl_805613AC * value * value;
+    if (value > lbl_805613A4) {
+        float cubic = lbl_805613A8 * value;
+        float square = lbl_805613AC * value;
+        cubic = cubic * value;
+        square = square * value;
+        cubic = cubic * value;
+        return cubic + square;
+    }
+    {
+        float cubic = lbl_805613A8 * value;
+        float square = lbl_805613AC * value;
+        cubic = cubic * value;
+        square = square * value;
+        cubic = cubic * value;
+        return cubic - square;
+    }
 }
 
 extern float lbl_805613A4;
