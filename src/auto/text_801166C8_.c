@@ -501,6 +501,7 @@ extern u32 lbl_8041D608[0x100];
 #define lbl_8041D608 lbl_8041D608[0]
 extern u32 lbl_8055DED8;
 extern u8 lbl_802F6528[];
+extern void fn_8011FE20(u32 **, u32);
 extern void memset(void *, int, unsigned int);
 s32 *fn_8011770C(s32 *arg0, u32 arg1) {
     struct {
