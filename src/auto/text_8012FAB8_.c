@@ -54,42 +54,71 @@ extern int lbl_8042F4B8;
 extern char lbl_8055E048;
 extern void fn_8013111C(void);
 void fn_801303A8(void) {
-    int *src = (int *)(lbl_8042F4B8 + 0x58);
-    int *dst = (int *)(lbl_80423054 + 0x58);
-    char c;
+    int *s = (int *)(lbl_8042F4B8);
+    int *d = (int *)(lbl_80423054);
+    int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, c;
 
     lbl_8055E048 = 1;
     lbl_804230D0 = -1;
     fn_8013111C();
-    dst[2] = src[0];
-    dst[4] = src[1];
-    dst[5] = src[2];
-    c = *(char *)(src + 0x18);
-    dst[6] = src[3];
-    dst[7] = src[4];
-    dst[8] = src[5];
-    dst[9] = src[6];
-    dst[10] = src[7];
-    dst[11] = src[8];
-    dst[12] = src[9];
-    dst[13] = src[10];
-    dst[14] = src[11];
-    dst[15] = src[12];
-    dst[16] = src[13];
-    dst[17] = src[14];
-    dst[18] = src[15];
-    dst[19] = src[16];
-    dst[20] = src[17];
-    dst[21] = src[18];
-    dst[22] = src[19];
-    dst[23] = src[20];
-    dst[24] = src[21];
-    dst[25] = src[22];
-    dst[26] = src[23];
-    dst[27] = src[24];
-    dst[28] = src[25];
-    dst[29] = src[26];
-    *(char *)(dst + 0x78) = c;
+    c = *(char *)(s + 0x70);
+    v0 = s[0x14];
+    v1 = s[0x18];
+    v2 = s[0x19];
+    v3 = s[0x1A];
+    v4 = s[0x1B];
+    v5 = s[0x1C];
+    v6 = s[0x1D];
+    v7 = s[0x1E];
+    v8 = s[0x1F];
+    v9 = s[0x20];
+    v10 = s[0x21];
+    v11 = s[0x22];
+    v12 = s[0x23];
+    v13 = s[0x24];
+    v14 = s[0x25];
+    v15 = s[0x26];
+    v16 = s[0x27];
+    v17 = s[0x28];
+    v18 = s[0x29];
+    v19 = s[0x2A];
+    v20 = s[0x2B];
+    v21 = s[0x2C];
+    v22 = s[0x2D];
+    v23 = s[0x2E];
+    v24 = s[0x2F];
+    v25 = s[0x30];
+    v26 = s[0x31];
+    v27 = s[0x32];
+    d[0x18] = v0;
+    d[0x1A] = v1;
+    d[0x1B] = v2;
+    d[0x1C] = v3;
+    d[0x1D] = v4;
+    d[0x1E] = v5;
+    d[0x1F] = v6;
+    d[0x20] = v7;
+    d[0x21] = v8;
+    d[0x22] = v9;
+    d[0x23] = v10;
+    d[0x24] = v11;
+    d[0x25] = v12;
+    d[0x26] = v13;
+    d[0x27] = v14;
+    d[0x28] = v15;
+    d[0x29] = v16;
+    d[0x2A] = v17;
+    d[0x2B] = v18;
+    d[0x2C] = v19;
+    d[0x2D] = v20;
+    d[0x2E] = v21;
+    d[0x2F] = v22;
+    d[0x30] = v23;
+    d[0x31] = v24;
+    d[0x32] = v25;
+    d[0x33] = v26;
+    d[0x34] = v27;
+    *(char *)(d + 0x78) = c;
     if (c == 0) {
         *(char *)lbl_80423054 = 0x2C;
     } else {
@@ -141,6 +170,7 @@ void fn_80130FCC(void *arg0, int arg1, int arg2, int arg3, void *arg4) {
 
 extern int lbl_802F8EE0[];
 extern char lbl_8032B300[];
+#pragma scheduling invalid_target
 void fn_80130FE0(int arg0) {
     int values[10];
     int *p;
@@ -162,13 +192,10 @@ void fn_80130FE0(int arg0) {
         fn_80131234(lbl_8032B300);
     } else {
         remainder = arg0 % 10;
-        {
-            int *selected = &values[remainder];
-            fn_80131234((void *)*selected);
-        }
+        fn_80131234((void *)values[remainder]);
     }
 }
-
+#pragma scheduling on
 void fn_80131264(void) {
     fn_801302E0();
 }
