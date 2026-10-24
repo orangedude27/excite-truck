@@ -332,6 +332,7 @@ extern "C" void fn_80206B14(void *arg0, int arg1, int arg2) {
     ((Dispatch4_80206B14 *)arg0)->f4(arg1, arg2);
 }
 #pragma scheduling on
+#pragma dont_inline reset
 extern "C" void fn_80206BF4(void) {
 	return;
 }
