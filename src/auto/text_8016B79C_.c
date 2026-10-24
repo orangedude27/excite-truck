@@ -117,7 +117,6 @@ void *fn_8016B8CC(void *arg0, s32 arg1) {
 extern "C" s32 strlen(const char *);
 extern "C" void fn_801308F4(void *, ...);
 extern "C" void fn_80130980(void *, s32, s32, f32);
-extern "C" void fn_801345D8(void *, s32, void *, s32);
 extern "C" void fn_801312EC(void *, void *);
 extern "C" void fn_80131318();
 extern "C" void fn_802ADFF4(s32, s32);
@@ -175,7 +174,7 @@ copy1:
         if ((s8)c != 0) goto loop1;
 after1:
         dst = (u8 *)arg0 + 0x58; src = &lbl_8055A20C; count = 0x14;
-        goto loop2;
+        goto copy2;
 loop2:
         if (--count > 0) goto copy2;
         dst[-1] = 0;
@@ -190,7 +189,7 @@ after2:
         fn_80130980((u8 *)arg0 + 0x9E, 0x14, 2, (f32)var_r28);
         if (*(u32 *)(lbl_8043036C + 8) != lbl_8055E044) fn_80131318();
         src = *(u8 **)(lbl_8043036C + 4); dst = (u8 *)arg0 + 0x58; count = 0x14;
-        goto loop3;
+        goto copy3;
 loop3:
         if (--count > 0) goto copy3;
         dst[-1] = 0;
@@ -206,7 +205,7 @@ after3:
     ((void (*)(void *, s32, s32))fn_801308F4)((u8 *)arg0 + 0x8A, 0x14, arg1 - arg3);
     if (fn_801609C4(arg1) != -1) {
         src = __AXGetStackHead(); dst = (u8 *)arg0 + 0x80; count = 0xA;
-        goto loop4;
+        goto copy4;
 loop4:
         if (--count > 0) goto copy4;
         dst[-1] = 0;
@@ -219,7 +218,7 @@ after4:
         ;
     } else {
         src = &lbl_8055A210; dst = (u8 *)arg0 + 0x80; count = 0xA;
-        goto loop5;
+        goto copy5;
 loop5:
         if (--count > 0) goto copy5;
         dst[-1] = 0;
@@ -234,6 +233,8 @@ after5:
     if (*(s32 *)((u8 *)arg0 + 0xF8) != 0) *((u8 *)arg0 + 8) = 0;
     state = *(s32 *)arg0;
     switch (state) {
+    case 4:
+        break;
     case 0:
         fn_802ADFF4(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4));
         if (strlen((const char *)arg0 + 0xDA) != 0) {
