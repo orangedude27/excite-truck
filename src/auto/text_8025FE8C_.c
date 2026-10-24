@@ -685,6 +685,7 @@ extern "C" void *fn_80207848(void *, s32);
 extern "C" void *fn_8023512C(void *);
 extern "C" void *fn_80232578(void *);
 extern "C" void *memset(void *, int, unsigned int);
+#pragma scheduling invalid_target
 extern "C" void fn_80261C68(s32 *arg0) {
     struct Dummy {
         virtual void slot0();
@@ -725,6 +726,7 @@ extern "C" void fn_80261C68(s32 *arg0) {
     void *item;
     u8 *group;
     u8 *stringBase;
+    float targetValue;
 
     stringBase = (u8 *)&lbl_80345B40;
     *(s32 *)((u8 *)arg0 + 8) = 0;
@@ -795,9 +797,10 @@ outerCheck:
     object = fn_80207848(stringBase + 0x178, 0);
     *(void **)((u8 *)arg0 + 0x14) = object;
     if (object != 0) {
-        if (lbl_80563B88 != *(float *)((u8 *)object + 8)) {
+        targetValue = lbl_80563B88;
+        if (targetValue != *(float *)((u8 *)object + 8)) {
             *(u8 *)((u8 *)object + 0x4D) = 1;
-            *(float *)((u8 *)object + 8) = lbl_80563B88;
+            *(float *)((u8 *)object + 8) = targetValue;
         }
     } else {
         fn_802E317C(stringBase + 0x188);
