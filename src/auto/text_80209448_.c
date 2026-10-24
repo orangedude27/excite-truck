@@ -4,7 +4,7 @@
 #include <types.h>
 
 #define M2C_UNK s32
-#define M2C_FIELD(expr, type, offset) (*(type *)((u8 *)(expr) + (offset)))
+#define M2C_FIELD(expr, type, offset) (*(type)((u8 *)(expr) + (offset)))
 #define M2C_VFUNC(obj, slot, type) ((type)(*(void ***)(obj))[slot])
 typedef void *(*M2CPtr0)(void *);
 typedef void *(*M2CPtr1)(void *, const char *);
@@ -14,3 +14,10 @@ typedef f32 (*M2CF32_2)(void *, const char *, f32);
 typedef f32 (*M2CF32_1)(void *, const char *);
 typedef f32 (*M2CF32_0)(void *);
 typedef void *(*M2CPtr2)(void *, const char *, s32);
+
+extern f32 lbl_8056323C;
+void *fn_80209448(void *arg0) {
+    f32 value;
+    value = M2C_VFUNC(arg0, 10, M2CF32_2)(arg0, "x", lbl_8056323C);
+    return (void *)(u32)value;
+}
