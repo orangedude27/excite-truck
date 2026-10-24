@@ -408,15 +408,29 @@ s32 fn_80161B0C(void) {
     return result;
 }
 
-f32 fn_80161B70(void) {
-    if (lbl_8055E300) {
-        volatile void **vtable = *(volatile void ***)lbl_8055E300;
-        volatile f32 (*fn)(void *) = (volatile f32 (*)(void *))vtable[13];
-        return fn((void *)lbl_8055E300);
+#pragma cplusplus on
+extern "C" f32 fn_80161B70(void) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual f32 v11();
+    };
+    Dummy *p = (Dummy *)lbl_8055E300;
+    if (p != 0) {
+        return p->v11();
     }
     return lbl_80561848;
 }
-
+#pragma cplusplus off
 s32 fn_80161B94(void) {
     if (lbl_8055E300 != 0) {
         volatile void * volatile *vptr = (volatile void * volatile *)lbl_8055E300;
