@@ -8,7 +8,7 @@ extern void fn_80015A20(void *, void *);
 extern void fn_80015B20(float *, int *, float *);
 extern int fn_80129D18(int, int);
 extern void fn_8014452C(int *, float, float, float);
-extern void fn_8017B6D4(void *, float *, float *, float, float);
+extern void fn_8017B6D4(void *, float *, float *, ...);
 extern void fn_8017B778(void *, float *, float *);
 extern void fn_8018BFA0(void *, float *, int *, int, float, float);
 extern float lbl_80561F88, lbl_80561F90, lbl_80561F94, lbl_80561F98, lbl_80561F9C, lbl_80561FA0, lbl_80561FA4, lbl_80561FA8, lbl_80561FAC, lbl_80561FB0, lbl_80561FB4, lbl_80561FB8, lbl_80561FBC, lbl_80561FC0, lbl_80561FC4;
