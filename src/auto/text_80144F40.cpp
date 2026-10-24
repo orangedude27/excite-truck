@@ -855,10 +855,14 @@ extern "C" __declspec(section ".sdata") char lbl_8055E218[];
 extern "C" __declspec(section ".sdata") char lbl_8055E220[];
 extern "C" __declspec(section ".sdata") f32 lbl_8056160C;
 extern "C" __declspec(section ".sdata") f32 lbl_80561610;
+extern "C" __declspec(section ".sdata") f32 lbl_805615D4;
+#pragma push
+#pragma scheduling invalid_target
+#pragma dont_inline on
 extern "C" void fn_80146824(void *arg0) {
     struct Block { s32 base; s32 count; };
     struct Record { f32 f0, f4, f8, fC; s32 value; char *label; };
-    struct Data { Record *records; s32 count, capacity; Record *recordsAgain; };
+    struct Data { Record *records; s32 count; volatile s32 capacity; Record *recordsAgain; };
     struct Proxy { s32 a, b; u8 pad8[4]; Data *data; };
     struct Owner {
         u8 pad[0x2C];
@@ -871,98 +875,103 @@ extern "C" void fn_80146824(void *arg0) {
     };
     typedef void *(*AllocFn)(s32, const char *, s32, s32, s32, s32);
     Owner *owner = (Owner *)arg0;
+    register Block *b2C = owner->block2C;
+    register Block *b34 = owner->block34;
+    register Block *b30 = owner->block30;
+    register s32 n2C = b2C->count;
+    register s32 n34 = b34->count;
+    register s32 n30 = b30->count;
+    register s32 size2C = n2C * 2;
+    register s32 size30 = n30 * 4 - n30;
+    register s32 size34 = n34 * 4 - n34;
     Data *data = (Data *)((AllocFn)fn_801284F8)(0x10, lbl_8032D114,
-        owner->block30->count, owner->block30->count * 4,
-        owner->block2C->count, owner->block2C->count * 4);
+        n34, n30 * 4, n30, n2C);
     if (data != 0) {
-        s32 capacity = owner->block30->count * 4 - owner->block30->count
-            + owner->block34->count * 2
-            + owner->block2C->count * 4 - owner->block2C->count + 1;
-        data->records = (Record *)fn_8012850C(capacity * 0x18, lbl_80559E48);
+        s32 total = size34 + size2C;
+        total = total + size30;
+        total = total + 1;
+        data->records = (Record *)fn_8012850C(total * 0x18, lbl_80559E48);
+        data->capacity = total;
         data->count = 0;
-        data->capacity = capacity;
         data->recordsAgain = data->records;
         owner->data = data;
     }
     Proxy *proxy = (Proxy *)fn_801284F8(0x18, lbl_8032D124);
     if (proxy != 0) {
-        proxy->a = 0;
+        Data *parent = owner->data;
         proxy->b = 0;
-        proxy->data = owner->data;
+        proxy->a = 0;
+        proxy->data = parent;
         owner->proxy = proxy;
     }
-    s32 i, offset;
-    i = 0;
-    offset = 0;
-    for (; i < owner->block2C->count; i++, offset += 0x28) {
+    for (s32 i = 0, offset = 0; i < owner->block2C->count; i++, offset += 0x28) {
         Record *r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count;
-        ((Data *)owner->proxy->data)->count++;
+            ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 0);
-        r->value = *(s32 *)owner->block2C->base + offset;
+        r->value = owner->block2C->base + offset;
         r->label = lbl_8055E20C;
         r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count;
-        ((Data *)owner->proxy->data)->count++;
+            ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 1);
-        r->value = *(s32 *)owner->block2C->base + offset;
+        r->value = owner->block2C->base + offset;
         r->label = lbl_8055E210;
     }
-    i = 0;
-    offset = 0;
-    for (; i < owner->block30->count; i++, offset += 0x20) {
+    for (s32 i = 0, offset = 0; i < owner->block30->count; i++, offset += 0x20) {
         Record *r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count;
-        ((Data *)owner->proxy->data)->count++;
+            ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 0);
-        r->value = *(s32 *)owner->block30->base + offset;
+        r->value = owner->block30->base + offset;
         r->label = lbl_8055E20C;
         r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count;
-        ((Data *)owner->proxy->data)->count++;
+            ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 1);
-        r->value = *(s32 *)owner->block30->base + offset;
+        r->value = owner->block30->base + offset;
         r->label = lbl_8055E214;
         r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count;
-        ((Data *)owner->proxy->data)->count++;
+            ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 2);
-        r->value = *(s32 *)owner->block30->base + offset;
+        r->value = owner->block30->base + offset;
         r->label = lbl_8055E218;
     }
-    i = 0;
-    offset = 0;
-    for (; i < owner->block34->count; i++, offset += 0x1C) {
+    for (s32 i = 0, offset = 0; i < owner->block34->count; i++, offset += 0x1C) {
         Record *r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count;
-        ((Data *)owner->proxy->data)->count++;
+            ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 0);
-        r->value = *(s32 *)owner->block34->base + offset;
+        r->value = owner->block34->base + offset;
         r->label = lbl_8055E20C;
         r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count;
-        ((Data *)owner->proxy->data)->count++;
+            ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 1);
-        r->value = *(s32 *)owner->block34->base + offset;
+        r->value = owner->block34->base + offset;
         r->label = lbl_8055E210;
         r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count;
-        ((Data *)owner->proxy->data)->count++;
+            ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 2);
-        r->value = *(s32 *)owner->block34->base + offset;
+        r->value = owner->block34->base + offset;
         r->label = lbl_8055E220;
     }
-    Record *last = (Record *)((Data *)owner->proxy->data)->records +
-        ((Data *)owner->proxy->data)->count;
-    ((Data *)owner->proxy->data)->count++;
-    last->label = (char *)arg0 + 0x40;
-    last->value = 0;
-    last->f0 = lbl_805615D4;
-    last->f4 = lbl_805615D4;
-    last->f8 = lbl_8056160C;
-    last->fC = lbl_80561610;
+    register f32 third;
+    register f32 second;
+    register f32 first;
+    char *label = (char *)arg0 + 0x40;
+    s32 zero = 0;
+    first = lbl_805615D4;
+    Data *queue = owner->proxy->data;
+    second = lbl_8056160C;
+    Record *records = queue->records;
+    s32 count = queue->count;
+    s32 byteOffset = count * 0x18;
+    third = lbl_80561610;
+    queue->count = count + 1;
+    Record *last = (Record *)((u8 *)records + byteOffset);
+    last->label = label;
+    last->value = zero;
+    last->f0 = first;
+    last->f4 = first;
+    last->f8 = second;
+    last->fC = third;
 }
-
+#pragma pop
 extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
@@ -991,6 +1000,194 @@ extern void lbl_8032D260(void);
 extern "C" void fn_80146C1C(void **arg0) {
     *arg0 = (void *)&lbl_8032D260;
 }
+
+extern "C" char lbl_8032CEC8[];
+extern "C" char lbl_80559E30[];
+extern "C" char lbl_80559E34[];
+extern "C" __declspec(section ".sdata") char lbl_80559E50[];
+extern "C" __declspec(section ".sdata") char lbl_80559E58[];
+extern "C" __declspec(section ".sdata") char lbl_80559E60[];
+#pragma push
+#pragma scheduling invalid_target
+#pragma small_data on
+#pragma use_lmw_stmw off
+extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
+    class Collection {
+    public:
+        virtual void c0(); virtual void c1(); virtual void c2(); virtual void c3();
+        virtual void c4(); virtual void c5(); virtual void c6(); virtual void c7();
+        virtual void c8(); virtual void c9(); virtual void c10(); virtual void c11();
+        virtual void c12(); virtual void c13(); virtual void c14(); virtual void c15();
+        virtual void c16(); virtual void c17(); virtual void c18(); virtual void c19();
+        virtual void c20(); virtual void c21();
+        virtual void *get(s32);
+    };
+    class Item {
+    public:
+        virtual const char *name();
+        virtual void i3(); virtual void i4(); virtual void *get(const char *, s32, void *);
+        virtual void i6(); virtual void *get2(const char *);
+    };
+    class ItemShort {
+    public:
+        virtual const char *name();
+        virtual void i3(); virtual void i4(); virtual void *get(const char *);
+        virtual void i6(); virtual void i7();
+    };
+    struct Object {
+        void *vtable;
+        u8 flag;
+        u8 pad5[3];
+        s32 value;
+        void *list0;
+        void *list1;
+        void *list2;
+    };
+    struct Result {
+        void *data;
+        s32 count;
+        s32 size;
+        void *end;
+    };
+    extern s32 fn_801454E8(void *, const char *);
+    extern char lbl_80559DFC[];
+    char *base = lbl_8032CEC8;
+    Object *object = (Object *)fn_801284F8(0x18, base + 0x26C);
+    if (object != 0) {
+    object->vtable = (void *)&lbl_8032D1D8;
+    object->flag = 0;
+    object->value = arg0;
+    object->list0 = 0;
+    object->list1 = 0;
+    object->list2 = 0;
+
+    {
+    s32 count = 0;
+    s32 i = 0;
+    while (1) {
+        void *item = ((Collection *)arg1)->get(i);
+        if (item == 0)
+            break;
+        const char *name = ((Item *)item)->name();
+        if (stricmp(name, base + 0x280) == 0)
+            count++;
+        i++;
+    }
+
+    Result *result0 = (Result *)fn_801284F8(0x10, base + 0x28C);
+    if (result0 != 0) {
+        void *data = fn_8012850C(count * 8, lbl_80559E48);
+        result0->data = data;
+        result0->size = count;
+        result0->count = 0;
+        result0->end = data;
+    }
+    i = 0;
+    while (1) {
+        void *item = ((Collection *)arg1)->get(i);
+        if (item == 0)
+            break;
+        const char *name = ((Item *)item)->name();
+        if (stricmp(name, base + 0x280) == 0) {
+            s32 index = result0->count;
+            void **data = (void **)result0->data;
+            void **record = (void **)((u8 *)data + index * 8);
+            result0->count = index + 1;
+            record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
+            record[1] = ((ItemShort *)item)->get(lbl_80559E34);
+        }
+        i++;
+    }
+    object->list0 = result0;
+    }
+
+    {
+    char *name1 = base + 0x29C;
+    s32 count = 0;
+    s32 i = 0;
+    while (1) {
+        void *item = ((Collection *)arg1)->get(i);
+        if (item == 0)
+            break;
+        const char *name = ((Item *)item)->name();
+        if (stricmp(name, name1) == 0)
+            count++;
+        i++;
+    }
+
+    Result *result1 = (Result *)fn_801284F8(0x10, base + 0x28C);
+    if (result1 != 0) {
+        void *data = fn_8012850C(count * 12, lbl_80559E48);
+        result1->data = data;
+        result1->size = count;
+        result1->count = 0;
+        result1->end = data;
+    }
+    i = 0;
+    while (1) {
+        void *item = ((Collection *)arg1)->get(i);
+        if (item == 0)
+            break;
+        const char *name = ((Item *)item)->name();
+        if (stricmp(name, name1) == 0) {
+            s32 index = result1->count;
+            void **data = (void **)result1->data;
+            void **record = (void **)((u8 *)data + index * 12);
+            result1->count = index + 1;
+            record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
+            record[1] = ((ItemShort *)item)->get(lbl_80559E30);
+            record[2] = ((Item *)item)->get2(lbl_80559E58);
+        }
+        i++;
+    }
+    object->list1 = result1;
+    }
+
+    {
+    const char *name2 = lbl_80559E60;
+    s32 count = 0;
+    s32 i = 0;
+    while (1) {
+        void *item = ((Collection *)arg1)->get(i);
+        if (item == 0)
+            break;
+        const char *name = ((Item *)item)->name();
+        if (stricmp(name, name2) == 0)
+            count++;
+        i++;
+    }
+
+    Result *result2 = (Result *)fn_801284F8(0x10, base + 0x28C);
+    if (result2 != 0) {
+        void *data = fn_8012850C(count * 12, lbl_80559E48);
+        result2->data = data;
+        result2->size = count;
+        result2->count = 0;
+        result2->end = data;
+    }
+    i = 0;
+    while (1) {
+        void *item = ((Collection *)arg1)->get(i);
+        if (item == 0)
+            break;
+        const char *name = ((Item *)item)->name();
+        if (stricmp(name, name2) == 0) {
+            s32 index = result2->count;
+            void **data = (void **)result2->data;
+            void **record = (void **)((u8 *)data + index * 12);
+            result2->count = index + 1;
+            record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
+            record[1] = ((ItemShort *)item)->get(lbl_80559E30);
+            record[2] = (void *)fn_801454E8(item, lbl_80559DFC);
+        }
+        i++;
+    }
+    object->list2 = result2;
+    }
+    }
+    return object;
+}
+#pragma pop
 extern "C" void fn_8002F6AC(s32, void *);
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *, s32);
 extern "C" s32 fn_80147070(s32 arg0, s32 arg1) {
