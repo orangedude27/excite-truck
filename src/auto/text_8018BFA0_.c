@@ -193,7 +193,7 @@ float PSVECSquareDistance(float *, float *);         /* extern */
 void *__AXFXGetLfoSinTable_801769CC();              /* extern */
 void *fn_8017960C(int);                             /* extern */
 int fn_801796CC(int, float *, int);       /* extern */
-int fn_80189BDC(float, float, float, float, float, float);      /* extern */
+int fn_80189BDC();                              /* extern */
 int fn_8018A174(void *);                        /* extern */
 void fn_8018F76C(void *, int);                   /* extern */
 int fn_801B8610(int, int);                      /* extern */
@@ -228,7 +228,7 @@ extern float lbl_8056202C;
 extern float lbl_80562030;
 extern float lbl_80562034;
 #pragma scheduling invalid_target
-void fn_8018E3EC(char *arg0, float *arg1, void *arg2, int arg3, int arg4, int arg5, int arg_sp0) {
+void fn_8018E3EC(char *arg0, float *arg1, char *arg2, int arg3, int arg4, int arg5, int arg_sp0) {
     extern float __fabsf(float);
 extern float lbl_80561FE8;
 extern float lbl_80558DC4;
