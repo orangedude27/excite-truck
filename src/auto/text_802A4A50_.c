@@ -104,11 +104,11 @@ void fn_802A4ADC(void) {
 void fn_802A4B90(void) {
     s32 value;
     value = lbl_8055F898;
-    if (value != -1) { fn_802C6CF8(); lbl_8055F898 = -1; }
+    if (value != -1) { ((s32 (*)(s32))fn_802C6CF8)(value); lbl_8055F898 = -1; }
     fn_802CAC54(lbl_8055F89C);
     fn_802A597C();
     value = lbl_8055F894;
-    if (value != 0) { fn_8028E398(); lbl_8055F894 = 0; }
+    if (value != 0) { ((s32 (*)(s32))fn_8028E398)(value); lbl_8055F894 = 0; }
     value = lbl_8055F888;
     if (value != 0) { ((void (*)(s32, s32))fn_802A5B8C)(value, 1); lbl_8055F888 = 0; }
     value = lbl_8055F88C;
