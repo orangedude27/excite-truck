@@ -490,7 +490,7 @@ void fn_802C974C(float f0, float f1, float f2) {
     view[2] = f2;
     if (mode != 0) {
         if ((unsigned char)lbl_8055FC75 == 0) goto keep_angle;
-        if ((float)__fabs((double)(lbl_8055D020 - lbl_80564EF8)) <= lbl_80558DC4) goto keep_angle;
+        if ((float)__fabs((double)(lbl_8055D020 - lbl_80564EF8)) <= (*(float *)&lbl_80558DC4)) goto keep_angle;
         angle = lbl_80564F24 * (float)atan((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020);
     }
 keep_angle:
