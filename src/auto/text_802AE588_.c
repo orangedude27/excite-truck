@@ -356,7 +356,7 @@ void fn_802B0288(void *arg0) {
 }
 
 extern int fn_802AE7AC(void);
-extern void *fn_802BE844(s16, s16, s32, f32);
+extern void *fn_802BE844();
 extern float lbl_80564B6C;
 extern float lbl_80564B84;
 #pragma dont_inline on
