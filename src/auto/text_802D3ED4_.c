@@ -7,7 +7,7 @@ extern void fn_8000D838(void *);
 extern void fn_8002F53C(void *, void *, u32, u32, u32);
 extern s16 lbl_8055FD08, lbl_8055FD0A, lbl_8055FD0C;
 extern unsigned char lbl_8055FD00;
-extern unsigned char lbl_804CA088;
+extern unsigned char lbl_804CA088[];
 extern void fn_802D3F30(void);
 #pragma scheduling off
 void fn_802D3ED4(void) {
