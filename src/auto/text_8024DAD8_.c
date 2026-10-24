@@ -38,6 +38,7 @@ extern unsigned char lbl_80498C48[];
 s32 fn_8001668C(s32, s32);
 s32 *fn_80016BC8(s32);
 extern unsigned char lbl_803444D8[];
+extern void fn_801345D8(void *, s32, void *, ...);
 extern void *lbl_8055F2E4;
 extern s32 lbl_8055F2E8;
 extern unsigned int lbl_8055F2EC;
