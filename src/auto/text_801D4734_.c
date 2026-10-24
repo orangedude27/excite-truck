@@ -867,6 +867,26 @@ int fn_801D7924(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+int fn_801D796C(void *arg0, int *arg1, int arg2) {
+    int *entry;
+    int idx;
+
+    entry = arg1;
+    for (idx = 0; idx < arg2; entry++, idx++) {
+        if (((int *)arg0)[1] != 0) {
+            if (fn_801D9B28(((int *)arg0)[1], *entry) != 0) {
+                return 1;
+            }
+        } else if (((int *)arg0)[2] == *entry) {
+            return 1;
+        }
+    }
+    return 0;
+}
+#pragma pop
+
 void *fn_801D7C6C(void) {
     return lbl_8033890C;
 }
