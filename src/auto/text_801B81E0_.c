@@ -109,7 +109,7 @@ struct Dummy_801B8318 {
           virtual void d29();
           virtual void d30();
           virtual void d31();
-          virtual void d32();
+                      virtual int d32();
           virtual void d33();
           virtual int d34(void *);
       };
