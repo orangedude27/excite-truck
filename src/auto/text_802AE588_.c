@@ -297,7 +297,7 @@ s32 fn_802B0130(void *arg0) {
 }
 
 extern int fn_801E8718(int);
-extern int fn_802AEB3C();
+extern void fn_802AEB3C();
 void fn_802B0144(void) {
     fn_801E8718(-1);
     fn_802AEB3C();
@@ -359,6 +359,7 @@ extern void *fn_802BE844(s16, s16, s32, f32);
 extern float lbl_80564B6C;
 extern float lbl_80564B84;
 #pragma dont_inline on
+extern int __cntlzw(unsigned int);
 s32 fn_802B02C8(void *arg0) {
     f32 temp_f0;
     f32 temp_f0_2;
@@ -366,18 +367,34 @@ s32 fn_802B02C8(void *arg0) {
     f32 temp_f2;
     f32 temp_f2_2;
     s32 var_r0;
+    s32 scaled_x;
+    s32 scaled_z;
+    s16 coord_x;
+    s16 coord_z;
+    u32 flags;
+
     if (fn_802AE7AC() != 0) {
         var_r0 = 0;
-        temp_f0 = *(f32 *)((char *)arg0);
-        temp_f2_2 = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
+        temp_f2_2 = lbl_80564B84 * lbl_80564AF0;
+        temp_f0 = *(f32 *)arg0;
+        temp_f2_2 = temp_f2_2 * lbl_80564B6C;
         temp_f1 = -temp_f2_2;
         if ((temp_f0 > temp_f1) && (temp_f0 < temp_f2_2)) {
-            temp_f0_2 = *(f32 *)((char *)arg0 + 8);
-            if ((temp_f0_2 > temp_f1) && (temp_f0_2 < temp_f2_2)) var_r0 = 1;
+            temp_f0_2 = *(f32 *)((u8 *)arg0 + 8);
+            if ((temp_f0_2 > temp_f1) && (temp_f0_2 < temp_f2_2))
+                var_r0 = 1;
         }
         if (var_r0 != 0) {
-            temp_f2 = *(f32 *)((char *)arg0 + 8);
-            return ((*(s32 *)((char *)fn_802BE844((s16)((s16)((s32)(*(f32 *)arg0 / lbl_80564AF0) & 0xFFFFFFF8) + 4), (s16)((s16)((s32)(temp_f2 / lbl_80564AF0) & 0xFFFFFFF8) + 4), 4, temp_f2) + 8) & 0x01000000) == 0);
+            temp_f0 = *(f32 *)arg0;
+            temp_f2 = temp_f0 / lbl_80564AF0;
+            scaled_x = (s32)temp_f2;
+            coord_x = (s16)((s16)(scaled_x & 0xFFFFFFF8) + 4);
+            temp_f0_2 = *(f32 *)((u8 *)arg0 + 8);
+            temp_f2 = temp_f0_2 / lbl_80564AF0;
+            scaled_z = (s32)temp_f2;
+            coord_z = (s16)((s16)(scaled_z & 0xFFFFFFF8) + 4);
+            flags = *(u32 *)((u8 *)fn_802BE844(coord_x, coord_z, 4, temp_f0_2) + 8);
+            return (u32)__cntlzw(flags & 0x01000000) >> 5;
         }
         return 1;
     }
