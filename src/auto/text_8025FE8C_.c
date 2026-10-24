@@ -46,7 +46,7 @@ extern void fn_802E317C(void *, ...);
 extern s32 lbl_8055C400;
 #pragma push
 #pragma small_data off
-extern u8 lbl_80345B40;
+extern u8 lbl_80345B40[];
 #pragma pop
 s32 fn_8025FECC(s32 a, s32 b, s32 c, s32 d, s32 e) {
     void *obj;
