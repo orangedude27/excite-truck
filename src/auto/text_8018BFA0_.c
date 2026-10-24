@@ -201,7 +201,7 @@ void fn_801BF2A4(void *, int, float *, void *, void *, int, void *, float, float
 void fn_802E30C8(void *, int);                   /* extern */
 #pragma push
 #pragma small_data off
-extern char lbl_80332758;
+extern char lbl_80332758[];
 #pragma pop
 extern float lbl_80558DC4;
 extern float lbl_8055A460;
