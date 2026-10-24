@@ -46,7 +46,7 @@ void fn_8028A664(void) {
     extern void fn_8028B3CC(void);
     extern void fn_801EEFDC(void *, s32);
     extern void fn_8028B93C(void), fn_8028BA44(void), fn_8028BA9C(void), fn_8028BB14(void);
-      extern s32 fn_8028B500(void *);
+      extern void fn_8028B500(void);
     void *p;
 
     p = fn_801284F8(0xDC, lbl_80348B98);
@@ -262,6 +262,21 @@ void fn_8028B4CC(void) {
         lbl_8055F704 = 0;
     }
 }
+
+#pragma cplusplus on
+extern "C" f32 lbl_8056432C, lbl_80564330, lbl_80564348, lbl_8056434C, lbl_80564364, lbl_8056436C, lbl_80564370, lbl_80564374, lbl_80564378, lbl_8056437C, lbl_80564380, lbl_80564384, lbl_80564388, lbl_8056438C, lbl_80564390, lbl_80564394, lbl_80564398;
+extern "C" s32 lbl_8055F6F0, lbl_8055F6F4;
+extern "C" void *lbl_8055F6FC;
+extern "C" f32 PSVECMag(f32 *);
+extern "C" f32 PSVECDotProduct(f32 *, f32 *);
+extern "C" void *fn_80287B24(s32);
+extern "C" f32 fn_80287BC8(f32, f32);
+extern "C" void fn_8028BED4(void *, s32, void *, void *, f32);
+extern void *fn_80287B24(s32);
+extern f32 lbl_8056432C, lbl_80564330, lbl_80564348, lbl_8056434C, lbl_80564364, lbl_8056436C, lbl_80564370, lbl_80564374, lbl_80564378, lbl_8056437C, lbl_80564380, lbl_80564384, lbl_80564388, lbl_8056438C, lbl_80564390, lbl_80564394, lbl_80564398;
+#pragma cplusplus on
+s32 fn_8028B500(void *arg0) { return 0x38; }
+#pragma cplusplus off
 
 extern f32 PSVECMag(f32 *);
 extern f32 fn_80287BC8(f32, f32);
