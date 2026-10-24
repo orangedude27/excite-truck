@@ -350,15 +350,22 @@ extern "C" void fn_801619A8(void) {
     }
     lbl_8055E2DD = 0;
 }
-#pragma cplusplus off
-void fn_80161A18(void) {
-    if (lbl_8055E300 != 0) {
-        void **vtable = *(void ***)lbl_8055E300;
-        void (*fn)(void) = (void (*)(void))vtable[7];
-        fn();
+#pragma cplusplus on
+extern "C" void fn_80161A18(void) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+    };
+    Dummy *p = (Dummy *)lbl_8055E300;
+    if (p != 0) {
+        p->v5();
     }
 }
-
+#pragma cplusplus off
 void fn_80161A38(s32 arg0, s32 arg1, s32 arg2) {
     register s32 a0 = arg0;
     register s32 a1 = arg1;
@@ -1145,7 +1152,7 @@ extern "C" void fn_80163F7C(void *arg0) {
             ((Dummy_80163F7C_VT3 *)obj)->f21((const char *)lbl_8055A10C, entryIndex, *(void **)(self + 0xE0));
             table = (f32 *)fn_801399FC();
             *(f32 **)(out + 0x34) = table;
-            register f32 *points;
+            register volatile f32 *points;
             register s32 bestIndex;
             register s32 i;
             register s32 count;
@@ -1155,7 +1162,7 @@ extern "C" void fn_80163F7C(void *arg0) {
                 f32 best = lbl_80561864;
                 f32 dx, dy, score;
                 bestIndex = -1;
-                for (i = 1; i <= count; i++) {
+                for (i = 1; i <= count; ++i) {
                         register s32 n = *(volatile s32 *)table;
                         s32 next = i % n;
                         s32 prev = (i - 1) % n;
@@ -1168,7 +1175,7 @@ extern "C" void fn_80163F7C(void *arg0) {
                         }
                 }
             }
-            register s32 count2 = *(s32 *)table;
+            register s32 count2 = *(volatile s32 *)table;
             {
                 volatile f32 x0, y0, x1, y1;
                 i = (bestIndex - 1) % count2;
