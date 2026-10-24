@@ -212,6 +212,96 @@ copy_done:
     fn_80253890(arg0, stack.sp38);
     *(signed char *)arg0 = 1;
 }
+
+extern "C" void *fn_80131810(void *);
+extern "C" int fn_802C7830(void);
+extern "C" int fn_801D2008(char *);
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" void *memset(void *, int, unsigned long);
+extern "C" void fn_802E317C(const char *, ...);
+__declspec(section ".sdata") extern char lbl_8055C150[], lbl_8055C158[], lbl_8055C160[], lbl_8055C168[], lbl_8055C16C[];
+void fn_80253890(void *arg0, void *arg1) {
+    extern void *fn_80131810(void *);
+    extern void fn_801345D8(void *, int, const char *, ...);
+    extern void fn_802E317C(const char *, ...);
+    extern int fn_802C7830(void);
+    extern int fn_801D2008(char *);
+    extern int sprintf(char *, const char *, ...);
+    extern void *memset(void *, int, unsigned long);
+    extern char lbl_8055C150[], lbl_8055C158[], lbl_8055C160[], lbl_8055C168[], lbl_8055C16C[];
+    extern int lbl_802FA5A8[];
+    extern float lbl_80563A04;
+    typedef int (*has_fn)(void *, const char *);
+    typedef int (*has8_fn)(void *, const char *, int, int, int, int, int, int);
+    typedef void *(*get_fn)(void *, const char *);
+    typedef const char *(*str_fn)(void *, const char *);
+    typedef int (*int_fn)(void *, const char *);
+    typedef void (*parse_fn)(float *, void *, const char *, float *);
+    typedef int (*param_fn)(void *, int);
+    unsigned char stack[0x350];
+    void *manager;
+    void *resource;
+    char *labels = lbl_803447C0;
+    int i;
+    volatile int *p;
+    void **vtable;
+    const char *str;
+
+    if (*(int *)((char *)arg0 + 0x28) != -1) return;
+    fn_801345D8((char *)stack + 0x258, 0x100, labels + 0x50, arg1);
+    manager = fn_80131810((char *)stack + 0x258);
+    if (manager == 0) {
+        *(int *)((char *)arg0 + 0x34) = 0;
+        *(int *)((char *)arg0 + 0x28) = -1;
+        *(int *)((char *)arg0 + 0x3FC) = 0;
+        return;
+    }
+    p = (int *)((char *)stack + 0x154);
+    i = 0x20;
+    do { p[1] = 0; *(p += 2) = 0; } while (--i != 0);
+    vtable = *(void ***)manager;
+    if (((has_fn)vtable[4])(manager, lbl_8055C150) != 0) {
+        resource = ((get_fn)vtable[2])(manager, lbl_8055C150);
+        str = ((str_fn)(*(void ***)resource)[5])(resource, labels + 0x60);
+        sprintf((char *)stack + 0x158, lbl_8055C158, arg1, str);
+        str = ((str_fn)(*(void ***)resource)[5])(resource, labels + 0x6C);
+        fn_801345D8((char *)stack + 0x58, 0x100, lbl_8055C158, arg1, str);
+        *(int *)((char *)arg0 + 0x28) = fn_802C6FC0((char *)stack + 0x58, 0, (int)arg1);
+        *(int *)((char *)arg0 + 0x2C) = ((int_fn)(*(void ***)resource)[7])(resource, labels + 0x78);
+        *(int *)((char *)arg0 + 0x30) = ((int_fn)(*(void ***)resource)[7])(resource, labels + 0x84);
+        *(int *)((char *)arg0 + 0x34) = ((int_fn)(*(void ***)resource)[7])(resource, labels + 0x90);
+        if (((has_fn)(*(void ***)resource)[3])(resource, labels + 0x9C) != 0) {
+            ((str_fn)(*(void ***)resource)[5])(resource, labels + 0x9C);
+            *(int *)((char *)arg0 + 0x38) = fn_802C7830();
+        } else *(int *)((char *)arg0 + 0x38) = -1;
+    } else fn_802E317C(labels + 0xA8, (char *)stack + 0x258);
+    vtable = *(void ***)manager;
+    if (((has_fn)vtable[4])(manager, lbl_8055C160) != 0) {
+        float zero = lbl_80563A04;
+        ((float *)((char *)stack + 0x28))[0] = zero; ((float *)((char *)stack + 0x28))[1] = zero; ((float *)((char *)stack + 0x28))[2] = zero;
+        resource = ((get_fn)vtable[2])(manager, lbl_8055C160);
+        for (i = 0; i < *(int *)((char *)arg0 + 0x34); i++) {
+            fn_801345D8((char *)stack + 0x38, 0x20, lbl_8055C168, i);
+            ((parse_fn)(*(void ***)resource)[14])((float *)((char *)stack + 0xC), resource, (char *)stack + 0x38, (float *)stack);
+            *(float *)((char *)arg0 + 0x3C + i * 0xC) = ((float *)((char *)stack + 0xC))[0];
+            *(float *)((char *)arg0 + 0x40 + i * 0xC) = ((float *)((char *)stack + 0xC))[1];
+            *(float *)((char *)arg0 + 0x44 + i * 0xC) = ((float *)((char *)stack + 0xC))[2];
+        }
+    } else memset((char *)arg0 + 0x3C, 0x3C0, 0);
+    vtable = *(void ***)manager;
+    if (((has8_fn)vtable[4])(manager, lbl_8055C16C,
+                            lbl_802FA5A8[2], lbl_802FA5A8[1],
+                            lbl_802FA5A8[0], lbl_802FA5A8[1],
+                            lbl_802FA5A8[2], lbl_802FA5A8[3]) != 0) {
+        resource = ((get_fn)vtable[2])(manager, lbl_8055C16C);
+        for (i = 0; i < 4; i++)
+            ((param_fn)(*(void ***)resource)[8])(resource, *(int *)((char *)stack + 0x18 + i * 4));
+    }
+    ((void (*)(void *))fn_80131818)(manager);
+    if (*(char *)((char *)stack + 0x158) != 0) *(int *)((char *)arg0 + 0x3FC) = fn_801D2008((char *)stack + 0x158);
+    else *(int *)((char *)arg0 + 0x3FC) = 0;
+}
+
 #pragma scheduling on
 #pragma cplusplus reset
 
@@ -349,7 +439,6 @@ void fn_80254568(void *arg0, s32 arg1, const char *arg2) {
 }
 
 #pragma dont_inline on
-#pragma scheduling invalid_target
 void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
     extern void *memset(void *, int, unsigned long);
     extern void PSVECCrossProduct(float *, float *, float *);
@@ -387,9 +476,9 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
     }
 
     if (arg1 != -1) {
-        ((void (*)(void *, s32, const char *))fn_80254568)(stack.sp2c, arg1, lbl_8055C178);
-        ((void (*)(void *, s32, const char *))fn_80254568)(stack.sp20, arg1, lbl_8055C180);
-        ((void (*)(void *, s32, const char *))fn_80254568)(stack.sp14, arg1, lbl_8055C188);
+        fn_80254568(stack.sp2c, arg1, lbl_8055C178);
+        fn_80254568(stack.sp20, arg1, lbl_8055C180);
+        fn_80254568(stack.sp14, arg1, lbl_8055C188);
 
         stack.sp8[0] = stack.sp20[0] +
             lbl_80563A18 * (stack.sp2c[0] - stack.sp20[0]);
@@ -463,7 +552,6 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
         *(float *)((char *)arg0 + 0x2C) = lbl_80563A04;
     }
 }
-#pragma scheduling on
 #pragma dont_inline reset
 void fn_80255200(void *arg0, s32 arg1) {
     extern float lbl_80563A04,lbl_80563A14,lbl_80563A58,lbl_80563A5C;
@@ -641,7 +729,7 @@ void fn_80256548(void *arg0) {
     extern unsigned char lbl_8055F330, lbl_8055F344, lbl_8055F345, lbl_8055F346, lbl_8055F347;
     extern char lbl_803447C0[], lbl_8055C1D0[];
     extern int lbl_8055CFF0, lbl_8055CFF4;
-    extern void fn_80253004(void *, void *);
+    extern void fn_80253004(s32, void *);
     extern void fn_802545C4(void *, int, int);
     extern void fn_80203E88(void *, float *, int);
     extern void fn_802E30C8(char *, char *);
@@ -651,7 +739,7 @@ void fn_80256548(void *arg0) {
     float vec[3], out[3];
     vec[0] = lbl_80563A04; vec[1] = lbl_80563A04; vec[2] = lbl_80563A04;
     if (*(int *)((char *)arg0 + 0x120) == 0) {
-        if (lbl_8055F330 != 0) fn_80253004(*(void **)((char *)arg0 + 4), out);
+        if (lbl_8055F330 != 0) fn_80253004(*(int *)((char *)arg0 + 4), out);
         else fn_802545C4(out, *(int *)((char *)arg0 + 0xE4), *(int *)((char *)arg0 + 8));
         vec[0] = out[0]; vec[1] = out[1]; vec[2] = out[2];
     }
