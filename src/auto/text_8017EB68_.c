@@ -431,17 +431,12 @@ void fn_8018160C(void *arg0) {
     if (fn_801A8E68((char *)arg0 + 0x26c)) fn_801797F8(*(int *)((char *)arg0 + 4), 1, 0);
     if (fn_801A8E68((char *)arg0 + 0x27c)) fn_801797F8(*(int *)((char *)arg0 + 4), 3, 0);
     if (fn_801A8E68((char *)arg0 + 0x24c)) fn_801797F8(*(int *)((char *)arg0 + 4), 0, 0);
-    p = (char *)arg0 + 0x2cc;
-    i = 0;
-    do {
+    for (p = (char *)arg0 + 0x2cc, i = 0; i < 4; i++, p += 0x10) {
         if (fn_801A8E68(p)) {
             fn_801797F8(*(int *)((char *)arg0 + 4), 4, i);
             break;
         }
-        ++i;
-        if (i >= 4) break;
-        p += 0x10;
-    } while (1);
+    }
 }
 
 void fn_80181700(void *arg0, int arg1) {
