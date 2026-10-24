@@ -45,6 +45,7 @@ int fn_80273B08(int arg0, int arg1) {
 void fn_80273B48(void) {
 }
 
+#pragma scheduling invalid_target
 void fn_80273B4C(void *arg0) {
     extern void fn_80015A20(void *, float *, float, float);
     extern void fn_80015B20(void *, void *, void *);
@@ -64,10 +65,10 @@ void fn_80273B4C(void *arg0) {
         vec[2] = lbl_80563FB0;
         fn_80015A20(out, vec, var_f1, lbl_80563FB0);
         temp_r3 = (char *)arg0 + 0x58;
-        fn_80015B20(temp_r3, out, (void *)((char *)arg0 + 0x58));
+        fn_80015B20(temp_r3, out, temp_r3);
     }
 }
-
+#pragma scheduling on
 void fn_8027445C(void) {
     extern void fn_80274268();
 extern void fn_80274460(void);
@@ -244,6 +245,41 @@ void fn_802751AC(void *arg0, float angle) {
     *(float *)((char *)arg0 + 0xBC) = lbl_80564024 * angle;
 }
 
+extern float lbl_80564030, lbl_80563FDC, lbl_80563FD8, lbl_80564024, lbl_80564020, lbl_80563FAC, lbl_80563FB0;
+extern float lbl_802FA7C0[];
+extern double sin(double), cos(double);
+void fn_802756A4(void *arg0) {
+    char *p = (char *)arg0;
+    char *state = *(char **)(p + 0x140);
+    float axis[3];
+    float basis[9];
+    float mag, scale, x, y, z, s, c, t;
+    int i;
+    for (i = 0; i < 3; i++) axis[i] = *(float *)(state + 0x2538 + i * 4) + lbl_80564030;
+    axis[1] = *(float *)(state + 0x253C) + lbl_80563FDC;
+    axis[2] = *(float *)(state + 0x2540) + lbl_80563FD8;
+    for (i = 0; i < 12; i++) *(int *)(p + 0x58 + i * 4) = *(int *)(p + 0xC0 + i * 4);
+    x = lbl_80564024 * lbl_802FA7C0[3];
+    y = lbl_80564024 * lbl_802FA7C0[4];
+    z = lbl_80564024 * lbl_802FA7C0[5];
+    mag = PSVECMag((float[]){x,y,z});
+    if (mag > lbl_80564020) {
+       scale = lbl_80563FAC / mag;
+       x *= scale; y *= scale; z *= scale;
+       s = (float)sin(mag); c = (float)cos(mag); t = lbl_80563FAC - c;
+       basis[0]=c+t*x*x; basis[1]=t*x*y+s*z; basis[2]=t*x*z-s*y;
+       basis[3]=t*x*y-s*z; basis[4]=c+t*y*y; basis[5]=t*y*z+s*x;
+       basis[6]=t*x*z+s*y; basis[7]=t*y*z-s*x; basis[8]=c+t*z*z;
+    } else {
+       basis[0]=lbl_80563FAC; basis[1]=lbl_80563FB0; basis[2]=lbl_80563FB0;
+       basis[3]=lbl_80563FB0; basis[4]=lbl_80563FAC; basis[5]=lbl_80563FB0;
+       basis[6]=lbl_80563FB0; basis[7]=lbl_80563FB0; basis[8]=lbl_80563FAC;
+    }
+    fn_801BFD34(p+0x7C, p+0x6C, p+0xC0);
+    fn_80015B20(p+0x58, basis, p+0xC0);
+    *(float *)(p+0xBC)=lbl_80564024*lbl_802FA7C0[6];
+}
+
 extern float lbl_8055E3C8, lbl_8055F588, lbl_80563FC4, lbl_80563FD8, lbl_80564040;
 extern double lbl_80564038;
 extern double fn_8002EFB4(float, double);
@@ -263,6 +299,36 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
  } else lbl_8055F588=v[12];
  angle=v[12]+farg1; v[2]=lbl_80563FB0; v[12]=angle; v[3]=lbl_80563FAC; v[4]=lbl_80563FB0;
  fn_8026E850(&v[11],(float*)(p+0xE4),arg0,&v[2]); *(float*)(p+0xBC)=lbl_80564040;
+}
+
+void fn_80275D0C(void *arg0, void *arg1) {
+    float v[3], u[3], w[3], axis[3], matrix[9], temp[3];
+    float mag, scale, s, c, t, x, y, z;
+    float *p=(float *)((char *)arg0+0xC0);
+    int i;
+    for(i=0;i<12;i++) ((float *)((char *)arg0+0x58))[i]=p[i];
+    v[0]=p[9]; v[1]=p[10]; v[2]=p[11];
+    u[0]=p[6]; u[1]=p[7]; u[2]=p[8];
+    w[0]=p[12]; w[1]=p[13]; w[2]=p[14];
+    axis[0]=lbl_80563FB0; axis[1]=lbl_80563FAC; axis[2]=lbl_80563FB0;
+    PSVECCrossProduct(axis,u,temp);
+    PSVECCrossProduct(u,temp,axis);
+    temp[0]=v[0]*lbl_80564024; temp[1]=v[1]*lbl_80564024; temp[2]=v[2]*lbl_80564024;
+    mag=PSVECMag(temp);
+    if(mag>lbl_80564020) {
+        scale=lbl_80563FAC/mag; x=temp[0]*scale; y=temp[1]*scale; z=temp[2]*scale;
+        s=(float)sin(mag); c=(float)cos(mag); t=lbl_80563FAC-c;
+        matrix[0]=c+t*x*x; matrix[1]=t*x*y+s*z; matrix[2]=t*x*z-s*y;
+        matrix[3]=t*x*y-s*z; matrix[4]=c+t*y*y; matrix[5]=t*y*z+s*x;
+        matrix[6]=t*x*z+s*y; matrix[7]=t*y*z-s*x; matrix[8]=c+t*z*z;
+    } else {
+        matrix[0]=lbl_80563FAC; matrix[1]=lbl_80563FB0; matrix[2]=lbl_80563FB0;
+        matrix[3]=lbl_80563FB0; matrix[4]=lbl_80563FAC; matrix[5]=lbl_80563FB0;
+        matrix[6]=lbl_80563FB0; matrix[7]=lbl_80563FB0; matrix[8]=lbl_80563FAC;
+    }
+    fn_801BFD34((char *)arg0+0x7C,(char *)arg0+0x84,u);
+    fn_80015B20((char *)arg0+0x58,matrix,u);
+    *(float *)((char *)arg0+0xBC)=lbl_80564024*w[2];
 }
 
 void fn_80275FC0(void *arg0) {
