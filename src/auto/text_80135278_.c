@@ -240,18 +240,22 @@ void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, fl
     }
 }
 
+#pragma scheduling invalid_target
 s32 fn_80135D60(Unk_80135278 *arg0, s32 arg1) {
-    if (arg1 != arg0->unk_2c) {
+    if ((unsigned long)arg1 != (unsigned long)arg0->unk_2c) {
+        s32 result;
         fn_80135354(arg0);
-        arg0->unk_2c = arg1;
-        if (arg1 != 0) {
-            return 1;
+        if (arg1 == 0) {
+            result = 0;
+        } else {
+            result = 1;
         }
-        return 0;
+        arg0->unk_2c = arg1;
+        return result;
     }
     return 2;
 }
-
+#pragma scheduling reset
 extern void fn_80135EA8(void *, s32, s32);
 extern void fn_80135F4C(void *);
 extern s32 lbl_8032BE6C[];
@@ -291,12 +295,12 @@ void fn_80135EA8(void *arg0, s32 arg1, s32 arg2) {
 
 #pragma dont_inline off
 void fn_80135EF0(void *arg0, s32 arg1) {
-    s32 value = *(s32 *)((char *)arg0 + 0x50);
-    if (fn_80135D60(arg0, arg1) == 1) {
-        *(s32 *)((char *)arg0 + 0x34) = 0;
-        *(s32 *)((char *)arg0 + 0x5c) = 0;
-        if (value != 0) {
-            *(s32 *)((char *)arg0 + 0x54) = *(s32 *)(*(char **)((char *)arg0 + 0x2c) + 0x18) >> 16;
+    Unk_80135278 *obj = (Unk_80135278 *)arg0;
+    if (fn_80135D60(obj, arg1) == 1) {
+        obj->unk_34 = 0;
+        obj->unk_5c = 0;
+        if (obj->unk_50 != 0) {
+            obj->unk_54 = *(s32 *)(*(char **)((u8 *)obj + 0x2c) + 0x18) >> 16;
         }
     }
 }
@@ -602,13 +606,18 @@ void fn_80136768(void) {
     fn_801569FC();
 }
 
-void fn_801367E8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 r;
-    r = ((s32 (**)(void))(*(void ***)arg0))[3]();
-    if (r != 1) return;
-    fn_801353C8((Unk_80135278 *)arg0, arg2, arg3, 0);
+#pragma cplusplus on
+extern "C" void fn_801367E8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    struct Dummy {
+        virtual s32 f0();
+        virtual s32 f1();
+    };
+    s32 r = ((Dummy *)arg0)->f1();
+    if (r == 1) {
+        fn_801353C8((Unk_80135278 *)arg0, arg2, arg3, 0);
+    }
 }
-
+#pragma cplusplus reset
 void fn_80136854(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     if (((s32 (*)(void))(*(void ***)arg0)[3])() == 1) {
         fn_80135F64((int)arg0, arg2, arg3, 1, 0);
