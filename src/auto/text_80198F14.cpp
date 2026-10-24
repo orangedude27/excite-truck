@@ -1315,8 +1315,8 @@ void fn_801A1B9C(void* arg0) {
     f32 sp3C = spC + sp18 * w;
     f32 sp40 = sp10 + sp1C * w;
     f32 f = *(f32*)((u8*)arg0 + 0x24);
-    fn_8019AC44(&sp38, &sp20, f);
-    fn_8019AC44(&sp2C, &sp20, f);
+    fn_8019AC44_3(&sp38, &sp20, f);
+    fn_8019AC44_3(&sp2C, &sp20, f);
 }
 
 extern void* lbl_803338C0;
