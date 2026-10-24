@@ -12004,15 +12004,15 @@ extern "C" void fn_800CEBE0(void *arg0, s32 arg1) {
     GXSetCullMode(0);
 }
 
-extern "C" void fn_800CB820(const char *, void *);
+extern "C" void fn_800CB820(void *, const char *, void *);
 extern "C" void fn_800CD38C(const char *);
 void startLeftEvent__Q210homebutton10HomeButtonFPCc(const char *);
 void homebutton::HomeButtonEventHandler::onEvent(unsigned long, unsigned long event, void *arg) {
     EventDispatchA *a = dispatch;
     EventDispatchB *b = (EventDispatchB *)a->first();
-    b->second();
+    void *owner = b->second();
     switch (event) {
-    case 1: fn_800CB820(text, arg); break;
+    case 1: fn_800CB820((void *)text, (const char *)((u8 *)owner + 0xB4), arg); break;
     case 2: startLeftEvent__Q210homebutton10HomeButtonFPCc(text); break;
     case 0:
         if ((((unsigned long *)arg)[4] & 0x800) || (((unsigned long *)arg)[4] & 0x01000000))
