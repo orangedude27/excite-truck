@@ -95,8 +95,7 @@ extern "C" void fn_8013472C(void) {
   
   }
 
-#pragma push
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80134A8C(void) {
     extern void *lbl_8042F758[];
     extern void *lbl_8055E0D4;
@@ -128,7 +127,7 @@ void fn_80134A8C(void) {
     fn_8013BC54();
     fn_80166A24();
 }
-#pragma pop
+#pragma scheduling on
   
   void fn_80134B50(void) {
       extern void *lbl_8055E0D4;
@@ -380,13 +379,13 @@ void fn_801351C4(void *arg0, s32 arg1) {
 extern void fn_8018ADBC(void *, f32);
 extern void fn_8018ADB4(void *, f32);
 extern void fn_8018ADA4(void *, f32);
+#pragma scheduling invalid_target
 void fn_801351CC(void *arg0) {
-    volatile f32 *value = &lbl_80561318;
-    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), *value);
+    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), lbl_80561318);
     fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
     fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
 }
-
+#pragma scheduling on
 void fn_80135218(void) {
 
 }
