@@ -58,5 +58,5 @@ void fn_802CA0E4(void);
 void fn_801E2F00(void);
 void fn_802C83CC(void);
 void fn_802C990C(int);
-void fn_802C2C00(int);
+unsigned char fn_802C2C00(unsigned char);
 void fn_801E6978(void);
