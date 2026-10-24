@@ -155,7 +155,7 @@ public:
 class Fn80199894VTab1C {
 public:
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-    virtual void v4(); virtual void v5(); virtual void v6();
+    virtual void v4();
     virtual void Call(f32*, f32*, s32, void*);
 };
 class Fn80199894VTab1CWide {
@@ -665,14 +665,14 @@ block_98:
                         sp[0x1E] = temp_f2_9;
                         sp[0x1F] *= temp_f1_6;
                         temp_r3 = (*(void **(**)(void *, f32, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x30)))(arg1, temp_f2_9, temp_f3_5);
-                        temp_r27_2 = (*(s32 (**)())((u8 *)(*temp_r3) + (0x14)))();
+                        temp_r27_2 = ((Fn80199894TempVTab *)temp_r3)->Get();
                         fn_802C1A0C(temp_r3, (*(s32 *)((u8 *)(temp_r29) + (0x1EC))));
-                        temp_r3_2 = (*(s32 (**)(void **))((u8 *)(*temp_r3) + (0x14)))(temp_r3);
+                        temp_r3_2 = ((Fn80199894TempVTab *)temp_r3)->Get();
                         temp_r30_2 = temp_r3_2;
                         if ((temp_r27_2 != 0) && (temp_r3_2 == 0)) {
-                            (*(void (**)(void **, s32))((u8 *)(*temp_r3) + (0x18)))(temp_r3, temp_r27_2);
+                            ((Fn80199894TempVTab *)temp_r3)->Set(temp_r27_2);
                             fn_801A4A10((s32)(*(s32 *)((u8 *)(arg1) + (8))), (s32)arg2, (s32)temp_r29);
-                            (*(void (**)(void **, s32))((u8 *)(*temp_r3) + (0x18)))(temp_r3, temp_r30_2);
+                            ((Fn80199894TempVTab *)temp_r3)->Set(temp_r30_2);
                         }
                     }
                 }
