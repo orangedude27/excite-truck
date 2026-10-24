@@ -679,8 +679,6 @@ void fn_80261AA0(void) {
 
 void fn_80261AE8(s32 *arg0, s32 arg1) { *arg0 = arg1; }
 
-#pragma push
-#pragma small_data off
 #pragma cplusplus on
 extern "C" void *fn_801284F8(s32, void *);
 extern "C" void *fn_80207848(void *, s32);
@@ -727,7 +725,6 @@ extern "C" void fn_80261C68(s32 *arg0) {
     void *item;
     u8 *group;
     u8 *stringBase;
-    u32 *base;
 
     stringBase = (u8 *)&lbl_80345B40;
     *(s32 *)((u8 *)arg0 + 8) = 0;
@@ -811,27 +808,26 @@ outerCheck:
     goto firstCheck;
 firstBody:
     if (lbl_8055F3EB == 0) {
-        object = *(void **)((u8 *)base[6] + j);
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
         ((Dummy *)object)->slot22();
-        object = *(void **)((u8 *)base[6] + j);
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
         ((Dummy *)object)->slot25();
-    } else if (i == ((s32 *)base)[0]) {
-        object = *(void **)((u8 *)base[6] + j);
+    } else if (i == (*(u32 **)&lbl_8055F420)[0]) {
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
         ((Dummy *)object)->slot24();
-    } else if (i == ((s32 *)base)[1] * 2 || i == ((s32 *)base)[1] * 2 + 1) {
-        object = *(void **)((u8 *)base[6] + j);
+    } else if (i == (*(u32 **)&lbl_8055F420)[1] * 2 || i == (*(u32 **)&lbl_8055F420)[1] * 2 + 1) {
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
         ((Dummy *)object)->slot23();
-        object = *(void **)((u8 *)base[6] + j);
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
         ((Dummy *)object)->slot25();
     } else {
-        object = *(void **)((u8 *)base[6] + j);
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
         ((Dummy *)object)->slot25();
     }
     j += 4;
     i++;
 firstCheck:
-    base = *(u32 **)&lbl_8055F420;
-    if (i < (s32)base[2]) goto firstBody;
+    if (i < (s32)(*(u32 **)&lbl_8055F420)[2]) goto firstBody;
 
     i = 0;
     j = 0;
@@ -839,30 +835,29 @@ firstCheck:
 secondBody:
     if (lbl_8055F3EB == 0) {
         if (i == *(s32 *)(lbl_8055F420 + 4)) {
-            object = *(void **)((u8 *)base[0xF] + j);
+            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
             ((Dummy *)object)->slot24();
         } else {
-            object = *(void **)((u8 *)base[0xF] + j);
+            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
             ((Dummy *)object)->slot23();
-            object = *(void **)((u8 *)base[0xF] + j);
+            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
             ((Dummy *)object)->slot25();
         }
     } else if (i == *(s32 *)(lbl_8055F420 + 4)) {
-        object = *(void **)((u8 *)base[0xF] + j);
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
         ((Dummy *)object)->slot24();
-        object = *(void **)((u8 *)base[0xF] + *(s32 *)(lbl_8055F420 + 4) * 4);
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + *(s32 *)(lbl_8055F420 + 4) * 4);
         ((Dummy *)object)->slot26();
     } else {
-        object = *(void **)((u8 *)base[0xF] + j);
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
         ((Dummy *)object)->slot22();
-        object = *(void **)((u8 *)base[0xF] + j);
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
         ((Dummy *)object)->slot25();
     }
     j += 4;
     i++;
 secondCheck:
-    base = *(u32 **)&lbl_8055F420;
-    if (i < (s32)base[3]) goto secondBody;
+    if (i < (s32)(*(u32 **)&lbl_8055F420)[3]) goto secondBody;
 }
 #pragma cplusplus reset
 #pragma pop
