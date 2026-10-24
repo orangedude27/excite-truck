@@ -10,7 +10,6 @@ void fn_8023B618(void) {
     fn_8023D70C();
 }
 
-extern void fn_802E712C(void);
 extern void fn_802E6CA4(int);
 extern void fn_802E6CA8(void);
 extern int fn_802E30C8(const char *, ...);
