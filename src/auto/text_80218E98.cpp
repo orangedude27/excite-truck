@@ -4010,15 +4010,15 @@ extern "C" void fn_80226B6C(void *arg0) {
 }
 
 extern "C" { __declspec(section ".data") extern char lbl_8033E038; }
-extern "C" void fn_80235380(void);
+extern "C" void fn_80235380(void *);
 extern "C" void *fn_80226F00(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033E038;
         if (*(u8 *)((u8 *)arg0 + 0x260) != 0)
             fn_8022EE98(*(void **)((u8 *)arg0 + 0x25C));
-        register void *ptr = *(void **)((u8 *)arg0 + 0x244);
-        if (ptr != 0)
-            fn_80235380();
+        void *old = *(void **)((u8 *)arg0 + 0x244);
+        if (old != 0)
+            fn_80235380(old);
         *(volatile s32 *)((u8 *)arg0 + 0x244) = 0;
         fn_8021915C(arg0, 0);
         if (arg1 > 0)
