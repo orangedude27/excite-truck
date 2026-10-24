@@ -6751,74 +6751,73 @@ extern "C" u8 lbl_80559250;
 extern "C" u8 lbl_80559258;
 extern "C" u8 lbl_80559260;
 extern "C" u8 lbl_80559268;
-extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s32 arg5, s32 arg6, u8 *arg7, s16 arg_sp8) {
-    s16 temp_r6;
-    s16 temp_r6_2;
-    s16 var_r23;
-    s32 temp_r4;
-    s32 temp_r4_10;
-    s32 temp_r4_11;
-    s32 temp_r4_7;
-    s32 temp_r4_8;
-    s32 temp_r4_9;
-    s32 var_ctr;
-    s32 var_ctr_2;
-    s32 var_ctr_3;
-    s32 var_ctr_4;
-    s32 var_r15_2;
-    s32 var_r15_3;
-    s32 var_r18_2;
-    s32 var_r24;
-    s32 var_r24_2;
-    s32 var_r25;
-    s32 var_r26;
-    s32 var_r27_2;
-    s32 var_r27_3;
-    s32 var_r4;
-    s32 var_r4_2;
-    s32 var_r4_3;
-    s32 var_r4_4;
-    u8 *var_r19;
-    u8 *temp_r4_12;
-    u8 *temp_r4_13;
-    u8 *temp_r4_14;
-    u8 *temp_r4_15;
-    u8 *temp_r4_16;
-    u8 *temp_r4_2;
-    u8 *temp_r4_3;
-    u8 *temp_r4_4;
-    u8 *temp_r4_5;
-    u8 *temp_r4_6;
-    u8 *temp_r5;
-    u8 *temp_r5_10;
-    u8 *temp_r5_11;
-    u8 *temp_r5_12;
-    u8 *temp_r5_2;
-    u8 *temp_r5_3;
-    u8 *temp_r5_4;
-    u8 *temp_r5_5;
-    u8 *temp_r5_6;
-    u8 *temp_r5_7;
-    u8 *temp_r5_8;
-    u8 *temp_r5_9;
-    u8 *var_r15;
-    u8 *var_r16;
-    u8 *var_r17;
-    u8 *var_r18;
-    u8 *var_r19_2;
-    u8 *var_r19_3;
-    u8 *var_r26_2;
-    u8 *var_r27;
-    u8 *var_r28;
-    u8 *var_r28_2;
-    u8 *var_r28_3;
-    u8 *var_r31;
-    u8 *var_r3;
-    u8 *var_r3_2;
-    u8 *var_r3_3;
+extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
+        
 
-            u8 *arg5p = (u8 *)arg5;
-    u8 *arg6p = (u8 *)arg6;
+    u8 *var_r3_3;
+    u8 *var_r3_2;
+    u8 *var_r3;
+    u8 *var_r31;
+    u8 *var_r28_3;
+    u8 *var_r28_2;
+    u8 *var_r28;
+    u8 *var_r27;
+    u8 *var_r26_2;
+    u8 *var_r19_3;
+    u8 *var_r19_2;
+    u8 *var_r18;
+    u8 *var_r17;
+    u8 *var_r16;
+    u8 *var_r15;
+    u8 *temp_r5_9;
+    u8 *temp_r5_8;
+    u8 *temp_r5_7;
+    u8 *temp_r5_6;
+    u8 *temp_r5_5;
+    u8 *temp_r5_4;
+    u8 *temp_r5_3;
+    u8 *temp_r5_2;
+    u8 *temp_r5_12;
+    u8 *temp_r5_11;
+    u8 *temp_r5_10;
+    u8 *temp_r5;
+    u8 *temp_r4_6;
+    u8 *temp_r4_5;
+    u8 *temp_r4_4;
+    u8 *temp_r4_3;
+    u8 *temp_r4_2;
+    u8 *temp_r4_16;
+    u8 *temp_r4_15;
+    u8 *temp_r4_14;
+    u8 *temp_r4_13;
+    u8 *temp_r4_12;
+    u8 *var_r19;
+    register s32 var_r4_4;
+    register s32 var_r4_3;
+    register s32 var_r4_2;
+    register s32 var_r4;
+    register s32 var_r27_3;
+    register s32 var_r27_2;
+    register s32 var_r26;
+    register s32 var_r25;
+    register s32 var_r24_2;
+    register s32 var_r24;
+    register s32 var_r18_2;
+    register s32 var_r15_3;
+    register s32 var_r15_2;
+    register s32 var_ctr_4;
+    register s32 var_ctr_3;
+    register s32 var_ctr_2;
+    register s32 var_ctr;
+    register s32 temp_r4_9;
+    register s32 temp_r4_8;
+    register s32 temp_r4_7;
+    register s32 temp_r4_11;
+    register s32 temp_r4_10;
+    register s32 temp_r4;
+    register s16 var_r23;
+    register s16 temp_r6_2;
+    register s16 temp_r6;
     var_r31 = arg4;
     if (arg3 & 7) {
         if ((s32) M2C_FIELD(arg0, s32 *, 0x9E0) == 0) {
@@ -6869,7 +6868,7 @@ loop_7:
                     }
                 }
                 if (var_r24_2 >= var_r23) {
-                    fn_800BD710(arg0, M2C_FIELD(arg7, s16 *, 2), M2C_FIELD((arg5p + (*var_r19 * 2)), s16 *, 0x2A), var_r28, var_r27);
+                    fn_800BD710(arg0, M2C_FIELD(arg7, s16 *, 2), M2C_FIELD(((u8 *)arg5 + (*var_r19 * 2)), s16 *, 0x2A), var_r28, var_r27);
                 }
             }
             var_r31 += 4;
@@ -7109,7 +7108,7 @@ loop_42:
                     var_r16 = var_r31;
                     var_r17 = var_r31 + 0x2400;
                     var_r25 = 0;
-                    var_r15 = arg6p + (var_r24 * 6);
+                    var_r15 = (u8 *)arg6 + (var_r24 * 6);
                     do {
                         fn_800BD710(arg0, M2C_FIELD(arg7, s16 *, 2), M2C_FIELD(var_r15, s16 *, 0x48), var_r16 + var_r27_2, var_r17 + var_r27_2);
                         var_r25 += 1;
@@ -7363,7 +7362,7 @@ loop_42:
             } else if (var_r15_2 < (s32) M2C_FIELD((arg0 + (7 - 7)), u8 *, 0x9F8)) {
                 var_r24 = 7;
             }
-            fn_800BD710(arg0, M2C_FIELD(arg7, s16 *, 2), M2C_FIELD((arg5 + (var_r24 * 2)), s16 *, 0x2A), var_r19_2, var_r18);
+            fn_800BD710(arg0, M2C_FIELD(arg7, s16 *, 2), M2C_FIELD(((u8 *)arg5 + (var_r24 * 2)), s16 *, 0x2A), var_r19_2, var_r18);
         }
         var_r15_2 += 1;
         var_r19_2 += 4;
@@ -7371,22 +7370,18 @@ loop_42:
     } while (var_r15_2 < 0x24);
     var_r27_3 = 0xC;
     var_r18_2 = 0x30;
-loop_135:
-    if (var_r27_3 < (s32) M2C_FIELD(arg0, s32 *, 0x9C0)) {
+while (var_r27_3 < (s32) M2C_FIELD(arg0, s32 *, 0x9C0)) {
         var_r3_3 = arg0;
         var_r4_4 = 0;
         var_ctr_4 = 0xA;
-loop_110:
-        if (arg_sp8 > (s16) M2C_FIELD(var_r3_3, s16 *, 0xA56)) {
-            var_r23 = (s16) M2C_FIELD((arg0 + var_r4_4), u8 *, 0x9EC);
-        } else {
+do {
+            if (arg_sp8 > (s16) M2C_FIELD(var_r3_3, s16 *, 0xA56)) {
+                var_r23 = (s16) M2C_FIELD((arg0 + var_r4_4), u8 *, 0x9EC);
+                break;
+            }
             var_r3_3 += 2;
             var_r4_4 += 1;
-            var_ctr_4 -= 1;
-            if (var_ctr_4 != 0) {
-                goto loop_110;
-            }
-        }
+        } while (--var_ctr_4 != 0);
         if (var_r27_3 >= var_r23) {
             if (var_r27_3 < (s32) M2C_FIELD(arg0, u8 *, 0x9F4)) {
                 var_r24 = 0xB - 8;
@@ -7421,7 +7416,6 @@ loop_110:
         }
         var_r18_2 += 4;
         var_r27_3 += 1;
-        goto loop_135;
     }
 }
 
@@ -7476,7 +7470,7 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
 }
 
 extern "C" void *lbl_8055DD88;
-extern "C" void fn_800BC538(u8 *, u8 *, u8 *, s32, u8 *, s32, s32, u8 *, s16); /* extern */
+extern "C" void fn_800BC538(u8 *, u8 *, u8 *, s32, u8 *, s16 *, s16 *, u8 *, s16); /* extern */
 extern "C" u32 fn_800BF048(void *, void *, void *, void *, void *, void *, s32 *, void *); /* extern */
 extern "C" u32 fn_800C0E7C(void *, void *, void *, void *, s32 *, void *); /* extern */
 extern "C" u32 fn_800C3DA0(void *, void *, s32, s16 *, s16 *, s16 *, s16, s16); /* extern */
@@ -12622,50 +12616,81 @@ extern "C" s32 lbl_802F4528[];
 extern "C" f32 lbl_80560E18;
 #pragma dont_inline on
 extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
-    u8 *self = (u8 *)arg0;
     s32 paneNo = ((homebutton::HomeButton *)arg0)->getPaneNo(arg1);
-    s32 mode;
     s32 changed = 0;
-    if (*(s32 *)(self + 0x10) == 2 && paneNo != -1 &&
-        *(s32 *)(self + 0x1C + paneNo * 4) == 0) {
-        mode = *(s32 *)self;
-        if (mode == 2 || paneNo >= *(s32 *)(self + 8)) {
-            switch (paneNo - *(s32 *)(self + 8)) {
+    if (*(s32 *)(((u8 *)arg0) + 0x10) == 2 && paneNo != -1 &&
+        *(s32 *)(((u8 *)arg0) + 0x1C + paneNo * 4) == 0) {
+        if (*(s32 *)((u8 *)arg0) != 2 && paneNo < *(s32 *)(((u8 *)arg0) + 8)) {
+            s32 i;
+            s32 count = *(s32 *)(((u8 *)arg0) + 0x0C);
+            s32 *entry = lbl_802F4528;
+            for (i = 0; i < count; ++i, entry += 2) {
+                if (paneNo != entry[0])
+                    continue;
+                if (entry[1] == 0)
+                    goto found_entry;
+            }
+            i = -1;
+found_entry:
+            void *pane = *(void **)(((u8 *)arg0) + 0x268 + i * 4);
+            fn_800CF3EC(pane);
+            *(s32 *)((u8 *)pane + 0x14) = 1;
+            if (*(s32 *)((u8 *)arg0) == 0) {
+                if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                    void *callbackObject = *(void **)(((u8 *)arg0) + 4);
+                    s32 (*callback)(s32, s32) =
+                        *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
+                    if (callback != 0 && callback(5, 4) == 0 &&
+                        *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                        *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                        ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
+                        detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
+                            (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                            *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
+                    }
+                    *(s32 *)(((u8 *)arg0) + 0x64) = 0;
+                }
+                changed = 1;
+            }
+        } else {
+            switch (paneNo - *(s32 *)(((u8 *)arg0) + 8)) {
             case 0: {
                 if (arg2 == 0) {
-                    if (mode == 2) {
-                        void *left = *(void **)(self + 0x3F0);
+                    s32 activate = 1;
+                    if (*(s32 *)((u8 *)arg0) == 2) {
+                        void *left = *(void **)(((u8 *)arg0) + 0x3F0);
                         if (*(s32 *)((u8 *)left + 0x14) != 1) {
-                            void *right = *(void **)(self + 0x3CC);
-                            if (*(s32 *)((u8 *)right + 0x14) == 1) {
-                                fn_800CF3EC(right);
-                                *(s32 *)((u8 *)right + 0x14) = 1;
-                                *(s32 *)(self + 0x70) = 3;
-                                *(s32 *)(self + 0x68) = 0;
-                                if (*(s32 *)(self + 0x64) > 2) {
-                                    void *callbackObject = *(void **)(self + 4);
-                                    s32 (*callback)(s32, s32) =
-                                        *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
-                                    s32 result = 0;
+                            void *right = *(void **)(((u8 *)arg0) + 0x3CC);
+                            if (*(s32 *)((u8 *)right + 0x14) != 1)
+                                activate = 0;
+                        }
+                    }
+                    if (activate) {
+                        void *right = *(void **)(((u8 *)arg0) + 0x3CC);
+                        fn_800CF3EC(right);
+                        *(s32 *)((u8 *)right + 0x14) = 1;
+                        *(s32 *)(((u8 *)arg0) + 0x70) = 3;
+                        *(s32 *)(((u8 *)arg0) + 0x68) = 0;
+                        if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                            void *callbackObject = *(void **)(((u8 *)arg0) + 4);
+                            s32 (*callback)(s32, s32) =
+                                *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
+                            s32 result = 0;
                             if (callback != 0)
                                 result = callback(5, 4);
-                                    if (result == 0 &&
-                                        *(void **)(self + 0x5C0) != 0 &&
-                                        *(void **)(self + 0x5D4) != 0) {
-                                        ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
-                                        detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                                            (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                                            *(void **)(self + 0x5D4), 4, 0, 0, 0);
-                                    }
-                                    *(s32 *)(self + 0x64) = 0;
-                                }
-                                changed = 1;
-                            } else {
-                                *(s32 *)(self + 0x68) = 3;
+                            if (result == 0 &&
+                                *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                                *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                                ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
+                                detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
+                                    (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                                    *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
                             }
+                            *(s32 *)(((u8 *)arg0) + 0x64) = 0;
                         }
+                        changed = 1;
                     } else {
-                        *(s32 *)(self + 0x70) = paneNo - *(s32 *)(self + 8) + 1;
+                        *(s32 *)(((u8 *)arg0) + 0x68) = 3;
                     }
                 }
                 break;
@@ -12685,12 +12710,12 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                     }
                     index = -1;
 found_entry_0:;
-                    void *pane = *(void **)(self + 0x298 + index * 4);
+                    void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
                     changed = 1;
-                    *(s32 *)(self + 0x70) = 1;
-                    *(s32 *)(self + 0x68) = 0;
+                    *(s32 *)(((u8 *)arg0) + 0x70) = 1;
+                    *(s32 *)(((u8 *)arg0) + 0x68) = 0;
                 }
                 break;
             }
@@ -12709,31 +12734,31 @@ found_entry_0:;
                     }
                     index = -1;
 found_entry_1:;
-                    void *pane = *(void **)(self + 0x298 + index * 4);
+                    void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
                         *(s32 *)((u8 *)pane + 0x14) = 1;
                         changed = 1;
                     }
-                    if (*(s32 *)(self + 0x64) > 2) {
-                        void *callbackObject = *(void **)(self + 4);
+                    if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                        void *callbackObject = *(void **)(((u8 *)arg0) + 4);
                         s32 (*callback)(s32, s32) =
                             *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
                         s32 result = 0;
                             if (callback != 0)
                                 result = callback(5, 4);
                         if (result == 0 &&
-                            *(void **)(self + 0x5C0) != 0 &&
-                            *(void **)(self + 0x5D4) != 0) {
-                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
+                            *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                            *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
                             detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                                (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                                *(void **)(self + 0x5D4), 4, 0, 0, 0);
+                                (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                                *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
                         }
-                        *(s32 *)(self + 0x64) = 0;
+                        *(s32 *)(((u8 *)arg0) + 0x64) = 0;
                     }
-                    *(s32 *)(self + 0x70) = 2;
-                    *(s32 *)(self + 0x68) = 0;
+                    *(s32 *)(((u8 *)arg0) + 0x70) = 2;
+                    *(s32 *)(((u8 *)arg0) + 0x68) = 0;
                 }
                 break;
             }
@@ -12752,31 +12777,31 @@ found_entry_1:;
                     }
                     index = -1;
 found_entry_2:;
-                    void *pane = *(void **)(self + 0x298 + index * 4);
+                    void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
                         *(s32 *)((u8 *)pane + 0x14) = 1;
                         changed = 1;
                     }
-                    if (*(s32 *)(self + 0x64) > 2) {
-                        void *callbackObject = *(void **)(self + 4);
+                    if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                        void *callbackObject = *(void **)(((u8 *)arg0) + 4);
                         s32 (*callback)(s32, s32) =
                             *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
                         s32 result = 0;
                             if (callback != 0)
                                 result = callback(5, 4);
                         if (result == 0 &&
-                            *(void **)(self + 0x5C0) != 0 &&
-                            *(void **)(self + 0x5D4) != 0) {
-                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
+                            *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                            *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
                             detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                                (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                                *(void **)(self + 0x5D4), 4, 0, 0, 0);
+                                (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                                *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
                         }
-                        *(s32 *)(self + 0x64) = 0;
+                        *(s32 *)(((u8 *)arg0) + 0x64) = 0;
                     }
-                    *(s32 *)(self + 0x70) = 3;
-                    *(s32 *)(self + 0x68) = 0;
+                    *(s32 *)(((u8 *)arg0) + 0x70) = 3;
+                    *(s32 *)(((u8 *)arg0) + 0x68) = 0;
                 }
                 break;
             }
@@ -12795,31 +12820,31 @@ found_entry_2:;
                     }
                     index = -1;
 found_entry_3:;
-                    void *pane = *(void **)(self + 0x298 + index * 4);
+                    void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
                         *(s32 *)((u8 *)pane + 0x14) = 1;
                         changed = 1;
                     }
-                    if (*(s32 *)(self + 0x64) > 2) {
-                        void *callbackObject = *(void **)(self + 4);
+                    if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                        void *callbackObject = *(void **)(((u8 *)arg0) + 4);
                         s32 (*callback)(s32, s32) =
                             *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
                         s32 result = 0;
                             if (callback != 0)
                                 result = callback(5, 4);
                         if (result == 0 &&
-                            *(void **)(self + 0x5C0) != 0 &&
-                            *(void **)(self + 0x5D4) != 0) {
-                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
+                            *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                            *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
                             detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                                (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                                *(void **)(self + 0x5D4), 4, 0, 0, 0);
+                                (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                                *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
                         }
-                        *(s32 *)(self + 0x64) = 0;
+                        *(s32 *)(((u8 *)arg0) + 0x64) = 0;
                     }
-                    *(s32 *)(self + 0x70) = 4;
-                    *(s32 *)(self + 0x68) = 0;
+                    *(s32 *)(((u8 *)arg0) + 0x70) = 4;
+                    *(s32 *)(((u8 *)arg0) + 0x68) = 0;
                 }
                 break;
             }
@@ -12838,31 +12863,31 @@ found_entry_3:;
                     }
                     index = -1;
 found_entry_4:;
-                    void *pane = *(void **)(self + 0x298 + index * 4);
+                    void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
                         *(s32 *)((u8 *)pane + 0x14) = 1;
                         changed = 1;
                     }
-                    if (*(s32 *)(self + 0x64) > 2) {
-                        void *callbackObject = *(void **)(self + 4);
+                    if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                        void *callbackObject = *(void **)(((u8 *)arg0) + 4);
                         s32 (*callback)(s32, s32) =
                             *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
                         s32 result = 0;
                             if (callback != 0)
                                 result = callback(5, 4);
                         if (result == 0 &&
-                            *(void **)(self + 0x5C0) != 0 &&
-                            *(void **)(self + 0x5D4) != 0) {
-                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
+                            *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                            *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
                             detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                                (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                                *(void **)(self + 0x5D4), 4, 0, 0, 0);
+                                (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                                *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
                         }
-                        *(s32 *)(self + 0x64) = 0;
+                        *(s32 *)(((u8 *)arg0) + 0x64) = 0;
                     }
-                    *(s32 *)(self + 0x70) = 5;
-                    *(s32 *)(self + 0x68) = 0;
+                    *(s32 *)(((u8 *)arg0) + 0x70) = 5;
+                    *(s32 *)(((u8 *)arg0) + 0x68) = 0;
                 }
                 break;
             }
@@ -12881,26 +12906,26 @@ found_entry_4:;
                     }
                     index = -1;
 found_entry_5:;
-                    void *pane = *(void **)(self + 0x298 + index * 4);
+                    void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
                     changed = 1;
-                    if (*(s32 *)(self + 0x64) > 2) {
-                        void *callbackObject = *(void **)(self + 4);
+                    if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                        void *callbackObject = *(void **)(((u8 *)arg0) + 4);
                         s32 (*callback)(s32, s32) =
                             *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
                         s32 result = 0;
                             if (callback != 0)
                                 result = callback(5, 4);
                         if (result == 0 &&
-                            *(void **)(self + 0x5C0) != 0 &&
-                            *(void **)(self + 0x5D4) != 0) {
-                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
+                            *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                            *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
                             detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                                (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                                *(void **)(self + 0x5D4), 4, 0, 0, 0);
+                                (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                                *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
                         }
-                        *(s32 *)(self + 0x64) = 0;
+                        *(s32 *)(((u8 *)arg0) + 0x64) = 0;
                     }
                 }
                 break;
@@ -12920,26 +12945,26 @@ found_entry_5:;
                     }
                     index = -1;
 found_entry_6:;
-                    void *pane = *(void **)(self + 0x298 + index * 4);
+                    void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
                     changed = 1;
-                    if (*(s32 *)(self + 0x64) > 2) {
-                        void *callbackObject = *(void **)(self + 4);
+                    if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                        void *callbackObject = *(void **)(((u8 *)arg0) + 4);
                         s32 (*callback)(s32, s32) =
                             *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
                         s32 result = 0;
                             if (callback != 0)
                                 result = callback(5, 4);
                         if (result == 0 &&
-                            *(void **)(self + 0x5C0) != 0 &&
-                            *(void **)(self + 0x5D4) != 0) {
-                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
+                            *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                            *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
                             detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                                (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                                *(void **)(self + 0x5D4), 4, 0, 0, 0);
+                                (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                                *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
                         }
-                        *(s32 *)(self + 0x64) = 0;
+                        *(s32 *)(((u8 *)arg0) + 0x64) = 0;
                     }
                 }
                 break;
@@ -12959,26 +12984,26 @@ found_entry_6:;
                     }
                     index = -1;
 found_entry_7:;
-                    void *pane = *(void **)(self + 0x298 + index * 4);
+                    void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
                     changed = 1;
-                    if (*(s32 *)(self + 0x64) > 2) {
-                        void *callbackObject = *(void **)(self + 4);
+                    if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                        void *callbackObject = *(void **)(((u8 *)arg0) + 4);
                         s32 (*callback)(s32, s32) =
                             *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
                         s32 result = 0;
                             if (callback != 0)
                                 result = callback(5, 4);
                         if (result == 0 &&
-                            *(void **)(self + 0x5C0) != 0 &&
-                            *(void **)(self + 0x5D4) != 0) {
-                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
+                            *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                            *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
                             detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                                (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                                *(void **)(self + 0x5D4), 4, 0, 0, 0);
+                                (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                                *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
                         }
-                        *(s32 *)(self + 0x64) = 0;
+                        *(s32 *)(((u8 *)arg0) + 0x64) = 0;
                     }
                 }
                 break;
@@ -12998,80 +13023,46 @@ found_entry_7:;
                     }
                     index = -1;
 found_entry_8:;
-                    void *pane = *(void **)(self + 0x298 + index * 4);
+                    void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
                     changed = 1;
-                    if (*(s32 *)(self + 0x64) > 2) {
-                        void *callbackObject = *(void **)(self + 4);
+                    if (*(s32 *)(((u8 *)arg0) + 0x64) > 2) {
+                        void *callbackObject = *(void **)(((u8 *)arg0) + 4);
                         s32 (*callback)(s32, s32) =
                             *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
                         s32 result = 0;
                             if (callback != 0)
                                 result = callback(5, 4);
                         if (result == 0 &&
-                            *(void **)(self + 0x5C0) != 0 &&
-                            *(void **)(self + 0x5D4) != 0) {
-                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
+                            *(void **)(((u8 *)arg0) + 0x5C0) != 0 &&
+                            *(void **)(((u8 *)arg0) + 0x5D4) != 0) {
+                            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(((u8 *)arg0) + 0x5D4));
                             detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                                (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                                *(void **)(self + 0x5D4), 4, 0, 0, 0);
+                                (u8 *)*(void **)(((u8 *)arg0) + 0x5C0) + 0xC,
+                                *(void **)(((u8 *)arg0) + 0x5D4), 4, 0, 0, 0);
                         }
-                        *(s32 *)(self + 0x64) = 0;
+                        *(s32 *)(((u8 *)arg0) + 0x64) = 0;
                     }
                 }
                 break;
             }
             }
-        } else {
-            s32 i = 0;
-            s32 count = *(s32 *)(self + 0x0C);
-            s32 *entry = lbl_802F4528;
-            if (count > 0) {
-                do {
-                    if (entry[0] == paneNo && entry[1] == 0)
-                        goto found_entry;
-                    entry += 2;
-                    ++i;
-                } while (--count != 0);
-            }
-            i = -1;
-found_entry:
-            void *pane = *(void **)(self + 0x268 + i * 4);
-            fn_800CF3EC(pane);
-            *(s32 *)((u8 *)pane + 0x14) = 1;
-            if (mode == 0) {
-                if (*(s32 *)(self + 0x64) > 2) {
-                    void *callbackObject = *(void **)(self + 4);
-                    s32 (*callback)(s32, s32) =
-                        *(s32 (**)(s32, s32))((u8 *)callbackObject + 0x14);
-                    if (callback != 0 && callback(5, 4) == 0 &&
-                        *(void **)(self + 0x5C0) != 0 &&
-                        *(void **)(self + 0x5D4) != 0) {
-                        ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)(self + 0x5D4));
-                        detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-                            (u8 *)*(void **)(self + 0x5C0) + 0xC,
-                            *(void **)(self + 0x5D4), 4, 0, 0, 0);
-                    }
-                    *(s32 *)(self + 0x64) = 0;
-                }
-                changed = 1;
-            }
         }
     }
-    if (paneNo == *(s32 *)(self + 8) + 1 || paneNo == *(s32 *)(self + 8) + 9) {
-        s32 base = *(s32 *)(self + 8);
-        ++*(s32 *)(self + 0x20 + base * 4);
-        ++*(s32 *)(self + 0x40 + base * 4);
+    if (paneNo == *(s32 *)(((u8 *)arg0) + 8) + 1 || paneNo == *(s32 *)(((u8 *)arg0) + 8) + 9) {
+        s32 base = *(s32 *)(((u8 *)arg0) + 8);
+        ++*(s32 *)(((u8 *)arg0) + 0x20 + base * 4);
+        ++*(s32 *)(((u8 *)arg0) + 0x40 + base * 4);
     } else {
-        ++*(s32 *)(self + 0x1C + paneNo * 4);
+        ++*(s32 *)(((u8 *)arg0) + 0x1C + paneNo * 4);
     }
     if (arg2 != 0 && changed) {
         s32 i = *(s32 *)arg2;
-        void *pane = *(void **)(self + 0x254 + i * 4);
+        void *pane = *(void **)(((u8 *)arg0) + 0x254 + i * 4);
         if (*(u8 *)((u8 *)pane + 0x1C) == 0 &&
-            *(f32 *)(self + 0x1CC + i * 4) <= 0.0f) {
-            *(f32 *)(self + 0x1BC + i * 4) = lbl_80560E18;
+            *(f32 *)(((u8 *)arg0) + 0x1CC + i * 4) <= 0.0f) {
+            *(f32 *)(((u8 *)arg0) + 0x1BC + i * 4) = lbl_80560E18;
             fn_800D155C(pane);
         }
     }
