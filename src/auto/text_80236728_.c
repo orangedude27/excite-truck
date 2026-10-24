@@ -141,7 +141,6 @@ extern char lbl_8055BA08[];
 extern char lbl_8055BA10[];
 extern char lbl_80498664[];
 extern char *fn_80029004(char *, int);
-extern char *fn_80237C40(void);
 void fn_80237A9C(void) {
 }
 
@@ -192,15 +191,20 @@ int arg0; void *arg1; double arg2;
 extern int stricmp(const char *, const char *);
 extern char lbl_8034094C[];
 extern void *fn_801284F8(int, char *);
-char *fn_80237C40(void) {
-    void *data = lbl_8034094C;
-    char *p = fn_801284F8(0x34, data);
-    int i;
-    for (i = 0; i < 0x21; i++) p[i] = 0;
-    *(int *)(p + 0x28) = 0;
-    *(int *)(p + 0x2c) = 0;
-    *(int *)(p + 0x24) = 0;
-    return p;
+void fn_80237C40(void)
+{
+  char *p = fn_801284F8(0x34, lbl_8034094C);
+  int *new_var;
+  int i;
+  for (i = 0; i < 0x21; i++)
+  {
+    p[i] = 0;
+  }
+
+  *((int *) (p + 0x28)) = 0;
+  *((int *) (p + 0x2c)) = 0;
+  new_var = (int *) (p + 0x24);
+  *new_var = 0;
 }
 
 void fn_80128668(void*);
