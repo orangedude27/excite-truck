@@ -116,7 +116,7 @@ public:
     virtual void f9();
     virtual void f10();
     virtual void f11();
-    virtual void f12();
+    virtual const char *getText();
     virtual void f13();
     virtual void f14();
     virtual void f15();
