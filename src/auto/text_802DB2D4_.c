@@ -1,7 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 typedef struct { unsigned char r, g, b, a; } fn_802DCAE4_GXColor;
-typedef struct { void *records; int count; int capacity; unsigned char pad[0x208]; void *current; unsigned char active; } fn_802DCAE4_State;
 extern void GXSetTevKColor(int, fn_802DCAE4_GXColor);
 
 extern unsigned char lbl_8055FEC0;
