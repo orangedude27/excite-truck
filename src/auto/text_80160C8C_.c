@@ -376,17 +376,35 @@ void fn_80161A38(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 
-s32 fn_80161A70(void) {
+#pragma cplusplus on
+extern "C" s32 fn_80161A70(void) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual s32 f7();
+        virtual s32 f8();
+        virtual s32 f9();
+        virtual s32 f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual s32 f15(s32);
+        virtual s32 f16(s32);
+    };
     if (lbl_8055E300 != 0) {
-        if (((s32 (*)(void))(*(void ***)lbl_8055E300)[9])() != 0) {
-            return ((s32 (*)(void *, s32))(*(void ***)lbl_8055E300)[18])((void *)lbl_8055E300, 0);
+        if (((Dummy *)lbl_8055E300)->f7() != 0) {
+            return ((Dummy *)lbl_8055E300)->f16(0);
         }
-        return ((s32 (*)(void *, s32))(*(void ***)lbl_8055E300)[17])((void *)lbl_8055E300, 0);
+        return ((Dummy *)lbl_8055E300)->f15(0);
     }
     return 0;
 }
-
-#pragma cplusplus on
 extern "C" void fn_80161AEC(void) {
     Dummy_801638A0 *p = (Dummy_801638A0 *)lbl_8055E300;
     if (p != 0) {
