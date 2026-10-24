@@ -83,7 +83,7 @@ public:
     virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
     virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
     virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-    virtual void v20(); virtual void v21(); virtual void v22();
+    virtual void v20();
     virtual long lookup(long);
 };
 #pragma cplusplus reset
@@ -722,25 +722,26 @@ long fn_8027CE4C(long arg0) {
         return 1;
     }
 }
-#pragma scheduling reset
-long fn_8027CFB4(long arg0) {
+#pragma cplusplus on
+extern "C" long fn_8027CFB4(long arg0) {
     long *obj = fn_8027C120(lbl_8055F654, arg0);
-    long id = fn_80205268(lbl_80347AB0, *(long *)((char *)&lbl_8055F654 + 0xB01C), -1);
+    long id = fn_80205268(lbl_80347AB0,
+                          *(long *)((char *)(long)lbl_8055F654 + 0xB01C), -1);
     void *manager = fn_8001285C(*(long *)((char *)obj + 4));
-    void *list = *(void **)((char *)manager + 0x20);
-    long result;
-    long i = 0;
-    fn_8001D884(&result, ((long (*)(void *, long))(*(void ***)list)[0x17])(list, id));
+    Fn8027CFB4List *list = *(Fn8027CFB4List **)((char *)manager + 0x20);
+    char result[0x18];
+    long i;
+    fn_8001D884(result, list->lookup(id));
+    i = 0;
     do {
-        long found = fn_8001DA48(&result, i);
+        long found = fn_8001DA48(result, i);
         if (found >= 0)
             return found;
         i++;
     } while (i < 5);
     return 0;
 }
-
-#pragma scheduling invalid_target
+#pragma cplusplus reset
 void fn_8027D158(long arg0, char *arg1, long arg2) {
     long *result = fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
     register long status = *result;
