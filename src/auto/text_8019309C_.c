@@ -478,38 +478,9 @@ extern int lbl_8055E3C4;
 extern unsigned char lbl_8055E574;
 extern float lbl_8055E57C;
 extern char lbl_80333284[], lbl_80333294[];
-#pragma cplusplus on
-extern "C" void *memset(void *, int, unsigned int);
-extern "C" int fn_801769B8(void);
-extern "C" int fn_801769A8(void);
-extern "C" int fn_8013B578(int);
-extern "C" int fn_801667F0(void);
-extern "C" int fn_801B8570(int);
-extern "C" float fn_801B306C(void);
-extern "C" void fn_801B30D0(int);
-extern "C" void fn_801B30E0(int);
-extern "C" void fn_80195D80(void *, float);
-extern "C" int fn_802E30C8(const char *, ...);
-extern "C" float lbl_8055E3C8, lbl_80562140, lbl_80562144, lbl_8056215C, lbl_80562160, lbl_80562180;
-extern "C" float lbl_805621A0, lbl_805621A4, lbl_805621A8, lbl_805621AC;
-extern "C" int lbl_8055E3C4;
-extern "C" unsigned char lbl_8055E574;
-extern "C" float lbl_8055E57C;
-extern "C" char lbl_80333284[], lbl_80333294[];
-extern "C" void fn_80193D30(void *arg0) {
-    struct Dummy {
-        virtual void v0() = 0;
-        virtual void v1() = 0;
-        virtual void v2() = 0;
-        virtual void v3(int) = 0;
-        virtual int v4() = 0;
-        virtual void v5() = 0;
-        virtual void v6() = 0;
-        virtual void v7() = 0;
-        virtual void v8() = 0;
-        virtual void v9() = 0;
-        virtual void v10(const char *) = 0;
-    };
+#pragma cplusplus off
+extern int fn_801769A8(void);
+void fn_80193D30(void *arg0) {
     char *p = (char *)arg0;
     int flag = 0;
     int temp;
@@ -577,7 +548,7 @@ extern "C" void fn_80193D30(void *arg0) {
 
     {
         void *sub = *(void **)(p + 0x28C);
-        *(int *)(p + 0x288) = ((Dummy *)sub)->v4();
+        *(int *)(p + 0x288) = ((int (**)(void *))*(void **)sub)[4](sub);
     }
 
     {
@@ -599,7 +570,7 @@ extern "C" void fn_80193D30(void *arg0) {
         void *vehicle = *(void **)(p + 0x294);
         void *callback = *(void **)((char *)vehicle + 0x2C0);
         if (callback != 0) {
-            ((Dummy *)callback)->v10(lbl_80333284);
+            ((void (**)(void *, const char *))*(void **)callback)[10](callback, lbl_80333284);
             ((void (*)(int))fn_8013B6A4)(*(int *)(p + 0x290));
         }
     }
@@ -675,7 +646,7 @@ extern "C" void fn_80193D30(void *arg0) {
     *(float *)(p + 0x1D0) = lbl_80562180;
     {
         void *sub = p + 0x19C;
-        ((Dummy *)sub)->v3(0);
+        ((void (**)(void *, int))*(void **)sub)[3](sub, 0);
     }
     {
         void *sub = p + 0x168;
@@ -701,7 +672,6 @@ extern "C" void fn_80193D30(void *arg0) {
     *(float *)(p + 0x2DC) = limit;
     *(int *)(p + 4) = *(int *)(p + 0x290) * 4;
 }
-#pragma cplusplus reset
 void fn_8019416C(void) {
 
 }
