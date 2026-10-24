@@ -866,7 +866,7 @@ loop_80:
                                         fn_8018F76C(arg0, var_r4_2);
                                     }
                                 }
-                                fn_802E30C8((char *)&lbl_80332758 + 0x6B8, M2C_FIELD(arg0, int *, 0x1EC));
+                                fn_802E30C8(&lbl_80332758 + 0x6B8, M2C_FIELD(arg0, int *, 0x1EC));
                                 var_r17_2 = 1;
                                 fn_801B8610(M2C_FIELD(arg0, int *, 0x1EC), arg4);
                             }
