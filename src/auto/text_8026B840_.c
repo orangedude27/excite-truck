@@ -43,7 +43,7 @@ extern s32 fn_802E2C20(void);
 extern u8 lbl_8055F501;
 extern u8 lbl_8055F502;
 extern s32 lbl_8055F504;
-extern f32 lbl_8049A168;
+extern char lbl_8049A168[];
 extern f32 lbl_80563D88;
 extern f32 lbl_80563D8C;
 extern f64 lbl_80563DD0;
