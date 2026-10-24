@@ -193,7 +193,7 @@ float PSVECSquareDistance(float *, float *);         /* extern */
 void *__AXFXGetLfoSinTable_801769CC();              /* extern */
 void *fn_8017960C(int);                             /* extern */
 int fn_801796CC(int, float *, int);       /* extern */
-int fn_80189BDC();                              /* extern */
+int fn_80189BDC(float, float, float, float, float, float);      /* extern */
 int fn_8018A174(void *);                        /* extern */
 void fn_8018F76C(void *, int);                   /* extern */
 int fn_801B8610(int, int);                      /* extern */
