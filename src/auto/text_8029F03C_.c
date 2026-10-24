@@ -80,7 +80,7 @@ void fn_8029F03C(void) {
 
 void fn_8029F0D0(void) {
     if (lbl_8055F820) {
-        fn_80128670();
+        ((int (*)(int))fn_80128670)(lbl_8055F820);
     }
     lbl_8055F820 = 0;
     fn_801EF024((void *)fn_802A0720);
@@ -92,6 +92,53 @@ void fn_8029F0D0(void) {
 void fn_8029F124(void) {
  int offset=0, i=0, zero=0; fn_802A002C();
  do { ++i; *(int*)((char*)lbl_8055F820+offset)=zero; offset+=4; } while(i<fn_801E85A4());
+}
+
+void fn_8029F188(void) {
+    int i;
+    int offset;
+    int *baseptr;
+    unsigned char *entry;
+    unsigned char *object;
+    float dx, dy, dz;
+    float scale;
+    if (lbl_8055F73C != 1) {
+        if (lbl_8055F824 == 0) fn_802E30C8(lbl_8034981C);
+        lbl_8055F824 = (lbl_8055F824 + 1) % 5;
+    }
+    scale = lbl_805646B0;
+    i = 0;
+    offset = 0;
+    baseptr = lbl_804B9B7C;
+    goto check;
+loop:
+    entry = (unsigned char *)baseptr[0] + offset;
+    object = *(unsigned char **)(entry + 0x30);
+    if (object != 0) {
+        dx = *(float *)(object + 0x60) - *(float *)(entry + 4);
+        *(float *)(entry + 0x10) = dx;
+        dx *= scale;
+        dy = *(float *)(object + 0x64) - *(float *)(entry + 8);
+        *(float *)(entry + 0x14) = dy;
+        dy *= scale;
+        *(float *)(entry + 0x10) = dx + *(float *)(entry + 0x1C);
+        dz = *(float *)(object + 0x68) - *(float *)(entry + 0xC);
+        *(float *)(entry + 0x14) = dy + *(float *)(entry + 0x20);
+        dz *= scale;
+        *(float *)(entry + 0x18) = dz + *(float *)(entry + 0x24);
+        *(float *)(entry + 4) = *(float *)(object + 0x60);
+        *(float *)(entry + 8) = *(float *)(object + 0x64);
+        *(float *)(entry + 0xC) = *(float *)(object + 0x68);
+    } else {
+        *(float *)(entry + 0x10) = *(float *)(entry + 0x1C);
+        *(float *)(entry + 0x14) = *(float *)(entry + 0x20);
+        *(float *)(entry + 0x18) = *(float *)(entry + 0x24);
+    }
+    if (entry[0x2E] != 0 && fn_801769F8() == 0) fn_802A0794(entry);
+    offset += 0x34;
+    i++;
+check:
+    if (i < baseptr[1]) goto loop;
 }
 
 void fn_8029F300(void) {
@@ -344,6 +391,38 @@ void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
         else
             fn_8028E584(*(int *)((char *)arg0 + 0x64), a, b);
         i++;
+    }
+}
+
+extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
+extern void* fn_801E8718(int);
+extern float PSVECDotProduct(const float*, const float*);
+void fn_802A042C(void* obj, float* pos) {
+    float a=lbl_805646BC, b=lbl_805646B4, c=lbl_805646C0, d=lbl_805646C8;
+    int i=0, off=0;
+    for (;;) {
+        if (i >= fn_801E85A4()) break;
+        unsigned char* ent=(unsigned char*)fn_801E8718(i);
+        float dx=pos[0]+*(float*)((char*)obj+0x30)-*(float*)(ent+0x24);
+        float dy=pos[1]+*(float*)((char*)obj+0x34)-*(float*)(ent+0x28);
+        float dz=pos[2]+*(float*)((char*)obj+0x38)-*(float*)(ent+0x2C);
+        float radius=*(float*)((char*)obj+0x44);
+        float v[3]={dx,dy,dz};
+        float dot=PSVECDotProduct(v,v);
+        if (dot < radius*radius) {
+            float amount=dot/(radius*radius);
+            if (amount<a) amount=a;
+            if (amount>b) amount=b;
+            float base=c**(float*)((char*)obj+0x48);
+            float next=base+amount*(b-base);
+            if(next<b) next-=d; else next+=d;
+            unsigned int* colors=(unsigned int*)&lbl_8055F820;
+            int n=(int)next+(colors[off/4]>>24);
+            if(n<0)n=0;
+            if(n>255)n=255;
+            colors[off/4]=(colors[off/4]&0x00FFFF)|((unsigned)n<<24)|(*(unsigned int*)((char*)obj+0x4C)&0x00FF0000);
+        }
+        off+=4; i++;
     }
 }
 
