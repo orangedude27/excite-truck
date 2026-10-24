@@ -208,10 +208,19 @@ void fn_80005B6C(void) {
 void fn_80005B70(void) {
 }
 
-#pragma push
-#pragma opt_pointer_aliasing on
-#pragma dont_inline on
-void fn_80005B74(void) {
+#pragma cplusplus on
+extern "C" void fn_80005B74(void) {
+    class LfoValue {
+    public:
+        virtual void method0() = 0;
+        virtual void method1() = 0;
+        virtual void method2() = 0;
+        virtual void method3() = 0;
+        virtual void method4() = 0;
+        virtual void method5() = 0;
+        virtual void method6() = 0;
+        virtual f32 getValue(const char *) = 0;
+    };
     extern s32 fn_80019B54(void);
     extern s32 *__AXFXGetLfoSinTable_801769CC(void);
     extern void *fn_8001285C(s32);
@@ -223,19 +232,18 @@ void fn_80005B74(void) {
     u8 *base = lbl_802FB0C8;
     if (fn_80019B54() != 0) {
         object = *(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
-        value = (*(f32 (**)(void *, const char *))((u8 *)*(void **)object + 0x24))(object, (char *)base + 0x24);
+        value = ((LfoValue *)object)->getValue((char *)base + 0x24);
         current = *(f32 *)((u8 *)lbl_8055D350 + 0x10);
         if (current > value) {
-            if (current - value < lbl_80560120) {
+            if (current - value < lbl_80560120)
                 fn_800105A0((char *)base + 0x38, 0);
-            }
         } else {
             sprintf(buffer, (char *)base + 0x4C, value - current);
             fn_800105A0(buffer, 0);
         }
     }
 }
-
+#pragma cplusplus off
 extern void *fn_801284F8(s32, const char *);
 extern void *fn_80014524(void *, s32);
 extern void fn_80176780(s32, s32);
@@ -545,19 +553,13 @@ extern "C" void fn_800063A8(void) {
 #pragma cplusplus reset
 #pragma scheduling on
 void fn_800064A8(void *arg0) {
-    volatile s32 *p8 = (volatile s32 *)((u8 *)arg0 + 8);
-    volatile s32 *p4 = (volatile s32 *)((u8 *)arg0 + 4);
-    s32 oldValue = *p8;
-    s32 newValue = *p4;
-    s32 var_r3;
-    if (oldValue != newValue) {
-        *p8 = newValue;
-        if (fn_80009C84() != 0) var_r3 = lbl_8055D348;
-        else var_r3 = fn_802E2C20();
-        *(s32 *)((u8 *)arg0 + 0xC) = var_r3;
+    s32 *p = (s32 *)arg0;
+    if (p[2] != p[1]) {
+        p[1] = p[2];
+        p[3] = fn_80009C84() != 0 ? lbl_8055D348 : fn_802E2C20();
     }
     fn_80011A2C();
-    switch (*(s32 *)((u8 *)arg0 + 4)) {
+    switch (p[1]) {
     case 3: fn_800066B4(arg0); return;
     case 2: fn_801CB844(); return;
     case 1: if (fn_801B8874() == 0) fn_80006B18(arg0); return;
@@ -726,10 +728,9 @@ extern s32 fn_80005460(void);
 extern s32 fn_8023D6FC(void);
 extern s32 fn_800053CC(void);
 extern s32 fn_800217E4(void);
-#pragma dont_inline fn_80005B74
-#pragma dont_inline fn_80005930
+#pragma dont_inline fn_800057BC
 void fn_80007238(void) {
-    char stack[0x18];
+    char stack[0x28];
     f32 f0;
     f32 f3;
     s32 mode;
@@ -741,7 +742,12 @@ void fn_80007238(void) {
     mode = ((s32 *)lbl_8034EE84)[6];
     f0 = lbl_80560194;
     f3 = lbl_80560198;
-    if (mode <= 2) f3 = f0;
+    if (mode > 2) {
+        goto continue_after_fmr;
+    } else {
+        f3 = f0;
+    }
+continue_after_fmr:
     fn_802C974C(lbl_80560130, lbl_80560124, f3);
     fn_800057D0();
     fn_80161C18();
