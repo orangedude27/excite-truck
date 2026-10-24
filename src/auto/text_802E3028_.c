@@ -14,7 +14,6 @@ extern char lbl_8034CEF8[];
 extern int lbl_8055D178;
 extern int lbl_8055D180;
 extern int lbl_8055D188;
-int fn_802E302C(void);
 
 extern void fn_802E3734(int *);
 extern int lbl_8055D178;
