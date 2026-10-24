@@ -158,6 +158,24 @@ public:
     virtual void v4(); virtual void v5(); virtual void v6();
     virtual void Call(f32*, f32*, s32, void*);
 };
+class Fn80199894VTab1CWide {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6();
+    virtual void Call(f32*, f32*, s32, void*, f32, f32, f32);
+};
+class Fn80199894VTab20 {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void Call(void*, f32*, f32*, s32, f32*, void*, f32);
+};
+class Fn80199894VTab20Wide {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void Call(void*, f32*, f32*, s32, f32*, void*, f32, f32, f32, f32);
+};
 
 extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_801A4A10(s32, s32, s32);
@@ -328,11 +346,11 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
         sp[0x2] = lbl_805622D0;
         sp[0x3] = lbl_805622D0;
         sp[0x4] = lbl_805622D0;
-        (*(void (**)(void *, f32 *, f32 *, s32, void *))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x1C)))(arg0, (f32 *)&sp[0x2], arg2, temp_r26, temp_r28);
+        ((Fn80199894VTab1C *)arg0)->Call((f32 *)&sp[0x2], arg2, temp_r26, temp_r28);
         sp[0x8] = lbl_805622D0;
         sp[0x0] = lbl_805622D0;
         sp[0x1] = lbl_805622D0;
-        (*(void (**)(void *, f32 *, f32 *, s32, void *))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x1C)))(arg1, (f32 *)&sp[0x8], arg2, temp_r27, temp_r29);
+        ((Fn80199894VTab1C *)arg1)->Call((f32 *)&sp[0x8], arg2, temp_r27, temp_r29);
         sp[0x5] = lbl_805622D0;
         sp[0x6] = lbl_805622D0;
         sp[0x7] = lbl_805622D0;
@@ -652,7 +670,7 @@ block_98:
             fn_801B34DC(arg0, (s32)arg1, (Vec*)arg2, (Vec*)(f32 *)&sp[0x1D], (Vec*)arg3, (s32)(*(s32 *)((u8 *)(arg1) + (0x20))));
         }
     }
-    (*(void (**)(void *, f32 *, f32 *, s32, void *))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x1C)))(arg0, (f32 *)&sp[0x47], (f32 *)&sp[0x4D], (*(s32 *)((u8 *)(arg1) + (0x20))), temp_r28);
+    ((Fn80199894VTab1C *)arg0)->Call((f32 *)&sp[0x47], (f32 *)&sp[0x4D], (*(s32 *)((u8 *)(arg1) + (0x20))), temp_r28);
     temp_f2_11 = sp[0x47] * lbl_805622DC;
     temp_f1_7 = sp[0x48] * lbl_805622DC;
     sp[0x47] = temp_f2_11;
