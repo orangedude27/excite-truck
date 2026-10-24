@@ -10,6 +10,10 @@ extern void *lbl_8055D820;
 extern void *lbl_8055D824;
 extern void __DSP_exec_task(void *, void *);
 extern void __DSP_remove_task(void *);
+extern s32 DSPCheckMailFromDSP(void);
+extern s32 DSPCheckMailToDSP(void);
+extern s32 DSPReadMailFromDSP(void);
+extern void DSPSendMailToDSP(u32);
 #include <ctype.h>
 
 extern u8 *FstStart_8055D840;
