@@ -82,7 +82,6 @@ void fn_801EA404(s32 arg0, s32 arg1) {
     fn_801FC908(arg1);
 }
 
-extern char lbl_8055EB58;
 char fn_801EA470(void) {
     return lbl_8055EB58;
 }
