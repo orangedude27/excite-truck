@@ -198,7 +198,7 @@ extern "C" s32 fn_8024EC3C(void) {
     return 0;
 }
 
-extern void *memset(void *, int, unsigned int);
+extern "C" void *memset(void *, int, unsigned int);
 
 extern unsigned char lbl_803442E4[];
 extern "C" s32 fn_80129D18(s32, s32);
