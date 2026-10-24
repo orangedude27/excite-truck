@@ -56,7 +56,7 @@ extern int fn_802B2C34(void *, char (*)[4]);
 extern int fn_802C6DC4(char (*)[4], int, int);
 extern char lbl_8055FB14[4];
 extern char lbl_8055CF98[4];
-extern char lbl_804C0800[4];
+extern float lbl_804C0800[3];
 extern float lbl_80564E38;
 extern void fn_802C0E68(int);
 extern float lbl_80564E3C;
@@ -70,7 +70,7 @@ extern void fn_802C0F4C(void);
 extern void fn_802C6B44(void);
 extern char lbl_8055FB14[4];
 extern char lbl_8055CF98[4];
-extern char lbl_804C0800[4];
+extern float lbl_804C0800[3];
 extern float lbl_80564E38;
 extern float lbl_80564E48;
 void fn_802C1020(void) {
