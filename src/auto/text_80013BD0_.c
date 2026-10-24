@@ -41,6 +41,7 @@ void fn_800154B8(void);
 void fn_80015658(void *);
 s32 fn_80016214(void);
 void fn_80015F30(void *);
+void fn_80148134(f32 *, f32 *, s32, f32, f32);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
