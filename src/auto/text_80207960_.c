@@ -1,6 +1,19 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma cplusplus on
+struct LoopItem_80207E70 {
+    virtual int f0(int);
+    virtual int f1();
+    virtual int f2();
+    virtual int f3();
+    virtual int f4();
+    virtual int f5();
+    virtual int f6();
+    virtual int f7();
+};
+#pragma cplusplus reset
+
 extern void fn_80208408(void);
 extern void fn_80208858(void);
 extern signed long fn_80128668(void);
