@@ -890,6 +890,7 @@ extern "C" void fn_8021B224(void *arg0) {
     }
 }
 
+#pragma dont_inline fn_8021B2B0
 extern "C" void fn_8021B2B0(void *arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, s32 arg6) {
     fn_80219568(arg0, arg1, arg2, arg6, arg4, 0, 0, arg5);
     *(s32 *)((u8 *)arg0 + 0x254) = (s32)arg3;
@@ -898,6 +899,7 @@ extern "C" void fn_8021B2B0(void *arg0, s32 arg1, s32 arg2, const char *arg3, s3
     *(s32 *)((u8 *)arg0 + 0x264) = arg5;
     fn_80219718(arg0);
 }
+#pragma dont_inline reset
 
 extern "C" s32 fn_8021B3A0(void *arg0) {
     s32 *p = *(s32 **)((u8 *)arg0 + 0x264);
