@@ -985,6 +985,25 @@ int fn_801D8518(int arg0) {
 }
 
 #pragma cplusplus on
+extern "C" void fn_801796CC(int, void *, int);
+#pragma push
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801D8544(void *arg0) {
+    int sp8;
+    int temp_r31;
+
+    temp_r31 = lbl_8055E3C4 - (*(int *)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0xC));
+    if (*(int *)((char *)arg0 + 4) == 2 && temp_r31 > 0) {
+        sp8 = *(int *)((char *)arg0 + 0x14);
+        fn_801796CC(0xB, &sp8, 4);
+        if (temp_r31 >= *(int *)((char *)arg0 + 8)) {
+            *(int *)((char *)arg0 + 4) = 3;
+        }
+    }
+}
+#pragma pop
+#pragma cplusplus reset
 extern "C" void fn_801D85C8(void *arg0) {
     struct Dummy {
         virtual void v0();
@@ -1200,6 +1219,45 @@ extern "C" void fn_801D88BC(void *arg0) {
 void fn_801D8938(void) {
 
 }
+
+#pragma push
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801D893C(void *arg0, unsigned int arg1) {
+    int offset;
+    unsigned char *item;
+    unsigned char *base;
+    int i;
+
+    i = 0;
+    offset = 0;
+    goto test;
+loop:
+    base = *(unsigned char **)((unsigned char *)arg0 + 0x24);
+    item = base + offset;
+    if (*(unsigned int *)item == arg1) {
+        if (i >= 0) {
+            int count = *(int *)((unsigned char *)arg0 + 0x28);
+            if (i < count) {
+                int last = count - 1;
+                if (i != last) {
+                    *(unsigned int *)item = *(unsigned int *)(base + last * 0xC);
+                    *(unsigned int *)(item + 4) = *(unsigned int *)(base + last * 0xC + 4);
+                    *(unsigned int *)(item + 8) = *(unsigned int *)(base + last * 0xC + 8);
+                }
+                *(int *)((unsigned char *)arg0 + 0x28) = *(int *)((unsigned char *)arg0 + 0x28) - 1;
+            }
+        }
+    }
+    offset += 0xC;
+    i++;
+test:
+    if (i < *(int *)((unsigned char *)arg0 + 0x28)) {
+        goto loop;
+    }
+}
+#pragma pop
+#pragma cplusplus reset
 
 void fn_801D89C0(void *arg0, void *arg1) {
     void *object;
