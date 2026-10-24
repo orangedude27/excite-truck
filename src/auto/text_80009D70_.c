@@ -91,6 +91,8 @@ void fn_8000AB44(void) {
     fn_8000A6D8();
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8000AB48(void* arg0, s32 arg1) {
     char* p;
     s32 i;
@@ -106,7 +108,7 @@ void fn_8000AB48(void* arg0, s32 arg1) {
     fn_8020C920(arg0);
     fn_802103B8(arg0);
 }
-
+#pragma pop
 void fn_8000ABE0(void* arg0) {
     fn_8012E498(&lbl_802FBC7C);
     fn_8000AAE4(arg0);
