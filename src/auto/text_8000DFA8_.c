@@ -568,12 +568,14 @@ void fn_80010B80(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
 }
 
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void *fn_80010BEC(void *arg0) {
     Unk0x18 *entry;
     s32 i;
+
     if (lbl_8055D4A8 > 0) {
         fn_80010B74();
-        entry = &lbl_8034F6B0[0];
+        entry = lbl_8034F6B0;
         i = 0;
         while (i < lbl_8055D4A8) {
             fn_80010A50(entry->unk_0x00, entry->unk_0x04, entry->unk_0x08,
@@ -585,6 +587,7 @@ void *fn_80010BEC(void *arg0) {
         lbl_8055D4A8 = 0;
     }
 }
+#pragma scheduling on
 #pragma dont_inline reset
 
 void fn_80010EF0(void);
@@ -1389,14 +1392,14 @@ f32 fn_8000EDC0(s32 arg0) {
 s32 fn_8000EE54(s32 arg0) {
     switch (arg0) {
     case 13:
-        return -1;
+        return -0x5400;
     case 11:
         return -1;
     case 12:
     case 14:
         return -0x5400;
     default:
-        fn_802E317C(lbl_802FC3DC);
+        fn_802E317C(lbl_802FC3DC, arg0);
         return -1;
     }
 }
