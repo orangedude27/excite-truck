@@ -10,6 +10,14 @@ extern int ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(int);
 extern int fn_800EAD00(void *);
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
+extern "C" unsigned char lbl_8041D4E0[];
+extern "C" void __register_global_object(void *, void *, void *);
+extern "C" void fn_800D2DD4(void);
+extern "C" unsigned char lbl_8055DE90;
+extern "C" unsigned char lbl_8055DE94, lbl_8055DE95, lbl_8055DE96, lbl_8055DE97;
+extern "C" float lbl_80561150;
+extern "C" unsigned char lbl_8041D4D0;
+extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(unsigned int, unsigned int);
 typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
