@@ -1,4 +1,6 @@
 #include <types.h>
+typedef s32 M2C_UNK;
+#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 extern void *fn_80156A40(void);
 extern void *fn_801284F8(s32, const char *);
 extern void *fn_80135DC4(void *, s32, void *);
