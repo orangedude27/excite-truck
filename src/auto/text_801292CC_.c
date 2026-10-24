@@ -3,7 +3,7 @@
 
 extern int lbl_8055DFA8;
 extern float lbl_80561238, lbl_8056123C, lbl_80561240;
-extern char lbl_8032A588, lbl_8032A59C, lbl_80559978;
+extern char lbl_8032A588[0x14], lbl_8032A59C, lbl_80559978;
 extern int fn_802E765C(int,int,int);
 extern int fn_802E7684(float);
 extern int fn_802E30C8(const char *, ...);
