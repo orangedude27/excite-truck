@@ -217,29 +217,19 @@ struct Dummy_80019534 {
     virtual void f1();
     virtual s32 f2(void *);
     virtual void f3();
-    virtual s32 f4(void *, s32);
+    virtual s32 f4(void *, ...);
 };
-#pragma cplusplus off
-#pragma scheduling invalid_target
-s32 fn_80019534(void) {
-    void **obj;
-    void **vtable;
-    void *addr;
-
-    obj = (void **)lbl_8055D58C;
-    if (obj != 0) {
-        addr = (void *)lbl_802FD3A0;
-        vtable = (void **)obj[0];
-        if (((s32 (*)(void *))vtable[4])(addr) != 0) {
-            obj = (void **)lbl_8055D58C;
-            vtable = (void **)obj[0];
-            ((void (*)(void *))vtable[2])(addr);
-            return ((s32 (*)(void *, s32))vtable[6])((void *)lbl_802FD3B4, 0);
+#pragma scheduling on
+#pragma cplusplus on
+extern "C" s32 fn_80019534(void) {
+    if (lbl_8055D58C != 0) {
+        if (((Dummy_80019534 *)lbl_8055D58C)->f2(lbl_802FD3A0) != 0) {
+            return ((Dummy_80019534 *)lbl_8055D58C)->f0(lbl_802FD3A0)->f4(lbl_802FD3B4, 0);
         }
     }
     return 0;
 }
-#pragma scheduling on
+#pragma cplusplus off
 s32 fn_80019098(s32 arg0) {
     void **tbl = (void **)lbl_803580A4;
     s32 count = ((s32 *)tbl)[1];
