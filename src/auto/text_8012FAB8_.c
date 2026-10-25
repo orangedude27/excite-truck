@@ -163,7 +163,7 @@ void fn_801308F8(char *dst, int count, int limit) {
 void fn_80130978(int arg0, int arg1) { fn_80130980(arg0, arg1, 3); }
 
 extern void fn_801345D8(void *, ...);
-extern char lbl_80559AA0[];
+extern void *lbl_80559AA0;
 void fn_80130FCC(void *arg0, int arg1, int arg2, int arg3, void *arg4) {
     fn_801345D8(arg0, arg1, lbl_80559AA0, 1, arg4);
 }
