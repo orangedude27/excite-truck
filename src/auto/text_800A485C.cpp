@@ -670,6 +670,22 @@ extern "C" s32 fn_800A625C(void *arg0, s32 arg1) {
     return 0;
 }
 
+#pragma dont_inline on
+extern "C" s32 fn_800A6268(s32 arg0, void *arg1) {
+    u32 value1 = *(u32 *)((u8 *)arg0 + 0x1C);
+    u32 value0 = *(u32 *)((u8 *)arg0 + 0x18);
+    *(u32 *)((u8 *)arg1 + 0x0) = value0;
+    *(u32 *)((u8 *)arg1 + 0x4) = value1;
+    value1 = *(u32 *)((u8 *)arg0 + 0x24);
+    value0 = *(u32 *)((u8 *)arg0 + 0x20);
+    *(u32 *)((u8 *)arg1 + 0x8) = value0;
+    *(u32 *)((u8 *)arg1 + 0xC) = value1;
+    value0 = *(u32 *)((u8 *)arg0 + 0x28);
+    *(u32 *)((u8 *)arg1 + 0x10) = value0;
+    return 0;
+}
+#pragma dont_inline reset
+
 extern "C" s32 fn_800A6298(void *arg0, u16 *arg1) {
     *arg1 = *(u16 *)((char *)arg0 + 0x20);
     return 0;
@@ -6393,12 +6409,16 @@ extern "C" s32 fn_800B9BB4(s32 arg0) {
 #pragma push
 #pragma small_data off
 extern "C" s32 fn_800BA160(s32 arg0) {
-    s32 value;
-    s32 mask;
+    register s32 result;
+    register s32 value;
+    register s32 mask;
     if (arg0 == 0) return 1;
-    value = *(volatile s32 *)(lbl_80407300 + 0x10);
-    mask = (-value | value) >> 31;
-    return 6 & ~mask;
+    result = 6;
+    value = *(volatile s32 *)((u8 *)lbl_80407300 + 0x10);
+    mask = -value | value;
+    mask >>= 31;
+    result &= ~mask;
+    return result;
 }
 #pragma push
 #pragma small_data off
@@ -12721,14 +12741,17 @@ extern "C" void *lbl_8055DDF0;
 extern "C" f32 lbl_80560E60;
 extern "C" char lbl_8031F168[];
 extern "C" void fn_800D4428(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(f32 *)((u8 *)arg0 + 0x10) = lbl_80560E60;
-    *(void **)arg0 = lbl_8031F168;
-    *(s32 *)((u8 *)arg0 + 0x14) = 0;
-    *(s32 *)((u8 *)arg0 + 0x18) = 0;
-    *(s16 *)((u8 *)arg0 + 0x1C) = 0;
+    f32 initial = lbl_80560E60;
+    char *vtable = lbl_8031F168;
+    s32 zero = 0;
+    *(s32 *)((u8 *)arg0 + 4) = zero;
+    *(s32 *)((u8 *)arg0 + 8) = zero;
+    *(s32 *)((u8 *)arg0 + 0xC) = zero;
+    *(f32 *)((u8 *)arg0 + 0x10) = initial;
+    *(void **)arg0 = vtable;
+    *(s32 *)((u8 *)arg0 + 0x14) = zero;
+    *(s32 *)((u8 *)arg0 + 0x18) = zero;
+    *(s16 *)((u8 *)arg0 + 0x1C) = zero;
 }
 
 extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 deleting) {
