@@ -5163,7 +5163,7 @@ extern "C" void fn_80229DE8(void *arg0, s32 unused, s32 arg2) {
     *(u32 *)((u8 *)arg0 + 0x260) = zero;
     s32 end = *(s32 *)((u8 *)arg0 + 0x10);
     *(u8 *)((u8 *)arg0 + 0x268) = one;
-    ((Fn80229DE8Dispatch *)arg0)->Call(arg2 - (end - start) - 3);
+    ((Fn80229DE8Dispatch2 *)arg0)->Call(unused, arg2 - (end - start) - 3);
 }
 
 extern s32 fn_8021E1C8(void *, s32, s32);
