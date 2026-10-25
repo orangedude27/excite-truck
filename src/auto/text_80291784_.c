@@ -278,7 +278,7 @@ void fn_802923EC(float arg0) {
         value = lbl_80564480;
         if (value < arg0) value = arg0;
         if (value > lbl_80564484) value = lbl_80564484;
-        base = &lbl_804B4010;
+        base = (int *)lbl_804B4010;
         base[6] = (base[6] & 0xFFFFFF) | ((int)(lbl_8056449C * value) << 24);
         entry = &lbl_804B3EC0;
         i = 0;
