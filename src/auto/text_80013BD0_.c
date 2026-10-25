@@ -12,7 +12,8 @@ extern f64 lbl_80560400;
 extern f32 lbl_805603BC;
 extern u8 lbl_8055E520;
 extern u8 lbl_802FCE04[], lbl_802FCE88[];
-extern u8 lbl_802FCD44[], lbl_802FCD78[], lbl_80558BA0[];
+extern u8 lbl_802FCD44[], lbl_802FCD78[];
+extern u8 lbl_80558BA0;
 extern void fn_80013EDC(void *, s32, void *, void *, f32, f32, f32);
 extern void fn_801476C4(void);
 extern u8 lbl_80558BBC[], lbl_802FCDB4[];
@@ -252,8 +253,16 @@ void fn_80014820(void *arg0) {
 #pragma dont_inline off
 
 void fn_80014A98(void *arg0) {
- void *p=*(void **)((u8 *)lbl_8055D350+0x30);
- fn_80013EDC(lbl_802FCD44,0,lbl_802FCD78,lbl_80558BA0,*(f32 *)((u8 *)arg0+0x2C),*(s32 *)((u8 *)p+0x24)==3?*(f32 *)((u8 *)p+0x1C):*(f32 *)((u8 *)p+0x14),lbl_80560360);
+    void *p;
+    f32 selected;
+    p = *(void **)((u8 *)lbl_8055D350 + 0x30);
+    if (*(s32 *)((u8 *)p + 0x24) == 3)
+        selected = *(f32 *)((u8 *)p + 0x1C);
+    else
+        selected = *(f32 *)((u8 *)p + 0x14);
+    ((void (*)(void *, void *, s32, void *, void *, f32, f32, f32))fn_80013EDC)(
+        arg0, lbl_802FCD44, 0, lbl_802FCD78, &lbl_80558BA0,
+        *(f32 *)((u8 *)arg0 + 0x2C), selected, lbl_80560360);
 }
 
 s32 fn_80014ADC(void) { return 0; }
@@ -710,20 +719,21 @@ extern "C" void fn_80015F30(void* arg0) {
 #pragma cplusplus reset
 #pragma pop
 
+#pragma scheduling invalid_target
 s32 fn_80016214(void) {
-    f64 scale = lbl_80560400;
-    f32 value = (f32)fn_8002EFB4(lbl_8055D350,
-                    *(f32 *)((u8 *)lbl_8055D350 + 0x10), scale);
-    if (!(value < lbl_805603BC)) {
-        if (lbl_8055E520) {
-            fn_80011E04(0);
-            fn_80010FDC(lbl_802FCE04, 0xC);
-            return 1;
-        }
+    register f64 scale = lbl_80560400;
+    register void *manager = lbl_8055D350;
+    f32 speed = *(f32 *)((u8 *)manager + 0x10);
+    f32 value = (f32)((f64 (*)(void *, f32, f64))fn_8002EFB4)(manager, speed, scale);
+    s32 greater = value > lbl_805603BC;
+    if (greater != 0 && lbl_8055E520 != 0) {
+        fn_80011E04(0);
+        fn_80010FDC(lbl_802FCE04, 0xC);
+        return 1;
     }
     return 0;
 }
-
+#pragma scheduling on
 s32 fn_80016288(void) { return 0; }
 
 extern f32 fn_8002EFB4(void *, f32, f64);
