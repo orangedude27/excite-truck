@@ -9,6 +9,8 @@ extern void GXLoadTexObj(void *, int);
 extern void fn_80128670(void *);
 extern void *lbl_8055FE28;
 extern void *lbl_8055FE18;
+extern void *lbl_8055FE1C;
+extern char lbl_8034C5F0[];
 extern void fn_802D7564(void);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_802E317C(const char *, ...);
