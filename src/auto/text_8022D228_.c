@@ -213,11 +213,13 @@ void fn_8022DAD0(void *arg0, float arg1) {
     **(float **)((char *)arg0 + 0x18) = step * (float)(int)(lbl_805635D4 + ((low + arg1 * (high - low)) / step));
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8022DB34(void *arg0, char *arg1) {
     int value = **(int **)((char *)arg0 + 4);
     sprintf(arg1, *(char **)((char *)arg0 + 0x10), value, arg0);
 }
-
+#pragma pop
 void fn_8022DB50(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     *(int *)arg0 = arg1;
     *(int *)((char *)arg0 + 4) = arg2;
