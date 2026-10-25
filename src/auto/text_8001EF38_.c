@@ -227,6 +227,13 @@ void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
 }
 
 #pragma scheduling invalid_target
+void fn_8001F724(void) {
+    ((void (*)())fn_8001F5BC)(lbl_8035A718, lbl_8035AF38);
+    memset(lbl_8035AF38, 0, 0x820);
+}
+#pragma scheduling on
+
+#pragma scheduling invalid_target
 void fn_8001F76C(void) {
     memset(lbl_8035AF38, 0, 0x820);
 }
