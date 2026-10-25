@@ -1,5 +1,8 @@
 extern float lbl_805601FC, lbl_80560204;
+#pragma push
+#pragma small_data off
 extern char lbl_8034F5F8, lbl_8034F604;
+#pragma pop
 extern char lbl_802FBC90[];
 extern void *lbl_8055D3D0;
 extern int lbl_80558A50, lbl_80558A58, lbl_80558A60, lbl_80558A68;
@@ -112,11 +115,14 @@ void fn_8000AEC4(void) {
 
 int fn_8000AEC8(int arg0) {
     int i;
-    int *p = &lbl_8034F5D8;
-    for (i = lbl_8055D3E0; i > 0; i--) {
+    int *p = (int *)0x8034F5D8;
+    i = lbl_8055D3E0;
+    if (i <= 0) goto done;
+    for (; i > 0; i--) {
         if (arg0 == *p) return 1;
         p++;
     }
+done:
     return 0;
 }
 
@@ -324,6 +330,19 @@ void fn_8000BC44(void) {
         fn_802E30C8(&lbl_802FBFF8);
         fn_8017691C();
     }
+}
+
+void fn_8000BD64(void) {
+    float value2 = lbl_80560204;
+    float value1 = lbl_805601FC;
+    volatile float *first = (float *)&lbl_8034F5F8;
+    volatile float *second = (float *)&lbl_8034F604;
+    first[0] = value1;
+    first[2] = value2;
+    first[1] = value2;
+    second[0] = value1;
+    second[2] = value2;
+    second[1] = value2;
 }
 
 void fn_8000BD98(void) {
