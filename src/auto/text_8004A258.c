@@ -165,7 +165,6 @@ void ClearArena(void) {
 
 #pragma small_data off
 void InquiryCallback(s32 result, struct DVDCommandBlock* arg1) {
-    extern u8 DriveInfo[4];
     if (*(u32*)((u8*)arg1 + 0xC) == 0) goto read_drive;
     goto set_one;
 read_drive:
@@ -512,6 +511,21 @@ extern const char lbl_80558F0C[];
 extern const char lbl_80558F0C[4];
 void OSRegisterVersion(const char *ver) {
     OSReport(lbl_80558F0C, ver);
+}
+
+const char *OSGetAppGamename(void) {
+    extern const char *AppGameNameForSysMenu;
+    extern char GameNameBuffer[5];
+    const char *name = (const char *)0x80003180;
+    if (__OSInIPL) {
+        name = AppGameNameForSysMenu;
+    }
+    GameNameBuffer[0] = name[0];
+    GameNameBuffer[1] = name[1];
+    GameNameBuffer[2] = name[2];
+    GameNameBuffer[3] = name[3];
+    GameNameBuffer[4] = 0;
+    return GameNameBuffer;
 }
 
 extern BOOL __OSInIPL;
