@@ -18,6 +18,15 @@ extern void fn_80297AFC(void);
 extern void fn_802C9CE0(void);
 extern void fn_802E30C8(void *, const char *);
 
+typedef struct Obj Obj;
+typedef void (*ObjMethod)(Obj *);
+typedef struct {
+    ObjMethod slots[8];
+} ObjVtable;
+struct Obj {
+    ObjVtable *vtable;
+};
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
