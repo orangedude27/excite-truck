@@ -1927,7 +1927,10 @@ void GXInitTexObjLOD(void *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max
     t[1] = (t[1] & ~0xFF00) | ((lmax << 8) & 0xFF00);
 }
 
-void GXInitTexObjWrapMode(int *obj, int wrap_s, int wrap_t) { *obj = (*obj & 0xFFFFFFFC) | wrap_s; *obj = (*obj & 0xFFFFFFF3) | (wrap_t << 2); }
+void GXInitTexObjWrapMode(int *obj, int wrap_s, int wrap_t) {
+    ((GXTexWrapReg *)obj)->wrapS = wrap_s;
+    ((GXTexWrapReg *)obj)->wrapT = wrap_t;
+}
 
 void GXInitTexObjTlut(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
