@@ -330,6 +330,7 @@ extern "C" void fn_8020B348(void *arg0) {
 #pragma pop
 extern void *fn_802E5AE8(void *);
 extern void fn_802E5D5C(void *);
+#pragma dont_inline fn_8020A6AC
 extern void *fn_8020A6AC(void *);
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8033C4F0[];
