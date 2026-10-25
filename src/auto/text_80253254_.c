@@ -14,6 +14,10 @@ extern char lbl_80344BC0[];
 extern void fn_80255200(void *, s32);
 extern void fn_80015A20(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
+extern void fn_802C6CF8(s32);
+extern void fn_801F0000(s32);
+extern void fn_80253C48(void *);
+extern void fn_802532BC(void);
 
 static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
     float outX;
@@ -39,18 +43,22 @@ static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
 
 void fn_80253254(void) {}
 
-#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_80253258(void) {
     extern float lbl_80563A04, lbl_80563A08, lbl_80563A0C, lbl_80563A10;
     extern void PSVECNormalize(float *, float *);
     extern void fn_802C9A1C(float *);
-    float x, y, z, scale;
-    float v[3];
-    x = lbl_80563A04; y = lbl_80563A08; z = lbl_80563A0C; scale = lbl_80563A10;
-    v[0] = x * scale; v[1] = y * scale; v[2] = z * scale;
-    PSVECNormalize(v, v); fn_802C9A1C(v);
+    float v[6];
+    v[0] = lbl_80563A04;
+    v[1] = lbl_80563A08;
+    v[2] = lbl_80563A0C;
+    v[3] = v[0] * lbl_80563A10;
+    v[4] = v[1] * lbl_80563A10;
+    v[5] = v[2] * lbl_80563A10;
+    PSVECNormalize(&v[3], &v[3]);
+    fn_802C9A1C(&v[3]);
 }
-#pragma dont_inline reset
+#pragma scheduling on
 
 void *fn_8025343C(void *arg0) {
     extern void fn_802532BC(void);
