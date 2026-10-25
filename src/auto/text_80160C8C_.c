@@ -521,6 +521,25 @@ extern "C" s32 fn_80161B94(void) {
     }
     return 0;
 }
+
+#pragma cplusplus on
+extern "C" int fn_80161BB8(void) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual int v7();
+    };
+    Dummy *p = (Dummy *)lbl_8055E300;
+    if (p != 0) {
+        return p->v7();
+    }
+    return 0;
+}
 #pragma cplusplus off
 s32 fn_80161BDC(s32 a, s32 b, s32 c) {
     register s32 arg0 = a;
