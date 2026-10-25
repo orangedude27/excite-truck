@@ -681,22 +681,15 @@ extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADB4(int, float);
   extern void fn_8018ADBC(int, float);
   extern void fn_8018ADAC(void *, float);
+#pragma scheduling invalid_target
 void fn_80194170(void *arg0, float arg1) {
     double value = lbl_80562140;
-    if (value < arg1) {
-        value = arg1;
-    } else {
-        value = lbl_80562140;
-    }
-    if (value > lbl_80562144) {
-        value = lbl_80562144;
-    } else {
-        value = value;
-    }
+    value = value < arg1 ? arg1 : value;
+    value = value > lbl_80562144 ? lbl_80562144 : value;
     *(float *)((char *)arg0 + 0x240) = value;
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
 }
-
+#pragma scheduling on
 void fn_801941A8(void *arg0, float arg1) {
     float value;
     float pos = *(float *)((char *)arg0 + 0x23C);
@@ -1540,7 +1533,7 @@ void fn_80197BD0(void *arg0, void *arg1) {
 
 extern float lbl_80562184, lbl_80562290, lbl_80562294;
 extern float lbl_8055A48C;
-extern int fn_8019813C(float);
+extern int fn_8019813C();
 int fn_80197FE4(void *arg0, void *arg1) {
     int result = 0;
     float speed;
