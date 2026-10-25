@@ -11814,7 +11814,7 @@ extern "C" void *fn_800D0F1C(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         s32 soundHandle = (s32)arg0 + 0x20;
         if (soundHandle != 0) {
-            DetachSound__Q34nw4hbm3snd11SoundHandleFv((void *)soundHandle);
+            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)((void *)soundHandle);
         }
         if (arg1 > 0) {
             ((void (*)(void *))fn_80128668)(arg0);
@@ -11918,13 +11918,13 @@ void fn_800D120C(void *arg0) {
 }
 
 extern "C" s32 fn_800D1E78(void *, s32, s32);
-s32 isPlayingSoundId__Q210homebutton10ControllerCFi(void *arg0, s32 arg1) {
-    if (fn_800D1E5C(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0) == 0) {
+#pragma dont_inline
+s32 homebutton::Controller::isPlayingSoundId(s32 arg0) const {
+    if (fn_800D1E5C(m_soundPlayer, m_soundId) == 0) {
         return 0;
     }
-    return fn_800D1E78(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0, arg1);
+    return fn_800D1E78(m_soundPlayer, m_soundId, arg0);
 }
-
 extern "C" void fn_800D1300(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x42) = 0;
     *(u8 *)((u8 *)arg0 + 0x43) = 0;
