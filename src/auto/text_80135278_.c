@@ -58,7 +58,9 @@ static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
 
 #pragma scheduling invalid_target
 float fn_80135278(float *a, float *b, float *c) {
-    return a[1] * (b[1] - c[1]) + a[0] * (b[0] - c[0]);
+    float dx = b[0] - c[0];
+    float dy = b[1] - c[1];
+    return a[0] * dx + a[1] * dy;
 }
 #pragma scheduling reset
 void *fn_801352B8(Unk_80135278 *arg0) {
@@ -240,50 +242,58 @@ void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, fl
     }
 }
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 s32 fn_80135D60(Unk_80135278 *arg0, s32 arg1) {
     if ((unsigned long)arg1 != (unsigned long)arg0->unk_2c) {
-        s32 result;
         fn_80135354(arg0);
-        if (arg1 == 0) {
-            result = 0;
-        } else {
-            result = 1;
-        }
         arg0->unk_2c = arg1;
-        return result;
+        if (arg1 != 0) {
+            return 1;
+        }
+        return 0;
     }
     return 2;
 }
-#pragma scheduling reset
+#pragma opt_dead_assignments reset
+#pragma opt_propagation reset
 extern void fn_80135EA8(void *, s32, s32);
 extern void fn_80135F4C(void *);
 extern s32 lbl_8032BE6C[];
-#pragma dont_inline on
-void *fn_80135DC4(void *arg0, s32 arg1, s32 arg2) {
-    fn_801352B8(arg0);
-    *(s32 *)((char *)arg0 + 0x58) = 0;
-    *(s32 **)arg0 = lbl_8032BE6C;
-    *(s32 *)((char *)arg0 + 0x54) = 0;
-    *(s32 *)((char *)arg0 + 0x50) = 0;
+#pragma cplusplus on
+extern "C" void *fn_80135DC4(void *arg0, s32 arg1, s32 arg2) {
+    struct Dummy {
+        virtual s32 f0(s32);
+        virtual s32 f1(s32);
+        char pad[0x4C];
+        s32 field50;
+        s32 field54;
+        volatile s32 field58;
+    };
+    Dummy *self = (Dummy *)arg0;
+    ((void (*)(void *))fn_801352B8)(arg0);
+    self->field58 = 0;
+    *(s32 **)self = lbl_8032BE6C;
+    self->field54 = 0;
+    self->field50 = 0;
     if (arg2 == 0) {
-        void *obj = fn_80156A40();
-        arg2 = ((s32 (**)(void *, s32))*(void **)obj)[2](obj, 0);
+        Dummy *obj = (Dummy *)fn_80156A40();
+        arg2 = obj->f0(0);
     }
-    if (((s32 (**)(void *, s32))*(void **)arg0)[3](arg0, arg2) != 0) {
+    if (self->f1(arg2) != 0) {
         if (arg1 != 0) {
-            void *p = *(void **)((char *)arg0 + 0x2C);
-            fn_80135EA8((char *)arg0 + 0x50, *(s32 *)((char *)p + 0x18) >> 16, 2);
+            void *p = *(void **)((char *)self + 0x2C);
+            fn_80135EA8(&self->field50, *(s32 *)((char *)p + 0x18) >> 16, 2);
         } else {
-            *(s32 *)((char *)arg0 + 0x58) = 0;
-            *(s32 *)((char *)arg0 + 0x54) = 0;
-            *(s32 *)((char *)arg0 + 0x50) = 0;
+            self->field58 = 0;
+            self->field54 = 0;
+            self->field50 = 0;
         }
-        fn_80135F4C(arg0);
+        ((void (*)(void *))fn_80135F4C)(arg0);
     }
     return arg0;
 }
-#pragma dont_inline reset
+#pragma cplusplus reset
 extern s32 fn_8012850C(s32, void *);
 extern s32 lbl_8032BE20[];
 void fn_80135EA8(void *arg0, s32 arg1, s32 arg2) {
@@ -529,7 +539,17 @@ void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
     out->unk_8 = d;
     out->unk_c = self->unk_c;
 }
-#pragma pop
+
+#pragma scheduling invalid_target
+void fn_80136594(void *arg0, s32 arg1, s32 arg2) {
+    float f = lbl_80561320;
+    s32 *p = (s32 *)arg0;
+    p[0] = 0;
+    p[2] = 0x2710;
+    *(float *)(p + 1) = f;
+    fn_801355C0((void *)arg1, arg2, 0, arg0, 0);
+}
+#pragma scheduling reset
 float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
     s32 same, offset, pos, count, i, j;
     unsigned long length;
