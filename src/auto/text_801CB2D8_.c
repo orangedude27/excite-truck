@@ -1038,6 +1038,10 @@ void fn_801CE7A0(void) {
     if (ptr != 0) { if (ptr != 0) ((void (*)(void *, int))((u32 *)*(u32 *)ptr)[2])(ptr, 1); state[0x2D4 / 4] = 0; }
 }
 
+int fn_801CE874(int arg0) {
+    return *fn_801EA9A0();
+}
+
 unsigned int fn_801CE898(void) {
     int value = fn_800167F4();
     int temp = value ^ 1;
