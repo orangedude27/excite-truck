@@ -266,6 +266,18 @@ void fn_8027B8C0(void* alarm) {
     fn_8027BA24(fn_8027B834(alarm));
 }
 
+#pragma dont_inline on
+long fn_8027B8E4(void *arg0, long arg1) {
+    long temp_r31;
+    long temp_r30;
+    temp_r31 = fn_8000DA10();
+    fn_8000D984(arg1);
+    temp_r30 = fn_8027BAB8(fn_8027B834(arg0));
+    fn_8000D984(temp_r31);
+    return temp_r30;
+}
+#pragma dont_inline reset
+
 void fn_8027B94C(void *arg0) {
     fn_8027B8E4(arg0, fn_8000DA10());
 }
@@ -552,18 +564,24 @@ long fn_8027C788(void *arg0) {
     long index = 0;
     char *name;
     long value;
+    register char *(*name_fn)(void *);
+    register long (*value_fn)(void *, char *);
+    register void *(*item_fn)(void *, long);
     goto fetch;
 body:
-    name = ((char *(*)(void *))(*(void ***)item)[2])(item);
+    name_fn = (char *(*)(void *))(*(void ***)item)[2];
+    name = name_fn(item);
     if (stricmp(name, lbl_80347A50) == 0) {
-        value = ((long (*)(void *, char *))(*(void ***)item)[5])(item, lbl_80347A5C);
+        value_fn = (long (*)(void *, char *))(*(void ***)item)[5];
+        value = value_fn(item, lbl_80347A5C);
         fn_8027C120(lbl_8055F654, value);
         if (fn_8027C650() == 0)
             return 0;
     }
     index++;
 fetch:
-    item = ((void *(*)(void *, long))(*(void ***)*(void **)((char *)arg0 + 8))[24])(*(void **)((char *)arg0 + 8), index);
+    item_fn = (void *(*)(void *, long))(*(void ***)*(void **)((char *)arg0 + 8))[24];
+    item = item_fn(*(void **)((char *)arg0 + 8), index);
     if (item != 0)
         goto body;
     return 1;
