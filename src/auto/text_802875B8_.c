@@ -128,6 +128,25 @@ void fn_802877D0(void) {
     fn_802AE394();
 }
 
+void fn_80287914(void) {
+    fn_802A86A4();
+    fn_8028E138();
+    fn_802980A0();
+    fn_8028A89C();
+    fn_8028CF50();
+    fn_8029222C();
+    fn_80294CC0();
+    fn_80296060();
+    fn_8029F124();
+    fn_80292628();
+    fn_802A172C();
+    fn_802A4C20();
+    fn_802A7C64();
+    fn_802AB5B8();
+    fn_802A9574();
+    fn_80288868(0);
+}
+
 extern s32 fn_801E7DF0(s32);
 extern void fn_8028777C(void);
 extern void fn_80288218(s32);
