@@ -464,11 +464,16 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     return (-1 - value) & sign;
 }
 
-void fn_801175C4(s32 arg0,s32 arg1){
- s32 off=((arg0+0x340)-arg0);
- s32* p=(s32*)(arg0-off);
- if(p[0x2e8/4]) fn_80117074(p);
- p[0x33c/4]=arg1;
+void fn_801175C4(s32 arg0, s32 arg1) {
+    register s32 off;
+    register s32 base;
+    off = arg0 + 0x340;
+    off -= arg0;
+    base = arg0 - off;
+    if (*(s32 *)(base + 0x2E8) != 0) {
+        fn_80117074((void *)base);
+    }
+    *(s32 *)(base + 0x33C) = arg1;
 }
 
 void fn_80117618(void *arg0, void *arg1) {
@@ -1356,6 +1361,22 @@ void fn_8011A1A0(u32 *data, u32 size) {
         }
     }
 }
+
+#pragma push
+#pragma scheduling on
+#pragma dont_inline on
+void fn_8011A330(void* arg0) {
+    s32 status;
+    *(s32*)((u8*)arg0 + 0xC4) = 1;
+    DVDCancel((DVDCommandBlock*)((u8*)arg0 + 0x54));
+    do {
+        status = DVDGetDriveStatus();
+    } while (status == 2 || status == 1);
+    *(s32*)((u8*)arg0 + 0xC4) = 0;
+    *(s32*)((u8*)arg0 + 0x24) = 0;
+}
+#pragma dont_inline reset
+#pragma pop
 
 u32 fn_8011A388(void* arg0, s32 arg1, s32 arg2, u32 arg3) {
     extern u32 fn_8011A240(void*, u32, s32, u32);
