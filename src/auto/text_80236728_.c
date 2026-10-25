@@ -66,6 +66,17 @@ extern char lbl_8055F0C4;
 extern char lbl_8055F0C5;
 extern char lbl_8055F0C6;
 extern char lbl_8055F0C7;
+extern void fn_802E317C(const char *);
+extern char lbl_80340910[];
+void fn_80236728(void) {
+    if (lbl_8055F0C4 != 0) {
+        fn_802E317C(lbl_80340910);
+    }
+    lbl_8055F0BC = 0;
+    lbl_8055F0C0 = 0;
+    lbl_8055F0C4 = 1;
+}
+
 void fn_80236774(void) {
     lbl_8055F0C4 = 0;
 }
@@ -871,3 +882,7 @@ extern void fn_80237968(void);
 extern void fn_80237A08(void);
 extern char lbl_8034095C[];
 extern char lbl_80340970[];
+typedef struct QueueNode_80236848 {
+    unsigned char pad[0x24];
+    struct QueueNode_80236848 *next;
+} QueueNode_80236848;
