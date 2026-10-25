@@ -232,13 +232,13 @@ typedef struct { float x, y, z; } Vec3_802B;
 void fn_802B110C(void (*fn)(void *), void *arg) {
     fn(arg);
 }
-#pragma pop
+#pragma scheduling invalid_target
 void fn_802B111C(void *arg0) {
     ((int *)arg0)[1] = (int)((char *)arg0 + 0x10);
     ((int *)arg0)[3] = 6;
     ((int *)arg0)[2] = 0;
 }
-
+#pragma scheduling on
 void *fn_802B1138(const char *name) {
     void *result = 0;
     int count = 0;
@@ -282,26 +282,28 @@ void fn_802B11BC(void *arg0) {
 }
 
 int fn_802B127C(void *arg0, Vec3_802B *src) {
-    int *self = (int *)arg0;
+    volatile int *self = (volatile int *)arg0;
     int next;
     int i;
-    float x, y, z;
+    int increment;
+    float z, y, x;
     float *base, *dst;
     if (self == 0) return 0;
-    next = self[0x31c / 4] + 1;
+    next = self[0x31C / 4] + 1;
     if (next <= self[0x320 / 4]) {
-        i = self[0x31c / 4];
+        i = self[0x31C / 4];
         x = src->x;
         y = src->y;
         z = src->z;
         base = (float *)self[0x318 / 4];
-        self[0x31c / 4] = i + 1;
+        increment = i + 1;
+        self[0x31C / 4] = increment;
         dst = (float *)((char *)base + i * 12);
         dst[0] = x;
         dst[1] = y;
         dst[2] = z;
     }
-    return (unsigned short)(self[0x31c / 4] - 1);
+    return (unsigned short)(self[0x31C / 4] - 1);
 }
 
 int fn_802B12E0(void *arg0, void *arg1, void *arg2, int arg3) {
@@ -346,37 +348,36 @@ int fn_802B12E0(void *arg0, void *arg1, void *arg2, int arg3) {
     return next;
 }
 
+#pragma scheduling invalid_target
 void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
     int *self = (int *)arg0;
+    void *tmp;
     int *obj;
-    int sp8;
+    void *sp8;
     int flag;
-    if (self == 0) {
-        return;
-    }
+    volatile int *count = (volatile int *)((char *)self + 0x328);
+    if (self == 0) return;
     flag = 0;
-    sp8 = ((int *)arg2)[0];
-    obj = *(int **)((char *)self[0xa38 / 4]);
+    sp8 = *(void **)arg2;
+    tmp = *(void **)((char *)self + 0xa38);
+    obj = *(int **)tmp;
     obj[1] = obj[1] - (0x18 - *(unsigned short *)((char *)arg2 + 4));
-    self[0xa38 / 4] = 0;
-    if (arg3 == 4) {
-        if (farg0 < lbl_80564BD0) {
-            flag = 1;
-        }
-    }
-    if (flag != 0) {
-        if (self[0x328 / 4] + 1 <= self[0x32c / 4]) {
-            int i = self[0x328 / 4];
+    *(void **)((char *)self + 0xa38) = 0;
+    if (arg3 == 4 && farg0 < lbl_80564BD0)
+        flag = 1;
+    if (flag) {
+        if (*count + 1 <= self[0x32c / 4]) {
+            int i = *count;
             float f = lbl_80564BD0 - farg0;
             int *dst = (int *)((char *)self[0x324 / 4] + i * 8);
-            self[0x328 / 4] = i + 1;
+            *count = i + 1;
             ((float *)dst)[1] = f;
-            dst[0] = sp8;
+            *(volatile int *)dst = (int)sp8;
         }
     }
     fn_802BAFF8(arg1, &sp8);
 }
-
+#pragma scheduling on
 extern float lbl_80564BB8, lbl_80564BD0, lbl_80564BD4, lbl_80564BD8;
 extern float lbl_80564BDC, lbl_80564BE0, lbl_80564BE4, lbl_80564BE8;
 extern double lbl_80564BF0;
@@ -475,7 +476,7 @@ void fn_802B1758(void *arg0) {
             }
 
             radius = lbl_80564BE8 * lbl_80564BB8;
-            point = lbl_804BE190 + 12;
+            point = (float *)((char *)lbl_804BE190 + 0x30);
             for (i = 4; i < 8; i++) {
                 sign = (i & 1) ? -1 : 1;
                 x = radius * (float)sign;
