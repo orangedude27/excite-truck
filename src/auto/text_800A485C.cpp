@@ -11329,11 +11329,10 @@ extern "C" s32 fn_800D014C(s32 arg0, s32 arg1) {
 
 extern "C" u32 lbl_8055DDA0;
 extern "C" void fn_800D018C(void *arg0, void *arg1) {
+    void *p = *(void **)((u8 *)arg1 + 0x10);
     lbl_8055DDA0 = 0;
-    void *p = (u8 *)arg1 + 0x10;
-    void *q = *(void **)p;
-    q = (u8 *)q + 0x10;
-    (*(void (**)(void *, void *))(*(void ***)arg0 + 20))(arg0, q);
+    p = (u8 *)p + 0x10;
+    (*(void (**)(void *, void *))(*(void ***)arg0 + 20))(arg0, p);
 }
 
 extern "C" u8 lbl_8031E878[];
@@ -16350,7 +16349,7 @@ extern "C" s32 fn_800A5800(void *arg0) {
 }
 
 extern "C" s32 fn_800A7090(void);
-extern "C" s32 fn_800A71A0(void);
+extern "C" s32 fn_800A71A0(s32 *);
 extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
 extern "C" s32 fn_800A586C(void *arg0, s32 a, s32 b, s32 c, s32 d) {
