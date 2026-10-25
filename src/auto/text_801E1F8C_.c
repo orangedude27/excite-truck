@@ -13,7 +13,7 @@ extern f32 lbl_80562CDC;
 extern f32 lbl_80562CE0;
 extern f32 lbl_80562CE4;
 extern s32 lbl_8055E3C4;
-extern char lbl_8033989C;
+extern char lbl_8033989C[];
 void fn_801B619C(void *, s32 *, f32 *);
 s32 fn_801A4E88(void *, f32 *, f32 *, s32, s32 *);
 void fn_802E30C8(const char *, ...);
