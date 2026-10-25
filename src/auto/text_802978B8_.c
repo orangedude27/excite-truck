@@ -77,7 +77,7 @@ void fn_80297A08(int arg0) {
     int index = (int)lbl_8055F7A4;
 
     if (index < 0x40) {
-        lbl_8055F7A4 = (void *)(index + 1);
+        *(int *)&lbl_8055F7A4 = index + 1;
         lbl_804B4F10[index] = arg0;
     }
 }
