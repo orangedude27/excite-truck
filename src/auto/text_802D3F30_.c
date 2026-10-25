@@ -227,7 +227,7 @@ void fn_802D5DE8(u32 flags) {
     GXSetVtxDescv(desc);
 }
 
-s32 fn_802D62E4(void *arg0, ...) {
+s32 fn_802D62E4(void *arg0) {
     if ((u32)(*(u32 *)arg0 + 0xB1BC0000) != 0x4C32U) {
         return 0;
     }
@@ -403,7 +403,7 @@ void fn_802D6B08(void *arg0) {
 }
 
 #pragma pop
-extern s32 fn_802D62E4(void *, ...);
+extern s32 fn_802D62E4(void *);
 void fn_802D6B54(void *alarm) {
     fn_802D5F88(((s32 (*)(void *))fn_802D62E4)(alarm));
 }
