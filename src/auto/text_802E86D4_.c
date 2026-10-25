@@ -23,6 +23,7 @@ extern void *lbl_80560024;
 extern char lbl_80560034;
 extern char lbl_8034DD78[];
 extern char lbl_8034DE94[];
+extern void fn_802E30C8(const char *, ...);
 extern void fn_802E8B34(const char *, ...);
 extern int fn_802E888C(int);
 extern char lbl_8034DB28[];
