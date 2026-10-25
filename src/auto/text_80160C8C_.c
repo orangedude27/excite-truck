@@ -866,7 +866,7 @@ struct Dummy_80162800 {
     virtual s32 f8();
     virtual void f9();
     virtual void f10();
-    virtual f64 f11();
+    virtual f32 f11();
 };
 #pragma cplusplus off
 extern int lbl_8055E2F8;
