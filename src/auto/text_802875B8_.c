@@ -242,6 +242,13 @@ void fn_80287B58(void) {
     fn_80288870();
 }
 
+#pragma dont_inline on
+s32 fn_80287B5C(s32 arg0) {
+    unsigned int value = ((unsigned int (*)(void))fn_80287B58)();
+    return value % (unsigned int)arg0;
+}
+#pragma dont_inline reset
+
 s32 fn_80287B94(s32 arg0, s32 arg1) {
     return arg0 + fn_80287B5C(arg1 - arg0);
 }
@@ -458,10 +465,12 @@ void fn_802882EC(void) {
 
 void fn_802885C0(void) {}
 
+#pragma push
+#pragma scheduling off
 s32 fn_802885C4(void *arg0, void *arg1) {
     return (s32)(lbl_80564268 * (*(f32 *)((u8 *)arg0 + 8) - *(f32 *)((u8 *)arg1 + 8)));
 }
-
+#pragma pop
 void fn_802887EC(void) {
     s32 i;
     for (i = 0; i < lbl_8055F6C0; i++) {
