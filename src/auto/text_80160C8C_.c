@@ -866,7 +866,7 @@ struct Dummy_80162800 {
     virtual s32 f8();
     virtual void f9();
     virtual void f10();
-    virtual f32 f11();
+    virtual f64 f11();
 };
 #pragma cplusplus off
 extern int lbl_8055E2F8;
@@ -875,29 +875,24 @@ extern int lbl_8055A0DC;
 extern int fn_801476D8(int, int, int);
 extern void fn_80130980(void *, int, int, float);
 extern void fn_801475D0(void *, ...);
-#pragma push
-#pragma small_data off
-#pragma processor 750
-#pragma use_lmw_stmw off
-s32 fn_80162800(void *arg0) {
+#pragma processor gekko
+#pragma cplusplus on
+extern "C" s32 fn_80162800(void *arg0) {
     s32 sp8;
-    f64 limit = (f64)lbl_8055E3C8;
-    void **vtable;
-    vtable = *(void ***)arg0;
-    if ((f32)limit > ((f32 (*)(void *))vtable[0x34 / 4])(arg0)) {
-        vtable = *(void ***)arg0;
-        if (((s32 (*)(void *))vtable[0x28 / 4])(arg0) == 0) {
-            ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, &lbl_8032FA38);
-            fn_801476D8(0, -1, lbl_8055E2F8);
-            ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x0C / 4])(lbl_8055E2E0, &lbl_8032FA44);
+    Dummy_80162800 *obj = (Dummy_80162800 *)arg0;
+    f32 limit = lbl_8055E3C8;
+    if (limit > obj->f11()) {
+        if (obj->f8() == 0) {
+            fn_801476D8((s32)((Dummy_80162800 *)lbl_8055E2E0)->f2(lbl_8032FA38), -1, lbl_8055E2F8);
+            ((Dummy_80162800 *)lbl_8055E2E0)->f1(lbl_8032FA44);
             fn_801476C4();
             fn_80130980(&sp8, 0x14, 3, *(f32 *)((char *)arg0 + 0x84) - *(f32 *)((char *)arg0 + 0x98));
-            ((void (*)(void *, s32, s32, void *))fn_801475D0)(lbl_8055E2E0, lbl_8055A0EC, lbl_8055A0DC, &sp8);
+            fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, &sp8);
         }
     }
     return 0;
 }
-#pragma pop
+#pragma cplusplus off
 extern int lbl_8032F698;
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
