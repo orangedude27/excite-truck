@@ -29,7 +29,7 @@ extern long fn_80137C74(void);
 extern unsigned long __AXGetStackHead_80137CFC(long);
 extern long lbl_803416A8;
 extern long lbl_8055BC54;
-extern long lbl_804987D0;
+extern long lbl_804987D0[];
 void fn_8023D704(long arg0) {
     lbl_8055F18C = (void *)arg0;
 }
