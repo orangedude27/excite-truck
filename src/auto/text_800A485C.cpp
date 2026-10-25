@@ -16003,13 +16003,17 @@ zero:
     return 0;
 }
 #pragma scheduling on
-s32 fn_800A4B54(u8 *arg0) {
-    u8 *ptr = arg0;
+#pragma push
+#pragma dont_inline on
+extern "C" s32 fn_800A4B54(s32 arg0) {
+    u8 *start = (u8 *)arg0;
+    u8 *ptr = start;
     do {
         ptr += 2;
     } while (*(u16 *)ptr != 0);
-    return (ptr - arg0) >> 1;
+    return (ptr - start) >> 1;
 }
+#pragma pop
 
 extern "C" void fn_800A4B78(u16 *arg0, u16 *arg1) {
     u16 *src = arg1;
