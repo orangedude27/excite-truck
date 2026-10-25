@@ -21,6 +21,7 @@ static inline s32 fixedMul20(s32 lhs, s32 rhs) {
 struct Fn800C0440Context { u8 pad[0xC]; volatile u32 bitIndex; volatile s32 limit; };
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_80559270[]; }
 extern "C" s32 fn_800A485C(s32);
+extern "C" s32 VFiPFCACHE_DoReadPage(void *, s32, s32, s32, s32);
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055920C[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055921C[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559220[]; }
