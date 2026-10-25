@@ -6,9 +6,7 @@ extern int fn_801B2C70(void *);
 extern int fn_801284F8(int, const char *);
 extern void fn_801AFA64(int *);
 extern const char lbl_803359A0[];
-#pragma small_data off
-extern float lbl_80558DC4;
-#pragma small_data on
+extern char lbl_80558DC4[];
 extern float lbl_8055E630;
 extern float lbl_8056255C;
 extern float lbl_80562560;
