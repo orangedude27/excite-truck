@@ -20,7 +20,7 @@ extern void *fn_801792F8(void);
   extern void *fn_801350C0(void);
   extern void *fn_801A520C(void *, void *);
   extern void *fn_801B83A0(void);
-  extern void fn_801938F4(void);
+  extern void *fn_801938F4();
   extern void fn_802E30C8(const char *, void *);
   extern const char lbl_8032BC50[];
   extern const char lbl_8032BC5C[];
@@ -381,7 +381,8 @@ extern void fn_8018ADB4(void *, f32);
 extern void fn_8018ADA4(void *, f32);
 #pragma scheduling invalid_target
 void fn_801351CC(void *arg0) {
-    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), lbl_80561318);
+    register f32 first = lbl_80561318;
+    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), first);
     fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
     fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
 }
