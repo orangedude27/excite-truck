@@ -54,7 +54,7 @@ extern double cos(double);
 extern double atan(double);
 extern double fn_8002EF30(f32);
 extern void fn_8026FCFC(void);
-extern f32 fn_8026EA8C();
+extern f32 fn_8026EA8C(s32, void *, f32);
 
 #pragma push
 #pragma dont_inline on
