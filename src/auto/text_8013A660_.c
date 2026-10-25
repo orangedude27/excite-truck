@@ -35,6 +35,7 @@ int fn_8013A6C4(void *arg0, void *arg1) {
     return *(int *)((char *)arg0 + 8) - *(int *)((char *)arg1 + 8);
 }
 
+#pragma dont_inline fn_8013A6D4
 int fn_8013A6D4(int arg0) {
     int values[3];
     int *p = lbl_802F9350;
@@ -91,12 +92,27 @@ extern float fn_8013A90C(void *, int, int, float);
 extern void fn_8013B6C0(int *, float *, int);
 extern char lbl_8032C264[];
 float fn_8013AA68(void *, void *, void *, void *);
-void fn_8013AC2C(int *arg0) {
-    void *p = fn_80012820(*(int *)((char *)fn_8001285C(*arg0) + 4));
-    void *obj = *(void **)((char *)p + 0x80);
-    ((void (*)(void *, char *, float))(*(void ***)obj)[10])(obj, lbl_8032C264, lbl_80561440);
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_8013AC2C(register int *arg0) {
+    /* Resolve the object handle and dispatch the virtual callback at offset 0x28. */
+    struct Target {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8(char *, float);
+    };
+    void *parent = fn_80012820(*(int *)((char *)fn_8001285C(*arg0) + 4));
+    Target *object = *(Target **)((char *)parent + 0x80);
+    object->f8(lbl_8032C264, lbl_80561440);
 }
-
+#pragma cplusplus off
+#pragma scheduling on
 void DBPrintf_8013B490(const char *fmt, ...) {
 #pragma unused(fmt)
 }
@@ -105,19 +121,27 @@ void fn_8013B56C(void) {
     lbl_8055E160 = 0;
 }
 
+#pragma scheduling invalid_target
 void *fn_8013B578(int arg0) {
-    char *base = lbl_8042F858;
-    int offset = arg0 * 8;
+    register char *base = lbl_8042F858;
+    register int offset = arg0 * 8;
     return base + offset + 8;
 }
-
+#pragma scheduling on
 extern void **fn_801B2ED0(void);
 extern void *fn_80138B1C(int);
 extern float lbl_80561430;
 #pragma cplusplus on
 extern "C" float fn_8013B590(void) {
-    unkVtable7 *object = (unkVtable7 *)*fn_801B2ED0();
-    int value = object->m_fn();
+    struct VTable {
+        unsigned char pad[0x1C];
+        int (*m_fn)(void *);
+    };
+    struct Object {
+        struct VTable *vtable;
+    };
+    struct Object *object = (struct Object *)fn_801B2ED0();
+    int value = object->vtable->m_fn(object);
     void *result = fn_80138B1C(*(int *)((char *)value + 0x2C));
     if (result != 0)
         return *(float *)((char *)result + 0xC);
