@@ -657,7 +657,8 @@ void fn_8000C5CC(void) {
     fn_80230B5C((int *)sp8);
     fn_802C8638((int *)sp8);
     fn_802C974C(lbl_805601F8, lbl_805601FC, lbl_80560200);
-    fn_80010074(-0x100, 9, &lbl_80558A48, lbl_805601F8, lbl_80560208, lbl_8056020C);
+    ((int (*)(int, int, const char *, ...))fn_80010074)(-0x100, 9, (const char *)&lbl_80558A48,
+        lbl_805601F8, lbl_80560208, lbl_8056020C);
     fn_80011A2C();
     fn_802C9904();
 }
