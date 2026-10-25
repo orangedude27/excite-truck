@@ -15,7 +15,7 @@ extern s32 fn_800168B0(s32, s32);
 extern s32 fn_800167F4(void);
 extern void* fn_800167B8(s32);
 extern void* fn_80016510(s32);
-extern s32 fn_8001786C(s32);
+extern void fn_8001786C(s32);
 extern char lbl_8055D564;
 extern void* lbl_8055D560;
 s32 atoi(void);
@@ -231,8 +231,8 @@ extern "C" void fn_80018030(void *arg0, s32 arg1) {
 }
 #pragma cplusplus reset
 void fn_800182A0(void* arg0, void* arg1) {
-    s32 i;
     s32 index;
+    s32 i;
     s32 value;
 
     for (i = 0; i < *(s32*)((char*)arg1); i++) {
