@@ -997,14 +997,16 @@ extern "C" void fn_801FF3AC(void* arg0, float arg1) {
 
 extern "C" void fn_801FF644(void*, void*);
 void fn_801FF644(void*, void*);
-void fn_801FF420(void*);
+extern "C" void fn_801FF420(void*);
 extern "C" void fn_801FF420(void* arg0) {
-    int i = 0;
-    char* entry = (char*)arg0;
+    char* entry;
+    int i;
+    i = 0;
+    entry = (char*)arg0;
     while (i < *(int*)((char*)arg0 + 0x2C0)) {
         fn_801FF644(arg0, entry);
         entry += 0x58;
-        ++i;
+        i++;
     }
 }
 
