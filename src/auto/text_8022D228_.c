@@ -127,6 +127,15 @@ void *fn_8022D7C4(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma dont_inline on
+char *fn_8022D82C(void *arg0, int arg1, int arg2) {
+    return *(char **)arg0 +
+           arg1 * *(int *)((char *)arg0 + 0x14) +
+           (*(int **)((char *)arg0 + 0x1C))[arg2];
+}
+#pragma pop
+
 char *fn_8022D850(void *arg0, int arg1, int arg2, int *arg3) {
     char *ptr = fn_8022D82C(arg0, arg1, arg2);
     if (arg3 != 0) *arg3 = (signed char)*ptr;
