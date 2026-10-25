@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 extern void __GXFlushTextureState(void);
-extern unsigned char lbl_80558E80[];
+extern unsigned char lbl_80558E80;
 extern int __cntlzw(unsigned int);
 extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
