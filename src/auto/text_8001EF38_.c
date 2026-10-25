@@ -73,6 +73,8 @@ void fn_8001EFB4(void) {
     fn_8001F724();
 }
 
+void fn_8001F76C(void);
+
 void fn_8001EFB8(void) {
     fn_8001F76C();
 }
@@ -169,6 +171,46 @@ void fn_8001F490(s32 arg) {
     }
 }
 
+extern void *memcpy(void *, const void *, unsigned long);
+void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
+    int *a = (int *)arg0;
+    int *b = (int *)arg1;
+    int sum0 = a[0] + b[0];
+    int sum1 = a[1] + b[1];
+    int sum2 = a[2] + b[2];
+    int sum3 = a[3] + b[3];
+    int sum4 = a[4] + b[4];
+    int sum5 = a[5] + b[5];
+    int sum6 = a[6] + b[6];
+    int sum7 = a[7] + b[7];
+    char *input;
+    char *entry;
+    int found;
+    int empty;
+    unsigned int i, j;
+    a[0] = sum0; a[1] = sum1; a[2] = sum2; a[3] = sum3;
+    a[4] = sum4; a[5] = sum5; a[6] = sum6; a[7] = sum7;
+    input = (char *)arg1 + 0x50;
+    for (i = 0; i < 0x32; i++, input += 0x28) {
+        entry = (char *)arg0 + 0x50;
+        found = 0;
+        empty = -1;
+        for (j = 0; j < 0x32 && found == 0; j++, entry += 0x28) {
+            if (empty >= 0) {
+            } else if ((signed char)*entry == 0) {
+                empty = j;
+                continue;
+            } else if (stricmp(entry, input) == 0) {
+                found = 1;
+                *(int *)(entry + 0x20) += *(int *)(input + 0x20);
+                *(int *)(entry + 0x24) += *(int *)(input + 0x24);
+            }
+        }
+        if (found == 0)
+            memcpy((char *)arg0 + 0x50 + empty * 0x28, input, 0x28);
+    }
+}
+
 s32 fn_8001F9A4(s32 arg0, s32 arg1) {
     SrcCoef *p;
     s32 *q;
@@ -204,6 +246,32 @@ s32 fn_8001FA8C(s32 arg0) {
     p = &lbl_802FDF30[arg0];
     if (p->unkC == 0) return 0;
     return ((s32 *)p->unkC)[1];
+}
+
+int fn_8001FAC8(int arg0, const char *arg1) {
+    int name = fn_80016720(arg1);
+    int total = 0;
+    int index = fn_8000DA10() * 0x820;
+    int offset = arg0 * 4;
+    char *base = &lbl_80358698[index];
+    char *nameTable = base + 0x50;
+    char *valueTable = base + offset;
+    int i;
+    for (i = 0; i < 0x32; i++) {
+        if (stricmp(nameTable, (const char *)name) == 0) total += *(int *)(valueTable + 0x70);
+        nameTable += 0x28; valueTable += 0x28;
+    }
+    base = lbl_80358698 + 0x2080; nameTable = base + 0x50; valueTable = base + offset;
+    for (i = 0; i < 0x32; i++) {
+        if (stricmp(nameTable, (const char *)name) == 0) total += *(int *)(valueTable + 0x70);
+        nameTable += 0x28; valueTable += 0x28;
+    }
+    base = lbl_80358698 + 0x28A0; nameTable = base + 0x50; valueTable = base + offset;
+    for (i = 0; i < 0x32; i++) {
+        if (stricmp(nameTable, (const char *)name) == 0) total += *(int *)(valueTable + 0x70);
+        nameTable += 0x28; valueTable += 0x28;
+    }
+    return total;
 }
 
 extern s32 fn_801E8838(void);
