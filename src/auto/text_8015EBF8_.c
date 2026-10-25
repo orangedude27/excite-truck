@@ -69,26 +69,48 @@ extern "C" int fn_8015ED54(void **node) {
 }
 #pragma cplusplus reset
 #pragma pop
-int fn_8015ED90(void **arg0) {
-    struct VTable {
-        unsigned char pad00[0x60];
-        void **(*get_child)(void *, int);
-    };
-    struct Object {
-        struct VTable *vtable;
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_8015ED90(void **arg0) {
+    class Object {
+    public:
+        virtual void unused01();
+        virtual void unused02();
+        virtual void unused03();
+        virtual void unused04();
+        virtual void unused05();
+        virtual void unused06();
+        virtual void unused07();
+        virtual void unused08();
+        virtual void unused09();
+        virtual void unused10();
+        virtual void unused11();
+        virtual void unused12();
+        virtual void unused13();
+        virtual void unused14();
+        virtual void unused15();
+        virtual void unused16();
+        virtual void unused17();
+        virtual void unused18();
+        virtual void unused19();
+        virtual void unused20();
+        virtual void unused21();
+        virtual void unused22();
+        virtual void **get_child(int);
     };
     int count = 0;
     int i;
     void **child;
-    struct Object *object = (struct Object *)arg0;
     if (arg0 != 0) {
-        for (i = 0; (child = object->vtable->get_child(arg0, i)) != 0; i++) {
+        for (i = 0; (child = ((Object *)arg0)->get_child(i)) != 0; i++) {
             if (fn_8015ED18(child))
                 count++;
         }
     }
     return count;
 }
+#pragma cplusplus reset
+#pragma pop
 
 extern int fn_8015ED54(void **);
 extern void fn_802E30C8(const char *, int, const char *);
