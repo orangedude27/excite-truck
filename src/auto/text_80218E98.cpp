@@ -4953,9 +4953,14 @@ extern "C" void fn_802328D4(void *);
 extern "C" void fn_80227C9C(s32, f32, f32, f32, f32);
 extern "C" f64 lbl_805634B8;
 extern "C" void fn_80229A94(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x1A)) *(u8 *)((u8 *)arg0 + 0x234) = 1;
-    *(u8 *)((u8 *)arg0 + 0x19) = 1;
-    ((void (**)(void *, s32, s32))(*(void ***)arg0))[15](arg0, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
+    register u32 one = 1;
+    *(u8 *)((u8 *)arg0 + 0x19) = one;
+    if (*(u8 *)((u8 *)arg0 + 0x1A)) {
+        *(u8 *)((u8 *)arg0 + 0x234) = one;
+    }
+    ((Fn80229A94Dispatch *)arg0)->Call(
+        *(s32 *)((u8 *)arg0 + 4),
+        *(s32 *)((u8 *)arg0 + 8));
 }
 
 extern "C" void fn_80229AC4(void *arg0) {
@@ -5034,6 +5039,7 @@ extern "C" void fn_80229CD8(void *arg0) {
 
 extern "C" void fn_802C5280(void *, s32, s32, s32, s32, void *);
 extern "C" f32 lbl_805634A8;
+#pragma scheduling invalid_target
 extern "C" void fn_80229CF8(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x18) = 1;
     *(f32 *)((u8 *)arg0 + 0x248) = lbl_805634A8;
@@ -5042,7 +5048,7 @@ extern "C" void fn_80229CF8(void *arg0) {
     }
     *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
-
+#pragma scheduling on
 extern "C" void fn_80229D1C(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x18) = 0;
     if ((s32)*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
