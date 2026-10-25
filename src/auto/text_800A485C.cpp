@@ -11840,6 +11840,16 @@ extern "C" void fn_800D155C(void *arg0) {
     WPADControlMotor(*(s32 *)arg0, 1);
 }
 
+#pragma dont_inline on
+extern "C" void fn_800D15B4(void *arg0) {
+    s32 channel = *(s32 *)arg0;
+    if (channel >= 4) return;
+    if (*(u8 *)((u8 *)arg0 + 0x1C) == 0) return;
+    *(u8 *)((u8 *)arg0 + 0x1C) = 0;
+    WPADControlMotor(channel, 0);
+}
+#pragma dont_inline reset
+
 extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void* this_ptr, void* arg1) {
     if (*(s32*)this_ptr >= 4) return -2;
     if (fn_800D1E5C(*(s32**)((u8*)this_ptr + 0x24), *(s32*)this_ptr) != 0 ||
