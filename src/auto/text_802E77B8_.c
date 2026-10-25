@@ -39,7 +39,7 @@ void *fn_802E77C0(int x) {
 
 float fn_802E7824(float arg0, float arg1) {
     float t = lbl_80565160 / (lbl_80565160 - arg1);
-    if (arg0 == lbl_80565164) {
+    if (arg0 >= lbl_80565164) {
         float v = t * (arg0 - arg1);
         if (v < lbl_80565168) v = lbl_80565168;
         if (v > lbl_80565164) v = lbl_80565164;
@@ -145,9 +145,9 @@ int fn_802E7AF4(int arg0, int arg1) {
         } else {
             fn_8005ED8C();
         }
-        ((void (*)(const char *, ...))fn_802E30C8)((const char *)&lbl_8034D8B4);
+        fn_802E30C8((const char *)&lbl_8034D8B4);
         if (fn_8005EE7C() != 4)
-            ((void (*)(const char *, ...))fn_802E30C8)((const char *)&lbl_8034D8E8);
+            fn_802E30C8((const char *)&lbl_8034D8E8);
     }
     return 0;
 }
@@ -401,9 +401,9 @@ void fn_802E830C(int *p) {
     p[0] = 3;
     p[1] = 0;
     p[2] = 2;
-    p[9] = -1;
     p[3] = 1;
     p[4] = 7;
+    p[9] = -1;
     p[12] = 4;
     p[13] = -1;
     p[10] = -1;
@@ -456,26 +456,31 @@ extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
 extern unsigned char lbl_80505978[];
 void fn_802E8524(void) {}
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802E8528(int index, float value, float unused) {
     extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
     extern unsigned char lbl_80505978[];
-    float scaled = (value - lbl_80565198) * lbl_8056519C;
-    float rounded;
+    register float scaled;
+    register float rounded;
+    int result;
     int converted;
     int magnitude;
-    int result = 0xFFFF;
 
+    scaled = value - lbl_80565198;
+    scaled = lbl_8056519C * scaled;
     if (scaled < lbl_80565164)
         rounded = scaled - lbl_80565170;
     else
         rounded = lbl_80565170 + scaled;
     converted = (int)rounded;
     magnitude = converted & ((-converted & ~converted) >> 31);
+    result = 0xFFFF;
     if (magnitude < result)
         result = magnitude;
     *(unsigned short *)(lbl_80505978 + index * 0x638 + 0xB0) = result;
 }
-
+#pragma pop
 void fn_802E85A8(void) {}
 
 void fn_802E85AC(void) {}
