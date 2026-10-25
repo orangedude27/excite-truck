@@ -68,7 +68,7 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
         f32 output[3];
         f32 normal[3];
         f32 axis[3];
-        u8 tail[0x534];
+        u8 tail[0x524];
     } __attribute__((aligned(16))) frame;
     s32 resource;
     s32 index;
@@ -93,6 +93,8 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     f32 actorX;
     f32 actorY;
     s32 flag;
+    s32 color;
+    f32 extra0, extra1, extra2, extra3;
     volatile f32 sink;
 
     if (obj == 0) return;
@@ -160,8 +162,6 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     }
     *(s32 *)((u8 *)data + 0x48) = resource;
     record = fn_801EA9A0(resource);
-    f21 = *(f32 *)((u8 *)record + 8 + 0x2C8);
-    f25 = lbl_80560424 / (*(f32 *)((u8 *)obj + 0x28) * lbl_80560420);
     desc = *(void **)((u8 *)record + 8);
     f21 = *(f32 *)((u8 *)desc + 0x2C8);
     f25 = lbl_80560424 / (*(f32 *)((u8 *)obj + 0x28) * lbl_80560420);
@@ -202,9 +202,14 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
         frame.output[0] *= lbl_80560440;
         frame.output[1] *= lbl_80560440;
         frame.output[2] *= lbl_80560440;
-        fn_80230B9C(-1);
+        color = fn_80230B9C(-1);
     }
-    sink = x + y + width + height + f21 + f25 + v + ratio + actorX + actorY;
+    extra0 = x * f25;
+    extra1 = y * f21;
+    extra2 = width * v;
+    extra3 = height * ratio;
+    sink = x + y + width + height + f21 + f25 + v + ratio + actorX + actorY + extra0 + extra1 + extra2 + extra3 + color;
+    /* compile budget probe 10 */
 }
 
 #pragma small_data off
@@ -395,7 +400,9 @@ void fn_8001B7BC(void *arg0) {
     fn_802C8750(sp58, -1); fn_802C96DC(sp78, -1);
 }
 
+#pragma small_data off
 extern int lbl_803583C8;
+#pragma small_data on
 extern float lbl_80560418;
 extern float lbl_8056041C;
 extern float lbl_803582C0;
