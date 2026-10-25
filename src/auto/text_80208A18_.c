@@ -18,9 +18,12 @@ extern void fn_801331C4(int, void *, float *);
 extern void fn_8013323C(int, void *, float);
 extern void fn_80209030(float);
 #pragma scheduling invalid_target
+#pragma push
+#pragma inline_depth(0)
 void fn_80208A50(float *arg0) {
     lbl_8055B4D4 = fn_80208A18(lbl_8055B4D0);
 }
+#pragma pop
 
 void fn_80208AC8(int arg0, int arg1) {
     float value = lbl_80563230;
