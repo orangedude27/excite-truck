@@ -67,25 +67,27 @@ extern f32 lbl_8056048C;
 extern f32 lbl_80560460;
 extern f32 lbl_80560464;
 extern f64 lbl_80560468;
-f32 fn_8001DA5C(s32 arg0) {
+#pragma scheduling invalid_target
+extern "C" f32 fn_8001DA5C(s32 arg0) {
     f64 bias = lbl_80560468;
     f64 angle;
     f64 fraction;
-    s32 quotient = lbl_8055E3C4 / arg0;
+    s32 quotient;
     s32 remainder;
     union { f64 d; u32 words[2]; } angle_bits;
     union { f64 d; u32 words[2]; } fraction_bits;
-    union { f64 d; u32 words[2]; } integer_bits;
-    integer_bits.words[0] = 0x43300000;
-    integer_bits.words[1] = arg0 ^ 0x8000;
-    angle = integer_bits.d - bias;
+    register f32 scale = lbl_80560460;
+    angle_bits.words[0] = 0x43300000;
+    angle_bits.words[1] = (u32)arg0 ^ 0x80000000;
+    angle = angle_bits.d - bias;
+    quotient = lbl_8055E3C4 / arg0;
     remainder = lbl_8055E3C4 - quotient * arg0;
     fraction_bits.words[0] = 0x43300000;
-    fraction_bits.words[1] = remainder ^ 0x8000;
+    fraction_bits.words[1] = (u32)remainder ^ 0x80000000;
     fraction = fraction_bits.d - bias;
-    return lbl_80560464 + lbl_80560464 * (f32)sin((f64)(lbl_80560460 * fraction / angle));
+    return lbl_80560464 + lbl_80560464 * (f32)sin((f64)(scale * fraction / angle));
 }
-
+#pragma scheduling on
 extern "C" void fn_8001DAD8(void) { extern int fn_8001DA5C(int); fn_8001DA5C(0x40); }
 
 extern "C" void fn_8001DAE0(f32* arg0, f32 arg1) {
@@ -143,11 +145,12 @@ extern "C" void fn_8001DF08(s32 arg0, s32 arg1) {
     ((CollisionEntry*)lbl_80358680[2])->apply(arg0, arg1);
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8001DF84(s32 arg0) {
-    void* p = lbl_80358680[1];
-    ((CollisionEntry*)p)->apply(arg0, 0);
+    void *p = lbl_80358680[1];
+    ((CollisionEntry *)p)->apply(arg0, 0);
 }
-
+#pragma scheduling on
 extern "C" void fn_8001DFA8(s32 arg0) {
     void* obj = ((void**)&lbl_80358680)[3];
     ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, arg0, 0);
