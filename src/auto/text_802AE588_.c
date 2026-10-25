@@ -92,7 +92,6 @@ public:
     virtual void unused0C() = 0;
     virtual void unused10() = 0;
     virtual void unused14() = 0;
-    virtual void unused18() = 0;
     virtual void *lookup(char *, int) = 0;
     virtual void unused24() = 0;
     virtual void unused28() = 0;
