@@ -116,7 +116,7 @@ void fn_8000AEC4(void) {
 
 int fn_8000AEC8(int arg0) {
     int i;
-    int *p = (int *)0x8034F5D8;
+    int *p = lbl_8034F5D8;
     i = lbl_8055D3E0;
     if (i <= 0) goto done;
     for (; i > 0; i--) {
@@ -336,14 +336,12 @@ void fn_8000BC44(void) {
 void fn_8000BD64(void) {
     float value2 = lbl_80560204;
     float value1 = lbl_805601FC;
-    volatile float *first = (float *)&lbl_8034F5F8;
-    volatile float *second = (float *)&lbl_8034F604;
-    first[0] = value1;
-    first[2] = value2;
-    first[1] = value2;
-    second[0] = value1;
-    second[2] = value2;
-    second[1] = value2;
+    *(volatile float *)lbl_8034F5F8 = value1;
+    ((volatile float *)lbl_8034F5F8)[2] = value2;
+    ((volatile float *)lbl_8034F5F8)[1] = value2;
+    *(volatile float *)lbl_8034F604 = value1;
+    ((volatile float *)lbl_8034F604)[2] = value2;
+    ((volatile float *)lbl_8034F604)[1] = value2;
 }
 
 void fn_8000BD98(void) {
