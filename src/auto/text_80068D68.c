@@ -7797,6 +7797,18 @@ BOOL btsnd_hcic_write_pin_type_800854B0(u32 pin_type) {
     return TRUE;
 }
 
+void fn_80085524(void *arg0, void *arg1) {
+    ((u16 *)((u8 *)arg0 + 2))[0] = 6;
+    ((u16 *)((u8 *)arg0 + 4))[0] = 0;
+    ((u8 *)arg0)[8] = 0x24;
+    ((u8 *)arg0)[9] = 0xC;
+    ((u8 *)arg0)[10] = 3;
+    ((u8 *)arg0)[11] = ((u8 *)arg1)[2];
+    ((u8 *)arg0)[12] = ((u8 *)arg1)[1];
+    ((u8 *)arg0)[13] = ((u8 *)arg1)[0];
+    btu_hcif_send_cmd(arg0);
+}
+
 void fn_80085568(void *arg0, u16 arg1, u16 arg2) {
     ((u16 *)((u8 *)arg0 + 2))[0] = 7;
     ((u16 *)((u8 *)arg0 + 4))[0] = 0;
