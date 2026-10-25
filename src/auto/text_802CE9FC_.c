@@ -69,6 +69,16 @@ extern unsigned long fn_802CE9FC();
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055FD3C;
+#pragma dont_inline on
+unsigned char fn_802CEA1C(unsigned int arg0) {
+    return ((unsigned char (*)(unsigned char, unsigned char, unsigned char, unsigned char))fn_802CE9FC)(
+        (unsigned char)(arg0 >> 16),
+        (unsigned char)(arg0 >> 8),
+        (unsigned char)arg0,
+        (unsigned char)(arg0 >> 24));
+}
+#pragma dont_inline reset
+
 void fn_802CEAC4(void) {
     extern int VIGetTvFormat(void), fn_802E9A1C(void), fn_8005AD9C(void);
     extern void fn_802E30C8(const char *, ...);
