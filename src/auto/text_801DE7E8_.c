@@ -13,7 +13,6 @@ extern int lbl_8055ADF4;
 extern int lbl_8055E9E0;
 extern float lbl_80562BE8;
 extern float lbl_80562BF4;
-extern int lbl_80339570;
 extern int lbl_804872B0;
 extern char lbl_804873B8[];
 extern int fn_801E85A4(void);
