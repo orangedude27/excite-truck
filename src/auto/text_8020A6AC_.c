@@ -128,33 +128,25 @@ extern void fn_802E5950(int, int);
 extern void fn_802E6138(void);
 extern void fn_802E61D8(void *);
 void fn_8020AA0C(void *arg0) {
-    struct Object {
-        unsigned int unk00;
-        int state;
-        void *first;
-        void *second;
-    };
-    struct Object *object = (struct Object *)arg0;
-    register void *value;
-
-    value = object->first;
+    int value = *(int *)((char *)arg0 + 8);
     if (value != 0) {
-        fn_802E61D8(value);
-        value = object->second;
-        if (value != 0)
-            fn_802E61D8(value);
-        value = object->second;
+        fn_802E61D8((void *)value);
+        value = *(int *)((char *)arg0 + 0xC);
         if (value != 0) {
-            fn_802E6138();
-            object->second = 0;
+            fn_802E61D8((void *)value);
         }
-        value = object->first;
+        value = *(int *)((char *)arg0 + 0xC);
         if (value != 0) {
-            fn_802E6138();
-            object->first = 0;
+            ((void (*)(void *))fn_802E6138)((void *)value);
+            *(int *)((char *)arg0 + 0xC) = 0;
+        }
+        value = *(int *)((char *)arg0 + 8);
+        if (value != 0) {
+            ((void (*)(void *))fn_802E6138)((void *)value);
+            *(int *)((char *)arg0 + 8) = 0;
         }
     }
-    object->state = 3;
+    *(int *)((char *)arg0 + 4) = 3;
     *((unsigned char *)arg0 + 0x3E) = 0;
 }
 
