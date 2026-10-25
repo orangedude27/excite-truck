@@ -150,7 +150,6 @@ void fn_802E8D2C(void) {
 }
 
 extern void *lbl_80560024;
-extern void fn_802E30C8(const char *, ...);
 void fn_802E8D7C(void* hi) {
     lbl_80560024 = hi;
 }
