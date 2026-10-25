@@ -114,6 +114,785 @@ void fn_801A9798(void *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
     node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
 }
+
+#pragma scheduling invalid_target
+void fn_801A9AB0(void *self, void *cfg) {
+    extern void fn_8017B0F8(void *, void *);
+    extern void fn_8017A580(void *, int, int, int, int, int, int, int);
+    extern void fn_8019EECC(void *, void *);
+    extern double fn_8002F234(float);
+    extern double lbl_805624B8;
+    extern double cos(double), sin(double);
+    extern void *fn_802C6B44(void *);
+    extern void fn_802C6C20(void *);
+    extern double __fabs(double);
+    extern float lbl_80558DC4;
+    extern void *fn_801A2354(void *, void *, void *, void *, float, float, float, float, float);
+    extern void *fn_801A3DAC(void *, void *, void *, void *);
+    extern void *fn_8019FFD8(void *, void *, void *);
+    extern void fn_801A0258(void *, void *, void *);
+    extern void fn_801A0444(void *, void *);
+    extern void *fn_80131808(void *);
+    extern void *fn_80131818(void *);
+    extern int strcmp(const char *, const char *);
+    extern void fn_80179F94(void *, void *);
+    extern void *fn_801A3190(void *, void *, void *, int, void *, void *, float, float);
+    extern char lbl_80335528[];
+    extern char lbl_80333B48[], lbl_803338C0[], lbl_80333B98[], lbl_80333918[], lbl_80333AF8[];
+    extern char lbl_8055A888[];
+    extern float lbl_80562478, lbl_8056247C, lbl_80562480, lbl_80562484;
+    extern float lbl_80562488, lbl_8056248C, lbl_80562490, lbl_80562494;
+    extern float lbl_80562498, lbl_8056249C, lbl_805624A0;
+    extern float lbl_805624A4, lbl_805624A8, lbl_805624AC, lbl_805624B0;
+    volatile unsigned char pad[0x200];
+    struct StackSpace {
+        char pad[0x144];
+        float v14c[3];
+        char gap[0x60];
+        float v1b8[3];
+    };
+    volatile struct StackSpace stack;
+    float f28, f29, f30, f25, f26, f27;
+    float x, y, z, scale, halfY;
+    unsigned int cfgValue, type, temp0, temp1, mode = 1, i;
+    void *object = 0, *object2, *scan;
+    char *names = lbl_80335528;
+    unsigned char *p = (unsigned char *)self;
+    unsigned char *c = (unsigned char *)cfg;
+
+    fn_8017B0F8(self, cfg);
+    *(unsigned char *)(p + 0x221) = 0;
+    *(unsigned char *)(p + 0x220) = 1;
+    *(unsigned char *)(p + 0x222) = 0;
+    *(float *)(p + 0x21C) = lbl_8056247C;
+    *(unsigned char *)(p + 0x223) = 1;
+    *(unsigned int *)(p + 0x224) = 0;
+    *(float *)(p + 0x228) = lbl_8056247C;
+    *(float *)(p + 0x22C) = lbl_8056247C;
+    *(float *)(p + 0x230) = lbl_8056247C;
+    *(unsigned char *)(p + 0x235) = 0;
+    *(unsigned char *)(p + 0x234) = 0;
+    *(float *)(p + 0x238) = lbl_8056247C;
+    fn_801AC240(self);
+    temp1 = *(unsigned int *)(c + 0x18);
+    temp0 = *(unsigned int *)(c + 0x1C);
+    *(unsigned int *)(p + 0x3C) = temp1;
+    *(unsigned int *)(p + 0x40) = temp0;
+    temp1 = *(unsigned int *)(c + 0x20);
+    temp0 = *(unsigned int *)(c + 0x24);
+    *(unsigned int *)(p + 0x44) = temp1;
+    *(unsigned int *)(p + 0x48) = temp0;
+    temp1 = *(unsigned int *)(c + 0x28);
+    temp0 = *(unsigned int *)(c + 0x2C);
+    *(unsigned int *)(p + 0x4C) = temp1;
+    *(unsigned int *)(p + 0x50) = temp0;
+    temp1 = *(unsigned int *)(c + 0x30);
+    temp0 = *(unsigned int *)(c + 0x34);
+    *(unsigned int *)(p + 0x54) = temp1;
+    *(unsigned int *)(p + 0x58) = temp0;
+    temp1 = *(unsigned int *)(c + 0x38);
+    temp0 = *(unsigned int *)(c + 0x3C);
+    *(unsigned int *)(p + 0x5C) = temp1;
+    *(unsigned int *)(p + 0x60) = temp0;
+    temp1 = *(unsigned int *)(c + 0x40);
+    temp0 = *(unsigned int *)(c + 0x44);
+    *(unsigned int *)(p + 0x64) = temp1;
+    *(unsigned int *)(p + 0x68) = temp0;
+    ((void (*)(void *))fn_8017A580)(self);
+    stack.v1b8[0] = lbl_8056247C;
+    stack.v1b8[1] = lbl_8056247C;
+    stack.v1b8[2] = lbl_8056247C;
+    *(float *)(p + 0x30) = lbl_8056247C;
+    *(float *)(p + 0x34) = lbl_8056247C;
+    *(float *)(p + 0x38) = lbl_8056247C;
+    ((void (*)(void *))fn_8017A57C)(self);
+
+    scale = lbl_80562484 * *(float *)(c + 8);
+    scale = scale / lbl_80562488;
+    f30 = lbl_80562480 * scale;
+    f29 = lbl_8056248C * f30;
+    f28 = *(float *)(c + 0x4C);
+    cfgValue = *(unsigned int *)(c + 0x48);
+    type = *(unsigned int *)(c + 0x50);
+    stack.v1b8[0] = lbl_8056247C;
+    stack.v1b8[1] = lbl_8056247C;
+    stack.v1b8[2] = lbl_8056247C;
+
+    switch (type) {
+    case 0:
+    case 17:
+        object = fn_801284F8(0x54, names + 0x94);
+        if (object != 0) {
+            unsigned char *o = (unsigned char *)object;
+            x = *(float *)(c + 0x58);
+            *(void **)(o + 0x0) = lbl_80333B48;
+            *(void **)(o + 0x4) = self;
+            *(void **)(o + 0x8) = 0;
+            *(void **)(o + 0xC) = p + 0x3C;
+            *(float *)(o + 0x10) = f30;
+            *(float *)(o + 0x14) = f28;
+            *(unsigned int *)(o + 0x18) = 0x53504852;
+            *(unsigned int *)(o + 0x1C) = 0;
+            *(unsigned int *)(o + 0x20) = 100;
+            *(float *)(o + 0x24) = x;
+            *(float *)(o + 0x28) = stack.v1b8[0];
+            *(float *)(o + 0x2C) = stack.v1b8[1];
+            *(float *)(o + 0x30) = stack.v1b8[2];
+            *(float *)(o + 0x34) = lbl_8056247C;
+            *(float *)(o + 0x38) = lbl_8056247C;
+            *(float *)(o + 0x3C) = lbl_8056247C;
+            *(float *)(o + 0x40) = lbl_8056247C;
+            *(float *)(o + 0x44) = lbl_8056247C;
+            *(float *)(o + 0x48) = lbl_8056247C;
+            *(unsigned char *)(o + 0x4C) = 0;
+            *(float *)(o + 0x50) = lbl_8056247C;
+            *(float *)(o + 0x28) = stack.v1b8[0];
+            *(float *)(o + 0x2C) = stack.v1b8[1];
+            *(float *)(o + 0x30) = stack.v1b8[2];
+            if (self != 0) fn_8019EECC(self, o + 0x28);
+        }
+        break;
+    case 1:
+    case 2:
+        x = *(float *)(c + 0x58);
+        y = *(float *)(c + 0x5C);
+        z = *(float *)(c + 0x60);
+        f25 = x * lbl_80562478;
+        f26 = y * lbl_80562478;
+        f27 = z * lbl_80562478;
+        fn_801A9798(self, f25, f26, f27, f29);
+        if (type == 1) {
+            object = fn_801284F8(0x38, names + 0xA8);
+            if (object != 0) {
+                unsigned char *o = (unsigned char *)object;
+                float xx2 = f25 * f25;
+                float yy2 = f26 * f26;
+                float zz2 = f27 * f27;
+                float norm = (xx2 + yy2) + zz2;
+                *(void **)(o + 0xC) = p + 0x3C;
+                *(void **)(o + 0x4) = self;
+                *(void **)(o + 0x8) = 0;
+                *(unsigned int *)(o + 0x18) = 0x424F5820;
+                *(float *)(o + 0x10) = f30;
+                *(float *)(o + 0x14) = f28;
+                *(unsigned int *)(o + 0x20) = 100;
+                *(unsigned int *)(o + 0x1C) = 0;
+                *(float *)(o + 0x24) = f25;
+                *(float *)(o + 0x28) = f26;
+                *(float *)(o + 0x2C) = f27;
+                *(float *)(o + 0x30) = (float)fn_8002F234(norm) + lbl_80562490;
+                *(unsigned int *)(o + 0x34) = 0;
+                *(void **)(o + 0x0) = lbl_803338C0;
+            }
+        } else {
+            f25 = f26 + f25;
+            f25 = f27 + f25;
+            f25 = f25 / lbl_80562494;
+            f25 = f25 * lbl_80562478;
+            object = fn_801284F8(0x54, names + 0xB8);
+            if (object != 0) {
+                unsigned char *o = (unsigned char *)object;
+                *(void **)(o + 0xC) = p + 0x3C;
+                *(void **)(o + 0x4) = self;
+                *(void **)(o + 0x8) = 0;
+                *(unsigned int *)(o + 0x18) = 0x53504852;
+                *(float *)(o + 0x10) = f30;
+                *(float *)(o + 0x14) = f28;
+                *(unsigned int *)(o + 0x20) = 100;
+                *(unsigned int *)(o + 0x1C) = 0;
+                *(float *)(o + 0x24) = f25;
+                *(float *)(o + 0x28) = stack.v1b8[0];
+                *(float *)(o + 0x2C) = stack.v1b8[1];
+                *(float *)(o + 0x30) = stack.v1b8[2];
+                *(float *)(o + 0x34) = lbl_8056247C;
+                *(float *)(o + 0x38) = lbl_8056247C;
+                *(float *)(o + 0x3C) = lbl_8056247C;
+                *(float *)(o + 0x40) = lbl_8056247C;
+                *(float *)(o + 0x44) = lbl_8056247C;
+                *(float *)(o + 0x48) = lbl_8056247C;
+                *(unsigned char *)(o + 0x4C) = 0;
+                *(float *)(o + 0x50) = lbl_8056247C;
+                *(void **)(o + 0x0) = lbl_80333B48;
+                if (self != 0) fn_8019EECC(self, o + 0x28);
+            }
+        }
+        break;
+    case 3:
+        x = *(float *)(c + 0x58);
+        y = *(float *)(c + 0x5C);
+        z = *(float *)(c + 0x60);
+        {
+            struct PushNode { void *next; float values[9]; };
+            struct PushNode *node;
+            float nx = -x * lbl_80562478;
+            float ny = y * lbl_80562478;
+            float nz = z * lbl_80562478;
+            stack.v14c[0] = y * lbl_80562478;
+            stack.v14c[1] = -x * lbl_80562478;
+            stack.v14c[2] = z * lbl_80562478;
+            stack.v1b8[0] = nx;
+            stack.v1b8[1] = ny;
+            stack.v1b8[2] = nz;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = nx; node->values[1] = ny; node->values[2] = nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = -nx; node->values[1] = ny; node->values[2] = nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = nx; node->values[1] = -ny; node->values[2] = nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = nx; node->values[1] = ny; node->values[2] = -nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = -nx; node->values[1] = -ny; node->values[2] = nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = nx; node->values[1] = -ny; node->values[2] = -nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = -nx; node->values[1] = -ny; node->values[2] = -nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+        }
+        break;
+    case 4:
+        {
+            struct PushNode { void *next; float values[9]; };
+            struct PushNode *node;
+            float vx, vy, vz, c0, s0, q0;
+            x = *(float *)(c + 0x58);
+            y = *(float *)(c + 0x5C);
+            z = *(float *)(c + 0x60);
+            f25 = x * lbl_80562478;
+            f26 = z;
+            f27 = y;
+            vx = x;
+            vy = -z * lbl_80562478;
+            vz = x;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = vx; node->values[1] = vy; node->values[2] = vz;
+            node->values[3] = f29; node->values[4] = lbl_80562478;
+            node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            c0 = (float)cos(lbl_805624B8);
+            s0 = (float)sin(lbl_805624B8);
+            q0 = vx * c0 + vz * s0;
+            vy = vy * lbl_805624AC;
+            vz = -vx * s0 + vz * c0;
+            vx = q0;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = vx; node->values[1] = vy; node->values[2] = vz;
+            node->values[3] = f29; node->values[4] = lbl_80562478;
+            node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            q0 = vx * c0 + vz * s0;
+            vy = vy * lbl_805624AC;
+            vz = -vx * s0 + vz * c0;
+            vx = q0;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = vx; node->values[1] = vy; node->values[2] = vz;
+            node->values[3] = f29; node->values[4] = lbl_80562478;
+            node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            q0 = vx * c0 + vz * s0;
+            vy = vy * lbl_805624AC;
+            vz = -vx * s0 + vz * c0;
+            vx = q0;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = vx; node->values[1] = vy; node->values[2] = vz;
+            node->values[3] = f29; node->values[4] = lbl_80562478;
+            node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            q0 = vx * c0 + vz * s0;
+            vy = vy * lbl_805624AC;
+            vz = -vx * s0 + vz * c0;
+            vx = q0;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = vx; node->values[1] = vy; node->values[2] = vz;
+            node->values[3] = f29; node->values[4] = lbl_80562478;
+            node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            q0 = vx * c0 + vz * s0;
+            vy = vy * lbl_805624AC;
+            vz = -vx * s0 + vz * c0;
+            vx = q0;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = vx; node->values[1] = vy; node->values[2] = vz;
+            node->values[3] = f29; node->values[4] = lbl_80562478;
+            node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            q0 = vx * c0 + vz * s0;
+            vy = vy * lbl_805624AC;
+            vz = -vx * s0 + vz * c0;
+            vx = q0;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = vx; node->values[1] = vy; node->values[2] = vz;
+            node->values[3] = f29; node->values[4] = lbl_80562478;
+            node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            q0 = vx * c0 + vz * s0;
+            vy = vy * lbl_805624AC;
+            vz = -vx * s0 + vz * c0;
+            vx = q0;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = vx; node->values[1] = vy; node->values[2] = vz;
+            node->values[3] = f29; node->values[4] = lbl_80562478;
+            node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+        }
+        object = fn_801284F8(0x54, names + 0x110);
+        if (object != 0) {
+            unsigned char *o = (unsigned char *)object;
+            *(void **)(o + 0xC) = p + 0x3C;
+            *(void **)(o + 0x4) = self;
+            *(void **)(o + 0x8) = 0;
+            *(unsigned int *)(o + 0x18) = 0x53504852;
+            *(float *)(o + 0x10) = f30;
+            *(float *)(o + 0x14) = f28;
+            *(unsigned int *)(o + 0x20) = 100;
+            *(unsigned int *)(o + 0x1C) = 0;
+            *(void **)(o + 0x0) = lbl_80333B48;
+            *(float *)(o + 0x24) = f25;
+            *(float *)(o + 0x28) = stack.v1b8[0];
+            *(float *)(o + 0x2C) = stack.v1b8[1];
+            *(float *)(o + 0x30) = stack.v1b8[2];
+            *(float *)(o + 0x34) = lbl_8056247C;
+            *(float *)(o + 0x38) = lbl_8056247C;
+            *(float *)(o + 0x3C) = lbl_8056247C;
+            *(float *)(o + 0x40) = lbl_8056247C;
+            *(float *)(o + 0x44) = lbl_8056247C;
+            *(float *)(o + 0x48) = lbl_8056247C;
+            *(unsigned char *)(o + 0x4C) = 0;
+            *(float *)(o + 0x50) = lbl_8056247C;
+            if (self != 0) fn_8019EECC(self, o + 0x28);
+        }
+        mode = 0;
+        break;
+    case 5:
+        x = *(float *)(c + 0x58);
+        y = *(float *)(c + 0x5C);
+        halfY = y * lbl_80562478;
+        fn_801A9798(self, x, halfY, x, f29);
+        object = fn_801284F8(0x5C, names + 0x124);
+        if (object != 0) {
+            unsigned char *o = (unsigned char *)object;
+            float maximum = x > halfY ? x : halfY;
+            *(void **)(o + 0xC) = p + 0x3C;
+            *(void **)(o + 0x4) = self;
+            *(void **)(o + 0x8) = 0;
+            *(unsigned int *)(o + 0x18) = 0x53504852;
+            *(float *)(o + 0x10) = f30;
+            *(float *)(o + 0x14) = f28;
+            *(unsigned int *)(o + 0x20) = 100;
+            *(unsigned int *)(o + 0x1C) = 0;
+            *(void **)(o + 0x0) = lbl_80333B48;
+            *(float *)(o + 0x24) = maximum;
+            *(float *)(o + 0x28) = lbl_8056247C;
+            *(float *)(o + 0x2C) = lbl_8056247C;
+            *(float *)(o + 0x30) = lbl_8056247C;
+            *(float *)(o + 0x34) = lbl_8056247C;
+            *(float *)(o + 0x38) = lbl_8056247C;
+            *(float *)(o + 0x3C) = lbl_8056247C;
+            *(float *)(o + 0x40) = lbl_8056247C;
+            *(float *)(o + 0x44) = lbl_8056247C;
+            *(float *)(o + 0x48) = lbl_8056247C;
+            *(unsigned char *)(o + 0x4C) = 0;
+            *(float *)(o + 0x50) = lbl_8056247C;
+            if (self != 0) fn_8019EECC(self, o + 0x28);
+            *(void **)(o + 0x0) = lbl_80333AF8;
+            *(float *)(o + 0x54) = x;
+            *(float *)(o + 0x58) = halfY;
+            *(unsigned int *)(o + 0x18) = 0x464C5352;
+        }
+        mode = 0;
+        break;
+
+    case 8:
+        x = *(float *)(c + 0x58);
+        y = *(float *)(c + 0x5C);
+        z = *(float *)(c + 0x60);
+        {
+            struct PushNode { void *next; float values[9]; };
+            struct PushNode *node;
+            float nx = x * lbl_80562478;
+            float ny = y * lbl_80562478;
+            float nz = z * lbl_80562478;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = nx; node->values[1] = ny; node->values[2] = nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = -nx; node->values[1] = ny; node->values[2] = nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = nx; node->values[1] = -ny; node->values[2] = nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = nx; node->values[1] = ny; node->values[2] = -nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = -nx; node->values[1] = -ny; node->values[2] = nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = nx; node->values[1] = -ny; node->values[2] = -nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            node = (struct PushNode *)fn_801AE180();
+            node->values[0] = -nx; node->values[1] = -ny; node->values[2] = -nz; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+        }
+        object = fn_801284F8(0x184, names + 0x110);
+        if (object != 0) {
+            object = fn_8019FFD8(object, p + 0x3C, self);
+            fn_801A0258(object, p + 0x3C, p);
+            fn_801A0258(object, p + 0x3C, p);
+            object = fn_801A2354(object, p + 0x3C, (void *)stack.v14c, self, x, y, z, f30, f28);
+            fn_801A0444(self, object);
+        }
+        break;
+    case 7:
+        object = fn_801284F8(0x2C, names + 0xCC);
+        if (object != 0) {
+            unsigned char *o = (unsigned char *)object;
+            *(void **)(o + 0x0) = lbl_80333918;
+            *(void **)(o + 0x4) = self;
+            *(void **)(o + 0xC) = p + 0x3C;
+            *(unsigned int *)(o + 0x18) = 0x54554245;
+            *(unsigned char *)(p + 0x221) = 1;
+        }
+        break;
+
+    case 10:
+        scan = fn_80131808(c + 0x58);
+        while (scan != 0 && strcmp((const char *)scan, "MRJT") != 0) {
+            scan = fn_80131818(scan);
+        }
+        object = fn_801284F8(0xE0, names + 0x104);
+        if (object != 0) {
+            object = fn_801A3190(object, p + 0x3C, (void *)stack.v14c,
+                                 scan != 0, (void *)stack.v14c,
+                                 (void *)stack.v14c, f30, f28);
+            *(unsigned char *)(p + 0x221) = 1;
+        }
+        break;
+    case 11:
+        x = *(float *)(c + 0x58);
+        y = *(float *)(c + 0x5C);
+        z = *(float *)(c + 0x60);
+        object = fn_801284F8(0x54, names + 0x124);
+        if (object != 0) {
+            fn_80179F94(self, object);
+            object2 = fn_801284F8(0x74, names + 0x138);
+            if (object2 != 0) {
+                object2 = fn_801A2354(object2, p + 0x3C,
+                                      (void *)stack.v14c, self,
+                                      x, y, z, f30, f28);
+            }
+            {
+                struct PushNode { void *next; float values[9]; };
+                struct PushNode *node = (struct PushNode *)fn_801AE180();
+                node->values[0] = x; node->values[1] = y; node->values[2] = z; node->values[3] = f29;
+                node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+                node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+                node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+                node = (struct PushNode *)fn_801AE180();
+                node->values[0] = -x; node->values[1] = y; node->values[2] = z; node->values[3] = f29;
+                node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+                node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+                node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+                node = (struct PushNode *)fn_801AE180();
+                node->values[0] = x; node->values[1] = -y; node->values[2] = z; node->values[3] = f29;
+                node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+                node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+                node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+            }
+        }
+        break;
+    case 12:
+        object = fn_801284F8(0x74, names + 0xE0);
+        if (object != 0) {
+            stack.v14c[0] = lbl_8056247C;
+            stack.v14c[1] = *(float *)(c + 0x5C) * lbl_80562478;
+            stack.v14c[2] = lbl_8056247C;
+            x = *(float *)(c + 0x58);
+            y = *(float *)(c + 0x5C);
+            object = fn_801A2354(object, p + 0x3C, (void *)stack.v14c, self,
+                                 lbl_805624A0, lbl_80562490, x, stack.v14c[1], x);
+        }
+        cfgValue = 0x6E;
+        mode = 0;
+        break;
+    case 13:
+    case 18:
+        x = *(float *)(c + 0x58);
+        y = *(float *)(c + 0x5C);
+        z = *(float *)(c + 0x60);
+        object = fn_801284F8(0x2C, names + 0xCC);
+        if (object != 0) {
+            unsigned char *o = (unsigned char *)object;
+            *(void **)(o + 0x0) = lbl_80333918;
+            *(void **)(o + 0x4) = self;
+            *(void **)(o + 0xC) = p + 0x3C;
+            *(unsigned int *)(o + 0x18) = 0x54554245;
+            *(float *)(p + 0x238) = f30;
+        }
+        {
+            struct PushNode { void *next; float values[9]; };
+            struct PushNode *node = (struct PushNode *)fn_801AE180();
+            node->values[0] = x; node->values[1] = y; node->values[2] = z; node->values[3] = f29;
+            node->values[4] = lbl_80562478; node->values[5] = lbl_8056247C; node->values[6] = lbl_8056247C;
+            node->values[7] = lbl_8056247C; node->values[8] = lbl_8056247C;
+            node->next = *(void **)(p + 0xD0); *(void **)(p + 0xD0) = node;
+        }
+        break;
+    case 16:
+        x = *(float *)(c + 0x58);
+        y = *(float *)(c + 0x5C);
+        z = *(float *)(c + 0x60);
+        f25 = x * lbl_80562478;
+        f26 = y * lbl_80562478;
+        f27 = z * lbl_80562478;
+        fn_801A9798(self, f25, f26, f27, f29);
+        object = fn_801284F8(0x38, names + 0xA8);
+        if (object != 0) {
+            unsigned char *o = (unsigned char *)object;
+            *(void **)(o + 0x0) = lbl_803338C0;
+            *(void **)(o + 0x4) = self;
+            *(void **)(o + 0xC) = p + 0x3C;
+            *(unsigned int *)(o + 0x18) = 0x4F465350;
+            *(float *)(p + 0x228) = f25;
+            *(float *)(p + 0x22C) = f26;
+            *(float *)(p + 0x230) = f27;
+            *(unsigned char *)(p + 0x234) = 1;
+            *(unsigned char *)(p + 0x235) = 1;
+        }
+        break;
+    case 20:
+        object = fn_801284F8(0x40, lbl_8055A888);
+        if (object != 0) {
+            fn_801A3DAC(object, p + 0x3C, c + 0x58, self);
+            *(unsigned char *)(p + 0x221) = 1;
+        }
+        break;
+    case 21:
+        {
+            struct Collection { unsigned char pad[0x10]; unsigned int count; void **items; };
+            struct Record { unsigned int tag; unsigned int unk; unsigned int count; unsigned char pad[0x44]; float point[3]; };
+            struct PushNode { void *next; float values[9]; };
+            struct Collection *collection = (struct Collection *)fn_802C6B44(c + 0x6C);
+            unsigned int outer = 0;
+            mode = 0;
+            while (outer < collection->count) {
+                struct Record *record = (struct Record *)collection->items[outer];
+                if (record->tag == 0x4D524A54) {
+                    unsigned int inner = 0;
+                    struct Record *point = record;
+                    while (inner < record->count) {
+                        struct PushNode *node = (struct PushNode *)fn_801AE180();
+                        node->values[0] = point->point[0];
+                        node->values[1] = point->point[1];
+                        node->values[2] = point->point[2];
+                        node->values[3] = f29;
+                        node->values[4] = lbl_80562478;
+                        node->values[5] = lbl_8056247C;
+                        node->values[6] = lbl_8056247C;
+                        node->values[7] = lbl_8056247C;
+                        node->values[8] = lbl_8056247C;
+                        node->next = *(void **)(p + 0xD0);
+                        *(void **)(p + 0xD0) = node;
+                        point = (struct Record *)((unsigned char *)point + 0x50);
+                        inner++;
+                    }
+                }
+                outer++;
+            }
+            fn_802C6C20(collection);
+            x = *(float *)(c + 0x58);
+            y = *(float *)(c + 0x5C);
+            {
+                float difference = y - x;
+                difference = (float)__fabs((double)difference);
+                if (difference > lbl_80558DC4) {
+                    float maximum = x > y ? x : y;
+                    object = fn_801284F8(0x5C, names + 0x17C);
+                    if (object != 0) {
+                        unsigned char *o = (unsigned char *)object;
+                        *(void **)(o + 0xC) = p + 0x3C;
+                        *(void **)(o + 0x4) = self;
+                        *(void **)(o + 0x8) = 0;
+                        *(unsigned int *)(o + 0x18) = 0x53504852;
+                        *(float *)(o + 0x10) = f30;
+                        *(float *)(o + 0x14) = f28;
+                        *(unsigned int *)(o + 0x20) = 100;
+                        *(unsigned int *)(o + 0x1C) = 0;
+                        *(void **)(o + 0x0) = lbl_80333B48;
+                        *(float *)(o + 0x24) = maximum;
+                        *(float *)(o + 0x28) = lbl_8056247C;
+                        *(float *)(o + 0x2C) = lbl_8056247C;
+                        *(float *)(o + 0x30) = lbl_8056247C;
+                        *(float *)(o + 0x34) = lbl_8056247C;
+                        *(float *)(o + 0x38) = lbl_8056247C;
+                        *(float *)(o + 0x3C) = lbl_8056247C;
+                        *(float *)(o + 0x40) = lbl_8056247C;
+                        *(float *)(o + 0x44) = lbl_8056247C;
+                        *(float *)(o + 0x48) = lbl_8056247C;
+                        *(unsigned char *)(o + 0x4C) = 0;
+                        *(float *)(o + 0x50) = lbl_8056247C;
+                        if (self != 0) fn_8019EECC(self, o + 0x28);
+                        *(void **)(o + 0x0) = lbl_80333AF8;
+                        *(float *)(o + 0x54) = x;
+                        *(float *)(o + 0x58) = y;
+                        *(unsigned int *)(o + 0x18) = 0x464C5352;
+                    }
+                } else {
+                    object = fn_801284F8(0x54, names + 0x17C);
+                    if (object != 0) {
+                        unsigned char *o = (unsigned char *)object;
+                        *(void **)(o + 0xC) = p + 0x3C;
+                        *(void **)(o + 0x4) = self;
+                        *(void **)(o + 0x8) = 0;
+                        *(unsigned int *)(o + 0x18) = 0x53504852;
+                        *(float *)(o + 0x10) = f30;
+                        *(float *)(o + 0x14) = f28;
+                        *(unsigned int *)(o + 0x20) = 100;
+                        *(unsigned int *)(o + 0x1C) = 0;
+                        *(void **)(o + 0x0) = lbl_80333B48;
+                        *(float *)(o + 0x24) = x;
+                        *(float *)(o + 0x28) = lbl_8056247C;
+                        *(float *)(o + 0x2C) = lbl_8056247C;
+                        *(float *)(o + 0x30) = lbl_8056247C;
+                        *(float *)(o + 0x34) = lbl_8056247C;
+                        *(float *)(o + 0x38) = lbl_8056247C;
+                        *(float *)(o + 0x3C) = lbl_8056247C;
+                        *(float *)(o + 0x40) = lbl_8056247C;
+                        *(float *)(o + 0x44) = lbl_8056247C;
+                        *(float *)(o + 0x48) = lbl_8056247C;
+                        *(unsigned char *)(o + 0x4C) = 0;
+                        *(float *)(o + 0x50) = lbl_8056247C;
+                        if (self != 0) fn_8019EECC(self, o + 0x28);
+                    }
+                }
+            }
+        }
+        break;
+    case 23:
+        mode = 0;
+        break;
+    default:
+        break;
+    }
+    {
+        extern float lbl_805624D4;
+        extern int lbl_8055E5E8;
+        extern char lbl_8055A890[], lbl_8055A898[], lbl_8055A8A8[];
+        extern unsigned char lbl_8055A8A0;
+        extern void fn_801DA758(int, unsigned char *, int);
+        struct ObjectVTable { unsigned int pad[16]; void (*method)(void *, int); };
+        unsigned int flags = *(unsigned int *)(c + 0x54);
+        void *node;
+        if (flags & 4) mode = 1;
+        if (flags & 8) mode = 0;
+        if (object != 0) {
+            ((struct ObjectVTable *)*(void **)object)->method(object, cfgValue);
+            fn_80179F94(self, object);
+            *(unsigned char *)(p + 0x1E8) = (unsigned char)mode;
+        }
+        node = *(void **)(p + 0xD0);
+        while (node != 0) {
+            *(float *)((unsigned char *)node + 0x14) = lbl_805624D4;
+            node = *(void **)node;
+        }
+        temp0 = *(unsigned int *)(p + 0x3C); temp1 = *(unsigned int *)(p + 0x40);
+        *(unsigned int *)(p + 0x1EC) = temp0; *(unsigned int *)(p + 0x1F0) = temp1;
+        temp0 = *(unsigned int *)(p + 0x44); temp1 = *(unsigned int *)(p + 0x48);
+        *(unsigned int *)(p + 0x1F4) = temp0; *(unsigned int *)(p + 0x1F8) = temp1;
+        temp0 = *(unsigned int *)(p + 0x4C); temp1 = *(unsigned int *)(p + 0x50);
+        *(unsigned int *)(p + 0x1FC) = temp0; *(unsigned int *)(p + 0x200) = temp1;
+        temp0 = *(unsigned int *)(p + 0x54); temp1 = *(unsigned int *)(p + 0x58);
+        *(unsigned int *)(p + 0x204) = temp0; *(unsigned int *)(p + 0x208) = temp1;
+        temp0 = *(unsigned int *)(p + 0x5C); temp1 = *(unsigned int *)(p + 0x60);
+        *(unsigned int *)(p + 0x20C) = temp0; *(unsigned int *)(p + 0x210) = temp1;
+        temp0 = *(unsigned int *)(p + 0x64); temp1 = *(unsigned int *)(p + 0x68);
+        *(unsigned int *)(p + 0x214) = temp0; *(unsigned int *)(p + 0x218) = temp1;
+        *(unsigned int *)(p + 0x224) = 0;
+        if (flags & 1) {
+            unsigned int bit = flags & 2;
+            void *head = (void *)lbl_8055E5E4;
+            if (head != 0 && bit == (unsigned int)lbl_8055E5E8) {
+                *(void **)(p + 0x224) = head;
+                node = head;
+                while (*(void **)((unsigned char *)node + 0x224) != head)
+                    node = *(void **)((unsigned char *)node + 0x224);
+                *(void **)((unsigned char *)node + 0x224) = self;
+            } else {
+                *(void **)(p + 0x224) = self;
+            }
+            lbl_8055E5E8 = (int)bit;
+            lbl_8055E5E4 = (int)self;
+        } else {
+            lbl_8055E5E4 = 0;
+        }
+        if (*(void **)(c + 0x80) != 0) {
+            void *iface = *(void **)(c + 0x80);
+            struct IfaceVTable {
+                void *pad0[3];
+                int (*has)(void *, const char *);
+                void *pad1;
+                void *(*get)(void *, const char *);
+                void *(*get2)(void *, const char *, const char *);
+            };
+            struct IfaceVTable *vt = (struct IfaceVTable *)*(void **)iface;
+            if (vt->has(iface, lbl_8055A890)) {
+                void *a = vt->get(iface, lbl_8055A890);
+                void *b = vt->get2(iface, (const char *)&lbl_8055A8A0, lbl_8055A8A8);
+                void *d = vt->get2(iface, lbl_8055A898, (const char *)b);
+                fn_801DA758((int)self, (unsigned char *)d, (int)a);
+                *(unsigned char *)(p + 0x222) = 1;
+                for (i = 0; i < *(unsigned int *)(p + 0x24); i++) {
+                    void *entry = i < *(int *)(p + 0x24) ?
+                        *(void **)((unsigned char *)self + 0x14 + i * 4) : 0;
+                    struct EntryVTable { unsigned int pad[16]; void (*call)(void *, int); };
+                    ((struct EntryVTable *)*(void **)entry)->call(entry, 0x72);
+                }
+            }
+        }
+    }
+}
 #pragma scheduling on
 void fn_801ABB54(void *arg0) {
     extern float lbl_80562478, lbl_8056247C, lbl_805624A4, lbl_805624AC, lbl_805624D8;
@@ -735,7 +1514,7 @@ void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
 void fn_801ADA38(void *arg0, int arg1) {
     int *sp8;
     if (arg1) {
-        sp8 = &lbl_80335940;
+        sp8 = (int *)lbl_80335940;
         fn_801ABFF8(&sp8);
     } else {
         *((char *)arg0 + 0x220) = 0;
