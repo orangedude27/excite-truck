@@ -170,6 +170,7 @@ void fn_802E5824(void) {
 void fn_802E5828(void) {
 }
 
+#pragma dont_inline fn_802E582C
 void fn_802E589C(void) {
     fn_802E582C();
 }
