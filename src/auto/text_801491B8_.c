@@ -740,14 +740,22 @@ float fn_8014C8F8(float farg0, float farg1, float farg2) {
 
 void fn_8014C920(void *arg0, void *arg1) {
     volatile int *src = (volatile int *)arg1;
-    int a = src[0];
-    int b = src[1];
-    int c = src[2];
-    int d = src[3];
-    float e = *(volatile float *)((char *)arg1 + 0x10);
-    int f = src[5];
-    int g = src[6];
-    int h = src[7];
+    int h;
+    int g;
+    int f;
+    int d;
+    int c;
+    int b;
+    int a;
+    float e;
+    a = src[0];
+    b = src[1];
+    c = src[2];
+    d = src[3];
+    e = *(volatile float *)((char *)arg1 + 0x10);
+    f = src[5];
+    g = src[6];
+    h = src[7];
     ((int *)arg0)[0] = a;
     ((int *)arg0)[1] = b;
     ((int *)arg0)[2] = c;
