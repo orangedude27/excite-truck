@@ -1610,7 +1610,7 @@ extern "C" void fn_802159FC(void *arg0) {
 
 extern "C" void fn_80215A10(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x18) = 1;
-    ((VfObj *)*(void **)((u8 *)arg0 + 0x244))->vf17();
+    ((VfObj *)*(void **)((u8 *)arg0 + 0x244))->vf15();
 }
 
 extern "C" void fn_80215A2C(void *arg0) {
