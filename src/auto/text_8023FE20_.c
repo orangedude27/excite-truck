@@ -20,6 +20,12 @@ extern char lbl_803425A8[];
 extern char lbl_8034288C[];
 extern s32 fn_8023512C(char *, s32, char *, s32);
 extern s32 fn_80232578(char *, char *, s32);
+extern char lbl_80498828[];
+void fn_8023FE20(void) {
+    *(int *)&lbl_80498828 = -1;
+    *(int *)((char *)&lbl_80498828 + 0x10) = -1;
+}
+
 s32 fn_802407B0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
