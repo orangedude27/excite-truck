@@ -459,11 +459,26 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
     fn_80147230(arg0, lbl_8055CE70, buf);
 }
 #pragma scheduling on
-extern s32 lbl_8055CE78, lbl_8055CE80, lbl_8034A808, lbl_8034A814;
+__declspec(section ".sdata") extern s32 lbl_8055CE78, lbl_8055CE80;
+extern s32 lbl_8034A808, lbl_8034A814;
 extern s32 fn_80147FF0(s32);
 void fn_802B67C8(s32 arg0) {
     void *(*method)(void *, s32) = (void *(*)(void *, s32))(*(void ***)lbl_8055FA48)[5];
     fn_80147FF0(*(s32 *)((char *)method(lbl_8055FA48, arg0) + 0x18));
+}
+
+s32 fn_802B6A70(s32 arg0) {
+    switch (arg0) {
+    case 2:
+        return (s32)&lbl_8055CE78;
+    case 3:
+        return (s32)&lbl_8034A808;
+    case 5:
+        return (s32)&lbl_8034A814;
+    default:
+    case 4:
+        return (s32)&lbl_8055CE80;
+    }
 }
 
 extern s32 lbl_8055CE78, lbl_8055CE80, lbl_8034A808, lbl_8034A814;
