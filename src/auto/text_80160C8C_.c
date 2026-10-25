@@ -49,7 +49,6 @@ extern u8 lbl_8055E2DC;
 
 extern s32 fn_80161E40(s32);
 
-extern int lbl_8032F698;
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
 extern float lbl_8056185C;
