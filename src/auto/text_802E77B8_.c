@@ -504,10 +504,8 @@ void fn_802E85F4(int index) {
     limit = lbl_805651A0;
     p = lbl_80505978 + index * 0x638;
     current = *(float *)(p + 0x6C);
-    if (value >= current)
-        value = current;
-    if (value <= limit)
-        value = limit;
+    value = value < current ? value : current;
+    value = value > limit ? value : limit;
     *(float *)(p + *(int *)(p + 0x68) * 4 + 0x70) = value;
     count = *(int *)(p + 0x68);
     count++;
