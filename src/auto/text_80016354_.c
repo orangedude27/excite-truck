@@ -90,6 +90,7 @@ void *fn_8001668C(const char *arg0, int arg1) {
     return lbl_8055D544;
 }
 #pragma pop
+#pragma dont_inline fn_8001668C
 void *fn_80016720(const char *arg0) {
     void *result = fn_8001668C(arg0, 0);
     if (*(int *)((char *)result + 0xA0) & 2) {
