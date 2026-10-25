@@ -182,9 +182,9 @@ void fn_802E7D0C(void) {
     for (i = 0; i < 4; i++)
         fn_8006022C(i);
     fn_8005ED8C();
-    fn_802E30C8(&lbl_8034D908);
+    fn_802E30C8((const char *)&lbl_8034D908);
     while (fn_8005EE7C() == 4) {}
-    fn_802E30C8(&lbl_8034D8E8);
+    fn_802E30C8((const char *)&lbl_8034D8E8);
     for (i = 0, p = lbl_80507258; i < lbl_8056000C; i++, p++)
         ((int (*)(int))fn_80128658)(*p);
     lbl_8056000C = 0;
