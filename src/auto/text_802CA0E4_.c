@@ -510,9 +510,13 @@ int fn_802CB288(int arg0) {
 }
 
 char fn_802CAFC8(int arg0) {
+    int offset;
+    char *base;
     if (arg0 == -1)
         return 5;
-    return *(char *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 8);
+    offset = arg0 * 0x4C;
+    base = (char *)lbl_8055FCB0;
+    return *(char *)(*(int *)(base + offset + 0x2C) + 8);
 }
 
 char fn_802CAFF0(int arg0) {
@@ -888,14 +892,7 @@ char fn_802CC744(void) {
     return lbl_8055D07D;
 }
 
-int fn_802CC74C(void) {
-    char *p = *(char **)lbl_8055FCBC;
-    if (p == 0)
-        return 0;
-    if (*(int *)(p + 4) == 0)
-        return 0;
-    return 1;
-}
+int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
 
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B7D0[];
