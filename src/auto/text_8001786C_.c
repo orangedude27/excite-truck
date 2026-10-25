@@ -274,27 +274,28 @@ void fn_80018318(void* arg0, s32 arg1) {
     fn_800180FC(arg0, arg1);
     fn_8013C8B8();
 }
-#pragma pop
+#pragma push
+#pragma dont_inline on
 s32 fn_800183C0(void *arg0) {
     s32 value;
-    s32 (*is_one)(void) = fn_80017F40;
+    s32 best;
+
     if (lbl_8055D560 != 0) {
         value = fn_800167F4();
-        if (value > (s32)lbl_8055D560) {
-            return value;
-        }
-        return (s32)lbl_8055D560;
+        best = (s32)lbl_8055D560;
+        if (value > best) best = value;
+        return best;
     }
-    if (is_one() != 0) {
+    if (fn_80017F40() != 0) {
         value = fn_800167F4();
-        if (value > *(s32 *)((char *)arg0 + 0x10)) {
-            return value;
-        }
-        return *(s32 *)((char *)arg0 + 0x10);
+        best = *(s32 *)((char *)arg0 + 0x10);
+        if (value > best) best = value;
+    } else {
+        best = fn_800167F4();
     }
-    return fn_800167F4();
+    return best;
 }
-
+#pragma pop
 extern void *fn_8001285C(s32);
 #pragma push
 #pragma dont_inline on
