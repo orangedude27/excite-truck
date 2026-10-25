@@ -654,7 +654,10 @@ void fn_802E30C8(void *, int);                   /* extern */
 #pragma small_data off
 extern char lbl_80332758[];
 #pragma pop
+#pragma push
+#pragma small_data off
 extern float lbl_80558DC4;
+#pragma pop
 extern float lbl_8055A460;
 extern float lbl_80561F98;
 extern float lbl_80561FC4;
