@@ -1031,6 +1031,23 @@ extern "C" void fn_802A41D8(void *arg0, s32 arg1) {
 extern "C" void fn_802A44B4(void) {
 }
 
+extern "C" void fn_802CAC54(s32);
+extern "C" void fn_80128670(s32);
+extern "C" void *fn_802A44B8(void *arg0, s32 arg1) {
+    s32 value;
+    if (arg0 != 0) {
+        ((void (*)(s32))fn_802CAC54)(*(s32 *)((u8 *)arg0 + 0x60));
+        value = *(s32 *)arg0;
+        if (value != 0) {
+            ((void (*)(s32))fn_80128670)(value - 0x10);
+        }
+        if (arg1 > 0) {
+            ((void (*)(void *))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+
 #pragma scheduling off
 extern "C" void fn_802A4524(void *arg0) {
     f32 value = lbl_80564744;
