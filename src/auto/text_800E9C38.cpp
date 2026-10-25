@@ -176,7 +176,14 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
     OSRestoreInterrupts(enabled);
 }
 
-void fn_800EA880(void *arg0, int arg1) { int a=*(int *)((char *)arg0+0xAC)+arg1; int b=*(int *)((char *)arg0+0xB0); *(int *)((char *)arg0+0xAC)=a; if(a>b) *(int *)((char *)arg0+0xAC)=b; }
+extern "C" void fn_800EA880(void *arg0, int arg1) {
+    int value = *(int *)((char *)arg0 + 0xAC) + arg1;
+    int limit = *(int *)((char *)arg0 + 0xB0);
+    *(int *)((char *)arg0 + 0xAC) = value;
+    if (value > limit) {
+        *(int *)((char *)arg0 + 0xAC) = limit;
+    }
+}
 
 extern "C" void fn_800EA8A0(void *arg0, int arg1, signed char arg2, float farg0) {
     *(float *)((char *)arg0 + 0xA8) = farg0;
