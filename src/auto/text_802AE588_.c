@@ -1134,7 +1134,7 @@ void fn_802B01A8(void) {
     fn_8029790C(0);
     fn_802AE7C0();
 }
-#pragma dont_inline reset
+#pragma dont_inline on
 void fn_802B0218(void) {
     if (fn_802AE7AC() != 0) {
         fn_802DBE4C();
@@ -1143,8 +1143,7 @@ void fn_802B0218(void) {
         fn_802DBECC();
     }
 }
-
-#pragma dont_inline on
+#pragma dont_inline reset
 void fn_802B0254(void) {
     if (fn_802AE7AC() != 0) {
         fn_802DBE4C();
