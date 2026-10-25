@@ -357,17 +357,17 @@ int fn_8000BD9C(int arg0, int arg1, int arg2) {
 
     switch (arg1) {
     case 0:
-        p = &lbl_8034F5D8;
+        p = (int *)&lbl_8034F5D8;
         found = 0;
         for (i = 0; i < lbl_8055D3E0; i++) {
             if (*out == *p) {
-                *out = (&lbl_8034F5D8)[(i + 1) % lbl_8055D3E0];
+                *out = ((int *)&lbl_8034F5D8)[(i + 1) % lbl_8055D3E0];
                 found = 1;
                 break;
             }
             p++;
         }
-        if (found == 0) *out = lbl_8034F5D8;
+        if (found == 0) *out = *(int *)&lbl_8034F5D8;
         return 1;
     case 0x170: *out = 0; return 1;
     case 0x171: *out = 1; return 1;
