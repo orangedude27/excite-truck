@@ -2,7 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 extern void __GXFlushTextureState(void);
-typedef void (*GXFifoIntrHandler)(short, void *);
 extern void GXCPInterruptHandler(short, void *);
 extern void *OSGetCurrentThread(void);
 extern void memset(void *, int, unsigned int);
