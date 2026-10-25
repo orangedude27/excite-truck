@@ -494,6 +494,22 @@ void *fn_80128F94(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     }
 }
 
+#pragma dont_inline on
+void fn_80129088(void *arg0) {
+    s32 *candidate;
+    s32 base;
+    void *end;
+    while (*(volatile s32 *)((u8 *)arg0 + 8) > 0) {
+        base = *(s32 *)((u8 *)arg0 + 4);
+        end = (void *)(base + *(s32 *)((u8 *)arg0 + 8));
+        candidate = (s32 *)((u8 *)end - 0x20 - *(s32 *)((u8 *)end - 0xC));
+        if ((u32)*candidate + 0x55560000U == 0x5555U)
+            return;
+        *(s32 *)((u8 *)arg0 + 8) = (s32)((u8 *)candidate - (u8 *)base);
+    }
+}
+#pragma dont_inline reset
+
 void fn_801290CC(void *arg0, void *arg1) {
     *(s32 *)((u8 *)arg1 - 0x10) = 0x06630216;
     fn_80129088(arg0);
