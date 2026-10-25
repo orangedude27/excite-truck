@@ -13,7 +13,6 @@ extern int fn_80129E34(void *, int, int);
 extern int fn_80019B3C(void);
 extern int fn_802E30C8(const char *, int, int, int);
 extern char lbl_8032A5C0[];
-extern void fn_80129C64(int);
 extern float fn_8012A080(void *);
 #pragma scheduling invalid_target
 void fn_80129C64(int arg0) {
