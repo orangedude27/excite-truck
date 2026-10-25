@@ -348,22 +348,20 @@ void fn_802C90F0(void) {
     lbl_8055FC70 = 3;
 }
 
+#pragma scheduling invalid_target
 void fn_802C9294(int arg0, int arg1) {
-    int value;
-    register int one;
+    int equal;
     if (arg0 != -1 && arg0 != -2) {
-        value = arg1 == 1;
-        one = 1;
-        lbl_8055FC75 = value;
-        lbl_8055FC74 = one;
+        equal = arg1 == 1;
+        lbl_8055FC74 = 1;
+        lbl_8055FC75 = equal;
     } else {
-        one = 0;
-        lbl_8055FC74 = one;
-        lbl_8055FC75 = one;
+        lbl_8055FC74 = 0;
+        lbl_8055FC75 = 0;
     }
     fn_802CB29C();
 }
-
+#pragma scheduling on
 extern void fn_802C8C04(int);
 extern void fn_802C8D74(void);
 extern int lbl_8055FC70;
@@ -745,14 +743,13 @@ extern "C" void fn_802C9D88(int arg0) {
 #pragma pop
 
 void *fn_802C9DE8(void *arg0, int arg1) {
-    *(void **)arg0 = fn_801E7840(arg1);
-    {
-        float zero = lbl_80564F00;
-        *(float *)((char *)arg0 + 4) = zero;
-        *(float *)((char *)arg0 + 8) = zero;
-        *(float *)((char *)arg0 + 12) = zero;
-        *(float *)((char *)arg0 + 16) = zero;
-    }
+    void *value = fn_801E7840(arg1);
+    float zero = lbl_80564F00;
+    *(void **)arg0 = value;
+    *(float *)((char *)arg0 + 4) = zero;
+    *(float *)((char *)arg0 + 8) = zero;
+    *(float *)((char *)arg0 + 12) = zero;
+    *(float *)((char *)arg0 + 16) = zero;
     *(int *)((char *)arg0 + 20) = 0;
     return arg0;
 }
