@@ -509,8 +509,8 @@ extern "C" void fn_80145C08(void *arg0, const char *arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-extern "C" void fn_80145C7C(void *arg0, u32 arg1) {
-    f32 scale = fn_801452B4(*(volatile f32 *)((u8 *)arg0 + 8));
+extern "C" void fn_80145C7C(void * __restrict arg0, u32 arg1) {
+    f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 input = *(f32 *)((u8 *)arg0 + 4);
     s32 id = *(s32 *)((u8 *)arg0 + 0xC);
     f32 value = ((f32 (*)(s32, f32))fn_801451DC)(id, input);
