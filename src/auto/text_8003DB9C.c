@@ -24,6 +24,12 @@ typedef struct {
 } GXPointSizeReg;
 
 typedef struct {
+    unsigned short unused0 : 12;
+    unsigned short attenuationK : 1;
+    unsigned short unused1 : 3;
+} GXAttnKReg;
+
+typedef struct {
     int attr;
     int compCnt;
     int compType;
