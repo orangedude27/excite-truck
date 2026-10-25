@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
 namespace homebutton {
 class GroupAnmController {
 public:
