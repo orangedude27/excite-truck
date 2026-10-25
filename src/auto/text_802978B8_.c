@@ -74,20 +74,25 @@ void fn_80297998(void) {
 }
 
 void fn_80297A08(int arg0) {
-    int index = (int)lbl_8055F7A4;
+    int index = lbl_8055F7A4;
+    int next;
 
-    if (index < 0x40) {
-        *(int *)&lbl_8055F7A4 = index + 1;
-        lbl_804B4F10[index] = arg0;
+    if (index >= 0x40) {
+        return;
     }
+
+    next = index + 1;
+    index <<= 2;
+    lbl_8055F7A4 = next;
+    *(int *)((char *)lbl_804B4F10 + index) = arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_80297A30(void) {
-    fn_8012850C(0x2010, lbl_803493F8);
-    lbl_8055F7A8 = fn_8002F37C(fn_80297A80, 0, 0x40, 0x80);
+    lbl_8055F7A8 = ((void *(*)(void *, void (*)(void), int, int, int))fn_8002F37C)(fn_8012850C(0x2010, lbl_803493F8), fn_80297A80, 0, 0x40, 0x80);
     lbl_8055F7AC = 0;
 }
-
+#pragma scheduling on
 extern void *lbl_8055F7A8;
 extern int lbl_8055F7AC;
 extern const char lbl_803493F8[];
