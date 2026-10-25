@@ -378,6 +378,17 @@ s32 fn_80232578(const char *arg0) {
     fn_8023158C(data, arg0);
     return (s32)data;
 }
+
+#pragma dont_inline on
+void fn_802328D4(s32 arg0) {
+    s32 value = *(s32 *)(arg0 + 8);
+    if (value != 0 && fn_802316A4((void *)value) != 0) {
+        *(s32 *)(arg0 + 8) = 0;
+    }
+    fn_802316A4((void *)arg0);
+}
+#pragma dont_inline off
+
 #pragma pop
 void fn_80232928(void* hi) {
     lbl_8055F060 = hi;
