@@ -222,7 +222,7 @@ struct Dummy_80019534 {
 #pragma scheduling on
 #pragma cplusplus on
 extern "C" s32 fn_80019534(void) {
-    if (lbl_8055D58C != 0) {
+    if (lbl_8055D58C) {
         if (((Dummy_80019534 *)lbl_8055D58C)->f2(lbl_802FD3A0) != 0) {
             return ((Dummy_80019534 *)lbl_8055D58C)->f0(lbl_802FD3A0)->f4(lbl_802FD3B4, 0);
         }
