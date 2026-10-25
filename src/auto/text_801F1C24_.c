@@ -17,7 +17,7 @@ extern const char lbl_8033A988[];
 extern const char lbl_8033A6E0[];
 #pragma push
 #pragma small_data off
-extern int lbl_8033A8F8;
+__declspec(section ".data") extern int lbl_8033A8F8;
 #pragma pop
 extern int lbl_8033A644, lbl_8033A868, lbl_8033A928;
 #pragma push
@@ -97,12 +97,14 @@ void fn_801F1E24(void) {
 }
 #pragma push
 #pragma small_data off
-#pragma pop
 void fn_801F1EA8(void) {
- void *p=fn_801284F8(0x14,&lbl_8055B124);
- if(p){*(void**)p=&lbl_8033A8F8;*(int*)((char*)p+0x10)=0;}
+    void *p = fn_801284F8(0x14, &lbl_8055B124);
+    if (p != 0) {
+        *(void **)p = &lbl_8033A8F8;
+        *(int *)((char *)p + 0x10) = 0;
+    }
 }
-#pragma small_data off
+#pragma pop
 extern int fn_802CAC28(void *, int);
 extern void *fn_802C86DC(void);
 extern float PSVECDotProduct(float *, float *);
