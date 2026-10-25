@@ -187,7 +187,6 @@ extern void fn_802DBA1C(unsigned char);
 extern void fn_802DB9DC(int);
 extern void fn_802DBBE4(int,int);
 extern void fn_802DBF54(int,int);
-extern void GXSetAlphaCompare(int, unsigned char, int, int, unsigned char);
 extern void GXSetColorUpdate(int);
 extern void GXSetZMode(int,int,int);
 extern unsigned char lbl_8055FEBA;
