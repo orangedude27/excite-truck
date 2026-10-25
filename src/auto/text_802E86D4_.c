@@ -79,15 +79,15 @@ int fn_802E888C(int arg0) {
     return result;
 }
 
+#pragma scheduling invalid_target
 int fn_802E88D8(void) {
-    int result = fn_802E888C(0);
-    if (result != 0) {
+    if (fn_802E888C(0) != 0) {
         lbl_80560034 = 1;
         return 1;
     }
     return 0;
 }
-
+#pragma scheduling on
 void fn_802E8918(void) {
     fn_802E2E38(1);
 }
