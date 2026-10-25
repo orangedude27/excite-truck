@@ -403,7 +403,7 @@ extern void fn_802E6264(void);
 extern void fn_802E6B34(void);
 extern int fn_80128670(void *);
 extern int fn_80019B60(void);
-extern int fn_8012850C(unsigned int, void *);
+extern void *fn_8012850C(unsigned int, void *);
 extern void *memset(void *, int, unsigned int);
 extern char lbl_8033C388[];
 extern char lbl_8033C37C[];
