@@ -1013,15 +1013,15 @@ extern "C" void fn_800A71D0(void *arg0, s32 arg1) {
     (*(s32 *)((u8 *)arg0 + 0x14)) = arg1;
 }
 
-extern "C" s32 fn_800A6268(s32);
+extern "C" s32 fn_800A6268(s32, void *);
 extern "C" s32 fn_800A71D8(void *arg0) {
     return (*(s32 *)((u8 *)arg0 + 0x14));
 }
 
-extern "C" s32 fn_800A71E0(void *arg0) {
+extern "C" s32 fn_800A71E0(s32 arg0, void *arg1) {
     s32 temp_r3;
 
-    temp_r3 = fn_800A6268((*(s32 *)((u8 *)arg0 + 4)));
+    temp_r3 = fn_800A6268(*(s32 *)((u8 *)arg0 + 4), arg1);
     return temp_r3 & ((s32) (-temp_r3 | temp_r3) >> 0x1F);
 }
 
