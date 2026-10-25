@@ -69,7 +69,7 @@ void fn_80276ACC(void *arg0, int arg1) {
 }
 
 void fn_80276B8C(void) {
-    volatile unsigned char *entry = &lbl_8049FD58;
+    volatile unsigned char *entry = (unsigned char *)&lbl_8049FD58;
     int i = 0;
     do {
         memset((void *)entry, 0, 0x50);
