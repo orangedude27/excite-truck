@@ -73,10 +73,12 @@ void fn_8023DA2C(long arg0, void *arg1, char arg2, long arg3) {
 }
 
 void fn_8023DB68(void) {
-    long *dst = (long *)&lbl_804987D0;
-    long i = 0;
+    long *dst;
+    long i;
 
     lbl_8055BC54 = fn_80137C74();
+    dst = &lbl_804987D0[0];
+    i = 0;
     while (i < lbl_8055BC54) {
         *dst = __AXGetStackHead_80137CFC(i);
         dst++;
