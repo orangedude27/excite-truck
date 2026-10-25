@@ -165,7 +165,7 @@ extern void fn_802E2E0C(void *, void *);
 extern int NANDInit(void);
 extern void fn_802E8838(void);
 extern void fn_802E9010(void);
-extern void fn_802E8C6C(int);
+extern int fn_802E8C6C(int);
 extern char lbl_8034DF00[];
 extern char lbl_8034DED4[];
 extern char lbl_8034DEF4[];
