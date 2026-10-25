@@ -322,9 +322,17 @@ extern "C" s32 fn_801455B8(void *arg0, void *arg1) {
     return 0;
 }
 
-extern "C" void fn_80145670(void *arg0, void **arg1) {
-    ((s32 *)arg0)[0] = ((s32 (*)(void *, const char *))(*(void ***)arg1)[5])(arg1, (const char *)&lbl_80559DD0);
-    ((s32 *)arg0)[1] = ((s32 (*)(void *, const char *))(*(void ***)arg1)[5])(arg1, (const char *)&lbl_8032CF48);
+extern "C" void fn_80145670(void *arg0, void *arg1) {
+    class V {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual s32 get(const char *);
+    };
+    V *obj = (V *)arg1;
+    ((s32 *)arg0)[0] = obj->get((const char *)&lbl_80559DD0);
+    ((s32 *)arg0)[1] = obj->get((const char *)&lbl_8032CF48);
     ((s32 *)arg0)[2] = fn_8023512C();
 }
 
@@ -497,16 +505,23 @@ extern "C" void fn_80145C08(void *arg0, const char *arg1) {
 #pragma pop
 #pragma dont_inline reset
 
-#pragma push
 #pragma dont_inline on
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" void fn_80145C7C(void *arg0, u32 arg1) {
-      f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-      f32 temp_f2 = ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
-      fn_8001027C(*(s32 *)((u8 *)arg0 + 0x18), *(s32 *)((u8 *)arg0 + 0x14), &lbl_80559E1C,
-          arg1, *(f32 *)((u8 *)arg0 + 0x10), temp_f2, temp_f31);
-  }
-#pragma dont_inline reset
+    f32 scale = fn_801452B4(*(volatile f32 *)((u8 *)arg0 + 8));
+    f32 input = *(f32 *)((u8 *)arg0 + 4);
+    s32 id = *(s32 *)((u8 *)arg0 + 0xC);
+    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(id, input);
+    f32 last = *(f32 *)((u8 *)arg0 + 0x10);
+    s32 b = *(s32 *)((u8 *)arg0 + 0x14);
+    s32 a = *(s32 *)((u8 *)arg0 + 0x18);
+    ((void (*)(s32, s32, s32, ...))fn_8001027C)(a, b, (s32)&lbl_80559E1C, arg1, last, value, scale);
+}
+#pragma scheduling on
 #pragma pop
+#pragma dont_inline reset
 
 extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
     f32 temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
