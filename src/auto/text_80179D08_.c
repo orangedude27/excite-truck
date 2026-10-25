@@ -41,9 +41,10 @@ struct Fn80179F94Dummy {
     virtual void m10() = 0;
     virtual void m11() = 0;
     virtual void m12() = 0;
-    virtual void m13() = 0;
-    virtual void m14() = 0;
-    virtual f32 m15(void *, void *, s32) = 0;
+    virtual f32 m13(void *, void *, s32) = 0;
+    f32 m15(void *arg0, void *arg1, s32 arg2) {
+        return m13(arg0, arg1, arg2);
+    }
 };
 extern "C" inline void fn_80179E00_virtual_call(void *obj) {
     ((Fn80179E00Dummy *)obj)->m8();
@@ -148,7 +149,8 @@ void fn_80179EE4(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80179F94(void *arg0, void *arg1) {
+#pragma cplusplus on
+extern "C" void fn_80179F94(void *arg0, void *arg1) {
     s32 count;
     void *slot;
     f32 value;
@@ -160,7 +162,7 @@ void fn_80179F94(void *arg0, void *arg1) {
     count++;
     *(s32 *)((u8 *)arg0 + 0x24) = count;
     *(s32 *)((u8 *)arg0 + 0x28) = count;
-    value = ((f32 (*)(void *, void *, void *, s32))((void **)*(void **)arg1)[15])(arg1, arg1, slot, count - 1);
+    value = ((Fn80179F94Dummy *)arg1)->m15(arg1, slot, count - 1);
     old = *(f32 *)((u8 *)arg0 + 0x2C);
     if (old <= value)
         goto update;
@@ -170,6 +172,7 @@ update:
 done:
     *(f32 *)((u8 *)arg0 + 0x2C) = old;
 }
+#pragma cplusplus reset
 #pragma pop
 void fn_8017A004(void) {
 
