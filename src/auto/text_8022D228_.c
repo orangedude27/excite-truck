@@ -268,7 +268,6 @@ void fn_8022DC20(void *arg0) {
     if (value < 0) *(int *)((char *)arg0 + 0xC) = *(int *)((char *)arg0 + 0x10) - 1;
 }
 
-#pragma dont_inline on
 void fn_8022DC40(void *arg0, int arg1) {
     int step;
     *(int *)((char *)arg0 + 0xC) = arg1;
@@ -279,7 +278,6 @@ check:
     step = *(int *)((char *)arg0 + 0x10);
     if (*(int *)((char *)arg0 + 0xC) >= step) goto loop;
 }
-#pragma dont_inline off
 
 int fn_8022DC68(void *arg0, int arg1) {
     int saved;
