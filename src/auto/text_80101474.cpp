@@ -8,7 +8,7 @@ extern int fn_80128668(void);
 extern int Pause__Q46nw4hbm3snd6detail7AxVoiceFb(int, unsigned char);
 extern int ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(int);
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void *, int);
-extern int fn_800EAD00(void *);
+extern "C" int fn_800EAD00(void *);
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
 extern "C" unsigned char lbl_8041D4E0[];
@@ -103,17 +103,17 @@ extern "C" void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
     *((int *)arg0 + 1) = arg2;
 }
 
-void Close__Q46nw4hbm3snd6detail8WsdTrackFv(void *arg0) {
+void nw4hbm::snd::detail::WsdTrack::Close() {
     void *var_r31;
-    ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(arg0, -1);
-    var_r31 = *(void **)((char *)arg0 + 0x30);
+    ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(this, -1);
+    var_r31 = *(void **)((char *)this + 0x30);
 loop_2:
     if (var_r31 != 0) {
         fn_800EAD00(var_r31);
         var_r31 = *(void **)((char *)var_r31 + 0xE4);
         goto loop_2;
     }
-    *(void **)((char *)arg0 + 0x30) = 0;
+    *(void **)((char *)this + 0x30) = 0;
 }
 
 extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *);
