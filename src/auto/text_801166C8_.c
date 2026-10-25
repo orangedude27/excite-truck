@@ -1345,22 +1345,27 @@ u32 fn_8011A388(void* arg0, s32 arg1, s32 arg2, u32 arg3) {
 
 #pragma unroll reset
 void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
-    s32 temp_r0, temp_r31, temp_r3, temp_r3_2, temp_r4, var_r31;
+    s32 temp_r0;
+    s32 temp_r31;
+    s32 temp_r3;
+    s32 temp_r3_2;
+    s32 temp_r4;
+    s32 var_r31;
     volatile s32 *counter = (volatile s32 *)((u8 *)arg0 + 0xC0);
+
     temp_r31 = fn_80116BD4(arg1, 0x3E8, *(s32 *)((u8 *)arg0 + 0xBC));
     temp_r3 = fn_80116D30();
     var_r31 = temp_r3;
     *counter = *counter + (temp_r31 - (temp_r3 - arg2));
-    for (;;) {
-        temp_r3_2 = fn_80116D30();
-        temp_r0 = *counter;
-        temp_r4 = temp_r3_2 - var_r31;
-        if (temp_r4 >= temp_r0) {
-            var_r31 = temp_r3_2;
-            *counter = temp_r0 - temp_r4;
-            if (*counter <= 0) break;
-        }
-    }
+    do {
+        do {
+            temp_r3_2 = fn_80116D30();
+            temp_r0 = *counter;
+            temp_r4 = temp_r3_2 - var_r31;
+        } while (temp_r4 < temp_r0);
+        var_r31 = temp_r3_2;
+        *counter = temp_r0 - temp_r4;
+    } while (*counter > 0);
 }
 
 void fn_8011A4F8(u32 arg0, void *arg1) {
@@ -2191,24 +2196,24 @@ void fn_8011BC48(void) {
 }
 
 s32 fn_8011BC4C(void *arg0, void *arg1) {
-    void *temp_r0;
-    void *var_r5;
+    void *next;
+    void *prev;
     if (arg0 == NULL) return 0;
-    var_r5 = *(void **)((u8 *)arg0 + 0x30);
-    if (var_r5 == arg1) {
-        *(void **)((u8 *)arg0 + 0x30) = *(void **)var_r5;
+    prev = *(void **)((u8 *)arg0 + 0x30);
+    if (prev == arg1) {
+        *(void **)((u8 *)arg0 + 0x30) = *(void **)prev;
         return 1;
     }
-    temp_r0 = *(void **)var_r5;
-check:
-    if (temp_r0 == arg1) {
-        *(void **)var_r5 = *(void **)arg1;
-        return 1;
-    }
-    var_r5 = temp_r0;
-    temp_r0 = *(void **)var_r5;
-    if (temp_r0 == NULL) return 0;
-    goto check;
+    next = *(void **)prev;
+    do {
+        if (next == arg1) {
+            *(void **)prev = *(void **)arg1;
+            return 1;
+        }
+        prev = next;
+        next = *(void **)prev;
+    } while (next != NULL);
+    return 0;
 }
 
 void fn_8011BCAC(void **head, void *node) {
@@ -2251,17 +2256,21 @@ void fn_8011BDF0(s32 arg0) {
 
 void *fn_8011BE48(s32 arg0) {
     void *ptr;
-    s32 sign;
+    register s32 zero;
+    register s32 sign;
+    register s32 one;
     ptr = fn_8011FFC4(0x40);
     if (ptr != NULL) {
         memset(ptr, 0, 0x40);
+        zero = 0;
         sign = arg0 >> 31;
-        *(s32 *)((u8 *)ptr + 0x00) = 0;
-        *(s32 *)((u8 *)ptr + 0x04) = 1;
+        one = 1;
+        *(s32 *)((u8 *)ptr + 0x00) = zero;
+        *(s32 *)((u8 *)ptr + 0x04) = one;
         arg0 = (sign ^ arg0) - sign;
-        *(s32 *)((u8 *)ptr + 0x30) = 0;
-        *(s32 *)((u8 *)ptr + 0x34) = 1;
-        *(s32 *)((u8 *)ptr + 0x38) = 0;
+        *(s32 *)((u8 *)ptr + 0x30) = zero;
+        *(s32 *)((u8 *)ptr + 0x34) = one;
+        *(s32 *)((u8 *)ptr + 0x38) = zero;
         *(s32 *)((u8 *)ptr + 0x3C) = arg0;
     }
     return ptr;
@@ -2409,8 +2418,8 @@ s32 fn_8011C400(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, s32 arg4) {
 #pragma scheduling on
 void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     register const u8 *var_r31;
-    u32 var_r30;
-    u32 var_r29;
+    register u32 var_r29;
+    register u32 var_r30;
     s32 temp_r0;
     s32 temp_r5_14;
     s32 temp_r5_15;
@@ -2434,9 +2443,9 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     s32 var_r3_8;
     s32 var_r3_9;
     s32 var_r8;
-    s8 *var_r3;
-    u8 *var_r3_15;
-    u8 *var_r3_16;
+    register s8 *var_r3;
+    register u8 *var_r3_15;
+    register u8 *var_r3_16;
     s32 temp_r4_2;
     s32 temp_r4_3;
     s8 var_r0_6;
@@ -2505,7 +2514,7 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     u32 var_r30_8;
     u32 var_r30_9;
     u32 var_r7;
-    u32 var_r8_2;
+    s32 var_r8_2;
 
     u8 buffers[0x20];
     void *arg0 = (void *)arg0_raw;
@@ -2858,9 +2867,7 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
             }
             var_r3_15 = arg3;
             var_r7 = 0xFFFF;
-            var_ctr_3 = var_r8_2 + 1;
-            if (var_r8_2 >= 0U) {
-                do {
+            for (var_ctr_3 = 0; var_ctr_3 <= (s32)var_r8_2; var_ctr_3++) {
                     if ((u32) var_r29 < 4U) {
                         temp_r9 = (*(u32 *)var_r31);
                         temp_r0 = 4 - var_r29;
@@ -2878,15 +2885,13 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
                     *var_r3_15 = var_r0_6;
                     var_r7 &= ~(1 << var_r0_6);
                     var_r3_15 += 1;
-                    var_ctr_3 -= 1;
-                } while (var_ctr_3 != 0);
-            }
+                }
             var_r3_16 = &arg3[var_r8_2];
             var_r4_3 = 0;
             do {
                 if (var_r7 & 1) {
-                    var_r3_16 += 1;
                     (*(s8 *)((s8 *)(var_r3_16) + (1))) = var_r4_3;
+                    var_r3_16 += 1;
                 }
                 var_r7 = var_r7 >> 1U;
                 var_r4_3 += 1;
@@ -3495,6 +3500,44 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
     } else {
         if (count == 8) {
             fn_80124F90(dst);
+        } else if (count == 4) {
+            fn_80125098(dst);
+        }
+    }
+}
+
+extern void fn_80121400(s32, s32 *, f32 *, s32);
+extern void fn_801219B4(void *);
+extern void fn_80121BF4(void *);
+extern void fn_80125014(void *);
+extern void fn_80122518(s32, u8 *, void *);
+void fn_80120E14(register s32 count, register void *dst, register s32 mode, register s32 srcIndex, register void *src) {
+    register s32 n;
+    if (count > 0x20) {
+        n = count >> 2;
+        fn_80122518(count, (u8 *)dst, (u8 *)src + (srcIndex - n) * 4);
+        if (count > 0x200) {
+            fn_80122E08(n, dst, srcIndex, src);
+            fn_80122ED8(n, (u8 *)dst + n * 4, srcIndex, src);
+            fn_80122E08(n, (u8 *)dst + n * 8, srcIndex, src);
+            fn_80122E08(n, (u8 *)dst + ((n * 3) << 2), srcIndex, src);
+        } else if (n > 0x20) {
+            fn_80122FA4(count, dst, srcIndex, src);
+        } else {
+            fn_80123CEC(count, dst, srcIndex, src);
+        }
+        fn_80121400(count, (s32 *)mode, (f32 *)dst, srcIndex);
+    } else if (count > 8) {
+        if (count == 0x20) {
+            fn_80123E98(dst, (u8 *)src + (srcIndex - 8) * 4);
+            fn_801219B4(dst);
+        } else {
+            fn_80124AD8(dst, src);
+            fn_80121BF4(dst);
+        }
+    } else {
+        if (count == 8) {
+            fn_80125014(dst);
         } else if (count == 4) {
             fn_80125098(dst);
         }
