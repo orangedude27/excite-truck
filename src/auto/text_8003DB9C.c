@@ -2538,7 +2538,7 @@ void GXSetNumIndStages(unsigned int value) {
     __GXData[0x5FC / 4] |= 6;
 }
 
-extern void GXSetTevIndirect(int, int, int, int, int, int, int, int, int, int);
+extern void GXSetTevIndirect(s32, s32, s32, s32, s32, s32, s32, s32, u8, s32);
 void GXSetTevDirect(int arg0) {
     GXSetTevIndirect(arg0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
@@ -2722,9 +2722,9 @@ void GXSetTevColorS10(s32 tevReg, void *color) {
 void GXSetTevKColor(s32 tevReg, unsigned int *color) {
     unsigned int index = tevReg << 1;
     unsigned int value = *color;
-    unsigned int *data = __GXData;
     unsigned int first = __rlwimi(__rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
     unsigned int second = __rlwimi(__rlwimi(__rlwimi((index + 0xE1) << 24, value, 24, 24, 31), value, 28, 12, 19), 8, 20, 8, 11);
+    unsigned int *data = __GXData;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = first;
     *(volatile unsigned char *)0xCC008000 = 0x61;
@@ -3238,6 +3238,43 @@ void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 f
     ((f32 *)__GXData)[0x554 / 4] = nearZ;
     ((f32 *)__GXData)[0x558 / 4] = farZ;
     __GXData[0x5FC / 4] |= 0x10000000;
+}
+
+void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    union ScissorReg {
+        unsigned int value;
+        struct {
+            unsigned int pad0 : 9;
+            unsigned int x : 11;
+            unsigned int pad1 : 1;
+            unsigned int y : 11;
+        } bits;
+    } topLeft, bottomRight;
+    unsigned int *data = __GXData;
+    s32 left = arg0 + 0x156;
+    s32 top = arg1 + 0x156;
+    s32 right;
+    s32 bottom;
+
+    topLeft.value = data[0x148 / 4];
+    topLeft.bits.y = top;
+    topLeft.bits.x = left;
+    data[0x148 / 4] = topLeft.value;
+
+    right = left + arg2;
+    bottom = top + arg3;
+    right -= 1;
+    bottom -= 1;
+    bottomRight.value = data[0x14C / 4];
+    bottomRight.bits.y = bottom;
+    bottomRight.bits.x = right;
+    data[0x14C / 4] = bottomRight.value;
+
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = data[0x148 / 4];
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = data[0x14C / 4];
+    *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetScissorBoxOffset(s32 x, s32 y) {
