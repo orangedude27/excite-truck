@@ -251,11 +251,170 @@ void fn_802B9FC0(void *arg0) {
     }
 }
 
-extern int lbl_802FAB60[];
 extern void *lbl_8055FA84;
 void fn_802BA004(void) {
     lbl_8055FA84 = 0;
 }
+
+#pragma cplusplus on
+extern "C" int fn_802E2C20(void *);
+extern "C" void fn_801352B8(void *);
+extern "C" void fn_80135D60(void *, void *);
+extern "C" void *fn_80156A40(void);
+extern "C" void *fn_802B8FE0(int);
+extern "C" void *fn_80138B4C(void *, void *);
+extern "C" void *fn_802B8EF0(int, void *);
+extern "C" void fn_80136414(void *, void *, int);
+extern "C" void fn_8013530C(void *, int);
+extern "C" double fn_8002F234(void *, void *, short, float, float, float);
+extern "C" double fn_8002EFB4(void *, float, double, float);
+extern "C" void fn_802E30C8(void *, ...);
+extern "C" void *lbl_8055FA78;
+extern "C" void *lbl_8055FA84;
+extern "C" char lbl_8034A9C0[];
+extern "C" int lbl_8034A064;
+extern "C" double lbl_80564CD0;
+extern "C" float lbl_80564CCC, lbl_80564CC4, lbl_80564CD8;
+extern void fn_801352B8(void *);
+extern void fn_80135D60(void *, void *);
+extern void *fn_80156A40(void);
+extern void *fn_802B8FE0(int);
+extern void *fn_80138B4C(void *, void *);
+extern void *fn_802B8EF0(int, void *);
+extern void fn_80136414(void *, void *, int);
+extern void fn_8013530C(void *, int);
+extern double fn_8002F234(void *, void *, short, float, float, float);
+extern double fn_8002EFB4(void *, float, double, float);
+extern void *lbl_8055FA78;
+extern char lbl_8034A9C0[];
+extern int lbl_8034A064;
+extern double lbl_80564CD0;
+extern float lbl_80564CCC, lbl_80564CC4, lbl_80564CD8;
+extern "C" void fn_802BA010(void *arg0, int arg1) {
+    struct Dummy { virtual void v0(); virtual void *v1(int); };
+    volatile char scratch[0x40];
+    char *sp = (char *)scratch;
+    int index, count;
+    int state = 2;
+    short radius, item;
+    void *buffer, *current, *next, *entry, *record, *pool, *base;
+    void *object = arg0;
+    void *interp, *end;
+    float f30, f31, f29;
+    float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
+
+    *(void *volatile *)(sp + 0x10) = lbl_8034A9C0;
+    *(volatile int *)(sp + 0x14) = fn_802E2C20(arg0);
+    if (object == 0) object = ((Dummy *)fn_80156A40())->v1(0);
+    fn_801352B8(sp + 0x24);
+    fn_80135D60(sp + 0x24, object);
+    buffer = fn_802B8FE0(arg1);
+    current = fn_80138B4C(object, 0);
+    if (current != 0) {
+        f0 = *(float *)((char *)current + 0x10);
+        f31 = lbl_80564CCC;
+        f30 = lbl_80564CD8;
+        f29 = lbl_80564CC4;
+        *(float *)buffer = f31 / f0;
+        do {
+            next = fn_802B8EF0(arg1, buffer);
+            if (next != 0) {
+                entry = (char *)current + 0x14;
+                index = 0;
+                while (index < *(int *)((char *)current + 8)) {
+                    fn_80136414(sp + 0x18, sp + 0x24, *(int *)((char *)entry + 4));
+                    pool = lbl_8055FA78;
+                    count = *(int *)((char *)pool + 4);
+                    base = *(void **)pool;
+                    *(int *)((char *)pool + 4) = count + 1;
+                    record = (char *)base + count * 0x54;
+                    radius = *(short *)((char *)entry + 2);
+                    item = *(short *)entry;
+                    *(int *)((char *)record + 8) = state;
+                    *(int *)((char *)record + 0x14) = item;
+                    *(int *)((char *)record + 0x18) = radius;
+                    *(void **)((char *)record + 0x30) = buffer;
+                    interp = *(void **)(sp + 0x18);
+                    end = *(void **)((char *)interp + 0x14);
+                    f1 = *(float *)(sp + 0x1C);
+                    f2 = *(float *)interp;
+                    f2 += f1 * (*(float *)end - f2);
+                    *(float *)((char *)record + 0x1C) = f2;
+                    f2 = *((float *)interp + 1);
+                    f2 += f1 * (*((float *)end + 1) - f2);
+                    *(float *)((char *)record + 0x20) = f2;
+                    f2 = *((float *)interp + 2);
+                    f2 += f1 * (*((float *)end + 2) - f2);
+                    *(float *)((char *)record + 0x24) = f2;
+                    f3 = *((float *)interp + 3);
+                    f2 = f3 + f1 * (*((float *)end + 3) - f3);
+                    *(float *)((char *)record + 0x28) = f2;
+                    f0 = *(float *)((char *)record + 0x24);
+                    f1 = *(float *)((char *)record + 0x28);
+                    f0 = (float)fn_8002F234(end, interp, radius,
+                                             f0 * f0 + f1 * f1, f1, f3);
+                    f0 = f31 / f0;
+                    f1 = *(float *)((char *)record + 0x24) * f0;
+                    *(float *)((char *)record + 0x24) = f1;
+                    f1 = *(float *)((char *)record + 0x28) * f0;
+                    *(float *)((char *)record + 0x28) = f1;
+                    f2 = *((float *)((char *)interp + 0x18)) * *(float *)(sp + 0x1C);
+                    f1 = *((float *)buffer + 1) * (*((float *)((char *)interp + 0x1C)) + f2);
+                    f0 = (float)fn_8002EFB4(interp, f1, lbl_80564CD0, f2);
+                    index++;
+                    entry = (char *)entry + 8;
+                    *(float *)((char *)record + 0x2C) = f0;
+                    *(int *)(sp + 8) = *(int *)((char *)record + 0x1C);
+                    *(void **)(sp + 0x30) = *(void **)((char *)record + 0x30);
+                    *(int *)sp = *(int *)((char *)record + 0x24);
+                    *(int *)(sp + 4) = *(int *)((char *)record + 0x28);
+                    *(int *)(sp + 0xC) = *(int *)((char *)record + 0x20);
+                    f0 = *(float *)(sp + 8);
+                    f2 = -f0;
+                    f10 = *(float *)*(void **)(sp + 0x30);
+                    f6 = *(float *)sp;
+                    f1 = f2 * f6;
+                    f8 = *(float *)(sp + 4);
+                    f3 = -f6;
+                    *(int *)(sp + 0x14) = *(int *)(sp + 0xC);
+                    f4 = f2 * f8;
+                    f0 = *(float *)(sp + 0x14);
+                    f7 = f8 * f10;
+                    f9 = *((float *)*(void **)(sp + 0x30) + 1);
+                    f5 = f3 * f10;
+                    f2 = f0 * f6;
+                    *(float *)((char *)record + 0x34) = f7;
+                    f0 = f0 * f8;
+                    *(float *)((char *)record + 0x38) = f30;
+                    f3 = f6 * f9;
+                    f4 = f4 + f2;
+                    *(float *)((char *)record + 0x3C) = f5;
+                    f0 = f1 - f0;
+                    f2 = f8 * f9;
+                    f4 = f10 * f4;
+                    f1 = f9 * f0;
+                    f0 = f29 + f4;
+                    *(float *)((char *)record + 0x40) = f0;
+                    *(float *)((char *)record + 0x44) = f3;
+                    *(float *)((char *)record + 0x48) = f30;
+                    *(float *)((char *)record + 0x4C) = f2;
+                    f0 = *(float *)((char *)record + 0x2C);
+                    f0 = f0 + f1;
+                    *(float *)((char *)record + 0x50) = f0;
+                    *(void **)((char *)record + 0x10) = *(void **)((char *)next + 0xC);
+                    *(void **)((char *)next + 0xC) = record;
+                    ++*(int *)&lbl_8055FA84;
+                }
+            }
+            current = fn_80138B4C(object, current);
+        } while (current != 0);
+    }
+    fn_8013530C(sp + 0x24, -1);
+    if (fn_802E2C20(sp + 0x24) - *(volatile int *)(sp + 0x14) > 0x1F4) {
+        fn_802E30C8(&lbl_8034A064, *(void *volatile *)(sp + 0x10));
+    }
+}
+#pragma cplusplus reset
 
 void fn_802BA560(void *arg0) {
     *(volatile int *)((char *)arg0 + 4) = 0;
