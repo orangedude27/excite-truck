@@ -2726,16 +2726,20 @@ void GXSetTevKColorSel(s32 arg0, s32 arg1) {
 }
 
 void GXSetTevKAlphaSel(s32 arg0, s32 arg1) {
-    register unsigned int *base = __GXData;
-    register unsigned int *entry = (unsigned int *)((char *)base + ((arg0 * 2) & ~3));
+    union TevKAlphaReg {
+        u32 value;
+        struct { u32 pad0 : 8; u32 selector : 5; u32 pad1 : 19; } odd;
+        struct { u32 pad0 : 18; u32 selector : 5; u32 pad1 : 9; } even;
+    } *entry = (union TevKAlphaReg *)((char *)__GXData + ((arg0 * 2) & ~3) + 0x200);
+
     if (arg0 & 1) {
-        entry[0x200 / 4] = (entry[0x200 / 4] & 0xFF07FFFF) | (arg1 << 19);
+        entry->odd.selector = arg1;
     } else {
-        entry[0x200 / 4] = (entry[0x200 / 4] & 0xFFFFC1FF) | (arg1 << 9);
+        entry->even.selector = arg1;
     }
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = entry[0x200 / 4];
-    *(unsigned short *)((char *)base + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = entry->value;
+    *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetTevSwapMode(s32 arg0, s32 arg1, s32 arg2) {
