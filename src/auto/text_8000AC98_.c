@@ -311,7 +311,7 @@ void fn_8000BC44(void) {
     extern int lbl_8034F5B8;
     extern int lbl_802FBFDC, lbl_802FBFF8;
     int i = 0;
-    int *p = &lbl_8034F5B8;
+    int *p = (int *)&lbl_8034F5B8;
     do {
         if (p[1] == 0x22) {
             fn_8026A1F0(p[0], i, 0);
