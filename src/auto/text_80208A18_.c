@@ -148,6 +148,8 @@ void fn_80209110(void **arg0) {
     }
 }
 
+#pragma push
+#pragma inline_depth(0)
 void fn_80209190(float *arg0, float arg1) {
     if (arg0 != 0) {
         float value = lbl_80563230 < arg1 ? lbl_80563230 : arg1;
@@ -156,6 +158,7 @@ void fn_80209190(float *arg0, float arg1) {
         fn_80208A50(arg0);
     }
 }
+#pragma pop
 
 extern float lbl_80563230;
 extern float lbl_80563234;
