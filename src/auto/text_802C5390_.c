@@ -711,5 +711,5 @@ extern void fn_802DB2B8(void);
 void fn_802C8234(void) { fn_802DB2B8(); }
 
 extern int lbl_8055D008;
-extern void fn_8012C4E4(void *, int);
+extern int fn_8012C4E4(void *, void *, int);
 
