@@ -129,7 +129,7 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
             fn_802E317C(lbl_80339A20 + 0x100, (u8 *)arg1 + 0x10);
         if (sp8 != 2) fn_802E317C(lbl_80339A20 + 0x58, (u8 *)arg1 + 0x10, 2);
     } else if (*(s32 *)((u8 *)arg0 + 0x14) != 0) {
-        ((void (*)(s32))fn_801E6924)(*(s32 *)((u8 *)arg0 + 0x14));
+        fn_801E6924(*(s32 *)((u8 *)arg0 + 0x14));
         *(s32 *)((u8 *)arg0 + 0x14)=0;
     }
 }
