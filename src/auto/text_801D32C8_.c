@@ -3,7 +3,7 @@
 
 extern int fn_80128668(void *);
 extern int fn_80179EE8(int);
-extern char lbl_80338400;
+extern char lbl_80338400[16];
 extern float lbl_80562AB8;
 
 void fn_801D32C8(void) {
@@ -95,15 +95,18 @@ unsigned int fn_801D37AC(void *arg0) {
 }
 
 void *fn_801D3894(void *arg0, int arg1) {
- if (arg0 != 0) {
-  *(int *)((char *)arg0 + 0x28) = 0;
-  *(char **)arg0 = &lbl_80338400;
-  *(int *)((char *)arg0 + 0x24) = 0;
-  *(float *)((char *)arg0 + 0x2C) = lbl_80562AB8;
-  if (arg0 != 0) fn_80179EE8(0);
-  if (arg1 > 0) fn_80128668(arg0);
- }
- return arg0;
+    if (arg0 != 0) {
+        float zero = lbl_80562AB8;
+        *(int *)((char *)arg0 + 0x28) = 0;
+        *(char **)arg0 = (char *)&lbl_80338400;
+        *(int *)((char *)arg0 + 0x24) = 0;
+        *(float *)((char *)arg0 + 0x2C) = zero;
+        if (arg0 != 0)
+            ((void (*)(void *, int))fn_80179EE8)(arg0, 0);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
 }
 
 extern void fn_8017B0F8(void);
