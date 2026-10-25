@@ -9,6 +9,7 @@ extern s32 fn_802C82C4(s32);
 extern s32 fn_802E30C8(s32, s32);
 extern s32 fn_80128668();
 extern s32 fn_80128670(s32);
+extern s32 fn_8027B9EC(s32);
 #pragma push
 #pragma small_data off
 extern s32 lbl_8034109C;
