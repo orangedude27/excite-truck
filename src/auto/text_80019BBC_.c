@@ -4,6 +4,9 @@
 #pragma small_data off
 extern char lbl_803583C8[];
 #pragma small_data on
+extern void fn_802C8BD0(int);
+extern void fn_802C8DB8(void *, int, unsigned short *, int);
+extern void fn_802C8D74(void);
 extern int fn_8001B478(float);
 extern void *fn_80156A40(void);
 extern float lbl_80560418;
@@ -59,6 +62,7 @@ extern void *fn_801E87A8(void);
 extern s32 fn_80230B9C(s32);
 extern void PSVECNormalize(f32 *, f32 *);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
+extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
 void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     struct Frame {
         u8 prefix[0x68];
@@ -76,7 +80,7 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     s32 *data;
     volatile u32 *destination;
     volatile u32 *destination2;
-    volatile u32 *source;
+    u32 *source;
     void *global;
     void *record;
     void *part;
@@ -94,13 +98,16 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     f32 actorY;
     s32 flag;
     s32 color;
+    f32 *ring;
+    u8 *vertex;
+    f32 u, w, z, sx, sy, sz, px, py, pz;
     f32 extra0, extra1, extra2, extra3;
     volatile f32 sink;
 
     if (obj == 0) return;
     resource = fn_801E866C(*(s32 *)((u8 *)obj + 0x44));
     global = lbl_8055D5B4;
-    source = (volatile u32 *)fn_801E8718(*(s32 *)((u8 *)obj + 0x44));
+    source = (u32 *)fn_801E8718(*(s32 *)((u8 *)obj + 0x44));
     destination = frame.matrix;
     a = source[6]; b = source[8]; destination[6] = a;
     c = source[0]; destination[8] = b;
@@ -123,21 +130,22 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     *(s32 *)((u8 *)data + 0x44) = fn_801EA994();
     index = 0;
     offset = 0;
-    for (;;) {
-        if (index >= *(s32 *)((u8 *)data + 0x44)) break;
-        record = fn_801EA9A0(index);
-        part = (void *)fn_80016474(*(s32 *)((u8 *)record + 0xAC));
-        *(u32 *)((u8 *)data + offset + 4) = *(u32 *)((u8 *)part + 0x50);
-        part = *(void **)((u8 *)record + 8);
-        if (part != 0) {
-            angle = (f32)fn_8002EFB0(*(f32 *)((u8 *)part + 0x20), *(f32 *)((u8 *)part + 0x18));
-            *(f32 *)((u8 *)data + offset + 8) = -angle;
-        }
-        index++;
-        offset += 8;
+    goto recordCheck;
+recordLoop:
+    record = fn_801EA9A0(index);
+    part = (void *)fn_80016474(*(s32 *)((u8 *)record + 0xAC));
+    *(u32 *)((u8 *)data + offset + 4) = *(u32 *)((u8 *)part + 0x50);
+    part = *(void **)((u8 *)record + 8);
+    if (part != 0) {
+        angle = (f32)fn_8002EFB0(*(f32 *)((u8 *)part + 0x20), *(f32 *)((u8 *)part + 0x18));
+        *(f32 *)((u8 *)data + offset + 8) = -angle;
     }
+    index++;
+    offset += 8;
+recordCheck:
+    if (index < *(s32 *)((u8 *)data + 0x44)) goto recordLoop;
 
-    source = (volatile u32 *)fn_801E8718(*(s32 *)((u8 *)obj + 0x44));
+    source = (u32 *)fn_801E8718(*(s32 *)((u8 *)obj + 0x44));
     destination2 = frame.matrix2;
     a = source[6]; b = source[8]; destination2[6] = a;
     c = source[0]; destination2[8] = b;
@@ -155,11 +163,13 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     angle = -result;
     index = 0;
     offset = 0;
-    while (index < *(s32 *)((u8 *)data + 0x44)) {
-        *(f32 *)((u8 *)data + offset + 8) -= angle;
-        index++;
-        offset += 8;
-    }
+    goto subtractCheck;
+subtractLoop:
+    *(f32 *)((u8 *)data + offset + 8) -= angle;
+    index++;
+    offset += 8;
+subtractCheck:
+    if (index < *(s32 *)((u8 *)data + 0x44)) goto subtractLoop;
     *(s32 *)((u8 *)data + 0x48) = resource;
     record = fn_801EA9A0(resource);
     desc = *(void **)((u8 *)record + 8);
@@ -204,12 +214,31 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
         frame.output[2] *= lbl_80560440;
         color = fn_80230B9C(-1);
     }
+    ring = (f32 *)((u8 *)lbl_803583C8 - 0x108);
+    vertex = (u8 *)&frame + 0x290;
+    color = -1;
+    for (index = 0; index < 21; index++) {
+        u = ring[0];
+        w = ring[1];
+        z = ring[2];
+        sx = u * f25;
+        sy = w * f25;
+        sz = z * f25;
+        px = sx * frame.output[0] + sy * frame.normal[0] + sz * frame.axis[0];
+        py = sx * frame.output[1] + sy * frame.normal[1] + sz * frame.axis[1];
+        pz = sx * frame.output[2] + sy * frame.normal[2] + sz * frame.axis[2];
+        fn_80231380(vertex, color,
+                    x + px + *(f32 *)((u8 *)&frame + 0x11C),
+                    y + py + *(f32 *)((u8 *)&frame + 0x120),
+                    pz + *(f32 *)((u8 *)&frame + 0x124), u, w);
+        ring += 3;
+        vertex += 0x18;
+    }
     extra0 = x * f25;
     extra1 = y * f21;
     extra2 = width * v;
     extra3 = height * ratio;
     sink = x + y + width + height + f21 + f25 + v + ratio + actorX + actorY + extra0 + extra1 + extra2 + extra3 + color;
-    /* compile budget probe 10 */
 }
 
 #pragma small_data off
@@ -349,6 +378,29 @@ int fn_8001B478(float farg0) {
     fn_8013530C(sp20, -1);
     return result;
 }
+
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_8001B754(float arg0) {
+    class Callback {
+    public:
+        virtual void f0();
+        virtual int invoke(int);
+    };
+    int i = 0;
+    int result;
+
+    for (;;) {
+        fn_8001B478(arg0);
+        i++;
+        result = ((Callback *)fn_80156A40())->invoke(i);
+        if (result == 0)
+            break;
+    }
+    return result;
+}
+#pragma cplusplus reset
+#pragma pop
 
 void fn_8001B7B8(void) {
     fn_802D3050();
