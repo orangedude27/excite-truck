@@ -576,9 +576,12 @@ s32 fn_80161D14(void) {
 
 #pragma dont_inline on
 void fn_80161DE4(void) {
-    register s32 total = fn_801615B4(fn_80161ECC() - 1);
+    s32 total;
+    s32 addition;
+    total = fn_801615B4(fn_80161ECC() - 1);
     fn_80161E40(fn_80161ECC() - 1);
-    total += fn_8016208C();
+    addition = fn_8016208C();
+    total = addition + total;
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, total + 1);
 }
 #pragma dont_inline off
@@ -1652,15 +1655,30 @@ int fn_80165848(int arg0, int arg1, int arg2, int arg3, int arg4, int *arg5) {
     return 0;
 }
 
-int fn_80165894(s32 a0, s32 a1, float *arg2, s32 arg3) {
+#pragma cplusplus on
+extern "C" int fn_80165894(s32 a0, s32 a1, float *arg2, s32 arg3) {
+    struct CacheObject {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void invoke(float *, s32);
+    };
     if (lbl_804348E8[arg3]) {
         *arg2 = lbl_80561848;
-        ((void (*)(int *, float *, s32))(((int ***) (*(char **)lbl_8042FDEC + (lbl_8055E304 << 2)))[0][0][0x38 / 4]))(
-            ((int **)(*(char **)lbl_8042FDEC + (lbl_8055E304 << 2)))[0], arg2, arg3);
+        ((CacheObject **)(*(char **)lbl_8042FDEC))[lbl_8055E304]->invoke(arg2, arg3);
     }
     return 0;
 }
-
+#pragma cplusplus off
 int fn_80165900(void) { return 1; }
 
 int fn_80165908(void) { return 0; }
