@@ -93,6 +93,13 @@ void fn_801A6558(void *arg0) {
         fn_801A67B0(arg0);
 }
 
+extern float lbl_80562438;
+void fn_801A67B0(void *arg0) {
+    float value = lbl_80562438;
+    *(int *)((char *)arg0 + 0x2704) = 1;
+    *(float *)((char *)arg0 + 0x11C) = value;
+}
+
 extern int lbl_8055E3C4;
 extern double lbl_80562440;
 void fn_801A69F4(void *arg0, float *arg1) {
