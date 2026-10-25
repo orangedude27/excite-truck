@@ -671,7 +671,7 @@ extern long fn_801284F8(long, void *);
 extern long fn_801A6484(void);
 extern unsigned char lbl_8055E45E;
 extern long fn_8017873C(long *, long, long, long, long);
-extern long lbl_80430850;
+extern long lbl_80430850[];
 extern long fn_80178C1C(long *);
 extern float lbl_80561B60;
 extern double lbl_80561B70;
