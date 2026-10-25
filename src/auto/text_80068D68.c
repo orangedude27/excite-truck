@@ -1470,8 +1470,9 @@ s32 fn_8006EBF4(void) {
     return r;
 }
 
+extern void fn_80068E08(s32);
 void fn_8006EC20(void) {
-    fn_80068E08();
+    ((void (*)(void))fn_80068E08)();
 }
 
 void fn_8006EC24(s32 arg0, s32 arg1) {
@@ -9256,6 +9257,18 @@ u8 fn_80089E20(u8 value) {
 
 void fn_80089E3C(void) {
 
+}
+
+extern void l2c_csm_closed(void *, u16, void *);
+extern void l2c_csm_orig_w4_sec_comp(void *, u16, void *);
+extern void l2c_csm_w4_l2ca_connect_rsp(void *, u16, void *);
+extern void l2c_csm_config(void *, u16, void *);
+extern void l2c_csm_w4_l2cap_disconnect_rsp(void *, u16, void *);
+extern void *jumptable_803183B0[];
+void fn_80089E40(void *p_ccb, u8 event, void *p_data) {
+    u32 state = *(u32 *)((u8 *)p_ccb + 4);
+    if (state > 8) return;
+    ((void (*)(void *, u16, void *))jumptable_803183B0[state])(p_ccb, event, p_data);
 }
 
 extern char lbl_80318580[];
