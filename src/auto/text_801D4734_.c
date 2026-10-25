@@ -326,13 +326,34 @@ int fn_801D57F0(void *alarm) {
     }
 }
 
+void fn_801D597C(int arg0, int arg1) {
+    int *entries;
+    int count;
+    int i;
+    if (arg0 == 0) {
+        return;
+    }
+    entries = (int *)lbl_804423A4[0];
+    count = lbl_804423A4[1];
+    for (i = 0; i < count; i++) {
+        if (entries[i] == arg0) {
+            if (arg1 != 0) {
+                fn_801D50A8(arg0);
+            } else {
+                fn_801D50B0(arg0);
+            }
+            return;
+        }
+    }
+}
+
 #pragma scheduling reset
 void fn_801D5A14(int arg0) {
-    fn_801D59C8(arg0, 2);
+    (void)fn_801D59C8(arg0, 2);
 }
 
 void fn_801D5A1C(int arg0) {
-    fn_801D59C8(arg0, 1);
+    (void)fn_801D59C8(arg0, 1);
 }
 
 #pragma scheduling invalid_target
