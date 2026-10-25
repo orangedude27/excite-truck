@@ -349,13 +349,17 @@ void fn_802C90F0(void) {
 }
 
 void fn_802C9294(int arg0, int arg1) {
+    int value;
+    int one;
     if (arg0 != -1 && arg0 != -2) {
-        char value = arg1 != 1;
-        lbl_8055FC75 = !value;
-        lbl_8055FC74 = 1;
+        value = arg1 == 1;
+        one = 1;
+        lbl_8055FC75 = value;
+        lbl_8055FC74 = one;
     } else {
-        lbl_8055FC74 = 0;
-        lbl_8055FC75 = 0;
+        one = 0;
+        lbl_8055FC74 = one;
+        lbl_8055FC75 = one;
     }
     fn_802CB29C();
 }
@@ -702,6 +706,12 @@ int fn_802C9C8C(int arg0) {
         return 1;
     }
     return 0;
+}
+
+void fn_802C9CE0(void) {
+    fn_802D362C(lbl_8055FC84);
+    fn_802D3304();
+    lbl_8055FC70 = 1;
 }
 
 extern int lbl_8055FC98;
