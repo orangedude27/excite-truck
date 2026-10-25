@@ -4087,6 +4087,10 @@ extern s32 fn_800B3754(s32, s32 *, s32);
 return fn_800B3754(arg0, (s32 *)arg1, 1) == 0;
 }
 
+extern "C" s32 fn_800B3304(void *arg0, void *arg1) {
+    return fn_800A4AD0((u8 *)arg0, (u8 *)arg1) != 0;
+}
+
 extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
 (*(s32 *)((u8 *)arg0 + 0)) = arg1;
 (*(s32 *)((u8 *)arg0 + 4)) = arg1;
