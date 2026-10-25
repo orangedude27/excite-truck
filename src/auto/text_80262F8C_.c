@@ -136,15 +136,22 @@ void fn_802638C4(void) {}
 
 #pragma scheduling on
 s32 fn_802638C8(void *arg0, s32 arg1) {
-    if (*((u8 *)arg0 + 0x29) != 0 && arg1 != 0x126) {
-        if (arg1 < 0x126) {
-            if (arg1 >= 0x125 && *((u8 *)arg0 + 0x28) == 0) {
-                *((u8 *)arg0 + 0x28) = 1;
-            }
-        } else if (arg1 < 0x128 && *((u8 *)arg0 + 0x28) != 0) {
-            *((u8 *)arg0 + 0x28) = 0;
-        }
-    }
+    if (*((u8 *)arg0 + 0x29) == 0) goto done;
+    if (arg1 == 0x126) goto done;
+    if (arg1 >= 0x126) goto upper;
+    if (arg1 >= 0x125) goto set_value;
+    goto done;
+upper:
+    if (arg1 >= 0x128) goto done;
+    goto clear_value;
+set_value:
+    if (*((u8 *)arg0 + 0x28) != 0) goto done;
+    *((u8 *)arg0 + 0x28) = 1;
+    goto done;
+clear_value:
+    if (*((u8 *)arg0 + 0x28) == 0) goto done;
+    *((u8 *)arg0 + 0x28) = 0;
+done:
     return 0;
 }
 
@@ -219,15 +226,17 @@ void fn_80263AB4(void *arg0) {
 }
 
 extern const u8 lbl_80346280[];
+#pragma push
+#pragma scheduling invalid_target
 void fn_80263B68(void *arg0, s32 arg1) {
     s32 value;
     *(s32 *)((u8 *)arg0 + 0x24) = arg1;
     *(s32 *)((u8 *)arg0 + 0x20) = (arg1 * 2) + 1;
-    fn_801333E8(arg1 + 8, lbl_80346280, (u8 *)arg0 + 0x28, (u8 *)arg0 + 0x28);
+    ((void (*)(s32, const u8 *, u8 *))fn_801333E8)(arg1 + 8, lbl_80346280, (u8 *)arg0 + 0x28);
     value = *(s32 *)((u8 *)arg0 + 0x24);
     *(s32 *)((u8 *)arg0 + 0x2C) |= 1 << value;
 }
-
+#pragma pop
 extern const u8 lbl_80346294[];
 void fn_80263BCC(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x24);
