@@ -26,6 +26,7 @@ void fn_80131818(void*);
 void fn_802E317C(const char*, ...);
 
 int stricmp(const char*, const char*);
+const char* fn_80008158(s32);
 void fn_80012794(void);
 void fn_80279488(void);
 void fn_802E30C8(const char*, ...);
