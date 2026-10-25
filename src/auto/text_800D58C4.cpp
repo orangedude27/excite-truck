@@ -51,7 +51,7 @@ extern "C" f32 lbl_80560E8C;
 extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E90;
 extern "C" f32 lbl_80560E94;
-extern "C" s16 lbl_80565230[4];
+extern "C" int lbl_80565230;
 namespace nw4hbm { namespace lyt {
 struct DrawInfo;
 class Pane { public: void CalculateMtx(const DrawInfo &); };
