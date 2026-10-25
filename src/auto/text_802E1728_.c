@@ -96,8 +96,8 @@ int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride) {
 
 int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
 
-int fn_802E1960(int arg0) {
-    int result = ((arg0 >> 3) + 3) & ~3;
+unsigned int fn_802E1960(unsigned int arg0) {
+    unsigned int result = ((arg0 >> 3) + 3) & ~3;
     if ((result & (result - 1)) == 0)
         return result;
     return fn_802E176C(result);
@@ -110,7 +110,7 @@ void fn_802E1A38(void *arg0, int arg1) {
 }
 
 extern int fn_802E1954(int);
-extern int fn_802E1960(int);
+extern unsigned int fn_802E1960(unsigned int);
 #pragma dont_inline on
 void fn_802E1A9C(void *arg0, int *arg1, int *arg2, int *arg3, int *arg4, int *arg5, int *arg6, int *arg7, int arg8) {
  int a, b, c, d, e, f, g;
@@ -287,11 +287,10 @@ int main(void) {
     int local[0x41];
     int *p = &local[1];
     int i;
-    for (i = 0; i < 0x20; i++) {
-        p[0] = 0;
-        p[1] = 0;
-        p += 2;
-    }
+    do {
+        *p++ = 0;
+        *p++ = 0;
+    } while (--i != 0);
     if (fn_80004D64(&local[2]) != 0) {
         if (fn_802E2A5C() != 0) {
             fn_80004E20();
@@ -319,14 +318,16 @@ unsigned long long fn_802E2C20(void) {
 extern int lbl_8055FEF8;
 extern unsigned int lbl_8055FEFC;
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
+#pragma scheduling invalid_target
 unsigned long long fn_802E2C9C(void) {
     unsigned long long now = OSGetTime();
-    unsigned int lo = (unsigned int)now - lbl_8055FEFC;
-    unsigned long long diff = now - *(unsigned long long *)&lbl_8055FEF8;
-    unsigned int ticks = *(volatile unsigned int *)0x800000F8;
-    return __div2i((diff << 3) | ((lo << 3) >> 29), (unsigned long long)(lo << 3) | ((unsigned long long)(ticks >> 2) * 0x431c));
+    unsigned long long start = ((unsigned long long)(unsigned int)lbl_8055FEF8 << 32) | lbl_8055FEFC;
+    unsigned long long elapsed = now - start;
+    unsigned int busClock = *(volatile unsigned int *)0x800000F8;
+    unsigned int scale = (busClock >> 2) / 125000;
+    return __div2i(elapsed << 3, scale);
 }
-
+#pragma scheduling on
 void fn_802E2CFC(void *arg0) {
     struct OSTimeCalendar calendar;
     OSTicksToCalendarTime(OSGetTime(), &calendar);
@@ -374,9 +375,6 @@ fn_802E30C8(text+0x1E4);OSReturnToMenu();
 }
 
 void fn_802E300C(int arg0) {
-    int temp = 0;
-    if (arg0 > 0)
-        temp = 1;
     ((void (*)(const char *, int))fn_802E317C)(lbl_8034CEE4, arg0);
 }
 
