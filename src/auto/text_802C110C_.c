@@ -5,7 +5,7 @@
 extern int lbl_8055FB28, lbl_8055FB2C, lbl_8055FB30, lbl_8055FB34, lbl_8055CFA0;
 extern int lbl_8055FB40;
 extern char lbl_804C0810[];
-extern int lbl_804C0E10;
+extern char lbl_804C0E10[];
 extern f32 lbl_8055FB38;
 extern f32 lbl_80564E50;
 extern char lbl_8034AEF8[], lbl_8034AF04[];
@@ -142,18 +142,29 @@ int fn_802C143C(void *arg0) {
     return index;
 }
 
+#pragma optimization_level 2
+#pragma scheduling invalid_target
 int fn_802C1500(int arg0, int arg1) {
+    struct Entry {
+        int first;
+        int second;
+        char padding[0x58];
+    };
     int index = lbl_8055FB2C;
-    int *table = (int *)((char *)&lbl_804C0810);
-    int *entry = (int *)((char *)table + arg1 * 0x60);
+    struct Entry *entry = (struct Entry *)lbl_804C0810 + arg1;
+    int *list = (int *)lbl_8055FB30;
     lbl_8055FB2C = index + 1;
-    ((int *)lbl_8055FB30)[index] = arg0;
-    if (entry[0] < 0)
-        entry[0] = index;
-    entry[1] = index;
+    list[index] = arg0;
+    if (entry->first < 0) {
+        entry->first = index;
+        entry->second = index;
+    } else {
+        entry->second = index;
+    }
     return lbl_8055CFA0 + index;
 }
-
+#pragma scheduling on
+#pragma optimization_level reset
 extern char lbl_8034AED0[];
 extern f32 lbl_80564E54, lbl_80564E50, lbl_80564E58;
 extern char lbl_8055CFA4[], lbl_8055CFAC[], lbl_8055CFB8[], lbl_8055CFC0[];
