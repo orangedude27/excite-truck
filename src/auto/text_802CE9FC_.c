@@ -1106,6 +1106,8 @@ void fn_802D2AC4(void) {
 
 #pragma small_data off
 extern char lbl_804C97D0;
+#pragma small_data off
+__declspec(section ".rodata") extern char lbl_804C97D0;
 void *fn_802D2D04(void) {
     return &lbl_804C97D0 + 0xC;
 }
