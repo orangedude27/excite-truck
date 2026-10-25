@@ -30,13 +30,12 @@ extern void *fn_8022EC7C(void);
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_8022E9E0(void) {
-    s32 size = 0x20;
     if (lbl_8055EFF4 == 0) {
-        void *p = fn_801284F8(size, (void *)&lbl_80340280);
-        if (p) p = fn_8012A13C(p, lbl_80340280, size, 8);
+        void *p = fn_801284F8(0x20, (void *)&lbl_80340280);
+        if (p) p = fn_8012A13C(p, lbl_80340280, 0x20, 8);
         lbl_8055EFF8 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055EFF8)) lbl_8055EFF4 += 1;
+    if (fn_8012A2D8(lbl_8055EFF8)) ++lbl_8055EFF4;
 }
 
 #pragma cplusplus on
@@ -50,15 +49,16 @@ extern "C" void fn_8022EA58(void *arg0) {
 }
 #pragma cplusplus reset
 void fn_8022EAB8(void) {
+    void *p;
     if (lbl_8055EFFC == 0) {
-        void *p = (void *)fn_801284F8(0x20, (void *)&lbl_80340290);
-        if (p) p = fn_8012A13C(p, lbl_80340290, 0x20, 0x3C);
+        p = fn_801284F8(0x20, (void *)&lbl_80340290);
+        if (p != 0) {
+            p = fn_8012A13C(p, (void *)&lbl_80340290, 0x20, 0x3C);
+        }
         lbl_8055F000 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055F000) != 0) {
-        s32 count;
-        count = lbl_8055EFFC;
-        lbl_8055EFFC = count + 1;
+    if (fn_8012A2D8(lbl_8055F000)) {
+        lbl_8055EFFC = lbl_8055EFFC + 1;
     }
 }
 
@@ -166,3 +166,41 @@ void fn_8022EE9C(void) {
     fn_8022EDE4(a);
 }
 
+extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
+#pragma dont_inline on
+void fn_8022EEF8(f32 *dst, const f32 *left, const f32 *right, s32 arg3) {
+    f32 temp_f1;
+    f32 temp_f24, temp_f25, temp_f26, temp_f27, temp_f28, temp_f29, temp_f30, temp_f31;
+
+    dst[12] = left[12] * right[12];
+    dst[13] = left[13] * right[13];
+    dst[14] = left[14] * right[14];
+    if (dst == left || dst == right) {
+        temp_f24 = fn_80144514(right[0], left[0], right[3], left[1], right[6], left[2]);
+        temp_f25 = fn_80144514(right[0], left[3], right[3], left[4], right[6], left[5]);
+        temp_f26 = fn_80144514(right[0], left[6], right[3], left[7], right[6], left[8]);
+        temp_f27 = fn_80144514(right[1], left[0], right[4], left[1], right[7], left[2]);
+        temp_f28 = fn_80144514(right[1], left[3], right[4], left[4], right[7], left[5]);
+        temp_f29 = fn_80144514(right[1], left[6], right[4], left[7], right[7], left[8]);
+        temp_f30 = fn_80144514(right[2], left[0], right[5], left[1], right[8], left[2]);
+        temp_f31 = fn_80144514(right[2], left[3], right[5], left[4], right[8], left[5]);
+        temp_f1 = fn_80144514(right[2], left[6], right[5], left[7], right[8], left[8]);
+        dst[0] = temp_f24; dst[3] = temp_f25; dst[6] = temp_f26;
+        dst[1] = temp_f27; dst[4] = temp_f28; dst[7] = temp_f29;
+        dst[2] = temp_f30; dst[5] = temp_f31; dst[8] = temp_f1;
+    } else {
+        dst[0] = fn_80144514(right[0], left[0], right[3], left[1], right[6], left[2]);
+        dst[3] = fn_80144514(right[0], left[3], right[3], left[4], right[6], left[5]);
+        dst[6] = fn_80144514(right[0], left[6], right[3], left[7], right[6], left[8]);
+        dst[1] = fn_80144514(right[1], left[0], right[4], left[1], right[7], left[2]);
+        dst[4] = fn_80144514(right[1], left[3], right[4], left[4], right[7], left[5]);
+        dst[7] = fn_80144514(right[1], left[6], right[4], left[7], right[7], left[8]);
+        dst[2] = fn_80144514(right[2], left[0], right[5], left[1], right[8], left[2]);
+        dst[5] = fn_80144514(right[2], left[3], right[5], left[4], right[8], left[5]);
+        dst[8] = fn_80144514(right[2], left[6], right[5], left[7], right[8], left[8]);
+    }
+    dst[9] = left[9] + right[9];
+    dst[10] = left[10] + right[10];
+    dst[11] = left[11] + right[11];
+}
+#pragma dont_inline off
