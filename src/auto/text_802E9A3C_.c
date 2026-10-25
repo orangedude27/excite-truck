@@ -142,12 +142,15 @@ extern char lbl_8055D2A4;
 extern int fn_800B7E5C(signed char, int);
 extern int fn_800B7B34(signed char);
 extern int fn_802EA5D4(void *, int);
+#pragma push
+#pragma scheduling invalid_target
 void fn_802E9CAC(int arg0) {
     OSReport((const char *)&lbl_8034E390, arg0);
     *(volatile char *)&lbl_80560061 = 0;
     ++*(volatile int *)&lbl_80560068;
 }
-
+#pragma scheduling on
+#pragma pop
 extern long fn_800B7CE8(long, void *, void *);
 extern long fn_800B7DB0(long, void (*)(long), void (*)(int));
 extern long fn_800B7968(long, long, long, void *);
