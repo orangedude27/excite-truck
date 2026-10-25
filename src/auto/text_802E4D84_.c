@@ -33,6 +33,7 @@ extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern void fn_802E589C(void);
 extern int fn_802E582C(void);
+#pragma dont_inline fn_802E582C
 __declspec(section ".sdata") extern char lbl_8055D1E4[];
 extern char lbl_8034D490[];
 extern char lbl_8034D4A0[];
