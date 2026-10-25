@@ -47,7 +47,7 @@ struct Dummy_801B8318 {
     virtual void f40();
           virtual void f41(void *);
           virtual void f42(void *, void *, void *);
-    virtual void f43();
+          virtual void f43(int, void *);
     virtual void f44();
     virtual void f45();
     virtual void f46();
