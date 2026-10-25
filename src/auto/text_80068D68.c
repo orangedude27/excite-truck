@@ -7758,10 +7758,16 @@ void fn_800853B4(u8 *arg0, u16 arg1, u16 arg2) {
 }
 
 void fn_800853F8(u8 *arg0, u16 arg1, u16 arg2) {
-    *(u16 *)(arg0 + 2) = 7; *(u16 *)(arg0 + 4) = 0;
-    arg0[8] = 0x1E; arg0[9] = 0xC; arg0[10] = 4;
-    arg0[11] = arg1; arg0[12] = arg1 >> 8; arg0[13] = arg2; arg0[14] = arg2 >> 8;
-    btu_hcif_send_cmd(arg1 >> 8, 4, 0xC, 0x1E, 0);
+    ((u16 *)(arg0 + 2))[0] = 7;
+    ((u16 *)(arg0 + 4))[0] = 0;
+    arg0[8] = 0x1E;
+    arg0[9] = 0xC;
+    arg0[10] = 4;
+    arg0[11] = arg1;
+    arg0[12] = arg1 >> 8;
+    arg0[13] = arg2;
+    arg0[14] = arg2 >> 8;
+    btu_hcif_send_cmd(arg0);
 }
 
 BOOL btsnd_hcic_write_pin_type_8008543C(u32 pin_type) {
