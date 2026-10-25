@@ -4,9 +4,27 @@
 extern int lbl_8041E098[];
 extern char lbl_80329FC0[];
 extern void fn_802E317C();
+extern char lbl_80329FA0[];
 
 void fn_80127C8C(void) {
 
+}
+
+void fn_80127CF4(void *arg0, void *arg1) {
+    int count = lbl_8041E098[1];
+    int value = count ^ 10;
+    int masked = value & 10;
+    int shifted = (value >> 1) - masked;
+    if (((unsigned int)shifted >> 31) != 0) {
+        unsigned char *slot = (unsigned char *)lbl_8041E098 + count * 16;
+        lbl_8041E098[1] = count + 1;
+        *(int *)(slot + 8) = 0;
+        *(void **)(slot + 12) = arg0;
+        *(void **)(slot + 16) = arg1;
+        slot[20] = 0;
+    } else {
+        fn_802E317C(lbl_80329FC0);
+    }
 }
 
 extern int fn_802E2C20();
