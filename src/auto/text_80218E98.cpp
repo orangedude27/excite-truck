@@ -4951,8 +4951,7 @@ extern "C" u32 fn_80229ADC(void) { return 1; }
 
 extern "C" void fn_80229AE4(void *arg0, s32 arg1, s32 arg2) {
     void *obj = *(void **)((u8 *)arg0 + 0x244);
-    ((void (*)(void *, s32, s32, s32, s32))((*(void ***)obj)[6]))(
-        obj,
+    ((Fn80229AE4Dispatch *)obj)->Call(
         *(s32 *)((u8 *)arg0 + 0x248),
         *(s32 *)((u8 *)arg0 + 0x24C),
         arg1,
