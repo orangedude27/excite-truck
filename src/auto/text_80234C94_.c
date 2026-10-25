@@ -92,6 +92,39 @@ loop:
     return *(void **)node;
 }
 
+extern double atof(const char *);
+extern void *fn_8012F150(const char *);
+extern int fn_8012F2E4(void *);
+extern int fn_8012F2E8(void);
+extern char *fn_8012F2F0(void *, int, int);
+extern unsigned char lbl_8055B9E0[];
+extern unsigned char lbl_803406B0[];
+extern void fn_80265940(void);
+void fn_80234EF4(void *arg0, const char *arg1, int arg2) {
+    void *source, *last = 0, *item;
+    int count, i;
+    if (fn_8012C33C(arg1)) {
+        source = fn_8012F150(arg1);
+        count = fn_8012F2E8();
+        for (i = 0; i < count; i++) {
+            item = fn_801284F8(0x1c, (const char *)lbl_8055B9E0);
+            *(float *)item = (float)atof(fn_8012F2F0(source, i, 0));
+            *(float *)((char *)item + 4) = (float)atof(fn_8012F2F0(source, i, 1));
+            *(float *)((char *)item + 8) = (float)atof(fn_8012F2F0(source, i, 2));
+            *(float *)((char *)item + 0xc) = (float)atof(fn_8012F2F0(source, i, 3));
+            *(float *)((char *)item + 0x14) = (float)atof(fn_8012F2F0(source, i, 4));
+            *(float *)((char *)item + 0x10) = (float)atof(fn_8012F2F0(source, i, 5));
+            if (!last) *(void **)((char *)arg0 + 0x88) = item;
+            else *(void **)((char *)last + 0x18) = item;
+            last = item;
+        }
+        fn_8012F2E4(source);
+        *(void **)((char *)last + 0x18) = 0;
+    } else {
+        fn_802E317C((const char *)lbl_803406B0, arg1);
+    }
+}
+
 #pragma dont_inline on
 void *fn_8023505C(void *arg0, int arg1) {
     void *node;
@@ -118,11 +151,12 @@ extern const char lbl_80340760[];
 extern int stricmp(const char *, const char *);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80235380(void *);
+#pragma scheduling invalid_target
 void fn_8023509C(void) {
     if (lbl_8055F084 != 0)
-        fn_802E317C(lbl_803406FC, 0);
+        fn_802E317C(lbl_803406FC);
 }
-
+#pragma scheduling on
 void fn_802350BC(void) {
     if (lbl_8055F084 != 0) {
         fn_802E30C8(lbl_80340724, 0);
