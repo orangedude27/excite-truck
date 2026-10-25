@@ -327,10 +327,12 @@ void fn_801B5360(void) {
 
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801B5364(int arg0, int arg1) {
-    *(int *)((char *)&lbl_80435C70 + 0x208 + arg0 * 4) = arg1;
+    *(int *)((char *)lbl_80435C70 + 0x208 + arg0 * 4) = arg1;
 }
-
+#pragma pop
 void fn_801B537C(int arg0) {
     int i;
     for (i = 0; i < 16; i++) {
