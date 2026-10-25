@@ -102,7 +102,7 @@ extern void *fn_8001285C();
 extern char *fn_80012820(int);
 extern const char *fn_80007FF0(int);
 extern int fn_80012938(float);
-extern float lbl_80560358;
+extern volatile float lbl_80560358;
 void fn_80012910(void) {
     fn_80007FF0(*(int *)((char *)fn_8001285C() + 8));
 }
@@ -142,6 +142,15 @@ void fn_80013618(int arg0) {
     *(int *)(lbl_8035183C + count * 4) = result;
     *(int *)(lbl_8035183C + 0x80) = count + 1;
     fn_8001335C(result, arg0);
+}
+
+int fn_800136FC(void *arg0, void *arg1) {
+    int a = ((int *)arg0)[0x1A];
+    int b = ((int *)arg1)[0x1A];
+    if (a == b) {
+        return ((int *)arg0)[0x1B] - ((int *)arg1)[0x1B];
+    }
+    return a - b;
 }
 
 extern int lbl_8055D518;
