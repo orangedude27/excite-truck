@@ -3,6 +3,11 @@
 extern int fn_802E95E0(void *, void (*)(void), int);
 extern void fn_802E9010(void);
 extern char lbl_8034DEC4[];
+extern char lbl_8034DF00[];
+extern int lbl_80560020;
+extern void fn_802E6B94(void);
+extern void fn_80127D58(void *);
+extern void fn_80128670(int);
 
 extern int lbl_8056002C;
 extern char lbl_8034E108[];
