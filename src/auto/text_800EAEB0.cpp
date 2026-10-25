@@ -494,6 +494,7 @@ extern "C" void fn_800EBB88(void *arg0) {
 extern u8 lbl_80322D60[], lbl_80322DA4[], lbl_8032301C[], lbl_80322FF8[], lbl_80322FBC[], lbl_80322F98[], lbl_80322FEC[], lbl_80322FC8[], lbl_8032304C[], lbl_80323028[];
 #pragma pop
 extern "C" void *MEMAllocFromFrmHeapEx(void *, u32, s32);
+extern "C" u32 MEMGetAllocatableSizeForFrmHeapEx(void *, s32);
 void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)(void *, unsigned long, void *), void *user) {
     void *block;
     void *list;
