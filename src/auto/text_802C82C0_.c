@@ -350,7 +350,7 @@ void fn_802C90F0(void) {
 
 void fn_802C9294(int arg0, int arg1) {
     int value;
-    int one;
+    register int one;
     if (arg0 != -1 && arg0 != -2) {
         value = arg1 == 1;
         one = 1;
@@ -409,13 +409,13 @@ void fn_802C9124(float farg0, float farg1, float farg2, float farg3, int x0, int
     }
 }
 
+#pragma dont_inline on
 void fn_802C942C(int arg0) {
     fn_802C92D0();
     fn_802C92DC(0, 0, lbl_8055CFF0, lbl_8055CFF4, arg0);
     fn_802C92D8();
 }
-
-#pragma scheduling invalid_target
+#pragma dont_inline reset
 void fn_802C9474(void) {
     if ((unsigned char)lbl_8055FC94 != 0) return;
     lbl_8055FC94 = 1;
