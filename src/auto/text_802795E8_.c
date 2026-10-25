@@ -10,7 +10,7 @@ extern void fn_80128670(s32);
 extern void *fn_8012850C(s32, const char *);
 extern void fn_8027974C(void);
 extern void fn_802795E8();
-extern void fn_802E30C8(const char *);
+extern void fn_802E30C8(const char *, ...);
 extern char lbl_80347818[];
 extern char lbl_80347824[];
 extern void *memset(void *, int, u32);
@@ -83,6 +83,7 @@ f32 fn_802798E8(void *arg0) {
 extern f32 lbl_805640F0;
 extern f32 lbl_805640F4;
 unsigned char fn_802798F0(u32 arg0, u32 arg1, f32 farg0) {
+    /* restore score-10 baseline for the final budget compile */
     s32 var_r0;
     s32 temp_r3;
     s32 temp_r4;
@@ -97,9 +98,35 @@ unsigned char fn_802798F0(u32 arg0, u32 arg1, f32 farg0) {
     temp_r3 = -temp_r4;
     temp_r3 &= ~temp_r4;
     temp_r3 >>= 31;
-    temp_r3 &= temp_r4;
+    temp_r3 = temp_r4 & temp_r3;
     if (temp_r3 < 0xFF) var_r0 = temp_r3;
     return (unsigned char)var_r0;
+}
+
+extern unsigned char fn_802798F0(unsigned int, unsigned int, float);
+extern float lbl_80564100, lbl_80564104;
+#pragma dont_inline fn_802798F0
+void fn_802799EC(void *arg0, float amount) {
+    unsigned char *base = (unsigned char *)arg0 + 4;
+    float end = *(float *)((unsigned char *)arg0 + 0x294);
+    float current = *(float *)((unsigned char *)arg0 + 0x298);
+    float remaining = end - amount;
+    float factor;
+    int i;
+    unsigned char *p;
+    if (current > remaining) remaining = current;
+    if (end > lbl_80564100) end = lbl_80564100;
+    *(float *)(base + 0x290) = remaining;
+    factor = lbl_80564104 - remaining / end;
+    *(int *)(base + 0x298) = 0;
+    p = base;
+    for (i = 0; i < 0xA4; i++, p += 4) {
+        p[0] = fn_802798F0(p[0], 0x80, factor);
+        p[1] = fn_802798F0(p[1], 0x80, factor);
+        p[2] = fn_802798F0(p[2], 0x80, factor);
+        p[3] = fn_802798F0(p[3], 0, factor);
+    }
+    for (i = 0; i < 0x12; i++) base[0x2A0 + i] = 0;
 }
 void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     unsigned int i;
