@@ -334,6 +334,9 @@ void *fn_80267EE4();
 int fn_8026A368(void) {
     return *(int *)((char *)fn_80267EE4() + 0x10);
 }
+int fn_802678C0(void) {
+    return (int)fn_80267EE4() + 0x58;
+}
 char fn_8026A38C(void) {
     return lbl_8055F488;
 }
