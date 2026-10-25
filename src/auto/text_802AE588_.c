@@ -259,8 +259,9 @@ extern float lbl_80564B94;
 extern float lbl_80564B98;
 extern float lbl_80564B9C;
 extern float lbl_80564BA0;
+#pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_802AEB3C(u8 *arg0, s32 arg_sp0) {
+void fn_802AEB3C(u8 *arg0) {
     s16 sp148;
     u8 *sp144;
     u8 *sp140;
@@ -511,9 +512,7 @@ void fn_802AEB3C(u8 *arg0, s32 arg_sp0) {
     fn_802AE690(temp_r14);
     var_f17 = lbl_80564B38;
     temp_f0 = (lbl_80564B78 + *(f32 *)((u8 *)(temp_r14) + (0x28))) - fn_801EA0E8(*(f32 *)((u8 *)(temp_r14) + (0x24)), *(f32 *)((u8 *)(temp_r14) + (0x2C)));
-    if (var_f17 > temp_f0) {
-
-    } else {
+    if (var_f17 <= temp_f0) {
         var_f17 = temp_f0;
     }
     lbl_8055F98C = fn_80203FF0() + var_f17;
@@ -536,7 +535,7 @@ void fn_802AEB3C(u8 *arg0, s32 arg_sp0) {
     fn_802C98DC(&sp1C, workspace + 0x7C8 + 0x40, workspace + 0x7C8 + 0x44, &sp1C, temp_r7_2, temp_f1_2);
     sp18 = lbl_80564B84;
     temp_r6_2 = (*(u32 *)&(sp18) >> 0x17U) & 0x7F;
-    temp_r14_2 = (s32)((u8 *)lbl_8055F984 + (*(workspace + 0x708 + ((temp_r6_2 + 1) * 4)) * 2));
+    temp_r14_2 = *(s32 *)lbl_8055F984 + (*(s32 *)(workspace + 0x708 + ((temp_r6_2 + 1) * 4)) * 2);
     memset((u8 *)temp_r14_2, -1, 0x2008);
     temp_f22 = lbl_80564B80;
     temp_r3_4 = *(s32 *)((u8 *)(workspace) + (0)) * 0x1C;
@@ -610,12 +609,14 @@ loop_133:
                 temp_f3 = temp_f1_4 * *(f32 *)((u8 *)((workspace + 0x7C8)) + (0x30));
                 if (temp_f27 > temp_f3) temp_f3 = temp_f27;
                 temp_f0 = temp_f3 + ((temp_f20 + temp_f21 * var_f18) * *(f32 *)((u8 *)((workspace + 0x7C8)) + (0x34)));
-                if (temp_f2_5 <= temp_f0) {
+                var_r0 = (temp_f2_5 <= temp_f0);
+                if (var_r0 != 0) {
                     temp_f2_6 = (f32) fabs(PSVECDotProduct(&spBC, workspace + 0x7C8 + 0xC));
                     temp_f3 = temp_f1_4 * *(f32 *)((u8 *)((workspace + 0x7C8)) + (0x38));
                     if (temp_f27 > temp_f3) temp_f3 = temp_f27;
                     temp_f0 = temp_f3 + ((temp_f19 + temp_f21 * var_f18) * *(f32 *)((u8 *)((workspace + 0x7C8)) + (0x3C)));
-                    if (temp_f2_6 <= temp_f0) {
+                    var_r0 = (temp_f2_6 <= temp_f0);
+                    if (var_r0 != 0) {
                         var_f17_2 = fn_802AE6E0(&spC8, workspace + 0x7C8 + 0x24);
                         var_r0 = 1;
                     } else {
@@ -645,17 +646,17 @@ block_22:
                     }
                     temp_r3_10 = workspace + 0x7A8 + (var_r0_3 * 4);
                     temp_f0_2 = *(f32 *)((u8 *)(temp_r3_10) + (-4));
-                    var_f0 = (var_f1 - temp_f0_2) / (*(f32 *)((u8 *)(temp_r3_10) + (-8)) - temp_f0_2);
-                    if (temp_f22 < var_f0) {
+                    var_r0_3 = (var_f1 >= temp_f0_2);
+                    if (var_r0_3 == 0) {
+                        var_f0 = (var_f1 - temp_f0_2) / (*(f32 *)((u8 *)(temp_r3_10) + (-8)) - temp_f0_2);
                         if (temp_f22 < var_f0) {
                             var_f0 = temp_f22;
+                            if (var_f0 > temp_f27) {
+                            } else {
+                                var_f0 = temp_f27;
+                            }
+                            var_f18_2 = temp_f27 + (var_f0 * temp_f22);
                         }
-                        if (var_f0 > temp_f27) {
-
-                        } else {
-                            var_f0 = temp_f27;
-                        }
-                        var_f18_2 = temp_f27 + (var_f0 * temp_f22);
                     }
                 }
                 if (var_r0_2 != 0) {
@@ -988,6 +989,7 @@ loop_119:
         goto loop_133;
     }
 }
+#pragma scheduling on
 #pragma dont_inline reset
 void fn_802AFE64(int *arg0, short a, short b, short c, short d, int e, int f, int g, float h, int j) {
     int index = *arg0;
@@ -1066,7 +1068,7 @@ void fn_802B0024(void *arg0, short arg1) {
     }
 }
 
-extern unsigned short fn_802B127C(int, int);
+extern int fn_802B127C(int, int);
 extern float fn_801DCF48(int, float, float);
 extern float lbl_80564AF0;
 extern double lbl_80564B70;
