@@ -214,7 +214,8 @@ int fn_80130FE0(int arg0) {
 }
 
 void fn_801310B4(void *arg0, void *arg1, int arg2) {
-    fn_801345D8(arg0, arg1, lbl_80559AF8, arg2, fn_80130FE0(arg2) + 1);
+    int result = fn_80130FE0(arg2);
+    fn_801345D8(arg0, arg1, &lbl_80559AF8, arg2, result + 1);
 }
 
 #pragma scheduling invalid_target
