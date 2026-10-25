@@ -857,7 +857,7 @@ extern char lbl_8032FA44[];
 struct Dummy_80162800 {
     virtual void f0();
     virtual void f1(void *);
-    virtual void f2(void *);
+    virtual void *f2(void *);
     virtual void f3();
     virtual void f4();
     virtual void f5();
