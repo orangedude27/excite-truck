@@ -33,7 +33,7 @@ s32 fn_8001FA20();
 s32 fn_8001FA8C();
 
 extern void fn_802E6BD8(int, int, void *, int, void (*)(long));
-extern void fn_8000DBC8(void (*)(int, int));
+extern void fn_8000DBC8(void (*)(long, long));
 void fn_8001F528(void);
 void fn_8001EF38(void* alarm) {
     fn_8001F528();
@@ -269,26 +269,27 @@ s32 fn_8001F89C(s32 arg0, s32 arg1) {
 
 #pragma scheduling invalid_target
 s32 fn_8001F9A4(s32 arg0, s32 arg1) {
-    void *q;
-    s32 *data;
-    s32 count;
-    s32 i;
+    void *temp_r5;
+    s32 *var_r6;
+    s32 temp_r0;
+    s32 var_ctr;
+    s32 var_r3;
     if (arg0 < 0) goto no_coef;
     if ((u32)arg0 >= 8) goto no_coef;
-    q = lbl_802FDF30[arg0].unkC;
-    if (q == 0) goto no_coef;
-    data = *(s32 **)q;
-    if (data == 0) goto no_coef;
-    count = *(s32 *)((char *)q + 4);
-    i = 0;
-    if (count > 0) {
-        do {
-            if (data[0] > arg1) return i;
-            data += 2;
-            i++;
-        } while (i < count);
+    temp_r5 = lbl_802FDF30[arg0].unkC;
+    if (temp_r5 == 0) goto no_coef;
+    var_r6 = *(s32 **)temp_r5;
+    if (var_r6 != 0) goto have_data;
+    return 0;
+have_data:
+    temp_r0 = *(s32 *)((char *)temp_r5 + 4);
+    var_r3 = 0;
+    for (var_ctr = temp_r0; var_ctr > 0; var_ctr--) {
+        if (var_r6[0] > arg1) return var_r3;
+        var_r6 += 2;
+        var_r3++;
     }
-    return *(s32 *)((char *)q + 4);
+    return *(s32 *)((char *)temp_r5 + 4);
 no_coef:
     return 0;
 }
