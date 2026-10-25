@@ -368,6 +368,21 @@ extern "C" void fn_8013E338(void) {
 
 }
 
+extern "C" void *fn_8013E33C(void *arg0, s32 arg1) {
+    void *field;
+    if (arg0 != 0) {
+        field = *(void **)((u8 *)arg0 + 4);
+        if (field != 0) {
+            fn_80128670((s32)field - 0x10);
+        }
+        *(void **)((u8 *)arg0 + 4) = 0;
+        if (arg1 > 0) {
+            ((void (*)(void *))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+
 #pragma scheduling invalid_target
 extern "C" void fn_8013E3A8(void *arg0, void *arg1) {
     u8 *dst = (u8 *)arg0;
