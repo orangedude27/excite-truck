@@ -591,12 +591,16 @@ extern int fn_80232B70(int);
 extern char lbl_8033FF98[];
 extern int stricmp(const char *, const char *);
 int fn_8022CC8C(const char *arg0) {
+    char *p;
     unsigned int i;
-    char *p = lbl_8033FF98;
-    for (i = 0; i < 0x1b; i++, p += 8) {
-        if (stricmp(arg0, *(const char **)(p + 4)) == 0) return *(int *)(lbl_8033FF98 + i * 8);
+
+    p = lbl_8033FF98;
+    i = 0;
+    for (; i < 0x1B; i++, p += 8) {
+        if (stricmp(arg0, *(const char **)(p + 4)) == 0)
+            return *(int *)(lbl_8033FF98 + i * 8);
     }
-    return 0x1a;
+    return 0x1A;
 }
 
 __declspec(section ".sdata") extern char lbl_8055B928[];
