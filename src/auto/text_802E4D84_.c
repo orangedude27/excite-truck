@@ -15,7 +15,7 @@ extern void fn_802E7770(void);
 extern int fn_802E7774(void (*arg0)(void));
 extern void fn_802E2E0C(void *arg0, void *arg1);
 extern int TRKReadBuffer_ui32(void);
-extern void fn_802E9A2C(void);
+extern float fn_802E9A2C(void);
 extern void fn_80060CC0(int, int, void (*)());
 extern void fn_802E30C8(char *, int, char *, ...);
 extern void fn_802E5248(int, int);
@@ -49,6 +49,43 @@ void fn_802E4D84(void *dst, void *src, int size) {
     int saved_size = size;
     memcpy(dst, src, size);
     DCFlushRange(saved_dst, saved_size);
+}
+
+extern unsigned char *fn_8012C370(int, unsigned int *, int, unsigned char *, unsigned char *);
+extern char lbl_8034D280[];
+void *fn_802E4DC8(char *arg0) {
+    unsigned int size;
+    unsigned char sp9;
+    unsigned char sp8;
+    unsigned char *buf;
+    int i;
+    unsigned char tmp;
+    buf = fn_8012C370(0x53465830, &size, 0, &sp9, &sp8);
+    if (!buf) return 0;
+    if (size != 3) fn_802E317C(lbl_8034D280, (int)arg0, (void *)3);
+    if (!sp8) return buf;
+    tmp=buf[0]; buf[0]=buf[3]; buf[3]=tmp;
+    tmp=buf[1]; buf[1]=buf[2]; buf[2]=tmp;
+    tmp=buf[4]; buf[4]=buf[7]; buf[7]=tmp;
+    tmp=buf[5]; buf[5]=buf[6]; buf[6]=tmp;
+    tmp=buf[12]; buf[12]=buf[13]; buf[13]=tmp;
+    tmp=buf[14]; buf[14]=buf[15]; buf[15]=tmp;
+    tmp=buf[16]; buf[16]=buf[19]; buf[19]=tmp;
+    tmp=buf[17]; buf[17]=buf[18]; buf[18]=tmp;
+    tmp=buf[20]; buf[20]=buf[23]; buf[23]=tmp;
+    tmp=buf[21]; buf[21]=buf[22]; buf[22]=tmp;
+    tmp=buf[24]; buf[24]=buf[25]; buf[25]=tmp;
+    tmp=buf[26]; buf[26]=buf[27]; buf[27]=tmp;
+    tmp=buf[28]; buf[28]=buf[29]; buf[29]=tmp;
+    *(unsigned int *)(buf+4) += (unsigned int)buf;
+    if (*(unsigned short *)(buf+26)==16 && buf[9]!=1) {
+        unsigned char *data=*(unsigned char **)(buf+4);
+        for(i=0; i<(int)((*(unsigned int *)buf + (*(unsigned int *)buf >> 31)) >> 1); i++) {
+            tmp=data[0]; data[0]=data[1]; data[1]=tmp; data+=2;
+        }
+    }
+    DCFlushRange(*(void **)(buf+4), *(unsigned int *)buf);
+    return buf;
 }
 
 extern float lbl_80565130;
@@ -152,16 +189,18 @@ int fn_802E58A0(void *arg0, int arg1) {
 void fn_802E58B8(unsigned char *arg0) {
     int index = lbl_8055FF78;
     unsigned char *dst = lbl_804FC558 + (index << 5);
-    unsigned char *src = arg0;
+    char *src = (char *)arg0;
     int count = 0x20;
+    char value;
     lbl_8055FF78 = index + 1;
-    do {
+    while (count > 0) {
         count--;
-    } while (count != 0);
-    *--dst = 0;
-    while ((signed char)*src != 0) {
-        *dst++ = *src++;
     }
+    dst[-1] = 0;
+    do {
+        value = *src++;
+        *dst++ = (unsigned char)value;
+    } while (value != 0);
     fn_8012BEF0(arg0);
     fn_8012C41C(fn_802E589C, 0, arg0);
 }
@@ -194,6 +233,36 @@ void fn_802E5A54(void) {
         fn_8012BF24(ptr);
     }
     lbl_8055FF78 = 0;
+}
+
+extern void *lbl_8055FF90;
+extern float lbl_80565128, lbl_80565148;
+extern char lbl_8034D554[], lbl_8034D578[];
+extern void fn_801282EC(int);
+extern void fn_801282F4(void);
+extern void *fn_8012850C(void *, char *);
+extern void *memset(void *, int, unsigned int);
+void *fn_802E5DD8(const char *arg0, unsigned int arg1, int arg2, int arg3, int arg4) {
+    int i, index = -1;
+    unsigned char *base = (unsigned char *)lbl_8055FF90, *slot, *dst;
+    const char *src = arg0;
+    for (i = 0; i < 0x20; i++) if (*(int *)(base + i * 0x50 + 0x94) == 0) { index = i; break; }
+    if (index < 0) fn_802E317C(lbl_8034D554, (int)arg0, (void *)0);
+    slot = base + index * 0xB0;
+    memset(slot, 0, 0xB0);
+    fn_801282EC(0x80); fn_801282F4();
+    *(void **)(slot + 0x90) = fn_8012850C((void *)arg1, lbl_8034D578);
+    memset(*(void **)(slot + 0x90), 0, arg1);
+    slot[0x25] = 1;
+    *(void **)(slot + 0x9C) = (void *)((unsigned int)*(void **)(slot + 0x90) + 0x80000000);
+    *(unsigned int *)(slot + 0xA0) = arg1;
+    *(int *)(slot + 0x94) = 1; *(int *)(slot + 0x20) = 1;
+    slot[0x24] = (arg2 == 1);
+    *(int *)(slot + 0x88) = arg3; *(int *)(slot + 0x8C) = arg4; *(int *)(slot + 0x98) = 0;
+    *(float *)(slot + 0xA8) = lbl_80565128; *(float *)(slot + 0xA4) = lbl_80565148;
+    dst = slot; i = 0x20;
+    do { unsigned char c = *src++; *dst++ = c; if ((signed char)c == 0) break; if (--i <= 0) { dst[-1] = 0; break; } } while (1);
+    return slot;
 }
 
 void fn_802E5FE4(void *arg0) {
