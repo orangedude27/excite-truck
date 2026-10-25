@@ -12325,9 +12325,14 @@ void rfc_check_mcb_active(void *arg0) {
 }
 
 void fn_80095518(void *arg0) {
-    u16 state = *(u16 *)((u8 *)arg0 + 0x14);
-    if (state == 12) rfc_port_sm_execute(*(void **)((u8 *)arg0 + 0x10), 5, 0);
-    else if (state == 11) fn_800916F4(*(void **)((u8 *)arg0 + 0x10), 5, 0);
+    s32 state = (s32)*(u16 *)((u8 *)arg0 + 0x14);
+    if (state != 12) {
+        if (state >= 12) return;
+        if (state < 11) return;
+        fn_800916F4(*(void **)((u8 *)arg0 + 0x10), 5, 0);
+        return;
+    }
+    rfc_port_sm_execute(*(void **)((u8 *)arg0 + 0x10), 5, 0);
 }
 
 void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
