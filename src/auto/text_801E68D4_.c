@@ -9,7 +9,7 @@ void fn_801E6CC4(void) {
     fn_8012C4D8();
 }
 
-extern void fn_801E6924(void*);
+extern void fn_801E6924();
 extern void fn_801E598C(s32);
 extern void fn_802C6CF8(s32);
 extern void fn_80128668(s32);
