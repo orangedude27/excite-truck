@@ -67,9 +67,7 @@ extern double __fabs(double);
 int fn_801AEA64(float arg0, float arg1) {
     float diff = arg0 - arg1;
     float magnitude = (float)__fabs((double)diff);
-    float *threshold = (float *)(((unsigned int)&lbl_80558DC4 & 0xFFFF0000) |
-                                ((unsigned int)&lbl_80558DC4 & 0x0000FFFF));
-    if (magnitude <= *threshold) return 0;
+    if (magnitude <= lbl_80558DC4) return 0;
     if (arg1 < arg0) return 1;
     return -1;
 }
@@ -142,6 +140,18 @@ void fn_801AED74(void) {
         }
     }
     lbl_8055E62C = fn_801B2ED4();
+}
+
+void *fn_801AF8D0(int arg0) {
+    void *result = 0;
+    if (arg0 < lbl_8055E624[1]) {
+        result = (char *)lbl_8055E624[0] + arg0 * 0x1C;
+        fn_801AE620(result);
+        if (fn_801AE618(*(unsigned short *)((char *)result + 0xE))) {
+            result = 0;
+        }
+    }
+    return result;
 }
 
 void fn_801AF92C(void *arg0) {
@@ -218,4 +228,3 @@ extern int *lbl_8055E624;
 extern unsigned char *fn_801EA9A0(int);
 extern int fn_801B8728(void);
 extern int fn_801B2C70(void *);
-extern float lbl_80558DC4;
