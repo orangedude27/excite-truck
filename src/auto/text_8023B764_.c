@@ -186,14 +186,14 @@ void fn_8023BE38(int ignored, int flag) {
     fn_80012794();
     fn_80012790(0x130);
     fn_802411C8();
-    if (flag == 0) goto loop;
-    fn_8023BBA8();
-    goto done;
-loop:
-    fn_8023BB0C();
-    fn_8023B5E0();
-    if (fn_8023FF1C(flag) != 1) goto loop;
-done:
+    if (flag != 0) {
+        fn_8023BBA8();
+    } else {
+        while (fn_8023FF1C(flag) != 1) {
+            fn_8023BB0C();
+            fn_8023B5E0();
+        }
+    }
     fn_8023BDEC();
     fn_80012794();
     fn_80012778();
