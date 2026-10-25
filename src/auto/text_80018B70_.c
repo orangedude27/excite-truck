@@ -39,6 +39,84 @@ s32 fn_80018B7C(void *arg0, void *arg1) {
     return diff;
 }
 
+void fn_80018BA4(void) {
+    extern void *lbl_8055D58C;
+    extern unsigned char lbl_80357E0C[12];
+    extern void *lbl_802FD2A0;
+    extern int strcmp(const char *, const char *);
+    extern int fn_80265DCC(void *, int, int, void *);
+    extern char lbl_80558C30[];
+    extern char lbl_80558C38[];
+    extern char lbl_80558C40[];
+    // Fix note: scans the manager's objects, appends matching metadata, and sorts the global result table.
+    int found = 0, index = 0, count;
+    void *object, *manager = lbl_8055D58C, *entry;
+    for (;;) {
+        object = ((void *(*)(void *, int))((void **)*(void **)manager)[3])(manager, index);
+        if (object == 0) break;
+        if (strcmp(((const char *(*)(void *))((void **)*(void **)object)[2])(object),
+                   (const char *)lbl_802FD2A0) == 0) {
+            count = *(int *)((char *)lbl_80357E0C + 4);
+            *(int *)((char *)lbl_80357E0C + 4) = count + 1;
+            entry = (char *)*(void **)lbl_80357E0C + count * 0x14;
+            *(int *)entry = ((int (*)(void *, const char *))((void **)*(void **)object)[5])(object, lbl_80558C30);
+            *(int *)((char *)entry + 4) = ((int (*)(void *, const char *))((void **)*(void **)object)[5])(object, lbl_80558C38);
+            *(int *)((char *)entry + 8) = ((int (*)(void *, const char *))((void **)*(void **)object)[7])(object, lbl_80558C40);
+            *(char *)((char *)entry + 0xC) = 0;
+            *(int *)((char *)entry + 0x10) = found++;
+        }
+        index++;
+    }
+    fn_80265DCC(*(void **)lbl_80357E0C, *(int *)((char *)lbl_80357E0C + 4), 0x14, fn_80018B7C);
+}
+
+void fn_80018CCC(void) {
+    extern void *lbl_8055D58C;
+    extern void *lbl_803580A4;
+    extern void *lbl_802FD2A0;
+    extern char lbl_80558C48[];
+    // Fix note: adds unique named objects to the shared table and fills their three metadata fields.
+    int index = 0, num, i, offset, found;
+    void *obj, *table;
+    const char *name;
+    void *(*getAt)(void *, int);
+    const char *(*getName)(void *);
+    const char *(*getValue)(void *, const char *);
+    void *(*getProperty)(void *, const char *);
+    getAt = (void *(*)(void *, int))((void **)*(void **)lbl_8055D58C)[3];
+    while ((obj = getAt(lbl_8055D58C, index)) != 0) {
+        getName = (const char *(*)(void *))((void **)*(void **)obj)[2];
+        if (stricmp(getName(obj), (const char *)&lbl_802FD2A0 + 0x10) == 0) {
+            getValue = (const char *(*)(void *, const char *))((void **)*(void **)obj)[5];
+            name = getValue(obj, (const char *)&lbl_802FD2A0 + 0x20);
+            table = lbl_803580A4;
+            num = *(int *)((char *)table + 4);
+            found = -1;
+            offset = 0;
+            for (i = 0; i < num; i++) {
+                if (stricmp(*(const char **)((char *)*(void **)table + offset), name) == 0) {
+                    found = i;
+                    break;
+                }
+                offset += 0x10;
+            }
+            if (found < 0) {
+                num = *(int *)((char *)table + 4);
+                found = num;
+                *(int *)((char *)table + 4) = num + 1;
+                *(const char **)((char *)*(void **)table + num * 0x10) = name;
+            }
+            table = (char *)*(void **)table + found * 0x10;
+            getProperty = (void *(*)(void *, const char *))((void **)*(void **)obj)[7];
+            *(void **)((char *)table + 4) = getProperty(obj, (const char *)&lbl_802FD2A0 + 0x30);
+            *(void **)((char *)table + 8) = getProperty(obj, lbl_80558C48);
+            getValue = (const char *(*)(void *, const char *))((void **)*(void **)obj)[5];
+            *(const char **)((char *)table + 0xC) = getValue(obj, (const char *)&lbl_802FD2A0 + 0x10);
+        }
+        index++;
+    }
+}
+
 void fn_80018E3C(void) {
     fn_80018B74();
 }
@@ -133,6 +211,16 @@ void fn_800195C0(void) {
     fn_80131234(lbl_802FD404);
 }
 
+#pragma cplusplus on
+struct Dummy_80019534 {
+    virtual Dummy_80019534 *f0(void *);
+    virtual void f1();
+    virtual s32 f2(void *);
+    virtual void f3();
+    virtual s32 f4(void *, s32);
+};
+#pragma cplusplus off
+#pragma scheduling invalid_target
 s32 fn_80019534(void) {
     void **obj;
     void **vtable;
@@ -151,7 +239,7 @@ s32 fn_80019534(void) {
     }
     return 0;
 }
-
+#pragma scheduling on
 s32 fn_80019098(s32 arg0) {
     void **tbl = (void **)lbl_803580A4;
     s32 count = ((s32 *)tbl)[1];
@@ -168,6 +256,42 @@ s32 fn_80019098(s32 arg0) {
         }
     }
     
+    return 0;
+}
+
+s32 fn_8001EFC0(s32, s32);
+s32 fn_80019144(s32 arg0) {
+    s32 i = 0;
+    s32 offset = 0;
+    s32 found;
+    void *entry;
+    s32 value0;
+    s32 value1;
+
+    while (1) {
+        if (stricmp(*(const char **)(*(char **)lbl_803580A4 + offset), (const char *)arg0) == 0)
+            break;
+        offset += 0x10;
+        i++;
+        if (i >= ((s32 *)lbl_803580A4)[1]) {
+            i = -1;
+            break;
+        }
+    }
+    entry = *(char **)lbl_803580A4 + i * 0x10 + 4;
+    if (i < 0)
+        entry = 0;
+    if (entry == 0)
+        return 0;
+    if (lbl_8055D588 != 0)
+        return 1;
+    value0 = fn_8001EFC0(0, arg0);
+    found = *(s32 *)entry <= value0;
+    value1 = fn_8001EFC0(1, arg0);
+    if (found != 0)
+        return 1;
+    if (*(s32 *)((char *)entry + 4) <= value1)
+        return 1;
     return 0;
 }
 
