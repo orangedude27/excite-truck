@@ -109,6 +109,8 @@ extern int fn_802CAC28(void *, int);
 extern void *fn_802C86DC(void);
 extern float PSVECDotProduct(float *, float *);
 extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A660, lbl_8033AC58;
+__declspec(section ".data") extern int lbl_8033A660;
+__declspec(section ".data") extern int lbl_8033AC58;
 extern char lbl_8033A808[];
 __declspec(section ".data") extern int lbl_8033A958;
 extern int lbl_8055B128;
@@ -170,13 +172,15 @@ void fn_801F2020(void) {
         *(int *)((char *)p + 4) = 0;
     }
 }
-#pragma pop
+#pragma push
+#pragma small_data off
+#pragma scheduling invalid_target
 void *fn_801F2064(void) {
-    void *p = fn_801284F8(8, &lbl_8033A660);
-    if (p) { *(void **)p = &lbl_8033A958; *(int *)((char *)p + 4) = fn_802CAC28(&lbl_8033AC58, 0); }
+    void *p = fn_801284F8(8, (void *)&lbl_8033A660);
+    if (p) { *(void **)p = (void *)&lbl_8033A958; *(int *)((char *)p + 4) = fn_802CAC28((void *)&lbl_8033AC58, 0); }
     return p;
 }
-
+#pragma pop
 extern const char lbl_8033A66C[];
 extern const char lbl_8033A7D0[];
 #pragma scheduling invalid_target
