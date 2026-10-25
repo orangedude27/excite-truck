@@ -1316,12 +1316,16 @@ extern void fn_8011A6A0(void *);
 extern void TRKGetFreeBuffer(void *);
 void *fn_8011A168(void *arg0) {
     s32 *src = (s32 *)arg0;
+    s32 second;
+    s32 first;
     if (arg0 == NULL) {
         lbl_8055DEE0 = 0;
         *((s32 *)&lbl_8055DEE0 + 1) = 0;
     } else {
-        lbl_8055DEE0 = src[0];
-        lbl_8055DEE4 = src[1];
+        second = src[1];
+        first = src[0];
+        lbl_8055DEE0 = first;
+        lbl_8055DEE4 = second;
     }
     return &fn_80119DD0;
 }
@@ -1737,10 +1741,12 @@ s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
 }
 
 f32 fn_8011AE18(s32 arg0) {
+    s32 magnitude;
     f32 temp;
-    temp = (f32)(((u32)arg0 >> 5) & 0x1FFFFFF) * lbl_80329D48[((u32)arg0 * 4) & 0x7C];
+    magnitude = (s32)(((u32)arg0 & ~0x10000000) >> 5);
+    temp = (f32)magnitude * lbl_80329D48[(u32)arg0 & 0x1F];
     if (arg0 & 0x10000000) {
-        temp = (f32)(-((f64)temp));
+        temp = -temp;
     }
     return temp;
 }
