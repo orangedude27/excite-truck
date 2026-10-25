@@ -14,7 +14,9 @@ extern "C" void fn_802ADE60(int, int);
 extern "C" void fn_8001DAE0(void *, f32);
 extern "C" f32 lbl_805614FC;
 extern "C" f32 lbl_80561500;
+#pragma small_data off
 extern "C" f32 lbl_80558DC4;
+#pragma small_data on
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614BC;
@@ -873,7 +875,7 @@ extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
 #pragma small_data on
 extern "C" f32 lbl_80558DC4_arr[2];
 extern "C" s32 fn_801420D4(void *arg0) {
-    return (f32)__fabs((f64)*(f32 *)((u8 *)arg0 + 0x2690)) <= *(volatile f32 *)0x80558DC4;
+    return !((f32)__fabs((f64)*(f32 *)((u8 *)arg0 + 0x2690)) <= *(volatile f32 *)0x80558DC4);
 }
 
 extern "C" void fn_80142104(void *arg0) {
