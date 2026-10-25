@@ -8,6 +8,7 @@ extern void fn_802C8BD0(int);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
 extern float PSVECDotProduct(const void *, const void *);
+extern float lbl_80560444, lbl_80560448, lbl_8056044C;
 extern float fn_80235EF0(void *, int);
 extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
 extern void fn_802354A0(void *, int, int, float, float, float, float, float);
@@ -262,6 +263,63 @@ subtractCheck:
         fn_802C8BD0(*(s32 *)obj);
     fn_802C8DB8((u8 *)&frame + 0x290, 0x29, (unsigned short *)((u8 *)&frame + 0x128), 0xB4);
     fn_802C8D74();
+    index = 0;
+    do {
+        if (index == fn_801E866C(*(s32 *)((u8 *)obj + 0x44))) break;
+        record = fn_801EA9A0(index);
+        actor = fn_8017960C(index);
+        px = *(f32 *)((u8 *)actor + 0x60) - *(f32 *)((u8 *)global + 8);
+        py = *(f32 *)((u8 *)actor + 0x64) - *(f32 *)((u8 *)global + 0xC);
+        pz = *(f32 *)((u8 *)actor + 0x68) - *(f32 *)((u8 *)global + 0x10);
+        frame.output[0] = px * *(f32 *)&frame.matrix[0] + py * *(f32 *)&frame.matrix[1] + pz * *(f32 *)&frame.matrix[2];
+        frame.output[1] = px * *(f32 *)&frame.matrix[3] + py * *(f32 *)&frame.matrix[4] + pz * *(f32 *)&frame.matrix[5];
+        frame.output[2] = px * *(f32 *)&frame.matrix[6] + py * *(f32 *)&frame.matrix[7] + pz * *(f32 *)&frame.matrix[8];
+        ratio = width * lbl_80560420 / f21;
+        frame.output[0] *= ratio;
+        frame.output[1] *= ratio;
+        frame.output[2] *= ratio;
+        result = PSVECDotProduct(frame.output, frame.output);
+        if (result < ratio * ratio) {
+            color = index == *(s32 *)((u8 *)data + 0x48) ? 1 : 3;
+            angle = (f32)fn_80235EF0(*(void **)data, color);
+            fn_80235AFC(*(void **)data, color, 0xFFFFFFFF,
+                        x + frame.output[0], y + frame.output[1], 0.0f,
+                        angle, angle, *(f32 *)((u8 *)record + 8));
+        }
+        index++;
+    } while (index < fn_801EA994());
+    index = 0;
+    offset = 0;
+    while (index < 16) {
+        record = (void *)((u8 *)lbl_803583C8 + offset);
+        if (*(u8 *)((u8 *)record + 0x10) != 0) {
+            px = *(f32 *)((u8 *)record + 8) - *(f32 *)((u8 *)&frame + 0x11C);
+            py = *(f32 *)((u8 *)record + 0xC) - *(f32 *)((u8 *)&frame + 0x120);
+            pz = lbl_80560418 - *(f32 *)((u8 *)&frame + 0x124);
+            frame.normal[0] = px * *(f32 *)&frame.matrix[0] + py * *(f32 *)&frame.matrix[1] + pz * *(f32 *)&frame.matrix[2];
+            frame.normal[1] = px * *(f32 *)&frame.matrix[3] + py * *(f32 *)&frame.matrix[4] + pz * *(f32 *)&frame.matrix[5];
+            frame.normal[2] = px * *(f32 *)&frame.matrix[6] + py * *(f32 *)&frame.matrix[7] + pz * *(f32 *)&frame.matrix[8];
+            ratio = width * lbl_80560420 / f21;
+            result = PSVECDotProduct(frame.normal, frame.normal);
+            if (result > ratio * ratio) {
+                PSVECNormalize(frame.normal, frame.normal);
+                angle = (f32)fn_80235EF0(record, 0);
+                fn_802354A0(record, *(s32 *)((u8 *)record + 4), -1,
+                            x + frame.normal[0], y + frame.normal[1], 0.0f,
+                            ratio, angle);
+            }
+        }
+        index++;
+        offset += 0x14;
+    }
+    data = *(s32 **)((u8 *)obj + 0x10);
+    color = resource == *(s32 *)((u8 *)data + 0x48) ? 1 : 3;
+    angle = (f32)fn_80235EF0(*(void **)data, color);
+    result = angle * lbl_80560424;
+    fn_80235AFC(*(void **)data, color, 0xFFFFFFFF,
+                x + width * lbl_80560420, y - height * lbl_80560420,
+                lbl_80560418, result, result,
+                *(f32 *)((u8 *)data + resource * 8 + 8));
     extra0 = x * f25;
     extra1 = y * f21;
     extra2 = width * v;
