@@ -1072,11 +1072,11 @@ void fn_801FF7D4(void *arg0, void *arg1) {
  }
 }
 
-void fn_801FF8DC(void *arg0, char *dest, const char *src) {
-    strncpy(dest, src, 0x10);
-    dest[0xF] = 0;
-    *(int *)(dest + 0x90) = 0;
-    *(int *)(dest + 0x94) = 0;
+extern "C" void fn_801FF8DC(void *arg0, void *dest, int src) {
+    strncpy((char *)dest, (const char *)src, 0x10);
+    ((char *)dest)[0xF] = 0;
+    *(int *)((char *)dest + 0x90) = 0;
+    *(int *)((char *)dest + 0x94) = 0;
 }
 
 void fn_801FF924(void* arg0, void* arg1, float farg0) {
