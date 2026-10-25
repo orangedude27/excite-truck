@@ -4738,8 +4738,7 @@ extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
     u32 place = 1;
 
     while (digits > 1 && arg1 != 0) {
-        u32 quotient = arg1 / divisor;
-        u32 rem = arg1 - quotient * divisor;
+        u32 rem = arg1 % divisor;
         if (rem != 0) {
             arg1 -= rem;
             *(u8 *)position += (s8)(rem / place);
@@ -11194,20 +11193,17 @@ extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
-    void* r30 = this_ptr;
-    s32 r31 = arg1;
-    
-    if (r30 != 0) {
-        void* list_ptr = (u8*)r30 + 0x24;
-        if (list_ptr != 0) {
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(list_ptr, 0);
+extern "C" void* __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_, s32 flag) {
+    if (this_) {
+        if ((u8*)this_ + 0x24 != 0) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8*)this_ + 0x24, 0);
         }
-        fn_800DCE10(r30, 0);
+        fn_800DCE10(this_, 0);
+        if (flag > 0) {
+            ((void (*)(void*))fn_80128668)(this_);
+        }
     }
-    if (r31 > 0) {
-        fn_80128668();
-    }
+    return this_;
 }
 
 extern "C" s32 fn_800C771C(s32 arg0, s32 arg1) {
