@@ -167,6 +167,11 @@ fail:
     return 0;
 }
 
+void fn_802E27A0(void *arg0) {
+    DCStoreRange(*(void **)((char *)arg0 + *(int *)((char *)arg0 + 0x114) * 0x30 + 0x11C),
+                 *(int *)((char *)arg0 + 0x17C));
+}
+
 #pragma dont_inline reset
 void fn_802E27B8(void *arg0) {
     int index = *(int *)((char *)arg0 + 0x114) + 1;
