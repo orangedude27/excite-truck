@@ -12490,6 +12490,13 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 arg1) {
     return 0;
 }
 
+void rfc_timer_stop(void *arg0) {
+    if (lbl_803C4828[0x414] >= 4) {
+        fn_8007093C(0x90003, lbl_80319EB0);
+    }
+    fn_80070F90(arg0);
+}
+
 void rfc_check_mcb_active(void *arg0) {
     u8 *mcb = (u8 *)arg0;
     u16 i;
