@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_80257A8C();
+void *fn_80257470(void *);
 void *fn_8022D850(void *, int, int, int);
 void fn_8022D894(void *, int, int, void *, int);
 void fn_80257A6C(int *, int, int);
