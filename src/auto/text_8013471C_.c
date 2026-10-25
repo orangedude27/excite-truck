@@ -107,6 +107,8 @@ s32 fn_80134A44(s32 arg0) {
   
   }
 
+extern void fn_80136CB8(void *, s32);
+extern void fn_8013A200(s32);
 #pragma scheduling invalid_target
 void fn_80134A8C(void) {
     extern void *lbl_8042F758[];
