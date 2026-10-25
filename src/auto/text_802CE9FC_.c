@@ -1254,6 +1254,15 @@ void* fn_802D3138(void) {
     return (char*)lbl_8055FD58 + 0x24;
 }
 
+void fn_802D3304(void) {
+    lbl_804C5700[0] = 1;
+    fn_802CFF50();
+    lbl_8055FDB4 = 0;
+    GXSetCullMode(0);
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevOp(0, 0);
+}
+
 extern unsigned char lbl_8055FD84;
 extern void fn_802CF5D4(void);
 extern void fn_802D2640(void);
@@ -1449,6 +1458,7 @@ void fn_802D3D94(void *arg1, int arg0) {
     GXLoadTexMtxImm(arg1, arg0 * 30, 1);
 }
 
+#pragma scheduling invalid_target
 void fn_802D3DAC(void) {
     if ((lbl_8055FDD0 & 0x3F) == 0) {
         OSReport(lbl_8034C204);
@@ -1456,7 +1466,7 @@ void fn_802D3DAC(void) {
     GXInitVtxDescList(lbl_8055FDD0++);
     GXDisableBreakPt();
 }
-
+#pragma scheduling on
 void fn_802D3DF8(int arg0, signed char arg1, float farg0, float farg1) {
     float mtx[2][3];
 
