@@ -32,6 +32,18 @@ void fn_80278288(void) {
 }
 
 #pragma scheduling invalid_target
+void fn_802782C4(void) {
+    lbl_8055F5B8 = 1;
+    lbl_8055F5B4 = 0;
+    lbl_8055F5BA = 0;
+    lbl_8055F5B9 = 0;
+    fn_802E30C8(lbl_80347590, lbl_8055E3C4);
+    lbl_8055F5BC = -1;
+    lbl_8055F5C0 = -1;
+}
+#pragma scheduling on
+
+#pragma scheduling invalid_target
 void fn_80278318(void) {
     fn_802E30C8(lbl_803475B4, lbl_8055E3C4);
     lbl_8055F5B8 = 0;
