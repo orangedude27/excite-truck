@@ -82,7 +82,7 @@ yes:
  return 1;
 }
 
-extern int lbl_8034F5B8;
+extern int lbl_8034F5B8[];
 extern int lbl_8034F5D8[];
 extern int lbl_8055D3D8, lbl_8055D3DC, lbl_8055D3E8;
 extern unsigned char lbl_8055D3D4, lbl_8055D3D5;
