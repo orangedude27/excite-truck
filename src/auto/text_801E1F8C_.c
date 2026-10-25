@@ -75,6 +75,7 @@ void fn_801E2100(void *arg0, void *arg1) {
             *((unsigned char *)arg1 + 0x1C) = 1;
     }
 }
+#pragma dont_inline reset
 
 void *fn_801A4548(void *);
 extern void *lbl_80339890[];
