@@ -885,7 +885,7 @@ extern "C" void* fn_8029BD54(void* arg0, int arg1) {
 extern "C" void fn_8029BEF8(void);
 extern "C" int fn_801EEFDC(void*, int);
 extern "C" int fn_8029C190(void*);
-extern "C" void fn_80288208(int);
+extern "C" void* fn_80288208(int);
 extern "C" int fn_80287B14(void);
 extern "C" int fn_8029AEE8(void*);
 extern "C" int fn_8029AF24(int);
@@ -897,7 +897,7 @@ extern "C" void fn_80288A58(void*, float*);
 extern "C" void fn_8029BEF8(void);
 extern "C" int fn_801EEFDC(void*, int);
 extern "C" int fn_8029C190(void*);
-extern "C" void fn_80288208(int);
+extern "C" void* fn_80288208(int);
 extern "C" int fn_80287B14(void);
 extern "C" int fn_8029AEE8(void*);
 extern "C" void fn_8029BDC4(void* arg0) {
