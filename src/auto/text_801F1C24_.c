@@ -106,7 +106,8 @@ void fn_801F1EA8(void) {
 extern int fn_802CAC28(void *, int);
 extern void *fn_802C86DC(void);
 extern float PSVECDotProduct(float *, float *);
-extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A808, lbl_8033A660, lbl_8033AC58;
+extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A660, lbl_8033AC58;
+extern char lbl_8033A808[];
 __declspec(section ".data") extern int lbl_8033A958;
 extern int lbl_8055B128;
 extern float lbl_80562F40;
@@ -158,13 +159,16 @@ void fn_801F1FD4(void) {
     }
 }
 
+#pragma push
 #pragma small_data off
 void fn_801F2020(void) {
     void *p = fn_801284F8(8, &lbl_8055B128);
-    if (p) { *(void **)p = &lbl_8033A808; *(int *)((char *)p + 4) = 0; }
+    if (p != 0) {
+        *(void **)p = (void *)&lbl_8033A808;
+        *(int *)((char *)p + 4) = 0;
+    }
 }
-
-#pragma small_data off
+#pragma pop
 void *fn_801F2064(void) {
     void *p = fn_801284F8(8, &lbl_8033A660);
     if (p) { *(void **)p = &lbl_8033A958; *(int *)((char *)p + 4) = fn_802CAC28(&lbl_8033AC58, 0); }
