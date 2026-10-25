@@ -48,24 +48,32 @@ int arg0;
     return *(int *)((char *)base + (arg0 << 4) + 4);
 }
 
+#pragma scheduling invalid_target
 void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
-    int *count = lbl_804C1338;
-    unsigned char *entry = 0;
-    if (*count < count[1]) {
-        entry = (unsigned char *)(unsigned long)count[2] + *count * 20;
-        ++*count;
+    register int count = lbl_804C1338[0];
+    register int limit = lbl_804C1338[1];
+    unsigned char *entry;
+    if (count < limit) {
+        register int offset = count * 0x14;
+        unsigned char *base = (unsigned char *)(unsigned long)lbl_804C1338[2];
+        lbl_804C1338[0] = count + 1;
+        entry = base + offset;
+    } else {
+        entry = 0;
     }
-    if (entry) {
-        *(int *)(entry + 0) = *(int *)((char *)a + 12);
-        *(signed char *)(entry + 4) = z;
-        *(int *)(entry + 8) = x;
-        *(int *)(entry + 12) = (*(unsigned int *)((char *)a + 4) & 1) ? y : -1;
-        *(void **)(entry + 16) = *(void **)((char *)b + 8);
-        *(void **)((char *)b + 8) = entry;
-    }
+    if (entry == 0)
+        return;
+    *(int *)(entry + 0) = *(int *)((char *)a + 12);
+    *(signed char *)(entry + 4) = z;
+    *(int *)(entry + 8) = x;
+    if ((*(unsigned int *)((char *)a + 4) & 1) != 0)
+        *(int *)(entry + 12) = y;
+    else
+        *(int *)(entry + 12) = -1;
+    *(void **)(entry + 16) = *(void **)((char *)b + 8);
+    *(void **)((char *)b + 8) = entry;
 }
-
-#pragma dont_inline on
+#pragma scheduling on
 void fn_802C543C(void) {
     lbl_804C1338[0] = 0;
 }
@@ -261,12 +269,12 @@ void fn_802C5BA0(int *arg0) {
     }
 }
 
-u16 fn_802C5BEC(int arg0, u16 arg1) {
-    u16 a = fn_802C5A50(5, arg1);
-    u16 b = arg0 & 0xFFFE;
-    return a + b;
+#pragma scheduling invalid_target
+u16 fn_802C5BEC(int arg0, int arg1) {
+    int temp = ((arg0 * 2) & 0xFFFE) + ((int (*)(int, int))fn_802C5A50)(5, 0x64);
+    return temp + (arg1 & 0xFFFF);
 }
-
+#pragma scheduling on
 extern int fn_802CAC28(void *, int);
 extern void *fn_802C5A60(int, int, u16);
 #pragma push
@@ -502,6 +510,32 @@ void fn_802C6CF8(int arg0) {
     fn_802C6C20(temp_r31);
 }
 
+s32 fn_802C6D5C(void *arg0) {
+    s32 outer_offset;
+    s32 outer_count;
+    s32 inner_offset;
+    s32 outer_index;
+    char *entry;
+    s32 inner_count;
+    s32 inner_index;
+    outer_count = *(s32 *)((char *)arg0 + 8);
+    outer_index = 0;
+    outer_offset = 0;
+    while (outer_index < outer_count) {
+        entry = *(char **)(*(char **)((char *)arg0 + 0xC) + outer_offset);
+        inner_count = *(s32 *)entry;
+        for (inner_index = 0, inner_offset = 0; inner_index < inner_count; inner_index++, inner_offset += 4) {
+            char *item = *(char **)(*(char **)(entry + 4) + inner_offset);
+            if (*(s32 *)item != 0) {
+                return 1;
+            }
+        }
+        outer_offset += 4;
+        outer_index++;
+    }
+    return 0;
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -599,8 +633,8 @@ float fn_802C7808(int arg0) {
 
 s32 fn_802C7830(char *arg0, s32 arg1, signed char c) {
     s32 value = 0;
-    s32 is_digit;
-    do {
+    register s32 is_digit;
+    while (c != 0) {
         value <<= 4;
         is_digit = 0;
         if (c >= '0') {
@@ -608,14 +642,14 @@ s32 fn_802C7830(char *arg0, s32 arg1, signed char c) {
                 is_digit = 1;
             }
         }
-        if (is_digit == 0) {
-            value |= c - '7';
-        } else {
+        if (is_digit != 0) {
             value |= c - '0';
+        } else {
+            value |= c - '7';
         }
         arg0++;
         c = *arg0;
-    } while (c != 0);
+    }
     return value;
 }
 
