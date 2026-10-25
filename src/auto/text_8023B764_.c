@@ -115,6 +115,7 @@ void fn_8023BB0C(void) {
         fn_80016970(var_r30, temp_r29, sp10, sp8);
     }
 }
+#pragma dont_inline reset
 #pragma scheduling on
 int fn_8023BC24(int ignored, int arg1, int arg2) {
     int *obj = (int *)fn_8027DB40(1);
