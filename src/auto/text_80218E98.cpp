@@ -1114,16 +1114,16 @@ extern "C" void fn_8021B224(void *arg0) {
     }
 }
 
-#pragma dont_inline fn_8021B2B0
-extern "C" void fn_8021B2B0(void *arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, s32 arg6) {
-    fn_80219568(arg0, arg1, arg2, arg6, arg4, 0, 0, arg5);
+#pragma dont_inline fn_80219568
+extern "C" void *fn_8021B2B0(void *arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, s32 arg6) {
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, arg6, arg4, 0, 0);
     *(s32 *)((u8 *)arg0 + 0x254) = (s32)arg3;
-    *(void **)arg0 = &lbl_8033F20C;
+    *(void **)arg0 = lbl_8033F20C;
     strcpy((char *)arg0 + 0x268, arg3);
     *(s32 *)((u8 *)arg0 + 0x264) = arg5;
     fn_80219718(arg0);
+    return arg0;
 }
-
 extern "C" int strcmp(const char *, const char *);
 extern "C" void fn_8021B32C(void *arg0) {
     s32 temp_r31;
@@ -5159,20 +5159,21 @@ extern "C" void fn_80229790(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x18) = 0;
 }
 
+#pragma scheduling on
 extern "C" void fn_802297D0(void *arg0) {
     s32 (*callback)(s32);
     if (*(u8 *)((u8 *)arg0 + 0x257) != 0 &&
         *(u8 *)((u8 *)arg0 + 0x254) != 0 &&
         *(u8 *)((u8 *)arg0 + 0x18) != 0) {
         callback = *(s32 (**)(s32))((u8 *)arg0 + 0x258);
-        if (callback != 0) {
-            if (callback(*(s32 *)((u8 *)arg0 + 0x25C)) != 0)
-                fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+        if (callback == 0 || callback(*(s32 *)((u8 *)arg0 + 0x25C)) == 0) {
+        } else {
+            fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
         }
     }
     fn_802192AC(arg0);
 }
-
+#pragma scheduling invalid_target
 extern "C" void fn_8022984C(void *arg0) {
     u8 *p = *(u8 **)((u8 *)arg0 + 0x254);
     *p = (u8)((s8)(*p == 0));
