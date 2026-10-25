@@ -29,7 +29,7 @@ extern s32 lbl_8055E824;
 extern char lbl_8055E838;
 extern u8 lbl_8055E83F;
 extern u8 lbl_8055E840;
-extern void *lbl_8055E86C;
+extern u8 *lbl_8055E86C;
 extern s32 lbl_8055E870;
 extern char lbl_80337474[];
 extern char lbl_80438464[];
