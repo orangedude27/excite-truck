@@ -7,6 +7,7 @@ extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, 
 extern int fn_80128668(void);
 extern int Pause__Q46nw4hbm3snd6detail7AxVoiceFb(int, unsigned char);
 extern int ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(int);
+extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void *, int);
 extern int fn_800EAD00(void *);
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
@@ -367,9 +368,11 @@ extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     return *(int *)((char *)arg0 + 0x48);
 }
 
+#pragma push
+#pragma opt_propagation off
 extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
-    int arg0_int = (int)arg0;
-    const char *base = lbl_80328178;
+    unsigned int arg0_int = (unsigned int)arg0;
+    char *base = (char *)lbl_80328178;
     unsigned char sp20[4], sp1C[4], sp18[4], sp14[4], sp10[4], spC[4], sp8[4];
     unsigned int temp_r30;
     unsigned int temp_r3;
@@ -391,29 +394,29 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     var_r9 = 1;
     var_r10 = 1;
     temp_r30 = arg0_int & 0xFF000000;
-    if (((unsigned int) (temp_r30 + 0x80000000) != 0U) && ((unsigned int) ((arg0_int & 0xFF800000) + 0x7F000000) != 0U)) {
+    if (((unsigned int) (temp_r30 + 0x80000000) >= 1U) && ((unsigned int) ((arg0_int & 0xFF800000) + 0x7F000000) >= 1U)) {
         var_r10 = 0;
     }
-    if ((var_r10 == 0) && ((unsigned int) ((arg0_int & 0xF8000000) + 0x70000000) != 0U)) {
+    if ((var_r10 == 0) && ((unsigned int) ((arg0_int & 0xF8000000) + 0x70000000) >= 1U)) {
         var_r9 = 0;
     }
-    if ((var_r9 == 0) && ((unsigned int) (temp_r30 + 0x40000000) != 0U)) {
+    if ((var_r9 == 0) && ((unsigned int) (temp_r30 + 0x40000000) >= 1U)) {
         var_r8 = 0;
     }
-    if ((var_r8 == 0) && ((unsigned int) ((arg0_int & 0xFF800000) + 0x3F000000) != 0U)) {
+    if ((var_r8 == 0) && ((unsigned int) ((arg0_int & 0xFF800000) + 0x3F000000) >= 1U)) {
         var_r7 = 0;
     }
-    if ((var_r7 == 0) && ((unsigned int) ((arg0_int & 0xF8000000) + 0x30000000) != 0U)) {
+    if ((var_r7 == 0) && ((unsigned int) ((arg0_int & 0xF8000000) + 0x30000000) >= 1U)) {
         var_r6 = 0;
     }
-    if ((var_r6 == 0) && ((unsigned int) ((arg0_int & 0xFFFFC000) + 0x20000000) != 0U)) {
+    if ((var_r6 == 0) && ((unsigned int) ((arg0_int & 0xFFFFC000) + 0x20000000) >= 1U)) {
         var_r5 = 0;
     }
     if (var_r5 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0xAD, base + 0x14, arg0_int);
     }
     var_r5_2 = 0;
-    if (((unsigned int) (temp_r30 + 0x80000000) == 0U) || (temp_r4 = arg0_int & 0xFF800000, (((unsigned int) (temp_r4 + 0x7F000000) == 0U) != 0)) || (temp_r3 = arg0_int & 0xF8000000, (((unsigned int) (temp_r3 + 0x70000000) == 0U) != 0)) || ((unsigned int) (temp_r30 + 0x40000000) == 0U) || ((unsigned int) (temp_r4 + 0x3F000000) == 0U) || ((unsigned int) (temp_r3 + 0x30000000) == 0U) || ((unsigned int) ((arg0_int & 0xFFFFC000) + 0x20000000) == 0U)) {
+    if (((unsigned int) (temp_r30 + 0x80000000) < 1U) || (temp_r4 = arg0_int & 0xFF800000, (((unsigned int) (temp_r4 + 0x7F000000) < 1U) != 0)) || (temp_r3 = arg0_int & 0xF8000000, (((unsigned int) (temp_r3 + 0x70000000) < 1U) != 0)) || ((unsigned int) (temp_r30 + 0x40000000) < 1U) || ((unsigned int) (temp_r4 + 0x3F000000) < 1U) || ((unsigned int) (temp_r3 + 0x30000000) < 1U) || ((unsigned int) ((arg0_int & 0xFFFFC000) + 0x20000000) < 1U)) {
         var_r5_2 = 1;
     }
     if (var_r5_2 == 0) {
@@ -616,7 +619,6 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     GXSetVtxDesc(0xB, 1);
     GXSetVtxDesc(0xD, 1);
 }
-
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2) {
     unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
