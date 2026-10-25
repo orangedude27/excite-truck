@@ -139,6 +139,20 @@ void* DSPReset(void) {
     return lbl_8055D808;
 }
 
+void *DSPAssertInt(void *arg0) {
+    s32 enabled;
+
+    enabled = OSDisableInterrupts();
+    __DSP_insert_task(arg0);
+    *(s32 *)arg0 = 0;
+    *(s32 *)((u8 *)arg0 + 8) = 1;
+    OSRestoreInterrupts(enabled);
+    if (arg0 == lbl_8055D820) {
+        __DSP_boot_task(arg0);
+    }
+    return arg0;
+}
+
 void *__DSPHandler(void *arg0) {
     s32 interrupts;
     interrupts = OSDisableInterrupts();
