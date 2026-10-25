@@ -150,19 +150,26 @@ void fn_801BEDA8(int *arg0, int *arg1, int *arg2, int *arg3, int *arg4) {
     *arg4 = lbl_8055E78C;
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_801BF0C4(void *arg0, void *arg1, int arg2) {
-    if (fn_801E9E78(arg2, arg1, arg0) == 0) {
-        float a = lbl_80562838;
-        float b = lbl_8056283C;
-        float c = lbl_80562838;
-        float d = lbl_805628A4;
-        ((float *)arg1)[0] = a;
-        ((float *)arg1)[1] = b;
-        ((float *)arg1)[2] = c;
-        ((float *)arg0)[1] = d;
+    float d;
+    float b;
+    float a;
+
+    if (fn_801E9E78(arg2, arg0, arg1) == 0) {
+        a = lbl_80562838;
+        b = lbl_8056283C;
+        *(float *)arg1 = a;
+        d = lbl_805628A4;
+        *(float *)((char *)arg1 + 4) = b;
+        *(float *)((char *)arg1 + 8) = a;
+        *(float *)((char *)arg0 + 4) = d;
     }
 }
-
+#pragma scheduling on
+#pragma pop
 void fn_801BF12C(float *arg0, float *arg1) {
     float d;
     float c;
