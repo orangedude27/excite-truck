@@ -118,6 +118,31 @@ found:
     }
     return lbl_80563AD0;
 }
+
+float fn_80258AB0(void *arg0, int arg1) {
+    int index = 0;
+    int offset = 0;
+    int len;
+    goto check;
+loop:
+    len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), (const char *)arg1);
+    if (((unsigned int)__cntlzw(len) >> 5)) {
+        if (lbl_80563AD0) goto found;
+        else goto found;
+    }
+    offset += 0x48;
+    index++;
+check:
+    if (index < *(int *)((char *)arg0 + 8)) goto loop;
+    index = -1;
+found:
+    if (index >= 0) {
+        unsigned int p = *(unsigned int *)((char *)arg0 + 4) + index * 0x48;
+        return fn_80235F64(*(unsigned int *)(p + 0x40), *(unsigned int *)(p + 0x44));
+    }
+    return lbl_80563AD0;
+}
+
 #pragma scheduling on
 extern int stricmp(const char *, const char *);
 extern int fn_80232B70(int, int, int);
