@@ -2,6 +2,7 @@
 extern f32 lbl_8055E85C;
 extern f32 lbl_8055E860;
 extern f32 lbl_805629B4;
+extern char lbl_8055AA4C[];
 extern char lbl_80336B00[];
 extern void fn_801C8420(void);
 extern void fn_801C6D94(void);
@@ -1034,13 +1035,15 @@ extern char lbl_8055AA44[4];
 extern Vec lbl_80438498;
 extern char lbl_8055E83D;
 void fn_801C7A28(void) {
-    lbl_80438498.x = lbl_80438268.x;
-    lbl_80438498.y = lbl_80438268.y;
-    lbl_80438498.z = lbl_80438268.z;
+    Vec *dst = &lbl_80438498;
+    Vec *src = &lbl_80438268;
+    dst->x = src->x;
+    dst->y = src->y;
+    dst->z = src->z;
     lbl_8055E83A = 0;
     lbl_8055E868 = fn_801C6CB0;
     lbl_8055E83D = 0;
-    ((void (*)(f32, f32))fn_801C78D8)(lbl_80438268.y, lbl_80438268.x);
+    ((void (*)(f32, f32))fn_801C78D8)(src->y, src->x);
 }
 
 extern f64 atof(const char *);
