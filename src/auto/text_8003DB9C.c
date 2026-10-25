@@ -1088,28 +1088,36 @@ void GXGetPointSize(s32 arg0) {
 }
 
 void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 type;
-    s32 clz3;
-    s32 clz2;
-    unsigned short value;
+    union {
+        u32 reg;
+        struct {
+            unsigned int high : 8;
+            unsigned int unused : 8;
+            unsigned int attenB : 4;
+            unsigned int distA : 1;
+            unsigned int attenA : 3;
+            unsigned int attenC : 3;
+            unsigned int unused2 : 3;
+            unsigned int distB : 1;
+            unsigned int type : 1;
+        } fields;
+    } value;
 
-    type = 0;
-    if (arg0 == 1) {
-        type = 1;
-    } else if (arg0 == 3) {
-        type = 1;
+    s32 type = 0;
+    value.reg = __peReg[1];
+    if (arg0 != 1) {
+        if (arg0 == 3) {
+            type = 1;
+        }
     }
-    clz3 = __cntlzw(arg0 - 3);
-    clz2 = __cntlzw(arg0 - 2);
-    value = __peReg[1];
-    value = (value & ~1) | type;
-    value = (value & ~0x800) | ((clz3 << 6) & 0x800);
-    value = (value & ~2) | ((clz2 >> 4) & 2);
-    value = (value & ~0xF000) | ((arg3 << 12) & 0xF000);
-    value = (value & ~0x700) | ((arg1 << 8) & 0x700);
-    value = (value & ~0xE0) | ((arg2 << 5) & 0xE0);
-    value = (value & ~0xFF000000) | 0x41000000;
-    __peReg[1] = value;
+    value.fields.type = type;
+    value.fields.distA = __cntlzw(arg0 - 3);
+    value.fields.distB = __cntlzw(arg0 - 2);
+    value.fields.attenB = arg3;
+    value.fields.attenA = arg1;
+    value.fields.attenC = arg2;
+    value.fields.high = 0x41;
+    __peReg[1] = value.reg;
 }
 
 void GXInitLightAttnK(s32 arg0) {
@@ -2612,39 +2620,70 @@ void GXSetTevAlphaIn(s32 stage, s32 a, s32 b, s32 c, s32 d) {
 }
 
 void GXSetTevColorOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    union TevColorOpReg {
+        unsigned int value;
+        struct {
+            unsigned int pad0 : 8;
+            unsigned int konst : 2;
+            unsigned int scale : 2;
+            unsigned int arg4 : 1;
+            unsigned int clamp : 1;
+            unsigned int bias : 2;
+            unsigned int pad1 : 16;
+        } bits;
+    };
     unsigned int *data = __GXData + arg0;
-    unsigned int value = data[0x180 / 4];
-    value = (value & ~0x40000) | ((arg1 << 18) & 0x40000);
+    union TevColorOpReg reg;
+
+    reg.value = data[0x180 / 4];
+    reg.bits.clamp = arg1;
     if (arg1 <= 1) {
-        value = (value & ~0x300000) | ((arg3 << 20) & 0x300000);
-        value = (value & ~0x30000) | ((arg2 << 16) & 0x30000);
+        reg.bits.scale = arg3;
+        reg.bits.bias = arg2;
     } else {
-        value = (value & ~0x300000) | ((arg1 << 19) & 0x300000) | 0x30000;
+        reg.bits.scale = ((unsigned int)arg1) >> 1;
+        reg.bits.bias = 3;
     }
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = (value & ~0x80000) | ((arg4 << 19) & 0x80000);
-    value = (value & ~0xC00000) | ((arg5 << 22) & 0xC00000);
-    *(volatile unsigned int *)0xCC008000 = value;
-    data[0x180 / 4] = value;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    reg.bits.arg4 = arg4;
+    reg.bits.konst = arg5;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
+    data[0x180 / 4] = reg.value;
+    *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetTevAlphaOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    unsigned int *data = __GXData + arg0;
-    unsigned int value = data[0x1C0 / 4];
-    value = (value & ~0x40000) | ((arg1 << 18) & 0x40000);
+    union TevAlphaOpReg {
+        unsigned int value;
+        struct {
+            unsigned int pad0 : 8;
+            unsigned int konst : 2;
+            unsigned int scale : 2;
+            unsigned int arg4 : 1;
+            unsigned int clamp : 1;
+            unsigned int bias : 2;
+            unsigned int pad1 : 16;
+        } bits;
+    };
+    register union TevAlphaOpReg reg;
+    register unsigned int *base = __GXData;
+    register unsigned int *data = base + arg0;
+
+    reg.value = data[0x1C0 / 4];
+    reg.bits.clamp = arg1;
     if (arg1 <= 1) {
-        value = (value & ~0x300000) | ((arg3 << 20) & 0x300000);
-        value = (value & ~0x30000) | ((arg2 << 16) & 0x30000);
+        reg.bits.scale = arg3;
+        reg.bits.bias = arg2;
     } else {
-        value = (value & ~0x300000) | ((arg1 << 19) & 0x300000) | 0x30000;
+        reg.bits.scale = ((unsigned int)arg1) >> 1;
+        reg.bits.bias = 3;
     }
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = (value & ~0x80000) | ((arg4 << 19) & 0x80000);
-    value = (value & ~0xC00000) | ((arg5 << 22) & 0xC00000);
-    *(volatile unsigned int *)0xCC008000 = value;
-    data[0x1C0 / 4] = value;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    reg.bits.arg4 = arg4;
+    reg.bits.konst = arg5;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
+    data[0x1C0 / 4] = reg.value;
+    *(volatile unsigned short *)((char *)base + 2) = 0;
 }
 
 void GXSetTevColor(s32 arg0, unsigned int *arg1) {
@@ -2681,19 +2720,11 @@ void GXSetTevColorS10(s32 tevReg, void *color) {
 }
 
 void GXSetTevKColor(s32 tevReg, unsigned int *color) {
+    unsigned int index = tevReg << 1;
     unsigned int value = *color;
     unsigned int *data = __GXData;
-    s32 index = tevReg << 1;
-    unsigned int first = (index + 0xE0) << 24;
-    unsigned int second = (index + 0xE1) << 24;
-    first |= value >> 24;
-    first |= value << 8;
-    first |= value << 12;
-    first |= 0x00800000;
-    second |= value >> 8;
-    second |= value << 12;
-    second |= value << 28;
-    second |= 0x00800000;
+    unsigned int first = __rlwimi(__rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
+    unsigned int second = __rlwimi(__rlwimi(__rlwimi((index + 0xE1) << 24, value, 24, 24, 31), value, 28, 12, 19), 8, 20, 8, 11);
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = first;
     *(volatile unsigned char *)0xCC008000 = 0x61;
@@ -3076,17 +3107,28 @@ void __GXSetProjection(void) {
 #pragma pop
 void GXSetProjection(float *arg0, int arg1) {
     unsigned int *data = __GXData;
+    register float fourth, third, second, first;
+    register float perspectiveB, perspectiveA, orthographicB, orthographicA;
+
+    first = arg0[0];
     data[0x528 / 4] = arg1;
-    *(float *)((char *)data + 0x52C) = arg0[0];
-    *(float *)((char *)data + 0x534) = arg0[5];
-    *(float *)((char *)data + 0x53C) = arg0[10];
-    *(float *)((char *)data + 0x540) = arg0[11];
+    second = arg0[5];
+    *(float *)((char *)data + 0x52C) = first;
+    third = arg0[10];
+    *(float *)((char *)data + 0x534) = second;
+    fourth = arg0[11];
+    *(float *)((char *)data + 0x53C) = third;
+    *(float *)((char *)data + 0x540) = fourth;
     if (arg1 == 1) {
-        *(float *)((char *)data + 0x530) = arg0[3];
-        *(float *)((char *)data + 0x538) = arg0[7];
+        perspectiveA = arg0[3];
+        perspectiveB = arg0[7];
+        *(float *)((char *)data + 0x530) = perspectiveA;
+        *(float *)((char *)data + 0x538) = perspectiveB;
     } else {
-        *(float *)((char *)data + 0x530) = arg0[2];
-        *(float *)((char *)data + 0x538) = arg0[6];
+        orthographicA = arg0[2];
+        orthographicB = arg0[6];
+        *(float *)((char *)data + 0x530) = orthographicA;
+        *(float *)((char *)data + 0x538) = orthographicB;
     }
     data[0x5FC / 4] |= 0x08000000;
 }
@@ -3119,6 +3161,31 @@ void GXLoadPosMtxImm(const f32 mtx[3][4], u32 id) {
     *fifo = pairs[4];
     *fifo = pairs[5];
 }
+
+#pragma push
+#pragma paired_single on
+#pragma paired on
+void GXLoadNrmMtxImm(const f32 mtx[3][4], u32 id) {
+    f64 row0, row1, row2;
+    f32 tail0, tail1, tail2;
+    u32 address;
+    address = id * 3 + 0x400;
+    *(volatile u8 *)0xCC008000 = 0x10;
+    *(volatile u32 *)0xCC008000 = address | 0x80000;
+    row0 = *(const volatile f64 *)&mtx[0][0];
+    tail0 = *(const volatile f32 *)&mtx[0][2];
+    row1 = *(const volatile f64 *)&mtx[1][0];
+    tail1 = *(const volatile f32 *)&mtx[1][2];
+    row2 = *(const volatile f64 *)&mtx[2][0];
+    tail2 = *(const volatile f32 *)&mtx[2][2];
+    *(volatile f64 *)0xCC008000 = row0;
+    *(volatile f32 *)0xCC008000 = tail0;
+    *(volatile f64 *)0xCC008000 = row1;
+    *(volatile f32 *)0xCC008000 = tail1;
+    *(volatile f64 *)0xCC008000 = row2;
+    *(volatile f32 *)0xCC008000 = tail2;
+}
+#pragma pop
 
 /* Assign through the register's low-six-bit field to match rlwimi directly. */
 void GXSetCurrentMtx(s32 arg0) {
