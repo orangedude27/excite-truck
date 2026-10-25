@@ -242,9 +242,15 @@ extern float lbl_80563C44, lbl_80563C48, lbl_80563C2C, lbl_80563C34, lbl_80563C4
 extern float lbl_80563C98;
 extern int fn_80178CA4(void);
 int fn_80268BA4(int arg0) {
-    register unsigned int shift = arg0 - 4;
-    if (shift > 0x13) return 0;
-    return ((1U << shift) & 0x80037) != 0;
+    unsigned int shift = arg0 - 4;
+    int result = 0;
+    if (shift > 0x13)
+        goto done;
+    if (!((1U << shift) & 0x80037))
+        goto done;
+    result = 1;
+done:
+    return result;
 }
 
 extern float lbl_80563C20, lbl_80563C2C, lbl_80563C8C, lbl_80563C90, lbl_80563C94;
@@ -273,10 +279,10 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     PSVECCrossProduct((char*)out+0xc,(char*)out+0x18,out);
 }
 
+#pragma dont_inline on
 void fn_8026A248(int arg0, int arg1) {
     *(int *)((char *)fn_80267EE4(arg1) + 0x24) = arg0;
 }
-
 extern void fn_802735F4(int, int);
 extern void fn_80135DC4(void *, int, int);
 extern void fn_80134E34(float);
