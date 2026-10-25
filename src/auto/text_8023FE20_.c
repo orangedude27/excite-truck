@@ -358,9 +358,10 @@ s32 fn_802411A4(s32 *arg0) {
     return 0;
 }
 
+#pragma dont_inline on
 extern void fn_8023FE20(void);
-#pragma dont_inline fn_8023FE20
 void fn_802411C8(void) { fn_8023FE20(); }
+#pragma dont_inline reset
 
 void fn_802411CC(void) { fn_8023FE34(); }
 
