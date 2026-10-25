@@ -631,6 +631,7 @@ void* fn_80179650(void) {
 }
 
 extern char lbl_8055E45D;
+extern const char lbl_80331B40[];
 char fn_801796B4(void) {
     return lbl_8055E45D;
 }
