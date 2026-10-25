@@ -87,12 +87,13 @@ extern char lbl_80343F78[];
 extern char lbl_80343F68[];
 int fn_80131234(const char *);
 int fn_80215214(int, int);
+#pragma dont_inline on
 int fn_8024C550(void) {
     fn_802E6FBC();
     fn_8024C464();
     return 0;
 }
-
+#pragma dont_inline reset
 int fn_8024C578(int arg0) {
     int result;
     if (((int (*)())fn_8000DBAC)() != 0) {
