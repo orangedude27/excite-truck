@@ -139,8 +139,20 @@ u32 fn_800080D8(void) {
     return *(u32*)((u8*)&lbl_8034EF38 + 0x1E0);
 }
 
+const char* fn_80008158(s32 arg0) {
+    if (arg0 < 0) {
+        goto done;
+    }
+    if (arg0 >= *(s32 *)((u8 *)&lbl_8034EF38 + 0x1E0)) {
+        goto done;
+    }
+    return *(const char **)((u8 *)&lbl_8034EF38 + arg0 * 0xC);
+
+done:
+    return lbl_805589A8;
+}
+
 const char* fn_80008158(s32);
-extern const char lbl_805589A8[];
 const char* fn_80008188(void) {
     return *(const char**)((u8*)&lbl_8034EF38 + fn_800080E8() * 0xC + 4);
 }
