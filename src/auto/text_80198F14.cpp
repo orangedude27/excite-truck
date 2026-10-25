@@ -82,7 +82,7 @@ extern "C" void fn_8017B6D4(s32, Vec*, s32);
 extern "C" void fn_8019AC44(void*, void*, void*, f32);
 inline void fn_8019AC44_compat(f32* a, f32* b, f32 c) {}
 static inline void fn_8019AC44_3(f32* a, f32* b, f32 c) {}
-extern char lbl_803339B8;
+extern char lbl_803339B8[];
 extern void fn_8019F03C();
 extern "C" s32 fn_8019DDFC(s32, s32, s32, s32, void*, void*, f32);
 extern "C" f64 fn_8002F234(f32);
@@ -1521,26 +1521,32 @@ extern "C" void fn_8019FF8C(void* arg0) {
     *(u8*)((u8*)arg0 + 0x78) = 0;
 }
 
+#pragma small_data off
 extern "C" void fn_8019FFD8(void* arg0, s32 arg1, s32 arg2) {
+    f32 zeroFloat = lbl_805622D0;
+    s32 zero = 0;
+    s32 minusOne = -1;
+    s32 tag = 0x47525550;
+    s32 count = 0x64;
     *(s32*)((u8*)arg0 + 0xC) = arg1;
     *(s32*)((u8*)arg0 + 4) = arg2;
-    *(s32*)((u8*)arg0 + 8) = 0;
-    *(s32*)((u8*)arg0 + 0x18) = 0x47525550;
-    *(f32*)((u8*)arg0 + 0x10) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x14) = lbl_805622D0;
-    *(s32*)((u8*)arg0 + 0x20) = 0x64;
-    *(s32*)((u8*)arg0 + 0x1C) = 0;
-    *(void**)((u8*)arg0) = &lbl_803339B8;
-    *(f32*)((u8*)arg0 + 0x170) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x178) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x16C) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x168) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x164) = lbl_805622D0;
-    *(s32*)((u8*)arg0 + 0x174) = 0;
-    *(s32*)((u8*)arg0 + 0x17C) = 0;
-    *(s32*)((u8*)arg0 + 0x180) = -1;
+    *(s32*)((u8*)arg0 + 8) = zero;
+    *(s32*)((u8*)arg0 + 0x18) = tag;
+    *(f32*)((u8*)arg0 + 0x10) = zeroFloat;
+    *(f32*)((u8*)arg0 + 0x14) = zeroFloat;
+    *(s32*)((u8*)arg0 + 0x20) = count;
+    *(s32*)((u8*)arg0 + 0x1C) = zero;
+    *(void**)arg0 = &lbl_803339B8;
+    *(f32*)((u8*)arg0 + 0x170) = zeroFloat;
+    *(f32*)((u8*)arg0 + 0x178) = zeroFloat;
+    *(f32*)((u8*)arg0 + 0x16C) = zeroFloat;
+    *(f32*)((u8*)arg0 + 0x168) = zeroFloat;
+    *(f32*)((u8*)arg0 + 0x164) = zeroFloat;
+    *(s32*)((u8*)arg0 + 0x174) = zero;
+    *(s32*)((u8*)arg0 + 0x17C) = zero;
+    *(s32*)((u8*)arg0 + 0x180) = minusOne;
 }
-
+#pragma small_data on
 extern "C" void* fn_801A0040(void* arg0, s32 arg1) {
       if (arg0 != 0) {
           *(void**)arg0 = &lbl_803339B8;
@@ -2447,13 +2453,15 @@ extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
     arg1->x = arg1->x - pad;
     arg1->z = arg1->z - pad;
 }
-#pragma scheduling off
+#pragma fp_contract on
+#pragma scheduling invalid_target
 extern "C" f32 fn_801A3880(s32 arg0) {
     f32 first = PSVECDotProduct((Vec*)(arg0 + 0x30), (Vec*)(arg0 + 0x30));
     f32 second = PSVECDotProduct((Vec*)(arg0 + 0x24), (Vec*)(arg0 + 0x24));
     f32 selected = second > first ? second : first;
     return (f32)fn_8002F234(selected);
 }
+#pragma fp_contract off
 #pragma scheduling on
 extern float lbl_805622D0, lbl_805622DC, lbl_805623C0;
 extern float PSVECDotProduct(float *, void *);
@@ -2660,15 +2668,13 @@ extern "C" void fn_801A442C(void* arg0, void* arg1, void* arg2) {
     *(f32*)((u8*)arg2 + 0x8) = c;
 }
 
-f32 fn_801A4460(void *arg0) {
-    f32 first;
-    f32 second;
-    first = PSVECDotProduct((const Vec *)((u8 *)arg0 + 0x34), (const Vec *)((u8 *)arg0 + 0x34));
-    second = PSVECDotProduct((const Vec *)((u8 *)arg0 + 0x28), (const Vec *)((u8 *)arg0 + 0x28));
-    if (second > first) {
-        first = second;
+extern "C" f32 fn_801A4460(void* arg0) {
+    f32 first = PSVECDotProduct((const Vec*)((u8*)arg0 + 0x34), (const Vec*)((u8*)arg0 + 0x34));
+    f32 second = PSVECDotProduct((const Vec*)((u8*)arg0 + 0x28), (const Vec*)((u8*)arg0 + 0x28));
+    if (second <= first) {
+        second = first;
     }
-    return (f32)fn_8002F234(first);
+    return (f32)fn_8002F234(second);
 }
 
 extern "C" void fn_801A44C4(void* arg0) {
@@ -2772,7 +2778,7 @@ extern "C" void fn_801A47B0(s32* arg0, s32 arg1) {
 #pragma opt_tail_call on
 extern "C" void fn_801A47C8(void* arg0) {
     s32 limit = *(s32*)arg0;
-    s32** ptrs = *(s32***)((u8*)arg0 + 4);
+    volatile s32** ptrs = *(volatile s32***)((u8*)arg0 + 4);
     for (s32 i = 0; i < limit; i++) {
         ((u8*)ptrs[i])[0x40] = 1;
     }
