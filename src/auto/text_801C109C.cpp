@@ -26,16 +26,17 @@ extern "C" int fn_801284F8(int, int *);
 extern int fn_801C109C(int, int, int, int);
 extern "C" int fn_80128668(int);
 extern int lbl_8055A950;
-extern "C" void __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int, int);
+extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int, int);
 extern int fn_80128670(int);
-int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int *arg0, int arg1) {
+#pragma dont_inline on
+extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int arg0, int arg1) {
     if (arg0 != 0) {
-        fn_80128670(*arg0);
-        if (arg1 > 0) fn_80128668((int)arg0);
+        fn_80128670(*(int *)arg0);
+        if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-
+#pragma dont_inline reset
 extern float lbl_80562910, lbl_80562914;
 void fn_801C1218(void *arg0) {
     char *base = (char *)arg0;
