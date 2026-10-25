@@ -652,12 +652,9 @@ void fn_801BF2A4(void *, int, float *, void *, void *, int, void *, float, float
 void fn_802E30C8(void *, int);                   /* extern */
 #pragma push
 #pragma small_data off
-extern char lbl_80332758[];
+extern char lbl_80332758;
 #pragma pop
-#pragma push
-#pragma small_data off
 extern float lbl_80558DC4;
-#pragma pop
 extern float lbl_8055A460;
 extern float lbl_80561F98;
 extern float lbl_80561FC4;
@@ -686,11 +683,8 @@ extern float lbl_80562034;
 void fn_8018E3EC(char *arg0, float *arg1, void *arg2, int arg3, int arg4, int arg5, int arg_sp0) {
     extern float __fabsf(float);
 extern float lbl_80561FE8;
-extern char lbl_80332758[];
-#pragma push
-#pragma small_data off
+extern char lbl_80332758;
 extern float lbl_80558DC4;
-#pragma pop
 extern float lbl_8055A460;
 extern float lbl_80561F74;
 extern float lbl_80561F88;
@@ -1101,7 +1095,7 @@ loop_80:
                     temp_f26_2 = lbl_80561FF4;
                     var_r22 = (char *)arg0 + 0x152C;
                     temp_f25 = lbl_80561FD0;
-                    var_r21_2 = lbl_80332758 + 0xE8;
+                    var_r21_2 = &lbl_80332758 + 0xE8;
                     temp_f23_3 = lbl_80561FE4;
                     var_r20_2 = 0;
                     do {
@@ -1178,7 +1172,7 @@ loop_80:
                         var_r21_2 += 0x40;
                     } while (var_r20_2 < 0x11);
                     temp_f25_2 = lbl_80561FEC;
-                    var_r24 = lbl_80332758 + 0x5B0;
+                    var_r24 = &lbl_80332758 + 0x5B0;
                     temp_f23_4 = lbl_80561F8C;
                     var_r20_3 = 0;
                     do {
@@ -1327,7 +1321,7 @@ loop_80:
                                         fn_8018F76C(arg0, var_r4_2);
                                     }
                                 }
-                                fn_802E30C8(lbl_80332758 + 0x6B8, M2C_FIELD(arg0, int *, 0x1EC));
+                                fn_802E30C8(&lbl_80332758 + 0x6B8, M2C_FIELD(arg0, int *, 0x1EC));
                                 var_r17_2 = 1;
                                 fn_801B8610(M2C_FIELD(arg0, int *, 0x1EC), arg4);
                             }
@@ -1335,7 +1329,7 @@ loop_80:
                     } else if (temp_r0_2 >= 9) {
                         temp_r3_10 = M2C_FIELD(arg0, void ***, 0x270);
                         if (M2C_FIELD(*temp_r3_10, int (**)(void **), 0x38)(temp_r3_10) == 0) {
-                            fn_802E30C8(lbl_80332758 + 0x6CC, M2C_FIELD(arg0, int *, 0x1EC));
+                            fn_802E30C8(&lbl_80332758 + 0x6CC, M2C_FIELD(arg0, int *, 0x1EC));
                             var_r17_2 = 1;
                         }
                     }
