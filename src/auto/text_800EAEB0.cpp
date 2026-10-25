@@ -402,18 +402,24 @@ void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay) {
 }
 #pragma pop
 void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
- f32 value;
- int valid = 0;
- if (release >= 0 && release <= 0x7F) valid = 1;
- if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B80,0x127,(const char*)lbl_80322C50,release,0,0x7F);
- valid = 0;
- if (release >= 0 && release <= 0x7F) valid = 1;
- if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B80,0x132,(const char*)lbl_80322C50,release,0,0x7F);
- if (release == 0x7F) value=lbl_80560FE8;
- else if (release == 0x7E) value=lbl_80561008;
- else if (release < 0x32) value=(f32)((release*2)+1)*lbl_8056100C/lbl_80561010;
- else value=lbl_80561014/(f32)(0x7E - release)/lbl_80561010;
- *(f32*)((u8*)this+0xC)=value;
+    f32 value;
+    int valid = 0;
+    register f32 factor;
+    if (release >= 0 && release <= 0x7F) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B80, 0x127, (const char*)lbl_80322C50, release, 0, 0x7F);
+    valid = 0;
+    if (release >= 0 && release <= 0x7F) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B80, 0x132, (const char*)lbl_80322C50, release, 0, 0x7F);
+    if (release == 0x7F) value = lbl_80560FE8;
+    else if (release == 0x7E) value = lbl_80561008;
+    else if (release < 0x32) {
+        factor = (f32)((release * 2) + 1);
+        value = factor * lbl_8056100C;
+        value = value / lbl_80561010;
+    } else {
+        value = lbl_80561014 / (0x7E - release) / lbl_80561010;
+    }
+    *(f32*)((u8*)this + 0xC) = value;
 }
 
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
@@ -956,21 +962,24 @@ extern "C" void OSSetAlarm(void*, u32, u32, u32, void (*)(void));
 extern "C" void fn_800EE910(void*);
 extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(void*, void*);
 extern "C" void* fn_800EE5E8(void* arg0, void* arg1) {
+    u8 first = ((volatile u8*)arg0)[1];
+    const s16* pcm = (const s16*)arg1;
     u8* state = (u8*)arg0;
-    u8* pcm = (u8*)arg1;
+    u8* file = lbl_80323840;
     u32 outerLevel;
-    s32 active = 1, startAlarm = 0, repeatAlarm = 0, mode, encoded;
+    s32 startAlarm, repeatAlarm, active, encoded;
+    u32 mode;
     u32 i;
     u8 encodedBuffer[0x18];
-    const char* file = (const char*)lbl_80323840;
-    if (state[1] == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x101,
-                                     file + 0x38);
+    if (first == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x101,
+                                     (const char*)file + 0x38);
     if (state[1] != 0) {
         outerLevel = OSDisableInterrupts();
         if (WPADCanSendStreamData(*(s32*)(state + 0x2C)) == 0) {
             OSRestoreInterrupts(outerLevel);
         } else {
+            active = 1;
             {
                 s32 allZero;
                 if (state[3] != 0) {
@@ -993,37 +1002,39 @@ extern "C" void* fn_800EE5E8(void* arg0, void* arg1) {
                     allZero = 1;
                 }
 scanDone:
-                if (allZero == 0) {
-                    if (state[6] != 0) active = 0;
-                } else {
-                    active = 0;
-                }
+                if (allZero != 0 || state[6] != 0) active = 0;
             }
+            startAlarm = 0;
+            repeatAlarm = 0;
             if (state[2] != 0) {
-                mode = 1;
-                if (active == 0) repeatAlarm = 1;
+                if (active != 0) {
+                    mode = 1;
+                } else {
+                    mode = 1;
+                    repeatAlarm = 1;
+                }
             } else if (active != 0) {
                 startAlarm = 1;
                 mode = state[5] == 0 ? 1 : 0;
                 state[5] = 0;
             } else mode = -1;
-            if (mode != -1) {
-                WENCGetEncodeData(state + 9, (u32)mode, (const s16*)pcm,
+            if ((mode + 0x10000U) != 0xFFFFU) {
+                WENCGetEncodeData(state + 9, (u32)mode, pcm,
                                   mode == 2 ? 0x20 : 0x28, encodedBuffer);
-                encoded = ((s32 (*)(s32, void*, s32))fn_80062278)(
-                    *(s32*)(state + 0x2C), encodedBuffer, 0x14);
-                if (encoded != 0)
+                if ((encoded = fn_80062278(
+                         *(s32*)(state + 0x2C), encodedBuffer, 0x14)) != 0)
                     Warning__Q26nw4hbm2dbFPCciPCce(
-                        file, 0x154,
-                        file + 0x60, encoded);
+                        (const char*)file, 0x154,
+                        (const char*)file + 0x60, encoded);
             }
             if (startAlarm != 0) {
                 u32 level = OSDisableInterrupts();
                 if (state[7] == 0) {
                     u32 ticks = *(volatile u32*)0x800000F8 >> 2;
                     u64 scaled = (u64)ticks * 0x1E0;
-                    OSSetAlarm(state + 0x38, (u32)0, (u32)(scaled >> 32),
-                               (u32)scaled, (void (*)(void))fn_800EE910);
+                    ((void (*)(void*, u32, u64, void (*)(void)))OSSetAlarm)(
+                        state + 0x38, (u32)0, scaled,
+                        (void (*)(void))fn_800EE910);
                     {
                         u64 time = OSGetTime();
                         *(u32*)(state + 0x9C) = (u32)time;
@@ -1039,9 +1050,10 @@ scanDone:
                 u32 level = OSDisableInterrupts();
                 state[8] = 1;
                 OSCancelAlarm(state + 0x68);
-                OSSetAlarm(state + 0x68, (u32)0, (u32)0,
-                           *(volatile u32*)0x800000F8 >> 2,
-                           (void (*)(void))IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext);
+                ((void (*)(void*, u32, u64, void (*)(void)))OSSetAlarm)(
+                    state + 0x68, (u32)0,
+                    (u64)(*(volatile u32*)0x800000F8 >> 2),
+                    (void (*)(void))IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext);
                 OSRestoreInterrupts(level);
             }
             state[2] = (u8)active;
@@ -1552,9 +1564,11 @@ void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi(void* self, int priori
     OSRestoreInterrupts(level);
 }
 
-s32 fn_800F016C(s32 array, s32 index) {
-    if (index > 0xf) return 0;
-    return *(s32*)(array + index * 4 + 0x9c);
+extern "C" s32 fn_800F016C(s32 array, s32 index) {
+    if (index > 0xF) {
+        return 0;
+    }
+    return *(s32 *)(array + index * 4 + 0x9C);
 }
 
 extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
