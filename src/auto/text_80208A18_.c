@@ -8,7 +8,7 @@ extern char lbl_80489258[];
 
 extern float lbl_80563230;
 extern float lbl_80563234;
-extern void fn_80208A50();
+extern void fn_80208A50(float *);
 
 extern void *lbl_8055EDA8;
 extern int lbl_80489238[4];
