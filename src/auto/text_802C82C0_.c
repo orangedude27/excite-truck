@@ -224,13 +224,19 @@ void fn_802C88FC(float *arg0) {
 
 #pragma scheduling on
 void fn_802C8B08(unsigned int *arg0) {
-    unsigned int *src = lbl_804C1410;
-    arg0[0] = src[0]; arg0[1] = src[1];
-    arg0[2] = src[2]; arg0[3] = src[3];
-    arg0[4] = src[4]; arg0[5] = src[5];
-    arg0[6] = src[6]; arg0[7] = src[7];
-    arg0[8] = src[8]; arg0[9] = src[9];
-    arg0[10] = src[10]; arg0[11] = src[11];
+    struct Pair { unsigned int first; unsigned int second; };
+    struct Tail { unsigned int first; struct Pair pair; unsigned int last; };
+    struct Pair *dst = (struct Pair *)arg0;
+    struct Pair *src = (struct Pair *)lbl_804C1410;
+    struct Tail *dstTail = (struct Tail *)((char *)arg0 + 0x20);
+    struct Tail *srcTail = (struct Tail *)((char *)lbl_804C1410 + 0x20);
+    dst[0] = src[0];
+    dst[1] = src[1];
+    dst[2] = src[2];
+    dst[3] = src[3];
+    dstTail->first = srcTail->first;
+    dstTail->pair = srcTail->pair;
+    dstTail->last = srcTail->last;
 }
 
 extern void fn_802CAD74(void);
