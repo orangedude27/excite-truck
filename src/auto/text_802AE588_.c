@@ -128,11 +128,12 @@ void fn_802AE690(void *arg0) {
     lbl_8055F988 = result;
 }
 
+#pragma scheduling invalid_target
 float fn_802AE6E0(void *arg0, void *arg1) {
-    float y0 = *(float *)((char *)arg0 + 8);
-    float y1 = *(float *)((char *)arg1 + 8);
-    float x0 = *(float *)arg0;
-    float x1 = *(float *)arg1;
+    float y0 = *(volatile float *)((char *)arg0 + 8);
+    float y1 = *(volatile float *)((char *)arg1 + 8);
+    float x0 = *(volatile float *)arg0;
+    float x1 = *(volatile float *)arg1;
     float dy = y0 - y1;
     float dx = x0 - x1;
     float dy2 = dy * dy;
@@ -140,7 +141,43 @@ float fn_802AE6E0(void *arg0, void *arg1) {
     return (float)fn_8002F234(dx2 + dy2, dy, y0);
 }
 
-#pragma dont_inline fn_802AE7AC
+extern void fn_802C7A44(void);
+extern float lbl_80564B3C;
+extern void fn_802C9648(float);
+extern void fn_80287A34(int);
+extern void fn_802C967C(void);
+extern void fn_802879E4(int);
+extern void fn_801FA6B8(void);
+extern void fn_802C7A50(void);
+extern void fn_802C9904(void);
+extern void fn_801FA738(void);
+void fn_802AE728(void) {
+    fn_802C7A44();
+    fn_802C9648(lbl_80564B3C);
+    fn_80287A34(0);
+    fn_802C967C();
+    fn_802879E4(0);
+    fn_801FA6B8();
+    fn_802C7A50();
+    fn_802C9904();
+    fn_801FA738();
+}
+
+#pragma scheduling on
+void fn_802BA004(void);
+void fn_802BA348(void);
+void fn_802C29A0(void);
+void fn_802BAE50(void);
+void fn_802AE774(void) {
+    fn_802BA004();
+    if (((int (*)(void))fn_802B05E4)() == 0) {
+        fn_802BA348();
+        fn_802C29A0();
+        fn_802BAE50();
+    }
+}
+
+#pragma scheduling on
 int fn_802AE7AC(void) {
     int val = *(int *)lbl_8055F984;
     unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
