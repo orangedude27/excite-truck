@@ -3,6 +3,13 @@
 
 typedef signed int s32;
 typedef unsigned char u8;
+#pragma cplusplus on
+struct ResetTarget {
+    virtual void f0() = 0;
+    virtual void f1() = 0;
+    virtual void cleanup(s32) = 0;
+};
+#pragma cplusplus reset
 extern int fn_80131234(void *);
 extern void *fn_8027DB40(s32);
 extern void *memset(void *, int, unsigned int);
@@ -44,6 +51,20 @@ s32 fn_802407B0(s32 arg0, s32 arg1) {
 
 s32 fn_802407F0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
+void *fn_80240830(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)((char *)arg0 + 0x0C) = lbl_80342618;
+        if (*(void **)((char *)arg0 + 0x24) != 0) {
+            void *object = *(void **)((char *)arg0 + 0x24);
+            ((void (*)(void *, s32))(*(void **)((char *)*(void **)object + 8)))(object, 1);
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
     return arg0;
 }
 
