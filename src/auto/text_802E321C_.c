@@ -15,6 +15,7 @@ extern s32 lbl_8055FF18;
 extern s32 lbl_8055FF1C;
 
 extern char lbl_8034CFB4[];
+extern char lbl_8034D000[];
 extern s32 fn_802E33D8(s32, const char *, s32);
 #pragma cplusplus on
 class Dummy_802E367C {
