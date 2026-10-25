@@ -2019,7 +2019,6 @@ void GXInitTexObjTlut(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
 }
 
-extern unsigned char lbl_80558E80[];
 void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
     union {
         s32 value;
