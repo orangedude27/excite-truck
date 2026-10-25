@@ -703,9 +703,13 @@ extern "C" void fn_800ECEE8(void* arg0) {
 }
 
 extern "C" u32 Read__Q44nw4r3snd18MemorySoundArchive16MemoryFileStreamFPvUl(void *this_, void *dst, u32 size) {
- u32 pos=*(u32 *)((u8 *)this_+0x1C); u32 remaining=*(u32 *)((u8 *)this_+0x18)-pos; u32 count=size;
- if(size>remaining) count=remaining;
- memcpy(dst,(u8 *)this_+*(u32 *)((u8 *)this_+0x14)+pos,count); return count;
+    u32 pos = *(u32 *)((u8 *)this_ + 0x1C);
+    u32 remaining = *(u32 *)((u8 *)this_ + 0x18) - pos;
+    u32 count = size;
+    if (size > remaining)
+        count = remaining;
+    memcpy(dst, (void *)(pos + *(u32 *)((u8 *)this_ + 0x14)), count);
+    return count;
 }
 
 extern u8 lbl_803231C0[];
