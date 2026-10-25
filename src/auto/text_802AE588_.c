@@ -146,6 +146,7 @@ int fn_802AE7AC(void) {
     unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
     return (int)(tmp >> 31);
 }
+#pragma dont_inline reset
 
 void fn_802AE7C0(void) {
     fn_802C9950(0x555766);
