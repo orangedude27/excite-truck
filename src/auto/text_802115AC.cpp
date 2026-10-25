@@ -70,7 +70,7 @@ public:
 extern "C" void fn_8021915C(void *, unsigned int);
 
 extern "C" void fn_80221E7C(void);
-extern "C" void fn_80215270(void);
+extern "C" s32 fn_80215270(s32, s32);
 extern "C" void fn_8022E4BC(s32);
 extern "C" void fn_8022E960(s32);
 extern "C" s32 fn_80211678(u8 *);
@@ -119,8 +119,8 @@ extern "C" void *fn_80211604(void *arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void fn_8021165C(void) {
-    fn_80215270();
+extern "C" s32 fn_8021165C(s32 arg0, s32 arg1) {
+    return fn_80215270(arg0, arg1);
 }
 
 extern s32 lbl_8055EF1C;
@@ -1633,14 +1633,10 @@ extern "C" void fn_80215A74(void *arg0) {
     u8 *self = (u8 *)arg0;
     u8 enabled = self[0x1A];
     self[0x19] = 0;
-    if (enabled == 0) goto done;
-    self[0x234] = 1;
-    {
-        void *obj = *(void **)(self + 0x244);
-        ((void (*)(void *))(*(void ***)obj)[20])(obj);
+    if (enabled != 0) {
+        self[0x234] = 1;
+        ((VfObj *)*(void **)(self + 0x244))->vf18();
     }
-done:
-    return;
 }
 extern "C" s32 fn_80215AA4(void *arg0, s32 arg1) {
     class Callback {
