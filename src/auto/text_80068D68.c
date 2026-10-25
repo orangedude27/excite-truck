@@ -14,6 +14,8 @@
 
 extern void BTM_SendHciReset(void (*)(void));
 extern void fn_80085384(u8 *, u8);
+extern void RFCOMM_Init(void);
+extern void rfcomm_l2cap_if_init(void);
 extern int btu_hcif_send_cmd();
 extern void fn_80085524(void *, void *);
 extern void fn_800869CC(void);
@@ -12395,19 +12397,21 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 u8 fn_80095084(s32 arg0, void *arg1) {
-    u16 count = arg0;
-    u8 *data = arg1;
+    volatile u8 *table = lbl_802EEC40;
     u8 crc = 0xFF;
 
     do {
-        crc = lbl_802EEC40[crc ^ *data++];
-    } while (count-- != 0);
+        crc = table[crc ^ *(u8 *)arg1];
+        arg1 = (u8 *)arg1 + 1;
+    } while ((u16)arg0-- != 0);
 
     crc = lbl_802EEC40[crc ^ (u32)arg1];
     return crc == 0xCF;
 }
-
+#pragma pop
 extern char lbl_80319EB0[];
 void *rfc_alloc_multiplexer_channel(u8 *addr, s8 arg1) {
     s32 index = 0;
