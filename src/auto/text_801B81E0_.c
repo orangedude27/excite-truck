@@ -262,10 +262,12 @@ int fn_801B8570(int arg0) {
 extern "C" void fn_801B85CC(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f7();
 }
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801B85E0(void *a, void *b, void *c, void *d) {
     ((Dummy_801B8874 *)lbl_8055E744)->d34(a, b, c, d);
 }
+#pragma scheduling on
 extern "C" void fn_801B8610(void *a, void *b) {
     ((Dummy_801B8318 *)lbl_8055E744)->f36(a, b);
 }
