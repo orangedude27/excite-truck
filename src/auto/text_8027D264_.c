@@ -143,12 +143,12 @@ void fn_8027D77C(void *arg0) {
     (*(void (**)(void *, int))(*(void ***)obj + 5))(obj, (int)&lbl_8055C784);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling push
+#pragma scheduling off
 void fn_8027D7B8(void *arg0) {
-    int id = *(int *)((char *)arg0 + 0xC);
-    fn_80007F90(*(int *)((char *)fn_8001285C(id) + 8));
+    fn_80007F90(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
 }
-#pragma scheduling on
+#pragma scheduling pop
 void fn_8027D810(void *arg0) {
     int id = *(int *)((char *)arg0 + 0xC);
     void *res = fn_8001285C(id);
@@ -331,6 +331,12 @@ void fn_8027DE6C(void) {
     fn_8027B690();
     fn_8027DA08();
 }
+
+#pragma dont_inline on
+int fn_8027DE98(int index) {
+    return *(int *)((char *)&lbl_804B2FD8 + index * 8);
+}
+#pragma dont_inline reset
 
 void fn_8027DEAC(void* alarm) {
     fn_8027DE98(fn_8000DA10(alarm));
