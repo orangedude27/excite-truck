@@ -201,6 +201,25 @@ void fn_80243938(char *arg0, char *arg1) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_802439E8(void *arg0, s32 arg1, s32 arg2) {
+    s32 value = 0xB;
+    volatile s32 *field = (volatile s32 *)((u8 *)arg0 + 0x1C);
+    *(s32 *)((u8 *)arg0 + 0x18) = arg1;
+    *(char **)arg0 = lbl_80342CEC;
+    *(s32 *)((u8 *)arg0 + 0x14) = 0;
+    *field = arg2;
+    if (arg2 <= 0xB)
+        value = arg2;
+    *field = value;
+    *(s32 *)((u8 *)arg0 + 0x34) = 0;
+    *(s32 *)((u8 *)arg0 + 0x30) = 0;
+    *(s32 *)((u8 *)arg0 + 0x2C) = 0;
+    *((u8 *)arg0 + 0x29) = 1;
+    *((u8 *)arg0 + 0x28) = 0;
+}
+#pragma scheduling on
+
 extern s32 fn_80232578(s32);
 extern s32 fn_802C5130(s32);
 extern void fn_802E30C8(const char *, ...);
@@ -270,13 +289,12 @@ void fn_80243C18(void) {
 extern void fn_80243938(char *, char *);
 void fn_802443C0(void *arg0) {
     char *str;
-    void *obj = arg0;
-    fn_802438EC(*(char **)((u8 *)obj + 0x18));
-    str = *(char **)((u8 *)obj + 0x18);
+    fn_802438EC(*(char **)((u8 *)arg0 + 0x18));
+    str = *(char **)((u8 *)arg0 + 0x18);
     if (strlen(str) != 0) {
-        *(char **)((u32)strlen(str) + (u32)str - 1) = 0;
+        str[strlen(str) - 1] = 0;
     }
-    fn_80243938(*(char **)((u8 *)obj + 0x18), *(char **)((u8 *)obj + 0x1C));
+    fn_80243938(*(char **)((u8 *)arg0 + 0x18), *(char **)((u8 *)arg0 + 0x1C));
 }
 
 void fn_8024442C(void *arg0) {
