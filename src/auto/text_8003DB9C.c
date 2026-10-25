@@ -1210,6 +1210,7 @@ typedef struct { char pad[0x2C8]; } OSContext;
 
 typedef void (*GXPEIntrHandler)(short, void *);
 extern GXPEIntrHandler __OSSetInterruptHandler(int type, GXPEIntrHandler handler);
+extern void __GXFifoInit(void);
 extern unsigned int __OSUnmaskInterrupts(unsigned int userMask);
 extern void OSWakeupThread(void *);
 extern void OSInitThreadQueue(void *);
