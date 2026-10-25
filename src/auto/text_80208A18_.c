@@ -159,7 +159,7 @@ void fn_80209190(float *arg0, float arg1) {
 extern float lbl_80563230;
 extern float lbl_80563234;
 extern void fn_80208A18(float);
-extern void fn_80208A50(float *);
+extern void fn_80208A50();
 extern int fn_80128668(void);
 void fn_802091CC(void) {
     fn_80208A18(lbl_80563230);
