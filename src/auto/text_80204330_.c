@@ -24,6 +24,7 @@ int fn_80204354(void);
 extern float lbl_80563168, lbl_8056316C, lbl_80563170, lbl_80563174, lbl_80563178, lbl_8056317C;
 extern double lbl_80563180;
 extern char lbl_80488BD0[];
+struct Entry80204 { int unk_0x0, unk_0x4, unk_0x8; float unk_0xc, unk_0x10, unk_0x14; };
 #pragma dont_inline on
 void fn_80204330(void) {
     lbl_8055ED48 = (void*)fn_802E2C20();
@@ -39,16 +40,12 @@ extern int lbl_8055ED3C, lbl_8055ED40, lbl_8055ED44;
 struct Obj80204 { void (*dtor)(void *, int); };
 #pragma dont_inline on
 unsigned int fn_8020437C(void) {
-    int value;
-    int masked;
-    value = fn_80204354();
-    value ^= 0xDAC;
-    masked = value & 0xDAC;
-    value >>= 1;
-    return (unsigned int)(value - masked) >> 31;
+    int value = fn_80204354();
+    int masked = (value ^ 0xDAC) & 0xDAC;
+    int shifted = (value ^ 0xDAC) >> 1;
+    return (unsigned int)(shifted - masked) >> 31;
 }
 #pragma dont_inline reset
-#pragma dont_inline on
 void fn_802043B0(int *arg0) {
  float val = lbl_80563168;
  float temp = ((float)fn_80204354() - lbl_8056316C) / lbl_80563170;
@@ -69,10 +66,10 @@ void fn_80204460(void) {
 }
 
 void fn_8020449C(void) {
+    int obj;
     lbl_8055ED3C = 0;
-    if (lbl_8055ED44 != 0) {
-        (*(void (***)(void *, int))lbl_8055ED44)[2]((void *)lbl_8055ED44, 1);
-    }
+    obj = (int)lbl_8055ED44;
+    if (obj != 0) (*(void (**)(void *, int))(*(int *)obj + 8))((void *)obj, 1);
     lbl_8055ED44 = 0;
 }
 
@@ -176,34 +173,36 @@ int fn_80204870(int arg0) {
 }
 
 void fn_802049DC(int a, int b, float c, float d, float e) {
-    int i;
-    char *entry;
-    i = lbl_8055ED3C;
+    int i = lbl_8055ED3C;
     if (i < 0x40) {
-      entry = lbl_80488BD0 + i * 0x18;
-      *(int *)(entry + 0) = a;
-      *(int *)(entry + 4) = 1;
-      *(int *)(entry + 8) = b;
-      *(float *)(entry + 0xC) = c;
-      *(float *)(entry + 0x10) = d;
-      lbl_8055ED3C = i + 1;
-      *(float *)(entry + 0x14) = e;
+        int *entry = (int *)lbl_80488BD0 + i * 6;
+        entry[0] = a;
+        entry[1] = 1;
+        entry[2] = b;
+        ((float *)entry)[3] = c;
+        ((float *)entry)[4] = d;
+        *(volatile int *)&lbl_8055ED3C = i + 1;
+        ((float *)entry)[5] = e;
     }
 }
 
-void fn_80204A1C(int a, int b) {
+#pragma push
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+void fn_80204A1C(int arg0, int arg1) {
     int i;
     char *entry;
-    i = lbl_8055ED3C;
-    if (i < 0x40) {
-      entry = lbl_80488BD0 + i * 0x18;
-      *(int *)(entry + 0) = a;
-      *(int *)(entry + 4) = 0;
-      lbl_8055ED3C = i + 1;
-      *(int *)(entry + 8) = b;
-    }
-}
 
+    i = lbl_8055ED3C;
+    if (i >= 0x40)
+        return;
+    entry = lbl_80488BD0 + i * 0x18;
+    *(int *)(entry + 0) = arg0;
+    *(int *)(entry + 4) = 0;
+    lbl_8055ED3C = i + 1;
+    *(int *)(entry + 8) = arg1;
+}
+#pragma pop
 void fn_80204A50(void) {
     fn_80204330();
 }
