@@ -19,6 +19,7 @@ extern u32 lbl_8055DC30;
 extern u8 lbl_8055DC34;
 extern void fn_800709FC(void);
 extern void fn_80071508(u8);
+extern void fn_800716B0(void *, s32, void *);
 extern u8 fn_80089E20(u8);
 extern u8 fn_80096670(u8);
 extern void SCInit(void);
