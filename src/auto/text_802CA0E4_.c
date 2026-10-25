@@ -792,6 +792,13 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
     *arg0 = arg2;
 }
 
+void fn_802CBD7C();
+void fn_802CBD30(void **arg0, void **arg1, void *arg2) {
+    fn_802CBD7C(arg1, arg2);
+    *(void **)((char *)arg2 + 0x10) = *arg0;
+    *arg0 = arg2;
+}
+
 void fn_802CBD7C(void **, void *);
 extern char lbl_8034BA04[];
 void fn_802CBD7C(void **arg0, void *arg1) {
