@@ -216,7 +216,7 @@ int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
 
 int fn_801B4B44(char *arg0) {
     int result = 0;
-    if (fn_801B47F0((int)(arg0 + 4)) != 0 && *arg0 != 0) result = 1;
+    if (fn_801B47F0((int)(arg0 + 4)) != 0 && *(char *)arg0 != 0) result = 1;
     return result;
 }
 
@@ -318,8 +318,6 @@ void fn_801B5318(void) {
 
 extern void *lbl_8055E6D8;
 extern void fn_801B49C8(void *);
-extern char lbl_80335E48;
-extern void fn_802E317C(const char *, int);
 extern int __dt__15shdStateMachineFv_801B496C();
 void fn_801B531C(void) {
     if (lbl_8055E6D8 != 0) {
