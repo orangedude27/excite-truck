@@ -148,7 +148,7 @@ void fn_801E1EA4(void *arg0) {
 int *fn_801E1F44(void) {
     if ((unsigned char)lbl_8055EA20 == 0)
         fn_801E1894();
-    return &lbl_804874D4;
+    return (int *)&lbl_804874D4;
 }
 
 extern char lbl_8055EA21;
