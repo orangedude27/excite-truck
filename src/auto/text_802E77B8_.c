@@ -172,7 +172,6 @@ extern int WPADSetSamplingCallback(int, int);
 extern int fn_8006022C(int);
 extern int fn_8005ED8C(void);
 extern int fn_8005EE7C(void);
-extern int fn_802E30C8();
 extern int lbl_8034D908, lbl_8034D8E8;
 extern int lbl_80507268[], lbl_80507258[], lbl_8056000C;
 void fn_802E7D0C(void) {
