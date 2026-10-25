@@ -10,7 +10,7 @@ extern char lbl_8055D1A0[];
 extern s32 lbl_8055FF20;
 extern s32 fn_802E321C(const char *);
 extern s32 fn_802E3270(s32);
-extern s32 fn_802E32C4();
+extern s32 fn_802E32C4(s32);
 extern s32 lbl_8055FF18;
 extern s32 lbl_8055FF1C;
 
