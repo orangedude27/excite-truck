@@ -121,7 +121,7 @@ void *fn_8022D7C4(void *arg0, int arg1) {
         fn_80128670(*(int *)((char *)arg0 + 0x18));
         fn_80128670(*(int *)((char *)arg0 + 0x1C));
         fn_80128670(*(int *)arg0);
-        if (arg1 > 0) fn_80128668();
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
