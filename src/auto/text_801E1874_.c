@@ -8,7 +8,7 @@ extern float fn_80129DC4(int, float, float);
 
 extern char lbl_8055EA20;
 extern char lbl_804874D4[];
-extern int lbl_804874B8;
+extern char lbl_804874B8[];
 extern char lbl_8055EA22;
 extern char lbl_8055EA22;
 extern float lbl_80562CAC;
