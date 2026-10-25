@@ -873,8 +873,8 @@ double fn_8002EFB4(double x, double y) {
     return __ieee754_fmod(x, y);
 }
 
-void fn_8002EFB8(void) {
-    __ieee754_log();
+double fn_8002EFB8(void) {
+    return __ieee754_log();
 }
 
 void fn_8002EFBC(void) {
