@@ -12324,6 +12324,7 @@ void rfc_check_mcb_active(void *arg0) {
     btu_start_timer(arg0, 0xB, 2);
 }
 
+/* Match note: widening the halfword state and guarding non-12 values preserves the signed checks and tail-call order. */
 void fn_80095518(void *arg0) {
     s32 state = (s32)*(u16 *)((u8 *)arg0 + 0x14);
     if (state != 12) {
