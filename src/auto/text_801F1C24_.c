@@ -19,7 +19,7 @@ extern const char lbl_8033A6E0[];
 #pragma small_data off
 __declspec(section ".data") extern int lbl_8033A8F8;
 #pragma pop
-extern int lbl_8033A644, lbl_8033A868, lbl_8033A928;
+__declspec(section ".data") extern int lbl_8033A644, lbl_8033A868, lbl_8033A928;
 #pragma push
 #pragma small_data off
 __declspec(section ".data") extern int lbl_8033AA90;
