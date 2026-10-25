@@ -15,6 +15,24 @@ extern int lbl_80344D98;
 __declspec(section ".data") extern int lbl_80344D98;
 extern char lbl_80344D88[];
 extern void *fn_801284F8(int, void *);
+#pragma scheduling invalid_target
+void fn_80258354(void) {
+    void *p = fn_801284F8(0x1328, lbl_80344D88);
+    if (p != 0) {
+        *(void **)p = &lbl_80344D98;
+        *(void **)((char *)p + 4) = (char *)p + 0x10;
+        *(int *)((char *)p + 0xC) = 0x20;
+        *(int *)((char *)p + 8) = 0;
+        *(void **)((char *)p + 0x910) = (char *)p + 0x91C;
+        *(int *)((char *)p + 0x918) = 0x20;
+        *(int *)((char *)p + 0x914) = 0;
+        *(void **)((char *)p + 0xD9C) = (char *)p + 0xDA8;
+        *(int *)((char *)p + 0xDA4) = 0x20;
+        *(int *)((char *)p + 0xDA0) = 0;
+    }
+}
+#pragma scheduling on
+
 void *fn_802583CC(void *o, int arg1, int arg2) {
  int i;
  char *p=(char *)o;
