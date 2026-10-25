@@ -355,14 +355,17 @@ void fn_80176BA8(void) {
 }
 
 void fn_80176BAC(void) {
-    f32 now = lbl_8055E3C8;
-    f32 delta = now - lbl_8055E3FC;
-    f32 upper = lbl_80561B38;
+    f32 now;
+    f32 delta;
+    f32 upper;
     f32 lower;
-    f32 value = upper < delta ? delta : upper;
-    lower = lbl_80561B3C;
-    value = value > lower ? value : lower;
-    fn_8017ED00(value);
+    now = lbl_8055E3C8;
+    delta = now - lbl_8055E3FC;
+    upper = lbl_80561B38;
+    upper = (upper < delta) ? delta : upper;
+    lower = *(volatile f32 *)&lbl_80561B3C;
+    lower = (lower < upper) ? lower : upper;
+    fn_8017ED00(lower);
     lbl_8055E3FC = now;
 }
 
@@ -459,6 +462,20 @@ void fn_80176E4C(void) {
     *(s32 *)(lbl_80430558 + 8) = 0;
     *(u8 *)(lbl_80430558 + 0x14) = 0;
 }
+
+void fn_80176EC0(void) {
+    if (lbl_804303D4[0] != 4) {
+        fn_801AED68();
+        if (lbl_804303D4[1] & 0x200) {
+            fn_801AED5C();
+        }
+    }
+    if (fn_801CF050() == 0) {
+        fn_80176A34(0);
+    }
+    fn_80176C4C();
+}
+
 #pragma scheduling on
 void fn_80176F24(void) {
     fn_80176EC0();
