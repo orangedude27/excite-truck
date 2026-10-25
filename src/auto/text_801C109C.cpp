@@ -27,7 +27,7 @@ extern int fn_801C109C(int, int, int, int);
 extern "C" int fn_80128668(int);
 extern int lbl_8055A950;
 extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int, int);
-extern int fn_80128670(int);
+extern "C" int fn_80128670(int);
 #pragma dont_inline on
 extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int arg0, int arg1) {
     if (arg0 != 0) {
