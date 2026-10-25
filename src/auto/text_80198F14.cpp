@@ -2447,7 +2447,7 @@ extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
     arg1->x = arg1->x - pad;
     arg1->z = arg1->z - pad;
 }
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" f32 fn_801A3880(s32 arg0) {
     f32 first = PSVECDotProduct((Vec*)(arg0 + 0x30), (Vec*)(arg0 + 0x30));
     f32 second = PSVECDotProduct((Vec*)(arg0 + 0x24), (Vec*)(arg0 + 0x24));
@@ -2770,7 +2770,7 @@ extern "C" void fn_801A47B0(s32* arg0, s32 arg1) {
 }
 
 #pragma opt_tail_call on
-void fn_801A47C8(void* arg0) {
+extern "C" void fn_801A47C8(void* arg0) {
     s32 limit = *(s32*)arg0;
     s32** ptrs = *(s32***)((u8*)arg0 + 4);
     for (s32 i = 0; i < limit; i++) {
@@ -2792,11 +2792,13 @@ void fn_801A47FC(void* arg0) {
 #pragma opt_tail_call on
 extern "C" void fn_801A4868(void* arg0, u8 arg1) {
     if (*(u8*)((u8*)arg0 + 0x40) != arg1) {
-        s32 local38;
-        u8 localC;
-        local38 = *(s32*)((u8*)arg0 + 0x38);
-        localC = arg1;
-        fn_801796EC(12, (s32*)&local38, 8);
+        struct Local {
+            s32 value;
+            u8 type;
+        } local;
+        local.value = *(s32*)((u8*)arg0 + 0x38);
+        local.type = arg1;
+        fn_801796EC(12, (s32*)&local.value, 8);
         *(u8*)((u8*)arg0 + 0x40) = arg1;
     }
 }
