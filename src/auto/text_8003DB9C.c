@@ -2400,6 +2400,7 @@ void GXSetTevDirect(int arg0) {
 
 void __GXUpdateBPMask(void) {}
 
+/* Use volatile byte and word FIFO stores, then clear the GXData halfword. */
 void __GXFlushTextureState(void) {
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = __GXData[0x174 / 4];
