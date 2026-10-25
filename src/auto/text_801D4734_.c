@@ -112,6 +112,15 @@ void fn_801D490C(void) {
  do { caret=strchr(part,0x5e); if(caret)*caret=0; fn_8000FF88(color,0xC,lbl_8055AD58,part,lbl_80562AE0,lbl_80562ADC,y); if(caret)part=caret+1;else part=0; y-=dy; } while(part&&(signed char)*part);
 }
 
+void* fn_801D4B34(void* arg0) {
+    *(void**)arg0 = lbl_80338D80;
+    *(int*)((char*)arg0 + 4) = 0;
+    *(void**)((char*)arg0 + 0x30) = (char*)arg0 + 0x3C;
+    *(int*)((char*)arg0 + 0x38) = 0x40;
+    *(int*)((char*)arg0 + 0x34) = 0;
+    return arg0;
+}
+
 #pragma cplusplus on
 extern "C" void *fn_801D4B60(void *arg0, int arg1) {
  extern char lbl_80338D80[], lbl_80338490[];
@@ -234,6 +243,22 @@ done:
 
 int fn_801D544C(void) {
     return 0;
+}
+
+extern float lbl_80562B04;
+void fn_801D5454(void *self, void *arg0) {
+    float old;
+    float y;
+    float x;
+    float z;
+    x = *(float *)arg0;
+    old = *(float *)(lbl_804422F0 + 4);
+    y = *(float *)((unsigned char *)arg0 + 4);
+    z = *(float *)((unsigned char *)arg0 + 8);
+    *(float *)(lbl_804422F0 + 0x14) = x;
+    *(float *)(lbl_804422F0 + 0x18) = y;
+    *(float *)(lbl_804422F0 + 0x1C) = z;
+    *(float *)(lbl_804422F0 + 4) = old + lbl_80562B04;
 }
 
 #pragma cplusplus on
