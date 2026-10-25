@@ -19,17 +19,18 @@ extern s32 fn_8001786C(s32);
 extern char lbl_8055D564;
 extern void* lbl_8055D560;
 s32 atoi(void);
+#pragma scheduling invalid_target
 void fn_800178BC(void* arg0, s32 arg1, s32 arg2) {
     s32 index1;
     s32 index2;
-    index1 = *(s32*)((char*)arg0);
-    *(s32*)((char*)arg0 + index1 * 4 + 4) = arg1;
+    index1 = *(s32*)arg0;
+    *(s32*)((char*)arg0 + (index1 << 2) + 4) = arg1;
     index2 = *(s32*)((char*)arg0 + 0x24);
-    *(s32*)((char*)arg0) = index1 + 1;
-    *(s32*)((char*)arg0 + index2 * 4 + 0x28) = arg2;
+    *(s32*)arg0 = index1 + 1;
+    *(s32*)((char*)arg0 + (index2 << 2) + 0x28) = arg2;
     *(s32*)((char*)arg0 + 0x24) = index2 + 1;
 }
-
+#pragma scheduling on
 int fn_800178F0(void) { return 0; }
 
 void fn_800178F8(s32 arg0, s32 arg1) {
@@ -42,7 +43,7 @@ void fn_800178F8(s32 arg0, s32 arg1) {
 #pragma dont_inline on
 s32 fn_800179E4(void *value, s32 array, s32 count) {
     while (count > 0) {
-        if (value == *(void **)array) return 1;
+        if ((s32)value == *(s32 *)array) return 1;
         array += 4;
         count--;
     }
@@ -60,22 +61,22 @@ void fn_80017A20(void *arg0, s32 *arg1) {
     fn_800179E4(arg0, (s32)(arg1 + 1), arg1[0]);
 }
 
-void fn_80017AC8(void* arg0) {
-    s32 offset, i;
+void fn_80017AC8(void *arg0) {
+    s32 offset, i, count;
     extern s32 fn_80129D18(s32);
     i = 0;
     offset = 0;
-    while (i < *(s32*)((char*)arg0 + 4)) {
+    while (i < (count = *(s32 *)((char *)arg0 + 4))) {
         s32 left;
         s32 right;
-        s32* items;
+        s32 *items;
         s32 index;
         index = fn_80129D18(1);
-        items = *(s32**)arg0;
+        items = *(s32 **)arg0;
         i++;
-        left = *(s32*)((char*)items + offset);
+        left = *(s32 *)((char *)items + offset);
         right = items[index];
-        *(s32*)((char*)items + offset) = right;
+        *(s32 *)((char *)items + offset) = right;
         offset += 4;
         items[index] = left;
     }
