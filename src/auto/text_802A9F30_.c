@@ -343,7 +343,7 @@ void fn_802AB504(void) {
     extern void fn_80128670(void *);
     extern void fn_802CAC54(int);
     extern s32 fn_802A9F30(void *), fn_802A9F90(s32 *);
-    extern void fn_802A9FB0(void);
+    extern s32 fn_802A9FB0(void *);
     extern unsigned char lbl_8055F92C;
     extern void *lbl_8055F924;
     extern int lbl_8055F928, lbl_8055CC60, lbl_8055CC64;
