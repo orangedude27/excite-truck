@@ -248,6 +248,11 @@ void fn_80190360(int arg0) {
     fn_80191084(arg0, 0);
 }
 
+s32 fn_80190B60(void *arg0) {
+    s32 bit = (*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 4) & 1;
+    return (s32)((u32)(-bit | bit) >> 31);
+}
+
 s32 fn_80190C8C(void *arg0) {
     s32 bit = (*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 3) & 1;
     return (s32)((u32)(-bit | bit) >> 31);
