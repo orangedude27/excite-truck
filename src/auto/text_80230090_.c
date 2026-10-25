@@ -153,6 +153,7 @@ void fn_80230DA4(float a, float b) {
     lbl_8055F02C = b - value;
 }
 
+#pragma dont_inline on
 float fn_80230DF4(float a, float b) {
     float value = (float)fn_8002EFB4(a + lbl_8055F02C);
     if (value < lbl_80563614) value += b;
@@ -160,6 +161,7 @@ float fn_80230DF4(float a, float b) {
     if (value < lbl_8056365C) value = lbl_80563610 - value;
     return value;
 }
+#pragma dont_inline reset
 
 float fn_80230E54(float a, float b) { return 0.0f; }
 
