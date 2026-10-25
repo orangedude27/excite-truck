@@ -24,7 +24,7 @@ copied:
     return base;
 }
 
-extern void fn_8013BD30();
+extern void fn_8013BD30(void *);
 extern const char lbl_8032C3D8[];
 extern const char lbl_80559CE0[];
 extern const char lbl_80559CE8[];
