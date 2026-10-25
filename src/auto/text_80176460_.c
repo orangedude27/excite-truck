@@ -3,6 +3,7 @@
 #include <types.h>
 extern u8 lbl_8055E3E4;
 extern char lbl_803316B4[];
+extern char lbl_8033189C[];
 int fn_80176F9C(void);
 void fn_80176F24(void);
 void fn_80176FC4(void);
