@@ -2,6 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 extern const char *lbl_802F9588[];
 struct Entry_801A75B4 { const char *name; char pad[20]; };
+typedef struct F801A9050Zero {
+    int words[8];
+} F801A9050Zero;
 extern float fn_801A7F98(void);
 extern float lbl_80562470;
 extern char lbl_8055A850;
