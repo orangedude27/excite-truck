@@ -336,6 +336,18 @@ void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(index, value, result);
 }
 
+void fn_802C5DF0(void *arg0, void *arg1) {
+    int offset = 0;
+    int index = 0;
+    while (index < *(int *)arg0) {
+        void *table = *(void **)((char *)arg0 + 4);
+        int value = *(int *)((char *)table + offset + 0xC);
+        ((void (*)(int))arg1)(value);
+        offset += 0x10;
+        index += 1;
+    }
+}
+
 void fn_802C5E6C(void *arg0, void *arg1) {
     void *temp = fn_802D6C44;
     ((void (*)(void *, void *))fn_802C5DF0)(arg1, temp);
