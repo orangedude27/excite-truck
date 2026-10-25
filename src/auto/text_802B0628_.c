@@ -581,7 +581,7 @@ int fn_802B1C14(void *arg0) {
     return ((int *)arg0)[4];
 }
 
-extern int lbl_8034A270;
+extern char lbl_8034A270[];
 void *fn_802B1C1C(void *arg0, int arg1) {
     if (arg1 >= 0 && arg1 < ((int *)arg0)[4]) {
         return *(void **)((char *)((int *)arg0)[3] + arg1 * 0x80 + 0x70);
