@@ -24,7 +24,7 @@ copied:
     return base;
 }
 
-extern void fn_8013BD30(void);
+extern void fn_8013BD30();
 extern const char lbl_8032C3D8[];
 extern const char lbl_80559CE0[];
 extern const char lbl_80559CE8[];
@@ -98,5 +98,80 @@ void fn_8013BFE0(void) {
 
 void fn_8013BFE4(void) {
 
+}
+
+extern void fn_80128658(void);
+extern void fn_80128668(void *);
+extern void fn_8013A598(void *, int);
+extern unsigned char lbl_8042F8C8[];
+void fn_8013C428(void *arg0) {
+    int i;
+    int count;
+    unsigned char *r5 = lbl_8042F8C8;
+    i = 0;
+    count = *(int *)(lbl_8042F8C8 + 0x240);
+    if (count > 0) {
+        do {
+            if (*(void **)r5 == arg0) {
+                int offset = i * 0x48;
+                unsigned char *entry = lbl_8042F8C8 + offset;
+                int ref = *(int *)(entry + 0x44) - 1;
+                *(int *)(entry + 0x44) = ref;
+                if (ref == 0) {
+                    int n;
+                    int tail;
+                    unsigned char *dst;
+                    unsigned char *src;
+                    if (*(int *)((char *)arg0 + 0x74) != 0) fn_80128658();
+                    if (arg0 != 0) {
+                        fn_8013A598((char *)arg0 + 0x40, -1);
+                        fn_80128668(arg0);
+                    }
+                    n = *(int *)(lbl_8042F8C8 + 0x240) - 1;
+                    *(int *)(lbl_8042F8C8 + 0x240) = n;
+                    tail = n * 0x48;
+                    dst = lbl_8042F8C8 + offset;
+                    src = lbl_8042F8C8 + tail;
+                    *(int *)dst = *(int *)src;
+                    { unsigned char a = src[4]; unsigned char b = src[5]; dst[4] = a; dst[5] = b; }
+                    { unsigned char a = src[6]; unsigned char b = src[7]; dst[6] = a; dst[7] = b; }
+                    { unsigned char a = src[8]; unsigned char b = src[9]; dst[8] = a; dst[9] = b; }
+                    { unsigned char a = src[10]; unsigned char b = src[11]; dst[10] = a; dst[11] = b; }
+                    { unsigned char a = src[12]; unsigned char b = src[13]; dst[12] = a; dst[13] = b; }
+                    { unsigned char a = src[14]; unsigned char b = src[15]; dst[14] = a; dst[15] = b; }
+                    { unsigned char a = src[16]; unsigned char b = src[17]; dst[16] = a; dst[17] = b; }
+                    { unsigned char a = src[18]; unsigned char b = src[19]; dst[18] = a; dst[19] = b; }
+                    { unsigned char a = src[20]; unsigned char b = src[21]; dst[20] = a; dst[21] = b; }
+                    { unsigned char a = src[22]; unsigned char b = src[23]; dst[22] = a; dst[23] = b; }
+                    { unsigned char a = src[24]; unsigned char b = src[25]; dst[24] = a; dst[25] = b; }
+                    { unsigned char a = src[26]; unsigned char b = src[27]; dst[26] = a; dst[27] = b; }
+                    { unsigned char a = src[28]; unsigned char b = src[29]; dst[28] = a; dst[29] = b; }
+                    { unsigned char a = src[30]; unsigned char b = src[31]; dst[30] = a; dst[31] = b; }
+                    { unsigned char a = src[32]; unsigned char b = src[33]; dst[32] = a; dst[33] = b; }
+                    { unsigned char a = src[34]; unsigned char b = src[35]; dst[34] = a; dst[35] = b; }
+                    { unsigned char a = src[36]; unsigned char b = src[37]; dst[36] = a; dst[37] = b; }
+                    { unsigned char a = src[38]; unsigned char b = src[39]; dst[38] = a; dst[39] = b; }
+                    { unsigned char a = src[40]; unsigned char b = src[41]; dst[40] = a; dst[41] = b; }
+                    { unsigned char a = src[42]; unsigned char b = src[43]; dst[42] = a; dst[43] = b; }
+                    { unsigned char a = src[44]; unsigned char b = src[45]; dst[44] = a; dst[45] = b; }
+                    { unsigned char a = src[46]; unsigned char b = src[47]; dst[46] = a; dst[47] = b; }
+                    { unsigned char a = src[48]; unsigned char b = src[49]; dst[48] = a; dst[49] = b; }
+                    { unsigned char a = src[50]; unsigned char b = src[51]; dst[50] = a; dst[51] = b; }
+                    { unsigned char a = src[52]; unsigned char b = src[53]; dst[52] = a; dst[53] = b; }
+                    { unsigned char a = src[54]; unsigned char b = src[55]; dst[54] = a; dst[55] = b; }
+                    { unsigned char a = src[56]; unsigned char b = src[57]; dst[56] = a; dst[57] = b; }
+                    { unsigned char a = src[58]; unsigned char b = src[59]; dst[58] = a; dst[59] = b; }
+                    { unsigned char a = src[60]; unsigned char b = src[61]; dst[60] = a; dst[61] = b; }
+                    { unsigned char a = src[62]; unsigned char b = src[63]; dst[62] = a; dst[63] = b; }
+                    { unsigned char a = src[64]; unsigned char b = src[65]; dst[64] = a; dst[65] = b; }
+                    { unsigned char a = src[66]; unsigned char b = src[67]; dst[66] = a; dst[67] = b; }
+                    *(int *)(entry + 0x44) = *(int *)(src + 0x44);
+                }
+                break;
+            }
+            r5 += 0x48;
+            i++;
+        } while (--count);
+    }
 }
 
