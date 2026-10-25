@@ -3,7 +3,7 @@ extern int lbl_8055F5C4;
 extern void fn_80128670(int);
 extern const char lbl_80347580[];
 extern int fn_8012850C(int, const char *, int);
-extern void *fn_8002F37C();
+extern void *fn_8002F37C(void *, void *, int, int, int);
 extern void fn_80278284(void);
 extern char lbl_8055F5BA;
 extern char lbl_8055F5BB;
@@ -110,22 +110,23 @@ error:
 void fn_80278778(char *arg0) {
     int i;
     char *dst;
-
     if ((unsigned char)lbl_8055F5B8 != 0) {
         fn_802E30C8(lbl_80347660);
         return;
     }
     dst = lbl_804A15D0;
-    for (i = 0x100; i > 0; i--) {
+    i = 0x100;
+    while (i > 0) {
+        i--;
     }
-    dst[-1] = 0;
-    do {
-        char c = *arg0++;
-        *dst++ = c;
-        if (c == 0) {
-            break;
-        }
-    } while (1);
+    dst[-1] = i;
+    for (;;) {
+        char c = *arg0;
+        arg0++;
+        *dst = c;
+        dst++;
+        if (c == 0) break;
+    }
     lbl_8055F5B9 = 1;
     lbl_8055F5BA = 0;
 }
