@@ -185,7 +185,6 @@ float fn_80230E54(float a, float b) {
 extern f32 lbl_80563610, lbl_80563640, lbl_80563648;
 extern u32 lbl_8055FB9C, lbl_8055FBA0;
 float fn_80230E54(float, float);
-f32 fn_8023659C(void);
 void fn_80230F6C(s32 *arg0) { *arg0 = -0x35BC; }
 
 extern float fn_80230EF4(long);
