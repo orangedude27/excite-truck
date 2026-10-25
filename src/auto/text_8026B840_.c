@@ -1,5 +1,26 @@
 #include "types.h"
 
+extern char lbl_80346A50[];
+extern s32 lbl_8055F4F0;
+extern s32 lbl_8055F508;
+extern f32 lbl_8055F50C;
+extern f32 lbl_8055F510;
+extern s32 lbl_8055F514;
+extern f32 lbl_80563D94;
+extern f32 lbl_80563D98;
+extern f32 lbl_80563DA0;
+extern f32 lbl_80563DB0;
+extern f32 lbl_80563DE8;
+extern f32 lbl_80563DEC;
+extern f32 lbl_80563DF0;
+extern f32 lbl_80563DF4;
+extern f32 lbl_80563DF8;
+extern f32 lbl_80563DFC;
+extern f32 lbl_80563E00;
+extern f32 lbl_80563E04;
+extern f32 lbl_80563E08;
+extern f32 lbl_80563E0C;
+
 extern void *lbl_8055F4E0;
 extern void *lbl_8055F4E4;
 extern void *lbl_8055F4E8;
