@@ -2552,27 +2552,38 @@ void GXSetTevColorIn(int stage, int a, int b, int c, int d) {
     unsigned int *data = __GXData;
     unsigned int *tev = data + stage;
     unsigned int value = tev[0x180 / 4];
-    value = (value & ~0xF000) | ((a << 12) & 0xF000);
-    value = (value & ~0xF00) | ((b << 8) & 0xF00);
-    value = (value & ~0xF0) | ((c << 4) & 0xF0);
-    value = (value & ~0xF) | (d & 0xF);
+    value = __rlwimi(value, a, 12, 16, 19);
+    value = __rlwimi(value, b, 8, 20, 23);
     *(volatile unsigned char *)0xCC008000 = 0x61;
+    value = __rlwimi(value, c, 4, 24, 27);
+    value = __rlwimi(value, d, 0, 28, 31);
     *(volatile unsigned int *)0xCC008000 = value;
     tev[0x180 / 4] = value;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetTevAlphaIn(int stage, int a, int b, int c, int d) {
+void GXSetTevAlphaIn(s32 stage, s32 a, s32 b, s32 c, s32 d) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int d : 3;
+            unsigned int c : 3;
+            unsigned int b : 3;
+            unsigned int a : 3;
+            unsigned int unused : 22;
+        } bits;
+    } reg;
     unsigned int *data = __GXData;
     unsigned int *tev = data + stage;
-    unsigned int value = tev[0x1C0 / 4];
-    value = (value & ~0xE000) | ((a << 13) & 0xE000);
-    value = (value & ~0x1C00) | ((b << 10) & 0x1C00);
-    value = (value & ~0x380) | ((c << 7) & 0x380);
-    value = (value & ~0x70) | ((d << 4) & 0x70);
+
+    reg.value = tev[0x1C0 / 4];
+    reg.bits.a = a;
+    reg.bits.b = b;
+    reg.bits.c = c;
+    reg.bits.d = d;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
-    tev[0x1C0 / 4] = value;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
+    tev[0x1C0 / 4] = reg.value;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
@@ -2693,15 +2704,15 @@ void GXSetTevKAlphaSel(s32 arg0, s32 arg1) {
 }
 
 void GXSetTevSwapMode(s32 arg0, s32 arg1, s32 arg2) {
-    unsigned int *base = __GXData;
-    register unsigned int *entry = base + arg0;
-    register unsigned int value = entry[0x1C0 / 4];
-    value = (value & ~3) | (arg1 & 3);
-    value = (value & ~0xC) | ((arg2 << 2) & 0xC);
+    unsigned char *base = (unsigned char *)__GXData;
+    unsigned int *entry = (unsigned int *)(base + arg0 * 4);
+    unsigned int value = entry[0x1C0 / 4];
+    value = __rlwimi(value, arg1, 0, 30, 31);
+    value = __rlwimi(value, arg2, 2, 28, 29);
     entry[0x1C0 / 4] = value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = entry[0x1C0 / 4];
-    *(unsigned short *)((char *)base + 2) = 0;
+    *(unsigned short *)(base + 2) = 0;
 }
 
 void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
@@ -2731,9 +2742,9 @@ void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1) {
         } bits;
     } reg;
 
-    *(volatile u8 *)0xCC008000 = 0x61;
     reg.value = 0xF3000000;
     reg.bits.ref0 = ref0;
+    *(volatile u8 *)0xCC008000 = 0x61;
     reg.bits.ref1 = ref1;
     reg.bits.comp0 = comp0;
     reg.bits.comp1 = comp1;
@@ -3087,6 +3098,27 @@ void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 f
     ((f32 *)__GXData)[0x554 / 4] = nearZ;
     ((f32 *)__GXData)[0x558 / 4] = farZ;
     __GXData[0x5FC / 4] |= 0x10000000;
+}
+
+void GXSetScissorBoxOffset(s32 x, s32 y) {
+    union {
+        u32 value;
+        struct {
+            unsigned int tag : 8;
+            unsigned int reserved : 4;
+            unsigned int y : 10;
+            unsigned int x : 10;
+        } bits;
+    } reg;
+    volatile u8 *fifo = (volatile u8 *)0xCC008000;
+
+    reg.value = 0;
+    reg.bits.x = ((u32)(x + 0x156)) >> 1;
+    *fifo = 0x61;
+    reg.bits.y = ((u32)(y + 0x156)) >> 1;
+    reg.bits.tag = 0x59;
+    *(volatile u32 *)fifo = reg.value;
+    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
 void GXSetClipMode(s32 arg0) {
