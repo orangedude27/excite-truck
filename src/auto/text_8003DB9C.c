@@ -2813,6 +2813,15 @@ void GXSetProjectionv(float *arg0) {
  d[0x5fc/4]|=0x08000000;
 }
 
+void GXSetCurrentMtx(s32 arg0) {
+    struct {
+        unsigned int unused : 26;
+        unsigned int matrix : 6;
+    } *reg = (void *)&__GXData[0x20];
+    reg->matrix = arg0;
+    __GXData[0x17F] |= 0x04000000;
+}
+
 void __GXSetViewport(void) {
  unsigned int *d=__GXData;
  float f2,f3,f0,f4,f5,f8,f9,f6,f1;
