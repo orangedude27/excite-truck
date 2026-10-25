@@ -52,6 +52,35 @@ extern float lbl_80564B84;
 extern float lbl_80564BB0;
 extern float fn_801EA0E8(float, float);
 extern unsigned int fn_802BBD38(short, short, float);
+extern char lbl_8034A020[];
+extern float lbl_804BE090[];
+extern float lbl_80564B40;
+extern float lbl_80564B48;
+extern float lbl_80564B4C;
+extern float lbl_80564B50;
+extern float lbl_80564B54;
+extern float lbl_80564B58;
+extern float lbl_80564B5C;
+extern float lbl_80564B60;
+extern float lbl_80564B64;
+extern float lbl_80564B6C;
+extern double lbl_80564B70;
+extern unsigned char fn_8012C33C(void *);
+extern void fn_802BE7F8(void);
+extern void fn_802B40F8(void);
+extern void fn_802B0914(void);
+extern void fn_802C26F0(void);
+extern void fn_802B1E28(void);
+extern void fn_802B57B8(void);
+extern void fn_802BBBC8(void);
+extern void fn_802C2138(void);
+extern void fn_802B9B68(void);
+extern void fn_802BDBA8(void);
+extern void fn_802C2298(void);
+extern void fn_802BF350(void);
+extern void fn_802B58E0(void);
+extern void *fn_802B59CC(void);
+extern void fn_802BEAB0(void);
 void* fn_802AE588(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
@@ -65,19 +94,21 @@ void* fn_802AE588(void* arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_802AE5E0(int arg0) {
-    int *ptr = &lbl_804BDFF0[1];
-    int total = 0;
-    int i = 2;
+    register int *ptr = &lbl_804BDFF0[1];
+    register int total = 0;
+    register int i = 2;
 loop:
     *ptr = total;
     total += (i + 1) * 4;
     i *= 2;
     ptr++;
-    if (i <= arg0) goto loop;
+    if (i <= arg0)
+        goto loop;
     *(int *)lbl_8055F984 = fn_8012850C(total * 2, &lbl_8055CD7C);
 }
-
+#pragma scheduling on
 extern void fn_802AE64C(void *);
 extern void fn_802C9950(int);
 extern void fn_802C9994(int);
@@ -168,15 +199,15 @@ void fn_802BA004(void);
 void fn_802BA348(void);
 void fn_802C29A0(void);
 void fn_802BAE50(void);
+#pragma scheduling invalid_target
 void fn_802AE774(void) {
     fn_802BA004();
-    if (((int (*)(void))fn_802B05E4)() == 0) {
-        fn_802BA348();
-        fn_802C29A0();
-        fn_802BAE50();
-    }
+    if (((int (*)(void))fn_802B05E4)() != 0)
+        return;
+    fn_802BA348();
+    fn_802C29A0();
+    fn_802BAE50();
 }
-
 #pragma scheduling on
 int fn_802AE7AC(void) {
     int val = *(int *)lbl_8055F984;
@@ -190,10 +221,13 @@ void fn_802AE7C0(void) {
     fn_802C9994(0xFFF5D9);
 }
 
+#pragma scheduling invalid_target
 void fn_802AE9D0(void) {
     lbl_8055CD78 = (void *)-1;
     fn_802C10C4();
-    if (fn_802B05E4() == 0) fn_802BF40C();
+    if (((int (*)(void))fn_802B05E4)() != 0)
+        goto done;
+    fn_802BF40C();
     fn_802C2410();
     fn_802BDC60();
     fn_802B9D08();
@@ -206,10 +240,11 @@ void fn_802AE9D0(void) {
     fn_802B4BDC();
     fn_802BBCC4();
     fn_802BE840();
-    fn_802AE644();
+    ((void (*)(void))fn_802AE644)();
+done:
     lbl_8055F970 = 0;
 }
-
+#pragma scheduling on
 void fn_802AEA44(void) {
     volatile int start;
     volatile char *buffer;
@@ -1115,12 +1150,16 @@ unsigned short fn_802B0070(int arg0) {
     return fn_802B127C(lbl_8055F974, arg0);
 }
 
+#pragma scheduling invalid_target
 void fn_802B009C(void *arg0, int arg1, int arg2, int arg3) {
-    *(float *)arg0 = (float)arg2 * lbl_80564AF0;
-    *(float *)((char *)arg0 + 8) = (float)arg3 * lbl_80564AF0;
-    *(float *)((char *)arg0 + 4) = fn_801DCF48(arg1, *(float *)arg0, *(float *)((char *)arg0 + 8));
+    float *out = (float *)arg0;
+    float x = (float)arg2 * lbl_80564AF0;
+    float z = (float)arg3 * lbl_80564AF0;
+    out[0] = x;
+    out[2] = z;
+    out[1] = fn_801DCF48(arg1, x, z);
 }
-
+#pragma scheduling on
 void fn_802B0114(void) {
 }
 
