@@ -491,6 +491,7 @@ extern "C" void* lbl_802FDE48;
 extern "C" void* lbl_802FDE54;
 extern "C" void** lbl_8055D5FC;
 extern "C" void** lbl_8055D600;
+// The array label, typed virtual call, and fixed-arity cleanup call preserve the target instructions.
 extern "C" void fn_8001EDB8(void) {
     struct Obj { virtual void v0(); virtual void v1(void *); };
     void* object = lbl_802FDE38;
