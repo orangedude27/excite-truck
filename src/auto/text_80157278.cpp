@@ -1196,16 +1196,16 @@ extern "C" f32 fn_80159F2C(void* arg0, void* arg1, void* arg2) {
 }
 
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
-    if (arg0->m260 <= 0) {
+    register s32 count = arg0->m260;
+    if (count <= 0) {
         return;
-    } else {
-        s32 buffer = arg0->m258;
-        if (buffer != 0) {
-            void fn_801CB6E4(void*, s32);
-            fn_801CB6E4((void*)buffer, *(s32*)&arg0->m4);
-        }
-        arg0->m260 = 0;
     }
+    register s32 buffer = arg0->m258;
+    if (buffer) {
+        void fn_801CB6E4(void*, s32);
+        fn_801CB6E4((void*)buffer, *(s32*)&arg0->m4);
+    }
+    arg0->m260 = 0;
 }
 
 #pragma dont_inline on
@@ -1758,22 +1758,23 @@ extern "C" void fn_8015C5D0(void* arg0) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_8015C5E4(Unk801577F0* self) {
-    f32 value = self->m278;
+extern "C" void fn_8015C5E4(void* arg0) {
+    f32 value = *(f32*)((u8*)arg0 + 0x278);
     f32 offset;
+    s32 *count = (s32*)((u8*)arg0 + 0x26c);
     if (value < lbl_80561754) {
         offset = value - lbl_80561760;
     } else {
         offset = lbl_80561760 + value;
     }
-    self->m26c = (s32)offset;
-    self->v13();
-    if (self->m26c > 0) {
-        if (self->m26c > 0) {
-            fn_801CB6E4((void*)0x48203, self->m4);
+    *count = (s32)offset;
+    ((Unk801577F0*)arg0)->v13();
+    if (*count > 0) {
+        if (*count > 0) {
+            fn_801CB6E4((void*)0x48203, *(s32*)((u8*)arg0 + 4));
         }
-        self->m26c = 0;
-        self->m278 = lbl_80561754;
+        *count = 0;
+        *(f32*)((u8*)arg0 + 0x278) = lbl_80561754;
     }
 }
 #pragma scheduling on
@@ -1918,8 +1919,8 @@ extern "C" u32 fn_8015CC28(void) { return 1; }
 
 extern "C" s32 fn_8015CC30(void* arg0) {
     f32 x = *(f32*)((char*)arg0 + 0x250);
-    if (x < lbl_80561754) return (s32)(x - lbl_80561760);
-    return (s32)(lbl_80561760 + x);
+    f32 r = (x < lbl_80561754) ? x - lbl_80561760 : lbl_80561760 + x;
+    return (s32)r;
 }
 
 extern "C" void fn_8015CC6C(void* arg0, f32 farg0) {
@@ -2188,10 +2189,10 @@ extern "C" void fn_8015D73C(Unk8015A368C* arg0) {
 
 extern "C" s32 fn_8015D77C(void* arg0) {
     s32 count = *(s32*)((u8*)arg0 + 0xC);
-    s32 i = 0;
     s32 offset = 0;
-    u8* base = (u8*)arg0 + 8;
+    s32 i = 0;
     for (; count > 0; count--) {
+        u8* base = (u8*)arg0 + 8;
         if (*(s32*)(base + offset + 0x14) >= 0)
             return *(s32*)(base + i * 0x38 + 0x14);
         offset += 0x38;
@@ -2583,6 +2584,26 @@ extern "C" void fn_8015EA24(void *arg0, s32 arg1) {
         obj->v6(arg1);
         var_r31 += 4;
         var_r30 += 1;
+    }
+}
+
+#pragma scheduling invalid_target
+extern "C" void fn_8015EB28(void *arg0) {
+    struct Entry {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void dispatch();
+    };
+    int i;
+    for (i = 0; i < *(int *)((char *)arg0 + 0x8); i++) {
+        Entry *entry = *(Entry **)((char *)*(void **)((char *)arg0 + 0x4) + i * 0x4);
+        entry->dispatch();
     }
 }
 
