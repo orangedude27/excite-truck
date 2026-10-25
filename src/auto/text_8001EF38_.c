@@ -27,6 +27,7 @@ extern char lbl_8035AF38[0x820];
 
 void fn_8001F578();
 void fn_8001F724();
+void fn_8001F780();
 s32 fn_8001F9A4();
 s32 fn_8001FA20();
 s32 fn_8001FA8C();
