@@ -1483,7 +1483,7 @@ extern "C" s32 fn_80215730(void *arg0) {
 
   void fn_802C2FC4(int);
   s32 fn_80128668(void *);
-void fn_802C40E8(int, int, int);
+extern "C" void fn_802C40E8(void *, s32, s32);
 void fn_802C4F2C(int, int *, int *);
 int fn_802C4EE4(int);
 int fn_802C4EFC(int);
@@ -1505,7 +1505,7 @@ extern "C" void fn_802157A8(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     s32 callback = *(s32 *)((u8 *)arg0 + 4);
     u32 remainder = arg3 % divisor;
     if (callback != 0) {
-        fn_802C40E8(callback, arg1, arg2 - *(s32 *)((u8 *)arg0 + 8) * remainder);
+        fn_802C40E8((void *)callback, arg1, arg2 - *(s32 *)((u8 *)arg0 + 8) * remainder);
     }
 }
 
@@ -1641,6 +1641,7 @@ extern "C" void fn_80215A48(void *arg0) {
 #pragma dont_inline on
 #pragma dont_inline reset
 extern "C" s32 fn_80215AA4(void *, s32);
+#pragma scheduling invalid_target
 extern "C" s32 fn_80215A74(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     u8 enabled = self[0x1A];
@@ -1652,6 +1653,7 @@ extern "C" s32 fn_80215A74(void *arg0, s32 arg1) {
         return fn_80215AA4(arg0, arg1);
     }
 }
+#pragma scheduling on
 extern "C" s32 fn_80215AA4(void *arg0, s32 arg1) {
     class Callback {
     public:
