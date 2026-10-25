@@ -46,7 +46,8 @@ void fn_8013028C(void) {
 }
 
 int fn_80130390(void) {
-    return lbl_802F8E60[lbl_8055E04C * 3];
+    int index = lbl_8055E04C;
+    return *(int *)((char *)lbl_802F8E60 + index * 12);
 }
 
 extern int lbl_80423054;
