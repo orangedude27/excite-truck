@@ -275,7 +275,7 @@ extern "C" void fn_8028BED4(void *, s32, void *, void *, f32);
 extern void *fn_80287B24(s32);
 extern f32 lbl_8056432C, lbl_80564330, lbl_80564348, lbl_8056434C, lbl_80564364, lbl_8056436C, lbl_80564370, lbl_80564374, lbl_80564378, lbl_8056437C, lbl_80564380, lbl_80564384, lbl_80564388, lbl_8056438C, lbl_80564390, lbl_80564394, lbl_80564398;
 #pragma cplusplus on
-s32 fn_8028B500(void *arg0) { return 0x38; }
+s32 fn_8028B500(void *arg0) { return arg0 ? 0x38 : 0; }
 #pragma cplusplus off
 
 extern f32 PSVECMag(f32 *);
@@ -347,10 +347,10 @@ s32 fn_8028BA9C(void *arg0) {
 }
 
 s32 fn_8028BB14(s32 arg0) {
-    s32 i;
-    i = 0;
+    s32 *value = (s32 *)arg0;
+    s32 i = 0;
     do {
-        fn_8028E584(lbl_8055F704, arg0, arg0 + 0xC);
+        fn_8028E584(lbl_8055F704, (s32)value, (s32)(value + 3));
         i++;
     } while (i < 0x14);
     return 0x18;
