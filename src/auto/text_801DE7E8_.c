@@ -117,3 +117,4 @@ void fn_801DF380(int arg0, int arg1, int arg2, int arg3) {
 extern void *memcpy(void *, const void *, unsigned int);
 extern unsigned long long fn_802E2C9C(int);
 extern void fn_801331C4(int, int *, float *);
+extern int lbl_80339570;
