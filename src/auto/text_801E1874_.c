@@ -74,7 +74,7 @@ void fn_801E1D2C(void) {
 void fn_801E1D38(void) {
     int *base;
     if (*fn_801E1F44() == 1) {
-        base = &lbl_804874B8;
+        base = (int *)lbl_804874B8;
         base[5] = (int)fn_80207848(lbl_80339878, 2);
         base[6] = (int)fn_80207848(lbl_80339884, 2);
     }
