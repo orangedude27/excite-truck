@@ -471,6 +471,12 @@ void fn_802C6B2C(s32 *arg0, s32 arg1) {
     }
 }
 
+#pragma dont_inline on
+int fn_802C6C20(int arg0) {
+    return fn_8012C4E4((void *)arg0, (void *)fn_802C5E6C, arg0);
+}
+#pragma dont_inline reset
+
 void fn_802C6C30(void) {}
 
 void fn_802C6C34(void) { fn_802C53A8(); }
