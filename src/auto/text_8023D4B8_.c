@@ -73,8 +73,8 @@ void fn_8023DA2C(long arg0, void *arg1, char arg2, long arg3) {
 }
 
 void fn_8023DB68(void) {
+    long *dst = (long *)&lbl_804987D0;
     long i = 0;
-    long *dst = &lbl_804987D0;
 
     lbl_8055BC54 = fn_80137C74();
     while (i < lbl_8055BC54) {
