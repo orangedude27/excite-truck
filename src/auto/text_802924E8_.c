@@ -76,7 +76,6 @@ extern "C" void fn_80292628(void) {
     public:
         virtual void m0();
         virtual void m1();
-        virtual void m2();
     };
     register unsigned char *entry;
     register s32 i;
@@ -84,7 +83,7 @@ extern "C" void fn_80292628(void) {
     i = 0;
     for (; i < *(s32 *)(lbl_804B4168 + 0x180); entry += 0x18, i++) {
         Dummy_80292628 *obj = *(Dummy_80292628 **)(entry + 0x10);
-        obj->m2();
+        obj->m1();
     }
 }
 extern "C" void fn_80292864(void) {
@@ -168,9 +167,9 @@ int fn_80292EC0(void *arg0, const char *arg1, s32 *arg2, s32 arg3) {
 void fn_80292F40(void *arg0, void *arg1, const char *arg2) {
     volatile s32 *counter = (volatile s32 *)((u8 *)arg0 + 0x180);
     s32 count = *counter;
-    char *dst = (char *)arg0 + count * 0x18;
+    register char *dst = (char *)arg0 + count * 0x18;
     s32 left = 0x10;
-    char c;
+    register signed char c;
     goto copy_byte;
 check_limit:
     if (--left > 0) {
