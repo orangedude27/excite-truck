@@ -141,11 +141,10 @@ void fn_80130518(void) {
 extern char *strchr(const char *, int);
 void fn_80130568(char *arg0) {
     char *base = arg0;
-    char replacement = *(char *)lbl_8055E050;
-    if (replacement != '.') {
-        *arg0 = replacement;
+    if (*(char *)lbl_8055E050 != '.') {
+        *arg0 = *(char *)lbl_8055E050;
         while ((arg0 = strchr(base, '.')) != 0) {
-            *arg0 = replacement;
+            *arg0 = *(char *)lbl_8055E050;
         }
     }
 }
@@ -212,6 +211,10 @@ int fn_80130FE0(int arg0) {
         remainder = arg0 % 10;
         fn_80131234((void *)values[remainder]);
     }
+}
+
+void fn_801310B4(void *arg0, void *arg1, int arg2) {
+    fn_801345D8(arg0, arg1, lbl_80559AF8, arg2, fn_80130FE0(arg2) + 1);
 }
 
 #pragma scheduling invalid_target
@@ -315,6 +318,5 @@ char *fn_8013126C(char *arg0, const char *arg1) {
     *dst = 0;
     return arg0;
 }
-extern char lbl_80559AF8[];
 extern char lbl_80559B00[];
 extern char lbl_8032B224[];
