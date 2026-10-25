@@ -18,6 +18,7 @@ extern int TRKReadBuffer_ui32(void);
 extern float fn_802E9A2C(void);
 extern void fn_80060CC0(int, int, void (*)());
 extern void fn_802E30C8(char *, int, char *, ...);
+extern void *memset(void *, int, unsigned int);
 extern void fn_802E5248(int, int);
 extern void fn_802E51D0();
 __declspec(section ".sdata") extern char lbl_8055D1D8[];
