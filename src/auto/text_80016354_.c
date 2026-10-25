@@ -8,7 +8,6 @@ extern void *fn_80016474(void);
 extern unsigned char *lbl_8055D540;
 extern unsigned char *lbl_8055D544;
 extern int stricmp(const char *, const char *);
-#pragma dont_inline fn_80016510
 extern int fn_80016510(int);
 extern void *lbl_8055D548;
 extern void *fn_80016BC8(void *, int);
@@ -163,13 +162,13 @@ void fn_800168B0(int arg0, int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80016928(int arg0, int arg1) {
-    unsigned char *entry;
-    unsigned char *base;
-    int i;
+    register unsigned char *entry;
+    register unsigned char *base;
+    register int i;
 
     i = 0;
-    entry = lbl_8055D540;
-    base = entry;
+    base = lbl_8055D540;
+    entry = base;
     for (; i < (int)lbl_8055D54C; i++, entry += 0x5C) {
         if (arg0 == *(int *)(entry + 4)) {
             *(int *)(base + i * 0x5C + 0x50) = arg1;
