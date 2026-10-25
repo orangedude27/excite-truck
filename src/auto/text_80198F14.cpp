@@ -2545,9 +2545,9 @@ extern "C" void *fn_801A3DAC(void *arg0,s32 arg1,s32 arg2,s32 arg3) {
 extern "C" void fn_8019ECC4(void);
 extern "C" void fn_801CFA48(void*);
 __declspec(section ".data") extern s32 lbl_80333728;
-void* fn_801A3F5C(void* arg0, s32 arg1, s32 arg2) {
+extern "C" void* fn_801A3F5C(void* arg0, s32 arg1, s32 arg2) {
     fn_8019ECC4();
-    *(s32*)arg0 = (s32)&lbl_80333728;
+    *(void**)arg0 = &lbl_80333728;
     if (arg2 != 0) {
         *(void**)((u8*)arg0 + 0x24) = (u8*)arg0 + 0x40;
         fn_801CFA48((u8*)arg0 + 0x40);
