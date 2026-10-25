@@ -2,6 +2,7 @@
 
 #include <types.h>
 #include <stdarg.h>
+#include "revolution/MTX/mtxtypes.h"
 typedef struct { void *pad[3]; void *(*get)(void *, int); } IterFC;
 typedef struct { void *pad[3]; int (*has)(void *, void *); void *(*next)(void *, void *); } IterFD;
 typedef struct { void *pad[15]; int (*has)(void *, void *); void *(*value)(void *, void *); } IterFE;
@@ -653,13 +654,20 @@ f32 fn_8014C75C(f32 *arg0, const f32 *arg1) {
     return v0;
 }
 
+#pragma scheduling invalid_target
 s64 fn_8014C770(f32 *arg0, f32 *arg1, f32 t) {
     union { struct { f32 x, y; } f; s64 bits; } out;
-    out.f.y = arg0[1] + t * (arg1[1] - arg0[1]);
-    out.f.x = arg0[0] + t * (arg1[0] - arg0[0]);
+    volatile f32 *a = (volatile f32 *)arg0;
+    volatile f32 *b = (volatile f32 *)arg1;
+    f32 y1 = b[1];
+    f32 y0 = a[1];
+    f32 x1 = b[0];
+    f32 x0 = a[0];
+    out.f.y = y0 + t * (y1 - y0);
+    out.f.x = x0 + t * (x1 - x0);
     return out.bits;
 }
-
+#pragma scheduling on
 void fn_8014C7B4(void *arg0, void *arg1) {
     s32 d, c, b, a;
     f32 j, i, h, g, f, e;
@@ -731,14 +739,15 @@ float fn_8014C8F8(float farg0, float farg1, float farg2) {
 }
 
 void fn_8014C920(void *arg0, void *arg1) {
-    int a = ((int *)arg1)[0];
-    int b = ((int *)arg1)[1];
-    int c = ((int *)arg1)[2];
-    int d = ((int *)arg1)[3];
-    float e = ((float *)arg1)[4];
-    int f = ((int *)arg1)[5];
-    int g = ((int *)arg1)[6];
-    int h = ((int *)arg1)[7];
+    volatile int *src = (volatile int *)arg1;
+    int a = src[0];
+    int b = src[1];
+    int c = src[2];
+    int d = src[3];
+    float e = *(volatile float *)((char *)arg1 + 0x10);
+    int f = src[5];
+    int g = src[6];
+    int h = src[7];
     ((int *)arg0)[0] = a;
     ((int *)arg0)[1] = b;
     ((int *)arg0)[2] = c;
@@ -1242,6 +1251,13 @@ void fn_80150B60(void *arg0) {
 }
 #pragma scheduling on
 s32 fn_80151604(void) { return 0; }
+
+s32 fn_8015160C(void) {
+    if (fn_80161C38() != 0) {
+        return 0x5608;
+    }
+    return (fn_80179650() > 1 ? 0x160B : 0x564B) & 0xFFFFFFBF;
+}
 
 void fn_80151654(void *a0, void *a1, s32 selector) {
     s32 index;
