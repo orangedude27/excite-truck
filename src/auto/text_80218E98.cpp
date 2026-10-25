@@ -1087,8 +1087,10 @@ extern "C" void fn_8021BD48(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma small_data off
+extern "C" __declspec(align(32)) void *lbl_8033EF68;
+#pragma scheduling invalid_target
 extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 arg6, f32 arg7) {
-    ((void *(*)(void *, s32, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0, 0);
+    ((void *(*)(void *, s32, s32, s32, void *, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, (void *)arg5, 0, 0);
     *(s32 *)((u8 *)arg0 + 0x25C) = arg3;
     *(void **)arg0 = &lbl_8033EF68;
     *(f32 *)((u8 *)arg0 + 0x254) = arg6;
@@ -1099,7 +1101,7 @@ extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     fn_8021BE48(arg0);
     return arg0;
 }
-#pragma pop
+#pragma scheduling on
 extern "C" void fn_8021BEBC(void *arg0) {
     fn_8021BE48(arg0);
 }
@@ -1107,7 +1109,7 @@ extern "C" void fn_8021BEBC(void *arg0) {
 extern "C" s32 fn_80129BC4(void);
 extern "C" void *fn_80217BD8(s32, s32, void *);
 extern "C" void fn_8021BE48(void *);
-extern "C" void fn_8021C12C(void);
+extern "C" void fn_8021C12C(void *);
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_80130568(char *);
 extern "C" void fn_8021BF90(void *arg0) {
@@ -1150,16 +1152,19 @@ extern "C" void fn_8021BFEC(void *arg0) {
 }
 
 extern "C" void fn_8021C128(void) {
-    fn_8021C12C();
+    ((void (*)())fn_8021C12C)();
 }
 
-extern "C" void fn_8021C12C(void) {
-    register void *arg0;
+extern "C" void fn_8021C12C(void *arg0) {
+    class Local {
+    public:
+        virtual void a0();
+        virtual void a1();
+        virtual void apply(void *, s32);
+    };
     void *obj;
-    void **vtable;
     obj = *(void **)((u8 *)arg0 + 0x2A4);
-    vtable = *(void ***)obj;
-    ((void (*)(void *, s32))vtable[4])(obj, 0x50);
+    ((Local *)obj)->apply((u8 *)arg0 + 0x254, 0x50);
     fn_80219718(arg0);
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
