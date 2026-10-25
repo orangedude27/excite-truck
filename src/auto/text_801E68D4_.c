@@ -43,11 +43,12 @@ s32 fn_801E68D4(void) {
 void fn_801E6924(s32 arg0) {
     s32* ptr = lbl_80487CC0;
     s32 i;
-    for (i = 0; i < 8; i++, ptr++) {
+    for (i = 0; i < 8; i++) {
         if ((unsigned int)*ptr == (unsigned int)arg0) {
             lbl_8055EAC8[i] = 0;
             return;
         }
+        ptr++;
     }
     fn_802E317C(&lbl_80339A20[0], arg0);
 }
