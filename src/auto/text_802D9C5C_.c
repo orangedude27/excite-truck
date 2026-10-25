@@ -74,12 +74,44 @@ void fn_802DA4C4(void) {
     lbl_8055FE5C = 0;
 }
 
+#pragma scheduling invalid_target
 void fn_802DA52C(void) {
     volatile unsigned char *p = (volatile unsigned char *)lbl_8055FE5C;
     *(volatile int *)(p + 0x10) = 0;
     *(volatile int *)(p + 0x20) = -1;
     p[0x24] = 1;
     p[0x25] = 0;
+}
+#pragma scheduling on
+void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int arg5) {
+    unsigned char *ctx = (unsigned char *)lbl_8055FE5C;
+    int len1 = arg5 * 4;
+    int size1 = (len1 + 8 + 3) & ~3;
+    unsigned char *rec1;
+    int len2 = arg2 * 12;
+    int size2 = (len2 + 0x18 + 3) & ~3;
+    unsigned char *rec2;
+    unsigned char old = ctx[0x25];
+    if (*(int *)(ctx + 0x10) + size1 + 8 > *(int *)(ctx + 0xC))
+        fn_802E317C(lbl_80346798, *(int *)(ctx + 8), len1 + 8, *(int *)(ctx + 0xC) >> 10);
+    rec1 = *(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10) + 4;
+    *(int *)rec1 = (int)arg3;
+    *(int *)(rec1 + 4) = arg5;
+    memcpy(rec1 + 8, arg4, len1);
+    *(int *)(ctx + 0x10) += size1 + 8;
+    ctx[0x25] = 0;
+    if (*(int *)(ctx + 0x10) + size2 + 8 > *(int *)(ctx + 0xC))
+        fn_802E317C(lbl_80346798, *(int *)(ctx + 8), size2, *(int *)(ctx + 0xC) >> 10);
+    rec2 = *(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10) + 4;
+    *(int *)rec2 = 7;
+    *(int *)(rec2 + 4) = (int)arg0;
+    *(int *)(rec2 + 8) = arg2;
+    *(int *)(rec2 + 0xC) = 0;
+    *(int *)(rec2 + 0x14) = (int)rec1;
+    rec2[0x10] = old;
+    memcpy(rec2 + 0x18, arg1, len2);
+    *(int *)(ctx + 0x10) += size2 + 8;
+    return rec2;
 }
 
 void *fn_802DA704(int owner, void *data, int count) {
@@ -110,6 +142,38 @@ void *fn_802DA704(int owner, void *data, int count) {
     *(int *)((char *)result + 0x14) = 0;
     *((unsigned char *)result + 0x10) = saved;
     memcpy((char *)result + 0x18, data, count * 12);
+    return result;
+}
+
+void *fn_802DA80C(int owner, void *data, int count) {
+    unsigned char *state = (unsigned char *)lbl_8055FE5C;
+    unsigned char saved = state[0x25];
+    int bytes = count * 0x30;
+    int size = bytes + 0x18;
+    int aligned = (size + 3) & ~3;
+    int used = *(int *)(state + 0x10);
+    int limit = *(int *)(state + 0x0C);
+    unsigned char *arena = (unsigned char *)*(unsigned int *)(state + 4);
+    unsigned char *base;
+    void *result;
+    state[0x25] = 0;
+    if (aligned + used + 8 > limit) {
+        fn_802E317C(lbl_80346798, *(int *)(state + 8), size, limit >> 10);
+        result = 0;
+    } else {
+        base = arena + used;
+        *(int *)base = 1;
+        result = base + 4;
+        *(int *)(base + aligned + 4) = aligned;
+        *(int *)(state + 0x10) = aligned + used + 8;
+    }
+    *(int *)((char *)result + 0) = 7;
+    *(int *)((char *)result + 4) = owner;
+    *(int *)((char *)result + 8) = count;
+    *(int *)((char *)result + 0x0C) = 1;
+    *(int *)((char *)result + 0x14) = 0;
+    *((unsigned char *)result + 0x10) = saved;
+    memcpy((char *)result + 0x18, data, bytes);
     return result;
 }
 
