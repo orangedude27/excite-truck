@@ -5,6 +5,9 @@
 #include "revolution/OS/OSInterrupt.h"
 #include "revolution/MTX/mtx.h"
 
+typedef const f32 PSMTXSrc[3][4];
+typedef f32 PSMTXDst[3][4];
+
 static inline void KPADNotifySampling(s32 chan) {
     KPADInsideStatus *status = &inside_kpads[chan];
     BOOL interrupts = OSDisableInterrupts();
@@ -56,6 +59,51 @@ void WPADiSamplingCallback(s32 chan, s32 result) {
             KPADNotifySampling(chan);
         }
     }
+}
+
+void *FindContainHeap_(MEMList *list, u32 addr) {
+    void *heap;
+    void *child;
+    void *block;
+    void *found;
+
+    for (heap = MEMGetNextListObject(list, 0); heap != 0;
+         heap = MEMGetNextListObject(list, heap)) {
+        if (*(u32 *)((u8 *)heap + 0x18) <= addr &&
+            addr < *(u32 *)((u8 *)heap + 0x1C)) {
+            for (child = MEMGetNextListObject((MEMList *)((u8 *)heap + 0xC), 0);
+                 child != 0;
+                 child = MEMGetNextListObject((MEMList *)((u8 *)heap + 0xC), child)) {
+                if (*(u32 *)((u8 *)child + 0x18) <= addr &&
+                    addr < *(u32 *)((u8 *)child + 0x1C)) {
+                    for (block = MEMGetNextListObject((MEMList *)((u8 *)child + 0xC), 0);
+                         block != 0;
+                         block = MEMGetNextListObject((MEMList *)((u8 *)child + 0xC), block)) {
+                        if (*(u32 *)((u8 *)block + 0x18) <= addr &&
+                            addr < *(u32 *)((u8 *)block + 0x1C)) {
+                            found = FindContainHeap_((MEMList *)((u8 *)block + 0xC), addr);
+                            if (found != 0) return found;
+                            return block;
+                        }
+                    }
+                    return child;
+                }
+            }
+            return heap;
+        }
+    }
+    return 0;
+}
+
+void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 align) {
+MEMiExpHeapMBlock *prev=blk->prev,*next=blk->next,*first,*last,*p; u32 alloc=(u32)mem,before=alloc-(align&0x7F),end=(u32)blk+blk->size+0x10,after=alloc+size;
+if(prev)prev->next=next;else exp->freeMBlocks.head=next;if(next)next->prev=prev;else exp->freeMBlocks.tail=prev;
+first=(MEMiExpHeapMBlock *)(alloc-0x10);
+if(alloc-before>=0x14){first=(MEMiExpHeapMBlock *)before;first->state=0x4652;first->settings=0;first->size=alloc-before-0x10;first->prev=0;first->next=0;p=exp->freeMBlocks.tail;if(p)p->next=first;else exp->freeMBlocks.head=first;first->prev=p;exp->freeMBlocks.tail=first;}
+last=(MEMiExpHeapMBlock *)after;
+if(end-after>=0x14){last->state=0x4652;last->settings=0;last->size=end-after-0x10;last->prev=0;last->next=0;p=exp->freeMBlocks.tail;if(p)p->next=last;else exp->freeMBlocks.head=last;last->prev=p;exp->freeMBlocks.tail=last;}
+first=(MEMiExpHeapMBlock *)(alloc-0x10);first->state=0x5544;first->size=size;first->settings=(align&0x8000)|(((alloc-before)<<8)&0x7F00)|(exp->group&0xFF);
+p=exp->usedMBlocks.tail;if(p)p->next=first;else exp->usedMBlocks.head=first;first->prev=p;first->next=0;exp->usedMBlocks.tail=first;return mem;
 }
 
 void* AllocFromHead_(MEMiHeapHead* heap, u32 size, s32 align) {
@@ -110,6 +158,66 @@ void* AllocFromTail_(MEMiHeapHead* heap, u32 size, s32 align) {
         }
     }
     return bestBlk != 0 ? AllocUsedBlockFromFreeBlock_(exp, bestBlk, bestBlkMemPtr, size, 1) : 0;
+}
+
+s32 RecycleRegion_(void *arg0, void *arg1) {
+    void *spC;
+    void *sp8;
+    void *r4;
+    void *r5;
+    void *r6;
+    void *r7;
+    void *r8;
+    r8 = 0;
+    sp8 = *(void **)arg1;
+    r6 = *(void **)arg0;
+    spC = *(void **)((u8 *)arg1 + 4);
+loop:
+    if (r6 != 0) {
+        if ((u32)r6 < (u32)*(void **)arg1) {
+            r8 = r6;
+            r6 = *(void **)((u8 *)r6 + 0xC);
+            goto loop;
+        }
+        if (r6 == *(void **)((u8 *)arg1 + 4)) {
+            r7 = *(void **)((u8 *)r6 + 8);
+            r6 = *(void **)((u8 *)r6 + 0xC);
+            spC = (void *)((u32)r6 + 0x10);
+            if (r7 != 0) *(void **)((u8 *)r7 + 0xC) = r6;
+            else *(void **)arg0 = r6;
+            if (r6 != 0) *(void **)((u8 *)r6 + 8) = r7;
+            else *(void **)((u8 *)arg0 + 4) = r7;
+        }
+    }
+    if (r8 != 0 && (void *)((u32)r8 + *(u32 *)((u8 *)r8 + 4) + 0x10) == *(void **)arg1) {
+        r5 = *(void **)((u8 *)r8 + 8);
+        sp8 = r8;
+        r4 = *(void **)((u8 *)r8 + 0xC);
+        if (r5 != 0) *(void **)((u8 *)r5 + 0xC) = r4;
+        else *(void **)arg0 = r4;
+        if (r4 != 0) *(void **)((u8 *)r4 + 8) = r5;
+        else *(void **)((u8 *)arg0 + 4) = r5;
+        r8 = r5;
+    }
+    r6 = (void *)((u32)spC - (u32)sp8);
+    if ((u32)r6 < 0x10) return 0;
+    r5 = sp8;
+    *(u16 *)r5 = 0x4652;
+    *(u16 *)((u8 *)r5 + 2) = 0;
+    *(u32 *)((u8 *)r5 + 4) = (u32)spC - ((u32)r5 + 0x10);
+    *(void **)((u8 *)r5 + 0xC) = 0;
+    *(void **)((u8 *)r5 + 8) = r8;
+    if (r8 != 0) {
+        r4 = *(void **)((u8 *)r8 + 0xC);
+        *(void **)((u8 *)r8 + 0xC) = r5;
+    } else {
+        r4 = *(void **)arg0;
+        *(void **)arg0 = r5;
+    }
+    *(void **)((u8 *)r5 + 0xC) = r4;
+    if (r4 != 0) *(void **)((u8 *)r4 + 8) = r5;
+    else *(void **)((u8 *)arg0 + 4) = r5;
+    return 1;
 }
 
 #pragma pop
@@ -200,6 +308,45 @@ init:
 MEMiHeapHead* MEMDestroyFrmHeap(MEMiHeapHead* heap) {
     MEMiFinalizeHeap(heap);
     return heap;
+}
+
+void* MEMAllocFromFrmHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
+    u32 start;
+    u32 end;
+    u32 alloc;
+    u32 mask;
+    u32 flags;
+    u32 result;
+    BOOL locked;
+    if (size == 0) size = 1;
+    size = (size + 3) & ~3;
+    flags = *(u32 *)((u8 *)heap + 0x38);
+    locked = (flags & 4) != 0;
+    if (locked) OSLockMutex((OSMutex *)((u8 *)heap + 0x20));
+    if (align >= 0) {
+        start = *(u32 *)((u8 *)heap + 0x3C);
+        mask = ~(align - 1);
+        result = (start + align - 1) & mask;
+        alloc = size + result;
+        end = *(u32 *)((u8 *)heap + 0x40);
+        if (alloc > end) result = 0;
+        else {
+            if (flags & 1) memset((void *)start, 0, alloc - start);
+            *(u32 *)((u8 *)heap + 0x3C) = alloc;
+        }
+    } else {
+        end = *(u32 *)((u8 *)heap + 0x40);
+        mask = ~(~align);
+        result = (end - size) & mask;
+        start = *(u32 *)((u8 *)heap + 0x3C);
+        if (result < start) result = 0;
+        else {
+            if (flags & 1) memset((void *)result, 0, end - result);
+            *(u32 *)((u8 *)heap + 0x40) = result;
+        }
+    }
+    if (locked) OSUnlockMutex((OSMutex *)((u8 *)heap + 0x20));
+    return (void *)result;
 }
 
 void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags) {
@@ -369,5 +516,22 @@ void PSMTXConcat(const Mtx a, const Mtx b, Mtx out) {
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 4; j++) out[i][j] = tmp[i][j];
     }
+}
+
+extern f32 lbl_80560C48;
+extern f32 lbl_80560C4C;
+void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
+    register f32 zero = lbl_80560C4C;
+    register f32 one = lbl_80560C48;
+    m[0][3] = x;
+    m[1][3] = y;
+    m[0][1] = zero;
+    m[2][0] = zero;
+    m[1][0] = zero;
+    m[1][1] = one;
+    m[1][2] = zero;
+    m[2][2] = one;
+    m[2][3] = z;
+    m[0][0] = one;
 }
 
