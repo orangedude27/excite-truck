@@ -158,12 +158,11 @@ void fn_8023509C(void) {
 }
 #pragma scheduling on
 void fn_802350BC(void) {
-    if (lbl_8055F084 != 0) {
-        fn_802E30C8(lbl_80340724, 0);
-        do {
-            fn_802E30C8(lbl_80340760, *(unsigned int *)lbl_8055F084);
-            fn_80235380(*(void **)lbl_8055F084);
-        } while (lbl_8055F084 != 0);
+    if (lbl_8055F084 != 0)
+        fn_802E30C8(lbl_80340724);
+    while (lbl_8055F084 != 0) {
+        fn_802E30C8(lbl_80340760, *(unsigned int *)lbl_8055F084);
+        fn_80235380(*(void **)lbl_8055F084);
     }
 }
 
