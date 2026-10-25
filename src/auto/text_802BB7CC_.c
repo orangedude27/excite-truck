@@ -153,6 +153,35 @@ void fn_802BBE34(void) {
     } while (var_r28 < 0x200);
 }
 
+extern const char lbl_8034AB00[];
+#pragma push
+#pragma scheduling invalid_target
+void fn_802BBF44(unsigned char *arg0, int arg1) {
+    register unsigned int value5;
+    register unsigned int value4;
+    register unsigned int value3;
+    register unsigned int value2;
+    register unsigned int value1;
+    register unsigned int value0;
+    unsigned int sum;
+
+    value0 = arg0[0];
+    value1 = arg0[1];
+    value2 = arg0[2];
+    value3 = arg0[3];
+    value4 = arg0[4];
+    value5 = arg0[5];
+    sum = value0 + value1;
+    sum += value2;
+    sum += value3;
+    sum += value4;
+    sum += value5;
+    if (sum != 0xFF) {
+        fn_802E30C8(lbl_8034AB00, value0, value1, value2,
+                    value3, value4, value5, arg1);
+    }
+}
+#pragma pop
 int fn_802BBF94(unsigned char arg0) {
     int res = (arg0 >> 4) & 0xF;
     return __rlwimi(res, arg0, 0, 24, 27);
