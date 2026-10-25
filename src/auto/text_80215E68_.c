@@ -74,7 +74,7 @@ s32 fn_80215EC4(s32 arg0, s32 arg1) {
 }
 
 void fn_80215F04(void *arg0) {
-    *(char **)arg0 = &lbl_8033D690;
+    *(char **)arg0 = (char *)&lbl_8033D690;
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
 }
 
@@ -189,6 +189,52 @@ s32 fn_802161CC(s32 arg0) {
         i++;
         p++;
     } while (i < 16);
+}
+
+s32 fn_80216244(void) {
+    s32 i;
+    u32 *p;
+    u8 *obj;
+    f32 matrix[12];
+    f32 pos[3];
+    f32 x, y, z;
+    f64 d;
+    u32 raw;
+    void (*callback)(void);
+
+    p = lbl_804908C8;
+    for (i = 0; i < 16; i++, p++) if (*p != 0) fn_802184D0();
+    callback = (void (*)(void))lbl_8055EF8C;
+    if (callback != 0) callback();
+    fn_802C86E8(0xFF0000FF);
+    fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+    fn_802C88BC(2);
+    p = lbl_804908C8;
+    for (i = 0; i < 16; i++, p++) {
+        if (*p != 0) {
+            obj = (u8 *)*p;
+            fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+            fn_80230B5C(matrix);
+            fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
+            raw = *(u32 *)(obj + 0x454);
+            d = (f64)(s32)raw;
+            x = -(f32)(d);
+            raw = *(u32 *)(obj + 0x458);
+            d = (f64)(s32)raw;
+            y = (f32)d;
+            z = lbl_80563458;
+            pos[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
+            pos[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
+            pos[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
+            matrix[9] += pos[0];
+            matrix[10] += pos[1];
+            matrix[11] += pos[2];
+            fn_802C8638(matrix);
+            fn_8023108C(*p == (u32)lbl_8055EF88);
+            fn_80218574((void *)*p);
+        }
+    }
+    fn_8023108C(1);
 }
 
 extern s32 fn_80127A50(void *);
