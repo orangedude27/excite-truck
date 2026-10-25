@@ -310,13 +310,18 @@ extern s32 lbl_8055E3C4;
 extern f32 lbl_80561638, lbl_8056163C;
 extern f64 lbl_80561640;
 extern f64 sin(f64);
+#pragma scheduling invalid_target
 #pragma dont_inline on
 f32 fn_801495D4(s32 arg0) {
+    f32 scale = lbl_80561638;
     f32 fraction = (f32)(lbl_8055E3C4 % arg0);
     f32 angle = (f32)arg0;
-    return lbl_8056163C + lbl_8056163C * (f32)sin((f64)(lbl_80561638 * fraction / angle));
+    f32 wave = scale * fraction;
+    f32 normalized = wave / angle;
+    return lbl_8056163C + lbl_8056163C * (f32)sin((f64)normalized);
 }
 #pragma dont_inline off
+#pragma scheduling on
 
 void fn_80149650(void) { fn_801495D4(0x40); }
 
@@ -577,36 +582,42 @@ void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
 }
 
 extern u8 lbl_8042FC70[];
+extern s32 fn_80161C38(void);
+extern s32 fn_80160A74(void);
 s32 fn_8014AFD4(void *arg0, void *arg1, s32 arg2) {
-    volatile u8 scratch[0x2D0];
-    u8 *text = lbl_8042FC70;
-    u8 *strings = lbl_8032D358;
+    volatile u8 scratch[0x370];
+    register u8 *text = lbl_8042FC70;
+    register u8 *strings = lbl_8032D358;
     void *manager;
-    s32 g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13;
-    f32 f0, f1, f2, f3, f4, f5, f6, f7;
     void *object;
     void *first;
     void *second;
+    f32 frame;
+    s32 frameIndex;
+    s32 value;
+    s32 status;
+    s32 flag;
     s32 sum;
     manager = fn_8017960C(*(s32 *)arg0);
-    g0 = *(s32 *)((u8 *)arg0 + 0x20); g1 = *(s32 *)((u8 *)arg0 + 0x24);
-    g2 = *(s32 *)((u8 *)arg0 + 0x28); g3 = *(s32 *)((u8 *)arg0 + 0x2C);
-    g4 = *(s32 *)((u8 *)arg0 + 0x30); g5 = *(s32 *)((u8 *)arg0 + 0x34);
-    g6 = *(s32 *)((u8 *)arg0 + 0x38); g7 = *(s32 *)((u8 *)arg0 + 0x3C);
-    g8 = *(s32 *)((u8 *)arg0 + 0x40); g9 = *(s32 *)((u8 *)arg0 + 0x44);
-    g10 = *(s32 *)((u8 *)arg0 + 0x48); g11 = *(s32 *)((u8 *)arg0 + 0x4C);
-    g12 = *(s32 *)((u8 *)arg0 + 0x50); g13 = *(s32 *)((u8 *)arg0 + 0x54);
-    f0 = *(f32 *)((u8 *)arg0 + 0x58); f1 = *(f32 *)((u8 *)arg0 + 0x5C);
-    f2 = *(f32 *)((u8 *)arg0 + 0x60); f3 = *(f32 *)((u8 *)arg0 + 0x64);
-    f4 = *(f32 *)((u8 *)arg0 + 0x68); f5 = *(f32 *)((u8 *)arg0 + 0x6C);
-    f6 = *(f32 *)((u8 *)arg0 + 0x70); f7 = *(f32 *)((u8 *)arg0 + 0x74);
     object = *(void **)((u8 *)manager + 0x270);
     first = ((void *(*)(void *))(*(void ***)object)[4])(object);
+    object = *(void **)((u8 *)manager + 0x270);
     second = ((void *(*)(void *))(*(void ***)object)[6])(object);
-    sum = (s32)text[0] + (s32)strings[0] + (s32)*(u8 *)arg0 + (s32)*(u8 *)arg1 + arg2;
-    sum += g0 + g1 + g2 + g3 + g4 + g5 + g6 + g7 + g8 + g9 + g10 + g11 + g12 + g13;
-    sum += (s32)(f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7);
-    sum += first != second;
+    frame = *(f32 *)((u8 *)arg0 + 0x18);
+    flag = (*(u32 *)first >> 2) & 1;
+    if (frame >= lbl_80561648) frame = lbl_8056163C + frame;
+    else frame = frame - lbl_8056163C;
+    frameIndex = (s32)frame;
+    value = fn_801609C4(frameIndex);
+    status = fn_80161C38();
+    if (status == 0 && lbl_8055E4D0 > 1 &&
+        frameIndex > *(s32 *)((u8 *)arg0 + 0x24) &&
+        frameIndex <= fn_80160A74() && frameIndex >= 0) {
+        value += ((s32 (*)(void *, const char *))(*(void ***)arg1)[3])(arg1, (const char *)strings + 0x150);
+    }
+    sum = flag + value + status + (first != second) + arg2;
+    sum += (manager != NULL);
+    sum += text[0] + strings[0] + (s32)*(u8 *)arg0 + (s32)*(u8 *)arg1;
     scratch[0] = (u8)sum;
     return scratch[0];
 }
@@ -714,20 +725,8 @@ f32 fn_8014C8B4(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
 
 float fn_8014C8F8(float farg0, float farg1, float farg2) {
     float value = farg2;
-    if (value < farg0) {
-        goto first;
-    }
-    goto second;
-first:
-    value = farg0;
-second:
-    if (value > farg1) {
-        goto third;
-    }
-    goto fourth;
-third:
-    value = farg1;
-fourth:
+    value = value < farg0 ? value : farg0;
+    value = value > farg1 ? value : farg1;
     return value;
 }
 
@@ -1479,8 +1478,8 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
 
     val_f29 = val_f29 * lbl_805616FC;
 
-    scale[0] = val_f29;
     scale[1] = lbl_80561648;
+    scale[0] = val_f29;
     scale[2] = lbl_80561648;
     scale[3] = lbl_80561648;
     scale[4] = val_f29;
