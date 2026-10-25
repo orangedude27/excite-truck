@@ -7830,11 +7830,22 @@ s32 btsnd_hcic_reset_800857CC(void) {
 }
 
 void fn_80085828(void *arg0) {
-    u8 *p = (u8 *)arg0;
-    p[2] = 3; p[3] = 0;
-    p[4] = 0; p[5] = 0;
-    p[8] = 5; p[9] = 0x10; p[10] = 0;
-    btu_hcif_send_cmd(5, 0, 3);
+    struct Cmd {
+        u16 pad;
+        u16 opcode;
+        u16 length;
+        u8 reserved[2];
+        u8 command;
+        u8 parameter;
+        u8 zero;
+    } *cmd = (struct Cmd *)arg0;
+
+    cmd->opcode = 3;
+    cmd->length = 0;
+    cmd->command = 5;
+    cmd->parameter = 0x10;
+    cmd->zero = 0;
+    btu_hcif_send_cmd(cmd, 5, 0, 3);
 }
 
 s32 btsnd_hcic_inq_cancel_80085850(void) {
@@ -11878,7 +11889,7 @@ void RFCOMM_ParNegReq(void *arg0, s32 arg1, s32 arg2) {
 
 void fn_800936BC(void *p, u16 a1, u16 a2, u16 a3, u16 a4, u16 a5, u16 a6) {
     if (*((u8 *)p + 0x6C) == 5)
-        rfc_send_pn(p, a1, a2, a3, a4, a5, a6);
+        rfc_send_pn(p, a1, 0, a2, a3, a4);
 }
 
 void RFCOMM_PortNegReq(void *mcb, u8 dlci, void *pars) {
