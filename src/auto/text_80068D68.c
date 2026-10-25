@@ -344,6 +344,12 @@ s32 fn_80068DB8(void *arg0) {
     return (*(s32 (**)(void *))(lbl_80392960 + 0x674))(arg0);
 }
 
+extern char lbl_803131B4[];
+void fn_80068E08(s32 arg0) {
+    DBPrintf_8006CFA8(lbl_803131B4);
+    ((void (*)(s32))(*(u32 *)(lbl_80392960 + 0x678)))(arg0);
+}
+
 void DeleteFlushCallback(s32 arg0) {
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern u8 lbl_803131E8[];
