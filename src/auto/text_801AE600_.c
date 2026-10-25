@@ -13,6 +13,8 @@ extern double lbl_80562568;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern float lbl_80435740[];
+
 int fn_801AE618(int arg0);
 int fn_801AE600(int arg0) {
     return arg0 == 0x50;
@@ -84,6 +86,52 @@ void fn_801AED5C(void) {
 void fn_801AED68(void) {
     lbl_8055E634 = 0;
     fn_801B878C();
+}
+
+extern void *lbl_8055E620;
+extern int fn_801B2F24(void);
+extern int fn_801B3050(int);
+extern int fn_801B2ED4(void);
+extern void *memset(void *, int, unsigned int);
+void fn_801AED74(void) {
+    int i;
+    int offset;
+    float value;
+    void *base;
+    void **table;
+    int j;
+    int k;
+    void *entry;
+    void *data;
+
+    if (lbl_8055E634 == 0) {
+        base = (void *)lbl_8055E624[0];
+        value = lbl_80562558;
+        offset = 0;
+        for (i = 0; i < lbl_8055E624[1]; i++) {
+            data = (char *)base + offset;
+            memset(data, 0, 0x1C);
+            *(float *)((char *)data + 8) = value;
+            *(short *)((char *)data + 0xC) = -100;
+            if (i < fn_801B2F24())
+                *(short *)((char *)data + 0x1A) = fn_801B3050(i);
+            else
+                *(short *)((char *)data + 0x1A) = -1;
+            offset += 0x1C;
+        }
+        table = (void **)lbl_8055E620;
+        for (j = 0; j < 2; j++) {
+            for (k = 0; k < 4; k++) {
+                entry = table[k];
+                if (entry != 0) {
+                    for (i = 0; i < *(int *)((char *)entry + 4); i++)
+                        *(short *)((char *)*(int *)entry + i * 8 + 6) = 0;
+                }
+            }
+            table += 4;
+        }
+    }
+    lbl_8055E62C = fn_801B2ED4();
 }
 
 void fn_801AF92C(void *arg0) {
