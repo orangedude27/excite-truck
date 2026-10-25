@@ -692,7 +692,7 @@ void fn_801FE568(void* arg0, unsigned char* p) {
  t=p[1]; p[1]=p[2]; p[2]=t;
 }
 
-void fn_801FE708(void *arg0, void *arg1) {
+extern "C" void fn_801FE708(void *arg0, void *arg1) {
     char *p = (char *)arg1 + 0x2C;
     int count = *(int *)((char *)arg0 + 0x94);
     if (count >= 4)
@@ -700,7 +700,7 @@ void fn_801FE708(void *arg0, void *arg1) {
     count = *(int *)((char *)arg0 + 0x94);
     char *slot = (char *)arg0 + count * 0x24;
     *(char **)(slot + 4) = p;
-    fn_801FE88C(arg0, slot + 8);
+    fn_801FE88C(arg0, slot + 4);
     ++*(int *)((char *)arg0 + 0x94);
 }
 
