@@ -350,7 +350,10 @@ extern "C" s32 lbl_8055FBC0;
 
 extern "C" void fn_80219044(void);
 extern "C" void fn_8021AC24(void *, s32, s32, s32, s32);
+#pragma push
+#pragma small_data off
 extern "C" int lbl_8033F548;
+#pragma pop
 extern "C" void fn_802C519C(void *);
 extern "C" void fn_8021915C(void *, u32);
 extern "C" s32 fn_80128668(void *);
@@ -5118,8 +5121,8 @@ extern "C" void fn_80229AE4(void *arg0, s32 arg1, s32 arg2) {
 
 extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
     ((void (*)(void *, s32, s32))fn_80219264)(arg0, arg1, arg2);
-    s32 temp_r3 = *(s32 *)((u8 *)arg0 + 0x248) + arg1;
     s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0x24C) + arg2;
+    s32 temp_r3 = *(s32 *)((u8 *)arg0 + 0x248) + arg1;
     *(s32 *)((u8 *)arg0 + 0x248) = temp_r3;
     *(s32 *)((u8 *)arg0 + 0x24C) = temp_r0;
 }
