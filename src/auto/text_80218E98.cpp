@@ -1228,6 +1228,21 @@ extern "C" void *lbl_8033E248[];
 extern "C" u8 lbl_8033E0BC[];
 extern "C" void fn_8021C6CC(void) { ((void (*)())fn_8021C6D0)(); }
 
+extern "C" void fn_8021C6D0(void *arg0) {
+    class Local {
+    public:
+        virtual void a0();
+        virtual void a1();
+        virtual void apply(void *, s32);
+    };
+    void *obj;
+    obj = *(void **)((u8 *)arg0 + 0x2A4);
+    ((Local *)obj)->apply((u8 *)arg0 + 0x254, 0x50);
+    fn_80219718(arg0);
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+}
+
 extern "C" void fn_802180B0();
 extern "C" void fn_802180BC();
 extern "C" void fn_802180C8();
