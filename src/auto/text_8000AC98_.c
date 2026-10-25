@@ -173,8 +173,9 @@ void fn_8000AF1C(void *arg0) {
  if(active) { fn_8000ADE0(0xD); fn_80265D74(); fn_80128678(); fn_80206454(); fn_80127930(); fn_802D3E9C(0); }
 }
 
+extern int fn_8000B210(void *);
 void fn_8000B288(void* alarm) {
-    fn_801DF110(fn_8000B210(alarm));
+    fn_801DF110(((int (*)(void *))fn_8000B210)(alarm));
 }
 
 int fn_8000B33C(void **arg0, int arg1, int arg2) {
@@ -239,6 +240,20 @@ int fn_8000B42C(int arg0) {
     return 1;
 }
 
+#pragma scheduling invalid_target
+int fn_8000B53C(int arg0) {
+    ((void (*)(int))fn_8000ADE0)(0x12);
+    AXFXSetHooks_8020DE10(fn_8000B5A8,
+        (int)fn_8000B3B4 & (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31,
+        lbl_8055D3EC);
+    switch (arg0) {
+    default:
+        return 0;
+    case 1:
+        return 1;
+    }
+}
+#pragma scheduling on
 extern int fn_80007554(int, int);
 extern int fn_8000BD9C(int, int, int);
 extern int fn_801E7DF0(int);
