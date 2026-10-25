@@ -450,7 +450,6 @@ int fn_801F17DC(void *arg0) {
 }
 
 extern int lbl_80488798[64];
-extern int lbl_8033A51C;
 extern char lbl_8033A544[];
 void fn_802E317C(const char *, ...);
 int fn_801F196C(int, int);
@@ -493,6 +492,7 @@ int fn_801EAB80(void *, int);
 int fn_80297988(void *);
 int memset(void *, int, unsigned int);
 extern char lbl_8033A5E8[];
+#pragma scheduling off
 void *fn_801F19FC(void *arg0, int arg1) {
     fn_801EAB2C();
     *(int **)arg0 = (int *)lbl_8033A5E8;
@@ -502,7 +502,7 @@ void *fn_801F19FC(void *arg0, int arg1) {
     fn_80297988(arg0);
     return arg0;
 }
-
+#pragma scheduling on
 int fn_801F1A70(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668(arg0);
