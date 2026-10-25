@@ -1431,7 +1431,9 @@ void fn_802D3DF8(int arg0, signed char arg1, float farg0, float farg1) {
 }
 
 extern unsigned long lbl_8055D0B8;
+#pragma small_data off
 extern unsigned char lbl_804C5710[4];
+#pragma small_data on
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 extern unsigned char lbl_804C5700[12];
@@ -1442,10 +1444,12 @@ void fn_802D3E88(void) {
 
 extern int lbl_804C5710_int;
 void fn_802D3E9C(unsigned char arg0) {
+    unsigned char *p;
+    p = lbl_804C5710;
     lbl_8055FD50 = arg0;
     lbl_8055FD4C = 0;
-    ((unsigned char *)&lbl_804C5710_int)[1] = 0;
-    ((unsigned char *)&lbl_804C5710_int)[0] = 0;
+    p[1] = 0;
+    p[0] = 0;
 }
 
 int fn_802D3EBC(void) {
