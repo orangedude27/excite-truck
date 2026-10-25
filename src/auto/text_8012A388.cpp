@@ -545,6 +545,20 @@ extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
     } else ++*(s32 *)((char *)p + 0x9C);
     return p;
 }
+
+#pragma scheduling invalid_target
+extern "C" s32 fn_8012BE90(void) {
+    fn_8012A648();
+    lbl_8055DFF8 = 1;
+    void *p = fn_801284F8(1, &lbl_805599B8);
+    if (p)
+        fn_8012BEF0((s32)lbl_8032AE9C);
+    lbl_8055DFFC = (s32)p;
+    fn_8012DBD0();
+    return 1;
+}
+#pragma scheduling on
+
 #pragma use_lmw_stmw reset
 #pragma dont_inline reset
 #pragma scheduling reset
