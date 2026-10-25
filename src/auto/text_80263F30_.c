@@ -491,6 +491,16 @@ void fn_8026562C(void *arg0) {
         *(unsigned char *)((char *)arg0 + 0x20) = 1;
     }
 }
+
+int fn_80265688(void) {
+    if (fn_80265B5C() != 0) {
+        fn_802168BC(-1);
+        return 1;
+    }
+    fn_80216D28();
+    return 0;
+}
+
 #pragma dont_inline reset
 extern char lbl_8055C4A8[4];
 extern void fn_80236954(void *queue);
