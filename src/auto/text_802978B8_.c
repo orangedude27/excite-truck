@@ -67,7 +67,8 @@ void fn_80297990(void* hi) {
     lbl_8055F7B0 = hi;
 }
 
-extern void *lbl_8055F7A4;
+
+    
 void fn_80297998(void) {
     lbl_8055F7A4 = 0;
 }
@@ -79,6 +80,12 @@ void fn_80297A08(int arg0) {
         lbl_8055F7A4 = (void *)(index + 1);
         lbl_804B4F10[index] = arg0;
     }
+}
+
+void fn_80297A30(void) {
+    fn_8012850C(0x2010, lbl_803493F8);
+    lbl_8055F7A8 = fn_8002F37C(fn_80297A80, 0, 0x40, 0x80);
+    lbl_8055F7AC = 0;
 }
 
 extern void *lbl_8055F7A8;
