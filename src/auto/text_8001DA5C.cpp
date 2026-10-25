@@ -156,11 +156,11 @@ extern "C" void fn_8001DFA8(s32 arg0) {
     void* obj = ((void**)&lbl_80358680)[3];
     ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, arg0, 0);
 }
-#pragma scheduling reset
+#pragma scheduling invalid_target
 extern "C" void fn_8001DFCC(void) {
-    ((CollisionEntry*)lbl_80358680[4])->apply(9, 17);
+    ((CollisionEntry *)lbl_80358680[4])->apply(9, 17);
 }
-
+#pragma scheduling on
 extern "C" void fn_8001DFF0(void) {
     ((CollisionEntry*)lbl_80358680[5])->apply(0, 0);
 }
