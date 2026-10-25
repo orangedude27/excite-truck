@@ -103,7 +103,7 @@ extern "C" void fn_800B5CB4(void);
 extern "C" void fn_800B0748(void);
 extern "C" void fn_800B78EC(void);
 extern "C" void fn_800B78F0(void);
-extern "C" void fn_800B7EAC(void);
+extern "C" s32 fn_800B7EAC(s32 *);
 extern "C" void fn_800CF27C(void);
 extern "C" void fn_800CF284(void);
 extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void);
