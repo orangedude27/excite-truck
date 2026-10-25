@@ -166,6 +166,14 @@ int fn_80133780(void *arg0, void *arg1) {
     return result;
 }
 
+extern void qsort(void *, int, int, int (*)(void *, void *));
+int fn_80133780(void *, void *);
+#pragma scheduling invalid_target
+void fn_801337C8(void) {
+    void *base = (void *)lbl_8055E07C;
+    qsort((char *)base + 8, *(int *)((char *)base + 4), 0x38, fn_80133780);
+}
+#pragma scheduling on
 __declspec(section ".data") extern int lbl_802FE850;
 static inline int is_line_space(int c) {
     int table = *(int *)((char *)&lbl_802FE850 + 0x38);
@@ -279,6 +287,26 @@ int fn_80133E10(void **arg0, int arg1, int arg2) {
         *arg0 = (char *)base + 8;
     }
     return 0;
+}
+
+extern char lbl_8042F558[], lbl_8032BAC8[];
+void fn_80133FCC(long arg0, long arg_sp0) {
+    long i,j,off,k; char* src; char* dst; void (*callback)(void);
+    if(arg0==1) {
+        src=lbl_8042F558;
+        for(i=0;i<lbl_8055E080;i++,src+=0x38) {
+            for(j=0,off=0;j<*(long*)((char*)lbl_8055E07C+4);j++,off+=0x38) {
+                dst=(char*)*(long*)lbl_8055E07C+off;
+                if(*(long*)(src+4)==*(long*)(dst+0xC)&&stricmp(src+0x24,dst+0x2C)==0) {
+                    for(k=0;k<9;k++) *(long*)(dst+8+k*4)=*(long*)(src+k*4);
+                    for(k=0;k<20;k++) dst[0x2C+k]=src[0x24+k];
+                }
+            }
+        }
+        src=(char*)lbl_8042F718;
+        for(i=0;i<8;i++,src+=8) { callback=*(void(**)(void))(src+4); if(callback) callback(); }
+    } else if(arg0==2) fn_802E30C8(lbl_8032BAC8);
+    if(arg0==3) fn_801337C8();
 }
 
 extern const char lbl_8032BAE8[];
