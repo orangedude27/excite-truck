@@ -102,6 +102,7 @@ void *fn_80016720(const char *arg0) {
 #pragma dont_inline reset
 void *fn_800167B8(int arg0) { return lbl_803577F0 + arg0 * 0x5C; }
 
+#pragma dont_inline fn_80016510
 void fn_800167CC(void) {
     fn_80016510(*(int *)((char *)fn_80016474() + 0x4C));
 }
