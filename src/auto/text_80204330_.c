@@ -189,18 +189,21 @@ void fn_802049DC(int a, int b, float c, float d, float e) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-void fn_80204A1C(int arg0, int arg1) {
-    int i;
-    char *entry;
-
-    i = lbl_8055ED3C;
-    if (i >= 0x40)
-        return;
-    entry = lbl_80488BD0 + i * 0x18;
-    *(int *)(entry + 0) = arg0;
-    *(int *)(entry + 4) = 0;
-    lbl_8055ED3C = i + 1;
-    *(int *)(entry + 8) = arg1;
+void fn_80204A1C(int arg0, int arg1)
+{
+  int i;
+  char *entry;
+  i = lbl_8055ED3C;
+  if (i >= 0x40)
+  {
+    return;
+  }
+  i = i;
+  entry = lbl_80488BD0 + (i * 0x18);
+  *((int *) (entry + 0)) = arg0;
+  lbl_8055ED3C = i + 1;
+  *((int *) (entry + 4)) = 0;
+  *((int *) (entry + 8)) = arg1;
 }
 #pragma pop
 void fn_80204A50(void) {
