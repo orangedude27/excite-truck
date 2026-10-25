@@ -101,6 +101,12 @@ void fn_802B5CC4(void) {
 s32 fn_802B5D94(s32 arg0) {
     return fn_802B5D2C(lbl_8055CE40, arg0);
 }
+
+u32 fn_802B5DA0(void) {
+    s32 temp_r3 = ((s32 (*)())fn_802B5D94)();
+    return (u32)((-1 - temp_r3) | (temp_r3 + 1)) >> 31;
+}
+
 #pragma pop
 
 extern s32 fn_801345D8(char *, s32, const char *, s32);
@@ -263,10 +269,20 @@ void fn_802B618C(void) {
 
 void fn_802B61B8(void) {
     if (lbl_8055FA38 == 3) {
-        fn_802C21C0();
-    } else if (lbl_8055FA38 == 2) {
-        fn_802BBEE4();
+        goto call_c;
     }
+    if (lbl_8055FA38 >= 3) {
+        return;
+    }
+    if (lbl_8055FA38 >= 2) {
+        goto call_b;
+    }
+    return;
+call_b:
+    fn_802BBEE4();
+    return;
+call_c:
+    fn_802C21C0();
 }
 
 extern char lbl_8034A980[];
@@ -989,17 +1005,19 @@ void fn_802B87A0(void) {
 }
 #pragma pop
 void fn_802B87F4(void) {
-    volatile s32* state;
     if (lbl_8055FA48 != 0) {
         fn_802B869C();
         fn_802B59A4(lbl_8055FA3C);
         fn_802B0288();
-        if (lbl_8055FA38 == 1)
-            return;
-        state = (volatile s32*)&lbl_8055FA40;
-        if (*state == 6)
-            return;
-        fn_802B4E3C();
+        if (lbl_8055FA38 != 1) {
+            switch (lbl_8055FA40) {
+            case 6:
+                break;
+            default:
+                fn_802B4E3C();
+                break;
+            }
+        }
     }
 }
 
