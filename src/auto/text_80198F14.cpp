@@ -115,6 +115,8 @@ extern s32 lbl_8055E5A0;
 extern "C" s32 fn_801CFEAC(void*);
 extern s32 lbl_803336EC[];
 extern void fn_801A48E4(void*);
+extern "C" void fn_801D2414(void*, s32, void*);
+extern "C" void fn_801D0738(void*, void*, void*, void*);
 #pragma push
 #pragma small_data off
 extern char lbl_803336F8[];
