@@ -78,7 +78,6 @@ void fn_8024C464(void) {
 }
 
 void fn_802E6FBC(void);
-void fn_802E712C();
 void fn_802E6CA8(void);
 void fn_8000DA80(void);
 int fn_8023FAD4(void *, int);
@@ -430,6 +429,14 @@ void fn_8024CBF4(void) {
     } while (i < 4);
     fn_8000DA10();
     fn_80214CB4();
+}
+
+extern char lbl_80343FC4[];
+extern char lbl_80343FF0[];
+int fn_8024CEF0(void) {
+    if (((int (*)(void))fn_8000DBAC)() != 0)
+        return 1;
+    return ((int (*)(void *, void *, int))fn_80215214)(lbl_80343FF0, lbl_80343FC4, 0);
 }
 
 #pragma push
