@@ -460,6 +460,12 @@ void fn_802E0B68(void) {
 #pragma dont_inline on
 void *fn_802E0BA4(void) {
 }
+
+void fn_802E0BA8(void) {
+    u32 *p = ((u32 *(*)(s32, void *))fn_801284F8)(0x228, lbl_8034CB68);
+    *p = 0x10011001;
+}
+
 #pragma dont_inline reset
 
 #pragma scheduling on
