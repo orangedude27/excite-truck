@@ -485,10 +485,28 @@ f32 fn_800108C8(f32 farg0, s32 arg0) {
 }
 #pragma pop
 extern s32 lbl_80558A90;
-f32 fn_8001090C(f64 farg0) {
-    return lbl_805602C8 * ((f32)farg0 * (f32)fn_80232B70(lbl_8055D490));
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma fp_contract on
+f32 fn_8001090C(f32 farg0) {
+    union {
+        f64 value;
+        u32 words[2];
+    } converted;
+    s32 raw;
+    f64 number;
+    f64 magic;
+    f32 scaled;
+    raw = fn_80232B70(lbl_8055D490);
+    converted.words[1] = (u32)raw ^ 0x80000000;
+    converted.words[0] = 0x43300000;
+    number = converted.value;
+    magic = lbl_80560268;
+    scaled = (f32)(number - magic);
+    return lbl_805602C8 * (farg0 * scaled);
 }
-
+#pragma pop
 s32 fn_80010964(s32 arg0) {
     return (s32)(arg0 * fn_80232B70(lbl_8055D490)) / (s32)lbl_80558A90;
 }
@@ -555,16 +573,31 @@ void fn_80010B7C(void) {
 }
 
 void fn_80010B80(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
-    Unk0x18 entry;
+    volatile s32 spill_arg0_a;
+    volatile s32 spill_arg0_b;
+    volatile f32 spill_arg4;
+    volatile f32 spill_arg3;
+    volatile f32 spill_arg2;
+    volatile f32 spill_arg1;
+    register s32 index;
 
-    entry.unk_0x00 = (f32)arg1;
-    entry.unk_0x04 = (f32)arg2;
-    entry.unk_0x08 = (f32)arg3;
-    entry.unk_0x0C = (f32)arg4;
-    entry.unk_0x10 = arg0;
-    entry.unk_0x14 = arg0;
-    if (lbl_8055D4A8 < 0x100) {
-        lbl_8034F6B0[lbl_8055D4A8++] = entry;
+    index = lbl_8055D4A8;
+    spill_arg1 = arg1;
+    spill_arg2 = arg2;
+    spill_arg3 = arg3;
+    spill_arg4 = arg4;
+    spill_arg0_b = arg0;
+    spill_arg0_a = arg0;
+
+    if (index < 0x100) {
+        Unk0x18 *entry = &lbl_8034F6B0[index];
+        entry->unk_0x00 = arg1;
+        entry->unk_0x04 = arg2;
+        entry->unk_0x08 = arg3;
+        entry->unk_0x0C = arg4;
+        entry->unk_0x10 = arg0;
+        entry->unk_0x14 = arg0;
+        lbl_8055D4A8 = index + 1;
     }
 }
 
@@ -1209,21 +1242,22 @@ void fn_80012158(void) {
 }
 
 void fn_800121A4(void) {
-    s32 *base = (s32 *)lbl_8055D4AC;
-    s32 *p;
+    u8 *obj;
+    s32 *base;
     s32 n;
-    void *obj;
-    p = base + base[0];
-    obj = (void *)p[4];
+    s32 zero;
+
+    base = (s32 *)lbl_8055D4AC;
+    obj = *(u8 **)((u8 *)base + base[0] * 4 + 0x10);
     if (obj == 0) return;
-    *((u8 *)obj + 0x49) = 1;
-    *((u8 *)obj + 0x4B) = 0;
-    *((u8 *)obj + 0x4A) = 0;
-    n = base[0];
-    n++;
+    obj[0x49] = 1;
+    zero = 0;
+    obj[0x4B] = zero;
+    obj[0x4A] = zero;
+    n = base[0] + 1;
     base[0] = n;
     if (n < 3) return;
-    base[0] = 0;
+    base[0] = zero;
 }
 
 extern void fn_801331C4(s32, void *, f32 *);
@@ -1423,13 +1457,14 @@ f32 fn_8000EEC8(s32 arg0, f32 arg1) {
 }
 #pragma dont_inline reset
 void fn_8000F0E4(void) {
+    s32 val;
     f32 f1;
 
-    lbl_8055D490 = fn_8023441C();
-    f1 = (f32)fn_80232B70(0);
-    f1 = f1 - (f32)lbl_80560268;
+    val = fn_8023441C();
+    lbl_8055D490 = val;
+    f1 = (f32)fn_80232B70(val);
     lbl_80558A90 = (s32)(lbl_805602C8 * f1);
-    lbl_8055D49C = fn_80011EDC();
+    *(f32 *)&lbl_8055D49C = fn_80011EDC();
     lbl_8055D498 = fn_80232578((s32)lbl_802FC414);
 }
 
