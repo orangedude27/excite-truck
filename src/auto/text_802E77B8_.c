@@ -12,7 +12,9 @@ extern int fn_801284E8(void *, int);
 extern int lbl_80507258[];
 extern int lbl_8055D224;
 extern int lbl_8056000C;
-void fn_802E8528(int, float, float);
+extern unsigned char lbl_80560008;
+extern char fn_802E9A24(void);
+  void fn_802E8528(int, float, float);
 int fn_802E77B8(void) { return 0; }
 
 #pragma push
@@ -222,7 +224,6 @@ extern void fn_802E2E38(int);
 extern void fn_802E7C14(void);
 extern void *memset(void *, int, unsigned int);
 #pragma push
-#pragma small_data off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802E7FD0(void) {
@@ -238,22 +239,21 @@ void fn_802E7FD0(void) {
     int previous;
     int elapsed;
     int count;
-    register int changed;
-    register int queueIndex;
-    register int channel;
-    int active;
-    int result;
     char *formatBase;
-    int probe;
-    int readCount;
-    int current;
-    int old;
-    int filtered;
-    int timeNow;
     unsigned char *record;
     int *devices;
-    unsigned char *base;
     unsigned char *lastState;
+    unsigned char *base;
+    int channel;
+    unsigned char one;
+    int readCount;
+    register int queueIndex;
+    int current;
+    int old;
+    int active;
+    int result;
+    int filtered;
+    int timeNow;
 
     formatBase = (char *)&lbl_8034D898;
     now = fn_802E2C20();
@@ -265,7 +265,8 @@ void fn_802E7FD0(void) {
         count = lbl_80560014;
         lbl_80560010 = now;
         lbl_80560014 = count + 1;
-        changed = fn_802ECC10();
+        {
+            int changed = fn_802ECC10();
         if ((unsigned int)changed != (unsigned int)lbl_80560009) {
             lbl_80560009 = changed;
             queueIndex = 0;
@@ -277,8 +278,10 @@ void fn_802E7FD0(void) {
                 queueIndex += 1;
             } while (queueIndex < 4);
         }
+        }
     }
 
+    one = 1;
     record = lbl_80505978;
     devices = lbl_80507278;
     base = record;
@@ -297,7 +300,7 @@ void fn_802E7FD0(void) {
             active = 1;
         if (active == 0 && now - *(int *)(record + 0x634) > 0x2710) {
             *(int *)(record + 0x634) = now;
-            record[0x631] = 1;
+            record[0x631] = one;
             result = fn_800604E8(channel, (int)(record + 0x618), fn_802E7C14);
             if (result != 0) {
                 record[0x631] = 0;
@@ -306,23 +309,23 @@ void fn_802E7FD0(void) {
             }
         }
 
-        probe = WPADProbe(channel, devices);
+        queueIndex = WPADProbe(channel, devices);
         result = KPADRead(channel, record + 0xC8, 1);
-        if (result >= 1 && probe == 0 && record[0xC4] != 0) {
+        if (result >= 1 && queueIndex == 0 && record[0xC4] != 0) {
             current = *(signed char *)(record + 0x14D);
             old = *(signed char *)lastState;
             if (current != old) {
                 result = (int)fn_802E77C0((signed char)current);
-                probe = (int)fn_802E77C0((signed char)old);
+                queueIndex = (int)fn_802E77C0(*(signed char *)lastState);
                 ((void (*)(const char *, ...))fn_802E30C8)(
-                    formatBase + 0x94, channel, probe, result);
+                    formatBase + 0x94, channel, queueIndex, result);
                 *lastState = (unsigned char)current;
             }
             if ((signed char)current == 0) {
                 if (record[0] == 0) {
-                    record[0] = 1;
+                    record[0] = (unsigned char)one;
                     *(int *)(record + 0xB4) = 0;
-                    record[0xC5] = 1;
+                    record[0xC5] = (unsigned char)one;
                     ((void (*)(const char *, ...))fn_802E30C8)(
                         formatBase + 0xA8, channel);
                 }
@@ -339,20 +342,20 @@ void fn_802E7FD0(void) {
 
         if (record[0x29] != 0) {
             if (record[0xC5] == 0) {
-                record[0xC5] = 1;
+                record[0xC5] = (unsigned char)one;
                 fn_802ECBF8();
             }
         } else {
             record[0xC5] = 0;
         }
 
-        filtered = 0;
+        queueIndex = 0;
         if (((int (*)(int))fn_802E77B8)(channel) != 0 &&
             record[0x2B] != 0 && record[0x29] != 0 &&
             record[0x27] != 0)
-            filtered = 1;
+            queueIndex = 1;
         timeNow = fn_802E2C20();
-        if (filtered == 0)
+        if (queueIndex == 0)
             *(int *)(record + 0xC0) = timeNow;
         else if (timeNow - *(int *)(record + 0xC0) > 0x3E8)
             fn_802E2E38(0);
