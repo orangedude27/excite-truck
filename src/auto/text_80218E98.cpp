@@ -1029,6 +1029,16 @@ extern "C" void fn_8021B134(void *arg0) {
  if (*p<start) { if(flag) *p=*(s32 *)((u8 *)arg0+0x25c)-1; else *p=start; }
 }
 
+#pragma dont_inline on
+extern "C" void *fn_8021B1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    fn_8021AC24(arg0, arg1, arg2, arg5, arg4);
+    *(s32 *)((u8 *)arg0 + 0x254) = arg4;
+    *(void **)arg0 = (void *)&lbl_8033F548;
+    *(s32 *)((u8 *)arg0 + 0x258) = arg3;
+    return arg0;
+}
+#pragma dont_inline reset
+
 extern "C" void *lbl_8033F20C;
 extern "C" void fn_8021B224(void *arg0) {
     s32 temp_r0;
@@ -5121,10 +5131,10 @@ extern "C" void fn_80229AE4(void *arg0, s32 arg1, s32 arg2) {
 
 extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
     ((void (*)(void *, s32, s32))fn_80219264)(arg0, arg1, arg2);
-    s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0x24C) + arg2;
     s32 temp_r3 = *(s32 *)((u8 *)arg0 + 0x248) + arg1;
-    *(s32 *)((u8 *)arg0 + 0x248) = temp_r3;
+    s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0x24C) + arg2;
     *(s32 *)((u8 *)arg0 + 0x24C) = temp_r0;
+    *(s32 *)((u8 *)arg0 + 0x248) = temp_r3;
 }
 
 extern "C" s32 fn_80229B68(void) { return 0; }
