@@ -25,6 +25,7 @@ extern float lbl_80563400;
 extern void fn_802EC1C0();
 extern void fn_802EC1E4();
 extern long fn_802EC12C();
+extern long fn_802EC0FC(void);
 long fn_8020F3B4(void) { return -1; }
  
 int fn_8020F3BC(int arg0, int arg1, int arg2) {
