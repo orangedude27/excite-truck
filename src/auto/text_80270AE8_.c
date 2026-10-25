@@ -401,6 +401,15 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
     return fn_80272428(arg0,arg1,mid,b,radius);
 }
 
+#pragma dont_inline on
+s32 fn_802726AC(f32 farg0, f32 farg1, f32 farg2) {
+    if (farg1 < farg2) {
+        return (farg1 < farg0) && (farg0 < farg2);
+    }
+    return (farg1 > farg0) && (farg0 > farg2);
+}
+#pragma dont_inline reset
+
 extern int fn_802726AC(float, float, float);
 int fn_802726EC(float farg0, float farg1, float farg2) {
     int result = 0;
