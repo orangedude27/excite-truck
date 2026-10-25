@@ -115,24 +115,21 @@ void fn_8012850C(void *arg0, void *arg1) {
     fn_8012834C(arg1, arg0, 0);
 }
 
+#pragma scheduling off
 s32 fn_80128520(s32 arg0) {
-    volatile s32 r4 = arg0;
-    void *var_r3;
-
-    if (lbl_8055DF80 != 0) {
-        var_r3 = lbl_8055DF84;
-        if (var_r3 != NULL) {
-            fn_802E317C(var_r3, NULL);
-        } else {
-            fn_8012834C(&lbl_8032A068, NULL, 3);
-        }
-    } else {
-        fn_802E317C(&lbl_8032A074, NULL);
+    if (lbl_8055DF80 == 0)
+        goto do_log;
+    if (*(volatile s32 **)&lbl_8055DF84 == NULL) {
+        fn_8012834C(lbl_8032A068, (void *)arg0, 3);
+        goto done;
     }
-    (void)r4;
+    goto do_log;
+do_log:
+    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A074, arg0);
+done:
     return lbl_8055DF98;
 }
-
+#pragma scheduling on
 void fn_80128678(void) {
     lbl_8055DF88 = 1;
 }
@@ -226,19 +223,20 @@ void fn_80128670(s32 arg0) {
     fn_80128584(arg0, 0);
 }
 
+#pragma scheduling invalid_target
 void fn_801286A0(void *arg0, s32 arg1) {
-    void *r31 = arg0;
-    s32 r7 = arg1 & ~0x3F;
-    s32 r6 = ((s32 *)arg0)[-6];
-    s32 r0 = ((s32 *)arg0)[-5];
-    
-    ((s32 *)arg0)[-6] = r6 - r7;
-    ((s32 *)arg0)[-5] = r0 - r7;
-    ((s32 *)lbl_8041E140)[1] -= r7;
-    fn_801281F4(((s32 *)arg0)[-5], r6 - r7);
-    ((s32 *)r31)[r0 - r7] = 0x53544B41;
+    s32 *base = (s32 *)arg0;
+    s32 aligned = arg1 & ~0x3F;
+    s32 offset;
+    u32 magic;
+    base[-6] -= aligned;
+    base[-5] -= aligned;
+    ((s32 *)lbl_8041E140)[1] -= aligned;
+    offset = ((s32 (*)(s32, s32))fn_801281F4)(base[-5], 4);
+    magic = 0x53544B41;
+    *(u32 *)((u8 *)base + offset) = magic;
 }
-
+#pragma scheduling on
 void fn_80128714(void *arg0, s32 arg1, s32 arg2) {
     void *r29;
     char *r30;
