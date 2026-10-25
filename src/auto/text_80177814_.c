@@ -591,6 +591,19 @@ void* fn_80179318(void) {
     return (void *)lbl_8055E448;
 }
 
+void fn_8017952C(void) {
+    long count;
+    long i;
+
+    fn_802E4C18(1);
+    count = fn_801787B4(&lbl_80430850);
+    i = 0;
+    while (i < count) {
+        fn_80177F40();
+        i++;
+    }
+}
+
 void fn_801CEFE8(void);
 void fn_801AED5C(void);
 void fn_801CB464(void);
