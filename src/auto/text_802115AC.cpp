@@ -1615,9 +1615,7 @@ extern "C" void fn_80215A10(void *arg0) {
 
 extern "C" void fn_80215A2C(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x18) = 0;
-    void *obj = *(void **)((u8 *)arg0 + 0x244);
-    void **vt = *(void ***)obj;
-    ((void (*)(void *))*(void **)((u8 *)vt + 0x48))(obj);
+    ((VfObj *)*(void **)((u8 *)arg0 + 0x244))->vf16();
 }
 
 extern "C" void fn_80215A48(void *arg0) {
