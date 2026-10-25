@@ -20,7 +20,7 @@ extern char lbl_80435C70[];
 #pragma pop
 extern char lbl_80335E48;
 extern void fn_802E317C(const char *, int);
-extern int __dt__15shdStateMachineFv_801B496C(int);
+extern int __dt__15shdStateMachineFv_801B496C();
 extern void *lbl_8055E6D8;
 extern int *fn_801B479C();
 extern int fn_801B47BC();
