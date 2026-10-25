@@ -483,6 +483,24 @@ void fn_802B67C8(s32 arg0) {
     fn_80147FF0(*(s32 *)((char *)method(lbl_8055FA48, arg0) + 0x18));
 }
 
+#pragma cplusplus on
+extern "C" void fn_802B69FC(void) {
+    class Dummy_802B69FC {
+    public:
+        virtual void m0();
+        virtual Dummy_802B69FC *m1(void *);
+    };
+    char *base = lbl_8034A598;
+    Dummy_802B69FC *obj = (Dummy_802B69FC *)lbl_8055FA48;
+
+    obj = obj->m1(base + 0x134);
+    fn_802B6568(obj, base + 0x244);
+    obj = (Dummy_802B69FC *)lbl_8055FA48;
+    obj = obj->m1(base + 0x160);
+    fn_802B6568(obj, base + 0x258);
+}
+#pragma cplusplus reset
+
 #pragma push
 #pragma small_data off
 s32 fn_802B6A70(s32 arg0) {
