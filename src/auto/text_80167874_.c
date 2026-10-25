@@ -123,21 +123,21 @@ extern s32 lbl_8055A1A0;
 extern s32 fn_80128668(void);
 extern char lbl_80330020[];
 extern char lbl_803300E0[];
-extern void fn_802E317C(const char *);
+extern void fn_802E317C(const char *, ...);
 #pragma dont_inline on
 s32 *fn_80167874(s32 arg0) {
+    s32 key = arg0;
     s32 *base = (s32 *)lbl_80330020;
     s32 *entry = base;
-    for (;;) {
-        s32 value = *entry;
-        if (value == 6) {
-            ((void (*)(const char *, ...))fn_802E317C)(lbl_803300E0);
-            return (s32 *)lbl_80330020;
-        }
-        if (value == arg0)
+    s32 value = *entry;
+    while (value != 6) {
+        if (value == key)
             return entry;
         entry = (s32 *)((u8 *)entry + 0x20);
+        value = *entry;
     }
+    ((void (*)(const char *, ...))fn_802E317C)(lbl_803300E0);
+    return (s32 *)lbl_80330020;
 }
 
 extern double cos(float);
