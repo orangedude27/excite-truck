@@ -116,6 +116,7 @@ void fn_8020F6F8(void) {
     fn_802EC0FC();
 }
  
+#pragma dont_inline on
 long fn_8020F6FC(void) {
     long index = lbl_8055EEC4;
     long *entries = lbl_804902C4.m_entries;
