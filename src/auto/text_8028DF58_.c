@@ -196,6 +196,9 @@ extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
 extern int stricmp(const char *, const char *);
 extern char lbl_80348F4C[];
+  #pragma push
+  #pragma scheduling invalid_target
+  #pragma scheduling on
   int fn_8028EDA8(unsigned int *arg0, unsigned int arg1) {
     unsigned int *base = arg0;
     unsigned int i = 0;
