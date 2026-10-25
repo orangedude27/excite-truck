@@ -5562,6 +5562,21 @@ BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR addr) {
     return FALSE;
 }
 
+BOOLEAN BTM_SecAddRmtNameNotifyCallback(tBTM_RMT_NAME_CALLBACK *p_callback) {
+    u8 *base = lbl_803C0F78;
+    int i;
+
+    for (i = 0; i < BTM_SEC_MAX_RMT_NAME_CALLBACKS; i++) {
+        if (*(tBTM_RMT_NAME_CALLBACK **)(base + 0x192C) == NULL) {
+            *(tBTM_RMT_NAME_CALLBACK **)(lbl_803C0F78 + i * 4 + 0x192C) = p_callback;
+            return TRUE;
+        }
+        base += 4;
+    }
+
+    return FALSE;
+}
+
 BOOLEAN BTM_SetSecurityLevel(BOOLEAN is_originator, char *p_name, UINT8 service_id, UINT16 sec_level, UINT16 psm, UINT32 mx_proto_id, UINT32 mx_chan_id) {
     char *trace = lbl_80316870;
     u8 *entry = lbl_803C0F78 + 0x1990;
@@ -12378,6 +12393,19 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     default:
         return 0x32;
     }
+}
+
+u8 fn_80095084(s32 arg0, void *arg1) {
+    u16 count = arg0;
+    u8 *data = arg1;
+    u8 crc = 0xFF;
+
+    do {
+        crc = lbl_802EEC40[crc ^ *data++];
+    } while (count-- != 0);
+
+    crc = lbl_802EEC40[crc ^ (u32)arg1];
+    return crc == 0xCF;
 }
 
 extern char lbl_80319EB0[];
