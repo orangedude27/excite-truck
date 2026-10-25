@@ -761,11 +761,12 @@ extern "C" void fn_800D7F78(void *arg0) {
 }
 
 extern "C" void fn_800D86F0(void *arg0, void *arg1) {
-    s16 v3, v2, v1, v0;
-    v0 = ((s16 *)arg1)[0];
-    v1 = ((s16 *)arg1)[1];
-    v2 = ((s16 *)arg1)[2];
-    v3 = ((s16 *)arg1)[3];
+    s16 v0, v1, v2, v3;
+    volatile s16 *src = (volatile s16 *)arg1;
+    v0 = src[0];
+    v1 = src[1];
+    v2 = src[2];
+    v3 = src[3];
     ((s16 *)arg0)[0] = v0;
     ((s16 *)arg0)[1] = v1;
     ((s16 *)arg0)[2] = v2;
