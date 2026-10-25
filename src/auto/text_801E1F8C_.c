@@ -6,6 +6,15 @@
 extern void *lbl_8055EA40;
 extern void *lbl_8055EA3C;
 extern char lbl_8055EA38;
+extern f32 lbl_80562CD8;
+extern f32 lbl_80562CDC;
+extern f32 lbl_80562CE0;
+extern f32 lbl_80562CE4;
+extern s32 lbl_8055E3C4;
+extern char lbl_8033989C;
+void fn_801B619C(void *, int *, f32 *);
+s32 fn_801A4E88(void *, f32 *, f32 *, s32, s32 *);
+void fn_802E30C8(const char *, ...);
 void fn_801A47C8(void);
 void fn_801A47FC(int);
 void fn_8015F670(int *, int);
