@@ -155,9 +155,11 @@ int fn_8023F964(int *arg0) {
 extern unsigned char lbl_80342238[];
 extern unsigned char lbl_80342248[];
 extern void fn_80215214(void *, void *, int);
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_8023F9E8(void) {
-    fn_80215214(lbl_80342238, lbl_80342248, 0);
+    void *first = lbl_80342238;
+    void *second = lbl_80342248;
+    fn_80215214(first, second, 0);
 }
 #pragma scheduling on
 extern s32 lbl_8055F1B4;
