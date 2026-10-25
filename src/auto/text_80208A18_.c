@@ -47,6 +47,14 @@ float fn_80208A18(float value) {
 void fn_80208A50(float *arg0) {
     lbl_8055B4D4 = fn_80208A18(lbl_8055B4D0);
 }
+
+void fn_80208A78(void) {
+    fn_801331C4(4, lbl_8033BEF8, &lbl_8055B4D0);
+    fn_80209030(lbl_8055B4D0);
+    fn_801332D0(4, &lbl_8055B4E0, &lbl_8055EDA8);
+    fn_80209090((int)lbl_8055EDA8);
+}
+
 #pragma pop
 
 void fn_80208AC8(int arg0, int arg1) {
