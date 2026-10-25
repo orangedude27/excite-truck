@@ -357,11 +357,11 @@ void fn_80176BA8(void) {
 void fn_80176BAC(void) {
     f32 now = lbl_8055E3C8;
     f32 delta = now - lbl_8055E3FC;
-    f32 value = delta;
-    if (value > lbl_80561B38)
-        value = lbl_80561B38;
-    if (value < lbl_80561B3C)
-        value = lbl_80561B3C;
+    f32 upper = lbl_80561B38;
+    f32 lower;
+    f32 value = upper < delta ? delta : upper;
+    lower = lbl_80561B3C;
+    value = value > lower ? value : lower;
     fn_8017ED00(value);
     lbl_8055E3FC = now;
 }
@@ -554,8 +554,8 @@ void fn_801777C0(void) {
     fn_80177658(fn_80177648);
 }
 
-void fn_801777CC(void) {
-    fn_801776C4();
+void fn_801777CC(u32 arg0) {
+    fn_801776C4(arg0);
 }
 
 void fn_801777D0(void) {
