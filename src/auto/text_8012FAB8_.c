@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 extern void *fn_80131234();
 extern int fn_801302E0();
+extern char lbl_80559AF8[];
 __declspec(section ".sdata") extern char lbl_80559B00[];
 
 extern int lbl_804230D0;
@@ -135,6 +136,18 @@ void fn_80130518(void) {
     *(int *)((char *)0x804230D0 + 4) = 0;
     memset((char *)0x804230D0 + 8, 0, 0xC350);
     *(char *)0x8055E048 = 0;
+}
+
+extern char *strchr(const char *, int);
+void fn_80130568(char *arg0) {
+    char *base = arg0;
+    char *p = base;
+    if (*(char *)lbl_8055E050 != '.') {
+        do {
+            *p = *(char *)lbl_8055E050;
+            p = strchr(base, '.');
+        } while (p != 0);
+    }
 }
 
 void fn_801308E4(void *arg0, void *arg1, int arg2, int arg3) {
