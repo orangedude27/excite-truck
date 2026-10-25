@@ -16,7 +16,7 @@ extern char lbl_805600C8;
 extern void *lbl_80560080;
 extern int fn_802EBD40(void);
 extern long lbl_80507600[];
-extern long lbl_8034E9C8;
+extern char lbl_8034E9C8[];
 __declspec(section ".rodata") extern long lbl_8034E9B0;
 extern long fn_800B7BDC(long);
 extern char lbl_8055D278;
@@ -35,16 +35,20 @@ extern char lbl_80560063;
 extern char lbl_8034E95C;
 extern char lbl_8034E980;
 extern int fn_802E2C20(void);
+#pragma push
+#pragma scheduling invalid_target
 long *fn_802E9A3C(long arg0, long arg1) {
+    long *p = lbl_80507600;
     lbl_80560060 = 1;
-    if (lbl_80507600 != 0) {
-        lbl_80507600[1] = arg0;
-        lbl_80507600[0] = (long)&lbl_8034E9C8;
-        lbl_80507600[3] = arg1;
+    if (p != 0) {
+        p[1] = arg0;
+        p[0] = (long)&lbl_8034E9C8;
+        p[3] = arg1;
     }
-    return lbl_80507600;
+    return p;
 }
-
+#pragma scheduling on
+#pragma pop
 extern char lbl_8055D258;
 extern long fn_800B7C34(long, void *);
 extern long fn_800B7C08(long, long *);
