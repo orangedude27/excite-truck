@@ -3,7 +3,6 @@
   
   typedef signed int s32;
 extern void fn_8023E33C(void *);
-#pragma dont_inline fn_8023E3D8
 extern void *lbl_8055F190;
 extern int lbl_8055F194;
 extern void fn_8023E16C(void *, int);
