@@ -647,7 +647,6 @@ void fn_8000C0E8(void *arg0) {
 #pragma scheduling on
 int fn_8000BD9C(int, int, int);
 extern float lbl_805601FC, lbl_80560204;
-extern char lbl_8034F5F8, lbl_8034F604;
 int fn_80230B5C(int *);
 int fn_802C8638(int *);
 int fn_802C974C(float, float, float);
