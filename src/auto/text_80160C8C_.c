@@ -553,17 +553,31 @@ extern "C" int fn_80161BB8(void) {
     }
     return 0;
 }
-#pragma cplusplus off
-s32 fn_80161BDC(s32 a, s32 b, s32 c) {
-    register s32 arg0 = a;
-    register s32 arg1 = b;
-    register s32 arg2 = c;
-    if (lbl_8055E300 != 0) {
-        return (*(s32 (**)(void *, s32, s32, s32))(*(char **)lbl_8055E300 + 0x3c))((void *)lbl_8055E300, arg0, arg1, arg2);
+#pragma cplusplus on
+extern "C" s32 fn_80161BDC(s32 arg0, s32 arg1, s32 arg2) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual s32 call(s32, s32, s32);
+    };
+    Dummy *p = (Dummy *)lbl_8055E300;
+    if (p != 0) {
+        return p->call(arg0, arg1, arg2);
     }
     return 0;
 }
-
+#pragma cplusplus off
 void fn_80161C18(void) {
     void *obj = (void *)lbl_8055E300;
     if (obj != 0) {
