@@ -295,6 +295,12 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
     OSRestoreInterrupts(outerLevel);
 }
 
+extern "C" void fn_800EB36C(void *arg0) {
+    DVDClose((u8 *)arg0 + 0x14C);
+    *(volatile u8 *)((u8 *)arg0 + 0x188) = 0;
+    fn_800F27AC(arg0);
+}
+
 extern f32 lbl_80560FE8;
 extern f32 lbl_80560FEC;
 extern f32 lbl_80560FF0;
