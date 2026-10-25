@@ -91,7 +91,7 @@ int fn_802368EC(void) {
 extern int fn_80215264(void);
 extern void fn_80236A5C(void*, int);
 extern void fn_80237AA0();
-extern void fn_80236960(void);
+extern void fn_80236960();
 extern char *lbl_8055F0C0;
 void fn_80236900(void) {
     lbl_8055F0C0[0x21] = 0;
@@ -141,13 +141,19 @@ void fn_802369A8(char *arg0, int arg1, int arg2) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
+extern void *memset(void *, int, unsigned long);
+extern char *strcpy(char *, const char *);
+#pragma push
+#pragma scheduling invalid_target
 void fn_80236A5C(void *arg0, int arg1) {
     extern char lbl_80498664[];
     extern char lbl_8055BA18[], lbl_8055BA1C[], lbl_8055BA24[], lbl_8055BA2C[];
     extern char lbl_8055BA38[], lbl_8055BA70[], lbl_8055BA78[], lbl_8055BA80[], lbl_8055BAAC[];
     extern char lbl_8055BAA4[], lbl_8055BAA0[], lbl_8055BA98[], lbl_8055BA90[], lbl_8055BA88[];
     extern char lbl_8055BA68[], lbl_8055BA60[], lbl_8055BA50[], lbl_8055BA48[], lbl_8055BA40[], lbl_8055BA58[];
-    extern char lbl_80340930[], lbl_80340940[], lbl_8034095C[], lbl_80340970[], lbl_803409DC[], lbl_803409E8[], lbl_80340A44[], lbl_80340A50[], lbl_80340A74[], lbl_80340AA4[];
+    extern char lbl_80340930[], lbl_80340940[], lbl_8034095C[], lbl_80340970[], lbl_803409DC[], lbl_803409E8[], lbl_80340A44[], lbl_80340A50[], lbl_80340A74[], lbl_80340AA4[], lbl_80340A18[], lbl_803409F4[], lbl_803409A8[], lbl_80340984[];
     extern char lbl_8055F0C6;
     extern float lbl_805636E0, lbl_805636E4;
     extern void *fn_80131810(char *);
@@ -162,28 +168,22 @@ void fn_80236A5C(void *arg0, int arg1) {
     extern void fn_80237968(void);
     extern void fn_80131818(void *);
     extern void fn_802E30C8(const char *, ...);
-    register int mode;
     register void *parser;
+    register int mode;
+    register float defaultZero, defaultOne;
     register void *list;
-    register int index;
+    int index;
     register char *filename = (char *)arg1;
     char *elementName;
     char *elementText;
-    char *manager;
+    AnimMgr *manager;
     void *node;
-    void *entry;
+    AnimEntry *entry;
     void *detailList;
     void *child;
     void *keyOut;
     void *previous;
-    void **vt;
-    int (*has_child)(void *, const char *);
-    void *(*get_child)(void *, const char *);
-    int (*next_child)(void *, int, char **, char **);
     char *(*get_name)(void *);
-    float (*get_float)(void *, const char *);
-    float (*get_float_default)(void *, const char *, float);
-    unsigned long long (*get_pair)(void *, const char *, float *);
     int count;
     int childIndex;
     int keyCount;
@@ -192,10 +192,10 @@ void fn_80236A5C(void *arg0, int arg1) {
     float value;
     unsigned long long pairBits1, pairBits2, pairBits3;
     float pairDefaults1[2], pairDefaults2[2], pairDefaults3[2];
-    void *trailMgr;
+    TrailMgr *trailMgr;
     void *group;
     void *trail;
-    void *trailEntry;
+    TrailEntry *trailEntry;
     void *trailKey;
     char *trailText;
     int groupIndex;
@@ -214,14 +214,10 @@ void fn_80236A5C(void *arg0, int arg1) {
     if (stricmp(filename, lbl_8055BA18) == 0)
         mode = 0;
     if (mode != 0) {
-        vt = *(void ***)parser;
-        has_child = (int (*)(void *, const char *))vt[4];
-        if (has_child(parser, lbl_8055BA1C) != 0) {
-            get_child = (void *(*)(void *, const char *))vt[2];
-            list = get_child(parser, lbl_8055BA1C);
+        if (((int (*)(void *, const char *))(*(void ***)parser)[4])(parser, lbl_8055BA1C) != 0) {
+            list = ((void *(*)(void *, const char *))(*(void ***)parser)[2])(parser, lbl_8055BA1C);
             index = 0;
-            next_child = (int (*)(void *, int, char **, char **))(*(void ***)list)[4];
-            while (next_child(list, index, &elementName, &elementText) != 0) {
+            while (((int (*)(void *, int, char **, char **))(*(void ***)list)[4])(list, index, &elementName, &elementText) != 0) {
                 if (fn_8002B1D8(elementName, lbl_8055BA24, 6) == 0) {
                     if ((stricmp(elementText, lbl_8055BA2C) == 0) ||
                         (stricmp(elementText, filename) == 0)) {
@@ -237,74 +233,72 @@ void fn_80236A5C(void *arg0, int arg1) {
         lbl_8055F0C6 = 1;
     manager = fn_801284F8(0x10, lbl_80340930);
     if (manager != 0) {
-        *(void **)manager = lbl_80340970;
-        *(int *)(manager + 4) = 0;
-        *(int *)(manager + 8) = 0;
-        *(float *)(manager + 0xC) = lbl_805636E0;
+        manager->vtable = lbl_80340970;
+        manager->entries = 0;
+        manager->count = 0;
+        manager->duration = lbl_805636E0;
         if (parser != 0) {
             index = 0;
             while ((node = ((void *(*)(void *, int))(*(void ***)parser)[3])(parser, index)) != 0) {
-                get_name = (char *(*)(void *))(*(void ***)node)[2];
-                if (stricmp(get_name(node), lbl_8055BA80) == 0)
-                    (*(int *)(manager + 8))++;
+                
+                if (stricmp(((char *(*)(void *))(*(void ***)node)[2])(node), lbl_8055BA80) == 0)
+                    manager->count++;
                 index++;
             }
-        }
-        count = *(int *)(manager + 8);
+        count = manager->count;
         if (count > 0) {
-            *(void **)(manager + 4) = fn_8002F37C(
+            manager->entries = (AnimEntry *)fn_8002F37C(
                 fn_8012850C(count * 0xC + 0x10, lbl_8055BA78),
                 fn_80237A84, fn_80237A08, 0xC, count);
-            *(int *)(manager + 8) = 0;
+            manager->count = 0;
             index = 0;
             while ((node = ((void *(*)(void *, int))(*(void ***)parser)[3])(parser, index)) != 0) {
-                get_name = (char *(*)(void *))(*(void ***)node)[2];
-                if (stricmp(get_name(node), lbl_8055BA70) == 0) {
+                
+                if (stricmp(((char *(*)(void *))(*(void ***)node)[2])(node), lbl_8055BA70) == 0) {
                     if (((void *(*)(void *, const char *))(*(void ***)node)[0x5C / 4])(node, lbl_8055BA38) != 0) {
                         detailList = ((void *(*)(void *, const char *))(*(void ***)node)[0x5C / 4])(node, lbl_8055BA38);
-                        entry = (char *)*(void **)(manager + 4) + (*(int *)(manager + 8)) * 0xC;
-                        *(void **)entry = ((void *(*)(void *, const char *))(*(void ***)node)[0x1C / 4])(node, lbl_80340A44);
-                        *(int *)((char *)entry + 8) = 0;
+                        entry = &manager->entries[manager->count];
+                        entry->object = ((void *(*)(void *, const char *))(*(void ***)node)[0x1C / 4])(node, lbl_80340A44);
+                        entry->keyCount = 0;
                         if (detailList != 0) {
                             childIndex = 0;
                             while ((child = ((void *(*)(void *, int))(*(void ***)detailList)[0x60 / 4])(detailList, childIndex)) != 0) {
-                                get_name = (char *(*)(void *))(*(void ***)child)[2];
-                                if (stricmp(get_name(child), lbl_8055BAAC) == 0)
-                                    (*(int *)((char *)entry + 8))++;
+                                
+                                if (stricmp(((char *(*)(void *))(*(void ***)child)[2])(child), lbl_8055BAAC) == 0)
+                                    (entry->keyCount)++;
                                 childIndex++;
                             }
-                            keyCount = *(int *)((char *)entry + 8);
+                            keyCount = entry->keyCount;
                             if (keyCount > 0) {
-                                *(void **)((char *)entry + 4) = fn_8002F37C(
+                                entry->keys = fn_8002F37C(
                                     fn_8012850C(keyCount * 0x14 + 0x10, lbl_80340AA4),
                                     (void (*)(void *))fn_80237A04, 0, 0x14, keyCount);
-                                *(int *)((char *)entry + 8) = 0;
-                                defaults1[0] = lbl_805636E4;
-                                defaults1[1] = lbl_805636E0;
-                                defaults1[2] = lbl_805636E0;
-                                defaults1[3] = lbl_805636E4;
-                                defaults1[4] = lbl_805636E4;
+                                entry->keyCount = 0;
+                                defaultZero = lbl_805636E0;
+                                defaultOne = lbl_805636E4;
+                                defaults1[0] = defaultZero;
+                                defaults1[2] = defaultOne;
+                                defaults1[1] = defaultOne;
+                                defaults1[3] = defaultZero;
+                                defaults1[4] = defaultZero;
                                 childIndex = 0;
                                 while ((child = ((void *(*)(void *, int))(*(void ***)detailList)[0x60 / 4])(detailList, childIndex)) != 0) {
-                                    get_name = (char *(*)(void *))(*(void ***)child)[2];
-                                    if (stricmp(get_name(child), lbl_8055BAA4) == 0) {
-                                        count = *(int *)((char *)entry + 8);
+                                    
+                                    if (stricmp(((char *(*)(void *))(*(void ***)child)[2])(child), lbl_8055BAA4) == 0) {
+                                        count = entry->keyCount;
                                         if (count > 0)
-                                            previous = (char *)*(void **)((char *)entry + 4) + (count - 1) * 0x14;
+                                            previous = (char *)entry->keys + (count - 1) * 0x14;
                                         else
                                             previous = defaults1;
-                                        keyOut = (char *)*(void **)((char *)entry + 4) + count * 0x14;
-                                        (*(int *)((char *)entry + 8))++;
-                                        get_float = (float (*)(void *, const char *))(*(void ***)child)[0x24 / 4];
-                                        get_float_default = (float (*)(void *, const char *, float))(*(void ***)child)[0x28 / 4];
-                                        value = get_float(child, lbl_8055BAA0);
+                                        keyOut = (char *)entry->keys + count * 0x14;
+                                        (entry->keyCount)++;
+                                        value = ((float (*)(void *, const char *))(*(void ***)child)[0x24 / 4])(child, lbl_8055BAA0);
                                         *(float *)keyOut = value;
-                                        *(float *)((char *)keyOut + 8) = get_float_default(child, lbl_8055BA98, *(float *)((char *)previous + 8));
-                                        *(float *)((char *)keyOut + 4) = get_float_default(child, lbl_8055BA90, *(float *)((char *)previous + 4));
-                                        get_pair = (unsigned long long (*)(void *, const char *, float *))(*(void ***)child)[0x40 / 4];
+                                        *(float *)((char *)keyOut + 8) = ((float (*)(void *, const char *, float))(*(void ***)child)[0x28 / 4])(child, lbl_8055BA98, *(float *)((char *)previous + 8));
+                                        *(float *)((char *)keyOut + 4) = ((float (*)(void *, const char *, float))(*(void ***)child)[0x28 / 4])(child, lbl_8055BA90, *(float *)((char *)previous + 4));
                                         pairDefaults1[0] = *(float *)((char *)previous + 0xC);
                                         pairDefaults1[1] = *(float *)((char *)previous + 0x10);
-                                        pairBits1 = get_pair(child, lbl_8055BA88, pairDefaults1);
+                                        pairBits1 = ((unsigned long long (*)(void *, const char *, float *))(*(void ***)child)[0x40 / 4])(child, lbl_8055BA88, pairDefaults1);
                                         *(float *)((char *)keyOut + 0xC) = *(float *)&pairBits1;
                                         *(float *)((char *)keyOut + 0x10) = *((float *)&pairBits1 + 1);
                                     }
@@ -313,91 +307,95 @@ void fn_80236A5C(void *arg0, int arg1) {
                             }
                         }
                         if (detailList == 0)
-                            fn_802E30C8(lbl_80340A74, *(void **)entry);
-                        if (*(void **)entry == 0)
-                            fn_802E30C8(lbl_80340A50, *(void **)entry);
-                        count = *(int *)((char *)entry + 8);
+                            fn_802E30C8(lbl_80340A74, entry->object);
+                        fn_802E30C8(lbl_80340A50, entry->object);
+                        count = entry->keyCount;
                         if (count > 0)
-                            value = *(float *)((char *)*(void **)((char *)entry + 4) + count * 0x14 - 0x14);
+                            value = *(float *)((char *)entry->keys + count * 0x14 - 0x14);
                         else
                             value = lbl_805636E0;
-                        if (*(float *)(manager + 0xC) > value)
-                            *(float *)(manager + 0xC) = value;
-                        (*(int *)(manager + 8))++;
+                        if (value < manager->duration)
+                            manager->duration = value;
+                        manager->count++;
                     }
                 }
                 index++;
             }
+        } else {
+            fn_802E30C8(lbl_803409F4, lbl_80498664);
+        }
+        } else {
+            fn_802E30C8(lbl_80340A18, lbl_80498664);
         }
     }
     lbl_8055F0B0 = (int)manager;
     manager = fn_801284F8(0x10, lbl_80340930);
     if (manager != 0) {
-        *(void **)manager = lbl_80340970;
-        *(int *)(manager + 4) = 0;
-        *(int *)(manager + 8) = 0;
-        *(float *)(manager + 0xC) = lbl_805636E0;
-        index = 0;
+        manager->vtable = lbl_80340970;
+        manager->entries = 0;
+        manager->count = 0;
+        manager->duration = lbl_805636E0;
+        if (parser != 0) {
+            index = 0;
         while ((node = ((void *(*)(void *, int))(*(void ***)parser)[3])(parser, index)) != 0) {
-            get_name = (char *(*)(void *))(*(void ***)node)[2];
-            if (stricmp(get_name(node), lbl_8055BA80) == 0)
-                (*(int *)(manager + 8))++;
+            
+            if (stricmp(((char *(*)(void *))(*(void ***)node)[2])(node), lbl_8055BA80) == 0)
+                manager->count++;
             index++;
         }
-        count = *(int *)(manager + 8);
+        count = manager->count;
         if (count > 0) {
-            *(void **)(manager + 4) = fn_8002F37C(
+            manager->entries = (AnimEntry *)fn_8002F37C(
                 fn_8012850C(count * 0xC + 0x10, lbl_8055BA78),
                 fn_80237A84, fn_80237A08, 0xC, count);
-            *(int *)(manager + 8) = 0;
+            manager->count = 0;
             index = 0;
             while ((node = ((void *(*)(void *, int))(*(void ***)parser)[3])(parser, index)) != 0) {
-                get_name = (char *(*)(void *))(*(void ***)node)[2];
-                if (stricmp(get_name(node), lbl_8055BA70) == 0) {
+                
+                if (stricmp(((char *(*)(void *))(*(void ***)node)[2])(node), lbl_8055BA70) == 0) {
                     if (((void *(*)(void *, const char *))(*(void ***)node)[0x5C / 4])(node, lbl_80340940) != 0) {
                         detailList = ((void *(*)(void *, const char *))(*(void ***)node)[0x5C / 4])(node, lbl_80340940);
-                        entry = (char *)*(void **)(manager + 4) + (*(int *)(manager + 8)) * 0xC;
-                        *(void **)entry = ((void *(*)(void *, const char *))(*(void ***)node)[0x1C / 4])(node, lbl_80340A44);
-                        *(int *)((char *)entry + 8) = 0;
+                        entry = &manager->entries[manager->count];
+                        entry->object = ((void *(*)(void *, const char *))(*(void ***)node)[0x1C / 4])(node, lbl_80340A44);
+                        entry->keyCount = 0;
                         if (detailList != 0) {
                             childIndex = 0;
                             while ((child = ((void *(*)(void *, int))(*(void ***)detailList)[0x60 / 4])(detailList, childIndex)) != 0) {
-                                get_name = (char *(*)(void *))(*(void ***)child)[2];
-                                if (stricmp(get_name(child), lbl_8055BAAC) == 0)
-                                    (*(int *)((char *)entry + 8))++;
+                                
+                                if (stricmp(((char *(*)(void *))(*(void ***)child)[2])(child), lbl_8055BAAC) == 0)
+                                    (entry->keyCount)++;
                                 childIndex++;
                             }
-                            keyCount = *(int *)((char *)entry + 8);
+                            keyCount = entry->keyCount;
                             if (keyCount > 0) {
-                                *(void **)((char *)entry + 4) = fn_8002F37C(
+                                entry->keys = fn_8002F37C(
                                     fn_8012850C(keyCount * 0x14 + 0x10, lbl_80340AA4),
                                     (void (*)(void *))fn_80237A04, 0, 0x14, keyCount);
-                                *(int *)((char *)entry + 8) = 0;
-                                defaults2[0] = lbl_805636E4;
-                                defaults2[1] = lbl_805636E0;
-                                defaults2[2] = lbl_805636E0;
-                                defaults2[3] = lbl_805636E4;
-                                defaults2[4] = lbl_805636E4;
+                                entry->keyCount = 0;
+                                defaultZero = lbl_805636E0;
+                                defaultOne = lbl_805636E4;
+                                defaults2[0] = defaultZero;
+                                defaults2[2] = defaultOne;
+                                defaults2[1] = defaultOne;
+                                defaults2[3] = defaultZero;
+                                defaults2[4] = defaultZero;
                                 childIndex = 0;
                                 while ((child = ((void *(*)(void *, int))(*(void ***)detailList)[0x60 / 4])(detailList, childIndex)) != 0) {
-                                    get_name = (char *(*)(void *))(*(void ***)child)[2];
-                                    if (stricmp(get_name(child), lbl_8055BAA4) == 0) {
-                                        count = *(int *)((char *)entry + 8);
+                                    
+                                    if (stricmp(((char *(*)(void *))(*(void ***)child)[2])(child), lbl_8055BAA4) == 0) {
+                                        count = entry->keyCount;
                                         if (count > 0)
-                                            previous = (char *)*(void **)((char *)entry + 4) + (count - 1) * 0x14;
+                                            previous = (char *)entry->keys + (count - 1) * 0x14;
                                         else
                                             previous = defaults2;
-                                        keyOut = (char *)*(void **)((char *)entry + 4) + count * 0x14;
-                                        (*(int *)((char *)entry + 8))++;
-                                        get_float = (float (*)(void *, const char *))(*(void ***)child)[0x24 / 4];
-                                        get_float_default = (float (*)(void *, const char *, float))(*(void ***)child)[0x28 / 4];
-                                        *(float *)keyOut = get_float(child, lbl_8055BAA0);
-                                        *(float *)((char *)keyOut + 8) = get_float_default(child, lbl_8055BA98, *(float *)((char *)previous + 8));
-                                        *(float *)((char *)keyOut + 4) = get_float_default(child, lbl_8055BA90, *(float *)((char *)previous + 4));
-                                        get_pair = (unsigned long long (*)(void *, const char *, float *))(*(void ***)child)[0x40 / 4];
+                                        keyOut = (char *)entry->keys + count * 0x14;
+                                        (entry->keyCount)++;
+                                        *(float *)keyOut = ((float (*)(void *, const char *))(*(void ***)child)[0x24 / 4])(child, lbl_8055BAA0);
+                                        *(float *)((char *)keyOut + 8) = ((float (*)(void *, const char *, float))(*(void ***)child)[0x28 / 4])(child, lbl_8055BA98, *(float *)((char *)previous + 8));
+                                        *(float *)((char *)keyOut + 4) = ((float (*)(void *, const char *, float))(*(void ***)child)[0x28 / 4])(child, lbl_8055BA90, *(float *)((char *)previous + 4));
                                         pairDefaults2[0] = *(float *)((char *)previous + 0xC);
                                         pairDefaults2[1] = *(float *)((char *)previous + 0x10);
-                                        pairBits2 = get_pair(child, lbl_8055BA88, pairDefaults2);
+                                        pairBits2 = ((unsigned long long (*)(void *, const char *, float *))(*(void ***)child)[0x40 / 4])(child, lbl_8055BA88, pairDefaults2);
                                         *(float *)((char *)keyOut + 0xC) = *(float *)&pairBits2;
                                         *(float *)((char *)keyOut + 0x10) = *((float *)&pairBits2 + 1);
                                     }
@@ -406,21 +404,25 @@ void fn_80236A5C(void *arg0, int arg1) {
                             }
                         }
                         if (detailList == 0)
-                            fn_802E30C8(lbl_80340A74, *(void **)entry);
-                        if (*(void **)entry == 0)
-                            fn_802E30C8(lbl_80340A50, *(void **)entry);
-                        count = *(int *)((char *)entry + 8);
+                            fn_802E30C8(lbl_80340A74, entry->object);
+                        fn_802E30C8(lbl_80340A50, entry->object);
+                        count = entry->keyCount;
                         if (count > 0)
-                            value = *(float *)((char *)*(void **)((char *)entry + 4) + count * 0x14 - 0x14);
+                            value = *(float *)((char *)entry->keys + count * 0x14 - 0x14);
                         else
                             value = lbl_805636E0;
-                        if (*(float *)(manager + 0xC) > value)
-                            *(float *)(manager + 0xC) = value;
-                        (*(int *)(manager + 8))++;
+                        if (value < manager->duration)
+                            manager->duration = value;
+                        manager->count++;
                     }
                 }
                 index++;
             }
+            } else {
+                fn_802E30C8(lbl_80340A18, lbl_80498664);
+            }
+        } else {
+            fn_802E30C8(lbl_803409F4, lbl_80498664);
         }
     }
     lbl_8055F0B4 = (int)manager;
@@ -428,94 +430,103 @@ void fn_80236A5C(void *arg0, int arg1) {
     trailMgr = fn_801284F8(0xC, lbl_80340930);
     if (trailMgr != 0) {
         *(void **)trailMgr = lbl_8034095C;
-        *(int *)((char *)trailMgr + 4) = 0;
-        *(int *)((char *)trailMgr + 8) = 0;
-        groupIndex = 0;
+        trailMgr->entries = 0;
+        trailMgr->count = 0;
+        if (parser != 0) {
+            groupIndex = 0;
         while ((group = ((void *(*)(void *, int))(*(void ***)parser)[3])(parser, groupIndex)) != 0) {
-            get_name = (char *(*)(void *))(*(void ***)group)[2];
-            if (stricmp(get_name(group), lbl_8055BA68) == 0) {
+            
+            if (stricmp(((char *(*)(void *))(*(void ***)group)[2])(group), lbl_8055BA68) == 0) {
                 trailIndex = 0;
                 while ((trail = ((void *(*)(void *, int))(*(void ***)group)[0x60 / 4])(group, trailIndex)) != 0) {
-                    get_name = (char *(*)(void *))(*(void ***)trail)[2];
-                    if (stricmp(get_name(trail), lbl_8055BA60) == 0)
-                        (*(int *)((char *)trailMgr + 8))++;
+                    
+                    if (stricmp(((char *(*)(void *))(*(void ***)trail)[2])(trail), lbl_8055BA60) == 0)
+                        trailMgr->count++;
                     trailIndex++;
                 }
             }
             groupIndex++;
         }
-        trailCount = *(int *)((char *)trailMgr + 8);
+        trailCount = trailMgr->count;
         if (trailCount > 0) {
-            *(void **)((char *)trailMgr + 4) = fn_8002F37C(
+            trailMgr->entries = (TrailEntry *)fn_8002F37C(
                 fn_8012850C(trailCount * 0x34 + 0x10, lbl_8055BA58),
                 fn_802379EC, fn_80237968, 0x34, trailCount);
-            *(int *)((char *)trailMgr + 8) = 0;
+            trailMgr->count = 0;
             groupIndex = 0;
             while ((group = ((void *(*)(void *, int))(*(void ***)parser)[3])(parser, groupIndex)) != 0) {
-                get_name = (char *(*)(void *))(*(void ***)group)[2];
-                if (stricmp(get_name(group), lbl_8055BA50) == 0) {
+                
+                if (stricmp(((char *(*)(void *))(*(void ***)group)[2])(group), lbl_8055BA50) == 0) {
                     trailIndex = 0;
                     while ((trail = ((void *(*)(void *, int))(*(void ***)group)[0x60 / 4])(group, trailIndex)) != 0) {
-                        get_name = (char *(*)(void *))(*(void ***)trail)[2];
-                        if (stricmp(get_name(trail), lbl_8055BA48) == 0) {
-                            trailEntry = (char *)*(void **)((char *)trailMgr + 4) + (*(int *)((char *)trailMgr + 8)) * 0x34;
-                            *(unsigned char *)((char *)trailEntry + 0x2C) =
+                        
+                        if (stricmp(((char *(*)(void *))(*(void ***)trail)[2])(trail), lbl_8055BA48) == 0) {
+                            trailEntry = &trailMgr->entries[trailMgr->count];
+                            trailEntry->flag2C =
                                 ((unsigned char (*)(void *, const char *, int))(*(void ***)trail)[0x30 / 4])(trail, lbl_803409E8, 0);
                             trailText = ((char *(*)(void *, const char *))(*(void ***)trail)[0x14 / 4])(trail, lbl_8055BA40);
-                            for (stringIndex = 0; stringIndex < 0x1E && trailText[stringIndex] != 0; stringIndex++)
-                                ((char *)trailEntry)[stringIndex] = trailText[stringIndex];
-                            ((char *)trailEntry)[stringIndex] = 0;
-                            ((char *)trailEntry)[0x2D] = 0;
-                            *(void **)((char *)trailEntry + 0x20) =
+                            memset((char *)trailEntry, 0, 0x1E);
+                            {
+                                char *copyDest = (char *)trailEntry;
+                                char *copySrc = trailText;
+                                char ch;
+                                do {
+                                    ch = *copySrc++;
+                                    *copyDest++ = ch;
+                                } while (ch != 0);
+                            }
+                            trailEntry->active = 0;
+                            trailEntry->field20 = (int)
                                 ((void *(*)(void *, const char *))(*(void ***)group)[0x1C / 4])(group, lbl_803409DC);
-                            *(int *)((char *)trailEntry + 0x28) = 0;
+                            trailEntry->keyCount = 0;
                             trailIndex = trailIndex;
+                            if (trail != 0) {
                             trailKeyCount = 0;
                             keyCount = 0;
                             while ((trailKey = ((void *(*)(void *, int))(*(void ***)trail)[0x60 / 4])(trail, keyCount)) != 0) {
-                                get_name = (char *(*)(void *))(*(void ***)trailKey)[2];
-                                if (stricmp(get_name(trailKey), lbl_8055BAAC) == 0)
+                                
+                                if (stricmp(((char *(*)(void *))(*(void ***)trailKey)[2])(trailKey), lbl_8055BAAC) == 0)
                                     trailKeyCount++;
                                 keyCount++;
                             }
-                            *(int *)((char *)trailEntry + 0x28) = trailKeyCount;
+                            trailEntry->keyCount = trailKeyCount;
                             if (trailKeyCount > 0) {
-                                *(void **)((char *)trailEntry + 0x24) = fn_8002F37C(
+                                trailEntry->keys = fn_8002F37C(
                                     fn_8012850C(trailKeyCount * 0x14 + 0x10, lbl_80340AA4),
                                     (void (*)(void *))fn_80237A04, 0, 0x14, trailKeyCount);
-                                *(int *)((char *)trailEntry + 0x28) = 0;
-                                trailDefaults[0] = lbl_805636E0;
-                                trailDefaults[1] = lbl_805636E4;
-                                trailDefaults[2] = lbl_805636E4;
-                                trailDefaults[3] = lbl_805636E0;
-                                trailDefaults[4] = lbl_805636E0;
+                                trailEntry->keyCount = 0;
+                                defaultZero = lbl_805636E0;
+                                defaultOne = lbl_805636E4;
+                                trailDefaults[0] = defaultZero;
+                                trailDefaults[2] = defaultOne;
+                                trailDefaults[1] = defaultOne;
+                                trailDefaults[3] = defaultZero;
+                                trailDefaults[4] = defaultZero;
                                 keyCount = 0;
                                 while ((trailKey = ((void *(*)(void *, int))(*(void ***)trail)[0x60 / 4])(trail, keyCount)) != 0) {
-                                    get_name = (char *(*)(void *))(*(void ***)trailKey)[2];
-                                    if (stricmp(get_name(trailKey), lbl_8055BAA4) == 0) {
-                                        count = *(int *)((char *)trailEntry + 0x28);
+                                    
+                                    if (stricmp(((char *(*)(void *))(*(void ***)trailKey)[2])(trailKey), lbl_8055BAA4) == 0) {
+                                        count = trailEntry->keyCount;
                                         if (count > 0)
-                                            previous = (char *)*(void **)((char *)trailEntry + 0x24) + (count - 1) * 0x14;
+                                            previous = (char *)trailEntry->keys + (count - 1) * 0x14;
                                         else
                                             previous = trailDefaults;
-                                        keyOut = (char *)*(void **)((char *)trailEntry + 0x24) + count * 0x14;
-                                        (*(int *)((char *)trailEntry + 0x28))++;
-                                        get_float = (float (*)(void *, const char *))(*(void ***)trailKey)[0x24 / 4];
-                                        get_float_default = (float (*)(void *, const char *, float))(*(void ***)trailKey)[0x28 / 4];
-                                        *(float *)keyOut = get_float(trailKey, lbl_8055BAA0);
-                                        *(float *)((char *)keyOut + 8) = get_float_default(trailKey, lbl_8055BA98, *(float *)((char *)previous + 8));
-                                        *(float *)((char *)keyOut + 4) = get_float_default(trailKey, lbl_8055BA90, *(float *)((char *)previous + 4));
-                                        get_pair = (unsigned long long (*)(void *, const char *, float *))(*(void ***)trailKey)[0x40 / 4];
+                                        keyOut = (char *)trailEntry->keys + count * 0x14;
+                                        (trailEntry->keyCount)++;
+                                        *(float *)keyOut = ((float (*)(void *, const char *))(*(void ***)trailKey)[0x24 / 4])(trailKey, lbl_8055BAA0);
+                                        *(float *)((char *)keyOut + 8) = ((float (*)(void *, const char *, float))(*(void ***)trailKey)[0x28 / 4])(trailKey, lbl_8055BA98, *(float *)((char *)previous + 8));
+                                        *(float *)((char *)keyOut + 4) = ((float (*)(void *, const char *, float))(*(void ***)trailKey)[0x28 / 4])(trailKey, lbl_8055BA90, *(float *)((char *)previous + 4));
                                         pairDefaults3[0] = *(float *)((char *)previous + 0xC);
                                         pairDefaults3[1] = *(float *)((char *)previous + 0x10);
-                                        pairBits3 = get_pair(trailKey, lbl_8055BA88, pairDefaults3);
+                                        pairBits3 = ((unsigned long long (*)(void *, const char *, float *))(*(void ***)trailKey)[0x40 / 4])(trailKey, lbl_8055BA88, pairDefaults3);
                                         *(float *)((char *)keyOut + 0xC) = *(float *)&pairBits3;
                                         *(float *)((char *)keyOut + 0x10) = *((float *)&pairBits3 + 1);
                                     }
                                     keyCount++;
                                 }
                             }
-                            (*(int *)((char *)trailMgr + 8))++;
+                            }
+                            trailMgr->count++;
                         }
                         trailIndex++;
                     }
@@ -523,13 +534,16 @@ void fn_80236A5C(void *arg0, int arg1) {
                 groupIndex++;
             }
         }
+        } else {
+            fn_802E30C8(lbl_803409A8, lbl_80498664);
+            fn_802E30C8(lbl_80340984, lbl_80498664);
+        }
     }
     lbl_8055F0B8 = (int)trailMgr;
     fn_80131818(parser);
     lbl_80498664[0] = 0;
 
 }
-
 #pragma pop
 void fn_802379EC(void *arg0) {
     int minus = -1;
