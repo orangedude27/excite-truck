@@ -257,7 +257,15 @@ extern "C" void VFipf_memcpy(void *, const void *, u32);
   #pragma opt_tail_call on
 
 namespace homebutton {
-class Controller { public: void updateSound(); void clearCallback(); };
+class Controller {
+public:
+    s32 m_soundId;
+    u8 pad4[0x20];
+    void *m_soundPlayer;
+    void updateSound();
+    void clearCallback();
+    s32 isPlayingSoundId(s32) const;
+};
 class FrameController {
 public:
     u8 pad0[4];
