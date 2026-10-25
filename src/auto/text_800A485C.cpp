@@ -1968,17 +1968,14 @@ extern "C" void fn_800B3BEC(u8 *buf, u8 *src, u8 flags);
 extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
     u8 buf[13];
     u32 sum;
-    u32 i;
-    u32 n;
+    u32 next;
+    u16 i;
 
     fn_800B3A70(buf, &p_ent[0x20E], 0);
     sum = 0;
-    i = 0;
-    n = 0xB;
-    while (n) {
-        n--;
-        sum = ((sum >> 1) + ((sum & 1) ? 0x80 : 0) + buf[i]) & 0xFF;
-        i++;
+    for (i = 0; i < 0xB; i++) {
+        next = ((sum & 0xFE) >> 1) + ((sum & 1) ? 0x80 : 0) + buf[i];
+        sum = next & 0xFF;
     }
     return (u8)sum;
 }
