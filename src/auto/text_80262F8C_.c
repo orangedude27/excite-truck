@@ -138,12 +138,12 @@ void fn_802638C4(void) {}
 s32 fn_802638C8(void *arg0, s32 arg1) {
     if (*((u8 *)arg0 + 0x29) == 0) goto done;
     if (arg1 == 0x126) goto done;
-    if (arg1 >= 0x126) goto upper;
-    if (arg1 >= 0x125) goto set_value;
+    if (arg1 < 0x126) {
+        if (arg1 < 0x125) goto done;
+        goto set_value;
+    }
+    if (arg1 < 0x128) goto clear_value;
     goto done;
-upper:
-    if (arg1 >= 0x128) goto done;
-    goto clear_value;
 set_value:
     if (*((u8 *)arg0 + 0x28) != 0) goto done;
     *((u8 *)arg0 + 0x28) = 1;
