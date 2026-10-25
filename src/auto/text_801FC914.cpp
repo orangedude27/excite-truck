@@ -135,11 +135,13 @@ extern "C" void fn_801FCA54(void* arg0, int arg1, int arg2) {
 }
 
 extern "C" void fn_801FCB40(void*, float);
+#pragma dont_inline on
 extern "C" void fn_801FCAAC(void* arg0, float farg0) {
     if (*(void**)((char*)arg0 + 4) != 0) {
         fn_801FCB40(arg0, farg0);
     }
 }
+#pragma dont_inline reset
 
 extern "C" void fn_801FCAC0(void* arg0) {
     if (*(void**)((char*)arg0 + 4) != 0) {
