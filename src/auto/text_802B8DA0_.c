@@ -623,9 +623,11 @@ void fn_802BAF98(void* arg0, s8 arg1) {
     ((s8*)arg0)[0xC] = arg1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802BAFA0(void) {
-    void **entries = *(void ***)&lbl_804BFFF4;
-    int count = *(int *)((char *)&lbl_804BFFF4 + 4);
+    void **entries = *(void ** volatile *)lbl_804BFFF4;
+    int count = *(volatile int *)(lbl_804BFFF4 + 4);
     lbl_8055FA6C = 0;
     lbl_8055FA70 = 0;
     while (count > 0) {
@@ -637,7 +639,8 @@ void fn_802BAFA0(void) {
     }
     *(int *)((char *)lbl_8055FA74 + 8) = 0;
 }
-
+#pragma scheduling on
+#pragma pop
 void fn_802BAFF8(void ***arg0, int *arg1) {
     void **p = *arg0;
     while (*p != 0) {
