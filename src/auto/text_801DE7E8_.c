@@ -12,12 +12,15 @@ void fn_801DE88C(void) {
 
 }
 
+#pragma scheduling invalid_target
 void fn_801DEF98(void) {
-    fn_801332D0(fn_8000DA10() + 0xC, &lbl_80339570, &lbl_8055E9DC);
+    extern char lbl_80339570_arr[];
+    int *p = (int *)lbl_80339570_arr;
+    fn_801332D0(fn_8000DA10() + 0xC, p, &lbl_8055E9DC);
     lbl_8055E9E0 = 0;
     *(int *)((char *)&lbl_804873B8 + 4) = 0;
 }
-
+#pragma scheduling on
 void fn_801DEFE0(void) {
     extern int lbl_8055E9E8;
     extern int lbl_8055E9EC;
