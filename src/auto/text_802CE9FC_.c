@@ -63,6 +63,7 @@ extern float lbl_80564FAC, lbl_80564FA8, lbl_80564F88;
 extern char lbl_804C97D0;
 #pragma small_data on
 extern void GXSetTevColor(int, ...);
+extern unsigned long fn_802CE9FC();
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
