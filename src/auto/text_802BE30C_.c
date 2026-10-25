@@ -128,6 +128,14 @@ void fn_802BE694(void) {
     }
 }
 
+extern void fn_802BE780(void *);
+void fn_802BE72C(void) {
+    u32 i;
+    for (i = 4; i < 0x41U; i <<= 1) {
+        fn_802BE780(&lbl_804C06E0[i]);
+    }
+}
+
 void fn_802BE780(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
@@ -150,15 +158,18 @@ s32 fn_802BE7C4(s32 arg0, s32 arg1, s32 arg2) {
 #pragma scheduling on
 void fn_802BE7F4(void) {}
 
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_802BE7F8(void) {
-    s32 flags = 0x200;
-    flags |= 0x84;
+    s32 flags;
     fn_802BE694();
+    flags = 0x200;
+    flags |= 0x84;
     lbl_804C07E4.ptr = lbl_8055FAC8;
     lbl_804C07E4.flags = flags | 0x800000;
     lbl_804C07E4.value = 0;
 }
-
+#pragma scheduling on
 void fn_802BE840(void) { fn_802BE72C(); }
 
 void *fn_802BE844(s32 arg0, s32 arg1, s32 arg2) {
