@@ -36,6 +36,20 @@ void fn_802D7564(void) {
     }
 }
 
+#pragma dont_inline on
+void fn_802D768C(void *arg0) {
+    extern void fn_80128658(s32);
+    s32 temp_r0;
+
+    temp_r0 = *(s32 *)((u8 *)arg0 + 0xE8);
+    *(s8 *)((u8 *)arg0 + 0x20) = 0;
+    if (temp_r0 != 0) {
+        fn_80128658(temp_r0);
+        *(s32 *)((u8 *)arg0 + 0xE8) = 0;
+    }
+}
+#pragma dont_inline reset
+
 int fn_802D76DC(int arg0) {
     switch (arg0) {
     case 3:
