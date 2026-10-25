@@ -244,6 +244,24 @@ copy_done:
     *(signed char *)arg0 = 1;
 }
 
+extern "C" void fn_802C6CF8(s32);
+extern "C" void fn_801F0000(s32);
+extern "C" void fn_80253C48(void *);
+extern "C" void fn_802532BC(void);
+#pragma dont_inline on
+extern "C" void fn_80253824(void *arg0) {
+    if (*(u8 *)arg0 != 0) {
+        *(u8 *)arg0 = 0;
+        fn_802C6CF8(*(s32 *)((u8 *)arg0 + 0x10));
+        fn_802C6CF8(*(s32 *)((u8 *)arg0 + 0x14));
+        fn_801F0000(*(s32 *)((u8 *)arg0 + 0x18));
+        fn_801F0000(*(s32 *)((u8 *)arg0 + 0x1C));
+        fn_80253C48(arg0);
+        ((void (*)(void *))fn_802532BC)(arg0);
+    }
+}
+#pragma dont_inline reset
+
 extern "C" void *fn_80131810(void *);
 extern "C" int fn_802C7830(void);
 extern "C" int fn_801D2008(char *);
