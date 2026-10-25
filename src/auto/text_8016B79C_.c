@@ -1264,7 +1264,7 @@ void fn_8016FD9C(f32 *arg0, void *arg1) {
     }
     fn_80130978(sp8, 0x20, value);
     fn_8014784C(arg1, lbl_80330B7C, lbl_80330B8C, 0);
-    fn_801475D0(arg1, lbl_8055A248, lbl_8055A268, sp8);
+    fn_801475D0(arg1, (const char *)&lbl_8055A248, (const char *)&lbl_8055A268, sp8);
 }
 
 #pragma cplusplus on
