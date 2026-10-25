@@ -3097,7 +3097,7 @@ extern "C" void fn_80222788(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
     f32 spC;
     f32 sp8;
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
-        f32 temp_f31 = lbl_805634A8;
+        register f32 temp_f31 = lbl_805634A8;
         fn_80230C30(&spC, &sp8, arg1, arg2);
         fn_802353F4(*(s32 *)((u8 *)arg0 + 4), arg4, spC, sp8, temp_f31);
     }
@@ -4168,7 +4168,7 @@ extern "C" s32 fn_802263CC(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void fn_802224B4(s32, s32);
+extern "C" void *fn_802224B4(void *, s32, s32, s32, s32, s32, s32, s32, u8, u8);
 extern "C" void *lbl_8033F7F4;
 extern "C" s32 fn_80226528(void *arg0, s32 arg1) {
     s32 *p = *(s32 **)((u8 *)arg0 + 0x27C);
@@ -4196,7 +4196,7 @@ extern "C" void fn_80226570(void *arg0, s32 arg1) {
 }
 
 extern "C" void *fn_80226630(void *arg0, s32 arg1, s32 arg2) {
-    fn_802224B4(1, 0);
+    fn_802224B4(arg0, 0, arg1, arg2, 0, 0, 0, 0, 1, 0);
     *(void **)arg0 = lbl_8033F7F4;
     *(s32 *)((u8 *)arg0 + 0x260) = fn_80228F40(arg1, arg2);
     *(s32 *)((u8 *)arg0 + 0x264) = 0;
@@ -5151,8 +5151,10 @@ extern "C" void fn_802297D0(void *arg0) {
         *(u8 *)((u8 *)arg0 + 0x254) != 0 &&
         *(u8 *)((u8 *)arg0 + 0x18) != 0) {
         callback = *(s32 (**)(s32))((u8 *)arg0 + 0x258);
-        if (callback != 0 && callback(*(s32 *)((u8 *)arg0 + 0x25C)) != 0)
+        if (callback == 0 || callback(*(s32 *)((u8 *)arg0 + 0x25C)) == 0) {
+        } else {
             fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+        }
     }
     fn_802192AC(arg0);
 }
