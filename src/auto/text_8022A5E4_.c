@@ -119,17 +119,27 @@ void fn_8022A858(int arg0) {
     fn_8022CAA8(lbl_80490968 + arg0 * 0x74);
 }
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
 int fn_8022A86C(int arg0) {
-    int i;
-    for (i = 0; i < 0x100; i++) {
-        if ((unsigned char)lbl_80490968[i * 0x74] == 0) {
+    extern int fn_802E317C(const char *, ...);
+    unsigned char *p = (unsigned char *)lbl_80490968;
+    int i = 0;
+    int count;
+
+    for (count = 0x100; count != 0; count--) {
+        if (*p == 0) {
             fn_8022A858(i);
             return i;
         }
+        p += 0x74;
+        i++;
     }
+    fn_802E317C(lbl_8033FBE8, arg0);
     return -1;
 }
-
+#pragma scheduling reset
+#pragma dont_inline off
 void fn_8022A8E4(int arg0) {
     extern unsigned char lbl_80497D68[];
     register int offset = arg0 * 0x74;
@@ -561,11 +571,19 @@ loop:
 }
 
 float fn_8022CA40(void *arg0) {
-    if (*(float *)((char *)arg0 + 0x34) < lbl_80563588) {
+    if (*(float *)((char *)arg0 + 0x34) < lbl_80563588)
         return lbl_80563588;
+    else {
+        union {
+            double d;
+            unsigned int w[2];
+        } converted;
+        int value = fn_80232B70(*(int *)((char *)arg0 + 8));
+        converted.w[1] = (unsigned int)value ^ 0x80000000;
+        converted.w[0] = 0x43300000;
+        return *(float *)((char *)arg0 + 0x34) /
+            (float)(converted.d - lbl_80563590);
     }
-    return *(float *)((char *)arg0 + 0x34) /
-        (float)fn_80232B70(*(int *)((char *)arg0 + 8));
 }
 
 extern double lbl_80563590;
