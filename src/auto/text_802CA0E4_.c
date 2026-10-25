@@ -794,6 +794,8 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
     *arg0 = arg2;
 }
 
+int fn_802CBBE8(int **link, int *target, int *current) { int removed = 0; do { if (current == target) { int *next = *(int **)((char *)target + 0x14); *link = next; *(int **)((char *)target + 0x14) = 0; removed = 1; break; } link = (int **)((char *)current + 0x14); current = *link; } while (current != 0); if (removed == 0) fn_802E317C(lbl_8034BA04); }
+
 void fn_802CBD7C();
 void fn_802CBD30(void **arg0, void **arg1, void *arg2) {
     fn_802CBD7C(arg1, arg2);
@@ -923,6 +925,16 @@ void fn_802CC518(int arg0, float arg1) {
     result = (lbl_80564F30 * arg1) / (float)(number - magic);
     lbl_8055FCC4 = result;
 }
+
+void fn_802CC5B8(int arg0) {
+    int offset;
+    if (arg0 == -1)
+        return;
+    fn_802CC550(arg0, lbl_80564F40, lbl_80564F44);
+    offset = arg0 * 0x4C;
+    *(int *)((char *)lbl_8055FCB0 + offset + 0x48) = 1000000;
+}
+
 void fn_802CC73C(char arg0) {
     lbl_8055D07D = arg0;
 }
