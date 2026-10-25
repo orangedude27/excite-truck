@@ -11638,10 +11638,15 @@ extern "C" void fn_800D0BA0(void) {
 
 }
 
-void fn_800D0BA4(void *arg0, D0BA4Dispatch *arg1) {
-    *(D0BA4Dispatch **)((char *)arg0 + 4) = arg1;
+extern "C" void fn_800D0BA4(void *arg0, void *arg1) {
+    class Dispatch {
+    public:
+        virtual ~Dispatch();
+        virtual void call(void *);
+    };
+    *(void **)((u8 *)arg0 + 4) = arg1;
     if (arg1 != 0) {
-        arg1->vf3((D0BA4Dispatch *)arg0);
+        ((Dispatch *)arg1)->call(arg0);
     }
 }
 
@@ -15998,18 +16003,28 @@ zero:
     return 0;
 }
 #pragma scheduling on
-s32 fn_800A4B54(u8 *arg0) { u8 *ptr = arg0; do { ptr += 2; } while (*(u16 *)ptr != 0); return (ptr - arg0) >> 1; }
+s32 fn_800A4B54(u8 *arg0) {
+    u8 *ptr = arg0;
+    do {
+        ptr += 2;
+    } while (*(u16 *)ptr != 0);
+    return (ptr - arg0) >> 1;
+}
 
 extern "C" void fn_800A4B78(u16 *arg0, u16 *arg1) {
-    u16 *dst = arg0;
     u16 *src = arg1;
+    volatile u16 *dst = (volatile u16 *)arg0;
     u16 value;
-    do {
-        src++;
-        dst++;
-        value = *src;
-        *dst = value;
-    } while (value != 0);
+    goto copy;
+loop:
+    src++;
+    dst++;
+copy:
+    value = *src;
+    *dst = value;
+    if (value != 0) {
+        goto loop;
+    }
 }
 
 extern "C" s32 fn_800A4B9C(u16 *arg0, u16 *arg1, s32 arg2) {
