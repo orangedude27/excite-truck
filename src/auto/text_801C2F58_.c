@@ -355,11 +355,11 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
     void *sp28;
     void *sp24;
     s32 sp20;
-    union { f32 rotation[9]; f32 basis[12]; } matrixTemp;
     f32 saved[12];
+    union { f32 rotation[9]; f32 basis[12]; } matrixTemp;
     union { f32 velocity[3]; f32 axis[3]; } vectorTemp;
     union { f32 translated[3]; f32 offset[3]; } resultTemp;
-    register f32 temp_f0;
+    f32 temp_f0;
     f32 temp_f0_2;
     f32 temp_f1;
     f32 temp_f1_10;
@@ -1278,6 +1278,12 @@ void fn_801C83D0(void) {
     lbl_8055A958 = value;
     sprintf(lbl_80437FC0, lbl_80336FDC, value);
     fn_801C957C(0);
+}
+
+extern char lbl_80337060[];
+void fn_801C84E0(void) {
+    lbl_8055E80D = 0;
+    sprintf(lbl_80437FC0, lbl_80337060);
 }
 
 extern char lbl_8055AA70;
