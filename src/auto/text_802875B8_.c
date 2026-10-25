@@ -2,6 +2,21 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80288868(void *);
+extern void fn_802A86A4(void);
+extern void fn_8028E138(void);
+extern void fn_802980A0(void);
+extern void fn_8028A89C(void);
+extern void fn_8028CF50(void);
+extern void fn_8029222C(void);
+extern void fn_80294CC0(void);
+extern void fn_80296060(void);
+extern void fn_8029F124(void);
+extern void fn_80292628(void);
+extern void fn_802A172C(void);
+extern void fn_802A4C20(void);
+extern void fn_802A7C64(void);
+extern void fn_802AB5B8(void);
+extern void fn_802A9574(void);
 extern void fn_802882EC(void);
 extern void *lbl_8055F6C8;
 typedef signed int s32;
