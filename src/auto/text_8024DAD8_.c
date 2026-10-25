@@ -1935,7 +1935,8 @@ extern void fn_80221F94(void *, s32);
 extern void *fn_801284F8(u32, void *);
 extern void *fn_8012850C(s32, void *);
 extern void fn_801312EC(void *, void *);
-extern f32 lbl_80563960, lbl_805639C0, lbl_80558DC4;
+extern f32 lbl_80563960, lbl_805639C0;
+__declspec(section ".data") extern f32 lbl_80558DC4;
 extern char lbl_8055C0E0[];
 extern char lbl_80344378[], lbl_80344384[], lbl_80344690[], lbl_803443B0[];
 void fn_80251D0C(void *arg0) {
