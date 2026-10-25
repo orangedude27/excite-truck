@@ -332,6 +332,7 @@ extern void *fn_802E5AE8(void *);
 extern void fn_802E5D5C(void *);
 #pragma dont_inline fn_8020A6AC
 extern void *fn_8020A6AC(void *);
+#pragma dont_inline fn_8020A6AC
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8033C4F0[];
 int fn_8020B874(void *object, void *name) {
