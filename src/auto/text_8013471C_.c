@@ -90,6 +90,18 @@ extern "C" void fn_8013472C(void) {
       fn_80137904();
       fn_8013A1F0();
   }
+
+extern s32 lbl_8055E3C4;
+#pragma dont_inline on
+s32 fn_80134A44(s32 arg0) {
+    if (arg0 >= 3)
+        return 0;
+    if (arg0 >= 0)
+        return (arg0 + lbl_8055E3C4) & 1;
+    return lbl_8055E3C4 & 1;
+}
+#pragma dont_inline reset
+
   
   void fn_80134A88(void) {
   
@@ -135,14 +147,19 @@ void fn_80134A8C(void) {
       fn_80136F08(lbl_8055E0D4);
   }
   
-  float fn_80134B58(float arg0) {
-      extern s32 fn_80134B9C(s32, s32);
-      extern double atof(void);
-      if (fn_80134B9C(arg0, 0) != 0)
-          arg0 = (float)atof();
-      return arg0;
-  }
-
+#pragma paired off
+#pragma paired_single off
+float fn_80134B58(s32 arg0, float arg1) {
+    extern s32 fn_80134B9C(s32, s32);
+    extern double atof(void);
+    float result = arg1;
+    if (fn_80134B9C(arg0, 0) != 0) {
+        result = (float)atof();
+    }
+    return result;
+}
+#pragma paired_single on
+#pragma paired on
 s32 fn_80134B9C(s32 arg0, s32 arg1) {
     if (lbl_8055E0AC != 0 && ((s32 (*)(void *, s32))(*(u32 *)(*(u32 *)lbl_8055E0AC + 0xC)))(lbl_8055E0AC, arg0) != 0)
         return ((s32 (*)(void *, s32))(*(u32 *)(*(u32 *)lbl_8055E0AC + 0x14)))(lbl_8055E0AC, arg0);
@@ -220,6 +237,7 @@ f32 fn_80134E00(void) {
 extern f32 fn_80134C1C(void);
 extern f32 fn_80134D20(void);
 extern f32 fn_80134E00(void);
+#pragma dont_inline on
 extern void *lbl_8055E0B0;
 extern f32 lbl_80560108;
 extern f32 lbl_8056010C;
