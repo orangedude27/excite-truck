@@ -262,10 +262,11 @@ void fn_8001C0E8(void) {
 }
 
 s32 fn_8001C200(const char *arg0, const char *arg1) {
-    if (stricmp(arg0, arg1) == 0 || stricmp(arg0, "???") == 0 || stricmp(arg1, "???") == 0) {
-        return 1;
+    s32 result = 0;
+    if (stricmp(arg0, arg1) == 0 || stricmp(arg0, lbl_80558C90) == 0 || stricmp(arg1, lbl_80558C90) == 0) {
+        result = 1;
     }
-    return 0;
+    return result;
 }
 
 #pragma dont_inline on
@@ -435,21 +436,25 @@ void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 
+#pragma use_lmw_stmw off
 s32 fn_8001CDB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 *entry;
 
     fn_8001C4DC();
     entry = ((s32 *(*)(s32, s32, s32))fn_8001C2CC)(arg0, arg1, arg2);
     if (entry == 0) {
-        return arg4;
+        goto fallback;
     }
     entry = (s32 *)((u8 *)entry + arg3 * 0xC);
-    if (*(u8 *)((u8 *)entry + 0x10) == 0) {
-        return arg4;
+    if (*(u8 *)((u8 *)entry + 0x10) != 0) {
+        goto result;
     }
+fallback:
+    return arg4;
+result:
     return entry[2];
 }
-
+#pragma use_lmw_stmw reset
 extern void *fn_8001C540(s32, s32, s32, s32);
 s32 fn_8001CE34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     void *result;
