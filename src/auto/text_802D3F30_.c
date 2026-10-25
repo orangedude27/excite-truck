@@ -71,11 +71,160 @@ void fn_802D4280(void *arg0) {
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
 
+void fn_802D4C44(void *arg0) {}
+
+void fn_802D5270(void *arg0) {
+    extern s32 fn_802CFF64(s32);
+    extern f32 lbl_804DAC48[];
+    extern f32 lbl_80564FF0;
+    s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
+    u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
+    f32 *dst = (f32 *)fn_802CFF64(count * 12);
+
+    if (dst != 0) {
+        f32 *out = dst;
+        if (count > 0) {
+            do {
+                volatile f32 sp14[3];
+                volatile f32 sp8[3];
+                f32 f = lbl_80564FF0 * (f32)src[0xE];
+                f32 *m1 = (f32 *)((u8 *)lbl_804DAC48 + ((s32)src[0xC] >> 2) * 0x30);
+                f32 g = lbl_80564FF0 * (f32)src[0xF];
+                f32 *m2 = (f32 *)((u8 *)lbl_804DAC48 + ((s32)src[0xD] >> 2) * 0x30);
+                f32 sx, sy, sz;
+                f32 ox, oy, oz;
+
+                if ((u8 *)sp8 == src) {
+                    sx = *(f32 *)(src + 0);
+                    sy = *(f32 *)(src + 4);
+                    sz = *(f32 *)(src + 8);
+                    sp8[0] = sz * m1[6] + (sx * m1[0] + sy * m1[3]);
+                    sp8[1] = sz * m1[7] + (sx * m1[1] + sy * m1[4]);
+                    sp8[2] = sz * m1[8] + (sx * m1[2] + sy * m1[5]);
+                } else {
+                    sp8[0] = *(f32 *)(src + 8) * m1[6] + (*(f32 *)(src + 0) * m1[0] + *(f32 *)(src + 4) * m1[3]);
+                    sp8[1] = *(f32 *)(src + 8) * m1[7] + (*(f32 *)(src + 0) * m1[1] + *(f32 *)(src + 4) * m1[4]);
+                    sp8[2] = *(f32 *)(src + 8) * m1[8] + (*(f32 *)(src + 0) * m1[2] + *(f32 *)(src + 4) * m1[5]);
+                }
+                sp8[0] += m1[9];
+                sp8[1] += m1[10];
+                sp8[2] += m1[11];
+
+                if ((u8 *)sp14 == src) {
+                    sx = *(f32 *)(src + 0);
+                    sy = *(f32 *)(src + 4);
+                    sz = *(f32 *)(src + 8);
+                    sp14[0] = sz * m2[6] + (sx * m2[0] + sy * m2[3]);
+                    sp14[1] = sz * m2[7] + (sx * m2[1] + sy * m2[4]);
+                    sp14[2] = sz * m2[8] + (sx * m2[2] + sy * m2[5]);
+                } else {
+                    sp14[0] = *(f32 *)(src + 8) * m2[6] + (*(f32 *)(src + 0) * m2[0] + *(f32 *)(src + 4) * m2[3]);
+                    sp14[1] = *(f32 *)(src + 8) * m2[7] + (*(f32 *)(src + 0) * m2[1] + *(f32 *)(src + 4) * m2[4]);
+                    sp14[2] = *(f32 *)(src + 8) * m2[8] + (*(f32 *)(src + 0) * m2[2] + *(f32 *)(src + 4) * m2[5]);
+                }
+                sp14[0] += m2[9];
+                sp14[1] += m2[10];
+                sp14[2] += m2[11];
+
+                ox = sp8[0] * f;
+                out[0] = ox;
+                oy = sp8[1] * f;
+                out[1] = oy;
+                oz = sp8[2] * f;
+                out[2] = oz;
+                out[0] = ox + sp14[0] * g;
+                out[1] = oy + sp14[1] * g;
+                out[2] = oz + sp14[2] * g;
+                src += 0x10;
+                out += 3;
+            } while (--count != 0);
+        }
+        GXSetArray(9, dst, 12);
+        GXSetArray(10, *(void **)((u8 *)arg0 + 0x24), 3);
+        GXSetArray(13, *(void **)((u8 *)arg0 + 0x28), 4);
+        GXCallDisplayList(*(void **)((u8 *)arg0 + 0x30), *(u32 *)((u8 *)arg0 + 0x2C));
+    }
+}
+
 void fn_802D5680(void *arg0) {
     void * volatile array = *(void **)((char *)arg0 + 0x20);
     GXSetArray(9, array, 0x10);
     GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+}
+
+extern s32 fn_802CFF64(s32);
+extern f32 lbl_804DB068[];
+extern f32 lbl_80564FF0;
+extern f64 lbl_80564FF8;
+void fn_802D56D4(void *arg0) {
+    s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
+    u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
+    f32 *dst = (f32 *)fn_802CFF64(count * 12);
+    s32 i;
+    if (dst == 0) {
+        fn_802D5680(arg0);
+        return;
+    }
+    for (i = 0; i < count; i++) {
+        u8 a = src[0xE], b = src[0xC], c = src[0xD], d = src[0xF];
+        f32 *v1 = (f32 *)((u8 *)lbl_804DB068 + b * 12);
+        f32 *v2 = (f32 *)((u8 *)lbl_804DB068 + c * 12);
+        f32 f = lbl_80564FF0 * (f32)a;
+        f32 g = lbl_80564FF0 * (f32)d;
+        f32 x = *(f32 *)src + v1[0] * f;
+        f32 y = *(f32 *)(src + 4) + v1[1] * f;
+        f32 z = *(f32 *)(src + 8) + v1[2] * f;
+        dst[0] = x + v2[0] * g;
+        dst[1] = y + v2[1] * g;
+        dst[2] = z + v2[2] * g;
+        src += 0x10;
+        dst += 3;
+    }
+    GXSetArray(9, (void *)fn_802CFF64(count * 12), 12);
+    GXSetArray(10, *(void **)((u8 *)arg0 + 0x24), 3);
+    GXCallDisplayList(*(void **)((u8 *)arg0 + 0x30), *(u32 *)((u8 *)arg0 + 0x2C));
+}
+
+extern f32 *fn_802D2D04(void);
+extern f32 PSVECDotProduct(const f32 *, const f32 *);
+extern void GXSetCullMode(u32);
+extern void GXSetBlendMode(u32,u32,u32,u32);
+extern f32 lbl_804C5690[9];
+void fn_802D5838(void *arg0) {
+ s32 count=*(s32*)((u8*)arg0+0x1C);
+ f32 *src=*(f32**)((u8*)arg0+0x20), *norm=*(f32**)((u8*)arg0+0x24);
+ f32 *dst=(f32*)fn_802CFF64(count*12), *base=dst;
+ if(dst) {
+  f32 *m=fn_802D2D04(); f32 v[3]; s32 i;
+  if(m==v) { v[0]=m[0]*lbl_804C5690[0]+m[1]*lbl_804C5690[1]+m[2]*lbl_804C5690[2]; v[1]=m[0]*lbl_804C5690[3]+m[1]*lbl_804C5690[4]+m[2]*lbl_804C5690[5]; v[2]=m[0]*lbl_804C5690[6]+m[1]*lbl_804C5690[7]+m[2]*lbl_804C5690[8]; }
+  else {v[0]=m[0]*lbl_804C5690[0]+m[1]*lbl_804C5690[1]+m[2]*lbl_804C5690[2];v[1]=m[0]*lbl_804C5690[3]+m[1]*lbl_804C5690[4]+m[2]*lbl_804C5690[5];v[2]=m[0]*lbl_804C5690[6]+m[1]*lbl_804C5690[7]+m[2]*lbl_804C5690[8];}
+  for(i=0;i<count;i++){ if(PSVECDotProduct(norm,v)<lbl_80565008){dst[0]=src[0]+v[0]*lbl_8055FDE0;dst[1]=src[1]+v[1]*lbl_8055FDE0;dst[2]=src[2]+v[2]*lbl_8055FDE0;}else{dst[0]=src[0];dst[1]=src[1];dst[2]=src[2];}src+=3;norm+=3;dst+=3;}
+  GXSetArray(9,base,12);
+  GXSetCullMode(lbl_8055FDE4?2:1);GXSetBlendMode(1,1,1,5);GXCallDisplayList(*(void**)((u8*)arg0+0x30),*(u32*)((u8*)arg0+0x2C));
+  GXSetCullMode(lbl_8055FDE4?1:2);GXSetBlendMode(3,1,1,5);GXCallDisplayList(*(void**)((u8*)arg0+0x30),*(u32*)((u8*)arg0+0x2C));
+ }
+}
+
+void fn_802D5DE8(u32 flags) {
+    int desc[54];
+    int *p;
+    memset(desc,0,0xD8);
+    p=desc;
+    if (flags & 1) { p[0]=0; p[1]=1; p+=2; }
+    if (flags & 2) { p[0]=9; p[1]=2; p+=2; }
+    else if (flags & 4) { p[0]=9; p[1]=3; p+=2; }
+    if (flags & 8) { p[0]=10; p[1]=2; p+=2; }
+    else if (flags & 0x10) { p[0]=10; p[1]=3; p+=2; }
+    if (flags & 0x20) { p[0]=11; p[1]=2; p+=2; }
+    else if (flags & 0x40) { p[0]=11; p[1]=3; p+=2; }
+    if (flags & 0x80) { p[0]=13; p[1]=2; p+=2; }
+    else if (flags & 0x100) { p[0]=13; p[1]=3; p+=2; }
+    if (flags & 0x200) { p[0]=14; p[1]=2; p+=2; }
+    else if (flags & 0x400) { p[0]=14; p[1]=3; p+=2; }
+    p[0]=0xff; p[1]=0;
+    GXClearVtxDesc();
+    GXSetVtxDescv(desc);
 }
 
 void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
@@ -152,6 +301,60 @@ void fn_802D6594(void *arg0) {
     }
 }
 
+extern const char lbl_8034C3B4[];
+extern f32 lbl_80565010;
+extern f32 lbl_80565014;
+void fn_802D65F8(s32 arg0, s32 arg1) {
+    u8 *bytes = (u8 *)arg0;
+    u8 a, b, c, d, e, f, g;
+    s32 count = *(s32 *)(bytes + 0x1C);
+    u8 *entries;
+
+    fn_802D63FC();
+    a=bytes[0x2C]; b=bytes[0x2F]; c=bytes[0x2D]; d=bytes[0x2E];
+    e=bytes[0x30]; f=bytes[0x33]; g=bytes[0x31];
+    bytes[0x2C]=b; bytes[0x2F]=a; bytes[0x2D]=d; bytes[0x2E]=c;
+    bytes[0x30]=f; bytes[0x33]=e; bytes[0x31]=bytes[0x32]; bytes[0x32]=g;
+    fn_802D657C((s32 *)(bytes+0x30),arg1);
+    if(bytes[8]==0x1A) fn_802D6594(bytes);
+    count=*(s32 *)(bytes+0x1C);
+    if(bytes[8]==0x13) {
+        entries=*(u8 **)(bytes+0x20);
+        if(count>0) {
+            do {
+                if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) goto second;
+                entries+=0x10;
+            } while(--count!=0);
+        }
+        fn_802E317C(lbl_8034C3B4);
+        count=*(s32 *)(bytes+0x1C);
+        entries=*(u8 **)(bytes+0x20);
+        bytes[8]=0x1A;
+        while(count-->0) {
+            f32 value=lbl_80565010*(f32)entries[0xE]/lbl_80565014;
+            *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
+            entries+=0x10;
+        }
+    }
+second:
+    if(bytes[8]==0x19) {
+        count=*(s32 *)(bytes+0x1C);
+        entries=*(u8 **)(bytes+0x20);
+        if(count>0) do {
+            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) return;
+            entries+=0x18;
+        } while(--count!=0);
+        count=*(s32 *)(bytes+0x1C);
+        entries=*(u8 **)(bytes+0x20);
+        bytes[8]=0x1B;
+        while(count-->0) {
+            f32 value=lbl_80565010*(f32)entries[0xE]/lbl_80565014;
+            *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
+            entries+=0x18;
+        }
+    }
+}
+
 #pragma push
 #pragma small_data off
 void fn_802D6810(void) {
@@ -193,8 +396,9 @@ void fn_802D6B08(void *arg0) {
 }
 
 #pragma pop
-void fn_802D6B54(void* alarm) {
-    fn_802D5F88(fn_802D62E4(alarm));
+extern s32 fn_802D62E4(void *, ...);
+void fn_802D6B54(void *alarm) {
+    fn_802D5F88(((s32 (*)(void *))fn_802D62E4)(alarm));
 }
 
 
