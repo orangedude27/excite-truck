@@ -145,7 +145,9 @@ void fn_80231714(s32 *arg0) {}
 
 s32 fn_80231718(s32 arg0) {
     u32 value = (u32)lbl_8055F060;
-    return (arg0 & 0xFF000000) | (value & 0x00FF0000) | (value & 0x0000FFFF);
+    u32 result = __rlwinm(value, 0, 8, 15);
+    result = __rlwimi(result, arg0, 0, 0, 7);
+    return result | (value & 0xFFFF);
 }
 
 extern s32 sprintf(char *, const char *, ...);
