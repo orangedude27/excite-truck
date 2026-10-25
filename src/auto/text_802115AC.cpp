@@ -1500,11 +1500,13 @@ extern "C" void *fn_80215738(void *arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_802157A8(int arg0, int arg1, int arg2, unsigned int arg3) {
-    unsigned int r7 = *(unsigned int *)(arg0 + 0xC);
-    int r8 = *(int *)(arg0 + 4);
-    unsigned int rem = arg3 - (arg3 / r7) * r7;
-    if (r8 != 0) fn_802C40E8(r8, arg1, arg2 - *(int *)(arg0 + 8) * rem);
+extern "C" void fn_802157A8(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
+    u32 divisor = *(u32 *)((u8 *)arg0 + 0xC);
+    s32 callback = *(s32 *)((u8 *)arg0 + 4);
+    u32 remainder = arg3 % divisor;
+    if (callback != 0) {
+        fn_802C40E8(callback, arg1, arg2 - *(s32 *)((u8 *)arg0 + 8) * remainder);
+    }
 }
 
 void fn_802157DC(void *arg0, int arg1, int arg2, int *arg3, int *arg4, int *arg5, int *arg6) {
@@ -1638,13 +1640,16 @@ extern "C" void fn_80215A48(void *arg0) {
 
 #pragma dont_inline on
 #pragma dont_inline reset
-extern "C" void fn_80215A74(void *arg0) {
+extern "C" s32 fn_80215AA4(void *, s32);
+extern "C" s32 fn_80215A74(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     u8 enabled = self[0x1A];
     self[0x19] = 0;
     if (enabled != 0) {
         self[0x234] = 1;
         ((VfObj *)*(void **)(self + 0x244))->vf18();
+    } else {
+        return fn_80215AA4(arg0, arg1);
     }
 }
 extern "C" s32 fn_80215AA4(void *arg0, s32 arg1) {
