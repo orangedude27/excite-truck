@@ -366,8 +366,9 @@ void fn_80020860(int arg0) {
                  lbl_805604F8 * (lbl_805604F0 * (f32) lbl_8055CFF0 / lbl_805604F4),
                  lbl_805604FC * (f32) lbl_8055CFF4, lbl_805604B4,
                  lbl_805604F0 * (f32) lbl_8055CFF0 / lbl_805604F4,
-                 (f32) lbl_8055CFF4);
+                                    (f32) lbl_8055CFF4);
 }
+#pragma pop
 
 extern int fn_80020184(void);
 extern int fn_801E8838(void);
