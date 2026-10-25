@@ -125,7 +125,15 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail7ChannelFPFPQ46nw4hbm3snd6detail7
     *((unsigned char *)arg0 + 0x38) = 0;
 }
 
-void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *arg0,const void *arg1,int arg2) { *(int *)((char *)arg0+0xD4)=arg2; fn_800EC8B4((char *)arg0+0x20); fn_800EB41C((char *)arg0+8); *(int *)((char *)arg0+0xAC)=0; Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(*(void **)((char *)arg0+0xE0),arg1); fn_800E519C(*(void **)((char *)arg0+0xE0)); *(signed char *)((char *)arg0+0x3A)=1; }
+extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *arg0, const void *arg1, long arg2) {
+    *(int *)((char *)arg0 + 0xD4) = arg2;
+    fn_800EC8B4((char *)arg0 + 0x20);
+    fn_800EB41C((char *)arg0 + 8);
+    *(int *)((char *)arg0 + 0xAC) = 0;
+    Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(*(void **)((char *)arg0 + 0xE0), arg1);
+    fn_800E519C(*(void **)((char *)arg0 + 0xE0));
+    *(signed char *)((char *)arg0 + 0x3A) = 1;
+}
 
 extern "C" char lbl_803228E8[];
 extern "C" char lbl_80322924[];
