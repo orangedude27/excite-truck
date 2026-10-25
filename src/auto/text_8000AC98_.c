@@ -672,7 +672,6 @@ int fn_80011A2C(void);
 int fn_802C9904(void);
 extern int lbl_80558A48;
 extern float lbl_805601F8, lbl_80560200, lbl_80560208, lbl_8056020C;
-extern int lbl_8034F5B8;
 void fn_8000C630(int arg0, int arg1) {
     int i;
     if (arg1 == -1) {
