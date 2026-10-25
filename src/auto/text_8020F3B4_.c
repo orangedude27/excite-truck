@@ -47,11 +47,12 @@ void fn_8020F5DC(void) {
     lbl_8055EEF4 = 0;
 }
  
+#pragma scheduling invalid_target
 void *fn_8020F5F0(long arg0) {
     long offset = (arg0 << 6) * 100;
     return (void *)((char *)&lbl_80489CA0 + offset);
 }
-
+#pragma scheduling on
 extern void *memset(void *, int, unsigned long);
 #pragma dont_inline on
 long fn_8020F608(long arg0, long arg1) {
