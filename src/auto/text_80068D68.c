@@ -14750,3 +14750,14 @@ void fn_80085DF4(void *arg0, u8 arg1) {
     *(u8 *)((u8 *)arg0 + 11) = arg1;
     btu_hcif_send_cmd(arg0);
 }
+
+void fn_80085E24(void *arg0, u8 arg1) {
+    *(u16 *)((u8 *)arg0 + 2) = 4;
+    *(u16 *)((u8 *)arg0 + 4) = 0;
+    *(u8 *)((u8 *)arg0 + 8) = 0x47;
+    *(u8 *)((u8 *)arg0 + 9) = 0x0C;
+    *(u8 *)((u8 *)arg0 + 10) = 1;
+    *(u8 *)((u8 *)arg0 + 11) = arg1;
+    btu_hcif_send_cmd(arg0);
+}
+
