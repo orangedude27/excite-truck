@@ -19,7 +19,7 @@ void fn_80128668(void);
 extern char *fn_8022D82C(void *, int, int);
 extern char *strncpy(char *, const char *, unsigned long);
 extern double fabs(double);
-extern float lbl_80558DC4;
+extern float lbl_80558DC4[];
 extern void *fn_8012850C(int, const char *);
 extern char lbl_80340108[];
 extern char lbl_80340114[];
@@ -369,19 +369,30 @@ void fn_8022DE1C(void *arg0) {
     *temp_r4 = var_f4;
 }
 
+#pragma push
+#pragma opt_propagation off
 int fn_8022DE88(void *arg0) {
     float diff = *(float *)((char *)arg0 + 0x10) - **(float **)((char *)arg0 + 0x18);
-    if ((float)__fabs(diff) <= lbl_80558DC4) return 0;
-    else return 1;
+    if (!((float)__fabs(diff) <= lbl_80558DC4[0])) {
+        return 1;
+    }
+    return 0;
 }
-
+#pragma pop
+extern double __fabs(double);
+#pragma push
+#pragma scheduling invalid_target
 int fn_8022DEC4(void *arg0) {
-    extern float lbl_80558DC4;
-    float diff = *(float *)((char *)arg0 + 0xC) - **(float **)((char *)arg0 + 0x18);
-    if (diff < 0.0f) diff = -diff;
-    return diff <= lbl_80558DC4 ? 0 : 1;
+    float value;
+    float current;
+    float diff;
+    current = *(float *)((char *)arg0 + 0xC);
+    value = **(float **)((char *)arg0 + 0x18);
+    diff = current - value;
+    if ((float)__fabs(diff) <= lbl_80558DC4[0]) return 0;
+    return 1;
 }
-
+#pragma pop
 void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
     *arg1 = *(int *)((char *)arg0 + 4);
     *arg2 = 4;
