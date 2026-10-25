@@ -545,16 +545,17 @@ s32 fn_802613E0(void) {
 
 extern s32 lbl_802FA6A8[];
 extern u8 lbl_8055B860;
+#pragma push
+#pragma scheduling invalid_target
 void fn_80261688(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 value;
-    *(s32 *)((u8 *)arg0 + 8) = arg3;
-    value = (s32)&lbl_8055B860;
-    *(s32 *)((u8 *)arg0 + 4) = 6;
-    *(s32 *)arg0 = value;
-    *(s32 *)((u8 *)arg0 + 0xC) = arg2;
-    *(s32 *)((u8 *)arg0 + 0x10) = arg1;
+    s32 *p = (s32 *)arg0;
+    p[2] = arg3;
+    p[1] = 6;
+    p[0] = (s32)&lbl_8055B860;
+    p[3] = arg2;
+    p[4] = arg1;
 }
-
+#pragma pop
 s32 fn_802616A8(void) {
     s32 j, i;
     s32 count;
@@ -659,7 +660,11 @@ void fn_80261A18(void *arg0, s32 arg1) {
 
 void fn_80261A40(s32 arg0) {
     fn_80236914();
-    lbl_8055F3E9 = arg0 == 2;
+    if (arg0 == 2) {
+        lbl_8055F3E9 = 1;
+    } else {
+        lbl_8055F3E9 = 0;
+    }
 }
 
 void fn_80261A7C(void *arg0, s32 arg1) {
