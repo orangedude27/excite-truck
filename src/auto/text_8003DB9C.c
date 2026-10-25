@@ -1111,11 +1111,22 @@ void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
 }
 
 void GXInitLightDir(unsigned int x, unsigned int y, unsigned int *arg2) {
-    unsigned int addr = 0xC8000000;
-    addr |= x << 2;
-    addr |= y << 12;
-    addr |= 1 << 22;
-    *arg2 = *(unsigned int *)addr;
+    union {
+        unsigned int addr;
+        struct {
+            unsigned int prefix : 8;
+            unsigned int flag : 2;
+            unsigned int yBits : 10;
+            unsigned int xBits : 10;
+            unsigned int low : 2;
+        } fields;
+    } address;
+
+    address.addr = 0xC8000000;
+    address.fields.xBits = x;
+    address.fields.yBits = y;
+    address.fields.flag = 1;
+    *arg2 = *(unsigned int *)address.addr;
 }
 
 unsigned int GXGetLightDir(unsigned int value) {
@@ -2109,11 +2120,16 @@ void GXInitTexCacheRegion(void *obj, signed char arg1, unsigned int arg2, int ar
 }
 
 void GXInitTlutRegion(unsigned int *region, int tmem_addr, int tlut_name) {
-    unsigned int value = 0;
-    value = (value & ~0x3FF) | (((tmem_addr - 0x80000) << 23) & 0x3FF);
-    value = (value & ~0x1FFC00) | ((tlut_name << 10) & 0x1FFC00);
-    value = (value & ~0xFF000000) | 0x65000000;
-    *region = value;
+    struct {
+        unsigned int type : 8;
+        unsigned int unused : 3;
+        unsigned int name : 11;
+        unsigned int addr : 10;
+    } value = {0, 0, 0, 0};
+    value.addr = tmem_addr - 0x80000;
+    value.name = tlut_name;
+    value.type = 0x65;
+    *region = *(unsigned int *)&value;
 }
 
 void GXInvalidateTexAll(void) {
