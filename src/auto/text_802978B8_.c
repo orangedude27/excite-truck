@@ -1,4 +1,4 @@
-extern void *lbl_8055F7A4;
+extern int lbl_8055F7A4;
 extern void *lbl_8055F7A8;
 extern int lbl_8055F7AC;
 extern const char lbl_803493F8[];
