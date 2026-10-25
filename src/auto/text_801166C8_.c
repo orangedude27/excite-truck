@@ -513,7 +513,7 @@ extern s32 lbl_8055DED4;
 extern void *fn_8011B584(u32, s32, s32, s32);
 extern void *fn_8011BE48(s32);
 extern void fn_8011BEC8(void *, void *, s32, s32);
-s32 *fn_8011770C(s32 arg0, s32 arg1) {
+s32 *fn_8011770C(void *arg0, s32 arg1) {
     struct {
         u8 header[0x2C];
         u8 headPad[4];
@@ -521,18 +521,17 @@ s32 *fn_8011770C(s32 arg0, s32 arg1) {
         u8 state[0x388];
     } local;
     u32 magic;
-    u32 flags;
     u32 mode;
     u32 width;
     u32 height;
     u32 count;
     u32 roundedHeight;
     u32 blockBytes;
-    void *allocated;
+    register void *allocated;
     u32 activeFlags;
     u32 format;
-    s32 *result = 0;
-    s32 (*openStream)(void *, void *, s32) = fn_8011ACC4;
+    s32 *result;
+    register s32 (*openStream)(void *, void *, s32) = fn_8011ACC4;
     if (!(arg1 & 0x4000)) {
         lbl_80559944 = 1;
         *(volatile u32 *)&lbl_8041D608 = 0;
@@ -541,12 +540,12 @@ s32 *fn_8011770C(s32 arg0, s32 arg1) {
     }
     lbl_8041D508[0] = 0;
     if (arg1 & 0x04000000) {
-        memcpy(local.header, (void *)arg0, 0x2C);
+        memcpy(local.header, arg0, 0x2C);
     } else {
         if ((arg1 & 0x02000000) && lbl_8055DED8 != 0)
             openStream = (s32 (*)(void *, void *, s32))lbl_8055DED8;
         lbl_8055DED8 = 0;
-        if (openStream(local.state + 0xF0, (void *)arg0, arg1) == 0) {
+        if (openStream(local.state + 0xF0, arg0, arg1) == 0) {
             if ((s8)lbl_8041D508[0] == 0)
                 fn_80116E2C(lbl_802F6528);
             return 0;
@@ -570,81 +569,93 @@ s32 *fn_8011770C(s32 arg0, s32 arg1) {
     width = *(u32 *)(local.header + 0x14);
     height = *(u32 *)(local.header + 0x18);
     format = *(u32 *)(local.header + 0x24);
-    *(u32 *)(local.state + 0) = width;
-    *(u32 *)(local.state + 4) = height;
-    *(u32 *)(local.state + 0x14) = *(u32 *)(local.header + 0x1C);
-    *(u32 *)(local.state + 0x18) = *(u32 *)(local.header + 0x20);
-    *(u32 *)(local.state + 0x28) = *(u32 *)(local.header + 4);
-    *(u32 *)(local.state + 0xC8) = *(u32 *)(local.header + 0xC);
-    *(u32 *)(local.state + 0xD0) = *(u32 *)(local.header + 0x28);
-    *(u32 *)(local.state + 0xCC) = *(u32 *)(local.header + 0x10);
-    *(u32 *)(local.state + 0x24) = format;
-    *(u32 *)(local.state + 0xC0) = (width + 15) >> 4;
-    flags = (arg1 & 0x8FFFFFFF) | (format & 0x20000);
-    if ((format & 0x100000) == 0) flags &= ~0x100000;
+    *(volatile u32 *)(local.state + 0) = width;
+    *(volatile u32 *)(local.state + 4) = height;
+    *(volatile u32 *)(local.state + 0x23C) = width;
+    *(volatile u32 *)(local.state + 0x240) = height;
+    *(volatile u32 *)(local.state + 0x24) = format;
+    *(volatile u32 *)(local.state + 0xC0) = (width + 15) >> 4;
+    *(volatile u32 *)(local.state + 0x20) = (arg1 & 0x8FFFFFFF) | (format & 0x20000);
+    if ((format & 0x100000) == 0)
+        *(volatile u32 *)(local.state + 0x20) &= ~0x100000;
     mode = arg1 & 0x70000000;
-    if (mode != 0x70000000)
-        flags |= mode;
-    else
-        flags |= format & 0x70000000;
-    if (mode == 0x30000000) width <<= 1;
-    else if (mode == 0x20000000 || mode == 0x10000000) height <<= 1;
-    else if (mode == 0x50000000 || mode == 0x40000000) {
-        width <<= 1;
-        height <<= 1;
+    if (mode != 0x70000000) {
+        if (mode == 0)
+            *(volatile u32 *)(local.state + 0x20) |= format & 0x70000000;
+        else
+            *(volatile u32 *)(local.state + 0x20) |= mode;
     }
-    if (magic == 0x674B4942) flags |= 0x18000;
-    else if (magic == 0x684B4942) flags |= 0x8000;
+    switch (mode) {
+    case 0x30000000:
+        *(volatile u32 *)(local.state + 0) <<= 1;
+        break;
+    case 0x20000000:
+    case 0x10000000:
+        *(volatile u32 *)(local.state + 4) <<= 1;
+        break;
+    case 0x50000000:
+    case 0x40000000:
+        *(volatile u32 *)(local.state + 0) <<= 1;
+        *(volatile u32 *)(local.state + 4) <<= 1;
+        break;
+    }
+    if (magic == 0x674B4942) *(volatile u32 *)(local.state + 0x20) |= 0x18000;
+    else if (magic == 0x684B4942) *(volatile u32 *)(local.state + 0x20) |= 0x8000;
+    *(volatile u32 *)(local.state + 0x8) = 0;
+        *(volatile u32 *)(local.state + 0xCC) = *(u32 *)(local.header + 0x10);
     if ((arg1 & 0x1000) && (s32)lbl_80559938 != -1) {
-        *(u32 *)(local.state + 0x14) = lbl_80559938;
-        *(u32 *)(local.state + 0x18) = lbl_8055DEDC;
+        *(volatile u32 *)(local.state + 0x14) = lbl_80559938;
+        *(volatile u32 *)(local.state + 0x18) = lbl_8055DEDC;
         lbl_80559938 = -1;
+    } else {
+        *(volatile u32 *)(local.state + 0x14) = *(u32 *)(local.header + 0x1C);
+        *(volatile u32 *)(local.state + 0x18) = *(u32 *)(local.header + 0x20);
     }
-    *(u32 *)(local.state + 0x20) = flags;
-    *(u32 *)(local.state + 0) = width;
-    *(u32 *)(local.state + 4) = height;
-    *(u32 *)(local.state + 0x23C) = width;
-    *(u32 *)(local.state + 0x240) = height;
+
+
     count = (*(u32 *)(local.header + 0x1C) +
               (*(u32 *)(local.header + 0x20) >> 1)) /
              *(u32 *)(local.header + 0x20);
-    if (!count) count = 1;
-    *(u32 *)(local.state + 0x2AC) = count;
-    *(u32 *)(local.state + 0x2A4) = *(u32 *)(local.header + 0x1C);
-    *(u32 *)(local.state + 0x2A8) = *(u32 *)(local.header + 0x20);
-    roundedHeight = (*(u32 *)(local.header + 0x20) + 15) >> 4;
-    blockBytes = *(u32 *)(local.state + 0xC0) * roundedHeight;
-    *(u32 *)(local.state + 0xC4) = blockBytes;
-    *(u32 *)(local.state + 0x2E4) = blockBytes >> 2;
-    fn_8011FE20((u32 **)(local.state + 0xBC), blockBytes + 0x10);
-    fn_8011FE20((u32 **)(local.state + 0x2B4), count * 4);
-    fn_8011FE20((u32 **)(local.state + 0x2B8), count * 4);
-    fn_8011FE20((u32 **)(local.state + 0x2BC), count * 4);
-    fn_8011FE20((u32 **)(local.state + 0x2C0), count * 4);
-    fn_8011FE20((u32 **)(local.state + 0x2C4), count * 4);
-    fn_8011FE20((u32 **)(local.state + 0x2C8), count * 4);
-    fn_8011FE20((u32 **)(local.state + 0x2CC), count * 4);
+        roundedHeight = (*(volatile u32 *)(local.state + 4) + 15) >> 4;
+    blockBytes = *(volatile u32 *)(local.state + 0xC0) * roundedHeight;
+    *(volatile u32 *)(local.state + 0x2A4) = *(u32 *)(local.header + 0x1C);
+    *(volatile u32 *)(local.state + 0x2A8) = *(u32 *)(local.header + 0x20);
+    *(volatile u32 *)(local.state + 0x28) = *(u32 *)(local.header + 4);
+    *(volatile u32 *)(local.state + 0xD0) = *(u32 *)(local.header + 0x28);
+    *(volatile u32 *)(local.state + 0xC8) = *(u32 *)(local.header + 0xC);
+    *(volatile u32 *)(local.state + 0xC4) = blockBytes;
+    *(volatile u32 *)(local.state + 0x2E4) = blockBytes >> 2;
+    *(volatile u32 *)(local.state + 0x2AC) = count;
+    if (!count) *(volatile u32 *)(local.state + 0x2AC) = 1;
+    fn_8011FE20((u32 **)(local.state + 0xBC), *(volatile u32 *)(local.state + 0xC4) + 0x10);
+    fn_8011FE20((u32 **)(local.state + 0x2B4), (*(volatile u32 *)(local.state + 0x2AC)) * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2B8), (*(volatile u32 *)(local.state + 0x2AC)) * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2BC), (*(volatile u32 *)(local.state + 0x2AC)) * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2C0), (*(volatile u32 *)(local.state + 0x2AC)) * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2C4), (*(volatile u32 *)(local.state + 0x2AC)) * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2C8), (*(volatile u32 *)(local.state + 0x2AC)) * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2CC), (*(volatile u32 *)(local.state + 0x2AC)) * 4);
     count = lbl_80559944;
     if (count == 0) count = 1;
     fn_8011FE20((u32 **)(local.state + 0x2F0), count * 0x17C);
     fn_8011FE20((u32 **)(local.state + 0x244), lbl_80559944 * 4);
-    fn_8011DFAC(local.state + 0x300, (width + 15) & ~15);
-    fn_8011FE20((u32 **)(local.state + 0x300), *(u32 *)(local.state + 0x300));
-    fn_8011FE20((u32 **)(local.state + 0x304), *(u32 *)(local.state + 0x304));
-    fn_8011FE20((u32 **)(local.state + 0x308), *(u32 *)(local.state + 0x308));
-    fn_8011FE20((u32 **)(local.state + 0x30C), *(u32 *)(local.state + 0x30C));
-    fn_8011FE20((u32 **)(local.state + 0x310), *(u32 *)(local.state + 0x310));
-    fn_8011FE20((u32 **)(local.state + 0x314), *(u32 *)(local.state + 0x314));
-    fn_8011FE20((u32 **)(local.state + 0x318), *(u32 *)(local.state + 0x318));
-    fn_8011FE20((u32 **)(local.state + 0x31C), *(u32 *)(local.state + 0x31C));
-    fn_8011FE20((u32 **)(local.state + 0x320), *(u32 *)(local.state + 0x320));
+    fn_8011DFAC(local.state + 0x300, (*(volatile u32 *)(local.state + 0) + 15) & ~15);
+    fn_8011FE20((u32 **)(local.state + 0x300), *(volatile u32 *)(local.state + 0x300));
+    fn_8011FE20((u32 **)(local.state + 0x304), *(volatile u32 *)(local.state + 0x304));
+    fn_8011FE20((u32 **)(local.state + 0x308), *(volatile u32 *)(local.state + 0x308));
+    fn_8011FE20((u32 **)(local.state + 0x30C), *(volatile u32 *)(local.state + 0x30C));
+    fn_8011FE20((u32 **)(local.state + 0x310), *(volatile u32 *)(local.state + 0x310));
+    fn_8011FE20((u32 **)(local.state + 0x314), *(volatile u32 *)(local.state + 0x314));
+    fn_8011FE20((u32 **)(local.state + 0x318), *(volatile u32 *)(local.state + 0x318));
+    fn_8011FE20((u32 **)(local.state + 0x31C), *(volatile u32 *)(local.state + 0x31C));
+    fn_8011FE20((u32 **)(local.state + 0x320), *(volatile u32 *)(local.state + 0x320));
     if ((arg1 & 0x04000000) == 0) {
-        fn_8011FE20((u32 **)(local.state + 0xEC), (*(u32 *)(local.state + 0xCC) + 1) * 4);
-        fn_8011FE20((u32 **)(local.state + 0x248), *(u32 *)(local.state + 0xD0) * 4);
-        fn_8011FE20((u32 **)(local.state + 0x24C), *(u32 *)(local.state + 0xD0) * 4);
-        fn_8011FE20((u32 **)(local.state + 0x250), *(u32 *)(local.state + 0xD0) * 4);
+        fn_8011FE20((u32 **)(local.state + 0xEC), (*(volatile u32 *)(local.state + 0xCC) + 1) * 4);
+        fn_8011FE20((u32 **)(local.state + 0x248), *(volatile u32 *)(local.state + 0xD0) * 4);
+        fn_8011FE20((u32 **)(local.state + 0x24C), *(volatile u32 *)(local.state + 0xD0) * 4);
+        fn_8011FE20((u32 **)(local.state + 0x250), *(volatile u32 *)(local.state + 0xD0) * 4);
     }
-    if ((s32)result == 0) {
+    {
         allocated = ((void *(*)(void *, s32))fn_80116DDC)(local.state, 0x388);
         if (allocated == 0) {
             fn_80116E2C((const u8 *)(lbl_802F6528 + 0x59));
@@ -692,17 +703,16 @@ s32 *fn_8011770C(s32 arg0, s32 arg1) {
         if ((arg1 & 0x400) == 0) {
             u8 *record, *records, *outA, *outB, *outC, *outD;
             void *copiedMetadata;
-            u32 metadataCount, metadataIndex, alignedRows;
+            u32 metadataIndex, alignedRows;
             s32 needsCopy;
+            fn_80117618(allocated, local.metadata);
             records = local.metadata;
             outA = local.metadata + 0x1C;
-            outB = local.metadata + 0x2C;
-            outC = local.metadata + 0x38;
-            outD = local.metadata + 0x54;
+            outB = local.metadata + 0x28;
+            outC = local.metadata + 0x34;
+            outD = local.metadata + 0x40;
             needsCopy = 0;
-            fn_80117618(allocated, local.metadata);
-            metadataCount = *(u32 *)local.metadata;
-            for (metadataIndex = 0; metadataIndex < metadataCount; metadataIndex++) {
+            for (metadataIndex = 0; metadataIndex < *(volatile u32 *)local.metadata; metadataIndex++) {
                 alignedRows = (*(u32 *)(local.metadata + 0x44) + 15) & ~15;
                 record = records + metadataIndex * 0x30;
                 if (*(u32 *)(record + 0x18) != 0) {
@@ -756,8 +766,10 @@ s32 *fn_8011770C(s32 arg0, s32 arg1) {
             u32 filePosition, begin, i, j, kept, dstOffset, tableOffset;
             u32 scanIndex, listCount, entryIndex, flags2, size, inputFlags, n;
             u32 *input, *inputA, *table, *indices;
-            u16 id;
-            s32 room, lastFlag, textureMode, stride;
+            u32 id;
+            s32 room, textureMode;
+            u32 lastFlag;
+            u32 stride;
             s32 (*getPosition)(void *, s32);
         if ((arg1 & 0x01000000) && (s32)lbl_8055993C != -1) {
             *(u32 *)((u8 *)allocated + 0x238) = lbl_8055993C;
@@ -850,75 +862,81 @@ s32 *fn_8011770C(s32 arg0, s32 arg1) {
         tableOffset = 0;
         scanIndex = 0;
         kept = 0;
-        listCount = *(u32 *)((u8 *)allocated + 0x2E8);
-        while (scanIndex < listCount) {
-            entry = *(u8 **)((u8 *)allocated + 0x2F0) + dstOffset;
-            *(u32 *)(entry + 0x2C) = 0;
-            entryIndex = ((u32 *)*(u32 **)((u8 *)allocated + 0x244))[tableOffset / 4];
+        while (scanIndex < *(u32 *)((u8 *)allocated + 0x2E8)) {
+            *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x2C) = 0;
+            entryIndex = *(u32 *)((u8 *)*(u32 **)((u8 *)allocated + 0x244) + tableOffset);
             flags2 = ((u32 *)*(u32 **)((u8 *)allocated + 0x24C))[entryIndex];
             if (((flags2 >> 31) || ((flags2 >> 28) & 1)) && lbl_8055DECC != 0) {
-                id = (u16)flags2;
+                id = flags2 & 0xFFFF;
                 if (*(u32 *)((u8 *)allocated + 0x14) != 0 &&
                     *(u32 *)((u8 *)allocated + 0x18) != 0) {
-                    id = (u16)((f64)*(u32 *)((u8 *)allocated + 0x358) *
-                        ((f64)id * (f64)*(u32 *)((u8 *)allocated + 0x14)) /
+                    id = (u16)((f64)*(u32 *)(local.state + 0x2A8) *
+                        ((f64)(u32)id * (f64)*(u32 *)((u8 *)allocated + 0x14)) /
                         ((f64)*(u32 *)((u8 *)allocated + 0x18) *
-                         (f64)*(u32 *)((u8 *)allocated + 0x354)));
+                         (f64)*(u32 *)(local.state + 0x2A4)));
                 }
                 if (((s32 (*)(void *, s32, s32, s32, s32, void *))lbl_8055DECC)(
-                    entry, id, ((flags2 >> 27) & 8) + 8,
+                    (*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset), id, ((flags2 >> 27) & 8) + 8,
                     ((flags2 >> 29) & 1) + 1,
                     *(s32 *)((u8 *)allocated + 0x20), allocated) != 0) {
-                    if (*(s32 *)(entry + 0x58) == 0)
-                        *(s32 *)(entry + 0x58) = -1;
+                    if (*(s32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x58) == 0)
+                        *(s32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x58) = -1;
                     inputA = *(u32 **)((u8 *)allocated + 0x248);
-                    size = inputA[entryIndex];
-                    *(u32 *)(entry + 0x28) = (size + 0xFF) & ~0xFF;
-                    *(void **)(entry + 0x2C) =
+                    size = (*(u32 **)((u8 *)allocated + 0x248))[
+                        *(u32 *)((u8 *)*(u32 **)((u8 *)allocated + 0x244) + tableOffset)];
+                    *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x28) = (size + 0xFF) & ~0xFF;
+                    *(void **)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x2C) =
                         ((void *(*)(void *, s32, ...))fn_80116DDC)(
-                            allocated, *(s32 *)(entry + 0x28), size, inputA);
-                    if (*(u32 *)(entry + 0x2C) == 0) {
-                        ((void (*)(void *))*(void **)(entry + 0x1C))(entry);
+                            allocated, *(s32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x28), size, inputA);
+                    if (*(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x2C) == 0) {
+                        ((void (*)(void *))*(void **)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x1C))((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset));
                     } else {
-                        room = 0x2EE - *(s32 *)(entry + 0x68);
+                        room = 0x2EE - *(s32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x68);
                         if (room < 0) room = 0;
-                        inputFlags = ((u32 *)*(u32 **)((u8 *)allocated + 0x24C))[entryIndex];
-                        *(s32 *)(entry + 0x44) = (((inputFlags >> 27) & 8) == 0);
-                        *(u32 *)(entry + 0x30) =
-                            *(u32 *)(entry + 0x2C) + *(u32 *)(entry + 0x28);
-                        *(u32 *)(entry + 0x34) = *(u32 *)(entry + 0x2C);
-                        *(u32 *)(entry + 0x38) = *(u32 *)(entry + 0x2C);
-                        *(u32 *)(entry + 0x4C) =
-                            fn_80116BD4(id * ((((inputFlags >> 29) & 1) + 1) * 2),
+                        inputFlags = (*(u32 **)((u8 *)allocated + 0x24C))[
+                            *(u32 *)((u8 *)*(u32 **)((u8 *)allocated + 0x244) + tableOffset)];
+                        *(s32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x44) = ((u32)__cntlzw((inputFlags << 5) & 8) >> 5);
+                        *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x30) =
+                            *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x2C) + *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x28);
+                        *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x34) = *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x2C);
+                        *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x38) = *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x2C);
+                        inputFlags = (*(u32 **)((u8 *)allocated + 0x24C))[
+                            *(u32 *)((u8 *)*(u32 **)((u8 *)allocated + 0x244) + tableOffset)];
+                        *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x4C) =
+                            fn_80116BD4((id * (((inputFlags >> 29) & 1) + 1)) * 2,
                                         room, 0x3E8) & ~3;
-                        if (*(u32 *)(entry + 0x4C) > *(u32 *)(entry + 0x28))
-                            *(u32 *)(entry + 0x4C) = *(u32 *)(entry + 0x28);
-                        lastFlag = ((u32 *)*(u32 **)((u8 *)allocated + 0x24C))[entryIndex];
-                        textureMode = (lastFlag >> 28) & 1;
-                        texture = fn_8011B584((u16)lastFlag,
-                                              ((lastFlag >> 29) & 1) + 1,
-                                              textureMode, 0);
-                        *(void **)(entry + 0x3C) = texture;
-                        if (texture == 0) {
-                            ((void (*)(void *))*(void **)(entry + 0x1C))(entry);
-                            *(u32 *)(entry + 0x2C) = 0;
+                        if (*(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x4C) > *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x28))
+                            *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x4C) = *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x28);
+                        lastFlag = (*(u32 **)((u8 *)allocated + 0x24C))[
+                            *(u32 *)((u8 *)*(u32 **)((u8 *)allocated + 0x244) + tableOffset)];
+                        texture = 0;
+                        if ((lastFlag >> 31) || ((lastFlag >> 28) & 1)) {
+                            textureMode = (lastFlag >> 28) & 1;
+                            texture = fn_8011B584((u16)lastFlag,
+                                                  ((lastFlag >> 29) & 1) + 1,
+                                                  textureMode, 0);
+                        }
+                        *(void **)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x3C) = texture;
+                        if (*(volatile u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x3C) == 0) {
+                            ((void (*)(void *))*(void **)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x1C))((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset));
+                            *(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x2C) = 0;
                         }
                         lbl_8055DED0 += 1;
                         stride = *(s32 *)((u8 *)allocated + 0x2A4);
-                        *(s32 *)(entry + 0x48) =
+                        *(s32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x48) =
                             *(s32 *)((u8 *)allocated + 8) -
                             ((stride * 3) / (*(s32 *)((u8 *)allocated + 0x2A8) * 4));
-                        *(s32 *)(entry + 0x40) = 0;
+                        *(s32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x40) = 0;
                     }
                 }
             }
-            if (*(s32 *)(entry + 0x6C) == 0)
-                *(s32 *)(entry + 0x6C) = 0x10000;
-            if (*(u32 *)(entry + 0x2C) == 0) {
+            if (*(s32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x6C) == 0)
+                *(s32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x6C) = 0x10000;
+            if (*(u32 *)((*(u8 **)((u8 *)allocated + 0x2F0) + dstOffset) + 0x2C) == 0) {
                 n = *(u32 *)((u8 *)allocated + 0x2E8) - 1;
                 *(u32 *)((u8 *)allocated + 0x2E8) = n;
                 indices = *(u32 **)((u8 *)allocated + 0x244);
-                memcpy(&indices[tableOffset / 4],
+                memcpy((u8 *)indices + tableOffset,
                        &indices[scanIndex + 1], (n - scanIndex) * 4);
             } else {
                 dstOffset += 0x17C;
@@ -946,9 +964,9 @@ s32 *fn_8011770C(s32 arg0, s32 arg1) {
             }
         }
         }
-        result = (s32 *)allocated;
+        
     }
-    return result;
+    return (s32 *)allocated;
 }
 #undef lbl_8041D608
 
@@ -1462,14 +1480,15 @@ s32 fn_8011A7CC(DVDFileInfo *info) {
 #pragma push
 #pragma dont_inline on
 s32 fn_8011A870(void *arg0, s32 arg1) {
-    register s32 *p = (s32 *)arg0;
+    register volatile s32 *p = (volatile s32 *)arg0;
+    register volatile s32 *wait = (volatile s32 *)((u8 *)arg0 + 0x24);
     register s32 result;
     if (arg1 & 1) {
         if (p[0x50 / 4] == 0)
             p[0x50 / 4] = 1;
         if (arg1 & 0x80000000) {
             do {
-            } while (p[0x24 / 4] != 0);
+            } while (*wait != 0);
         }
     } else if (arg1 & 2) {
         if ((u32)p[0x50 / 4] == 1U)
@@ -2417,6 +2436,7 @@ s32 fn_8011C400(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, s32 arg4) {
 #pragma push
 #pragma scheduling on
 void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
+    u8 buffers[0x20];
     register const u8 *var_r31;
     register u32 var_r29;
     register u32 var_r30;
@@ -2448,10 +2468,10 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     register u8 *var_r3_16;
     s32 temp_r4_2;
     s32 temp_r4_3;
-    s8 var_r0_6;
+    u32 var_r0_6;
     s32 var_r4;
     s32 var_r4_2;
-    s32 var_r4_3;
+    register s32 var_r4_3;
     u32 temp_r29;
     u32 temp_r30;
     u32 temp_r3;
@@ -2513,10 +2533,9 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     u32 var_r30_7;
     u32 var_r30_8;
     u32 var_r30_9;
-    u32 var_r7;
+    register u32 var_r7;
     s32 var_r8_2;
 
-    u8 buffers[0x20];
     void *arg0 = (void *)arg0_raw;
     s32 *arg1 = (s32 *)arg1_raw;
     s32 *arg2 = (s32 *)arg2_raw;
