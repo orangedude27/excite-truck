@@ -132,7 +132,7 @@ void fn_802E9C68(long arg0) {
 }
 #pragma scheduling on
 #pragma pop
-extern char lbl_8034E390;
+extern char lbl_8034E390[];
 extern char lbl_8034E3E0;
 extern char lbl_8034E3F0;
 extern char lbl_805076B8;
