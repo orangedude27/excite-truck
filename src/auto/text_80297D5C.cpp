@@ -73,27 +73,27 @@ extern float lbl_805645AC;
 extern float lbl_805645B0;
 extern float lbl_805645B4;
 extern float lbl_80558DC4;
-int fn_80297D5C(int* out, int value) {
-    int i = 1;
-    do {
+#pragma scheduling invalid_target
+extern "C" int fn_80297D5C(void *out, int value) {
+    int i;
+    for (i = 1; i < 0x10; ++i) {
         if (i * i == value) {
-            *out = i;
+            *(int *)out = i;
             return 1;
         }
-        i++;
-    } while (i <= 0x10);
+    }
     return 0;
 }
-
-int fn_80297D90(int* out, int value) {
+#pragma scheduling on
+extern "C" int fn_80297D90(void *out, int value) {
     int i = 0;
     do {
         if ((1 << i) == value) {
-            *out = i;
+            *(int *)out = i;
             return 1;
         }
         i++;
-    } while (i < 0xa);
+    } while (i < 0xA);
     return 0;
 }
 
