@@ -33,7 +33,7 @@ extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern void fn_802E589C(void);
 extern int fn_802E582C(void);
-extern char lbl_8055D1E4[];
+__declspec(section ".sdata") extern char lbl_8055D1E4[];
 extern char lbl_8034D490[];
 extern char lbl_8034D4A0[];
 extern char lbl_8034D5B0[];
@@ -203,6 +203,17 @@ void fn_802E58B8(unsigned char *arg0) {
     } while (value != 0);
     fn_8012BEF0(arg0);
     fn_8012C41C(fn_802E589C, 0, arg0);
+}
+
+extern int sprintf(char *, const char *, ...);
+void fn_802E5950(int arg0, int arg1) {
+    char buffer[0x108];
+
+    sprintf(buffer, lbl_8055D1E4, arg0, arg1);
+    ((void (*)(char *, char *))fn_802E30C8)(lbl_8034D490, buffer);
+    if (fn_802E582C() == 0) {
+        ((void (*)(char *, char *))fn_802E30C8)(lbl_8034D4A0, buffer);
+    }
 }
 
 void fn_802E59BC(unsigned char *arg0) {
