@@ -443,15 +443,15 @@ void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *arg4) {
     }
 }
 
-extern "C" u8 *fn_8012B4E4(u8 *arg0, u8 *arg1) {
+#pragma scheduling invalid_target
+extern "C" u8 *fn_8012B4E4(u8 *arg0, s8 *arg1) {
     s8 ch = (s8)*arg0;
-    u32 diff = (u32)(ch - 0x2A);
-    *arg1 = (u8)(__cntlzw(diff) >> 5);
+    *arg1 = (s8)(ch - 0x2A == 0);
     if (ch == 0x2A)
         return arg0 + 1;
     return arg0;
 }
-
+#pragma scheduling on
 extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
     if ((*(u32 *)((char *)arg0 + 0x34) & 0x20) &&
         (*(u32 *)((char *)arg1 + 0x34) & 0x10)) return 1;
