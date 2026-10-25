@@ -497,11 +497,10 @@ int fn_801EAB2C(void);
 int fn_801EAB80(void *, int);
 int fn_80297988(void *);
 int memset(void *, int, unsigned int);
-extern char lbl_8033A5E8[];
-#pragma scheduling off
+__declspec(section ".rodata") extern int lbl_8033A5E8;
 void *fn_801F19FC(void *arg0, int arg1) {
     fn_801EAB2C();
-    *(int **)arg0 = (int *)lbl_8033A5E8;
+    *(int **)arg0 = &lbl_8033A5E8;
     fn_801EAB80(arg0, arg1);
     memset((char *)arg0 + 0x3C, 0, 0x44);
     *(int *)((char *)arg0 + 0x80) = 0;
