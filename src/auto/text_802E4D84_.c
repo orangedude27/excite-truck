@@ -172,24 +172,18 @@ void fn_802E5828(void) {
 }
 
 #pragma dont_inline on
+#pragma scheduling invalid_target
 int fn_802E582C(void) {
-    int count;
-    int *entries;
-    int value;
-
-    if (lbl_8055FFA0 >= 0x100)
-        return 0;
-    value = fn_802E5AE8();
-    count = lbl_8055FFA0;
-    entries = lbl_8055FF9C;
-    entries[count] = value;
-    count = lbl_8055FFA0;
-    entries = lbl_8055FF9C;
-    if (entries[count] == 0)
-        return 0;
-    lbl_8055FFA0 = count + 1;
-    return 1;
+    if (lbl_8055FFA0 < 0x100) {
+        lbl_8055FF9C[lbl_8055FFA0] = fn_802E5AE8();
+        if (lbl_8055FF9C[lbl_8055FFA0] == 0)
+            return 0;
+        lbl_8055FFA0 = lbl_8055FFA0 + 1;
+        return 1;
+    }
+    return 0;
 }
+#pragma scheduling on
 #pragma dont_inline reset
 
 #pragma dont_inline fn_802E582C
