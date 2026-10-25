@@ -98,10 +98,14 @@ void fn_8028E0F0(void) {
 extern void fn_8028ED74(void *);
 extern void fn_8028EE1C(void *);
 extern void fn_8028F8C4(int);
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8028E138(void) {
+    struct Table { int entries[64]; int count; };
     int i;
     int *entries = (int *)&lbl_804B34B0;
-    struct Table { int entries[64]; int count; } *base = (struct Table *)&lbl_804B34B0;
+    register struct Table *base = (struct Table *)&lbl_804B34B0;
     lbl_8055F738 = lbl_80564420;
     i = 0;
     goto test;
@@ -112,7 +116,7 @@ body:
 test:
     if (i < base->count) goto body;
 }
-
+#pragma pop
 void fn_8028E1A4(void) {
     lbl_8055F738 = fn_801E7E18();
     lbl_8055F73C = 1;
@@ -271,21 +275,28 @@ int fn_8028EF44(void *arg0, unsigned int arg1) {
 }
 
 #pragma push
-#pragma small_data off
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8028EFC4(int arg0, int *arg1) {
-    int i = 0;
-    int *p = arg1;
-    while (i < *(int *)((char *)arg1 + 0x100)) {
-        int item = *p;
-        int n = *(int *)((char *)item + 0x44);
-        fn_8028ED8C((char *)arg0 + (n - 1) * 0x104, item);
-        p++;
-        i++;
-    }
+    int *base;
+    int *cursor;
+    int i;
+    int item;
+    int n;
+    base = arg1;
+    cursor = base;
+    i = 0;
+    goto test;
+body:
+    item = *cursor;
+    n = *(int *)((char *)item + 0x44);
+    ((void (*)(void *, int))fn_8028ED8C)((char *)arg0 + (n - 1) * 0x104, item);
+    cursor++;
+    i++;
+test:
+    if (i < *(int *)((char *)base + 0x100)) goto body;
 }
-
-#pragma push
-#pragma small_data off
+#pragma pop
 int fn_8028F040(int *arg0, int *arg1, int arg2) {
     int n = *(int *)((char *)arg0 + 0x100);
     while (n > 0) {
