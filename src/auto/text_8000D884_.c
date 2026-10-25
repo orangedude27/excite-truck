@@ -87,24 +87,26 @@ int fn_8000DA10(void) {
     return *lbl_8055D46C;
 }
 
+#pragma push
+#pragma optimization_level 2
 void fn_8000DA1C(const char *arg0) {
-    int *p;
-    char *dst;
-    int n;
-    unsigned char c;
-    p = (int *)((char *)lbl_8055D46C + *lbl_8055D46C * 0x18);
-    p[1] = 2;
-    p = (int *)((char *)lbl_8055D46C + *lbl_8055D46C * 0x18);
-    dst = (char *)p + 8;
+    register int n;
+    register char *base;
+    register char *dst;
+    register unsigned char c;
+    *((int *)((char *)lbl_8055D46C + *lbl_8055D46C * 0x18) + 1) = 2;
+    base = (char *)lbl_8055D46C + *lbl_8055D46C * 0x18;
+    dst = base + 8;
     n = 0x12;
-    do { n--; } while (n > 0);
+    while (--n > 0) {
+    }
     dst[-1] = 0;
     do {
         c = *arg0++;
         *dst++ = c;
     } while ((signed char)c != 0);
 }
-
+#pragma pop
 void fn_8000DA80(void) {
     int *entry;
     int i;
@@ -153,23 +155,18 @@ extern void fn_802E30C8();
 #pragma scheduling invalid_target
 void fn_8000DBC8(int arg0) {
     int count;
-    int appendCount;
     unsigned int *entry;
 
     count = lbl_8055D460;
     entry = lbl_8034F628;
-    if (count > 0) {
-        do {
-            if (*entry == (unsigned int)arg0) {
-                fn_802E30C8(lbl_802FC264, arg0);
-                return;
-            }
-            entry++;
-        } while (--count != 0);
+    for (; count > 0; count--) {
+        if (*entry == (unsigned int)arg0) {
+            ((void (*)(const char *, ...))fn_802E30C8)(lbl_802FC264, arg0);
+            return;
+        }
+        entry++;
     }
-    appendCount = lbl_8055D460;
-    lbl_8034F628[appendCount] = arg0;
-    lbl_8055D460 = appendCount + 1;
+    lbl_8034F628[lbl_8055D460++] = arg0;
 }
 #pragma pop
 void fn_8000DC28(const char *arg0, int arg1) {
