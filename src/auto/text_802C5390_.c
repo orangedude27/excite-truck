@@ -132,6 +132,7 @@ void fn_802C5720(int arg0) {
     }
     fn_802DB2BC(1);
 }
+#pragma dont_inline reset
 
 void fn_802C57B0(void) { }
 
