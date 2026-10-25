@@ -1051,7 +1051,13 @@ extern u16 lbl_80394680[];
 extern u32 lbl_80393628[];
 s32 fn_8006DF68(s32 *arg0) {
     s32 val = arg0[-2];
-    return val ? val + 8 : 0;
+
+    switch (val) {
+    default:
+        return val + 8;
+    case 0:
+        return 0;
+    }
 }
 
 u8 fn_8006DF84(void *arg0) {
@@ -14451,17 +14457,19 @@ u8 fn_8006CA6C(void) {
     return val;
 }
 
+#pragma push
+#pragma opt_propagation off
 void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 arg8) {
-    u32 *ptr = (u32 *)&lbl_80392960;
+    u8 *ptr = (u8 *)&lbl_80392960;
     void (*func)(void);
     if (arg8 == 3) {
-        func = (void (*)(void))ptr[0x66C / 4];
+        func = *(void (**)(void))(ptr + 0x66C);
         if (func) func();
     } else {
         DBPrintf_8006CFA8(lbl_803140D0, arg8);
     }
 }
-
+#pragma pop
 void fn_8006CF80(void) {
     DBPrintf_8006CFA8(lbl_803140E8);
 }
