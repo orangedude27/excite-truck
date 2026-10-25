@@ -573,21 +573,20 @@ void fn_80265A34(void) {
 }
 
 int fn_80265B5C(void) {
-    register int ret = 1;
-    register void *p = lbl_8055F44C;
-    register int flag = 0;
+    int ret = 1;
+    void *p = lbl_8055F44C;
+    int flag = 0;
 
-    if (p != 0) {
-        if (*((unsigned char *)p + 0x20) != 0) {
-            flag = 1;
-        }
+    if (p != 0 && *((unsigned char *)p + 0x20) != 0) {
+        flag = 1;
     }
     if (flag != 0) {
-        return ret;
+        goto done;
     }
     if (lbl_8055F450 == 0) {
         ret = 0;
     }
+done:
     return ret;
 }
 
