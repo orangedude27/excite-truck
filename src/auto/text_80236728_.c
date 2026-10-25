@@ -85,6 +85,25 @@ void fn_80236774(void) {
     lbl_8055F0C4 = 0;
 }
 
+extern void fn_80237D00(void *);
+void fn_80236848(void) {
+    QueueNode_80236848 *end = (QueueNode_80236848 *)lbl_8055F0C0;
+    QueueNode_80236848 *node = (QueueNode_80236848 *)lbl_8055F0BC;
+
+    if (node == end) {
+        fn_80237D00(end);
+        lbl_8055F0BC = 0;
+        lbl_8055F0C0 = 0;
+        return;
+    }
+    while (node->next != end) {
+        node = node->next;
+    }
+    fn_80237D00(end);
+    lbl_8055F0C0 = (char *)node;
+    node->next = 0;
+}
+
 void fn_802368B4(int arg0) {
     if (((unsigned char *)lbl_8055F0C0)[arg0] == 0) {
         lbl_8055F0C0[arg0] = 1;
