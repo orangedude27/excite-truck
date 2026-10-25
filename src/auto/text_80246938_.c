@@ -267,6 +267,22 @@ s32 fn_8024762C(void) {
     return 0;
 }
 
+#pragma scheduling invalid_target
+void fn_8024768C(void) {
+    s32 i;
+
+    fn_80214CB4((s32)lbl_8055BEAC);
+    i = 1;
+    goto check;
+loop:
+    fn_80214B44(i);
+    i += 1;
+check:
+    if (i < *(s32 *)((char *)lbl_802FA3B4 + lbl_8055F26C * 0xC + 8))
+        goto loop;
+    fn_80214A9C(0x14);
+}
+#pragma scheduling on
 s32 fn_802476FC(void) {
     UnkFunc fn;
     if (fn_802411D4() != 0 && lbl_8055F26C > 0) fn = fn_80214B94;
