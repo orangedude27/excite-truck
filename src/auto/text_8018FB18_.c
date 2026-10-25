@@ -1148,6 +1148,11 @@ int fn_80192C68(void *arg0) {
     return (((unsigned char)*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 5) & 7) - 1;
 }
 
+s32 fn_80192E20(void *arg0) {
+    s32 bit = *(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) & 1;
+    return (s32)((u32)(-bit | bit) >> 31);
+}
+
 unsigned char fn_80192F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
 }
