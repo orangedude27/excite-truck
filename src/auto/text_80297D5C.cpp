@@ -825,6 +825,17 @@ void fn_8029B1B8(void* arg0) {
     *(float*)(p+0x1F8)=lbl_80564590 / (float)*(unsigned short*)(p+0x1EC);
 }
 
+extern "C" void* fn_8029B938(void* arg0) {
+    int result = fn_801284F8(0x1FC, lbl_80349550);
+    if (result != 0) {
+        result = fn_8029ADCC();
+    }
+    *(int*)arg0 = result;
+    fn_801EEFDC((void*)fn_8029BFF8, 4);
+    fn_8029BA0C(arg0);
+    return arg0;
+}
+
 extern "C" void fn_8029BEF8(void);
 extern "C" int fn_8029C190(void*);
 extern "C" int fn_801EEFDC(void*, int);
