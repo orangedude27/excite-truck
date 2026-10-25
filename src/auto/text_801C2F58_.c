@@ -1,4 +1,7 @@
 #include <types.h>
+extern f32 lbl_8055E85C;
+extern f32 lbl_8055E860;
+extern f32 lbl_805629B4;
 extern char lbl_80336B00[];
 extern void fn_801C8420(void);
 extern void fn_801C6D94(void);
