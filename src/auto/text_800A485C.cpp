@@ -2,6 +2,7 @@
 #include <macros.h>
 extern "C" s32 WPADSetSamplingCallback(s32, void *);
 extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
+extern "C" void DetachSound__Q34nw4hbm3snd11SoundHandleFv(void *);
 namespace homebutton {
 class GroupAnmController {
 public:
@@ -4614,9 +4615,14 @@ extern "C" u8 lbl_80559230;
 extern "C" u8 lbl_80559231;
 extern "C" s32 fn_800B4D00(void) {
     u8 data[2];
+    s32 result = 0;
+
     data[0] = lbl_80559230;
     data[1] = lbl_80559231;
-    return VFiPFSTR_StrNCmp(0, data, 0, 1, 2) == 0;
+    if (VFiPFSTR_StrNCmp(0, data, 1, 0, 2) == 0) {
+        result = 1;
+    }
+    return result;
 }
 
 extern "C" s32 fn_800A4D74(void *, u32);
