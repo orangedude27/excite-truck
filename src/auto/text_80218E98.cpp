@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern "C" void fn_80227880(s32, f32, f32, f32, f32);
+
 extern "C" s32 fn_8022F638(s32, s32, s32, s32, f32);
 extern f32 lbl_805634E4;
 
