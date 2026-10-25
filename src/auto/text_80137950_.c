@@ -12,9 +12,9 @@ extern void fn_802E317C(const char*, ...);
 extern char lbl_8032BEE4[];
 extern char lbl_8032BEC0[];
 extern char lbl_8032BECC[];
-extern char lbl_80559C04[];
-extern char lbl_80559C08[];
-extern char lbl_80559C10[];
+extern int lbl_80559C04;
+extern int lbl_80559C08;
+extern int lbl_80559C10;
 int fn_801379CC(void) {
     if ((int)lbl_80559C00 == -1) {
         fn_802E317C("x");
