@@ -413,7 +413,7 @@ void fn_802C942C(int arg0) {
 void fn_802C9474(void) {
     if ((unsigned char)lbl_8055FC94 != 0) return;
     lbl_8055FC94 = 1;
-    fn_802E30C8(lbl_8055D030, lbl_8034B4E0);
+    ((void (*)(int, ...))fn_802E30C8)((int)lbl_8055D030, lbl_8034B4E0);
 }
 #pragma scheduling on
 int fn_802C94A0();
@@ -439,18 +439,23 @@ extern double atan(double);
 extern double sin(double);
 extern double cos(double);
 extern void fn_802D0368(float, float, float, float);
+#pragma scheduling invalid_target
 void fn_802C9648(float arg0) {
-    float f3 = lbl_8055FC38;
-    float f4 = lbl_8055FC3C;
-    float f0 = f3 * arg0;
-    float f2 = f4 * arg0;
+    float f0;
+    float f2;
+    float f3;
+    float f4;
+    f3 = lbl_8055FC38;
+    f4 = lbl_8055FC3C;
+    f0 = f3 * arg0;
+    f2 = f4 * arg0;
     lbl_804C144C[0] = f3;
     lbl_804C144C[1] = f4;
     lbl_8055FC38 = f0;
     lbl_8055FC3C = f2;
     fn_802C974C(f0, f2, lbl_804C144C[2]);
 }
-
+#pragma scheduling on
 void fn_802C967C(void) {
     fn_802C974C(lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
 }
