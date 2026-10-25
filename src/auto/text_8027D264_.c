@@ -12,7 +12,7 @@ extern int lbl_8055C774;
 extern int fn_80012820(int);
 extern void fn_80008188(int);
 extern void fn_8000DBC8(void *);
-extern void *lbl_804B2FD8;
+extern char lbl_804B2FD8[];
 extern void fn_8027D96C(int);
 extern void fn_8027D9A4(int, int);
 extern int fn_80128668(void);
@@ -93,6 +93,25 @@ void *fn_8027D494(void *arg0) {
     return arg0;
 }
 
+void *fn_8027D5B8(void *);
+void *fn_8027D504(void *arg0) {
+    struct Local {
+        void *field_00;
+        int field_04;
+        void *field_08;
+        int field_0C;
+        int field_10;
+    };
+    struct Local *obj = (struct Local *)arg0;
+    obj->field_00 = lbl_80347CA8;
+    obj->field_04 = 0;
+    obj->field_0C = 0;
+    obj->field_08 = (char *)arg0 + 0x14;
+    obj->field_10 = 6;
+    fn_8002F53C((char *)arg0 + 0x14, fn_8027D5B8, fn_8027D39C, 0x1F4, 6);
+    return arg0;
+}
+
 int fn_8027D578(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
@@ -159,8 +178,7 @@ extern "C" void fn_8027D77C(void *arg0) {
 void fn_8027D7B8(void *arg0) {
     fn_80007F90(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
 }
-#pragma scheduling push
-#pragma scheduling off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8027D810(void *arg0) {
     class Obj {
@@ -170,13 +188,12 @@ extern "C" void fn_8027D810(void *arg0) {
         virtual void v2();
         virtual void v3(int);
     };
-    int id = *(int *)((char *)arg0 + 0xC);
-    void *res = fn_8001285C(id);
+    void *res = fn_8001285C(*(volatile int *)((char *)arg0 + 0xC));
     void *obj = *(void **)((char *)res + 0x20);
     ((Obj *)obj)->v3((int)lbl_80347DE8);
 }
 #pragma cplusplus off
-#pragma scheduling pop
+#pragma scheduling on
 int fn_8027D850(void *arg0) {
     return *(int *)((char *)arg0 + 0x34);
 }
@@ -276,7 +293,21 @@ int fn_8027D954(void *arg0, int arg1) {
 
 unsigned char fn_8027D964(void *arg0) { return ((unsigned char *)arg0)[0xBCC]; }
 
-extern void *lbl_804B2FD8;
+void fn_8027D96C(int arg0) {
+    if (arg0 == 1) {
+        return;
+    }
+    if (arg0 < 1) {
+        if (arg0 < 0) {
+            return;
+        }
+    } else if (arg0 >= 3) {
+        return;
+    }
+    memset(&lbl_804B2FD8, 0, 0x20);
+}
+
+extern char lbl_804B2FD8[];
 extern int memset(void *, int, unsigned int);
 extern char lbl_80347DF8[];
 extern void fn_802E30C8(char *, int);
@@ -287,7 +318,7 @@ void fn_8027D9A4(int arg0, int arg1) {
     memset((char *)&lbl_804B2FD8 + arg0 * 8, 0, 8);
 }
 
-__declspec(section ".data") extern void *lbl_804B2FD8;
+__declspec(section ".data") extern char lbl_804B2FD8[];
 void fn_8027DA08(void) {
  int sp14,sp10,spC,sp8;
  int *entry;
