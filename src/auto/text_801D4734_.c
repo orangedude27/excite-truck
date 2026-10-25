@@ -1357,6 +1357,7 @@ void fn_801D8938(void) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801D893C(void *arg0, unsigned int arg1) {
+    int count;
     int offset;
     unsigned char *item;
     unsigned char *base;
@@ -1370,7 +1371,7 @@ loop:
     item = base + offset;
     if (*(unsigned int *)item == arg1) {
         if (i >= 0) {
-            int count = *(int *)((unsigned char *)arg0 + 0x28);
+            count = *(volatile int *)((unsigned char *)arg0 + 0x28);
             if (i < count) {
                 int last = count - 1;
                 if (i != last) {
