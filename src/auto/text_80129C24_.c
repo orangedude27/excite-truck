@@ -15,10 +15,12 @@ extern int fn_802E30C8(const char *, int, int, int);
 extern char lbl_8032A5C0[];
 extern void fn_80129C64(int);
 extern float fn_8012A080(void *);
+#pragma scheduling invalid_target
 void fn_80129C64(int arg0) {
-    fn_80129E34((char *)lbl_804223F8 + arg0 * 0x19C, 0x5AC2, 0x43DB);
+    char *entry = lbl_804223F8 + arg0 * 0x19C;
+    fn_80129E34(entry, 0x5AC2, 0x43DB);
 }
-
+#pragma scheduling on
 void fn_80129C80(int arg0, int arg1, int arg2) {
     int value0 = arg1;
     int value1 = arg2;
