@@ -392,6 +392,21 @@ unsigned int GXSetBreakPtCallback(unsigned int value) {
     return old;
 }
 
+void GXDisableBreakPt(void) {
+    unsigned char *data;
+    unsigned int value;
+    unsigned int cleared;
+    OSDisableInterrupts();
+    data = (unsigned char *)__GXData;
+    value = *(unsigned int *)(data + 8);
+    value = __rlwinm(value, 0, 31, 29);
+    cleared = __rlwinm(value, 0, 27, 25);
+    *(unsigned int *)(data + 8) = cleared;
+    *(unsigned short *)((char *)__cpReg + 2) = (unsigned short)cleared;
+    lbl_8055D950 = 0;
+    OSRestoreInterrupts();
+}
+
 extern void *lbl_8055D94C;
 void* GXGetCurrentGXThread(void) {
     return lbl_8055D94C;
@@ -2515,9 +2530,9 @@ void GXSetNumIndStages(unsigned int value) {
     __GXData[0x5FC / 4] |= 6;
 }
 
-extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
+extern void GXSetTevIndirect(int, int, int, int, int, int, int, int, int, int);
 void GXSetTevDirect(int arg0) {
-    GXSetTevIndirect(arg0, 0, 0, 0, 0, 0, 0, 0);
+    GXSetTevIndirect(arg0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 void __GXUpdateBPMask(void) {}
