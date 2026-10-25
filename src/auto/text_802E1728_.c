@@ -1,6 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct { char data[0x20]; } GXTexObj;
+extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
+extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
+extern float lbl_805650F0;
 extern int lbl_804DB780[];
 extern void DCStoreRange(void *, int);
 extern char lbl_8034CD48[];
