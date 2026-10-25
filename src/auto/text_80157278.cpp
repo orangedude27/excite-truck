@@ -182,6 +182,11 @@ public:
       virtual void v3(s32);
       virtual void v4(s32);
       virtual void v5(s32);
+      virtual void v7(s32);
+      virtual void v8(s32);
+      virtual void v9(s32);
+      virtual void v10(s32);
+      virtual void v11(s32);
       virtual void v6(s32);
   };
   
