@@ -108,6 +108,17 @@ int fn_802E8AE8(const char *arg0) {
     return result;
 }
 
+void fn_802E8B34(const char *arg0) {
+    /* Report the path and status if NANDDelete fails. */
+    fn_802E30C8(lbl_8034DE54, arg0);
+    {
+        int result = NANDDelete(arg0);
+        if (result != 0) {
+            fn_802E30C8(lbl_8034DE6C, result, arg0);
+        }
+    }
+}
+
 void fn_802E8B98(void) {
     if (lbl_80560030 != 0) {
         fn_802E8B34((const char *)0);
