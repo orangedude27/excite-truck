@@ -123,12 +123,15 @@ void *fn_802E9BEC(long arg0) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802E9C68(long arg0) {
     OSReport((const char *)&lbl_8034E370, arg0);
-    lbl_80560061 = 1;
-    lbl_80560068++;
+    *(volatile char *)&lbl_80560061 = 1;
+    ++*(volatile int *)&lbl_80560068;
 }
-
+#pragma scheduling on
+#pragma pop
 extern char lbl_8034E390;
 extern char lbl_8034E3E0;
 extern char lbl_8034E3F0;
