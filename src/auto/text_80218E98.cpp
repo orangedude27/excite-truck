@@ -1226,7 +1226,7 @@ extern "C" void fn_8021C6D0(void);
 extern "C" void fn_8022EE98(void *);
 extern "C" void *lbl_8033E248[];
 extern "C" u8 lbl_8033E0BC[];
-extern "C" void fn_8021C6CC(void) { fn_8021C6D0(); }
+extern "C" void fn_8021C6CC(void) { ((void (*)())fn_8021C6D0)(); }
 
 extern "C" void fn_802180B0();
 extern "C" void fn_802180BC();
