@@ -83,7 +83,7 @@ void fn_802E30C8(const char *);
 extern char lbl_8032D0D0[];
 void fn_8000FF88(s32, s32, s32, f32, f32, f32);
 extern char lbl_8032CF48[];
-extern char lbl_80559DD0[];
+extern __declspec(section ".sdata") char lbl_80559DD0[];
 s32 fn_8023512C(void);
 void fn_802E3AD0(s32, const char *, ...);
 }
@@ -322,20 +322,10 @@ extern "C" s32 fn_801455B8(void *arg0, void *arg1) {
     return 0;
 }
 
-extern "C" s32 fn_80145670(void *arg0, void *arg1) {
-    struct VTable {
-        s32 (*unused0)(void);
-        s32 (*unused1)(void);
-        s32 (*unused2)(void);
-        s32 (*unused3)(void);
-        s32 (*unused4)(void);
-        s32 (*get)(void *, const char *);
-    };
-    VTable *vtable = *(VTable **)arg1;
-    *(s32 *)arg0 = vtable->get(arg1, lbl_80559DD0);
-    *(s32 *)((u8 *)arg0 + 4) = vtable->get(arg1, lbl_8032CF48);
-    *(s32 *)((u8 *)arg0 + 8) = fn_8023512C();
-    return 0;
+extern "C" void fn_80145670(void *arg0, void **arg1) {
+    ((s32 *)arg0)[0] = ((s32 (*)(void *, const char *))(*(void ***)arg1)[5])(arg1, (const char *)&lbl_80559DD0);
+    ((s32 *)arg0)[1] = ((s32 (*)(void *, const char *))(*(void ***)arg1)[5])(arg1, (const char *)&lbl_8032CF48);
+    ((s32 *)arg0)[2] = fn_8023512C();
 }
 
 extern "C" s32 fn_8013126C(void *, s32);
@@ -462,10 +452,11 @@ extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32);
 extern "C" s32 lbl_80559E1C;
 extern "C" void fn_80145B50(void *arg0, s32 arg1) {
     f32 value = (f32)arg1;
+    f32 multiplier = lbl_80561608;
     *(f32 *)((u8 *)arg0 + 4) = lbl_805615D4;
-    *(f32 *)((u8 *)arg0 + 0xC) = lbl_80561608;
-    *(f32 *)((u8 *)arg0 + 8) = lbl_80561608;
-    *(f32 *)arg0 = lbl_80561608 * value;
+    *(f32 *)((u8 *)arg0 + 0xC) = multiplier;
+    *(f32 *)((u8 *)arg0 + 8) = multiplier;
+    *(f32 *)arg0 = multiplier * value;
 }
 
 #pragma dont_inline on
@@ -485,9 +476,11 @@ extern "C" void fn_80145B94(void *arg0, u32 arg1) {
 
 #pragma dont_inline on
 #pragma push
-#pragma scheduling invalid_target
+#pragma processor 750
+#pragma scheduling on
 extern "C" void fn_80145C08(void *arg0, const char *arg1) {
-    f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 scale_input = *(f32 *)((u8 *)arg0 + 8);
+    f32 scale = fn_801452B4(scale_input);
     f32 input = *(f32 *)((u8 *)arg0 + 4);
     s32 id = *(s32 *)((u8 *)arg0 + 0xC);
     f32 value = ((f32 (*)(s32, f32))fn_801451DC)(id, input);
@@ -523,13 +516,16 @@ extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
 }
 
 extern "C" void fn_80145D8C(void *arg0) {
-    if (lbl_8042FBC0.count + 1 <= lbl_8042FBC0.capacity) {
-        s32 i = lbl_8042FBC0.count;
-        lbl_8042FBC0.count = i + 1;
-        lbl_8042FBC0.data[i] = arg0;
+    volatile Queue80145D8C *queue = &lbl_8042FBC0;
+    s32 count = queue->count;
+    if (count + 1 <= queue->capacity) {
+        register s32 i = queue->count;
+        void **data = lbl_8042FBC0.data;
+        queue->count = i + 1;
+        data[i] = arg0;
         return;
     }
-    fn_802E30C8(lbl_8032D0D0);
+    ((void (*)(const char *, ...))fn_802E30C8)(lbl_8032D0D0);
 }
 
 #pragma dont_inline on
