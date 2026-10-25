@@ -120,19 +120,19 @@ s32 fn_801B3398(void* arg0) {
  fn_801796CC(1,&local,0x38);
  return 0x38;
 }
-#pragma use_lmw_stmw reset
+#pragma scheduling invalid_target
 void fn_801B3448(void) {
-    void* p = (void*)fn_801284F8(0x5C0, &lbl_80335D3C);
-    if (p == NULL) {
-        return;
-    }
+    void *p;
+    int (*callback)(void);
+    p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
+    if (p == NULL) return;
     p = fn_801B3B70(p);
+    callback = fn_801B3390;
     lbl_8055E6C0 = (s32)p;
-    fn_801B5364(1, fn_801B3390);
+    fn_801B5364(1, callback);
     fn_801B5364(0xF, fn_801B3398);
 }
-
-#pragma scheduling off
+#pragma scheduling on
 void fn_801B34A4(void) {
     fn_801B3DBC((void*)lbl_8055E6C0);
     memset(lbl_80435C50, 0, 0x20);
@@ -149,9 +149,9 @@ void fn_801B3B28(void) {
     lbl_8055E6C0 = 0;
 }
 
-#pragma scheduling off
-void* fn_801B3B70(void* arg0) {
-    fn_8002F53C((u8*)arg0 + 0x2FC, fn_801B3C64, fn_801B3BD4, 0x2C, 0x10);
+#pragma scheduling invalid_target
+void *fn_801B3B70(void *arg0) {
+    fn_8002F53C((u8 *)arg0 + 0x2FC, fn_801B3C64, fn_801B3BD4, 0x2C, 0x10);
     fn_801B3FD8(arg0);
     fn_801B4204(arg0);
     fn_801B42D0(arg0);
@@ -293,15 +293,14 @@ void fn_801B435C(void *arg0) {
 
 extern void fn_802E317C(const char *, ...);
 extern u8 lbl_80335D80[];
-s32 fn_801B4428(u32* arg0, u32* arg1) {
-    u32 a = *arg0;
-    u32 b = *arg1;
-    if (a < b) return -1;
-    if (a > b) return 1;
+#pragma scheduling invalid_target
+s32 fn_801B4428(u32 *arg0, u32 *arg1) {
+    if (*arg0 < *arg1) return -1;
+    if (*arg0 > *arg1) return 1;
     fn_802E317C((const char *)lbl_80335D80);
     return 0;
 }
-
+#pragma scheduling on
 void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
     s32 half;
     s32 right;
