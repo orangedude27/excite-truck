@@ -3745,13 +3745,10 @@ extern "C" s32 fn_80224A38(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_80224B0C(void *arg0, s32 arg1) {
-    s32 result = 0;
     void *p = *(void **)((u8 *)arg0 + 0x258);
     if (p != 0 && *(s32 *)((u8 *)arg0 + 0x254) != *(s32 *)p)
         return 0;
-    if (arg1 != 0xD && (u32)arg1 != 0x126 && (u32)arg1 != 0x128)
-        return result;
-    return 1;
+    return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
 }
 
 extern "C" u8 lbl_8033DA84[];
