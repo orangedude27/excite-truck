@@ -704,7 +704,7 @@ void fn_801FE708(void *arg0, void *arg1) {
     ++*(int *)((char *)arg0 + 0x94);
 }
 
-void fn_801FE77C(void* arg0) {
+extern "C" void fn_801FE77C(void* arg0) {
     char* item = (char*)arg0 + 4;
     int i = 0;
     while (i < *(int*)((char*)arg0 + 0x94)) {
