@@ -931,14 +931,13 @@ extern "C" void *AllocTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4h
     extern void *AllocImpl__Q44nw4r3snd6detail8PoolImplFv(void *);
     void *track = AllocImpl__Q44nw4r3snd6detail8PoolImplFv((u8 *)arg0 + 8);
     if (track == 0) {
-        return 0;
+        track = 0;
+    } else if (track != 0) {
+        track = __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(track);
     }
     if (track != 0) {
-        track = __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(track);
-        if (track != 0) {
-            *(void **)((u8 *)track + 0xB4) = arg1;
-            *(void **)((u8 *)track + 0xBC) = *(void **)((u8 *)arg0 + 4);
-        }
+        *(void **)((u8 *)track + 0xB4) = arg1;
+        *(void **)((u8 *)track + 0xBC) = *(void **)((u8 *)arg0 + 4);
     }
     return track;
 }
