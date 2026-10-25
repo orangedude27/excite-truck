@@ -335,6 +335,22 @@ void fn_801D5A1C(int arg0) {
     fn_801D59C8(arg0, 1);
 }
 
+#pragma scheduling invalid_target
+#pragma dont_inline on
+int fn_801D5A2C(void *arg0, int arg1, int arg2) {
+    void **entries = (void **)lbl_804423A4[0];
+    int count = lbl_804423A4[1];
+    int i;
+    for (i = 0; i < count; i++) {
+        if (entries[i] == arg0) {
+            return ((int (*)(void *, int, int))fn_801D5014)(arg0, arg1, arg2);
+        }
+    }
+    return 0;
+}
+#pragma dont_inline reset
+#pragma scheduling reset
+
 #pragma cplusplus on
 #pragma push
 #pragma scheduling invalid_target
