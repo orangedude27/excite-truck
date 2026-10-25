@@ -4,17 +4,6 @@
 #include "revolution/GX/GXTypes.h"
 #include "revolution/GX/GXAttr.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
-struct MaterialInitLayout {
-    u8 pad24[0x24];
-    s16 color[4];
-    s16 alpha[8];
-    u8 pad3c[0x10];
-    u32 cap4c;
-    u32 cap50;
-    u8 field54;
-    u8 pad55[3];
-    u32 field58;
-};
 namespace nw4hbm { namespace lyt {
 class ResourceAccessor;
 class Layout {
