@@ -17,7 +17,7 @@ struct Obj_80161C94 {
     virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
     virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
     virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
-    virtual void f20(); virtual void f21(); virtual void f22(); virtual s32 f23(void *);
+    virtual void f20(); virtual s32 f21(void *);
 };
 #pragma cplusplus off
 
