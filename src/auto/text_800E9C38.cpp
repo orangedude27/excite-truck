@@ -196,7 +196,7 @@ extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7ChannelFPQ46nw4hbm3snd6detai
  if(*(int*)(manager+0xc)){if(!v)Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8,0x233,lbl_80322AB4);Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(manager+0xc,v);if(!v)Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8,0x233,lbl_80322AB4);head=manager+4;Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(manager,&head,v);}
 }
 
-void fn_800EAD00(void *arg0) {
+extern "C" void fn_800EAD00(void *arg0) {
     if (arg0 != 0) {
         *(int *)((char *)arg0 + 0xD8) = 0;
         *(int *)((char *)arg0 + 0xDC) = 0;
