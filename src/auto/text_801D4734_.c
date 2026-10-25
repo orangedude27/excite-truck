@@ -32,6 +32,16 @@ void fn_801D47F8(void* alarm) {
     fn_801D5488(fn_801D5650(alarm));
 }
 
+int fn_801D481C(void) {
+    char* object = lbl_804422F0;
+    float value = lbl_80562ADC;
+    *(float*)(object + 0x14) = value;
+    *(float*)(object + 0x18) = value;
+    *(float*)(object + 0x1C) = value;
+    *(float*)(object + 0x4) = value;
+    return fn_801D56C0(object);
+}
+
 #pragma cplusplus on
 extern "C" signed char lbl_8055E954;
 extern "C" char lbl_804422F0[];
