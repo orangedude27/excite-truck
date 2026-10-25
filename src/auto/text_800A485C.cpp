@@ -16021,15 +16021,17 @@ extern "C" char *fn_800A4AAC(char *dst, char *src) {
 extern "C" s32 fn_800A4AD0(u8 *arg0, u8 *arg1) {
     u8 a;
     u8 b;
-    do {
-        arg0++;
-        arg1++;
-        a = *arg0;
-        if (a == 0) break;
-        b = *arg1;
-        if (b == 0) break;
-        if (a != b) break;
-    } while (1);
+    goto test;
+again:
+    arg0++;
+    arg1++;
+test:
+    a = *arg0;
+    if (a == 0) goto done;
+    b = *arg1;
+    if (b == 0) goto done;
+    if (a == b) goto again;
+done:
     return a - *arg1;
 }
 
