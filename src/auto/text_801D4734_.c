@@ -347,6 +347,23 @@ void fn_801D597C(int arg0, int arg1) {
     }
 }
 
+#pragma dont_inline on
+int fn_801D59C8(int arg0, int arg1) {
+    void **entries;
+    int count;
+    entries = (void **)lbl_804423A4[0];
+    count = lbl_804423A4[1];
+    while (count > 0) {
+        if (entries[0] == (void *)arg0) {
+            return arg1 == *(int *)((char *)arg0 + 4);
+        }
+        entries++;
+        count--;
+    }
+    return 0;
+}
+#pragma dont_inline off
+
 #pragma scheduling reset
 void fn_801D5A14(int arg0) {
     (void)fn_801D59C8(arg0, 2);
