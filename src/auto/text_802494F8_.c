@@ -132,22 +132,27 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 void *fn_8024A204(void *arg0, s32 arg1) {
+    char *base;
+    unsigned int offset;
+    s32 zero = 0;
     if (arg0 != 0) {
-        s32 zero = 0;
-        *(s32 *)((char *)arg0 + 0x11C) = zero;
-        if ((unsigned int)arg0 + 0x10 != 0) {
-            if ((unsigned int)arg0 + 0x10 != 0) {
-                *(s32 *)((char *)arg0 + 0x10) = zero;
-                *(s32 *)((char *)arg0 + 0x14) = zero;
-                *(s32 *)((char *)arg0 + 0x18) = zero;
-            }
+        base = (char *)arg0;
+        *(s32 *)(base + 0x11C) = zero;
+        if ((base + 0x10 != 0) && ((char *)arg0 + 0x10 != 0)) {
+            offset = 0x10;
+            *(s32 *)((char *)arg0 + offset) = zero;
+            *(s32 *)((char *)arg0 + 0x14) = zero;
+            *(s32 *)((char *)arg0 + 0x18) = zero;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
-
+#pragma scheduling reset
 void *fn_8024A268(void *arg0, s32 arg1) {
     volatile s32 *p;
     volatile s32 test;
@@ -212,11 +217,151 @@ void *fn_8024AC54(void *arg0, int arg1) {
     return arg0;
 }
 
+extern void *fn_8024B73C(void *, const char *, void *);
+extern void fn_8024B830(void *, s32);
+extern s32 fn_8024B874(s32);
+extern s32 fn_8024B87C(void *, s32);
+extern s32 fn_8024B8A4(void *, s32);
+extern s32 fn_8024B8CC(s32);
+extern s32 fn_8024B8D4(s32);
+extern s32 fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
+extern void fn_80236074(void *, unsigned int);
+extern s32 lbl_802FA4FC[];
+extern char lbl_80343998[];
+extern s32 lbl_80498998[];
+extern int lbl_8055B860;
+extern int lbl_8055BF68;
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
-    #pragma unused(arg0, arg1, arg2)
+    char storage[0x1F8];
+    register s32 *output = arg0;
+    register s32 key = arg1;
+    register void *work = arg2;
+    register char *name = lbl_80343998;
+    register s32 zero = 0;
+    register s32 three = 3;
+    register s32 *configStackPointer = (s32 *)storage;
+    s32 result;
+
+    if (fn_802411D4() == 0) {
+        return 0;
+    }
+    fn_8024B73C((char *)storage + 0x18, (const char *)key, work);
+    fn_8024B830((char *)storage + 0x18, *output);
+    work = (char *)storage + 0x18;
+
+    configStackPointer[49] = zero;
+    configStackPointer[46] = (s32)&lbl_8055BF68;
+    configStackPointer[48] = (s32)work;
+    configStackPointer[47] = 5;
+    configStackPointer[50] = zero;
+
+    configStackPointer[53] = fn_8024B87C(work, 0);
+    configStackPointer[51] = (s32)(name + 0x16c);
+    configStackPointer[52] = three;
+    configStackPointer[54] = zero;
+    configStackPointer[55] = (s32)work;
+    configStackPointer[59] = fn_8024B8A4(work, 0);
+    configStackPointer[56] = (s32)(name + 0x16c);
+    configStackPointer[57] = (s32)work;
+    configStackPointer[58] = zero;
+    configStackPointer[60] = zero;
+
+    configStackPointer[63] = fn_8024B87C(work, 1);
+    configStackPointer[61] = (s32)(name + 0x178);
+    configStackPointer[62] = three;
+    configStackPointer[64] = zero;
+    configStackPointer[65] = (s32)work;
+    configStackPointer[69] = fn_8024B8A4(work, 1);
+    configStackPointer[66] = (s32)(name + 0x178);
+    configStackPointer[67] = (s32)work;
+    configStackPointer[68] = zero;
+    configStackPointer[70] = zero;
+
+    configStackPointer[73] = fn_8024B87C(work, 2);
+    configStackPointer[71] = (s32)(name + 0x184);
+    configStackPointer[72] = three;
+    configStackPointer[74] = zero;
+    configStackPointer[75] = (s32)work;
+    configStackPointer[79] = fn_8024B8A4(work, 2);
+    configStackPointer[76] = (s32)(name + 0x184);
+    configStackPointer[77] = (s32)work;
+    configStackPointer[78] = zero;
+    configStackPointer[80] = zero;
+
+    configStackPointer[83] = fn_8024B87C(work, 3);
+    configStackPointer[81] = (s32)(name + 0x190);
+    configStackPointer[82] = three;
+    configStackPointer[84] = zero;
+    configStackPointer[85] = (s32)work;
+    configStackPointer[89] = fn_8024B8A4(work, 3);
+    configStackPointer[86] = (s32)(name + 0x190);
+    configStackPointer[87] = (s32)work;
+    configStackPointer[88] = zero;
+    configStackPointer[90] = zero;
+
+    configStackPointer[93] = fn_8024B87C(work, 4);
+    configStackPointer[91] = (s32)(name + 0x19c);
+    configStackPointer[92] = three;
+    configStackPointer[94] = zero;
+    configStackPointer[95] = (s32)work;
+    configStackPointer[99] = fn_8024B8A4(work, 4);
+    configStackPointer[96] = (s32)(name + 0x19c);
+    configStackPointer[97] = (s32)work;
+    configStackPointer[98] = zero;
+    configStackPointer[100] = zero;
+
+    configStackPointer[101] = (s32)(name + 0xCC);
+    configStackPointer[102] = 0x12;
+    configStackPointer[103] = fn_8024B8CC((s32)work);
+    configStackPointer[104] = zero;
+    configStackPointer[105] = (s32)work;
+    configStackPointer[106] = (s32)(name + 0xCC);
+    configStackPointer[107] = 2;
+    configStackPointer[108] = fn_8024B8D4((s32)work);
+    configStackPointer[109] = zero;
+    configStackPointer[110] = (s32)work;
+    configStackPointer[111] = (s32)(name + 0xBC);
+    configStackPointer[112] = three;
+    configStackPointer[113] = fn_8024B874((s32)work);
+    configStackPointer[114] = zero;
+    configStackPointer[115] = (s32)work;
+    configStackPointer[116] = (s32)&lbl_8055B860;
+    configStackPointer[117] = 6;
+    configStackPointer[118] = zero;
+    configStackPointer[119] = -1;
+    configStackPointer[120] = 0x1B;
+    configStackPointer[121] = lbl_80498998[0];
+    configStackPointer[122] = lbl_80498998[1];
+    configStackPointer[123] = lbl_80498998[2];
+    configStackPointer[124] = lbl_80498998[3];
+    configStackPointer[125] = lbl_80498998[4];
+    configStackPointer[0] = lbl_802FA4FC[0];
+    configStackPointer[1] = (s32)&configStackPointer[46];
+    configStackPointer[2] = lbl_802FA4FC[2];
+    configStackPointer[3] = lbl_802FA4FC[3];
+    configStackPointer[4] = lbl_802FA4FC[4];
+
+    result = fn_802146BC(configStackPointer, -0x3E7, -0x3E7, 1,
+                         lbl_802FA4FC[4], lbl_802FA4FC[3],
+                         lbl_802FA4FC[2], lbl_802FA4FC[0]);
+    if (result != -1) {
+        *output = result;
+        fn_80236074((char *)storage + 0x64, -1);
+        configStackPointer[12] = zero;
+        configStackPointer[13] = zero;
+        configStackPointer[14] = zero;
+        return 1;
+    }
+    fn_80236074((char *)storage + 0x64, -1);
+    configStackPointer[12] = zero;
+    configStackPointer[13] = zero;
+    configStackPointer[14] = zero;
     return 0;
 }
-
+#pragma pop
 void *fn_8024AFF8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         fn_80236074((char *)arg0 + 0x4C, -1);
