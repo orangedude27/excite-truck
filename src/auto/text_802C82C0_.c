@@ -409,12 +409,13 @@ void fn_802C942C(int arg0) {
     fn_802C92D8();
 }
 
+#pragma scheduling invalid_target
 void fn_802C9474(void) {
     if ((unsigned char)lbl_8055FC94 != 0) return;
     lbl_8055FC94 = 1;
     fn_802E30C8(lbl_8055D030, lbl_8034B4E0);
 }
-
+#pragma scheduling on
 int fn_802C94A0();
 void fn_802C9638(int arg0, int arg1) {
     fn_802C94A0(arg0, arg1, 0);
@@ -579,17 +580,18 @@ float fn_802C99E8(float arg0) {
     fn_802C99D8();
     return previous;
 }
-#pragma dont_inline reset
+#pragma dont_inline on
 void fn_802C9A1C(float *arg0) {
-    float x = arg0[0];
-    float y = arg0[1];
-    float z = arg0[2];
-    lbl_804C1440[0] = x;
-    lbl_804C1440[1] = y;
-    lbl_804C1440[2] = z;
+    float z, y, x;
+    x = arg0[0];
+    y = arg0[1];
+    z = arg0[2];
+    ((float *)lbl_804C1440)[0] = x;
+    ((float *)lbl_804C1440)[1] = y;
+    ((float *)lbl_804C1440)[2] = z;
     fn_802C99D8();
 }
-
+#pragma dont_inline reset
 void *fn_802C9A40(void) {
     return lbl_804C1440;
 }
