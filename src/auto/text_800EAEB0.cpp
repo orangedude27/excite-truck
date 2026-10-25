@@ -1,4 +1,5 @@
 #include <types.h>
+extern "C" void DVDClose(void *);
 extern "C" void fn_800F27AC(void *);
 namespace nw4hbm { namespace snd { namespace detail {
 class FrameHeap {
