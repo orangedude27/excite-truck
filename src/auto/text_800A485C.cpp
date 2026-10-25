@@ -5803,6 +5803,24 @@ extern "C" s32 fn_800B7E5C(s8 arg0) {
     }
     return result;
 }
+
+extern "C" s32 fn_800B7EAC(s32 *arg0) {
+    s32 thread;
+
+    if (arg0 == 0) {
+        OSReport(lbl_8031B190);
+        return -2;
+    }
+    thread = (s32)OSGetCurrentThread();
+    if (thread == 0) {
+        OSReport(lbl_8031B1C0);
+        *arg0 = 0;
+        return -3;
+    }
+    *arg0 = thread;
+    return 0;
+}
+
 #pragma dont_inline reset
 extern "C" const char lbl_8031B218[];
 extern "C" s32 fn_800B7FC4(s32 arg0) {
