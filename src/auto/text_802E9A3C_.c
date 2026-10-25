@@ -325,15 +325,15 @@ void fn_802EC158(void) {
     } while (i < 2);
 }
 
+#pragma push
+#pragma inline_depth 0
 void fn_802EC1C0(float arg0) {
-    unsigned char flag = lbl_805600D0;
     lbl_8055D270 = arg0;
-    if (flag == 0) {
-        return;
+    if ((unsigned char)lbl_805600D0 != 0) {
+        fn_802EC138();
     }
-    fn_802EC138();
 }
-#pragma dont_inline reset
+#pragma pop
 void fn_802EC1D8(void) {
     lbl_805600C8 = 1;
 }
@@ -365,14 +365,14 @@ void fn_802EC32C(long arg0, long arg1) {
 }
 
 long fn_802EC348(void *arg0, long arg1) {
-    if (arg1 < 0) {
-        return 0;
-    }
-    if (arg1 >= ((long *)arg0)[3]) {
-        return 0;
-    }
-    ((long *)arg0)[2] = arg1;
+    if (arg1 < 0)
+        goto fail;
+    if (arg1 >= *(long *)((char *)arg0 + 0xC))
+        goto fail;
+    *(long *)((char *)arg0 + 8) = arg1;
     return 1;
+fail:
+    return 0;
 }
 
 long fn_802EC370(void *arg0) {
@@ -385,7 +385,7 @@ long fn_802EC3F0(void *arg0, long arg1, long arg2) {
 }
 
 long fn_802EC42C(void *arg0) {
-    return ((long (*)(long long, long))fn_800B7C64)(((long *)arg0)[1], 0) == 0;
+    return fn_800B7C64(((long *)arg0)[1], 0) == 0;
 }
 
 long fn_802EC45C(void *arg0) { return ((long *)arg0)[2]; }
