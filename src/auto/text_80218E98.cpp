@@ -5310,6 +5310,15 @@ extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     *(f32 *)((u8 *)obj + 0x34) -= scratch[9];
 }
 
+extern "C" void fn_802C744C(s32, void *);
+extern "C" void fn_8022A574(void *arg0) {
+    s32 value = *(s32 *)((u8 *)arg0 + 4);
+    if (value == -1) {
+        return;
+    }
+    fn_802C744C(value, (u8 *)arg0 + 8);
+}
+
 extern "C" s32 fn_80229CA4(s32);
 extern "C" s32 fn_80229C9C(s32);
 extern "C" void fn_80229CB4(void *);
