@@ -225,6 +225,25 @@ void fn_802C33A8(s32 arg0, s32 arg1, u32 arg2) {
         *pixel = value;
     }
 }
+
+void fn_802C3424(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u32 arg4) {
+    s8 mode = *(s8 *)lbl_8055FC00;
+    s32 flag = 0;
+    if (mode != 5 && mode != 6)
+        flag = 1;
+    if (flag != 0) {
+        if (*(volatile s8 *)lbl_8055FC00 != 1) {
+            fn_802C3478(arg0, arg1, arg2, arg3, arg4);
+            return;
+        }
+        fn_802C365C(arg0, arg1, arg2, arg3, arg4);
+        return;
+    }
+    if (*(volatile s8 *)lbl_8055FC00 != 5)
+        return;
+    fn_802C356C(arg0, arg1, arg2, arg3, arg4);
+}
+
 #pragma pop
 
 #pragma push
