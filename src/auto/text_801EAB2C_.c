@@ -36,6 +36,7 @@ void fn_801EAB2C(void *arg0) {
     *(short *)((char *)arg0 + 0x38) = lbl_80562E28;
 }
 
+#pragma dont_inline fn_801EAB80
 void fn_801EAB80(void *arg0, long arg1) {
     fn_80176948(arg1, (long)arg0 + 0x34, (long)arg0);
 }
@@ -82,6 +83,15 @@ void fn_801EAD5C(void* arg0) {
     fn_802C744C(*(s32*)((u8*)arg0 + 0x3C), (u8*)arg0 + 4);
 }
 
+#pragma dont_inline fn_801EAB80
+void *fn_801EAD6C(void *arg0, s32 arg1) {
+    fn_801EAB2C(arg0);
+    *(void **)arg0 = lbl_80339E18;
+    fn_801EAB80(arg0, arg1);
+    memset((u8 *)arg0 + 0x3C, 0, 0x40);
+    *(s32 *)((u8 *)arg0 + 0x70) = -1;
+    return arg0;
+}
 s32 fn_801EAF20(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
