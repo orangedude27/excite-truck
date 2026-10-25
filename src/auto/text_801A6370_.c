@@ -30,9 +30,11 @@ float fn_801A6390(int arg0, int arg1) {
 }
 
 #pragma dont_inline on
+#pragma scheduling invalid_target
 float fn_801A63C4(int arg0, int arg1) {
     return (lbl_80562428 * fn_801A6390(arg0, arg1)) / lbl_8056241C;
 }
+#pragma scheduling on
 #pragma dont_inline off
 
 void fn_801A63F4(void *arg0, void *arg1, void *arg2, void *arg3) {
