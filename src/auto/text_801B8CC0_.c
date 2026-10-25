@@ -1,4 +1,5 @@
 #include <revolution/MTX/mtxtypes.h>
+void fn_801836E0(void *, int);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern float lbl_80562754;
 extern float lbl_80562758;
@@ -168,7 +169,7 @@ extern "C" void fn_801B8E28(int arg0) {
         w.sp20[2] = temp_f3 + *(float *)((char *)obj + 0x38);
         fn_801AD28C((char *)obj + 0x2704, w.sp20, *(void **)((char *)obj + 0x2754), &((struct ObjectLayout *)obj)->position, lbl_80562758, lbl_80562760, temp_f3);
     }
-    fn_8018A08C(obj);
+    fn_8018A08C((void *)obj);
 }
 #pragma cplusplus reset
 void fn_801B916C(void* arg0) {
