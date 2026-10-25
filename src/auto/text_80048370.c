@@ -5,9 +5,6 @@
 #include "revolution/OS/OSInterrupt.h"
 #include "revolution/MTX/mtx.h"
 
-typedef const f32 PSMTXSrc[3][4];
-typedef f32 PSMTXDst[3][4];
-
 static inline void KPADNotifySampling(s32 chan) {
     KPADInsideStatus *status = &inside_kpads[chan];
     BOOL interrupts = OSDisableInterrupts();
@@ -523,10 +520,11 @@ extern f32 lbl_80560C4C;
 void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
     register f32 zero = lbl_80560C4C;
     register f32 one = lbl_80560C48;
+    double pair = (double)zero;
     m[0][3] = x;
     m[1][3] = y;
-    m[0][1] = zero;
-    m[2][0] = zero;
+    *(double *)&m[0][1] = pair;
+    *(double *)&m[2][0] = pair;
     m[1][0] = zero;
     m[1][1] = one;
     m[1][2] = zero;
