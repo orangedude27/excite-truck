@@ -117,6 +117,18 @@ void fn_802CEAC4(void) {
     *(unsigned short *)(lbl_804C9724 + 0xA) -= 5;
 }
 
+extern void fn_802D9C4C(void);
+int fn_802CEC04(int arg0) {
+    if (arg0 == 1) {
+        fn_802D9C4C();
+        GXSetDrawSyncCallback();
+        VISetBlack(1);
+        VIFlush();
+        VIWaitForRetrace();
+    }
+    return 0;
+}
+
 void fn_802CEC44(void) {
     lbl_8055FD3C = 1;
 }
