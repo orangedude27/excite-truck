@@ -204,6 +204,8 @@ void fn_80005B68(void) {
 
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_80005B6C(void) {
     return;
 }
