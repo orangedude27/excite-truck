@@ -115,7 +115,7 @@ extern s32 lbl_8055E5A0;
 extern "C" s32 fn_801CFEAC(void*);
 extern s32 lbl_803336EC[];
 extern void fn_801A48E4(void*);
-extern "C" void fn_801D2414(void*, s32, void*);
+extern "C" void fn_801D2414(...);
 extern "C" void fn_801D0738(void*, void*, void*, void*);
 #pragma push
 #pragma small_data off
@@ -2929,6 +2929,15 @@ extern void fn_801E3FC8(void*, s32, f32);
 void fn_801A49FC(s32 arg0) {
     if (*(s32*)((u8*)arg0 + 0x48) != 0) {
         fn_801D06C4();
+    }
+}
+
+extern "C" void fn_801A4A10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    if (*(s32*)((u8*)arg0 + 0x40) != 0) {
+        fn_801D2414(NULL, 0, NULL);
+        if (*(s32*)((u8*)arg0 + 0x48) != 0) {
+            fn_801D0738((void*)arg0, (void*)arg1, (void*)arg2, (void*)arg3);
+        }
     }
 }
 
