@@ -12,7 +12,7 @@ extern int lbl_8055C774;
 extern int fn_80012820(int);
 extern void fn_80008188(int);
 extern void fn_8000DBC8(void *);
-extern void fn_8027D96C(void);
+extern void fn_8027D96C(int);
 extern void fn_8027D9A4(int, int);
 extern int fn_80128668(void);
 extern int fn_8002F53C(void*, void*, void*, int, int);
@@ -137,14 +137,22 @@ void fn_8027D6FC(void *arg0) {
     }
 }
 
-void fn_8027D77C(void *arg0) {
-    void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_8027D77C(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3(int);
+    };
+    void *res = fn_8001285C(*(volatile int *)((char *)arg0 + 0xC));
     void *obj = *(void **)((char *)res + 0x20);
-    (*(void (**)(void *, int))(*(void ***)obj + 5))(obj, (int)&lbl_8055C784);
+    ((Obj *)obj)->v3((int)&lbl_8055C784);
 }
-
-#pragma scheduling push
-#pragma scheduling off
+#pragma cplusplus off
+#pragma scheduling on
 void fn_8027D7B8(void *arg0) {
     fn_80007F90(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
 }
@@ -296,7 +304,7 @@ extern int fn_80012820(int);
 extern void fn_80008188(int);
 extern void fn_802E6BD8(int, int, void *, int, void *);
 extern void fn_8000DBC8(void *);
-extern void fn_8027D96C(void);
+extern void fn_8027D96C(int);
 extern void fn_8027D9A4(int, int);
 void fn_8027DAF4(void) {
     fn_802E6BD8(0x50435252, 1, &lbl_804B2FD8, 0x20, fn_8027D96C);
