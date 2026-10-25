@@ -597,6 +597,7 @@ void fn_801F1B1C(void *arg0, void *arg1, int arg2) {
       else
           *(volatile int *)((char *)dst + 0x80) = 0;
   }
-  #pragma scheduling on
-#pragma push
-#pragma scheduling invalid_target
+    #pragma scheduling on
+  #pragma push
+  #pragma scheduling invalid_target
+  #pragma pop
