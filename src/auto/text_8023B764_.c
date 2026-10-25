@@ -33,6 +33,23 @@ void fn_8023B764(s32 arg0, s32 arg1) {
     fn_802054EC((s32)&lbl_80341308, arg0, arg1);
 }
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_8023B77C(void) {
+    s32 var_r31;
+    s32 var_r30;
+
+    var_r31 = 0x129;
+    var_r30 = 0x18D;
+    if (fn_802C9A58() == 0) {
+        var_r31 = 0x136;
+        var_r30 = 0x1BC;
+    }
+    fn_802CED50((var_r31 * 0x280) / 512, 0x188, ((var_r30 - var_r31) * 0x280) / 512, 0x1F);
+}
+#pragma scheduling on
+#pragma dont_inline reset
+
 void fn_8023B7EC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 sp8[16];
 
@@ -214,13 +231,24 @@ void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
 void fn_8023C20C(void) {}
 
 void fn_8023C210(void *dst, void *src) {
+    register u32 *source;
+    register u32 *target;
+    int count;
     *(s32 *)((u8 *)dst + 4) = *(s32 *)((u8 *)src + 0);
     *(s32 *)((u8 *)dst + 8) = *(s32 *)((u8 *)src + 4);
     *(s32 *)((u8 *)dst + 0xC) = *(s32 *)((u8 *)src + 8);
     *(u8 *)((u8 *)dst + 0x10) = *((u8 *)src + 0xC);
     *(u8 *)((u8 *)dst + 0x11) = *((u8 *)src + 0xD);
     *(u8 *)((u8 *)dst + 0x12) = *((u8 *)src + 0xE);
-    __builtin_memcpy((u8 *)dst + 0x14, (u8 *)src + 0x10, 0xA0);
+    source = (u32 *)((u8 *)src + 0xC);
+    target = (u32 *)((u8 *)dst + 0x10);
+    count = 0x14;
+    do {
+        target[1] = source[1];
+        target[2] = source[2];
+        source += 2;
+        target += 2;
+    } while (--count != 0);
 }
 
 void fn_8023C268(void) {}
