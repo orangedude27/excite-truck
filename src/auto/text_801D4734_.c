@@ -842,16 +842,16 @@ int fn_801D7214(int arg0) {
     return 0;
 }
 
-void fn_801D72D0(int arg0) {
-    int p;
+void fn_801D72D0(void *arg0) {
+    char *p;
     fn_8016A240((char *)arg0 + 8);
-    p = ((int *)arg0)[0x38 / 4];
-    ((int *)arg0)[1] = 1;
-    if (p != 0 && *(char *)(p + 0x19) != 0) {
-        *(char *)(p + 0x4A) = 1;
-        *(char *)(p + 0x4C) = 0;
+    p = *(char **)((char *)arg0 + 0x38);
+    *(volatile int *)((char *)arg0 + 4) = 1;
+    if (p != 0 && *(unsigned char *)(p + 0x19) != 0) {
+        *(unsigned char *)(p + 0x4A) = 1;
+        *(unsigned char *)(p + 0x4C) = 0;
     }
-    *(char *)(arg0 + 0x34) = 0;
+    *(unsigned char *)((char *)arg0 + 0x34) = 0;
 }
 
 extern void *fn_801284F8(int, void *);
