@@ -10,6 +10,17 @@ extern char lbl_8032F5DC[];
 extern char lbl_8032F71C[];
 extern char lbl_8032F760[];
 
+#pragma cplusplus on
+struct Obj_80161C94 {
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+    virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+    virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+    virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+    virtual void f20(); virtual void f21(); virtual void f22(); virtual s32 f23(void *);
+};
+#pragma cplusplus off
+
 extern s32 lbl_8055A0E0;
 extern s32 lbl_8055A0E8;
 
@@ -616,6 +627,25 @@ s32 fn_80161C70(void) {
         return ((s32 (*)(void))(*(void ***)obj)[0x54 / 4])();
     }
     return 1;
+}
+
+void **fn_80161C94(void) {
+    void *manager;
+    void *object;
+    s32 result;
+    void **allocated;
+
+    manager = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
+    object = *(void **)((u8 *)manager + 0x20);
+    result = ((s32 (*)(void *, void *))(*(void **)(*(void ***)object + 0x5C)))(object, lbl_8032F5DC);
+    if (((u32)(-result | result) >> 31) != 0) {
+        allocated = fn_801284F8(4, lbl_8032F71C);
+        if (allocated != 0) {
+            *allocated = lbl_8032F760;
+            return allocated;
+        }
+    }
+    return 0;
 }
 
 s32 fn_80161D14(void) {
