@@ -1188,6 +1188,15 @@ extern "C" void fn_80214B94(s32 arg0) {
     }
 }
 
+extern "C" void fn_80214BE4(s32 arg0, s32 arg1, s32 arg2) {
+    s32 obj = fn_802168E4();
+    if (obj != 0) {
+        ((void (*)(s32, s32, s32, s32))fn_802168E0)(obj, arg0, arg1, arg2);
+    } else {
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D328);
+    }
+}
+
 extern "C" void fn_80214C54(s32 arg0, s32 arg1) {
     if (fn_802168E4() != 0) {
         fn_80218C14(arg0, arg1);
