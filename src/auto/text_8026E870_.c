@@ -58,16 +58,49 @@ extern f32 fn_8026EA8C();
 
 #pragma push
 #pragma dont_inline on
+extern f32 lbl_80563E34;
+extern void PSVECCrossProduct(const Vec *, const Vec *, Vec *);
+extern void PSVECNormalize(const Vec *, Vec *);
+void fn_8026E870(Vec *arg0, Vec *arg1, void *arg2, Vec *arg3) {
+    Vec delta;
+    Vec axis;
+    Vec side;
+    Vec up;
+    Vec forward;
+    Vec other;
+    f32 dot;
+    *(f32 *)((char *)arg2 + 0x7C) = arg0->x;
+    *(f32 *)((char *)arg2 + 0x80) = arg0->y;
+    *(f32 *)((char *)arg2 + 0x84) = arg0->z;
+    delta.x = arg1->x - arg0->x;
+    delta.y = arg1->y - arg0->y;
+    delta.z = arg1->z - arg0->z;
+    dot = PSVECDotProduct(&delta, &delta);
+    if (dot < lbl_80563E30) return;
+    if (fabs(delta.x) >= lbl_80563E34 && fabs(delta.z) >= lbl_80563E34) return;
+    axis = delta;
+    PSVECCrossProduct(arg3, &axis, (Vec *)((char *)arg2 + 0x58));
+    PSVECCrossProduct(&axis, (Vec *)((char *)arg2 + 0x58), (Vec *)((char *)arg2 + 0x64));
+    side = *(Vec *)((char *)arg2 + 0x58);
+    up = axis;
+    PSVECCrossProduct(&up, &side, &forward);
+    PSVECNormalize(&side, &side);
+    PSVECNormalize(&forward, &forward);
+    PSVECCrossProduct(&side, &forward, &other);
+    *(Vec *)((char *)arg2 + 0x58) = side;
+    *(Vec *)((char *)arg2 + 0x64) = forward;
+    *(Vec *)((char *)arg2 + 0x70) = other;
+}
+
+#pragma scheduling invalid_target
 s32 fn_8026EA14(s32 arg0) {
     s32 shift = arg0 - 4;
     s32 result = 0;
-    if ((unsigned)shift > 0x13)
-        return result;
-    if ((1 << shift) & 0x80017)
-        result = 1;
+    s32 one = 1;
+    if ((unsigned)shift <= 0x13 && ((one << shift) & 0x80017)) result = 1;
     return result;
 }
-#pragma pop
+#pragma scheduling on
 
 #pragma push
 #pragma dont_inline on
@@ -186,6 +219,40 @@ f32 fn_8026ECE4(void *arg0, f32 *arg1) {
     }
     return value;
 }
+
+extern f32 lbl_80563E7C;
+extern f32 lbl_80563E80;
+void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
+    f32 *entry = lbl_8049A218 + (*arg0 * 4);
+    f32 curve;
+    f32 t;
+    f32 blend;
+    f32 dx;
+    f32 dy;
+    f32 dz;
+    curve = entry[3];
+    if (curve < lbl_80563E6C) curve = lbl_80563E6C;
+    else if (curve > lbl_80563E30) curve = lbl_80563E30;
+    else if (curve > lbl_80563E78) curve = (lbl_80563E70 * curve * curve * curve) + (lbl_80563E74 * curve * curve);
+    else curve = (lbl_80563E70 * curve * curve * curve) - (lbl_80563E74 * curve * curve);
+    t = (entry[1] - lbl_80563E78) / lbl_80563E7C;
+    if (t < lbl_80563E30) t = lbl_80563E30;
+    if (t > lbl_80563E78) t = lbl_80563E78;
+    arg1->y += farg0 * lbl_80563E80 * (lbl_80563E78 + t * lbl_80563E30) * curve;
+    dx = arg2->x - arg1->x;
+    dy = arg2->y - arg1->y;
+    dz = arg2->z - arg1->z;
+    curve = entry[3];
+    if (curve < lbl_80563E6C) curve = lbl_80563E6C;
+    else if (curve > lbl_80563E30) curve = lbl_80563E30;
+    else if (curve > lbl_80563E78) curve = (lbl_80563E70 * curve * curve * curve) + (lbl_80563E74 * curve * curve);
+    else curve = (lbl_80563E70 * curve * curve * curve) - (lbl_80563E74 * curve * curve);
+    blend = lbl_80563E6C - lbl_80563E50 * curve;
+    arg1->x = arg2->x + dx * blend;
+    arg1->y = arg2->y + dy * blend;
+    arg1->z = arg2->z + dz * blend;
+}
+
 #pragma pop
 
 #pragma scheduling off
@@ -532,5 +599,5 @@ void fn_802704D4(void *arg0, void *arg1) {
     ((void (*)(void *, s32, void *))fn_802704D0)(arg0, *(s32 *)((u8 *)arg1 + 4), arg1);
 }
 
-void fn_802704E0(void) { fn_8026EA8C(); }
+void fn_802704E0(void) { ((f32 (*)())fn_8026EA8C)(); }
 
