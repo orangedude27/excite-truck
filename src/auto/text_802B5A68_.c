@@ -660,10 +660,6 @@ s32 fn_802B6E30(void) {
     }
 }
 
-extern s32 lbl_8055CE78;
-extern s32 lbl_8055CE80;
-extern s32 lbl_8034A808;
-extern s32 lbl_8034A814;
 s32 fn_802B6E30(void);
 #pragma push
 #pragma scheduling on
