@@ -1314,14 +1314,6 @@ void fn_8016FF98(void *arg0) {
     }
 }
 
-extern char lbl_80330B7C[];
-extern char lbl_80330B8C[];
-extern char lbl_8055A248[];
-extern char lbl_8055A268[];
-extern void fn_80130978(void *, s32, f32);
-extern void fn_8014784C(void *, const char *, const char *, s32);
-extern void fn_801475D0(void *, const char *, const char *, void *);
-extern void fn_8016A438(void);
 s32 fn_8016FFE4(void) { return 0x1408; }
 
 #pragma cplusplus on
