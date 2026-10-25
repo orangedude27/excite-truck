@@ -176,6 +176,12 @@ void fn_802DBDD8(void) {
     lbl_8055FEAC = 0;
 }
 
+void fn_802DBECC(void) {
+    fn_802D3360();
+    GXSetTevKAlphaSel(0, 0);
+    lbl_8055FEB8 = 0;
+}
+
 #pragma dont_inline on
 void fn_802DBF00(signed char arg0) {
     fn_802DBD88();
