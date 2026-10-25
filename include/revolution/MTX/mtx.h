@@ -16,7 +16,7 @@ void PSMTXTranspose(const Mtx, Mtx);
 u32 PSMTXInverse(const Mtx, Mtx);
 u32 PSMTXInvXpose(const Mtx, Mtx);
 void PSMTXRotRad(Mtx, f32, f32, f32);
-void PSMTXRotTrig(Mtx, f32, f32, char);
+void PSMTXRotTrig(Mtx, Mtx, f32, f32, f32);
 void PSMTXRotAxisRad(Mtx, const Vec*, f32);
 void PSMTXTrans(Mtx, f32, f32, f32);
 void PSMTXTransApply(const Mtx, Mtx, f32, f32, f32);
