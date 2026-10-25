@@ -5387,10 +5387,13 @@ extern "C" s32 fn_800B73BC(s32 arg0) {
 }
 #pragma dont_inline reset
 
-s32 fn_800B73CC(s32 arg0, s32 arg1) {
-    if (arg0 == 0)
+extern "C" s32 fn_800B73CC(s32 arg0, s32 arg1) {
+    switch (arg0) {
+    default:
+        return 0;
+    case 0:
         return arg1;
-    return 0;
+    }
 }
 
 extern "C" s32 fn_800B73E4(s32 arg0) {
