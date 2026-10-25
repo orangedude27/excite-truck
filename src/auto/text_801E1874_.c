@@ -42,7 +42,7 @@ int fn_801E1894(void) {
   settings=((void **(*)(void *,const char *))(*(void ***)obj)[23])(obj,(const char *)lbl_8055AE68);
   name=((char *(*)(void *,const char *,const char *))(*(void ***)obj)[6])(obj,(const char *)lbl_8055AE6C,(const char *)lbl_8055AE74);
   if(stricmp(name,(const char *)lbl_8055AE7C)==0) *(int *)&lbl_804874D4=1;
-  else if(stricmp(name,(const char *)lbl_8055AE84)==0) lbl_804874D4=2;
+  else if(stricmp(name,(const char *)lbl_8055AE84)==0) *(int *)&lbl_804874D4=2;
   if(((int(*)(void *,const char *))(*(void ***)obj)[3])(obj,(const char *)lbl_80339860)!=0)
    lbl_8055EA22=((int(*)(void *,const char *))(*(void ***)obj)[11])(obj,(const char *)lbl_80339860);
   else lbl_8055EA22=(lbl_804874D4==1);
