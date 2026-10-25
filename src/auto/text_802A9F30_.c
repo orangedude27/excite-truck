@@ -352,7 +352,7 @@ void fn_802AB504(void) {
     lbl_8055F92C = 0;
     fn_801EF024((void (*)(void))fn_802A9F30);
     fn_801EF024((void (*)(void))fn_802A9F90);
-    fn_801EF024(fn_802A9FB0);
+    fn_801EF024((void (*)(void))fn_802A9FB0);
     p = (int *)lbl_8055F924;
     if (p) {
         fn_8028E398(p[0]);
