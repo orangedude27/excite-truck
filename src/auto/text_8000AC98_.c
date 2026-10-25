@@ -307,7 +307,6 @@ int fn_8000BB08(void) {
 }
 
 void fn_8000BC44(void) {
-    extern int lbl_8034F5B8;
     extern int lbl_802FBFDC, lbl_802FBFF8;
     int i = 0;
     int *p = (int *)&lbl_8034F5B8;
