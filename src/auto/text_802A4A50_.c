@@ -118,7 +118,7 @@ void fn_802A4B90(void) {
 void fn_802A4C20(void) {
     volatile s32 *flag;
     flag = &lbl_8055F88C;
-    if (*flag != 0) fn_802A6A44();
+    if (*flag != 0) ((s32 (*)(s32 *))fn_802A6A44)((s32 *)flag);
     flag = &lbl_8055F888;
     if (*flag != 0) fn_802A5C1C();
     fn_802A59E0();
@@ -229,6 +229,23 @@ void fn_802A52FC(f32 arg0) {
     result = fn_801284F8(0xBC, &lbl_80349C94);
     if (result != 0) result = fn_802A5AE8(amount, 0);
     lbl_8055F888 = result;
+}
+
+void fn_802A5270(f32);
+s32 fn_802A5384(s32 arg0) {
+    s32 value = *(s32 *)arg0;
+
+    if (value == 2) {
+        fn_802A52FC(lbl_8056485C);
+        return;
+    }
+    if (value > 1) {
+        return;
+    }
+    if (value < 1) {
+        return;
+    }
+    fn_802A5270(lbl_8056485C);
 }
 
 void *fn_802A7614(void *, s32);
@@ -379,23 +396,24 @@ void fn_802A6408(void *arg0) {
     }
 }
 
-#pragma push
-#pragma scheduling off
+#pragma scheduling push
+#pragma scheduling on
 void fn_802A6758(void *arg0, f32 *arg1) {
-    u8 *dst = *(u8 **)arg0 + (*(s32 *)((u8 *)arg0 + 4) * 0xC);
+    s32 i = *(s32 *)((u8 *)arg0 + 4);
+    f32 *base = *(f32 **)arg0;
     f32 z;
     f32 y;
     f32 x;
     x = arg1[0];
     y = arg1[1];
     z = arg1[2];
-    *(f32 *)dst = x;
-    *(f32 *)(dst + 4) = y;
-    *(f32 *)(dst + 8) = z;
+    base[i * 3] = x;
+    base += i * 3;
+    base[1] = y;
+    base[2] = z;
     *(s32 *)((u8 *)arg0 + 4) += 1;
 }
-#pragma scheduling on
-#pragma pop
+#pragma scheduling pop
 void fn_802A6790(void *arg0) {
     f32 sp8;
     f32 spC;
