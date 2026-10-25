@@ -8,6 +8,7 @@ int fn_80216D14(int arg0) {
     return arg0 < 0 ? 0 : 1 << arg0;
 }
 
+#pragma noinline
 void fn_80216D28(void) {
     lbl_8055EFAC = 1;
 }
@@ -66,20 +67,24 @@ void fn_8021734C(void *arg0) {
     if (*(void **)(base + 0x438) != 0) (*(void (**)(void))((char *)base + 0x438))();
 }
 
+#pragma noinline
+#pragma scheduling invalid_target
 void fn_802173F8(void *arg0) {
     char *base = (char *)arg0;
     int i;
     if (*(void **)(base + 0x43C) != 0) (*(void (**)(void))((char *)base + 0x43C))();
     i = *(int *)(base + 0x430) - 1;
+    base += i * 4;
     while (i >= 0) {
-        void *obj = *(void **)(base + i * 4 + 0x30);
+        void *obj = *(void **)(base + 0x30);
         void **vtable = *(void ***)obj;
         ((void (*)(void *))vtable[4])(obj);
+        base -= 4;
         i--;
     }
     fn_80216D28();
 }
-
+#pragma scheduling on
 void fn_80217478(void) {
 
 }
@@ -358,20 +363,19 @@ int fn_80217BC8(int *arg0, int *arg1) {
     return *arg0 - *arg1;
 }
 
+#pragma scheduling invalid_target
 void *fn_80217BD8(void *arg0, int arg1, int arg2) {
     char *base = (char *)arg0;
     int count = *(int *)(base + 0x494);
-    char *entry = base + count * 8;
-    *(int *)(entry + 0x4A0) = arg1;
-    *(int *)(entry + 0x4A4) = arg2;
-    count = *(int *)(base + 0x494);
-    count++;
+    *(int *)(base + count * 8 + 0x4A0) = arg1;
+    *(int *)(base + count * 8 + 0x4A4) = arg2;
+    count = *(int *)(base + 0x494) + 1;
     *(int *)(base + 0x494) = count;
     qsort(base + 0x4A0, count, 8, fn_80217BC8, base);
     *(int *)(base + 0x498) = *(int *)(base + 0x4A0);
     return base + 0x498;
 }
-
+#pragma scheduling on
 void fn_80217C4C(void *arg0) {
     char *base = (char *)arg0;
     int count = *(int *)(base + 0x494);
@@ -463,17 +467,17 @@ void fn_802180D4(void *arg0) { fn_80217EC0(arg0, 0, 1); }
 void fn_802180E0(void *arg0, int arg1) {
     extern void fn_802E30C8(const char *, ...);
     extern char lbl_8033D83C[];
-    if (arg1 >= 0 && arg1 < *(int *)((char *)arg0 + 0x494)) {
-        *(int *)((char *)arg0 + 0x498) = *(int *)((char *)arg0 + 0x4A0 + arg1 * 8);
+    if (arg1 < 0 || arg1 >= *(int *)((char *)arg0 + 0x494)) {
+        fn_802E30C8(lbl_8033D83C);
         return;
     }
-    fn_802E30C8(lbl_8033D83C);
+    *(int *)((char *)arg0 + 0x498) = *(int *)((char *)arg0 + 0x4A0 + arg1 * 8);
 }
 
 int fn_80218120(void *arg0) {
-    extern void fn_802E30C8(const char *, ...);
     extern char lbl_8033D860[];
-    int i;
+    extern void fn_802E30C8(const char *, ...);
+    long i;
     int count = *(int *)((char *)arg0 + 0x494);
     for (i = 0; i < count; i++) {
         if (*(int *)((char *)arg0 + 0x498) == *(int *)((char *)arg0 + 0x4A0 + i * 8)) return i;
@@ -504,40 +508,24 @@ void fn_80218198(void *arg0, void **arg1) {
     }
 }
 
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_80218214(void *arg0, int arg1, int arg2) {
     struct Dummy {
-        virtual int f0();
-        virtual int f1();
-        virtual int f2();
-        virtual int f3();
-        virtual int f4();
-        virtual int f5();
-        virtual int f6();
-        virtual int f7();
-        virtual int f8();
-        virtual int f9();
-        virtual int f10();
-        virtual int f11();
-        virtual int f12();
-        virtual int f13();
-        virtual int f14();
-        virtual int f15();
-        virtual int f16();
-        virtual int f17();
-        virtual int f18();
-        virtual int f19();
-        virtual int f20();
-        virtual int f21();
-        virtual int f22();
-        virtual int f23();
-        virtual int f24();
-        virtual int f25();
-        virtual int f26(int, int);
+        virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3();
+        virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7();
+        virtual int f8(); virtual int f9(); virtual int f10(); virtual int f11();
+        virtual int f12(); virtual int f13(); virtual int f14(); virtual int f15();
+        virtual int f16(); virtual int f17(); virtual int f18(); virtual int f19();
+        virtual int f20(); virtual int f21(); virtual int f22(); virtual int f23();
+        virtual int f24(); virtual int f25(); virtual int f26(int, int);
     };
     char *entry;
     int i;
-    float threshold = lbl_80563490;
+    register float threshold = lbl_80563490;
     i = *(int *)((char *)arg0 + 0x430) - 1;
     entry = (char *)arg0 + i * 4;
     while (i >= 0) {
@@ -557,10 +545,18 @@ extern "C" int fn_80218214(void *arg0, int arg1, int arg2) {
     return -1;
 }
 #pragma cplusplus reset
+#pragma dont_inline reset
+#pragma pop
 int fn_802182F0(void *arg0, void *arg1) {
+    int count;
     int i;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x430); i++) {
-        if (*(void **)((char *)arg0 + 0x30 + i * 4) == arg1) return i;
+    count = *(int *)((char *)arg0 + 0x430);
+    i = 0;
+    while (count > 0) {
+        if (*(void **)((char *)arg0 + 0x30 + i * 4) == arg1)
+            return i;
+        i++;
+        count--;
     }
     return -1;
 }
@@ -606,8 +602,8 @@ void fn_80218370(void *arg0) {
 }
 
 void fn_80218464(void *arg0) {
-    int i = 0;
     char *base = (char *)arg0;
+    int i = 0;
     char *cursor = base;
     while (i < *(int *)(base + 0x430)) {
         void *obj = *(void **)(cursor + 0x30);
