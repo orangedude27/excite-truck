@@ -145,7 +145,7 @@ void fn_80207C80(void* arg0) {
     fn_80207E70(arg0);
 }
 
-#pragma dont_inline fn_80207D40
+#pragma dont_inline on
 signed long fn_80207D40(void* arg0) {
     signed long temp_r3;
 
