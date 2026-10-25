@@ -23,3 +23,6 @@ void fn_802BE2B4(void) {
 # pragma opt_dead_assignments reset
 # pragma opt_propagation reset
 # pragma scheduling reset
+
+#include <types.h>
+DECL_SECTION(".ctors") funcptr_t D_802ED574 = fn_802BE2B4;
