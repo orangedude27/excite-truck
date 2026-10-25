@@ -282,17 +282,17 @@ extern "C" void fn_801FCF18(void* arg0, int arg1, int arg2) {
 }
 
 extern "C" void fn_801FCF74(void* arg0, float farg0) {
-    register int obj = *(int *)((char *)arg0 + 4);
+    int obj = *(int *)((char *)arg0 + 4);
     if (obj == 0)
         return;
-    obj = *(unsigned short *)((char *)obj + 0x16);
-    switch (obj) {
+    int type = *(unsigned short *)((char *)obj + 0x16);
+    switch (type) {
     case 0:
-        return fn_801FD3F0();
+        return ((void (*)(void *, int))fn_801FD3F0)(arg0, type);
     case 1:
-        return fn_801FD5E8(arg0, farg0);
+        return ((void (*)(void *, int, float))fn_801FD5E8)(arg0, type, farg0);
     case 2:
-        return fn_801FDF18();
+        return ((void (*)(void *, int))fn_801FDF18)(arg0, type);
     default:
         return fn_802E317C((const char *)lbl_8033B618);
     }
