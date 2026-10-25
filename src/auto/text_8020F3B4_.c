@@ -160,8 +160,10 @@ void fn_8020FE90(void) {
     fn_802EC12C();
     fn_802EC1D8();
     if (lbl_8055EEE0 == -2) {
-        result = ((long (*)(long))fn_8020F3B4)(0);
-    } else if (lbl_8055EEE0 == -1) {
+        lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(0);
+        return;
+    }
+    if (lbl_8055EEE0 == -1) {
         result = fn_8020F6FC();
     } else {
         result = lbl_8055EEE0 + (lbl_8055EEE4 * 0xA);
