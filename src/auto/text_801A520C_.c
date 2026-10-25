@@ -341,11 +341,20 @@ extern "C" void fn_801A5ED8(void *arg0) {
 }
 #pragma cplusplus off
   
-  int fn_801A5F44(void *arg0, int arg1) {
-      void *obj = *(void **)((char *)arg0 + 0x270C);
-      return ((int (*)(void *, int))(*(void ***)obj)[6])(obj, arg1 + 0x44) + 0x44;
-  }
-  
+#pragma cplusplus on
+extern "C" int fn_801A5F44(void *arg0, int arg1) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void *f4(int);
+    };
+    VTable *obj = (VTable *)*(void **)((char *)arg0 + 0x270C);
+    return (int)((char *)obj->f4(arg1 + 0x44) + 0x44);
+}
+#pragma cplusplus reset
   void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4, float farg0) {
       int x, y, a, b;
       void *obj;
