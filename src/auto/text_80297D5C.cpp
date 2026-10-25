@@ -435,10 +435,12 @@ void fn_80299338(void *arg0, int arg1, float *arg2, float *arg3, float *arg4, sh
 }
 
   extern "C" float fn_801E7E18(void);
-void fn_802994C0(void* arg0) {
-    *(int*)arg0 = -1;
-    *(int*)((char*)arg0 + 0x34) = 2;
-    *(float*)((char*)arg0 + 0x38) = fn_801E7E18();
+extern "C" void* fn_802997F4(void*, int);
+extern "C" void fn_802994C0(void* arg0, unsigned int arg1) {
+    void* ptr = fn_802997F4(arg0, arg1);
+    *(int*)ptr = -1;
+    *(int*)((char*)ptr + 0x34) = 2;
+    *(float*)((char*)ptr + 0x38) = fn_801E7E18();
 }
 
 extern "C" void fn_80299504(void* arg0) {
@@ -715,6 +717,25 @@ extern "C" void fn_8029A890(void *arg0, void *arg1) {
 
 extern "C" void fn_8029A8A4(void *arg0, void *arg1) {
     *(unsigned char *)((char *)arg0 + (int)arg1 * 0x2C + 0x28) = 1u;
+}
+
+extern "C" void fn_8029A8B8(void* arg0) {
+    *(unsigned char*)((char*)arg0 + 0x28) = 0;
+    *(float*)((char*)arg0 + 0x24) = lbl_805645B8;
+    *(float*)((char*)arg0 + 0x50) = lbl_805645B8;
+    *(unsigned char*)((char*)arg0 + 0x54) = 0;
+    *(float*)((char*)arg0 + 0x7C) = lbl_805645B8;
+    *(unsigned char*)((char*)arg0 + 0x80) = 0;
+    *(float*)((char*)arg0 + 0xA8) = lbl_805645B8;
+    *(unsigned char*)((char*)arg0 + 0xAC) = 0;
+    *(float*)((char*)arg0 + 0xD4) = lbl_805645B8;
+    *(unsigned char*)((char*)arg0 + 0xD8) = 0;
+    *(float*)((char*)arg0 + 0x100) = lbl_805645B8;
+    *(unsigned char*)((char*)arg0 + 0x104) = 0;
+    *(float*)((char*)arg0 + 0x12C) = lbl_805645B8;
+    *(unsigned char*)((char*)arg0 + 0x130) = 0;
+    *(float*)((char*)arg0 + 0x158) = lbl_805645B8;
+    *(unsigned char*)((char*)arg0 + 0x15C) = 0;
 }
 
 extern "C" int fn_80287B24(int);
