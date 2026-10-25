@@ -70,6 +70,44 @@ s32 fn_80243528(s32 arg0, s32 arg1) {
     return sum;
 }
 
+s32 fn_8024360C(s32 value, s32 tableIndex) {
+    s32 *entry = (s32 *)lbl_803428B0 + tableIndex * 48;
+    s32 start = 0;
+    s32 best = 0;
+    s32 index = 0;
+    s32 length;
+    s32 end;
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        length = entry[1];
+        end = start + length;
+        if (length > 0) best = index;
+        if (value >= start && value < end) return index;
+        start = end;
+        index++;
+        length = entry[4];
+        end = start + length;
+        if (length > 0) best = index;
+        if (value >= start && value < end) return index;
+        start = end;
+        index++;
+        length = entry[7];
+        end = start + length;
+        if (length > 0) best = index;
+        if (value >= start && value < end) return index;
+        start = end;
+        index++;
+        length = entry[10];
+        end = start + length;
+        if (length > 0) best = index;
+        if (value >= start && value < end) return index;
+        start = end;
+        index++;
+        entry += 12;
+    }
+    return best;
+}
+
 s32 fn_80243710(s32 arg0, s32 arg1) {
     s32 result = 0;
     if (arg0 >= 0 && arg0 <= fn_80243478(arg1)) result = 1;
@@ -136,30 +174,69 @@ void fn_802438EC(char* arg0) {
 
 __declspec(section ".sdata") extern char lbl_8055BE14[];
 void fn_80243938(char *arg0, char *arg1) {
-    s32 len = strlen(arg0);
-    char *dst = arg0;
+    register int len = strlen(arg0);
+    register char *dst = arg0;
 
-    if (len == 0) return;
+    if (!len) return;
     if (arg0[len - 1] == '_') return;
     if (len + 1 >= (s32)arg1) return;
 
     arg1 = (char *)((s32)arg1 - 1);
     while (*dst != 0) {
-        dst++;
-        arg1 = (char *)((s32)arg1 - 1);
+        arg1 = (char *)(arg1 - 1);
+        dst += 1;
     }
     if ((s32)arg1 <= 0) return;
 
     {
         char *src = lbl_8055BE14;
         while ((*dst++ = *src++) != 0) {
-            arg1 = (char *)((s32)arg1 - 1);
+            arg1 = (char *)(arg1 - 1);
             if ((s32)arg1 <= 0) {
                 dst[-1] = 0;
                 return;
             }
         }
     }
+}
+
+extern s32 fn_80232578(s32);
+extern s32 fn_802C5130(s32);
+extern void fn_802E30C8(const char *, ...);
+extern s32 fn_80131234(const char *);
+void fn_80243A38(void *arg0) {
+    s32 *entry;
+    s32 group, i, type;
+    *(s32 *)((u8 *)arg0 + 0x20) = fn_80232578((s32)((u8 *)lbl_803428B0 + 0x3C0));
+    *(s32 *)((u8 *)arg0 + 0x24) = fn_802C5130((s32)((u8 *)lbl_803428B0 + 0x3CC));
+    if (*(s32 *)((u8 *)arg0 + 0x24) == 0)
+        fn_802E30C8((char *)lbl_803428B0 + 0x3D8);
+    fn_80243938(*(char **)((u8 *)arg0 + 0x18), *(char **)((u8 *)arg0 + 0x1C));
+    entry = (s32 *)lbl_803428B0;
+    group = 0;
+    do {
+        i = 0;
+        while (i < fn_80243478(group)) {
+            type = entry[2];
+            if (type == 4) goto next;
+            if (type < 4) {
+                if (type != 2) goto next;
+                if (entry[0] == 0) goto next;
+                if (strlen((char *)entry[0]) >= 1) goto next;
+                entry[0] = fn_80131234((char *)lbl_803428B0 + 0x410);
+            } else {
+                if (type >= 6) goto next;
+                if (entry[0] == 0) goto next;
+                if (strlen((char *)entry[0]) >= 1) goto next;
+                entry[0] = fn_80131234((char *)lbl_803428B0 + (type == 3 ? 0x3FC : 0x420));
+            }
+        next:
+            entry += 3;
+            i++;
+        }
+        group++;
+        entry = (s32 *)lbl_803428B0 + group * 48;
+    } while (group < 5);
 }
 
 extern s32 fn_80128668(void);
@@ -191,8 +268,7 @@ void fn_802443C0(void *arg0) {
 }
 
 void fn_8024442C(void *arg0) {
-    u8 *field = (u8 *)arg0 + 0x29;
-    *field = (s32)((*field == 0) ? 1 : 0);
+    *(s8 *)((u8 *)arg0 + 0x29) = !*(u8 *)((u8 *)arg0 + 0x29);
 }
 
 extern s32 fn_80244558(void *);
