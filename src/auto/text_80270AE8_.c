@@ -146,11 +146,11 @@ int fn_80270D1C(int arg0) {
     }
 }
 
+#pragma scheduling off
 int fn_80270D4C(void *arg0, void *arg1) {
     float *right;
     float *left;
-    unsigned char flag = *((volatile unsigned char *)arg1 + 4);
-    if (flag != 0) {
+    if (*((unsigned char *)arg1 + 4) != 0) {
         right = (float *)(*(char **)arg1 + 0xC);
     } else {
         right = (float *)(*(char **)arg1 + 4);
@@ -162,31 +162,32 @@ int fn_80270D4C(void *arg0, void *arg1) {
     }
     return (int)(*left - *right);
 }
-
+#pragma scheduling on
 extern float lbl_80563F40;
+#pragma scheduling invalid_target
 void fn_80270DB0(void *arg0, void *arg1, float farg0) {
-    float *left,*right,*left2,*left3,*left4,*right2,*right3;
-    float f2,f3,f0;
-    unsigned char flag;
-    flag=*(unsigned char *)((unsigned char *)arg0+4);
-    if(flag) left=(float *)(*(char **)arg0+0x10); else left=(float *)(*(char **)arg0+8);
-    f2=*left;
-    if(*(unsigned char *)((unsigned char *)arg1+4)) right=(float *)(*(char **)arg1+0xC); else right=(float *)(*(char **)arg1+4);
-    f3=*right;
-    if(flag) left2=(float *)(*(char **)arg0+0xC); else left2=(float *)(*(char **)arg0+4);
-    if(f2<*left2) f2+=farg0;
-    if(flag) left3=(float *)(*(char **)arg0+0xC); else left3=(float *)(*(char **)arg0+4);
-    if(f3<*left3) f3+=farg0;
-    if(flag) left4=(float *)(*(char **)arg0+0xC); else left4=(float *)(*(char **)arg0+4);
-    f0=lbl_80563F40*(f2+f3);
-    if(*left4>f0) f3=*left4; else f3=f0;
-    if (!(f3 < farg0)) f3-=farg0;
-    if(flag) right2=(float *)(*(char **)arg0+0x10); else right2=(float *)(*(char **)arg0+8);
-    *right2=f3;
-    if(*(unsigned char *)((unsigned char *)arg1+4)) right3=(float *)(*(char **)arg1+0xC); else right3=(float *)(*(char **)arg1+4);
-    *right3=f3;
+    register unsigned char flag;
+    register float *left, *right, *left2, *left3, *left4, *right2, *right3;
+    float f2, f3, f0;
+    flag = *(unsigned char *)((unsigned char *)arg0 + 4);
+    if (flag) left = (float *)(*(char **)arg0 + 0x10); else left = (float *)(*(char **)arg0 + 8);
+    f2 = *left;
+    if (*(unsigned char *)((unsigned char *)arg1 + 4)) right = (float *)(*(char **)arg1 + 0xC); else right = (float *)(*(char **)arg1 + 4);
+    f3 = *right;
+    if (flag) left2 = (float *)(*(char **)arg0 + 0xC); else left2 = (float *)(*(char **)arg0 + 4);
+    if (f2 < *left2) f2 += farg0;
+    if (flag) left3 = (float *)(*(char **)arg0 + 0xC); else left3 = (float *)(*(char **)arg0 + 4);
+    if (f3 < *left3) f3 += farg0;
+    if (flag) left4 = (float *)(*(char **)arg0 + 0xC); else left4 = (float *)(*(char **)arg0 + 4);
+    f0 = lbl_80563F40 * (f2 + f3);
+    if (*left4 > f0) f3 = *left4; else f3 = f0;
+    if (f3 >= farg0) f3 -= farg0;
+    if (flag) right2 = (float *)(*(char **)arg0 + 0x10); else right2 = (float *)(*(char **)arg0 + 8);
+    *right2 = f3;
+    if (*(unsigned char *)((unsigned char *)arg1 + 4)) right3 = (float *)(*(char **)arg1 + 0xC); else right3 = (float *)(*(char **)arg1 + 4);
+    *right3 = f3;
 }
-
+#pragma scheduling on
 extern char lbl_80346E90[];
 void fn_802712F8(void *);
 void fn_8027156C(void) {
@@ -212,16 +213,16 @@ typedef float f32;
 extern f32 lbl_80563F4C;
 void fn_802715C4(void *arg0, void *arg1)
 {
-  register f32 a = *((f32 *) (((u8 *) arg1) + 0x14));
+  f32 a = *((f32 *) (((u8 *) arg1) + 0x14));
   f32 b = lbl_80563F4C;
-  register f32 c = *((f32 *) (((u8 *) arg1) + 0x10));
+  f32 c = *((f32 *) (((u8 *) arg1) + 0x10));
   f32 d = *((f32 *) (((u8 *) arg1) + 0xC));
   f32 x = b * a;
-  register f32 y = b * c;
-  register f32 z;
+  f32 y = b * c;
+  f32 z;
+  *((f32 *) (((u8 *) arg0) + 8)) = x;
   z = d;
   z = b * z;
-  *((f32 *) (((u8 *) arg0) + 8)) = x;
   *((f32 *) (((u8 *) arg0) + 0)) = z;
   *((f32 *) (((u8 *) arg0) + 4)) = y;
 }
@@ -478,11 +479,12 @@ void fn_80273354(void) {
 }
 
 extern int lbl_8055F54C;
+#pragma dont_inline on
 void fn_802733C8(void) {
     fn_80271578();
     lbl_8055F54C = 0x12;
 }
-
+#pragma dont_inline reset
 void fn_802733F0(void) {
 }
 
@@ -581,7 +583,7 @@ void fn_80273604(void *arg0, s32 arg1) {
     s32 start = *(s32 *)(table + 4);
     s32 count = *(s32 *)(table + 0xC);
     u8 *state = lbl_80346BA0 + (start + count) * 0x28;
-    s32 kind = *(s32 *)state;
+    s32 kind = *(s32 *)(lbl_80346BA0 + (start + count) * 0x28);
     switch (kind) {
     case 0x22: {
         struct Scratch { float vec[3]; float pad; float matrix[9]; float pos[3]; } scratch;
@@ -590,27 +592,27 @@ void fn_80273604(void *arg0, s32 arg1) {
         *(s32 *)((u8 *)arg0 + 88) = *(s32 *)((u8 *)arg0 + 192); *(s32 *)((u8 *)arg0 + 92) = *(s32 *)((u8 *)arg0 + 196); *(s32 *)((u8 *)arg0 + 96) = *(s32 *)((u8 *)arg0 + 200); *(s32 *)((u8 *)arg0 + 100) = *(s32 *)((u8 *)arg0 + 204);
         *(s32 *)((u8 *)arg0 + 104) = *(s32 *)((u8 *)arg0 + 208); *(s32 *)((u8 *)arg0 + 108) = *(s32 *)((u8 *)arg0 + 212); *(s32 *)((u8 *)arg0 + 112) = *(s32 *)((u8 *)arg0 + 216); *(s32 *)((u8 *)arg0 + 116) = *(s32 *)((u8 *)arg0 + 220);
         *(s32 *)((u8 *)arg0 + 120) = *(s32 *)((u8 *)arg0 + 224); *(s32 *)((u8 *)arg0 + 124) = *(s32 *)((u8 *)arg0 + 228); *(s32 *)((u8 *)arg0 + 128) = *(s32 *)((u8 *)arg0 + 232); *(s32 *)((u8 *)arg0 + 132) = *(s32 *)((u8 *)arg0 + 236);
-        scratch.vec[0] = *(float *)(state + 0x14) * scale;
-        scratch.vec[1] = *(float *)(state + 0x18) * scale;
-        scratch.vec[2] = *(float *)(state + 0x1C) * scale;
         scratch.pos[0] = *(float *)(state + 8);
         scratch.pos[1] = *(float *)(state + 0xC);
         scratch.pos[2] = *(float *)(state + 0x10);
-        mag = PSVECMag(scratch.vec);
-        if (mag > lbl_80563F9C) {
-            t0 = lbl_80563F50 / mag;
-            nx = t0 * scratch.vec[0]; ny = t0 * scratch.vec[1]; nz = t0 * scratch.vec[2];
-            sine = (float)sin(mag);
-            cosine = (float)cos(mag);
+        scratch.vec[0] = *(float *)(state + 0x14) * scale;
+        scratch.vec[1] = *(float *)(state + 0x18) * scale;
+        scratch.vec[2] = *(float *)(state + 0x1C) * scale;
+        nz = PSVECMag(scratch.vec);
+        if (nz > lbl_80563F9C) {
+            t0 = lbl_80563F50 / nz;
+            nx = t0 * scratch.vec[0]; ny = t0 * scratch.vec[1]; mag = t0 * scratch.vec[2];
+            sine = (float)sin(nz);
+            cosine = (float)cos(nz);
             oneMinusCos = lbl_80563F50 - cosine;
-            t1 = sine * nz;
+            t1 = sine * mag;
             t2 = oneMinusCos * nx;
             t3 = ny * t2;
             scratch.matrix[0] = cosine + (oneMinusCos * (nx * nx));
-            t4 = nz * t2;
+            t4 = mag * t2;
             t5 = sine * ny;
             scratch.matrix[1] = t3 + t1;
-            t0 = nz * (oneMinusCos * ny);
+            t0 = mag * (oneMinusCos * ny);
             t2 = sine * nx;
             scratch.matrix[3] = t3 - t1;
             scratch.matrix[2] = t4 - t5;
@@ -618,7 +620,7 @@ void fn_80273604(void *arg0, s32 arg1) {
             scratch.matrix[5] = t0 + t2;
             scratch.matrix[6] = t4 + t5;
             scratch.matrix[7] = t0 - t2;
-            scratch.matrix[8] = cosine + (oneMinusCos * (nz * nz));
+            scratch.matrix[8] = cosine + (oneMinusCos * (mag * mag));
         } else {
             scratch.matrix[1] = lbl_80563F48;
             scratch.matrix[0] = lbl_80563F50;
@@ -632,7 +634,7 @@ void fn_80273604(void *arg0, s32 arg1) {
         }
         fn_801BFD34((u8 *)arg0 + 0x7C, scratch.pos, (u8 *)arg0 + 0xC0);
         fn_80015B20((u8 *)arg0 + 0x58, scratch.matrix, (u8 *)arg0 + 0xC0);
-        *(float *)((u8 *)arg0 + 0xBC) = lbl_80563F4C * *(float *)(state + 0x20);
+        *(float *)((u8 *)arg0 + 0xBC) = *(float *)(state + 0x20) * lbl_80563F4C;
         return;
     }
     case 0:
