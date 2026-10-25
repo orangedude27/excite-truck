@@ -31,8 +31,6 @@ struct Fn80229900VTable {
     virtual void v24();
     virtual void v25();
     virtual void v26();
-    virtual void v27();
-    virtual void v28();
     virtual void Call(s32, s32);
 };
 #pragma push
@@ -4871,8 +4869,8 @@ extern "C" void fn_802298F8(void) {
 extern "C" void fn_802298FC(void) {
 }
 
-void fn_80229900(void *arg0) {
-    ((void (*)(void *, int, int))(*(void ***)arg0)[0x74 / 4])(arg0, 0, 0);
+extern "C" void fn_80229900(void *arg0) {
+    ((Fn80229900VTable *)arg0)->Call(0, 0);
 }
 
 extern "C" void fn_80229918(void *arg0) {
