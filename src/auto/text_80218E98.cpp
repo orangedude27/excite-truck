@@ -1113,6 +1113,21 @@ extern "C" void fn_8021B2B0(void *arg0, s32 arg1, s32 arg2, const char *arg3, s3
     *(s32 *)((u8 *)arg0 + 0x264) = arg5;
     fn_80219718(arg0);
 }
+
+extern "C" int strcmp(const char *, const char *);
+extern "C" void fn_8021B32C(void *arg0) {
+    s32 temp_r31;
+    fn_802192AC(arg0);
+    temp_r31 = *(s32 *)((u8 *)arg0 + 0x254);
+    if (strcmp((char *)temp_r31, (char *)arg0 + 0x268) != 0) {
+        strcpy((char *)arg0 + 0x268, (char *)temp_r31);
+        fn_80219718(arg0);
+        if (*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
+            *(u8 *)((u8 *)arg0 + 0x234) = 1;
+        }
+    }
+}
+
 #pragma dont_inline reset
 
 extern "C" s32 fn_8021B3A0(void *arg0) {
@@ -1544,8 +1559,6 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
         virtual void v4();
         virtual void v5();
         virtual void v6();
-        virtual void v7();
-        virtual void v8();
         virtual void call();
     };
     struct Second {
@@ -1577,21 +1590,21 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
         virtual void v25();
         virtual void v26();
         virtual void v27();
-        virtual void v28();
-        virtual void v29();
         virtual s32 get();
     };
-    volatile s32 sp8;
     volatile s32 spC;
+    volatile s32 sp8;
+    register s32 result;
+    register s32 start;
     First *first;
-    s32 result;
 
     fn_802C3034(arg1);
     first = *(First **)((u8 *)arg0 + 0x248);
     first->call();
     result = ((Second *)arg0)->get();
+    start = *(s32 *)((u8 *)arg0 + 0x254);
     sp8 = 0x43300000;
-    spC = (result - *(s32 *)((u8 *)arg0 + 0x254)) ^ 0x80000000;
+    spC = (result - start) ^ 0x80000000;
 }
 
 extern "C" void fn_8021CBBC(void *arg0) {
