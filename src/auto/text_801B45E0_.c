@@ -17,7 +17,7 @@ struct F801B4720 {
     virtual void f1(void) = 0;
     virtual void f2(void) = 0;
     virtual void f3(void) = 0;
-    virtual void f4(int = 0) = 0;
+    virtual void f4(void) = 0;
     virtual void f5(void) = 0;
     virtual void f6(void) = 0;
 };
