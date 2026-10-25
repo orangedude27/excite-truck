@@ -24,7 +24,7 @@ extern char lbl_8055D280;
 __declspec(section ".rodata") extern long lbl_8034E260;
 extern long jumptable_8034E2F8[];
 extern int OSReport(const char *, ...);
-extern char lbl_8034E370;
+extern char lbl_8034E370[];
 extern char lbl_80560061;
 extern int lbl_80560068;
 extern int lbl_805600A0;
