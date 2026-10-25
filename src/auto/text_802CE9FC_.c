@@ -59,7 +59,9 @@ extern unsigned char lbl_804C5700[12];
 extern int fn_802E317C(const char *, ...);
 extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
 extern float lbl_80564FAC, lbl_80564FA8, lbl_80564F88;
+#pragma small_data off
 extern char lbl_804C97D0;
+#pragma small_data on
 extern void GXSetTevColor(int, ...);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
