@@ -21,8 +21,8 @@ extern const char lbl_8055AEB0[];
 
 void fn_8012A260(void*, unsigned int);
 void fn_80128668(void*);
-extern s32 lbl_803398D8;
-extern s32 lbl_80339904;
+extern char lbl_803398D8[];
+extern char lbl_80339904[];
 extern void *lbl_8055EA50;
 extern void *fn_801284F8(s32, void *);
 extern void fn_8012A13C(void *, s32, s32);
