@@ -188,24 +188,20 @@ void fn_801DCD24(void) {
     fn_80128668();
 }
 
+#pragma scheduling invalid_target
 void fn_801DCD28(int arg0) {
-    int temp_r3;
-
     lbl_8055E998 = 0;
     if (arg0 == 0) {
-        temp_r3 = fn_801DC9B0();
-        lbl_8055E990 = temp_r3;
-        fn_802E30C8((const char *)&lbl_80339468, temp_r3);
+        fn_802E30C8(lbl_80339468, lbl_8055E990 = fn_801DC9B0());
         lbl_8055E994 = (void (*)(int))fn_801DCA5C;
     } else {
-        temp_r3 = fn_801DCA60();
-        lbl_8055E990 = temp_r3;
+        lbl_8055E990 = fn_801DCA60();
         lbl_8055E994 = (void (*)(int))fn_801DCD24;
     }
     lbl_8055E9A4 = 1;
     fn_801D02B0();
 }
-
+#pragma scheduling on
 void fn_801DCDA0(void) {
 
 }
