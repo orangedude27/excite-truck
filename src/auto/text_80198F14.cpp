@@ -214,8 +214,8 @@ public:
 };
 
 extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
-extern "C" void fn_801A4A10(s32, s32, s32);
-extern "C" void fn_801A44D4(void*);
+extern "C" void fn_801A4A10(s32, s32, s32, s32 = 0);
+  extern "C" void fn_801A44D4(void*);
 extern void* lbl_8055A508;
 extern void* lbl_8055A510;
 
