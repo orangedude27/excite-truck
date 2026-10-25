@@ -4,6 +4,7 @@ typedef struct { unsigned char r, g, b, a; } fn_802DCAE4_GXColor;
 extern void GXSetTevKColor(int, fn_802DCAE4_GXColor);
 
 extern unsigned char lbl_8055FEC0;
+extern unsigned char lbl_8055FEBA;
 extern signed char lbl_8055FE9E;
 extern int lbl_8055FEA0, lbl_8055FEA4;
 #pragma push
