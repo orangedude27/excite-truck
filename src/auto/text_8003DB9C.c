@@ -30,6 +30,12 @@ typedef struct {
 } GXAttnKReg;
 
 typedef struct {
+    unsigned int unused0 : 23;
+    unsigned int gamma : 2;
+    unsigned int unused1 : 7;
+} GXDispCopyGammaReg;
+
+typedef struct {
     unsigned int unused : 28;
     unsigned int wrapT : 2;
     unsigned int wrapS : 2;
