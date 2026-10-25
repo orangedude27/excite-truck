@@ -30,6 +30,14 @@ public:
     virtual void Call(s32, s32);
 };
 
+struct Fn8021C9D8Object {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void First();
+    virtual void Second();
+};
+
 struct Fn80219264VTable {
     virtual void v0();
     virtual void v1();
