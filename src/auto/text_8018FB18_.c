@@ -362,17 +362,30 @@ void fn_80191060(void) {
 
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
-s32 fn_80191108(void *arg0, s32 arg1) {
-    struct Object {
-        void **vtable;
+#pragma cplusplus on
+extern "C" s32 fn_80191108(void *arg0, s32 arg1) {
+    class Object1 {
+    public:
+        virtual s32 f0();
+        virtual s32 f1();
+        virtual s32 f2();
+        virtual s32 f3();
+        virtual s32 method();
     };
-    struct Object *obj1 = *(struct Object **)((u8 *)arg0 + 0xC);
-    s32 result1 = ((s32 (*)(struct Object *))obj1->vtable[6])(obj1);
-    struct Object *obj2 = *(struct Object **)((u8 *)arg0 + 8);
-    s32 result2 = ((s32 (*)(struct Object *, s32))obj2->vtable[6])(obj2, arg1 + result1);
-    return result1 + result2;
+    class Object2 {
+    public:
+        virtual s32 f0();
+        virtual s32 f1();
+        virtual s32 f2();
+        virtual s32 f3();
+        virtual s32 method(s32);
+    };
+    Object1 *obj1 = *(Object1 **)((u8 *)arg0 + 0xC);
+    s32 result = obj1->method();
+    Object2 *obj2 = *(Object2 **)((u8 *)arg0 + 8);
+    return result + obj2->method(arg1 + result);
 }
-
+#pragma cplusplus reset
 extern u8 lbl_80332FC4[];
 void fn_801912B4(void *arg0) {
     *(void **)arg0 = lbl_80332FC4;
