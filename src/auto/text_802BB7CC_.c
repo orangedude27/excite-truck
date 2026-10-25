@@ -36,7 +36,6 @@ int fn_802BB87C(int arg0) {
     return -2;
 }
 
-#pragma dont_inline fn_802BB8E4
 void fn_802BB8E4(int* arg0) {
     int temp_r0 = *arg0;
     if (temp_r0 != -2) {
