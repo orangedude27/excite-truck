@@ -400,8 +400,6 @@ void fn_8001B7BC(void *arg0) {
     fn_802C8750(sp58, -1); fn_802C96DC(sp78, -1);
 }
 
-#pragma small_data off
-extern int lbl_803583C8;
 #pragma small_data on
 extern float lbl_80560418;
 extern float lbl_8056041C;
