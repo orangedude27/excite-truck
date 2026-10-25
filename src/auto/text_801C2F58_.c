@@ -1185,6 +1185,8 @@ void fn_801C7FE4(void) {
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
 
+extern f32 lbl_805629B4;
+extern f32 lbl_8055E85C, lbl_8055E860;
 extern s32 lbl_8055E854;
 extern void fn_801C78D8(void);
 void fn_801C80BC(void) {
