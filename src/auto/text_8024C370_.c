@@ -162,7 +162,7 @@ int fn_8024C6F4(void) {
 extern int fn_802146BC(int *, int, int, int);
 extern void fn_802149C4(int);
 extern void fn_802149FC(int);
-extern void fn_8024C524(void);
+extern int fn_8024C524(void);
 extern int fn_8024C578(int);
 extern int lbl_802FA538[];
 extern char lbl_804989E8[];
