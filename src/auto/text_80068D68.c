@@ -4304,6 +4304,7 @@ result:
     return status;
 }
 
+extern void fn_80085E24(void *, u8);
 tBTM_STATUS BTM_SetPageScanType(UINT16 arg0) {
     void *p_buf;
     tBTM_STATUS status;
