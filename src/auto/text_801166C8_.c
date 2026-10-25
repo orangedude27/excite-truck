@@ -1454,24 +1454,28 @@ s32 fn_8011A7CC(DVDFileInfo *info) {
     return p[0x24 / 4];
 }
 
+#pragma push
 #pragma dont_inline on
 s32 fn_8011A870(void *arg0, s32 arg1) {
+    register s32 *p = (s32 *)arg0;
+    register s32 result;
     if (arg1 & 1) {
-        if (*(s32 *)((char *)arg0 + 0x50) == 0)
-            *(s32 *)((char *)arg0 + 0x50) = 1;
+        if (p[0x50 / 4] == 0)
+            p[0x50 / 4] = 1;
         if (arg1 & 0x80000000) {
             do {
-            } while (*(s32 *)((char *)arg0 + 0x24) != 0);
+            } while (p[0x24 / 4] != 0);
         }
     } else if (arg1 & 2) {
-        if ((u32)*(s32 *)((char *)arg0 + 0x50) == 1U)
-            *(s32 *)((char *)arg0 + 0x50) = 0;
+        if ((u32)p[0x50 / 4] == 1U)
+            p[0x50 / 4] = 0;
         if (arg1 & 0x80000000)
             fn_8011A7CC(arg0);
     }
-    return *(s32 *)((char *)arg0 + 0x50);
+    result = p[0x50 / 4];
+    return result;
 }
-
+#pragma pop
 extern u32 fn_8011A240(void *, u32, s32, u32);
 extern void fn_8011A45C(void *, s32, s32);
 extern void fn_8011A1A0(u32 *, u32);
@@ -3253,6 +3257,10 @@ void fn_8011DFAC(void* arg0, u32 arg1) {
     out[8] = fn_8011DF68(0x200, arg1, 4, 0x30);
 }
 
+s32 *fn_8011E0B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5, s32 arg6, s32 arg7) {
+    return arg5;
+}
+
 extern s32* fn_8011E0B4(s32, s32, s32, s32, s32, s32*, s32, s32);
 u32 fn_8011FC2C(void* arg0, s32 arg1, s32 arg2, s32* arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     u32 result = 0;
@@ -3477,7 +3485,7 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
         }
         fn_80120F84(count, mode, dst);
     } else if (count > 8) {
-        if (count == 8) {
+        if (count == 0x20) {
             fn_80123E98(dst, (u8 *)src + (srcIndex - 8) * 4);
             fn_80121848(dst);
         } else {
@@ -3485,8 +3493,11 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
             fn_80121BB0(dst);
         }
     } else {
-        fn_80124F90(dst);
-        if (count == 4) fn_80125098(dst);
+        if (count == 8) {
+            fn_80124F90(dst);
+        } else if (count == 4) {
+            fn_80125098(dst);
+        }
     }
 }
 
