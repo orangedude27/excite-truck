@@ -561,6 +561,19 @@ void fn_802E0D44(u32 size) {
     } while (1);
 }
 
+void fn_802E0E60(arg0)
+void *arg0;
+{
+    s32 *field;
+
+    field = (s32 *)((u8 *)arg0 + 4);
+    if (*field != 0) {
+        fn_802E1728((u8 *)arg0 + 0x50);
+        fn_80118DC0((void *)*field);
+        *field = 0;
+    }
+}
+
 #pragma dont_inline reset
 void fn_802E1290(void *arg0) {
     extern void fn_802E30C8(const char *, ...);
