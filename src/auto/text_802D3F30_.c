@@ -24,6 +24,8 @@ extern void PSMTXRotTrig(void *, void *, f32, f32, f32);
 extern f32 lbl_80565008;
 extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
+extern u32 lbl_8055FDE8;
+extern u8 lbl_8055FDEC;
 void fn_802D3F30(void) {
 }
 
