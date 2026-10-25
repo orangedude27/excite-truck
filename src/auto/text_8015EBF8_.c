@@ -339,6 +339,7 @@ void fn_8015F92C(float *arg0, float farg0) {
     }
 }
 
+#pragma scheduling invalid_target
 s32 fn_8015FA44(void *arg0, s32 arg1, f32 arg2) {
     s32 result = -1;
     s32 i;
@@ -355,8 +356,7 @@ s32 fn_8015FA44(void *arg0, s32 arg1, f32 arg2) {
     }
     return result;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_8015FAB8(s32 *arg0, s32 arg1, f32 arg2) {
     s32 result = -1;
     s32 i;
