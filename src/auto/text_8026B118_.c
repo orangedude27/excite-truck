@@ -55,6 +55,51 @@ void fn_8026B1D0(void *obj) {
     *(float *)((unsigned char *)dst + 8) = b;
 }
 
+extern int *__AXFXGetLfoSinTable_801769CC(void);
+extern void *fn_8001285C(int);
+extern void *fn_80028E00(char *, const char *);
+extern int fn_8012C33C(char *);
+extern void *fn_80131808(char *);
+extern void fn_80131818(void *);
+extern int fn_802E30C8(const char *, ...);
+extern char *strchr(const char *, int);
+extern char *strncpy(char *, const char *, unsigned int);
+extern int stricmp(const char *, const char *);
+extern char lbl_8055C504[], lbl_8055C50C[];
+#pragma push
+#pragma cplusplus on
+void fn_8026B260(void) {
+    class Iterator { public: virtual void *next(int); };
+    class Entry { public: virtual const char *getName(); };
+    char name[12];
+    void *obj, *nameObj;
+    Iterator *it;
+    Entry *entry;
+    char *dot;
+    int index = 0;
+    lbl_8055F4C8 = 0;
+    obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
+    nameObj = *(void **)((char *)obj + 0x20);
+    if ((char *)((void *(*)(void *, const char *, int))(*(void ***)nameObj)[6])(nameObj, (char *)lbl_80346988, 0) != 0) {
+        strncpy(name, (char *)((void *(*)(void *, const char *, int))(*(void ***)nameObj)[6])(nameObj, (char *)lbl_80346988, 0), 11);
+        dot = strchr(name, '.');
+        if (dot) *dot = 0;
+        fn_80028E00(name, lbl_8055C504);
+        if (!fn_8012C33C(name)) { fn_802E30C8((char *)lbl_80346988 + 0xC, name); return; }
+        it = (Iterator *)fn_80131808(name);
+        do {
+            entry = (Entry *)it->next(index++);
+            if (entry && stricmp(entry->getName(), lbl_8055C50C) == 0) { fn_8026B1D0(entry); lbl_8055F4C8++; }
+        } while (entry);
+        fn_80131818(it);
+        fn_802E30C8((char *)lbl_80346988 + 0x34, lbl_8055F4C8, name);
+        return;
+    }
+    fn_802E30C8((char *)lbl_80346988 + 0x5C);
+}
+#pragma cplusplus reset
+#pragma pop
+
 void fn_8026B644(void) {
     fn_8026B260();
     fn_801331C4(4, lbl_80346988 + 0xA0, &lbl_8055C4F8);
@@ -69,11 +114,12 @@ extern void *memset(void *, int, unsigned int);
 extern int fn_801B2F24(void);
 extern void fn_8026B3D4(int);
 extern void deleteThreads__6SystemFv_8026B178(void *);
+#pragma scheduling invalid_target
 void fn_8026B6D0(void) {
     void *p = lbl_8049A0E8;
     memset(p, 0, 0x80);
 }
-
+#pragma scheduling on
 void fn_8026B6E4(void) {
     int i;
     if (lbl_8055F4C8 > 0) {
