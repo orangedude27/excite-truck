@@ -113,6 +113,19 @@ int fn_80008DBC(int arg0) {
     }
 }
 
+s32 fn_80008F68(s32 arg0) {
+    switch (arg0) {
+    case 0x15:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
 void fn_80009C80(void) {
     fn_80009534();
 }
@@ -129,6 +142,18 @@ s32 fn_80009C8C(void) {
     if ((u8)lbl_8055D36D == 0 && (u8)lbl_8055D378 != 0)
         result = 1;
     lbl_8055D378 = 0;
+    return result;
+}
+
+s32 fn_80009CB8(void) {
+    s32 result = 0;
+    if ((u8)lbl_8055D36D != 0)
+        goto done;
+    if (*((u8 *)&lbl_8055D378 + 1) == 0)
+        goto done;
+    result = 1;
+    *((u8 *)&lbl_8055D378 + 1) = 0;
+done:
     return result;
 }
 
