@@ -283,7 +283,7 @@ extern "C" void* fn_80298868(void* arg0) {
     int i = 0;
     while (i < 4) {
         if (*(unsigned char*)(p + 0x28) == 0) {
-            return (void*)(p + i * 0x2C);
+            return (char*)arg0 + i * 0x2C;
         }
         p += 0x2C;
         i++;
