@@ -504,8 +504,11 @@ extern f32 lbl_805634A0;
 extern f32 lbl_805634A4;
 extern f32 lbl_805634B0;
 extern f32 lbl_805634B4;
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_80219358(void *arg0, f32 value) {
-    if (value >= lbl_805634B0) {
+    register f32 threshold = lbl_805634B0;
+    if (value < threshold) {
         if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
             return;
         *(u8 *)((u8 *)arg0 + 0x1A) = 1;
@@ -514,14 +517,19 @@ extern "C" void fn_80219358(void *arg0, f32 value) {
     }
     if (*(u8 *)((u8 *)arg0 + 0x1A) == 0) {
         if (*(f32 *)((u8 *)arg0 + 0x20) < lbl_805634B4) {
+            f32 divisor;
             *(f32 *)((u8 *)arg0 + 0x20) = lbl_805634A4;
-            if (value > lbl_805634B0)
-                *(f32 *)((u8 *)arg0 + 0x28) = lbl_805634A4 / value;
+            if (value > threshold)
+                divisor = value;
+            else
+                divisor = threshold;
+            *(f32 *)((u8 *)arg0 + 0x28) = lbl_805634A4 / divisor;
         }
     }
     *(f32 *)((u8 *)arg0 + 0x1C) = lbl_805634A0;
 }
-
+#pragma scheduling on
+#pragma pop
 extern "C" void fn_802193C8(void *arg0, f32 value) {
     const f32 threshold = 0.1f;
     if (value < threshold) {
@@ -4288,6 +4296,17 @@ extern "C" void fn_80227244(void *arg0, s32 arg1) {
         fn_80128668(obj);
 }
 
+#pragma push
+#pragma ppc_psq_save off
+#pragma scheduling invalid_target
+extern "C" void fn_80227880(s32 unused, f32 x, f32 y, f32 width, f32 height) {
+    ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(
+        0x40FFFFFF, x, y, x + width, y - height, lbl_805634A8);
+    ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(
+        0x99000000, x, y, x + width, y - height, lbl_805634A8);
+}
+#pragma scheduling on
+#pragma pop
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma scheduling invalid_target
 extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
