@@ -38,6 +38,14 @@ void fn_801607BC(void) {
     lbl_8042FD60[4] = e;
 }
 
+#pragma dont_inline on
+int fn_80160998(int arg0) {
+    if (lbl_8055E2BC != 0)
+        return fn_8001DA48(lbl_8055E2BC, arg0);
+    return lbl_8042FD60[arg0];
+}
+#pragma dont_inline off
+
 int fn_801609C4(int value) {
     int *p = lbl_8042FD60;
     if (lbl_8055E2BC != 0) return fn_8001D9B4((int *)lbl_8055E2BC, value);
