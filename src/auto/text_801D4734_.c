@@ -584,6 +584,18 @@ int fn_801D6C3C(int arg0) {
 }
 
 #pragma scheduling invalid_target
+void fn_801D6D28(void* arg0) {
+    unsigned char* ptr = *(unsigned char**)((char*)arg0 + 0x30);
+    if (ptr != 0 && ptr[0x19] != 0) {
+        ptr[0x4A] = 1;
+        ptr[0x4C] = 0;
+    }
+    if (*(int*)((char*)arg0 + 4) == 0) {
+        return;
+    }
+    *(int*)((char*)arg0 + 4) = 1;
+}
+#pragma scheduling on
 void fn_801D6D68(UnkStruct_801D701C *arg0) {
     extern char lbl_80338B98[];
     arg0->name = lbl_80338B98;
