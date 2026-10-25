@@ -1032,10 +1032,12 @@ void GXGetCullMode(s32 arg0, u8 arg1) {
 }
 
 void GXGetLineWidth(s32 arg0) {
-    unsigned int value = 0;
-    value = (value & ~3) | (arg0 & 3);
-    value |= 4;
-    __peReg[4] = value;
+    struct {
+        unsigned short unused : 14;
+        unsigned short width : 2;
+    } value = {0, 0};
+    value.width = arg0;
+    __peReg[4] = *(unsigned short *)&value | 4;
 }
 
 void GXGetPointSize(s32 arg0) {
