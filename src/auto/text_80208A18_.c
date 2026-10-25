@@ -3,6 +3,7 @@
 
 extern float lbl_8055B4D0;
 extern float lbl_8055B4D4;
+extern float fn_80208A18(float);
 extern char lbl_80489258[];
 
 extern float lbl_80563230;
