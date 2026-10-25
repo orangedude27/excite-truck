@@ -527,9 +527,10 @@ extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
     return arg0;
 }
 
-s32 fn_80156C60(void *arg0, s32 arg1) {
-    if (arg1 >= ((s32 *)arg0)[2]) return 0;
-    return ((s32 *)((s32 *)arg0)[1])[arg1 * 2];
+extern "C" s32 fn_80156C60(void *arg0, s32 arg1) {
+    if (arg1 < ((s32 *)arg0)[2])
+        return *(s32 *)((u8 *)((s32 *)arg0)[1] + (arg1 * 8));
+    return 0;
 }
 
 extern "C" void* fn_8017960C(s32);
