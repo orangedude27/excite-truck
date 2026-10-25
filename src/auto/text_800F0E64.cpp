@@ -644,9 +644,10 @@ extern "C" s32 fn_800F27F4(void *arg0) {
     return ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(*(s32*)((u8*)arg0 + 4));
 }
 
-extern "C" s32 ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13StrmSoundInfo(s32);
+extern "C" s32 ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13StrmSoundInfo(void *, u32, void *);
 extern "C" s32 fn_800F27FC(void *arg0) {
-    return ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13StrmSoundInfo(*(s32*)((u8*)arg0 + 4));
+    typedef s32 (*ReadStrmSoundInfoThunk)(s32);
+    return ((ReadStrmSoundInfoThunk)ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13StrmSoundInfo)(*(s32*)((u8*)arg0 + 4));
 }
 
 M2C_UNK ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13WaveSoundInfo(s32);
@@ -2451,20 +2452,21 @@ extern "C" void fn_800FA350(void) {
 
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
     if ((s8)lbl_8055DE68 == 0) {
-        u32* p = (u32*)&lbl_80412CC8[0x2384];
-        p[1] = 0;
-        p[2] = 0;
-        p[0] = 0;
-        p[1] = 0;
-        p[3] = 0;
-        *(void**)p[1] = (void*)p;
-        *(void**)p[2] = (void*)p;
-        ((u8*)p)[0x10] = 0;
-        __register_global_object((void*)&lbl_80412CC8[0x2388], (void*)&__dt__10TitleSceneFv,
-                                 (void*)&lbl_80412CB8, (void*)&lbl_80412CC8[0x2388]);
+        volatile u32 *base = (volatile u32 *)lbl_80412CC8;
+        base[0x2388 / 4] = 0;
+        void *object = (void *)((u8 *)base + 0x2388);
+        base[0x238c / 4] = 0;
+        base[0x2378 / 4] = 0;
+        base[0x237c / 4] = 0;
+        base[0x2384 / 4] = 0;
+        base[0x2388 / 4] = (u32)object;
+        base[0x238c / 4] = (u32)object;
+        ((volatile u8 *)base)[0x2394] = 0;
+        __register_global_object((void *)base, (void *)&__dt__10TitleSceneFv,
+                                 (void *)&lbl_80412CB8, object);
         lbl_8055DE68 = 1;
     }
-    return &lbl_80412CC8[0x2388];
+    return (void *)lbl_80412CC8;
 }
 
 extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
