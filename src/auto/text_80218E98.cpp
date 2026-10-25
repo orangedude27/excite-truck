@@ -2273,7 +2273,7 @@ extern "C" s32 fn_8021F478(s32 *arg0) {
     char *base;
 
     fn_801A7844(1);
-    base = (char *)&lbl_80490934;
+    base = lbl_80490934;
     if (fn_801A7C8C(*(s32 *)(base + 0x18)) != 0) {
         fn_801A7E54(base, 0x18, *(s32 *)(base + 0x18));
         fn_802E47E8();
