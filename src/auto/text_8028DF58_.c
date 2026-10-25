@@ -25,8 +25,6 @@ extern void *memcpy(void *, const void *, unsigned int);
 extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
 extern int lbl_8055F748;
-extern void fn_8028ED74(void *);
-extern void fn_8028EE1C(void *);
 extern int lbl_804B34B0_arr[];
 #pragma push
 #pragma small_data off
