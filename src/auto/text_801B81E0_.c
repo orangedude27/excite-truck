@@ -40,7 +40,7 @@ struct Dummy_801B8318 {
     virtual void f33();
     virtual void f34();
     virtual void f35();
-    virtual int f36(void *, int, int);
+    virtual void f36(void *, void *);
     virtual void f37();
     virtual void f38(void *, void *);
     virtual void f39();
@@ -267,12 +267,11 @@ void fn_801B85E0(void *a, void *b, void *c, void *d) {
     (*(void (***)(void *, void *, void *, void *, void *))lbl_8055E744)[36](lbl_8055E744, a, b, c, d);
 }
 
-void fn_801B8610(void *a, void *b) {
-    register void *obj = lbl_8055E744;
-    register void (**vtable)(void *, void *) = *(void (***)(void *, void *))obj;
-    vtable[38](a, b);
+#pragma cplusplus on
+extern "C" void fn_801B8610(void *a, void *b) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f38(a, b);
 }
-
+#pragma cplusplus off
 int fn_801B8630(int arg0, int arg1, int arg2) {
     extern int fn_80161BDC(void);
     if (fn_80161BDC() != 0) return 1;
