@@ -60,7 +60,7 @@ extern void *fn_801284F8(s32, const char *);
 extern char lbl_8034044C[];
 extern char lbl_80340488[];
 extern char lbl_803404C0[];
-extern s32 stricmp(const char *, const char *);
+extern s32 stricmp();
 extern void *fn_8012850C(s32, const char *);
 extern char *strcpy(char *, const char *);
 extern char lbl_80340440[];
@@ -79,10 +79,12 @@ s32 fn_80231504(void) {
 
 #pragma dont_inline on
 s32 fn_8023150C(const char *arg0) {
-    s32 i = 0;
     s32 offset = 0;
+    s32 i = 0;
+    const char *name;
     while (i < *(s32 *)(lbl_8055F068 + 0x168)) {
-        if (stricmp((const char *)(*(void **)(lbl_8055F068 + offset + 4)), arg0) == 0) {
+        name = (const char *)(*(void **)(lbl_8055F068 + offset + 4));
+        if (stricmp(name, arg0) == 0) {
             return i;
         }
         offset += 0xC;
