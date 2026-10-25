@@ -5191,15 +5191,19 @@ extern "C" void fn_80229E34(void *arg0) {
 }
 
 extern "C" void fn_80229E74(void *arg0) {
-    s32 *data = *(s32 **)((u8 *)arg0 + 0x248);
-    s32 value = data[2] - 1;
-    data[2] = value;
-    s32 limit = data[0] - data[1];
-    if (value > limit) {
-        data[2] = limit;
+    s32 temp_r0;
+    s32 temp_r4;
+    void *temp_r5;
+
+    temp_r5 = *(void **)((u8 *)arg0 + 0x248);
+    temp_r4 = *(s32 *)((u8 *)temp_r5 + 8) - 1;
+    *(s32 *)((u8 *)temp_r5 + 8) = temp_r4;
+    temp_r0 = *(s32 *)((u8 *)temp_r5 + 0) - *(s32 *)((u8 *)temp_r5 + 4);
+    if (temp_r4 > temp_r0) {
+        *(s32 *)((u8 *)temp_r5 + 8) = temp_r0;
     }
-    if (data[2] < 0) {
-        data[2] = 0;
+    if (*(s32 *)((u8 *)temp_r5 + 8) < 0) {
+        *(s32 *)((u8 *)temp_r5 + 8) = 0;
     }
 }
 
