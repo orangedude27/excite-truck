@@ -24,6 +24,7 @@ extern void fn_8028F114(int *, int, int);
 extern void *memcpy(void *, const void *, unsigned int);
 extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
+extern int lbl_8055F748;
 extern int lbl_804B34B0_arr[];
 #pragma push
 #pragma small_data off
@@ -70,12 +71,11 @@ __declspec(section ".data") extern int lbl_804B34B0;
 #pragma push
 #pragma small_data off
 void fn_8028E080(void) {
-    struct Table { int entries[64]; int count; } *base = (struct Table *)&lbl_804B34B0;
-    int *entries = base->entries;
     int i;
-    int z = 0;
-    lbl_8055F73C = z;
-    i = z;
+    int *entries = (int *)&lbl_804B34B0;
+    struct Table { int entries[64]; int count; } *base = (struct Table *)&lbl_804B34B0;
+    lbl_8055F73C = 0;
+    i = 0;
     goto test;
 body:
     fn_8028F8E0(*entries, lbl_8055F738);
@@ -84,14 +84,17 @@ body:
 test:
     if (i < base->count) goto body;
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8028E0F0(void) {
+    char* base = (char*)&lbl_804B34B0;
     fn_8028F5A4();
-    fn_8028EE28((char *)&lbl_804B34B0 + 0x208);
-    fn_8028ED80((char *)&lbl_804B34B0 + 0x104);
-    fn_8028ED80(&lbl_804B34B0);
+    fn_8028EE28(base + 0x208);
+    fn_8028ED80(base + 0x104);
+    fn_8028ED80(base);
 }
-
+#pragma pop
 extern void fn_8028ED74(void *);
 extern void fn_8028EE1C(void *);
 extern void fn_8028F8C4(int);
@@ -301,6 +304,21 @@ int fn_8028F040(int *arg0, int *arg1, int arg2) {
     return -2;
 }
 
+int fn_8028F0C0(int *arg0, int arg1, int arg2) {
+    int i = arg1 + 1;
+    int *p = (int *)((char *)arg0 + i * 0x104);
+    if (i < 9) {
+        do {
+            if (*(int *)((char *)p + 0x100) > 0) {
+                return fn_8028F040((int *)((char *)arg0 + arg1 * 0x104), (int *)((char *)arg0 + i * 0x104), arg2);
+            }
+            p = (int *)((char *)p + 0x104);
+            i++;
+        } while (i < 9);
+    }
+    return -2;
+}
+
 void fn_8028F114(int *arg0, int arg1, int arg2) {
     void *tmp[64];
     int n1=0,n2=0,n3=0;
@@ -433,9 +451,11 @@ int fn_8028F858(int arg0, int arg1) {
 
 void fn_8028F8C4(int arg0) {
     char *p = (char *)arg0;
+    float f;
     *(int *)(p + 0x90) = -1;
     *(int *)(p + 0x94) = 0;
-    *(float *)(p + 0x9C) = lbl_80564420;
+    f = lbl_80564420;
+    *(float *)(p + 0x9C) = f;
 }
 
 extern float lbl_80558DC4;
