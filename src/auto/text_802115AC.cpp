@@ -82,7 +82,7 @@ extern u8 lbl_8033CAE8[];
 extern "C" s32 fn_80214E10(s32);
 extern "C" s32 fn_80214FE0(s32, s32, s32, s32);
 extern "C" s32 fn_80206430(void);
-extern "C" s32 fn_8022BAD0(s32, s32, s32, s32, float);
+extern "C" s32 fn_8022BAD0(s32, s32, s32, s32, ...);
 extern "C" s32 fn_8022AC1C(s32, s32, s32, s32, s32, s32, s32, s32);
 extern float lbl_80563450;
 extern "C" float fn_80209028(void);
