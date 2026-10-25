@@ -110,6 +110,30 @@ void* fn_801FCA14(void* arg0, int arg1) {
     return arg0;
 }
 
+extern "C" void fn_801FCA54(void* arg0, int arg1, int arg2) {
+    float zero;
+    float one;
+    zero = lbl_80563034;
+    one = lbl_80563030;
+    int value = *(int*)((char*)arg1 + 4);
+    *(int*)((char*)arg0 + 0) = arg2;
+    *(int*)((char*)arg0 + 4) = 0;
+    *(int*)((char*)arg0 + 8) = value;
+    *(float*)((char*)arg0 + 0xc) = one;
+    *(float*)((char*)arg0 + 0x10) = zero;
+    *(float*)((char*)arg0 + 0x14) = zero;
+    *(float*)((char*)arg0 + 0x18) = zero;
+    *(float*)((char*)arg0 + 0x1c) = one;
+    *(float*)((char*)arg0 + 0x20) = zero;
+    *(float*)((char*)arg0 + 0x24) = zero;
+    *(float*)((char*)arg0 + 0x28) = zero;
+    *(float*)((char*)arg0 + 0x2c) = one;
+    *(float*)((char*)arg0 + 0x30) = zero;
+    *(float*)((char*)arg0 + 0x34) = zero;
+    *(float*)((char*)arg0 + 0x38) = zero;
+    *(int*)((char*)arg0 + 0x3C) = -1;
+}
+
 extern "C" void fn_801FCB40(void*, float);
 extern "C" void fn_801FCAAC(void* arg0, float farg0) {
     if (*(void**)((char*)arg0 + 4) != 0) {
@@ -257,7 +281,7 @@ extern "C" void fn_801FCF18(void* arg0, int arg1, int arg2) {
     *(float*)((char*)arg0 + 0x40) = zero;
 }
 
-void fn_801FCF74(void* arg0) {
+extern "C" void fn_801FCF74(void* arg0) {
     int obj = *(int*)((char*)arg0 + 4);
     if (!obj) return;
     unsigned short type = *(unsigned short*)((char*)obj + 0x16);
