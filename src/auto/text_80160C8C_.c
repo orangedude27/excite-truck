@@ -1476,21 +1476,14 @@ void fn_8016464C(void *arg0) {
     if(iterator) fn_80131818(iterator);
 }
 
-#pragma push
-#pragma scheduling invalid_target
-void fn_801647DC(void *arg0) {
-    struct VTable {
-        void (*slot0)(void);
-        void (*slot1)(void);
-        void (*slot2)(void *, s32);
-    };
+#pragma cplusplus on
+extern "C" void fn_801647DC(void *arg0) {
     struct Object {
-        struct VTable *vtable;
+        virtual void method(s32);
     };
     s32 var_r31;
     s32 var_r30;
     void *temp_r3;
-    void (*method)(void *, s32);
 
     var_r31 = 0;
     var_r30 = 0;
@@ -1498,8 +1491,7 @@ void fn_801647DC(void *arg0) {
         temp_r3 = *(void **)((char *)(*(s32 *)((char *)arg0 + 0x34)) + var_r31 + 4);
         if (temp_r3 != 0) {
             if (temp_r3 != 0) {
-                method = ((struct Object *)temp_r3)->vtable->slot2;
-                method(temp_r3, 1);
+                ((Object *)temp_r3)->method(1);
             }
         }
         var_r31 += 8;
@@ -1507,7 +1499,7 @@ void fn_801647DC(void *arg0) {
     }
     *(s32 *)((char *)arg0 + 0x38) = 0;
 }
-#pragma pop
+#pragma cplusplus off
 int fn_80164868(void) {
     return 1;
 }
