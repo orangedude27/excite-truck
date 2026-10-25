@@ -279,10 +279,11 @@ int fn_801B8630(int arg0, int arg1, int arg2) {
     return (*(int (***)(void *, int, int, int))lbl_8055E744)[40](lbl_8055E744, arg0, arg1, arg2);
 }
 
-void fn_801B86A4(void *arg0) {
-    (*(void (***)(void *, void *))lbl_8055E744)[43](lbl_8055E744, arg0);
+#pragma cplusplus on
+extern "C" void fn_801B86A4(void *arg0) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f41(arg0);
 }
-
+#pragma cplusplus off
 void fn_801B86BC(int arg0, void *arg1) {
     extern float lbl_8055A910;
     extern void fn_8027DED8(int, void *, float);
