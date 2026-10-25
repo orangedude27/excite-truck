@@ -55,6 +55,8 @@ extern unsigned int fn_802BBD38(short, short, float);
 extern char lbl_8034A020[];
 extern float lbl_804BE090[];
 extern float lbl_80564B40;
+extern float lbl_80564B44;
+extern float lbl_80564B68;
 extern float lbl_80564B48;
 extern float lbl_80564B4C;
 extern float lbl_80564B50;
