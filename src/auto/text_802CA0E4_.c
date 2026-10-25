@@ -516,9 +516,13 @@ char fn_802CAFC8(int arg0) {
 }
 
 char fn_802CAFF0(int arg0) {
+    int offset;
+    char *base;
     if (arg0 == -1)
         return 0x32;
-    return *(char *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 9);
+    offset = arg0 * 0x4C;
+    base = (char *)lbl_8055FCB0;
+    return *(char *)(*(int *)(base + offset + 0x2C) + 9);
 }
 
 extern char lbl_8034B940[];
