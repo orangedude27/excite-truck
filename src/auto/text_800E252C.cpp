@@ -1514,15 +1514,20 @@ extern "C" void fn_800E5464(void *arg0, float arg1) {
     }
 }
 
-extern "C" void fn_800E54A8(void *arg0, float farg0) {
-    float value = farg0;
-    if (farg0 <= lbl_80560F54) {
-        if (farg0 < lbl_80560F3C)
-            value = lbl_80560F3C;
+extern "C" void fn_800E54A8(void *arg0, float arg1) {
+    float value;
+    if (arg1 > lbl_80560F54) {
+        value = lbl_80560F54;
+    } else if (arg1 < lbl_80560F3C) {
+        value = lbl_80560F3C;
+    } else {
+        value = arg1;
     }
-    if (value != *(float *)((char *)arg0 + 0x12C)) {
-        *(float *)((char *)arg0 + 0x12C) = value;
-        *(unsigned char *)((char *)arg0 + 0x123) |= 0x20;
+    float *field = (float *)((char *)arg0 + 0x12C);
+    if (value != *field) {
+        unsigned char *flags = (unsigned char *)arg0 + 0x123;
+        *field = value;
+        *flags |= 0x20;
     }
 }
 
