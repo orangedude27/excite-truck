@@ -24,6 +24,26 @@ copied:
     return base;
 }
 
+extern float lbl_80561480;
+extern float lbl_80561484;
+extern float lbl_80561488;
+extern float lbl_8056148C;
+extern float lbl_80561490;
+void fn_8013BD30(void *arg0) {
+    float e, d, c, b, a;
+    float *p = (float *)arg0;
+    a = lbl_80561480;
+    b = lbl_80561484;
+    c = lbl_80561488;
+    d = lbl_8056148C;
+    e = lbl_80561490;
+    p[0] = a;
+    p[1] = b;
+    p[2] = c;
+    p[4] = d;
+    p[3] = e;
+}
+
 extern void fn_8013BD30(void *);
 extern const char lbl_8032C3D8[];
 extern const char lbl_80559CE0[];
