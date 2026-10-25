@@ -74,7 +74,7 @@ int fn_80171E3C(void *arg0) {
 #pragma pop
 
 int fn_80171EC0(void) {
-    return *(int *)((char *)fn_8017960C(0) + 0x10) == 0x50434152;
+    return *(int *)((char *)fn_8017960C() + 0x10) == 0x50434152;
 }
 
 unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
