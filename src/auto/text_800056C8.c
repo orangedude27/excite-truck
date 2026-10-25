@@ -933,6 +933,15 @@ void fn_800077E4(void *arg0) {
     }
 }
 
+void fn_80007848(void) {
+    void *base = lbl_8055D350;
+    void *object = *(void **)((u8 *)base + 0x2C);
+    if ((*(u32 *)((u8 *)object + 0x2C0) & 0x20) != 0) {
+        return;
+    }
+    fn_8000C630(0x20, *(s32 *)((u8 *)base + 0x1C));
+}
+
 extern f32 fn_80011E44(void);
 extern f32 fn_80011E60(void);
 extern void fn_8000FBE8(f32, f32, f32);
