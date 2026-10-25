@@ -145,6 +145,7 @@ void fn_80207C80(void* arg0) {
     fn_80207E70(arg0);
 }
 
+#pragma dont_inline fn_80207D40
 signed long fn_80207D40(void* arg0) {
     signed long temp_r3;
 
@@ -156,8 +157,13 @@ signed long fn_80207D40(void* arg0) {
     return 1;
 }
 
-void fn_80207D8C(void* arg0) { if (fn_80207D40(arg0)) { fn_80207C80(arg0); (*(void (**)(void*, void*))(*(void***)((char*)arg0 + 0x90)))(*(void**)((char*)arg0 + 0x90), (char*)arg0 + 0x5C); } }
-
+#pragma dont_inline fn_80207D40
+void fn_80207D8C(void* arg0) {
+    if (fn_80207D40(arg0) != 0) {
+        fn_80207C80(arg0);
+        (*(void (**)(void*, void*))(*(void***)*(void**)((char*)arg0 + 0x90) + 8))(*(void**)((char*)arg0 + 0x90), (char*)arg0 + 0x5C);
+    }
+}
 extern void fn_80207C80(void*);
 extern void* lbl_802F9DC8[];
 extern char lbl_8033BE20[];
