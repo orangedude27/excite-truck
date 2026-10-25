@@ -1595,16 +1595,25 @@ attach:
     return 0;
 }
 #pragma dont_inline off
-void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, unsigned long start, unsigned long end) {
-    unsigned long* entries = *(unsigned long**)((char*)self + 0x14);
-    unsigned long i = 0, offset = 0;
-    if (!entries) return;
+extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, u32 start, u32 end) {
+    if (*(u32**)((u8*)self + 0x14) == 0) return;
+    u32 offset;
+    u32* entries;
+    u32 index;
+    u32 zero;
+    index = 0;
+    offset = 0;
+    zero = 0;
+    goto loop_check;
     do {
-        unsigned long* entry = (unsigned long*)((char*)entries + offset);
-        unsigned long value = entry[1];
-        if (value >= start && value <= end) entry[1] = 0;
-        offset += 8; ++i;
-    } while (i < entries[0]);
+        u32* entry = (u32*)((u8*)entries + offset);
+        u32 value = entry[1];
+        if (!(start > value) && !(value > end)) entry[1] = zero;
+        offset += 8;
+        ++index;
+    loop_check:
+        entries = *(u32**)((u8*)self + 0x14);
+    } while (index < entries[0]);
 }
 
 void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self, unsigned long start, unsigned long end) {
