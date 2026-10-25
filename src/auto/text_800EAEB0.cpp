@@ -7,6 +7,9 @@ public:
     void *Alloc(unsigned long, void (*)(void *, unsigned long, void *), void *);
 };
 class EnvGenerator { public: void SetRelease(int); void SetDecay(int); };
+ }}}
+namespace nw4r { namespace snd { namespace detail {
+class PoolImpl { public: void *AllocImpl(); };
 }}}
 extern f32 lbl_80560FE8, lbl_80561008, lbl_8056100C, lbl_80561010, lbl_80561014;
 #pragma push
@@ -895,7 +898,9 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *);
 extern "C" void *AllocTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm3snd6detail9SeqPlayer(void *arg0, void *arg1) {
     extern void *AllocImpl__Q44nw4r3snd6detail8PoolImplFv(void *);
     void *track = AllocImpl__Q44nw4r3snd6detail8PoolImplFv((u8 *)arg0 + 8);
-    if (track == 0) return 0;
+    if (track == 0) {
+        return 0;
+    }
     track = __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(track);
     if (track != 0) {
         *(void **)((u8 *)track + 0xB4) = arg1;
