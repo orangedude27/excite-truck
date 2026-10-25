@@ -16,6 +16,13 @@ extern void fn_802E30C8(void *, const char *);
 
 extern void *lbl_8055F7B0;
 void fn_80297A84(void);
+extern void fn_80297A30(void);
+void fn_802978B8(void) {
+    fn_80297998();
+    fn_80297A30();
+    lbl_8055F7B0 = (void*)0x50000000;
+}
+
 void fn_802978E4(void) {
     fn_80297A84();
     lbl_8055F7A4 = 0;
