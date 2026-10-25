@@ -157,10 +157,7 @@ void fn_802671CC(void *arg0, int arg1) {
     (void)arg1;
 }
 
-#pragma cplusplus on
 extern void *lbl_8055F490;
-extern "C" void fn_8026785C(void);
-#pragma cplusplus off
 extern void *fn_80267EE4(int);
 extern void fn_801EF024(void *);
 extern void fn_80278288(void);
