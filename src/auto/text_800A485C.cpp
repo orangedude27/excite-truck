@@ -5519,6 +5519,16 @@ extern "C" void fn_800B7684(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC((s32)fn_800A9B0C(alarm));
 }
 
+#pragma dont_inline on
+extern "C" s32 fn_800B76A8(s32 arg0, s32 arg1) {
+    s32 result = ((s32 (*)(void))fn_800B0748)();
+    if (result == 0) {
+        fn_800B78EC();
+    }
+    return fn_800B73BC(result);
+}
+#pragma dont_inline reset
+
 extern "C" s32 fn_800B6A8C(s8, s32);
 extern "C" s32 fn_800B76E8(s8 arg0) {
     extern void fn_800B73E4(void*);
