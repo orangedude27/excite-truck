@@ -152,11 +152,24 @@ void fn_802E3734(s32 *arg0) {
     *arg0 = -1;
 }
 
-void fn_802E37C4(s32 arg0) {
-    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x125);
-    ((void (*)(s32))(*(s32 *)*(s32 *)(obj + 0x24) + 0x18))(*(s32 *)(obj + 0x24));
-}
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_802E37C4(s32 arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+    };
 
+    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x125);
+    s32 entry = *(s32 *)(obj + 0x24);
+    ((Obj *)entry)->v4();
+}
+#pragma cplusplus off
+#pragma scheduling on
 void fn_802E3898(s32 arg0, const char *arg1, s32 *arg2) {
     s32 total;
     s32 result;
