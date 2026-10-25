@@ -22,18 +22,20 @@ extern void fn_801D0824(void *);
 extern void fn_802C1180(void *);
 extern int fn_802E317C(const char *);
 extern char lbl_8034AED0[];
+#pragma scheduling invalid_target
 void *fn_802C110C(int arg0) {
-    int i;
-    int *entry = (int *)((char *)&lbl_804C0810);
-    for (i = 0; i < lbl_8055FB28; i++, entry = (int *)((char *)entry + 0x60)) {
-        if (arg0 >= entry[0] && arg0 <= entry[1])
+    char *entry = lbl_804C0810;
+    int count = lbl_8055FB28;
+    for (; count > 0; --count, entry += 0x60) {
+        if (arg0 < *(int *)entry)
+            continue;
+        if (arg0 <= *(int *)(entry + 4))
             return entry;
     }
-    fn_802E317C((const char *)0x8034AED0);
+    ((int (*)(const char *, ...))fn_802E317C)(lbl_8034AED0, arg0);
     return 0;
 }
-
-#pragma scheduling off
+#pragma scheduling on
 void fn_802C1180(void *arg0) {
     volatile int *src = (volatile int *)arg0;
     volatile int *dst = (volatile int *)src[1];
