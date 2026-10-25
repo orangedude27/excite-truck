@@ -240,7 +240,7 @@ int fn_801D544C(void) {
 extern "C" void fn_801D5520(char *arg0) {
  struct Manager { virtual void v0(); virtual void *get(int); };
  struct Node { virtual const char *name(); };
- extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void); extern int fn_801D4CF8(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *,const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
+ extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void *); extern int fn_801D4CF8(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *,const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
  Manager *manager=(Manager *)fn_80131810(); int i=0;
  if(!manager) { fn_802E30C8((char *)&lbl_80338460+0x120,arg0); return; }
  for(;;) {
@@ -248,7 +248,7 @@ extern "C" void fn_801D5520(char *arg0) {
   const char *name=((Node *)node)->name();
   if(stricmp(name,(char *)&lbl_80338460+0x150)==0) {
    void *obj=fn_801284F8(0x13c,(char *)&lbl_80338460+0x160);
-   if(obj) obj=fn_801D4B34();
+   if(obj) obj=fn_801D4B34(obj);
    if(fn_801D4CF8(obj,node)) {
     int n=lbl_804423A4[1]++;
     ((void **)lbl_804423A4[0])[n]=obj;
