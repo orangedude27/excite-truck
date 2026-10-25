@@ -156,6 +156,7 @@ signed long fn_80207D40(void* arg0) {
     *(signed long*)(((signed char*)arg0) + 8) = temp_r3;
     return 1;
 }
+#pragma dont_inline reset
 
 #pragma dont_inline fn_80207D40
 void fn_80207D8C(void* arg0) {
