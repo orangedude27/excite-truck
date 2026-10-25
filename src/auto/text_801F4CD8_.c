@@ -112,8 +112,6 @@ public:
   virtual void d0();
   virtual void d1();
   virtual void d2();
-  virtual void d3();
-  virtual void d4();
   virtual const char *d5(const char *);
   virtual void d6();
   virtual void d7();
@@ -742,13 +740,14 @@ __declspec(section ".sdata") extern char lbl_8055B1A8[];
 __declspec(section ".sdata") extern char lbl_8055B1B0[];
 __declspec(section ".sdata") extern char lbl_8055B1B8[];
 __declspec(section ".sdata") extern char lbl_8055B1C0[];
-#pragma scheduling invalid_target
-void fn_801F7280(void *arg0, void *arg1, void *arg2) {
+#pragma cplusplus on
+extern "C" void fn_801F7280(void *arg0, void *arg1, void *arg2) {
     int got;
     int value;
     int old;
     char sp8[0x68];
     char *slot;
+    DummyObj_801F7280 *object;
     if (*(int *)((char *)arg0 + 0x120) >= 4) {
         fn_802E317C(lbl_8033AE54);
     }
@@ -757,18 +756,19 @@ void fn_801F7280(void *arg0, void *arg1, void *arg2) {
         fn_802E317C(lbl_8033AE78);
     }
     slot = (char *)arg0 + *(int *)((char *)arg0 + 0x120) * 0x48;
-    value = ((GetterI)(*(void ***)arg1)[5])(arg1, lbl_8055B1C0);
-    old = fn_801F4E44(((char *(*)(void *, const char *))(*(void ***)arg1)[5])(arg1, lbl_8055B19C));
+    object = (DummyObj_801F7280 *)arg1;
+    value = (int)object->d5(lbl_8055B1C0);
+    old = fn_801F4E44(object->d5(lbl_8055B19C));
     fn_801F5344(sp8, arg1, arg2);
     fn_801F602C(slot, (int)sp8, value, old, got);
     *(int *)(slot + 0x34) = -1;
     slot[0x38] = 1;
-    *(float *)(slot + 0x3C) = lbl_80562FE8 * ((float (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_8055B1A8);
-    *(float *)(slot + 0x40) = ((float (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_8055B1B0);
-    *(float *)(slot + 0x44) = ((float (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_8055B1B8);
+    *(float *)(slot + 0x3C) = lbl_80562FE8 * object->d9(lbl_8055B1A8);
+    *(float *)(slot + 0x40) = object->d9(lbl_8055B1B0);
+    *(float *)(slot + 0x44) = object->d9(lbl_8055B1B8);
     *(int *)((char *)arg0 + 0x120) = *(int *)((char *)arg0 + 0x120) + 1;
 }
-#pragma scheduling on
+#pragma cplusplus reset
 extern void fn_801F6A98(void *);
 void fn_801F73E0(void) {
     fn_801F6A98(lbl_8055EC10);
