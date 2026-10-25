@@ -182,11 +182,11 @@ void* __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_80298250(void* s
     return self;
 }
 
-void fn_802982A8(void *arg0) {
-    *(unsigned char *)((char *)arg0 + 0x28) = 0;
-    *(unsigned char *)((char *)arg0 + 0x54) = 0;
-    *(unsigned char *)((char *)arg0 + 0x80) = 0;
-    *(unsigned char *)((char *)arg0 + 0xAC) = 0;
+extern "C" void fn_802982A8(void *arg0) {
+    *(unsigned char *)((unsigned char *)arg0 + 0x28) = 0;
+    *(unsigned char *)((unsigned char *)arg0 + 0x54) = 0;
+    *(unsigned char *)((unsigned char *)arg0 + 0x80) = 0;
+    *(unsigned char *)((unsigned char *)arg0 + 0xAC) = 0;
 }
 
 extern "C" void fn_80298BBC(void*);
@@ -332,9 +332,7 @@ extern "C" void fn_80298B48(void* arg0) {
     int offset = 0;
     int i = 0;
     while (i < fn_80287B14()) {
-        unsigned char* base = (unsigned char*)*(void**)arg0;
-        unsigned char* current = base + offset;
-        if (current[0x19] != 0) {
+        if (*(volatile unsigned char*)((char*)*(void**)arg0 + offset + 0x19) != 0) {
             fn_80298FBC(arg0);
         }
         offset += 0x20;
