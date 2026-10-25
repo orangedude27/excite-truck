@@ -462,14 +462,15 @@ DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 void fn_802D8FB4(void);
 extern int lbl_8055D058;
 extern int lbl_8055D078;
-void fn_802CB38C(int arg0, int arg1, int arg2) {
-    int saved0 = arg0;
-    int saved2 = arg2;
-    int saved1 = arg1;
-    ((int (*)(int, int, int, int))fn_802CA57C)(saved0, (int)&lbl_8055D078, 0, saved2);
-    fn_802CA4E0(saved0, lbl_8055D058, 0, saved1, saved2);
+#pragma scheduling invalid_target
+void fn_802CB38C(void *arg0, void *arg1, void *arg2) {
+    register void *saved0 = arg0;
+    register void *saved2 = arg2;
+    register void *saved1 = arg1;
+    ((void (*)(void *, int, int, void *))fn_802CA57C)(saved0, (int)&lbl_8055D078, 0, saved2);
+    fn_802CA4E0((int)saved0, lbl_8055D058, 0, (int)saved1, (int)saved2);
 }
-
+#pragma scheduling on
 void fn_802CB3F4(void) {
     fn_802D8FB4();
 }
@@ -894,7 +895,7 @@ int fn_802CC74C(void) {
 
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B7D0[];
-extern char fn_802CA7DC(const char *);
+
 extern int lbl_8055D03C;
 extern char lbl_8034B5F0[];
 void fn_802CAC54(int);
