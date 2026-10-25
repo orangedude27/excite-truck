@@ -285,12 +285,12 @@ extern char lbl_8034CD8C[];
 extern char lbl_8055D174[];
 int main(void) {
     int local[0x41];
-    int *p = &local[1];
     int i;
     do {
-        *p++ = 0;
-        *p++ = 0;
-    } while (--i != 0);
+        *(int *)&local[1] = 0;
+        *(int *)&local[2] = 0;
+        i += 2;
+    } while (i != 0x40);
     if (fn_80004D64(&local[2]) != 0) {
         if (fn_802E2A5C() != 0) {
             fn_80004E20();
