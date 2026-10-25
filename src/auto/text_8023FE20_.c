@@ -3,13 +3,6 @@
 
 typedef signed int s32;
 typedef unsigned char u8;
-#pragma cplusplus on
-struct ResetTarget {
-    virtual void f0() = 0;
-    virtual void f1() = 0;
-    virtual void cleanup(s32) = 0;
-};
-#pragma cplusplus reset
 extern int fn_80131234(void *);
 extern void *fn_8027DB40(s32);
 extern void *memset(void *, int, unsigned int);
