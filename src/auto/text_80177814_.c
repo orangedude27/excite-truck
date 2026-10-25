@@ -608,8 +608,6 @@ void fn_801795B0(void) {
     fn_801AED68();
 }
 
-extern const char lbl_80331B40[];
-
 void fn_801795D8(void *arg0, int arg1) {
     ((void **)lbl_80430830)[arg1] = arg0;
     if (*(int *)((char *)arg0 + 0x1F0) == 0x50) {
