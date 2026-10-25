@@ -224,7 +224,7 @@ extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(voi
 extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *, void *, u8);
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(f32 *, f32 *, u8, f32 (*)[], s32, u8);
-extern "C" u8 lbl_80320BD8;
+extern "C" const char lbl_80320BD8[];
 extern "C" f32 lbl_80560EE8;
 extern "C" void DrawFrame8__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hbm3lyt6Window5FrameRCQ36nw4hbm3lyt15WindowFrameSizeUc(
     void *self,
