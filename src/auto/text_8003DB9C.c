@@ -2020,6 +2020,7 @@ void GXInitTexObjTlut(void* arg0, int arg1) {
 }
 
 void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
+    s32 value;
     union {
         s32 value;
         struct {
@@ -2030,9 +2031,10 @@ void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
         } fields;
     } data;
 
-    data.value = *arg0;
-    data.fields.mip = ((unsigned int)__cntlzw(arg2 - 1) >> 1);
-    *arg0 = data.value;
+    value = *arg0;
+    value = (value & ~0x10) | (((unsigned int)__cntlzw(arg2 - 1) >> 1) & 0x10);
+    *arg0 = value;
+    data.value = value;
     data.fields.filter = ((unsigned char *)&lbl_80558E80)[arg1];
     *arg0 = data.value;
 }
@@ -2119,14 +2121,29 @@ void GXLoadTexObj(void *arg0, unsigned int arg1) {
 }
 
 void GXInitTlutObj(void *arg0, unsigned int arg1, int arg2, short arg3) {
-    unsigned int value = *(unsigned int *)((char *)arg0 + 4);
-    unsigned int size = 0;
-    value = (arg1 << 27) | (value & 0xFF);
-    size |= arg2 << 10;
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int type : 8;
+            unsigned int format : 24;
+        } fields;
+    } value;
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 20;
+            unsigned int size : 2;
+            unsigned int rest : 10;
+        } fields;
+    } size = {0};
+
+    value.reg = *(unsigned int *)((char *)arg0 + 4);
+    value.fields.format = arg1 >> 5;
+    size.fields.size = arg2;
     *(short *)((char *)arg0 + 8) = arg3;
-    value |= 0x64000000;
-    *(unsigned int *)arg0 = size;
-    *(unsigned int *)((char *)arg0 + 4) = value;
+    value.fields.type = 0x64;
+    *(unsigned int *)arg0 = size.reg;
+    *(unsigned int *)((char *)arg0 + 4) = value.reg;
 }
 
 unsigned short GXGetTexObjTlut(void *arg0) {
