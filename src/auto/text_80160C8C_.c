@@ -942,12 +942,13 @@ extern "C" s32 fn_80162800(void *arg0) {
     return 0;
 }
 #pragma cplusplus off
-extern int lbl_8032F698;
+extern char lbl_8032F698[];
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
 s32 fn_801628E8(void *arg0) {
-    if (*(f32 *)((u8 *)arg0 + 0x8C) > lbl_8056185C) {
-        ((void (*)(int *))(*(void ***)lbl_8055E2E0)[0xC / 4])(&lbl_8032F698);
+    f32 limit = lbl_8056185C;
+    if (*(f32 *)((u8 *)arg0 + 0x8C) > limit) {
+        ((void (*)(void *, char *))(*(void ***)lbl_8055E2E0)[0xC / 4])(lbl_8055E2E0, lbl_8032F698);
         fn_801476C4();
     }
     return 1;
