@@ -24,13 +24,15 @@ void *fn_802AC0E8(void *arg0, const char *arg1, int arg2) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 int fn_802AC174(const char *arg0) {
     int sp8;
     sp8 = 0;
-    if (sscanf(arg0, &lbl_8055CC88, &sp8) == 1) return sp8;
+    if (sscanf(arg0, &lbl_8055CC88, &sp8) == 1)
+        return sp8;
     return -1;
 }
-
+#pragma scheduling on
 extern char *strstr(const char *, const char *);
 extern int lbl_802FAA50[];
 int fn_802AC1BC(const char *arg0, int arg1) {
