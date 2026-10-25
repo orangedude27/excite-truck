@@ -443,12 +443,11 @@ extern "C" void fn_801B89A0(void) {
 extern "C" void fn_801B89B4(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f28();
 }
-#pragma cplusplus off
-void fn_801B89C8(void* arg0) {
-    register void (**vtable)(void*, void*) = *(void (***)(void*, void*))lbl_8055E744;
-    vtable[31](lbl_8055E744, arg0);
+#pragma cplusplus on
+extern "C" void fn_801B89C8(void *arg0) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f29(arg0);
 }
-
+#pragma cplusplus off
 int fn_801B89E0(void) {
     extern float lbl_8055E750;
     extern float lbl_8056274C;
