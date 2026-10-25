@@ -86,6 +86,23 @@ void fn_8020A860(UnkStruct_8020A860 *arg0) {
     arg0->name = lbl_8033C458;
     arg0->state = 0;
 }
+
+#pragma scheduling invalid_target
+int fn_8020A878(void *arg0) {
+    void *buffer;
+    if (fn_80019B60() != 0)
+        lbl_8055B598 = lbl_805632B0;
+    else
+        lbl_8055B598 = lbl_805632B4;
+    lbl_8055EE04 = arg0;
+    buffer = fn_8012850C(0x800, lbl_8033C37C);
+    *(void **)((char *)arg0 + 4) = buffer;
+    memset(buffer, 0, 0x800);
+    fn_802E6B04();
+    return 1;
+}
+#pragma scheduling on
+
 #pragma scheduling on
 
 extern void fn_802E59BC(void *);
