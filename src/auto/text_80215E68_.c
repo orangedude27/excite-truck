@@ -95,8 +95,8 @@ extern s32 fn_802C3034(s32);
 extern s32 fn_802C3424(s32, s32, s32, s32, s32);
 extern s32 lbl_8055FBDC;
 extern s32 fn_802E4A10(void);
-extern char lbl_8033D768;
-extern char lbl_8033D774;
+extern char lbl_8033D768[];
+extern char lbl_8033D774[];
 char *fn_80215F9C(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 0x10) != 0) return (char *)&lbl_8033D774;
     return (char *)&lbl_8033D768;
