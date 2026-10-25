@@ -2982,6 +2982,7 @@ extern "C" void fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
 #pragma diag_default 1735
 extern "C" void fn_80219440(void *arg0, s32 arg1, void *arg2, s32 arg3);
 #pragma diag_default 1735
+#pragma dont_inline on
 extern "C" void fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     fn_80218F34(arg0, arg1, arg2, arg1 + arg4, arg2 + arg5, arg3);
     *(s32 *)((u8 *)arg0 + 0x248) = arg1;
@@ -2991,6 +2992,7 @@ extern "C" void fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     *(s32 *)((u8 *)arg0 + 0x244) = arg6;
     ((void (*)(void *))(*(void ***)arg0)[33])(arg0);
 }
+#pragma dont_inline reset
 
 #pragma dont_inline on
 extern "C" void fn_802223C4(void *arg0, s32 arg1) {
