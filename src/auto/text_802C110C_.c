@@ -57,6 +57,50 @@ void *fn_802C120C(void) {
     return entry;
 }
 
+void fn_802C126C(void) {
+    int *var_r29;
+    char *var_r30;
+    int var_r28, var_r28_2, var_r5;
+    unsigned char *var_r4, *var_r6;
+    unsigned char temp_r3;
+    lbl_8055FB2C = 0;
+    lbl_8055FB28 = 0;
+    lbl_8055CFA0 = fn_801FB1F4(0x1F40);
+    lbl_8055FB38 = lbl_80564E50;
+    lbl_8055FB30 = fn_8012850C(0x7D00, lbl_8034AEF8);
+    fn_801D0590(&lbl_8055FB40);
+    if (&lbl_8055FB40 != 0)
+        fn_801D0800((char *)&lbl_8055FB40 + 4);
+    var_r29 = (int *)((char *)&lbl_804C0810);
+    var_r28 = 0;
+    do {
+        memset(var_r29, 0, 0x60);
+        var_r4 = (unsigned char *)lbl_8034AF04;
+        var_r6 = (unsigned char *)((char *)var_r29 + 8);
+        var_r5 = 0x20;
+        do {
+            temp_r3 = *var_r4++;
+            *var_r6++ = temp_r3;
+            if ((signed char)temp_r3 == 0)
+                break;
+        } while (--var_r5 > 0);
+        if (var_r5 == 0)
+            var_r6[-1] = 0;
+        var_r28++;
+        var_r29 = (int *)((char *)var_r29 + 0x60);
+    } while (var_r28 < 0x10);
+    var_r30 = (char *)((char *)&lbl_804C0E10);
+    var_r28_2 = 0;
+    do {
+        memset(var_r30, 0, 0x48);
+        var_r28_2++;
+        var_r30 += 0x48;
+    } while (var_r28_2 < 8);
+    lbl_8055FB34 = 0;
+    fn_802C1928();
+    fn_802C1A08();
+}
+
 void fn_802C13A4(void) {
     int i;
     fn_801D05B4(&lbl_8055FB40);
@@ -74,7 +118,7 @@ void fn_802C13A4(void) {
 
 extern int fn_801345D8(char *, int, const char *, int);
 extern char lbl_8034AF14[];
-extern int lbl_804C0810;
+
 extern int lbl_8055FB28;
 int fn_802C143C(void *arg0) {
     char buf[0x20];
@@ -107,6 +151,55 @@ int fn_802C1500(int arg0, int arg1) {
         entry[0] = index;
     entry[1] = index;
     return lbl_8055CFA0 + index;
+}
+
+extern char lbl_8034AED0[];
+extern f32 lbl_80564E54, lbl_80564E50, lbl_80564E58;
+extern char lbl_8055CFA4[], lbl_8055CFAC[], lbl_8055CFB8[], lbl_8055CFC0[];
+extern void fn_801FA7F4(int, f32 *, void *);
+void fn_802C1550(void) {
+    char *entry;
+    int i, j;
+    f32 pos[12];
+    entry = (char *)&lbl_804C0810;
+    for (i = 0; i < lbl_8055FB28; i++, entry += 0x60) {
+        void *obj = *(void **)(entry + 0x30);
+        int count;
+        int index;
+        char *name;
+        *(u8 *)(entry + 0x28) = (((int (*)(void *, char *, int))(*(void ***)obj)[0x30 / 4])(obj, lbl_8034AED0 + 0x54, 0) == 0);
+        obj = ((void *(*)(void *, char *))(*(void ***)obj)[0x5c / 4])(obj, lbl_8034AED0 + 0x60);
+        if (obj == 0)
+            continue;
+        *(f32 *)(entry + 0x2c) = ((f32 (*)(void *, char *))(*(void ***)obj)[0x24 / 4])(obj, lbl_8034AED0 + 0x6c);
+        index = ((int (*)(void *, char *))(*(void ***)obj)[0x14 / 4])(obj, lbl_8055CFA4);
+        count = ((int (*)(void *, char *))(*(void ***)obj)[0x1c / 4])(obj, lbl_8055CFAC);
+        *(int *)(entry + 0x38) = count;
+        *(int *)(entry + 0x3c) = 0;
+        *(void **)(entry + 0x34) = (void *)fn_8012850C(count * 4, lbl_8055CFB8);
+        memset(0, 0, count * 4);
+        name = ((char *(*)(void *, char *))(*(void ***)obj)[0x14 / 4])(obj, lbl_8055CFC0);
+        for (j = 0; j < 0x20; j++) {
+            char c = name[j];
+            entry[8 + j] = c;
+            if (c == 0)
+                break;
+        }
+        if (j == 0x20)
+            entry[0x27] = 0;
+        if (count <= 0)
+            continue;
+        for (j = 0; j < count; j++) {
+            pos[0] = lbl_80564E54;
+            pos[1] = lbl_80564E50; pos[2] = lbl_80564E50;
+            pos[3] = lbl_80564E50; pos[4] = lbl_80564E54;
+            pos[5] = lbl_80564E50; pos[6] = lbl_80564E50;
+            pos[7] = lbl_80564E50; pos[8] = lbl_80564E54;
+            pos[9] = lbl_80564E50; pos[11] = lbl_80564E50;
+            pos[10] = lbl_80564E58;
+            fn_801FA7F4(index, pos, *(void **)(entry + 0x30));
+        }
+    }
 }
 
 extern f32 lbl_804C1050[16];
