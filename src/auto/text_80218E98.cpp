@@ -3,6 +3,13 @@
 
 #include <types.h>
 
+#pragma push
+#pragma small_data off
+extern "C" char lbl_8033DC4C[];
+extern "C" char lbl_8033DC58[];
+extern "C" void *lbl_8033DEAC[];
+#pragma pop
+
 extern "C" void fn_80227880(s32, f32, f32, f32, f32);
 
 extern "C" s32 fn_8022F638(s32, s32, s32, s32, f32);
