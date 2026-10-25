@@ -83,9 +83,12 @@ int fn_802DB69C(void **arg0, int arg1) {
     int i = 0;
     while (i < lbl_8055FEA4) {
         int base;
+        unsigned char *texture;
         obj = *p;
-        base = tex++;
-        GXLoadTexObj(obj + 0x24, base);
+        base = tex;
+        texture = obj + 0x24;
+        tex = base + 1;
+        GXLoadTexObj(texture, base);
         if (obj[0xCC]) {
             int extra = tex++;
             GXLoadTexObj(obj + 0x78, extra);
@@ -184,7 +187,7 @@ extern void fn_802DBA1C(unsigned char);
 extern void fn_802DB9DC(int);
 extern void fn_802DBBE4(int,int);
 extern void fn_802DBF54(int,int);
-extern void GXSetAlphaCompare(int,int,int,int,int);
+extern void GXSetAlphaCompare(int, unsigned char, int, int, unsigned char);
 extern void GXSetColorUpdate(int);
 extern void GXSetZMode(int,int,int);
 extern unsigned char lbl_8055FEBA;
