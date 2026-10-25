@@ -92,11 +92,10 @@ void fn_802DB58C(void) {
 }
 
 void fn_802DB620(void) {
-    int m[12];
+    int m[8];
     int *p = (int *)lbl_802FACF8;
     m[0] = p[0]; m[1] = p[1]; m[2] = p[2]; m[3] = p[3];
     m[4] = p[4]; m[5] = p[5]; m[6] = p[6]; m[7] = p[7];
-    m[8] = p[8]; m[9] = p[9]; m[10] = p[10]; m[11] = p[11];
     *(float *)&m[0] = lbl_8055D148;
     *(float *)&m[6] = lbl_8055D148;
     GXLoadTexMtxImm((float *)m, 0x1e, 1);
