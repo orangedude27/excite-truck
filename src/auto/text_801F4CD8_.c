@@ -20,6 +20,8 @@ extern void fn_802E317C(const char *, ...);
 extern void fn_801F7280(void *, void *, void *);
 extern char lbl_8033AE54[], lbl_8033AE78[];
 extern char lbl_8055B1C0[];
+typedef int (*GetterI)(void *, const char *);
+typedef void (*SetterV)(void *, const char *);
 extern void fn_801F5344(void *, void *, void *);
 extern void fn_801F70D0(void *, int);
 extern void fn_801F6D60(void *, int);
@@ -721,6 +723,31 @@ void fn_801F7220(void *arg0) {
         i++;
     }
 }
+
+void fn_801F7280(void *arg0, void *arg1, void *arg2) {
+    int count, got, old, value;
+    char *slot;
+    void **vtable;
+    count = *(int *)((char *)arg0 + 0x120);
+    if (count >= 4) fn_802E317C(lbl_8033AE54);
+    got = fn_801F4ECC(arg1);
+    if (got & 1) fn_802E317C(lbl_8033AE78);
+    count = *(int *)((char *)arg0 + 0x120);
+    slot = (char *)arg0 + count * 0x48;
+    vtable = *(void ***)arg1;
+    value = ((int (*)(void *, const char *))vtable[5])(arg1, lbl_8055B1C0);
+    ((void (*)(void *, const char *))vtable[5])(arg1, lbl_8055B19C);
+    old = fn_801F4E44(lbl_8055B1A8);
+    fn_801F5344(slot, arg1, arg2);
+    fn_801F602C(slot, value, old, got, 0);
+    *(int *)(slot + 0x34) = -1;
+    slot[0x38] = 1;
+    *(float *)(slot + 0x3C) = lbl_80562FE8 * ((float (*)(void *, const char *))vtable[9])(arg1, lbl_8055B1A8);
+    *(float *)(slot + 0x40) = ((float (*)(void *, const char *))vtable[9])(arg1, lbl_8055B1B0);
+    *(float *)(slot + 0x44) = ((float (*)(void *, const char *))vtable[9])(arg1, lbl_8055B1B8);
+    *(int *)((char *)arg0 + 0x120) = count + 1;
+}
+
 #pragma dont_inline reset
 extern void fn_801F6A98(void *);
 void fn_801F73E0(void) {
