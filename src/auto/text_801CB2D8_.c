@@ -969,6 +969,13 @@ extern void fn_801476C4(void *, f32, f32);
          }
      }
  }
+
+void fn_801CDDCC(void) {
+    if (fn_801CE898() == 0) {
+        fn_801CDE00((s32)lbl_8055E884 + 0x2C0);
+    }
+}
+
 #pragma pop
 #pragma paired_single off
 #pragma scheduling invalid_target
