@@ -438,17 +438,23 @@ int fn_801F15A8(void **arg0, int arg1) {
     return count - 1;
 }
 
+void fn_801F17C8(int unused) {
+    memset(lbl_80488798, 0, 0x100);
+}
+
+#pragma push
+#pragma scheduling invalid_target
 int fn_801F17DC(void *arg0) {
     int *entry = lbl_80488798;
     int i = 0;
     do {
         if (*entry != 0)
-            fn_802E317C((const char *)&lbl_8033A51C);
+            fn_802E317C(lbl_8033A51C);
         i++;
         entry++;
     } while (i < 0x40);
 }
-
+#pragma pop
 extern int lbl_80488798[64];
 extern char lbl_8033A544[];
 void fn_802E317C(const char *, ...);
