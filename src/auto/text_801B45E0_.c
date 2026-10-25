@@ -16,7 +16,7 @@ struct F801B4610 {
 #pragma cplusplus off
 #pragma push
 #pragma small_data off
-extern char lbl_80435C70;
+extern char lbl_80435C70[];
 #pragma pop
 extern char lbl_80335E48;
 extern void fn_802E317C(const char *, int);
