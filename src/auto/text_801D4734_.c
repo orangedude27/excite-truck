@@ -1109,6 +1109,13 @@ int fn_801D8154(void *arg0) {
     return *(int *)((char *)arg0 + 0x40);
 }
 
+void *fn_801DA8C8(const char *, const char *);
+void fn_801D825C(void *arg0) {
+    if (*(int *)((char *)arg0 + 0x40) != 0) {
+        *(void **)((char *)arg0 + 0x2C) = fn_801DA8C8((char *)arg0 + 4, (char *)arg0 + 0x18);
+    }
+}
+
 void fn_801D832C(void *arg0) {
     if (*(int *)((char *)arg0 + 0x40) != 0) {
         *(int *)((char *)arg0 + 0x40) = 1;
