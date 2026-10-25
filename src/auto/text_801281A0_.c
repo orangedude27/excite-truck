@@ -71,6 +71,17 @@ void fn_8012820C(void) {
     (void)one;
 }
 
+extern void fn_80128710(void);
+#pragma dont_inline on
+void fn_801282A0(void) {
+    fn_801287D0(&lbl_8041E140);
+    fn_801287D0(&lbl_8041E160);
+    ((void (*)(s32))fn_80128710)(lbl_8055DF94);
+    lbl_8055DF94 = 0;
+    lbl_8055DF90 = 0;
+}
+#pragma dont_inline reset
+
 void fn_801282E8(void) {
 
 }
