@@ -516,11 +516,11 @@ void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f
 
 void fn_802336AC(s32 arg0, s32 arg1, s32 arg2, const char *fmt, f32 farg0, f32 farg1, f32 farg2, ...) {
     #pragma scheduling invalid_target
-    char buffer[0x68];
+    char buffer[0x78];
     va_list args;
+
     va_start(args, farg2);
     vsprintf(buffer, fmt, args);
-    va_end(args);
     fn_80233600((u8 *)buffer, arg0, arg1, arg2, farg0, farg1, farg2);
 }
 
