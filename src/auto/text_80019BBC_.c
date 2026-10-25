@@ -16,7 +16,9 @@ extern int fn_8001B478(float);
 extern void *fn_80156A40(void);
 extern float lbl_80560418;
 extern float lbl_8056041C;
+#pragma small_data off
 extern float lbl_803582C0;
+#pragma small_data on
 extern double cos(double);
 extern double sin(double);
 void fn_80019BBC(void) {
@@ -123,8 +125,7 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     f32 actorY;
     s32 flag;
     s32 color;
-    f32 *ring;
-    u8 *vertex;
+    u32 *ring;
     f32 u, w, z, sx, sy, sz, px, py, pz;
 
     if (obj == 0) return;
@@ -237,13 +238,20 @@ subtractCheck:
         frame.output[2] *= lbl_80560440;
         color = fn_80230B9C(-1);
     }
-    ring = (f32 *)((u8 *)lbl_803583C8 - 0x108);
-    vertex = (u8 *)&frame + 0x280;
+    ring = (u32 *)&lbl_803582C0;
+    flag = 0;
     color = -1;
+    offset = 0;
     for (index = 0; index < 21; index++) {
-        u = ring[0];
-        w = ring[1];
-        z = ring[2];
+        a = *(u32 *)((u8 *)ring + offset);
+        b = *(u32 *)((u8 *)ring + offset + 4);
+        c = *(u32 *)((u8 *)ring + offset + 8);
+        *(volatile u32 *)((u8 *)&frame + 0x6C) = a;
+        *(volatile u32 *)((u8 *)&frame + 0x70) = b;
+        *(volatile u32 *)((u8 *)&frame + 0x74) = c;
+        u = *(volatile f32 *)((u8 *)&frame + 0x6C);
+        w = *(volatile f32 *)((u8 *)&frame + 0x70);
+        z = *(volatile f32 *)((u8 *)&frame + 0x74);
         sx = u * f25;
         sy = w * f25;
         sz = z * f25;
@@ -256,7 +264,7 @@ subtractCheck:
         px = *(f32 *)((u8 *)&frame + 0x60);
         py = *(f32 *)((u8 *)&frame + 0x64);
         pz = *(f32 *)((u8 *)&frame + 0x68);
-        fn_80231380(vertex, color,
+        fn_80231380((u8 *)&frame + 0x280 + flag, color,
                     x + px + *(f32 *)((u8 *)&frame + 0x10C),
                     y + py + *(f32 *)((u8 *)&frame + 0x110),
                     pz + *(f32 *)((u8 *)&frame + 0x114),
@@ -279,7 +287,7 @@ subtractCheck:
             px = *(f32 *)((u8 *)&frame + 0x60);
             py = *(f32 *)((u8 *)&frame + 0x64);
             pz = *(f32 *)((u8 *)&frame + 0x68);
-            fn_80231380(vertex + 0x1F8, color & 0x00FFFFFF,
+            fn_80231380((u8 *)&frame + 0x280 + (index + 21) * 0x18, color & 0x00FFFFFF,
                         x + px + *(f32 *)((u8 *)&frame + 0x10C),
                         y + py + *(f32 *)((u8 *)&frame + 0x110),
                         pz + *(f32 *)((u8 *)&frame + 0x114),
@@ -290,10 +298,11 @@ subtractCheck:
                             (py + *(f32 *)((u8 *)&frame + 0x110))) +
                             *(f32 *)((u8 *)record + 0x24) / *(f32 *)((u8 *)record + 0x1C));
         }
-        ring += 3;
-        vertex += 0x18;
+        offset += 12;
+        flag += 0x18;
     }
-    for (index = 0, offset = 0; index < 20; index++) {
+    index = 0; offset = 0;
+    do {
         flag = (index + 1) % 20;
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = 20; offset += 2;
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)index; offset += 2;
@@ -304,7 +313,7 @@ subtractCheck:
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)flag; offset += 2;
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)(index + 21); offset += 2;
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)(flag + 21); offset += 2;
-    }
+    } while (++index < 20);
     if (*(s32 *)((u8 *)obj + 4) != -2)
         fn_802C8BD0(*(s32 *)((u8 *)obj + 4));
     else
