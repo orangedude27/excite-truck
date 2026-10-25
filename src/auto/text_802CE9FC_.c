@@ -178,7 +178,7 @@ void fn_802CF104(void) {
 void fn_802CF5A8(void) {
     if (lbl_8055D0FF == 0) return;
     lbl_8055D0FF = 0;
-    fn_802E2E0C(fn_802CEC04, &lbl_8055D100);
+    fn_802E2E0C((void (*)(void))fn_802CEC04, &lbl_8055D100);
 }
 
 void fn_802CF5D0(void) {}
