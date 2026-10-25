@@ -148,7 +148,7 @@ int fn_8000DBAC(int arg0) {
 extern int lbl_8055D460;
 extern unsigned int lbl_8034F628[];
 extern char lbl_802FC264[];
-extern void fn_802E30C8(const char *, int);
+extern void fn_802E30C8();
 void fn_8000DBC8(int arg0) {
     int count;
     unsigned int *entry;
@@ -169,14 +169,15 @@ void fn_8000DBC8(int arg0) {
     lbl_8055D460 = count + 1;
 }
 
+#pragma optimization_level 3
 void fn_8000DC28(const char *arg0, int arg1) {
+    register int count;
     register char *dst;
     register unsigned char c;
-    register int count;
 
     dst = (char *)lbl_8055D46C + arg1 * 0x12 + 0x64;
     count = 0x12;
-    while (count-- > 0) {
+    while (--count > 0) {
     }
     dst[-1] = 0;
     do {
@@ -184,9 +185,39 @@ void fn_8000DC28(const char *arg0, int arg1) {
         *dst++ = c;
     } while ((signed char)c != 0);
 }
-
 int fn_8000DC70(int arg0) {
     return (int)((char *)lbl_8055D46C + arg0 * 0x12 + 0x64);
+}
+
+void fn_8000DC84(int arg0) {
+    int *p;
+    int value;
+    if (arg0 == 1) {
+        fn_8000D984(*lbl_8055D46C);
+    } else if (arg0 == 2) {
+        fn_8000DD98();
+    } else if (arg0 == 3) {
+        fn_8000DF2C(1);
+        value = 1;
+        p = lbl_8055D46C;
+        if (p[1] != 0) p[1] = value;
+        p = lbl_8055D46C;
+        if (p[7] != 0) p[7] = value;
+        p = lbl_8055D46C;
+        if (p[13] != 0) p[13] = value;
+        p = lbl_8055D46C;
+        if (p[19] != 0) p[19] = value;
+    } else if (arg0 == 5) {
+        value = 2;
+        p = lbl_8055D46C;
+        if (p[1] != 0) p[1] = value;
+        p = lbl_8055D46C;
+        if (p[7] != 0) p[7] = value;
+        p = lbl_8055D46C;
+        if (p[13] != 0) p[13] = value;
+        p = lbl_8055D46C;
+        if (p[19] != 0) p[19] = value;
+    }
 }
 
 extern int lbl_8055D460;
