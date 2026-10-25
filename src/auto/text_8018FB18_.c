@@ -2,6 +2,14 @@
 
 #include <types.h>
 
+typedef s32 M2C_UNK;
+#ifndef M2C_FIELD
+#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
+#endif
+#ifndef M2C_BITWISE
+#define M2C_BITWISE(type, expr) ((type)(expr))
+#endif
+
 extern void fn_801B6650(int);
 extern void fn_802793B0(int);
 
@@ -57,6 +65,39 @@ void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
     lbl_8055A46C = value;
     if (limit > result) limit = result;
     lbl_8055A468 = limit;
+    return arg0;
+}
+
+void *fn_8018FE8C(void *arg0, s32 arg1) {
+    s32 temp_r0;
+    void *obj;
+    void (**method)(void *, int);
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_80333018;
+        if (fn_801B6668(arg0) != 0) fn_801B6654();
+        obj = *(void **)((char *)arg0 + 4);
+        if (obj != 0) {
+            method = (void (**)(void *, int))((char *)*(void **)obj + 0x80);
+            (*method)(obj, 1);
+        }
+        obj = *(void **)((char *)arg0 + 8);
+        *(void **)((char *)arg0 + 4) = 0;
+        if (obj != 0) {
+            method = (void (**)(void *, int))((char *)*(void **)obj + 8);
+            (*method)(obj, 1);
+        }
+        obj = *(void **)((char *)arg0 + 0xC);
+        *(void **)((char *)arg0 + 8) = 0;
+        if (obj != 0) {
+            method = (void (**)(void *, int))((char *)*(void **)obj + 8);
+            (*method)(obj, 1);
+        }
+        *(void **)((char *)arg0 + 0xC) = 0;
+        temp_r0 = lbl_8055E518 - 1;
+        lbl_8055E518 = temp_r0;
+        if (temp_r0 == 0) fn_8018FCC4();
+        if (arg1 > 0) fn_80128668(arg0);
+    }
     return arg0;
 }
 
@@ -207,9 +248,10 @@ void fn_80190360(int arg0) {
     fn_80191084(arg0, 0);
 }
 
-#pragma scheduling off
+#pragma scheduling push
+#pragma scheduling invalid_target
 int fn_80190D38(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC))); }
-#pragma scheduling on
+#pragma scheduling pop
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
 
 #pragma dont_inline on
