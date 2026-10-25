@@ -141,12 +141,9 @@ extern "C" void fn_80297FA4(void) {
 extern "C" void fn_80298124(void) {
     fn_80298BBC(lbl_8055F7C8);
     fn_8029BA8C(lbl_8055F7D8);
-    switch ((int)lbl_8055F7C4) {
-    case 0:
-        break;
-    default:
-        fn_80299628();
-        break;
+    void* p = lbl_8055F7C4;
+    if (p != 0) {
+        ((void (*)(void*))fn_80299628)(p);
     }
 }
 
