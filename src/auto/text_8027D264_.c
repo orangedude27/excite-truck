@@ -4,7 +4,7 @@
 extern void *lbl_8055C790;
 extern void fn_8001D9B4(void *);
 extern void *fn_8001285C(int);
-extern int lbl_80347DE8;
+extern char lbl_80347DE8[];
 extern int fn_80007F90(int);
 extern int lbl_8055C784;
 extern int lbl_8055C77C;
@@ -137,9 +137,12 @@ void fn_8027D6FC(void *arg0) {
     }
 }
 
-#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8027D77C(void *arg0) {
+    struct Input {
+        char pad[0xC];
+        int id;
+    };
     class Obj {
     public:
         virtual void v0();
@@ -147,12 +150,11 @@ extern "C" void fn_8027D77C(void *arg0) {
         virtual void v2();
         virtual void v3(int);
     };
-    void *res = fn_8001285C(*(volatile int *)((char *)arg0 + 0xC));
+    void *res = fn_8001285C(((Input *)arg0)->id);
     void *obj = *(void **)((char *)res + 0x20);
     ((Obj *)obj)->v3((int)&lbl_8055C784);
 }
 #pragma cplusplus off
-#pragma scheduling on
 void fn_8027D7B8(void *arg0) {
     fn_80007F90(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
 }
