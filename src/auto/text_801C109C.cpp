@@ -346,7 +346,7 @@ void fn_801C2B9C(float* out, float* a, float* b, float scale) {
     out[2] = a[2] + b[2] * scale;
 }
 
-void fn_801C2BDC(void *arg0, unsigned int *arg1, unsigned int *arg2, unsigned int *arg3) {
+extern "C" void fn_801C2BDC(void *arg0, unsigned int *arg1, unsigned int *arg2, unsigned int *arg3) {
     *arg1 = *(unsigned int *)((unsigned char *)arg0 + 0x14);
     *arg2 = *(unsigned int *)((unsigned char *)arg0 + 0x24);
     *arg3 = *(unsigned int *)((unsigned char *)arg0 + 0x28);
