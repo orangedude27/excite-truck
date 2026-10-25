@@ -742,11 +742,11 @@ __declspec(section ".sdata") extern char lbl_8055B1B8[];
 __declspec(section ".sdata") extern char lbl_8055B1C0[];
 #pragma cplusplus on
 extern "C" void fn_801F7280(void *arg0, void *arg1, void *arg2) {
+    char sp8[0x68];
     int got;
+    char *slot;
     int value;
     int old;
-    char sp8[0x68];
-    char *slot;
     DummyObj_801F7280 *object;
     if (*(int *)((char *)arg0 + 0x120) >= 4) {
         fn_802E317C(lbl_8033AE54);
