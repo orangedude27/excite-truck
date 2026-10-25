@@ -304,7 +304,7 @@ extern "C" void fn_80128670(s32);
 extern "C" int lbl_8033F4B8[];
 extern "C" int lbl_8033FB38[];
 extern "C" void fn_80222340(void *, s32, s32, s32, s32, s32, s32);
-extern "C" void fn_80218F80(void);
+extern "C" void *fn_80218F80(void *, void *);
 extern "C" char lbl_8033E560[];
 extern "C" char lbl_8033DA60[];
 extern "C" s32 fn_80232578(s32);
@@ -438,8 +438,9 @@ extern "C" s32 fn_80218F34(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
 }
 #pragma dont_inline reset
 
-extern "C" void fn_80218F80(void) {
+extern "C" void *fn_80218F80(void *arg0, void *arg1) {
 }
+#define fn_80218F80() ((void (*)(void))fn_80218F80)()
 
 extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     f32 b = lbl_805634A4;
