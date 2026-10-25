@@ -1117,18 +1117,19 @@ extern "C" void fn_801FF8DC(void *arg0, void *dest, int src) {
     *(int *)((char *)dest + 0x94) = 0;
 }
 
-void fn_801FF924(void* arg0, void* arg1, float farg0) {
+extern "C" void fn_801FF924(void* arg0, void* arg1, float farg0) {
     char* p;
     int i;
     i = 0;
     p = (char*)arg1;
-    goto body2;
-    do {
-body2:
-        fn_801FCAAC(*(void**)(p + 0x50), farg0);
-        p += 4;
-        i++;
-    } while (i < *(int*)((char*)arg1 + 0x94));
+    goto check;
+body:
+    fn_801FCAAC(*(void**)(p + 0x50), farg0);
+    p += 4;
+    i++;
+check:
+    if (i < *(int*)((char*)arg1 + 0x94))
+        goto body;
 }
 
 #pragma dont_inline on
