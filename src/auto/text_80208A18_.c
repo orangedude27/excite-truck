@@ -7,7 +7,7 @@ extern char lbl_80489258[];
 
 extern float lbl_80563230;
 extern float lbl_80563234;
-extern void fn_80208A50(float *);
+extern void fn_80208A50();
 
 extern void *lbl_8055EDA8;
 extern int lbl_80489238[4];
@@ -16,6 +16,7 @@ extern char lbl_8033BF08[];
 extern void fn_801331C4(int, void *, float *);
 extern void fn_8013323C(int, void *, float);
 extern void fn_80209030(float);
+#pragma scheduling invalid_target
 void fn_80208AC8(int arg0, int arg1) {
     float value = lbl_80563230;
     switch (arg1) {
@@ -35,7 +36,7 @@ void fn_80208AC8(int arg0, int arg1) {
         break;
     }
 }
-
+#pragma scheduling default
 int fn_80208CFC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -178,22 +179,20 @@ int fn_80209214(void) {
 extern float lbl_8055B4D0;
 extern char lbl_8055B4E0[];
 extern void fn_801332D0(int, void *, void *);
+#pragma scheduling invalid_target
 int fn_8020921C(void) {
     struct Config { int value; unsigned int pad; unsigned int version; };
     extern struct Config lbl_8048929C;
     extern unsigned int lbl_8055E044;
     extern void fn_80131318(void);
-    struct Config *config = &lbl_8048929C;
-    unsigned int expected = lbl_8055E044;
+    volatile struct Config *config = &lbl_8048929C;
     unsigned int version = config->version;
-    if (version == expected) {
-        return lbl_8048929C.value;
-    }
-    fn_80131318();
+    if (version != lbl_8055E044)
+        fn_80131318();
     config = &lbl_8048929C;
     return config->value;
 }
-
+#pragma scheduling default
 int fn_80209260(int arg0) { return arg0 + 4; }
 
 int fn_80209268(void) { return 1; }
