@@ -5738,8 +5738,9 @@ extern "C" s32 fn_800B7E5C(s8 arg0) {
     } else if (temp_r3 == 1) {
         result = 1;
     } else {
-        temp_r3 = -temp_r3 | temp_r3;
-        result = temp_r3 >> 31;
+        s32 normalized = -temp_r3;
+        normalized |= temp_r3;
+        result = normalized >> 31;
     }
     return result;
 }
