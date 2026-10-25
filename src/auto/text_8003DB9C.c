@@ -1031,6 +1031,7 @@ void GXGetCullMode(s32 arg0, u8 arg1) {
     __peReg[3] = (arg0 << 8) | arg1;
 }
 
+/* The 16-bit bitfield places width in the low bits and matches the target rlwimi. */
 void GXGetLineWidth(s32 arg0) {
     struct {
         unsigned short unused : 14;
