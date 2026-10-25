@@ -29,6 +29,23 @@ void fn_8022F248(void) {
     }
     strcpy(lbl_80497E3C + 0x3c, &lbl_8055B988);
 }
+
+void fn_8022F294(void) {
+    void *var_r0;
+    void *var_r31;
+    if (fn_80230020() != 0) {
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80340394);
+        var_r0 = lbl_8055F014;
+        var_r31 = var_r0;
+        while (var_r0 != 0) {
+            fn_8022F824(*(void **)var_r31);
+            var_r31 = *(void **)((char *)var_r31 + 8);
+            var_r0 = 0;
+            lbl_8055F014 = var_r31;
+        }
+    }
+}
+
 #pragma scheduling on
 
 void *fn_8022F2FC(char *arg0) {
