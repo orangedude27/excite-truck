@@ -280,6 +280,10 @@ long fn_802104B8(void) {
     return (unsigned long)((-1 - lbl_8055B658) | (lbl_8055B658 + 1)) >> 31;
 }
 
+long fn_802104D0(void) {
+    return fn_802EC0FC() > 0;
+}
+
 long fn_802104FC(void) {
     return (lbl_8055B658 + 1) == 0;
 }
