@@ -212,6 +212,11 @@ void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_8001F76C(void) {
+    memset(lbl_8035AF38, 0, 0x820);
+}
+#pragma scheduling on
 s32 fn_8001F9A4(s32 arg0, s32 arg1) {
     SrcCoef *p;
     s32 *q;
