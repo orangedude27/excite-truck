@@ -36,11 +36,11 @@ extern "C" void fn_802CAC54(int);
 extern "C" void fn_8029BDC4(void*);
 extern "C" void fn_80299544(void);
 extern "C" void fn_802982C0(void);
-extern "C" void fn_8029998C(void);
+extern "C" void fn_8029998C(void*);
 extern "C" void fn_80299FE0(void *, void *, float);
 extern "C" void fn_80299A88(void *, void *, unsigned int, float);
 extern "C" char lbl_803494D0[];
-extern "C" void fn_8029998C(void);
+extern "C" void fn_8029998C(void*);
 extern "C" void fn_8029A17C(void);
 extern void* lbl_8055F7CC;
 extern void* lbl_8055F7E0;
@@ -154,7 +154,7 @@ void fn_80298160(void) {
         fn_8029BDC4(lbl_8055F7DC);
         if (lbl_8055F7C4 != 0) fn_80299544();
         if (lbl_8055F7C0 != 0) fn_802982C0();
-        if (lbl_8055F7CC != 0) fn_8029998C();
+        if (lbl_8055F7CC != 0) fn_8029998C(lbl_8055F7CC);
         if (lbl_8055F7D0 != 0) fn_8029A17C();
     }
 }
@@ -193,13 +193,13 @@ extern "C" void fn_8029BA8C(void*);
 extern "C" void fn_80299628(void);
 extern void* lbl_8055F7D8;
 extern "C" void fn_8029871C(void*, void*, float);
-void fn_802982C0(void *arg0) {
+extern "C" void fn_802982C0(void) {
     float temp_f31 = fn_801E7E24();
-    void *var_r31 = arg0;
+    void *var_r31 = lbl_8055F7C0;
     int var_r30 = 0;
     do {
         if (*(unsigned char *)((char *)var_r31 + 0x28) != 0) {
-            fn_8029871C(arg0, var_r31, temp_f31);
+            fn_8029871C(var_r31, var_r31, temp_f31);
         }
         var_r30 += 1;
         var_r31 = (char *)var_r31 + 0x2c;
@@ -557,6 +557,17 @@ extern "C" void* fn_802998F4(void* arg0, int arg1) {
 }
 #pragma scheduling on
 extern "C" void fn_80299988(void) {
+}
+
+extern "C" void fn_8029998C(void* arg0) {
+    float temp = fn_801E7E18();
+    void* entry = arg0;
+    int i = 0;
+    while (i < *(int*)((char*)arg0 + 0x138)) {
+        fn_80299FE0(arg0, entry, temp);
+        entry = (char*)entry + 0x9C;
+        i++;
+    }
 }
 
 extern "C" double cos(double);
