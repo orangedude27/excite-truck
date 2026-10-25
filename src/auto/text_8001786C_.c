@@ -204,7 +204,6 @@ s32 fn_80017F6C(s32 arg0) {
 #pragma dont_inline off
 #pragma scheduling on
 extern void* fn_8001668C(void*, s32);
-extern void fn_802E30C8(const char*, ...);
 extern const char lbl_802FD0C8[];
 extern const char lbl_802FD0D8[];
 extern const char lbl_80357DC0[];
