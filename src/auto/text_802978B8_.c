@@ -1,5 +1,5 @@
 extern void *lbl_8055F7A4;
-extern void *lbl_804B4F10;
+extern int lbl_804B4F10[];
 void fn_80297998(void);
 extern int lbl_8055F7B4;
 extern void *lbl_8055CA60;
