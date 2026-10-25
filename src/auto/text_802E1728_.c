@@ -100,6 +100,7 @@ int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 int fn_802E18D4(int arg0, int arg1, int arg2, int arg3, void *arg4, int arg5) {
     GXInitTexObj((GXTexObj *)arg4, (void *)arg5, (unsigned short)arg0, (unsigned short)arg1,
                  arg2, arg3, arg3, 0);
@@ -107,7 +108,7 @@ int fn_802E18D4(int arg0, int arg1, int arg2, int arg3, void *arg4, int arg5) {
                     lbl_805650F0, lbl_805650F0, lbl_805650F0);
     return 1;
 }
-
+#pragma scheduling on
 int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
 
 unsigned int fn_802E1960(unsigned int arg0) {
@@ -324,7 +325,7 @@ unsigned int fn_802E2C20(void) {
     unsigned int ticks;
     unsigned int factor;
     now = OSGetTime();
-    if (((*(volatile int *)&lbl_8055FEF8 ^ ((int)0 >> 31)) | *(volatile unsigned int *)&lbl_8055FEFC) == 0) {
+    if ((*(volatile int *)&lbl_8055FEF8 | *(volatile unsigned int *)&lbl_8055FEFC) == 0) {
         *(volatile unsigned int *)&lbl_8055FEFC = (unsigned int)now;
         *(volatile int *)&lbl_8055FEF8 = (unsigned int)(now >> 32);
     }
