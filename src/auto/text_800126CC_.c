@@ -49,6 +49,10 @@ void* fn_80012854(void) {
     return (void*)lbl_8055D508;
 }
 
+void *fn_8001285C(int arg0) DECOMP_DONT_INLINE {
+    return &lbl_80352AD0[arg0 * 0x28];
+}
+
 extern char lbl_80352AD0[];
 extern int lbl_802FC700;
 extern void fn_80131818(void *);
