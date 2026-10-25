@@ -261,6 +261,8 @@ void fn_8001C0E8(void) {
     ((void (*)(void))fn_8001BC28)();
 }
 
+#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_8001C200(const char *arg0, const char *arg1) {
     s32 result = 0;
     if (stricmp(arg0, arg1) == 0 || stricmp(arg0, lbl_80558C90) == 0 || stricmp(arg1, lbl_80558C90) == 0) {
@@ -268,8 +270,7 @@ s32 fn_8001C200(const char *arg0, const char *arg1) {
     }
     return result;
 }
-
-#pragma dont_inline on
+#pragma scheduling reset
 s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
     volatile u32 key = *(volatile u32 *)arg0;
     s32 result = 0;
@@ -667,7 +668,23 @@ void fn_8001D5F0(s32 arg0) {
     }
     fn_8001D5D8();
 }
-#pragma dont_inline reset
+
+extern void fn_802E30C8(const char *, ...);
+extern const char lbl_802FDB04[];
+#pragma scheduling invalid_target
+#pragma scheduling on
+void fn_8001D728(s32 arg0, s32 arg1) {
+    switch (arg1) {
+    case 0:
+        fn_802E30C8(lbl_802FDB04, arg0);
+        memset(lbl_8055D5CC + arg0 * 0xDAC4, 0, 0xDAC4);
+        ((s32 *)lbl_80358658[arg0])[1] = 0;
+        break;
+    default:
+        break;
+    }
+}
+#pragma scheduling reset
 void fn_8001D7A4(void) {
 
 }
