@@ -18,6 +18,7 @@ extern s32 lbl_8055DF8C;
 extern s32 lbl_8055DF90;
 extern s32 lbl_8055DF94;
 extern char lbl_8055DF81;
+extern char lbl_8032A448[];
 void fn_801287D0(void *);
 
 s32 fn_801281F4(s32, s32);
@@ -279,6 +280,139 @@ void fn_801287D0(void *arg0) {
 
 s32 fn_801288A4(void) {
     return 0;
+}
+
+extern char lbl_8032A1F8[];
+extern char lbl_8032A204[];
+void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3, s32 arg4) {
+    s32 size = fn_801281F4(arg1, 0x40);
+    void *found = ((void *(*)(void *, s32))fn_801288A4)(arg0, size);
+    void *record;
+    u8 *start;
+    u8 *p;
+    s32 limit;
+    s32 rounded;
+    if (found != NULL) {
+        sprintf((char *)found + 4, lbl_8032A1F8, arg2, size);
+        *((u8 *)found + 0x24) = 1;
+        return (u8 *)found + 0x40;
+    }
+    limit = size + *(s32 *)((u8 *)arg0 + 4) + 0x40;
+    if (limit >= *(s32 *)((u8 *)arg0 + 8)) {
+        void **vtable = *(void ***)arg0;
+        ((void (*)(void *, s32))vtable[14])(arg0, 1);
+        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A204, arg2, size);
+    }
+    record = (u8 *)*(void **)((u8 *)arg0 + 0xC) + *(s32 *)((u8 *)arg0 + 4);
+    memset(record, 0, 0x40);
+    strcpy((char *)record + 4, arg2);
+    *((u8 *)record + 0x24) = 1;
+    *(s32 *)((u8 *)record + 0x30) = arg4;
+    *(s32 *)((u8 *)record + 0x28) = size;
+    *(s32 *)((u8 *)record + 0x2C) = arg1;
+    *(u32 *)record = 0x53544B41;
+    *(void **)((u8 *)record + 0x34) = *(void **)((u8 *)arg0 + 0x10);
+    *(u32 *)((u8 *)record + 0x3C) = 0x53544B41;
+    *(void **)((u8 *)arg0 + 0x10) = record;
+    start = (u8 *)record + 0x40;
+    memset(start, 0xE3, size);
+    p = start + arg1;
+    rounded = fn_801281F4(arg1, 4);
+    while (p < start + rounded) *p++ = 0xE3;
+    limit = size + *(s32 *)((u8 *)arg0 + 4) + 0x40;
+    *(s32 *)((u8 *)arg0 + 4) = limit;
+    if (limit < *(s32 *)((u8 *)arg0 + 8)) *(u32 *)(start + rounded) = 0x53544B41;
+    if (*(s32 *)((u8 *)arg0 + 0x14) < limit) *(s32 *)((u8 *)arg0 + 0x14) = limit;
+    if (start + size >= *(u8 **)((u8 *)arg0 + 0x1C)) *(u8 **)((u8 *)arg0 + 0x1C) = start + size;
+    if (start < *(u8 **)((u8 *)arg0 + 0x18)) *(u8 **)((u8 *)arg0 + 0x18) = start;
+    return start;
+}
+
+u32 fn_801281A0(s32);
+void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
+    u8 *base = arg1 - 0x40;
+    u8 *p;
+    u8 *end;
+    void *entry;
+    s32 length, rounded;
+    if (*(u32 *)(arg1 - 0x40) != 0x5354414B)
+        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x228, base);
+    length = *(s32 *)(arg1 - 0x14);
+    rounded = fn_801281F4(length, 4);
+    if (*(u32 *)(arg1 + rounded) != 0x5354414B)
+        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x244, base + 4);
+    p = arg1 + *(s32 *)(base + 0x2C);
+    end = arg1 + fn_801281F4(*(s32 *)(base + 0x2C), 4);
+    while (p < end) {
+        if (*p != 0xE3)
+            ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x278, p,
+                p - (arg1 + *(s32 *)(base + 0x2C)), base + 4, 0xE3);
+        p++;
+    }
+    if (*(u32 *)(base + 0x3C) != 0x5354414B)
+        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x2C8, base + 4);
+    if (base[0x24] == 0)
+        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x304, base + 4);
+    if (*(s32 *)(base + 0x30) != arg2) {
+        u32 newname = fn_801281A0(arg2);
+        u32 oldname = fn_801281A0(*(s32 *)(base + 0x30));
+        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x31C, base + 4, oldname, newname);
+    }
+    base[0x24] = 0;
+    entry = *(void **)((u8 *)arg0 + 0x10);
+    while (entry != 0 && *(u8 *)((u8 *)entry + 0x24) == 0) {
+        *(void **)((u8 *)arg0 + 0x10) = *(void **)((u8 *)entry + 0x34);
+        *(void **)((u8 *)entry + 0x34) = 0;
+        entry = *(void **)((u8 *)arg0 + 0x10);
+    }
+    if (entry != 0)
+        *(u32 *)((u8 *)arg0 + 4) = *(u32 *)((u8 *)entry + 0x28) +
+           ((u8 *)entry - *(u8 **)((u8 *)arg0 + 0xC)) + 0x40;
+    else
+        *(u32 *)((u8 *)arg0 + 4) = 0;
+}
+
+extern int strcmp(const char *, const char *);
+extern char lbl_80559970[], lbl_80559974[];
+void fn_80128C5C(void *arg0, int arg1, int arg2) {
+    int offset;
+    int total;
+    int used;
+    int count;
+    int size;
+    int equal;
+    void *message;
+    if ((arg1 & 1) != 0) {
+        ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x348);
+        offset = 0;
+        used = 0;
+        count = 0;
+        total = *(int *)((char *)arg0 + 4);
+        while (offset < total) {
+            char *record = *(char **)((char *)arg0 + 0xC) + offset;
+            if (*(unsigned int *)record != 0x53544B41)
+                ((void (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x380, record);
+            equal = strcmp(record + 4, lbl_8032A000 + 0x5C);
+            message = &lbl_80559974[0];
+            if (*(unsigned char *)(record + 0x24) != 0 && equal == 0)
+                message = &lbl_80559970[0];
+            size = *(int *)(record + 0x28);
+            fn_802E30C8(lbl_8032A000 + 0x394, message,
+                        record + 4, (void *)size, record);
+            if (*(unsigned char *)(record + 0x24) == 0)
+                used += size + 0x40;
+            count++;
+            offset += size + 0x40;
+            if ((offset & 0x1F) == 0)
+                fn_802E2D74(1);
+        }
+        fn_802E30C8(lbl_8032A000 + 0x3B4, (void *)(total / 1024),
+                    (void *)(*(int *)((char *)arg0 + 8) / 1024),
+                    (void *)((*(int *)((char *)arg0 + 8) - total) / 1024),
+                    (void *)(used / 1024));
+        ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x3E8, (void *)count);
+        ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x3F8);
+    }
 }
 
 void fn_80128DCC(void *arg0) {
