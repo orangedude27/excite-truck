@@ -17,6 +17,7 @@ extern float lbl_80564AAC;
 void fn_8028E398(int);
 void fn_80128668(void *);
 extern void *lbl_8055F924;
+extern int lbl_8055F928;
 void fn_8028E080(void);
 __declspec(section ".sdata") extern float lbl_805649F0;
 s32 fn_802A9F90(s32 *arg0) {
@@ -25,6 +26,17 @@ s32 fn_802A9F90(s32 *arg0) {
     return 4;
 }
 
+#pragma scheduling invalid_target
+s32 fn_802A9FB0(void *arg0) {
+    extern int lbl_8055F928;
+    int index = *(int *)arg0;
+    int offset = index * 0x108;
+    unsigned char value = *((unsigned char *)arg0 + 4);
+    *(unsigned char *)(lbl_8055F928 + offset + 0xEC) = 1;
+    *(unsigned char *)(lbl_8055F928 + offset + 0xF4) = value;
+    return 8;
+}
+#pragma scheduling on
 void fn_802A9FE0(void *arg0) {
     float value = lbl_805649F0;
     int i;
@@ -367,6 +379,21 @@ void fn_802AB504(void) {
     lbl_8055CC60 = -2;
     fn_802CAC54(lbl_8055CC64);
     lbl_8055CC64 = -2;
+}
+
+void fn_802AB5B8(void) {
+    extern int lbl_8055F928;
+    int index = 0;
+    int offset = 0;
+    do {
+        char *entry = (char *)lbl_8055F928 + offset;
+        *(int *)(entry + 0x104) = index;
+        fn_802A9FE0(entry);
+        fn_802AA0C8(entry);
+        fn_802AA0EC(entry);
+        index++;
+        offset += 0x108;
+    } while (index < 8);
 }
 
 void fn_802AB6D0(void) {}
