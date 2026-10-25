@@ -42,9 +42,6 @@ struct Fn80179F94Dummy {
     virtual void m11() = 0;
     virtual void m12() = 0;
     virtual f32 m13(void *, void *, s32) = 0;
-    f32 m15(void *arg0, void *arg1, s32 arg2) {
-        return m13(arg0, arg1, arg2);
-    }
 };
 extern "C" inline void fn_80179E00_virtual_call(void *obj) {
     ((Fn80179E00Dummy *)obj)->m8();
@@ -148,6 +145,7 @@ void fn_80179EE4(void) {
 }
 
 #pragma push
+#pragma optimization_level 2
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80179F94(void *arg0, void *arg1) {
@@ -162,7 +160,7 @@ extern "C" void fn_80179F94(void *arg0, void *arg1) {
     count++;
     *(s32 *)((u8 *)arg0 + 0x24) = count;
     *(s32 *)((u8 *)arg0 + 0x28) = count;
-    value = ((Fn80179F94Dummy *)arg1)->m15(arg1, slot, count - 1);
+    value = ((Fn80179F94Dummy *)arg1)->m13(arg1, slot, count - 1);
     old = *(f32 *)((u8 *)arg0 + 0x2C);
     if (old <= value)
         goto update;
