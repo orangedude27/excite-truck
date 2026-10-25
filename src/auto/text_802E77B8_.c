@@ -138,6 +138,18 @@ int fn_802E7AF4(int arg0,int arg1) {
  return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_802E7C14(int arg0) {
+    extern unsigned char lbl_80505978[];
+
+    if (arg0 < 0)
+        return;
+    if (arg0 >= 4)
+        return;
+    *((unsigned char *)&lbl_80505978 + arg0 * 0x638 + 0x631) = arg0 - arg0;
+}
+#pragma pop
 void fn_802E7C40(void) {
     lbl_80560008 = fn_802E9A24();
 }
