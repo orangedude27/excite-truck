@@ -1619,6 +1619,14 @@ void fn_80198488(void *arg0) {
       return arg0;
   }
 
+#pragma dont_inline on
+void fn_80198E7C(int index) {
+    void *entry = lbl_804349C0[index];
+    if (*((u8 *)entry + 0x2A4) != 0)
+        fn_801964D0();
+}
+#pragma dont_inline reset
+
   void fn_80198E7C(int index);
     void fn_80198EA0(int index) {
         fn_80198E7C(index);
