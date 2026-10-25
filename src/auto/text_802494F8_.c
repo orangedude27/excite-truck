@@ -691,7 +691,7 @@ s32 fn_8024BB7C(void *arg0) {
 }
 
 extern char lbl_80343E60[];
-  void *fn_80012870(s32, s32);
+  void *fn_80012870(int, int);
 void fn_8024BBF4(void *arg0) {
     s32 spC, sp8;
     void *obj;
