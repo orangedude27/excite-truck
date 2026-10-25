@@ -255,9 +255,11 @@ extern "C" s32 fn_8013D890(s32 arg0, s32 arg1) {
 extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
     s32 count = 0;
     s32 i = 0;
-    void *item;
-    while ((item = (void *)arg0->vC(i)) != 0) {
-        if (fn_8013CB44(arg1, (TObj10 *)item)) count++;
+
+    while (arg0->vC(i) != 0) {
+        if (fn_8013CB44(arg1, (TObj10 *)arg0->vC(i))) {
+            count++;
+        }
         i++;
     }
     return count;
@@ -387,7 +389,12 @@ extern "C" void fn_8013E3A8(void *arg0, void *arg1) {
 }
 #pragma scheduling invalid_target
 extern "C" void *fn_8013E6E4(void *arg0) {
-    fn_8001DAE0((u8 *)arg0 + 0x98, lbl_805614AC);
+    register f32 first;
+    void *field;
+
+    first = *(volatile f32 *)&lbl_805614AC;
+    field = (u8 *)arg0 + 0x98;
+    fn_8001DAE0(field, first);
     fn_8001DAE0((u8 *)arg0 + 0xA0, lbl_805614FC);
     fn_8001DAE0((u8 *)arg0 + 0xA8, lbl_805614FC);
     fn_8001DAE0((u8 *)arg0 + 0xB0, lbl_805614FC);
@@ -616,8 +623,8 @@ extern "C" f32 lbl_80561540;
 extern "C" f32 lbl_805614A4, lbl_805614AC, lbl_80561530, lbl_80561538, lbl_8056153C, lbl_80561540;
 #pragma scheduling invalid_target
 extern "C" s32 fn_8013F438(f32 x) {
-    register f32 t = (x - lbl_80561530) / lbl_80561538;
-    register f32 v = (lbl_805614AC < t) ? lbl_805614AC : t;
+    f32 t = (x - lbl_80561530) / lbl_80561538;
+    f32 v = (lbl_805614AC < t) ? lbl_805614AC : t;
     v = (v > lbl_805614A4) ? lbl_805614A4 : v;
     return (s32)(lbl_8056153C + v * lbl_80561540);
 }
@@ -1919,13 +1926,16 @@ extern "C" s32 fn_80144454(void) { return 0; }
 extern "C" s32 fn_8013D1F0(s32);
 #pragma dont_inline on
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
-    register s32 v = fn_8013D1F0(arg1);
-    v ^= 0xA;
-    register s32 mask = v & 0xA;
-    register s32 half = v >> 1;
-    return (half - mask) < 0;
+    s32 value = fn_8013D1F0(arg1);
+    value ^= 0xA;
+    s32 half = value >> 1;
+    s32 mask = value & 0xA;
+    if (half - mask < 0) {
+        return 1;
+    }
+    return 0;
 }
-#pragma dont_inline reset
+#pragma dont_inline off
 extern "C" s32 fn_80144494(s32 arg0, s32 arg1) { return arg1; }
 struct Fn8013FC6CDispatch {
     virtual void unused0();
