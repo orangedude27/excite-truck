@@ -24,6 +24,10 @@ extern void *lbl_8055F10C;
 
 extern void* lbl_8055BAC8;
 s32 fn_80214D04(void);
+s32 fn_802399AC(void) {
+    return fn_8027B9EC(1) != 0;
+}
+
 void fn_80239A94(void) {
     lbl_8055BAC8 = (void*)fn_80214D04();
 }
