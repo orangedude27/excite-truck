@@ -1050,9 +1050,7 @@ void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 void GXInitLightAttnK(s32 arg0) {
-    unsigned short value = __peReg[1];
-    value = (value & 0xFFF7) | ((arg0 & 1) << 3);
-    __peReg[1] = value;
+    ((GXAttnKReg *)&__peReg[1])->attenuationK = arg0;
 }
 
 void GXInitLightSpot(s32 arg0, s32 arg1) {
