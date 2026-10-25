@@ -6275,6 +6275,7 @@ void btm_sec_auth_complete(register UINT16 handle, register UINT8 status) {
     }
 }
 
+/* Match note: combine the null and security-bit tests so both failures share the zero return block. */
 s32 fn_8007FEFC(u16 handle) {
     tBTM_SEC_DEV_REC *dev = btm_find_dev_by_handle(handle);
     if (dev != NULL && ((((u8 *)dev)[0x81] & 0x40) != 0)) {
