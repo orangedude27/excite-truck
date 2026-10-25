@@ -46,6 +46,7 @@ void fn_801F4DCC(void) {
     fn_801F7220(lbl_8055EC18);
 }
 
+#pragma scheduling invalid_target
 void fn_801F4DD4(void *arg0, void *arg1) {
     void *temp_r3;
     temp_r3 = fn_802AE414();
@@ -54,7 +55,7 @@ void fn_801F4DD4(void *arg0, void *arg1) {
     }
     fn_801F7280(lbl_8055EC18, temp_r3, arg1);
 }
-
+#pragma scheduling on
 extern void *fn_801284F8(int, void *);
 extern char lbl_8033AC68[];
 extern char *lbl_8033AC9C[5];
