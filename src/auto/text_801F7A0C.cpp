@@ -179,7 +179,7 @@ int stricmp(const char *, const char *);
         }
 extern "C" void *fn_801F981C(void *node, s32 arg);
 extern "C" void fn_801F9928(void *list, s32 arg);
-extern void *fn_801F9440(void *list, void *node);
+extern "C" void fn_801F9440(F92Node **list, F92Node *node);
 
 struct F9Node {
     void *vtable; // 0x0
