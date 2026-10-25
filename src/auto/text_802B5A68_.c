@@ -475,11 +475,8 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
     fn_80147230(arg0, lbl_8055CE70, buf);
 }
 #pragma scheduling on
-__declspec(section ".sdata") extern s32 lbl_8055CE78, lbl_8055CE80;
-#pragma push
-#pragma small_data off
-extern s32 lbl_8034A808, lbl_8034A814;
-#pragma pop
+__declspec(section ".sdata") extern const char lbl_8055CE78[], lbl_8055CE80[];
+extern const char lbl_8034A808[], lbl_8034A814[];
 extern s32 fn_80147FF0(s32);
 void fn_802B67C8(s32 arg0) {
     void *(*method)(void *, s32) = (void *(*)(void *, s32))(*(void ***)lbl_8055FA48)[5];
