@@ -1231,6 +1231,11 @@ void fn_801C811C(void) {
     fn_801C957C(1, fn_801C6CBC, lbl_805629B4);
 }
 
+void fn_801C8150(void) {
+    lbl_8055E864 = atoi(lbl_804380F0);
+    strcpy(lbl_804380F0, lbl_8055AA44);
+}
+
 void fn_801C8190(void) {
     lbl_8055E854 = 1;
     fn_801C78D8();
