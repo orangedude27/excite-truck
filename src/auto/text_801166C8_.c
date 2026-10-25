@@ -447,11 +447,21 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
     return maxDiff;
 }
 
-s32 fn_80117598(s32 arg0,s32 arg1){
- s32 off=((arg0+0x340)-arg0);
- s32* p=(s32*)(arg0-off);
- s32 v=p[0x33c/4];
- return (~v) & ((v-arg1 | arg1-v)>>31);
+s32 fn_80117598(s32 arg0, s32 arg1) {
+    u8* base;
+    u8* end;
+    s32 offset;
+    s32 value;
+    s32 difference;
+    s32 sign;
+    base = (u8*)arg0;
+    end = base + 0x340;
+    offset = (s32)end - (s32)base;
+    base = (u8*)((s32)base - offset);
+    value = *(s32*)(base + 0x33C);
+    difference = (value - arg1) | (arg1 - value);
+    sign = difference >> 31;
+    return (-1 - value) & sign;
 }
 
 void fn_801175C4(s32 arg0,s32 arg1){
@@ -3417,11 +3427,12 @@ got_memory:
 
 void fn_80120084(void *arg0) {
     u8 *ptr = arg0;
-    u8 *base;
     if (ptr == 0) return;
-    base = ptr - ptr[-1];
-    if (ptr[-2] == 3) ((void (*)(void *))*(void **)(ptr - 8))(base);
-    else free(base);
+    if (ptr[-2] == 3) {
+        ((void (*)(void *))*(void **)(ptr - 8))(ptr - ptr[-1]);
+    } else {
+        free(ptr - ptr[-1]);
+    }
 }
 
 void fn_80120834(s32 n, s32 *info, f32 *table) {
