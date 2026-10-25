@@ -400,8 +400,6 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
 
 extern int fn_801DC9B0(void);
 extern int fn_801DCA60(void);
-extern void fn_802E30C8(const char *, ...);
-extern void fn_801D02B0(void);
 void fn_801DD808(void) {
     unsigned char *entry = lbl_80446F18;
     int i = 0;
