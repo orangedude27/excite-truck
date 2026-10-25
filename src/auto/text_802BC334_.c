@@ -12,6 +12,10 @@ int fn_802CAC28(int, int);
 void fn_802BD018(void *);
 int fn_802BD070(void *);
 void fn_80128668(void *);
+extern int fn_802C9C24(int);
+extern void fn_802E317C(void *, int);
+extern void fn_802B110C(void *, int);
+extern int lbl_8034AB38;
 int fn_802BC334(int arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
