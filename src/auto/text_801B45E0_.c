@@ -118,16 +118,15 @@ void fn_801B4720(int arg0) {
         offset += 12;
     }
     value = *(int *)(arg0 + 4);
-    zero = 0;
-    *(int *)(arg0 + 8) = zero;
+    *(int *)(arg0 + 8) = 0;
     *(int *)(arg0 + 0xC) = value;
     *(int *)(arg0 + 0x10) = value;
-    *(int *)(arg0 + 0x14) = zero;
-    *(int *)(arg0 + 0x20) = zero;
-    *(int *)(arg0 + 0x24) = zero;
+    *(int *)(arg0 + 0x14) = 0;
+    *(int *)(arg0 + 0x20) = 0;
+    *(int *)(arg0 + 0x24) = 0;
     object = *(void **)arg0;
     vtable = *(void ***)object;
-    ((void (*)(void))vtable[3])();
+    ((void (*)(void))vtable[6])();
 }
 
 #pragma dont_inline on
@@ -246,23 +245,18 @@ int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
     return 1;
 }
 
-void fn_801B4AC4(int arg0, int arg1) {
+#pragma cplusplus on
+extern "C" void fn_801B4AC4(int arg0, int arg1) {
     int index;
     int *entry;
-    int object;
-    int value;
 
     index = ((int (*)(int, int))fn_801B4C9C)(arg0, arg1);
     entry = ((int *(*)(int, int))fn_801B4C58)(arg0, index);
-    value = entry[2];
-    object = *(int *)(arg0 + 4);
-    ((void (*)(int, int))(*(int *)(*(int *)object + 0x14)))(object, value);
+    ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f5(entry[2]);
     entry = ((int *(*)(int, int))fn_801B4C60)(arg0, index);
-    value = entry[2];
-    object = *(int *)(arg0 + 4);
-    ((void (*)(int, int))(*(int *)(*(int *)object + 0x14)))(object, value);
+    ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f5(entry[2]);
 }
-
+#pragma cplusplus off
 int fn_801B4B44(char *arg0) {
     int result = 0;
     if (fn_801B47F0((int)(arg0 + 4)) != 0 && *arg0) result = 1;
@@ -307,7 +301,7 @@ void fn_801B4C9C(int arg0, int arg1) {
     } while (count-- != 0);
 }
 #pragma pop
-extern double lbl_80562660;
+extern float lbl_80562660;
 extern float lbl_80562658;
 float fn_801B4D10(int arg0, int arg1) {
     return (float)((arg1 - fn_801B4B9C(arg0)) % 6) / lbl_80562658;
