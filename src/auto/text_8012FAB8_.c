@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 extern void *fn_80131234();
 extern int fn_801302E0();
-extern char lbl_80559B00[];
+__declspec(section ".sdata") extern char lbl_80559B00[];
 
 extern int lbl_804230D0;
 extern int lbl_80423054;
@@ -200,6 +200,14 @@ void fn_80130FE0(int arg0) {
         fn_80131234((void *)values[remainder]);
     }
 }
+
+void *fn_80131234(void) {
+    int result = fn_801302E0();
+    if (result == 0)
+        return lbl_80559B00;
+    return (void *)result;
+}
+
 #pragma scheduling on
 void fn_80131264(void) {
     fn_801302E0();
