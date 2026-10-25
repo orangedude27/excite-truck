@@ -13246,13 +13246,18 @@ extern "C" void* __dt__Q36nw4hbm3lyt8BoundingFv(void* arg0, int arg1) {
     return arg0;
 }
 
-extern "C" void DrawSelf__Q36nw4hbm3lyt8BoundingFRCQ36nw4hbm3lyt8DrawInfo(BoundingPane* self, const DrawInfo* info) {
-    Vec2 pos;
-    unsigned int color = 0x00FF00FF;
+extern "C" void DrawSelf__Q36nw4hbm3lyt8BoundingFRCQ36nw4hbm3lyt8DrawInfo(BoundingPane *self, const DrawInfo *info) {
+    struct ColorArg {
+        unsigned int value;
+    };
+    ColorArg color;
+
     if ((info->flag >> 3) & 1) {
-        self->v24();
-        pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(self, 0xFFFF0000);
-        DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(&pos, (const Size*)((const char*)self + 0x4C), color);
+        self->v22();
+        color.value = 0x00FF00FF;
+        Vec2 pos = ((Vec2 (*)(BoundingPane *))GetVtxPos__Q34nw4r3lyt4PaneCFv)(self);
+        ((void (*)(const Vec2 *, const Size *, const ColorArg *))DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color)(
+            &pos, (const Size *)((const u8 *)self + 0x4C), &color);
     }
 }
 
