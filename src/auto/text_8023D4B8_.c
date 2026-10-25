@@ -2,6 +2,7 @@
   // split_file divides it into the game's real files (file_status shows its range).
   
   typedef signed int s32;
+extern void fn_8023E33C(void *);
 extern void *lbl_8055F190;
 extern int lbl_8055F194;
 extern void fn_8023E16C(void *, int);
