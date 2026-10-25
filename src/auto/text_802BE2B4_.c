@@ -25,4 +25,5 @@ void fn_802BE2B4(void) {
 # pragma scheduling reset
 
 #include <types.h>
+#include <macros.h>
 DECL_SECTION(".ctors") funcptr_t D_802ED574 = fn_802BE2B4;
