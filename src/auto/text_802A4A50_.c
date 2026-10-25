@@ -37,7 +37,7 @@ void fn_802A5A38(void);
 extern s32 lbl_8055F888;
 extern s32 lbl_8055F88C;
 extern f32 lbl_8055F8A0;
-s32 fn_802A6A44(void);
+s32 fn_802A6A44(s32 *);
 s32 fn_802A5C1C(void);
 void fn_802A59E0(void);
 extern s32 lbl_804BCFA8[];
@@ -236,8 +236,7 @@ s32 fn_802A5384(s32 arg0) {
     s32 value = *(s32 *)arg0;
 
     if (value == 2) {
-        fn_802A52FC(lbl_8056485C);
-        return;
+        return ((s32 (*)(f32))fn_802A52FC)(lbl_8056485C);
     }
     if (value > 1) {
         return;
@@ -245,7 +244,7 @@ s32 fn_802A5384(s32 arg0) {
     if (value < 1) {
         return;
     }
-    fn_802A5270(lbl_8056485C);
+    return ((s32 (*)(f32))fn_802A5270)(lbl_8056485C);
 }
 
 void *fn_802A7614(void *, s32);
