@@ -35,9 +35,7 @@ extern s32 fn_802161CC(s32);
 extern void fn_80218370(void *);
 extern s32 fn_802E97B4(void);
 extern void fn_802166B8(void);
-#pragma small_data off
-extern char lbl_8033D690;
-#pragma small_data on
+extern char lbl_8033D690[];
 extern s32 fn_80215EC4(s32, s32);
 #pragma small_data off
 extern void *lbl_80490710;
