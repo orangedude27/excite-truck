@@ -11796,6 +11796,13 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
+void homebutton::Controller::clearCallback() {
+    WPADSetSamplingCallback(*(s32 *)this, *(void **)((u8 *)this + 0x28));
+    *(s32 *)((u8 *)this + 0x28) = 0;
+    ((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(*(s32 *)this, *(void **)((u8 *)this + 0x2C));
+    *(s32 *)((u8 *)this + 0x2C) = 0;
+}
+
 extern "C" void fn_800D1054(void *arg0, void *arg1, s32 arg2) {
     s32 temp_r0, temp_r4, temp_r5, temp_r6_2;
     void *temp_r6, *temp_r7;
