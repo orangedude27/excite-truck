@@ -21,6 +21,7 @@ extern void fn_801D05B4(void *);
 extern void fn_801D0824(void *);
 extern void fn_802C1180(void *);
 extern int fn_802E317C(const char *);
+extern char lbl_8034AED0[];
 void *fn_802C110C(int arg0) {
     int i;
     int *entry = (int *)((char *)&lbl_804C0810);
@@ -49,15 +50,22 @@ void fn_802C1180(void *arg0) {
     ((int **)lbl_8055FB30)[src[0]] = (int *)src[1];
     src[1] = zero;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void *fn_802C120C(void) {
-    unsigned int n = lbl_8055FB34 + 1;
-    void *entry = (char *)&lbl_804C0E10 + lbl_8055FB34 * 0x48;
-    lbl_8055FB34 = ((n << 29) - (n >> 31));
+    unsigned int nextIndex;
+    unsigned int oldIndex;
+    unsigned int value;
+    void *entry;
+    oldIndex = lbl_8055FB34;
+    entry = (char *)&lbl_804C0E10 + oldIndex * 0x48;
+    nextIndex = oldIndex + 1;
+    value = (nextIndex << 29) - (nextIndex >> 31);
+    value = ((value << 3) | (value >> 29)) + (nextIndex >> 31);
+    lbl_8055FB34 = value;
     fn_802C1180(entry);
     return entry;
 }
-
+#pragma scheduling on
 void fn_802C126C(void) {
     int *var_r29;
     char *var_r30;
