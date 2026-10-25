@@ -5570,6 +5570,19 @@ extern "C" void *fn_8022A124(void *arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_8012C33C(void *);
+extern "C" s32 fn_802C6FC0(void *, s32, s32);
+extern "C" void fn_8022A19C(void *arg0, void *arg1) {
+    s32 temp_r0 = *(s32 *)((u8 *)arg0 + 4);
+    if (temp_r0 != -1) {
+        fn_802C6CF8(temp_r0);
+        *(s32 *)((u8 *)arg0 + 4) = -1;
+    }
+    if (fn_8012C33C(arg1) != 0) {
+        *(s32 *)((u8 *)arg0 + 4) = fn_802C6FC0(arg1, 0, 0);
+    }
+}
+
 extern "C" void *fn_802C86DC(void);
 extern "C" void fn_802C77F0(s32, f32 *);
 extern "C" void fn_802C98DC(f32 *, f32 *, f32 *, f32 *);
