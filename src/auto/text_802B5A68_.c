@@ -108,7 +108,7 @@ void fn_802B5CCC(void) {
 
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B321C(0, (void **)&sp8, *(s32 *)(object + 8), lbl_8055FA40);
-    *sp8 = __cntlzw(*sp8) >> 5;
+    *sp8 = (u32)__cntlzw(*sp8) / 32U;
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B32E0(*(s32 *)(object + 8));
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
@@ -502,7 +502,6 @@ s32 fn_802B6A70(s32 arg0) {
     }
 }
 #pragma pop
-extern s32 lbl_8055CE78, lbl_8055CE80, lbl_8034A808, lbl_8034A814;
 extern float lbl_8055FA18;
 extern s32 fn_802B6A70(s32);
 extern void *fn_802B5240(void *);
