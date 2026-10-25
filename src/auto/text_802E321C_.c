@@ -91,14 +91,23 @@ void fn_802E34DC(void) {
     }
 }
 
+extern char lbl_8034CF80[];
+#pragma scheduling invalid_target
 void fn_802E3550(void) {
+    char *entry;
     s32 i;
-    for (i = 0; i < 16; i++) {
-        char *entry = lbl_804DB810 + i * 0x28;
-        if (((unsigned char *)entry)[0x20] != 0) fn_802E317C(lbl_8034CF40, (s32)entry);
-    }
-}
 
+    entry = lbl_804DB810;
+    i = 0;
+    do {
+        if (((unsigned char *)entry)[0x20] != 0) {
+            fn_802E317C(lbl_8034CF80, (s32)entry);
+        }
+        i++;
+        entry += 0x28;
+    } while (i < 16);
+}
+#pragma scheduling on
 s32 fn_802E35C0(const char *arg0, s32 arg1) {
     s32 i;
     for (i = 0; i < 16; i++) {
