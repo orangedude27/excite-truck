@@ -1284,6 +1284,15 @@ extern "C" void *fn_80215264(void) {
     return lbl_8033CAE8;
 }
 
+extern "C" s32 fn_80215270(s32 arg0, s32 arg1) {
+    s32 *row;
+    if (arg1 >= 3) {
+        arg1 = 1;
+    }
+    row = lbl_80490528 + (arg1 * 4);
+    return row[arg0];
+}
+
 extern "C" void fn_80215298(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 arg4, s32 arg5, u32 arg6) {
     *arg0 = arg4;
     *arg2 = arg4 + arg6 - 0x1A;
