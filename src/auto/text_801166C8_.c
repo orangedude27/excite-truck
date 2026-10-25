@@ -2402,6 +2402,7 @@ void fn_8011C2EC(s32 arg0, void *arg1) {
     }
 }
 
+extern s32 fn_8011C0E0();
 void fn_8011C364(s32 arg0) {
     if (arg0 != 0) {
         fn_8011C0E0();
