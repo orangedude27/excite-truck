@@ -4,7 +4,7 @@
 #include <types.h>
 extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void);
 extern "C" void fn_800EEE8C(void *, const void *);
-extern "C" void *lbl_8032428C;
+extern "C" char lbl_8032428C[];
 extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, unsigned int);
 extern "C" void fn_80128668(void*);
 
