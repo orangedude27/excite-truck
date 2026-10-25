@@ -178,6 +178,13 @@ reset:
     memset(dst, clear, size);
 }
 
+extern char lbl_8035A718[0x820];
+#pragma scheduling invalid_target
+void fn_8001F578(void) {
+    memset(lbl_8035A718, 0, 0x820);
+    memset(lbl_8035AF38, 0, 0x820);
+}
+#pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
 void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
     int *a = (int *)arg0;
