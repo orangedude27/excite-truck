@@ -1024,6 +1024,13 @@ void fn_801CE6D0(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
     *arg0 = local;
 }
 
+int fn_801CE75C(void) {
+    if (fn_801CE898() != 0) {
+        return 1;
+    }
+    return lbl_8055E884[0x2C0 / 4] == 3;
+}
+
 extern unsigned int fn_801CE898(void);
 extern void fn_802ADE60(int);
 void fn_801CE7A0(void) {
