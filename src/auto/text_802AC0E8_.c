@@ -244,7 +244,21 @@ void fn_802AE0E0(void **arg0) {
     }
 }
 
-void fn_802AE118(void *arg0){int i=0,off=0;char *container=*(char **)arg0;while(i<*(int *)(container+4)){unsigned char *entry=(unsigned char *)*(char **)container+off;if(entry[0x68])*(float *)(entry+0x6c)=*(float *)((char *)arg0+4)-*(float *)(*(char **)(entry+0x64)+0x2c);off+=0x74;i++;}}
+void fn_802AE118(void *arg0) {
+    int off;
+    int i;
+    i = 0;
+    off = 0;
+    while (i < *(int *)(*(char **)arg0 + 4)) {
+        if (*(unsigned char *)((unsigned char *)*(char **)*(char **)arg0 + off + 0x68) != 0) {
+            *(float *)((unsigned char *)*(char **)*(char **)arg0 + off + 0x6C) =
+                *(float *)((char *)arg0 + 4) -
+                *(float *)(*(char **)((unsigned char *)*(char **)*(char **)arg0 + off + 0x64) + 0x2C);
+        }
+        off += 0x74;
+        i++;
+    }
+}
 
 #pragma push
 #pragma use_lmw_stmw off
