@@ -11,6 +11,7 @@ extern const char lbl_8032F4C8[];
 extern int fn_801284F8(int, const char *);
 extern int fn_8001D884(void *);
 extern int fn_80128668(void);
+extern void fn_801607F8(void);
 extern int __AXGetStackHead(int);
 typedef struct Obj { void **vtable; } Obj;
 typedef int (*Callback)(Obj *, int, int);
@@ -26,15 +27,16 @@ void fn_8016071C(Obj *obj) {
 }
 
 void fn_801607BC(void) {
-    int a = lbl_802F9490[0];
-    int b = lbl_802F9490[1];
-    int c = lbl_802F9490[2];
-    int d = lbl_802F9490[3];
-    int e = lbl_802F9490[4];
+    int a, b, c, d, e;
+    a = lbl_802F9490[0];
     lbl_8042FD60[0] = a;
+    b = lbl_802F9490[1];
     lbl_8042FD60[1] = b;
+    c = lbl_802F9490[2];
     lbl_8042FD60[2] = c;
+    d = lbl_802F9490[3];
     lbl_8042FD60[3] = d;
+    e = lbl_802F9490[4];
     lbl_8042FD60[4] = e;
 }
 
