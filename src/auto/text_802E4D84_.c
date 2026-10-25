@@ -183,6 +183,7 @@ extern int fn_802E5AE8(void);
 extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern int fn_802E582C(void);
+#pragma dont_inline fn_802E582C
 int fn_802E58A0(void *arg0, int arg1) {
     if (arg1 == 0x53465830) return fn_802E582C();
     return 1;
