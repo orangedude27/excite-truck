@@ -16,6 +16,8 @@ extern void fn_802E6264(void);
 extern int lbl_8055EE0C;
 extern void *lbl_8055EE10;
 extern char lbl_8033C35C[];
+extern char lbl_8033C338[];
+extern int stricmp(const char *, const char *);
 extern char lbl_8033C368[];
 extern char lbl_804892D0[];
 extern int fn_801284F8(int, void *);
