@@ -12226,7 +12226,7 @@ void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 arg2, u32 arg3) {
     rfc_check_send_cmd(p_mcb, p_buf);
 }
 
-extern u8 fn_80095084();
+extern u8 fn_80095084(s32, void *);
 extern char lbl_80319DD8[];
 extern char lbl_80559090[];
 extern char lbl_80559098[];
