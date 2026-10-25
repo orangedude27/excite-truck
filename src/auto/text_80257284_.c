@@ -103,19 +103,19 @@ void fn_8022D76C(void);
 extern char lbl_80344CE4[];
 #pragma dont_inline on
 void fn_80257A8C(void *arg0) {
-    int sp1C;
-    int sp8;
-    int temp_r29;
+    char sp1C[0x24];
+    char sp8[0x14];
     int var_r30;
+    int temp_r29;
 
     fn_8022D76C();
     var_r30 = 0;
     do {
         temp_r29 = fn_8001BA74(var_r30 + 1);
         fn_8022D894(arg0, var_r30, 0, fn_8001BA6C(), 0);
-        fn_8001BC38(&sp1C, fn_8000DA10(), temp_r29, *(int *)((char *)arg0 + 0x30), 0);
-        if (fn_8001BCF0(&sp1C) != 0) {
-            fn_8022D894(arg0, var_r30, 1, fn_8001BD38(&sp1C, &sp8, 0x14), 0);
+        fn_8001BC38(sp1C, fn_8000DA10(), temp_r29, *(int *)((char *)arg0 + 0x30), 0);
+        if (fn_8001BCF0(sp1C) != 0) {
+            fn_8022D894(arg0, var_r30, 1, fn_8001BD38(sp1C, sp8, 0x14), 0);
         } else {
             fn_8022D894(arg0, var_r30, 1, &lbl_80344CE4, 0);
         }
