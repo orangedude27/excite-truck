@@ -166,7 +166,6 @@ extern void fn_801EF024(void *);
 extern void fn_80278288(void);
 extern void fn_802733F0(void);
 extern void fn_80209110(void *);
-extern void *lbl_8055F490;
 extern int lbl_8055F494;
 extern float lbl_8055E3C8;
 void *fn_802678E4(int arg0) {
