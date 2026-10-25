@@ -42,9 +42,11 @@ void fn_802E1728(void *arg0) {
 }
 
 #pragma scheduling invalid_target
+#pragma dont_inline on
 unsigned int fn_802E176C(unsigned int arg0) {
     return 1U << (32 - __cntlzw(arg0));
 }
+#pragma dont_inline reset
 #pragma scheduling reset
 void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
     int x;
@@ -322,7 +324,7 @@ unsigned int fn_802E2C20(void) {
     unsigned int ticks;
     unsigned int factor;
     now = OSGetTime();
-    if ((*(volatile int *)&lbl_8055FEF8 | *(volatile unsigned int *)&lbl_8055FEFC) == 0) {
+    if (((*(volatile int *)&lbl_8055FEF8 ^ ((int)0 >> 31)) | *(volatile unsigned int *)&lbl_8055FEFC) == 0) {
         *(volatile unsigned int *)&lbl_8055FEFC = (unsigned int)now;
         *(volatile int *)&lbl_8055FEF8 = (unsigned int)(now >> 32);
     }
