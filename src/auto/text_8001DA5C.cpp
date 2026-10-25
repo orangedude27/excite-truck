@@ -156,6 +156,7 @@ extern "C" void fn_8001DFA8(s32 arg0) {
     void* obj = ((void**)&lbl_80358680)[3];
     ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, arg0, 0);
 }
+// Invalid-target scheduling keeps the table load ahead of the literal arguments.
 #pragma scheduling invalid_target
 extern "C" void fn_8001DFCC(void) {
     ((CollisionEntry *)lbl_80358680[4])->apply(9, 17);
