@@ -27,6 +27,24 @@ struct Fn80179E00Dummy {
     virtual void m7() = 0;
     virtual void m8() = 0;
 };
+struct Fn80179F94Dummy {
+    virtual void m0() = 0;
+    virtual void m1() = 0;
+    virtual void m2() = 0;
+    virtual void m3() = 0;
+    virtual void m4() = 0;
+    virtual void m5() = 0;
+    virtual void m6() = 0;
+    virtual void m7() = 0;
+    virtual void m8() = 0;
+    virtual void m9() = 0;
+    virtual void m10() = 0;
+    virtual void m11() = 0;
+    virtual void m12() = 0;
+    virtual void m13() = 0;
+    virtual void m14() = 0;
+    virtual f32 m15(void *, void *, s32) = 0;
+};
 extern "C" inline void fn_80179E00_virtual_call(void *obj) {
     ((Fn80179E00Dummy *)obj)->m8();
 }
@@ -128,6 +146,31 @@ void fn_80179EE4(void) {
 
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_80179F94(void *arg0, void *arg1) {
+    s32 count;
+    void *slot;
+    f32 value;
+    f32 old;
+
+    count = *(s32 *)((u8 *)arg0 + 0x24);
+    slot = (u8 *)arg0 + count * 4;
+    *(void **)((u8 *)slot + 0x14) = arg1;
+    count++;
+    *(s32 *)((u8 *)arg0 + 0x24) = count;
+    *(s32 *)((u8 *)arg0 + 0x28) = count;
+    value = ((f32 (*)(void *, void *, void *, s32))((void **)*(void **)arg1)[15])(arg1, arg1, slot, count - 1);
+    old = *(f32 *)((u8 *)arg0 + 0x2C);
+    if (old <= value)
+        goto update;
+    goto done;
+update:
+    old = value;
+done:
+    *(f32 *)((u8 *)arg0 + 0x2C) = old;
+}
+#pragma pop
 void fn_8017A004(void) {
 
 }
