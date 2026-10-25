@@ -78,7 +78,6 @@ void fn_8024C464(void) {
 }
 
 void fn_802E6FBC(void);
-void fn_802E6CA8(void);
 void fn_8000DA80(void);
 int fn_8023FAD4(void *, int);
 extern int lbl_8055F2C4;
@@ -433,14 +432,13 @@ void fn_8024CBF4(void) {
 
 extern char lbl_80343FC4[];
 extern char lbl_80343FF0[];
+#pragma scheduling invalid_target
 int fn_8024CEF0(void) {
     if (((int (*)(void))fn_8000DBAC)() != 0)
         return 1;
     return ((int (*)(void *, void *, int))fn_80215214)(lbl_80343FF0, lbl_80343FC4, 0);
 }
-
-#pragma push
-#pragma scheduling off
+#pragma scheduling on
 int fn_8024CF38(int *arg0) {
     fn_8024CC54(arg0, fn_8024CEF0, 1);
 }
