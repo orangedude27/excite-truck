@@ -744,6 +744,17 @@ extern "C" void fn_8029A8B8(void* arg0) {
     *(unsigned char*)((char*)arg0 + 0x15C) = 0;
 }
 
+extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_802CAC54(*(int*)((char*)arg0 + 0x1E4));
+        fn_802CAC54(*(int*)((char*)arg0 + 0x1E8));
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" int fn_80287B24(int);
 extern "C" void fn_801BFD34(void*, void*, int);
 extern "C" void fn_80015B20(void*, void*, int);
