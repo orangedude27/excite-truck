@@ -605,7 +605,7 @@ float fn_80129DC4(int, void *, float, float);
 int fn_801FE88C(void *, void *);
 extern const char lbl_8033B638[];
 extern const char lbl_8033B654[];
-extern int lbl_8033B760;
+extern char lbl_8033B760[];
 extern "C" void fn_801FE510(void *arg0, void *arg1) {
     void *p = arg1;
     while (p != 0) {
@@ -614,11 +614,12 @@ extern "C" void fn_801FE510(void *arg0, void *arg1) {
     }
 }
 
-void fn_801FE550(void *arg0) {
-    *(int **)arg0 = &lbl_8033B760;
+#pragma scheduling invalid_target
+extern "C" void fn_801FE550(void *arg0) {
+    *(char **)arg0 = lbl_8033B760;
     *(int *)((char *)arg0 + 0x94) = 0;
 }
-
+#pragma scheduling on
 void fn_801FE568(void* arg0, unsigned char* p) {
  unsigned char t; int i;
  t=p[0x2c]; p[0x2c]=p[0x3b]; p[0x3b]=t;
