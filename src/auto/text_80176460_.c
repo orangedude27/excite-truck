@@ -191,14 +191,12 @@ u32 *fn_801769D8(void) { return &lbl_8055E3F8; }
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_801769EC(void);
 
+#pragma scheduling invalid_target
 int fn_80176F9C(void) {
     s32 v = *(s32 *)(lbl_80430558 + 0xC);
-    if (v == 0 || v == 3)
-        return 0;
-    return 1;
+    return v != 0 && v != 3;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80176FC4(void) {
     if (*(s32 *)(lbl_80430558 + 0xC) == 3) {
         fn_80176F28();
