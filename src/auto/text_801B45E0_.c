@@ -31,8 +31,8 @@ extern int fn_801284F8(int, int *);
 extern int fn_801B4904(void);
 #pragma push
 #pragma small_data off
-extern int lbl_80335E10;
-extern int lbl_80335E28;
+extern int lbl_80335E10[];
+extern int lbl_80335E28[];
 #pragma pop
 void fn_801B45E0(void *arg0) {
     *(int *)((char *)arg0 + 0x00) = 0;
