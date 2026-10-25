@@ -4,6 +4,7 @@
 
 extern int lbl_802FC638[];
 extern int lbl_802FC69C;
+extern char lbl_80352AD0[];
 void *fn_800126CC(int arg0) {
     int i = 0;
     if (arg0 != lbl_802FC638[0]) {
