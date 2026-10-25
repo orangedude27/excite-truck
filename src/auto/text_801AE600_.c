@@ -3,6 +3,9 @@ extern int *lbl_8055E624;
 extern unsigned char *fn_801EA9A0(int);
 extern int fn_801B8728(void);
 extern int fn_801B2C70(void *);
+extern int fn_801284F8(int, const char *);
+extern void fn_801AFA64(int *);
+extern const char lbl_803359A0[];
 extern float lbl_80558DC4;
 extern float lbl_8055E630;
 extern float lbl_8056255C;
@@ -157,6 +160,11 @@ void fn_801AF92C(void *arg0) {
             entry[0x10] = 0;
         }
     }
+}
+
+float fn_801AF9EC(int arg0, float *arg1) {
+    if (arg1 != 0) *arg1 = lbl_80435740[arg0 * 2 + 1];
+    return lbl_80435740[arg0 * 2];
 }
 
 void fn_801AFA5C(int arg0) { fn_801AFA70(arg0, 1); }
