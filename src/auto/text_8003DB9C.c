@@ -1726,7 +1726,7 @@ void GXInitLightPos(void *arg0, float farg0, float farg1, float farg2) {
 }
 
 void GXGetLightDir_Internal(void *arg0, float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
- extern float lbl_80560B5C;
+ extern const float lbl_80560B5C;
  float c, b, a;
  *(volatile float *)((char *)arg0 + 0x34) = farg3;
  a = lbl_80560B5C * farg0;
