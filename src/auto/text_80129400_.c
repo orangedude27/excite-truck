@@ -163,8 +163,8 @@ void fn_80129AFC(void) {
     do {
         fn_80129690(p, i, lbl_804223A0);
         i++;
+        p += 0x80;
     } while (i < 4);
-    p += 0x80 * i;
 }
 
 s32 fn_80129BC4(void) {
