@@ -1,4 +1,6 @@
 #include "types.h"
+extern s32 fn_802B32E0(s32);
+extern s32 fn_802B4E44(s32);
 extern float lbl_8055FA10;
 
 #pragma small_data on
@@ -467,6 +469,8 @@ void fn_802B67C8(s32 arg0) {
     fn_80147FF0(*(s32 *)((char *)method(lbl_8055FA48, arg0) + 0x18));
 }
 
+#pragma push
+#pragma small_data off
 s32 fn_802B6A70(s32 arg0) {
     switch (arg0) {
     case 2:
@@ -480,7 +484,7 @@ s32 fn_802B6A70(s32 arg0) {
         return (s32)&lbl_8055CE80;
     }
 }
-
+#pragma pop
 extern s32 lbl_8055CE78, lbl_8055CE80, lbl_8034A808, lbl_8034A814;
 extern float lbl_8055FA18;
 extern s32 fn_802B6A70(s32);
@@ -1029,11 +1033,13 @@ s32 fn_802B8728(void) {
 }
 
 #pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802B8744(void) {
-    s32 result = fn_80145E70(lbl_8034A980);
-    void *state = &lbl_804BE7D8;
+    s32 result;
+    void *state;
+
+    result = fn_80145E70(lbl_8034A980);
+    state = &lbl_804BE7D8;
     lbl_8055FA48 = (void **)result;
     lbl_8055FA40 = 6;
     *(s32 *)((u8 *)state + 4) = 0;
