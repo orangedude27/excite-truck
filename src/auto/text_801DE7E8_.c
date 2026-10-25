@@ -12,6 +12,36 @@ void fn_801DE88C(void) {
 
 }
 
+void fn_801DEF98(void) {
+    fn_801332D0(fn_8000DA10() + 0xC, &lbl_80339570, &lbl_8055E9DC);
+    lbl_8055E9E0 = 0;
+    *(int *)((char *)&lbl_804873B8 + 4) = 0;
+}
+
+void fn_801DEFE0(void) {
+    extern int lbl_8055E9E8;
+    extern int lbl_8055E9EC;
+    extern int lbl_8055ADF0;
+    extern int lbl_8055ADF4;
+    extern float lbl_80562BE8;
+    extern float lbl_80562BF4;
+    extern void __AXDSPInitCallback_801769E0(void);
+    extern void fn_801769EC(void);
+    extern int fn_80209190(int, float);
+
+    if (lbl_8055E9E8 != 0) {
+        __AXDSPInitCallback_801769E0();
+        fn_80209190(lbl_8055E9EC, lbl_80562BE8);
+        return;
+    }
+    if (*(long long *)&lbl_8055ADF0 >= 0) {
+        fn_801769EC();
+        fn_80209190(lbl_8055E9EC, lbl_80562BF4);
+        lbl_8055ADF4 = -1;
+        lbl_8055ADF0 = -1;
+    }
+}
+
 extern int lbl_8055E9E8;
 extern int lbl_8055E9DC;
 extern int lbl_8055E9EC;
