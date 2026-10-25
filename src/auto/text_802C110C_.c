@@ -143,7 +143,7 @@ int fn_802C143C(void *arg0) {
 
 int fn_802C1500(int arg0, int arg1) {
     int index = lbl_8055FB2C;
-    int *table = &lbl_804C0810;
+    int *table = (int *)((char *)&lbl_804C0810);
     int *entry = (int *)((char *)table + arg1 * 0x60);
     lbl_8055FB2C = index + 1;
     ((int *)lbl_8055FB30)[index] = arg0;
