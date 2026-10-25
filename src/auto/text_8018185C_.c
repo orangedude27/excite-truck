@@ -395,11 +395,23 @@ extern void fn_801BEB1C(int, int *);
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80561CAC, lbl_80561CD0, lbl_80561D9C;
 extern float lbl_80561CAC, lbl_80561CD0, lbl_80561D9C, lbl_8055E4E0;
+extern void fn_8017B4AC(void *, void *);
+extern float lbl_80558DC4, lbl_80561DA0, lbl_80561CDC, lbl_80561CD8;
+extern float lbl_80561DA4, lbl_80561DA8, lbl_80561CE4, lbl_80561D98, lbl_80561DAC;
+extern void fn_801796CC(int, void *, int);
+extern int fn_80129D18(int, int);
+extern float lbl_80561CCC, lbl_80561D40, lbl_80561DB0;
+extern float lbl_80561D00, lbl_80561CF0, lbl_80561CF4, lbl_80561CF8;
+extern float lbl_80561D44, lbl_80561DB4, lbl_80561D50, lbl_80561DB8;
+extern void PSVECCrossProduct(void *, void *, void *);
+extern float lbl_80561CCC, lbl_80561D40, lbl_80561DB0, lbl_80561DBC;
+#pragma push
+#pragma paired_single off
 void fn_80183E7C(void *arg0) {
     unsigned char *self = (unsigned char *)arg0;
-    unsigned char stack_space[0x300];
+    unsigned char stack_space[0x2b0];
     int i;
-    if (fn_800216D0() != 0) {
+    if (fn_800216D0()) {
         *(float *)(self + 0x25dc) = lbl_80561CAC;
         *(float *)(self + 0x25e0) = lbl_80561CAC;
         *(float *)(self + 0x25e4) = lbl_80561CD0;
@@ -431,13 +443,164 @@ void fn_80183E7C(void *arg0) {
     else
         *(float *)(self + 0x2598) = lbl_80561CAC;
     {
-        float value = *(float *)(self + 0x2650) - lbl_80561D9C;
-        if (lbl_80561CAC > value)
-            value = lbl_80561CAC;
-        *(float *)(self + 0x2650) = value;
+        float step = *(float *)(self + 0x2650) - lbl_80561D9C;
+        if (step < lbl_80561CAC) step = lbl_80561CAC;
+        *(float *)(self + 0x2650) = step;
+        if (!(fabsf(step) <= lbl_80558DC4) && *(float *)(self + 0x25d4) < lbl_80561DA0) {
+            if (step < lbl_80561CDC) step = lbl_80561CDC;
+            *(float *)(self + 0x2650) = step;
+            if (*(int *)(self + 0x2620) > 2) {
+                float dot = PSVECDotProduct(self + 0x124, self + 0x48);
+                if (fabsf(dot) < lbl_80561CD8) {
+                    float t = (step - lbl_80561CAC) / lbl_80561CD0;
+                    float q;
+                    float amount;
+                    float velocity;
+                    float factor;
+                    float vec[3];
+                    if (t > lbl_80561CD0) t = lbl_80561CD0;
+                    if (t < lbl_80561CAC) t = lbl_80561CAC;
+                    q = (*(float *)(self + 0x25d4) - lbl_80561DA4) / lbl_80561DA8;
+                    if (q < lbl_80561CD0) q = lbl_80561CD0;
+                    if (q < lbl_80561CAC) q = lbl_80561CAC;
+                    amount = lbl_80561CAC + t * lbl_80561CD0;
+                    velocity = lbl_80561CE4 * *(float *)(self + 0xd4);
+                    velocity = lbl_80561D98 * velocity;
+                    velocity = lbl_80561DAC * velocity;
+                    velocity = velocity * amount;
+                    factor = (lbl_80561CAC + q * lbl_80561CD0) * velocity;
+                    if (dot <= lbl_80561CAC) factor = -factor;
+                    vec[0] = *(float *)(self + 0x48) * factor;
+                    vec[1] = *(float *)(self + 0x4c) * factor;
+                    vec[2] = *(float *)(self + 0x50) * factor;
+                    fn_8017B4AC(self, vec);
+                }
+            }
+        }
+    }
+    if (*(float *)(self + 0x258c) <= lbl_80561CCC && self[0x259c] != 0) {
+        unsigned char *args = &stack_space[0x218];
+        int *vtable;
+        *(int *)(args + 0) = *(int *)(self + 0x1ec);
+        *(float *)(args + 4) = lbl_80561CD0;
+        *(float *)(args + 8) = *(float *)(self + 0x25d0);
+        *(int *)(args + 12) = -1;
+        fn_801796CC(4, args, 0x10);
+        if (*(float *)(self + 0x2608) - *(float *)(self + 0x25e0) > lbl_80561D40) {
+            *(float *)(self + 0x2608) = lbl_80561CAC;
+            if (fn_80129D18(4, 0xa) < 3) {
+                vtable = *(int **)*(void **)(self + 0x2584);
+                ((void (*)(void *))vtable[7])(*(void **)(self + 0x2584));
+            }
+        }
+        args = &stack_space[0x208];
+        *(int *)(args + 0) = *(int *)(self + 0x1ec);
+        *(float *)(args + 4) = lbl_80561CD0;
+        *(float *)(args + 8) = *(float *)(self + 0x25d0);
+        *(int *)(args + 12) = -1;
+        fn_801796CC(4, args, 0x10);
+        {
+            float current = *(float *)(self + 0x2608);
+            float target = *(float *)(self + 0x25e0);
+            *(float *)(self + 0x2608) = target + lbl_80561DB0 * (current - target);
+        }
+    }
+    {
+        unsigned int flags = *(unsigned int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4);
+        int active;
+        if ((flags & 0x20000) == 0)
+            active = fabsf(*(float *)(self + 0x2690)) <= lbl_80558DC4;
+        else
+            active = fabsf(*(float *)(self + 0x2690) - lbl_80561CD0) <= lbl_80558DC4;
+        if (!(fabsf(*(float *)(self + 0x2650)) <= lbl_80558DC4) && active) {
+            if (*(unsigned int *)(self + 0x10) == 0x50434152) {
+                void *obj = *(void **)(self + 0x270);
+                int *vt = *(int **)obj;
+                if (((int (*)(void *))vt[5])(obj) != 0) {
+                    int state = *(int *)(self + 0x2620);
+                    float speed = *(float *)(self + 0x4c);
+                    if (state <= 2 && speed < lbl_80561DB4) {
+                        if (state == 0) *(float *)(self + 0x2614) = lbl_80561CAC;
+                        else if (fabsf(*(float *)(self + 0x2614)) <= lbl_80558DC4) {
+                            if (speed < lbl_80561CAC) {
+                                float next = *(float *)(self + 0x2614) + lbl_80561D9C;
+                                if (*(float *)(self + 0x25d4) < lbl_80561D50) next += lbl_80561DB8;
+                                *(float *)(self + 0x2614) = next;
+                            } else *(float *)(self + 0x2614) = lbl_80561CAC;
+                        } else *(float *)(self + 0x2614) = lbl_80561CAC;
+                    }
+                    if (*(float *)(self + 0x2614) >= lbl_80561D44 &&
+                        *(float *)(self + 0x4c) > lbl_80561CDC)
+                        *(float *)(self + 0x2614) = lbl_80561CAC;
+                    if (fabsf(*(float *)(self + 0x58)) <= lbl_80561CAC &&
+                        fabsf(*(float *)(self + 0x40)) < lbl_80561CCC) {
+                        float factor = -*(float *)(self + 0x40) * lbl_80561D00;
+                        float *v = (float *)&stack_space[0x20c];
+                        float *out = (float *)&stack_space[0x200];
+                        float dot, scale;
+                        v[0] = *(float *)(self + 0x54) * factor;
+                        v[1] = *(float *)(self + 0x58) * factor;
+                        v[2] = *(float *)(self + 0x5c) * factor;
+                        dot = PSVECDotProduct(self + 0x124, v);
+                        scale = (dot - lbl_80561CF0) * lbl_80561CF8;
+                        if (scale > lbl_80561CD0) scale = lbl_80561CD0;
+                        if (scale < lbl_80561CAC) scale = lbl_80561CAC;
+                        scale = lbl_80561CD0 - scale;
+                        out[0] = v[0] * scale;
+                        out[1] = v[1] * scale;
+                        out[2] = v[2] * scale;
+                        fn_8017B4AC(self, out);
+                    }
+                }
+            }
+        }
+    }
+    {
+        int state = *(int *)(self + 0x2620);
+        if (state == 0) {
+            *(int *)(self + 0x2648) = 7;
+        } else if (state >= 3) {
+            *(int *)(self + 0x2648) = 0;
+            self[0x2624] = 0;
+            self[0x2625] = 0;
+        } else if (*(int *)(self + 0x2648) == 0) {
+            *(int *)(self + 0x2648) = 1;
+        }
+        {
+            int mode = *(int *)(self + 0x2648);
+            if (mode >= 1 && mode <= 6) {
+                float *vec = (float *)&stack_space[0x1e4];
+                vec[0] = *(float *)(self + 0x124) * lbl_80561DBC;
+                vec[1] = *(float *)(self + 0x128) * lbl_80561DBC;
+                vec[2] = *(float *)(self + 0x12c) * lbl_80561DBC;
+                if (!(fabsf(*(float *)(self + 0x2650)) <= lbl_80558DC4))
+                    fn_8017B4AC(self, vec);
+                *(int *)(self + 0x2648) = mode + 1;
+                {
+                    float *a = (float *)&stack_space[0x1d8];
+                    float *b = (float *)&stack_space[0x1cc];
+                    float *c = (float *)&stack_space[0x1c0];
+                    a[0] = *(float *)(self + 0x23f8) - *(float *)(self + 0x2554);
+                    a[1] = *(float *)(self + 0x23fc) - *(float *)(self + 0x2558);
+                    a[2] = *(float *)(self + 0x2400) - *(float *)(self + 0x255c);
+                    b[0] = *(float *)(self + 0x246c) - *(float *)(self + 0x24e0);
+                    b[1] = *(float *)(self + 0x2470) - *(float *)(self + 0x24e4);
+                    b[2] = *(float *)(self + 0x2474) - *(float *)(self + 0x24e8);
+                    PSVECCrossProduct(a, b, c);
+                    {
+                        float x = c[2] - *(float *)(self + 0x25ac);
+                        float y = c[1] - *(float *)(self + 0x25a8);
+                        float z = c[0];
+                        *(float *)(self + 0x25a4) = x * lbl_80561D0C;
+                        (void)y;
+                        (void)z;
+                    }
+                }
+            }
+        }
     }
 }
-
+#pragma pop
 int fn_80186DDC(void) { return 0; }
 
 void fn_80186DE4(void) {
@@ -1488,8 +1651,8 @@ int fn_8018AF04(void *arg0) {
 }
 
 int fn_8018B06C(void *arg0) {
-    int index = *(int *)((unsigned char *)arg0 + 0x1ec);
-    return ((int *)lbl_8055E918)[index * 0x9c / 4 + 5];
+    return *(int *)((unsigned char *)lbl_8055E918 +
+                    *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C + 0x14);
 }
 
 int fn_8018B084(void *arg0) {
