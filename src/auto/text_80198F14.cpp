@@ -264,12 +264,11 @@ extern "C" void **fn_801B83A0();
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_raw, s32 arg4_raw, s32 arg5_raw, f32 farg0, f32 farg1, f32 farg2) {
-    volatile f32 stackStorage[80];
-    volatile f32 *sp = stackStorage;
+    f32 stackStorage[80];
+    f32 *sp = stackStorage;
     void *temp_r31;
     void *temp_r30;
     void *temp_r29;
-    volatile f32 underflow;
     void *temp_r28;
     f32 temp_f0;
     f32 temp_f0_2;
@@ -380,8 +379,8 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
         sp[3] = lbl_805622D0;
         ((Fn80199894VTab1C *)arg0)->Call((f32 *)&sp[1], ((f32 *)arg2_raw), temp_r26, temp_r28);
         sp[7] = lbl_805622D0;
-        underflow = lbl_805622D0;
-        sp[0] = lbl_805622D0;
+        sp[8] = lbl_805622D0;
+        sp[9] = lbl_805622D0;
         ((Fn80199894VTab1C *)arg1)->Call((f32 *)&sp[7], ((f32 *)arg2_raw), temp_r27, temp_r29);
         sp[4] = lbl_805622D0;
         sp[5] = lbl_805622D0;
@@ -807,73 +806,82 @@ extern "C" s32 fn_8019BD4C(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
 
+#pragma scheduling invalid_target
 extern "C" s32 fn_8019C854(void* arg0, void* arg1) {
-    void* matrix = *(void**)((u8*)arg1 + 0xC);
-    f32 x = *(f32*)((u8*)arg0 + 0x34) - *(f32*)((u8*)matrix + 0x24);
-    f32 y = *(f32*)((u8*)arg0 + 0x38) - *(f32*)((u8*)matrix + 0x28);
-    f32 z = *(f32*)((u8*)arg0 + 0x3C) - *(f32*)((u8*)matrix + 0x2C);
-
-    f32 axis = (x * *(f32*)((u8*)matrix + 0x18) +
-                y * *(f32*)((u8*)matrix + 0x1C)) +
-               z * *(f32*)((u8*)matrix + 0x20);
-    f32 sideX = (x * *(f32*)matrix +
-                 y * *(f32*)((u8*)matrix + 4)) +
-                z * *(f32*)((u8*)matrix + 8);
-    f32 sideY = (x * *(f32*)((u8*)matrix + 0xC) +
-                 y * *(f32*)((u8*)matrix + 0x10)) +
-                z * *(f32*)((u8*)matrix + 0x14);
-
-    f32 radius = *(f32*)((u8*)arg0 + 0x24);
-    f32 halfHeight = *(f32*)((u8*)arg1 + 0x28);
-    f32 otherRadius = *(f32*)((u8*)arg1 + 0x24);
-    f32 extent = radius + halfHeight;
-    if (axis >= extent || axis <= -extent)
-        return 0;
-
-    f32 distance = (f32)fn_8002F234(sideY * sideY + sideX * sideX);
-    f32 depth = extent - __fabsf(distance - otherRadius);
-    if (depth <= lbl_805622D0)
-        return 0;
-
-    Vec point;
-    point.x = sideX;
-    point.y = sideY;
-    point.z = axis;
-    if (distance > otherRadius + halfHeight) {
-        f32 scale = (distance - radius) / distance;
-        point.x *= scale;
-        point.y *= scale;
-        point.z *= scale;
-    } else if (distance < otherRadius - halfHeight) {
-        f32 scale = (distance + radius) / distance;
-        point.x *= scale;
-        point.y *= scale;
-        point.z *= scale;
+    Vec local; Vec point; Vec normal; Vec worldPoint; Vec worldNormal;
+    void* saved0; void* saved1; f32 radius; f32 otherRadius; f32 halfHeight; f32 depth;
+    {
+        f32* matrix = *(f32**)((u8*)arg1 + 0xC);
+        saved0 = arg0;
+        f32 x = *(f32*)((u8*)saved0 + 0x34) - matrix[9];
+        f32 y = *(f32*)((u8*)saved0 + 0x38) - matrix[10];
+        f32 z = *(f32*)((u8*)saved0 + 0x3C) - matrix[11];
+        local.x = (x * matrix[0] + y * matrix[1]) + z * matrix[2];
+        local.y = (x * matrix[3] + y * matrix[4]) + z * matrix[5];
+        local.z = (x * matrix[6] + y * matrix[7]) + z * matrix[8];
+        saved1 = arg1;
     }
-
-    Vec normal;
-    normal.x = sideX - point.x;
-    normal.y = sideY - point.y;
-    normal.z = axis - lbl_805622D0;
+    radius = *(f32*)((u8*)saved0 + 0x24);
+    halfHeight = *(f32*)((u8*)saved1 + 0x28);
+    otherRadius = *(f32*)((u8*)saved1 + 0x24);
+    f32 upper = radius + halfHeight;
+    if (!(local.z < upper && local.z > -upper))
+        return 0;
+    {
+        f32 distance = (f32)fn_8002F234(local.y * local.y + local.x * local.x);
+        depth = (radius + halfHeight) - (f32)__fabs((f64)(distance - otherRadius));
+        if (depth <= lbl_805622D0) return 0;
+        if (distance > otherRadius + halfHeight) {
+            f32 scale = (distance - radius) / distance;
+            point.x = local.x * scale; point.y = local.y * scale; point.z = local.z * scale;
+        } else if (distance < otherRadius - halfHeight) {
+            f32 scale = (distance + radius) / distance;
+            point.x = local.x * scale; point.y = local.y * scale; point.z = local.z * scale;
+        } else {
+            point.x = local.x; point.y = local.y; point.z = local.z;
+        }
+    }
+    normal.z = local.z - lbl_805622D0;
+    normal.x = local.x - point.x;
+    normal.y = local.y - point.y;
+    point.z = lbl_805622D0;
     PSVECNormalize(&normal, &normal);
-
-    Vec worldPoint;
-    fn801A1F98Transform((volatile f32*)&worldPoint, (volatile f32*)&point,
-                        (f32*)matrix);
-    worldPoint.x += *(f32*)((u8*)matrix + 0x24);
-    worldPoint.y += *(f32*)((u8*)matrix + 0x28);
-    worldPoint.z += *(f32*)((u8*)matrix + 0x2C);
-
-    Vec worldNormal;
-    fn801A1F98Transform((volatile f32*)&worldNormal, (volatile f32*)&normal,
-                        (f32*)matrix);
-
+    {
+        f32* matrix = *(f32**)((u8*)saved1 + 0xC);
+        volatile f32* dst = (volatile f32*)&worldPoint;
+        volatile f32* src = (volatile f32*)&point;
+        f32 x = src[0], y = src[1], z = src[2];
+        if (dst == src) {
+            dst[0] = (x * matrix[0] + y * matrix[3]) + z * matrix[6];
+            dst[1] = (x * matrix[1] + y * matrix[4]) + z * matrix[7];
+            dst[2] = (x * matrix[2] + y * matrix[5]) + z * matrix[8];
+        } else {
+            dst[0] = (y * matrix[3] + x * matrix[0]) + z * matrix[6];
+            dst[1] = (y * matrix[4] + x * matrix[1]) + z * matrix[7];
+            dst[2] = (y * matrix[5] + x * matrix[2]) + z * matrix[8];
+        }
+        dst[0] += matrix[9]; dst[1] += matrix[10]; dst[2] += matrix[11];
+    }
+    {
+        f32* matrix = *(f32**)((u8*)saved1 + 0xC);
+        volatile f32* dst = (volatile f32*)&worldNormal;
+        volatile f32* src = (volatile f32*)&normal;
+        f32 x = src[0], y = src[1], z = src[2];
+        if (dst == src) {
+            dst[0] = (x * matrix[0] + y * matrix[3]) + z * matrix[6];
+            dst[1] = (x * matrix[1] + y * matrix[4]) + z * matrix[7];
+            dst[2] = (x * matrix[2] + y * matrix[5]) + z * matrix[8];
+        } else {
+            dst[0] = (y * matrix[3] + x * matrix[0]) + z * matrix[6];
+            dst[1] = (y * matrix[4] + x * matrix[1]) + z * matrix[7];
+            dst[2] = (y * matrix[5] + x * matrix[2]) + z * matrix[8];
+        }
+    }
     typedef void (*Call)(void*, void*, Vec*, Vec*, s32, s32, f32, f32, f32);
-    ((Call)fn_8019A788)(arg0, arg1, &worldPoint, &worldNormal, 0, 0,
-                        depth, lbl_805622D0, lbl_805622D0);
+    ((Call)fn_8019A788)(saved0, saved1, &worldPoint, &worldNormal, 0, 0, depth, lbl_805622D0, lbl_805622D0);
     return 1;
 }
-
+#pragma scheduling on
 extern void fn_8019CCCC(void*, f32, s32);
 extern void fn_8019CCCC(void*, void*, s32, f32);
 void fn_8019CE3C(void* arg0, s32 arg1) {
@@ -2016,12 +2024,12 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
         virtual void* a16() = 0; virtual void* a17() = 0; virtual void* f() = 0;
     };
     void* result = ((V*)arg1)->f();
-    volatile s32* words = (volatile s32*)result;
-    s32 y = words[10];
-    s32 x = words[9];
-    *(s32*)arg0 = x;
-    *(s32*)((u8*)arg0 + 4) = y;
-    *(s32*)((u8*)arg0 + 8) = *(s32*)((u8*)result + 0x2C);
+    volatile u32* words = (volatile u32*)result;
+    u32 y = words[10];
+    u32 x = words[9];
+    *(u32*)arg0 = x;
+    *(u32*)((u8*)arg0 + 4) = y;
+    *(u32*)((u8*)arg0 + 8) = *(u32*)((u8*)result + 0x2C);
 }
 
 #pragma scheduling on
@@ -2761,9 +2769,16 @@ void fn_801A4868(void* arg0, u8 arg1) {
     }
 }
 
-void fn_801A48C8(void* arg0) {
-    void* ptr = *(void**)((u8*)arg0 + 0x48);
-    ((void(*)(void*, void*, void**))(*(void***)((u8*)ptr + 0x18)))(ptr, &lbl_8055A508, &lbl_8055A510);
+extern "C" void fn_801A48C8(void* arg0) {
+    struct VTable {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void Call(void*, void*);
+    };
+    VTable* ptr = *(VTable**)((u8*)arg0 + 0x48);
+    ptr->Call(&lbl_8055A508, &lbl_8055A510);
 }
 
 extern void fn_801EA1E0(void*, s32, f32, f32);
