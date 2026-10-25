@@ -1,4 +1,7 @@
 extern float lbl_805601FC, lbl_80560204;
+extern unsigned char lbl_8055D3EC;
+extern void fn_8000B5A8(void);
+extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
 extern int fn_80230B5C(int *);
 extern int fn_802C8638(int *);
 extern int fn_802C974C(float, float, float);
