@@ -35,18 +35,28 @@ int fn_8024521C(void *arg0, int arg1) {
 
 extern char lbl_80342FC0[];
 extern float lbl_80563830;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 int fn_80245264(void *arg0) {
+    char *base = lbl_80342FC0;
     int result;
-    result = fn_802C5130(lbl_80342FC0 + 0x60);
-    *(int *)((char *)arg0 + 4) = result;
-    if (result == 0) fn_802E30C8(lbl_80342FC0 + 0x78);
-    *(int *)((char *)arg0 + 8) = 0;
-    *(int *)((char *)arg0 + 0x10) = fn_80232578(lbl_80342FC0 + 0xB4);
-    *(int *)((char *)arg0 + 0xC) = fn_80232578(lbl_80342FC0 + 0xB4);
-    *(float *)((char *)arg0 + 0x14) = lbl_80563830;
-    return 0;
-}
+    float value;
 
+    result = fn_802C5130(base + 0x60);
+    *(int *)((char *)arg0 + 4) = result;
+    if (result == 0) {
+        fn_802E30C8(base + 0x78);
+    }
+    *(int *)((char *)arg0 + 8) = 0;
+    *(int *)((char *)arg0 + 0x10) = fn_80232578(base + 0xB4);
+    result = fn_80232578(base + 0xB4);
+    value = lbl_80563830;
+    *(int *)((char *)arg0 + 0xC) = result;
+    *(float *)((char *)arg0 + 0x14) = value;
+}
+#pragma scheduling on
+#pragma pop
 int fn_802452E4(void *arg0) {
     void *value;
     value = *(void **)((char *)arg0 + 4);
