@@ -164,7 +164,7 @@ void fn_801F1FD4(void) {
 void fn_801F2020(void) {
     void *p = fn_801284F8(8, &lbl_8055B128);
     if (p != 0) {
-        *(void **)p = (void *)&lbl_8033A808;
+        *(void **)p = lbl_8033A808;
         *(int *)((char *)p + 4) = 0;
     }
 }
