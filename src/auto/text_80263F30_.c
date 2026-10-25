@@ -12,7 +12,7 @@ extern void *lbl_8055F444;
 extern void *lbl_8055F448;
 extern void fn_80235380(void *);
 extern void fn_80128670(void *);
-extern char lbl_8055C458[];
+extern void *lbl_8055C458;
 extern void fn_80236914(void);
 extern void fn_80264098(void *, int);
 extern void *fn_80264A54(void);
@@ -32,16 +32,14 @@ void fn_802640A0(void *arg0) {
     *(int *)((char *)arg0 + 0xc) = 0;
     *(int *)((char *)arg0 + 0x10) = 0;
 }
-#pragma dont_inline on
-#pragma dont_inline off
+#pragma scheduling invalid_target
 void fn_802643B8(void *arg0) {
     *(void **)arg0 = lbl_8055C458;
     fn_80264098(arg0, 8);
     *(void (**)(void))((char *)arg0 + 8) = fn_80236914;
     *(int *)((char *)arg0 + 0xc) = 2;
 }
-#pragma dont_inline on
-#pragma dont_inline off
+#pragma scheduling on
 void fn_80264404(void *arg0) {
     *(void **)arg0 = 0;
     fn_80264098(arg0, 5);
@@ -575,9 +573,9 @@ void fn_80265A34(void) {
 }
 
 int fn_80265B5C(void) {
-    int ret = 1;
-    void *p = lbl_8055F44C;
-    int flag = 0;
+    register int ret = 1;
+    register void *p = lbl_8055F44C;
+    register int flag = 0;
 
     if (p != 0) {
         if (*((unsigned char *)p + 0x20) != 0) {
