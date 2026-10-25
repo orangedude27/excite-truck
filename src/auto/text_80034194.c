@@ -18,6 +18,7 @@ extern void DSPSendMailToDSP(u32);
 
 extern u8 *FstStart_8055D840;
 extern u8 *FstStringStart_8055D83C;
+extern u32 MaxEntryNum_8055D838;
 extern __Locale lbl_802FE850;
 extern s32 lbl_8055D828;
 extern BOOL __DVDLongFileNameFlag;
