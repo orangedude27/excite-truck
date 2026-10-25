@@ -2020,7 +2020,6 @@ void GXInitTexObjTlut(void* arg0, int arg1) {
 }
 
 void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
-    s32 value;
     union {
         s32 value;
         struct {
@@ -2031,10 +2030,9 @@ void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
         } fields;
     } data;
 
-    value = *arg0;
-    value = (value & ~0x10) | (((unsigned int)__cntlzw(arg2 - 1) >> 1) & 0x10);
-    *arg0 = value;
-    data.value = value;
+    data.value = *arg0;
+    data.fields.mip = ((unsigned int)__cntlzw(arg2 - 1) >> 5);
+    *arg0 = data.value;
     data.fields.filter = ((unsigned char *)&lbl_80558E80)[arg1];
     *arg0 = data.value;
 }
