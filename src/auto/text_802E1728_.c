@@ -96,12 +96,14 @@ int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride) {
 
 int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
 
+#pragma dont_inline on
 unsigned int fn_802E1960(unsigned int arg0) {
     unsigned int result = ((arg0 >> 3) + 3) & ~3;
     if ((result & (result - 1)) == 0)
         return result;
     return fn_802E176C(result);
 }
+#pragma dont_inline reset
 
 void fn_802E1A38(void *arg0, int arg1) {
     int result;
@@ -301,20 +303,27 @@ int main(void) {
     return 0;
 }
 
-unsigned long long fn_802E2C20(void) {
-    unsigned long long now = OSGetTime();
-    if ((lbl_8055FEF8 | (int)(0 >> 31)) == 0 && lbl_8055FEFC == 0) {
-        lbl_8055FEFC = (unsigned int)now;
-        lbl_8055FEF8 = (unsigned int)(now >> 32);
+#pragma scheduling invalid_target
+unsigned int fn_802E2C20(void) {
+    unsigned long long now;
+    unsigned long long diff;
+    unsigned int baseLow;
+    unsigned int baseHigh;
+    unsigned int ticks;
+    unsigned int factor;
+    now = OSGetTime();
+    if ((*(volatile int *)&lbl_8055FEF8 | *(volatile unsigned int *)&lbl_8055FEFC) == 0) {
+        *(volatile unsigned int *)&lbl_8055FEFC = (unsigned int)now;
+        *(volatile int *)&lbl_8055FEF8 = (unsigned int)(now >> 32);
     }
-    {
-        unsigned int ticks = *(volatile unsigned int *)0x800000F8;
-        unsigned int factor = (unsigned int)(((unsigned long long)(ticks >> 2) * 0x10624dd3U) >> 32) >> 6;
-        unsigned long long diff = now - (((unsigned long long)(unsigned int)lbl_8055FEF8 << 32) | lbl_8055FEFC);
-        return __div2i(diff, factor);
-    }
+    baseLow = *(volatile unsigned int *)&lbl_8055FEFC;
+    ticks = *(volatile unsigned int *)0x800000F8;
+    factor = (ticks >> 2) / 1000;
+    baseHigh = *(volatile unsigned int *)&lbl_8055FEF8;
+    diff = now - (((unsigned long long)baseHigh << 32) | baseLow);
+    return (unsigned int)__div2i(diff, factor);
 }
-
+#pragma scheduling on
 extern int lbl_8055FEF8;
 extern unsigned int lbl_8055FEFC;
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
