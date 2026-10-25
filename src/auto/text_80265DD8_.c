@@ -158,7 +158,6 @@ void fn_802671CC(void *arg0, int arg1) {
 }
 
 extern void *lbl_8055F490;
-extern void *lbl_8055F490;
 extern void *fn_80267EE4(int);
 extern void fn_801EF024(void *);
 extern void fn_80278288(void);
