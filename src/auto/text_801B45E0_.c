@@ -175,6 +175,20 @@ void fn_801B4820(int *arg0, int *arg1, unsigned int arg2) {
                 (0x32 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+int fn_801B4904(int arg0) {
+    int spC;
+    int sp8;
+    int size;
+    ((void (*)(void *))fn_801B45E0)((void *)(arg0 + 4));
+    size = ((int (*)(int))fn_801B4818)(arg0);
+    ((void (*)(int, int *, int *, int))fn_801B4820)(arg0, &spC, &sp8, size);
+    ((void (*)(void *, int, int))fn_801B46BC)((void *)(arg0 + 4), sp8, spC);
+    *(char *)arg0 = 0;
+    return arg0;
+}
+#pragma pop
 int __dt__15shdStateMachineFv_801B496C(int arg0, int arg1) {
     if (arg0 != 0) {
         fn_801B4610((void *)(arg0 + 4), -1);
@@ -216,7 +230,7 @@ int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
 
 int fn_801B4B44(char *arg0) {
     int result = 0;
-    if (fn_801B47F0((int)(arg0 + 4)) != 0 && *(char *)arg0 != 0) result = 1;
+    if (fn_801B47F0((int)(arg0 + 4)) != 0 && *arg0) result = 1;
     return result;
 }
 
