@@ -73,7 +73,7 @@ extern "C" void fn_80221E7C(void);
 extern "C" void fn_80215270(void);
 extern "C" void fn_8022E4BC(s32);
 extern "C" void fn_8022E960(s32);
-extern "C" s32 fn_80211678(void);
+extern "C" s32 fn_80211678(u8 *);
 extern "C" char lbl_8055B750[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int stricmp(const char *, const char *);
@@ -125,14 +125,15 @@ extern "C" void fn_8021165C(void) {
 
 extern s32 lbl_8055EF1C;
 extern s32 lbl_8055EF20;
-s32 fn_80211660(s32 arg0) {
+extern "C" s32 fn_80211660(s32 arg0) {
     if (arg0 == 0) {
         return lbl_8055EF1C;
+    } else {
+        return lbl_8055EF20;
     }
-    return lbl_8055EF20;
 }
 
-s32 fn_80211678(u8 *arg0) {
+extern "C" s32 fn_80211678(u8 *arg0) {
     return ((s8) *arg0 - 0x24) == 0;
 }
 
@@ -259,7 +260,7 @@ extern "C" float fn_80212248(s32 arg0) {
 
 extern "C" void fn_8022E4BC(s32);
 extern "C" void fn_8022E960(s32);
-extern "C" s32 fn_80211678(void);
+extern "C" s32 fn_80211678(u8 *);
 extern "C" char lbl_8055B750[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int stricmp(const char *, const char *);
@@ -291,7 +292,7 @@ extern "C" void fn_80212340(void *arg0) {
         p[4] = 0;
     }
     if (*(s32 *)arg0 != 0) {
-        if (fn_80211678() == 0) {
+        if (fn_80211678((u8 *)arg0) == 0) {
             fn_8022E4BC(p[3]);
         } else {
             fn_8022E960(p[3]);
