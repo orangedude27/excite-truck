@@ -536,6 +536,20 @@ extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, 
     OSRestoreInterrupts(irq);
 }
 
+void *nw4r::snd::detail::PoolImpl::AllocImpl() {
+    void **head = (void **)this;
+    void *node;
+    u32 level = OSDisableInterrupts();
+    node = *head;
+    if (node == 0) {
+        OSRestoreInterrupts(level);
+        return 0;
+    }
+    *head = *(void **)node;
+    OSRestoreInterrupts(level);
+    return node;
+}
+
 extern "C" void fn_800EC848(void** head, void* node) {
     u32 level = OSDisableInterrupts();
     *(void**)node = *head;
