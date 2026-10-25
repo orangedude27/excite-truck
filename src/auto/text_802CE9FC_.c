@@ -1431,9 +1431,7 @@ void fn_802D3DF8(int arg0, signed char arg1, float farg0, float farg1) {
 }
 
 extern unsigned long lbl_8055D0B8;
-#pragma small_data off
-extern unsigned char lbl_804C5710[4];
-#pragma small_data on
+__declspec(section ".data") extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 extern unsigned char lbl_804C5700[12];
