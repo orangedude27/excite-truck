@@ -9,6 +9,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
+namespace nw4hbm { namespace snd { class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); }; } }
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
 extern "C" f32 lbl_805610C0;
 extern "C" f32 lbl_805610C4;
@@ -2190,11 +2191,13 @@ void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
     }
 }
 
-extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *this_, f32 farg0) {
+#pragma push
+#pragma scheduling on
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *arg0, f32 farg0) {
     if (!(farg0 >= lbl_805610BC)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
-    *(f32 *)&((u8 *)this_)[0x28] = farg0;
+    *(f32 *)((u8 *)arg0 + 0x28) = farg0;
 }
-
+#pragma pop
 extern "C" s32 fn_800F87E8(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x30); }
 
 extern "C" u8 fn_800F87F0(void *arg0) { return *(u8 *)((u8 *)arg0 + 0x2C); }
