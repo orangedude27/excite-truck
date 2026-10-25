@@ -16,7 +16,7 @@ struct Fn801A6C14Dispatch {
 
 extern float lbl_80562418;
 extern float lbl_8056241C;
-extern float lbl_80562420;
+extern double lbl_80562420;
 extern float lbl_80562428;
 extern float *fn_80265D98(void);
 extern void fn_8012F57C(int, void *, void *, float);
