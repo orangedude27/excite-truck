@@ -2657,6 +2657,7 @@ extern "C" void fn_8015E9A4(void *arg0, s32 arg1) {
         var_r30 += 1;
     }
 }
+#pragma scheduling invalid_target
 extern "C" void fn_8015EA24(void *arg0, s32 arg1) {
     s32 var_r31 = 0;
     s32 var_r30 = 0;
@@ -2667,8 +2668,7 @@ extern "C" void fn_8015EA24(void *arg0, s32 arg1) {
         var_r30 += 1;
     }
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8015EB28(void *arg0) {
     struct Entry {
         virtual void v0();
