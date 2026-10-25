@@ -14,10 +14,7 @@ typedef struct Unk8001BBBC {
 extern s8 lbl_8055D5C8;
 extern s32 *lbl_8055D5D0;
 extern u8 *lbl_8055D5CC;
-#pragma push
-#pragma small_data off
-extern s32 lbl_803583C8;
-#pragma pop
+extern char lbl_803583C8[];
 extern void fn_8002F634(void *, void *, s32, s32);
 extern s32 fn_8001BA10(s32, s32);
 extern s32 fn_8001D2E4(s32, s32, s32, s32);
@@ -155,6 +152,15 @@ s32 fn_8001BD28(void *arg0) {
 
 u8 fn_8001BD30(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x10);
+}
+
+void fn_8001BD38(void *arg0, s32 arg1, s32 arg2) {
+    s32 r4 = arg1;
+    s32 r5 = arg2;
+    s32 r6 = (s32)arg0;
+    s32 r3 = *(s32 *)(r6 + 4);
+    s32 r4b = *(s32 *)(r6 + 0x1C);
+    fn_8001C73C(r3, r4b, r4, r5);
 }
 
 #pragma dont_inline on
@@ -436,10 +442,9 @@ s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
 }
 #pragma scheduling reset
 u32 fn_8001D220(u32 arg0, u32 arg1, u32 arg2) {
-    register u32 value = arg0;
-    value |= arg2 << 16;
-    value |= arg1 << 8;
-    return value;
+    u32 result = arg0 | (arg2 << 16);
+    result |= arg1 << 8;
+    return result;
 }
 
 void fn_8001D234(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
