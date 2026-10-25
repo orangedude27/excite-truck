@@ -1055,10 +1055,10 @@ void fn_801C7A28(void) {
 extern f64 atof(const char *);
 void fn_801C7A6C(void) {
     f32 value = (f32)atof(lbl_804380F0);
-    ((Vec *)0x80438498)->x = lbl_80562970;
-    ((Vec *)0x80438498)->y = lbl_80562970;
-    ((Vec *)0x80438498)->z = value;
-    strcpy(lbl_804380F0, (char *)0x8055AA44);
+    lbl_80438498.x = lbl_80562970;
+    lbl_80438498.y = lbl_80562970;
+    lbl_80438498.z = value;
+    strcpy(lbl_804380F0, lbl_8055AA44);
 }
 
 #pragma push
