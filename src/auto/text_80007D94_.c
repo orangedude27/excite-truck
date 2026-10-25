@@ -106,15 +106,17 @@ void fn_80007F68(void) {
     fn_80279488();
     fn_80007F04();
 }
+#pragma scheduling invalid_target
 const char* fn_80007F90(u32 arg0) {
-    Unk802FB70C* p;
-    u32 key;
-    for (p = lbl_802FB70C; (key = p->unk_0x0) != 0; ++p) {
-        if (key == arg0) return p->unk_0x4;
+    Unk802FB70C* p = lbl_802FB70C;
+    while (p->unk_0x0) {
+        if (p->unk_0x0 == arg0) return p->unk_0x4;
+        p++;
     }
     fn_802E317C(lbl_802FB77C, arg0);
     return lbl_80558998;
 }
+#pragma scheduling on
 const char* fn_80007FF0(u32 arg0) {
     Unk802FB70C* p;
     u32 key;
