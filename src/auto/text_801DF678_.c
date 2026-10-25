@@ -28,6 +28,7 @@ void* fn_801DF678(void* arg0, int arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_801DF6D0(void* arg0) {
     int zero = 0;
     void* ptr = &lbl_8055AE2C;
@@ -39,7 +40,7 @@ void fn_801DF6D0(void* arg0) {
     *(int*)((char*)arg0 + 0x10) = zero;
     *(int*)((char*)arg0 + 0x14) = -1;
 }
-
+#pragma scheduling on
 extern void *fn_801284F8(int, void *);
 extern void *fn_80131808(void *);
 extern void fn_80131818(void *);
