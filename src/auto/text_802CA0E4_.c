@@ -360,22 +360,24 @@ void fn_802CAD68(void) {
 
 #pragma dont_inline fn_802CAD74
 void fn_802CAD74(int arg0) {
-    int *p;
-    int value;
+retry:
     if (arg0 == lbl_8055FCB8)
         return;
-    if (arg0 == -1) {
-        lbl_8055FCB8 = arg0;
-        return;
-    }
     lbl_8055FCB8 = arg0;
-    p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
-    p[0x48 / 4]++;
-    value = p[0x40 / 4];
-    if (value != 0)
-        fn_802D9160(value, 0);
-    else
-        fn_802D9160(p[0x28 / 4], 0);
+    if (arg0 == -1) {
+        arg0 = lbl_8055FCB4;
+        goto retry;
+    }
+    {
+        int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
+        int value;
+        p[0x48 / 4]++;
+        value = p[0x40 / 4];
+        if (value != 0)
+            fn_802D9160(value, 0);
+        else
+            fn_802D9160(p[0x28 / 4], 0);
+    }
 }
 void fn_802CADD0(int arg0, int arg1) {
     int offset;
@@ -511,6 +513,21 @@ int fn_802DB2C4(int);
 int fn_802CB288(int arg0) {
     int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
     return fn_802DB2C4(p[0x28 / 4]);
+}
+
+extern void fn_802D93E8(int);
+extern void fn_802D9418(void);
+extern int lbl_8055D06C;
+void fn_802CB29C(int arg0) {
+    if (arg0 != -1 && arg0 != -2) {
+        int offset = arg0 * 0x4C;
+        int *entry = (int *)(lbl_8055FCB0 + offset);
+        fn_802D93E8(entry[0x28 / 4]);
+        lbl_8055D06C = arg0;
+        return;
+    }
+    fn_802D9418();
+    lbl_8055D06C = -2;
 }
 
 char fn_802CAFC8(int arg0) {
@@ -794,8 +811,9 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
     *arg0 = arg2;
 }
 
-int fn_802CBBE8(register int **link, int *target, int *current) { int removed = 0; do { if (current == target) { int *next = *(int **)((char *)target + 0x14); *link = next; *(int **)((char *)target + 0x14) = 0; removed = 1; break; } link = (int **)((char *)current + 0x14); current = *(int * volatile *)link; } while (current != 0); if (removed == 0) fn_802E317C(lbl_8034BA04); }
-
+#pragma scheduling invalid_target
+int fn_802CBBE8(register int **link, register int *target, register int *current) { register int removed = 0; goto advance; check: if (current == target) { register int *next = *(int **)((char *)target + 0x14); *link = next; *(int **)((char *)target + 0x14) = 0; removed = 1; goto done; } advance: link = (int **)((char *)current + 0x14); current = *link; if (current != 0) goto check; done: if (removed == 0) fn_802E317C(lbl_8034BA04); }
+#pragma scheduling on
 void fn_802CBD7C();
 void fn_802CBD30(void **arg0, void **arg1, void *arg2) {
     fn_802CBD7C(arg1, arg2);
@@ -807,7 +825,7 @@ void fn_802CBD7C(void **, void *, void *);
 extern char lbl_8034BA04[];
 void fn_802CBD7C(register void **link, void *target, void *current) {
     int removed = 0;
-    do {
+    while (current != 0) {
         if (current == target) {
             void *next = *(void **)((char *)target + 0x10);
             *link = next;
@@ -815,9 +833,12 @@ void fn_802CBD7C(register void **link, void *target, void *current) {
             removed = 1;
             break;
         }
-        link = (void **)((char *)current + 0x10);
-        current = *(void * volatile *)link;
-    } while (current != 0);
+        {
+            void * volatile *next_link = (void * volatile *)((char *)current + 0x10);
+            link = (void **)next_link;
+            current = *next_link;
+        }
+    }
     if (removed == 0)
         fn_802E317C(lbl_8034BA04);
 }
