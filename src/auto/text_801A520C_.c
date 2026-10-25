@@ -8,6 +8,7 @@ typedef struct D_801A520C {
 } D_801A520C;
 
 void fn_8018B0D8(int *, int *);
+int fn_8018BA54();
 void fn_80189CB4(void);
 void fn_8018AF00(void);
 void fn_80183DF8(void);
