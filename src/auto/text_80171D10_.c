@@ -48,6 +48,15 @@ int fn_80171D38(int arg0) {
     return result;
 }
 
+void fn_80171D94(void) {
+    void *r = fn_8017960C();
+    int i = 0;
+    do {
+        fn_8018F76C((int)r, i);
+        i++;
+    } while (i < 4);
+}
+
 int fn_80171DE4(void *arg0) {
     extern int fn_80139EC4(int, float, float);
     extern int lbl_8055E3A4;
