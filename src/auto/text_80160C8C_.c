@@ -346,11 +346,13 @@ void fn_80161618(void) {
         struct Interface {
             virtual void slot0();
             virtual void slot1();
+            virtual void slot2();
+            virtual void slot3();
         };
         ((struct Interface *)item)->slot1();
 #pragma cplusplus reset
-        offset += 4;
-        i++;
+        offset += sizeof(s32);
+        ++i;
     }
 }
 
@@ -1367,12 +1369,16 @@ int fn_80164468(void *arg0) {
     return *((float *)((char *)arg0 + 0x8C)) < lbl_8056185C;
 }
 
-void fn_80164480(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_80020434(int *, float *);
+extern "C" void fn_8026A2CC(int *, int, float);
+extern "C" void fn_8000C630(int, int);
+#pragma cplusplus on
+extern "C" void fn_80164480(void *arg0) {
     int sp10[12];
     float sp8;
-    int (*call)(void *) = *(int (**)(void *))((char *)(*(void **)arg0) + 0x24);
 
-    if (call(arg0) != 0) {
+    if (((Dummy_801638A0 *)arg0)->f7() != 0) {
         if ((lbl_8055E3C8 - *((float *)((char *)arg0 + 0xC))) > lbl_80561868) {
             fn_80020434(sp10, &sp8);
             fn_8026A2CC(sp10, 0, sp8);
@@ -1382,7 +1388,7 @@ void fn_80164480(void *arg0) {
         fn_8000C630(0x20, -1);
     }
 }
-
+#pragma cplusplus off
 extern s32 fn_802A96E8(void *, s32, s32, s32, s32);
 extern s32 fn_802C9950(s32);
 extern s32 fn_802C9994(s32);
