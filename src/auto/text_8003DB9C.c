@@ -30,6 +30,12 @@ typedef struct {
 } GXAttnKReg;
 
 typedef struct {
+    unsigned int unused : 28;
+    unsigned int wrapT : 2;
+    unsigned int wrapS : 2;
+} GXTexWrapReg;
+
+typedef struct {
     int attr;
     int compCnt;
     int compType;
