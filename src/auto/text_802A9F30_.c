@@ -21,7 +21,7 @@ void fn_8028E080(void);
 __declspec(section ".sdata") extern float lbl_805649F0;
 s32 fn_802A9F90(s32 *arg0) {
     extern int lbl_8055F928;
-    *(u8 *)(lbl_8055F928 + (*arg0 * 0x108) + 0xDC) = 1;
+    *(u8 *)((u8 *)(lbl_8055F928 + (*arg0 * 0x108)) + 0xDC) = 1;
     return 4;
 }
 
