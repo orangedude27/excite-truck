@@ -1,3 +1,4 @@
+extern "C" int fn_801EEFDC(void*, int);
 extern "C" float lbl_805645C8;
 extern "C" float lbl_805645E8;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
