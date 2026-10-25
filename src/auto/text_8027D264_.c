@@ -149,11 +149,10 @@ int fn_8027D6BC(int arg0, int arg1) {
 }
 
 void fn_8027D6FC(void *arg0) {
+    typedef int (*Method)(void *, int);
     void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
-    void *obj = *(void **)((char *)res + 0x20);
-    if ((*(int (**)(void *, int))(*(void ***)obj + 3))(obj, (int)&lbl_8055C77C) != 0) {
-        obj = *(void **)((char *)res + 0x20);
-        fn_80008188((*(int (**)(void *, int))(*(void ***)obj + 5))(obj, (int)&lbl_8055C774));
+    if ((*(Method *)((char *)*(void **)(*(void **)((char *)res + 0x20)) + 0xC))(*(void **)((char *)res + 0x20), (int)&lbl_8055C77C) != 0) {
+        fn_80008188((*(Method *)((char *)*(void **)(*(void **)((char *)res + 0x20)) + 0x14))(*(void **)((char *)res + 0x20), (int)&lbl_8055C774));
     } else {
         fn_80008188(fn_80012820(*(int *)((char *)res + 4)) + 8);
     }
@@ -309,16 +308,16 @@ void fn_8027D96C(int arg0) {
     memset(lbl_804B2FD8, 0, 0x20);
 }
 
-extern char lbl_804B2FD8[];
-extern int memset(void *, int, unsigned int);
-extern char lbl_80347DF8[];
-extern void fn_802E30C8(char *, int);
-void fn_8027D9A4(int arg0, int arg1) {
-    if (arg1 != 0)
-        return;
-    fn_802E30C8(lbl_80347DF8, arg0);
-    memset((char *)&lbl_804B2FD8 + arg0 * 8, 0, 8);
-}
+  extern char lbl_804B2FD8[];
+  extern int memset(void *, int, unsigned int);
+  extern char lbl_80347DF8[];
+  extern void fn_802E30C8(char *, ...);
+  void fn_8027D9A4(int arg0, int arg1) {
+      if (arg1 != 0)
+          return;
+      fn_802E30C8(lbl_80347DF8, arg0);
+      memset(lbl_804B2FD8 + arg0 * 8, 0, 8);
+  }
 
 __declspec(section ".data") extern char lbl_804B2FD8[];
 void fn_8027DA08(void) {
