@@ -24,7 +24,7 @@ int *fn_80204AA4(void) {
 }
 
 void *fn_80204B18(int arg0) {
-    return (char *)&lbl_802F9D68 + arg0 * 0xC;
+    return lbl_802F9D68 + arg0 * 0xC;
 }
 
 void fn_80204BB4(void) {
