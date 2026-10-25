@@ -20,11 +20,15 @@ extern void fn_8012C4D8(void);
 
 extern s32 lbl_8055FC00;
 s32 fn_802C2CAC(s32 arg0) {
-    return ((arg0 * 8) & 0xF8) | (((((arg0 << 9) & 0xF80000) | 0xFF000000) & ~0xF800) | ((arg0 << 6) & 0xF800));
+    return (((arg0 << 9) & 0xF80000) | 0xFF000000 | ((arg0 << 6) & 0xF800)) | ((arg0 & 0x1F) << 3);
 }
 
 s32 fn_802C2CC4(s32 arg0) {
-    return ((arg0 * 8) & 0xF8) | (((((arg0 << 8) & 0xF80000) | 0xFF000000) & ~0xFC00) | ((arg0 << 5) & 0xFC00));
+    unsigned int value = ((unsigned int)arg0 << 8) & 0x00F80000;
+    value |= 0xFF000000;
+    value |= ((unsigned int)arg0 << 5) & 0x0000FC00;
+    value |= ((unsigned int)arg0 & 0x1F) << 3;
+    return (s32)value;
 }
 
 void fn_802C2CDC(void *arg0, s32 arg1, s32 arg2) {
@@ -543,6 +547,12 @@ void fn_802C3F00(s32 arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 arg5,s32 arg6,
             } while(--row>0);
         } else fn_802E317C((char *)lbl_8034B100,*(s8 *)arg0);
     }
+}
+
+void fn_802C40E8(void *arg0, s32 arg1, s32 arg2) {
+    fn_802C3850((s32)arg0, 0, 0,
+        *(s32 *)((u8 *)arg0 + 8), *(s32 *)((u8 *)arg0 + 0xC),
+        lbl_8055FC00, arg1, arg2);
 }
 
 extern void *fn_8012C370(s32, u32 *, s32 *, s32, u8 *);
