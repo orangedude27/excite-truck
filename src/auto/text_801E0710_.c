@@ -65,11 +65,13 @@ void fn_801E0710(void) {
     }
 }
 
+#pragma scheduling invalid_target
+extern void fn_80128658();
 void *fn_801E07E8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         s32 value = *(s32 *)arg0;
         if (value != 0) {
-            fn_80128658();
+            ((void (*)(s32))fn_80128658)(value);
             *(s32 *)arg0 = 0;
             fn_80128670(*(s32 *)((u8 *)arg0 + 4));
             *(s32 *)((u8 *)arg0 + 4) = 0;
@@ -79,7 +81,7 @@ void *fn_801E07E8(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-
+#pragma scheduling on
 void fn_801E0864(void *arg0) {
     float x;
     float y;
