@@ -370,12 +370,13 @@ void *fn_8016C598(void *arg0, int arg1, int arg2) {
 int fn_8016C760(void *arg0) { return ((int *)arg0)[1]; }
 
 extern f32 lbl_805619A0;
+#pragma scheduling invalid_target
 void fn_8016CD10(void *arg0) {
     *((f32 *)((u8 *)arg0 + 0x34)) = lbl_805619A0;
     *((u8 *)arg0 + 0x30) = 0;
     *((u8 *)arg0 + 0x31) = 0;
 }
-
+#pragma scheduling on
 void fn_8016CD28(void *arg0) {
     int zero = 0;
     int minusOne = -1;
@@ -388,11 +389,17 @@ void fn_8016CD28(void *arg0) {
 
 s32 fn_8016CD4C(void *arg0) { s32 *base=*(s32 **)arg0; s32 index=((s32 *)arg0)[1]; ((s32 *)arg0)[1]=index+1; return (s32)base+index*0x14; }
 
-void *fn_8016CD68(void *arg0,s32 arg1,s32 arg2) {
- s32 temp; s32 size=arg1*0x14;
- fn_8012850C(size+0x10,arg2);
- temp=fn_8002F37C(fn_8016CDE0,fn_8016C168,0x14,arg1);
- ((s32 *)arg0)[0]=temp; ((s32 *)arg0)[3]=temp; ((s32 *)arg0)[2]=arg1; ((s32 *)arg0)[1]=0; return arg0;
+void *fn_8016CD68(void *arg0, s32 arg1, s32 arg2) {
+    s32 temp;
+    s32 size = arg1 * 0x14;
+    void *buffer = (void *)fn_8012850C(size + 0x10, arg2);
+    temp = ((s32 (*)(void *, void *, void *, s32, s32))fn_8002F37C)(
+        buffer, fn_8016CDE0, fn_8016C168, 0x14, arg1);
+    ((s32 *)arg0)[0] = temp;
+    ((s32 *)arg0)[3] = temp;
+    ((s32 *)arg0)[2] = arg1;
+    ((s32 *)arg0)[1] = 0;
+    return arg0;
 }
 
 void fn_8016CDE0(void *arg0) {
@@ -537,23 +544,32 @@ void fn_8016D278(void *arg0) { *(u32 *)arg0=(u32)arg0+0xC; *(u32 *)((u8 *)arg0+8
 
 s32 fn_8016D544(void *arg0) {
     s32 *list = *(s32 **)((u8 *)arg0 + 0x18);
-    s32 count = 0;
-    s32 i = 0;
-    while (i < *(s32 *)((u8 *)list + 4)) {
-        s32 *items = *(s32 **)list;
-        s32 n = *(s32 *)((u8 *)items + i * 0x14 + 4);
-        s32 j = 0;
+    s32 total = 0;
+    s32 outerIndex = 0;
+    s32 outerOffset = 0;
+    s32 outerCount = *(s32 *)((u8 *)list + 4);
+    goto outerTest;
+outerBody:
+    {
+        volatile void **items = *(volatile void ***)list;
         s32 found = 0;
-        while (j < n) {
-            if (*(s32 *)((u8 *)items + i * 0x14 + j * 0x44 + 0xC) == 0) {
-                found = 1;
-            }
-            j++;
+        s32 innerOffset = 0;
+        void *entry = (void *)*(volatile void **)((u8 *)items + outerOffset);
+        s32 count = *(s32 *)((u8 *)entry + 4);
+        s32 j;
+        for (j = 0; j < count; ++j) {
+            void *entryAgain = (void *)*(volatile void **)((u8 *)items + outerOffset);
+            void *data = *(void **)entryAgain;
+            if (*(s32 *)((u8 *)data + innerOffset + 0xC) == 0) ++found;
+            innerOffset += 0x44;
         }
-        count += found;
-        i++;
+        total += found;
     }
-    return count;
+    outerOffset += 0x14;
+    ++outerIndex;
+outerTest:
+    if (outerIndex < outerCount) goto outerBody;
+    return total;
 }
 
 s32 fn_802BAA68(s32, void *);
@@ -921,35 +937,36 @@ void fn_8016E918(void *arg0) {
 }
 
 extern f32 lbl_805619A4;
-#pragma scheduling off
+#pragma scheduling on
 void fn_8016E984(void *arg0) {
-    s32 temp = *(s32 *)((u8 *)arg0 + 0xC);
-    void *p;
-    *(f32 *)((u8 *)arg0 + 4) = lbl_805619A4;
-    *(s32 *)arg0 = 0;
-    *((u8 *)arg0 + 8) = 1;
-    *((u8 *)arg0 + 9) = 0;
-    *((u8 *)arg0 + 0x10) = 0;
-    *(s32 *)((u8 *)arg0 + 0xF8) = 0;
-    *(s32 *)((u8 *)arg0 + 0xFC) = 0;
-    *(s32 *)((u8 *)arg0 + 0x100) = 0;
-    *(s32 *)((u8 *)arg0 + 0x104) = 0;
-    if (temp != 0) fn_802AE0E0(temp);
-    p = *(void **)((u8 *)arg0 + 0x14);
-    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-    p = *(void **)((u8 *)arg0 + 0x18);
-    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-    p = *(void **)((u8 *)arg0 + 0x1C);
-    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-    p = *(void **)((u8 *)arg0 + 0x24);
-    *((u8 *)arg0 + 0x20) = 0;
-    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-    p = *(void **)((u8 *)arg0 + 0x28);
-    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-    p = *(void **)((u8 *)arg0 + 0x2C);
-    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-}
-
+      register f32 initial = lbl_805619A4;
+      volatile s32 temp = *(s32 *)((u8 *)arg0 + 0xC);
+      void *p;
+      *(s32 *)arg0 = 0;
+      *(f32 *)((u8 *)arg0 + 4) = initial;
+      *((u8 *)arg0 + 8) = 1;
+      *((u8 *)arg0 + 9) = 0;
+      *((u8 *)arg0 + 0x10) = 0;
+      *(s32 *)((u8 *)arg0 + 0xF8) = 0;
+      *(s32 *)((u8 *)arg0 + 0xFC) = 0;
+      *(s32 *)((u8 *)arg0 + 0x100) = 0;
+      *(s32 *)((u8 *)arg0 + 0x104) = 0;
+      if (temp != 0) fn_802AE0E0(temp);
+      p = *(void **)((u8 *)arg0 + 0x14);
+      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+      p = *(void **)((u8 *)arg0 + 0x18);
+      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+      p = *(void **)((u8 *)arg0 + 0x1C);
+      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+      p = *(void **)((u8 *)arg0 + 0x24);
+      *((u8 *)arg0 + 0x20) = 0;
+      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+      p = *(void **)((u8 *)arg0 + 0x28);
+      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+      p = *(void **)((u8 *)arg0 + 0x2C);
+      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+  }
+#pragma scheduling off
 extern void fn_80130980(void *, s32, s32, f32);
 extern s32 fn_80207848(void *, s32);
 extern s32 fn_802ADF34(void *, char *, s32 *);
