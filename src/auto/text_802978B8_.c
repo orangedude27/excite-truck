@@ -82,18 +82,25 @@ void fn_80297998(void) {
     lbl_8055F7A4 = 0;
 }
 
-void fn_802979A4(void) {
-    Obj **cursor;
-    Obj *object;
+#pragma cplusplus on
+extern "C" void fn_802979A4(void) {
+    class Dummy_802979A4 {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual void m5();
+    };
     int i;
 
-    cursor = (Obj **)lbl_804B4F10;
-    for (i = 0; i < lbl_8055F7A4; cursor++, i++) {
-        object = *cursor;
-        object->vtable->slots[7](object);
+    for (i = 0; i < lbl_8055F7A4; i++) {
+        Dummy_802979A4 *obj = ((Dummy_802979A4 **)(void *)lbl_804B4F10)[i];
+        obj->m5();
     }
 }
-
+#pragma cplusplus off
 void fn_80297A08(int arg0) {
     int index = lbl_8055F7A4;
     int next;
