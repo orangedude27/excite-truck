@@ -691,7 +691,6 @@ extern long fn_80178C1C(long *);
 extern float lbl_80561B60;
 extern double lbl_80561B70;
 extern char *fn_80178374(long);
-extern const char lbl_80331B40[];
 extern long fn_802E317C(const char *, long, ...);
 extern const char lbl_80331B40[];
 #include <revolution/MTX/vec.h>
