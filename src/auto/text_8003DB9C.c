@@ -2898,13 +2898,22 @@ void GXSetDither(s32 enable) {
 }
 
 void GXSetDstAlpha(s32 enable, s32 alpha) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int unused : 23;
+            unsigned int enable : 1;
+            unsigned int alpha : 8;
+        } bits;
+    } reg;
     unsigned int *data = __GXData;
-    unsigned int value = data[0x224 / 4];
-    value = (value & ~0xFF) | alpha;
-    value = (value & ~0x100) | (enable << 8);
+
+    reg.value = data[0x224 / 4];
+    reg.bits.alpha = alpha;
+    reg.bits.enable = enable;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
-    data[0x224 / 4] = value;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
+    data[0x224 / 4] = reg.value;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
