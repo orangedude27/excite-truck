@@ -318,13 +318,15 @@ char __GXIsGPFifoReady(void) {
 }
 
 void GXGetGPStatus(char *a, char *b, char *c, char *d, char *e) {
-    unsigned int value = *__cpReg;
-    __GXData[3] = value;
+    unsigned int *data = __GXData;
+    unsigned short *cp = __cpReg;
+    unsigned int value = *cp;
+    data[3] = value;
     *a = value & 1;
-    *b = (__GXData[3] >> 1) & 1;
-    *c = (__GXData[3] >> 2) & 1;
-    *d = (__GXData[3] >> 3) & 1;
-    *e = (__GXData[3] >> 4) & 1;
+    *b = (data[3] >> 1) & 1;
+    *c = (data[3] >> 2) & 1;
+    *d = (data[3] >> 3) & 1;
+    *e = (data[3] >> 4) & 1;
 }
 
 extern unsigned int lbl_8055D954;
@@ -2581,27 +2583,16 @@ void GXSetTevColorIn(int stage, int a, int b, int c, int d) {
 }
 
 void GXSetTevAlphaIn(s32 stage, s32 a, s32 b, s32 c, s32 d) {
-    union {
-        unsigned int value;
-        struct {
-            unsigned int d : 3;
-            unsigned int c : 3;
-            unsigned int b : 3;
-            unsigned int a : 3;
-            unsigned int unused : 22;
-        } bits;
-    } reg;
     unsigned int *data = __GXData;
     unsigned int *tev = data + stage;
-
-    reg.value = tev[0x1C0 / 4];
-    reg.bits.a = a;
-    reg.bits.b = b;
-    reg.bits.c = c;
-    reg.bits.d = d;
+    unsigned int value = tev[0x1C0 / 4];
+    value = __rlwimi(value, a, 13, 16, 18);
+    value = __rlwimi(value, b, 10, 19, 21);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = reg.value;
-    tev[0x1C0 / 4] = reg.value;
+    value = __rlwimi(value, c, 7, 22, 24);
+    value = __rlwimi(value, d, 4, 25, 27);
+    *(volatile unsigned int *)0xCC008000 = value;
+    tev[0x1C0 / 4] = value;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
@@ -3036,8 +3027,23 @@ void GXCallDisplayList(unsigned int arg0, unsigned int arg1) {
 extern float lbl_80560BC8;
 extern float lbl_80560BCC;
 extern float lbl_80560BD0;
-void __GXSetProjection(void) { volatile unsigned char *p=(volatile unsigned char*)0xCC008000; volatile unsigned int *q=(volatile unsigned int*)0xCC008000; p[0]=16; q[0]=0x61020; q[0]=__GXData[0x528/4]; }
+#pragma push
+#pragma paired on
+#pragma paired_single on
+void __GXSetProjection(void) {
+    f64 *src = (f64 *)((u8 *)__GXData + 0x52C);
+    volatile f64 *fifo = (volatile f64 *)0xCC008000;
+    volatile u8 *fifo8 = (volatile u8 *)fifo;
+    volatile u32 *fifo32 = (volatile u32 *)fifo;
 
+    fifo8[0] = 0x10;
+    fifo32[0] = 0x61020;
+    *fifo = *(src + 0);
+    *fifo = *(src + 1);
+    *fifo = *(src + 2);
+    fifo32[0] = *(u32 *)((u8 *)__GXData + 0x528);
+}
+#pragma pop
 void GXSetProjection(float *arg0, int arg1) {
     unsigned int *data = __GXData;
     data[0x528 / 4] = arg1;
