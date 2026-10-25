@@ -2353,6 +2353,15 @@ u32 fn_8011C06C(void *arg0) {
     return 1;
 }
 
+s32 fn_8011C0E0(s32 arg0) {
+    goto check;
+yield:
+    OSYieldThread();
+check:
+    if (fn_8011C06C((void*)arg0) == 0)
+        goto yield;
+}
+
 #pragma dont_inline on
 u32 fn_8011C1E0(s32 arg0, void *arg1) {
     BOOL enabled;
