@@ -15,6 +15,7 @@ extern void fn_8020CF6C(int);
 extern double fabs(double);
 extern char lbl_8033C6B0[], lbl_8033C6BC[];
 extern float lbl_80563318;
+extern void fn_8020C908(float);
 extern void fn_8000C6E4(void);
 extern void fn_80209190(int, float);
 extern void fn_80206454(void);
