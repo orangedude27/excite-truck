@@ -174,6 +174,16 @@ void fn_801B4820(int *arg0, int *arg1, unsigned int arg2) {
                 (0x32 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
 }
 
+int __dt__15shdStateMachineFv_801B496C(int arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_801B4610((void *)(arg0 + 4), -1);
+        if (arg1 > 0) {
+            fn_80128668((void *)arg0);
+        }
+    }
+    return arg0;
+}
+
 #pragma dont_inline on
 void fn_801B49C8(void *arg0) {
     *(unsigned char *)arg0 = 1;
