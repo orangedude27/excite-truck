@@ -53,6 +53,26 @@ int fn_802B8E50(int arg0) {
     return -2;
 }
 
+void *fn_802BE844(s32, s32, s32);
+void *fn_802B8EB8(s32 arg0, s32 arg1, u32 arg2, s32 arg3) {
+    s32 sign = (s32)(arg2 >> 31);
+    s32 sum = sign + arg2;
+    s32 half = sum >> 1;
+    s32 x;
+    s32 y;
+    s16 shortX;
+    x = arg0 - half;
+    if (arg3 & 1) {
+        x = arg0 + half;
+    }
+    shortX = (s16)x;
+    y = arg1 - half;
+    if (arg3 & 2) {
+        y = arg1 + half;
+    }
+    return fn_802BE844(shortX, (s16)y, half);
+}
+
 int fn_802B9100(void) {
     return 0;
 }
