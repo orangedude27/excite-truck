@@ -35,7 +35,6 @@ int fn_8013A6C4(void *arg0, void *arg1) {
     return *(int *)((char *)arg0 + 8) - *(int *)((char *)arg1 + 8);
 }
 
-#pragma dont_inline fn_8013A6D4
 int fn_8013A6D4(int arg0) {
     int values[3];
     int *p = lbl_802F9350;
