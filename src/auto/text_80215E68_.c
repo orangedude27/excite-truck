@@ -60,7 +60,7 @@ s32 fn_80215E68(s32 arg0, s32 arg1) {
 
 #pragma small_data off
 void fn_80215EA8(void) {
-    fn_8002F634(&lbl_80490710, fn_80215EC4, 0x18, 0x10);
+    fn_8002F634(lbl_80490710, fn_80215EC4, 0x18, 0x10);
 }
 #pragma small_data on
 s32 fn_80215EC4(s32 arg0, s32 arg1) {
@@ -97,8 +97,8 @@ extern s32 fn_802E4A10(void);
 extern char lbl_8033D768[];
 extern char lbl_8033D774[];
 char *fn_80215F9C(void *arg0) {
-    if (*(s32 *)((u8 *)arg0 + 0x10) != 0) return (char *)&lbl_8033D774;
-    return (char *)&lbl_8033D768;
+    if (*(s32 *)((u8 *)arg0 + 0x10) != 0) return (char *)lbl_8033D774;
+    return (char *)lbl_8033D768;
 }
 
 void fn_80215FBC(void *arg0) {
