@@ -732,11 +732,11 @@ void fn_801F7280(void *arg0, void *arg1, void *arg2) {
     if (count >= 4) fn_802E317C(lbl_8033AE54);
     got = fn_801F4ECC(arg1);
     if (got & 1) fn_802E317C(lbl_8033AE78);
+    vtable = *(void ***)arg1;
     count = *(int *)((char *)arg0 + 0x120);
     slot = (char *)arg0 + count * 0x48;
-    vtable = *(void ***)arg1;
-    value = ((int (*)(void *, const char *))vtable[5])(arg1, lbl_8055B1C0);
-    ((void (*)(void *, const char *))vtable[5])(arg1, lbl_8055B19C);
+    value = ((GetterI)vtable[5])(arg1, lbl_8055B1C0);
+    ((SetterV)vtable[5])(arg1, lbl_8055B19C);
     old = fn_801F4E44(lbl_8055B1A8);
     fn_801F5344(slot, arg1, arg2);
     fn_801F602C(slot, value, old, got, 0);
@@ -745,6 +745,7 @@ void fn_801F7280(void *arg0, void *arg1, void *arg2) {
     *(float *)(slot + 0x3C) = lbl_80562FE8 * ((float (*)(void *, const char *))vtable[9])(arg1, lbl_8055B1A8);
     *(float *)(slot + 0x40) = ((float (*)(void *, const char *))vtable[9])(arg1, lbl_8055B1B0);
     *(float *)(slot + 0x44) = ((float (*)(void *, const char *))vtable[9])(arg1, lbl_8055B1B8);
+    count = *(int *)((char *)arg0 + 0x120);
     *(int *)((char *)arg0 + 0x120) = count + 1;
 }
 
@@ -760,7 +761,17 @@ void fn_801F73E8(void) { fn_801F6B98(lbl_8055EC10); }
 extern void fn_801F6DF0(void *);
 void fn_801F73F0(void) { fn_801F6DF0(lbl_8055EC14); }
 
-extern void fn_801F6EC0(void *);
+#pragma dont_inline on
+void fn_801F6EC0(void *arg0) {
+    int i = 0;
+    void *entry = arg0;
+    do {
+        if (*(char *)((char *)entry + 0x38) != 0) fn_801F6880(entry);
+        entry = (char *)entry + 0x54;
+        i++;
+    } while (i < *(int *)((char *)arg0 + 0x2A0));
+}
+#pragma dont_inline reset
 void fn_801F73F8(void) { fn_801F6EC0(lbl_8055EC14); }
 
 extern char lbl_8033AD7C[], lbl_8033AD88[];
