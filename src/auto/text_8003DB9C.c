@@ -1290,11 +1290,23 @@ void GXSetLineWidth(s32 width, s32 format) {
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetPointSize(unsigned char size, unsigned char format) {
+void GXSetPointSize(s32 size, s32 format) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int unused0 : 10;
+            unsigned int format : 3;
+            unsigned int unused1 : 3;
+            unsigned int size : 8;
+            unsigned int unused2 : 8;
+        } bits;
+    } reg;
     unsigned int *data = __GXData;
-    unsigned int value = data[0x7C / 4];
-    value = (value & ~0x38FF00) | (size << 8) | (format << 19);
-    data[0x7C / 4] = value;
+
+    reg.value = data[0x7C / 4];
+    reg.bits.size = size;
+    reg.bits.format = format;
+    data[0x7C / 4] = reg.value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = data[0x7C / 4];
     *(volatile unsigned short *)((char *)data + 2) = 0;
