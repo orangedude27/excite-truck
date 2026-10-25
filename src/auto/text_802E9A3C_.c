@@ -107,20 +107,18 @@ extern "C" void fn_802E9BCC(void *arg0) {
 #pragma cplusplus reset
 #pragma pop
 void *fn_802E9BEC(long arg0) {
-    long v = arg0 + 10;
-    if ((unsigned long)v > 29) return 0;
-    switch (v) {
+    char *base = (char *)&lbl_8034E260;
+    switch (arg0) {
     case 0: return &lbl_8055D278;
-    case 1: return (char *)&lbl_8034E260 + 0x2c;
-    case 2: return (char *)&lbl_8034E260 + 0x38;
-    case 3: return (char *)&lbl_8034E260 + 0x44;
-    case 4: return (char *)&lbl_8034E260 + 0x50;
-    case 5: return (char *)&lbl_8034E260 + 0x5c;
-    case 6: return (char *)&lbl_8034E260 + 0x6c;
-    case 7: return (char *)&lbl_8034E260 + 0x7c;
-    case 8: return (char *)&lbl_8034E260 + 0x88;
-    case 9: return &lbl_8055D280;
-    default: return 0;
+    case 8: return base + 0x2C;
+    case 14: return base + 0x38;
+    case 15: return base + 0x44;
+    case 16: return base + 0x50;
+    case 17: return base + 0x5C;
+    case 18: return base + 0x6C;
+    case 19: return base + 0x7C;
+    case -10: return base + 0x88;
+    default: return &lbl_8055D280;
     }
 }
 
@@ -422,7 +420,8 @@ long fn_802EC3F0(void *arg0, long arg1, long arg2) {
 #pragma scheduling on
 #pragma pop
 long fn_802EC42C(void *arg0) {
-    return fn_800B7C64(((long *)arg0)[1], 0) == 0;
+    long unused;
+    return ((long (*)(long, long, long))fn_800B7C64)(((long *)arg0)[1], unused, 0) == 0;
 }
 
 long fn_802EC45C(void *arg0) { return ((long *)arg0)[2]; }
