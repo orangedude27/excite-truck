@@ -91,6 +91,16 @@ extern "C" void fn_801FC94C(void) {
         *(int *)((char *)p + 4) = 0;
     }
 }
+
+extern "C" const char lbl_8033B5F8[];
+extern "C" void fn_801FE550(void *);
+extern "C" void fn_801FC994(void) {
+    void *p = fn_801284F8(0x98, lbl_8033B5F8);
+    if (p != 0) {
+        fn_801FE550(p);
+    }
+}
+
 #pragma pop
 
 void* fn_801FCA14(void* arg0, int arg1) {
