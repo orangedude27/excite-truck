@@ -44,7 +44,7 @@ void *fn_802C5390(int arg0) {
 int fn_802C53A8(arg0)
 int arg0;
 {
-    int *base = *(int **)((char *)lbl_804C139C + 8);
+    int *base = *(int * volatile *)((char *)lbl_804C139C + 8);
     return *(int *)((char *)base + (arg0 << 4) + 4);
 }
 
@@ -334,9 +334,9 @@ void fn_802C5E6C(void *arg0, void *arg1) {
 s32 fn_802C5EB8(void *, u32);
 
 s32 fn_802C5E7C(void *arg0) {
-    s32 result = fn_802C5EB8(arg0, 0x5350484C);
+    char *result = (char *)fn_802C5EB8(arg0, 0x5350484C);
     if (result != 0) {
-        return result + 8;
+        return (s32)(result + 8);
     }
     return 0;
 }
