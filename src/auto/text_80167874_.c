@@ -121,20 +121,21 @@ void fn_801EA1E0(f32 *, s32, f32, f32);
 extern s32 lbl_8055A198;
 extern s32 lbl_8055A1A0;
 extern s32 fn_80128668(void);
-extern s32 lbl_80330020;
+extern char lbl_80330020[];
 extern char lbl_803300E0[];
 extern void fn_802E317C(const char *);
 #pragma dont_inline on
 s32 *fn_80167874(s32 arg0) {
-    s32 *entry = &lbl_80330020;
+    s32 *base = (s32 *)lbl_80330020;
+    s32 *entry = base;
     for (;;) {
         s32 value = *entry;
+        if (value == 6) {
+            ((void (*)(const char *, ...))fn_802E317C)(lbl_803300E0);
+            return (s32 *)lbl_80330020;
+        }
         if (value == arg0)
             return entry;
-        if (value == 6) {
-            fn_802E317C(lbl_803300E0);
-            return &lbl_80330020;
-        }
         entry = (s32 *)((u8 *)entry + 0x20);
     }
 }
@@ -186,33 +187,72 @@ extern void fn_80168020(void);
 extern void fn_80167EE0(s32 *);
 extern int *fn_80167E98(int *, int);
 #pragma push
-#pragma ppc_psq_save off
-void fn_801679F0(void) {
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801679F0(void) {
+    class DummyShortItem {
+    public:
+        virtual void v0();
+        virtual s32 v1(const char *name);
+        virtual void v2();
+        virtual void v3(const char *name);
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual f32 v7(const char *name);
+        virtual f32 v8(const char *name, f32 value);
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual DummyVec2 v13(const char *name);
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void *getObject(const char *name);
+    };
+    class DummyContainerLocal {
+    public:
+        virtual void v0();
+        virtual DummyArg1 *getItem(s32 index);
+    };
+    class DummyParamLocal {
+    public:
+        virtual void v0();
+        virtual s32 check(s32 value);
+        virtual void apply(DummyArg1 *item, void *manager, s32 *coords);
+    };
     extern char lbl_80330000[];
     extern char lbl_80330234[], lbl_80330248[], lbl_8033025C[], lbl_80330270[];
     extern f32 lbl_802F9514[3];
     extern s32 lbl_8055E354;
     extern f32 lbl_80561938;
     struct Local {
-        char *sp8;
-        char *spC;
-        char *sp10;
-        char *sp14;
+        DummyParamLocal *sp8;
+        DummyParamLocal *spC;
+        DummyParamLocal *sp10;
+        DummyParamLocal *sp14;
         s32 sp18[3];
         s32 pad24;
         f32 sp28[6];
-        char **sp40[5];
+        DummyParamLocal **sp40[5];
     } local;
     u8 *base;
-    s32 zero;
+    register u32 zero;
+    register s32 manager;
     s32 i;
     u8 *entry;
-    void *object;
-    void *manager;
-    void *container;
-    void *item;
+    DummyItem *object;
+    DummyArg1 *item;
+    DummyContainerLocal *container;
     void *child;
-    char ***slot;
+    DummyParamLocal ***slot;
     s32 value;
     s32 result;
     f32 f2;
@@ -222,26 +262,26 @@ void fn_801679F0(void) {
     f32 scale;
 
     base = (u8 *)lbl_80330000;
-    object = *(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
-    local.sp14 = lbl_80330270;
-    local.sp10 = lbl_8033025C;
-    local.spC = lbl_80330248;
-    local.sp8 = lbl_80330234;
+    object = (DummyItem *)*(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
+    local.sp14 = (DummyParamLocal *)lbl_80330270;
+    local.sp10 = (DummyParamLocal *)lbl_8033025C;
+    local.spC = (DummyParamLocal *)lbl_80330248;
+    local.sp8 = (DummyParamLocal *)lbl_80330234;
     local.sp40[0] = &local.sp8;
+    zero = 0;
+    local.sp40[4] = (DummyParamLocal **)zero;
     local.sp40[1] = &local.sp14;
     local.sp40[2] = &local.sp10;
     local.sp40[3] = &local.spC;
-    zero = 0;
-    local.sp40[4] = (char **)zero;
 
-    manager = fn_801284F8(0x1E15C, base + 0x1D8, &local.sp10, &local.sp14);
+    manager = (s32)fn_801284F8(0x1E15C, base + 0x1D8, &local.sp10, &local.sp14);
     if (manager != 0) {
-        *(void **)manager = (u8 *)manager + 0xC;
-        *(s32 *)((u8 *)manager + 8) = 0x1388;
+        *(void **)(u32)manager = (u8 *)manager + 0xC;
+        *(s32 *)((u8 *)(u32)manager + 8) = 0x1388;
         *(s32 *)((u8 *)manager + 4) = zero;
-        fn_8002F53C((u8 *)manager + 0xC, fn_80167EE0, fn_80167E98, 0x18, 0x1388);
+        fn_8002F53C((u8 *)(u32)manager + 0xC, fn_80167EE0, fn_80167E98, 0x18, 0x1388);
         scale = lbl_80561938;
-        *(u8 **)((u8 *)manager + 0x1D4CC) = (u8 *)manager + 0x1D4D8;
+        *(u8 **)((u8 *)(u32)manager + 0x1D4CC) = (u8 *)manager + 0x1D4D8;
         *(s32 *)((u8 *)manager + 0x1D4D4) = 0x64;
         *(s32 *)((u8 *)manager + 0x1D4D0) = zero;
         entry = base + 0x20;
@@ -254,62 +294,67 @@ void fn_801679F0(void) {
                 fn_802C77F0((void *)value, local.sp28);
                 f2 = local.sp28[5] - local.sp28[4];
                 f3 = local.sp28[3] - local.sp28[2];
-                if (f3 <= f2)
+                if (f3 > f2) {
+                    f3 = f3;
+                } else {
                     f3 = f2;
+                }
                 f0 = local.sp28[1] - local.sp28[0];
-                if (f0 <= f3)
+                if (f0 > f3) {
+                    f0 = f0;
+                } else {
                     f0 = f3;
+                }
                 *(f32 *)(entry + 0x14) = scale * f0;
                 *(f32 *)(entry + 0x18) = -local.sp28[2];
             }
             i += 1;
             entry += 0x20;
         } while (i < 5);
-        *((u8 *)manager + 0x1E158) = zero;
+        *((u8 *)(u32)manager + 0x1E158) = zero;
     }
-    lbl_8055E354 = (s32)manager;
-    if (((s32 (*)(void *, void *))(*(void ***)object)[3])(object, base + 0x1E8) != 0) {
+    lbl_8055E354 = manager;
+    if (object->v1((const char *)base + 0x1E8) != 0) {
         local.sp18[0] = ((s32 *)lbl_802F9514)[0];
         local.sp18[1] = ((s32 *)lbl_802F9514)[1];
         local.sp18[2] = ((s32 *)lbl_802F9514)[2];
-        result = ((s32 (*)(void *, void *, s32, s32, void *))(*(void ***)object)[23])(
-            object, base + 0x1F4, local.sp18[1], local.sp18[0], lbl_802F9514);
+        result = (s32)object->getObject((const char *)base + 0x1F4, local.sp18[1], local.sp18[0], lbl_802F9514);
         if (((u32)(-result | result) >> 31) != 0) {
-            child = ((void *(*)(void *, void *))(*(void ***)object)[23])(object, base + 0x1F4);
-            f1 = ((f32 (*)(void *, void *, f32))(*(void ***)child)[10])(
-                child, base + 0x200, *(f32 *)&local.sp18[0]);
+            child = ((DummyShortItem *)object)->getObject((const char *)base + 0x1F4);
+            f1 = ((DummyItem *)child)->v8((const char *)base + 0x200, *(f32 *)&local.sp18[0]);
             *(f32 *)&local.sp18[0] = f1;
-            f1 = ((f32 (*)(void *, void *, f32))(*(void ***)child)[10])(
-                child, base + 0x210, *(f32 *)&local.sp18[1]);
+            f1 = ((DummyItem *)child)->v8((const char *)base + 0x210, *(f32 *)&local.sp18[1]);
             *(f32 *)&local.sp18[1] = f1;
-            f1 = ((f32 (*)(void *, void *, f32))(*(void ***)child)[10])(
-                child, base + 0x220, *(f32 *)&local.sp18[2]);
+            f1 = ((DummyItem *)child)->v8((const char *)base + 0x220, *(f32 *)&local.sp18[2]);
             *(f32 *)&local.sp18[2] = f1;
         }
         ((void (*)(void *, void *))(*(void ***)object)[5])(object, base + 0x1E8);
-        container = fn_80131810();
+        container = (DummyContainerLocal *)fn_80131810();
         if (container != 0) {
             i = 0;
-            item = ((void *(*)(void *, s32))(*(void ***)container)[3])(container, i);
-            while (item != 0) {
-                slot = local.sp40;
-                value = ((s32 (*)(void *))(*(void ***)item)[2])(item);
-                while (*slot != 0) {
-                    if (((s32 (*)(void *, s32))(*(void ***)*slot)[3])(*slot, value) != 0) {
-                        ((void (*)(void *, void *, void *, s32 *))(*(void ***)*slot)[4])(
-                            *slot, item, (void *)lbl_8055E354, local.sp18);
-                        break;
-                    }
-                    slot++;
+            goto item_check;
+        item_body:
+            slot = local.sp40;
+            do {
+                value = (s32)((DummyArg1 *)item)->getName();
+                if (((DummyParamLocal *)*slot)->check(value) != 0) {
+                    ((DummyParamLocal *)*slot)->apply(
+                        item, (void *)lbl_8055E354, local.sp18);
+                    break;
                 }
-                i += 1;
-                item = ((void *(*)(void *, s32))(*(void ***)container)[3])(container, i);
-            }
+                slot++;
+            } while (*slot != 0);
+            i += 1;
+        item_check:
+            item = container->getItem(i);
+            if (item != 0)
+                goto item_body;
             fn_80131818(container);
         }
     }
     fn_80168020();
 }
+#pragma cplusplus reset
 #pragma pop
 
 s32 fn_80167D58(s32 arg0, s32 arg1) {
@@ -450,6 +495,144 @@ void fn_80168328(void) {
     }
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_801683F4(void *arg0, s32 arg1) {
+    extern s32 lbl_80430260[];
+    extern s32 lbl_8055E354;
+    extern f32 lbl_80561924;
+    extern f32 lbl_80561950;
+    extern void *fn_8017960C(s32);
+    extern f64 fn_8002F234(f32);
+
+    s32 counts[7];
+    s32 num;
+    s32 i;
+    s32 j;
+    s32 offset;
+    s32 index;
+    s32 *indexEntry;
+    void *object;
+    void *bounds;
+    void *resource;
+    void *manager;
+    void *entries;
+    void *records;
+    void *entry;
+    void *record;
+    void *recordObject;
+    volatile f32 x;
+    volatile f32 z;
+    f32 dx;
+    f32 dy;
+    f32 dz;
+    f32 tx;
+    f32 tz;
+    volatile f32 minX;
+    volatile f32 maxX;
+    volatile f32 minZ;
+    volatile f32 maxZ;
+    f32 radius;
+
+    memset(counts, 0, 0x18);
+    object = fn_8017960C(arg1);
+    indexEntry = (s32 *)((u8 *)lbl_80430260 + arg1 * 0x10);
+
+    if (indexEntry[0] == lbl_8055E3C4 - 1) {
+        num = 0;
+        x = *(f32 *)((u8 *)object + 0x60);
+        z = *(f32 *)((u8 *)object + 0x68);
+        minX = lbl_80561924;
+        maxX = lbl_80561924;
+        minZ = lbl_80561924;
+        maxZ = lbl_80561924;
+        radius = lbl_80561924;
+        bounds = 0;
+        if (*(s32 *)((u8 *)object + 0x24) > 0)
+            bounds = *(void **)((u8 *)object + 0x14);
+        if (bounds != 0) {
+            dx = *(f32 *)((u8 *)indexEntry + 4) - x;
+            dy = *(f32 *)((u8 *)indexEntry + 8) - *(f32 *)((u8 *)object + 0x64);
+            dz = *(f32 *)((u8 *)indexEntry + 0xC) - z;
+            tx = dz * *(f32 *)((u8 *)object + 0x44)
+               + (dx * *(f32 *)((u8 *)object + 0x3C)
+               + dy * *(f32 *)((u8 *)object + 0x40));
+            tz = dz * *(f32 *)((u8 *)object + 0x5C)
+               + (dx * *(f32 *)((u8 *)object + 0x54)
+               + dy * *(f32 *)((u8 *)object + 0x58));
+            resource = *(void **)((u8 *)bounds + 0x17C);
+            minX = tx < lbl_80561924 ? lbl_80561924 : tx;
+            minX -= lbl_80561950 * *(f32 *)((u8 *)resource + 0x24);
+            minZ = tz < lbl_80561924 ? lbl_80561924 : tz;
+            minZ -= lbl_80561950 * *(f32 *)((u8 *)resource + 0x2C);
+            maxX = tx > lbl_80561924 ? lbl_80561924 : tx;
+            maxX += lbl_80561950 * *(f32 *)((u8 *)resource + 0x24);
+            maxZ = tz > lbl_80561924 ? lbl_80561924 : tz;
+            maxZ += lbl_80561950 * *(f32 *)((u8 *)resource + 0x2C);
+            radius = (f32)fn_8002F234(
+                *(f32 *)((u8 *)resource + 0x24) * *(f32 *)((u8 *)resource + 0x24)
+              + *(f32 *)((u8 *)resource + 0x2C) * *(f32 *)((u8 *)resource + 0x2C));
+        }
+
+        manager = (void *)(u32)lbl_8055E354;
+        entries = *(void **)((u8 *)manager + 0x1D4CC);
+        records = *(void **)manager;
+        offset = 0;
+        for (i = 0; i < *(s32 *)((u8 *)manager + 0x1D4D0); i++) {
+            entry = (u8 *)entries + offset;
+            if (*(u8 *)((u8 *)entry + 0x1D) != 0) {
+                num++;
+            } else if (*(u8 *)((u8 *)entry + 4) != 0 &&
+                (*(u8 *)((u8 *)entry + 0x1C) == 0 ||
+                 (f32)fn_8002F234(
+                    (z - *(f32 *)((u8 *)entry + 0xC)) * (z - *(f32 *)((u8 *)entry + 0xC))
+                  + (x - *(f32 *)((u8 *)entry + 8)) * (x - *(f32 *)((u8 *)entry + 8))
+                 ) < radius + *(f32 *)((u8 *)entry + 0x10))) {
+                for (j = 0; j < *(s32 *)((u8 *)entry + 0x18); j++) {
+                    record = (u8 *)records +
+                        (*(s32 *)((u8 *)entry + 0x14) + j) * 0x18;
+                    recordObject = *(void **)record;
+                    if (recordObject != 0 &&
+                        *(s32 *)((u8 *)recordObject + 0x10) != 0 &&
+                        *(u8 *)((u8 *)record + 0x14) == 0) {
+                        dx = *(f32 *)((u8 *)record + 4) - x;
+                        dy = *(f32 *)((u8 *)record + 8) - *(f32 *)((u8 *)object + 0x64);
+                        dz = *(f32 *)((u8 *)record + 0xC) - z;
+                        tx = dz * *(f32 *)((u8 *)object + 0x44)
+                           + (dx * *(f32 *)((u8 *)object + 0x3C)
+                           + dy * *(f32 *)((u8 *)object + 0x40));
+                        tz = dz * *(f32 *)((u8 *)object + 0x5C)
+                           + (dx * *(f32 *)((u8 *)object + 0x54)
+                           + dy * *(f32 *)((u8 *)object + 0x58));
+                        radius = *(f32 *)((u8 *)recordObject + 0x14);
+                        if (tx + radius > minX && tx - radius < maxX &&
+                            tz + radius > minZ && tz - radius < maxZ) {
+                            *(u8 *)((u8 *)record + 0x14) = 1;
+                            index = *(s32 *)recordObject;
+                            counts[index]++;
+                        }
+                    }
+                }
+            }
+            offset += 0x20;
+        }
+    }
+
+    *(f32 *)((u8 *)indexEntry + 4) = *(f32 *)((u8 *)object + 0x60);
+    *(f32 *)((u8 *)indexEntry + 8) = *(f32 *)((u8 *)object + 0x64);
+    *(f32 *)((u8 *)indexEntry + 0xC) = *(f32 *)((u8 *)object + 0x68);
+    indexEntry[0] = lbl_8055E3C4;
+    ((s32 *)arg0)[0] = counts[0];
+    ((s32 *)arg0)[1] = counts[1];
+    ((s32 *)arg0)[2] = counts[2];
+    ((s32 *)arg0)[3] = counts[3];
+    ((s32 *)arg0)[4] = counts[4];
+    ((s32 *)arg0)[5] = num;
+}
+#pragma use_lmw_stmw reset
+#pragma processor reset
+#pragma pop
 extern s32 fn_8002B1D8(s32, s32 *, s32);
 extern char lbl_803301B8[];
 extern s32 lbl_8055E354;
@@ -515,24 +698,21 @@ s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 a;
-    s32 b;
-
-    a = arg3 - arg1;
-    if (arg1 > a) {
-        a = arg1;
-    }
-    b = arg2 - arg0;
-    if (arg0 > b) {
-        b = arg0;
-    }
-    if (a < b) {
-        b = a;
-    }
-    if (b > 2) {
+    if (arg1 > arg3 - arg1)
+        arg1 = arg3 - arg1;
+    if (arg0 > arg2 - arg0)
+        arg0 = arg2 - arg0;
+    if (arg1 < arg0)
+        arg0 = arg1;
+    if (arg0 > 2)
         return 3;
+    switch (arg0) {
+    case 0:
+    case 1:
+        return 1;
+    default:
+        return 2;
     }
-    return b + 1;
 }
 
 extern s32 lbl_8055A198;
@@ -562,13 +742,14 @@ extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         virtual s32 checkName(const char *name);
     };
 
+    f32 *cursor;
     s32 type;
-    s32 parsed;
-    s32 i;
     s32 *values;
-    s32 *cursor;
+    s32 i;
+    s32 parsed;
     s32 id;
     f32 zero;
+    DummyEntry *entry;
 
     if (((DummyCheck *)arg0)->checkName(arg1->getName()) == 0) {
         fn_802E30C8(lbl_803303EC, arg1->getName());
@@ -593,42 +774,39 @@ extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
 
     values = fn_801399FC(arg1);
     id = parsed;
+    entry = &arg2->entries[arg2->entryCount];
+    arg2->entryCount = arg2->entryCount + 1;
     zero = lbl_80561924;
-    {
-        DummyEntry *entry = &arg2->entries[arg2->entryCount++];
-        entry->byte1C = 0;
-        entry->f8 = zero;
-        entry->fC = zero;
-        entry->f10 = zero;
-        entry->recordStart = arg2->recordCount;
-        entry->recordCount = 0;
-        entry->byte1D = 0;
-        entry->id = id;
-        entry->active = 1;
-        arg2->flag1E158 = 1;
-    }
+    entry->byte1C = 0;
+    entry->f8 = zero;
+    entry->fC = zero;
+    entry->f10 = zero;
+    entry->recordStart = arg2->recordCount;
+    entry->recordCount = 0;
+    entry->byte1D = 0;
+    entry->id = id;
+    entry->active = 1;
+    arg2->flag1E158 = 1;
 
+    cursor = (f32 *)values;
     i = 0;
-    cursor = values;
     for (; i < *values; i++) {
-        s32 count = arg2->recordCount;
-        DummyRecord *rec = &arg2->records[count];
-
-        arg2->recordCount = count + 1;
+        DummyRecord *rec = &arg2->records[arg2->recordCount++];
         rec->obj = 0;
         rec->obj = (DummyRecordObj *)fn_80167874(type);
-        rec->x = *(f32 *)((u8 *)cursor + 8);
+        rec->x = cursor[2];
         rec->y = zero;
-        rec->z = *(f32 *)((u8 *)cursor + 0xC);
+        rec->z = cursor[3];
         rec->hit = zero;
         fn_801E9E30(0, &rec->x);
-        rec->y = rec->y + rec->obj->f18 + rec->hit;
+        rec->y = rec->hit + (rec->y + rec->obj->f18);
         rec->flag = 0;
         fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
         (*(s32 *)((u8 *)fn_80167874(type) + 0x1C))++;
 
         if (arg2->flag1E158 != 0) {
-            arg2->entries[arg2->entryCount - 1].recordCount++;
+            entry = &arg2->entries[arg2->entryCount - 1];
+            entry->recordCount++;
         } else {
             if (arg2->entryCount == 0 || arg2->entries[arg2->entryCount - 1].byte1C != 0) {
                 DummyEntry *newEntry = &arg2->entries[arg2->entryCount++];
@@ -637,9 +815,9 @@ extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
                 newEntry->recordCount = 0;
                 newEntry->byte1D = 0;
             }
-            arg2->entries[arg2->entryCount - 1].recordCount++;
+            entry = &arg2->entries[arg2->entryCount - 1];
+            entry->recordCount++;
         }
-
         cursor += 2;
     }
 
