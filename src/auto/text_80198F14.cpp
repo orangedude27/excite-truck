@@ -225,6 +225,18 @@ extern "C" void fn_8017B6D4(s32, Vec*, s32);
 extern f32 lbl_805622D0, lbl_805622E4, lbl_805622E8;
 extern "C" f32 PSVECMag(const Vec*);
 #pragma dont_inline on
+extern "C" void* __dt__Q36PSGame10SoundTable11CategoryMgrFv(void* arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        if (arg0 != NULL) {
+            *(u32*)arg0 = 0;
+        }
+        if (arg1 > 0) {
+            ((void (*)(void*))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* arg4, f32 farg0) {
     Vec a, b, d, p;
     f32 dot, mag, limit;
