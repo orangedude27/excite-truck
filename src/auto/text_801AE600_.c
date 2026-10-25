@@ -62,6 +62,7 @@ extern void fn_801AE894(void *);
 extern int fn_801EA994(void);
 extern double __fabs(double);
 int fn_801AEA64(float arg0, float arg1) {
+    /* Round the absolute float difference and compare with the full-address tolerance. */
     float diff = arg0 - arg1;
     float magnitude = (float)__fabs((double)diff);
     if (magnitude <= *(float *)(void *)&lbl_80558DC4) return 0;
