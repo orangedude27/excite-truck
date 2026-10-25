@@ -324,7 +324,7 @@ void fn_802CF850(void) {
 
 extern double __fabs(double);
 #pragma scheduling invalid_target
-int fn_802CFCA0(void* alarm) {
+void fn_802CFCA0(void* alarm) {
     extern char lbl_80558DC4[];
     char fifo[0x80];
     int spC;
@@ -353,7 +353,6 @@ int fn_802CFCA0(void* alarm) {
             lbl_804C97B0[0x1C] = 1;
         }
     }
-    return lbl_8055FD30;
 }
 #pragma scheduling on
 extern int GXGetFifoBase(void *);
@@ -377,9 +376,10 @@ void fn_802CFD74(void) {
     VIConfigure(lbl_8055FD64);
 }
 
-extern int fn_802CFCA0(void*);
+extern void fn_802CFCA0(void*);
 void fn_802CFEEC(void* alarm) {
-    fn_802CFDE0(fn_802CFCA0(alarm));
+    fn_802CFCA0(alarm);
+    fn_802CFDE0();
 }
 
 extern unsigned long lbl_8055FD44;
