@@ -18,7 +18,7 @@ extern Unk802FB70C lbl_802FB70C[];
 extern const char lbl_802FB77C[];
 extern const char lbl_80558998[1];
 extern const char lbl_805589A0[1];
-extern const char lbl_805589A8[];
+extern const char lbl_805589A8[1];
 void fn_80007DA0(void);
 void fn_80279464(void);
 void fn_80012778(void);
