@@ -276,7 +276,6 @@ s32 fn_802476FC(void) {
 
 extern s32 lbl_8055BEA8;
 extern s32 lbl_8055BEBC;
-extern void* lbl_8055BEAC;
 s32 fn_80214D04(void);
 void fn_80247768(void) {
     lbl_8055BEAC = (void*)fn_80214D04();
