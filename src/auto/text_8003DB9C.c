@@ -18,6 +18,12 @@ extern u32 __cvt_fp2unsigned(f32);
   extern void __GXSaveFifo(void);
 
 typedef struct {
+    unsigned short unused0 : 11;
+    unsigned short pointSize : 1;
+    unsigned short unused1 : 4;
+} GXPointSizeReg;
+
+typedef struct {
     int attr;
     int compCnt;
     int compType;
@@ -193,6 +199,93 @@ int CPGPLinkCheck(void) {
         OSReport(&lbl_803036F8, lbl_8037C0C0, *((unsigned int *)&lbl_8037C0C0 + 1));
     }
     return 0;
+}
+
+void GXSetGPFifo(unsigned int *fifo) {
+    int intStatus;
+    unsigned int tmp;
+    unsigned int *gx = &lbl_8037C0C0;
+    unsigned int *gd = __GXData;
+
+    intStatus = OSDisableInterrupts();
+
+    tmp = gd[2] & ~1u;
+    gd[2] = tmp;
+    __cpReg[1] = (unsigned short)tmp;
+    tmp = gd[2] & 0xFFFFFFF3u;
+    gd[2] = tmp;
+    __cpReg[1] = (unsigned short)tmp;
+
+    if (fifo == 0) {
+        lbl_8055D949 = 0;
+        lbl_8055D960 = 0;
+        tmp = gd[2] & 0xFFFFFFEFu;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+        *((unsigned char *)gx + 0x21) = 0;
+        *((unsigned char *)gx + 0x22) = 0;
+        ((void (*)(int))OSRestoreInterrupts)(intStatus);
+        return;
+    }
+
+    gx[0] = fifo[0];
+    gx[1] = fifo[1];
+    gx[2] = fifo[2];
+    gx[3] = fifo[3];
+    gx[4] = fifo[4];
+    gx[5] = fifo[5];
+    gx[6] = fifo[6];
+    gx[7] = fifo[7];
+    gx[8] = fifo[8];
+    lbl_8055D949 = 1;
+    *((unsigned char *)gx + 0x22) = 1;
+
+    __cpReg[0x20 / 2] = (unsigned short)gx[0];
+    __cpReg[0x24 / 2] = (unsigned short)gx[1];
+    __cpReg[0x30 / 2] = (unsigned short)gx[7];
+    __cpReg[0x34 / 2] = (unsigned short)gx[6];
+    __cpReg[0x38 / 2] = (unsigned short)gx[5];
+    __cpReg[0x28 / 2] = (unsigned short)gx[3];
+    __cpReg[0x2C / 2] = (unsigned short)gx[4];
+    __cpReg[0x22 / 2] = (unsigned short)((gx[0] >> 16) & 0x3FFF);
+    __cpReg[0x26 / 2] = (unsigned short)((gx[1] >> 16) & 0x3FFF);
+    __cpReg[0x32 / 2] = (unsigned short)((int)gx[7] >> 16);
+    __cpReg[0x36 / 2] = (unsigned short)((gx[6] >> 16) & 0x3FFF);
+    __cpReg[0x3A / 2] = (unsigned short)((gx[5] >> 16) & 0x3FFF);
+    __cpReg[0x2A / 2] = (unsigned short)(gx[3] >> 16);
+    __cpReg[0x2E / 2] = (unsigned short)(gx[4] >> 16);
+
+    PPCSync();
+
+    if ((CPGPLinkCheck() & 0xFF) != 0) {
+        lbl_8055D960 = 1;
+        *((unsigned char *)gx + 0x21) = 1;
+        tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+        tmp = gd[2] | 0x10u;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+    } else {
+        lbl_8055D960 = 0;
+        *((unsigned char *)gx + 0x21) = 0;
+        tmp = gd[2] & 0xFFFFFFF3u;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+        tmp = gd[2] & 0xFFFFFFEFu;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+    }
+
+    __cpReg[1] = (unsigned short)(gd[2] & 0xFFFFFFFDu & 0xFFFFFFDFu);
+    __cpReg[1] = (unsigned short)gd[2];
+    tmp = gd[4] | 3u;
+    gd[4] = tmp;
+    __cpReg[2] = (unsigned short)tmp;
+    tmp = gd[2] | 1u;
+    gd[2] = tmp;
+    __cpReg[1] = (unsigned short)tmp;
+    ((void (*)(int))OSRestoreInterrupts)(intStatus);
 }
 
 char __GXIsGPFifoReady(void) {
@@ -1017,7 +1110,8 @@ extern unsigned int __OSUnmaskInterrupts(unsigned int userMask);
 extern void OSWakeupThread(void *);
 extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
-void GXInitSpecularDir(unsigned int arg0, void *ctx) {
+#pragma cplusplus on
+extern "C" void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     extern unsigned int lbl_8055D978;
     extern unsigned short *__peReg;
     extern void OSClearContext(void *);
@@ -1033,7 +1127,7 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     }
     __peReg[5] |= 4;
 }
-
+#pragma cplusplus off
 unsigned int GXLoadLightObjIndx(unsigned int value) {
     unsigned int old = lbl_8055D974;
 
@@ -2053,6 +2147,118 @@ void __GXSetSUTexRegs(void) {
         if (field != 0xFF && (mode & (1 << tex)) == 0 && (gx[0x5E8 / 4] & (1 << i)) != 0)
             __SetSURegs(field, tex);
     }
+}
+
+void __GXSetTmemConfig(s32 arg0) {
+    volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
+    volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
+    if (arg0 == 1) goto case1;
+    if (arg0 >= 1) goto compare3;
+    goto default_case;
+compare3:
+    if (arg0 >= 3) goto default_case;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8C0D8000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x900DC000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8D0D8800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x910DC800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8E0D9000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x920DD000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8F0D9800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x930DD800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAC0DA000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB00DC400;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAD0DA800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB10DCC00;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAE0DB000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB20DD400;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAF0DB800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB30DDC00;
+    goto done;
+case1:
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8C0D8000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x900DC000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8D0D8800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x910DC800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8E0D9000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x920DD000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8F0D9800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x930DD800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAC0DA000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB00DE000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAD0DA800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB10DE800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAE0DB000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB20DF000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAF0DB800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB30DF800;
+    goto done;
+default_case:
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8C0D8000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x900DC000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8D0D8400;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x910DC400;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8E0D8800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x920DC800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x8F0D8C00;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0x930DCC00;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAC0D9000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB00DD000;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAD0D9400;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB10DD400;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAE0D9800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB20DD800;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xAF0D9C00;
+    *fifo8 = (u8)0x61;
+    *fifo32 = 0xB30DDC00;
+done:
+    ;
 }
 
 void GXSetIndTexCoordScale(unsigned int stage, unsigned int scaleS, unsigned int scaleT) {
