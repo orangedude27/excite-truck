@@ -352,6 +352,6 @@ void fn_801B537C(int arg0) {
             return;
         }
     }
-    fn_802E317C(&lbl_80335E48, arg0);
+    fn_802E317C((const char *)&lbl_80335E48, arg0);
 }
 
