@@ -11369,6 +11369,7 @@ extern void rfc_mx_sm_sabme_wait_ua(void *, s32, void *);
 extern void rfc_mx_sm_state_wait_sabme(void *, s32, void *);
 extern void rfc_mx_sm_state_connected(void *, s32, void *);
 extern void rfc_mx_sm_state_disc_wait_ua(void *, s32, void *);
+/* Match note: the seven switch arms preserve the incoming arguments and compile to the original tail-dispatch table. */
 void fn_800916F4(void *arg0, s32 arg1, s16 *arg2) {
     switch (((u8 *)arg0)[0x6c]) {
     case 0:
