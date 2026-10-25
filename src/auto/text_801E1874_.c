@@ -29,6 +29,40 @@ void fn_801E1874(void) {
     lbl_8055EA22 = 0;
 }
 
+extern void *fn_802AE414(const char *);
+extern int stricmp(const char *, const char *);
+extern unsigned char lbl_8055AE60[], lbl_8055AE68[], lbl_8055AE6C[], lbl_8055AE74[], lbl_8055AE7C[], lbl_8055AE84[], lbl_8055AE8C[], lbl_8055AE94[], lbl_8055AE9C[], lbl_8055AEA8[];
+extern unsigned char lbl_80339860[], lbl_8033986C[];
+extern float lbl_80562CA8;
+int fn_801E1894(void) {
+ void **obj; void **settings; char *name; float v[3]; int r,g,b;
+ fn_801E1874();
+ if (fn_802AE414((const char *)lbl_8055AE60) != 0) {
+  obj=fn_802AE414((const char *)lbl_8055AE60);
+  settings=((void **(*)(void *,const char *))(*(void ***)obj)[23])(obj,(const char *)lbl_8055AE68);
+  name=((char *(*)(void *,const char *,const char *))(*(void ***)obj)[6])(obj,(const char *)lbl_8055AE6C,(const char *)lbl_8055AE74);
+  if(stricmp(name,(const char *)lbl_8055AE7C)==0) *(int *)&lbl_804874D4=1;
+  else if(stricmp(name,(const char *)lbl_8055AE84)==0) lbl_804874D4=2;
+  if(((int(*)(void *,const char *))(*(void ***)obj)[3])(obj,(const char *)lbl_80339860)!=0)
+   lbl_8055EA22=((int(*)(void *,const char *))(*(void ***)obj)[11])(obj,(const char *)lbl_80339860);
+  else lbl_8055EA22=(lbl_804874D4==1);
+  *((unsigned char *)&lbl_804874D4+4)=((int(*)(void *,const char *,int))(*(void ***)obj)[12])(obj,(const char *)lbl_8033986C,0);
+  if(settings) {
+   ((void(*)(float *,void *,const char *))(*(void ***)settings)[13])(v,settings,(const char *)lbl_8055AE8C);
+   r=(int)(lbl_80562CA8*v[0]); if(r<0)r=-r; if(r>255)r=255;
+   g=(int)(lbl_80562CA8*v[1]); if(g<0)g=-g; if(g>255)g=255;
+   b=(int)(lbl_80562CA8*v[2]); if(b<0)b=-b; if(b>255)b=255;
+   *(int *)((char *)&lbl_804874D4+8)=(r<<16)|0xff000000|(g<<8)|b;
+   *(float *)((char *)&lbl_804874D4+0xc)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)lbl_8055AE94);
+   *(float *)((char *)&lbl_804874D4+0x10)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)lbl_8055AE9C);
+   *(float *)((char *)&lbl_804874D4+0x14)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)lbl_8055AEA8);
+   *((unsigned char *)&lbl_804874D4+0x18)=1;
+  }
+ }
+ lbl_8055EA20=1;
+ return 0;
+}
+
 void fn_801E1D20(void) {
     lbl_8055EA20 = 0;
 }
