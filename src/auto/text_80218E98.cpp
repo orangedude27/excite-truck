@@ -438,8 +438,22 @@ extern "C" s32 fn_80218F34(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
 }
 #pragma dont_inline reset
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void *fn_80218F80(void *arg0, void *arg1) {
+    *(void **)arg0 = lbl_8033FB38;
+    register void *temp_r7 = arg1;
+    s32 temp_r5 = *(s32 *)((u8 *)arg1 + 0xC);
+    s32 temp_r4 = *(s32 *)((u8 *)arg1 + 8);
+    fn_80218FEC(arg0, temp_r4, temp_r5,
+                temp_r4 + *(s32 *)((u8 *)temp_r7 + 0x14),
+                temp_r5 + *(s32 *)((u8 *)temp_r7 + 0x18),
+                *(s32 *)((u8 *)temp_r7 + 0x10));
+    *(void **)((u8 *)arg0 + 0x23C) = fn_8021525C();
+    *(s32 *)((u8 *)arg0 + 0x240) = 0;
+    return arg0;
 }
+#pragma pop
 #define fn_80218F80() ((void (*)(void))fn_80218F80)()
 
 extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
@@ -1519,6 +1533,65 @@ extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
             fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
+    struct First {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void call();
+    };
+    struct Second {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual void v23();
+        virtual void v24();
+        virtual void v25();
+        virtual void v26();
+        virtual void v27();
+        virtual void v28();
+        virtual void v29();
+        virtual s32 get();
+    };
+    volatile s32 sp8;
+    volatile s32 spC;
+    First *first;
+    s32 result;
+
+    fn_802C3034(arg1);
+    first = *(First **)((u8 *)arg0 + 0x248);
+    first->call();
+    result = ((Second *)arg0)->get();
+    sp8 = 0x43300000;
+    spC = (result - *(s32 *)((u8 *)arg0 + 0x254)) ^ 0x80000000;
 }
 
 extern "C" void fn_8021CBBC(void *arg0) {
