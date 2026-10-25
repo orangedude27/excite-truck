@@ -501,7 +501,7 @@ void fn_802D01B0(float *p, float v) {
 
 void fn_802D02F8(signed char arg1) {
     extern unsigned char lbl_804C9778[];
-    extern unsigned char fn_802CEA1C(void);
+    extern unsigned char fn_802CEA1C();
     unsigned int value;
     unsigned char high, mid;
     lbl_804C9778[0x2d] = arg1;
