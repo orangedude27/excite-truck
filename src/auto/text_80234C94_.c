@@ -277,7 +277,7 @@ int fn_80235FD8(void *arg0) {
 
 extern void *fn_8012850C(int, void *, int);
 extern char lbl_803408CC[];
-extern char lbl_8055B9F8[];
+extern int lbl_8055B9F8;
 void *fn_80236008(void *arg0, int arg1, int arg2) {
     *(int *)((char *)arg0 + 8) = arg1;
     *(void **)arg0 = lbl_803408CC;
