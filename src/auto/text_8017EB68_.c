@@ -86,20 +86,23 @@ float fn_8017EB80(float arg0, float arg1, float arg2) {
     return -value;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 int fn_8017EBE0(void) {
     int zero = 0;
     int one = 1;
     lbl_8055E4B8 = zero;
     lbl_8055E4BA = one;
     lbl_8055E4B9 = zero;
-    lbl_804348D8[0] = 0;
-    lbl_804348D8[1] = 0;
-    lbl_804348D8[2] = 0;
-    lbl_804348D8[3] = 0;
+    lbl_804348D8[0] = (Unk8017Object *)zero;
+    lbl_804348D8[1] = (Unk8017Object *)zero;
+    lbl_804348D8[2] = (Unk8017Object *)zero;
+    lbl_804348D8[3] = (Unk8017Object *)zero;
     fn_801808DC();
-    return one;
+    return 1;
 }
-
+#pragma pop
 void fn_8017EC30(void) {
     Unk8017Object **ptr = lbl_804348D8;
     int i = 0;
