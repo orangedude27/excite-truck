@@ -296,13 +296,12 @@ extern "C" s32 fn_802E3C24(s32 arg0, s32 arg1, s32 arg2) {
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual void v3();
-        virtual s32 v4(s32, s32, s32);
+        virtual s32 v3(s32, s32, s32);
     };
     s32 obj = ((s32 (*)(void))fn_802E339C)();
     s32 result;
     if (obj != 0) {
-        result = ((Obj *)obj)->v4(arg0, arg1, arg2);
+        result = ((Obj *)obj)->v3(arg0, arg1, arg2);
     } else {
         fn_802E317C(lbl_8034CFE4);
         result = 0;
