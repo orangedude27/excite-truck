@@ -47,6 +47,7 @@ void fn_8028ED74(void *);
 void fn_8028EE1C(void *);
 void fn_8028F8C4(int);
 float fn_801E7E18(void);
+extern void fn_8028ED74(void *);
 void fn_8028DFFC(void) {
     fn_8028DF58();
     lbl_8055F73D = 1;
@@ -99,15 +100,18 @@ extern void fn_8028ED74(void *);
 extern void fn_8028EE1C(void *);
 extern void fn_8028F8C4(int);
 void fn_8028E138(void) {
-    int *base = &lbl_804B34B0;
-    int *ptr = base;
-    int count = 0;
+    int i;
+    int *entries = (int *)&lbl_804B34B0;
+    struct Table { int entries[64]; int count; } *base = (struct Table *)&lbl_804B34B0;
     lbl_8055F738 = lbl_80564420;
-    while (count < *(int *)((char *)base + 0x100)) {
-        fn_8028F8C4(*ptr);
-        ptr++;
-        count++;
-    }
+    i = 0;
+    goto test;
+body:
+    fn_8028F8C4(*entries);
+    entries++;
+    i++;
+test:
+    if (i < base->count) goto body;
 }
 
 void fn_8028E1A4(void) {
