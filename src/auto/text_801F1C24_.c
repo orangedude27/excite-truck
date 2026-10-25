@@ -173,11 +173,10 @@ void fn_801F2020(void) {
     }
 }
 #pragma push
-#pragma small_data off
 #pragma scheduling invalid_target
 void *fn_801F2064(void) {
-    void *p = fn_801284F8(8, (void *)&lbl_8033A660);
-    if (p) { *(void **)p = (void *)&lbl_8033A958; *(int *)((char *)p + 4) = fn_802CAC28((void *)&lbl_8033AC58, 0); }
+    void *p = fn_801284F8(8, &lbl_8033A660);
+    if (p) { *(void **)p = &lbl_8033A958; *(int *)((char *)p + 4) = fn_802CAC28(&lbl_8033AC58, 0); }
     return p;
 }
 #pragma pop
