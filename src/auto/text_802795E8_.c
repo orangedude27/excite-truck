@@ -53,29 +53,25 @@ void fn_80279848(void) {
     lbl_8055F618 = 0;
 }
 
+#pragma scheduling invalid_target
 void *fn_80279874(s32 arg0) {
-    s32 i;
-    s32 count;
     char *entry;
     char *base;
+    s32 count;
+    s32 i;
 
     i = 0;
     count = lbl_8055F61C;
     base = (char *)lbl_8055F618;
     entry = base;
-    if (count > 0) {
-        do {
-            if (arg0 == *(s32 *)entry) {
-                return base + i * 0x2B8;
-            }
-            entry += 0x2B8;
-            i++;
-        } while (i < count);
+    for (; i < count; entry += 0x2B8, ++i) {
+        if (arg0 == *(s32 *)entry)
+            return base + i * 0x2B8;
     }
-    fn_802E30C8(lbl_80347824);
+    fn_802E30C8(lbl_80347824, arg0);
     return 0;
 }
-
+#pragma scheduling reset
 f32 fn_802798E8(void *arg0) {
     return *(f32 *)((char *)arg0 + 0x294);
 }
