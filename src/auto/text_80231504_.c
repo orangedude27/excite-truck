@@ -61,7 +61,7 @@ extern char lbl_8034044C[];
 extern char lbl_80340488[];
 extern char lbl_803404C0[];
 extern s32 stricmp(const char *, const char *);
-extern void *fn_8012850C(s32, const char *, ...);
+extern void *fn_8012850C(s32, const char *);
 extern char *strcpy(char *, const char *);
 extern char lbl_80340440[];
 extern void fn_802CAC54(void *);
@@ -94,12 +94,20 @@ s32 fn_8023150C(const char *arg0) {
 
 #pragma dont_inline on
 void fn_8023158C(void *arg0, const char *arg1) {
-    s32 count = *(s32 *)(lbl_8055F068 + 0x168);
-    s32 offset = count * 0xC;
-    *(s32 *)(lbl_8055F068 + 0x168) = count + 1;
-    *(void **)(lbl_8055F068 + offset) = arg0;
-    *(s32 *)(lbl_8055F068 + offset + 8) = 1;
-    strcpy(fn_8012850C(0x40, lbl_80340440, offset, count + 1, lbl_8055F068), arg1);
+    u8 *base;
+    s32 count;
+    s32 offset;
+    u8 *entry;
+
+    base = lbl_8055F068;
+    count = *(s32 *)(base + 0x168);
+    offset = count * 0xC;
+    *(s32 *)(base + 0x168) = count + 1;
+    entry = base + offset;
+    *(void **)(base + offset) = arg0;
+    *(s32 *)(entry + 8) = 1;
+    *(char **)(entry + 4) = fn_8012850C(0x40, lbl_80340440);
+    strcpy(*(char **)(entry + 4), arg1);
 }
 #pragma dont_inline off
 
@@ -654,12 +662,9 @@ void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
 }
 
 void fn_8023441C(const char *arg0) {
-    s32 value;
-    value = (s32)fn_8012850C(0x2100, lbl_80340614);
-    lbl_8055F06C = value;
-    value = fn_80232578(arg0);
+    lbl_8055F06C = (s32)((void *(*)(s32, const char *))fn_8012850C)(0x2100, lbl_80340614);
+    lbl_8055F058 = fn_80232578(arg0);
     *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
-    lbl_8055F058 = value;
 }
 
 void fn_80234470(void) {
