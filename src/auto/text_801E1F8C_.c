@@ -113,14 +113,3 @@ void fn_801E2294(void) {
 }
 typedef struct VTable_801E2084 { void *unk0; void *unk4; void *unk8; void *unkC; void (*call)(void *, void *); } VTable_801E2084;
 typedef struct Obj_801E2084 { VTable_801E2084 *vtable; } Obj_801E2084;
-
-#include <revolution/MTX/vec.h>
-extern f32 lbl_80562CD8;
-extern f32 lbl_80562CDC;
-extern f32 lbl_80562CE0;
-extern f32 lbl_80562CE4;
-extern s32 lbl_8055E3C4;
-extern char lbl_8033989C;
-void fn_801B619C(void *, int *, f32 *);
-s32 fn_801A4E88(void *, f32 *, f32 *, s32, s32 *);
-void fn_802E30C8(const char *, ...);
