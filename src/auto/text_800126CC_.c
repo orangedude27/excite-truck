@@ -93,7 +93,7 @@ void *fn_80012870(int arg0, int arg1) {
     return 0;
 }
 
-extern void *fn_8001285C(void);
+extern void *fn_8001285C();
 extern char *fn_80012820(int);
 extern const char *fn_80007FF0(int);
 extern int fn_80012938(float);
@@ -138,6 +138,44 @@ void fn_80013618(int arg0) {
     *(int *)(lbl_8035183C + 0x80) = count + 1;
     fn_8001335C(result, arg0);
 }
+
+extern int lbl_8055D518;
+void fn_80013A34(void) {
+    int count = lbl_8055D518;
+    char *p = lbl_803551E0;
+    int blocks, i;
+    if (count > 0) {
+        blocks = (unsigned int)count >> 3;
+        for (i = 0; i < blocks; i++) {
+            *(int *)(p + 0x84) += *(int *)(p + 0x70); *(int *)(p + 0x70) = 0;
+            *(int *)(p + 0x10C) += *(int *)(p + 0xF8); *(int *)(p + 0xF8) = 0;
+            *(int *)(p + 0x194) += *(int *)(p + 0x180); *(int *)(p + 0x180) = 0;
+            *(int *)(p + 0x21C) += *(int *)(p + 0x208); *(int *)(p + 0x208) = 0;
+            *(int *)(p + 0x2A4) += *(int *)(p + 0x290); *(int *)(p + 0x290) = 0;
+            *(int *)(p + 0x32C) += *(int *)(p + 0x318); *(int *)(p + 0x318) = 0;
+            *(int *)(p + 0x3B4) += *(int *)(p + 0x3A0); *(int *)(p + 0x3A0) = 0;
+            *(int *)(p + 0x43C) += *(int *)(p + 0x428); *(int *)(p + 0x428) = 0;
+            p += 0x440;
+        }
+        for (i = 0; i < (count & 7); i++) {
+            *(int *)(p + 0x84) += *(int *)(p + 0x70);
+            *(int *)(p + 0x70) = 0;
+            p += 0x88;
+        }
+    }
+    {
+        char *entry = lbl_80352AD0;
+        int x;
+        for (x = 0; x < lbl_8055D508; x++, entry += 0x28) {
+            int y;
+            for (y = 0; y < lbl_8055D518; y++) {
+                if (*(int *)(entry + 4) == *(int *)(lbl_803551E0 + y * 0x88))
+                    entry[0x24] = 0;
+            }
+        }
+    }
+}
+
 extern int lbl_802FCB74;
 extern int fn_8012C33C(void);
 extern int fn_80131808(int);
