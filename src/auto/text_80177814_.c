@@ -238,6 +238,10 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
     return arg0;
 }
 
+void fn_801784AC(void) {
+    fn_801E2640(&lbl_804340C0[0], &lbl_8055E468);
+}
+
 void fn_801785A4(void **arg0) {
     int index = lbl_8055E438;
     lbl_8055E434[index] = arg0;
@@ -384,16 +388,16 @@ extern void fn_801FA978(void);
 extern void fn_8020C41C(void);
 extern void fn_80267420(void);
 extern void fn_8026B644(void);
-#pragma scheduling invalid_target
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80178DD4(int arg0) {
     register char *table = jumptable_803318F8;
     register char *base = (char *)lbl_80430590;
-    register int savedArg = arg0;
-    register int *var_r28;
-    register char *var_r27;
-    register int i;
-    register int temp_r26;
-    void *allocation;
+    register int var_r28;
+    register int var_r27;
+    register int var_r26;
+    register int var_r31;
+    register int version;
     int value;
     void *object;
 
@@ -402,23 +406,24 @@ void fn_80178DD4(int arg0) {
     fn_80181FEC(); fn_801DF6FC(); fn_801DA6EC(); fn_801D0E0C();
     fn_80127464(); fn_801CEFAC();
     fn_80177814(&lbl_8055E418); fn_80177814(&lbl_8055E420); fn_80177814(&lbl_8055E428);
-    allocation = (void *)fn_801284F8(0x68, table + 0x220);
-    if (allocation != 0) allocation = (void *)fn_80135DC4((int)allocation, 0, 0);
-    lbl_8055E414 = allocation;
+    value = fn_801284F8(0x68, table + 0x220);
+    if (value != 0) value = fn_80135DC4(value, 0, 0);
+    lbl_8055E414 = (void *)value;
     memset(base + 0x32F0, 0, 0x840);
     fn_80129C80(4, lbl_8055E418, *(int *)((char *)&lbl_8055E418 + 4));
     fn_80129C80(3, lbl_8055E420, *(int *)((char *)&lbl_8055E420 + 4));
     fn_80129C80(5, lbl_8055E428, *(int *)((char *)&lbl_8055E428 + 4));
-    var_r28 = (int *)base;
-    var_r27 = base + 0x10;
-    i = 0;
-    do {
-        *var_r28 = -1;
-        memset(var_r27, 0, 8);
-        ++i; ++var_r28; var_r27 += 8;
-    } while (i < 4);
+
+    var_r28 = (int)base;
+    var_r27 = (int)(base + 0x10);
+    for (var_r26 = 0; var_r26 < 4; ++var_r26, var_r28 += 4, var_r27 += 8) {
+        *(int *)var_r28 = -1;
+        memset((void *)var_r27, 0, 8);
+    }
+
     lbl_8055E430 = (void *)fn_80137C74();
-    lbl_8055E43C = 0;
+    var_r31 = 0;
+    lbl_8055E43C = var_r31;
     fn_80127464(); fn_801B5274(); fn_801B5FA0(); fn_801B3448();
     fn_801A4E28(); fn_801AFAC8(); fn_801B06C8(); fn_801B8B84();
     fn_801CEC80(); fn_80181F30(); fn_801DE0A4();
@@ -429,43 +434,60 @@ void fn_80178DD4(int arg0) {
     fn_801E0710(); fn_801B8318(); fn_801FA978();
     lbl_8055E434 = (void **)fn_8012850C(0x800, table + 0x230);
     fn_801E2188();
-    *(int *)(base + 0x2A0) = 0;
-    var_r28 = (int *)(base + 0x2A0);
-    var_r28[1] = 0; var_r28[2] = 0; var_r28[3] = 0;
-    var_r28[4] = 0; var_r28[5] = 0; var_r28[6] = 0; var_r28[7] = 0;
-    lbl_8055E45E = 0; lbl_8055E45F = 0; lbl_8055E45C = 0; lbl_8055E45D = 0;
-    lbl_8055E438 = 0;
-    *(int *)(base + 0x22E8) = 0; *(int *)(base + 0x2E0) = 0; *(int *)(base + 0x12E4) = 0;
-    temp_r26 = fn_8012F3CC(savedArg);
+    *(int *)(base + 0x2A0) = var_r31;
+    {
+        int *field = (int *)(base + 0x2A0);
+        field[1] = var_r31; field[2] = var_r31; field[3] = var_r31;
+        field[4] = var_r31; field[5] = var_r31; field[6] = var_r31; field[7] = var_r31;
+    }
+    lbl_8055E45E = var_r31; lbl_8055E45F = var_r31; lbl_8055E45C = var_r31; lbl_8055E45D = var_r31;
+    lbl_8055E438 = var_r31;
+    *(int *)(base + 0x22E8) = var_r31;
+    *(int *)(base + 0x2E0) = var_r31;
+    *(int *)(base + 0x12E4) = var_r31;
+
+    var_r26 = fn_8012F3CC(arg0);
     fn_801AE4C4(); fn_80127464();
-    for (i = 0; i < 3; ++i) {
-        fn_8012F43C((void *)temp_r26);
-        while (fn_80178678((void *)temp_r26, &object, i) != 0) {
+    var_r27 = 0;
+    do {
+        fn_8012F43C((void *)var_r26);
+        while (fn_80178678((void *)var_r26, &object, var_r27) != 0) {
             if (object != 0) fn_801785A4((void **)object);
         }
-    }
-    fn_80127464(); fn_8012F418((void *)temp_r26); fn_801B52CC();
+        var_r27 += 1;
+    } while (var_r27 < 3);
+
+    fn_80127464(); fn_8012F418((void *)var_r26); fn_801B52CC();
     fn_801E21BC(); fn_80127464(); fn_8017D2CC(0x200);
     lbl_8055E448 = 0;
     value = 1;
-    if ((int)lbl_8055E430 > 1) value = (int)lbl_8055E430;
+    version = (int)lbl_8055E430;
+    if (version > 1) value = version;
     lbl_8055E440 = value; lbl_8055E444 = (void *)value;
     fn_80267420();
     lbl_8055E450 = fn_801284E8(table + 0x23C, lbl_8055E3CC + 0x2EE8);
     fn_801AD5EC(); fn_80127464(); fn_801B2320(); fn_801C4B10();
-    *(int *)(base + 0x2C0 + 0x10) = 0;
-    *((unsigned char *)(base + 0x2C0) + 0x14) = 1;
-    *(int *)(base + 0x2C0 + 0x1C) = 0; *(int *)(base + 0x2C0 + 0x18) = 0;
-    fn_801E1D38(base + 0x2C0, 1);
+    {
+        int *field = (int *)(base + 0x2C0);
+        field[4] = var_r31;
+        *((unsigned char *)field + 0x14) = 1;
+        field[7] = var_r31; field[6] = var_r31;
+        fn_801E1D38(field, 1);
+    }
     fn_801D47F4(); fn_801B5364(9, (void *)fn_80178C4C);
     fn_80129C80(4, lbl_8055E418, *(int *)((char *)&lbl_8055E418 + 4));
     fn_80129C80(3, lbl_8055E420, *(int *)((char *)&lbl_8055E420 + 4));
     fn_80129C80(5, lbl_8055E428, *(int *)((char *)&lbl_8055E428 + 4));
     fn_80127464(); fn_80179320();
 }
-#pragma scheduling on
+#pragma pop
 extern void fn_801B2C6C(void);
 extern void fn_801B5354(void);
+void fn_80179110(void) {
+    fn_801B2C6C();
+    fn_801B5354();
+    lbl_8055E448 += 1;
+}
 extern int fn_802E4C18(int);
 extern int fn_801787B4(void *);
 extern void fn_80177F40(void);
@@ -620,7 +642,7 @@ extern int lbl_804305A0[];
 extern int lbl_8055E450;
 void fn_801797F8(int arg0, int arg1, unsigned short arg2) {
     int *p = &lbl_804305A0[arg0 * 2];
-    p[0] = (arg1 << 16) | arg2;
+    p[0] = (arg1 << 16) + (arg2 & 0xffff);
     p[1] += 1;
 }
 
