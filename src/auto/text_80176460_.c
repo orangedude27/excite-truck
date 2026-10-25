@@ -127,6 +127,15 @@ loop_test:
     fn_8017779C();
 }
 
+#pragma scheduling invalid_target
+void fn_80176734(void) {
+    if (fn_80176F9C() != 0) {
+        fn_802E30C8(lbl_80331604);
+    }
+    lbl_804303D4[0] = 4;
+    fn_80177048();
+}
+#pragma scheduling on
 void fn_8017677C(void) {
 }
 
@@ -357,13 +366,15 @@ void fn_80176BAC(void) {
     lbl_8055E3FC = now;
 }
 
+#pragma scheduling invalid_target
 s32 *fn_80176C0C(s32 *arg0, s32 *arg1) {
-    s32 length = *arg1;
+    register s32 length = *arg1;
+    register s32 *source = arg1 + 1;
     *arg0 = length;
-    memcpy((u8 *)arg0 + 4, (u8 *)arg1 + 4, length);
+    memcpy(arg0 + 1, source, length);
     return arg0;
 }
-
+#pragma scheduling on
 void fn_80176C4C(void) {
     if (*(s32 *)lbl_804303D4 != 4) {
         ((s32 *)lbl_804303C8)[0] = *(s32 *)lbl_804303D4;
