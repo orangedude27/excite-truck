@@ -156,6 +156,7 @@ int fn_801B47F0(int arg0) {
     }
     return temp_r5 + (*(int *)(arg0 + 0x1C) - temp_r4);
 }
+#pragma dont_inline off
 
 int fn_801B4818(void) { return 0x100000; }
 
