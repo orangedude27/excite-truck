@@ -1,6 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern char lbl_80340394[];
+extern char lbl_803403CC[];
+extern char lbl_80340408[];
+int fn_80230020(void);
+void fn_8022F824(void *);
+void fn_802E30C8(void *);
 extern void *lbl_8055F014;
 extern float lbl_805635FC;
 extern float lbl_8056360C;
@@ -12,6 +18,19 @@ void fn_80015E30(void *, float);
 void fn_80015B20(void *, void *, void *);
 void fn_80015AA0(void *, float);
 char *stricmp(const char *, const char *);
+void fn_802E317C();
+extern char lbl_80340350[];
+extern char lbl_80497E3C[];
+extern char lbl_8055B988;
+#pragma scheduling invalid_target
+void fn_8022F248(void) {
+    if (lbl_8055F014 != 0) {
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340350);
+    }
+    strcpy(lbl_80497E3C + 0x3c, &lbl_8055B988);
+}
+#pragma scheduling on
+
 void *fn_8022F2FC(char *arg0) {
     void *node = lbl_8055F014;
     while (node != 0) {
