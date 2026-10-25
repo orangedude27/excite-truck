@@ -143,9 +143,9 @@ extern int fn_800B7E5C(signed char, int);
 extern int fn_800B7B34(signed char);
 extern int fn_802EA5D4(void *, int);
 void fn_802E9CAC(int arg0) {
-    OSReport(&lbl_8034E390, arg0);
-    lbl_80560061 = 0;
-    lbl_80560068++;
+    OSReport((const char *)&lbl_8034E390, arg0);
+    *(volatile char *)&lbl_80560061 = 0;
+    ++*(volatile int *)&lbl_80560068;
 }
 
 extern long fn_800B7CE8(long, void *, void *);
