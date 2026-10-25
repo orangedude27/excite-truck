@@ -1,4 +1,5 @@
 #include <types.h>
+extern s32 lbl_8032A05C;
 
 extern char lbl_8055DF88;
 __declspec(section ".data") extern u32 lbl_802F8E40;
