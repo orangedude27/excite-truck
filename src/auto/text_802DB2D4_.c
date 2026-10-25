@@ -1,3 +1,10 @@
+extern void fn_802D0610(int);
+extern void fn_802D68C4(int, int, int, int);
+extern void GXSetZMode(int, int, int);
+extern void GXSetNumChans(int);
+extern void GXSetChanCtrl(int, int, int, int, int, int, int);
+extern unsigned char lbl_8055FEB8;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 typedef struct { unsigned char r, g, b, a; } fn_802DCAE4_GXColor;
