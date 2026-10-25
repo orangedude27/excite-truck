@@ -203,13 +203,18 @@ int fn_8022DA34(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8022DA74(void *arg0, char *arg1) {
-    float high = *(float *)((char *)arg0 + 8);
-    float low = *(float *)((char *)arg0 + 4);
-    float range = high - low;
-    sprintf(arg1, lbl_8055B958, *(int *)((char *)arg0 + 0x1C), lbl_805635D0 + (low + **(float **)((char *)arg0 + 0x18) * range), range, low);
+    register void *data = arg0;
+    register float high = *(volatile float *)((char *)arg0 + 8);
+    register float low = *(volatile float *)((char *)data + 4);
+    register float range = high - low;
+    register float fraction = **(float **)((char *)data + 0x18);
+    register int precision = *(int *)((char *)data + 0x1C);
+    sprintf(arg1, lbl_8055B958, precision, lbl_805635D0 + (low + fraction * range), range, low);
 }
-#pragma scheduling reset
+#pragma pop
 float fn_8022DAB0(void *arg0) {
     float low = *(float *)((char *)arg0 + 0xC);
     return (**(float **)((char *)arg0 + 0x18) - low) / (*(float *)((char *)arg0 + 0x10) - low);
@@ -370,27 +375,31 @@ void fn_8022DE1C(void *arg0) {
 }
 
 #pragma push
-#pragma opt_propagation off
+#pragma optimize_for_size on
 int fn_8022DE88(void *arg0) {
-    float diff = *(float *)((char *)arg0 + 0x10) - **(float **)((char *)arg0 + 0x18);
-    if (!((float)__fabs(diff) <= lbl_80558DC4[0])) {
-        return 1;
-    }
-    return 0;
+    float *epsilon_ptr = (float *)&lbl_80558DC4;
+    float current = *(float *)((char *)arg0 + 0x10);
+    float *value_ptr = *(float **)((char *)arg0 + 0x18);
+    float value = *value_ptr;
+    float diff = current - value;
+    if ((float)__fabs(diff) <= *epsilon_ptr) return 0;
+    return 1;
 }
 #pragma pop
 extern double __fabs(double);
 #pragma push
+#pragma opt_propagation off
 #pragma scheduling invalid_target
 int fn_8022DEC4(void *arg0) {
-    float value;
-    float current;
-    float diff;
-    current = *(float *)((char *)arg0 + 0xC);
-    value = **(float **)((char *)arg0 + 0x18);
-    diff = current - value;
-    if ((float)__fabs(diff) <= lbl_80558DC4[0]) return 0;
-    return 1;
+    float *valuePtr = *(float **)((char *)arg0 + 0x18);
+    float current = *(float *)((char *)arg0 + 0xC);
+    float value = *valuePtr;
+    float diff = current;
+    diff -= value;
+    if (!((float)__fabs(diff) <= lbl_80558DC4[0])) {
+        return 1;
+    }
+    return 0;
 }
 #pragma pop
 void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
