@@ -147,7 +147,7 @@ extern u8 lbl_8049FE98[];
 __declspec(section ".data") extern u8 lbl_8049FD58;
 void fn_80276BE4(u32 *arg0, f32 *arg1) {
     u32 *src;
-    if (lbl_8049FD58 != 0) {
+    if (*(unsigned char *)&lbl_8049FD58 != 0) {
         fn_8027656C(lbl_8049FE98 + 4, lbl_8049FE98 + 0x34, 0);
     }
     src = (u32 *)(lbl_8049FE98 + 4);
