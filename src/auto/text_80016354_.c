@@ -103,7 +103,10 @@ void *fn_80016720(const char *arg0) {
     }
     return (char *)result + 0x2C;
 }
-#pragma dont_inline reset
+
+#pragma scheduling invalid_target
+void *fn_8001675C(unsigned int arg0, int arg1) { int i; int found = 0; unsigned char *entry; for (i = 0, entry = lbl_8055D544; i < (int)lbl_8055D550; i++, entry += 0xA8) { if (arg0 == (arg0 & *(unsigned int *)(entry + 0xA0))) { if (found == arg1) return lbl_8055D544 + i * 0xA8; found++; } } return lbl_8055D544; }
+#pragma scheduling on
 void *fn_800167B8(int arg0) { return lbl_803577F0 + arg0 * 0x5C; }
 
 void fn_800167CC(void) {
@@ -237,6 +240,17 @@ void fn_80016A48(void *arg0, int arg1) {
     }
     fn_8027953C(arg0);
 }
+
+void *fn_80016BC8(void *arg0, int arg1) {
+    int *var_r3;
+
+    var_r3 = (int *)arg0;
+    if (*(int *)((char *)var_r3 + 0xA0) & 2) {
+        var_r3 = (int *)fn_80016544(*(int *)((char *)var_r3 + 8));
+    }
+    return (void *)((char *)lbl_8055D548 + ((*var_r3 + (arg1 * 0x32)) * 0xC));
+}
+
 extern void *lbl_8055D538;
 extern void *lbl_8055D53C;
 extern char lbl_802FCEEC[];
