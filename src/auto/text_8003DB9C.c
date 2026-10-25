@@ -2874,16 +2874,25 @@ void GXSetAlphaUpdate(s32 enable) {
 }
 
 void GXSetZMode(s32 enable, s32 func, s32 update) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int unused : 27;
+            unsigned int update : 1;
+            unsigned int func : 3;
+            unsigned int enable : 1;
+        } bits;
+    } reg;
     unsigned int *data = __GXData;
-    unsigned int value;
-    value = data[0x228 / 4];
-    value = (value & ~1) | (enable & 1);
-    value = (value & ~0xE) | ((func << 1) & 0xE);
+
+    reg.value = data[0x228 / 4];
+    reg.bits.enable = enable;
+    reg.bits.func = func;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = (value & ~0x10) | ((update << 4) & 0x10);
-    *(volatile unsigned int *)0xCC008000 = value;
-    data[0x228 / 4] = value;
-    *(unsigned short *)((char *)data + 2) = 0;
+    reg.bits.update = update;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
+    data[0x228 / 4] = reg.value;
+    *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetZCompLoc(s32 enable) {
