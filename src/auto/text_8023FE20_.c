@@ -21,6 +21,7 @@ extern char lbl_8034288C[];
 extern s32 fn_8023512C(char *, s32, char *, s32);
 extern s32 fn_80232578(char *, char *, s32);
 extern char lbl_80498828[];
+extern void *fn_80241098(void *);
 void fn_8023FE20(void) {
     register int *p = (int *)lbl_80498828;
     *p++ = -1;
@@ -82,19 +83,19 @@ void fn_802409A4(void *arg0, signed char arg1) {
 }
 
 void fn_802409AC(void *arg0, s32 arg1) {
+    s32 count = *(s32 *)((char *)arg0 + 0x2C);
     s32 i;
-    void *entry;
+    char *entry = (char *)arg0;
     void *item;
-    s32 count;
-    count = *(s32 *)((char *)arg0 + 0x2C);
-    entry = arg0;
-    *(s32 *)((char *)arg0 + 0x18 + count * 4) = arg1;
-    *(s32 *)((char *)arg0 + 0x2C) = count + 1;
-    for (i = 0; i < *(s32 *)((char *)arg0 + 0x2C); i++) {
-        item = *(void **)((char *)entry + 0x18);
-        *(u8 *)item = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
-        *(s32 *)((char *)item + 4) = *(s32 *)((char *)arg0 + 0x34);
-        entry = (char *)entry + 4;
+    *(s32 *)(entry + 0x18 + count * 4) = arg1;
+    *(s32 *)(entry + 0x2C) = count + 1;
+    for (i = 0; i < *(s32 *)(entry + 0x2C); i++) {
+        s32 value = **(s32 **)(entry + 0x34);
+        s32 selected = *(u8 *)(entry + 0x38) != 0 && i == *(s32 *)(entry + 0x30);
+        item = *(void **)(entry + 0x18);
+        entry += 4;
+        *(u8 *)item = selected;
+        *(s32 *)((char *)item + 4) = value;
     }
 }
 
@@ -612,12 +613,14 @@ done:
 #pragma scheduling on
 #pragma optimize_for_size on
 void fn_80241DE8(void *arg0) {
+    s32 *p = (s32 *)arg0;
+    s32 *entry = p;
     s32 i;
-    void *entry;
 
-    for (i = 0, entry = arg0; i < *(s32 *)((char *)arg0 + 0x2C); i++, entry = (char *)entry + 4) {
-        *(u8 *)*(void **)((char *)entry + 0x18) = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
-        *(s32 *)((char *)*(void **)((char *)arg0 + 0x18) + 4) = *(s32 *)((char *)arg0 + 0x34);
+    for (i = 0; i < p[11]; i++, entry += 1) {
+        s32 *out = *(s32 **)(entry + 6);
+        *out = (p[14] != 0 && i == p[12]);
+        out[1] = *(s32 *)p[9];
     }
 }
 
