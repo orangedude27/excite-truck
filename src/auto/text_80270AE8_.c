@@ -420,14 +420,15 @@ int fn_802726EC(float farg0, float farg1, float farg2) {
 }
 
 int fn_80272C24(float farg0, float farg1, float farg2, float farg3) {
+    int result;
     if (farg1 == farg2) return 1;
     if (farg1 > farg2) {
         if (farg1 > farg0) farg1 -= farg3;
         else farg2 += farg3;
     }
-    if (!(farg0 < farg1)) return 0;
-    if (!(farg0 > farg2)) return 0;
-    return 1;
+    result = 0;
+    if ((farg0 >= farg1) && (farg0 <= farg2)) result = 1;
+    return result;
 }
 
 extern unsigned char lbl_8055F564;
