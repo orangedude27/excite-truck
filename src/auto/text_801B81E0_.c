@@ -271,14 +271,53 @@ extern "C" void fn_801B85E0(void *a, void *b, void *c, void *d) {
 extern "C" void fn_801B8610(void *a, void *b) {
     ((Dummy_801B8318 *)lbl_8055E744)->f36(a, b);
 }
-#pragma cplusplus off
-int fn_801B8630(int arg0, int arg1, int arg2) {
+#pragma cplusplus on
+extern "C" int fn_801B8630(int arg0, int arg1, int arg2) {
+    struct Dummy_801B8630 {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual void d6();
+        virtual void d7();
+        virtual void d8();
+        virtual void d9();
+        virtual void d10();
+        virtual void d11();
+        virtual void d12();
+        virtual void d13();
+        virtual void d14();
+        virtual void d15();
+        virtual void d16();
+        virtual void d17();
+        virtual void d18();
+        virtual void d19();
+        virtual void d20();
+        virtual void d21();
+        virtual void d22();
+        virtual void d23();
+        virtual void d24();
+        virtual void d25();
+        virtual void d26();
+        virtual void d27();
+        virtual void d28();
+        virtual void d29();
+        virtual void d30();
+        virtual void d31();
+        virtual void d32();
+        virtual void d33();
+        virtual void d34();
+        virtual void d35();
+        virtual void d36();
+        virtual void d37();
+        virtual int call(int, int, int);
+    };
     extern int fn_80161BDC(void);
     if (fn_80161BDC() != 0) return 1;
-    return (*(int (***)(void *, int, int, int))lbl_8055E744)[40](lbl_8055E744, arg0, arg1, arg2);
+    return ((Dummy_801B8630 *)lbl_8055E744)->call(arg0, arg1, arg2);
 }
-
-#pragma cplusplus on
 extern "C" void fn_801B86A4(void *arg0) {
     ((Dummy_801B8318 *)lbl_8055E744)->f41(arg0);
 }
