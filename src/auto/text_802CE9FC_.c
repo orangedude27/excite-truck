@@ -1178,6 +1178,19 @@ void fn_802D2F70(int arg0) {
     fn_802D2ED8(arg0, 0);
 }
 
+int fn_802D2F78(int *arg0, int *arg1) {
+    int *data;
+    int value;
+    GXSetDrawSyncCallback();
+    VIFlush();
+    data = lbl_804C9760;
+    value = data[2];
+    *((unsigned char *)data + 0x14) = 1;
+    *arg0 = value;
+    *arg1 = data[3];
+    return data[1];
+}
+
 void fn_802D3050(int arg0) {
     unsigned long value;
 
@@ -1460,10 +1473,14 @@ void fn_802D3D94(void *arg1, int arg0) {
 
 #pragma scheduling invalid_target
 void fn_802D3DAC(void) {
-    if ((lbl_8055FDD0 & 0x3F) == 0) {
+    register int id = lbl_8055FDD0;
+    if ((id & 0x3F) != 0) {
+    } else {
         OSReport(lbl_8034C204);
     }
-    GXInitVtxDescList(lbl_8055FDD0++);
+    id = lbl_8055FDD0;
+    lbl_8055FDD0 = id + 1;
+    GXInitVtxDescList(id);
     GXDisableBreakPt();
 }
 #pragma scheduling on
