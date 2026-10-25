@@ -80,21 +80,26 @@ check:
         goto loop;
 }
 
-void fn_801C1320(void* arg0) {
-    int i = 0;
-    int offset = 0;
-    while (i < *(int*)((char*)arg0 + 0x14)) {
-        float* dst = *(float**)((char*)arg0 + 0x2C);
-        float* out = (float*)((char*)dst + offset);
-        out[0] = *(float*)((char*)arg0 + 0x3C);
-        out[1] = *(float*)((char*)arg0 + 0x40);
-        out[2] = *(float*)((char*)arg0 + 0x44);
-        ++i;
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_801C1320(void *arg0) {
+    int offset;
+    int i;
+    char *dst;
+    i = 0;
+    offset = 0;
+    while (i < *(int *)((char *)arg0 + 0x14)) {
+        dst = *(char * volatile *)((char *)arg0 + 0x2C);
+        i++;
+        *(float *)(dst + offset) = *(float *)((char *)arg0 + 0x3C);
+        float *out = (float *)(dst + offset);
         offset += 12;
+        out[1] = *(float *)((char *)arg0 + 0x40);
+        out[2] = *(float *)((char *)arg0 + 0x44);
     }
 }
-
-#pragma dont_inline on
+#pragma scheduling on
+#pragma dont_inline reset
 extern void fn_801C1B60(int);
 #pragma force_active on
 void fn_801C1218(void);
@@ -340,10 +345,13 @@ extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int a
         fn_80144DAC((void *)arg8, v14);
 }
 #pragma pop
-void fn_801C2B9C(float* out, float* a, float* b, float scale) {
-    out[1] = a[1] + b[1] * scale;
-    out[0] = a[0] + b[0] * scale;
-    out[2] = a[2] + b[2] * scale;
+void fn_801C2B9C(float *out, float *a, float *b, float scale) {
+    float x = a[0] + b[0] * scale;
+    float y = a[1] + b[1] * scale;
+    float z = a[2] + b[2] * scale;
+    out[1] = y;
+    out[0] = x;
+    out[2] = z;
 }
 
 extern "C" void fn_801C2BDC(void *arg0, unsigned int *arg1, unsigned int *arg2, unsigned int *arg3) {
