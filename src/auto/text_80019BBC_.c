@@ -650,7 +650,6 @@ void fn_8001B7BC(void *arg0) {
 #pragma small_data on
 extern float lbl_80560418;
 extern float lbl_8056041C;
-extern float lbl_803582C0;
 extern int fn_8001B478(float);
 extern void *fn_80156A40(void);
 extern double cos(double);
