@@ -3,6 +3,9 @@
 
 #include <types.h>
 
+extern "C" s32 fn_8022F8CC(s32);
+extern "C" s32 fn_8022FFE8(s32);
+
 class Fn80229AE4Dispatch {
 public:
     virtual void v0();
@@ -4974,12 +4977,17 @@ extern "C" void fn_80229998(void *arg0) {
     }
 }
 
-int fn_802299B0(void *arg0) {
-    int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x18)) result = 2;
-    int *p = *(int **)((char *)arg0 + 0x254);
-    if (p != 0 && *p == *(int *)((char *)arg0 + 0x258)) result |= 1;
-    return result;
+extern "C" s32 fn_802299B0(void *arg0) {
+    s32 *p;
+    s32 result = 0;
+    s32 value = 0;
+
+    if (*(u8 *)((u8 *)arg0 + 0x18) != 0)
+        result = 2;
+    p = *(s32 **)((u8 *)arg0 + 0x254);
+    if (p != 0 && *p == *(s32 *)((u8 *)arg0 + 0x258))
+        value = 1;
+    return (value != 0) | result;
 }
 
 void fn_802299FC(void *arg0) {
