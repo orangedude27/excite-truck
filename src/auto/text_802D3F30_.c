@@ -227,6 +227,13 @@ void fn_802D5DE8(u32 flags) {
     GXSetVtxDescv(desc);
 }
 
+s32 fn_802D62E4(void *arg0, ...) {
+    if ((u32)(*(u32 *)arg0 + 0xB1BC0000) != 0x4C32U) {
+        return 0;
+    }
+    return (s32)arg0;
+}
+
 void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     extern u8 lbl_804CA438[];
     extern s32 lbl_8055FDF0;
@@ -423,7 +430,7 @@ void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
     arg0[3] = a;
     arg0[1] = d;
     arg0[2] = c;
-    if (fn_802D62E4(arg0, c, arg2) != 0) {
+    if (((s32 (*)(void *))fn_802D62E4)(arg0) != 0) {
         fn_802D65F8(arg1, arg2);
     } else {
         s32 sp8 = *(s32 *)arg0;
