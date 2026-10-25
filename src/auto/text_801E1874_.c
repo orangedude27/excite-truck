@@ -21,14 +21,14 @@ extern const char lbl_80339878[];
 extern const char lbl_80339884[];
 int *fn_801E1F44(void);
 void *fn_80207848(const char *, int);
+#pragma scheduling invalid_target
 void fn_801E1874(void) {
-    volatile int *p = (volatile int *)&lbl_804874D4;
-    *p = 0;
-    *((volatile char *)p + 0x18) = 0;
-    *((volatile char *)p + 4) = 0;
+    *(volatile int *)lbl_804874D4 = 0;
+    *((volatile char *)lbl_804874D4 + 0x18) = 0;
+    *((volatile char *)lbl_804874D4 + 4) = 0;
     lbl_8055EA22 = 0;
 }
-
+#pragma scheduling on
 extern void *fn_802AE414(const char *);
 extern int stricmp(const char *, const char *);
 extern unsigned char lbl_8055AE60[], lbl_8055AE68[], lbl_8055AE6C[], lbl_8055AE74[], lbl_8055AE7C[], lbl_8055AE84[], lbl_8055AE8C[], lbl_8055AE94[], lbl_8055AE9C[], lbl_8055AEA8[];
