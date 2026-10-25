@@ -152,6 +152,18 @@ void fn_802C86E8(void* hi) {
     lbl_8055D018 = hi;
 }
 
+extern void fn_802C87B4(int, int, int, int);
+extern void fn_80128668(void *);
+void *fn_802C8750(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_802C87B4(*(int *)((unsigned char *)arg0), *(int *)((unsigned char *)arg0 + 4), *(int *)((unsigned char *)arg0 + 8), *(int *)((unsigned char *)arg0 + 0xC));
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 void fn_802C87B4(int x,int y,int w,int h){
 int half;
 if((unsigned char)lbl_8055FC74==0 && (unsigned char)lbl_8055FC8D!=0){
@@ -353,8 +365,8 @@ void fn_802C9294(int arg0, int arg1) {
     int equal;
     if (arg0 != -1 && arg0 != -2) {
         equal = arg1 == 1;
-        lbl_8055FC74 = 1;
         lbl_8055FC75 = equal;
+        lbl_8055FC74 = 1;
     } else {
         lbl_8055FC74 = 0;
         lbl_8055FC75 = 0;
