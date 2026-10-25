@@ -229,6 +229,21 @@ void fn_802D5DE8(u32 flags) {
     GXSetVtxDescv(desc);
 }
 
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_802D5F88(s32 arg0) {
+    u8 *ptr = (u8 *)arg0;
+    register u32 flags = *(u32 *)(ptr + 0xC);
+    u32 normalized = flags & 0xFFCFFFFF;
+    u8 mode = ptr[9];
+
+    if (normalized != lbl_8055FDE8) {
+        GXCallDisplayList(*(void **)(ptr + 0x10), (u32)ptr[0xB] << 5);
+        lbl_8055FDE8 = normalized;
+        lbl_8055FDEC = mode;
+    }
+}
+#pragma scheduling on
 s32 fn_802D62E4(void *arg0) {
     if ((u32)(*(u32 *)arg0 + 0xB1BC0000) != 0x4C32U) {
         return 0;
@@ -387,14 +402,17 @@ extern const char lbl_8034C3F4[];
 extern const char lbl_8034C428[];
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
+#pragma scheduling invalid_target
 void fn_802D6860(void) {
+    s32 lastLength;
     fn_802E30C8(lbl_8034C3F4, lbl_8055FDF8 - lbl_8055FDF4, lbl_8055FDF0);
     fn_80128670(lbl_8055FDF4);
+    lastLength = lbl_8055FE00;
     lbl_8055FDF4 = 0;
     lbl_8055FDF8 = 0;
-    fn_802E30C8(lbl_8034C428, lbl_8055FE00);
+    fn_802E30C8(lbl_8034C428, lastLength);
 }
-
+#pragma scheduling on
 void fn_802D6B08(void *arg0) {
     fn_802D61BC();
     if (lbl_8055FD1C & 8) {
