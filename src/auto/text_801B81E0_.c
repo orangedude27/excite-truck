@@ -217,11 +217,11 @@ void fn_801B84BC(void) {
 extern "C" void fn_801B84C0(void *arg0) {
     ((Dummy_801B8318 *)lbl_8055E744)->f18(arg0);
 }
-#pragma cplusplus off
-void fn_801B84D8(void* arg0) {
-    (*(void (***)(void*, void*))lbl_8055E744)[21](lbl_8055E744, arg0);
+#pragma cplusplus on
+extern "C" void fn_801B84D8(void *arg0) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f19(arg0);
 }
-
+#pragma cplusplus off
 int fn_801B84F0(void) {
     return 0;
 }
