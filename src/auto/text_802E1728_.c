@@ -96,6 +96,13 @@ int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride) {
 
 int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
 
+int fn_802E1960(int arg0) {
+    int result = ((arg0 >> 3) + 3) & ~3;
+    if ((result & (result - 1)) == 0)
+        return result;
+    return fn_802E176C(result);
+}
+
 void fn_802E1A38(void *arg0, int arg1) {
     int result;
     result = fn_802E1980(arg1, (char *)arg0 + 0x190, (char *)arg0 + 0x180, (char *)arg0 + 0x184, *(int *)((char *)arg0 + 0x104));
@@ -341,13 +348,14 @@ u64 fn_802E2D74(int arg0) {
     return now - start;
 }
 
+#pragma scheduling invalid_target
 void fn_802E2E0C(int arg0, int arg1) {
     int index = lbl_8055FF00;
-    *(volatile int *)&lbl_8055FF00 = index + 1;
+    lbl_8055FF00 = index + 1;
     lbl_804DB790[index] = arg0;
     lbl_804DB7D0[index] = arg1;
 }
-
+#pragma scheduling on
 void fn_802E2E38(int arg0) {
 extern char lbl_8034CCE0[]; extern int lbl_804DB790[],lbl_804DB7D0[],lbl_8055FF00;
 extern int fn_80039840(void),fn_802D9BF0(void),fn_802D9C04(void),fn_8005EE7C(void);
@@ -366,7 +374,9 @@ fn_802E30C8(text+0x1E4);OSReturnToMenu();
 }
 
 void fn_802E300C(int arg0) {
-    int temp = (arg0 > 0) ? 1 : 0;
+    int temp = 0;
+    if (arg0 > 0)
+        temp = 1;
     ((void (*)(const char *, int))fn_802E317C)(lbl_8034CEE4, arg0);
 }
 
