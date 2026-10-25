@@ -463,6 +463,13 @@ void fn_80128EF0(void *arg0, s32 arg1) {
     *(u32 *)(temp_r31 + temp_r30) = 0x06630216;
 }
 
+void fn_80128F68(void *arg0) {
+    s32 *p = (s32 *)arg0;
+    s32 a = p[4];
+    s32 b = p[3];
+    fn_802E30C8(&lbl_8032A448, (void *)a, (void *)b);
+}
+
 extern s32 fn_801281F4(s32, s32);
 extern s32 fn_802E317C(void *, void *);
 extern char lbl_8032A470[];
@@ -501,9 +508,10 @@ s32 fn_801290DC(void *arg0, s32 arg1) {
 }
 
 extern char lbl_8032A498[];
+#pragma scheduling invalid_target
 void fn_80129138(void *arg0) {
     fn_802E30C8(lbl_8032A498,
-        (void *)(*(s32 *)((u8 *)arg0 + 8) >> 10),
-        (void *)(*(s32 *)((u8 *)arg0 + 0xC) >> 10));
+        (void *)(*(s32 *)((u8 *)arg0 + 8) / 1024),
+        (void *)(*(s32 *)((u8 *)arg0 + 0xC) / 1024));
 }
-
+#pragma scheduling on
