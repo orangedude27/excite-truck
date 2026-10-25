@@ -333,6 +333,14 @@ void fn_80191060(void) {
 
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
+extern u8 lbl_80332FC4[];
+void fn_801912B4(void *arg0) {
+    *(void **)arg0 = lbl_80332FC4;
+    *(s32 *)((u8 *)arg0 + 0x34) = 0;
+    *(s32 *)((u8 *)arg0 + 0x38) = 0;
+    *(s32 *)((u8 *)arg0 + 8) = -1;
+}
+
 #pragma cplusplus on
 extern "C" void fn_801914F8(void *arg0) {
     class VTable {
