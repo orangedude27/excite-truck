@@ -209,16 +209,17 @@ void fn_802E58B8(unsigned char *arg0) {
 }
 
 extern int sprintf(char *, const char *, ...);
+#pragma scheduling invalid_target
 void fn_802E5950(int arg0, int arg1) {
     char buffer[0x108];
 
     sprintf(buffer, lbl_8055D1E4, arg0, arg1);
-    ((void (*)(char *, char *))fn_802E30C8)(lbl_8034D490, buffer);
-    if (fn_802E582C() == 0) {
-        ((void (*)(char *, char *))fn_802E30C8)(lbl_8034D4A0, buffer);
+    ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D490, buffer);
+    if (((int (*)(char *))fn_802E582C)(buffer) == 0) {
+        ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D4A0, buffer);
     }
 }
-
+#pragma scheduling on
 void fn_802E59BC(unsigned char *arg0) {
     int index = lbl_8055FF78;
     unsigned char *dst = lbl_804FC558 + (index << 5);
