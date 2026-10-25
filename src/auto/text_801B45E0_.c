@@ -144,6 +144,7 @@ int fn_801B47D4(int arg0, int arg1) {
     return *(int *)(arg0 + 0x1C) - 1;
 }
 
+#pragma dont_inline on
 int fn_801B47F0(int arg0) {
     unsigned int temp_r4;
     unsigned int temp_r5;
