@@ -573,6 +573,7 @@ void fn_802C7734(void* alarm) {
 }
 
 void fn_802C7758(void);
+#pragma dont_inline fn_802C7758
 void fn_802C7758(void) {
     fn_802D0610(0);
 }
