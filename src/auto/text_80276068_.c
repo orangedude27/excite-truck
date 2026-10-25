@@ -68,16 +68,17 @@ void fn_80276ACC(void *arg0, int arg1) {
         lbl_8055F598 = (int)entry;
 }
 
+#pragma scheduling invalid_target
 void fn_80276B8C(void) {
-    volatile unsigned char *entry = (unsigned char *)&lbl_8049FD58;
+    unsigned char *entry = lbl_8049FD58;
     int i = 0;
     do {
-        memset((void *)entry, 0, 0x50);
+        memset(entry, 0, 0x50);
         i++;
         entry += 0x50;
     } while (i < 4);
 }
-
+#pragma scheduling on
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef float f32;
