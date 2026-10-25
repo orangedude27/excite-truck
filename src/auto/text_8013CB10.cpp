@@ -216,8 +216,12 @@ extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
 }
 
 extern "C" u32 fn_8013D18C(u32 arg0) {
-    S6_8013D18C values;
-    values = *(S6_8013D18C *)&lbl_802F9398;
+    struct {
+        s32 v[6];
+    } values = {{
+        lbl_802F9398[0], lbl_802F9398[1], lbl_802F9398[2],
+        lbl_802F9398[3], lbl_802F9398[4], lbl_802F9398[5]
+    }};
     return values.v[arg0 % 6];
 }
 
@@ -455,7 +459,7 @@ extern "C" void *fn_8013E6E4(void *arg0) {
 extern "C" void fn_802C6CF8(s32);
 extern "C" void fn_802CAC54(s32);
 extern "C" void fn_8002F6AC(s32, void *);
-extern "C" void fn_8013E33C(void);
+extern "C" void *fn_8013E33C(void *, s32);
 extern "C" void *__dt__Q210JASDrumSet5TPercFv(void *, s32);
 extern "C" u8 lbl_8032CAF0[];
 extern "C" s32 lbl_8055E1C0;
