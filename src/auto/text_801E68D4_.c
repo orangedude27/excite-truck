@@ -25,16 +25,19 @@ extern void fn_802C70AC(s32, void*, s32, s32);
 extern void fn_802E317C(const char*, ...);
 extern char lbl_80339A20[];
 s32 fn_801E68D4(void) {
-    u8* var_r3 = (u8*)lbl_8055EAC8;
-    s32 var_r6 = 0;
+    s32 count = 8;
+    s32 index = 0;
+    u8 *ptr = (u8 *)lbl_8055EAC8;
+
     do {
-        if (var_r3[0] == 0) {
-            lbl_8055EAC8[var_r6] = 1;
-            return lbl_80487CC0[var_r6];
+        if (*ptr == 0) {
+            s32 result = lbl_80487CC0[index];
+            lbl_8055EAC8[index] = 1;
+            return result;
         }
-        var_r3 += 1;
-        var_r6 += 1;
-    } while (var_r6 < 8);
+        ++ptr;
+        ++index;
+    } while (--count != 0);
     return 0;
 }
 
@@ -81,7 +84,7 @@ void fn_801E6B98(void* arg0) {
     s32* var_r31 = (s32*)arg0;
     s32 temp = var_r31[5];
     if (temp != 0) {
-        fn_801E6924((void*)temp);
+        ((void (*)(s32))fn_801E6924)(temp);
     }
     fn_801E598C(var_r31[1]);
     fn_802C6CF8(var_r31[0]);
