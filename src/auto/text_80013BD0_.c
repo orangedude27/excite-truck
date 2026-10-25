@@ -101,12 +101,14 @@ f32 fn_80013D60(f32 x) {
     return x;
 }
 
+#pragma scheduling invalid_target
 void fn_80013DF0(s32 arg0) {
     void *obj = *(void **)((u8 *)lbl_803577E0[arg0] + 0x50);
-    void **vt = *(void ***)obj;
-    ((void (*)(void *, void *))vt[3])(obj, lbl_802FCBEC);
+    register void **vtable = *(void ***)obj;
+    register void *method = vtable[3];
+    ((void (*)(void *, void *))method)(obj, lbl_802FCBEC);
 }
-
+#pragma scheduling on
 void fn_80013E1C(s32 arg0) {
     void *obj;
     void **vt;
@@ -121,12 +123,16 @@ void fn_80013E1C(s32 arg0) {
     }
 }
 
-void fn_80013EAC(s32 arg0, s32 arg1) {
+#pragma scheduling invalid_target
+void fn_80013EAC(s32 arg0, s32 arg1, s32 arg2) {
     void *obj = *(void **)((u8 *)lbl_803577E0[arg0] + 0x50);
-    if (arg1 < 1) arg1 = 1;
-    fn_80013BD0(obj, arg1, 0, 0);
+    s32 value = 1;
+    if (arg1 >= 1) {
+        value = arg1;
+    }
+    fn_80013BD0(obj, value, arg2, 0);
 }
-
+#pragma scheduling on
 extern u8 lbl_80558B80;
 extern void *fn_8023512C(void *);
 extern void *fn_802CAC28(void *, s32);
