@@ -20,6 +20,16 @@ extern void *lbl_8055F924;
 extern int lbl_8055F928;
 void fn_8028E080(void);
 __declspec(section ".sdata") extern float lbl_805649F0;
+s32 fn_802A9F30(void *arg0) {
+    extern double lbl_805649E8;
+    s32 temp_r5;
+    temp_r5 = *(s32 *)arg0 * 0x108;
+    *(u8 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xC4) = 1;
+    *(f32 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xD4) = *(f32 *)((u8 *)arg0 + 4);
+    *(f32 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xD8) = (f32)*(u8 *)((u8 *)arg0 + 8);
+    return 0xC;
+}
+
 s32 fn_802A9F90(s32 *arg0) {
     extern int lbl_8055F928;
     *(u8 *)((u8 *)(lbl_8055F928 + (*arg0 * 0x108)) + 0xDC) = 1;
@@ -381,10 +391,11 @@ void fn_802AB504(void) {
     lbl_8055CC64 = -2;
 }
 
+#pragma dont_inline on
 void fn_802AB5B8(void) {
     extern int lbl_8055F928;
-    int index = 0;
     int offset = 0;
+    int index = 0;
     do {
         char *entry = (char *)lbl_8055F928 + offset;
         *(int *)(entry + 0x104) = index;
@@ -395,7 +406,7 @@ void fn_802AB5B8(void) {
         offset += 0x108;
     } while (index < 8);
 }
-
+#pragma dont_inline reset
 void fn_802AB6D0(void) {}
 
 #pragma push
