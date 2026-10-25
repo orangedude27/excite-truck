@@ -12,6 +12,9 @@
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
 
+extern void fn_800716F0(void *);
+extern void fn_8006CF44(void *, void *, void *, void *, void *, u32);
+
 extern void BTM_SendHciReset(void (*)(void));
 extern void fn_80085384(u8 *, u8);
 extern void RFCOMM_Init(void);
