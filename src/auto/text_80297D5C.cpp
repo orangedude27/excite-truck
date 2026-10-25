@@ -490,16 +490,15 @@ extern "C" int fn_802996B0(void *arg0, int *out) {
  return found;
 }
 
-extern "C" void* fn_802997F4(void* arg0, int arg1) {
-    void* p = arg0;
-    int i = 0;
-    do {
-        if (*(int*)p == arg1) {
-            return (char*)arg0 + (i << 6);
+extern "C" void *fn_802997F4(void *arg0, int arg1) {
+    void *p = arg0;
+    int i;
+    for (i = 0; i < 4; i++) {
+        if (arg1 == *(int *)p) {
+            return (char *)arg0 + (i << 6);
         }
-        p = (char*)p + 0x40;
-        i++;
-    } while (i < 4);
+        p = (char *)p + 0x40;
+    }
     return 0;
 }
 
