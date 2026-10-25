@@ -865,10 +865,15 @@ s32 fn_800074EC(s32 arg0) {
 
 s32 fn_800075A0(s32 arg0) {
     u32 p = *(u32 *)((u8 *)&lbl_8034EEB8 + arg0 * 0x10 + 0x10);
-    if (p == *(u32 *)((u8 *)&lbl_8034EEB8 + 0x58)) return 0;
-    if (p == *(u32 *)((u8 *)&lbl_8034EEB8 + 8)) return 0;
-    if (p == *(u32 *)((u8 *)&lbl_8034EEB8 + 0x5c)) return 0;
-    return 1;
+    s32 result = 0;
+    if (p != *(u32 *)((u8 *)&lbl_8034EEB8 + 0x58)) {
+        if (p != *(u32 *)((u8 *)&lbl_8034EEB8 + 8)) {
+            if (p != *(u32 *)((u8 *)&lbl_8034EEB8 + 0x5c)) {
+                result = 1;
+            }
+        }
+    }
+    return result;
 }
 
 s32 fn_800075E4(s32 arg0, s32 arg1) {
