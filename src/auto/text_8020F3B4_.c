@@ -230,13 +230,14 @@ extern long fn_802EC12C(void);
 extern long fn_8020FCC4(void);
 extern char lbl_8033C9AC[];
 extern long lbl_8055EED0;
+#pragma scheduling invalid_target
 void fn_8021037C(void) {
-    lbl_8055EED0 = fn_80207848(&lbl_8033C9AC, 1);
+    lbl_8055EED0 = fn_80207848(lbl_8033C9AC, 1);
     fn_802EC1D8();
     fn_802EC12C();
     fn_8020FCC4();
 }
- 
+#pragma scheduling on
 void fn_802103B8(void) {
     fn_8020F5C8();
 }
