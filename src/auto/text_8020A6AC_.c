@@ -41,6 +41,22 @@ extern int fn_80128668(void);
 extern char lbl_8033C458[];
 typedef struct { char *name; int state; } UnkStruct_8020A860;
 #pragma scheduling invalid_target
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void *fn_8020A6AC(void *arg0) {
+    char *entry = lbl_804892D0;
+    int i = 0;
+    while (i < (int)lbl_8055EE08) {
+        if (stricmp((const char *)arg0, entry) == 0)
+            return entry;
+        entry += 0x24;
+        i++;
+    }
+    return lbl_8033C338;
+}
+#pragma scheduling on
+#pragma dont_inline reset
+
 void fn_8020A72C(void) {
     void *object = (void *)fn_801284F8(0xC, lbl_8033C35C);
     if (object != 0)
