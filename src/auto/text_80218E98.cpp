@@ -4041,11 +4041,7 @@ extern "C" s32 fn_802268A0(void *arg0, s32 arg1) {
     s32 *p = *(s32 **)((u8 *)arg0 + 0x264);
     if (p != 0 && *(s32 *)((u8 *)arg0 + 0x260) != *p)
         return 0;
-    if (arg1 != 0xD) {
-        if ((u32)arg1 != 0x126 && (u32)arg1 != 0x128)
-            return 0;
-    }
-    return 1;
+    return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
 }
 
 extern "C" u32 fn_802268E8(void *arg0) {
