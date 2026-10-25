@@ -1202,11 +1202,14 @@ void *fn_801AC2C8(void *arg0, int arg1) {
 void *fn_801AC330(void *arg0) {
     fn_801A9700(arg0);
     *(void **)arg0 = &lbl_80335808;
-    if (lbl_8055E5EC == 0) {
+    if (*(volatile int *)&lbl_8055E5EC == 0) {
         lbl_8055E5F0 = 0;
     }
-    *(int *)((char *)arg0 + 0x250) = lbl_8055E5EC;
-    lbl_8055E5EC = lbl_8055E5EC + 1;
+    {
+        int count = *(volatile int *)&lbl_8055E5EC;
+        *(int *)((char *)arg0 + 0x250) = count;
+        *(volatile int *)&lbl_8055E5EC = count + 1;
+    }
     lbl_80435628[*(int *)((char *)arg0 + 0x250)] = arg0;
     *(int *)((char *)arg0 + 0x254) = -1;
     return arg0;
@@ -1379,6 +1382,37 @@ void fn_801ACF94(void) {
     }
 }
 
+extern float lbl_8056250C;
+extern float lbl_80562514;
+#pragma scheduling off
+void fn_801AD0E0(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, float farg1) {
+    float a, b, c, d, x, e, y, z, p, q, r;
+    a = lbl_80562514;
+    *(volatile int *)((char *)arg0 + 0x0C) = 0;
+    b = lbl_8056247C;
+    c = a * farg0;
+    d = lbl_8056250C;
+    x = *(float *)((char *)arg1 + 0x00);
+    e = d * c;
+    y = *(float *)((char *)arg1 + 0x04);
+    z = *(float *)((char *)arg1 + 0x08);
+    p = *(float *)((char *)arg3 + 0x00);
+    q = *(float *)((char *)arg3 + 0x04);
+    r = *(float *)((char *)arg3 + 0x08);
+    *(float *)((char *)arg0 + 0x28) = b;
+    *(float *)((char *)arg0 + 0x2C) = b;
+    *(float *)((char *)arg0 + 0x00) = x;
+    *(float *)((char *)arg0 + 0x04) = y;
+    *(float *)((char *)arg0 + 0x08) = z;
+    *(int *)((char *)arg0 + 0x0C) = (int)arg2;
+    *(float *)((char *)arg0 + 0x10) = p;
+    *(float *)((char *)arg0 + 0x14) = q;
+    *(float *)((char *)arg0 + 0x18) = r;
+    *(float *)((char *)arg0 + 0x1C) = farg0;
+    *(float *)((char *)arg0 + 0x24) = farg1;
+    *(float *)((char *)arg0 + 0x20) = e;
+}
+#pragma scheduling on
 extern void fn_8017AB84(void *, Vec *, void *);
 extern void fn_801AD0E0(void *, void *, void *, void *, f32, f32);
 void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg0, f32 farg1) {
@@ -1426,7 +1460,17 @@ void *fn_801AD6B0(void *arg0, int arg1) {
     return arg0;
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
+void fn_801AD750(void *arg0, void *arg1) {
+    void *var_r30 = arg0;
+    fn_801A9AB0(arg0, arg1);
+    *(int *)((char *)var_r30 + 0x240) = *(int *)((char *)arg1 + 0x80);
+    if (var_r30 != 0) {
+        var_r30 = (char *)var_r30 + 0x23C;
+        fn_801D08C0(var_r30);
+    }
+}
+#pragma scheduling on
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
     void *obj;
     if (arg3 >= 8) return;
