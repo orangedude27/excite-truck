@@ -264,6 +264,7 @@ public:
     void updateSound();
     void clearCallback();
     s32 isPlayingSoundId(s32) const;
+    int isPlayingSoundId(int) const;
 };
 class FrameController {
 public:
