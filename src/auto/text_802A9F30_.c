@@ -19,6 +19,12 @@ void fn_80128668(void *);
 extern void *lbl_8055F924;
 void fn_8028E080(void);
 __declspec(section ".sdata") extern float lbl_805649F0;
+s32 fn_802A9F90(s32 *arg0) {
+    extern int lbl_8055F928;
+    *(u8 *)(lbl_8055F928 + (*arg0 * 0x108) + 0xDC) = 1;
+    return 4;
+}
+
 void fn_802A9FE0(void *arg0) {
     float value = lbl_805649F0;
     int i;
@@ -35,8 +41,10 @@ void fn_802A9FE0(void *arg0) {
 void fn_802AA0C8(void *arg0) {
     extern float lbl_805649F0;
     extern float lbl_805649F4;
-    float second = lbl_805649F4;
-    float first = lbl_805649F0;
+    float second;
+    float first;
+    first = lbl_805649F0;
+    second = lbl_805649F4;
     *(unsigned char *)((char *)arg0 + 0xDC) = 0;
     *(float *)((char *)arg0 + 0xE0) = first;
     *(float *)((char *)arg0 + 0xE4) = second;
