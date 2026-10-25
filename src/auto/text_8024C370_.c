@@ -78,7 +78,7 @@ void fn_8024C464(void) {
 }
 
 void fn_802E6FBC(void);
-void fn_802E712C(void);
+void fn_802E712C();
 void fn_802E6CA8(void);
 void fn_8000DA80(void);
 int fn_8023FAD4(void *, int);
