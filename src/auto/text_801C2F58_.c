@@ -1035,6 +1035,7 @@ extern char lbl_80438280[];
 extern char lbl_80438380[];
 extern char lbl_8055A95C[7];
 extern char lbl_8055AA44[4];
+extern s32 lbl_8055E864;
 extern Vec lbl_80438498;
 extern char lbl_8055E83D;
 void fn_801C7A28(void) {
@@ -1971,13 +1972,14 @@ void fn_801C95EC(f32 arg0) {
 }
 
 s32 fn_801C968C(s32 delta) {
-    s32 updated = lbl_8055E820 + delta;
-    lbl_8055E820 = updated;
-    if (updated < 0) {
+    register s32 temp_r4;
+    temp_r4 = lbl_8055E820 + delta;
+    lbl_8055E820 = temp_r4;
+    if (temp_r4 < 0) {
         lbl_8055E820 = *(s32*)((u8*)lbl_8055E86C + lbl_8055E81C * 0x10 + 8) - 1;
         return;
     }
-    if (updated >= *(s32*)((u8*)lbl_8055E86C + lbl_8055E81C * 0x10 + 8)) {
+    if (temp_r4 >= *(s32*)((u8*)lbl_8055E86C + lbl_8055E81C * 0x10 + 8)) {
         lbl_8055E820 = 0;
     }
 }
