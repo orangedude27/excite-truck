@@ -72,13 +72,12 @@ void fn_8022D350(void *arg0, const char *arg1, char arg2) {
 }
 
 char *fn_8022D3F8(void *arg0, int arg1, int *arg2) {
-    char **array;
-    char *ptr;
     if (arg1 >= 0 && arg1 < *(int *)((char *)arg0 + 8)) {
-        array = *(char ***)((char *)arg0 + 0x10);
-        ptr = array[arg1];
-        if (arg2 != 0) *arg2 = ptr[*(int *)((char *)arg0 + 4)];
-        return ptr;
+        if (arg2 != 0) {
+            *arg2 = ((signed char *)(*(char ***)((char *)arg0 + 0x10))[arg1])[
+                *(int *)((char *)arg0 + 4)];
+        }
+        return (*(char ***)((char *)arg0 + 0x10))[arg1];
     }
     if (arg2 != 0) *arg2 = 0;
     return 0;
@@ -155,27 +154,22 @@ void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char a
     *ptr = 0;
     *(int *)((char *)arg0 + 0x24) += 1;
 }
-#pragma scheduling reset
-#pragma use_lmw_stmw reset
+#pragma scheduling invalid_target
 void fn_8022D924(void *arg0, int arg1) {
-    int count = *(int *)((char *)arg0 + 0x24);
-    int value = *(int *)((char *)arg0 + 0x2C);
-    int next = count + 1;
-    *(int *)((char *)arg0 + 0x10) = arg1;
-    if (value >= 0) {
-        *(int *)((char *)arg0 + 0x24) = next;
-        if (value != 0) {
-            *(int *)((char *)arg0 + 0x20) = value;
-            *(int *)((char *)arg0 + 0x24) = next + 1;
-            *(int *)((char *)arg0 + 0x2C) = arg1;
-            *(int *)((char *)arg0 + 0x20) = arg1 / *(int *)((char *)arg0 + 0x10);
-            *(int *)((char *)arg0 + 0x24) = next + 2;
-        }
-    } else {
-        *(int *)((char *)arg0 + 0x24) = next;
-    }
+    int *p = (int *)arg0;
+    int value;
+    p[0x24 / 4] = p[0x24 / 4] + 1;
+    p[0x10 / 4] = arg1;
+    value = p[0x2C / 4];
+    if (value < 0) return;
+    if (value == 0) return;
+    p[0x20 / 4] = value;
+    p[0x24 / 4] = p[0x24 / 4] + 1;
+    p[0x2C / 4] = arg1;
+    p[0x20 / 4] = arg1 / p[0x10 / 4];
+    p[0x24 / 4] = p[0x24 / 4] + 1;
 }
-
+#pragma scheduling on
 int fn_8022D97C(int *arg0, int arg1) {
     return *arg0 + arg1 * 0x28;
 }
@@ -288,8 +282,9 @@ check:
 #pragma dont_inline off
 
 int fn_8022DC68(void *arg0, int arg1) {
+    int saved;
     int value;
-    int saved = *(int *)((char *)arg0 + 0xC);
+    saved = *(int *)((char *)arg0 + 0xC);
     fn_8022DC40(arg0, arg1);
     value = fn_8022DBD4(arg0);
     fn_8022DC40(arg0, saved);
