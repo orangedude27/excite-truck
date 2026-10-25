@@ -206,18 +206,26 @@ int fn_80296A10(unsigned int arg0, unsigned int arg1, float arg2) {
 }
 #pragma pop
 
-#pragma scheduling off
+#pragma push
+#pragma scheduling invalid_target
 void fn_80296AAC(void *arg0) {
+    register float value68;
+    register float value64;
+    register float value60;
+
     memset(arg0, 0, 0x30);
-    *(float *)((char *)arg0 + 0x10) = lbl_80564560;
-    *(float *)((char *)arg0 + 8) = lbl_80564560;
-    *(float *)((char *)arg0 + 0) = lbl_80564564;
-    *(float *)((char *)arg0 + 0x1C) = lbl_80564568;
+    value60 = lbl_80564560;
+    value64 = lbl_80564564;
+    value68 = lbl_80564568;
+    *(float *)((char *)arg0 + 0x10) = value60;
+    *(float *)((char *)arg0 + 8) = value60;
+    *(float *)((char *)arg0 + 0) = value64;
+    *(float *)((char *)arg0 + 0x1C) = value68;
     *(int *)((char *)arg0 + 0x18) = -1;
     *(int *)((char *)arg0 + 0x2C) = 10;
     *(int *)((char *)arg0 + 0x14) = -1;
 }
-#pragma scheduling on
+#pragma pop
 void fn_80296D24(void) {}
 
 void fn_80296D28(void) { fn_8029690C(); }
