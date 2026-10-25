@@ -1,3 +1,7 @@
+extern long lbl_8055EEE0;
+extern long lbl_8055EEE4;
+extern long lbl_8055B658;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
   
@@ -413,12 +417,13 @@ void fn_802113D8(void) {
 extern float lbl_80563404;
 extern void fn_80206454(void);
 extern void fn_801769EC(void);
+#pragma scheduling invalid_target
 void fn_802114C4(void) {
-    fn_80209190(lbl_8055EEF0, lbl_80563404);
+    ((void (*)(float, long))fn_80209190)(lbl_80563404, lbl_8055EEF0);
     fn_80206454();
     fn_801769EC();
 }
-
+#pragma scheduling on
 extern void fn_801345D8(void *, ...);
 extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
