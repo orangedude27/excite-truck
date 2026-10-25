@@ -24,24 +24,22 @@ extern void fn_80015B20(void*, void*, s32);
 extern void fn_802C70AC(s32, void*, s32, s32);
 extern void fn_802E317C(const char*, ...);
 extern char lbl_80339A20[];
+#pragma scheduling invalid_target
 s32 fn_801E68D4(void) {
-    s32 count = 8;
-    s32 index = 0;
-    u8 *ptr = (u8 *)lbl_8055EAC8;
+    s32 i;
+    s32 result;
+    u8 *ptr;
 
-    do {
+    for (i = 0, ptr = (u8 *)lbl_8055EAC8; i < 8; ++ptr, ++i) {
         if (*ptr == 0) {
-            s32 result = lbl_80487CC0[index];
-            lbl_8055EAC8[index] = 1;
+            result = lbl_80487CC0[i];
+            lbl_8055EAC8[i] = 1;
             return result;
         }
-        ++ptr;
-        ++index;
-    } while (--count != 0);
+    }
     return 0;
 }
-
-#pragma dont_inline on
+#pragma scheduling reset
 void fn_801E6924(void* arg0) {
     s32* var_r31 = lbl_80487CC0;
     s8* var_r30 = lbl_8055EAC8;
