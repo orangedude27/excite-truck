@@ -420,6 +420,7 @@ void fn_801B8964(int arg0, float arg1) {
 }
 
 #pragma cplusplus on
+#pragma cplusplus on
 extern "C" void fn_801B8978(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f25();
 }
