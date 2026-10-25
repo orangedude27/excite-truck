@@ -188,55 +188,56 @@ extern int fn_802CA57C(int, int, int);
 extern int fn_802CA4E0(int, int, int, int, int);
 extern int stricmp(const char *, const char *);
 extern unsigned int strlen(const char *);
-#pragma dont_inline fn_802CA7D4
-#pragma dont_inline fn_802CA7DC
-#pragma dont_inline fn_802CA7F4
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma dont_inline on
 int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
-    char *path = (char *)arg0;
-    char *strings = lbl_8034B538;
-    int flag;
-    int index;
+    int path_value;
+    register int strings;
+    register int flag;
+    register int best;
+    register int index;
     int offset;
-    int best;
     int resource;
-    int *table = (int *)lbl_8055FCB0;
-    int *entry;
+    register int *entry;
     int size;
     char *src;
     char *dst;
     int count;
     int c;
+    unsigned char first;
 
-    if (strlen(path) >= 0x10 &&
-        fn_802CA7DC(path) == 0 &&
-        fn_802CA7F4(path) == 0) {
-        fn_802E317C(strings + 0x2B8, path, strlen(path), 0x10);
+    path_value = arg0;
+    strings = (int)lbl_8034B538;
+    if (strlen((char *)path_value) >= 0x10 &&
+        ((int (*)(const char *))fn_802CA7DC)((char *)path_value) == 0 &&
+        fn_802CA7F4((char *)path_value) == 0) {
+        fn_802E317C((const char *)(strings + 0x2B8), (char *)path_value, strlen((char *)path_value), 0x10);
     }
-    if (strlen(path) >= 0x20)
-        fn_802E317C(strings + 0x2E0, path, strlen(path), 0x20);
-    if ((signed char)*path == 0 && arg3 == 1)
-        path = strings + 0x30C;
+    if (strlen((char *)path_value) >= 0x20)
+        fn_802E317C((const char *)(strings + 0x2E0), (char *)path_value, strlen((char *)path_value), 0x20);
+    if ((signed char)*(char *)path_value == 0 && arg3 == 1)
+        path_value = (int)(strings + 0x30C);
 
+    first = *(unsigned char *)path_value;
     flag = arg2 != 0;
-    c = (signed char)*path;
-    if (c == 0 || c == '.' || c == '#')
+    if ((signed char)first == 0 || (signed char)first == '.' || (signed char)first == '#')
         return -1;
 
     best = -1;
     index = 0;
     offset = 0;
     do {
-        entry = (int *)((char *)table + offset);
+        entry = (int *)(lbl_8055FCB0 + offset);
         if (entry[0] > 0) {
-            if (stricmp((char *)entry + 4, (char *)fn_802CA824((int)path)) == 0 &&
+            if (stricmp((char *)entry + 4, (char *)fn_802CA824((int)(char *)path_value)) == 0 &&
                 entry[0x24 / 4] == arg1 &&
                 flag == 0) {
                 offset = index * 0x4C;
-                entry = (int *)((char *)table + offset);
-                if (((int (*)(int, int, int))fn_802CA7D4)((int)path, arg3, entry[0x34 / 4]) == 0) {
-                    fn_802E30C8(strings + 0x318, path);
-                    entry[0x3C / 4] = 0;
-                    entry[0x34 / 4] = 0xE;
+                if (((int (*)(int, int, int))fn_802CA7D4)((int)(char *)path_value, arg3, *(int *)(lbl_8055FCB0 + offset + 0x34)) == 0) {
+                    fn_802E30C8((const char *)(strings + 0x318), (char *)path_value);
+                    *(int *)(lbl_8055FCB0 + offset + 0x3C) = 0;
+                    *(int *)(lbl_8055FCB0 + offset + 0x34) = 0xE;
                 }
                 entry[0]++;
                 return index;
@@ -249,65 +250,69 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     } while (index < 0x200);
 
     if (best < 0)
-        fn_802E317C(strings + 0x33C, path);
+        fn_802E317C((const char *)(strings + 0x33C), (char *)path_value);
 
     if (flag == 0) {
-        resource = fn_802CA658((int)path, arg3);
+        resource = fn_802CA658((int)(char *)path_value, arg3);
         if (resource == 0) {
-            fn_802E30C8(strings + 0x354, path);
+            fn_802E30C8((const char *)(strings + 0x354), (char *)path_value);
             resource = fn_802CA658((int)(strings + 0x370), 0xE);
         }
     } else {
         resource = arg2;
-        ((int (*)(int, int, int, int))fn_802CA57C)(resource, (int)path, 0, arg3);
+        ((int (*)(int, int, int, int))fn_802CA57C)(resource, (int)(char *)path_value, 0, arg3);
     }
     if (resource == 0)
         return -1;
 
-    entry = (int *)((char *)table + best * 0x4C);
+    entry = (int *)(lbl_8055FCB0 + best * 0x4C);
     *(signed char *)((char *)entry + 0x30) = flag;
     entry[0] = 1;
     entry[0x48 / 4] = 0;
     entry[0x24 / 4] = arg1;
 
-    if (fn_802CA7DC(path) == 0) {
-        src = path;
+    if (((int (*)(const char *))fn_802CA7DC)((char *)path_value) == 0) {
+        src = (char *)path_value;
         dst = (char *)entry + 4;
         count = 0x20;
-        do {
-            c = (signed char)*src;
-            *dst++ = *src++;
-            if (c == 0)
-                break;
-            count--;
-            if (count <= 0) {
-                dst[-1] = 0;
-                break;
-            }
-        } while (1);
+        goto copy1_body;
+copy1_check:
+        count--;
+        if (count > 0)
+            goto copy1_body;
+        dst[-1] = 0;
+        goto copy1_done;
+copy1_body:
+        c = (unsigned char)*src++;
+        *dst++ = c;
+        if ((signed char)c != 0)
+            goto copy1_check;
+copy1_done:
         if (flag != 0)
             size = 0;
         else
-            size = fn_802CA380((int)path);
+            size = fn_802CA380((int)(char *)path_value);
         entry[0x3C / 4] = size;
         if (size < 0x3E80)
             entry[0x3C / 4] = 0;
     } else {
-        fn_802E30C8(strings + 0x380, path);
-        src = (char *)fn_802CA824((int)path);
+        fn_802E30C8((const char *)(strings + 0x380), (char *)path_value);
+        src = (char *)fn_802CA824((int)(char *)path_value);
         dst = (char *)entry + 4;
         count = 0x20;
-        do {
-            c = (signed char)*src;
-            *dst++ = *src++;
-            if (c == 0)
-                break;
-            count--;
-            if (count <= 0) {
-                dst[-1] = 0;
-                break;
-            }
-        } while (1);
+        goto copy2_body;
+copy2_check:
+        count--;
+        if (count > 0)
+            goto copy2_body;
+        dst[-1] = 0;
+        goto copy2_done;
+copy2_body:
+        c = (unsigned char)*src++;
+        *dst++ = c;
+        if ((signed char)c != 0)
+            goto copy2_check;
+copy2_done:
         entry[0x3C / 4] = 0;
     }
 
@@ -315,10 +320,13 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     entry[0x44 / 4] = 0;
     entry[0x2C / 4] = resource;
     entry[0x34 / 4] = arg3;
-    entry[0x28 / 4] = fn_802CA4E0(resource, (int)path, 0, 0, arg3);
+    entry[0x28 / 4] = fn_802CA4E0(resource, (int)(char *)path_value, 0, 0, arg3);
     lbl_8055FCB8 = -2;
     return best;
 }
+#pragma dont_inline reset
+#pragma scheduling on
+#pragma use_lmw_stmw reset
 void fn_802CAC28(int arg0, int arg1) {
     fn_802CA898(arg0, arg1, 0, 0xE);
 }
@@ -455,8 +463,11 @@ void fn_802D8FB4(void);
 extern int lbl_8055D058;
 extern int lbl_8055D078;
 void fn_802CB38C(int arg0, int arg1, int arg2) {
-    fn_802CA57C(lbl_8055D078, 0, arg2);
-    fn_802CA4E0(arg0, lbl_8055D058, 0, arg1, arg0);
+    int saved0 = arg0;
+    int saved2 = arg2;
+    int saved1 = arg1;
+    ((int (*)(int, int, int, int))fn_802CA57C)(saved0, (int)&lbl_8055D078, 0, saved2);
+    fn_802CA4E0(saved0, lbl_8055D058, 0, saved1, saved2);
 }
 
 void fn_802CB3F4(void) {
@@ -477,9 +488,13 @@ extern float lbl_80564F44;
 extern float lbl_8055FCC4;
   extern unsigned short lbl_8055FCA8;
 int fn_802CAF8C(int arg0) {
+    int *entry;
+    unsigned short expected;
     if (arg0 == -1)
         return 0;
-    return *(unsigned short *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 0xC) != lbl_8055FCA8;
+    entry = (int *)(arg0 * 0x4C + lbl_8055FCB0);
+    expected = lbl_8055FCA8;
+    return *(unsigned short *)(*(entry + 11) + 0xC) != expected;
 }
 void fn_802CC550(int, float, float);
 int fn_802CB274(int arg0) {
