@@ -378,10 +378,14 @@ void fn_802CAD74(int arg0) {
         fn_802D9160(p[0x28 / 4], 0);
 }
 void fn_802CADD0(int arg0, int arg1) {
+    int offset;
+    char *base;
     if (arg0 == -1) {
         fn_802DBDE8(arg1, 0);
     } else {
-        fn_802DBDE8(arg1, *(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x28));
+        offset = arg0 * 0x4C;
+        base = (char *)lbl_8055FCB0;
+        fn_802DBDE8(arg1, *(int *)(base + offset + 0x28));
     }
 }
 
