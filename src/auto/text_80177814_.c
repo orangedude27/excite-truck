@@ -14,6 +14,9 @@ extern int lbl_80430870[];
 extern int lbl_80430590[];
 extern int lbl_80430830[];
 
+extern long fn_80178C1C(long *);
+extern long lbl_80430850;
+extern float lbl_80561B60;
 void fn_80179EE8(void*, unsigned int);
 void fn_80128668(void*);
 extern unsigned char lbl_8055E46C;
