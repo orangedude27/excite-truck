@@ -110,14 +110,13 @@ extern float lbl_80562CD0;
 extern float lbl_80562CD4;
 extern void fn_801E1B30(void);
 void fn_801E1E64(void) {
-    int *base = (int *)lbl_804874B8;
-    void *p = *(void **)((char *)base + 0x14);
+    void *p = *(void **)(lbl_804874B8 + 0x14);
     if (p != 0) {
         *(unsigned char *)((char *)p + 0x4A) = 0;
         *(unsigned char *)((char *)p + 0x4B) = 1;
         *(unsigned char *)((char *)p + 0x49) = 1;
     }
-    if (*base != 0)
+    if (*(int *)lbl_804874B8 != 0)
         fn_801E1B30();
 }
 
