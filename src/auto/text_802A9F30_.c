@@ -31,6 +31,7 @@ void fn_802A9FE0(void *arg0) {
     *(float *)((char *)arg0 + 0xD8) = value;
 }
 
+#pragma scheduling invalid_target
 void fn_802AA0C8(void *arg0) {
     extern float lbl_805649F0;
     extern float lbl_805649F4;
@@ -41,7 +42,7 @@ void fn_802AA0C8(void *arg0) {
     *(float *)((char *)arg0 + 0xE4) = second;
     *(int *)((char *)arg0 + 0xE8) = -1;
 }
-
+#pragma scheduling on
 void fn_802AA0EC(void *arg0) {
     extern float lbl_805649F0;
     float value = lbl_805649F0;
@@ -334,7 +335,7 @@ void fn_802AB504(void) {
     extern void fn_80128670(void *);
     extern void fn_802CAC54(int);
     extern void fn_802A9F30(void), fn_802A9FB0(void);
-    extern int fn_802A9F90(int *);
+    extern s32 fn_802A9F90(s32 *);
     extern unsigned char lbl_8055F92C;
     extern void *lbl_8055F924;
     extern int lbl_8055F928, lbl_8055CC60, lbl_8055CC64;
