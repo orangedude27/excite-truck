@@ -275,8 +275,8 @@ float fn_801E8738(long arg0) {
 
 #pragma scheduling off
 long fn_801E8758(long arg0) {
-    unsigned char *entry;
     long value;
+    unsigned char *entry;
     long result;
 
     if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
