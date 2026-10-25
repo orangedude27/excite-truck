@@ -530,12 +530,18 @@ void fn_800062E8(void) {
 
 extern s32 fn_80011A5C(s32);
 extern s32 fn_801B84A4(s32);
+#pragma scheduling invalid_target
 void fn_80006378(s32 arg0, s32 arg1) {
-    s32 *p = (s32 *)(lbl_8034EEB8_arr + (arg1 << 4));
-    void (*fn)(void) = (void (*)(void))((s32 *)p[7])[12];
-    fn();
+    s32 *p;
+    void *object;
+    void **vtable;
+    p = lbl_8034EEB8;
+    p = (s32 *)((u8 *)p + (arg1 << 4));
+    object = (void *)p[7];
+    vtable = *(void ***)object;
+    ((void (*)(void))vtable[12])();
 }
-
+#pragma scheduling on
 s32 fn_8000639C(void) {
     return 0;
 }
@@ -828,9 +834,11 @@ void fn_80007498(void) {
 }
 
 s32 fn_8000749C(void) {
-    if (lbl_8055D340[1] == 0) return 0;
-    if (lbl_8055D340[0] == 0) return 0;
-    return 1;
+    s32 result = 0;
+    if (lbl_8055D340[1] != 0) {
+        if (lbl_8055D340[0] != 0) result = 1;
+    }
+    return result;
 }
 
 s32 fn_800074C4(void) {
