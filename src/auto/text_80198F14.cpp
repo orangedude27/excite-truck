@@ -1418,23 +1418,36 @@ extern "C" void fn_8019F1B4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
     fn_8019DDFC(arg1, arg2, arg3, arg4, (u8 *)arg0 + 0x34, arg0, *(f32 *)((u8 *)arg0 + 0x24));
 }
 
-void fn_8019F1D4(void *arg0, f32 *arg1, f32 *arg2) {
-    f32 width = *(f32 *)((u8 *)arg0 + 0x24);
-    f32 left = *(f32 *)((u8 *)arg0 + 0x34);
-    f32 mid = *(f32 *)((u8 *)arg0 + 0x38);
-    f32 right = *(f32 *)((u8 *)arg0 + 0x3C);
-    f32 a = width * lbl_805622DC;
-    f32 b = width * lbl_805622E0;
-    f32 v0[2] = {width, width};
-    f32 v1[4] = {width, left, mid, right};
-    arg1[0] = left + a;
-    arg1[1] = mid + a;
-    arg1[2] = right + a;
-    arg2[0] = left + b;
-    arg2[1] = mid + b;
-    arg2[2] = right + b;
+#pragma scheduling invalid_target
+extern "C" void fn_8019F1D4(void* arg0, f32* arg1, f32* arg2) {
+    volatile f32 inputA[2];
+    volatile f32 inputB[4];
+    f32 width = *(f32*)((u8*)arg0 + 0x24);
+    f32 scaleA = width * lbl_805622DC;
+    f32 left = *(f32*)((u8*)arg0 + 0x34);
+    f32 mid = *(f32*)((u8*)arg0 + 0x38);
+    f32 scaleB = width * lbl_805622E0;
+    f32 right = *(f32*)((u8*)arg0 + 0x3C);
+    f32 x0 = left + scaleA;
+    inputA[0] = width;
+    f32 x1 = mid + scaleA;
+    f32 x2 = right + scaleA;
+    inputA[1] = width;
+    arg1[0] = x0;
+    f32 y0 = left + scaleB;
+    f32 y1 = mid + scaleB;
+    f32 y2 = right + scaleB;
+    arg1[1] = x1;
+    arg1[2] = x2;
+    inputB[0] = width;
+    inputB[1] = left;
+    inputB[2] = mid;
+    inputB[3] = right;
+    arg2[0] = y0;
+    arg2[1] = y1;
+    arg2[2] = y2;
 }
-
+#pragma scheduling on
 extern "C" void fn_8019F248(void *arg0) {
     extern f32 lbl_80562300;
     extern s32 lbl_8055E598;
@@ -1588,38 +1601,57 @@ extern "C" void fn_801A0160(void* arg0) {
     s32 value = lbl_8055E3C4;
     if (value != *(s32*)((u8*)arg0 + 0x180)) {
         *(s32*)((u8*)arg0 + 0x180) = value;
-        void** entries = (void**)arg0;
-        s32 i = 0;
+        class Dummy {
+        public:
+            virtual void m0();
+            virtual void m1();
+            virtual void m2();
+            virtual void m3();
+        };
+        register u8* entry = (u8*)arg0;
+        register s32 i = 0;
+        goto check;
     loop:
-        void* item = *(void**)((u8*)entries + 0x24);
-        ((void (*)(void*))((void**) *(void**)item)[3])(item);
-        entries++;
+        Dummy* item = *(Dummy**)(entry + 0x24);
+        item->m1();
+        entry += 4;
         i++;
+    check:
         if (i < *(s32*)((u8*)arg0 + 0x174))
             goto loop;
     }
 }
 
 extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
-    f32 temp_f8 = *(f32*)((u8*)arg0 + 0x178);
-    void* temp_r3 = *(void**)((u8*)arg0 + 0xC);
-    f32 temp_f7 = *(f32*)((u8*)temp_r3 + 0x24);
-    f32 temp_f2 = temp_f8 * lbl_805622DC;
-    f32 temp_f6 = *(f32*)((u8*)temp_r3 + 0x28);
-    f32 temp_f0 = temp_f8 * lbl_805622E0;
-    f32 temp_f5 = *(f32*)((u8*)temp_r3 + 0x2C);
-    f32 sp8 = temp_f8;
-    *(f32*)arg1 = temp_f7 + temp_f2;
-    *(f32*)((u8*)arg1 + 4) = temp_f6 + temp_f2;
-    *(f32*)((u8*)arg1 + 8) = temp_f5 + temp_f2;
-    f32 spC = temp_f8;
-    f32 sp10 = temp_f8;
-    f32 sp14 = temp_f7;
-    f32 sp18 = temp_f6;
-    f32 sp1C = temp_f5;
-    *(f32*)arg2 = temp_f7 + temp_f0;
-    *(f32*)((u8*)arg2 + 4) = temp_f6 + temp_f0;
-    *(f32*)((u8*)arg2 + 8) = temp_f5 + temp_f0;
+    volatile f32 inputA[2];
+    volatile f32 inputB[4];
+    volatile f32* first = (volatile f32*)arg1;
+    volatile f32* second = (volatile f32*)arg2;
+    f32 value = *(f32*)((u8*)arg0 + 0x178);
+    f32 scaleA = value * lbl_805622DC;
+    void* base = *(void**)((u8*)arg0 + 0xC);
+    f32 x = *(f32*)((u8*)base + 0x24);
+    f32 y = *(f32*)((u8*)base + 0x28);
+    f32 scaleB = value * lbl_805622E0;
+    f32 z = *(f32*)((u8*)base + 0x2C);
+    f32 x0 = x + scaleA;
+    f32 y0 = y + scaleA;
+    inputA[0] = value;
+    f32 z0 = z + scaleA;
+    first[0] = x0;
+    f32 x1 = x + scaleB;
+    f32 y1 = y + scaleB;
+    first[1] = y0;
+    f32 z1 = z + scaleB;
+    first[2] = z0;
+    inputA[1] = value;
+    inputB[0] = value;
+    inputB[1] = x;
+    inputB[2] = y;
+    inputB[3] = z;
+    second[0] = x1;
+    second[1] = y1;
+    second[2] = z1;
 }
 
 extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 farg2) {
@@ -2173,6 +2205,24 @@ extern "C" void fn_801A2474(void *self) {
     }
 }
 
+extern "C" char lbl_80333818[];
+extern "C" void fn_801A2674(void*, s32, s32, f32);
+#pragma scheduling invalid_target
+extern "C" void* fn_801A25F8(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    *(s32*)((u8*)arg0 + 0xC) = arg1;
+    *(s32*)((u8*)arg0 + 0x30) = arg2;
+    *(s32*)((u8*)arg0 + 4) = arg3;
+    *(s32*)((u8*)arg0 + 8) = 0;
+    *(s32*)((u8*)arg0 + 0x18) = 0x52414744;
+    *(f32*)((u8*)arg0 + 0x10) = lbl_805622E0;
+    *(f32*)((u8*)arg0 + 0x14) = lbl_805622E0;
+    *(s32*)((u8*)arg0 + 0x20) = 0x64;
+    *(s32*)((u8*)arg0 + 0x1C) = 0;
+    *(void**)arg0 = lbl_80333818;
+    ((void (*)(void*, s32, s32))fn_801A2674)(arg0, 0, -1);
+    return arg0;
+}
+#pragma scheduling on
 extern "C" void fn_801A2674(void* arg0, s32 arg1, s32 arg2, f32 arg3) {
     *(f32*)((u8*)arg0 + 0x24) = arg3;
     *(s32*)((u8*)arg0 + 0x28) = arg1;
@@ -2180,7 +2230,7 @@ extern "C" void fn_801A2674(void* arg0, s32 arg1, s32 arg2, f32 arg3) {
 }
 
 extern f32 lbl_805622E0;
-void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
+extern "C" void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
     f32 sp10, spC, sp8;
     f32 temp_f0 = *(f32*)((u8*)arg0 + 0x24);
     void* temp_r3 = *(void**)((u8*)arg0 + 0xC);
@@ -2668,15 +2718,20 @@ extern "C" void fn_801A442C(void* arg0, void* arg1, void* arg2) {
     *(f32*)((u8*)arg2 + 0x8) = c;
 }
 
+#pragma scheduling invalid_target
 extern "C" f32 fn_801A4460(void* arg0) {
-    f32 first = PSVECDotProduct((const Vec*)((u8*)arg0 + 0x34), (const Vec*)((u8*)arg0 + 0x34));
-    f32 second = PSVECDotProduct((const Vec*)((u8*)arg0 + 0x28), (const Vec*)((u8*)arg0 + 0x28));
-    if (second <= first) {
-        second = first;
+    register void* base = arg0;
+    f32 first = PSVECDotProduct((const Vec*)((u8*)base + 0x34), (const Vec*)((u8*)base + 0x34));
+    f32 second = PSVECDotProduct((const Vec*)((u8*)base + 0x28), (const Vec*)((u8*)base + 0x28));
+    f32 result;
+    if (second > first) {
+        result = second;
+    } else {
+        result = first;
     }
-    return (f32)fn_8002F234(second);
+    return fn_8002F234(result);
 }
-
+#pragma scheduling on
 extern "C" void fn_801A44C4(void* arg0) {
     fn_801CFF18(*(s32*)((u8*)arg0 + 0x24), *(s32*)((u8*)arg0 + 0xC));
 }
@@ -2785,14 +2840,18 @@ extern "C" void fn_801A47C8(void* arg0) {
 }
 
 #pragma opt_tail_call on
-void fn_801A47FC(void* arg0) {
-    if (arg0) {
-        s32 limit = *(s32*)arg0;
-        s32** ptrs = *(s32***)((u8*)arg0 + 4);
-        for (s32 i = 0; i < limit; i++) {
-            fn_801A49E8((void*)ptrs[i]);
-        }
-    }
+extern "C" void fn_801A47FC(void* arg0) {
+    register s32* r29 = (s32*)arg0;
+    register s32 r30 = 0;
+    register s32 r31 = 0;
+    if (!r29) return;
+    goto check;
+loop:
+    fn_801A49E8((void*)(*(s32*)(r29[1] + r31)));
+    r31 += 4;
+    r30++;
+check:
+    if (r30 < r29[0]) goto loop;
 }
 
 #pragma opt_tail_call on
