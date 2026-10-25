@@ -33,6 +33,56 @@ void fn_80007D94(const char** arg0, const char** arg1) {
     stricmp(*arg0, *arg1);
 }
 
+extern void *fn_80131808(void *);
+extern char lbl_802FB6E0[];
+extern const char lbl_80558978[];
+extern const char lbl_80558980[];
+extern const char lbl_80558988[];
+extern const char lbl_80558990[];
+void fn_80007DA0(void) {
+    void *config;
+    void *entry;
+    void **vtable;
+    u32 count;
+    u32 index;
+    u32 offset;
+    void *(*getEntry)(void *, int);
+    void *(*getName)(void *);
+    void *(*func)(void *, const char *, const char *);
+
+    config = fn_80131808(lbl_802FB6E0 + 0x68);
+    lbl_8034EF38.unk_0x1E4 = config;
+    count = 0;
+    *(u32 *)((u8 *)&lbl_8034EF38 + 0x1E0) = 0;
+    index = 0;
+    do {
+        vtable = *(void ***)config;
+        getEntry = (void *(*)(void *, int))vtable[3];
+        entry = getEntry(config, index);
+        index++;
+        if (entry != 0) {
+            vtable = *(void ***)entry;
+            getName = (void *(*)(void *))vtable[2];
+            if (stricmp(getName(entry), lbl_80558978) == 0) {
+                const char *value;
+                value = ((const char *(*)(void *, const char *))vtable[5])(entry, lbl_80558980);
+                offset = count * 0xC;
+                *(const char **)((u8 *)&lbl_8034EF38 + offset) = value;
+                func = (void *(*)(void *, const char *, const char *))vtable[6];
+                *(void **)((u8 *)&lbl_8034EF38 + offset + 4) = func(entry, lbl_802FB6E0 + 0x74, lbl_80558988);
+                *(void **)((u8 *)&lbl_8034EF38 + offset + 8) = func(entry, lbl_80558990, lbl_80558988);
+                count++;
+                *(u32 *)((u8 *)&lbl_8034EF38 + 0x1E0) = count;
+                if (count >= 0x28) {
+                    fn_802E317C(lbl_802FB6E0 + 0x84);
+                    break;
+                }
+            }
+        }
+    } while (index != 0);
+    qsort(&lbl_8034EF38, count, 0xC, (int (*)(const void *, const void *))fn_80007D94);
+}
+
 #pragma dont_inline on
 void fn_80007F04(void) {
     Unk8034EF38* p = &lbl_8034EF38;
@@ -88,7 +138,7 @@ u32 fn_800080D8(void) {
     return *(u32*)((u8*)&lbl_8034EF38 + 0x1E0);
 }
 
-s32 fn_80008158(s32);
+const char* fn_80008158(s32);
 extern const char lbl_805589A8[];
 const char* fn_80008188(void) {
     return *(const char**)((u8*)&lbl_8034EF38 + fn_800080E8() * 0xC + 4);
