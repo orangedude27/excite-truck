@@ -740,8 +740,8 @@ extern s32 fn_800217E4(void);
 #pragma dont_inline fn_800057BC
 void fn_80007238(void) {
     char stack[0x28];
-    f32 f0;
     f32 f3;
+    f32 f0;
     s32 mode;
     ((s32 *)lbl_8034EE84)[3] = ((s32 (*)(void))fn_801E7E3C)();
     ((f32 *)lbl_8034EE84)[4] = ((f32 (*)(void))fn_801E7E18)();
@@ -751,12 +751,7 @@ void fn_80007238(void) {
     mode = ((s32 *)lbl_8034EE84)[6];
     f0 = lbl_80560194;
     f3 = lbl_80560198;
-    if (mode > 2) {
-        goto continue_after_fmr;
-    } else {
-        f3 = f0;
-    }
-continue_after_fmr:
+    f3 = (mode > 2) ? f3 : f0;
     fn_802C974C(lbl_80560130, lbl_80560124, f3);
     fn_800057D0();
     fn_80161C18();
