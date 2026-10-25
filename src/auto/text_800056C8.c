@@ -1,4 +1,5 @@
 #include <types.h>
+extern s32 fn_801B87A0(s32, s32);
 extern s32 fn_801769A8(void);
 extern s32 fn_80005580(s32);
 extern s32 fn_80005678(void);
@@ -1101,9 +1102,12 @@ void *fn_80007C04(void) {
     return lbl_802FB604;
 }
 
+extern int __cntlzw(unsigned int);
 void fn_80007C10(void *arg0) {
-    u8 value = !!fn_801769B8();
-    ((u8 *)arg0)[4] = value;
+    u32 value = fn_801769B8();
+    u32 normalized = (u32)__cntlzw(value) >> 5;
+    normalized = (u32)__cntlzw(normalized) >> 5;
+    ((u8 *)arg0)[4] = normalized;
     ((u8 *)arg0)[5] = 0;
 }
 
