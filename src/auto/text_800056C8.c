@@ -249,6 +249,20 @@ extern "C" void fn_80005B74(void) {
         }
     }
 }
+
+void fn_80005C20(void) {
+    f32 temp_f0;
+    f32 var_f3;
+    s32 temp_r3;
+
+    temp_r3 = fn_802E2C20();
+    var_f3 = lbl_8056011C;
+    temp_f0 = (f32)(temp_r3 - lbl_8055D348) / lbl_80560124;
+    var_f3 = (var_f3 > temp_f0) ? var_f3 : temp_f0;
+    lbl_8055D34C = var_f3;
+    lbl_8055D348 = temp_r3;
+}
+
 #pragma pop
 #pragma cplusplus off
 extern void *fn_801284F8(s32, const char *);
@@ -961,10 +975,11 @@ void fn_800077E4(void *arg0) {
     void *base = lbl_8055D350;
     void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
     *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
-    if (fn_8000561C(p, base)) {
-        *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
-        fn_80276DC8(((s32 *)lbl_8055D350)[7]);
+    if (fn_8000561C(p, base) == 0) {
+        return;
     }
+    *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
+    fn_80276DC8(((s32 *)lbl_8055D350)[7]);
 }
 
 void fn_80007848(void) {
