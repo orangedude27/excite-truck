@@ -25,7 +25,7 @@ void fn_801D32DC(void) {
 
 int fn_801D36E8(void);
 int fn_801D3FA4(int, int, int, int, int, int, int);
-#pragma scheduling off
+#pragma use_lmw_stmw off
 int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     int result;
 
@@ -33,38 +33,61 @@ int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     fn_801D3FA4(result, arg0, arg1, arg2, arg3, arg4, arg5);
     return result;
 }
-
+#pragma use_lmw_stmw reset
 extern int fn_801D411C(void *);
 extern void *lbl_804421D8[];
-int fn_801D36E8(void) {
-    float bestValue;
+#pragma cplusplus on
+#pragma paired off
+#pragma paired_single off
+#pragma scheduling invalid_target
+extern "C" int fn_801D36E8(void) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual int check();
+    };
+    register float bestValue;
     void **entry;
     void *best;
     int index;
 
     bestValue = lbl_80562AB8;
-    entry = (void **)&lbl_804421D8;
+    entry = lbl_804421D8;
     best = 0;
     index = 0;
-    goto check;
+    goto check_loop;
 loop:
-    if ((*(int (**)(void *))(*(int *)*entry + 0x44))(*entry) == 0)
-        return (int)((void **)&lbl_804421D8)[index];
-    if (best != 0 && *(float *)((char *)*entry + 0x224) >= bestValue)
-        goto next;
-    best = *entry;
-    bestValue = *(float *)((char *)best + 0x224);
-next:
+    if (((struct Dummy *)*entry)->check() == 0)
+        return (int)lbl_804421D8[index];
+    if (best == 0 || *(float *)((char *)*entry + 0x224) < bestValue) {
+        best = *entry;
+        bestValue = *(float *)((char *)best + 0x224);
+    }
     entry++;
     index++;
-check:
+check_loop:
     if (index < *(int *)&lbl_8055E940)
         goto loop;
     fn_801D411C(best);
     return (int)best;
 }
-
-#pragma scheduling on
+#pragma paired reset
+#pragma paired_single reset
+#pragma cplusplus reset
+#pragma scheduling off
 unsigned int fn_801D37AC(void *arg0) {
     int temp_r4;
     temp_r4 = *(int *)((char *)arg0 + 0x1EC);
@@ -171,54 +194,73 @@ extern void fn_802E317C(const char *, ...);
 extern float lbl_80562AAC, lbl_80562AB8, lbl_80562AC4;
 extern char lbl_8033837C[];
 extern int lbl_80333918[];
-void fn_801D4294(void *arg0, void *arg1) {
+#pragma cplusplus on
+extern "C" double fn_8002F234(float);
+extern "C" void fn_8019EECC(void *, void *);
+extern "C" void fn_8019F564(void *, void *, float *, void *, float, float, float, float, float, float);
+extern "C" void fn_802E317C(const char *, ...);
+extern "C" float lbl_80562AAC, lbl_80562AB8, lbl_80562AC4;
+extern "C" char lbl_8033837C[];
+extern "C" int lbl_80333918[];
+extern "C" void fn_801D4294(void *arg0, void *arg1) {
     unsigned char *self = (unsigned char *)arg0;
     const unsigned char *src = (const unsigned char *)arg1;
-    volatile float sp8 = lbl_80562AB8;
-    volatile float spc = lbl_80562AB8;
-    volatile float sp10 = lbl_80562AB8;
+    float size;
+    float zero = lbl_80562AB8;
     int mode = *(int *)(src + 0x28);
+    volatile float sp10;
+    volatile float spc;
+    volatile float sp8;
     void *resource;
 
+    sp8 = zero;
+    spc = zero;
+    sp10 = zero;
     switch (mode) {
     case 0: {
-        float size = *(float *)(src + 0x2C);
+        size = *(float *)(src + 0x2C);
         unsigned char *p;
+        float posx;
+        float posy;
+        int shouldInit;
         *(unsigned int *)(self + 0x23C) = 0x53504852;
         *(float *)(self + 0x240) = size;
         resource = *(void **)(self + 0x244);
         if (resource == 0) break;
         p = (unsigned char *)resource;
+        posx = *(float *)(src + 0x14);
         *(void **)(p + 0x0C) = self + 0x3C;
+        posy = *(float *)(src + 0x18);
         *(void **)(p + 0x04) = self;
         *(unsigned int *)(p + 0x08) = 0;
         *(unsigned int *)(p + 0x18) = 0x53504852;
-        *(float *)(p + 0x10) = *(float *)(src + 0x14);
-        *(float *)(p + 0x14) = *(float *)(src + 0x18);
+        *(float *)(p + 0x10) = posx;
+        *(float *)(p + 0x14) = posy;
         *(unsigned int *)(p + 0x20) = 0x64;
         *(unsigned int *)(p + 0x1C) = 0;
         *(void **)p = (void *)&lbl_80333B48;
-        *(float *)(p + 0x28) = sp8;
-        *(float *)(p + 0x2C) = spc;
-        *(float *)(p + 0x30) = sp10;
+        shouldInit = arg0 != 0;
+        *(volatile float *)(p + 0x28) = sp8;
+        *(volatile float *)(p + 0x2C) = spc;
+        *(volatile float *)(p + 0x30) = sp10;
         *(float *)(p + 0x24) = size;
-        *(float *)(p + 0x34) = lbl_80562AB8;
-        *(float *)(p + 0x38) = lbl_80562AB8;
-        *(float *)(p + 0x3C) = lbl_80562AB8;
-        *(float *)(p + 0x40) = lbl_80562AB8;
-        *(float *)(p + 0x44) = lbl_80562AB8;
-        *(float *)(p + 0x48) = lbl_80562AB8;
+        *(float *)(p + 0x34) = zero;
+        *(float *)(p + 0x38) = zero;
+        *(float *)(p + 0x3C) = zero;
+        *(float *)(p + 0x40) = zero;
+        *(float *)(p + 0x44) = zero;
+        *(float *)(p + 0x48) = zero;
         *(unsigned char *)(p + 0x4C) = 0;
-        *(float *)(p + 0x50) = lbl_80562AB8;
-        *(float *)(p + 0x28) = sp8;
-        *(float *)(p + 0x2C) = spc;
-        *(float *)(p + 0x30) = sp10;
-        if (arg0 != 0) fn_8019EECC(arg0, p + 0x28);
+        *(float *)(p + 0x50) = zero;
+        *(volatile float *)(p + 0x28) = sp8;
+        *(volatile float *)(p + 0x2C) = spc;
+        *(volatile float *)(p + 0x30) = sp10;
+        if (shouldInit) fn_8019EECC(arg0, p + 0x28);
         break;
     }
     case 1: {
-        float y = *(float *)(src + 0x2C);
         float x = lbl_80562AC4 * *(float *)(src + 0x30);
+        float y = *(float *)(src + 0x2C);
         float xx = x * x;
         float yy = y * y;
         *(unsigned int *)(self + 0x23C) = 0x54554245;
@@ -226,14 +268,19 @@ void fn_801D4294(void *arg0, void *arg1) {
         resource = *(void **)(self + 0x244);
         if (resource != 0) {
             unsigned char *p = (unsigned char *)resource;
-            float f = lbl_80562AC4 * *(float *)(src + 0x30);
-            float h = *(float *)(src + 0x2C);
-            *(void **)(p + 0x0C) = self + 0x3C;
+            unsigned char *subObj;
+            float posx, posy, f, h;
+            subObj = self + 0x3C;
+            posx = *(float *)(src + 0x14);
+            *(void **)(p + 0x0C) = subObj;
+            posy = *(float *)(src + 0x18);
             *(void **)(p + 0x04) = self;
             *(unsigned int *)(p + 0x08) = 0;
             *(unsigned int *)(p + 0x18) = 0x54554245;
-            *(float *)(p + 0x10) = *(float *)(src + 0x14);
-            *(float *)(p + 0x14) = *(float *)(src + 0x18);
+            f = lbl_80562AC4 * *(float *)(src + 0x30);
+            h = *(float *)(src + 0x2C);
+            *(float *)(p + 0x10) = posx;
+            *(float *)(p + 0x14) = posy;
             *(unsigned int *)(p + 0x20) = 0x64;
             *(unsigned int *)(p + 0x1C) = 0;
             *(float *)(p + 0x24) = h;
@@ -243,8 +290,8 @@ void fn_801D4294(void *arg0, void *arg1) {
         break;
     }
     case 2: {
-        float y = *(float *)(src + 0x2C);
         float x = *(float *)(src + 0x30);
+        float y = *(float *)(src + 0x2C);
         float xx = x * x;
         float yy = y * y;
         *(unsigned int *)(self + 0x23C) = 0x54554245;
@@ -252,17 +299,26 @@ void fn_801D4294(void *arg0, void *arg1) {
         resource = *(void **)(self + 0x244);
         if (resource != 0) {
             unsigned char *p = (unsigned char *)resource;
-            *(void **)(p + 0x0C) = self + 0x3C;
+            unsigned char *subObj;
+            float posx, posy, h, f;
+            void *vtable;
+            subObj = self + 0x3C;
+            posx = *(float *)(src + 0x14);
+            *(void **)(p + 0x0C) = subObj;
+            posy = *(float *)(src + 0x18);
             *(void **)(p + 0x04) = self;
             *(unsigned int *)(p + 0x08) = 0;
+            vtable = lbl_80333918;
             *(unsigned int *)(p + 0x18) = 0x54554245;
-            *(float *)(p + 0x10) = *(float *)(src + 0x14);
-            *(float *)(p + 0x14) = *(float *)(src + 0x18);
+            h = *(float *)(src + 0x2C);
+            f = *(float *)(src + 0x30);
+            *(float *)(p + 0x10) = posx;
+            *(float *)(p + 0x14) = posy;
             *(unsigned int *)(p + 0x20) = 0x64;
             *(unsigned int *)(p + 0x1C) = 0;
-            *(float *)(p + 0x24) = *(float *)(src + 0x2C);
-            *(float *)(p + 0x28) = *(float *)(src + 0x30);
-            *(void **)p = lbl_80333918;
+            *(float *)(p + 0x24) = h;
+            *(float *)(p + 0x28) = f;
+            *(void **)p = vtable;
         }
         break;
     }
@@ -284,11 +340,21 @@ void fn_801D4294(void *arg0, void *arg1) {
     }
 
     resource = *(void **)(self + 0x244);
-    ((void (*)(void *, int))(*(void ***)resource)[16])(resource, *(int *)(src + 0x1C));
+    {
+        struct Resource {
+            virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+            virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+            virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+            virtual void m12(); virtual void m13();
+            virtual void update(int);
+            virtual void m14(); virtual void m15();
+        };
+        ((Resource *)resource)->update(*(int *)(src + 0x1C));
+    }
     self[0x1E9] = src[0x20];
     *(int *)(self + 0x24) = *(int *)(self + 0x28);
 }
-
+#pragma cplusplus reset
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECCrossProduct(const void *, const void *, float *);
 extern float PSVECSquareDistance(const void *, const void *);
