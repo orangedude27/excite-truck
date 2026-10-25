@@ -361,9 +361,8 @@ void fn_8026A394(void *arg0) {
  }
 }
 
-extern void fn_80269BB0(void);
-void *fn_80267EE4(int);
-void fn_8026A49C(void) {
+  extern void fn_80269BB0(void);
+  void fn_8026A49C(void) {
     fn_80269BB0();
 }
 
