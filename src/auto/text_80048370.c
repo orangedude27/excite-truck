@@ -4,7 +4,7 @@
 #include <revolution/MEM.h>
 #include "revolution/KPAD/__KPAD.h"
 #include "revolution/OS/OSInterrupt.h"
-#include "revolution/MTX/mtx.h"
+#include "revolution/MTX/mtxtypes.h"
 
 static inline void KPADNotifySampling(s32 chan) {
     KPADInsideStatus *status = &inside_kpads[chan];
