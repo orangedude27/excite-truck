@@ -141,9 +141,8 @@ extern void fn_801C7254(void *);
 extern void fn_80144CD0(void *, void *, void *);
 extern float lbl_802FA818[];
 extern float lbl_80564064, lbl_80564068, lbl_8056406C;
-u32 fn_8027656C(void *, void *, u32);
-extern u8 lbl_8049FD58;
-extern u8 lbl_8049FE98[];
+  u32 fn_8027656C(void *, void *, u32);
+  extern u8 lbl_8049FE98[];
 __declspec(section ".data") extern u8 lbl_8049FD58;
 void fn_80276BE4(u32 *arg0, f32 *arg1) {
     u32 *src;
