@@ -43,6 +43,7 @@ float fn_80291784(float a, float b, float c, float d) {
     return value - lbl_80564480;
 }
 
+#pragma scheduling invalid_target
 void fn_802919AC(void *arg0) {
     void *saved = arg0;
     void *cursor = saved;
@@ -54,7 +55,7 @@ void fn_802919AC(void *arg0) {
         i++;
     }
 }
-
+#pragma scheduling on
 void fn_80291A1C(void) {
     float value = lbl_805644A0;
     void **obj = (void **)fn_802AE414(&lbl_8055C948);
@@ -228,12 +229,22 @@ void fn_802921F4(void) {
 }
 
 void fn_8029222C(void) {
-    int i;
-    char *p;
+    register int *base;
+    register char *p;
+    register int count;
+    register char zero;
     if (lbl_8055F75C == 0) return;
     p = (char *)&lbl_804B3EC0;
-    for (i = 0; i < *((int *)&lbl_804B3EC0 + 0x48); i++, p += 0x24)
-        p[0x14] = 0;
+    base = (int *)p;
+    count = 0;
+    zero = 0;
+    goto check;
+loop:
+    p[0x14] = zero;
+    p += 0x24;
+    count++;
+check:
+    if (count < base[0x48]) goto loop;
     *((char *)&lbl_804B4010 + 0x14) = 0;
 }
 
@@ -259,10 +270,15 @@ void fn_8029231C(float *arg0) {
 }
 
 void fn_802923C4(int arg0) {
-    int *p;
+    register unsigned int *p;
+    register unsigned int old;
+    register unsigned int value;
     if (lbl_8055F75C == 0) return;
-    p = (int *)&lbl_804B4010;
-    p[6] = (arg0 & 0xFFFFFF) | (p[6] & 0xFF000000);
+    p = (unsigned int *)lbl_804B4010;
+    old = p[6];
+    value = (unsigned int)arg0 << 8;
+    value >>= 8;
+    p[6] = value | (old & 0xFF000000);
 }
 
 extern float lbl_8056449C;
