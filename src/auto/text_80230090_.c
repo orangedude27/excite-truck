@@ -7,7 +7,7 @@ extern u8 lbl_8055B998;
 extern f32 lbl_8055F02C;
 extern f32 lbl_8055F030;
 extern f32 lbl_80563610;
-extern f32 lbl_80563638;
+extern f64 lbl_80563638;
 extern f32 lbl_80563640;
 extern f32 lbl_80563648;
 extern u32 lbl_8055FB9C;
