@@ -288,7 +288,8 @@ void fn_801B5274(void) {
     lbl_8055E6D0 = 0;
     lbl_8055E6D4 = 3;
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void fn_801B52CC(void) {
     int result;
     fn_802E30C8((int *)&lbl_80335E10);
@@ -298,7 +299,7 @@ void fn_801B52CC(void) {
     }
     lbl_8055E6D8 = (void *)result;
 }
-
+#pragma pop
 void fn_801B5318(void) {
 
 }
