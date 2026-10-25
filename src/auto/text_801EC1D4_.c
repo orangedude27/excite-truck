@@ -189,13 +189,14 @@ void fn_801ECB80(void *arg0) {
 }
 #pragma pop
 
+#pragma scheduling invalid_target
 long fn_801ECC8C(unsigned int arg0) {
     long result = 0;
-    if (fn_801ECB60() == 0 && arg0 == lbl_8055EBC8)
+    if (fn_801ECB60() != 0 || arg0 == lbl_8055EBC8)
         result = 1;
     return result;
 }
-
+#pragma scheduling on
 void fn_801ECF58(void *arg0) {
     long flag;
     long entry;
@@ -541,17 +542,13 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801EEEEC(long arg0, long arg1) {
 }
 
 void fn_801EEF44(void *arg0, void *arg1) {
-    long base;
-    long p44;
-    long pc8;
-    long p148;
-    base = *(long *)((char *)lbl_80488648 + *(long *)((char *)arg1 + 0xFA8) * 4);
-    p44 = base + 0x44;
-    pc8 = base + 0xC8;
-    p148 = base + 0x148;
-    *(long *)((char *)arg0 + 0x16C) = p44;
-    *(long *)((char *)arg0 + 0x170) = pc8;
-    *(long *)((char *)arg0 + 0x174) = p148;
+    unsigned int index;
+    unsigned int base;
+    index = *(unsigned int *)((char *)arg1 + 0xFA8);
+    base = *(unsigned int *)((char *)lbl_80488648 + index * 4);
+    *(unsigned int *)((char *)arg0 + 0x16C) = base + 0x44;
+    *(unsigned int *)((char *)arg0 + 0x170) = base + 0xC8;
+    *(unsigned int *)((char *)arg0 + 0x174) = base + 0x148;
     fn_801EDD7C(arg0, (long)arg1);
 }
 
