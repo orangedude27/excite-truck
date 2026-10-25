@@ -705,7 +705,7 @@ extern const char lbl_8055B3C8[];
 extern const char lbl_8055B3D0[];
 extern const char lbl_8055B3D8[];
 void* fn_802AE414(int);
-char* strncpy(char*, const char*, unsigned long);
+extern "C" char* strncpy(char*, const char*, unsigned long);
 #pragma cplusplus on
 extern "C" int fn_801FE88C(void* unused, void* out) {
     struct Obj {
