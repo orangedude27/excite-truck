@@ -1989,6 +1989,20 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_
     OSUnlockMutex(mutex);
 }
 
+#pragma push
+#pragma small_data off
+extern "C" u8 lbl_80325BE8[];
+extern "C" u8 lbl_80325BB8[];
+#pragma push
+#pragma dont_inline on
+#pragma small_data off
+u32 nw4hbm::snd::SoundArchivePlayer::detail_ConvertLabelStringToSoundId(const char *label) {
+    if (*(u32 *)((u8 *)this + 0x10) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325BE8, 0x163, (const char *)lbl_80325BB8);
+    }
+    return (u32)fn_800F27D4(*(void **)((u8 *)this + 0x10), (s32)label);
+}
+#pragma pop
 extern "C" void *__dt__Q36nw4hbm3snd9SoundHeapFv(void*, int);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8114(void *arg0, int arg1) {
  if(arg0) { __dt__Q36nw4hbm3snd9SoundHeapFv(arg0,0); if(arg1>0) ((void(*)(void*))fn_80128668)(arg0); }
