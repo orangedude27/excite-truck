@@ -148,16 +148,18 @@ void *fn_8020FC04(void) {
     char *data = (char *)fn_8020FAF0();
     long type;
     if (data == 0) {
-        return 0;
+        goto null_result;
     }
     type = *(long *)data;
     if (type == 0) {
-        return 0;
+        return (void *)0;
     }
     if (type == 1) {
         return (void *)lbl_804900AC.m_entries[fn_8020F6FC()];
     }
     return data + 0x24;
+null_result:
+    return 0;
 }
 
 #pragma scheduling invalid_target
