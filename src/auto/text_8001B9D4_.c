@@ -90,7 +90,10 @@ void fn_8001BA84(void) {
 #pragma scheduling invalid_target
 s32 fn_8001BA90(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 temp = fn_8001D25C(arg2);
-    return temp != 0 ? fn_8001CDB8(arg0, arg1, temp, arg3, arg4) : arg4;
+    if (temp != 0) {
+        return fn_8001CDB8(arg0, arg1, temp, arg3, arg4);
+    }
+    return arg4;
 }
 
 #pragma push
