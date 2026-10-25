@@ -117,6 +117,42 @@ f32 fn_8026EA44(s32 arg0) {
         return lbl_80563E3C;
     }
 }
+
+extern f32 lbl_80563E40, lbl_80563E44, lbl_80563E48, lbl_80563E4C;
+f32 fn_8026EA8C(s32 arg0, void *arg1, f32 farg0) {
+    f32 value;
+    switch (arg0) {
+    case 4:
+        return lbl_80563E40;
+    case 5:
+        return lbl_80563E44;
+    case 6:
+        return lbl_80563E48;
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+    case 18:
+    case 19:
+    case 20:
+    case 21:
+    case 22:
+    case 23:
+    default:
+        value = lbl_80563E48 + lbl_80563E4C * farg0;
+        if (value < lbl_80563E40)
+            return value;
+        return lbl_80563E40;
+    }
+}
+
 #pragma pop
 
 #pragma push
@@ -208,18 +244,18 @@ end:
 #pragma cplusplus reset
 #pragma pop
 
-#pragma pop
-#pragma push
-#pragma dont_inline on
+#pragma processor 750
 f32 fn_8026ECE4(void *arg0, f32 *arg1) {
-    f32 value = fn_8026EB4C(arg0);
+    f32 denom;
+    f32 value;
+    value = fn_8026EB4C(arg0);
     if (value > lbl_8055F52C) {
-        f32 denom = (f32)cos((double)(lbl_8055F52C * lbl_80563E68));
+        denom = (f32)cos((double)(lbl_8055F52C * lbl_80563E68));
         *arg1 *= (f32)cos((double)(value * lbl_80563E68)) / denom;
     }
     return value;
 }
-
+#pragma processor reset
 extern f32 lbl_80563E7C;
 extern f32 lbl_80563E80;
 void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
