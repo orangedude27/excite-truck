@@ -93,7 +93,6 @@ public:
     virtual void unused10() = 0;
     virtual void unused14() = 0;
     virtual void unused18() = 0;
-    virtual void unused1C() = 0;
     virtual void *lookup(char *, int) = 0;
     virtual void unused24() = 0;
     virtual void unused28() = 0;
@@ -243,7 +242,8 @@ void fn_802AE7C0(void) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_802AE7F4(void) {
+#pragma cplusplus on
+extern "C" void fn_802AE7F4(void) {
     volatile float values[7];
     volatile float saveTotal;
     register float total;
@@ -268,14 +268,12 @@ void fn_802AE7F4(void) {
     fn_802B58E0();
 
     {
-        void *obj = fn_802B59CC();
-        lbl_8055CD78 = ((void *(*)(void *, void *, int))(*(void ***)obj)[8])
-            (obj, base + 0xC, -1);
+        ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
+        lbl_8055CD78 = obj->lookup(base + 0xC, -1);
     }
     {
-        void *obj = fn_802B59CC();
-        lbl_8055F981 = ((char (*)(void *, void *, int))(*(void ***)obj)[12])
-            (obj, base + 0x18, 0);
+        ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
+        lbl_8055F981 = obj->status(base + 0x18, 0);
     }
 
     total = lbl_80564B40 * (lbl_80564B44 * lbl_80564AF0);
@@ -312,6 +310,7 @@ void fn_802AE7F4(void) {
     fn_802BEAB0();
     lbl_8055F97C = 0xFA;
 }
+#pragma cplusplus reset
 #pragma scheduling on
 #pragma dont_inline reset
 
