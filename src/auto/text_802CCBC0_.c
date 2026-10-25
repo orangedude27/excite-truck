@@ -319,19 +319,18 @@ extern "C" void fn_802CD254(void *arg0) {
 }
 #pragma cplusplus reset
 
-#pragma scheduling on
-#pragma scheduling on
-#pragma scheduling on
-#pragma scheduling on
-#pragma scheduling on
-#pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
 void fn_802CD320(void *arg0, int arg1) {
-    int count = *(int *)((char *)arg0 + 0x88);
-    int *items = *(int **)((char *)arg0 + 0x90);
+    register int *items;
+    register int count;
+
+    count = *(int *)((char *)arg0 + 0x88);
+    items = *(int **)((char *)arg0 + 0x90);
     items[count] = arg1;
     *(int *)((char *)arg0 + 0x88) = count + 1;
 }
-
+#pragma pop
 void fn_802CD33C(void *arg0, int arg1, int arg2) {
     if (arg2 != 0) {
         unsigned short *p = (unsigned short *)(*(char **)((char *)arg0 + 0x24) + (arg1 << 5) + 0x12);
@@ -348,12 +347,230 @@ void fn_802CDAA8(void) {
 
 extern unsigned char *lbl_8055DFC4;
 extern int fn_802D0514(int);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_802CDAFC(void *arg0, int arg1) {
     int a = *(int *)((char *)arg0 + 0x18);
     int b = *(int *)((char *)arg0 + 0x10);
     *(unsigned char *)((char *)lbl_8055DFC4 + a + arg1 + b + 1) = 0;
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+int fn_802CDB20(void *arg0, int arg1) {
+    int a;
+    int b;
+    int index;
+    unsigned char *base;
+
+    if (arg1 < 0) {
+        return 0;
+    }
+    a = *(int *)((char *)arg0 + 0x18);
+    b = *(int *)((char *)arg0 + 0x10);
+    index = arg1 + a;
+    base = lbl_8055DFC4;
+    index = index + b;
+    return base[index + 1] != 0;
+}
+#pragma opt_propagation on
+#pragma scheduling on
+#pragma pop
+void fn_802CE260(int *, int);
+void fn_802CE278(int *, int);
+void fn_802CE290(int *, int);
+void fn_802CE2A8(int *, int);
+void fn_802CE2C0(int *, int);
+void fn_802CE2D8(int *, int);
+void fn_802CE2F0(int *, int);
+#pragma scheduling on
+void fn_802CDDC8(void *arg0, int arg1) {
+register int delta = arg1;
+volatile unsigned char *base = (volatile unsigned char *)arg0;
+volatile unsigned char *rec;
+unsigned char t;
+int i;
+int index;
+int offset;
+{
+register unsigned int a0 = base[0], a1 = base[3], a2 = base[1], a3 = base[2];
+register unsigned int a4 = base[4], a5 = base[7], a6 = base[5], a7 = base[6];
+register unsigned int a8 = base[8], a9 = base[0xB], a10 = base[9], a11 = base[0xA];
+base[0] = a1; base[3] = a0; base[1] = a3; base[2] = a2;
+base[4] = a5; base[7] = a4; base[5] = a7; base[6] = a6;
+base[8] = a9; base[0xB] = a8; base[9] = a11; base[0xA] = a10;
+}
+t = base[0x10];
+base[0x10] = base[0x13];
+base[0x13] = t;
+t = base[0x11];
+base[0x11] = base[0x12];
+base[0x12] = t;
+t = base[0x14];
+base[0x14] = base[0x17];
+base[0x17] = t;
+t = base[0x15];
+base[0x15] = base[0x16];
+base[0x16] = t;
+t = base[0x18];
+base[0x18] = base[0x1b];
+base[0x1b] = t;
+t = base[0x19];
+base[0x19] = base[0x1a];
+base[0x1a] = t;
+t = base[0x1c];
+base[0x1c] = base[0x1f];
+base[0x1f] = t;
+t = base[0x1d];
+base[0x1d] = base[0x1e];
+base[0x1e] = t;
+t = base[0x20];
+base[0x20] = base[0x23];
+base[0x23] = t;
+t = base[0x21];
+base[0x21] = base[0x22];
+base[0x22] = t;
+t = base[0x24];
+base[0x24] = base[0x27];
+base[0x27] = t;
+t = base[0x25];
+base[0x25] = base[0x26];
+base[0x26] = t;
+t = base[0x28];
+base[0x28] = base[0x2b];
+base[0x2b] = t;
+t = base[0x29];
+base[0x29] = base[0x2a];
+base[0x2a] = t;
+t = base[0x2c];
+base[0x2c] = base[0x2f];
+base[0x2f] = t;
+t = base[0x2d];
+base[0x2d] = base[0x2e];
+base[0x2e] = t;
+t = base[0x30];
+base[0x30] = base[0x33];
+base[0x33] = t;
+t = base[0x31];
+base[0x31] = base[0x32];
+base[0x32] = t;
+t = base[0x34];
+base[0x34] = base[0x37];
+base[0x37] = t;
+t = base[0x35];
+base[0x35] = base[0x36];
+base[0x36] = t;
+rec = base + 0x38;
+for (i = 4; i != 0; --i) {
+t = rec[0x0];
+rec[0x0] = rec[0x3];
+rec[0x3] = t;
+t = rec[0x1];
+rec[0x1] = rec[0x2];
+rec[0x2] = t;
+t = rec[0x4];
+rec[0x4] = rec[0x7];
+rec[0x7] = t;
+t = rec[0x5];
+rec[0x5] = rec[0x6];
+rec[0x6] = t;
+t = rec[0x8];
+rec[0x8] = rec[0xb];
+rec[0xb] = t;
+t = rec[0x9];
+rec[0x9] = rec[0xa];
+rec[0xa] = t;
+t = rec[0xc];
+rec[0xc] = rec[0xf];
+rec[0xf] = t;
+t = rec[0xd];
+rec[0xd] = rec[0xe];
+rec[0xe] = t;
+t = rec[0x10];
+rec[0x10] = rec[0x13];
+rec[0x13] = t;
+t = rec[0x11];
+rec[0x11] = rec[0x12];
+rec[0x12] = t;
+rec += 0x14;
+}
+t = base[0x88]; base[0x88] = base[0x8b]; base[0x8b] = t;
+t = base[0x89]; base[0x89] = base[0x8a]; base[0x8a] = t;
+t = base[0x8c]; base[0x8c] = base[0x8f]; base[0x8f] = t;
+t = base[0x8d]; base[0x8d] = base[0x8e]; base[0x8e] = t;
+t = base[0x90]; base[0x90] = base[0x93]; base[0x93] = t;
+t = base[0x91]; base[0x91] = base[0x92]; base[0x92] = t;
+fn_802CE260((int *)(base + 0x14), delta);
+fn_802CE278((int *)(base + 0x1C), delta);
+fn_802CE290((int *)(base + 0x24), delta);
+fn_802CE2A8((int *)(base + 0x2C), delta);
+index = 0;
+offset = 0;
+while (index < *(volatile int *)(base + 0x28)) {
+rec = *(volatile unsigned char **)(base + 0x2C) + offset;
+t = rec[0x0];
+rec[0x0] = rec[0x1];
+rec[0x1] = t;
+t = rec[0x2];
+rec[0x2] = rec[0x3];
+rec[0x3] = t;
+t = rec[0x4];
+rec[0x4] = rec[0x5];
+rec[0x5] = t;
+t = rec[0x6];
+rec[0x6] = rec[0x7];
+rec[0x7] = t;
+t = rec[0x8];
+rec[0x8] = rec[0xb];
+rec[0xb] = t;
+t = rec[0x9];
+rec[0x9] = rec[0xa];
+rec[0xa] = t;
+fn_802CE2C0((int *)(rec + 8), delta);
+offset += 0xC;
+index++;
+}
+fn_802CE2D8((int *)(base + 0x34), delta);
+index = 0;
+offset = 0;
+while (index < *(volatile int *)(base + 0x30)) {
+rec = *(volatile unsigned char **)(base + 0x34) + offset;
+t = rec[0x14];
+rec[0x14] = rec[0x17];
+rec[0x17] = t;
+t = rec[0x15];
+rec[0x15] = rec[0x16];
+rec[0x16] = t;
+t = rec[0x18];
+rec[0x18] = rec[0x1b];
+rec[0x1b] = t;
+t = rec[0x19];
+rec[0x19] = rec[0x1a];
+rec[0x1a] = t;
+*(volatile int *)(rec + 0x10) = -2;
+offset += 0x1C;
+index++;
+}
+fn_802CE2F0((int *)(base + 0x90), delta);
+index = 0;
+offset = 0;
+while (index < *(volatile int *)(base + 0x88)) {
+rec = *(volatile unsigned char **)(base + 0x90) + offset;
+t = rec[0x0];
+rec[0x0] = rec[0x3];
+rec[0x3] = t;
+t = rec[0x1];
+rec[0x1] = rec[0x2];
+rec[0x2] = t;
+offset += 4;
+index++;
+}
+*(volatile int *)(base + 8) |= 1;
+}
+#pragma scheduling invalid_target
 void fn_802CE260(int *arg0, int arg1) {
     int val = *arg0;
     if (val != 0) {
