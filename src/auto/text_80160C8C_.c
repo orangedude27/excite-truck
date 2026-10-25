@@ -574,9 +574,9 @@ s32 fn_80161D14(void) {
 
 #pragma dont_inline on
 void fn_80161DE4(void) {
-    s32 total = fn_801615B4(fn_80161ECC() - 1);
+    register s32 total = fn_801615B4(fn_80161ECC() - 1);
     fn_80161E40(fn_80161ECC() - 1);
-    total = total + fn_8016208C();
+    total += fn_8016208C();
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, total + 1);
 }
 #pragma dont_inline off
@@ -850,9 +850,25 @@ done:
 
 #pragma push
 #pragma small_data off
-extern int lbl_8032FA38;
-extern int lbl_8032FA44;
+extern char lbl_8032FA38[];
+extern char lbl_8032FA44[];
 #pragma pop
+#pragma cplusplus on
+struct Dummy_80162800 {
+    virtual void f0();
+    virtual void f1(void *);
+    virtual void f2(void *);
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual s32 f8();
+    virtual void f9();
+    virtual void f10();
+    virtual f32 f11();
+};
+#pragma cplusplus off
 extern int lbl_8055E2F8;
 extern int lbl_8055A0EC;
 extern int lbl_8055A0DC;
@@ -1457,10 +1473,21 @@ void fn_8016464C(void *arg0) {
     if(iterator) fn_80131818(iterator);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801647DC(void *arg0) {
+    struct VTable {
+        void (*slot0)(void);
+        void (*slot1)(void);
+        void (*slot2)(void *, s32);
+    };
+    struct Object {
+        struct VTable *vtable;
+    };
     s32 var_r31;
     s32 var_r30;
     void *temp_r3;
+    void (*method)(void *, s32);
 
     var_r31 = 0;
     var_r30 = 0;
@@ -1468,7 +1495,8 @@ void fn_801647DC(void *arg0) {
         temp_r3 = *(void **)((char *)(*(s32 *)((char *)arg0 + 0x34)) + var_r31 + 4);
         if (temp_r3 != 0) {
             if (temp_r3 != 0) {
-                ((void (*)(void *, s32))((void **) *(void **)temp_r3)[2])(temp_r3, 1);
+                method = ((struct Object *)temp_r3)->vtable->slot2;
+                method(temp_r3, 1);
             }
         }
         var_r31 += 8;
@@ -1476,7 +1504,7 @@ void fn_801647DC(void *arg0) {
     }
     *(s32 *)((char *)arg0 + 0x38) = 0;
 }
-
+#pragma pop
 int fn_80164868(void) {
     return 1;
 }
@@ -1625,9 +1653,10 @@ int fn_80165848(int arg0, int arg1, int arg2, int arg3, int arg4, int *arg5) {
 }
 
 int fn_80165894(s32 a0, s32 a1, float *arg2, s32 arg3) {
-    if (lbl_804348E8[arg3] != 0) {
+    if (lbl_804348E8[arg3]) {
         *arg2 = lbl_80561848;
-        ((void (*)(int *, float *, s32))(*(int **)(lbl_8042FDEC + (lbl_8055E304 << 2)))[0x38 / 4])((int *)(lbl_8042FDEC + (lbl_8055E304 << 2)), arg2, arg3);
+        ((void (*)(int *, float *, s32))(((int ***) (*(char **)lbl_8042FDEC + (lbl_8055E304 << 2)))[0][0][0x38 / 4]))(
+            ((int **)(*(char **)lbl_8042FDEC + (lbl_8055E304 << 2)))[0], arg2, arg3);
     }
     return 0;
 }
