@@ -101,7 +101,7 @@ extern "C" void fn_8019CE3C(void*, s32);
 extern "C" void fn_802E317C(const char*, ...);
 extern "C" const char lbl_803335EC[];
 extern void fn_801EA1E0(s32, s32, f32, f32);
-extern "C" void fn_8019EBC0(void);
+extern "C" void fn_8019EBC0(void*);
 extern "C" void fn_8019F3D0(void);
 extern "C" void fn_801A49E8(void*);
 extern "C" void fn_801A49FC(s32);
