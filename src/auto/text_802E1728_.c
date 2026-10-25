@@ -98,16 +98,22 @@ int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride) {
     return 0;
 }
 
+int fn_802E18D4(int arg0, int arg1, int arg2, int arg3, void *arg4, int arg5) {
+    GXInitTexObj((GXTexObj *)arg4, (void *)arg5, (unsigned short)arg0, (unsigned short)arg1,
+                 arg2, arg3, arg3, 0);
+    GXInitTexObjLOD((GXTexObj *)arg4, 0, 0, 0, 0, 0,
+                    lbl_805650F0, lbl_805650F0, lbl_805650F0);
+    return 1;
+}
+
 int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
 
-#pragma dont_inline on
 unsigned int fn_802E1960(unsigned int arg0) {
     unsigned int result = ((arg0 >> 3) + 3) & ~3;
     if ((result & (result - 1)) == 0)
         return result;
     return fn_802E176C(result);
 }
-#pragma dont_inline reset
 
 void fn_802E1A38(void *arg0, int arg1) {
     int result;
