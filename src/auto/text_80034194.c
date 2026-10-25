@@ -137,6 +137,14 @@ void* DSPReset(void) {
     return lbl_8055D808;
 }
 
+void *__DSPHandler(void *arg0) {
+    s32 interrupts;
+    interrupts = OSDisableInterrupts();
+    *(u32 *)((u8 *)arg0 + 8) |= 2;
+    OSRestoreInterrupts(interrupts);
+    return arg0;
+}
+
 void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
