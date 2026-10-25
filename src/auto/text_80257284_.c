@@ -42,6 +42,17 @@ void fn_80257284(void) {
     fn_802574E0((int)&obj[0][0],-1);
 }
 
+#pragma scheduling invalid_target
+void *fn_80257470(void *arg0) {
+    *(int *)arg0 = (int)&lbl_80344CF0;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    ((void (*)(int, int, int, int *))fn_8022D458)((int)((char *)arg0 + 0x1C), 0x28, 2, &lbl_80563AA8);
+    ((void (*)(int, int, int, int *))fn_8022D458)((int)((char *)arg0 + 0x54), 0x40, 2, &lbl_80563AB0);
+    fn_80257B7C((int)((char *)arg0 + 0x18C));
+    return arg0;
+}
+#pragma scheduling on
+
 int fn_802574E0(int arg0, int arg1) { int temp_r3; if (arg0 != 0) { temp_r3 = arg0 + 0x18C; if (temp_r3 != 0) fn_8022D7C4(temp_r3, 0); fn_8022D7C4(arg0 + 0x54, -1); fn_8022D7C4(arg0 + 0x1C, -1); if (arg1 > 0) fn_80128668(arg0); } return arg0; }
 
 int fn_80257904(void *arg0, int arg1) {
@@ -81,6 +92,37 @@ int fn_80257904(void *arg0, int arg1) {
 }
 
 void fn_80257A6C(int *arg0, int arg1, int arg2) { *arg0 = (*arg0 + (arg2 + arg1)) % arg2; }
+
+int fn_8000DA10(void);
+int fn_8001BA74(int);
+void *fn_8001BA6C(void);
+void fn_8001BC38(void *, int, int, int, int);
+int fn_8001BCF0(void *);
+void *fn_8001BD38(void *, void *, int);
+void fn_8022D76C(void);
+extern char lbl_80344CE4[];
+#pragma dont_inline on
+void fn_80257A8C(void *arg0) {
+    int sp1C;
+    int sp8;
+    int temp_r29;
+    int var_r30;
+
+    fn_8022D76C();
+    var_r30 = 0;
+    do {
+        temp_r29 = fn_8001BA74(var_r30 + 1);
+        fn_8022D894(arg0, var_r30, 0, fn_8001BA6C(), 0);
+        fn_8001BC38(&sp1C, fn_8000DA10(), temp_r29, *(int *)((char *)arg0 + 0x30), 0);
+        if (fn_8001BCF0(&sp1C) != 0) {
+            fn_8022D894(arg0, var_r30, 1, fn_8001BD38(&sp1C, &sp8, 0x14), 0);
+        } else {
+            fn_8022D894(arg0, var_r30, 1, &lbl_80344CE4, 0);
+        }
+        var_r30 += 1;
+    } while (var_r30 < 7);
+}
+#pragma dont_inline reset
 
 #pragma scheduling invalid_target
 int fn_80257B7C(int arg0) { ((int (*)(int, int, int, int *))fn_8022D458)(arg0, 7, 2, &lbl_80563AB8); return arg0; }
