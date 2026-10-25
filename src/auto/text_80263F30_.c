@@ -496,6 +496,14 @@ void fn_802658FC(void) {
     fn_80236954(lbl_8055C4A8);
 }
 
+void fn_80265904(void) {
+    fn_80236914();
+    if (fn_8023695C(lbl_8055C4A8) == 2) {
+        fn_80216CA8();
+        fn_802168BC(0);
+    }
+}
+
 extern int fn_802146BC(int *, int, int, int, int, int, int, int);
 extern int lbl_80498F58[5];
 extern int lbl_802FA73C[5];
