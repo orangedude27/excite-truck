@@ -149,27 +149,29 @@ extern int lbl_8055D460;
 extern unsigned int lbl_8034F628[];
 extern char lbl_802FC264[];
 extern void fn_802E30C8();
+#pragma push
+#pragma scheduling invalid_target
 void fn_8000DBC8(int arg0) {
     int count;
+    int appendCount;
     unsigned int *entry;
 
     count = lbl_8055D460;
     entry = lbl_8034F628;
     if (count > 0) {
-        for (; count != 0; count--) {
+        do {
             if (*entry == (unsigned int)arg0) {
                 fn_802E30C8(lbl_802FC264, arg0);
                 return;
             }
             entry++;
-        }
+        } while (--count != 0);
     }
-    count = lbl_8055D460;
-    lbl_8034F628[count] = arg0;
-    lbl_8055D460 = count + 1;
+    appendCount = lbl_8055D460;
+    lbl_8034F628[appendCount] = arg0;
+    lbl_8055D460 = appendCount + 1;
 }
-
-#pragma optimization_level 3
+#pragma pop
 void fn_8000DC28(const char *arg0, int arg1) {
     register int count;
     register char *dst;
@@ -223,4 +225,4 @@ void fn_8000DC84(int arg0) {
 extern int lbl_8055D460;
 extern unsigned int lbl_8034F628[];
 extern char lbl_802FC264[];
-extern void fn_802E30C8(const char *, int);
+extern void fn_802E30C8();
