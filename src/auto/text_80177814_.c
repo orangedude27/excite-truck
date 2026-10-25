@@ -173,6 +173,7 @@ void fn_80177EE4(void) {
     }
 }
 
+extern char jumptable_803318F8[];
 #pragma dont_inline off
 long fn_801781B8(void) { return 0; }
 
@@ -200,13 +201,15 @@ unsigned char *fn_801781F4(long arg0) {
     unsigned char a;
     unsigned char b;
     unsigned char c;
+    unsigned char d;
     *(volatile long *)p = arg0;
     a = p[0];
     c = p[3];
     b = p[1];
+    d = p[2];
     p[0] = c;
     p[3] = a;
-    p[1] = p[2];
+    p[1] = d;
     p[2] = b;
     return (unsigned char *)p;
 }
