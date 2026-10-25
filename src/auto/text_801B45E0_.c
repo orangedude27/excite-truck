@@ -105,7 +105,9 @@ void fn_801B46BC(void *arg0, int arg1, int arg2) {
     *(int *)arg0 = fn_802E4CA4(arg2);
     fn_801B4720((int)arg0);
 }
-void fn_801B4720(int arg0) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801B4720(int arg0) {
     int offset;
     unsigned int i;
     int minusOne;
@@ -133,10 +135,10 @@ void fn_801B4720(int arg0) {
     *(int *)(arg0 + 0x14) = 0;
     *(int *)(arg0 + 0x20) = 0;
     *(int *)(arg0 + 0x24) = 0;
-    object = *(void **)arg0;
-    vtable = *(void ***)object;
-    ((void (*)(void))vtable[6])();
+    ((F801B4720 *)*(void **)arg0)->f6();
 }
+#pragma cplusplus off
+#pragma pop
 
 #pragma dont_inline on
 int *fn_801B479C(int arg0, int arg1) {
@@ -257,12 +259,12 @@ int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
 #pragma cplusplus on
 extern "C" void fn_801B4AC4(int arg0, int arg1) {
     int index;
-    int *entry;
+    volatile int *entry;
 
     index = ((int (*)(int, int))fn_801B4C9C)(arg0, arg1);
-    entry = ((int *(*)(int, int))fn_801B4C58)(arg0, index);
+    entry = ((volatile int *(*)(int, int))fn_801B4C58)(arg0, index);
     ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f3(entry[2]);
-    entry = ((int *(*)(int, int))fn_801B4C60)(arg0, index);
+    entry = ((volatile int *(*)(int, int))fn_801B4C60)(arg0, index);
     ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f3(entry[2]);
 }
 #pragma cplusplus off
