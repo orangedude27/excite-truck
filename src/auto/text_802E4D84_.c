@@ -272,7 +272,7 @@ extern char lbl_8034D554[], lbl_8034D578[];
 extern void fn_801282EC(int);
 extern void fn_801282F4(void);
 extern void *fn_8012850C(void *, char *);
-extern void *memset(void *, int, unsigned int);
+
 void *fn_802E5DD8(const char *arg0, unsigned int arg1, int arg2, int arg3, int arg4) {
     int i, index = -1;
     unsigned char *base = (unsigned char *)lbl_8055FF90, *slot, *dst;
