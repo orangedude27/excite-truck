@@ -365,13 +365,13 @@ extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0x10) = temp_r0;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_80219264(void *arg0, s32 arg1, s32 arg2) {
-    void **vtable = *(void ***)arg0;
-    ((void (*)(void *, s32, s32))vtable[7])(arg0,
+    ((Fn80219264VTable *)arg0)->Call(
         *(s32 *)((u8 *)arg0 + 4) + arg1,
         *(s32 *)((u8 *)arg0 + 8) + arg2);
 }
-
+#pragma scheduling on
 extern "C" void fn_80219284(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)arg0 + 4) + arg1;
     *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)((u8 *)arg0 + 8) + arg2;
