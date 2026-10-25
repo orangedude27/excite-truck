@@ -1085,7 +1085,7 @@ extern "C" void *fn_8021B1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 }
 #pragma dont_inline reset
 
-extern "C" void *lbl_8033F20C;
+extern "C" char lbl_8033F20C[];
 extern "C" void fn_8021B224(void *arg0) {
     s32 temp_r0;
     s32 temp_r4;
@@ -5165,9 +5165,9 @@ extern "C" void fn_802297D0(void *arg0) {
         *(u8 *)((u8 *)arg0 + 0x254) != 0 &&
         *(u8 *)((u8 *)arg0 + 0x18) != 0) {
         callback = *(s32 (**)(s32))((u8 *)arg0 + 0x258);
-        if (callback == 0 || callback(*(s32 *)((u8 *)arg0 + 0x25C)) == 0) {
-        } else {
-            fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+        if (callback != 0) {
+            if (callback(*(s32 *)((u8 *)arg0 + 0x25C)) != 0)
+                fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
         }
     }
     fn_802192AC(arg0);
