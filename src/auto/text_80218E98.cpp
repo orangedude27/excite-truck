@@ -3,6 +3,9 @@
 
 #include <types.h>
 
+extern "C" void *fn_8021525C(void);
+extern "C" void fn_80218FEC(void *, s32, s32, s32, s32, s32);
+
 extern "C" s32 fn_8022F8CC(s32);
 extern "C" s32 fn_8022FFE8(s32);
 
