@@ -875,7 +875,6 @@ extern int lbl_8055A0DC;
 extern int fn_801476D8(int, int, int);
 extern void fn_80130980(void *, int, int, float);
 extern void fn_801475D0(void *, ...);
-#pragma processor gekko
 #pragma cplusplus on
 extern "C" s32 fn_80162800(void *arg0) {
     s32 sp8;
