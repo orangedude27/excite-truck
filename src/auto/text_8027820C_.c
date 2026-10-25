@@ -3,7 +3,7 @@ extern int lbl_8055F5C4;
 extern void fn_80128670(int);
 extern const char lbl_80347580[];
 extern int fn_8012850C(int, const char *, int);
-extern void *fn_8002F37C(void *, int, int, int);
+extern void *fn_8002F37C();
 extern void fn_80278284(void);
 extern char lbl_8055F5BA;
 extern char lbl_8055F5BB;
@@ -27,6 +27,19 @@ extern char lbl_8055F5B8;
 void fn_8027820C(void) {}
 
 void fn_80278210(void) {}
+
+void fn_80278214(void) {
+    lbl_8055F5B4 = 0;
+    lbl_8055F5C8 = 0;
+    lbl_8055F5BB = 0;
+    lbl_8055F5BA = 0;
+    lbl_8055F5B9 = 0;
+    lbl_8055F5BC = -1;
+    lbl_8055F5C4 = -1;
+    lbl_8055F5B8 = 0;
+    fn_8012850C(0x80, lbl_80347580, 0);
+    lbl_8055F5B0 = (int)fn_8002F37C(fn_80278284, 0, 0x38, 2);
+}
 
 void fn_80278284(void) {}
 
