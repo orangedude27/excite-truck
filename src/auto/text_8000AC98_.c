@@ -245,7 +245,6 @@ extern int fn_801E868C(int, int *, int *);
 extern int fn_801E86F8(int);
 extern void *fn_801EA9A0(void);
 void fn_8000B838(void) {
-    extern int lbl_8034F5B8;
     int spC;
     int sp8;
     char *p = (char *)&lbl_8034F5B8;
