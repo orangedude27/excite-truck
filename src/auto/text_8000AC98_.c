@@ -152,11 +152,11 @@ void fn_8000AF1C(void *arg0) {
  fn_8000AB44(); fn_8023889C(); fn_801CB808(); fn_801617BC(); fn_802061F8(); fn_80006D9C();
  fn_8000CE60(); fn_8020D178(); fn_802108C8(); fn_802B8744(); fn_801769EC(); fn_8000AF04();
  entry=&lbl_8034F5B8; i=0;
- do { memset(entry,0,8); val=lbl_8034F5D8; fn_801332D0(i+0xC,lbl_802FBC90+0x238,&val);
- if(val>=0x22) { fn_802E30C8(lbl_802FBC90+0x248); val=lbl_8034F5D8; }
- else if(val<0) { fn_802E30C8(lbl_802FBC90+0x248); val=lbl_8034F5D8; }
- else if(fn_8000AEC8(val)==0) val=lbl_8034F5D8;
- entry[0]=val; entry[1]=0x22; entry+=2; i++; } while(i<4);
+ do { memset(entry,0,8); val=*(int *)&lbl_8034F5D8; fn_801332D0(i+0xC,lbl_802FBC90+0x238,&val);
+   if(val>=0x22) { fn_802E30C8(lbl_802FBC90+0x248); val=*(int *)&lbl_8034F5D8; }
+   else if(val<0) { fn_802E30C8(lbl_802FBC90+0x248); val=*(int *)&lbl_8034F5D8; }
+   else if(fn_8000AEC8(val)==0) val=*(int *)&lbl_8034F5D8;
+   entry[0]=val; entry[1]=0x22; entry+=2; i++; } while(i<4);
  lbl_8055D3D5=0; lbl_8055D3D4=1; lbl_8055D3D0=0;
  if(active) { fn_8000ADE0(0xD); fn_80265D74(); fn_80128678(); fn_80206454(); fn_80127930(); fn_802D3E9C(0); }
 }
