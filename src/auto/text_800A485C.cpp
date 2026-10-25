@@ -5531,6 +5531,7 @@ extern "C" s32 fn_800B76A8(s32 arg0, s32 arg1) {
 #pragma dont_inline reset
 
 extern "C" s32 fn_800B6A8C(s8, s32);
+#pragma dont_inline fn_800B76E8
 extern "C" s32 fn_800B76E8(s8 arg0) {
     extern void fn_800B73E4(void*);
     ((s32 (*)(s8))fn_800B6A8C)(arg0);
