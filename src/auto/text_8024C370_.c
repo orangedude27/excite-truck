@@ -77,6 +77,14 @@ void fn_8024C464(void) {
     }
 }
 
+#pragma dont_inline on
+int fn_8024C524(void) {
+    fn_802E712C();
+    fn_802E6CA8();
+    fn_8024C464();
+    return 0;
+}
+#pragma dont_inline reset
 void fn_802E6FBC(void);
 void fn_8000DA80(void);
 int fn_8023FAD4(void *, int);
@@ -434,9 +442,13 @@ extern char lbl_80343FC4[];
 extern char lbl_80343FF0[];
 #pragma scheduling invalid_target
 int fn_8024CEF0(void) {
+    void *second;
+    void *first;
     if (((int (*)(void))fn_8000DBAC)() != 0)
         return 1;
-    return ((int (*)(void *, void *, int))fn_80215214)(lbl_80343FF0, lbl_80343FC4, 0);
+    second = lbl_80343FC4;
+    first = lbl_80343FF0;
+    return ((int (*)(void *, void *, int))fn_80215214)(first, second, 0);
 }
 #pragma scheduling on
 int fn_8024CF38(int *arg0) {
