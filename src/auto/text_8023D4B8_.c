@@ -86,23 +86,25 @@ void fn_8023DB68(void) {
     }
 }
 
+#pragma scheduling invalid_target
 void fn_8023DBCC(void) {
-    char *var_r31;
-    s32 var_r30;
+    long *dst;
+    long i;
 
     fn_80137C78(lbl_8055BC54);
-    var_r31 = (char *)&lbl_804987D0;
-    var_r30 = 0;
-loop_1:
-    if (var_r30 < lbl_8055BC54) {
-        fn_80137C84(*(s32 *)var_r31, var_r30);
-        var_r31 += 4;
-        var_r30 += 1;
-        goto loop_1;
-    }
+    dst = &lbl_804987D0[0];
+    i = 0;
+    goto check;
+loop:
+    fn_80137C84(*dst, i);
+    dst++;
+    i++;
+check:
+    if (i < lbl_8055BC54)
+        goto loop;
     lbl_8055BC54 = -1;
 }
-
+#pragma scheduling on
 char *fn_8023DC38(char *arg0) {
     char **var_r31;
     s32 var_r30;
