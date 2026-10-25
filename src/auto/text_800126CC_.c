@@ -74,7 +74,7 @@ void fn_80012794(void) {
 }
 extern char lbl_803518C0[];
 extern char lbl_803551E0[];
-char *fn_80012820(int arg0) {
+char *fn_80012820(int arg0) DECOMP_DONT_INLINE {
     if (arg0 >= 0) {
         return &lbl_803518C0[arg0 * 0x84];
     }
