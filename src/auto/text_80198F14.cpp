@@ -1322,7 +1322,7 @@ void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
     return arg0;
 }
 
-void fn_8019EECC(void* arg0, Vec* arg1) {
+extern "C" void fn_8019EECC(void* arg0, Vec* arg1) {
     arg1->x += *(f32*)((u8*)arg0 + 0x30);
     arg1->y += *(f32*)((u8*)arg0 + 0x34);
     arg1->z += *(f32*)((u8*)arg0 + 0x38);
