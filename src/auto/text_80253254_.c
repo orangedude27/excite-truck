@@ -553,13 +553,16 @@ void fn_802543FC(void *arg0) {
 }
 
 void fn_80254568(void *arg0, s32 arg1, const char *arg2) {
-    extern int fn_801E2CCC(void *, const char *, void **);
-    void *sp8;
-    sp8 = 0;
-    fn_801E2CCC((void *)arg1, arg2, &sp8);
-    *(s32 *)arg0 = *(s32 *)((u8 *)sp8 + 0x24);
-    *(s32 *)((u8 *)arg0 + 4) = *(s32 *)((u8 *)sp8 + 0x28);
-    *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)sp8 + 0x2C);
+    struct Result {
+        s32 x;
+        s32 y;
+        s32 z;
+    };
+    void *sp8 = 0;
+    struct Result *result;
+    fn_801E2CCC(arg1, arg2, &sp8);
+    result = (struct Result *)((u8 *)sp8 + 0x24);
+    *(struct Result *)arg0 = *result;
 }
 
 #pragma dont_inline on
