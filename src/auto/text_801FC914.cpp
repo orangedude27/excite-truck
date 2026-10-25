@@ -1018,13 +1018,13 @@ extern "C" void fn_801FF58C(void* unused, char* dst, const char* src) {
 }
 
 void fn_801FF5D4(void* arg0, void* arg1, float farg0) {
-    int var_r30 = 0;
-    int* var_r31 = (int*)arg1;
-    do {
-        ((void (*)(void*, float))fn_801FCF74)((void*)var_r31[0x30 / 4], farg0);
-        var_r31++;
-        var_r30++;
-    } while (var_r30 < *(int*)((char*)arg1 + 0x54));
+    char *entry = (char *)arg1;
+    int i = 0;
+    while (i < *(int *)((char *)arg1 + 0x54)) {
+        ((void (*)(void*, float))fn_801FCF74)(*(void **)(entry + 0x30), farg0);
+        entry += 4;
+        i++;
+    }
 }
 
 #pragma dont_inline on
