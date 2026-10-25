@@ -897,18 +897,20 @@ extern "C" void fn_8021A910(void *arg0, s32 arg1) {
     ((VfObj *)arg0)->vf31();
 }
 
+#pragma scheduling invalid_target
 extern "C" s32 fn_8021A9A4(void *arg0) {
     u8 *base = (u8 *)arg0;
-    s32 r4 = 0;
-    s32 r5 = 0;
-    if (*(u8 *)fn_80216708() != 0)
-        r4 = 2;
+    u32 flag = *(u8 *)fn_80216708();
+    s32 first = 0;
+    if (flag != 0)
+        first = 2;
     s32 *p = *(s32 **)(base + 0x254);
+    s32 second = 0;
     if (p != 0 && *p == *(s32 *)(base + 0x258))
-        r5 = 1;
-    return (r5 != 0) | r4;
+        second = 1;
+    return (s32)(((u32)(second | -second)) >> 31) | first;
 }
-
+#pragma scheduling on
 extern "C" void fn_8021AA18(void *arg0) {
     struct State {
         u32 a[12];
@@ -1336,6 +1338,22 @@ extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     fn_8021BE48(arg0);
     return arg0;
 }
+
+#pragma dont_inline on
+extern "C" void fn_8021BE48(void *arg0) {
+    f32 value = *(f32 *)*(void **)((u8 *)arg0 + 0x25C);
+    sprintf((char *)arg0 + 0x264,
+            *(const char **)((u8 *)arg0 + 0x260),
+            *(f32 *)((u8 *)arg0 + 0x258) +
+                value * *(f32 *)((u8 *)arg0 + 0x254),
+            value);
+    fn_80130568((char *)arg0 + 0x264);
+    fn_80219718(arg0);
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+}
+#pragma dont_inline reset
+
 #pragma scheduling on
 extern "C" void fn_8021BEBC(void *arg0) {
     fn_8021BE48(arg0);
@@ -2227,7 +2245,7 @@ handled:
 
 extern "C" void *lbl_8033EF68;
 extern "C" void *lbl_8033E8FC;
-extern "C" void *lbl_80490934;
+extern "C" char lbl_80490934[];
 extern "C" void fn_801A7844(s32);
 extern "C" s32 fn_801A7C8C(s32);
 extern "C" void fn_801A7E54(void *, s32, s32);
@@ -2249,17 +2267,22 @@ extern "C" void fn_8021F42C(void *arg0) {
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
+#pragma push
+#pragma small_data off
 extern "C" s32 fn_8021F478(s32 *arg0) {
+    char *base;
+
     fn_801A7844(1);
-    if (fn_801A7C8C(*(s32 *)((u8 *)lbl_80490934 + 0x18)) != 0) {
-        fn_801A7E54(lbl_80490934, 0x18, *(s32 *)((u8 *)lbl_80490934 + 0x18));
+    base = (char *)&lbl_80490934;
+    if (fn_801A7C8C(*(s32 *)(base + 0x18)) != 0) {
+        fn_801A7E54(base, 0x18, *(s32 *)(base + 0x18));
         fn_802E47E8();
         *arg0 = -2;
         return 1;
     }
     return 0;
 }
-
+#pragma pop
 extern "C" void fn_801A7A5C(void);
 extern "C" s32 fn_802146BC(void *, s32, s32, s32, void *, s32, s32, s32);
 extern "C" void fn_802194FC(void *);
