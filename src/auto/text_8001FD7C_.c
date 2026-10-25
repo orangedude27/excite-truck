@@ -473,16 +473,13 @@ int fn_8002173C(void) {
 }
 #pragma pop
 int fn_800217AC(void) {
-    if (lbl_8055D648 != 0) {
+    int result;
+    if (lbl_8055D648 != 0)
         return 0;
-    }
-    if (lbl_8055D644 != 0) {
-        if (lbl_8055D645 == 0) {
-            return 1;
-        }
-        return 0;
-    }
-    return 1;
+    result = 0;
+    if (lbl_8055D644 == 0 || lbl_8055D645 != 0)
+        result = 1;
+    return result;
 }
 
 extern float lbl_80560560, lbl_80560564, lbl_805604B8, lbl_805604B4, lbl_80560568, lbl_80560554, lbl_805604FC;
