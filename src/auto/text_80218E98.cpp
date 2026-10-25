@@ -352,7 +352,7 @@ extern "C" void fn_80219044(void);
 extern "C" void fn_8021AC24(void *, s32, s32, s32, s32);
 #pragma push
 #pragma small_data off
-extern "C" int lbl_8033F548;
+extern "C" char lbl_8033F548[];
 #pragma pop
 extern "C" void fn_802C519C(void *);
 extern "C" void fn_8021915C(void *, u32);
