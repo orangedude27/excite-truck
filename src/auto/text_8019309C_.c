@@ -1533,7 +1533,7 @@ void fn_80197BD0(void *arg0, void *arg1) {
 
 extern float lbl_80562184, lbl_80562290, lbl_80562294;
 extern float lbl_8055A48C;
-extern int fn_8019813C();
+extern void fn_8019813C(void *, void *, float, float);
 int fn_80197FE4(void *arg0, void *arg1) {
     int result = 0;
     float speed;
@@ -1571,7 +1571,7 @@ int fn_80197FE4(void *arg0, void *arg1) {
     if (entry != 0 && *((u8 *)entry + 0x2A5) != 0)
         allowed = 0;
     if (allowed && in_range && angle_ok) {
-        fn_8019813C(*(float *)((char *)arg1 + 8));
+        fn_8019813C(arg0, arg1, x, x + speed * y);
         result = 1;
     }
     return result;
