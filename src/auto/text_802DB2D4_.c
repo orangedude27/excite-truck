@@ -174,6 +174,12 @@ void fn_802DBDD8(void) {
     lbl_8055FEAC = 0;
 }
 
+#pragma dont_inline on
+void fn_802DBF00(signed char arg0) {
+    fn_802DBD88();
+    lbl_8055FEBA = arg0;
+}
+#pragma dont_inline reset
 typedef unsigned char u8;
 extern void fn_802DBDD8(void);
 extern void fn_802DEE1C(void);
