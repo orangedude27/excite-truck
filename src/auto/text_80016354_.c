@@ -8,6 +8,7 @@ extern void *fn_80016474(void);
 extern unsigned char *lbl_8055D540;
 extern unsigned char *lbl_8055D544;
 extern int stricmp(const char *, const char *);
+#pragma dont_inline fn_80016510
 extern int fn_80016510(int);
 extern void *lbl_8055D548;
 extern void *fn_80016BC8(void *, int);
