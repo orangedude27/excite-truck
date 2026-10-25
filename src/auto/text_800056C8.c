@@ -112,6 +112,7 @@ void fn_800057BC(void) {
     }
     fn_80230DA0();
 }
+#pragma pop
 
 s32 fn_800057D0(void) {
     s32 *base;
