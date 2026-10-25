@@ -12,7 +12,7 @@ extern void *lbl_8055F244;
 extern int fn_80232578(void *);
 extern int fn_802C5130(void *);
 extern int fn_802C519C(void *);
-extern int fn_802E30C8(void *);
+extern void fn_802E30C8(const char *, ...);
 extern int fn_802328D4(void *);
 extern int fn_802451DC(void *, int);
 extern int fn_8024521C(void *, int);
