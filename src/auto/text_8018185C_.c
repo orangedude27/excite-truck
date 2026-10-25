@@ -390,6 +390,54 @@ void fn_80183DF8(void *arg0) {
     }
 }
 
+extern int fn_800216D0(void);
+extern void fn_801BEB1C(int, int *);
+extern float PSVECDotProduct(const void *, const void *);
+extern float lbl_80561CAC, lbl_80561CD0, lbl_80561D9C;
+extern float lbl_80561CAC, lbl_80561CD0, lbl_80561D9C, lbl_8055E4E0;
+void fn_80183E7C(void *arg0) {
+    unsigned char *self = (unsigned char *)arg0;
+    unsigned char stack_space[0x300];
+    int i;
+    if (fn_800216D0() != 0) {
+        *(float *)(self + 0x25dc) = lbl_80561CAC;
+        *(float *)(self + 0x25e0) = lbl_80561CAC;
+        *(float *)(self + 0x25e4) = lbl_80561CD0;
+        self[0x260d] = 0;
+        if (self[0x25c0] != 0) {
+            *(float *)(self + 0x25bc) = lbl_8055E4E0;
+            fn_801BEB1C(*(int *)(self + 0x1ec), (int *)&stack_space[4]);
+            for (i = 0; i < 2; i++) {
+                unsigned char *src = (unsigned char *)*(int *)&stack_space[4] + i * 0x20;
+                unsigned char *next = src + 0x10;
+                unsigned char *dst = self + 0x23ac + i * 0xe8;
+                *(float *)(dst + 0x4c) = *(float *)(src + 0x150);
+                *(float *)(dst + 0x50) = *(float *)(src + 0x154);
+                *(float *)(dst + 0x54) = *(float *)(src + 0x158);
+                *(float *)(dst + 0x58) = *(float *)(src + 0x110);
+                *(float *)(dst + 0x5c) = *(float *)(src + 0x114);
+                *(float *)(dst + 0x60) = *(float *)(src + 0x118);
+                *(float *)(dst + 0xc0) = *(float *)(next + 0x150);
+                *(float *)(dst + 0xc4) = *(float *)(next + 0x154);
+                *(float *)(dst + 0xc8) = *(float *)(next + 0x158);
+                *(float *)(dst + 0xcc) = *(float *)(next + 0x110);
+                *(float *)(dst + 0xd0) = *(float *)(next + 0x114);
+                *(float *)(dst + 0xd4) = *(float *)(next + 0x118);
+            }
+        }
+    }
+    if (self[0x260d] != 0)
+        *(float *)(self + 0x2598) += lbl_80561D9C;
+    else
+        *(float *)(self + 0x2598) = lbl_80561CAC;
+    {
+        float value = *(float *)(self + 0x2650) - lbl_80561D9C;
+        if (lbl_80561CAC > value)
+            value = lbl_80561CAC;
+        *(float *)(self + 0x2650) = value;
+    }
+}
+
 int fn_80186DDC(void) { return 0; }
 
 void fn_80186DE4(void) {
@@ -461,50 +509,107 @@ extern float lbl_80561E80;
 extern float lbl_80561ED8;
 extern float lbl_8055E4E8;
 extern float lbl_80561DC0;
+#pragma scheduling invalid_target
 void fn_80186DE8(void) {
-    int sp78, sp84, sp88, sp80, sp7C;
-    int i, count, j;
-    int *table;
-    int tableBase;
-    volatile int state[8];
-    volatile double values[37];
-    float f18, f14, f15;
-    float first[3], second[3];
-    float *velocity;
-    void *r18, *node;
-    char *r19;
-    void **vtable;
+    struct Frame {
+        char pad0[0x70];
+        int sp78, sp7c, sp80, sp84, sp88;
+        char pad1[0x1a8 - 0x8c];
+        volatile float resultSecond[3];
+        volatile float tailB;
+        volatile float resultFirst[3];
+        volatile float tailC;
+        char padToSums[0x480 - 0x1c8];
+        volatile float sumSecond[3];
+        volatile float sumFirst[3];
+        volatile float second[3];
+        volatile float first[3];
+        char pad2[0x4f0 - 0x4b0];
+        volatile double values[37];
+        char pad3[4];
+        volatile int state[8];
+        char pad4[8];
+        volatile int tableBase;
+        char pad5[0x6c8 - 0x640];
+    } frame;
+    register void **table;
+    register int count, i;
+    register float f18, f14, f15;
+    register float *velocity;
+    register void **r18;
+    register void *node;
+    register char *r19;
 
     fn_80190E6C();
-    if (fn_801C5B60() != 0) return;
+    if (fn_801C5B60()) return;
     fn_80196A9C();
     fn_801C56AC();
-    r18 = *fn_801B83A0();
-    vtable = *(void ***)r18;
-    ((void (*)(void *))vtable[0xC8 / 4])(r18);
-    sp78 = 0;
-    fn_801BEDA8(&sp88, &sp84, &sp80, &sp7C, &sp78);
-    table = (int *)lbl_804348E8;
+    r18 = fn_801B83A0();
+    ((void (*)(void *))(*(void ***)r18)[0xC8 / 4])(r18);
+    frame.sp78 = 0;
+    fn_801BEDA8(&frame.sp88, &frame.sp84, &frame.sp80, &frame.sp7c, &frame.sp78);
+    table = (void **)(void *)lbl_804348E8;
     f18 = lbl_80561CAC;
     f14 = lbl_80561D34;
     f15 = lbl_80561CE4;
     i = 0;
     count = 0;
-    while (count < sp78) {
-        r18 = (void *)table[0];
-        r19 = (char *)(void *)sp88 + i;
+    while (frame.sp78 > count) {
+        r18 = (void **)table[0];
+        r19 = (char *)(void *)frame.sp88 + i;
         fn_80183E7C(r18);
-        *((unsigned char *)r18 + 0x1E9) = 1;
+        *((unsigned char *)r18 + 0x1E9) = (unsigned char)1;
         if (*(float *)((char *)r18 + 0x4C) < f18) {
             node = *(void **)((char *)r18 + 0xD0);
             while (node != 0) {
                 fn_801ADB44(node, r18);
                 node = *(void **)node;
             }
-            fn_8017C7C8(r18, first, second);
+            fn_8017C7C8(r18, (float *)frame.first, (float *)frame.second);
             if (*((unsigned char *)r18 + 0x26AC)) {
-                first[0] = first[1] = first[2] = f18;
-                second[0] = second[1] = second[2] = f18;
+                frame.first[0] = f18;
+                frame.first[1] = f18;
+                frame.first[2] = f18;
+                frame.second[0] = f18;
+                frame.second[1] = f18;
+                frame.second[2] = f18;
+            }
+            {
+                float a0 = *(float *)(r19 + 0x90);
+                float x0 = a0 + frame.first[0];
+                float a2 = *(float *)(r19 + 0x98);
+                float x2 = a2 + frame.first[2];
+                float a1 = *(float *)(r19 + 0x94);
+                float x1 = a1 + frame.first[1];
+                float b2 = *(float *)(r19 + 0xA8);
+                float y2 = b2 + frame.second[2];
+                float b1 = *(float *)(r19 + 0xA4);
+                float y1 = b1 + frame.second[1];
+                float b0 = *(float *)(r19 + 0xA0);
+                float y0 = b0 + frame.second[0];
+                *(float *)(r19 + 0x90) = x0;
+                *(float *)(r19 + 0x94) = x1;
+                *(float *)(r19 + 0x9C) = frame.tailC;
+                *(float *)(r19 + 0x98) = x2;
+                *(float *)(r19 + 0xA0) = y0;
+                *(float *)(r19 + 0xA4) = y1;
+                *(float *)(r19 + 0xA8) = y2;
+                frame.sumFirst[0] = a0;
+                frame.sumFirst[1] = a1;
+                frame.sumFirst[2] = a2;
+                frame.sumFirst[0] = x0;
+                frame.sumFirst[1] = x1;
+                frame.sumFirst[2] = x2;
+                frame.sumSecond[0] = y0;
+                frame.sumSecond[1] = y1;
+                frame.sumSecond[2] = y2;
+                frame.resultFirst[0] = x0;
+                frame.resultFirst[1] = x1;
+                frame.resultFirst[2] = x2;
+                frame.resultSecond[0] = y0;
+                frame.resultSecond[1] = y1;
+                frame.resultSecond[2] = y2;
+                *(float *)(r19 + 0xAC) = frame.tailB;
             }
             velocity = (float *)((char *)r18 + 0x124);
             if (PSVECDotProduct(velocity, velocity) > f15) {
@@ -513,64 +618,61 @@ void fn_80186DE8(void) {
                 velocity[1] *= f14;
                 velocity[2] *= f14;
             }
-            for (j = 0; j < 3; j++) {
-                *(float *)(r19 + 0x90 + j * 4) += first[j];
-                *(float *)(r19 + 0xA0 + j * 4) += second[j];
-            }
         }
-        table += 1;
-        i += 0xB0;
-        count += 1;
+        table = table + 1;
+        i = i + 176;
+        count = count + 1;
     }
     fn_801BEDD4();
-    values[1] = lbl_80561D2C;
-    tableBase = (int)(void *)lbl_804348E8;
-    values[0] = lbl_80561D44;
-    state[0] = 0;
-    values[2] = lbl_80561DD0;
-    state[1] = 0;
-    values[3] = lbl_80561D00;
-    state[2] = 0;
-    values[4] = lbl_80561DA0;
-    values[5] = lbl_80561DC0;
-    values[6] = lbl_80561CB0;
-    state[3] = 0;
-    values[7] = lbl_80561CD8;
-    state[4] = 0;
-    values[8] = lbl_80561E58;
-    state[5] = 0;
-    values[10] = lbl_80561D38;
-    values[11] = lbl_80561E60;
-    values[12] = lbl_80561E64;
-    values[13] = lbl_80561E68;
-    tableBase += 0x4950;
-    values[9] = lbl_80561E5C;
-    values[14] = lbl_80561E70;
-    values[15] = lbl_80561E74;
-    state[6] = 0;
-    values[16] = lbl_80561E78;
-    values[17] = lbl_80561E7C;
-    values[18] = lbl_80561D04;
-    values[19] = lbl_80561DA4;
-    values[20] = lbl_80561EA4;
-    values[21] = lbl_80561EAC;
-    values[22] = lbl_80561EA8;
-    values[23] = lbl_80561DEC;
-    values[24] = lbl_80561EB0;
-    values[25] = lbl_80561DE4;
-    values[26] = lbl_80561EB8;
-    values[27] = lbl_80561EB4;
-    values[28] = lbl_80561EBC;
-    values[29] = lbl_80561EC0;
-    values[30] = lbl_80561DA4;
-    values[31] = lbl_80561EC4;
-    values[32] = *(double *)&lbl_80561ED8;
-    values[33] = lbl_80561EC8;
-    values[34] = lbl_80561ECC;
-    values[35] = lbl_80561ED0;
-    values[36] = lbl_80561D50;
+    frame.values[1] = lbl_80561D2C;
+    frame.tableBase = (int)0x80430000;
+    frame.state[7] = (int)lbl_804348E8;
+    frame.values[0] = lbl_80561D44;
+    frame.state[0] = 0;
+    frame.values[2] = lbl_80561DD0;
+    frame.state[1] = 0;
+    frame.values[3] = lbl_80561D00;
+    frame.state[2] = 0;
+    frame.values[4] = lbl_80561DA0;
+    frame.values[5] = lbl_80561DC0;
+    frame.values[6] = lbl_80561CB0;
+    frame.state[3] = 0;
+    frame.values[7] = lbl_80561CD8;
+    frame.state[4] = 0;
+    frame.values[8] = lbl_80561E58;
+    frame.state[5] = 0;
+    frame.values[10] = lbl_80561D38;
+    frame.values[11] = lbl_80561E60;
+    frame.values[12] = lbl_80561E64;
+    frame.values[13] = lbl_80561E68;
+    frame.tableBase += 0x4950;
+    frame.values[9] = lbl_80561E5C;
+    frame.values[14] = lbl_80561E70;
+    frame.values[15] = lbl_80561E74;
+    frame.state[6] = 0;
+    frame.values[16] = lbl_80561E78;
+    frame.values[17] = lbl_80561E7C;
+    frame.values[18] = lbl_80561D04;
+    frame.values[19] = lbl_80561DA4;
+    frame.values[20] = lbl_80561EA4;
+    frame.values[21] = lbl_80561EAC;
+    frame.values[22] = lbl_80561EA8;
+    frame.values[23] = lbl_80561DEC;
+    frame.values[24] = lbl_80561EB0;
+    frame.values[25] = lbl_80561DE4;
+    frame.values[26] = lbl_80561EB8;
+    frame.values[27] = lbl_80561EB4;
+    frame.values[28] = lbl_80561EBC;
+    frame.values[29] = lbl_80561EC0;
+    frame.values[30] = lbl_80561DA4;
+    frame.values[31] = lbl_80561EC4;
+    frame.values[32] = *(double *)&lbl_80561ED8;
+    frame.values[33] = lbl_80561EC8;
+    frame.values[34] = lbl_80561ECC;
+    frame.values[35] = lbl_80561ED0;
+    frame.values[36] = lbl_80561D50;
 }
-
+#pragma scheduling on
 extern float lbl_80561CAC, lbl_80561CDC, lbl_80561D90, lbl_80561D9C;
 extern float lbl_80561DE4, lbl_80561E5C, lbl_80561EE0, lbl_80561EE4;
 extern float lbl_80561EE8, lbl_80561EEC, lbl_80561EF0, lbl_80561EF4;
