@@ -1084,8 +1084,12 @@ void fn_801C7B28(void) {
 #pragma small_data off
 #pragma pop
 void fn_801C7BA0(void) {
-    lbl_8055E868 = fn_801C6CB0;
-    lbl_8055E83D = 0; lbl_8055E83C = 0; lbl_8055E83B = 0; lbl_8055E83A = 0;
+    void (*callback)(void) = fn_801C6CB0;
+    lbl_8055E83D = 0;
+    lbl_8055E83C = 0;
+    lbl_8055E83B = 0;
+    lbl_8055E83A = 0;
+    lbl_8055E868 = callback;
     strcpy(lbl_80438280, lbl_8055AA44);
     strcpy(lbl_80438380, lbl_8055AA44);
     fn_801C957C(0);
