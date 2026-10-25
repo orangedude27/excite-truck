@@ -587,7 +587,7 @@ extern "C" s32 fn_800F273C(void *arg0) {
 
 void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(void *arg0, s32 flag) {
     if (flag == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x46, lbl_803247F8);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803247E0, 0x46, (const char *)lbl_803247F8);
     }
     *(s32 *)((u8 *)arg0 + 4) = flag;
 }
@@ -3572,7 +3572,28 @@ extern "C" void NotifyAsyncEnd__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFb(
     OSRestoreInterrupts(token);
 }
 
-extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(void *a,int n,u16 *p){void *x=*(void **)((u8*)a+4);if(*((u8*)x+16)!=2)return;int i=0,o=0;do{x=*(void **)((u8*)a+4);*(u16*)((u8*)x+0x518+o)=*p++;i++;o+=2;}while(i<n&&i<2);*((u8*)x+0x51)=1;}
+extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(void* self, int n, u16* p) {
+    void* stream = *(void**)((u8*)self + 4);
+    if (*((u8*)stream + 0x10) != 2) return;
+    u16 value;
+    int offset;
+    int index;
+    index = 0;
+    offset = 0;
+    goto loop_check;
+loop_body:
+    stream = *(void**)((u8*)self + 4);
+    ++index;
+    value = *p;
+    ++p;
+    u16* context = (u16*)((u8*)stream + 0x518 + offset);
+    offset += 2;
+    *context = value;
+loop_check:
+    if (index < n && index < 2) goto loop_body;
+    stream = *(void**)((u8*)self + 4);
+    *((u8*)stream + 0x51) = 1;
+}
 
 extern "C" int fn_800FD810(void* arg0, int arg1) {
     void* temp_r6 = *(void**)((char*)arg0 + 4);
