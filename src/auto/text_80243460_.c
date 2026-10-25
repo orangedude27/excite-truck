@@ -240,6 +240,17 @@ void fn_80243A38(void *arg0) {
     } while (group < 5);
 }
 
+extern s32 fn_802328D4(char *);
+extern s32 fn_802C519C(char *);
+void fn_80243B84(void *arg0) {
+    char **obj = (char **)arg0;
+    fn_802438EC(obj[6]);
+    fn_802C519C(obj[9]);
+    obj[9] = 0;
+    fn_802328D4(obj[8]);
+    obj[8] = 0;
+}
+
 extern s32 fn_80128668(void);
 extern void fn_80221E7C(void);
 extern s32 fn_802328D4(char*);
