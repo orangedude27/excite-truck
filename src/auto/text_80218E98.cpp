@@ -3962,11 +3962,7 @@ extern "C" s32 fn_80226528(void *arg0, s32 arg1) {
     s32 *p = *(s32 **)((u8 *)arg0 + 0x27C);
     if (p != 0 && *(s32 *)((u8 *)arg0 + 0x280) != *p)
         return 0;
-    if (arg1 != 0xD) {
-        if ((u32)arg1 != 0x126 && (u32)arg1 != 0x128)
-            return 0;
-    }
-    return 1;
+    return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
 }
 
 extern "C" void fn_80226570(void *arg0, s32 arg1) {
