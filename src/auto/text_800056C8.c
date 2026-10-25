@@ -209,6 +209,7 @@ void fn_80005B68(void) {
 void fn_80005B6C(void) {
     return;
 }
+#pragma pop
 
 void fn_80005B70(void) {
 }
