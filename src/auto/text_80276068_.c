@@ -280,10 +280,12 @@ void fn_80276DC8(int arg0) {
 }
 
 float fn_80277704(int i) {
-    unsigned char *p = (unsigned char *)&lbl_8049FD58 + i * 0x50;
-    if (*p != 0) {
-        float *f = (float *)p;
-        return (lbl_8055E3C8 - f[0x48 / 4]) / f[0x44 / 4];
+    volatile unsigned char *base = (volatile unsigned char *)&lbl_8049FD58;
+    int offset = i * 0x50;
+    if (base[offset] != 0) {
+        float *p = (float *)((unsigned char *)base + offset);
+        return (lbl_8055E3C8 - *(float *)((unsigned char *)p + 0x48)) /
+               *(float *)((unsigned char *)p + 0x44);
     }
     return lbl_80564054;
 }
