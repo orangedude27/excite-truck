@@ -208,6 +208,23 @@ void fn_80129218(void) {
 
 }
 
+void fn_8012921C(void *arg0, s32 arg1) {
+    s32 mask;
+    s32 sum;
+    s32 offset;
+    void *result;
+    if (arg1 <= 0x40)
+        return;
+    mask = arg1 - 1;
+    sum = *(s32 *)((u8 *)arg0 + 0xC) + *(s32 *)((u8 *)arg0 + 4);
+    if (((sum + 0x40) & mask) == 0)
+        return;
+    offset = arg1 - ((sum + 0x80) & mask);
+    offset &= mask;
+    result = ((void *(*)(void *, s32, void *, s32))(*(void **)((u8 *)*(void **)arg0 + 0x10)))(arg0, offset, &lbl_8032A05C, 3);
+    *(u8 *)((u8 *)result - 0x1C) = 0;
+}
+
 void fn_80128584(s32, s32);
 
 void fn_80128658(s32 arg0) {
@@ -460,7 +477,6 @@ void fn_80128ED8(void *arg0, s32 arg1, s32 arg2) {
     p[4] = 0;
 }
 
-extern s32 lbl_8032A05C;
 void fn_80128EF0(void *arg0, s32 arg1) {
     s32 temp_r31;
     s32 temp_r30;
