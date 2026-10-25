@@ -33,7 +33,9 @@ void fn_802B0690(int *arg0) {
 
 void fn_802B06D4(void) {
     void **obj = fn_802B59CC();
-    (*(void (***)(void *, void *, int))obj)[12](obj, lbl_8034A078, 0);
+    void (**vtable)(void *, void *, int) = (void (**)(void *, void *, int))*obj;
+    void (*call)(void *, void *, int) = vtable[12];
+    call(obj, lbl_8034A078, 0);
 }
 
 extern void *fn_801284F8(int, void *);
@@ -121,15 +123,13 @@ void fn_802B0904(void) {
     ((int *)lbl_8055F9A0)[2] = 0;
 }
 
+#pragma scheduling invalid_target
 void fn_802B0914(void) {
-    register void *first = lbl_8034A0B4;
-    register void *second;
-    fn_802B8AE0(first, &lbl_8055F998);
-    second = lbl_8034A0C4;
-    fn_802B8AE0(second, &lbl_8055F99C);
+    fn_802B8AE0(lbl_8034A0B4, &lbl_8055F998);
+    fn_802B8AE0(lbl_8034A0C4, &lbl_8055F99C);
     fn_802B0710();
 }
-
+#pragma scheduling on
 extern void *fn_802B0AC0(void *, int);
 void fn_802B0954(int arg0) {
     extern void *lbl_804BE104;
