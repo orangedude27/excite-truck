@@ -13,7 +13,7 @@ extern int fn_80176948(int, int, int);
 extern float lbl_80562E60;
 extern float lbl_80562E64;
 extern short lbl_80562E28;
-extern int lbl_80339E60;
+extern u8 lbl_80339E60[];
 void fn_801EAB2C(void *arg0) {
     float a = lbl_80562E60;
     float b = lbl_80562E64;
