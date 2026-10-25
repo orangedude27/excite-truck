@@ -2286,6 +2286,17 @@ void fn_80073A1C(void) {
 
 }
 
+void bta_dm_send_hci_reset(void) {
+    u8 *buf;
+
+    lbl_803C0AD8[0x7E] = 1;
+    buf = GKI_getpoolbuf(2);
+    if (buf != NULL) {
+        fn_80085384(buf, 0);
+    }
+    BTM_SendHciReset(fn_80073A1C);
+}
+
 s32 BTA_EnableBluetooth(void *arg0) {
     void *buf;
     extern u32 lbl_80560D18;
