@@ -5585,6 +5585,21 @@ BOOLEAN BTM_SecAddRmtNameNotifyCallback(tBTM_RMT_NAME_CALLBACK *p_callback) {
     return FALSE;
 }
 
+BOOLEAN BTM_SecDeleteRmtNameNotifyCallback(tBTM_RMT_NAME_CALLBACK *p_callback) {
+    u8 *base = lbl_803C0F78;
+    int i;
+
+    for (i = 0; i < BTM_SEC_MAX_RMT_NAME_CALLBACKS; i++) {
+        if (*(tBTM_RMT_NAME_CALLBACK **)(base + 0x192C) == p_callback) {
+            *(tBTM_RMT_NAME_CALLBACK **)(lbl_803C0F78 + i * 4 + 0x192C) = NULL;
+            return TRUE;
+        }
+        base += 4;
+    }
+
+    return FALSE;
+}
+
 BOOLEAN BTM_SetSecurityLevel(BOOLEAN is_originator, char *p_name, UINT8 service_id, UINT16 sec_level, UINT16 psm, UINT32 mx_proto_id, UINT32 mx_chan_id) {
     char *trace = lbl_80316870;
     u8 *entry = lbl_803C0F78 + 0x1990;
