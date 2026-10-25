@@ -76,7 +76,7 @@ extern "C" void fn_802C744C(void*, void*);
   }
 #pragma push
 #pragma small_data off
-void* fn_801FE188(void*);
+extern "C" void* fn_801FE188(void*);
 extern "C" void fn_801FC914(void) {
     void *p = fn_801284F8(0x38, lbl_8033B5D8);
     if (p != 0) {
