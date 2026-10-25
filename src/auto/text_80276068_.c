@@ -169,7 +169,7 @@ void fn_80276D3C(int unused, int arg) {
         fn_80276098(sp10, p + 4, sp8, *(float *)(p + 0x34), lbl_80564060, 0, 0x22);
     } else {
         memcpy(lbl_8049FE98, p, 0x48);
-        lbl_8049FD58 = 0;
+        *(unsigned char *)&lbl_8049FD58 = 0;
     }
 }
 
