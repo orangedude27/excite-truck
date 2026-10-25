@@ -47,17 +47,17 @@ typedef signed int s32;
 typedef float f32;
 static inline void transformBasis(f32 *dst, const f32 *src,
                                   const f32 *xaxis, const f32 *yaxis, const f32 *zaxis) {
-    if (dst != src) {
-        dst[0] = src[0] * xaxis[0] + src[1] * yaxis[0] + src[2] * zaxis[0];
-        dst[1] = src[0] * xaxis[1] + src[1] * yaxis[1] + src[2] * zaxis[1];
-        dst[2] = src[0] * xaxis[2] + src[1] * yaxis[2] + src[2] * zaxis[2];
-    } else {
+    if (dst == src) {
         f32 x = src[0];
         f32 y = src[1];
         f32 z = src[2];
         dst[0] = x * xaxis[0] + y * yaxis[0] + z * zaxis[0];
         dst[1] = x * xaxis[1] + y * yaxis[1] + z * zaxis[1];
         dst[2] = x * xaxis[2] + y * yaxis[2] + z * zaxis[2];
+    } else {
+        dst[0] = src[0] * xaxis[0] + src[1] * yaxis[0] + src[2] * zaxis[0];
+        dst[1] = src[0] * xaxis[1] + src[1] * yaxis[1] + src[2] * zaxis[1];
+        dst[2] = src[0] * xaxis[2] + src[1] * yaxis[2] + src[2] * zaxis[2];
     }
 }
 extern s32 fn_801E866C(s32);
@@ -247,19 +247,53 @@ subtractCheck:
         sx = u * f25;
         sy = w * f25;
         sz = z * f25;
-        px = sx * frame.output[0] + sy * frame.normal[0] + sz * frame.axis[0];
-        py = sx * frame.output[1] + sy * frame.normal[1] + sz * frame.axis[1];
-        pz = sx * frame.output[2] + sy * frame.normal[2] + sz * frame.axis[2];
+        *(f32 *)((u8 *)&frame + 0x60) = sx;
+        *(f32 *)((u8 *)&frame + 0x64) = sy;
+        *(f32 *)((u8 *)&frame + 0x68) = sz;
+        transformBasis((f32 *)((u8 *)&frame + 0x60),
+                       (f32 *)((u8 *)&frame + 0x60),
+                       frame.output, frame.normal, frame.axis);
+        px = *(f32 *)((u8 *)&frame + 0x60);
+        py = *(f32 *)((u8 *)&frame + 0x64);
+        pz = *(f32 *)((u8 *)&frame + 0x68);
         fn_80231380(vertex, color,
                     x + px + *(f32 *)((u8 *)&frame + 0x10C),
                     y + py + *(f32 *)((u8 *)&frame + 0x110),
-                    pz + *(f32 *)((u8 *)&frame + 0x114), u, w);
+                    pz + *(f32 *)((u8 *)&frame + 0x114),
+                    lbl_80560420 + lbl_80560420 *
+                        (px + *(f32 *)((u8 *)&frame + 0x10C)) +
+                        *(f32 *)((u8 *)record + 0x20) / *(f32 *)((u8 *)record + 0x1C),
+                    lbl_80560424 - (lbl_80560420 + lbl_80560420 *
+                        (py + *(f32 *)((u8 *)&frame + 0x110))) +
+                        *(f32 *)((u8 *)record + 0x24) / *(f32 *)((u8 *)record + 0x1C));
+        if (index < 20) {
+            sx = u * f21;
+            sy = w * f21;
+            sz = z * f21;
+            *(f32 *)((u8 *)&frame + 0x60) = sx;
+            *(f32 *)((u8 *)&frame + 0x64) = sy;
+            *(f32 *)((u8 *)&frame + 0x68) = sz;
+            transformBasis((f32 *)((u8 *)&frame + 0x60),
+                           (f32 *)((u8 *)&frame + 0x60),
+                           frame.output, frame.normal, frame.axis);
+            px = *(f32 *)((u8 *)&frame + 0x60);
+            py = *(f32 *)((u8 *)&frame + 0x64);
+            pz = *(f32 *)((u8 *)&frame + 0x68);
+            fn_80231380(vertex + 0x1F8, color & 0x00FFFFFF,
+                        x + px + *(f32 *)((u8 *)&frame + 0x10C),
+                        y + py + *(f32 *)((u8 *)&frame + 0x110),
+                        pz + *(f32 *)((u8 *)&frame + 0x114),
+                        lbl_80560420 + lbl_80560420 *
+                            (px + *(f32 *)((u8 *)&frame + 0x10C)) +
+                            *(f32 *)((u8 *)record + 0x20) / *(f32 *)((u8 *)record + 0x1C),
+                        lbl_80560424 - (lbl_80560420 + lbl_80560420 *
+                            (py + *(f32 *)((u8 *)&frame + 0x110))) +
+                            *(f32 *)((u8 *)record + 0x24) / *(f32 *)((u8 *)record + 0x1C));
+        }
         ring += 3;
         vertex += 0x18;
     }
-    index = 0;
-    offset = 0;
-    do {
+    for (index = 0, offset = 0; index < 20; index++) {
         flag = (index + 1) % 20;
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = 20; offset += 2;
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)index; offset += 2;
@@ -270,7 +304,7 @@ subtractCheck:
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)flag; offset += 2;
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)(index + 21); offset += 2;
         *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)(flag + 21); offset += 2;
-    } while (++index < 20);
+    }
     if (*(s32 *)((u8 *)obj + 4) != -2)
         fn_802C8BD0(*(s32 *)((u8 *)obj + 4));
     else
@@ -286,20 +320,35 @@ subtractCheck:
         px = *(f32 *)((u8 *)actor + 0x60) - *(f32 *)((u8 *)global + 8);
         py = *(f32 *)((u8 *)actor + 0x64) - *(f32 *)((u8 *)global + 0xC);
         pz = *(f32 *)((u8 *)actor + 0x68) - *(f32 *)((u8 *)global + 0x10);
-        frame.output[0] = px * *(f32 *)&frame.matrix[0] + py * *(f32 *)&frame.matrix[1] + pz * *(f32 *)&frame.matrix[2];
-        frame.output[1] = px * *(f32 *)&frame.matrix[3] + py * *(f32 *)&frame.matrix[4] + pz * *(f32 *)&frame.matrix[5];
-        frame.output[2] = px * *(f32 *)&frame.matrix[6] + py * *(f32 *)&frame.matrix[7] + pz * *(f32 *)&frame.matrix[8];
+        *(f32 *)((u8 *)&frame + 0x54) = px;
+        *(f32 *)((u8 *)&frame + 0x58) = py;
+        *(f32 *)((u8 *)&frame + 0x5C) = pz;
+        transformBasis((f32 *)((u8 *)&frame + 0x54),
+                       (f32 *)((u8 *)&frame + 0x54),
+                       frame.output, frame.normal, frame.axis);
         ratio = width * lbl_80560420 / f21;
-        frame.output[0] *= ratio;
-        frame.output[1] *= ratio;
-        frame.output[2] *= ratio;
-        result = PSVECDotProduct(frame.output, frame.output);
-        if (result < ratio * ratio) {
+        *(f32 *)((u8 *)&frame + 0x54) *= ratio;
+        *(f32 *)((u8 *)&frame + 0x58) *= ratio;
+        *(f32 *)((u8 *)&frame + 0x5C) *= ratio;
+        result = PSVECDotProduct((u8 *)&frame + 0x54, (u8 *)&frame + 0x54);
+        if (result < (width * lbl_80560420) * (width * lbl_80560420)) {
             color = index == *(s32 *)((u8 *)data + 0x48) ? 1 : 3;
             angle = (f32)fn_80235EF0(*(void **)data, color);
+            ratio = 1.0f - result / ((width * lbl_80560420) * (width * lbl_80560420));
+            if (ratio >= lbl_80560440) {
+                if (ratio > lbl_80560424) ratio = lbl_80560424;
+                if (ratio > lbl_80560418)
+                    v = lbl_80560444 * ratio * ratio * ratio + lbl_80560448 * ratio * ratio;
+                else
+                    v = lbl_80560444 * ratio * ratio * ratio - lbl_80560448 * ratio * ratio;
+            }
+            v *= lbl_8056044C;
+            if (v < lbl_80560418) v -= lbl_80560420;
+            else v += lbl_80560420;
             fn_80235AFC(*(void **)data, color, 0xFFFFFFFF,
-                        x + frame.output[0], y + frame.output[1], 0.0f,
-                        angle, angle, *(f32 *)((u8 *)record + 8));
+                        x + *(f32 *)((u8 *)&frame + 0x54), y + *(f32 *)((u8 *)&frame + 0x58), 0.0f,
+                        v * width * lbl_80560420, angle,
+                        *(f32 *)((u8 *)record + 8));
         }
         index++;
     } while (index < fn_801EA994());
@@ -311,17 +360,25 @@ subtractCheck:
             px = *(f32 *)((u8 *)record + 8) - *(f32 *)((u8 *)&frame + 0x10C);
             py = *(f32 *)((u8 *)record + 0xC) - *(f32 *)((u8 *)&frame + 0x110);
             pz = lbl_80560418 - *(f32 *)((u8 *)&frame + 0x114);
-            frame.normal[0] = px * *(f32 *)&frame.matrix[0] + py * *(f32 *)&frame.matrix[1] + pz * *(f32 *)&frame.matrix[2];
-            frame.normal[1] = px * *(f32 *)&frame.matrix[3] + py * *(f32 *)&frame.matrix[4] + pz * *(f32 *)&frame.matrix[5];
-            frame.normal[2] = px * *(f32 *)&frame.matrix[6] + py * *(f32 *)&frame.matrix[7] + pz * *(f32 *)&frame.matrix[8];
-            ratio = width * lbl_80560420 / f21;
-            result = PSVECDotProduct(frame.normal, frame.normal);
+            *(f32 *)((u8 *)&frame + 0x3C) = px;
+            *(f32 *)((u8 *)&frame + 0x40) = py;
+            *(f32 *)((u8 *)&frame + 0x44) = pz;
+            transformBasis((f32 *)((u8 *)&frame + 0x3C),
+                           (f32 *)((u8 *)&frame + 0x3C),
+                           frame.output, frame.normal, frame.axis);
+            ratio = width * lbl_80560420;
+            result = PSVECDotProduct((u8 *)&frame + 0x3C, (u8 *)&frame + 0x3C);
             if (result > ratio * ratio) {
-                PSVECNormalize(frame.normal, frame.normal);
+                PSVECNormalize((f32 *)((u8 *)&frame + 0x3C), (f32 *)((u8 *)&frame + 0x3C));
+                *(f32 *)((u8 *)&frame + 0x3C) *= ratio;
+                *(f32 *)((u8 *)&frame + 0x40) *= ratio;
+                *(f32 *)((u8 *)&frame + 0x44) *= ratio;
                 angle = (f32)fn_80235EF0(record, 0);
+                result = angle * lbl_80560420;
                 fn_802354A0(record, *(s32 *)((u8 *)record + 4), -1,
-                            x + frame.normal[0], y + frame.normal[1], 0.0f,
-                            ratio, angle);
+                            x + width * lbl_80560420 + *(f32 *)((u8 *)&frame + 0x3C) - result,
+                            result + y - height * lbl_80560420 + *(f32 *)((u8 *)&frame + 0x40),
+                            lbl_80560418, angle, angle);
             }
         }
         index++;
@@ -339,17 +396,20 @@ subtractCheck:
     px = *(f32 *)((u8 *)global + 8) - *(f32 *)((u8 *)&frame + 0x10C);
     py = *(f32 *)((u8 *)global + 0xC) - *(f32 *)((u8 *)&frame + 0x110);
     pz = lbl_80560418 - *(f32 *)((u8 *)&frame + 0x114);
-    frame.axis[0] = px * *(f32 *)&frame.matrix[0] + py * *(f32 *)&frame.matrix[1] + pz * *(f32 *)&frame.matrix[2];
-    frame.axis[1] = px * *(f32 *)&frame.matrix[3] + py * *(f32 *)&frame.matrix[4] + pz * *(f32 *)&frame.matrix[5];
-    frame.axis[2] = px * *(f32 *)&frame.matrix[6] + py * *(f32 *)&frame.matrix[7] + pz * *(f32 *)&frame.matrix[8];
+    *(f32 *)((u8 *)&frame + 0x30) = px;
+    *(f32 *)((u8 *)&frame + 0x34) = py;
+    *(f32 *)((u8 *)&frame + 0x38) = pz;
+    transformBasis((f32 *)((u8 *)&frame + 0x30),
+                   (f32 *)((u8 *)&frame + 0x30),
+                   frame.output, frame.normal, frame.axis);
     ratio = width * lbl_80560420 / f21;
-    frame.axis[0] *= ratio;
-    frame.axis[1] *= ratio;
-    frame.axis[2] *= ratio;
-    result = PSVECDotProduct(frame.axis, frame.axis);
+    *(f32 *)((u8 *)&frame + 0x30) *= ratio;
+    *(f32 *)((u8 *)&frame + 0x34) *= ratio;
+    *(f32 *)((u8 *)&frame + 0x38) *= ratio;
+    result = PSVECDotProduct((u8 *)&frame + 0x30, (u8 *)&frame + 0x30);
     if (result < (width * lbl_80560420) * (width * lbl_80560420)) {
         angle = (f32)fn_80235EF0(*(void **)data, 0);
-        ratio = 1.0f - PSVECDotProduct(frame.axis, frame.axis) /
+        ratio = 1.0f - PSVECDotProduct((u8 *)&frame + 0x30, (u8 *)&frame + 0x30) /
                 ((width * lbl_80560420) * (width * lbl_80560420));
         if (ratio >= lbl_80560440) {
             if (ratio > lbl_80560424) ratio = lbl_80560424;
@@ -363,7 +423,7 @@ subtractCheck:
         else v += lbl_80560420;
         color = ((s32)v << 24) | 0x00FFFFFF;
         fn_80235AFC(*(void **)data, 0, (u32)color,
-                    x + frame.axis[0], y + frame.axis[1], lbl_80560418,
+                    x + *(f32 *)((u8 *)&frame + 0x30), y + *(f32 *)((u8 *)&frame + 0x34), lbl_80560418,
                     angle, angle, *(f32 *)((u8 *)actor + 0x68));
     }
 }
