@@ -107,6 +107,12 @@ void fn_8026B644(void) {
     fn_8026B11C((void **)&lbl_8055F4CC, lbl_80346988 + 0xBC);
 }
 
+void fn_8026B69C(void) {
+    lbl_8055F4C8 = 0;
+    deleteThreads__6SystemFv_8026B178(&lbl_8055F4CC);
+    deleteThreads__6SystemFv_8026B178(&lbl_8055F4D0);
+}
+
 extern unsigned char lbl_8049A0E8[];
 extern int lbl_8055F4C8;
 extern int lbl_8055F4CC, lbl_8055F4D0;
@@ -132,9 +138,8 @@ void fn_8026B6E4(void) {
 }
 
 int fn_8026B734(int arg0, float *arg1) {
-    if (lbl_8049A0E8[arg0 << 4]) {
-        unsigned char *p = lbl_8049A0E8 + (arg0 << 4);
-        *arg1 = *(float *)(p + 8);
+    if (*(volatile unsigned char *)(lbl_8049A0E8 + (arg0 << 4))) {
+        *arg1 = *(float *)(lbl_8049A0E8 + (arg0 << 4) + 8);
         return 1;
     }
     return 0;
