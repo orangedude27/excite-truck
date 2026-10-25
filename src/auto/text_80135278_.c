@@ -62,16 +62,21 @@ float fn_80135278(float *a, float *b, float *c) {
     float dy = b[1] - c[1];
     return a[0] * dx + a[1] * dy;
 }
-#pragma scheduling reset
+#pragma scheduling invalid_target
 void *fn_801352B8(Unk_80135278 *arg0) {
-    arg0->unk_0 = (s32)&lbl_8032BE80;
-    arg0->unk_4 = 0;
-    arg0->unk_c = 0x2710;
-    arg0->unk_8 = lbl_80561320;
-    fn_80135390(arg0);
-    return arg0;
-}
+    float value = lbl_80561320;
+    Unk_80135278 *self;
 
+    arg0->unk_0 = (s32)&lbl_8032BE80;
+    self = arg0;
+    self->unk_4 = 0;
+    self->unk_c = 0x2710;
+    self->unk_8 = value;
+    fn_80135390(self);
+    return self;
+}
+#pragma scheduling reset
+#pragma dont_inline fn_8013530C
 void *fn_8013530C(void *arg0, s32 arg1) {
     if (arg0 != (void*)0) {
         *(s32 *)((u8 *)arg0 + 0x2C) = 0;
@@ -109,12 +114,11 @@ void fn_80135390(Unk_80135278 *arg0) {
 #pragma dont_inline on
 void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     float f = lbl_80561320;
-    arg0->unk_8 = f;
     arg0->unk_4 = arg3;
+    arg0->unk_8 = f;
     fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
     fn_801357A4(arg0, arg1);
 }
-
 void *fn_80135420(float *point, void *unused, void *list) {
     extern double __fabs(double);
     extern void fn_802E30C8(const char *, ...);
@@ -170,6 +174,38 @@ s32 fn_801353C4(void) {
 
 s32 fn_801355B8(void *arg0, void *arg1) {
     return 0;
+}
+
+void fn_80135B24(void *arg0, void *arg1, float farg0) {
+    void *entry;
+    void *node;
+    void *base;
+    float initial = lbl_80561320;
+
+    *(void **)arg0 = 0;
+    base = *(void **)((char *)arg1 + 0x2C);
+    *(s32 *)((char *)arg0 + 8) = 0x2710;
+    *(float *)((char *)arg0 + 4) = initial;
+    node = *(void **)((char *)base + 0x20);
+    *(void **)arg0 = node;
+    if (node == 0) {
+        goto done;
+    }
+    for (;;) {
+        node = *(void **)arg0;
+        entry = *(void **)((char *)node + 0x14);
+        if (*(float *)((char *)entry + 0x1C) >= farg0) {
+            break;
+        }
+        if (*((u8 *)entry + 0x34) != 3) {
+            break;
+        }
+        *(void **)arg0 = entry;
+    }
+    *(float *)((char *)arg0 + 4) = (farg0 - *(float *)((char *)node + 0x1C)) / *(float *)((char *)node + 0x18);
+    *(s32 *)((char *)arg0 + 8) = 0;
+done:
+    return;
 }
 
 void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, float amount) {
@@ -484,30 +520,42 @@ int fn_80136068(Unk_80135278 *arg0, void *arg1, int arg2) {
     arg0->unk_60 = arg0->unk_4;
     return status;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 int fn_801363A0(void *arg0, void *arg1) {
-    int temp_r31 = *(int *)((char *)*(void **)arg1 + 0x10);
-    int var = *(int *)((char *)*((void **)*(void **)arg1 + 0x14) + 0x10);
-    if (var == 0) var = *(int *)((char *)*(void **)((char *)arg0 + 0x2C) + 0x18);
+    void *temp_r6 = *(void * volatile *)arg1;
+    int temp_r31 = *(int *)((char *)temp_r6 + 0x10);
+    int var = *(int *)((char *)*(void **)((char *)temp_r6 + 0x14) + 0x10);
+    if (var == 0) {
+        var = *(int *)((char *)*(void **)((char *)arg0 + 0x2C) + 0x18);
+    }
     return temp_r31 + (unsigned int)(*(float *)((char *)arg1 + 4) * (float)(var - temp_r31));
 }
-
+#pragma scheduling on
 extern float lbl_80561358;
 extern double lbl_80561360;
-void fn_80136414(void *arg0, void *arg1, unsigned long arg2) {
-    unsigned long low = arg2 & 0xFFFF;
-    unsigned long index = arg2 >> 16;
+void fn_80136414(void *arg0, void *arg1, s32 arg2) {
+    unsigned long low;
+    unsigned long index;
     union {
         double value;
         struct { unsigned long hi, lo; } words;
     } converted;
+    float divisor;
     float fraction;
+    char *node;
+    char *base;
+
+    low = (unsigned long)arg2 & 0xFFFF;
     converted.words.hi = 0x43300000;
+    node = *(char **)((char *)arg1 + 0x2C);
     converted.words.lo = low;
-    fraction = (float)converted.value - (float)lbl_80561360;
-    *(char **)arg0 = (char *)*(void **)((char *)*(void **)((char *)arg1 + 0x2C) + 0x1C) + index * 0x3C;
+    index = ((unsigned long)arg2) >> 16;
+    fraction = converted.value - lbl_80561360;
+    divisor = lbl_80561358;
+    base = *(char **)(node + 0x1C);
+    *(char **)arg0 = base + index * 0x3C;
     *(s32 *)((char *)arg0 + 8) = 0;
-    *(float *)((char *)arg0 + 4) = fraction / lbl_80561358;
+    *(float *)((char *)arg0 + 4) = fraction / divisor;
 }
 
 extern double fn_8002EFB4(double, double);
@@ -640,6 +688,23 @@ void fn_80136764(void) {
 
 void fn_80136768(void) {
     fn_801569FC();
+}
+
+void *fn_8013676C(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        float **field = (float **)((u8 *)arg0 + 0x50);
+        if (field != 0) {
+            if (*field != 0) {
+                fn_80128670();
+            }
+            *field = 0;
+        }
+        fn_8013530C(arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 #pragma cplusplus on
