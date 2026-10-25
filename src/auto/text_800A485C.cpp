@@ -5708,7 +5708,7 @@ extern "C" s32 fn_800B7E5C(s8 arg0) {
  return (s32)(-temp_r3 | temp_r3) >> 31;
 }
 
-extern "C" s32 OSReport(const char *, ...);
+extern "C" void OSReport(const char *, ...);
 extern "C" s32 OSWaitSemaphore(void);
 extern "C" s32 fn_800B76E8(s8);
 extern "C" const char lbl_8031B190[];
