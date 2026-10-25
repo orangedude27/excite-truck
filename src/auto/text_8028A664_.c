@@ -359,6 +359,19 @@ s32 fn_8028BB14(s32 arg0) {
 void fn_8028BC18(void) {
 }
 
+s32 fn_8028BC1C(s32 arg0, s32 arg1) {
+    extern void fn_802CAC54(s32);
+    extern void fn_80128670(s32);
+    s32 temp;
+    if (arg0 != 0) {
+        fn_802CAC54(((s32 *)arg0)[5]);
+        temp = *(s32 *)arg0;
+        if (temp != 0) fn_80128670(temp - 0x10);
+        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)((void *)arg0);
+    }
+    return arg0;
+}
+
 extern f32 lbl_8056432C;
 #pragma push
 #pragma scheduling off
