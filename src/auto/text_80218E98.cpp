@@ -1558,9 +1558,7 @@ extern "C" void fn_8021CF9C(void *arg0) {
 
 void fn_8021CF9C(void);
 void fn_8021AC24(void *, int, int, int);
-extern int lbl_8033F548;
 extern "C" void fn_8021CF9C(void);
-extern "C" int lbl_8033F548;
 extern "C" void fn_8021D040(void) { fn_8021CF9C(); }
 
 extern "C" void fn_8021D154(void *arg0) {
