@@ -397,13 +397,13 @@ s32 *fn_80176C0C(s32 *arg0, s32 *arg1) {
 }
 #pragma scheduling on
 void fn_80176C4C(void) {
-    if (*(s32 *)lbl_804303D4 != 4) {
+    if (*(volatile s32 *)lbl_804303D4 != 4) {
         ((s32 *)lbl_804303C8)[0] = *(s32 *)lbl_804303D4;
         ((s32 *)lbl_804303C8)[1] = ((s32 *)lbl_804303D4)[1];
-        lbl_804303C8[8] = lbl_804303D4[2];
+        ((u8 *)lbl_804303C8)[8] = ((u8 *)lbl_804303D4)[8];
         *(s32 *)lbl_804303D4 = 4;
         ((s32 *)lbl_804303D4)[1] = 0;
-        memset(lbl_804303D4 + 2, 0, 4);
+        memset(lbl_804303D4 + 2, 0, 1);
     }
     fn_80179320();
     lbl_8055E3F4 = 3;
@@ -585,6 +585,19 @@ void fn_801776C4(u32 arg0) {
     }
     lbl_80430570[lbl_8055E400] = arg0;
     lbl_8055E400++;
+}
+
+void fn_80177720(u32 arg0) {
+    s32 i;
+    for (i = 0; i < lbl_8055E400; i++) {
+        if (arg0 == (u32)lbl_80430570[i]) {
+            lbl_8055E400--;
+            memmove(&lbl_80430570[i], &lbl_80430570[i + 1],
+                    (lbl_8055E400 - i) * sizeof(s32));
+            return;
+        }
+    }
+    fn_802E317C(lbl_8033189C);
 }
 
 extern void fn_80177658(void *);
