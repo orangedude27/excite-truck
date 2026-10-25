@@ -98,12 +98,12 @@ void fn_80230B5C(void *arg0) {
     p[8]=b; p[9]=a; p[10]=a; p[11]=c;
 }
 
-s32 fn_80230B9C(void) {
+s32 fn_80230B9C(u32 arg0) {
     extern void *fn_8022EDC4(void);
     extern f64 lbl_80563650;
     u8 a=0, b=0, c=0, d=0;
     f32 scale;
-    fn_80230AB8(&a, &b, &c, &d);
+    fn_80230AB8(arg0, &a, &b, &c, &d);
     scale = *(f32 *)((u8 *)fn_8022EDC4() + 0x30);
     return d | (c << 8) | (b << 16) | ((s32)(((f64)a - lbl_80563650) * scale) << 24);
 }
