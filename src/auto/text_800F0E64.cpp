@@ -592,7 +592,7 @@ void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(void *a
     *(s32 *)((u8 *)arg0 + 4) = flag;
 }
 
-void fn_800F27AC(void *arg0) {
+extern "C" void fn_800F27AC(void *arg0) {
     *(s32 *)((u8 *)arg0 + 4) = 0;
     *(u8 *)((u8 *)arg0 + 8) = 0x2F;
     *(u8 *)((u8 *)arg0 + 9) = 0;
@@ -1417,8 +1417,10 @@ extern "C" s32 GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *arg0, 
         void *players;
     };
     SoundArchivePlayer *self = (SoundArchivePlayer *)arg0;
-    volatile u32 *playerCount = (volatile u32 *)((u8 *)self + 0x70);
-    if (arg1 >= *playerCount) {
+    register u32 playerCount;
+
+    playerCount = self->playerCount;
+    if (arg1 >= playerCount) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2B2, lbl_803250C8, arg1, 0);
     }
     return (s32)((u8 *)self->players + arg1 * 0x48);
@@ -3154,7 +3156,8 @@ extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void)
         p = pHead;
         pHead = *(void**)pHead;
         if (p == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D, (const char*)lbl_80326B68);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
+                                         (const char*)lbl_80326B68);
         }
         UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)p)[-0x08]);
     }
