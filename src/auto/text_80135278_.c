@@ -76,7 +76,6 @@ void *fn_801352B8(Unk_80135278 *arg0) {
     return self;
 }
 #pragma scheduling reset
-#pragma dont_inline fn_8013530C
 void *fn_8013530C(void *arg0, s32 arg1) {
     if (arg0 != (void*)0) {
         *(s32 *)((u8 *)arg0 + 0x2C) = 0;
@@ -176,6 +175,7 @@ s32 fn_801355B8(void *arg0, void *arg1) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 void fn_80135B24(void *arg0, void *arg1, float farg0) {
     void *entry;
     void *node;
@@ -188,26 +188,23 @@ void fn_80135B24(void *arg0, void *arg1, float farg0) {
     *(float *)((char *)arg0 + 4) = initial;
     node = *(void **)((char *)base + 0x20);
     *(void **)arg0 = node;
-    if (node == 0) {
-        goto done;
-    }
-    for (;;) {
-        node = *(void **)arg0;
-        entry = *(void **)((char *)node + 0x14);
-        if (*(float *)((char *)entry + 0x1C) >= farg0) {
-            break;
+    if (node != 0) {
+        for (;;) {
+            node = *(void **)arg0;
+            entry = *(void **)((char *)node + 0x14);
+            if (*(float *)((char *)entry + 0x1C) >= farg0) {
+                break;
+            }
+            if (*((u8 *)entry + 0x34) != 3) {
+                break;
+            }
+            *(void **)arg0 = entry;
         }
-        if (*((u8 *)entry + 0x34) != 3) {
-            break;
-        }
-        *(void **)arg0 = entry;
+        *(float *)((char *)arg0 + 4) = (farg0 - *(float *)((char *)node + 0x1C)) / *(float *)((char *)node + 0x18);
+        *(s32 *)((char *)arg0 + 8) = 0;
     }
-    *(float *)((char *)arg0 + 4) = (farg0 - *(float *)((char *)node + 0x1C)) / *(float *)((char *)node + 0x18);
-    *(s32 *)((char *)arg0 + 8) = 0;
-done:
-    return;
 }
-
+#pragma scheduling reset
 void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, float amount) {
     extern double fn_8002F234(float);
     float step;
@@ -692,12 +689,11 @@ void fn_80136768(void) {
 
 void *fn_8013676C(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        float **field = (float **)((u8 *)arg0 + 0x50);
-        if (field != 0) {
-            if (*field != 0) {
+        if ((u8 *)arg0 + 0x50 != 0) {
+            if (*(s32 *)((u8 *)arg0 + 0x50) != 0) {
                 fn_80128670();
             }
-            *field = 0;
+            *(s32 *)((u8 *)arg0 + 0x50) = 0;
         }
         fn_8013530C(arg0, 0);
         if (arg1 > 0) {
