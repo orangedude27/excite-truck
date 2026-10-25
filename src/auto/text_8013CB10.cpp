@@ -228,6 +228,20 @@ extern "C" s32 fn_8013D1F0(s32 arg0) {
     return *(s32 *)(obj + 0x10);
 }
 
+extern "C" s32 fn_8013D224(f32 farg0, f32 farg1) {
+    f32 diff = farg0 - farg1;
+    f32 result;
+    if ((f32)__fabs((f64)diff) <= lbl_80558DC4) {
+        return 0;
+    }
+    if (diff > lbl_805614A4) {
+        result = lbl_805614AC;
+    } else {
+        result = lbl_805614BC;
+    }
+    return (s32)result;
+}
+
 extern "C" void fn_8013D27C(void *a, void *b) {
     fn_8013D224(*(f32 *)((u8 *)a + 0x18), *(f32 *)((u8 *)b + 0x18));
 }
@@ -792,6 +806,15 @@ extern "C" void *fn_801414A4(void *arg0) {
     void **fields = (void **)arg0;
     fields[0] = fn_802CAC28(lbl_8032CAA0, 0);
     fields[1] = fn_802CAC28(lbl_8032CAB0, 0);
+    return arg0;
+}
+
+extern "C" void *__dt__Q210JASDrumSet5TPercFv(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        fn_802CAC54(*(s32 *)arg0);
+        fn_802CAC54(*(s32 *)((u8 *)arg0 + 4));
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+    }
     return arg0;
 }
 
