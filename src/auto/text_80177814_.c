@@ -178,24 +178,15 @@ extern char jumptable_803318F8[];
 long fn_801781B8(void) { return 0; }
 
 long fn_801781C0(unsigned int arg0) {
-    switch (arg0) {
-    case 0x13: return 1;
-    case 0x14: return 1;
-    case 0x15: return 1;
-    case 0x16: return 1;
-    case 0x17: return 1;
-    case 0x18: return 1;
-    case 0x19: return 1;
-    case 0x1A: return 1;
-    case 0x1B: return 1;
-    case 0x1C: return 1;
-    case 0x1D: return 1;
-    case 0x1E: return 1;
-    case 0x1F: return 1;
-    default: return 0;
+    register char *table = jumptable_803318F8;
+    register long r;
+    if (arg0 - 0x13 <= 0xC) {
+        r = *(long *)(table + (arg0 - 0x13) * 4);
+        return r;
     }
+    return 0;
 }
-
+#pragma scheduling invalid_target
 unsigned char *fn_801781F4(long arg0) {
     volatile unsigned char *p = &lbl_8055E46C;
     unsigned char a;
@@ -668,7 +659,7 @@ extern long lbl_80430850;
 extern long fn_80178C1C(long *);
 extern float lbl_80561B60;
 extern double lbl_80561B70;
-extern void *fn_80178374(void);
+extern void *fn_80178374(long);
 extern long fn_802E317C(const char *, long, ...);
 extern const char lbl_80331B40[];
 #include <revolution/MTX/vec.h>
