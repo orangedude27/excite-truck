@@ -220,7 +220,7 @@ extern void* lbl_8055A510;
 void fn_8019F1A4(void) __attribute__((noreturn));
 
 extern "C" s32 fn_80128668(void);
-void fn_801A5C4C(void);
+extern "C" void fn_801A5C4C(void*);
 extern "C" void fn_8017B6D4(s32, Vec*, s32);
 extern f32 lbl_805622D0, lbl_805622E4, lbl_805622E8;
 extern "C" f32 PSVECMag(const Vec*);
@@ -249,7 +249,7 @@ extern "C" void fn_80199870(void* arg0) {
     u32 value = *(u32*)((u8*)arg0 + 0x10);
     if ((u32)(value - 0x50430000) == 0x4152 ||
         (u32)(value - 0x41430000) == 0x4152) {
-        fn_801A5C4C();
+        fn_801A5C4C(arg0);
     }
 }
 #pragma dont_inline reset
@@ -1222,11 +1222,11 @@ void fn_8019EB14(u8 *arg0, s32 arg1) {
 }
 
 void fn_8019EBC0(void* arg0) {
-    void* obj = *(void**)((u8*)arg0 + 4);
-    if (obj != 0) {
-        void** vtable = *(void***)obj;
-        ((void (*)(void*))(*(u32*)((u8*)vtable + 0x48)))(obj);
+    VTab19* p = *(VTab19**)((u8*)arg0 + 4);
+    if (p == NULL) {
+        return;
     }
+    p->v16();
 }
 
 extern "C" void fn_8019EBE0(void* self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
@@ -1422,12 +1422,12 @@ void fn_8019F1D4(void *arg0, f32 *arg1, f32 *arg2) {
     arg2[2] = right + b;
 }
 
-void fn_8019F248(void *arg0) {
+extern "C" void fn_8019F248(void *arg0) {
     extern f32 lbl_80562300;
     extern s32 lbl_8055E598;
     extern void fn_801E3FC8(void*, s32, f32);
     f32 var_f1 = *(f32*)((u8*)arg0 + 0x24);
-    if (var_f1 <= lbl_80562300) {
+    if (var_f1 < lbl_80562300) {
         var_f1 = lbl_80562300;
     }
     fn_801E3FC8((u8*)arg0 + 0x34, lbl_8055E598, var_f1);
