@@ -693,7 +693,6 @@ extern void fn_802C3320();
 extern void fn_802C33A8();
 extern void fn_802E317C(const char *, ...);
 extern void fn_802C3850();
-extern void fn_802C3754(s32, s32, s32, s32, s32, s32, s32, s32);
 extern const char lbl_8034B078[];
 extern void fn_802C3918(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3C68(s32,s32,s32,s32,s32,s32,s32,s32);
