@@ -1705,6 +1705,8 @@ extern "C" void* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void* this_, s
     return result;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
     void* pHead = *(void**)&lbl_80412A6C[0x04];
     void* pList = &lbl_80412A6C[0x04];
@@ -1722,6 +1724,7 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
         fn_800F0360((u8*)pPlayer - 0x100);
     }
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
