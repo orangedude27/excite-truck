@@ -705,12 +705,12 @@ extern "C" s32 fn_80219958(void *arg0, s32 arg1) {
     return fn_802192A4(arg0, arg1);
 }
 #pragma dont_inline reset
-extern "C" void *fn_8021995C(void *arg0, s32 arg1, s32 arg2) {
-    fn_80222340(arg0, 0, 0, arg1, 0, 0, 0);
-    *(s32 *)((u8 *)arg0 + 0x254) = arg2;
+extern "C" void *fn_8021995C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    fn_80222340(arg0, arg1, arg2, arg3, 0, 0, arg4);
+    *(s32 *)((u8 *)arg0 + 0x254) = arg5;
     *(void **)arg0 = lbl_8033F4B8;
-    if (arg2 != 0) {
-        fn_80219440(arg0, 0, (void *)arg2, 4);
+    if (arg5 != 0) {
+        fn_80219440(arg0, 0, (void *)arg5, 4);
     }
     return arg0;
 }
