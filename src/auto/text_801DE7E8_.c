@@ -23,7 +23,6 @@ extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_801769EC(void);
 extern int fn_8000DA10(void);
 extern void fn_801332D0(int, int*, int*);
-extern int lbl_80339570;
 int fn_801DF060(void) {
     int val = lbl_8055E9E8;
     unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
