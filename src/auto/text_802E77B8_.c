@@ -133,14 +133,19 @@ int fn_802E7A70(unsigned int value) {
     return 1;
 }
 
-int fn_802E7AF4(int arg0,int arg1) {
- if(arg0==1){
-  fn_80128684();
-  if(arg1==2)fn_8005ED8C();else fn_8005EE20();
-  fn_802E30C8(&lbl_8034D8B4);
-  if(fn_8005EE7C()!=4)fn_802E30C8(&lbl_8034D8E8);
- }
- return 0;
+int fn_802E7AF4(int arg0, int arg1) {
+    if (arg0 == 1) {
+        fn_80128684();
+        if (arg1 != 2) {
+            fn_8005EE20();
+        } else {
+            fn_8005ED8C();
+        }
+        ((void (*)(const char *, ...))fn_802E30C8)((const char *)&lbl_8034D8B4);
+        if (fn_8005EE7C() != 4)
+            ((void (*)(const char *, ...))fn_802E30C8)((const char *)&lbl_8034D8E8);
+    }
+    return 0;
 }
 
 #pragma push
@@ -388,11 +393,22 @@ void fn_802E7FD0(void) {
     } while (channel < 4);
     fn_802EC884();
 }
-#pragma pop
+#pragma scheduling invalid_target
 void fn_802E830C(int *p) {
- p[0]=3; p[1]=0; p[2]=2; p[9]=-1; p[3]=1; p[4]=7; p[12]=4; p[13]=-1; p[10]=-1; p[11]=-1; p[5]=5; p[6]=6;
+    p[0] = 3;
+    p[1] = 0;
+    p[2] = 2;
+    p[9] = -1;
+    p[3] = 1;
+    p[4] = 7;
+    p[12] = 4;
+    p[13] = -1;
+    p[10] = -1;
+    p[11] = -1;
+    p[5] = 5;
+    p[6] = 6;
 }
-
+#pragma scheduling on
 unsigned char fn_802E8364(void *arg0,int arg1){extern unsigned char lbl_80505978[]; unsigned char *src=lbl_80505978+arg1*0x638; unsigned char *dst=(unsigned char*)arg0; unsigned char a,b; unsigned int x,y;
 *(float*)(dst+0)=*(float*)(src+4);
 *(float*)(dst+4)=*(float*)(src+8);
@@ -471,18 +487,29 @@ int fn_802E85B8(int arg0) {
     return values[arg0];
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802E85F4(int index) {
- unsigned char *p=lbl_80505978+index*0x638;
- float value=lbl_805651A4, current=*(float *)(p+0x6C);
- int count;
- if(value<current)value=current;
- if(value>lbl_805651A0)value=lbl_805651A0;
- count=*(int *)(p+0x68);
- *(float *)(p+count*4+0x70)=value;
- count++;
- *(int *)(p+0x68)=count%16;
-}
+    extern unsigned char lbl_80505978[];
+    extern float lbl_805651A0, lbl_805651A4;
+    unsigned char *p;
+    float value = lbl_805651A4;
+    float limit = lbl_805651A0;
+    float current;
+    int count;
 
+    p = lbl_80505978 + index * 0x638;
+    current = *(float *)(p + 0x6C);
+    if (value >= current)
+        value = current;
+    if (value <= limit)
+        value = limit;
+    *(float *)(p + *(int *)(p + 0x68) * 4 + 0x70) = value;
+    count = *(int *)(p + 0x68);
+    count++;
+    *(int *)(p + 0x68) = count % 16;
+}
+#pragma pop
 void fn_802E8664(void) {}
 
 void *fn_802E8668(int index) {
