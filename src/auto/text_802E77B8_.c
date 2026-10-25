@@ -56,7 +56,8 @@ float fn_802E78A4(float arg0) {
     float a = fn_802E7824(lbl_80565174 + arg0, lbl_80565178);
     float b = fn_802E7824(arg0 - lbl_80565174, lbl_80565178);
     float v = lbl_80565170 * (b + a);
-    return v + lbl_80565164 * (v * __fabs(v) - v);
+    float f = v * __fabs(v) - v;
+    return v + lbl_80565164 * f;
 }
 
 void fn_802E7920(int arg0) {
@@ -535,6 +536,7 @@ extern int lbl_802FAE80[4];
 extern float lbl_805651A0, lbl_805651A4;
 extern unsigned char lbl_80505978[];
 extern int fn_8005ED8C(void), fn_8005EE20(void), fn_8005EE7C(void);
-extern int fn_80128684(void), fn_802E30C8(int *);
+extern int fn_80128684(void);
+extern int fn_802E30C8();
 extern int lbl_8034D8B4, lbl_8034D8E8;
 extern int fn_80128658(int, int *);
