@@ -32,7 +32,7 @@ s32 fn_8001F9A4();
 s32 fn_8001FA20();
 s32 fn_8001FA8C();
 
-extern void fn_802E6BD8(int, int, void *, int, void (*)(int));
+extern void fn_802E6BD8(int, int, void *, int, void (*)(long));
 extern void fn_8000DBC8(void (*)(int, int));
 void fn_8001F528(void);
 void fn_8001EF38(void* alarm) {
@@ -261,8 +261,8 @@ extern char lbl_802FE0A0[];
 s32 fn_8001F89C(s32 arg0, s32 arg1) {
     s32 result;
     if (arg1 >= 0 && (u32)arg1 < 4) {
-        result = *(volatile s32 *)(lbl_8035A718 + arg0 * 4);
-        result += *(volatile s32 *)(lbl_80358698 + arg0 * 4 + arg1 * 0x820);
+        result = *(s32 *)(lbl_8035A718 + arg0 * 4);
+        result += *(s32 *)(lbl_80358698 + arg1 * 0x820 + arg0 * 4);
     } else {
         fn_802E30C8(lbl_802FE0A0);
         result = 0;
