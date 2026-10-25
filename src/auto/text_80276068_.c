@@ -35,7 +35,7 @@ void fn_80276098(void *arg0, void *arg1, float arg2, float arg3, float arg4, int
         (float)fabsf(PSVECSquareDistance((char*)arg0+0xC,(char*)arg1+0xC)) != lbl_80558DC4 ||
         (float)fabsf(PSVECSquareDistance((char*)arg0+0x18,(char*)arg1+0x18)) != lbl_80558DC4) {
     } else return;
-    entry=&lbl_8049FD58+arg5*0x50; out=(float*)(entry+4);
+    entry=(unsigned char *)&lbl_8049FD58+arg5*0x50; out=(float*)(entry+4);
     trace=a[0]+a[4]+a[8]; *(float*)(entry+0x44)=arg4; *(float*)(entry+0x48)=lbl_8055E3C8;
     if(trace>lbl_80564048){root=fn_8002F234(lbl_8056404C+trace);inv=lbl_80564050/root;out[0]=lbl_80564050*root;out[1]=inv*(a[5]-a[7]);out[2]=inv*(a[6]-a[2]);out[3]=inv*(a[1]-a[3]);}
     else{i=0;if(a[4]>a[0])i=1;if(a[8]>a[i*3+i])i=2;j=(i+1)%3;k=(j+1)%3;root=fn_8002F234(lbl_8056404C+(a[i*3+i]-(a[j*3+k]+a[k*3+j])));inv=lbl_80564050/root;out[i]=lbl_80564050*root;out[3]=inv*(a[j*3+k]-a[k*3+j]);out[j]=inv*(a[i*3+j]+a[j*3+i]);out[k]=inv*(a[i*3+k]+a[k*3+i]);}
@@ -69,10 +69,10 @@ void fn_80276ACC(void *arg0, int arg1) {
 }
 
 void fn_80276B8C(void) {
-    unsigned char *entry = &lbl_8049FD58;
+    volatile unsigned char *entry = &lbl_8049FD58;
     int i = 0;
     do {
-        memset(entry, 0, 0x50);
+        memset((void *)entry, 0, 0x50);
         i++;
         entry += 0x50;
     } while (i < 4);
