@@ -2361,11 +2361,19 @@ void GXSetIndTexOrder(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 void GXSetNumIndStages(unsigned int value) {
-    unsigned int *data = __GXData;
-    unsigned int old = data[0x254 / 4];
-    old = (old & ~0x70000) | ((value << 16) & 0x70000);
-    data[0x254 / 4] = old;
-    data[0x5FC / 4] |= 6;
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 13;
+            unsigned int stages : 3;
+            unsigned int rest : 16;
+        } fields;
+    } data;
+
+    data.reg = __GXData[0x254 / 4];
+    data.fields.stages = value;
+    __GXData[0x254 / 4] = data.reg;
+    __GXData[0x5FC / 4] |= 6;
 }
 
 extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
