@@ -55,6 +55,7 @@ void* fn_800165D4(void) {
     return lbl_8055D550;
 }
 
+#pragma dont_inline fn_80016510
 void fn_800165DC(void) {
     fn_80016510(*(int *)((char *)fn_80016474() + 0x4C));
 }
@@ -153,13 +154,20 @@ void fn_800168B0(int arg0, int arg1) {
 }
 
 void fn_80016928(int arg0, int arg1) {
-    int i;
-    unsigned char *p;
-    for (i = 0, p = lbl_8055D540; i < (int)lbl_8055D54C; i++, p += 0x5C) {
-        if (arg0 == *(int *)(p + 4)) {
-            *(int *)(lbl_8055D540 + i * 0x5C + 0x50) = arg1;
-            return;
-        }
+    int count = (int)lbl_8055D54C;
+    int i = 0;
+    unsigned char *base = lbl_8055D540;
+    unsigned char *entry = base;
+
+    if (count > 0) {
+        do {
+            if (arg0 == *(int *)(entry + 4)) {
+                *(int *)(base + i * 0x5C + 0x50) = arg1;
+                return;
+            }
+            entry += 0x5C;
+            i++;
+        } while (--count > 0);
     }
 }
 
