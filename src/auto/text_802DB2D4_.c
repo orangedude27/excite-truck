@@ -116,6 +116,17 @@ int fn_802DB69C(void **arg0, int arg1) {
     GXSetNumTexGens((unsigned char)lbl_8055FEA4);
     return stage;
 }
+
+void fn_802DB9DC(int arg0) {
+    if (lbl_8055FEBA != 0)
+        return;
+    if (arg0 != 0) {
+        GXSetBlendMode(1, 4, 0, 5);
+    } else {
+        GXSetBlendMode(1, 4, 1, 5);
+    }
+}
+
 #pragma dont_inline reset
 #pragma use_lmw_stmw on
 
