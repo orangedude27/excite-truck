@@ -1021,18 +1021,16 @@ extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
 }
 
 extern "C" void fn_801590A8(void* arg0) {
+    f32 f0;
+    f32 f1;
     ((Unk801577F0*)arg0)->v31();
-    f32 f0 = *(f32*)((char*)arg0 + 0x24c);
-    f32 f1 = *(f32*)((char*)arg0 + 0x260);
-    f32 f2 = lbl_80561754;
-    *(f32*)((char*)arg0 + 0x25c) = f2;
-    if (f1 > f0) {
+    *(f32*)((char*)arg0 + 0x25c) = lbl_80561754;
+    if (*(f32*)((char*)arg0 + 0x260) > *(f32*)((char*)arg0 + 0x24c)) {
         s32 object = *(s32*)((char*)arg0 + 0x268);
         if (object != 0) {
             fn_801CB750(object, *(s32*)((char*)arg0 + 4));
         }
-        f2 = lbl_80561754;
-        *(f32*)((char*)arg0 + 0x260) = f2;
+        *(f32*)((char*)arg0 + 0x260) = lbl_80561754;
     }
     f1 = lbl_80561754;
     f0 = lbl_8056177C;
@@ -2594,13 +2592,16 @@ extern "C" s32 fn_80159338(void) {
 }
 
 extern "C" void* fn_80159340(void* arg0, s32 arg1) {
+    struct ChildVTable {
+        virtual void call(s32);
+    };
     void* child;
     if (arg0) {
         child = *(void**)((char*)arg0 + 0x278);
         *(void**)arg0 = lbl_8032F0E8;
         if (child) {
             if (child) {
-                ((Unk8015A368C*)child)->v1(1);
+                ((ChildVTable*)child)->call(1);
             }
         }
         if (arg0) {
