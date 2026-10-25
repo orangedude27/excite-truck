@@ -2921,6 +2921,11 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     ((BitReader8011 *)arg0)->value = var_r30;
     ((BitReader8011 *)arg0)->count = (u32)var_r29;
 }
+
+void fn_8011CD78(void* arg0, void* arg1) {
+    fn_8011C4A0((s32)arg1, (s32)((u8*)arg0 + 0x24), (s32)((u8*)arg0 + 0x20), (s32)((u8*)arg0 + 0x10));
+}
+
 #pragma pop
 void fn_8011CD90(s32 arg0, s32 arg1, s32 arg2) {
     s32 a = arg2;
@@ -3281,8 +3286,42 @@ void fn_8011DFAC(void* arg0, u32 arg1) {
     out[8] = fn_8011DF68(0x200, arg1, 4, 0x30);
 }
 
-s32 *fn_8011E0B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5, s32 arg6, s32 arg7) {
-    return arg5;
+extern void fn_8011CD78(void *, void *);
+extern void fn_8011D0E8(void *, void *, void *);
+extern void fn_8011D378(void *, void *, void *);
+s32 *fn_8011E0B4(s32 arg0, s32 arg1, s32 width, s32 height, s32 format, s32 *buffers, s32 offset, s32 flags) {
+    s32 rowBytes = (format << 3) - width;
+    u8 work[0x450];
+    u8 *base = work + 8;
+    void (*decode)(void *, void *, void *);
+    s32 zero = 0;
+    ((s32 *)base)[-2] = width;
+    ((s32 *)base)[-1] = height;
+    *(s32 *)(base + 4) = offset;
+    *(s32 *)(base + 0) = zero;
+    *(s32 *)(base + 8) = zero;
+    
+    *(s32 *)(base + 0x404) = rowBytes;
+    decode = (format & 0x8000) ? fn_8011D0E8 : fn_8011D378;
+    *(void **)(base + 0x408) = (void *)decode;
+    fn_8011C3A8(buffers[0], base + 0x1D0, 0x200, width, 4, 1, 0);
+    fn_8011C3A8(buffers[1], base + 0x1A0, 0x200, (u32)width >> 1, 4, 1, 0);
+    fn_8011C3A8(buffers[2], base + 0x170, 0x200, width, 8, 0x40, 0);
+    fn_8011C3A8(buffers[3], base + 0x140, 0x200, width, 8, 8, 0);
+    fn_8011C3A8(buffers[4], base + 0x110, 0x200, width, 5, 1, 1);
+    fn_8011C3A8(buffers[5], base + 0xE0, 0x200, width, 5, 1, 1);
+    fn_8011C3A8(buffers[6], base + 0xB0, 0x200, width, 0xB, 1, 0);
+    fn_8011C3A8(buffers[7], base + 0x80, 0x200, width, 0xB, 1, 1);
+    fn_8011C3A8(buffers[8], base + 0x50, 0x200, width, 4, 0x30, 0);
+    fn_8011CD78(base + 0x1D0, base);
+    fn_8011CD78(base + 0x1A0, base);
+    fn_8011CD90((s32)(base + 0x170), (s32)base, (s32)(base + 0x280));
+    fn_8011CD78(base + 0x140, base);
+    fn_8011CD78(base + 0x110, base);
+    fn_8011CD78(base + 0xE0, base);
+    fn_8011CD78(base + 0x50, base);
+    decode(base + 0x180, base + 0x10, base + 0x290);
+    return buffers;
 }
 
 extern s32* fn_8011E0B4(s32, s32, s32, s32, s32, s32*, s32, s32);
