@@ -13,9 +13,9 @@
     extern float fn_80129DC4(int, float, float);
     extern void fn_8013530C(void *, int);
     extern int lbl_8055E550;
-    extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204;
+    extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204, lbl_805621E4;
 
-    extern void fn_80194FD0(void);
+      extern void fn_80194FD0(void);
 #pragma cplusplus on
 class Vt_80194C4C {
 public:
@@ -681,14 +681,21 @@ extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADB4(int, float);
   extern void fn_8018ADBC(int, float);
   extern void fn_8018ADAC(void *, float);
-  void fn_80194170(void *arg0, float arg1) {
-    float value;
-    if (arg1 > lbl_80562140) value = arg1;
-    else value = lbl_80562140;
-    if (value > lbl_80562144) value = lbl_80562144;
+void fn_80194170(void *arg0, float arg1) {
+    double value = lbl_80562140;
+    if (value < arg1) {
+        value = arg1;
+    } else {
+        value = lbl_80562140;
+    }
+    if (value > lbl_80562144) {
+        value = lbl_80562144;
+    } else {
+        value = value;
+    }
     *(float *)((char *)arg0 + 0x240) = value;
-          fn_8018ADB4(*(int *)((char *)arg0 + 0x294), value);
-  }
+    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
+}
 
 void fn_801941A8(void *arg0, float arg1) {
     float value;
@@ -720,7 +727,7 @@ void fn_801941A8(void *arg0, float arg1) {
     fn_8018ADAC(*(void **)((char *)arg0 + 0x294), pos);
 }
 
-  void fn_801942B8(void *arg0, float arg1) {
+void fn_801942B8(void *arg0, float arg1) {
     float value;
     if (arg1 > lbl_80562140) value = arg1;
     else value = lbl_80562140;
@@ -1180,23 +1187,21 @@ void fn_801963A0(void *arg0) {
       fn_80196DC4(arg0);
   }
 
+#pragma dont_inline on
 void fn_80196418(void *arg0) {
     int value = *(int *)((char *)arg0 + 0x210);
     if (value == 1) {
-        goto call_b;
+        return;
     }
-    if (value >= 1) {
-        goto done;
+    if (value > 1) {
+        return;
     }
     if (value >= 0) {
-        goto done;
+        return;
     }
-done:
-    return;
-call_b:
     fn_80195830(arg0);
 }
-
+#pragma dont_inline reset
   extern int fn_801B2F24(void);
   extern void fn_801B2F40(int);
   extern int fn_8019643C(void);
@@ -1366,12 +1371,17 @@ void fn_80196C90(void *arg0) {
     *(float *)(obj + 0x148) = *(float *)(obj + 0x144);
 }
 #pragma pop
-  int fn_8019700C(int index) {
-      void *entry = lbl_804349C0[index];
-      if (entry == 0) return 1;
-      if (*((u8 *)entry + 0x2A4) != 0) return 1;
-      return 0;
-  }
+int fn_8019700C(int index) {
+    void *entry = lbl_804349C0[index];
+    register int result = 1;
+    if (entry == 0)
+        goto done;
+    if (*((u8 *)entry + 0x2A4) == 0)
+        goto done;
+    result = 0;
+done:
+    return result;
+}
 
 extern float lbl_80562144, lbl_80562170, lbl_80562194, lbl_8055A488;
 int fn_8019703C(void *arg0, void *arg1) {
