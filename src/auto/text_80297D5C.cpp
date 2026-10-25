@@ -35,7 +35,7 @@ extern "C" float fn_801E7E24(void);
 extern "C" void fn_802CAC54(int);
 extern "C" void fn_8029BDC4(void*);
 extern "C" void fn_80299544(void);
-extern "C" void fn_802982C0(void);
+extern "C" void fn_802982C0(void *);
 extern "C" void fn_8029998C(void*);
 extern "C" void fn_80299FE0(void *, void *, float);
 extern "C" void fn_80299A88(void *, void *, unsigned int, float);
@@ -153,7 +153,7 @@ void fn_80298160(void) {
         fn_80298B48(lbl_8055F7C8);
         fn_8029BDC4(lbl_8055F7DC);
         if (lbl_8055F7C4 != 0) fn_80299544();
-        if (lbl_8055F7C0 != 0) fn_802982C0();
+        if (lbl_8055F7C0 != 0) fn_802982C0(lbl_8055F7C0);
         if (lbl_8055F7CC != 0) fn_8029998C(lbl_8055F7CC);
         if (lbl_8055F7D0 != 0) fn_8029A17C();
     }
@@ -193,13 +193,13 @@ extern "C" void fn_8029BA8C(void*);
 extern "C" void fn_80299628(void);
 extern void* lbl_8055F7D8;
 extern "C" void fn_8029871C(void*, void*, float);
-extern "C" void fn_802982C0(void) {
+extern "C" void fn_802982C0(void *arg0) {
     float temp_f31 = fn_801E7E24();
-    void *var_r31 = lbl_8055F7C0;
+    void *var_r31 = arg0;
     int var_r30 = 0;
     do {
         if (*(unsigned char *)((char *)var_r31 + 0x28) != 0) {
-            fn_8029871C(var_r31, var_r31, temp_f31);
+            fn_8029871C(arg0, var_r31, temp_f31);
         }
         var_r30 += 1;
         var_r31 = (char *)var_r31 + 0x2c;
