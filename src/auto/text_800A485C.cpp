@@ -678,10 +678,12 @@ extern "C" s32 fn_800A61D0(void *arg0) {
     return 0;
 }
 
+#pragma dont_inline on
 extern "C" s32 fn_800A625C(void *arg0, s32 arg1) {
     *(s32 *)((char *)arg0 + 0x2C) = arg1;
     return 0;
 }
+#pragma dont_inline reset
 
 #pragma dont_inline on
 extern "C" s32 fn_800A6268(s32 arg0, void *arg1) {
@@ -705,6 +707,7 @@ extern "C" s32 fn_800A6298(void *arg0, u16 *arg1) {
 }
 
 extern "C" void fn_800A71D0(void *, s32);
+#pragma dont_inline on
 extern "C" s32 fn_800A6480(void *arg0, s32 arg1) {
     s32 result;
     void *obj;
@@ -718,6 +721,7 @@ extern "C" s32 fn_800A6480(void *arg0, s32 arg1) {
     }
     return 0;
 }
+#pragma dont_inline reset
 
 extern "C" s32 fn_800A6520(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
     s32 sp10;
@@ -1090,6 +1094,15 @@ extern "C" s32 fn_800A728C(void *arg0) {
         result = 0xC;
     }
     return result;
+}
+
+extern "C" s32 fn_800A7338(void *arg0) {
+    s32 result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+    if (result != 0) {
+        return result;
+    }
+    result = fn_800A6480(*(void **)((u8 *)arg0 + 4), 0);
+    return result & ((s32)(-result | result) >> 31);
 }
 
 #pragma push
@@ -4718,22 +4731,21 @@ return_result:
 return result;
 }
 #pragma pop
-s32 fn_800B51FC(u8 *arg0, s32 arg1) {
-    s32 value = arg1;
+extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
+    arg0 = (void *)((u8 *)arg0 + 7);
+    u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
-    s32 digits = 7;
-    u8 *p = arg0 + 7;
 
-    while (digits > 1 && value != 0) {
-        u32 rem = value % divisor;
+    while (digits > 1 && arg1 != 0) {
+        u32 rem = arg1 % divisor;
         if (rem != 0) {
-            value -= rem;
-            *p += (s8)(rem / place);
+            arg1 -= rem;
+            *(u8 *)arg0 += (s8)(rem / place);
         }
         divisor *= 10;
         digits--;
-        p--;
+        arg0 = (void *)((u8 *)arg0 - 1);
         place *= 10;
     }
     return 0;
@@ -9155,6 +9167,34 @@ fn_800C0B68((struct Fn800C0B68Context*)arg0, *(s16*)((u8*)arg0 + 0x288), (s32)ar
 }
 return 0;
 }
+
+s32 fn_800C083C(s32 arg0, s32 arg1, s32 *arg2) {
+    u32 *node;
+    u16 value;
+    u32 index = 0;
+    u32 mask = 0xF;
+    s32 shift = 0x1C;
+    s32 count = arg1;
+    s32 result;
+
+    if (arg1 > 0) {
+        while (1) {
+            node = *(u32 **)(arg2[index * 4]);
+            value = *(u16 *)(node + ((mask & (arg0 >> shift)) * 2));
+            if (value & 0x8000) {
+                return value & 0x7FFF;
+            }
+            mask = *(u32 *)(lbl_8031C2B8 + ((value * 4) & 0x3C));
+            index = value >> 8;
+            shift -= value & 0xF;
+            if (--count == 0) {
+                return 0;
+            }
+        }
+    }
+    return 0;
+}
+
 #pragma pop
 struct Fn800C08A8Context { u8 pad[0xC]; u32 bitIndex; s32 limit; };
 extern "C" u8 lbl_8031C2E0[];
@@ -13083,6 +13123,25 @@ extern "C" s32 fn_800D51F4(long a0, long a1, long a2, long a3, long a4, long a5)
         fn_80116A38(&info);
     }
     return result;
+}
+
+extern "C" void fn_800DCE50(void *arg0);
+#pragma push
+#pragma small_data off
+extern u8 lbl_8031F43C[];
+#pragma pop
+extern "C" void __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *this_) {
+    u8 *self = (u8 *)this_;
+
+    fn_800DCE50(this_);
+
+    *(u32 *)(self + 0x28) = 0;
+    *(u32 *)(self + 0x2C) = 0;
+    *(u32 *)self = (u32)&lbl_8031F43C;
+    *(u32 *)(self + 0x20) = 0;
+    *(u32 *)(self + 0x24) = 0;
+    *(u32 *)(self + 0x28) = (u32)(self + 0x28);
+    *(u32 *)(self + 0x2C) = (u32)(self + 0x28);
 }
 
 extern "C" const char lbl_8031F2C8[];
