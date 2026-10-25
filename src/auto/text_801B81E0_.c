@@ -17,7 +17,7 @@ struct Dummy_801B8318 {
     virtual void f10();
     virtual void f11();
     virtual void f12();
-    virtual void f13();
+          virtual void f13(void *);
     virtual void f14();
     virtual void f15();
     virtual void f16();
