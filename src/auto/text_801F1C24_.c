@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void *fn_802C86DC(void);
+extern float PSVECDotProduct(float *, float *);
 extern double fn_8002EFB0();
 extern void fn_8029231C();
 extern void PSVECNormalize(void *, void *);
@@ -1035,12 +1036,17 @@ check:
     if (p != 0) goto loop;
 }
 
-void fn_801F44DC(int a,int b,void *c,int d) {
- void *p=fn_801284F8(12,lbl_8055B140);
- if(p){*(void **)p=lbl_8033AA48;*(void **)((char *)p+4)=(char *)c+0x2C;*(int *)((char *)p+8)=d;}
- fn_802CD320(b,p);
+#pragma scheduling invalid_target
+void fn_801F44DC(int arg1, int arg2, int arg3) {
+    int v = arg2 + 0x2C;
+    void *p = fn_801284F8(0xC, (void *)lbl_8055B140);
+    if (p != 0) {
+        *(void **)p = (void *)lbl_8033AA48;
+        *(int *)((char *)p + 4) = v;
+        *(int *)((char *)p + 8) = arg3;
+    }
+    fn_802CD320(arg1, p);
 }
-
 void fn_801F4550(void) {
 
 }
