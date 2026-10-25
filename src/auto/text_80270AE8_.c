@@ -240,20 +240,14 @@ f32 fn_802715F0(void *arg0) {
 }
 
 int fn_80271FAC(const char *arg0) {
-    char **entry;
-    int i;
-    entry = lbl_80346B54;
-    i = 0;
-loop:
-    if (i != 11 && stricmp(arg0, *entry) == 0) {
-        return i;
-    }
-    i++;
-    if (i >= 18) {
-        return 11;
-    }
-    entry++;
-    goto loop;
+    char **entry = lbl_80346B54;
+    int i = 0;
+    do {
+        if ((i != 11) && (stricmp(arg0, *entry) == 0)) return i;
+        ++i;
+        ++entry;
+    } while (i < 18);
+    return 11;
 }
 
 #pragma cplusplus on
@@ -363,6 +357,21 @@ void fn_80272354(void *arg0) {
     memset((char *)arg0 + 0x10, 0, 8);
     *(int *)((char *)arg0 + 0x58) = 0;
     *(int *)((char *)arg0 + 0x5C) = 2;
+}
+
+#pragma scheduling invalid_target
+void fn_802723B4(void *arg0, void *arg1) {
+    void *slot;
+    void *object;
+    float factor;
+    float base;
+    ((void (*)(void **, void *))fn_80136468)(&slot, arg0);
+    object = slot;
+    factor = *(float *)((char *)&slot + 4);
+    base = *(float *)object;
+    *(float *)arg1 = base + (*(float *)*(void **)((char *)object + 0x14) - base) * factor;
+    base = *(float *)((char *)object + 4);
+    *(float *)((char *)arg1 + 4) = base + (*(float *)((char *)*(void **)((char *)object + 0x14) + 4) - base) * factor;
 }
 #pragma scheduling on
 extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
