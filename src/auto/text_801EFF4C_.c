@@ -442,7 +442,7 @@ int fn_801F15A8(void **arg0, int arg1) {
 }
 
 void fn_801F17C8(int unused) {
-    memset(lbl_80488798_u8, 0, 0x100);
+    memset(lbl_80488798, 0, 0x100);
 }
 
 #pragma push
@@ -598,6 +598,3 @@ void fn_801F1B1C(void *arg0, void *arg1, int arg2) {
           *(volatile int *)((char *)dst + 0x80) = 0;
   }
     #pragma scheduling on
-  #pragma push
-  #pragma scheduling invalid_target
-  #pragma pop
