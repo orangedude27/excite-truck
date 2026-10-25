@@ -158,13 +158,24 @@ signed long fn_80207D40(void* arg0) {
 }
 #pragma dont_inline reset
 
-#pragma dont_inline fn_80207D40
-void fn_80207D8C(void* arg0) {
+#pragma cplusplus on
+extern "C" void fn_80207D8C(void* arg0) {
+    class Item {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6(void*);
+    };
     if (fn_80207D40(arg0) != 0) {
         fn_80207C80(arg0);
-        (*(void (**)(void*, void*))(*(void***)*(void**)((char*)arg0 + 0x90) + 8))(*(void**)((char*)arg0 + 0x90), (char*)arg0 + 0x5C);
+        ((Item*)*(void**)((char*)arg0 + 0x90))->f6((char*)arg0 + 0x5C);
     }
 }
+#pragma cplusplus reset
 extern void fn_80207C80(void*);
 extern void* lbl_802F9DC8[];
 extern char lbl_8033BE20[];
