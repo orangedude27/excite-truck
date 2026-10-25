@@ -10263,11 +10263,20 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
 }
 
 void l2c_process_timeout(void *arg) {
-    u16 event = *(u16 *)((u8 *)arg + 0x14);
-    if (event == 4) l2c_process_held_packets(1);
-    else if (event == 2) l2c_link_timeout(*(void **)((u8 *)arg + 0x10));
-    else if (event > 2 && event < 4) fn_80089E40(*(void **)((u8 *)arg + 0x10), 0x1E, 0);
-    else if (event == 0x49) return;
+    s32 event = *(u16 *)((u8 *)arg + 0x14);
+    switch (event) {
+    case 2:
+        l2c_link_timeout(*(void **)((u8 *)arg + 0x10));
+        break;
+    case 3:
+        fn_80089E40(*(void **)((u8 *)arg + 0x10), 0x1E, 0);
+        break;
+    case 4:
+        l2c_process_held_packets(1);
+        break;
+    case 0x49:
+        break;
+    }
 }
 
 void *l2cu_allocate_lcb(u8 *addr) {
