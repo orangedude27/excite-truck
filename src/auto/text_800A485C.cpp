@@ -1512,6 +1512,22 @@ s32 VFiPFCACHE_InitCaches(void *arg0) {
     return status & ((-status | status) >> 31);
 }
 
+extern "C" s32 fn_800A7C20(void *, s32, void *, s32);
+extern "C" s32 fn_800A8D08(s32 arg0, void **arg1, s32 *arg2, s32 arg3, s32 *arg4) {
+    s32 result;
+
+    if (*(s32 *)((u8 *)arg0 + 0x1634) == 0) {
+        *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x162C) + 4) =
+            *(s32 *)((u8 *)arg0 + 0x1638);
+        *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x162C) + 8) =
+            *(s32 *)((u8 *)arg0 + 0x1638);
+        *arg2 = (s32)*(void **)((u8 *)arg0 + 0x162C);
+        return 0;
+    }
+    result = fn_800A7C20((void *)arg0, (s32)((u8 *)arg0 + 0x1634), (void *)arg1, (s32)arg2);
+    return result & ((s32)(-result | result) >> 31);
+}
+
 extern "C" void VFiPFCACHE_FreeFATPage(void *arg0, void *arg1) {
     u8 *page = (u8 *)arg1;
     void *head = *(void **)((u8 *)arg0 + 0x1630);
@@ -5583,6 +5599,25 @@ extern "C" void fn_800B777C(void *arg0) {
         fn_800B7FC4(*(s32 *)((u8 *)arg0 + 8));
         *(u32 *)arg0 = 0;
     }
+}
+
+extern "C" s32 fn_800B77C0(void *arg0) {
+    u32 thread;
+    s32 count;
+
+    if (*(s32 *)((u8 *)arg0 + 4) == 0) {
+        fn_800B8004(*(s32 *)((u8 *)arg0 + 8));
+        ((s32 (*)(u32 *))fn_800B7EAC)((u32 *)((u8 *)arg0 + 0xC));
+    } else {
+        ((s32 (*)(u32 *))fn_800B7EAC)(&thread);
+        if (*(u32 *)((u8 *)arg0 + 0xC) != thread) {
+            fn_800B8004(*(s32 *)((u8 *)arg0 + 8));
+            *(u32 *)((u8 *)arg0 + 0xC) = thread;
+        }
+    }
+    count = *(s32 *)((u8 *)arg0 + 4);
+    *(s32 *)((u8 *)arg0 + 4) = count + 1;
+    return count;
 }
 
 extern "C" void fn_800B783C(void *arg0) {
