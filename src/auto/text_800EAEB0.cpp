@@ -491,7 +491,7 @@ extern "C" void fn_800EBB88(void *arg0) {
 
 #pragma push
 #pragma small_data off
-extern u8 lbl_80322D60[], lbl_8032301C[], lbl_80322FF8[], lbl_80322FBC[], lbl_80322F98[], lbl_80322FEC[], lbl_80322FC8[], lbl_8032304C[], lbl_80323028[];
+extern u8 lbl_80322D60[], lbl_80322DA4[], lbl_8032301C[], lbl_80322FF8[], lbl_80322FBC[], lbl_80322F98[], lbl_80322FEC[], lbl_80322FC8[], lbl_8032304C[], lbl_80323028[];
 #pragma pop
 extern "C" void *MEMAllocFromFrmHeapEx(void *, u32, s32);
 void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)(void *, unsigned long, void *), void *user) {
@@ -1708,20 +1708,17 @@ extern "C" void* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void* this_, s
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
-    void* pHead = *(void**)&lbl_80412A6C[0x04];
-    void* pList = &lbl_80412A6C[0x04];
-    void* pPlayer;
-
+    void *pHead = *(void **)&lbl_80412A6C[4];
+    void *pList = &lbl_80412A6C[4];
+    void *pPlayer;
     while (pHead != pList) {
         pPlayer = pHead;
-        pHead = *(void**)pHead;
-
-        if (pPlayer == NULL) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x23D,
-                                         (const char*)lbl_80324000);
+        pHead = *(void **)pHead;
+        if (pPlayer == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324024, 0x23D,
+                                         (const char *)lbl_80324000);
         }
-
-        fn_800F0360((u8*)pPlayer - 0x100);
+        fn_800F0360((u8 *)pPlayer - 0x100);
     }
 }
 #pragma pop
