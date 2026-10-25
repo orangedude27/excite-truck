@@ -203,6 +203,7 @@ public:
       virtual void v13(s32);
       virtual void v14(s32);
       virtual void v15(s32);
+      virtual void v16(s32);
   };
 
 class Unk801584D4 {
@@ -2637,17 +2638,17 @@ extern "C" s32 fn_8015E910(void *arg0, s32 arg1) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8015E9A4(void *arg0, s32 arg1) {
     s32 var_r31 = 0;
     s32 var_r30 = 0;
     while (var_r30 < *(s32 *)((char *)arg0 + 8)) {
-        Unk801577F0 *obj = *(Unk801577F0 **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
-        obj->v18(arg1);
+        Unk8015E9A4V *obj = *(Unk8015E9A4V **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
+        obj->v15(arg1);
         var_r31 += 4;
         var_r30 += 1;
     }
 }
-
 extern "C" void fn_8015EA24(void *arg0, s32 arg1) {
     s32 var_r31 = 0;
     s32 var_r30 = 0;
