@@ -19,7 +19,7 @@ typedef struct {
 
 extern int lbl_802F8E60[];
 extern int lbl_8055E04C;
-extern int lbl_8055E050;
+extern char *lbl_8055E050;
 extern int fn_8012BF24(void *);
 extern int stricmp(const char *, const char *);
 void fn_801301E0(unsigned char *arg0) {
