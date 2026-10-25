@@ -438,6 +438,18 @@ void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
     *(f32*)((u8*)this + 0xC) = value;
 }
 
+extern "C" void InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *self, void *sound) {
+    void *head = (u8 *)self + 4;
+    if (sound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D24, 0x233,
+                                     (const char *)lbl_80322D00);
+    }
+    void *iterator = head;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
+        self, &iterator, (u8 *)sound + 0xD0);
+    *(void **)((u8 *)sound + 0x14) = self;
+}
+
 #pragma push
 #pragma small_data off
 extern u8 lbl_80322D24[];
