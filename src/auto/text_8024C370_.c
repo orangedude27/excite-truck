@@ -464,6 +464,19 @@ void fn_8024CF54(void) {
     fn_8024C768();
 }
 
+#pragma dont_inline on
+void fn_8024CF60(void) {
+    int sp8;
+    if (fn_8024CF38(&sp8) != 0) {
+        fn_8000D984(sp8);
+        fn_8000DA80();
+        fn_8000DC70(sp8);
+        ((void (*)(void))fn_8000DA1C)();
+        if (fn_802E8D84() != 0)
+            fn_802E7128();
+    }
+}
+#pragma dont_inline reset
 void fn_8024CFB4(void) {
     int sp8;
     if (((int (*)(int *))fn_8024CF48)(&sp8) != 0) fn_8000D984(sp8);
