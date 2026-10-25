@@ -1066,7 +1066,7 @@ void fn_801FF6FC(void* arg0, float farg0) {
 }
 
 extern "C" void fn_801FF994(void*, void*);
-void fn_801FCAAC(void*, float);
+extern "C" void fn_801FCAAC(void*, float);
 void fn_801FCAC0(void*);
 void fn_801FF770(void* arg0) {
     void *entry;
