@@ -5,6 +5,8 @@
 
 extern "C" void fn_80130568(char *);
 
+extern "C" void fn_80130568(char *);
+
 #pragma push
 #pragma small_data off
 extern "C" char lbl_8033DC4C[];
