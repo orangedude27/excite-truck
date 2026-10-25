@@ -50,7 +50,7 @@ namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; st
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
-class WsdTrack { public: static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); };
+class WsdTrack { public: static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); void Close(); };
 }}}
 extern int fn_801013B0(int);
 extern int InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(int);
@@ -105,7 +105,7 @@ extern "C" void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
 
 void Close__Q46nw4hbm3snd6detail8WsdTrackFv(void *arg0) {
     void *var_r31;
-    ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(-1);
+    ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(arg0, -1);
     var_r31 = *(void **)((char *)arg0 + 0x30);
 loop_2:
     if (var_r31 != 0) {
