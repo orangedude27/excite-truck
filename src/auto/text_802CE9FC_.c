@@ -24,7 +24,7 @@ extern void fn_802D14D8(void);
 extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
-  extern void fn_802CEC04(void);
+  extern int fn_802CEC04(int);
   extern void fn_802E2E0C(void (*)(void), void *);
   extern void fn_802D6C68();
   extern void fn_802DA52C(void);
