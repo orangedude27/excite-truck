@@ -2,6 +2,11 @@
 
 extern s32 fn_8026A344(s32);
 extern void *fn_8017960C(s32);
+extern void fn_801BFD34(void *, void *, void *);
+extern void fn_8012F57C(f32 *, f32 *, f32 *, f32);
+extern f32 fn_801E9DDC(f32 *, f32, f32);
+extern f64 fn_8002F234(f64);
+extern void fn_802E317C(const char *, ...);
 
 extern char lbl_80346A50[];
 extern s32 lbl_8055F4F0;
