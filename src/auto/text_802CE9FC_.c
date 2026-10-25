@@ -325,7 +325,7 @@ void fn_802CF850(void) {
 extern double __fabs(double);
 #pragma scheduling invalid_target
 int fn_802CFCA0(void* alarm) {
-    extern float lbl_80558DC4;
+    extern char lbl_80558DC4[];
     char fifo[0x80];
     int spC;
     int sp8;
@@ -348,7 +348,7 @@ int fn_802CFCA0(void* alarm) {
     lbl_8055FD30 += 1;
     if (lbl_804C97B0[0] == 0) {
         value = *(volatile float *)((unsigned char *)lbl_804C97B0 + 0x10);
-        if (!((float)__fabs((double)value) <= *(volatile float *)&lbl_80558DC4)) {
+        if (!((float)__fabs((double)value) <= *(volatile float *)lbl_80558DC4)) {
             lbl_804C97B0[0] = 1;
             lbl_804C97B0[0x1C] = 1;
         }
@@ -436,10 +436,10 @@ void fn_802CFFA4(unsigned short arg0) {
 
 void fn_802D0014(float a, float b, float c) {
     extern unsigned char lbl_804C97B0[];
-    extern float lbl_80558DC4;
+    extern char lbl_80558DC4[];
     float d = c < 0.0f ? -c : c;
     ((float *)lbl_804C97B0)[2] = b;
-    if (d > lbl_80558DC4) {
+    if (d > *(float *)lbl_80558DC4) {
         lbl_804C97B0[0] = 1;
         ((float *)lbl_804C97B0)[3] = a + ((b - a) / c);
     } else {
