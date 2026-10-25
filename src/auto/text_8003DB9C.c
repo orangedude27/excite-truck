@@ -2702,16 +2702,27 @@ void GXSetTevKColor(s32 tevReg, unsigned int *color) {
 }
 
 void GXSetTevKColorSel(s32 arg0, s32 arg1) {
-    register unsigned int *base = __GXData;
-    register unsigned int *entry = (unsigned int *)((char *)base + ((arg0 * 2) & ~3));
-    if (arg0 & 1) {
-        entry[0x200 / 4] = (entry[0x200 / 4] & 0xFFFC1FFF) | (arg1 << 14);
+    struct OddField {
+        unsigned int unused0 : 13;
+        unsigned int selector : 5;
+        unsigned int unused1 : 14;
+    };
+    struct EvenField {
+        unsigned int unused0 : 23;
+        unsigned int selector : 5;
+        unsigned int unused1 : 4;
+    };
+    unsigned int *base = __GXData;
+    unsigned int odd = arg0 & 1;
+    unsigned int *entry = (unsigned int *)((u8 *)base + (((unsigned int)arg0 << 1) & ~3));
+    if (odd) {
+        ((struct OddField *)(entry + 0x80))->selector = arg1;
     } else {
-        entry[0x200 / 4] = (entry[0x200 / 4] & 0xFFFFFE0F) | (arg1 << 4);
+        ((struct EvenField *)(entry + 0x80))->selector = arg1;
     }
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = entry[0x200 / 4];
-    *(unsigned short *)((char *)base + 2) = 0;
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = entry[0x80];
+    *(unsigned short *)((u8 *)base + 2) = 0;
 }
 
 void GXSetTevKAlphaSel(s32 arg0, s32 arg1) {
@@ -3077,13 +3088,32 @@ void GXSetProjection(float *arg0, int arg1) {
 }
 
 void GXSetProjectionv(float *arg0) {
- unsigned int *d=__GXData; int value;
- if(lbl_80560BC8 != arg0[0]) value=1; else value=0;
- d[0x528/4]=value;
- *(float*)((char*)d+0x52c)=arg0[1];
- *(float*)((char*)d+0x534)=arg0[2];
- *(float*)((char*)d+0x53c)=arg0[4];
- d[0x5fc/4]|=0x08000000;
+    unsigned int *data = __GXData;
+    int value = (lbl_80560BC8 != arg0[0]);
+    data[0x528 / 4] = value;
+    *(float *)((char *)data + 0x52C) = arg0[1];
+    *(float *)((char *)data + 0x534) = arg0[2];
+    *(float *)((char *)data + 0x53C) = arg0[4];
+    data[0x5FC / 4] |= 0x08000000;
+}
+
+void GXLoadPosMtxImm(const f32 mtx[3][4], u32 id) {
+    f64 pairs[6];
+    volatile f64 *fifo = (volatile f64 *)0xCC008000;
+    pairs[0] = *(const f64 *)&mtx[0][0];
+    pairs[1] = *(const f64 *)&mtx[0][2];
+    pairs[2] = *(const f64 *)&mtx[1][0];
+    pairs[3] = *(const f64 *)&mtx[1][2];
+    pairs[4] = *(const f64 *)&mtx[2][0];
+    pairs[5] = *(const f64 *)&mtx[2][2];
+    *(volatile u8 *)0xCC008000 = 0x10;
+    *(volatile u32 *)0xCC008000 = (id << 2) | 0xB0000;
+    *fifo = pairs[0];
+    *fifo = pairs[1];
+    *fifo = pairs[2];
+    *fifo = pairs[3];
+    *fifo = pairs[4];
+    *fifo = pairs[5];
 }
 
 /* Assign through the register's low-six-bit field to match rlwimi directly. */
