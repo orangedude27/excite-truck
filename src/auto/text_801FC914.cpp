@@ -922,11 +922,16 @@ extern "C" void fn_801FF1C4(void* arg0, int arg1, int arg2) {
     ++*(int*)(p + 0xE04);
 }
 
-extern "C" void fn_801FF260(void* arg0) {
+extern double __fabs(double);
+#pragma push
+#pragma small_data off
+extern "C" void fn_801FF260(void *arg0) {
     float value = fn_801E7E24();
-    if (fabs(value) > lbl_80558DC4) fn_801FF6FC((char*)arg0 + 0x1008, value);
+    if (!((float)__fabs((double)value) <= lbl_80558DC4)) {
+        fn_801FF6FC((char *)arg0 + 0x1008, value);
+    }
 }
-
+#pragma pop
 extern "C" int fn_801FF2B0(void) { return 3; }
 
 extern "C" void fn_801FF2B8(void* arg0, int arg1, int arg2) {
