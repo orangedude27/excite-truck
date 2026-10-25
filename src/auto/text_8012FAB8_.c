@@ -141,12 +141,12 @@ void fn_80130518(void) {
 extern char *strchr(const char *, int);
 void fn_80130568(char *arg0) {
     char *base = arg0;
-    char *p = base;
-    if (*(char *)lbl_8055E050 != '.') {
-        do {
-            *p = *(char *)lbl_8055E050;
-            p = strchr(base, '.');
-        } while (p != 0);
+    char replacement = *(char *)lbl_8055E050;
+    if (replacement != '.') {
+        *arg0 = replacement;
+        while ((arg0 = strchr(base, '.')) != 0) {
+            *arg0 = replacement;
+        }
     }
 }
 
@@ -189,7 +189,7 @@ void fn_80130FCC(void *arg0, int arg1, void *arg2) {
 extern int lbl_802F8EE0[];
 extern char lbl_8032B300[];
 #pragma scheduling invalid_target
-void fn_80130FE0(int arg0) {
+int fn_80130FE0(int arg0) {
     int values[10];
     int *p;
     int quotient;
