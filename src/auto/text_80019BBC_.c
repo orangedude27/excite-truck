@@ -17,7 +17,7 @@ extern void *fn_80156A40(void);
 extern float lbl_80560418;
 extern float lbl_8056041C;
 #pragma small_data off
-extern float lbl_803582C0;
+extern char lbl_803582C0[];
 #pragma small_data on
 extern double cos(double);
 extern double sin(double);
