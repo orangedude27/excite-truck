@@ -527,11 +527,14 @@ void fn_801290CC(void *arg0, void *arg1) {
 }
 
 s32 fn_801290DC(void *arg0, s32 arg1) {
-    s32 aligned = fn_801281F4(arg1, 0x40);
+    s32 aligned = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x40);
     s32 end = *(s32 *)((u8 *)arg0 + 0xC);
+    s32 result;
     if (*(s32 *)((u8 *)arg0 + 8) < end - aligned)
-        return *(s32 *)((u8 *)arg0 + 4) + end - aligned;
-    return 0;
+        result = *(s32 *)((u8 *)arg0 + 4) + end - aligned;
+    else
+        result = 0;
+    return result;
 }
 
 extern char lbl_8032A498[];
