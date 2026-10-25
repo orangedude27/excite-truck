@@ -1,4 +1,10 @@
 extern void *lbl_8055F7A4;
+extern void *lbl_8055F7A8;
+extern int lbl_8055F7AC;
+extern const char lbl_803493F8[];
+extern void fn_80297A80(void);
+extern void *fn_8012850C(int, const char *);
+extern void *fn_8002F37C(void (*)(void), int, int, int);
 extern int lbl_804B4F10[];
 void fn_80297998(void);
 extern int lbl_8055F7B4;
@@ -71,7 +77,7 @@ void fn_80297A08(int arg0) {
 
     if (index < 0x40) {
         lbl_8055F7A4 = (void *)(index + 1);
-        ((int *)lbl_804B4F10)[index] = arg0;
+        lbl_804B4F10[index] = arg0;
     }
 }
 
