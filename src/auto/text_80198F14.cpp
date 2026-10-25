@@ -1221,7 +1221,7 @@ void fn_8019EB14(u8 *arg0, s32 arg1) {
     }
 }
 
-void fn_8019EBC0(void* arg0) {
+extern "C" void fn_8019EBC0(void* arg0) {
     VTab19* p = *(VTab19**)((u8*)arg0 + 4);
     if (p == NULL) {
         return;
