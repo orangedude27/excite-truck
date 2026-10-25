@@ -370,7 +370,10 @@ extern void fn_8023FE20(void);
 void fn_802411C8(void) { fn_8023FE20(); }
 #pragma dont_inline reset
 
+#pragma dont_inline on
+extern s32 fn_8023FE34(void);
 void fn_802411CC(void) { fn_8023FE34(); }
+#pragma dont_inline reset
 
 void fn_802411D0(void) { fn_8023FE60(); }
 
