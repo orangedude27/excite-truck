@@ -720,21 +720,22 @@ extern "C" void fn_8029A8A4(void *arg0, void *arg1) {
 }
 
 extern "C" void fn_8029A8B8(void* arg0) {
+    float value = lbl_805645B8;
     *(unsigned char*)((char*)arg0 + 0x28) = 0;
-    *(float*)((char*)arg0 + 0x24) = lbl_805645B8;
-    *(float*)((char*)arg0 + 0x50) = lbl_805645B8;
+    *(float*)((char*)arg0 + 0x24) = value;
+    *(float*)((char*)arg0 + 0x50) = value;
     *(unsigned char*)((char*)arg0 + 0x54) = 0;
-    *(float*)((char*)arg0 + 0x7C) = lbl_805645B8;
+    *(float*)((char*)arg0 + 0x7C) = value;
     *(unsigned char*)((char*)arg0 + 0x80) = 0;
-    *(float*)((char*)arg0 + 0xA8) = lbl_805645B8;
+    *(float*)((char*)arg0 + 0xA8) = value;
     *(unsigned char*)((char*)arg0 + 0xAC) = 0;
-    *(float*)((char*)arg0 + 0xD4) = lbl_805645B8;
+    *(float*)((char*)arg0 + 0xD4) = value;
     *(unsigned char*)((char*)arg0 + 0xD8) = 0;
-    *(float*)((char*)arg0 + 0x100) = lbl_805645B8;
+    *(float*)((char*)arg0 + 0x100) = value;
     *(unsigned char*)((char*)arg0 + 0x104) = 0;
-    *(float*)((char*)arg0 + 0x12C) = lbl_805645B8;
+    *(float*)((char*)arg0 + 0x12C) = value;
     *(unsigned char*)((char*)arg0 + 0x130) = 0;
-    *(float*)((char*)arg0 + 0x158) = lbl_805645B8;
+    *(float*)((char*)arg0 + 0x158) = value;
     *(unsigned char*)((char*)arg0 + 0x15C) = 0;
 }
 
