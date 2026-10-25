@@ -179,22 +179,35 @@ void fn_802E9CF0(void) {
 }
 #pragma pop
 extern char lbl_8034E3E0, lbl_8034E3F0, lbl_805076B8, lbl_80560061, lbl_8055D2A4;
-void fn_802E9E54(unsigned char *arg0, unsigned char *arg1, int arg2) {
-    unsigned char *dst = arg0;
-    unsigned char *src = arg1;
-    int count = arg2;
-    for (;;) {
-        if (count <= 1 || (signed char)*src == 0) { *dst = 0; return; }
-        if (*src < 0x80) { *dst++ = *src++; count--; }
-        else {
-            unsigned char ch = *++src;
-            count--;
-            *dst++ = 0x3F;
-            if ((signed char)ch != 0) src++;
-        }
+#pragma push
+#pragma scheduling invalid_target
+void fn_802E9E54(unsigned char *dst, unsigned char *src, int count) {
+    unsigned char next;
+    goto check;
+body:
+    if (*src < 0x80) {
+        unsigned char ch = *(volatile unsigned char *)src;
+        count--;
+        src++;
+        *dst = ch;
+        dst++;
+        goto check;
     }
+    src++;
+    next = *(volatile unsigned char *)src;
+    count--;
+    *(volatile unsigned char *)dst = 0x3F;
+    dst++;
+    if ((signed char)next == 0) goto check;
+    src++;
+check:
+    if (count <= 1) goto done;
+    if ((signed char)*src != 0) goto body;
+done:
+    *dst = 0;
 }
-
+#pragma scheduling on
+#pragma pop
 void fn_802EA7E0(void) {
     lbl_8056007C = 0;
     if ((unsigned char)lbl_80560061 != 0) {
@@ -387,6 +400,16 @@ fail:
 
 long fn_802EC370(void *arg0) {
     return ((long *)arg0)[3];
+}
+
+int fn_802EC378(void *arg0, void *arg1, int arg2) {
+    int pos = *(int *)((char *)arg0 + 8);
+    if (pos >= 0 && pos + arg2 <= *(int *)((char *)arg0 + 0xC)) {
+        __builtin_memcpy(arg1, (char *)*(char **)((char *)arg0 + 4) + pos, arg2);
+        *(int *)((char *)arg0 + 8) = *(int *)((char *)arg0 + 8) + arg2;
+        return 1;
+    }
+    return 0;
 }
 
 #pragma push
