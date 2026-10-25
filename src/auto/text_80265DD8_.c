@@ -89,7 +89,7 @@ void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
     arg1[2] = arg2[2] + arg3[2] * factor;
 }
 
-void fn_802670A0(int *arg1, int arg0) {
+void fn_802670A0(int arg0, int *arg1) {
     int count;
     int x;
     int y;
@@ -292,6 +292,10 @@ int fn_8026A27C(int arg0) {
     int value = p[arg0];
     p[arg0] = 0;
     return value;
+}
+
+void fn_8026A298(int arg0) {
+    lbl_80499E50[arg0] = -1;
 }
 
 extern void fn_801EA994(void);
