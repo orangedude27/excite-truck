@@ -6,9 +6,9 @@ extern int lbl_8055F940;
 extern int lbl_8055F944;
 extern int lbl_8055F948;
 extern signed char lbl_8055F94C;
-extern const char lbl_8055CC88[];
+extern const char lbl_8055CC88;
 extern int fn_802E2C20(void);
-extern int sscanf(const char *, ...);
+extern int sscanf(const char *, const char *, ...);
 extern void fn_802AC344(void);
 void *fn_802AC0E8(void *arg0, const char *arg1, int arg2) {
     char *node = (char *)arg0;
