@@ -110,7 +110,7 @@ void fn_802E7A14(int arg0) {
 extern float lbl_805651A0, lbl_805651A4;
 extern int fn_8005ED8C(void), fn_8005EE20(void), fn_8005EE7C(void);
 extern int fn_80128684(void), fn_802E30C8(int *);
-extern int lbl_8034D8B4, lbl_8034D8E8;
+__declspec(section ".rodata") extern int lbl_8034D8B4, lbl_8034D8E8;
 extern int lbl_80507258[], lbl_8056000C;
 extern int fn_80128658(int, int *);
 int fn_802E7A70(unsigned int value) {
@@ -493,11 +493,13 @@ void fn_802E85F4(int index) {
     extern unsigned char lbl_80505978[];
     extern float lbl_805651A0, lbl_805651A4;
     unsigned char *p;
-    float value = lbl_805651A4;
-    float limit = lbl_805651A0;
     float current;
+    float limit;
+    float value;
     int count;
 
+    value = lbl_805651A4;
+    limit = lbl_805651A0;
     p = lbl_80505978 + index * 0x638;
     current = *(float *)(p + 0x6C);
     if (value >= current)
