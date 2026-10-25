@@ -814,6 +814,16 @@ void fn_802CBD7C(void **arg0, void *arg1) {
     }
 }
 
+void fn_802CBFA0(void *arg0, unsigned int arg1) {
+    void *node;
+    node = *(void **)((char *)arg0 + 0xC);
+    while (node != 0) {
+        if (*(unsigned int *)((char *)node + 0xC) == arg1)
+            *(unsigned int *)((char *)node + 0xC) = 0;
+        node = *(void **)((char *)node + 0x10);
+    }
+}
+
 extern char lbl_8034BA34[];
 extern char lbl_8034BA70[];
 int fn_802D9154(void);
