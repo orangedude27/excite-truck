@@ -113,9 +113,9 @@ int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
 
 unsigned int fn_802E1960(unsigned int arg0) {
     unsigned int result = ((arg0 >> 3) + 3) & ~3;
-    if ((result & (result - 1)) == 0)
-        return result;
-    return fn_802E176C(result);
+    if ((result & (result - 1)) != 0)
+        return fn_802E176C(result);
+    return result;
 }
 
 void fn_802E1A38(void *arg0, int arg1) {
@@ -320,10 +320,10 @@ int main(void) {
 unsigned int fn_802E2C20(void) {
     unsigned long long now;
     unsigned long long diff;
-    unsigned int baseHigh;
-    unsigned int baseLow;
-    unsigned int ticks;
-    unsigned int factor;
+    register unsigned int baseHigh;
+    register unsigned int baseLow;
+    register unsigned int ticks;
+    register unsigned int factor;
     now = OSGetTime();
     if ((*(volatile int *)&lbl_8055FEF8 | *(volatile unsigned int *)&lbl_8055FEFC) == 0) {
         *(volatile unsigned int *)&lbl_8055FEFC = (unsigned int)now;
