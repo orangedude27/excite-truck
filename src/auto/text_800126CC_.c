@@ -107,18 +107,20 @@ void fn_80012910(void) {
     fn_80007FF0(*(int *)((char *)fn_8001285C() + 8));
 }
 
-int fn_80012938(float f) DECOMP_DONT_INLINE {
+#pragma dont_inline on
+int fn_80012938(float f) {
     if (f > lbl_80560358) {
         return 2;
     }
     return 1;
 }
+#pragma dont_inline reset
 
+#pragma dont_inline fn_80012938
 void fn_80012954(void) {
     char *p = fn_80012820(*(int *)((char *)fn_8001285C() + 4));
     fn_80012938(*(float *)(p + 0x78));
 }
-
 int fn_800132E4(void *arg0, int arg1, int arg2) {
     if (((int (*)(void))(*(void ***)arg0)[3])() != 0) {
         return ((int (*)(void *, int))(*(void ***)arg0)[7])(arg0, arg1);
@@ -147,7 +149,7 @@ void fn_80013618(int arg0) {
 int fn_800136FC(void *arg0, void *arg1) {
     int a = ((int *)arg0)[0x1A];
     int b = ((int *)arg1)[0x1A];
-    if (a == b) {
+    if (b == a) {
         return ((int *)arg0)[0x1B] - ((int *)arg1)[0x1B];
     }
     return a - b;
