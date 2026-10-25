@@ -530,11 +530,11 @@ extern "C" void fn_801EC130(s32 arg0, void *arg1, s32 arg2) {
             virtual void f0();
             virtual void f1();
             virtual void f2();
-            virtual void f3();
+            virtual void f3(void *);
             virtual void f4();
             virtual void f5(void *);
         };
-        ((Dummy *)obj)->f5(arg1);
+        ((Dummy *)obj)->f3(arg1);
     }
 }
 #pragma cplusplus reset
