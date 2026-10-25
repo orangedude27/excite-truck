@@ -446,7 +446,8 @@ unsigned char fn_800216F4(void) {
 }
 
 int fn_800216FC(void) {
-    if (lbl_8055D644 != 0) return fn_80020184();
+    if (lbl_8055D644 != 0)
+        return fn_80020184() > 0;
     return 0;
 }
 
