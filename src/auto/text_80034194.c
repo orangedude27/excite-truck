@@ -80,6 +80,7 @@ extern s32 executing_8055D8C8;
 extern char DummyCommandBlock_80376AA0[];
 extern void __DVDFSInit(void);
 extern void __DSP_boot_task(void *);
+extern void __DSP_insert_task(void *);
 extern void fn_80038040(void);
 extern s32 OSGetTick(void);
 extern s32 fn_8003BCDC(s32);
