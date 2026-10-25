@@ -48,13 +48,11 @@ void fn_802BC3E0(short arg0, short arg1, short arg2, char *arg3) {
 }
 #pragma scheduling on
 short fn_802BC424(int arg0) {
-    short value = arg0 + 0x200;
     int mask = 0x1FF;
-    while (1) {
+    short value = arg0 + 0x200;
+    do {
         mask >>= 1;
-        if ((value & mask) == 0)
-            break;
-    }
+    } while (value & mask);
     return mask + 1;
 }
 
@@ -470,29 +468,17 @@ void *fn_801284F8(int, int);
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
 #pragma push
-#pragma scheduling off
-void fn_802BD414(int arg0, volatile int *arg1)
-{
-  volatile int *result = (volatile int *) fn_801284F8(0xC, arg0);
-  if (result != 0)
-  {
-    int second;
-    int first = arg1[0];
-    if (arg1)
-    {
-      result[0] = arg1[1];
-      result[2] = first;
-      result[1] = 0;
-      result[1] = result[1] + arg1[0];
+#pragma use_lmw_stmw off
+#pragma scheduling on
+void fn_802BD414(int arg0, volatile int *arg1) {
+    volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
+    if (result != 0) {
+        int first = arg1[0];
+        result[0] = arg1[1];
+        result[2] = first;
+        result[1] = 0;
+        result[1] = result[1] + arg1[0];
     }
-    else
-    {
-      result[0] = arg1[1];
-      result[2] = first;
-      result[1] = 0;
-      result[1] = result[1] + arg1[0];
-    }
-  }
 }
 #pragma pop
 void fn_802BD478(int arg0, volatile int *arg1) {
@@ -776,11 +762,15 @@ void fn_802BDD8C(float arg0) {
 }
 
 void fn_802BDFBC(void *arg0, int arg1, float farg0) {
-    float value;
+    float value = farg0;
     void *node;
-    value = farg0;
-    if (arg1 < 8) value = lbl_80564D18;
-    else if (arg1 > 8) value = lbl_80564D14;
+    if (arg1 < 8) {
+        value = lbl_80564D18;
+    } else if (arg1 == 8) {
+        value = farg0;
+    } else {
+        value = lbl_80564D14;
+    }
     node = *(void **)((char *)arg0 + 4);
     while (node != 0) {
         *(float *)((char *)node + 0xC) = value;
