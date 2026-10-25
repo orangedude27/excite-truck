@@ -16,11 +16,11 @@ extern char lbl_8049A2C8[];
 extern char lbl_8049F9D8[];
 extern int fn_80273B08(int, int);
 extern void fn_80273978(void);
+#pragma scheduling invalid_target
 void fn_80273A88(void) {
     fn_8002F634(lbl_8049F9D8, fn_80273978, 0x1C, 0x20);
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80273AA4(void *arg0) {
     *(char **)((char *)arg0 + 0x18) = lbl_80347364;
     *(int *)arg0 = 0;
