@@ -3051,6 +3051,20 @@ extern "C" void fn_80222468(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0x24C) = arg2;
 }
 
+extern "C" void *fn_802224B4(void *arg0, s32 arg1, s32 arg2, s32 arg3,
+                                   s32 arg4, s32 arg5, s32 arg6, s32 arg7,
+                                   u8 arg8, u8 arg9) {
+    fn_80222340(arg0, arg2, arg3, 0, arg4, arg5, arg6);
+    *(void **)arg0 = lbl_8033F880;
+    *(s32 *)((u8 *)arg0 + 0x25C) = arg1;
+    *(s32 *)((u8 *)arg0 + 0x258) = arg7;
+    *(u8 *)((u8 *)arg0 + 0x256) = arg8;
+    *(u8 *)((u8 *)arg0 + 0x257) = arg9;
+    *(u8 *)((u8 *)arg0 + 0x255) = 0;
+    *(u8 *)((u8 *)arg0 + 0x254) = 0;
+    return arg0;
+}
+
 extern "C" void fn_802328D4(void*);
 extern "C" s32 lbl_8033F9E0[];
 extern "C" s32 fn_80232578(s32);
