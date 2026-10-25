@@ -142,6 +142,25 @@ u32 fn_800080D8(void) {
     return *(u32*)((u8*)&lbl_8034EF38 + 0x1E0);
 }
 
+#pragma dont_inline on
+s32 fn_800080E8(arg0)
+const char* arg0;
+{
+    s32 i = 0;
+    goto compare;
+body:
+    if (stricmp(arg0, fn_80008158(i)) == 0) {
+        return i;
+    }
+    i++;
+compare:
+    if (i < (s32)fn_800080D8()) {
+        goto body;
+    }
+    return -1;
+}
+#pragma dont_inline reset
+
 const char* fn_80008158(s32 arg0) {
     if (arg0 < 0) {
         goto done;
