@@ -197,6 +197,13 @@ void fn_8001F4C4(s32 arg0, s32 arg1) {
         break;
     }
 }
+
+void fn_8001F528(void) {
+    fn_802E6BD8(0x41434856, 3, lbl_80358698, 0x2080, fn_8001F490);
+    fn_8000DBC8(fn_8001F4C4);
+    fn_8001F578();
+}
+
 #pragma scheduling on
 extern char lbl_8035A718[0x820];
 #pragma scheduling invalid_target
