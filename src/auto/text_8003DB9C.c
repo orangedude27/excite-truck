@@ -1079,10 +1079,7 @@ void GXInitLightSpot(s32 arg0, s32 arg1) {
 }
 
 void GXInitLightDistAttn(unsigned int arg0) {
-    unsigned short reg = __peReg[1];
-
-    reg = (reg & ~0x4) | ((arg0 << 2) & 0x4);
-    __peReg[1] = reg;
+    ((GXDistAttnReg *)&__peReg[1])->distanceAttn = arg0;
 }
 
 void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
