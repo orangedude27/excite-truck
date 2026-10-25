@@ -118,3 +118,8 @@ extern void *memcpy(void *, const void *, unsigned int);
 extern unsigned long long fn_802E2C9C(int);
 extern void fn_801331C4(int, int *, float *);
 extern int lbl_80339570;
+extern int fn_8000DA10(void);
+extern void fn_801332D0(int, int*, int*);
+extern int lbl_8055E9DC;
+extern int lbl_8055E9E0;
+extern char lbl_804873B8[];
