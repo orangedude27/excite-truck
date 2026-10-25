@@ -12,7 +12,7 @@ extern void *lbl_8055F444;
 extern void *lbl_8055F448;
 extern void fn_80235380(void *);
 extern void fn_80128670(void *);
-extern void *lbl_8055C458;
+extern char lbl_8055C458[];
 extern void fn_80236914(void);
 extern void fn_80264098(void *, int);
 extern void *fn_80264A54(void);
@@ -575,20 +575,22 @@ void fn_80265A34(void) {
 }
 
 int fn_80265B5C(void) {
-    register void *p = lbl_8055F44C;
-    register int result = 1;
-    register int found = 0;
+    int ret = 1;
+    void *p = lbl_8055F44C;
+    int flag = 0;
 
-    if (p != 0 && *((unsigned char *)p + 0x20) != 0) {
-        found = 1;
+    if (p != 0) {
+        if (*((unsigned char *)p + 0x20) != 0) {
+            flag = 1;
+        }
     }
-    if (found != 0) {
-        return result;
+    if (flag != 0) {
+        return ret;
     }
-    if (lbl_8055F450 != 0) {
-        return result;
+    if (lbl_8055F450 == 0) {
+        ret = 0;
     }
-    return 0;
+    return ret;
 }
 
 int fn_80265B9C(int arg0, int arg1) {
