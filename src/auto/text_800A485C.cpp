@@ -16131,12 +16131,21 @@ copy:
     }
 }
 
-extern "C" s32 fn_800A4B9C(u16 *arg0, u16 *arg1, s32 arg2) {
-    while (arg2 != 0) {
-        u16 a = *arg0;
-        u16 b = *arg1;
-        if (a == 0 || b == 0 || a != b) return a - b;
-        arg0++; arg1++; arg2--;
+extern "C" s32 fn_800A4B9C(u16 *arg0, u16 *arg1, s32 count) {
+    while (count != 0) {
+        u16 right;
+        u16 left = *arg0;
+        if (left == 0) goto differ;
+        right = *arg1;
+        if (right == 0) goto differ;
+        if (left == right) goto equal;
+    differ:
+        right = *(volatile u16 *)arg1;
+        return left - right;
+    equal:
+        arg0++;
+        arg1++;
+        count--;
     }
     return 0;
 }
