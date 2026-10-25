@@ -83,6 +83,24 @@ extern void fn_802BF350(void);
 extern void fn_802B58E0(void);
 extern void *fn_802B59CC(void);
 extern void fn_802BEAB0(void);
+#pragma cplusplus on
+class ETConfigAccess {
+public:
+    virtual void unused00() = 0;
+    virtual void unused04() = 0;
+    virtual void unused08() = 0;
+    virtual void unused0C() = 0;
+    virtual void unused10() = 0;
+    virtual void unused14() = 0;
+    virtual void unused18() = 0;
+    virtual void unused1C() = 0;
+    virtual void *lookup(char *, int) = 0;
+    virtual void unused24() = 0;
+    virtual void unused28() = 0;
+    virtual void unused2C() = 0;
+    virtual char status(char *, int) = 0;
+};
+#pragma cplusplus reset
 void* fn_802AE588(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
@@ -222,6 +240,80 @@ void fn_802AE7C0(void) {
     fn_802C9950(0x555766);
     fn_802C9994(0xFFF5D9);
 }
+
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_802AE7F4(void) {
+    volatile float values[7];
+    volatile float saveTotal;
+    register float total;
+    register char *base = lbl_8034A020;
+    int count;
+
+    lbl_8055F980 = fn_8012C33C(base);
+    fn_802AE5E0(0x400);
+    fn_802BE7F8();
+    fn_802B40F8();
+    fn_802B0914();
+    fn_802C26F0();
+    fn_802B1E28();
+    fn_802B57B8();
+    fn_802BBBC8();
+    fn_802C2138();
+    fn_802B9B68();
+    fn_802BDBA8();
+    fn_802C2298();
+    if ((unsigned char)lbl_8055F980 == 0)
+        fn_802BF350();
+    fn_802B58E0();
+
+    {
+        void *obj = fn_802B59CC();
+        lbl_8055CD78 = ((void *(*)(void *, void *, int))(*(void ***)obj)[8])
+            (obj, base + 0xC, -1);
+    }
+    {
+        void *obj = fn_802B59CC();
+        lbl_8055F981 = ((char (*)(void *, void *, int))(*(void ***)obj)[12])
+            (obj, base + 0x18, 0);
+    }
+
+    total = lbl_80564B40 * (lbl_80564B44 * lbl_80564AF0);
+    saveTotal = total;
+    {
+        register volatile float *value = values;
+        register float *table = (float *)((char *)lbl_804BE090 + 4);
+        register int step = 2;
+        float factor = lbl_80564B68 * (lbl_80564B6C * lbl_80564AF0);
+        count = 7;
+        values[0] = lbl_80564B48 * (lbl_80564B48 * lbl_80564AF0);
+        values[1] = lbl_80564B48 * (lbl_80564B4C * lbl_80564AF0);
+        values[2] = lbl_80564B40 * (lbl_80564B50 * lbl_80564AF0);
+        values[3] = lbl_80564B48 * (lbl_80564B54 * lbl_80564AF0);
+        values[4] = lbl_80564B58 * (lbl_80564B5C * lbl_80564AF0);
+        values[5] = lbl_80564B44 * (lbl_80564B60 * lbl_80564AF0);
+        values[6] = lbl_80564B64 * lbl_80564AF0;
+        do {
+            float v = *value;
+            *table = total;
+            {
+                float next = factor * (float)(step * 3);
+                if (next > v) {
+                } else {
+                    next = v;
+                }
+                total += next;
+            }
+            step *= 2;
+            table++;
+            value++;
+        } while (--count != 0);
+    }
+    fn_802BEAB0();
+    lbl_8055F97C = 0xFA;
+}
+#pragma scheduling on
+#pragma dont_inline reset
 
 #pragma scheduling invalid_target
 void fn_802AE9D0(void) {
