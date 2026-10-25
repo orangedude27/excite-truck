@@ -24,6 +24,7 @@ extern void fn_801D5328(int, int);
 extern void fn_801D5A14(int);
 extern void fn_801D5A1C(int);
 extern void fn_801D59C8(int, int);
+extern char lbl_80338D80[];
 void fn_801D47F4(void) {
     fn_801D57F0();
 }
