@@ -51,7 +51,7 @@ extern "C" f32 lbl_80560E8C;
 extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E90;
 extern "C" f32 lbl_80560E94;
-extern "C" int lbl_80565230;
+extern "C" s16 lbl_80565230[4];
 namespace nw4hbm { namespace lyt {
 struct DrawInfo;
 class Pane { public: void CalculateMtx(const DrawInfo &); };
@@ -303,18 +303,21 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
     extern f32 lbl_80560E78;
     extern f32 lbl_80560E7C;
-    extern void* lbl_8031F618;
+    extern char lbl_8031F618[];
     extern void memset(void*, int, unsigned int);
     extern void PSMTXIdentity(void*);
     u8* p = (u8*)arg0;
-    *(void**)p = &lbl_8031F618;
-    *(f32*)(p + 0x34) = lbl_80560E78;
-    *(f32*)(p + 0x38) = lbl_80560E78;
-    *(f32*)(p + 0x3C) = lbl_80560E78;
-    *(f32*)(p + 0x40) = lbl_80560E78;
-    *(f32*)(p + 0x44) = lbl_80560E7C;
-    *(f32*)(p + 0x48) = lbl_80560E7C;
-    *(f32*)(p + 0x4C) = lbl_80560E7C;
+    char* vtable = lbl_8031F618;
+    register f32 b = lbl_80560E7C;
+    register f32 a = lbl_80560E78;
+    *(char**)p = vtable;
+    *(f32*)(p + 0x34) = a;
+    *(f32*)(p + 0x38) = a;
+    *(f32*)(p + 0x3C) = a;
+    *(f32*)(p + 0x40) = a;
+    *(f32*)(p + 0x44) = b;
+    *(f32*)(p + 0x48) = b;
+    *(f32*)(p + 0x4C) = b;
     memset(p + 0x50, 0, 1);
     PSMTXIdentity(p + 4);
     return arg0;
@@ -608,8 +611,8 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
         f32 h = *(f32*)&p[0x1C];
         f32 w = *(f32*)&p[0x18];
         f32 negH = -h;
-        f32 s = lbl_80560E84;
         f32 negW = -w;
+        f32 s = lbl_80560E84;
         *(f32*)&((u8*)pOut)[8] = w * s;
         *(f32*)&((u8*)pOut)[4] = h * s;
         *(f32*)&((u8*)pOut)[0] = negW * s;
@@ -970,6 +973,32 @@ extern "C" s32 fn_800D89FC(s32 arg0, s32 arg1) {
 
 extern "C" s32 fn_800D8A04(s32 arg0, s32 arg1) {
     return arg0 + arg1;
+}
+
+extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
+    volatile short *defaults = (volatile short *)&lbl_80565230;
+    short c0 = defaults[0];
+    short c1 = defaults[1];
+    short c2 = defaults[2];
+    short c3 = defaults[3];
+    unsigned int mask4c = *(unsigned int *)((char *)arg0 + 0x4c) & 0x1f;
+    unsigned int mask50 = *(unsigned int *)((char *)arg0 + 0x50) & 0x1f;
+    *(short *)((char *)arg0 + 0x24) = c0;
+    *(short *)((char *)arg0 + 0x26) = c1;
+    *(short *)((char *)arg0 + 0x28) = c2;
+    *(short *)((char *)arg0 + 0x2a) = c3;
+    *(short *)((char *)arg0 + 0x2c) = 0xff;
+    *(short *)((char *)arg0 + 0x2e) = 0xff;
+    *(short *)((char *)arg0 + 0x30) = 0xff;
+    *(short *)((char *)arg0 + 0x32) = 0xff;
+    *(short *)((char *)arg0 + 0x34) = 0xff;
+    *(short *)((char *)arg0 + 0x36) = 0xff;
+    *(short *)((char *)arg0 + 0x38) = 0xff;
+    *(short *)((char *)arg0 + 0x3a) = 0xff;
+    *(unsigned int *)((char *)arg0 + 0x4c) = mask4c;
+    *(unsigned int *)((char *)arg0 + 0x50) = mask50;
+    *(unsigned char *)((char *)arg0 + 0x54) = 0;
+    *(unsigned int *)((char *)arg0 + 0x58) = 0;
 }
 
 extern "C" s32 fn_800D9328(void *arg0) {
