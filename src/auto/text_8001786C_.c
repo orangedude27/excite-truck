@@ -11,6 +11,9 @@ typedef struct Unk18440 {
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void* fn_80016544(s32);
+extern void fn_802E30C8(const char*, ...);
+extern s32 fn_8013C8E8(s32);
+extern const char lbl_802FD088[];
 extern s32 fn_800168B0(s32, s32);
 extern s32 fn_800167F4(void);
 extern void* fn_800167B8(s32);
