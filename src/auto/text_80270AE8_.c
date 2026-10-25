@@ -407,7 +407,7 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
 }
 
 extern char lbl_8034705C[];
-extern void fn_802723B4(void *, float *);
+extern void fn_802723B4(void *, void *);
 void fn_8027264C(int arg0, void *arg1, float farg0) {
     float value;
     fn_802723B4(arg1, &value);
