@@ -3,6 +3,15 @@
 
 #include <types.h>
 
+class Fn80229AE4Dispatch {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void Call(s32, s32, s32, s32);
+};
+
 struct Fn80219264VTable {
     virtual void v0();
     virtual void v1();
@@ -4942,7 +4951,12 @@ extern "C" u32 fn_80229ADC(void) { return 1; }
 
 extern "C" void fn_80229AE4(void *arg0, s32 arg1, s32 arg2) {
     void *obj = *(void **)((u8 *)arg0 + 0x244);
-    ((void (*)(void *, s32, s32, s32, s32))(*(u32 *)*(u32 *)obj + 0x18))(obj, *(s32 *)((u8 *)arg0 + 0x248), *(s32 *)((u8 *)arg0 + 0x24C), arg1, arg2);
+    ((void (*)(void *, s32, s32, s32, s32))((*(void ***)obj)[6]))(
+        obj,
+        *(s32 *)((u8 *)arg0 + 0x248),
+        *(s32 *)((u8 *)arg0 + 0x24C),
+        arg1,
+        arg2);
 }
 
 extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
@@ -5004,14 +5018,11 @@ extern "C" void fn_80229CD8(void *arg0) {
 extern "C" void fn_802C5280(void *, s32, s32, s32, s32, void *);
 extern "C" f32 lbl_805634A8;
 extern "C" void fn_80229CF8(void *arg0) {
-    u8 flag = *(u8 *)((u8 *)arg0 + 0x1A);
-    if (flag == 0) {
-        *(u8 *)((u8 *)arg0 + 0x18) = 1;
-        *(f32 *)((u8 *)arg0 + 0x248) = lbl_805634A8;
-        return;
-    }
     *(u8 *)((u8 *)arg0 + 0x18) = 1;
     *(f32 *)((u8 *)arg0 + 0x248) = lbl_805634A8;
+    if (*(u8 *)((u8 *)arg0 + 0x1A) == 0) {
+        return;
+    }
     *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
@@ -5022,12 +5033,15 @@ extern "C" void fn_80229D1C(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_80229D3C(void *arg0, s32 arg1, s32 arg2) {
-    s32 value = *(s32 *)((u8 *)arg0 + 4);
-    fn_802C5280(*(void **)((u8 *)arg0 + 0x250), arg1 - value,
-                arg2 - *(s32 *)((u8 *)arg0 + 8), 0, value, arg0);
+    register void *self = arg0;
+    register void *target = *(void **)((u8 *)arg0 + 0x250);
+    register s32 value = *(s32 *)((u8 *)self + 4);
+    register s32 other = *(s32 *)((u8 *)self + 8);
+    fn_802C5280(target, arg1 - value, arg2 - other, 0, value, self);
 }
-
+#pragma scheduling on
 extern "C" s32 fn_80229D5C(s32);
 extern "C" s32 fn_80229D5C(s32 arg0) {
     return arg0 + 0x264;
@@ -5051,14 +5065,15 @@ extern "C" s32 fn_80229DC0(s32 arg0) {
     return arg0 + 0x268;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_80229DC8(void *arg0) {
-    register u32 zero = 0;
     register u32 one = 1;
+    register u32 zero = 0;
     *(u32 *)((u8 *)arg0 + 0x260) = zero;
     *(u8 *)((u8 *)arg0 + 0x268) = one;
-    ((void (**)(void *))(*(void ***)arg0))[19](arg0);
+    ((VfObj *)arg0)->vf17();
 }
-
+#pragma scheduling on
 extern "C" void fn_80229DE8(void *arg0, s32 unused, s32 arg2) {
     register u32 zero = 0;
     register u32 one = 1;
