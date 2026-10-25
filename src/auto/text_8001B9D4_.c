@@ -43,10 +43,12 @@ void fn_8001B9D4(void *arg0) {
     ((s32 *)arg0)[6] = -2;
 }
 
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8001B9F4(void) {
     fn_8002F634(&lbl_803583C8, fn_8001BA10, 0x14, 0x10);
 }
-
+#pragma scheduling reset
 s32 fn_8001BA10(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
