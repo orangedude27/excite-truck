@@ -42,9 +42,6 @@ extern "C" u8 lbl_8055DFF9;
 extern "C" void *lbl_8055E000;
 extern "C" s32 fn_8012BC50(void *, void *, s32);
 extern "C" s32 fn_8012E9F0(s32, s32);
-extern "C" s32 lbl_80559984;
-extern "C" s32 lbl_805599AC;
-extern "C" s32 sprintf(s32, s32, s32);
 
 extern "C" void *fn_8012CB44(void *, s32);
 extern "C" void fn_8012CA40(void *);
