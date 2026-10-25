@@ -84,7 +84,7 @@ inline void fn_8019AC44_compat(f32* a, f32* b, f32 c) {}
 static inline void fn_8019AC44_3(f32* a, f32* b, f32 c) {}
 extern char lbl_803339B8;
 extern void fn_8019F03C();
-extern s32 fn_8019DDFC(s32, s32, s32, s32, void*, void*, f32);
+extern "C" s32 fn_8019DDFC(s32, s32, s32, s32, void*, void*, f32);
 extern "C" f64 fn_8002F234(f32);
 extern "C" void fn_8019ECC4(void);
 extern void* lbl_80333B48;
