@@ -14,7 +14,7 @@ extern void fn_80136A18(s32, s32);
 extern s32 fn_801284F8(s32, s32*);
 extern s32 fn_801368F8(s32);
 extern f32 lbl_80561368;
-extern s32 lbl_8032BEB4;
+extern s32 lbl_8032BEB4[];
 extern void fn_801376A8(s32, s32 *, s32, s32, s32 *);
 extern void fn_80136D20(void);
 void fn_801369EC(void *arg0) {
@@ -64,17 +64,19 @@ void fn_80136E8C(void *arg0, s32 arg1, signed char arg2) {
 }
 
 void fn_80136EA4(void *arg0, s32 arg1) {
-    s32 values[3];
-    s32 stride;
-    s32 base;
-    s32 index;
-    values[0] = *(s32 *)((char *)&lbl_8032BEB4);
-    values[1] = *(s32 *)((char *)&lbl_8032BEB4 + 4);
-    values[2] = *(s32 *)((char *)&lbl_8032BEB4 + 8);
-    stride = *(s32 *)((char *)arg0 + 0xC);
-    index = *(s32 *)((char *)arg0);
-    base = *(s32 *)((char *)arg0 + 0x10);
-    fn_801376A8(base + arg1 * stride + index * 8 + 0x18, (s32 *)((char *)&values[0]), arg1, base, &lbl_8032BEB4);
+    s32 sp10;
+    s32 spC;
+    s32 sp8;
+    s32 temp_r7;
+
+    sp8 = *(s32 *)((char *)&lbl_8032BEB4);
+    spC = *(s32 *)((char *)&lbl_8032BEB4 + 4);
+    sp10 = *(s32 *)((char *)&lbl_8032BEB4 + 8);
+    temp_r7 = *(s32 *)((char *)arg0 + 0x10);
+    fn_801376A8((s32)arg0,
+                (s32 *)(temp_r7 + arg1 * *(s32 *)((char *)arg0 + 0xC) +
+                        *(s32 *)arg0 * 8 + 0x18),
+                (s32)&sp8, arg1, (s32 *)temp_r7);
 }
 
 extern void *fn_801B2ED0(int);
@@ -248,6 +250,82 @@ void fn_8013776C(void *arg0) {
     temp_f0 = *(f32 *)((char *)arg0 + 0x20);
     temp_f1 = *(f32 *)((char *)arg0 + 0x1C);
     *(f32 *)((char *)arg0 + 0x18) = temp_f1 * temp_f1 + temp_f0 * temp_f0;
+}
+
+void fn_80137788(void *arg0, s32 arg1, void *arg2) {
+    extern f32 lbl_8056136C;
+    s32 state;
+    s32 stride;
+    s32 id;
+    s32 difference;
+    s32 entries;
+    s32 entry;
+    s32 equal;
+    unsigned char flag;
+    f32 x;
+    f32 y;
+    f32 scale;
+
+    state = lbl_8055E0D0;
+    stride = *(s32 *)((char *)state + 0xC);
+    id = *(s32 *)((char *)arg0 + 0x14);
+    difference = id - arg1;
+    entries = *(s32 *)((char *)state + 0x10);
+    entry = entries + arg1 * stride;
+    flag = *(unsigned char *)((char *)entry + 0x14);
+    equal = difference == 0;
+    if ((equal ^ flag) != 0) {
+        x = *(f32 *)((char *)arg0 + 0x1C);
+        scale = lbl_8056136C;
+        y = *(f32 *)((char *)arg0 + 0x20);
+        x = x * scale;
+        y = y * scale;
+        *(f32 *)arg2 = x;
+        *(f32 *)((char *)arg2 + 4) = y;
+        return;
+    }
+    x = *(f32 *)((char *)arg0 + 0x1C);
+    y = *(f32 *)((char *)arg0 + 0x20);
+    *(f32 *)arg2 = x;
+    *(f32 *)((char *)arg2 + 4) = y;
+}
+
+void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
+    extern f32 lbl_8056136C;
+    s32 state;
+    s32 stride;
+    s32 id;
+    s32 difference;
+    s32 entries;
+    s32 entry;
+    s32 equal;
+    unsigned char flag;
+    f32 y;
+    f32 x;
+    f32 scale;
+
+    state = lbl_8055E0D0;
+    stride = *(s32 *)((char *)state + 0xC);
+    id = *(s32 *)((char *)arg0 + 0x14);
+    difference = id - arg1;
+    entries = *(s32 *)((char *)state + 0x10);
+    entry = entries + arg1 * stride;
+    flag = *(unsigned char *)((char *)entry + 0x14);
+    equal = difference == 0;
+    if ((equal ^ flag) != 0) {
+        x = *(f32 *)((char *)arg0 + 0x24);
+        scale = lbl_8056136C;
+        y = *(f32 *)((char *)arg0 + 0x28);
+        x = x * scale;
+        y = y * scale;
+        *(f32 *)arg2 = x;
+        *(f32 *)((char *)arg2 + 4) = y;
+        return;
+    }
+    x = *(f32 *)((char *)arg0 + 0x24);
+    y = *(f32 *)((char *)arg0 + 0x28);
+    *(f32 *)arg2 = x;
+    *(f32 *)((char *)arg2 + 4) = y;
 }
 
 float fn_80137850(void *arg0)
