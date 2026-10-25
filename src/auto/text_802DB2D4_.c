@@ -30,6 +30,26 @@ void fn_802DB2D4(void) {
     lbl_8055FD24 = ((unsigned char *)lbl_804DB468[0])[0xE4];
     GXSetAlphaCompare(4, ((unsigned char *)lbl_804DB468[0])[0xE4], 1, 0, 0);
 }
+
+void fn_802DB304(void *arg0, int arg1) {
+    void **dst = (void **)arg0;
+
+    switch (arg1) {
+    case 0:
+        dst[0] = lbl_804DB468[0];
+        return;
+    case 2:
+        dst[0] = lbl_804DB468[0];
+        dst[1] = lbl_804DB468[1];
+        return;
+    case 1:
+        dst[0] = lbl_804DB468[0];
+        dst[1] = lbl_804DB468[1];
+        dst[2] = lbl_804DB468[2];
+        return;
+    }
+}
+
 #pragma scheduling on
 int fn_802DB378(int arg0, int arg1) { int result = 0xFF; if (arg0 == 2) { if (arg1 == 0) result = 4; } return result; }
 
@@ -189,6 +209,38 @@ void fn_802DBDD8(void) {
     lbl_8055FEAC = 0;
 }
 
+#pragma scheduling off
+void fn_802DBDE8(int arg0, void *arg1) {
+    int count;
+    void **entry;
+
+    if (arg1 != 0) {
+        int oldCount = *(int *)((char *)arg1 + 0xF0);
+        int value = lbl_8055FD30;
+        *(int *)((char *)arg1 + 0xEC) = value;
+        *(int *)((char *)arg1 + 0xF0) = oldCount + 1;
+        entry = lbl_804DB468;
+        entry[arg0] = arg1;
+        count = 0;
+        lbl_8055FEA4 = count;
+        goto loop_body;
+    }
+
+    entry = lbl_804DB468;
+    count = 0;
+    goto loop_check;
+
+loop_body:
+    count++;
+    lbl_8055FEA4 = count;
+    entry++;
+
+loop_check:
+    if (count < 3 && entry[0] != 0)
+        goto loop_body;
+    lbl_8055FE9E = 1;
+}
+#pragma scheduling on
 void fn_802DBECC(void) {
     fn_802D3360();
     GXSetTevKAlphaSel(0, 0);
@@ -356,11 +408,15 @@ extern char lbl_8034CB24[];
 extern unsigned int lbl_8055FEBC;
 extern unsigned int lbl_8055FEBC;
 int fn_802DC6AC(int a, unsigned int b) {
-    int i = a / 4;
-    int j = (int)b / 4;
-    unsigned int *base = (unsigned int *)lbl_8055FEBC;
-    unsigned short v = *(unsigned short *)((char *)base + ((i + (j << 7)) << 6));
-    return (*(int *)((char *)base + ((i + (j << 7)) << 6) + 0x20) & 0xffff) | ((unsigned int)v << 16);
+    int row = a / 4;
+    int col = (int)b / 4;
+    int x = a % 4;
+    int y = (int)b % 4;
+    int index = ((x + (y << 2)) << 4) / 8;
+    char *tile = (char *)lbl_8055FEBC + (row + (col << 7)) * 64;
+    tile += index;
+    return *(unsigned short *)(tile + 32) |
+           ((unsigned int)*(unsigned short *)tile << 16);
 }
 
 extern void GXLoadPosMtxImm(float (*)[4], unsigned int);
