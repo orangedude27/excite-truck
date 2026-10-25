@@ -104,6 +104,8 @@ void fn_80005740(s32 arg0) {
     }
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_800057BC(void) {
     if (lbl_8055F024 == 0) {
         return;
