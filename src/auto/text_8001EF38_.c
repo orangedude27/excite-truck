@@ -180,6 +180,20 @@ reset:
     memset(dst, clear, size);
 }
 
+extern char lbl_802FE024[];
+extern void fn_802E30C8(const char *, ...);
+#pragma scheduling invalid_target
+void fn_8001F4C4(s32 arg0, s32 arg1) {
+    switch (arg1) {
+    case 0:
+        fn_802E30C8(lbl_802FE024, arg0);
+        memset(lbl_80358698 + arg0 * 0x820, 0, 0x820);
+        break;
+    default:
+        break;
+    }
+}
+#pragma scheduling on
 extern char lbl_8035A718[0x820];
 #pragma scheduling invalid_target
 void fn_8001F578(void) {
