@@ -9,7 +9,7 @@ extern void fn_8017A57C(void) __attribute__((noreturn));
 extern void fn_801AC240(void *);
 extern void fn_801AC254(void *);
 extern void fn_801ABFF8(int **);
-extern int lbl_80335940;
+extern char lbl_80335940[];
 extern float lbl_805624D0;
 
 extern void fn_8017B0B0(void *);
