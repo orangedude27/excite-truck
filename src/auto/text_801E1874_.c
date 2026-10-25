@@ -45,7 +45,7 @@ int fn_801E1894(void) {
   else if(stricmp(name,(const char *)lbl_8055AE84)==0) *(int *)&lbl_804874D4=2;
   if(((int(*)(void *,const char *))(*(void ***)obj)[3])(obj,(const char *)lbl_80339860)!=0)
    lbl_8055EA22=((int(*)(void *,const char *))(*(void ***)obj)[11])(obj,(const char *)lbl_80339860);
-  else lbl_8055EA22=(lbl_804874D4==1);
+  else lbl_8055EA22=(*(int *)&lbl_804874D4==1);
   *((unsigned char *)&lbl_804874D4+4)=((int(*)(void *,const char *,int))(*(void ***)obj)[12])(obj,(const char *)lbl_8033986C,0);
   if(settings) {
    ((void(*)(float *,void *,const char *))(*(void ***)settings)[13])(v,settings,(const char *)lbl_8055AE8C);
