@@ -3,7 +3,7 @@
 
 extern int lbl_8041E098[];
 extern char lbl_80329FC0[];
-extern void fn_802E317C();
+extern void fn_802E317C(const char *, ...);
 extern char lbl_80329FA0[];
 
 void fn_80127C8C(void) {
