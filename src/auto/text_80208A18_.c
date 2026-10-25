@@ -20,6 +20,27 @@ extern void fn_80209030(float);
 #pragma scheduling invalid_target
 #pragma push
 #pragma inline_depth(0)
+float fn_80208A18(float value) {
+    struct Entry {
+        float value;
+        int id;
+    };
+    struct State {
+        struct Entry entries[8];
+        int count;
+    };
+    struct State *state = (struct State *)lbl_80489258;
+    int count = state->count;
+    int i;
+
+    for (i = 0; i < count; i++) {
+        if (state->entries[i].id != 0) {
+            value *= state->entries[i].value;
+        }
+    }
+    return value;
+}
+
 void fn_80208A50(float *arg0) {
     lbl_8055B4D4 = fn_80208A18(lbl_8055B4D0);
 }
