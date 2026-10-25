@@ -4,7 +4,8 @@
 
 extern int lbl_8055FB28, lbl_8055FB2C, lbl_8055FB30, lbl_8055FB34, lbl_8055CFA0;
 extern int lbl_8055FB40;
-extern int lbl_804C0810, lbl_804C0E10;
+extern char lbl_804C0810[];
+extern int lbl_804C0E10;
 extern f32 lbl_8055FB38;
 extern f32 lbl_80564E50;
 extern char lbl_8034AEF8[], lbl_8034AF04[];
