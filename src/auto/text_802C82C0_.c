@@ -68,14 +68,14 @@ void fn_802C82C0(void) {
 #pragma cplusplus on
 extern "C" int fn_80133010(void);
 extern "C" void fn_802C82C4(int arg0) {
-    struct Base { char first; char rest[0x38]; };
-    Base *base;
+    char (*base)[0x40] = (char (*)[0x40])lbl_8034B498;
+    char (&baseRef)[0x40] = *base;
     int mode;
-    base = (Base *)lbl_8034B498;
+
     mode = arg0;
     if (fn_80019B9C() != 0 || fn_802E9A0C() == 1) mode = 1;
     lbl_8055FC90 = (void *)mode;
-    if (fn_80133010() != 0) fn_80133348(1, &base->first, (int)lbl_8055FC90);
+    if (fn_80133010() != 0) fn_80133348(1, baseRef, (int)lbl_8055FC90);
     lbl_8055FC8C = 0;
     lbl_8055D020 = lbl_80564EF8;
     lbl_8055D024 = lbl_80564EF8;
@@ -341,6 +341,11 @@ int fn_802C90E0(void) {
     return lbl_8055FC70 == 0;
 }
 
+void fn_802C90F0(void) {
+    ((void (*)(void))fn_802C8C04)();
+    lbl_8055FC70 = 3;
+}
+
 void fn_802C9294(int arg0, int arg1) {
     if (arg0 != -1 && arg0 != -2) {
         char value = arg1 != 1;
@@ -473,13 +478,16 @@ float fn_802C9744(void) { return lbl_8055FC40; }
 
 extern float __fabsf(float);
 extern double __fabs(double);
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802C974C(float f0, float f1, float f2) {
     float *view = lbl_804C144C;
-    float angle = f2;
+    register float angle = f2;
     float f4;
-    float ratio, a, t, s, theta;
+    register float sine, theta, tangent;
+    float cosine;
+    float denom_angle, denom_sine, atan_value, ratio, depth;
     unsigned char mode = lbl_8055FC74;
+
     lbl_8055FC38 = f0;
     lbl_8055FC3C = f1;
     lbl_8055FC40 = f2;
@@ -490,20 +498,26 @@ void fn_802C974C(float f0, float f1, float f2) {
     }
     lbl_8055FC4C = angle;
     theta = lbl_80564F18 * angle;
-    s = (float)sin(theta);
-    lbl_8055FC48 = s;
-    t = s / (float)cos(theta);
-    a = lbl_80564F28 - lbl_80564F18 * angle;
-    lbl_8055FC44 = t;
-    lbl_8055FC88 = t;
-    s = (float)sin(a);
-    ratio = t / lbl_8055FC6C;
+    sine = (float)sin(theta);
+    cosine = (float)cos(theta);
+    denom_angle = lbl_80564F28 - angle * lbl_80564F18;
+    lbl_8055FC48 = sine;
+    tangent = sine / cosine;
+    lbl_8055FC44 = tangent;
+    lbl_8055FC88 = tangent;
+    denom_sine = (float)sin(denom_angle);
+    depth = lbl_80564EF8 / denom_sine;
+    ratio = lbl_8055FC44 / lbl_8055FC6C;
+    lbl_8055FC54 = depth;
     lbl_8055FC50 = ratio;
-    lbl_8055FC54 = lbl_80564EF8 / s;
-    a = lbl_80564F24 * (float)atan(ratio);
+    atan_value = (float)atan(ratio);
+    theta = lbl_80564F24 * atan_value;
+    sine = (float)sin(lbl_80564F28 - theta * lbl_80564F18);
     f4 = lbl_80564EF8;
-    lbl_8055FC58 = f4 / (float)sin(lbl_80564F28 - lbl_80564F18 * a);
-    if (mode == 0) f4 = lbl_8055D020 / lbl_8055D024;
+    lbl_8055FC58 = f4 / sine;
+    if (mode == 0) {
+        f4 = lbl_8055D020 / lbl_8055D024;
+    }
     fn_802D0368(lbl_8055FC38, lbl_8055FC3C, angle, f4);
     fn_802CC518((int)lbl_8055FC64, lbl_8055FC44);
 }
