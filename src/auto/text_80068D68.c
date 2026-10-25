@@ -11,6 +11,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
+extern int btu_hcif_send_cmd();
 extern void DBPrintf_8006CFA8(const char *, ...);
 extern char lbl_80313464[];
 extern char lbl_8031347C[];
