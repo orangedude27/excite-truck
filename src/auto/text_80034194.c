@@ -1585,13 +1585,15 @@ void __DVDPrepareReset(void) {
     }
 }
 
+#pragma small_data off
+extern __declspec(section ".data") u8 lbl_8037B580;
 s32 __DVDTestAlarm(void *alarm) {
     if (alarm == &lbl_8037B580) {
         return 1;
     }
     return fn_8003BE40();
 }
-
+#pragma small_data on
 u32 fn_80039CD8(void) { return 1; }
 
 void fn_80039CE0(void) {
