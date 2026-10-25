@@ -201,13 +201,16 @@ void fn_80130FE0(int arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 void *fn_80131234(void) {
     int result = fn_801302E0();
-    if (result == 0)
+    switch (result) {
+    case 0:
         return lbl_80559B00;
-    return (void *)result;
+    default:
+        return (void *)result;
+    }
 }
-
 #pragma scheduling on
 void fn_80131264(void) {
     fn_801302E0();
