@@ -287,13 +287,14 @@ extern void fn_80268BD4(void *, int, float, float);
 extern float lbl_80563C28;
 extern float lbl_80563C9C;
 extern char lbl_80499950[];
+#pragma push
+#pragma scheduling invalid_target
 int fn_8026A27C(int arg0) {
-    volatile int *p = lbl_80499E50;
-    int value = p[arg0];
-    p[arg0] = 0;
+    int value = lbl_80499E50[arg0];
+    lbl_80499E50[arg0] = 0;
     return value;
 }
-
+#pragma pop
 void fn_8026A298(int arg0) {
     lbl_80499E50[arg0] = -1;
 }
