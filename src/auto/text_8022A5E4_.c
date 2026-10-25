@@ -212,13 +212,14 @@ int fn_8022AB94(const char *arg0, char arg1) {
     return count;
 }
 
+#pragma scheduling invalid_target
 void fn_8022ABC8(void *arg0, const char *arg1, int arg2) {
     char buffer[0x800];
     strncpy(buffer, arg1, arg2);
     buffer[arg2] = 0;
     fn_8023293C(arg0, buffer, lbl_80563588);
 }
-
+#pragma scheduling on
 extern void fn_8022ACFC(float *, float *, float *, float *, float, float);
 __declspec(section ".sdata") extern double lbl_80563590;
 void fn_8022AC1C(int unused0, int unused1, int arg2, int arg3, int *arg4, int *arg5, int *arg6, int *arg7) {
@@ -442,20 +443,25 @@ void fn_8022C520(void) {
     int flag2;
     char* s;
     void** v;
+    unsigned int c1;
+    unsigned int c2;
+    unsigned int c3;
 
     tmpl = *(Cfg58*)&lbl_802F9F58;
-    tmpl.w[4] = 0xffd6003c;
-    tmpl.w[5] = 0xffd6003c;
-    tmpl.w[6] = 0xff2dc82d;
-    tmpl.w[7] = 0xff2dc82d;
-    tmpl.w[11] = 0xff2d2dc8;
-    tmpl.w[12] = 0xff2d2dc8;
-    tmpl.w[13] = 0xffd6003c;
-    tmpl.w[14] = 0xffd6003c;
+    c1 = 0xffd6003c;
+    c2 = 0xff2dc82d;
+    c3 = 0xff2d2dc8;
+    tmpl.w[3] = c1;
+    tmpl.w[4] = c1;
+    tmpl.w[5] = c2;
+    tmpl.w[6] = c2;
+    tmpl.w[10] = c3;
+    tmpl.w[11] = c3;
+    tmpl.w[12] = c1;
+    tmpl.w[13] = c1;
     list = fn_80131810(lbl_8033FBE8 + 0x64, 0xff2dc82d, 0xffd6003c);
     if (list != 0) {
-        for (i = 0; (entry = fn_80131818(list)) != 0; i++) {
-            (void)i;
+        for (i = 0; (entry = (v = *(void***)list, ((void* (*)(void*, int))v[3])(list, i))) != 0; i++) {
             v = *(void***)entry;
             if (stricmp(((char* (*)(void*))v[2])(entry), lbl_8055B8C4) != 0) {
                 continue;
@@ -483,9 +489,9 @@ void fn_8022C520(void) {
             }
             work = tmpl;
             v = *(void***)entry;
-            work.w[1] = ((int (*)(void*, const char*, int))v[6])(entry, lbl_8033FBE8 + 0xf0, work.w[1]);
+            work.w[0] = ((int (*)(void*, const char*, int))v[6])(entry, lbl_8033FBE8 + 0xf0, work.w[0]);
             v = *(void***)entry;
-            *(float*)&work.w[2] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0xfc, *(float*)&work.w[2]);
+            *(float*)&work.w[1] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0xfc, *(float*)&work.w[1]);
             flag1 = 1;
             v = *(void***)entry;
             if (((int (*)(void*, const char*))v[3])(entry, lbl_8033FBE8 + 0x108) != 0) {
@@ -518,7 +524,7 @@ void fn_8022C520(void) {
                     fn_802E30C8(lbl_8033FBE8 + 0x174, s);
                 }
             }
-            work.w[3] = flag1 | flag2;
+            work.w[2] = flag1 | flag2;
             v = *(void***)entry;
             fn_8022CDE4((int*)&work.w[3], ((void* (*)(void*, const char*))v[23])(entry, lbl_8055B8F8));
             v = *(void***)entry;
@@ -529,16 +535,16 @@ void fn_8022C520(void) {
                 work.w[17] = (int)((char* (*)(void*, const char*))v[5])(entry, lbl_8055B900);
             }
             v = *(void***)entry;
-            work.w[18] = ((int (*)(void*, const char*, int))v[8])(entry, lbl_8055B908, work.w[18]);
+            work.w[21] = ((int (*)(void*, const char*, int))v[8])(entry, lbl_8055B908, work.w[21]);
             v = *(void***)entry;
-            work.w[20] = ((int (*)(void*, const char*, int))v[8])(entry, lbl_8055B910, work.w[20]);
+            work.w[18] = ((int (*)(void*, const char*, int))v[8])(entry, lbl_8055B910, work.w[18]);
             v = *(void***)entry;
             *(float*)&work.w[19] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0x1a8, *(float*)&work.w[19]);
             v = *(void***)entry;
-            *(float*)&work.w[21] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0x1b4, *(float*)&work.w[21]);
+            *(float*)&work.w[20] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0x1b4, *(float*)&work.w[20]);
             ((void (*)(int, void*))fn_8022A858)(value, &work);
         }
-        fn_80131820(list);
+        fn_80131818(list);
     }
 }
 
@@ -555,9 +561,11 @@ loop:
 }
 
 float fn_8022CA40(void *arg0) {
-    float value = *(float *)((char *)arg0 + 0x34);
-    if (value < lbl_80563588) return lbl_80563588;
-    return value / fn_80232B70(*(int *)((char *)arg0 + 8));
+    if (*(float *)((char *)arg0 + 0x34) < lbl_80563588) {
+        return lbl_80563588;
+    }
+    return *(float *)((char *)arg0 + 0x34) /
+        (float)fn_80232B70(*(int *)((char *)arg0 + 8));
 }
 
 extern double lbl_80563590;
