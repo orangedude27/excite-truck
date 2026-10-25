@@ -6,7 +6,9 @@ extern int fn_801B2C70(void *);
 extern int fn_801284F8(int, const char *);
 extern void fn_801AFA64(int *);
 extern const char lbl_803359A0[];
+#pragma small_data off
 extern float lbl_80558DC4;
+#pragma small_data on
 extern float lbl_8055E630;
 extern float lbl_8056255C;
 extern float lbl_80562560;
@@ -61,9 +63,13 @@ extern float lbl_8056255C;
 extern void fn_801AE874(unsigned short *, int);
 extern void fn_801AE894(void *);
 extern int fn_801EA994(void);
+extern double __fabs(double);
 int fn_801AEA64(float arg0, float arg1) {
     float diff = arg0 - arg1;
-    if (__fabsf(diff) <= lbl_80558DC4) return 0;
+    float magnitude = (float)__fabs((double)diff);
+    float *threshold = (float *)(((unsigned int)&lbl_80558DC4 & 0xFFFF0000) |
+                                ((unsigned int)&lbl_80558DC4 & 0x0000FFFF));
+    if (magnitude <= *threshold) return 0;
     if (arg1 < arg0) return 1;
     return -1;
 }
