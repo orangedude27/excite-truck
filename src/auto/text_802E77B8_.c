@@ -52,6 +52,8 @@ float fn_802E7824(float arg0, float arg1) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 float fn_802E78A4(float arg0) {
     float a = fn_802E7824(lbl_80565174 + arg0, lbl_80565178);
     float b = fn_802E7824(arg0 - lbl_80565174, lbl_80565178);
@@ -59,7 +61,7 @@ float fn_802E78A4(float arg0) {
     float f = v * __fabs(v) - v;
     return v + lbl_80565164 * f;
 }
-
+#pragma pop
 void fn_802E7920(int arg0) {
     extern int WPADControlMotor(int, int);
     extern int fn_802D9BF0(void);
@@ -170,7 +172,7 @@ extern int WPADSetSamplingCallback(int, int);
 extern int fn_8006022C(int);
 extern int fn_8005ED8C(void);
 extern int fn_8005EE7C(void);
-extern int fn_802E30C8(int *);
+extern int fn_802E30C8();
 extern int lbl_8034D908, lbl_8034D8E8;
 extern int lbl_80507268[], lbl_80507258[], lbl_8056000C;
 void fn_802E7D0C(void) {
@@ -456,18 +458,21 @@ extern unsigned char lbl_80505978[];
 void fn_802E8524(void) {}
 
 void fn_802E8528(int index, float value, float unused) {
+    extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
+    extern unsigned char lbl_80505978[];
     float scaled = (value - lbl_80565198) * lbl_8056519C;
     float rounded;
     int converted;
     int magnitude;
-    unsigned short result = 0xFFFF;
+    int result = 0xFFFF;
+
     if (scaled < lbl_80565164)
         rounded = scaled - lbl_80565170;
     else
         rounded = lbl_80565170 + scaled;
     converted = (int)rounded;
     magnitude = converted & ((-converted & ~converted) >> 31);
-    if (magnitude < 0xFFFF)
+    if (magnitude < result)
         result = magnitude;
     *(unsigned short *)(lbl_80505978 + index * 0x638 + 0xB0) = result;
 }
