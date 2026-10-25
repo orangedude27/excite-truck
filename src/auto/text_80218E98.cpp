@@ -1031,9 +1031,12 @@ extern "C" void fn_8021B134(void *arg0) {
 
 #pragma dont_inline on
 extern "C" void *fn_8021B1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    void *vtable;
+
     fn_8021AC24(arg0, arg1, arg2, arg5, arg4);
+    vtable = lbl_8033F548;
     *(s32 *)((u8 *)arg0 + 0x254) = arg4;
-    *(void **)arg0 = (void *)&lbl_8033F548;
+    *(void **)arg0 = vtable;
     *(s32 *)((u8 *)arg0 + 0x258) = arg3;
     return arg0;
 }
