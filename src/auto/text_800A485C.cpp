@@ -16570,8 +16570,8 @@ extern "C" s32 fn_800A5788(void *arg0, s32 arg1) {
     }
 }
 #pragma dont_inline reset
-extern "C" s32 fn_800A5800(void *arg0) {
-    s32 result = fn_800A7338(*(void **)((u8 *)arg0 + 0x1FBC));
+extern "C" s32 fn_800A5800(void *arg0, s32 arg1) {
+    s32 result = fn_800A7338(*(void **)((u8 *)arg0 + 0x1FBC), arg1);
     switch (result) {
     case 0:
         break;
