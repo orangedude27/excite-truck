@@ -204,18 +204,26 @@ long fn_801E866C(long arg0) {
     return *(long *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x64);
 }
 
+#pragma scheduling invalid_target
 long fn_801E868C(long arg0, unsigned long *arg1, unsigned long *arg2) {
-    char *entry = (char *)lbl_8055EB04 + arg0 * 0xE0;
-    unsigned long id = *(unsigned long *)(entry + 0x70);
-    if (id != lbl_80487CE0[arg0]) {
-        lbl_80487CE0[arg0] = id;
-        *arg1 = *(unsigned long *)(entry + 0x74) >> 16;
-        if (arg2 != 0) *arg2 = *(unsigned long *)(entry + 0x74) & 0xFFFF;
+    volatile unsigned long *entry;
+    volatile unsigned long *cache;
+    unsigned long id;
+
+    entry = (volatile unsigned long *)((char *)lbl_8055EB04 + arg0 * 0xE0);
+    cache = (volatile unsigned long *)lbl_80487CE0;
+    id = entry[0x70 / 4];
+    if (id != cache[arg0]) {
+        cache[arg0] = id;
+        *arg1 = entry[0x74 / 4] >> 16;
+        if (arg2 != 0) {
+            *arg2 = entry[0x74 / 4] & 0xFFFF;
+        }
         return 1;
     }
     return 0;
 }
-
+#pragma scheduling on
 void fn_801E86E8(long arg0, long arg1) {
     if (arg1 < 0) arg1 = (long)lbl_8055AF0C;
     fn_8026A248(arg0, arg1);
@@ -237,10 +245,10 @@ float fn_801E8738(long arg0) {
     return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x34);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling off
 long fn_801E8758(long arg0) {
-    register unsigned char *entry;
-    register long value;
+    unsigned char *entry;
+    long value;
     long result;
 
     if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
@@ -416,6 +424,7 @@ void fn_801E8D48(void) {
     fn_801E87D4(0);
 }
 
+#pragma scheduling invalid_target
 void fn_801E8DD4(void) {
     long spC;
     long sp8;
@@ -425,7 +434,7 @@ void fn_801E8DD4(void) {
     if (((int (*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4) != 0) fn_801EAD6C(&sp8);
     ((void (*)(void))fn_801E87D4)();
 }
-
+#pragma scheduling on
 void fn_801E8E38(void) {
     float sp1C;
     float sp18;
