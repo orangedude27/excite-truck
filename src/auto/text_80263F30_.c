@@ -34,7 +34,7 @@ void fn_802640A0(void *arg0) {
 }
 #pragma scheduling invalid_target
 void fn_802643B8(void *arg0) {
-    *(void **)arg0 = lbl_8055C458;
+    *(void **)arg0 = &lbl_8055C458;
     fn_80264098(arg0, 8);
     *(void (**)(void))((char *)arg0 + 8) = fn_80236914;
     *(int *)((char *)arg0 + 0xc) = 2;
