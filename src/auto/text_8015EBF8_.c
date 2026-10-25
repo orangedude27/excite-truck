@@ -32,10 +32,16 @@ void fn_8015EC50(unsigned short *arg0, void *arg1) {
 }
 
 int fn_8015ECC0(void *arg0) {
-    int result = 0;
-    int test = 0;
-    if (((int *)arg0)[8] < 1000 && ((unsigned int *)arg0)[6] == 0x54554245) test = 1;
-    if (test && (float)fabs(((float *)((void **)arg0)[3])[7]) > lbl_805617D0) result = 1;
+    register int result = 0;
+    register int test = 0;
+    if (((int *)arg0)[8] < 1000 && ((unsigned int *)arg0)[6] == 0x54554245) {
+        test = 1;
+    }
+    if (test != 0) {
+        if ((float)fabs(((float *)((void **)arg0)[3])[7]) > lbl_805617D0) {
+            result = test;
+        }
+    }
     return result;
 }
 
@@ -64,12 +70,21 @@ extern "C" int fn_8015ED54(void **node) {
 #pragma cplusplus reset
 #pragma pop
 int fn_8015ED90(void **arg0) {
+    struct VTable {
+        unsigned char pad00[0x60];
+        void **(*get_child)(void *, int);
+    };
+    struct Object {
+        struct VTable *vtable;
+    };
     int count = 0;
     int i;
     void **child;
+    struct Object *object = (struct Object *)arg0;
     if (arg0 != 0) {
-        for (i = 0; (child = ((void **(*)(void *, int))((void **)*arg0)[0x18])(arg0, i)) != 0; i++) {
-            if (fn_8015ED18(child)) count++;
+        for (i = 0; (child = object->vtable->get_child(arg0, i)) != 0; i++) {
+            if (fn_8015ED18(child))
+                count++;
         }
     }
     return count;
@@ -341,6 +356,7 @@ s32 fn_8015FA44(void *arg0, s32 arg1, f32 arg2) {
     return result;
 }
 
+#pragma scheduling invalid_target
 s32 fn_8015FAB8(s32 *arg0, s32 arg1, f32 arg2) {
     s32 result = -1;
     s32 i;
@@ -353,7 +369,7 @@ s32 fn_8015FAB8(s32 *arg0, s32 arg1, f32 arg2) {
     }
     return result;
 }
-
+#pragma scheduling reset
 extern f32 lbl_80561810;
 void fn_8015FB28(void *arg0, void *arg1) {
     s32 *dst = (s32 *)arg0;
@@ -432,18 +448,79 @@ s32 fn_801602CC(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+extern float fn_80160588(void *, void *, void *);
+extern float fn_801605C8(void *, void *, void *);
+extern float lbl_8055E2A4, lbl_805617D4, lbl_805617DC, lbl_805617E8, lbl_80561800, lbl_80561828;
+void fn_801602D4(struct Hit *arg0, void *arg1, void *arg2, float arg3) {
+    float dist, pos, height, low, high, t;
+    s16 type;
+    int first, last, i;
+    dist = fn_80160588(arg2, (char *)arg1 + 4, (char *)arg2 + 0x10) - *(float *)((char *)arg1 + 0xC);
+    if (dist > lbl_805617D4 && dist < arg3) {
+        pos = fn_801605C8(arg2, (char *)arg1 + 4, (char *)arg2 + 0x10);
+        height = *(float *)((char *)arg1 + 0xC);
+        low = -lbl_80561800 * lbl_805617DC;
+        if (pos + height > low) {
+            high = lbl_80561800 * lbl_805617DC;
+            if (pos - height < high) {
+                type = *(s16 *)((char *)arg1 + 2);
+                first = last = 0;
+                switch (type) {
+                case 0:
+                    t = (pos - height - low) / (high - low);
+                    if (t < lbl_805617E8) t = lbl_805617E8;
+                    if (t > lbl_805617D4) t = lbl_805617D4;
+                    first = (int)(lbl_805617D4 + t * lbl_80561828);
+                    t = (lbl_8055E2A4 + pos + height - low) / (high - low);
+                    if (t < lbl_805617E8) t = lbl_805617E8;
+                    if (t > lbl_805617D4) t = lbl_805617D4;
+                    last = (int)(lbl_805617D4 + t * lbl_80561828);
+                    break;
+                case 2:
+                    t = (pos + lbl_8055E2A4 - low) / (high - low);
+                    if (t < lbl_805617E8) t = lbl_805617E8;
+                    if (t > lbl_805617D4) t = lbl_805617D4;
+                    last = (int)(lbl_805617D4 + t * lbl_80561828);
+                    break;
+                case 1:
+                    t = (pos - low) / (high - low);
+                    if (t < lbl_805617E8) t = lbl_805617E8;
+                    if (t > lbl_805617D4) t = lbl_805617D4;
+                    first = (int)(lbl_805617D4 + t * lbl_80561828);
+                    last = 0x40;
+                    break;
+                default:
+                    break;
+                }
+                for (i = first; i < last; i++) {
+                    if (dist < arg0[i].x) {
+                        arg0[i].x = dist;
+                        arg0[i].y = type;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#pragma scheduling invalid_target
 f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 spC;
     f32 sp8;
     f32 temp_f2;
     f32 temp_f3;
+    f32 result1;
+    f32 result2;
+
     temp_f3 = *(f32 *)arg1 - *(f32 *)arg2;
     temp_f2 = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
-    sp8 = temp_f3;
-    spC = temp_f2;
-    return (*(f32 *)((u8 *)arg0 + 4) * temp_f3) + (-*(f32 *)arg0 * temp_f2);
+    result1 = temp_f3 * *(f32 *)((u8 *)arg0 + 4);
+    *(volatile f32 *)&sp8 = temp_f3;
+    result2 = temp_f2 * -*(f32 *)arg0;
+    *(volatile f32 *)&spC = temp_f2;
+    return result1 + result2;
 }
-
+#pragma scheduling on
 void fn_801606B8(void) {
 }
 
