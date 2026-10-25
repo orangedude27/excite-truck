@@ -11,7 +11,7 @@ struct QueryObject_80292114 {
 };
 #pragma cplusplus reset
 
-extern int lbl_804B4010;
+extern char lbl_804B4010[];
 extern unsigned char lbl_8055F75C;
 extern float fn_801EC114(void);
 extern float fn_80291784(float, float, float, float);
