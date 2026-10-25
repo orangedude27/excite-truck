@@ -2813,6 +2813,7 @@ void GXSetProjectionv(float *arg0) {
  d[0x5fc/4]|=0x08000000;
 }
 
+/* Assign through the register's low-six-bit field to match rlwimi directly. */
 void GXSetCurrentMtx(s32 arg0) {
     struct {
         unsigned int unused : 26;
