@@ -785,6 +785,16 @@ extern "C" void fn_8014145C(void *arg0) {
     }
 }
 
+extern "C" char lbl_8032CAA0[];
+extern "C" char lbl_8032CAB0[];
+extern "C" void *fn_802CAC28(const char *, s32);
+extern "C" void *fn_801414A4(void *arg0) {
+    void **fields = (void **)arg0;
+    fields[0] = fn_802CAC28(lbl_8032CAA0, 0);
+    fields[1] = fn_802CAC28(lbl_8032CAB0, 0);
+    return arg0;
+}
+
 extern "C" void fn_802A96E8(s32, s32, s32, s32, s32, void *);
 extern "C" void fn_80141558(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_802A96E8(arg1, arg2, arg3, *(s32 *)((char *)arg0 + 0), *(s32 *)((char *)arg0 + 4), arg0);
