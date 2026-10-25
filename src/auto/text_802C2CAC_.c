@@ -19,6 +19,8 @@ void fn_802C5024(s32, s32, s32, s32);
 extern void fn_8012C4D8(void);
 
 extern s32 lbl_8055FC00;
+extern void fn_802C3754(s32, s32, s32, s32, s32, s32, s32, s32);
+extern void fn_802DB2C8(void);
 s32 fn_802C2CAC(s32 arg0) {
     return (((arg0 << 9) & 0xF80000) | 0xFF000000 | ((arg0 << 6) & 0xF800)) | ((arg0 & 0x1F) << 3);
 }
