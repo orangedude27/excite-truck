@@ -10,6 +10,27 @@ void fn_80127C8C(void) {
 
 }
 
+void fn_80127C90(int arg0, int arg1) {
+    int *base = lbl_8041E098;
+    int count = base[1];
+    int value = count ^ 10;
+    int masked = value & 10;
+    int shifted = value >> 1;
+    unsigned int available = (unsigned int)(masked - shifted) >> 31;
+    char *entry;
+
+    if (available != 0) {
+        base[1] = count + 1;
+        entry = (char *)base + count * 16;
+        *(int *)(entry + 8) = arg0;
+        *(int *)(entry + 12) = 0;
+        *(int *)(entry + 16) = arg1;
+        entry[20] = 0;
+    }
+    if (available == 0)
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80329FA0);
+}
+
 void fn_80127CF4(void *arg0, void *arg1) {
     int count = lbl_8041E098[1];
     int value = count ^ 10;
@@ -35,7 +56,6 @@ extern char lbl_80329FE8[];
 extern char lbl_80329FC0[];
 extern char lbl_80329FA0[];
 extern void fn_802E30C8();
-extern void fn_802E317C();
 void fn_80127EF8(void) {
     int i;
     for (i = 0; i < lbl_8041E098[1]; i++)
