@@ -160,10 +160,13 @@ extern "C" void fn_8012A5E8(void *arg0) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8012A648(void) {
     void *p = fn_8012A570(0x18, &lbl_805599A0);
     fn_8012A364(lbl_8055E008, p);
 }
+#pragma pop
 #pragma dont_inline reset
 #pragma scheduling reset
 #pragma dont_inline on
