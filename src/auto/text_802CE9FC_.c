@@ -179,6 +179,10 @@ void fn_802CF5FC(void) {
 void fn_802CF830(void) {
 }
 
+int fn_802CF834(void) {
+    return lbl_804C9760[1] != 0;
+}
+
 extern void GXSetCopyClear(unsigned char *, int);
 extern void GXSetScissor(unsigned int, unsigned int, unsigned int, unsigned int);
 extern void GXSetPixelFmt(int, int);
