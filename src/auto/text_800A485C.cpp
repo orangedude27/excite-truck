@@ -4484,6 +4484,7 @@ extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *arg0) {
     return length;
 }
 
+#define fn_800A4B9C_CALL fn_800A4B9C
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
     u8 *out = (u8 *)arg0;
     u16 *src = arg1;
@@ -4492,9 +4493,9 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
     s16 underscore = 0x5F;
     if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
         while (*src != 0) {
-            if (fn_800A4B9C(src, (u16 *)&dot, 1) == 0) {
+            if (fn_800A4B9C_CALL(src, (u16 *)&dot, 1) == 0) {
                 *out = 0x2E;
-            } else if (fn_800A4B9C(src, (u16 *)&space, 1) == 0) {
+            } else if (fn_800A4B9C_CALL(src, (u16 *)&space, 1) == 0) {
                 *out = 0x20;
             } else {
                 *out = 0x5F;
@@ -5728,13 +5729,21 @@ extern "C" void fn_800B7E38(u8 arg0) {
         ((void (*)(u32))lbl_80405D00[1])((u32)arg0);
 }
 
+#pragma dont_inline on
 extern "C" s32 fn_800B7E5C(s8 arg0) {
- s32 temp_r3 = fn_800B76E8(arg0);
- if (temp_r3 == -1) return -1;
- if (temp_r3 == 1) return 1;
- return (s32)(-temp_r3 | temp_r3) >> 31;
+    s32 temp_r3 = fn_800B76E8(arg0);
+    s32 result;
+    if (temp_r3 == -1) {
+        result = -1;
+    } else if (temp_r3 == 1) {
+        result = 1;
+    } else {
+        temp_r3 = -temp_r3 | temp_r3;
+        result = temp_r3 >> 31;
+    }
+    return result;
 }
-
+#pragma dont_inline reset
 extern "C" const char lbl_8031B218[];
 extern "C" s32 fn_800B7FC4(s32 arg0) {
     if (arg0 == 0) {
