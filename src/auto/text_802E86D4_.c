@@ -24,7 +24,7 @@ extern char lbl_80560034;
 extern char lbl_8034DD78[];
 extern char lbl_8034DE94[];
 extern void fn_802E30C8(const char *, ...);
-extern void fn_802E8B34(const char *, ...);
+extern void fn_802E8B34(const char *);
 extern int fn_802E888C(int);
 extern char lbl_8034DB28[];
 extern void fn_802E86D4(void);
@@ -113,7 +113,7 @@ void fn_802E8B98(void) {
         fn_802E8B34((const char *)0);
         fn_802E8B34(lbl_8034DD78);
     } else {
-        fn_802E8B34(lbl_8034DE94);
+        fn_802E30C8(lbl_8034DE94);
     }
 }
 
@@ -246,17 +246,28 @@ extern int fn_802ECC10(void);
 extern int fn_802E888C(int);
 extern char lbl_8034E130[];
 extern char lbl_8034E108[];
+#pragma scheduling invalid_target
 void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
- char *dst=(char*)arg0+0xC; int i=0x100; const char *start=arg1;
- *(int*)((char*)arg0+8)=arg2; *(int*)((char*)arg0+4)=arg3;
- while(i>0) --i;
- dst[-1]=0;
- do { char c=*arg1++; *dst++=c; } while ((signed char)dst[-1]!=0);
- *(void**)((char*)arg0+0x198)=arg0;
- *(int*)((char*)arg0+0x258)=0; *(char*)((char*)arg0+0x250)=0; *(int*)((char*)arg0+0x254)=0; *(int*)arg0=2;
- fn_802E30C8(lbl_8034E130,arg3,start);
+    const char *original = arg1;
+    const char *src = arg1;
+    char *dst = (char *)arg0 + 0xC;
+    int count = 0x100;
+    *(int *)((char *)arg0 + 8) = arg2;
+    *(int *)((char *)arg0 + 4) = arg3;
+    while (count > 0) count--;
+    dst[-1] = count;
+    do {
+        char c = *src++;
+        *dst++ = c;
+    } while (dst[-1] != 0);
+    *(void **)((char *)arg0 + 0x198) = arg0;
+    *(int *)((char *)arg0 + 0x258) = 0;
+    *(char *)((char *)arg0 + 0x250) = 0;
+    *(int *)((char *)arg0 + 0x254) = 0;
+    *(int *)arg0 = 2;
+    fn_802E30C8(lbl_8034E130, arg3, original);
 }
-
+#pragma scheduling on
 extern void fn_802E95CC(int, void **);
 extern int NANDCreateAsync(const char *, unsigned char, unsigned char, void (*)(int, void **), void *);
 extern int NANDOpenAsync(const char *, void *, unsigned char, void (*)(int, void **), void *);
