@@ -308,7 +308,7 @@ extern void *lbl_8055E6D8;
 extern void fn_801B49C8(void *);
 extern char lbl_80335E48;
 extern void fn_802E317C(const char *, int);
-extern int __dt__15shdStateMachineFv_801B496C(int);
+extern int __dt__15shdStateMachineFv_801B496C();
 void fn_801B531C(void) {
     if (lbl_8055E6D8 != 0) {
         __dt__15shdStateMachineFv_801B496C(1);
