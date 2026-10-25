@@ -4,6 +4,17 @@
 #include "revolution/GX/GXTypes.h"
 #include "revolution/GX/GXAttr.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
+struct MaterialInitLayout {
+    u8 pad24[0x24];
+    s16 color[4];
+    s16 alpha[8];
+    u8 pad3c[0x10];
+    u32 cap4c;
+    u32 cap50;
+    u8 field54;
+    u8 pad55[3];
+    u32 field58;
+};
 namespace nw4hbm { namespace lyt {
 class ResourceAccessor;
 class Layout {
@@ -307,10 +318,9 @@ extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
     extern void memset(void*, int, unsigned int);
     extern void PSMTXIdentity(void*);
     u8* p = (u8*)arg0;
-    char* vtable = lbl_8031F618;
-    register f32 b = lbl_80560E7C;
-    register f32 a = lbl_80560E78;
-    *(char**)p = vtable;
+    f32 b = lbl_80560E7C;
+    f32 a = lbl_80560E78;
+    *(void**)p = lbl_8031F618;
     *(f32*)(p + 0x34) = a;
     *(f32*)(p + 0x38) = a;
     *(f32*)(p + 0x3C) = a;
