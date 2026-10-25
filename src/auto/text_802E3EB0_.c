@@ -262,11 +262,9 @@ int fn_802E461C(void *arg0) {
     return DVDGetCommandBlockStatus((char *)arg0 + 4) == 0;
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 int fn_802E4648(void *arg0) {
-    void *data;
-    data = arg0;
-    fn_802E317C(lbl_8034D198, (char *)data + 0x40);
+    fn_802E317C(lbl_8034D198, (char *)arg0 + 0x40);
     return -1;
 }
 #pragma scheduling on
