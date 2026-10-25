@@ -136,14 +136,13 @@ void fn_8020D224(void) {
     fn_80230E90(1);
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_8020D29C(void) {
-    lbl_8055EE94 = 0;
-    fn_80209190(lbl_8055EE74, lbl_8056331C);
+    fn_80209190((lbl_8055EE94 = 0, lbl_8055EE74), lbl_8056331C);
     fn_80206454();
     fn_801769EC();
 }
-
+#pragma dont_inline on
 void fn_8020DABC(void) {
     fn_8020C908(lbl_8055EE8C);
     fn_80209030(lbl_8055EE90);
@@ -151,8 +150,7 @@ void fn_8020DABC(void) {
     if (lbl_8055EE78 == 2 && ((int (*)(void))fn_8020CF68)() == 0)
         fn_8020D0CC(-1);
 }
-
-#pragma dont_inline on
+#pragma dont_inline reset
 int fn_8020DB0C(int arg0) {
     int var_r31 = 1;
 
