@@ -26,7 +26,7 @@ typedef struct {
     unsigned char padding_41[3];
 } Fn801F1B1CSource;
 
-extern int fn_801F17C8(int);
+extern void fn_801F17C8(int);
   void fn_801EFF4C(void* alarm) {
       fn_801F17C8(fn_801F0AA0(alarm));
   }
