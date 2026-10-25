@@ -226,7 +226,7 @@ void fn_802CF850(void) {
     extern void GXSetTevColorOp(int, int, int, int, int, int);
     extern void GXSetZCompLoc(int);
     extern void GXSetCopyClear(unsigned char *, int);
-    extern unsigned long fn_802CE9FC(unsigned long);
+    extern unsigned long fn_802CE9FC();
     extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
     extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
     extern void fn_802D007C(float);
