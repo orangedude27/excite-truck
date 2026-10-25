@@ -53,6 +53,7 @@ extern "C" void *fn_80208994(int, int, int, float);
 extern "C" void fn_802085E8(int, void *);
 extern char lbl_8033BD90;
 extern float lbl_805631FC;
+extern float lbl_80563200;
 extern float lbl_80563204;
 extern "C" int fn_8012A364(void*, void*);
 extern "C" int fn_801284F8(int, void*);
