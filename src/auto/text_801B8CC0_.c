@@ -1,5 +1,6 @@
 #include <revolution/MTX/mtxtypes.h>
 void fn_801836E0(void *, int);
+void fn_80128668(void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern float lbl_80562754;
 extern float lbl_80562758;
