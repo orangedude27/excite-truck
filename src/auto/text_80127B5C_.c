@@ -26,3 +26,8 @@ void fn_80127F70(void* alarm) {
     fn_80127B5C(fn_802E2C20(alarm));
 }
 
+void fn_80127F94(void) {
+    if (fn_802E2C20() - lbl_8055DF70 > 0x10)
+        fn_80127B5C();
+}
+
