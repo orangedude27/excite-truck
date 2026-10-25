@@ -18,6 +18,106 @@ extern "C" void fn_800FFE94(void* arg0) {
         *(void**)arg0 = 0;
 }
 
+extern "C" char lbl_803276F0[];
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *arg0, const void *arg1) {
+    register char *strings = lbl_803276F0;
+    register const unsigned char *file = (const unsigned char *)arg1;
+    register unsigned short version;
+    *(unsigned int *)arg0 = 0;
+    *(unsigned int *)((char *)arg0 + 4) = 0;
+    *(unsigned int *)((char *)arg0 + 8) = 0;
+    if (file == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x59, strings + 0xB4);
+    if (*(const unsigned int *)file != 0x52575344)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x37, strings + 0x10);
+    if (*(const unsigned int *)file != 0x52575344)
+        return arg0;
+    version = *(const unsigned short *)(file + 6);
+    if (version < 0x100)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x3F, strings + 0x5C);
+    version = *(const unsigned short *)(file + 6);
+    if (version < 0x100)
+        return arg0;
+    if (version > 0x102)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x45, strings + 0x5C);
+    if (version > 0x102)
+        return arg0;
+    *(const void **)arg0 = arg1;
+    *(void **)((char *)arg0 + 4) = (void *)(file + *(const unsigned int *)(file + 0x10));
+    if (**(const unsigned int **)((char *)arg0 + 4) != 0x44415441)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x62, strings + 0xE0);
+    *(void **)((char *)arg0 + 8) = (void *)(file + *(const unsigned int *)(file + 0x18));
+    if (**(const unsigned int **)((char *)arg0 + 8) != 0x57415645)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x66, strings + 0x138);
+    return arg0;
+}
+
+extern "C" void* GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void*);
+extern "C" float lbl_80561118;
+extern "C" char lbl_803278D8[];
+extern "C" char lbl_80327904[];
+extern "C" char lbl_80559918[];
+extern "C" char lbl_80559920[];
+extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(void* arg0, void* arg1, int arg2) {
+    register unsigned char* base = (unsigned char*)*(void**)((char*)arg0 + 4);
+    register unsigned char* data = base + 8;
+    unsigned char* entry = base + arg2 * 8;
+    unsigned char* ref;
+    unsigned char* wave;
+    if (entry[0xD] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559918, 0x6F, lbl_803278D8);
+    ref = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0xC], *(unsigned int*)(entry + 0x10), data);
+    if (ref[1] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559920, 0x6F, lbl_80327904);
+    wave = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(unsigned int*)(ref + 4), data);
+    if (*(unsigned short*)((char*)*(void**)arg0 + 6) == 0x102) {
+        *(float*)arg1 = *(float*)wave;
+        ((unsigned char*)arg1)[4] = wave[4]; ((unsigned char*)arg1)[5] = wave[5];
+        ((unsigned char*)arg1)[6] = wave[6]; ((unsigned char*)arg1)[7] = wave[7];
+        ((unsigned char*)arg1)[8] = wave[8]; ((unsigned char*)arg1)[9] = wave[9];
+    } else if (*(unsigned short*)((char*)*(void**)arg0 + 6) == 0x101) {
+        *(float*)arg1 = *(float*)wave;
+        ((unsigned char*)arg1)[4] = wave[4]; ((unsigned char*)arg1)[5] = wave[5];
+        ((unsigned char*)arg1)[6] = 0; ((unsigned char*)arg1)[7] = 0;
+        ((unsigned char*)arg1)[8] = 0; ((unsigned char*)arg1)[9] = 0x7F;
+    } else {
+        *(float*)arg1 = lbl_80561118;
+        ((unsigned char*)arg1)[4] = 0x40; ((unsigned char*)arg1)[5] = 0;
+        ((unsigned char*)arg1)[6] = 0; ((unsigned char*)arg1)[7] = 0;
+        ((unsigned char*)arg1)[8] = 0; ((unsigned char*)arg1)[9] = 0x7F;
+    }
+    return 1;
+}
+
+extern "C" char lbl_80327880[], lbl_803278AC[], lbl_803278D8[], lbl_80559908[], lbl_80559910[], lbl_80559918[];
+extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(void* arg0, void* arg1, int arg2, int arg3) {
+    unsigned char* base = (unsigned char*)*(void**)((char*)arg0 + 4);
+    unsigned char* data = base + 8;
+    unsigned char* entry = base + arg2 * 8;
+    unsigned char* ref;
+    unsigned char* note;
+    unsigned char* wave;
+    unsigned char* voice;
+    unsigned int index = arg3 * 8;
+    if (entry[0xD] != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559918, 0x6F, lbl_803278D8);
+    ref = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0xC], *(unsigned int*)(entry + 0x10), data);
+    if (ref[0x11] != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559908, 0x6F, lbl_80327880);
+    note = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0x10], *(unsigned int*)(ref + 0x14), data);
+    if (note[index + 5] != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559910, 0x6F, lbl_803278AC);
+    voice = note + index;
+    wave = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(voice[4], *(unsigned int*)(voice + 8), data);
+    *(unsigned int*)arg1 = *(unsigned int*)wave;
+    ((unsigned char*)arg1)[4]=wave[4]; ((unsigned char*)arg1)[5]=wave[5]; ((unsigned char*)arg1)[6]=wave[6]; ((unsigned char*)arg1)[7]=wave[7];
+    ((unsigned char*)arg1)[8]=wave[0xC]; ((unsigned char*)arg1)[0xB]=wave[0xD];
+    if (*(unsigned short*)((char*)*(void**)arg0+6) >= 0x101) {
+        ((unsigned char*)arg1)[9]=wave[0xE]; ((unsigned char*)arg1)[0xA]=wave[0xF]; *(float*)((char*)arg1+0xC)=*(float*)(wave+0x10);
+    } else {
+        ((unsigned char*)arg1)[9]=0x40; ((unsigned char*)arg1)[0xA]=0; *(float*)((char*)arg1+0xC)=lbl_80561118;
+    }
+    return 1;
+}
+
 extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(void* arg0, unsigned int arg1, void* arg2, const void* arg3) {
     unsigned char sp8[8];
     register void* header = *(void**)arg0;
@@ -118,6 +218,14 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9WsdPlayerFv(void* arg0) {
     OSRestoreInterrupts(level);
     Close__Q46nw4hbm3snd6detail8WsdTrackFv((char*)arg0 + 0x9C);
     *((unsigned char*)arg0 + 0x1D) = 0;
+}
+
+extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *, unsigned char);
+extern "C" void Pause__Q46nw4hbm3snd6detail9WsdPlayerFb(void *arg0, unsigned char arg1) {
+    int enabled = OSDisableInterrupts();
+    *(unsigned char *)((char *)arg0 + 0x20) = arg1;
+    PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb((char *)arg0 + 0x9C, arg1);
+    OSRestoreInterrupts(enabled);
 }
 
 extern "C" void fn_80100908(void* arg0, float arg1) {
