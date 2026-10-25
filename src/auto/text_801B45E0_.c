@@ -307,7 +307,7 @@ void fn_801B52CC(void) {
     fn_802E30C8((int *)&lbl_80335E10);
     result = fn_801284F8(0x2C, (int *)&lbl_80335E28);
     if (result != 0) {
-        result = fn_801B4904();
+        result = fn_801B4904(result);
     }
     lbl_8055E6D8 = (void *)result;
 }
