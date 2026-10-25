@@ -206,8 +206,8 @@ void fn_801DCDA4(void) {
     fn_801D049C();
 }
 
-void fn_801DCE0C(int arg0) {
-    fn_801DCD28(arg0);
+void fn_801DCE0C(void) {
+    ((void (*)(void))fn_801DCD28)();
 }
 
 void fn_801DCE10(void) {
