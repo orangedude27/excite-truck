@@ -94,12 +94,15 @@ s32 fn_8001BA90(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return arg4;
 }
 
-void fn_8001BB0C(s32 arg0, s32 arg1, volatile s32 arg2, volatile s32 arg3) {
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
+void fn_8001BB0C(s32 arg0, s32 arg1, s32 arg2) {
     s32 saved2 = arg2;
-    s32 saved3 = arg3;
-    fn_8001CE34(arg0, fn_8001D25C(arg1), saved2, saved3);
+    s32 saved0 = arg0;
+    ((void (*)(s32, s32, s32))fn_8001CE34)(saved0, fn_8001D25C(arg1), saved2);
 }
-
+#pragma pop
 void fn_8001BB58(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     volatile register s32 a = arg3;
     volatile register s32 b = arg2;
