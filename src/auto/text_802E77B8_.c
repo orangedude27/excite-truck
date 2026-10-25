@@ -225,7 +225,7 @@ extern int fn_802ECC10(void);
 extern void fn_802EC884(void);
 extern void fn_802ECBF8(void);
 extern void fn_802E2E38(int);
-extern void fn_802E7C14(void);
+extern void fn_802E7C14(int);
 extern void *memset(void *, int, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
