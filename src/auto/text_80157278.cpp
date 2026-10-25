@@ -190,28 +190,53 @@ public:
       virtual void v6(s32);
   };
   
-  class Unk8015E9A4V {
+  class Unk8015E9A4Base {
   public:
-      virtual void v0(s32);
-      virtual void v1(s32);
-      virtual void v2(s32);
-      virtual void v3(s32);
-      virtual void v4(s32);
-      virtual void v5(s32);
-      virtual void v6(s32);
-      virtual void v7(s32);
-      virtual void v8(s32);
-      virtual void v9(s32);
-      virtual void v10(s32);
-      virtual void v11(s32);
-      virtual void v12(s32);
-      virtual void v13(s32);
-      virtual void v14(s32);
+      virtual void b0(s32);
+      virtual void b1(s32);
+      virtual void b2(s32);
+      virtual void b3(s32);
+      virtual void b4(s32);
+      virtual void b5(s32);
+      virtual void b6(s32);
+      virtual void b7(s32);
+      virtual void b8(s32);
+      virtual void b9(s32);
+      virtual void b10(s32);
+      virtual void b11(s32);
+      virtual void b12(s32);
+      virtual void b13(s32);
+      virtual void b14(s32);
+      virtual void b15(s32);
+      virtual void b16(s32);
+      virtual void b17(s32);
+      virtual void b18(s32);
+      virtual void b19(s32);
+      virtual void b20(s32);
+      virtual void b21(s32);
+      virtual void b22(s32);
+      virtual void b23(s32);
+      virtual void b24(s32);
+      virtual void b25(s32);
+      virtual void b26(s32);
+      virtual void b27(s32);
+      virtual void b28(s32);
+      virtual void b29(s32);
+      virtual void b30(s32);
+      virtual void b31(s32);
+      virtual void b32(s32);
+      virtual void b33(s32);
+      virtual void b34(s32);
+      virtual void b35(s32);
+      virtual void b36(s32);
+      virtual void b37(s32);
+      virtual void b38(s32);
+      virtual void b39(s32);
+      virtual void b40(s32);
+  };
+  class Unk8015E9A4V : public Unk8015E9A4Base {
+  public:
       virtual void v15(s32);
-      virtual void v16(s32);
-      virtual void v17(s32);
-      virtual void v18(s32);
-      virtual void v19(s32);
   };
 
 class Unk801584D4 {
@@ -2652,12 +2677,11 @@ extern "C" void fn_8015E9A4(void *arg0, s32 arg1) {
     s32 var_r30 = 0;
     while (var_r30 < *(s32 *)((char *)arg0 + 8)) {
         Unk8015E9A4V *obj = *(Unk8015E9A4V **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
-        obj->v12(arg1);
+        obj->v15(arg1);
         var_r31 += 4;
         var_r30 += 1;
     }
 }
-#pragma scheduling invalid_target
 extern "C" void fn_8015EA24(void *arg0, s32 arg1) {
     s32 var_r31 = 0;
     s32 var_r30 = 0;
