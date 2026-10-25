@@ -50,12 +50,12 @@ void fn_80207960(void) {
 }
 
 signed long fn_80207964(signed long arg0) {
-    if (arg0 != 0) {
-        goto nonzero;
+    switch (arg0) {
+    case 0:
+        return 1;
+    default:
+        return 0;
     }
-    return 1;
-nonzero:
-    return 0;
 }
 
 void fn_80207980(void* arg0) {
