@@ -631,7 +631,7 @@ void fn_801AD5F0(void) {
 extern void fn_801D0A24(void *, void *);
 extern void fn_801AC0A0(void *, float *, float *, int, int);
 extern void fn_801D09A8(void *, int);
-extern void fn_801A9AB0(void);
+extern void fn_801A9AB0(void *, void *);
 extern void fn_801D08C0(void *);
 extern void fn_801D0934(void *);
 void *fn_801AD6B0(void *arg0, int arg1) {
