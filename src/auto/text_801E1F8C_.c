@@ -63,6 +63,7 @@ void fn_801E2084(void *arg0, void *arg1) {
     }
 }
 #pragma scheduling on
+#pragma dont_inline fn_801E2100
 void fn_801E2100(void *arg0, void *arg1) {
     int result;
     int (*first)(int);
@@ -117,14 +118,16 @@ void fn_801E2294(void) {
 
 extern double __fabs(double);
 #pragma scheduling invalid_target
+#pragma dont_inline fn_801E2100
 s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, void **arg5, void **arg6, s32 arg7, s32 (*arg_sp8)(s32)) {
-    f32 delta[3], normal[3], dot, mag, scale, clampMag;
+    f32 delta[3], normal[3], mag, scale, clampMag;
+    E2640Scratch scratch;
     f32 diffX, diffY, targetY, targetZ;
     E2640Query query;
     f32 rangeScale;
     void *hits[5];
     void *lists[2];
-    s32 found, count, finalResult, i, j;
+    s32 found, finalResult, i, j;
     targetY = arg1[1];
     diffX = arg1[0] - arg0[0];
     targetZ = arg1[2];
@@ -139,13 +142,13 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
     normal[0] = delta[0] * scale;
     normal[1] = delta[1] * scale;
     normal[2] = delta[2] * scale;
-    dot = PSVECDotProduct((Vec *)normal, (Vec *)delta);
+    scratch.dot = PSVECDotProduct((Vec *)normal, (Vec *)delta);
     found = 0;
     *arg5 = 0;
-    if ((f32)__fabs((f64)dot) > lbl_80562CE4) {
-        count = 5;
-        fn_801B619C(hits, &count, arg0);
-        for (i = 0; i < count; i++) {
+    if ((f32)__fabs((f64)scratch.dot) > lbl_80562CE4) {
+        scratch.count = 5;
+        fn_801B619C(hits, &scratch.count, arg0);
+        for (i = 0; i < scratch.count; i++) {
             void **node = *(void ***)hits[i];
             while (node != 0) {
                 void *obj = *node;
@@ -159,7 +162,7 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                         value = *(s32 *)((char *)item + 0x20);
                         if ((!arg_sp8 || arg_sp8(value)) &&
                             (*(s32 (**)(void *, void *, f32 *, f32 *, s32))(*(void ***)item + 6))
-                            (item, arg0, normal, &dot, arg3)) {
+                            (item, arg0, normal, &scratch.dot, arg3)) {
                             *arg4 = value;
                             found = 1;
                             *arg5 = obj;
@@ -179,7 +182,7 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
         query.direction.x = normal[0];
         query.direction.y = normal[1];
         query.direction.z = normal[2];
-        query.dot = &dot;
+        query.dot = &scratch.dot;
         query.found = found;
         query.filter = arg_sp8;
         for (i = 0; i < 2; i++) {
@@ -194,7 +197,6 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                 for (;;) {
                     u16 *range = (u16 *)((char *)*(void **)((char *)mesh + 0x10) + index * 8);
                     s32 k, midX, midZ;
-                    u16 child;
                     for (k = range[0]; k < range[1]; k++) {
                         u16 tri = *(u16 *)((char *)*(void **)((char *)mesh + 0x0C) + k * 2);
                         void *obj = *(void **)((char *)*(void **)((char *)mesh + 4) + tri * 4);
@@ -203,20 +205,19 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                     }
                     if (range[2] == 0) break;
                     {
-                        child = range[2];
+                        index = range[2];
                         midX = (minX + maxX) >> 1;
                         midZ = (minZ + maxZ) >> 1;
                         if (z <= midZ) {
                             maxZ = midZ;
                             if (x <= midX) maxX = midX;
-                            else { minX = midX; child++; }
+                            else { minX = midX; index++; }
                         } else {
                             minZ = midZ;
-                            if (x <= midX) { maxX = midX; child += 2; }
-                            else { minX = midX; child += 3; }
+                            if (x <= midX) { maxX = midX; index += 2; }
+                            else { minX = midX; index += 3; }
                         }
                     }
-                    index = child;
                 }
             }
         }
@@ -237,7 +238,7 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                     value = *(s32 *)((char *)item + 0x20);
                     if ((!arg_sp8 || arg_sp8(value)) &&
                         (*(s32 (**)(void *, void *, f32 *, f32 *, s32))(*(void ***)item + 6))
-                        (item, arg0, normal, &dot, arg3)) {
+                        (item, arg0, normal, &scratch.dot, arg3)) {
                         *arg4 = value;
                         found = 1;
                         *arg5 = obj;
@@ -258,7 +259,7 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                     if (*(u8 *)((char *)item + 0x40)) {
                         void *hit = *(void **)((char *)item + 0x3C);
                         if ((*(s32 (**)(void *, void *, f32 *, f32 *, s32))(*(void ***)hit + 6))
-                            (hit, arg0, normal, &dot, arg3)) {
+                            (hit, arg0, normal, &scratch.dot, arg3)) {
                             found = 1;
                             *arg4 = *(s32 *)((char *)hit + 0x20);
                             *arg5 = 0;
@@ -268,15 +269,15 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
             }
         }
     }
-    if (fn_801A4E88(arg0, normal, &dot, arg3, &finalResult)) {
+    if (fn_801A4E88(arg0, normal, &scratch.dot, arg3, &finalResult)) {
         found = 1;
         *arg4 = finalResult;
         *arg5 = 0;
     }
     if (found) {
-        arg2[0] = arg0[0] + normal[0] * dot;
-        arg2[1] = arg0[1] + normal[1] * dot;
-        arg2[2] = arg0[2] + normal[2] * dot;
+        arg2[0] = arg0[0] + normal[0] * scratch.dot;
+        arg2[1] = arg0[1] + normal[1] * scratch.dot;
+        arg2[2] = arg0[2] + normal[2] * scratch.dot;
     }
     return found;
 }
