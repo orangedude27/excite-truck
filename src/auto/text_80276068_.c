@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int lbl_8055F598, lbl_8055F59C, lbl_8055F5A0;
-extern unsigned char lbl_8049FD58;
+__declspec(section ".data") extern unsigned char lbl_8049FD58[];
 extern float lbl_8055E3C8, lbl_80564054, lbl_80564060;
 extern float lbl_8049FD58_float_dummy;
 extern void *fn_80276A44(void);
@@ -143,7 +143,6 @@ extern float lbl_802FA818[];
 extern float lbl_80564064, lbl_80564068, lbl_8056406C;
   u32 fn_8027656C(void *, void *, u32);
   extern u8 lbl_8049FE98[];
-__declspec(section ".data") extern u8 lbl_8049FD58;
 void fn_80276BE4(u32 *arg0, f32 *arg1) {
     u32 *src;
     if (*(unsigned char *)&lbl_8049FD58 != 0) {
