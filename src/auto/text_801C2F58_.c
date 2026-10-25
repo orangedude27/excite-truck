@@ -18,6 +18,8 @@ extern void fn_801C84E0(void);
 extern void fn_801C8500(void);
 #include <internal/printf.h>
 #include <revolution/MTX/vec.h>
+extern Vec lbl_80438498;
+extern char lbl_8055AA44[4];
 
 extern char lbl_8055E839;
 extern s32 lbl_8055E828;
@@ -1966,6 +1968,18 @@ void fn_801C95EC(f32 arg0) {
     lbl_8055E820 = arg0;
     lbl_8055E824 = arg0;
     fn_801C957C(1);
+}
+
+s32 fn_801C968C(s32 delta) {
+    s32 updated = lbl_8055E820 + delta;
+    lbl_8055E820 = updated;
+    if (updated < 0) {
+        lbl_8055E820 = *(s32*)((u8*)lbl_8055E86C + lbl_8055E81C * 0x10 + 8) - 1;
+        return;
+    }
+    if (updated >= *(s32*)((u8*)lbl_8055E86C + lbl_8055E81C * 0x10 + 8)) {
+        lbl_8055E820 = 0;
+    }
 }
 
 void fn_801C96E4(void) {
