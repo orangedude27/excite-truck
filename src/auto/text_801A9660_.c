@@ -1515,7 +1515,7 @@ void fn_801ADA38(void *arg0, int arg1) {
     int *sp8;
     if (arg1) {
         sp8 = (int *)lbl_80335940;
-        fn_801ABFF8(&sp8);
+        ((void (*)(void *, int **))fn_801ABFF8)(arg0, &sp8);
     } else {
         *((char *)arg0 + 0x220) = 0;
     }
