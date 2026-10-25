@@ -1455,7 +1455,7 @@ void fn_8006EBF0(void) {
 
 }
 
-extern s32 fn_80068DB8(void);
+extern s32 fn_80068DB8();
 s32 fn_8006EBF4(void) {
     s32 r = fn_80068DB8();
     if (r == 0) {
