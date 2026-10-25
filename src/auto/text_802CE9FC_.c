@@ -71,6 +71,15 @@ extern unsigned long fn_802CE9FC(int, int, int, int);
 
 extern char lbl_8055FD3C;
 #pragma dont_inline on
+unsigned long fn_802CE9FC(int arg0, int arg1, int arg2, int arg3) {
+    unsigned char bytes[4];
+    bytes[0] = (unsigned char)arg0;
+    bytes[1] = (unsigned char)arg1;
+    bytes[2] = (unsigned char)arg2;
+    bytes[3] = (unsigned char)arg3;
+    return *(unsigned long *)bytes;
+}
+
 unsigned char fn_802CEA1C(unsigned int arg0) {
     return ((unsigned char (*)(unsigned char, unsigned char, unsigned char, unsigned char))fn_802CE9FC)(
         (unsigned char)(arg0 >> 16),
