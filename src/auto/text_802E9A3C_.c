@@ -406,7 +406,7 @@ long fn_802EC370(void *arg0) {
 int fn_802EC378(void *arg0, void *arg1, int arg2) {
     int pos = *(int *)((char *)arg0 + 8);
     if (pos >= 0 && pos + arg2 <= *(int *)((char *)arg0 + 0xC)) {
-        __builtin_memcpy(arg1, (char *)*(char **)((char *)arg0 + 4) + pos, arg2);
+        memcpy(arg1, (char *)*(char **)((char *)arg0 + 4) + pos, arg2);
         *(int *)((char *)arg0 + 8) = *(int *)((char *)arg0 + 8) + arg2;
         return 1;
     }
