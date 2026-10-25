@@ -1,5 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern int fn_802E95E0(void *, void (*)(void), int);
+extern void fn_802E9010(void);
+extern char lbl_8034DEC4[];
 
 extern int lbl_8056002C;
 extern char lbl_8034E108[];
@@ -206,8 +209,15 @@ void fn_802E9160(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)(
 
 int fn_802E91AC(int *arg0) { return *arg0 == 0; }
 
-unsigned int fn_802E91BC(int *arg0) { int value=*arg0 ^ 2; int shifted=value >> 1; int masked=value & 2; int result=shifted-masked; return (unsigned int)result >> 31; }
-
+#pragma scheduling invalid_target
+unsigned int fn_802E91BC(int *arg0) {
+    int value = *arg0 ^ 2;
+    int shifted = value >> 1;
+    value &= 2;
+    shifted -= value;
+    return shifted < 0;
+}
+#pragma scheduling on
 extern int fn_802E2C20(void);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034E024[];
