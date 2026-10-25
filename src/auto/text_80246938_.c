@@ -38,6 +38,7 @@ extern s32 lbl_8055BEF0;
 extern void *lbl_8055F278;
 extern void fn_80214CB4(s32);
 extern s32 lbl_802FA3B4[];
+extern void* lbl_8055BEAC;
 
 typedef struct lbl_8055F278_struct {
     char pad00[0x04];
