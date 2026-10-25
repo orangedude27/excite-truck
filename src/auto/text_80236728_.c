@@ -122,7 +122,21 @@ void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
 
 void fn_8023695C(void) { fn_80237EFC(); }
 
-#pragma push
+#pragma scheduling invalid_target
+void fn_80236960(char *source) {
+    int remaining;
+    char *destination;
+    if (source == 0)
+        return;
+    destination = lbl_80498664;
+    remaining = 0x64;
+    while ((*destination++ = *source++) != '\0') {
+        if (--remaining > 0)
+            continue;
+        destination[-1] = '\0';
+        return;
+    }
+}
 #pragma scheduling on
 void fn_802369A8(char *arg0, int arg1, int arg2) {
     extern char lbl_8055BA08[8], lbl_8055BA10[8];
