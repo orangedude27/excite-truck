@@ -2,7 +2,6 @@
 #include <macros.h>
 extern "C" s32 WPADSetSamplingCallback(s32, void *);
 extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
-extern "C" void DetachSound__Q34nw4hbm3snd11SoundHandleFv(void *);
 namespace homebutton {
 class GroupAnmController {
 public:
