@@ -413,7 +413,7 @@ extern "C" void fn_800A5954(void) {
 
 extern "C" s32 fn_800A71D8(void *);
 extern "C" s32 fn_800A73A0(void *, s32, u32, s32, s32, s32);
-extern "C" s32 fn_800A7338(void *);
+extern "C" s32 fn_800A7338(void *, s32 = 0);
 extern "C" s32 fn_800A7568(void *, s32);
 extern "C" s32 fn_800A607C(void);
 extern "C" s32 fn_800A5958(void *arg0, s32 *arg1) {
@@ -1096,12 +1096,12 @@ extern "C" s32 fn_800A728C(void *arg0) {
     return result;
 }
 
-extern "C" s32 fn_800A7338(void *arg0) {
+extern "C" s32 fn_800A7338(void *arg0, s32 arg1) {
     s32 result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
     if (result != 0) {
         return result;
     }
-    result = fn_800A6480(*(void **)((u8 *)arg0 + 4), 0);
+    result = fn_800A6480(*(void **)((u8 *)arg0 + 4), arg1);
     return result & ((s32)(-result | result) >> 31);
 }
 
@@ -4732,20 +4732,21 @@ return result;
 }
 #pragma pop
 extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
-    arg0 = (void *)((u8 *)arg0 + 7);
+    s32 position = (s32)arg0 + 7;
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
 
     while (digits > 1 && arg1 != 0) {
-        u32 rem = arg1 % divisor;
+        u32 quotient = arg1 / divisor;
+        u32 rem = arg1 - quotient * divisor;
         if (rem != 0) {
             arg1 -= rem;
-            *(u8 *)arg0 += (s8)(rem / place);
+            *(u8 *)position += (s8)(rem / place);
         }
         divisor *= 10;
         digits--;
-        arg0 = (void *)((u8 *)arg0 - 1);
+        position--;
         place *= 10;
     }
     return 0;
@@ -13129,21 +13130,23 @@ extern "C" void fn_800DCE50(void *arg0);
 #pragma push
 #pragma small_data off
 extern u8 lbl_8031F43C[];
+#pragma push
+#pragma small_data off
 #pragma pop
 extern "C" void __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *this_) {
-    u8 *self = (u8 *)this_;
+    u32 *p = (u32 *)this_;
+    u32 v = (u32)&lbl_8031F43C;
 
     fn_800DCE50(this_);
 
-    *(u32 *)(self + 0x28) = 0;
-    *(u32 *)(self + 0x2C) = 0;
-    *(u32 *)self = (u32)&lbl_8031F43C;
-    *(u32 *)(self + 0x20) = 0;
-    *(u32 *)(self + 0x24) = 0;
-    *(u32 *)(self + 0x28) = (u32)(self + 0x28);
-    *(u32 *)(self + 0x2C) = (u32)(self + 0x28);
+    p[0x28 >> 2] = 0;
+    p[0x2C >> 2] = 0;
+    p[0] = v;
+    p[0x20 >> 2] = 0;
+    p[0x24 >> 2] = 0;
+    p[0x28 >> 2] = (u32)this_ + 0x28;
+    p[0x2C >> 2] = (u32)this_ + 0x28;
 }
-
 extern "C" const char lbl_8031F2C8[];
 extern "C" s32 fn_800D53FC(void *arg0, void *arg1, const char *arg2) {
     const char *file = lbl_8031F2C8;
