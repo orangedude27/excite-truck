@@ -3,6 +3,26 @@
 
 extern void fn_80288868(void *);
 extern void fn_80288870(void);
+extern void fn_802AB504(void);
+extern void fn_8029F0D0(void);
+extern void fn_802A7C24(void);
+extern void fn_802921F4(void);
+extern void fn_802A4B90(void);
+extern void fn_802A14F8(void);
+extern void fn_802A0AFC(void);
+extern void fn_80292618(void);
+extern void fn_8029EFBC(void);
+extern void fn_8029C22C(void);
+extern void fn_80296064(void);
+extern void fn_80297FA4(void);
+extern void fn_80294C68(void);
+extern void fn_8028CF18(void);
+extern void fn_8028A784(void);
+extern void fn_802A1660(void);
+extern void fn_80288988(void);
+extern void fn_802A85C8(void);
+extern void fn_802881D4(void);
+extern void fn_802882A0(void);
 extern void fn_802A86A4(void);
 extern void fn_8028E138(void);
 extern void fn_802980A0(void);
@@ -289,7 +309,19 @@ s32 fn_80287B94(s32 arg0, s32 arg1) {
     return arg0 + fn_80287B5C(arg1 - arg0);
 }
 
-#pragma scheduling off
+#pragma paired off
+#pragma paired_single off
+f32 fn_80287BC8(f32 farg0, f32 farg1) {
+    unsigned int random;
+    f32 diff;
+    f32 ratio;
+    random = ((unsigned int (*)(void))fn_80288870)() & 0x1FFFF;
+    diff = farg1 - farg0;
+    ratio = (f32)random / lbl_80564250;
+    return farg0 + diff * ratio;
+}
+#pragma paired_single reset
+#pragma paired reset
 void *fn_80287C30(void *arg0) {
     *(s32 *)arg0 = 0;
     memset((u8 *)arg0 + 4, 0, 0x20);
