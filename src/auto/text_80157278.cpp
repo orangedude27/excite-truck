@@ -174,16 +174,36 @@ public:
     virtual s32 v8(s32);
 };
 
-class Unk8015EA24V {
-public:
-    virtual void v0(s32);
-    virtual void v1(s32);
-    virtual void v2(s32);
-    virtual void v3(s32);
-    virtual void v4(s32);
-    virtual void v5(s32);
-    virtual void v6(s32);
-};
+  class Unk8015EA24V {
+  public:
+      virtual void v0(s32);
+      virtual void v1(s32);
+      virtual void v2(s32);
+      virtual void v3(s32);
+      virtual void v4(s32);
+      virtual void v5(s32);
+      virtual void v6(s32);
+  };
+  
+  class Unk8015E9A4V {
+  public:
+      virtual void v0(s32);
+      virtual void v1(s32);
+      virtual void v2(s32);
+      virtual void v3(s32);
+      virtual void v4(s32);
+      virtual void v5(s32);
+      virtual void v6(s32);
+      virtual void v7(s32);
+      virtual void v8(s32);
+      virtual void v9(s32);
+      virtual void v10(s32);
+      virtual void v11(s32);
+      virtual void v12(s32);
+      virtual void v13(s32);
+      virtual void v14(s32);
+      virtual void v15(s32);
+  };
 
 class Unk801584D4 {
 public:
@@ -2472,8 +2492,9 @@ extern "C" void fn_8015E238(Unk801577F0V* arg0) {
 extern "C" void fn_8015E2C8(Unk801577F0V* arg0) {
     UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
     s32 count = arg0->mCount;
-    for (s32 j = 0; j < count; j++) {
-        entries[j]->v15();
+    s32 off;
+    for (off = 0; off < count; off++) {
+        entries[off]->v18(0);
     }
 }
 
@@ -2501,14 +2522,65 @@ extern "C" void fn_8015E568(Unk801577F0V* arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8015E5F4(Unk801577F0V* arg0, s32 arg1) {
-    UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
-    s32 count = arg0->mCount;
-    for (s32 j = 0; j < count; j++) {
-        entries[j]->v18(arg1);
+    class Base {
+    public:
+        virtual void b0();
+        virtual void b1();
+        virtual void b2();
+        virtual void b3();
+        virtual void b4();
+        virtual void b5();
+        virtual void b6();
+        virtual void b7();
+        virtual void b8();
+        virtual void b9();
+        virtual void b10();
+        virtual void b11();
+        virtual void b12();
+        virtual void b13();
+        virtual void b14();
+        virtual void b15();
+        virtual void b16();
+        virtual void b17();
+        virtual void b18();
+        virtual void b19();
+        virtual void b20();
+        virtual void b21();
+        virtual void b22();
+        virtual void b23();
+        virtual void b24();
+        virtual void b25();
+        virtual void b26();
+        virtual void b27();
+        virtual void b28();
+        virtual void b29();
+        virtual void b30();
+        virtual void b31();
+        virtual void b32();
+        virtual void b33();
+        virtual void b34();
+        virtual void b35();
+        virtual void b36();
+        virtual void b37();
+        virtual void b38();
+        virtual void b39();
+        virtual void b40();
+    };
+    class Vt3c : public Base {
+    public:
+        virtual void call(s32);
+    };
+    s32 off = 0;
+    s32 i = 0;
+    while (i < *(s32*)((u8*)arg0 + 8)) {
+        Vt3c* entry = *(Vt3c**)((u8*)*(void**)((u8*)arg0 + 4) + off);
+        entry->call(arg1);
+        off += 4;
+        i += 1;
     }
 }
-
 extern "C" void fn_8015E674(void *arg0, int arg1) {
  struct A { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void call(int); };
  int i=0, offset=0; void **array; void *obj,*state;
