@@ -344,21 +344,45 @@ extern void *lbl_80358658[];
 extern s32 lbl_802ED7B8[];
 extern const char lbl_802FD85C[];
 extern s32 fn_802E317C(const char *);
+#pragma scheduling invalid_target
+#pragma scheduling on
 s32 *fn_8001C4E0(s32 arg0) {
-    s32 compare = arg0;
-    register s32 *entry = lbl_802ED7B8;
-    do {
-        if (*entry == compare) {
+    s32 *entry = lbl_802ED7B8;
+    for (;;) {
+        if (*entry == arg0) {
             return entry;
         }
-        entry = (s32 *)((u8 *)entry + 0xC);
-    } while (*entry != 0);
-    fn_802E317C(lbl_802FD85C);
-    return 0;
+        entry += 3;
+        if (*entry == 0) {
+            fn_802E317C(lbl_802FD85C);
+            return 0;
+        }
+    }
 }
-
+#pragma scheduling reset
 void fn_8001C714(void) {
     fn_80131234(*(s32 *)((u8 *)((s32 *(*)(void))fn_8001C4E0)() + 8));
+}
+
+extern const char lbl_802FD9E8[];
+int fn_8001C960(u32 arg0) {
+    volatile s32 *entry;
+    s32 value;
+
+    entry = lbl_802ED7B8;
+    goto check;
+loop:
+    if ((u8)value == arg0) {
+        return *entry;
+    }
+    entry += 3;
+check:
+    value = *entry;
+    if (value != 0) {
+        goto loop;
+    }
+    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD9E8, arg0);
+    return 0;
 }
 
 extern s32 *fn_8001C4E0(s32);
