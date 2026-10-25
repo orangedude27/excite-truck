@@ -84,21 +84,24 @@ void fn_802C2FC4(void) {
     ((void (*)(void))fn_8012C4D8)();
 }
 
+#pragma scheduling invalid_target
 void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
-    volatile s32 *p = (volatile s32 *)arg0;
-    s32 var_r10 = p[2];
     s32 var_r0;
-    p[5] = (s32)(arg1 & ((arg1 >> 31) - 1));
-    if (arg3 < var_r10)
+    s32 var_r10;
+    var_r10 = *(s32 *)((u8 *)arg0 + 8);
+    *(s32 *)((u8 *)arg0 + 0x14) = (s32)(arg1 & ((arg1 >> 31) - 1));
+    *(s32 *)((u8 *)arg0 + 0x18) = (s32)(arg2 & ((arg2 >> 31) - 1));
+    if (arg3 < var_r10) {
         var_r10 = arg3;
-    p[6] = (s32)(arg2 & ((arg2 >> 31) - 1));
-    p[7] = var_r10;
-    var_r0 = p[3];
-    if (arg4 < var_r0)
+    }
+    var_r0 = *(s32 *)((u8 *)arg0 + 0xC);
+    *(s32 *)((u8 *)arg0 + 0x1C) = var_r10;
+    if (arg4 < var_r0) {
         var_r0 = arg4;
-    p[8] = var_r0;
+    }
+    *(s32 *)((u8 *)arg0 + 0x20) = var_r0;
 }
-
+#pragma scheduling on
 void fn_802C3014(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
     *(s32 *)((u8 *)arg0 + 0x18) = 0;
@@ -185,9 +188,9 @@ s32 fn_802C3170(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4, s32 *arg
 
 extern const char lbl_8034B060[];
 extern void fn_802C3320(void);
-extern void fn_802C33A8(void);
+extern void fn_802C33A8(s32, s32, u32);
 extern void fn_802E317C(const char *, ...);
-void fn_802C32B8(void) {
+void fn_802C32B8(s32 arg0, s32 arg1, u32 arg2) {
     u8 *state = (u8 *)lbl_8055FC00;
     s8 mode;
     s32 flag;
@@ -200,7 +203,7 @@ void fn_802C32B8(void) {
         return;
     }
     if ((s8)state[0] == 5) {
-        fn_802C33A8();
+        fn_802C33A8(arg0, arg1, arg2);
         return;
     }
     fn_802E317C(lbl_8034B060, (s32)(s8)*(u8 *)lbl_8055FC00);
