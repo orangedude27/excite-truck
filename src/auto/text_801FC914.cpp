@@ -904,11 +904,13 @@ extern "C" void fn_801FF168(void) {
 
 }
 
-extern "C" void fn_801FF16C(void* arg0) {
+#pragma small_data off
+extern "C" void fn_801FF16C(void *arg0) {
     float value = fn_801E7E24();
-    if (fabs(value) > lbl_80558DC4) fn_801FF3AC((char*)arg0 + 0xE08, value);
+    if (!((float)__fabs((double)value) <= lbl_80558DC4)) {
+        fn_801FF3AC((char *)arg0 + 0xE08, value);
+    }
 }
-
 extern "C" int fn_801FF1BC(void) { return 3; }
 
 extern "C" void fn_801FF1C4(void* arg0, int arg1, int arg2) {
