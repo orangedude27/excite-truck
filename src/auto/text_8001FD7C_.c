@@ -359,6 +359,8 @@ extern float lbl_805604F4;
 extern float lbl_805604F8;
 extern float lbl_805604FC;
 extern int fn_802354A0(int, int, s32, f32, f32, f32, f32, f32);
+#pragma push
+#pragma dont_inline on
 void fn_80020860(int arg0) {
     fn_802354A0(lbl_8055D654, 0, (arg0 << 0x18) | 0xFF0000 | 0xFFFF,
                  lbl_805604F8 * (lbl_805604F0 * (f32) lbl_8055CFF0 / lbl_805604F4),
