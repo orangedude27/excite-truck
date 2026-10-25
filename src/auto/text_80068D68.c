@@ -5038,6 +5038,13 @@ void ptim_start_timer(tPTIM_CB *p_cb, TIMER_LIST_ENT *p_tle, UINT16 type, INT32 
     GKI_add_to_timer_list(&p_cb->timer_queue, p_tle);
 }
 
+void fn_800716B0(void *p_queue, s32 p_tle, void *arg2) {
+    GKI_remove_from_timer_list(p_queue, (TIMER_LIST_ENT *)p_tle);
+    if (*(s32 *)p_queue == 0) {
+        GKI_stop_timer(((u8 *)p_queue)[0x10]);
+    }
+}
+
 void fn_800716F0(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
