@@ -92,10 +92,10 @@ int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
 }
 #pragma pop
 void fn_801E2F00(void) {
-    void *p = fn_801284F8(0x20, &lbl_803398D8);
+    void *p = fn_801284F8(0x20, lbl_803398D8);
     if (p != 0) {
-        fn_8012A13C(&lbl_803398D8, 0x128, 0x68);
-        *(void **)p = &lbl_80339904;
+        ((void (*)(void *, void *, s32, s32))fn_8012A13C)(p, lbl_803398D8, 0x128, 0x68);
+        *(void **)p = lbl_80339904;
     }
     lbl_8055EA50 = p;
 }
