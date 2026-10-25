@@ -29,17 +29,27 @@ void fn_801D0650(void *arg0) {
         i++;
     }
 }
+#pragma cplusplus on
 #pragma push
 #pragma use_lmw_stmw off
-void fn_801D06C4(void *arg0) {
-    int offset = 0;
-    int i = 0;
-    for (; i < lbl_804386B4[0].count; offset += 4, i++) {
+extern "C" void fn_801D06C4(void *arg0) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1(void *);
+    };
+    int offset;
+    int i;
+    i = 0;
+    offset = 0;
+    while (i < lbl_804386B4[0].count) {
         void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
-        (*(void (**)(void *, void *))(*(char **)obj + 0xC))(obj, arg0);
+        ((Dummy *)obj)->f1(arg0);
+        offset += 4;
+        i++;
     }
 }
 #pragma pop
+#pragma cplusplus reset
 void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
     int type = *(int *)((char *)arg2 + 0x10);
     int ok = 0;
