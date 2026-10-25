@@ -243,7 +243,7 @@ f32 fn_80134E34(f32 arg0) {
 void *fn_80134E90(void) {
     void *p = fn_801284F8(0x30C, lbl_8032BC50);
     if (p != 0) {
-        fn_801938F4();
+        p = fn_801938F4(p);
     }
     return p;
 }
