@@ -193,8 +193,8 @@ extern "C" void fn_80165B78(void **arg0) {
     char *strings = lbl_8032FCC0;
     Dummy80165B78 *obj2;
     Dummy80165B78 *obj;
-    char *text;
     char *match;
+    char *text;
     float scale;
     float value;
 
@@ -255,7 +255,7 @@ extern "C" void fn_80165B78(void **arg0) {
     *(float *)((char *)&lbl_8042FE38 + 0x54) = fn_80204CFC(strings + 0x164);
     *(float *)((char *)&lbl_8042FE38 + 0x58) = fn_80204CFC(strings + 0x178);
     *(float *)((char *)&lbl_8042FE38 + 0x5c) = obj->getFloatDefault(strings + 0x194, lbl_805618C4);
-    *(float *)((char *)&lbl_8042FE38 + 0x60) = lbl_805618CC * (float)((double (*)(Dummy80165B78 *, const char *, float))(*(void ***)obj)[10])(obj, strings + 0x1A8, lbl_805618C8);
+    *(float *)((char *)&lbl_8042FE38 + 0x60) = lbl_805618CC * (float)((Dummy80165B78D *)obj)->getFloatDefaultDouble(strings + 0x1A8, lbl_805618C8);
 }
 #pragma cplusplus off
 #pragma scheduling on
@@ -764,7 +764,15 @@ void fn_80167684(float arg0) {
 }
 
 #pragma push
-#pragma small_data off
+#pragma scheduling invalid_target
+int fn_80167728(int arg0) {
+    unsigned char **entries = *(unsigned char ***)&lbl_8055E32C;
+    int offset = arg0 * 0x88;
+    unsigned char *base = *entries;
+    return *(float *)(base + offset + 0x28) <
+           *(float *)((char *)&lbl_8042FE38 + 0x68);
+}
+#pragma pop
 unsigned char fn_80167758(void) { return *((unsigned char *)&lbl_8042FE38 + 0x4E); }
 int fn_80167768(float arg0) { return arg0 > *(float *)((char *)&lbl_8042FE38 + 0x50); }
 #pragma pop
