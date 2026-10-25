@@ -250,6 +250,26 @@ extern "C" s32 fn_802E3A64(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma cplusplus on
+extern "C" s32 fn_802E3BB4(s32 arg0, s32 arg1, s32 arg2) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual s32 v2(s32, s32, s32);
+    };
+
+    s32 obj = ((s32 (*)(void))fn_802E339C)();
+    s32 result;
+    if (obj != 0) {
+        result = ((Obj *)obj)->v2(arg0, arg1, arg2);
+    } else {
+        result = -1;
+    }
+    return result;
+}
+#pragma cplusplus off
+
+#pragma cplusplus on
 extern "C" void fn_802E3CA4(s32 arg0) {
     class Obj {
     public:
