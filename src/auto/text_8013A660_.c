@@ -44,11 +44,14 @@ int fn_8013A6D4(int arg0) {
     return values[arg0];
 }
 
+#pragma push
+#pragma inline_depth(0)
 char *fn_8013A708(char *arg0, int arg1, int arg2) {
     strcpy(arg0, (char *)fn_8013A6D4(arg1));
     fn_80028E00(arg0, arg2);
     return arg0;
 }
+#pragma pop
 
 #pragma dont_inline fn_8013A708
 int fn_8013A760(unkVtable **arg0, int arg1) {
