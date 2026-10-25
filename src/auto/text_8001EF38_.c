@@ -252,6 +252,20 @@ void fn_8001F724(void) {
 void fn_8001F76C(void) {
     memset(lbl_8035AF38, 0, 0x820);
 }
+
+extern char lbl_802FE0A0[];
+s32 fn_8001F89C(s32 arg0, s32 arg1) {
+    s32 result;
+    if (arg1 >= 0 && (u32)arg1 < 4) {
+        result = *(s32 *)(lbl_8035A718 + arg0 * 4);
+        result += *(s32 *)(lbl_80358698 + arg0 * 4 + arg1 * 0x820);
+    } else {
+        fn_802E30C8(lbl_802FE0A0);
+        result = 0;
+    }
+    return result;
+}
+
 #pragma scheduling on
 s32 fn_8001F9A4(s32 arg0, s32 arg1) {
     SrcCoef *p;
@@ -271,17 +285,26 @@ s32 fn_8001F9A4(s32 arg0, s32 arg1) {
     return q[1];
 }
 
+#pragma scheduling invalid_target
 s32 fn_8001FA20(s32 arg0, s32 arg1) {
-    SrcCoef *p;
     s32 *q;
-    if (arg0 < 0 || (u32)arg0 >= 8) return 0;
-    p = &lbl_802FDF30[arg0];
-    q = p->unkC;
-    if (q == 0) return 0;
-    if (q[0] == 0 || q[1] < arg1 || arg1 <= 0) return -1;
-    return *(s32 *)(q[0] + ((arg1 - 1) * 8));
+    s32 data;
+    if (arg0 < 0) goto no_coef;
+    if ((u32)arg0 >= 8) goto no_coef;
+    q = lbl_802FDF30[arg0].unkC;
+    if (q == 0) goto no_coef;
+    data = q[0];
+    if (data == 0) goto invalid;
+    if (q[1] < arg1) goto invalid;
+    if (arg1 > 0) goto get_value;
+invalid:
+    return -1;
+get_value:
+    return *(s32 *)(data + ((arg1 - 1) * 8));
+no_coef:
+    return 0;
 }
-
+#pragma scheduling on
 s32 fn_8001FA8C(s32 arg0) {
     SrcCoef *base;
     void *p;
