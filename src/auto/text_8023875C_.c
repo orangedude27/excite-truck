@@ -30,6 +30,23 @@ extern float lbl_80563714;
 extern double lbl_80563700;
 extern int lbl_80563708;
 extern int lbl_8056370C;
+extern int fn_80232BA4(int, int, int, int, int, float, float, float, float, float);
+extern int fn_802344CC(int, int, int, int, float, float, float);
+void fn_8023875C(int x, int y, const char *text, int arg3, int arg4) {
+    if (fn_802344B0() != 0 && strlen(text) + 1 < 0x40) {
+        fn_802344CC((int)text, arg3, arg4, 0,
+            (float)(x - (int)((lbl_8055CFF0 + (lbl_8055CFF0 >> 31)) >> 1)),
+            (float)((int)((lbl_8055CFF4 + (lbl_8055CFF4 >> 31)) >> 1) - y),
+            lbl_805636F0);
+        return;
+    }
+    fn_80232BA4((int)text, lbl_8055F0D4, arg3, arg4,
+        (int)((lbl_8055CFF0 + (lbl_8055CFF0 >> 31)) >> 1),
+        (float)(x - (int)((lbl_8055CFF0 + (lbl_8055CFF0 >> 31)) >> 1)),
+        (float)((int)((lbl_8055CFF4 + (lbl_8055CFF4 >> 31)) >> 1) - y),
+        lbl_805636F0, lbl_805636F4, lbl_805636F8);
+}
+
 void fn_8023889C(void) {
     int sp8;
     int spC;
@@ -65,12 +82,14 @@ void fn_8023895C(void) {
     fn_802344C4(1);
 }
 
+#pragma scheduling invalid_target
 void fn_802389E4(void) {
-    if (fn_802344B0()) fn_802346C8();
+    if (fn_802344B0())
+        fn_802346C8();
     lbl_8055F0D8 = 0;
     fn_802344C4(0);
 }
-
+#pragma scheduling on
 int fn_80238A20(void) {
     return (int)(lbl_805636F0 * (float)fn_80232B70(lbl_8055F0D4));
 }
