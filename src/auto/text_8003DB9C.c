@@ -1387,6 +1387,7 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 void GXSetDispCopyDst(s32 value) {
+    register unsigned int *gx = __GXData;
     union {
         u32 reg;
         struct {
@@ -1396,9 +1397,9 @@ void GXSetDispCopyDst(s32 value) {
         } fields;
     } data = {0};
 
-    data.fields.arg = ((value << 1) & 0x7FFE) >> 5;
+    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    __GXData[0x238 / 4] = data.reg;
+    gx[0x238 / 4] = data.reg;
 }
 
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
@@ -1429,16 +1430,24 @@ void GXSetDispCopyFrame2Field(s32 value) {
 }
 
 void GXSetCopyClamp(s32 value) {
-    unsigned int *data = __GXData;
-    unsigned int a, b;
-    a = data[0x23C / 4];
-    a = (a & ~1) | (value & 1);
-    a = (a & ~2) | (value & 2);
-    data[0x23C / 4] = a;
-    b = data[0x24C / 4];
-    b = (b & ~1) | (value & 1);
-    b = (b & ~2) | (value & 2);
-    data[0x24C / 4] = b;
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 30;
+            unsigned int bit1 : 1;
+            unsigned int bit0 : 1;
+        } fields;
+    } data;
+    unsigned int *gx = __GXData;
+
+    data.reg = gx[0x23C / 4];
+    data.fields.bit0 = value;
+    data.fields.bit1 = value;
+    gx[0x23C / 4] = data.reg;
+    data.reg = gx[0x24C / 4];
+    data.fields.bit0 = value;
+    data.fields.bit1 = value;
+    gx[0x24C / 4] = data.reg;
 }
 
 f32 GXGetYScaleFactor(u32 arg0, u32 arg1) {
@@ -2012,10 +2021,21 @@ void GXInitTexObjTlut(void* arg0, int arg1) {
 
 extern unsigned char lbl_80558E80[];
 void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
-    s32 temp = *arg0;
-    temp = (temp & ~0x10) | (((unsigned int)__cntlzw(arg2 - 1) >> 1) & 0x10);
-    *arg0 = temp;
-    *arg0 = (temp & ~0xE0) | ((lbl_80558E80[arg1] << 5) & 0xE0);
+    union {
+        s32 value;
+        struct {
+            unsigned int high : 24;
+            unsigned int filter : 3;
+            unsigned int mip : 1;
+            unsigned int low : 4;
+        } fields;
+    } data;
+
+    data.value = *arg0;
+    data.fields.mip = ((unsigned int)__cntlzw(arg2 - 1) >> 1);
+    *arg0 = data.value;
+    data.fields.filter = ((unsigned char *)&lbl_80558E80)[arg1];
+    *arg0 = data.value;
 }
 
 void GXGetTexObjWidth(void *arg0, s32 arg1) {
