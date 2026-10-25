@@ -366,14 +366,24 @@ extern "C" int fn_801A5F44(void *arg0, int arg1) {
       *arg4 = y + b;
   }
   
-  int fn_801A6024(void *arg0, int arg1) {
-      int base;
-      void *obj;
-      base = arg1 + fn_8018BA54();
-      obj = *(void **)((char *)arg0 + 0x270C);
-      return base + ((int (*)(void *, int))(*(void ***)obj)[8])(obj, base) - arg1;
-  }
-  
+#pragma cplusplus on
+extern "C" int fn_801A6024(void *arg0, int arg1) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual int v6(int);
+    };
+    int base = arg1 + fn_8018BA54();
+    Obj *obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
+    base += obj->v6(base);
+    return base - arg1;
+}
+#pragma cplusplus off
   void fn_80188E2C(void);
   int fn_8018BA54(void);
   void fn_8018956C(void);
