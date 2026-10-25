@@ -229,7 +229,7 @@ void fn_8021031C(void) {
 }
  
 extern long fn_80207848(void *, long);
-extern long fn_802EC1D8(void);
+extern void fn_802EC1D8(void);
 extern long fn_802EC12C(void);
 extern long fn_8020FCC4(void);
 extern char lbl_8033C9AC[];
