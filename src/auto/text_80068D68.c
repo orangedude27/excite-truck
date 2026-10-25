@@ -7715,6 +7715,17 @@ BOOLEAN btsnd_hcic_change_name(BD_NAME name) {
     return TRUE;
 }
 
+void fn_8008534C(void *arg0, u16 arg1) {
+    *(u16 *)((u8 *)arg0 + 2) = 5;
+    *(u16 *)((u8 *)arg0 + 4) = 0;
+    *(u8 *)((u8 *)arg0 + 8) = 0x18;
+    *(u8 *)((u8 *)arg0 + 9) = 0x0C;
+    *(u8 *)((u8 *)arg0 + 10) = 2;
+    *(u8 *)((u8 *)arg0 + 11) = arg1;
+    *(u8 *)((u8 *)arg0 + 12) = arg1 >> 8;
+    btu_hcif_send_cmd(arg0);
+}
+
 void fn_80085384(u8 *arg0, u8 arg1) {
     *(u16 *)(arg0 + 2) = 4;
     *(u16 *)(arg0 + 4) = 0;
