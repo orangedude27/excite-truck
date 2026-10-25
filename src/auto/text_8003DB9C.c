@@ -1418,9 +1418,27 @@ void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height) {
 }
 
 void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
+    union {
+        u32 value;
+        struct {
+            unsigned int tag : 8;
+            unsigned int reserved : 4;
+            unsigned int y : 10;
+            unsigned int x : 10;
+        } bits;
+    } src, dst;
     unsigned int *data = __GXData;
-    data[0x240 / 4] = 0x49000000 | ((x & 0x3FF) << 0) | ((y & 0x3FF) << 10);
-    data[0x244 / 4] = 0x4A000000 | (((width - 1) & 0x3FF) << 0) | (((height - 1) & 0x3FF) << 10);
+
+    src.value = 0;
+    dst.value = 0;
+    src.bits.x = x;
+    src.bits.y = y;
+    src.bits.tag = 0x49;
+    dst.bits.x = width - 1;
+    dst.bits.y = height - 1;
+    dst.bits.tag = 0x4A;
+    data[0x240 / 4] = src.value;
+    data[0x244 / 4] = dst.value;
 }
 
 void GXSetDispCopyDst(s32 value) {
@@ -3101,6 +3119,7 @@ void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 f
 }
 
 void GXSetScissorBoxOffset(s32 x, s32 y) {
+    register u32 yAdjusted;
     union {
         u32 value;
         struct {
@@ -3110,14 +3129,14 @@ void GXSetScissorBoxOffset(s32 x, s32 y) {
             unsigned int x : 10;
         } bits;
     } reg;
-    volatile u8 *fifo = (volatile u8 *)0xCC008000;
 
     reg.value = 0;
     reg.bits.x = ((u32)(x + 0x156)) >> 1;
-    *fifo = 0x61;
-    reg.bits.y = ((u32)(y + 0x156)) >> 1;
+    *(volatile u8 *)0xCC008000 = 0x61;
+    yAdjusted = (u32)(y + 0x156);
+    reg.bits.y = yAdjusted >> 1;
     reg.bits.tag = 0x59;
-    *(volatile u32 *)fifo = reg.value;
+    *(volatile u32 *)0xCC008000 = reg.value;
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
