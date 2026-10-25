@@ -330,10 +330,10 @@ void fn_801CC768(void *arg0, float arg1) {
 }
 
 void **fn_801CC784(void *arg0) {
-    void **base = *(void ***)arg0;
-    int index = *(int *)((char *)arg0 + 4);
-    *(int *)((char *)arg0 + 4) = index + 1;
-    return (void **)((char *)base + (index << 2));
+    s32 index = ((s32 *)arg0)[1];
+    s32 *base = *(s32 **)arg0;
+    ((s32 *)arg0)[1] = index + 1;
+    return (void **)((s32)base + (index << 2));
 }
 
 extern void *memset(void *, int, unsigned long);
@@ -1123,11 +1123,11 @@ fail:
 }
 
 void *fn_801CEB0C(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
+    if (arg0) {
         *(void **)((char *)arg0 + 4) = &lbl_80338010[0];
         fn_801CEB94((char *)arg0 + 8);
         fn_801CEB94((char *)arg0 + 0xC);
-        if (arg0 != 0) {
+        if (arg0) {
             void (*cleanup)(void *);
             cleanup = fn_801CBD04;
             *(void **)((char *)arg0 + 4) = &lbl_80338038[0];
