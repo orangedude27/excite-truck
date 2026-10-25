@@ -3480,6 +3480,15 @@ fallback:
     return fn_802192A4(arg0, arg1);
 }
 
+extern "C" void fn_80223A58(void *arg0) {
+    if (*(u8 *)fn_80216708() != 0) {
+        fn_802237DC(arg0);
+    } else {
+        fn_802237D0(arg0);
+    }
+    ((void (*)(void *))fn_80223280)(arg0);
+}
+
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
 extern "C" void *lbl_8033E3D4[];
