@@ -34,8 +34,8 @@ void fn_802A9FE0(void *arg0) {
 void fn_802AA0C8(void *arg0) {
     extern float lbl_805649F0;
     extern float lbl_805649F4;
-    volatile float first = lbl_805649F0;
-    volatile float second = lbl_805649F4;
+    float second = lbl_805649F4;
+    float first = lbl_805649F0;
     *(unsigned char *)((char *)arg0 + 0xDC) = 0;
     *(float *)((char *)arg0 + 0xE0) = first;
     *(float *)((char *)arg0 + 0xE4) = second;
@@ -333,7 +333,8 @@ void fn_802AB504(void) {
     extern void fn_801EF024(void (*)(void));
     extern void fn_80128670(void *);
     extern void fn_802CAC54(int);
-    extern void fn_802A9F30(void), fn_802A9F90(void), fn_802A9FB0(void);
+    extern void fn_802A9F30(void), fn_802A9FB0(void);
+    extern int fn_802A9F90(int *);
     extern unsigned char lbl_8055F92C;
     extern void *lbl_8055F924;
     extern int lbl_8055F928, lbl_8055CC60, lbl_8055CC64;
@@ -341,7 +342,7 @@ void fn_802AB504(void) {
     int *q;
     lbl_8055F92C = 0;
     fn_801EF024(fn_802A9F30);
-    fn_801EF024(fn_802A9F90);
+    fn_801EF024((void (*)(void))fn_802A9F90);
     fn_801EF024(fn_802A9FB0);
     p = (int *)lbl_8055F924;
     if (p) {
