@@ -1497,15 +1497,20 @@ extern float lbl_80560F38;
 extern float lbl_80560F50;
 extern float lbl_80560F54;
 extern float lbl_80560F3C;
-extern "C" void fn_800E5464(void *arg0, float farg0) {
-    float value = farg0;
-    if (farg0 <= lbl_80560F38) {
-        if (farg0 < lbl_80560F50)
-            value = lbl_80560F50;
+extern "C" void fn_800E5464(void *arg0, float arg1) {
+    float value;
+    if (arg1 > lbl_80560F38) {
+        value = lbl_80560F38;
+    } else if (arg1 < lbl_80560F50) {
+        value = lbl_80560F50;
+    } else {
+        value = arg1;
     }
-    if (value != *(float *)((char *)arg0 + 0x128)) {
-        *(float *)((char *)arg0 + 0x128) = value;
-        *(unsigned char *)((char *)arg0 + 0x123) |= 0x20;
+    float *field = (float *)((char *)arg0 + 0x128);
+    if (value != *field) {
+        unsigned char *flags = (unsigned char *)arg0 + 0x123;
+        *field = value;
+        *flags |= 0x20;
     }
 }
 
