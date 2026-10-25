@@ -492,6 +492,7 @@ extern "C" void* lbl_802FDE54;
 extern "C" void** lbl_8055D5FC;
 extern "C" void** lbl_8055D600;
 extern "C" void fn_8001EDB8(void) {
+    struct Obj { virtual void v0(); virtual void v1(void *); };
     void* object = lbl_802FDE38;
     void* selected;
     if (fn_801E85A4() == 2) {
@@ -499,8 +500,8 @@ extern "C" void fn_8001EDB8(void) {
     } else {
         selected = lbl_8055D5FC;
     }
-    ((void (*)(void*, void*))(*(void***)selected)[3])(selected, object);
-    fn_801476C4();
+    ((Obj *)selected)->v1(object);
+    ((void (*)(void))fn_801476C4)();
 }
 
 extern "C" s32 fn_8001EE14(s32 arg0, s32 arg1) {
