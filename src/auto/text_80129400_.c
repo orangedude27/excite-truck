@@ -23,6 +23,7 @@ void fn_80127D58(void *);
 void fn_802E7D0C(void);
 
 extern u8 lbl_80422380[0x20];
+#pragma scheduling invalid_target
 void fn_80129400(void) {
     u8 *p;
     s32 i;
@@ -35,7 +36,7 @@ void fn_80129400(void) {
         p += 0x80;
     } while (i < 4);
 }
-
+#pragma scheduling on
 void fn_80129458(void) {
     u8 *a = lbl_80422380;
     u8 *b = lbl_804223A0;
@@ -162,8 +163,6 @@ void fn_80129AFC(void) {
     do {
         fn_80129690(p, i, lbl_804223A0);
         i++;
-        if (i >= 4) break;
-        p += 0x80;
     } while (i < 4);
     p += 0x80 * i;
 }
