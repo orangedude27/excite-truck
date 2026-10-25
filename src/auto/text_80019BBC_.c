@@ -45,6 +45,21 @@ typedef unsigned char u8;
 typedef unsigned int u32;
 typedef signed int s32;
 typedef float f32;
+static inline void transformBasis(f32 *dst, const f32 *src,
+                                  const f32 *xaxis, const f32 *yaxis, const f32 *zaxis) {
+    if (dst != src) {
+        dst[0] = src[0] * xaxis[0] + src[1] * yaxis[0] + src[2] * zaxis[0];
+        dst[1] = src[0] * xaxis[1] + src[1] * yaxis[1] + src[2] * zaxis[1];
+        dst[2] = src[0] * xaxis[2] + src[1] * yaxis[2] + src[2] * zaxis[2];
+    } else {
+        f32 x = src[0];
+        f32 y = src[1];
+        f32 z = src[2];
+        dst[0] = x * xaxis[0] + y * yaxis[0] + z * zaxis[0];
+        dst[1] = x * xaxis[1] + y * yaxis[1] + z * zaxis[1];
+        dst[2] = x * xaxis[2] + y * yaxis[2] + z * zaxis[2];
+    }
+}
 extern s32 fn_801E866C(s32);
 extern void *fn_801E8718(s32);
 extern double fn_8002EFB0(f32, f32);
@@ -68,20 +83,21 @@ extern s32 fn_80230B9C(s32);
 extern void PSVECNormalize(f32 *, f32 *);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
+#pragma scheduling invalid_target
 void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     struct Frame {
-        u8 prefix[0x68];
+        u8 prefix[0x78];
         f32 vectors[4];
         u32 matrix2[12];
         u32 matrix[12];
         f32 output[3];
         f32 normal[3];
         f32 axis[3];
-        u8 gap0[0x2C];
+        u8 gap0[0x0C];
         unsigned short indices[0x5A];
         u8 gap1[0xB4];
         u8 vertices[0x1F8];
-        u8 tail[0x198];
+        u8 tail[0x1A8];
     } __attribute__((aligned(16))) frame;
     s32 resource;
     s32 index;
@@ -110,8 +126,6 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     f32 *ring;
     u8 *vertex;
     f32 u, w, z, sx, sy, sz, px, py, pz;
-    f32 extra0, extra1, extra2, extra3;
-    volatile f32 sink;
 
     if (obj == 0) return;
     resource = fn_801E866C(*(s32 *)((u8 *)obj + 0x44));
@@ -224,7 +238,7 @@ subtractCheck:
         color = fn_80230B9C(-1);
     }
     ring = (f32 *)((u8 *)lbl_803583C8 - 0x108);
-    vertex = (u8 *)&frame + 0x290;
+    vertex = (u8 *)&frame + 0x280;
     color = -1;
     for (index = 0; index < 21; index++) {
         u = ring[0];
@@ -237,9 +251,9 @@ subtractCheck:
         py = sx * frame.output[1] + sy * frame.normal[1] + sz * frame.axis[1];
         pz = sx * frame.output[2] + sy * frame.normal[2] + sz * frame.axis[2];
         fn_80231380(vertex, color,
-                    x + px + *(f32 *)((u8 *)&frame + 0x11C),
-                    y + py + *(f32 *)((u8 *)&frame + 0x120),
-                    pz + *(f32 *)((u8 *)&frame + 0x124), u, w);
+                    x + px + *(f32 *)((u8 *)&frame + 0x10C),
+                    y + py + *(f32 *)((u8 *)&frame + 0x110),
+                    pz + *(f32 *)((u8 *)&frame + 0x114), u, w);
         ring += 3;
         vertex += 0x18;
     }
@@ -247,22 +261,23 @@ subtractCheck:
     offset = 0;
     do {
         flag = (index + 1) % 20;
-        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = 20; offset += 2;
-        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)index; offset += 2;
-        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)flag; offset += 2;
-        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)index; offset += 2;
-        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)flag; offset += 2;
-        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)(index + 21); offset += 2;
-        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)flag; offset += 2;
-        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)(index + 21); offset += 2;
-        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)(flag + 21); offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x118 + offset) = 20; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)index; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)flag; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)index; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)flag; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)(index + 21); offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)flag; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)(index + 21); offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x118 + offset) = (unsigned short)(flag + 21); offset += 2;
     } while (++index < 20);
     if (*(s32 *)((u8 *)obj + 4) != -2)
         fn_802C8BD0(*(s32 *)((u8 *)obj + 4));
     else
         fn_802C8BD0(*(s32 *)obj);
-    fn_802C8DB8((u8 *)&frame + 0x290, 0x29, (unsigned short *)((u8 *)&frame + 0x128), 0xB4);
+    fn_802C8DB8((u8 *)&frame + 0x280, 0x29, (unsigned short *)((u8 *)&frame + 0x118), 0xB4);
     fn_802C8D74();
+    record = fn_801EA9A0(resource);
     index = 0;
     do {
         if (index == fn_801E866C(*(s32 *)((u8 *)obj + 0x44))) break;
@@ -293,9 +308,9 @@ subtractCheck:
     while (index < 16) {
         record = (void *)((u8 *)lbl_803583C8 + offset);
         if (*(u8 *)((u8 *)record + 0x10) != 0) {
-            px = *(f32 *)((u8 *)record + 8) - *(f32 *)((u8 *)&frame + 0x11C);
-            py = *(f32 *)((u8 *)record + 0xC) - *(f32 *)((u8 *)&frame + 0x120);
-            pz = lbl_80560418 - *(f32 *)((u8 *)&frame + 0x124);
+            px = *(f32 *)((u8 *)record + 8) - *(f32 *)((u8 *)&frame + 0x10C);
+            py = *(f32 *)((u8 *)record + 0xC) - *(f32 *)((u8 *)&frame + 0x110);
+            pz = lbl_80560418 - *(f32 *)((u8 *)&frame + 0x114);
             frame.normal[0] = px * *(f32 *)&frame.matrix[0] + py * *(f32 *)&frame.matrix[1] + pz * *(f32 *)&frame.matrix[2];
             frame.normal[1] = px * *(f32 *)&frame.matrix[3] + py * *(f32 *)&frame.matrix[4] + pz * *(f32 *)&frame.matrix[5];
             frame.normal[2] = px * *(f32 *)&frame.matrix[6] + py * *(f32 *)&frame.matrix[7] + pz * *(f32 *)&frame.matrix[8];
@@ -320,14 +335,39 @@ subtractCheck:
                 x + width * lbl_80560420, y - height * lbl_80560420,
                 lbl_80560418, result, result,
                 *(f32 *)((u8 *)data + resource * 8 + 8));
-    extra0 = x * f25;
-    extra1 = y * f21;
-    extra2 = width * v;
-    extra3 = height * ratio;
-    sink = x + y + width + height + f21 + f25 + v + ratio + actorX + actorY + extra0 + extra1 + extra2 + extra3 + color;
+    actor = fn_8017960C(fn_801E866C(*(s32 *)((u8 *)obj + 0x44)));
+    px = *(f32 *)((u8 *)global + 8) - *(f32 *)((u8 *)&frame + 0x10C);
+    py = *(f32 *)((u8 *)global + 0xC) - *(f32 *)((u8 *)&frame + 0x110);
+    pz = lbl_80560418 - *(f32 *)((u8 *)&frame + 0x114);
+    frame.axis[0] = px * *(f32 *)&frame.matrix[0] + py * *(f32 *)&frame.matrix[1] + pz * *(f32 *)&frame.matrix[2];
+    frame.axis[1] = px * *(f32 *)&frame.matrix[3] + py * *(f32 *)&frame.matrix[4] + pz * *(f32 *)&frame.matrix[5];
+    frame.axis[2] = px * *(f32 *)&frame.matrix[6] + py * *(f32 *)&frame.matrix[7] + pz * *(f32 *)&frame.matrix[8];
+    ratio = width * lbl_80560420 / f21;
+    frame.axis[0] *= ratio;
+    frame.axis[1] *= ratio;
+    frame.axis[2] *= ratio;
+    result = PSVECDotProduct(frame.axis, frame.axis);
+    if (result < (width * lbl_80560420) * (width * lbl_80560420)) {
+        angle = (f32)fn_80235EF0(*(void **)data, 0);
+        ratio = 1.0f - PSVECDotProduct(frame.axis, frame.axis) /
+                ((width * lbl_80560420) * (width * lbl_80560420));
+        if (ratio >= lbl_80560440) {
+            if (ratio > lbl_80560424) ratio = lbl_80560424;
+            if (ratio > lbl_80560418)
+                v = lbl_80560444 * ratio * ratio * ratio + lbl_80560448 * ratio * ratio;
+            else
+                v = lbl_80560444 * ratio * ratio * ratio - lbl_80560448 * ratio * ratio;
+        }
+        v *= lbl_8056044C;
+        if (v < lbl_80560418) v -= lbl_80560420;
+        else v += lbl_80560420;
+        color = ((s32)v << 24) | 0x00FFFFFF;
+        fn_80235AFC(*(void **)data, 0, (u32)color,
+                    x + frame.axis[0], y + frame.axis[1], lbl_80560418,
+                    angle, angle, *(f32 *)((u8 *)actor + 0x68));
+    }
 }
-
-#pragma small_data off
+#pragma scheduling on
 int fn_8001B308(void *arg0, int arg1, int arg2) {
     unsigned char *var_r7;
     int temp_r8;
