@@ -501,6 +501,8 @@ void fn_802335F0(u8 *arg0, s32 arg1, f32 farg0, f32 farg1) {
     fn_80233600(arg0, arg1, -1, 9, farg0, farg1, lbl_8056368C);
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2) {
     s32 sp8;
 
@@ -510,12 +512,15 @@ void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f
         fn_80232040(arg0, arg1, sp8, arg3, 0, farg0, farg1, lbl_80563684, farg2, lbl_80563684, lbl_8056368C);
     }
 }
+#pragma pop
 
 void fn_802336AC(s32 arg0, s32 arg1, s32 arg2, const char *fmt, f32 farg0, f32 farg1, f32 farg2, ...) {
-    char buffer[0xA8];
+    #pragma scheduling invalid_target
+    char buffer[0x68];
     va_list args;
     va_start(args, farg2);
     vsprintf(buffer, fmt, args);
+    va_end(args);
     fn_80233600((u8 *)buffer, arg0, arg1, arg2, farg0, farg1, farg2);
 }
 
