@@ -1960,6 +1960,20 @@ void fn_801A1B9C(void* arg0) {
     fn_8019AC44_3(&sp2C, &sp20, f);
 }
 
+extern "C" void fn_801E44F4(void*, u32, f32, f32, f32);
+#pragma scheduling invalid_target
+extern "C" void fn_801A1CA0(void* arg0) {
+    if (*(s32*)((u8*)arg0 + 0x20) < 1000) {
+        f32 x = *(f32*)((u8*)arg0 + 0x24);
+        f32 z = *(f32*)((u8*)arg0 + 0x28);
+        fn_801E44F4(*(void**)((u8*)arg0 + 0xC), 0x40FFFF00, x, x, z);
+    } else {
+        f32 x = *(f32*)((u8*)arg0 + 0x24);
+        f32 z = *(f32*)((u8*)arg0 + 0x28);
+        fn_801E44F4(*(void**)((u8*)arg0 + 0xC), 0x4000FF80, x, x, z);
+    }
+}
+#pragma scheduling on
 extern void* lbl_803338C0;
 extern "C" void* fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
     u8 temp_r12, temp_r22, temp_r23, temp_r24, temp_r25;
