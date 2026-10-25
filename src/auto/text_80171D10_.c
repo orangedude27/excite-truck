@@ -1121,7 +1121,7 @@ int fn_80175A38(void *arg0, float *arg1, float *arg2, int arg3, int arg4, int *a
     return 1;
 }
 
-extern void *fn_8017960C(int);
+extern void *fn_8017960C();
 extern float lbl_80561AF0;
 extern float lbl_80561AF4;
 int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2, int *arg3) {
