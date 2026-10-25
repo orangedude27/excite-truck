@@ -1835,5 +1835,4 @@ extern void fn_80279B28(int, void *);
 extern void fn_80279C00(int, void *);
 extern void fn_8017B0B0(void);
 extern void fn_801BD808(void *);
-extern int lbl_803326F8;
 extern int lbl_8055E4D0;
