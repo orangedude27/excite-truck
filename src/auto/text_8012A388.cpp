@@ -1127,6 +1127,17 @@ extern "C" s32 fn_8012D838(s32 arg0) {
     }
 }
 
+extern "C" void fn_8012D8A8(s32 arg0) {
+    if (arg0 != 0) {
+        fn_8012D40C(arg0);
+        fn_8012D1A8(arg0);
+        fn_80128660(*(s32 *)((char *)arg0 + 0xC8));
+        *(s32 *)((char *)arg0 + 0xB8) = 0;
+        fn_8012CB44((void *)(arg0 + 4), -1);
+        fn_8012CA40((void *)arg0);
+    }
+}
+
 extern "C" s32 fn_80128668(void *);
 extern "C" s32 fn_8012DCC0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
