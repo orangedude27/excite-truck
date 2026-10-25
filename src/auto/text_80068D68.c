@@ -1833,6 +1833,19 @@ void fn_80070AF0(s32 arg0) {
     GKI_shutdown();
 }
 
+typedef int (*Fn80070B24Callback)(int);
+int fn_80070B24(int arg0) {
+    Fn80070B24Callback callback = (Fn80070B24Callback)lbl_8055DC74;
+
+    if (callback == 0) {
+        return arg0;
+    }
+    if ((s8)arg0 >= 0) {
+        return callback(0);
+    }
+    return callback(1);
+}
+
 void fn_80070B54(void) {
     lbl_80559050 = 1;
     lbl_80559054 = 1;
