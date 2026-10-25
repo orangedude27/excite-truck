@@ -25,7 +25,7 @@ void fn_80019BBC(void) {
     float angle = lbl_80560418;
     float step = lbl_8056041C;
     float initial = angle;
-    float *p = &lbl_803582C0;
+    float *p = (float *)&lbl_803582C0;
     int i = 0;
     do {
         *p++ = (float)cos(angle);
