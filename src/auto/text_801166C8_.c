@@ -1056,6 +1056,11 @@ void fn_80119558(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x50) = fn_80116D30();
 }
 
+void fn_801195A0(void *arg0) {
+    fn_8011943C(arg0, 0);
+    *(s32 *)((u8 *)arg0 + 0x38) = 1;
+}
+
 extern f64 lbl_80561198;
 extern f64 lbl_805611A8;
 extern f32 lbl_805611A0;
