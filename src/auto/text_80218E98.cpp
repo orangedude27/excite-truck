@@ -747,6 +747,12 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021A650(void *arg0, 
     return arg0;
 }
 
+extern "C" void fn_8022F824(s32);
+extern "C" void fn_8021A744(void *arg0) {
+    fn_8022F824(*(s32 *)((u8 *)arg0 + 0x244));
+    *(s32 *)((u8 *)arg0 + 0x244) = 0;
+}
+
 extern "C" s32 fn_8022F638(s32, s32, s32, s32, f32);
 extern "C" s32 fn_8022F8CC(s32);
 extern "C" s32 fn_8022FFE8(s32);
