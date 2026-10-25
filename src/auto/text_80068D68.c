@@ -4077,6 +4077,16 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
     if (temp_r28 != 0) temp_r28(0);
 }
 
+void fn_80085DC4(void *arg0, u8 arg1) {
+    ((u16 *)((u8 *)arg0 + 2))[0] = 4;
+    ((u16 *)((u8 *)arg0 + 4))[0] = 0;
+    ((u8 *)arg0)[8] = 0x43;
+    ((u8 *)arg0)[9] = 0x0C;
+    ((u8 *)arg0)[10] = 1;
+    ((u8 *)arg0)[11] = arg1;
+    ((void (*)(void *, u8))btu_hcif_send_cmd)(arg0, arg1);
+}
+
 tBTM_STATUS BTM_SetLocalDeviceName(char *p_name) {
     void *buf;
     u8 *name;
