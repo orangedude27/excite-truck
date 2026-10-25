@@ -256,19 +256,26 @@ int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
 }
 #pragma pop
 extern void *memcpy(void *, const void *, unsigned long);
+#pragma push
+#pragma optimize_for_size on
 int fn_80133AD8(int arg0) {
     int values[17];
-    int *src = lbl_802F9308;
-    int *dst = values;
-    int count = 8;
-    do {
-        *dst++ = *src++;
-        *dst++ = *src++;
-    } while (--count != 0);
-    *dst = *src;
+    int *src;
+    int *dst;
+    int i;
+
+    dst = values - 1;
+    src = lbl_802F9308 - 1;
+    for (i = 8; i > 0; --i) {
+        dst[1] = src[1];
+        dst[2] = src[2];
+        src += 2;
+        dst += 2;
+    }
+    dst[1] = src[1];
     return values[arg0];
 }
-
+#pragma pop
 int fn_80133E10(void **arg0, int arg1, int arg2) {
     int count = 0;
     int offset = 0;
