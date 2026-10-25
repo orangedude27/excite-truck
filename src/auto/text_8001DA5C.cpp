@@ -486,20 +486,20 @@ extern "C" s32 fn_8001ED78(s32 arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_801E85A4(void);
-extern "C" void* lbl_802FDE38;
+extern "C" char lbl_802FDE38[];
 extern "C" void* lbl_802FDE48;
 extern "C" void* lbl_802FDE54;
 extern "C" void** lbl_8055D5FC;
 extern "C" void** lbl_8055D600;
 extern "C" void fn_8001EDB8(void) {
-    void* object = &lbl_802FDE38;
-    void** selected;
+    void* object = lbl_802FDE38;
+    void* selected;
     if (fn_801E85A4() == 2) {
         selected = lbl_8055D600;
     } else {
         selected = lbl_8055D5FC;
     }
-    ((void (*)(void*, void*))(*(void***)*selected)[3])(*selected, object);
+    ((void (*)(void*, void*))(*(void***)selected)[3])(selected, object);
     fn_801476C4();
 }
 
