@@ -2,6 +2,8 @@
 extern int lbl_80488798[64];
 extern char lbl_8033A51C[];
 extern void fn_802E317C(const char *, ...);
+extern char lbl_8033A578[];
+int fn_801F196C(int, int);
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct {
