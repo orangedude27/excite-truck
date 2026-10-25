@@ -105,6 +105,34 @@ void fn_801E8144(void) {
 
 }
 
+extern void fn_80287AF0(void *);
+extern void fn_801FA550(void);
+#pragma cplusplus on
+extern "C" void fn_801E8148(void) {
+    class Dummy_801E8148 {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+    };
+    long index;
+    long i;
+    Dummy_801E8148 *obj;
+
+    index = 0;
+    i = 0;
+    while (i < lbl_8055EB34) {
+        obj = (Dummy_801E8148 *)*(long *)((char *)lbl_8055EB3C + index);
+        obj->m2();
+        index += 4;
+        i++;
+    }
+    fn_80287AF0(0);
+    fn_801FA550();
+}
+#pragma cplusplus off
 void fn_801E837C(void) {
     extern void fn_802D6C54(long, void *, float);
     long i;
@@ -333,6 +361,7 @@ void fn_801E88B4(long *arg0, long *arg1, long *arg2, long *arg3, long arg4) {
     *arg3 = *(long *)(base + 0x48);
 }
 
+#pragma scheduling invalid_target
 float fn_801E88F0(long arg0) {
     long index = arg0;
     long params[4];
@@ -347,7 +376,7 @@ float fn_801E88F0(long arg0) {
     base = (char *)lbl_8055EB04 + index * 0xE0;
     return *(float *)(base + 0x38) * ((float *)params)[which];
 }
-
+#pragma scheduling on
 long fn_801E8954(long arg0) {
     if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
     return (*(unsigned long *)(lbl_80487D00 + arg0 * 0x38 + 0x30)) & 1;
@@ -435,35 +464,43 @@ void fn_801E8DD4(void) {
     if (object != 0) fn_801EAD6C(object, (long)data);
     ((void (*)(void))fn_801E87D4)();
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801E8E38(void) {
-    float sp1C;
-    float sp18;
-    float sp14;
-    float sp10;
-    long spC;
-    long sp8;
-    sp8 = 0x4D555450;
-    spC = 0x18;
-    sp10 = lbl_80562DB0;
-    sp1C = lbl_80562DA8;
-    sp18 = lbl_80562DA8;
-    sp14 = lbl_80562DA8;
-    if (((int (*)(int, void *, void *, float, float, float, float, float, float))fn_801284F8)(0x7C, &lbl_80339CB4, &sp8, sp10, sp1C, sp18, sp14, sp14, sp14) != 0) fn_801EAD6C(&sp8);
+    struct InitData { long tag; long size; float a; float b; float c; float d; } data;
+    register float fill = lbl_80562DA8;
+    register float main = lbl_80562DB0;
+    void *object;
+
+    data.tag = 0x4D555450;
+    data.size = 0x18;
+    data.a = main;
+    data.b = fill;
+    data.c = fill;
+    data.d = fill;
+    object = ((void *(*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4);
+    if (object != 0) fn_801EAD6C(object, (long)&data);
     ((void (*)(void))fn_801E87D4)();
 }
-
+#pragma scheduling invalid_target
 void *fn_801E8EA4(long arg0) {
     unsigned char *entry = lbl_80339CC0;
-    do {
-        if (*(long *)(entry + 4) == arg0) break;
-        entry += 0xC;
-    } while (*(long *)entry != 0);
-    if (*(long *)entry == 0) fn_802E317C(lbl_80339CFC);
+    long sentinel;
+
+    goto check_key;
+
+check_key:
+    if (*(long *)(entry + 4) == arg0) goto done;
+    entry += 0xC;
+    sentinel = *(long *)entry;
+    if (sentinel != 0) goto check_key;
+
+done:
+    if (*(long *)entry == 0) {
+        fn_802E317C(lbl_80339CFC, arg0);
+    }
     return entry;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 long fn_801E952C(long arg0) {
     memset((void *)arg0, 0, 0x3F8);
     return arg0;
