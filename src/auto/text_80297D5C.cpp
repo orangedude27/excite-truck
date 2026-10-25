@@ -863,6 +863,28 @@ void* fn_8029B9A4(void* arg0, int arg1) {
     return arg0;
 }
 
+extern "C" int fn_8029AEE8(void *);
+#pragma use_lmw_stmw off
+extern "C" int fn_8029BA0C(void *arg0) {
+    char *entry = (char *)arg0;
+    int i = 0;
+    char *base = (char *)arg0;
+    int zero = 0;
+    int one = 1;
+    while (i < fn_80287B14()) {
+        void *info = fn_80288208(i);
+        if (*(int *)((char *)info + 0x24) > 0) {
+            *(int *)(entry + 4) = one;
+        } else {
+            *(int *)(entry + 4) = zero;
+        }
+        *(int *)(entry + 0x14) = zero;
+        entry += 0x14;
+        i++;
+    }
+    return fn_8029AEE8(*(void **)base);
+}
+#pragma use_lmw_stmw reset
 extern "C" void fn_8029BA8C(void* arg0) {
     fn_8029AF24(*(int*)arg0);
 }
