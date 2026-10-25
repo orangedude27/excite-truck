@@ -10898,6 +10898,14 @@ u8 l2cu_lcb_disconnecting(void) {
     return 0;
 }
 
+void RFCOMM_Init(void) {
+    u8 *p = lbl_803C4828;
+    memset(p, 0, 0x418);
+    p[0x65] = 1;
+    p[0x414] = 5;
+    rfcomm_l2cap_if_init();
+}
+
 void PORT_StartCnf(void *mux_id, u16 status) {
     s32 i;
     s32 found = 1;
