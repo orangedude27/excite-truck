@@ -433,5 +433,4 @@ extern long lbl_805076A0[];
 extern char lbl_8034E990;
 extern long fn_8012C370(long, long, long *, long *, long, long);
 extern long fn_802E30C8(char *, long);
-extern void *memcpy(void *, const void *, unsigned long);
 extern char lbl_80560060;
