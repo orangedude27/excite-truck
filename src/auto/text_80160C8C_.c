@@ -638,13 +638,13 @@ extern "C" void **fn_80161C94(void) {
 
     manager = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     object = (Obj_80161C94 *)*(void **)((u8 *)manager + 0x20);
-    result = ((s32 (*)(void *, void *))(*(void ***)object)[0x5C / 4])((void *)object, lbl_8032F5DC);
+    result = object->f21(lbl_8032F5DC);
     if (((u32)(-result | result) >> 31) != 0) {
         allocated = (void **)fn_801284F8(4, lbl_8032F71C);
         if (allocated != 0) {
             *allocated = lbl_8032F760;
-            return allocated;
         }
+        return allocated;
     }
     return 0;
 }
