@@ -274,6 +274,8 @@ void fn_8022DC20(void *arg0) {
     if (value < 0) *(int *)((char *)arg0 + 0xC) = *(int *)((char *)arg0 + 0x10) - 1;
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_8022DC40(void *arg0, int arg1) {
     int step;
     *(int *)((char *)arg0 + 0xC) = arg1;
@@ -284,6 +286,7 @@ check:
     step = *(int *)((char *)arg0 + 0x10);
     if (*(int *)((char *)arg0 + 0xC) >= step) goto loop;
 }
+#pragma pop
 
 int fn_8022DC68(void *arg0, int arg1) {
     int value;
@@ -457,10 +460,12 @@ int fn_8022DF9C(void *arg0) {
 }
 
 float fn_8022DFBC(void *arg0) {
-    int temp_r6 = *(int *)((char *)arg0 + 8);
-    int temp_r0 = *(int *)((char *)arg0 + 0xC) - temp_r6;
-    int temp_r5 = **(int **)((char *)arg0 + 4) - temp_r6;
-    return (float)temp_r5 / (float)temp_r0;
+    int offset = *(int *)((char *)arg0 + 8);
+    int numerator = **(int **)((char *)arg0 + 4) - offset;
+    int denominator = *(int *)((char *)arg0 + 0xC) - offset;
+    float convertedDenominator = (float)denominator;
+    float convertedNumerator = (float)numerator;
+    return convertedNumerator / convertedDenominator;
 }
 
 void fn_8022E014(void *arg0, float arg1) {
