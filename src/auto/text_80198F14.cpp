@@ -768,9 +768,10 @@ extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
     } else {out->x=lbl_805622D0;out->y=lbl_805622D0;out->z=lbl_805622D0;}
 }
 
+extern "C" void fn_8019AA34(void*, void*, void*, void*, s32, s32, void*, f32, f32);
 void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
-    extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
-    fn_8019AA34((u8*)arg0 + 0x34, arg1, (u8*)arg1 + 0x34, arg2, arg3, arg1, *(f32*)((u8*)arg0 + 0x24), *(f32*)((u8*)arg1 + 0x24));
+    f32 scale = *(f32*)((u8*)arg1 + 0x24);
+    fn_8019AA34(arg0, (u8*)arg0 + 0x34, arg1, (u8*)arg1 + 0x34, arg2, arg3, arg1, *(f32*)((u8*)arg0 + 0x24), scale);
 }
 
 extern "C" s32 fn_8019B08C(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
