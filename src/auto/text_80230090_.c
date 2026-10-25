@@ -145,6 +145,8 @@ void fn_80230C9C(float *arg0, float *arg1, float farg0, float farg1, float farg2
 
 void fn_80230DA0(void) {}
 
+#pragma paired off
+#pragma paired_single off
 void fn_80230DA4(float a, float b) {
     float value;
     lbl_8055F030 = a;
@@ -152,6 +154,8 @@ void fn_80230DA4(float a, float b) {
     if (value < lbl_80563614) value += b;
     lbl_8055F02C = b - value;
 }
+#pragma paired_single reset
+#pragma paired reset
 
 #pragma dont_inline on
 float fn_80230DF4(float a, float b) {
