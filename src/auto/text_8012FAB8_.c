@@ -142,10 +142,10 @@ void fn_80130518(void) {
 extern char *strchr(const char *, int);
 void fn_80130568(char *arg0) {
     char *base = arg0;
-    if (*lbl_8055E050 != '.') {
-        *arg0 = *lbl_8055E050;
+    if (*(char *)lbl_8055E050 != '.') {
+        *arg0 = *(char *)lbl_8055E050;
         while ((arg0 = strchr(base, '.')) != 0) {
-            *arg0 = *lbl_8055E050;
+            *arg0 = *(char *)lbl_8055E050;
         }
     }
 }
@@ -160,21 +160,26 @@ void fn_801308F4(void) {
 
 void fn_801308F8(char *dst, int count, int limit) {
     char *src;
-    if (limit < 1000) {
-        fn_8013072C();
-        return;
-    }
-    src = (char *)fn_80131234();
-    for (;;) {
-        int c = *src++;
-        *dst++ = c;
-        if ((signed char)c == 0)
-            break;
-        if (--count <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-    }
+    unsigned char c;
+    if (limit < 1000)
+        goto fallback;
+    src = (char *)fn_80131234(lbl_8032B224);
+    goto copy;
+count_check:
+    if (--count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
+    goto done;
+fallback:
+    fn_8013072C();
+done:
+    ;
 }
 
 void fn_80130978(int arg0, int arg1) { fn_80130980(arg0, arg1, 3); }
@@ -301,23 +306,17 @@ int fn_802E317C(const char *, ...);
 
 char *fn_8013126C(char *arg0, const char *arg1) {
     int count;
-    char *dst;
-    const char *src;
-    src = arg1;
+    char *dst = arg0;
+    const char *src = arg1;
+    char c;
     fn_802E317C(lbl_8032B328);
-    dst = arg0;
-    count = 0x12c;
-    do {
-        count--;
-    } while (count > 0);
-    count = 0x12c;
-    for (;;) {
-        int c = *src++;
-        if ((signed char)c == 0)
-            break;
-        *dst++ = c;
+    for (count = 0x12c; count > 0; count--) {
     }
-    *dst = 0;
+    dst[-1] = 0;
+    do {
+        c = *src++;
+        *dst++ = c;
+    } while (c != 0);
     return arg0;
 }
 extern char lbl_80559B00[];
