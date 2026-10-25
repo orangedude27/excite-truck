@@ -136,6 +136,16 @@ void fn_802CECF4(unsigned int arg0) {
     } while ((unsigned short)lbl_8055D0F6 != arg0);
 }
 
+void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
+    volatile unsigned char *state = lbl_804C5710;
+    *(volatile int *)(state + 4) = arg0;
+    *(volatile int *)(state + 8) = arg1;
+    *(volatile int *)(state + 0xC) = arg2;
+    *(volatile int *)(state + 0x10) = arg3;
+    state[0] = 1;
+    state[1] = 1;
+}
+
 void fn_802CF048(int arg0) {
     if (arg0 != 0) {
         GXSetGPMetric(0x23, 0x16);
@@ -517,13 +527,22 @@ void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     p[0] = a; p[1] = b; p[2] = c; p[3] = 0; p[0x5C] = 1;
 }
 
+#pragma scheduling off
 void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
-    float *out = (float *)((unsigned char *)&lbl_804C97D0 + 0xC);
-    out[0] = p[0]; out[1] = p[1]; out[2] = p[2]; out[3] = v;
+    float z, y, x;
+    float *out;
+    x = p[0];
+    y = p[1];
+    z = p[2];
+    out = (float *)((unsigned char *)&lbl_804C97D0 + 0xC);
+    out[0] = x;
+    out[1] = y;
+    out[2] = z;
+    out[3] = v;
     *((unsigned char *)&lbl_804C97D0 + 0x5C) = 1;
 }
-
+#pragma scheduling on
 void fn_802D02F8(signed char arg1) {
     extern unsigned char lbl_804C9778[];
     extern unsigned char fn_802CEA1C();
@@ -1510,6 +1529,5 @@ extern unsigned char lbl_804C5700[12];
 extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
-extern void fn_802CEC04(void);
-extern void fn_802E2E0C(void (*)(void), void *);
-extern int lbl_804C9760[];
+  extern void fn_802E2E0C(void (*)(void), void *);
+  extern int lbl_804C9760[];
