@@ -223,6 +223,21 @@ void fn_80178290(void) {
         fn_801AFD20((void *)&lbl_80331938);
     }
 }
+
+extern char lbl_80331944[];
+extern char lbl_80338400[];
+void *fn_8017B0B0(void *);
+#pragma scheduling invalid_target
+void *fn_801782C8(void) {
+    long object = fn_801284F8(0x29C, (void *)&lbl_80331944[0]);
+    if (object != 0) {
+        fn_8017B0B0((void *)object);
+        *(long *)object = (long)&lbl_80338400[0];
+    }
+    return (void *)object;
+}
+#pragma scheduling on
+
 #pragma scheduling on
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
     if (arg0 != 0) {
