@@ -122,21 +122,26 @@ extern "C" void fn_8001DD6C(void) {
         lbl_80358680[i] = 0;
     }
 }
-#pragma scheduling reset
-void fn_8001DEA8(void) {
-    u32 var_r30;
-    void ***var_r31;
-    
-    var_r31 = (void ***)lbl_80358680;
-    var_r30 = 0;
+#pragma scheduling invalid_target
+extern "C" void fn_8001DEA8(void) {
+    class Entry {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+    };
+    void*** p;
+    u32 i;
+    p = (void***)lbl_80358680;
+    i = 0;
     do {
-        void **temp = var_r31[0];
-        ((void (**)(void *))temp)[4](temp);
-        var_r30++;
-        var_r31++;
-    } while (var_r30 < 6);
+        Entry* obj = (Entry*)p[0];
+        obj->f2();
+        i++;
+        p++;
+    } while (i < 6);
 }
-
+#pragma scheduling on
 extern "C" void fn_8001DF04(void) {
 }
 
