@@ -318,6 +318,18 @@ void fn_80018794(void) {
     lbl_8055D560 = (void*)atoi();
 }
 
+void fn_800187B8(const char* source) {
+    int remaining = 0x40;
+    volatile char* destination = (volatile char*)lbl_80357DC0;
+    while ((*destination++ = *source++) != '\0') {
+        if (--remaining > 0) {
+            continue;
+        }
+        destination[-1] = '\0';
+        return;
+    }
+}
+
 void fn_800187F8(void) {
     lbl_8055D564 = 1;
 }
