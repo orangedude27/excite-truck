@@ -17,6 +17,8 @@ extern void *lbl_8055FEE8;
 extern void fn_802D3144(void);
 extern void GXSetNumIndStages(u8);
 extern void GXSetTevDirect(GXTevStageID);
+extern void fn_80118DC0(void *);
+extern void fn_802E1728(void *);
 
 void fn_802DEAC4(void) {
     register u32 x = 1;
