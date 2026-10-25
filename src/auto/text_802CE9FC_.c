@@ -1,4 +1,5 @@
 #pragma dont_inline fn_802CFF50
+extern int lbl_804C9760[];
 extern int lbl_804C5650[];
 extern char lbl_8055FD70;
 extern float lbl_80564F8C, lbl_80564FCC, lbl_80564FDC;
