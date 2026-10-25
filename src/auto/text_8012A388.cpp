@@ -139,6 +139,7 @@ extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
 }
 #pragma use_lmw_stmw reset
 #pragma dont_inline reset
+#pragma dont_inline on
 extern "C" void *fn_8012A570(u32, void *) {
     if (lbl_8055E004 == 0) {
         void *name = lbl_8032A6F8;
@@ -444,7 +445,8 @@ void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *arg4) {
 
 extern "C" u8 *fn_8012B4E4(u8 *arg0, u8 *arg1) {
     s8 ch = (s8)*arg0;
-    *arg1 = ch == 0x2A;
+    u32 diff = (u32)(ch - 0x2A);
+    *arg1 = (u8)(__cntlzw(diff) >> 5);
     if (ch == 0x2A)
         return arg0 + 1;
     return arg0;
