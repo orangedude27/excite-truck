@@ -13,7 +13,8 @@ extern void fn_802328D4(int);
 extern void fn_80128668(void *);
 extern int lbl_80344D98;
 __declspec(section ".data") extern int lbl_80344D98;
-extern int lbl_80344D88;
+extern char lbl_80344D88[];
+extern void *fn_801284F8(int, void *);
 void *fn_802583CC(void *o, int arg1, int arg2) {
  int i;
  char *p=(char *)o;
