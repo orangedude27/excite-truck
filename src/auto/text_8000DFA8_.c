@@ -477,12 +477,13 @@ s32 fn_8001084C(s32 arg0) {
     return (s32)q;
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 f32 fn_800108C8(f32 farg0, s32 arg0) {
-    f32 r = farg0 * fn_8023293C(lbl_8055D490, lbl_80560264);
-    f32 c = lbl_805602C8;
-    return c * r;
+    return (farg0 * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, arg0, lbl_80560264)) * lbl_805602C8;
 }
-
+#pragma pop
 extern s32 lbl_80558A90;
 f32 fn_8001090C(f64 farg0) {
     return lbl_805602C8 * ((f32)farg0 * (f32)fn_80232B70(lbl_8055D490));
@@ -1190,16 +1191,16 @@ void fn_800120BC(void) {
 }
 
 void fn_80012158(void) {
-    s32 *base = (s32 *)lbl_8055D4AC;
-    s32 *p;
+    register u8 *obj;
+    register s32 *base;
     s32 n;
-    void *obj;
-    p = base + base[0];
-    obj = (void *)p[1];
+
+    base = (s32 *)lbl_8055D4AC;
+    obj = *(u8 **)((u8 *)base + base[0] * 4 + 4);
     if (obj == 0) return;
-    *((u8 *)obj + 0x49) = 1;
-    *((u8 *)obj + 0x4B) = 0;
-    *((u8 *)obj + 0x4A) = 0;
+    obj[0x49] = 1;
+    obj[0x4B] = 0;
+    obj[0x4A] = 0;
     n = base[0];
     n++;
     base[0] = n;
