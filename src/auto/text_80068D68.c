@@ -12497,6 +12497,14 @@ void rfc_timer_stop(void *arg0) {
     fn_80070F90(arg0);
 }
 
+extern char lbl_80319F04[];
+void rfc_port_timer_stop(void *arg0) {
+    if (lbl_803C4828[0x414] >= 4) {
+        fn_8007093C(0x90003, lbl_80319F04);
+    }
+    fn_80070F90((u8 *)arg0 + 0x70);
+}
+
 void rfc_check_mcb_active(void *arg0) {
     u8 *mcb = (u8 *)arg0;
     u16 i;
