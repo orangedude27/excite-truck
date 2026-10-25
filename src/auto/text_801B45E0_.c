@@ -18,8 +18,8 @@ struct F801B4610 {
 #pragma small_data off
 extern char lbl_80435C70[];
 #pragma pop
-extern char lbl_80335E48;
-extern void fn_802E317C(const char *, int);
+extern char lbl_80335E48[];
+extern void fn_802E317C(const char *, ...);
 extern int __dt__15shdStateMachineFv_801B496C();
 extern void *lbl_8055E6D8;
 extern int *fn_801B479C();
