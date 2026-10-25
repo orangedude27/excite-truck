@@ -275,6 +275,19 @@ int fn_80235FD8(void *arg0) {
     return count;
 }
 
+extern void *fn_8012850C(int, void *, int);
+extern char lbl_803408CC[];
+extern char lbl_8055B9F8[];
+void *fn_80236008(void *arg0, int arg1, int arg2) {
+    *(int *)((char *)arg0 + 8) = arg1;
+    *(void **)arg0 = lbl_803408CC;
+    *(void **)((char *)arg0 + 4) = fn_8012850C(arg1 * 0x2C, &lbl_8055B9F8, arg2);
+    *(int *)((char *)arg0 + 0xC) = 0;
+    *(int *)((char *)arg0 + 0x10) = -2;
+    *((char *)arg0 + 0x14) = arg2;
+    return arg0;
+}
+
 #pragma dont_inline reset
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
