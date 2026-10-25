@@ -121,6 +121,29 @@ void fn_8023BB0C(void) {
         fn_80016970(var_r30, temp_r29, sp10, sp8);
     }
 }
+
+#pragma dont_inline on
+void fn_8023BBA8(void) {
+    s32 sp10;
+    s32 spC;
+    s32 sp8;
+
+    sp10 = 0;
+    spC = 0;
+    sp8 = 0;
+    goto check;
+body:
+    fn_802411C8();
+    if (fn_8023FF1C(1) != 1) {
+        fn_8023BB0C();
+        fn_8023B9EC(sp10, spC, 0, sp8, 0);
+        fn_8001EFC8();
+    }
+check:
+    if (fn_8024A4CC(&sp10, &spC, &sp8) != 0) goto body;
+}
+#pragma dont_inline reset
+
 #pragma dont_inline reset
 #pragma scheduling on
 int fn_8023BC24(int ignored, int arg1, int arg2) {
