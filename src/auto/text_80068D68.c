@@ -2847,6 +2847,19 @@ void bta_hh_open_cmpl_act(void *arg0, void *arg1) {
     dev[0x19] = 0;
 }
 
+void bta_hh_data_act(void *arg0, void *arg1) {
+    u8 *data = *(u8 **)((u8 *)arg1 + 0xC);
+    void *sp8 = data;
+
+    fn_8006CF44((void *)(u32)(u8)*(u16 *)((u8 *)arg1 + 6),
+                data + *(u16 *)(data + 4) + 8,
+                (void *)(u32)*(u16 *)(data + 2),
+                (void *)(u32)((u8 *)arg0)[0x1B],
+                (void *)(u32)((u8 *)arg0)[0x13],
+                ((u8 *)arg0)[0x15]);
+    fn_800716F0(&sp8);
+}
+
 void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
     u8 hs_data[10];
     u8 conn[8];
