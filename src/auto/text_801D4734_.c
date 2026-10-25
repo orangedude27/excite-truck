@@ -205,6 +205,7 @@ int fn_801D50A0(void) {
     return 0;
 }
 
+#pragma dont_inline on
 void fn_801D50A8(int arg0) {
     fn_801D5328(arg0, 1);
 }
@@ -212,6 +213,7 @@ void fn_801D50A8(int arg0) {
 void fn_801D50B0(int arg0) {
     fn_801D5328(arg0, 0);
 }
+#pragma dont_inline reset
 
 #pragma cplusplus on
 void fn_801D5328(int arg0, int arg1) {
