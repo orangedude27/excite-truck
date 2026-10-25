@@ -23,6 +23,14 @@ extern char lbl_8055D564;
 extern void* lbl_8055D560;
 s32 atoi(void);
 #pragma scheduling invalid_target
+void fn_8001786C(s32 arg0) {
+    void* object;
+    object = (void*)((char*)fn_80016544(arg0) + 0x2C);
+    if (fn_8013C8E8((s32)object) == 6) {
+        fn_802E30C8(lbl_802FD088, object);
+    }
+}
+
 void fn_800178BC(void* arg0, s32 arg1, s32 arg2) {
     s32 index1;
     s32 index2;
