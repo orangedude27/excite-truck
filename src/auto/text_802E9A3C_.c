@@ -383,11 +383,14 @@ long fn_802EC370(void *arg0) {
     return ((long *)arg0)[3];
 }
 
+#pragma push
+#pragma scheduling invalid_target
 long fn_802EC3F0(void *arg0, long arg1, long arg2) {
     long value = ((long *)arg0)[1];
     return fn_800B7C60(arg1, arg2, 1, value) == 1;
 }
-
+#pragma scheduling on
+#pragma pop
 long fn_802EC42C(void *arg0) {
     return fn_800B7C64(((long *)arg0)[1], 0) == 0;
 }
