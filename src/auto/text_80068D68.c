@@ -11,6 +11,9 @@
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
+
+extern void BTM_SendHciReset(void (*)(void));
+extern void fn_80085384(u8 *, u8);
 extern int btu_hcif_send_cmd();
 extern void fn_80085524(void *, void *);
 extern void fn_800869CC(void);
