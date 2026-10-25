@@ -12,6 +12,7 @@ extern int lbl_8055C774;
 extern int fn_80012820(int);
 extern void fn_80008188(int);
 extern void fn_8000DBC8(void *);
+extern void *lbl_804B2FD8;
 extern void fn_8027D96C(int);
 extern void fn_8027D9A4(int, int);
 extern int fn_80128668(void);
@@ -158,14 +159,24 @@ extern "C" void fn_8027D77C(void *arg0) {
 void fn_8027D7B8(void *arg0) {
     fn_80007F90(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
 }
-#pragma scheduling pop
-void fn_8027D810(void *arg0) {
+#pragma scheduling push
+#pragma scheduling off
+#pragma cplusplus on
+extern "C" void fn_8027D810(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3(int);
+    };
     int id = *(int *)((char *)arg0 + 0xC);
     void *res = fn_8001285C(id);
-    void *p = *(void **)((char *)res + 0x20);
-    (*(void (**)(void *, int))(*(char **)p + 0x14))(p, (int)&lbl_80347DE8);
+    void *obj = *(void **)((char *)res + 0x20);
+    ((Obj *)obj)->v3((int)lbl_80347DE8);
 }
-
+#pragma cplusplus off
+#pragma scheduling pop
 int fn_8027D850(void *arg0) {
     return *(int *)((char *)arg0 + 0x34);
 }
