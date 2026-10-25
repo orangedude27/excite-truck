@@ -820,7 +820,7 @@ extern "C" int fn_801EEFDC(void*, int);
 void* fn_8029B9A4(void* arg0, int arg1) {
     if (arg0 != 0) {
         fn_801EF024((void*)fn_8029BFF8);
-        __dt__Q210JASDrumSet5TPercFv_8029AE88(*(void**)arg0, 1);
+        ((void (*)(void*, int))__dt__Q210JASDrumSet5TPercFv_8029AE88)(*(void**)arg0, 1);
         if (arg1 > 0) {
             fn_80128668(arg0);
         }
