@@ -6,7 +6,9 @@ typedef int s32;
 extern void *fn_801E87A8(void);
 extern s32 fn_8026E20C(void);
 extern void fn_8026E204(s32);
-extern s32 lbl_8034F3D0;
+#pragma small_data off
+extern char lbl_8034F3D0[];
+#pragma small_data on
 extern s32 fn_800167F4(void);
 extern s32 lbl_802ED6D8[];
 extern s32 lbl_8055D370;
@@ -147,13 +149,10 @@ s32 fn_80009C8C(void) {
 
 s32 fn_80009CB8(void) {
     s32 result = 0;
-    if ((u8)lbl_8055D36D != 0)
-        goto done;
-    if (*((u8 *)&lbl_8055D378 + 1) == 0)
-        goto done;
-    result = 1;
-    *((u8 *)&lbl_8055D378 + 1) = 0;
-done:
+    if ((u8)lbl_8055D36D == 0 && *((u8 *)&lbl_8055D378 + 1) != 0) {
+        result = 1;
+        *((u8 *)&lbl_8055D378 + 1) = 0;
+    }
     return result;
 }
 
