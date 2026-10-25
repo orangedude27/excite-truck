@@ -1,3 +1,4 @@
+#include "math.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -96,6 +97,56 @@ int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
     return 1;
 }
 
+extern float lbl_80562B64;
+extern float lbl_80562B68;
+extern float lbl_80562B6C;
+float fn_801DB398(float grid[4][4], float t, float u) {
+float sp8,spC,sp10,sp14; float *o=&sp8,*s=&grid[0][0]; float q=t*t,c=q*t; int i;
+for(i=0;i<2;i++){float x0=s[0],y0=s[1],x1=s[4],y1=s[5],x2=s[8],y2=s[9],x3=s[12],y3=s[13]; float dx=x1-x0,dy=y1-y0,dx2=x3-x2; float a=lbl_80562B64*dx,b=lbl_80562B64*dx2,d=lbl_80562B68*a,e=lbl_80562B68*dy,f=lbl_80562B6C*dy-d-b,g=(a+b)-e; o[0]=y0+a*t+g*c+f*q; a=lbl_80562B64*(y1-s[3]); b=lbl_80562B64*(y3-y2); d=lbl_80562B68*(x1-x2); dy=y1-y2; o[1]=y2+a*t+(((a+b)-lbl_80562B68*dy)*c)+((lbl_80562B6C*dy-d-b)*q); o+=2;s+=2;}
+{float a=u*u,b=lbl_80562B64*(sp10-sp8),d=sp10-spC,e=lbl_80562B64*(sp14-spC),c=lbl_80562B64*(sp14-sp8);return spC+b*u+(((b+e)-lbl_80562B68*d)*(a*u))+((lbl_80562B6C*d-lbl_80562B68*c-e)*a);}
+}
+
+float fn_801DB514(float grid[4][4], void *out, float t, float u) {
+    float a[4], b[4];
+    float q = t * t;
+    float c = q * t;
+    float *src = &grid[0][0];
+    float *pa = a;
+    float *pb = b;
+    int i;
+    for (i = 0; i < 4; i++) {
+        float x = src[8] - src[0];
+        float y = src[4] - src[0];
+        float z = src[12] - src[4];
+        float p = lbl_80562B64 * x;
+        float r = lbl_80562B64 * z;
+        float s = lbl_80562B6C * y;
+        float v = (p + r) - lbl_80562B68 * y;
+        float w = (s - lbl_80562B68 * p) - r;
+        *pa++ = p + lbl_80562B6C * v * q + lbl_80562B68 * w * t;
+        *pb++ = src[4] + p * t + v * c + w * q;
+        src++;
+    }
+    {
+        float x = b[2] - b[0];
+        float y = b[3] - b[1];
+        float p = lbl_80562B64 * x;
+        float r = lbl_80562B64 * y;
+        float v = (p + r) - lbl_80562B68 * (b[2] - b[1]);
+        float w = (lbl_80562B6C * (b[2] - b[1]) - lbl_80562B68 * p) - r;
+        float h = p + lbl_80562B6C * v * (u * u) + lbl_80562B68 * w * u;
+        float dx = a[2] - a[0];
+        float dy = a[3] - a[1];
+        float factor = lbl_80562B70 / *(float *)((char *)lbl_8055E990 + 8);
+        float z = -(h);
+        ((float *)out)[0] = z;
+        ((float *)out)[1] = factor;
+        ((float *)out)[2] = -z;
+        PSVECNormalize(out, out);
+        return a[1] + dx * u + dy * (u * u);
+    }
+}
+
 #pragma paired_single off
 int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
     float grid[4][4];
@@ -138,9 +189,11 @@ void fn_801DCDA0(void) {
 }
 
 void fn_801DCDA4(void) {
-    if (*(volatile int *)((char *)lbl_80446F08 + 8)) {
+    void *data;
+    data = (void *)lbl_80446F08;
+    if (((void **)data)[2] != (void *)0) {
         fn_80128670();
-        *(volatile int *)((char *)lbl_80446F08 + 8) = 0;
+        ((void **)data)[2] = (void *)0;
     }
     lbl_8055E994(lbl_8055E990);
     lbl_8055E994 = 0;
@@ -149,8 +202,8 @@ void fn_801DCDA4(void) {
     fn_801D049C();
 }
 
-void fn_801DCE0C(void) {
-    fn_801DCD28();
+void fn_801DCE0C(int arg0) {
+    fn_801DCD28(arg0);
 }
 
 void fn_801DCE10(void) {
@@ -205,10 +258,141 @@ void fn_801DCF00(void) {
     lbl_8055E9A8 = 0;
 }
 
+#pragma scheduling invalid_target
 float fn_801DCF0C(void) {
-    volatile float sp8 = lbl_80562BB8;
-    ((int (*)(float *, int, int, int))fn_801DC258)((float *)&sp8, 0, 0, 0);
+    float sp8;
+    float *p = &sp8;
+    sp8 = lbl_80562BB8;
+    ((int (*)(float *, int, int, int))fn_801DC258)(p, 0, 0, 0);
     return sp8;
+}
+#pragma scheduling on
+extern double fabs(double);
+float fn_801DCF48(void *arg0, float farg0, float farg1) {
+    extern float lbl_80562B84;
+    extern float lbl_80562BBC;
+    char *state = (char *)lbl_8055E990;
+    char *node, *layer;
+    float sp8, var_f31, x, z, roundedX, roundedZ;
+    float base, slope, weight, var_f7, var_f8, factorX, factorZ, normalY;
+    int ix, iz, quotientX, quotientZ, tileX, tileZ, remX, remZ;
+    int tile, next, deltaX, deltaZ, otherX, otherZ;
+    unsigned short *tileMap;
+    unsigned short sample00, sample01, sample10;
+    void *tileBase;
+
+    if (*(int *)(state + 0x10) == 0) {
+        sp8 = lbl_80562B84;
+        if (((int (*)(float *, int, int, void *))fn_801DC258)(&sp8, 0, 0, arg0) == 0) {
+            sp8 = lbl_80562B84;
+            if (arg0 != 0) {
+                ((float *)arg0)[0] = lbl_80562B84;
+                ((float *)arg0)[1] = lbl_80562B70;
+                ((float *)arg0)[2] = lbl_80562B84;
+            }
+        }
+        return sp8;
+    }
+    x = *(float *)(state + 8) * (farg0 + *(float *)(state + 0));
+    z = *(float *)(state + 0xC) * (farg1 + *(float *)(state + 4));
+    if (x < lbl_80562B84) roundedX = x - lbl_80562B64;
+    else roundedX = lbl_80562B64 + x;
+    ix = (int)roundedX;
+    if (z < lbl_80562B84) roundedZ = z - lbl_80562B64;
+    else roundedZ = lbl_80562B64 + z;
+    iz = (int)roundedZ;
+
+    quotientX = ix / 32;
+    quotientZ = iz / 32;
+    tileX = quotientX - lbl_8055E99C;
+    tileZ = quotientZ - lbl_8055E9A0;
+    remX = ix - quotientX * 32;
+    remZ = iz - quotientZ * 32;
+    node = 0;
+    if (tileX < 0) {
+        node = 0;
+    } else if (tileZ < 0) {
+        node = 0;
+    } else if (tileX >= 0x60) {
+        node = 0;
+    } else if (tileZ >= 0x60) {
+        node = 0;
+    } else {
+        tileMap = lbl_80442708;
+        tile = tileMap[tileX * 0x60 + tileZ];
+        if (tile != 0xFFFF) {
+            tileBase = *(void **)(state + 0x18);
+            node = (char *)tileBase + tile * 0x894;
+        }
+    }
+    if (node == 0) {
+        if (arg0 != 0) {
+            ((float *)arg0)[0] = lbl_80562B84;
+            ((float *)arg0)[1] = lbl_80562B70;
+            ((float *)arg0)[2] = lbl_80562B84;
+        }
+        return lbl_80562B84;
+    }
+
+    if (arg0 != 0) {
+        deltaX = remX << 6;
+        next = *(int *)(node + 0x890);
+        deltaZ = remZ << 1;
+        otherX = (remX ^ 1) << 6;
+        otherZ = (remZ ^ 1) << 1;
+        base = *(float *)(node + 0);
+        slope = *(float *)(node + 4);
+        sample00 = *(unsigned short *)(node + deltaX + deltaZ + 8);
+        sample01 = *(unsigned short *)(node + deltaX + otherZ + 8);
+        sample10 = *(unsigned short *)(node + otherX + deltaZ + 8);
+        var_f31 = base + slope * (float)sample00;
+        var_f8 = base + slope * (float)sample01;
+        var_f7 = base + slope * (float)sample10;
+        next = *(int *)(node + 0x890);
+        if (next >= 0) {
+            do {
+                layer = (char *)*(char **)(state + 0x20) + next * 0x810;
+                base = *(float *)(layer + 0);
+                slope = *(float *)(layer + 4);
+                weight = lbl_804424B0[*(int *)(layer + 0x808)];
+                var_f31 += weight * (base + slope * (float)*(unsigned short *)(layer + deltaX + deltaZ + 8));
+                var_f7 += weight * (base + slope * (float)*(unsigned short *)(layer + otherX + deltaZ + 8));
+                var_f8 += weight * (base + slope * (float)*(unsigned short *)(layer + deltaX + otherZ + 8));
+                next = *(int *)(layer + 0x80C);
+            } while (next >= 0);
+        }
+        var_f7 -= var_f31;
+        var_f8 -= var_f31;
+        if (remX & 1) factorX = lbl_80562BBC;
+        else factorX = lbl_80562B70;
+        factorX /= *(float *)(state + 8);
+        if (remZ & 1) factorZ = lbl_80562BBC;
+        else factorZ = lbl_80562B70;
+        factorZ /= *(float *)(state + 0xC);
+        ((float *)arg0)[0] = -var_f7 * factorX;
+        normalY = (float)fabs(factorX * factorZ);
+        ((float *)arg0)[2] = -var_f8 * factorZ;
+        ((float *)arg0)[1] = normalY;
+        PSVECNormalize((float *)arg0, (float *)arg0);
+    } else {
+        deltaZ = remZ << 1;
+        next = *(int *)(node + 0x890);
+        deltaX = remX << 6;
+        base = *(float *)(node + 0);
+        slope = *(float *)(node + 4);
+        sample00 = *(unsigned short *)(node + deltaX + deltaZ + 8);
+        var_f31 = base + slope * (float)sample00;
+        if (next >= 0) {
+            do {
+                layer = (char *)*(char **)(state + 0x20) + next * 0x810;
+                weight = lbl_804424B0[*(int *)(layer + 0x808)];
+                var_f31 += weight * (*(float *)(layer + 0) +
+                    *(float *)(layer + 4) * (float)*(unsigned short *)(layer + deltaX + deltaZ + 8));
+                next = *(int *)(layer + 0x80C);
+            } while (next >= 0);
+        }
+    }
+    return var_f31;
 }
 
 extern int fn_801DC9B0(void);
@@ -230,6 +414,20 @@ void fn_801DD808(void) {
         entry += 0x20;
         i++;
     } while (i < (int)lbl_8055E9A8);
+}
+
+extern float lbl_80562B84;
+extern float fn_801DCF0C(void);
+void fn_801DD88C(void) {
+    float temp[75];
+    int i,j;
+    for(i=0;i<9;i++) for(j=0;j<8;j++) { temp[i*8+j]=lbl_804424B0[i*8+j]; lbl_804424B0[i*8+j]=lbl_80562B84; }
+    temp[72]=lbl_804424B0[72]; lbl_804424B0[72]=lbl_80562B84;
+    temp[73]=lbl_804424B0[73]; lbl_804424B0[73]=lbl_80562B84;
+    temp[74]=lbl_804424B0[74]; lbl_804424B0[74]=lbl_80562B84;
+    fn_801DCF0C();
+    for(i=0;i<3;i++) for(j=0;j<24;j++) lbl_804424B0[i*24+j]=temp[i*24+j];
+    lbl_804424B0[72]=temp[72]; lbl_804424B0[73]=temp[73]; lbl_804424B0[74]=temp[74];
 }
 
 extern int lbl_8055E99C;
