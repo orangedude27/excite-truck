@@ -3,6 +3,7 @@
 extern void *fn_80131234();
 extern int fn_801302E0();
 __declspec(section ".sdata") extern char lbl_80559AF8;
+extern char lbl_8032B224[];
 __declspec(section ".sdata") extern char lbl_80559B00[];
 
 extern int lbl_804230D0;
@@ -141,10 +142,10 @@ void fn_80130518(void) {
 extern char *strchr(const char *, int);
 void fn_80130568(char *arg0) {
     char *base = arg0;
-    if (*(char *)lbl_8055E050 != '.') {
-        *arg0 = *(char *)lbl_8055E050;
+    if (*lbl_8055E050 != '.') {
+        *arg0 = *lbl_8055E050;
         while ((arg0 = strchr(base, '.')) != 0) {
-            *arg0 = *(char *)lbl_8055E050;
+            *arg0 = *lbl_8055E050;
         }
     }
 }
