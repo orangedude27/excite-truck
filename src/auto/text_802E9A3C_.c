@@ -124,7 +124,7 @@ void *fn_802E9BEC(long arg0) {
 }
 
 void fn_802E9C68(long arg0) {
-    OSReport(&lbl_8034E370, arg0);
+    OSReport((const char *)&lbl_8034E370, arg0);
     lbl_80560061 = 1;
     lbl_80560068++;
 }
