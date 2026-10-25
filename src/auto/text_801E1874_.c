@@ -127,7 +127,7 @@ void fn_801E1EA4(void *arg0) {
     void *base = (char *)arg0 + 4;
     float *cfg = (float *)&lbl_804874B8;
     for (i = 0; i < count; i++) {
-        int type = lbl_804874B8;
+        int type = *(int *)lbl_804874B8;
         if (type == 3) {
             *(float *)((char *)base + 0xD4) = lbl_80562CAC;
             *(float *)((char *)base + 0xD8) = lbl_80562CD4 * cfg[1];
