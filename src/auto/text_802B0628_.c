@@ -596,5 +596,3 @@ int fn_802B1C50(void *arg0, int arg1, int arg2) {
     }
     return 0;
 }
-
-extern int lbl_8034A270;
