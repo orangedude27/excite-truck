@@ -69,18 +69,24 @@ void fn_8029261C(void) {
     fn_80292EB4(lbl_804B4168);
 }
 
-void fn_80292628(void) {
-    s32 i;
-    unsigned char *entry = lbl_804B4168;
-    for (i = 0; i < *(s32 *)(lbl_804B4168 + 0x180); i++, entry += 0x18) {
-        void *obj = *(void **)(entry + 0x10);
-        void **vtable = *(void ***)obj;
-        ((void (*)(void *))vtable[3])(obj);
-    }
-}
-
 #pragma cplusplus on
 #pragma scheduling invalid_target
+extern "C" void fn_80292628(void) {
+    class Dummy_80292628 {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+    };
+    register unsigned char *entry;
+    register s32 i;
+    entry = lbl_804B4168;
+    i = 0;
+    for (; i < *(s32 *)(lbl_804B4168 + 0x180); entry += 0x18, i++) {
+        Dummy_80292628 *obj = *(Dummy_80292628 **)(entry + 0x10);
+        obj->m2();
+    }
+}
 extern "C" void fn_80292864(void) {
     class Dummy_80292864 {
     public:
@@ -160,12 +166,31 @@ int fn_80292EC0(void *arg0, const char *arg1, s32 *arg2, s32 arg3) {
 }
 
 void fn_80292F40(void *arg0, void *arg1, const char *arg2) {
-    s32 count = *(s32 *)((u8 *)arg0 + 0x180);
-    u8 *entry = (u8 *)arg0 + count * 0x18;
-    strncpy((char *)entry, arg2, 0x10);
-    *(void **)(entry + 0x10) = arg1;
-    *(s32 *)(entry + 0x14) = 1;
-    *(s32 *)((u8 *)arg0 + 0x180) = count + 1;
+    volatile s32 *counter = (volatile s32 *)((u8 *)arg0 + 0x180);
+    s32 count = *counter;
+    char *dst = (char *)arg0 + count * 0x18;
+    s32 left = 0x10;
+    char c;
+    goto copy_byte;
+check_limit:
+    if (--left > 0) {
+        goto copy_byte;
+    }
+    dst[-1] = 0;
+    goto after_copy;
+copy_byte:
+    c = *arg2++;
+    *dst++ = c;
+    if (c != 0) {
+        goto check_limit;
+    }
+after_copy:
+    count = *counter;
+    *(void **)((char *)arg0 + count * 0x18 + 0x10) = arg1;
+    count = *counter;
+    *(s32 *)((char *)arg0 + count * 0x18 + 0x14) = 1;
+    count = *counter;
+    *counter = count + 1;
 }
 
 extern float fn_801E7E24(void*);
