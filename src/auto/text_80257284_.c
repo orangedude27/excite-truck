@@ -80,6 +80,8 @@ int fn_80257904(void *arg0, int arg1) {
 
 void fn_80257A6C(int *arg0, int arg1, int arg2) { *arg0 = (*arg0 + (arg2 + arg1)) % arg2; }
 
+#pragma scheduling invalid_target
 int fn_80257B7C(int arg0) { fn_8022D458(7, 2, &lbl_80563AB8); return arg0; }
+#pragma scheduling on
 
 void fn_80257BB8(void *arg0, int arg1) { *(int *)((char *)arg0 + 0x30) = arg1; fn_80257A8C(arg0); }
