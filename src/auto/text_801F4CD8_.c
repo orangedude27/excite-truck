@@ -137,35 +137,22 @@ typedef void *(*F2)(void *, void *);
 #pragma use_lmw_stmw off
 int fn_801F52BC(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     int result = 0;
-    if (((int (*)(void *))(*(void ***)arg0)[3])(arg0) != 0) {
+    int (*check)(void *);
+    check = (int (*)(void *))(*(void ***)arg0)[3];
+    if (check(arg0) != 0) {
         result = ((int (*)(int, int, int))fn_8012F9E8)(arg2, arg3, ((int (*)(void *, int))(*(void ***)arg0)[5])(arg0, arg1));
     }
     return result;
 }
-
+#pragma pop
 extern void *fn_8002F37C();
 extern void *fn_8012850C();
 extern char lbl_8033ADA4[];
 extern char lbl_8033ADC4[];
 extern void fn_801F596C(void);
+#pragma scheduling invalid_target
 void fn_801F5664(void *arg0, int arg1) {
-    short temp_r0;
-    short temp_r0_2;
-    short temp_r0_3;
-    short temp_r0_4;
-    short temp_r7_2;
-    int var_r8;
-    int temp_r0_5;
-    int temp_r3_2;
-    int temp_r4_3;
-    int temp_r4_9;
-    int temp_r5;
     int var_r31;
-    int var_r4;
-    int var_r5;
-    int var_r6;
-    int var_r6_2;
-    int var_r8_2;
     void *temp_r3;
     void *temp_r3_3;
     void *temp_r4;
@@ -184,26 +171,45 @@ void fn_801F5664(void *arg0, int arg1) {
     void *temp_r6_2;
     void *temp_r6_3;
     void *temp_r7;
+    int temp_r0;
+    int temp_r0_2;
+    int temp_r0_3;
+    int temp_r0_4;
+    int temp_r7_2;
+    int var_r8;
+    int temp_r0_5;
+    int temp_r3_2;
+    int temp_r4_3;
+    int temp_r4_9;
+    int temp_r5;
+    int var_r4;
+    int var_r5;
+    int var_r6;
+    int var_r6_2;
+    int var_r8_2;
+    int temp_r0_6;
 
+    temp_r0_6 = *(int *)((char *)arg0 + 0x30);
     var_r31 = *(int *)((char *)arg0 + 0x2C);
     switch (arg1) {
-    case 4:
     case 1:
+    case 4:
         var_r31 = 2;
         break;
     case 2:
         var_r31 = 4;
         break;
     case 5:
-        var_r31 = *(int *)((char *)arg0 + 0x30);
+        var_r31 = temp_r0_6;
+        break;
+    case 3:
         break;
     default:
         fn_802E317C(lbl_8033ADA4, arg1);
         var_r31 = 0;
         break;
     }
-    fn_8012850C((var_r31 * 0x10) + 0x10, lbl_8033ADC4);
-    temp_r3 = fn_8002F37C(0, fn_801F596C, 0x10, var_r31);
+    temp_r3 = fn_8002F37C(fn_8012850C((var_r31 * 0x10) + 0x10, lbl_8033ADC4), fn_801F596C, 0, 0x10, var_r31);
     var_r6 = 0;
     var_r4 = 0;
     var_r5 = 0;
@@ -236,7 +242,7 @@ void fn_801F5664(void *arg0, int arg1) {
         *(float *)((char *)temp_r4_5 + 8) = *(float *)((char *)temp_r5_3 + 4);
         *(float *)((char *)temp_r4_5 + 0xC) = *(float *)((char *)temp_r5_3 + 8);
         temp_r4_6 = *(void **)((char *)arg0 + 4);
-        temp_r0_3 = (short)(*(int *)((char *)arg0 + 0x2C) - 1);
+        temp_r0_3 = *(int *)((char *)arg0 + 0x2C) - 1;
         temp_r3_2 = temp_r0_3 * 0xC;
         *(short *)((char *)temp_r6 + 0) = temp_r0_3;
         temp_r3_3 = (char *)temp_r4_6 + temp_r3_2;
@@ -266,7 +272,7 @@ void fn_801F5664(void *arg0, int arg1) {
         *(float *)((char *)temp_r3 + 8) = *(float *)((char *)temp_r4_8 + 4);
         *(float *)((char *)temp_r3 + 0xC) = *(float *)((char *)temp_r4_8 + 8);
         temp_r5_4 = *(void **)((char *)arg0 + 4);
-        temp_r0_4 = (short)((*(int *)((char *)arg0 + 0x30) - 1) * *(int *)((char *)arg0 + 0x2C));
+        temp_r0_4 = (*(int *)((char *)arg0 + 0x30) - 1) * *(int *)((char *)arg0 + 0x2C);
         temp_r4_9 = temp_r0_4 * 0xC;
         *(short *)((char *)temp_r3 + 0x10) = temp_r0_4;
         temp_r4_10 = (char *)temp_r5_4 + temp_r4_9;
@@ -279,7 +285,7 @@ void fn_801F5664(void *arg0, int arg1) {
         while (var_r8_2 < *(int *)((char *)arg0 + 0x30)) {
             temp_r5_5 = (char *)temp_r3 + var_r4;
             temp_r6_2 = *(void **)((char *)arg0 + 4);
-            temp_r7_2 = (short)(*(int *)((char *)arg0 + 0x2C) * var_r8_2);
+            temp_r7_2 = *(int *)((char *)arg0 + 0x2C) * var_r8_2;
             temp_r0_5 = temp_r7_2 * 0xC;
             *(short *)temp_r5_5 = temp_r7_2;
             temp_r6_3 = (char *)temp_r6_2 + temp_r0_5;
@@ -297,8 +303,7 @@ void fn_801F5664(void *arg0, int arg1) {
     *(void **)((char *)arg0 + 0x1C) = temp_r3;
     *(int *)((char *)arg0 + 0x20) = var_r31;
 }
-
-#pragma pop
+#pragma scheduling on
 void fn_801F596C(void) {
 
 }
@@ -588,11 +593,10 @@ void fn_801F6880(void* a) {
  fn_802C8D74(); fn_802C9A4C(f31);
 }
 
-void fn_801F69C8(void *arg0) {
-    int size;
-    size = 0x900;
-    memset(arg0, 0, size);
-    *(int *)((char *)arg0 + 0x900) = 0;
+void *fn_801F69C8(void *arg0) {
+    memset(arg0,0,0x900);
+    *(int *)((char *)arg0+0x900)=0;
+    return arg0;
 }
 
 extern void fn_801F602C(void *, int, int, int, int);
@@ -781,10 +785,11 @@ void fn_801F78D8(void) {
 }
 
 extern void fn_801F75A4(void *, void *, void *);
+#pragma scheduling invalid_target
 void fn_801F78DC(void *arg0, void *arg1) {
     fn_801F75A4(arg1, (char *)arg1 + 0x2C, arg0);
 }
-
+#pragma scheduling on
 extern const char lbl_8033AECC[];
 extern const char lbl_8033AED8[];
 #pragma scheduling invalid_target
