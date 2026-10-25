@@ -11919,7 +11919,7 @@ void fn_800D120C(void *arg0) {
 
 extern "C" s32 fn_800D1E78(void *, s32, s32);
 #pragma dont_inline
-s32 homebutton::Controller::isPlayingSoundId(s32 arg0) const {
+int homebutton::Controller::isPlayingSoundId(int arg0) const {
     if (fn_800D1E5C(m_soundPlayer, m_soundId) == 0) {
         return 0;
     }
