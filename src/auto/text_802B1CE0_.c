@@ -124,21 +124,76 @@ void fn_802B218C(void *arg0) {
 #pragma push
 #pragma opt_common_subs off
 void fn_802B21D4(void **arg0) {
-    int *ptr = (int *)*arg0;
+    void *ptr = *arg0;
+    register int value;
     if (ptr != 0) {
         if (ptr != 0) {
-            int value = ptr[2];
+            value = ((int *)ptr)[2];
             if (value != -2) {
                 fn_802CAC54();
-                ptr[2] = -2;
+                ((int *)ptr)[2] = -2;
             }
-            value = ptr[0];
-            if (value != 0) fn_802C6C20();
+            value = ((int *)ptr)[0];
+            if (value != 0) {
+                fn_802C6C20();
+            }
             fn_80128668(ptr);
         }
         *arg0 = 0;
     }
 }
+
+extern char lbl_8034A2E8[];
+extern char lbl_8055CDD8;
+extern void *fn_801284F8(int, const char *);
+extern void fn_802B2504(int *, int);
+extern void *fn_802B2958(void *);
+extern void fn_802B2934(void *, void **);
+extern void fn_802B257C(void *);
+void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
+    int i;
+    void *result;
+    void *item;
+    int (*get_name)(void *, const char *, int);
+    void *(*get_item)(void *, int);
+    *(int *)((char *)arg0 + 0x40C) = 0;
+    *(int *)((char *)arg0 + 0x410) = 0x10;
+    *(void ***)((char *)arg0 + 0x408) = (void **)((char *)arg0 + 0x414);
+    *(char *)((char *)arg0 + 4) = 0;
+    *(char *)((char *)arg0 + 5) = 0;
+    for (i = 0; i < 16; i++) {
+        int *p = (int *)((char *)arg0 + 8 + i * 0x20);
+        p[0] = i * 8;
+        p[1] = i * 8 + 1;
+        p[2] = i * 8 + 2;
+        p[3] = i * 8 + 3;
+        p[4] = i * 8 + 4;
+        p[5] = i * 8 + 5;
+        p[6] = i * 8 + 6;
+        p[7] = i * 8 + 7;
+    }
+    fn_802B2504((int *)((char *)arg0 + 8), 0x80);
+    get_name = *(int (**)(void *, const char *, int))(*(void ***)arg1 + 0x30/4);
+    *(char *)((char *)arg0 + 5) = get_name(arg1, &lbl_8055CDD8, 1);
+    *(char *)((char *)arg0 + 4) = *(char *)((char *)arg0 + 5);
+    get_item = *(void *(**)(void *, int))(*(void ***)arg1 + 0x60/4);
+    i = 0;
+    while ((item = get_item(arg1, i)) != 0) {
+        if (fn_802B1DE8(item) != 0) {
+            result = fn_801284F8(0x2A8, lbl_8034A2E8);
+            if (result != 0) {
+                result = fn_802B2958(item);
+                *(void **)((char *)arg0 + 8) = result;
+                fn_802B2934((char *)arg0 + 0x408, (void **)((char *)arg0 + 8));
+            }
+        }
+        i++;
+    }
+    fn_802B257C(arg0);
+    *(void **)arg0 = arg2;
+    return arg0;
+}
+
 #pragma pop
 int fn_80129D90(int, int, int);
 #pragma push
@@ -226,22 +281,205 @@ void fn_802B28BC(int *dst, int count) {
 void fn_802B2C34(void (*fn)(void *), void *arg) {
     fn(arg);
 }
-#pragma scheduling reset
+#pragma scheduling invalid_target
 void fn_802B2D94(int *arg0) {
+    int *object = arg0;
     int i;
-    i = 0;
     lbl_8055F9B4 = 0;
     lbl_8055F9B0 = 0;
-    do {
-        fn_802B2E08(*fn_802B320C(arg0, i));
-        i++;
-    } while (i < fn_802B2E00(arg0));
+    i = 0;
+    goto check;
+loop:
+    fn_802B2E08(*fn_802B320C(object, i));
+    i++;
+check:
+    if (i < fn_802B2E00(object)) {
+        goto loop;
+    }
 }
-
+#pragma scheduling on
 int fn_802B2E00(void *arg0) {
     return ((int *)arg0)[1];
 }
 
+extern double cos(float);
+extern double sin(float);
+extern double fn_8002EFB4(float, double);
+extern float fn_80129DC4(float, float);
+extern float fn_801E7E18(void);
+extern void fn_801F1C24(float *);
+extern void fn_802C28C0(void);
+extern void fn_802C8BD0(void);
+extern void fn_802C8D74(void);
+extern void fn_802DC71C(int, int);
+extern void fn_802DC8B4(void);
+extern void fn_802DCAE4(int, float *, void *, void *, float);
+extern float lbl_80564C00, lbl_80564C04, lbl_80564C08;
+extern float lbl_80564C0C, lbl_80564C10, lbl_80564C20;
+extern double lbl_80564C18, lbl_80564C28;
+#pragma scheduling invalid_target
+int fn_802B2E08(int arg0) {
+    char *base, *obj, *transform;
+    register float *entry;
+    char *head;
+    float stack[24];
+    double conversion;
+    float scaleX, scaleY, scaleZ, normal, vertical;
+    float angle, cosine, sine, radial, radius, c, x, x2, yz, x3;
+    float product0, product1, product2;
+    float phase, phase2, scale;
+    register int arrayOffset, j, index;
+    int zero, eight, row, byteOffset, n;
+    unsigned char *data, *record;
+    unsigned short selector;
+
+    base = (char *)arg0;
+    conversion = lbl_80564C28;
+    scaleX = lbl_80564C0C;
+    index = 0;
+    scaleY = lbl_80564C10;
+    scaleZ = lbl_80564C20;
+    arrayOffset = 0;
+    normal = lbl_80564C00;
+    vertical = lbl_80564C04;
+    zero = 0;
+    eight = 8;
+    goto outer_check;
+
+outer_body:
+    obj = *(char **)(*(char **)(base + 0x408) + arrayOffset);
+    head = *(char **)(obj + 0x10);
+    if (head != 0) {
+        if (*(unsigned char *)(obj + 0x2A0) != 0) {
+            entry = (float *)(obj + 0x18);
+            radial = normal;
+            j = 0;
+            do {
+                radius = ((float (*)(int, float, float))fn_80129DC4)(
+                    0, *(float *)(obj + 0x298), *(float *)(obj + 0x29C));
+                entry[9] = radius;
+                angle = ((float (*)(int, float, float))fn_80129DC4)(
+                    0, lbl_80564C00, lbl_80564C08);
+                cosine = (float)cos(angle);
+                sine = (float)sin(angle);
+                x = entry[9];
+                c = cosine;
+                j++;
+                product1 = radial * x;
+                product0 = c * x;
+                product2 = -sine * x;
+                entry[0] = product0;
+                entry[1] = product1;
+                entry[2] = product2;
+                x2 = entry[9];
+                yz = radial * x2;
+                entry[3] = yz;
+                entry[4] = vertical * x2;
+                entry[5] = yz;
+                x3 = entry[9];
+                entry[6] = sine * x3;
+                entry[7] = radial * x3;
+                entry[8] = c * x3;
+                entry += 10;
+            } while ((unsigned int)j < 16u);
+            *(unsigned char *)(obj + 0x2A0) = (unsigned char)zero;
+        }
+
+        if (*(unsigned char *)(obj + 4) != 0) {
+            fn_801F1C24(stack);
+            entry = (float *)(obj + 0x18);
+            {
+                volatile float *vEntry = (volatile float *)entry;
+                for (j = 0; j < eight; j++) {
+                    scale = vEntry[9];
+                    entry[0] = stack[0] * scale;
+                    entry[1] = stack[1] * scale;
+                    entry[2] = stack[2] * scale;
+                    scale = vEntry[9];
+                    entry[3] = stack[3] * scale;
+                    entry[4] = stack[4] * scale;
+                    entry[5] = stack[5] * scale;
+                    scale = vEntry[9];
+                    entry[6] = stack[6] * scale;
+                    entry[7] = stack[7] * scale;
+                    entry[8] = stack[8] * scale;
+                    scale = vEntry[19];
+                    entry[10] = stack[0] * scale;
+                    entry[11] = stack[1] * scale;
+                    entry[12] = stack[2] * scale;
+                    scale = vEntry[19];
+                    entry[13] = stack[3] * scale;
+                    entry[14] = stack[4] * scale;
+                    entry[15] = stack[5] * scale;
+                    scale = vEntry[19];
+                    entry[16] = stack[6] * scale;
+                    entry[17] = stack[7] * scale;
+                    entry[18] = stack[8] * scale;
+                    entry += 20;
+                    vEntry = (volatile float *)entry;
+                }
+            }
+        } else if (*(float *)(obj + 8) > normal) {
+            phase = fn_801E7E18();
+            entry = (float *)(obj + 0x18);
+            phase2 = scaleZ * phase;
+            j = 0;
+            do {
+                angle = (float)fn_8002EFB4(
+                    (scaleX * (float)j) / scaleY + phase, lbl_80564C18);
+                sine = (float)sin(angle);
+                entry[3] = *(float *)(obj + 8) * sine;
+                angle = (float)fn_8002EFB4(
+                    (scaleX * (float)j) / scaleY + phase2, lbl_80564C18);
+                cosine = (float)cos(angle);
+                j++;
+                entry[5] = *(float *)(obj + 8) * cosine;
+                entry += 10;
+            } while (j < 16);
+        }
+
+        fn_802C28C0();
+        fn_802C8BD0();
+        fn_802DC71C(*(int *)(*(char **)(obj + 0xC) + 4),
+                    *(int *)(*(char **)(obj + 0xC) + 8));
+        do {
+            n = *(int *)(head + 4);
+            row = 0;
+            byteOffset = 0;
+            do {
+                data = *(unsigned char **)head;
+                record = data + byteOffset;
+                stack[21] = *(float *)(record + 4);
+                stack[22] = *(float *)(record + 8);
+                stack[23] = *(float *)(record + 0xC);
+                selector = *(unsigned short *)record;
+                transform = obj + ((selector & 0xF) * 0x28);
+                (*(unsigned int *)&stack[12]) = *(unsigned int *)(transform + 0x18);
+                (*(unsigned int *)&stack[13]) = *(unsigned int *)(transform + 0x1C);
+                (*(unsigned int *)&stack[14]) = *(unsigned int *)(transform + 0x20);
+                (*(unsigned int *)&stack[15]) = *(unsigned int *)(transform + 0x24);
+                (*(unsigned int *)&stack[16]) = *(unsigned int *)(transform + 0x28);
+                (*(unsigned int *)&stack[17]) = *(unsigned int *)(transform + 0x2C);
+                (*(unsigned int *)&stack[18]) = *(unsigned int *)(transform + 0x30);
+                (*(unsigned int *)&stack[19]) = *(unsigned int *)(transform + 0x34);
+                (*(unsigned int *)&stack[20]) = *(unsigned int *)(transform + 0x38);
+                fn_802DCAE4(*(int *)(*(char **)(obj + 0xC) + 4), stack + 12, transform,
+                            record, *(float *)(record + 0x10));
+                byteOffset += 0x14;
+                row++;
+            } while (row < n);
+            head = *(char **)(head + 0xC);
+        } while (head != 0);
+        fn_802DC8B4();
+        fn_802C8D74();
+    }
+    arrayOffset += 4;
+    index++;
+outer_check:
+    if (index < *(int *)(base + 0x40C))
+        goto outer_body;
+}
+#pragma scheduling on
 int *fn_802B320C(int *arg0, int arg1) {
     return (int *)((char *)*arg0 + arg1 * 4);
 }
@@ -399,14 +637,18 @@ void fn_802B2C7C(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 int fn_802B2C98(char *arg0) {
-    Unk802B2C98 *base = &lbl_804BE1FC;
-    int result = 0;
+    register Unk802B2C98 *base = &lbl_804BE1FC;
+    int result;
     int i;
-    for (i = 0; i < base->m4; i++) {
-        if (stricmp(arg0, *(char **)((char *)((void **)base->m0)[i] + 0x24)) == 0) {
-            result = (int)((void **)base->m0)[i];
+
+    result = 0;
+    i = 0;
+    while (i < base->m4) {
+        if (stricmp(arg0, *(char **)((char *)((void **)lbl_804BE1FC.m0)[i] + 0x24)) == 0) {
+            result = (int)((void **)lbl_804BE1FC.m0)[i];
             break;
         }
+        i++;
     }
     return result;
 }
