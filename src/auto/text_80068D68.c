@@ -8227,6 +8227,12 @@ void hidh_search_callback(UINT16 sdp_result) {
     (*(void (**)(UINT16, UINT16, void *))(lbl_803C3C38 + 0x384))(0, attr_mask, lbl_803C3C38 + 0x38c);
 }
 
+void fn_800869CC(void) {
+    u8 *p = lbl_803C3C38;
+    memset(p, 0, 0x404);
+    p[0x401] = 0;
+}
+
 extern u8 lbl_803C3C38[];
 extern u8 lbl_803C3AF0[];
 extern u8 hidh_conn_reg(void);
