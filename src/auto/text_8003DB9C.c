@@ -548,7 +548,8 @@ void GXClearVtxDesc(void) {
     unsigned int *data = __GXData;
     unsigned int zero = 0;
     unsigned int value = 1;
-    data[0x14 / 4] = (zero & ~0x600) | ((value << 9) & 0x600);
+    unsigned int field = __rlwimi(0, value, 9, 21, 22);
+    data[0x14 / 4] = field;
     data[0x18 / 4] = zero;
     *((unsigned char *)data + 0x524) = zero;
     *((unsigned char *)data + 0x525) = zero;
@@ -2864,9 +2865,8 @@ void GXSetColorUpdate(s32 enable) {
 
 void GXSetAlphaUpdate(s32 enable) {
     unsigned int *data = __GXData;
-    unsigned int value;
-    value = data[0x220 / 4];
-    value = (value & ~0x10) | ((enable << 4) & 0x10);
+    unsigned int value = data[0x220 / 4];
+    value = (value & 0xFFFFFFEF) | ((enable & 1) << 4);
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = value;
     data[0x220 / 4] = value;
