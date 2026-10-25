@@ -484,12 +484,13 @@ void fn_802CFFA4(unsigned short arg0) {
     lbl_8055FD86 = arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_802D0014(float a, float b, float c) {
     extern unsigned char lbl_804C97B0[];
     extern char lbl_80558DC4[];
-    float d = c < 0.0f ? -c : c;
-    ((float *)lbl_804C97B0)[2] = b;
-    if (d > *(float *)lbl_80558DC4) {
+    float magnitude = (float)__fabs((double)c);
+    ((float *)lbl_804C97B0)[2] = a;
+    if (!(magnitude <= *(float *)lbl_80558DC4)) {
         lbl_804C97B0[0] = 1;
         ((float *)lbl_804C97B0)[3] = a + ((b - a) / c);
     } else {
@@ -499,7 +500,7 @@ void fn_802D0014(float a, float b, float c) {
     ((float *)lbl_804C97B0)[4] = c;
     lbl_804C97B0[0x1C] = 1;
 }
-
+#pragma scheduling on
 void fn_802D007C(float arg0) {
     float scaled;
     int truncated;
@@ -1473,9 +1474,9 @@ void fn_802D3D94(void *arg1, int arg0) {
 
 #pragma scheduling invalid_target
 void fn_802D3DAC(void) {
-    register int id = lbl_8055FDD0;
-    if ((id & 0x3F) != 0) {
-    } else {
+    int id;
+
+    if ((lbl_8055FDD0 & 0x3F) == 0) {
         OSReport(lbl_8034C204);
     }
     id = lbl_8055FDD0;
