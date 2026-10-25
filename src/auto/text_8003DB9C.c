@@ -2476,6 +2476,23 @@ void GXSetTevDirect(int arg0) {
 
 void __GXUpdateBPMask(void) {}
 
+void __GXSetIndirectMask(s32 mask) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int unused0 : 24;
+            unsigned int indirectMask : 8;
+        } bits;
+    } reg;
+    unsigned int *data = __GXData;
+    reg.value = data[0x174 / 4];
+    reg.bits.indirectMask = mask;
+    data[0x174 / 4] = reg.value;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = data[0x174 / 4];
+    *(unsigned short *)((char *)data + 2) = 0;
+}
+
 /* Use volatile byte and word FIFO stores, then clear the GXData halfword. */
 void __GXFlushTextureState(void) {
     *(volatile unsigned char *)0xCC008000 = 0x61;
