@@ -165,7 +165,6 @@ extern int NANDClose(void *);
 extern char lbl_80560034;
 extern int fn_802E95E0(void *, void (*)(void), int);
 extern int fn_802E2C20(void);
-extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034E024[];
 extern int lbl_80507288;
 extern unsigned char lbl_80560035;
