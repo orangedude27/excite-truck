@@ -115,14 +115,16 @@ int fn_80133348(int arg0, int arg1, int arg2) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 void fn_801333E8(int arg0, int arg1, unsigned char *arg2) {
     void *sp8;
-    if (fn_80133E10(&sp8, arg0, arg1) == 0)
-        fn_80133460(arg0, arg1, *arg2);
-    else
+    if (fn_80133E10(&sp8, arg0, arg1) != 0) {
         *arg2 = *(unsigned char *)((char *)sp8 + 8);
+    } else {
+        fn_80133460(arg0, arg1, *arg2);
+    }
 }
-
+#pragma scheduling on
 int fn_80133460(int arg0, int arg1, unsigned char arg2) {
     void *sp8;
     fn_80133E10(&sp8, arg0, arg1);
