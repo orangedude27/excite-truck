@@ -86,14 +86,13 @@ extern "C" int fn_80297D5C(void *out, int value) {
 }
 #pragma scheduling on
 extern "C" int fn_80297D90(void *out, int value) {
-    int i = 0;
-    do {
+    int i;
+    for (i = 0; i < 10; i++) {
         if ((1 << i) == value) {
             *(int *)out = i;
             return 1;
         }
-        i++;
-    } while (i < 0xA);
+    }
     return 0;
 }
 
