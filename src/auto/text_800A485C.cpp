@@ -4615,11 +4615,13 @@ extern "C" u8 lbl_80559230;
 extern "C" u8 lbl_80559231;
 extern "C" s32 fn_800B4D00(void) {
     u8 data[2];
+    s32 count;
     s32 result = 0;
 
     data[0] = lbl_80559230;
     data[1] = lbl_80559231;
-    if (VFiPFSTR_StrNCmp(0, data, 1, 0, 2) == 0) {
+    count = 1;
+    if (VFiPFSTR_StrNCmp(0, data, count, 0, 2) == 0) {
         result = 1;
     }
     return result;
@@ -11094,7 +11096,7 @@ extern "C" void *fn_800C6914(void *arg0, void *arg1) {
     return arg0;
 }
 
-extern "C" void fn_800D0F1C(void *, s32);
+extern "C" void *fn_800D0F1C(void *, s32);
 extern "C" s32 fn_800D67B8(s32, s32);
 extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
@@ -11798,6 +11800,19 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
         OSCreateAlarm((OSAlarm *)(lbl_80407600 + temp_r30));
         OSCreateAlarm((OSAlarm *)(lbl_80407600 + 0xC0 + temp_r30));
         *(void **)(lbl_80407600 + 0x180 + arg1 * 4) = arg0;
+    }
+    return arg0;
+}
+
+s32 fn_800D0F1C(s32 arg0, s32 arg1) {
+    if (arg0 != 0) {
+        s32 soundHandle = arg0 + 0x20;
+        if (soundHandle != 0) {
+            DetachSound__Q34nw4hbm3snd11SoundHandleFv((void *)soundHandle);
+        }
+        if (arg1 > 0) {
+            ((void (*)(void *))fn_80128668)((void *)arg0);
+        }
     }
     return arg0;
 }
