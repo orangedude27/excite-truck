@@ -331,6 +331,28 @@ int fn_801D57F0(void *alarm) {
     }
 }
 
+extern int strcmp(const char *, const char *);
+#pragma push
+#pragma use_lmw_stmw off
+void *fn_801D5860(const char *arg0) {
+    void **entries;
+    int count;
+    int i;
+    char *entry;
+    entries = (void **)lbl_804423A4[0];
+    count = lbl_804423A4[1];
+    i = 0;
+    while (i < count) {
+        entry = (char *)*entries;
+        if (strcmp(entry + 8, arg0) == 0) {
+            return entry;
+        }
+        entries++;
+        i++;
+    }
+    return 0;
+}
+#pragma pop
 extern float lbl_80562B00;
 float fn_801D58DC(void *arg0) {
     void **entries;
