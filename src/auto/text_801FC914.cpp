@@ -282,11 +282,11 @@ extern "C" void fn_801FCF18(void* arg0, int arg1, int arg2) {
 }
 
 extern "C" void fn_801FCF74(void* arg0, float farg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
+    register int obj = *(int *)((char *)arg0 + 4);
     if (obj == 0)
         return;
-    int type = *(unsigned short *)((char *)obj + 0x16);
-    switch (type) {
+    obj = *(unsigned short *)((char *)obj + 0x16);
+    switch (obj) {
     case 0:
         return fn_801FD3F0();
     case 1:
@@ -1063,7 +1063,7 @@ void fn_801FF6FC(void* arg0, float farg0) {
     }
 }
 
-void fn_801FF994(void*, void*);
+extern "C" void fn_801FF994(void*, void*);
 void fn_801FCAAC(void*, float);
 void fn_801FCAC0(void*);
 void fn_801FF770(void* arg0) {
@@ -1129,16 +1129,19 @@ body2:
     } while (i < *(int*)((char*)arg1 + 0x94));
 }
 
+#pragma dont_inline on
 void fn_801FF994(void* arg0, void* arg1) {
-    int i = 0;
-    char* p = (char*)arg1;
-    do {
-        fn_801FCAC0(*(void**)(p + 0x50));
-        p += 4;
+    void* entry;
+    int i;
+    i = 0;
+    entry = arg1;
+    while (i < *(int*)((char*)arg1 + 0x94)) {
+        fn_801FCAC0(*(void**)((char*)entry + 0x50));
+        entry = (char*)entry + 4;
         i++;
-    } while (i < *(int*)((char*)arg1 + 0x94));
+    }
 }
-
+#pragma dont_inline reset
 extern "C" void* fn_8002F634(void*, void*, int, int);
 #pragma dont_inline on
 SHMainMenu::~SHMainMenu() {
