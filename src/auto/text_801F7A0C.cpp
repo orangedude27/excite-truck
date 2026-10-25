@@ -484,7 +484,7 @@ extern "C" void *fn_801F9338(void *self) {
 extern "C" void *fn_801F93FC(void *node) {
     void *n = fn_801F8188(node, 0, 1);
 
-    fn_801F9440((struct F9Node *)&lbl_8055EC38, (struct F9Node *)n);
+    fn_801F9440((F92Node **)&lbl_8055EC38, (F92Node *)n);
     return n;
 }
 
@@ -569,11 +569,16 @@ extern "C" void *fn_801F96C8(void *node) {
     for (;;) {
         if (stricmp((char *)node, (char *)list) != 0) {
             list = *(void **)((char *)list + 0x20);
-            if (list != NULL) continue;
+            if (list != NULL) {
+                continue;
+            }
         }
-        if (list != NULL) break;
+        if (list != NULL) {
+            break;
+        }
         fn_801F96A8(node);
         list = ((void *(*)(void))fn_801F93FC)();
+        break;
     }
     return list;
 }
@@ -666,19 +671,19 @@ extern "C" void fn_801F9928(void *list, s32 arg) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801F99CC(F92Obj *obj) {
     F92Obj *cur = (F92Obj *)*(void **)((char *)obj + 0x24);
     F92Obj *next;
     while (cur != NULL) {
         next = (F92Obj *)*(void **)((char *)cur + 0x24);
         if (cur != NULL) {
-            F92VT *vt = (F92VT *)*(void **)((char *)cur + 0x108);
-            vt->fn8(cur, 1);
+            ((void (*)(F92Obj *, s32))(*(void **)((u8 *)*(void **)((char *)cur + 0x108) + 8)))(cur, 1);
         }
         cur = next;
     }
 }
-
+#pragma scheduling on
 extern "C" void fn_801F9A24(F92Node **arg0) {
     F92Node *node = *arg0;
     do {
@@ -874,6 +879,7 @@ extern "C" void fn_802C70AC(s32, void *, s32, s32);
 extern "C" void *lbl_8055EC50;
 extern "C" void *lbl_8055EC5C;
 extern "C" u8 lbl_8055EC40;
+#pragma scheduling invalid_target
 extern "C" void fn_801FA550(void) {
     void *node;
     void *other;
@@ -884,11 +890,7 @@ extern "C" void fn_801FA550(void) {
             fn_801F7A0C() != 0) {
             void *arg = *(void **)((u8 *)node + 0x34);
             s32 id = *(s32 *)node;
-            if (arg == 0) goto use_inline;
-            goto call_handler;
-        use_inline:
-            arg = (u8 *)node + 4;
-        call_handler:
+            if (arg == 0) arg = (u8 *)node + 4;
             fn_802C70AC(id, arg, -1, -15);
         }
         node = *(void **)((u8 *)node + 0x44);
@@ -902,7 +904,7 @@ extern "C" void fn_801FA550(void) {
         other = *(void **)((u8 *)other + 0x68);
     }
 }
-
+#pragma scheduling on
 extern "C" void fn_801FA6B8(void) {
     void *node = lbl_8055EC4C;
     while (node != 0) {
