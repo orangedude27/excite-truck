@@ -3,6 +3,13 @@
 
 #include <types.h>
 
+extern s32 *__AXFXGetLfoSinTable_801769CC(void);
+extern void *fn_8001285C();
+extern void *fn_801284F8(s32, void *);
+extern char lbl_8032F5DC[];
+extern char lbl_8032F71C[];
+extern char lbl_8032F760[];
+
 extern s32 lbl_8055A0E0;
 extern s32 lbl_8055A0E8;
 
@@ -945,15 +952,21 @@ extern "C" s32 fn_80162800(void *arg0) {
 extern char lbl_8032F698[];
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
-s32 fn_801628E8(void *arg0) {
-    f32 limit = lbl_8056185C;
-    if (*(f32 *)((u8 *)arg0 + 0x8C) > limit) {
-        ((void (*)(void *, char *))(*(void ***)lbl_8055E2E0)[0xC / 4])(lbl_8055E2E0, lbl_8032F698);
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" s32 fn_801628E8(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void call(char *);
+    };
+    if (*(f32 *)((u8 *)arg0 + 0x8C) > lbl_8056185C) {
+        ((Dummy *)lbl_8055E2E0)->call(lbl_8032F698);
         fn_801476C4();
     }
     return 1;
 }
-
+#pragma cplusplus off
+#pragma scheduling on
 void *fn_80162938(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void **)arg0 = (void *)lbl_8032F858;
