@@ -2447,16 +2447,14 @@ extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
     arg1->x = arg1->x - pad;
     arg1->z = arg1->z - pad;
 }
-#pragma scheduling on
-extern "C" f32 fn_801A3880(void* arg0) {
-    f32 max = PSVECDotProduct((const Vec*)((u8*)arg0 + 0x30), (const Vec*)((u8*)arg0 + 0x30));
-    f32 value = PSVECDotProduct((const Vec*)((u8*)arg0 + 0x24), (const Vec*)((u8*)arg0 + 0x24));
-    if (value <= max) {
-        value = max;
-    }
-    return (f32)fn_8002F234(value);
+#pragma scheduling invalid_target
+extern "C" f32 fn_801A3880(s32 arg0) {
+    f32 first = PSVECDotProduct((Vec*)(arg0 + 0x30), (Vec*)(arg0 + 0x30));
+    f32 second = PSVECDotProduct((Vec*)(arg0 + 0x24), (Vec*)(arg0 + 0x24));
+    f32 selected = second > first ? second : first;
+    return (f32)fn_8002F234(selected);
 }
-
+#pragma scheduling on
 extern float lbl_805622D0, lbl_805622DC, lbl_805623C0;
 extern float PSVECDotProduct(float *, void *);
 extern int fn_80198F64(void *, int, void *, float *, void *, float *, float);
@@ -2792,7 +2790,7 @@ void fn_801A47FC(void* arg0) {
 }
 
 #pragma opt_tail_call on
-void fn_801A4868(void* arg0, u8 arg1) {
+extern "C" void fn_801A4868(void* arg0, u8 arg1) {
     if (*(u8*)((u8*)arg0 + 0x40) != arg1) {
         s32 local38;
         u8 localC;
@@ -3020,10 +3018,9 @@ extern "C" s32 fn_801A517C(s32 arg0) {
 extern "C" u8 fn_801A5184(void *arg0) { return *((u8*)arg0 + 0x40); }
 
 extern "C" void fn_801A4868(void*, u8);
-extern "C" void fn_801A4868(void);
 
 extern "C" void fn_801A518C(void) {
-    fn_801A4868();
+    ((void (*)(void))fn_801A4868)();
 }
 
 extern "C" void fn_801A5190(void* arg0) {
