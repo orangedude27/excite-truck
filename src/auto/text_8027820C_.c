@@ -31,13 +31,51 @@ void fn_80278288(void) {
     lbl_8055F5B0 = 0; lbl_8055F5B4 = 0;
 }
 
+#pragma scheduling invalid_target
 void fn_80278318(void) {
     fn_802E30C8(lbl_803475B4, lbl_8055E3C4);
-    lbl_8055F5B8 = 0; lbl_8055F5BA = 0; lbl_8055F5B9 = 0;
+    lbl_8055F5B8 = 0;
+    lbl_8055F5BA = 0;
+    lbl_8055F5B9 = 0;
 }
-
+#pragma scheduling on
 char fn_80278358(void) {
     return lbl_8055F5B8;
+}
+
+extern char lbl_8055F5C9;
+extern const char lbl_803475D8[];
+void fn_80278360(void *arg0) {
+    int count;
+    int *dst;
+    int *src;
+    if (lbl_8055F5B8 != 0 && lbl_8055F5B4 == 0) {
+        if (lbl_8055E3C4 > 10) return;
+        if (lbl_8055F5B8 == 0 || lbl_8055F5B4 >= 2) goto error;
+        if (lbl_8055F5B4 == 0) {
+            lbl_8055F5C9 = 1;
+            fn_802E30C8(lbl_803475D8);
+            return;
+        }
+        count = lbl_8055F5B4;
+        if (lbl_8055E3C4 - *(int *)(lbl_8055F5B0 + (count - 1) * 0x38 + 0x34) < 2) return;
+    }
+    count = lbl_8055F5B4;
+    dst = (int *)(lbl_8055F5B0 + count * 0x38);
+    lbl_8055F5B4 = count + 1;
+    *(int *)((char *)dst + 0x34) = lbl_8055E3C4;
+    src = (int *)arg0;
+    dst[0] = src[0x16]; dst[1] = src[0x17]; dst[2] = src[0x18]; dst[3] = src[0x19];
+    dst[4] = src[0x1A]; dst[5] = src[0x1B]; dst[6] = src[0x1C]; dst[7] = src[0x1D];
+    dst[8] = src[0x1E]; dst[9] = src[0x1F]; dst[10] = src[0x20]; dst[11] = src[0x21];
+    dst[12] = src[0x22];
+    *(float *)((char *)dst + 0x30) = *(float *)((char *)src + 0xBC);
+    return;
+error:
+    if (lbl_8055F5C9 == 0) {
+        lbl_8055F5C9 = 1;
+        fn_802E30C8(lbl_803475D8);
+    }
 }
 
 void fn_80278778(char *arg0) {
@@ -67,9 +105,12 @@ char fn_802787F4(void) {
 }
 
 int fn_802787FC(void) {
-    if (lbl_8055F5BA != 0) return 0;
-    if (lbl_8055F5BB == 0) return 0;
-    return 1;
+    int result = 0;
+    if ((unsigned char)lbl_8055F5BA != 0) goto done;
+    if ((unsigned char)lbl_8055F5BB == 0) goto done;
+    result = 1;
+done:
+    return result;
 }
 
 extern char lbl_8055F5BB;
@@ -90,12 +131,7 @@ void fn_8027889C(float arg0) {
     float t;
     float result;
     t = arg0 / lbl_805640B8;
-    result = t - lbl_805640BC;
-    if (t < lbl_805640A8) {
-        result = t - lbl_805640BC;
-    } else {
-        result = lbl_805640BC + t;
-    }
+    result = t < lbl_805640A8 ? t - lbl_805640BC : lbl_805640BC + t;
     lbl_8055F5C0 = (int)result;
 }
 
