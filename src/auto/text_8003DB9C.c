@@ -2,6 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 extern void __GXFlushTextureState(void);
+extern void GXCPInterruptHandler(short, void *);
+extern void *OSGetCurrentThread(void);
+extern void memset(void *, int, unsigned int);
+extern unsigned int lbl_8055D958;
+extern void *lbl_8055D95C;
 extern unsigned char lbl_80558E80;
 extern int __cntlzw(unsigned int);
 extern unsigned int lbl_8055D954;
@@ -1578,25 +1583,52 @@ done:
 }
 
 void GXSetCopyClear(unsigned char *color, s32 depth) {
-    unsigned int first = 0;
-    unsigned int second = 0;
-    unsigned int third = 0;
-    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
+    union ColorWord {
+        unsigned int value;
+        struct {
+            unsigned int command : 8;
+            unsigned int pad : 8;
+            unsigned int channel : 8;
+            unsigned int low : 8;
+        } bits;
+    } first, second;
+    union DepthWord {
+        unsigned int value;
+        struct {
+            unsigned int command : 8;
+            unsigned int depth : 24;
+        } bits;
+    } third;
+    unsigned int red;
+    unsigned int blue;
+    unsigned int green;
+    unsigned int *data;
+
+    red = color[0];
+    green = color[3];
+    first.value = 0;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    first |= color[0];
-    first |= color[3] << 8;
-    first |= 0x4F000000;
-    *fifo = first;
+    first.bits.low = red;
+    first.bits.channel = green;
+    blue = color[2];
+    first.bits.command = 0x4F;
+    *(volatile unsigned int *)0xCC008000 = first.value;
+
+    second.value = 0;
+    second.bits.low = blue;
+    green = color[1];
+    second.bits.command = 0x50;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    second |= color[2];
-    second |= color[1] << 8;
-    second |= 0x50000000;
-    *fifo = second;
+    second.bits.channel = green;
+    data = __GXData;
+    *(volatile unsigned int *)0xCC008000 = second.value;
+
+    third.value = 0;
+    third.bits.depth = depth;
+    third.bits.command = 0x51;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    third |= depth;
-    third |= 0x51000000;
-    *fifo = third;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = third.value;
+    *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetCopyFilter(s32 arg0, u8 *arg1, s32 arg2, u8 *arg3) {
@@ -1811,17 +1843,24 @@ void GXGetLightDir_Internal(void *arg0, float farg0, float farg1, float farg2, f
 void GXInitLightColor(void *arg0, s32 *arg1) { *(s32 *)((char *)arg0 + 0xC) = *arg1; }
 
 void GXLoadLightObjImm(void *arg0, s32 arg1) {
-    unsigned int i;
     volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
     volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
-    float *src = (float *)((char *)arg0 + 0x10);
-    fifo8[0] = 0x10;
-    fifo32[0] = ((0x1F - __cntlzw(arg1)) << 4) + 0xF0600;
+    volatile double *fifo64 = (volatile double *)0xCC008000;
+    const double *src = (const double *)((char *)arg0 + 0x10);
+    unsigned int count = 31 - __cntlzw(arg1);
+
+    *fifo8 = 0x10;
+    fifo32[0] = (((count & 7) << 4) + 0x600) | 0xF0000;
     fifo32[0] = *(unsigned int *)((char *)arg0 + 0xC);
     fifo32[0] = 0;
     fifo32[0] = 0;
-    for (i = 0; i < 6; i++) fifo32[0] = ((unsigned int *)src)[i * 2];
-    *__GXData; 
+    fifo64[0] = src[0];
+    fifo64[0] = src[1];
+    fifo64[0] = src[2];
+    fifo64[0] = src[3];
+    fifo64[0] = src[4];
+    fifo64[0] = src[5];
+    ((volatile unsigned short *)__GXData)[1] = 1;
 }
 
 void GXSetChanAmbColor_Internal(s32 type, void *color) {
@@ -2465,6 +2504,42 @@ done:
     ;
 }
 
+#pragma dont_inline GXSetTevIndirect
+void GXSetTevIndirect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, u8 arg8, s32 arg9) {
+    union {
+        u32 value;
+        struct {
+            unsigned int opcode : 8;
+            unsigned int unused : 3;
+            unsigned int indirectPrev : 1;
+            unsigned int utcLod : 1;
+            unsigned int stage : 3;
+            unsigned int wrapT : 3;
+            unsigned int matrix : 4;
+            unsigned int bias : 2;
+            unsigned int format : 3;
+            unsigned int texStage : 2;
+            unsigned int tevStage : 2;
+        } fields;
+    } reg;
+    unsigned int *data;
+
+    reg.value = 0;
+    reg.fields.tevStage = arg1;
+    reg.fields.texStage = arg2;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    reg.fields.format = arg3;
+    reg.fields.utcLod = arg8 & 1;
+    reg.fields.bias = arg9;
+    data = __GXData;
+    reg.fields.matrix = arg4;
+    reg.fields.wrapT = arg5;
+    reg.fields.stage = arg6;
+    reg.fields.indirectPrev = arg7;
+    reg.fields.opcode = arg0 + 0x10;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
+    *(unsigned short *)((char *)data + 2) = 0;
+}
 void GXSetIndTexCoordScale(unsigned int stage, unsigned int scaleS, unsigned int scaleT) {
     unsigned int *data = __GXData;
     unsigned int *reg = data + (0x178 / 4);
@@ -2786,16 +2861,42 @@ void GXSetTevSwapMode(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
-    unsigned int *data = __GXData;
-    unsigned int *table = (unsigned int *)((char *)data + 0x200);
-    unsigned int offset0 = index * 8;
-    unsigned int offset1 = (index * 2 + 1) * 4;
-    table[offset0 / 4] = (table[offset0 / 4] & ~0xF) | (rasSel & 3) | ((texSel << 2) & 0xC);
+    union {
+        u32 value;
+        struct {
+            unsigned int unused : 28;
+            unsigned int texSel : 2;
+            unsigned int rasSel : 2;
+        } fields;
+    } word;
+    u32 offset1;
+    u32 offset0;
+    u32 index2;
+    unsigned int *table;
+    unsigned int *data;
+
+    offset0 = (u32)index << 3;
+    index2 = (u32)index << 1;
+    offset1 = index2 + 1;
+    data = __GXData;
+    table = (unsigned int *)((char *)data + 0x200);
+
+    word.value = *(u32 *)((char *)table + offset0);
+    word.fields.rasSel = rasSel;
+    word.fields.texSel = texSel;
+    *(u32 *)((char *)table + offset0) = word.value;
+
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = table[offset0 / 4];
-    table[offset1 / 4] = (table[offset1 / 4] & ~0xF) | (rasSel2 & 3) | ((texSel2 << 2) & 0xC);
+    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset0);
+
+    offset1 <<= 2;
+    word.value = *(u32 *)((char *)table + offset1);
+    word.fields.rasSel = rasSel2;
+    word.fields.texSel = texSel2;
+    *(u32 *)((char *)table + offset1) = word.value;
+
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = table[offset1 / 4];
+    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset1);
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
