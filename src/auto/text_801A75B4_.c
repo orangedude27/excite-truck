@@ -118,6 +118,17 @@ void fn_801A7844(int arg0) {
     *(float *)&lbl_80435370[4] = y;
 }
 
+extern void fn_801A90A4(char *, int, const char *);
+extern int fn_8013358C(int, int, char *);
+#pragma push
+#pragma scheduling invalid_target
+void fn_801A7A08(const char *arg0, int arg1, int arg2) {
+    char buffer[0x20];
+
+    fn_801A90A4(buffer, 0x20, arg0);
+    fn_8013358C(arg2, arg1, buffer);
+}
+#pragma pop
 extern float lbl_80562458;
 void fn_801A7A5C(void) {
     char *base = (char *)lbl_80435050;
