@@ -211,6 +211,23 @@ int fn_801A7C8C(void *arg0) {
     return result;
 }
 
+void fn_801A9110(void *, const char *);
+#pragma dont_inline on
+void fn_801A7DFC(int arg0, const char *arg1, int arg2) {
+    struct {
+        int unk0;
+        int unk4;
+        char unk8[4];
+        char unkC;
+    } local;
+
+    local.unk4 = 0;
+    local.unkC = 0;
+    fn_801A9110(&local, arg1);
+    fn_801A7A08((const char *)&local, arg0, arg2);
+}
+#pragma dont_inline reset
+
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_801A7E54(char *dst, int len, const char *name) {
@@ -756,8 +773,12 @@ int fn_801A902C(void) {
 }
 
 void fn_801A9050(void *arg0, int arg1) {
-    int zero[8] = {0};
-    fn_801A9110(arg0, lbl_802F9588[arg1]);
+    F801A9050Zero zero = {{0}};
+    const char **table = (const char **)lbl_802F9588;
+    const char *name = *(const char **)((char *)table + arg1 * 8);
+
+    ((void (*)(void *, const char *, const char **, int, F801A9050Zero))fn_801A9110)(
+        arg0, name, table, 0, zero);
 }
 
 void fn_801A90A4(char *arg0, int arg1, const char *arg2) {
