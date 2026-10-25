@@ -281,14 +281,21 @@ extern "C" void fn_801FCF18(void* arg0, int arg1, int arg2) {
     *(float*)((char*)arg0 + 0x40) = zero;
 }
 
-extern "C" void fn_801FCF74(void* arg0) {
-    int obj = *(int*)((char*)arg0 + 4);
-    if (!obj) return;
-    unsigned short type = *(unsigned short*)((char*)obj + 0x16);
-    if (type == 1) fn_801FD5E8();
-    else if (type == 0) fn_801FD3F0();
-    else if (type > 2) fn_802E317C((const char*)lbl_8033B618);
-    else fn_801FDF18();
+extern "C" void fn_801FCF74(void* arg0, float farg0) {
+    void *obj = *(void **)((char *)arg0 + 4);
+    if (obj == 0)
+        return;
+    int type = *(unsigned short *)((char *)obj + 0x16);
+    switch (type) {
+    case 0:
+        return fn_801FD3F0();
+    case 1:
+        return fn_801FD5E8(arg0, farg0);
+    case 2:
+        return fn_801FDF18();
+    default:
+        return fn_802E317C((const char *)lbl_8033B618);
+    }
 }
 
 #pragma push
@@ -1018,16 +1025,19 @@ void fn_801FF5D4(void* arg0, void* arg1, float farg0) {
     } while (var_r30 < *(int*)((char*)arg1 + 0x54));
 }
 
+#pragma dont_inline on
 void fn_801FF644(void* arg0, void* arg1) {
-    int var_r30 = 0;
-    int* var_r31 = (int*)arg1;
-    do {
-        fn_801FCFC8((void*)var_r31[0x30 / 4]);
-        var_r31++;
-        var_r30++;
-    } while (var_r30 < *(int*)((char*)arg1 + 0x54));
+    void* entry;
+    int i;
+    i = 0;
+    entry = arg1;
+    while (i < *(int*)((char*)arg1 + 0x54)) {
+        fn_801FCFC8(*(void**)((char*)entry + 0x30));
+        entry = (char*)entry + 4;
+        i++;
+    }
 }
-
+#pragma dont_inline reset
 extern "C" void* lbl_8055EC94;
 void fn_801FF6A4(void* arg0) {
     lbl_8055EC94 = arg0;
