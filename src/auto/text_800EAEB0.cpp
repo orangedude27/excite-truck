@@ -859,6 +859,8 @@ extern "C" void fn_800F2330(s32, s32, s32, s32, s32);
 extern "C" void fn_800EE060(void* this_, s32 a, s32 b, s32 c, s32 d, s32 e) {
     fn_800F2330(a, b, c, d, e);
 }
+#pragma push
+#pragma dont_inline on
 extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *arg0) {
     extern u8 lbl_80323258[];
     extern u8 lbl_80323760[];
@@ -875,6 +877,7 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *arg0) {
     *((u8 *)arg0 + 0xC6) = 0;
     return arg0;
 }
+#pragma pop
 
 extern "C" void fn_800EE2E0(void *arg0, s32 arg1) {
     extern s32 Parse__Q46nw4hbm3snd6detail9MmlParserCFPQ46nw4hbm3snd6detail11MmlSeqTrackb(void *, void *, s32);
