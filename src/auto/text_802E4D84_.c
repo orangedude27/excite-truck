@@ -22,6 +22,7 @@ extern void fn_802E5248(int, int);
 extern void fn_802E51D0();
 __declspec(section ".sdata") extern char lbl_8055D1D8[];
 extern char lbl_8034D39C[];
+extern char lbl_8034D384[];
 extern char lbl_8034D3C0[];
 extern unsigned char lbl_804FC800[];
 extern unsigned char lbl_804FC558[];
@@ -169,6 +170,27 @@ void fn_802E5824(void) {
 
 void fn_802E5828(void) {
 }
+
+#pragma dont_inline on
+int fn_802E582C(void) {
+    int count;
+    int *entries;
+    int value;
+
+    if (lbl_8055FFA0 >= 0x100)
+        return 0;
+    value = fn_802E5AE8();
+    count = lbl_8055FFA0;
+    entries = lbl_8055FF9C;
+    entries[count] = value;
+    count = lbl_8055FFA0;
+    entries = lbl_8055FF9C;
+    if (entries[count] == 0)
+        return 0;
+    lbl_8055FFA0 = count + 1;
+    return 1;
+}
+#pragma dont_inline reset
 
 #pragma dont_inline fn_802E582C
 void fn_802E589C(void) {
