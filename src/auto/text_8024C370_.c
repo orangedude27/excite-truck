@@ -464,6 +464,7 @@ void fn_8024CF54(void) {
     fn_8024C768();
 }
 
+// Keep fn_8024CF38 as a call; inlining it substitutes fn_8024CC54 and changes the target sequence.
 #pragma dont_inline on
 void fn_8024CF60(void) {
     int sp8;
