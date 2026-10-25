@@ -2,7 +2,7 @@
 extern f32 lbl_8055E85C;
 extern f32 lbl_8055E860;
 extern f32 lbl_805629B4;
-extern char lbl_8055AA4C[];
+extern char lbl_8055AA4C[6];
 extern char lbl_80336B00[];
 extern void fn_801C8420(void);
 extern void fn_801C6D94(void);
@@ -818,10 +818,11 @@ void fn_801C6CB4(void) {
     fn_801C957C(1);
 }
 
+#pragma inline off
 void fn_801C6CBC(void) {
-    sprintf(lbl_804380F0, "%s %d", lbl_804380F0, fn_801C6C28(&lbl_80438268));
+    sprintf(lbl_804380F0, lbl_8055AA4C, lbl_804380F0, fn_801C6C28(&lbl_80438268));
 }
-
+#pragma inline auto
 void fn_801C6D00(void) {
     s32 *src = lbl_80499050;
     s32 *dst = lbl_804381F0;
@@ -1035,15 +1036,18 @@ extern char lbl_8055AA44[4];
 extern Vec lbl_80438498;
 extern char lbl_8055E83D;
 void fn_801C7A28(void) {
-    Vec *dst = &lbl_80438498;
     Vec *src = &lbl_80438268;
-    dst->x = src->x;
-    dst->y = src->y;
-    dst->z = src->z;
+    Vec *dst = &lbl_80438498;
+    f32 x = src->x;
+    f32 y = src->y;
+    f32 z = src->z;
+    dst->x = x;
+    dst->y = y;
+    dst->z = z;
     lbl_8055E83A = 0;
     lbl_8055E868 = fn_801C6CB0;
     lbl_8055E83D = 0;
-    ((void (*)(f32, f32))fn_801C78D8)(src->y, src->x);
+    ((void (*)(f32, f32))fn_801C78D8)(y, x);
 }
 
 extern f64 atof(const char *);
