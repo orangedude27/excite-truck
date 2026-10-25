@@ -60,6 +60,49 @@ extern void *lbl_8055D714;
 
 extern void *lbl_8055D73C;
 extern void *lbl_8055D6A8;
+void TRKPostEvent(s32 arg0) {
+    extern u32 lbl_80558DD0;
+    extern s32 lbl_8055D6B0, lbl_8055D6B4, lbl_8055D6B8, lbl_8055D6BC;
+    extern s32 lbl_8055D6C0, lbl_8055D6C4, lbl_8055D6C8, lbl_8055D6CC;
+    extern s32 lbl_8055D6D0, lbl_8055D6D4, lbl_8055D6DC;
+    extern void TRKInitializeNub(void);
+    extern void __OSSetInterruptHandler(int, void (*)(void *, void *));
+    extern void __OSUnmaskInterrupts(u32);
+    extern void TRKGetNextEvent(void *, void *);
+    s32 irq;
+    u32 ticks;
+    if ((s32)lbl_8055D6A8 != 1) {
+        OSRegisterVersion(lbl_80558DD0);
+        lbl_8055D6D0 = 0;
+        ticks = *(volatile u32 *)0x800000F8 / 500000;
+        lbl_8055D6C8 = 0;
+        lbl_8055D6C0 = 0;
+        lbl_8055D6B8 = 0;
+        lbl_8055D6B0 = 0;
+        lbl_8055D6D4 = (ticks * 0x7B24) / 8000;
+        lbl_8055D6CC = (ticks * 0xA428) / 8000;
+        lbl_8055D6C4 = (ticks * 0xA410) / 8000;
+        lbl_8055D6BC = (ticks * 0xF618) / 8000;
+        lbl_8055D6B4 = (ticks * 0xBB8) / 8000;
+        *(volatile u32 *)0xCD006C00 &= ~0x15;
+        *(volatile u32 *)0xCD006C04 = 0;
+        *(volatile u32 *)0xCD006C0C = 0;
+        *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & 0xFFFFFFDF) | 0x20;
+        if (((*(volatile u32 *)0xCD006C00 >> 6) & 1) == 0) {
+            *(volatile u32 *)0xCD006C00 &= 0xFFFFFFBF;
+            irq = OSDisableInterrupts();
+            TRKInitializeNub();
+            *(volatile u32 *)0xCD006C00 |= 0x40;
+            OSRestoreInterrupts(irq);
+        }
+        lbl_8055D6E0 = 0;
+        lbl_8055D6DC = arg0;
+        __OSSetInterruptHandler(5, TRKGetNextEvent);
+        __OSUnmaskInterrupts(0x04000000);
+        lbl_8055D6A8 = (void *)1;
+    }
+}
+
 void TRKConstructEvent(void) {
     lbl_8055D6A8 = 0;
 }
@@ -261,6 +304,60 @@ void TRKGetFreeBuffer(void *arg0) {
     }
     OSRestoreInterrupts(level);
 }
+
+void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    extern s32 OSDisableInterrupts(void);
+    extern void OSRestoreInterrupts(s32);
+    extern void fn_80033148(void *);
+    s32 irq = OSDisableInterrupts();
+    u32 index;
+    void *buf = (void *)lbl_8035BEA0[0];
+    if (buf != 0)
+        lbl_8035BEA0[0] = *(u32 *)buf;
+    if (buf == 0) {
+        for (index = 1; index < arg0; ++index) {
+            void *first = (void *)lbl_8035BEA0[index];
+            if (first != 0) {
+                void *last = (void *)lbl_8035BF20[index];
+                if (first == last) {
+                    lbl_8035BF20[index] = 0;
+                    lbl_8035BEA0[index] = 0;
+                    buf = first;
+                } else if (last != 0) {
+                    buf = last;
+                    lbl_8035BF20[index] = *(u32 *)((u8 *)last + 4);
+                    *(u32 *)((u8 *)buf + 4) = 0;
+                }
+            }
+            if (buf != 0) {
+                if (*(u16 *)((u8 *)buf + 0x148) == 1)
+                    *(u32 *)((u8 *)buf + 0x20) = 1;
+                if (*(void (**)(void *))((u8 *)buf + 0x10) != 0)
+                    (*(void (**)(void *))((u8 *)buf + 0x10))(buf);
+                break;
+            }
+        }
+    }
+    if (buf != 0) {
+        void *head = (void *)lbl_8035BEA0[arg0];
+        *(void **)buf = head;
+        *(u32 *)((u8 *)buf + 4) = 0;
+        if (head != 0) {
+            *(void **)((u8 *)head + 4) = buf;
+            lbl_8035BEA0[arg0] = (u32)buf;
+        } else {
+            lbl_8035BEA0[arg0] = (u32)buf;
+            lbl_8035BF20[arg0] = (u32)buf;
+        }
+        *(u32 *)((u8 *)buf + 0xC) = arg0;
+        *(s32 *)((u8 *)buf + 0x10) = arg1;
+        *(s32 *)((u8 *)buf + 0x14) = arg2;
+        fn_80033148(buf);
+    }
+    OSRestoreInterrupts(irq);
+    return buf;
+}
+
 #pragma pop
 void TRKProcessInput(void *arg0, s32 arg1) {
     s32 irq;
@@ -409,10 +506,10 @@ void* fn_80031248(void) {
 }
 
 void *gdev_cc_initialize(void) {
-    s32 old = lbl_8055D748;
-    s32 next = (old + 1) & 1;
+    u32 old = lbl_8055D748;
+    u32 next = (old + 1) % 2;
     lbl_8055D748 = next;
-    lbl_8055D744 = (u8 *)&lbl_8035E820[next * 0x300];
+    lbl_8055D744 = &lbl_8035E820[next * 0x300];
     return &lbl_8035E820[old * 0x300];
 }
 
@@ -714,6 +811,79 @@ void fn_80031C9C(unsigned short arg0) {
     lbl_8055D730 = arg0;
 }
 
+extern u8 lbl_8035EE20[];
+extern s32 lbl_8055D788;
+extern s32 lbl_8055D754, lbl_8055D758, lbl_8055D750;
+extern void fn_80032EAC(u32, void *);
+extern void __AXPrintStudio(void);
+extern void *gdev_cc_initialize(void);
+extern void DSPSendMailToDSP(u32);
+extern s32 DSPCheckMailToDSP(void);
+extern void TRKReadBuffer1_ui64(void);
+extern void InitMetroTRKCommTable(void);
+extern s32 fn_800328E8(void);
+extern void CircleBufferReadBytes(u32, u32, void *);
+extern void *__AXGetCurrentProfile(void);
+void CircleBufferInitialize(u32 arg0) {
+    u64 time;
+    s32 mail;
+    s32 start;
+    s32 ring;
+    s32 i;
+    u8 *profile;
+    time = OSGetTime();
+    *(u64 *)lbl_8035EE20 = time;
+    fn_80032EAC(arg0, lbl_8035EE20);
+    __AXPrintStudio();
+    mail = (s32)gdev_cc_initialize();
+    DSPSendMailToDSP(0xBABE0080);
+    while (DSPCheckMailToDSP() != 0) { }
+    DSPSendMailToDSP(mail);
+    while (DSPCheckMailToDSP() != 0) { }
+    TRKReadBuffer1_ui64();
+    time = OSGetTime();
+    *(u64 *)(lbl_8035EE20 + 8) = time;
+    InitMetroTRKCommTable();
+    time = OSGetTime();
+    *(u64 *)(lbl_8035EE20 + 0x10) = time;
+    time = OSGetTime();
+    *(u64 *)(lbl_8035EE20 + 0x18) = time;
+    if (lbl_8055D774 != 0) ((void (*)(void))lbl_8055D774)();
+    time = OSGetTime();
+    *(u64 *)(lbl_8035EE20 + 0x20) = time;
+    start = lbl_8055D754;
+    ring = start + 0x12;
+    if (ring < lbl_8055D758) ring = 0;
+    if (lbl_8055D750 >= start && lbl_8055D750 < start + 0x12) lbl_8055D750 = ring;
+    lbl_8055D754 = ring;
+    CircleBufferReadBytes((u32)(lbl_8035EE20 + 0x5E0),
+        (u32)(lbl_8035EE20 + 0x8E0 + lbl_8055D788 * 0x180),
+        lbl_8035EE20 + 0x40 + start * 2);
+    lbl_8055D788++;
+    if (lbl_8055D75C == 1) lbl_8055D788 %= 3;
+    else {
+        lbl_8055D788 &= 1;
+        AIInitDMA(lbl_8035EE20 + 0x8E0 + lbl_8055D788 * 0x180, 0x180);
+    }
+    time = OSGetTime();
+    *(u64 *)(lbl_8035EE20 + 0x28) = time;
+    *(s32 *)(lbl_8035EE20 + 0x30) = fn_800328E8();
+    profile = __AXGetCurrentProfile();
+    if (profile != 0) {
+        for (i = 0; i < 7; i++) {
+            profile[0] = lbl_8035EE20[i * 8];
+            profile[1] = lbl_8035EE20[i * 8 + 1];
+            profile[2] = lbl_8035EE20[i * 8 + 2];
+            profile[3] = lbl_8035EE20[i * 8 + 3];
+            profile[4] = lbl_8035EE20[i * 8 + 4];
+            profile[5] = lbl_8035EE20[i * 8 + 5];
+            profile[6] = lbl_8035EE20[i * 8 + 6];
+            profile[7] = lbl_8035EE20[i * 8 + 7];
+            profile += 8;
+        }
+    }
+}
+
 void fn_80031ED4(void) {
     u64 time;
     if ((s32)lbl_8055D780 == 0) {
@@ -781,8 +951,9 @@ extern void OSInitThreadQueue(void *);
 extern s32 DSPReset(void);
 extern void DSPInit(void);
 extern void DSPAssertInt(void *);
+#pragma scheduling on
 void fn_80032004(void) {
-    struct {
+    struct Task {
         u8 pad[4];
         u32 unk4;
         u8 pad8[4];
@@ -798,11 +969,14 @@ void fn_80032004(void) {
         void (*unk2C)(void);
         void (*unk30)(void);
         void (*unk34)(void);
-    } *task = (void *)lbl_8035FB80;
-    u32 zero = 0;
+    };
+    void *resource = lbl_802FFD60;
+    struct Task *task = (struct Task *)lbl_8035FB80;
+    register u32 zero = 0;
+
     task->unk4 = zero;
     lbl_8055D770 = zero;
-    task->unkC = lbl_802FFD60;
+    task->unkC = resource;
     task->unk10 = lbl_80558DE4;
     task->unk14 = zero;
     task->unk18 = lbl_8035FBD0;
@@ -820,7 +994,7 @@ void fn_80032004(void) {
     DSPAssertInt(lbl_8035FB80);
     while (lbl_8055D770 == 0) {}
 }
-
+#pragma scheduling reset
 void fn_800322E4(void) {
     s32 enabled = OSDisableInterrupts();
     lbl_8055D774 = 0;
@@ -876,18 +1050,15 @@ s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
 
 void AXRmtAdvancePtr(s32 arg0) {
     s32 end;
-    s32 next;
     end = lbl_8055D754 - 0x24;
     if (end < 0) end += lbl_8055D758;
     end -= lbl_8055D750;
     if (end < 0) end += lbl_8055D758;
     if (arg0 > end) arg0 = end;
-    next = lbl_8055D750 + arg0;
-    if (next < lbl_8055D758) {
-        lbl_8055D750 = next;
-        return;
+    lbl_8055D750 += arg0;
+    if (lbl_8055D750 >= lbl_8055D758) {
+        lbl_8055D750 -= lbl_8055D758;
     }
-    lbl_8055D750 = next - lbl_8055D758;
 }
 
 extern u8 lbl_80363BE0[];
