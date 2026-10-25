@@ -3086,6 +3086,17 @@ extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_802336AC(s32, s32, s32, const char *, f32, f32, f32, ...);
+extern "C" char lbl_8055B8A4[];
+void fn_802225E8(void *arg0, s32 arg1, s32 arg2) {
+    f32 spC;
+    f32 sp8;
+
+    fn_80230C30(&spC, &sp8, arg1, arg2);
+    fn_802336AC(*(s32 *)((u8 *)arg0 + 4), -1, 9, lbl_8055B8A4,
+                *(s32 *)((u8 *)arg0 + 8), spC, sp8, lbl_805634A8);
+}
+
 extern "C" void *fn_802226D4(void *arg0, s32 arg1) {
     extern char lbl_8033F9BC[];
     extern s32 fn_8023512C(s32);
