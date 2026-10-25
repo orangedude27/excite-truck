@@ -1511,14 +1511,20 @@ extern "C" void fn_802157A8(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     }
 }
 
-void fn_802157DC(void *arg0, int arg1, int arg2, int *arg3, int *arg4, int *arg5, int *arg6) {
-    int var_r0;
-    int *temp = *(int **)((char *)arg0 + 4);
+extern "C" void fn_802157DC(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
+    s32 var_r0;
+    void *temp_r5;
+
     *arg3 = arg1;
     *arg4 = arg2;
-    var_r0 = temp != 0 ? temp[2] : 0;
+    temp_r5 = *(void **)((u8 *)arg0 + 4);
+    if (temp_r5 != 0) {
+        var_r0 = *(s32 *)((u8 *)temp_r5 + 8);
+    } else {
+        var_r0 = 0;
+    }
     *arg5 = *arg3 + var_r0;
-    *arg6 = *arg4 + *(int *)((char *)arg0 + 8);
+    *arg6 = *arg4 + *(s32 *)((u8 *)arg0 + 8);
 }
 
 extern "C" s32 fn_8021581C(void *arg0) {
