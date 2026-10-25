@@ -39,7 +39,18 @@ s32 fn_802E321C(const char *arg0) {
     const char *prefix = lbl_8055D1A0;
     return strncmp(arg0, prefix, strlen(prefix)) == 0;
 }
-#pragma small_data off
+
+#pragma dont_inline on
+s32 fn_802E32C4(s32 arg0) {
+    if (arg0 != 0 && fn_802E321C((const char *)arg0) != 0 && lbl_8055FF20 != 0) {
+        return lbl_8055FF20;
+    }
+    if (arg0 != 0 && fn_802E3270(arg0) != 0 && (s32)lbl_8055FF24 != 0) {
+        return (s32)lbl_8055FF24;
+    }
+    return 0;
+}
+#pragma dont_inline reset
 s32 *fn_802E333C(void) {
     s32 *temp_r3;
     temp_r3 = (s32 *)((s32 (*)())fn_802E32C4)();
@@ -276,6 +287,30 @@ extern "C" s32 fn_802E3BB4(s32 arg0, s32 arg1, s32 arg2) {
     }
     return result;
 }
+
+extern char lbl_8034CFE4[];
+#pragma cplusplus on
+extern "C" s32 fn_802E3C24(s32 arg0, s32 arg1, s32 arg2) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual s32 v4(s32, s32, s32);
+    };
+    s32 obj = ((s32 (*)(void))fn_802E339C)();
+    s32 result;
+    if (obj != 0) {
+        result = ((Obj *)obj)->v4(arg0, arg1, arg2);
+    } else {
+        fn_802E317C(lbl_8034CFE4);
+        result = 0;
+    }
+    return result;
+}
+#pragma cplusplus off
+
 #pragma cplusplus off
 
 #pragma cplusplus on
