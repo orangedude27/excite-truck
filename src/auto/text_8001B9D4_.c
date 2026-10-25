@@ -134,15 +134,11 @@ void fn_8001BC28(void *arg0, s32 arg1) {
 
 s32 fn_8001BCF0(void *arg0) {
     s32 var_r5 = 0;
-    
-    s32 ptr = ((s32 *)arg0)[6] + ((s32 *)arg0)[3] * 0xC;
-    
-    if (*((u8 **)ptr + 0x10) != 0)
+    u8 *ptr = (u8 *)(((s32 *)arg0)[6] + ((s32 *)arg0)[3] * 0xC);
+    if (ptr[0x10] != 0)
         goto done;
-    
     if (((u8 *)arg0)[0x20] == 0)
         goto done;
-    
     var_r5 = 1;
 done:
     return var_r5;
@@ -210,13 +206,15 @@ void fn_8001BDA8(void *arg0) {
     }
     *(u8 *)((u8 *)arg0 + 0x20) = 0;
 }
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8001BE70(void *arg0) {
     s32 index = *(s32 *)((u8 *)arg0 + 0xC);
     s32 base = *(s32 *)((u8 *)arg0 + 0x18);
     *(s32 *)((u8 *)arg0 + 0x1C) = *(s32 *)(base + index * 0xC + 8);
     *(u8 *)((u8 *)arg0 + 0x20) = 0;
 }
-
+#pragma scheduling reset
 void *fn_8001BE94(void *dest, int val, size_t count) {
     fn_8001BC38(dest, val, count);
     return dest;
@@ -449,14 +447,16 @@ u32 fn_8001D220(u32 arg0, u32 arg1, u32 arg2) {
     return result;
 }
 
+#pragma scheduling invalid_target
 void fn_8001D234(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     u32 value = arg0;
     u32 byte = (value >> 16) & 0xFF;
+    u32 mid = (value >> 8) & 0xFF;
     *arg1 = value & 0xFF;
-    *arg2 = (value >> 8) & 0xFF;
+    *arg2 = mid;
     *(s8 *)arg3 = (byte != 0);
 }
-
+#pragma scheduling on
 void fn_8001D298(s32 arg0) {
     s32 temp_r31;
     temp_r31 = fn_8000DA10();
