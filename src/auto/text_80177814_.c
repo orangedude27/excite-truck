@@ -232,6 +232,20 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
     return arg0;
 }
 
+extern char lbl_80331950[];
+char *fn_80178374(long arg0) {
+    char *var_r4 = lbl_80331950;
+    int temp_r0;
+
+    while ((temp_r0 = *(int *)var_r4) != 0) {
+        if ((unsigned long)temp_r0 == (unsigned long)arg0) {
+            return var_r4;
+        }
+        var_r4 += 0xC;
+    }
+    return NULL;
+}
+
 void fn_801784AC(void) {
     fn_801E2640(&lbl_804340C0[0], &lbl_8055E468);
 }
