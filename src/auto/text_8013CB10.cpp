@@ -308,14 +308,39 @@ extern "C" void fn_8013E19C(void *arg0, f32 arg1) {
  p[2]=qx; p[0]=qz; p[1]=qy; p[3]=rz; p[4]=ry; p[5]=rx;
 }
 
+extern "C" void fn_8013E2AC(void *arg0, void *arg1) {
+    volatile u32 *src = (volatile u32 *)arg1;
+    u32 word0 = src[0];
+    u32 word1 = src[1];
+    u32 word2 = src[2];
+    u32 word3 = src[3];
+    u32 word4 = src[4];
+    u32 word5 = src[5];
+    f32 value0 = *(volatile f32 *)((u8 *)arg1 + 0x18);
+    s16 value1 = *(volatile s16 *)((u8 *)arg1 + 0x1C);
+    u8 value2 = *((volatile u8 *)arg1 + 0x1E);
+    f32 value3 = *(volatile f32 *)((u8 *)arg1 + 0x20);
+
+    ((u32 *)arg0)[0] = word0;
+    ((u32 *)arg0)[1] = word1;
+    ((u32 *)arg0)[2] = word2;
+    ((u32 *)arg0)[3] = word3;
+    ((u32 *)arg0)[4] = word4;
+    ((u32 *)arg0)[5] = word5;
+    *(f32 *)((u8 *)arg0 + 0x18) = value0;
+    *(s16 *)((u8 *)arg0 + 0x1C) = value1;
+    *((u8 *)arg0 + 0x1E) = value2;
+    *(f32 *)((u8 *)arg0 + 0x20) = value3;
+}
+
 #pragma dont_inline off
 extern "C" f64 fn_8002F234(f32);
+#pragma processor 750
 extern "C" f32 fn_8013E300(void *arg0) {
     f32 y = *(f32 *)((u8 *)arg0 + 4);
     f32 x = *(f32 *)arg0;
     return (f32)fn_8002F234(x * x + y * y);
 }
-
 extern "C" void fn_8013E338(void) {
 
 }
@@ -746,6 +771,15 @@ extern "C" void fn_80141458(void) {
 
 }
 
+extern "C" char lbl_8032CA94[];
+extern "C" void fn_8013D2C4(void *, void *);
+extern "C" void fn_8014145C(void *arg0) {
+    void **object = fn_801284F8(0x298, lbl_8032CA94);
+    if (object != 0) {
+        fn_8013D2C4(object, arg0);
+    }
+}
+
 extern "C" void fn_802A96E8(s32, s32, s32, s32, s32, void *);
 extern "C" void fn_80141558(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_802A96E8(arg1, arg2, arg3, *(s32 *)((char *)arg0 + 0), *(s32 *)((char *)arg0 + 4), arg0);
@@ -1112,19 +1146,27 @@ extern "C" s32 fn_80142BB4(void *arg0) {
     return (count + (*(s32 *)((u8 *)arg0 + 8) - *(s32 *)((u8 *)arg0 + 0xC))) % count;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 extern "C" void *fn_80142BD8(void *arg0) {
- s32 write=*(s32 *)((u8 *)arg0+8);
- s32 count=*(s32 *)((u8 *)arg0+4);
- s32 read=*(s32 *)((u8 *)arg0+0xC);
- s32 next;
- u8 *base;
- next=(write+1)%count;
- base=*(u8 **)arg0;
- *(s32 *)((u8 *)arg0+8)=next;
- if(next==read) *(s32 *)((u8 *)arg0+0xC)=(read+1)%count;
- return base+write*12;
-}
+    s32 *ring = (s32 *)arg0;
+    s32 write = ring[2];
+    s32 count = ring[1];
+    s32 next;
+    s32 read = ring[3];
+    u8 *base;
+    void *result;
 
+    next = (write + 1) % count;
+    base = (u8 *)ring[0];
+    result = base + write * 12;
+    ring[2] = next;
+    if (next == read)
+        ring[3] = (read + 1) % count;
+    return result;
+}
+#pragma pop
 extern "C" void *fn_80142C28(void *arg0, void *arg1) {
  u8 *p=(u8 *)*(void **)((u8 *)arg0+0x64);
  s32 index=*(s32 *)((u8 *)arg0+0x68);
