@@ -55,7 +55,7 @@ extern u8 lbl_8055D340[4];
 extern s32 fn_801CB844(void);
 extern s32 fn_801B8874(void);
 extern void fn_80006B18(void *);
-extern s32 fn_80010074(s32, s32, const char *, ...);
+extern s32 fn_80010074(s32, s32, void *, void *, f32, f32, f32);
 extern int sprintf(char *, const char *, ...);
 extern u8 lbl_802FB2A0[];
 extern s32 lbl_80558928;
