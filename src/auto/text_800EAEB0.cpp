@@ -433,6 +433,24 @@ void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
     *(f32*)((u8*)this + 0xC) = value;
 }
 
+#pragma push
+#pragma small_data off
+extern u8 lbl_80322D24[];
+extern u8 lbl_80322D00[];
+#pragma pop
+extern "C" void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(
+    void* this_, void* pSound) {
+    if (pSound == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322D24, 0x233,
+                                     (const char*)lbl_80322D00);
+    }
+
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
+        this_, &((u8*)pSound)[0xD0]);
+
+    ((s32*)pSound)[0x14 / 4] = 0;
+}
+
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *self) {
     extern const char lbl_80322CD0[];
@@ -915,10 +933,12 @@ extern "C" void *AllocTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4h
     if (track == 0) {
         return 0;
     }
-    track = __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(track);
     if (track != 0) {
-        *(void **)((u8 *)track + 0xB4) = arg1;
-        *(void **)((u8 *)track + 0xBC) = *(void **)((u8 *)arg0 + 4);
+        track = __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(track);
+        if (track != 0) {
+            *(void **)((u8 *)track + 0xB4) = arg1;
+            *(void **)((u8 *)track + 0xBC) = *(void **)((u8 *)arg0 + 4);
+        }
     }
     return track;
 }
