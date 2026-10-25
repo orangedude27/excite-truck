@@ -35,13 +35,14 @@ extern unsigned char lbl_80489BD0[];
 extern int fn_80128668(void);
 extern char lbl_8033C458[];
 typedef struct { char *name; int state; } UnkStruct_8020A860;
+#pragma scheduling invalid_target
 void fn_8020A72C(void) {
-    volatile char *p = lbl_8033C35C;
-    int size = 0xC;
-    if (fn_801284F8(size, (void *)p) != 0) fn_8020A860();
-    fn_80208E90(0);
+    void *object = (void *)fn_801284F8(0xC, lbl_8033C35C);
+    if (object != 0)
+        object = ((void *(*)(void *))fn_8020A860)(object);
+    ((int (*)(void *, int))fn_80208E90)(object, 0);
 }
-
+#pragma scheduling on
 void* fn_8020A76C(void) {
     return lbl_8055EE08;
 }
@@ -89,21 +90,33 @@ extern void fn_802E5950(int, int);
 extern void fn_802E6138(void);
 extern void fn_802E61D8(void *);
 void fn_8020AA0C(void *arg0) {
-    void *value = *(void **)((char *)arg0 + 8);
+    struct Object {
+        unsigned int unk00;
+        int state;
+        void *first;
+        void *second;
+    };
+    struct Object *object = (struct Object *)arg0;
+    register void *value;
+
+    value = object->first;
     if (value != 0) {
         fn_802E61D8(value);
-        if (*(void **)((char *)arg0 + 0xC) != 0)
-            fn_802E61D8(*(void **)((char *)arg0 + 0xC));
-        if (*(void **)((char *)arg0 + 0xC) != 0) {
+        value = object->second;
+        if (value != 0)
+            fn_802E61D8(value);
+        value = object->second;
+        if (value != 0) {
             fn_802E6138();
-            *(void **)((char *)arg0 + 0xC) = 0;
+            object->second = 0;
         }
-        if (*(void **)((char *)arg0 + 8) != 0) {
+        value = object->first;
+        if (value != 0) {
             fn_802E6138();
-            *(void **)((char *)arg0 + 8) = 0;
+            object->first = 0;
         }
     }
-    *(int *)((char *)arg0 + 4) = 3;
+    object->state = 3;
     *((unsigned char *)arg0 + 0x3E) = 0;
 }
 
