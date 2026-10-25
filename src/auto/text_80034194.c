@@ -79,6 +79,7 @@ extern void OSSetPeriodicAlarm(void *, u32, u32, s32, u32, u32, void (*)(void));
 extern s32 executing_8055D8C8;
 extern char DummyCommandBlock_80376AA0[];
 extern void __DVDFSInit(void);
+extern void __DSP_boot_task(void *);
 extern void fn_80038040(void);
 extern s32 OSGetTick(void);
 extern s32 fn_8003BCDC(s32);
@@ -1396,10 +1397,11 @@ s32 fn_800393C4(s32 value) {
     return old;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_800393D4(void) {
-    s32 enabled;
+    s32 enabled = OSDisableInterrupts();
 
-    enabled = OSDisableInterrupts();
     lbl_8055D84C = 0;
     if (PausingFlag_8055D850 != 0) {
         PausingFlag_8055D850 = 0;
@@ -1407,7 +1409,7 @@ void fn_800393D4(void) {
     }
     OSRestoreInterrupts(enabled);
 }
-
+#pragma pop
 extern s32 lbl_8055D858, lbl_8055D86C;
 extern void (*lbl_8055D8B8)(s32, void *);
 extern s32 __DVDDequeueWaitingQueue(void *);
