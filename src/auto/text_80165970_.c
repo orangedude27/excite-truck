@@ -118,12 +118,15 @@ void fn_801659C8(int arg0) {
 
 #pragma push
 #pragma dont_inline on
+#pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw off
 float fn_801659D0(int arg0) {
     float temp_f31;
     temp_f31 = fn_8013672C(arg0);
-    return temp_f31 * (float)fn_800081F0(arg0);
+    return temp_f31 * ((float)fn_800081F0(arg0) - lbl_80561890);
 }
-
+#pragma pop
 extern int strcmp(const char *, const char *);
 extern float lbl_80561898;
 extern float lbl_805618A0;
@@ -416,21 +419,27 @@ int fn_801667F0(void) {
 }
 
 void fn_80166814(void) {
+    int temp_r3;
+    void *temp_r31;
+
     if (*(void **)&lbl_8055E334 != 0) {
         fn_80139E18(*(void **)&lbl_8055E334);
         *(void **)&lbl_8055E334 = 0;
     }
-    {
-        void *p = *(void **)&lbl_8055E32C;
-        if (p != 0) {
-            void *x = *(void **)((char *)p + 0xC);
-            if (x != 0) {
-                fn_80128670((char *)x - 0x10);
-            }
-            fn_80165970(p, 1);
-            *(void **)&lbl_8055E32C = 0;
+    temp_r31 = *(void **)&lbl_8055E32C;
+    if (temp_r31 != 0) {
+        temp_r3 = *(int *)((char *)temp_r31 + 0xC);
+        if (temp_r3 != 0) {
+            fn_80128670((char *)(temp_r3 - 0x10));
         }
+        if (temp_r31 != 0) {
+            *(int *)((char *)temp_r31 + 0) = 0;
+            *(int *)((char *)temp_r31 + 4) = 0;
+            *(int *)((char *)temp_r31 + 8) = 0;
+        }
+        fn_80128668(temp_r31);
     }
+    *(void **)&lbl_8055E32C = 0;
 }
 
 extern float lbl_805618A0, lbl_805618D0, lbl_805618E4, lbl_805618E8;
