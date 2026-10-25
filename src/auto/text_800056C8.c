@@ -75,13 +75,10 @@ void fn_800056C8(s32 arg0, s32 arg1) {
 #pragma push
 #pragma dont_inline on
 void fn_800056E0(s32 arg0) {
-    s32 r29 = arg0;
-    s32 r30 = 0;
-    s32 r31 = ((s32 *)lbl_8055D350)[4];
-    while (1) {
-        if (r30 >= r31) break;
-        fn_800056C8(r30, r29);
-        r30++;
+    s32 count = ((s32 *)lbl_8055D350)[5];
+    s32 i = 0;
+    for (; i < count; i++) {
+        fn_800056C8(i, arg0);
     }
 }
 
@@ -532,14 +529,15 @@ void fn_800062E8(void) {
 
 void fn_80006330(void) {
     u32 *flags = (u32 *)lbl_8034EE84;
-    s32 index;
-    s32 *entry;
-    void *object;
-    flags[8] = (flags[8] & 0xFFFFFF78) & 0xFFFFF9FF;
-    index = ((s32 *)lbl_8055D350)[7];
-    entry = lbl_8034EEB8 + (index << 2);
+    register s32 *entry;
+    register void *object;
+    register void **vtable;
+    flags[8] &= 0xFFFFFF78;
+    flags[8] &= 0xFFFFF9FF;
+    entry = lbl_8034EEB8 + (((s32 *)lbl_8055D350)[7] << 2);
     object = (void *)entry[7];
-    ((void (*)(void))(*(u32 *)((u8 *)*(void **)object + 0x24)))();
+    vtable = *(void ***)object;
+    ((void (*)(void))vtable[9])();
 }
 
 extern s32 fn_80011A5C(s32);
@@ -877,6 +875,15 @@ s32 fn_800074EC(s32 arg0) {
     return result;
 }
 
+#pragma scheduling invalid_target
+s32 fn_80007554(s32 arg0, s32 arg1, s32 arg2) {
+    s32 *obj = *(s32 **)((s32 *)lbl_8034EEB8 + arg0 * 4 + 4);
+    if (obj != 0) {
+        return (*(s32 (**)(s32 *, s32, s32, s32))(*(s32 **)obj + 12))(obj, arg0, arg1, arg2);
+    }
+    return 0;
+}
+#pragma scheduling on
 s32 fn_800075A0(s32 arg0) {
     u32 p = *(u32 *)((u8 *)&lbl_8034EEB8 + arg0 * 0x10 + 0x10);
     s32 result = 0;
@@ -951,12 +958,12 @@ extern void fn_80276DC8(s32);
 extern void *fn_801E87A8(void);
 extern s32 fn_801CB8FC(void);
 void fn_800077E4(void *arg0) {
-    void **base = (void **)lbl_8055D350;
+    void *base = lbl_8055D350;
     void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
     *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
     if (fn_8000561C(p, base)) {
-        *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)base)[4];
-        fn_80276DC8(((s32 *)base)[7]);
+        *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
+        fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }
 }
 
