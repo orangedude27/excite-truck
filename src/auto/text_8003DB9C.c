@@ -1094,8 +1094,20 @@ void GXInitLightDistAttn(unsigned int arg0) {
 }
 
 void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
-    extern unsigned short *__peReg;
-    *__peReg = (unsigned short)((x & 1) | ((y & 7) << 1) | ((z & 1) << 4));
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 27;
+            unsigned int zBit : 1;
+            unsigned int yBits : 3;
+            unsigned int xBit : 1;
+        } fields;
+    } data = {0};
+
+    data.fields.xBit = x;
+    data.fields.yBits = y;
+    data.fields.zBit = z;
+    *__peReg = (unsigned short)data.reg;
 }
 
 void GXInitLightDir(unsigned int x, unsigned int y, unsigned int *arg2) {
