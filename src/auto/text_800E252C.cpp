@@ -1438,6 +1438,23 @@ extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *this_, u8 paused) {
     OSRestoreInterrupts(level);
 }
 
+extern "C" void fn_800E5338(void *arg0, float arg1) {
+    float value;
+    if (arg1 > lbl_80560F38) {
+        value = lbl_80560F38;
+    } else if (arg1 < lbl_80560F3C) {
+        value = lbl_80560F3C;
+    } else {
+        value = arg1;
+    }
+    float *field = (float *)((char *)arg0 + 0x188);
+    if (value != *field) {
+        unsigned char *flags = (unsigned char *)arg0 + 0x123;
+        *field = value;
+        *flags |= 0x10;
+    }
+}
+
 extern "C" void SetVeVolume__Q46nw4hbm3snd6detail7AxVoiceFff(void *self, float arg0, float arg1) {
     float f0 = lbl_80560F3C;
     if (arg1 < f0) {
@@ -2222,6 +2239,13 @@ void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *self, const v
 
 extern "C" void fn_800E80B4(void) {
 
+}
+
+extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank);
+extern "C" void *fn_800E80B8(void *arg0) {
+    __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(arg0, (const void *)0);
+    *(int *)((char *)arg0 + 0xC) = 0;
+    return arg0;
 }
 
 extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
