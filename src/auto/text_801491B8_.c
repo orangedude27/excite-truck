@@ -1308,6 +1308,21 @@ void fn_80151914(void) {
 
 }
 
+void fn_80151918(void *arg0, void *arg1) {
+    u32 index = *(u32*)((u8*)arg1 + 0x1EC);
+    u32 base = (u32)arg0 + index * 0xC0;
+    u32 address = base + 0x9E4;
+    volatile u32 *indexField = (volatile u32*)((u8*)arg1 + 0x1EC);
+    u32 clearIndex;
+    if (address != 0) {
+        fn_8014DC08((void*)address);
+    }
+    clearIndex = *indexField;
+    if (*(u8*)((u8*)arg0 + 0x8F4) != 0) {
+        *(u8*)((u8*)arg0 + clearIndex * 0x1C + 0x8F8) = 0;
+    }
+}
+
 extern s32 fn_80141F7C(f32);
 extern void fn_80149650(void);
 extern void fn_80151C98(void *, s32);
@@ -1802,24 +1817,27 @@ s32 fn_801552D8(s32 arg0, s32 arg1) {
 
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_8056171C;
+#pragma scheduling invalid_target
 void fn_80155318(void *arg0) {
-    f32 f0 = lbl_80561648;
-    f32 f1 = lbl_8056171C;
+    register f32 value0 = lbl_80561648;
+    register f32 value1 = lbl_8056171C;
+    register s32 zero = 0;
+    register s32 minusOne = -1;
     *(s32 **)arg0 = lbl_8032E1A0;
-    *(s32 *)((u8 *)arg0 + 0x120) = 0;
-    *(s32 *)((u8 *)arg0 + 0x11C) = 0;
-    *((u8 *)arg0 + 4) = 0;
-    *(f32 *)((u8 *)arg0 + 8) = f1;
-    *(f32 *)((u8 *)arg0 + 0xC) = f0;
-    *(f32 *)((u8 *)arg0 + 0x10) = f0;
-    *(s32 *)((u8 *)arg0 + 0x118) = 0;
-    *(s32 *)((u8 *)arg0 + 0x10C) = -1;
-    *((u8 *)arg0 + 5) = 0;
-    *((u8 *)arg0 + 0x14) = 0;
-    *((u8 *)arg0 + 0x64) = 0;
-    *((u8 *)arg0 + 0xB4) = 0;
+    *(s32 *)((u8 *)arg0 + 0x120) = zero;
+    *(s32 *)((u8 *)arg0 + 0x11C) = zero;
+    *((u8 *)arg0 + 4) = zero;
+    *(f32 *)((u8 *)arg0 + 8) = value1;
+    *(f32 *)((u8 *)arg0 + 0xC) = value0;
+    *(f32 *)((u8 *)arg0 + 0x10) = value0;
+    *(s32 *)((u8 *)arg0 + 0x118) = zero;
+    *(s32 *)((u8 *)arg0 + 0x10C) = minusOne;
+    *((u8 *)arg0 + 5) = zero;
+    *((u8 *)arg0 + 0x14) = zero;
+    *((u8 *)arg0 + 0x64) = zero;
+    *((u8 *)arg0 + 0xB4) = zero;
 }
-
+#pragma scheduling on
 void fn_80155368(void) {
 
 }
