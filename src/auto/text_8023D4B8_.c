@@ -265,7 +265,6 @@ test:
 
 extern int lbl_80341C40[];
 extern int fn_801A902C(void);
-extern void fn_801A9050(void *, int);
 extern void fn_8023E33C();
 int fn_8023E52C(int arg0) {
     return lbl_80341C40[arg0];
