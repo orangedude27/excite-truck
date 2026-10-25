@@ -17,7 +17,7 @@ struct F801B4720 {
     virtual void f1(void) = 0;
     virtual void f2(void) = 0;
     virtual void f3(void) = 0;
-    virtual void f4(void) = 0;
+    virtual void f4(int = 0) = 0;
     virtual void f5(void) = 0;
     virtual void f6(void) = 0;
 };
@@ -113,29 +113,28 @@ extern "C" void fn_801B4720(int arg0) {
     int minusOne;
     int value;
     int zero;
-    void *object;
-    void **vtable;
+    int clear;
 
     i = 0;
     offset = 0;
     minusOne = -1;
     zero = 0;
-    while (i < *(unsigned int *)(arg0 + 0x1C)) {
+    for (; i < *(unsigned int *)(arg0 + 0x1C); offset += 12) {
         int *entries = *(int **)(arg0 + 0x18);
         i++;
         *(int *)((char *)entries + offset) = minusOne;
         *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 4) = zero;
         *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 8) = zero;
-        offset += 12;
     }
     value = *(int *)(arg0 + 4);
-    *(int *)(arg0 + 8) = 0;
+    clear = 0;
+    *(int *)(arg0 + 8) = clear;
     *(int *)(arg0 + 0xC) = value;
     *(int *)(arg0 + 0x10) = value;
-    *(int *)(arg0 + 0x14) = 0;
-    *(int *)(arg0 + 0x20) = 0;
-    *(int *)(arg0 + 0x24) = 0;
-    ((F801B4720 *)*(void **)arg0)->f6();
+    *(int *)(arg0 + 0x14) = clear;
+    *(int *)(arg0 + 0x20) = clear;
+    *(int *)(arg0 + 0x24) = clear;
+    ((F801B4720 *)*(void **)arg0)->f4();
 }
 #pragma cplusplus off
 #pragma pop
