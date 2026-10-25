@@ -705,7 +705,7 @@ extern void fn_80116E54(void *, void *);
 extern void fn_801282EC(u32);
 extern void fn_801282F4(void);
 extern void *fn_8012850C(u32, void *);
-extern void *fn_801284F8(s32, void *);
+extern void fn_801284F8(void *, void *);
 extern void fn_80118DC0(void *);
 extern void fn_802E1728(void *);
 extern void fn_801282F4(void);
