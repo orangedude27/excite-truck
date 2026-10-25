@@ -1069,17 +1069,15 @@ extern "C" void fn_801FF994(void*, void*);
 void fn_801FCAAC(void*, float);
 void fn_801FCAC0(void*);
 void fn_801FF770(void* arg0) {
-    char* p;
+    void *entry;
     int i;
     i = 0;
-    p = (char*)arg0;
-    goto body;
-    do {
-body:
-        fn_801FF994(arg0, p);
-        p += 0x98;
+    entry = arg0;
+    while (i < *(int *)((char *)arg0 + 0x4C0)) {
+        fn_801FF994(arg0, entry);
+        entry = (char *)entry + 0x98;
         i++;
-    } while (i < *(int*)((char*)arg0 + 0x4C0));
+    }
 }
 
 extern "C" int stricmp(const char *, const char *);
