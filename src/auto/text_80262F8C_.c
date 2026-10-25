@@ -160,6 +160,14 @@ void fn_8026392C(void *arg0) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
+s32 fn_8026395C(void *arg0, s32 arg1) {
+    *(s32 *)((u8 *)arg0 + 0x24) = arg1;
+    *(s32 *)((u8 *)arg0 + 0x20) = arg1 * 2;
+    return fn_801333E8(arg1 + 8, lbl_803462A8, (u8 *)arg0 + 0x28, (u8 *)arg0);
+}
+#pragma pop
 extern s32 fn_80133460(s32, const u8 *, u8, s32);
 extern s32 fn_801333E8(s32, const u8 *, u8 *, u8 *);
 extern const u8 lbl_803462B8[];
