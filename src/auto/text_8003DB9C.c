@@ -1074,10 +1074,18 @@ void GXInitLightAttnK(s32 arg0) {
 }
 
 void GXInitLightSpot(s32 arg0, s32 arg1) {
-    unsigned int reg = 0;
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 23;
+            unsigned int bit : 1;
+            unsigned int value : 8;
+        } fields;
+    } data = {0};
 
-    reg = (reg & 0xFFFFFE00) | (arg1 & 0xFF) | ((arg0 & 1) << 8);
-    __peReg[2] = reg;
+    data.fields.value = arg1;
+    data.fields.bit = arg0;
+    __peReg[2] = data.reg;
 }
 
 void GXInitLightDistAttn(unsigned int arg0) {
