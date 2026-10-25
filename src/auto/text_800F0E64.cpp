@@ -838,6 +838,16 @@ extern "C" s32 ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFU
     return 1;
 }
 
+extern "C" const char lbl_80324BA8[];
+extern "C" char lbl_80559870;
+extern "C" s32 ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13StrmSoundInfo(void *self, u32 index, void *outInfo) {
+    u64 refInfo = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(self, index);
+    u8 *bytes = (u8 *)&refInfo;
+    if (bytes[1] != 2)
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559870, 0x71, lbl_80324BA8);
+    return GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), *(void **)((u8 *)self + 0x28)) != 0;
+}
+
 extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13WaveSoundInfo(void *self, u32 index, void *info) {
     extern const char lbl_80324B7C[];
     extern char lbl_80559868;
@@ -2450,11 +2460,13 @@ extern "C" void fn_800FA350(void) {
     }
 }
 
+#pragma push
+#pragma scheduling on
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
     if ((s8)lbl_8055DE68 == 0) {
         volatile u32 *base = (volatile u32 *)lbl_80412CC8;
         base[0x2388 / 4] = 0;
-        void *object = (void *)((u8 *)base + 0x2388);
+        register void *object = (void *)((u8 *)base + 0x2388);
         base[0x238c / 4] = 0;
         base[0x2378 / 4] = 0;
         base[0x237c / 4] = 0;
@@ -2462,13 +2474,14 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
         base[0x2388 / 4] = (u32)object;
         base[0x238c / 4] = (u32)object;
         ((volatile u8 *)base)[0x2394] = 0;
+        register const void *label = (const void *)&lbl_80412CB8;
         __register_global_object((void *)base, (void *)&__dt__10TitleSceneFv,
-                                 (void *)&lbl_80412CB8, object);
+                                 (void *)label, object);
         lbl_8055DE68 = 1;
     }
     return (void *)lbl_80412CC8;
 }
-
+#pragma pop
 extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
     if (this_) {
         if ((u8*)this_ + 0x2384 != 0) {
