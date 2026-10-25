@@ -1056,11 +1056,11 @@ extern "C" void* fn_801FF6B4(void* arg0, int arg1) {
 
 extern "C" void fn_801FF924(void*, void*, float);
 void fn_801FF6FC(void* arg0, float farg0) {
+    char *entry = (char *)arg0;
     int i = 0;
-    char* p = (char*)arg0;
-    while (i < *(int*)((char*)arg0 + 0x4C0)) {
-        fn_801FF924(arg0, p, farg0);
-        p += 0x98;
+    while (i < *(int *)((char *)arg0 + 0x4C0)) {
+        fn_801FF924(arg0, entry, farg0);
+        entry += 0x98;
         i++;
     }
 }
