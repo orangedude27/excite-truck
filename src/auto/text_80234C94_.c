@@ -258,6 +258,23 @@ float fn_80235F64(int arg0, int arg1) {
     }
     return *(float *)((char *)node + 0x10);
 }
+
+int fn_80235FD8(void *arg0) {
+    void *p;
+    int count;
+
+    if (arg0 == 0) {
+        return 0;
+    }
+    p = *(void **)((char *)arg0 + 0x88);
+    count = 0;
+    while (p != 0) {
+        p = *(void **)((char *)p + 0x18);
+        count++;
+    }
+    return count;
+}
+
 #pragma dont_inline reset
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
