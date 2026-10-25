@@ -259,15 +259,12 @@ void fn_8001F76C(void) {
 
 extern char lbl_802FE0A0[];
 s32 fn_8001F89C(s32 arg0, s32 arg1) {
-    s32 result;
     if (arg1 >= 0 && (u32)arg1 < 4) {
-        result = *(s32 *)(lbl_8035A718 + arg0 * 4);
-        result += *(s32 *)(lbl_80358698 + arg1 * 0x820 + arg0 * 4);
-    } else {
-        fn_802E30C8(lbl_802FE0A0);
-        result = 0;
+        return *(s32 *)(lbl_8035A718 + arg0 * 4)
+             + *(s32 *)(lbl_80358698 + arg1 * 0x820 + arg0 * 4);
     }
-    return result;
+    fn_802E30C8(lbl_802FE0A0);
+    return 0;
 }
 
 #pragma scheduling invalid_target
