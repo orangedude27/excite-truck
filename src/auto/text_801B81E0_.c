@@ -402,13 +402,13 @@ extern "C" void fn_801B8900(void) {
 extern "C" void fn_801B8914(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f10();
 }
-#pragma cplusplus off
-void fn_801B8928(void *a, void *b, void *c) {
-    register void *obj = lbl_8055E744;
-    register void (**vt)(void *, void *, void *, void *) = *(void (***)(void *, void *, void *, void *))obj;
-    vt[44](obj, a, b, c);
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801B8928(void *arg0, void *arg1, void *arg2) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f42(arg0, arg1, arg2);
 }
-
+#pragma scheduling on
+#pragma cplusplus off
 float fn_801B8950(int arg0) {
     extern float lbl_80436D08[];
     return lbl_80436D08[arg0];
