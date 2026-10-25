@@ -79,6 +79,27 @@ void fn_80292628(void) {
     }
 }
 
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_80292864(void) {
+    class Dummy_80292864 {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+    };
+    register unsigned char *entry;
+    register s32 i;
+    entry = lbl_804B4168;
+    i = 0;
+    for (; i < *(s32 *)(lbl_804B4168 + 0x180); entry += 0x18, i++) {
+        Dummy_80292864 *obj = *(Dummy_80292864 **)(entry + 0x10);
+        obj->m3();
+    }
+}
+#pragma scheduling on
+#pragma cplusplus off
 extern int fn_802928D4(int, int, int, int, int, int);
 void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
     fn_802928D4(0, arg0, arg1, arg2, arg3, arg1);
