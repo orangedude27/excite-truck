@@ -160,16 +160,22 @@ s32 fn_8001F41C(const char* arg) {
 }
 
 void fn_8001F490(s32 arg) {
-    if (arg == 2) {
-        goto lbl;
-    }
-    if (arg < 2) {
-        if (arg != 0) {
-            return;
-        }
-    lbl:
-        memset(&lbl_80358698, 0, 0x2080);
-    }
+    void *dst;
+    int clear;
+    unsigned long size;
+
+    if (arg == 2)
+        goto reset;
+    if (arg >= 2)
+        return;
+    if (arg == 0)
+        goto reset;
+    return;
+reset:
+    dst = lbl_80358698;
+    clear = 0;
+    size = 0x2080;
+    memset(dst, clear, size);
 }
 
 extern void *memcpy(void *, const void *, unsigned long);
@@ -247,11 +253,20 @@ s32 fn_8001FA20(s32 arg0, s32 arg1) {
 }
 
 s32 fn_8001FA8C(s32 arg0) {
-    SrcCoef *p;
-    if (arg0 < 0 || (u32)arg0 >= 8) return 0;
-    p = &lbl_802FDF30[arg0];
-    if (p->unkC == 0) return 0;
-    return ((s32 *)p->unkC)[1];
+    SrcCoef *base;
+    void *p;
+
+    if (arg0 < 0)
+        goto zero;
+    if ((u32)arg0 >= 8)
+        goto zero;
+    base = lbl_802FDF30;
+    p = base[arg0].unkC;
+    if (p == 0)
+        goto zero;
+    return ((s32 *)p)[1];
+zero:
+    return 0;
 }
 
 int fn_8001FAC8(int arg0, const char *arg1) {
