@@ -40,9 +40,17 @@ extern int lbl_8055ED3C, lbl_8055ED40, lbl_8055ED44;
 struct Obj80204 { void (*dtor)(void *, int); };
 #pragma dont_inline on
 unsigned int fn_8020437C(void) {
-    int value = fn_80204354();
-    int masked = (value ^ 0xDAC) & 0xDAC;
-    int shifted = (value ^ 0xDAC) >> 1;
+    union Value {
+        int s;
+        unsigned int u;
+    } value;
+    int masked;
+    int shifted;
+
+    value.s = fn_80204354();
+    value.u ^= 0xDAC;
+    masked = value.u & 0xDAC;
+    shifted = ((int)value.u) >> 1;
     return (unsigned int)(shifted - masked) >> 31;
 }
 #pragma dont_inline reset
@@ -65,14 +73,17 @@ void fn_80204460(void) {
     lbl_8055ED44 = fn_80145E70(lbl_8033BB18);
 }
 
-void fn_8020449C(void) {
-    int obj;
+#pragma cplusplus on
+extern "C" void fn_8020449C(void) {
+    class Obj {
+    public:
+        virtual ~Obj();
+    };
     lbl_8055ED3C = 0;
-    obj = (int)lbl_8055ED44;
-    if (obj != 0) (*(void (**)(void *, int))(*(int *)obj + 8))((void *)obj, 1);
+    delete (Obj *)lbl_8055ED44;
     lbl_8055ED44 = 0;
 }
-
+#pragma cplusplus reset
 int fn_802044E8(void) {
  unsigned char input[0x64];
  float matrix[12];
