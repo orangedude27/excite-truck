@@ -17,6 +17,9 @@ extern char lbl_803389B8[];
 extern char lbl_8033890C[];
 extern void fn_8016A240(const char *arg0);
 extern int lbl_8055E3C4;
+extern char lbl_804422F0[];
+extern float lbl_80562ADC;
+extern int fn_801D56C0(void*);
 extern void fn_801D5328(int, int);
 extern void fn_801D5A14(int);
 extern void fn_801D5A1C(int);
@@ -979,6 +982,30 @@ void fn_801D7E54(void *arg0) {
     }
 }
 
+#pragma cplusplus on
+extern "C" void fn_80128658(int);
+void *fn_801D7EC0(void *arg0, int arg1) {
+    int value;
+    void **vtable;
+    register void *child;
+
+    if (arg0 == 0) goto done;
+    child = *(void **)((unsigned char *)arg0 + 0x2C);
+    *(void **)arg0 = lbl_80338CB0;
+    *(int *)((unsigned char *)arg0 + 0x40) = 0;
+    if (child != 0) {
+        if (child != 0) {
+            vtable = *(void ***)child;
+            ((void (*)(void *, int))vtable[2])(child, 1);
+        }
+    }
+    value = *(int *)((unsigned char *)arg0 + 0x3C);
+    if (value != 0) fn_80128658(value);
+    if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+done:
+    return arg0;
+}
+#pragma cplusplus reset
 int fn_801D7F5C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
