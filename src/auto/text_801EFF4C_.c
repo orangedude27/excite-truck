@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern int lbl_80488798[64];
+extern unsigned char lbl_80488798_u8[];
 extern char lbl_8033A51C[];
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8033A578[];
@@ -441,8 +442,7 @@ int fn_801F15A8(void **arg0, int arg1) {
 }
 
 void fn_801F17C8(int unused) {
-    void *p = lbl_80488798;
-    memset(p, 0, 0x100);
+    memset((void *)lbl_80488798, 0, 0x100);
 }
 
 #pragma push
@@ -478,6 +478,19 @@ void fn_801F1878(void *arg0) {
         fn_802E317C(lbl_8033A544, *(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
     }
     lbl_80488798[index] = (int)arg0;
+}
+
+#pragma push
+#pragma use_lmw_stmw off
+int fn_801F18F0(void *arg0) {
+    int index = fn_801F196C(*(int *)((char *)arg0 + 8),
+                            *(int *)((char *)arg0 + 0xC));
+    if (lbl_80488798[index] == 0) {
+        fn_802E317C(lbl_8033A578,
+                    *(int *)((char *)arg0 + 8),
+                    *(int *)((char *)arg0 + 0xC));
+        lbl_80488798[index] = 0;
+    }
 }
 #pragma pop
 int fn_801F196C(int a, int b) { return b + a * 4; }
