@@ -485,6 +485,25 @@ void fn_802CFFA4(unsigned short arg0) {
 }
 
 #pragma scheduling invalid_target
+void fn_802CFFAC(int arg0, int arg1, int arg2) {
+    unsigned long packed;
+    volatile unsigned char spB;
+    volatile unsigned char spA;
+    volatile unsigned char sp9;
+    volatile unsigned char sp8;
+
+    packed = fn_802CE9FC(arg0, arg1, arg2, 0);
+    spB = (unsigned char)packed;
+    sp8 = (unsigned char)(packed >> 24);
+    sp9 = (unsigned char)(packed >> 16);
+    lbl_804C97B0[1] = sp8;
+    lbl_804C97B0[2] = sp9;
+    lbl_804C97B0[3] = (unsigned char)(packed >> 8);
+    lbl_804C97B0[4] = (unsigned char)packed;
+    lbl_804C97B0[0x1C] = 1;
+    spA = (unsigned char)(packed >> 8);
+}
+#pragma scheduling on
 void fn_802D0014(float a, float b, float c) {
     extern unsigned char lbl_804C97B0[];
     extern char lbl_80558DC4[];
@@ -556,23 +575,21 @@ void fn_802D01B0(float *p, float v) {
     *((unsigned char *)&lbl_804C97D0 + 0x5C) = 1;
 }
 #pragma scheduling on
-void fn_802D02F8(signed char arg1) {
+void fn_802D02F8(int arg0, signed char arg1) {
     extern unsigned char lbl_804C9778[];
-    extern unsigned char fn_802CEA1C();
+    volatile unsigned char scratch[4];
     unsigned int value;
-    unsigned char high, mid;
     lbl_804C9778[0x2d] = arg1;
     lbl_804C9778[0x2c] = 1;
-    value = fn_802CEA1C();
+    value = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
     lbl_804C9778[0x31] = value;
-    high = (unsigned char)(value >> 24);
-    lbl_804C9778[0x2e] = high;
-    mid = (unsigned char)(value >> 16);
-    lbl_804C9778[0x2f] = mid;
-    high = (unsigned char)(value >> 8);
-    lbl_804C9778[0x30] = high;
-    *(unsigned char *)((unsigned char *)&value + 3) = (unsigned char)value;
-    *(unsigned char *)((unsigned char *)&value + 2) = high;
+    scratch[0] = (unsigned char)(value >> 24);
+    scratch[1] = (unsigned char)(value >> 16);
+    lbl_804C9778[0x2e] = scratch[0];
+    lbl_804C9778[0x2f] = scratch[1];
+    lbl_804C9778[0x30] = (unsigned char)(value >> 8);
+    scratch[3] = (unsigned char)value;
+    scratch[2] = (unsigned char)(value >> 8);
 }
 
 void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
@@ -1190,6 +1207,17 @@ int fn_802D2F78(int *arg0, int *arg1) {
     *arg0 = value;
     *arg1 = data[3];
     return data[1];
+}
+
+void fn_802D2FD8(void) {
+    ((unsigned char *)lbl_804C9760)[0x14] = 0;
+    DCFlushRange((void *)lbl_804C9760[1],
+        (unsigned long)(lbl_804C9760[4] * (lbl_804C9760[2] * lbl_804C9760[3])));
+    VISetNextFrameBuffer((void *)lbl_804C9760[1]);
+    VIFlush();
+    VIWaitForRetrace();
+    VISetBlack(0);
+    lbl_804C9760[1] = lbl_804C9760[0];
 }
 
 void fn_802D3050(int arg0) {
