@@ -127,6 +127,20 @@ loop_test:
     fn_8017779C();
 }
 
+extern char lbl_803315E8[];
+extern s32 fn_80209110(s32 *);
+void fn_801766C4(void) {
+    s32 i = 0;
+    lbl_8055E3F4 = 7;
+    do {
+        fn_80176CC8();
+        i += 1;
+        if (i >= 10)
+            fn_802E317C(lbl_803315E8);
+    } while (lbl_8055E3F4 != 8);
+    fn_80209110(&lbl_8055E3F0);
+}
+
 #pragma scheduling invalid_target
 void fn_80176734(void) {
     if (fn_80176F9C() != 0) {
@@ -591,8 +605,9 @@ void fn_801777CC(u32 arg0) {
     fn_801776C4(arg0);
 }
 
-void fn_801777D0(void) {
-    fn_80177720();
+extern char lbl_8033189C[];
+void fn_801777D0(u32 arg0) {
+    fn_80177720(arg0);
 }
 
 
