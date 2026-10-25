@@ -15,7 +15,7 @@ extern void *fn_801792F8(void);
   extern f32 fn_80134DF8(void);
   extern s32 fn_801769A8(void);
   extern void *fn_80134E90(void);
-  extern void *fn_80134EC8(void);
+  extern void *fn_80134EC8();
   extern void *fn_80134FF8(void);
   extern void *fn_801350C0(void);
   extern void *fn_801A520C(void *, void *);
@@ -244,6 +244,7 @@ extern f32 lbl_8056010C;
 extern f32 lbl_80561304;
 extern f64 lbl_80561308;
 extern f64 lbl_80561310;
+#pragma scheduling invalid_target
 f32 fn_80134E34(f32 arg0) {
     f32 f30;
     f32 f31;
@@ -253,11 +254,9 @@ f32 fn_80134E34(f32 arg0) {
         f30 = arg0;
     }
     f31 = fn_80134C1C();
-    fn_80134D20();
-    return arg0 - f30 * f31;
+    return fn_80134D20() - f30 * f31;
 }
-
-#pragma dont_inline on
+#pragma scheduling on
 void *fn_80134E90(void) {
     void *p = fn_801284F8(0x30C, lbl_8032BC50);
     if (p != 0) {
