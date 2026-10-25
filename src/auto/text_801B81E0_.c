@@ -111,7 +111,7 @@ struct Dummy_801B8318 {
           virtual void d31();
                       virtual int d32();
           virtual void d33();
-          virtual int d34(void *);
+                      virtual void d34(void *, void *, void *, void *);
       };
   #pragma cplusplus off
   int fn_801B81E0(void *arg0) {
