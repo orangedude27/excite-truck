@@ -12954,8 +12954,8 @@ extern "C" s32 fn_800D53FC(void *arg0, void *arg1, const char *arg2) {
     return 1;
 }
 
-void fn_800D54E0(long a, long b, long c, long d) {
-    fn_800D51F4(a + 4, a + 0x30, b, c, d, b);
+extern "C" void fn_800D54E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    fn_800D51F4(arg0 + 4, arg0 + 0x30, arg1, arg2, arg3, arg1);
 }
 
 int fn_800D5500(void *obj, const char *name) {
