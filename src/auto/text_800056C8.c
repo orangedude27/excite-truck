@@ -59,7 +59,7 @@ extern s32 fn_80010074(s32, s32, void *, void *, f32, f32, f32);
 extern int sprintf(char *, const char *, ...);
 extern u8 lbl_802FB2A0[];
 extern s32 lbl_80558928;
-extern u8 lbl_80558948[];
+extern char lbl_80558948[];
 extern f32 lbl_80560134;
 extern f32 lbl_80560190;
 extern u8 lbl_802FB0C8[];
@@ -971,17 +971,17 @@ extern s32 fn_8000561C(void *, void *);
 extern void fn_80276DC8(s32);
 extern void *fn_801E87A8(void);
 extern s32 fn_801CB8FC(void);
+#pragma scheduling invalid_target
 void fn_800077E4(void *arg0) {
     void *base = lbl_8055D350;
     void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
     *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
-    if (fn_8000561C(p, base) == 0) {
-        return;
+    if (fn_8000561C(p, base) != 0) {
+        *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
+        fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }
-    *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
-    fn_80276DC8(((s32 *)lbl_8055D350)[7]);
 }
-
+#pragma scheduling on
 void fn_80007848(void) {
     void *base = lbl_8055D350;
     void *object = *(void **)((u8 *)base + 0x2C);
