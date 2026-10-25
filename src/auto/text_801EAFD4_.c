@@ -5,7 +5,7 @@ typedef int s32;
 typedef unsigned int u32;
 typedef float f32;
 typedef unsigned char u8;
-extern s32 lbl_8033A048;
+extern char lbl_8033A048[];
 extern s32 *lbl_80339E88;
 extern s32 *lbl_8055EBA0;
 extern s32 lbl_8055AFB8;
@@ -514,7 +514,11 @@ void fn_801EC11C(void) {
     }
 }
 
-void fn_801EC130(s32 arg0, void *arg1, s32 arg2) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_802C6FB4(s32);
+extern "C" void fn_802C703C(s32);
+extern "C" void fn_801EC130(s32 arg0, void *arg1, s32 arg2) {
     if (((s32 *)arg1)[1] != -1) {
         fn_802C6FB4(arg2);
         fn_802C703C(((s32 *)arg1)[1]);
@@ -522,11 +526,19 @@ void fn_801EC130(s32 arg0, void *arg1, s32 arg2) {
     if (*(s32 *)arg1 == 1) {
         s32 (*lookup)(void *) = fn_801EB110;
         void *obj = (void *)lookup(arg1);
-        register void **vt = *(void ***)obj;
-        ((void (*)(void *, void *))vt[5])(obj, arg1);
+        struct Dummy {
+            virtual void f0();
+            virtual void f1();
+            virtual void f2();
+            virtual void f3();
+            virtual void f4();
+            virtual void f5(void *);
+        };
+        ((Dummy *)obj)->f5(arg1);
     }
 }
-#pragma dont_inline off
+#pragma cplusplus reset
+#pragma pop
 void fn_801EC19C(void) {
 
 }
