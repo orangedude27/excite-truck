@@ -647,14 +647,16 @@ extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
     if (obj != 0) *(s32 *)((u8 *)arg0 + 0x10) = fn_802A42C8(&params, arg1);
 }
 
-extern "C" void* fn_802A2EEC(void* arg0, void* arg1) {
-    *(void**)arg0 = lbl_80349B50;
-    s32 result = (*(s32 (**)(void*, void*))(*(void**)((char*)arg1 + 0x14)))(arg1, &lbl_8055CBB0);
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void *fn_802A2EEC(void *arg0, DummyReceiver_802A3314 *arg1) {
+    *(void **)arg0 = lbl_80349B50;
+    s32 result = arg1->v3(&lbl_8055CBB0);
     fn_802A30BC(arg0, result);
     fn_802A31DC(arg0, result);
     return arg0;
 }
-
+#pragma pop
 extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void**)arg0 = lbl_80349B50;
