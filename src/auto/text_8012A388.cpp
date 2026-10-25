@@ -1,6 +1,6 @@
 #include <types.h>
 extern "C" s8 lbl_8055DFF8;
-extern "C" u8 lbl_805599B8[];
+extern "C" u8 lbl_805599B8;
 extern "C" const char lbl_8032AE9C[];
 extern "C" void fn_8012BEF0(s32);
 extern "C" void fn_8012DBD0(void);
