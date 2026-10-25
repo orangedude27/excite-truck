@@ -1144,7 +1144,7 @@ void fn_802B0218(void) {
     }
 }
 
-#pragma dont_inline fn_802AE7AC
+#pragma dont_inline on
 void fn_802B0254(void) {
     if (fn_802AE7AC() != 0) {
         fn_802DBE4C();
@@ -1152,6 +1152,7 @@ void fn_802B0254(void) {
         fn_802DBECC();
     }
 }
+#pragma dont_inline reset
 void fn_802B0288(void *arg0) {
     if ((void *)lbl_8055F970 != arg0)
         fn_802B4E44(*(int *)((char *)arg0 + 8));
