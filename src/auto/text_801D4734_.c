@@ -348,6 +348,34 @@ int fn_801D5A2C(void *arg0, int arg1, int arg2) {
     }
     return 0;
 }
+
+extern char lbl_80338D20[];
+void fn_801D5AA8(void *arg0) {
+    char *base;
+    char *vtable;
+    char *p1c;
+    char *p7c;
+    int zero;
+    int four;
+    int size;
+    base = arg0;
+    vtable = lbl_80338D20;
+    *(void **)base = vtable;
+    zero = 0;
+    p1c = base + 0x1C;
+    *(void **)(base + 4) = vtable + 0x38;
+    p7c = base + 0x7C;
+    four = 4;
+    *(int *)(base + 8) = zero;
+    size = 0x40;
+    *(void **)(base + 0x10) = p1c;
+    *(int *)(base + 0x18) = four;
+    *(int *)(base + 0x14) = zero;
+    *(void **)(base + 0x70) = p7c;
+    *(int *)(base + 0x78) = size;
+    *(int *)(base + 0x74) = zero;
+}
+
 #pragma dont_inline reset
 #pragma scheduling reset
 
