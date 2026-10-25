@@ -1203,6 +1203,15 @@ void fn_801C80C8(void) {
     lbl_8055E854 = 2;
 }
 
+void fn_801C811C(void) {
+    lbl_8055E854 = 4;
+    lbl_8055E860 = lbl_805629B4;
+    lbl_8055E85C = lbl_80562970;
+    lbl_8055E83A = 1;
+    lbl_8055E868 = fn_801C6CBC;
+    fn_801C957C(1, fn_801C6CBC, lbl_805629B4);
+}
+
 void fn_801C8190(void) {
     lbl_8055E854 = 1;
     fn_801C78D8();
