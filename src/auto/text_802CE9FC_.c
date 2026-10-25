@@ -323,13 +323,16 @@ void fn_802CF850(void) {
     lbl_8055FDB4 = 0;
 }
 
+extern double __fabs(double);
+#pragma scheduling invalid_target
 int fn_802CFCA0(void* alarm) {
-    int sp10;
+    extern float lbl_80558DC4;
+    char fifo[0x80];
     int spC;
     int sp8;
-    int pad[24];
+    float value;
     fn_802D6C68();
-    lbl_8055FE39 = 1;
+    *(volatile unsigned char *)&lbl_8055FE39 = 1;
     lbl_8055FDA4 = lbl_8055FD94;
     lbl_8055FD9C = 0;
     lbl_804C5700[0] = 1;
@@ -337,22 +340,23 @@ int fn_802CFCA0(void* alarm) {
     fn_802DA52C();
     GXSetDrawSync();
     GXGetVtxDesc();
-    GXGetCPUFifo(&sp10);
-    GXGetFifoPtrs(&sp10, &spC, &sp8);
+    GXGetCPUFifo(fifo);
+    GXGetFifoPtrs(fifo, &spC, &sp8);
     GXEnableBreakPt(sp8);
     GXGetVtxDesc();
     GXInvalidateVtxCache();
     GXMiscInit(1);
     lbl_8055FD30 += 1;
     if (lbl_804C97B0[0] == 0) {
-        if (__fabsf(((float *)lbl_804C97B0)[4]) <= lbl_80558DC4) {
+        value = *(volatile float *)((unsigned char *)lbl_804C97B0 + 0x10);
+        if (!((float)__fabs((double)value) <= *(volatile float *)&lbl_80558DC4)) {
             lbl_804C97B0[0] = 1;
             lbl_804C97B0[0x1C] = 1;
         }
     }
-    return 0;
+    return lbl_8055FD30;
 }
-
+#pragma scheduling on
 extern int GXGetFifoBase(void *);
 extern int GXGetFifoSize(void *);
 extern void GXGetVtxAttrFmtv(void);
