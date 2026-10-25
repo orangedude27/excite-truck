@@ -14,10 +14,6 @@ extern char lbl_80344BC0[];
 extern void fn_80255200(void *, s32);
 extern void fn_80015A20(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
-extern void fn_802C6CF8(s32);
-extern void fn_801F0000(s32);
-extern void fn_80253C48(void *);
-extern void fn_802532BC(void);
 
 static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
     float outX;
