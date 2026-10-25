@@ -160,7 +160,7 @@ void fn_8000AF1C(void *arg0) {
  fn_801E7C1C(arg0); fn_801E8818(fn_8000AEC4,lbl_802FBC90+0x21C); fn_8012E81C(lbl_802FBC90+0x228);
  fn_8000AB44(); fn_8023889C(); fn_801CB808(); fn_801617BC(); fn_802061F8(); fn_80006D9C();
  fn_8000CE60(); fn_8020D178(); fn_802108C8(); fn_802B8744(); fn_801769EC(); fn_8000AF04();
- entry=&lbl_8034F5B8; i=0;
+ entry=(int *)&lbl_8034F5B8; i=0;
  do { memset(entry,0,8); val=*(int *)&lbl_8034F5D8; fn_801332D0(i+0xC,lbl_802FBC90+0x238,&val);
    if(val>=0x22) { fn_802E30C8(lbl_802FBC90+0x248); val=*(int *)&lbl_8034F5D8; }
    else if(val<0) { fn_802E30C8(lbl_802FBC90+0x248); val=*(int *)&lbl_8034F5D8; }
@@ -650,6 +650,18 @@ void fn_8000C0E8(void *arg0) {
     }
     fn_8000BF20(&local, 0);
 }
+
+void fn_8000C5CC(void) {
+    char sp8[0x38];
+
+    fn_80230B5C((int *)sp8);
+    fn_802C8638((int *)sp8);
+    fn_802C974C(lbl_805601F8, lbl_805601FC, lbl_80560200);
+    fn_80010074(-0x100, 9, &lbl_80558A48, lbl_805601F8, lbl_80560208, lbl_8056020C);
+    fn_80011A2C();
+    fn_802C9904();
+}
+
 #pragma scheduling on
 int fn_8000BD9C(int, int, int);
 extern float lbl_805601FC, lbl_80560204;
