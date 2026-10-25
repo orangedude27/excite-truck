@@ -11227,8 +11227,17 @@ extern "C" void fn_800CF96C(void) {
 
 }
 
-void fn_800CFAC8(void *arg0) {
- u8 *p=(u8*)arg0; p[0x18]=0; p[4]=0; p[5]=0; p[6]=0; p[7]=0; p[8]=0; p[9]=0; p[0xA]=0; p[0xB]=0;
+extern "C" void fn_800CFAC8(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    p[0x18] = 0;
+    p[4] = 0;
+    p[5] = 0;
+    p[6] = 0;
+    p[7] = 0;
+    p[8] = 0;
+    p[9] = 0;
+    p[0xA] = 0;
+    p[0xB] = 0;
 }
 
 extern "C" void fn_800CFBB8(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x28) = arg1; }
