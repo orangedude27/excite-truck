@@ -42,11 +42,10 @@ void fn_80129C80(int arg0, int arg1, int arg2) {
 }
 
 int fn_80129D18(int arg0, int arg1) {
-    int result = arg1 - 1;
-    int value = (int)((float)arg1 * fn_8012A080((char *)lbl_804223F8 + arg0 * 0x19C));
-    if (value < result)
-        result = value;
-    return result;
+    int value = (int)((float)arg1 * fn_8012A080(lbl_804223F8 + arg0 * 0x19C));
+    if (value < arg1 - 1)
+        return value;
+    return arg1 - 1;
 }
 
 #pragma dont_inline on
