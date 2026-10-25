@@ -173,6 +173,19 @@ void fn_8000AF1C(void *arg0) {
  if(active) { fn_8000ADE0(0xD); fn_80265D74(); fn_80128678(); fn_80206454(); fn_80127930(); fn_802D3E9C(0); }
 }
 
+int fn_8000B210(void *arg0) {
+    extern int fn_80231504(int);
+    if (*(void **)lbl_8055D3D0 != 0) {
+        if (((int (*)(void))fn_8000AD2C)() != 0) {
+            int saved = fn_80231504(0);
+            ((int (*)())*(void **)lbl_8055D3D0)(saved, lbl_8055D3D0);
+            return fn_80231504(saved);
+        }
+        return ((int (*)())*(void **)lbl_8055D3D0)(lbl_8055D3D0);
+    }
+    return (int)lbl_8055D3D0;
+}
+
 extern int fn_8000B210(void *);
 void fn_8000B288(void* alarm) {
     fn_801DF110(((int (*)(void *))fn_8000B210)(alarm));
@@ -244,7 +257,7 @@ int fn_8000B42C(int arg0) {
 int fn_8000B53C(int arg0) {
     ((void (*)(int))fn_8000ADE0)(0x12);
     AXFXSetHooks_8020DE10(fn_8000B5A8,
-        (int)fn_8000B3B4 & (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31,
+        (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31 & (int)fn_8000B3B4,
         lbl_8055D3EC);
     switch (arg0) {
     default:
