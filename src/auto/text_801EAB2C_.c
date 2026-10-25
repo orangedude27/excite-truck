@@ -36,7 +36,6 @@ void fn_801EAB2C(void *arg0) {
     *(short *)((char *)arg0 + 0x38) = lbl_80562E28;
 }
 
-#pragma dont_inline fn_801EAB80
 void fn_801EAB80(void *arg0, long arg1) {
     fn_80176948(arg1, (long)arg0 + 0x34, (long)arg0);
 }
