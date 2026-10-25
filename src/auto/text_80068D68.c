@@ -4824,13 +4824,14 @@ void btm_pm_proc_cmd_status(UINT8 status) {
 
 void fn_8007D4C4(void) {
     extern u32 lbl_802EEBF8[];
-    u32 *src = lbl_802EEBF8;
-    u8 *dst = lbl_803C0F78;
+    register u32 *src = lbl_802EEBF8;
+    register u8 *dst = lbl_803C0F78;
+
     *(u16 *)(dst + 0x18F6) = 0xFFFF;
-    *(u32 *)(dst + 0x18F8) = src[0];
-    *(u32 *)(dst + 0x18FC) = src[1];
-    *(u32 *)(dst + 0x1900) = src[2];
-    *(u32 *)(dst + 0x1904) = src[3];
+    *(u32 *)(dst + 0x18F8) = *src++;
+    *(u32 *)(dst + 0x18FC) = *src++;
+    *(u32 *)(dst + 0x1900) = *src++;
+    *(u32 *)(dst + 0x1904) = *src++;
     dst[0x1909] = 2;
 }
 
@@ -7744,10 +7745,16 @@ void fn_80085384(u8 *arg0, u8 arg1) {
 }
 
 void fn_800853B4(u8 *arg0, u16 arg1, u16 arg2) {
-    *(u16 *)(arg0 + 2) = 7; *(u16 *)(arg0 + 4) = 0;
-    arg0[8] = 0x1C; arg0[9] = 0xC; arg0[10] = 4;
-    arg0[11] = arg1; arg0[12] = arg1 >> 8; arg0[13] = arg2; arg0[14] = arg2 >> 8;
-    btu_hcif_send_cmd(arg1 >> 8, 4, 0xC, 0x1C, 0);
+    ((u16 *)(arg0 + 2))[0] = 7;
+    ((u16 *)(arg0 + 4))[0] = 0;
+    arg0[8] = 0x1C;
+    arg0[9] = 0xC;
+    arg0[10] = 4;
+    arg0[11] = arg1;
+    arg0[12] = arg1 >> 8;
+    arg0[13] = arg2;
+    arg0[14] = arg2 >> 8;
+    btu_hcif_send_cmd(arg0);
 }
 
 void fn_800853F8(u8 *arg0, u16 arg1, u16 arg2) {
