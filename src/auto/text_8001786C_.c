@@ -42,10 +42,9 @@ void fn_800178F8(s32 arg0, s32 arg1) {
 
 #pragma dont_inline on
 s32 fn_800179E4(void *value, s32 array, s32 count) {
-    while (count > 0) {
-        if ((s32)value == *(s32 *)array) return 1;
-        array += 4;
-        count--;
+    s32 i;
+    for (i = 0; i < count; i++) {
+        if ((s32)value == *(s32 *)(array + i * 4)) return 1;
     }
     return 0;
 }
