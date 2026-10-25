@@ -66,7 +66,7 @@ extern double __fabs(double);
 int fn_801AEA64(float arg0, float arg1) {
     float diff = arg0 - arg1;
     float magnitude = (float)__fabs((double)diff);
-    if (magnitude <= lbl_80558DC4) return 0;
+    if (magnitude <= *(float *)(void *)&lbl_80558DC4) return 0;
     if (arg1 < arg0) return 1;
     return -1;
 }
