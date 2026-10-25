@@ -392,10 +392,7 @@ extern void fn_802E1780(void *, unsigned int, int);
 extern int fn_802E1804(void *, void *, int, int, int);
 extern int fn_802E18D4(int, int, int, int, void *, void *);
 extern void DCFlushRange(void *, int);
-typedef struct { char data[0x20]; } GXTexObj;
-extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
-extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
-extern float lbl_805650F0;
+
 extern void DCStoreRange(void *, int);
 extern void fn_80127D58(void *);
 extern void fn_802E29AC(void);
