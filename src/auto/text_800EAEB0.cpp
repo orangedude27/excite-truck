@@ -449,11 +449,15 @@ extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlay
     return result;
 }
 
-void fn_800EBB88(void* arg0) {
-    u32* p = (u32*)arg0;
-    u32* q = (u32*)((u8*)arg0 + 8);
-    p[2] = 0; p[3] = 0; p[0] = 0; p[1] = 0;
-    p[2] = (u32)q; p[3] = (u32)q;
+extern "C" void fn_800EBB88(void *arg0) {
+    volatile s32 *p = (volatile s32 *)arg0;
+    s32 *q = (s32 *)((u8 *)arg0 + 8);
+    p[2] = 0;
+    p[3] = 0;
+    p[0] = 0;
+    p[1] = 0;
+    p[2] = (s32)q;
+    p[3] = (s32)q;
 }
 
 #pragma push
