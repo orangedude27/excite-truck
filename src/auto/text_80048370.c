@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+#include <math.h>
 #include <revolution/MEM.h>
 #include "revolution/KPAD/__KPAD.h"
 #include "revolution/OS/OSInterrupt.h"
@@ -365,17 +366,20 @@ void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags) {
 }
 
 u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead *heap, s32 align) {
-    u32 size = align < 0 ? -align : align;
+    u32 size = (align < 0) ? (0 - align) : align;
     u32 start;
     u32 end;
     u32 result;
     BOOL enabled;
     enabled = OSDisableInterrupts();
-    start = (u32)heap->start;
-    end = (u32)heap->end;
-    result = (size + start - 1) & ~(size - 1);
-    if (result > end) result = 0;
-    else result = end - result;
+    start = *(u32 *)((u8 *)heap + 0x3C);
+    end = *(u32 *)((u8 *)heap + 0x40);
+    result = (size + start - 1) & (size - 1);
+    if (result <= end) {
+        result = end - result;
+    } else {
+        result = 0;
+    }
     OSRestoreInterrupts(enabled);
     return result;
 }
@@ -520,16 +524,39 @@ extern f32 lbl_80560C4C;
 void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
     register f32 zero = lbl_80560C4C;
     register f32 one = lbl_80560C48;
-    double pair = (double)zero;
     m[0][3] = x;
     m[1][3] = y;
-    *(double *)&m[0][1] = pair;
-    *(double *)&m[2][0] = pair;
+    *(double *)&m[0][1] = zero;
+    *(double *)&m[2][0] = zero;
     m[1][0] = zero;
     m[1][1] = one;
     m[1][2] = zero;
     m[2][2] = one;
     m[2][3] = z;
     m[0][0] = one;
+}
+
+void PSMTXRotTrig(register Mtx m, register Mtx r, register f32 sx, register f32 sy, register f32 sz) {
+    register f32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
+    a0 = *(f32 *)&m[0][0];
+    a1 = *(f32 *)&m[0][1];
+    a2 = *(f32 *)&m[0][2];
+    a3 = *(f32 *)&m[0][3];
+    a4 = *(f32 *)&m[1][0];
+    a5 = *(f32 *)&m[1][1];
+    a6 = *(f32 *)&m[1][2];
+    a7 = *(f32 *)&m[1][3];
+    a8 = *(f32 *)&m[2][0];
+    a9 = *(f32 *)&m[2][1];
+    *(f32 *)&r[0][0] = a0;
+    *(f32 *)&r[0][1] = a1;
+    *(f32 *)&r[0][2] = a2;
+    *(f32 *)&r[0][3] = a3;
+    *(f32 *)&r[1][0] = a4;
+    *(f32 *)&r[1][1] = a5;
+    *(f32 *)&r[1][2] = a6;
+    *(f32 *)&r[1][3] = a7;
+    *(f32 *)&r[2][0] = a8;
+    *(f32 *)&r[2][1] = a9;
 }
 
