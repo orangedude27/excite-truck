@@ -276,27 +276,27 @@ s32 fn_8001F89C(s32 arg0, s32 arg1) {
 
 #pragma scheduling invalid_target
 s32 fn_8001F9A4(s32 arg0, s32 arg1) {
-    void *temp_r5;
+    volatile s32 *temp_r5;
     s32 *var_r6;
     s32 temp_r0;
     s32 var_ctr;
     s32 var_r3;
     if (arg0 < 0) goto no_coef;
     if ((u32)arg0 >= 8) goto no_coef;
-    temp_r5 = lbl_802FDF30[arg0].unkC;
+    temp_r5 = (volatile s32 *)lbl_802FDF30[arg0].unkC;
     if (temp_r5 == 0) goto no_coef;
-    var_r6 = *(s32 **)temp_r5;
+    var_r6 = (s32 *)temp_r5[0];
     if (var_r6 != 0) goto have_data;
     return 0;
 have_data:
-    temp_r0 = *(s32 *)((char *)temp_r5 + 4);
+    temp_r0 = temp_r5[1];
     var_r3 = 0;
     for (var_ctr = temp_r0; var_ctr > 0; var_ctr--) {
         if (var_r6[0] > arg1) return var_r3;
         var_r6 += 2;
         var_r3++;
     }
-    return *(s32 *)((char *)temp_r5 + 4);
+    return temp_r5[1];
 no_coef:
     return 0;
 }
