@@ -902,10 +902,33 @@ void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned
 }
 
 void GXSetNumTexGens(unsigned int value) {
-    unsigned int *data = __GXData;
-    data[0x254 / 4] = (data[0x254 / 4] & 0x0FFFFFFF) | (value & 0xF0000000);
-    data[0x5FC / 4] |= 0x200;
-    data[0x5FC / 4] |= 4;
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 28;
+            unsigned int texGens : 4;
+        } fields;
+    } tex;
+
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad0 : 6;
+            unsigned int upper : 1;
+            unsigned int pad1 : 22;
+            unsigned int lower : 1;
+            unsigned int pad2 : 2;
+        } fields;
+    } flags;
+
+    tex.reg = __GXData[0x254 / 4];
+    tex.fields.texGens = value;
+    __GXData[0x254 / 4] = tex.reg;
+
+    flags.reg = __GXData[0x5FC / 4];
+    flags.fields.upper = 1;
+    flags.fields.lower = 1;
+    __GXData[0x5FC / 4] = flags.reg;
 }
 
 void GXSetMisc(s32 which, unsigned short value) {
@@ -1364,10 +1387,18 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 void GXSetDispCopyDst(s32 value) {
-    unsigned int result = 0;
-    result = (value << 1) & 0xFFFE;
-    result >>= 5;
-    __GXData[0x238 / 4] = result | 0x4D000000;
+    union {
+        u32 reg;
+        struct {
+            u32 constant : 8;
+            u32 pad : 14;
+            u32 arg : 10;
+        } fields;
+    } data = {0};
+
+    data.fields.arg = ((value << 1) & 0x7FFE) >> 5;
+    data.fields.constant = 0x4D;
+    __GXData[0x238 / 4] = data.reg;
 }
 
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
@@ -2679,18 +2710,13 @@ void GXSetTevOrder(unsigned int stage, int texCoord, int texMap, int color) {
 }
 
 void GXSetNumTevStages(s32 count) {
-    union {
-        unsigned int reg;
-        struct {
-            unsigned int pad : 18;
-            unsigned int stages : 4;
-            unsigned int rest : 10;
-        } fields;
-    } data;
+    struct {
+        unsigned int pad : 18;
+        signed int stages : 4;
+        unsigned int rest : 10;
+    } *fields = (void *)&__GXData[0x254 / 4];
 
-    data.reg = __GXData[0x254 / 4];
-    data.fields.stages = count - 1;
-    __GXData[0x254 / 4] = data.reg;
+    fields->stages = count - 1;
     __GXData[0x5FC / 4] |= 4;
 }
 
