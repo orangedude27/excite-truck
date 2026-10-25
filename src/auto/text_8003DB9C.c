@@ -2400,6 +2400,12 @@ void GXSetTevDirect(int arg0) {
 
 void __GXUpdateBPMask(void) {}
 
+void __GXFlushTextureState(void) {
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = __GXData[0x174 / 4];
+    *(unsigned short *)((char *)__GXData + 2) = 0;
+}
+
 extern unsigned int lbl_80303C30;
 void GXSetTevOp(int stage, int mode) {
     unsigned int *color;
@@ -2672,9 +2678,19 @@ void GXSetTevOrder(unsigned int stage, int texCoord, int texMap, int color) {
 }
 
 void GXSetNumTevStages(s32 count) {
-    unsigned int *data = __GXData;
-    data[0x254 / 4] = (data[0x254 / 4] & ~0x3C00) | ((count - 1) << 10);
-    data[0x5FC / 4] |= 4;
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 18;
+            unsigned int stages : 4;
+            unsigned int rest : 10;
+        } fields;
+    } data;
+
+    data.reg = __GXData[0x254 / 4];
+    data.fields.stages = count - 1;
+    __GXData[0x254 / 4] = data.reg;
+    __GXData[0x5FC / 4] |= 4;
 }
 
 void GXSetFogRangeAdj(int enable, int center, unsigned short *table) {
