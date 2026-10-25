@@ -549,7 +549,7 @@ extern "C" float fn_80129DC4(int, void*, float, float);
 extern "C" float fn_801E7E24(void);
 extern "C" void* memset(void*, int, unsigned long);
 extern "C" const char lbl_8033B790[];
-void* fn_801FE188(void* arg0) {
+extern "C" void* fn_801FE188(void* arg0) {
     *(const char**)arg0 = lbl_8033B790;
     memset((char*)arg0 + 4, 0, 0x30);
     *(int*)((char*)arg0 + 0x34) = 0;
