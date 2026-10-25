@@ -53,6 +53,15 @@ void __AXDSPInitCallback_8004DDC4(void) {
     lbl_8055DA44 = 1;
 }
 
+void __OSGetExecParams(unsigned int *param) {
+    unsigned int exec = *(volatile unsigned int *)0x800030F0;
+    if (exec >= 0x80000000u) {
+        memcpy(param, (void *)exec, 0x1C);
+        return;
+    }
+    *param = 0;
+}
+
 void fn_8004DDF4(void* hi) {
     lbl_8055DA2C = hi;
 }
@@ -76,87 +85,109 @@ extern void __OSLaunchMenu(void);
 #pragma small_data on
 #pragma small_data reset
 void fn_8004DDFC(void) {
-    unsigned char *mem;
     unsigned char *base;
-    register unsigned char *selected;
-    register unsigned char *entry;
-    unsigned char b0, b1, b2, b3;
-    volatile unsigned char saved[4];
+    unsigned char *mem;
+    unsigned char *partition;
+    register unsigned int *entry;
+    register unsigned int *selected;
+    struct local_state {
+        unsigned char b0;
+        unsigned char b1;
+        unsigned char b2;
+        unsigned char b3;
+        int fd;
+        unsigned int count;
+    } state;
     int error;
     unsigned int i;
     unsigned long long title;
-    int fd;
     int result;
-    unsigned int count;
 
-    b0 = lbl_80560C70;
-    b1 = lbl_80560C71;
-    b2 = lbl_80560C72;
-    b3 = lbl_80560C73;
-    saved[0] = b0;
-    saved[1] = b1;
-    saved[2] = b2;
-    saved[3] = b3;
+    state.b0 = lbl_80560C70;
+    state.b1 = lbl_80560C71;
+    state.b2 = lbl_80560C72;
+    state.b3 = lbl_80560C73;
+    base = lbl_8037D900 + 0x10000;
     mem = lbl_8037D900;
-    base = mem + 0x10000;
-    fd = -1;
-    count = 1;
+    state.fd = -1;
+    state.count = 1;
     lbl_8055DA2C = 0;
-    ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, b2, b1, b0, 0, -1, 1, mem);
-    if (lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
-        OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
-        __OSLaunchMenu();
+    ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, state.b2, state.b1, state.b0, 0, -1, 1, mem);
+    if (lbl_8055DA2C != 0) {
+        if (lbl_8055DA2C != (void *)1) {
+            const char *format = lbl_803049C0;
+            unsigned int status = *(volatile unsigned int *)&lbl_8055DA2C;
+            OSReport(format, status);
+            __OSLaunchMenu();
+        }
     }
 
-    entry = base - 0x4300;
+    entry = (unsigned int *)(base - 0x4300);
     lbl_8055DA40 = (unsigned int *)entry;
     lbl_8055DA2C = 0;
     fn_8003AD88(entry, 0x20, 0x10000, (void *)fn_8004DDF4);
-    if (*(volatile void **)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
-        OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
-        __OSLaunchMenu();
+    if (lbl_8055DA2C != 0) {
+        if (lbl_8055DA2C != (void *)1) {
+            const char *format = lbl_803049C0;
+            unsigned int status = *(volatile unsigned int *)&lbl_8055DA2C;
+            OSReport(format, status);
+            __OSLaunchMenu();
+        }
     }
 
-    entry = base - 0x42E0;
+    entry = (unsigned int *)(base - 0x42E0);
     lbl_8055DA3C = (unsigned int *)entry;
     lbl_8055DA2C = 0;
     fn_8003AD88(entry, 0x20, *(int *)((unsigned char *)lbl_8055DA40 + 4), (void *)fn_8004DDF4);
-    if (*(volatile void **)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
-        OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
-        __OSLaunchMenu();
+    if (lbl_8055DA2C != 0) {
+        if (lbl_8055DA2C != (void *)1) {
+            const char *format = lbl_803049C0;
+            unsigned int status = *(volatile unsigned int *)&lbl_8055DA2C;
+            OSReport(format, status);
+            __OSLaunchMenu();
+        }
     }
 
     selected = 0;
-    entry = (unsigned char *)lbl_8055DA3C;
+    entry = (unsigned int *)lbl_8055DA3C;
     lbl_8055DA38 = 0;
     for (i = 0; (unsigned char)i < *(unsigned int *)lbl_8055DA40; i++) {
-        if (*(int *)(entry + 4) == 0) {
+        if (entry[1] == 0) {
             selected = entry;
             lbl_8055DA38 = (unsigned int *)entry;
         }
-        entry += 8;
+        entry += 2;
         lbl_8055DA3C = (unsigned int *)entry;
     }
     lbl_8055DA2C = 0;
-    DVDLowOpenPartition(*(unsigned int *)selected, 0, 0, 0, base - 0x42C0, (void *)fn_8004DDF4);
-    if (*(volatile void **)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
-        OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
-        __OSLaunchMenu();
+    partition = base - 0x42C0;
+    DVDLowOpenPartition(*(unsigned int *)selected, 0, 0, 0, partition, (void *)fn_8004DDF4);
+    if (lbl_8055DA2C != 0) {
+        if (lbl_8055DA2C != (void *)1) {
+            const char *format = lbl_803049C0;
+            unsigned int status = *(volatile unsigned int *)&lbl_8055DA2C;
+            OSReport(format, status);
+            __OSLaunchMenu();
+        }
     }
 
     lbl_8055DA2C = 0;
     fn_8003AC24((void *)fn_8004DDF4);
-    if (*(volatile void **)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
-        OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
-        __OSLaunchMenu();
+    if (lbl_8055DA2C != 0) {
+        if (lbl_8055DA2C != (void *)1) {
+            const char *format = lbl_803049C0;
+            unsigned int status = *(volatile unsigned int *)&lbl_8055DA2C;
+            OSReport(format, status);
+            __OSLaunchMenu();
+        }
     }
 
-    entry = base - 0x42C0;
-    lbl_8055DA34 = entry;
-    title = *(unsigned long long *)(entry + 0x184);
+    partition = base - 0x42C0;
+    lbl_8055DA34 = partition;
     error = 0;
+    title = *(unsigned long long *)(partition + 0x184);
     result = IOS_Open(&lbl_80558F40, 0);
-    fd = result;
+    state.fd = result;
     if (result < 0)
         error = result;
     if (error != 0) {
@@ -164,65 +195,79 @@ void fn_8004DDFC(void) {
         __OSLaunchMenu();
     }
 
-    result = ((int (*)(int *, unsigned long long, void *, unsigned int *))_ES_GetTicketViews)(&fd, title, 0, &count);
-    if (count == 1 && result != 0) {
+    result = ((int (*)(int *, unsigned long long, void *, unsigned int *))_ES_GetTicketViews)(&state.fd, title, 0, &state.count);
+    if (state.count == 1 && result != 0) {
         OSReport(lbl_803049C0, result);
         __OSLaunchMenu();
     }
-    result = ((int (*)(int *, unsigned long long, void *, unsigned int *))_ES_GetTicketViews)(&fd, title, mem, &count);
+    result = ((int (*)(int *, unsigned long long, void *, unsigned int *))_ES_GetTicketViews)(&state.fd, title, mem, &state.count);
     if (result != 0) {
         OSReport(lbl_803049C0, result);
         __OSLaunchMenu();
     }
-    result = ((int (*)(int *, unsigned long long, void *))_ES_LaunchTitle)(&fd, title, mem);
+    result = ((int (*)(int *, unsigned long long, void *))_ES_LaunchTitle)(&state.fd, title, mem);
     if (result != 0) {
         OSReport(lbl_803049C0, result);
         __OSLaunchMenu();
     }
-    if (fd >= 0 && IOS_Close() == 0)
-        fd = -1;
+    if (state.fd >= 0 && IOS_Close() == 0)
+        state.fd = -1;
 
     DVDLowInit();
     lbl_8055DA2C = 0;
     fn_8003A834(base + 0x740, (void *)fn_8004DDF4);
-    if (*(volatile void **)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
-        OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
-        __OSLaunchMenu();
+    if (lbl_8055DA2C != 0) {
+        if (lbl_8055DA2C != (void *)1) {
+            const char *format = lbl_803049C0;
+            unsigned int status = *(volatile unsigned int *)&lbl_8055DA2C;
+            OSReport(format, status);
+            __OSLaunchMenu();
+        }
     }
 
-    entry = base - 0x4300;
+    entry = (unsigned int *)(base - 0x4300);
     lbl_8055DA40 = (unsigned int *)entry;
     lbl_8055DA2C = 0;
     fn_8003AD88(entry, 0x20, 0x10000, (void *)fn_8004DDF4);
-    if (*(volatile void **)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
-        OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
-        __OSLaunchMenu();
+    if (lbl_8055DA2C != 0) {
+        if (lbl_8055DA2C != (void *)1) {
+            const char *format = lbl_803049C0;
+            unsigned int status = *(volatile unsigned int *)&lbl_8055DA2C;
+            OSReport(format, status);
+            __OSLaunchMenu();
+        }
     }
 
-    entry = base - 0x42E0;
+    entry = (unsigned int *)(base - 0x42E0);
     lbl_8055DA3C = (unsigned int *)entry;
     lbl_8055DA2C = 0;
     fn_8003AD88(entry, 0x20, *(int *)((unsigned char *)lbl_8055DA40 + 4), (void *)fn_8004DDF4);
-    if (*(volatile void **)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
-        OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
-        __OSLaunchMenu();
+    if (lbl_8055DA2C != 0) {
+        if (lbl_8055DA2C != (void *)1) {
+            const char *format = lbl_803049C0;
+            unsigned int status = *(volatile unsigned int *)&lbl_8055DA2C;
+            OSReport(format, status);
+            __OSLaunchMenu();
+        }
     }
 
     selected = 0;
-    entry = (unsigned char *)lbl_8055DA3C;
+    entry = (unsigned int *)lbl_8055DA3C;
     lbl_8055DA38 = 0;
     for (i = 0; (unsigned char)i < *(unsigned int *)lbl_8055DA40; i++) {
-        if (*(int *)(entry + 4) == 0) {
+        if (entry[1] == 0) {
             selected = entry;
             lbl_8055DA38 = (unsigned int *)entry;
         }
-        entry += 8;
+        entry += 2;
         lbl_8055DA3C = (unsigned int *)entry;
     }
     lbl_8055DA2C = 0;
     DVDLowOpenPartition(*(unsigned int *)selected, 0, 0, 0, base - 0x42C0, (void *)fn_8004DDF4);
-    if (*(volatile void **)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
-        OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
+    if (lbl_8055DA2C != 0 && lbl_8055DA2C != (void *)1) {
+        const char *format = lbl_803049C0;
+        unsigned int status = *(volatile unsigned int *)&lbl_8055DA2C;
+        OSReport(format, status);
         __OSLaunchMenu();
     }
 }
