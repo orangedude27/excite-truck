@@ -2472,7 +2472,7 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void* self) {
     *(float*)((char*)self+0x28)=target; *(float*)((char*)self+0x2c)=target; *(float*)((char*)self+0x30)=lbl_80560FB0; *(float*)((char*)self+0x34)=lbl_80560FB0; *(float*)((char*)self+0x38)=lbl_80560FB0; *(float*)((char*)self+0x3c)=lbl_80560FB0; *(int*)((char*)self+0x40)=0;
 }
 
-void fn_800E8ADC(void *arg0) {
+extern "C" void fn_800E8ADC(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x65) == 0)
         *(unsigned char *)((char *)arg0 + 0x64) = 1;
 }
