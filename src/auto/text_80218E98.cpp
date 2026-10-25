@@ -1357,10 +1357,11 @@ extern "C" void *fn_8021C97C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 }
 
 extern "C" void fn_8021C9D8(void *arg0) {
-    if (*(s32 *)((u8 *)arg0 + 0x258) > 0)
-        ((void (**)(void *))(*(void ***)((u8 *)arg0 + 0x254)))[5](*(void **)((u8 *)arg0 + 0x254));
-    else
-        ((void (**)(void *))(*(void ***)((u8 *)arg0 + 0x254)))[6](*(void **)((u8 *)arg0 + 0x254));
+    if (*(s32 *)((u8 *)arg0 + 0x258) > 0) {
+        (*(Fn8021C9D8Object **)((u8 *)arg0 + 0x254))->First();
+    } else {
+        (*(Fn8021C9D8Object **)((u8 *)arg0 + 0x254))->Second();
+    }
 }
 
 extern "C" int lbl_8033D924[];
