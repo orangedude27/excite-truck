@@ -426,12 +426,13 @@ void fn_801E8D48(void) {
 
 #pragma scheduling invalid_target
 void fn_801E8DD4(void) {
-    long spC;
-    long sp8;
-    memset(&sp8, 0, 8);
-    sp8 = 0x50616E6C;
-    spC = 8;
-    if (((int (*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4) != 0) fn_801EAD6C(&sp8);
+    long data[2];
+    void *object;
+    memset(data, 0, 8);
+    data[0] = 0x50616E6C;
+    data[1] = 8;
+    object = ((void *(*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4);
+    if (object != 0) fn_801EAD6C(object, (long)data);
     ((void (*)(void))fn_801E87D4)();
 }
 #pragma scheduling on
