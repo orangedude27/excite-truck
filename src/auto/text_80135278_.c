@@ -492,6 +492,24 @@ int fn_801363A0(void *arg0, void *arg1) {
     return temp_r31 + (unsigned int)(*(float *)((char *)arg1 + 4) * (float)(var - temp_r31));
 }
 
+extern float lbl_80561358;
+extern double lbl_80561360;
+void fn_80136414(void *arg0, void *arg1, unsigned long arg2) {
+    unsigned long low = arg2 & 0xFFFF;
+    unsigned long index = arg2 >> 16;
+    union {
+        double value;
+        struct { unsigned long hi, lo; } words;
+    } converted;
+    float fraction;
+    converted.words.hi = 0x43300000;
+    converted.words.lo = low;
+    fraction = (float)converted.value - (float)lbl_80561360;
+    *(char **)arg0 = (char *)*(void **)((char *)*(void **)((char *)arg1 + 0x2C) + 0x1C) + index * 0x3C;
+    *(s32 *)((char *)arg0 + 8) = 0;
+    *(float *)((char *)arg0 + 4) = fraction / lbl_80561358;
+}
+
 extern double fn_8002EFB4(double, double);
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8032BE30[];
@@ -579,13 +597,11 @@ float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
 }
 
 s32 fn_801366C0(void *arg0, void *arg1, float farg0) {
-    if (*(s32 *)((char *)arg0 + 4) != 0) {
-        if (*(s32 *)(*(s32 *)((char *)arg0 + 0x2C) + 0x1C) == 0) {
-            return 0;
-        }
-    }
-    return ((*(float *)((char *)arg1 + 0)) * (*(float *)((char *)arg0 + 0x10))
-          + (*(float *)((char *)arg1 + 8)) * (*(float *)((char *)arg0 + 0x14))) < -farg0;
+    if (*(s32 *)((char *)arg0 + 4) == 0 ||
+        *(s32 *)(*(s32 *)((char *)arg0 + 0x2C) + 0x1C) == 0)
+        return 0;
+    return ((*(float *)((char *)arg1 + 0) * *(float *)((char *)arg0 + 0x10))
+          + (*(float *)((char *)arg1 + 8) * *(float *)((char *)arg0 + 0x14))) < -farg0;
 }
 
 void fn_80136714(void *arg0) {
