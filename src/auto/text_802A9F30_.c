@@ -44,7 +44,7 @@ void fn_802AA0C8(void *arg0) {
 
 void fn_802AA0EC(void *arg0) {
     extern float lbl_805649F0;
-    volatile float value = lbl_805649F0;
+    float value = lbl_805649F0;
     *(unsigned char *)((char *)arg0 + 0xEC) = 0;
     *(float *)((char *)arg0 + 0xF0) = value;
 }
@@ -283,11 +283,11 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
             temp_f2 = (float)cos(var_f21);
             temp_f21 = *(float *)(obj + 0xFC) * temp_f2 * temp_f24;
             temp_f6 = *(float *)(obj + 0xFC) * (float)sin(var_f21) * temp_f24;
+            var_r29 = frame.sp8;
+            var_r26 = 0;
             temp_f21_2 = (float)sp58 + (temp_f20 * temp_f21) + ((float)sp80 * temp_f6);
             temp_f22 = (float)sp68 + ((float)sp60 * temp_f21) + ((float)sp88 * temp_f6);
             temp_f23 = (float)sp78 + ((float)sp70 * temp_f21) + ((float)sp90 * temp_f6);
-            var_r29 = frame.sp8;
-            var_r26 = 0;
         do {
             var_r29[0] = temp_f21_2;
             var_r29[1] = temp_f22;
