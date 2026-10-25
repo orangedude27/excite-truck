@@ -349,6 +349,24 @@ float fn_801D58DC(void *arg0) {
     return lbl_80562B00;
 }
 
+unsigned char fn_801D592C(void *arg0) {
+    void **entries;
+    int count;
+    if (arg0 == 0) {
+        return 0;
+    }
+    entries = (void **)lbl_804423A4[0];
+    count = lbl_804423A4[1];
+    while (count > 0) {
+        if (entries[0] == arg0) {
+            return *(unsigned char *)((char *)arg0 + 0x21);
+        }
+        entries++;
+        count--;
+    }
+    return 0;
+}
+
 void fn_801D597C(void *arg0, int arg1) {
     void **entries;
     int count;
