@@ -112,6 +112,7 @@ void fn_802C5690(void *arg0) {
 
 extern void fn_802C54D4(void);
 extern int lbl_804C1390[];
+#pragma dont_inline on
 void fn_802C5720(int arg0) {
     int count;
     void **items;
