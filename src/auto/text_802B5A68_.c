@@ -197,22 +197,25 @@ void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_802B5EE8(void) {
-    extern s32 lbl_8055FA38;
-    extern float lbl_8055FA18;
-    extern s32 lbl_804BE7D8;
-    u32 temp_r0;
     u32 temp_r4;
-    u32 temp_r4_2;
+    u32 temp_r0;
 
     temp_r4 = lbl_8055FA38 + 1;
-    temp_r4_2 = temp_r4 >> 31;
-    temp_r0 = (temp_r4 << 30) - temp_r4_2;
+    temp_r0 = temp_r4 << 30;
     lbl_8055FA18 = lbl_80564C5C;
-    lbl_8055FA38 = ((temp_r0 << 2) | (temp_r0 >> 30)) + temp_r4_2;
-    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = 0;
+    temp_r4 = temp_r4 >> 31;
+    temp_r0 = temp_r0 - temp_r4;
+    temp_r0 = (temp_r0 << 2) | (temp_r0 >> 30);
+    temp_r4 = temp_r0 + temp_r4;
+    temp_r0 = 0;
+    *(volatile s32 *)&lbl_8055FA38 = temp_r4;
+    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = temp_r0;
 }
-
+#pragma pop
 extern s32 lbl_8055FA38;
 extern float lbl_8055FA18;
 __declspec(section ".data") extern s32 lbl_804BE7D8;
@@ -462,6 +465,7 @@ void fn_802B67C8(s32 arg0) {
     fn_80147FF0(*(s32 *)((char *)method(lbl_8055FA48, arg0) + 0x18));
 }
 
+extern s32 lbl_8055CE78, lbl_8055CE80, lbl_8034A808, lbl_8034A814;
 extern float lbl_8055FA18;
 extern s32 fn_802B6A70(s32);
 extern void *fn_802B5240(void *);
