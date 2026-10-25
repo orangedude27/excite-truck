@@ -35,20 +35,28 @@ void fn_80028E00(unsigned char *dst, const unsigned char *src) {
 }
 
 void fn_80028E2C(unsigned char *dst, const unsigned char *src, int n) {
+    unsigned char ch;
+
     src--;
     dst--;
-    while (*++dst != 0)
-        ;
-    dst--;
-    n++;
-    if (n != 0) {
-        do {
-            *++dst = *++src;
-            if (*dst == 0)
-                break;
-        } while (--n != 0);
+    while (*++dst != 0) {
     }
-    *dst = 0;
+    dst--;
+    n = n + 1;
+    goto test;
+copy:
+    ch = *++src;
+    *++dst = ch;
+    if (ch == 0) {
+        dst--;
+        goto done;
+    }
+test:
+    n = n - 1;
+    if (n != 0)
+        goto copy;
+done:
+    *++dst = 0;
 }
 
 int strcmp(const unsigned char *p, const unsigned char *q) {
@@ -128,33 +136,43 @@ unsigned char *strchr(const unsigned char *s, int c) {
 
 unsigned char *fn_80029004(const unsigned char *s, int c) {
     const unsigned char *p = s - 1;
-    unsigned char ch = (unsigned char)c;
+    unsigned char current;
+    unsigned int ch = c & 0xFF;
     unsigned char *last = 0;
-    do {
-        if (*++p == ch)
-            last = (unsigned char *)p;
-    } while (*p != 0);
+    goto next;
+compare:
+    if (current == ch)
+        last = (unsigned char *)p;
+next:
+    current = *++p;
+    if (current != 0)
+        goto compare;
     if (last != 0)
         return last;
-    if (ch == 0)
-        return (unsigned char *)p;
-    return 0;
+    if (ch != 0)
+        return 0;
+    return (unsigned char *)p;
 }
 
 unsigned char *strstr(const unsigned char *s, const unsigned char *find) {
     const unsigned char *p = s - 1;
-    unsigned char ch;
+    unsigned int first;
+    unsigned char current;
+
     if (find == 0) return (unsigned char *)s;
-    ch = *find;
-    if (ch == 0) return (unsigned char *)s;
-    while (*++p != 0) {
-        if (*p == ch) {
+    first = *find;
+    if (first == 0) return (unsigned char *)s;
+    while ((current = *++p) != 0) {
+        if (current == first) {
+            unsigned int x;
+            unsigned int y;
             const unsigned char *a = p - 1;
             const unsigned char *b = find - 1;
-            while (*++a == *++b) {
-                if (*a == 0) break;
-            }
-            if (*b == 0) return (unsigned char *)p;
+            do {
+                x = *++a;
+                y = *++b;
+            } while (x == y && x != 0);
+            if (y == 0) return (unsigned char *)p;
         }
     }
     return 0;
