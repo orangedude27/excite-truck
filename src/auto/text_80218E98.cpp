@@ -3871,6 +3871,14 @@ offset += 0xC;
 *(s32 *)(obj + 0x280) = fn_80228F40(*(s32 *)(obj + 4), *(s32 *)(obj + 8));
 return arg0;
 }
+
+extern "C" void fn_802258C8(void *arg0) {
+    void *result;
+    result = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C), *(s32 *)((u8 *)arg0 + 0x280), arg0);
+    *(void **)((u8 *)arg0 + 0x27C) = result;
+    fn_80219440(arg0, 1, result, 4);
+}
+
 #pragma pop
 extern "C" void fn_80225918(void *arg0) {
     fn_802192AC(arg0);
@@ -5000,19 +5008,23 @@ extern "C" void fn_80229998(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" s32 fn_802299B0(void *arg0) {
-    s32 *p;
     s32 result = 0;
-    s32 value = 0;
+    s32 *p;
+    s32 value;
 
     if (*(u8 *)((u8 *)arg0 + 0x18) != 0)
         result = 2;
     p = *(s32 **)((u8 *)arg0 + 0x254);
-    if (p != 0 && *p == *(s32 *)((u8 *)arg0 + 0x258))
-        value = 1;
+    value = 0;
+    if (p != 0) {
+        if (*p == *(s32 *)((u8 *)arg0 + 0x258))
+            value |= 1;
+    }
     return (value != 0) | result;
 }
-
+#pragma scheduling on
 void fn_802299FC(void *arg0) {
     int a = *(int *)((char *)arg0 + 8);
     int diff = *(int *)((char *)arg0 + 0x10) - a;
