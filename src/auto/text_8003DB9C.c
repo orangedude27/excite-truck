@@ -30,6 +30,12 @@ typedef struct {
 } GXAttnKReg;
 
 typedef struct {
+    unsigned short unused0 : 13;
+    unsigned short distanceAttn : 1;
+    unsigned short unused1 : 2;
+} GXDistAttnReg;
+
+typedef struct {
     unsigned int unused0 : 23;
     unsigned int gamma : 2;
     unsigned int unused1 : 7;
