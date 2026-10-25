@@ -76,12 +76,61 @@ void fn_801BE168(int index, float *v, float *a, float *b, float w) {
     dst[24]=b[0]; dst[25]=b[1]; dst[26]=b[2]; dst[27]=0.0f;
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+void fn_801BEAEC(int arg0, int arg1, void *arg2) {
+    float *temp;
+    float f0;
+    float f1;
+    float f2;
+    temp = (float *)(arg0 * 0x1F0 + lbl_8055E798);
+    temp = (float *)((char *)temp + arg1 * 0x10);
+    f2 = temp[18];
+    f1 = temp[17];
+    f0 = temp[16];
+    ((float *)arg2)[0] = f0;
+    ((float *)arg2)[1] = f1;
+    ((float *)arg2)[2] = f2;
+}
+#pragma opt_propagation on
+#pragma scheduling on
+#pragma pop
 void fn_801BEB1C(int arg0, int *arg1) {
     *arg1 = lbl_8055E798 + arg0 * 0x1F0;
 }
 
 void fn_801BEB30(int arg0, int *arg1) {
     *arg1 = lbl_8055E79C + (arg0 * 0x190);
+}
+
+extern float lbl_80562838, lbl_8056283C, lbl_805628A8, lbl_805628AC, lbl_805628B0;
+extern float PSVECDotProduct(const void *, const void *);
+extern void PSVECNormalize(const void *, void *);
+void fn_801BEB44(int i, int j, float *target, float *velocity) {
+    unsigned char *base = (unsigned char *)lbl_8055E798 + i * 0x1F0;
+    unsigned char *p = base + j * 16;
+    float old[3], next[3], delta[3], t;
+    float d0, d1;
+    int k;
+    for (k=0;k<3;k++) { old[k]=*(float *)(p+0x40+k*4); next[k]=*(float *)(p+0x150+k*4); delta[k]=next[k]-old[k]; }
+    d0=PSVECDotProduct(delta, p+0x110);
+    for (k=0;k<3;k++) delta[k]=old[k]-target[k];
+    d1=PSVECDotProduct(delta, velocity)-d0;
+    if (d1 > lbl_805628A8) return;
+    if (PSVECDotProduct(velocity,p+0x110) < lbl_805628AC) return;
+    t=lbl_805628B0*(lbl_805628A8+d1);
+    if (t < lbl_8056283C) t=lbl_8056283C;
+    if (t > lbl_80562838) t=lbl_80562838;
+    for(k=0;k<3;k++) delta[k]=old[k]+t*(next[k]-old[k]);
+    PSVECNormalize(delta,delta);
+    for(k=0;k<3;k++) {
+      *(float *)(p+0x150+k*4)=target[k]+t*( *(float *)(p+0x40+k*4)-target[k]);
+      *(float *)(p+0x110+k*4)=delta[k];
+    }
+    *(float *)(p+0x15C)=*(float *)(p+0x24);
+    *(float *)(p+0x11C)=*(float *)(p+0x14);
 }
 
 extern float lbl_80562838;
