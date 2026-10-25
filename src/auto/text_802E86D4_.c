@@ -140,6 +140,14 @@ int fn_802E8C6C(int arg0) {
     return 0;
 }
 
+void fn_802E8D2C(void) {
+    ((int (*)(void *, void (*)(void)))fn_802E95E0)(lbl_8034DF00, fn_802E8838);
+    fn_80127D58((void *)fn_802E9010);
+    fn_802E6B94();
+    fn_80128670(lbl_80560020);
+    lbl_80560020 = 0;
+}
+
 extern void *lbl_80560024;
 extern void fn_802E30C8(const char *, ...);
 void fn_802E8D7C(void* hi) {
