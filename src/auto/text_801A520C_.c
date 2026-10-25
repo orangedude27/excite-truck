@@ -27,7 +27,7 @@ void fn_80182010(void);
 void fn_80182074(void);
 void fn_8018B09C(void);
 int fn_80265D38(void *, int);
-extern int lbl_80333C48;
+extern char lbl_80333C48[];
 extern float PSVECDotProduct(float *, float *);
 void *fn_801A520C(void *arg0, void *arg1) {
     fn_80182010();
