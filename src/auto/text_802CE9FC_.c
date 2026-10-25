@@ -1462,7 +1462,7 @@ void fn_802D3ECC(unsigned short arg0) {
 extern unsigned long lbl_8055FD94;
 extern unsigned long lbl_8055FDA0;
 extern unsigned char lbl_804C97B0[];
-extern unsigned long fn_802CE9FC(unsigned long);
+extern unsigned long fn_802CE9FC();
 extern int fn_802CFF64(int);
 extern unsigned char lbl_8055FD78;
 extern int lbl_8055D0BC;
