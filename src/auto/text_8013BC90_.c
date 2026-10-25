@@ -32,7 +32,7 @@ extern const char lbl_80559CF0[];
 void fn_8013BD5C(void *arg0, void *arg1) {
     float *v = (float *)arg0;
     void *p;
-    fn_8013BD30();
+    fn_8013BD30(arg0);
     p = (*(void *(*)(void *, const char *))((char *)*(void **)arg1 + 0x5c))(arg1, lbl_8032C3D8);
     if (p != 0) {
         v[0] = (*(float (*)(void *, const char *, float))((char *)*(void **)p + 0x28))(p, lbl_80559CE0, v[0]);
