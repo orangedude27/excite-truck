@@ -142,6 +142,22 @@ void fn_8020F730(void) {
     lbl_8055EEC4 = 0;
 }
 
+void *fn_8020FC04(void) {
+    char *data = (char *)fn_8020FAF0();
+    long type;
+    if (data == 0) {
+        return 0;
+    }
+    type = *(long *)data;
+    if (type == 0) {
+        return 0;
+    }
+    if (type == 1) {
+        return (void *)lbl_804900AC.m_entries[fn_8020F6FC()];
+    }
+    return data + 0x24;
+}
+
 #pragma scheduling invalid_target
 void fn_8020FC6C(void) {
     if (lbl_804900AC.m_count == 0) {
