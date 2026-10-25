@@ -25,6 +25,7 @@ extern void fn_801D5A14(int);
 extern void fn_801D5A1C(int);
 extern int fn_801D59C8(int, int);
 extern char lbl_80338D80[];
+extern float fn_801D58DC();
 void fn_801D47F4(void) {
     fn_801D57F0();
 }
@@ -326,21 +327,21 @@ int fn_801D57F0(void *alarm) {
     }
 }
 
-void fn_801D597C(int arg0, int arg1) {
-    int *entries;
+void fn_801D597C(void *arg0, int arg1) {
+    void **entries;
     int count;
     int i;
     if (arg0 == 0) {
         return;
     }
-    entries = (int *)lbl_804423A4[0];
+    entries = (void **)lbl_804423A4[0];
     count = lbl_804423A4[1];
     for (i = 0; i < count; i++) {
         if (entries[i] == arg0) {
             if (arg1 != 0) {
-                fn_801D50A8(arg0);
+                fn_801D50A8((int)arg0);
             } else {
-                fn_801D50B0(arg0);
+                fn_801D50B0((int)arg0);
             }
             return;
         }
