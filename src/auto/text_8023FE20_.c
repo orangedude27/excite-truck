@@ -36,6 +36,7 @@ s32 fn_8023FE34(void) {
     return result + 1;
 }
 
+extern char lbl_80342618[];
 s32 fn_802407B0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
