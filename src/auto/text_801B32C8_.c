@@ -312,22 +312,19 @@ void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
     if (right > 0) *(void**)((u8*)arg1 + half * 16 + 12) = fn_801B447C(arg0, (u8*)arg1 + half * 16 + 16, right);
     return (u8*)arg1 + half * 16;
 }
-#pragma dont_inline off
-void* fn_801B4528(void* arg0, u32* arg1, u32 arg2) {
-    while (arg1 != NULL) {
-        if (arg2 < *arg1) {
-            arg1 = (u32*)arg1[2];
-            if (arg1 == NULL) return NULL;
-        } else if (arg2 > *arg1) {
-            arg1 = (u32*)arg1[3];
-            if (arg1 == NULL) return NULL;
-        } else {
-            return arg1;
-        }
+#pragma dont_inline on
+void *fn_801B4528(void *arg0, u32 *arg1, u32 arg2) {
+    if (arg2 < *arg1) {
+        arg1 = (u32 *)arg1[2];
+        if (arg1 != NULL) return fn_801B4528(arg0, arg1, arg2);
+        return NULL;
+    } else if (arg2 > *arg1) {
+        arg1 = (u32 *)arg1[3];
+        if (arg1 != NULL) return fn_801B4528(arg0, arg1, arg2);
+        return NULL;
     }
-    return NULL;
+    return arg1;
 }
-
 void* fn_801B4570(void* arg0, u32 arg1) {
     void* found;
     s32* node;
