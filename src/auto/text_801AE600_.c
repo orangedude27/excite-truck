@@ -51,6 +51,7 @@ void fn_801AE874(unsigned short *arg0, int arg1) {
 }
 
 #pragma small_data off
+extern float lbl_80558DC4;
 extern float lbl_80562560;
 extern float lbl_8055E630;
 extern float lbl_80562558;
