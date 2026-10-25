@@ -269,7 +269,7 @@ void fn_801B85E0(void *a, void *b, void *c, void *d) {
 
 #pragma cplusplus on
 extern "C" void fn_801B8610(void *a, void *b) {
-    ((Dummy_801B8318 *)lbl_8055E744)->f38(a, b);
+    ((Dummy_801B8318 *)lbl_8055E744)->f36(a, b);
 }
 #pragma cplusplus off
 int fn_801B8630(int arg0, int arg1, int arg2) {
