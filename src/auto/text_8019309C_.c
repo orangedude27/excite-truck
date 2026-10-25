@@ -813,12 +813,11 @@ extern float lbl_80562140, lbl_80562144, lbl_8056215C, lbl_805621A4, lbl_805621D
 float fn_80194B60(float a, float b, float c, float d) {
     float ratio;
     float curve;
-    float distance;
-    distance = (float)fn_8002EFB4(d, c);
-    if (distance > c * lbl_8056215C) {
-        distance = c - distance;
+    d = (float)fn_8002EFB4(d, c);
+    if (d > c * lbl_8056215C) {
+        d = c - d;
     }
-    ratio = distance / (c * lbl_8056215C);
+    ratio = d / (c * lbl_8056215C);
     curve = lbl_805621A4;
     if (ratio < curve) {
         goto done;
@@ -1181,10 +1180,22 @@ void fn_801963A0(void *arg0) {
       fn_80196DC4(arg0);
   }
 
-  void fn_80196418(void *arg0) {
-      int value = *(int *)((char *)arg0 + 0x210);
-      if (value == 0) fn_80195830(arg0);
-  }
+void fn_80196418(void *arg0) {
+    int value = *(int *)((char *)arg0 + 0x210);
+    if (value == 1) {
+        goto call_b;
+    }
+    if (value >= 1) {
+        goto done;
+    }
+    if (value >= 0) {
+        goto done;
+    }
+done:
+    return;
+call_b:
+    fn_80195830(arg0);
+}
 
   extern int fn_801B2F24(void);
   extern void fn_801B2F40(int);
@@ -1608,9 +1619,10 @@ void fn_80198488(void *arg0) {
       return arg0;
   }
 
-  void fn_80198EA0(void) {
-      fn_80198E7C();
-  }
+  void fn_80198E7C(int index);
+    void fn_80198EA0(int index) {
+        fn_80198E7C(index);
+    }
 
   typedef unsigned char u8;
   extern void *lbl_804349C0[];
