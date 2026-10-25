@@ -1015,9 +1015,7 @@ void GXGetLineWidth(s32 arg0) {
 }
 
 void GXGetPointSize(s32 arg0) {
-    unsigned short value = __peReg[1];
-    value = (value & ~0x10) | ((arg0 << 4) & 0x10);
-    __peReg[1] = value;
+    ((GXPointSizeReg *)&__peReg[1])->pointSize = arg0;
 }
 
 void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
