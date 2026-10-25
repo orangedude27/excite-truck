@@ -691,53 +691,52 @@ s32 fn_8024BB7C(void *arg0) {
 }
 
 extern char lbl_80343E60[];
-  void *fn_80012870(int, int);
-void fn_8024BBF4(void *arg0) {
-    s32 spC, sp8;
-    void *obj;
-    void *result;
-    char *src, *dst;
-    s32 count;
-    int (*get_name)(void *, char *);
-    obj = *(void **)((char *)arg0 + 0x30);
-    if (obj != 0) {
-        ((void (*)(void *, s32 *, s32 *))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x38))(obj, &sp8, &spC);
-        result = fn_80012870(sp8, spC);
-        *(s32 *)((char *)arg0 + 0x34) = *(s32 *)result;
-        obj = *(void **)((char *)result + 0x20);
-        get_name = *(int (**)(void *, char *))((char *)*(void **)obj + 0x14);
-        src = (char *)get_name(obj, lbl_80343E60);
-        dst = (char *)arg0 + 0x38;
-        count = 0x64;
-        do {
-            count--;
-            if (count <= 0) {
-                dst[-1] = 0;
-                break;
-            }
-            {
-                char c = *src++;
-                *dst++ = c;
-                if ((signed char)c == 0) break;
-            }
-        } while (1);
-    } else {
-        *(s32 *)((char *)arg0 + 0x34) = -1;
-        *(char *)((char *)arg0 + 0x38) = 0;
-    }
-}
-
-void fn_8024BCC0(void *arg0) {
-    s32 spC, sp8;
-    void *obj;
-    void *result;
-    char *src, *dst;
-    s32 count;
-    int (*get_name)(void *, char *);
-    obj = *(void **)((char *)arg0 + 0x30);
-    if (obj != 0) {
-        ((void (*)(void *, s32 *, s32 *))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x38))(obj, &sp8, &spC);
-        result = fn_80012870(sp8, spC);
+  void fn_8024BBF4(void *arg0) {
+      s32 spC, sp8;
+      void *obj;
+      void *result;
+      char *src, *dst;
+      s32 count;
+      int (*get_name)(void *, char *);
+      obj = *(void **)((char *)arg0 + 0x30);
+      if (obj != 0) {
+          ((void (*)(void *, s32 *, s32 *))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x38))(obj, &sp8, &spC);
+          result = (void *)fn_80012870(sp8, spC);
+          *(s32 *)((char *)arg0 + 0x34) = *(s32 *)result;
+          obj = *(void **)((char *)result + 0x20);
+          get_name = *(int (**)(void *, char *))((char *)*(void **)obj + 0x14);
+          src = (char *)get_name(obj, lbl_80343E60);
+          dst = (char *)arg0 + 0x38;
+          count = 0x64;
+          do {
+              count--;
+              if (count <= 0) {
+                  dst[-1] = 0;
+                  break;
+              }
+              {
+                  char c = *src++;
+                  *dst++ = c;
+                  if ((signed char)c == 0) break;
+              }
+          } while (1);
+      } else {
+          *(s32 *)((char *)arg0 + 0x34) = -1;
+          *(char *)((char *)arg0 + 0x38) = 0;
+      }
+  }
+  
+  void fn_8024BCC0(void *arg0) {
+      s32 spC, sp8;
+      void *obj;
+      void *result;
+      char *src, *dst;
+      s32 count;
+      int (*get_name)(void *, char *);
+      obj = *(void **)((char *)arg0 + 0x30);
+      if (obj != 0) {
+          ((void (*)(void *, s32 *, s32 *))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x38))(obj, &sp8, &spC);
+          result = (void *)fn_80012870(sp8, spC);
         *(s32 *)((char *)arg0 + 0x34) = *(s32 *)result;
         obj = *(void **)((char *)result + 0x20);
         get_name = *(int (**)(void *, char *))((char *)*(void **)obj + 0x14);
