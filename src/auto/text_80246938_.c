@@ -274,6 +274,8 @@ s32 fn_802476FC(void) {
 extern s32 lbl_8055BEA8;
 extern s32 lbl_8055BEBC;
 extern void* lbl_8055BEAC;
+extern void fn_80214CB4(s32);
+extern s32 lbl_802FA3B4[];
 s32 fn_80214D04(void);
 void fn_80247768(void) {
     lbl_8055BEAC = (void*)fn_80214D04();
@@ -608,11 +610,15 @@ void fn_80248AF0(void *arg0) {
 }
 #pragma pop
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80248BD0(void *arg0) {
-    *(float *)((char *)arg0 + 0x20) = lbl_805638CC;
+    float f = lbl_805638CC;
+    *(float *)((char *)arg0 + 0x20) = f;
     *(unsigned char *)((char *)arg0 + 0x1C) = fn_802E8690(*(s32 *)((char *)arg0 + 0x18));
 }
-
+#pragma pop
 void fn_80248C0C(void *arg0) {
     unsigned char res;
     float *fp = (float *)((char *)arg0 + 0x20);
