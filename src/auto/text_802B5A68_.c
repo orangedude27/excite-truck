@@ -272,11 +272,12 @@ void fn_802B61B8(void) {
         goto call_c;
     }
     if (lbl_8055FA38 >= 3) {
-        return;
+        goto done;
     }
     if (lbl_8055FA38 >= 2) {
         goto call_b;
     }
+done:
     return;
 call_b:
     fn_802BBEE4();
