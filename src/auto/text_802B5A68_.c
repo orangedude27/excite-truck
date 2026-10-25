@@ -11,6 +11,9 @@ typedef s32 (*UnkFunc)(s32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern s32 lbl_8055FA38;
+extern float lbl_8055FA18;
+__declspec(section ".data") extern s32 lbl_804BE7D8;
 extern void **lbl_8055FA48;
 extern char lbl_8034A598[];
 extern const char lbl_8055CE58[];
