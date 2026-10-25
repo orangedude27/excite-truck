@@ -17,14 +17,26 @@ f32 fn_8026B844(f32 f) {
     f32 c = lbl_80563D78;
     if (f > c) {
         f32 t = (f - lbl_80563D7C) / lbl_80563D80;
-        if (c > t) c = t;
+        if (c > t) {
+            goto set_first;
+        }
+        goto done_first;
+set_first:
+        c = t;
+done_first:
         return c;
     }
     {
         f32 t = (lbl_80563D7C + f) / lbl_80563D84;
-        if (c < t) c = t;
+        if (c < t) {
+            goto set_second;
+        }
+        goto done_second;
+set_second:
+        c = t;
+done_second:
+        return c;
     }
-    return c;
 }
 
 BOOL fn_8026BFF0(s32 x) {
@@ -55,7 +67,7 @@ extern f32 lbl_80563DE0;
 extern f32 lbl_80563DE4;
 extern u32 lbl_802FA768[4];
 extern u32 lbl_802FA778[4];
-extern void fn_80015A20(void *, float *, float, float, float, float);
+extern void fn_80015A20();
 void fn_8026C014(s32 arg0, void *arg1) {
     struct Snapshot { f32 f[8]; s32 i[16]; u8 flag; };
     u8 localFrame[0x328];
@@ -66,7 +78,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
     s32 command;
     s32 flag;
     u8 active;
-    f32 *base = (f32 *)(void *)&lbl_8049A168;
+    f32 *base = (f32 *)(void *)lbl_8049A168;
     f32 dt;
     f32 step;
     f32 scale;
@@ -86,8 +98,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
         if (index >= 0) {
             active = localFrame[0x2BC + index];
             if (active != 0 && lbl_8055F500 == 0) {
-                counter = lbl_8055F4EC + 1;
-                counter %= 3;
+                counter = (lbl_8055F4EC + 1) % 3;
                 *(volatile s32 *)&lbl_8055F4EC = counter;
                 *(volatile u8 *)&lbl_8055F500 = active;
             }
@@ -112,7 +123,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
     }
     counter = lbl_8055F4EC;
     if (counter == 0) {
-        counter++;
+        counter = counter + 1;
         counter %= 3;
         lbl_8055F4EC = counter;
     }
@@ -156,8 +167,8 @@ void fn_8026C014(s32 arg0, void *arg1) {
             *(u32 *)(localFrame + 0x118 + index * 4) = lbl_802FA778[index];
         }
         index = ((command << 1) | flag) * 4;
-        a = scale * *(f32 *)(localFrame + 0x128 + index);
         b = scale * *(f32 *)(localFrame + 0x118 + index);
+        a = scale * *(f32 *)(localFrame + 0x128 + index);
         if (fn_802E4A1C(0x1E) != 0) az = a;
         else if (fn_802E4A1C(0x2C) != 0) az = -a;
         if (fn_802E4A1C(0x51) != 0) ax = a;
@@ -196,8 +207,8 @@ void fn_8026C014(s32 arg0, void *arg1) {
             base[0x24] = az;
         }
         matrix = (f32 *)lbl_80499050;
-        a = base[0x22] * matrix[0] + base[0x23] * matrix[3] + base[0x24] * matrix[6];
-        b = base[0x22] * matrix[1] + base[0x23] * matrix[4] + base[0x24] * matrix[7];
+        a = base[0x22] * matrix[0] + (base[0x23] * matrix[3] + base[0x24] * matrix[6]);
+        b = base[0x22] * matrix[1] + (base[0x23] * matrix[4] + base[0x24] * matrix[7]);
         c = base[0x22] * matrix[2] + base[0x23] * matrix[5] + base[0x24] * matrix[8];
         *(f32 *)(localFrame + 0x60) = a;
         *(f32 *)(localFrame + 0x64) = b;
@@ -206,7 +217,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
         matrix[10] += b;
         matrix[11] += c;
         fn_80015A20(localFrame + 0x1E0, base + 0x25, a, b, c, 0.0f);
-        fn_80015B20(matrix, localFrame + 0x1E0, matrix);
+        fn_80015B20(matrix, matrix, localFrame + 0x1E0);
     }
 }
 
