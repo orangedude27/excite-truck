@@ -27,16 +27,20 @@ void fn_801AFC28(void) {
     lbl_8055E654 = 0;
 }
 
+#pragma scheduling invalid_target
 void *fn_801AFD20(void *this_) {
-    s32 zero = 0;
+    f32 value;
+    void *vtable;
     fn_8017B0B0();
-    *(s32 *)((u8 *)this_ + 0x1F4) = zero;
-    *(void **)this_ = lbl_80335A00;
-    *(s32 *)((u8 *)this_ + 0x1F0) = zero;
-    *(f32 *)((u8 *)this_ + 0x1EC) = lbl_80562578;
+    value = lbl_80562578;
+    vtable = lbl_80335A00;
+    *(s32 *)((u8 *)this_ + 0x1F4) = 0;
+    *(void **)this_ = vtable;
+    *(s32 *)((u8 *)this_ + 0x1F0) = 0;
+    *(f32 *)((u8 *)this_ + 0x1EC) = value;
     return this_;
 }
-
+#pragma scheduling on
 void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_, s32 flag) {
     if (this_ != NULL) {
         if (this_ != NULL) {
