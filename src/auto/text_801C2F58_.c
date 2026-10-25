@@ -1193,8 +1193,8 @@ void fn_801C80BC(void) {
 }
 
 void fn_801C80C8(void) {
-    lbl_8055E868 = fn_801C6CB0;
     lbl_8055E83A = 1;
+    lbl_8055E868 = fn_801C6CB0;
     lbl_8055E854 = 2;
 }
 
