@@ -28,7 +28,7 @@ extern void fn_80018440(s32 *, s32, void *);
 extern void fn_8000AB48(void *, s32 *);
 extern s32 fn_802C9A58(void);
 extern void fn_802CED50(s32, s32, s32, s32);
-extern const s32 lbl_80341308;
+extern const char lbl_80341308[];
 void fn_8023B764(s32 arg0, s32 arg1) {
     fn_802054EC((s32)&lbl_80341308, arg0, arg1);
 }
