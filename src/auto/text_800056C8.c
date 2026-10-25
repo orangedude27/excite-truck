@@ -1104,11 +1104,11 @@ void *fn_80007C04(void) {
 
 extern int __cntlzw(unsigned int);
 void fn_80007C10(void *arg0) {
-    u32 value = fn_801769B8();
-    u32 normalized = (u32)__cntlzw(value) >> 5;
+    s32 value = fn_801769B8();
+    s32 normalized = (u32)__cntlzw(value) >> 5;
     normalized = (u32)__cntlzw(normalized) >> 5;
-    ((u8 *)arg0)[4] = normalized;
-    ((u8 *)arg0)[5] = 0;
+    ((s8 *)arg0)[4] = (s8)normalized;
+    ((s8 *)arg0)[5] = 0;
 }
 
 extern s32 fn_801B8848(void);
