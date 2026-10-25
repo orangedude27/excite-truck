@@ -3,6 +3,7 @@
 
 extern "C" float lbl_80561124;
 extern "C" char lbl_80327930[];
+extern "C" char lbl_8032796C[];
 extern "C" char lbl_80327944[];
 extern "C" int OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(int);
@@ -227,6 +228,16 @@ extern "C" void Pause__Q46nw4hbm3snd6detail9WsdPlayerFb(void *arg0, unsigned cha
     int enabled = OSDisableInterrupts();
     *(unsigned char *)((char *)arg0 + 0x20) = arg1;
     PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb((char *)arg0 + 0x9C, arg1);
+    OSRestoreInterrupts(enabled);
+}
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100820(void *arg0, float value) {
+    float minimum = lbl_80561124;
+    if (!(value >= minimum)) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0xFA, lbl_80327944);
+    }
+    int enabled = OSDisableInterrupts();
+    *(float *)((char *)arg0 + 0x24) = value;
     OSRestoreInterrupts(enabled);
 }
 
