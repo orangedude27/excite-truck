@@ -125,6 +125,7 @@ long fn_8020F6FC(void) {
     lbl_8055EEC4 = (index + 1) % count;
     return value;
 }
+#pragma dont_inline reset
 
 void fn_8020F730(void) {
     long i;
