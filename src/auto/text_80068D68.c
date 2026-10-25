@@ -7704,8 +7704,12 @@ BOOLEAN btsnd_hcic_change_name(BD_NAME name) {
 }
 
 void fn_80085384(u8 *arg0, u8 arg1) {
-    *(u16 *)(arg0 + 2) = 4; *(u16 *)(arg0 + 4) = 0;
-    arg0[8] = 0x1A; arg0[9] = 0xC; arg0[10] = 1; arg0[11] = arg1;
+    *(u16 *)(arg0 + 2) = 4;
+    *(u16 *)(arg0 + 4) = 0;
+    arg0[8] = 0x1A;
+    arg0[9] = 0xC;
+    arg0[10] = 1;
+    arg0[11] = arg1;
     btu_hcif_send_cmd(0xC, 0x1A, 0, 4);
 }
 
@@ -14735,4 +14739,5 @@ extern u8 lbl_80559060[];
 extern u8 lbl_803151D8[];
 extern char lbl_80319EC0[];
 extern char lbl_8031669C[];
-
+void fn_80085DF4(void *arg0, u8 arg1) {
+}
