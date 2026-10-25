@@ -60,7 +60,6 @@ void* fn_800165D4(void) {
     return lbl_8055D550;
 }
 
-#pragma dont_inline fn_80016510
 void fn_800165DC(void) {
     fn_80016510(*(int *)((char *)fn_80016474() + 0x4C));
 }
