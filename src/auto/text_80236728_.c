@@ -882,7 +882,3 @@ extern void fn_80237968(void);
 extern void fn_80237A08(void);
 extern char lbl_8034095C[];
 extern char lbl_80340970[];
-typedef struct QueueNode_80236848 {
-    unsigned char pad[0x24];
-    struct QueueNode_80236848 *next;
-} QueueNode_80236848;
