@@ -25,7 +25,7 @@ extern f32 lbl_805635E0;
 extern f32 lbl_805635E4;
 extern void fn_80128668(void *);
 extern void *fn_8022EC7C(void);
-extern void *fn_8022ECC0(void);
+extern void *fn_8022ECC0();
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -65,10 +65,14 @@ void fn_8022EAB8(void) {
 
 #pragma dont_inline on
 void fn_8022EB30(void *arg0) {
+    void **vtable;
+    void (*destroy)(void *, int);
     fn_8012A364(lbl_8055F000, arg0);
     if (--lbl_8055EFFC == 0) {
         if (lbl_8055F000) {
-            ((void (*)(void *, int))(*(void ***)lbl_8055F000)[2])(lbl_8055F000, 1);
+            vtable = *(void ***)lbl_8055F000;
+            destroy = (void (*)(void *, int))vtable[2];
+            destroy(lbl_8055F000, 1);
         }
         lbl_8055F000 = 0;
     }
