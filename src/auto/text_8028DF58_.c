@@ -209,6 +209,7 @@ extern char lbl_80348F4C[];
     fn_802E317C(lbl_80348F4C);
     return 0;
 }
+#pragma pop
 void fn_8028EE1C(void *arg0) {
     *(int *)((char *)arg0 + 0x600) = 0;
 }
