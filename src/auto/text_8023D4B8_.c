@@ -263,6 +263,15 @@ test:
     return arg0;
 }
 
+void fn_8023E504(void *arg0, int *arg1) {
+    int value = *(int *)((char *)arg0 + 0x10);
+    if (value == -1) {
+        *arg1 = 0;
+        return;
+    }
+    fn_801A9050(arg1, value);
+}
+
 extern int lbl_80341C40[];
 extern int fn_801A902C(void);
 extern void fn_8023E33C();
