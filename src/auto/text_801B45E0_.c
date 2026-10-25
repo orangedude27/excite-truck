@@ -12,6 +12,15 @@ extern "C" {
 struct F801B4610 {
     virtual void f2(int) = 0;
 };
+struct F801B4720 {
+    virtual void f0(void) = 0;
+    virtual void f1(void) = 0;
+    virtual void f2(void) = 0;
+    virtual void f3(void) = 0;
+    virtual void f4(void) = 0;
+    virtual void f5(void) = 0;
+    virtual void f6(void) = 0;
+};
 struct F801B4AC4 {
     virtual void f0() = 0;
     virtual void f1() = 0;
@@ -252,9 +261,9 @@ extern "C" void fn_801B4AC4(int arg0, int arg1) {
 
     index = ((int (*)(int, int))fn_801B4C9C)(arg0, arg1);
     entry = ((int *(*)(int, int))fn_801B4C58)(arg0, index);
-    ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f5(entry[2]);
+    ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f3(entry[2]);
     entry = ((int *(*)(int, int))fn_801B4C60)(arg0, index);
-    ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f5(entry[2]);
+    ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f3(entry[2]);
 }
 #pragma cplusplus off
 int fn_801B4B44(char *arg0) {
