@@ -2,6 +2,7 @@
 #include <revolution/MTX/vec.h>
 #define M2C_FIELD(expr, type, offset) (*(type)((char *)(expr) + (offset)))
 typedef struct E2640Query { Vec position; Vec direction; f32 *dot; u8 found; u8 pad[3]; s32 (*filter)(s32); } E2640Query;
+typedef struct E2640Scratch { s32 count; f32 dot; } E2640Scratch;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -116,7 +117,7 @@ void fn_801E2294(void) {
 
 extern double __fabs(double);
 #pragma scheduling invalid_target
-s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4, void **arg5, void **arg6, s32 arg7, s32 (*arg_sp8)(s32)) {
+s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, void **arg5, void **arg6, s32 arg7, s32 (*arg_sp8)(s32)) {
     f32 delta[3], normal[3], dot, mag, scale, clampMag;
     f32 diffX, diffY, targetY, targetZ;
     E2640Query query;
@@ -149,12 +150,11 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4, void **arg
             while (node != 0) {
                 void *obj = *node;
                 if (obj && (*(s32 (**)(void *))(*(void ***)obj + 0x11))(obj)) {
-                    s32 n = *(s32 *)((char *)obj + 0x24);
-                    void *entry = (void *)((char *)obj + 0x14);
-                    for (j = 0; j < n; j++) {
+                    void *slot = obj;
+                    for (j = 0; j < *(s32 *)((char *)obj + 0x24); j++) {
                         void *item;
                         s32 value;
-                        if (j >= 0 && j < n) item = *(void **)entry;
+                        if (j >= 0 && j < *(s32 *)((char *)obj + 0x24)) item = *(void **)((char *)slot + 0x14);
                         else item = 0;
                         value = *(s32 *)((char *)item + 0x20);
                         if ((!arg_sp8 || arg_sp8(value)) &&
@@ -164,7 +164,7 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4, void **arg
                             found = 1;
                             *arg5 = obj;
                         }
-                        entry = (void *)((char *)entry + 4);
+                        slot = (void *)((char *)slot + 4);
                     }
                 }
                 node = *(void ***)((char *)node + 4);
