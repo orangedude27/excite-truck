@@ -659,7 +659,7 @@ void fn_80261A18(void *arg0, s32 arg1) {
 
 void fn_80261A40(s32 arg0) {
     fn_80236914();
-    lbl_8055F3E9 = (u32)__cntlzw(arg0 - 2) >> 5;
+    lbl_8055F3E9 = arg0 == 2;
 }
 
 void fn_80261A7C(void *arg0, s32 arg1) {
@@ -671,11 +671,14 @@ void fn_80261A7C(void *arg0, s32 arg1) {
 }
 
 void fn_80261AA0(void) {
-    s32 i = 0;
-    do {
-        fn_80214A9C(i + 10);
-        i++;
-    } while (i < *(s32 *)(lbl_8055F420 + 0xC));
+    s32 i;
+    i = 0;
+    goto check;
+loop:
+    fn_80214A9C(i + 10);
+    i++;
+check:
+    if (i < *(s32 *)(lbl_8055F420 + 0xC)) goto loop;
 }
 
 void fn_80261AE8(s32 *arg0, s32 arg1) { *arg0 = arg1; }
