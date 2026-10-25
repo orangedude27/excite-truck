@@ -6,6 +6,8 @@
 extern int fn_8023695C(void *);
 extern void fn_80216CA8(void);
 extern void fn_802168BC(int);
+extern int fn_80265B5C(void);
+extern void fn_80216D28(void);
 extern void *lbl_8055F444;
 extern void *lbl_8055F448;
 extern void fn_80235380(void *);
