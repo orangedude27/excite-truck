@@ -27,6 +27,7 @@ extern void fn_8001CAF8(void);
 extern s32 fn_8001D25C(s32);
 extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
 extern s32 fn_8001CE34(s32, s32, s32, s32);
+extern s32 fn_8001CE74(s32, s32, s32, s32);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -168,16 +169,16 @@ void fn_8001BD38(void *arg0, s32 arg1, s32 arg2) {
 void fn_8001BD54(Unk8001BBBC *arg0, void *arg1) {
     fn_8001BBBC(arg0, *(s32 *)((u8 *)*(void **)((u8 *)arg1 + 0x18) + *(s32 *)((u8 *)arg1 + 0xC) * 0xC + 0xC));
 }
-#pragma dont_inline reset
-s32 fn_8001BD6C(void *arg0, void *arg1) {
-    s32 r3 = ((s32 *)arg0)[6];
-    s32 r4 = ((s32 *)arg0)[3];
-    s32 r5 = ((s32 *)arg1)[6];
-    s32 r6 = ((s32 *)arg1)[3];
-    s32 result = fn_8001D2E4(r3, r4, r5, r6);
-    return result >> 31;
+#pragma scheduling invalid_target
+u32 fn_8001BD6C(void *arg0, void *arg1) {
+    u32 a0 = *(u32 *)((s8 *)arg0 + 0x18);
+    u32 a0c = *(u32 *)((s8 *)arg0 + 0xC);
+    u32 a18 = *(u32 *)((s8 *)arg1 + 0x18);
+    u32 a1c = *(u32 *)((s8 *)arg1 + 0xC);
+    u32 r = fn_8001D2E4(a0, a0c, a18, a1c);
+    return (r & 0x80000000) >> 31;
 }
-
+#pragma scheduling on
 extern void *lbl_80358628;
 extern void *fn_800167CC(s32, void *, s32, s32);
 extern void *fn_80016BC8(s32);
