@@ -24,7 +24,6 @@ extern float lbl_80563F48;
 extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
 void *fn_801E87A8(void);
-extern int fn_802726AC(void);
 void fn_8027156C();
 #pragma push
 #pragma small_data off
@@ -230,11 +229,9 @@ void fn_802715C4(void *arg0, void *arg1)
 extern f32 lbl_8055F540;
 extern f32 lbl_8055F544;
 f32 fn_802715F0(void *arg0) {
-    f32 value = lbl_80563F4C * *(f32 *)((u8 *)arg0 + 0x18);
     f32 min = lbl_8055F544;
-    if (min < value) {
-        min = value;
-    }
+    f32 value = *(f32 *)((u8 *)arg0 + 0x18) * lbl_80563F4C;
+    min = (min < value) ? value : min;
     if (min > lbl_8055F540) {
         return min;
     }
