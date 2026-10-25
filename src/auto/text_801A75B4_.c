@@ -20,22 +20,21 @@ extern void *memset(void *, int, unsigned int);
 extern int fn_801A8E38(void);
 
 extern char lbl_8055E5C8;
+#pragma push
+#pragma scheduling invalid_target
 const char **fn_801A75B4(const char *arg0) {
-    int *entry;
-    int i;
-    entry = (int *)lbl_802F9588;
-    i = 0;
-loop:
-    if (stricmp((const char *)entry[0], arg0) == 0)
-        return (const char **)entry;
-    i++;
-    if (i < 0x15) {
-        entry += 2;
-        goto loop;
-    }
+    const char **entry = (const char **)lbl_802F9588;
+    int i = 0;
+
+    do {
+        if (stricmp(*entry, arg0) == 0)
+            return entry;
+        i++;
+        entry = (const char **)((char *)entry + 8);
+    } while (i < 0x15);
     return 0;
 }
-
+#pragma pop
 extern signed char fn_802E47F8(int);
 extern char lbl_803342D0[];
 extern char lbl_8055E5D4;
