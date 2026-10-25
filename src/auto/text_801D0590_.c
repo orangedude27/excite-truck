@@ -20,11 +20,15 @@ void fn_801D0590(void* arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801D0650(void *arg0) {
-    int offset = 0;
-    int i = 0;
+    int offset;
+    int i;
+    i = 0;
+    offset = 0;
     while (i < lbl_804386B4[0].count) {
         void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
-        ((void (*)(void *, void *))(*(void ***)obj)[2])(obj, arg0);
+        register void (*dispatch)(void *, void *);
+        dispatch = (void (*)(void *, void *))(*(void ***)obj)[2];
+        dispatch(obj, arg0);
         offset += 4;
         i++;
     }
@@ -119,6 +123,23 @@ extern "C" void fn_801D09A8(void *arg0, void *arg1) {
         i++;
     }
 }
+#pragma cplusplus on
+extern "C" void fn_801D0A24(void *arg0, void *arg1) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3(void *, void *);
+    };
+    int offset;
+    int i;
+    i = 0;
+    offset = 0;
+    while (i < lbl_8043870C[0].count) {
+        void *obj = *(void **)((char *)lbl_8043870C[0].items + offset);
+        ((Dummy *)obj)->f3(arg0, arg1);
+        offset += 4;
+        i++;
+    }
+}
 #pragma cplusplus reset
-void fn_801D0A24(void *arg0,void *arg1) { int i=0, offset=0; while(i < lbl_8043870C[0].count) { void *obj=*(void **)((char *)lbl_8043870C[0].items+offset); ((void (*)(void *,void *,void *))(*(void ***)obj)[5])(obj,arg0,arg1); offset+=4; i++; } }
-#pragma pop
