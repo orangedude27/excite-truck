@@ -58,14 +58,11 @@ s32 fn_801D2BF4(s32 *arg0, s32 *arg1) {
     return *arg0 - *arg1;
 }
 
-#pragma dont_inline on
-void fn_801D2C04(void) {
-    s32 cmp = (s32)fn_801D2BF4;
-    s32 count = lbl_8055E930;
-    qsort(lbl_80438958, count, 0x4C4, (void *)cmp);
-}
-
 #pragma scheduling invalid_target
+void fn_801D2C04(void) {
+    qsort(lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
+}
+#pragma scheduling on
 s32 fn_801D2C20(s32 arg0) {
     s32 sp8;
     sp8 = arg0;
