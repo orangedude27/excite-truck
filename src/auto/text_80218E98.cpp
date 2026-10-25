@@ -4399,6 +4399,11 @@ extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3
     }
 }
 
+extern "C" void fn_80227C9C(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
+    fn_80227880(arg0, arg1, arg2, arg3, arg4);
+    fn_802278F0(arg0, arg1, arg2, arg3, arg4);
+}
+
 extern "C" s32 fn_8022DD80(s32);
 extern "C" s32 fn_8022DD88(s32);
 extern "C" s32 fn_8022DD90(s32, s32);
