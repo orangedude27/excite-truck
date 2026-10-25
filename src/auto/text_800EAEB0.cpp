@@ -6,7 +6,7 @@ class FrameHeap {
 public:
     void *Alloc(unsigned long, void (*)(void *, unsigned long, void *), void *);
 };
-class EnvGenerator { public: void SetRelease(int); void SetDecay(int); };
+class EnvGenerator { public: void SetRelease(int); void SetDecay(int); void SetSustain(int); };
  }}}
 namespace nw4r { namespace snd { namespace detail {
 class PoolImpl { public: void *AllocImpl(); };
@@ -1721,8 +1721,8 @@ extern "C" void* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void* this_, s
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
-    void *pHead = *(void **)&lbl_80412A6C[4];
-    void *pList = &lbl_80412A6C[4];
+    register void *pHead = *(void **)&lbl_80412A6C[4];
+    register void *pList = &lbl_80412A6C[4];
     void *pPlayer;
     while (pHead != pList) {
         pPlayer = pHead;
