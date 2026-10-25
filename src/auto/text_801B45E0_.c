@@ -357,15 +357,20 @@ void fn_801B5360(void) {
 void fn_801B5364(int arg0, int arg1) {
     *(int *)((char *)lbl_80435C70 + 0x208 + arg0 * 4) = arg1;
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void fn_801B537C(int arg0) {
+    unsigned int *ptr;
     int i;
+
+    ptr = (unsigned int *)lbl_80435C70;
     for (i = 0; i < 16; i++) {
-        if (*(int *)((char *)&lbl_80435C70 + 0x208 + i * 4) == arg0) {
-            *(int *)((char *)&lbl_80435C70 + 0x208 + i * 4) = 0;
+        if ((unsigned int)ptr[0x82] == (unsigned int)arg0) {
+            *(unsigned int *)((char *)lbl_80435C70 + 0x208 + i * 4) = 0;
             return;
         }
+        ptr++;
     }
-    fn_802E317C((const char *)&lbl_80335E48, arg0);
+    fn_802E317C(lbl_80335E48, arg0);
 }
-
+#pragma pop
