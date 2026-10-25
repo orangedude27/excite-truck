@@ -5,7 +5,10 @@ void fn_80129C60(void) {
 
 }
 
-extern void *lbl_804223F8;
+#pragma push
+#pragma small_data off
+extern char lbl_804223F8[];
+#pragma pop
 extern int fn_80129E34(void *, int, int);
 extern int fn_80019B3C(void);
 extern int fn_802E30C8(const char *, int, int, int);
