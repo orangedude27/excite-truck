@@ -1130,7 +1130,7 @@ body2:
 }
 
 #pragma dont_inline on
-void fn_801FF994(void* arg0, void* arg1) {
+extern "C" void fn_801FF994(void* arg0, void* arg1) {
     void* entry;
     int i;
     i = 0;
