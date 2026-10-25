@@ -210,6 +210,21 @@ void fn_802C32B8(s32 arg0, s32 arg1, u32 arg2) {
 }
 
 #pragma push
+#pragma inline_depth(0)
+void fn_802C33A8(s32 arg0, s32 arg1, u32 arg2) {
+    u32 *pixel;
+    u32 value;
+    if (fn_802C3130((void *)lbl_8055FC00, arg0, arg1) != 0) {
+        pixel = (u32 *)fn_802C3060((void *)lbl_8055FC00, arg0, arg1);
+        value = ((arg2 >> 8) & 0x00F80000) | 0xFF000000;
+        value = (value & ~0x0000FC00) | ((arg2 >> 11) & 0x0000FC00);
+        value = (value & ~0x000000F8) | ((arg2 >> 13) & 0x000000F8);
+        *pixel = value;
+    }
+}
+#pragma pop
+
+#pragma push
 #pragma processor 750
 #pragma inline_depth(0)
 void fn_802C3478(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
