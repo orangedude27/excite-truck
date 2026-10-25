@@ -111,6 +111,14 @@ void *fn_8022EC7C(void) {
     return node;
 }
 
+extern s32 lbl_8055B980;
+void *fn_8022ECC0(s32 arg0) {
+    void *p = ((void *(*)(s32, void *))fn_8022E9E0)(8, &lbl_8055B980);
+    ((s32 *)p)[0] = arg0;
+    ((s32 *)p)[1] = 0;
+    return p;
+}
+
 void fn_8022ED00(void) {
     s32 *p = (s32 *)((void *(*)(void))fn_8022ECC0)();
     if (((s32 *)lbl_8055F004)[1] == 0) {
