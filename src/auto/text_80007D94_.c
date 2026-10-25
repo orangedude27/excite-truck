@@ -142,8 +142,6 @@ u32 fn_800080D8(void) {
     return *(u32*)((u8*)&lbl_8034EF38 + 0x1E0);
 }
 
-const char* fn_80008158(s32);
-
 const char* fn_80008158(s32 arg0) {
     if (arg0 < 0) {
         goto done;
