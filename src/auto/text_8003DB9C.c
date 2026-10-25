@@ -1210,8 +1210,6 @@ typedef struct { char pad[0x2C8]; } OSContext;
     ((reg) = ((unsigned int)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((unsigned int)(val) << (shift)))
 
 typedef void (*GXPEIntrHandler)(short, void *);
-
-typedef void (*GXPEIntrHandler)(short, void *);
 extern GXPEIntrHandler __OSSetInterruptHandler(int type, GXPEIntrHandler handler);
 extern unsigned int __OSUnmaskInterrupts(unsigned int userMask);
 extern void OSWakeupThread(void *);
