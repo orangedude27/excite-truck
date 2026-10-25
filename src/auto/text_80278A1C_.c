@@ -24,22 +24,89 @@ s32 fn_80278A1C(void) {
 void fn_80278A24(void) {
 }
 
-void fn_80278A28(void* arg0) {
-    f32 v1 = lbl_805640C4;
-    f32 v0 = lbl_805640C8;
-    f32 v3 = lbl_805640C0;
-    f32 v2 = -v3;
+#pragma cplusplus on
+extern "C" void fn_80278A28(void* arg0) {
+    f32 d;
+    f32 b = lbl_805640C4;
+    f32 c;
+    f32 a = lbl_805640C0;
+    f32 *p = (f32*)arg0;
 
-    *(f32*)((u8*)arg0 + 0x10) = v3;
-    *(f32*)((u8*)arg0 + 0x04) = v2;
-    *(f32*)((u8*)arg0 + 0x08) = v2;
-    *(f32*)((u8*)arg0 + 0x0C) = v2;
-    *(f32*)((u8*)arg0 + 0x14) = v3;
-    *(f32*)((u8*)arg0 + 0x18) = v3;
-    *(f32*)((u8*)arg0 + 0x1C) = v1;
-    *(f32*)((u8*)arg0 + 0x20) = v1;
-    *(f32*)((u8*)arg0 + 0x24) = v1;
-    *(f32*)((u8*)arg0 + 0x2C) = v0;
+    c = -a;
+    d = lbl_805640C8;
+    p[4] = a;
+    p[1] = c;
+    p[2] = c;
+    p[3] = c;
+    p[5] = a;
+    p[6] = a;
+    p[7] = b;
+    p[8] = b;
+    p[9] = b;
+    p[11] = d;
+}
+#pragma cplusplus reset
+extern void* fn_801284F8(s32, const char*);
+extern s32 fn_8012C33C(char*);
+extern void* fn_80131808(char*);
+extern void fn_80131818(void*);
+extern void fn_80278A64(void*, void*, void*, s32);
+extern void fn_802E30C8(char*, s32);
+extern char lbl_80347690[];
+extern const char lbl_8055C6C8[];
+extern const char lbl_8055C6D0[];
+extern const char lbl_8055C6D8[];
+extern const char lbl_8055C6E0[];
+void* fn_80279004(s32 arg0, s32 arg1) {
+    char path[0xC0];
+    char path2[0x80];
+    char key[0x20];
+    f32 values[6];
+    void* object;
+    void* file;
+    void* file2 = NULL;
+    void* resource;
+    s32 i;
+    f32* dst;
+
+    object = fn_801284F8(0x2464, lbl_8055C6C8);
+    sprintf(path, lbl_80347690 + 0xF4, arg0);
+    *(void**)((u8*)object + 0x2438) = fn_80131808(path);
+    sprintf(path, lbl_80347690 + 0x108, arg0);
+    if (fn_8012C33C(path) == 0) {
+        sprintf(path, lbl_80347690 + 0x118, arg0);
+    }
+    file = fn_80131808(path);
+    sprintf(path2, lbl_80347690 + 0x128, arg0);
+    if (fn_8012C33C(path2) != 0) {
+        file2 = fn_80131808(path2);
+    }
+    fn_80278A64(object, file, file2, arg0);
+    memset((u8*)object + 0x2138, 0, 0x300);
+    if (((s32 (**)(void*, const char*))(*(void**)file))[2](file, lbl_8055C6D0) != 0) {
+        resource = ((void* (**)(void*, const char*))(*(void**)file))[1](file, lbl_8055C6D0);
+        dst = (f32*)((u8*)object + 0x2138);
+        for (i = 0; i < 0x20; i++) {
+            sprintf(key, lbl_8055C6D8, i);
+            ((void (**)(void*, f32*, char*))(*(void**)resource))[6](resource, values, key);
+            dst[0] = values[0]; dst[1] = values[1]; dst[2] = values[2];
+            sprintf(key, lbl_8055C6E0, i);
+            ((void (**)(void*, f32*, char*))(*(void**)resource))[6](resource, values + 3, key);
+            dst[3] = values[3]; dst[4] = values[4]; dst[5] = values[5];
+            dst += 6;
+        }
+    } else {
+        fn_802E30C8(lbl_80347690 + 0x13C, arg0);
+    }
+    fn_80131818(file);
+    if (file2 != NULL) fn_80131818(file2);
+    *(s32*)((u8*)object + 0x245C) = 1;
+    strncpy((char*)object + 0x243C, (char*)arg0, 0x20);
+    *((u8*)object + 0x245B) = 0;
+    *(void**)((u8*)object + 0x2134) = *(void**)((u8*)object + 0x2438);
+    *(void**)((u8*)object + 0x2460) = lbl_8055F5F0;
+    lbl_8055F5F0 = object;
+    return object;
 }
 
 void* fn_80279254(s32 arg0, s32 arg1) {
