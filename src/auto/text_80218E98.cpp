@@ -1020,8 +1020,8 @@ extern "C" char lbl_8033F5D0[];
 #pragma dont_inline on
 extern "C" void *fn_8021B0CC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     fn_8021AC24(arg0, arg1, arg2, arg7, arg4);
-    *(s32 *)((u8 *)arg0 + 0x254) = arg3;
     *(void **)arg0 = lbl_8033F5D0;
+    *(s32 *)((u8 *)arg0 + 0x254) = arg3;
     *(s32 *)((u8 *)arg0 + 0x258) = arg4;
     *(s32 *)((u8 *)arg0 + 0x25C) = arg5;
     *(s32 *)((u8 *)arg0 + 0x260) = arg6;
