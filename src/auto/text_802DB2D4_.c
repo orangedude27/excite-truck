@@ -18,6 +18,14 @@ extern float lbl_8055D148;
 extern unsigned char lbl_804DB068[];
 extern unsigned char lbl_802FACF8[];
 extern unsigned char lbl_802FACD8[];
+extern unsigned char lbl_8055FEB0, lbl_8055FD24;
+#pragma scheduling invalid_target
+void fn_802DB2D4(void) {
+    lbl_8055FEB0 = 0;
+    lbl_8055FD24 = ((unsigned char *)lbl_804DB468[0])[0xE4];
+    GXSetAlphaCompare(4, ((unsigned char *)lbl_804DB468[0])[0xE4], 1, 0, 0);
+}
+#pragma scheduling on
 int fn_802DB378(int arg0, int arg1) { int result = 0xFF; if (arg0 == 2) { if (arg1 == 0) result = 4; } return result; }
 
 void fn_802DB394(void) { volatile int mode = 3; GXSetTevOp(0, mode); GXSetTevOp(1, 3); GXSetTevAlphaOp(1, 0, 0, 0, 1, 0); GXSetTevAlphaIn(1, 0, 7, 7, 7); }
