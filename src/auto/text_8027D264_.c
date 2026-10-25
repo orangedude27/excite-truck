@@ -304,7 +304,7 @@ void fn_8027D96C(int arg0) {
     } else if (arg0 >= 3) {
         return;
     }
-    memset(&lbl_804B2FD8, 0, 0x20);
+    memset(lbl_804B2FD8, 0, 0x20);
 }
 
 extern char lbl_804B2FD8[];
