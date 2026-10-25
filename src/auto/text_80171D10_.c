@@ -74,7 +74,6 @@ int fn_80171E3C(void *arg0) {
 #pragma pop
 
 int fn_80171EC0(void) {
-    extern void *fn_8017960C(int);
     return *(int *)((char *)fn_8017960C(0) + 0x10) == 0x50434152;
 }
 
@@ -102,7 +101,7 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
 }
 
 unsigned int fn_801720E0(unsigned int arg0) {
-    return ((arg0 & 0x7F7F7F) | ((arg0 & 0xFF000000) >> 1));
+    return (arg0 & 0xFF000000) | ((arg0 & 0xFEFEFE) / 2);
 }
 
 void fn_801720FC(float *arg0, int arg1, float arg2) {
@@ -224,8 +223,8 @@ float fn_801725C8(float arg0) {
 }
 
 int fn_80172624(void *arg0, int arg1) {
-    extern void *fn_8017960C(int);
-    extern float PSQUATMultiply(void *, void *);
+      extern void *fn_8017960C();
+  extern float PSQUATMultiply(void *, void *);
     extern float lbl_8043038C[];
     void *a = fn_8017960C((int)arg0);
     void *b = fn_8017960C(arg1);
@@ -269,8 +268,6 @@ void fn_802AE168(void *);                           /* extern */
 unsigned int strlen(const char *); /* extern */
 #pragma scheduling invalid_target
 void fn_8017272C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-extern char lbl_80330F54[];
-extern char lbl_804303B8[];
 extern int lbl_8055A2A0;
 extern unsigned char lbl_8055A2A4;
 extern unsigned char lbl_8055A2A8;
@@ -287,27 +284,27 @@ extern float lbl_80561A54;
     float var_f4;
     int temp_r0;
     int var_r28;
-    int var_r5;
-    int var_r5_2;
-    int var_r5_3;
-    int var_r5_4;
-    int var_r5_5;
     int var_r6;
-    unsigned char *var_r3;
-    unsigned char *var_r4;
-    unsigned char *var_r4_2;
-    unsigned char *var_r4_3;
-    unsigned char *var_r4_4;
+    int var_r5;
     unsigned char *var_r6_2;
+    volatile unsigned char *var_r4;
+    int var_r5_2;
     unsigned char *var_r6_3;
+    volatile unsigned char *var_r4_2;
+    int var_r5_3;
     unsigned char *var_r6_4;
+    volatile unsigned char *var_r4_3;
+    unsigned char *var_r3;
+    int var_r5_4;
     unsigned char *var_r6_5;
+    int var_r5_5;
     unsigned char *var_r6_6;
-    unsigned char temp_r3;
-    unsigned char temp_r3_2;
-    unsigned char temp_r3_3;
-    unsigned char temp_r3_4;
-    unsigned char temp_r4;
+    volatile unsigned char *var_r4_4;
+    int temp_r3;
+    int temp_r3_2;
+    int temp_r3_3;
+    int temp_r3_4;
+    int temp_r4;
     void *temp_r3_10;
     void *temp_r3_5;
     void *temp_r3_6;
@@ -338,36 +335,24 @@ extern float lbl_80561A54;
             var_r6_2 = (unsigned char *)arg0 + 0x9E;
             var_r4 = &lbl_8055A2A4;
             var_r5 = 0x14;
-loop_14:
-            temp_r3 = *var_r4;
-            var_r4 += 1;
-            *var_r6_2 = temp_r3;
-            var_r6_2 += 1;
-            if ((signed char) temp_r3 != 0) {
-                var_r5 -= 1;
-                if (var_r5 <= 0) {
-                    (*(signed char *)((char *)(var_r6_2) + (-1))) = 0;
-                } else {
-                    goto loop_14;
+            for (;;) {
+                if (--var_r5 <= 0) {
+                    (*(signed char *)((char *)var_r6_2 - 1)) = 0;
                 }
+                temp_r3 = *var_r4++;
+                *var_r6_2++ = temp_r3;
+                if ((signed char)temp_r3 == 0) break;
             }
             var_r6_3 = (unsigned char *)arg0 + 0x58;
             var_r4_2 = &lbl_8055A2A4;
             var_r5_2 = 0x14;
-loop_18:
-            temp_r3_2 = *var_r4_2;
-            var_r4_2 += 1;
-            *var_r6_3 = temp_r3_2;
-            var_r6_3 += 1;
-            if ((signed char) temp_r3_2 == 0) {
-
-            } else {
-                var_r5_2 -= 1;
-                if (var_r5_2 <= 0) {
-                    (*(signed char *)((char *)(var_r6_3) + (-1))) = 0;
-                } else {
-                    goto loop_18;
+            for (;;) {
+                if (--var_r5_2 <= 0) {
+                    (*(signed char *)((char *)var_r6_3 - 1)) = 0;
                 }
+                temp_r3_2 = *var_r4_2++;
+                *var_r6_3++ = temp_r3_2;
+                if ((signed char)temp_r3_2 == 0) break;
             }
         } else {
             if ((signed char) lbl_8055E3AC == 0) {
@@ -381,18 +366,13 @@ loop_18:
             var_r4_3 = (*(unsigned char **)((char *)(&lbl_804303B8) + (4)));
             var_r6_4 = (unsigned char *)arg0 + 0x58;
             var_r5_3 = 0x14;
-loop_27:
-            temp_r3_3 = *var_r4_3;
-            var_r4_3 += 1;
-            *var_r6_4 = temp_r3_3;
-            var_r6_4 += 1;
-            if ((signed char) temp_r3_3 != 0) {
-                var_r5_3 -= 1;
-                if (var_r5_3 <= 0) {
-                    (*(signed char *)((char *)(var_r6_4) + (-1))) = 0;
-                } else {
-                    goto loop_27;
+            for (;;) {
+                if (--var_r5_3 <= 0) {
+                    (*(signed char *)((char *)var_r6_4 - 1)) = 0;
                 }
+                temp_r3_3 = *var_r4_3++;
+                *var_r6_4++ = temp_r3_3;
+                if ((signed char)temp_r3_3 == 0) break;
             }
         }
         fn_801308F4((unsigned char *)arg0 + 0x6C, 0x14, arg1);
@@ -401,37 +381,25 @@ loop_27:
             var_r3 = __AXGetStackHead();
             var_r6_5 = (unsigned char *)arg0 + 0x80;
             var_r5_4 = 0xA;
-loop_32:
-            temp_r4 = *var_r3;
-            var_r3 += 1;
-            *var_r6_5 = temp_r4;
-            var_r6_5 += 1;
-            if ((signed char) temp_r4 == 0) {
-
-            } else {
-                var_r5_4 -= 1;
-                if (var_r5_4 <= 0) {
-                    (*(signed char *)((char *)(var_r6_5) + (-1))) = 0;
-                } else {
-                    goto loop_32;
+            for (;;) {
+                if (--var_r5_4 <= 0) {
+                    (*(signed char *)((char *)var_r6_5 - 1)) = 0;
                 }
+                temp_r4 = *var_r3++;
+                *var_r6_5++ = temp_r4;
+                if ((signed char)temp_r4 == 0) break;
             }
         } else {
             var_r6_6 = (unsigned char *)arg0 + 0x80;
             var_r4_4 = &lbl_8055A2A8;
             var_r5_5 = 0xA;
-loop_37:
-            temp_r3_4 = *var_r4_4;
-            var_r4_4 += 1;
-            *var_r6_6 = temp_r3_4;
-            var_r6_6 += 1;
-            if ((signed char) temp_r3_4 != 0) {
-                var_r5_5 -= 1;
-                if (var_r5_5 <= 0) {
-                    (*(signed char *)((char *)(var_r6_6) + (-1))) = 0;
-                } else {
-                    goto loop_37;
+            for (;;) {
+                if (--var_r5_5 <= 0) {
+                    (*(signed char *)((char *)var_r6_6 - 1)) = 0;
                 }
+                temp_r3_4 = *var_r4_4++;
+                *var_r6_6++ = temp_r3_4;
+                if ((signed char)temp_r3_4 == 0) break;
             }
         }
         if ((int) (*(int *)((char *)(arg0) + (0xF8))) != 0) {
@@ -996,34 +964,33 @@ void fn_80174794(void **arg0) {
         }
     }
 }
+#pragma push
 #pragma scheduling invalid_target
 int fn_8017483C(void *arg0, void *arg1, int arg2) {
     extern double fn_8002F234(float);
     extern void fn_801B7C8C(void *, void *, float *);
     extern float lbl_80561A40, lbl_80561A50, lbl_80561AD0;
-    float xy[2], minimum, length, scale;
+    float xy[2], length, minimum, scale;
     void *entry;
-    int zero = 0;
-    int two = 2;
     if (arg2 < *(int *)((char *)arg0 + 8)) {
         entry = (char *)*(void **)((char *)arg0 + 4) + arg2 * 8;
         xy[0] = *(float *)entry * lbl_80561A50;
         xy[1] = *(float *)((char *)entry + 4) * lbl_80561A50;
         length = (float)fn_8002F234(xy[0] * xy[0] + xy[1] * xy[1]);
         minimum = lbl_80561AD0;
-        minimum = minimum < length ? length : minimum;
+        minimum = (length > minimum) ? length : minimum;
         scale = lbl_80561A40 / minimum;
         xy[0] = xy[0] * scale;
         xy[1] = xy[1] * scale;
         fn_801B7C8C(arg1, entry, xy);
-        *(int *)((char *)arg1 + 0x48) = zero;
-        *(int *)((char *)arg1 + 0x44) = two;
-        *(int *)((char *)arg1 + 0x4C) = zero;
+        *(int *)((char *)arg1 + 0x48) = 0;
+        *(int *)((char *)arg1 + 0x44) = 2;
+        *(int *)((char *)arg1 + 0x4C) = 0;
         return 1;
     }
     return 0;
 }
-#pragma scheduling on
+#pragma pop
 void fn_80175080(void **arg0, int arg1, int arg2, char *arg3, int arg4, int arg5, int arg6, int arg7, double farg0, double farg1, double farg2, double farg3, double farg4, double farg5, double farg6, double farg7, void *arg_sp8) {
     extern void *fn_80147CEC(void *, void *, void *, double);
     extern void fn_80147230(void *, const char *, const char *);
