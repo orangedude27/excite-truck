@@ -64,6 +64,7 @@ extern f32 lbl_80560134;
 extern f32 lbl_80560190;
 extern u8 lbl_802FB0C8[];
 extern s32 lbl_8055D354;
+extern s32 fn_80007554(s32, s32, s32);
 #pragma scheduling invalid_target
 void fn_800056C8(s32 arg0, s32 arg1) {
     s32 *p = (s32 *)((u8 *)&lbl_8034EEB8 + (arg0 << 4));
@@ -527,6 +528,18 @@ void fn_800062E8(void) {
         ((s32 *)lbl_8055D350)[6] == ((s32 *)lbl_8055D350)[5]) {
         fn_8000FBE4();
     }
+}
+
+void fn_80006330(void) {
+    u32 *flags = (u32 *)lbl_8034EE84;
+    s32 index;
+    s32 *entry;
+    void *object;
+    flags[8] = (flags[8] & 0xFFFFFF78) & 0xFFFFF9FF;
+    index = ((s32 *)lbl_8055D350)[7];
+    entry = lbl_8034EEB8 + (index << 2);
+    object = (void *)entry[7];
+    ((void (*)(void))(*(u32 *)((u8 *)*(void **)object + 0x24)))();
 }
 
 extern s32 fn_80011A5C(s32);
