@@ -2483,12 +2483,12 @@ extern "C" void Setup__Q46nw4hbm3snd6detail14StrmBufferPoolFPvUli(void* this_, u
 }
 
 extern "C" void fn_800FA9E8(void* arg0) {
-    OSDisableInterrupts();
+    u32 level = OSDisableInterrupts();
     *(s32*)arg0 = 0;
     *(s32*)((u8*)arg0 + 4) = 0;
     *(s32*)((u8*)arg0 + 8) = 0;
     *(s32*)((u8*)arg0 + 0xC) = 0;
-    OSRestoreInterrupts(0);
+    OSRestoreInterrupts(level);
 }
 
 extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
