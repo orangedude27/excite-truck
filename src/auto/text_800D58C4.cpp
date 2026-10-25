@@ -849,19 +849,21 @@ extern "C" void fn_800D8834(u8 *arg0, u8 *arg1) {
     *arg0 = *arg1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_800D8840(void *arg0, void *arg1) {
-    s32 v3 = *(s32 *)((u8 *)arg1 + 0xC);
-    s32 v4 = *(s32 *)((u8 *)arg1 + 4);
+    register s32 v3 = *(s32 *)((u8 *)arg1 + 0xC);
+    register s32 v4 = *(s32 *)((u8 *)arg1 + 4);
     f32 v2 = *(f32 *)((u8 *)arg1 + 8);
-    s32 v1 = *(s32 *)arg1;
-    s32 v0 = *(s32 *)((u8 *)arg1 + 0x10);
+    register s32 v1 = *(s32 *)arg1;
+    register s32 v0 = *(s32 *)((u8 *)arg1 + 0x10);
     *(s32 *)arg0 = v1;
     *(s32 *)((u8 *)arg0 + 4) = v4;
     *(f32 *)((u8 *)arg0 + 8) = v2;
     *(s32 *)((u8 *)arg0 + 0xC) = v3;
     *(s32 *)((u8 *)arg0 + 0x10) = v0;
 }
-
+#pragma pop
 extern "C" void fn_800D886C(GXColor *arg0, const GXColor *arg1) {
     *arg0 = *arg1;
 }
@@ -1251,9 +1253,11 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
     }
 }
 
+#pragma inline_max_size 10000
+#pragma inline_max_total_size 10000
 extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           register const char *data = lbl_8031F990;
-                          float matrix[12];
+                          float matrix[3][4];
                           struct Fn800DA094TexObj { s32 fields[8]; };
                         Fn800DA094TexObj texture;
                           float indirectMatrix[6];
@@ -1688,15 +1692,14 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           } else {
                               temp_r0_10 = temp_r0_4 >> 0x1CU;
                               var_r24_4 = 0;
-                              switch (temp_r0_10) {                       /* irregular */
-                              case 0:
+                              if (temp_r0_10 == 0) {
                                   GXSetTevOrder(0U, 0xFFU, 0xFFU, 4U);
                                   GXSetTevColorIn(0U, 0xF, 4, 0xA, 0xF);
                                   GXSetTevAlphaIn(0U, 7, 2, 5, 7);
                                   var_r25 = 1;
                                   var_r24_4 = 1;
-                                  break;
-                              case 1:
+                                  
+} else if (temp_r0_10 == 1) {
                                   GXSetTevOrder(0U, 0U, 0U, 0xFFU);
                                   GXSetTevColorIn(0U, 2, 4, 8, 0xF);
                                   GXSetTevAlphaIn(0U, 1, 2, 4, 7);
@@ -1708,8 +1711,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                                       GXSetTevAlphaIn(var_r24_4, 7, 0, 5, 7);
                                       var_r24_4 += 1;
                                   }
-                                  break;
-                              case 2:
+                                  
+} else if (temp_r0_10 == 2) {
                                   GXSetTevOrder(0U, 0U, 0U, 0xFFU);
                                   GXSetTevColorIn(0U, 0xF, 0xF, 0xF, 8);
                                   GXSetTevAlphaIn(0U, 7, 7, 7, 4);
@@ -1740,7 +1743,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                                       var_r24_4 += 1;
                                   }
                                   goto block_83;
-                              default:
+                              
+} else {
                                   var_r21_3 = (s32 *)(data + 0x490);
                                   var_r22_2 = (s32 *)(data + 0x4B0);
                                   var_r28_2 = 0;
@@ -1766,7 +1770,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                               loop_69_test:
                                   if (var_r28_2 < (u32) ((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x1CU)) goto loop_69_body;
                                   goto block_70;
-                              }
+                              
+}
                               var_r22_3 = 0;
                       goto loop_87_test;
                         loop_87_body:
@@ -1845,10 +1850,14 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           }
        return (var_r25 != 0) && (var_r26 != 0);
                       }
-
-extern "C" void fn_800DAFA8(void* arg0, void* arg1) {
-    void** vtable = *(void***)arg1;
-    ((void (*)(void*, void*))vtable[5])(arg1, arg0);
+extern "C" void fn_800DAFA8(void *arg0, void *arg1) {
+    struct Obj {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3(void *);
+    };
+    ((Obj *)arg1)->f3(arg0);
 }
 
 extern "C" void fn_800DAFC4(void* arg0, u32 arg1) {
