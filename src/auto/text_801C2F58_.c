@@ -218,13 +218,19 @@ void fn_801C3A3C(s32 arg0, f32 arg1, f32 arg2) {
     }
 }
 
+#pragma fp_contract on
+#pragma scheduling invalid_target
 void fn_801C3AF8(s32 arg0, s32 arg1, f32 arg2) {
-    f32 values[3];
-    values[0] = cos(arg2);
-    values[1] = sin(arg2);
-    fn_801B7C8C(arg0, arg1, &values[1]);
+    f32 values[2];
+    f32 cosine;
+    f32 sine;
+    cosine = (f32)((f64 (*)(f32))cos)(arg2);
+    sine = (f32)((f64 (*)(f32))sin)(arg2);
+    values[0] = sine;
+    values[1] = cosine;
+    fn_801B7C8C(arg0, arg1, &values[0]);
 }
-
+#pragma scheduling on
 s32 *__AXFXGetLfoSinTable_801769CC(void);
 void *fn_8001285C(s32);
 extern f32 lbl_80562990;
@@ -1941,6 +1947,20 @@ void fn_801C855C(void) {
     lbl_8055E81C = 0;
     lbl_8055E820 = 0;
 }
+
+void fn_801C9444(void) {
+    s32 *p = (s32 *)lbl_8055E86C;
+    int i = 0;
+    do {
+        fn_80128670(*p);
+        i++;
+        *p = 0;
+        p++;
+    } while (i < 0x21);
+    fn_80128670((s32)lbl_8055E86C);
+    lbl_8055E86C = 0;
+}
+
 #pragma scheduling invalid_target
 void fn_801C94B8(void) {
     fn_80238A74();
@@ -1972,6 +1992,23 @@ void fn_801C9514(void) {
     }
     __AXDSPInitCallback_801769E0();
 }
+
+int fn_801C957C(arg0)
+int arg0;
+{
+    u8 *table;
+    if (arg0 != 0) {
+        strcpy(lbl_804380F0, lbl_8055AA44);
+        table = (u8*)lbl_80337474;
+        table[lbl_8055E824] = 0x1E;
+    } else {
+        table = (u8*)lbl_80337474;
+        table[lbl_8055E824] = 0xFF;
+    }
+    lbl_8055E838 = arg0;
+    return (int)table;
+}
+
 #pragma pop
 void fn_801C95EC(f32 arg0) {
     lbl_8055E81C = arg0;
