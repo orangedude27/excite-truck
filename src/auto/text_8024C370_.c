@@ -29,6 +29,7 @@ extern float lbl_80563930, lbl_80563940;
 extern float fn_8023293C();
 extern void fn_80230924(void *, float, float, float, float, float);
 extern void fn_80230C30(float *, float *, int, int);
+extern double lbl_80563938;
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -483,12 +484,10 @@ void fn_8024CFB4(void) {
     if (((int (*)(int *))fn_8024CF48)(&sp8) != 0) fn_8000D984(sp8);
 }
 
+int fn_80232B70(int);
 void fn_8024CFE8(void *arg0) {
-    int numerator;
-    int denominator;
-    double bias = 4503601774854144.0;
-    numerator = *(int *)((char *)arg0 + 0x10);
-    denominator = fn_80232B70(*(int *)((char *)arg0 + 0x34));
+    int denominator = fn_80232B70(*(int *)((char *)arg0 + 0x34));
+    int numerator = *(int *)((char *)arg0 + 0x10);
     *(float *)((char *)arg0 + 0x40) = (float)numerator / (float)denominator;
 }
 
