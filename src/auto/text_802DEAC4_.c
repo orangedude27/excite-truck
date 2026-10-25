@@ -58,11 +58,12 @@ void fn_802DEE88(void) {
     GXSetBlendMode(1, 4, 5, 0);
 }
 
+#pragma scheduling invalid_target
 void fn_802DEF70(void) {
     GXSetTevSwapMode(0, 0, 0);
     fn_802D3144();
 }
-
+#pragma scheduling on
 void fn_802DEFA0(void) {
     s32 spC;
     s32 sp8;
