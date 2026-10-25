@@ -5,6 +5,7 @@ extern long lbl_8055B658;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
   
+extern void *fn_8020FAF0(void);
 extern struct Unk_804900AC { long *m_entries; long m_count; long m_capacity; } lbl_804900AC;
 extern void fn_801345D8(void *, ...);
 extern long lbl_8055B664;
@@ -151,6 +152,24 @@ void fn_8020FC6C(void) {
         ((long (*)(long))fn_8020F3B4)(0);
     }
 }
+
+#pragma dont_inline on
+void fn_8020FE90(void) {
+    long result;
+
+    fn_802EC12C();
+    fn_802EC1D8();
+    if (lbl_8055EEE0 == -2) {
+        result = ((long (*)(long))fn_8020F3B4)(0);
+    } else if (lbl_8055EEE0 == -1) {
+        result = fn_8020F6FC();
+    } else {
+        result = lbl_8055EEE0 + (lbl_8055EEE4 * 0xA);
+    }
+    lbl_8055B658 = result;
+}
+#pragma dont_inline reset
+
 #pragma scheduling on
 extern long lbl_8055EEBC;
 extern long lbl_8055EEE0;
