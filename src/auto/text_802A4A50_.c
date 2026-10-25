@@ -236,15 +236,17 @@ s32 fn_802A5384(s32 arg0) {
     s32 value = *(s32 *)arg0;
 
     if (value == 2) {
-        return ((s32 (*)(f32))fn_802A52FC)(lbl_8056485C);
+        goto special;
     }
-    if (value > 1) {
+    if (value >= 2) {
         return;
     }
     if (value < 1) {
         return;
     }
     return ((s32 (*)(f32))fn_802A5270)(lbl_8056485C);
+special:
+    return ((s32 (*)(f32))fn_802A52FC)(lbl_8056485C);
 }
 
 void *fn_802A7614(void *, s32);
