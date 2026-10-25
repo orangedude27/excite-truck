@@ -47,7 +47,6 @@ void fn_8028ED74(void *);
 void fn_8028EE1C(void *);
 void fn_8028F8C4(int);
 float fn_801E7E18(void);
-extern void fn_8028ED74(void *);
 void fn_8028DFFC(void) {
     fn_8028DF58();
     lbl_8055F73D = 1;
