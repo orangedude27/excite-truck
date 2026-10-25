@@ -111,6 +111,7 @@ void fn_802BBBC8(void) {
     lbl_8055FA90 = fn_802B05E4();
 }
 #pragma push
+#pragma scheduling invalid_target
 #pragma inline_depth(0)
 void fn_802BBCC4(void) {
     extern int lbl_804C0098[];
