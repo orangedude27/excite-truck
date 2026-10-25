@@ -1727,15 +1727,16 @@ void GXInitLightPos(void *arg0, float farg0, float farg1, float farg2) {
 
 void GXGetLightDir_Internal(void *arg0, float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
  extern float lbl_80560B5C;
+ float c, b, a;
  *(volatile float *)((char *)arg0 + 0x34) = farg3;
- farg3 = lbl_80560B5C * farg0;
- farg0 = lbl_80560B5C * farg1;
+ a = lbl_80560B5C * farg0;
+ b = lbl_80560B5C * farg1;
  *(volatile float *)((char *)arg0 + 0x38) = farg4;
- farg2 = lbl_80560B5C * farg2;
+ c = lbl_80560B5C * farg2;
  *(volatile float *)((char *)arg0 + 0x3C) = farg5;
- *(volatile float *)((char *)arg0 + 0x28) = farg3;
- *(volatile float *)((char *)arg0 + 0x2C) = farg0;
- *(volatile float *)((char *)arg0 + 0x30) = farg2;
+ *(volatile float *)((char *)arg0 + 0x28) = a;
+ *(volatile float *)((char *)arg0 + 0x2C) = b;
+ *(volatile float *)((char *)arg0 + 0x30) = c;
 }
 
 void GXInitLightColor(void *arg0, s32 *arg1) { *(s32 *)((char *)arg0 + 0xC) = *arg1; }
@@ -2840,6 +2841,24 @@ void GXSetZMode(s32 enable, s32 func, s32 update) {
     value = (value & ~0x10) | ((update << 4) & 0x10);
     *(volatile unsigned int *)0xCC008000 = value;
     data[0x228 / 4] = value;
+    *(unsigned short *)((char *)data + 2) = 0;
+}
+
+void GXSetZCompLoc(s32 enable) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int unused0 : 25;
+            unsigned int zCompLoc : 1;
+            unsigned int unused1 : 6;
+        } bits;
+    } reg;
+    unsigned int *data = __GXData;
+    reg.value = data[0x22C / 4];
+    reg.bits.zCompLoc = enable;
+    data[0x22C / 4] = reg.value;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = data[0x22C / 4];
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
