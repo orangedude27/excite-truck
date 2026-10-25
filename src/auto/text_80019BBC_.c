@@ -7,6 +7,10 @@ extern char lbl_803583C8[];
 extern void fn_802C8BD0(int);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
+extern float PSVECDotProduct(const void *, const void *);
+extern float fn_80235EF0(void *, int);
+extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
+extern void fn_802354A0(void *, int, int, float, float, float, float, float);
 extern int fn_8001B478(float);
 extern void *fn_80156A40(void);
 extern float lbl_80560418;
@@ -72,7 +76,11 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
         f32 output[3];
         f32 normal[3];
         f32 axis[3];
-        u8 tail[0x524];
+        u8 gap0[0x2C];
+        unsigned short indices[0x5A];
+        u8 gap1[0xB4];
+        u8 vertices[0x1F8];
+        u8 tail[0x198];
     } __attribute__((aligned(16))) frame;
     s32 resource;
     s32 index;
@@ -234,6 +242,26 @@ subtractCheck:
         ring += 3;
         vertex += 0x18;
     }
+    index = 0;
+    offset = 0;
+    do {
+        flag = (index + 1) % 20;
+        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = 20; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)index; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)flag; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)index; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)flag; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)(index + 21); offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)flag; offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)(index + 21); offset += 2;
+        *(unsigned short *)((u8 *)&frame + 0x128 + offset) = (unsigned short)(flag + 21); offset += 2;
+    } while (++index < 20);
+    if (*(s32 *)((u8 *)obj + 4) != -2)
+        fn_802C8BD0(*(s32 *)((u8 *)obj + 4));
+    else
+        fn_802C8BD0(*(s32 *)obj);
+    fn_802C8DB8((u8 *)&frame + 0x290, 0x29, (unsigned short *)((u8 *)&frame + 0x128), 0xB4);
+    fn_802C8D74();
     extra0 = x * f25;
     extra1 = y * f21;
     extra2 = width * v;
