@@ -459,6 +459,7 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
     fn_80147230(arg0, lbl_8055CE70, buf);
 }
 #pragma scheduling on
+extern s32 lbl_8055CE78, lbl_8055CE80, lbl_8034A808, lbl_8034A814;
 extern s32 fn_80147FF0(s32);
 void fn_802B67C8(s32 arg0) {
     void *(*method)(void *, s32) = (void *(*)(void *, s32))(*(void ***)lbl_8055FA48)[5];
@@ -1012,16 +1013,19 @@ s32 fn_802B8728(void) {
     return (s8)*((u8 *)&lbl_804BFF80 + 0x34) == 0;
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_802B8744(void) {
-    lbl_8055FA48 = (void **)fn_80145E70(lbl_8034A980);
+    s32 result = fn_80145E70(lbl_8034A980);
+    void *state = &lbl_804BE7D8;
+    lbl_8055FA48 = (void **)result;
     lbl_8055FA40 = 6;
-    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = 0;
-    lbl_8055FA00 = fn_8026E214((void *)fn_802B8728, &lbl_804BE7D8);
+    *(s32 *)((u8 *)state + 4) = 0;
+    lbl_8055FA00 = fn_8026E214((void *)fn_802B8728, state);
     lbl_8055FA34 = -1;
 }
-
-#pragma push
-#pragma small_data off
+#pragma pop
 void fn_802B87A0(void) {
     fn_8026E214((void *)lbl_8055FA00, 0);
     deleteThreads__6SystemFv((void *)((u8 *)&lbl_8055FA48));
