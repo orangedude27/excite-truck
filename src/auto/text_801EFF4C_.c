@@ -26,9 +26,10 @@ typedef struct {
     unsigned char padding_41[3];
 } Fn801F1B1CSource;
 
-void fn_801EFF4C(void* alarm) {
-    fn_801F17C8(fn_801F0AA0(alarm));
-}
+extern int fn_801F17C8(int);
+  void fn_801EFF4C(void* alarm) {
+      fn_801F17C8(fn_801F0AA0(alarm));
+  }
 
 void fn_801EFF70(void* alarm) {
     fn_801F0CC4(fn_801F17DC(alarm));
@@ -435,6 +436,17 @@ int fn_801F15A8(void **arg0, int arg1) {
             return i;
     }
     return count - 1;
+}
+
+int fn_801F17DC(void *arg0) {
+    int *entry = lbl_80488798;
+    int i = 0;
+    do {
+        if (*entry != 0)
+            fn_802E317C((const char *)&lbl_8033A51C);
+        i++;
+        entry++;
+    } while (i < 0x40);
 }
 
 extern int lbl_80488798[64];
