@@ -385,6 +385,35 @@ extern "C" s32 fn_80191108(void *arg0, s32 arg1) {
     Object2 *obj2 = *(Object2 **)((u8 *)arg0 + 8);
     return result + obj2->method(arg1 + result);
 }
+
+extern "C" s32 fn_80191240(void *arg0, s32 arg1) {
+    class Object1 {
+    public:
+        virtual s32 f0();
+        virtual s32 f1();
+        virtual s32 f2();
+        virtual s32 f3();
+        virtual s32 f4();
+        virtual s32 f5();
+        virtual s32 method();
+    };
+    class Object2 {
+    public:
+        virtual s32 f0();
+        virtual s32 f1();
+        virtual s32 f2();
+        virtual s32 f3();
+        virtual s32 f4();
+        virtual s32 f5();
+        virtual s32 method(s32);
+    };
+    Object1 *obj1 = *(Object1 **)((u8 *)arg0 + 0xC);
+    s32 result = arg1 + obj1->method();
+    Object2 *obj2 = *(Object2 **)((u8 *)arg0 + 8);
+    result += obj2->method(result);
+    return result - arg1;
+}
+
 #pragma cplusplus reset
 extern u8 lbl_80332FC4[];
 void fn_801912B4(void *arg0) {
