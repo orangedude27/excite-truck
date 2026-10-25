@@ -58,7 +58,7 @@ extern "C" void fn_802A2AE8(void*, s32);
 extern "C" void fn_802A2BF4(void*, s32);
 extern "C" void fn_802A2D04(void*, s32);
 extern "C" void fn_802A2E08(void*, s32);
-extern "C" void fn_802A44B8(void*, s32);
+extern "C" void *fn_802A44B8(void*, s32);
 extern "C" int lbl_80349B78[];
 extern "C" int lbl_8055F870;
 extern "C" float lbl_80564734;
@@ -974,14 +974,15 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void fn_802A3DFC(void* arg0) {
-    f32* cursor = (f32*)((char*)arg0 + 8);
+extern "C" void fn_802A3DFC(void *arg0) {
+    f32 value = lbl_80564744;
+    u8 *cursor = (u8 *)arg0;
     s32 i = 0;
     do {
-        *cursor = lbl_80564744;
-        cursor++;
-        i++;
-    } while (i < fn_80287B14(arg0));
+        *(f32 *)(cursor + 8) = value;
+        cursor += 4;
+        ++i;
+    } while (i < ((s32 (*)(void))fn_80287B14)());
 }
 
 void fn_802A4118(void *arg0, void *arg1) {
