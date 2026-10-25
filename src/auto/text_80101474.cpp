@@ -107,12 +107,12 @@ void nw4hbm::snd::detail::WsdTrack::Close() {
     void *var_r31;
     ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(this, -1);
     var_r31 = *(void **)((char *)this + 0x30);
-loop_2:
-    if (var_r31 != 0) {
-        fn_800EAD00(var_r31);
-        var_r31 = *(void **)((char *)var_r31 + 0xE4);
-        goto loop_2;
-    }
+    goto check;
+loop:
+    fn_800EAD00(var_r31);
+    var_r31 = *(void **)((char *)var_r31 + 0xE4);
+check:
+    if (var_r31 != 0) goto loop;
     *(void **)((char *)this + 0x30) = 0;
 }
 
