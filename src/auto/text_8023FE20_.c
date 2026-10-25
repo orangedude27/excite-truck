@@ -27,6 +27,14 @@ void fn_8023FE20(void) {
     p[3] = -1;
 }
 
+s32 fn_8023FE34(void) {
+    register s32 *p = (s32 *)lbl_80498828;
+    s32 result = 0;
+    if (*p++ >= 0) result = 1;
+    if (p[3] < 0) return result;
+    return result + 1;
+}
+
 s32 fn_802407B0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
