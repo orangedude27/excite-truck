@@ -267,7 +267,6 @@ void fn_802923C4(int arg0) {
 
 extern float lbl_8056449C;
 extern double lbl_805644C8;
-__declspec(section ".data") extern int lbl_804B4010;
 __declspec(section ".data") extern int lbl_804B3EC0;
 void fn_802923EC(float arg0) {
     float value;
