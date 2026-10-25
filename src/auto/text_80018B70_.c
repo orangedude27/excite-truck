@@ -217,7 +217,7 @@ struct Dummy_80019534 {
     virtual void f1();
     virtual s32 f2(void *);
     virtual void f3();
-    virtual s32 f4(void *, ...);
+    virtual s32 f4(void *, s32);
 };
 #pragma scheduling on
 #pragma cplusplus on
