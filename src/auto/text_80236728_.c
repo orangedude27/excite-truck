@@ -710,16 +710,19 @@ void fn_80237D00(void *arg0) {
     fn_80128668(arg0);
 }
 
+#pragma use_lmw_stmw off
 void fn_80237E7C(char *arg0, int unused) {
-    int i = 0, offset = 0;
     char **items = *(char ***)((char *)lbl_8055F0C0 + 0x30);
+    int i = 0;
+    int offset = 0;
     while (i < *(int *)((char *)items + 8)) {
         if (stricmp(*(char **)((char *)items + 4) + offset, arg0) == 0)
             *(*(char **)((char *)items + 4) + offset + 0x2d) = 0;
-        offset += 0x34; i++;
+        offset += 0x34;
+        i++;
     }
 }
-
+#pragma use_lmw_stmw reset
 void *fn_80237FF8(void *arg0, int arg1) {
     int value;
     if (arg0 != 0) {
