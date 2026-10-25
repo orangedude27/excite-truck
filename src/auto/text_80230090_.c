@@ -148,11 +148,15 @@ void fn_80230DA0(void) {}
 #pragma paired off
 #pragma paired_single off
 void fn_80230DA4(float a, float b) {
-    float value;
+    register float value;
+    register float end;
+
+    end = b;
     lbl_8055F030 = a;
     value = (float)fn_8002EFB4();
-    if (value < lbl_80563614) value += b;
-    lbl_8055F02C = b - value;
+    if (value < lbl_80563614)
+        value = value + end;
+    lbl_8055F02C = end - value;
 }
 #pragma paired_single reset
 #pragma paired reset
@@ -182,7 +186,7 @@ extern f32 lbl_80563610, lbl_80563638, lbl_80563640, lbl_80563648;
 extern u32 lbl_8055FB9C, lbl_8055FBA0;
 s32 fn_802E2C20(void);
 float fn_80230E54(float, float);
-void fn_8023659C(void);
+f32 fn_8023659C(void);
 void fn_80230F6C(s32 *arg0) { *arg0 = -0x35BC; }
 
 extern float fn_80230EF4(long);
