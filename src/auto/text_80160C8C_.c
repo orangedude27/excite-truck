@@ -882,7 +882,7 @@ extern void fn_80130980(void *, int, int, float);
 extern void fn_801475D0(void *, ...);
 #pragma cplusplus on
 extern "C" s32 fn_80162800(void *arg0) {
-    s32 sp8;
+    s32 sp8[3];
     Dummy_80162800 *obj = (Dummy_80162800 *)arg0;
     f32 limit = lbl_8055E3C8;
     if (limit > obj->f11()) {
@@ -1639,6 +1639,7 @@ int fn_80165840(void) {
     return 0;
 }
 
+#pragma dont_inline on
 int fn_80165848(int arg0, int arg1, int arg2, int arg3, int arg4, int *arg5) {
     if (fn_80161BB8() != 0) {
         *arg5 |= 0x1150;
@@ -1646,6 +1647,7 @@ int fn_80165848(int arg0, int arg1, int arg2, int arg3, int arg4, int *arg5) {
     }
     return 0;
 }
+#pragma dont_inline off
 
 #pragma cplusplus on
 extern "C" int fn_80165894(s32 a0, s32 a1, float *arg2, s32 arg3) {
