@@ -19,6 +19,11 @@ extern f64 lbl_80561000;
 extern u8 lbl_80322B80[], lbl_80322C50[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" s32 fn_800F1080(void*, const void*, s32);
+#pragma push
+#pragma small_data off
+extern u8 lbl_80322D24[];
+extern u8 lbl_80322D00[];
+#pragma pop
 
 #pragma push
 #pragma small_data off
