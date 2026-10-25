@@ -16,7 +16,7 @@ extern f32 lbl_80563614;
 extern f32 lbl_8056365C;
 extern f32 lbl_80563660;
 f64 fn_8002EFB4();
-extern void fn_80230AB8();
+extern void fn_80230AB8(u32, u8 *, u8 *, u8 *, u8 *);
 extern void *fn_8022EDC4(void);
 extern f64 lbl_80563650;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
