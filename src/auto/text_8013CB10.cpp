@@ -310,16 +310,21 @@ extern "C" void fn_8013E19C(void *arg0, f32 arg1) {
 
 extern "C" void fn_8013E2AC(void *arg0, void *arg1) {
     volatile u32 *src = (volatile u32 *)arg1;
-    u32 word0 = src[0];
-    u32 word1 = src[1];
-    u32 word2 = src[2];
-    u32 word3 = src[3];
-    u32 word4 = src[4];
-    u32 word5 = src[5];
-    f32 value0 = *(volatile f32 *)((u8 *)arg1 + 0x18);
-    s16 value1 = *(volatile s16 *)((u8 *)arg1 + 0x1C);
-    u8 value2 = *((volatile u8 *)arg1 + 0x1E);
-    f32 value3 = *(volatile f32 *)((u8 *)arg1 + 0x20);
+    u32 word5, word4, word3, word2, word1, word0;
+    f32 value3, value2, value1, value0;
+    s16 half;
+    u8 byte;
+
+    word0 = src[0];
+    word1 = src[1];
+    word2 = src[2];
+    word3 = src[3];
+    word4 = src[4];
+    word5 = src[5];
+    value0 = *(volatile f32 *)((u8 *)arg1 + 0x18);
+    half = *(volatile s16 *)((u8 *)arg1 + 0x1C);
+    byte = *((volatile u8 *)arg1 + 0x1E);
+    value3 = *(volatile f32 *)((u8 *)arg1 + 0x20);
 
     ((u32 *)arg0)[0] = word0;
     ((u32 *)arg0)[1] = word1;
@@ -328,8 +333,8 @@ extern "C" void fn_8013E2AC(void *arg0, void *arg1) {
     ((u32 *)arg0)[4] = word4;
     ((u32 *)arg0)[5] = word5;
     *(f32 *)((u8 *)arg0 + 0x18) = value0;
-    *(s16 *)((u8 *)arg0 + 0x1C) = value1;
-    *((u8 *)arg0 + 0x1E) = value2;
+    *(s16 *)((u8 *)arg0 + 0x1C) = half;
+    *((u8 *)arg0 + 0x1E) = byte;
     *(f32 *)((u8 *)arg0 + 0x20) = value3;
 }
 
