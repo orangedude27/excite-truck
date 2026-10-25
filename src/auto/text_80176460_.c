@@ -132,12 +132,15 @@ extern s32 fn_80209110(s32 *);
 void fn_801766C4(void) {
     s32 i = 0;
     lbl_8055E3F4 = 7;
-    do {
-        fn_80176CC8();
-        i += 1;
-        if (i >= 10)
-            fn_802E317C(lbl_803315E8);
-    } while (lbl_8055E3F4 != 8);
+    goto check_state;
+loop:
+    fn_80176CC8();
+    i += 1;
+    if (i >= 10)
+        fn_802E317C(lbl_803315E8);
+check_state:
+    if (lbl_8055E3F4 != 8)
+        goto loop;
     fn_80209110(&lbl_8055E3F0);
 }
 
