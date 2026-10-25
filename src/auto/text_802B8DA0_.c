@@ -69,7 +69,7 @@ int fn_802B9914(void *arg0) {
     return (short)((int *)arg0)[6];
 }
 
-extern int lbl_802FAB60[];
+extern short lbl_802FAB60[];
 int fn_802B9920(int arg0) {
     int v = arg0 + 0x200;
     int idx = (v >> 31) + (v << 27) + ((v << 27) >> 27);
