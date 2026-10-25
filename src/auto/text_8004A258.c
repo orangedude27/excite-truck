@@ -1,6 +1,8 @@
 #include <types.h>
 #include <revolution/OS/OSHardware.h>
 
+extern u8 DriveInfo[4];
+
 extern BOOL __OSInIPL;
 extern const char lbl_80558F0C[4];
 
@@ -161,6 +163,18 @@ void ClearArena(void) {
     }
 }
 
+#pragma small_data off
+void InquiryCallback(s32 result, struct DVDCommandBlock* arg1) {
+    extern u8 DriveInfo[4];
+    if (*(u32*)((u8*)arg1 + 0xC) == 0) goto read_drive;
+    goto set_one;
+read_drive:
+    *(u16*)0x800030E6 = *(u16*)(DriveInfo + 2) | 0x8000;
+    return;
+set_one:
+    *(u16*)0x800030E6 = 1;
+}
+#pragma small_data on
 extern const char lbl_80558F04[];
 #pragma small_data on
 extern const char lbl_80558F04[6];
@@ -458,14 +472,15 @@ void OSInit(void) {
 #pragma pop
 
 void __OSDBIntegrator(void) {
-    volatile u32 *p = (volatile u32 *)0x48;
-    * (volatile u32 *)0x4C = __builtin_return_address(0);
-    *(volatile u32 *)0x48 |= 0x80000000;
-    __builtin_unreachable();
+    register volatile u32 *base = (volatile u32 *)0x40;
+    base[3] = 0;
+    base[2] |= 0x80000000;
+    PPCMtmsr(0x30);
 }
 
 extern void __OSDBJump(void) {
     OSExceptionVector();
+    (void)0;
 }
 
 #pragma small_data on
