@@ -516,6 +516,7 @@ void fn_80179110(void) {
 extern int fn_802E4C18(int);
 extern int fn_801787B4(void *);
 extern void fn_80177F40(void);
+extern long lbl_80430850[];
 void fn_80179140(void) {
     int var_r31;
     int var_r30;
