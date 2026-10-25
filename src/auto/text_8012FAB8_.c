@@ -164,10 +164,11 @@ void fn_80130978(int arg0, int arg1) { fn_80130980(arg0, arg1, 3); }
 
 extern void fn_801345D8(void *, ...);
 extern void *lbl_80559AA0;
-void fn_80130FCC(void *arg0, int arg1, int arg2, int arg3, void *arg4) {
-    fn_801345D8(arg0, arg1, lbl_80559AA0, 1, arg4);
+#pragma scheduling invalid_target
+void fn_80130FCC(void *arg0, int arg1, void *arg2) {
+    fn_801345D8(arg0, arg1, &lbl_80559AA0, 1, arg2);
 }
-
+#pragma scheduling on
 extern int lbl_802F8EE0[];
 extern char lbl_8032B300[];
 #pragma scheduling invalid_target
