@@ -539,6 +539,5 @@ extern float lbl_805651A0, lbl_805651A4;
 extern unsigned char lbl_80505978[];
 extern int fn_8005ED8C(void), fn_8005EE20(void), fn_8005EE7C(void);
 extern int fn_80128684(void);
-extern int fn_802E30C8();
 extern int lbl_8034D8B4, lbl_8034D8E8;
 extern int fn_80128658(int, int *);
