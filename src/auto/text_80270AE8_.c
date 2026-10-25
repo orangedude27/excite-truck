@@ -24,6 +24,7 @@ extern float lbl_80563F48;
 extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
 void *fn_801E87A8(void);
+extern void fn_80136468(void **, void *, float);
 void fn_8027156C();
 #pragma push
 #pragma small_data off
@@ -348,18 +349,22 @@ extern char *lbl_80346B54[];
 extern float lbl_80563F48;
 extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
+#pragma scheduling invalid_target
 void fn_80272354(void *arg0) {
-    float other = lbl_80563F88;
-    float value = lbl_80563F48;
-    *(float *)((char *)arg0 + 0x0) = value;
-    *(float *)((char *)arg0 + 0x4) = value;
-    *(float *)((char *)arg0 + 0x8) = value;
-    *(float *)((char *)arg0 + 0xC) = other;
+    float other;
+    float value;
+    volatile float *out = (volatile float *)arg0;
+    value = *(volatile float *)&lbl_80563F48;
+    other = *(volatile float *)&lbl_80563F88;
+    out[0] = value;
+    out[1] = value;
+    out[2] = value;
+    out[3] = other;
     memset((char *)arg0 + 0x10, 0, 8);
     *(int *)((char *)arg0 + 0x58) = 0;
     *(int *)((char *)arg0 + 0x5C) = 2;
 }
-
+#pragma scheduling on
 extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
 extern void fn_80136468(void **, void *, float);
 float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
@@ -399,6 +404,14 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
     } else mid=(a+b)*lbl_80563F40;
     if (d0 < d1) return fn_80272428(arg0,arg1,a,radius,0);
     return fn_80272428(arg0,arg1,mid,b,radius);
+}
+
+extern char lbl_8034705C[];
+extern void fn_802723B4(void *, float *);
+void fn_8027264C(int arg0, void *arg1, float farg0) {
+    float value;
+    fn_802723B4(arg1, &value);
+    DBPrintf_80270B00(lbl_8034705C, arg0, farg0, value, *(float *)((char *)&value + 4));
 }
 
 #pragma dont_inline on
