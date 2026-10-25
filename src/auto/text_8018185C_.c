@@ -322,14 +322,14 @@ extern void fn_80279B28(int, void *);
 extern void fn_80279C00(int, void *);
 extern void fn_8017B0B0(void);
 extern void fn_801BD808(void *);
-extern int lbl_803326F8;
+extern char lbl_803326F8[];
 extern int lbl_8055E4D0;
 void *fn_80182010(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
     fn_8017B0B0();
-    *(int **)p = &lbl_803326F8;
+    *(int **)p = (int *)lbl_803326F8;
     *(short *)(p + 0x2B4) = -1;
-    fn_801BD808(&lbl_803326F8);
+    fn_801BD808(lbl_803326F8);
     ((void **)lbl_804348E8)[lbl_8055E4D0] = arg0;
     lbl_8055E4D0++;
     return arg0;
