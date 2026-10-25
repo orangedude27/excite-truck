@@ -20,7 +20,7 @@ extern void *fn_801792F8(void);
   extern void *fn_801350C0(void);
   extern void *fn_801A520C(void *, void *);
   extern void *fn_801B83A0(void);
-  extern void *fn_801938F4();
+  extern void *fn_801938F4(void *);
   extern void fn_802E30C8(const char *, void *);
   extern const char lbl_8032BC50[];
   extern const char lbl_8032BC5C[];
