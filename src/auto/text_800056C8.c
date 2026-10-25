@@ -245,6 +245,7 @@ extern "C" void fn_80005B74(void) {
         }
     }
 }
+#pragma pop
 #pragma cplusplus off
 extern void *fn_801284F8(s32, const char *);
 extern void *fn_80014524(void *, s32);
