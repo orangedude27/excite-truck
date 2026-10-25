@@ -150,6 +150,21 @@ s32 fn_8023DFB0(void) {
     return 0;
 }
 
+int fn_8023DFD4(void) {
+    extern int lbl_8055F194;
+    extern void fn_8023E16C(void *, int);
+    extern void fn_8023E0DC(void *, int, int);
+    int capacity;
+    int index;
+
+    fn_8023E16C(lbl_8055F190, lbl_8055F194);
+    capacity = *(int *)((char *)lbl_8055F190 + 8);
+    index = (capacity + lbl_8055F194 - 1) % capacity;
+    lbl_8055F194 = index;
+    fn_8023E0DC(lbl_8055F190, index, capacity);
+    return 0;
+}
+
 extern int fn_80128668(void);
 extern void fn_8023DA64(void *, int, int);
 extern char lbl_8055BBB8[];
