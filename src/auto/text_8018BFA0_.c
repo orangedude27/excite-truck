@@ -678,12 +678,16 @@ extern float lbl_80562028;
 extern float lbl_8056202C;
 extern float lbl_80562030;
 extern float lbl_80562034;
-#pragma scheduling invalid_target
+#pragma push
+#pragma ppc_psq_save off
 void fn_8018E3EC(char *arg0, float *arg1, void *arg2, int arg3, int arg4, int arg5, int arg_sp0) {
     extern float __fabsf(float);
 extern float lbl_80561FE8;
 extern char lbl_80332758;
+#pragma push
+#pragma small_data off
 extern float lbl_80558DC4;
+#pragma pop
 extern float lbl_8055A460;
 extern float lbl_80561F74;
 extern float lbl_80561F88;
@@ -873,7 +877,9 @@ extern float lbl_80562034;
     char *var_r22;
     char *var_r24;
 
-    temp_f6 = lbl_80561FF8 / M2C_FIELD(arg0, float *, 0xD4);
+    register float divisor = *(volatile float *)((char *)arg0 + 0xD4);
+    register float numerator = lbl_80561FF8;
+    temp_f6 = numerator / divisor;
     temp_f5 = M2C_FIELD(arg1, float *, 0) * temp_f6;
     temp_f3 = M2C_FIELD(arg1, float *, 4) * temp_f6;
     temp_f1 = M2C_FIELD(arg1, float *, 8) * temp_f6;
@@ -1340,7 +1346,7 @@ loop_80:
         }
     }
 }
-#pragma scheduling on
+#pragma pop
 extern float lbl_80561F88;
 extern float lbl_80562038;
 extern float lbl_8056203C;
