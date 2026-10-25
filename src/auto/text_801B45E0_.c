@@ -291,8 +291,8 @@ void fn_801B5274(void) {
 #pragma pop
 void fn_801B52CC(void) {
     int result;
-    fn_802E30C8(&lbl_80335E10);
-    result = fn_801284F8(0x2C, &lbl_80335E28);
+    fn_802E30C8((int *)&lbl_80335E10);
+    result = fn_801284F8(0x2C, (int *)&lbl_80335E28);
     if (result != 0) {
         result = fn_801B4904();
     }
