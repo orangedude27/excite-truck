@@ -94,14 +94,16 @@ extern const char lbl_80559B68[];
 int fn_80133348(int, int, int);
 int fn_80133460(int, int, unsigned char);
 int sprintf(char *, const char *, ...);
+#pragma scheduling invalid_target
 void fn_801332D0(int arg0, int arg1, int *arg2) {
     void *sp8;
-    if (fn_80133E10(&sp8, arg0, arg1) == 0)
-        fn_80133348(arg0, arg1, *arg2);
-    else
+    if (fn_80133E10(&sp8, arg0, arg1) != 0) {
         *arg2 = *(int *)((char *)sp8 + 0xC);
+    } else {
+        fn_80133348(arg0, arg1, *arg2);
+    }
 }
-
+#pragma scheduling on
 int fn_80133348(int arg0, int arg1, int arg2) {
     void *sp8;
     fn_80133E10(&sp8, arg0, arg1);
@@ -195,14 +197,17 @@ extern int fn_8002B1D8(void *, void *, int);
 extern int atoi(const char *);
 extern int stricmp(const char *, const char *);
 char *fn_801337E4(char *arg0) {
-    unsigned char *p = (unsigned char *)arg0;
-    int table = *(int *)(lbl_802FE850 + 0x38);
-    while (*p != 0) {
-        int c = (signed char)*p;
-        if (c < 0 || c >= 0x100 || !(*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100)) return (char *)p;
+    char *p = arg0;
+    int table = *(int *)((char *)&lbl_802FE850 + 0x38);
+    do {
+        int c;
         p++;
-    }
-    return (char *)p;
+        c = (signed char)*p;
+        if (c == 0) return p;
+        if (c < 0 || c >= 0x100) return p;
+        if (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100) continue;
+        return p;
+    } while (1);
 }
 
 int fn_80133844(const char *arg0) {
