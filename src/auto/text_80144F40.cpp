@@ -726,8 +726,7 @@ extern "C" void fn_8014630C(void) {
 
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
-        s32 temp = *(s32 *)((u8 *)arg0 + 8);
-        if (temp != 0) {
+        if (*(void**)((u8*)arg0 + sizeof(void*) * 2)) {
             fn_80235380();
         }
         if (arg1 > 0) {
@@ -1541,11 +1540,14 @@ extern "C" f32 fn_801452B4(f32);
 extern "C" f32 lbl_805615D4;
 extern "C" void fn_801470B0(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" void fn_80148100(void *arg0) {
-    fn_801470B0(*(s32 *)((u8 *)arg0 + 0x18), -1,
-        *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4),
-        *(f32 *)((u8 *)arg0 + 8), *(f32 *)((u8 *)arg0 + 0x10),
-        *(f32 *)((u8 *)arg0 + 0x14), lbl_805615D4, lbl_805615D4,
-        lbl_805615D4, lbl_805615D4);
+    f32 farg0 = *(f32 *)((u8 *)arg0 + 4);
+    f32 farg1 = *(f32 *)((u8 *)arg0 + 8);
+    f32 farg2 = *(f32 *)((u8 *)arg0 + 0x10);
+    f32 farg3 = *(f32 *)((u8 *)arg0 + 0x14);
+    s32 arg2 = *(s32 *)((u8 *)arg0 + 0x18);
+    s32 arg3 = *(s32 *)((u8 *)arg0 + 0xC);
+    fn_801470B0(arg2, -1, arg3, farg0, farg1, farg2, farg3,
+        lbl_805615D4, lbl_805615D4, lbl_805615D4, lbl_805615D4);
 }
 
 #pragma dont_inline on
