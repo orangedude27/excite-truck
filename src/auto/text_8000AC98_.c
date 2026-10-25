@@ -1,7 +1,7 @@
 extern float lbl_805601FC, lbl_80560204;
 #pragma push
 #pragma small_data off
-extern char lbl_8034F5F8, lbl_8034F604;
+extern char lbl_8034F5F8[], lbl_8034F604[];
 #pragma pop
 extern char lbl_802FBC90[];
 extern void *lbl_8055D3D0;
