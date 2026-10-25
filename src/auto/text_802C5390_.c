@@ -567,6 +567,7 @@ void fn_802C7758(void) {
     fn_802D0610(0);
 }
 
+#pragma dont_inline fn_802C7760
 void fn_802C7760(void *arg0, f32 *arg1, f32 *arg2, f32 *arg3, f32 *arg4, f32 *arg5, f32 *arg6) {
     void *temp_r3 = fn_802C5390((int)arg0);
     *arg1 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x2C);
