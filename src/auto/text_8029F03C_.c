@@ -90,8 +90,15 @@ void fn_8029F0D0(void) {
 }
 
 void fn_8029F124(void) {
- int offset=0, i=0, zero=0; fn_802A002C();
- do { ++i; *(int*)((char*)lbl_8055F820+offset)=zero; offset+=4; } while(i<fn_801E85A4());
+    int zero = 0;
+    int offset = 0;
+    int i = 0;
+    fn_802A002C();
+    do {
+        i++;
+        *(int *)((char *)lbl_8055F820 + offset) = zero;
+        offset += 4;
+    } while (i < fn_801E85A4());
 }
 
 void fn_8029F188(void) {
@@ -255,8 +262,11 @@ int fn_8029FDF0(int *arg0, int *arg1) {
 }
 
 void fn_8029FE00(void) {
-    int count = lbl_8055F81C;
-    qsort(lbl_804B5070, count, 0x78, (int (*)(const void *, const void *))fn_8029FDF0);
+    int count;
+    int (*compare)(const void *, const void *);
+    count = lbl_8055F81C;
+    compare = (int (*)(const void *, const void *))fn_8029FDF0;
+    qsort(lbl_804B5070, count, 0x78, compare);
 }
 
 #pragma push
@@ -473,18 +483,27 @@ int fn_802A0620(Unk802A0794Params *arg0) {
 }
 #pragma pop
 
+#pragma push
+#pragma use_lmw_stmw off
 int fn_802A0720(int *arg0, int arg1) {
-    int i = 0;
     int offset = 0;
-    do {
+    int i = 0;
+    goto check;
+loop:
+    {
         int *base = (int *)lbl_804B9B7C[0];
-        if (*(int *)((unsigned char *)base + offset) == *arg0)
-            fn_802A0794((unsigned char *)base + offset);
-        offset += 0x34;
-        i++;
-    } while (i < lbl_804B9B7C[1]);
+        unsigned char *entry = (unsigned char *)base + offset;
+        if (*(int *)entry == *arg0)
+            fn_802A0794(entry);
+    }
+    offset += 0x34;
+    i++;
+check:
+    if (i < lbl_804B9B7C[1])
+        goto loop;
     return 4;
 }
+#pragma pop
 
 #pragma push
 #pragma inline off
