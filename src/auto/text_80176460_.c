@@ -536,6 +536,22 @@ void fn_80177658(void *arg0) {
     }
 }
 
+extern char lbl_80331850[];
+void fn_801776C4(u32 arg0) {
+    s32 count = lbl_8055E400;
+    u32 *entry = (u32 *)lbl_80430570;
+    s32 i;
+    for (i = count; i > 0; --i) {
+        if (arg0 == *entry) {
+            fn_802E317C(lbl_80331850);
+            return;
+        }
+        entry++;
+    }
+    lbl_80430570[lbl_8055E400] = arg0;
+    lbl_8055E400++;
+}
+
 extern void fn_80177658(void *);
 extern void fn_80177608(void *);
 extern void fn_80177618(int *);
