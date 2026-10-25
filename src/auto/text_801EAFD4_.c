@@ -298,8 +298,8 @@ void fn_801EB820(void) {
 #pragma dont_inline on
 void fn_801EB824(s32 arg0) {
     s32 sp8;
-    sp8=(s32)&lbl_8033A048;
-    fn_801EB000(&sp8);
+    sp8 = (s32)lbl_8033A048;
+    ((s32 (*)(s32, s32 *))fn_801EB000)(arg0, &sp8);
 }
 
 void fn_801EB854(void) {
