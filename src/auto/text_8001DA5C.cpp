@@ -145,6 +145,7 @@ extern "C" void fn_8001DF08(s32 arg0, s32 arg1) {
     ((CollisionEntry*)lbl_80358680[2])->apply(arg0, arg1);
 }
 
+// Invalid-target scheduling reuses r5 for the object base before passing the zero argument.
 #pragma scheduling invalid_target
 extern "C" void fn_8001DF84(s32 arg0) {
     void *p = lbl_80358680[1];
