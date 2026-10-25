@@ -172,9 +172,12 @@ extern float lbl_80563234;
 extern float fn_80208A18(float);
 extern void fn_80208A50(float *);
 extern int fn_80128668(void);
+#pragma push
+#pragma inline_depth(0)
 void fn_802091CC(void) {
     fn_80208A18(lbl_80563230);
 }
+#pragma pop
 
 int fn_802091D4(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
