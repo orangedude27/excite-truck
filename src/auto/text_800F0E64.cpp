@@ -565,8 +565,8 @@ extern "C" void fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
 }
 
 extern "C" void fn_800F26D8(void *arg0) {
-    extern s32 lbl_80324848;
-    *(s32 *)arg0 = (s32)&lbl_80324848;
+    extern char lbl_80324848[];
+    *(s32 *)arg0 = (s32)lbl_80324848;
     *(s32 *)((u8 *)arg0 + 4) = 0;
     *(u8 *)((u8 *)arg0 + 8) = 0x2F;
     *(u8 *)((u8 *)arg0 + 9) = 0;
