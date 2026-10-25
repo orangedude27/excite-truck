@@ -995,6 +995,12 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
     return arg1 + result;
 }
 
+extern "C" s32 fn_800A71A0(s32 *arg0) {
+    *(volatile u32 *)arg0 &= 0xFFFFFFFE;
+    *(volatile u16 *)&lbl_803D1640 -= 1;
+    return 0;
+}
+
 #pragma dont_inline reset
 
 extern "C" s32 fn_800A71C4(u32 *arg0) {
@@ -11329,10 +11335,18 @@ extern "C" s32 fn_800D014C(s32 arg0, s32 arg1) {
 
 extern "C" u32 lbl_8055DDA0;
 extern "C" void fn_800D018C(void *arg0, void *arg1) {
+    class Dispatch {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void call(void *);
+    };
     void *p = *(void **)((u8 *)arg1 + 0x10);
     lbl_8055DDA0 = 0;
-    p = (u8 *)p + 0x10;
-    (*(void (**)(void *, void *))(*(void ***)arg0 + 20))(arg0, p);
+    ((Dispatch *)arg0)->call((u8 *)p + 0x10);
 }
 
 extern "C" u8 lbl_8031E878[];
