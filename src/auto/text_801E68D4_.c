@@ -39,31 +39,32 @@ s32 fn_801E68D4(void) {
     }
     return 0;
 }
-#pragma scheduling reset
-void fn_801E6924(void* arg0) {
-    s32* var_r31 = lbl_80487CC0;
-    s8* var_r30 = lbl_8055EAC8;
-    s32 var_r6;
-    for (var_r6 = 0; var_r6 < 8; var_r6++) {
-        if (var_r31[var_r6] == (s32)arg0) {
-            var_r30[var_r6] = 0;
+#pragma scheduling invalid_target
+void fn_801E6924(s32 arg0) {
+    s32* ptr = lbl_80487CC0;
+    s32 i;
+    for (i = 0; i < 8; i++, ptr++) {
+        if ((unsigned int)*ptr == (unsigned int)arg0) {
+            lbl_8055EAC8[i] = 0;
             return;
         }
     }
     fn_802E317C(&lbl_80339A20[0], arg0);
 }
-#pragma dont_inline off
+#pragma scheduling reset
 
 extern char lbl_80339A20[0x40];
 void fn_801E6978(void) {
-    s32* var_r30 = lbl_80487CC0;
-    s8* var_r29 = lbl_8055EAC8;
-    s8* var_r28_2 = lbl_8055EAC8;
+    volatile s32 *var_r30 = lbl_80487CC0;
+    volatile s8 *var_r29 = lbl_8055EAC8;
     s32 var_r28 = 0;
+
     do {
-        *var_r30++ = fn_8012EC90(0x4000);
+        *var_r30 = fn_8012EC90(0x4000);
         var_r28 += 1;
-        *var_r29++ = 0;
+        *var_r29 = 0;
+        var_r30 += 1;
+        var_r29 += 1;
     } while (var_r28 < 8);
 }
 
