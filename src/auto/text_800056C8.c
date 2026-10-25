@@ -63,13 +63,12 @@ extern f32 lbl_80560134;
 extern f32 lbl_80560190;
 extern u8 lbl_802FB0C8[];
 extern s32 lbl_8055D354;
-#pragma push
-#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_800056C8(s32 arg0, s32 arg1) {
     s32 *p = (s32 *)((u8 *)&lbl_8034EEB8 + (arg0 << 4));
     *(p + 4) = arg1;
 }
-#pragma pop
+#pragma scheduling on
 
 #pragma push
 #pragma dont_inline on
@@ -419,6 +418,17 @@ void fn_800060A0(void *arg0) {
 
 void fn_800060B4(void) {
     return;
+}
+
+extern f32 lbl_80560138;
+void fn_800060B8(void *arg0) {
+    float value = lbl_80560138;
+    *(u8 *)((u8 *)arg0 + 0x14) = 0;
+    *(float *)((u8 *)arg0 + 4) = value;
+    *(float *)((u8 *)arg0 + 8) = value;
+    *(float *)((u8 *)arg0 + 0xC) = value;
+    *(float *)((u8 *)arg0 + 0x10) = value;
+    *(float *)((u8 *)arg0 + 0x18) = value;
 }
 
 void fn_800060DC(void) {
