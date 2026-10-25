@@ -4137,12 +4137,21 @@ void fn_8007A280(u8 *arg0) {
 }
 
 tBTM_STATUS fn_8007A2C8(u16 *arg0) {
-    register u16 *base = (u16 *)lbl_803C0F78;
-    if (((u8 *)base)[0x64e] < 4) return 0xc;
-    arg0[0] = base[0x31b];
-    arg0[1] = base[0x31c];
-    arg0[2] = base[0x31d];
-    arg0[3] = base[0x31e];
+    volatile u16 *base = (volatile u16 *)lbl_803C0F78;
+    u16 first;
+    u16 second;
+    u16 third;
+    u16 fourth;
+
+    if (((volatile u8 *)base)[0x64e] < 4) return 0xC;
+    first = base[0x31b];
+    second = base[0x31c];
+    arg0[0] = first;
+    arg0[1] = second;
+    third = base[0x31d];
+    fourth = base[0x31e];
+    arg0[2] = third;
+    arg0[3] = fourth;
     arg0[4] = base[0x31f];
     return 0;
 }
@@ -4826,8 +4835,8 @@ void btm_pm_proc_cmd_status(UINT8 status) {
 
 void fn_8007D4C4(void) {
     extern u32 lbl_802EEBF8[];
-    register u32 *src = lbl_802EEBF8;
-    register u8 *dst = lbl_803C0F78;
+    u8 *dst = lbl_803C0F78;
+    u32 *src = lbl_802EEBF8;
 
     *(u16 *)(dst + 0x18F6) = 0xFFFF;
     *(u32 *)(dst + 0x18F8) = *src++;
