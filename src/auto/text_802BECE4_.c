@@ -168,23 +168,45 @@ void fn_802BF508(void) {
 
 float fn_802BF590(void) { return lbl_8055FAF4; }
 
-int fn_802BF6AC(void) {
+#pragma cplusplus on
+extern "C" void fn_802BF598(int arg0, float farg0) {
+    class Dummy {
+    public:
+        virtual void f0();
+        virtual void f1(int, float);
+    };
+    int index = fn_801E85B4();
+    Dummy *obj = (Dummy *)lbl_804C07F0[index];
+    if (obj != 0) {
+        obj->f1(arg0, farg0);
+    }
+}
+extern "C" int fn_802BF6AC(void) {
+    struct Dummy {
+        virtual void f0(int);
+        virtual int f1();
+        virtual int f2();
+        virtual int f3();
+    };
     extern void *fn_801284F8(int, const char *);
     extern void *fn_802BF780(void);
     extern const char lbl_8034AD90[];
-    void *obj;
+    register void *obj;
     obj = fn_801284F8(0x18, lbl_8034AD90);
-    if (obj == 0)
-        return 0;
-    obj = fn_802BF780();
-    if (obj == 0)
-        return 0;
-    if (((int (*)(void *))(*(void ***)obj)[5])(obj) != 0)
-        return (int)obj;
-    ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
-    return 0;
+    if (obj != 0) {
+        obj = fn_802BF780();
+        if (obj != 0) {
+            if (((Dummy *)obj)->f3() == 0) {
+                if (obj != 0)
+                    ((Dummy *)obj)->f0(1);
+                obj = 0;
+            }
+        }
+    }
+    return (int)obj;
 }
-
+#pragma scheduling on
+#pragma cplusplus reset
 extern void *fn_801284F8(int, const char*);
 extern void* fn_802BF780(void);
 extern const char lbl_8034AD90[];
@@ -239,6 +261,47 @@ void *fn_802BFA58(void *arg0, int arg1) {
             fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern float lbl_80564DCC, lbl_80564DD0, lbl_80564DD4;
+extern unsigned short lbl_802FAC20;
+extern void fn_80015A20(void *, float *, float, float, float, float, float);
+extern void fn_80015B20(float *, void *, float *);
+extern void fn_802C8B98(int, float *);
+extern void fn_802C8DB8(void *, int, unsigned short *, int);
+extern void fn_802C8D74(void);
+void fn_802BFE48(void *arg0, void *arg1, float arg2) {
+    struct V { float x,y,z; int pad; float nx,ny,nz; int pad2; } v[4];
+    float mat[16];
+    float point[4];
+    float *p;
+    float x, y, z;
+    int i;
+    unsigned short *indices = &lbl_802FAC20;
+    if (*(int *)((char *)arg0 + 0x18) == -2) return;
+    x = lbl_80564DCC * arg2;
+    y = lbl_80564DD0 * arg2;
+    for (i = 0; i < 4; i++) {
+        v[i].x = (i & 1) ? x : -x;
+        v[i].y = (i & 2) ? x : -x;
+        v[i].z = y;
+        v[i].pad = -1;
+        v[i].nx = (i & 1) ? lbl_80564D80 : lbl_80564D90;
+        v[i].ny = (i & 2) ? lbl_80564D80 : lbl_80564D90;
+        v[i].nz = lbl_80564D90;
+        v[i].pad2 = -1;
+    }
+    p = mat + 8;
+    p[0]=lbl_80564D80; p[1]=lbl_80564D90; p[2]=lbl_80564D90; p[3]=lbl_80564D90;
+    p[4]=lbl_80564D80; p[5]=lbl_80564D90; p[6]=lbl_80564D90; p[7]=lbl_80564D90;
+    p[8]=lbl_80564D80;
+    point[0]=lbl_80564DD4; point[1]=lbl_80564D90; point[2]=lbl_80564D90;
+    fn_80015A20(point, mat + 2, lbl_80564D90, lbl_80564D80,
+                ((float *)arg1)[11], ((float *)arg1)[10], ((float *)arg1)[9]);
+    fn_80015B20(mat + 8, point, mat + 8);
+    fn_802C8B98(*(int *)((char *)arg0 + 0x18), mat + 8);
+    fn_802C8DB8(v, 4, indices, 6);
+    fn_802C8D74();
 }
 
 void fn_802C0054(void *dst, const void *src) {
