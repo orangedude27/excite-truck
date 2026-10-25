@@ -25,6 +25,8 @@ extern void *memcpy(void *, const void *, unsigned int);
 extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
 extern int lbl_8055F748;
+extern void fn_8028ED74(void *);
+extern void fn_8028EE1C(void *);
 extern int lbl_804B34B0_arr[];
 #pragma push
 #pragma small_data off
@@ -390,6 +392,19 @@ void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0
     arg0[1] = arg1[1] * arg3[1] + farg1 * fn_80129DC4(0, -arg2[1], arg2[1]);
     arg0[1] += farg1 * farg0;
     arg0[2] = arg1[2] * arg3[2] + farg1 * fn_80129DC4(0, -arg2[2], arg2[2]);
+}
+
+extern char lbl_80348F9C[];
+int fn_8028F534(int arg0) {
+    int shift = 0;
+    int index = 0;
+    for (; index < 4; index++, shift += 2) {
+        if (arg0 == (1 << shift)) {
+            return 1 << index;
+        }
+    }
+    fn_802E317C(lbl_80348F9C, arg0);
+    return 0;
 }
 
 void fn_8028F5A0(int arg0, int arg1) {
