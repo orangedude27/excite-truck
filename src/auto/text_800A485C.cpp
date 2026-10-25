@@ -11152,6 +11152,8 @@ extern "C" s32 fn_800CF2B0(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) {
+    f32 value;
+
     *(s32 *)((u8 *)arg0 + 0x18) = arg1;
     *(f32 *)((u8 *)arg0 + 4) = arg2;
     *(f32 *)((u8 *)arg0 + 8) = arg3;
@@ -11159,10 +11161,11 @@ extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) 
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
     *(u8 *)((u8 *)arg0 + 0x1C) = 0;
     if (arg1 == 1) {
-        *(f32 *)((u8 *)arg0 + 0xC) = arg2;
+        value = (f32)(f64)arg2;
     } else {
-        *(f32 *)((u8 *)arg0 + 0xC) = arg3;
+        value = (f32)(f64)arg3;
     }
+    *(f32 *)((u8 *)arg0 + 0xC) = value;
 }
 
 extern "C" void fn_800CF3EC(void *arg0) {
