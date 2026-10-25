@@ -50,6 +50,12 @@ void* fn_80016508(void) {
     return lbl_8055D54C;
 }
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
+int fn_80016510(int arg0) { extern void *lbl_8055D550; if (arg0 < (int)lbl_8055D550) return (int)(lbl_8055D544 + arg0 * 0xA8); return (int)(lbl_80357960 + (arg0 - (int)lbl_8055D550) * 0xA8); }
+#pragma scheduling on
+#pragma dont_inline reset
+
 extern void *lbl_8055D550;
 void* fn_800165D4(void) {
     return lbl_8055D550;
@@ -154,24 +160,24 @@ void fn_800168B0(int arg0, int arg1) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_80016928(int arg0, int arg1) {
-    int count = (int)lbl_8055D54C;
-    int i = 0;
-    unsigned char *base = lbl_8055D540;
-    unsigned char *entry = base;
+    unsigned char *entry;
+    unsigned char *base;
+    int i;
 
-    if (count > 0) {
-        do {
-            if (arg0 == *(int *)(entry + 4)) {
-                *(int *)(base + i * 0x5C + 0x50) = arg1;
-                return;
-            }
-            entry += 0x5C;
-            i++;
-        } while (--count > 0);
+    i = 0;
+    entry = lbl_8055D540;
+    base = entry;
+    for (; i < (int)lbl_8055D54C; i++, entry += 0x5C) {
+        if (arg0 == *(int *)(entry + 4)) {
+            *(int *)(base + i * 0x5C + 0x50) = arg1;
+            return;
+        }
     }
 }
-
+#pragma pop
 void fn_80016970(int arg0, int arg1, int arg2, int arg3) {
     int offset = arg0 * 0x5C;
     unsigned char *entry = lbl_803577F0 + offset;
