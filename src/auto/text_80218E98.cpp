@@ -52,6 +52,28 @@ public:
     virtual void Call(s32);
 };
 
+class Fn80229DE8Dispatch2 {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void Call(s32, s32);
+};
+
 struct Fn8021C9D8Object {
     virtual void v0();
     virtual void v1();
@@ -5141,7 +5163,7 @@ extern "C" void fn_80229DE8(void *arg0, s32 unused, s32 arg2) {
     *(u32 *)((u8 *)arg0 + 0x260) = zero;
     s32 end = *(s32 *)((u8 *)arg0 + 0x10);
     *(u8 *)((u8 *)arg0 + 0x268) = one;
-    ((void (**)(void *, s32))(*(void ***)arg0))[19](arg0, arg2 - (end - start) - 3);
+    ((Fn80229DE8Dispatch *)arg0)->Call(arg2 - (end - start) - 3);
 }
 
 extern s32 fn_8021E1C8(void *, s32, s32);
