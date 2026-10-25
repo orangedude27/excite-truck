@@ -4,6 +4,7 @@
 #include <string.h>
 extern void fn_80241354(void*);
 extern s32 lbl_803428B0[][16][3];
+extern char lbl_80342CEC[];
 s32 fn_80243478(s32);
 
 void fn_80243460(void* arg0) {
