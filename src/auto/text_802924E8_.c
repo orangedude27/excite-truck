@@ -166,10 +166,13 @@ int fn_80292EC0(void *arg0, const char *arg1, s32 *arg2, s32 arg3) {
 
 void fn_80292F40(void *arg0, void *arg1, const char *arg2) {
     volatile s32 *counter = (volatile s32 *)((u8 *)arg0 + 0x180);
-    s32 count = *counter;
-    register char *dst = (char *)arg0 + count * 0x18;
-    s32 left = 0x10;
-    register signed char c;
+    s32 count;
+    s32 left;
+    char *dst;
+    unsigned char c;
+    count = *counter;
+    left = 0x10;
+    dst = (char *)arg0 + count * 0x18;
     goto copy_byte;
 check_limit:
     if (--left > 0) {
@@ -178,9 +181,9 @@ check_limit:
     dst[-1] = 0;
     goto after_copy;
 copy_byte:
-    c = *arg2++;
-    *dst++ = c;
-    if (c != 0) {
+    c = (unsigned char)*arg2++;
+    *dst++ = (char)c;
+    if ((signed char)c != 0) {
         goto check_limit;
     }
 after_copy:
