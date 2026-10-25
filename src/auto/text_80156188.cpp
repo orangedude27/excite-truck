@@ -107,6 +107,10 @@ extern "C" void fn_801561E8(u8 *arg0) {
     }
 }
 
+extern "C" u8 lbl_8032E238[];
+extern "C" char lbl_8032E248[];
+extern "C" char lbl_80559FC0;
+extern "C" s32 fn_801345D8(s32, s32, const char *, ...);
 extern "C" s32* fn_801E87A8();
 extern "C" void* fn_8001285C(s32);
 #pragma dont_inline fn_8015621C
