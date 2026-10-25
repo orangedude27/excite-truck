@@ -1,4 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern int lbl_80488798[64];
+extern int lbl_8033A51C;
+extern void fn_802E317C(const char *, ...);
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct {
@@ -211,10 +214,11 @@ int fn_80128670(int);
 void fn_802C6CF8(int);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 int fn_801F0CC4(int unused) {
-    int i, j, k;
-    int offset;
-    int base;
+    register int i, j, k;
+    register int offset;
+    register int base;
     i = 0;
     offset = 0;
     while (i < lbl_8055EBF0) {
@@ -240,6 +244,7 @@ int fn_801F0CC4(int unused) {
     lbl_8055EBEC = 0;
     lbl_8055EBF0 = 0;
 }
+#pragma scheduling on
 #pragma pop
 extern float lbl_80562F1C;
 #pragma dont_inline on
@@ -512,50 +517,54 @@ void fn_801F1AD0(void *arg0) {
 
 void fn_801EABA8(void);
 int fn_801F1848(void);
+#pragma scheduling invalid_target
 void fn_801F1B1C(void *arg0, void *arg1, int arg2) {
-    int v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1;
     short v16;
     float v17;
     unsigned char flag;
+    int v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1;
+    register void *dst;
+    register void *src;
+    dst = arg0;
+    src = arg1;
     fn_801EABA8();
-    flag = *(unsigned char *)((char *)arg1 + 0x40);
-    v1 = *(int *)((char *)arg1 + 0x00);
-    v2 = *(int *)((char *)arg1 + 0x04);
-    v3 = *(int *)((char *)arg1 + 0x08);
-    v4 = *(int *)((char *)arg1 + 0x0C);
-    v5 = *(int *)((char *)arg1 + 0x10);
-    v6 = *(int *)((char *)arg1 + 0x14);
-    v7 = *(int *)((char *)arg1 + 0x18);
-    v8 = *(int *)((char *)arg1 + 0x1C);
-    v9 = *(int *)((char *)arg1 + 0x20);
-    v10 = *(int *)((char *)arg1 + 0x24);
-    v11 = *(int *)((char *)arg1 + 0x28);
-    v12 = *(int *)((char *)arg1 + 0x2C);
-    v16 = *(short *)((char *)arg1 + 0x30);
-    v13 = *(int *)((char *)arg1 + 0x34);
-    v14 = *(int *)((char *)arg1 + 0x38);
-    v17 = *(float *)((char *)arg1 + 0x3C);
-    *(int *)((char *)arg0 + 0x3C) = v1;
-    *(int *)((char *)arg0 + 0x40) = v2;
-    *(int *)((char *)arg0 + 0x44) = v3;
-    *(int *)((char *)arg0 + 0x48) = v4;
-    *(int *)((char *)arg0 + 0x4C) = v5;
-    *(int *)((char *)arg0 + 0x50) = v6;
-    *(int *)((char *)arg0 + 0x54) = v7;
-    *(int *)((char *)arg0 + 0x58) = v8;
-    *(int *)((char *)arg0 + 0x5C) = v9;
-    *(int *)((char *)arg0 + 0x60) = v10;
-    *(int *)((char *)arg0 + 0x64) = v11;
-    *(int *)((char *)arg0 + 0x68) = v12;
-    *(short *)((char *)arg0 + 0x6C) = v16;
-    *(int *)((char *)arg0 + 0x70) = v13;
-    *(int *)((char *)arg0 + 0x74) = v14;
-    *(float *)((char *)arg0 + 0x78) = v17;
-    *(unsigned char *)((char *)arg0 + 0x7C) = flag;
+    flag = *(volatile unsigned char *)((char *)src + 0x40);
+    v1 = *(volatile int *)((char *)src + 0x00);
+    v2 = *(volatile int *)((char *)src + 0x04);
+    v3 = *(volatile int *)((char *)src + 0x08);
+    v4 = *(volatile int *)((char *)src + 0x0C);
+    v5 = *(volatile int *)((char *)src + 0x10);
+    v6 = *(volatile int *)((char *)src + 0x14);
+    v7 = *(volatile int *)((char *)src + 0x18);
+    v8 = *(volatile int *)((char *)src + 0x1C);
+    v9 = *(volatile int *)((char *)src + 0x20);
+    v10 = *(volatile int *)((char *)src + 0x24);
+    v11 = *(volatile int *)((char *)src + 0x28);
+    v12 = *(volatile int *)((char *)src + 0x2C);
+    v16 = *(volatile short *)((char *)src + 0x30);
+    v13 = *(volatile int *)((char *)src + 0x34);
+    v14 = *(volatile int *)((char *)src + 0x38);
+    v17 = *(volatile float *)((char *)src + 0x3C);
+    *(volatile int *)((char *)dst + 0x3C) = v1;
+    *(volatile int *)((char *)dst + 0x40) = v2;
+    *(volatile int *)((char *)dst + 0x44) = v3;
+    *(volatile int *)((char *)dst + 0x48) = v4;
+    *(volatile int *)((char *)dst + 0x4C) = v5;
+    *(volatile int *)((char *)dst + 0x50) = v6;
+    *(volatile int *)((char *)dst + 0x54) = v7;
+    *(volatile int *)((char *)dst + 0x58) = v8;
+    *(volatile int *)((char *)dst + 0x5C) = v9;
+    *(volatile int *)((char *)dst + 0x60) = v10;
+    *(volatile int *)((char *)dst + 0x64) = v11;
+    *(volatile int *)((char *)dst + 0x68) = v12;
+    *(volatile short *)((char *)dst + 0x6C) = v16;
+    *(volatile int *)((char *)dst + 0x70) = v13;
+    *(volatile int *)((char *)dst + 0x74) = v14;
+    *(volatile float *)((char *)dst + 0x78) = v17;
+    *(volatile unsigned char *)((char *)dst + 0x7C) = flag;
     if (flag != 0)
-        *(int *)((char *)arg0 + 0x80) = fn_801F1848();
+        *(volatile int *)((char *)dst + 0x80) = fn_801F1848();
     else
-        *(int *)((char *)arg0 + 0x80) = 0;
+        *(volatile int *)((char *)dst + 0x80) = 0;
 }
-
-#pragma dont_inline off
+#pragma scheduling on
