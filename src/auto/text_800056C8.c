@@ -956,6 +956,16 @@ void fn_80007848(void) {
     fn_8000C630(0x20, *(s32 *)((u8 *)base + 0x1C));
 }
 
+s32 fn_8000786C(void *arg0, void *arg1, s32 arg2, void *arg3) {
+    if (arg1 != 0) {
+        return 0;
+    }
+    if ((u32)arg2 == 0x3E8) {
+        return fn_801B87A0((s32)arg1, (s32)((u32)arg3 & 0xFFFF));
+    }
+    return 0;
+}
+
 extern f32 fn_80011E44(void);
 extern f32 fn_80011E60(void);
 extern void fn_8000FBE8(f32, f32, f32);
