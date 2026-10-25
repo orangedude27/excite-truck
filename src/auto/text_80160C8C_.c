@@ -418,17 +418,30 @@ extern "C" void fn_80161A18(void) {
         p->v5();
     }
 }
-#pragma cplusplus off
-void fn_80161A38(s32 arg0, s32 arg1, s32 arg2) {
-    register s32 a0 = arg0;
-    register s32 a1 = arg1;
-    register s32 a2 = arg2;
-    if (lbl_8055E300 != 0) {
-        ((void (*)(void *, s32, s32, s32))(*(void ***)lbl_8055E300)[0x40 / 4])((void *)lbl_8055E300, a0, a1, a2);
+#pragma cplusplus on
+extern "C" void fn_80161A38(s32 arg0, s32 arg1, s32 arg2) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void call(s32, s32, s32);
+    };
+    Dummy *p = (Dummy *)lbl_8055E300;
+    if (p != 0) {
+        p->call(arg0, arg1, arg2);
     }
 }
-
-#pragma cplusplus on
 extern "C" s32 fn_80161A70(void) {
     struct Dummy {
         virtual void f0();
