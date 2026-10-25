@@ -194,7 +194,25 @@ void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
 }
 
+void fn_802B5EE8(void) {
+    extern s32 lbl_8055FA38;
+    extern float lbl_8055FA18;
+    extern s32 lbl_804BE7D8;
+    u32 temp_r0;
+    u32 temp_r4;
+    u32 temp_r4_2;
+
+    temp_r4 = lbl_8055FA38 + 1;
+    temp_r4_2 = temp_r4 >> 31;
+    temp_r0 = (temp_r4 << 30) - temp_r4_2;
+    lbl_8055FA18 = lbl_80564C5C;
+    lbl_8055FA38 = ((temp_r0 << 2) | (temp_r0 >> 30)) + temp_r4_2;
+    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = 0;
+}
+
 extern s32 lbl_8055FA38;
+extern float lbl_8055FA18;
+__declspec(section ".data") extern s32 lbl_804BE7D8;
 extern s32 fn_80128678(void);
 extern s32 fn_80128684(void);
 extern void *fn_80156A40(void);
@@ -967,9 +985,14 @@ extern "C" void fn_802B869C(void) {
 }
 #pragma cplusplus off
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_802B86F8(void) {
-    u8 *base = (u8 *)&lbl_804BFF80;
-    u8 value = base[0x14];
+    s8 value;
+    u8 *base;
+    value = ((s8 *)&lbl_804BFF80)[0x14];
+    base = (u8 *)&lbl_804BFF80;
     base[0x34] = 0;
     if (value == 0)
         return;
@@ -977,7 +1000,7 @@ void fn_802B86F8(void) {
         return;
     base[0x14] = 0;
 }
-
+#pragma pop
 s32 fn_802B8728(void) {
     return (s8)*((u8 *)&lbl_804BFF80 + 0x34) == 0;
 }
