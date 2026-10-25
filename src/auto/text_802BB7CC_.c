@@ -36,6 +36,7 @@ int fn_802BB87C(int arg0) {
     return -2;
 }
 
+#pragma dont_inline fn_802BB8E4
 void fn_802BB8E4(int* arg0) {
     int temp_r0 = *arg0;
     if (temp_r0 != -2) {
@@ -151,6 +152,25 @@ void fn_802BBE34(void) {
         } while (var_r27 < 0x200);
         var_r28 += 1;
     } while (var_r28 < 0x200);
+}
+
+extern int fn_80128690(void);
+extern void fn_80128684(void);
+extern void fn_80128678(void);
+extern int fn_802BBA08(void *, int);
+extern int lbl_8055CF20;
+extern int lbl_8055CF28;
+void fn_802BBEE4(void) {
+    int result;
+
+    fn_802BBE34();
+    result = fn_80128690();
+    if ((result & 0xFF) == 0)
+        fn_80128684();
+    fn_802BBA08(&lbl_8055CF20, 0);
+    fn_802BBA08(&lbl_8055CF28, 3);
+    if ((result & 0xFF) == 0)
+        fn_80128678();
 }
 
 extern const char lbl_8034AB00[];
