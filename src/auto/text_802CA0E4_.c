@@ -563,6 +563,8 @@ found:
     return (int)((unsigned char *)lbl_8055FCB0 + result * 0x4C);
 }
 
+void fn_802CB228(int arg0) { int *entry = (int *)(lbl_8055FCB0 + arg0 * 0x4C); ((void (*)(int))fn_802D8FB4)(entry[0x28 / 4]); fn_80128668(entry[0x2C / 4]); entry[0x2C / 4] = 0; entry[0] = 0; }
+
 unsigned short fn_802CB3FC(int arg0) {
     int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
     unsigned short *q = (unsigned short *)p[0x2C / 4];
@@ -894,10 +896,24 @@ int fn_802CC404(void *arg0) {
     return *(int *)(*(char **)((char *)arg0 + 0x38) + 4);
 }
 
+extern double lbl_80564F38;
+#pragma fp_contract on
 void fn_802CC518(int arg0, float arg1) {
-    lbl_8055FCC4 = (lbl_80564F30 * arg1) / (float)arg0;
-}
+    union {
+        double value;
+        unsigned int words[2];
+    } converted;
+    double number;
+    double magic;
+    float result;
 
+    converted.words[1] = (unsigned int)arg0 ^ 0x80000000;
+    converted.words[0] = 0x43300000;
+    number = converted.value;
+    magic = lbl_80564F38;
+    result = (lbl_80564F30 * arg1) / (float)(number - magic);
+    lbl_8055FCC4 = result;
+}
 void fn_802CC73C(char arg0) {
     lbl_8055D07D = arg0;
 }
@@ -906,8 +922,9 @@ char fn_802CC744(void) {
     return lbl_8055D07D;
 }
 
+#pragma scheduling invalid_target
 int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
-
+#pragma scheduling on
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B7D0[];
 
