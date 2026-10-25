@@ -274,7 +274,6 @@ void fn_8022DC20(void *arg0) {
     if (value < 0) *(int *)((char *)arg0 + 0xC) = *(int *)((char *)arg0 + 0x10) - 1;
 }
 
-#pragma push
 #pragma dont_inline on
 void fn_8022DC40(void *arg0, int arg1) {
     int step;
@@ -286,7 +285,7 @@ check:
     step = *(int *)((char *)arg0 + 0x10);
     if (*(int *)((char *)arg0 + 0xC) >= step) goto loop;
 }
-#pragma pop
+#pragma dont_inline off
 
 int fn_8022DC68(void *arg0, int arg1) {
     int value;
@@ -459,6 +458,7 @@ int fn_8022DF9C(void *arg0) {
     return *(int *)((char *)arg0 + 8) != *ptr;
 }
 
+#pragma scheduling invalid_target
 float fn_8022DFBC(void *arg0) {
     int offset = *(int *)((char *)arg0 + 8);
     int numerator = **(int **)((char *)arg0 + 4) - offset;
@@ -467,7 +467,7 @@ float fn_8022DFBC(void *arg0) {
     float convertedNumerator = (float)numerator;
     return convertedNumerator / convertedDenominator;
 }
-
+#pragma scheduling on
 void fn_8022E014(void *arg0, float arg1) {
     int temp = *(int *)((char *)arg0 + 8);
     *(int *)*(int **)((char *)arg0 + 4) = temp + (int)(arg1 * (float)(*(int *)((char *)arg0 + 0xC) - temp));
