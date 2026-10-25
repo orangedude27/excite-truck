@@ -1683,11 +1683,14 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
     }
 }
 #pragma pop
-extern "C" void fn_800F0728(void* this_, s32 a1, s32 a2) {
-    void (*fn)(void*, s32, s32);
-    void* p = *(void**)((u8*)this_ + 0x94);
-    fn = (void (*)(void*, s32, s32))(*(void**)((u8*)*(void**)p + 0xC));
-    fn(this_, a1, a2);
+extern "C" void fn_800F0728(void *this_, s32 a1, s32 a2) {
+    class Dispatch {
+    public:
+        virtual void f0();
+        virtual void invoke(void *, s32, s32);
+    };
+    Dispatch *object = *(Dispatch **)((u8 *)this_ + 0x94);
+    object->invoke(this_, a1, a2);
 }
 
 extern "C" void fn_800F0750(void) {
