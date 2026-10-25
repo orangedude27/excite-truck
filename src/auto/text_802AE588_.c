@@ -140,6 +140,7 @@ float fn_802AE6E0(void *arg0, void *arg1) {
     return (float)fn_8002F234(dx2 + dy2, dy, y0);
 }
 
+#pragma dont_inline fn_802AE7AC
 int fn_802AE7AC(void) {
     int val = *(int *)lbl_8055F984;
     unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
