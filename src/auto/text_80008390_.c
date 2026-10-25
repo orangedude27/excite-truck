@@ -11,6 +11,23 @@ extern s32 fn_800167F4(void);
 extern s32 lbl_802ED6D8[];
 extern s32 lbl_8055D370;
 extern s32 lbl_805601B0;
+void fn_80008390(void) {
+ int *array=*(int **)&lbl_8034F3D0;
+ int *count=(int *)((char *)&lbl_8034F3D0+4);
+ int *src;
+ int n,i;
+ *count=0;
+ if(fn_800167F4()>1){n=*count;*count=n+1;array[n]=lbl_805601B0;}
+ if(lbl_8055D370==0) src=lbl_802ED6D8;
+ else src=lbl_802ED6D8+4;
+ for(i=0;i<(lbl_8055D370==0?4:5);i++){n=*count;*count=n+1;array[n]=src[i];}
+ for(i=0;i<*count;i++) if(array[i]==1){
+  src=lbl_802ED6D8+10;
+  for(n=0;n<4;n++){int k=*count;*count=k+1;array[k]=src[n];}
+  break;
+ }
+}
+
 void fn_80008618(s32 arg0) {
     s32 value = fn_8026E20C();
     s32 result = value | arg0;
@@ -103,5 +120,15 @@ void fn_80009C80(void) {
 extern char lbl_8055D36D;
 char fn_80009C84(void) {
     return lbl_8055D36D;
+}
+
+extern char lbl_8055D378;
+s32 fn_80009C8C(void) {
+    s32 result = 0;
+
+    if ((u8)lbl_8055D36D == 0 && (u8)lbl_8055D378 != 0)
+        result = 1;
+    lbl_8055D378 = 0;
+    return result;
 }
 
