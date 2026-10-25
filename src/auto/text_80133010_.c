@@ -159,13 +159,21 @@ int fn_8013358C(int arg0, int arg1, char *arg2) {
         fn_802E30C8(lbl_8032B8F8, arg2, (char*)result + 0x14);
     }
 }
-#pragma pop
+#pragma optimize_for_size on
 int fn_80133780(void *arg0, void *arg1) {
-    int result = *(int *)((char *)arg0 + 4) - *(int *)((char *)arg1 + 4);
-    if (result == 0) result = fn_8002B1D8((char *)arg0 + 0x24, (char *)arg1 + 0x24, 0x13);
+    int second = *(int *)((char *)arg1 + 4);
+    int first = *(int *)((char *)arg0 + 4);
+    int result = first - second;
+    switch (result) {
+    case 0:
+        result = fn_8002B1D8((char *)arg0 + 0x24, (char *)arg1 + 0x24, 0x13);
+        break;
+    default:
+        break;
+    }
     return result;
 }
-
+#pragma optimize_for_size off
 extern void qsort(void *, int, int, int (*)(void *, void *));
 int fn_80133780(void *, void *);
 #pragma scheduling invalid_target
@@ -247,12 +255,17 @@ int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
     return arg2 != start;
 }
 #pragma pop
+extern void *memcpy(void *, const void *, unsigned long);
 int fn_80133AD8(int arg0) {
     int values[17];
-    int *p = lbl_802F9308;
-    int i;
-    for (i = 0; i < 16; i++) values[i] = *p++;
-    values[16] = *p;
+    int *src = lbl_802F9308;
+    int *dst = values;
+    int count = 8;
+    do {
+        *dst++ = *src++;
+        *dst++ = *src++;
+    } while (--count != 0);
+    *dst = *src;
     return values[arg0];
 }
 
@@ -316,9 +329,13 @@ extern const char lbl_8032B920[];
 extern int fn_80133F3C(int);
 extern void *memmove(void *, const void *, unsigned int);
 void fn_801341B4(int arg0, int arg1) {
-    if (arg1 == 0) {
+    switch (arg1) {
+    case 0:
         fn_802E30C8(lbl_8032BAE8, arg0);
         fn_80133F3C(arg0 + 0xC);
+        break;
+    default:
+        break;
     }
 }
 
