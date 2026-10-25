@@ -101,6 +101,20 @@ void fn_802B5CC4(void) {
     fn_802B5CB4(1);
 }
 
+extern int __cntlzw(unsigned int);
+void fn_802B5CCC(void) {
+    u8 *sp8;
+    u8 *object;
+
+    object = (u8 *)((void *(*)(void))fn_802B5B6C)();
+    fn_802B321C(0, (void **)&sp8, *(s32 *)(object + 8), lbl_8055FA40);
+    *sp8 = __cntlzw(*sp8) >> 5;
+    object = (u8 *)((void *(*)(void))fn_802B5B6C)();
+    fn_802B32E0(*(s32 *)(object + 8));
+    object = (u8 *)((void *(*)(void))fn_802B5B6C)();
+    fn_802B4E44(*(s32 *)(object + 8));
+}
+
 #pragma push
 #pragma dont_inline on
 s32 fn_802B5D94(s32 arg0) {
@@ -462,7 +476,10 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
 }
 #pragma scheduling on
 __declspec(section ".sdata") extern s32 lbl_8055CE78, lbl_8055CE80;
+#pragma push
+#pragma small_data off
 extern s32 lbl_8034A808, lbl_8034A814;
+#pragma pop
 extern s32 fn_80147FF0(s32);
 void fn_802B67C8(s32 arg0) {
     void *(*method)(void *, s32) = (void *(*)(void *, s32))(*(void ***)lbl_8055FA48)[5];
