@@ -128,6 +128,13 @@ extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
 void fn_802E8C2C(void) { for (;;) { if(((int(*)(int))fn_802E888C)(4)!=0) { ((void(*)(void))fn_802E8918)(); return; } if(fn_802E88D8()!=0) return; } }
 
+int fn_802E8C6C(int arg0) {
+    if (arg0 == 1) {
+        ((int (*)(const char *, void (*)(void)))fn_802E95E0)(lbl_8034DEC4, fn_802E9010);
+    }
+    return 0;
+}
+
 extern void *lbl_80560024;
 extern void fn_802E30C8(const char *, ...);
 void fn_802E8D7C(void* hi) {
