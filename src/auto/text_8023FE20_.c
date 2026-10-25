@@ -22,8 +22,9 @@ extern s32 fn_8023512C(char *, s32, char *, s32);
 extern s32 fn_80232578(char *, char *, s32);
 extern char lbl_80498828[];
 void fn_8023FE20(void) {
-    *(int *)&lbl_80498828 = -1;
-    *(int *)((char *)&lbl_80498828 + 0x10) = -1;
+    register int *p = (int *)lbl_80498828;
+    *p++ = -1;
+    p[3] = -1;
 }
 
 s32 fn_802407B0(s32 arg0, s32 arg1) {
