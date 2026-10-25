@@ -310,7 +310,7 @@ void fn_8023E504(void *arg0, int *arg1) {
 
 extern int lbl_80341C40[];
 extern int fn_801A902C(void);
-extern void fn_8023E33C(void *);
+extern void fn_8023E33C();
 int fn_8023E52C(int arg0) {
     return lbl_80341C40[arg0];
 }
