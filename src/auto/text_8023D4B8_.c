@@ -237,7 +237,7 @@ void fn_8023E1FC(void *arg0) {
 
 void *fn_8023E440(void *arg0, void *arg1) {
     extern int fn_801A902C(void);
-    extern void fn_801A9050(void *, int);
+    extern int fn_801A9050(void *, int);
     extern void fn_8023E33C(void *);
     extern char lbl_80341C50[];
     struct Out { int first; int pad; unsigned int second; char tail[4]; } out;
