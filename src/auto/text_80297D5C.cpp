@@ -162,13 +162,12 @@ extern "C" void* fn_802981EC(unsigned int size) {
     return fn_80299A04(lbl_8055F7CC, size);
 }
 
-void fn_802981F8(void* self) {
-    float values[3];
-    values[0] = lbl_8056459C;
-    values[1] = lbl_80564590;
-    values[2] = lbl_8056459C;
-    fn_8028E584(lbl_8055F7E0, self, values, lbl_8056459C);
-    fn_80288A40(self, values);
+extern "C" void fn_802981F8(void* self) {
+    float sp8 = lbl_8056459C;
+    float spC = lbl_80564590;
+    float sp10 = lbl_8056459C;
+    fn_8028E584(lbl_8055F7E0, self, &sp8, lbl_8056459C);
+    fn_80288A40(self, &sp8);
 }
 
 void* __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_80298250(void* self, int arg1) {
@@ -789,7 +788,7 @@ extern "C" int fn_8029ADCC(void);
 extern "C" int fn_8029BA0C(void*);
 extern "C" int fn_801EF024(void*);
 extern "C" int fn_8029C190(void*);
-extern "C" void __dt__Q210JASDrumSet5TPercFv_8029AE88(void*, int);
+extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void*, int);
 extern "C" int fn_8029BFF8(void*);
 extern int lbl_8055CA84;
 extern int lbl_8055CA88;
