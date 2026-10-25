@@ -711,15 +711,3 @@ void fn_8000C730(void) {
     }
 }
 
-int fn_8000BD9C(int, int, int);
-extern float lbl_805601FC, lbl_80560204;
-int fn_80230B5C(int *);
-int fn_802C8638(int *);
-int fn_802C974C(float, float, float);
-int fn_80010074(int, int, int *, float, float, float);
-int fn_80011A2C(void);
-int fn_802C9904(void);
-extern int lbl_80558A48;
-extern float lbl_805601F8, lbl_80560200, lbl_80560208, lbl_8056020C;
-extern int lbl_8034F5B8;
-
