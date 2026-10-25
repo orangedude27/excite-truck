@@ -135,6 +135,14 @@ s32 fn_801E320C(s32 arg0, s32 arg1) {
     return fn_801E2DEC(arg0, arg1, 0) != 0;
 }
 
+void fn_801E323C(s32 *arg0) {
+    s32 value = *arg0;
+    if (value != -1) {
+        fn_802C6CF8(value);
+    }
+    fn_8012A364((s32)lbl_8055EA50, arg0);
+}
+
 void fn_801E3284(void *out, void *in, s32 arg2) {
     s32 sp68[12];
     s32 sp5C[3];
