@@ -63,7 +63,7 @@ void fn_801E2084(void *arg0, void *arg1) {
     }
 }
 #pragma scheduling on
-#pragma dont_inline fn_801E2100
+#pragma dont_inline on
 void fn_801E2100(void *arg0, void *arg1) {
     int result;
     int (*first)(int);
