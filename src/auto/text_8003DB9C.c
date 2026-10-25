@@ -3,6 +3,7 @@
 #include <types.h>
 extern void __GXFlushTextureState(void);
 extern void GXCPInterruptHandler(short, void *);
+typedef void (*GXFifoIntrHandler)(short, void *);
 extern void *OSGetCurrentThread(void);
 extern void memset(void *, int, unsigned int);
 extern unsigned int lbl_8055D958;
