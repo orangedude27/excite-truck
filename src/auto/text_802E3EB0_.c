@@ -32,18 +32,21 @@ void *fn_802E3EBC(void) {
     return (void *)lbl_8055FF40;
 }
 
+#pragma scheduling invalid_target
 void fn_802E3F38(void *arg0) {
-    unsigned char *base = lbl_804FBAA0;
+    unsigned char *p;
     int i;
+    p = lbl_804FBAA0;
     for (i = 0; i < 0x10; i++) {
-        if (arg0 == base + i * 0x91 + 1) {
-            base[i * 0x91] = 0;
+        if (arg0 == p + 1) {
+            lbl_804FBAA0[i * 0x91] = 0;
             return;
         }
+        p += 0x91;
     }
-    fn_802E317C(&lbl_8034D054);
+    fn_802E317C(lbl_8034D054, arg0);
 }
-
+#pragma scheduling on
 int fn_802E4030(int arg0, int arg1) {
     void (*reset)(void);
     if (arg0 != 0 && arg1 > 0) {
