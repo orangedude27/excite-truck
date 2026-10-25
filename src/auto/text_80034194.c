@@ -368,6 +368,17 @@ void __DSP_remove_task(void *task) {
     *(void **)((u8 *)*(void **)((u8 *)task + 0x38) + 0x3c) = *(void **)((u8 *)task + 0x3c);
 }
 
+void __DVDFSInit(void) {
+    u8 *fst;
+    BootInfo_8055D844 = (void *)0x80000000;
+    fst = *(u8 **)0x80000038;
+    FstStart_8055D840 = fst;
+    if (fst == 0)
+        return;
+    MaxEntryNum_8055D838 = *(u32 *)(fst + 8);
+    FstStringStart_8055D83C = fst + MaxEntryNum_8055D838 * 12;
+}
+
 #pragma use_lmw_stmw off
 s32 DVDConvertPathToEntrynum(const char *path) {
     const DVDNode *new_var;
