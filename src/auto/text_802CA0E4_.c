@@ -794,7 +794,7 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
     *arg0 = arg2;
 }
 
-int fn_802CBBE8(int **link, int *target, int *current) { int removed = 0; do { if (current == target) { int *next = *(int **)((char *)target + 0x14); *link = next; *(int **)((char *)target + 0x14) = 0; removed = 1; break; } link = (int **)((char *)current + 0x14); current = *link; } while (current != 0); if (removed == 0) fn_802E317C(lbl_8034BA04); }
+int fn_802CBBE8(register int **link, int *target, int *current) { int removed = 0; do { if (current == target) { int *next = *(int **)((char *)target + 0x14); *link = next; *(int **)((char *)target + 0x14) = 0; removed = 1; break; } link = (int **)((char *)current + 0x14); current = *(int * volatile *)link; } while (current != 0); if (removed == 0) fn_802E317C(lbl_8034BA04); }
 
 void fn_802CBD7C();
 void fn_802CBD30(void **arg0, void **arg1, void *arg2) {
@@ -803,32 +803,23 @@ void fn_802CBD30(void **arg0, void **arg1, void *arg2) {
     *arg0 = arg2;
 }
 
-void fn_802CBD7C(void **, void *);
+void fn_802CBD7C(void **, void *, void *);
 extern char lbl_8034BA04[];
-void fn_802CBD7C(void **arg0, void *arg1) {
+void fn_802CBD7C(register void **link, void *target, void *current) {
     int removed = 0;
-    for (;;) {
-        void *node = *arg0;
-        if (node == 0) {
-            if (removed)
-                return;
-            fn_802E317C(lbl_8034BA04);
-            return;
-        }
-        if (node == arg1) {
+    do {
+        if (current == target) {
+            void *next = *(void **)((char *)target + 0x10);
+            *link = next;
+            *(void **)((char *)target + 0x10) = 0;
             removed = 1;
-            *arg0 = *(void **)((char *)arg1 + 0x10);
-            *(void **)((char *)arg1 + 0x10) = 0;
-            if (*arg0 == 0) {
-                if (removed)
-                    return;
-                fn_802E317C(lbl_8034BA04);
-                return;
-            }
-        } else {
-            arg0 = (void **)((char *)node + 0x10);
+            break;
         }
-    }
+        link = (void **)((char *)current + 0x10);
+        current = *(void * volatile *)link;
+    } while (current != 0);
+    if (removed == 0)
+        fn_802E317C(lbl_8034BA04);
 }
 
 void fn_802CBFA0(void *arg0, unsigned int arg1) {
