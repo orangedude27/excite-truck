@@ -481,13 +481,15 @@ extern "C" void *fn_801F9338(void *self) {
     return result;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void *fn_801F93FC(void *node) {
     void *n = fn_801F8188(node, 0, 1);
-
     fn_801F9440((F92Node **)&lbl_8055EC38, (F92Node *)n);
     return n;
 }
-
+#pragma scheduling on
+#pragma pop
 extern "C" void fn_801F9440(F92Node **list, F92Node *node) {
     node->next = *list;
     *list = node;
