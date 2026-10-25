@@ -1090,18 +1090,17 @@ extern "C" void fn_8012D40C(s32 arg0) {
 }
 #pragma scheduling on
 #pragma dont_inline reset
-s32 fn_8012D838(void *arg0) {
-    s32 temp_r0;
-
-    fn_8012D40C((long)arg0);
-    temp_r0 = *(s32 *)((u8 *)arg0 + 0xB8);
-    switch (temp_r0) {
+extern "C" s32 fn_8012D838(s32 arg0) {
+    s32 state;
+    fn_8012D40C(arg0);
+    state = *(s32 *)((u8 *)arg0 + 0xB8);
+    switch (state) {
+    case 1:
+        return 0;
     case 2:
         return 1;
     case 3:
         return 2;
-    case 1:
-        return 0;
     default:
         return 0;
     }
