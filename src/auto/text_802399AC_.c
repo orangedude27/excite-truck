@@ -79,6 +79,47 @@ second:
     else if (p[2] != p[3]) fn_802090BC(p[2]);
 }
 
+#pragma push
+#pragma cplusplus on
+extern "C" s32 fn_80239EF0(void) {
+    class Obj {
+    public:
+        virtual s32 f0(s32 *);
+        virtual s32 f1(s32 *);
+        virtual s32 f2(s32 *);
+        virtual s32 f3(s32 *);
+        virtual s32 f4(s32 *);
+        virtual s32 f5(s32 *);
+        virtual s32 f6(s32 *);
+        virtual s32 f7(s32 *);
+        virtual s32 f8(s32 *);
+        virtual s32 f9(s32 *);
+        virtual s32 f10(s32 *);
+        virtual s32 f11(s32 *);
+        virtual s32 f12(s32 *);
+        virtual s32 f13(s32 *);
+        virtual s32 f14(s32 *);
+        virtual s32 f15(s32 *);
+        virtual s32 f16(s32 *);
+        virtual s32 f17(s32 *);
+        virtual s32 f18(s32 *);
+        virtual s32 f19(s32 *);
+        virtual s32 f20(s32 *);
+        virtual s32 f21(s32 *);
+        virtual s32 f22(s32 *);
+    };
+    fn_80239E5C(lbl_8049870C, 0);
+    lbl_8049870C[1] = lbl_8049870C[0];
+    lbl_8049870C[3] = lbl_8049870C[2];
+    if (((Obj *)lbl_8055F10C)->f22(lbl_8049870C) != 0) {
+        fn_80214AF0(0x1E);
+    } else {
+        fn_80214A9C(0x1E);
+    }
+    return 0;
+}
+#pragma cplusplus reset
+#pragma pop
 unsigned char fn_80239F6C(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
 
 extern s32 fn_80209030(float);
@@ -513,6 +554,8 @@ void fn_8023B1A0(void *arg0) {
 void fn_8023B21C(void) {
 }
 
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_8023B220(void *arg0) {
     if (fn_802399AC() != 0) {
         return;
@@ -525,7 +568,7 @@ void fn_8023B220(void *arg0) {
         fn_80214A9C(6);
     }
 }
-
+#pragma scheduling on
 void fn_8023B284(void *arg0) {
     if (((s32 (*)(void *))(*(void ***)lbl_8055F10C)[24])(lbl_8055F10C) == 0) {
         s32 value = fn_80214D04();
