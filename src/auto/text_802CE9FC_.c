@@ -1104,11 +1104,12 @@ void fn_802D2AC4(void) {
     fn_802DFAF4();
 }
 
+#pragma small_data off
 extern char lbl_804C97D0;
-void* fn_802D2D04(void) {
+void *fn_802D2D04(void) {
     return &lbl_804C97D0 + 0xC;
 }
-
+#pragma small_data on
 extern void *lbl_8055FD64;
 void* fn_802D2D14(void) {
     return lbl_8055FD64;
