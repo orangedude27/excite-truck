@@ -167,6 +167,16 @@ void fn_80129AFC(void) {
     } while (i < 4);
 }
 
+void fn_80129B60(void) {
+    u8 *p = lbl_80422180;
+    s32 i = 0;
+    do {
+        fn_80129690(p, i, lbl_80422380);
+        i++;
+        p += 0x80;
+    } while (i < 4);
+}
+
 s32 fn_80129BC4(void) {
     return 1;
 }
