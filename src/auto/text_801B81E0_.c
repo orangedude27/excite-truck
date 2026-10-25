@@ -262,12 +262,10 @@ int fn_801B8570(int arg0) {
 extern "C" void fn_801B85CC(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f7();
 }
-#pragma cplusplus off
-void fn_801B85E0(void *a, void *b, void *c, void *d) {
-    (*(void (***)(void *, void *, void *, void *, void *))lbl_8055E744)[36](lbl_8055E744, a, b, c, d);
-}
-
 #pragma cplusplus on
+extern "C" void fn_801B85E0(void *a, void *b, void *c, void *d) {
+    ((Dummy_801B8874 *)lbl_8055E744)->d34(a, b, c, d);
+}
 extern "C" void fn_801B8610(void *a, void *b) {
     ((Dummy_801B8318 *)lbl_8055E744)->f36(a, b);
 }
@@ -282,17 +280,17 @@ int fn_801B8630(int arg0, int arg1, int arg2) {
 extern "C" void fn_801B86A4(void *arg0) {
     ((Dummy_801B8318 *)lbl_8055E744)->f41(arg0);
 }
-#pragma cplusplus off
-void fn_801B86BC(int arg0, void *arg1) {
+#pragma cplusplus on
+extern "C" void fn_801B86BC(int arg0, void *arg1) {
     extern float lbl_8055A910;
     extern void fn_8027DED8(int, void *, float);
     register float value;
-    (*(void (***)(void *, int, void *))lbl_8055E744)[45](lbl_8055E744, arg0, arg1);
+    ((Dummy_801B8318 *)lbl_8055E744)->f43(arg0, arg1);
     value = *(float *)((char *)arg1 + 0x50);
     *(float *)((char *)arg1 + 0x50) = value * lbl_8055A910;
     fn_8027DED8(arg0, arg1, value);
 }
-
+#pragma cplusplus off
 int fn_801B8728(int arg0) {
     register void *obj = lbl_8055E744;
     register int result;
