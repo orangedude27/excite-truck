@@ -1478,8 +1478,7 @@ void GXSetCopyFilter(s32 arg0, u8 *arg1, s32 arg2, u8 *arg3) {
 }
 
 void GXSetDispCopyGamma(s32 arg0) {
-    unsigned int *data = __GXData;
-    data[0x23C/4] = (data[0x23C/4] & 0xFFFFFE7F) | (arg0 << 7);
+    ((GXDispCopyGammaReg *)&__GXData[0x23c / 4])->gamma = arg0;
 }
 
 void GXCopyDisp(unsigned int source, int clear) {
