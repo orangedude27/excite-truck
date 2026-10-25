@@ -1349,7 +1349,7 @@ extern "C" void fn_8019EF00(void* arg0) {
     out[2] += m[11];
 }
 
-void fn_8019F03C(void* arg0) {
+extern "C" void fn_8019F03C(void* arg0) {
     f32 value = lbl_805622D0;
     *(u8*)((u8*)arg0 + 0x4C) = 0;
     *(f32*)((u8*)arg0 + 0x40) = value;
