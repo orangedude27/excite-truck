@@ -1,4 +1,5 @@
 extern void *lbl_8055F7A4;
+void fn_80297998(void);
 extern int lbl_8055F7B4;
 extern void *lbl_8055CA60;
 extern const char lbl_803493D8[];
