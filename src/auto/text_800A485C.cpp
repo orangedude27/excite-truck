@@ -367,6 +367,7 @@ extern "C" void fn_800D1C48(void);
 #include <revolution/MEM/mem_allocator.h>
 #include <revolution/MEM/mem_expHeap.h>
 #include <revolution/MEM/mem_frameHeap.h>
+#include "revolution/OS/OSError.h"
 extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1);
 
   extern "C" void fn_800B7610(void *arg0, s32 arg1, s32 arg2);
@@ -5713,6 +5714,15 @@ extern "C" s32 fn_800B7E5C(s8 arg0) {
  if (temp_r3 == -1) return -1;
  if (temp_r3 == 1) return 1;
  return (s32)(-temp_r3 | temp_r3) >> 31;
+}
+
+extern "C" const char lbl_8031B218[];
+extern "C" s32 fn_800B7FC4(s32 arg0) {
+    if (arg0 == 0) {
+        OSReport(lbl_8031B218);
+        return -2;
+    }
+    return 0;
 }
 
 extern "C" void OSReport(const char *, ...);
