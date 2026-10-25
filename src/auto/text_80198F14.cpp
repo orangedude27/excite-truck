@@ -2622,13 +2622,20 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4
     return 0;
 }
 #pragma scheduling on
-void fn_801A442C(void *arg0, void *arg1, void *arg2) {
-    *(f32 *)((u8 *)arg1 + 0) = *(f32 *)((u8 *)arg0 + 0x28);
-    *(f32 *)((u8 *)arg1 + 4) = *(f32 *)((u8 *)arg0 + 0x2C);
-    *(f32 *)((u8 *)arg1 + 8) = *(f32 *)((u8 *)arg0 + 0x30);
-    *(f32 *)((u8 *)arg2 + 0) = *(f32 *)((u8 *)arg0 + 0x34);
-    *(f32 *)((u8 *)arg2 + 4) = *(f32 *)((u8 *)arg0 + 0x38);
-    *(f32 *)((u8 *)arg2 + 8) = *(f32 *)((u8 *)arg0 + 0x3C);
+extern "C" void fn_801A442C(void* arg0, void* arg1, void* arg2) {
+    f32 z, y, x, c, b, a;
+    x = *(f32*)((u8*)arg0 + 0x28);
+    y = *(f32*)((u8*)arg0 + 0x2C);
+    z = *(f32*)((u8*)arg0 + 0x30);
+    *(f32*)((u8*)arg1 + 0x0) = x;
+    a = *(f32*)((u8*)arg0 + 0x34);
+    *(f32*)((u8*)arg1 + 0x4) = y;
+    b = *(f32*)((u8*)arg0 + 0x38);
+    *(f32*)((u8*)arg1 + 0x8) = z;
+    c = *(f32*)((u8*)arg0 + 0x3C);
+    *(f32*)((u8*)arg2 + 0x0) = a;
+    *(f32*)((u8*)arg2 + 0x4) = b;
+    *(f32*)((u8*)arg2 + 0x8) = c;
 }
 
 f32 fn_801A4460(void *arg0) {
