@@ -527,13 +527,12 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
     return (u8 *)block + 0x20;
 }
 
-extern "C" u32 fn_800EC56C(void *arg0) {
-    u32 hasHeap = *(u32 *)arg0;
+extern "C" u32 fn_800EC56C(void **arg0) {
     u32 size;
-    if (hasHeap == 0) {
+    if (*arg0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0x127, (const char *)lbl_80322DA4);
     }
-    size = MEMGetAllocatableSizeForFrmHeapEx(*(void **)arg0, 0x20);
+    size = MEMGetAllocatableSizeForFrmHeapEx(*arg0, 0x20);
     if (size < 0x20) {
         return 0;
     }
@@ -1721,7 +1720,6 @@ extern "C" void* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void* this_, s
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
     void *pHead = *(void **)&lbl_80412A6C[4];
     void *pList = &lbl_80412A6C[4];
@@ -1736,7 +1734,6 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
         fn_800F0360((u8 *)pPlayer - 0x100);
     }
 }
-#pragma scheduling on
 #pragma pop
 
 #pragma push
