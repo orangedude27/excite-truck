@@ -178,7 +178,7 @@ int fn_802CA658(int arg0, int arg1) {
 char fn_802CA7D4(void) { return 1; }
 
 #pragma dont_inline fn_802CA7DC
-char fn_802CA7DC(const char *arg0) { return (signed char)*arg0 == 0x2A; }
+int fn_802CA7DC(const unsigned char *arg0) { return ((signed char)*arg0 - 0x2A) == 0; }
 
 #pragma dont_inline fn_802CA7F4
 int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
