@@ -82,6 +82,18 @@ void fn_80297998(void) {
     lbl_8055F7A4 = 0;
 }
 
+void fn_802979A4(void) {
+    Obj **cursor;
+    Obj *object;
+    int i;
+
+    cursor = (Obj **)lbl_804B4F10;
+    for (i = 0; i < lbl_8055F7A4; cursor++, i++) {
+        object = *cursor;
+        object->vtable->slots[7](object);
+    }
+}
+
 void fn_80297A08(int arg0) {
     int index = lbl_8055F7A4;
     int next;
@@ -110,4 +122,21 @@ extern void fn_802C6CF8(void *);
 extern void *fn_8012850C(int, const char *);
 extern void *fn_8002F37C(void (*)(void), int, int, int);
 void fn_80297A80(void) {}
+
+void fn_80297A84(void) {
+    int offset = 0;
+    int i = 0;
+    goto test;
+loop:
+    fn_802C6CF8(*(void **)((char *)lbl_8055F7A8 + offset));
+    offset += 0x40;
+    i++;
+test:
+    if (i < lbl_8055F7AC)
+        goto loop;
+    if (lbl_8055F7A8 != 0)
+        fn_80128670((char *)lbl_8055F7A8 - 0x10);
+    lbl_8055F7A8 = 0;
+    lbl_8055F7AC = 0;
+}
 
