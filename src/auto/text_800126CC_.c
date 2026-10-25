@@ -59,19 +59,22 @@ extern void fn_80131818(void *);
 extern char lbl_8035183C[];
 extern char lbl_8055D500;
 extern int lbl_8055D514;
+#pragma scheduling invalid_target
 void fn_80012794(void) {
-    char *p = &lbl_8035183C[0];
+    void **base = (void **)&lbl_8035183C[0];
+    void **p = base;
     int i = 0;
     lbl_80558AD8 = 0x134;
-    while (i < *(int *)((char *)lbl_8035183C + 0x80)) {
-        fn_80131818(p);
-        p += 4;
+    while (i < *(int *)((char *)base + 0x80)) {
+        fn_80131818(*p);
+        p++;
         i++;
     }
-    *(int *)((char *)lbl_8035183C + 0x80) = 0;
+    *(int *)((char *)base + 0x80) = 0;
     lbl_8055D500 = 0;
     lbl_8055D514 = 0;
 }
+#pragma scheduling on
 extern char lbl_803518C0[];
 extern char lbl_803551E0[];
 char *fn_80012820(int arg0) DECOMP_DONT_INLINE {
@@ -128,10 +131,11 @@ int fn_800132E4(void *arg0, int arg1, int arg2) {
     return arg2;
 }
 
-extern int lbl_802FCB74;
+extern char lbl_802FCB74[];
 extern int fn_8012C33C(void);
 extern int fn_80131808(int);
 extern void fn_8001335C(int, int);
+#pragma scheduling invalid_target
 void fn_80013618(int arg0) {
     int count;
     int result;
@@ -145,7 +149,7 @@ void fn_80013618(int arg0) {
     *(int *)(lbl_8035183C + 0x80) = count + 1;
     fn_8001335C(result, arg0);
 }
-
+#pragma scheduling on
 int fn_800136FC(void *arg0, void *arg1) {
     int a = ((int *)arg0)[0x1A];
     int b = ((int *)arg1)[0x1A];
@@ -192,7 +196,7 @@ void fn_80013A34(void) {
     }
 }
 
-extern int lbl_802FCB74;
+extern char lbl_802FCB74[];
 extern int fn_8012C33C(void);
 extern int fn_80131808(int);
 extern void fn_8001335C(int, int);
