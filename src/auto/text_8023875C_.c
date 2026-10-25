@@ -64,13 +64,15 @@ void fn_8023889C(void) {
     } while (i < 2);
 }
 
+#pragma scheduling invalid_target
 void fn_80238920(void) {
+    int value = *(volatile int *)&lbl_8055F0D4;
     lbl_8055F0D9 = 0;
-    if (lbl_8055F0D4 != 0)
+    if (value != 0)
         fn_802328D4();
     lbl_8055F0D4 = 0;
 }
-
+#pragma scheduling on
 void fn_8023895C(void) {
     volatile float sp34;
     int sp8[8];
