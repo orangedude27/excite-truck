@@ -610,24 +610,30 @@ extern "C" void* fn_80299FA8(void* arg0, void* arg1) {
     *(void**)arg1 = 0;
 }
 
-extern "C" void fn_8029A114(void *arg0) {
-    *(float *)((char *)arg0 + 4) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0) = lbl_80564590;
-    *(float *)((char *)arg0 + 8) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0xC) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0x10) = lbl_80564590;
-    *(float *)((char *)arg0 + 0x14) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0x18) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0x1C) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0x20) = lbl_80564590;
-    *(float *)((char *)arg0 + 0x24) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0x28) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0x2C) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0x30) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0x34) = lbl_8056459C;
-    *(float *)((char *)arg0 + 0x38) = lbl_8056459C;
-    *(int *)((char *)arg0 + 0x3C) = -1;
-    *(int *)((char *)arg0 + 0x40) = -1;
+extern "C" void fn_8029A114(void* arg0) {
+    float value0 = lbl_8056459C;
+    float value1 = lbl_80564590;
+    volatile float temp[3];
+    *(volatile float *)((char *)arg0 + 4) = value0;
+    *(volatile float *)((char *)arg0 + 0) = value1;
+    *(volatile float *)((char *)arg0 + 8) = value0;
+    *(volatile float *)((char *)arg0 + 0xC) = value0;
+    *(volatile float *)((char *)arg0 + 0x10) = value1;
+    *(volatile float *)((char *)arg0 + 0x14) = value0;
+    *(volatile float *)((char *)arg0 + 0x18) = value0;
+    *(volatile float *)((char *)arg0 + 0x1C) = value0;
+    *(volatile float *)((char *)arg0 + 0x20) = value1;
+    *(volatile float *)((char *)arg0 + 0x24) = value0;
+    *(volatile float *)((char *)arg0 + 0x28) = value0;
+    *(volatile float *)((char *)arg0 + 0x2C) = value0;
+    temp[0] = value0;
+    temp[1] = value0;
+    temp[2] = value0;
+    *(volatile float *)((char *)arg0 + 0x30) = value0;
+    *(volatile float *)((char *)arg0 + 0x34) = value0;
+    *(volatile float *)((char *)arg0 + 0x38) = value0;
+    *(volatile int *)((char *)arg0 + 0x3C) = -1;
+    *(volatile int *)((char *)arg0 + 0x40) = -1;
 }
 
 extern "C" void fn_8029A4B4(void);
