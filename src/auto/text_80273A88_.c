@@ -20,11 +20,12 @@ void fn_80273A88(void) {
     fn_8002F634(lbl_8049F9D8, fn_80273978, 0x1C, 0x20);
 }
 
+#pragma scheduling invalid_target
 void fn_80273AA4(void *arg0) {
-    *(int *)arg0 = 0;
     *(char **)((char *)arg0 + 0x18) = lbl_80347364;
+    *(int *)arg0 = 0;
 }
-
+#pragma scheduling on
 int fn_80273ABC(int arg0) {
     fn_80272354();
     return arg0;
@@ -123,6 +124,162 @@ int fn_80274730(void *arg0, float arg1, float arg2, float arg3, float arg4) {
     v=lbl_80563FB0; (*(float *)(p+0x120))=v; (*(float *)(p+0x124))=v; (*(float *)(p+0x128))=v;
 }
 
+extern int fn_801EA098(void *, void *, float *, int *, float, float);
+extern float lbl_8055F580;
+extern float lbl_80563FDC;
+extern unsigned char lbl_8055F584;
+extern double lbl_80563FB8;
+#pragma push
+#pragma processor 750
+void fn_802749FC(void *arg0, void *arg1) {
+    extern float PSVECDotProduct(float *, float *);
+    struct { int sp8; float spC[3]; float sp18[3]; float sp24[3]; float sp30[3]; float sp3C; float pad[2]; float sp48[3]; } local;
+    unsigned long m11, m10, m9, m8, m7, m6, m5, m4, m3, m2, m1, m0;
+    float temp_f0;
+    float temp_f0_2;
+    float temp_f0_3;
+    float temp_f1;
+    float temp_f1_2;
+    float temp_f1_3;
+    float temp_f2;
+    float temp_f2_2;
+    float temp_f2_3;
+    float temp_f3;
+    float temp_f3_2;
+    float temp_f3_3;
+    float temp_f3_4;
+    float temp_f4;
+    float temp_f5;
+    float temp_f6;
+    float temp_f6_2;
+    float temp_f7;
+    float temp_f7_2;
+    float temp_f8;
+    float var_f3;
+    float var_f5;
+
+    if ((int) (*(unsigned char *)((char *)arg0 + 0x138)) != 0) {
+        float zero = lbl_80563FAC;
+        float one = lbl_80563FB0;
+        (*(float *)((char *)arg0 + 0x28)) = one;
+        (*(float *)((char *)arg0 + 0x2C)) = zero;
+        (*(float *)((char *)arg0 + 0x30)) = one;
+        (*(float *)((char *)arg0 + 0x34)) = one;
+        (*(float *)((char *)arg0 + 0x38)) = one;
+        (*(float *)((char *)arg0 + 0x3C)) = one;
+    }
+    m0 = *(volatile unsigned int *)((char *)arg0 + 0xC0);
+    m1 = *(volatile unsigned int *)((char *)arg0 + 0xC4);
+    m2 = *(volatile unsigned int *)((char *)arg0 + 0xC8);
+    m3 = *(volatile unsigned int *)((char *)arg0 + 0xCC);
+    m4 = *(volatile unsigned int *)((char *)arg0 + 0xD0);
+    m5 = *(volatile unsigned int *)((char *)arg0 + 0xD4);
+    m6 = *(volatile unsigned int *)((char *)arg0 + 0xD8);
+    m7 = *(volatile unsigned int *)((char *)arg0 + 0xDC);
+    m8 = *(volatile unsigned int *)((char *)arg0 + 0xE0);
+    m9 = *(volatile unsigned int *)((char *)arg0 + 0xE4);
+    m10 = *(volatile unsigned int *)((char *)arg0 + 0xE8);
+    m11 = *(volatile unsigned int *)((char *)arg0 + 0xEC);
+    *(unsigned int *)((char *)arg0 + 0x58) = m0;
+    *(unsigned int *)((char *)arg0 + 0x5C) = m1;
+    *(unsigned int *)((char *)arg0 + 0x60) = m2;
+    *(unsigned int *)((char *)arg0 + 0x64) = m3;
+    *(unsigned int *)((char *)arg0 + 0x68) = m4;
+    *(unsigned int *)((char *)arg0 + 0x6C) = m5;
+    *(unsigned int *)((char *)arg0 + 0x70) = m6;
+    *(unsigned int *)((char *)arg0 + 0x74) = m7;
+    *(unsigned int *)((char *)arg0 + 0x78) = m8;
+    *(unsigned int *)((char *)arg0 + 0x7C) = m9;
+    *(unsigned int *)((char *)arg0 + 0x80) = m10;
+    *(unsigned int *)((char *)arg0 + 0x84) = m11;
+    if (&local.sp30[0] == arg1) {
+        temp_f6 = (*(float *)((char *)arg1 + 4));
+        temp_f0 = (*(float *)((char *)arg1 + 0));
+        temp_f7 = (*(float *)((char *)arg1 + 8));
+        local.sp30[0] = (temp_f7 * (*(float *)((char *)((char *)arg0 + 0x70)))) + ((temp_f0 * (*(float *)((char *)((char *)arg0 + 0x58)))) + (temp_f6 * (*(float *)((char *)((char *)arg0 + 0x64)))));
+        local.sp30[1] = (temp_f7 * (*(float *)((char *)((char *)arg0 + 0x74)))) + ((temp_f0 * (*(float *)((char *)((char *)arg0 + 0x5C)))) + (temp_f6 * (*(float *)((char *)((char *)arg0 + 0x68)))));
+        local.sp30[2] = (temp_f7 * (*(float *)((char *)((char *)arg0 + 0x78)))) + ((temp_f0 * (*(float *)((char *)((char *)arg0 + 0x60)))) + (temp_f6 * (*(float *)((char *)((char *)arg0 + 0x6C)))));
+    } else {
+        local.sp30[0] = ((*(float *)((char *)arg1 + 8)) * (*(float *)((char *)((char *)arg0 + 0x70)))) + (((*(float *)((char *)arg1 + 0)) * (*(float *)((char *)((char *)arg0 + 0x58)))) + ((*(float *)((char *)arg1 + 4)) * (*(float *)((char *)((char *)arg0 + 0x64)))));
+        local.sp30[1] = ((*(float *)((char *)arg1 + 8)) * (*(float *)((char *)((char *)arg0 + 0x74)))) + (((*(float *)((char *)arg1 + 0)) * (*(float *)((char *)((char *)arg0 + 0x5C)))) + ((*(float *)((char *)arg1 + 4)) * (*(float *)((char *)((char *)arg0 + 0x68)))));
+        local.sp30[2] = ((*(float *)((char *)arg1 + 8)) * (*(float *)((char *)((char *)arg0 + 0x78)))) + (((*(float *)((char *)arg1 + 0)) * (*(float *)((char *)((char *)arg0 + 0x60)))) + ((*(float *)((char *)arg1 + 4)) * (*(float *)((char *)((char *)arg0 + 0x6C)))));
+    }
+    (*(float *)((char *)((char *)arg0 + 0x7C))) = (float) ((*(float *)((char *)((char *)arg0 + 0x7C))) + local.sp30[0]);
+    (*(float *)((char *)((char *)arg0 + 0x80))) = (float) ((*(float *)((char *)((char *)arg0 + 0x80))) + local.sp30[1]);
+    (*(float *)((char *)((char *)arg0 + 0x84))) = (float) ((*(float *)((char *)((char *)arg0 + 0x84))) + local.sp30[2]);
+    local.sp8 = 0;
+    if ((signed char) lbl_8055F584 == 0) {
+        temp_f0_2 = (float) cos(lbl_80563FB8);
+        lbl_8055F584 = 1;
+        lbl_8055F580 = temp_f0_2;
+    }
+    if (fn_801EA098((char *)(*(void **)((char *)arg0 + 0x140)) + 0x6C, &local.sp3C, &local.sp48[0], &local.sp8, (*(float *)((char *)((char *)arg0 + 0xE4))), (*(float *)((char *)((char *)arg0 + 0xEC)))) == 0) {
+        local.sp48[0] = (*(float *)((char *)((char *)arg0 + 0xCC)));
+        local.sp48[1] = (*(float *)((char *)((char *)arg0 + 0xD0)));
+        local.sp48[2] = (*(float *)((char *)((char *)arg0 + 0xD4)));
+    } else {
+        temp_f0_3 = (PSVECDotProduct(&local.sp48[0], (float *)((unsigned int)arg0 + 0xCC)) - lbl_8055F580) / (lbl_80563FAC - lbl_8055F580);
+        var_f5 = lbl_80563FB0;
+        var_f5 = (var_f5 > temp_f0_3) ? var_f5 : temp_f0_3;
+        temp_f4 = local.sp48[0] * var_f5;
+        temp_f3 = local.sp48[1] * var_f5;
+        temp_f2 = local.sp48[2] * var_f5;
+        local.sp48[0] = temp_f4;
+        temp_f1 = lbl_80563FAC - var_f5;
+        local.sp48[1] = temp_f3;
+        local.sp48[2] = temp_f2;
+        local.sp48[0] = temp_f4 + ((*(float *)((char *)((char *)arg0 + 0xCC))) * temp_f1);
+        local.sp48[1] = temp_f3 + ((*(float *)((char *)((char *)arg0 + 0xD0))) * temp_f1);
+        local.sp48[2] = temp_f2 + ((*(float *)((char *)((char *)arg0 + 0xD4))) * temp_f1);
+    }
+    if ((int) (*(unsigned char *)((char *)((char *)arg0 + 0x138))) != 0) {
+        var_f3 = lbl_80563FB0;
+    } else {
+        var_f3 = lbl_80563FDC;
+    }
+    temp_f5 = (*(float *)((char *)((char *)arg0 + 0x28))) * var_f3;
+    temp_f8 = (*(float *)((char *)((char *)arg0 + 0x2C))) * var_f3;
+    temp_f7_2 = (*(float *)((char *)((char *)arg0 + 0x30))) * var_f3;
+    (*(float *)((char *)((char *)arg0 + 0x28))) = temp_f5;
+    temp_f6_2 = lbl_80563FAC - var_f3;
+    (*(float *)((char *)((char *)arg0 + 0x2C))) = temp_f8;
+    (*(float *)((char *)((char *)arg0 + 0x30))) = temp_f7_2;
+    temp_f3_2 = temp_f5 + (local.sp48[0] * temp_f6_2);
+    (*(float *)((char *)((char *)arg0 + 0x28))) = temp_f3_2;
+    temp_f3_3 = temp_f8 + (local.sp48[1] * temp_f6_2);
+    (*(float *)((char *)((char *)arg0 + 0x2C))) = temp_f3_3;
+    temp_f3_4 = local.sp48[2] * temp_f6_2;
+    (*(float *)((char *)((char *)arg0 + 0x64))) = (float) ((temp_f3_2 * lbl_80563FC4) + ((*(float *)((char *)((char *)arg0 + 0xCC))) * lbl_80563FC4));
+    (*(float *)((char *)((char *)arg0 + 0x68))) = (float) ((temp_f3_3 * lbl_80563FC4) + ((*(float *)((char *)((char *)arg0 + 0xD0))) * lbl_80563FC4));
+    temp_f2_2 = temp_f7_2 + temp_f3_4;
+    temp_f1_2 = temp_f2_2 * lbl_80563FC4;
+    (*(float *)((char *)((char *)arg0 + 0x30))) = temp_f2_2;
+    (*(float *)((char *)((char *)arg0 + 0x6C))) = (float) (temp_f1_2 + ((*(float *)((char *)((char *)arg0 + 0xD4))) * lbl_80563FC4));
+    PSVECCrossProduct((char *)((char *)arg0 + 0x64), (char *)((char *)arg0 + 0x70), (char *)((char *)arg0 + 0x58));
+    PSVECCrossProduct((void *)((unsigned int)arg0 + 0x58), (void *)((unsigned int)arg0 + 0x64), (void *)((unsigned int)arg0 + 0x70));
+    local.spC[0] = (*(float *)((char *)((char *)arg0 + 0x58)));
+    local.spC[1] = (*(float *)((char *)((char *)arg0 + 0x5C)));
+    local.spC[2] = (*(float *)((char *)((char *)arg0 + 0x60)));
+    temp_f2_3 = (*(float *)((char *)((char *)arg0 + 0x78)));
+    temp_f1_3 = (*(float *)((char *)((char *)arg0 + 0x74)));
+    local.sp24[0] = (*(float *)((char *)((char *)arg0 + 0x70)));
+    local.sp24[1] = temp_f1_3;
+    local.sp24[2] = temp_f2_3;
+    PSVECCrossProduct(&local.sp24[0], &local.spC[0], &local.sp18[0]);
+    PSVECNormalize(&local.spC[0], &local.spC[0]);
+    PSVECNormalize(&local.sp18[0], &local.sp18[0]);
+    PSVECCrossProduct(&local.spC[0], &local.sp18[0], &local.sp24[0]);
+    (*(float *)((char *)((char *)arg0 + 0x58))) = local.spC[0];
+    (*(float *)((char *)((char *)arg0 + 0x5C))) = local.spC[1];
+    (*(float *)((char *)((char *)arg0 + 0x60))) = local.spC[2];
+    (*(float *)((char *)((char *)arg0 + 0x64))) = local.sp18[0];
+    (*(float *)((char *)((char *)arg0 + 0x68))) = local.sp18[1];
+    (*(float *)((char *)((char *)arg0 + 0x6C))) = local.sp18[2];
+    (*(float *)((char *)((char *)arg0 + 0x70))) = local.sp24[0];
+    (*(float *)((char *)((char *)arg0 + 0x74))) = local.sp24[1];
+    (*(float *)((char *)((char *)arg0 + 0x78))) = local.sp24[2];
+}
+#pragma pop
 extern float lbl_80563FA8, lbl_80563FB0;
 void fn_80274E94(void *arg0) {
     fn_80274730(arg0, lbl_80563FA8, lbl_80563FA8, lbl_80563FA8, lbl_80563FB0);
