@@ -26,24 +26,31 @@ int fn_802C2930(void *arg0, int arg1) {
     return (int)arg0;
 }
 
-void fn_802C29A0(void) {
+#pragma cplusplus on
+extern "C" void fn_802C29A0(void) {
+    struct Prefix {
+        Prefix *next;
+    };
+    class Node : public Prefix {
+    public:
+        virtual int calc() = 0;
+        virtual void finish() = 0;
+    };
     int sum = 0;
-    struct Vtable { char pad[8]; int (*calc)(void *); void (*finish)(void *); };
-    struct Node { struct Node *next; struct Vtable *vtable; };
     {
-        struct Node *node;
-        for (node = (struct Node *)lbl_8055FB80; node != 0; node = node->next)
-            sum += node->vtable->calc(node);
+        Node *node;
+        for (node = (Node *)lbl_8055FB80; node != 0; node = (Node *)node->next)
+            sum += node->calc();
     }
     fn_802BAD9C(sum);
     {
-        struct Node *node;
-        for (node = (struct Node *)lbl_8055FB80; node != 0; node = node->next)
-            node->vtable->finish(node);
+        Node *node;
+        for (node = (Node *)lbl_8055FB80; node != 0; node = (Node *)node->next)
+            node->finish();
     }
     lbl_8055FB84 = 1;
 }
-
+#pragma cplusplus off
 void fn_802C2A34(void) {
     lbl_8055FB84 = 0;
 }
