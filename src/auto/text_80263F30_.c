@@ -3,6 +3,9 @@
 
 
 
+extern int fn_8023695C(void *);
+extern void fn_80216CA8(void);
+extern void fn_802168BC(int);
 extern void *lbl_8055F444;
 extern void *lbl_8055F448;
 extern void fn_80235380(void *);
@@ -109,17 +112,18 @@ void fn_802645EC(void) {
     *(float *)((char *)lbl_8055F444 + 0x1C) = lbl_8055C454;
 }
 
+#pragma scheduling invalid_target
 void fn_802645FC(void *arg0) {
     extern float lbl_80563BF8;
     extern float lbl_8055C454;
     extern float lbl_80563BF0;
-    float b = lbl_80563BF8;
-    float a = lbl_80563BF0;
-    *(float *)((char *)arg0 + 0x18) = b;
+    float b = lbl_80563BF0;
+    float a = lbl_80563BF8;
+    *(float *)((char *)arg0 + 0x18) = a;
     *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
-    *(float *)((char *)arg0 + 0x20) = a;
+    *(float *)((char *)arg0 + 0x20) = b;
 }
-
+#pragma scheduling on
 void fn_80264618(void *arg0) {
     extern float lbl_80558DC4[];
     extern float lbl_80563BF0;
@@ -502,26 +506,30 @@ extern void fn_80265904(void);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80265940(void) {
-    struct Data {
-        int value0; int value1; int value2; int value3; int value4;
-        int value5; int value6; int value7; int value8; int value9;
-        int value10; int value11; int value12; int value13; int value14;
-        int value15; int value16; int value17; int value18; int value19;
-    } data;
+    int data[20];
     int *v;
-    data.value15 = lbl_80498F58[0];
-    data.value16 = lbl_80498F58[1];
-    data.value17 = lbl_80498F58[2];
-    data.value18 = lbl_80498F58[3];
-    data.value19 = lbl_80498F58[4];
     v = lbl_802FA73C;
-    data.value0 = v[0]; data.value1 = (int)&data.value5;
-    data.value2 = v[2]; data.value3 = v[3]; data.value4 = v[4];
-    data.value7 = (int)fn_802658FC; data.value12 = (int)fn_80265904;
-    data.value5 = (int)lbl_8055BAC0; data.value10 = (int)lbl_8055BAB8;
-    data.value13 = 2; data.value6 = 8; data.value11 = 8;
-    data.value8 = 0; data.value9 = 0; data.value14 = 0;
-    fn_802146BC((int*)&data, -999, -999, 1, v[4], v[3], v[2], v[0]);
+    data[15] = lbl_80498F58[0];
+    data[16] = lbl_80498F58[1];
+    data[17] = lbl_80498F58[2];
+    data[18] = lbl_80498F58[3];
+    data[19] = lbl_80498F58[4];
+    data[0] = v[0];
+    data[1] = (int)&data[5];
+    data[2] = v[2];
+    data[3] = v[3];
+    data[4] = v[4];
+    data[7] = (int)fn_802658FC;
+    data[12] = (int)fn_80265904;
+    data[5] = (int)lbl_8055BAC0;
+    data[10] = (int)lbl_8055BAB8;
+    data[13] = 2;
+    data[6] = 8;
+    data[11] = 8;
+    data[8] = 0;
+    data[9] = 0;
+    data[14] = 0;
+    fn_802146BC(data, -999, -999, 1, v[4], v[3], v[2], v[0]);
 }
 #pragma pop
 extern void fn_80236954(void *);
