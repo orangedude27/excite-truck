@@ -12,6 +12,14 @@ extern "C" {
 struct F801B4610 {
     virtual void f2(int) = 0;
 };
+struct F801B4AC4 {
+    virtual void f0() = 0;
+    virtual void f1() = 0;
+    virtual void f2() = 0;
+    virtual void f3() = 0;
+    virtual void f4() = 0;
+    virtual void f5(int) = 0;
+};
 }
 #pragma cplusplus off
 #pragma push
@@ -89,27 +97,37 @@ void fn_801B46BC(void *arg0, int arg1, int arg2) {
     fn_801B4720((int)arg0);
 }
 void fn_801B4720(int arg0) {
-    unsigned int i;
     int offset;
-    int *entries;
+    unsigned int i;
+    int minusOne;
+    int value;
+    int zero;
+    void *object;
+    void **vtable;
 
     i = 0;
     offset = 0;
-    entries = *(int **)(arg0 + 0x18);
+    minusOne = -1;
+    zero = 0;
     while (i < *(unsigned int *)(arg0 + 0x1C)) {
-        entries[offset / 4] = -1;
-        *(int *)((char *)entries + offset + 4) = 0;
-        *(int *)((char *)entries + offset + 8) = 0;
-        offset += 12;
+        int *entries = *(int **)(arg0 + 0x18);
         i++;
+        *(int *)((char *)entries + offset) = minusOne;
+        *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 4) = zero;
+        *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 8) = zero;
+        offset += 12;
     }
-    *(int *)(arg0 + 8) = 0;
-    *(int *)(arg0 + 0xC) = *(int *)(arg0 + 4);
-    *(int *)(arg0 + 0x10) = *(int *)(arg0 + 4);
-    *(int *)(arg0 + 0x14) = 0;
-    *(int *)(arg0 + 0x20) = 0;
-    *(int *)(arg0 + 0x24) = 0;
-    (*(void (**)(void))(*(int *)*(int *)arg0 + 0x18))();
+    value = *(int *)(arg0 + 4);
+    zero = 0;
+    *(int *)(arg0 + 8) = zero;
+    *(int *)(arg0 + 0xC) = value;
+    *(int *)(arg0 + 0x10) = value;
+    *(int *)(arg0 + 0x14) = zero;
+    *(int *)(arg0 + 0x20) = zero;
+    *(int *)(arg0 + 0x24) = zero;
+    object = *(void **)arg0;
+    vtable = *(void ***)object;
+    ((void (*)(void))vtable[3])();
 }
 
 #pragma dont_inline on
@@ -228,6 +246,23 @@ int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
     return 1;
 }
 
+void fn_801B4AC4(int arg0, int arg1) {
+    int index;
+    int *entry;
+    int object;
+    int value;
+
+    index = ((int (*)(int, int))fn_801B4C9C)(arg0, arg1);
+    entry = ((int *(*)(int, int))fn_801B4C58)(arg0, index);
+    value = entry[2];
+    object = *(int *)(arg0 + 4);
+    ((void (*)(int, int))(*(int *)(*(int *)object + 0x14)))(object, value);
+    entry = ((int *(*)(int, int))fn_801B4C60)(arg0, index);
+    value = entry[2];
+    object = *(int *)(arg0 + 4);
+    ((void (*)(int, int))(*(int *)(*(int *)object + 0x14)))(object, value);
+}
+
 int fn_801B4B44(char *arg0) {
     int result = 0;
     if (fn_801B47F0((int)(arg0 + 4)) != 0 && *arg0) result = 1;
@@ -258,19 +293,20 @@ void fn_801B4C60(int arg0, int arg1) {
     fn_801B479C(arg0 + 4, fn_801B47BC(arg0 + 4, arg1));
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801B4C9C(int arg0, int arg1) {
     int count;
     int value;
 
-    count = arg1 - fn_801B4B9C(arg0);
+    count = arg1 - ((int (*)(int))fn_801B4B9C)(arg0);
     value = fn_801B47AC(arg0 + 4);
     count /= 6;
     do {
         fn_801B47BC(arg0 + 4, value);
-        count--;
-    } while (count != 0);
+    } while (count-- != 0);
 }
-
+#pragma pop
 extern double lbl_80562660;
 extern float lbl_80562658;
 float fn_801B4D10(int arg0, int arg1) {
