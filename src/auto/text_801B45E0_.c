@@ -28,7 +28,7 @@ extern int fn_801B4B9C(int);
 extern int fn_801B47AC(int);
 extern int fn_802E30C8(int *, ...);
 extern int fn_801284F8(int, int *);
-extern int fn_801B4904(void);
+extern int fn_801B4904();
 #pragma push
 #pragma small_data off
 extern int lbl_80335E10[];
