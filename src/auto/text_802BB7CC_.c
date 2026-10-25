@@ -110,6 +110,8 @@ void fn_802BBBC8(void) {
     } while (i < 6);
     lbl_8055FA90 = fn_802B05E4();
 }
+#pragma push
+#pragma inline_depth(0)
 void fn_802BBCC4(void) {
     extern int lbl_804C0098[];
     extern int lbl_804C00B0[];
@@ -124,7 +126,7 @@ void fn_802BBCC4(void) {
         var_r29++;
     } while (var_r28 < 6);
 }
-
+#pragma pop
   extern int lbl_804C0098[];
 extern void fn_802BB8E4(int*);
 extern unsigned int fn_802D972C(int, int);
@@ -160,19 +162,24 @@ extern void fn_80128678(void);
 extern int fn_802BBA08(void *, int);
 extern int lbl_8055CF20;
 extern int lbl_8055CF28;
+#pragma push
+#pragma scheduling invalid_target
 void fn_802BBEE4(void) {
-    int result;
+    register int result;
+    register unsigned char status;
 
     fn_802BBE34();
     result = fn_80128690();
-    if ((result & 0xFF) == 0)
+    status = (unsigned char)result;
+    if (status == 0)
         fn_80128684();
     fn_802BBA08(&lbl_8055CF20, 0);
     fn_802BBA08(&lbl_8055CF28, 3);
-    if ((result & 0xFF) == 0)
+    status = (unsigned char)result;
+    if (status == 0)
         fn_80128678();
 }
-
+#pragma pop
 extern const char lbl_8034AB00[];
 #pragma push
 #pragma scheduling invalid_target
