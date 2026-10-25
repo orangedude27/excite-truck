@@ -165,6 +165,18 @@ int fn_8023DFD4(void) {
     return 0;
 }
 
+int fn_8023E028(void) {
+    int temp_r4;
+    int temp_r5;
+
+    fn_8023E16C(lbl_8055F190, lbl_8055F194);
+    temp_r5 = lbl_8055F194 + 1;
+    temp_r4 = temp_r5 % *(int *)((char *)lbl_8055F190 + 8);
+    lbl_8055F194 = temp_r4;
+    fn_8023E0DC(lbl_8055F190, temp_r4, temp_r5);
+    return 0;
+}
+
 extern int fn_80128668(void);
 extern void fn_8023DA64(void *, int, int);
 extern char lbl_8055BBB8[];
