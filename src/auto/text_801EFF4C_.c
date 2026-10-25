@@ -442,7 +442,7 @@ int fn_801F15A8(void **arg0, int arg1) {
 }
 
 void fn_801F17C8(int unused) {
-    memset((void *)lbl_80488798, 0, 0x100);
+    memset(lbl_80488798_u8, 0, 0x100);
 }
 
 #pragma push
@@ -592,9 +592,11 @@ void fn_801F1B1C(void *arg0, void *arg1, int arg2) {
     *(volatile int *)((char *)dst + 0x74) = v14;
     *(volatile float *)((char *)dst + 0x78) = v17;
     *(volatile unsigned char *)((char *)dst + 0x7C) = flag;
-    if (flag != 0)
-        *(volatile int *)((char *)dst + 0x80) = fn_801F1848();
-    else
-        *(volatile int *)((char *)dst + 0x80) = 0;
-}
-#pragma scheduling on
+          if (flag != 0)
+          *(volatile int *)((char *)dst + 0x80) = fn_801F1848();
+      else
+          *(volatile int *)((char *)dst + 0x80) = 0;
+  }
+  #pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
