@@ -27,6 +27,7 @@ extern int fn_801D59C8(int, int);
 extern char lbl_80338D80[];
 extern float fn_801D58DC();
 extern unsigned char fn_801D592C();
+extern void *fn_801D5860();
 void fn_801D47F4(void) {
     fn_801D57F0();
 }
