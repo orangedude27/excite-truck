@@ -1549,6 +1549,17 @@ extern "C" void fn_8021CF9C(void);
 extern "C" int lbl_8033F548;
 extern "C" void fn_8021D040(void) { fn_8021CF9C(); }
 
+extern "C" void fn_8021D154(void *arg0) {
+    void *value;
+
+    if (fn_80129BC4() != 0) {
+        value = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C),
+                            *(s32 *)((u8 *)arg0 + 0x2C0), arg0);
+        *(void **)((u8 *)arg0 + 0x2BC) = value;
+        ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 1, value, 4);
+    }
+}
+
 extern "C" s32 fn_8021D1B0(void *arg0) {
     s32 *p = *(s32 **)((u8 *)arg0 + 0x2BC);
     if (p == 0)
