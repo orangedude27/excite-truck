@@ -1311,10 +1311,21 @@ void GXEnableTexOffsets(s32 texMap, int line, int point) {
 }
 
 void GXSetCullMode(unsigned int mode) {
-    unsigned int *data = __GXData;
-    unsigned int field = ((mode >> 1) & 1) | ((mode << 1) & 2);
-    data[0x254 / 4] = (data[0x254 / 4] & ~0xC000) | (field << 14);
-    data[0x5FC / 4] |= 4;
+    unsigned int field = (mode >> 1) & 1;
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 16;
+            unsigned int cull : 2;
+            unsigned int rest : 14;
+        } fields;
+    } data;
+
+    field = (field & ~2U) | ((mode << 1) & 2);
+    data.reg = __GXData[0x254 / 4];
+    data.fields.cull = field;
+    __GXData[0x254 / 4] = data.reg;
+    __GXData[0x5FC / 4] |= 4;
 }
 
 void GXSetCoPlanar(s32 enable) {
@@ -1716,16 +1727,15 @@ void GXInitLightPos(void *arg0, float farg0, float farg1, float farg2) {
 
 void GXGetLightDir_Internal(void *arg0, float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
  extern float lbl_80560B5C;
- float a, b, c;
  *(volatile float *)((char *)arg0 + 0x34) = farg3;
- a = lbl_80560B5C * farg0;
- b = lbl_80560B5C * farg1;
+ farg3 = lbl_80560B5C * farg0;
+ farg0 = lbl_80560B5C * farg1;
  *(volatile float *)((char *)arg0 + 0x38) = farg4;
- c = lbl_80560B5C * farg2;
+ farg2 = lbl_80560B5C * farg2;
  *(volatile float *)((char *)arg0 + 0x3C) = farg5;
- *(volatile float *)((char *)arg0 + 0x28) = a;
- *(volatile float *)((char *)arg0 + 0x2C) = b;
- *(volatile float *)((char *)arg0 + 0x30) = c;
+ *(volatile float *)((char *)arg0 + 0x28) = farg3;
+ *(volatile float *)((char *)arg0 + 0x2C) = farg0;
+ *(volatile float *)((char *)arg0 + 0x30) = farg2;
 }
 
 void GXInitLightColor(void *arg0, s32 *arg1) { *(s32 *)((char *)arg0 + 0xC) = *arg1; }
@@ -2792,13 +2802,20 @@ void GXSetBlendMode(s32 type, s32 src, s32 dst, s32 op) {
 }
 
 void GXSetColorUpdate(s32 enable) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int unused0 : 28;
+            unsigned int colorUpdate : 1;
+            unsigned int unused1 : 3;
+        } bits;
+    } reg;
     unsigned int *data = __GXData;
-    unsigned int value;
-    value = data[0x220 / 4];
-    value = (value & ~8) | ((enable << 3) & 8);
+    reg.value = data[0x220 / 4];
+    reg.bits.colorUpdate = enable;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
-    data[0x220 / 4] = value;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
+    data[0x220 / 4] = reg.value;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
