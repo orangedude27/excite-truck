@@ -138,6 +138,10 @@ int fn_802E7AF4(int arg0,int arg1) {
  return 0;
 }
 
+void fn_802E7C40(void) {
+    lbl_80560008 = fn_802E9A24();
+}
+
 extern int WPADSetSamplingCallback(int, int);
 extern int fn_8006022C(int);
 extern int fn_8005ED8C(void);
