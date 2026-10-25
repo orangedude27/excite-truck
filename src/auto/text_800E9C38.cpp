@@ -5,10 +5,10 @@ typedef signed char s8;
 typedef signed int s32;
 typedef float f32;
 extern int SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *, int);
-extern int fn_800EC8B4(void *);
-extern int fn_800EB41C(void *);
-extern int Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *, const void *);
-extern int fn_800E519C(void *);
+extern "C" int fn_800EC8B4(void *);
+extern "C" int fn_800EB41C(void *);
+extern "C" int Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *, const void *);
+extern "C" int fn_800E519C(void *);
 extern void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, int);
 extern void *fn_80128668(void *);
 int __dt__Q46nw4hbm3snd6detail14ChannelManagerFv(int arg0, int arg1) {
