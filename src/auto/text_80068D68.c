@@ -11362,6 +11362,39 @@ void fn_800916D8(void *callback, u32 cid) {
     *(void **)(base + 0x3C + index * 4) = callback;
 }
 
+extern void rfc_mx_sm_state_idle(void *, s32, void *);
+extern void rfc_mx_sm_state_wait_conn_cnf(void *, s32, void *);
+extern void rfc_mx_sm_state_configure(void *, s32, void *);
+extern void rfc_mx_sm_sabme_wait_ua(void *, s32, void *);
+extern void rfc_mx_sm_state_wait_sabme(void *, s32, void *);
+extern void rfc_mx_sm_state_connected(void *, s32, void *);
+extern void rfc_mx_sm_state_disc_wait_ua(void *, s32, void *);
+void fn_800916F4(void *arg0, s32 arg1, s16 *arg2) {
+    switch (((u8 *)arg0)[0x6c]) {
+    case 0:
+        rfc_mx_sm_state_idle(arg0, arg1, arg2);
+        return;
+    case 1:
+        rfc_mx_sm_state_wait_conn_cnf(arg0, arg1, arg2);
+        return;
+    case 2:
+        rfc_mx_sm_state_configure(arg0, arg1, arg2);
+        return;
+    case 3:
+        rfc_mx_sm_sabme_wait_ua(arg0, arg1, arg2);
+        return;
+    case 4:
+        rfc_mx_sm_state_wait_sabme(arg0, arg1, arg2);
+        return;
+    case 5:
+        rfc_mx_sm_state_connected(arg0, arg1, arg2);
+        return;
+    case 6:
+        rfc_mx_sm_state_disc_wait_ua(arg0, arg1, arg2);
+        return;
+    }
+}
+
 void rfc_mx_sm_state_connected(void *arg0, s32 arg1, void *arg2) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319868[];
