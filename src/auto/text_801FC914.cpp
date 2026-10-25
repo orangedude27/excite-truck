@@ -651,7 +651,7 @@ extern "C" void fn_801FE448(void* arg0) {
 #pragma pop
 extern "C" void fn_802C7040(int);
 float fn_80129DC4(int, void *, float, float);
-int fn_801FE88C(void *, void *);
+extern "C" int fn_801FE88C(void *, void *);
 extern const char lbl_8033B638[];
 extern const char lbl_8033B654[];
 extern char lbl_8033B760[];
