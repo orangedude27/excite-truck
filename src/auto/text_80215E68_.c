@@ -71,11 +71,12 @@ s32 fn_80215EC4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_80215F04(void *arg0) {
-    *(char **)arg0 = (char *)&lbl_8033D690;
+    *(char **)arg0 = lbl_8033D690;
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
 }
-
+#pragma scheduling on
 s32 fn_80215F1C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
