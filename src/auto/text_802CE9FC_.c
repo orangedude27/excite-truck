@@ -1383,6 +1383,11 @@ void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned in
     fn_802D68C4(result,4,colors,6,colors[5],colors[4],colors[0],lbl_802FACC8,result[20],lbl_80564F88,result[13],result[18],result[14],result[10],result[6],result[8],result[2],result[4],result[3],result[0],p2);
 }
 
+void fn_802D3D50(void) {
+    lbl_804C97B0[0] = 0;
+    lbl_804C97B0[0x1C] = 1;
+}
+
 extern void OSReport(const char *, ...);
 extern void GXInitVtxDescList(int);
 extern void GXDisableBreakPt(void);
