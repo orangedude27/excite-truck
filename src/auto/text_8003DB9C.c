@@ -2719,15 +2719,27 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
 }
 
 void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1) {
-    unsigned int value = 0xF3000000;
-    value |= ref0;
-    value |= ref1 << 8;
-    value |= comp0 << 16;
-    value |= comp1 << 19;
-    value |= op << 22;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
-    *(volatile unsigned short *)((char *)__GXData + 2) = 0;
+    union {
+        u32 value;
+        struct {
+            unsigned int reserved : 8;
+            unsigned int op : 2;
+            unsigned int comp1 : 3;
+            unsigned int comp0 : 3;
+            unsigned int ref1 : 8;
+            unsigned int ref0 : 8;
+        } bits;
+    } reg;
+
+    *(volatile u8 *)0xCC008000 = 0x61;
+    reg.value = 0xF3000000;
+    reg.bits.ref0 = ref0;
+    reg.bits.ref1 = ref1;
+    reg.bits.comp0 = comp0;
+    reg.bits.comp1 = comp1;
+    reg.bits.op = op;
+    *(volatile u32 *)0xCC008000 = reg.value;
+    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
 void GXSetZTexture(s32 op, s32 format, s32 bias) {
@@ -2865,7 +2877,8 @@ void GXSetColorUpdate(s32 enable) {
 
 void GXSetAlphaUpdate(s32 enable) {
     unsigned int *data = __GXData;
-    unsigned int value = data[0x220 / 4];
+    unsigned int value;
+    value = data[0x220 / 4];
     value = (value & 0xFFFFFFEF) | ((enable & 1) << 4);
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = value;
@@ -2952,11 +2965,15 @@ void GXSetDstAlpha(s32 enable, s32 alpha) {
 }
 
 void GXSetFieldMask(s32 even, s32 odd) {
-    unsigned int *data = __GXData;
-    unsigned int value = (odd & 1) | ((even << 1) & 2) | 0x44000000;
+    unsigned int *data;
+    unsigned int value = 0;
     *(volatile unsigned char *)0xCC008000 = 0x61;
+    value = __rlwimi(value, odd, 0, 31, 31);
+    value = __rlwimi(value, even, 1, 30, 30);
+    data = __GXData;
+    value = __rlwimi(value, 0x44, 24, 0, 7);
     *(volatile unsigned int *)0xCC008000 = value;
-    *(unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetFieldMode(s32 mode, s32 field) {
@@ -3046,6 +3063,20 @@ void __GXSetViewport(void) {
  *(volatile float*)0xCC008000=lbl_80560BD0+f6;
  *(volatile float*)0xCC008000=lbl_80560BD0+f1;
  *(volatile float*)0xCC008000=f9+*(float*)((char*)d+0x55c);
+}
+
+void GXSetViewportJitter(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
+    extern f32 lbl_80560BCC;
+    if (arg0 == 0) {
+        farg1 -= lbl_80560BCC;
+    }
+    ((f32 *)__GXData)[0x544 / 4] = farg0;
+    ((f32 *)__GXData)[0x548 / 4] = farg1;
+    ((f32 *)__GXData)[0x54C / 4] = farg2;
+    ((f32 *)__GXData)[0x550 / 4] = farg3;
+    ((f32 *)__GXData)[0x554 / 4] = farg4;
+    ((f32 *)__GXData)[0x558 / 4] = farg5;
+    __GXData[0x5FC / 4] |= 0x10000000;
 }
 
 void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 farZ) {
