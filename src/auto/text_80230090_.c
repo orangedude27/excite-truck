@@ -75,6 +75,13 @@ void fn_80230A68(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
     p[5] = *(u32 *)&farg4;
 }
 
+void fn_80230AB8(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4) {
+    *arg1 = (u8)(arg0 >> 24);
+    *arg2 = (u8)(arg0 >> 16);
+    *arg3 = (u8)(arg0 >> 8);
+    *arg4 = (u8)arg0;
+}
+
 void fn_80230AD8(s32 arg0) {
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(3);
@@ -154,12 +161,12 @@ float fn_80230DF4(float a, float b) {
     return value;
 }
 
-void fn_80230E54(float a, float b) {}
+float fn_80230E54(float a, float b) { return 0.0f; }
 
 extern f32 lbl_80563610, lbl_80563638, lbl_80563640, lbl_80563648;
 extern u32 lbl_8055FB9C, lbl_8055FBA0;
 s32 fn_802E2C20(void);
-void fn_80230E54(float, float);
+float fn_80230E54(float, float);
 void fn_8023659C(void);
 void fn_80230F6C(s32 *arg0) { *arg0 = -0x35BC; }
 
