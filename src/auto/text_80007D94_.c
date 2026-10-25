@@ -170,6 +170,7 @@ done:
     return 0xC8;
 }
 
+#pragma dont_inline on
 void fn_8000822C(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0) = -1;
     *(u32 *)((u8 *)arg0 + 4) = 0;
@@ -177,6 +178,7 @@ void fn_8000822C(void *arg0) {
     *(u32 *)((u8 *)arg0 + 0xC) = 0;
     *(u32 *)((u8 *)arg0 + 8) = 0;
 }
+#pragma dont_inline reset
 
 void fn_8000822C(void *);
 #pragma dont_inline fn_8000822C
