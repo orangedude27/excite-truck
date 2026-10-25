@@ -62,16 +62,18 @@ int fn_8013A760(unkVtable **arg0, int arg1) {
     } while (i < 3);
     return 0;
 }
+#pragma push
+#pragma scheduling invalid_target
 void fn_8013A7E8(unkVtable **arg0, char *arg1, char *arg2) {
     char buffer[0x20];
     int i = 0;
     do {
         char *name = ((char *(*)(char *, int, int))fn_8013A708)(buffer, i, (int)arg1);
-        fn_8013A660(arg0, name, arg2);
+        ((void (*)(unkVtable **, char *, char *))fn_8013A660)(arg0, name, arg2);
         i++;
     } while (i < 3);
 }
-
+#pragma pop
 extern char lbl_8032C1E8[];
 extern char lbl_8032C1F8[];
 int fn_8013A860(float *arg0, unkVtable **arg1) {
