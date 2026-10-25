@@ -209,6 +209,8 @@ void fn_80005B70(void) {
 }
 
 #pragma cplusplus on
+#pragma push
+#pragma dont_inline on
 extern "C" void fn_80005B74(void) {
     class LfoValue {
     public:
