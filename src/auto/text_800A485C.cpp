@@ -5541,6 +5541,13 @@ extern "C" void fn_800B7710(void *arg0) {
     }
 }
 
+extern "C" void fn_800B777C(void *arg0) {
+    if ((*(u32 *)arg0 & 1) != 0) {
+        fn_800B7FC4(*(s32 *)((u8 *)arg0 + 8));
+        *(u32 *)arg0 = 0;
+    }
+}
+
 extern "C" void fn_800B783C(void *arg0) {
     extern s32 fn_800B8048(s32);
     if (--*(s32 *)((u8 *)arg0 + 4) == 0) {
