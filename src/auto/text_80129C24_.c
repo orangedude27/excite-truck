@@ -1,6 +1,15 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void fn_80129C64(int);
+void fn_80129C24(void) {
+    int i = 0;
+    do {
+        fn_80129C64(i);
+        i++;
+    } while (i < 7);
+}
+
 void fn_80129C60(void) {
 
 }
