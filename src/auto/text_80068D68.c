@@ -27,6 +27,7 @@ extern u8 fn_80096670(u8);
 extern void SCInit(void);
 extern char lbl_80315700[];
 extern u8 lbl_802EEB60[];
+extern u8 lbl_802EEC40[];
 extern u8 lbl_802EEBD8[];
 extern char *bta_hh_evt_code(u32);
 extern char lbl_8031A188[];
