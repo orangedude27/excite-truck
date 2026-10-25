@@ -196,23 +196,23 @@ extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
 extern int stricmp(const char *, const char *);
 extern char lbl_80348F4C[];
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_8028EDA8(unsigned int *arg0, unsigned int arg1) {
-    int i = 0;
-    int count = *(int *)((char *)arg0 + 0x100);
-    if (count > 0) {
-        do {
-            if (*arg0 == arg1) {
-                arg0[i] = 0;
-                return 1;
-            }
-            arg0 += 1;
-            i += 1;
-        } while (--count != 0);
+    unsigned int *base = arg0;
+    unsigned int i = 0;
+    unsigned int count = *(unsigned int *)((char *)arg0 + 0x100);
+    for (; i < count; i++) {
+        if (arg1 == base[i]) {
+            base[i] = 0;
+            return 1;
+        }
     }
     fn_802E317C(lbl_80348F4C);
     return 0;
 }
-
+#pragma pop
 void fn_8028EE1C(void *arg0) {
     *(int *)((char *)arg0 + 0x600) = 0;
 }
@@ -221,9 +221,14 @@ void fn_8028EE28(void *arg0) {
     *(int *)((char *)arg0 + 0x600) = 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling off
 int fn_8028EE34(void *arg0, int arg1, int *arg2) {
-    char *p = (char *)arg0;
-    int i = 0;
+    char *p;
+    int i;
+    p = (char *)arg0;
+    i = 0;
     while (i < *(int *)((char *)arg0 + 0x600)) {
         if (fn_8002B1D8(arg1, p, 15) == 0) {
             *arg2 = i;
@@ -234,7 +239,7 @@ int fn_8028EE34(void *arg0, int arg1, int *arg2) {
     }
     return 0;
 }
-
+#pragma pop
 extern int fn_8002B1D8(int, void *, int);
 extern char *strncpy(char *, const char *, unsigned int);
 void fn_8028EEB4(void *arg0, int arg1, const char *arg2) {
@@ -298,22 +303,35 @@ test:
 }
 #pragma pop
 int fn_8028F040(int *arg0, int *arg1, int arg2) {
-    int n = *(int *)((char *)arg0 + 0x100);
-    while (n > 0) {
-        int id = *(int *)((char *)*arg0 + 0xA4);
+    int outerCount;
+    int outerIndex;
+    int id;
+    int innerCount;
+    void **cursor;
+    int i;
+    int found;
+    void *item;
+    int other;
+    outerCount = *(int *)((char *)arg0 + 0x100);
+    for (outerIndex = 0; outerIndex < outerCount; outerIndex++) {
+        id = *(int *)((char *)*arg0 + 0xA4);
         if (id != arg2) {
-            int count = *(int *)((char *)arg1 + 0x100);
-            int j = 0;
-            int *p = arg1;
-            while (j < count) {
-                int other = *(int *)((char *)*p + 0xA4);
-                p++;
-                j++;
-                if (id == other) return id;
-            }
+            innerCount = *(int *)((char *)arg1 + 0x100);
+            cursor = (void **)arg1;
+            found = 0;
+            i = 0;
+            goto inner_check;
+inner_body:
+            item = *cursor;
+            cursor++;
+            i++;
+            other = *(int *)((char *)item + 0xA4);
+            found = (id == other);
+inner_check:
+            if (found == 0 && i < innerCount) goto inner_body;
+            if (found != 0) return id;
         }
         arg0++;
-        n--;
     }
     return -2;
 }
