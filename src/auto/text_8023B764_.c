@@ -100,6 +100,7 @@ s32 fn_8023B9AC(s32 arg0, s32 arg1) {
 }
 
 #pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_8023BB0C(void) {
     s32 sp10, spC, sp8;
     s32 temp_r31 = fn_802411CC();
@@ -155,14 +156,14 @@ void fn_8023BE38(int ignored, int flag) {
     fn_80012794();
     fn_80012790(0x130);
     fn_802411C8();
-    if (flag != 0) {
-        fn_8023BBA8();
-    } else {
-        do {
-            fn_8023BB0C();
-            fn_8023B5E0();
-        } while (fn_8023FF1C(flag) != 1);
-    }
+    if (flag == 0) goto loop;
+    fn_8023BBA8();
+    goto done;
+loop:
+    fn_8023BB0C();
+    fn_8023B5E0();
+    if (fn_8023FF1C(flag) != 1) goto loop;
+done:
     fn_8023BDEC();
     fn_80012794();
     fn_80012778();
