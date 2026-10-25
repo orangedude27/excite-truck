@@ -161,37 +161,39 @@ void *fn_802ADDD8(void *arg0,int arg1) {
 extern void fn_80128668(void *);
 extern void fn_80128670(void *);
 extern void fn_802AD30C(void *);
+#pragma scheduling invalid_target
 void *fn_802ADE60(void **arg0, int arg1) {
     int count;
     int offset;
     void *obj;
     int zero;
-
     if (arg0 != 0) {
         count = *(int *)((char *)*arg0 + 4);
         offset = count * 0x74;
-        while (count > 0) {
+        for (;;) {
             fn_802AD30C(*(void **)(*(char **)*arg0 + offset + 0x64));
-            count--;
             offset -= 0x74;
+            if (!(count-- > 0)) break;
         }
         *(int *)((char *)*arg0 + 4) = 0;
         obj = *arg0;
         if (obj != 0) {
-            fn_80128670(*(void **)((char *)obj + 0xC));
             if (obj != 0) {
-                zero = 0;
-                *(int *)((char *)obj + 0) = zero;
-                *(int *)((char *)obj + 4) = zero;
-                *(int *)((char *)obj + 8) = zero;
+                fn_80128670(*(void **)((char *)obj + 0xC));
+                if (obj != 0) {
+                    zero = 0;
+                    *(int *)((char *)obj + 0) = zero;
+                    *(int *)((char *)obj + 4) = zero;
+                    *(int *)((char *)obj + 8) = zero;
+                }
+                fn_80128668(obj);
             }
-            fn_80128668(obj);
         }
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-
+#pragma scheduling on
 int fn_802ADF34(void **arg0,char *arg1,int arg2) {
  int result,index,count; char *header,*entry,*dst; char c;
  result=fn_802AC4A8(arg1,arg2);
@@ -228,7 +230,17 @@ void fn_802AE02C(void *arg0, int arg1) {
 
 void fn_802AE0B8(int **arg0,int arg1){unsigned char *p; p=(unsigned char *)**arg0+arg1*0x74;if(p[0x69])p[0x69]=0;}
 
-void fn_802AE0E0(void **arg0){int off=0,i=0;while(i<*(int *)(*(char **)arg0+4)){*(unsigned char *)(*(char **)*(char **)arg0+off+0x68)=0;off+=0x74;i++;}}
+void fn_802AE0E0(void **arg0) {
+    int off;
+    int i;
+    i = 0;
+    off = 0;
+    while (i < *(int *)(*(char **)arg0 + 4)) {
+        *(unsigned char *)(*(char **)*(char **)arg0 + off + 0x68) = 0;
+        off += 0x74;
+        i++;
+    }
+}
 
 void fn_802AE118(void *arg0){int i=0,off=0;char *container=*(char **)arg0;while(i<*(int *)(container+4)){unsigned char *entry=(unsigned char *)*(char **)container+off;if(entry[0x68])*(float *)(entry+0x6c)=*(float *)((char *)arg0+4)-*(float *)(*(char **)(entry+0x64)+0x2c);off+=0x74;i++;}}
 
