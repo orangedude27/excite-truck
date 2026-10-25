@@ -118,6 +118,85 @@ void fn_801A7844(int arg0) {
     *(float *)&lbl_80435370[4] = y;
 }
 
+extern float lbl_80562458;
+void fn_801A7A5C(void) {
+    char *base = (char *)lbl_80435050;
+    char *src = base;
+    char *dst = base + 0x190;
+    int i;
+    *(float *)(base + 0x320) = lbl_80562458;
+    *(float *)(base + 0x324) = lbl_80562458;
+    base[0x328] = 0;
+    base[0x329] = 0;
+    base[0x32a] = 0;
+    ((void (*)(int, void *))fn_801A7844)(1, base + 0x320);
+    fn_801A7844(1);
+    for (i = 0; i < 4; i++) {
+        float *sf = (float *)src;
+        float *df = (float *)dst;
+        int j;
+        for (j = 0; j < 8; j++) df[j] = sf[j];
+        for (j = 0x20; j < 0x40; j++) dst[j] = src[j];
+        for (j = 0x40; j < 0x60; j += 4) *(int *)(dst + j) = *(int *)(src + j);
+        dst[0x60] = src[0x60];
+        src += 0x64; dst += 0x64;
+    }
+    *(float *)(base + 0x32c) = *(float *)(base + 0x320);
+    *(float *)(base + 0x330) = *(float *)(base + 0x324);
+    base[0x334] = base[0x328]; base[0x335] = base[0x329]; base[0x336] = base[0x32a];
+}
+
+int fn_801A7C8C(void *arg0) {
+    extern const char **lbl_8055E5CC;
+    extern int lbl_8055E5D0;
+    extern double lbl_80562460;
+    extern float lbl_80562468;
+    extern void fn_801A91B0(void *, const void *);
+    extern int fn_801A8EE4(unsigned int *);
+    extern int fn_801A8A10(void *);
+    extern float fn_801A85E8(void *);
+    int sp8[3];
+    unsigned char sp14;
+    int i;
+    int offset;
+    int result;
+    float value;
+    fn_801A7628();
+    result = 0;
+    offset = 0;
+    for (i = 0; i < lbl_8055E5D0; i++) {
+        if (*(unsigned char *)((char *)lbl_8055E5CC + offset + 0x14) == 0) {
+            sp8[1] = 0;
+            sp14 = 0;
+            fn_801A91B0(sp8, (char *)lbl_8055E5CC + offset);
+            if (sp8[0] != 5 && sp8[0] != 6) {
+                if (fn_801A8EE4((unsigned int *)sp8) != 0) {
+                    if (fn_801A8E38() != 0 && fn_801A8A10(sp8) == 0) {
+                        *(int *)arg0 = sp8[0];
+                        *((int *)arg0 + 1) = sp8[1];
+                        *((int *)arg0 + 2) = sp8[2];
+                        *((unsigned char *)arg0 + 0xC) = sp14;
+                        result = 1;
+                        break;
+                    }
+                } else {
+                    value = fn_801A7F98();
+                    if (fabsf(fn_801A85E8(sp8)) < lbl_80562460 && value > lbl_80562468) {
+                        *(int *)arg0 = sp8[0];
+                        *((int *)arg0 + 1) = sp8[1];
+                        *((int *)arg0 + 2) = sp8[2];
+                        *((unsigned char *)arg0 + 0xC) = sp14;
+                        result = 1;
+                        break;
+                    }
+                }
+            }
+        }
+        offset += 0x18;
+    }
+    return result;
+}
+
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_801A7E54(char *dst, int len, const char *name) {
@@ -166,6 +245,418 @@ void fn_801A7F8C(void) {
     lbl_8055E5C8 = 0;
 }
 
+#pragma scheduling invalid_target
+float fn_801A85E8(void *arg0) {
+    struct Row {
+        float floats[8];
+        unsigned char bytes[32];
+        unsigned int words[8];
+        unsigned char last;
+    };
+    struct Config {
+        float value0;
+        float value1;
+        unsigned char flags[3];
+    };
+    struct Row *output;
+    struct Config *config;
+    char *base;
+    struct Row *row;
+    struct Row *source;
+    volatile char *sourceBase;
+    struct Config *active;
+    struct Row snapshot;
+    union { unsigned int words[3]; float values[2]; unsigned char bytes[12]; } saved;
+    unsigned int index;
+    float result;
+    float copyF0, copyF1;
+    unsigned char copyB0, copyB1;
+    unsigned int copyW0, copyW1;
+
+    if (*(int *)arg0 == 1)
+        return lbl_80562458;
+
+    base = (char *)lbl_80435050;
+    index = *(int *)((char *)arg0 + 4);
+    row = (struct Row *)(base + index * 0x64);
+    snapshot = *row;
+    output = (struct Row *)((char *)lbl_80435050 + index * 0x64);
+    sourceBase = (volatile char *)base + 0x190;
+    source = (struct Row *)(sourceBase + index * 0x64);
+    row->floats[0] = *(volatile float *)(sourceBase + index * 0x64);
+    copyF0 = source->floats[1];
+    copyF1 = source->floats[2];
+    output->floats[1] = copyF0;
+    copyF0 = source->floats[3];
+    output->floats[2] = copyF1;
+    copyF1 = source->floats[4];
+    output->floats[3] = copyF0;
+    copyF0 = source->floats[5];
+    output->floats[4] = copyF1;
+    copyF1 = source->floats[6];
+    output->floats[5] = copyF0;
+    copyF0 = source->floats[7];
+    output->floats[6] = copyF1;
+    output->floats[7] = copyF0;
+
+    copyB0 = source->bytes[0];
+    copyB1 = source->bytes[1];
+    output->bytes[0] = copyB0;
+    copyB0 = source->bytes[2];
+    output->bytes[1] = copyB1;
+    copyB1 = source->bytes[3];
+    output->bytes[2] = copyB0;
+    copyB0 = source->bytes[4];
+    output->bytes[3] = copyB1;
+    copyB1 = source->bytes[5];
+    output->bytes[4] = copyB0;
+    copyB0 = source->bytes[6];
+    output->bytes[5] = copyB1;
+    copyB1 = source->bytes[7];
+    output->bytes[6] = copyB0;
+    copyB0 = source->bytes[8];
+    output->bytes[7] = copyB1;
+    copyB1 = source->bytes[9];
+    output->bytes[8] = copyB0;
+    copyB0 = source->bytes[10];
+    output->bytes[9] = copyB1;
+    copyB1 = source->bytes[11];
+    output->bytes[10] = copyB0;
+    copyB0 = source->bytes[12];
+    output->bytes[11] = copyB1;
+    copyB1 = source->bytes[13];
+    output->bytes[12] = copyB0;
+    copyB0 = source->bytes[14];
+    output->bytes[13] = copyB1;
+    copyB1 = source->bytes[15];
+    output->bytes[14] = copyB0;
+    copyB0 = source->bytes[16];
+    output->bytes[15] = copyB1;
+    copyB1 = source->bytes[17];
+    output->bytes[16] = copyB0;
+    copyB0 = source->bytes[18];
+    output->bytes[17] = copyB1;
+    copyB1 = source->bytes[19];
+    output->bytes[18] = copyB0;
+    copyB0 = source->bytes[20];
+    output->bytes[19] = copyB1;
+    copyB1 = source->bytes[21];
+    output->bytes[20] = copyB0;
+    copyB0 = source->bytes[22];
+    output->bytes[21] = copyB1;
+    copyB1 = source->bytes[23];
+    output->bytes[22] = copyB0;
+    copyB0 = source->bytes[24];
+    output->bytes[23] = copyB1;
+    copyB1 = source->bytes[25];
+    output->bytes[24] = copyB0;
+    copyB0 = source->bytes[26];
+    output->bytes[25] = copyB1;
+    copyB1 = source->bytes[27];
+    output->bytes[26] = copyB0;
+    copyB0 = source->bytes[28];
+    output->bytes[27] = copyB1;
+    copyB1 = source->bytes[29];
+    output->bytes[28] = copyB0;
+    copyB0 = source->bytes[30];
+    output->bytes[29] = copyB1;
+    copyB1 = source->bytes[31];
+    output->bytes[30] = copyB0;
+    output->bytes[31] = copyB1;
+
+    copyW0 = source->words[0];
+    copyW1 = source->words[1];
+    output->words[0] = copyW0;
+    copyW0 = source->words[2];
+    output->words[1] = copyW1;
+    copyW1 = source->words[3];
+    output->words[2] = copyW0;
+    copyW0 = source->words[4];
+    output->words[3] = copyW1;
+    copyW1 = source->words[5];
+    output->words[4] = copyW0;
+    copyW0 = source->words[6];
+    output->words[5] = copyW1;
+    copyW1 = source->words[7];
+    output->words[6] = copyW0;
+    output->words[7] = copyW1;
+
+    output->last = source->last;
+
+    config = (struct Config *)(base + 0x320);
+    active = (struct Config *)(base + 0x32C);
+    saved.words[0] = *(unsigned int *)config;
+    saved.words[1] = *((unsigned int *)config + 1);
+    saved.words[2] = *((unsigned int *)config + 2);
+    config->value0 = active->value0;
+    config->value1 = active->value1;
+    config->flags[0] = active->flags[0];
+    config->flags[1] = active->flags[1];
+    config->flags[2] = active->flags[2];
+
+    result = fn_801A7F98();
+    row->floats[0] = snapshot.floats[0];
+    copyF0 = snapshot.floats[1];
+    copyF1 = snapshot.floats[2];
+    output->floats[1] = copyF0;
+    copyF0 = snapshot.floats[3];
+    output->floats[2] = copyF1;
+    copyF1 = snapshot.floats[4];
+    output->floats[3] = copyF0;
+    copyF0 = snapshot.floats[5];
+    output->floats[4] = copyF1;
+    copyF1 = snapshot.floats[6];
+    output->floats[5] = copyF0;
+    copyF0 = snapshot.floats[7];
+    output->floats[6] = copyF1;
+    output->floats[7] = copyF0;
+
+    copyB0 = snapshot.bytes[0];
+    copyB1 = snapshot.bytes[1];
+    output->bytes[0] = copyB0;
+    copyB0 = snapshot.bytes[2];
+    output->bytes[1] = copyB1;
+    copyB1 = snapshot.bytes[3];
+    output->bytes[2] = copyB0;
+    copyB0 = snapshot.bytes[4];
+    output->bytes[3] = copyB1;
+    copyB1 = snapshot.bytes[5];
+    output->bytes[4] = copyB0;
+    copyB0 = snapshot.bytes[6];
+    output->bytes[5] = copyB1;
+    copyB1 = snapshot.bytes[7];
+    output->bytes[6] = copyB0;
+    copyB0 = snapshot.bytes[8];
+    output->bytes[7] = copyB1;
+    copyB1 = snapshot.bytes[9];
+    output->bytes[8] = copyB0;
+    copyB0 = snapshot.bytes[10];
+    output->bytes[9] = copyB1;
+    copyB1 = snapshot.bytes[11];
+    output->bytes[10] = copyB0;
+    copyB0 = snapshot.bytes[12];
+    output->bytes[11] = copyB1;
+    copyB1 = snapshot.bytes[13];
+    output->bytes[12] = copyB0;
+    copyB0 = snapshot.bytes[14];
+    output->bytes[13] = copyB1;
+    copyB1 = snapshot.bytes[15];
+    output->bytes[14] = copyB0;
+    copyB0 = snapshot.bytes[16];
+    output->bytes[15] = copyB1;
+    copyB1 = snapshot.bytes[17];
+    output->bytes[16] = copyB0;
+    copyB0 = snapshot.bytes[18];
+    output->bytes[17] = copyB1;
+    copyB1 = snapshot.bytes[19];
+    output->bytes[18] = copyB0;
+    copyB0 = snapshot.bytes[20];
+    output->bytes[19] = copyB1;
+    copyB1 = snapshot.bytes[21];
+    output->bytes[20] = copyB0;
+    copyB0 = snapshot.bytes[22];
+    output->bytes[21] = copyB1;
+    copyB1 = snapshot.bytes[23];
+    output->bytes[22] = copyB0;
+    copyB0 = snapshot.bytes[24];
+    output->bytes[23] = copyB1;
+    copyB1 = snapshot.bytes[25];
+    output->bytes[24] = copyB0;
+    copyB0 = snapshot.bytes[26];
+    output->bytes[25] = copyB1;
+    copyB1 = snapshot.bytes[27];
+    output->bytes[26] = copyB0;
+    copyB0 = snapshot.bytes[28];
+    output->bytes[27] = copyB1;
+    copyB1 = snapshot.bytes[29];
+    output->bytes[28] = copyB0;
+    copyB0 = snapshot.bytes[30];
+    output->bytes[29] = copyB1;
+    copyB1 = snapshot.bytes[31];
+    output->bytes[30] = copyB0;
+    output->bytes[31] = copyB1;
+
+    copyW0 = snapshot.words[0];
+    copyW1 = snapshot.words[1];
+    output->words[0] = copyW0;
+    copyW0 = snapshot.words[2];
+    output->words[1] = copyW1;
+    copyW1 = snapshot.words[3];
+    output->words[2] = copyW0;
+    copyW0 = snapshot.words[4];
+    output->words[3] = copyW1;
+    copyW1 = snapshot.words[5];
+    output->words[4] = copyW0;
+    copyW0 = snapshot.words[6];
+    output->words[5] = copyW1;
+    copyW1 = snapshot.words[7];
+    output->words[6] = copyW0;
+    output->words[7] = copyW1;
+
+    output->last = snapshot.last;
+    config->value0 = saved.values[0];
+    config->value1 = saved.values[1];
+    config->flags[0] = saved.bytes[8];
+    config->flags[1] = saved.bytes[9];
+    config->flags[2] = saved.bytes[10];
+    return result;
+}
+#pragma scheduling on
+int fn_801A8A10(void *arg0) {
+struct Row {
+float floats[8];
+unsigned char bytes[32];
+unsigned int words[8];
+unsigned char last;
+};
+struct Config {
+float value0;
+float value1;
+unsigned char flags[3];
+};
+struct Row *output;
+struct Config *config;
+volatile char *base;
+struct Row *row;
+struct Row *source;
+volatile char *sourceBase;
+struct Config *active;
+struct Row snapshot;
+union { unsigned int words[3]; float values[2]; unsigned char bytes[12]; } saved;
+int index;
+int result;
+
+if (*(int *)arg0 == 1)
+return 0;
+
+base = (volatile char *)lbl_80435050;
+index = ((int *)arg0)[1];
+row = (struct Row *)(base + index * 0x64);
+snapshot = *row;
+output = (struct Row *)(base + index * 0x64);
+sourceBase = (volatile char *)lbl_80435050 + 0x190;
+source = (struct Row *)(sourceBase + index * 0x64);
+row->floats[0] = *(volatile float *)(sourceBase + index * 0x64);
+output->floats[1] = source->floats[1];
+output->floats[2] = source->floats[2];
+output->floats[3] = source->floats[3];
+output->floats[4] = source->floats[4];
+output->floats[5] = source->floats[5];
+output->floats[6] = source->floats[6];
+output->floats[7] = source->floats[7];
+output->bytes[0] = source->bytes[0];
+output->bytes[1] = source->bytes[1];
+output->bytes[2] = source->bytes[2];
+output->bytes[3] = source->bytes[3];
+output->bytes[4] = source->bytes[4];
+output->bytes[5] = source->bytes[5];
+output->bytes[6] = source->bytes[6];
+output->bytes[7] = source->bytes[7];
+output->bytes[8] = source->bytes[8];
+output->bytes[9] = source->bytes[9];
+output->bytes[10] = source->bytes[10];
+output->bytes[11] = source->bytes[11];
+output->bytes[12] = source->bytes[12];
+output->bytes[13] = source->bytes[13];
+output->bytes[14] = source->bytes[14];
+output->bytes[15] = source->bytes[15];
+output->bytes[16] = source->bytes[16];
+output->bytes[17] = source->bytes[17];
+output->bytes[18] = source->bytes[18];
+output->bytes[19] = source->bytes[19];
+output->bytes[20] = source->bytes[20];
+output->bytes[21] = source->bytes[21];
+output->bytes[22] = source->bytes[22];
+output->bytes[23] = source->bytes[23];
+output->bytes[24] = source->bytes[24];
+output->bytes[25] = source->bytes[25];
+output->bytes[26] = source->bytes[26];
+output->bytes[27] = source->bytes[27];
+output->bytes[28] = source->bytes[28];
+output->bytes[29] = source->bytes[29];
+output->bytes[30] = source->bytes[30];
+output->bytes[31] = source->bytes[31];
+output->words[0] = source->words[0];
+output->words[1] = source->words[1];
+output->words[2] = source->words[2];
+output->words[3] = source->words[3];
+output->words[4] = source->words[4];
+output->words[5] = source->words[5];
+output->words[6] = source->words[6];
+output->words[7] = source->words[7];
+output->last = source->last;
+
+config = (struct Config *)(base + 0x320);
+active = (struct Config *)(base + 0x32C);
+saved.words[0] = ((unsigned int *)config)[0];
+saved.words[1] = ((unsigned int *)config)[1];
+saved.words[2] = ((unsigned int *)config)[2];
+config->value0 = active->value0;
+config->value1 = active->value1;
+config->flags[0] = active->flags[0];
+config->flags[1] = active->flags[1];
+config->flags[2] = active->flags[2];
+
+result = fn_801A8E38();
+row->floats[0] = snapshot.floats[0];
+output->floats[1] = snapshot.floats[1];
+output->floats[2] = snapshot.floats[2];
+output->floats[3] = snapshot.floats[3];
+output->floats[4] = snapshot.floats[4];
+output->floats[5] = snapshot.floats[5];
+output->floats[6] = snapshot.floats[6];
+output->floats[7] = snapshot.floats[7];
+output->bytes[0] = snapshot.bytes[0];
+output->bytes[1] = snapshot.bytes[1];
+output->bytes[2] = snapshot.bytes[2];
+output->bytes[3] = snapshot.bytes[3];
+output->bytes[4] = snapshot.bytes[4];
+output->bytes[5] = snapshot.bytes[5];
+output->bytes[6] = snapshot.bytes[6];
+output->bytes[7] = snapshot.bytes[7];
+output->bytes[8] = snapshot.bytes[8];
+output->bytes[9] = snapshot.bytes[9];
+output->bytes[10] = snapshot.bytes[10];
+output->bytes[11] = snapshot.bytes[11];
+output->bytes[12] = snapshot.bytes[12];
+output->bytes[13] = snapshot.bytes[13];
+output->bytes[14] = snapshot.bytes[14];
+output->bytes[15] = snapshot.bytes[15];
+output->bytes[16] = snapshot.bytes[16];
+output->bytes[17] = snapshot.bytes[17];
+output->bytes[18] = snapshot.bytes[18];
+output->bytes[19] = snapshot.bytes[19];
+output->bytes[20] = snapshot.bytes[20];
+output->bytes[21] = snapshot.bytes[21];
+output->bytes[22] = snapshot.bytes[22];
+output->bytes[23] = snapshot.bytes[23];
+output->bytes[24] = snapshot.bytes[24];
+output->bytes[25] = snapshot.bytes[25];
+output->bytes[26] = snapshot.bytes[26];
+output->bytes[27] = snapshot.bytes[27];
+output->bytes[28] = snapshot.bytes[28];
+output->bytes[29] = snapshot.bytes[29];
+output->bytes[30] = snapshot.bytes[30];
+output->bytes[31] = snapshot.bytes[31];
+output->words[0] = snapshot.words[0];
+output->words[1] = snapshot.words[1];
+output->words[2] = snapshot.words[2];
+output->words[3] = snapshot.words[3];
+output->words[4] = snapshot.words[4];
+output->words[5] = snapshot.words[5];
+output->words[6] = snapshot.words[6];
+output->words[7] = snapshot.words[7];
+output->last = snapshot.last;
+config->value0 = saved.values[0];
+config->value1 = saved.values[1];
+config->flags[0] = saved.bytes[8];
+config->flags[1] = saved.bytes[9];
+config->flags[2] = saved.bytes[10];
+return result;
+}
+#pragma scheduling on
+
+#pragma scheduling on
 int fn_801A8E38(void) {
     return fn_801A7F98() > lbl_80562470;
 }
@@ -186,16 +677,20 @@ int fn_801A8E68(void *arg0) {
     return 1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 int fn_801A8EE4(unsigned int *arg0) {
     unsigned int value = *arg0 - 1;
     int result = 0;
     if (value > 5)
-        return result;
-    if ((1U << value) & 0x2D)
-        result = 1;
+        goto done;
+    if (!((1U << value) & 0x2D))
+        goto done;
+    result = 1;
+done:
     return result;
 }
-
+#pragma pop
 int fn_801A8F10(int *arg0) {
     extern int lbl_80435050[];
     extern int jumptable_80334F04[];
@@ -289,5 +784,62 @@ void fn_801A91B0(void *arg0, const void *arg1) {
         *(unsigned char *)((char *)arg0 + 8) = *(const unsigned char *)((const char *)arg1 + 0xC);
         return;
     }
+}
+
+void *fn_801A9234(const char *arg0) {
+    extern int lbl_8055E5D0;
+    extern const char **lbl_8055E5CC;
+    int i;
+    int count;
+    const char **base;
+    const char *entry;
+    int type;
+    fn_801A7628();
+    count = lbl_8055E5D0;
+    i = 0;
+    base = lbl_8055E5CC;
+    entry = (const char *)base;
+    if (count > 0) {
+        for (; i < count; i++) {
+            type = *(int *)arg0;
+            if (type == *(int *)(entry + 8)) {
+                switch (type) {
+                case 4: goto check_word_a;
+                case 2: goto check_word_b;
+                case 3: goto check_word_c;
+                case 5: goto check_word_d;
+                case 6: goto check_word_e;
+                case 1: goto check_byte;
+                default: goto next;
+                }
+check_word_a:
+                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                    return (char *)base + i * 0x18;
+                goto next;
+check_word_b:
+                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                    return (char *)base + i * 0x18;
+                goto next;
+check_word_c:
+                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                    return (char *)base + i * 0x18;
+                goto next;
+check_word_d:
+                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                    return (char *)base + i * 0x18;
+                goto next;
+check_word_e:
+                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                    return (char *)base + i * 0x18;
+                goto next;
+check_byte:
+                if (*(unsigned char *)(arg0 + 8) == (unsigned char)*(int *)(entry + 0xC))
+                    return (char *)base + i * 0x18;
+            }
+next:
+            entry += 0x18;
+        }
+    }
+    return 0;
 }
 
