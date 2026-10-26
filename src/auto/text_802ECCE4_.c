@@ -19,6 +19,24 @@ extern s32 lbl_8055D300;
 extern void *fn_801284F8(s32, const char *);
 extern s32 fn_802ECD68(void *, void *, s32);
 #pragma scheduling reset
+extern unsigned char *fn_80029004(const unsigned char *, int);
+extern void strncpy(unsigned char *, const unsigned char *, int);
+#pragma dont_inline on
+void fn_802ECCE4(char *arg0, void *arg1, s32 arg2) {
+    s32 length = arg2;
+    unsigned char *match = fn_80029004((const unsigned char *)arg1, 0x2E);
+
+    if (match != 0) {
+        s32 matchLength = (s32)((match + 1) - (unsigned char *)arg1);
+        if (matchLength < length) {
+            length = matchLength;
+        }
+    }
+    strncpy((unsigned char *)arg0, (const unsigned char *)arg1, length);
+    *((unsigned char *)arg0 + length - 1) = 0;
+}
+#pragma dont_inline reset
+
 s32 fn_802ECD68(void *arg0, void *arg1, s32 arg2) {
     s32 result;
     memset(arg0, 0, 0x44);
