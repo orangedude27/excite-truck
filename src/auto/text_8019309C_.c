@@ -1769,7 +1769,7 @@ void fn_80198E7C(int index) {
       void fn_801964D0(void *);
   void fn_80128668(void *);
   void fn_80193138(int);
-    void fn_801964D0();
+    void fn_801964D0(void *);
     void fn_80128668(void *);
   void fn_80193138(int);
   extern float fn_801671FC(int);
