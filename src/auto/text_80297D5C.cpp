@@ -508,6 +508,7 @@ extern "C" void fn_80299504(void* arg0) {
     *(float*)((char*)arg0 + 0xF8) = value;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_80299544(void* arg0) {
     float dt = fn_801E7E24();
     float f5 = lbl_80564590;
@@ -522,7 +523,7 @@ extern "C" void fn_80299544(void* arg0) {
             if (f5 < val) {
                 val = f5;
             }
-            if (val <= f4) {
+            if (val < f4) {
                 val = f4;
             }
             *(float*)(p + 0x3C) = val;
@@ -531,7 +532,7 @@ extern "C" void fn_80299544(void* arg0) {
             if (f5 < val) {
                 val = f5;
             }
-            if (val <= f4) {
+            if (val < f4) {
                 val = f4;
             }
             *(float*)(p + 0x3C) = val;
@@ -541,7 +542,7 @@ extern "C" void fn_80299544(void* arg0) {
         }
     }
 }
-
+#pragma scheduling on
 extern "C" void fn_80299628(void* arg0) {
     fn_802C8BD0(*(int*)((char*)arg0 + 0x100));
     if (fn_802C8DBC(0x14) != 0) {
@@ -806,36 +807,37 @@ extern "C" void fn_8029A318(float *a, float *b, float *c, int x, int y, int z, i
 extern "C" void fn_8029A318(float*, float*, float*, int, int, int, int);
 #pragma dont_inline on
 extern "C" void fn_8029A60C(void* arg0, void* arg1) {
-    volatile float vectors[9];
+    struct Vectors {
+        float c[3];
+        float b[3];
+        float a[3];
+    };
+    volatile Vectors vectors;
     volatile unsigned int *src = (volatile unsigned int *)arg1;
     unsigned int v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
     float value = lbl_8056459C;
-    float *outA, *outB, *outC;
 
     v0 = src[0];
-    vectors[6] = value;
+    vectors.a[0] = value;
     v1 = src[1];
-    outB = (float *)&vectors[3];
-    vectors[7] = value;
-    outC = (float *)&vectors[0];
+    vectors.a[1] = value;
     v2 = src[2];
-    vectors[8] = value;
+    vectors.a[2] = value;
     v3 = src[3];
-    vectors[3] = value;
+    vectors.b[0] = value;
     v4 = src[4];
-    vectors[4] = value;
+    vectors.b[1] = value;
     v5 = src[5];
-    vectors[5] = value;
+    vectors.b[2] = value;
     v6 = src[6];
-    vectors[0] = value;
+    vectors.c[0] = value;
     v7 = src[7];
-    vectors[1] = value;
+    vectors.c[1] = value;
     v8 = src[8];
-    vectors[2] = value;
+    vectors.c[2] = value;
     v9 = src[9];
     v10 = src[10];
     v11 = src[11];
-    outA = (float *)&vectors[6];
 
     *(unsigned int *)((char *)arg0 + 0x00) = v0;
     *(unsigned int *)((char *)arg0 + 0x04) = v1;
@@ -850,8 +852,8 @@ extern "C" void fn_8029A60C(void* arg0, void* arg1) {
     *(unsigned int *)((char *)arg0 + 0x28) = v10;
     *(unsigned int *)((char *)arg0 + 0x2C) = v11;
 
-    ((void (*)(void*, float*, float*, float*))fn_8029A318)(arg0, outA, outB, outC);
-    fn_80298458((int)lbl_8055F7C0, *(int *)((char *)arg0 + 0x40), (void *)&vectors[6], (void *)&vectors[3], (void *)&vectors[0], *(short *)((char *)arg1 + 0x30));
+    ((void (*)(void*, float*, float*, float*))fn_8029A318)(arg0, (float *)&vectors.a[0], (float *)&vectors.b[0], (float *)&vectors.c[0]);
+    fn_80298458((int)lbl_8055F7C0, *(int *)((char *)arg0 + 0x40), (void *)&vectors.a[0], (void *)&vectors.b[0], (void *)&vectors.c[0], *(short *)((char *)arg1 + 0x30));
 }
 #pragma dont_inline reset
 extern "C" void* fn_8029A820(void *arg0, int arg1) {
@@ -1022,8 +1024,9 @@ extern "C" void fn_8029B1B8(void* arg0) {
     if (fn_80297D5C(p + 0x1EC, 0x10) == 0 || fn_80297D90(p + 0x1F0, *(int*)(p + 0x1EC)) == 0) {
         fn_802E317C(lbl_8034951C);
     }
+    int v = *(int*)(p + 0x1F0);
     *(float*)(p + 0x1F8) = lbl_80564590 / (float)*(int*)(p + 0x1EC);
-    *(int*)(p + 0x1F4) = 0x10 - (*(int*)(p + 0x1F0) << 1);
+    *(int*)(p + 0x1F4) = 0x10 - (v << 1);
 }
 #pragma dont_inline reset
 extern "C" void* fn_8029B938(void* arg0) {
@@ -1179,47 +1182,59 @@ void fn_8029BE54(void* arg0, void* arg1) {
     *(unsigned char*)(dst + 0x14) = d;
     *(int*)((char*)arg0 + 0xA4) = *(int*)((char*)arg0 + 0xA4) + 1;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_8029BEF8(void *out) {
-    unsigned char params[0x90];
-    fn_8028E61C(params);
-    *(int*)(params + 0x00) = 1;
-    *(int*)(params + 0x04) = 0xC0;
-    *(float*)(params + 0x08) = lbl_80564590;
-    *(float*)(params + 0x0C) = lbl_80564590;
-    *(float*)(params + 0x10) = lbl_80564590;
-    *(float*)(params + 0x14) = lbl_805645E4;
-    *(float*)(params + 0x18) = lbl_805645E4;
-    *(float*)(params + 0x1C) = lbl_805645E4;
-    *(float*)(params + 0x20) = lbl_80564598;
-    *(float*)(params + 0x24) = lbl_80564590;
-    *(float*)(params + 0x28) = lbl_805645E4;
-    *(float*)(params + 0x2C) = lbl_80564590;
-    *(float*)(params + 0x30) = lbl_805645E4;
-    *(float*)(params + 0x34) = lbl_805645E4;
-    *(float*)(params + 0x38) = lbl_805645E4;
-    *(float*)(params + 0x3C) = lbl_80564590;
-    *(float*)(params + 0x40) = lbl_80564590;
-    *(float*)(params + 0x44) = lbl_80564590;
-    *(float*)(params + 0x48) = lbl_8056459C;
-    *(float*)(params + 0x50) = lbl_805645A0;
-    *(float*)(params + 0x70) = lbl_80564598;
-    *(float*)(params + 0x74) = lbl_805645E4;
-    *(float*)(params + 0x78) = lbl_805645A8;
-    *(float*)(params + 0x7C) = lbl_805645AC;
-    *(float*)(params + 0x80) = lbl_80564590;
-    *(float*)(params + 0x88) = lbl_805645B0;
-    *(float*)(params + 0x90) = lbl_805645B0;
-    *(float*)(params + 0x84) = lbl_805645B4;
-    *(float*)(params + 0x8C) = lbl_805645B4;
-    *(float*)(params + 0x94) = lbl_805645B4;
-    *(int*)(params + 0x84) = 0x40;
-    params[0x88] = 1;
-    *(int*)(params + 0x44) = 2;
-    params[0x89] = 1;
-    *(void**)out = ((void* (*)(void*, void*, void*))fn_8028E2F8)(params, lbl_80349450, lbl_8055CA80);
+    unsigned char raw[0xA8];
+    fn_8028E61C(raw + 0x18);
+    float x = lbl_80564590;
+    int one = 1;
+    float y = lbl_805645E4;
+    int size = 0xC0;
+    float b0 = lbl_805645B0;
+    float b4 = lbl_805645B4;
+    int size2 = 0x40;
+    float c = lbl_80564598;
+    int count = 2;
+    float d = lbl_8056459C;
+    float e = lbl_805645A0;
+    float f = lbl_805645A8;
+    float g = lbl_805645AC;
+    *(int*)(raw + 0x18 + 0x04) = size;
+    *(float*)(raw + 0x18 + 0x08) = c;
+    *(float*)(raw + 0x18 + 0x0C) = x;
+    *(int*)(raw + 0x18 + 0x00) = one;
+    *(float*)(raw + 0x0C) = y;
+    *(float*)(raw + 0x10) = y;
+    *(float*)(raw + 0x14) = y;
+    *(float*)(raw + 0x18 + 0x10) = y;
+    *(float*)(raw + 0x18 + 0x14) = y;
+    *(float*)(raw + 0x18 + 0x18) = y;
+    *(float*)(raw + 0x00) = x;
+    *(float*)(raw + 0x04) = x;
+    *(float*)(raw + 0x08) = x;
+    *(float*)(raw + 0x18 + 0x1C) = x;
+    *(float*)(raw + 0x18 + 0x20) = x;
+    *(float*)(raw + 0x18 + 0x24) = x;
+    *(float*)(raw + 0x18 + 0x28) = d;
+    *(float*)(raw + 0x18 + 0x30) = e;
+    *(float*)(raw + 0x18 + 0x50) = c;
+    *(float*)(raw + 0x18 + 0x54) = y;
+    *(float*)(raw + 0x18 + 0x58) = f;
+    *(float*)(raw + 0x18 + 0x5C) = g;
+    *(float*)(raw + 0x18 + 0x60) = b0;
+    *(float*)(raw + 0x18 + 0x68) = b0;
+    *(float*)(raw + 0x18 + 0x70) = b0;
+    *(float*)(raw + 0x18 + 0x64) = b4;
+    *(float*)(raw + 0x18 + 0x6C) = b4;
+    *(float*)(raw + 0x18 + 0x74) = b4;
+    *(float*)(raw + 0x18 + 0x80) = x;
+    *(int*)(raw + 0x18 + 0x84) = size2;
+    raw[0x18 + 0x88] = one;
+    *(int*)(raw + 0x18 + 0x44) = count;
+    raw[0x18 + 0x89] = one;
+    *(void**)out = ((void* (*)(void*, void*, void*))fn_8028E2F8)(raw + 0x18, lbl_80349450, lbl_8055CA80);
 }
-
+#pragma scheduling on
 int fn_8029BFF8(void* arg0) {
     fn_8029BA94(lbl_8055F7D8, arg0);
     return 0x10;
