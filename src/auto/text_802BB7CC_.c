@@ -91,37 +91,55 @@ void fn_802BB958(short arg0, int arg1, unsigned char *arg2, unsigned char *arg3)
     } while (var_r28 < 6);
 }
 #pragma pop
+#pragma push
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void fn_802BBBC8(void) {
     extern int lbl_80564CF8;
     extern int lbl_80564CFC;
     extern int lbl_804C0098[];
     extern int lbl_804C00B0[];
-    extern signed char lbl_8055CF30[];
+    extern signed char lbl_8055CF30;
     extern signed char lbl_8055FA90;
     extern char lbl_8034AAB8[];
     extern char lbl_8034AAC4[];
-    extern void fn_801345D8(void *, int, char *, int, signed char);
+    extern void fn_801345D8(char *, int, char *, ...);
+    extern int fn_802E317C(char *, ...);
     extern int fn_802CA294(void);
-    extern int fn_802E317C(char *, int);
     extern signed char fn_802B05E4(void);
+    char sp10[0x20];
     int args[2];
-    int *out0 = lbl_804C0098;
-    int *out1 = lbl_804C00B0;
-    int i = 0;
+    int *var_r26;
+    int *var_r27;
+    int temp_r3;
+    int var_r25;
+    int var_r3;
+
     args[0] = lbl_80564CF8;
+    var_r27 = lbl_804C0098;
+    var_r26 = lbl_804C00B0;
     args[1] = lbl_80564CFC;
+    var_r25 = 0;
     do {
-        fn_801345D8(&args[0], 0x20, lbl_8034AAB8, args[i / 3], lbl_8055CF30[i % 3]);
-        *out0 = fn_802BB87C((int)&args[0]);
-        if (*out0 == -2) fn_802E317C(lbl_8034AAC4, i);
-        if (*out0 == -2) *out1 = 0;
-        else *out1 = fn_802CA294();
-        i++;
-        out0++;
-        out1++;
-    } while (i < 6);
+        fn_801345D8(sp10, 0x20, lbl_8034AAB8, args[var_r25 / 3], (&lbl_8055CF30)[var_r25 % 3]);
+        temp_r3 = fn_802BB87C((int)sp10);
+        *var_r27 = temp_r3;
+        if (temp_r3 == -2) {
+            fn_802E317C(lbl_8034AAC4, var_r25);
+        }
+        if (*var_r27 == -2) {
+            var_r3 = 0;
+        } else {
+            var_r3 = fn_802CA294();
+        }
+        var_r25 += 1;
+        *var_r26 = var_r3;
+        var_r27++;
+        var_r26++;
+    } while (var_r25 < 6);
     lbl_8055FA90 = fn_802B05E4();
 }
+#pragma pop
 #pragma push
 #pragma scheduling invalid_target
 #pragma inline_depth(0)
