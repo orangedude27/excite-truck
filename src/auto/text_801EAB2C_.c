@@ -12,6 +12,7 @@ extern void *memset(void *, int, unsigned int);
 extern void fn_802C6CF8(s32);
 extern s32 fn_802C6FC0(s32, s32, s32);
 extern void fn_801EAB2C(void*);
+extern void fn_801EABA8(void *, void *);
 extern void fn_801EAB80(void*, s32);
 extern u8 lbl_80339E3C[];
 
