@@ -754,10 +754,13 @@ void *fn_80237FF8(void *arg0, int arg1) {
         value = *(int *)((char *)arg0 + 4);
         *(void **)arg0 = lbl_80340970;
         if (value != 0) fn_8002F6AC((void *)value, fn_80237A08);
-        *(float *)((char *)arg0 + 0xC) = lbl_805636E0;
+        {
+            float initial = lbl_805636E0;
+            *(int *)((char *)arg0 + 4) = 0;
+            *(int *)((char *)arg0 + 8) = 0;
+            *(float *)((char *)arg0 + 0xC) = initial;
+        }
         if (arg1 > 0) fn_80128668(arg0);
-        *(int *)((char *)arg0 + 4) = 0;
-        *(int *)((char *)arg0 + 8) = 0;
     }
     return arg0;
 }
