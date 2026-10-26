@@ -7,6 +7,7 @@ extern "C" {
 extern void* lbl_8055EC98;
 extern void* lbl_8055EC94;
 extern const char lbl_8033B5D8[];
+extern const char lbl_8033B638[];
 extern const char lbl_8033B8C8[];
 extern const char lbl_8033B8EC[];
 extern const char lbl_8033B7F0[];
