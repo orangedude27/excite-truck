@@ -212,8 +212,28 @@ extern s32 *fn_80012870(s32, s32);
 extern void fn_8023B9EC(s32, s32, s32, s32, s32);
 extern void fn_8023BE38(int, int);
 extern const char lbl_80341340[];
+#pragma dont_inline on
 void fn_8023BEB8(s32 arg0, s32 arg1, s32 arg2) {
     fn_8023B9EC(arg0, arg1, arg2, 0, 0);
+}
+
+void fn_8023BEC4(s32 arg0, s32 arg1) {
+    s32 temp_r31;
+    s32 var_r29;
+    s32 var_r30;
+
+    temp_r31 = *(s32 *)((u8 *)fn_8001285C() + 4);
+    var_r30 = -1;
+    var_r29 = *(s32 *)((u8 *)fn_80012820(temp_r31) + 0x70);
+loop:
+    if (arg0 == *fn_80012870(temp_r31, var_r29)) {
+        var_r30 = var_r29;
+    }
+    if (var_r29 > 0) {
+        var_r29--;
+        goto loop;
+    }
+    fn_8023BEB8(temp_r31, var_r30, arg1);
 }
 
 void fn_8023BF4C(void *arg0) {
