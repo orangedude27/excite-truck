@@ -45,7 +45,7 @@ extern void *lbl_8055ED90;
 extern char lbl_8033BD3C;
 extern char lbl_8033BD4C;
 extern char lbl_8055B4C0[8];
-extern char lbl_8055B4C8[];
+extern char lbl_8055B4C8[8];
 extern "C" void *fn_80206BF8(int, void*);
 extern int lbl_8055ED80;
 extern float lbl_805631F8;
@@ -205,6 +205,17 @@ extern "C" void fn_80206750(void *arg0, int arg1, int arg2) {
     }
 }
 
+#pragma scheduling invalid_target
+extern "C" void fn_802067C8(void *arg0) {
+    struct Obj { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); };
+    int fieldEmpty = !*(int *)((u8 *)arg0 + 0x44);
+    u8 result = (u8)(*(u8 *)((u8 *)arg0 + 0x19) != 0 &&
+        (*(float *)((u8 *)arg0 + 8) > lbl_80563200 || fieldEmpty));
+    *(u8 *)((u8 *)arg0 + 0x18) = result;
+    if (result)
+        ((Obj *)arg0)->f3();
+}
+#pragma scheduling on
 extern "C" void fn_80206820(void) {
 }
 
@@ -356,15 +367,16 @@ extern "C" void fn_80206C70(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" float fn_80206CD0(void* arg0, float arg1) {
     float f = lbl_805631FC;
     float x = lbl_80563204 * *(float*)((char*)arg0 + 8);
-    if (f <= x) f = x;
+    if (f > x) f = x;
     float y = PSVECMag(arg0) - f;
-    if (y <= arg1) y = arg1;
+    if (y > arg1) y = arg1;
     return arg1 / y;
 }
-
+#pragma scheduling on
 extern "C" float PSVECDotProduct(const void*, const void*);
 extern float lbl_805631F8, lbl_805631FC, lbl_80563208;
 void fn_80206D3C(void* self, void* list, int count) {
@@ -568,6 +580,19 @@ extern "C" void *fn_802077A4(int arg0, int arg1, int arg2, int arg3) {
     }
     return obj;
 }
+
+extern "C" void *fn_80207848(int arg0, int arg1) {
+    struct Callback { virtual ~Callback(); };
+    void *obj = (void *)fn_801284F8(0x70, lbl_8055B4C8);
+    if (obj != 0)
+        obj = fn_802072E4(obj, arg0, arg1);
+    if (obj != 0 && *(int *)((char *)obj + 0xC) == 0) {
+        delete (Callback *)obj;
+        obj = 0;
+    }
+    return obj;
+}
+
 #pragma scheduling invalid_target
 extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
     void *value = arg2;
