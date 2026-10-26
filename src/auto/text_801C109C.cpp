@@ -110,11 +110,13 @@ void fn_801C1B60(int arg0);
 extern "C" void fn_801C1218(void);
 extern "C" void fn_801C1364(int);
 extern "C" void fn_801C1320(void*);
+#pragma dont_inline on
 extern "C" void fn_801C1B60(int arg0) {
     fn_801C1218();
     fn_801C1364(arg0);
     fn_801C1320((void*)arg0);
 }
+#pragma dont_inline reset
 #pragma force_active reset
 extern "C" void fn_801C1B9C(void) {
 }
@@ -242,27 +244,38 @@ check2:
 extern float lbl_80562930;
 extern float lbl_80562928;
 extern "C" float PSQUATMultiply(void *, void *, void *);
-void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
-    float x = arg3[0] * lbl_80562930;
-    float y = arg3[1] * lbl_80562930;
-    float z = arg3[2] * lbl_80562930;
+extern "C" void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
+    float f5 = arg3[0] * lbl_80562930;
+    float f4 = arg3[1] * lbl_80562930;
+    float f0 = arg3[2] * lbl_80562930;
+    float a0 = arg1[0];
+    float a1 = arg1[1];
+    float a2 = arg1[2];
+    float b0 = arg2[0];
+    float b1 = arg2[1];
+    float b2 = arg2[2];
     int i = 0;
-    int offset = 0;
-    *(float *)((char *)arg0 + 0x58) = arg1[0];
-    *(float *)((char *)arg0 + 0x5C) = arg1[1];
-    *(float *)((char *)arg0 + 0x60) = arg1[2];
-    *(float *)((char *)arg0 + 0x64) = arg2[0];
-    *(float *)((char *)arg0 + 0x68) = arg2[1];
-    *(float *)((char *)arg0 + 0x6C) = arg2[2];
-    do {
-        float *dst = *(float **)((char *)arg0 + 0x2C);
-        float *p = (float *)((char *)dst + offset);
+    int off = 0;
+
+    *(float *)((char *)arg0 + 0x58) = a0;
+    *(float *)((char *)arg0 + 0x5C) = a1;
+    *(float *)((char *)arg0 + 0x60) = a2;
+    *(float *)((char *)arg0 + 0x64) = b0;
+    *(float *)((char *)arg0 + 0x68) = b1;
+    *(float *)((char *)arg0 + 0x6C) = b2;
+    goto check;
+loop:
+    {
+        float *p = (float *)(*(char **)((char *)arg0 + 0x2C) + off);
         ++i;
-        p[0] += x;
-        offset += 12;
-        p[1] += y;
-        p[2] += z;
-    } while (i < *(int *)((char *)arg0 + 0x14));
+        p[0] += f5;
+        off += 0xC;
+        p[1] += f4;
+        p[2] += f0;
+    }
+check:
+    if (i < *(int *)((char *)arg0 + 0x14))
+        goto loop;
     fn_801C1B60((int)arg0);
 }
 
