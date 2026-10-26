@@ -495,20 +495,22 @@ void fn_8025419C(void *arg0) {
  fn_802543FC(arg0);
 }
 
+extern void fn_802C7AE0(s32, void *, s32, float);
+#pragma scheduling invalid_target
 void fn_80254354(void *arg0) {
     extern float lbl_80563A2C;
-    s32 var_r0, i;
     u8 *p;
+    s32 i;
+    s32 var_r0;
     fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x14), (u8 *)arg0 + 0x598, -1, lbl_80563A2C);
     p = (u8 *)arg0 + 0x5D8;
     i = 0;
     do {
         var_r0 = 0;
-        if (i == 0) {
-            var_r0 = 0;
-        }
-        if (i == 1) {
-            var_r0 = 1;
+        if (i != 0) {
+            if (i == 1) {
+                var_r0 = 1;
+            }
         }
         if (var_r0 != 0)
             fn_801F1474(*(s32 *)((u8 *)arg0 + 0x18), p, lbl_80563A2C);
@@ -518,7 +520,7 @@ void fn_80254354(void *arg0) {
         p += 0x30;
     } while (i < 4);
 }
-
+#pragma scheduling on
 void fn_802543FC(void *arg0) {
     extern void *fn_802C86DC(void);
     extern s32 fn_802C7A34(s32, void *, s32);
