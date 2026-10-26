@@ -268,8 +268,7 @@ void *fn_801C3C80(void) {
     register char *entry;
     register s32 max;
     register s32 count;
-    entry = (char *)lbl_8055E7F8 + lbl_8055E7F0 * 0x30C;
-    lbl_8055E7F0++;
+    entry = (char *)lbl_8055E7F8 + lbl_8055E7F0++ * 0x30C;
     if ((u8)lbl_8055E80D != 0) {
         *(f32 *)entry = lbl_8055E810;
     } else {
@@ -1270,13 +1269,12 @@ void fn_801C7F64(void) {
     *(volatile u8 *)&lbl_8055E83A = 1;
 }
 
+#pragma scheduling invalid_target
 void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
-    register void *obj;
-    Unk_80437D88 *base;
-    f32 *v;
+    Unk_80437D88 *base = &lbl_80437D88;
+    void *obj;
     lbl_8055E83A = 0;
-    base = &lbl_80437D88;
     obj = fn_801C3C80();
     *(s32 *)((char *)obj + 8) = 6;
     *(s32 *)((char *)obj + 0xC) = lbl_8055E850;
@@ -1284,14 +1282,13 @@ void fn_801C7FE4(void) {
     strcpy((char *)obj + 0x114, (char *)base + 0x5F8);
     *(s32 *)((char *)obj + 0x10) = fn_801C3954((s32)obj + 0x14);
     *(s32 *)((char *)obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
-    v = (f32 *)((char *)base + 0x4E0);
     *(f32 *)((char *)obj + 0x214) = *(f32 *)((char *)base + 0x4E0);
-    *(f32 *)((char *)obj + 0x218) = v[1];
-    *(f32 *)((char *)obj + 0x21C) = v[2];
+    *(f32 *)((char *)obj + 0x218) = *(f32 *)((char *)base + 0x4E4);
+    *(f32 *)((char *)obj + 0x21C) = *(f32 *)((char *)base + 0x4E8);
     sprintf((char *)base + 0x238, lbl_80336FB0, *(f32 *)obj);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
-
+#pragma scheduling on
 extern f32 lbl_805629B4;
 extern f32 lbl_8055E85C, lbl_8055E860;
 extern s32 lbl_8055E854;
