@@ -906,6 +906,78 @@ extern "C" char lbl_8032CC64[];
 extern "C" f32 fn_80141C9C(f32 arg0) {
     return floor(arg0);
 }
+
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_80141CC0(char *arg0) {
+    {
+        char *src = (char *)fn_80131234(lbl_8032CC1C);
+        char c;
+        long len = 20;
+        char *dst = arg0 + 0xC6;
+
+        goto copy_a;
+    check_a:
+        if (--len > 0)
+            goto copy_a;
+        dst[-1] = 0;
+        goto done_a;
+    copy_a:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0)
+            goto done_a;
+        goto check_a;
+    done_a:
+        ;
+    }
+
+    {
+        char *src = (char *)fn_80131234(lbl_8032CC40);
+        char c;
+        long len = 20;
+        char *dst = arg0 + 0xDA;
+
+        goto copy_b;
+    check_b:
+        if (--len > 0)
+            goto copy_b;
+        dst[-1] = 0;
+        goto done_b;
+    copy_b:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0)
+            goto done_b;
+        goto check_b;
+    done_b:
+        ;
+    }
+
+    {
+        char c;
+        char *src = lbl_80559D80;
+        long len = 20;
+        char *dst = arg0 + 0xEE;
+
+        goto copy_c;
+    check_c:
+        if (--len > 0)
+            goto copy_c;
+        dst[-1] = 0;
+        goto done_c;
+    copy_c:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0)
+            goto done_c;
+        goto check_c;
+    done_c:
+        ;
+    }
+}
+#pragma pop
+
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_80141DAC(char *arg0) {
