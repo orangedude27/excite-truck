@@ -416,23 +416,31 @@ void fn_8014ACD4(void) {
 
 }
 
-s32 fn_8014ACD8(void *arg0, s32 arg1) {
-    Obj8014ACD8 *obj;
-    s32 result;
-    obj = (Obj8014ACD8 *)fn_801B2ED0(arg1);
-    obj = (Obj8014ACD8 *)obj->vtable->fn();
-    result = 0;
-    if (obj->state != 3 && obj->flags == 0) {
-        result = 1;
-    }
-    if (result != 0 && *(f32 *)((u8 *)arg0 + 0x8D4) <= *(f32 *)((u8 *)arg0 + 0x8DC)) {
-        result = 1;
-    } else {
-        result = 0;
+#pragma cplusplus on
+extern "C" s32 fn_8014ACD8(void *arg0, s32 arg1) {
+    class Obj {
+    public:
+        virtual void *v0();
+        virtual void *v1();
+        virtual void *v2();
+        u8 pad[0x20];
+        s32 state;
+        u8 flags;
+    };
+    Obj *obj = (Obj *)fn_801B2ED0(arg1);
+    obj = (Obj *)obj->v2();
+    register s32 result = 0;
+    register s32 valid = 0;
+    if (obj->state != 3 && obj->flags == 0)
+        valid = 1;
+    if (valid != 0) {
+        s32 greater = *(f32 *)((u8 *)arg0 + 0x8D4) > *(f32 *)((u8 *)arg0 + 0x8DC);
+        if (greater == 0)
+            result = 1;
     }
     return result;
 }
-
+#pragma cplusplus reset
 s32 fn_8014AD64(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x108); }
 
 f32 fn_8014AD6C(void *arg0) {
