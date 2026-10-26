@@ -147,17 +147,17 @@ extern "C" int fn_8029C190(void*);
         }
     }
 
-    void fn_80298160(void) {
-        float value = fn_801E7E24();
-        if (__fabsf(value) != lbl_80558DC4) {
-            fn_80298B48(lbl_8055F7C8);
-            fn_8029BDC4(lbl_8055F7DC);
-            if (lbl_8055F7C4 != 0) fn_80299544();
-            if (lbl_8055F7C0 != 0) fn_802982C0(lbl_8055F7C0);
-            if (lbl_8055F7CC != 0) fn_8029998C(lbl_8055F7CC);
-            if (lbl_8055F7D0 != 0) fn_8029A17C();
-        }
+extern "C" void fn_80298160(void) {
+    float value = fn_801E7E24();
+    if (__fabsf(value) > lbl_80558DC4) {
+        fn_80298B48(lbl_8055F7C8);
+        fn_8029BDC4(lbl_8055F7DC);
+        if (lbl_8055F7C4 != 0) fn_80299544();
+        if (lbl_8055F7C0 != 0) fn_802982C0(lbl_8055F7C0);
+        if (lbl_8055F7CC != 0) fn_8029998C(lbl_8055F7CC);
+        if (lbl_8055F7D0 != 0) ((void (*)(void*))fn_8029A17C)(lbl_8055F7D0);
     }
+}
 
     extern "C" void* fn_802981EC(unsigned int size, float value) {
         return (void*)fn_80299A04(lbl_8055F7CC, size, value);
@@ -683,15 +683,15 @@ extern "C" int fn_8029A290(void* arg0, void* arg1) {
     extern float PSVECSquareDistance(const void*, const void*);
     extern float PSVECDotProduct(const void*, const void*);
     extern float lbl_80564604;
-    float threshold = *(volatile float*)&lbl_80564594;
+    register double threshold = lbl_80564594;
     int result = 1;
     if (PSVECSquareDistance((char*)arg0 + 0x24, (char*)arg1 + 0x24) > threshold) {
         goto done;
     }
-    if (PSVECDotProduct(arg0, arg1) < lbl_80564604) {
-        goto done;
+    int below = PSVECDotProduct(arg0, arg1) < lbl_80564604;
+    if (below == 0) {
+        result = 0;
     }
-    result = 0;
 done:
     return result;
 }
