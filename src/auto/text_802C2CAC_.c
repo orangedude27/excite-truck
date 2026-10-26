@@ -190,7 +190,7 @@ s32 fn_802C3170(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4, s32 *arg
 }
 
 extern const char lbl_8034B060[];
-extern void fn_802C3320(void);
+extern void fn_802C3320();
 extern void fn_802C33A8(s32, s32, u32);
 extern void fn_802E317C(const char *, ...);
 void fn_802C32B8(s32 arg0, s32 arg1, u32 arg2) {
