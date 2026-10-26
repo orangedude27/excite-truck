@@ -172,11 +172,11 @@ void fn_802CEC50(int arg0) {
     extern float lbl_80564F80, lbl_80564F84;
     unsigned long long now;
     unsigned long long delta;
-    unsigned int oldHigh;
     unsigned int oldLow;
-    float difference;
-    float previous;
+    unsigned int oldHigh;
     float value;
+    float previous;
+    float difference;
 
     switch (arg0) {
     case 1:
@@ -199,7 +199,7 @@ void fn_802CEC50(int arg0) {
         fn_802D3900();
         break;
     default:
-        fn_802E317C(lbl_8034BE20, (int)arg0);
+        fn_802E317C(lbl_8034BE20, arg0);
         break;
     }
 }
@@ -229,27 +229,65 @@ void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     state[1] = 1;
 }
 
+void fn_802CEF90(void) {
+    extern void GXGetGPStatus(char *, char *, char *, char *, char *);
+    extern void *GXGetCurrentGXThread(void);
+    extern void OSReport(const char *, ...);
+    extern void OSPanic(const char *, int, const char *, ...);
+    extern void fn_802CED78(void);
+    extern char lbl_8034BF34[];
+    extern char lbl_8034BF70[];
+    extern char lbl_8055D0F8[];
+    extern unsigned char lbl_8055FD34;
+    extern int lbl_8055FD38;
+    extern unsigned int lbl_8055FDB8;
+    extern unsigned int lbl_8055FDBC;
+    unsigned char status;
+    unsigned char dummy;
+    unsigned int thread;
+
+    if (lbl_8055FD34 != 0) {
+        lbl_8055FD38++;
+    }
+    GXGetGPStatus((char *)&status, (char *)&dummy, (char *)&dummy, (char *)&dummy, (char *)&dummy);
+    thread = (unsigned int)GXGetCurrentGXThread();
+    if (status != 0 && thread == lbl_8055FDBC) {
+        lbl_8055FDB8++;
+        if (lbl_8055FDB8 >= 10) {
+            OSReport(lbl_8034BF34);
+            fn_802CED78();
+            OSPanic(lbl_8055D0F8, 0x201, lbl_8034BF70);
+        }
+    } else {
+        lbl_8055FDBC = thread;
+        lbl_8055FDB8 = 0;
+    }
+}
+
 void fn_802CF048(int arg0) {
+    extern void GXSetGPMetric(int, int);
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC010000;
+
     if (arg0 != 0) {
         GXSetGPMetric(0x23, 0x16);
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = 0x2402C004;
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = 0x23000020;
-        *(volatile unsigned char *)0xCC008000 = 0x10;
-        *(volatile unsigned short *)0xCC008000 = 0;
-        *(volatile unsigned short *)0xCC008000 = 0x1006;
-        *(volatile unsigned int *)0xCC008000 = 0x84400;
+        *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x61;
+        *(volatile unsigned int *)(fifo - 0x2000) = 0x2402C004;
+        *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x61;
+        *(volatile unsigned int *)(fifo - 0x2000) = 0x23000020;
+        *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x10;
+        *(volatile unsigned short *)((volatile unsigned char *)fifo - 0x8000) = 0;
+        *(volatile unsigned short *)((volatile unsigned char *)fifo - 0x8000) = 0x1006;
+        *(volatile unsigned int *)(fifo - 0x2000) = 0x84400;
         return;
     }
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = 0x24000000;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = 0x23000000;
-    *(volatile unsigned char *)0xCC008000 = 0x10;
-    *(volatile unsigned short *)0xCC008000 = 0;
-    *(volatile unsigned short *)0xCC008000 = 0x1006;
-    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x61;
+    *(volatile unsigned int *)(fifo - 0x2000) = 0x24000000;
+    *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x61;
+    *(volatile unsigned int *)(fifo - 0x2000) = 0x23000000;
+    *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x10;
+    *(volatile unsigned short *)((volatile unsigned char *)fifo - 0x8000) = 0;
+    *(volatile unsigned short *)((volatile unsigned char *)fifo - 0x8000) = 0x1006;
+    *(volatile unsigned int *)(fifo - 0x2000) = 0;
 }
 
 #pragma dont_inline on
@@ -665,6 +703,7 @@ void fn_802D02F8(int arg0, signed char arg1) {
 
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
     extern float lbl_80564F94;
     extern unsigned char lbl_804C9778[];
@@ -722,7 +761,7 @@ int fn_802D0514(void *source) {
     return next;
 }
 
-void fn_802D07E4(unsigned char* arg0, int arg1) {
+void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
     extern int lbl_8055D0BC, lbl_8055D0C0;
     extern signed char lbl_8055FD90;
@@ -731,9 +770,8 @@ void fn_802D07E4(unsigned char* arg0, int arg1) {
     extern char lbl_8034C0EC[], lbl_8034C108[];
     extern void fn_802E30C8(const char*, ...);
     unsigned char* out;
-    unsigned char* in;
-    unsigned char c;
-    int n;
+    char c;
+    register int n;
     if ((int)lbl_8055D0B8 >= 0) {
         fn_802E30C8(lbl_8034C0EC);
         lbl_8055D0B8 = lbl_8055D0BC * lbl_8055D0C0;
@@ -743,13 +781,11 @@ void fn_802D07E4(unsigned char* arg0, int arg1) {
     out = lbl_804C9830;
     n = 0x100;
     do { n--; } while (n > 0);
-    out[-1] = 0;
-    in = arg0;
+    out[-1] = (unsigned char)n;
     do {
-        c = *in++;
+        c = *arg0++;
         *out++ = c;
-        if ((signed char)c == 0) break;
-    } while (1);
+    } while (c != 0);
     if (arg1 != 0) {
         fn_802E30C8(lbl_8034C108, lbl_8055D0BC * lbl_804C9760[2], lbl_8055D0C0 * lbl_804C9760[3], lbl_804C9760, lbl_8055D0BC);
         lbl_8055D0B8 = 0;
@@ -792,6 +828,50 @@ void fn_802D08CC(int arg0) {
 }
 
 void fn_802D0910(int, int, int, int, int, int) {
+}
+
+void fn_802D0914(int arg0, short arg1, short arg2) {
+    extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
+    unsigned char buffer[0x12];
+    unsigned char b8;
+    unsigned char b9;
+    unsigned char b10;
+    unsigned char b11;
+    unsigned char b12;
+    unsigned char b13;
+    unsigned char b14;
+    unsigned char b15;
+
+    memset(buffer, 0, 0x12);
+    *(unsigned short *)(buffer + 8) = 0;
+    *(unsigned short *)(buffer + 10) = 0;
+    *(unsigned short *)(buffer + 12) = arg1;
+    *(unsigned short *)(buffer + 14) = arg2;
+
+    b8 = buffer[8];
+    b9 = buffer[9];
+    b10 = buffer[10];
+    b11 = buffer[11];
+    b12 = buffer[12];
+    b13 = buffer[13];
+    b14 = buffer[14];
+    b15 = buffer[15];
+
+    buffer[0] = 0;
+    buffer[1] = 0;
+    buffer[2] = 2;
+    buffer[8] = b9;
+    buffer[9] = b8;
+    buffer[10] = b11;
+    buffer[11] = b10;
+    buffer[12] = b13;
+    buffer[13] = b12;
+    buffer[14] = b15;
+    buffer[15] = b14;
+    buffer[16] = 0x18;
+    buffer[17] = 0;
+
+    fn_802E3A64(arg0, buffer, 0x12, b13, b11, b9, 0x18, 2);
 }
 
 void fn_802D09E4(void) {
@@ -958,29 +1038,26 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802D1B58(void) {
-    float m[8];
-    float f = lbl_80564F94;
+    int m[8];
     float *t = (float *)lbl_804C5690;
-    float a = -t[1];
-    float b = -t[4];
-    float c = -t[7];
     int *p = (int *)lbl_802FAC70;
-
-    *(int *)&m[0] = p[0];
-    *(int *)&m[1] = p[1];
-    *(int *)&m[2] = p[2];
-    *(int *)&m[3] = p[3];
-    *(int *)&m[4] = p[4];
-    *(int *)&m[5] = p[5];
-    *(int *)&m[6] = p[6];
-    *(int *)&m[7] = p[7];
-    m[0] = f * a;
-    m[1] = f * b;
-    m[2] = f * c;
-    GXLoadTexMtxImm(m, 0x21, 1);
+    m[0] = p[0];
+    m[1] = p[1];
+    m[2] = p[2];
+    m[3] = p[3];
+    m[4] = p[4];
+    m[5] = p[5];
+    m[6] = p[6];
+    m[7] = p[7];
+    *(float *)&m[0] = 0.5f * -t[1];
+    *(float *)&m[1] = 0.5f * -t[4];
+    *(float *)&m[2] = 0.5f * -t[7];
+    GXLoadTexMtxImm((float *)m, 0x21, 1);
 }
-
+#pragma pop
 extern float lbl_80564FCC;
 extern float lbl_80564FDC;
 #pragma push
@@ -1486,29 +1563,37 @@ void fn_802D3900(void) {
 
 extern char lbl_8034C1E4[];
 extern float lbl_80564F88;
+#pragma processor 7400
 void *fn_802D39A4(float value) {
     unsigned char *p;
-    int i;
-    unsigned char *found;
-    p = lbl_804C9984;
-    i = 0;
-    found = 0;
-    do {
+    int index = 0;
+    unsigned char *found = 0;
+    int count;
+    int active;
+    float initialValue;
+
+    p = (unsigned char *)lbl_804C9984;
+    for (count = 0; count < 0x40; ++count) {
         if (p[0xC] == 0) {
-            found = lbl_804C9984 + i * 0x18;
+            found = (unsigned char *)lbl_804C9984 + index * 0x18;
             break;
         }
         p += 0x18;
-        i++;
-    } while (i < 0x40);
-    if (found == 0) fn_802E317C(lbl_8034C1E4);
-    found[0xC] = 1;
+        index++;
+    }
+    if (found == 0)
+        fn_802E317C(lbl_8034C1E4);
+#pragma scheduling off
+    active = 1;
+    initialValue = lbl_80564F88;
+    found[0xC] = active;
     found[0xD] = 0;
     *(float *)(found + 0x10) = value;
-    *(float *)(found + 0x14) = lbl_80564F88;
+    *(float *)(found + 0x14) = initialValue;
+#pragma scheduling on
     return found;
 }
-
+#pragma processor gekko
 void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
 
 extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE8, lbl_80564FEC;
