@@ -145,11 +145,11 @@ void fn_80236918(void* alarm) {
 }
 
 extern void fn_80237A9C(void);
-extern void fn_80237DA0(void *, char *);
+extern void fn_80237DA0(char *, void *);
 extern int fn_80237EFC();
 void fn_80236950(void) { fn_80237A9C(); }
 
-void fn_80236954(void *arg0, char *arg1) { fn_80237DA0(arg0, arg1); }
+void fn_80236954(char *arg0, void *arg1) { fn_80237DA0(arg0, arg1); }
 
 extern void fn_80237E7C(char *, int);
 void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
@@ -738,7 +738,7 @@ void fn_80237D00(void *arg0) {
 
 #pragma use_lmw_stmw off
 extern float fn_8023659C();
-void fn_80237DA0(void *unused, char *name) {
+void fn_80237DA0(char *name, void *unused) {
     char *table = *(char **)(lbl_8055F0C0 + 0x30);
     int outer = 0;
     int outerOffset = 0;
@@ -778,6 +778,38 @@ void fn_80237E7C(char *arg0, int unused) {
         i++;
     }
 }
+
+int fn_80237EFC(char *arg0) {
+    int found = 0;
+    TrailMgr *manager = *(TrailMgr **)((char *)lbl_8055F0C0 + 0x30);
+    int active = 0;
+    float currentTime = fn_8023659C();
+    int offset = 0;
+    int i;
+
+    for (i = 0; i < manager->count; i++, offset += 0x34) {
+        TrailEntry *entry = (TrailEntry *)((char *)manager->entries + offset);
+        if (stricmp((char *)entry, arg0) == 0) {
+            if (entry->active != 0) {
+                float keyTime;
+                found = 1;
+                if (entry->keyCount > 0)
+                    keyTime = entry->keys[entry->keyCount - 1].time;
+                else
+                    keyTime = lbl_805636E0;
+                if (keyTime > currentTime - entry->field30)
+                    active = 1;
+            }
+        }
+    }
+    if (found != 0) {
+        if (active != 0)
+            return 1;
+        return 2;
+    }
+    return 0;
+}
+
 #pragma use_lmw_stmw reset
 void *fn_80237FF8(void *arg0, int arg1) {
     int value;
