@@ -26,7 +26,7 @@ extern void fn_8001BF0C(int, f32);
 extern int fn_80161C38(void);
 extern void fn_801CD7BC(int, int, f32);
 extern s32 *lbl_8055E884;
-extern unsigned char *fn_801EA9A0(void);
+extern unsigned char *fn_801EA9A0();
 extern int fn_801EA994(void);
 extern void fn_801CCBA4(void);
 extern void fn_801CCAEC(int);
