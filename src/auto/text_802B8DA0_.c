@@ -87,6 +87,44 @@ void *fn_802B8EB8(s32 arg0, s32 arg1, u32 arg2, s32 arg3) {
     return fn_802BE844(shortX, (s16)y, half);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void *fn_802B8EF0(int arg0, void *arg1) {
+    void **table;
+    int index;
+    void *entry;
+    int state;
+    char *name;
+    void **items;
+    int count;
+    table = (void **)lbl_804C0088;
+    index = arg0;
+    entry = table[index];
+    if (entry == 0) {
+        name = &lbl_8055CEC8;
+        entry = fn_801284F8(0x10, &lbl_8055CECC);
+        if (entry != 0) {
+            *(char **)entry = name;
+            arg1 = *(void **)((char *)arg1 + 8);
+            if ((signed char)*name != 0)
+                state = fn_802B110C((void *)fn_802B8E50, name);
+            else
+                state = -2;
+            *(int *)((char *)entry + 4) = state;
+            if (state == -2 && (signed char)*name != 0)
+                fn_802E317C((char *)&lbl_8034AA2C, name);
+            *(int *)((char *)entry + 0xC) = 0;
+            *(void **)((char *)entry + 8) = arg1;
+        }
+        table[index] = entry;
+        items = *(void ***)lbl_804BFFF4;
+        count = *(int *)(lbl_804BFFF4 + 4);
+        *(int *)(lbl_804BFFF4 + 4) = count + 1;
+        items[count] = entry;
+    }
+    return table[index];
+}
+#pragma pop
 int fn_802B9100(void) {
     return 0;
 }
@@ -210,17 +248,17 @@ void fn_802B9D08(void) {
     register void *node;
     register char *base = lbl_804BFFE8;
     register int zero;
-    register volatile int *list;
+    register void **list;
     fn_802B9DD0(&lbl_8055FA7C);
     fn_802B9E4C(&lbl_8055FA78);
-    list = (volatile int *)(base + 0x0C);
+    list = (void **)(base + 0x0C);
     i = 0;
     offset = 0;
     zero = 0;
-    while (i < list[1]) {
-        node = *(void **)((char *)*(void **)(base + 0x0C) + offset);
+    while (i < ((int *)list)[1]) {
+        node = *(void **)((char *)list[0] + offset);
         if (node != 0) {
-            *(volatile int *)((char *)node + 0x0C) = zero;
+            *(int *)((char *)node + 0x0C) = zero;
             if (*(int *)((char *)node + 4) != -2) {
                 fn_802CAC54();
             }
@@ -229,9 +267,12 @@ void fn_802B9D08(void) {
         offset += 4;
         i++;
     }
-    list[1] = zero;
-    *(int *)(base + 0x68) = zero;
-    fn_802B9EC8(&lbl_8055FA80);
+    ((int *)list)[1] = zero;
+    {
+        char *clear = base + 0x64;
+        *(int *)(clear + 4) = zero;
+        ((void (*)(void *, void *))fn_802B9EC8)(&lbl_8055FA80, clear);
+    }
     memset(base + 0xA0, 0, 0x10);
     fn_802B9F38(&lbl_8055FA74);
 }
@@ -522,7 +563,7 @@ extern "C" void *fn_802BA580(void **arg0, void *arg1, float scale) {
     extern void fn_802BA848(void *,void *,void *,void *);
     extern float lbl_80564CDC, lbl_80564CC4, lbl_80564CD8;
     extern float lbl_80564CE0, lbl_80564CE4, lbl_80564CE8, lbl_80564CCC;
-    extern int lbl_8055CF04, lbl_8055CEF8, lbl_8055CECC, lbl_8034AA2C;
+    extern int lbl_8055CF04, lbl_8055CEF8, lbl_8055CECC;
     float j[3], h[3];
     union { unsigned long long bits; float v[2]; } value;
     float g[2], f[2], e[2], d[2], c[2], b[2], a[2];
