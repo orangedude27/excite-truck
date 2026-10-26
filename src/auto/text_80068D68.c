@@ -376,6 +376,17 @@ void fn_80068E08(s32 arg0) {
     ((void (*)(s32))(*(u32 *)(lbl_80392960 + 0x678)))(arg0);
 }
 
+extern char lbl_803131C4[];
+void SyncFlushCallback(s32 arg0) {
+    DBPrintf_8006CFA8(lbl_803131C4, arg0, lbl_80392960[0xC]);
+    if (lbl_80392960[0xC] != 0) {
+        if (arg0 == 0)
+            lbl_80392960[0xC] = 0x17;
+        else
+            lbl_80392960[0xC] = 0xFF;
+    }
+}
+
 void DeleteFlushCallback(s32 arg0) {
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern u8 lbl_803131E8[];
@@ -4860,6 +4871,24 @@ tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
     return BTM_SUCCESS;
 }
 
+void btm_pm_reset(void)
+{
+    int xx;
+    tBTM_PM_STATUS_CBACK *cb = NULL;
+    if ((btm_cb.pm_pend_id != BTM_PM_SET_ONLY_ID) &&
+        (btm_cb.pm_reg_db[btm_cb.pm_pend_id].mask & BTM_PM_REG_NOTIF)) {
+        cb = btm_cb.pm_reg_db[btm_cb.pm_pend_id].cback;
+    }
+    btm_cb.pm_pend_link = MAX_L2CAP_LINKS;
+    for (xx = 0; xx < BTM_MAX_PM_RECORDS; xx++) {
+        btm_cb.pm_reg_db[xx].mask = BTM_PM_REC_NOT_USED;
+    }
+    if (cb != NULL) {
+        (*cb)(btm_cb.acl_db[btm_cb.pm_pend_link].remote_addr,
+              BTM_PM_STS_ERROR, BTM_DEV_RESET, 0);
+    }
+}
+
 void btm_pm_sm_alloc(u8 index) {
     u8 *entry;
     entry = lbl_803C0F78 + 0x4cc + index * 0x22;
@@ -8094,18 +8123,16 @@ s32 btsnd_hcic_write_policy_set_80085668(u16 arg0, u16 arg1) {
     return 1;
 }
 
-BOOLEAN btsnd_hcic_write_cur_iac_lap(UINT8 num_cur_iac, LAP cur_iac_lap[]) {
-    UINT8 *p_buf = GKI_getpoolbuf(2);
-    UINT8 *p;
-    UINT8 i;
-    if (p_buf == NULL) return FALSE;
+void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, LAP *cur_iac_lap) {
+    u8 *p = p_buf + 0xC;
+    u8 i;
+
     *(u16 *)(p_buf + 2) = (num_cur_iac * 3) + 4;
     *(u16 *)(p_buf + 4) = 0;
     p_buf[8] = 0x3A;
     p_buf[9] = 0xC;
     p_buf[10] = (num_cur_iac * 3) + 1;
     p_buf[11] = num_cur_iac;
-    p = p_buf + 0xC;
     for (i = 0; i < num_cur_iac; i++) {
         p[0] = cur_iac_lap[i][2];
         p[1] = cur_iac_lap[i][1];
@@ -8113,7 +8140,6 @@ BOOLEAN btsnd_hcic_write_cur_iac_lap(UINT8 num_cur_iac, LAP cur_iac_lap[]) {
         p += 3;
     }
     btu_hcif_send_cmd(p_buf);
-    return TRUE;
 }
 
 s32 btsnd_hcic_inq_cancel_8008576C(void) {
@@ -12691,6 +12717,15 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 arg1) {
         return channel;
     }
     return 0;
+}
+
+void rfc_timer_start(void *arg0, u16 arg1) {
+    u8 *mcb = (u8 *)arg0;
+    if (lbl_803C4828[0x414] >= 4) {
+        fn_80070954(0x90003, lbl_80319EC0, arg1);
+    }
+    *(void **)(mcb + 0x10) = mcb;
+    btu_start_timer(mcb, 0xB, arg1);
 }
 
 void rfc_timer_stop(void *arg0) {
