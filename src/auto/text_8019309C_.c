@@ -795,18 +795,18 @@ void fn_801945F8(void *arg0) {
     }
     fn_80194590(arg0);
 }
-#pragma dont_inline reset
+#pragma scheduling invalid_target
 void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
-    float x, y;
-    double pair;
-    x = a[1] + t * (b[1] - a[1]);
-    y = a[0] + t * (b[0] - a[0]);
-    pair = (double)y;
-    out[0] = (float)pair;
-    out[1] = x;
+    volatile double pair;
+    union { double d; float f[2]; } temp;
+    temp.f[1] = a[1] + t * (b[1] - a[1]);
+    temp.f[0] = a[0] + t * (b[0] - a[0]);
+    pair = temp.d;
+    out[0] = ((float *)&pair)[0];
+    out[1] = ((float *)&pair)[1];
     out[2] = a[2] + t * (b[2] - a[2]);
 }
-
+#pragma scheduling on
 extern double fn_8002EFB4(float, float);
 extern float lbl_80562140, lbl_80562144, lbl_8056215C, lbl_805621A4, lbl_805621D0, lbl_805621D4;
 #pragma processor 750
@@ -1366,8 +1366,8 @@ void fn_80196C90(void *arg0) {
 #pragma pop
 int fn_8019700C(int index) {
     void *entry = lbl_804349C0[index];
-    register int result = 1;
-    if (entry == 0)
+    int result = 1;
+    if (!entry)
         goto done;
     if (*((u8 *)entry + 0x2A4) == 0)
         goto done;
@@ -1577,7 +1577,35 @@ int fn_80197FE4(void *arg0, void *arg1) {
     return result;
 }
 
-#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_8019813C(void *arg0, void *arg1, float arg2, float arg3) {
+    int should_update = 1;
+    float event_time;
+    float value;
+    float adjustment;
+    float weight;
+    int index;
+
+    if (*((u8 *)arg0 + 0x11C) != 0 && arg2 > *((float *)((char *)arg0 + 0x124))) {
+        should_update = 0;
+    }
+    if (should_update == 0) {
+        return;
+    }
+    event_time = *((float *)((char *)arg1 + 0x10));
+    weight = *((volatile float *)((char *)arg1 + 4));
+    value = *((float *)((char *)arg0 + 0x270)) + event_time;
+    adjustment = *((volatile float *)&lbl_805621E4);
+    index = *((int *)((char *)arg1 + 0x18));
+
+    *((u8 *)arg0 + 0x11C) = 1;
+    *((float *)((char *)arg0 + 0x128)) = arg3;
+    *((float *)((char *)arg0 + 0x124)) = arg2;
+    *((float *)((char *)arg0 + 0x12C)) = weight;
+    *((float *)((char *)arg0 + 0x130)) = value - adjustment;
+    *((int *)((char *)arg0 + 0x138)) = index;
+}
+#pragma scheduling on
 void fn_80198488(void *arg0) {
     int temp_r0;
     int var_r4;
