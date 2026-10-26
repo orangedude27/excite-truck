@@ -220,6 +220,7 @@ f32 fn_801C3B6C(void) {
     return lbl_8055E7E4 + r_a;
 }
 
+#pragma scheduling invalid_target
 #pragma dont_inline fn_801C34CC
 s32 fn_801C3B7C(const void *arg0, const void *arg1) {
     volatile f32 *left;
