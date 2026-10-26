@@ -164,30 +164,12 @@ extern void* fn_80208D4C(void);
 extern void fn_80208D70(void);
 extern char lbl_8033BD30[];
 extern "C" void *fn_80206570(int index) {
-    int values[10];
-    int *p = lbl_802F9DA0;
-    int value0 = p[0];
-    int value1 = p[1];
-    int value2 = p[2];
-    int value3 = p[3];
-    int value4 = p[4];
-    int value5 = p[5];
-    int value6 = p[6];
-    int value7 = p[7];
-    int value8 = p[8];
-    int value9 = p[9];
-    values[0] = value0;
-    values[1] = value1;
-    values[2] = value2;
-    values[3] = value3;
-    values[4] = value4;
-    values[5] = value5;
-    values[6] = value6;
-    values[7] = value7;
-    values[8] = value8;
-    values[9] = value9;
+    struct Values {
+        int value[10];
+    };
+    struct Values values = *(struct Values *)&lbl_802F9DA0;
     if (index < 10)
-        return &values[index];
+        return (void *)values.value[index];
     return lbl_8033BD30;
 }
 
