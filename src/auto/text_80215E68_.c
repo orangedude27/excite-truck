@@ -334,14 +334,14 @@ void fn_8021676C(void) {
 }
 
 extern char lbl_8033D7A4[];
-extern char lbl_8033D7B4;
+extern char lbl_8033D7B4[];
 extern void *fn_801284F8(s32, const char *);
 extern void *fn_80216D40(void *, s32, s32, s32, s32, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
-#pragma small_data off
+#pragma use_lmw_stmw off
 void *fn_80216770(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    const char *name = (const char *)&lbl_8033D7A4;
+    const char *name = (const char *)lbl_8033D7A4;
     void *result = fn_801284F8(0xDE8, name);
     s32 i;
     if (result != 0)
@@ -352,7 +352,7 @@ void *fn_80216770(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
             return result;
         }
     }
-    fn_802E317C(&lbl_8033D7B4);
+    fn_802E317C((const char *)&lbl_8033D7B4);
     return 0;
 }
 #pragma pop
