@@ -3,6 +3,11 @@
 
 #include <types.h>
 
+int fn_8001F7E4();
+extern s8 lbl_8055D614;
+extern s32 lbl_8055D618;
+extern char lbl_802FE060[];
+
 typedef struct SrcCoef {
     s32 unk0;
     s32 unk4;
@@ -274,6 +279,23 @@ s32 fn_8001F89C(s32 arg0, s32 arg1) {
     }
     fn_802E30C8(lbl_802FE0A0);
     return 0;
+}
+
+void fn_8001F908(void *arg0) {
+    s32 index = fn_8000DA10();
+
+    if (index >= 0 && (u32)index < 4U) {
+        *(s32 *)((u8 *)arg0 + 4) =
+            *((s32 *)&lbl_80358698 +
+              index * 0x208 + *(s32 *)arg0);
+    } else {
+        *(s32 *)((u8 *)arg0 + 4) = 0;
+    }
+
+    *(s32 *)((u8 *)arg0 + 8) =
+        *((s32 *)&lbl_80358698 + 0xA28 + *(s32 *)arg0) +
+        (*(s32 *)((u8 *)arg0 + 4) +
+         *((s32 *)&lbl_80358698 + 0x820 + *(s32 *)arg0));
 }
 
 #pragma scheduling invalid_target
