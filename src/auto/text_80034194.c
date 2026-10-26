@@ -616,18 +616,21 @@ extern void cbForReadAsync(void *, void *);
 extern char lbl_80302070[];
 extern char lbl_803020A4[];
 extern char lbl_80558DF8[];
+#pragma push
+#pragma use_lmw_stmw off
 s32 DVDReadAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *callback, s32 prio) {
     s32 end;
     if (offset < 0 || (u32)offset > *(u32 *)((u8 *)block + 0x34))
-        OSPanic(lbl_80558DF8, 0x325, lbl_80302070);
+        ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558DF8, 0x325, lbl_80302070);
     end = offset + length;
     if (end < 0 || (u32)end >= *(u32 *)((u8 *)block + 0x34) + 0x20)
-        OSPanic(lbl_80558DF8, 0x32B, lbl_80302070);
+        ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558DF8, 0x32B, lbl_80302070);
     *(void **)((u8 *)block + 0x38) = callback;
     DVDReadAbsAsyncPrio(block, addr, length, *(s32 *)((u8 *)block + 0x30) + (offset >> 2), cbForReadAsync, prio);
     return 1;
 }
-
+#pragma use_lmw_stmw reset
+#pragma pop
 void cbForReadAsync(void *arg0, void *arg1) {
     void (*callback)(void);
     callback = *(void (**)(void))((u8 *)arg1 + 0x38);
@@ -1581,6 +1584,34 @@ void cbForCancel(void) {
 extern void *lbl_8055D88C;
 void fn_8003998C(void* hi) {
     lbl_8055D88C = hi;
+}
+
+s32 __DVDGetCoverStatus(void) {
+    s32 status;
+    u32 frequency;
+    u32 threshold;
+    u64 now;
+    s64 elapsed;
+    s64 stamp;
+    lbl_8055D88C = 0;
+    fn_8003BB58((void (*)(void))fn_8003998C);
+    while (*(volatile u32 *)&lbl_8055D88C == 0) {
+    }
+    if ((*(volatile u32 *)&lbl_8055D88C & 1) == 0) {
+        return 0;
+    }
+    status = fn_8003BB48();
+    now = __OSGetSystemTime();
+    frequency = *(volatile u32 *)0x800000F8;
+    threshold = ((frequency >> 2) / 1000) * 100;
+    stamp = (s64)(((u64)(u32)lbl_8055D8A0 << 32) | lbl_8055D8A4);
+    elapsed = (s64)now - stamp;
+    if (elapsed < (s64)threshold) {
+        return 0;
+    }
+    status &= 1;
+    status = -status;
+    return status + 2;
 }
 
 void fn_80039A5C(void (*callback)(s32, void *)) {
