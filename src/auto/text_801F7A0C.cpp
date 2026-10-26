@@ -507,29 +507,65 @@ extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg);
 extern "C" int strcmp(const char *, const char *);
 #pragma use_lmw_stmw off
 extern "C" void *fn_801F9338(void *self) {
-    u8 pad[0x20];
-    s32 sp8;
+    class Node {
+    public:
+        virtual const char *name();
+    };
+    class List {
+    public:
+        virtual void *s4();
+        virtual void *s8();
+        virtual void *sC();
+        virtual void *s10();
+        virtual void *s14();
+        virtual void *s18();
+        virtual void *s1C();
+        virtual void *s20();
+        virtual void *s24();
+        virtual void *s28();
+        virtual void *s2C();
+        virtual void *s30();
+        virtual void *s34();
+        virtual void *s38();
+        virtual void *s3C();
+        virtual void *s40();
+        virtual void *s44();
+        virtual void *s48();
+        virtual void *s4C();
+        virtual void *s50();
+        virtual void *s54();
+        virtual void *s58();
+        virtual void *get(s32);
+    };
+
+    u8 sp8[0x30];
     void *data;
     void *result;
-    void *node;
     s32 index;
+    void *node;
 
     data = 0;
-    if (fn_801F7EB0(&sp8, self, 0) != 0) {
-        data = &sp8;
+    if (fn_801F7EB0(sp8, self, 0) != 0) {
+        data = sp8;
     }
     result = 0;
     index = 0;
-    node = (*(FListVT **)self)->get(self, 0);
-    while (node != 0) {
-        if (strcmp(((FNodeVT *)*(void **)node)->name(node), (const char *)&lbl_8055B36C) == 0) {
-            void *newNode = fn_801F8188(node, (s32)data, 0);
-            *(void **)((u8 *)newNode + 0x24) = result;
-            result = newNode;
-        }
-        index++;
-        node = (*(FListVT **)self)->get(self, index);
+    goto get_node;
+
+body:
+    if (strcmp(((Node *)node)->name(), (const char *)&lbl_8055B36C) == 0) {
+        void *newNode = fn_801F8188(node, (s32)data, 0);
+        *(void **)((u8 *)newNode + 0x24) = result;
+        result = newNode;
     }
+    index++;
+
+get_node:
+    node = ((List *)self)->get(index);
+    if (node != 0) {
+        goto body;
+    }
+
     return result;
 }
 
@@ -604,7 +640,7 @@ extern "C" void *fn_801F95C4(void *arg0, void *arg1) {
         virtual const char *name(const char *key);
     };
     void *node = 0;
-    void *list = lbl_8055EC44;
+    void *list = *(void * volatile *)&lbl_8055EC44;
     s32 index = 0;
     goto outer_check;
 next_list:
