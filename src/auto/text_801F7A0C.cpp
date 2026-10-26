@@ -107,6 +107,21 @@ public:
     virtual s32 s30(void *, s32);
 };
 
+class F7E20VTable {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual f32 apply(const char *, f32);
+};
+
 struct FIterVT {
     void *vtable; // 0x0
     void *vtbl;   // 0x8
@@ -297,6 +312,23 @@ s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
         ((f32 *)arg0)[9]=d[0];((f32 *)arg0)[10]=d[1];((f32 *)arg0)[11]=d[2];
     }
     fn_801F7A14(arg0);
+}
+
+extern "C" void fn_801F7E20(void *arg0, void *arg1) {
+    u8 *obj = (u8 *)arg1;
+    f32 temp;
+    f32 value;
+    if (*(s8 *)(obj + 0x61) != 0) {
+        temp = -*(f32 *)((u8 *)fn_802C6B44(obj + 0x61) + 0x34);
+        value = lbl_80562FF8 + temp;
+        *(f32 *)(obj + 0x28) = value;
+        fn_802C6C20(temp);
+    } else {
+        *(f32 *)(obj + 0x28) = lbl_80562FF0;
+    }
+    *(f32 *)(obj + 0x28) =
+        ((f32 (*)(void *, const char *, f32))(*(void ***)arg0)[10])(
+            arg0, lbl_8033AFDC, *(f32 *)(obj + 0x28));
 }
 
 extern u8 lbl_8033AFE8[];
