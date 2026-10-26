@@ -116,6 +116,18 @@ extern "C" s32 __dt__15shdStateMachineFv(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma small_data off
+extern "C" u8 lbl_80324154[];
+#pragma pop
+extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi(void *, int);
+extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, int arg1) {
+    int valid = 0;
+    if (arg1 >= 0 && arg1 <= 0x7F) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324060, 0xE9, (const char *)lbl_80324154, arg1, 0, 0x7F);
+    SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi((u8 *)arg0 + 0xD8, arg1);
+}
+
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *, int);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void **, void *);
 extern "C" const char lbl_80324314[];
