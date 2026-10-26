@@ -225,8 +225,8 @@ f32 fn_801C3B6C(void) {
 s32 fn_801C3B7C(const void *arg0, const void *arg1) {
     volatile f32 *left;
     volatile f32 *right;
-    f32 a;
     f32 b;
+    f32 a;
     left = (volatile f32 *)arg0;
     right = (volatile f32 *)arg1;
     b = *right;
@@ -2004,19 +2004,18 @@ void fn_801C95EC(f32 arg0) {
         s32 id;
         s32 flags;
     };
-    struct Entry **table;
     struct Entry *entry;
     s32 id;
     s32 prev;
+    register s32 idx2;
 
     strcpy(lbl_80437FC0, lbl_8055AA44);
     entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
     entry->callback(entry);
 
     prev = lbl_8055E81C;
-    table = (struct Entry **)lbl_8055E86C;
-    entry = *(struct Entry **)((char *)table + (prev << 4));
-    entry = &entry[lbl_8055E820];
+    idx2 = lbl_8055E820;
+    entry = &(*(struct Entry **)((char *)lbl_8055E86C + prev * 0x10))[idx2];
     id = entry->id;
     if (id == 0x22) {
         lbl_8055E81C = lbl_8055E870;
@@ -2208,22 +2207,32 @@ void fn_801C6B70(void) {
 }
 
 void fn_801C6AD0(s32 *arg0) {
-    if (lbl_8055E7E2) {
-        f32 temp_f1 = fn_801C3B6C();
+    f32 temp_f1;
+    f32 temp_f1_2;
+    f32 var_f0;
+    s32 temp_r0;
+    s32 var_r0;
+    s32 var_r3;
+
+    if ((u8)lbl_8055E7E2 != 0) {
+        temp_f1 = fn_801C3B6C();
         if (temp_f1 < lbl_8056296C) {
-            f32 diff = lbl_805629C8 * (lbl_8056296C - temp_f1);
-            s32 original = *arg0;
-            s32 result;
-            if (diff >= lbl_80562970) {
-                result = (s32)(diff - lbl_80562974);
+            var_r3 = *arg0;
+            temp_f1_2 = lbl_805629C8 * (lbl_8056296C - temp_f1);
+            if (temp_f1_2 < lbl_80562970) {
+                var_f0 = temp_f1_2 - lbl_80562974;
             } else {
-                result = (s32)(diff + lbl_80562974);
+                var_f0 = lbl_80562974 + temp_f1_2;
             }
-            if (result > original) {
-                if (result < 0xFF) {
-                    *arg0 = result;
-                }
+            temp_r0 = (s32)var_f0;
+            if (temp_r0 > var_r3) {
+                var_r3 = temp_r0;
             }
+            var_r0 = 0xFF;
+            if (var_r3 < 0xFF) {
+                var_r0 = var_r3;
+            }
+            *arg0 = var_r0;
         }
     }
 }
