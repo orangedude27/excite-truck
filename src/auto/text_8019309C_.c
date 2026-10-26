@@ -1766,7 +1766,7 @@ void fn_80198E7C(int index) {
     typedef unsigned char u8;
     extern void *lbl_804349C0[];
     extern void *lbl_804349E0[];
-      void fn_801964D0();
+      void fn_801964D0(void *);
   void fn_80128668(void *);
   void fn_80193138(int);
     void fn_801964D0();
