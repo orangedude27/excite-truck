@@ -412,6 +412,3 @@ long fn_8017EAF4(long arg0) { return arg0 + 0x6C; }
 long fn_8017EAFC(long arg0) { return arg0 + 0x118; }
 
 long fn_8017EB04(long arg0) { return arg0 + 0x70; }
-#pragma cplusplus on
-struct VObj_8017D93C { virtual void d0(int); };
-#pragma cplusplus reset
