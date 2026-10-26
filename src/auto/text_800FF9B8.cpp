@@ -1,6 +1,14 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+namespace nw4hbm { namespace snd { namespace detail {
+struct WsdTrack { struct WsdCallback; };
+class WaveSound {
+public:
+    void Prepare(const void *, long, int, const WsdTrack::WsdCallback *, unsigned long);
+};
+}}}
+
 typedef unsigned int u32;
 extern "C" u32 lbl_8055DE88;
 extern "C" void fn_800FFE94(int);
