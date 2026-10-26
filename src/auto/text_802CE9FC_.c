@@ -1,6 +1,9 @@
 #pragma dont_inline fn_802CFF50
 #pragma dont_inline fn_802D2ED8
 extern int lbl_804C9760[];
+#pragma small_data off
+extern unsigned int lbl_804C9940;
+#pragma small_data on
 extern unsigned char lbl_804C5710[];
 extern unsigned char lbl_8055D0F0;
 extern void *lbl_8055FD64;
@@ -481,6 +484,60 @@ void fn_802CF850(void) {
     lbl_8055FDB4 = 0;
 }
 
+void fn_802CFBA8(void) {
+    extern void fn_802D9A50(void);
+    extern void fn_80127D58(void (*)(void));
+    extern void fn_800591AC(int);
+    extern void fn_802E30C8(const char *, ...);
+    extern void fn_802DD5F4(void);
+    extern void fn_802D3894(void);
+    extern void fn_802D6860(void);
+#pragma small_data off
+    extern unsigned int lbl_804C9940;
+#pragma small_data on
+    extern void *lbl_8055FD68;
+    extern unsigned int lbl_8055FD98;
+    extern void *lbl_8055FDB0;
+    extern void fn_80128670();
+    extern void fn_802DA4C4(void);
+    extern void fn_802D0C98(void);
+    extern void fn_802DAE18(void);
+    extern void fn_802D8DA0(void);
+    extern char lbl_8034C038[];
+
+    fn_80127D58(fn_802D9A50);
+    fn_802D9C4C();
+    fn_800591AC(0);
+    fn_802E30C8(lbl_8034C038, lbl_8055FD98);
+    fn_802DD5F4();
+    fn_802D3894();
+    fn_802D6860();
+    fn_80128670(lbl_804C9940);
+    lbl_804C9940 = 0;
+    fn_802DA4C4();
+    fn_802D0C98();
+    VISetBlack(1);
+    VIFlush();
+    VIWaitForRetrace();
+    GXGetVtxDesc();
+    GXSetDrawSyncCallback();
+    VIFlush();
+    VIWaitForRetrace();
+    fn_802DAE18();
+    fn_80128670(lbl_8055FD68);
+    lbl_8055FD68 = 0;
+    fn_80128670(lbl_804C9760[0]);
+    lbl_804C9760[0] = 0;
+    fn_802D8DA0();
+    if (lbl_8055FDB0 != 0) {
+        fn_80128670((char *)lbl_8055FDB0 - 0x10);
+    }
+    lbl_8055FDB0 = 0;
+    lbl_804C9760[1] = 0;
+    fn_80128670(lbl_8055FDA0, lbl_804C9760);
+    lbl_8055FDA0 = 0;
+}
+
 extern double __fabs(double);
 #pragma scheduling invalid_target
 void fn_802CFCA0(void* alarm) {
@@ -736,28 +793,32 @@ int fn_802D0514(void *source) {
     extern unsigned long lbl_8055FDAC;
     extern void *lbl_8055FDB0;
     extern char lbl_804C97D0;
-    int index;
-    int next;
-    int *src;
-    int *dst;
+    unsigned long index;
+    unsigned char *src;
+    unsigned char *dst;
     unsigned char *aux;
+    unsigned int *a;
+    unsigned int *b;
+    unsigned long next;
     index = lbl_8055FDAC;
     if (index < 0x800) return 0;
     next = index + 1;
-    src = (int *)source;
-    dst = (int *)((unsigned char *)lbl_8055FDB0 + index * 0x4C);
+    src = (unsigned char *)source;
+    dst = (unsigned char *)lbl_8055FDB0 + index * 0x4C;
+    a = (unsigned int *)src;
+    b = (unsigned int *)dst;
+    b[0] = a[0]; b[1] = a[1]; b[2] = a[2]; b[3] = a[3];
+    b[4] = a[4]; b[5] = a[5]; b[6] = a[6]; b[7] = a[7];
+    b[8] = a[8]; b[9] = a[9]; b[10] = a[10]; b[11] = a[11];
     lbl_8055FDAC = next;
-    dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = src[3];
-    dst[4] = src[4]; dst[5] = src[5]; dst[6] = src[6]; dst[7] = src[7];
-    dst[8] = src[8]; dst[9] = src[9]; dst[10] = src[10]; dst[11] = src[11];
     aux = (unsigned char *)&lbl_804C97D0;
-    ((unsigned char *)dst)[0x30] = aux[0]; ((unsigned char *)dst)[0x31] = aux[1];
-    ((unsigned char *)dst)[0x32] = aux[2]; ((unsigned char *)dst)[0x33] = aux[3];
-    ((unsigned char *)dst)[0x34] = aux[4]; ((unsigned char *)dst)[0x35] = aux[5];
-    ((unsigned char *)dst)[0x36] = aux[6]; ((unsigned char *)dst)[0x37] = aux[7];
-    ((unsigned char *)dst)[0x38] = aux[8];
-    dst[15] = aux[3]; dst[16] = aux[4]; dst[17] = aux[5];
-    *(float *)((unsigned char *)dst + 0x48) = *(float *)(aux + 0x18);
+    dst[0x30] = aux[0]; dst[0x31] = aux[1]; dst[0x32] = aux[2];
+    dst[0x33] = aux[3]; dst[0x34] = aux[4]; dst[0x35] = aux[5];
+    dst[0x36] = aux[6]; dst[0x37] = aux[7]; dst[0x38] = aux[8];
+    b[15] = ((unsigned int *)aux)[3];
+    b[16] = ((unsigned int *)aux)[4];
+    b[17] = ((unsigned int *)aux)[5];
+    *(float *)(dst + 0x48) = *(float *)(aux + 0x18);
     return next;
 }
 
@@ -769,9 +830,8 @@ void fn_802D07E4(char* arg0, int arg1) {
     extern int lbl_804C9760[];
     extern char lbl_8034C0EC[], lbl_8034C108[];
     extern void fn_802E30C8(const char*, ...);
-    unsigned char* out;
-    char c;
-    register int n;
+    register char c;
+    register unsigned char* out;
     if ((int)lbl_8055D0B8 >= 0) {
         fn_802E30C8(lbl_8034C0EC);
         lbl_8055D0B8 = lbl_8055D0BC * lbl_8055D0C0;
@@ -779,9 +839,7 @@ void fn_802D07E4(char* arg0, int arg1) {
     }
     lbl_8055FD90 = 1;
     out = lbl_804C9830;
-    n = 0x100;
-    do { n--; } while (n > 0);
-    out[-1] = (unsigned char)n;
+    out[-1] = 0;
     do {
         c = *arg0++;
         *out++ = c;
@@ -830,8 +888,12 @@ void fn_802D08CC(int arg0) {
 void fn_802D0910(int, int, int, int, int, int) {
 }
 
+#pragma scheduling invalid_target
 void fn_802D0914(int arg0, short arg1, short arg2) {
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
+    register int first = arg0;
+    register short second = arg1;
+    register short third = arg2;
     unsigned char buffer[0x12];
     unsigned char b8;
     unsigned char b9;
@@ -845,9 +907,8 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     memset(buffer, 0, 0x12);
     *(unsigned short *)(buffer + 8) = 0;
     *(unsigned short *)(buffer + 10) = 0;
-    *(unsigned short *)(buffer + 12) = arg1;
-    *(unsigned short *)(buffer + 14) = arg2;
-
+    *(unsigned short *)(buffer + 12) = second;
+    *(unsigned short *)(buffer + 14) = third;
     b8 = buffer[8];
     b9 = buffer[9];
     b10 = buffer[10];
@@ -856,7 +917,6 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     b13 = buffer[13];
     b14 = buffer[14];
     b15 = buffer[15];
-
     buffer[0] = 0;
     buffer[1] = 0;
     buffer[2] = 2;
@@ -870,10 +930,9 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     buffer[15] = b14;
     buffer[16] = 0x18;
     buffer[17] = 0;
-
-    fn_802E3A64(arg0, buffer, 0x12, b13, b11, b9, 0x18, 2);
+    fn_802E3A64(first, buffer, 0x12, b13, b11, b9, 0x18, 2);
 }
-
+#pragma scheduling on
 void fn_802D09E4(void) {
 }
 
