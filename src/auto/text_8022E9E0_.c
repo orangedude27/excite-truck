@@ -176,7 +176,7 @@ void fn_8022EE98(void *arg0) {
 
 extern f32 lbl_805635E0;
 extern f32 lbl_805635E4;
-extern void fn_8022EDE4(f32 *);
+extern void *fn_8022EDE4(f32 *, f32);
 void fn_8022EE9C(void) {
     f32 a[12];
     a[0] = lbl_805635E0;
@@ -191,7 +191,7 @@ void fn_8022EE9C(void) {
     a[9] = lbl_805635E4;
     a[10] = lbl_805635E4;
     a[11] = lbl_805635E4;
-    fn_8022EDE4(a);
+    fn_8022EDE4(a, lbl_805635E0);
 }
 
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
