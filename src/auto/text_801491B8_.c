@@ -2013,10 +2013,11 @@ void fn_80155AEC(void) {
 
 u32 fn_80155C88(void) { return 1; }
 
-extern int vsprintf(char *, const char *, ...);
-void fn_80155C90(char *arg0, ...) {
-    char buffer[0x200];
-    vsprintf(arg0 + 0x14, buffer);
+extern int vsprintf(char *, const char *, va_list);
+void fn_80155C90(void *arg0, const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    vsprintf((char *)arg0 + 0x14, fmt, ap);
 }
 
 void fn_80155D20(void *arg0, const char *fmt, ...) {
@@ -2145,20 +2146,19 @@ s32 fn_8014F0C8(s32 arg0, s32 arg1) {
 
 s32 fn_8014F088(s32 arg0, s32 arg1);
 void fn_8014F108(void *arg0) {
-    void *base = arg0;
-    void *entry = base;
-    u8 *member = (u8 *)base + 0x454;
-    u32 i = 0;
-    do {
+    register void *base = arg0;
+    register void *entry = base;
+    register u8 *member = (u8 *)base + 0x454;
+    register u32 i;
+    for (i = 0; i < 2; i++) {
         s32 result = fn_801284F8(8, &lbl_8032DB34);
         if (result != 0)
             result = ((s32 (*)(s32, s32))fn_802ADDD8)(result, 2);
         *(s32 *)((u8 *)entry + 0x45C) = result;
         fn_8014F194(member);
-        i++;
         entry = (u8 *)entry + 0x240;
         member += 0x240;
-    } while (i < 2);
+    }
     *(s32 *)((u8 *)base + 0x9D8) = fn_80145E70(lbl_8032DB40);
 }
 
