@@ -1223,7 +1223,7 @@ void fn_80037A8C(void) {
 
 extern void fn_8003A834(void *, void *);
 extern char lbl_80376B00[];
-extern void fn_80037DBC(void);
+extern void fn_80037DBC(u32);
 void fn_80037CEC(void) {
     s32 enabled;
     u8 *base;
@@ -1412,15 +1412,18 @@ void fn_80038040(void) {
 
 extern void DCInvalidateRange(void *, u32);
 extern s32 __DVDPushWaitingQueue(s32, void *);
+#pragma opt_propagation off
 s32 DVDInquiryAsync(void *block, void *addr, void *callback) {
     s32 enabled;
     s32 result;
-    *(u32 *)((u8 *)block + 8) = 0xE;
+    u32 cmd = 0xE;
+    *(u32 *)((u8 *)block + 8) = cmd;
     *(void **)((u8 *)block + 0x18) = addr;
     *(u32 *)((u8 *)block + 0x14) = 0x20;
     *(u32 *)((u8 *)block + 0x20) = 0;
     *(void **)((u8 *)block + 0x28) = callback;
-    if (lbl_80558E04 != 0) {
+    if (lbl_80558E04 != 0 &&
+        (cmd == 1 || cmd == 4 || cmd == 5 || cmd == 0x21 || cmd == 0xE)) {
         DCInvalidateRange(*(void **)((u8 *)block + 0x18), *(u32 *)((u8 *)block + 0x14));
     }
     enabled = OSDisableInterrupts();
@@ -1432,7 +1435,7 @@ s32 DVDInquiryAsync(void *block, void *addr, void *callback) {
     OSRestoreInterrupts(enabled);
     return result;
 }
-
+#pragma opt_propagation reset
 extern u8 lbl_8037B5B0;
 extern s32 __DVDGetNextWaitingQueue(void);
 extern __declspec(section ".data") u8 lbl_8037B5B0;
@@ -1621,11 +1624,9 @@ s32 __DVDGetCoverStatus(void) {
     s32 status;
     u32 frequency;
     u32 threshold;
-    u32 stampHigh;
-    u32 stampLow;
     u64 now;
     s64 elapsed;
-    s64 stamp;
+    u64 stamp;
     lbl_8055D88C = 0;
     fn_8003BB58((void (*)(void))fn_8003998C);
     while (*(volatile u32 *)&lbl_8055D88C == 0) {
@@ -1636,11 +1637,9 @@ s32 __DVDGetCoverStatus(void) {
     status = fn_8003BB48();
     now = __OSGetSystemTime();
     frequency = *(volatile u32 *)0x800000F8;
-    stampHigh = (u32)lbl_8055D8A0;
     threshold = ((frequency >> 2) / 1000) * 100;
-    stampLow = lbl_8055D8A4;
-    stamp = (s64)(((u64)stampHigh << 32) | stampLow);
-    elapsed = (s64)now - stamp;
+    stamp = *(volatile u64 *)(void *)&lbl_8055D8A0;
+    elapsed = (s64)now - (s64)stamp;
     if (elapsed < (s64)threshold) {
         return 0;
     }
