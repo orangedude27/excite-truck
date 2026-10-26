@@ -1053,7 +1053,7 @@ void fn_801CE6CC(void) {
 
 }
 
-extern unsigned char *fn_801EA9A0(void);
+extern unsigned char *fn_801EA9A0();
 extern s32 *lbl_8055E884;
 extern void fn_801CBD48(void *, void *);
 extern void fn_802AE220(void *);
