@@ -67,8 +67,10 @@ extern f32 lbl_8056048C;
 extern f32 lbl_80560460;
 extern f32 lbl_80560464;
 extern f64 lbl_80560468;
+#pragma push
 #pragma scheduling invalid_target
 extern "C" f32 fn_8001DA5C(s32 arg0) {
+    f32 scale = lbl_80560460;
     f64 bias = lbl_80560468;
     f64 angle;
     f64 fraction;
@@ -76,7 +78,6 @@ extern "C" f32 fn_8001DA5C(s32 arg0) {
     s32 remainder;
     union { f64 d; u32 words[2]; } angle_bits;
     union { f64 d; u32 words[2]; } fraction_bits;
-    register f32 scale = lbl_80560460;
     angle_bits.words[0] = 0x43300000;
     angle_bits.words[1] = (u32)arg0 ^ 0x80000000;
     angle = angle_bits.d - bias;
@@ -87,7 +88,7 @@ extern "C" f32 fn_8001DA5C(s32 arg0) {
     fraction = fraction_bits.d - bias;
     return lbl_80560464 + lbl_80560464 * (f32)sin((f64)(scale * fraction / angle));
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void fn_8001DAD8(void) { extern int fn_8001DA5C(int); fn_8001DA5C(0x40); }
 
 extern "C" void fn_8001DAE0(f32* arg0, f32 arg1) {
@@ -97,6 +98,18 @@ extern "C" void fn_8001DAE0(f32* arg0, f32 arg1) {
 extern "C" f32 fn_8001DAE8(void) {
     return lbl_8055E3C8;
 }
+
+#pragma dont_inline on
+extern "C" f32 fn_8001DAF0(void *arg0) {
+    f32 value = (fn_8001DAE8() - *(f32 *)((u8 *)arg0 + 4)) / *(f32 *)arg0;
+    f32 result = lbl_80560470;
+    if (result >= value)
+        result = value;
+    if (result > lbl_80560474)
+        result = lbl_80560474;
+    return result;
+}
+#pragma dont_inline reset
 
 extern "C" s32 fn_8001DD2C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
@@ -285,7 +298,7 @@ extern "C" void fn_8001E544(void* arg0) {
     ((f32*)arg0)[24] = b;
 }
 #pragma scheduling on
-extern s32 lbl_802FDC70;
+extern char lbl_802FDC70[];
 extern "C" void* fn_8001E5B0(void* arg0, s32 arg1) {
     void* entry;
     if (arg0 != 0) {
