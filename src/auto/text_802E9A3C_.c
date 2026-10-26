@@ -1,4 +1,5 @@
 extern void *lbl_80560078;
+extern void OSSleepTicks(unsigned long long);
 extern void *memcpy(void *, const void *, unsigned long);
 extern char lbl_80560060;
 extern char lbl_8052E658[0x610];
