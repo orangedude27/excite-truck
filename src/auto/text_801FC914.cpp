@@ -743,16 +743,16 @@ extern "C" void fn_801FE77C(void* arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801FE7E8(void* arg0) {
+    float threshold = lbl_80563034;
     char* item = (char*)arg0 + 4;
     int i = 0;
-    float threshold = lbl_80563034;
     while (i < *(int*)((char*)arg0 + 0x94)) {
         if (*(unsigned short*)(item + 0x14) == 1) {
             float time = *(float*)(item + 0x20) - fn_801E7E24();
-            int expired = time < threshold;
             *(float*)(item + 0x20) = time;
-            if (expired) {
+            if (time < threshold) {
                 typedef float (*UpdateFn)(int, float, float);
                 fn_801FEDA4(item);
                 *(float*)(item + 0x20) = ((UpdateFn)fn_80129DC4)(0, *(float*)(item + 0x18), *(float*)(item + 0x1C));
@@ -762,7 +762,7 @@ extern "C" void fn_801FE7E8(void* arg0) {
         ++i;
     }
 }
-
+#pragma scheduling on
 extern const char lbl_8055B3C8[];
 extern const char lbl_8055B3D0[];
 extern const char lbl_8055B3D8[];
@@ -1209,22 +1209,25 @@ extern "C" void* fn_801FEFC8(void* arg0, int arg1) {
     }
     return arg0;
 }
-extern "C" void fn_801FF014(void* arg0, int arg1, int arg2, int arg3) {
-    void* obj = *(void**)((char*)arg0 + 4);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void fn_801FF014(void *arg0, int arg1, int arg2, int arg3) {
+    void *obj = *(void **)((char *)arg0 + 4);
+    int end = arg2 + 0x2C;
     if (obj == 0) {
         obj = fn_801284F8(0x10CC, lbl_8033B86C);
         if (obj != 0) {
-            *(void**)obj = (void*)lbl_8033B898;
-            fn_8002F53C((char*)obj + 4, (void*)fn_801FF0D4, (void*)fn_801FCED8, 0x70, 0x20);
-            *(int*)((char*)obj + 0xE04) = 0;
-            fn_801FF354((char*)obj + 0xE08);
+            *(void **)obj = (void *)lbl_8033B898;
+            fn_8002F53C((char *)obj + 4, (void *)fn_801FF0D4, (void *)fn_801FCED8, 0x70, 0x20);
+            *(int *)((char *)obj + 0xE04) = 0;
+            fn_801FF354((char *)obj + 0xE08);
         }
-        *(void**)((char*)arg0 + 4) = obj;
+        *(void **)((char *)arg0 + 4) = obj;
         fn_802CD320(arg1, obj);
     }
-    fn_801FF1C4(*(void**)((char*)arg0 + 4), arg2, arg2 + 0x2C);
+    fn_801FF1C4(*(void **)((char *)arg0 + 4), arg2, end);
 }
-
+#pragma pop
 extern "C" void fn_801FF0D4(void* arg0) {
     *(int*)arg0 = 0;
     *((int*)arg0 + 1) = 0;
