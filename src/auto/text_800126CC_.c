@@ -6,25 +6,29 @@ extern void fn_802E317C(void *, ...);
 extern char lbl_802FC638[];
 extern char lbl_802FC69C[];
 extern char lbl_80352AD0[];
+#pragma scheduling invalid_target
 void *fn_800126CC(int arg0) {
+    volatile int *table = (volatile int *)lbl_802FC638;
     int i = 0;
-    if (arg0 != lbl_802FC638[0]) {
+    if (arg0 != table[0]) {
         i = 1;
-        if (arg0 != lbl_802FC638[5]) {
+        if (arg0 != table[5]) {
             i = 2;
-            if (arg0 != lbl_802FC638[10]) {
+            if (arg0 != table[10]) {
                 i = 3;
-                if (arg0 != lbl_802FC638[15]) {
+                if (arg0 != table[15]) {
                     i = 4;
-                    if (arg0 != lbl_802FC638[20]) i = 5;
+                    if (arg0 != table[20])
+                        i = 5;
                 }
             }
         }
     }
-    if (i >= 5) fn_802E317C(&lbl_802FC69C);
-    return (char *)lbl_802FC638 + i * 0x14;
+    if (i >= 5)
+        fn_802E317C(lbl_802FC69C, arg0);
+    return lbl_802FC638 + i * 0x14;
 }
-
+#pragma scheduling on
 void fn_80012778(void) { fn_80012984(0x12F); }
 
 void fn_80012780(void) { fn_80012984(0x130); }
