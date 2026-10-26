@@ -273,6 +273,28 @@ void fn_801A5D80(void *arg0, int arg1, int arg2, int arg3, int arg4) {
 }
 
 #pragma cplusplus on
+extern "C" void fn_801A5E0C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    class Obj {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12();
+        virtual void f13(int, int, int, int);
+    };
+    float zero;
+    Obj *obj;
+    fn_8018956C();
+    obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
+    obj->f13(arg1, arg2, arg3, arg4);
+    if (arg3 == 0x6D) {
+        zero = lbl_805623C8;
+        *(int *)((char *)arg0 + 0x2714) = 1;
+        *(int *)((char *)arg0 + 0x2720) = 0;
+        *(float *)((char *)arg0 + 0x271C) = zero;
+        *(float *)((char *)arg0 + 0x2718) = zero;
+    }
+}
 struct Dummy_801A5E98 {
     virtual void h0() {}
     virtual void h1() {}
