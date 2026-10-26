@@ -9,6 +9,19 @@ struct QueryObject_80292114 {
     virtual int f3(int *);
     virtual int f4(int *);
 };
+struct QueryObject_80291A1C {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
+    virtual float f10(int *, float);
+};
 #pragma cplusplus reset
 
 extern char lbl_804B4010[];
@@ -57,13 +70,19 @@ void fn_802919AC(void *arg0) {
 }
 #pragma scheduling on
 void fn_80291A1C(void) {
-    float value = lbl_805644A0;
-    void **obj = (void **)fn_802AE414(&lbl_8055C948);
-    int *settings = (int *)&lbl_804B4010;
+    /* Fix note: initialize settings and preserve the optional virtual-call result. */
+    void *obj;
+    float value;
+    int *settings;
+
+    value = lbl_805644A0;
+    obj = fn_802AE414(&lbl_8055C948);
     if (obj != 0) {
-        value = ((float (*)(void *, float))(*(void **)((char *)*obj + 0x28)))(&lbl_8055C938, lbl_805644A0);
+        value = ((float (*)(void *, int *, float))(*(void **)((char *)*(void **)obj + 0x28)))(
+            obj, &lbl_8055C938, lbl_805644A0);
     }
-    ((float *)settings)[0] = lbl_80564484;
+    *(float *)&lbl_804B4010 = lbl_80564484;
+    settings = (int *)&lbl_804B4010;
     ((float *)settings)[1] = lbl_80564484;
     ((float *)settings)[2] = lbl_80564484;
     settings[3] = fn_802CAC28(&lbl_80349158, 0);
@@ -84,21 +103,21 @@ void fn_80291AC8(void) {
     }
     settings[4] = 0;
 }
-#pragma dont_inline off
+#pragma scheduling invalid_target
 void fn_80291B14(float *arg0) {
     float value = arg0[0];
     int result;
-    int *settings = (int *)&lbl_804B4010;
-    fn_802C8E70(settings);
-    *((float *)settings + 2) = value;
-    result = fn_802C8FF4(settings, *((float *)settings + 7));
-    if (result != 0 && fn_802D3A5C(settings[4], settings) != 0) {
-        *((unsigned char *)settings + 0x14) = 1;
-    } else {
-        *((unsigned char *)settings + 0x14) = 0;
+    signed char success;
+    fn_802C8E70((int *)lbl_804B4010);
+    *((float *)(lbl_804B4010 + 8)) = value;
+    result = fn_802C8FF4((int *)lbl_804B4010, *((float *)(lbl_804B4010 + 0x1C)));
+    success = 0;
+    if (result != 0 && fn_802D3A5C(*((int *)(lbl_804B4010 + 0x10)), (int *)lbl_804B4010) != 0) {
+        success = 1;
     }
+    *((unsigned char *)(lbl_804B4010 + 0x14)) = success;
 }
-
+#pragma scheduling on
 void fn_80291B9C(void *arg0, float *arg1, float arg2) {
     float a = arg1[0];
     float b = arg1[1];
@@ -260,15 +279,34 @@ void fn_8029227C(void) {
 done: ;
 }
 
+#pragma scheduling invalid_target
 void fn_8029231C(float *arg0) {
-    float sp[3]; float dt; float result; float *base;
-    if (!lbl_8055F75C) return;
-    dt = fn_801EC114(); base = (float *)fn_802C86DC();
-    sp[0] = base[9] + arg0[0] * dt; sp[1] = base[10] + arg0[1] * dt; sp[2] = base[11] + arg0[2] * dt;
-    result = fn_80291784(arg0[2] * dt, arg0[1] * dt, sp[0], arg0[0] * dt);
-    fn_80291B14(sp); fn_80291B9C(&lbl_804B3EC0, sp, result);
-}
+    /* Fix note: scale the vector, store the translated point, and forward the result. */
+    float *base;
+    register float dt;
+    volatile float sp[3];
+    register float temp_f1;
+    register float temp_f2;
+    register float temp_f3;
+    register float temp_f4;
 
+    if (lbl_8055F75C != 0) {
+        dt = fn_801EC114();
+        base = (float *)fn_802C86DC();
+        temp_f4 = arg0[0] * dt;
+        temp_f2 = arg0[1] * dt;
+        temp_f3 = base[9];
+        temp_f3 += temp_f4;
+        temp_f1 = arg0[2] * dt;
+        sp[0] = temp_f3;
+        sp[1] = base[10] + temp_f2;
+        sp[2] = base[11] + temp_f1;
+        dt = fn_80291784(temp_f1, temp_f2, temp_f3, temp_f4);
+        fn_80291B14((float *)sp);
+        fn_80291B9C(&lbl_804B3EC0, (float *)sp, dt);
+    }
+}
+#pragma scheduling on
 void fn_802923C4(int arg0) {
     register unsigned int *p;
     register unsigned int old;
