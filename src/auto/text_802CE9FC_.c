@@ -686,6 +686,7 @@ void fn_802D0014(float a, float b, float c) {
 }
 #pragma push
 #pragma small_data off
+extern __declspec(section ".data") char lbl_804C97D0;
 void fn_802D007C(float arg0) {
     extern float lbl_80564FAC;
     extern float lbl_80564FA8;
