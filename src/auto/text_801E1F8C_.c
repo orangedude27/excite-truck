@@ -70,7 +70,8 @@ void fn_801E2100(void *arg0, void *arg1) {
     int (*second)(void *, void *, void *, int, int *);
     first = *(int (**)(int))((char *)arg1 + 0x20);
     if (first == 0 || first(*(int *)((char *)arg0 + 0x20)) != 0) {
-        result = ((int (*)(void *, void *, void *, int, int *))(*(void ***)arg0)[3])(arg0, arg1, (char *)arg1 + 0xC, *(int *)((char *)arg1 + 0x18), &result);
+        int arg4 = *(int *)((char *)arg1 + 0x18);
+        result = ((int (*)(void *, void *, void *, int, int *))(*(void ***)arg0)[3])(arg0, arg1, (char *)arg1 + 0xC, arg4, &result);
         if (result != 0)
             *((unsigned char *)arg1 + 0x1C) = 1;
     }
@@ -118,38 +119,39 @@ void fn_801E2294(void) {
 }
 
 extern double __fabs(double);
+#pragma ppc_psq_save off
 #pragma scheduling invalid_target
-#pragma dont_inline fn_801E2100
 s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, void **arg5, void **arg6, s32 arg7, s32 (*arg_sp8)(s32)) {
-    f32 delta[3], normal[3], mag, scale, clampMag;
-    E2640Scratch scratch;
+    f32 delta[3], normal[3], dot, mag, scale, clampMag;
     f32 diffX, diffY, targetY, targetZ;
-    E2640Query query;
+    struct { E2640Query query; } queryStorage;
     f32 rangeScale;
     void *hits[5];
-    void *lists[2];
-    s32 found, finalResult, i, j;
-    targetY = arg1[1];
+    struct { u32 pad[2]; void *items[2]; } listStorage;
+    register s32 found;
+    s32 count, finalResult, i, j;
+    u32 meshIndex;
     diffX = arg1[0] - arg0[0];
-    targetZ = arg1[2];
+    targetY = arg1[1];
     diffY = targetY - arg0[1];
+    targetZ = arg1[2];
     delta[0] = diffX;
     delta[1] = diffY;
     delta[2] = targetZ - arg0[2];
     mag = PSVECMag((Vec *)delta);
     clampMag = lbl_80562CDC;
-    if (clampMag <= mag) clampMag = mag;
+    clampMag = (clampMag > mag) ? clampMag : mag;
     scale = lbl_80562CE0 / clampMag;
     normal[0] = delta[0] * scale;
     normal[1] = delta[1] * scale;
     normal[2] = delta[2] * scale;
-    scratch.dot = PSVECDotProduct((Vec *)normal, (Vec *)delta);
-    found = 0;
+    dot = PSVECDotProduct((Vec *)normal, (Vec *)delta);
     *arg5 = 0;
-    if ((f32)__fabs((f64)scratch.dot) > lbl_80562CE4) {
-        scratch.count = 5;
-        fn_801B619C(hits, &scratch.count, arg0);
-        for (i = 0; i < scratch.count; i++) {
+    found = 0;
+    if ((f32)__fabs((f64)normal[1]) > lbl_80562CE4) {
+        count = 5;
+        fn_801B619C(hits, &count, arg0);
+        for (i = 0; i < count; i++) {
             void **node = *(void ***)hits[i];
             while (node != 0) {
                 void *obj = *node;
@@ -163,7 +165,7 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                         value = *(s32 *)((char *)item + 0x20);
                         if ((!arg_sp8 || arg_sp8(value)) &&
                             (*(s32 (**)(void *, void *, f32 *, f32 *, s32))(*(void ***)item + 6))
-                            (item, arg0, normal, &scratch.dot, arg3)) {
+                            (item, arg0, normal, &dot, arg3)) {
                             *arg4 = value;
                             found = 1;
                             *arg5 = obj;
@@ -174,20 +176,20 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                 node = *(void ***)((char *)node + 4);
             }
         }
-        lists[0] = lbl_8055EA3C;
-        lists[1] = lbl_8055EA40;
+        listStorage.items[0] = lbl_8055EA3C;
+        listStorage.items[1] = lbl_8055EA40;
         rangeScale = lbl_80562CD8;
-        query.position.x = arg0[0];
-        query.position.y = arg0[1];
-        query.position.z = arg0[2];
-        query.direction.x = normal[0];
-        query.direction.y = normal[1];
-        query.direction.z = normal[2];
-        query.dot = &scratch.dot;
-        query.found = found;
-        query.filter = arg_sp8;
-        for (i = 0; i < 2; i++) {
-            void *mesh = lists[i];
+        queryStorage.query.position.x = arg0[0];
+        queryStorage.query.position.y = arg0[1];
+        queryStorage.query.position.z = arg0[2];
+        queryStorage.query.direction.x = normal[0];
+        queryStorage.query.direction.y = normal[1];
+        queryStorage.query.direction.z = normal[2];
+        queryStorage.query.dot = &dot;
+        queryStorage.query.found = found;
+        queryStorage.query.filter = arg_sp8;
+        for (meshIndex = 0; meshIndex < 2; meshIndex++) {
+            void *mesh = listStorage.items[meshIndex];
             if (mesh) {
                 s32 minX = -0x2625A00, maxX = 0x2625A00;
                 s32 minZ = -0x2625A00, maxZ = 0x2625A00;
@@ -197,12 +199,14 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                 index = 0;
                 for (;;) {
                     u16 *range = (u16 *)((char *)*(void **)((char *)mesh + 0x10) + index * 8);
-                    s32 k, midX, midZ;
-                    for (k = range[0]; k < range[1]; k++) {
+                    s32 k, end, midX, midZ;
+                    k = range[0];
+                    end = range[1];
+                    for (; k < end; k++) {
                         u16 tri = *(u16 *)((char *)*(void **)((char *)mesh + 0x0C) + k * 2);
                         void *obj = *(void **)((char *)*(void **)((char *)mesh + 4) + tri * 4);
                         if (*(u8 *)((char *)obj + 0x40))
-                            fn_801E2100(*(void **)((char *)obj + 0x3C), &query);
+                            fn_801E2100(*(void **)((char *)obj + 0x3C), &queryStorage.query);
                     }
                     if (range[2] == 0) break;
                     {
@@ -222,7 +226,7 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                 }
             }
         }
-        found = query.found;
+        found = queryStorage.query.found;
     } else {
         fn_802E30C8((const char *)&lbl_8033989C, lbl_8055E3C4);
         for (i = 0; i < arg7; i++) {
@@ -239,7 +243,7 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                     value = *(s32 *)((char *)item + 0x20);
                     if ((!arg_sp8 || arg_sp8(value)) &&
                         (*(s32 (**)(void *, void *, f32 *, f32 *, s32))(*(void ***)item + 6))
-                        (item, arg0, normal, &scratch.dot, arg3)) {
+                        (item, arg0, normal, &dot, arg3)) {
                         *arg4 = value;
                         found = 1;
                         *arg5 = obj;
@@ -248,19 +252,18 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                 }
             }
         }
-        lists[0] = lbl_8055EA3C;
-        lists[1] = lbl_8055EA40;
+        listStorage.items[0] = lbl_8055EA3C;
+        listStorage.items[1] = lbl_8055EA40;
         for (i = 0; i < 2; i++) {
-            void *list = lists[i];
+            void *list = listStorage.items[i];
             if (list) {
-                s32 n = *(s32 *)list;
                 void **items = *(void ***)((char *)list + 4);
-                for (j = 0; j < n; j++) {
+                for (j = 0; j < *(s32 *)list; j++) {
                     void *item = items[j];
                     if (*(u8 *)((char *)item + 0x40)) {
                         void *hit = *(void **)((char *)item + 0x3C);
                         if ((*(s32 (**)(void *, void *, f32 *, f32 *, s32))(*(void ***)hit + 6))
-                            (hit, arg0, normal, &scratch.dot, arg3)) {
+                            (hit, arg0, normal, &dot, arg3)) {
                             found = 1;
                             *arg4 = *(s32 *)((char *)hit + 0x20);
                             *arg5 = 0;
@@ -270,15 +273,15 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
             }
         }
     }
-    if (fn_801A4E88(arg0, normal, &scratch.dot, arg3, &finalResult)) {
+    if (fn_801A4E88(arg0, normal, &dot, arg3, &finalResult)) {
         found = 1;
         *arg4 = finalResult;
         *arg5 = 0;
     }
     if (found) {
-        arg2[0] = arg0[0] + normal[0] * scratch.dot;
-        arg2[1] = arg0[1] + normal[1] * scratch.dot;
-        arg2[2] = arg0[2] + normal[2] * scratch.dot;
+        arg2[0] = arg0[0] + normal[0] * dot;
+        arg2[1] = arg0[1] + normal[1] * dot;
+        arg2[2] = arg0[2] + normal[2] * dot;
     }
     return found;
 }
