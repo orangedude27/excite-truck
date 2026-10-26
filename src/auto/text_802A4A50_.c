@@ -6,6 +6,11 @@ typedef unsigned char u8;
 typedef unsigned long u32;
 typedef signed long s32;
 typedef float f32;
+extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
+extern s32 lbl_8055F88C;
+extern char lbl_80349C88[];
+extern s32 fn_801284F8(s32, char *);
+extern s32 fn_802A6944(s32, s32, s32);
 typedef union { double d; struct { f32 x, z; }; } Vec2_802A775C;
 typedef struct {
     void *points;
@@ -222,8 +227,9 @@ extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
 extern char lbl_80349C94[];
 s32 fn_801284F8(s32, char *);
 s32 fn_802A5AE8();
+#pragma scheduling invalid_target
 void fn_802A52FC(f32 arg0) {
-    f32 value = lbl_8056485C;
+    register f32 value = lbl_8056485C;
     s32 result;
     s32 amount;
     value = (value < arg0) ? value : arg0;
@@ -233,7 +239,7 @@ void fn_802A52FC(f32 arg0) {
     if (result != 0) result = fn_802A5AE8(result, amount, 0);
     lbl_8055F888 = result;
 }
-
+#pragma scheduling on
 void fn_802A5270(f32);
 s32 fn_802A5384(s32 arg0) {
     s32 value = *(s32 *)arg0;
