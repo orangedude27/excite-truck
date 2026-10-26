@@ -1268,7 +1268,7 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
     return lbl_804127A8;
 }
 extern "C" u64 OSGetTime(void);
-extern "C" void OSSetPeriodicAlarm(void*, u64, u64, u32, void*, u32, void*, void*);
+extern "C" void OSSetPeriodicAlarm(void*, u32, u32, u32, u32, u32, void*, u32);
 extern "C" void fn_800EE568(void*);
 extern "C" void fn_800EEBA8(void*, u64, u64);
 extern "C" void Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void* self_) {
