@@ -1,4 +1,9 @@
 #include <types.h>
+extern int lbl_8055D668, lbl_8055D66C;
+extern char *lbl_80558D8C;
+extern int fn_8000DA10(void);
+extern int fn_8001BA90(int, int, int, int, int);
+extern void fn_8001BA70(int, int, unsigned char *, int);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
