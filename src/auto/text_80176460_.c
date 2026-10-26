@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 extern void *lbl_8055E3E8;
+extern void __AXDSPInitCallback_801769E0(void);
 extern u8 lbl_8055E3E4;
 extern char lbl_803316B4[];
 extern char lbl_8033189C[];
