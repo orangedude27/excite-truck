@@ -105,49 +105,57 @@ extern "C" s32 fn_80144F40(const char *arg0, void *arg1) {
 }
 
 extern "C" u8 lbl_80559DCC;
+#pragma scheduling invalid_target
 extern "C" s32 fn_80144FB0(void *arg0, s32 arg1, s32 arg2, const char *arg3) {
     struct Entry { const char *text; u32 mask; };
-    char *dst = (char *)arg0;
     Entry *entry = (Entry *)arg3;
-    *dst = 0;
+    char *dst = (char *)arg0;
+    s32 zero = 0;
+    const char *separator = (const char *)&lbl_80559DCC;
+    const char *src;
+    s32 remaining;
+    char *cursor;
+    *dst = zero;
     while (entry->text != 0) {
         if ((entry->mask & (u32)arg2) == entry->mask) {
-            if (*dst != 0) {
-                s32 left = arg1;
-                char *end = dst;
-                while (*end != 0) { left--; end++; }
-                if (left > 0) {
-                    const char *sep = (const char *)&lbl_80559DCC;
-                    do {
-                        char c = *sep++;
-                        *end++ = c;
-                        if (c != 0) {
-                            left--;
-                            if (left <= 0) { end[-1] = 0; break; }
-                        } else break;
-                    } while (1);
+            if ((s8)*dst != 0) {
+                remaining = arg1;
+                cursor = dst;
+                while ((s8)*cursor != 0) {
+                    --remaining;
+                    ++cursor;
+                }
+                if (remaining > 0) {
+                    src = separator;
+                    while ((s8)(*cursor++ = *src++) != 0) {
+                        if (--remaining <= 0) {
+                            cursor[-1] = zero;
+                            break;
+                        }
+                    }
                 }
             }
-            const char *src = entry->text;
-            s32 left2 = arg1;
-            char *end2 = dst;
-            while (*end2 != 0) { left2--; end2++; }
-            if (left2 > 0) {
-                do {
-                    char c = *src++;
-                    *end2++ = c;
-                    if (c != 0) {
-                        left2--;
-                        if (left2 <= 0) { end2[-1] = 0; break; }
-                    } else break;
-                } while (1);
+            remaining = arg1;
+            cursor = dst;
+            while ((s8)*cursor != 0) {
+                --remaining;
+                ++cursor;
+            }
+            if (remaining > 0) {
+                src = entry->text;
+                while ((s8)(*cursor++ = *src++) != 0) {
+                    if (--remaining <= 0) {
+                        cursor[-1] = zero;
+                        break;
+                    }
+                }
             }
         }
-        entry++;
+        ++entry;
     }
-    return 0;
+    return (s32)dst;
 }
-
+#pragma scheduling on
 extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
     f32 temp_f1 = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
     f32 var_f0;
@@ -357,18 +365,12 @@ extern "C" void fn_801456E8(void *arg0, s32 arg1) {
     s32 i;
     i = 0;
     offset = 0;
-    s32 formatted;
     while (i < list->count) {
         entry = (Entry *)((u8 *)list->entries + offset);
         value = fn_8013126C(result, entry->unk1C);
-        formatted = fn_80144FB0(buffer, 0x40, entry->unk14, base + 0x10);
-        f32 farg0 = entry->unk4;
-        f32 farg1 = entry->unk8;
-        s32 arg3 = entry->unkC;
-        s32 arg4 = entry->unk18;
-        s32 arg5 = entry->unk0;
-        f32 farg2 = entry->unk10;
-        fn_802E3AD0(arg1, base + 0xD4, farg0, farg1, arg3, arg4, formatted, arg5, value, farg2);
+        s32 formatted = fn_80144FB0(buffer, 0x40, entry->unk14, base + 0x10);
+        fn_802E3AD0(arg1, base + 0xD4, entry->unk4, entry->unk8,
+                    entry->unkC, entry->unk18, formatted, entry->unk0, value, entry->unk10);
         offset += 0x20;
         i++;
     }
@@ -1559,32 +1561,35 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u8 *other = (u8 *)arg2;
+    f32 zSource = *(f32 *)(src + 0x10);
+    f32 zOther = *(f32 *)(other + 0x10);
+    f32 yOther = *(f32 *)(other + 8);
+    f32 ySource = *(f32 *)(src + 8);
+    f32 xOther = *(f32 *)(other + 4);
+    f32 xSource = *(f32 *)(src + 4);
+    yOther = yOther - ySource;
+    xOther = xOther - xSource;
+    zOther = zOther - zSource;
     f32 factor = (f32)arg3;
-    f32 y = *(f32 *)(src + 8) + factor * (*(f32 *)(other + 8) - *(f32 *)(src + 8));
-    f32 x = *(f32 *)(src + 4) + factor * (*(f32 *)(other + 4) - *(f32 *)(src + 4));
-    f32 zBase = *(f32 *)(src + 0x10);
-    f32 z = zBase + factor * (*(f32 *)(other + 0x10) - zBase);
+    f32 y = ySource + factor * yOther;
+    f32 x = xSource + factor * xOther;
+    f32 z = zSource + factor * zOther;
     Pair second;
     Pair first;
-    first.f.x = x;
     first.f.y = y;
+    first.f.x = x;
     second.raw = first.raw;
-    u32 w4 = *(u32 *)(src + 4);
-    u32 w8 = *(u32 *)(src + 8);
-    u32 w0 = *(u32 *)(src + 0);
-    u32 wc = *(u32 *)(src + 0xC);
-    u32 w14 = *(u32 *)(src + 0x14);
-    u32 w18 = *(u32 *)(src + 0x18);
     u32 w1c = *(u32 *)(src + 0x1C);
+    u32 w18 = *(u32 *)(src + 0x18);
+    u32 w14 = *(u32 *)(src + 0x14);
+    u32 wc = *(u32 *)(src + 0xC);
+    u32 w0 = *(u32 *)(src + 0);
+    u32 w8 = *(u32 *)(src + 8);
+    u32 w4 = *(u32 *)(src + 4);
     volatile u32 *d = (volatile u32 *)dst;
-    *(volatile f32 *)(dst + 0x10) = zBase;
-    d[1] = w4;
-    d[2] = w8;
-    d[0] = w0;
-    d[3] = wc;
-    d[5] = w14;
-    d[6] = w18;
-    d[7] = w1c;
+    *(volatile f32 *)(dst + 0x10) = zSource;
+    d[1] = w4; d[2] = w8; d[0] = w0; d[3] = wc;
+    d[5] = w14; d[6] = w18; d[7] = w1c;
     *(volatile f32 *)(dst + 4) = second.f.x;
     *(volatile f32 *)(dst + 8) = second.f.y;
     *(volatile f32 *)(dst + 0x10) = z;
@@ -1869,14 +1874,15 @@ void fn_802E3734(s32 *);
 __declspec(section ".sdata") extern char lbl_80559E70[5];
 extern char lbl_8032D28C[];
 }
+#pragma dont_inline on
+#pragma scheduling invalid_target
 extern "C" void fn_80148534(void *arg0) {
-    s32 value;
-    char *name;
     strcpy(fn_80029004((char *)arg0 + 5, '.'), lbl_80559E70);
-    name = (char *)arg0 + 5;
+    char *name = (char *)arg0;
+    name += 5;
     if (strchr(name, '/') != 0)
         name = strchr(name, '/') + 1;
-    value = fn_802E3D68(name);
+    s32 value = fn_802E3D68(name);
     if (value != -1) {
         fn_802E3AD0(value, lbl_8032D28C, 1);
         fn_801457D0(*(void **)((u8 *)arg0 + 0x2C), value);
@@ -1887,7 +1893,8 @@ extern "C" void fn_80148534(void *arg0) {
         fn_802E3734(&value);
     }
 }
-
+#pragma scheduling on
+#pragma dont_inline reset
 extern "C" void fn_80148610(void *arg0) {
     bool *b = (bool *)((u8 *)arg0 + 4);
     *b = !*b;
