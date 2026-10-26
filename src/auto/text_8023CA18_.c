@@ -49,8 +49,31 @@ void fn_8023D1C0(void) {
 
 void fn_8023D1F8(void) {}
 
+extern void fn_80221EA0(void *, s32, s32, s32);
+extern s32 fn_80208D3C(void);
+extern void *fn_80208D4C(s32);
+extern char *strcpy(char *, const char *);
+extern const char lbl_8055BB98[];
+void fn_8023D1FC(void *p) {
+    s32 n;
+    void *item;
+    fn_80221EA0(p, 2, *(s32 *)((u8 *)p + 0x24), 4);
+    fn_80221EA0(p, 0, *(s32 *)((u8 *)p + 0x18), 4);
+    fn_80221EA0(p, 1, *(s32 *)((u8 *)p + 0x20), 4);
+    fn_80221EA0(p, 3, *(s32 *)((u8 *)p + 0x1c), 4);
+    fn_80221EA0(p, 4, *(s32 *)((u8 *)p + 0x2c), 4);
+    fn_80221EA0(p, 5, *(s32 *)((u8 *)p + 0x30), 4);
+    fn_80221EA0(p, 6, *(s32 *)((u8 *)p + 0x34), 4);
+    n = **(s32 **)((u8 *)p + 0x24);
+    if (n >= 0 && n < fn_80208D3C()) {
+        item = fn_80208D4C(n);
+        strcpy(*(char **)((u8 *)p + 0x28), ((const char *(*)(void *))(*(s32 **)item)[3])(item));
+    } else {
+        strcpy(*(char **)((u8 *)p + 0x28), lbl_8055BB98);
+    }
+}
+
 extern s32 lbl_8055BB68;
-extern s32 lbl_803415E8;
 typedef struct Obj8023 {
     u8 pad[0x18];
     s32 f18;
