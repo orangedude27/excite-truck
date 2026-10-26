@@ -524,13 +524,21 @@ extern "C" void fn_80145C7C(void * __restrict arg0, u32 arg1) {
 #pragma pop
 #pragma dont_inline reset
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
 extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
-    f32 temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
-    f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-    ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
-    fn_802354A0((s32)arg1, arg2, *(s32 *)((u8 *)arg0 + 0x18), temp_f31, lbl_805615D4, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
+    f32 temp_f31;
+    f32 temp_f30;
+    temp_f31 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
+    temp_f30 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(
+        *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+    ((void (*)(s32, s32, s32, f32, f32, f32, f32, f32))fn_802354A0)(
+        (s32)arg1, arg2, *(s32 *)((u8 *)arg0 + 0x18),
+        value, temp_f30, lbl_805615D4, temp_f31, *(f32 *)((u8 *)arg0 + 0x14));
 }
-
+#pragma scheduling on
+#pragma dont_inline reset
 extern "C" void fn_80145D8C(void *arg0) {
     volatile Queue80145D8C *queue = &lbl_8042FBC0;
     s32 count = queue->count;
@@ -542,6 +550,34 @@ extern "C" void fn_80145D8C(void *arg0) {
         return;
     }
     ((void (*)(const char *, ...))fn_802E30C8)(lbl_8032D0D0);
+}
+
+extern "C" void fn_80145DD8(void *arg0) {
+    Queue80145D8C *queue = &lbl_8042FBC0;
+    void **item = queue->data;
+    s32 count = queue->count;
+    s32 i = 0;
+
+    if (count > 0) {
+        s32 remaining = count;
+        do {
+            if (*item == arg0) {
+                goto found;
+            } else {
+                item++;
+                i++;
+            }
+        } while (--remaining != 0);
+    }
+    i = -1;
+found:
+    if ((i >= 0) && (i >= 0) && (i < queue->count)) {
+        s32 last = queue->count - 1;
+        if (i != last) {
+            queue->data[i] = queue->data[last];
+        }
+        queue->count = last;
+    }
 }
 
 #pragma dont_inline on
@@ -771,14 +807,6 @@ extern "C" void *fn_80146490(void *arg0) {
 }
 
 extern "C" void fn_80128668(void *);
-extern "C" void fn_80146584(void *arg0) {
-    void *buf = *(void **)arg0;
-    if (buf != NULL) {
-        fn_80128668(buf);
-        *(void **)arg0 = NULL;
-    }
-}
-
 extern "C" void fn_80128670(s32);
 extern "C" void fn_80131818(void);
 extern "C" void fn_80145DD8(void *);
@@ -788,7 +816,14 @@ extern "C" void fn_80146638(void *);
 extern "C" void fn_801466B4(void *);
 extern "C" void fn_80146730(void *);
 extern "C" void fn_801467AC(void *);
-extern "C" void *lbl_8032D1E8;
+
+extern "C" void fn_80146584(void *arg0) {
+    void *buf = *(void **)arg0;
+    if (buf != NULL) {
+        fn_80128668(buf);
+        *(void **)arg0 = NULL;
+    }
+}
 extern "C" void fn_801465C8(void *arg0) {
     void *p = *(void **)arg0;
     if (p != NULL) {
