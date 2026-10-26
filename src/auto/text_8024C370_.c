@@ -62,23 +62,31 @@ void *fn_8024C3FC(void *arg0, int arg1) {
     return arg0;
 }
 
-#pragma dont_inline on
+#pragma push
+#pragma use_lmw_stmw off
 void fn_8024C464(void) {
-    int i;
-    int state;
-    for (i = 0; i < 4; ++i) {
-        fn_801345D8(&lbl_80498A00[i * 0x12], 0x12, lbl_8055C018, fn_8000DB34(i));
-        if (fn_8000DBAC(i) == 0 && i == fn_8000DA10()) {
+    char *buffer = lbl_80498A00;
+    int *state = lbl_80498A48;
+    int i = 0;
+    int zero = 0;
+    int one = 1;
+    int two = 2;
+    do {
+        fn_801345D8(buffer, 0x12, lbl_8055C018, fn_8000DB34(i));
+        if ((fn_8000DBAC(i) == 0) && (i == fn_8000DA10())) {
             if (fn_8000DB8C(i) != 0)
-                lbl_80498A48[i] = 2;
+                *state = two;
             else
-                lbl_80498A48[i] = 1;
+                *state = one;
         } else {
-            lbl_80498A48[i] = 0;
+            *state = zero;
         }
-    }
+        i++;
+        buffer += 0x12;
+        state++;
+    } while (i < 4);
 }
-#pragma dont_inline reset
+#pragma pop
 
 #pragma dont_inline on
 int fn_8024C524(void) {
@@ -103,16 +111,16 @@ int fn_8024C550(void) {
     return 0;
 }
 #pragma dont_inline reset
+#pragma use_lmw_stmw off
 int fn_8024C578(int arg0) {
     int result;
-    if (((int (*)())fn_8000DBAC)() != 0) {
+    if (((int (*)(void))fn_8000DBAC)() != 0) {
         int sp[4];
-        short last;
+        short last = 0;
         sp[0] = 0;
         sp[1] = 0;
         sp[2] = 0;
         sp[3] = 0;
-        last = 0;
         if (fn_8023FAD4(sp, 0x12) != 0) {
             fn_8000D984(arg0);
             fn_8000DA80();
