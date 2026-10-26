@@ -127,6 +127,7 @@ f32 fn_801C3450(f32 arg0) {
     value = (f32)(s32)(arg0 * fn_801C2F58(2, lbl_80562978));
     return (value - *(f32 *)&lbl_80562980) / denom;
 }
+#pragma dont_inline reset
 
 #pragma dont_inline on
 s32 fn_801C34CC(f32 arg0, f32 arg1) {
