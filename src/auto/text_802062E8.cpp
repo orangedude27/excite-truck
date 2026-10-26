@@ -1,6 +1,12 @@
 #include "types.h"
 
+extern "C" void fn_80208D70(void);
+extern "C" void *fn_80208D4C(void);
+extern "C" void fn_80208D80(int);
+extern "C" int fn_801284F8(int, void *);
 extern "C" void fn_80208B8C(int);
+extern int lbl_8055ED80;
+extern unsigned char lbl_8055ED84;
 extern "C" void *fn_80207990(void *, void *);
 extern "C" void fn_8020A368(void);
 extern "C" void fn_802E30C8(const char *, ...);
