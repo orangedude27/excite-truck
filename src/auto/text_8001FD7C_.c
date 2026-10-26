@@ -156,19 +156,22 @@ extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
 
-void fn_8001FFD0(int arg0, int arg1, void* arg2, int arg3) {
+void fn_8001FFD0(int arg0, int arg1, void *arg2, int arg3) {
+    char *base = lbl_802FE138;
     switch (arg1) {
-        case 0x180201:
-            fn_801345D8(arg2, arg3, &lbl_802FE138[0xac], arg0 + 1);
-            return;
         case 0x180303:
-            fn_801345D8(arg2, arg3, &lbl_802FE138[0x98], arg0 + 1);
+            ((void (*)(void *, int, char *, ...))fn_801345D8)(arg2, arg3, base + 0x98, arg0 + 1);
+            return;
+        case 0x180201:
+            ((void (*)(void *, int, char *, ...))fn_801345D8)(arg2, arg3, base + 0xAC, arg0 + 1);
             return;
         case 0x180304:
-            fn_801345D8(arg2, arg3, &lbl_802FE138[0xc0], arg0 + 1);
+            ((void (*)(void *, int, char *, ...))fn_801345D8)(arg2, arg3, base + 0xC0, arg0 + 1);
+            return;
+        default:
+            ((void (*)(void *, int, char *, ...))fn_801345D8)(arg2, arg3, base + 0xD4, arg0 + 1);
             return;
     }
-    fn_801345D8(arg2, arg3, &lbl_802FE138[0xd4], arg0 + 1);
 }
 
 extern void PSVECCrossProduct();
