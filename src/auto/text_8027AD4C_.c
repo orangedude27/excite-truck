@@ -2,8 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_804A4380[];
-extern long lbl_80347B4C;
-extern long lbl_80347B5C;
+__declspec(section ".rodata") extern long lbl_80347B4C;
+__declspec(section ".rodata") extern long lbl_80347B5C;
 long fn_8000D984(long);
 long fn_8027B8E4(void *, long);
 void *fn_8027B834(void *);
