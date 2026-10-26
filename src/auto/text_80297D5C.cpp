@@ -509,9 +509,8 @@ extern "C" void fn_802C8E00(int, unsigned int, float, float, float, float, float
 extern float lbl_805645E0;
 extern float lbl_80564590, lbl_8056459C, lbl_805645E0;
 extern "C" void fn_80299830(void* arg0, int arg1) {
-    float scale = lbl_805645E0;
     char* var_r31 = (char*)arg0 + (arg1 << 6);
-    int temp_r0 = (int)(scale * *(float*)(var_r31 + 0x3C));
+    int temp_r0 = (int)(255.0f * *(float*)(var_r31 + 0x3C));
     if (temp_r0 >= 1) {
         int var_r30 = temp_r0 << 24;
         int var_r29 = 0;
@@ -523,9 +522,10 @@ extern "C" void fn_80299830(void* arg0, int arg1) {
             if (var_r29 & 2) var_f5 = lbl_8056459C;
             else var_f5 = lbl_80564590;
             int t = var_r29 ^ 1;
-            int diff = t >> 1;
-            diff -= t & var_r29;
-            fn_802C8E00(var_r30, (unsigned int)diff >> 31,
+            int temp_r3 = t >> 1;
+            t &= var_r29;
+            t = temp_r3 - t;
+            fn_802C8E00(var_r30, (unsigned int)t >> 31,
                 *(float*)(var_r31 + 4), *(float*)(var_r31 + 8), *(float*)(var_r31 + 0xC), var_f4, var_f5);
             var_r29++;
             var_r31 += 0xC;
@@ -779,6 +779,55 @@ extern "C" void fn_8029A8B8(void* arg0) {
     *(float*)((char*)arg0 + 0x158) = value;
     *(unsigned char*)((char*)arg0 + 0x15C) = 0;
 }
+
+extern "C" int fn_8029ADCC(void *arg0);
+extern "C" void fn_8029B1B8(void *);
+extern "C" void *fn_80288208(int);
+extern "C" int fn_80287E20(void *, const char *);
+extern "C" void *fn_80287E80(void *, const char *);
+extern "C" char lbl_80349508[];
+extern "C" char lbl_8055CA90[];
+#pragma cplusplus on
+extern "C" int fn_8029ADCC(void *arg0) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual float apply(const char *, float);
+    };
+    int count;
+    int i;
+    void *cursor;
+    void *obj;
+    float value;
+
+    fn_8029B1B8(arg0);
+    count = fn_80287B14();
+    value = lbl_80564590;
+    cursor = arg0;
+    i = 0;
+    while (i < count) {
+        obj = fn_80288208(i);
+        *(float *)((char *)cursor + 0x1C0) = value;
+        if (fn_80287E20(obj, lbl_8055CA90) != 0) {
+            obj = fn_80287E80(obj, lbl_8055CA90);
+            *(float *)((char *)cursor + 0x1C0) = ((Dummy *)obj)->apply(lbl_80349508, *(float *)((char *)cursor + 0x1C0));
+        }
+        cursor = (char *)cursor + 4;
+        i += 1;
+    }
+    fn_8029AEE8(arg0);
+    return (int)arg0;
+}
+#pragma cplusplus reset
 
 extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* arg0, int arg1) {
     if (arg0 != 0) {
