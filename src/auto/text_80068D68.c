@@ -11263,6 +11263,19 @@ void PORT_LineStatusInd(void *mcb, u8 dlci, u8 line_status) {
     }
 }
 
+extern void port_rfc_closed();
+extern char lbl_80319454[];
+void PORT_DlcReleaseInd(void *arg0, u8 arg1) {
+    void *port;
+    void *(*find_mcb)(void) = (void *(*)(void))port_find_mcb_dlci_port;
+
+    port = find_mcb();
+    if (lbl_803C4828[0x414] >= 4)
+        fn_8007093C(0x90003, lbl_80319454);
+    if (port != 0)
+        port_rfc_closed(port, 0x13);
+}
+
 void PORT_CloseInd(void *arg0) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319468[];
