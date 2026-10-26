@@ -264,7 +264,7 @@ void fn_802A52FC(f32 arg0) {
     value = (value > lbl_80564858) ? value : lbl_80564858;
     amount = (s32)(lbl_80564878 * value);
     result = fn_801284F8(0xBC, lbl_80349C94);
-    if (result != 0) result = fn_802A5AE8(result, amount, 0);
+    if (result != 0) result = fn_802A5AE8((void *)result, amount, 0);
     lbl_8055F888 = result;
 }
 #pragma scheduling on
