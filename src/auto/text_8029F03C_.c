@@ -195,40 +195,43 @@ int fn_8029F3BC(unsigned char *arg0) {
 #pragma dont_inline on
 void fn_8029F458(unsigned char *arg0, int arg1) {
     unsigned char buf[0x20];
-    unsigned char *dst;
     unsigned char c;
     int remaining;
+    unsigned char *dst;
     int id;
-    volatile int *globals = (volatile int *)lbl_804B9B7C;
-    int i;
     int offset;
-    if (*arg0 == '$')
+    int i;
+    if (*(signed char *)arg0 == '$')
         arg0++;
     dst = buf;
     remaining = 0x20;
-    do {
-        remaining--;
-        c = *arg0++;
-        *dst++ = c;
-        if ((signed char)c == 0)
-            break;
-    } while (remaining != 0);
-    if (remaining == 0)
-        dst[-1] = 0;
+    goto copy;
+decrement:
+    remaining--;
+    if (remaining > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto lookup;
+copy:
+    c = *arg0++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto decrement;
+lookup:
     id = fn_8029F3BC(buf);
-    i = 0;
     offset = 0;
+    i = 0;
     goto check;
 loop:
     {
-        unsigned char *entry = (unsigned char *)globals[0] + offset;
+        unsigned char *entry = (unsigned char *)*(volatile int *)&lbl_804B9B7C[0] + offset;
         if (*(int *)entry == id)
             *(int *)(entry + 0x30) = arg1;
     }
     offset += 0x34;
     i++;
 check:
-    if (i < globals[1])
+    if (i < *(volatile int *)&lbl_804B9B7C[1])
         goto loop;
 }
 #pragma dont_inline reset
@@ -310,25 +313,31 @@ extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_8029FD04(void) {
-    void **object;
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_8029FD04(void) {
+    class Object {
+    public:
+        virtual const char *name();
+        virtual Object *child(int);
+    };
+    Object *object;
     int i;
-    void **child;
-    register void **vtable;
+    Object *child;
     lbl_804B9B7C[1] = 0;
-    object = fn_80131810(lbl_8034989C);
+    object = (Object *)fn_80131810(lbl_8034989C);
     if (object != 0) {
-        i = 1;
-        child = (vtable = (void **)*object, ((void *(*)(void *, int))vtable[3])(object, 0));
+        i = 0;
+        child = object->child(i++);
         while (child != 0) {
-            if (stricmp((vtable = (void **)*child, ((const char *(*)(void *))vtable[2])(child)), lbl_8055CB60) == 0)
+            if (stricmp(child->name(), lbl_8055CB60) == 0)
                 fn_8029FB00(child);
-            child = (vtable = (void **)*object, ((void *(*)(void *, int))vtable[3])(object, i++));
+            child = object->child(i++);
         }
         fn_80131818(object);
     }
 }
-
+#pragma cplusplus off
 #pragma scheduling invalid_target
 void fn_8029FDDC(void) {
     lbl_804B9B7C[1] = 0;
