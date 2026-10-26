@@ -9,6 +9,7 @@ public:
 };
 class EnvGenerator { public: void SetRelease(int); void SetDecay(int); void SetSustain(int); };
 class PoolImpl { public: void DestroyImpl(void *, unsigned long); };
+class RemoteSpeakerManager { public: void Setup(); };
    }}}
 namespace nw4r { namespace snd { namespace detail {
 class PoolImpl { public: void *AllocImpl(); };
@@ -1283,10 +1284,11 @@ extern "C" void Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void* self_)
         u64 time = OSGetTime();
         u32 ticks = *(volatile u32*)0x800000F8;
         u32 a = ticks >> 2;
-        u32 q = (u32)(((u64)a * 0x431CDE83ULL) >> 32) >> 15;
-        u32 period = q * 0x000065AB;
-        u64 interval = ((u64)(period * 0x00001062) >> 32) >> 9;
-        OSSetPeriodicAlarm(self + 8, (u64)q, time, (u32)time, 0, (u32)interval, (void*)fn_800EEBA8, 0);
+        u32 q = a / 125000;
+        u32 period = q * 0x0065B9AB;
+        u32 interval = period / 8000;
+        OSSetPeriodicAlarm(self + 8, q, (u32)(time >> 32), (u32)time,
+                           0, interval, (void*)fn_800EEBA8, 0);
         self[0] = 1;
     }
 }
