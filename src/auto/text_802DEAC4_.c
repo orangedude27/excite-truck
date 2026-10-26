@@ -3,6 +3,14 @@
 
 #include <types.h>
 extern s32 fn_8011A168;
+extern void fn_80119214(void *, void *);
+extern void fn_80116E54(void *, void *);
+extern void fn_801282EC(u32);
+extern void fn_801282F4(void);
+extern void *fn_8012850C(u32, void *);
+extern void *fn_802E0C04(u32);
+extern void fn_802E0D44(u32);
+extern u8 lbl_8055D150, lbl_8055D158, lbl_8055D160;
 extern void fn_801284F8(void *, void *);
 extern char lbl_8034CB68[];
 extern void *lbl_8055FEEC;
