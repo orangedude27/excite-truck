@@ -465,7 +465,27 @@ void fn_80017558(void) {
     }
 }
 
-#pragma scheduling off
+extern unsigned char lbl_802FD07C[];
+extern void *memset(void *, int, unsigned int);
+#pragma scheduling invalid_target
+void fn_8001766C(int arg0) {
+    unsigned char *base = lbl_803577F0;
+    int recordOffset = arg0 * 0x5C;
+    unsigned char *entryBase = base;
+    unsigned char *entry = entryBase + recordOffset;
+    int index = arg0;
+    int offset68 = index * 0x68;
+    int offset8 = index * 8;
+
+    memset(entry, 0, 0x5C);
+    *(int *)(entry + 4) = -1000;
+    ((void (*)(char *, int, const char *, ...))fn_801345D8)(
+        (char *)(entry + 8), 0x40, (const char *)lbl_802FD07C, index + 1);
+    *(int *)(entry + 0x48) = 1000;
+    *(unsigned char *)(lbl_803577F0 + 0x410 + offset8) = 0;
+    *(unsigned char *)(lbl_803577F0 + 0x430 + offset68) = 0;
+}
+#pragma scheduling on
 void fn_80017708(void *arg0, int arg1, void *arg2) {
     int temp_r0;
     int temp_r0_2;
@@ -485,27 +505,31 @@ void fn_80017708(void *arg0, int arg1, void *arg2) {
     *(int *)arg2 = temp_r0;
     *(int *)((char *)arg2 + 4) = temp_r0;
 }
+#pragma dont_inline on
 void fn_800177B8(void) {
-    int var_r28;
-    int var_r30;
     int var_r31;
+    int var_r30;
     void *temp_r29;
+    int var_r28;
+
     memset(lbl_8055D548, 0, 0x960);
     var_r30 = 0;
     var_r31 = 0;
-loop_5:
+    goto loop_test;
+loop_body:
+    temp_r29 = lbl_8055D544 + var_r31;
+    if ((*(int *)((char *)temp_r29 + 0xA0) & 2) == 0) {
+        var_r28 = 0;
+        do {
+            fn_80017708(temp_r29, var_r28, fn_80016BC8(temp_r29, var_r28));
+            var_r28++;
+        } while (var_r28 < 4);
+    }
+    var_r31 += 0xA8;
+    var_r30++;
+loop_test:
     if (var_r30 < (int)lbl_8055D550) {
-        temp_r29 = lbl_8055D544 + var_r31;
-        if (!(*(int *)((char *)temp_r29 + 0xA0) & 2)) {
-            var_r28 = 0;
-            do {
-                fn_80017708(temp_r29, var_r28, fn_80016BC8(temp_r29, var_r28));
-                var_r28 += 1;
-            } while (var_r28 < 4);
-        }
-        var_r31 += 0xA8;
-        var_r30 += 1;
-        goto loop_5;
+        goto loop_body;
     }
 }
-
+#pragma dont_inline reset
