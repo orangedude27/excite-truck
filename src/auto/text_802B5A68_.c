@@ -89,18 +89,19 @@ void fn_802B5B6C(void) {
 extern void *lbl_8055FA44;
 s32 fn_802B5B74(void *arg0) {
     s32 workspace[51];
-    s32 result = 0;
+    s32 result;
     s32 index;
     void *object;
 
+    workspace[2] = 0x10;
     workspace[0] = (s32)&workspace[3];
     workspace[1] = 0;
-    workspace[2] = 0x10;
     object = ((void *(*)(void))fn_802B5B6C)();
     ((void (*)(void *, s32, s32, s32))fn_802B321C)(
         workspace, 0, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
 
     index = (s32)lbl_8055FA44;
+    result = 0;
     if (index >= 0 && index < workspace[1]) {
         result = 1;
     }
@@ -418,22 +419,31 @@ extern s32 lbl_8034A70C;
 extern int strcmp(const char *, const char *);
 #pragma dont_inline on
 void fn_802B62A4(const char **arg) {
-    s32 i = 0;
-    s32 *entry = (s32 *)&lbl_8034A670;
-    do {
-        if (entry[0] != 0 && strcmp((const char *)entry[0], *arg) == 0) break;
-        if (entry[1] != 0 && ((s32 (*)(const char *))entry[1])(*arg) != 0) {
-            ((void (*)(const char *, void *))entry[2])(*arg, (void *)entry);
-            return;
-        }
-        i++;
-        entry += 3;
-    } while (i < 4);
+    register s32 *entry = (s32 *)lbl_8034A670;
+    register u32 i = 0;
+
+loop:
+    if (entry[0] != 0 && strcmp((const char *)entry[0], *arg) == 0) {
+        goto action;
+    }
+    if (entry[1] == 0 || ((s32 (*)(const char *))entry[1])(*arg) == 0) {
+        goto next;
+    }
+action:
+    ((void (*)(const char *, void *))*(s32 *)(lbl_8034A670 + i * 12 + 8))(
+        *arg, (void *)(lbl_8034A670 + i * 12));
+    return;
+next:
+    i++;
+    entry += 3;
+    if (i < 4) {
+        goto loop;
+    }
 }
 
 void fn_802B6358(const char **arg) {
     s32 i = 0;
-    s32 *entry = &lbl_8034A70C;
+    s32 *entry = (s32 *)lbl_8034A70C;
     do {
         if (entry[0] != 0 && strcmp((const char *)entry[0], *arg) == 0) break;
         if (entry[1] != 0 && ((s32 (*)(const char *))entry[1])(*arg) != 0) {
