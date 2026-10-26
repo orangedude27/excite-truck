@@ -260,18 +260,33 @@ void fn_8027B60C(void *arg0) {
 }
 #pragma scheduling on
 #pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void fn_8027B77C(void) {
-    char *base, *p;
-    long outer, i;
+    register char *base;
+    register unsigned int outer;
+    register char *p;
+    register unsigned int i;
     if (fn_80019B3C() == 0 || lbl_8055F650 != 0) {
         base = lbl_804A4380;
         outer = 0;
         do {
-            p = base; i = 0;
-            do { fn_8027B60C(p); i++; p += 0xBD0; } while (i < 3);
-            p = base + 0x2370; i = 0;
-            do { fn_8027B60C(p); i++; p += 0xBD0; } while (i < 2);
-            outer++; base += 0x3B10;
+            p = base;
+            i = 0;
+            do {
+                fn_8027B60C(p);
+                i++;
+                p += 0xBD0;
+            } while (i < 3);
+            p = base + 0x2370;
+            i = 0;
+            do {
+                fn_8027B60C(p);
+                i++;
+                p += 0xBD0;
+            } while (i < 2);
+            outer++;
+            base += 0x3B10;
         } while (outer < 4);
         lbl_8055F650 = 0;
     }
@@ -473,9 +488,11 @@ long *fn_8027C120(long arg0, long arg1) {
     long offset = 0;
     goto check;
 loop:
-    if (stricmp((char *)arg1, *(char **)(*(long *)arg0 + offset + 0xC)) != 0)
+    if (((unsigned int)__cntlzw(stricmp((char *)arg1, *(char **)((char *)(*(long *)arg0) + offset + 0xC))) >> 5) != 0) {
+        goto found;
+    } else {
         goto advance;
-    goto found;
+    }
 advance:
     offset += 0x14;
     index++;
@@ -529,8 +546,8 @@ extern void fn_8027C2B8();
 #pragma push
 #pragma scheduling invalid_target
 void *fn_8027C41C(void *arg0, long arg1) {
-    register char *base = (char *)arg0 + 0x10000;
-    register long zero = 0;
+    long zero = 0;
+    char *base = (char *)arg0 + 0x10000;
     char *temp_r7 = base - 0x50E8;
     char *temp_r6 = base - 0x4FEC;
     *(long *)(base - 0x4FE4) = arg1;
