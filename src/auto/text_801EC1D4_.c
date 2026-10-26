@@ -281,14 +281,14 @@ void fn_801ECFE0(void *arg0) {
 }
 #pragma pop
 
-void fn_801ED2D0(void *arg0) {
-    long offset;
-    char *current;
-    long flag;
-    long i;
-    char *p;
-
-    fn_801ECC70();
+  void fn_801ED2D0(void *arg0) {
+      long offset;
+      char *current;
+      long flag;
+      long i;
+      char *p;
+  
+      fn_801ECC70(arg0);
     flag = *(long *)((char *)arg0 + 0x40) == fn_801E866C(-1);
     i = 0;
     current = (char *)arg0;
