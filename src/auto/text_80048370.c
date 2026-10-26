@@ -6,6 +6,9 @@
 #include "revolution/OS/OSInterrupt.h"
 #include "revolution/MTX/mtxtypes.h"
 
+extern f32 lbl_80560C48;
+extern f32 lbl_80560C4C;
+
 static inline void KPADNotifySampling(s32 chan) {
     KPADInsideStatus *status = &inside_kpads[chan];
     BOOL interrupts = OSDisableInterrupts();
@@ -582,9 +585,8 @@ void *MEMGetNextListObject(MEMList *list, void *object) {
 #pragma push
 #pragma paired on
 #pragma paired_single on
-#pragma fp_contract on
-void PSMTXConcat(const Mtx a, const Mtx b, Mtx out) {
-    int i;
+void PSMTXConcat(register const Mtx a, register const Mtx b, register Mtx out) {
+    register int i;
     for (i = 0; i < 3; i++) {
         out[i][0] = a[i][0] * b[0][0] + a[i][1] * b[1][0] + a[i][2] * b[2][0];
         out[i][1] = a[i][0] * b[0][1] + a[i][1] * b[1][1] + a[i][2] * b[2][1];
