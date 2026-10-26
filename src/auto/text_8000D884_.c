@@ -68,24 +68,30 @@ void fn_8000D94C(void) {
     lbl_8055D468 = zero;
 }
 
+#pragma push
+#pragma optimization_level 2
+#pragma scheduling invalid_target
 void fn_8000D984(int arg0) {
-    unsigned char *entry;
+    int *entry;
+    int *ptr;
     int i;
 
     fn_8000DF2C(2);
-    entry = lbl_8034F650;
-    *lbl_8055D46C = arg0;
+    ptr = lbl_8055D46C;
+    entry = (int *)lbl_8034F650;
+    *ptr = arg0;
     i = 0;
-    do {
-        if (i < lbl_8055D464) {
-            i++;
-            *(int **)(entry + 8) = (int *)(*(int *)(entry + 12) * *lbl_8055D46C + lbl_8055D468 + *(int *)(entry + 20));
-            entry += 0x18;
-        }
-    } while (i < lbl_8055D464);
+    goto check;
+loop:
+    ptr = lbl_8055D46C;
+    i++;
+    *(int *)entry[2] = entry[3] * *ptr + (lbl_8055D468 + entry[5]);
+    entry += 6;
+check:
+    if (i < lbl_8055D464) goto loop;
     fn_8000DF2C(3);
 }
-
+#pragma pop
 int fn_8000DA10(void) {
     return *lbl_8055D46C;
 }
