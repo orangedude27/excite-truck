@@ -340,6 +340,18 @@ check:
     if (i < lbl_8055F890) goto loop;
 }
 
+void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
+    s32 size = arg1 * 0xC;
+    s32 buffer = ((s32 (*)(s32, void *, s32))fn_8012850C)(size + 0x10, lbl_80349CA0, size);
+    *(s32 *)arg0 = fn_8002F37C(buffer, (void *)fn_8001BA68, 0, 0xC, arg1);
+    *(s32 *)((u8 *)arg0 + 8) = arg1;
+    *(s32 *)((u8 *)arg0 + 0xC) = fn_802CAC28((void *)lbl_8055CBBC, 0);
+    *(s32 *)((u8 *)arg0 + 0x10) = fn_802CAC28((void *)lbl_8055CBB8, 0);
+    *(s32 *)((u8 *)arg0 + 0x1C) = arg2;
+    fn_802A5C1C(arg0);
+    return arg0;
+}
+
 extern s32 lbl_804BCFA8[];
 extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
@@ -501,6 +513,7 @@ void fn_802A6408(void *arg0) {
 
 #pragma scheduling push
 #pragma scheduling on
+#pragma dont_inline on
 void fn_802A6758(void *arg0, f32 *arg1) {
     s32 i = *(s32 *)((u8 *)arg0 + 4);
     f32 *base = *(f32 **)arg0;
