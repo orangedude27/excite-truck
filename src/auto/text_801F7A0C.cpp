@@ -336,6 +336,7 @@ extern f32 lbl_80562FFC;
 s32 fn_801F7B10(void *, void *, s32);
 s32 fn_801BFD34(void *, void *, s32);
 s32 fn_80015B20(void *, void *, s32);
+extern "C" void fn_80015B20(void *, void *, void *);
 #pragma scheduling invalid_target
 extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg) {
     struct VCall {
@@ -1186,14 +1187,11 @@ extern "C" void fn_801F973C(void *, void *, u32);
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
-    u32 zero = 0;
     volatile u32 *src = (volatile u32 *)arg1;
-    u32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    u32 zero, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     f32 data[14];
 
-    data[13] = *(f32 *)&zero;
-    data[12] = *(f32 *)&zero;
-
+    zero = 0;
     t0 = src[0];
     t1 = src[1];
     t2 = src[2];
@@ -1206,6 +1204,9 @@ extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     t9 = src[9];
     t10 = src[10];
     t11 = src[11];
+
+    ((u32 *)data)[13] = zero;
+    ((u32 *)data)[12] = zero;
 
     *(u32 *)&data[0] = t0;
     *(u32 *)&data[1] = t1;
@@ -1224,18 +1225,9 @@ extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     {
         void *obj = fn_801F96C8(arg0);
         f32 scale = *(f32 *)((u8 *)obj + 0x28);
-        f32 s0 = data[3] * scale;
-        f32 s2 = data[5] * scale;
-        f32 d0 = data[9];
-        f32 s1 = data[4] * scale;
-        f32 d1 = data[10];
-        d0 += s0;
-        d1 += s1;
-        f32 d2 = data[11];
-        d2 += s2;
-        data[9] = d0;
-        data[10] = d1;
-        data[11] = d2;
+        data[9] += data[3] * scale;
+        data[10] += data[4] * scale;
+        data[11] += data[5] * scale;
         fn_801F973C(obj, data, 2);
     }
 }
