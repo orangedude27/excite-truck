@@ -5,6 +5,7 @@
 extern float lbl_80564560;
 extern float lbl_80564564;
 extern float lbl_80564568;
+extern float lbl_8056456C;
 extern void *lbl_8055F788;
 int stricmp(const char *, const char *);
 extern void *lbl_8055F788;
@@ -182,16 +183,26 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
 
 #pragma cplusplus reset
 #pragma pop
+extern void fn_802CAC54(void);
+extern void fn_80128670(void *);
+extern void fn_80128668(void *);
+#pragma use_lmw_stmw off
 void fn_80296838(void *arg0) {
+    void *entry;
     int i;
     int offset;
-    void *entry;
-    if (arg0 == 0) return;
-    if (*(void **)((char *)arg0 + 0x24) != 0) {
+    void *list;
+
+    if (arg0 == 0) {
+        return;
+    }
+    list = *(void **)((char *)arg0 + 0x24);
+    if (list != 0) {
         i = 0;
         offset = 0;
         while (i < *(int *)((char *)arg0 + 0x2C)) {
-            entry = (char *)*(void **)((char *)arg0 + 0x24) + offset;
+            list = *(void **)((char *)arg0 + 0x24);
+            entry = (char *)list + offset;
             if (*(int *)((char *)entry + 0x18) != -1 &&
                 *(int *)((char *)entry + 0x18) != -2) {
                 fn_802CAC54();
@@ -200,12 +211,15 @@ void fn_80296838(void *arg0) {
             offset += 0x30;
             i++;
         }
-        fn_80128670((char *)*(void **)((char *)arg0 + 0x24) - 0x10);
+        list = *(void **)((char *)arg0 + 0x24);
+        if (list != 0) {
+            fn_80128670((char *)list - 0x10);
+        }
         *(void **)((char *)arg0 + 0x24) = 0;
     }
     fn_80128668(arg0);
 }
-
+#pragma use_lmw_stmw on
 void fn_802968E8(void *arg0) {
     int count = *(int *)((char *)arg0 + 0x28);
     *(int *)((char *)arg0 + 0x28) = count + 1;
