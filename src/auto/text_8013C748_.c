@@ -68,6 +68,7 @@ extern "C" void *fn_8013C770(const char *);
 extern "C" char lbl_8032C4C0[];
 extern "C" char lbl_8032C4D0[];
 extern "C" int lbl_8055E188;
+#pragma cplusplus on
 #pragma dont_inline on
 extern "C" void fn_8013C804(void) {
     SearchObject *object;
