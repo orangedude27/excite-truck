@@ -56,16 +56,20 @@ void fn_80264484(void *arg0) {
     extern void *fn_801284F8(unsigned int, void *);
     extern char lbl_803464A8[];
     extern char lbl_803464F8[];
-    extern struct {
-        void **items;
-        int count;
-    } lbl_80498F78;
-    void *result = fn_801284F8(0x18, lbl_803464A8);
+    extern unsigned char lbl_80498F78[];
+    void *result;
+    void **items;
+    int count;
+
+    result = fn_801284F8(0x18, lbl_803464A8);
     if (result != 0) {
         *(int *)((char *)result + 0x14) = 0;
         *(void **)result = lbl_803464F8;
     }
-    lbl_80498F78.items[lbl_80498F78.count++] = result;
+    count = *(int *)(lbl_80498F78 + 4);
+    items = *(void ***)(lbl_80498F78 + 0);
+    *(int *)(lbl_80498F78 + 4) = count + 1;
+    items[count] = result;
     *(int *)arg0 = 0;
     fn_80264098(arg0, 5);
     *(void **)((char *)arg0 + 8) = result;
@@ -123,7 +127,7 @@ void fn_802645FC(void *arg0) {
     *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
     *(float *)((char *)arg0 + 0x20) = b;
 }
-#pragma scheduling on
+#pragma dont_inline on
 void fn_80264618(void *arg0) {
     extern float lbl_80558DC4[];
     extern float lbl_80563BF0;
@@ -134,34 +138,33 @@ void fn_80264618(void *arg0) {
     float a;
     float b;
     float c;
-    a = *(float *)((char *)arg0 + 0x1C);
-    a = a < 0.0f ? -a : a;
-    a = a * a;
-    if (a == lbl_80558DC4[0]) {
-        fn_80221F94(0, 0);
+    float limit;
+
+    a = (float)__fabs((double)*(float *)((char *)arg0 + 0x1C));
+    if (a <= lbl_80558DC4[0]) {
+        fn_80221F94(arg0, 0);
         fn_80216CA8();
-        a = fn_80214D48();
     }
+    a = fn_80214D48();
     b = *(float *)((char *)arg0 + 0x18);
+    limit = lbl_80563BF0;
     b = b - a;
-    if (lbl_80563BF0 <= b) {
-        b = lbl_80563BF0;
-    }
+    b = limit > b ? limit : b;
     *(float *)((char *)arg0 + 0x18) = b;
     if (fn_802645C0() != 0) {
-        c = *(float *)((char *)arg0 + 0x20);
-        c = c + a;
-        *(float *)((char *)arg0 + 0x20) = c;
-        a = fn_80214D48();
+        c = fn_80214D48();
+        b = *(float *)((char *)arg0 + 0x20);
+        b = b + c;
+        *(float *)((char *)arg0 + 0x20) = b;
     }
-    c = *(float *)((char *)arg0 + 0x1C);
-    c = c - a;
-    if (lbl_80563BF0 <= c) {
-        c = lbl_80563BF0;
-    }
-    *(float *)((char *)arg0 + 0x1C) = c;
+    c = fn_80214D48();
+    b = *(float *)((char *)arg0 + 0x1C);
+    limit = lbl_80563BF0;
+    b = b - c;
+    b = limit > b ? limit : b;
+    *(float *)((char *)arg0 + 0x1C) = b;
 }
-
+#pragma dont_inline off
 void *fn_80264968(void *arg0, int arg1) {
     struct Local {
         char pad_00[0x54];
@@ -406,17 +409,24 @@ void fn_8026523C(void *arg0) {
 
 int strlen(char *);
 void fn_80265268(void *arg0, int arg1, char *arg2, float farg0) {
-    int count = 0x96;
     char *dst = (char *)arg0 + 0x1C;
+    int count = 0x96;
     char *src = arg2;
+    unsigned char c;
     *(int *)((char *)arg0 + 0x18) = arg1;
-    do {
-        unsigned char c = *src++;
-        *dst++ = c;
-        if ((signed char)c == 0) break;
-        count--;
-    } while (count > 0);
-    if (count == 0) dst[-1] = 0;
+    goto copy;
+count_check:
+    if (--count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
+    goto done;
+done:
     *(int *)((char *)arg0 + 0xB4) = strlen((char *)arg0 + 0x1C);
     *(float *)((char *)arg0 + 0xB8) = farg0;
 }
@@ -524,31 +534,31 @@ extern void fn_80265904(void);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80265940(void) {
-    int data[20];
-    int *v;
-    v = lbl_802FA73C;
-    data[15] = lbl_80498F58[0];
-    data[16] = lbl_80498F58[1];
-    data[17] = lbl_80498F58[2];
-    data[18] = lbl_80498F58[3];
-    data[19] = lbl_80498F58[4];
-    data[0] = v[0];
-    data[1] = (int)&data[5];
-    data[2] = v[2];
-    data[3] = v[3];
-    data[4] = v[4];
-    data[7] = (int)fn_802658FC;
-    data[12] = (int)fn_80265904;
-    data[5] = (int)lbl_8055BAC0;
-    data[10] = (int)lbl_8055BAB8;
-    data[13] = 2;
-    data[6] = 8;
-    data[11] = 8;
-    data[8] = 0;
-    data[9] = 0;
-    data[14] = 0;
-    fn_802146BC(data, -999, -999, 1, v[4], v[3], v[2], v[0]);
-}
+      int data[24];
+      int *v;
+      v = lbl_802FA73C;
+      data[15] = lbl_80498F58[0];
+      data[16] = lbl_80498F58[1];
+      data[17] = lbl_80498F58[2];
+      data[18] = lbl_80498F58[3];
+      data[19] = lbl_80498F58[4];
+      data[0] = v[0];
+      data[1] = (int)&data[5];
+      data[2] = v[2];
+      data[3] = v[3];
+      data[4] = v[4];
+      data[7] = (int)fn_802658FC;
+      data[12] = (int)fn_80265904;
+      data[5] = (int)lbl_8055BAC0;
+      data[10] = (int)lbl_8055BAB8;
+      data[13] = 2;
+      data[6] = 8;
+      data[11] = 8;
+      data[8] = 0;
+      data[9] = 0;
+      data[14] = 0;
+      fn_802146BC(data, -999, -999, 1, v[4], v[3], v[2], v[0]);
+  }
 #pragma pop
 extern void fn_80236954(void *);
 extern int fn_8023695C(void *);
