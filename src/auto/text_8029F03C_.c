@@ -207,7 +207,29 @@ unsigned char fn_8029F510(unsigned char *arg0, int arg1) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma optimization_level 2
-extern "C" void fn_8029F534(void *, unsigned char *);
+extern "C" void fn_8029F534(void *arg0, unsigned char *arg1) {
+    class Obj {
+    public:
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+        virtual void set(const char *) = 0;
+        virtual void v4() = 0;
+        virtual void v5() = 0;
+        virtual void v6() = 0;
+        virtual void v7() = 0;
+        virtual void v8() = 0;
+        virtual unsigned char getBool(const char *, int) = 0;
+    };
+    Obj *obj = (Obj *)arg1;
+    if (((int (*)(unsigned char *, int))fn_8029F510)((unsigned char *)arg0, (int)arg1) != 0) {
+        obj->set((const char *)&lbl_8034983C);
+        *(int *)((char *)arg0 + 4) = fn_8028E3F4();
+        *(unsigned char *)((char *)arg0 + 8) = obj->getBool((const char *)&lbl_80349848, 0);
+    } else {
+        *(int *)((char *)arg0 + 4) = 0;
+    }
+}
 #pragma scheduling on
 #pragma cplusplus off
 #pragma pop
