@@ -205,7 +205,7 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     }
 }
 #pragma use_lmw_stmw on
-#pragma inline no fn_802CA4E0
+#pragma dont_inline fn_802CA4E0
 int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
     char sp8[0x34];
 
@@ -759,6 +759,10 @@ extern unsigned short lbl_8055FCAA;
 #pragma small_data off
 #pragma pop
 extern int fn_802CB2FC(int, int, int, unsigned char, unsigned short, unsigned char);
+#pragma push
+#pragma small_data on
+#pragma small_data off
+#pragma pop
 #pragma push
 #pragma inline off
 #pragma use_lmw_stmw off
