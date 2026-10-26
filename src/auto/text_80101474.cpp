@@ -1,4 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern "C" const char lbl_80327CB8[];
+extern "C" const char lbl_80327CCC[];
+extern "C" void fn_800EA880(void *, int);
+extern "C" int Parse__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(void *, const void *, unsigned long, bool);
 extern "C" const char lbl_80328030[];
 extern "C" const char lbl_80327EE0[];
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
