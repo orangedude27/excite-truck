@@ -2492,6 +2492,15 @@ BOOLEAN bta_dm_search_sm_execute(BT_HDR *p_msg) {
     return TRUE;
 }
 
+void fn_8007403C(void) {
+    memset(lbl_803C0D18, 0, 0x2E);
+    if (lbl_80559018[1] != 0) {
+        fn_80071098((s32)bta_dm_pm_cback);
+        BTM_PmRegister(3, lbl_803C0C14 + 0x95,
+                       (tBTM_PM_STATUS_CBACK *)bta_dm_pm_btm_cback);
+    }
+}
+
 void fn_800740A4(void) {
     BTM_PmRegister(4, lbl_803C0C14 + 0x95, 0);
 }
