@@ -112,21 +112,23 @@ int fn_802461D0(int arg0, int arg1) {
 }
 
 void fn_80246210(void) {
-    int i;
     int count;
+    int i;
+    int zero;
 
+    zero = 0;
+    *((char *)lbl_8055F244 + 0x1E) = (char)zero;
     i = 0;
-    *((char *)lbl_8055F244 + 0x1E) = 0;
     count = *(int *)((char *)*(void **)((char *)lbl_8055F244 + 0x20) + 0x14);
-    do {
+    while (i < count) {
         fn_80214AF0(i);
         i++;
-    } while (i < count);
-    do {
+    }
+    while (count < 4) {
         fn_80214B44(count);
         fn_80214A9C(count);
         count++;
-    } while (count < 4);
+    }
     fn_80214CB4(*(int *)((char *)*(void **)((char *)lbl_8055F244 + 0x20) + 0x10));
 }
 
