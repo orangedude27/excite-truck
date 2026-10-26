@@ -1,4 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+
+extern void fn_802E6B44(int, int);
+extern int lbl_80507268[];
+extern unsigned char lbl_80505978[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern float lbl_80565160, lbl_80565164, lbl_80565168, lbl_8056516C;
@@ -117,26 +121,22 @@ extern int fn_802E30C8(const char *, ...);
 __declspec(section ".rodata") extern int lbl_8034D8B4, lbl_8034D8E8;
 extern int lbl_80507258[], lbl_8056000C;
 extern int fn_80128658(int, int *);
+#pragma push
+#pragma scheduling invalid_target
 int fn_802E7A70(unsigned int value) {
-    int found = -1;
-    int i = 0;
-    int count = lbl_8056000C;
-    int *p = lbl_80507258;
-    while (count--) {
+    int found;
+    int *p;
+    int i;
+    int removed;
+    for (found = -1, p = lbl_80507258, i = 0; i < lbl_8056000C; p++, i++)
         if ((unsigned int)*p == value) found = i;
-        p++;
-        i++;
-    }
-    count = lbl_8056000C;
-    count--;
-    lbl_8056000C = count;
-    p = lbl_80507258;
-    i = p[count];
-    p[found] = i;
-    fn_80128658(i, p);
+    lbl_8056000C--;
+    removed = lbl_80507258[lbl_8056000C];
+    lbl_80507258[found] = removed;
+    fn_80128658(removed, lbl_80507258);
     return 1;
 }
-
+#pragma pop
 int fn_802E7AF4(int arg0, int arg1) {
     if (arg0 == 1) {
         fn_80128684();
