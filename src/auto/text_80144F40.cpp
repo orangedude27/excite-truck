@@ -406,13 +406,15 @@ extern "C" void fn_8014589C(void *arg0, s32 arg1, s32 arg2) {
     }
     fn_802E3AD0(arg1, lbl_80559E14);
 }
-#pragma scheduling on
+#pragma use_lmw_stmw off
 extern "C" void fn_8014595C(void *arg0, const char *arg1) {
     char *base = lbl_8032CEC8;
     fn_802E3AD0((s32)arg1, base + 0x1D0);
     fn_802E3AD0((s32)arg1, base + 0x1E4);
-    s32 i = 0;
-    s32 offset = 0;
+    s32 offset;
+    s32 i;
+    i = 0;
+    offset = 0;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         void *entry = (void *)(*(u8 **)arg0 + offset);
         fn_802E3AD0((s32)arg1, base + 0x1FC,
@@ -422,7 +424,7 @@ extern "C" void fn_8014595C(void *arg0, const char *arg1) {
     }
     fn_802E3AD0((s32)arg1, lbl_80559E14);
 }
-
+#pragma use_lmw_stmw reset
 extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     f32 span = farg3 - farg2;
     f32 den = farg1 - farg0;
