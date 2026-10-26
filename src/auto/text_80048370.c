@@ -478,6 +478,7 @@ u32 MEMResizeForMBlockFrmHeap(MEMiHeapHead *heap, void *memBlock, u32 size) {
     return count;
 }
 
+#pragma dont_inline MEMAllocFromExpHeapEx
 static void* AllocatorAllocForExpHeap_(MEMAllocator* allocator, u32 size) {
     return MEMAllocFromExpHeapEx(allocator->heap, size, allocator->heapParam1);
 }
