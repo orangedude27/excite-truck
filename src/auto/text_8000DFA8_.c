@@ -371,6 +371,27 @@ void fn_8000FBE4(void) {
     fn_8000F4F0();
 }
 
+#pragma scheduling invalid_target
+void fn_8000FBE8(f32 arg0, f32 arg1, f32 arg2) {
+    extern f32 fn_80235F64(s32, s32);
+    extern s32 lbl_8055D4CC;
+    extern f32 lbl_80560290, lbl_805602F8, lbl_805602FC;
+    extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
+    f32 temp_f28;
+    f32 temp_f29;
+    f32 temp_f30;
+    f32 temp_f31;
+    f32 temp_f3;
+
+    temp_f28 = arg1 + lbl_80560264;
+    temp_f3 = fn_80235F64(lbl_8055D4CC, 4) * arg2;
+    temp_f31 = lbl_805602F8 + temp_f3;
+    temp_f30 = arg0 - lbl_80560290;
+    temp_f29 = lbl_80560290 + (temp_f28 + (temp_f3 * lbl_8056025C));
+    ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(lbl_8055D4D0, 4, temp_f30, temp_f29, temp_f31, temp_f31);
+    ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(lbl_8055D4D0, 5, temp_f30 + temp_f31, temp_f29, lbl_805602FC, temp_f31);
+}
+#pragma scheduling on
 extern f32 lbl_805602B0;
 extern void fn_802344CC(char *, s32, s32, s32, f32, f32, f32);
 void fn_80010074(s32 arg0, s32 arg1, const char *fmt, ...) {
@@ -388,6 +409,22 @@ void fn_80010074(s32 arg0, s32 arg1, const char *fmt, ...) {
     fn_802344CC(buffer, x & 0xFF000000, y, 0, lbl_805602B0 + fy, fx - lbl_805602B0, lbl_805602C8 * fx);
     fn_802344CC(buffer, x, y, 0, fy, fx, lbl_805602C8 * fx);
 }
+
+extern void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_80010188(s32 arg0, s32 arg1, const char *fmt, f32 scale, f32 x, f32 y, ...) {
+    char buffer[0x200];
+    va_list args;
+    va_start(args, y);
+    vsprintf(buffer, fmt, args);
+    fn_80232BA4(buffer, lbl_8055D490, arg0, arg1,
+                x, y, lbl_805602C8 * scale,
+                lbl_80560280, lbl_80560264);
+}
+#pragma scheduling on
+#pragma pop
 
 void fn_800103B8(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, const char *fmt, ...) {
     extern f32 lbl_80560280;
@@ -697,23 +734,27 @@ extern void fn_80011280(s32, s32, f64, f64, f32, f32);
 extern void fn_8000E3B4(s32);
 extern void fn_8000E874(s32);
 extern void fn_8000EF74(s32);
+#pragma push
+#pragma processor 750
 void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
-    Unk80350F88 *base = (Unk80350F88 *)&lbl_80350F88;
-    Unk80350F88Entry *entry = &base->entries[base->unk_0x288++];
-    char *n = name;
-    s32 v2 = a2;
-    s32 v3 = a3;
-    s32 v4 = a4;
-
-    strncpy(entry->name, n, 0x28);
+    s32 idx;
+    Unk80350F88 *base;
+    volatile Unk80350F88Entry *entry;
+    char *n;
+    base = (Unk80350F88 *)&lbl_80350F88;
+    idx = base->unk_0x288;
+    n = name;
+    base->unk_0x288 = idx + 1;
+    entry = &base->entries[idx];
+    strncpy((char *)entry->name, n, 0x28);
     entry->unk_0x28 = 0;
-    entry->unk_0x2C = v2;
-    entry->unk_0x30 = v3;
+    entry->unk_0x2C = a2;
+    entry->unk_0x30 = a3;
     entry->unk_0x34 = 0;
-    entry->unk_0x38 = v4;
+    entry->unk_0x38 = a4;
     entry->unk_0x3C = f1;
 }
-
+#pragma pop
 void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     s32 idx;
     s8 *entry;
@@ -1234,22 +1275,27 @@ void fn_80011F64(void) {
 
 extern s32 *lbl_8055D4AC;
 extern void fn_80128668(void *);
-void fn_800120BC(void) {
-    struct Entry { s32 unk0; void *object; s32 unk8; };
-    s32 *base = lbl_8055D4AC;
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_800120BC(void) {
+    struct Dummy {
+        virtual void release(s32);
+        virtual void v1();
+    };
+    register s32 *base = lbl_8055D4AC;
     if (base != 0) {
-        struct Entry *outer = (struct Entry *)base;
-        s32 i = 0;
+        register s32 *outer = base;
+        register s32 i = 0;
         for (; i < 2; ++i, outer += 3) {
-            struct Entry *inner = outer;
-            s32 j = 0;
+            register s32 *inner = outer;
+            register s32 j = 0;
             for (; j < 3; ++j, ++inner) {
-                void *object = inner->object;
+                void *object = *(void **)(inner + 1);
                 if (object == 0)
                     goto next;
                 if (object == 0)
                     goto next;
-                ((void (*)(void *, s32))(*(void ***)object)[2])(object, 1);
+                ((struct Dummy *)object)->release(1);
             next:
                 ;
             }
@@ -1258,7 +1304,7 @@ void fn_800120BC(void) {
     }
     lbl_8055D4AC = 0;
 }
-
+#pragma cplusplus reset
 void fn_80012158(void) {
     register u8 *obj;
     register s32 *base;
@@ -1300,29 +1346,33 @@ extern void fn_801331C4(s32, void *, f32 *);
 extern void *lbl_802FC580;
 void fn_800121F0(void) {
     f32 sp8;
-    s32 *base = (s32 *)lbl_8055D4AC;
+    s32 *base;
     s32 *p;
-    s32 i;
+    s32 var_ctr;
+
     sp8 = lbl_80560264;
-    fn_801331C4(4, lbl_802FC580, &sp8);
-    for (i = 0; i < 2; i++) {
+    base = (s32 *)lbl_8055D4AC;
+    fn_801331C4(4, &lbl_802FC580, &sp8);
+    var_ctr = 2;
+    do {
         p = (s32 *)base[1];
-        if (p != 0 && sp8 != *(f32 *)(p + 2)) {
-            *(u8 *)(p + 0x4D) = 1;
-            *(f32 *)(p + 2) = sp8;
+        if (p != 0 && sp8 != *(f32 *)((u8 *)p + 8)) {
+            *((u8 *)p + 0x4D) = 1;
+            *(f32 *)((u8 *)p + 8) = sp8;
         }
         p = (s32 *)base[2];
-        if (p != 0 && sp8 != *(f32 *)(p + 2)) {
-            *(u8 *)(p + 0x4D) = 1;
-            *(f32 *)(p + 2) = sp8;
+        if (p != 0 && sp8 != *(f32 *)((u8 *)p + 8)) {
+            *((u8 *)p + 0x4D) = 1;
+            *(f32 *)((u8 *)p + 8) = sp8;
         }
         p = (s32 *)base[3];
-        if (p != 0 && sp8 != *(f32 *)(p + 2)) {
-            *(u8 *)(p + 0x4D) = 1;
-            *(f32 *)(p + 2) = sp8;
+        if (p != 0 && sp8 != *(f32 *)((u8 *)p + 8)) {
+            *((u8 *)p + 0x4D) = 1;
+            *(f32 *)((u8 *)p + 8) = sp8;
         }
         base += 3;
-    }
+        var_ctr -= 1;
+    } while (var_ctr != 0);
 }
 
 s32 fn_800122B4(s32 arg0, s32 arg1) {
