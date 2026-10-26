@@ -505,6 +505,7 @@ extern "C" void *fn_801F92AC(F92Obj *obj) {
 #pragma scheduling on
 extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg);
 extern "C" int strcmp(const char *, const char *);
+#pragma use_lmw_stmw off
 extern "C" void *fn_801F9338(void *self) {
     u8 pad[0x20];
     s32 sp8;
@@ -588,22 +589,42 @@ extern "C" void fn_801F94CC(const char *format, ...) {
     }
 }
 
+__declspec(section ".sdata") extern u8 lbl_8055B2DC[];
 extern "C" void *fn_801F95C4(void *arg0, void *arg1) {
-    void *list = lbl_8055EC44;
+    class Owner {
+    public:
+        virtual void f0();
+        virtual void *get(s32 index);
+    };
+    class Node {
+    public:
+        virtual void f0();
+        virtual void f4();
+        virtual void f8();
+        virtual const char *name(const char *key);
+    };
     void *node = 0;
-    s32 index;
-    while (node == 0 && list != 0) {
-        index = 0;
-        do {
-            void *owner = *(void **)list;
-            node = (*(FListVT **)owner)->get(owner, index);
-            if (node == 0) break;
-            if (((s32 (*)(void *))arg0)(node) != 0) break;
-            if (stricmp((*(FNodeVT **)node)->name(node), (const char *)arg1) == 0) break;
-            index++;
-        } while (1);
-        list = *(void **)((u8 *)list + 4);
-    }
+    void *list = lbl_8055EC44;
+    s32 index = 0;
+    goto outer_check;
+next_list:
+    index = 0;
+    goto get_next;
+check_node:
+    if (((s32 (*)(void *))arg0)(node) == 0) goto increment;
+    if (stricmp(((Node *)node)->name((const char *)lbl_8055B2DC),
+                (const char *)arg1) == 0) goto list_advance;
+increment:
+    index++;
+get_next:
+    node = ((Owner *)*(void **)list)->get(index);
+    if (node != 0) goto check_node;
+list_advance:
+    list = *(void **)((char *)list + 4);
+outer_check:
+    if (node != 0) goto done;
+    if (list != 0) goto next_list;
+done:
     if (node == 0) fn_802E317C((const char *)lbl_8033B210, (const char *)arg1);
     return node;
 }
@@ -641,29 +662,34 @@ extern "C" void fn_80015B20(void *, void *, void *);
 extern "C" void fn_80204018(void *, void *);
 extern "C" u8 lbl_8055EC7C;
 extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
-    u32 temp;
+    u8 scratch[0x38];
+    u8 state;
+    s32 field;
     u32 flags;
-    u8 data2c[16];
-    u8 data8[32];
-    s32 sp3c;
-    s32 sp38;
+    register s32 zero;
     void *node;
 
     if ((arg2 & 2) != 0) {
-        temp = lbl_8055EC7C == 0;
-        lbl_8055EC7C = temp;
-        flags = *(s32 *)((u8 *)arg0 + 0x24) != 0;
-        if (temp != 0) flags |= 2;
-        node = arg0;
-        sp3c = 0;
-        sp38 = 0;
-        while (node != 0) {
-            fn_801BFD34(data2c, (u8 *)node + 0x54, arg1);
-            fn_80015B20(data8, (u8 *)node + 0x30, arg1);
-            sp38 = flags;
-            sp3c = *(s32 *)((u8 *)arg1 + 0x34);
-            ((void (*)(void *, void *, s32 *, s32 *))(*(u32 **)*(void **)((u8 *)node + 0x108))[4])(node, data8, &sp38, &sp3c);
+        state = lbl_8055EC7C;
+        field = *(s32 *)((u8 *)arg0 + 0x24);
+        lbl_8055EC7C = (state == 0);
+        flags = field != 0;
+        if (flags != 0) {
+            flags |= 2;
+            zero = 0;
+            node = arg0;
+            goto next_node;
+        loop_body:
+            *(s32 *)(scratch + 0x30) = zero;
+            *(s32 *)(scratch + 0x34) = zero;
+            fn_801BFD34(scratch + 0x24, (u8 *)node + 0x54, arg1);
+            fn_80015B20(scratch, (u8 *)node + 0x30, arg1);
+            *(s32 *)(scratch + 0x30) = flags;
+            *(s32 *)(scratch + 0x34) = *(s32 *)((u8 *)arg1 + 0x34);
+            ((void (**)(void *, void *))*(void **)((u8 *)node + 0x108))[4](node, scratch);
+        next_node:
             node = *(void **)((u8 *)node + 0x24);
+            if (node != 0) goto loop_body;
         }
     }
     if ((arg2 & 1) != 0) fn_80204018(arg0, arg1);
@@ -988,7 +1014,7 @@ extern "C" void fn_801FA1D4(void) {
     }
     cur = lbl_8055EC5C;
     while (cur != 0) {
-        if (*(s32 *)((char *)cur + 0x54) > 0) {
+        if (*(volatile s32 *)((char *)cur + 0x54) > 0) {
             if (*(s32 *)((char *)cur + 0x60) != 1) {
                 i = fn_80129D90(0, 0);
                 fn_801E6CD0(*(s32 *)((char *)cur + 0x30),
