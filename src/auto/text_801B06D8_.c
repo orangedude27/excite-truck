@@ -76,20 +76,29 @@ extern f32 lbl_80558DC4;
 #pragma push
 #pragma processor 750
 s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
-    f32 sp18, sp14, sp10, spC, sp8;
-    register f32 step = lbl_805625BC;
-    register f32 increment = lbl_805625C0;
-    register f32 start = step;
-    register f32 limit = lbl_805625C4;
+    volatile f32 sp18, sp14, sp10, spC, sp8;
+    register f32 limit;
+    register f32 increment;
+    register f32 start;
+    register f32 step;
+    register s32 enabled asm("r3");
+    step = lbl_805625BC;
+    increment = lbl_805625C0;
+    start = step;
+    limit = lbl_805625C4;
     while (step < limit) {
         f32 dx = *(f32 *)arg1 * step;
         f32 dy = *(f32 *)((u8 *)arg1 + 4) * step;
         f32 x = *(f32 *)arg0 + dx;
         f32 y = *(f32 *)((u8 *)arg0 + 4) + dy;
         sp14 = start;
-        sp8 = x; spC = y; sp10 = x; sp18 = y;
-        if (fn_802B04D4(&sp10, dy, x, dx)) return 1;
-        if (lbl_8055E66C && fn_80139EC4(sp8, spC)) return 1;
+        sp8 = x;
+        spC = y;
+        sp10 = x;
+        sp18 = y;
+        if (fn_802B04D4((f32 *)&sp10, dy, x, dx)) return 1;
+        enabled = lbl_8055E66C;
+        if (enabled && fn_80139EC4(sp8, spC)) return 1;
         step += increment;
     }
     return 0;
@@ -259,18 +268,21 @@ extern "C" s32 fn_801B0DF0(s32 arg0) {
 #pragma cplusplus reset
 extern s32 fn_801B2F40(s32);
 extern s32 fn_801B0DF0(s32);
-s32 fn_801B0E40(s32 arg0, s32 *arg1) {
+#pragma cplusplus on
+extern "C" s32 fn_801B0E40(s32 arg0, s32 *arg1) {
+    struct Dummy {
+        virtual void *d0();
+        virtual void *d1();
+        virtual void *d2();
+    };
     s32 temp_r31;
     s32 var_r30;
     s32 var_r31;
-    void *base;
-    void **obj;
-    void **vtable;
+    s32 temp_r0;
+    void *base = lbl_8055E684;
+    Dummy *obj = (Dummy *)((u8 *)base + (arg0 << 7));
 
-    base = lbl_8055E684;
-    obj = (void **)((u8 *)base + (arg0 << 7));
-    vtable = *(void ***)obj;
-    base = ((void *(*)(void *, void *))vtable[4])(obj, base);
+    base = obj->d2();
     temp_r31 = *(s32 *)((u8 *)base + 4);
     var_r30 = temp_r31;
     while (var_r30 <= (s32)lbl_8055E678) {
@@ -278,9 +290,11 @@ s32 fn_801B0E40(s32 arg0, s32 *arg1) {
         if (((s32 (*)(void))fn_801B0DF0)() != 0) return 0;
         var_r30++;
     }
+    temp_r0 = *arg1;
     var_r30 = temp_r31 - 1;
-    var_r31 = *arg1;
-    if (var_r31 <= 1) var_r31 = 1;
+    var_r31 = 1;
+    if (temp_r0 > 1)
+        var_r31 = temp_r0;
     while (var_r30 >= var_r31) {
         fn_801B2F40(var_r30 - 1);
         if (((s32 (*)(void))fn_801B0DF0)() != 0) {
@@ -291,7 +305,7 @@ s32 fn_801B0E40(s32 arg0, s32 *arg1) {
     }
     return 1;
 }
-
+#pragma cplusplus reset
 s32 fn_801B0F18(void) {
     return *(s32 *)((u8 *)lbl_8055E684 + (fn_80179630() << 7) + 0x4C);
 }
@@ -381,30 +395,31 @@ void fn_801B1318(void) {
 extern s32 fn_801B526C(void);
 extern s32 fn_8026A344(void);
 extern void fn_8026A248(s32, s32);
-void fn_801B1390(s32 arg0, s32 arg1) {
-    s32 keep0 = arg0;
-    s32 keep1 = arg1;
-    s32 count;
-    s32 index;
-
-    count = fn_8026A344();
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801B1390(s32 arg0, s32 arg1) {
+    struct Dummy {
+        virtual void d0();
+        virtual void d1();
+        virtual void *d2();
+    };
+    s32 count = fn_8026A344();
     if (fn_801B526C() != 0) {
-        index = ((s32)lbl_8055E678 + keep1 + count) % (s32)lbl_8055E678;
-        fn_8026A248(index, keep0);
+        s32 index = ((s32)lbl_8055E678 + arg1 + count) % (s32)lbl_8055E678;
+        fn_8026A248(index, arg0);
     } else {
-        index = 0;
+        s32 index = 0;
         if (count >= 0 && count < (s32)lbl_8055E678) {
-            void **obj = (void **)((u8 *)lbl_8055E684 + (count << 7));
-            void **vtable = *(void ***)obj;
-            s32 (*method)(void *, void *) = (s32 (*)(void *, void *))vtable[4];
-            void *result = (void *)method(obj, lbl_8055E684);
+            Dummy *obj = (Dummy *)((u8 *)lbl_8055E684 + (count << 7));
+            void *result = obj->d2();
             index = *(s32 *)((u8 *)result + 4) - 1;
         }
-        index = ((s32)lbl_8055E678 + keep1 + index) % (s32)lbl_8055E678;
-        fn_8026A248(lbl_80435C30[index], keep0);
+        index = ((s32)lbl_8055E678 + arg1 + index) % (s32)lbl_8055E678;
+        fn_8026A248(lbl_80435C30[index], arg0);
     }
 }
-
+#pragma scheduling on
+#pragma cplusplus off
 void fn_801B14BC(s32 *arg0,s32 arg1,s32 arg2) {
     if(arg2){*arg0 |= arg1;return;}
     *arg0 &= ~arg1;
@@ -523,6 +538,59 @@ void fn_801B18B8(void *arg0, s32 arg1, s32 arg2) {
     fn_80135F64(*(s32 *)((u8 *)arg0 + 0x58), p0, p1, arg1, arg2, obj, y, z, originalZ, x, scale);
     fn_801353C8(*(s32 *)((u8 *)arg0 + 0x3C), p0, p1, 0);
 }
+
+#pragma cplusplus on
+extern "C" void fn_801B196C(s32 arg0, s32 arg1) {
+    struct Manager {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void *d3(s32);
+        virtual void d4(s32, void *);
+    };
+    struct Object {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2(void *, f32 *, s32);
+    };
+    void *self = (void *)arg0;
+    void *entity = *(void **)((u8 *)self + 0x5C);
+    Manager *manager;
+    Object *object;
+    f32 *data;
+    f32 scale, dx, dy, x, dz, y, z;
+    f32 points[5];
+    void *result;
+
+    manager = (Manager *)fn_80156A40();
+    manager->d4(*(s32 *)((u8 *)entity + 0x1EC), (u8 *)entity + 0x60);
+
+    data = *(f32 **)((u8 *)self + 0x5C);
+    scale = *(f32 *)((u8 *)data + 0x5BC);
+    dx = *(f32 *)((u8 *)data + 0x54) * scale;
+    dy = *(f32 *)((u8 *)data + 0x58) * scale;
+    x = *(f32 *)((u8 *)data + 0x94) + dx;
+    dz = *(f32 *)((u8 *)data + 0x5C) * scale;
+    y = *(f32 *)((u8 *)data + 0x98) + dy;
+    points[2] = x;
+    z = *(f32 *)((u8 *)data + 0x9C) + dz;
+    points[0] = x;
+    points[3] = y;
+    points[4] = z;
+    points[1] = z;
+
+    manager = (Manager *)fn_80156A40();
+    result = manager->d3(*(s32 *)((u8 *)self + 0x60));
+    object = *(Object **)((u8 *)self + 0x3C);
+    object->d2(result, points, 0);
+
+    object = *(Object **)((u8 *)self + 0x3C);
+    *(s32 *)((u8 *)self + 0x4C) = *(s32 *)((u8 *)object + 4);
+    *(f32 *)((u8 *)self + 0x50) = *(f32 *)((u8 *)object + 8);
+    *(s32 *)((u8 *)self + 0x54) = *(s32 *)((u8 *)object + 0xC);
+}
+#pragma cplusplus reset
+
 #pragma dont_inline reset
 
 extern void *fn_80156A40(void);
