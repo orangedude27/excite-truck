@@ -132,41 +132,51 @@ extern void fn_802B4CB4(void *);
 extern void fn_802B4DC0(void *);
 __declspec(section ".sdata") extern int lbl_8055F9D0[];
 void fn_802B4BDC(void) {
-    int i;
+    unsigned int i;
     int *p;
+
     i = 0;
     p = lbl_804BE248;
     do {
+        int keep;
         fn_802B4CB4(p);
-        if (++i >= 0x80)
+        i += 1;
+        keep = i < 0x80;
+        p += 1;
+        if (!keep)
             break;
-        p++;
     } while (1);
+
     {
-        int count = 0;
-        int offset = 0;
-        int zero = 0;
+        int count;
+        int offset;
         void *entry;
-        for (;;) {
-            entry = *(void **)((char *)*(void **)lbl_8055F9D0 + offset);
+        int zero;
+
+        count = 0;
+        offset = 0;
+        zero = 0;
+        goto check_count;
+loop:
+        entry = *(void **)((char *)*(void **)*(void **)lbl_8055F9D0 + offset);
+        if (entry != 0) {
             if (entry != 0) {
+                int data = *(int *)((char *)entry + 0xC);
+                if (data != 0)
+                    fn_80128670(data - 0x10);
                 if (entry != 0) {
-                    int data = *(int *)((char *)entry + 0xC);
-                    if (data != 0)
-                        fn_80128670(data - 0x10);
-                    if (entry != 0) {
-                        *(int *)entry = zero;
-                        *(int *)((char *)entry + 4) = zero;
-                        *(int *)((char *)entry + 8) = zero;
-                    }
+                    *(int *)entry = zero;
+                    *(int *)((char *)entry + 4) = zero;
+                    *(int *)((char *)entry + 8) = zero;
                 }
-                fn_80128668(entry);
             }
-            offset += 4;
-            count++;
-            if (count >= *(int *)((char *)lbl_8055F9D0 + 4))
-                break;
+            fn_80128668(entry);
         }
+        offset += 4;
+        count += 1;
+check_count:
+        if (count < ((int *)lbl_8055F9D0)[1])
+            goto loop;
     }
     fn_802B4DC0(lbl_8055F9D0);
 }
@@ -246,39 +256,67 @@ void fn_802B4E3C(void* hi) {
 }
 
 extern int fn_802B3DA4(int, unsigned short, int);
+#pragma push
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void fn_802B4E44(int arg0, int arg1) {
-    int **table = (int **)&lbl_804BE248;
-    int **tableEnd = table + 0x80;
-    while (table < tableEnd) {
-        int **slots = (int **)*table++;
-        if (slots != 0) {
-            int **slot = slots;
-            int **slotEnd = slots + 0x400;
-            while (slot < slotEnd) {
-                int *entry = *slot++;
-                if (entry != 0) {
-                    int count = 0;
-                    int offset = 0;
-                    while (count < entry[1]) {
-                        char *record = (char *)entry[0] + offset;
-                        int index = 0;
-                        char *out = record + 0xC;
-                        while (index < 6) {
-                            int value = fn_802B3DA4(arg0, *(unsigned short *)(record + 8), index);
-                            *(int *)out = value;
-                            index++;
-                            out += 4;
-                        }
-                        offset += 0x24;
-                        count++;
-                    }
-                }
-            }
-        }
-    }
-}
+    unsigned int slotIndex;
+    int index;
+    int *record;
+    int count;
+    int *table;
+    int offset;
+    int *out;
+    char *slot;
+    int *entry;
+    unsigned int outer;
+    int keepSlot;
+    int keepOuter;
 
-#pragma dont_inline on
+    table = lbl_804BE248;
+    outer = 0;
+outer_loop:
+    slot = (char *)*table;
+    if (slot != 0) {
+        slotIndex = 0;
+slot_loop:
+        entry = *(int **)slot;
+        if (entry != 0) {
+            count = 0;
+            offset = 0;
+            goto record_test;
+record_loop:
+            record = (int *)(*(int *)entry + offset);
+            out = record;
+            index = 0;
+field_loop:
+            *(int *)((char *)out + 0xC) =
+                fn_802B3DA4(arg0, *(unsigned short *)((char *)record + 8), index);
+            index++;
+            out++;
+            if (index < 6)
+                goto field_loop;
+            offset += 0x24;
+            count++;
+record_test:
+            if (count < entry[1])
+                goto record_loop;
+        }
+        slotIndex++;
+        keepSlot = slotIndex < 0x400;
+        slot += 8;
+        if (keepSlot)
+            goto slot_loop;
+    }
+    outer++;
+    keepOuter = outer < 0x80;
+    table++;
+    if (keepOuter)
+        goto outer_loop;
+}
+#pragma use_lmw_stmw on
+#pragma scheduling on
+#pragma pop
 void *fn_802B4F10(void *out, int x, int y, int a, int b) {
     int result = 0;
     int r = fn_802B40B0(a, b);
