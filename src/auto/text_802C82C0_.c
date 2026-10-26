@@ -234,25 +234,37 @@ void fn_802C88E8(unsigned int arg0) {
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
 extern double lbl_80564F10;
 extern float lbl_80564F18, lbl_80564F1C;
+#pragma scheduling invalid_target
 void fn_802C88FC(float *arg0) {
-    float x, y, z;
-    arg0[0] = lbl_80564EF8;
-    arg0[1] = lbl_80564F00;
-    arg0[2] = lbl_80564F00;
-    arg0[3] = lbl_80564F00;
-    arg0[5] = lbl_80564F00;
-    arg0[4] = lbl_80564F1C;
-    arg0[6] = lbl_80564F00;
-    arg0[7] = lbl_80564F00;
-    arg0[8] = lbl_80564EF8;
-    x = (float)(unsigned int)lbl_8055FC64;
-    y = (lbl_80564F18 * x) / lbl_8055FC44;
-    z = lbl_80564EF8 / lbl_8055D020;
-    arg0[11] = -(y * z);
-    arg0[10] = (float)(unsigned int)lbl_8055FC60 + lbl_80564F18 * (float)(unsigned int)lbl_8055FC68;
-    arg0[9] = (float)(unsigned int)lbl_8055FC5C + lbl_80564F18 * (float)(unsigned int)lbl_8055FC64;
-}
+    float x;
+    float y;
+    float z;
+    float value;
+    float fill;
+    float scale;
+    float divisor;
 
+    x = (float)(unsigned int)lbl_8055FC64;
+    scale = lbl_80564F18;
+    divisor = lbl_8055FC44;
+    value = lbl_80564EF8;
+    z = value / lbl_8055D020;
+    fill = lbl_80564F00;
+
+    arg0[0] = value;
+    arg0[1] = fill;
+    arg0[2] = fill;
+    arg0[3] = fill;
+    y = (scale * x) / divisor;
+    arg0[5] = fill;
+    arg0[4] = lbl_80564F1C;
+    arg0[6] = fill;
+    arg0[7] = fill;
+    arg0[8] = value;
+    arg0[11] = -(y * z);
+    arg0[10] = (float)(unsigned int)lbl_8055FC60 + scale * (float)(unsigned int)lbl_8055FC68;
+    arg0[9] = (float)(unsigned int)lbl_8055FC5C + scale * (float)(unsigned int)lbl_8055FC64;
+}
 #pragma scheduling on
 void fn_802C8B08(unsigned int *arg0) {
     struct Pair { unsigned int first; unsigned int second; };
@@ -536,6 +548,7 @@ float fn_802C9744(void) { return lbl_8055FC40; }
 
 extern float __fabsf(float);
 extern double __fabs(double);
+extern int fn_802CC518();
 #pragma push
 #pragma processor 750
 void fn_802C974C(float f0, float f1, float f2) {
@@ -551,9 +564,13 @@ void fn_802C974C(float f0, float f1, float f2) {
     lbl_8055FC3C = f1;
     lbl_8055FC40 = f2;
     view[2] = f2;
-    if ((mode == 0 || (unsigned char)lbl_8055FC75 != 0) &&
-        !((float)__fabs((double)(lbl_8055D020 - lbl_80564EF8)) <= (*(float *)&lbl_80558DC4))) {
-        angle = lbl_80564F24 * (float)atan((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020);
+    if (mode == 0 || (unsigned char)lbl_8055FC75 != 0) {
+        float diff = lbl_8055D020 - lbl_80564EF8;
+        float abs = (float)__fabs((double)diff);
+        if (!(abs <= (*(float *)&lbl_80558DC4))) {
+            atan_value = (float)atan((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020);
+            angle = lbl_80564F24 * atan_value;
+        }
     }
     lbl_8055FC4C = angle;
     theta = lbl_80564F18 * angle;
