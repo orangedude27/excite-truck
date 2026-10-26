@@ -17,6 +17,10 @@ extern int btsnd_hcic_reject_conn(void *, u8 *, u8);
 
 extern void fn_800716F0(void *);
 extern void fn_8006CF44(void *, void *, void *, void *, void *, u32);
+extern void fn_8007BC88(void);
+extern void fn_80076E70(void);
+extern void fn_8007F588(s8);
+extern void fn_8007D4C4(void);
 
 extern void BTM_SendHciReset(void (*)(void));
 extern void fn_80085384(u8 *, u8);
