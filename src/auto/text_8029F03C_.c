@@ -51,7 +51,7 @@ extern void fn_8029FD04(void);
 extern int fn_801E85AC(void);
 extern int fn_8012850C(int, void *);
 extern int fn_801EEFDC(void *, int);
-extern int lbl_80349810;
+extern char lbl_80349810[];
 extern unsigned char lbl_804B7770[];
 extern int lbl_8055F818;
 extern void *memset(void *, int, unsigned int);
@@ -195,37 +195,40 @@ int fn_8029F3BC(unsigned char *arg0) {
 #pragma dont_inline on
 void fn_8029F458(unsigned char *arg0, int arg1) {
     unsigned char buf[0x20];
-    unsigned char *dst = buf;
+    unsigned char *dst;
     unsigned char c;
     int remaining;
     int id;
+    volatile int *globals = (volatile int *)lbl_804B9B7C;
     int i;
     int offset;
     if (*arg0 == '$')
         arg0++;
+    dst = buf;
     remaining = 0x20;
-    goto copy;
-copy:
-    c = *arg0++;
-    *dst++ = c;
-    if ((signed char)c == 0)
-        goto lookup;
-    remaining--;
-    if (remaining != 0)
-        goto copy;
-    dst[-1] = 0;
-lookup:
+    do {
+        remaining--;
+        c = *arg0++;
+        *dst++ = c;
+        if ((signed char)c == 0)
+            break;
+    } while (remaining != 0);
+    if (remaining == 0)
+        dst[-1] = 0;
     id = fn_8029F3BC(buf);
     i = 0;
     offset = 0;
     goto check;
 loop:
-    if (*(int *)((unsigned char *)lbl_804B9B7C[0] + offset) == id)
-        *(int *)((unsigned char *)lbl_804B9B7C[0] + offset + 0x30) = arg1;
+    {
+        unsigned char *entry = (unsigned char *)globals[0] + offset;
+        if (*(int *)entry == id)
+            *(int *)(entry + 0x30) = arg1;
+    }
     offset += 0x34;
     i++;
 check:
-    if (i < lbl_804B9B7C[1])
+    if (i < globals[1])
         goto loop;
 }
 #pragma dont_inline reset
