@@ -1,5 +1,6 @@
 extern int fn_8028E61C(int *);
 extern int fn_8028E2F8(int *, int *, int, int, float, float, float, float, float, float, float);
+extern float fn_801E7E24(void);
 __declspec(section ".data") extern int lbl_80348B24;
 extern float lbl_80564274, lbl_80564280, lbl_80564284, lbl_80564288, lbl_8056428C, lbl_8056429C;
 extern float lbl_805642A4, lbl_805642B0, lbl_805642C8, lbl_805642F4, lbl_805642F8;
@@ -352,7 +353,7 @@ void fn_802896E4(void *arg0) {
     frame.sp3C = f8;
     frame.sp40 = f8;
     frame.sp44 = f8;
-    *(float *)((char *)&frame + 0x48) = f6;
+    frame.sp48 = f6;
     frame.sp50 = f5;
     frame.sp54 = f8;
     frame.sp90 = f4;
