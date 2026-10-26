@@ -34,14 +34,14 @@ extern "C" int fn_8029C190(void*);
     extern "C" void fn_80298FBC(void*);
   extern "C" void fn_802CAC54(int);
   extern "C" void fn_8029BDC4(void*);
-  extern "C" void fn_80299544(void);
-  extern "C" void fn_802982C0(void *);
-  extern "C" void fn_8029998C(void*);
-  extern "C" void fn_80299FE0(void *, void *, float);
-  extern "C" void fn_80299A88(void *, void *, unsigned int, float);
-  extern "C" char lbl_803494D0[];
-  extern "C" void fn_8029998C(void*);
-  extern "C" void fn_8029A17C(void);
+  extern "C" void fn_80299544(void* = 0);
+    extern "C" void fn_802982C0(void *);
+    extern "C" void fn_8029998C(void*);
+    extern "C" void fn_80299FE0(void *, void *, float);
+    extern "C" void fn_80299A88(void *, void *, unsigned int, float);
+    extern "C" char lbl_803494D0[];
+    extern "C" void fn_8029998C(void*);
+    extern "C" void fn_8029A17C(void* = 0);
   extern void* lbl_8055F7CC;
   extern void* lbl_8055F7E0;
   extern void* lbl_8055F7C8;
@@ -679,11 +679,12 @@ extern "C" void fn_8029A208(void* arg0, int arg1, int arg2) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" int fn_8029A290(void* arg0, void* arg1) {
     extern float PSVECSquareDistance(const void*, const void*);
     extern float PSVECDotProduct(const void*, const void*);
     extern float lbl_80564604;
-    register double threshold = lbl_80564594;
+    double threshold = lbl_80564594;
     int result = 1;
     if (PSVECSquareDistance((char*)arg0 + 0x24, (char*)arg1 + 0x24) > threshold) {
         goto done;
@@ -695,7 +696,7 @@ extern "C" int fn_8029A290(void* arg0, void* arg1) {
 done:
     return result;
 }
-
+#pragma scheduling on
 extern "C" void fn_8029A318(float *a, float *b, float *c, int x, int y, int z, int w) {
  if ((unsigned char *)b==(unsigned char *)a+0x30) {
  b[0]=a[14]*a[3]+a[12]*a[0]+a[14]*a[6]; b[1]=a[14]*a[4]+a[12]*a[1]+a[14]*a[7]; b[2]=a[14]*a[5]+a[12]*a[2]+a[14]*a[8];
