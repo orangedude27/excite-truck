@@ -310,6 +310,7 @@ extern char lbl_8031A620[];
 extern u8 lbl_8055DC90;
 #include "revolution/BTE/stack/include/sdp_api.h"
 #include "revolution/BTE/stack/include/l2c_api.h"
+#include "revolution/BTE/stack/include/hidd_api.h"
 typedef struct hcisu_if {
     void (*init)(u32, u32, u32);
     void (*open)(void *);
@@ -8244,6 +8245,17 @@ void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, vo
         }
     }
     btu_hcif_send_cmd(p);
+}
+
+extern void hidd_proc_repage_timeout(void);
+void HID_DevInit(void) {
+    memset(&lbl_803C3AF0[0], 0, 0x144);
+    lbl_803C3AF0[0xCA] = 1;
+    *(u16*)&lbl_803C3AF0[0xCC] = 0x40;
+    lbl_803C3AF0[0x106] = 1;
+    *(u16*)&lbl_803C3AF0[0x108] = 0x40;
+    *(void**)&lbl_803C3AF0[0x2C] = &hidd_proc_repage_timeout;
+    lbl_803C3AF0[0x141] = 0;
 }
 
 void hidd_pm_set_now(void *arg0) {
