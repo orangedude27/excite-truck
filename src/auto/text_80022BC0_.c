@@ -6,21 +6,21 @@
 void __str2dec(decimal *arg0, const char *arg1, short arg2) {
     unsigned char *p;
     unsigned char *q;
-    unsigned char *first;
     unsigned char *last;
+    unsigned char *first;
     int count;
     int ch;
 
     p = (unsigned char *)arg1;
     *(short *)((char *)arg0 + 2) = arg2;
     *(unsigned char *)arg0 = 0;
-    for (count = 0; count < 0x24 && (signed char)*p != 0; count++, p++) {
-        ch = *p;
-        *((volatile unsigned char *)((unsigned int)arg0 + count + 5)) = (unsigned char)(ch - 0x30);
+    for (count = 0; count < 0x24 && (signed char)*p != 0;) {
+        *((volatile unsigned char *)((unsigned int)arg0 + count++ + 5)) =
+            (unsigned char)(*p++ - 0x30);
     }
 
-    ch = *p;
     *(volatile unsigned char *)((char *)arg0 + 4) = (unsigned char)count;
+    ch = *p;
     if ((signed char)ch == 0)
         return;
     if ((signed char)ch < 5)
@@ -29,24 +29,32 @@ void __str2dec(decimal *arg0, const char *arg1, short arg2) {
         goto round_up;
 
     q = p + 1;
-    while ((signed char)*q == 0x30)
-        q++;
-    if ((signed char)*q == 0)
-        return;
-    if ((*(unsigned char *)((char *)arg0 + count + 4) & 1) == 0)
+    goto load_trailing;
+check_zero:
+    if ((signed char)ch != 0x30)
+        goto round_up;
+    q++;
+load_trailing:
+    ch = *q;
+    if ((signed char)ch != 0)
+        goto check_zero;
+    if ((*(unsigned char *)(count + (int)arg0 + 4) & 1) == 0)
         return;
 
 round_up:
     first = (unsigned char *)arg0 + 5;
-    last = first + count - 1;
-    while (*last >= 9) {
-        if (last == first) {
-            *last = 1;
-            *(short *)((char *)arg0 + 2) = *(short *)((char *)arg0 + 2) + 1;
-            return;
-        }
-        *last = 0;
-        last--;
+    last = first + *(unsigned char *)((char *)arg0 + 4) - 1;
+carry:
+    if (*last < 9) {
+        *last = *last + 1;
+        return;
     }
-    *last = *last + 1;
+    if (last == first) {
+        *last = 1;
+        *(short *)((char *)arg0 + 2) = *(short *)((char *)arg0 + 2) + 1;
+        return;
+    }
+    *last = 0;
+    last--;
+    goto carry;
 }
