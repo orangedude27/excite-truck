@@ -147,47 +147,43 @@ extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80558DC4;
 extern void PSVECCrossProduct();
 #pragma scheduling on
-void fn_8017B6D4(void *arg0, void *arg1, void *arg2) {
+void fn_8017B6D4(void *arg0, float *arg1, float *arg2) {
     float vector[3];
-    float temp_f2;
-    float temp_f1;
+    register float temp_f1;
+    register float temp_f2;
+    float delta0;
 
-    vector[0] = *(float *)arg2 - *(float *)((char *)arg0 + 0x60);
-    temp_f2 = *(float *)((char *)arg2 + 4);
+    temp_f1 = arg2[0];
+    temp_f2 = arg2[1];
+    delta0 = temp_f1 - *(float *)((char *)arg0 + 0x60);
+    temp_f1 = arg2[2];
+    vector[0] = delta0;
     vector[1] = temp_f2 - *(float *)((char *)arg0 + 0x64);
-    temp_f1 = *(float *)((char *)arg2 + 8);
     vector[2] = temp_f1 - *(float *)((char *)arg0 + 0x68);
     PSVECCrossProduct((char *)arg0 + 0x124, vector, arg1, temp_f1, temp_f2);
-    *(float *)arg1 += *(float *)((char *)arg0 + 0x118);
-    *(float *)((char *)arg1 + 4) += *(float *)((char *)arg0 + 0x11C);
-    *(float *)((char *)arg1 + 8) += *(float *)((char *)arg0 + 0x120);
+    arg1[0] += *(float *)((char *)arg0 + 0x118);
+    arg1[1] += *(float *)((char *)arg0 + 0x11C);
+    arg1[2] += *(float *)((char *)arg0 + 0x120);
 }
+extern void PSVECCrossProduct(const float *, const float *, float *);
 #pragma push
 #pragma scheduling invalid_target
-void fn_8017B778(void *arg0, void *arg1, void *arg2) {
+void fn_8017B778(void *arg0, float *arg1, float *arg2) {
     float vector[3];
     float temp_f1;
     float temp_f2;
     float temp_f0;
-    float value0;
-    float offset0;
-    float value1;
-    float value2;
 
-    temp_f1 = *(float *)arg2;
-    temp_f2 = *(float *)((char *)arg2 + 4);
+    temp_f1 = arg2[0];
+    temp_f2 = arg2[1];
     vector[0] = temp_f1 - *(float *)((char *)arg0 + 0x60);
     vector[1] = temp_f2 - *(float *)((char *)arg0 + 0x64);
-    temp_f0 = *(float *)((char *)arg2 + 8);
+    temp_f0 = arg2[2];
     vector[2] = temp_f0 - *(float *)((char *)arg0 + 0x68);
-    PSVECCrossProduct((char *)arg0 + 0x178, vector, arg1, temp_f0, temp_f2);
-    value0 = *(float *)arg1;
-    offset0 = *(float *)((char *)arg0 + 0x16c);
-    value1 = *(float *)((char *)arg1 + 4);
-    *(float *)arg1 = value0 + offset0;
-    value2 = *(float *)((char *)arg1 + 8);
-    *(float *)((char *)arg1 + 4) = value1 + *(float *)((char *)arg0 + 0x170);
-    *(float *)((char *)arg1 + 8) = value2 + *(float *)((char *)arg0 + 0x174);
+    PSVECCrossProduct((const float *)((char *)arg0 + 0x178), vector, arg1);
+    arg1[0] += *(float *)((char *)arg0 + 0x16c);
+    arg1[1] += *(float *)((char *)arg0 + 0x170);
+    arg1[2] += *(float *)((char *)arg0 + 0x174);
 }
 #pragma pop
 extern float lbl_80561BB8, lbl_80561BBC, lbl_80561BC0, lbl_80561BC4, lbl_80561BC8, lbl_80561BCC, lbl_80561BD0, lbl_80561BD4, lbl_80561BD8;
@@ -663,37 +659,53 @@ typedef unsigned int u32;
 typedef float f32;
 extern void fn_8017A580(u32, u32, u32, u32, u32, u32);
 void fn_8017CFFC(void* arg0, u32* arg1, f32* arg2, f32* arg3, u32 arg_sp0) {
-    u32 a0 = arg1[0];
-    u32 a1 = arg1[1];
-    u32 a2 = arg1[2];
-    u32 a3 = arg1[3];
-    u32 a4 = arg1[4];
-    u32 a5 = arg1[5];
-    u32 a6 = arg1[6];
-    u32 a7 = arg1[7];
-    u32 a8 = arg1[8];
-    u32 a9 = arg1[9];
-    u32 a10 = arg1[10];
-    u32 a11 = arg1[11];
-    *(u32*)((char*)arg0 + 0x3C) = a0;
-    *(u32*)((char*)arg0 + 0x40) = a1;
-    *(u32*)((char*)arg0 + 0x44) = a2;
-    *(u32*)((char*)arg0 + 0x48) = a3;
-    *(u32*)((char*)arg0 + 0x4C) = a4;
-    *(u32*)((char*)arg0 + 0x50) = a5;
-    *(u32*)((char*)arg0 + 0x54) = a6;
-    *(u32*)((char*)arg0 + 0x58) = a7;
-    *(u32*)((char*)arg0 + 0x5C) = a8;
-    *(u32*)((char*)arg0 + 0x60) = a9;
-    *(u32*)((char*)arg0 + 0x64) = a10;
-    *(u32*)((char*)arg0 + 0x68) = a11;
-    fn_8017A580(a5, a6, a7, a8, a9, a10);
-    *(f32*)((char*)arg0 + 0x118) = arg2[0];
-    *(f32*)((char*)arg0 + 0x11C) = arg2[1];
-    *(f32*)((char*)arg0 + 0x120) = arg2[2];
-    *(f32*)((char*)arg0 + 0x124) = arg3[0];
-    *(f32*)((char*)arg0 + 0x128) = arg3[1];
-    *(f32*)((char*)arg0 + 0x12C) = arg3[2];
+    volatile u32 *src = (volatile u32 *)arg1;
+    f32 *vec1 = arg2;
+    f32 *vec2 = arg3;
+    u32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    f32 f0, f1, f2, f3, f4, f5;
+
+    t0 = src[0];
+    t1 = src[1];
+    t2 = src[2];
+    t3 = src[3];
+    t4 = src[4];
+    t5 = src[5];
+    t6 = src[6];
+    t7 = src[7];
+    t8 = src[8];
+    t9 = src[9];
+    t10 = src[10];
+    t11 = src[11];
+
+    *(u32*)((char*)arg0 + 0x3C) = t0;
+    *(u32*)((char*)arg0 + 0x40) = t1;
+    *(u32*)((char*)arg0 + 0x44) = t2;
+    *(u32*)((char*)arg0 + 0x48) = t3;
+    *(u32*)((char*)arg0 + 0x4C) = t4;
+    *(u32*)((char*)arg0 + 0x50) = t5;
+    *(u32*)((char*)arg0 + 0x54) = t6;
+    *(u32*)((char*)arg0 + 0x58) = t7;
+    *(u32*)((char*)arg0 + 0x5C) = t8;
+    *(u32*)((char*)arg0 + 0x60) = t9;
+    *(u32*)((char*)arg0 + 0x64) = t10;
+    *(u32*)((char*)arg0 + 0x68) = t11;
+
+    ((void (*)(void *))fn_8017A580)(arg0);
+
+    f5 = vec1[0];
+    f4 = vec1[1];
+    f3 = vec1[2];
+    f2 = vec2[0];
+    f1 = vec2[1];
+    f0 = vec2[2];
+
+    *(f32*)((char*)arg0 + 0x118) = f5;
+    *(f32*)((char*)arg0 + 0x11C) = f4;
+    *(f32*)((char*)arg0 + 0x120) = f3;
+    *(f32*)((char*)arg0 + 0x124) = f2;
+    *(f32*)((char*)arg0 + 0x128) = f1;
+    *(f32*)((char*)arg0 + 0x12C) = f0;
 }
 
 extern unsigned int fn_801B60F4(void *, float);
