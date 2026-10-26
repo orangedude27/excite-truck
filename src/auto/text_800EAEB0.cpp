@@ -1518,8 +1518,10 @@ extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(void* self, bool pause) 
     level = OSDisableInterrupts();
     *(u8*)((u8*)self + 0x18) = pause;
     for (i = 0; i < 16; i++, self = (char*)self + 4) {
-        void* track = 0;
-        if (i <= 15) {
+        void* track;
+        if (i > 15) {
+            track = 0;
+        } else {
             track = *(void**)((char*)self + 0x9c);
         }
         if (track != 0) {
