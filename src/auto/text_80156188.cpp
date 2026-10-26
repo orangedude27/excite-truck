@@ -126,14 +126,15 @@ extern "C" char lbl_8032E254[];
 extern "C" char lbl_80559FC0;
 extern "C" char lbl_80559FC4;
 extern "C" char lbl_80559FC8;
+#pragma push
+#pragma scheduling invalid_target
 #pragma dont_inline on
 s32 fn_801562BC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 buffer[0x20];
     u8 *src = fn_801E879C();
+    s32 count = 0x20;
     u8 *dst = buffer;
     u8 *name = (u8 *)arg2;
-    s32 count = 0x20;
-    u8 c;
 
     goto copy;
 check:
@@ -142,23 +143,29 @@ check:
     dst[-1] = 0;
     goto done;
 copy:
-    c = *src++;
-    *dst++ = c;
-    if ((s8)c != 0)
+    if ((s8)(*dst++ = *src++) != 0)
         goto check;
 done:
     fn_801561E8(buffer);
     if (arg3 != 0) {
-        fn_801345D8((s32)arg0, arg1, lbl_8032E254, name,
-                    (s8)*name != 0 ? (const char *)&lbl_80559FC4 : (const char *)&lbl_80559FC0,
-                    buffer);
+        const char *choice;
+        if ((s8)*name != 0)
+            choice = (const char *)&lbl_80559FC4;
+        else
+            choice = (const char *)&lbl_80559FC0;
+        fn_801345D8((s32)arg0, arg1, lbl_8032E254, name, choice, buffer);
     } else {
-        fn_801345D8((s32)arg0, arg1, (const char *)&lbl_80559FC8,
-                    (s8)*name != 0 ? (const char *)name : (const char *)buffer);
+        const char *text;
+        if ((s8)*name != 0)
+            text = (const char *)name;
+        else
+            text = (const char *)buffer;
+        fn_801345D8((s32)arg0, arg1, (const char *)&lbl_80559FC8, text);
     }
     return (s32)arg0;
 }
 #pragma dont_inline off
+#pragma pop
 extern s32 fn_801562BC(void*, s32, s32, s32);
 extern s32 fn_80156248(void*, s32);
 extern s32 fn_80138968(void*);
