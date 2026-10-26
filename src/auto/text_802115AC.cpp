@@ -1108,6 +1108,8 @@ extern "C" s32 fn_8021481C(void *arg0) {
     return 0;
 }
 
+#pragma push
+#pragma small_data on
 extern "C" s32 fn_80214934(const void* arg0, s32 arg1, void* arg2, s32 arg3) {
     s32 end = fn_80029004((const char*)arg1, 0x2e);
     if (end == 0) {
@@ -1115,6 +1117,8 @@ extern "C" s32 fn_80214934(const void* arg0, s32 arg1, void* arg2, s32 arg3) {
     }
     return ((s32 (*)(void*, s32, const char*, ...))fn_801345D8)(arg2, arg3, lbl_8055B808, (s32)arg0, end - arg1, (const char*)arg1);
 }
+#pragma small_data off
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
