@@ -21,6 +21,8 @@ int fn_801BD628(float *arg0) {
     return result;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801BD694(int arg0) {
     extern int lbl_8055E78C, lbl_8055E790, lbl_8055E794, lbl_8055E798, lbl_8055E79C, lbl_8055E7A0, lbl_8055E7A4;
     extern signed char lbl_8055E7A8;
@@ -29,20 +31,23 @@ void fn_801BD694(int arg0) {
     extern void *fn_8012850C(int, const char *);
     extern void *fn_8002F37C(void *, void (*)(void), int, int, int);
     int temp;
-    lbl_8055E790 = arg0; lbl_8055E78C = 0;
-    fn_8012850C(arg0 * 0xB0 + 0x10, lbl_80336A50);
-    lbl_8055E794 = (int)fn_8002F37C(0, fn_801BD78C, 0xB0, arg0, 0);
+    void *memory;
+
+    *(volatile int *)&lbl_8055E790 = arg0;
+    *(volatile int *)&lbl_8055E78C = 0;
+    memory = fn_8012850C(arg0 * 0xB0 + 0x10, lbl_80336A50);
+    lbl_8055E794 = (int)fn_8002F37C(memory, fn_801BD78C, 0, 0xB0, arg0);
     temp = lbl_8055E790;
-    fn_8012850C(temp * 0x1F0 + 0x10, lbl_8055A924);
-    lbl_8055E798 = (int)fn_8002F37C(0, fn_801BD788, 0x1F0, temp, 0);
+    memory = fn_8012850C(temp * 0x1F0 + 0x10, lbl_8055A924);
+    lbl_8055E798 = (int)fn_8002F37C(memory, fn_801BD788, 0, 0x1F0, temp);
     temp = lbl_8055E790;
-    fn_8012850C(temp * 0x190 + 0x10, lbl_8055A92C);
-    lbl_8055E79C = (int)fn_8002F37C(0, fn_801BD784, 0x190, temp, 0);
-    fn_8012850C(lbl_8055E790 * 0x14, lbl_8055A934);
-    lbl_8055E7A4 = (int)fn_8012850C(lbl_8055E790, lbl_8055A93C);
+    memory = fn_8012850C(temp * 0x190 + 0x10, lbl_8055A92C);
+    lbl_8055E79C = (int)fn_8002F37C(memory, fn_801BD784, 0, 0x190, temp);
+    lbl_8055E7A4 = (int)fn_8012850C(lbl_8055E790 * 0x14, lbl_8055A934);
+    lbl_8055E7A0 = (int)fn_8012850C(lbl_8055E790, lbl_8055A93C);
     lbl_8055E7A8 = 1;
 }
-
+#pragma pop
 void fn_801BD784(void) {
 
 }
