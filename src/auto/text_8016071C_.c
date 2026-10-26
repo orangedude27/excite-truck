@@ -17,11 +17,12 @@ typedef struct Obj { void **vtable; } Obj;
 typedef int (*Callback)(Obj *, int, int);
 void fn_8016071C(Obj *obj) {
     int i;
+    int head;
     if (fn_801284F8(0x18, lbl_8032F4C8)) {
         lbl_8055E2BC = (void *)fn_8001D884(obj);
     }
     for (i = 0; i < 5; i++) {
-        int head = __AXGetStackHead(i);
+        head = __AXGetStackHead(i);
         lbl_8042FD60[i] = ((Callback)obj->vtable[4])(obj, head, -1);
     }
 }
@@ -41,6 +42,22 @@ void fn_801607BC(void) {
 }
 
 #pragma dont_inline on
+void fn_801607F8(void) {
+    if (lbl_8055E2BC == 0) {
+        if (lbl_8055E2BC == 0) {
+            fn_80128668();
+        }
+        lbl_8055E2BC = 0;
+    }
+    lbl_8042FD60[0] = -1;
+    lbl_8042FD60[1] = -1;
+    lbl_8042FD60[2] = -1;
+    lbl_8042FD60[3] = -1;
+    lbl_8042FD60[4] = -1;
+}
+#pragma dont_inline off
+
+#pragma dont_inline on
 int fn_80160998(int arg0) {
     if (lbl_8055E2BC != 0)
         return fn_8001DA48(lbl_8055E2BC, arg0);
@@ -49,13 +66,16 @@ int fn_80160998(int arg0) {
 #pragma dont_inline off
 
 int fn_801609C4(int value) {
-    int *p = lbl_8042FD60;
-    if (lbl_8055E2BC != 0) return fn_8001D9B4((int *)lbl_8055E2BC, value);
-    if (*p >= 0 && value >= *p) return 0;
-    if (p[1] >= 0 && value >= p[1]) return 1;
-    if (p[2] >= 0 && value >= p[2]) return 2;
-    if (p[3] >= 0 && value >= p[3]) return 3;
-    if (p[4] >= 0 && value >= p[4]) return 4;
+    int i;
+    int *p;
+    if (lbl_8055E2BC != 0)
+        return fn_8001D9B4((int *)lbl_8055E2BC, value);
+    p = lbl_8042FD60;
+    for (i = 0; i < 5; i++) {
+        int bound = *p++;
+        if (bound >= 0 && value >= bound)
+            return i;
+    }
     return 4;
 }
 
