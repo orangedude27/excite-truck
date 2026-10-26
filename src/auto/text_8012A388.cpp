@@ -1305,7 +1305,7 @@ extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
             break;
         }
     }
-    *(s32 *)((u8 *)arg0 + 0x4c) = fn_8012CAA0(arg2);
+    *(s32 *)((u8 *)arg0 + 0x4c) = fn_8012CAA0(arg2, (void *)arg1);
     *(s32 *)((u8 *)arg0 + 8) = 1;
 }
 
