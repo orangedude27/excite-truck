@@ -113,6 +113,16 @@ public:
     virtual void d1();
     virtual s32 d2();
 };
+class Dummy_80151984 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+    virtual void d20(); virtual void d21(); virtual void d22(); virtual void d23();
+    virtual s32 check();
+};
 class Iter_8014E1D0 {
 public:
     virtual void d0();
@@ -874,6 +884,26 @@ extern "C" void fn_8014D700(void *arg0, s32 arg1) {
     }
     fn_80149658(arg1, (void *)((u8 *)arg0 + 0x6C), *(void **)((u8 *)arg0 + 0xC), var_r6);
 }
+
+void fn_8014D794(void *arg0, void *arg1) {
+    fn_801E7E18();
+    if (*(u8 *)((u8 *)arg0 + 0xA0) == 0) {
+        if (fn_800167F4() == 2) {
+            f32 values[4];
+            values[0] = lbl_80561688;
+            values[1] = lbl_805616C0;
+            values[2] = lbl_805616C4;
+            values[3] = lbl_80561648;
+            if (*(s32 *)((u8 *)arg1 + 8) != 0) {
+                fn_802AE220(values);
+            }
+        } else if (*(s32 *)((u8 *)arg1 + 8) != 0) {
+            fn_802AE220(0);
+        }
+    }
+    (void)(*(f32 *)((u8 *)arg0 + 0x64) >= lbl_80561648);
+}
+
 #pragma cplusplus reset
 s32 fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
     void **accessor=(void **)arg1; void *a,*b,*obj; u8 storage[0x1C];
@@ -1385,6 +1415,34 @@ void fn_80151918(void *arg0, void *arg1) {
     if (*(u8*)((u8*)arg0 + 0x8F4) != 0) {
         *(u8*)((u8*)arg0 + clearIndex * 0x1C + 0x8F8) = 0;
     }
+}
+
+s32 fn_80151984(void *arg0, s32 arg1, s32 arg2) {
+    s32 count;
+    s32 i;
+    void *object;
+    void **vtable;
+    s32 (*check)(void *);
+
+    if (arg2 == 0x58) {
+        vtable = *(void ***)arg0;
+        check = (s32 (*)(void *))vtable[0x1A];
+        if (check(arg0) != 0) {
+            count = fn_801E85A4();
+            object = arg0;
+            for (i = 0; i < count; i++) {
+                if (*((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) == 0) {
+                    if (count > 1) {
+                        *(s32 *)((u8 *)object + 0x454) = 4;
+                    } else if (*(s32 *)((u8 *)object + 0x454) == 2) {
+                        *((u8 *)object + 0x460) = 1;
+                    }
+                }
+                object = (u8 *)object + 0x240;
+            }
+        }
+    }
+    return 0;
 }
 
 extern s32 fn_80141F7C(f32);
