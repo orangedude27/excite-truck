@@ -686,7 +686,6 @@ void fn_802D0014(float a, float b, float c) {
 }
 #pragma push
 #pragma small_data off
-__declspec(section ".rodata") extern char lbl_804C97D0;
 void fn_802D007C(float arg0) {
     extern float lbl_80564FAC;
     extern float lbl_80564FA8;
@@ -803,7 +802,7 @@ int fn_802D0514(void *source) {
     extern unsigned long lbl_8055FDAC;
     extern void *lbl_8055FDB0;
     int index;
-    int next;
+    unsigned long next;
     unsigned int *src;
     unsigned char *dst;
     unsigned int a;
