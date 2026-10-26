@@ -148,6 +148,22 @@ public:
   virtual void d8();
   virtual float d9(const char *);
 };
+class Obj_801F4ECC {
+public:
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void d4();
+    virtual void d5();
+    virtual void d6();
+    virtual void d7();
+    virtual void d8();
+    virtual void d9();
+    virtual void d10();
+    virtual void d11();
+    virtual int getValue(const char *, int);
+};
 #pragma cplusplus on
 extern "C" {
 __declspec(section ".sdata") extern char lbl_8055B178[];
@@ -777,7 +793,7 @@ void fn_801F70D0(void *arg0, int arg1) {
 extern void fn_801E8C84(float *);
 void fn_801F7160(void *arg0) {
     float sp[6];
-    float offset, scale;
+    register float offset, scale;
     void *entry;
     int i;
 
