@@ -79,6 +79,8 @@ extern s32 lbl_8055F8A4;
 extern f32 lbl_80564840, lbl_80564844;
 extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_80564888;
 void fn_802A6234();
+f32 fn_80129DC4(s32, f32, f32);
+extern f32 lbl_80564894, lbl_80564898;
 f32 fn_802A4A50(void) {
     f32 value;
     s32 now;
@@ -512,6 +514,22 @@ void fn_802A6790(void *arg0) {
         sp10 = temp_f1;
         fn_802A6758(arg0, &sp8);
     }
+}
+
+s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
+    s32 *object = (s32 *)arg0;
+
+    object[0] = fn_8002F37C(
+        fn_8012850C(arg1 * 0xC + 0x10, lbl_80349CAC),
+        (void *)fn_8001BA68,
+        0,
+        0xC,
+        arg1);
+    object[2] = arg1;
+    object[3] = fn_802CAC28((void *)lbl_8055CBC0, 0);
+    object[4] = arg2;
+    fn_802A6A44(object);
+    return arg0;
 }
 
 void *fn_802A69D8(void *arg0, s32 arg1) {
