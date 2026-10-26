@@ -191,6 +191,7 @@ extern "C" f32 fn_801452A0(s32 arg0, f32 arg1) {
     return arg1;
 }
 
+#pragma dont_inline fn_801452B4
 extern "C" f32 fn_801452B4(f32 arg0) { f32 result = lbl_805615F0 - arg0; result = result + lbl_8055E204; return result; }
 
 extern "C" f32 fn_801452C8(f32 arg0) {
@@ -1545,19 +1546,21 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
 }
 #pragma pop
 extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
-    struct Data { u32 w0; f32 f4; f32 f8; u32 wc; f32 f10; u32 w14; u32 w18; u32 w1c; };
-    Data *dst = (Data *)arg0;
-    Data *src = (Data *)arg1;
-    Data *other = (Data *)arg2;
+    u8 *dst = (u8 *)arg0;
+    u8 *src = (u8 *)arg1;
+    u8 *other = (u8 *)arg2;
     f32 factor = (f32)arg3;
-    f32 f4 = src->f4 + factor * (other->f4 - src->f4);
-    f32 f8 = src->f8 + factor * (other->f8 - src->f8);
-    f32 f10 = src->f10 + factor * (other->f10 - src->f10);
-    *dst = *src;
-    dst->f4 = f4;
-    dst->f8 = f8;
-    dst->f10 = f10;
-    dst->w18 = fn_80147C50(src->w18, other->w18, factor);
+    f32 x = *(f32 *)(src + 4) + factor * (*(f32 *)(other + 4) - *(f32 *)(src + 4));
+    f32 y = *(f32 *)(src + 8) + factor * (*(f32 *)(other + 8) - *(f32 *)(src + 8));
+    f32 z = *(f32 *)(src + 0x10) + factor * (*(f32 *)(other + 0x10) - *(f32 *)(src + 0x10));
+    *(u32 *)(dst + 0x0) = *(u32 *)(src + 0x0);
+    *(u32 *)(dst + 0xC) = *(u32 *)(src + 0xC);
+    *(u32 *)(dst + 0x14) = *(u32 *)(src + 0x14);
+    *(u32 *)(dst + 0x1C) = *(u32 *)(src + 0x1C);
+    *(f32 *)(dst + 4) = x;
+    *(f32 *)(dst + 8) = y;
+    *(f32 *)(dst + 0x10) = z;
+    *(u32 *)(dst + 0x18) = fn_80147C50(*(u32 *)(src + 0x18), *(u32 *)(other + 0x18), factor);
 }
 
 void fn_80147DC0(void *dst, void *src, void *end, f32 t) {
@@ -1611,8 +1614,17 @@ extern "C" void fn_80147EE0(void *arg0, f32 scale) {
     *(f32 *)((u8 *)arg0 + 8) = ypos - decay;
 }
 
-#pragma push
-#pragma dont_inline on
+extern "C" void fn_80011630(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
+#pragma dont_inline fn_801452B4
+extern "C" void fn_80147F30(s32 arg0, s32 arg1, s32 arg2,
+                            f32 farg0, f32 farg1, f32 farg2, f32 farg3,
+                            f32 farg4, f32 farg5, f32 farg6, f32 farg7,
+                            f32 farg8, f32 farg9) {
+    f32 temp_f31 = fn_801452B4(farg1);
+    f32 temp_f1 = ((f32 (*)(s32, f32))fn_801451DC)(0, farg0);
+    fn_80011630(arg0, arg1, arg2, temp_f1, temp_f31, farg2, farg3,
+                farg4, farg5, farg6, farg7, farg8, farg9);
+}
 extern "C" void fn_80147FF0(void *arg0, s32 arg1) {
     f32 temp_f31;
     f32 temp_f30;
