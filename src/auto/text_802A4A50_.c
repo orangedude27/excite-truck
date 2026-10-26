@@ -57,7 +57,7 @@ extern s32 fn_80128670(s32);
 extern s32 fn_80128668(void *);
 s32 fn_802A597C(void);
 s32 fn_8028E398(void);
-s32 fn_802A5B8C(s32);
+s32 fn_802A5B8C();
 void *fn_802A69D8(void *, s32);
 s32 fn_800167F4(void);
 s32 fn_802A5384(s32);
@@ -223,13 +223,32 @@ void fn_802A50F8(void) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_802A5270(f32 arg0) {
+    f32 value = lbl_8056485C;
+    s32 amount;
+    s32 result;
+
+    value = (value < arg0) ? value : arg0;
+    value = (value > lbl_80564858) ? value : lbl_80564858;
+    amount = (s32)(lbl_80564878 * value);
+    result = fn_801284F8(0x44, lbl_80349C88);
+    if (result != 0) {
+        result = fn_802A6944(result, amount, 0);
+    }
+    lbl_8055F88C = result;
+    fn_802A50F8();
+}
+#pragma scheduling on
 extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
 extern char lbl_80349C94[];
 s32 fn_801284F8(s32, char *);
 s32 fn_802A5AE8();
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_802A52FC(f32 arg0) {
-    register f32 value = lbl_8056485C;
+    f32 value = lbl_8056485C;
     s32 result;
     s32 amount;
     value = (value < arg0) ? value : arg0;
@@ -240,6 +259,7 @@ void fn_802A52FC(f32 arg0) {
     lbl_8055F888 = result;
 }
 #pragma scheduling on
+#pragma pop
 void fn_802A5270(f32);
 s32 fn_802A5384(s32 arg0) {
     s32 value = *(s32 *)arg0;
