@@ -183,24 +183,26 @@ extern void *fn_80178C9C(void);
 extern void fn_801B8054(s32, void *, f32, f32);
 extern void fn_80015A20(void *, f32 *);
 extern void fn_80015B20(s32, void *, s32);
+#pragma push
+#pragma processor 750
 void fn_801C3A3C(s32 arg0, f32 arg1, f32 arg2) {
+    char out[0x24];
+    f32 values[3];
     void *p = fn_80178C9C();
     void *r = *(void **)(*(char **)((char *)p + 0x2C) + 0x20);
     while (r != 0 && *(u8 *)((char *)r + 0x34) != 0)
         r = *(void **)((char *)r + 0x14);
-    fn_801B8054(arg0, p, lbl_80562970, (r != 0 ? *(f32 *)((char *)r + 0x1C) : lbl_80562970) + arg1);
     {
-        f32 values[3];
-        values[0] = arg2;
-        values[1] = lbl_80562970;
-        values[2] = lbl_80562970;
-        fn_80015A20(&values[1], &values[0]);
-        fn_80015B20(arg0, &values[1], arg0);
+        f32 offset = (r != 0) ? *(f32 *)((char *)r + 0x1C) : lbl_80562970;
+        fn_801B8054(arg0, p, lbl_80562970, offset + arg1);
     }
+    values[0] = lbl_80562970;
+    values[1] = arg2;
+    values[2] = lbl_80562970;
+    fn_80015A20(out, values);
+    fn_80015B20(arg0, out, arg0);
 }
-
-#pragma fp_contract on
-#pragma scheduling invalid_target
+#pragma pop
 void fn_801C3AF8(s32 arg0, s32 arg1, f32 arg2) {
     f32 values[2];
     f32 cosine;
@@ -890,7 +892,7 @@ void fn_801C7394(void) {
 void fn_801C73DC(void) {
     s32 count;
     s32 current;
-    s32 index;
+    register s32 index;
     s32 previousOffset;
     s32 currentOffset;
     char *base;
@@ -898,26 +900,50 @@ void fn_801C73DC(void) {
     s32 previousKey;
     count = lbl_8055E7F0;
     current = lbl_8055E828;
+    index = current - 1;
     if (count == 0)
         goto done;
-    index = current - 1;
     if (index < 0)
         goto done;
     if (index >= count)
         goto done;
     previousOffset = index * 0x30C;
-    base = (char *)lbl_8055E7F8;
     currentOffset = current * 0x30C;
+    base = (char *)lbl_8055E7F8;
     if (fn_801C34CC(*(f32 *)(base + currentOffset), *(f32 *)(base + previousOffset))) {
+        base = (char *)lbl_8055E7F8;
         currentKey = *(s32 *)(base + currentOffset + 4);
         previousKey = *(s32 *)(base + previousOffset + 4);
         *(s32 *)(base + currentOffset + 4) = previousKey;
         *(s32 *)(base + previousOffset + 4) = currentKey;
-        qsort((void *)lbl_8055E7F8, count, 0x30C,
+        qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
               (int (*)(const void *, const void *))fn_801C3B7C);
     }
 done:
     ;
+}
+
+void fn_801C7480(void) {
+    register s32 index = lbl_8055E828;
+    register s32 next = index + 1;
+    register s32 count = lbl_8055E7F0;
+
+    if (count != 0) {
+        if (next >= 0) {
+            if (next < count) {
+                if (fn_801C34CC(
+                        *(f32 *)((char *)(s32)lbl_8055E7F8 + next * 0x30C),
+                        *(f32 *)((char *)(s32)lbl_8055E7F8 + index * 0x30C))) {
+                    s32 *current = (s32 *)((char *)(s32)lbl_8055E7F8 + index * 0x30C);
+                    s32 *following = (s32 *)((char *)(s32)lbl_8055E7F8 + next * 0x30C);
+                    s32 value = current[1];
+                    current[1] = following[1];
+                    following[1] = value;
+                    qsort((void *)(s32)lbl_8055E7F8, (size_t)lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
+                }
+            }
+        }
+    }
 }
 
 void fn_801C7524(void) {
@@ -2207,33 +2233,24 @@ extern char lbl_80336EC8[];
 extern s32 lbl_8055E7F0;
 extern s32 lbl_8055E7F8;
 void fn_801C6B70(void) {
-    f32 val;
-    f32 diff;
-    s32 *str1;
-    s32 *str0;
-    f32 *ptr;
-    
-    ptr = (f32 *)&lbl_80437E24[0];
-    val = ptr[2];
-    
-    if (val >= lbl_80562970) {
-        if (lbl_8055E3C8 >= val) {
-            diff = lbl_8055E3C8 - val;
-            if (diff <= lbl_80562978) {
-                ptr[2] = lbl_80562994;
-                ptr[0] = 0.0f;
-                ptr[1] = 0.0f;
-            }
+    const char *temp_r31;
+    const char *temp_r31_2;
+
+    if (*(f32 *)((u8 *)lbl_80437E24 + 8) >= lbl_80562970) {
+        if ((lbl_8055E3C8 < *(f32 *)((u8 *)lbl_80437E24 + 8)) || ((lbl_8055E3C8 - *(f32 *)((u8 *)lbl_80437E24 + 8)) > lbl_80562978)) {
+            *(f32 *)((u8 *)lbl_80437E24 + 8) = lbl_80562994;
+            lbl_80437E24[0] = 0;
+            lbl_80437E24[1] = 0;
+            return;
         }
-    }
-    
-    str1 = (s32 *)lbl_80437E24[1];
-    if (strlen((const char *)str1) != 0) {
-        fn_8000FC8C((const char *)str1);
-    }
-    str0 = (s32 *)lbl_80437E24[0];
-    if (strlen((const char *)str0) != 0) {
-        fn_8000FDF0((const char *)str0);
+        temp_r31 = (const char *)lbl_80437E24[1];
+        if (strlen(temp_r31) != 0) {
+            fn_8000FC8C(temp_r31);
+        }
+        temp_r31_2 = (const char *)lbl_80437E24[0];
+        if (strlen(temp_r31_2) != 0) {
+            fn_8000FDF0(temp_r31_2);
+        }
     }
 }
 
