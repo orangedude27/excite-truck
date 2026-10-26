@@ -191,8 +191,9 @@ extern "C" f32 fn_801452A0(s32 arg0, f32 arg1) {
     return arg1;
 }
 
-#pragma dont_inline fn_801452B4
+#pragma dont_inline on
 extern "C" f32 fn_801452B4(f32 arg0) { f32 result = lbl_805615F0 - arg0; result = result + lbl_8055E204; return result; }
+#pragma dont_inline reset
 
 extern "C" f32 fn_801452C8(f32 arg0) {
     extern f32 lbl_805615E0;
