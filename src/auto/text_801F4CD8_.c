@@ -7,6 +7,7 @@ extern void *lbl_8055EC10;
 extern void *lbl_8055EC1C;
 extern void *lbl_8055EC20;
 extern char lbl_8033ACE8[32];
+__declspec(section ".data") extern float lbl_80558DC4;
 extern void fn_801E8C84(float *);
 extern void *fn_801284F8(int, void *);
 extern char lbl_8033AC68[];
@@ -690,6 +691,41 @@ FN_801F6A08_RETURN fn_801F6A08(void *arg0, int arg1) {
     }
     return arg0;
 }
+
+extern float fn_801E7E24(void);
+extern unsigned char fn_802CDB20(int, int);
+void fn_801F6A98(void *arg0, int arg1) {
+    extern float lbl_80558DC4;
+    float sp[6];
+    float offset, scale;
+    int enabled;
+    void *entry;
+    int i;
+
+    enabled = ((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4) ? 1 : 0;
+    entry = arg0;
+    i = 0;
+    goto check;
+loop:
+    if (enabled != 0) {
+        scale = *(float *)((char *)entry + 0x40);
+        offset = *(float *)((char *)entry + 0x3C);
+        fn_801E8C84(&sp[0]);
+        sp[3] = sp[0] * scale;
+        sp[5] = sp[2] * scale;
+        sp[4] = sp[1] * scale - offset;
+        fn_801F63F0(entry, &sp[3], *(float *)((char *)entry + 0x44));
+    }
+    fn_801F65D0(entry);
+    fn_801F6728(entry);
+    *(unsigned char *)((char *)entry + 0x38) =
+        fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
+    entry = (char *)entry + 0x48;
+    i++;
+check:
+    if (i < *(int *)((char *)arg0 + 0x900)) goto loop;
+}
+
 #pragma scheduling on
 extern void fn_801F602C(void *, int, int, int, int);
 extern char lbl_8033ADF8[];
