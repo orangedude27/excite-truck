@@ -338,6 +338,37 @@ found:
     *(unsigned char *)(obj + 0x4A) = 0;
 }
 
+void fn_80258F94(void *arg0, const char *arg1) {
+    int index = 0;
+    int offset = 0;
+    unsigned int entry;
+    void *object;
+    goto check;
+loop:
+    switch ((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 0xD9C) + offset), arg1)) >> 5) {
+    case 0:
+        offset += 0x2C;
+        index++;
+        goto check;
+    default:
+        goto found;
+    }
+check:
+    if (index < *(int *)((char *)arg0 + 0xDA0)) goto loop;
+    index = -1;
+found:
+    if (index >= 0) {
+        entry = *(unsigned int *)((char *)arg0 + 0xD9C);
+        entry += index * 0x2C;
+        object = *(void **)(entry + 0x20);
+        if (object != 0) {
+            /* Mark the matched object active and clear its secondary flag. */
+            *(unsigned char *)((char *)object + 0x4A) = 1;
+            *(unsigned char *)((char *)object + 0x4C) = 0;
+        }
+    }
+}
+
 #pragma scheduling invalid_target
 void fn_8025904C(void *arg0, int arg1, float farg0) {
     int index = 0;
