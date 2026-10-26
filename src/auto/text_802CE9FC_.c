@@ -1527,15 +1527,16 @@ void fn_802D3DAC(void) {
 #pragma scheduling on
 void fn_802D3DF8(int arg0, signed char arg1, float farg0, float farg1) {
     float mtx[2][3];
-
     lbl_804C5700[13] = 1;
     GXLoadTexObj((char *)arg0 + 0x24, 2, lbl_804C5700);
-    *(int *)&mtx[0][1] = 0;
+    *(int *)&mtx[0][0] = 0;
     *(int *)&mtx[1][1] = 0;
+    *(int *)&mtx[0][1] = 0;
     *(int *)&mtx[0][2] = 0;
+    *(int *)&mtx[1][0] = 0;
     *(int *)&mtx[1][2] = 0;
     mtx[0][0] = farg0;
-    mtx[1][0] = farg1;
+    mtx[1][1] = farg1;
     GXSetIndTexMtx(1, mtx, arg1);
 }
 
