@@ -163,7 +163,7 @@ void fn_802CEC44(void) {
 
 void fn_802CECF4(unsigned int arg0) {
     extern unsigned short lbl_8055D0F6;
-    extern int fn_802CEC50(unsigned short);
+    extern void fn_802CEC50(unsigned short);
     unsigned int value;
     do {
         value = lbl_8055D0F6 + 1;
