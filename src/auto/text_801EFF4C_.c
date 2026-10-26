@@ -638,3 +638,6 @@ void fn_801F1B1C(void *arg0, void *arg1, int arg2) {
         *(volatile int *)((char *)dst + 0x80) = 0;
 }
     #pragma scheduling on
+extern float lbl_80562F1C;
+extern float lbl_80562F18;
+extern int __cntlzw(unsigned int);
