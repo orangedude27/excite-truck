@@ -43,7 +43,7 @@ extern float lbl_80564480;
 extern float lbl_805644A0;
 extern float lbl_80564484;
 extern float lbl_80564490;
-extern int lbl_80349158;
+extern char lbl_80349158[];
 extern int lbl_8055C938;
 extern int lbl_8055C948;
 extern void *fn_802AE414(int *);
@@ -79,13 +79,13 @@ void fn_80291A1C(void) {
     value = lbl_805644A0;
     obj = (struct QueryObject_80291A1C *)fn_802AE414(&lbl_8055C948);
     if (obj != 0) {
-        value = obj->f10(&lbl_8055C938, lbl_805644A0);
+        value = obj->f8(&lbl_8055C938, lbl_805644A0);
     }
     *(float *)&lbl_804B4010 = lbl_80564484;
     settings = (int *)&lbl_804B4010;
     ((float *)settings)[1] = lbl_80564484;
     ((float *)settings)[2] = lbl_80564484;
-    settings[3] = fn_802CAC28(&lbl_80349158, 0);
+    settings[3] = fn_802CAC28((int *)&lbl_80349158, 0);
     fn_802CA294();
     settings[4] = fn_802D39A4(lbl_80564490);
     *((unsigned char *)settings + 0x14) = 0;
