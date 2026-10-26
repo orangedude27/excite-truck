@@ -412,6 +412,41 @@ void fn_80161618(void) {
     }
 }
 
+extern int fn_80133348(int, int, int);
+#pragma use_lmw_stmw off
+void fn_801616FC(void) {
+    register s32 count;
+    register s32 offset;
+    register u8 *base;
+    void *item;
+
+    fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, lbl_8055A0B8);
+    base = lbl_8042FDEC;
+    count = 0;
+    offset = 0;
+    goto test_loop;
+loop:
+    item = *(void **)((u8 *)*(void **)lbl_8042FDEC + offset);
+#pragma cplusplus on
+    ((Dummy_801616FC_A *)item)->invoke();
+#pragma cplusplus off
+    item = *(void **)((u8 *)*(void **)lbl_8042FDEC + offset);
+    if (item != 0) {
+#pragma cplusplus on
+        ((Dummy_801616FC_B *)item)->reset(1);
+#pragma cplusplus off
+    }
+    offset += 4;
+    count += 1;
+test_loop:
+    if (count < *(s32 *)(base + 4)) {
+        goto loop;
+    }
+    *(s32 *)(base + 4) = 0;
+    lbl_8055E300 = 0;
+}
+#pragma use_lmw_stmw reset
+
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801617BC(void) {
@@ -743,7 +778,7 @@ extern const char lbl_8032F738[];
 
 int fn_80161ECC(void) {
     int i = 0;
-    while (fn_80161E40(i) >= 0) {
+    while ((fn_80161E40)(i) >= 0) {
         i++;
     }
     return i;
