@@ -143,6 +143,30 @@ void fn_8001BC28(void *arg0, s32 arg1) {
     *(s8 *)((char *)arg0 + 0x20) = 1;
 }
 
+#pragma push
+#pragma small_data off
+void *fn_8001BC38(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    u8 *base = (u8 *)arg0;
+    s32 count;
+    *(s32 *)(base + 0) = arg1;
+    *(s32 *)(base + 0xC) = arg4;
+    *(s32 *)(base + 4) = arg2;
+    *(s32 *)(base + 8) = arg3;
+    count = fn_8001D25C(arg3);
+    if (count != 0) {
+        *(void **)(base + 0x18) =
+            ((void *(*)(s32, s32, s32))fn_8001CD4C)(*(s32 *)(base + 0), *(s32 *)(base + 4), count);
+        *(u8 *)(base + 0x10) = fn_8001CB8C(*(s32 *)(base + 4), (const char *)count, base + 0x14);
+    } else {
+        *(void **)(base + 0x18) = &lbl_80358628;
+        *(u8 *)(base + 0x10) = 0;
+    }
+    *(s32 *)(base + 0x1C) =
+        *(s32 *)((u8 *)*(void **)(base + 0x18) + *(s32 *)(base + 0xC) * 0xC + 8);
+    *(u8 *)(base + 0x20) = 0;
+    return arg0;
+}
+#pragma pop
 s32 fn_8001BCF0(void *arg0) {
     s32 var_r5 = 0;
     u8 *ptr = (u8 *)(((s32 *)arg0)[6] + ((s32 *)arg0)[3] * 0xC);
@@ -186,7 +210,6 @@ u32 fn_8001BD6C(void *arg0, void *arg1) {
     return (r & 0x80000000) >> 31;
 }
 #pragma scheduling on
-extern void *lbl_80358628;
 extern void *fn_800167CC(s32, void *, s32, s32);
 extern void *fn_80016BC8(s32);
 #pragma push
