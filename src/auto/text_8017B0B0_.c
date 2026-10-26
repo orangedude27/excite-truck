@@ -19,12 +19,6 @@ extern void PSVECCrossProduct();
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80558DC4;
 
-typedef struct fn_8017B4E0Vec3 {
-    float x;
-    float y;
-    float z;
-} fn_8017B4E0Vec3;
-
 void *fn_8017B0B0(void *arg0) {
     fn_80179D08();
     *(int *)((char *)arg0 + 0x184) = 0;
@@ -48,8 +42,11 @@ void fn_8017B164(void *arg0) {
 
 extern float lbl_80561BA8, lbl_80561BAC, lbl_80561BB0, lbl_80561BB4;
 void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
-    float *matrix = (float *)arg0;
-    unsigned int *words = (unsigned int *)arg0;
+    union MatrixData {
+        float f[106];
+        unsigned int u[106];
+    };
+    union MatrixData *matrix = (union MatrixData *)arg0;
     float base;
     float zero;
     float x;
@@ -70,44 +67,44 @@ void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
     y = base * c;
     z = base * d;
     x = factor * x;
-    matrix[0xf8 / 4] = zero;
+    matrix->f[0xf8 / 4] = zero;
     y = factor * y;
     z = factor * z;
-    matrix[0xfc / 4] = zero;
+    matrix->f[0xfc / 4] = zero;
     inverse_scale = *(volatile float *)&lbl_80561BB4;
     y = factor * y;
     z = factor * z;
-    matrix[0x100 / 4] = zero;
+    matrix->f[0x100 / 4] = zero;
     iy = inverse_scale / y;
-    matrix[0x108 / 4] = zero;
+    matrix->f[0x108 / 4] = zero;
     iz = inverse_scale / z;
     x = factor * x;
-    matrix[0x10c / 4] = zero;
-    matrix[0x110 / 4] = zero;
-    matrix[0x104 / 4] = iy;
-    matrix[0x114 / 4] = iz;
+    matrix->f[0x10c / 4] = zero;
+    matrix->f[0x110 / 4] = zero;
+    matrix->f[0x104 / 4] = iy;
+    matrix->f[0x114 / 4] = iz;
     sa = base * a;
     ix = inverse_scale / x;
     ia = inverse_scale / sa;
-    matrix[0xd4 / 4] = sa;
-    matrix[0xd8 / 4] = x;
-    matrix[0xdc / 4] = y;
-    matrix[0xe0 / 4] = z;
-    matrix[0xe4 / 4] = ia;
-    matrix[0xe8 / 4] = ix;
-    matrix[0xec / 4] = iy;
-    matrix[0xf0 / 4] = iz;
-    matrix[0xf4 / 4] = ix;
-    /* Cache the nine completed matrix words for the object’s integer copy. */
-    words[0x148 / 4] = words[0xf4 / 4];
-    words[0x14c / 4] = words[0xf8 / 4];
-    words[0x150 / 4] = words[0xfc / 4];
-    words[0x154 / 4] = words[0x100 / 4];
-    words[0x158 / 4] = words[0x104 / 4];
-    words[0x15c / 4] = words[0x108 / 4];
-    words[0x160 / 4] = words[0x10c / 4];
-    words[0x164 / 4] = words[0x110 / 4];
-    words[0x168 / 4] = words[0x114 / 4];
+    matrix->f[0xd4 / 4] = sa;
+    matrix->f[0xd8 / 4] = x;
+    matrix->f[0xdc / 4] = y;
+    matrix->f[0xe0 / 4] = z;
+    matrix->f[0xe4 / 4] = ia;
+    matrix->f[0xe8 / 4] = ix;
+    matrix->f[0xec / 4] = iy;
+    matrix->f[0xf0 / 4] = iz;
+    matrix->f[0xf4 / 4] = ix;
+    /* Copy the completed matrix values into the object's cached integer block. */
+    matrix->u[0x148 / 4] = matrix->u[0xf4 / 4];
+    matrix->u[0x14c / 4] = matrix->u[0xf8 / 4];
+    matrix->u[0x150 / 4] = matrix->u[0xfc / 4];
+    matrix->u[0x154 / 4] = matrix->u[0x100 / 4];
+    matrix->u[0x158 / 4] = matrix->u[0x104 / 4];
+    matrix->u[0x15c / 4] = matrix->u[0x108 / 4];
+    matrix->u[0x160 / 4] = matrix->u[0x10c / 4];
+    matrix->u[0x164 / 4] = matrix->u[0x110 / 4];
+    matrix->u[0x168 / 4] = matrix->u[0x114 / 4];
 }
 
 #pragma scheduling invalid_target
@@ -120,7 +117,7 @@ void fn_8017B4AC(float *arg0, float *arg1) {
     arg0[0x144 / 4] = z;
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8017B4E0(void *arg0, float *arg1, float *arg2, float arg3) {
     float delta[3];
     float output[3];
