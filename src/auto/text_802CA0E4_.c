@@ -205,7 +205,6 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     }
 }
 #pragma use_lmw_stmw on
-#pragma dont_inline fn_802CA4E0
 int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
     char sp8[0x34];
 
@@ -764,15 +763,14 @@ extern int fn_802CB2FC(int, int, int, unsigned char, unsigned short, unsigned ch
 #pragma small_data off
 #pragma pop
 #pragma push
-#pragma inline off
+#pragma dont_inline on
 #pragma use_lmw_stmw off
 int fn_802CB128(int arg0, int arg1, int arg2, int arg3) {
-    int *p;
-    int n;
-    unsigned char flags;
-    unsigned short id;
+    register int n;
     const char *name;
-    int allocArg;
+    unsigned short id;
+    int flags;
+    int *p;
 
     id = lbl_8055FCAA;
     name = &lbl_8055D05C;
@@ -780,24 +778,23 @@ int fn_802CB128(int arg0, int arg1, int arg2, int arg3) {
     if (arg3 & 0x20)
         flags = 2;
     if (arg3 & 0x40)
-        flags &= 7;
-    allocArg = arg3 & 1;
-    n = allocArg + 2;
-    p = (int *)((int (*)(int))fn_802CB018)(allocArg);
+        flags = (unsigned char)(flags & 7);
+    n = (arg3 & 1) + 2;
+    p = (int *)((int (*)(int))fn_802CB018)(arg3 & 1);
     memset(p, 0, 0x4C);
     p[0] = 1;
     p[9] = 0;
-    p[13] = 0xE;
     p[15] = 0;
     p[16] = 0;
     p[17] = 0;
+    p[13] = 0xE;
     strcpy((char *)p + 4, name);
     p[11] = fn_802CB2FC(arg0, arg1, 1, (unsigned char)n, id, flags);
     p[10] = fn_802CA4E0(p[11], (int)&lbl_8055D064, 1, 0, p[13]);
     return ((char *)p - (char *)lbl_8055FCB0) / 0x4C;
 }
 #pragma use_lmw_stmw on
-#pragma inline auto
+#pragma dont_inline reset
 #pragma pop
 
 void fn_802CB228(int arg0) { int *entry = (int *)(lbl_8055FCB0 + arg0 * 0x4C); ((void (*)(int))fn_802D8FB4)(entry[0x28 / 4]); fn_80128668(entry[0x2C / 4]); entry[0x2C / 4] = 0; entry[0] = 0; }
