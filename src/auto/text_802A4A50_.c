@@ -177,6 +177,7 @@ void fn_802A4CA8(void) {
 
 void fn_802A4D00(void) { fn_802C2C00(0); }
 
+#pragma scheduling invalid_target
 void fn_802A4D08(void) {
     u8 *state = (u8 *)fn_801E1F44();
     s32 flag;
@@ -214,7 +215,7 @@ void fn_802A4D08(void) {
         fn_802C9118();
     }
 }
-
+#pragma scheduling on
 extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag(float *);
 extern void fn_802E317C(const char *);
