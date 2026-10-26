@@ -2,7 +2,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void fn_8000A7A8(void);
-extern void fn_8000A6D8(void);
+extern void fn_8000A6D8(void) DECOMP_DONT_INLINE;
 extern void fn_8000A808(void);
 extern void fn_80128668(void*);
 extern void fn_80009DC8(void);
@@ -48,24 +48,27 @@ void* fn_80009D70(void* arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8000A644(void* arg0, void* arg1) {
     s32 count = 0;
-    s32* var_r6 = (s32*)((u8*)arg0 + 0x20);
-    ((s32*)arg0)[0x3E0 / 4] = ((s32*)arg1)[0x24 / 4];
+    char* dst = (char*)arg0 + 0x20;
+    s32* src = (s32*)arg1;
+    ((s32*)arg0)[0x3E0 / 4] = src[0x24 / 4];
     while (count < ((s32*)arg0)[0x3C0 / 4]) {
-        var_r6[0x68 / 4] = ((s32*)arg1)[4 / 4];
-        var_r6[0x6C / 4] = ((s32*)arg1)[0x28 / 4];
-        var_r6 += 0x78 / 4;
-        arg1 = (void*)((u8*)arg1 + 4);
+        dst += 0x78;
+        *(s32*)(dst - 0x10) = src[4 / 4];
+        *(s32*)(dst - 0xC) = src[0x28 / 4];
+        src++;
         count++;
     }
     fn_80009DC8();
 }
-
+#pragma pop
 void fn_8000A688(void (*arg0)(void*), s32 arg1) DECOMP_DONT_INLINE {
-    u8 sp8[0x20];
-    fn_801345D8(sp8, 0x20, &lbl_80558A14, arg1);
-    arg0(sp8);
+    char sp8[0x20];
+    ((void (*)(void*, s32, void*, s32))fn_801345D8)(sp8 + 8, 0x20, &lbl_80558A14, arg1);
+    arg0(sp8 + 8);
 }
 
 void fn_8000AADC(void* arg0) {
