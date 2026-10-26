@@ -922,7 +922,6 @@ void fn_801C73DC(void) {
 done:
     ;
 }
-#pragma scheduling on
 
 #pragma scheduling invalid_target
 void fn_801C7480(void) {
