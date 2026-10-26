@@ -90,7 +90,47 @@ out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
 }
 
 }
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
+extern "C" void *fn_801B8D80(void) {
+    extern void *fn_801284F8(unsigned int, void *);
+    extern void fn_80182010(void *);
+    extern int fn_8017960C(int);
+    extern char lbl_803369C0[];
+    extern char lbl_803369D0[];
+    extern void *lbl_80436D28[];
+    extern float lbl_80562750;
+    void *obj;
+    void *vtable;
+    float value;
+    int zero;
+    int index;
+
+    obj = fn_801284F8(0x2760, lbl_803369C0);
+    if (obj != 0) {
+        fn_80182010(obj);
+        vtable = lbl_803369D0;
+        value = lbl_80562750;
+        *(void **)obj = vtable;
+        zero = 0;
+        *(int *)((char *)obj + 0x2738) = zero;
+        *(int *)((char *)obj + 0x2710) = zero;
+        *(float *)((char *)obj + 0x272C) = value;
+        *(float *)((char *)obj + 0x2730) = value;
+        index = lbl_8055E774;
+        *(int *)((char *)obj + 0x2700) = index;
+        lbl_8055E774 = index + 1;
+        lbl_80436D28[*(int *)((char *)obj + 0x2700)] = obj;
+        *(int *)((char *)obj + 0x2754) =
+            fn_8017960C(*(int *)((char *)obj + 0x2700));
+        *(unsigned char *)((char *)obj + 0x275C) = zero;
+    }
+    return obj;
+}
+#pragma cplusplus reset
+#pragma scheduling on
+#pragma pop
 extern "C" void fn_801B8E28(int arg0) {
     struct Dummy {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -201,6 +241,22 @@ void fn_801B916C(void* arg0) {
     }
 }
 
+#pragma scheduling invalid_target
+#pragma cplusplus off
+void *fn_801B9274(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        s32 index = *(s32 *)((char *)arg0 + 0x2700);
+        lbl_8055E774--;
+        lbl_80436D28[index] = 0;
+        fn_801836E0(arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+#pragma cplusplus reset
+#pragma scheduling on
 extern float lbl_80562750;
 extern float lbl_80562768;
 extern float lbl_8056276C;
