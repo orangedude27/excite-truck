@@ -179,6 +179,37 @@ int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *ar
     }
     return 1;
 }
+
+extern void *fn_8012E96C(const char *);
+extern void *fn_8012C370(const char *, u32, s32 *, void *, void *, u8 *);
+extern void fn_802E317C(const char *, ...);
+extern void fn_801DC32C(void *);
+extern char lbl_8033940C[];
+extern char lbl_80339418[];
+#pragma push
+#pragma auto_inline off
+#pragma scheduling invalid_target
+int fn_801DC9B0(void) {
+    char *path = lbl_8033940C;
+    s32 size = 0;
+    u8 flag;
+    int result;
+
+    fn_8012E96C(path);
+    result = (int)fn_8012C370(path, 0x47726E64, &size, 0, 0, &flag);
+    if (result != 0) {
+        if (size != 0) {
+            fn_802E317C(lbl_80339418, path, size, 0);
+        }
+        if (flag != 0) {
+            fn_801DC32C((void *)result);
+        }
+    }
+    return result;
+}
+#pragma scheduling on
+#pragma pop
+
 #pragma paired_single reset
 void fn_801DCA5C(void) {
     fn_8012C4D8();
@@ -207,11 +238,10 @@ void fn_801DCDA0(void) {
 }
 
 void fn_801DCDA4(void) {
-    void *data;
-    data = (void *)lbl_80446F08;
-    if (((void **)data)[2] != (void *)0) {
+    register void *entry = *(void **)((char *)lbl_80446F08 + 8);
+    if (entry != 0) {
         fn_80128670();
-        ((void **)data)[2] = (void *)0;
+        *(void **)((char *)lbl_80446F08 + 8) = 0;
     }
     lbl_8055E994(lbl_8055E990);
     lbl_8055E994 = 0;
