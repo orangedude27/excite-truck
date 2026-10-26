@@ -263,28 +263,30 @@ void fn_8027B60C(void *arg0) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8027B77C(void) {
-    register char *base;
-    register unsigned int outer;
-    register char *p;
-    register unsigned int i;
+    char *base;
+    unsigned int outer;
     if (fn_80019B3C() == 0 || lbl_8055F650 != 0) {
         base = lbl_804A4380;
         outer = 0;
         do {
-            p = base;
-            i = 0;
-            do {
-                fn_8027B60C(p);
-                i++;
-                p += 0xBD0;
-            } while (i < 3);
-            p = base + 0x2370;
-            i = 0;
-            do {
-                fn_8027B60C(p);
-                i++;
-                p += 0xBD0;
-            } while (i < 2);
+            {
+                char *p = base;
+                unsigned int i = 0;
+                do {
+                    fn_8027B60C(p);
+                    i++;
+                    p += 0xBD0;
+                } while (i < 3);
+            }
+            {
+                char *p = base + 0x2370;
+                unsigned int i = 0;
+                do {
+                    fn_8027B60C(p);
+                    i++;
+                    p += 0xBD0;
+                } while (i < 2);
+            }
             outer++;
             base += 0x3B10;
         } while (outer < 4);
@@ -450,27 +452,43 @@ void fn_8027BF38(void) {
             fn_80012790(state);
     }
 }
-#pragma scheduling on
-void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
+#pragma cplusplus on
+extern "C" void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
+    class FirstInterface {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual char *getName(const char *);
+    };
+    class SecondInterface {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual char *getName(const char *, const char *);
+    };
     long i;
-    void *p, *q;
-    *(long *)arg0 = arg1;
-    *(char **)((char *)arg0 + 4) = lbl_80347A5C;
-    *(long *)((char *)arg0 + 8) = arg2;
-    *(void ***)((char *)arg0 + 0x10) = arg3;
-    *(char **)((char *)arg0 + 0xC) =
-       (*(char *(**)(void *, char **))(*(void ***)arg3)[5])(arg3, (char **)&lbl_80347A5C);
-    i = 0;
-    do {
-        p = fn_8001285C(i);
-        q = *(void ***)((char *)p + 0x20);
-        if (stricmp((*(char *(**)(void *, char *, char *))(*(void ***)q)[6])(q, lbl_8055C758, lbl_8055C770),
-                    *(char **)((char *)arg0 + 0xC)) == 0)
-            *(void **)((char *)arg0 + 4) = *(void **)p;
-        i++;
-    } while (i < fn_80012854());
-}
+    void *p;
 
+    *(long *)arg0 = arg1;
+    *(long *)((char *)arg0 + 8) = arg2;
+    *(void **)((char *)arg0 + 0x10) = arg3;
+    *(char **)((char *)arg0 + 0xC) = ((FirstInterface *)arg3)->getName((const char *)&lbl_80347A5C);
+    i = 0;
+    goto check;
+loop:
+    p = fn_8001285C(i);
+    if (stricmp(((SecondInterface *)*(void **)((char *)p + 0x20))->getName((const char *)&lbl_8055C758, (const char *)&lbl_8055C770),
+                *(char **)((char *)arg0 + 0xC)) == 0)
+        *(void **)((char *)arg0 + 4) = *(void **)p;
+    i++;
+check:
+    if (i < fn_80012854())
+        goto loop;
+}
+#pragma cplusplus reset
 extern char lbl_80347B30[];
 #pragma cplusplus on
 extern "C" void fn_8027C0D0(void *arg0, long arg1, void *arg2) {
@@ -490,11 +508,9 @@ long *fn_8027C120(long arg0, long arg1) {
     long offset = 0;
     goto check;
 loop:
-    if (((unsigned int)__cntlzw(stricmp((char *)arg1, *(char **)((char *)(*(long *)arg0) + offset + 0xC))) >> 5) != 0) {
-        goto found;
-    } else {
+    if (((unsigned int)__cntlzw(stricmp((char *)arg1, *(char **)((char *)(*(long *)arg0) + offset + 0xC))) >> 5) == 0)
         goto advance;
-    }
+    goto found;
 advance:
     offset += 0x14;
     index++;
