@@ -215,17 +215,23 @@ void fn_8029F534(void *arg0, unsigned char *arg1) {
     }
 }
 
-void fn_8029F5C8(void *arg0, unsigned char *arg1) {
-    if (fn_8029F510((unsigned char *)arg0, (int)arg1)) {
-        void **vtable = (void **)*(void **)arg1;
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
+    register void **vtable;
+    if (((int (*)(unsigned char *, int))fn_8029F510)((unsigned char *)arg0, (int)arg1) != 0) {
+        vtable = *(void ***)arg1;
         ((void (*)(unsigned char *, int *))vtable[5])(arg1, &lbl_8034983C);
-        *(int *)((unsigned char *)arg0 + 4) = fn_802929F8();
-        ((float (*)(unsigned char *, int *, float))vtable[10])(arg1, &lbl_8055CAE8, lbl_805646B4);
-        *(float *)((unsigned char *)arg0 + 8) = lbl_805646B4;
+        *(int *)((char *)arg0 + 4) = fn_802929F8();
+        vtable = *(void ***)arg1;
+        *(float *)((char *)arg0 + 8) =
+            ((float (*)(unsigned char *, int *, float))vtable[10])(arg1, &lbl_8055CAE8, lbl_805646B4);
     } else {
-        *(int *)((unsigned char *)arg0 + 4) = 0;
+        *(int *)((char *)arg0 + 4) = 0;
     }
 }
+#pragma cplusplus off
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -486,8 +492,12 @@ int fn_802A0620(Unk802A0794Params *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 int fn_802A0720(int *arg0, int arg1) {
-    int offset = 0;
-    int i = 0;
+    int *baseptr;
+    int offset;
+    int i;
+    baseptr = lbl_804B9B7C;
+    i = 0;
+    offset = 0;
     goto check;
 loop:
     {
@@ -499,7 +509,7 @@ loop:
     offset += 0x34;
     i++;
 check:
-    if (i < lbl_804B9B7C[1])
+    if (i < baseptr[1])
         goto loop;
     return 4;
 }
