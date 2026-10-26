@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef float f32;
 extern s32 fn_801333E8(s32, const u8 *, u8 *, u8 *);
 extern const u8 lbl_803462A8[];
+extern const u8 lbl_80346048[];
 extern s32 lbl_8055F434;
 extern s32 lbl_8055C440;
 extern f32 lbl_80563BC8;
@@ -121,17 +122,28 @@ void fn_80263820(void *arg0) {
         *(s32 *)((u8 *)arg0 + 0x18) = 0;
 }
 
-#pragma scheduling off
+#pragma push
+#pragma scheduling invalid_target
 void fn_80263848(void *arg0, s32 arg1) {
-    s32 temp_r31 = *(s32 *)((u8 *)arg0 + 0x10);
-    s32 temp_r30 = *(s32 *)((u8 *)arg0 + 0xC);
-    s32 temp_r29 = *(s32 *)((u8 *)arg0 + 8);
-    s32 temp_r28 = *(s32 *)((u8 *)arg0 + 4);
-    s32 temp_r3 = ((s32 (*)(const u8 *))fn_80131234)(lbl_80346324);
-    volatile s32 sp8 = 0;
-    fn_8022BAD0(0x12, temp_r28, temp_r29, 0, temp_r30, temp_r31, temp_r3, *(s32 *)((u8 *)arg0 + 0x18), lbl_80563BD4);
-}
+    s32 temp_r28;
+    s32 temp_r29;
+    s32 temp_r30;
+    s32 temp_r31;
+    s32 temp_r3;
+    f32 scale;
+    volatile s32 sp8;
 
+    temp_r28 = *(s32 *)((u8 *)arg0 + 0x10);
+    temp_r29 = *(s32 *)((u8 *)arg0 + 0xC);
+    temp_r30 = *(s32 *)((u8 *)arg0 + 8);
+    temp_r31 = *(s32 *)((u8 *)arg0 + 4);
+    temp_r3 = ((s32 (*)(const u8 *))fn_80131234)(lbl_80346324);
+    scale = lbl_80563BD4;
+    sp8 = 0;
+    fn_8022BAD0(0x12, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3,
+                *(s32 *)((u8 *)arg0 + 0x18), scale);
+}
+#pragma pop
 void fn_802638C4(void) {}
 
 #pragma scheduling on
