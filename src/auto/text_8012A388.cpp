@@ -1536,35 +1536,38 @@ extern "C" s32 fn_8012EFB0(void *arg0, void *arg1, s32 arg2) {
 
 extern "C" s32 fn_8012D838(s32);
 extern "C" void fn_8012F06C(void *arg0) {
-    s32 done;
-    s32 entry;
-    s32 state;
-    if (*(u8 *)((char *)arg0 + 0xA20) == 0) {
-        *(u8 *)((char *)arg0 + 0xA20) = 1;
+    u8 *obj = (u8 *)arg0;
+    if (obj[0xA20] == 0) {
+        s32 one = 1;
+        s32 done;
+        obj[0xA20] = (u8)one;
         do {
             done = 0;
-            entry = fn_8012E490((s32 *)((char *)arg0 + 0xA18));
+            void *entry = (void *)fn_8012E490((s32 *)(obj + 0xA18));
             if (entry != 0) {
-                state = fn_8012D838(*(s32 *)(entry + 0x4C));
-                if (state != 1) {
-                    if (state >= 0) {
-                        if (state < 3) {
-                            fn_8012E40C((void *)*(s32 *)(entry + 0x4C), (s32)(entry + 0xC));
-                        }
-                    } else {
-                        /* negative states are ignored */
-                    }
-                    if (state >= 0 && state < 1) {
-                        void *p = fn_8012BD3C(lbl_8055E000, (const char *)(entry + 0xC));
-                        *(s32 *)((char *)p + 0x9C) = *(s32 *)(entry + 8);
-                        *(u8 *)((char *)p + 0xAD) = 1;
-                        fn_8012E3D4((char *)arg0 + 0xA18);
-                        done = 1;
-                    }
+                s32 state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
+                if (state == 1) goto after_state;
+                if (state >= 1) goto state_ge_one;
+                if (state >= 0) goto state_zero;
+                goto after_state;
+state_ge_one:
+                if (state < 3) {
+                    fn_8012E40C((void *)*(s32 *)((u8 *)entry + 0x4C), (s32)((u8 *)entry + 0xC));
                 }
+                goto after_state;
+state_zero:
+                {
+                    void *node = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
+                    *(s32 *)((u8 *)node + 0x9C) = *(s32 *)((u8 *)entry + 8);
+                    *(u8 *)((u8 *)node + 0xAD) = (u8)one;
+                    fn_8012E3D4(obj + 0xA18);
+                    done = 1;
+                }
+after_state:
+                ;
             }
         } while (done != 0);
-        *(u8 *)((char *)arg0 + 0xA20) = 0;
+        obj[0xA20] = 0;
     }
 }
 
@@ -1665,24 +1668,25 @@ extern "C" s32 fn_8012C6F0(void *arg0) {
 extern "C" s32 fn_802E748C(s32, s32, void *);
 extern "C" const char lbl_8032AC34[];
 extern "C" void fn_8012C720(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    void *file = *(void **)((u8 *)arg0 + 4);
     void *context;
+    void *file = *(void * volatile *)((u8 *)arg0 + 4);
+    void *successFile;
     s32 offset;
-    s32 base;
     s32 temp;
-    if ((*(u32 *)((u8 *)file + 0x34) & 8) == 0) {
-        file = *(void **)((u8 *)arg0 + 4);
-        context = *(void **)((u8 *)arg0 + 8);
-        base = *(s32 *)((u8 *)context + 0x80);
-        temp = *(s32 *)((u8 *)file + 0x2C);
-        offset = base + (arg3 + temp);
-        context = *(void **)((u8 *)arg0 + 8);
-        *(s32 *)((u8 *)arg0 + 0xC) = fn_802E748C(*(s32 *)((u8 *)context + 0xA4) + offset / 2048, base, file);
+    if ((*(volatile u32 *)((u8 *)file + 0x34) & 8) == 0) {
+        successFile = *(void * volatile *)((u8 *)arg0 + 4);
+        context = *(void * volatile *)((u8 *)arg0 + 8);
+        temp = arg3 + *(volatile s32 *)((u8 *)successFile + 0x2C);
+        context = (void *)*(volatile s32 *)((u8 *)context + 0x80);
+        offset = (s32)context + temp;
+        context = *(void * volatile *)((u8 *)arg0 + 8);
+        *(s32 *)((u8 *)arg0 + 0xC) = ((s32 (*)(s32, s32, s32, s32))fn_802E748C)(
+            *(volatile s32 *)((u8 *)context + 0xA4) + offset / 2048, arg1, arg2, arg3);
         *(s32 *)((u8 *)arg0 + 0x10) = arg1 + (offset & 0x7FF);
         *(s32 *)((u8 *)arg0 + 0x14) = arg2;
     } else {
         fn_802E30C8(lbl_8032AC34, file);
-        file = *(void **)((u8 *)arg0 + 4);
+        file = *(void * volatile *)((u8 *)arg0 + 4);
         memcpy((void *)arg1, (void *)(*(u32 *)((u8 *)file + 0x3C) + 8), *(u32 *)((u8 *)file + 0x28));
         *(s32 *)((u8 *)arg0 + 0x10) = arg1;
         *(s32 *)((u8 *)arg0 + 0xC) = -1;
