@@ -18,8 +18,9 @@ struct QueryObject_80291A1C {
     virtual void f5();
     virtual void f6();
     virtual void f7();
-    virtual void f8();
-    virtual void f9();
+    virtual float f8(int *, float);
+    virtual void f8_unused();
+    virtual void f9_unused();
     virtual float f10(int *, float);
 };
 #pragma cplusplus reset
@@ -71,15 +72,14 @@ void fn_802919AC(void *arg0) {
 #pragma scheduling on
 void fn_80291A1C(void) {
     /* Fix note: initialize settings and preserve the optional virtual-call result. */
-    void *obj;
+    struct QueryObject_80291A1C *obj;
     float value;
     int *settings;
 
     value = lbl_805644A0;
-    obj = fn_802AE414(&lbl_8055C948);
+    obj = (struct QueryObject_80291A1C *)fn_802AE414(&lbl_8055C948);
     if (obj != 0) {
-        value = ((float (*)(void *, int *, float))(*(void **)((char *)*(void **)obj + 0x28)))(
-            obj, &lbl_8055C938, lbl_805644A0);
+        value = obj->f10(&lbl_8055C938, lbl_805644A0);
     }
     *(float *)&lbl_804B4010 = lbl_80564484;
     settings = (int *)&lbl_804B4010;
