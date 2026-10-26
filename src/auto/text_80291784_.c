@@ -15,7 +15,7 @@ extern char lbl_804B4010[];
 extern unsigned char lbl_8055F75C;
 extern float fn_801EC114(void);
 extern float fn_80291784(float, float, float, float);
-extern void fn_80291B14();
+extern void fn_80291B14(float *);
 extern void fn_80291B9C(void *, float *, float);
 extern void *fn_802C86DC(void);
 __declspec(section ".data") extern int lbl_804B3EC0;
