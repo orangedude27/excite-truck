@@ -73,7 +73,7 @@ s32 fn_802E2C20(void);
 extern s32 lbl_8055F8A4;
 extern f32 lbl_80564840, lbl_80564844;
 extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_80564888;
-void fn_802A6234(f32, f32, f32);
+void fn_802A6234();
 f32 fn_802A4A50(void) {
     f32 value;
     s32 now;
@@ -225,7 +225,7 @@ void fn_802A50F8(void) {
 
 #pragma scheduling invalid_target
 void fn_802A5270(f32 arg0) {
-    f32 value = lbl_8056485C;
+    f32 value = *(volatile f32 *)&lbl_8056485C;
     s32 amount;
     s32 result;
 
@@ -334,11 +334,25 @@ check:
 extern s32 lbl_804BCFA8[];
 extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
-s32 fn_802A5B8C(s32 arg0) {
+#pragma scheduling invalid_target
+s32 fn_802A5B8C(s32 arg0, s32 arg1) {
+    s32 temp;
+    s32 second;
+    s32 minusOne = -1;
+    volatile s32 *p = (volatile s32 *)arg0;
+    if (arg0 != 0) {
+        fn_802CAC54(p[4]);
+        second = p[3];
+        p[4] = minusOne;
+        fn_802CAC54(second);
+        temp = p[0];
+        if ((p[3] = minusOne, temp != 0)) fn_80128670(temp - 0x10);
+        p[0] = 0;
+        if (arg1 > 0) fn_80128668((void *)arg0);
+    }
     return arg0;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802A5C1C(void *arg0) {
     f32 d;
     f32 b;
