@@ -100,30 +100,37 @@ void *fn_80139D4C(void) {
     return object;
 }
 
+#pragma scheduling invalid_target
 void fn_80139E18(void *arg0) {
-    int i, offset, value;
+    int i;
+    int offset;
+    int value;
+    int base;
     if (arg0 == 0)
         return;
+    base = (int)arg0;
     i = 0;
     offset = 0;
-    while (i < *(int *)((char *)arg0 + 8)) {
-        fn_80128658(*(int *)(*(int *)((char *)arg0 + 4) + offset));
+    while (i < *(int *)((char *)base + 8)) {
+        fn_80128658(*(int *)(*(int *)((char *)base + 4) + offset));
         offset += 4;
         i++;
     }
-    *(int *)((char *)arg0 + 8) = 0;
-    if (*(int *)arg0 != 0)
+    value = *(int *)base;
+    *(int *)((char *)base + 8) = 0;
+    if (value != 0)
         fn_80131818();
-    value = 0;
-    *(int *)arg0 = value;
-    if ((char *)arg0 + 4 != 0) {
-        *(int *)((char *)arg0 + 4) = value;
-        *(int *)((char *)arg0 + 8) = value;
-        *(int *)((char *)arg0 + 12) = value;
+    *(int *)base = 0;
+    if (base + 4 != 0) {
+        if (base + 4 != 0) {
+            *(int *)((char *)base + 4) = 0;
+            *(int *)((char *)base + 8) = 0;
+            *(int *)((char *)base + 12) = 0;
+        }
     }
-    fn_80128668(arg0);
+    fn_80128668((void *)base);
 }
-
+#pragma scheduling on
 int fn_80139EC4(void *arg0, float arg1, float arg2) {
     int i = 0;
     int offset = 0;
