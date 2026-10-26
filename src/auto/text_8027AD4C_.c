@@ -95,6 +95,7 @@ public:
 };
 class Fn8027BA24List {
 public:
+    virtual void v0();
     virtual long count();
     virtual Fn8027BA24Item *item(long);
 };
