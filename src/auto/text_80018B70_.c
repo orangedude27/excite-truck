@@ -119,6 +119,8 @@ void fn_80018CCC(void) {
     }
 }
 
+#pragma push
+#pragma dont_inline on
 s32 fn_80018E3C(void) {
     fn_80018B74();
 }
@@ -126,7 +128,49 @@ s32 fn_80018E3C(void) {
 s32 fn_80018E40(void) {
     fn_80018B70();
 }
+#pragma pop
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline fn_80018E3C
+#pragma dont_inline fn_80018E40
+s32 fn_80018E44(const char *arg0, s32 arg1) {
+    /* Fix note: select the matching record and reject it only when its mode is newer and its flag is clear. */
+    register s32 mode;
+    register s32 index;
+    register s32 offset;
+
+    if (lbl_8055D588 != 0) {
+        return 1;
+    }
+    if (stricmp(arg0, lbl_80558C50) == 0) {
+        mode = fn_80018E3C();
+    } else {
+        mode = fn_80018E40();
+    }
+    index = 0;
+    offset = 0;
+    goto check;
+loop:
+    if (stricmp((const char *)arg1,
+                *(const char **)((char *)*(void **)lbl_80357E0C + offset + 4)) == 0 &&
+        stricmp(arg0,
+                *(const char **)((char *)*(void **)lbl_80357E0C + offset)) == 0) {
+        char *entry = (char *)*(void **)lbl_80357E0C + index * 0x14;
+        if (*(s32 *)(entry + 8) > mode && *(u8 *)(entry + 0xC) == 0) {
+            return 0;
+        }
+        return 1;
+    }
+    offset += 0x14;
+    index++;
+check:
+    if (index < ((s32 *)lbl_80357E0C)[1]) {
+        goto loop;
+    }
+    return 1;
+}
+#pragma pop
 void fn_80018FA8(s32 arg0) {
     fn_80018E44(lbl_80558C50, arg0);
 }
