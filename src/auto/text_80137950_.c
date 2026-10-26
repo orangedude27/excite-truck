@@ -47,11 +47,6 @@ void fn_80137B14(void) {
 }
 
 extern char lbl_80559C38[];
-#pragma inline no fn_80137950
-#pragma inline no fn_80137B0C
-#pragma inline no fn_801379CC
-#pragma inline no fn_80137A18
-#pragma inline no fn_80137B14
 extern void *fn_801284F8(int, const char *);
 extern char *fn_80137950(int);
 extern void fn_80137B0C(void *);
