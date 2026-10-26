@@ -459,7 +459,7 @@ extern "C" s32 fn_80191108(void *arg0, s32 arg1) {
 }
 
 #pragma cplusplus on
-extern "C" s32 fn_801B6660(s32);
+extern "C" void fn_801B6660(s32);
 #pragma use_lmw_stmw off
 extern "C" void fn_80191178(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, f32 farg0) {
     class Dummy {
