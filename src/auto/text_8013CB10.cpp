@@ -94,6 +94,17 @@ public:
     virtual s32 vC(s32); // 0xC
 };
 
+class TObj60 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+    virtual void d20(); virtual void d21();
+    virtual s32 v60(s32);
+};
+
 class TObj20b {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
@@ -278,6 +289,31 @@ extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
 
     while (arg0->vC(i) != 0) {
         if (fn_8013CB44(arg1, (TObj10 *)arg0->vC(i))) {
+            count++;
+        }
+        i++;
+    }
+    return count;
+}
+
+#pragma dont_inline on
+extern "C" s32 fn_8013DE7C(void *arg0, const char *arg1) {
+    class TObj60 {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+        virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+        virtual void d20(); virtual void d21();
+        virtual s32 v60(s32);
+    };
+    TObj60 *obj = (TObj60 *)arg0;
+    s32 count = 0;
+    s32 i = 0;
+
+    while (obj->v60(i) != 0) {
+        if (fn_8013CB44(arg1, (TObj10 *)obj->v60(i))) {
             count++;
         }
         i++;
@@ -734,11 +770,18 @@ extern "C" int fn_8013FC6C(void* arg0) {
     return 0;
 }
 #pragma scheduling on
-extern "C" int fn_8013FD20(void* arg0, int arg1) {
+extern "C" int fn_8013FD20(void *arg0, int arg1) {
     int result = 1;
-    if (*(int*)(*(char**)((char*)arg0 + 0xB8) + arg1 * 0x12C + 0x11C) != 0) {
-        float f = fn_8001DAE8((char*)arg0 + 0x74) - *(float*)((char*)arg0 + 0x78);
-        if (!(f <= lbl_805614A4) && f < *(float*)((char*)arg0 + 0x74)) result = 0;
+    int valid = 0;
+    if (*(int *)(*(char **)((char *)arg0 + 0xB8) + arg1 * 0x12C + 0x11C) != 0) {
+        float diff = fn_8001DAE8((char *)arg0 + 0x74) -
+                     *(float *)((char *)arg0 + 0x78);
+        if (diff >= lbl_805614A4 && diff < *(float *)((char *)arg0 + 0x74)) {
+            valid = 1;
+        }
+        if (valid == 0) {
+            result = 0;
+        }
     }
     return result;
 }
@@ -1093,19 +1136,23 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
 }
 
 extern "C" f32 lbl_8042FB3C_arr[8];
+#pragma scheduling invalid_target
 extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
-    u8 *items = *(u8 **)((u8 *)arg0 + 0x64) + 4;
+    u8 *table = *(u8 **)((u8 *)arg0 + 0x64);
+    u8 *items = *(u8 **)(table + 4);
     u8 *item = items + arg1 * 0x14;
-    f32 scale = *(f32 *)&lbl_8042FB3C_arr[0x1C];
-    f32 v = (f32)(*(s32 *)(item + 0x10) ^ 0x8000) * scale * (f32)(*(s32 *)(item + 0xC) ^ 0x8000);
-    if (v < lbl_805614A4) {
-        v -= lbl_80561498;
+    f32 first = (f32)*(s32 *)(item + 0x10);
+    f32 scale = *(f32 *)(lbl_8042FB3C + 0x1C);
+    f32 second = (f32)*(s32 *)(item + 0xC);
+    f32 value = first * scale * second;
+    if (value < lbl_805614A4) {
+        value -= lbl_80561498;
     } else {
-        v += lbl_80561498;
+        value += lbl_80561498;
     }
-    return (s32)v;
+    return (s32)value;
 }
-
+#pragma scheduling on
 extern "C" s32 fn_80142870(void *arg0, void *arg1) {
     f32 t;
     f32 x;
@@ -1244,22 +1291,34 @@ extern "C" u8 *fn_8017960C(s32);
 extern "C" u32 fn_8013D148(u8 *, f32);
 extern "C" void *fn_802C6C34(s32);
 extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
-    u8 *self = arg0;
-    u8 *manager = fn_8017960C(arg1);
+    struct Object {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual u8 *get();
+    };
+    register u8 *self = arg0;
+    u8 *manager = (u8 *)fn_8017960C(arg1);
     u8 *base = *(u8 **)(manager + 0x270);
-    u8 *object = ((TObj18 *)base)->v18();
+    u8 *object = ((Object *)base)->get();
     s32 index = *(s32 *)(self + 0x68);
     f32 value = *(f32 *)(object + 0x48);
     u8 *items = *(u8 **)(self + 0x64);
     u8 *item = *(u8 **)(items + 4) + index * 0x14;
-    u32 result = fn_8013D148(item, value);
-    u8 *current = *(u8 **)(items + 4);
-    s32 offset = *(s32 *)(current + index * 0x14);
-    u8 *end = *(u8 **)(current + 4) + offset * 0x24;
-    if (result == (u32)(end - 0x24)) {
-        return end;
+    u8 *result = (u8 *)fn_8013D148(item, value);
+
+    index = *(s32 *)(self + 0x68);
+    items = *(u8 **)(self + 0x64);
+    base = *(u8 **)(items + 4);
+    s32 offset = *(s32 *)(base += index * 0x14);
+    u8 *array = *(u8 **)(base + 4);
+    u8 *end = array + offset * 0x24;
+    u8 *out = array;
+    if (result != end - 0x24) {
+        out = result + 0x24;
     }
-    return (u8 *)result + 0x24;
+    return out;
 }
 
 extern "C" s32 fn_80142D34(void) { return 0; }
