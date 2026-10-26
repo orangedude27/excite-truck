@@ -285,6 +285,25 @@ void fn_80274E94(void *arg0) {
     fn_80274730(arg0, lbl_80563FA8, lbl_80563FA8, lbl_80563FA8, lbl_80563FB0);
 }
 
+void fn_80274EA8(void *arg0) {
+    float vec[3];
+    float magnitude;
+    float scale;
+    char *p = (char *)arg0;
+
+    vec[0] = *(float *)(p + 0x7C) - *(float *)(p + 0xE4);
+    vec[1] = *(float *)(p + 0x80) - *(float *)(p + 0xE8);
+    vec[2] = *(float *)(p + 0x84) - *(float *)(p + 0xEC);
+    magnitude = PSVECMag(vec);
+    if (magnitude > lbl_80564010) {
+        scale = -(magnitude - lbl_80564010) / magnitude;
+        *(float *)(p + 0x7C) += vec[0] * scale;
+        *(float *)(p + 0x80) += vec[1] * scale;
+        *(float *)(p + 0x84) += vec[2] * scale;
+    }
+    fn_80274730(arg0, lbl_80563FA8, lbl_80564014, lbl_80564018, lbl_8056401C);
+}
+
 void fn_80274F74(void *arg0, void *arg1, float angle) {
     float magnitude;
     float sine;
