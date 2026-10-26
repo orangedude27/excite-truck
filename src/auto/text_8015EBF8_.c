@@ -283,16 +283,19 @@ void fn_8015F79C(void) {
 
 
 extern f32 lbl_805617D4, lbl_805617E4, lbl_805617E8, lbl_805617EC, lbl_805617F0;
+extern f32 lbl_8056182C;
+extern f64 fn_8002F234(f32, f32, f32);
 f32 PSVECDotProduct(void *, void *);
-s32 fn_8015F7A0(u32 arg0, void *arg1, void *arg2) {
-    f32 scale = (f32)arg0 * lbl_805617E4;
-    f32 t = (PSVECDotProduct(arg1, arg2) - lbl_805617EC) / lbl_805617F0;
-    f32 clamp = lbl_805617E8;
+#pragma scheduling invalid_target
+s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
+    register f32 scale = (f32)arg0 * lbl_805617E4;
+    register f32 t = (PSVECDotProduct(arg1, arg2) - lbl_805617EC) / lbl_805617F0;
+    register f32 clamp = lbl_805617E8;
     if (clamp >= t) clamp = t;
     if (clamp <= lbl_805617D4) clamp = lbl_805617D4;
     return (s32)(-scale + clamp * (scale - -scale));
 }
-
+#pragma scheduling on
 extern f32 lbl_8055E2A4;
 extern f32 lbl_805617DC;
 extern f32 lbl_80561808;
@@ -396,18 +399,81 @@ s32 fn_8015FAB8(s32 *arg0, s32 arg1, f32 arg2) {
 }
 #pragma scheduling reset
 extern f32 lbl_80561810;
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8015FB28(void *arg0, void *arg1) {
-    s32 *dst = (s32 *)arg0;
-    s32 *src = (s32 *)arg1;
-    dst[6] = src[6]; dst[7] = src[7]; dst[8] = src[8];
-    dst[9] = src[9]; dst[10] = src[10]; dst[11] = src[11];
-    *(f32 *)&dst[9] = *(f32 *)&dst[9] + (*(f32 *)&dst[6] * lbl_80561810);
-    *(f32 *)&dst[10] = *(f32 *)&dst[10] + (*(f32 *)&dst[7] * lbl_80561810);
-    *(f32 *)&dst[11] = *(f32 *)&dst[11] + (*(f32 *)&dst[8] * lbl_80561810);
-    dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2];
-    dst[3] = src[3]; dst[4] = src[4]; dst[5] = src[5];
-}
+    volatile u32 *dst = (volatile u32 *)arg0;
+    volatile u32 *src = (volatile u32 *)arg1;
+    volatile f32 *dstFloat = (volatile f32 *)arg0;
+    u32 word18;
+    u32 word1C;
+    u32 word20;
+    u32 word28;
+    u32 word24;
+    u32 word2C;
+    u32 word0;
+    u32 word4;
+    u32 word8;
+    u32 wordC;
+    u32 word10;
+    u32 word14;
+    f32 velocityX;
+    f32 velocityY;
+    f32 velocityZ;
+    f32 scale;
+    f32 scaledX;
+    f32 scaledY;
+    f32 scaledZ;
+    f32 positionX;
+    f32 positionY;
+    f32 positionZ;
+    f32 newX;
+    f32 newY;
+    f32 newZ;
 
+    word18 = src[6];
+    word1C = src[7];
+    dst[6] = word18;
+    word20 = src[8];
+    dst[7] = word1C;
+    word28 = src[10];
+    dst[8] = word20;
+    word24 = src[9];
+    word2C = src[11];
+    dst[9] = word24;
+    velocityX = dstFloat[6];
+    scale = lbl_80561810;
+    dst[10] = word28;
+    velocityZ = dstFloat[8];
+    scaledX = velocityX * scale;
+    velocityY = dstFloat[7];
+    dst[11] = word2C;
+    scaledZ = velocityZ * scale;
+    scaledY = velocityY * scale;
+    positionY = dstFloat[10];
+    positionX = dstFloat[9];
+    newY = positionY + scaledY;
+    positionZ = dstFloat[11];
+    newX = positionX + scaledX;
+    word0 = src[0];
+    newZ = positionZ + scaledZ;
+    word4 = src[1];
+    word8 = src[2];
+    wordC = src[3];
+    word10 = src[4];
+    word14 = src[5];
+    dst[0] = word0;
+    dst[1] = word4;
+    dst[2] = word8;
+    dst[3] = wordC;
+    dst[4] = word10;
+    dst[5] = word14;
+    dstFloat[9] = newX;
+    dstFloat[10] = newY;
+    dstFloat[11] = newZ;
+}
+#pragma processor reset
+#pragma use_lmw_stmw reset
 extern f32 lbl_805617D4;
 void fn_80160230(void *arg0, void *arg1) {
     register f32 c, b, a;
