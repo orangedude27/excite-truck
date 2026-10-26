@@ -35,6 +35,7 @@ public:
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8033BDC0;
+__declspec(section ".rodata") extern char lbl_8033BDC0;
 extern int lbl_8055ED80;
 extern "C" void fn_80208620(int, void *);
 extern "C" void fn_8020899C(int, int);
