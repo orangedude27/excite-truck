@@ -534,22 +534,22 @@ void fn_802A6758(void *arg0, f32 *arg1) {
 #pragma push
 #pragma processor 750
 void fn_802A6790(void *arg0) {
-    f32 sp8;
-    f32 spC;
-    f32 sp10;
-    f32 temp_f30;
-    f32 temp_f29;
-    f32 temp_f31;
+    f32 values[3];
+    f32 first;
+    f32 scaled;
+    f32 second;
+    f32 third;
 
     *(s32 *)((u8 *)arg0 + 4) = 0;
     while (*(s32 *)((u8 *)arg0 + 4) < *(s32 *)((u8 *)arg0 + 8)) {
-        temp_f30 = fn_80287BC8(*(f32 *)((u8 *)arg0 + 0x24), *(f32 *)((u8 *)arg0 + 0x28));
-        temp_f29 = *(f32 *)((u8 *)arg0 + 0x20) * temp_f30;
-        temp_f31 = fn_80287BC8(-temp_f29, temp_f29);
-        spC = fn_80287BC8(-temp_f29, temp_f29);
-        sp8 = temp_f31;
-        sp10 = temp_f30;
-        fn_802A6758(arg0, &sp8);
+        first = fn_80287BC8(*(f32 *)((u8 *)arg0 + 0x24), *(f32 *)((u8 *)arg0 + 0x28));
+        scaled = *(f32 *)((u8 *)arg0 + 0x20) * first;
+        second = fn_80287BC8(-scaled, scaled);
+        third = fn_80287BC8(-scaled, scaled);
+        values[0] = second;
+        values[1] = third;
+        values[2] = first;
+        fn_802A6758(arg0, values);
     }
 }
 #pragma pop
@@ -638,6 +638,25 @@ void fn_802A6D68(void *arg0) {
         }
         fn_802C8D74();
         fn_802C9A4C(saved);
+    }
+}
+
+s32 fn_802A711C(void *arg0, f32 arg1, f32 arg2, f32 arg3) {
+    f32 sp8;
+    f32 spC;
+    f32 sp10;
+    register f32 temp_f30;
+    register f32 temp_f29;
+    register f32 temp_f31;
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+    while (*(s32 *)((u8 *)arg0 + 4) < *(s32 *)((u8 *)arg0 + 8)) {
+        temp_f30 = fn_80287BC8(*(f32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x1C));
+        temp_f29 = *(f32 *)((u8 *)arg0 + 0x14) * temp_f30;
+        temp_f31 = fn_80287BC8(-temp_f29, temp_f29);
+        sp8 = temp_f31;
+        spC = fn_80287BC8(-temp_f29, temp_f29);
+        sp10 = temp_f30;
+        fn_802A70E4(arg0, &sp8);
     }
 }
 
