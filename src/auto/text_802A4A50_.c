@@ -252,7 +252,7 @@ void fn_802A5270(f32 arg0) {
 extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
 extern char lbl_80349C94[];
 s32 fn_801284F8(s32, char *);
-s32 fn_802A5AE8();
+void *fn_802A5AE8(void *, s32, s32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
