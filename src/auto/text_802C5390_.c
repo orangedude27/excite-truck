@@ -1,4 +1,10 @@
 #include "types.h"
+extern void *fn_8012C370(int, int, u32 *, int *, u8 *, u8 *);
+extern void fn_802E317C(const char *, ...);
+extern void DCStoreRangeNoSync(const void *, u32);
+extern void fn_802C61BC(void *, int);
+extern const char lbl_8034B2E8[];
+extern const char lbl_8034B314[];
 #pragma push
 #pragma small_data off
 extern void fn_802D6C48(void);
