@@ -415,7 +415,7 @@ void fn_802B6284(void) {
 }
 
 extern char lbl_8034A670[];
-extern s32 lbl_8034A70C;
+extern char lbl_8034A70C[];
 extern int strcmp(const char *, const char *);
 #pragma dont_inline on
 void fn_802B62A4(const char **arg) {
