@@ -48,11 +48,14 @@ s32 fn_802407F0(s32 arg0, s32 arg1) {
 }
 
 void *fn_80240830(void *arg0, s32 arg1) {
+    register void *prev;
     if (arg0 != 0) {
+        prev = *(void **)((char *)arg0 + 0x24);
         *(void **)((char *)arg0 + 0x0C) = lbl_80342618;
-        if (*(void **)((char *)arg0 + 0x24) != 0) {
-            void *object = *(void **)((char *)arg0 + 0x24);
-            ((void (*)(void *, s32))(*(void **)((char *)*(void **)object + 8)))(object, 1);
+        if (prev != 0) {
+            register void *vtable = *(void **)prev;
+            register void *method = *(void **)((char *)vtable + 8);
+            ((void (*)(void *, s32))method)(prev, 1);
         }
         if (arg1 > 0) {
             fn_80128668(arg0);
@@ -371,6 +374,8 @@ void *fn_80241098(void *arg0) {
 
 void *fn_802410F8(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
     s32 temp_r4;
+    s32 temp_r3;
+    float temp_f0;
     *(void **)((u8 *)arg0 + 0xC) = lbl_803426B0;
     *(s32 *)((u8 *)arg0 + 4) = -1;
     *(u8 *)arg0 = 0;
@@ -385,9 +390,11 @@ void *fn_802410F8(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
     temp_r4 = lbl_8055F1F4;
     *(s32 *)((u8 *)arg0 + 0x3C) = temp_r4;
     lbl_8055F1F4 = temp_r4 + 1;
-    *(s32 *)((u8 *)arg0 + 0x44) = fn_8023512C(lbl_803425A8, temp_r4, lbl_803425A8, 1);
-    *(float *)((u8 *)arg0 + 0x58) = lbl_80563758;
-    *(float *)((u8 *)arg0 + 0x54) = lbl_80563758;
+    temp_r3 = ((s32 (*)(char *))fn_8023512C)(lbl_803425A8);
+    temp_f0 = lbl_80563758;
+    *(s32 *)((u8 *)arg0 + 0x44) = temp_r3;
+    *(float *)((u8 *)arg0 + 0x58) = temp_f0;
+    *(float *)((u8 *)arg0 + 0x54) = temp_f0;
     *(u8 *)((u8 *)arg0 + 0x5C) = 0;
     return arg0;
 }
@@ -651,24 +658,27 @@ void fn_80241DE8(void *arg0) {
 }
 
 s32 fn_80241E40(void *arg0) {
+    void *entry;
     s32 i;
     s32 result;
-    void *entry;
     s32 value;
+    void *out;
 
-    value = fn_802E4A10();
-    if (*(s32 *)((char *)arg0 + 0x34) != value) {
+    if (*(s32 *)*(s32 **)((char *)arg0 + 0x34) == fn_802E4A10() &&
+        *(u8 *)((char *)arg0 + 0x38) == 0) {
         return 0;
     }
-    if (*(u8 *)((char *)arg0 + 0x38) == 0) {
-        return 0;
-    }
-    result = 1;
     for (i = 0, entry = arg0; i < *(s32 *)((char *)arg0 + 0x2C); i++, entry = (char *)entry + 4) {
-        *(u8 *)*(void **)((char *)entry + 0x18) = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
-        *(s32 *)((char *)*(void **)((char *)arg0 + 0x18) + 4) = *(s32 *)((char *)arg0 + 0x34);
+        result = 0;
+        value = *(s32 *)*(s32 **)((char *)arg0 + 0x34);
+        if (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30)) {
+            result = 1;
+        }
+        out = *(void **)((char *)entry + 0x18);
+        *(u8 *)out = result;
+        *(s32 *)((char *)out + 4) = value;
     }
-    return result;
+    return 1;
 }
 
 s32 fn_80241EE8(s32 arg0) {
