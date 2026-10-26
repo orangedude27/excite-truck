@@ -216,22 +216,39 @@ extern "C" void *fn_80014664(void *arg0, s32 arg1) {
 }
 #pragma pop
 
+extern int __cntlzw(unsigned int);
 void fn_80014750(void *arg0) {
     void *manager;
     void *state;
+    void *input;
     f32 value;
+    s32 result;
+    s32 pressed;
     if (*(u8 *)((u8 *)arg0 + 8)) {
-        manager=lbl_8055D350;
-        if (lbl_80562068-lbl_8056039C <= *(f32 *)((u8 *)manager+0x10)-*(f32 *)((u8 *)*(void **)((u8 *)manager+0xC)+0xC)) return;
-        fn_8000C630(0x17,-1);
-        return;
+        manager = lbl_8055D350;
+        state = *(void **)((u8 *)manager + 0xC);
+        if (*(f32 *)((u8 *)manager + 0x10) - *(f32 *)((u8 *)state + 0xC) <
+            lbl_80562068 - lbl_8056039C)
+            fn_8000C630(0x17, -1);
+    } else {
+        manager = lbl_8055D350;
+        state = *(void **)((u8 *)manager + 0xC);
+        value = *(f32 *)((u8 *)state + 0x10);
+        result = 0;
+        if (value > lbl_8056039C) {
+            if (value < lbl_805603A0)
+                goto set_result;
+        }
+        if (value > lbl_805603A4) {
+        set_result:
+            result = 1;
+        }
+        input = *(void **)((u8 *)manager + 0x2C);
+        pressed = (u32)__cntlzw(*(u32 *)((u8 *)input + 0x2C0) & 0x20) >> 5;
+        result = result && pressed;
+        if (result != 0)
+            fn_8000C630(0x17, -1);
     }
-    manager=lbl_8055D350;
-    state=*(void **)((u8 *)manager+0xC);
-    value=*(f32 *)((u8 *)state+0x10);
-    if (!(value>lbl_8056039C && value<lbl_805603A0) && !(value>lbl_805603A4)) return;
-    if (!((*(u32 *)((u8 *)*(void **)((u8 *)manager+0x2C)+0x2C0)&0x20)!=0)) return;
-    fn_8000C630(0x17,-1);
 }
 
 void fn_8001480C(void *arg0) {
