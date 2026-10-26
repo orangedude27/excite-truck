@@ -885,23 +885,27 @@ extern "C" void fn_8014D700(void *arg0, s32 arg1) {
     fn_80149658(arg1, (void *)((u8 *)arg0 + 0x6C), *(void **)((u8 *)arg0 + 0xC), var_r6);
 }
 
-void fn_8014D794(void *arg0, void *arg1) {
+extern "C" bool fn_8014D794(void *arg0, void *arg1) {
     fn_801E7E18();
     if (*(u8 *)((u8 *)arg0 + 0xA0) == 0) {
         if (fn_800167F4() == 2) {
+            void *target = *(void **)((u8 *)arg1 + 8);
             f32 values[4];
             values[0] = lbl_80561688;
             values[1] = lbl_805616C0;
             values[2] = lbl_805616C4;
             values[3] = lbl_80561648;
-            if (*(s32 *)((u8 *)arg1 + 8) != 0) {
-                fn_802AE220(values);
+            if (target != 0) {
+                ((void (*)(void *, void *))fn_802AE220)(target, values);
             }
-        } else if (*(s32 *)((u8 *)arg1 + 8) != 0) {
-            fn_802AE220(0);
+        } else {
+            void *target = *(void **)((u8 *)arg1 + 8);
+            if (target != 0) {
+                ((void (*)(void *, void *))fn_802AE220)(target, 0);
+            }
         }
     }
-    (void)(*(f32 *)((u8 *)arg0 + 0x64) >= lbl_80561648);
+    return *(f32 *)((u8 *)arg0 + 0x64) >= lbl_80561648;
 }
 
 #pragma cplusplus reset
@@ -1417,34 +1421,32 @@ void fn_80151918(void *arg0, void *arg1) {
     }
 }
 
-s32 fn_80151984(void *arg0, s32 arg1, s32 arg2) {
-    s32 count;
-    s32 i;
-    void *object;
-    void **vtable;
-    s32 (*check)(void *);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" s32 fn_80151984(void *arg0, s32 arg1, s32 arg2) {
+    register s32 count;
+    register u8 *object;
+    register s32 i;
 
-    if (arg2 == 0x58) {
-        vtable = *(void ***)arg0;
-        check = (s32 (*)(void *))vtable[0x1A];
-        if (check(arg0) != 0) {
-            count = fn_801E85A4();
-            object = arg0;
-            for (i = 0; i < count; i++) {
-                if (*((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) == 0) {
-                    if (count > 1) {
-                        *(s32 *)((u8 *)object + 0x454) = 4;
-                    } else if (*(s32 *)((u8 *)object + 0x454) == 2) {
-                        *((u8 *)object + 0x460) = 1;
-                    }
+    if (arg2 == 0x58 && ((Dummy_80151984 *)arg0)->check() != 0) {
+        count = fn_801E85A4();
+        object = (u8 *)arg0;
+        for (i = 0; i < count; i++) {
+            if (*((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) == 0) {
+                if (count > 1) {
+                    *(s32 *)(object + 0x454) = 4;
+                } else if (*(s32 *)(object + 0x454) == 2) {
+                    *(object + 0x460) = 1;
                 }
-                object = (u8 *)object + 0x240;
             }
+            object += 0x240;
         }
     }
     return 0;
 }
-
+#pragma cplusplus off
+#pragma pop
 extern s32 fn_80141F7C(f32);
 extern void fn_80149650(void);
 extern void fn_80151C98(void *, s32);
@@ -1834,6 +1836,34 @@ s32 fn_80153A38(void *arg0) {
 }
 
 u32 fn_80153AC8(void) { return 1; }
+
+#pragma cplusplus on
+#pragma use_lmw_stmw off
+extern "C" void fn_80153C44(void *arg0, s32 arg1) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual s32 method(s32);
+    };
+    Dummy *obj = (Dummy *)arg0;
+    s32 count = fn_801E85A4();
+    if (count > 1) {
+        s32 flag = 0;
+        s32 i;
+        for (i = 0; i < count; i++) {
+            flag = (flag | obj->method(fn_801E866C(i))) != 0;
+        }
+        if (flag != 0) {
+            fn_8014D918((char *)arg0 + fn_801E86F8(arg1) * 0xC0 + 0x9E4, lbl_8055E240, arg1);
+        }
+    }
+}
+#pragma use_lmw_stmw reset
+#pragma cplusplus reset
 
 u32 fn_80153CF8(void) { return 1; }
 
