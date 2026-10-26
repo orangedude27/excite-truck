@@ -76,13 +76,14 @@ void fn_80230A68(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
     p[5] = *(u32 *)&farg4;
 }
 
-#pragma dont_inline fn_80230AB8
+#pragma dont_inline on
 void fn_80230AB8(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4) {
     *arg1 = (u8)(arg0 >> 24);
     *arg2 = (u8)(arg0 >> 16);
     *arg3 = (u8)(arg0 >> 8);
     *arg4 = (u8)arg0;
 }
+#pragma dont_inline reset
 
 void fn_80230AD8(s32 arg0) {
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
