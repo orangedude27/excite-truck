@@ -124,34 +124,41 @@ extern "C" void fn_801561E8(u8 *);
 extern "C" s32 fn_801345D8(s32, s32, const char *, ...);
 extern "C" char lbl_8032E254[];
 extern "C" char lbl_80559FC0;
-extern "C" char lbl_80559FC4[];
+extern "C" char lbl_80559FC4;
 extern "C" char lbl_80559FC8[];
+#pragma dont_inline on
 s32 fn_801562BC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 buffer[0x20];
     u8 *src = fn_801E879C();
     u8 *dst = buffer;
     u8 *name = (u8 *)arg2;
     s32 count = 0x20;
-    do {
-        u8 c = *src++;
-        *dst++ = c;
-        count--;
-        if ((s8)c == 0)
-            break;
-    } while (count > 0);
-    if (count == 0)
-        dst[-1] = 0;
+    u8 c;
+
+    goto copy;
+check:
+    if (--count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((s8)c != 0)
+        goto check;
+done:
     fn_801561E8(buffer);
     if (arg3 != 0) {
-        const char *choice = (s8)*name != 0 ? lbl_80559FC4 : (const char *)&lbl_80559FC0;
-        fn_801345D8((s32)arg0, arg1, lbl_8032E254, name, choice, buffer);
+        fn_801345D8((s32)arg0, arg1, lbl_8032E254, name,
+                    (s8)*name != 0 ? (const char *)&lbl_80559FC4 : (const char *)&lbl_80559FC0,
+                    buffer);
     } else {
         fn_801345D8((s32)arg0, arg1, lbl_80559FC8,
-                    (s8)*name != 0 ? name : buffer);
+                    (s8)*name != 0 ? (const char *)name : (const char *)buffer);
     }
     return (s32)arg0;
 }
-
+#pragma dont_inline off
 extern s32 fn_801562BC(void*, s32, s32, s32);
 extern s32 fn_80156248(void*, s32);
 extern s32 fn_80138968(void*);
