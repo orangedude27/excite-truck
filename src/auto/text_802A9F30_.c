@@ -22,11 +22,13 @@ void fn_8028E080(void);
 __declspec(section ".sdata") extern float lbl_805649F0;
 s32 fn_802A9F30(void *arg0) {
     extern double lbl_805649E8;
-    s32 temp_r5;
-    temp_r5 = *(s32 *)arg0 * 0x108;
+    UnkAAF04Conversion conversion;
+    s32 temp_r5 = *(s32 *)arg0 * 0x108;
+    conversion.words[0] = 0x43300000;
+    conversion.words[1] = *(u8 *)((u8 *)arg0 + 8);
     *(u8 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xC4) = 1;
     *(f32 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xD4) = *(f32 *)((u8 *)arg0 + 4);
-    *(f32 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xD8) = (f32)*(u8 *)((u8 *)arg0 + 8);
+    *(f32 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xD8) = (f32)conversion.value - lbl_805649E8;
     return 0xC;
 }
 
@@ -406,7 +408,36 @@ void fn_802AB5B8(void) {
         offset += 0x108;
     } while (index < 8);
 }
-#pragma dont_inline reset
+
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802AB628(float farg0) {
+    extern int fn_80287B14(void);
+    extern int fn_80287B24(int);
+    extern void fn_802AA25C(void *, void *, float);
+    extern int lbl_8055F928;
+    int count = fn_80287B14();
+    int offset;
+    int i;
+    int object;
+    int base;
+    i = 0;
+    offset = i;
+    goto check;
+loop:
+    object = fn_80287B24(i);
+    base = lbl_8055F928 + offset;
+    fn_802AA1D0(i);
+    fn_802AA25C((void *)base, (void *)object, farg0);
+    fn_802AA9D4((void *)base, (void *)object, farg0);
+    fn_802AAC80((void *)base, (void *)object, farg0);
+    offset += 0x108;
+    i += 1;
+check:
+    if (i < count)
+        goto loop;
+}
+#pragma pop
 void fn_802AB6D0(void) {}
 
 #pragma push
