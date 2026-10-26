@@ -15,6 +15,27 @@ extern char lbl_8032BECC[];
 extern int lbl_80559C04;
 extern int lbl_80559C08;
 extern int lbl_80559C10;
+#pragma inline no fn_80137950
+#pragma inline no fn_80137B0C
+#pragma inline no fn_801379CC
+#pragma inline no fn_80137A18
+#pragma inline no fn_80137B14
+char *fn_80137950(int arg0) {
+    switch (arg0) {
+        case 0:
+            return (char *)&lbl_80559C10;
+        case 1:
+            return lbl_8032BEC0;
+        case 2:
+            return (char *)&lbl_80559C08;
+        case 3:
+            return (char *)&lbl_80559C04;
+        default:
+            fn_802E317C(lbl_8032BECC);
+            return (char *)0;
+    }
+}
+
 int fn_801379CC(void) {
     if ((int)lbl_80559C00 == -1) {
         fn_802E317C("x");
