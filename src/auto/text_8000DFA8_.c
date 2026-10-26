@@ -334,22 +334,28 @@ void fn_8000F4F0(void) {
     fn_802C8750(scope,-1);
 }
 
-void fn_8000FB44(void) {
-    UnkF22C *obj;
-    void (*destroy)(UnkF22C *, s32);
+#pragma dont_inline on
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_8000FB44(void) {
+    struct Obj {
+        virtual void v0(int);
+    };
+    s32 value;
 
-    if (lbl_80351738[0x14] != 0) fn_80235380();
+    value = lbl_80351738[0x14];
+    if (value != 0) {
+        ((void (*)(s32))fn_80235380)(value);
+    }
     lbl_80351738[0x14] = 0;
-    fn_802328D4(lbl_8055D494);
+    fn_802328D4(lbl_8055D494, lbl_80351738);
     lbl_8055D494 = 0;
-    obj = lbl_8055D4B0;
-    if (obj != 0) {
-        if (obj != 0) {
-            destroy = obj->vtable->unk_0x8;
-            destroy(obj, 1);
+    if (lbl_8055D4B0 != 0) {
+        if (lbl_8055D4B0 != 0) {
+            ((Obj *)lbl_8055D4B0)->v0(1);
         }
     }
-    lbl_8055D4B0 = (UnkF22C *)0;
+    lbl_8055D4B0 = 0;
     fn_8000F40C();
     fn_8000F464();
     fn_8000F384();
@@ -358,7 +364,8 @@ void fn_8000FB44(void) {
     fn_8000F22C();
     fn_8000F4BC();
 }
-
+#pragma cplusplus reset
+#pragma scheduling on
 extern void fn_8000F4F0(void);
 void fn_8000FBE4(void) {
     fn_8000F4F0();
@@ -469,12 +476,7 @@ extern s32 lbl_8055D494;
 }
 
 s32 fn_8001084C(s32 arg0) {
-    f32 f = fn_8023293C(lbl_8055D490, lbl_80560264);
-    f64 d = (f64)(f32)arg0 * (f64)f;
-    f32 num = (f32)(d - lbl_80560268);
-    f32 den = (f32)(lbl_80558A90 ^ 0x8000);
-    f32 q = num / den;
-    return (s32)q;
+    return (s32)(((f32)arg0 * fn_8023293C(lbl_8055D490, lbl_80560264)) / (f32)lbl_80558A90);
 }
 
 #pragma push
@@ -1135,6 +1137,36 @@ f32 fn_80011EC8(s32 arg0) {
     return lbl_80350ED8[arg0 * 5];
 }
 
+__declspec(section ".sdata") extern char lbl_80558ACC[];
+extern int sprintf(char *, const char *, ...);
+#pragma push
+#pragma processor 750
+#pragma scheduling on
+#pragma dont_inline on
+f32 fn_80011EDC(void) {
+    char buffer[0x10];
+    f32 scale;
+    f32 best;
+    f32 value;
+    s32 i;
+
+    scale = lbl_805602C8;
+    best = lbl_80560280;
+    i = 0;
+    do {
+        sprintf(buffer, lbl_80558ACC, (char)(i + 0x30));
+        value = scale * ((f32 (*)(s32, char *, f32))fn_8023293C)(
+            lbl_8055D490, buffer, lbl_80560264);
+        if (value > best) {
+            best = value;
+        }
+        i++;
+    } while (i < 10);
+
+    return best;
+}
+#pragma pop
+
 void fn_80011F64(void) {
     extern s32 *fn_801284F8(s32, const char *);
     extern s32 fn_80207848(void *, s32);
@@ -1203,22 +1235,26 @@ void fn_80011F64(void) {
 extern s32 *lbl_8055D4AC;
 extern void fn_80128668(void *);
 void fn_800120BC(void) {
-    s32 **base;
-    s32 *row;
-    s32 i, j;
-    base = (s32 **)lbl_8055D4AC;
+    struct Entry { s32 unk0; void *object; s32 unk8; };
+    s32 *base = lbl_8055D4AC;
     if (base != 0) {
-        for (i = 0; i < 2; i++) {
-            row = (s32 *)base;
-            for (j = 0; j < 3; j++) {
-                if (row[1] != 0) {
-                    ((void (*)(void *, s32))(*(void ***)row[1])[1])((void *)row[1], 1);
-                }
-                row++;
+        struct Entry *outer = (struct Entry *)base;
+        s32 i = 0;
+        for (; i < 2; ++i, outer += 3) {
+            struct Entry *inner = outer;
+            s32 j = 0;
+            for (; j < 3; ++j, ++inner) {
+                void *object = inner->object;
+                if (object == 0)
+                    goto next;
+                if (object == 0)
+                    goto next;
+                ((void (*)(void *, s32))(*(void ***)object)[2])(object, 1);
+            next:
+                ;
             }
-            base += 3;
         }
-        fn_80128668((void *)lbl_8055D4AC);
+        fn_80128668(base);
     }
     lbl_8055D4AC = 0;
 }
@@ -1399,29 +1435,20 @@ s32 fn_8000E338(s32 arg0) {
 }
 
 f32 fn_8000EDC0(s32 arg0) {
-    f32 f1;
-    if (fn_801E85A4() > 2) {
+    if (fn_801E85A4() > 2)
+        return lbl_80560264;
+    switch (arg0) {
+    case 12:
+    case 14:
+        return lbl_805602B8;
+    case 13:
+        return lbl_805602BC;
+    case 11:
+        return lbl_80560264;
+    default:
+        fn_802E317C(&lbl_802FC3A4, arg0);
         return lbl_80560264;
     }
-    if (arg0 < 0xC) {
-        if (arg0 >= 0xE) {
-            f1 = lbl_80560264;
-        } else {
-            f1 = lbl_80560264;
-            fn_802E317C(&lbl_802FC3A4);
-        }
-    } else if (arg0 < 0xE) {
-        if (arg0 == 0xB) {
-            f1 = lbl_80560264;
-        } else {
-            f1 = lbl_805602B8;
-        }
-    } else if (arg0 == 0xD) {
-        f1 = lbl_805602BC;
-    } else {
-        f1 = lbl_80560264;
-    }
-    return f1;
 }
 
 s32 fn_8000EE54(s32 arg0) {
