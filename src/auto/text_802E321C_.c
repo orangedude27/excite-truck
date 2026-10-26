@@ -1,3 +1,5 @@
+#include <stdarg.h>
+#include <string.h>
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
 typedef struct CallbackObject { void **vtable; } CallbackObject;
@@ -80,15 +82,17 @@ s32 fn_802E33D0(void) { return 0; }
 #pragma scheduling invalid_target
 s32 fn_802E33D8(s32 arg0, const char *arg1, s32 arg2) {
     char *entry;
+    s32 offset;
 
-    if (arg0 < 0 || arg0 > 0x10) {
+    if (arg0 < 0 || arg0 == -1 || arg0 > 0x10) {
         fn_802E317C(lbl_8034CF40, arg0, arg1, arg2);
     }
-    entry = lbl_804DB810 + arg0 * 0x28;
+    offset = arg0 * 0x28;
+    entry = lbl_804DB810 + offset;
     if (((unsigned char *)entry)[0x20] == 0) {
         fn_802E317C(lbl_8034CF60, arg0, arg1, arg2);
     }
-    return (s32)entry;
+    return (s32)(lbl_804DB810 + offset);
 }
 #pragma scheduling on
 void fn_802E3498(void) {
