@@ -38,6 +38,14 @@ int fn_8020F3BC(int arg0, int arg1, int arg2) {
     ((void (*)(int, int, int *, int))fn_801345D8)(arg1, arg2, (int *)&lbl_8055B664, arg0);
     return result;
 }
+
+#pragma scheduling invalid_target
+long fn_8020F400(long arg0, long arg1, long arg2) {
+    long result = arg1;
+    ((void (*)(long, long, long *, long))fn_801345D8)(arg1, arg2, (long *)&lbl_8055B664, arg0);
+    return result;
+}
+#pragma scheduling on
  
 #pragma dont_inline on
 void fn_8020F5C8(void) {
@@ -144,6 +152,7 @@ void fn_8020F730(void) {
     lbl_8055EEC4 = 0;
 }
 
+#pragma dont_inline on
 void *fn_8020FC04(void) {
     char *data = (char *)fn_8020FAF0();
     long type;
@@ -161,6 +170,7 @@ void *fn_8020FC04(void) {
 null_result:
     return 0;
 }
+#pragma dont_inline reset
 
 #pragma scheduling invalid_target
 void fn_8020FC6C(void) {
