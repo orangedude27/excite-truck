@@ -104,7 +104,7 @@ void fn_8028D084(void *arg0, void *arg1) {
         fn_802E317C(lbl_80348C50 + 0x30, value);
 }
 
-extern int lbl_804B3470;
+extern char lbl_804B3470[];
 extern char lbl_80348CA0[];
 extern int lbl_8055C8D0;
 extern int fn_801345D8(void *, int, const void *, ...);
