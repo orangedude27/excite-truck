@@ -481,35 +481,34 @@ void fn_8024B6A8(void) {
 
 void fn_8024B6AC(void *arg0) {
     s32 index;
-    s32 count;
-    s32 *array;
-    char *src;
-    char *dst;
+    void **array;
     char c;
+    char *src;
+    s32 count;
+    char *dst;
 
     index = fn_80214D04();
     *(s32 *)((char *)arg0 + 0x9C) = index;
-    array = *(s32 **)((char *)arg0 + 0x18);
+    array = *(void ***)((char *)arg0 + 0x18);
     dst = (char *)arg0 + 0x64;
     count = 0x32;
     src = *(char **)((char *)array[index] + 0x10);
-    goto decrement;
+    goto copy;
+decrement:
+    count--;
+    if (count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
 copy:
     c = *src++;
     *dst++ = c;
     if ((signed char)c != 0)
         goto decrement;
-    goto done;
-decrement:
-    count--;
-    if (count > 0)
-        goto copy;
-    *(s32 *)0 = 0;
-    dst[-1] = 0;
 done:
-    array = *(s32 **)((char *)arg0 + 0x18);
+    array = *(void ***)((char *)arg0 + 0x18);
     index = *(s32 *)((char *)arg0 + 0x9C);
-    *(s32 *)((char *)arg0 + 0x98) = array[index];
+    *(s32 *)((char *)arg0 + 0x98) = *(s32 *)array[index];
 }
 
 #pragma push
@@ -691,7 +690,7 @@ s32 fn_8024BB7C(void *arg0) {
 }
 
 extern char lbl_80343E60[];
-  void fn_8024BBF4(void *arg0) {
+void fn_8024BBF4(void *arg0) {
       s32 spC, sp8;
       void *obj;
       void *result;
@@ -700,7 +699,7 @@ extern char lbl_80343E60[];
       int (*get_name)(void *, char *);
       obj = *(void **)((char *)arg0 + 0x30);
       if (obj != 0) {
-          ((void (*)(void *, s32 *, s32 *))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x38))(obj, &sp8, &spC);
+          ((void (*)(void *, s32 *, s32 *))*(void **)((char *)*(volatile void **)((char *)obj + 0xC) + 0x38))(obj, &sp8, &spC);
           result = (void *)fn_80012870(sp8, spC);
           *(s32 *)((char *)arg0 + 0x34) = *(s32 *)result;
           obj = *(void **)((char *)result + 0x20);
@@ -724,7 +723,7 @@ extern char lbl_80343E60[];
           *(s32 *)((char *)arg0 + 0x34) = -1;
           *(char *)((char *)arg0 + 0x38) = 0;
       }
-  }
+}
   
   void fn_8024BCC0(void *arg0) {
       s32 spC, sp8;
