@@ -149,16 +149,27 @@ check:
 }
 
 void fn_8029F300(void) {
- int offset=0, i=0, zero=0, a,b,c,d; fn_802029FC();
- do {
-  if(fn_801E85A4()==1) { fn_802C92D0();
-   if(((unsigned int)*(int*)((char*)lbl_8055F820+offset)>>24)!=0) {
-    fn_801E88B4(&a,&b,&c,&d,i);
-    fn_802C92DC(a,b,c,d,*(int*)((char*)lbl_8055F820+offset));
-   } fn_802C92D8();
-  }
-  ++i; *(int*)((char*)lbl_8055F820+offset)=zero; offset+=4;
- } while(i<fn_801E85A4());
+    int offset, i, zero;
+    int a, b, c, d;
+    fn_802029FC();
+    i = 0;
+    offset = 0;
+    zero = 0;
+    goto check;
+loop:
+    if (fn_801E85A4() == 1) {
+        fn_802C92D0();
+        if (((unsigned int)*(int *)((char *)lbl_8055F820 + offset) >> 24) != 0) {
+            fn_801E88B4(&a, &b, &c, &d, i);
+            fn_802C92DC(a, b, c, d, *(int *)((char *)lbl_8055F820 + offset));
+        }
+        fn_802C92D8();
+    }
+    i++;
+    *(int *)((char *)lbl_8055F820 + offset) = zero;
+    offset += 4;
+check:
+    if (i < fn_801E85A4()) goto loop;
 }
 
 #pragma push
@@ -177,27 +188,38 @@ int fn_8029F3BC(unsigned char *arg0) {
 #pragma scheduling on
 #pragma pop
 
+#pragma dont_inline fn_8029F3BC
 void fn_8029F458(unsigned char *arg0, int arg1) {
     unsigned char buf[0x20];
     unsigned char *src = arg0;
     unsigned char *dst = buf;
     int id;
-    int i;
-    if (*src == '$') src++;
-    for (i = 0; i < 0x20; i++) {
-        unsigned char c = *src++;
-        *dst++ = c;
-        if ((signed char)c == 0) break;
+    int remaining = 0x20;
+    int i = 0;
+    int offset = 0;
+
+    if (*src == '$')
+        src++;
+
+    while (remaining > 0) {
+        signed char c = (signed char)*src++;
+        *dst++ = (unsigned char)c;
+        remaining--;
+        if (c == 0)
+            break;
     }
-    if (i == 0x20) dst[-1] = 0;
+    if (remaining == 0)
+        dst[-1] = 0;
+
     id = fn_8029F3BC(buf);
-    for (i = 0; i < lbl_804B9B7C[1]; i++) {
-        unsigned char *base = (unsigned char *)lbl_804B9B7C[0];
-        if (*(int *)(base + i * 0x34) == id)
-            *(int *)(base + i * 0x34 + 0x30) = arg1;
+    while (i < lbl_804B9B7C[1]) {
+        unsigned char *entry = (unsigned char *)lbl_804B9B7C[0] + offset;
+        if (*(int *)entry == id)
+            *(int *)(entry + 0x30) = arg1;
+        i++;
+        offset += 0x34;
     }
 }
-
 unsigned char fn_8029F510(unsigned char *arg0, int arg1) {
     if (arg1 != 0) {
         *arg0 = 1;
