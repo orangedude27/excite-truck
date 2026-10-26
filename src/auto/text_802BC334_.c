@@ -421,6 +421,7 @@ extern "C" void fn_802BCBDC(void) {
         i++;
     }
 }
+
 #pragma cplusplus reset
 #pragma pop
 #pragma pop
@@ -632,6 +633,7 @@ void fn_802BD69C(void *arg0, int arg1) {
 
 int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
 
+#pragma scheduling invalid_target
 void fn_802BDBA8(void) {
     char *strings = (char *)&lbl_8034AB38;
     void *object;
@@ -642,19 +644,18 @@ void fn_802BDBA8(void) {
     fn_802B8AE0(strings + 0xE8, &lbl_8055FAA8);
     fn_802B8AE0(strings + 0xF4, &lbl_8055FAAC);
     result = fn_802B05E4();
-    *(unsigned char *)&lbl_8055FAB0 = result == 0;
-    if (result == 0) {
-        return;
+    *(unsigned char *)&lbl_8055FAB0 = !result;
+    if (result != 0) {
+        fn_802BD210();
+        object = fn_801284F8(8, (int)(strings + 0x104));
+        if (object != 0) {
+            fn_802C2914(object);
+            *(void **)((char *)object + 4) = &lbl_8034AC48;
+        }
+        lbl_8055FABC = object;
     }
-    fn_802BD210();
-    object = fn_801284F8(8, (int)(strings + 0x104));
-    if (object != 0) {
-        fn_802C2914(object);
-        *(void **)((char *)object + 4) = &lbl_8034AC48;
-    }
-    lbl_8055FABC = object;
 }
-
+#pragma scheduling on
 void fn_802BDC3C(void* alarm) {
     fn_802C1550(fn_802BD210(alarm));
 }
