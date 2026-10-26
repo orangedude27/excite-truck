@@ -1,3 +1,7 @@
+#pragma cplusplus on
+struct VObj_8017D93C { virtual void d0(int); };
+#pragma cplusplus reset
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
