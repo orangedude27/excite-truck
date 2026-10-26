@@ -72,20 +72,19 @@ void fn_802B57B8(void) {
 extern "C" void fn_802B562C(void *, void *, void *);
 #pragma cplusplus on
 #pragma dont_inline on
-#pragma small_data off
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_802B58E0(void) {
     class Obj {
     public:
         virtual void f0();
         virtual void *getItem(int);
     };
-    int i;
     int offset;
-    int itemIndex;
-    struct TplLike *list = &lbl_804BE454;
-    struct TplLike *pool = &lbl_804BE4AC;
+    int i;
     void *obj;
     void *item;
+    int itemIndex;
     unsigned int count;
     void *entries;
 
@@ -93,14 +92,14 @@ extern "C" void fn_802B58E0(void) {
     offset = 0;
     goto outer_test;
 outer_body:
-    obj = *(void **)((char *)list->entries + offset);
+    obj = *(void **)((char *)lbl_804BE454.entries + offset);
     itemIndex = 0;
     goto item_fetch;
 item_body:
     if (fn_802B54CC(item) != 0) {
-        count = pool->count;
-        entries = pool->entries;
-        pool->count = count + 1;
+        count = lbl_804BE4AC.count;
+        entries = lbl_804BE4AC.entries;
+        lbl_804BE4AC.count = count + 1;
         fn_802B562C((char *)entries + count * 0x30, item, entries);
     }
     itemIndex++;
@@ -111,10 +110,10 @@ item_fetch:
     offset += 4;
     i++;
 outer_test:
-    if (i < (int)list->count)
+    if (i < (int)lbl_804BE454.count)
         goto outer_body;
 }
-#pragma small_data reset
+#pragma pop
 #pragma dont_inline off
 #pragma cplusplus off
 
