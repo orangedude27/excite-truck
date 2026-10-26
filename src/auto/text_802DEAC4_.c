@@ -16,6 +16,12 @@ extern char *fn_80029004(char *, int);
 extern void fn_802E0EAC(void *);
 extern char lbl_8034CBC4[];
 __declspec(section ".sdata") extern char lbl_8055D168[];
+extern int fn_801186B8(void *);
+extern void fn_80118C44(void *);
+extern void fn_802E27A0(void *);
+extern void fn_802E27B8(void *);
+extern u8 fn_802ECC10(void);
+extern char lbl_8034CBE0[], lbl_8034CBF8[];
 extern void fn_801284F8(void *, void *);
 extern char lbl_8034CB68[];
 extern void *lbl_8055FEEC;
@@ -613,7 +619,40 @@ void fn_802E0F98(void) {
     lbl_8055FEE8 = object;
 }
 
-#pragma dont_inline reset
+#pragma push
+#pragma use_lmw_stmw off
+s32 fn_802E11A4(s32 arg0, s32 arg1) {
+    s32 saved = ((s32 (*)(void))fn_802E0BA8)();
+    register void *object = fn_802E0BA4();
+    char *dot;
+    register char *dest;
+    register const char *suffix;
+    register int remaining;
+    *(s32 *)((char *)object + 4) = 0;
+    *(u8 *)((char *)object + 0x48) = (u8)arg1;
+    fn_801345D8((char *)object + 8, 0x40, lbl_8034CBC4, arg0);
+    dot = fn_80029004((char *)object + 8, 0x2e);
+    if (dot != 0)
+        *dot = 0;
+    dest = (char *)object + 8;
+    remaining = 0x40;
+    suffix = lbl_8055D168;
+    while ((s8)*dest) {
+        --remaining;
+        ++dest;
+    }
+    if (remaining > 0) {
+        while ((s8)(*dest++ = *suffix++) != 0) {
+            if (--remaining <= 0) {
+                dest[-1] = 0;
+                break;
+            }
+        }
+    }
+    fn_802E0EAC(object);
+    return saved;
+}
+#pragma pop
 void fn_802E1290(void *arg0) {
     extern void fn_802E30C8(const char *, ...);
     extern void *fn_802E0BA4(void);
