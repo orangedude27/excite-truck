@@ -23,6 +23,9 @@ extern int lbl_8055E3C4;
 extern int lbl_8055E524;
 void fn_80191084(int, int);
 int fn_801B89E0(void);
+extern s32 fn_801CF050(void);
+extern void fn_801B6658(void);
+extern f32 lbl_805620BC;
 extern char lbl_804349B0[];
 #pragma scheduling invalid_target
 extern s32 fn_8012850C(s32, void *);
