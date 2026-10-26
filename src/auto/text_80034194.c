@@ -1411,7 +1411,6 @@ void fn_80038040(void) {
 }
 
 extern void DCInvalidateRange(void *, u32);
-extern s32 __DVDPushWaitingQueue(s32, void *);
 #pragma opt_propagation off
 s32 DVDInquiryAsync(void *block, void *addr, void *callback) {
     s32 result;
