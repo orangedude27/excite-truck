@@ -262,17 +262,17 @@ void fn_801C3C14(s32 arg0) {
 #pragma pop
 extern char lbl_8055E80D;
 extern f32 lbl_8055E810;
+#pragma scheduling invalid_target
 void *fn_801C3C80(void) {
     s32 i;
-    s32 max;
-    s32 offset;
-    s32 count;
-    char *entry;
-
+    register s32 offset;
+    register char *entry;
+    register s32 max;
+    register s32 count;
     i = lbl_8055E7F0;
     entry = (char *)lbl_8055E7F8 + i * 0x30C;
     lbl_8055E7F0 = i + 1;
-    if (lbl_8055E80D != 0) {
+    if ((u8)lbl_8055E80D != 0) {
         *(f32 *)entry = lbl_8055E810;
     } else {
         fn_801C3B6C();
@@ -281,19 +281,22 @@ void *fn_801C3C80(void) {
     max = 0;
     offset = 0;
     count = 0;
-    while (count < lbl_8055E7F0 - 1) {
-        if (fn_801C34CC(*(f32 *)entry, *(f32 *)((char *)lbl_8055E7F8 + offset))) {
-            i = *(s32 *)((char *)lbl_8055E7F8 + offset + 4);
-            if (i > max)
-                max = i;
-        }
-        offset += 0x30C;
-        count++;
+    goto test;
+loop:
+    if (fn_801C34CC(*(f32 *)entry, *(f32 *)((char *)lbl_8055E7F8 + offset))) {
+        i = *(s32 *)((char *)lbl_8055E7F8 + offset + 4);
+        if (i > max)
+            max = i;
     }
+    offset += 0x30C;
+    count += 1;
+test:
+    if (count < lbl_8055E7F0 - 1)
+        goto loop;
     *(s32 *)(entry + 4) = max + 1;
     return entry;
 }
-
+#pragma scheduling on
 extern void fn_80128670(s32);
 extern s32 fn_8012850C(s32, void *);
 extern void fn_801C3D88(void *);
@@ -960,34 +963,34 @@ void fn_801C7524(void) {
 #pragma push
 #pragma paired off
 #pragma paired_single off
+#pragma scheduling invalid_target
 void fn_801C7698(void) {
-    struct Entry {
-        f32 score;
-        u8 data[0x308];
-    };
-    s32 count;
+    s32 offset;
     s32 index;
-    struct Entry *entries;
     f32 value;
     f32 score;
-    count = lbl_8055E7F0;
-    if (count > 0) {
+    if (lbl_8055E7F0 > 0) {
         value = (f32)atof(lbl_804380F0);
         index = lbl_8055E828;
-        entries = (struct Entry *)lbl_8055E7F8;
-        score = entries[index].score;
+        offset = index * 0x30C;
+        score = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset);
         if (value + score < lbl_80562970) {
             sprintf(lbl_80437FC0, lbl_80336F0C);
-        } else {
-            do {
-                score = entries[index].score;
-                entries[index].score = fn_801C3450(value + score);
-                index++;
-            } while (index < count);
-            qsort((void *)lbl_8055E7F8, count, 0x30C,
-                  (int (*)(const void *, const void *))fn_801C3B7C);
+            goto cleanup;
         }
+        goto update;
+update:
+        do {
+            score = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset);
+            *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) =
+                fn_801C3450(value + score);
+            index++;
+            offset += 0x30C;
+        } while (index < lbl_8055E7F0);
+        qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
+              (int (*)(const void *, const void *))fn_801C3B7C);
     }
+cleanup:
     fn_801C957C(0);
 }
 #pragma pop
