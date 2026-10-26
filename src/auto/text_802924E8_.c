@@ -227,6 +227,8 @@ int fn_80292FB4(unsigned char *arg0, void *arg1) {
     return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void *fn_80293034(void *arg0, void *arg1, int arg2) {
     class EffectArg {
@@ -253,6 +255,8 @@ extern "C" void *fn_80293034(void *arg0, void *arg1, int arg2) {
     return arg0;
 }
 #pragma cplusplus off
+#pragma scheduling on
+#pragma pop
 extern float fn_801E7E24(void*);
 extern void fn_802936C4(void*);
 extern float lbl_80558DC4;
@@ -291,6 +295,27 @@ void fn_80293128(void* arg0) {
     if (!(abs <= lbl_80558DC4)) fn_802936C4(arg0);
 }
 
+#pragma use_lmw_stmw off
+void fn_80293178(void *arg0, int unused) {
+    register unsigned char *entry;
+    int temp_r30;
+    int temp_r29;
+    register int i;
+
+    temp_r30 = fn_802C9950(0);
+    temp_r29 = fn_802C9994(0);
+    entry = (unsigned char *)arg0 + 0x2C;
+    i = 0;
+    for (; i < *(int *)((char *)arg0 + 0x2FAC); entry += 0x4C, i++) {
+        fn_802C9950(*(int *)((char *)arg0 + (*(unsigned char *)(entry + 0x4A) << 3) + 0x2FB0));
+        fn_802C9994(*(int *)((char *)arg0 + (*(unsigned char *)(entry + 0x4A) << 3) + 0x2FB4));
+        fn_802C744C(*(void **)((char *)arg0 + (*(unsigned char *)(entry + 0x48) << 2) + 8), entry);
+    }
+    fn_802C9994(temp_r29);
+    fn_802C9950(temp_r30);
+}
+#pragma use_lmw_stmw reset
+
 #pragma push
 #pragma scheduling invalid_target
 void fn_80293530(void* arg0) {
@@ -303,19 +328,35 @@ void fn_80293530(void* arg0) {
         i++;
     }
 }
-#pragma pop
-void* fn_80293A00(void* arg0, void* arg1, int unused, int arg2, int arg3, int arg4) {
-    *(void**)arg0 = lbl_80349278;
+#pragma push
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void *fn_80293A00(void *arg0, void *arg1, int arg2, int arg3, int arg4) {
+    class EffectArg {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual float value(const char *);
+    };
+    *(void **)arg0 = lbl_80349278;
     fn_80293CD0(arg0, arg2, arg3, arg4);
-    *(float*)((u8*)arg0 + 4) = lbl_8056450C;
-    if (arg1) {
-        void** vt = *(void***)arg1;
-        *(float*)((u8*)arg0 + 4) = ((float (*)(void*, const char*))vt[10])(arg1, (const char *)&lbl_8055C988);
+    *(float *)((char *)arg0 + 4) = lbl_8056450C;
+    if (arg1 != 0) {
+        *(float *)((char *)arg0 + 4) =
+            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
     }
-    *(int*)((u8*)arg0 + 0x4c2c) = 0;
+    *(int *)((char *)arg0 + 0x4C2C) = 0;
     return arg0;
 }
-
+#pragma cplusplus off
+#pragma scheduling on
+#pragma pop
 extern unsigned char lbl_80349278[];
 extern float lbl_8056450C;
 extern void fn_80293CD0(void*, int, int, int);
@@ -417,6 +458,35 @@ void fn_80293EB0(void* arg0) {
         i++;
     }
 }
+
+#pragma cplusplus on
+extern "C" void *fn_80294254(void *arg0, void *arg1, int arg2, int arg3, int arg4) {
+    class EffectArg {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual float value(const char *);
+    };
+    float initialValue;
+    *(void **)arg0 = lbl_8034925C;
+    initialValue = ((float (*)(void *, int, int, int))fn_80294530)(arg0, arg2, arg3, arg4);
+    initialValue = lbl_805644D4;
+    *(float *)((char *)arg0 + 4) = initialValue;
+    if (arg1 != 0) {
+        *(float *)((char *)arg0 + 4) =
+            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
+    }
+    *(int *)((char *)arg0 + 0x222C) = 0;
+    return arg0;
+}
+#pragma cplusplus off
+
 #pragma pop
 
 extern unsigned char lbl_8034925C[];
