@@ -11,7 +11,7 @@ extern double sin(double);
 extern void *fn_801284F8(int, void *);
 extern void fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void *, int, int, int);
-extern int lbl_8034A9F4;
+extern char lbl_8034A9F4[];
 extern void *lbl_8055FA7C;
 extern char lbl_804BFFF4[];
 extern int lbl_8055FA6C, lbl_8055FA70;
@@ -583,6 +583,23 @@ extern float lbl_80564CF0;
 float fn_802BAD90(float farg0) {
     return lbl_80564CF0 * farg0;
 }
+
+#pragma cplusplus on
+extern "C" void fn_802BAE30(void *);
+extern "C" void fn_802BAD9C(s32 arg0) {
+    char *label = (char *)&lbl_8034A9F4;
+    void *entry = fn_801284F8(0x10, label);
+    if (entry != 0) {
+        void *buffer = ((void *(*)(int, void *))fn_8012850C)(arg0 * 0x44 + 0x10, label);
+        void *items = fn_8002F37C(buffer, fn_802BAE30, 0, 0x44, arg0);
+        *(void **)entry = items;
+        *(s32 *)((char *)entry + 8) = arg0;
+        *(s32 *)((char *)entry + 4) = 0;
+        *(void **)((char *)entry + 0xC) = items;
+    }
+    lbl_8055FA7C = entry;
+}
+#pragma cplusplus reset
 
 void fn_802BAE30(void *arg0) {
     *(volatile int *)((char *)arg0 + 4) = 0;
