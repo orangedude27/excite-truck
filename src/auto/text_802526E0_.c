@@ -18,6 +18,7 @@ void fn_802E30C8(const char *, const char *);
 
 extern s32 lbl_8055EAA8, lbl_8055EAAC, lbl_8055F2F8;
 void fn_801BD790(void);
+#pragma dont_inline fn_80252B88
 void fn_80252B88(s32 arg0) {
     u8 sp8[0x28];
     fn_802526E0(sp8);
@@ -114,6 +115,37 @@ void fn_80253004(s32 index, void *out) {
         b = vsrc[0]; a = vsrc[1]; vdst[0] = b; vdst[1] = a;
     }
     *(u32 *)(dst + 116) = *(u32 *)(src + 116);
+}
+
+extern f32 lbl_805639FC;
+extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
+void fn_80253104(s32 arg0, void *arg1) {
+    f32 x = *(f32 *)((u8 *)arg1 + 0x12C);
+    f32 y = *(f32 *)((u8 *)arg1 + 0x130);
+    u8 *entry = lbl_80498D00 + arg0 * 0x78;
+    *(f32 *)(entry + 0x34) = x;
+    *(f32 *)(entry + 0x38) = y;
+    *(f32 *)(entry + 0x3C) = *(f32 *)((u8 *)arg1 + 0x134);
+    fn_801BDA74(arg0, entry);
+    if (entry[0x30] == 0) {
+        fn_80252B88(arg0);
+    } else {
+        u32 args[12];
+        args[0] = *(u32 *)(entry + 0);
+        args[1] = *(u32 *)(entry + 4);
+        args[2] = *(u32 *)(entry + 8);
+        args[3] = *(u32 *)(entry + 0xC);
+        args[4] = *(u32 *)(entry + 0x10);
+        args[5] = *(u32 *)(entry + 0x14);
+        args[6] = *(u32 *)(entry + 0x18);
+        args[7] = *(u32 *)(entry + 0x1C);
+        args[8] = *(u32 *)(entry + 0x20);
+        args[9] = *(u32 *)(entry + 0x28);
+        args[10] = *(u32 *)(entry + 0x24);
+        args[11] = *(u32 *)(entry + 0x2C);
+        *(f32 *)(args + 11) = lbl_805639FC + fn_801DCF48(0,args[9],args[8],args[7],args[6],args[5],args[4],args[3],*(f32 *)(entry+0x24),*(f32 *)(entry+0x2C));
+        fn_801BE400(arg0, args, lbl_805639E8);
+    }
 }
 
 extern s8 lbl_8055F308;
