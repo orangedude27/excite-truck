@@ -30,13 +30,35 @@ s32 fn_80127538(void) {
     memset(lbl_8041DC10, 0, 0x10);
     fn_80127968();
     fn_80127C90(fn_80127968, lbl_80329EF4);
-    lbl_8055DF1C = 0;
     lbl_8055DF18 = 0;
+    lbl_8055DF1C = 0;
     lbl_8055DF30 = 0;
     lbl_8055DF34 = 0;
     return 1;
 }
 
+#pragma scheduling invalid_target
+void fn_801275AC(void) {
+    const char *base = lbl_80329E30;
+    s32 *entry;
+    s32 i;
+
+    fn_80127D58(fn_80127968);
+    if (lbl_8055DF44 == 0)
+        return;
+    fn_802E30C8(base + 0xD0);
+    fn_802E30C8(base + 0x108, lbl_8055DF44);
+    entry = lbl_8041DF30;
+    i = 0;
+    while (i < lbl_8055DF44) {
+        s32 start = entry[2];
+        fn_802E30C8(base + 0x11C, start, entry[5] - start, entry[0], entry[1]);
+        entry += 3;
+        i++;
+    }
+    fn_802E30C8(base + 0xD0);
+}
+#pragma scheduling on
 void fn_80127930(void* alarm) {
     fn_801274C8(fn_8012766C(alarm));
 }
