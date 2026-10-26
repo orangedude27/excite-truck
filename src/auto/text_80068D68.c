@@ -5,8 +5,11 @@
 #include <printf.h>
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
+#define btsnd_hcic_reject_conn btsnd_hcic_reject_conn_public
 #include "revolution/BTE/stack/include/hcimsgs.h"
+#undef btsnd_hcic_reject_conn
 #include "revolution/BTE/bta/include/ptim.h"
+extern BOOLEAN btsnd_hcic_reject_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
