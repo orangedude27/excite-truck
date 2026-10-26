@@ -386,6 +386,46 @@ extern "C" void fn_80190F94(void *arg0) {
     VTable *obj = *(VTable **)((char *)arg0 + 0x10);
     obj->f12();
 }
+
+#pragma cplusplus on
+extern "C" void DBPrintf_801797A8(const char *, ...);
+extern "C" char lbl_80332EDC[];
+#pragma cplusplus on
+#pragma use_lmw_stmw off
+extern "C" void fn_80190FA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13(s32, s32, s32, s32);
+    };
+    void *target = *(void **)((u8 *)arg0 + 0x10);
+
+    if (target != 0) {
+        if (target == *(void **)((u8 *)arg0 + 0xC) &&
+            lbl_8055E523 != 0 &&
+            lbl_8055E520 == 0 &&
+            arg3 != 1) {
+            lbl_8055E520 = 1;
+            DBPrintf_801797A8((const char *)*(void **)((u8 *)arg0 + 0x28), lbl_80332EDC);
+        }
+        ((Dummy *)*(void **)((u8 *)arg0 + 0x10))->v13(arg1, arg2, arg3, arg4);
+    }
+}
+#pragma use_lmw_stmw reset
+#pragma cplusplus reset
+
 #pragma cplusplus off
 
 void fn_80191060(void) {
@@ -1350,6 +1390,23 @@ int fn_80192C68(void *arg0) {
 }
 
 #pragma scheduling invalid_target
+extern f32 lbl_8056208C, lbl_80562090, lbl_805620AC;
+f32 fn_80192C7C(void *arg0) {
+    u8 byte = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 6);
+    u8 raw = (byte >> 4) | (byte & 0xF0);
+    f32 normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+    f32 value;
+    if (lbl_80562090 < normalized) {
+        value = lbl_80562090;
+    } else {
+        value = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+    }
+    value = value > lbl_8056208C ? value : lbl_8056208C;
+    return lbl_8056208C + value * lbl_80562090;
+}
+#pragma scheduling on
+
+#pragma scheduling invalid_target
 extern f32 lbl_8056208C, lbl_80562090, lbl_805620AC, lbl_80562094, lbl_80562138;
 #pragma scheduling invalid_target
 f32 fn_80192D10(void *arg0) {
@@ -1388,6 +1445,26 @@ s32 fn_80192E20(void *arg0) {
     return (s32)((u32)(-bit | bit) >> 31);
 }
 
+#pragma scheduling invalid_target
+f32 fn_80192E3C(void *arg0) {
+    u32 packed;
+    u32 swapped;
+    f32 normalized;
+    f32 value;
+    packed = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 6);
+    swapped = packed & 0x0F;
+    swapped = (swapped & ~0xF0) | ((packed << 4) & 0xF0);
+    normalized = ((f32)swapped - lbl_8056208C) / lbl_805620AC;
+    if (lbl_80562090 < normalized) {
+        value = lbl_80562090;
+    } else {
+        value = ((f32)(u8)swapped - lbl_8056208C) / lbl_805620AC;
+    }
+    value = value > lbl_8056208C ? value : lbl_8056208C;
+    return lbl_8056208C + value * lbl_80562090;
+}
+#pragma scheduling on
+
 extern f64 lbl_805620B0;
 extern f32 lbl_805620B8, lbl_80562084, lbl_805620A4;
 #pragma scheduling invalid_target
@@ -1418,6 +1495,7 @@ extern void *__AXGetStudio_80178C90(void);
 extern s32 fn_801B2F54(s32);
 extern f32 fn_8018AE3C(void *);
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void fn_80192F80(void *arg0) {
     s32 result;
     f32 value;
@@ -1432,6 +1510,7 @@ void fn_80192F80(void *arg0) {
     value = ((f32 (*)(void *))fn_8018AE4C)(*(void **)((u8 *)arg0 + 0x34));
     *(f32 *)((u8 *)__AXGetStudio_80178C90() + 0x10) = value;
 }
+#pragma use_lmw_stmw reset
 #pragma scheduling on
 int fn_80193010(void) { return 0x20; }
 
