@@ -913,7 +913,6 @@ check:
 
 extern "C" void fn_801FA138(void **arg0) {
     struct Item {
-        virtual void first();
         virtual void next(s32);
     };
     void *node = *arg0;
