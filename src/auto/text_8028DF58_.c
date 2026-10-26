@@ -1,4 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern char lbl_80348CF8[];
+extern char lbl_80348D28[];
+extern int stricmp(const char *, const char *);
+extern int fn_802E317C(const char *, ...);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_803490D4[];
