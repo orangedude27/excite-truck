@@ -23,6 +23,9 @@ extern "C" u8 lbl_8032A6F8[];
 extern "C" s32 lbl_8055E00C;
 extern "C" void **lbl_8055E010;
 extern "C" u8 lbl_8032AC88[];
+extern "C" u8 lbl_8032ACA0[];
+extern "C" u8 lbl_8032ACD0[];
+extern "C" void fn_80127CF4(s32, s32);
 extern "C" void *fn_801284F8(u32, void *);
 extern "C" void **fn_8012A13C(void *, void *, u32, u32);
 extern "C" void *fn_8012A2D8(void **);
@@ -1290,6 +1293,57 @@ done:
     if (found == 0) fn_8012BD98(name, &lbl_8055E000, 0);
 }
 
+extern "C" s32 fn_8012CC24(void *, void *);
+#pragma push
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+extern "C" void fn_8012DEE4(void *arg0) {
+    u8 *obj = (u8 *)arg0;
+    s32 one = 1;
+    s32 zero = 0;
+    void *entry;
+    s32 done;
+    s32 state;
+
+    if (obj[0xA20] != 0) return;
+    obj[0xA20] = (u8)one;
+    do {
+        done = 0;
+        entry = *(void **)(obj + 0xA18);
+        if (entry != 0) {
+            state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
+            if (state == 1) goto after_state;
+            if (state >= 1) goto state_ge_one;
+            if (state >= 0) goto state_zero;
+            goto after_state;
+        state_ge_one:
+            if (state < 3) goto state_two;
+            goto after_state;
+        state_zero:
+            fn_8012CC24(*(void **)((u8 *)entry + 0x4C), (u8 *)entry + 0xC);
+            goto after_state;
+        state_two:
+            {
+                void *node = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
+                *(s32 *)((u8 *)node + 0x9C) = *(s32 *)((u8 *)entry + 8);
+                *(u8 *)((u8 *)node + 0xAD) = (u8)one;
+            }
+            entry = *(void **)(obj + 0xA18);
+            if (entry != 0) {
+                void *next = *(void **)((u8 *)entry + 4);
+                *(void **)(obj + 0xA18) = next;
+                if (next == 0) *(void **)(obj + 0xA1C) = obj + 0xA18;
+                *(void **)((u8 *)entry + 4) = (void *)zero;
+            }
+            done = 1;
+        after_state:
+            ;
+        }
+    } while (done != 0);
+    obj[0xA20] = 0;
+}
+#pragma pop
+
 extern "C" void fn_8012DFCC(Unk8012DFCCList *arg0, Unk8012DFCCNode *arg1) {
     *arg0->tail = arg1;
     arg0->tail = &arg1->next;
@@ -1535,6 +1589,7 @@ extern "C" s32 fn_8012EFB0(void *arg0, void *arg1, s32 arg2) {
 }
 
 extern "C" s32 fn_8012D838(s32);
+#pragma scheduling invalid_target
 extern "C" void fn_8012F06C(void *arg0) {
     u8 *obj = (u8 *)arg0;
     if (obj[0xA20] == 0) {
@@ -1570,7 +1625,7 @@ after_state:
         obj[0xA20] = 0;
     }
 }
-
+#pragma scheduling on
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" void fn_802E317C(const char *, ...);
 extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2);
