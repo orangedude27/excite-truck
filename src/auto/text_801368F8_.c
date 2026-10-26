@@ -6,7 +6,6 @@ typedef float f32;
 #define F(p,o) (*(f32 *)((char *)(p)+(o)))
 #define I(p,o) (*(s32 *)((char *)(p)+(o)))
 #define B(p,o) (*(unsigned char *)((char *)(p)+(o)))
-typedef struct { f32 x, y, z; } Unk80137078Vec3;
 extern s32 lbl_8055E0D4;
 extern s32 lbl_8055E0D0;
 extern s32 lbl_80559BF8;
