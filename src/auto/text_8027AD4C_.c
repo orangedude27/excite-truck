@@ -520,6 +520,25 @@ long *fn_8027C26C(void *arg0, const char *arg1) {
     return *(long **)((char *)arg0 + 0xAF0C) + index * 0xC;
 }
 
+extern void fn_8027C2B8();
+void *fn_8027C41C(void *arg0, long arg1) {
+    void *temp_r6 = (char *)arg0 + 0xB014;
+    void *temp_r7 = (char *)arg0 + 0xAF18;
+    *(long *)((char *)arg0 + 0xB01C) = arg1;
+    *(void **)arg0 = (char *)arg0 + 0xC;
+    *(long *)((char *)arg0 + 8) = 0x8C0;
+    *(long *)((char *)arg0 + 0xAF14) = 0x14;
+    *(long *)((char *)arg0 + 4) = 0;
+    *(void **)((char *)arg0 + 0xAF0C) = temp_r7;
+    *(long *)((char *)arg0 + 0xAF10) = 0;
+    *(void **)((char *)arg0 + 0xB008) = temp_r6;
+    *(long *)((char *)arg0 + 0xB010) = 2;
+    *(long *)((char *)arg0 + 0xB00C) = 0;
+    fn_8027C2B8(arg0, 0, &lbl_80347B4C, temp_r6, temp_r7, 0);
+    fn_8027C2B8(arg0, 1, &lbl_80347B5C);
+    return arg0;
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 long fn_8027C4B4(long arg0, long arg1) {
