@@ -18,7 +18,7 @@ extern void *fn_80288B88(void *, int);
 extern void *fn_80289EE0(void *, int);
 extern void *__dt__12PhysicsWorldFv_80289C20(void *, int);
 extern void *__dt__Q210JASDrumSet5TPercFv_802894F4(void *, int);
-extern int fn_80289084(void);
+extern void fn_80289084();
 extern int fn_80289154(int);
 extern int fn_80289268(int);
 extern int fn_80289394(int);
@@ -80,7 +80,8 @@ extern int fn_80288BF0(int, int, int);
 extern int fn_80289558(int, int);
 extern void fn_80289FC4(int **, int, int);
 __declspec(section ".data") extern float lbl_80558DC4;
-#pragma optimize_for_size on
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80288A74(void **arg0, int arg1) {
     void **q;
     int i;
@@ -110,7 +111,7 @@ void fn_80288A74(void **arg0, int arg1) {
         }
     }
 }
-#pragma optimize_for_size reset
+#pragma pop
 int fn_80288B40(int arg0) {
     fn_80289084(); fn_80289154(arg0); fn_80289268(arg0); fn_80289394(arg0); return arg0;
 }
@@ -437,11 +438,14 @@ int fn_80289F54(int arg0) {
         offset += 0x68;
     }
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void fn_80289FC4(int **arg0, int arg1, int arg2) {
     char *temp = (char *)*arg0 + arg1 * 0x68;
-    if (arg2 == 3 && *(void **)(temp + 0x64) == 0 && *(int *)(temp + 0x60) > 0) {
-        *(void **)(temp + 0x64) = temp + fn_80287B5C() * 0x18;
+    if (arg2 == 3 && *(void **)(temp + 0x64) == 0 &&
+        *(long *)(temp + 0x60) > 0) {
+        int index = fn_80287B5C();
+        *(void **)(temp + 0x64) = temp + index * 0x18;
         fn_8028A330((int *)arg0, arg1);
     } else if (arg2 != 3 && *(void **)(temp + 0x64) != 0) {
         *(void **)(temp + 0x64) = 0;
@@ -449,7 +453,8 @@ void fn_80289FC4(int **arg0, int arg1, int arg2) {
         fn_8028A330((int *)arg0, arg1);
     }
 }
-
+#pragma scheduling on
+#pragma pop
 extern int fn_80288208(int);
 extern int fn_80287E20(void *);
 extern void *fn_80287E80(int, void *);
