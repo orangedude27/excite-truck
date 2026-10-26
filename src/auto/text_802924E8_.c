@@ -1,4 +1,6 @@
 extern unsigned char lbl_80349294[];
+extern unsigned char lbl_8034925C[];
+extern void fn_80294530(void *, int, int, int);
 extern char lbl_8055C988;
 extern float lbl_805644D4;
 extern int fn_80293374(void *, void *);
@@ -237,8 +239,6 @@ extern "C" void *fn_80293034(void *arg0, void *arg1, int arg2) {
         virtual void v5();
         virtual void v6();
         virtual void v7();
-        virtual void v8();
-        virtual void v9();
         virtual float value(const char *);
     };
     *(void **)arg0 = lbl_80349294;
