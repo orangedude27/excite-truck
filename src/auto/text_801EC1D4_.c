@@ -211,8 +211,8 @@ void fn_801ECF58(void *arg0) {
             if ((*(long *)(owner + 0x2C0) & 0x100) == 0)
                 flag = 1;
         }
-        fn_801ECC70();
-        fn_80201018(*(long *)((char *)arg0 + 0x184),
+                  fn_801ECC70(arg0);
+          fn_80201018(*(long *)((char *)arg0 + 0x184),
                     *(void **)((char *)arg0 + 0x3C), flag);
     }
 }
