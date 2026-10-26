@@ -727,21 +727,58 @@ extern "C" s32 fn_8013F438(f32 x) {
 }
 #pragma scheduling on
 extern float lbl_805614A4, lbl_805614AC, lbl_805614F8, lbl_80561518, lbl_80561544, lbl_80561548;
-void fn_8013F498(void *arg0, void *arg1, float farg0) {
-    float a = (farg0 - lbl_805614A4) / lbl_805614AC;
-    float b;
-    if (lbl_805614AC < a) b = a; else b = lbl_805614AC;
-    if (b > lbl_805614A4) b = lbl_805614A4;
-    float c = ((farg0 * farg0) - lbl_805614A4) / lbl_805614AC;
-    float d = lbl_80561544 + b * lbl_805614F8;
-    float e = d * lbl_80561518;
-    float f;
-    if (lbl_805614AC < c) f = c; else f = lbl_805614AC;
-    if (f > lbl_805614A4) f = lbl_805614A4;
-    *(float*)arg0 = lbl_805614A4 - d;
-    *(float*)((char*)arg0 + 4) = lbl_805614A4 + f * lbl_80561548 + e;
-    *(float*)arg1 = lbl_805614A4 + d;
-    *(float*)((char*)arg1 + 4) = lbl_805614A4 + f * lbl_80561548 - e;
+extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
+    f32 sp1C;
+    f32 sp18;
+    f32 sp14;
+    f32 sp10;
+    f32 spC;
+    f32 sp8;
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f6;
+    f32 temp_f7;
+    f32 temp_f8;
+    f32 var_f3;
+    f32 var_f4;
+    f64 temp_f2;
+    f64 temp_f5;
+
+    var_f3 = lbl_805614AC;
+    temp_f0 = (farg0 - lbl_805614A4) / var_f3;
+    if (var_f3 < temp_f0) {
+    } else {
+        var_f3 = temp_f0;
+    }
+    if (var_f3 > lbl_805614A4) {
+    } else {
+        var_f3 = lbl_805614A4;
+    }
+    var_f4 = lbl_805614AC;
+    temp_f0_2 = ((farg0 * farg0) - lbl_805614A4) / var_f4;
+    temp_f6 = lbl_80561544 + (var_f3 * lbl_805614F8);
+    temp_f8 = temp_f6 * lbl_80561518;
+    if (var_f4 < temp_f0_2) {
+    } else {
+        var_f4 = temp_f0_2;
+    }
+    if (var_f4 > lbl_805614A4) {
+    } else {
+        var_f4 = lbl_805614A4;
+    }
+    temp_f5 = -temp_f6;
+    temp_f2 = -temp_f8;
+    sp18 = lbl_805614A4;
+    temp_f7 = lbl_805614A4 + (var_f4 * lbl_80561548);
+    sp1C = temp_f7;
+    *(f32 *)arg0 = lbl_805614A4 + (f32)temp_f5;
+    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f8;
+    sp10 = (f32)temp_f5;
+    sp14 = temp_f8;
+    sp8 = temp_f6;
+    spC = (f32)temp_f2;
+    *(f32 *)arg1 = lbl_805614A4 + temp_f6;
+    *(f32 *)((u8 *)arg1 + 4) = temp_f7 + (f32)temp_f2;
 }
 
 #pragma scheduling invalid_target
@@ -898,62 +935,71 @@ extern "C" char lbl_8032CC64[];
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_80141DAC(char *arg0) {
-    char *src;
-    char c;
-    long len;
-    char *dst;
+    {
+        char *src = (char *)fn_80131234(lbl_8032CC64);
+        char c;
+        long len = 20;
+        char *dst = arg0 + 0xEE;
 
-    src = (char *)fn_80131234(lbl_8032CC64);
-    dst = arg0 + 0xEE;
-    len = 20;
-    goto copy_a;
-check_a:
-    if (--len > 0)
         goto copy_a;
-    dst[-1] = 0;
-    goto done_a;
-copy_a:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c == 0)
+    check_a:
+        if (--len > 0)
+            goto copy_a;
+        dst[-1] = 0;
         goto done_a;
-    goto check_a;
-done_a:
+    copy_a:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0)
+            goto done_a;
+        goto check_a;
+    done_a:
+        ;
+    }
 
-    dst = arg0 + 0xC6;
-    src = lbl_80559D80;
-    len = 20;
-    goto copy_b;
-check_b:
-    if (--len > 0)
+    {
+        char c;
+        char *src = lbl_80559D80;
+        long len = 20;
+        char *dst = arg0 + 0xC6;
+
         goto copy_b;
-    dst[-1] = 0;
-    goto done_b;
-copy_b:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c == 0)
+    check_b:
+        if (--len > 0)
+            goto copy_b;
+        dst[-1] = 0;
         goto done_b;
-    goto check_b;
-done_b:
+    copy_b:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0)
+            goto done_b;
+        goto check_b;
+    done_b:
+        ;
+    }
 
-    dst = arg0 + 0xDA;
-    src = lbl_80559D80;
-    len = 20;
-    goto copy_c;
-check_c:
-    if (--len > 0)
+    {
+        char c;
+        char *src = lbl_80559D80;
+        long len = 20;
+        char *dst = arg0 + 0xDA;
+
         goto copy_c;
-    dst[-1] = 0;
-    goto done_c;
-copy_c:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c == 0)
+    check_c:
+        if (--len > 0)
+            goto copy_c;
+        dst[-1] = 0;
         goto done_c;
-    goto check_c;
-done_c:
-    ;
+    copy_c:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0)
+            goto done_c;
+        goto check_c;
+    done_c:
+        ;
+    }
 }
 #pragma pop
 extern "C" s32 fn_80141E90(f32 *arg0, f32 arg1) {
