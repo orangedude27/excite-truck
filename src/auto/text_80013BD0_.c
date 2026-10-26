@@ -24,7 +24,7 @@ extern f64 sin(f32);
 extern void *lbl_803577E0[];
 extern u8 lbl_802FCBEC[], lbl_802FCBF8[], lbl_802FCBC8[];
 extern s32 fn_802C9A58(void);
-extern void fn_80013BD0();
+extern void fn_80013BD0(void *, s32, s32, s32);
 typedef struct { void *vtable; s32 field4; } VtblObj;
 extern f32 lbl_80560360, lbl_80560368, lbl_8056036C, lbl_80560370, lbl_80560374, lbl_80560398;
 extern f32 fn_801E7E24(void);
