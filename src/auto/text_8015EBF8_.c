@@ -31,6 +31,7 @@ void fn_8015EC50(unsigned short *arg0, void *arg1) {
     *arg0 = (value - ((int *)((void **)arg1)[11])[7]) / 60;
 }
 
+#pragma dont_inline fn_8015ECC0
 int fn_8015ECC0(void *arg0) {
     register int result = 0;
     register int test = 0;
