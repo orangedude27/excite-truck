@@ -3,6 +3,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern float PSVECDotProduct(const float *, const float *);
 #pragma scheduling invalid_target
 void fn_801CFA48(void *arg0) {
  typedef struct { unsigned char *ptr1; int count1; unsigned char *ptr2; int count2; unsigned char *ptr3; int count3; } tFA48View;
