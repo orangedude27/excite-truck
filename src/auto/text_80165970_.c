@@ -326,27 +326,36 @@ extern int fn_801B2EC0(void);
 extern void *fn_8017960C(void);
 extern float lbl_805618D0;
 extern float lbl_805618D4;
-#pragma push
-#pragma dont_inline on
-float fn_80166274(void) {
-    float f2 = lbl_805618D0;
+#pragma cplusplus on
+extern "C" float fn_80166274(void) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void *get(void);
+    };
+    Obj *object;
     void *p;
     fn_80179630(-1);
-    p = *(void **)(*(int *)(fn_801B2EC0()) + 0x1C);
-    p = ((void *(*)(void))p)();
+    object = (Obj *)fn_801B2EC0();
+    p = object->get();
     fn_80179630(-1);
     {
         void *r3 = fn_8017960C();
-        float f0 = *(float *)(*(int *)((char *)p + 4) + 0x20);
+        float f0 = *(float *)((char *)*(void **)((char *)p + 4) + 0x20);
         float f1 = *(float *)((char *)r3 + 0x25CC);
-        if (f2 <= f0) f2 = f0;
+        float f2 = lbl_805618D0;
+        f2 = (f2 > f0) ? f2 : f0;
         f0 = f1 / f2;
-        if (lbl_805618D4 > f0) f0 = lbl_805618D4;
-        return f0;
+        f1 = lbl_805618D4;
+        f1 = (f1 > f0) ? f1 : f0;
+        return f1;
     }
 }
-
-#pragma pop
+#pragma cplusplus reset
 extern void fn_802E30C8(char *, ...);
 extern int lbl_8055E330;
 extern signed char lbl_8055E329;
