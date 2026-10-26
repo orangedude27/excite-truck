@@ -279,12 +279,12 @@ void fn_8023E33C(void *arg0) {
         char unkC;
     } nameInfo;
     unsigned char *src;
+    unsigned char c;
     int remaining;
     unsigned char *dst;
-    unsigned char c;
 
     if (*(int *)((char *)arg0 + 0x10) == -1) {
-        src = *(unsigned char **)&lbl_8055BBA0;
+        src = (unsigned char *)lbl_8055BBA0;
         remaining = 0x14;
         dst = (unsigned char *)arg0 + 0x14;
         goto copy;
