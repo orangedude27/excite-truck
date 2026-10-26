@@ -457,10 +457,26 @@ return object;
 extern u32 lbl_802F9B30[];
 extern u8 lbl_8055B2CC[];
 extern "C" int fn_801F88F4(void *arg0) {
- u32 table[3]; table[0]=lbl_802F9B30[0];table[1]=lbl_802F9B30[1];table[2]=lbl_802F9B30[2];
- char *name=((FNodeVT*)*(void**)arg0)->name(arg0);
- for(int i=0;i<3&&table[i];i++)if(stricmp((char*)table[i],name)==0)return 1;
- return 0;
+    class F88Node {
+    public:
+        virtual void v0();
+        virtual void v4();
+        virtual void v8();
+        virtual void vC();
+        virtual void v10();
+        virtual char *v14(const char *, u32, u32);
+    };
+    u32 table[3];
+    table[0] = lbl_802F9B30[0];
+    table[1] = lbl_802F9B30[1];
+    table[2] = lbl_802F9B30[2];
+    char *name = ((F88Node *)arg0)->v14((const char *)lbl_8055B2CC, table[1], table[0]);
+    u32 *entry = table;
+    do {
+        if (stricmp((const char *)*entry, name) == 0) return 1;
+        entry++;
+    } while (*entry != 0);
+    return 0;
 }
 
 extern "C" void fn_801F92A8(void) {
@@ -814,6 +830,25 @@ extern "C" s32 fn_801F9CF8(void *arg0) {
     return 8;
 }
 
+extern "C" void *fn_80016544(s32);
+extern "C" s32 fn_801F9D70(void *arg0) {
+    char *item;
+    s32 ret = 0;
+    char *base = (char *)arg0 + 0x20;
+    s32 i;
+
+    item = base;
+    for (i = 0; i < *(s32 *)(base + 0x3c0); item += 0x78, i++) {
+        if (*(s32 *)item == 0x50) {
+            ret = 1;
+            if (!(*(u32 *)((char *)fn_80016544(*(s32 *)(item + 0x6c)) + 0xa0) & 4)) {
+                return 0;
+            }
+        }
+    }
+    return ret;
+}
+
 extern "C" void fn_802C6CF8(s32);
 void fn_801EF024(void *);
 void fn_80204020(void);
@@ -873,6 +908,27 @@ loop:
     }
 check:
     if (node != 0) goto loop;
+    *arg0 = 0;
+}
+
+extern "C" void fn_801FA138(void **arg0) {
+    struct Item {
+        virtual void first();
+        virtual void next(s32);
+    };
+    void *node = *arg0;
+    while (node != 0) {
+        void *next = *(void **)((u8 *)node + 0x14);
+        if (node != 0) {
+            void *obj = *(void **)((u8 *)node + 0x10);
+            if (obj != 0 && obj != 0) {
+                ((Item *)obj)->next(1);
+            }
+            *(void **)((u8 *)node + 0x10) = 0;
+            ((void (*)(void *))fn_80128668)(node);
+        }
+        node = next;
+    }
     *arg0 = 0;
 }
 
