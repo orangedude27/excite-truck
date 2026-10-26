@@ -437,6 +437,7 @@ void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
 }
 
 #pragma scheduling invalid_target
+/* Reverse-ordered scalar loads keep the vector copies and final register restore matching. */
 void fn_801C0D6C(void *arg0) {
     extern void PSVECNormalize(void *, void *);
     float vec1[3];
