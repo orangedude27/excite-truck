@@ -159,7 +159,7 @@ extern "C" int fn_80207C50(int,int,int);
 extern "C" void fn_8020655C(int a, int b) { fn_80207C50(lbl_8055ED80,a,b); }
 
 extern void* fn_80207C74(int, unsigned int);
-extern int lbl_802F9DA0;
+extern int lbl_802F9DA0[10];
 extern void* fn_80208D4C(void);
 extern void fn_80208D70(void);
 extern "C" void* fn_80206570(int index) {
