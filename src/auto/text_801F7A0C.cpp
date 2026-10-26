@@ -701,23 +701,24 @@ extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
     u8 scratch[0x38];
     u8 state;
     s32 field;
-    u32 flags;
     register s32 zero;
+    u32 flags;
     void *node;
 
     if ((arg2 & 2) != 0) {
-        state = lbl_8055EC7C;
-        field = *(s32 *)((u8 *)arg0 + 0x24);
-        lbl_8055EC7C = (state == 0);
+        state = *(volatile u8 *)&lbl_8055EC7C;
+        field = *(volatile s32 *)((u8 *)arg0 + 0x24);
+        state = (state == 0);
+        *(volatile u8 *)&lbl_8055EC7C = state;
         flags = field != 0;
         if (flags != 0) {
             flags |= 2;
-            zero = 0;
             node = arg0;
+            zero = 0;
             goto next_node;
         loop_body:
-            *(s32 *)(scratch + 0x30) = zero;
             *(s32 *)(scratch + 0x34) = zero;
+            *(s32 *)(scratch + 0x30) = zero;
             fn_801BFD34(scratch + 0x24, (u8 *)node + 0x54, arg1);
             fn_80015B20(scratch, (u8 *)node + 0x30, arg1);
             *(s32 *)(scratch + 0x30) = flags;
@@ -1155,6 +1156,7 @@ extern "C" void fn_801FA738(void) {
 extern "C" void *fn_801F96C8(void *);
 extern "C" void fn_801F973C(void *, void *, u32);
 #pragma dont_inline on
+#pragma use_lmw_stmw off
 extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     s32 data[14];
     data[0] = 0;
