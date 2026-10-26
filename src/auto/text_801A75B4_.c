@@ -122,6 +122,26 @@ void fn_801A7844(int arg0) {
     *(float *)&lbl_80435370[4] = y;
 }
 
+extern void fn_801334F4(int, int, int *, int);
+#pragma push
+#pragma scheduling invalid_target
+void fn_801A7974(const char *arg0, int arg1, int arg2) {
+    F801A9050Zero temp;
+
+    temp.words[0] = 0;
+    temp.words[1] = 0;
+    temp.words[2] = 0;
+    temp.words[3] = 0;
+    temp.words[4] = 0;
+    temp.words[5] = 0;
+    temp.words[6] = 0;
+    temp.words[7] = 0;
+    fn_801A90A4((char *)&temp, 0x20, arg0);
+    fn_801334F4(arg2, arg1, temp.words, 0x20);
+    fn_801A9110((void *)arg0, (const char *)&temp);
+}
+#pragma scheduling on
+#pragma pop
 extern void fn_801A90A4(char *, int, const char *);
 extern int fn_8013358C(int, int, char *);
 #pragma push
