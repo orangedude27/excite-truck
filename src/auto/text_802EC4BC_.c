@@ -31,22 +31,25 @@ void fn_80127464(void);
       return fn_802E9A0C() == 1;
   }
   
-  s32 fn_802EC4E8(s32 arg0) {
-      char sp10[0x40];
-      s32 sp8;
-      s32 temp_r30;
-      s32 temp_r31;
-      fn_801345D8(sp10, 0x40, lbl_8034E9E0, arg0);
-      sp8 = fn_802E36D8(sp10);
-      if (sp8 == -1) fn_802E317C(lbl_8034E9E0 + 0x10, sp10);
-      temp_r30 = fn_802E37C4(sp8);
-      fn_801282EC(0x20);
-      temp_r31 = fn_8012850C(temp_r30, lbl_8034E9E0 + 0x28);
-      fn_802E3804(sp8, temp_r31, temp_r30);
-      fn_802E3734(&sp8);
-      return temp_r31;
-  }
-  
+#pragma scheduling invalid_target
+s32 fn_802EC4E8(s32 arg0) {
+    char sp10[0x40];
+    char *base = lbl_8034E9E0;
+    s32 sp8;
+    s32 temp_r30;
+    s32 temp_r31;
+    ((void (*)(void *, s32, ...))fn_801345D8)(sp10, 0x40, base, arg0);
+    sp8 = fn_802E36D8(sp10);
+    if (sp8 == -1)
+        ((void (*)(void *, ...))fn_802E317C)(base + 0x10, sp10);
+    temp_r30 = fn_802E37C4(sp8);
+    fn_801282EC(0x20);
+    temp_r31 = fn_8012850C(temp_r30, base + 0x28);
+    fn_802E3804(sp8, temp_r31, temp_r30);
+    fn_802E3734(&sp8);
+    return temp_r31;
+}
+#pragma scheduling on
   extern char lbl_80558860[];
   extern char lbl_8034E9E0[];
   extern void *jumptable_8034EA80[];
@@ -77,8 +80,8 @@ void *fn_802EC598(void) {
 #pragma scheduling on
 extern void fn_800C657C(void);
 extern void fn_80128670(s32);
-extern s32 lbl_8034EB28;
-extern s32 lbl_805588D8;
+extern char lbl_8034EB28[];
+extern char lbl_805588D8[];
 extern s32 lbl_805600E0;
 extern s32 lbl_805600E4;
 extern u8 lbl_805600EC;
@@ -88,9 +91,9 @@ void fn_802EC7AC(void) {
     s32 i;
     lbl_805600EC = 0;
     fn_800C657C();
-    p = &lbl_805588D8;
+    p = (s32 *)lbl_805588D8;
     i = 0;
-    format = (char *)&lbl_8034EB28;
+    format = lbl_8034EB28;
     do {
         if (*p != 0)
             fn_802E317C(format, (void *)*p);
