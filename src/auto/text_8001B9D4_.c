@@ -249,7 +249,7 @@ void fn_8001BF0C(s32 arg0, f32 arg1) {
 }
 
 void *fn_8001C070(void *dest, int val, size_t count) {
-    fn_8001BC38(dest, val, count);
+    ((void *(*)())fn_8001BC38)(dest, val, count);
     return dest;
 }
 
