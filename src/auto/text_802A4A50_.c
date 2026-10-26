@@ -81,6 +81,7 @@ extern s32 lbl_8055F8A4;
 extern f32 lbl_80564840, lbl_80564844;
 extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_80564888;
 void fn_802A6234();
+void fn_802A70E4(void *, f32 *);
 f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898;
 f32 fn_802A4A50(void) {
