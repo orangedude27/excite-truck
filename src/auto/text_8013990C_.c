@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int sprintf(char *, const char *, ...);
+extern int fn_802E30C8(const char *, ...);
 int fn_80128668();
 int fn_80131818();
 int fn_80128658(int);
@@ -17,24 +19,37 @@ void fn_80139B5C(void *arg0, int arg1) {
 
 extern float lbl_80561410;
 int fn_80139B70(int arg0, float arg1, float arg2) {
-    int i, count, result = 0;
-    float *p = (float *)(arg0 + 8);
+    volatile float *p;
+    int count;
+    int result;
+    int i;
+
     count = *(int *)arg0;
+    p = (volatile float *)(arg0 + 8);
+    result = 0;
     for (i = 0; i < count; i++, p += 2) {
+        float y0 = p[1];
         int next = i + 1;
         int index = next % count;
-        float *q = (float *)(arg0 + index * 8);
-        float y0 = p[1];
+        volatile float *q = (volatile float *)(arg0 + index * 8);
         float y1 = q[3];
         int rising = y0 < y1;
+
         if (rising) {
             if (arg2 < y0 || arg2 > y1) continue;
         } else if (arg2 < y1 || arg2 > y0) continue;
+
         {
-            float x0 = p[0], x1 = q[2];
-            float dy = y1 - y0, dx = -(x1 - x0);
-            float vy = arg2 - y0, vx = arg1 - x0;
-            if (rising == (dy * vx + dx * vy < lbl_80561410)) result++;
+            float x0 = p[0];
+            float x1 = q[2];
+            float vx = arg1 - x0;
+            float dx = x1 - x0;
+            float y0b = p[1];
+            float y1b = q[3];
+            float vy = arg2 - y0b;
+            float dy = y1b - y0b;
+            float negdx = -dx;
+            if (rising == (dy * vx + negdx * vy < lbl_80561410)) result++;
         }
     }
     return result & 1;
@@ -69,38 +84,50 @@ void *fn_80131810(void);
 void *fn_801284F8(int, const char *);
 void *fn_801399FC(void);
 extern const char lbl_8032C0C8[];
+#pragma scheduling invalid_target
 void *fn_80139D4C(void) {
-    void *source;
-    void *object;
+    struct VTable {
+        int (*unused0)(void *, int);
+        int (*unused1)(void *, int);
+        int (*unused2)(void *, int);
+        int (*callback)(void *, int);
+    };
+    struct Source {
+        struct VTable *vtable;
+    };
     int count;
-    int (*next)(void *, int);
-    void *item;
+    void *object;
+    struct Source *source;
     int n;
+    void **items;
+    void *item;
+    const char *name;
+    register struct VTable *vtable;
 
     object = 0;
-    source = fn_80131810();
+    source = (struct Source *)fn_80131810();
     if (source != 0) {
-        object = fn_801284F8(0x90, lbl_8032C0C8);
+        name = lbl_8032C0C8;
+        object = fn_801284F8(0x90, name);
         if (object != 0) {
             *(void **)((char *)object + 4) = (char *)object + 0x10;
             *(int *)((char *)object + 12) = 0x20;
             *(int *)((char *)object + 8) = 0;
             *(void **)object = source;
             count = 0;
-            do {
+            while (count == 0 || (vtable = source->vtable)->callback(source, count) != 0) {
                 item = fn_801399FC();
                 n = *(int *)((char *)object + 8);
                 count++;
+                items = *(void ***)((char *)object + 4);
                 *(int *)((char *)object + 8) = n + 1;
-                ((void **)*(void **)((char *)object + 4))[n] = item;
-                next = *(int (**)(void *, int))(*(char **)source + 12);
-            } while (next(source, count) != 0);
+                items[n] = item;
+            }
         }
     }
     return object;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80139E18(void *arg0) {
     int i;
     int offset;
