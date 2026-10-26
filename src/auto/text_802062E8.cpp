@@ -173,6 +173,41 @@ extern "C" void *fn_80206570(int index) {
     return lbl_8033BD30;
 }
 
+extern "C" char *strncpy(char *, const char *, unsigned int);
+extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
+    char *self = (char *)arg0;
+    *(void **)self = &lbl_8033BDC0;
+    strncpy(self + 0x37, (const char *)arg1, 0xC);
+    self[0x43] = 0;
+    *(int *)(self + 0xC) = 0;
+    *(int *)(self + 0x44) = arg2;
+    *(float *)(self + 4) = lbl_805631F8;
+    *(float *)(self + 8) = lbl_805631F8;
+    self[0x49] = 0;
+    self[0x48] = 0;
+    self[0x4A] = 1;
+    self[0x4C] = 0;
+    self[0x4B] = 0;
+    self[0x4E] = 1;
+    self[0x4D] = 1;
+    self[0x4F] = 1;
+    *(int *)(self + 0x10) = -0x64;
+    *(int *)(self + 0x14) = 0;
+    self[0x18] = 0;
+    self[0x19] = 0;
+    *(float *)(self + 0x20) = lbl_805631FC;
+    *(float *)(self + 0x1C) = lbl_805631F8;
+    *(float *)(self + 0x24) = lbl_805631FC;
+    *(int *)(self + 0x50) = 0;
+    *(float *)(self + 0x28) = lbl_805631FC;
+    self[0x34] = 1;
+    *(float *)(self + 0x2C) = lbl_805631FC;
+    self[0x35] = 1;
+    *(float *)(self + 0x30) = lbl_805631FC;
+    self[0x36] = 1;
+    return arg0;
+}
+
 #pragma dont_inline on
 extern "C" void *fn_802066C8(void *arg0, u32 arg1) {
     if (arg0 != 0) {
@@ -355,6 +390,7 @@ extern "C" void fn_80206BF4(void) {
 
 extern float lbl_80563200;
 extern char lbl_8033BDC0;
+__declspec(section ".rodata") extern char lbl_8033BDC0;
 extern "C" void fn_80208620(int, void *);
 extern "C" void fn_8020899C(int, int);
 extern "C" int fn_80128668(void *);
