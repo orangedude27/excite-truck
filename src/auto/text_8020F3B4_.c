@@ -154,6 +154,33 @@ void fn_8020F730(void) {
 }
 
 #pragma use_lmw_stmw off
+void fn_8020F950(void) {
+    long capacity;
+    long limit;
+    long i;
+    long index;
+    long value;
+    long *entries;
+    capacity = lbl_804900AC.m_capacity;
+    lbl_804900AC.m_count = 0;
+    limit = ((long (*)(void *))fn_802EC0FC)(&lbl_804900AC);
+    if (capacity < limit) {
+        limit = capacity;
+    }
+    i = 0;
+    while (i < limit) {
+        value = fn_802EC104(i);
+        index = lbl_804900AC.m_count;
+        i++;
+        entries = lbl_804900AC.m_entries;
+        lbl_804900AC.m_count = index + 1;
+        entries[index] = value;
+    }
+    fn_8020F730();
+}
+#pragma use_lmw_stmw reset
+
+#pragma use_lmw_stmw off
 #pragma dont_inline on
 int fn_8020FB80(void *arg0) {
     int offset;
@@ -205,6 +232,37 @@ void fn_8020FC6C(void) {
             fn_8020FB80(data);
         } else {
             ((long (*)(long))fn_8020F3B4)(0);
+        }
+    }
+}
+
+extern char *strncpy(char *, const char *, unsigned long);
+void fn_8020FDE4(long arg0, const char *arg1, char *arg2) {
+    char *block;
+    char *dst;
+    char *src;
+    long remaining;
+    signed char value;
+
+    src = arg2;
+    block = (char *)((void *(*)(char *))fn_8020FAF0)(src);
+    memset(block, 0, 4);
+    *(long *)block = arg0;
+    strncpy(block + 0x24, arg1, 0x3F);
+    dst = block + 4;
+    remaining = 0x20;
+    while (1) {
+        value = *src;
+        src++;
+        *dst = value;
+        dst++;
+        if (value == 0) {
+            return;
+        }
+        remaining--;
+        if (remaining <= 0) {
+            dst[-1] = 0;
+            return;
         }
     }
 }
