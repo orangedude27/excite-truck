@@ -217,6 +217,7 @@ void fn_8029F534(void *arg0, unsigned char *arg1) {
 
 #pragma push
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
     class Obj {
     public:
@@ -228,14 +229,16 @@ extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
         virtual void v5() = 0;
         virtual void v6() = 0;
         virtual void v7() = 0;
-        virtual void v8() = 0;
-        virtual float getFloat(const char *, float) = 0;
+        virtual float getFloat(float, const char *) = 0;
     };
     Obj *obj = (Obj *)arg1;
     if (((int (*)(unsigned char *, int))fn_8029F510)((unsigned char *)arg0, (int)arg1) != 0) {
         obj->set((const char *)&lbl_8034983C);
         *(int *)((char *)arg0 + 4) = fn_802929F8();
-        *(float *)((char *)arg0 + 8) = obj->getFloat((const char *)&lbl_8055CAE8, lbl_805646B4);
+        {
+            float scalar = lbl_805646B4;
+            *(float *)((char *)arg0 + 8) = obj->getFloat(scalar, (const char *)&lbl_8055CAE8);
+        }
     } else {
         *(int *)((char *)arg0 + 4) = 0;
     }
