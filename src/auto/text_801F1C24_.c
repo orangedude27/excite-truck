@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void *fn_802C86DC(void);
+extern float fn_801E7E18(void);
 extern float PSVECDotProduct(float *, float *);
 extern double fn_8002EFB0();
 extern void fn_8029231C();
@@ -45,6 +46,25 @@ extern int lbl_8055B138;
 #pragma dont_inline on
 int *fn_801F1CE8(int arg0) {
     return (int *)(arg0 + 0x2C);
+}
+
+int fn_801F1CF0(int arg0) {
+    float delta[3];
+    void *camera;
+    float x, y, z, cx, cy, cz;
+    char *base = (char *)arg0;
+
+    camera = fn_802C86DC();
+    x = *(float *)(base + 0x24);
+    y = *(float *)(base + 0x28);
+    cx = *(float *)((char *)camera + 0x24);
+    z = *(float *)(base + 0x2C);
+    delta[0] = x - cx;
+    cy = *(float *)((char *)camera + 0x28);
+    delta[1] = y - cy;
+    cz = *(float *)((char *)camera + 0x2C);
+    delta[2] = z - cz;
+    return PSVECDotProduct(delta, (float *)(base + 0x18)) < lbl_80562F40;
 }
 
 #pragma dont_inline on
