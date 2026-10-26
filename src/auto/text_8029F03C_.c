@@ -31,7 +31,7 @@ extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, cons
 extern int fn_8028E3F4(void);
 extern int fn_802929F8(void);
 extern int fn_8029F3BC(unsigned char *);
-extern int lbl_8034983C;
+extern char lbl_8034983C[];
 extern int lbl_80349848;
 extern int lbl_804B9B7C[];
 extern float lbl_805646B4;
