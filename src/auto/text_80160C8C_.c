@@ -73,20 +73,6 @@ static inline void fn_80164CDC_call(void *arg0) {
 }
 #pragma cplusplus off
 
-#pragma cplusplus on
-struct Dummy_80162178 {
-    virtual void f0();
-    virtual void f1();
-    virtual void f2();
-    virtual void f3();
-    virtual void *f4(s32 *, s32 *);
-};
-extern "C" {
-static inline void *fn_80162178_call(void *obj, s32 *arg0, s32 *arg1) {
-    return ((Dummy_80162178 *)obj)->f4(arg0, arg1);
-}
-}
-#pragma cplusplus off
 
 #pragma cplusplus on
 struct Dummy_80163550 {
@@ -415,15 +401,15 @@ void fn_80161618(void) {
 extern int fn_80133348(int, int, int);
 #pragma use_lmw_stmw off
 void fn_801616FC(void) {
-    register s32 count;
-    register s32 offset;
     register u8 *base;
+    register s32 offset;
+    register s32 count;
     void *item;
 
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, lbl_8055A0B8);
     base = lbl_8042FDEC;
-    count = 0;
     offset = 0;
+    count = 0;
     goto test_loop;
 loop:
     item = *(void **)((u8 *)*(void **)lbl_8042FDEC + offset);
@@ -916,12 +902,16 @@ extern "C" void fn_80162178(void *arg0, s32 arg1) {
     *(s32 *)((char *)arg0 + 8) = 0;
     *(u8 *)((char *)arg0 + 0x10) = 0;
     *(float *)((char *)arg0 + 0xC) = lbl_8056184C;
-    for (i = 0, offset = 0; i < *(s32 *)((char *)arg0 + 0x38); offset += 8, i++) {
+    i = 0;
+    offset = 0;
+    while (i < *(s32 *)((char *)arg0 + 0x38)) {
         void *obj = *(void **)((char *)arg0 + 4);
         char *entries = *(char **)((char *)arg0 + 0x34);
         s32 *entry = (s32 *)(entries + offset);
         void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
         fn_801DF380(result, entry[0], fn_80161438, entry[1]);
+        offset += 8;
+        i++;
     }
 }
 #pragma cplusplus off
