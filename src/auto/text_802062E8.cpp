@@ -43,7 +43,7 @@ extern "C" void fn_802073A4(void*, int, int);
 extern int lbl_8055ED8C;
 extern void *lbl_8055ED90;
 extern char lbl_8033BD3C;
-extern char lbl_8033BD4C;
+extern char lbl_8033BD4C[];
 extern char lbl_8055B4C0[8];
 extern char lbl_8055B4C8[8];
 extern "C" void *fn_80206BF8(int, void*);
@@ -162,11 +162,33 @@ extern void* fn_80207C74(int, unsigned int);
 extern int lbl_802F9DA0[10];
 extern void* fn_80208D4C(void);
 extern void fn_80208D70(void);
-extern "C" void* fn_80206570(int index) {
-    int values[10]; int* p=(int*)&lbl_802F9DA0; int i;
-    for(i=0;i<10;i++) values[i]=p[i];
-    if(index<10) return (void*)values[index];
-    return (void*)0x8033BD30;
+extern char lbl_8033BD30[];
+extern "C" void *fn_80206570(int index) {
+    int values[10];
+    int *p = lbl_802F9DA0;
+    int value0 = p[0];
+    int value1 = p[1];
+    int value2 = p[2];
+    int value3 = p[3];
+    int value4 = p[4];
+    int value5 = p[5];
+    int value6 = p[6];
+    int value7 = p[7];
+    int value8 = p[8];
+    int value9 = p[9];
+    values[0] = value0;
+    values[1] = value1;
+    values[2] = value2;
+    values[3] = value3;
+    values[4] = value4;
+    values[5] = value5;
+    values[6] = value6;
+    values[7] = value7;
+    values[8] = value8;
+    values[9] = value9;
+    if (index < 10)
+        return &values[index];
+    return lbl_8033BD30;
 }
 
 #pragma dont_inline on
@@ -551,6 +573,21 @@ extern "C" void fn_80207490(void *arg0, void *arg1, int arg2) {
 extern "C" void fn_8020769C(void* arg0, int arg1, int arg2) {
 	fn_802073A4(arg0, arg1, arg2);
 }
+
+extern "C" void *fn_802076A0(int arg0, int arg1, int arg2, int arg3) {
+    struct Callback {
+        virtual ~Callback();
+    };
+    void *obj = (void *)fn_801284F8(0x70, &lbl_8033BD4C);
+    if (obj != 0)
+        obj = fn_80207428(obj, arg0, arg1, arg2, arg3);
+    if (obj != 0 && *(int *)((char *)obj + 0xC) == 0) {
+        delete (Callback *)obj;
+        obj = 0;
+    }
+    return obj;
+}
+
 #pragma dont_inline reset
 
 extern "C" void *fn_802066C8(void*, u32);
