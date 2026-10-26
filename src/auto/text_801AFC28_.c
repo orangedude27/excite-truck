@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include <stddef.h>
+#include <revolution/MTX/mtxtypes.h>
 
 extern void *lbl_8055E650;
 extern void *lbl_8055E654;
@@ -90,10 +91,18 @@ extern f32 lbl_80562588;
 void fn_801B022C(void *arg0) {
     s32 temp_r0;
     void *var_r31;
+    f32 temp_f1;
+    f32 temp_f0;
+
     fn_8017B164();
-    *(f32 *)((u8 *)arg0 + 0x1EC) = lbl_80562578;
+    temp_f1 = lbl_80562578;
+    temp_f0 = lbl_80562598;
+    *(f32 *)((u8 *)arg0 + 0x1EC) = temp_f1;
     *(u8 *)((u8 *)arg0 + 0x1F8) = 0;
-    fn_8017A580(arg0, lbl_80562578);
+    *(f32 *)((u8 *)arg0 + 0x60) = temp_f1;
+    *(f32 *)((u8 *)arg0 + 0x64) = temp_f0;
+    *(f32 *)((u8 *)arg0 + 0x68) = temp_f1;
+    ((void (*)(void *, f32, f32, f32))fn_8017A580)(arg0, temp_f1, temp_f0, temp_f1);
     temp_r0 = *(s32 *)((u8 *)arg0 + 0x28);
     *(s32 *)((u8 *)arg0 + 0x24) = temp_r0;
     if (temp_r0 > 0) {
