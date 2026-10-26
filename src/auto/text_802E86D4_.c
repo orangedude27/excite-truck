@@ -165,6 +165,19 @@ int fn_802E8C6C(int arg0) {
     return 0;
 }
 
+void fn_802E8CA8(void) {
+    int result = NANDInit();
+    if (result != 0) {
+        fn_802E317C(lbl_8034DED4, result);
+    }
+    fn_801282F4();
+    fn_801282EC(0x80);
+    lbl_80560020 = fn_8012850C(0x55730, lbl_8034DEF4);
+    fn_802E6B50();
+    fn_80127C90((void *)fn_802E9010, &lbl_8055D248);
+    fn_802E2E0C((void *)fn_802E8C6C, &lbl_8055D250);
+}
+
 void fn_802E8D2C(void) {
     ((int (*)(void *, void (*)(void)))fn_802E95E0)(lbl_8034DF00, fn_802E8838);
     fn_80127D58((void *)fn_802E9010);
