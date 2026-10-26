@@ -8,7 +8,10 @@ typedef int M2C_UNK;
 extern void *fn_801284F8(unsigned int, void *);
 extern void *fn_8012850C(s32, void *);
 extern void fn_801312EC(void *, void *);
+#pragma push
+#pragma small_data on
 extern char lbl_8055C0E0[];
+#pragma pop
 extern char lbl_80344378[], lbl_80344384[], lbl_80344690[];
 extern unsigned char lbl_8055C0E8;
 extern unsigned int lbl_8055E044;
@@ -1083,6 +1086,22 @@ void *fn_8024FFF8(void *arg0, s32 arg1) {
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+void *fn_8025007C(s32 arg0) {
+    void *result;
+    void *array;
+    result = fn_801284F8(0x20, lbl_80344378);
+    if (result != 0) {
+        *(void **)result = lbl_80344384;
+        array = fn_8012850C(arg0 * 0x48, lbl_8055C0E0);
+        *(void **)((u8 *)result + 4) = array;
+        *(s32 *)((u8 *)result + 0xC) = arg0;
+        *(s32 *)((u8 *)result + 8) = 0;
+        *(void **)((u8 *)result + 0x10) = array;
+        fn_801312EC((u8 *)result + 0x14, lbl_80344690);
+    }
+    return result;
 }
 
 void fn_80250108(void *arg0) {
