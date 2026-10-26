@@ -3,6 +3,7 @@
 
 extern "C" float lbl_80561124;
 extern "C" char lbl_80327930[];
+extern "C" char lbl_80327994[];
 extern "C" char lbl_8032796C[];
 extern "C" char lbl_80327944[];
 extern "C" int OSDisableInterrupts(void);
@@ -231,14 +232,24 @@ extern "C" void Pause__Q46nw4hbm3snd6detail9WsdPlayerFb(void *arg0, unsigned cha
     OSRestoreInterrupts(enabled);
 }
 
-extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100820(void *arg0, float value) {
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100820(register void *arg0, float value) {
+    register void *self = arg0;
     float minimum = lbl_80561124;
     if (!(value >= minimum)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0xFA, lbl_80327944);
     }
     int enabled = OSDisableInterrupts();
-    *(float *)((char *)arg0 + 0x24) = value;
+    *(float *)((char *)self + 0x24) = value;
     OSRestoreInterrupts(enabled);
+}
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100894(void *self, float volume) {
+    float minVolume = lbl_80561124;
+    if (!(volume >= minVolume))
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x101, lbl_8032796C);
+    int interruptState = OSDisableInterrupts();
+    *(float *)((char *)self + 0x3C) = volume;
+    OSRestoreInterrupts(interruptState);
 }
 
 extern "C" void fn_80100908(void* arg0, float arg1) {
