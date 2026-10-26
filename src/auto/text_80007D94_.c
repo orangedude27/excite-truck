@@ -128,16 +128,17 @@ const char* fn_80007FF0(u32 arg0) {
     return lbl_805589A0;
 }
 
-#pragma dont_inline fn_80007F04
+#pragma scheduling invalid_target
 u32 fn_80008050(const char* arg0) {
-    Unk802FB70C* p;
-    u32 key;
+    register u32 key;
+    register Unk802FB70C* p;
     for (p = lbl_802FB70C; (key = p->unk_0x0) != 0; ++p) {
         if (strcmp(p->unk_0x4, arg0) == 0) return key;
     }
     fn_802E30C8(lbl_802FB7A4, arg0);
     return 0;
 }
+#pragma scheduling on
 u32 fn_800080D8(void) {
     return *(u32*)((u8*)&lbl_8034EF38 + 0x1E0);
 }
