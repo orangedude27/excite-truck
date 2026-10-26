@@ -58,8 +58,8 @@ void fn_801A63F4(void *arg0, void *arg1, void *arg2, void *arg3) {
 }
 
 void *fn_801A6484(void *arg0) {
-    char *current;
     char *end;
+    char *current;
     void *handle;
 
     fn_80182010();
