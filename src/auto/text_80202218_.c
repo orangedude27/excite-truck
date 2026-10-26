@@ -48,27 +48,34 @@ void fn_802022A0(int *arg0) {
     }
 }
 
+#pragma push
+#pragma ppc_psq_save off
 int fn_802022E4(const Vec *arg0) {
     f32 temp_f1;
     f32 var_f31;
-    s32 var_r29;
-    s32 var_r30;
     s32 var_r31;
+    s32 var_r30;
+    s32 var_r29;
+
     var_f31 = lbl_805630A0;
     var_r31 = 0;
     var_r30 = 0;
     var_r29 = 0;
-    do {
-        temp_f1 = PSVECSquareDistance(arg0, (const Vec *)(lbl_8055ECC4 + var_r31));
-        if (temp_f1 < var_f31) {
-            var_f31 = temp_f1;
-            var_r30 = var_r29;
-        }
-        var_r31 += 0x10;
-        var_r29 += 1;
-    } while (var_r29 < lbl_8055ECC0);
+    goto test;
+loop:
+    temp_f1 = PSVECSquareDistance(arg0, (const Vec *)((char *)lbl_8055ECC4 + var_r31));
+    if (temp_f1 < var_f31) {
+        var_f31 = temp_f1;
+        var_r30 = var_r29;
+    }
+    var_r31 += 0x10;
+    var_r29 += 1;
+test:
+    if (var_r29 < lbl_8055ECC0)
+        goto loop;
     return var_r30;
 }
+#pragma pop
 
 int fn_80202378(int arg0, int arg1, int arg2, int arg3) {
     if (arg3 >= lbl_8055ECC0) return -1;
