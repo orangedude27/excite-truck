@@ -155,8 +155,6 @@ int fn_802E7AF4(int arg0, int arg1) {
 void fn_802E7B6C(int arg0, int arg1) {
     int var_r30 = arg0;
     int var_r31 = arg1;
-    int offset;
-    unsigned char *base;
     unsigned char *record;
 
     if (var_r30 < 0) {
@@ -171,9 +169,7 @@ dispatch:
     if (lbl_80507268[var_r30] != 0) {
         ((void (*)(void))lbl_80507268[var_r30])();
     }
-    offset = var_r30 * 0x638;
-    base = lbl_80505978;
-    record = base + offset;
+    record = lbl_80505978 + var_r30 * 0x638;
     if (var_r31 == -1) {
         record[0xC4] = 0;
     } else if (var_r31 == 0) {
@@ -234,7 +230,8 @@ extern int WPADSetSamplingCallback(int, int);
 extern int fn_8006022C(int);
 extern int fn_8005ED8C(void);
 extern int fn_8005EE7C(void);
-extern int lbl_8034D908, lbl_8034D8E8;
+extern char lbl_8034D908[];
+extern int lbl_8034D8E8;
 extern int lbl_80507268[], lbl_80507258[], lbl_8056000C;
 void fn_802E7D0C(void) {
     int i;
