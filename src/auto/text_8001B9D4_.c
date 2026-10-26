@@ -27,6 +27,9 @@ extern s32 fn_802E317C(const char *);
 extern void fn_8001C9C4(void);
 extern void fn_8001CAF8(void);
 extern s32 fn_8001D25C(s32);
+extern void fn_8001CD4C(s32, s32, s32);
+extern s32 fn_8001CB8C(s32, const char *, void *);
+extern void *lbl_80358628;
 extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
 extern s32 fn_8001CE34(s32, s32, s32, s32);
 extern s32 fn_8001CE74(s32, s32, s32, s32);
@@ -281,7 +284,7 @@ s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
     return result;
 }
 #pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
     s32 i = 0;
     s32 offset = 0;
@@ -300,7 +303,7 @@ s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
         }
     }
 }
-#pragma scheduling reset
+#pragma use_lmw_stmw reset
 #pragma dont_inline reset
 extern const char lbl_802FD750[];
 s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
@@ -656,10 +659,12 @@ loop_outer_528:
     var_r27 = 0;
     var_r28 = lbl_8055D5CC + var_r31;
     var_r30 = var_r28;
+    goto loop_inner_528;
+loop_inner_528:
     do {
         *(s32 *)(var_r30 + 4) = callback(*(s32 *)(var_r30 + 4));
-        var_r30 += 0x2C;
         var_r27 += 1;
+        var_r30 += 0x2C;
     } while (var_r27 < *(s32 *)(var_r28 + 0x6E00));
     ((void (*)(void *, s32, s32 (*)(s32)))fn_8001D484)(var_r28 + 0x6E04, 0xF0, callback);
     var_r29 += 1;
