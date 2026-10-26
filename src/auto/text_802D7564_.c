@@ -69,10 +69,9 @@ int fn_802D76DC(int arg0) {
     case 0x49:
     case 0x4C:
         return 0;
-    default:
-        fn_802E317C(lbl_8034C4B0, arg0);
-        return 1;
     }
+    fn_802E317C(lbl_8034C4B0, arg0);
+    return 1;
 }
 
 #pragma dont_inline on
@@ -337,7 +336,7 @@ void fn_802D9418(void) {
 }
 
 extern void *lbl_8055FE28;
-extern void *lbl_8034C5B8;
+extern char lbl_8034C5B8[];
 extern void *fn_8012850C(void *, void *);
 void* fn_802D94DC(void) {
     return lbl_8055FE18;
@@ -456,4 +455,27 @@ void *fn_802D8C00(void *arg0, void *arg1) {
     fn_802D7780(obj, arg0);
     return obj;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_802D8D1C(void) {
+    int i;
+    int offset;
+
+    lbl_8055FE24 = 0;
+    lbl_8055FE20 = 0;
+    lbl_8055FE1C = 0;
+    lbl_8055FE18 = 0;
+    lbl_8055FE28 = fn_8012850C((void *)0x1ACE8, &lbl_8034C5B8);
+
+    i = 0;
+    offset = 0;
+    do {
+        memset((char *)lbl_8055FE28 + offset, 0, 0xF4);
+        i++;
+        offset += 0xF4;
+    } while (i < 0x1C2);
+}
+#pragma pop
 
