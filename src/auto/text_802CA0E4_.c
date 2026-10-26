@@ -73,9 +73,9 @@ int fn_802CA2A8(void *arg0, int arg1, int arg2) {
     int remaining = arg1;
     char *dst = (char *)arg0;
     const char *src = (const char *)arg2;
+    const char *suffix;
     char *cursor;
     char *dot;
-    const char *suffix;
 
     {
         int copy_count = arg1;
@@ -90,11 +90,13 @@ int fn_802CA2A8(void *arg0, int arg1, int arg2) {
 
     dot = fn_80029004(dst, '.');
     *dot = 0;
+    suffix = &lbl_8055D048;
     cursor = dst;
-    while ((signed char)*cursor++)
+    while ((signed char)*cursor != 0) {
         --remaining;
+        ++cursor;
+    }
     if (remaining > 0) {
-        suffix = &lbl_8055D048;
         while ((signed char)(*cursor++ = *suffix++) != 0) {
             if (--remaining <= 0) {
                 cursor[-1] = 0;
@@ -167,6 +169,45 @@ int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
     }
     fn_802CA3F4(sp8, arg0, arg2 == 1 ? 3 : 1, arg3, arg4);
     return fn_802D8E9C(sp8, arg1);
+}
+
+extern void fn_802D8DCC(void *, int);
+void fn_802CA57C(int arg0, int arg1, int arg2, int arg3) {
+    unsigned char *base = (unsigned char *)arg0;
+    unsigned char old14;
+    unsigned char old15;
+    unsigned char old0;
+    unsigned char old1;
+    unsigned char old2;
+    unsigned char old3;
+    unsigned char oldC;
+    unsigned char oldD;
+    char sp8[0x34];
+
+    if ((base[5] & 0x80) == 0) {
+        old14 = base[0x14];
+        old15 = base[0x15];
+        base[0x14] = base[0x17];
+        old0 = base[0];
+        old1 = base[1];
+        base[0x17] = old14;
+        old2 = base[2];
+        old3 = base[3];
+        base[0x15] = base[0x16];
+        oldC = base[0xC];
+        oldD = base[0xD];
+        base[0x16] = old15;
+        base[0] = old1;
+        base[1] = old0;
+        base[2] = old3;
+        base[3] = old2;
+        base[0xC] = oldD;
+        base[0xD] = oldC;
+        *(int *)(base + 0x14) = (int)base + *(int *)(base + 0x14);
+        ((void (*)(void *, int, int, int, int, int, int, int))fn_802CA3F4)(sp8, arg0, 0, arg2, arg3, oldD, old3, old1);
+        fn_802D8DCC(sp8, arg1);
+        base[5] |= 0x80;
+    }
 }
 
 extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
