@@ -16,6 +16,30 @@ void fn_8013C748(void) {
     }
 }
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void *fn_8013C770(const char *arg0) {
+    int *var_r31;
+
+    var_r31 = (int *)&lbl_8032C478;
+    goto loop_test;
+loop_body:
+    if (stricmp(arg0, (const char *)*var_r31) != 0) {
+        goto loop_next;
+    }
+    goto done;
+loop_next:
+    var_r31 += 3;
+loop_test:
+    if (*var_r31 != 0) {
+        goto loop_body;
+    }
+done:
+    return var_r31;
+}
+#pragma scheduling on
+#pragma dont_inline off
+
 void fn_8013C800(void) {
     fn_8013C7D0();
 }
