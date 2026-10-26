@@ -3697,6 +3697,21 @@ update:
     *(u16 *)(lbl_803C0F78 + i * 0x11C + 0x3A) = arg1;
 }
 
+void btm_acl_timeout(TIMER_LIST_ENT *p_tle) {
+    u8 param[0xA];
+    void (*callback)(u8 *);
+
+    if (*(u32 *)((u8 *)p_tle + 0x10) == 4) {
+        callback = *(void (**)(u8 *))(lbl_803C0F78 + 0x5C4);
+        param[0] = 0xA;
+        *(u16 *)(param + 8) = 0;
+        *(void (**)(u8 *))(lbl_803C0F78 + 0x5C4) = NULL;
+        if (callback != NULL) {
+            callback(param);
+        }
+    }
+}
+
 s32 fn_80078310(s32 arg0)
 {
     if (arg0 == 0) {
