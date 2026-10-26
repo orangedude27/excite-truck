@@ -993,16 +993,21 @@ extern "C" void OSSetAlarmUserData(void*, void*);
 extern "C" void* memset(void*, int, u32);
 extern u8 lbl_80323770[];
 extern u8 lbl_80323790[];
+#pragma push
+#pragma dont_inline on
 extern "C" void FreeTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm3snd6detail8SeqTrack(void* arg0, void* arg1) {
+    struct Dummy {
+        virtual void v0(s32);
+    };
     if (arg1 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323770, 0x3B, (const char*)lbl_80323790);
     *(u32*)((u8*)arg1 + 0xB4) = 0;
     if (arg1 != 0) {
-        (*(void (**)(void*, s32))(*(u32*)arg1 + 8))(arg1, -1);
+        ((Dummy*)arg1)->v0(-1);
         fn_800EC848((void**)((u8*)arg0 + 8), arg1);
     }
 }
-
+#pragma pop
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, void*, u32, u32);
 extern "C" void fn_800EE428(void* arg0, void* arg1, u32 arg2) {
     CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8*)arg0 + 8, arg1, arg2, 0xD4);
