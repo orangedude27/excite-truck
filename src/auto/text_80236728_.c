@@ -145,11 +145,11 @@ void fn_80236918(void* alarm) {
 }
 
 extern void fn_80237A9C(void);
-extern void fn_80237DA0(void);
+extern void fn_80237DA0(void *, char *);
 extern int fn_80237EFC(void);
 void fn_80236950(void) { fn_80237A9C(); }
 
-void fn_80236954(void) { fn_80237DA0(); }
+void fn_80236954(void *arg0, char *arg1) { fn_80237DA0(arg0, arg1); }
 
 extern void fn_80237E7C(char *, int);
 void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
