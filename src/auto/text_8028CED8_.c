@@ -14,7 +14,7 @@ extern void fn_8028D7C0(int);
 extern void fn_801E58FC(void);
 extern void fn_802C8D74(void);
 extern void fn_802C967C(void);
-extern float lbl_80558DC4;
+extern float lbl_80558DC4[];
 extern float fn_801E7E24(void);
 extern void fn_8028D728(void);
 extern void fn_8028D4FC(void);
@@ -47,8 +47,11 @@ void fn_8028CF50(void) {
 }
 
 void fn_8028CF64(void) {
-    if (lbl_8055F714 != 0 && __fabsf(fn_801E7E24()) >= lbl_80558DC4) {
-        fn_8028D728();
+    if (lbl_8055F714 != 0) {
+        float value = fn_801E7E24();
+        float abs = (float)__fabs((double)value);
+        if (!(abs <= lbl_80558DC4[0]))
+            fn_8028D728();
     }
 }
 
@@ -130,7 +133,6 @@ int fn_8028D17C(void) {
     return lbl_8055F728 > 0;
 }
 
-extern int lbl_804B3400;
 extern int lbl_8055F728;
 extern void fn_802CAC54(int);
 void fn_8028D25C(void) {
@@ -177,6 +179,53 @@ void fn_8028D4FC(void) {
     }
 }
 
+void fn_8028D58C(void *arg0) {
+    unsigned char *base = *(unsigned char **)arg0;
+    unsigned int count = *(unsigned int *)((char *)arg0 + 4);
+    unsigned int start_index = count - *(unsigned int *)((char *)arg0 + 8) + 2;
+    unsigned char *end = base + count * 0x28;
+    unsigned char *start = base + ((start_index & (-(int)start_index >> 31)) * 0x28);
+    unsigned int n = (unsigned int)(end + 0x27 - start) / 0x28;
+    unsigned char *src = start;
+    unsigned char *dst = base;
+    while (src < end) {
+        if (src[0x26] != 0 &&
+            (*(unsigned short *)(src + 0x24) >= 0x100 ||
+             *(unsigned short *)(src - 4) >= 0x100 ||
+             src + 0x28 >= end ||
+             (src[0x4E] != 0 && *(unsigned short *)(src + 0x4C) >= 0x100)))
+            src[0x26] = 1;
+        else
+            src[0x26] = 0;
+        src += 0x28;
+    }
+    src = start;
+    while (src < end) {
+        if (src[0x26] != 0 || (src + 0x28 < end && src[0x4E] != 0)) {
+            int v;
+            int x;
+            float f;
+            f = *(float *)(src + 0); *(float *)(dst + 0) = f;
+            f = *(float *)(src + 4); *(float *)(dst + 4) = f;
+            f = *(float *)(src + 8); *(float *)(dst + 8) = f;
+            f = *(float *)(src + 0xC); *(float *)(dst + 0xC) = f;
+            f = *(float *)(src + 0x10); *(float *)(dst + 0x10) = f;
+            f = *(float *)(src + 0x14); *(float *)(dst + 0x14) = f;
+            f = *(float *)(src + 0x18); *(float *)(dst + 0x18) = f;
+            f = *(float *)(src + 0x1C); *(float *)(dst + 0x1C) = f;
+            f = *(float *)(src + 0x20); *(float *)(dst + 0x20) = f;
+            v = *(unsigned short *)(src + 0x24) - 0x80;
+            x = v < 0 ? -v : v;
+            *(unsigned short *)(dst + 0x24) = (unsigned short)(v & (v < 0 ? -1 : 0));
+            dst[0x26] = src[0x26];
+            dst += 0x28;
+        }
+        src += 0x28;
+    }
+    *(unsigned int *)((char *)arg0 + 4) = (dst - base) / 0x28;
+}
+
+#pragma small_data off
 void fn_8028D728(void) {
     typedef struct { unsigned char pad[0x14]; int *items; int total; } Entry;
     Entry *entry = (Entry *)&lbl_804B3400;
@@ -190,7 +239,7 @@ void fn_8028D728(void) {
         }
     }
 }
-
+#pragma small_data on
 extern double lbl_805643F8;
 extern float lbl_805643F4;
 extern void fn_801E53A8(void *, void *, void *, int, float);
