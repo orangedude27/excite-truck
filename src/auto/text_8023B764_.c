@@ -6,6 +6,7 @@ typedef signed short s16;
 typedef unsigned short u16;
 typedef signed int s32;
 typedef unsigned int u32;
+extern void fn_80137C80(s32);
 
 extern void fn_802411C8(void);
 extern int fn_8023FF1C(int);
@@ -56,6 +57,8 @@ void fn_8023B77C(void) {
 #pragma scheduling on
 #pragma dont_inline reset
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8023B7EC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 sp8[16];
 
@@ -71,7 +74,7 @@ void fn_8023B7EC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_80018440(sp8, *(s32 *)((u8 *)arg0 + 0x3E4), (u8 *)arg0 + 0x3F8);
     fn_8000AB48(arg0, sp8);
 }
-
+#pragma pop
 void fn_8023B8AC(s32 arg0) {
     fn_8000ABE0();
     fn_800126C0(arg0, arg0 + 0x3F8);
@@ -82,22 +85,45 @@ void fn_8023B8AC(s32 arg0) {
     fn_8020A600();
 }
 
+#pragma scheduling invalid_target
 void fn_8023B904(void *arg0, void *dest, s32 flag) {
-    if (flag == 0) {
-        u8 *p = lbl_803413A8;
-        fn_8000BF20(&p);
-        if (dest != 0) {
-            *(s32 *)((u8 *)dest) = *(s32 *)(p + 0);
-            *(s32 *)((u8 *)dest + 4) = *(s32 *)(p + 4);
-            *(s32 *)((u8 *)dest + 8) = *(s32 *)(p + 8);
-            *(u8 *)((u8 *)dest + 0xC) = p[0xC];
-            *(u8 *)((u8 *)dest + 0xD) = p[0xD];
-            *(u8 *)((u8 *)dest + 0xE) = p[0xE];
-            __builtin_memcpy((u8 *)dest + 0x10, p + 0x10, 0xA0);
-        }
-    } else fn_8000C0E8();
-}
+    struct Buffer {
+        u8 *data;
+        s32 field0;
+        s32 field1;
+        s32 field2;
+        u8 bytes[4];
+        s32 tail[40];
+    } local;
+    s32 *source;
+    s32 *target;
+    s32 count;
 
+    if (flag == 0) {
+        local.data = lbl_803413A8;
+        ((void (*)(void *, void *))fn_8000BF20)(arg0, &local);
+        if (dest != 0) {
+            *(s32 *)dest = local.field0;
+            target = (s32 *)((u8 *)dest + 0xC);
+            *(s32 *)((u8 *)dest + 4) = local.field1;
+            *(s32 *)((u8 *)dest + 8) = local.field2;
+            ((u8 *)dest)[0xC] = local.bytes[0];
+            ((u8 *)dest)[0xD] = local.bytes[1];
+            ((u8 *)dest)[0xE] = local.bytes[2];
+            source = (s32 *)local.bytes;
+            count = 0x14;
+            do {
+                target[1] = source[1];
+                target[2] = source[2];
+                source += 2;
+                target += 2;
+            } while (--count != 0);
+        }
+    } else {
+        fn_8000C0E8();
+    }
+}
+#pragma scheduling on
 s32 fn_8023B9AC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
