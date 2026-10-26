@@ -129,6 +129,7 @@ struct Dummy_801B8318 {
 #pragma cplusplus off
 #pragma push
 #pragma scheduling invalid_target
+#pragma dont_inline fn_801B81E0
 int fn_801B81E0(void *arg0) {
     extern int fn_8014145C(void);
     extern int fn_8014DE50(void);
