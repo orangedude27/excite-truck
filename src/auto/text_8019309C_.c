@@ -230,14 +230,17 @@ int fn_80193524(void *arg0, void *arg1) {
     extern float PSVECDotProduct(const void *, const void *);
     extern float lbl_8056215C;
     float delta[3];
-    float dot;
-    if (__fabs(PSVECDotProduct((char *)arg0 + 0x54, (char *)arg1 + 0x54)) >= lbl_8056215C)
-        return 0;
-    delta[0] = *(float *)((char *)arg1 + 0x60) - *(float *)((char *)arg0 + 0x60);
-    delta[1] = *(float *)((char *)arg1 + 0x64) - *(float *)((char *)arg0 + 0x64);
-    delta[2] = *(float *)((char *)arg1 + 0x68) - *(float *)((char *)arg0 + 0x68);
-    dot = PSVECDotProduct(delta, (char *)arg0 + 0x54);
-    return dot > -PSVECDotProduct(delta, (char *)arg1 + 0x54);
+    float dot = __fabs(PSVECDotProduct((char *)arg1 + 0x54, (char *)arg0 + 0x54));
+    int result = 0;
+
+    if (dot < lbl_8056215C) {
+        delta[0] = *(float *)((char *)arg1 + 0x60) - *(float *)((char *)arg0 + 0x60);
+        delta[1] = *(float *)((char *)arg1 + 0x64) - *(float *)((char *)arg0 + 0x64);
+        delta[2] = *(float *)((char *)arg1 + 0x68) - *(float *)((char *)arg0 + 0x68);
+        dot = PSVECDotProduct(delta, (char *)arg0 + 0x54);
+        result = dot > -PSVECDotProduct(delta, (char *)arg1 + 0x54);
+    }
+    return result;
 }
 #pragma processor gekko
 void fn_801935EC(void *arg0) {
@@ -1440,8 +1443,8 @@ void fn_801971AC(void *arg0, void *arg1) {
     float speed;
     float old0;
     float old1;
-    float result0;
-    float result1;
+    register float result0;
+    register float result1;
     float *point;
     char *base;
     point = (float *)arg1;
@@ -1455,8 +1458,8 @@ void fn_801971AC(void *arg0, void *arg1) {
     old0 = point[0];
     sp18[1] = *(float *)(base + 0x4C) + (*(float *)(base + 0x5C) * speed);
     old1 = point[1];
-    result1 = (factor * (sp18[1] - old1)) + old1;
-    result0 = (factor * (sp18[0] - old0)) + old0;
+    result1 = old1 + (factor * (sp18[1] - old1));
+    result0 = old0 + (factor * (sp18[0] - old0));
     sp8[0] = result0;
     sp8[1] = result1;
     sp10 = *(double *)sp8;
@@ -1667,24 +1670,33 @@ void fn_80198488(void *arg0) {
     }
 }
 #pragma dont_inline reset
-  void *fn_80198DD0(void *arg0, int arg1) {
-      int i;
-      int count;
-      void **items;
-      if (arg0 == 0) return arg0;
-      *(void **)arg0 = &lbl_80333390;
-      count = *(int *)((unsigned char *)lbl_804349E0 + 0x20);
-      items = (void **)lbl_804349E0;
-      for (i = 0; i < count; i++) {
-          if (items[i] == arg0) {
-              count--;
-              *(int *)((unsigned char *)lbl_804349E0 + 0x20) = count;
-              items[i] = items[count];
-          }
-      }
-      if (arg1 > 0) fn_80128668(arg0);
-      return arg0;
-  }
+void *fn_80198DD0(void *arg0, int arg1) {
+    void **scan;
+    int loopCount;
+    int i;
+    int count;
+    if (arg0 != 0) {
+        *(void **)arg0 = &lbl_80333390;
+        scan = lbl_804349E0;
+        i = 0;
+        loopCount = *(int *)((char *)lbl_804349E0 + 0x20);
+        if (loopCount > 0) {
+            for (; loopCount > 0; loopCount--) {
+                if (*scan == arg0) {
+                    count = *(int *)((char *)lbl_804349E0 + 0x20) - 1;
+                    *(int *)((char *)lbl_804349E0 + 0x20) = count;
+                    *(void **)((char *)lbl_804349E0 + (i << 2)) =
+                        ((void **)lbl_804349E0)[count];
+                } else {
+                    scan++;
+                    i++;
+                }
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
 
 #pragma dont_inline on
 void fn_80198E7C(int index) {
@@ -1699,11 +1711,11 @@ void fn_80198E7C(int index) {
         fn_80198E7C(index);
     }
 
-  typedef unsigned char u8;
-  extern void *lbl_804349C0[];
-  extern void *lbl_804349E0[];
-  extern int lbl_80333390;
-  void fn_801964D0(void);
+  
+    typedef unsigned char u8;
+    extern void *lbl_804349C0[];
+    extern void *lbl_804349E0[];
+    void fn_801964D0(void);
   void fn_80128668(void *);
   void fn_80193138(int);
   void fn_801964D0(void);
