@@ -15,6 +15,7 @@ typedef struct CacheEntry {
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern u8 lbl_804CA438[];
 extern s32 lbl_8055FD1C;
 extern u8 lbl_8055FDE4;
 extern f32 lbl_8055FDE0;
