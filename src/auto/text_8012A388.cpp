@@ -253,24 +253,39 @@ extern "C" const char lbl_8032AC68[];
 extern "C" s32 fn_8012A470(void *, s32, void *, void *);
 extern "C" s32 fn_80132E7C(void *, s32);
 extern "C" const char lbl_8032A7E8[];
+extern int __cntlzw(unsigned int);
+#pragma push
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" s32 fn_8012AA60(void *arg0, s32 arg1, s32 arg2) {
- s32 count=*(s32*)((char*)arg0+0x88);
- void *base=*(void**)((char*)arg0+0x60);
- s32 result=*(s32*)((char*)arg0+0x94);
- void *p=base;
- if (result == fn_80132E7C(base,count*0x44)) {
-  s32 i=0;
-  while(i<count) {
-   fn_8012A388(p);
-   if (*(s32*)((char*)p+0x2c)+*(s32*)((char*)p+0x28)>arg1) goto next;
-   if(fn_8012A470(arg0,i,p,base)==0){result=0;break;}
-  next:
-   p=(char*)p+0x44; ++i;
-  }
- } else { fn_802E30C8("%s",arg0); }
- return result;
-}
+    s32 count;
+    s32 result;
+    void *base;
+    void *p;
+    s32 i;
 
+    count = *(s32 *)((char *)arg0 + 0x88);
+    p = *(void **)((char *)arg0 + 0x60);
+    result = *(s32 *)((char *)arg0 + 0x94);
+    base = p;
+    result = (u32)__cntlzw((u32)(fn_80132E7C(p, count * 0x44) - result)) >> 5;
+    if (result != 0) {
+        for (i = 0; i < count; i++) {
+            fn_8012A388(p);
+            if (*(s32 *)((char *)p + 0x2C) + *(s32 *)((char *)p + 0x28) <= arg1) {
+                if (fn_8012A470(arg0, i, p, base) == 0) {
+                    result = 0;
+                    break;
+                }
+            }
+            p = (char *)p + 0x44;
+        }
+    } else {
+        fn_802E30C8(lbl_8032A7E8, arg0);
+    }
+    return result;
+}
+#pragma pop
 extern "C" s32 fn_8012AB34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 result = 0;
     if (((s32 (*)(s32, s32, s32))fn_802E39D0)(arg0, arg1, 0x34) != 0) {
@@ -1213,7 +1228,7 @@ struct Unk8012DFCCList {
 };
 
 
-extern "C" s32 fn_8012CAA0(s32);
+extern "C" s32 fn_8012CAA0(s32, void * = 0);
 #pragma dont_inline on
 extern "C" void fn_8012DD00(void) {
     if (lbl_8055E014) {
