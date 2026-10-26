@@ -1258,50 +1258,46 @@ f32 fn_80192D10(void *arg0) {
     extern f64 lbl_805620B0;
     typedef union {
         f64 value;
-        struct {
-            u32 high;
-            u32 low;
-        } words;
+        struct { u32 high; u32 low; } words;
     } DoubleBits;
     register u8 byteValue = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 5);
-    DoubleBits first;
     DoubleBits second;
-    f32 result;
+    DoubleBits first;
+    f32 lower = lbl_80562090;
+    f32 value;
     first.words.high = 0x43300000;
     first.words.low = byteValue;
-    result = (f32)(first.value - lbl_805620B0);
-    result = (result - lbl_8056208C) / lbl_805620AC;
-    if (lbl_80562090 < result) {
-        result = lbl_80562090;
+    value = (f32)(first.value - lbl_805620B0);
+    value = (value - lbl_8056208C) / lbl_805620AC;
+    if (lower < value) {
+        value = lower;
     } else {
         second.words.high = 0x43300000;
         second.words.low = byteValue;
-        result = (f32)(second.value - lbl_805620B0);
-        result = (result - lbl_8056208C) / lbl_805620AC;
-        if (result > lbl_8056208C) {
-            result = lbl_8056208C;
+        value = (f32)(second.value - lbl_805620B0);
+        value = (value - lbl_8056208C) / lbl_805620AC;
+        if (value > lbl_8056208C) {
+            value = lbl_8056208C;
         }
     }
-    return lbl_80562094 + result * lbl_80562138;
+    return lbl_80562094 + value * lbl_80562138;
 }
 #pragma scheduling on
 extern f64 lbl_805620B0;
 extern f32 lbl_8056208C, lbl_80562090, lbl_80562094, lbl_805620AC, lbl_80562138;
+#pragma scheduling invalid_target
 f32 fn_80192D98(void *arg0) {
-    f32 value;
     u8 raw = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 4);
-    value = lbl_80562090;
-    if (value < ((f32)raw - lbl_8056208C) / lbl_805620AC) {
+    f32 normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+    f32 value;
+    if (lbl_80562090 < normalized) {
+        value = lbl_80562090;
     } else {
         value = ((f32)raw - lbl_8056208C) / lbl_805620AC;
     }
-    if (value > lbl_8056208C) {
-    } else {
-        value = lbl_8056208C;
-    }
+    value = value > lbl_8056208C ? value : lbl_8056208C;
     return lbl_80562094 + value * lbl_80562138;
 }
-
 #pragma scheduling on
 
 s32 fn_80192E20(void *arg0) {
