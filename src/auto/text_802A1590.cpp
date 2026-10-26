@@ -245,28 +245,26 @@ extern "C" char* lbl_802FAA10[];
 extern "C" char lbl_80349934[];
 extern "C" int stricmp(const char*, const char*);
 extern "C" void fn_802E317C(const char*, const char*);
-extern "C" s32 fn_802A1864(const char* name) {
-    s32 entries[12];
-    s32 i;
-    entries[0] = (s32)lbl_802FAA10[0];
-    entries[1] = (s32)lbl_802FAA10[1];
-    entries[2] = (s32)lbl_802FAA10[2];
-    entries[3] = (s32)lbl_802FAA10[3];
-    entries[4] = (s32)lbl_802FAA10[4];
-    entries[5] = (s32)lbl_802FAA10[5];
-    entries[6] = (s32)lbl_802FAA10[6];
-    entries[7] = (s32)lbl_802FAA10[7];
-    entries[8] = (s32)lbl_802FAA10[8];
-    entries[9] = (s32)lbl_802FAA10[9];
-    entries[10] = (s32)lbl_802FAA10[10];
-    entries[11] = (s32)lbl_802FAA10[11];
-    for (i = 0; i < 6; ++i) {
-        if (stricmp(name, (char*)entries[i * 2]) == 0) return entries[i * 2 + 1];
-    }
-    fn_802E317C(lbl_80349934, name);
+#pragma use_lmw_stmw off
+extern "C" s32 fn_802A1864(const char *name) {
+    register s32 table[12];
+    register s32 *src = (s32 *)lbl_802FAA10;
+    register s32 *dst = table;
+    register s32 *p = table;
+    register unsigned int i = 0;
+    *dst++ = *src++; *dst++ = *src++; *dst++ = *src++; *dst++ = *src++;
+    *dst++ = *src++; *dst++ = *src++; *dst++ = *src++; *dst++ = *src++;
+    *dst++ = *src++; *dst++ = *src++; *dst++ = *src++; *dst = *src;
+    do {
+        if (stricmp(name, (const char *)p[0]) == 0)
+            return ((s32 *)((char *)table + 4))[i * 2];
+        ++i;
+        p += 2;
+    } while (i < 6);
+    ((void (*)(const char *, ...))fn_802E317C)(lbl_80349934, name);
     return 0;
 }
-
+#pragma use_lmw_stmw on
 extern "C" void fn_802A1B20(void* arg0, s32 count) {
     void* p = arg0;
     f32 threshold = fn_801E7E24();
@@ -654,7 +652,7 @@ extern "C" f32 lbl_80564730, lbl_80564734, lbl_80564740, lbl_80564744, lbl_80564
 extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
     struct Params {
         s32 size;
-        f32 a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r;
+        f32 a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s;
     } params;
     void *obj;
     params.size = 0x834;
@@ -676,8 +674,12 @@ extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
     params.p = lbl_80564740;
     params.q = lbl_805647D8;
     params.r = lbl_80564744;
+    params.s = lbl_805647C8;
     obj = fn_801284F8(0x68, (void *)lbl_80349A34);
-    if (obj != 0) *(s32 *)((u8 *)arg0 + 0x10) = fn_802A42C8(&params, arg1);
+    if (obj != 0) {
+        *(s32 *)((u8 *)arg0 + 0x10) =
+            ((s32 (*)(void *, Params *, s32))fn_802A42C8)(obj, &params, arg1);
+    }
 }
 
 #pragma push
