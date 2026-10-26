@@ -56,27 +56,70 @@ extern Ctr804302F0 lbl_804302F0;
 extern f32 lbl_80561958;
 extern f32 lbl_8056195C;
 extern f32 lbl_8055E3C8;
+#pragma small_data off
 void fn_8016A0D4(void) {
- s32 i=0, off=0; u8* ptr;
- while(i < *(s32*)((u8*)&lbl_80430340+4)) { ptr=(u8*)(*(u32*)&lbl_80430340)+off; ptr[0x28]=0; off+=0x2c; i++; }
- i=0; off=0;
- while(i < *(s32*)((u8*)&lbl_80430318+4)) { ptr=(u8*)(*(u32*)&lbl_80430318)+off; ptr[0x3c]=0; off+=0x48; ptr[0x3d]=0; *(f32*)(ptr+0x40)=lbl_80561958; *(f32*)(ptr+0x44)=lbl_8056195C; i++; }
-}
+    register Unk8016A0AC *table = &lbl_80430340;
+    register s32 *tableCount = &table->unk_0x4;
+    register s32 i = 0;
+    register s32 offset = 0;
+    register s32 zero = 0;
 
+    goto check_first;
+first_loop:
+    {
+        register u8 *entry = (u8 *)table->unk_0x0 + offset;
+        i++;
+        entry[0x28] = zero;
+        offset += 0x2C;
+    }
+check_first:
+    if (i < *tableCount)
+        goto first_loop;
+
+    {
+        register s32 *recordCount = (s32 *)((u8 *)&lbl_80430318 + 4);
+        register s32 count = 0;
+        register s32 recordOffset = 0;
+        register s32 clear = 0;
+        register f32 value1 = lbl_80561958;
+        register f32 value2 = lbl_8056195C;
+
+        goto check_second;
+    second_loop:
+        {
+            register u8 *entry =
+                (u8 *)(*(s32 *)&lbl_80430318) + recordOffset;
+            count++;
+            entry[0x3C] = clear;
+            recordOffset += 0x48;
+            entry[0x3D] = clear;
+            *(f32 *)(entry + 0x40) = value1;
+            *(f32 *)(entry + 0x44) = value2;
+        }
+    check_second:
+        if (count < *recordCount)
+            goto second_loop;
+    }
+}
+#pragma small_data on
 extern f32 lbl_8055E3C8;
+#pragma push
+#pragma small_data off
 void fn_8016A240(const char *arg0) {
-    s32 *state = &lbl_80430340.unk_0x4;
-    s32 i = 0;
-    s32 offset = 0;
-    s32 zero = 0;
-    u8 *entry;
+    register Unk8016A0AC *table = &lbl_80430340;
+    register s32 *state = &table->unk_0x4;
+    register volatile s32 *recordSlot = (s32 *)lbl_80430318;
+    register s32 i = 0;
+    register s32 offset = 0;
+    register s32 zero = 0;
+
     while (i < *state) {
-        if (stricmp(lbl_80430340.unk_0x0 + offset + 1, arg0) == 0) {
-            s32 j = 0;
-            entry = (u8 *)lbl_80430340.unk_0x0 + offset;
+        if (stricmp(table->unk_0x0 + offset + 1, arg0) == 0) {
+            register s32 j = 0;
+            register u8 *entry = (u8 *)table->unk_0x0 + offset;
             entry[0x28] = zero;
             while (j < *(s32 *)(entry + 0x24)) {
-                u8 *record = (u8 *)lbl_80430318 + ((*(s32 *)(entry + 0x20) + j) * 0x48);
+                register u8 *record = (u8 *)(*recordSlot) + ((*(s32 *)(entry + 0x20) + j) * 0x48);
                 if (record[0x3c] != 0) {
                     record[0x3c] = zero;
                     *(f32 *)(record + 0x44) = lbl_8055E3C8;
@@ -88,7 +131,7 @@ void fn_8016A240(const char *arg0) {
         i++;
     }
 }
-
+#pragma pop
 extern f32 PSVECSquareDistance(void *, void *);
 extern s32 fn_8017960C(void);
 extern u8 lbl_8055E364;
@@ -152,9 +195,13 @@ s32 fn_8016A8F8(void* alarm) {
     void* obj;
     Entry28* entry;
     volatile Ctr804302F0* vc;
+    u8* d;
+    u8* s;
+    s32 k;
+    s32 sj;
     s32 cur;
     s32 i;
-    s32 var24 = 1;
+    s32 var24;
 
     obj = *(void**)((char*)fn_8000AC38() + 0x20);
     lbl_8055E364 = ((s32(*)(void*, void*, s32))((*(void***)obj)[0xC]))(obj, &lbl_80330460, 0);
@@ -172,33 +219,41 @@ s32 fn_8016A8F8(void* alarm) {
     lbl_804302F0.data = lbl_804302F0.ptr10;
     lbl_804302F0.limit = lbl_804302F0.cap;
     lbl_804302F0.count = 0;
+    var24 = 1;
 
     while (lbl_804302F0.count + 1 <= lbl_804302F0.limit && var24 < 0x64) {
         cur = lbl_804302F0.count;
         entry = &lbl_804302F0.data[cur];
         lbl_804302F0.count = cur + 1;
-        if (entry->flag != 0) {
+        if (entry->name[0] != 0) {
             fn_802C6CF8((void*)entry->handle);
-            entry->flag = 0;
+            entry->name[0] = 0;
         }
         if (lbl_8055E364 != 0) {
-            fn_801345D8(entry->name, 0x1e, &lbl_803306B4, var24);
+            fn_801345D8(entry->name + 1, 0x1e, &lbl_803306B4, var24);
         } else {
-            fn_801345D8(entry->name, 0x1e, &lbl_803306A0, var24);
+            fn_801345D8(entry->name + 1, 0x1e, &lbl_803306A0, var24);
         }
-        if (fn_8012C33C(entry->name) != 0) {
-            entry->handle = fn_802C6FC0(entry->name, 0, 0);
+        if (fn_8012C33C(entry->name + 1) != 0) {
+            entry->handle = fn_802C6FC0(entry->name + 1, 0, 0);
             entry->id = var24;
-            entry->flag = 1;
-            fn_802E30C8(&lbl_80330688, var24, entry->name);
+            entry->name[0] = 1;
+            fn_802E30C8(&lbl_80330688, var24, entry->name + 1);
         }
-        if (entry->flag == 0) {
+        if (entry->name[0] == 0) {
             vc = &lbl_804302F0;
             i = vc->count - 1;
             if (i >= 0) {
                 if (i < vc->count) {
                     if (i != vc->count - 1) {
-                        lbl_804302F0.data[i] = lbl_804302F0.data[vc->count - 1];
+                        sj = (vc->count - 1) * 0x28;
+                        d = (u8*)lbl_804302F0.data + i * 0x28;
+                        s = (u8*)lbl_804302F0.data + sj;
+                        for (k = 0; k < 0x1f; k++) {
+                            d[k] = s[k];
+                        }
+                        *(s32*)(d + 0x20) = *(s32*)(s + 0x20);
+                        *(s32*)(d + 0x24) = *(s32*)(s + 0x24);
                     }
                     vc->count = vc->count - 1;
                 }
