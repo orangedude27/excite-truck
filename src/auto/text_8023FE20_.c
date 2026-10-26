@@ -417,6 +417,7 @@ extern s32 fn_8023FE34(void);
 void fn_802411CC(void) { fn_8023FE34(); }
 #pragma dont_inline reset
 
+extern void fn_8023FE60();
 void fn_802411D0(void) { fn_8023FE60(); }
 
 #pragma dont_inline fn_802411D4
@@ -663,17 +664,16 @@ s32 fn_80241E40(void *arg0) {
     s32 result;
     s32 value;
     void *out;
+    s32 *valuePtr;
 
     if (*(s32 *)*(s32 **)((char *)arg0 + 0x34) == fn_802E4A10() &&
         *(u8 *)((char *)arg0 + 0x38) == 0) {
         return 0;
     }
     for (i = 0, entry = arg0; i < *(s32 *)((char *)arg0 + 0x2C); i++, entry = (char *)entry + 4) {
-        result = 0;
-        value = *(s32 *)*(s32 **)((char *)arg0 + 0x34);
-        if (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30)) {
-            result = 1;
-        }
+        valuePtr = *(s32 **)((char *)arg0 + 0x34);
+        value = *valuePtr;
+        result = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30)) ? 1 : 0;
         out = *(void **)((char *)entry + 0x18);
         *(u8 *)out = result;
         *(s32 *)((char *)out + 4) = value;
