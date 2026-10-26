@@ -29,8 +29,8 @@ void *fn_80204B18(int arg0) {
     return lbl_802F9D68 + arg0 * 0xC;
 }
 
-void fn_80204BB4(const char *arg0) {
-    fn_80204B2C(arg0);
+void fn_80204BB4(void) {
+    fn_80204B2C();
 }
 
 extern int *lbl_8055ED5C;
