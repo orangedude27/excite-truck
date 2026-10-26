@@ -1,4 +1,10 @@
 #include "revolution/MTX/mtxtypes.h"
+extern int lbl_8034AC48, lbl_8055FAA8, lbl_8055FAAC;
+extern void fn_802C126C(void);
+extern void fn_802B8AE0(void *, void *);
+extern char fn_802B05E4(void);
+extern int fn_802BD210();
+extern void fn_802C2914(void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
