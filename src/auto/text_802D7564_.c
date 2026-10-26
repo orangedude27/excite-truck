@@ -31,11 +31,10 @@ extern void *fn_802D7600(void *queue);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802D7564(void) {
-    unsigned char *entry;
-    int i;
     int offset;
+    int i;
+    unsigned char *entry;
     unsigned short t;
-    unsigned short s;
 
     fn_802E30C8(lbl_8034C460);
     i = 0;
@@ -43,9 +42,9 @@ void fn_802D7564(void) {
     do {
         entry = (unsigned char *)lbl_8055FE28 + offset;
         if (entry[0x20] != 0) {
-            t = GXGetTexObjWrapT(entry + 0x24);
-            s = GXGetTexObjWrapS(entry + 0x24);
-            fn_802E30C8(lbl_8034C47C, i, entry, s, t);
+            t = GXGetTexObjWrapT(entry + 0x24) & 0xFFFF;
+            fn_802E30C8(lbl_8034C47C, i, entry,
+                        (unsigned short)GXGetTexObjWrapS(entry + 0x24), t);
         }
         i++;
         offset += 0xF4;
