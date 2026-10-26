@@ -15,11 +15,6 @@ extern char lbl_8032BECC[];
 extern int lbl_80559C04;
 extern int lbl_80559C08;
 extern int lbl_80559C10;
-#pragma dont_inline fn_80137950
-#pragma dont_inline fn_80137B0C
-#pragma dont_inline fn_801379CC
-#pragma dont_inline fn_80137A18
-#pragma dont_inline fn_80137B14
 char *fn_80137950(int arg0) {
     switch (arg0) {
         case 0:
