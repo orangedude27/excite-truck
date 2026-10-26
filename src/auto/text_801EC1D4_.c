@@ -288,7 +288,7 @@ void fn_801ECFE0(void *arg0) {
       long i;
       char *p;
   
-      fn_801ECC70(arg0);
+      ((void (*)(void))fn_801ECC70)();
     flag = *(long *)((char *)arg0 + 0x40) == fn_801E866C(-1);
     i = 0;
     current = (char *)arg0;
