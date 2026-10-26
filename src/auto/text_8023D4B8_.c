@@ -28,7 +28,7 @@ extern void fn_801333E8(long, void *, char *);
 extern void fn_80133460(void);
 extern long fn_80137C74(void);
 extern unsigned long __AXGetStackHead_80137CFC(long);
-extern long lbl_803416A8;
+extern char lbl_803416A8[0x400];
 extern long lbl_8055BC54;
 extern long lbl_804987D0[];
 void fn_8023D704(long arg0) {
