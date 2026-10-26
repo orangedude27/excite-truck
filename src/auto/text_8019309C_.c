@@ -51,7 +51,7 @@ extern float lbl_8056223C, lbl_8055E57C;
 extern int lbl_804348E8[];
 extern void *lbl_804349E0[];
 extern char lbl_80333390[0x10000];
-  void fn_801964D0();
+  void fn_801964D0(void *);
   void fn_80128668(void *);
   void fn_80193138(int);
   void fn_80193CE0(void *);
@@ -1114,15 +1114,19 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
     float abs0;
     float sp8;
     float spC;
+    float value0;
+    float value1;
+    float out0;
+    float out1;
     int var_r0;
     temp_f5 = farg0 - farg1;
-    temp_f5 += lbl_80562230;
+    temp_f5 = lbl_80562230 + temp_f5;
     temp_f5 /= farg2;
     mag0 = __fabs((double)farg0);
     abs0 = (float)mag0;
     if (abs0 < lbl_80562168) {
-        float value0 = lbl_80562140;
-        float value1 = lbl_80562144;
+        value0 = lbl_80562140;
+        value1 = lbl_80562144;
         *arg1 = value0;
         *arg0 = value1;
         *arg2 = 0;
@@ -1132,15 +1136,19 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
         goto direct_case;
     sp8 = temp_f5;
     spC = farg1;
-    if ((int)(*(unsigned int *)&spC & 0x80000000U) != (int)(*(unsigned int *)&sp8 & 0x80000000U))
+    if ((int)(*(unsigned int *)&sp8 & 0x80000000U) != (int)(*(unsigned int *)&spC & 0x80000000U))
         goto different_sign;
 direct_case:
-    *arg0 = (float)__fabs((double)temp_f5) / lbl_80562234;
-    *arg1 = lbl_80562144;
+    out0 = (float)__fabs((double)temp_f5) / lbl_80562234;
+    out1 = lbl_80562144;
+    *arg0 = out0;
+    *arg1 = out1;
     goto finish;
 different_sign:
-    *arg0 = lbl_80562144;
-    *arg1 = (float)__fabs((double)temp_f5) / lbl_80562238;
+    out0 = lbl_80562144;
+    out1 = (float)__fabs((double)temp_f5) / lbl_80562238;
+    *arg0 = out0;
+    *arg1 = out1;
 finish:
     if (farg0 > lbl_80562144)
         var_r0 = 1;
@@ -1222,6 +1230,39 @@ void fn_80196418(void *arg0) {
       }
       return 0;
   }
+
+extern int fn_80129D18(int, int);
+extern void fn_8018A174(void *);
+extern void fn_8017B4AC(void *, float *, float, float);
+extern float lbl_80562240;
+void fn_801964D0(void *arg0) {
+    float sp8;
+    float spC;
+    float sp10;
+    float temp_f1;
+    float temp_f2;
+    float var_f3;
+    void **temp_r3;
+    void *temp_r3_2;
+    temp_r3 = *(void ***)((char *)arg0 + 0x28C);
+    if (fn_80196468(*(int *)((char *)((void *(*)(void *))(*(void ***)temp_r3)[4])(temp_r3) + 4)) != 0) {
+        *((unsigned char *)arg0 + 0x2A7) = 1;
+        if (fn_80129D18(3, 10) < 5) {
+            fn_8018A174(*(void **)((char *)arg0 + 0x294));
+            if (fn_80129D18(3, 2) != 0)
+                var_f3 = lbl_805621A4;
+            else
+                var_f3 = lbl_80562140;
+            temp_r3_2 = *(void **)((char *)arg0 + 0x294);
+            temp_f2 = lbl_805621AC * *(float *)((char *)temp_r3_2 + 0xD4);
+            temp_f1 = lbl_80562240 * temp_f2 * var_f3;
+            sp8 = *(float *)((char *)temp_r3_2 + 0x3C) * temp_f1;
+            spC = *(float *)((char *)temp_r3_2 + 0x40) * temp_f1;
+            sp10 = *(float *)((char *)temp_r3_2 + 0x44) * temp_f1;
+            fn_8017B4AC(*(void **)((char *)arg0 + 0x294), &sp8, temp_f1, temp_f2);
+        }
+    }
+}
 
 extern float lbl_80562140, lbl_80562144, lbl_80562184, lbl_805621A4;
 extern float lbl_805621EC, lbl_80562244, lbl_80562248;
