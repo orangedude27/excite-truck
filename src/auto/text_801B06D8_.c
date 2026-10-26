@@ -479,16 +479,47 @@ void fn_801B179C(void *arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma dont_inline on
+extern void fn_80135F64(s32, f32 *, f32 *, s32, s32, void *, f32, f32, f32, f32, f32);
+extern void fn_801353C8(s32, f32 *, f32 *, s32);
 void fn_801B18B8(void *arg0, s32 arg1, s32 arg2) {
-    f32 p0[4]; f32 p1[2];
-    void *obj = lbl_8055E684;
-    f32 scale=*(f32*)((u8*)obj+0x5BC);
-    f32 x=*(f32*)((u8*)obj+0x94)+*(f32*)((u8*)obj+0x54)*scale;
-    f32 y=*(f32*)((u8*)obj+0x9C)+*(f32*)((u8*)obj+0x5C)*scale;
-    f32 z=*(f32*)((u8*)obj+0x98)+*(f32*)((u8*)obj+0x58)*scale;
-    p0[0]=x;p0[1]=y;p0[2]=x;p0[3]=z;p1[0]=*(f32*)((u8*)obj+0x54);p1[1]=*(f32*)((u8*)obj+0x5C);
-    fn_80135F64(*(s32*)((u8*)obj+0x58),p0,p1,arg1,arg2,obj,y,z,*(f32*)((u8*)obj+0x58),x,scale);
-    fn_801353C8(*(s32*)((u8*)obj+0x3C),p0,p1,0);
+    f32 p0[5];
+    f32 p1[2];
+    f32 yBase;
+    f32 scale;
+    f32 secondY;
+    f32 y;
+    f32 xBase;
+    void *obj;
+    f32 originalZ;
+    f32 zBase;
+    f32 z;
+    f32 secondX;
+    f32 x;
+
+    obj = *(void **)((u8 *)arg0 + 0x5C);
+    scale = *(f32 *)((u8 *)obj + 0x5BC);
+    x = *(f32 *)((u8 *)obj + 0x54) * scale;
+    y = *(f32 *)((u8 *)obj + 0x5C) * scale;
+    xBase = *(f32 *)((u8 *)obj + 0x94);
+    yBase = *(f32 *)((u8 *)obj + 0x9C);
+    originalZ = *(f32 *)((u8 *)obj + 0x58);
+    x = xBase + x;
+    zBase = *(f32 *)((u8 *)obj + 0x98);
+    y = yBase + y;
+    z = originalZ * scale;
+    p0[0] = x;
+    p0[1] = y;
+    z = zBase + z;
+    obj = *(void **)((u8 *)arg0 + 0x5C);
+    p0[2] = x;
+    secondX = *(f32 *)((u8 *)obj + 0x54);
+    p0[3] = z;
+    p1[0] = secondX;
+    secondY = *(f32 *)((u8 *)obj + 0x5C);
+    p0[4] = y;
+    p1[1] = secondY;
+    fn_80135F64(*(s32 *)((u8 *)arg0 + 0x58), p0, p1, arg1, arg2, obj, y, z, originalZ, x, scale);
+    fn_801353C8(*(s32 *)((u8 *)arg0 + 0x3C), p0, p1, 0);
 }
 #pragma dont_inline reset
 
@@ -941,17 +972,26 @@ void fn_801B24B8(void) {
     }
 }
 
-s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
-    s32 index1 = *arg1;
-    s32 index0 = *arg0;
+#pragma push
+#pragma processor 750
+#pragma cplusplus on
+extern "C" s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
+    struct First {
+        virtual void v0();
+        virtual void v1();
+        virtual void *get(s32, void *);
+    };
+    struct Second {
+        virtual void v0();
+        virtual void v1();
+        virtual void *get();
+    };
     void *base = lbl_8055E684;
-    void *obj0 = (u8 *)base + (index0 << 7);
-    void *obj1 = (u8 *)base + (index1 << 7);
-    void **vtable0 = *(void ***)obj0;
-    void *result0 = ((void *(*)(void *, s32, void *))vtable0[4])(obj0, index1, base);
+    Second *obj1 = (Second *)((u8 *)base + (*arg1 << 7));
+    First *obj0 = (First *)((u8 *)base + (*arg0 << 7));
+    void *result0 = obj0->get(*arg1, base);
     register f32 var_f31 = *(f32 *)((u8 *)result0 + 0x20);
-    void **vtable1 = *(void ***)obj1;
-    void *result1 = ((void *(*)(void *))vtable1[4])(obj1);
+    void *result1 = obj1->get();
     f32 var_f1 = *(f32 *)((u8 *)result1 + 0x20);
 
     if (var_f31 < lbl_80562604) var_f31 = lbl_80562610;
@@ -959,7 +999,8 @@ s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
     if (var_f31 < var_f1) return -1;
     return var_f31 > var_f1;
 }
-
+#pragma cplusplus off
+#pragma pop
 extern void *__AXFXGetLfoSinTable_801769CC(void);
 extern int fn_80019B3C(void);
 extern f32 fn_8013B650(int);
@@ -1192,6 +1233,45 @@ void fn_801B2C6C(void) {
 
 }
 
+s32 fn_801B2C70(void *arg0) {
+    register s32 i;
+    register s32 offset;
+    register s32 zero;
+    register s32 x;
+    register s32 y;
+    register s32 shifted;
+    register s32 mask;
+    register u8 *entry;
+
+    memset(arg0, 0, 0xB0);
+    *(s32 *)arg0 = (s32)lbl_8055E678;
+    entry = (u8 *)arg0 + 0x10;
+    *(s32 *)((u8 *)arg0 + 4) = lbl_8055E67C;
+    *(u8 *)((u8 *)arg0 + 0xC) = 0;
+    *(u8 *)((u8 *)arg0 + 0xD) = lbl_8055E698;
+
+    x = lbl_8055E69C;
+    y = lbl_8055E67C;
+    x ^= y;
+    shifted = x >> 1;
+    mask = x & y;
+    shifted -= mask;
+    *(u8 *)((u8 *)arg0 + 0xE) = (u32)shifted >> 31;
+    zero = 0;
+    i = 0;
+    offset = 0;
+
+    while (i < (s32)lbl_8055E678) {
+        i += 1;
+        *(s32 *)(entry + 4) = *(s32 *)((u8 *)lbl_8055E684 + offset + 8);
+        offset += 0x80;
+        *(s32 *)(entry + 8) = zero;
+        *(u8 *)(entry + 0x10) = zero;
+        entry += 0x14;
+    }
+    return 1;
+}
+
 #pragma dont_inline on
 void *fn_801B2EC0(s32 arg0) {
     return (void *)((u8 *)lbl_8055E684 + (arg0 << 7));
@@ -1236,6 +1316,38 @@ s32 fn_801B2F54(s32 arg0) {
     return *(s32 *)((u8 *)result + 0x10);
 }
 
+extern f32 lbl_8056261C;
+extern f32 fn_801365C4(void *, void *);
+extern double __fabs(double);
+#pragma scheduling invalid_target
+f32 fn_801B2F90(s32 arg0, s32 arg1) {
+    void *base = lbl_8055E684;
+    void *obj0 = (u8 *)base + (arg0 << 7);
+    void *obj1 = (u8 *)base + (arg1 << 7);
+    void *first;
+    void *second;
+    s32 difference;
+
+    if (*(s32 *)((u8 *)obj0 + 8) - 1 < *(s32 *)((u8 *)obj1 + 8) - 1) {
+        first = obj0;
+        second = obj1;
+    } else {
+        first = obj1;
+        second = obj0;
+    }
+    difference = (*(s32 *)((u8 *)first + 0x14) -
+                  *(s32 *)((u8 *)second + 0x14)) -
+                 ((u32)*(u32 *)((u8 *)first + 0x74) <
+                  (u32)*(u32 *)((u8 *)second + 0x74));
+    if (difference != 0)
+        return lbl_8056261C * (f32)difference;
+    {
+        double magnitude = __fabs((f64)fn_801365C4(*(void **)((u8 *)second + 0x58),
+                                                  *(void **)((u8 *)first + 0x58)));
+        return (f32)magnitude;
+    }
+}
+#pragma scheduling on
 s32 fn_801B3050(s32 arg0) {
     return *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x6C);
 }
