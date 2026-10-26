@@ -186,7 +186,7 @@ int fn_8015F148(void **arg0, int arg1) {
     return count;
 }
 
-void fn_8015F1E4(void *);
+void fn_8015F1E4();
 void fn_8015EC50(unsigned short *, void *);
 int fn_8015ECC0(void *);
 void fn_8015F320(void **arg0, int arg1, void *arg2) {
@@ -610,6 +610,47 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     result2 = temp_f2 * -*(f32 *)arg0;
     *(volatile f32 *)&spC = temp_f2;
     return result1 + result2;
+}
+
+#pragma scheduling invalid_target
+void *fn_8016060C(void *arg0, void *arg1) {
+    volatile f32 *dst = (volatile f32 *)arg0;
+    volatile f32 *src = (volatile f32 *)arg1;
+    f32 x = src[6];
+    f32 y = src[8];
+    register f32 magnitude;
+    register f32 limit;
+    f32 clamped;
+    f32 inputX;
+    f32 outputX;
+    f32 inputY;
+    f32 outputY;
+    f32 normalizedX;
+    f32 normalizedY;
+    register f32 scale;
+
+    dst[0] = x;
+    dst[1] = y;
+    magnitude = (f32)fn_8002F234(x * x + y * y, y, x);
+    limit = lbl_8056182C;
+    if (limit > magnitude)
+        clamped = limit;
+    else
+        clamped = magnitude;
+    inputX = src[9];
+    scale = lbl_805617E8 / clamped;
+    outputX = dst[0];
+    inputY = src[11];
+    outputY = dst[1];
+    dst[4] = inputX;
+    normalizedX = outputX * scale;
+    dst[5] = inputY;
+    normalizedY = outputY * scale;
+    dst[0] = normalizedX;
+    dst[1] = normalizedY;
+    dst[2] = normalizedY;
+    dst[3] = -normalizedX;
+    return arg0;
 }
 #pragma scheduling on
 void fn_801606B8(void) {
