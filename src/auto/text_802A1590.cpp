@@ -120,32 +120,44 @@ extern "C" void fn_802A1B20(void*, s32);
 extern "C" void fn_802A1CC4(void);
 extern "C" void fn_8028E61C(void*);
 extern "C" void fn_801EEFDC(void *, s32);
+#pragma scheduling invalid_target
 extern "C" void fn_802A1590(void) {
-    void *obj;
-    void **entry;
-    s32 index;
+    class Item {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual s32 v21(void *);
+    };
+    register void **entry;
+    register s32 index;
     char name[0x20];
-
     memset(lbl_804BCF88, 0, 0x20);
     entry = lbl_804BCF88;
     index = 0;
-    do {
-        fn_801345D8(name, 0x20, lbl_80349928, index);
-        obj = fn_802AE414(name);
-        if (obj != 0) {
-            if (((s32 (*)(void *, void *))(*(void ***)obj)[0x5c / 4])(obj, &lbl_8055CB70) != 0) {
-                *entry = (void *)fn_802A194C();
-            }
-        }
-        index++;
-        entry++;
-    } while (index < 8);
+loop:
+    ((void (*)(void *, s32, const char *, ...))fn_801345D8)(name, 0x20, lbl_80349928, index);
+    {
+        void *obj = fn_802AE414(name);
+        if (obj != 0)
+            obj = (void *)((Item *)obj)->v21(&lbl_8055CB70);
+        if (obj != 0)
+            *entry = (void *)fn_802A194C();
+    }
+    index++;
+    entry++;
+    if (index < 8)
+        goto loop;
     fn_80287B38((void *)fn_802A1B20);
     fn_802A1CC4();
-    fn_801EEFDC((void *)fn_802A1C30, 5);
+    {
+        register void *cb = (void *)fn_802A1C30;
+        fn_801EEFDC(cb, 5);
+    }
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_802A1660(void) {
     class Dummy {
     public:
@@ -504,11 +516,16 @@ extern "C" f32 lbl_80564744;
 extern "C" int lbl_80349AB0[];
 extern "C" void fn_8028E584(void*, void*);
 extern "C" s32 fn_80287B14(void*);
+#pragma scheduling invalid_target
 extern "C" void fn_802A2A38(void* arg0, void* arg1) {
     s32 index = *(s32*)((char*)arg1 + 0x28);
     f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
-    if (*value > lbl_80564730 - lbl_80558DC4) {
-        fn_8028E584(*(void**)((char*)arg0 + 0xC), (char*)arg1 + 0xC);
+    f32 current = *value;
+    f32 limit = lbl_80564730 - lbl_80558DC4;
+    int shouldCall = current > limit;
+    if (shouldCall) {
+        ((void (*)(void*, void*, void*))fn_8028E584)(
+            *(void**)((char*)arg0 + 0xC), arg1, (char*)arg1 + 0xC);
     }
     index = *(s32*)((char*)arg1 + 0x28);
     value = (f32*)((char*)arg0 + (index << 4) + 0x20);
@@ -517,7 +534,7 @@ extern "C" void fn_802A2A38(void* arg0, void* arg1) {
     }
     *value += lbl_80564750;
 }
-
+#pragma scheduling on
 extern "C" void fn_802A2AE8(void* arg0, s32 arg1) {
     u8 space[0xB0];
     u8* cfg = space + 0x18;
@@ -1003,15 +1020,25 @@ extern "C" void fn_802A3DFC(void *arg0) {
     } while (i < ((s32 (*)(void))fn_80287B14)());
 }
 
-void fn_802A4118(void *arg0, void *arg1) {
-    f32 *p = (f32 *)((char *)arg0 + (*(s32 *)((char *)arg1 + 0x28) * 4));
-    f32 f = p[2];
-    if (f > (lbl_80564730 - lbl_80558DC4)) {
-        p[2] = f - lbl_80564730;
+extern "C" f32 lbl_80564834;
+#pragma scheduling invalid_target
+extern "C" void fn_802A4118(void *arg0, void *arg1) {
+    s32 index = *(s32 *)((char *)arg1 + 0x28);
+    f32 *p = (f32 *)((char *)arg0 + (index << 2));
+    s32 shouldCall = p[2] > (lbl_80564730 - lbl_80558DC4);
+    if (shouldCall != 0) {
+        f32 scale = fn_80287BC8(lbl_80564834, lbl_8056477C);
+        fn_8028E590(*(s32 *)((char *)arg0 + 4), (f32 *)arg1,
+                     (f32 *)((char *)arg1 + 0xC), scale);
     }
+
+    index = *(s32 *)((char *)arg1 + 0x28);
+    p = (f32 *)((char *)arg0 + (index << 2));
+    if (p[2] > (lbl_80564730 - lbl_80558DC4))
+        p[2] = p[2] - lbl_80564730;
     p[2] += lbl_80564750;
 }
-
+#pragma scheduling on
 extern "C" void fn_8028E61C(void *);
 extern "C" f32 lbl_8056472C, lbl_80564730, lbl_80564734, lbl_80564738;
 extern "C" f32 lbl_8056475C, lbl_80564760, lbl_805647C8, lbl_80564830;
