@@ -126,7 +126,7 @@ f32 fn_801C3450(f32 arg0) {
     return (value - *(f32 *)&lbl_80562980) / denom;
 }
 
-#pragma dont_inline fn_801C34CC
+#pragma dont_inline on
 s32 fn_801C34CC(f32 arg0, f32 arg1) {
     f32 diff = arg0 - arg1;
     f64 abs = __fabs((f64)diff);
@@ -884,6 +884,39 @@ void fn_801C7394(void) {
             lbl_8055E828 = temp_r3;
         }
     }
+}
+
+void fn_801C73DC(void) {
+    s32 count;
+    s32 current;
+    s32 index;
+    s32 previousOffset;
+    s32 currentOffset;
+    char *base;
+    s32 currentKey;
+    s32 previousKey;
+    count = lbl_8055E7F0;
+    current = lbl_8055E828;
+    if (count == 0)
+        goto done;
+    index = current - 1;
+    if (index < 0)
+        goto done;
+    if (index >= count)
+        goto done;
+    previousOffset = index * 0x30C;
+    base = (char *)lbl_8055E7F8;
+    currentOffset = current * 0x30C;
+    if (fn_801C34CC(*(f32 *)(base + currentOffset), *(f32 *)(base + previousOffset))) {
+        currentKey = *(s32 *)(base + currentOffset + 4);
+        previousKey = *(s32 *)(base + previousOffset + 4);
+        *(s32 *)(base + currentOffset + 4) = previousKey;
+        *(s32 *)(base + previousOffset + 4) = currentKey;
+        qsort((void *)lbl_8055E7F8, count, 0x30C,
+              (int (*)(const void *, const void *))fn_801C3B7C);
+    }
+done:
+    ;
 }
 
 void fn_801C7524(void) {
@@ -2007,19 +2040,16 @@ void fn_801C95EC(f32 arg0) {
     struct Entry *entry;
     s32 id;
     s32 prev;
-    register s32 idx2;
 
     strcpy(lbl_80437FC0, lbl_8055AA44);
     entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
     entry->callback(entry);
-
-    prev = lbl_8055E81C;
-    idx2 = lbl_8055E820;
-    entry = &(*(struct Entry **)((char *)lbl_8055E86C + prev * 0x10))[idx2];
+    entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
     id = entry->id;
     if (id == 0x22) {
         lbl_8055E81C = lbl_8055E870;
     } else {
+        prev = lbl_8055E81C;
         lbl_8055E870 = prev;
         lbl_8055E81C = id;
         if (prev != id) {
