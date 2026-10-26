@@ -1128,24 +1128,22 @@ void fn_801ABFF4(void) {
 }
 
 void fn_801ABFF8(void *self, int **manager) {
-    struct CallbackTable {
-        void *unk[2];
-        void (*call)(void *, void *);
-    };
     struct CallbackObject {
-        struct CallbackTable *vtable;
+        void (**vtable)(void *, void *);
     };
     void *node;
+    struct CallbackObject *callback;
 
+    callback = (struct CallbackObject *)manager;
     node = *(void **)((char *)self + 0x224);
     if (node != 0 &&
         *(unsigned char *)((char *)self + 0x223) != 0 &&
         lbl_8055E3C4 > 1) {
-        do {
+        while (node != self) {
             *(unsigned char *)((char *)node + 0x223) = 0;
-            ((struct CallbackObject *)manager)->vtable->call(manager, node);
+            callback->vtable[2](manager, node);
             node = *(void **)((char *)node + 0x224);
-        } while (node != self);
+        }
         *(unsigned char *)((char *)self + 0x223) = 0;
     }
     fn_801AC240(self);
@@ -1285,8 +1283,38 @@ void **fn_801AC3AC(void **arg0, int arg1) {
     return arg0;
 }
 
-#pragma dont_inline on
-#pragma scheduling off
+extern void fn_802E30C8(const char *, ...);
+#pragma scheduling invalid_target
+void fn_801AC454(void *arg0, void *arg1) {
+    extern float lbl_805624EC;
+    extern char lbl_80335728[];
+    int count;
+    int hasEntries;
+    float defaultValue;
+    float configValue;
+    void *candidate;
+
+    *(void **)((char *)arg0 + 0x23C) = 0;
+    *(void **)((char *)arg0 + 0x240) = 0;
+    fn_801A9AB0(arg0, arg1);
+    count = *(int *)((char *)arg0 + 0x250);
+    configValue = *(float *)((char *)arg1 + 0x5C);
+    defaultValue = lbl_8056247C;
+    hasEntries = count > 0;
+    *(float *)((char *)arg0 + 0x248) = configValue;
+    *(float *)((char *)arg0 + 0x244) = defaultValue;
+    *(float *)((char *)arg0 + 0x24C) = defaultValue;
+    *(void **)((char *)arg0 + 0x23C) = 0;
+    if (hasEntries) {
+        candidate = lbl_80435628[count - 1];
+        if (PSVECSquareDistance((const Vec *)((char *)candidate + 0x60),
+                                (const Vec *)((char *)arg0 + 0x60)) < lbl_805624EC) {
+            *(void **)((char *)arg0 + 0x23C) = candidate;
+            fn_802E30C8(lbl_80335728, candidate);
+        }
+    }
+}
+#pragma scheduling on
 void fn_801AC508(void) {
     s32 value = lbl_8055E5EC;
     if (value > 0) {
