@@ -61,13 +61,15 @@ void *fn_8022D2BC(void *arg0, int arg1) {
 }
 #pragma scheduling on
 void fn_8022D350(void *arg0, const char *arg1, char arg2) {
-    int index = *(int *)((char *)arg0 + 8);
-    if (index < *(int *)arg0) {
-        strncpy((*(char ***)((char *)arg0 + 0x10))[index], arg1, *(int *)((char *)arg0 + 4));
-        (*(char ***)((char *)arg0 + 0x10))[index][*(int *)((char *)arg0 + 4) - 1] = 0;
-        (*(char ***)((char *)arg0 + 0x10))[index][*(int *)((char *)arg0 + 4)] = arg2;
-        *(int *)((char *)arg0 + 8) = index + 1;
-        *(int *)((char *)arg0 + 0xC) += 1;
+    if (*(int *)((char *)arg0 + 8) < *(int *)((char *)arg0)) {
+        strncpy((*(char ***)((char *)arg0 + 0x10))[*(int *)((char *)arg0 + 8)],
+                arg1, *(int *)((char *)arg0 + 4));
+        (*(char ***)((char *)arg0 + 0x10))[*(int *)((char *)arg0 + 8)]
+            [*(int *)((char *)arg0 + 4) - 1] = 0;
+        (*(char ***)((char *)arg0 + 0x10))[*(int *)((char *)arg0 + 8)]
+            [*(int *)((char *)arg0 + 4)] = arg2;
+        (*(int *)((char *)arg0 + 8))++;
+        (*(int *)((char *)arg0 + 0xC))++;
     }
 }
 
@@ -324,27 +326,31 @@ void fn_8022DD9C(void *arg0,int *arg1,int *arg2) {
 *arg1=*(int *)((char *)arg0+0x18); *arg2=4;
 }
 
+#pragma push
+#pragma opt_propagation off
 void fn_8022DDB0(void *arg0) {
-float *temp_r4;
-float temp_f3;
-float var_f4;
-float temp_f0;
-temp_f0=lbl_805635D4;
-temp_r4=*(float **)((char *)arg0+0x18);
-temp_f3=*(float *)((char *)arg0+0x14);
-{
-float temp_f1=*temp_r4;
-float temp_f2=temp_f1+temp_f3;
-temp_f2=temp_f2/temp_f3;
-temp_f0=temp_f0+temp_f2;
-temp_f0=(float)(int)temp_f0;
-temp_f0=temp_f3*temp_f0;
-}
-var_f4=*(float *)((char *)arg0+0x10);
-if(var_f4>=temp_f0) var_f4=temp_f0;
-*temp_r4=var_f4;
-}
+    float *temp_r4;
+    float temp_f3;
+    float var_f4;
+    float temp_f0;
 
+    temp_f0 = lbl_805635D4;
+    temp_r4 = *(float **)((char *)arg0 + 0x18);
+    temp_f3 = *(float *)((char *)arg0 + 0x14);
+    {
+        float temp_f1 = *temp_r4;
+        float temp_f2 = temp_f1 + temp_f3;
+        temp_f2 = temp_f2 / temp_f3;
+        temp_f0 = temp_f0 + temp_f2;
+        temp_f0 = (float)(int)temp_f0;
+        temp_f0 = temp_f3 * temp_f0;
+    }
+    var_f4 = *(float *)((char *)arg0 + 0x10);
+    if (var_f4 < temp_f0) var_f4 = temp_f0;
+    *temp_r4 = var_f4;
+}
+#pragma push
+#pragma scheduling invalid_target
 void fn_8022DE1C(void *arg0) {
     float *temp_r4;
     float temp_f0;
@@ -362,15 +368,12 @@ void fn_8022DE1C(void *arg0) {
     temp_f0 = (float)(int)temp_f0;
     var_f4 = *(float *)((char *)arg0 + 0x0C);
     temp_f0 = temp_f3 * temp_f0;
-    if (var_f4 > temp_f0) {
-    } else {
+    if (var_f4 <= temp_f0) {
         var_f4 = temp_f0;
     }
     *temp_r4 = var_f4;
 }
-
-#pragma push
-#pragma optimize_for_size on
+#pragma pop
 int fn_8022DE88(void *arg0) {
     float *epsilon_ptr = (float *)&lbl_80558DC4;
     float current = *(float *)((char *)arg0 + 0x10);
