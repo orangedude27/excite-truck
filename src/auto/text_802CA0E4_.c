@@ -122,12 +122,18 @@ int fn_802CA380(int arg0) {
     return result;
 }
 
+#pragma use_lmw_stmw off
 int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    unsigned char *src = (unsigned char *)arg1;
-    int *dst = (int *)arg0;
-    unsigned char c12, c7, c6, c11, c5, c4, c10;
+    register unsigned char *src = (unsigned char *)arg1;
+    register int value = arg2;
+    register int mode1 = arg3;
+    register int mode2 = arg4;
+    register int *dst = (int *)arg0;
+    unsigned char c5, c12, c4, c7, c6, c10;
     unsigned short h12, h0, h2;
     int ptr14;
+    register int flags;
+
     memset(arg0, 0, 0x34);
     c5 = src[5];
     c12 = src[0xB];
@@ -139,27 +145,32 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     h0 = *(unsigned short *)src;
     h2 = *(unsigned short *)(src + 2);
     ptr14 = *(int *)(src + 0x14);
-    dst[2] = c12 & 1;
+    flags = c12 & 1;
+    dst[2] = flags;
     dst[0] = c5 & 0x7F;
     dst[5] = c7;
     dst[4] = c6;
     dst[3] = h12;
     dst[6] = c12;
     *(unsigned char *)((char *)arg0 + 0x1C) = c10;
-    dst[1] = arg2;
+    dst[1] = value;
     dst[8] = (signed char)c4;
     dst[9] = h0;
     dst[10] = h2;
     dst[11] = ptr14;
-    dst[12] = arg3;
-    if (arg4 == 2)
-        dst[2] = (c12 & 1) | 1;
-    else if (arg4 == 6)
-        dst[2] = (c12 & 1) | 2;
-    else if (arg4 == 5)
-        dst[2] = (c12 & 1) | 4;
+    dst[12] = mode1;
+    if (mode2 == 2) {
+        flags |= 1;
+        dst[2] = flags;
+    } else if (mode2 == 6) {
+        flags |= 2;
+        dst[2] = flags;
+    } else if (mode2 == 5) {
+        flags |= 4;
+        dst[2] = flags;
+    }
 }
-
+#pragma use_lmw_stmw on
 int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
     char sp8[0x34];
 
@@ -172,40 +183,49 @@ int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
 }
 
 extern void fn_802D8DCC(void *, int);
-void fn_802CA57C(int arg0, int arg1, int arg2, int arg3) {
-    unsigned char *base = (unsigned char *)arg0;
+void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
+    register void *resource = arg0;
+    register int context = arg1;
+    volatile unsigned char *base = (volatile unsigned char *)resource;
     unsigned char old14;
+    unsigned char old17;
     unsigned char old15;
+    unsigned char old16;
     unsigned char old0;
     unsigned char old1;
     unsigned char old2;
     unsigned char old3;
     unsigned char oldC;
     unsigned char oldD;
+    int pointerOffset;
     char sp8[0x34];
 
     if ((base[5] & 0x80) == 0) {
         old14 = base[0x14];
+        old17 = base[0x17];
         old15 = base[0x15];
-        base[0x14] = base[0x17];
+        old16 = base[0x16];
+        base[0x14] = old17;
         old0 = base[0];
         old1 = base[1];
         base[0x17] = old14;
         old2 = base[2];
         old3 = base[3];
-        base[0x15] = base[0x16];
+        base[0x15] = old16;
         oldC = base[0xC];
         oldD = base[0xD];
         base[0x16] = old15;
+        pointerOffset = *(volatile int *)(base + 0x14);
         base[0] = old1;
+        pointerOffset += (int)resource;
         base[1] = old0;
         base[2] = old3;
         base[3] = old2;
         base[0xC] = oldD;
         base[0xD] = oldC;
-        *(int *)(base + 0x14) = (int)base + *(int *)(base + 0x14);
-        ((void (*)(void *, int, int, int, int, int, int, int))fn_802CA3F4)(sp8, arg0, 0, arg2, arg3, oldD, old3, old1);
-        fn_802D8DCC(sp8, arg1);
+        *(volatile int *)(base + 0x14) = pointerOffset;
+        ((void (*)(void *, int, int, int, int, int, int, int))fn_802CA3F4)(sp8, (int)resource, 0, arg2, arg3, oldD, old3, old1);
+        fn_802D8DCC(sp8, context);
         base[5] |= 0x80;
     }
 }
@@ -213,7 +233,7 @@ void fn_802CA57C(int arg0, int arg1, int arg2, int arg3) {
 extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
 extern char lbl_8034B634[];
 extern char lbl_8034B658[];
-extern void fn_802CA57C(int, int, int, int);
+extern void fn_802CA57C(void *, int, int, int);
 #pragma scheduling invalid_target
 int fn_802CA658(int arg0, int arg1) {
     unsigned int sp10;
@@ -230,7 +250,7 @@ int fn_802CA658(int arg0, int arg1) {
         if (check != 0xF)
             fn_802E317C(lbl_8034B658, arg0);
         if (sp8 != 0)
-            fn_802CA57C(result, arg0, 0, arg1);
+            fn_802CA57C((void *)result, arg0, 0, arg1);
     }
     return result;
 }
@@ -267,7 +287,7 @@ int fn_802CA7DC(const unsigned char *arg0) { return ((signed char)*arg0 - 0x2A) 
 int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
 
 extern int fn_802CA824(int);
-extern void fn_802CA57C(int, int, int, int);
+extern void fn_802CA57C(void *, int, int, int);
 extern int fn_802CA4E0(int, int, int, int, int);
 extern int stricmp(const char *, const char *);
 extern unsigned int strlen(const char *);
@@ -576,7 +596,7 @@ void fn_802CAF1C(int arg0, signed char arg1, signed char arg2) {
 
 #pragma dont_inline reset
 int fn_802DB2C0(int);
-void fn_802CA57C(int, int, int, int);
+void fn_802CA57C(void *, int, int, int);
 int fn_802CA4E0(int, int, int, int, int);
 int fn_802CA898(int, int, int, int);
 #pragma push
