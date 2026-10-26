@@ -177,7 +177,10 @@ void fn_8028E584(void *arg0, int arg1, float *arg2) {
     fn_8028FB98(arg0, arg1, arg2, lbl_80564424);
 }
 
-void fn_8028E58C(void) { fn_8028FAE4(); }
+extern void fn_8028FAE4(void *, int, float *, float);
+void fn_8028E58C(void *arg0, int arg1, float *arg2, float farg0) {
+    fn_8028FAE4(arg0, arg1, arg2, farg0);
+}
 
 void fn_8028E590(void) { fn_8028FC40(); }
 
@@ -514,6 +517,25 @@ void fn_8028F608(float *out0, float *out1, float *matrix, float angle) {
     out1[0]=y*b-x*a; out1[1]=y*e-x*c; out1[2]=y*h-x*g;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
+int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
+    int count;
+    void *buffer;
+    void *result;
+
+    ((int (*)(void *))fn_8028E61C)(arg0);
+    ((void (*)(void *, void *))fn_8028FD00)(arg0, arg1);
+    count = *(int *)((char *)arg1 + 4);
+    buffer = fn_8012850C(count * 0x28 + 0x10, lbl_80348FC4);
+    result = fn_8002F37C(buffer, (void *)fn_8028F854, 0, 0x28, count);
+    *(void **)((char *)arg0 + 0x8c) = result;
+    *(int *)((char *)arg0 + 0x98) = count;
+    *(void **)((char *)arg0 + 0xa4) = (void *)fn_802CAC28(arg2, 0);
+    return (int)arg0;
+}
+#pragma pop
 void fn_8028F854(void) {}
 
 int fn_8028F858(int arg0, int arg1) {
@@ -608,6 +630,8 @@ done:
     return 0;
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_8028FB98(void *arg0, int arg1, float *arg2, float farg0) {
     extern void fn_8028FEE4(void *, int, float *, float, float);
     float sp8[2];
@@ -625,7 +649,7 @@ void fn_8028FB98(void *arg0, int arg1, float *arg2, float farg0) {
         fn_8028FEE4(arg0, arg1, sp8, lbl_80564420, lbl_80564424);
     }
 }
-
+#pragma pop
 extern int fn_8028F534(int);
 extern double lbl_80564440;
 void fn_8028FD00(void *arg0, void *arg1, int arg2) {
