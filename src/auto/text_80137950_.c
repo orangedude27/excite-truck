@@ -38,6 +38,30 @@ int fn_801379CC(void) {
     return (int)lbl_8042F788[(int)lbl_80559C00];
 }
 
+extern void *fn_80131808(void *);
+extern void fn_80131818(void *);
+extern int sprintf(char *, const char *, ...);
+extern int stricmp(const char *, const char *);
+extern char lbl_80559C18, lbl_80559C20, lbl_80559C28, lbl_80559C30;
+#pragma inline_depth(0)
+void fn_80137A18(void) {
+    char name[0x100];
+    char *result = (char *)fn_801379CC();
+    void *list;
+    void *item;
+    int index = 0;
+
+    sprintf(name, (const char *)(void *)&lbl_80559C18, result + 8);
+    list = fn_80131808(name);
+    while ((item = ((void *(*)(void *, int))(*(void ***)list)[3])(list, index++)) != 0) {
+        const char *item_name = ((const char *(*)(void *))(*(void ***)item)[2])(item);
+        if (stricmp(item_name, (const char *)(void *)&lbl_80559C20) == 0) {
+            *(float *)result = ((float (*)(void *, const char *))(*(void ***)item)[9])(item, (const char *)(void *)&lbl_80559C28);
+            *(float *)(result + 4) = ((float (*)(void *, const char *))(*(void ***)item)[9])(item, (const char *)(void *)&lbl_80559C30);
+        }
+    }
+    fn_80131818(list);
+}
 void fn_80137B0C(void* hi) {
     lbl_80559C00 = hi;
 }
