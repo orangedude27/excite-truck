@@ -77,6 +77,20 @@ void fn_802E339C(void) {
 #pragma dont_inline reset
 s32 fn_802E33D0(void) { return 0; }
 
+#pragma scheduling invalid_target
+s32 fn_802E33D8(s32 arg0, const char *arg1, s32 arg2) {
+    char *entry;
+
+    if (arg0 < 0 || arg0 > 0x10) {
+        fn_802E317C(lbl_8034CF40, arg0, arg1, arg2);
+    }
+    entry = lbl_804DB810 + arg0 * 0x28;
+    if (((unsigned char *)entry)[0x20] == 0) {
+        fn_802E317C(lbl_8034CF60, arg0, arg1, arg2);
+    }
+    return (s32)entry;
+}
+#pragma scheduling on
 void fn_802E3498(void) {
     memset((void *)((char *)lbl_804DB810 + 0), 0, 0x280);
     if (lbl_8055FF18 == 0) {
@@ -119,18 +133,20 @@ void fn_802E3550(void) {
     } while (i < 16);
 }
 #pragma scheduling on
+extern char lbl_8034CF98[];
 s32 fn_802E35C0(const char *arg0, s32 arg1) {
-    s32 i;
-    for (i = 0; i < 16; i++) {
-        char *entry = lbl_804DB810 + i * 0x28;
-        if (((unsigned char *)entry)[0x20] == 0) {
+    char *scan = lbl_804DB810;
+    s32 i = 0;
+    for (; i < 16; i++, scan += 0x28) {
+        if ((unsigned char)scan[0x20] == 0) {
+            char *entry = lbl_804DB810 + i * 0x28;
             entry[0x20] = 1;
             strncpy(entry, arg0, 0x20);
             *(s32 *)(entry + 0x24) = arg1;
             return i;
         }
     }
-    fn_802E317C(lbl_8034CF40 + 0x58, arg0);
+    fn_802E317C(lbl_8034CF98, arg0);
     return -1;
 }
 
@@ -221,30 +237,38 @@ extern "C" void fn_802E3804(s32 arg0, const char *arg1, s32 arg2) {
         fn_802E317C(lbl_8034CFC0, arg2, object);
     }
 }
-#pragma cplusplus off
+#pragma use_lmw_stmw off
+#pragma cplusplus on
 void fn_802E3898(s32 arg0, const char *arg1, s32 *arg2) {
+    class V {
+    public:
+        virtual s32 f0(const char *, s32);
+    };
+    s32 obj;
     s32 total;
     s32 result;
-    s32 obj;
     s32 entry;
     s32 count;
-    total = *arg2;
+
     obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x142);
+    total = *arg2;
     result = 0;
-    if (total > 0) {
-        do {
-            entry = *(s32 *)(obj + 0x24);
-            count = ((s32 (*)(s32, const char *, s32))(*(s32 *)entry + 8))(entry, arg1, total - result);
-            if (count < 0) { result = count; break; }
-            if (count <= 0) break;
-            result += count;
-            arg1 += count;
-        } while (total > 0);
+    while (total > 0) {
+        entry = *(s32 *)(obj + 0x24);
+        count = ((V *)entry)->f0(arg1, total - result);
+        if (count < 0) {
+            result = count;
+            break;
+        }
+        if (count <= 0) {
+            break;
+        }
+        result += count;
+        arg1 += count;
     }
     *arg2 = result;
 }
-
-#pragma cplusplus on
+#pragma use_lmw_stmw reset
 extern "C" void fn_802E3930(s32 arg0, s32 arg1, s32 arg2) {
     class Obj {
     public:
