@@ -300,6 +300,28 @@ void fn_8023243C(void) {
     }
     *(s32 *)(lbl_80497F14 + 4) = 0;
 }
+
+extern char lbl_803404FC[];
+extern void fn_802CB228(void *);
+extern void fn_80128668(void);
+void fn_802324D8(void) {
+    s32 offset = 0;
+    s32 i = 0;
+
+    /* Log and release each 12-byte entry, then clear the global list. */
+    while (i < *(s32 *)(lbl_8055F068 + 0x168)) {
+        u8 *entry = lbl_8055F068 + offset;
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_803404FC, *(s32 *)(entry + 4));
+        fn_802CB228(*(void **)*(void **)entry);
+        fn_8012C4D8(*(void **)entry);
+        fn_80128670(*(void **)(entry + 4));
+        offset += 0xC;
+        i++;
+    }
+    fn_80128668();
+    lbl_8055F068 = 0;
+}
+
 #pragma pop
 extern void *fn_8012C370(const char *, s32, u32 *, s32 *, u8 *, u8 *);
 extern void fn_80028E00(char *, const char *);
