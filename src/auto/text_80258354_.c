@@ -17,6 +17,7 @@ extern char lbl_80344D88[];
 extern void *fn_801284F8(int, void *);
 extern char lbl_8055C258[];
 __declspec(section ".sdata") extern char lbl_8055C258[];
+extern float lbl_80563AC8;
 #pragma scheduling invalid_target
 void fn_80258354(void) {
     void *p = fn_801284F8(0x1328, lbl_80344D88);
