@@ -476,6 +476,21 @@ void fn_80232B80(s32 arg0) {
     lbl_8055B9A8 = value;
 }
 
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+void fn_80232BA4(char *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
+    s32 sp8 = arg2;
+
+    /* Let the debug hook adjust arg2, then render only when the text is nonempty. */
+    fn_80231714(&sp8);
+    if ((s8)*arg0 != 0) {
+        fn_80232040((u8 *)arg0, arg1, sp8, arg3, 0, farg0, farg1, farg2, farg3, farg4, lbl_8056368C);
+    }
+}
+#pragma pop
+#pragma dont_inline off
+
 extern int vsprintf(char *, const char *, va_list);
 extern f32 lbl_8056368C;
 extern f32 lbl_80563684;
