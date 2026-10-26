@@ -419,6 +419,33 @@ extern "C" void fn_8012B328(void) {
 
 }
 
+extern "C" void *fn_8012AFE0(void *, void *);
+extern char lbl_8032A960[];
+#pragma scheduling invalid_target
+extern "C" void *fn_8012B32C(const char *arg0) {
+    u8 scratch[0x48];
+    void *result = 0;
+    s32 index;
+    void *node;
+
+    fn_802E30C8(lbl_8032A960, arg0);
+    index = 0;
+    for (;;) {
+        node = ((void *(*)(void *, void *, s32))fn_8012B314)((void *)arg0, scratch, index);
+        if (node == 0)
+            break;
+        result = fn_8012AFE0(node, (void *)arg0);
+        if (result != 0) {
+            ((void (*)(void))fn_8012B328)();
+            break;
+        }
+        ((void (*)(void *))fn_8012B324)(node);
+        index += 1;
+    }
+    return result;
+}
+#pragma scheduling on
+
 extern "C" char *fn_80029004(char *, int);
 void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *arg4) {
     char *src;
@@ -922,19 +949,32 @@ func_exit:
 #pragma dont_inline reset
 
 extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
-    arg0[0] = arg1[0];
-    arg0[1] = arg1[1];
-    arg0[2] = arg1[2];
-    arg0[3] = arg1[3];
-    arg0[4] = arg1[4];
-    arg0[5] = arg1[5];
-    arg0[6] = arg1[6];
-    arg0[7] = arg1[7];
-    arg0[8] = arg1[8];
-    arg0[9] = arg1[9];
-    arg0[10] = arg1[10];
-    arg0[11] = arg1[11];
-    arg0[12] = arg1[12];
+    u32 v4 = arg1[4];
+    u32 v3 = arg1[3];
+    u32 v2 = arg1[2];
+    u32 v1 = arg1[1];
+    u32 v0 = arg1[0];
+    u32 v5 = arg1[5];
+    u32 v6 = arg1[6];
+    u32 v7 = arg1[7];
+    u32 v8 = arg1[8];
+    u32 v9 = arg1[9];
+    u32 v10 = arg1[10];
+    u32 v11 = arg1[11];
+    u32 v12 = arg1[12];
+    arg0[0] = v0;
+    arg0[1] = v1;
+    arg0[2] = v2;
+    arg0[3] = v3;
+    arg0[4] = v4;
+    arg0[5] = v5;
+    arg0[6] = v6;
+    arg0[7] = v7;
+    arg0[8] = v8;
+    arg0[9] = v9;
+    arg0[10] = v10;
+    arg0[11] = v11;
+    arg0[12] = v12;
 }
 
 extern "C" u32 fn_8012D3D0(void) { return 1; }
@@ -1368,12 +1408,12 @@ extern "C" void *fn_8012EC90(s32 arg0) {
 }
 
 extern "C" void fn_8012ED20(void *arg0) {
- s32 i;
  u8 *p;
+ s32 i;
  for (i=0, p=(u8 *)arg0+4; i<2; i++, p+=0x10) {
   if (*(s32 *)(p+4)) {
-   fn_8012C90C((void *)*(s32 *)(p+4));
    fn_8012C958((void *)*(s32 *)(p+4));
+   fn_8012C90C((void *)*(s32 *)(p+4));
    *(s32 *)(p+4)=0;
   }
  }
