@@ -41,10 +41,11 @@ extern float lbl_80564F30;
 #pragma scheduling invalid_target
 extern void fn_802CAC28(int, int);
 void fn_802CA0E4(void) {
-    int i;
-    int offset;
-    int result;
     char *strings = lbl_8034B538;
+    int offset;
+    int i;
+    int result;
+    register int base;
 
     lbl_8055FCB0 = fn_8012850C(0x9800, &lbl_8055D040);
     fn_802CB424();
@@ -64,7 +65,9 @@ void fn_802CA0E4(void) {
     lbl_8055D03C = result;
     if (result != -1) {
         fn_802E30C8(strings + 0x6C);
-        fn_802D92B8(*(int *)(lbl_8055FCB0 + lbl_8055D03C * 0x4C + 0x28));
+        base = lbl_8055FCB0;
+        base += lbl_8055D03C * 0x4C;
+        fn_802D92B8(*(int *)(base + 0x28));
         return;
     }
     fn_802E30C8(strings + 0x88);
