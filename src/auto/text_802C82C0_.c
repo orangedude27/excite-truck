@@ -1,3 +1,4 @@
+#include <revolution/MTX/mtxtypes.h>
 extern float lbl_8055FC6C;
 extern void fn_802D362C(int);
 extern void fn_802D3304(void);
@@ -127,22 +128,52 @@ extern void fn_802C8638(unsigned int *);
 extern float lbl_80564EF8, lbl_80564F00;
 extern void PSVECNormalize(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
-void fn_802C8588(void *arg0, float *arg1, float *arg2) {
-    float x = arg1[0], y = arg1[1], z = arg1[2];
+#pragma scheduling invalid_target
+void fn_802C8588(float *arg0, float *arg1, float *arg2) {
+    float x0 = arg1[0];
+    float x2 = arg2[0];
+    float dx = x2 - x0;
+    float y0 = arg1[1];
+    float y2 = arg2[1];
+    float up = lbl_80564F00;
+    float dy = y2 - y0;
+    float right = lbl_80564EF8;
+    float z0 = arg1[2];
+    float z2 = arg2[2];
+    float dz = z2 - z0;
     float sp[3];
-    ((float *)arg0)[9] = x;
-    ((float *)arg0)[10] = y;
-    ((float *)arg0)[11] = z;
-    ((float *)arg0)[6] = arg2[0] - x;
-    ((float *)arg0)[7] = arg2[1] - y;
-    ((float *)arg0)[8] = arg2[2] - z;
-    sp[0] = lbl_80564F00; sp[1] = lbl_80564EF8; sp[2] = lbl_80564F00;
-    PSVECNormalize((char *)arg0 + 0x18, (char *)arg0 + 0x18);
-    PSVECCrossProduct(sp, (char *)arg0 + 0x18, arg0);
+    sp[0] = up;
+    sp[1] = right;
+    sp[2] = up;
+    arg0[9] = x0;
+    arg0[10] = y0;
+    arg0[11] = z0;
+    arg0[6] = dx;
+    arg0[7] = dy;
+    arg0[8] = dz;
+    PSVECNormalize(arg0 + 6, arg0 + 6);
+    PSVECCrossProduct(sp, arg0 + 6, arg0);
     PSVECNormalize(arg0, arg0);
-    PSVECCrossProduct((char *)arg0 + 0x18, arg0, (char *)arg0 + 0xC);
+    PSVECCrossProduct(arg0 + 6, arg0, arg0 + 3);
 }
-
+#pragma scheduling on
+extern void fn_802D03F4(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
+#pragma scheduling invalid_target
+void fn_802C8638(unsigned int *arg0) {
+    int *src = (int *)arg0;
+    register int v2, v3, v1, v0;
+    int v4, v5, v6, v7, v8, v9, v10, v11;
+    volatile int *dst;
+    v2 = src[2]; v3 = src[3]; v1 = src[1]; v0 = src[0];
+    dst = (volatile int *)lbl_804C1410;
+    v4 = src[4]; v5 = src[5]; v6 = src[6]; v7 = src[7];
+    v8 = src[8]; v9 = src[9]; v10 = src[10]; v11 = src[11];
+    dst[0] = v0; dst[1] = v1; dst[2] = v2; dst[3] = v3;
+    dst[4] = v4; dst[5] = v5; dst[6] = v6; dst[7] = v7;
+    dst[8] = v8; dst[9] = v9; dst[10] = v10; dst[11] = v11;
+    fn_802D03F4((unsigned int *)dst, v10, v9, v8, v7, v6, v5, v4);
+}
+#pragma scheduling on
 void *fn_802C86DC(void) {
     return lbl_804C1410;
 }
@@ -259,10 +290,9 @@ void fn_802C8BD0(int arg0) {
 
 #pragma use_lmw_stmw off
 void fn_802C8C04(int arg0) {
-    unsigned int src[12];
     unsigned int *dst = lbl_804C13E0;
     unsigned int sp8[12];
-    unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
+    unsigned int v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
     v0 = lbl_804C1410[0];
     v1 = lbl_804C1410[1]; v2 = lbl_804C1410[2]; v3 = lbl_804C1410[3];
     v4 = lbl_804C1410[4]; v5 = lbl_804C1410[5]; v6 = lbl_804C1410[6];
@@ -273,7 +303,7 @@ void fn_802C8C04(int arg0) {
     lbl_8055FC35 = 1;
     fn_802C89E8(sp8, v11, v10, v9, v8, v7, v6, v5);
     fn_802C8638(sp8);
-    fn_802C8BD0(arg0);
+    ((void (*)(int))fn_802C8BD0)(arg0);
 }
 
 #pragma dont_inline on
@@ -506,7 +536,8 @@ float fn_802C9744(void) { return lbl_8055FC40; }
 
 extern float __fabsf(float);
 extern double __fabs(double);
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_802C974C(float f0, float f1, float f2) {
     float *view = lbl_804C144C;
     register float angle = f2;
@@ -520,8 +551,8 @@ void fn_802C974C(float f0, float f1, float f2) {
     lbl_8055FC3C = f1;
     lbl_8055FC40 = f2;
     view[2] = f2;
-    if (mode != 0 && (unsigned char)lbl_8055FC75 != 0 &&
-        (float)__fabs((double)(lbl_8055D020 - lbl_80564EF8)) > (*(float *)&lbl_80558DC4)) {
+    if ((mode == 0 || (unsigned char)lbl_8055FC75 != 0) &&
+        !((float)__fabs((double)(lbl_8055D020 - lbl_80564EF8)) <= (*(float *)&lbl_80558DC4))) {
         angle = lbl_80564F24 * (float)atan((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020);
     }
     lbl_8055FC4C = angle;
@@ -543,13 +574,13 @@ void fn_802C974C(float f0, float f1, float f2) {
     sine = (float)sin(lbl_80564F28 - theta * lbl_80564F18);
     f4 = lbl_80564EF8;
     lbl_8055FC58 = f4 / sine;
-    if (mode == 0) {
-        f4 = lbl_8055D020 / lbl_8055D024;
+    switch (mode) {
+    case 0: f4 = lbl_8055D020 / lbl_8055D024; break;
     }
     fn_802D0368(lbl_8055FC38, lbl_8055FC3C, angle, f4);
     fn_802CC518((int)lbl_8055FC64, lbl_8055FC44);
 }
-#pragma scheduling on
+#pragma pop
 void fn_802C98DC(float *arg0, float *arg1, float *arg2, float *arg3) {
     *arg0 = lbl_8055FC44;
     *arg1 = lbl_8055FC38;
