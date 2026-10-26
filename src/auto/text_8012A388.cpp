@@ -128,16 +128,16 @@ extern "C" void fn_8012A46C(void *, const char *) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
+    register u8 *buffer = (u8 *)arg3;
     s32 result;
-    void *buffer;
-    const char *strings;
+    register const char *strings = lbl_8032A630;
 
-    strings = lbl_8032A630;
-    buffer = (char *)arg3 + *(s32 *)((char *)arg2 + 0x2C);
-    buffer = (char *)buffer - 8;
+    buffer += *(s32 *)((char *)arg2 + 0x2C);
+    buffer -= 8;
     *(void **)((char *)arg2 + 0x3C) = buffer;
-    fn_8012A46C((char *)buffer + 8, strings);
-    result = fn_80132E7C((char *)buffer + 8, *(s32 *)((char *)arg2 + 0x28)) == *(s32 *)((char *)arg2 + 0x30);
+    fn_8012A46C(buffer + 8, strings);
+    result = (u32)__cntlzw((u32)*(s32 *)((char *)arg2 + 0x30) -
+                           (u32)fn_80132E7C(buffer + 8, *(s32 *)((char *)arg2 + 0x28))) >> 5;
     if (result) {
         if (*(u32 *)((char *)arg2 + 0x34) & 8) {
             fn_802E30C8(strings + 0xC);
@@ -524,18 +524,22 @@ extern "C" s32 strstr(const char *, const char *);
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012BA1C(void *arg0) {
+    struct EntryView {
+        u8 pad[0x38];
+        s32 value;
+    };
     const char *strings = lbl_8032A630;
     s32 offset, i;
     s32 j, offset2;
     register s32 value;
-    register u8 *entry;
+    register EntryView *entry;
     register u32 flags;
 
     i = 0;
     offset = 0;
     while (i < *(s32 *)((char *)arg0 + 0x88)) {
-        entry = *(u8 **)((char *)arg0 + 0x60) + offset;
-        value = *(s32 *)(entry + 0x38);
+        entry = (EntryView *)(*(u8 **)((char *)arg0 + 0x60) + offset);
+        value = entry->value;
         if (value > 0) fn_802E30C8(strings + 0x470, arg0);
         offset += 0x44;
         i++;
@@ -545,8 +549,8 @@ extern "C" void fn_8012BA1C(void *arg0) {
         j = 0;
         offset2 = 0;
         while (j < *(s32 *)((char *)arg0 + 0x88)) {
-            entry = *(u8 **)((char *)arg0 + 0x60) + offset2;
-            flags = *(u32 *)(entry + 0x34);
+            entry = (EntryView *)(*(u8 **)((char *)arg0 + 0x60) + offset2);
+            flags = *(u32 *)((u8 *)entry + 0x34);
             if ((flags & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0);
             offset2 += 0x44;
             j++;
@@ -594,12 +598,12 @@ extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2) {
             ((void (*)(void *, s32))arg1)(arg0, arg2);
         }
         if (*(u32 *)(r31 + 0x34) & 4) {
-            Struct8012BC50 *s = (Struct8012BC50 *)r31;
+            register Struct8012BC50 *s = (Struct8012BC50 *)r31;
             fn_80128660(s->field_40);
-            s->field_40 = 0;
             s->f1 = 0;
-            s->f3 = 0;
+            s->field_40 = 0;
             s->field_3c = 0;
+            s->f3 = 0;
         }
     }
     return *(s32 *)(r31 + 0x38) == 0;
