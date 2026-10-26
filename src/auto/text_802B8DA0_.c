@@ -10,7 +10,7 @@ extern double cos(double);
 extern double sin(double);
 extern void *fn_801284F8(int, void *);
 extern void fn_8012850C(int, void *);
-extern void *fn_8002F37C(void *, int, int, int);
+extern void *fn_8002F37C(void *, void *, int, int, int);
 extern int lbl_8034A9F4;
 extern void *lbl_8055FA7C;
 extern char lbl_804BFFF4[];
@@ -563,10 +563,14 @@ void fn_802BAA50(void *arg0) {
 }
 
 void fn_802BAD0C(void *arg0, float angle) {
-    float x = *(float *)((char *)arg0 + 0);
-    float c = (float)cos(angle);
-    float s = (float)sin(angle);
-    float y = *(float *)((char *)arg0 + 4);
+    register float c;
+    register float x;
+    register float s;
+    register float y;
+    x = *(float *)((char *)arg0 + 0);
+    c = (float)cos(angle);
+    s = (float)sin(angle);
+    y = *(float *)((char *)arg0 + 4);
     *(float *)((char *)arg0 + 4) = x * s + y * c;
     *(float *)((char *)arg0 + 0) = *(float *)((char *)arg0 + 0) * c - y * s;
 }
