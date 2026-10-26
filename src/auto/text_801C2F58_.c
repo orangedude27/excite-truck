@@ -220,16 +220,23 @@ f32 fn_801C3B6C(void) {
     return lbl_8055E7E4 + r_a;
 }
 
+#pragma dont_inline fn_801C34CC
 s32 fn_801C3B7C(const void *arg0, const void *arg1) {
-    f32 a = *(f32 *)arg0;
-    f32 b = *(f32 *)arg1;
+    volatile f32 *left;
+    volatile f32 *right;
+    f32 a;
+    f32 b;
+    left = (volatile f32 *)arg0;
+    right = (volatile f32 *)arg1;
+    b = *right;
     if (b < lbl_80562990)
         return -1;
+    a = *left;
     if (a < lbl_80562990)
         return 1;
-    if (fn_801C34CC(a, b))
+    if (((s32 (*)(void))fn_801C34CC)())
         return *(s32 *)((char *)arg0 + 4) - *(s32 *)((char *)arg1 + 4);
-    if (a < b)
+    if (*left < *right)
         return -1;
     return 1;
 }
@@ -1989,10 +1996,35 @@ int arg0;
 
 #pragma pop
 void fn_801C95EC(f32 arg0) {
-    lbl_8055E81C = arg0;
-    lbl_8055E820 = arg0;
-    lbl_8055E824 = arg0;
-    fn_801C957C(1);
+    struct Entry {
+        void *name;
+        void (*callback)(void *);
+        s32 id;
+        s32 flags;
+    };
+    struct Entry **table;
+    struct Entry *entry;
+    s32 id;
+    s32 prev;
+
+    strcpy(lbl_80437FC0, lbl_8055AA44);
+    entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
+    entry->callback(entry);
+
+    prev = lbl_8055E81C;
+    table = (struct Entry **)lbl_8055E86C;
+    entry = *(struct Entry **)((char *)table + (prev << 4));
+    entry = &entry[lbl_8055E820];
+    id = entry->id;
+    if (id == 0x22) {
+        lbl_8055E81C = lbl_8055E870;
+    } else {
+        lbl_8055E870 = prev;
+        lbl_8055E81C = id;
+        if (prev != id) {
+            lbl_8055E820 = 0;
+        }
+    }
 }
 
 s32 fn_801C968C(s32 delta) {
