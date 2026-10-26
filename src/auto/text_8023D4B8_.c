@@ -264,7 +264,7 @@ void fn_8023E1FC(void *arg0) {
                 } while (1);
             }
         } else {
-            fn_801A7E54(sp18, 0x14, sp8);
+            fn_801A7E54(sp18, 0x14, (void *)sp8);
         }
         fn_8022D894(arg0, i, 1, sp18, 0);
     }
