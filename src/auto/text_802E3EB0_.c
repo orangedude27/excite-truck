@@ -103,8 +103,10 @@ extern char lbl_8034D180[];
 extern void DVDInit(void);
 extern int DVDClose(void *);
 extern void fn_802E3F38(void *);
+#pragma small_data off
 extern unsigned int lbl_8034D0E4;
 extern unsigned int lbl_8034D130;
+#pragma small_data on
 void *fn_802E41C4(void *arg0, int arg1) {
     void (*release)(void *);
     if (arg0 != 0) {
