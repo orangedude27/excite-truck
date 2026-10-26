@@ -10,6 +10,43 @@ int fn_80139B70(int, float, float);
 extern int lbl_8055E138;
 extern int lbl_8055E13C;
 extern unsigned char lbl_8042F7C0;
+extern const char lbl_8032BFD8[];
+extern const char lbl_8032C018[];
+extern const char lbl_80559C40[];
+extern __declspec(section ".sdata") const char lbl_80559C40[];
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" int fn_8013990C(void *arg0) {
+    class Object {
+    public:
+        virtual char *getName(void);
+        virtual int f1(void);
+        virtual int f2(void);
+        virtual int f3(void);
+        virtual int check(char *, int);
+    };
+    char buffer[0x0C];
+    int count = 0;
+    int result;
+    Object *obj = (Object *)arg0;
+
+    do {
+        sprintf(buffer, lbl_80559C40, count++);
+        result = obj->check(buffer, 0);
+    } while (result != 0 && count < 0x2710);
+
+    if (count > 0x400) {
+        char *name = obj->getName();
+        fn_802E30C8(lbl_8032BFD8, 0x400, name, count);
+    }
+    if (result != 0) {
+        char *name = obj->getName();
+        fn_802E30C8(lbl_8032C018, name);
+    }
+    return count;
+}
+#pragma cplusplus reset
+#pragma scheduling on
 void fn_80139B5C(void *arg0, int arg1) {
     volatile float *p = (volatile float *)((char *)arg0 + 0x60);
     float a = p[0];
