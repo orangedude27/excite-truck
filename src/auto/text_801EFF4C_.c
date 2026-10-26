@@ -1,3 +1,6 @@
+extern float lbl_80562F1C;
+extern float lbl_80562F18;
+extern int __cntlzw(unsigned int);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern int lbl_80488798[64];
 extern unsigned char lbl_80488798_u8[];
@@ -105,16 +108,18 @@ extern "C" void fn_801F004C(int unused, int arg1, void *arg2) {
 }
 
 extern "C" void fn_801F0148(void *arg0, void *arg1) {
+    float value;
     *(float *)((char *)arg0 + 0x18) =
-        ((float (*)(void *, int))(*(void ***)arg1)[9])(arg1, (int)&lbl_8033A400)
+        ((float (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_8033A400)
         * lbl_80562F10 * lbl_80562F14;
     *(float *)((char *)arg0 + 0x1C) =
-        ((float (*)(void *, int))(*(void ***)arg1)[9])(arg1, (int)&lbl_8033A410)
+        ((float (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_8033A410)
         * lbl_80562F10 * lbl_80562F14;
-    *(float *)((char *)arg0 + 0x24) = lbl_80562F18;
-    *(float *)((char *)arg0 + 0x20) =
-        ((float (*)(void *, int))(*(void ***)arg1)[9])(arg1, lbl_8055B0C0)
+    value =
+        ((float (*)(void *, int))(*(void ***)arg1)[9])(arg1, (int)&lbl_8055B0C0)
         * lbl_80562F10;
+    *(float *)((char *)arg0 + 0x24) = lbl_80562F18;
+    *(float *)((char *)arg0 + 0x20) = value;
 }
 
   #pragma cplusplus off
