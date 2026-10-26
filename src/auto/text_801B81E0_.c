@@ -2,6 +2,19 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void *lbl_8055E744;
+extern void *fn_801284F8(int, const char *);
+extern void *fn_8001285C(int);
+extern int fn_801B81E0(void *);
+extern void fn_80161618(void);
+extern char lbl_8033676C[];
+extern char lbl_8033677C[];
+extern char lbl_8033678C[];
+extern float lbl_8055A910;
+extern char lbl_8055E748;
+extern int lbl_8055E74C;
+extern float lbl_8055E750;
+extern float lbl_80562740;
+extern float lbl_80562744;
 #pragma cplusplus on
 struct Dummy_801B8318 {
     virtual void f0(int);
@@ -113,24 +126,32 @@ struct Dummy_801B8318 {
           virtual void d33();
                       virtual void d34(void *, void *, void *, void *);
       };
-  #pragma cplusplus off
-  int fn_801B81E0(void *arg0) {
+#pragma cplusplus off
+#pragma push
+#pragma scheduling invalid_target
+int fn_801B81E0(void *arg0) {
     extern int fn_8014145C(void);
     extern int fn_8014DE50(void);
     extern int fn_8016BE60(void);
     extern int fn_80172C28(void);
     extern void fn_802E317C(const char *, ...);
     extern char lbl_80336740[];
-    int value = *(int *)((char *)arg0 + 0x3E8);
-    switch (value) {
-    case 0x180201: return fn_8014145C();
-    case 0x180302: return fn_8014DE50();
-    case 0x180303: return fn_8016BE60();
-    case 0x180304: return fn_80172C28();
-    default: fn_802E317C(lbl_80336740); return 0;
+
+    switch (*(volatile int *)((char *)arg0 + 0x3E8)) {
+    case 0x180201:
+        return fn_8014145C();
+    case 0x180303:
+        return fn_8016BE60();
+    case 0x180302:
+        return fn_8014DE50();
+    case 0x180304:
+        return fn_80172C28();
+    default:
+        fn_802E317C(lbl_80336740);
+        return 0;
     }
 }
-
+#pragma pop
 #pragma cplusplus on
 extern "C" void fn_801B8318(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f59();
