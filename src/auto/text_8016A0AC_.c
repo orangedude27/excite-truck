@@ -148,25 +148,50 @@ void fn_8016A68C(void* arg0) {
 }
 
 extern f32 lbl_80561970;
-s32 fn_8016A6B0(const char *arg0, s32 arg1) {
+typedef struct { f32 first; f32 second; } FloatPair8016A6B0;
+u64 fn_8016A6B0(const char *arg0, s32 arg1) {
+    /* Fix note: compare each name and item ID, then return both selected float bit patterns. */
     s32 i = 0;
     s32 nameOffset = 0;
     s32 itemOffset = 0;
-    s32 count = *(s32 *)((char *)&lbl_80430340 + 4);
-    while (i < count) {
-        if (stricmp(*(char **)&lbl_80430340 + nameOffset + 1, arg0) == 0 &&
-            arg1 == *(s32 *)((char *)&lbl_80430318 + itemOffset + 4)) {
-            f32 a = *(f32 *)((char *)&lbl_80430318 + i * 0x48 + 0x38);
-            f32 b = *(f32 *)((char *)&lbl_80430318 + i * 0x48 + 0x30);
-            union { f32 f; s32 i; } result;
-            result.f = b;
-            return result.i;
+    volatile s32 *nameCount = (volatile s32 *)&lbl_80430340.unk_0x4;
+    volatile s32 *recordBase = (volatile s32 *)lbl_80430318;
+    union FloatBits {
+        f32 f;
+        u32 i;
+    };
+    union Result {
+        struct {
+            u32 first;
+            u32 second;
+        } words;
+        u64 value;
+    } result;
+
+    while (i < *nameCount) {
+        if (stricmp(lbl_80430340.unk_0x0 + nameOffset + 1, arg0) == 0) {
+            volatile s32 *records = (volatile s32 *)*recordBase;
+            if (arg1 == *(records + itemOffset / 4 + 1)) {
+                union FloatBits first;
+                union FloatBits second;
+                first.f = *(f32 *)((char *)records + i * 0x48 + 0x30);
+                second.f = *(f32 *)((char *)records + i * 0x48 + 0x38);
+                result.words.first = first.i;
+                result.words.second = second.i;
+                return result.value;
+            }
         }
         nameOffset += 0x2c;
         itemOffset += 0x48;
         i++;
     }
-    { union { f32 f; s32 i; } result; result.f = lbl_80561970; return result.i; }
+    {
+        union FloatBits fallback;
+        fallback.f = lbl_80561970;
+        result.words.first = fallback.i;
+        result.words.second = fallback.i;
+    }
+    return result.value;
 }
 
 #pragma use_lmw_stmw off
@@ -305,3 +330,30 @@ int fn_8016B598(void) {
     }
 }
 
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_8016B634(s32 arg0) {
+    register s32 count = 0;
+    register s32 offset = 0;
+    register void* entry;
+
+    while (count < lbl_804302F0.count) {
+        entry = (void*)((u8*)lbl_804302F0.data + offset);
+        if (*(u8*)entry != 0) {
+            fn_802C6CF8(*(void**)((u8*)entry + 0x20));
+            *(u8*)entry = 0;
+        }
+        offset += 0x28;
+        count++;
+    }
+    if (lbl_804302F0.ptr10 != 0) {
+        fn_8002F6AC(lbl_804302F0.ptr10, fn_8016AC24);
+        lbl_804302F0.ptr10 = 0;
+        lbl_804302F0.cap = 0;
+        lbl_804302F0.data = 0;
+        lbl_804302F0.count = 0;
+        lbl_804302F0.limit = 0;
+    }
+}
+#pragma scheduling on
+#pragma use_lmw_stmw on
