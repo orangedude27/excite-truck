@@ -264,6 +264,26 @@ extern "C" void fn_80165B78(void **arg0) {
     *(float *)((char *)&lbl_8042FE38 + 0x5c) = obj->getFloatDefault(strings + 0x194, lbl_805618C4);
     *(float *)((char *)&lbl_8042FE38 + 0x60) = lbl_805618CC * (float)((Dummy80165B78D *)obj)->getFloatDefaultDouble(strings + 0x1A8, lbl_805618C8);
 }
+
+#pragma cplusplus on
+extern "C" void fn_80165FAC(void) {
+    class Obj {
+    public:
+        virtual void **method(int) = 0;
+    };
+    Obj *obj;
+    int value;
+    void **result;
+    obj = (Obj *)fn_80131808(lbl_8032FCC0 + 0x1C0);
+    value = fn_80204EA0(lbl_8032FCC0 + 0x1CC);
+    fn_802E30C8(lbl_8032FCC0 + 0x1D8, value);
+    result = obj->method(value);
+    ((void (*)(void))fn_80165A30)();
+    fn_80165B78(result);
+    fn_80131818(obj);
+}
+#pragma cplusplus reset
+
 #pragma cplusplus off
 #pragma scheduling on
 #pragma pop
