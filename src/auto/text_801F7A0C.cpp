@@ -1519,7 +1519,7 @@ extern "C" void fn_801FBFE8(void* arg0) {
 
 extern u8 lbl_8033B54C[], lbl_80333B48[];
 extern f32 lbl_80563014;
-void fn_8019EECC(void);
+extern "C" void fn_8019EECC(void);
 #pragma push
 #pragma processor 750
 extern "C" void fn_8019EECC(void);
@@ -1560,7 +1560,7 @@ extern "C" void fn_801FC048(void *arg0) {
         spC = zero;
         sp10 = zero;
         *(f32 *)((u8 *)obj + 0x30) = zero;
-        return;
+    } else {
         fn_8019EECC();
     }
 }
