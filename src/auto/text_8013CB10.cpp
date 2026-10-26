@@ -727,7 +727,9 @@ extern "C" s32 fn_8013F438(f32 x) {
 }
 #pragma scheduling on
 extern float lbl_805614A4, lbl_805614AC, lbl_805614F8, lbl_80561518, lbl_80561544, lbl_80561548;
+#pragma scheduling invalid_target
 extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
+    volatile f32 scratch[6];
     f32 temp_f0, temp_f0_2, temp_f6, temp_f7, temp_f8;
     f32 var_f3 = lbl_805614AC;
     f32 var_f4;
@@ -743,18 +745,23 @@ extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
     var_f4 = var_f4 > lbl_805614A4 ? var_f4 : lbl_805614A4;
     temp_f5 = -temp_f6;
     temp_f2 = -temp_f8;
+    scratch[4] = lbl_805614A4;
     temp_f7 = lbl_805614A4 + var_f4 * lbl_80561548;
+    scratch[5] = temp_f7;
     f32 out0 = lbl_805614A4 + (f32)temp_f5;
     f32 out2 = lbl_805614A4 + temp_f6;
     f32 out1 = temp_f7 + temp_f8;
     f32 out3 = temp_f7 + (f32)temp_f2;
     *(f32 *)arg0 = out0;
     *(f32 *)((u8 *)arg0 + 4) = out1;
+    scratch[2] = (f32)temp_f5;
+    scratch[3] = temp_f8;
+    scratch[0] = temp_f6;
+    scratch[1] = (f32)temp_f2;
     *(f32 *)arg1 = out2;
     *(f32 *)((u8 *)arg1 + 4) = out3;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" int fn_8013FC6C(void* arg0) {
     struct V {
         virtual int a0(int); virtual int a1(int); virtual int a2(int);
@@ -803,10 +810,9 @@ extern "C" void fn_8014052C(void *unused, s32 arg0, u8 *arg1) {
     if (f >= lbl_805614A4 && f < *(f32 *)(arg1 + 0x98))
         flag = 1;
     if (flag != 0 && *(s32 *)(arg1 + 0x80) > 0x32) {
-        f32 a = fn_8001DAF0((f32 *)(arg1 + 0x98));
+        f32 delta = lbl_805614AC - fn_8001DAF0((f32 *)(arg1 + 0x98));
         f32 count = (f32)*(s32 *)(arg1 + 0x80);
-        f32 b = (lbl_805614AC - a) * count;
-        v = *(s32 *)(arg1 + 0x10C) - (s32)b;
+        v = *(s32 *)(arg1 + 0x10C) - (s32)(count * delta);
     }
     fn_8001DF08(fn_801E866C(arg0), v);
 }
