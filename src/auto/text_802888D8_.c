@@ -1,6 +1,17 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct {
+    volatile float sp8, spC, sp10, sp14, sp18, sp1C;
+    volatile int sp20, sp24;
+    volatile float sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44;
+    char pad40[0x8];
+    volatile float sp50, sp54;
+    char pad50[0xC];
+    volatile int sp64;
+    volatile float sp68, sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94;
+} fn_802897E0Frame;
+
 extern int lbl_8055F6DC;
 extern int lbl_8055C880;
 extern float lbl_80564280, lbl_8056428C, lbl_8056429C, lbl_805642A4, lbl_805642BC, lbl_805642C0, lbl_805642C4, lbl_805642C8, lbl_805642D4, lbl_805642D8, lbl_805642DC, lbl_805642E0, lbl_805642E4, lbl_805642E8, lbl_805642EC;
@@ -216,9 +227,40 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
             *(int *)((char *)arg0 + 0x68), (float *)&sp8, (char *)matrix + 0x34, x, y);
     }
 }
-#pragma use_lmw_stmw reset
-#pragma scheduling on
-#pragma processor reset
+
+extern int fn_80287E20();
+extern void fn_80287ED0(float *, void *, int, int);
+extern int lbl_8055C884, lbl_8055C88C;
+extern float lbl_80564274, lbl_80564278;
+#pragma push
+#pragma scheduling invalid_target
+void fn_80289084(void *arg0) {
+    float result[3];
+    volatile float fallback[3];
+    float f31 = lbl_80564278;
+    float f30 = lbl_80564274;
+    float *dst = (float *)arg0;
+    int i = 0;
+
+    while (i < fn_80287B14()) {
+        void *obj = (void *)fn_80288208(i);
+        if (fn_80287E20(obj, &lbl_8055C884)) {
+            fn_80287ED0(result, obj, (int)&lbl_8055C884, (int)&lbl_8055C88C);
+            dst[0] = result[0];
+            dst[1] = result[1];
+            dst[2] = result[2];
+        } else {
+            dst[0] = f30;
+            dst[1] = f31;
+            fallback[0] = f30;
+            fallback[1] = f31;
+            fallback[2] = f30;
+            dst[2] = f30;
+        }
+        dst += 3;
+        i++;
+    }
+}
 #pragma pop
 void fn_802896E4(void *);
 int fn_802894B4(int arg0) {
