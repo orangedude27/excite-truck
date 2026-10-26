@@ -3,6 +3,10 @@ extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
 extern int stricmp(const char *, const char *);
 extern int fn_802E317C(const char *, ...);
+extern float fn_802C9A4C(float);
+extern void fn_802C8BD0(int);
+extern void fn_802C8D74(void);
+extern int fn_8028FA1C(int);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_803490D4[];
@@ -522,18 +526,20 @@ void fn_8028F608(float *out0, float *out1, float *matrix, float angle) {
 #pragma scheduling on
 int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
     int count;
-    void *buffer;
-    void *result;
+    void *self;
+    int *params;
 
-    ((int (*)(void *))fn_8028E61C)(arg0);
-    ((void (*)(void *, void *))fn_8028FD00)(arg0, arg1);
-    count = *(int *)((char *)arg1 + 4);
-    buffer = fn_8012850C(count * 0x28 + 0x10, lbl_80348FC4);
-    result = fn_8002F37C(buffer, (void *)fn_8028F854, 0, 0x28, count);
-    *(void **)((char *)arg0 + 0x8c) = result;
-    *(int *)((char *)arg0 + 0x98) = count;
-    *(void **)((char *)arg0 + 0xa4) = (void *)fn_802CAC28(arg2, 0);
-    return (int)arg0;
+    self = arg0;
+    params = (int *)arg1;
+    ((int (*)(void *))fn_8028E61C)(self);
+    ((void (*)(void *, void *))fn_8028FD00)(self, params);
+    count = params[1];
+    *(void **)((char *)self + 0x8c) =
+        fn_8002F37C(fn_8012850C(count * 0x28 + 0x10, lbl_80348FC4),
+                    (void *)fn_8028F854, 0, 0x28, count);
+    *(int *)((char *)self + 0x98) = count;
+    *(void **)((char *)self + 0xa4) = (void *)fn_802CAC28(arg2, 0);
+    return (int)self;
 }
 #pragma pop
 void fn_8028F854(void) {}
@@ -629,6 +635,27 @@ int fn_8028FA1C(int arg0) {
 done:
     return 0;
 }
+
+#pragma push
+#pragma dont_inline on
+void fn_8028FAE4(void *arg0, int arg1, float *arg2, float farg0) {
+    extern void fn_8028FEE4(void *, int, float *, float, float);
+    float sp8[2];
+    int result = 0;
+
+    if (*(float *)((char *)arg0 + 0x9C) >=
+            lbl_80564424 - lbl_80558DC4 &&
+        *(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94))
+        result = 1;
+    if (result != 0) {
+        fn_8028F444(sp8, arg2,
+                    (float *)((char *)arg0 + 0x10),
+                    (float *)((char *)arg0 + 0x1C),
+                    *(float *)((char *)arg0 + 0x28), lbl_80564424);
+        fn_8028FEE4(arg0, arg1, sp8, lbl_80564420, farg0);
+    }
+}
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
