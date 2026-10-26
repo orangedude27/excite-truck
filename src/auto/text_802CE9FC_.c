@@ -161,6 +161,40 @@ void fn_802CEC44(void) {
     lbl_8055FD3C = 1;
 }
 
+void fn_802CEC50(unsigned short arg0) {
+    extern unsigned long long fn_802E2C9C(void);
+    extern float fn_8002FD54(unsigned int, unsigned int);
+    extern void fn_802D3900(void);
+    extern char lbl_8034BE20[];
+    extern float lbl_8055D0B0, lbl_8055D0B4;
+    extern unsigned int lbl_8055FD10, lbl_8055FD14;
+    extern char lbl_8055FD3C;
+    extern float lbl_80564F80, lbl_80564F84;
+    unsigned long long now;
+    unsigned long long delta;
+    float value;
+    float previous;
+    float diff;
+
+    if (arg0 == 1) {
+        now = fn_802E2C9C();
+        lbl_8055FD14 = (unsigned int)now;
+        lbl_8055FD10 = (unsigned int)(now >> 32);
+        lbl_8055FD3C = 0;
+    } else if (arg0 == 2) {
+        now = fn_802E2C9C();
+        delta = now - (((unsigned long long)lbl_8055FD10 << 32) | lbl_8055FD14);
+        value = lbl_80564F80 * fn_8002FD54((unsigned int)(delta >> 32), (unsigned int)delta);
+        previous = lbl_8055D0B4;
+        diff = previous - value;
+        lbl_8055D0B0 = value;
+        lbl_8055D0B4 = value + lbl_80564F84 * diff;
+        fn_802D3900();
+    } else {
+        fn_802E317C(lbl_8034BE20, arg0);
+    }
+}
+
 void fn_802CECF4(unsigned int arg0) {
     extern unsigned short lbl_8055D0F6;
     extern void fn_802CEC50(unsigned short);
@@ -627,22 +661,20 @@ void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
     extern unsigned char lbl_804C9778[];
     extern unsigned char lbl_804C97B0[];
     extern double fn_8002EF30(double);
-    register unsigned char *p = lbl_804C9778;
-    register int one = 1;
     float result;
 
-    *(float *)(p + 4) = arg0;
-    lbl_804C9778[0] = one;
-    *(float *)(p + 8) = arg1;
-    *(float *)(p + 0xc) = arg2;
-    *(float *)(p + 0x14) = arg3;
+    *(float *)(lbl_804C9778 + 4) = arg0;
+    lbl_804C9778[0] = 1;
+    *(float *)(lbl_804C9778 + 8) = arg1;
+    *(float *)(lbl_804C9778 + 0xc) = arg2;
+    *(float *)(lbl_804C9778 + 0x14) = arg3;
 
     result = fn_8002EF30(arg2 * lbl_80564F94);
 
     *(float *)(lbl_804C97B0 + 0x14) = arg0;
-    *(float *)(p + 0x10) = result;
+    *(float *)(lbl_804C9778 + 0x10) = result;
     *(float *)(lbl_804C97B0 + 0x18) = arg1;
-    lbl_804C97B0[0x1c] = one;
+    lbl_804C97B0[0x1c] = 1;
 }
 #pragma pop
 extern void *lbl_8055FD54;
@@ -1226,6 +1258,23 @@ extern void *lbl_8055FD64;
 void* fn_802D2D14(void) {
     return lbl_8055FD64;
 }
+
+#pragma dont_inline on
+void fn_802D2ED8(int arg0, int arg1) {
+    float matrix[12];
+    int *base;
+
+    if (arg1 == 0) {
+        lbl_8055FD70 = 1;
+        lbl_8055FD8C = -1;
+    }
+    base = lbl_804CA2D8;
+    fn_801BFD34((unsigned char *)matrix + 0x24, (unsigned char *)arg0 + 0x24, base);
+    fn_80015B20(matrix, (void *)arg0, base);
+    fn_802D0DD4(lbl_804C5650, matrix);
+    GXLoadPosMtxImm(lbl_804C5650, (arg1 * 4) - arg1);
+}
+#pragma dont_inline off
 
 void fn_802D2F70(int arg0) {
     fn_802D2ED8(arg0, 0);
