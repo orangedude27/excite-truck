@@ -84,6 +84,18 @@ void fn_802A6234();
 void fn_802A70E4(void *, f32 *);
 f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898;
+extern f32 __fabsf(f32);
+extern f32 lbl_80558DC4, lbl_80564854;
+extern s32 lbl_8055CFF0, lbl_8055CFF4;
+void fn_802A5A90(void);
+void fn_802A6D68(void *);
+void fn_802D3D50(void);
+void fn_802A5FE4(void);
+void *fn_801E7E34(void);
+s32 fn_802C90F0(s32);
+void fn_802C9118(void);
+void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
+
 f32 fn_802A4A50(void) {
     f32 value;
     s32 now;
@@ -343,13 +355,14 @@ check:
 
 #pragma scheduling invalid_target
 void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
-    s32 size = arg1 * 0xC;
-    void *buffer = ((void *(*)(s32, void *, s32))fn_8012850C)(size + 0x10, lbl_80349CA0, size);
-    *(s32 *)arg0 = fn_8002F37C((s32)buffer, (void *)fn_8001BA68, 0, 0xC, arg1);
-    *(s32 *)((u8 *)arg0 + 8) = arg1;
-    *(s32 *)((u8 *)arg0 + 0xC) = fn_802CAC28((void *)lbl_8055CBBC, 0);
-    *(s32 *)((u8 *)arg0 + 0x10) = fn_802CAC28((void *)lbl_8055CBB8, 0);
-    *(s32 *)((u8 *)arg0 + 0x1C) = arg2;
+    s32 count = arg1;
+    s32 bytes = count * 12;
+    void *buffer = ((void *(*)(s32, void *, s32))fn_8012850C)(count * 12 + 16, lbl_80349CA0, count * 12);
+    *(s32 *)arg0 = fn_8002F37C((s32)buffer, (void *)fn_8001BA68, 0, 12, count);
+    *(s32 *)((u8 *)arg0 + 8) = count;
+    *(s32 *)((u8 *)arg0 + 12) = fn_802CAC28((void *)lbl_8055CBBC, 0);
+    *(s32 *)((u8 *)arg0 + 16) = fn_802CAC28((void *)lbl_8055CBB8, 0);
+    *(s32 *)((u8 *)arg0 + 28) = arg2;
     fn_802A5C1C(arg0);
     return arg0;
 }
@@ -720,30 +733,40 @@ void *fn_802A7614(void *arg0, s32 arg1) {
 
 extern f32 lbl_80564858, lbl_805648C8;
 #pragma push
-#pragma scheduling off
+#pragma processor 750
 s32 fn_802A7680(s32 arg0) {
-    f32 temp_f31;
-    f32 temp_f29;
-    f32 temp_f30;
-    s32 offset;
-    s32 i;
-    temp_f31 = lbl_805648C8;
-    offset = 0;
-    i = 0;
-    while (i < *(s32 *)((u8 *)arg0 + 4)) {
-        f32 angle = *(f32 *)((u8 *)arg0 + 0x18);
-        temp_f29 = *(f32 *)((u8 *)arg0 + 0x14) + fn_80287BC8(temp_f31 * -angle, temp_f31 * angle);
-        temp_f30 = *(f32 *)((u8 *)arg0 + 0x10) + fn_80287BC8(lbl_80564858, *(f32 *)((u8 *)arg0 + 0x1C));
-        angle = *(f32 *)((u8 *)arg0 + 0x18);
-        *(f32 *)(*(u32 *)arg0 + offset) = *(f32 *)((u8 *)arg0 + 0xC) + fn_80287BC8(temp_f31 * -angle, temp_f31 * angle);
-        *(f32 *)(*(u32 *)arg0 + offset + 4) = temp_f30;
-        *(f32 *)(*(u32 *)arg0 + offset + 8) = temp_f29;
-        offset += 0xC;
-        i++;
-    }
-    *(f32 *)((u8 *)arg0 + 0x3C) = lbl_80564858;
-}
+    struct Vec { f32 x, y, z; };
+    u8 *object = (u8 *)arg0;
+    f32 amplitude = lbl_805648C8;
+    s32 offset = 0;
+    s32 i = 0;
 
+    while (i < *(s32 *)(object + 4)) {
+        f32 angle2;
+        f32 angle;
+        f32 y;
+        f32 z;
+        f32 x;
+        struct Vec *out;
+
+        angle = *(f32 *)(object + 0x18);
+        z = *(f32 *)(object + 0x14) +
+            fn_80287BC8(amplitude * -angle, amplitude * angle);
+        y = *(f32 *)(object + 0x10) +
+            fn_80287BC8(lbl_80564858, *(f32 *)(object + 0x1C));
+        angle2 = *(f32 *)(object + 0x18);
+        x = *(f32 *)(object + 0xC) +
+            fn_80287BC8(amplitude * -angle2, amplitude * angle2);
+        out = (struct Vec *)(*(u32 *)object + offset);
+        i++;
+        offset += 0xC;
+        out->x = x;
+        out->y = y;
+        out->z = z;
+    }
+    *(f32 *)(object + 0x3C) = lbl_80564858;
+}
+#pragma pop
 extern f32 PSVECSquareDistance(const void *, const void *);
 extern double fn_8002F234(double);
 extern void *fn_801E8718(s32);
