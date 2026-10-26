@@ -120,7 +120,7 @@ void fn_801E2294(void) {
 
 extern double __fabs(double);
 #pragma ppc_psq_save off
-#pragma scheduling invalid_target
+#pragma scheduling off
 s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, void **arg5, void **arg6, s32 arg7, s32 (*arg_sp8)(s32)) {
     f32 delta[3], normal[3], dot, mag, scale, clampMag;
     f32 diffX, diffY, targetY, targetZ;
