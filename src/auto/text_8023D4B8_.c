@@ -19,7 +19,7 @@ extern void fn_8023E1FC(void *);
   extern char lbl_80341B9C[];
   extern s32 fn_802E317C(const char *, ...);
   extern char lbl_8055BBA0[];
-  extern void fn_801A7E54(void *, s32, ...);
+  extern void fn_801A7E54(void *, s32, void *);
 void* fn_8023D6FC(void) {
     return lbl_8055F18C;
 }
