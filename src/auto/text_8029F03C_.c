@@ -206,7 +206,7 @@ unsigned char fn_8029F510(unsigned char *arg0, int arg1) {
 void fn_8029F534(void *arg0, unsigned char *arg1) {
     if (fn_8029F510((unsigned char *)arg0, (int)arg1)) {
         void **vtable = (void **)*(void **)arg1;
-        ((void (*)(unsigned char *, int *))vtable[5])(arg1, &lbl_8034983C);
+        ((void (*)(unsigned char *, int *))vtable[5])(arg1, (int *)&lbl_8034983C);
         *(int *)((unsigned char *)arg0 + 4) = fn_8028E3F4();
         *(unsigned char *)((unsigned char *)arg0 + 8) =
             ((unsigned char (*)(unsigned char *, int *, int))vtable[12])(arg1, &lbl_80349848, 0);
@@ -218,14 +218,24 @@ void fn_8029F534(void *arg0, unsigned char *arg1) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
-    register void **vtable;
+    class Obj {
+    public:
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+        virtual void set(const char *) = 0;
+        virtual void v4() = 0;
+        virtual void v5() = 0;
+        virtual void v6() = 0;
+        virtual void v7() = 0;
+        virtual void v8() = 0;
+        virtual float getFloat(const char *, float) = 0;
+    };
+    Obj *obj = (Obj *)arg1;
     if (((int (*)(unsigned char *, int))fn_8029F510)((unsigned char *)arg0, (int)arg1) != 0) {
-        vtable = *(void ***)arg1;
-        ((void (*)(unsigned char *, int *))vtable[5])(arg1, &lbl_8034983C);
+        obj->set((const char *)&lbl_8034983C);
         *(int *)((char *)arg0 + 4) = fn_802929F8();
-        vtable = *(void ***)arg1;
-        *(float *)((char *)arg0 + 8) =
-            ((float (*)(unsigned char *, int *, float))vtable[10])(arg1, &lbl_8055CAE8, lbl_805646B4);
+        *(float *)((char *)arg0 + 8) = obj->getFloat((const char *)&lbl_8055CAE8, lbl_805646B4);
     } else {
         *(int *)((char *)arg0 + 4) = 0;
     }
