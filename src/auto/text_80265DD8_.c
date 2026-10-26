@@ -283,13 +283,45 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     PSVECCrossProduct((char*)out+0xc,(char*)out+0x18,out);
 }
 
+void fn_80268D94(void) {
+    struct {
+        int a;
+        int b;
+        int c;
+        int d;
+        int e;
+        int f;
+        int g;
+        int h;
+        int i;
+        int j;
+        int k;
+        int l;
+        int m;
+        int n;
+        int o;
+        int p;
+        int q;
+        int r;
+        int s;
+    } sp8;
+    int sp58;
+    fn_80135DC4(&sp8, 0, 0);
+    fn_80268BD4(lbl_80499920, *(int *)&sp8 + 0x1c, lbl_80563C20, lbl_80563C98);
+    if (sp58 != 0) {
+        fn_80128670();
+    }
+    sp58 = 0;
+    fn_8013530C(&sp8, 0);
+}
+
 #pragma dont_inline on
 void fn_8026A248(int arg0, int arg1) {
     *(int *)((char *)fn_80267EE4(arg1) + 0x24) = arg0;
 }
 extern void fn_802735F4(int, int);
 extern void fn_80135DC4(void *, int, int);
-extern void fn_80134E34(float);
+extern float fn_80134E34(float);
 extern void fn_80136468(int *, void *);
 extern void fn_80128670(void);
 extern void fn_8013530C(void *, int);
@@ -319,24 +351,29 @@ void fn_8026A2C8(void) {
     fn_801EA994();
 }
 
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8026A2CC(int *arg0, int arg1, float arg2) {
     int *dst = (int *)((char *)lbl_80499080 + arg1 * 0x228 + 0x1a4);
-    dst[0] = arg0[0];
-    dst[1] = arg0[1];
-    dst[2] = arg0[2];
-    dst[3] = arg0[3];
-    dst[4] = arg0[4];
-    dst[5] = arg0[5];
-    dst[6] = arg0[6];
-    dst[7] = arg0[7];
-    dst[8] = arg0[8];
-    dst[9] = arg0[9];
-    dst[10] = arg0[10];
-    dst[11] = arg0[11];
-    *(float *)((char *)dst + 0x30) = arg2;
+    int *src = arg0;
+    int a = src[0];
+    int b = src[1];
+    int c = src[2];
+    int d = src[3];
+    dst[0] = a;
+    dst[1] = b;
+    dst[2] = c;
+    dst[3] = d;
+    dst[4] = src[4];
+    dst[5] = src[5];
+    dst[6] = src[6];
+    dst[7] = src[7];
+    dst[8] = src[8];
+    dst[9] = src[9];
+    dst[10] = src[10];
+    dst[11] = src[11];
+    *(float *)(dst + 12) = arg2;
 }
-
-#pragma dont_inline on
 int fn_8026A344(int arg0) {
     return *(int *)((char *)fn_80267EE4(arg0) + 0x20);
 }
@@ -379,23 +416,26 @@ void fn_8026A394(void *arg0) {
     fn_80269BB0();
 }
 
-void fn_8026A4A0(int arg0, void *arg1, float *arg2) {
-    char *base = (char *)fn_80267EE4(arg0);
-    *(int *)((char *)arg1 + 0x00) = *(int *)(base + 0x58);
-    *(int *)((char *)arg1 + 0x04) = *(int *)(base + 0x5c);
-    *(int *)((char *)arg1 + 0x08) = *(int *)(base + 0x60);
-    *(int *)((char *)arg1 + 0x0c) = *(int *)(base + 0x64);
-    *(int *)((char *)arg1 + 0x10) = *(int *)(base + 0x68);
-    *(int *)((char *)arg1 + 0x14) = *(int *)(base + 0x6c);
-    *(int *)((char *)arg1 + 0x18) = *(int *)(base + 0x70);
-    *(int *)((char *)arg1 + 0x1c) = *(int *)(base + 0x74);
-    *(int *)((char *)arg1 + 0x20) = *(int *)(base + 0x78);
-    *(int *)((char *)arg1 + 0x24) = *(int *)(base + 0x7c);
-    *(int *)((char *)arg1 + 0x28) = *(int *)(base + 0x80);
-    *(int *)((char *)arg1 + 0x2c) = *(int *)(base + 0x84);
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
+void fn_8026A4A0(int arg0, int *arg1, float *arg2) {
+    char *base = (char *)lbl_80499080 + arg0 * 0x228;
+    arg1[0] = *(int *)(base + 0x58);
+    arg1[1] = *(int *)(base + 0x5c);
+    arg1[2] = *(int *)(base + 0x60);
+    arg1[3] = *(int *)(base + 0x64);
+    arg1[4] = *(int *)(base + 0x68);
+    arg1[5] = *(int *)(base + 0x6c);
+    arg1[6] = *(int *)(base + 0x70);
+    arg1[7] = *(int *)(base + 0x74);
+    arg1[8] = *(int *)(base + 0x78);
+    arg1[9] = *(int *)(base + 0x7c);
+    arg1[10] = *(int *)(base + 0x80);
+    arg1[11] = *(int *)(base + 0x84);
     *arg2 = *(float *)(base + 0xbc);
 }
-
+#pragma pop
 extern float lbl_8055F484;
 extern float lbl_80563C6C;
 extern float lbl_80499980[8];
