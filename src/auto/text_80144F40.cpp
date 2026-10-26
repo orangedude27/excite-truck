@@ -1860,32 +1860,29 @@ extern "C" void *fn_801484A4(const char *arg0, void *arg1) {
     return NULL;
 }
 #pragma scheduling on
-void fn_80029004(char *, int);
+extern "C" {
+char *fn_80029004(char *, int);
 char *strcpy(char *, const char *);
 char *strchr(const char *, int);
 s32 fn_802E3D68(const char *);
-void fn_801457D0(s32, s32);
-void fn_801456E8(s32, s32);
-void fn_8014589C(s32, s32);
-void fn_8014595C(s32, s32);
 void fn_802E3734(s32 *);
-extern char lbl_80559E70[];
+__declspec(section ".sdata") extern char lbl_80559E70[5];
 extern char lbl_8032D28C[];
+}
 extern "C" void fn_80148534(void *arg0) {
     s32 value;
     char *name;
-    fn_80029004((char *)arg0 + 5, '.');
-    strcpy((char *)arg0 + 5, lbl_80559E70);
+    strcpy(fn_80029004((char *)arg0 + 5, '.'), lbl_80559E70);
     name = (char *)arg0 + 5;
     if (strchr(name, '/') != 0)
         name = strchr(name, '/') + 1;
     value = fn_802E3D68(name);
     if (value != -1) {
-        fn_802E3AD0(0, lbl_8032D28C, 1);
-        fn_801457D0(*(s32 *)((u8 *)arg0 + 0x2C), value);
-        fn_801456E8(*(s32 *)((u8 *)arg0 + 0x30), value);
-        fn_8014589C(*(s32 *)((u8 *)arg0 + 0x34), value);
-        fn_8014595C(*(s32 *)((u8 *)arg0 + 0x3C), value);
+        fn_802E3AD0(value, lbl_8032D28C, 1);
+        fn_801457D0(*(void **)((u8 *)arg0 + 0x2C), value);
+        fn_801456E8(*(void **)((u8 *)arg0 + 0x30), value);
+        fn_8014589C(*(void **)((u8 *)arg0 + 0x34), value);
+        fn_8014595C(*(void **)((u8 *)arg0 + 0x3C), (const char *)value);
         fn_802E3AD0(value, lbl_80559E14);
         fn_802E3734(&value);
     }
