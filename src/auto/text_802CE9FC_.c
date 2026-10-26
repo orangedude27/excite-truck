@@ -871,7 +871,6 @@ void fn_802D0E48(int arg0) {
     }
 }
 
-#pragma dont_inline fn_802D0EC8
 int fn_802D0EC8(int arg0) {
     switch (arg0) {
     case 8:
