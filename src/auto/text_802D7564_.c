@@ -36,6 +36,29 @@ void fn_802D7564(void) {
     }
 }
 
+#pragma push
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void *fn_802D7600(void *arg0) {
+    unsigned char *entry;
+    int i;
+
+    entry = (unsigned char *)lbl_8055FE28;
+    for (i = 0; i < 0x1C2; i++) {
+        if (entry[0x20] == 0) {
+            memset(entry, 0, 0xF4);
+            entry[0x20] = 1;
+            return entry;
+        }
+        entry += 0xF4;
+    }
+    fn_802D7564();
+    fn_802E317C(lbl_8034C494, arg0);
+    return 0;
+}
+#pragma pop
+
 #pragma dont_inline on
 void fn_802D768C(void *arg0) {
     extern void fn_80128658(s32);
