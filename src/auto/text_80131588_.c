@@ -459,35 +459,36 @@ s32 fn_80132098(void* arg0, s32 index, void* dst1, void* dst2) {
 }
 
 extern char lbl_8032B764[];
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling on
-s32 fn_801320D8(void* arg0, const char* name) {
-    volatile struct { const char* name; s32 value; } key;
+#pragma cplusplus on
+extern "C" s32 fn_801320D8(void *arg0, const char *name) {
+    class Dummy {
+    public:
+        virtual char *v0(void);
+    };
+    volatile struct { const char *name; s32 value; } key;
     s32 index;
-    char* found;
+    char *found;
     s32 offset;
     key.name = name;
     key.value = 0;
     found = NULL;
     index = 0;
     offset = 0;
-    while (index < *(s32*)((char*)arg0 + 0xC)) {
-        if (stricmp(name, *(char**)(*(char**)((char*)arg0 + 0x10) + offset)) == 0) {
-            found = *(char**)((char*)arg0 + 0x10) + index * 8;
+    while (index < *(s32 *)((char *)arg0 + 0xC)) {
+        if (stricmp(name, *(char **)(*(char **)((char *)arg0 + 0x10) + offset)) == 0) {
+            found = *(char **)((char *)arg0 + 0x10) + index * 8;
             break;
         }
         offset += 8;
         index++;
     }
-    if (found == NULL && *(void**)((char*)arg0 + 0x14) != NULL)
-        found = ((char* (*)(void*, const char*))fn_80131C88)(*(void**)((char*)arg0 + 0x14), name);
+    if (found == NULL && *(void **)((char *)arg0 + 0x14) != NULL)
+        found = ((char *(*)(void *, const char *))fn_80131C88)(*(void **)((char *)arg0 + 0x14), name);
     if (found == NULL)
-        fn_802E317C(lbl_8032B764, name,
-            ((char* (*)(void*))(*(void**)((char*)*(void**)arg0 + 8)))(arg0));
-    return *(s32*)(found + 4);
+        fn_802E317C(lbl_8032B764, name, ((Dummy *)arg0)->v0());
+    return *(s32 *)(found + 4);
 }
-#pragma pop
+#pragma cplusplus reset
 extern int atoi(const char*);
 extern int atoi();
 #pragma cplusplus on
@@ -520,35 +521,45 @@ s32 fn_80132220(void* arg0) {
 extern unsigned long strlen(const char*);
 extern char lbl_8032B790[];
 #pragma push
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
-    const char* value = ((char* (*)(void*))(*(void**)((char*)*(void**)arg0 + 0x14)))(arg0);
+    void **vtable = *(void ***)arg0;
+    const char *value = ((char *(*)(void *))vtable[5])(arg0);
     s32 index = 0;
     while ((s8)*arg2 != 0) {
         if (stricmp(arg2, value) == 0) return index;
-        arg2 = &arg2[strlen(arg2)] + 1;
+        arg2 = strlen(arg2) + arg2 + 1;
         index++;
     }
     fn_802E317C(lbl_8032B790, value, arg1,
-        ((char* (*)(void*))(*(void**)((char*)*(void**)arg0 + 8)))(arg0));
+        ((char *(*)(void *))(*(void ***)((char *)*(void **)arg0 + 8)))(arg0));
     return -1;
+}
+#pragma pop
+f32 fn_80132354(void *arg0, s32 arg1, f32 farg0) {
+    f32 a, b;
+    s32 name = ((s32 (*)(void *))(*(void **)((char *)*(void **)arg0 + 0x14)))(arg0);
+    if (sscanf(lbl_80559B1C, &a, &b) != 2) {
+        fn_802E317C(lbl_8032B7BC, name, arg1,
+            ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 8)))(arg0));
+    }
+    return a + farg0 * (b - a);
 }
 
 extern char lbl_8032B80C[], lbl_8032B7E4[];
 #pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling on
-void fn_80132410(void* arg0, void* arg1, const char* arg2) {
-    typedef struct { s32 x,y,z; } Vector;
+#pragma scheduling invalid_target
+void fn_80132410(void *arg0, void *arg1, const char *arg2) {
+    typedef struct { s32 x, y, z; } Vector;
     Vector values;
-    const char* value = ((char* (**)(void*, const char*))(*(void**)arg1))[5](arg1, arg2);
+    const char *value = ((char *(**)(void *, const char *))(*(void **)arg1))[5](arg1, arg2);
     if (sscanf(value, lbl_8032B80C, &values.x, &values.y, &values.z) != 3) {
         fn_802E317C(lbl_8032B7E4, value, arg2,
-            ((char* (**)(void*))(*(void**)arg1))[2](arg1));
+            ((char *(**)(void *))(*(void **)arg1))[2](arg1));
     }
-    *(Vector*)arg0 = values;
+    *(Vector *)arg0 = values;
 }
-
+#pragma pop
 Vec2 fn_801324E0(void *arg0, s32 arg1) {
     Vec2 result;
     char *value = ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 0x14)))(arg0);
@@ -559,6 +570,21 @@ Vec2 fn_801324E0(void *arg0, s32 arg1) {
     return result;
 }
 
+#pragma push
+#pragma scheduling on
+f32 fn_8013278C(void *arg0, s32 arg1) {
+    f32 a, b;
+    s32 name = ((s32 (*)(void *))(*(void **)((char *)*(void **)arg0 + 0x14)))(arg0);
+    if (fn_8012F9E8(&a, 4, (const char *)name) != 0) {
+        u8 *p = (u8 *)&a;
+        u8 t = p[0]; p[0] = p[3]; p[3] = t;
+        t = p[1]; p[1] = p[2]; p[2] = t;
+    } else {
+        fn_802E317C(lbl_8032B840, name, arg1,
+            ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 8)))(arg0));
+    }
+    return a;
+}
 #pragma pop
 
 #pragma push
@@ -601,7 +627,7 @@ s32 fn_801328D4(void *arg0, s32 arg1) {
     }
     return 0;
 }
-#pragma pop
+#pragma use_lmw_stmw off
 struct Unk80132968Vector { s32 x, y, z; } fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
     struct Unk80132968Vector copy;
     struct Unk80132968Vector result;
@@ -614,7 +640,7 @@ struct Unk80132968Vector { s32 x, y, z; } fn_80132968(void *arg1, s32 arg2, stru
     }
     return copy = result;
 }
-#pragma pop
+#pragma use_lmw_stmw reset
 
 struct Unk80132AE4Value {
     struct { s32 a[9]; } matrix;
@@ -665,6 +691,24 @@ s32 fn_80132C50(void* arg0, s32 arg1) {
         return (s32)(*(char**)((char*)arg0 + 0xC) + arg1 * 0x1C);
     return 0;
 }
+
+#pragma push
+#pragma scheduling invalid_target
+s32 fn_80132C74(void *arg0, s32 arg1) {
+    register s32 offset = 0;
+    register s32 i = 0;
+    register s32 count;
+    while ((count = *(s32 *)((u8 *)arg0 + 4)), i < count) {
+        char *s = *(char **)((u8 *)arg0 + 0xC) + offset;
+        if (stricmp(*(char **)(s + 4), (char *)arg1) == 0)
+            return (s32)(*(char **)((u8 *)arg0 + 0xC) + i * 0x1C);
+        offset += 0x1C;
+        i++;
+    }
+    fn_802E317C(lbl_8032B73C, (char *)arg1);
+    return 0;
+}
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
