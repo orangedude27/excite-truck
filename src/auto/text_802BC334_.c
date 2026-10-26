@@ -453,7 +453,6 @@ check:
         lbl_8055FAB4 = 0;
     }
 }
-#pragma scheduling on
 void fn_802BCFB0(int *arg0) {
     int temp_r31;
     temp_r31 = *arg0;
