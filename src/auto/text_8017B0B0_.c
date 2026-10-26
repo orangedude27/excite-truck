@@ -15,6 +15,7 @@ extern void fn_80179D94(void);
 extern void fn_8017B2D0(void*, float, float, float, float);
 extern void fn_80179D08(void);
 extern char lbl_80331CC4[];
+extern void PSVECCrossProduct();
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80558DC4;
 
@@ -41,36 +42,56 @@ void fn_8017B164(void *arg0) {
 
 extern float lbl_80561BA8, lbl_80561BAC, lbl_80561BB0, lbl_80561BB4;
 void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
-    float base = lbl_80561BAC;
-    float factor = lbl_80561BB0;
-    float zero = lbl_80561BA8;
-    float sx = factor * (factor * (base * b));
-    float sy = factor * (factor * (base * c));
-    float sz = factor * (factor * (base * d));
-    float sa = base * a;
-    float ia = lbl_80561BB4 / sa;
-    float ix = lbl_80561BB4 / sx;
-    float iy = lbl_80561BB4 / sy;
-    float iz = lbl_80561BB4 / sz;
+    float base;
+    float zero;
+    float x;
+    float factor;
+    float y;
+    float z;
+    float inverse_scale;
+    float iy;
+    float iz;
+    float sa;
+    float ix;
+    float ia;
 
+    base = lbl_80561BAC;
+    zero = lbl_80561BA8;
+    x = base * b;
+    factor = lbl_80561BB0;
+    y = base * c;
+    z = base * d;
+    x = factor * x;
     *(float *)((char *)arg0 + 0xf8) = zero;
+    y = factor * y;
+    z = factor * z;
     *(float *)((char *)arg0 + 0xfc) = zero;
+    inverse_scale = lbl_80561BB4;
+    y = factor * y;
+    z = factor * z;
     *(float *)((char *)arg0 + 0x100) = zero;
-    *(float *)((char *)arg0 + 0x104) = iy;
+    iy = inverse_scale / y;
     *(float *)((char *)arg0 + 0x108) = zero;
+    iz = inverse_scale / z;
+    x = factor * x;
     *(float *)((char *)arg0 + 0x10c) = zero;
     *(float *)((char *)arg0 + 0x110) = zero;
+    *(float *)((char *)arg0 + 0x104) = iy;
     *(float *)((char *)arg0 + 0x114) = iz;
+
+    sa = base * a;
+    ix = inverse_scale / x;
+    ia = inverse_scale / sa;
     *(float *)((char *)arg0 + 0xd4) = sa;
-    *(float *)((char *)arg0 + 0xd8) = sx;
-    *(float *)((char *)arg0 + 0xdc) = sy;
-    *(float *)((char *)arg0 + 0xe0) = sz;
+    *(float *)((char *)arg0 + 0xd8) = x;
+    *(float *)((char *)arg0 + 0xdc) = y;
+    *(float *)((char *)arg0 + 0xe0) = z;
     *(float *)((char *)arg0 + 0xe4) = ia;
     *(float *)((char *)arg0 + 0xe8) = ix;
     *(float *)((char *)arg0 + 0xec) = iy;
     *(float *)((char *)arg0 + 0xf0) = iz;
-    *(float *)((char *)arg0 + 0xf4) = ia;
-    /* Cache the nine matrix words as integers after filling their float fields. */
+    *(float *)((char *)arg0 + 0xf4) = ix;
+    /* Copy the completed matrix words into the object's cached integer block. */
     *(unsigned int *)((char *)arg0 + 0x148) = *(unsigned int *)((char *)arg0 + 0xf4);
     *(unsigned int *)((char *)arg0 + 0x14c) = *(unsigned int *)((char *)arg0 + 0xf8);
     *(unsigned int *)((char *)arg0 + 0x150) = *(unsigned int *)((char *)arg0 + 0xfc);
@@ -93,6 +114,7 @@ void fn_8017B4AC(float *arg0, float *arg1) {
 }
 #pragma scheduling on
 extern void fn_8017B4E0(void *, float *, float *, float);
+#pragma scheduling invalid_target
 void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int arg5, float *arg6, int arg7, float arg8) {
     int count;
     int index;
@@ -130,7 +152,7 @@ void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int a
     }
     fn_8017B4E0(arg0, arg3, arg4, arg8);
 }
-
+#pragma scheduling on
 extern float lbl_80561BA8;
 #pragma scheduling off
 void fn_8017B6A8(void *arg0) {
