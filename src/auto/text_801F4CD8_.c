@@ -160,8 +160,6 @@ public:
     virtual void d7();
     virtual void d8();
     virtual void d9();
-    virtual void d10();
-    virtual void d11();
     virtual int getValue(const char *, int);
 };
 #pragma cplusplus on
@@ -180,19 +178,18 @@ extern char lbl_8055B168[];
 extern char lbl_8055B170[];
 __declspec(section ".sdata") extern char lbl_8055B168[];
 __declspec(section ".sdata") extern char lbl_8055B170[];
-int fn_801F4ECC(void *arg0) {
+#pragma cplusplus on
+extern "C" int fn_801F4ECC(void *arg0) {
     int result = 0;
-    void **vtable = *(void ***)arg0;
-    int (*call)(void *, const char *, int) = (int (*)(void *, const char *, int))vtable[12];
-    if (call(arg0, lbl_8055B168, 0)) result |= 1;
-    call = (int (*)(void *, const char *, int))(*(void ***)arg0)[12];
-    if (call(arg0, lbl_8033AD28, 0)) result |= 2;
-    call = (int (*)(void *, const char *, int))(*(void ***)arg0)[12];
-    if (call(arg0, lbl_8055B170, 0)) result |= 4;
+    Obj_801F4ECC *object = (Obj_801F4ECC *)arg0;
+
+    if (object->getValue(lbl_8055B168, 0)) result |= 1;
+    if (object->getValue(lbl_8033AD28, 0)) result |= 2;
+    if (object->getValue(lbl_8055B170, 0)) result |= 4;
     if ((result & 1) && (result & 4)) fn_802E317C(lbl_8033AD34);
     return result;
 }
-
+#pragma cplusplus off
 typedef int (*F0)(void);
 typedef void *(*F2)(void *, void *);
 #pragma push
@@ -793,7 +790,7 @@ void fn_801F70D0(void *arg0, int arg1) {
 extern void fn_801E8C84(float *);
 void fn_801F7160(void *arg0) {
     float sp[6];
-    register float offset, scale;
+    float offset, scale;
     void *entry;
     int i;
 
