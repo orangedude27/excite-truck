@@ -156,14 +156,16 @@ void fn_801B0BB0(void *arg0, void *arg1) {
     void *var_r3;
     void *var_r0;
     s32 var_r4;
-    register f32 threshold = lbl_805625F4;
+    f32 threshold = lbl_805625F4;
+    f32 value;
     f32 temp_f31;
 
     temp_r5 = *(void **)((u8 *)arg1 + 4);
     *(void **)arg0 = temp_r5;
     *(f32 *)((u8 *)arg0 + 4) = *(f32 *)((u8 *)arg1 + 8);
     *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)arg1 + 0xC);
-    temp_f31 = *(f32 *)((u8 *)*(void **)((u8 *)arg1 + 0x2C) + 8) - threshold;
+    value = *(f32 *)((u8 *)*(void **)((u8 *)arg1 + 0x2C) + 8);
+    temp_f31 = value - threshold;
     if (*(f32 *)((u8 *)temp_r5 + 0x1C) > temp_f31) {
         fn_802E30C8(lbl_80335A58);
         var_r3 = *(void **)((u8 *)*(void **)((u8 *)arg1 + 0x2C) + 0x1C);
@@ -273,7 +275,7 @@ s32 fn_801B0E40(s32 arg0, s32 *arg1) {
     var_r30 = temp_r31;
     while (var_r30 <= (s32)lbl_8055E678) {
         fn_801B2F40(var_r30 - 1);
-        if (fn_801B0DF0(0) != 0) return 0;
+        if (((s32 (*)(void))fn_801B0DF0)() != 0) return 0;
         var_r30++;
     }
     var_r30 = temp_r31 - 1;
@@ -281,7 +283,7 @@ s32 fn_801B0E40(s32 arg0, s32 *arg1) {
     if (var_r31 <= 1) var_r31 = 1;
     while (var_r30 >= var_r31) {
         fn_801B2F40(var_r30 - 1);
-        if (fn_801B0DF0(0) != 0) {
+        if (((s32 (*)(void))fn_801B0DF0)() != 0) {
             *arg1 = var_r30 + 1;
             break;
         }
@@ -529,33 +531,37 @@ extern void *fn_80135DC4(void *, s32, void *);
 extern void *fn_801352B8(void);
 extern char lbl_80335B28[], lbl_80335B3C[];
 extern void fn_80135F4C(void *);
-void fn_801B1A5C(void *arg0) {
-    void *obj;
-    void **vtable;
-    void *a;
-    void *b;
-    void **vt;
-    obj = fn_80156A40();
-    vtable = *(void ***)obj;
-    a = ((void *(*)(void *, void *))vtable[4])(obj, *(void **)((u8 *)arg0 + 0x60));
-    b = *(void **)((u8 *)arg0 + 0x58);
-    vt = *(void ***)b;
-    ((void (*)(void *, void *))vt[3])(b, a);
-    a = ((void *(*)(void *, void *))vtable[5])(obj, *(void **)((u8 *)arg0 + 0x60));
-    b = *(void **)((u8 *)arg0 + 0x3C);
-    vt = *(void ***)b;
-    ((void (*)(void *, void *))vt[3])(b, a);
-    fn_80135F4C(*(void **)((u8 *)arg0 + 0x58));
-    b = *(void **)((u8 *)arg0 + 0x58);
-    a = *(void **)((u8 *)arg0 + 0x3C);
-    *(s32 *)((u8 *)arg0 + 0x40) = *(s32 *)((u8 *)b + 4);
-    *(f32 *)((u8 *)arg0 + 0x44) = *(f32 *)((u8 *)b + 8);
-    *(s32 *)((u8 *)arg0 + 0x48) = *(s32 *)((u8 *)b + 0xC);
-    *(s32 *)((u8 *)arg0 + 0x4C) = *(s32 *)((u8 *)a + 4);
-    *(f32 *)((u8 *)arg0 + 0x50) = *(f32 *)((u8 *)a + 8);
-    *(s32 *)((u8 *)arg0 + 0x54) = *(s32 *)((u8 *)a + 0xC);
-}
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801B1A5C(void *arg0) {
+    struct Manager {
+        virtual void v0();
+        virtual void v1();
+        virtual void *getFirst(void *);
+        virtual void *getSecond(void *);
+    };
+    struct Target {
+        virtual void v0();
+        virtual void set(void *);
+    };
+    Manager *manager = (Manager *)fn_80156A40();
+    void *first = manager->getFirst(*(void **)((u8 *)arg0 + 0x60));
+    Target *targetA = *(Target **)((u8 *)arg0 + 0x58);
+    targetA->set(first);
+    void *second = manager->getSecond(*(void **)((u8 *)arg0 + 0x60));
+    Target *targetB = *(Target **)((u8 *)arg0 + 0x3C);
+    targetB->set(second);
 
+    fn_80135F4C(*(void **)((u8 *)arg0 + 0x58));
+    *(s32 *)((u8 *)arg0 + 0x40) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x58) + 4);
+    *(f32 *)((u8 *)arg0 + 0x44) = *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x58) + 8);
+    *(s32 *)((u8 *)arg0 + 0x48) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x58) + 0xC);
+    *(s32 *)((u8 *)arg0 + 0x4C) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x3C) + 4);
+    *(f32 *)((u8 *)arg0 + 0x50) = *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x3C) + 8);
+    *(s32 *)((u8 *)arg0 + 0x54) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x3C) + 0xC);
+}
+#pragma cplusplus off
+#pragma pop
 M2C_UNK fn_801353C4(void *, f32 *);                 /* extern */
 s32 fn_80136068(void *, f32 *, f32 *);              /* extern */
 s32 fn_801363A0(void *);                            /* extern */
@@ -1233,46 +1239,53 @@ void fn_801B2C6C(void) {
 
 }
 
+#pragma scheduling invalid_target
 s32 fn_801B2C70(void *arg0) {
-    register s32 i;
-    register s32 offset;
-    register s32 zero;
-    register s32 x;
-    register s32 y;
-    register s32 shifted;
-    register s32 mask;
-    register u8 *entry;
+    struct Entry {
+        s32 unknown0;
+        s32 value;
+        s32 unknown8;
+        u8 unknownC[4];
+        u8 flag;
+        u8 unknown11[3];
+    } *entry;
+    s32 i;
+    s32 offset;
+    s32 zero;
+    s32 x;
+    s32 y;
+    s32 shifted;
+    s32 mask;
 
     memset(arg0, 0, 0xB0);
     *(s32 *)arg0 = (s32)lbl_8055E678;
-    entry = (u8 *)arg0 + 0x10;
     *(s32 *)((u8 *)arg0 + 4) = lbl_8055E67C;
-    *(u8 *)((u8 *)arg0 + 0xC) = 0;
+    zero = 0;
+    *(u8 *)((u8 *)arg0 + 0xC) = zero;
     *(u8 *)((u8 *)arg0 + 0xD) = lbl_8055E698;
 
     x = lbl_8055E69C;
     y = lbl_8055E67C;
-    x ^= y;
+    x = x ^ y;
     shifted = x >> 1;
     mask = x & y;
-    shifted -= mask;
+    shifted = shifted - mask;
     *(u8 *)((u8 *)arg0 + 0xE) = (u32)shifted >> 31;
-    zero = 0;
+
+    entry = (struct Entry *)((u8 *)arg0 + 0x10);
     i = 0;
     offset = 0;
-
     while (i < (s32)lbl_8055E678) {
-        i += 1;
-        *(s32 *)(entry + 4) = *(s32 *)((u8 *)lbl_8055E684 + offset + 8);
-        offset += 0x80;
-        *(s32 *)(entry + 8) = zero;
-        *(u8 *)(entry + 0x10) = zero;
-        entry += 0x14;
+        i = i + 1;
+        entry->value = *(s32 *)((u8 *)lbl_8055E684 + offset + 8);
+        offset = offset + 0x80;
+        entry->unknown8 = zero;
+        entry->flag = zero;
+        entry++;
     }
     return 1;
 }
-
-#pragma dont_inline on
+#pragma scheduling on
 void *fn_801B2EC0(s32 arg0) {
     return (void *)((u8 *)lbl_8055E684 + (arg0 << 7));
 }
