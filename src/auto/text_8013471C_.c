@@ -85,6 +85,49 @@ extern "C" void fn_8013472C(void) {
 void __AXDSPInitCallback_80134770(void) {
       lbl_8055E0AC = 0;
   }
+
+extern void fn_80160AE4(void);
+extern void fn_8015F558(void);
+extern void fn_8013A1EC(void);
+extern void fn_8013B56C(void);
+extern void fn_80166814(void);
+extern void fn_801378D0(void);
+extern void __AXDSPInitCallback_80134770(void);
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_8013490C(void) {
+    register void **entries;
+    register s32 index;
+    register s32 zero;
+    void *item;
+
+    fn_80160AE4();
+    fn_8015F558();
+    fn_8013A1EC();
+    fn_8013B56C();
+    fn_80166814();
+    entries = lbl_8042F758;
+    index = 0;
+    zero = 0;
+    do {
+        item = *entries;
+        if (item == 0)
+            goto skip_clear;
+        if (item == 0)
+            goto clear_item;
+        ((void (*)(void *))fn_80128668)(item);
+clear_item:
+        *entries = (void *)zero;
+skip_clear:
+        index++;
+        entries++;
+    } while (index < 8);
+    __AXDSPInitCallback_80134770();
+    fn_801378D0();
+}
+#pragma dont_inline off
+#pragma scheduling on
+
   
   void fn_80134994(void) {
   
