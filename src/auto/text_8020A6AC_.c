@@ -13,6 +13,8 @@ extern int lbl_8055EDF8;
 extern unsigned int lbl_8055EE00;
 
 extern void fn_802E6264(void);
+extern void fn_802E5D5C(void *);
+extern void fn_8020B2BC(void *, int, int);
 extern int lbl_8055EE0C;
 extern void *lbl_8055EE10;
 extern char lbl_8033C35C[];
