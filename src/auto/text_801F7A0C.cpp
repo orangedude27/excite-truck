@@ -703,24 +703,20 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
 
 #pragma dont_inline on
 extern "C" void fn_801F9928(void *list, s32 arg) {
+    void *cur;
+    char *name;
     s32 i = 0;
-    void *cur = (*(FListVT **)list)->get(list, 0);
-
-    for (;;) {
-        void *next;
-        FNodeVT *vt;
-
-        if (cur == NULL) {
-            break;
-        }
-        vt = *(FNodeVT **)cur;
-        next = (*(FListVT **)list)->get(list, i);
-        vt->name(cur);
-        if (stricmp((char *)(&lbl_8055B36C), (char *)(&lbl_8055B36C)) == 0) {
-            fn_801F981C(cur, arg);
-        }
-        i++;
-        cur = next;
+    goto get_cur;
+body:
+    name = (*(FNodeVT **)cur)->name(cur);
+    if (stricmp(name, (const char *)&lbl_8055B36C) == 0) {
+        fn_801F981C(cur, arg);
+    }
+    i++;
+get_cur:
+    cur = (*(FListVT **)list)->get(list, i);
+    if (cur != 0) {
+        goto body;
     }
 }
 
@@ -881,15 +877,24 @@ extern "C" void clear__Q211J2DBloSaver19CTextureNameConnectFv(void **arg0) {
 }
 
 extern "C" void fn_801FA010(void **arg0) {
-    void *node = *arg0;
+    int i;
+    void *p;
+    void *node;
+    void *next;
+
+    node = *arg0;
     while (node != 0) {
-        void *next = *(void **)((char *)node + 0x68);
-        fn_801E6CD0(*(void **)((char *)node + 0x30), 0, 0.0f);
-        int i;
-        for (i = 0; i < *(s32 *)((char *)node + 0x54); i++)
-            fn_801E6CC4(*(void **)((char *)node + 0x34 + i * 4));
-        fn_801E6B98(*(void **)((char *)node + 0x30));
-        ((void (*)(void *))fn_80128668)(node);
+        next = *(void **)((char *)node + 0x68);
+        if (node != 0) {
+            fn_801E6CD0(*(void **)((char *)node + 0x30), 0, lbl_80562FF0);
+            p = node;
+            for (i = 0; i < *(s32 *)((char *)node + 0x54); i++) {
+                fn_801E6CC4(*(void **)((char *)p + 0x34));
+                p = (char *)p + 4;
+            }
+            fn_801E6B98(*(void **)((char *)node + 0x30));
+            ((void (*)(void *))fn_80128668)(node);
+        }
         node = next;
     }
     *arg0 = 0;
@@ -937,24 +942,33 @@ extern void* lbl_8055EC50;
 extern void* lbl_8055EC5C;
 extern s32 fn_80129D90(s32, s32);
 extern s32 fn_801E6CD0(s32, s32, f32);
-void fn_801FA1D4(void) {
-    unsigned char* p;
-    void* cur;
-    s32 i;
-    p = (unsigned char*)lbl_8055EC4C;
-    while (p != 0) { p[0x40] = 1; p = *(unsigned char**)(p + 0x44); }
-    p = (unsigned char*)lbl_8055EC50;
-    while (p != 0) { p[0x40] = 1; p = *(unsigned char**)(p + 0x44); }
-    cur = lbl_8055EC5C;
-    while (cur != 0) {
-        if (*(s32*)((char*)cur + 0x54) > 0) {
-            if (*(s32*)((char*)cur + 0x60) != 1) {
-                i = fn_80129D90(0, 0);
-                fn_801E6CD0(*(s32*)((char*)cur + 0x30), *(s32*)((char*)cur + 0x34 + i * 4), lbl_80562FF0);
-            } else fn_801E6CD0(*(s32*)((char*)cur + 0x30), 0, lbl_80562FF0);
+extern "C" void fn_801FA1D4(void) {
+    unsigned char *p = (unsigned char *)lbl_8055EC4C;
+    do {
+        p[0x40] = 1;
+        p = *(unsigned char **)(p + 0x44);
+    } while (p != 0);
+
+    p = (unsigned char *)lbl_8055EC50;
+    do {
+        p[0x40] = 1;
+        p = *(unsigned char **)(p + 0x44);
+    } while (p != 0);
+
+    void *cur = lbl_8055EC5C;
+    do {
+        if (*(s32 *)((char *)cur + 0x54) > 0) {
+            if (*(s32 *)((char *)cur + 0x60) != 1) {
+                s32 i = fn_80129D90(0, 0);
+                fn_801E6CD0(*(s32 *)((char *)cur + 0x30),
+                            *(s32 *)((char *)cur + 0x34 + i * 4),
+                            lbl_80562FF0);
+            } else {
+                fn_801E6CD0(*(s32 *)((char *)cur + 0x30), 0, lbl_80562FF0);
+            }
         }
-        cur = *(void**)((char*)cur + 0x68);
-    }
+        cur = *(void **)((char *)cur + 0x68);
+    } while (cur != 0);
 }
 
 extern "C" int fn_8020402C(void);
@@ -1325,34 +1339,30 @@ extern "C" void fn_801FBEA8(void* arg0) {
  *(void**)obj = lbl_80333918;
  }
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_801FBF48(void *arg0) {
     void *obj = fn_801284F8(0x2C, lbl_8033B52C);
     if (obj != 0) {
         f32 zero, one, x, y;
-        s32 tag;
         one = lbl_80563010;
         zero = lbl_80562FFC;
-        *(void **)obj = lbl_80333B98;
+        *(volatile void **)obj = lbl_80333B98;
         x = *(f32 *)((char *)arg0 + 0x58);
-        *(s32 *)((char *)obj + 0xC) = 0;
+        *(volatile s32 *)((char *)obj + 0xC) = 0;
         y = *(f32 *)((char *)arg0 + 0x5C);
-        *(s32 *)((char *)obj + 4) = 0;
-        tag = 0x52494E47;
-        *(s32 *)((char *)obj + 8) = 0;
-        *(s32 *)((char *)obj + 0x18) = tag;
-        *(f32 *)((char *)obj + 0x10) = one;
-        *(f32 *)((char *)obj + 0x14) = zero;
-        *(s32 *)((char *)obj + 0x20) = 100;
-        *(s32 *)((char *)obj + 0x1C) = 0;
-        *(void **)obj = lbl_803337C8;
-        *(f32 *)((char *)obj + 0x24) = x;
-        *(f32 *)((char *)obj + 0x28) = y;
+        *(volatile s32 *)((char *)obj + 4) = 0;
+        *(volatile s32 *)((char *)obj + 8) = 0;
+        *(volatile s32 *)((char *)obj + 0x18) = 0x52494E47;
+        *(volatile f32 *)((char *)obj + 0x10) = one;
+        *(volatile f32 *)((char *)obj + 0x14) = zero;
+        *(volatile s32 *)((char *)obj + 0x20) = 100;
+        *(volatile s32 *)((char *)obj + 0x1C) = 0;
+        *(volatile void **)obj = lbl_803337C8;
+        *(volatile f32 *)((char *)obj + 0x24) = x;
+        *(volatile f32 *)((char *)obj + 0x28) = y;
     }
 }
-
-#pragma push
-#pragma paired_single off
+#pragma scheduling on
 extern "C" void fn_801FBFE8(void* arg0) {
  f64 value = lbl_80563010;
  void* obj = fn_801284F8(0xE0, lbl_8033B53C);
