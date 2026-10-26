@@ -476,6 +476,73 @@ extern "C" void fn_801914F8(void *arg0) {
 u8 fn_8019157C(void *arg0) { return *((u8 *)arg0 + 0x14); }
 
 #pragma cplusplus on
+extern "C" void fn_801331C4(s32, void *, f32 *);
+extern char lbl_8055A480[];
+extern "C" void *memset(void *, int, u32);
+extern "C" void fn_801915FC(void *arg0, void *arg1) {
+    class FirstVTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+    };
+    class SecondVTable {
+    public:
+        virtual void g0();
+        virtual void g1();
+        virtual void g2();
+        virtual void g3();
+        virtual void g4();
+        virtual void g5();
+        virtual void g6();
+        virtual void g7();
+        virtual void g8();
+        virtual void g9();
+        virtual void g10();
+        virtual void g11();
+        virtual void g12();
+        virtual void g13();
+        virtual void g14();
+        virtual void g15();
+        virtual void g16();
+        virtual void g17();
+        virtual void g18();
+        virtual void g19();
+        virtual void g20();
+        virtual void g21();
+        virtual void g22();
+        virtual void g23();
+        virtual void g24();
+        virtual void g25();
+        virtual void g26();
+        virtual void g27();
+        virtual int g28();
+    };
+    FirstVTable *first = (FirstVTable *)arg0;
+    SecondVTable *second;
+    s32 result;
+    *(void **)((char *)arg0 + 0x34) = arg1;
+    *(s32 *)((char *)arg0 + 0x3C) = *(s32 *)((char *)arg1 + 0x1EC);
+    first->f9();
+    *(f32 *)((char *)arg0 + 0x10) = lbl_8056208C;
+    *(f32 *)((char *)arg0 + 0x14) = lbl_8056208C;
+    *(f32 *)((char *)arg0 + 0x18) = lbl_8056208C;
+    memset((char *)arg0 + 0x20, 0, 0x10);
+    *(f32 *)((char *)arg0 + 0x1C) = lbl_80562090;
+    second = *(SecondVTable **)((char *)arg0 + 0x38);
+    result = second->g28();
+    fn_801331C4(result, lbl_8055A480, (f32 *)((char *)arg0 + 0x1C));
+}
+#pragma cplusplus reset
+
+#pragma cplusplus on
 extern "C" void fn_80191688(void *arg0) {
     class Inner {
     public:
@@ -1346,6 +1413,24 @@ unsigned char fn_80192F6C(void *arg0) {
 
 void fn_80192F74(void *arg0) {
     *(int *)((char *)arg0 + 0xC) = lbl_8055E3C4;
+}
+
+extern void *__AXGetStudio_80178C90(void);
+extern s32 fn_801B2F54(s32);
+extern f32 fn_8018AE3C(void *);
+void fn_80192F80(void *arg0) {
+    s32 result;
+    f32 value;
+
+    *(s32 *)__AXGetStudio_80178C90() = 0;
+    result = fn_801B2F54(*(s32 *)((u8 *)arg0 + 0x3C));
+    *(s32 *)((u8 *)__AXGetStudio_80178C90() + 4) = result;
+    value = *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x25CC);
+    *(f32 *)((u8 *)__AXGetStudio_80178C90() + 8) = value;
+    value = fn_8018AE3C(*(void **)((u8 *)arg0 + 0x34));
+    *(f32 *)((u8 *)__AXGetStudio_80178C90() + 0xC) = value;
+    value = ((f32 (*)(void *, f32))fn_8018AE4C)(*(void **)((u8 *)arg0 + 0x34), 0.0f);
+    *(f32 *)((u8 *)__AXGetStudio_80178C90() + 0x10) = value;
 }
 
 int fn_80193010(void) { return 0x20; }
