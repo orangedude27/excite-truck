@@ -264,7 +264,7 @@ void fn_802A52FC(f32 arg0) {
     value = (value > lbl_80564858) ? value : lbl_80564858;
     amount = (s32)(lbl_80564878 * value);
     result = fn_801284F8(0xBC, lbl_80349C94);
-    if (result != 0) result = fn_802A5AE8((void *)result, amount, 0);
+    if (result != 0) result = (s32)fn_802A5AE8((void *)result, amount, 0);
     lbl_8055F888 = result;
 }
 #pragma scheduling on
@@ -538,14 +538,10 @@ void fn_802A6790(void *arg0) {
 
 #pragma scheduling invalid_target
 s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
-    s32 size;
-    s32 allocation;
     s32 *object = (s32 *)arg0;
 
-    size = arg1 * 0xC;
-    allocation = fn_8012850C(size + 0x10, lbl_80349CAC);
     object[0] = fn_8002F37C(
-        allocation,
+        fn_8012850C(arg1 * 0xC + 0x10, lbl_80349CAC),
         (void *)fn_8001BA68,
         0,
         0xC,
