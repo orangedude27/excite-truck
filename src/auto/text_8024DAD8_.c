@@ -1788,7 +1788,7 @@ copy_c128_continue: ;
 #pragma pop
 
 extern f32 lbl_80563960;
-extern void fn_802354A0(s32, s32, f32, f32, f32, f32, f32, s32);
+extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern f32 fn_80216CB4(void);
 #pragma push
 #pragma processor 750
