@@ -88,6 +88,52 @@ void fn_8022F364(void *arg0) {
     }
 }
 
+void fn_8022F548(void *arg0) {
+    struct Pair { unsigned int a; unsigned int b; };
+    unsigned int *src = (unsigned int *)lbl_80497E3C;
+    struct Pair *dst = (struct Pair *)arg0;
+    struct Pair *from = (struct Pair *)src;
+    float fvalue;
+    unsigned char byte;
+
+    dst[0] = from[0];
+    dst[1] = from[1];
+    dst[2] = from[2];
+    dst[3] = from[3];
+    *(unsigned int *)((char *)arg0 + 0x20) = src[8];
+    *(struct Pair *)((char *)arg0 + 0x24) = *(struct Pair *)((char *)src + 0x24);
+    *(unsigned int *)((char *)arg0 + 0x2C) = src[11];
+    *(unsigned int *)((char *)arg0 + 0x34) = src[13];
+    *(unsigned int *)((char *)arg0 + 0x38) = src[14];
+    fvalue = *(float *)((char *)src + 0x7C);
+    *(float *)((char *)arg0 + 0x7C) = fvalue;
+    *(unsigned int *)((char *)arg0 + 0x80) = *(unsigned int *)((char *)src + 0x80);
+    *(unsigned int *)((char *)arg0 + 0x84) = *(unsigned int *)((char *)src + 0x84);
+    *(unsigned int *)((char *)arg0 + 0x88) = *(unsigned int *)((char *)src + 0x88);
+    fvalue = *(float *)((char *)src + 0x8C);
+    *(float *)((char *)arg0 + 0x8C) = fvalue;
+    fvalue = *(float *)((char *)src + 0x90);
+    *(float *)((char *)arg0 + 0x90) = fvalue;
+    fvalue = *(float *)((char *)src + 0x94);
+    *(float *)((char *)arg0 + 0x94) = fvalue;
+    fvalue = *(float *)((char *)src + 0x98);
+    *(float *)((char *)arg0 + 0x98) = fvalue;
+    byte = *((unsigned char *)src + 0x9C);
+    *((unsigned char *)arg0 + 0x9C) = byte;
+    byte = *((unsigned char *)src + 0x9D);
+    *((unsigned char *)arg0 + 0x9D) = byte;
+    fvalue = *(float *)((char *)src + 0xA0);
+    *(float *)((char *)arg0 + 0xA0) = fvalue;
+    fvalue = *(float *)((char *)src + 0xA4);
+    *(float *)((char *)arg0 + 0xA4) = fvalue;
+    fvalue = *(float *)((char *)src + 0xA8);
+    *(float *)((char *)arg0 + 0xA8) = fvalue;
+    fvalue = *(float *)((char *)src + 0xAC);
+    *(float *)((char *)arg0 + 0xAC) = fvalue;
+    fvalue = *(float *)((char *)src + 0xB0);
+    *(float *)((char *)arg0 + 0xB0) = fvalue;
+}
+
 void fn_8022F77C(void *arg0) {
     void *prev = 0;
     void *node = lbl_8055F014;
