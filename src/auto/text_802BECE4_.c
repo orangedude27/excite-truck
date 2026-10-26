@@ -32,7 +32,7 @@ extern float PSVECMag(void *);
 extern char lbl_8034ACC0[];
 #pragma push
 #pragma small_data on
-extern char lbl_8055CF78[];
+extern const char lbl_8055CF78[];
 #pragma pop
 extern unsigned char lbl_8055CF71;
 extern int fn_801E85B4(void);
