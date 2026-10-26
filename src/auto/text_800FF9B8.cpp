@@ -5,6 +5,29 @@ namespace nw4hbm { namespace snd { namespace detail {
 struct WsdTrack { struct WsdCallback; };
 class WaveSound {
 public:
+    virtual void unk_00() = 0;
+    virtual void unk_04() = 0;
+    virtual void unk_08() = 0;
+    virtual void unk_0c() = 0;
+    virtual void unk_10() = 0;
+    virtual void unk_14() = 0;
+    virtual void unk_18() = 0;
+    virtual void unk_1c() = 0;
+    virtual void unk_20() = 0;
+    virtual void unk_24() = 0;
+    virtual void unk_28() = 0;
+    virtual void unk_2c() = 0;
+    virtual void unk_30() = 0;
+    virtual void unk_34() = 0;
+    virtual void unk_38() = 0;
+    virtual void unk_3c() = 0;
+    virtual void unk_40() = 0;
+    virtual void unk_44() = 0;
+    virtual void unk_48() = 0;
+    virtual void unk_4c() = 0;
+    virtual void unk_50() = 0;
+    virtual void unk_54() = 0;
+    virtual void unk_0x58() = 0;
     void Prepare(const void *, long, int, const WsdTrack::WsdCallback *, unsigned long);
 };
 }}}
@@ -38,6 +61,18 @@ extern "C" int fn_800FFA6C(int arg0, int arg1) {
     extern void fn_80128668(void);
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
+}
+
+extern "C" const char lbl_80327500[];
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+extern "C" void Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void *, const void *, long, int, const nw4hbm::snd::detail::WsdTrack::WsdCallback *, unsigned long);
+void nw4hbm::snd::detail::WaveSound::Prepare(const void *arg1, long arg2, int arg3, const nw4hbm::snd::detail::WsdTrack::WsdCallback *arg4, unsigned long arg5) {
+    const char *base = lbl_80327500;
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x43, base + 0x18);
+    if (arg4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x44, base + 0x48);
+    if (*(int *)((char *)this + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x45, base + 0x74);
+    ((void (*)(void *))(*(void ***)((char *)this + 0x0))[0x16])(this);
+    Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl((char *)this + 0xD8, arg1, arg2, arg3, arg4, arg5);
 }
 
 extern "C" int fn_800FFC5C(int arg0, int arg1) {
