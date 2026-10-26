@@ -51,6 +51,7 @@ extern float fn_801660C0(void);
 extern int *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(int);
 extern void fn_80165FAC(void);
+extern void fn_802E30C8(char *, ...);
 extern void fn_80163550(int);
 extern void fn_80166754(void *);
 extern void *fn_801284F8(int, void *);
@@ -418,6 +419,32 @@ void fn_801663C8(int count, void *records, void *config) {
     lbl_8055E32A = *(int *)((char *)config + 4) != 0x180304;
     *(int *)&lbl_8055E334 = 0;
 }
+
+void fn_80166754(void *arg0) {
+    extern float lbl_805618D8, lbl_805618DC, lbl_805618E0;
+    char *base = (char *)&lbl_8042FE38;
+    float zero = lbl_8056189C;
+    float value44 = lbl_805618D8;
+    float arg1 = lbl_805618DC;
+    float arg2;
+    float result;
+    *(float *)((char *)arg0 + 0x18) = *(float *)(base + 0x14);
+    arg2 = lbl_805618E0;
+    *(float *)((char *)arg0 + 0x0C) = zero;
+    *(float *)((char *)arg0 + 0x08) = zero;
+    *(float *)((char *)arg0 + 0x14) = zero;
+    *(float *)((char *)arg0 + 0x10) = zero;
+    *(float *)((char *)arg0 + 0x44) = value44;
+    *(float *)((char *)arg0 + 0x38) = zero;
+    *(float *)((char *)arg0 + 0x34) = zero;
+    *(float *)((char *)arg0 + 0x40) = zero;
+    *(float *)((char *)arg0 + 0x3C) = zero;
+    result = ((float (*)(int, float, float))fn_80129DC4)(3, arg1, arg2);
+    *(float *)((char *)arg0 + 0x4C) = *(float *)(base + 0x3C);
+    *(float *)((char *)arg0 + 0x48) = -*(float *)(base + 0x3C);
+    *(float *)((char *)arg0 + 0x50) = result * lbl_80561898;
+}
+
 #pragma pop
 int fn_801667F0(void) {
     int result = 0;
