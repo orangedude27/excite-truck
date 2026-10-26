@@ -39,18 +39,24 @@ extern int __ieee754_rem_pio2(double, double *);
 extern unsigned char lbl_802FE850[];
 extern double lbl_805609D8, lbl_805609E0, lbl_805609E8, lbl_805609F0, lbl_805609F8, lbl_80560A00, lbl_80560A08;
 void fn_8002B0D8(unsigned char *s) {
-    unsigned char *p;
-    int c;
-    p = s;
-    while (*p != 0) {
-        c = (signed char)*p;
-        if (c < 0 || c >= 256) {
-        } else {
-            c = *(unsigned char *)(*(unsigned int *)(*(unsigned int *)(lbl_802FE850 + 0x38) + 0x10) + c);
-            *p = c;
-        }
-        p++;
-    }
+    register unsigned char *p = s;
+    register unsigned char *base = lbl_802FE850;
+    register int c;
+    register int skip;
+
+    goto check;
+loop:
+    c = (signed char)*p;
+    skip = 0;
+    if (c < 0 || c >= 256) skip = 1;
+    if (skip != 0) goto store;
+    c = *(unsigned char *)(*(unsigned int *)(*(unsigned int *)(base + 0x38) + 0x10) + c);
+store:
+    *p = (unsigned char)c;
+    p++;
+check:
+    c = (signed char)*p;
+    if (c != 0) goto loop;
 }
 
 int stricmp(unsigned char *a, unsigned char *b) {
@@ -764,22 +770,27 @@ double floor(double x) {
 
 double frexp(double x, int *eptr) {
     union { double d; unsigned int i[2]; } u;
-    int hx, lx;
+    int highWord;
+    int absHigh;
+    int lowWord;
+
     u.d = x;
-    hx = u.i[0];
-    lx = u.i[1];
+    highWord = u.i[0];
+    absHigh = highWord & 0x7fffffff;
+    lowWord = u.i[1];
     *eptr = 0;
-    hx &= 0x7fffffff;
-    if (hx < 0x7ff00000) {
-        if ((hx | lx) == 0) return x;
-        if (hx < 0x00100000) {
-            *eptr = -54;
-            x *= lbl_80560A98;
-            u.d = x;
-            hx = u.i[0] & 0x7fffffff;
+    if (absHigh < 0x7ff00000) {
+        if ((absHigh | lowWord) == 0)
+            return x;
+        if (absHigh < 0x00100000) {
+            double scale = lbl_80560A98;
+            *(volatile int *)eptr = -54;
+            u.d *= scale;
+            highWord = u.i[0];
+            absHigh = highWord & 0x7fffffff;
         }
-        *eptr += (hx >> 20) - 0x3fe;
-        u.i[0] = (u.i[0] & 0x800fffff) | 0x3fe00000;
+        *eptr += (absHigh >> 20) - 0x3fe;
+        u.i[0] = (highWord & 0x800fffff) | 0x3fe00000;
         return u.d;
     }
     return x;
