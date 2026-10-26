@@ -325,7 +325,7 @@ void fn_8020FE90(void) {
     lbl_8055B658 = result;
 }
 
-void fn_8020FEF0(long arg0) {
+long fn_8020FEF0(long arg0) {
     long state = lbl_8055EEE0;
     long count;
     long pos;
@@ -556,7 +556,7 @@ void AXFXSetHooks_80210950(void *arg0, void *arg1) {
     lbl_8055EEDC = arg1;
 }
 
-extern void fn_8020FEF0(long);
+extern long fn_8020FEF0(long);
 extern long fn_802100AC(void);
 extern long fn_80012158(void);
 #pragma scheduling invalid_target
