@@ -31,6 +31,7 @@ extern void fn_802E3028();
 extern char lbl_8055D190;
 extern char lbl_8055D198;
 extern void exit(int);
+#pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_802E3150(void *arg0) {
     int tmp = 0;
@@ -39,8 +40,14 @@ void fn_802E3150(void *arg0) {
     for (;;) {}
 }
 #pragma scheduling on
+#pragma dont_inline reset
 void fn_802E317C(int a0, int a1, int a2, int a3, int a4, int a5, int a6, int a7, ...) {
-    fn_802E3028();
+    va_list args;
+
+    /* Fix note: start the variadic list after the final fixed argument. */
+    va_start(args, a7);
+    fn_802E3028((const char *)a0, args, (int)&lbl_8055D190);
+    va_end(args);
     fn_802E3150(&lbl_8055D198);
     exit(-1);
 }
