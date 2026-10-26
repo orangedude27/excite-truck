@@ -6,10 +6,13 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #define btsnd_hcic_reject_conn btsnd_hcic_reject_conn_public
+#define btsnd_hcic_reject_esco_conn btsnd_hcic_reject_esco_conn_public
 #include "revolution/BTE/stack/include/hcimsgs.h"
+#undef btsnd_hcic_reject_esco_conn
 #undef btsnd_hcic_reject_conn
 #include "revolution/BTE/bta/include/ptim.h"
 extern int btsnd_hcic_reject_conn(void *, u8 *, u8);
+extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
