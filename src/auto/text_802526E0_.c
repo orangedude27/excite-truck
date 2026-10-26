@@ -30,6 +30,7 @@ void fn_80252BC8(void) {
     lbl_8055F2F8 = 0;
 }
 
+#pragma dont_inline on
 void fn_80252BF0(void) {
     u32 sp8[4];
     s32 index = lbl_8055F2F8;
@@ -41,6 +42,7 @@ void fn_80252BF0(void) {
     fn_80252B88(index);
     lbl_80498D00[index * 0x78 + 0x30] = 1;
 }
+#pragma dont_inline reset
 
 void fn_80252C78(void) {
     lbl_8055F308 = 1;
