@@ -667,6 +667,7 @@ FN_801F6A08_RETURN fn_801F6A08(void *arg0, int arg1) {
             fn_80128668(arg0);
         }
     }
+    return arg0;
 }
 #pragma scheduling on
 extern void fn_801F602C(void *, int, int, int, int);
@@ -773,21 +774,27 @@ void fn_801F70D0(void *arg0, int arg1) {
     }
 }
 
+extern void fn_801E8C84(float *);
 void fn_801F7160(void *arg0) {
-    float sp[6], scale, offset;
-    int i;
+    float sp[6];
+    float offset, scale;
     void *entry;
-    i=0; entry=arg0;
-    while(i < *(int *)((char *)arg0+0x120)) {
-        scale=*(float *)((char *)entry+0x40);
-        offset=*(float *)((char *)entry+0x3C);
+    int i;
+
+    entry = arg0;
+    i = 0;
+    while (i < *(int *)((char *)arg0 + 0x120)) {
+        scale = *(float *)((char *)entry + 0x40);
+        offset = *(float *)((char *)entry + 0x3C);
         fn_801E8C84(&sp[0]);
-        sp[3]=sp[0]*scale;
-        sp[5]=sp[2]*scale;
-        sp[4]=sp[1]*scale-offset;
-        fn_801F63F0(entry,&sp[3],*(float *)((char *)entry+0x44));
-        fn_801F65D0(entry); fn_801F6728(entry);
-        entry=(char *)entry+0x48; i++;
+        sp[3] = sp[0] * scale;
+        sp[5] = sp[2] * scale;
+        sp[4] = sp[1] * scale - offset;
+        fn_801F63F0(entry, &sp[3], *(float *)((char *)entry + 0x44));
+        fn_801F65D0(entry);
+        fn_801F6728(entry);
+        entry = (char *)entry + 0x48;
+        i++;
     }
 }
 
