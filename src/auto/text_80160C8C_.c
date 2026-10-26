@@ -676,11 +676,11 @@ s32 fn_80161D14(void) {
 extern char lbl_8032F72C[];
 #pragma use_lmw_stmw off
 s32 fn_80161D50(void) {
-    typedef s32 (*TestFn)(void *, const char *, s32);
     register s32 count;
     register s32 total;
     register s32 i;
     register void *item;
+    s32 matched;
 
     count = fn_80161ECC();
     total = 0;
@@ -689,8 +689,10 @@ s32 fn_80161D50(void) {
 loop:
     fn_80161E40(i);
     item = fn_8001285C();
-    if (((TestFn)(*(void ***)(*(void **)((u8 *)item + 0x20)))[12])(
-            *(void **)((u8 *)item + 0x20), lbl_8032F72C, 0) != 0) {
+#pragma cplusplus on
+    matched = ((Dummy_80161D50 *)*(void **)((u8 *)item + 0x20))->test(lbl_8032F72C, 0);
+#pragma cplusplus off
+    if (matched != 0) {
         total += fn_8016208C(*(s32 *)item);
     }
     i += 1;
