@@ -789,9 +789,9 @@ void fn_8027CBF8(long arg0, char *arg1, long arg2) {
     copy_a:
         c = *src++;
         *arg1++ = c;
-        if ((signed char)c)
-            goto check_a;
-        goto done;
+        if ((signed char)c == 0)
+            goto done;
+        goto check_a;
     } else {
         src = fn_80131234(lbl_80347C14);
         goto copy_b;
@@ -803,9 +803,9 @@ void fn_8027CBF8(long arg0, char *arg1, long arg2) {
     copy_b:
         c = *src++;
         *arg1++ = c;
-        if ((signed char)c)
-            goto check_b;
-        goto done;
+        if ((signed char)c == 0)
+            goto done;
+        goto check_b;
     }
 done:
     ;
