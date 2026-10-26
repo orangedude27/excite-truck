@@ -492,9 +492,6 @@ void fn_802CFBA8(void) {
     extern void fn_802DD5F4(void);
     extern void fn_802D3894(void);
     extern void fn_802D6860(void);
-#pragma small_data off
-    extern unsigned int lbl_804C9940;
-#pragma small_data on
     extern void *lbl_8055FD68;
     extern unsigned int lbl_8055FD98;
     extern void *lbl_8055FDB0;
@@ -512,8 +509,10 @@ void fn_802CFBA8(void) {
     fn_802DD5F4();
     fn_802D3894();
     fn_802D6860();
+#pragma small_data off
     fn_80128670(lbl_804C9940);
     lbl_804C9940 = 0;
+#pragma small_data on
     fn_802DA4C4();
     fn_802D0C98();
     VISetBlack(1);
@@ -685,30 +684,41 @@ void fn_802D0014(float a, float b, float c) {
     ((float *)lbl_804C97B0)[4] = c;
     lbl_804C97B0[0x1C] = 1;
 }
-#pragma scheduling on
+#pragma push
+#pragma small_data off
+__declspec(section ".rodata") extern char lbl_804C97D0;
 void fn_802D007C(float arg0) {
-    float scaled;
-    int truncated;
-    float value;
-    int secondValue;
-    signed char channel;
+    extern float lbl_80564FAC;
+    extern float lbl_80564FA8;
+    extern float lbl_80564F88;
+    extern char lbl_804C97D0;
+    extern unsigned char lbl_804C5700[];
+    float temp_f0;
+    float var_f3;
+    unsigned char temp_r6;
+    volatile unsigned char scratch[4];
     int color;
-    scaled = lbl_80564FAC * arg0;
-    truncated = (int)scaled;
-    value = (float)truncated;
-    if (value < lbl_80564FA8) value = lbl_80564FA8;
-    secondValue = (int)value;
-    value = (float)secondValue;
-    if (value > lbl_80564F88) value = lbl_80564F88;
-    channel = (signed char)value;
-    color = -1;
-    *((unsigned char *)&lbl_804C97D0 + 8) = channel;
-    *((unsigned char *)&lbl_804C97D0 + 0x5C) = 1;
-    GXSetTevColor(1, &color, &lbl_804C97D0, channel);
+
+    temp_f0 = lbl_80564FAC * arg0;
+    var_f3 = lbl_80564FA8;
+    if (var_f3 >= (float)(int)temp_f0) {
+        var_f3 = (float)(int)temp_f0;
+    }
+    if (var_f3 <= lbl_80564F88) {
+        var_f3 = lbl_80564F88;
+    }
+    scratch[2] = 0xFF;
+    scratch[1] = 0xFF;
+    scratch[0] = 0xFF;
+    temp_r6 = (unsigned char)var_f3;
+    scratch[3] = temp_r6;
+    color = *(int *)scratch;
+    ((unsigned char *)&lbl_804C97D0)[8] = temp_r6;
+    ((unsigned char *)&lbl_804C97D0)[0x5C] = 1;
+    GXSetTevColor(1, &color);
     lbl_804C5700[0] = 1;
 }
-
-#pragma small_data off
+#pragma pop
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     unsigned char *p = (unsigned char *)&lbl_804C97D0;
@@ -792,33 +802,58 @@ void fn_802D050C(void* hi) {
 int fn_802D0514(void *source) {
     extern unsigned long lbl_8055FDAC;
     extern void *lbl_8055FDB0;
-    extern char lbl_804C97D0;
-    unsigned long index;
-    unsigned char *src;
+    int index;
+    int next;
+    unsigned int *src;
     unsigned char *dst;
+    unsigned int a;
+    unsigned int b;
+    unsigned int c;
     unsigned char *aux;
-    unsigned int *a;
-    unsigned int *b;
-    unsigned long next;
-    index = lbl_8055FDAC;
-    if (index < 0x800) return 0;
-    next = index + 1;
-    src = (unsigned char *)source;
+    index = (int)lbl_8055FDAC;
+    if (index >= 0x800) return 0;
+    src = (unsigned int *)source;
     dst = (unsigned char *)lbl_8055FDB0 + index * 0x4C;
-    a = (unsigned int *)src;
-    b = (unsigned int *)dst;
-    b[0] = a[0]; b[1] = a[1]; b[2] = a[2]; b[3] = a[3];
-    b[4] = a[4]; b[5] = a[5]; b[6] = a[6]; b[7] = a[7];
-    b[8] = a[8]; b[9] = a[9]; b[10] = a[10]; b[11] = a[11];
+    a = src[0];
+    b = src[1];
+    next = index + 1;
     lbl_8055FDAC = next;
-    aux = (unsigned char *)&lbl_804C97D0;
-    dst[0x30] = aux[0]; dst[0x31] = aux[1]; dst[0x32] = aux[2];
-    dst[0x33] = aux[3]; dst[0x34] = aux[4]; dst[0x35] = aux[5];
-    dst[0x36] = aux[6]; dst[0x37] = aux[7]; dst[0x38] = aux[8];
-    b[15] = ((unsigned int *)aux)[3];
-    b[16] = ((unsigned int *)aux)[4];
-    b[17] = ((unsigned int *)aux)[5];
-    *(float *)(dst + 0x48) = *(float *)(aux + 0x18);
+    *(unsigned int *)(dst + 0) = a;
+    c = src[2];
+    *(unsigned int *)(dst + 4) = b;
+    a = src[3];
+    *(unsigned int *)(dst + 8) = c;
+    b = src[4];
+    *(unsigned int *)(dst + 12) = a;
+    c = src[5];
+    *(unsigned int *)(dst + 16) = b;
+    a = src[6];
+    *(unsigned int *)(dst + 20) = c;
+    b = src[7];
+    *(unsigned int *)(dst + 24) = a;
+    c = src[8];
+    *(unsigned int *)(dst + 28) = b;
+    a = src[9];
+    *(unsigned int *)(dst + 32) = c;
+    b = src[10];
+    *(unsigned int *)(dst + 36) = a;
+    c = src[11];
+    *(unsigned int *)(dst + 40) = b;
+    *(unsigned int *)(dst + 44) = c;
+    aux = (unsigned char *)&lbl_804C97D0 - 1;
+    dst[0x30] = *++aux;
+    dst[0x31] = aux[1];
+    dst[0x32] = aux[2];
+    dst[0x33] = aux[3];
+    dst[0x34] = aux[4];
+    dst[0x35] = aux[5];
+    dst[0x36] = aux[6];
+    dst[0x37] = aux[7];
+    dst[0x38] = aux[8];
+    *(unsigned int *)(dst + 0x3C) = *(unsigned int *)(aux + 12);
+    *(unsigned int *)(dst + 0x40) = *(unsigned int *)(aux + 16);
+    *(unsigned int *)(dst + 0x44) = *(unsigned int *)(aux + 20);
+    *(float *)(dst + 0x48) = *(float *)(aux + 24);
     return next;
 }
 
