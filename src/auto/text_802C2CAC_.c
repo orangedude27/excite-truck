@@ -214,6 +214,19 @@ void fn_802C32B8(s32 arg0, s32 arg1, u32 arg2) {
 
 #pragma push
 #pragma inline_depth(0)
+void fn_802C3320(s32 arg0, s32 arg1, u32 arg2) {
+    u32 value;
+    if (fn_802C3130((void *)lbl_8055FC00, arg0, arg1) != 0) {
+        value = arg2 >> 16;
+        if ((s8)*(u8 *)lbl_8055FC00 == 3)
+            value = arg2 & 0xFFFF;
+        *(u16 *)fn_802C3044((void *)lbl_8055FC00, arg0, arg1) = (u16)value;
+    }
+}
+#pragma pop
+
+#pragma push
+#pragma inline_depth(0)
 void fn_802C33A8(s32 arg0, s32 arg1, u32 arg2) {
     u32 *pixel;
     u32 value;
