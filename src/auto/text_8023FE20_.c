@@ -37,23 +37,34 @@ s32 fn_8023FE34(void) {
     return result + 1;
 }
 
+extern char lbl_803422C0[];
+#pragma scheduling invalid_target
 void fn_8023FE60(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    s32 i;
-    s32 found = 0;
-    s32 *entry = (s32 *)lbl_80498828;
-    for (i = 0; i < 2; i++, entry += 4) {
-        if (entry[0] < 0) continue;
+    register s32 *cursor = (s32 *)lbl_80498828;
+    register s32 found = 0;
+    register s32 index = 0;
+    for (; index < 2; cursor += 4, index++) {
+        if (cursor[0] < 0) continue;
         if (found == arg0) {
-            if (arg1 != 0) *arg1 = entry[2];
-            if (arg2 != 0) *arg2 = entry[3];
-            if (arg3 != 0) *arg3 = entry[0];
+            if (arg1 != 0) {
+                register s32 *table = (s32 *)lbl_80498828;
+                table += index * 4;
+                *arg1 = table[2];
+            }
+            if (arg2 != 0) {
+                register s32 *table = (s32 *)lbl_80498828;
+                table += index * 4;
+                *arg2 = table[3];
+            }
+            if (arg3 != 0)
+                *arg3 = *(s32 *)((char *)lbl_80498828 + index * 16);
             return;
         }
         found++;
     }
-    return;
+    fn_802E317C(lbl_803422C0, arg0, found);
 }
-
+#pragma scheduling on
 extern char lbl_80342618[];
 s32 fn_802407B0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
