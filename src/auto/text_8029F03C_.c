@@ -218,6 +218,7 @@ void fn_8029F534(void *arg0, unsigned char *arg1) {
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
+#pragma optimization_level 2
 extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
     class Obj {
     public:
@@ -236,7 +237,7 @@ extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
         obj->set((const char *)&lbl_8034983C);
         *(int *)((char *)arg0 + 4) = fn_802929F8();
         {
-            float scalar = lbl_805646B4;
+            float scalar = *(volatile float *)&lbl_805646B4;
             *(float *)((char *)arg0 + 8) = obj->getFloat(scalar, (const char *)&lbl_8055CAE8);
         }
     } else {
