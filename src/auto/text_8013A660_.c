@@ -79,15 +79,27 @@ void fn_8013A7E8(unkVtable **arg0, char *arg1, char *arg2) {
 #pragma pop
 extern char lbl_8032C1E8[];
 extern char lbl_8032C1F8[];
-int fn_8013A860(float *arg0, unkVtable **arg1) {
-    int result = ((int (*)(char *))(*arg1)->m_fn)(lbl_8032C1E8);
+#pragma cplusplus on
+extern "C" int fn_8013A860(float *arg0, void *arg1) {
+    class LocalVtable {
+    public:
+        virtual void v1();
+        virtual int check(char *);
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual float get(char *);
+    };
+    int result = ((LocalVtable *)arg1)->check(lbl_8032C1E8);
     if (result != 0) {
-        arg0[0] = ((float (*)(char *))(*(void ***)arg1)[9])(lbl_8032C1F8);
-        arg0[1] = ((float (*)(char *))(*(void ***)arg1)[9])(lbl_8032C1E8);
+        arg0[0] = ((LocalVtable *)arg1)->get(lbl_8032C1F8);
+        arg0[1] = ((LocalVtable *)arg1)->get(lbl_8032C1E8);
     }
     return result;
 }
-
+#pragma cplusplus off
 extern void *fn_8001285C(int);
 extern void *fn_80012820(int);
 extern int fn_8013A760(unkVtable **, int);
