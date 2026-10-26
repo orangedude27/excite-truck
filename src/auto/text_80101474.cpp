@@ -50,7 +50,7 @@ namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; st
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
-class WsdTrack { public: static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); void Close(); };
+class WsdTrack { public: struct WsdCallback; static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); void Close(); int ParseNextTick(const WsdCallback *, unsigned long, bool); };
 }}}
 extern int fn_801013B0(int);
 extern int InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(int);
@@ -80,24 +80,31 @@ extern "C" void fn_801014DC(s32 arg0) {
 }
 
 extern int fn_800EC890(void *, void *, int, int, int);
-void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer(void *arg0, void *arg1) {
+#pragma scheduling invalid_target
+extern "C" void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer(void *arg0, void *arg1) {
+    float defaultValue = lbl_80561128;
+    register int value7F = 0x7F;
+    register int valueMinus1 = -1;
+    register int value40 = 0x40;
+    register int value2 = 2;
+
     *(void **)((char *)arg0 + 0x2C) = arg1;
     *(int *)((char *)arg0 + 0) = 0;
-    *(int *)((char *)arg0 + 4) = -1;
-    *(unsigned char *)((char *)arg0 + 0x1D) = 0x40;
-    *(unsigned char *)((char *)arg0 + 0x1C) = 2;
-    *(float *)((char *)arg0 + 0x20) = lbl_80561128;
-    *(unsigned char *)((char *)arg0 + 0x24) = 0x40;
+    *(int *)((char *)arg0 + 4) = valueMinus1;
+    *(unsigned char *)((char *)arg0 + 0x1D) = value40;
+    *(unsigned char *)((char *)arg0 + 0x1C) = value2;
+    *(float *)((char *)arg0 + 0x20) = defaultValue;
+    *(unsigned char *)((char *)arg0 + 0x24) = value40;
     *(unsigned char *)((char *)arg0 + 0x25) = 0;
     *(unsigned char *)((char *)arg0 + 0x26) = 0;
     *(unsigned char *)((char *)arg0 + 0x27) = 0;
     *(unsigned char *)((char *)arg0 + 0x28) = 0;
-    *(unsigned char *)((char *)arg0 + 0x29) = 0x7F;
-    fn_800EC890((char *)arg0 + 0xC, arg1, 2, 0x40, -1);
+    *(unsigned char *)((char *)arg0 + 0x29) = value7F;
+    fn_800EC890((char *)arg0 + 0xC, arg1, value2, value40, valueMinus1);
     *(int *)((char *)arg0 + 8) = 0;
     *(int *)((char *)arg0 + 0x30) = 0;
 }
-
+#pragma scheduling on
 extern "C" void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
     *(int *)arg0 = arg1;
     *((int *)arg0 + 1) = arg2;
