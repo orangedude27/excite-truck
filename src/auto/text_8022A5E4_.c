@@ -231,14 +231,16 @@ void fn_8022ABC8(void *arg0, const char *arg1, int arg2) {
 }
 #pragma scheduling on
 extern void fn_8022ACFC(int, int, float *, float *, float *, float *, float, float);
-__declspec(section ".sdata") extern double lbl_80563590;
+__declspec(section ".sdata2") extern double lbl_80563590;
 void fn_8022AC1C(int unused0, int unused1, int arg2, int arg3, int *arg4, int *arg5, int *arg6, int *arg7) {
     float a, b, c, d;
-    fn_8022ACFC(unused0, unused1, &d, &c, &b, &a, (float)(unsigned int)arg2, (float)(unsigned int)arg3);
-    *arg4 = (int)d;
-    *arg5 = (int)c;
-    *arg6 = (int)b;
-    *arg7 = (int)a;
+    float x = (float)((double)(arg2 ^ 0x80000000) - lbl_80563590);
+    float y = (float)((double)(arg3 ^ 0x80000000) - lbl_80563590);
+    fn_8022ACFC(unused0, unused1, &a, &b, &c, &d, x, y);
+    *arg4 = (int)a;
+    *arg5 = (int)b;
+    *arg6 = (int)c;
+    *arg7 = (int)d;
 }
 
 extern float lbl_80563588;
