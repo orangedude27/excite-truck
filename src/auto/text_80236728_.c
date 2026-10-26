@@ -595,6 +595,29 @@ mode_done:
     lbl_80498664[0] = 0;
 
 }
+
+extern void fn_80128670(int);
+void *fn_80237968(void *arg0, int arg1) {
+    struct Object { unsigned char pad[0x20]; int field20; int field24; int field28; };
+    struct Object *object = (struct Object *)arg0;
+    if (arg0 != 0) {
+        if ((char *)arg0 + 0x20 != 0) {
+            int value = object->field24;
+            if (value == 0) goto reset;
+            if (value == 0) goto reset;
+            fn_80128670(value - 0x10);
+        reset:
+            object->field20 = -1;
+            object->field28 = 0;
+            object->field24 = 0;
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 #pragma scheduling on
 void fn_802379EC(void *arg0) {
     int minus = -1;
