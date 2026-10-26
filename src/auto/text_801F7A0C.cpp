@@ -361,8 +361,6 @@ extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg) {
         virtual s32 f18();
         virtual s32 f19();
         virtual s32 f20();
-        virtual s32 f21();
-        virtual s32 f22();
         virtual s32 get(const u8 *);
     };
     s32 result = ((VCall *)self)->get(lbl_8033AFE8);
@@ -371,25 +369,31 @@ extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg) {
     } else {
         f32 value0 = lbl_80562FF0;
         f32 value1 = lbl_80562FFC;
-        *(f32 *)((u8 *)out + 4) = value0;
-        *(f32 *)out = value1;
-        *(f32 *)((u8 *)out + 8) = value0;
-        *(f32 *)((u8 *)out + 0xC) = value0;
-        *(f32 *)((u8 *)out + 0x10) = value1;
-        *(f32 *)((u8 *)out + 0x14) = value0;
-        *(f32 *)((u8 *)out + 0x18) = value0;
-        *(f32 *)((u8 *)out + 0x1C) = value0;
-        *(f32 *)((u8 *)out + 0x20) = value1;
-        *(f32 *)((u8 *)out + 0x24) = value0;
-        *(f32 *)((u8 *)out + 0x28) = value0;
-        *(f32 *)((u8 *)out + 0x2C) = value0;
+        volatile f32 *dst = (volatile f32 *)out;
+        dst[1] = value0;
+        dst[0] = value1;
+        dst[2] = value0;
+        dst[3] = value0;
+        dst[4] = value1;
+        dst[5] = value0;
+        dst[6] = value0;
+        dst[7] = value0;
+        dst[8] = value1;
+        dst[9] = value0;
+        dst[10] = value0;
+        dst[11] = value0;
     }
     if (arg != 0) {
         fn_801BFD34((u8 *)out + 0x24, (u8 *)out + 0x24, arg);
         fn_80015B20(out, out, (void *)arg);
     }
-    if (result == 0 && arg != 0) return 1;
-    return 0;
+    s32 ret = 0;
+    if (result != 0) goto set_result;
+    if (arg == 0) goto done;
+set_result:
+    ret = 1;
+done:
+    return ret;
 }
 #pragma scheduling on
 
@@ -641,13 +645,13 @@ extern "C" void fn_801F94CC(const char *format, ...) {
     vsprintf(buffer, format, args);
     node = fn_801284F8(8, lbl_8033B200);
     if (node != 0) {
-        *(void **)node = fn_80131810(buffer);
-        if (*(void **)node != 0) {
+        *(void * volatile *)node = fn_80131810((void *)buffer);
+        if (*(void * volatile *)node != 0) {
             *(void **)((u8 *)node + 4) = lbl_8055EC44;
             lbl_8055EC44 = node;
         } else {
-            fn_80131818();
-            *(void **)node = 0;
+            fn_80131818(0);
+            *(void * volatile *)node = 0;
             ((void (*)(void *))fn_80128668)(node);
         }
     }
@@ -727,19 +731,18 @@ extern "C" void fn_80204018(void *, void *);
 extern "C" u8 lbl_8055EC7C;
 extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
     u8 scratch[0x38];
-    u32 field;
-    u32 temp;
-    register u32 flags;
+    u32 state;
+    u32 flags;
     register s32 zero;
     void *node;
 
     if ((arg2 & 2) != 0) {
-        temp = *(volatile u8 *)&lbl_8055EC7C;
-        field = *(volatile u32 *)((u8 *)arg0 + 0x24);
-        temp = (temp == 0);
-        *(volatile u8 *)&lbl_8055EC7C = temp;
-        flags = field != 0;
-        if (temp != 0) {
+        state = *(volatile u8 *)&lbl_8055EC7C;
+        flags = *(volatile s32 *)((u8 *)arg0 + 0x24);
+        state = (state == 0);
+        *(volatile u8 *)&lbl_8055EC7C = state;
+        flags = flags != 0;
+        if (state != 0) {
             flags |= 2;
             node = arg0;
             zero = 0;
@@ -1188,10 +1191,10 @@ extern "C" void fn_801F973C(void *, void *, u32);
 #pragma use_lmw_stmw off
 extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     volatile u32 *src = (volatile u32 *)arg1;
-    u32 zero, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    u32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    u32 zero;
     f32 data[14];
 
-    zero = 0;
     t0 = src[0];
     t1 = src[1];
     t2 = src[2];
@@ -1205,6 +1208,7 @@ extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     t10 = src[10];
     t11 = src[11];
 
+    zero = 0;
     ((u32 *)data)[13] = zero;
     ((u32 *)data)[12] = zero;
 
