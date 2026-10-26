@@ -666,7 +666,7 @@ long fn_8027C71C(void *arg0) {
     return flag;
 }
 
-long fn_8027C650(void);
+long fn_8027C650();
 extern char lbl_80347A50[];
 #pragma dont_inline on
 long fn_8027C788(void *arg0) {
@@ -739,48 +739,39 @@ long fn_8027CB20(void) { return 1; }
 long fn_8027CBF0(void) { return 1; }
 
 void fn_8027CBF8(long arg0, char *arg1, long arg2) {
-    long count;
     char *src;
     char c;
-
-    count = arg2;
     if (fn_8027CB28()) {
         src = fn_80131234(lbl_80347B78);
-        count--;
-        if (count > 0)
+        goto copy_a;
+    check_a:
+        if (--arg2 > 0)
             goto copy_a;
-        goto terminate_a;
-copy_a:
+        arg1[-1] = 0;
+        goto done;
+    copy_a:
         c = *src++;
         *arg1++ = c;
-        if ((signed char)c == 0)
-            goto finish_a;
-        count--;
-        if (count > 0)
-            goto copy_a;
-terminate_a:
-        arg1[-1] = 0;
-finish_a:
-        ;
+        if ((signed char)c != 0)
+            goto check_a;
+        goto done;
     } else {
         src = fn_80131234(lbl_80347C14);
-        count--;
-        if (count > 0)
+        goto copy_b;
+    check_b:
+        if (--arg2 > 0)
             goto copy_b;
-        goto terminate_b;
-copy_b:
+        arg1[-1] = 0;
+        goto done;
+    copy_b:
         c = *src++;
         *arg1++ = c;
-        if ((signed char)c == 0)
-            goto finish_b;
-        count--;
-        if (count > 0)
-            goto copy_b;
-terminate_b:
-        arg1[-1] = 0;
-finish_b:
-        ;
+        if ((signed char)c != 0)
+            goto check_b;
+        goto done;
     }
+done:
+    ;
 }
 
 extern long lbl_80347B4C;
