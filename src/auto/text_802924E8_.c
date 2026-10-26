@@ -1,3 +1,8 @@
+extern unsigned char lbl_80349294[];
+extern char lbl_8055C988[];
+extern float lbl_805644D4;
+extern int fn_80293374(void *, void *);
+extern void *fn_802935A0(void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -153,18 +158,23 @@ void fn_80292EA8(void *arg0) { *(s32 *)((u8 *)arg0 + 0x180) = 0; }
 
 void fn_80292EB4(void *arg0) { *(s32 *)((u8 *)arg0 + 0x180) = 0; }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 int fn_80292EC0(void *arg0, const char *arg1, s32 *arg2, s32 arg3) {
-    s32 i;
-    u8 *entry;
-    for (i = 0, entry = (u8 *)arg0; i < *(s32 *)((u8 *)arg0 + 0x180); i++, entry += 0x18) {
+    u8 *entry = (u8 *)arg0;
+    s32 i = 0;
+    do {
         if (fn_8002B1D8(arg1, (char *)entry, 0xF) == 0) {
             *arg2 = i;
             return 1;
         }
-    }
+        entry += 0x18;
+        i += 1;
+    } while (i < *(s32 *)((u8 *)arg0 + 0x180));
     return 0;
 }
-
+#pragma pop
 void fn_80292F40(void *arg0, void *arg1, const char *arg2) {
     volatile s32 *counter = (volatile s32 *)((u8 *)arg0 + 0x180);
     s32 count;
