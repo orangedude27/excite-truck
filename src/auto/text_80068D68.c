@@ -9958,26 +9958,31 @@ void fn_8008C04C(s16 arg0) {
 }
 
 BOOL l2cap_link_chk_pkt_end(void) {
-    u8 *p_lcb;
+    u8 *p_lcb = *(u8 **)(lbl_803C4040 + 0x7BC);
     u8 *p_buf;
     u8 *p_data;
-    u16 offset, len;
-    u8 hi, lo;
+    u16 offset;
+    u16 len;
+    u8 hi;
+    u8 lo;
     u16 l2cap_len;
-    p_lcb = *(u8 **)(lbl_803C4040 + 0x7BC);
-    if (p_lcb != 0) {
-        p_buf = *(u8 **)(p_lcb + 0x50);
-        if (p_buf != 0) {
-            offset = *(u16 *)(p_buf + 4);
-            len = *(u16 *)(p_buf + 2);
-            p_data = p_buf + offset;
-            hi = p_data[0x0D];
-            lo = p_data[0x0C];
-            l2cap_len = (u16)(lo + (hi << 8));
-            if (l2cap_len > len - 8) return FALSE;
-            *(u8 **)(p_lcb + 0x50) = 0;
-        }
-    }
+    if (p_lcb == 0)
+        goto empty;
+    p_buf = *(u8 **)(p_lcb + 0x50);
+    if (p_buf != 0)
+        goto have_buf;
+empty:
+    return TRUE;
+have_buf:
+    offset = *(u16 *)(p_buf + 4);
+    len = *(u16 *)(p_buf + 2);
+    p_data = p_buf + offset;
+    hi = p_data[0x0D];
+    lo = p_data[0x0C];
+    l2cap_len = (u16)(lo + (hi << 8));
+    if (l2cap_len > len - 8)
+        return FALSE;
+    *(u8 **)(p_lcb + 0x50) = 0;
     return TRUE;
 }
 
