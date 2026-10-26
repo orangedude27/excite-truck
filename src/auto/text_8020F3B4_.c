@@ -193,7 +193,37 @@ void fn_8020F950(void) {
     }
     fn_8020F730();
 }
-#pragma use_lmw_stmw reset
+
+#pragma scheduling invalid_target
+long fn_8020F9F4(void) {
+    long i;
+    char *base;
+
+    fn_8000DA10();
+    base = (char *)fn_8020F5F0(0);
+    i = 0;
+    do {
+        if ((signed char)base[4] == 0) return i;
+        i++;
+        if ((signed char)base[0x68] == 0) return i;
+        i++;
+        if ((signed char)base[0xCC] == 0) return i;
+        i++;
+        if ((signed char)base[0x130] == 0) return i;
+        i++;
+        if ((signed char)base[0x194] == 0) return i;
+        i++;
+        if ((signed char)base[0x1F8] == 0) return i;
+        i++;
+        if ((signed char)base[0x25C] == 0) return i;
+        i++;
+        if ((signed char)base[0x2C0] == 0) return i;
+        i++;
+        base += 0x320;
+    } while (i < 8);
+    return 0;
+}
+#pragma scheduling on
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
@@ -264,7 +294,7 @@ void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
     strncpy(block + 0x24, arg1, 0x3F);
     dst = block + 4;
     remaining = 0x20;
-    while (1) {
+    do {
         remaining--;
         if (remaining <= 0) {
             dst[-1] = 0;
@@ -274,10 +304,7 @@ void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
         arg2++;
         *dst = value;
         dst++;
-        if ((signed char)value == 0) {
-            return;
-        }
-    }
+    } while ((signed char)value != 0);
 }
 
 #pragma dont_inline on
@@ -297,6 +324,54 @@ void fn_8020FE90(void) {
     }
     lbl_8055B658 = result;
 }
+
+void fn_8020FEF0(long arg0) {
+    long state = lbl_8055EEE0;
+    long count;
+    long pos;
+    long max;
+
+    if (state == -2) {
+        count = lbl_8055EEBC;
+        if (count > 0) {
+            if (arg0 == 1) {
+                lbl_8055EEE0 = -1;
+                fn_8020FE90();
+            }
+            return;
+        }
+    }
+    if (state == -1) {
+        if (arg0 != -1) {
+            return;
+        }
+        lbl_8055EEE0 = -2;
+        fn_8020FE90();
+        return;
+    }
+
+    pos = lbl_8055EEE4;
+    max = lbl_8055EEE8 - 1;
+    arg0 += pos;
+    arg0 &= ((-arg0 & ~arg0) >> 31);
+    if (arg0 < max) {
+        max = arg0;
+    }
+    lbl_8055EEE4 = max;
+    count = lbl_8055EEBC;
+    if (pos == max) {
+        return;
+    }
+    if (count == 0) {
+        lbl_8055EEE0 = -2;
+    } else if (state >= 0 && state + max * 10 >= count) {
+        lbl_8055EEE0 = (count - 1) % 10;
+    }
+    if (lbl_8055EEE0 >= 0) {
+        fn_8020FE90();
+    }
+}
+
 #pragma dont_inline reset
 
 #pragma scheduling on
@@ -481,7 +556,7 @@ void AXFXSetHooks_80210950(void *arg0, void *arg1) {
     lbl_8055EEDC = arg1;
 }
 
-extern long fn_8020FEF0(long);
+extern void fn_8020FEF0(long);
 extern long fn_802100AC(void);
 extern long fn_80012158(void);
 #pragma scheduling invalid_target
