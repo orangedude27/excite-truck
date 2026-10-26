@@ -6,7 +6,7 @@
 
 /* forward decls for helpers defined further down in this file */
 extern "C" s32 fn_80128668(void *);
-extern "C" void fn_800FDE60(void);
+extern "C" void *fn_800FDE60(void);
 extern "C" void fn_800FE1D0(void);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0(void *, s32);
 extern u8 lbl_8055DE80;
@@ -81,7 +81,7 @@ extern u8 lbl_804190A0[];
 #pragma pop
 extern u8 lbl_8055DE78;
 #pragma dont_inline on
-extern "C" void fn_800FDE60(void) {
+extern "C" void *fn_800FDE60(void) {
     extern u8 lbl_80326E08[];
     extern u8 lbl_80326E20[];
     u8 *base = lbl_804190A0;
