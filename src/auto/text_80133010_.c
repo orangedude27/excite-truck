@@ -30,14 +30,13 @@ extern void fn_801341B4(int, int);
 extern void fn_802E6BD8(int, int, int, int, void (*)(void));
 extern void fn_8000DBC8(void (*)(int, int));
 extern void *memmove(void *, const void *, unsigned int);
-#pragma push
-#pragma optimize_for_size on
+#pragma scheduling invalid_target
 void fn_80133024(void) {
     void *p;
     lbl_8055E078 = 1;
     p = fn_801284F8(0x6D68, lbl_8032B880);
     lbl_8055E07C = (int)p;
-    *(int*)((char*)p + 4) = 0;
+    *(int *)((char *)p + 4) = 0;
     lbl_8055E080 = 0;
     lbl_8042F718[1] = 0;
     lbl_8042F718[3] = 0;
@@ -47,13 +46,12 @@ void fn_80133024(void) {
     lbl_8042F718[11] = 0;
     lbl_8042F718[13] = 0;
     lbl_8042F718[15] = 0;
-    if (fn_80133BA0(lbl_80559B58, 0, 0x12) == 0) {
+    if (fn_80133BA0(lbl_80559B58, 0, 0x12) == 0)
         fn_802E317C(lbl_8032B88C, lbl_80559B58);
-    }
     fn_802E6BD8(0x4F505473, 6, lbl_8055E07C, 0x6D68, fn_80133FCC);
     fn_8000DBC8(fn_801341B4);
 }
-#pragma pop
+#pragma scheduling on
 void fn_801330E8(int arg0) {
  if (!fn_80133BA0(lbl_80559B58,0,arg0)) {
    const char *fmt=lbl_8032B8B0;
@@ -126,11 +124,18 @@ void fn_801332D0(int arg0, int arg1, int *arg2) {
     }
 }
 #pragma scheduling on
+__declspec(section ".sdata") extern const char lbl_80559B60[];
 int fn_80133348(int arg0, int arg1, int arg2) {
+    union Conv {
+        double value;
+        unsigned int words[2];
+    } conv;
     void *sp8;
     fn_80133E10(&sp8, arg0, arg1);
+    conv.words[0] = 0x43300000;
+    conv.words[1] = ((unsigned int)arg2) ^ 0x80000000;
+    *(float *)((char *)sp8 + 0x10) = (float)(conv.value - lbl_805612D8);
     *(int *)((char *)sp8 + 0xC) = arg2;
-    *(float *)((char *)sp8 + 0x10) = (float)(unsigned int)arg2;
     *(unsigned char *)((char *)sp8 + 8) = arg2 != 0;
     sprintf((char *)sp8 + 0x14, lbl_80559B60, arg2);
     *(int *)sp8 = 2;
@@ -205,6 +210,18 @@ int fn_8013365C(int arg0, int arg1) {
     fn_802E317C(lbl_8032B920, i);
     return -1;
 }
+
+#pragma scheduling invalid_target
+void fn_801336E0(int arg0, int arg1) {
+    int *entry = &lbl_8042F718[arg0 * 2];
+    if (entry[1] == 0) {
+        fn_802E317C(lbl_8032B940, arg0);
+    }
+    if (entry[1] != arg1) {
+        fn_802E317C(lbl_8032B968, entry[0], arg1);
+    }
+    entry[1] = 0;
+}
 #pragma scheduling on
 int fn_80133780(void *arg0, void *arg1) {
     int second = *(int *)((char *)arg1 + 4);
@@ -275,21 +292,36 @@ int fn_801338D8(const char *arg0) {
 
 extern int fn_802E30C8(const char *, ...);
 extern double atof(const char *);
+#pragma scheduling invalid_target
+#pragma dont_inline on
 float fn_80133960(const char *arg0) {
-    unsigned char c = *fn_801337E4((char *)arg0);
-    int ch = (signed char)c;
-    int isNumber;
-    if (ch < 0 || ch >= 0x100) isNumber = 0;
-    else {
-        int table = *(int *)(lbl_802FE850 + 0x38);
-        isNumber = *(unsigned short *)(*(int *)(table + 8) + ch * 2) & 8;
-    }
-    if (!isNumber && ((unsigned char)(c - '-') > 1)) return (float)fn_80133844(arg0);
-    return (float)atof(arg0);
-}
+    char *p = fn_801337E4((char *)arg0);
+    unsigned char c = *p;
+    register int ch = (signed char)c;
+    int invalid = 0;
 
-#pragma push
-#pragma peephole on
+    if (ch < 0)
+        goto set_invalid;
+    if (ch < 0x100)
+        goto check_invalid;
+set_invalid:
+    invalid = 1;
+check_invalid:
+    if (invalid != 0) {
+        ch = 0;
+        goto test_char;
+    }
+    {
+        int table = *(int *)((char *)&lbl_802FE850 + 0x38);
+        ch = *(unsigned short *)(*(int *)(table + 8) + ch * 2) & 8;
+    }
+test_char:
+    if (ch || (unsigned char)(c - 0x2d) <= 1)
+        return (float)atof(p);
+    return (float)(unsigned int)fn_80133844(p);
+}
+#pragma dont_inline reset
+#pragma scheduling on
 int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
     char *p = *arg0;
     char *start = arg2;
