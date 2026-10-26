@@ -409,17 +409,22 @@ void fn_8016CDE0(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
 }
 
-s32 fn_8016CDF8(void *arg0, void *obj) {
+#pragma cplusplus on
+extern "C" s32 fn_8016CDF8(void *arg0, void *obj) {
+    struct Obj {
+        virtual void v0();
+        virtual int v1(char *);
+    };
     char sp8[0x1E];
     s32 count = 0;
-    fn_801345D8(sp8, 0x1E, lbl_8033072C, 0);
-    while (((s32 (*)(void *, char *))(*(u32 **)obj)[3])(obj, sp8) != 0) {
+    fn_801345D8(sp8, 0x1E, lbl_8033072C);
+    while (((Obj *)obj)->v1(sp8) != 0) {
         count++;
         fn_801345D8(sp8, 0x1E, lbl_803308A0, count);
     }
     return count;
 }
-
+#pragma cplusplus reset
 void fn_8016CE94(void *arg0, f32 arg1) {
     *(f32 *)((u8 *)arg0 + 4) = arg1;
 }
@@ -574,21 +579,44 @@ outerTest:
 
 s32 fn_802BAA68(s32, void *);
 void fn_8016D5B8(void *arg0) {
-    s32 *list = *(s32 **)((u8 *)arg0 + 0x18);
-    s32 i = 0;
-    while (i < *(s32 *)((u8 *)list + 4)) {
-        s32 *items = *(s32 **)list;
-        s32 n = *(s32 *)((u8 *)items + i * 0x14 + 4);
-        s32 j = 0;
-        while (j < n) {
-            s32 *item = (s32 *)((u8 *)items + i * 0x14 + j * 0x44);
-            if (*(s32 *)((u8 *)item + 0xC) == 0) {
-                *(s32 *)((u8 *)item + 4) = fn_802BAA68(*(s32 *)((u8 *)item + 8), (void *)((u8 *)item + 0x14));
-            }
-            j++;
-        }
-        i++;
+    u8 *arg = (u8 *)arg0;
+    u8 *list;
+    u8 *outer;
+    s32 innerIndex;
+    u8 *item;
+    s32 outerOffset;
+    s32 innerOffset;
+    s32 outerIndex;
+    u8 *entry;
+
+    outerIndex = 0;
+    outerOffset = 0;
+    goto outer_check;
+
+outer_setup:
+    outer = *(u8 **)list;
+    innerIndex = 0;
+    innerOffset = 0;
+    goto inner_check;
+
+inner_body:
+    item = *(u8 **)entry + innerOffset;
+    if (*(s32 *)(item + 0xC) == 0) {
+        *(s32 *)(item + 4) =
+            fn_802BAA68(*(s32 *)(item + 8), item + 0x14);
     }
+    innerOffset += 0x44;
+    innerIndex++;
+
+inner_check:
+    entry = *(u8 **)(outer + outerOffset);
+    if (innerIndex < *(s32 *)(entry + 4)) goto inner_body;
+    outerOffset += 0x14;
+    outerIndex++;
+
+outer_check:
+    list = *(u8 **)(arg + 0x18);
+    if (outerIndex < *(s32 *)(list + 4)) goto outer_setup;
 }
 
 int fn_8000DA10();
@@ -799,19 +827,22 @@ void fn_8016DFB8(void *arg0) {
 }
 
 void fn_8016E06C(void *arg0) {
+    u8 **baseSlot;
     s32 index = *(s32 *)((u8 *)arg0 + 0x2c);
+
     if (index < *(s32 *)((u8 *)arg0 + 0x3c)) {
-        u8 *item = (u8 *)*(void **)((u8 *)arg0 + 0x18) + index * 0x14;
-        s32 i;
-        s32 offset;
-        *item = 1;
+        u8 *item;
+        s32 i = 0;
+        s32 offset = 0;
+        baseSlot = *(u8 ***)((u8 *)arg0 + 0x18);
+        item = *baseSlot + index * 0x14;
+        item[9] = 1;
         *(f32 *)(item + 0xc) = lbl_8055E3C8;
         *(s32 *)(item + 0x10) = 0;
-        i = 0;
-        offset = 0;
-        while (i < *(s32 *)item) {
-            if (*(s32 *)((u8 *)*(void **)item + offset + 4) != 0) {
-                fn_802BAF98((u8 *)*(void **)item + offset, 1);
+        while (i < *(s32 *)((u8 *)*(void **)item + 4)) {
+            u8 *entry = (u8 *)*(void **)item + offset;
+            if (*(s32 *)(entry + 4) != 0) {
+                fn_802BAF98(entry, 1);
             }
             offset += 0x44;
             i += 1;
@@ -903,29 +934,34 @@ extern void *fn_802ADDD8(s32);
 extern void fn_8016EA9C(void *);
 extern void fn_8016E984(void *);
 extern s32 fn_80179650(void);
+#pragma scheduling invalid_target
 void fn_8016E880(void *arg0, void *arg1) {
-    s32 count = *(s32 *)((u8 *)arg0 + 8);
-    s32 index = 0;
-    s32 offset = 0;
-    void *items = *(void **)((u8 *)arg0 + 4);
-    void *entry = arg1;
-    *(s32 *)arg1 = count;
-    *(s32 *)((u8 *)arg1 + 4) = fn_80179650();
-    *((u8 *)arg1 + 0xD) = 1;
-    *((u8 *)arg1 + 0xE) = 0;
-    do {
-        *(s32 *)((u8 *)entry + 0x10) = index;
-        index += 1;
-        *((u8 *)entry + 0x20) = 0;
-        *(s32 *)((u8 *)entry + 0x18) =
-            **(s32 **)((u8 *)items + offset);
-        offset += 4;
-        *(s32 *)((u8 *)entry + 0x14) = 1;
-        *((u8 *)arg1 + 0xC) = 1;
-        entry = (u8 *)entry + 0x14;
-    } while (index < count);
-}
+    register u8 *input = (u8 *)arg0;
+    register u8 *output = (u8 *)arg1;
+    register s32 index = 0;
+    register s32 offset = 0;
+    u8 *entry = (u8 *)arg1;
 
+    *(s32 *)output = *(s32 *)(input + 8);
+    *(s32 *)(output + 4) = fn_80179650();
+    *(u8 *)(output + 0xD) = 1;
+    *(u8 *)(output + 0xE) = 0;
+    goto check;
+
+loop:
+    *(s32 *)(entry + 0x10) = index;
+    index++;
+    *(u8 *)(entry + 0x20) = 0;
+    *(s32 *)(entry + 0x18) =
+        **(s32 **)(*(u32 *)(input + 4) + offset);
+    offset += 4;
+    *(s32 *)(entry + 0x14) = 1;
+    *(u8 *)(output + 0xC) = 1;
+    entry += 0x14;
+check:
+    if (index < *(s32 *)(input + 8)) goto loop;
+}
+#pragma scheduling on
 void fn_8016E918(void *arg0) {
     s32 result;
     *(void **)((u8 *)arg0 + 0x98) = fn_80145E70(lbl_80330BC8);
