@@ -35,34 +35,37 @@ void fn_8023D704(long arg0) {
     lbl_8055F18C = (void *)arg0;
 }
 
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8023D70C(void) {
-    char sp8;
-    char sp9;
-    char spA;
-    char spB;
+    register long len;
+    register char *base = lbl_803416A8;
+    register long i = 0;
     char spC;
-    long i = 0;
-    long len;
+    char spB;
+    char spA;
+    char sp9;
+    char sp8;
 
     do {
         len = 0x10;
-        if (i < 4) {
+        if (i < 4)
             len = i + 0xC;
-        }
         spC = 1;
         spB = 1;
         spA = 0;
         sp9 = 0;
         sp8 = 1;
-        fn_801333E8(len, &lbl_803416A8 + 0x368, &spC);
-        fn_801333E8(len, &lbl_803416A8 + 0x378, &spB);
-        fn_801333E8(len, &lbl_803416A8 + 0x38C, &spA);
-        fn_801333E8(len, &lbl_803416A8 + 0x3A0, &sp9);
-        fn_801333E8(len, &lbl_803416A8 + 0x3B0, &sp8);
+        fn_801333E8(len, base + 0x368, &spC);
+        fn_801333E8(len, base + 0x378, &spB);
+        fn_801333E8(len, base + 0x38C, &spA);
+        fn_801333E8(len, base + 0x3A0, &sp9);
+        fn_801333E8(len, base + 0x3B0, &sp8);
         i++;
     } while (i < 5);
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw on
 void fn_8023DA2C(long arg0, void *arg1, char arg2, long arg3) {
     char sp8;
     sp8 = arg2;
