@@ -378,6 +378,44 @@ void fn_802CAC44(int arg0, int arg1) {
     fn_802CA898(arg0, 0, 0, arg1);
 }
 
+extern void fn_8012C4D8(void *);
+extern void fn_802CB82C(int);
+extern void fn_802CAD28(int);
+extern char lbl_8034B8E0[];
+#pragma scheduling invalid_target
+void fn_802CAC54(int arg0) {
+    register int value;
+    char *base;
+    char *entry;
+    int offset;
+
+    if (arg0 == -1)
+        return;
+    if (arg0 >= 0 && arg0 < 0x200) {
+        offset = arg0 * 0x4C;
+        base = (char *)lbl_8055FCB0;
+        value = *(int *)(base + offset);
+        if (value <= 0) {
+            entry = base + offset;
+            fn_802E317C(lbl_8034B8E0, entry + 4);
+        }
+    }
+    offset = arg0 * 0x4C;
+    entry = (char *)lbl_8055FCB0 + offset;
+    if (*(unsigned char *)(entry + 0x30) != 0) {
+        fn_802CAD28(arg0);
+        return;
+    }
+    value = *(int *)entry - 1;
+    *(int *)entry = value;
+    if (value == 0 && *(int *)(entry + 0x2C) != 0) {
+        fn_802CB82C(arg0);
+        fn_8012C4D8(*(void **)(entry + 0x2C));
+        *(int *)(entry + 0x2C) = 0;
+        ((void (*)(int))fn_802D8FB4)(*(int *)(entry + 0x28));
+    }
+}
+#pragma scheduling on
 void fn_802CAD28(int arg0) {
     int *p;
     int value;
@@ -904,16 +942,17 @@ extern char lbl_8034BA34[];
 extern char lbl_8034BA70[];
 int fn_802D9154(void);
 void fn_802CC03C(int **arg0, int *arg1, int arg2) {
+    int offset = arg2 * 0x4C;
     char sp10[0x20];
     int sp8;
-    fn_802CA2A8(sp10, 0x20, lbl_8055FCB0 + arg2 * 0x4C + 4);
-    arg1[0] = fn_8012C5B8(sp10, 0x54455820, &sp8);
+
+    arg1[0] = fn_8012C5B8((char *)fn_802CA2A8(sp10, 0x20, (int)((char *)lbl_8055FCB0 + offset + 4)), 0x54455820, &sp8);
     arg1[1] = arg2;
     arg1[3] = fn_802D9154();
     if (arg1[0] == 0)
         fn_802E317C(lbl_8034BA34, sp10);
-    if (sp8 != 0xF)
-        fn_802E317C(lbl_8034BA70, sp10, 0xF);
+    if ((unsigned int)sp8 != 0xF)
+        fn_802E317C(lbl_8034BA70, sp10, sp8, 0xF);
     ((void (*)(int **, int, int *))fn_802CBB9C)(arg0, (int)arg0 + 4, arg1);
 }
 
