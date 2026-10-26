@@ -51,7 +51,7 @@ extern float lbl_8056223C, lbl_8055E57C;
 extern int lbl_804348E8[];
 extern void *lbl_804349E0[];
 extern char lbl_80333390[0x10000];
-  void fn_801964D0(void);
+  void fn_801964D0();
   void fn_80128668(void *);
   void fn_80193138(int);
   void fn_80193CE0(void *);
@@ -230,7 +230,7 @@ int fn_80193524(void *arg0, void *arg1) {
     extern float PSVECDotProduct(const void *, const void *);
     extern float lbl_8056215C;
     float delta[3];
-    float dot = __fabs(PSVECDotProduct((char *)arg1 + 0x54, (char *)arg0 + 0x54));
+    float dot = __fabs(PSVECDotProduct((char *)arg0 + 0x54, (char *)arg1 + 0x54));
     int result = 0;
 
     if (dot < lbl_8056215C) {
@@ -1110,30 +1110,35 @@ extern float lbl_80562208, lbl_80562230, lbl_80562234, lbl_80562238;
 extern float __fabsf(float);
 void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, float farg2) {
     float temp_f5;
+    double mag0;
+    float abs0;
     float sp8;
     float spC;
     int var_r0;
-    temp_f5 = (lbl_80562230 + (farg0 - farg1)) / farg2;
-    if (__fabs(farg0) < lbl_80562168) {
+    temp_f5 = farg0 - farg1;
+    temp_f5 = (lbl_80562230 + temp_f5) / farg2;
+    mag0 = __fabs((double)farg0);
+    abs0 = (float)mag0;
+    if (abs0 < lbl_80562168) {
         *arg1 = lbl_80562140;
         *arg0 = lbl_80562144;
         *arg2 = 0;
         return;
     }
-    if (__fabs(farg1) < lbl_80562208) {
-        *arg0 = __fabs(temp_f5) / lbl_80562234;
-        *arg1 = lbl_80562144;
-    } else {
-        sp8 = farg1;
-        spC = temp_f5;
-        if ((*(unsigned int *)&spC & 0x80000000) == (*(unsigned int *)&sp8 & 0x80000000)) {
-            *arg0 = __fabs(temp_f5) / lbl_80562234;
-            *arg1 = lbl_80562144;
-        } else {
-            *arg0 = lbl_80562144;
-            *arg1 = __fabs(temp_f5) / lbl_80562238;
-        }
-    }
+    if ((float)__fabs((double)farg1) < lbl_80562208)
+        goto direct_case;
+    sp8 = temp_f5;
+    spC = farg1;
+    if ((int)(*(unsigned int *)&sp8 & 0x80000000U) != (int)(*(unsigned int *)&spC & 0x80000000U))
+        goto different_sign;
+direct_case:
+    *arg0 = (float)__fabs((double)temp_f5) / lbl_80562234;
+    *arg1 = lbl_80562144;
+    goto finish;
+different_sign:
+    *arg0 = lbl_80562144;
+    *arg1 = (float)__fabs((double)temp_f5) / lbl_80562238;
+finish:
     if (farg0 > lbl_80562144)
         var_r0 = 1;
     else
@@ -1671,26 +1676,28 @@ void fn_80198488(void *arg0) {
 }
 #pragma dont_inline reset
 void *fn_80198DD0(void *arg0, int arg1) {
+    struct Table {
+        void *items[8];
+        int count;
+    } *table;
     void **scan;
+    unsigned char i;
     int loopCount;
-    int i;
     int count;
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_80333390;
-        scan = lbl_804349E0;
+        table = (struct Table *)lbl_804349E0;
+        scan = table->items;
         i = 0;
-        loopCount = *(int *)((char *)lbl_804349E0 + 0x20);
-        if (loopCount > 0) {
-            for (; loopCount > 0; loopCount--) {
-                if (*scan == arg0) {
-                    count = *(int *)((char *)lbl_804349E0 + 0x20) - 1;
-                    *(int *)((char *)lbl_804349E0 + 0x20) = count;
-                    *(void **)((char *)lbl_804349E0 + (i << 2)) =
-                        ((void **)lbl_804349E0)[count];
-                } else {
-                    scan++;
-                    i++;
-                }
+        loopCount = table->count;
+        for (; loopCount > 0; loopCount--) {
+            if (*scan == arg0) {
+                count = table->count - 1;
+                table->count = count;
+                table->items[i] = table->items[count];
+            } else {
+                scan++;
+                i++;
             }
         }
         if (arg1 > 0) fn_80128668(arg0);
