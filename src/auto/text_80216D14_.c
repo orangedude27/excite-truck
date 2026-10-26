@@ -652,29 +652,57 @@ int fn_8021832C(void *arg0) {
 }
 
 extern void fn_80217D84(void *);
-void fn_80218370(void *arg0) {
-    char *base = (char *)arg0;
-    int i;
+#pragma cplusplus on
+extern "C" void fn_80218370(void *arg0) {
+    class Entry {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28();
+        virtual void update();
+    };
+    register char *base = (char *)arg0;
+    register char *cursor = base;
+    register int i = 0;
     int j;
-    int found = 0;
-    for (i = 0; i < *(int *)(base + 0x430); i++) {
-        void *obj = *(void **)(base + i * 4 + 0x30);
-        void **vtable = *(void ***)obj;
-        ((void (*)(void *))vtable[31])(obj);
-    }
+    char *scan;
+    void *object;
+    int found;
+
+    goto checkFirst;
+firstLoop:
+    ((Entry *)*(void **)(cursor + 0x30))->update();
+    cursor += 4;
+    i++;
+checkFirst:
+    if (i < *(int *)(base + 0x430))
+        goto firstLoop;
+
     j = *(int *)(base + 0x494);
-    for (i = 0; i < j; i++) {
-        char *entry = base + i * 8;
-        void *obj = *(void **)(entry + 0x4A4);
-        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0) && *(unsigned char *)( (char *)entry + 0x4A4 + 0x1B)) {
-            int matched = *(unsigned char *)((char *)obj + 0x1A) != 0;
-            if (!matched && *(float *)((char *)obj + 0x20) <= lbl_80563490) matched = 1;
-            if (matched) { found = 1; break; }
+    scan = base;
+    found = 0;
+    for (i = 0; i < j; i++, scan += 8) {
+        if (*(int *)(base + 0x498) == *(int *)(scan + 0x4A0)) {
+            object = *(void **)(scan + 0x4A4);
+            if (*(unsigned char *)((char *)object + 0x1B) != 0) {
+                int matched = (*(unsigned char *)((char *)object + 0x1A) != 0) ||
+                              (*(float *)((char *)object + 0x20) >= lbl_80563490);
+                if (matched) {
+                    found = 1;
+                    break;
+                }
+            }
         }
     }
-    if (!found) fn_80217D84(arg0);
+    if (!found)
+        fn_80217D84(arg0);
 }
-
+#pragma cplusplus off
 void fn_80218464(void *arg0) {
     char *base = (char *)arg0;
     int i = 0;
