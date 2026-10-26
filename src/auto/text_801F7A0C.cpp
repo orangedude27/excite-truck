@@ -1181,16 +1181,18 @@ extern "C" s32 fn_801FBD94(void *arg0) {
     return flags | 1;
 }
 
-extern "C" void *fn_801FBE1C(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void *arg6) {
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void *fn_801FBE1C(void **arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) {
     void *obj = fn_801284F8(0x4C, lbl_8033B5B8);
     if (obj != 0) {
-        obj = fn_801A4A8C(arg1, arg2, arg3, arg4, arg5, arg6);
+        obj = fn_801A4A8C(obj, arg1, arg2, arg3, arg4, arg5);
     }
     *(void **)((u8 *)obj + 0x44) = *arg0;
     *arg0 = obj;
     return (u8 *)obj + 4;
 }
-
+#pragma pop
 extern "C" void fn_801FBEA8(void* arg0) {
  void* obj = fn_801284F8(0x2C, lbl_8033B51C);
  if (obj != 0) {
