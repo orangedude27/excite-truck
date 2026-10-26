@@ -203,17 +203,15 @@ unsigned char fn_8029F510(unsigned char *arg0, int arg1) {
     return *arg0;
 }
 
-void fn_8029F534(void *arg0, unsigned char *arg1) {
-    if (fn_8029F510((unsigned char *)arg0, (int)arg1)) {
-        void **vtable = (void **)*(void **)arg1;
-        ((void (*)(unsigned char *, int *))vtable[5])(arg1, (int *)&lbl_8034983C);
-        *(int *)((unsigned char *)arg0 + 4) = fn_8028E3F4();
-        *(unsigned char *)((unsigned char *)arg0 + 8) =
-            ((unsigned char (*)(unsigned char *, int *, int))vtable[12])(arg1, (int *)&lbl_80349848, 0);
-    } else {
-        *(int *)((unsigned char *)arg0 + 4) = 0;
-    }
-}
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+#pragma optimization_level 2
+extern "C" void fn_8029F534(void *, unsigned char *);
+#pragma scheduling on
+#pragma cplusplus off
+#pragma pop
+
 
 #pragma push
 #pragma cplusplus on
