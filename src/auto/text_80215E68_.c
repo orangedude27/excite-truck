@@ -333,7 +333,7 @@ void fn_8021676C(void) {
 
 }
 
-extern char lbl_8033D7A4;
+extern char lbl_8033D7A4[];
 extern char lbl_8033D7B4;
 extern void *fn_801284F8(s32, const char *);
 extern void *fn_80216D40(void *, s32, s32, s32, s32, s32, s32);
