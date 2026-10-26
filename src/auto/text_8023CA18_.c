@@ -15,6 +15,50 @@ void fn_8023CA18(void) {
 
 void fn_8023CA50(void) {}
 
+extern char lbl_803414D0[];
+extern u8 lbl_8055F160;
+extern f32 lbl_8055F164;
+extern f32 lbl_8055F168;
+extern f32 lbl_8055F16C;
+extern f32 lbl_8055F170;
+extern f32 lbl_8055F174;
+extern s32 lbl_8055F178;
+extern s32 lbl_8055F17C;
+extern s32 lbl_8055BB70;
+extern f32 lbl_80563738;
+extern void fn_801333E8(s32, void *, u8 *);
+extern void fn_801331C4(s32, void *, f32 *);
+extern void fn_801332D0(s32, void *, s32 *);
+extern void fn_80209030(f32);
+extern void fn_80209090(s32);
+#pragma push
+#pragma small_data off
+#pragma pop
+#pragma push
+#pragma scheduling invalid_target
+void fn_8023CA54(void) {
+    s32 zero = 0;
+    char *base = (char *)&lbl_803414D0;
+    lbl_8055F160 = zero;
+    fn_801333E8(4, base, &lbl_8055F160);
+    lbl_8055F164 = lbl_80563738;
+    fn_801331C4(4, base + 0x10, &lbl_8055F164);
+    lbl_8055F168 = lbl_80563738;
+    fn_801331C4(4, base + 0x20, &lbl_8055F168);
+    lbl_8055F16C = lbl_80563738;
+    fn_801331C4(4, base + 0x30, &lbl_8055F16C);
+    fn_80209030(lbl_8055F16C);
+    lbl_8055F17C = zero;
+    fn_801332D0(4, &lbl_8055BB70, &lbl_8055F17C);
+    fn_80209090(lbl_8055F17C);
+    lbl_8055F170 = lbl_80563738;
+    fn_801331C4(4, base + 0x40, &lbl_8055F170);
+    lbl_8055F174 = lbl_80563738;
+    fn_801331C4(4, base + 0x4C, &lbl_8055F174);
+    lbl_8055F178 = 1;
+    fn_801332D0(4, base + 0x5C, &lbl_8055F178);
+}
+#pragma pop
 s32 fn_8023CB54(void) {
     fn_801330E8(4);
     fn_8023CA54();
@@ -24,6 +68,36 @@ s32 fn_8023CB54(void) {
 s32 fn_8023CB80(void* arg0) {
     fn_80236900(arg0);
     return 1;
+}
+
+extern s32 lbl_804987A0[];
+extern s32 lbl_802FA090[];
+extern s32 lbl_8055B860;
+extern void fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
+void fn_8023CBA4(void) {
+    s32 data[20];
+    s32 *v = lbl_802FA090;
+    data[6] = 6;
+    data[1] = (s32)&data[5];
+    data[5] = (s32)&lbl_8055B860;
+    data[0] = v[0];
+    data[7] = 0;
+    data[8] = -1;
+    data[9] = 0x1B;
+    data[11] = 6;
+    data[10] = (s32)&lbl_8055B860;
+    data[12] = 0;
+    data[13] = -2;
+    data[14] = 0xD;
+    data[2] = v[2];
+    data[3] = v[3];
+    data[4] = v[4];
+    data[15] = lbl_804987A0[0];
+    data[16] = lbl_804987A0[1];
+    data[17] = lbl_804987A0[2];
+    data[18] = lbl_804987A0[3];
+    data[19] = lbl_804987A0[4];
+    fn_802146BC(data, -999, -999, 1, v[4], v[3], v[2], v[0]);
 }
 
 #pragma cplusplus on
