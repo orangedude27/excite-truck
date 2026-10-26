@@ -54,7 +54,7 @@ void *fn_8001285C(int arg0) DECOMP_DONT_INLINE {
 }
 
 extern char lbl_80352AD0[];
-extern int lbl_802FC700;
+extern char lbl_802FC700[];
 extern void fn_80131818(void *);
 extern char lbl_8035183C[];
 extern char lbl_8055D500;
@@ -149,6 +149,15 @@ void fn_80013618(int arg0) {
     *(int *)(lbl_8035183C + 0x80) = count + 1;
     fn_8001335C(result, arg0);
 }
+
+int fn_80013680(void *arg0, void *arg1) {
+    void *a = *(void **)((char *)arg0 + 0x80);
+    void *b = *(void **)((char *)arg1 + 0x80);
+    int x = (*(int (**)(void *, char *, int))(*(char **)a + 0x20))(a, lbl_802FCB74, 0x63);
+    int y = (*(int (**)(void *, char *, int))(*(char **)b + 0x20))(b, lbl_802FCB74, 0x63);
+    return x - y;
+}
+
 #pragma scheduling on
 int fn_800136FC(void *arg0, void *arg1) {
     int a = ((int *)arg0)[0x1A];
