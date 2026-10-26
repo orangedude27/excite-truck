@@ -5,6 +5,9 @@ extern f32 lbl_8055E0A8;
 extern void *lbl_8042F758[];
 extern void *lbl_8055E0D4;
 extern f32 lbl_80561304;
+extern void *lbl_8055E0B0;
+extern f32 lbl_80560108, lbl_8056010C;
+extern f64 lbl_80561308, lbl_80561310;
 extern void *fn_8001285C(s32);
 extern s32 *fn_801E87A8(void);
 extern u32 lbl_80559BD8;
@@ -17,13 +20,13 @@ extern void *fn_801792F8(void);
   extern f32 fn_80134DF8(void);
   extern s32 fn_801769A8(void);
   extern void *fn_80134E90(void);
-  extern void *fn_80134EC8();
+  extern void *fn_80134EC8(void);
   extern void *fn_80134FF8(void);
   extern void *fn_801350C0(void);
   extern void *fn_801A520C(void *, void *);
   extern void *fn_801B83A0(void);
   extern void *fn_801938F4(void *);
-  extern void fn_802E30C8(const char *, void *);
+  extern void fn_802E30C8(const char *, ...);
   extern const char lbl_8032BC50[];
   extern const char lbl_8032BC5C[];
   
@@ -78,7 +81,8 @@ extern "C" void fn_8013472C(void) {
 }
 #pragma cplusplus reset
 #pragma pop
-  void __AXDSPInitCallback_80134770(void) {
+  #pragma dont_inline __AXDSPInitCallback_80134770
+void __AXDSPInitCallback_80134770(void) {
       lbl_8055E0AC = 0;
   }
   
@@ -109,15 +113,13 @@ s32 fn_80134A44(s32 arg0) {
   
   }
 
-extern void fn_80136CB8(void *, s32);
-extern void fn_8013A200(s32);
 #pragma scheduling invalid_target
 void fn_80134A8C(void) {
     extern void *lbl_8042F758[];
     extern void *lbl_8055E0D4;
     extern void *lbl_8055E0B0;
-    extern void fn_80136CB8(void *, s32);
-    extern void fn_80136D20(void *, s32);
+      extern void fn_80136CB8(void *, s32);
+      extern void fn_80136D20(void *, s32);
     extern s32 fn_80134A44(s32);
     extern void fn_801371E0(void *);
     extern void fn_8013A204(s32);
@@ -226,6 +228,18 @@ s32 fn_80134D54(void) {
 }
 
 #pragma dont_inline on
+f32 fn_80134D78(void) {
+    unsigned long temp_r3;
+    s32 half;
+    f32 value0;
+    value0 = (f32)((u32 (*)(void))fn_80134D54)();
+    temp_r3 = (s32)lbl_8055E0B0 + 1;
+    half = (s32)(((u32)temp_r3 >> 31) + temp_r3) >> 1;
+    return lbl_80561304 + (lbl_80560108 * value0) + ((f32)half * lbl_8056010C);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
 f32 fn_80134DF8(void) {
     return lbl_80561304;
 }
@@ -269,19 +283,86 @@ void *fn_80134E90(void) {
     return p;
 }
 
-void *fn_80134EC8(void) {
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_80134EC8(void) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void f21();
+        virtual void f22();
+        virtual void f23();
+        virtual void f24();
+        virtual void f25();
+        virtual void f26();
+        virtual void f27();
+        virtual void f28();
+        virtual void f29();
+        virtual void f30();
+        virtual void f31();
+        virtual void f32();
+        virtual void f33();
+        virtual void f34();
+        virtual void f35();
+        virtual void f36();
+        virtual void f37();
+        virtual void f38();
+        virtual void f39();
+        virtual void f40();
+        virtual void f41();
+        virtual void f42();
+        virtual void f43();
+        virtual void f44();
+        virtual void f45();
+        virtual void f46();
+        virtual void f47();
+        virtual void f48();
+        virtual void f49();
+        virtual void f50();
+        virtual void f51();
+        virtual void f52();
+        virtual void f53();
+        virtual void f54();
+        virtual void f55();
+        virtual void f56();
+        virtual s32 f57();
+    };
     void *obj = fn_801B83A0();
-    void *tbl = *(void **)((u8 *)obj + 0x0);
-    s32 (*fn)(void) = *(s32 (**)(void))((u8 *)tbl + 0xEC);
-    if (fn() != 0) {
+    s32 result = ((Dummy *)obj)->f57();
+    register s32 selector = (s32)obj;
+    if (result != 0)
+        return;
+    switch (selector) {
+    case 0x180201:
         fn_80134E90();
-    } else {
+        break;
+    default:
         fn_802E30C8(lbl_8032BC5C, obj);
         fn_80134FF8();
+        break;
     }
-    return obj;
 }
-
+#pragma cplusplus reset
+#pragma pop
 s32 fn_80134F40(void) {
     return 0;
 }
@@ -400,14 +481,16 @@ void fn_801351C4(void *arg0, s32 arg1) {
 extern void fn_8018ADBC(void *, f32);
 extern void fn_8018ADB4(void *, f32);
 extern void fn_8018ADA4(void *, f32);
+#pragma push
 #pragma scheduling invalid_target
 void fn_801351CC(void *arg0) {
-    register f32 first = lbl_80561318;
-    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), first);
+    const f32 first = lbl_80561318;
+    void *object = *(void **)((u8 *)arg0 + 8);
+    fn_8018ADBC(object, first);
     fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
     fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
 }
-#pragma scheduling on
+#pragma pop
 void fn_80135218(void) {
 
 }
