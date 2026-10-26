@@ -115,6 +115,61 @@ void fn_8021747C(void *arg0, void *arg1, void *arg2) {
     if (callback != 0) callback(arg0, arg1, arg2);
 }
 
+extern void fn_80218198(void *, void **);
+extern int fn_80218214(void *, int, int);
+#pragma cplusplus on
+extern "C" void fn_8021749C(void *arg0, int arg1, int arg2) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15(int, int);
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual void v23();
+        virtual int v24();
+    };
+    char *base = (char *)arg0;
+    int x;
+    int y;
+    int index;
+    Dummy *obj;
+    if (*(void **)(base + 0x44C) == 0) {
+        x = arg1 - *(int *)(base + 0x454);
+        y = arg2 - *(int *)(base + 0x458);
+        index = fn_80218214(arg0, x, y);
+        obj = 0;
+        if (index >= 0) obj = (Dummy *)*(void **)(base + index * 4 + 0x30);
+        *(void **)(base + 0x44C) = obj;
+        if (obj != 0 && obj->v24() != 0) {
+            if (*(void **)(base + 0x450) != obj)
+                fn_80218198(arg0, (void **)obj);
+        } else {
+            fn_80218198(arg0, 0);
+        }
+        if (obj != 0) obj->v15(x, y);
+    }
+}
+#pragma cplusplus off
+
 #pragma cplusplus on
 extern "C" void fn_80217590(void *arg0, int arg1, int arg2) {
     class Obj {
@@ -748,27 +803,37 @@ int fn_8021885C(void *arg0, int arg1) {
 extern int fn_80216D14(int);
 extern void fn_802193C8(float);
 void fn_8021889C(void *arg0, int arg1, float arg2) {
-    int bit;
-    int i;
-    int called;
-    char *base = (char *)arg0;
-    char *cursor;
-    if (*(int *)(base + 0x464) & fn_80216D14(arg1)) return;
-    bit = fn_80216D14(arg1);
-    *(int *)(base + 0x464) |= bit;
-    cursor = base;
-    called = 0;
-    i = 0;
-    while (i < *(int *)(base + 0x430)) {
-        void *obj = *(void **)(cursor + 0x30);
-        if (*(int *)((char *)obj + 0x238) & *(int *)(base + 0x464)) {
+    int mask = fn_80216D14(arg1);
+    if (*(int *)((char *)arg0 + 0x464) & mask)
+        return;
+    {
+        char *cursor;
+        int called;
+        int currentMask;
+        int flags;
+        int i;
+
+        currentMask = fn_80216D14(arg1);
+        flags = *(int *)((char *)arg0 + 0x464);
+        cursor = (char *)arg0;
+        called = 0;
+        *(int *)((char *)arg0 + 0x464) = flags | currentMask;
+        i = 0;
+        goto check;
+    loop:
+        if (*(int *)((char *)arg0 + 0x464) &
+            *(int *)((char *)*(void **)(cursor + 0x30) + 0x238)) {
             fn_802193C8(arg2);
             called++;
         }
         cursor += 4;
         i++;
+    check:
+        if (i < *(int *)((char *)arg0 + 0x430))
+            goto loop;
+        if (called > 8)
+            *(char *)((char *)arg0 + 0x46C) = 1;
     }
-    if (called > 8) *(char *)(base + 0x46C) = 1;
 }
 
 extern void fn_80219358(float);
