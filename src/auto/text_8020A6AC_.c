@@ -30,6 +30,7 @@ extern void *fn_8012850C(unsigned int, void *);
 extern void *memset(void *, int, unsigned int);
   extern void fn_802E6B04(void);
   extern char lbl_8033C388[];
+  extern void fn_802E6B34(void);
   typedef struct { void **vtable; } Unk8012A570;
     extern void fn_8020A860();
   extern int fn_80208E90(int);
