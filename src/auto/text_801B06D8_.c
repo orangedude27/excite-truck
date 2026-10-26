@@ -378,6 +378,7 @@ s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
 
 extern s32 fn_801B11DC(const void *, const void *);
 extern void qsort(void *, unsigned long, unsigned long, s32 (*)(const void *, const void *));
+#pragma dont_inline on
 void fn_801B1318(void) {
     s32 i;
     s32 *p;
@@ -391,6 +392,7 @@ void fn_801B1318(void) {
         p++;
     }
 }
+#pragma dont_inline reset
 
 extern s32 fn_801B526C(void);
 extern s32 fn_8026A344(void);
