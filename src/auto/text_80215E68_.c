@@ -42,7 +42,7 @@ extern void fn_8002F634(void *, void *, s32, s32);
 extern f32 lbl_8055EF94;
 extern s32 lbl_8055EF74;
 extern s32 fn_80217270(s32);
-extern s32 fn_802E317C(const char *);
+extern s32 fn_802E317C(const char *, ...);
 extern char lbl_8033D7EC;
 extern s32 fn_80218464(void);
 
@@ -117,12 +117,13 @@ u8 fn_80215FEC(void *arg0) { return *(u8 *)((u8 *)arg0 + 8); }
 
 u8 fn_80215FF4(u8 *arg0) { return *arg0; }
 
+#pragma scheduling invalid_target
 s32 fn_80215FFC(void *arg0) {
     s32 result = 0;
     if (*(u8 *)arg0 != 0 && *(s32 *)((u8 *)arg0 + 4) == fn_802E4A10()) result = 1;
     return result;
 }
-
+#pragma scheduling on
 u32 fn_80216054(void) { return 1; }
 
 void fn_8021605C(void *arg0, s32 arg1) {
@@ -304,29 +305,30 @@ u32 *fn_80216708(void) {
     return &lbl_8055EF98;
 }
 
+#pragma scheduling invalid_target
 void fn_80216710(void) {
+    u32 *p = lbl_804908C8;
     lbl_8055EF88 = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 4) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 8) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0xC) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x10) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x14) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x18) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x1C) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x20) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x24) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x28) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x2C) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x30) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x34) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x38) = 0;
-    *(s32 *)((u8 *)&lbl_804908C8 + 0x3C) = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
+    *p++ = 0;
     lbl_8055EF7C = 0;
     lbl_8055EF8C = 0;
     lbl_8055EF90 = 0;
 }
-
+#pragma scheduling on
 void fn_8021676C(void) {
 
 }
@@ -335,14 +337,15 @@ extern char lbl_8033D7A4;
 extern char lbl_8033D7B4;
 extern void *fn_801284F8(s32, const char *);
 extern void *fn_80216D40(void *, s32, s32, s32, s32, s32, s32);
+#pragma push
+#pragma scheduling invalid_target
 #pragma small_data off
-#pragma small_data on
-void *fn_80216770(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 unused) {
-    void *result = fn_801284F8(0xDE8, &lbl_8033D7A4);
+void *fn_80216770(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    const char *name = (const char *)&lbl_8033D7A4;
+    void *result = fn_801284F8(0xDE8, name);
     s32 i;
-    if (result != 0) {
+    if (result != 0)
         result = fn_80216D40(result, arg0, arg1, arg2, arg3, arg4, arg5);
-    }
     for (i = 0; i < 16; i++) {
         if (lbl_804908C8[i] == 0) {
             lbl_804908C8[i] = (u32)result;
@@ -352,6 +355,7 @@ void *fn_80216770(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s3
     fn_802E317C(&lbl_8033D7B4);
     return 0;
 }
+#pragma pop
 void fn_8021683C(u32 arg0) {
     s32 i;
     for (i = 0; i < 16; i++) {
