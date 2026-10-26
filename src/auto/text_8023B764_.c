@@ -216,6 +216,7 @@ extern const char lbl_80341340[];
 void fn_8023BEB8(s32 arg0, s32 arg1, s32 arg2) {
     fn_8023B9EC(arg0, arg1, arg2, 0, 0);
 }
+#pragma dont_inline reset
 
 void fn_8023BEC4(s32 arg0, s32 arg1) {
     s32 temp_r31;
