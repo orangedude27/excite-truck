@@ -603,19 +603,16 @@ extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, 
 }
 
 void nw4hbm::snd::detail::PoolImpl::DestroyImpl(void* buffer, unsigned long size) {
-    extern u8 lbl_80323058[];
-    extern u8 lbl_80323070[];
-    void** link = (void**)this;
-    u32 start = (u32)buffer;
-    u32 end = start + size;
     if (buffer == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323058, 0x44,
-                                     (const char*)lbl_80323070);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)::lbl_80323058, 0x44,
+                                     (const char*)::lbl_80323070);
     }
     u32 level = OSDisableInterrupts();
+    void** link = (void**)this;
     void* node = *link;
     while (node != 0) {
-        if ((u32)node >= start && (u32)node < end) {
+        if ((u32)buffer <= (u32)node &&
+            (u32)node < (u32)buffer + (u32)size) {
             *link = *(void**)node;
         } else {
             link = (void**)node;
