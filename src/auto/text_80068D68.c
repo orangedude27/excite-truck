@@ -738,6 +738,7 @@ u8 fn_8006A97C(void)
 
 void WUDSetSniffMode(BD_ADDR addr, s32 interval)
 {
+    u8 *pm_ids = lbl_80392960;
     tBTM_PM_PWR_MD block;
     if (interval > 0) {
         block.mode = BTM_PM_MD_SNIFF;
@@ -748,7 +749,7 @@ void WUDSetSniffMode(BD_ADDR addr, s32 interval)
     block.min = interval;
     block.attempt = 1;
     block.timeout = 0;
-    BTM_SetPowerMode(lbl_80392960[0x68A], addr, &block);
+    BTM_SetPowerMode(pm_ids[0x68A], addr, &block);
 }
 
 extern char lbl_803134A0[];
