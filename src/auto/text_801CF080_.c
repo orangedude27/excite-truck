@@ -5,6 +5,20 @@
 
 extern float PSVECDotProduct(const float *, const float *);
 #pragma scheduling invalid_target
+f32 fn_801CF778(const float *arg0, const float *arg1, const float *arg2) {
+    float delta[3];
+    float dot;
+
+    delta[0] = arg0[0] - arg1[0];
+    delta[1] = arg0[1] - arg1[1];
+    delta[2] = arg0[2] - arg1[2];
+    dot = -PSVECDotProduct(delta, arg2);
+    delta[0] += arg2[0] * dot;
+    delta[1] += arg2[1] * dot;
+    delta[2] += arg2[2] * dot;
+    return PSVECDotProduct(delta, delta);
+}
+
 void fn_801CFA48(void *arg0) {
  typedef struct { unsigned char *ptr1; int count1; unsigned char *ptr2; int count2; unsigned char *ptr3; int count3; } tFA48View;
  volatile tFA48View *p=(volatile tFA48View *)arg0;
