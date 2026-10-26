@@ -153,7 +153,7 @@ done:
                     (s8)*name != 0 ? (const char *)&lbl_80559FC4 : (const char *)&lbl_80559FC0,
                     buffer);
     } else {
-        fn_801345D8((s32)arg0, arg1, lbl_80559FC8,
+        fn_801345D8((s32)arg0, arg1, (const char *)&lbl_80559FC8,
                     (s8)*name != 0 ? (const char *)name : (const char *)buffer);
     }
     return (s32)arg0;
