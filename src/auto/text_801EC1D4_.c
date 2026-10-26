@@ -235,9 +235,9 @@ void fn_801ECFE0(void *arg0) {
     long i, j, offset, mask, handle, flag, cached;
     char *part, *data;
     float scale;
-    if (!(*(float *)(*(char **)(self+0x3C)+0x22C) < lbl_80562E94)) {
-        fn_801ECC70();
-        flag = (*(unsigned long *)((char *)fn_801E87A8()+0x10) >> 1) & 1;
+          if (!(*(float *)(*(char **)(self+0x3C)+0x22C) < lbl_80562E94)) {
+          fn_801ECC70(self);
+          flag = (*(unsigned long *)((char *)fn_801E87A8()+0x10) >> 1) & 1;
         entry = (long *)(self+0x154);
         cached = lbl_8055EBC0;
         scale = lbl_80562E98;
