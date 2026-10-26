@@ -32,6 +32,32 @@ void fn_802C0D70(float *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_802C0F4C(void) {
+    extern char lbl_8055FB18[4];
+    extern char lbl_8055CF98[4];
+    extern int fn_8012C33C(char (*)[4]);
+    extern int fn_802B2C34(void *, char (*)[4]);
+    extern int fn_802C6DC4(char (*)[4], int, int);
+    extern void fn_802C0E68(int);
+    extern void fn_802C6B44(void);
+    void *file;
+    s32 result = -1;
+
+    *(s32 *)lbl_8055FB18 = -1;
+    if (fn_8012C33C(&lbl_8055CF98) != 0) {
+        file = &lbl_8055CF98;
+        result = fn_802B2C34((void *)fn_802C6B44, (char (*)[4])file);
+        if (result != 0) {
+            result = ((int (*)(char (*)[4], int, int, int))fn_802C6DC4)((char (*)[4])file, result, 0, 0);
+        } else {
+            result = -1;
+        }
+        *(s32 *)lbl_8055FB18 = result;
+    }
+    fn_802C0E68(*(s32 *)lbl_8055FB18);
+}
+#pragma scheduling on
 void fn_802C0FD4(int *queue) {
     s32 handle;
     handle = *queue;
@@ -73,24 +99,31 @@ extern char lbl_8055CF98[4];
 extern float lbl_804C0800[3];
 extern float lbl_80564E38;
 extern float lbl_80564E48;
+#pragma scheduling invalid_target
 void fn_802C1020(void) {
     float sp[12];
     float *sp_ptr = sp;
     float *obj;
     if (*(int *)lbl_8055FB14 != -1) {
-        sp[1] = lbl_80564E38; sp[0] = lbl_80564E48;
-        sp[2] = lbl_80564E38; sp[3] = lbl_80564E38;
-        sp[4] = lbl_80564E48; sp[5] = lbl_80564E38;
-        sp[6] = lbl_80564E38; sp[7] = lbl_80564E38;
+        sp[1] = lbl_80564E38;
+        sp[0] = lbl_80564E48;
+        sp[2] = lbl_80564E38;
+        sp[3] = lbl_80564E38;
+        sp[4] = lbl_80564E48;
+        sp[5] = lbl_80564E38;
+        sp[6] = lbl_80564E38;
+        sp[7] = lbl_80564E38;
         sp[8] = lbl_80564E48;
         obj = fn_802C86DC(lbl_80564E48);
-        sp[9] = obj[9]; sp[10] = obj[10]; sp[11] = obj[11];
+        sp[9] = obj[9];
+        sp[10] = obj[10];
+        sp[11] = obj[11];
         fn_802C744C(*(int *)lbl_8055FB14, sp_ptr);
     }
     fn_802A4E08();
-    fn_8029231C((void *)((char *)lbl_804C0800));
+    fn_8029231C((char *)lbl_804C0800);
 }
-
+#pragma scheduling on
 void fn_802C10B8(void) {
     *(s32 *)lbl_8055FB14 = -1;
     fn_802C0F4C();
