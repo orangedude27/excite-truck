@@ -25,6 +25,9 @@ extern "C" void **lbl_8055E010;
 extern "C" u8 lbl_8032AC88[];
 extern "C" u8 lbl_8032ACA0[];
 extern "C" u8 lbl_8032ACD0[];
+extern "C" u8 lbl_8032ACB0[];
+namespace nw4r { namespace ef { class Effect; } }
+extern "C" nw4r::ef::Effect *lbl_8055E014;
 extern "C" void fn_80127CF4(s32, s32);
 extern "C" void *fn_801284F8(u32, void *);
 extern "C" void **fn_8012A13C(void *, void *, u32, u32);
@@ -1295,7 +1298,6 @@ done:
 
 extern "C" s32 fn_8012CC24(void *, void *);
 #pragma push
-#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 extern "C" void fn_8012DEE4(void *arg0) {
     u8 *obj = (u8 *)arg0;
