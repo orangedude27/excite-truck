@@ -436,6 +436,8 @@ test_loop:
 #pragma use_lmw_stmw reset
 
 #pragma cplusplus on
+extern "C" void fn_802CAC54(int);
+extern "C" void fn_80235380(int);
 #pragma scheduling invalid_target
 extern "C" void fn_801617BC(void) {
     class Item {
@@ -1768,9 +1770,9 @@ void fn_80164D60(void) {
 
 }
 
+#pragma scheduling invalid_target
 void fn_80164F50(void *arg0) {
     extern void fn_801796BC(s32);
-    extern s32 fn_80160CE4(void);
     extern s32 fn_80131234(void *);
     extern void fn_802A95A8(f32 *, f32 *, f32, f32);
     extern void fn_80276CB0(void *, s32);
@@ -1782,35 +1784,48 @@ void fn_80164F50(void *arg0) {
     extern f32 lbl_80561840;
     extern f32 lbl_80561848;
     extern f32 lbl_80561888;
-    u8 *base = lbl_8032F588;
+    void *self = arg0;
     f32 out[2];
     f32 in[2];
     s32 value;
     s32 first;
     s32 second;
+    u8 *base = lbl_8032F588;
+    s32 zero;
+    f32 f2;
+    f32 f1;
+    f32 f0;
+    f32 *outPtr;
+    f32 *inPtr;
 
     fn_801796BC(1);
     value = fn_80160CE4();
     if (lbl_8055E2DC != 0 && value <= *(s32 *)(lbl_8042FDEC + 4)) {
-        *(s32 *)((u8 *)arg0 + 8) = value;
+        *(s32 *)((u8 *)self + 8) = value;
     }
-    if (*(s32 *)((u8 *)arg0 + 8) >= *(s32 *)(lbl_8042FDEC + 4)) {
-        *(s32 *)((u8 *)arg0 + 8) = *(s32 *)(lbl_8042FDEC + 4);
+    if (*(s32 *)((u8 *)self + 8) >= *(s32 *)(lbl_8042FDEC + 4)) {
+        *(s32 *)((u8 *)self + 8) = *(s32 *)(lbl_8042FDEC + 4);
     }
-    *(u8 *)((u8 *)arg0 + 4) = 0;
-    out[0] = lbl_80561888;
-    out[1] = lbl_80561888;
-    in[0] = lbl_80561840;
-    *(u8 *)((u8 *)arg0 + 6) = 0;
-    in[1] = lbl_80561848;
-    *(u8 *)((u8 *)arg0 + 5) = 0;
-    fn_802A95A8(out, in, lbl_80561840, lbl_80561888);
+    zero = 0;
+    f2 = *(volatile f32 *)&lbl_80561888;
+    *(volatile u8 *)((u8 *)self + 4) = zero;
+    outPtr = out;
+    f1 = *(volatile f32 *)&lbl_80561840;
+    inPtr = in;
+    *(volatile u8 *)((u8 *)self + 6) = zero;
+    f0 = *(volatile f32 *)&lbl_80561848;
+    *(volatile u8 *)((u8 *)self + 5) = zero;
+    outPtr[0] = f2;
+    outPtr[1] = f2;
+    inPtr[0] = f1;
+    inPtr[1] = f0;
+    fn_802A95A8(outPtr, inPtr, f1, f2);
     fn_80276CB0(base + 0x630, 0);
     first = fn_80131234(base + 0x654);
     second = fn_80131234(base + 0x63C);
     fn_801DF380((void *)second, first, fn_80161438, 0);
 }
-
+#pragma scheduling on
 unsigned char fn_80165040(void *arg0) {
     return *((unsigned char *)arg0 + 5);
 }
