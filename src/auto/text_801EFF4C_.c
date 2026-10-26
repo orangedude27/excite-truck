@@ -68,8 +68,8 @@ int fn_801F0010(int arg0, int arg1) {
 extern float lbl_80562F10;
 extern float lbl_80562F14;
 extern float lbl_80562F18;
-extern int lbl_8033A400;
-extern int lbl_8033A410;
+extern char lbl_8033A400[];
+extern char lbl_8033A410[];
 extern int lbl_8055B0C0;
 extern void *fn_802C6B44(void);
 extern int fn_802C6C20(void *);
