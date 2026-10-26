@@ -450,7 +450,7 @@ void fn_800105A0(s32 arg0, s32 arg1, s32 unused) {
     extern void fn_80010B80(s32, f32, f32, f32, f32);
     extern void fn_80010C74(f32, f32, f32);
     extern void fn_80010D88(f32, f32, f32);
-    extern void fn_8000FF88(s32, s32, s32, f32, f32, f32);
+    extern void fn_8000FF88(s32, s32, const char *, f32, f32, f32, ...);
     extern f32 lbl_8056025C;
     extern f32 lbl_80560264;
     extern f32 lbl_805602EC;
@@ -491,7 +491,7 @@ void fn_800105A0(s32 arg0, s32 arg1, s32 unused) {
     fn_80010D88(f28 + f29, f26, f31);
     fn_80010C74(f28, f26 - f31, lbl_80560264 + f29);
     fn_80010D88(f28, f26, f31);
-    fn_8000FF88(-1, 0xC, arg0, f30, f27, f26);
+    fn_8000FF88(-1, 0xC, (const char *)arg0, f30, f27, f26);
 }
 
 #pragma dont_inline off
@@ -756,7 +756,8 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
     entry->unk_0x38 = a4;
     entry->unk_0x3C = f1;
 }
-#pragma pop
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     s32 idx;
     Unk80350F88 *base;
@@ -776,7 +777,8 @@ void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     entry->unk_0x3C = f;
     entry->unk_0x34 = a3;
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw on
 void fn_8001123C(s32 arg0) {
     fn_8000E3B4(arg0);
     fn_8000E874(arg0);
@@ -1352,6 +1354,7 @@ extern void fn_801331C4(s32, void *, f32 *);
 extern void *lbl_802FC580;
 __declspec(section ".data") extern void *lbl_802FC580;
 #pragma unroll off
+#pragma optimize_for_size on
 #pragma scheduling invalid_target
 void fn_800121F0(void) {
     f32 sp8;
@@ -1384,6 +1387,7 @@ void fn_800121F0(void) {
     } while (var_ctr != 0);
 }
 #pragma scheduling on
+#pragma optimize_for_size reset
 #pragma unroll reset
 s32 fn_800122B4(s32 arg0, s32 arg1) {
     struct { char sp8[0x14]; volatile s32 sp1C; } frame;
