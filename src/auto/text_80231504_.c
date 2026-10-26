@@ -279,6 +279,28 @@ void fn_802321D8(void) {
     memset(lbl_8055F068, 0, 0x16C);
 }
 
+extern void fn_80235380(void);
+#pragma push
+#pragma scheduling invalid_target
+void fn_8023243C(void) {
+    s32 offset = 0;
+    s32 i = 0;
+
+    /* Release nonempty record resources and handles, then clear the active count. */
+    while (i < *(s32 *)(lbl_80497F14 + 4)) {
+        void *resource = *(void **)(*(u8 **)lbl_80497F14 + offset + 0xC);
+        if (resource != 0) {
+            ((void (*)(void *))fn_80235380)(resource);
+        }
+        if (*(s32 *)(*(u8 **)lbl_80497F14 + offset + 8) != -1) {
+            fn_802CAC54(*(void **)(*(u8 **)lbl_80497F14 + offset + 8));
+        }
+        offset += 0x1C;
+        i++;
+    }
+    *(s32 *)(lbl_80497F14 + 4) = 0;
+}
+#pragma pop
 extern void *fn_8012C370(const char *, s32, u32 *, s32 *, u8 *, u8 *);
 extern void fn_80028E00(char *, const char *);
 extern s32 fn_802CAC34(char *, s32);
