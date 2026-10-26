@@ -271,6 +271,43 @@ void fn_8023E1FC(void *arg0) {
     fn_8022D894(arg0, 0x11, 0, lbl_80341BE0, 0);
 }
 
+void fn_8023E33C(void *arg0) {
+    struct NameInfo {
+        int unk0;
+        int unk4;
+        char unk8[4];
+        char unkC;
+    } nameInfo;
+    unsigned char *src;
+    int remaining;
+    unsigned char *dst;
+    unsigned char c;
+
+    if (*(int *)((char *)arg0 + 0x10) == -1) {
+        src = *(unsigned char **)&lbl_8055BBA0;
+        remaining = 0x14;
+        dst = (unsigned char *)arg0 + 0x14;
+        goto copy;
+    check_count:
+        remaining--;
+        if (remaining > 0)
+            goto copy;
+        dst[-1] = 0;
+        return;
+    copy:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c != 0)
+            goto check_count;
+        return;
+    }
+
+    nameInfo.unk4 = 0;
+    nameInfo.unkC = 0;
+    fn_801A9050(&nameInfo, *(int *)((char *)arg0 + 0x10));
+    fn_801A7E54((char *)arg0 + 0x14, 0x14, &nameInfo);
+}
+
 void *fn_8023E440(void *arg0, void *arg1) {
     extern int fn_801A902C(void);
     extern int fn_801A9050(void *, int);
@@ -337,8 +374,7 @@ void fn_8023E550(int arg0) {
   extern char lbl_802FA0A8[];
   extern char lbl_80341B9C[];
   extern s32 fn_802E317C(const char *, ...);
-  extern char lbl_8055BBA0[];
-#pragma cplusplus on
+  #pragma cplusplus on
 struct Dummy8023E1FC {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
