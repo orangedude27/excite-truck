@@ -282,20 +282,24 @@ void fn_801ECFE0(void *arg0) {
 #pragma pop
 
 void fn_801ED2D0(void *arg0) {
+    long offset;
+    char *current;
     long flag;
     long i;
-    long offset;
     char *p;
+
     fn_801ECC70();
     flag = *(long *)((char *)arg0 + 0x40) == fn_801E866C(-1);
     i = 0;
+    current = (char *)arg0;
     offset = 0;
     do {
         p = (char *)*(void **)((char *)arg0 + 0x3C) + offset;
-        fn_801F131C(*(void **)((char *)arg0 + 0x4D4 + i * 4), flag, p,
+        fn_801F131C(*(void **)(current + 0x4D4), flag, p,
                     *(float *)(p + 0xB0));
         i++;
         offset += 0x6C;
+        current += 4;
     } while (i < 4);
 }
 
@@ -503,24 +507,35 @@ void fn_801EEC68(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 long fn_801EEE38(void) {
     long *entries;
     long context;
-    long i;
+    unsigned int i;
     long value;
+
     context = fn_80179CB0();
     entries = lbl_80488648;
     i = 0;
-    do {
-        if (i >= 8) value = 0;
-        else value = *entries;
-        if (value == 0) return value;
-        fn_801EECAC(value, context);
-        entries++;
-        i++;
-    } while (1);
-}
+    goto check;
 
+loop:
+    fn_801EECAC(value, context);
+    i++;
+    entries++;
+    if (i < 8u) {
+        goto check;
+    }
+    return 0;
+
+check:
+    value = *entries;
+    if (value != 0) {
+        goto loop;
+    }
+    return value;
+}
+#pragma scheduling on
 extern void fn_801EC750(void *);
 extern int lbl_8033A2D4[64];
 #pragma scheduling off
