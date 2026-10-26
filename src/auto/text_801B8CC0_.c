@@ -93,6 +93,46 @@ out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
+#pragma cplusplus on
+extern "C" int fn_801E320C(int, int);
+extern "C" void *fn_801E3004(int, int, int);
+extern "C" void fn_801E3488(void *, void *);
+extern "C" void fn_801E323C(void *);
+extern "C" int fn_802C7A10(int);
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" char lbl_803369A0[];
+#pragma scheduling invalid_target
+extern "C" void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float arg4, float arg5) {
+    volatile unsigned int *src;
+    unsigned int *dst;
+    unsigned int a;
+    unsigned int b;
+    unsigned int c;
+    void *p;
+    int result;
+
+    dst = (unsigned int *)arg0;
+    src = (volatile unsigned int *)arg3;
+    a = src[0];
+    b = src[1];
+    c = src[2];
+    dst[0] = a;
+    dst[1] = b;
+    dst[2] = c;
+    result = fn_801E320C(arg1, (int)arg2);
+    if (result != 0) {
+        p = fn_801E3004(arg1, (int)arg2, -1);
+        if (p != 0) {
+            fn_801E3488(arg0, p);
+            fn_801E323C(p);
+        }
+    } else {
+        result = fn_802C7A10(arg1);
+        fn_802E30C8(lbl_803369A0, (int)arg2, result);
+    }
+}
+#pragma scheduling on
+#pragma cplusplus reset
 extern "C" void *fn_801B8D80(void) {
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_80182010(void *);
