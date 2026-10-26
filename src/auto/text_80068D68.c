@@ -20,6 +20,9 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
 
+extern void GAP_Init(void);
+extern void bta_sys_init(void);
+
 extern void fn_800716F0(void *);
 extern void fn_8006CF44(void *, void *, void *, void *, void *, u32);
 extern void fn_8007BC88(void);
@@ -5613,17 +5616,23 @@ BOOLEAN btm_is_sco_active(UINT16 handle) {
 extern unsigned char lbl_803C0F78[];
 extern int memcmp(const void *, const void *, unsigned long);
 int btm_num_sco_links_active(void) {
-    int count = 0;
     unsigned char *base = lbl_803C0F78;
+    int count = 0;
     int state;
     state = *(unsigned short *)(base + 0x185c);
-    if (state < 7)
-        count = state >= 2 ? 1 : count;
+    if (state < 7) {
+        if (state >= 2)
+            count = 1;
+    }
     state = *(unsigned short *)(base + 0x1890);
-    if (state < 7)
-        count = state >= 2 ? count + 1 : count;
+    if (state < 7) {
+        if (state >= 2)
+            count++;
+    }
     state = *(unsigned short *)(base + 0x18c4);
-    if (state >= 2 && state < 7)
+    if (state >= 7)
+        return count;
+    if (state >= 2)
         count++;
     return count;
 }
@@ -8561,15 +8570,16 @@ u8 HID_HostRemoveDev(u32 dev_handle) {
 }
 #pragma pop
 u8 HID_HostOpenDev(u32 arg0) {
-    u8 *entry;
-    u32 offset;
-    if (lbl_803C3C38[0x400] == 0)
+    u8 *entry = lbl_803C3C38;
+    s32 offset;
+    if (entry[0x400] == 0)
         return 1;
-    if (arg0 > 0x10) return 5;
-    offset = arg0 * 0x34;
-    entry = lbl_803C3C38 + offset;
-    if (entry[0] == 0)
-        return 5;
+    if (arg0 <= 0x10) {
+        offset = arg0 * 0x34;
+        if (entry[offset] == 0)
+            return 5;
+    }
+    entry += offset;
     if (entry[0xA] != 0)
         return 10;
     entry[0xC] = 1;
