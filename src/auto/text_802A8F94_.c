@@ -23,6 +23,17 @@ void* fn_802A8F94(void* arg0, s32 arg1) {
     return arg0;
 }
 
+extern f32 fn_801EA0E8(f32, f32);
+#pragma scheduling invalid_target
+void fn_802A8FEC(void *arg0, void *arg1) {
+    f32 *dst = (f32 *)arg0;
+    f32 *src = (f32 *)arg1;
+    f32 y = src[1];
+    dst[1] = fn_801EA0E8(src[0], y);
+    dst[0] = src[0];
+    dst[2] = y;
+}
+#pragma scheduling on
 s32 fn_802A9048(void) {
     u32 value;
     s32 result;
@@ -56,6 +67,59 @@ void fn_802A93A4(void) {
     }
 }
 
+extern u8 lbl_804BD6F8;
+extern f32 lbl_80564984;
+extern f32 lbl_80564988;
+extern s32 fn_801E85B4(void);
+extern s32 fn_801E866C(s32);
+extern void *fn_801EA9A0(void);
+extern f32 fn_801E7E24(void);
+extern void *fn_801E7E3C(void *);
+extern void fn_802C744C(s32, void *);
+void fn_802A9428(void) {
+    s32 index;
+    s32 kind;
+    s32 value;
+    s32 *entry;
+    s32 *current;
+    s32 selected;
+    f32 elapsed;
+    if (lbl_8055F8F0 == 0)
+        return;
+    selected = -1;
+    index = fn_801E85B4();
+    kind = fn_801E866C(-1);
+    value = *(s32 *)((u8 *)fn_801EA9A0() + 0x1C);
+    entry = (s32 *)((u8 *)&lbl_804BD6F8 + 0x98 + index * 16);
+    if (kind != entry[0] || value < entry[2]) {
+        entry[0] = kind;
+        entry[1] = value;
+        entry[2] = value;
+        *(f32 *)(entry + 3) = lbl_80564978;
+    } else if (value != entry[2]) {
+        entry[1] = entry[2];
+        entry[2] = value;
+        *(f32 *)(entry + 3) = lbl_80564984;
+    } else if (*(f32 *)(entry + 3) < lbl_80564988) {
+        entry[1] = entry[2];
+    } else {
+        elapsed = fn_801E7E24();
+        *(f32 *)(entry + 3) -= elapsed;
+    }
+    current = entry;
+    selected = current[1];
+    selected = ((s32 *)fn_801E7E3C(current))[2] <= selected ? 3 : selected;
+    if (lbl_8055F8F1 != 0)
+        selected = 3;
+    else if ((u32)(current[1] + 1) < 4)
+        selected = current[1];
+    if (selected >= 0) {
+        s32 *slot = (s32 *)((u8 *)&lbl_804BD6F8 + 0x48 + selected * 8);
+        if (slot[1] != -1)
+            fn_802C744C(slot[1], (u8 *)&lbl_804BD6F8 + 0x68);
+    }
+}
+
 void fn_802A9574(void) {
     s32 *p = (s32 *)&lbl_804BD790;
     f32 f = lbl_80564978;
@@ -78,6 +142,5 @@ void fn_802A95AC(u8 arg0) {
 }
 extern u8 lbl_8055F8F0;
 extern s32 lbl_8055CC58;
-extern s32 lbl_804BD740;
 extern s32 lbl_804BD790;
 extern f32 lbl_80564978;
