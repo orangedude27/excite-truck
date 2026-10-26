@@ -409,8 +409,8 @@ void fn_801616FC(void) {
 
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, lbl_8055A0B8);
     base = lbl_8042FDEC;
-    offset = 0;
     count = 0;
+    offset = 0;
     goto test_loop;
 loop:
     item = *(void **)((u8 *)*(void **)lbl_8042FDEC + offset);
@@ -749,6 +749,9 @@ test_loop:
     return total;
 }
 #pragma use_lmw_stmw reset
+
+extern s32 fn_80012854();
+extern const char lbl_8032F738[];
 
 #pragma dont_inline on
 void fn_80161DE4(void) {
