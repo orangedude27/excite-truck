@@ -341,32 +341,38 @@ extern "C" void fn_80145670(void *arg0, void *arg1) {
 
 extern "C" s32 fn_8013126C(void *, s32);
 extern "C" s32 fn_80144FB0(void *, s32, s32, const char *);
+#pragma scheduling invalid_target
 extern "C" void fn_801456E8(void *arg0, s32 arg1) {
     struct Entry { s32 unk0; f32 unk4; f32 unk8; s32 unkC; f32 unk10; s32 unk14; s32 unk18; s32 unk1C; };
     struct List { Entry *entries; s32 count; };
+    char *base = lbl_8032CEC8;
     List *list = (List *)arg0;
-    char pad[0xF0];
     char buffer[0x40];
-    char result[0x48];
-    s32 value;
-    s32 offset = 0;
+    char result[0x138];
+    fn_802E3AD0(arg1, base + 0x90);
+    fn_802E3AD0(arg1, base + 0xA0);
     s32 i = 0;
+    s32 offset = 0;
+    s32 value;
+    s32 formatted;
     Entry *entry;
-    fn_802E3AD0(arg1, lbl_8032CEC8 + 0x90);
-    fn_802E3AD0(arg1, lbl_8032CEC8 + 0xA0);
     while (i < list->count) {
         entry = (Entry *)((u8 *)list->entries + offset);
         value = fn_8013126C(result, entry->unk1C);
-        fn_80144FB0(buffer, 0x40, entry->unk14, lbl_8032CEC8 + 0x10);
-        fn_802E3AD0(arg1, lbl_8032CEC8 + 0xD4, entry->unkC, entry->unk18, buffer,
-                    entry->unk0, value, entry->unk4, entry->unk8, entry->unk10);
+        formatted = fn_80144FB0(buffer, 0x40, entry->unk14, base + 0x10);
+        f32 farg0 = entry->unk4;
+        f32 farg1 = entry->unk8;
+        s32 arg3 = entry->unkC;
+        s32 arg4 = entry->unk18;
+        s32 arg5 = entry->unk0;
+        f32 farg2 = entry->unk10;
+        fn_802E3AD0(arg1, base + 0xD4, farg0, farg1, arg3, arg4, formatted, arg5, value, farg2);
         offset += 0x20;
         i++;
     }
     fn_802E3AD0(arg1, lbl_80559E14);
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_801457D0(void *arg0, s32 arg1) {
     char *base = lbl_8032CEC8;
     s32 offset;
@@ -1545,28 +1551,31 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
     s32 hi = ((d & 0xFF) << 24) | ((c & 0xFF) << 16);
     return lo | hi;
 }
-#pragma pop
+#pragma scheduling invalid_target
 extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
+    union Pair { struct { f32 y; f32 x; } f; f64 raw; };
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u8 *other = (u8 *)arg2;
-    f32 yDelta = *(f32 *)(other + 8) - *(f32 *)(src + 8);
-    f32 xDelta = *(f32 *)(other + 4) - *(f32 *)(src + 4);
-    f32 zBase = *(f32 *)(src + 0x10);
-    f32 zDelta = *(f32 *)(other + 0x10) - zBase;
-    f32 y = *(f32 *)(src + 8) + (f32)arg3 * yDelta;
-    f32 x = *(f32 *)(src + 4) + (f32)arg3 * xDelta;
-    f32 z = zBase + (f32)arg3 * zDelta;
+    f32 factor = (f32)arg3;
+    f32 y = *(f32 *)(src + 8) + factor * (*(f32 *)(other + 8) - *(f32 *)(src + 8));
+    f32 x = *(f32 *)(src + 4) + factor * (*(f32 *)(other + 4) - *(f32 *)(src + 4));
+    f32 z = *(f32 *)(src + 0x10) + factor * (*(f32 *)(other + 0x10) - *(f32 *)(src + 0x10));
+    Pair first;
+    Pair second;
+    first.f.y = y;
+    first.f.x = x;
+    second.raw = first.raw;
     *(u32 *)(dst + 0x0) = *(u32 *)(src + 0x0);
     *(u32 *)(dst + 0xC) = *(u32 *)(src + 0xC);
     *(u32 *)(dst + 0x14) = *(u32 *)(src + 0x14);
     *(u32 *)(dst + 0x1C) = *(u32 *)(src + 0x1C);
-    *(f32 *)(dst + 4) = x;
-    *(f32 *)(dst + 8) = y;
+    *(f32 *)(dst + 4) = second.f.x;
+    *(f32 *)(dst + 8) = second.f.y;
     *(f32 *)(dst + 0x10) = z;
-    *(u32 *)(dst + 0x18) = fn_80147C50(*(u32 *)(src + 0x18), *(u32 *)(other + 0x18), (f32)arg3);
+    *(u32 *)(dst + 0x18) = fn_80147C50(*(u32 *)(src + 0x18), *(u32 *)(other + 0x18), factor);
 }
-
+#pragma scheduling on
 void fn_80147DC0(void *dst, void *src, void *end, f32 t) {
     u8 *d = (u8 *)dst;
     u8 *s = (u8 *)src;
