@@ -55,18 +55,20 @@ void fn_8028CF64(void) {
     }
 }
 
+#pragma paired off
+#pragma paired_single off
+#pragma scheduling invalid_target
 void fn_8028CFB0(void) {
     int *entry;
     int i;
-    float time;
     float scale;
+    float time;
     if (lbl_8055F714 != 0) {
         time = fn_802C9A4C(lbl_8055F710);
         fn_802C9648(lbl_805643E8);
         entry = &lbl_804B3400;
         scale = lbl_805643EC;
-        i = 0;
-        do {
+        for (i = 0; i < *(volatile int *)&lbl_8055F728; i++) {
             if (entry[6] > 1) {
                 fn_802C8BD0(entry[0]);
                 if (fn_801E5370(entry[6], 4, scale * fn_801E88F0(-1)) != 0) {
@@ -76,13 +78,14 @@ void fn_8028CFB0(void) {
                 fn_802C8D74();
             }
             entry = (int *)((char *)entry + 0x1C);
-            i++;
-        } while (i < lbl_8055F728);
+        }
         fn_802C967C();
         fn_802C9A4C(time);
     }
 }
-
+#pragma scheduling on
+#pragma paired_single reset
+#pragma paired reset
 extern int fn_802CAC28(int);
 extern int fn_802E317C(char *, ...);
 extern char lbl_80348C50[];
@@ -102,37 +105,43 @@ void fn_8028D084(void *arg0, void *arg1) {
 }
 
 extern int lbl_804B3470;
-extern int lbl_80348CA0;
+extern char lbl_80348CA0[];
 extern int lbl_8055C8D0;
 extern int fn_801345D8(void *, int, const void *, int);
 extern void *fn_802AE414(void *);
 extern void fn_8028D084(void *, void *);
+#pragma dont_inline on
 int fn_8028D17C(void) {
-    int i = 0;
-    int *slot = &lbl_804B3470;
+    int i;
+    int temp;
+    int invalid;
+    int *slot;
+    char *base;
+    void *obj;
+
     lbl_8055F728 = 0;
-    do {
-        int temp;
-        void *obj;
+    slot = &lbl_804B3470;
+    base = (char *)&lbl_804B3400;
+    i = 0;
+    invalid = -1;
+    for (; i < 8; i++) {
         fn_801345D8(&temp, 0x20, &lbl_80348CA0, i);
         obj = fn_802AE414(&temp);
         if (obj != 0) {
-            void *vtable = *(void **)obj;
-            obj = ((void *(*)(void *, int))(*(void **)((char *)vtable + 0x5C)))(obj, lbl_8055C8D0);
+            obj = ((void *(*)(void *, void *))(((void **)*(void **)obj)[23]))(obj, &lbl_8055C8D0);
         }
         if (obj != 0) {
-            fn_8028D084((char *)&lbl_804B3400 + lbl_8055F728 * 0x1C, obj);
+            fn_8028D084(base + lbl_8055F728 * 0x1C, obj);
             *slot = lbl_8055F728;
             lbl_8055F728++;
         } else {
-            *slot = -1;
+            *slot = invalid;
         }
-        i++;
         slot++;
-    } while (i < 8);
+    }
     return lbl_8055F728 > 0;
 }
-
+#pragma dont_inline reset
 extern int lbl_8055F728;
 extern void fn_802CAC54(int);
 void fn_8028D25C(void) {
@@ -247,7 +256,6 @@ extern double lbl_805643F8;
 extern float lbl_805643F4;
 extern void fn_801E53A8(void *, void *, void *, int, float);
 void fn_8028D7C0(int arg0) {
-    double d;
     float scale;
     int outer;
     int inner;
@@ -256,7 +264,7 @@ void fn_8028D7C0(int arg0) {
     int *table;
     int *group;
     int *item;
-    d = lbl_805643F8;
+
     scale = lbl_805643F4;
     table = (int *)((char *)&lbl_804B3400 + arg0 * 0x1C);
     outer = 0;
@@ -269,7 +277,7 @@ void fn_8028D7C0(int arg0) {
             item = (int *)((char *)group[0] + offset);
             fn_801E53A8(item, (char *)item + 0xC, (char *)item + 0x18,
                         *((unsigned char *)item + 0x26) != 0,
-                        scale * ((float)*(unsigned short *)((char *)item + 0x24) - (float)d));
+                        scale * (float)*(unsigned short *)((char *)item + 0x24));
             offset += 0x28;
             inner++;
         }
