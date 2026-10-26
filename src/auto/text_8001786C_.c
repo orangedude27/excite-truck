@@ -51,6 +51,35 @@ void fn_800178F8(s32 arg0, s32 arg1) {
     fn_800168B0(arg0, *(s32*)((char*)temp + index * 4 + 0x64));
 }
 
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+void fn_80017944(s32 *arg0) {
+    register s32 count;
+    register s32 i;
+    register s32 id;
+    register s32 kind;
+    void *object;
+    void *resource;
+
+    count = fn_800167F4();
+    *(s32 *)((char *)arg0 + 0x24) = 0;
+    i = 0;
+    *(s32 *)arg0 = 0;
+    for (; i < count; i++) {
+        object = fn_800167B8(i);
+        id = *(s32 *)((char *)object + 4);
+        resource = fn_80016510(*(s32 *)((char *)object + 0x4C));
+        kind = *(s32 *)((char *)resource + 4);
+        fn_800178BC(arg0, id, kind);
+        fn_8001786C(kind);
+        if (fn_800178F0() != 0) {
+            fn_800178F8(id, kind);
+        }
+    }
+}
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
+
 #pragma dont_inline on
 s32 fn_800179E4(void *value, s32 array, s32 count) {
     s32 i;
@@ -71,22 +100,41 @@ void fn_80017A20(void *arg0, s32 *arg1) {
     fn_800179E4(arg0, (s32)(arg1 + 1), arg1[0]);
 }
 
-void fn_80017AC8(void *arg0) {
-    s32 offset, i, count;
+extern void *fn_80016464(s32);
+extern s32 fn_80016508(void);
+extern void fn_80017AC8(void *);
+void fn_80017A2C(void *arg0, s32 arg1) {
+    s32 i = 0;
+    while (i < fn_80016508()) {
+        void *obj = fn_80016464(i);
+        s32 *p = (s32 *)(arg1 + 4);
+        if (!*p) {
+            s32 n = *(s32 *)((char *)arg0 + 4);
+            *(s32 *)((char *)arg0 + 4) = n + 1;
+            *(s32 **)((char *)*(s32 *)arg0 + n * 4) = obj;
+        }
+        i++;
+    }
+    fn_80017AC8(arg0);
+}
+
+void fn_80017AC8(void* arg0) {
+    s32 offset, i;
+    register s32 count;
     extern s32 fn_80129D18(s32);
     i = 0;
     offset = 0;
-    while (i < (count = *(s32 *)((char *)arg0 + 4))) {
+    while (i < (count = *(s32*)((char*)arg0 + 4))) {
         s32 left;
         s32 right;
-        s32 *items;
+        s32* items;
         s32 index;
         index = fn_80129D18(1);
-        items = *(s32 **)arg0;
+        items = *(s32**)arg0;
         i++;
-        left = *(s32 *)((char *)items + offset);
+        left = *(s32*)((char*)items + offset);
         right = items[index];
-        *(s32 *)((char *)items + offset) = right;
+        *(s32*)((char*)items + offset) = right;
         offset += 4;
         items[index] = left;
     }
