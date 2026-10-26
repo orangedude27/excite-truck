@@ -469,6 +469,54 @@ extern "C" void fn_801617BC(void) {
         i++;
     }
 }
+
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801618B4(void) {
+    class Obj {
+    public:
+        virtual void cleanup(int);
+    };
+    class Item {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void setup();
+        virtual void teardown();
+    };
+    s32 offset;
+    s32 i;
+    s32 *count;
+    void *item;
+
+    fn_802CAC54(lbl_8055E2E8);
+    fn_802CAC54(lbl_8055E2EC);
+    fn_802CAC54(lbl_8055E2F0);
+    fn_802CAC54(lbl_8055E2F4);
+    fn_802CAC54(lbl_8055E2F8);
+    fn_80235380(lbl_8055E2FC);
+
+    if (lbl_8055E2E0 != 0 && lbl_8055E2E0 != 0) {
+        ((Obj *)lbl_8055E2E0)->cleanup(1);
+    }
+    if (lbl_8055E2E4 != 0 && lbl_8055E2E4 != 0) {
+        ((Obj *)lbl_8055E2E4)->cleanup(1);
+    }
+
+    count = (s32 *)(lbl_8042FDEC + 4);
+    i = 0;
+    offset = 0;
+    while (i < *count) {
+        item = *(void **)(*(s32 *)lbl_8042FDEC + offset);
+        ((Item *)item)->teardown();
+        offset += 4;
+        i++;
+    }
+}
+#pragma scheduling on
+#pragma cplusplus reset
+
 #pragma scheduling on
 #pragma cplusplus reset
 extern s32 lbl_8055A0B0;
