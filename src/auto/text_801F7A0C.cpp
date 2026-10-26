@@ -312,6 +312,7 @@ s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
     fn_801F7A14(arg0);
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801F7E20(void *arg0, void *arg1) {
     u8 *obj = (u8 *)arg1;
     f32 temp;
@@ -327,7 +328,7 @@ extern "C" void fn_801F7E20(void *arg0, void *arg1) {
     *(f32 *)(obj + 0x28) =
         ((F7E20VTable *)arg0)->apply(lbl_8033AFDC, *(f32 *)(obj + 0x28));
 }
-
+#pragma scheduling on
 extern u8 lbl_8033AFE8[];
 extern s32 lbl_8055B2A0;
 extern f32 lbl_80562FFC;
