@@ -32,11 +32,17 @@ extern void *fn_8022ECC0();
 
 void fn_8022E9E0(void) {
     if (lbl_8055EFF4 == 0) {
-        void *p = fn_801284F8(0x20, (void *)&lbl_80340280);
-        if (p) p = fn_8012A13C(p, lbl_80340280, 0x20, 8);
+        void *p;
+        p = fn_801284F8(0x20, (void *)&lbl_80340280);
+        if (p != 0) {
+            p = fn_8012A13C(p, (void *)&lbl_80340280, 0x20, 8);
+        }
         lbl_8055EFF8 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055EFF8)) ++lbl_8055EFF4;
+    if (fn_8012A2D8(lbl_8055EFF8) == 0) {
+        return;
+    }
+    ++lbl_8055EFF4;
 }
 
 #pragma cplusplus on
@@ -50,29 +56,26 @@ extern "C" void fn_8022EA58(void *arg0) {
 }
 #pragma cplusplus reset
 void fn_8022EAB8(void) {
-    void *p;
     if (lbl_8055EFFC == 0) {
-        p = fn_801284F8(0x20, (void *)&lbl_80340290);
-        if (p != 0) {
-            p = fn_8012A13C(p, (void *)&lbl_80340290, 0x20, 0x3C);
-        }
+        void *p = fn_801284F8(0x20, (void *)&lbl_80340290);
+        if (p) p = fn_8012A13C(p, lbl_80340290, 0x20, 0x3C);
         lbl_8055F000 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055F000)) {
-        lbl_8055EFFC = lbl_8055EFFC + 1;
-    }
+    if (fn_8012A2D8(lbl_8055F000)) ++lbl_8055EFFC;
 }
 
 #pragma dont_inline on
 void fn_8022EB30(void *arg0) {
+    void *object;
     void **vtable;
     void (*destroy)(void *, int);
     fn_8012A364(lbl_8055F000, arg0);
     if (--lbl_8055EFFC == 0) {
-        if (lbl_8055F000) {
-            vtable = *(void ***)lbl_8055F000;
+        object = lbl_8055F000;
+        if (object) {
+            vtable = *(void ***)object;
             destroy = (void (*)(void *, int))vtable[2];
-            destroy(lbl_8055F000, 1);
+            destroy(object, 1);
         }
         lbl_8055F000 = 0;
     }
@@ -87,19 +90,31 @@ void fn_8022EB90(void) {
     p[1] = p[0];
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_8022EBF0(void) {
-    s32 *p = (s32 *)lbl_8055F004;
-    if (p[1]) {
-        fn_802E30C8(lbl_80340308);
-        while (fn_8022EC7C()) fn_8022ED50(p[1]);
-        fn_8022EA58((void *)p[1]);
-        p[1] = 0;
-        p[0] = 0;
+    void *node;
+
+    if (((s32 *)lbl_8055F004)[1] != 0) {
+        ((void (*)(char *, ...))fn_802E30C8)(lbl_80340308);
+        node = fn_8022EC7C();
+        goto test;
+loop:
+        fn_8022ED50(((s32 *)lbl_8055F004)[1]);
+        node = fn_8022EC7C();
+test:
+        if (node != 0)
+            goto loop;
+        fn_8022EA58((void *)((s32 *)lbl_8055F004)[1]);
+        ((s32 *)lbl_8055F004)[1] = 0;
+        ((s32 *)lbl_8055F004)[0] = 0;
     }
-    fn_80128668(p);
+    fn_80128668((void *)lbl_8055F004);
     lbl_8055F004 = 0;
 }
-
+#pragma dont_inline off
+#pragma pop
 void *fn_8022EC7C(void) {
     u32 *p = (u32 *)lbl_8055F004;
     u32 *node = (u32 *)p[0];
