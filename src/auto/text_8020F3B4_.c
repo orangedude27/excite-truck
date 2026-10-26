@@ -7,6 +7,9 @@ extern long lbl_8055B658;
 // split_file divides it into the game's real files (file_status shows its range).
   
 extern void *fn_8020FAF0(void);
+extern long fn_8000DA10(void);
+extern long fn_8020F9F4(void);
+extern int stricmp(const char *, const char *);
 extern struct Unk_804900AC { long *m_entries; long m_count; long m_capacity; } lbl_804900AC;
 extern void fn_801345D8(void *, ...);
 extern long lbl_8055B664;
@@ -111,6 +114,7 @@ long fn_8020F608(long arg0, long arg1) {
         *(long *)(ptr + 0xC1C) = arg0;
         ptr += 0xC80;
     }
+    return 0;
 }
 #pragma dont_inline reset
  
