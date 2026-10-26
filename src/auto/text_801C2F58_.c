@@ -241,6 +241,7 @@ s32 fn_801C3B7C(const void *arg0, const void *arg1) {
         return -1;
     return 1;
 }
+#pragma scheduling on
 
 #pragma push
 #pragma scheduling off
