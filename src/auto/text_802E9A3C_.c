@@ -363,7 +363,7 @@ void fn_802EC1D8(void) {
 extern long fn_800B7C64(long, long);
 extern long fn_800B7C60(long, long, long, long);
 extern long lbl_805076A0[];
-extern char lbl_8034E990;
+extern char lbl_8034E990[];
 extern long fn_8012C370(long, long, long *, long *, long, long);
 extern long fn_802E30C8(char *, long);
 #pragma push
@@ -387,7 +387,7 @@ void fn_802EC294(int index, int arg1) {
         slot[0] = temp_r3;
         slot[1] = sp8;
     } else {
-        ((long (*)(char *, ...))fn_802E30C8)(&lbl_8034E990, arg1);
+        ((long (*)(char *, ...))fn_802E30C8)(lbl_8034E990, arg1);
     }
 }
 #pragma pop
