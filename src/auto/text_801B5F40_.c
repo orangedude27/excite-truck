@@ -23,37 +23,37 @@ extern void *fn_801284F8(s32, void *);
 extern void NWC24Data_Init_801B6098(s32 *);
 extern void fn_801B608C(s32 *);
 extern s32 lbl_8055A8D0;
+#pragma scheduling invalid_target
 void fn_801B5FA0(void) {
-    s32 count;
+    s32 num;
     s32 offset;
+    s32 i;
     void *node;
-    void *previous;
     void *memory;
 
-    count = lbl_8055A8D0;
-    memory = fn_8012850C((count << 3) + 0x10, (u8 *)&lbl_80335EE0 + 0x18);
-    lbl_8055E708 = fn_8002F37C(memory, (void *)NWC24Data_Init_801B6098, 0, 8, count);
-    memory = fn_8012850C(0x9C50, (u8 *)&lbl_80335EE0 + 0x28);
+    num = lbl_8055A8D0;
+    memory = fn_8012850C((num << 3) + 0x10, lbl_80335EE0 + 0x18);
+    lbl_8055E708 = fn_8002F37C(memory, (void *)NWC24Data_Init_801B6098, 0, 8, num);
+    memory = fn_8012850C(0x9C50, lbl_80335EE0 + 0x28);
     lbl_8055E70C = fn_8002F37C(memory, (void *)fn_801B608C, 0, 4, 0x2710);
-    count = 0;
+    num = 0;
     lbl_8055E710 = 0;
-    node = fn_801284F8(4, (u8 *)&lbl_80335EE0 + 0x34);
+    node = fn_801284F8(4, lbl_80335EE0 + 0x34);
     if (node != 0) {
-        *(s32 *)node = 0;
+        *(s32 *)node = num;
     }
     lbl_8055E714 = (s32)node;
-    previous = lbl_8055E710;
+    i = 0;
     offset = 0;
-    while (count < lbl_8055A8D0) {
-        count++;
+    while (i < lbl_8055A8D0) {
+        i++;
         node = (u8 *)lbl_8055E708 + offset;
-        *(void **)((u8 *)node + 4) = previous;
-        previous = node;
+        *(void **)((u8 *)node + 4) = lbl_8055E710;
         offset += 8;
         lbl_8055E710 = node;
     }
 }
-
+#pragma scheduling on
 void fn_801B608C(s32 *arg0) {
     *arg0 = 0;
 }
