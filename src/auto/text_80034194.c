@@ -1414,8 +1414,8 @@ extern void DCInvalidateRange(void *, u32);
 extern s32 __DVDPushWaitingQueue(s32, void *);
 #pragma opt_propagation off
 s32 DVDInquiryAsync(void *block, void *addr, void *callback) {
-    s32 enabled;
     s32 result;
+    s32 enabled;
     u32 cmd = 0xE;
     *(u32 *)((u8 *)block + 8) = cmd;
     *(void **)((u8 *)block + 0x18) = addr;
@@ -1620,8 +1620,8 @@ void fn_8003998C(void* hi) {
     lbl_8055D88C = hi;
 }
 
-s32 __DVDGetCoverStatus(void) {
-    s32 status;
+u32 __DVDGetCoverStatus(void) {
+    u32 status;
     u32 frequency;
     u32 threshold;
     u64 now;
@@ -1638,7 +1638,7 @@ s32 __DVDGetCoverStatus(void) {
     now = __OSGetSystemTime();
     frequency = *(volatile u32 *)0x800000F8;
     threshold = ((frequency >> 2) / 1000) * 100;
-    stamp = *(volatile u64 *)(void *)&lbl_8055D8A0;
+    stamp = *(u64 *)(void *)&lbl_8055D8A0;
     elapsed = (s64)now - (s64)stamp;
     if (elapsed < (s64)threshold) {
         return 0;
