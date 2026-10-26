@@ -121,6 +121,33 @@ void DBPrintf_8013B490(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+extern void fn_8013AC78(int, int *);
+extern void fn_802049DC(int, int, float, float, float);
+extern char lbl_8032C358[];
+extern float lbl_80561450;
+extern float lbl_80561454;
+extern float lbl_80561438;
+void fn_8013B4E0(void *arg0) {
+    int sp8[10];
+    char *src = (char *)arg0;
+    int *dst = sp8;
+    int i = 0;
+    int value;
+    while (i < *(int *)((char *)arg0 + 0x3C0)) {
+        value = *(int *)(src + 0x68);
+        src += 0x78;
+        i++;
+        *dst = value;
+        dst++;
+    }
+    fn_8013AC78(0, sp8);
+    lbl_80559C98 = lbl_80561440;
+    fn_802049DC((int)(void *)lbl_8032C358, (int)(void *)&lbl_80559C98,
+                lbl_80561450, lbl_80561454, lbl_80561438);
+    lbl_8055E160 = 1;
+    lbl_8055E161 = 0;
+}
+
 void fn_8013B56C(void) {
     lbl_8055E160 = 0;
 }
@@ -137,15 +164,8 @@ extern void *fn_80138B1C(int);
 extern float lbl_80561430;
 #pragma cplusplus on
 extern "C" float fn_8013B590(void) {
-    struct VTable {
-        unsigned char pad[0x1C];
-        int (*m_fn)(void *);
-    };
-    struct Object {
-        struct VTable *vtable;
-    };
-    struct Object *object = (struct Object *)fn_801B2ED0();
-    int value = object->vtable->m_fn(object);
+    void *object = *fn_801B2ED0();
+    int value = ((int (*)(void *))((void **)object)[7])(object);
     void *result = fn_80138B1C(*(int *)((char *)value + 0x2C));
     if (result != 0)
         return *(float *)((char *)result + 0xC);
@@ -175,15 +195,16 @@ extern float fn_80134B58(float *, float);
 extern float fn_8013B5DC(int, int);
 extern void *fn_8013B578(int);
 void fn_8013B6C0(int *arg0, float *arg1, int arg2) {
-    char *p = (char *)lbl_802F9360;
-    p += arg2 * 8;
     if (arg2 <= 4) {
-        *arg0 = *(int *)p;
-        *arg1 = *(float *)(p + 4);
+        *arg0 = lbl_802F9360[arg2 * 2];
+        *arg1 = *(float *)((char *)lbl_802F9360 + arg2 * 8 + 4);
     } else {
         fn_802E317C(lbl_8032C374, arg2);
-        *arg0 = 0;
-        *arg1 = lbl_80561434;
+        {
+            float fallback = lbl_80561434;
+            *arg0 = 0;
+            *arg1 = fallback;
+        }
     }
 }
 
