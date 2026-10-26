@@ -146,28 +146,50 @@ void fn_8017B6A8(void *arg0) {
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80558DC4;
 extern void PSVECCrossProduct();
-void fn_8017B6D4(void *arg0, float *arg1, float *arg2) {
-    float sp8, spC, sp10;
-    sp8 = arg2[0] - *(float *)((char *)arg0 + 0x60);
-    spC = arg2[1] - *(float *)((char *)arg0 + 0x64);
-    sp10 = arg2[2] - *(float *)((char *)arg0 + 0x68);
-    PSVECCrossProduct((char *)arg0 + 0x124, &sp8, arg1);
-    arg1[0] += *(float *)((char *)arg0 + 0x118);
-    arg1[1] += *(float *)((char *)arg0 + 0x11c);
-    arg1[2] += *(float *)((char *)arg0 + 0x120);
-}
+#pragma scheduling on
+void fn_8017B6D4(void *arg0, void *arg1, void *arg2) {
+    float vector[3];
+    float temp_f2;
+    float temp_f1;
 
-void fn_8017B778(void *arg0, float *arg1, float *arg2) {
-    float sp8, spC, sp10;
-    sp8 = arg2[0] - *(float *)((char *)arg0 + 0x60);
-    spC = arg2[1] - *(float *)((char *)arg0 + 0x64);
-    sp10 = arg2[2] - *(float *)((char *)arg0 + 0x68);
-    PSVECCrossProduct((char *)arg0 + 0x178, &sp8, arg1);
-    arg1[0] += *(float *)((char *)arg0 + 0x16c);
-    arg1[1] += *(float *)((char *)arg0 + 0x170);
-    arg1[2] += *(float *)((char *)arg0 + 0x174);
+    vector[0] = *(float *)arg2 - *(float *)((char *)arg0 + 0x60);
+    temp_f2 = *(float *)((char *)arg2 + 4);
+    vector[1] = temp_f2 - *(float *)((char *)arg0 + 0x64);
+    temp_f1 = *(float *)((char *)arg2 + 8);
+    vector[2] = temp_f1 - *(float *)((char *)arg0 + 0x68);
+    PSVECCrossProduct((char *)arg0 + 0x124, vector, arg1, temp_f1, temp_f2);
+    *(float *)arg1 += *(float *)((char *)arg0 + 0x118);
+    *(float *)((char *)arg1 + 4) += *(float *)((char *)arg0 + 0x11C);
+    *(float *)((char *)arg1 + 8) += *(float *)((char *)arg0 + 0x120);
 }
+#pragma push
+#pragma scheduling invalid_target
+void fn_8017B778(void *arg0, void *arg1, void *arg2) {
+    float vector[3];
+    float temp_f1;
+    float temp_f2;
+    float temp_f0;
+    float value0;
+    float offset0;
+    float value1;
+    float value2;
 
+    temp_f1 = *(float *)arg2;
+    temp_f2 = *(float *)((char *)arg2 + 4);
+    vector[0] = temp_f1 - *(float *)((char *)arg0 + 0x60);
+    vector[1] = temp_f2 - *(float *)((char *)arg0 + 0x64);
+    temp_f0 = *(float *)((char *)arg2 + 8);
+    vector[2] = temp_f0 - *(float *)((char *)arg0 + 0x68);
+    PSVECCrossProduct((char *)arg0 + 0x178, vector, arg1, temp_f0, temp_f2);
+    value0 = *(float *)arg1;
+    offset0 = *(float *)((char *)arg0 + 0x16c);
+    value1 = *(float *)((char *)arg1 + 4);
+    *(float *)arg1 = value0 + offset0;
+    value2 = *(float *)((char *)arg1 + 8);
+    *(float *)((char *)arg1 + 4) = value1 + *(float *)((char *)arg0 + 0x170);
+    *(float *)((char *)arg1 + 8) = value2 + *(float *)((char *)arg0 + 0x174);
+}
+#pragma pop
 extern float lbl_80561BB8, lbl_80561BBC, lbl_80561BC0, lbl_80561BC4, lbl_80561BC8, lbl_80561BCC, lbl_80561BD0, lbl_80561BD4, lbl_80561BD8;
 extern void fn_8017D0C8(void *);
 extern void fn_8017A578(void *);
