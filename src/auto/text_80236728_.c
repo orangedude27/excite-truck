@@ -702,11 +702,12 @@ extern void *fn_801284F8(int, char *);
 
   *((int *) (p + 0x28)) = 0;
   *((int *) (p + 0x2c)) = 0;
-  new_var = (int *) (p + 0x24);
-  *new_var = 0;
-}
-
-void fn_80128668(void*);
+      new_var = (int *) (p + 0x24);
+    *new_var = 0;
+    return p;
+  }
+  
+  void fn_80128668(void*);
 void fn_80237D00(void *arg0) {
     void *p = *(void **)((char *)arg0 + 0x28);
     if (p != 0) {
