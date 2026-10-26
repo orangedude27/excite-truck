@@ -1,6 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern float lbl_80563490;
 extern int fn_802368B4(int);
+#pragma cplusplus on
+struct Fn8021734CEntry {
+    virtual void m0();
+    virtual void update();
+};
+#pragma cplusplus reset
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055EFAC;
@@ -52,19 +58,31 @@ extern "C" void *fn_80217270(void *arg0, int arg1) {
 }
 #pragma cplusplus off
 void fn_8021734C(void *arg0) {
-    int i;
-    char *base = (char *)arg0;
-    for (i = 0; i < *(int *)(base + 0x430); i++) {
-        void *obj = *(void **)(base + i * 4 + 0x30);
-        void **vtable = *(void ***)obj;
-        ((void (*)(void *))vtable[3])(obj);
-        if (*(int *)(base + 0x440) != 0) {
-            int value = *(int *)((char *)obj + 0x23C);
-            if (*(int *)((char *)obj + 0x240) != 0) value = **(int **)((char *)obj + 0x240);
-            fn_802368B4(value);
-        }
+    register int i = 0;
+    register char *self = (char *)arg0;
+    register char *entry = self;
+    void *object;
+    void *source;
+    long value;
+    void (*callback)(void);
+
+    goto check;
+loop:
+    object = *(void **)(entry + 0x30);
+    ((void (*)(void *))(*(void ***)object)[3])(object);
+    if (*(int *)(self + 0x440) != 0) {
+        source = *(void **)((char *)object + 0x240);
+        value = source ? *(long *)source : *(long *)((char *)object + 0x23C);
+        fn_802368B4(value);
     }
-    if (*(void **)(base + 0x438) != 0) (*(void (**)(void))((char *)base + 0x438))();
+    entry += 4;
+    i++;
+check:
+    if (i < *(int *)(self + 0x430))
+        goto loop;
+    callback = *(void (**)(void))(self + 0x438);
+    if (callback != 0)
+        callback();
 }
 
 #pragma noinline
@@ -615,28 +633,44 @@ void fn_80218464(void *arg0) {
 }
 
 extern float lbl_80563490;
-void fn_802184D0(void *arg0) {
-    int i = 0;
-    char *base = (char *)arg0;
-    char *cursor = base;
-    float threshold = lbl_80563490;
-    while (i < *(int *)(base + 0x430)) {
-        int call = 0;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_802184D0(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+    };
+    register float threshold;
+    char *cursor;
+    int i;
+    char *base;
+    for (threshold = lbl_80563490, base = (char *)arg0, cursor = base, i = 0;
+         i < *(int *)(base + 0x430); cursor += 4, i++) {
         void *obj = *(void **)(cursor + 0x30);
-        if (*(unsigned char *)((char *)obj + 0x1A) == 0) {
-            if (*(float *)((char *)obj + 0x20) >= threshold) call = 1;
-        } else {
+        int call = 0;
+        if (*(unsigned char *)((char *)obj + 0x1A) != 0 ||
+            *(float *)((char *)obj + 0x20) >= threshold) {
             call = 1;
         }
         if (call != 0) {
-            void **vtable = *(void ***)obj;
-            ((void (*)(void *))vtable[11])(obj);
+            ((Obj *)obj)->v9();
         }
-        cursor += 4;
-        i++;
     }
 }
-
+#pragma cplusplus off
+#pragma scheduling on
+#pragma pop
 extern float lbl_80563494, lbl_80563498;
 extern int fn_80215228(void);
 extern void fn_80230C30(float *,float *,int,int);
@@ -809,27 +843,52 @@ void fn_80218B88(void *arg0, int arg1, int arg2, int arg3, int arg4) {
         }
     }
 }
-#pragma pop
+#pragma push
+#pragma scheduling on
 void fn_80218C14(void *arg0, int arg1, void *arg2) {
-    char *dst = (char *)arg0 + arg1 * 0x3C + 0x6A0;
-    char *src = (char *)arg2;
-    *(unsigned int *)(dst + 0x00) = *(unsigned int *)(src + 0x00);
-    *(unsigned int *)(dst + 0x04) = *(unsigned int *)(src + 0x04);
-    *(unsigned int *)(dst + 0x08) = *(unsigned int *)(src + 0x08);
-    *(unsigned int *)(dst + 0x0C) = *(unsigned int *)(src + 0x0C);
-    *(unsigned int *)(dst + 0x10) = *(unsigned int *)(src + 0x10);
-    *(unsigned int *)(dst + 0x14) = *(unsigned int *)(src + 0x14);
-    *(unsigned int *)(dst + 0x18) = *(unsigned int *)(src + 0x18);
-    *(unsigned int *)(dst + 0x1C) = *(unsigned int *)(src + 0x1C);
-    *(unsigned int *)(dst + 0x20) = *(unsigned int *)(src + 0x20);
-    *(unsigned int *)(dst + 0x24) = *(unsigned int *)(src + 0x24);
-    *(unsigned int *)(dst + 0x28) = *(unsigned int *)(src + 0x28);
-    *(unsigned int *)(dst + 0x2C) = *(unsigned int *)(src + 0x2C);
-    *(float *)(dst + 0x30) = *(float *)(src + 0x30);
-    *(float *)(dst + 0x34) = *(float *)(src + 0x34);
-    *(float *)(dst + 0x38) = *(float *)(src + 0x38);
-}
+    register const unsigned int *src = (const unsigned int *)arg2;
+    register unsigned int a;
+    register unsigned int b;
+    register unsigned int c;
+    register int offset = arg1 * 0x3C;
+    register unsigned int *dst = (unsigned int *)((char *)arg0 + offset + 0x6A0);
+    register float z;
+    register float y;
+    register float x;
+    float *fsrc = (float *)arg2;
 
+    a = src[0];
+    b = src[1];
+    c = src[2];
+    dst[0] = a;
+    a = src[3];
+    dst[1] = b;
+    b = src[4];
+    dst[2] = c;
+    c = src[5];
+    dst[3] = a;
+    a = src[6];
+    dst[4] = b;
+    b = src[7];
+    dst[5] = c;
+    c = src[8];
+    dst[6] = a;
+    a = src[9];
+    dst[7] = b;
+    b = src[10];
+    dst[8] = c;
+    c = src[11];
+    dst[9] = a;
+    x = fsrc[12];
+    dst[10] = b;
+    y = fsrc[13];
+    dst[11] = c;
+    z = fsrc[14];
+    ((float *)dst)[12] = x;
+    ((float *)dst)[13] = y;
+    ((float *)dst)[14] = z;
+}
+#pragma pop
 void fn_80218C98(void *arg0, void **arg1, int arg2) {
     char *base = arg0;
     char *obj = (char *)arg1;
