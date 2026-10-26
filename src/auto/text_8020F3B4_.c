@@ -172,14 +172,19 @@ null_result:
 }
 #pragma dont_inline reset
 
+extern int fn_8020FB80(void *);
 #pragma scheduling invalid_target
 void fn_8020FC6C(void) {
+    void *data;
     if (lbl_804900AC.m_count == 0) {
         ((long (*)(long))fn_8020F3B4)(0);
-    } else if (fn_8020FC04() != 0) {
-        fn_8020FB80();
     } else {
-        ((long (*)(long))fn_8020F3B4)(0);
+        data = fn_8020FC04();
+        if (data != 0) {
+            fn_8020FB80(data);
+        } else {
+            ((long (*)(long))fn_8020F3B4)(0);
+        }
     }
 }
 
