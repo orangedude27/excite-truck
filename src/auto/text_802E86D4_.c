@@ -199,8 +199,9 @@ extern int fn_802E88D8(void);
 extern int NANDDelete(const char *);
 extern char lbl_8034DE54[];
 extern char lbl_8034DE6C[];
-extern int NANDOpen(void *, int);
-extern int NANDClose(void *);
+  extern int NANDOpen(const char *, void *, int);
+  extern int NANDGetLength(void *, unsigned int *);
+  extern int NANDClose(void *);
 extern char lbl_80560034;
 extern int fn_802E95E0(void *, void (*)(void), int);
 extern int fn_802E2C20(void);
@@ -440,12 +441,29 @@ void fn_802E9254(void *arg0) {
 #pragma scheduling on
 void fn_802E95CC(int arg0, void **arg1) { void *obj=*arg1; *(int*)((char*)obj+0x254)=arg0; *(char*)((char*)obj+0x250)=1; }
 
+#pragma scheduling invalid_target
 int fn_802E95E0(void *arg0, void (*callback)(void), int arg2) {
- int base=fn_802E2C20(); int limit=base+0xFA0;
- for (;;) { int value; if(lbl_80507288<2) return 1; value=fn_802E2C20();
- if(value<base || value>limit) { fn_802E30C8(lbl_8034E024,arg0,value-base); return 0; } callback(); }
+    void *log_arg = arg0;
+    void (*loop_callback)(void) = callback;
+    volatile int *state_page;
+    int base;
+    base = fn_802E2C20();
+    state_page = (volatile int *)((unsigned int)&lbl_80507288 & 0xFFFF0000);
+    goto check_state;
+loop_body:
+    {
+        int value = fn_802E2C20();
+        if (value < base || value > base + 0xFA0) {
+            fn_802E30C8(lbl_8034E024, log_arg, value - base);
+            return 0;
+        }
+        loop_callback();
+    }
+check_state:
+    if (state_page[0x1CA2] >= 2) goto loop_body;
+    return 1;
 }
-
+#pragma scheduling on
 extern int fn_8012C370(const char *, int, void *, void *, int, int);
 extern void fn_8012E81C(const char *);
 extern char lbl_8034D9C0[];
@@ -478,11 +496,29 @@ int fn_802E967C(char *arg0, void *arg1, int arg2) {
     return 1;
 }
 
+__declspec(section ".data") extern int lbl_80507288;
 void fn_802E97B4(void) {
- if(lbl_80560035==0) { if(fn_802ECC10()!=0) return; lbl_80560035=1;
- if(lbl_80507288==1) { int value=*(int*)((char*)&lbl_80507288+0x25C);
- if(value==-9) fn_802E888C(6); else if(value==-11) fn_802E888C(5); else if(value!=0) fn_802E30C8(lbl_8034E0BC); }
- lbl_80560035=0; *(int*)((char*)&lbl_80507288+0x25C)=0; }
+    if (lbl_80560035 == 0) {
+        if (fn_802ECC10() != 0) return;
+        lbl_80560035 = 1;
+        if (lbl_80507288 == 1) {
+            switch (*(int *)((char *)&lbl_80507288 + 0x25C)) {
+            case 0:
+                break;
+            case -9:
+                fn_802E888C(6);
+                break;
+            case -11:
+                fn_802E888C(5);
+                break;
+            default:
+                fn_802E30C8(lbl_8034E0BC);
+                break;
+            }
+        }
+        lbl_80560035 = 0;
+        *(int *)((char *)&lbl_80507288 + 0x25C) = 0;
+    }
 }
 
 void fn_802E986C(void) {}
