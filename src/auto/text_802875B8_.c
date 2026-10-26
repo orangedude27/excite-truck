@@ -69,7 +69,7 @@ extern s32 fn_801EE0C8(s32);
 extern s32 fn_801E2CCC(s32, s32);
 extern s32 fn_8002F6AC(s32, void *(*)(void *, s32));
 extern void *fn_80287C80(void *, s32);
-extern void fn_802E317C(const char *, s32);
+extern void fn_802E317C(const char *, ...);
 extern const char lbl_80348A4C[];
 typedef struct Obj { void **vtable; } Obj;
 void* fn_802875B8(void* arg0, s32 arg1) {
@@ -384,6 +384,29 @@ void fn_80287CE8(int arg0, void *arg1, int arg2, int arg3) {
     } while (0);
 }
 
+#pragma scheduling invalid_target
+void fn_80287D70(void *arg0, int arg1, int arg2) {
+    char name[0x20];
+    const char *format = lbl_80348A40;
+
+    if ((arg2 & 0x100000) != 0) {
+        format = lbl_80348A30;
+        *(volatile int *)((char *)arg0 + 0x24) = 0;
+        return;
+    }
+
+    do {
+        sprintf(name, format, arg2 + 1);
+        if (((int (*)(int, char *, int *))fn_801E2CCC)(
+                arg1, name,
+                (int *)((char *)arg0 +
+                        (*(volatile int *)((char *)arg0 + 0x24) << 2) + 4)) == 0) {
+            return;
+        }
+        ++*(volatile int *)((char *)arg0 + 0x24);
+        arg2 = *(volatile int *)((char *)arg0 + 0x24);
+    } while (arg2 < 8);
+}
 #pragma scheduling on
 
 #pragma scheduling on
@@ -403,10 +426,10 @@ void fn_80287E80(void **arg0, s32 arg1) {
     ((void (*)(void *, void *))(*(void ***)obj)[2])(obj, local);
 }
 
+#pragma scheduling invalid_target
 void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
-    Obj *obj;
-    obj = *arg1;
-    if (obj != 0 && ((s32 (*)(Obj *, s32))obj->vtable[2])(obj, arg2) != 0) {
+    Obj *obj = *arg1;
+    if (obj != 0 && (s32)((s32 (*)(Obj *, s32))obj->vtable[2])(obj, arg2)) {
     } else {
         fn_802E317C(lbl_80348A4C, arg2);
     }
@@ -414,7 +437,7 @@ void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
     obj = ((Obj *(*)(Obj *, s32))obj->vtable[2])(obj, arg2);
     ((void (*)(Obj *, Obj *, s32))obj->vtable[13])(arg0, obj, arg3);
 }
-
+#pragma scheduling on
 void fn_80287F90(void *arg0, void **arg1, s32 arg2, s32 arg3, s32 *src) {
     s32 sp8[3];
     void *obj;
