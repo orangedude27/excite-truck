@@ -2,6 +2,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern float lbl_80562844;
+__declspec(section ".sdata") extern char lbl_8055A924[];
+__declspec(section ".sdata") extern char lbl_8055A92C[];
+__declspec(section ".sdata") extern char lbl_8055A934[];
+__declspec(section ".sdata") extern char lbl_8055A93C[];
 extern float lbl_80562848;
 extern int lbl_8055E798;
 extern int lbl_8055E79C;
