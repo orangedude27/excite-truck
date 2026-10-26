@@ -74,6 +74,21 @@ static inline void fn_80164CDC_call(void *arg0) {
 #pragma cplusplus off
 
 #pragma cplusplus on
+struct Dummy_80162178 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void *f4(s32 *, s32 *);
+};
+extern "C" {
+static inline void *fn_80162178_call(void *obj, s32 *arg0, s32 *arg1) {
+    return ((Dummy_80162178 *)obj)->f4(arg0, arg1);
+}
+}
+#pragma cplusplus off
+
+#pragma cplusplus on
 struct Dummy_80163550 {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
     virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual s32 f8();
