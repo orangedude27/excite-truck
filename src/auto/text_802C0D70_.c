@@ -33,6 +33,50 @@ void fn_802C0D70(float *arg0) {
 }
 
 #pragma scheduling invalid_target
+void fn_802C0E68(int arg0) {
+    extern char lbl_8055FB14[4];
+    extern char lbl_8055CF90[4];
+    extern float lbl_804C0800[3];
+    extern float lbl_80564E38;
+    extern float lbl_80564E3C;
+    extern float lbl_80564E40;
+    extern float lbl_80564E44;
+    extern int fn_801E2CCC(char *, void **);
+    extern void PSVECNormalize(float *, float *);
+    extern void fn_802C0D70(float *);
+    extern void fn_802C9A1C(float *);
+    void *sp8;
+    float vector[3];
+
+    if (*(int *)lbl_8055FB14 != arg0) {
+        *(int *)lbl_8055FB14 = arg0;
+        sp8 = 0;
+        if (arg0 == -1) {
+            goto default_values;
+        }
+        if (((int (*)(int, char *, void **))fn_801E2CCC)(arg0, lbl_8055CF90, &sp8) == 0) {
+            goto default_values;
+        }
+        lbl_804C0800[0] = *(float *)((char *)sp8 + 0x24);
+        lbl_804C0800[1] = *(float *)((char *)sp8 + 0x28);
+        lbl_804C0800[2] = *(float *)((char *)sp8 + 0x2C);
+        goto values_ready;
+
+    default_values:
+        lbl_804C0800[0] = lbl_80564E38;
+        lbl_804C0800[1] = lbl_80564E3C;
+        lbl_804C0800[2] = lbl_80564E40;
+
+    values_ready:
+        vector[0] = lbl_804C0800[0] * lbl_80564E44;
+        vector[1] = lbl_804C0800[1] * lbl_80564E44;
+        vector[2] = lbl_804C0800[2] * lbl_80564E44;
+        PSVECNormalize(vector, vector);
+        fn_802C0D70(vector);
+        fn_802C9A1C(vector);
+    }
+}
+#pragma scheduling on
 void fn_802C0F4C(void) {
     extern char lbl_8055FB18[4];
     extern char lbl_8055CF98[4];
