@@ -250,15 +250,13 @@ void fn_8020FC6C(void) {
 }
 
 extern char *strncpy(char *, const char *, unsigned long);
-void fn_8020FDE4(long arg0, const char *arg1, char *arg2) {
+void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
     char *block;
-    char *dst;
-    char *src;
     long remaining;
+    char *dst;
     unsigned char value;
 
-    src = arg2;
-    block = (char *)((void *(*)(char *))fn_8020FAF0)(src);
+    block = (char *)((void *(*)(char *))fn_8020FAF0)(arg2);
     memset(block, 0, 4);
     *(long *)block = arg0;
     strncpy(block + 0x24, arg1, 0x3F);
@@ -270,8 +268,8 @@ void fn_8020FDE4(long arg0, const char *arg1, char *arg2) {
             dst[-1] = 0;
             return;
         }
-        value = (unsigned char)*src;
-        src++;
+        value = (unsigned char)*arg2;
+        arg2++;
         *dst = value;
         dst++;
         if ((signed char)value == 0) {
@@ -586,3 +584,5 @@ extern void fn_8020F730(void);
 extern long fn_8020F9F4(void);
 extern int stricmp(const char *, const char *);
 extern int fn_8002B1D8(const char *, const char *, int);
+extern long lbl_8055EEBC;
+extern long lbl_8055EEE8;
