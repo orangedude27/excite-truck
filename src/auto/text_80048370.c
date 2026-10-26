@@ -43,6 +43,30 @@ void WPADiDisableRecalibration(s32 chan) {
 
 #pragma push
 #pragma use_lmw_stmw off
+void WPADiClearQueue(s32 chan) {
+    BOOL inner;
+    BOOL interrupts;
+    BOOL enabled;
+    KPADInsideStatus *status = &inside_kpads[chan];
+    interrupts = OSDisableInterrupts();
+    enabled = status->is_dpd_enabled;
+    status->is_dpd_enabled = 1;
+    if (enabled != 1) {
+        inner = OSDisableInterrupts();
+        if (status->sampling_pending == 0 && WPADProbe(chan, 0) != -1) {
+            status->sampling_pending = 1;
+            if (status->dpd_ctrl_callback != 0) {
+                status->dpd_ctrl_callback(chan, 0);
+            }
+        }
+        OSRestoreInterrupts(inner);
+    }
+    OSRestoreInterrupts(interrupts);
+}
+#pragma pop
+
+#pragma push
+#pragma use_lmw_stmw off
 #pragma opt_common_subs off
 void WPADiSamplingCallback(s32 chan, s32 result) {
     extern u32 fn_80062460(s32);
@@ -251,6 +275,29 @@ MEMiHeapHead* MEMDestroyExpHeap(MEMiHeapHead* heap) {
     return heap;
 }
 
+#pragma dont_inline on
+void* MEMAllocFromExpHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
+    void* memBlock;
+
+    if (size == 0) {
+        size = 1;
+    }
+    size = ROUND_UP(size, 4);
+
+    LockHeap(heap);
+
+    if (align >= 0) {
+        memBlock = AllocFromHead_(heap, size, align);
+    } else {
+        memBlock = AllocFromTail_(heap, size, -align);
+    }
+
+    UnlockHeap(heap);
+
+    return memBlock;
+}
+#pragma dont_inline reset
+
 void MEMFreeToExpHeap(MEMiHeapHead* heap, void* memBlock) {
     MEMiExpHeapMBlock* mblock;
     MEMiExpHeapHead* exp;
@@ -384,7 +431,23 @@ u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead *heap, s32 align) {
     return result;
 }
 
-BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) { return FALSE; }
+BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) {
+    u8 *base = (u8 *)heap;
+    u32 size;
+    MEMiFrmHeapState *state;
+    #pragma unused(id)
+    size = *(u32 *)(base + 0x40);
+    LockHeap(heap);
+    state = *(MEMiFrmHeapState **)(base + 0x3C);
+    if (state != 0) {
+        *(void **)(base + 0x3C) = *(void **)(state);
+    }
+    UnlockHeap(heap);
+    if (state != 0 && (GetOptForHeap(heap) & MEM_HEAP_OPT_CLEAR_ALLOC)) {
+        memset((void *)state, 0, size);
+    }
+    return (BOOL)state;
+}
 
 u32 MEMAdjustFrmHeap(MEMiHeapHead *heap) {
     MEMiFrmHeapHead *frm = (MEMiFrmHeapHead *)(heap + 1);
