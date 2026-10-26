@@ -9,7 +9,9 @@ typedef struct {
     volatile float sp50, sp54;
     char pad50[0xC];
     volatile int sp64;
-    volatile float sp68, sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94;
+    volatile float sp68;
+    char pad64[4];
+    volatile float sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94;
 } fn_802897E0Frame;
 
 extern int lbl_8055F6DC;
