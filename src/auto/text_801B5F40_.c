@@ -17,6 +17,43 @@ void __AXPushCallbackStack(void *arg0) {
     lbl_8055E710 = arg0;
 }
 
+extern void *fn_8012850C(s32, void *);
+extern s32 fn_8002F37C(void *, void *, s32, s32, s32);
+extern void *fn_801284F8(s32, void *);
+extern void NWC24Data_Init_801B6098(s32 *);
+extern void fn_801B608C(s32 *);
+extern s32 lbl_8055A8D0;
+void fn_801B5FA0(void) {
+    s32 count;
+    s32 offset;
+    void *node;
+    void *previous;
+    void *memory;
+
+    count = lbl_8055A8D0;
+    memory = fn_8012850C((count << 3) + 0x10, (u8 *)&lbl_80335EE0 + 0x18);
+    lbl_8055E708 = fn_8002F37C(memory, (void *)NWC24Data_Init_801B6098, 0, 8, count);
+    memory = fn_8012850C(0x9C50, (u8 *)&lbl_80335EE0 + 0x28);
+    lbl_8055E70C = fn_8002F37C(memory, (void *)fn_801B608C, 0, 4, 0x2710);
+    count = 0;
+    lbl_8055E710 = 0;
+    node = fn_801284F8(4, (u8 *)&lbl_80335EE0 + 0x34);
+    if (node != 0) {
+        *(s32 *)node = 0;
+    }
+    lbl_8055E714 = (s32)node;
+    previous = lbl_8055E710;
+    offset = 0;
+    while (count < lbl_8055A8D0) {
+        count++;
+        node = (u8 *)lbl_8055E708 + offset;
+        *(void **)((u8 *)node + 4) = previous;
+        previous = node;
+        offset += 8;
+        lbl_8055E710 = node;
+    }
+}
+
 void fn_801B608C(s32 *arg0) {
     *arg0 = 0;
 }
@@ -83,7 +120,6 @@ void fn_801B619C(void *arg0, int *arg1, float *arg2) {
 #pragma scheduling on
 extern void *fn_801B5F40(void);
 extern void __AXPushCallbackStack(void *);
-extern void *lbl_80335EE0;
 extern char lbl_80335F20[];
 void fn_801B63E0(void **head, s32 value) {
     void *node = fn_801B5F40();
