@@ -218,25 +218,29 @@ void fn_8023BEB8(s32 arg0, s32 arg1, s32 arg2) {
 }
 #pragma dont_inline reset
 
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8023BEC4(s32 arg0, s32 arg1) {
     s32 temp_r31;
-    s32 var_r29;
     s32 var_r30;
+    s32 var_r29;
 
     temp_r31 = *(s32 *)((u8 *)fn_8001285C() + 4);
     var_r30 = -1;
     var_r29 = *(s32 *)((u8 *)fn_80012820(temp_r31) + 0x70);
-loop:
+    goto check;
+body:
     if (arg0 == *fn_80012870(temp_r31, var_r29)) {
         var_r30 = var_r29;
     }
-    if (var_r29 > 0) {
-        var_r29--;
-        goto loop;
+check:
+    if (var_r29-- > 0) {
+        goto body;
     }
     fn_8023BEB8(temp_r31, var_r30, arg1);
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw reset
 void fn_8023BF4C(void *arg0) {
     fn_8023B9EC(*(s32 *)((u8 *)arg0 + 0),
                 *(s32 *)((u8 *)arg0 + 4),
