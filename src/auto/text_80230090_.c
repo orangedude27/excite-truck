@@ -76,6 +76,7 @@ void fn_80230A68(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
     p[5] = *(u32 *)&farg4;
 }
 
+#pragma dont_inline fn_80230AB8
 void fn_80230AB8(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4) {
     *arg1 = (u8)(arg0 >> 24);
     *arg2 = (u8)(arg0 >> 16);
@@ -199,12 +200,50 @@ float fn_80230E54(float a, float b) {
 
 void fn_80230E90(s32 arg0) {
     if (arg0 == 1) {
-        fn_80230DA4((f32)fn_802E2C20() / lbl_80563640, lbl_80563648);
+        union {
+            u32 word[2];
+            f64 value;
+        } converted;
+        s32 ticks = fn_802E2C20();
+        f64 bias;
+        f32 normalized;
+
+        converted.word[1] = (u32)ticks ^ 0x80000000;
+        bias = lbl_80563638;
+        converted.word[0] = 0x43300000;
+        normalized = (f32)(converted.value - bias) / lbl_80563640;
+        fn_80230DA4(normalized, lbl_80563648);
     } else {
         fn_80230DA4(fn_8023659C(), lbl_80563648);
     }
 }
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
+float fn_80230EF4(long arg0) {
+    if (!lbl_8055B998) return lbl_80563610;
+    if (arg0 == 1) {
+        union {
+            u32 word[2];
+            f64 value;
+        } converted;
+        s32 ticks = fn_802E2C20();
+        f64 bias;
+        f32 normalized;
+        converted.word[1] = (u32)ticks ^ 0x80000000;
+        bias = lbl_80563638;
+        converted.word[0] = 0x43300000;
+        normalized = (f32)(converted.value - bias) / lbl_80563640;
+        return fn_80230E54(normalized, lbl_80563648);
+    }
+    {
+        f32 a = fn_8023659C();
+        f32 b = lbl_80563648;
+        return fn_80230E54(a, b);
+    }
+}
+#pragma scheduling on
+#pragma dont_inline reset
 extern f32 lbl_80563610, lbl_80563640, lbl_80563648;
 extern u32 lbl_8055FB9C, lbl_8055FBA0;
 float fn_80230E54(float, float);
