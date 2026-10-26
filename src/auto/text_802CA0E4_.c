@@ -4,6 +4,10 @@
 #include <macros.h>
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B538[];
+extern char lbl_8034B618[];
+extern int lbl_8055D058;
+extern int fn_802C90E0(void);
+extern int fn_802D8E9C(void *, unsigned int);
 extern int lbl_8055D038;
 extern int lbl_8055D040;
 extern int fn_8012850C(int, int *);
