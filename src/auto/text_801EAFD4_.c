@@ -26,6 +26,7 @@ extern s32 lbl_804885E8[];
 extern f32 lbl_80562E68;
 extern f32 lbl_8055EB98[2];
 extern void fn_801EB9A4(s32 *);
+#pragma dont_inline on
 s32 fn_801EAFD4(void *arg0) {
     s32 temp = *(s32 *)arg0;
     if (temp == 0x103) {
@@ -35,6 +36,45 @@ s32 fn_801EAFD4(void *arg0) {
         return ((s32 *)arg0)[3];
     }
     return 0;
+}
+#pragma dont_inline off
+
+s32 fn_801EB000(s32 *arg0, void *arg1) {
+    s32 *node;
+    s32 *child;
+    s32 *item;
+    s32 i;
+    s32 type;
+
+    node = arg0;
+    while (node != 0) {
+        type = node[0];
+        if (type & 0x100) {
+            fn_801EAFD4(node);
+            fn_801EB000((s32 *)node[2], arg1);
+        } else {
+            switch (type) {
+            case 0:
+                item = node;
+                i = 0;
+                while (i < node[5]) {
+                    fn_801EB000((s32 *)item[7], arg1);
+                    item += 2;
+                    i += 1;
+                }
+                break;
+            case 4:
+                child = (s32 *)node[2];
+                if (child != 0) {
+                    void **vtable = *(void ***)arg1;
+                    ((void (*)(void *, s32 *, s32, s32))vtable[2])(
+                        arg1, child, child[2], child[1]);
+                }
+                break;
+            }
+        }
+        node = (s32 *)node[1];
+    }
 }
 
 s32 fn_801EB0E8(void) { return 0; }
