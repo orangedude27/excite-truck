@@ -8,7 +8,7 @@ struct Obj_801ADA9C { struct FnTable_801ADA9C *vtable; };
 extern void fn_8017A57C(void) __attribute__((noreturn));
 extern void fn_801AC240(void *);
 extern void fn_801AC254(void *);
-extern void fn_801ABFF8(int **);
+extern void fn_801ABFF8(void *, int **);
 extern char lbl_80335940[];
 extern float lbl_805624D0;
 
@@ -31,13 +31,45 @@ extern void **fn_801A9700(void **);
 extern int lbl_8055E3C4;
 extern int lbl_8055A858;
 extern int jumptable_80335578[];
+extern void *fn_801AC330(void *);
+extern void *fn_801AC26C(void);
 void fn_801A9660(void) {
+    extern char lbl_80335528[];
+    extern char lbl_80335538[];
     unsigned int index = *(unsigned int *)((char *)fn_801792F8() + 0x50) - 6;
-    if (index < 0x11) {
-        ((void (*)(void))jumptable_80335578[index])();
+    void *obj;
+
+    if (index > 16) goto fallback;
+
+    switch (index) {
+    case 0:
+    case 3:
+    case 8:
+    case 9:
+    case 13:
+    case 16:
+        fn_802E317C(lbl_80335538);
         return;
+    case 6:
+        obj = fn_801284F8(0x258, lbl_80335528);
+        if (obj != 0) {
+            fn_801AC330(obj);
+            return;
+        }
+        fn_801AC26C();
+        return;
+    case 11:
+    case 12:
+    case 15:
+        fn_801AC26C();
+        return;
+    default:
+        break;
     }
-    if (fn_801284F8(0x23c, &lbl_8055A858) != 0) fn_801A9700(0);
+
+fallback:
+    if (fn_801284F8(0x23c, &lbl_8055A858) != 0)
+        fn_801A9700(0);
 }
 
 #pragma scheduling off
@@ -1448,15 +1480,33 @@ extern void fn_801A9AB0(void *, void *);
 extern void fn_801D08C0(void *);
 extern void fn_801D0934(void *);
 void *fn_801AD6B0(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_80335744;
-        *(void **)((char *)arg0 + 0x23C) = (char *)&lbl_80335744 + 0x54;
-        fn_801D0934((char *)arg0 + 0x23C);
-        *(int *)((char *)arg0 + 0x240) = 0;
-        lbl_8055E5E4 = 0;
-        fn_80179EE8(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+    void *initArg;
+
+    if (arg0 == 0) {
+        goto done;
     }
+    *(void **)arg0 = &lbl_80335744;
+    initArg = arg0;
+    *(void **)((char *)arg0 + 0x23C) = (char *)&lbl_80335744 + 0x54;
+    if (arg0 == 0) {
+        goto init_call;
+    }
+    initArg = (char *)arg0 + 0x23C;
+init_call:
+    fn_801D0934(initArg);
+    *(int *)((char *)arg0 + 0x240) = 0;
+    if (arg0 != 0) {
+        lbl_8055E5E4 = 0;
+        if (arg0 != 0) {
+            if (arg0 != 0) {
+                fn_80179EE8(arg0, 0);
+            }
+        }
+    }
+    if (arg1 > 0) {
+        fn_80128668(arg0);
+    }
+done:
     return arg0;
 }
 
@@ -1541,7 +1591,29 @@ void fn_801AD8C8(void *arg0, int *arg1, float *arg2, float *arg3) {
     fn_801AC240(arg0);
 }
 
-void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16(float *, float *, int, int);
+    };
     float scale;
     float sp14[3];
     float sp8[3];
@@ -1552,9 +1624,9 @@ void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
     sp8[0] = *(float *)((char *)arg0 + 0x60) + arg2[0];
     sp8[1] = *(float *)((char *)arg0 + 0x64) + arg2[1];
     sp8[2] = *(float *)((char *)arg0 + 0x68) + arg2[2];
-    ((void (*)(float *, float *, int, int))(*(void ***)arg0)[18])(sp14, sp8, 100, 0);
+    ((Obj *)arg0)->v16(sp14, sp8, 100, 0);
 }
-
+#pragma pop
 void fn_801ADA38(void *arg0, int arg1) {
     int *sp8;
     if (arg1) {
