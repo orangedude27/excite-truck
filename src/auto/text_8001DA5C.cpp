@@ -299,21 +299,28 @@ extern "C" void fn_8001E544(void* arg0) {
 }
 #pragma scheduling on
 extern char lbl_802FDC70[];
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void* fn_8001E5B0(void* arg0, s32 arg1) {
+    class Entry {
+    public:
+        virtual void destroy(s32);
+    };
     void* entry;
+
     if (arg0 != 0) {
         entry = *(void**)((u8*)arg0 + 0x24);
-        *(void**)arg0 = &lbl_802FDC70;
+        *(void**)arg0 = (void*)lbl_802FDC70;
         if (entry != 0) {
-            ((void (**)(void*, s32))(*(void***)entry))[1](entry, 1);
+            if (entry != 0)
+                ((Entry*)entry)->destroy(1);
         }
-        if (arg1 > 0) {
+        if (arg1 > 0)
             ((s32 (*)(void*))fn_80128668)(arg0);
-        }
     }
     return arg0;
 }
-
+#pragma pop
 extern "C" void fn_8001E964(void* arg0) {
     f32 value = lbl_80560490;
     *(f32*)((u8*)arg0 + 0x34) = value;
