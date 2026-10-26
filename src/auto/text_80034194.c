@@ -16,6 +16,14 @@ extern s32 DSPReadMailFromDSP(void);
 extern void DSPSendMailToDSP(u32);
 #include <ctype.h>
 
+extern char lbl_80301DB0[];
+extern s32 lbl_80558DE8;
+extern s32 lbl_8055D818;
+extern s32 __OSSetInterruptHandler(s32, void *);
+extern s32 __OSUnmaskInterrupts(s32);
+extern void __DSPHandler_80034418(s16, OSContext *);
+extern void DBPrintf_800343C8(const char *, ...);
+
 extern u8 *FstStart_8055D840;
 extern u8 *FstStringStart_8055D83C;
 extern u32 MaxEntryNum_8055D838;
@@ -1590,6 +1598,8 @@ s32 __DVDGetCoverStatus(void) {
     s32 status;
     u32 frequency;
     u32 threshold;
+    u32 stampHigh;
+    u32 stampLow;
     u64 now;
     s64 elapsed;
     s64 stamp;
@@ -1603,8 +1613,10 @@ s32 __DVDGetCoverStatus(void) {
     status = fn_8003BB48();
     now = __OSGetSystemTime();
     frequency = *(volatile u32 *)0x800000F8;
+    stampHigh = (u32)lbl_8055D8A0;
     threshold = ((frequency >> 2) / 1000) * 100;
-    stamp = (s64)(((u64)(u32)lbl_8055D8A0 << 32) | lbl_8055D8A4);
+    stampLow = lbl_8055D8A4;
+    stamp = (s64)(((u64)stampHigh << 32) | stampLow);
     elapsed = (s64)now - stamp;
     if (elapsed < (s64)threshold) {
         return 0;
