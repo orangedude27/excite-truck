@@ -1,4 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern void fn_80287D70(void *, int, int);
+extern int fn_8012C33C(const char *);
+extern int fn_80131808(const char *);
+extern int sprintf(char *, const char *, ...);
+extern const char lbl_80348A20[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80288868(void *);
