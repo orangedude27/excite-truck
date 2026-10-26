@@ -541,8 +541,8 @@ extern "C" void *fn_801F9338(void *self) {
     u8 sp8[0x30];
     void *data;
     void *result;
-    s32 index;
     void *node;
+    s32 index;
 
     data = 0;
     if (fn_801F7EB0(sp8, self, 0) != 0) {
