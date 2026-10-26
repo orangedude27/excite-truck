@@ -170,6 +170,7 @@ int fn_8020FB80(void *arg0) {
 }
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
+#pragma dont_inline on
 void *fn_8020FC04(void) {
     char *data = (char *)fn_8020FAF0();
     long type;
