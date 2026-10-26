@@ -50,7 +50,7 @@ extern void *lbl_804349C0[];
 extern float lbl_8056223C, lbl_8055E57C;
 extern int lbl_804348E8[];
 extern void *lbl_804349E0[];
-extern int lbl_80333390;
+extern char lbl_80333390[0x10000];
   void fn_801964D0(void);
   void fn_80128668(void *);
   void fn_80193138(int);
