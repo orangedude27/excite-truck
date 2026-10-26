@@ -300,6 +300,13 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9WsdPlayerFQ36nw4hbm3snd6AuxBusf(
     *(float*)((char*)arg0 + arg1 * 4 + 0x50) = arg2;
 }
 
+extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_80100B24(void* arg0, int arg1) {
+    int valid = arg1 >= 0 && arg1 < 3;
+    if (!valid)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x145, lbl_80327994, arg1, 0, 3);
+    return *(float*)((char*)arg0 + arg1 * 4 + 0x50);
+}
+
 extern "C" void fn_80100BAC(void* arg0, int arg1) {
     int level = OSDisableInterrupts();
     *(int*)((char*)arg0 + 0x44) = arg1;
