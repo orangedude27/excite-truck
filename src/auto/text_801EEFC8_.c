@@ -43,6 +43,41 @@ done:
         fn_802E317C(lbl_8033A328);
     }
 }
+
+extern char lbl_8033A354[];
+#pragma scheduling invalid_target
+#pragma push
+#pragma optimize_for_size on
+#pragma use_lmw_stmw off
+void fn_801EF0AC(unsigned char *arg0) {
+    char buf[0x400];
+    unsigned int *slot;
+    unsigned char *data;
+    int index = 0;
+    int ret;
+    signed char id;
+    unsigned int i;
+
+    while (index < (int)*(unsigned int *)arg0) {
+        id = (signed char)arg0[index + 4];
+        data = arg0 + index + 5;
+        ret = -1;
+        slot = (unsigned int *)(lbl_80488678 + id * 16);
+        for (i = 0; i < 4; i++, slot++) {
+            if (*slot != 0) {
+                memcpy(buf, data, 0x400);
+                ret = ((int (*)(char *))*slot)(buf);
+            }
+        }
+        if (ret != -1) {
+            index = index + ret + 1;
+        } else {
+            fn_802E317C(lbl_8033A354, *((volatile unsigned char *)arg0 + index + 4));
+            return;
+        }
+    }
+}
+#pragma pop
 #pragma scheduling on
 void fn_801EF184(void) {
 
