@@ -210,7 +210,7 @@ u32 fn_8001BD6C(void *arg0, void *arg1) {
     return (r & 0x80000000) >> 31;
 }
 #pragma scheduling on
-extern void *fn_800167CC(s32, void *, s32, s32);
+extern void *fn_800167CC(s32);
 extern void *fn_80016BC8(s32);
 #pragma push
 #pragma small_data off
@@ -227,9 +227,7 @@ void fn_8001BDA8(void *arg0) {
                 *(s32 *)((u8 *)arg0 + 0x1C);
             index = *(s32 *)((u8 *)arg0 + 0xC);
             *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + index * 0xC + 0x10) = 1;
-            result = fn_800167CC(0, (u8 *)*(void **)((u8 *)arg0 + 0x18) +
-                                    *(s32 *)((u8 *)arg0 + 0xC) * 0xC, 1,
-                                 *(s32 *)((u8 *)arg0 + 0x1C));
+            result = fn_800167CC(0);
             temp = fn_80016BC8(0);
             *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) +
                      *(s32 *)((u8 *)arg0 + 0xC) * 0xC + 0xC) =
@@ -541,7 +539,8 @@ s32 fn_8001CE74(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return 0;
 }
 
-#pragma scheduling on
+#pragma paired off
+#pragma paired_single off
 s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     void *ptr = (void *)fn_8001285C(arg1);
     s32 count = *(s32 *)((u8 *)arg0 + 0x6C);
@@ -550,8 +549,8 @@ s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
         *(s32 *)((u8 *)arg0 + 0xC) >= arg2) {
         do {
             if (*(s32 *)((u8 *)arg0 + 0xC) == arg2) {
-                if (*(u32 *)((u8 *)ptr + 8) == 0x18000302) {
-                    if (*(f32 *)((u8 *)arg0 + 0x14) <= arg3)
+                if (*(u32 *)((u8 *)ptr + 8) == 0x00180302) {
+                    if (*(f32 *)((u8 *)arg0 + 0x14) > arg3)
                         break;
                 } else if (*(f32 *)((u8 *)arg0 + 0x14) < arg3) {
                     break;
@@ -563,7 +562,8 @@ s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     }
     return result;
 }
-
+#pragma paired_single reset
+#pragma paired reset
 int fn_8001CF8C(arg0, arg1, arg2, arg3, arg4)
 s32 arg0, arg1, arg2, arg3;
 double arg4;
