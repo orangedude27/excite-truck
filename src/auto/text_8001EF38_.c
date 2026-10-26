@@ -72,8 +72,10 @@ void fn_8001EFAC(void) {
     fn_8001F3AC();
 }
 
-void fn_8001EFB0(void) {
-    fn_8001F908();
+void fn_8001F908(void *);
+
+void fn_8001EFB0(void *arg0) {
+    fn_8001F908(arg0);
 }
 
 void fn_8001EFB4(void) {
