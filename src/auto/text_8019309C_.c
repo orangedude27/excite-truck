@@ -1116,12 +1116,15 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
     float spC;
     int var_r0;
     temp_f5 = farg0 - farg1;
-    temp_f5 = (lbl_80562230 + temp_f5) / farg2;
+    temp_f5 += lbl_80562230;
+    temp_f5 /= farg2;
     mag0 = __fabs((double)farg0);
     abs0 = (float)mag0;
     if (abs0 < lbl_80562168) {
-        *arg1 = lbl_80562140;
-        *arg0 = lbl_80562144;
+        float value0 = lbl_80562140;
+        float value1 = lbl_80562144;
+        *arg1 = value0;
+        *arg0 = value1;
         *arg2 = 0;
         return;
     }
@@ -1129,7 +1132,7 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
         goto direct_case;
     sp8 = temp_f5;
     spC = farg1;
-    if ((int)(*(unsigned int *)&sp8 & 0x80000000U) != (int)(*(unsigned int *)&spC & 0x80000000U))
+    if ((int)(*(unsigned int *)&spC & 0x80000000U) != (int)(*(unsigned int *)&sp8 & 0x80000000U))
         goto different_sign;
 direct_case:
     *arg0 = (float)__fabs((double)temp_f5) / lbl_80562234;
@@ -1709,7 +1712,7 @@ void *fn_80198DD0(void *arg0, int arg1) {
 void fn_80198E7C(int index) {
     void *entry = lbl_804349C0[index];
     if (*((u8 *)entry + 0x2A4) != 0)
-        fn_801964D0();
+        fn_801964D0(entry);
 }
 #pragma dont_inline reset
 
