@@ -1412,6 +1412,37 @@ void fn_80038040(void) {
     }
 }
 
+s32 DVDReadAbsAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *callback, s32 prio) {
+    s32 result;
+    s32 interrupts;
+    u32 command;
+
+    *(u32 *)((u8 *)block + 8) = 1;
+    *(void **)((u8 *)block + 0x18) = addr;
+    *(u32 *)((u8 *)block + 0x14) = length;
+    *(u32 *)((u8 *)block + 0x10) = offset;
+    *(u32 *)((u8 *)block + 0x20) = 0;
+    *(void **)((u8 *)block + 0x28) = callback;
+
+    if (lbl_80558E04 != 0) {
+        command = *(u32 *)((u8 *)block + 8);
+        if (command == 1 || command == 4 || command == 5 ||
+            command == 0x21 || command == 0xE) {
+            DCInvalidateRange(*(void **)((u8 *)block + 0x18),
+                              *(u32 *)((u8 *)block + 0x14));
+        }
+    }
+
+    interrupts = OSDisableInterrupts();
+    *(u32 *)((u8 *)block + 0xC) = 2;
+    result = __DVDPushWaitingQueue(prio, block);
+    if (executing_8055D8C8 == 0 && lbl_8055D84C == 0) {
+        fn_80038040();
+    }
+    OSRestoreInterrupts(interrupts);
+    return result;
+}
+
 extern void DCInvalidateRange(void *, u32);
 #pragma opt_propagation off
 s32 DVDInquiryAsync(void *block, void *addr, void *callback) {
