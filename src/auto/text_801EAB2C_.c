@@ -3,6 +3,9 @@
 
 #include <types.h>
 extern int lbl_80488228;
+extern void fn_802DAC54(void);
+extern int fn_802C7A40(int, void *, int, int, void *, int);
+extern void fn_802C70AC(int, void *, int, int);
 extern u8 lbl_80339E18[];
 extern void *memset(void *, int, unsigned int);
 
