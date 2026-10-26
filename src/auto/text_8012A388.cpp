@@ -568,6 +568,7 @@ extern "C" void fn_8012BC24(void **arg0, void *arg1) {
 }
 
 extern "C" const char lbl_8032AAFC[];
+#pragma scheduling reset
 extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2) {
     struct Struct8012BC50 {
         u8 pad[0x34];
@@ -595,15 +596,14 @@ extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2) {
         if (*(u32 *)(r31 + 0x34) & 4) {
             Struct8012BC50 *s = (Struct8012BC50 *)r31;
             fn_80128660(s->field_40);
+            s->field_40 = 0;
             s->f1 = 0;
             s->f3 = 0;
-            s->field_40 = 0;
             s->field_3c = 0;
         }
     }
     return *(s32 *)(r31 + 0x38) == 0;
 }
-
 extern "C" void *fn_8012BD3C(void *arg0, const char *arg1) {
     void *entry = arg0;
     goto test;
@@ -1261,6 +1261,7 @@ extern "C" void fn_8012DBD0(void) {
     u32 offset;
     s32 last;
     u32 *base;
+    u32 endAddress;
 
     if (lbl_8055DFFC != 0) {
         object = fn_801284F8(0xA24, lbl_8032ACA0);
@@ -1283,9 +1284,11 @@ extern "C" void fn_8012DBD0(void) {
             if (i < last) goto loop_body;
             base = *(u32 * volatile *)((char *)object + 8);
             *(u32 *)((char *)base + (u32)last * 0x50) = 0;
-            *(void **)((char *)object + 0x14) = *(void ** volatile *)((char *)object + 8);
+            endAddress = (u32)object + 0xA18;
+            base = *(u32 * volatile *)((char *)object + 8);
+            *(u32 *)((char *)object + 0x14) = (u32)base;
             *(s32 *)((char *)object + 0xA18) = 0;
-            *(void **)((char *)object + 0xA1C) = (char *)object + 0xA18;
+            *(u32 *)((char *)object + 0xA1C) = endAddress;
             fn_80127CF4((s32)object, (s32)lbl_8032ACD0);
             *(u8 *)((char *)object + 0xA20) = 0;
         }
