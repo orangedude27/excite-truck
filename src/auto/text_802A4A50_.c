@@ -465,7 +465,25 @@ void fn_802A5CA4(void *arg0) {
     obj->pos[0]=m[9]; obj->pos[1]=m[10]; obj->pos[2]=m[11];
     obj->axis[0]=m[6]; obj->axis[1]=m[7]; obj->axis[2]=m[8];
 }
-#pragma scheduling on
+
+#pragma push
+#pragma processor 750
+void fn_802A6234(void *arg0) {
+    f32 temp_f30;
+    f32 temp_f31;
+    s32 var_r31 = (s32)arg0;
+    s32 var_r30 = 0;
+    do {
+        temp_f30 = fn_80129DC4(0, lbl_80564894, lbl_80564898);
+        temp_f31 = fn_80129DC4(0, lbl_80564894, lbl_80564898);
+        *(f32 *)(var_r31 + 0x5C) = fn_80129DC4(0, lbl_80564894, lbl_80564898);
+        var_r30 += 1;
+        *(f32 *)(var_r31 + 0x60) = temp_f31;
+        *(f32 *)(var_r31 + 0x64) = temp_f30;
+        var_r31 += 0xC;
+    } while (var_r30 < 8);
+}
+#pragma pop
 f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898;
 f32 fn_802A4AD4(void);
@@ -516,11 +534,16 @@ void fn_802A6790(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
+    s32 size;
+    s32 allocation;
     s32 *object = (s32 *)arg0;
 
+    size = arg1 * 0xC;
+    allocation = fn_8012850C(size + 0x10, lbl_80349CAC);
     object[0] = fn_8002F37C(
-        fn_8012850C(arg1 * 0xC + 0x10, lbl_80349CAC),
+        allocation,
         (void *)fn_8001BA68,
         0,
         0xC,
@@ -531,7 +554,7 @@ s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
     fn_802A6A44(object);
     return arg0;
 }
-
+#pragma scheduling on
 void *fn_802A69D8(void *arg0, s32 arg1) {
     s32 temp;
     if (arg0 != 0) {
