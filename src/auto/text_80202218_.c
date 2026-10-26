@@ -221,6 +221,48 @@ test:
     lbl_8055ECE0 = 0;
     fn_802CE4F4(lbl_8055ECC8);
 }
+
+void fn_802029FC(void) {
+    extern double lbl_805630A8;
+    extern float lbl_805630A4, lbl_805630B0, lbl_805630B4;
+    extern int lbl_804888E0[];
+    extern float fn_801E7E18(void);
+    extern double fn_8002EFB4();
+    extern int fn_802C7A3C(float, float, float);
+    extern void fn_802C70AC(int, float *, int, int);
+    float values[12];
+    float first;
+    int *base, *entry;
+    int result, index;
+
+    first = fn_801E7E18();
+    result = fn_802C7A3C(lbl_805630B0 - (float)fn_8002EFB4(first, lbl_805630A8),
+                         lbl_805630A4, lbl_805630B4);
+    values[0] = lbl_805630B0;
+    values[1] = lbl_805630A4;
+    values[2] = lbl_805630A4;
+    values[3] = lbl_805630A4;
+    values[4] = lbl_805630B0;
+    values[5] = lbl_805630A4;
+    values[6] = lbl_805630A4;
+    values[7] = lbl_805630A4;
+    values[8] = lbl_805630B0;
+    values[9] = lbl_805630A4;
+    values[10] = lbl_805630A4;
+    values[11] = lbl_805630A4;
+    entry = lbl_804888E0;
+    base = entry;
+    index = 0;
+    goto test;
+loop:
+    fn_802C70AC(*entry, values, result, 8);
+    entry++;
+    index++;
+test:
+    if (index < base[0x20])
+        goto loop;
+}
+
 #pragma scheduling on
 #pragma pop
 extern unsigned char lbl_8055ECE0;
