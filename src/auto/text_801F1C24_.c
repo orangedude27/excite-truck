@@ -753,23 +753,32 @@ void fn_801F3C14(int unused, unsigned char *arg0) {
     }
 }
 
+#pragma push
+#pragma processor 750
 void fn_801F3CAC(void *arg0, void *arg1) {
-    void *node = arg1;
-    while (node != 0) {
-        float value = *(float *)((char *)node + 0x30) * fn_801E7E18();
+    extern float fn_801E7E18(void);
+    extern void fn_80144DC8(void *);
+    extern void fn_80015EB0(void *, float);
+    extern void fn_80015B20(void *, void *, void *);
+    extern void fn_802C744C(int, void *);
+    struct Buffers {
         char sp8[0x24];
-        char sp2c[4];
-        fn_80144DC8(sp8);
-        fn_80015EB0(sp8, value);
-        fn_80015B20(sp8, sp8, (char *)node + 0x34);
-        fn_80144DAC(sp2c, (char *)node + 0x20);
-        fn_802C744C(*(int *)((char *)node + 4), sp8);
+        float sp2c[3];
+    } buffers;
+    void *node;
+    float value;
+    node = arg1;
+    while (node != 0) {
+        value = *(float *)((char *)node + 0x30) * fn_801E7E18();
+        fn_80144DC8(buffers.sp8);
+        fn_80015EB0(buffers.sp8, value);
+        fn_80015B20(buffers.sp8, buffers.sp8, (char *)node + 0x34);
+        fn_80144DAC(buffers.sp2c, (float *)((char *)node + 0x20));
+        fn_802C744C(*(int *)((char *)node + 4), buffers.sp8);
         node = *(void **)((char *)node + 0xC);
     }
 }
-
-#pragma push
-#pragma small_data off
+#pragma pop
 extern int lbl_8033AA90, lbl_8033AA18, lbl_8033AA24;
 extern void fn_801F3E60(void);
 #pragma pop
