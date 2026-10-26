@@ -1057,7 +1057,9 @@ extern "C" void OSSetAlarmUserData(void*, void*);
 extern "C" void* memset(void*, int, u32);
 extern u8 lbl_80323770[];
 extern u8 lbl_80323790[];
+#pragma dont_inline on
 extern "C" void* fn_800EE4F0(void* arg0) {
+
     u8* p = (u8*)arg0;
     p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0; p[4] = 0; p[5] = 0; p[6] = 0;
     *(u32*)(p + 0x30) = 0;
@@ -1221,6 +1223,7 @@ extern "C" void* fn_800EE4F0(void*);
 extern u8 lbl_804127A8[];
 #pragma pop
 extern u8 lbl_8055DE40;
+#pragma dont_inline fn_800EE4F0
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void) {
     u8* base = lbl_804127A8;
     if ((s8)lbl_8055DE40 == 0) {
@@ -1239,7 +1242,6 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
     }
     return base;
 }
-
 extern "C" u64 OSGetTime(void);
 extern "C" void OSSetPeriodicAlarm(void*, u64, u64, u32, void*, u32, void*, void*);
 extern "C" void fn_800EE568(void*);
