@@ -281,8 +281,39 @@ int fn_801F0CC4(int unused) {
     lbl_8055EBEC = 0;
     lbl_8055EBF0 = 0;
 }
-#pragma scheduling on
-#pragma pop
+
+#pragma dont_inline on
+int fn_801F09FC(const char *);
+void fn_801F1878(void *);
+#pragma dont_inline on
+int fn_801F0DC0(int arg0, int arg1, int arg2, int arg3) {
+    int zero = 0;
+    *(int *)(arg0 + 0) = fn_801F09FC((const char *)arg1);
+    *(int *)(arg0 + 4) = zero;
+    *(int *)(arg0 + 8) = arg2;
+    *(int *)(arg0 + 0xC) = arg3;
+    if ((arg3 == 0) || (arg3 == 2)) {
+        float z = lbl_80562F1C;
+        float one = lbl_80562F18;
+        register unsigned int normalized = (unsigned int)__cntlzw(1) >> 5;
+        *(int *)(arg0 + 0x10) = normalized;
+        *(unsigned char *)(arg0 + 0x14) = zero;
+        *(float *)(arg0 + 0x18) = one;
+        *(float *)(arg0 + 0x1C) = z;
+        *(float *)(arg0 + 0x20) = z;
+        *(float *)(arg0 + 0x24) = z;
+        *(float *)(arg0 + 0x28) = one;
+        *(float *)(arg0 + 0x2C) = z;
+        *(float *)(arg0 + 0x30) = z;
+        *(float *)(arg0 + 0x34) = z;
+        *(float *)(arg0 + 0x38) = one;
+        *(float *)(arg0 + 0x3C) = z;
+        *(float *)(arg0 + 0x40) = z;
+        *(float *)(arg0 + 0x44) = z;
+        fn_801F1878((void *)arg0);
+    }
+    return arg0;
+}
 extern float lbl_80562F1C;
 #pragma dont_inline on
 int fn_801F0E88(int arg0, int arg1) {
@@ -650,7 +681,4 @@ void fn_801F1B1C(void *arg0, void *arg1, int arg2) {
     else
         *(volatile int *)((char *)dst + 0x80) = 0;
 }
-    #pragma scheduling on
-extern float lbl_80562F1C;
-extern float lbl_80562F18;
-extern int __cntlzw(unsigned int);
+          #pragma scheduling on
