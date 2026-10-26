@@ -62,6 +62,7 @@ extern "C" void fn_80148DFC(void *);
   extern "C" void fn_80148EDC(void *);
   extern "C" void fn_80235380();
   extern "C" void fn_80128668(void *);
+  extern "C" void deleteThreads__6SystemFv(void *);
 
 class ThreadObject80144F40 {
 public:
@@ -1545,6 +1546,21 @@ extern "C" void fn_80147EE0(void *arg0, f32 scale) {
     *(f32 *)((u8 *)arg0 + 4) = xpos - scale;
     *(f32 *)((u8 *)arg0 + 8) = ypos - decay;
 }
+
+#pragma push
+#pragma dont_inline on
+extern "C" void fn_80147FF0(void *arg0, s32 arg1) {
+    f32 temp_f31;
+    f32 temp_f30;
+    temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
+    temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 x = *(f32 *)((u8 *)arg0 + 4);
+    s32 id = *(s32 *)((u8 *)arg0 + 0xC);
+    f32 temp_f1 = ((f32 (*)(s32, f32))fn_801451DC)(id, x);
+    fn_80011278(arg1, temp_f1, temp_f31, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
+}
+#pragma dont_inline reset
+#pragma pop
 
 extern "C" void *lbl_8032D1D8;
 extern "C" f32 fn_801451DC(s32);
