@@ -1,4 +1,4 @@
-extern int *lbl_80435780;
+extern int lbl_80435780[];
 extern int *lbl_8055E624;
 extern unsigned char *fn_801EA9A0(int);
 extern int fn_801B8728(void);
