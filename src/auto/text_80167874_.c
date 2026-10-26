@@ -124,22 +124,22 @@ extern s32 fn_80128668(void);
 extern char lbl_80330020[];
 extern char lbl_803300E0[];
 extern void fn_802E317C(const char *, ...);
-#pragma dont_inline on
+#pragma optimization_level 2
+#pragma scheduling invalid_target
 s32 *fn_80167874(s32 arg0) {
-    s32 key = arg0;
-    s32 *base = (s32 *)lbl_80330020;
-    s32 *entry = base;
+    s32 *entry = (s32 *)lbl_80330020;
     s32 value = *entry;
     while (value != 6) {
-        if (value == key)
+        if (value == arg0)
             return entry;
         entry = (s32 *)((u8 *)entry + 0x20);
         value = *entry;
     }
-    ((void (*)(const char *, ...))fn_802E317C)(lbl_803300E0);
+    fn_802E317C(lbl_803300E0);
     return (s32 *)lbl_80330020;
 }
-
+#pragma scheduling on
+#pragma optimization_level reset
 extern double cos(float);
 extern double sin(float);
 extern int lbl_8055E3C4;
@@ -636,6 +636,7 @@ void fn_801683F4(void *arg0, s32 arg1) {
 extern s32 fn_8002B1D8(s32, s32 *, s32);
 extern char lbl_803301B8[];
 extern s32 lbl_8055E354;
+extern s32 lbl_80430260[];
 void fn_801688B4(s32 arg0) {
     s32 i = 0;
     s32 offset = 0;
