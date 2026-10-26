@@ -58,9 +58,9 @@ extern "C" void *fn_80217270(void *arg0, int arg1) {
 }
 #pragma cplusplus off
 void fn_8021734C(void *arg0) {
-    register int i = 0;
+    register char *entry = (char *)arg0;
     register char *self = (char *)arg0;
-    register char *entry = self;
+    register int i = 0;
     void *object;
     void *source;
     long value;
@@ -68,9 +68,9 @@ void fn_8021734C(void *arg0) {
 
     goto check;
 loop:
-    object = *(void **)(entry + 0x30);
-    ((void (*)(void *))(*(void ***)object)[3])(object);
+    ((void (*)(void *))(*(void ***)(*(void **)(entry + 0x30)))[3])(*(void **)(entry + 0x30));
     if (*(int *)(self + 0x440) != 0) {
+        object = *(void **)(entry + 0x30);
         source = *(void **)((char *)object + 0x240);
         value = source ? *(long *)source : *(long *)((char *)object + 0x23C);
         fn_802368B4(value);
@@ -812,20 +812,21 @@ void fn_80218A34(void *arg0, int arg1) {
     }
 }
 void fn_80218ADC(void *arg0, int arg1) {
-    char *base=(char *)arg0, *cursor;
-    int i, one=1, zero=0;
-    int mask=fn_80216D14(arg1);
-    if ((*(int *)(base+0x468)&mask)==0) {
-        mask=fn_80216D14(arg1);
-        *(int *)(base+0x468)|=mask;
-        cursor=base;
-        i=0;
-        for (; i<*(int *)(base+0x430); i++,cursor+=4) {
-            void *obj=*(void **)(cursor+0x30);
-            if (*(int *)(base+0x468)&*(int *)((char *)obj+0x238)) {
-                *(unsigned char *)((char *)obj+0x1B)=zero;
-                if (*(unsigned char *)((char *)obj+0x1A))
-                    *(unsigned char *)((char *)obj+0x234)=one;
+    char *cursor;
+    void *obj;
+    int i, one = 1, zero = 0;
+    int mask = fn_80216D14(arg1);
+    if ((*(int *)((char *)arg0 + 0x468) & mask) == 0) {
+        mask = fn_80216D14(arg1);
+        *(int *)((char *)arg0 + 0x468) |= mask;
+        cursor = (char *)arg0;
+        i = 0;
+        for (; i < *(int *)((char *)arg0 + 0x430); cursor += 4, i++) {
+            obj = *(void **)(cursor + 0x30);
+            if (*(int *)((char *)arg0 + 0x468) & *(int *)((char *)obj + 0x238)) {
+                *(unsigned char *)((char *)obj + 0x1B) = zero;
+                if (*(unsigned char *)((char *)obj + 0x1A))
+                    *(unsigned char *)((char *)obj + 0x234) = one;
             }
         }
     }
