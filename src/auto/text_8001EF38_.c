@@ -4,6 +4,7 @@
 #include <types.h>
 
 int fn_8001F7E4();
+s32 fn_8001FD24(void);
 extern s8 lbl_8055D614;
 extern s32 lbl_8055D618;
 extern char lbl_802FE060[];
