@@ -47,6 +47,7 @@ extern "C" void deleteThreads__6SystemFv_8026B178(void *arg0) {
 #pragma pop
 
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_8026B1D0(void *obj_) {
     class Object {
     public:
@@ -58,8 +59,6 @@ extern "C" void fn_8026B1D0(void *obj_) {
         virtual void v14();
         virtual void v18();
         virtual void v1C();
-        virtual void v20();
-        virtual void v24();
         virtual float fn28(unsigned int, float);
         virtual void v2C();
         virtual void v30();
@@ -71,14 +70,15 @@ extern "C" void fn_8026B1D0(void *obj_) {
         unsigned long long bits;
         float values[2];
     } pair;
-    Object *obj = (Object *)obj_;
     float *dst = (float *)(lbl_8049A028 + lbl_8055F4C8 * 0xC);
+    Object *obj = (Object *)obj_;
 
-    pair.bits = obj->fn3C((unsigned int)lbl_8055C4FC);
+    pair.bits = obj->fn3C((unsigned int)&lbl_8055C4FC);
     dst[0] = pair.values[0];
     dst[1] = pair.values[1];
-    dst[2] = obj->fn28((unsigned int)lbl_8055C500, lbl_80563D68);
+    dst[2] = obj->fn28((unsigned int)&lbl_8055C500, lbl_80563D68);
 }
+#pragma scheduling on
 #pragma cplusplus reset
 extern int *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(int);
