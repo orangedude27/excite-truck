@@ -2,16 +2,16 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct {
-    volatile float sp8, spC, sp10, sp14, sp18, sp1C;
-    volatile int sp20, sp24;
-    volatile float sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44;
+    float sp8, spC, sp10, sp14, sp18, sp1C;
+    int sp20, sp24;
+    float sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44;
     char pad40[0x8];
-    volatile float sp50, sp54;
+    float sp50, sp54;
     char pad50[0xC];
-    volatile int sp64;
-    volatile float sp68;
+    int sp64;
+    float sp68;
     char pad64[4];
-    volatile float sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94;
+    float sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94;
     char tail[0x20];
 } fn_802897E0Frame;
 
