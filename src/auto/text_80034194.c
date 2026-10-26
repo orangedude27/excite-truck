@@ -678,6 +678,7 @@ void cbForCancelSync(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma dont_inline(fn_800356F4)
 void fn_800356F4(s32 arg0, s32 arg1, s32 arg2) {
     s32 enabled;
     u32 tick;
