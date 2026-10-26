@@ -291,6 +291,8 @@ void fn_8027B77C(void) {
         lbl_8055F650 = 0;
     }
 }
+#pragma scheduling on
+#pragma pop
 
 #pragma dont_inline reset
 void *fn_8027B878(long arg0) {
