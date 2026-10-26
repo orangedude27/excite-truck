@@ -793,7 +793,7 @@ s32 fn_8006ADC4(s32 arg0)
     extern const char lbl_80313584[];
     s32 prev;
     s32 enabled;
-    DBPrintf_8006CFA8(lbl_80313584, arg0);
+    DBPrintf_8006CFA8(lbl_80313584);
     enabled = OSDisableInterrupts();
     prev = *(s32 *)(lbl_80392960 + 0x66C);
     *(s32 *)(lbl_80392960 + 0x66C) = arg0;
