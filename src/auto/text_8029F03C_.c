@@ -161,17 +161,21 @@ void fn_8029F300(void) {
  } while(i<fn_801E85A4());
 }
 
+#pragma push
+#pragma scheduling invalid_target
 int fn_8029F3BC(unsigned char *arg0) {
+    unsigned char *current = lbl_804B7770;
     int i = 0;
-    unsigned char *current = lbl_804B6E70;
     while (i < lbl_804B9B7C[1]) {
         if (stricmp((const char *)current, (const char *)arg0) == 0)
-            return *(int *)(current + 0x20);
+            return *(int *)(lbl_804B7770 + i * 0x24 + 0x20);
         current += 0x24;
         i++;
     }
     return -1;
 }
+#pragma scheduling on
+#pragma pop
 
 void fn_8029F458(unsigned char *arg0, int arg1) {
     unsigned char buf[0x20];
