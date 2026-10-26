@@ -23,6 +23,7 @@ void fn_80127D58(void *);
 void fn_802E7D0C(void);
 
 extern u8 lbl_80422380[0x20];
+extern void *lbl_8055DFD4;
 #pragma scheduling invalid_target
 void fn_80129400(void) {
     u8 *p;
@@ -36,40 +37,60 @@ void fn_80129400(void) {
         p += 0x80;
     } while (i < 4);
 }
-#pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
 void fn_80129458(void) {
-    u8 *a = lbl_80422380;
+    u32 zero = 0;
+    u32 one = 1;
     u8 *b = lbl_804223A0;
-    a[0]=1; *(u16 *)(a+6)=0x58; *(u16 *)(a+4)=0x54; a[2]=0;
-    *(u16 *)(a+12)=0x1B; *(u16 *)(a+8)=0x43; *(u16 *)(a+10)=0x53;
-    b[0]=1; b[2]=1; b[1]=0; *(u16 *)(b+6)=0xD; *(u16 *)(b+12)=0x113;
-    *(u16 *)(b+4)=0x20; *(u16 *)(b+8)=0x6F; *(u16 *)(b+10)=0x1B;
-    *(u16 *)(b+0x1C)=0x121; *(u16 *)(b+0xE)=0; *(u16 *)(b+0x12)=0;
-    *(u16 *)(b+0x10)=0; *(u16 *)(b+0x14)=0;
+    u8 *a = lbl_80422380;
+    a[0] = one;
+    *(u16 *)(a + 6) = 0x58;
+    *(u16 *)(a + 4) = 0x54;
+    a[2] = zero;
+    *(u16 *)(a + 12) = 0x1B;
+    *(u16 *)(a + 8) = 0x43;
+    *(u16 *)(a + 10) = 0x53;
+    b[0] = one;
+    b[2] = one;
+    b[1] = zero;
+    *(u16 *)(b + 6) = 0xD;
+    *(u16 *)(b + 12) = 0x113;
+    *(u16 *)(b + 4) = 0x20;
+    *(u16 *)(b + 8) = 0x6F;
+    *(u16 *)(b + 10) = 0x1B;
+    *(u16 *)(b + 0x1C) = 0x121;
+    *(u16 *)(b + 0xE) = zero;
+    *(u16 *)(b + 0x12) = zero;
+    *(u16 *)(b + 0x10) = zero;
+    *(u16 *)(b + 0x14) = zero;
 }
-
+#pragma pop
 void fn_801294FC(s32 arg0, s32 arg1) {
     fn_802E4800(arg0 | ((arg1 << 12) & 0xF000));
 }
 
 void fn_8012960C(void *arg0) {
-    s32 now = fn_802E2C20();
     u8 *p = (u8 *)arg0;
+    s32 now = fn_802E2C20();
     s32 count;
-    s32 old;
-    s32 limit = 0xFA;
-    if (p[8] == 0) {
+    s32 limit;
+    s32 elapsed;
+
+    if (p[8] != 0) {
+        count = *(s32 *)(p + 4);
+        limit = 0xFA;
+        elapsed = now - *(volatile s32 *)p;
+        if (count != 0)
+            limit = 0x7D;
+        if (elapsed > limit) {
+            *(s32 *)p = now;
+            *(s32 *)(p + 0x18) = 0;
+            *(s32 *)(p + 4) = *(s32 *)(p + 4) + 1;
+        }
+    } else {
         *(s32 *)p = now;
-        *(s32 *)(p+4) = 0;
-        return;
-    }
-    count = *(s32 *)(p+4);
-    old = *(s32 *)p;
-    if (count != 0) limit = 0x7D;
-    if (now - old > limit) {
-        *(s32 *)p = now;
-        *(s32 *)(p+0x18) = 0;
-        *(s32 *)(p+4) = count + 1;
+        *(s32 *)(p + 4) = 0;
     }
 }
 
