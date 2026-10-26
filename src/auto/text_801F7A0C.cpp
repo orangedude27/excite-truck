@@ -335,6 +335,7 @@ extern s32 lbl_8055B2A0;
 extern f32 lbl_80562FFC;
 s32 fn_801F7B10(void *, void *, s32);
 s32 fn_801BFD34(void *, void *, s32);
+extern "C" void fn_801BFD34(void *, void *, void *);
 s32 fn_80015B20(void *, void *, s32);
 extern "C" void fn_80015B20(void *, void *, void *);
 #pragma scheduling invalid_target
@@ -1191,10 +1192,10 @@ extern "C" void fn_801F973C(void *, void *, u32);
 #pragma use_lmw_stmw off
 extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     volatile u32 *src = (volatile u32 *)arg1;
-    u32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
-    u32 zero;
+    u32 zero, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     f32 data[14];
 
+    zero = 0;
     t0 = src[0];
     t1 = src[1];
     t2 = src[2];
@@ -1208,7 +1209,6 @@ extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     t10 = src[10];
     t11 = src[11];
 
-    zero = 0;
     ((u32 *)data)[13] = zero;
     ((u32 *)data)[12] = zero;
 
