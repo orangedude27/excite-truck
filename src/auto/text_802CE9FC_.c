@@ -1,4 +1,5 @@
 #pragma dont_inline fn_802CFF50
+#pragma dont_inline fn_802D0EC8
 extern int lbl_804C9760[];
 extern unsigned char lbl_804C5710[];
 extern unsigned char lbl_8055D0F0;
