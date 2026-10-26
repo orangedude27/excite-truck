@@ -107,22 +107,30 @@ extern "C" void fn_801F004C(int unused, int arg1, void *arg2) {
     fn_802C6C20(list);
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801F0148(void *arg0, void *arg1) {
+    class Fn801F0148VTable {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual float v7(int);
+    };
     float value;
-    *(float *)((char *)arg0 + 0x18) =
-        ((float (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_8033A400)
-        * lbl_80562F10 * lbl_80562F14;
-    *(float *)((char *)arg0 + 0x1C) =
-        ((float (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_8033A410)
-        * lbl_80562F10 * lbl_80562F14;
-    value =
-        ((float (*)(void *, int))(*(void ***)arg1)[9])(arg1, (int)&lbl_8055B0C0)
-        * lbl_80562F10;
+    Fn801F0148VTable *object = (Fn801F0148VTable *)arg1;
+    value = object->v7((int)&lbl_8033A400) * lbl_80562F10;
+    *(float *)((char *)arg0 + 0x18) = value * lbl_80562F14;
+    value = object->v7((int)&lbl_8033A410) * lbl_80562F10;
+    *(float *)((char *)arg0 + 0x1C) = value * lbl_80562F14;
+    value = object->v7((int)&lbl_8055B0C0) * lbl_80562F10;
     *(float *)((char *)arg0 + 0x24) = lbl_80562F18;
     *(float *)((char *)arg0 + 0x20) = value;
 }
-
-  #pragma cplusplus off
+#pragma scheduling on
 
 extern int lbl_8055B0E0;
 extern int lbl_8055B0E8;
