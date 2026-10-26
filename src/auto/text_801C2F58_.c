@@ -91,37 +91,16 @@ extern f32 lbl_80558DC4[];
 extern double fn_8002F234(float);
 extern void fn_8012F57C(float *, float *, float *, float);
 extern f32 lbl_8056296C, lbl_80562970, lbl_80562974;
+#pragma scheduling invalid_target
 f32 fn_801C2F58(s32 arg0, f32 arg1) {
     f32 result = lbl_8056296C;
-    if (arg0 > 0) {
-        s32 remainder = arg0 - 8;
-        s32 count = 0;
-        if (arg0 > 8 && arg0 <= 0x7FFFFFFE) {
-            count = 1;
-        }
-        if (count != 0) {
-            s32 loops = (remainder + 7) / 8;
-            while (loops-- != 0) {
-                result *= arg1;
-                result *= arg1;
-                result *= arg1;
-                result *= arg1;
-                result *= arg1;
-                result *= arg1;
-                result *= arg1;
-                result *= arg1;
-                if (remainder <= 0)
-                    break;
-            }
-        }
-        remainder = arg0 - 8 * count;
-        while (remainder-- != 0) {
-            result *= arg1;
-        }
+    s32 i;
+    for (i = 0; i < arg0; i++) {
+        result *= arg1;
     }
     return result;
 }
-
+#pragma scheduling on
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
     float qa[4], qb[4], q[4], trace, root, half=lbl_80562974, w, x, y, z;
     int i,j,k;
