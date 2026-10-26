@@ -120,7 +120,7 @@ int fn_8028D17C(void) {
     void *obj;
 
     lbl_8055F728 = 0;
-    slot = &lbl_804B3470;
+    slot = (int *)lbl_804B3470;
     base = (char *)&lbl_804B3400;
     i = 0;
     invalid = -1;
