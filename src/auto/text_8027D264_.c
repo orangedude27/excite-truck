@@ -4,6 +4,7 @@
 extern void *lbl_8055C790;
 extern void fn_8001D9B4(void *);
 extern void *fn_8001285C(int);
+extern void fn_80007FF0(int);
 extern char lbl_80347DE8[];
 extern int fn_80007F90(int);
 extern int lbl_8055C784;
