@@ -134,28 +134,24 @@ __declspec(section ".sdata") extern int lbl_8055F9D0[];
 #pragma push
 #pragma scheduling invalid_target
 void fn_802B4BDC(void) {
-    int zero;
-    int i;
-    int *p;
-    int count;
-    int offset;
     void *entry;
+    int zero;
+    int offset;
+    int *p;
+    int i;
+    int count;
 
-    zero = 0;
     i = 0;
     p = lbl_804BE248;
     do {
-        int keep;
         fn_802B4CB4(p);
         i += 1;
-        keep = (unsigned int)i < 0x80;
         p += 1;
-        if (!keep)
-            break;
-    } while (1);
+    } while ((unsigned int)i < 0x80);
 
     count = 0;
     offset = 0;
+    zero = 0;
     goto check_count;
 loop:
     entry = *(void **)((char *)*(void **)*(void * volatile *)lbl_8055F9D0 + offset);
