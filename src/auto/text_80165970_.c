@@ -316,6 +316,23 @@ void fn_80166098(void) {
     fn_801B2EC0();
 }
 
+#pragma cplusplus on
+float fn_801660C0(void) {
+    void **object;
+    int index;
+    float factor;
+    float value;
+    object = ((void **(*)(void))fn_80166098)();
+    index = *(int *)((char *)((void *(*)(void *))(*(void ***)object)[4])(object) + 0x10) - 1;
+    factor = fn_8013672C(index);
+    value = (float)index * factor + *(float *)((char *)((void *(*)(void *))(*(void ***)object)[6])(object) + 0x48);
+    if (lbl_8056189C > value) {
+        return lbl_8056189C;
+    }
+    return value;
+}
+#pragma cplusplus reset
+
 int fn_8016616C(void) {
     return lbl_8055E320 > *(float *)((char *)&lbl_8042FE38 + 0x48);
 }
@@ -423,7 +440,7 @@ void fn_801663C8(int count, void *records, void *config) {
     fn_802E30C8(strings + 0x280, *(float *)((char *)&lbl_8042FE38 + 8), (float)(double)value, *(float *)((char *)&lbl_8042FE38 + 4), *(float *)&lbl_8042FE38);
     holder = fn_801284F8(16, strings + 0x2A0);
     if (holder) {
-        array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), fn_80166754, 0, 0x88, count);
+        array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), (void (*)(void *))fn_80166754, 0, 0x88, count);
         *(void **)holder = array;
         *(int *)((char *)holder + 8) = count;
         *(int *)((char *)holder + 4) = 0;
@@ -443,6 +460,8 @@ void fn_801663C8(int count, void *records, void *config) {
     *(int *)&lbl_8055E334 = 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_80166754(void *arg0) {
     extern float lbl_805618D8, lbl_805618DC, lbl_805618E0;
     char *base = (char *)&lbl_8042FE38;
@@ -467,7 +486,7 @@ void fn_80166754(void *arg0) {
     *(float *)((char *)arg0 + 0x48) = -*(float *)(base + 0x3C);
     *(float *)((char *)arg0 + 0x50) = result * lbl_80561898;
 }
-
+#pragma scheduling on
 #pragma pop
 int fn_801667F0(void) {
     int result = 0;
