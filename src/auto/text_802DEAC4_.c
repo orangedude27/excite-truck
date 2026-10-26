@@ -22,6 +22,8 @@ extern void fn_802E27A0(void *);
 extern void fn_802E27B8(void *);
 extern u8 fn_802ECC10(void);
 extern char lbl_8034CBE0[], lbl_8034CBF8[];
+extern void fn_802E30C8(const char *, ...);
+extern void fn_802E2C20(void);
 extern void fn_801284F8(void *, void *);
 extern char lbl_8034CB68[];
 extern void *lbl_8055FEEC;
