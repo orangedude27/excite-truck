@@ -9,7 +9,7 @@ typedef s32 (SortCompareObject::*SortCompareMethod)(s32, s32);
 static inline s32 callSortCompare(void *object, s32 *descriptor, s32 left, s32 right) {
     return (((SortCompareObject *)object)->*(*((SortCompareMethod *)descriptor)))(left, right);
 }
-#pragma cplusplus reset
+#pragma cplusplus off
 #define F(p,o) (*(f32 *)((char *)(p)+(o)))
 #define I(p,o) (*(s32 *)((char *)(p)+(o)))
 #define B(p,o) (*(unsigned char *)((char *)(p)+(o)))
