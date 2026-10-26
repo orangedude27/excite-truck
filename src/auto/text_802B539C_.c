@@ -69,6 +69,58 @@ void fn_802B57B8(void) {
 }
 
 #pragma cplusplus on
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+extern "C" void fn_802B5808(int arg0) {
+    register int var_r28;
+    register int var_r29;
+    register int var_r27;
+    register int var_r26;
+    register int var_r25;
+    register int var_r25_2;
+    register int status;
+
+    var_r26 = 0;
+    var_r29 = 0;
+    goto loop_6;
+loop_6_body:
+    var_r25 = 0;
+    var_r28 = (int)lbl_804BE4AC.entries + var_r29;
+    var_r27 = var_r28 + 0x10;
+    do {
+        fn_802B5404((int *)var_r27);
+        var_r25 += 1;
+        var_r27 += 8;
+    } while (var_r25 < 4);
+    status = *(int *)(var_r28 + 0x2C);
+    if (status != -1) {
+        ((void (*)(int))fn_802C6CF8)(status);
+    }
+    var_r29 += 0x30;
+    var_r26 += 1;
+loop_6:
+    if (var_r26 < (int)lbl_804BE4AC.count) {
+        goto loop_6_body;
+    }
+
+    var_r25_2 = 0;
+    var_r29 = 0;
+    goto loop_9;
+loop_9_body:
+    fn_80131818(*(int *)((char *)lbl_804BE454.entries + var_r29));
+    var_r29 += 4;
+    var_r25_2 += 1;
+loop_9:
+    if (var_r25_2 < (int)lbl_804BE454.count) {
+        goto loop_9_body;
+    }
+    lbl_804BE454.count = 0;
+    lbl_804BE4AC.count = 0;
+    lbl_8055F9E8 = 0;
+}
+#pragma dont_inline off
+#pragma use_lmw_stmw on
+#pragma cplusplus on
 extern "C" void fn_802B562C(void *, void *, void *);
 #pragma cplusplus on
 #pragma dont_inline on
