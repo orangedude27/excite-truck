@@ -645,7 +645,7 @@ void *fn_801F69C8(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-void fn_801F6A08(void *arg0, int arg1) {
+FN_801F6A08_RETURN fn_801F6A08(void *arg0, int arg1) {
     void *entry;
     int i;
 
