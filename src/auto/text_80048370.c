@@ -278,13 +278,17 @@ MEMiHeapHead* MEMDestroyExpHeap(MEMiHeapHead* heap) {
 #pragma dont_inline on
 void* MEMAllocFromExpHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
     void* memBlock;
+    register u32 rounded;
 
     if (size == 0) {
         size = 1;
     }
-    size = ROUND_UP(size, 4);
+    rounded = size + 3;
+    size = rounded & 0xFFFFFFFC;
 
-    LockHeap(heap);
+    if ((*(u32 *)((u8 *)heap + 0x38) & 4) != 0) {
+        OSLockMutex((OSMutex *)((u8 *)heap + 0x20));
+    }
 
     if (align >= 0) {
         memBlock = AllocFromHead_(heap, size, align);
@@ -292,7 +296,9 @@ void* MEMAllocFromExpHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
         memBlock = AllocFromTail_(heap, size, -align);
     }
 
-    UnlockHeap(heap);
+    if ((*(u32 *)((u8 *)heap + 0x38) & 4) != 0) {
+        OSUnlockMutex((OSMutex *)((u8 *)heap + 0x20));
+    }
 
     return memBlock;
 }
@@ -569,6 +575,9 @@ void *MEMGetNextListObject(MEMList *list, void *object) {
     return *(void **)((u8 *)object + list->offset + 4);
 }
 
+#pragma push
+#pragma paired on
+#pragma paired_single on
 void PSMTXConcat(const Mtx a, const Mtx b, Mtx out) {
     Mtx tmp;
     int i, j;
@@ -582,7 +591,7 @@ void PSMTXConcat(const Mtx a, const Mtx b, Mtx out) {
         for (j = 0; j < 4; j++) out[i][j] = tmp[i][j];
     }
 }
-
+#pragma pop
 extern f32 lbl_80560C48;
 extern f32 lbl_80560C4C;
 void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
