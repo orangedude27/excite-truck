@@ -578,7 +578,7 @@ extern "C" void *fn_802076A0(int arg0, int arg1, int arg2, int arg3) {
     struct Callback {
         virtual ~Callback();
     };
-    void *obj = (void *)fn_801284F8(0x70, &lbl_8033BD4C);
+    void *obj = (void *)fn_801284F8(0x70, lbl_8033BD4C);
     if (obj != 0)
         obj = fn_80207428(obj, arg0, arg1, arg2, arg3);
     if (obj != 0 && *(int *)((char *)obj + 0xC) == 0) {
