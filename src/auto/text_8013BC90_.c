@@ -94,24 +94,33 @@ void fn_8013BF3C(void) {
     ((void (*)(void))fn_8013BD30)();
 }
 
+#pragma scheduling invalid_target
 void *fn_8013BF40(char *arg0) {
-    void *p=fn_801284F8(0x78,lbl_8032C414);
-    char *dst=(char *)p;
-    const char *src=arg0;
-    int n=0x40;
-    if(p) fn_8013A264((char *)p+0x40);
-    while (--n > 0) {
-        char c=*src++;
-        *dst++=c;
-        if(!c) goto copied2;
-    }
-    dst[-1]=0;
-copied2:
-    fn_8013BF3C();
-    *(int *)((char *)p+0x74)=0;
+    void *p = fn_801284F8(0x78, lbl_8032C414);
+    int count;
+    char *dst;
+    unsigned char c;
+    if (p != 0)
+        fn_8013A264((char *)p + 0x40);
+    dst = (char *)p;
+    count = 0x40;
+    goto copy;
+count_check:
+    if (--count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto copied;
+copy:
+    c = (unsigned char)*arg0++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
+copied:
+    ((void (*)(void *))fn_8013BF3C)((char *)p + 0x60);
+    *(volatile int *)((char *)p + 0x74) = 0;
     return p;
 }
-
+#pragma scheduling on
 void fn_8013BFE0(void) {
 
 }
