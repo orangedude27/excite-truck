@@ -71,6 +71,63 @@ void fn_8000A688(void (*arg0)(void*), s32 arg1) DECOMP_DONT_INLINE {
     arg0(sp8 + 8);
 }
 
+extern void *fn_80131810(const char *);
+extern void fn_80131818(void *);
+extern void fn_802E317C(const char *, ...);
+extern int stricmp(const char *, const char *);
+extern char lbl_802FBC08[];
+extern char lbl_802FBC18[];
+extern int lbl_80558A20;
+extern int lbl_80558A28;
+extern int lbl_80558A30;
+#pragma cplusplus on
+extern "C" void *fn_80131810(const char *);
+extern "C" void fn_80131818(void *);
+extern "C" void fn_802E317C(const char *, ...);
+extern "C" int stricmp(const char *, const char *);
+extern "C" char lbl_802FBC08[];
+extern "C" char lbl_802FBC18[];
+extern "C" int lbl_80558A20;
+extern "C" int lbl_80558A28;
+extern "C" int lbl_80558A30;
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_8000A6D8(void) {
+    class ManagerView {
+    public:
+        virtual void unused0() = 0;
+        virtual void unused1() = 0;
+        virtual void unused2() = 0;
+        virtual const char *getName(const char *) = 0;
+    };
+    class ResourceView {
+    public:
+        virtual void *getItem(const char *) = 0;
+        virtual void unused1() = 0;
+        virtual void unused2() = 0;
+        virtual const char *getName(const char *) = 0;
+    };
+    const char *original;
+    const char *name;
+    void *resource;
+    void *manager;
+    void *item;
+    manager = *(void **)((u8 *)(void *)lbl_8055D3B8 + 0x20);
+    original = ((ManagerView *)manager)->getName((const char *)&lbl_80558A20);
+    name = (const char *)&lbl_80558A28;
+    resource = fn_80131810(lbl_802FBC08);
+    if (resource != 0) {
+        item = ((ResourceView *)resource)->getItem((const char *)&lbl_80558A20);
+        name = ((ResourceView *)item)->getName((const char *)&lbl_80558A30);
+        fn_80131818(resource);
+    }
+    if (stricmp(name, original) != 0) {
+        fn_802E317C(lbl_802FBC18, original, name);
+    }
+}
+#pragma pop
+#pragma cplusplus reset
+
 void fn_8000AADC(void* arg0) {
     fn_8000A7A8();
 }
