@@ -1774,6 +1774,26 @@ extern "C" void fn_8012CA40(void *arg0) {
     }
 }
 
+extern "C" u32 lbl_805599C0;
+extern "C" void fn_801282F4(void);
+extern "C" void fn_801284F0(void *, void *);
+extern "C" s32 fn_8012CAA0(s32 arg0, void *arg1) {
+    void *obj = ((void *(*)(s32, void *))fn_8012C9C8)(0xD0, &lbl_805599C0);
+    if (obj != 0) {
+        s32 zero = 0;
+        *(u8 *)((u8 *)obj + 0xB0) = zero;
+        *(s32 *)((u8 *)obj + 0xB8) = 1;
+        *(s32 *)((u8 *)obj + 0xB4) = -1;
+        *(s32 *)((u8 *)obj + 0xCC) = (arg0 + 0x7FF) & ~0x7FF;
+        fn_801282F4();
+        fn_801282EC(0x80);
+        *(s32 *)((u8 *)obj + 0xC8) =
+            ((s32 (*)(void *, s32))fn_801284F0)(arg1, *(s32 *)((u8 *)obj + 0xCC));
+        *(s32 *)((u8 *)obj + 0xC0) = zero;
+    }
+    return (s32)obj;
+}
+
 extern "C" const char lbl_8032AE20[];
 extern "C" void *fn_8012CB44(void *arg0, s32 arg1) {
     s32 i, offset;
