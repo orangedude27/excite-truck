@@ -1013,38 +1013,74 @@ void fn_801B2364(void) {
  }
 }
 #pragma pop
+extern void fn_801B15A8(s32, f32);
 void fn_801B24B8(void) {
-    s32 *entry;
-    s32 i;
-    s32 count;
-    void *obj;
-    void **vtable;
-    if (fn_801769F8() != 0) return;
+    struct Table {
+        s32 entries[16];
+        volatile s32 count;
+    };
+    register struct Table *table;
+    register s32 value;
+    register void *obj;
+    register s32 *entry;
+    register s32 i;
+    register s32 newValue;
+    register s32 index;
+    register s32 *table2;
+    register s32 j;
+
+    if (fn_801769F8() != 0)
+        return;
     entry = (s32 *)&lbl_80435BE8;
+    table = (struct Table *)entry;
     i = 0;
-    count = *(s32 *)((u8 *)&lbl_80435BE8 + 0x40);
-    while (i < count) {
-        obj = (u8 *)lbl_8055E684 + (entry[0] << 7);
-        if (*(u8 *)((u8 *)obj + 0x78) == 0)
-            *(s32 *)((u8 *)obj + 0x74) = lbl_8055E688 - i + 9;
-        entry = (s32 *)((u8 *)entry + 8);
-        i++;
-    }
+    goto check_first;
+first_loop:
+    index = entry[0];
+    value = *(volatile s32 *)&lbl_8055E688;
+    obj = (u8 *)lbl_8055E684 + (index << 7);
+    newValue = value - i + 9;
+    if (*(u8 *)((u8 *)obj + 0x78) == 0)
+        *(s32 *)((u8 *)obj + 0x74) = newValue;
+    entry = (s32 *)((u8 *)entry + 8);
+    i++;
+check_first:
+    if (i < table->count)
+        goto first_loop;
+
     fn_801B1318();
-    entry = (s32 *)&lbl_80435BE8;
-    i = 0;
-    count = *(s32 *)((u8 *)&lbl_80435BE8 + 0x40);
-    while (i < count) {
-        obj = (u8 *)lbl_8055E684 + (entry[0] << 7);
-        fn_801B15A8((s32)obj, *(f32 *)((u8 *)entry + 4));
-        entry = (s32 *)((u8 *)entry + 8);
-        i++;
+
+    table2 = (s32 *)&lbl_80435BE8;
+    j = 0;
+    goto check_second;
+second_loop:
+    {
+        s32 index2 = table->entries[0];
+        f32 amount = *(f32 *)((u8 *)table + 4);
+        obj = (u8 *)lbl_8055E684 + (index2 << 7);
+        fn_801B15A8((s32)obj, amount);
     }
-    *(s32 *)((u8 *)&lbl_80435BE8 + 0x40) = 0;
+    table = (struct Table *)((u8 *)table + 8);
+    j++;
+check_second:
+    if (j < *(volatile s32 *)((u8 *)table2 + 0x40))
+        goto second_loop;
+
+    *(volatile s32 *)((u8 *)table2 + 0x40) = 0;
     obj = lbl_8055E68C;
     if (obj != 0) {
-        vtable = *(void ***)obj;
-        ((void (*)(void *))vtable[8])(obj);
+#pragma cplusplus on
+        struct Dummy {
+            virtual void d0();
+            virtual void d1();
+            virtual void d2();
+            virtual void d3();
+            virtual void d4();
+            virtual void d5();
+            virtual void call();
+        };
+        ((Dummy *)obj)->call();
+#pragma cplusplus reset
     }
 }
 
