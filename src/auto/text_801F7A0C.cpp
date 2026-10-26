@@ -386,7 +386,7 @@ extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg) {
     }
     if (arg != 0) {
         fn_801BFD34((u8 *)out + 0x24, (u8 *)out + 0x24, arg);
-        fn_80015B20(out, out, arg);
+        fn_80015B20(out, out, (void *)arg);
     }
     if (result == 0 && arg != 0) return 1;
     return 0;
