@@ -587,11 +587,10 @@ float fn_802BAD90(float farg0) {
 
 #pragma cplusplus on
 extern "C" void fn_802BAE30(void *);
-extern "C" void fn_802BAD9C(s32 arg0) {
-    char *label = (char *)&lbl_8034A9F4;
-    void *entry = fn_801284F8(0x10, label);
+void fn_802BAD9C(s32 arg0) {
+    void *entry = fn_801284F8(0x10, (void *)&lbl_8034A9F4);
     if (entry != 0) {
-        void *buffer = ((void *(*)(int, void *))fn_8012850C)(arg0 * 0x44 + 0x10, label);
+        void *buffer = ((void *(*)(int, void *))fn_8012850C)(arg0 * 0x44 + 0x10, (void *)&lbl_8034A9F4);
         void *items = fn_8002F37C(buffer, fn_802BAE30, 0, 0x44, arg0);
         *(void **)entry = items;
         *(s32 *)((char *)entry + 8) = arg0;
