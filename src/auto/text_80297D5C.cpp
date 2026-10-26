@@ -1181,7 +1181,7 @@ extern "C" void fn_80298DE0(void*, void*, int);
 extern "C" void fn_8029BBD4(void*, void*, int);
 extern "C" void fn_8029A208(void*, int, int);
 extern "C" void fn_8029A904(void*, void*, float, float);
-void fn_8029C084(void* arg0, int arg1) {
+extern "C" void fn_8029C084(void* arg0, int arg1) {
     float temp_f31 = fn_801E7E24();
     if (__fabsf(temp_f31) != lbl_80558DC4) {
         int i = 0;
