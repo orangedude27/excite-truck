@@ -192,6 +192,7 @@ void fn_80206228(void) {
     }
 }
 
+#pragma dont_inline reset
 void fn_8020625C(void) {
     unsigned char old;
     if (fn_801E85A4() > 1) {
