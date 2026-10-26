@@ -95,7 +95,6 @@ void fn_8012960C(void *arg0) {
     }
 }
 
-#pragma dont_inline fn_801294FC
 extern void fn_80129508(void *, s32, void *);
 void fn_80129690(void *arg0, s32 arg1, void *arg2) {
     u8 *dst = (u8 *)arg0;
