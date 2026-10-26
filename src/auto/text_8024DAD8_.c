@@ -5,6 +5,11 @@ typedef signed int s32;
 typedef unsigned char u8;
 typedef float f32;
 typedef int M2C_UNK;
+extern void *fn_801284F8(unsigned int, void *);
+extern void *fn_8012850C(s32, void *);
+extern void fn_801312EC(void *, void *);
+extern char lbl_8055C0E0[];
+extern char lbl_80344378[], lbl_80344384[], lbl_80344690[];
 extern unsigned char lbl_8055C0E8;
 extern unsigned int lbl_8055E044;
 extern unsigned char *fn_80019098(unsigned char *);
@@ -1159,8 +1164,8 @@ extern "C" s32 fn_80250204(void *arg0, s32 arg1, M2C_UNK arg_sp0) {
     s32 *temp_r4_3;
     s32 temp_r22;
     s32 temp_r27;
-    s32 temp_r27_2;
-    s32 temp_r27_3;
+    register s32 temp_r27_2;
+    register s32 temp_r27_3;
     s32 var_r0;
     s32 var_r0_2;
     s32 var_r0_3;
@@ -1185,24 +1190,24 @@ extern "C" s32 fn_80250204(void *arg0, s32 arg1, M2C_UNK arg_sp0) {
     u8 *var_r23;
     u8 *var_r23_2;
     u8 *var_r25_3;
-    u8 *var_r4;
-    u8 *var_r4_10;
-    u8 *var_r4_2;
-    u8 *var_r4_5;
-    u8 *var_r4_6;
-    u8 *var_r4_9;
+    volatile u8 *var_r4;
+    volatile u8 *var_r4_10;
+    volatile u8 *var_r4_2;
+    volatile u8 *var_r4_5;
+    volatile u8 *var_r4_6;
+    volatile u8 *var_r4_9;
     u8 *var_r5_11;
     u8 *var_r5_3;
     u8 *var_r5_7;
-    u8 *var_r6;
-    u8 *var_r6_2;
-    u8 *var_r6_3;
-    u8 *var_r6_4;
-    u8 *var_r6_5;
-    u8 *var_r6_6;
-    u8 *var_r6_7;
-    u8 *var_r6_8;
-    u8 *var_r6_9;
+    volatile u8 *var_r6;
+    volatile u8 *var_r6_2;
+    volatile u8 *var_r6_3;
+    volatile u8 *var_r6_4;
+    volatile u8 *var_r6_5;
+    volatile u8 *var_r6_6;
+    volatile u8 *var_r6_7;
+    volatile u8 *var_r6_8;
+    volatile u8 *var_r6_9;
     u8 temp_r23_2;
     u8 temp_r3_10;
     u8 temp_r3_17;
@@ -1352,10 +1357,8 @@ copy_125_b_end: ;
                 copy_b = M2C_FIELD(temp_r3_9, s32, 0x20);
                 M2C_FIELD(temp_r29, s32, 0x1C) = copy_a;
                 M2C_FIELD(temp_r29, s32, 0x20) = copy_b;
-                copy_b = M2C_FIELD(temp_r3_9, s32, 0x24);
-                copy_a = M2C_FIELD(temp_r3_9, s32, 0x28);
-                M2C_FIELD(temp_r29, s32, 0x24) = copy_b;
-                M2C_FIELD(temp_r29, s32, 0x28) = copy_a;
+                M2C_FIELD(temp_r29, s32, 0x28) = M2C_FIELD(temp_r3_9, s32, 0x28);
+                M2C_FIELD(temp_r29, s32, 0x24) = M2C_FIELD(temp_r3_9, s32, 0x24);
 do {
                         var_r6_3 = M2C_FIELD(var_r22, u8 *, 4);
                         if (var_r6_3 != 0) {
@@ -1506,10 +1509,8 @@ copy_127_b_end: ;
                 copy_b = M2C_FIELD(temp_r3_21, s32, 0x18);
                 M2C_FIELD(temp_r28, s32, 0x14) = copy_a;
                 M2C_FIELD(temp_r28, s32, 0x18) = copy_b;
-                copy_a = M2C_FIELD(temp_r3_21, s32, 0x1C);
-                copy_b = M2C_FIELD(temp_r3_21, s32, 0x20);
-                M2C_FIELD(temp_r28, s32, 0x1C) = copy_a;
-                M2C_FIELD(temp_r28, s32, 0x20) = copy_b;
+                M2C_FIELD(temp_r28, s32, 0x20) = M2C_FIELD(temp_r3_21, s32, 0x20);
+                M2C_FIELD(temp_r28, s32, 0x1C) = M2C_FIELD(temp_r3_21, s32, 0x1C);
                 copy_a = M2C_FIELD(temp_r3_21, s32, 0x24);
                 copy_b = M2C_FIELD(temp_r3_21, s32, 0x28);
                 M2C_FIELD(temp_r28, s32, 0x24) = copy_a;
@@ -1683,10 +1684,8 @@ copy_128_b_end: ;
                     copy_b = M2C_FIELD(temp_r3_34, s32, 0x20);
                     M2C_FIELD(temp_r28_2, s32, 0x1C) = copy_a;
                     M2C_FIELD(temp_r28_2, s32, 0x20) = copy_b;
-                    copy_b = M2C_FIELD(temp_r3_34, s32, 0x24);
-                    copy_a = M2C_FIELD(temp_r3_34, s32, 0x28);
-                    M2C_FIELD(temp_r28_2, s32, 0x24) = copy_b;
-                    M2C_FIELD(temp_r28_2, s32, 0x28) = copy_a;
+                    M2C_FIELD(temp_r28_2, s32, 0x28) = M2C_FIELD(temp_r3_34, s32, 0x28);
+                    M2C_FIELD(temp_r28_2, s32, 0x24) = M2C_FIELD(temp_r3_34, s32, 0x24);
 do {
                             var_r6_9 = M2C_FIELD(var_r26_3, u8 *, 4);
                             if (var_r6_9 != 0) {
@@ -1939,24 +1938,36 @@ extern f32 lbl_80563960, lbl_805639C0;
 __declspec(section ".data") extern f32 lbl_80558DC4;
 extern char lbl_8055C0E0[];
 extern char lbl_80344378[], lbl_80344384[], lbl_80344690[], lbl_803443B0[];
+#pragma scheduling off
 void fn_80251D0C(void *arg0) {
-    fn_80255904(*(s32 *)((char *)arg0 + 0x20));
-    *(s32 *)((char *)arg0 + 0x190) = -1;
-    *(u8 *)((char *)arg0 + 0x28) = 0; *(u8 *)((char *)arg0 + 0x48) = 0;
-    *(u8 *)((char *)arg0 + 0x88) = 0; *(u8 *)((char *)arg0 + 0x108) = 0;
-    *(f32 *)((char *)arg0 + 0x194) = lbl_80563960;
-    *(f32 *)((char *)arg0 + 0x198) = lbl_805639C0;
-    fn_80214A9C(0x1f, lbl_80563960);
-    *(u8 *)((char *)arg0 + 0x19c) = 0;
-}
+    float value1;
+    int zero;
+    float value0;
 
+    fn_80255904(*(s32 *)((char *)arg0 + 0x20));
+    value1 = lbl_80563960;
+    zero = 0;
+    value0 = lbl_805639C0;
+    *(s32 *)((char *)arg0 + 0x190) = -1;
+    *(u8 *)((char *)arg0 + 0x28) = zero;
+    *(u8 *)((char *)arg0 + 0x48) = zero;
+    *(u8 *)((char *)arg0 + 0x88) = zero;
+    *(u8 *)((char *)arg0 + 0x108) = zero;
+    *(f32 *)((char *)arg0 + 0x194) = value1;
+    *(f32 *)((char *)arg0 + 0x198) = value0;
+    fn_80214A9C(0x1F, value1);
+    *(u8 *)((char *)arg0 + 0x19C) = zero;
+}
+#pragma scheduling on
 s32 fn_80252238(void *arg0, s32 arg1) {
-    extern f32 lbl_80558DC4;
-    if (arg1 != 13) return 0;
-    if ((f32)fabs((double)*(f32 *)((char *)arg0 + 0x194)) > lbl_80558DC4) return 0;
-    if ((f32)fabs((double)*(f32 *)((char *)arg0 + 0x198)) > lbl_80558DC4) return 0;
-    fn_80221F94(arg0, 0);
-    return 1;
+    extern double __fabs(double);
+    if (arg1 == 13 &&
+        (lbl_80558DC4 >= (f32)__fabs((double)*(f32 *)((char *)arg0 + 0x194)) ||
+         lbl_80558DC4 >= (f32)__fabs((double)*(f32 *)((char *)arg0 + 0x198)))) {
+        fn_80221F94(arg0, 0);
+        return 1;
+    }
+    return 0;
 }
 
 #pragma push
