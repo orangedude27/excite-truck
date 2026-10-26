@@ -40,6 +40,8 @@ int fn_80202248(int arg0) {
     return result;
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_802022A0(int *arg0) {
     int temp_r0 = *arg0;
     if (temp_r0 != -1) {
@@ -47,9 +49,11 @@ void fn_802022A0(int *arg0) {
         *arg0 = -1;
     }
 }
+#pragma pop
 
-#pragma ppc_psq_save off
-#pragma scheduling invalid_target
+#pragma push
+#pragma paired_single off
+#pragma paired off
 int fn_802022E4(const Vec *arg0) {
     f32 temp_f1;
     f32 var_f31;
@@ -75,8 +79,7 @@ test:
         goto loop;
     return var_r30;
 }
-#pragma ppc_psq_save reset
-#pragma scheduling on
+#pragma pop
 
 int fn_80202378(int arg0, int arg1, int arg2, int arg3) {
     if (arg3 >= lbl_8055ECC0) return -1;
@@ -88,6 +91,43 @@ void *fn_802023C8(void) { return lbl_80488964; }
 
 void fn_802025D4(void) {
 
+}
+
+void fn_802025D8(void) {
+    extern int lbl_8055ECC0;
+    extern int lbl_8055ECC4;
+    extern int lbl_8055ECC8;
+    extern int lbl_8055ECCC;
+    extern int lbl_8055ECD0;
+    extern int lbl_804888E0[];
+    extern void fn_802022A0(int *);
+    extern void fn_802CE6C0(int);
+    extern int fn_802CE49C(int);
+    extern int fn_80128670(int);
+    int offset;
+    int count;
+
+    fn_802022A0(&lbl_8055ECD0);
+    fn_802022A0(&lbl_8055ECCC);
+    offset = 0;
+    count = 0;
+    goto test;
+loop:
+    fn_802CE6C0(*(int *)((char *)lbl_8055ECC4 + offset + 12));
+    offset += 0x10;
+    count += 1;
+test:
+    if (count < lbl_8055ECC0)
+        goto loop;
+    if (lbl_8055ECC0 > 0) {
+        fn_802CE49C(lbl_8055ECC8);
+        lbl_8055ECC8 = 0;
+        if (lbl_8055ECC4 != 0)
+            fn_80128670(lbl_8055ECC4 - 0x10);
+        lbl_8055ECC4 = 0;
+    }
+    lbl_8055ECC0 = 0;
+    lbl_804888E0[0x20] = 0;
 }
 
 void fn_8020268C(void) {
