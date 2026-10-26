@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern int fn_802E2C20(void);
 extern int lbl_80507288;
+extern int NANDCheck(unsigned int, unsigned int, unsigned int *);
+extern char lbl_8034D9C0[];
 // split_file divides it into the game's real files (file_status shows its range).
 extern int fn_802E95E0(void *, void (*)(void), int);
 extern void fn_802E9010(void);
@@ -64,14 +66,38 @@ void fn_802E870C(void) {
 
 extern int fn_80131234(int, int, int, int, int, int, int, int);
 int fn_802E8744(void *arg0) {
-    int values[14]; int i;
-    values[0]=((int*)arg0)[0]; values[1]=((int*)arg0)[1]; values[2]=((int*)arg0)[2]; values[3]=((int*)arg0)[3];
-    values[4]=((int*)arg0)[4]; values[5]=((int*)arg0)[5]; values[6]=((int*)arg0)[6]; values[7]=((int*)arg0)[7];
-    values[8]=((int*)arg0)[8]; values[9]=((int*)arg0)[9]; values[10]=((int*)arg0)[10]; values[11]=((int*)arg0)[11]; values[12]=((int*)arg0)[12]; values[13]=((int*)arg0)[13];
-    values[1]=fn_80131234(values[1],values[12],values[11],values[10],values[9],values[8],values[7],values[6]);
-    for(i=0;i<4;i++) if(((int*)arg0)[6+i*2]!=0) values[6+i*2]=fn_80131234(((int*)arg0)[6+i*2],0,0,0,0,0,0,0);
-    ((void (*)(void *,int *))((*(void ***)lbl_80560024)[2]))(lbl_80560024,values);
-    return 0;
+    int *p = (int *)arg0;
+    int v0 = p[0], v1 = p[1], v2 = p[2], v3 = p[3];
+    int v4 = p[4], v5 = p[5], v6 = p[6], v7 = p[7];
+    int v8 = p[8], v9 = p[9], v10 = p[10], v11 = p[11];
+    int v12 = p[12], v13 = p[13];
+    int values[14];
+    int i;
+    int *src;
+    int *dst;
+    values[0] = v0;
+    values[1] = v1;
+    values[2] = v2;
+    values[3] = v3;
+    values[4] = v4;
+    values[5] = v5;
+    values[6] = v6;
+    values[7] = v7;
+    values[8] = v8;
+    values[9] = v9;
+    values[10] = v10;
+    values[11] = v11;
+    values[12] = v12;
+    values[13] = v13;
+    values[1] = fn_80131234(v1, v12, v11, v10, v9, v8, v7, v6);
+    src = p + 6;
+    dst = values + 6;
+    for (i = 0; i < 4; i++) {
+        if (src[0] != 0) dst[0] = ((int (*)(int))fn_80131234)(src[0]);
+        src += 2;
+        dst += 2;
+    }
+    return ((int (*)(void *, int *))(*(void ***)((void *)lbl_80560024))[2])(lbl_80560024, values);
 }
 
 void fn_802E8838(void) {
@@ -445,10 +471,8 @@ void fn_802E95CC(int arg0, void **arg1) { void *obj=*arg1; *(int*)((char*)obj+0x
 int fn_802E95E0(void *arg0, void (*callback)(void), int arg2) {
     void *log_arg = arg0;
     void (*loop_callback)(void) = callback;
-    volatile int *state_page;
-    int base;
-    base = fn_802E2C20();
-    state_page = (volatile int *)((unsigned int)&lbl_80507288 & 0xFFFF0000);
+    int base = fn_802E2C20();
+    volatile int *state_page = (volatile int *)((unsigned int)&lbl_80507288 & 0xFFFF0000);
     goto check_state;
 loop_body:
     {
