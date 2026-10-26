@@ -391,8 +391,10 @@ extern "C" void fn_8014589C(void *arg0, s32 arg1, s32 arg2) {
     char *base = lbl_8032CEC8;
     fn_802E3AD0(arg1, base + 0x170);
     fn_802E3AD0(arg1, base + 0x180);
-    s32 offset = 0;
-    s32 i = 0;
+    s32 offset;
+    s32 i;
+    i = 0;
+    offset = 0;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         u8 *entry = *(u8 **)arg0 + offset;
         fn_802E3AD0(arg1, base + 0x1A8,
