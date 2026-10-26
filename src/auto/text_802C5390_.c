@@ -507,6 +507,31 @@ void fn_802C6B2C(s32 *arg0, s32 arg1) {
     }
 }
 
+int fn_802C6B44(int arg0) {
+    void *result;
+    int sp10;
+    u32 spC;
+    u8 sp9;
+    u8 sp8;
+
+    result = fn_8012C370(arg0, 0x4D4F444C, &spC, &sp10, &sp8, &sp9);
+    if (result != 0) {
+        if (sp9 != 0) {
+            if (spC != 0xC) {
+                fn_802E317C(lbl_8034B2E8, spC, 0xC, arg0);
+            }
+            DCStoreRangeNoSync(result, sp10);
+            fn_802C61BC(result, arg0);
+        }
+        if (sp8 != 0) {
+            fn_802C5DF0(result, fn_802D6C48);
+        }
+        return (int)result;
+    }
+    fn_802E317C(lbl_8034B314, arg0);
+    return 0;
+}
+
 #pragma dont_inline on
 int fn_802C6C20(int arg0) {
     return fn_8012C4E4((void *)arg0, (void *)fn_802C5E6C, arg0);
