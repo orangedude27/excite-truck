@@ -385,6 +385,7 @@ extern "C" char lbl_8055B7E0;
 extern "C" char lbl_8055B7E8;
 extern "C" char lbl_8055B7F0;
 extern "C" float __fabsf(float);
+#pragma scheduling invalid_target
 extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     extern void *lbl_8055EF38;
     extern s32 lbl_8055EF2C;
@@ -399,6 +400,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     register const char *data = (const char *)lbl_80490510;
     *(s32 *)&lbl_8055EF38 = *(s32 *)((char *)arg1 + 0x8C);
     type = *(s32 *)((char *)arg1 + 0);
+    (void)(type - type);
     switch (type) {
     case 5: {
         void *child = fn_8021227C(arg2, ((char *)arg1) + 0x20, 3);
@@ -1067,7 +1069,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     }
     *(s32 *)&lbl_8055EF38 = -1;
 }
-#pragma dont_inline reset
+#pragma scheduling on
 extern "C" s32 fn_802ECEEC(void);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" s32 fn_802146BC(void *, s32, s32, s32, s32, s32, s32, s32);
@@ -1104,13 +1106,12 @@ extern "C" s32 fn_8021481C(void *arg0) {
     return 0;
 }
 
-extern "C" s32 fn_80214934(const void *arg0, s32 arg1, void *arg2, s32 arg3) {
-    s32 end = fn_80029004((const char *)arg1, 0x2e);
+extern "C" s32 fn_80214934(const void* arg0, s32 arg1, void* arg2, s32 arg3) {
+    s32 end = fn_80029004((const char*)arg1, 0x2e);
     if (end == 0) {
-        end = (s32)((const char *)arg1 + strlen((const char *)arg1));
+        end = (s32)((const char*)arg1 + strlen((const char*)arg1));
     }
-    fn_801345D8(arg2, arg3, lbl_8055B808, (s32)arg0, end - arg1, (const char *)arg1);
-    return 0;
+    return ((s32 (*)(void*, s32, const char*, ...))fn_801345D8)(arg2, arg3, lbl_8055B808, (s32)arg0, end - arg1, (const char*)arg1);
 }
 
 #pragma push
@@ -1452,11 +1453,15 @@ extern "C" void fn_80215500(void) {
 
 }
 
+#pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
-                *(s32 *)((u8 *)arg0 + 4), arg6, 0, lbl_80563450);
+    f32 rate = lbl_80563450;
+    s32 value8 = *(s32 *)((u8 *)arg0 + 8);
+    s32 value4 = *(s32 *)((u8 *)arg0 + 4);
+    fn_8022BAD0(value8, arg1, arg2, 0, arg4, arg5,
+                value4, arg6, 0, rate);
 }
-
+#pragma scheduling on
 extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     fn_8022AC1C(*(s32 *)((char *)arg0 + 8), *(s32 *)((char *)arg0 + 4), arg1, arg2, arg3, arg4, arg5, arg6);
 }
@@ -1481,7 +1486,6 @@ extern "C" void* __dt__14CollisionSpaceFv_802155B4(void* arg0, s32 arg1) {
 extern "C" s32 fn_80029004(const char *, s32);
 extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
 extern "C" unsigned long strlen(const char *);
-extern "C" char lbl_8055B808[];
 extern "C" s32 fn_802C4F14(s32);
 extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
 extern "C" void fn_80215618(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
