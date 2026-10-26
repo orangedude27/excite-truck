@@ -41,34 +41,36 @@ void fn_8017B164(void *arg0) {
 
 extern float lbl_80561BA8, lbl_80561BAC, lbl_80561BB0, lbl_80561BB4;
 void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
-    float x = lbl_80561BAC * b;
-    float y = lbl_80561BAC * c;
-    float z = lbl_80561BAC * d;
-    float sx = lbl_80561BB0 * x;
-    float sy = lbl_80561BB0 * y;
-    float sz = lbl_80561BB0 * z;
-    float sa = lbl_80561BAC * a;
+    float base = lbl_80561BAC;
+    float factor = lbl_80561BB0;
+    float zero = lbl_80561BA8;
+    float sx = factor * (factor * (base * b));
+    float sy = factor * (factor * (base * c));
+    float sz = factor * (factor * (base * d));
+    float sa = base * a;
     float ia = lbl_80561BB4 / sa;
     float ix = lbl_80561BB4 / sx;
     float iy = lbl_80561BB4 / sy;
     float iz = lbl_80561BB4 / sz;
-    *(float *)((char *)arg0 + 0xf8) = lbl_80561BA8;
-    *(float *)((char *)arg0 + 0xfc) = lbl_80561BA8;
-    *(float *)((char *)arg0 + 0x100) = lbl_80561BA8;
-    *(float *)((char *)arg0 + 0x108) = lbl_80561BA8;
-    *(float *)((char *)arg0 + 0x10c) = lbl_80561BA8;
-    *(float *)((char *)arg0 + 0x110) = lbl_80561BA8;
-    *(float *)((char *)arg0 + 0x104) = iz;
-    *(float *)((char *)arg0 + 0x114) = iy;
+
+    *(float *)((char *)arg0 + 0xf8) = zero;
+    *(float *)((char *)arg0 + 0xfc) = zero;
+    *(float *)((char *)arg0 + 0x100) = zero;
+    *(float *)((char *)arg0 + 0x104) = iy;
+    *(float *)((char *)arg0 + 0x108) = zero;
+    *(float *)((char *)arg0 + 0x10c) = zero;
+    *(float *)((char *)arg0 + 0x110) = zero;
+    *(float *)((char *)arg0 + 0x114) = iz;
     *(float *)((char *)arg0 + 0xd4) = sa;
     *(float *)((char *)arg0 + 0xd8) = sx;
-    *(float *)((char *)arg0 + 0xf4) = ix;
     *(float *)((char *)arg0 + 0xdc) = sy;
     *(float *)((char *)arg0 + 0xe0) = sz;
     *(float *)((char *)arg0 + 0xe4) = ia;
     *(float *)((char *)arg0 + 0xe8) = ix;
-    *(float *)((char *)arg0 + 0xec) = iz;
-    *(float *)((char *)arg0 + 0xf0) = iy;
+    *(float *)((char *)arg0 + 0xec) = iy;
+    *(float *)((char *)arg0 + 0xf0) = iz;
+    *(float *)((char *)arg0 + 0xf4) = ia;
+    /* Cache the nine matrix words as integers after filling their float fields. */
     *(unsigned int *)((char *)arg0 + 0x148) = *(unsigned int *)((char *)arg0 + 0xf4);
     *(unsigned int *)((char *)arg0 + 0x14c) = *(unsigned int *)((char *)arg0 + 0xf8);
     *(unsigned int *)((char *)arg0 + 0x150) = *(unsigned int *)((char *)arg0 + 0xfc);
@@ -90,7 +92,7 @@ void fn_8017B4AC(float *arg0, float *arg1) {
     arg0[0x144 / 4] = z;
 }
 #pragma scheduling on
-extern void fn_8017B4E0(void *, void *);
+extern void fn_8017B4E0(void *, float *, float *, float);
 void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int arg5, float *arg6, int arg7, float arg8) {
     int count;
     int index;
@@ -126,7 +128,7 @@ void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int a
             *(int *)((char *)arg0 + 0x1E4) = count + 1;
         }
     }
-    fn_8017B4E0(arg3, arg4);
+    fn_8017B4E0(arg0, arg3, arg4, arg8);
 }
 
 extern float lbl_80561BA8;
