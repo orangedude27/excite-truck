@@ -25,6 +25,9 @@ extern float lbl_805640D8;
 extern float lbl_805640DC;
 extern float lbl_805640E0;
 extern float lbl_805640E4;
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802793B0(int arg0) {
     unsigned char *p = lbl_804A16E8 + arg0 * 0xA0;
     *(unsigned char *)(p + 0x00) = 0;
@@ -61,4 +64,4 @@ void fn_802793B0(int arg0) {
     *(float *)(p + 0x98) = lbl_805640E0;
     *(float *)(p + 0x9C) = lbl_805640E4;
 }
-
+#pragma pop
