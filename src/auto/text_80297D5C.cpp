@@ -83,6 +83,7 @@ extern "C" int fn_8029C190(void*);
     extern float lbl_805645AC;
     extern float lbl_805645B0;
     extern float lbl_805645B4;
+    extern float lbl_805645E0;
     __declspec(section ".data") extern float lbl_80558DC4;
     #pragma scheduling invalid_target
     extern "C" int fn_80297D5C(void *out, int value) {
@@ -769,24 +770,52 @@ extern "C" void fn_8029A318(float *a, float *b, float *c, int x, int y, int z, i
 }
 
 extern "C" void fn_8029A318(float*, float*, float*, int, int, int, int);
+#pragma dont_inline on
 extern "C" void fn_8029A60C(void* arg0, void* arg1) {
-    float a[3], b[3], c[3];
-    unsigned int* dst = (unsigned int*)arg0;
-    unsigned int* src = (unsigned int*)arg1;
-    int p = (int)src[9];
-    int q = (int)src[8];
-    int r = (int)src[7];
-    int s = (int)src[6];
-    a[0] = lbl_8056459C; a[1] = lbl_8056459C; a[2] = lbl_8056459C;
-    b[0] = lbl_8056459C; b[1] = lbl_8056459C; b[2] = lbl_8056459C;
-    c[0] = lbl_8056459C; c[1] = lbl_8056459C;
-    dst[0]=src[0]; dst[1]=src[1]; dst[2]=src[2]; dst[3]=src[3];
-    dst[4]=src[4]; dst[5]=src[5]; dst[6]=src[6]; dst[7]=src[7];
-    dst[8]=src[8]; dst[9]=src[9]; dst[10]=src[10]; dst[11]=src[11];
-    fn_8029A318(a,b,c,s,r,q,p);
-    fn_80298458((int)lbl_8055F7C0, *(int*)((char*)arg0+0x40), a,b,c, *(short*)((char*)arg1+0x30));
-}
+    float vectors[9];
+    volatile unsigned int *src = (volatile unsigned int *)arg1;
+    unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
 
+    vectors[0] = lbl_8056459C;
+    vectors[1] = lbl_8056459C;
+    vectors[2] = lbl_8056459C;
+    vectors[3] = lbl_8056459C;
+    vectors[4] = lbl_8056459C;
+    vectors[5] = lbl_8056459C;
+    vectors[6] = lbl_8056459C;
+    vectors[7] = lbl_8056459C;
+    vectors[8] = lbl_8056459C;
+
+    v0 = src[0];
+    v1 = src[1];
+    v2 = src[2];
+    v3 = src[3];
+    v4 = src[4];
+    v5 = src[5];
+    v6 = src[6];
+    v7 = src[7];
+    v8 = src[8];
+    v9 = src[9];
+    v10 = src[10];
+    v11 = src[11];
+
+    *(unsigned int *)((char *)arg0 + 0x00) = v0;
+    *(unsigned int *)((char *)arg0 + 0x04) = v1;
+    *(unsigned int *)((char *)arg0 + 0x08) = v2;
+    *(unsigned int *)((char *)arg0 + 0x0C) = v3;
+    *(unsigned int *)((char *)arg0 + 0x10) = v4;
+    *(unsigned int *)((char *)arg0 + 0x14) = v5;
+    *(unsigned int *)((char *)arg0 + 0x18) = v6;
+    *(unsigned int *)((char *)arg0 + 0x1C) = v7;
+    *(unsigned int *)((char *)arg0 + 0x20) = v8;
+    *(unsigned int *)((char *)arg0 + 0x24) = v9;
+    *(unsigned int *)((char *)arg0 + 0x28) = v10;
+    *(unsigned int *)((char *)arg0 + 0x2C) = v11;
+
+    ((void (*)(void*, float*, float*, float*))fn_8029A318)(arg0, &vectors[6], &vectors[3], &vectors[0]);
+    fn_80298458((int)lbl_8055F7C0, *(int *)((char *)arg0 + 0x40), &vectors[6], &vectors[3], &vectors[0], *(short *)((char *)arg1 + 0x30));
+}
+#pragma dont_inline reset
 extern "C" void* fn_8029A820(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_801EF024((void *)fn_8029C024);
@@ -835,6 +864,7 @@ extern "C" void *fn_80287E80(void *, const char *);
 extern "C" char lbl_80349508[];
 extern "C" int lbl_8055CA90;
 #pragma scheduling invalid_target
+#pragma dont_inline on
 #pragma cplusplus on
 extern "C" int fn_8029ADCC(void *arg0) {
     class Dummy {
@@ -853,16 +883,14 @@ extern "C" int fn_8029ADCC(void *arg0) {
     void *cursor;
     int i;
     void *obj;
-    register float value;
 
     fn_8029B1B8(arg0);
     count = fn_80287B14();
-    value = lbl_80564590;
     cursor = arg0;
     i = 0;
     while (i < count) {
         obj = fn_80288208(i);
-        *(float *)((char *)cursor + 0x1C0) = value;
+        *(float *)((char *)cursor + 0x1C0) = lbl_80564590;
         if (fn_80287E20(obj, (const char *)&lbl_8055CA90) != 0) {
             obj = fn_80287E80(obj, (const char *)&lbl_8055CA90);
             *(float *)((char *)cursor + 0x1C0) = ((Dummy *)obj)->apply(lbl_80349508, *(float *)((char *)cursor + 0x1C0));
@@ -874,6 +902,7 @@ extern "C" int fn_8029ADCC(void *arg0) {
     return (int)arg0;
 }
 #pragma cplusplus reset
+#pragma dont_inline reset
 #pragma scheduling on
 
 extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* arg0, int arg1) {
