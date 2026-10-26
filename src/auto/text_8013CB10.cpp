@@ -598,7 +598,6 @@ extern "C" f32 fn_8013EFB0(f32 arg0) {
 
 extern f32 lbl_80561514;
 extern f32 lbl_80561510;
-extern f32 lbl_80558DC4;
 extern void fn_802AE220(int);
 extern int fn_8001DFCC(void);
 extern f32 lbl_805614A4;
