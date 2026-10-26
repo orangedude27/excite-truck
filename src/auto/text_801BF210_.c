@@ -309,6 +309,7 @@ void *fn_801C0180(void *arg0, int arg1) {
     return arg0;
 }
 
+/* The frame places Setup at sp+0x30; reversed float locals preserve the target FPR order. */
 void fn_801C0204(void *arg0, int *arg1) {
     struct Setup {
         int value;
