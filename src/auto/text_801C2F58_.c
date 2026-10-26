@@ -990,6 +990,7 @@ void fn_801C7698(void) {
     }
     fn_801C957C(0);
 }
+#pragma pop
 
 extern u8 lbl_8055E83E;
 extern u8 lbl_8055E841;
