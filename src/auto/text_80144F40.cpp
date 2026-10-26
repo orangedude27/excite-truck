@@ -1559,6 +1559,15 @@ extern "C" void fn_80147FF0(void *arg0, s32 arg1) {
     f32 temp_f1 = ((f32 (*)(s32, f32))fn_801451DC)(id, x);
     fn_80011278(arg1, temp_f1, temp_f31, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
 }
+
+extern "C" void fn_80011280(s32, s32, f64, f64, f32, f32);
+extern "C" void fn_80148070(void *arg0, s32 arg1, s32 arg2) {
+    f32 value0 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
+    f32 value1 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 value2 = ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+    fn_80011280(arg1, arg2, value2, value1, value0, *(f32 *)((u8 *)arg0 + 0x14));
+}
+
 #pragma dont_inline reset
 #pragma pop
 
