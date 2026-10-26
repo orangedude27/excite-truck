@@ -104,11 +104,12 @@ void fn_80017A20(void *arg0, s32 *arg1) {
 extern void *fn_80016464(s32);
 extern s32 fn_80016508(void);
 extern void fn_80017AC8(void *);
+#pragma scheduling invalid_target
 void fn_80017A2C(void *arg0, s32 arg1) {
     s32 i = 0;
+    s32 *p = (s32 *)(arg1 + 4);
     while (i < fn_80016508()) {
         void *obj = fn_80016464(i);
-        s32 *p = (s32 *)(arg1 + 4);
         if (!*p) {
             s32 n = *(s32 *)((char *)arg0 + 4);
             *(s32 *)((char *)arg0 + 4) = n + 1;
@@ -118,7 +119,7 @@ void fn_80017A2C(void *arg0, s32 arg1) {
     }
     fn_80017AC8(arg0);
 }
-
+#pragma scheduling on
 void fn_80017AC8(void* arg0) {
     s32 offset, i;
     register s32 count;
@@ -144,19 +145,34 @@ void fn_80017AC8(void* arg0) {
 extern s32 fn_800165D4(void);
 extern s32 fn_80017A14(s32, s32);
 extern void fn_80017AC8(void*);
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80017B40(void *arg0, s32 arg1) {
-    s32 i = 0;
+    register s32 i;
+    register s32 a;
+    register s32 b;
+    register s32 skip;
+    register unsigned long flags;
+    register s32 bit2;
+    register s32 bit3;
+    register s32 n;
+    register void **items;
+    void *obj;
+
+    i = 0;
     while (i < fn_800165D4()) {
-        void *obj = fn_80016510(i);
-        unsigned long flags = *(unsigned long *)((char *)obj + 0xA0);
-        s32 a = *(s32 *)((char *)obj + 4);
-        s32 b = *(s32 *)((char *)obj + 8);
-        s32 skip = 0;
-        if ((flags & 2) || ((flags >> 2) & 1) || ((flags >> 3) & 1)) skip = 1;
+        obj = fn_80016510(i);
+        flags = *(unsigned long *)((char *)obj + 0xA0);
+        skip = 0;
+        a = *(s32 *)((char *)obj + 4);
+        b = *(s32 *)((char *)obj + 8);
+        bit2 = (flags >> 2) & 1;
+        bit3 = (flags >> 3) & 1;
+        if ((flags & 2) || bit2 || bit3) skip = 1;
         if (!skip && fn_80017A14(a, arg1) == 0 && fn_80017A14(b, arg1) == 0) {
-            s32 n = *(s32 *)((char *)arg0 + 4);
-            void **items = *(void ***)arg0;
+            n = *(s32 *)((char *)arg0 + 4);
+            items = *(void ***)arg0;
             *(s32 *)((char *)arg0 + 4) = n + 1;
             items[n] = (void *)a;
         }
@@ -164,7 +180,6 @@ void fn_80017B40(void *arg0, s32 arg1) {
     }
     fn_80017AC8(arg0);
 }
-
 extern void *fn_80016510(s32);
 extern void *fn_80016474(s32);
 extern void fn_80017D5C(void *);
