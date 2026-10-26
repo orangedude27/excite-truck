@@ -22,6 +22,13 @@ void fn_802B9FC0(void *);
 int fn_80128668(void *);
 void fn_8002F6AC(int, void (*)(void));
 extern char lbl_804BFFE8[];
+extern void *lbl_8055FA78;
+extern void *lbl_8055FA80;
+void fn_802B9DD0(void *);
+void fn_802B9E4C(void *);
+void fn_802B9EC8(void *);
+void fn_802B9F38(void **);
+int fn_802CAC54(void);
 void* fn_802B8DA0(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
