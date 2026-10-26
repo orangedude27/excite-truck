@@ -286,5 +286,6 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
     return found;
 }
 #pragma scheduling on
+#pragma ppc_psq_save reset
 typedef struct VTable_801E2084 { void *unk0; void *unk4; void *unk8; void *unkC; void (*call)(void *, void *); } VTable_801E2084;
 typedef struct Obj_801E2084 { VTable_801E2084 *vtable; } Obj_801E2084;
