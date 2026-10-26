@@ -5218,11 +5218,16 @@ void fn_800719B8(void *arg0) {
     BTM_SetConnectability(((u8 *)arg0)[9], 0, 0);
 }
 
-void bta_dm_bond(void *arg0) {
- u32 sp8[2];
- s32 ptr = fn_8008128C((u8 *)arg0 + 8);
- if (ptr) memcpy(sp8, (void *)ptr, 8); else memset(sp8, 0, 8);
- BTM_SecBond((u8 *)arg0 + 8, ((u8 *)arg0)[0xE], (u8 *)arg0 + 0xF, sp8);
+void bta_dm_bond(u8 *arg0)
+{
+    u32 sp8[2];
+    void *ptr = (void *)fn_8008128C(arg0 + 8);
+    if (ptr != 0) {
+        memcpy(sp8, ptr, 8);
+    } else {
+        memset(sp8, 0, 8);
+    }
+    BTM_SecBond(arg0 + 8, arg0[0xE], arg0 + 0xF, sp8);
 }
 
 void bta_dm_pin_reply(void *arg0) {
