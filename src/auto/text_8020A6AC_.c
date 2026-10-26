@@ -123,6 +123,20 @@ int fn_8020A878(void *arg0) {
     return 1;
 }
 
+void fn_8020A8E8(void *arg0) {
+    int *list = *(int **)((char *)arg0 + 4);
+    int i = 0;
+    while (i < 0x200) {
+        if (list[i] != 0) {
+            fn_802E317C(lbl_8033C388);
+        }
+        i++;
+    }
+    fn_80128670(list);
+    *(int **)((char *)arg0 + 4) = 0;
+    *(void **)lbl_8055EE04 = 0;
+}
+
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8020A978(void *arg0) {
@@ -316,6 +330,46 @@ void fn_8020AC2C(void *arg0) {
  }
  fn_802E6264();
 }
+
+extern char lbl_8033C3F4[];
+#pragma scheduling invalid_target
+void *fn_8020B1C8(void *arg0, int arg1) {
+    void *old;
+    int value;
+
+    if (arg0 != 0) {
+        old = *(void **)((char *)arg0 + 8);
+        *(void **)arg0 = lbl_8033C3F4;
+        if (old != 0)
+            fn_802E61D8(old);
+        value = *(int *)((char *)arg0 + 0xC);
+        if (value != 0)
+            fn_802E61D8((void *)value);
+        value = *(int *)((char *)arg0 + 0xC);
+        if (value != 0) {
+            ((void (*)(void *))fn_802E6138)((void *)value);
+            *(int *)((char *)arg0 + 0xC) = 0;
+        }
+        value = *(int *)((char *)arg0 + 8);
+        if (value != 0) {
+            ((void (*)(void *))fn_802E6138)((void *)value);
+            *(int *)((char *)arg0 + 8) = 0;
+        }
+        value = *(int *)((char *)arg0 + 0x14);
+        if (value != 0)
+            fn_802E5D5C((void *)value);
+        value = *(int *)((char *)arg0 + 0x10);
+        if (value != 0) {
+            fn_802E5D5C((void *)value);
+            ((void (*)(void *, int, int))fn_8020B2BC)(lbl_8055EE04, (int)arg0, *(int *)((char *)arg0 + 0x40));
+        }
+        if (arg1 > 0)
+            ((void (*)(void *))fn_8020A800)(arg0);
+    }
+    return arg0;
+}
+#pragma scheduling on
+
 #pragma pop
 
 int fn_8020B2A8(void *arg0) {
