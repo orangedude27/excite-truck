@@ -773,6 +773,8 @@ long fn_8027CB20(void) { return 1; }
 
 long fn_8027CBF0(void) { return 1; }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8027CBF8(long arg0, char *arg1, long arg2) {
     char *src;
     char c;
