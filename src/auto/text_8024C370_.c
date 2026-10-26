@@ -17,7 +17,7 @@ int fn_8000DA10(void);
 int fn_8000DB34(int);
 int fn_8000DB8C(int);
 int fn_8000DBAC(int);
-void fn_801345D8(void *, int, const char *, int);
+void fn_801345D8(void *, int, const char *, ...);
 extern char lbl_80498A00[];
 extern int lbl_80498A48[];
 extern char lbl_8055C018[];
@@ -116,11 +116,12 @@ int fn_8024C578(int arg0) {
     int result;
     if (((int (*)(void))fn_8000DBAC)() != 0) {
         int sp[4];
-        short last = 0;
+        short last;
         sp[0] = 0;
         sp[1] = 0;
         sp[2] = 0;
         sp[3] = 0;
+        last = 0;
         if (fn_8023FAD4(sp, 0x12) != 0) {
             fn_8000D984(arg0);
             fn_8000DA80();
