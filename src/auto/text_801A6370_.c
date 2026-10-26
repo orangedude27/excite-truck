@@ -57,6 +57,27 @@ void fn_801A63F4(void *arg0, void *arg1, void *arg2, void *arg3) {
     out[0] = ax + tx * (bx - ax);
 }
 
+void *fn_801A6484(void *arg0) {
+    char *current;
+    char *end;
+    void *handle;
+
+    fn_80182010();
+    *(void **)arg0 = &lbl_80333CB8;
+    current = (char *)arg0 + 0x2708;
+    end = (char *)arg0 + 0x272C;
+    do {
+        fn_801A644C(current);
+        current += 0xC;
+    } while (current < end);
+    fn_801A644C(end);
+    handle = fn_8012850C(0xF7, &lbl_80333CA8);
+    *(void **)((char *)arg0 + 0x2700) =
+        ((void *(*)(void *, void (*)(void), int, int, int))fn_8002F37C)(
+            handle, fn_801A6520, 0, 0x4D, 3);
+    return arg0;
+}
+
 void fn_801A6520(void) {
 
 }
@@ -71,8 +92,6 @@ extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, int, int, int);
 extern float lbl_8056242C;
 extern float lbl_80562430;
-extern char lbl_80333CA8;
-extern char lbl_80333CB8;
 extern void fn_801A6520(void);
 void fn_801A6524(void *arg0) {
     fn_8018381C();
