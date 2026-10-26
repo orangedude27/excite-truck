@@ -5613,17 +5613,15 @@ BOOLEAN btm_is_sco_active(UINT16 handle) {
 extern unsigned char lbl_803C0F78[];
 extern int memcmp(const void *, const void *, unsigned long);
 int btm_num_sco_links_active(void) {
-    int count;
-    unsigned char *base;
-    unsigned short state;
-    base = lbl_803C0F78;
-    count = 0;
+    int count = 0;
+    unsigned char *base = lbl_803C0F78;
+    int state;
     state = *(unsigned short *)(base + 0x185c);
-    if (state >= 2 && state < 7)
-        count = 1;
+    if (state < 7)
+        count = state >= 2 ? 1 : count;
     state = *(unsigned short *)(base + 0x1890);
-    if (state >= 2 && state < 7)
-        count++;
+    if (state < 7)
+        count = state >= 2 ? count + 1 : count;
     state = *(unsigned short *)(base + 0x18c4);
     if (state >= 2 && state < 7)
         count++;
@@ -9406,7 +9404,7 @@ extern void l2c_csm_orig_w4_sec_comp(void *, u16, void *);
 extern void l2c_csm_w4_l2ca_connect_rsp(void *, u16, void *);
 extern void l2c_csm_config(void *, u16, void *);
 extern void l2c_csm_w4_l2cap_disconnect_rsp(void *, u16, void *);
-void l2c_csm_term_w4_sec_comp(void *p_ccb, u16 event, BT_HDR *p_msg)
+void l2c_csm_term_w4_sec_comp(void *p_ccb, u16 event, void *p_msg)
 {
     u16 offset = event - 3;
     if (lbl_803C4040[0] >= 4)
