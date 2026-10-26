@@ -164,18 +164,21 @@ void fn_8015EF84(void **arg0) {
 }
 
 #pragma push
-#pragma inline_depth 0
+#pragma dont_inline fn_8015ECC0
 int fn_8015F148(void **arg0, int arg1) {
     int count = 0;
     int i;
     int j;
     void **child;
+    int (*predicate)(void *) = fn_8015ECC0;
+
     for (i = 0; i < arg1; i++) {
         child = *(void ***)arg0;
         if (child != 0) {
             for (j = 0; j < ((int *)child)[0]; j++) {
                 void *item = *(void **)((char *)child[1] + j * 4);
-                if (fn_8015ECC0((char *)item + 0x3C)) count++;
+                if (predicate((char *)item + 0x3C))
+                    count++;
             }
         }
         arg0++;
