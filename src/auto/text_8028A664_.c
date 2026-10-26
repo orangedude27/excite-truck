@@ -4,6 +4,13 @@
 
 #include <types.h>
 
+extern s32 fn_8012850C(s32, void *, s32);
+extern s32 fn_8002F37C(void *, s32, s32, s32);
+extern s32 fn_802CAC28(void *, s32);
+extern f64 fn_8002F208(f64);
+extern char lbl_80348C34[], lbl_80348C40[];
+extern f64 lbl_805643C8;
+
 extern f32 fn_801E7E18(void);
 extern s32 lbl_804B32B8[];
 extern void fn_8028BC88(s32);
@@ -204,14 +211,21 @@ void fn_8028AB14(void) {
 #pragma pop
 
 void fn_8028AD78(void) {
-    s32 i;
-    for (i = 0; i < 8; i++) {
-        struct Obj8028 *p = *(struct Obj8028 **)((u8 *)lbl_804B3238 + i * 0x10);
-        if (p) {
-            ((void (*)(void *, s32))p->vtable[2])(p, 1);
-            *(struct Obj8028 **)((u8 *)lbl_804B3238 + i * 0x10) = 0;
-        }
+    u8 *slot = (u8 *)lbl_804B3238;
+    s32 i = 0;
+loop:
+    {
+        struct Obj8028 *p = *(struct Obj8028 **)slot;
+        if (p == 0) goto next;
+        if (p == 0) goto clear;
+        ((void (*)(void *, s32))*(void **)((u8 *)*(void **)p + 8))(p, 1);
+clear:
+        *(struct Obj8028 **)slot = 0;
     }
+next:
+    i++;
+    slot += 0x10;
+    if (i < 8) goto loop;
 }
 
 #pragma push
@@ -331,16 +345,19 @@ extern f32 lbl_80564394;
 extern s32 fn_80287B94(s32, s32, f32, f32, f32);
 extern s32 fn_8028CD80(s32, s32, void *, f32 *, f32);
 s32 fn_8028BA9C(void *arg0) {
-    f32 x = *(f32 *)((u8 *)arg0 + 0xC);
-    f32 y = *(f32 *)((u8 *)arg0 + 0x10);
-    f32 z = *(f32 *)((u8 *)arg0 + 0x14);
-    f32 scale = lbl_805643A0;
-    f32 a = x * scale;
-    f32 b = y * scale;
-    f32 c = z * scale;
+    f32 a, b, c, scale;
     f32 values[3];
     s32 temp;
-    values[0] = a; values[1] = b; values[2] = c;
+    c = *(f32 *)((u8 *)arg0 + 0x14);
+    b = *(f32 *)((u8 *)arg0 + 0x10);
+    scale = lbl_805643A0;
+    a = *(f32 *)((u8 *)arg0 + 0xC);
+    a *= scale;
+    b *= scale;
+    c *= scale;
+    values[0] = a;
+    values[1] = b;
+    values[2] = c;
     temp = fn_80287B94(0x18, 0x30, a, b, c);
     fn_8028CD80(lbl_8055F6F8, temp, arg0, values, lbl_80564394);
     return 0x1C;
