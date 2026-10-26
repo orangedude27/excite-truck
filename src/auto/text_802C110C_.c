@@ -112,22 +112,40 @@ void fn_802C126C(void) {
     fn_802C1A08();
 }
 
+#pragma scheduling invalid_target
 void fn_802C13A4(void) {
+    char *entry;
+    int address_check;
+    char *base;
     int i;
+    int value;
+
     fn_801D05B4(&lbl_8055FB40);
-    if (&lbl_8055FB40 != 0)
-        fn_801D0824((char *)&lbl_8055FB40 + 4);
-    for (i = 0; i < lbl_8055FB28; i++) {
-        if (*(int *)((char *)&lbl_804C0810 + i * 0x60 + 0x34))
-            fn_80128670(*(int *)((char *)&lbl_804C0810 + i * 0x60 + 0x34));
-    }
+    address_check = (int)&lbl_8055FB40;
+    base = (char *)&lbl_8055FB40;
+    if (address_check != 0)
+        fn_801D0824(base + 4);
+
+    entry = lbl_804C0810;
+    i = 0;
+    goto check;
+loop:
+    value = *(int *)(entry + 0x34);
+    if (value != 0)
+        fn_80128670(value);
+    entry += 0x60;
+    i += 1;
+check:
+    if (i < lbl_8055FB28)
+        goto loop;
+
     fn_80128670(lbl_8055FB30);
     lbl_8055FB30 = 0;
     lbl_8055FB2C = 0;
     lbl_8055FB28 = 0;
 }
-
-extern int fn_801345D8(char *, int, const char *, int);
+#pragma scheduling on
+extern int fn_801345D8(char *, int, const char *, ...);
 extern char lbl_8034AF14[];
 
 extern int lbl_8055FB28;
