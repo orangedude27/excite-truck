@@ -31,6 +31,68 @@ extern "C" int fn_80296308(void *node) {
     return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055C9C0) == 0;
 }
 
+#pragma cplusplus on
+extern "C" int sscanf(const char *, const char *, ...);
+extern char lbl_802FE850[];
+__declspec(section ".sdata") extern char lbl_8055C9C8[];
+__declspec(section ".sdata") extern char lbl_8055C9CC[];
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" int fn_80296344(void *arg0, void *arg1, int arg2) {
+    class Node {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual const char *getString(const char *, const char *);
+    };
+    int result;
+    register int invalid;
+    register int c;
+    const char *name;
+    unsigned char *table;
+    void *cmap;
+
+    name = ((Node *)arg0)->getString((const char *)arg1, lbl_8055C9C8);
+    if (name[0] != '0') {
+        goto fallback;
+    }
+    c = (signed char)name[1];
+    invalid = 0;
+    if (c < 0) {
+        goto set_invalid;
+    }
+    if (c < 0x100) {
+        goto check_invalid;
+    }
+set_invalid:
+    invalid = 1;
+check_invalid:
+    switch (invalid) {
+    case 0:
+        goto lookup;
+    default:
+        goto test_char;
+    }
+lookup:
+    cmap = *(void **)(lbl_802FE850 + 0x38);
+    table = *(unsigned char **)((char *)cmap + 0x10);
+    c = table[c];
+test_char:
+    if (c != 'x') {
+        goto fallback;
+    }
+    sscanf(name + 2, lbl_8055C9CC, &result);
+    goto done;
+fallback:
+    result = arg2;
+done:
+    return result;
+}
+#pragma cplusplus reset
+#pragma scheduling on
+
 extern "C" int fn_80296344(void *, void *, int);
 extern "C" int fn_802963F0(void *, int);
 extern "C" int fn_802CAC28(void *, int);
