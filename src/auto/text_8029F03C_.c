@@ -209,7 +209,7 @@ void fn_8029F534(void *arg0, unsigned char *arg1) {
         ((void (*)(unsigned char *, int *))vtable[5])(arg1, (int *)&lbl_8034983C);
         *(int *)((unsigned char *)arg0 + 4) = fn_8028E3F4();
         *(unsigned char *)((unsigned char *)arg0 + 8) =
-            ((unsigned char (*)(unsigned char *, int *, int))vtable[12])(arg1, &lbl_80349848, 0);
+            ((unsigned char (*)(unsigned char *, int *, int))vtable[12])(arg1, (int *)&lbl_80349848, 0);
     } else {
         *(int *)((unsigned char *)arg0 + 4) = 0;
     }
