@@ -1225,11 +1225,14 @@ extern u8 lbl_804127A8[];
 extern u8 lbl_8055DE40;
 #pragma dont_inline fn_800EE4F0
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void) {
-    u8* base = lbl_804127A8;
     if ((s8)lbl_8055DE40 == 0) {
+        u8* end;
+        u8* base;
+        u8* p;
+        base = lbl_804127A8;
         base[0] = 0;
-        u8* p = base + 0x38;
-        u8* end = base + 0x2B8;
+        p = base + 0x38;
+        end = base + 0x2B8;
         do {
             fn_800EE4F0(p);
             p += 0xA0;
@@ -1240,7 +1243,7 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
         *(s32*)(base + 0x244) = 3;
         lbl_8055DE40 = 1;
     }
-    return base;
+    return lbl_804127A8;
 }
 extern "C" u64 OSGetTime(void);
 extern "C" void OSSetPeriodicAlarm(void*, u64, u64, u32, void*, u32, void*, void*);
