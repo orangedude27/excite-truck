@@ -400,6 +400,7 @@ void fn_80161618(void) {
 
 extern int fn_80133348(int, int, int);
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_801616FC(void) {
     register u8 *base;
     register s32 offset;
@@ -431,6 +432,7 @@ test_loop:
     *(s32 *)(base + 4) = 0;
     lbl_8055E300 = 0;
 }
+#pragma scheduling on
 #pragma use_lmw_stmw reset
 
 #pragma cplusplus on
@@ -764,9 +766,8 @@ extern const char lbl_8032F738[];
 
 int fn_80161ECC(void) {
     int i = 0;
-    while ((fn_80161E40)(i) >= 0) {
+    while (fn_80161E40(i) >= 0)
         i++;
-    }
     return i;
 }
 
