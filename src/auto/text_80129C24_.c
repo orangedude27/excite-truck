@@ -36,7 +36,8 @@ void fn_80129C80(int arg0, int arg1, int arg2) {
         value0 = 0x29885B;
         value1 = 0x1A5A7D;
     } else {
-        fn_802E30C8(lbl_8032A5C0, arg0, value0, value1);
+        ((int (*)(const char *, ...))fn_802E30C8)(
+            lbl_8032A5C0, arg0, value0, value1);
     }
     fn_80129E34((char *)lbl_804223F8 + arg0 * 0x19C, value0, value1);
 }
