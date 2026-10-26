@@ -1,3 +1,5 @@
+void fn_8018956C(void);
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -414,7 +416,7 @@ void fn_801A60E0(void *arg0, void *arg1) {
     if (*(float *)(p + 0x124) > lbl_80562404) {
         f0 = lbl_80562408 * (lbl_8056240C - *(float *)(p + 0x58));
         f2 = lbl_805623C8;
-        if (f0 < f2) {
+        if (f2 > f0) {
             f2 = f0;
         } else {
             f2 = f2;
