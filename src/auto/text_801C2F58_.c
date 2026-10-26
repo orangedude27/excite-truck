@@ -126,6 +126,7 @@ f32 fn_801C3450(f32 arg0) {
     return (value - *(f32 *)&lbl_80562980) / denom;
 }
 
+#pragma inline off(fn_801C34CC)
 s32 fn_801C34CC(f32 arg0, f32 arg1) {
     f32 diff = arg0 - arg1;
     f64 abs = __fabs((f64)diff);
