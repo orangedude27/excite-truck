@@ -601,6 +601,22 @@ extern "C" void fn_800063A8(void) {
     ((Dummy *)object)->v7();
     fn_801B84A4(index);
 }
+
+s32 fn_80006408(s32 arg0, s32 arg1, s32 arg2) {
+    void *obj;
+
+    if (((s32 *)lbl_8055D350)[8] & 4) {
+        obj = *(void **)(lbl_8034EEB8_arr + (arg0 << 4) + 0x18);
+        if ((*(s32 (**)(void *))((u8 *)obj + 0x30))(obj) != 0) {
+            return 1;
+        }
+    }
+    if ((u32)arg1 == 0x3e8) {
+        return fn_801B87A0(arg0, (u32)arg2 & 0xFFFF);
+    }
+    return 0;
+}
+
 #pragma cplusplus reset
 #pragma scheduling on
 void fn_800064A8(void *arg0) {
@@ -812,26 +828,40 @@ done:
     fn_800057BC();
     fn_800217E4();
 }
-void fn_80007318(void) {
-    u8 sp8[0x10];
-    u32 *base = (u32 *)lbl_8034EE84;
-    void *obj;
+#pragma cplusplus on
+extern "C" void fn_80007318(void) {
+    class Dummy {
+    public:
+        virtual void v0(void);
+        virtual void v1(void);
+        virtual void v2(void);
+        virtual void v3(void);
+        virtual void v4(void);
+        virtual void v5(void);
+        virtual void v6(void);
+        virtual void v7(void);
+    };
+    char stack[0x28];
+    u32 *base;
+    u32 **manager;
     fn_80005C20();
-    fn_80230B5C(sp8);
-    fn_802C8638(sp8);
+    fn_80230B5C(stack);
+    fn_802C8638(stack);
     fn_802C974C(lbl_80560130, lbl_80560124, lbl_8056019C);
+    base = (u32 *)lbl_8034EE84;
     base[0x1C / 4] = 0;
-    base[0x24 / 4] = fn_801E866C();
-    obj = fn_801EA9A0();
-    base[0x28 / 4] = (u32)obj;
-    base[0x2C / 4] = ((u32 *)obj)[2];
-    base[0x30 / 4] = (u32)((u8 *)obj + 0xC);
-    *(f32 *)&base[0x10 / 4] = fn_80005FE0(0, 0);
+    base[0x24 / 4] = ((s32 (*)(s32))fn_801E866C)(0);
+    ((u32 *)lbl_8034EE84)[0x28 / 4] = (u32)((void *(*)(void *))fn_801EA9A0)(*(void **)((u8 *)lbl_8055D350 + 0x24));
+    manager = (u32 **)lbl_8055D350;
+    base[0x2C / 4] = *(u32 *)((u8 *)manager[0x28 / 4] + 8);
+    base[0x30 / 4] = (u32)((u8 *)manager[0x28 / 4] + 0xC);
+    *(f32 *)&base[0x10 / 4] = ((f32 (*)(void))fn_801E7E18)();
+    ((Dummy *)*(void **)((u8 *)lbl_8034EEB8 + 0x54))->v7();
     fn_800057BC();
     fn_80011A2C();
     fn_802C9904();
 }
-
+#pragma cplusplus reset
 void fn_800073D8(s32 arg0) {
     s32 *p;
     s32 value;
