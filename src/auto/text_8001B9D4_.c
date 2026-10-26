@@ -227,7 +227,7 @@ void fn_8001BE70(void *arg0) {
 }
 #pragma scheduling reset
 void *fn_8001BE94(void *dest, int val, size_t count) {
-    fn_8001BC38(dest, val, count);
+    ((void *(*)())fn_8001BC38)(dest, val, count);
     return dest;
 }
 
