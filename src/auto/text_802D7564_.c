@@ -27,18 +27,31 @@ extern char lbl_8055D110[];
 extern void *fn_8012850C(void *, void *);
 extern char lbl_8055D118[4];
 extern void *fn_802D7600(void *queue);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802D7564(void) {
+    unsigned char *entry;
     int i;
-    char *p = (char *)lbl_8055FE28;
+    int offset;
+    unsigned short t;
+    unsigned short s;
+
     fn_802E30C8(lbl_8034C460);
-    for (i = 0; i < 0x1C2; i++, p += 0xF4) {
-        if (p[0x20]) {
-            unsigned short t = GXGetTexObjWrapT(p + 0x24);
-            unsigned short s = GXGetTexObjWrapS(p + 0x24);
-            fn_802E30C8(lbl_8034C47C, i, p, s, t);
+    i = 0;
+    offset = 0;
+    do {
+        entry = (unsigned char *)lbl_8055FE28 + offset;
+        if (entry[0x20] != 0) {
+            t = GXGetTexObjWrapT(entry + 0x24);
+            s = GXGetTexObjWrapS(entry + 0x24);
+            fn_802E30C8(lbl_8034C47C, i, entry, s, t);
         }
-    }
+        i++;
+        offset += 0xF4;
+    } while (i < 0x1C2);
 }
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
@@ -374,6 +387,8 @@ extern void GXSetTexCopyDst(unsigned short, unsigned short, int, unsigned char);
 extern void GXSetZMode(int, int, int);
 extern void GXSetColorUpdate(int);
 extern void fn_802CFF50(void);
+#pragma push
+#pragma scheduling invalid_target
 void fn_802D9418(void) {
     void *obj;
     unsigned int s, t;
@@ -389,7 +404,7 @@ void fn_802D9418(void) {
     lbl_8055FE24 = 0;
     fn_802CFF50();
 }
-
+#pragma pop
 extern void *lbl_8055FE28;
 extern char lbl_8034C5B8[];
 extern void *fn_8012850C(void *, void *);
