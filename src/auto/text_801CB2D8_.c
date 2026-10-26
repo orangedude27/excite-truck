@@ -21,7 +21,7 @@ extern int fn_80128668(void *);
 extern char lbl_80338024[];
 extern char lbl_80338038[];
 #pragma pop
-extern int fn_8001BF34(f32);
+extern int fn_8001BF34(int);
 extern void fn_8001BF0C(f32, f32);
 extern int fn_80161C38(void);
 extern void fn_801CD7BC(int, int, f32);
