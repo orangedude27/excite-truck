@@ -699,6 +699,21 @@ void *fn_801F6D20(void *arg0) {
     return arg0;
 }
 
+void *fn_801F6D60(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        void *entry = arg0;
+        int i = 0;
+        for (; i < *(int *)((char *)arg0 + 0x2A0); entry = (char *)entry + 0x54, i++) {
+            fn_801F639C(entry);
+        }
+        *(int *)((char *)arg0 + 0x2A0) = 0;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern char lbl_8033AE20[], lbl_8033AE48[];
 extern int fn_801F4E44(const char *);
 extern int fn_801F4ECC(void *);
