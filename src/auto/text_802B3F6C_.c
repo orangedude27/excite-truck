@@ -42,18 +42,66 @@ void fn_802B4004(void) {
     lbl_8055F9CC += 1;
 }
 
-void *fn_802B4014(void *arg0) {
-    int i = 0;
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+#pragma dont_inline on
+extern "C" void *fn_802B4014(void *arg0) {
+    class Object {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual int check(int *);
+    };
+    class List {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void f21();
+        virtual void *get(int);
+    };
     void *p;
-    do {
-        p = (*(void *(**)(void *, int))((char *)*(void **)arg0 + 0x60))(arg0, i);
-        if (fn_802B3FC4(p) != 0 &&
-            (*(int (**)(void *, int *))((char *)*(void **)p + 0x1C))(p, &lbl_8055CE00) == 1)
-            return p;
-        i++;
-    } while (1);
-}
+    int i = 0;
 
+    goto get_next;
+check:
+    if (fn_802B3FC4(p) != 0) {
+        if (((Object *)p)->check(&lbl_8055CE00) == 1)
+            goto done;
+    }
+    i += 1;
+get_next:
+    p = ((List *)arg0)->get(i);
+    if (p != 0)
+        goto check;
+done:
+    return p;
+}
+#pragma dont_inline off
+#pragma cplusplus reset
+#pragma pop
 int fn_802B40B0(int arg0, int arg1) {
     int p;
     if (arg0 >= 0 && (unsigned int)arg0 < 0x80) {
