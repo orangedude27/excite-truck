@@ -57,50 +57,44 @@ extern f32 lbl_80561958;
 extern f32 lbl_8056195C;
 extern f32 lbl_8055E3C8;
 #pragma small_data off
+#pragma scheduling invalid_target
 void fn_8016A0D4(void) {
-    register Unk8016A0AC *table = &lbl_80430340;
-    register s32 *tableCount = &table->unk_0x4;
-    register s32 i = 0;
-    register s32 offset = 0;
-    register s32 zero = 0;
-
-    goto check_first;
-first_loop:
-    {
-        register u8 *entry = (u8 *)table->unk_0x0 + offset;
-        i++;
-        entry[0x28] = zero;
-        offset += 0x2C;
+    s32 i;
+    for (i = 0; i < lbl_80430340.unk_0x4; i++) {
+        ((u8 *)lbl_80430340.unk_0x0)[i * 0x2C + 0x28] = 0;
     }
-check_first:
-    if (i < *tableCount)
-        goto first_loop;
 
     {
-        register s32 *recordCount = (s32 *)((u8 *)&lbl_80430318 + 4);
-        register s32 count = 0;
-        register s32 recordOffset = 0;
-        register s32 clear = 0;
-        register f32 value1 = lbl_80561958;
-        register f32 value2 = lbl_8056195C;
+        register s32 *recordCount;
+        register u8 *entry;
+        register s32 recordOffset;
+        register s32 count;
+        register u8 clear;
+        register f32 value1;
+        register f32 value2;
+
+        value2 = lbl_80561958;
+        value1 = lbl_8056195C;
+        recordCount = (s32 *)(lbl_80430318 + 4);
+        count = 0;
+        recordOffset = 0;
+        clear = 0;
 
         goto check_second;
     second_loop:
-        {
-            register u8 *entry =
-                (u8 *)(*(s32 *)&lbl_80430318) + recordOffset;
-            count++;
-            entry[0x3C] = clear;
-            recordOffset += 0x48;
-            entry[0x3D] = clear;
-            *(f32 *)(entry + 0x40) = value1;
-            *(f32 *)(entry + 0x44) = value2;
-        }
+        count++;
+        entry = (u8 *)(*(s32 *)lbl_80430318) + recordOffset;
+        entry[0x3C] = clear;
+        recordOffset += 0x48;
+        entry[0x3D] = clear;
+        *(f32 *)(entry + 0x40) = value2;
+        *(f32 *)(entry + 0x44) = value1;
     check_second:
         if (count < *recordCount)
             goto second_loop;
     }
 }
+#pragma scheduling on
 #pragma small_data on
 extern f32 lbl_8055E3C8;
 #pragma push
@@ -146,6 +140,8 @@ s32 fn_8016A30C(void) {
  if(PSVECSquareDistance((void *)(c+0x60),(u8 *)p+0x30)<b*b) {*(u8 *)((u8 *)p+0x3d)=1;d=1;*(f32 *)((u8 *)p+0x40)=lbl_8055E3C8;} }
  if(d)f++; g+=0x48;e++;goto loop;} return f;} return 0;
 }
+
+void fn_8016B634(s32 arg0);
 
 void fn_8016A68C(void* arg0) {
     fn_8016B634(fn_8016B598(arg0));
@@ -284,4 +280,28 @@ u8* fn_8016B4FC(u8* arg0, s32 arg1) { if(arg0) { *arg0=0; if(arg1>0) fn_80128668
 void fn_8016B544(u8* arg0) { *arg0 = 0; }
 
 void* fn_8016B550(void* arg0, s32 arg1) { if(arg0) { *(u8*)arg0=0; if(arg1>0) fn_80128668(arg0); } return arg0; }
+
+int fn_8016B598(void) {
+    register char *first;
+    register char *second;
+
+    first = (char *)&lbl_80430340;
+    if (*(void **)(first + 0x10) != 0) {
+        fn_8002F6AC(*(void **)(first + 0x10), (void *(*)(void *, s32))fn_8016B4FC);
+        *(s32 *)(first + 0x10) = 0;
+        *(s32 *)(first + 0x14) = 0;
+        lbl_80430340.unk_0x0 = 0;
+        *(s32 *)(first + 4) = 0;
+        *(s32 *)(first + 8) = 0;
+    }
+    second = lbl_80430318;
+    if (*(void **)(second + 0x10) != 0) {
+        fn_8002F6AC(*(void **)(second + 0x10), fn_8016B550);
+        *(s32 *)(second + 0x10) = 0;
+        *(s32 *)(second + 0x14) = 0;
+        *(s32 *)second = 0;
+        *(s32 *)(second + 4) = 0;
+        *(s32 *)(second + 8) = 0;
+    }
+}
 
