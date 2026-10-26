@@ -264,14 +264,12 @@ extern char lbl_8055E80D;
 extern f32 lbl_8055E810;
 #pragma scheduling invalid_target
 void *fn_801C3C80(void) {
-    s32 i;
     register s32 offset;
     register char *entry;
     register s32 max;
     register s32 count;
-    i = lbl_8055E7F0;
-    entry = (char *)lbl_8055E7F8 + i * 0x30C;
-    lbl_8055E7F0 = i + 1;
+    entry = (char *)lbl_8055E7F8 + lbl_8055E7F0 * 0x30C;
+    lbl_8055E7F0++;
     if ((u8)lbl_8055E80D != 0) {
         *(f32 *)entry = lbl_8055E810;
     } else {
@@ -279,14 +277,13 @@ void *fn_801C3C80(void) {
         *(f32 *)entry = ((f32 (*)(void))fn_801C3450)();
     }
     max = 0;
-    offset = 0;
     count = 0;
+    offset = 0;
     goto test;
 loop:
     if (fn_801C34CC(*(f32 *)entry, *(f32 *)((char *)lbl_8055E7F8 + offset))) {
-        i = *(s32 *)((char *)lbl_8055E7F8 + offset + 4);
-        if (i > max)
-            max = i;
+        if (*(s32 *)((char *)lbl_8055E7F8 + offset + 4) > max)
+            max = *(s32 *)((char *)lbl_8055E7F8 + offset + 4);
     }
     offset += 0x30C;
     count += 1;
@@ -967,23 +964,18 @@ void fn_801C7524(void) {
 void fn_801C7698(void) {
     s32 offset;
     s32 index;
-    f32 value;
-    f32 score;
+    register f32 value;
     if (lbl_8055E7F0 > 0) {
         value = (f32)atof(lbl_804380F0);
         index = lbl_8055E828;
         offset = index * 0x30C;
-        score = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset);
-        if (value + score < lbl_80562970) {
+        if (value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) < lbl_80562970) {
             sprintf(lbl_80437FC0, lbl_80336F0C);
             goto cleanup;
         }
-        goto update;
-update:
         do {
-            score = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset);
             *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) =
-                fn_801C3450(value + score);
+                fn_801C3450(value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset));
             index++;
             offset += 0x30C;
         } while (index < lbl_8055E7F0);
@@ -1066,7 +1058,7 @@ void fn_801C77FC(void) {
     else
         *(s32 *)((char *)entry + 0xC) = lbl_8055E844;
     if (flag != 0) {
-        strcpy(name, lbl_8055AA5C);
+        strcpy(name, (const char *)&lbl_8055AA5C);
     } else {
         sprintf(name, lbl_8055AA64, lbl_8055E844);
     }
@@ -1280,9 +1272,11 @@ void fn_801C7F64(void) {
 
 void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
-    Unk_80437D88 *base = &lbl_80437D88;
-    void *obj;
+    register void *obj;
+    Unk_80437D88 *base;
+    f32 *v;
     lbl_8055E83A = 0;
+    base = &lbl_80437D88;
     obj = fn_801C3C80();
     *(s32 *)((char *)obj + 8) = 6;
     *(s32 *)((char *)obj + 0xC) = lbl_8055E850;
@@ -1290,9 +1284,10 @@ void fn_801C7FE4(void) {
     strcpy((char *)obj + 0x114, (char *)base + 0x5F8);
     *(s32 *)((char *)obj + 0x10) = fn_801C3954((s32)obj + 0x14);
     *(s32 *)((char *)obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
+    v = (f32 *)((char *)base + 0x4E0);
     *(f32 *)((char *)obj + 0x214) = *(f32 *)((char *)base + 0x4E0);
-    *(f32 *)((char *)obj + 0x218) = *(f32 *)((char *)base + 0x4E4);
-    *(f32 *)((char *)obj + 0x21C) = *(f32 *)((char *)base + 0x4E8);
+    *(f32 *)((char *)obj + 0x218) = v[1];
+    *(f32 *)((char *)obj + 0x21C) = v[2];
     sprintf((char *)base + 0x238, lbl_80336FB0, *(f32 *)obj);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
