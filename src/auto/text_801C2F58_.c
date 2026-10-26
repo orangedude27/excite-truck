@@ -1,4 +1,5 @@
 #include <types.h>
+extern f64 atof(const char *);
 extern f32 lbl_8055E85C;
 extern f32 lbl_8055E860;
 extern f32 lbl_805629B4;
@@ -2183,6 +2184,25 @@ s32 fn_801CA070(s32 *arg0) {
   fn_802E3734(&handle);
   sprintf(lbl_80437FC0,base+0xD30,arg0);
  } else sprintf(lbl_80437FC0,base+0xD48,arg0);
+}
+
+extern void fn_801CA1C4(void *, s32, s32, s32);
+extern char lbl_80337944[];
+extern char lbl_8055AB10[];
+extern s32 lbl_80562950;
+extern int fn_80238A20(void);
+void fn_801CA5A8(void) {
+    if (lbl_8055E7F0 != 0) {
+        char buffer[0x100];
+        s32 context = fn_80238A20();
+        char *record = (char *)(s32)lbl_8055E7F8 + lbl_8055E828 * 0x30C;
+        char *name = ((char *(*)(u8 *, s32))fn_801C98F4)((u8 *)(s32)lbl_80562950, *(s32 *)(record + 8));
+        sprintf(buffer, lbl_80337944, name);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(0x190, 0xB4, buffer, -1);
+        sprintf(buffer, lbl_8055AB10, (double)*(f32 *)record);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(0x190, context + 0xB4, buffer, -1);
+        fn_801CA1C4((char *)(s32)lbl_8055E7F8 + lbl_8055E828 * 0x30C, 0x190, context + 0xB4 + context, context);
+    }
 }
 
 #pragma pop
