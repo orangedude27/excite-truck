@@ -66,17 +66,19 @@ int fn_80171DE4(void *arg0) {
 }
 
 #pragma push
-#pragma dont_inline on
+#pragma processor 750
 int fn_80171E3C(void *arg0) {
-    extern int fn_802B04D4(float *, float, float);
+    extern int fn_802B04D4(float *);
     extern int fn_80139EC4(int, float, float);
     extern int lbl_8055E3A4;
     extern float lbl_80561A38;
-    float sp8, spC, sp10;
-    sp10 = *(float *)((char *)arg0 + 4);
-    sp8 = *(float *)arg0;
-    spC = lbl_80561A38;
-    if (fn_802B04D4(&sp8, sp8, sp10)) return 0;
+    float last = *(float *)((char *)arg0 + 4);
+    float position[3];
+
+    position[0] = *(float *)arg0;
+    position[1] = lbl_80561A38;
+    position[2] = last;
+    if (fn_802B04D4(position)) return 0;
     if (lbl_8055E3A4 && fn_80139EC4(lbl_8055E3A4, *(float *)arg0, *(float *)((char *)arg0 + 4))) return 0;
     return 1;
 }
@@ -85,6 +87,47 @@ int fn_80171E3C(void *arg0) {
 int fn_80171EC0(void) {
     return *(int *)((char *)fn_8017960C() + 0x10) == 0x50434152;
 }
+
+extern float lbl_80561A3C, lbl_80561A40;
+#pragma dont_inline on
+int fn_80171EF8(void *arg0, void *arg1) {
+    float *start = (float *)arg0;
+    float *endPoint = (float *)arg1;
+    float dy;
+    float dx;
+    float sum;
+    volatile float savedY;
+    volatile float savedX;
+    float distance;
+    float step;
+    float limit;
+    float t;
+    dy = start[1] - endPoint[1];
+    dx = start[0] - endPoint[0];
+    sum = dy * dy + dx * dx;
+    savedY = dy;
+    savedX = dx;
+    distance = (float)fn_8002F234(sum);
+    step = lbl_80561A3C / distance;
+    limit = lbl_80561A40 - step;
+    t = step;
+    while (t < limit) {
+        float coords[2];
+        double point;
+        float y0 = start[1];
+        float y1 = endPoint[1];
+        float x0 = start[0];
+        float x1 = endPoint[0];
+        coords[0] = x0 + (x1 - x0) * t;
+        coords[1] = y0 + (y1 - y0) * t;
+        point = *(double *)coords;
+        if (fn_80171E3C(&point) == 0)
+            return 0;
+        t += step;
+    }
+    return 1;
+}
+#pragma dont_inline reset
 
 unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
     extern float lbl_80561A44, lbl_80561A48;
@@ -110,7 +153,7 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
 }
 
 unsigned int fn_801720E0(unsigned int arg0) {
-    return (arg0 & 0xFF000000) | ((arg0 & 0xFEFEFE) / 2);
+    return (arg0 & 0xFF000000) | ((arg0 & 0xFEFEFE) >> 1);
 }
 
 void fn_801720FC(float *arg0, int arg1, float arg2) {
@@ -953,7 +996,37 @@ int fn_80174314(void) {
 }
 
 #pragma push
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_801746D0(int *arg0, int *arg1, int arg2) {
+    extern float lbl_8043038C[];
+    int i;
+    int is_zero;
+    int *src;
+    int *row;
+    int *table;
+
+    arg1[0] = arg0[0x170 / 4];
+    arg1[1] = 1;
+    *(unsigned char *)((unsigned char *)arg1 + 0xD) =
+        (unsigned char)((int (*)(void *))(*(void ***)arg0)[9])(arg0);
+    *(unsigned char *)((unsigned char *)arg1 + 0xC) = 0;
+    src = arg0;
+    row = (int *)((unsigned char *)arg1 + 0x10);
+    table = (int *)lbl_8043038C;
+    i = 0;
+    while (i < arg1[0]) {
+        is_zero = !((int (*)(int))fn_80171EC0)(i);
+        *(unsigned char *)((unsigned char *)row + 0x10) = (unsigned char)is_zero;
+        row[1] = i;
+        i += 1;
+        row[2] = src[0x94 / 4] +
+            ((src[0x9C / 4] + src[0x98 / 4]) * table[5]);
+        row = (int *)((unsigned char *)row + 0x14);
+        src += 0x1C / 4;
+    }
+}
+#pragma scheduling on
+#pragma pop
 void fn_80174794(void **arg0) {
     extern float fn_801B306C(void);
     extern int fn_800216D0(void);
@@ -1049,32 +1122,48 @@ float fn_801757A8(void) { return lbl_80561AEC; }
 
 int fn_801757B0(void) { return 1; }
 
-int fn_801757B8(void *arg0, int arg1) {
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_801757B8(void *arg0, int arg1) {
+    class Query {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+        virtual void d16(); virtual void callback(int);
+        virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21();
+        virtual void d22(); virtual void d23(); virtual int query();
+    };
+    struct State { char pad[0x17C]; volatile float upper; };
+    extern int fn_801E866C(int);
     extern float fn_8001DAE8(void *);
     extern int fn_802AE220(int, int);
     extern void fn_8001DFCC(void);
     extern float lbl_80561A44;
     float value;
-    int result = 0;
-    int field;
+    int result;
     fn_801E866C(arg1);
     value = fn_8001DAE8((char *)arg0 + 0x17C) - *(float *)((char *)arg0 + 0x180);
-    if (value >= lbl_80561A44 && value < *(float *)((char *)arg0 + 0x17C))
-        result = 1;
+    result = value >= lbl_80561A44 &&
+             value < ((State *)arg0)->upper;
     if (result != 0) {
-        ((void (*)(void *, int))((*(void ***)arg0)[19]))(arg0, arg1);
+        ((Query *)arg0)->callback(arg1);
     } else {
         if (*(unsigned char *)((char *)arg0 + 0x1B4) != 0)
-            ((void (*)(void *, int))((*(void ***)arg0)[19]))(arg0, arg1);
+            ((Query *)arg0)->callback(arg1);
         if (*(int *)((char *)arg0 + 0x1B8) != 0)
             fn_802AE220(*(int *)((char *)arg0 + 0x1B8), 0);
     }
-    if (((int (*)(void *))((*(void ***)arg0)[26]))(arg0) != 0)
+    if (((Query *)arg0)->query() != 0)
         fn_8001DFCC();
-    field = *(int *)((char *)arg0 + 0x1AC);
-    return (unsigned int)((4 - field) | (field - 4)) >> 31;
+    {
+        int field = *(int *)((char *)arg0 + 0x1AC);
+        return (unsigned int)((4 - field) | (field - 4)) >> 31;
+    }
 }
-
+#pragma cplusplus reset
+#pragma pop
 int fn_801758B8(void *arg0) { return *(int *)((char *)arg0 + 0x1AC) == 2; }
 
 extern void fn_802AE118(void);
@@ -1135,15 +1224,20 @@ extern float lbl_80561AF0;
 extern float lbl_80561AF4;
 int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2, int *arg3) {
     float *p = (float *)fn_8017960C(arg2);
+    float first = p[0x54 / 4];
     float scale = lbl_80561AF0;
-    float x = p[0x54 / 4] * scale + p[0x60 / 4];
-    float y = p[0x5C / 4] * scale + p[0x68 / 4];
+    float outValue = lbl_80561AF4;
+    float x = first * scale + p[0x60 / 4];
     float z = p[0x58 / 4] * scale + p[0x64 / 4];
+    float y = p[0x5C / 4] * scale + p[0x68 / 4];
+    volatile float stack[3];
     arg0[0] = x;
     arg0[1] = y;
     *arg3 = 0x21F;
-    *arg1 = lbl_80561AF4;
-    *(volatile float *)((char *)&z) = z;
+    *arg1 = outValue;
+    stack[0] = x;
+    stack[1] = z;
+    stack[2] = y;
     return 1;
 }
 
