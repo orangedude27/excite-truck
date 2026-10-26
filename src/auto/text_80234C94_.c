@@ -186,21 +186,22 @@ void fn_80235380(void *arg0) {
     }
 }
 
+#pragma paired off
+#pragma paired_single off
 void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
     void *node;
-
-    if (arg1 >= 0) {
-        node = fn_8023505C((void *)arg0, arg1);
-        if (node == 0) {
-            fn_802E30C8(lbl_80340808, arg1, arg0);
-        } else {
-            fn_802354A0(arg0, arg1, -1, arg2, arg3, arg4,
-                        *(float *)((char *)node + 0x14),
-                        *(float *)((char *)node + 0x10));
-        }
+    if (arg1 < 0) return;
+    node = ((void *(*)(void *, int))fn_8023505C)((void *)arg0, arg1);
+    if (node == 0) {
+        fn_802E30C8(lbl_80340808, arg1, arg0);
+        return;
     }
+    fn_802354A0(arg0, arg1, -1, arg2, arg3, arg4,
+                *(float *)((char *)node + 0x14),
+                *(float *)((char *)node + 0x10));
 }
-
+#pragma paired_single on
+#pragma paired on
 extern void fn_80230A68(void *, int, float, float, float, float, float);
 extern int fn_80230B9C(void *);
 extern void fn_802C8C04(int);
@@ -287,6 +288,31 @@ void *fn_80236008(void *arg0, int arg1, int arg2) {
     return arg0;
 }
 
+void *fn_80236074(void *arg0, int arg1) {
+    int offset;
+    int i;
+    int mode;
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_803408CC;
+        i = 0;
+        offset = 0;
+        while (i < *(int *)((char *)arg0 + 0xC)) {
+            fn_802CAC54(*(void **)(*(char **)((char *)arg0 + 4) + offset + 0x24));
+            offset += 0x2C;
+            i++;
+        }
+        fn_80128670(*(void **)((char *)arg0 + 4));
+        mode = *(int *)((char *)arg0 + 0x10);
+        *(int *)((char *)arg0 + 8) = 0;
+        *(int *)((char *)arg0 + 0xC) = 0;
+        if (mode != -2)
+            fn_802CAC54();
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 #pragma dont_inline reset
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
@@ -299,7 +325,6 @@ void fn_80236134(void *arg0, int arg1, const char *arg2) {
     int count;
     char *entry;
     char *dst;
-    int i;
     char ch;
 
     if (fn_8012C33C(arg2) != 0) {
@@ -308,15 +333,21 @@ void fn_80236134(void *arg0, int arg1, const char *arg2) {
         entry = *(char **)((char *)arg0 + 4) + count * 0x2C;
         *(int *)((char *)arg0 + 0xC) = count + 1;
         dst = entry;
-        i = 0x21;
-        while (i-- > 0)
-            ;
-        for (;;) {
-            ch = *arg2++;
-            *dst++ = ch;
-            if ((signed char)ch == 0)
-                break;
-        }
+        count = 0x21;
+        goto loop_body;
+    count_check:
+        count -= 1;
+        if (count > 0)
+            goto loop_body;
+        dst[-1] = 0;
+        goto finish;
+    loop_body:
+        ch = *arg2++;
+        *dst = ch;
+        dst++;
+        if (ch != 0)
+            goto count_check;
+    finish:
         *(int *)(entry + 0x28) = arg1;
         *(int *)(entry + 0x24) = id;
     }
