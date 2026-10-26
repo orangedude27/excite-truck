@@ -659,6 +659,22 @@ extern "C" void fn_8029A114(void* arg0) {
     *(volatile int *)((char *)arg0 + 0x40) = -1;
 }
 
+extern "C" int fn_8029A290(void*, void*);
+extern "C" void fn_8029A60C(void*, void*);
+extern "C" void fn_8029A17C(void* arg0) {
+    int temp_r0 = *(int*)((char*)arg0 + 0x40);
+    if (temp_r0 != -1) {
+        if (*((unsigned char*)lbl_8055F7C0 + temp_r0 * 0x2C + 0x28) != 0) {
+            void* temp_r3 = (void*)fn_80287B24(*(int*)((char*)arg0 + 0x3C));
+            if (fn_8029A290(arg0, temp_r3) != 0) {
+                fn_8029A60C(arg0, temp_r3);
+            }
+        } else {
+            *(int*)((char*)arg0 + 0x40) = -1;
+        }
+    }
+}
+
 extern "C" void fn_8029A4B4(void);
 extern "C" void fn_8029840C(void);
 extern "C" void fn_8029A208(void* arg0, int arg1, int arg2) {
@@ -684,7 +700,7 @@ extern "C" int fn_8029A290(void* arg0, void* arg1) {
     extern float PSVECSquareDistance(const void*, const void*);
     extern float PSVECDotProduct(const void*, const void*);
     extern float lbl_80564604;
-    register double threshold = *(volatile float*)&lbl_80564594;
+    double threshold = lbl_80564594;
     int result = 1;
     if (PSVECSquareDistance((char*)arg0 + 0x24, (char*)arg1 + 0x24) > threshold) {
         goto done;
