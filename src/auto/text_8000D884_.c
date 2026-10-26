@@ -42,13 +42,16 @@ void fn_8000D884(int arg0, int arg1, int arg2, int arg3, int arg4) {
     lbl_80558A88 += offset;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8000D8C8(void) {
-    int size;
     int i;
-    size = fn_801284E8(lbl_802FC240, lbl_80558A88);
-    lbl_8055D470 = 1;
-    lbl_8055D468 = size;
-    fn_802E6BD8(0x49646E74, 2, size, lbl_80558A88, fn_8000DC84);
+    int stack = *(volatile int *)&lbl_80558A88;
+
+    *(volatile unsigned char *)&lbl_8055D470 = 1;
+    fn_802E6BD8(0x49646E74, 2,
+        (*(volatile int *)&lbl_8055D468 = fn_801284E8(lbl_802FC240, stack)),
+        lbl_80558A88, fn_8000DC84);
     lbl_8055D46C = (int *)lbl_8055D468;
     fn_8000DD98();
     for (i = 3; i >= 0; i--) {
@@ -56,7 +59,7 @@ void fn_8000D8C8(void) {
         fn_8000DA80();
     }
 }
-
+#pragma pop
 void fn_8000D94C(void) {
     int zero;
     zero = 0;
@@ -91,12 +94,10 @@ int fn_8000DA10(void) {
 #pragma optimization_level 2
 void fn_8000DA1C(const char *arg0) {
     register int n;
-    register char *base;
     register char *dst;
     register unsigned char c;
     *((int *)((char *)lbl_8055D46C + *lbl_8055D46C * 0x18) + 1) = 2;
-    base = (char *)lbl_8055D46C + *lbl_8055D46C * 0x18;
-    dst = base + 8;
+    dst = (char *)lbl_8055D46C + *lbl_8055D46C * 0x18 + 8;
     n = 0x12;
     while (--n > 0) {
     }
