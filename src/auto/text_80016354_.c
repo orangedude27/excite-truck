@@ -6,7 +6,7 @@ extern void *lbl_8055D554;
 
 extern unsigned char lbl_803577F0[];
 extern unsigned char lbl_80357960[];
-extern void *fn_80016474(void);
+extern void *fn_80016474();
 extern unsigned char *lbl_8055D540;
 extern unsigned char *lbl_8055D544;
 extern int stricmp(const char *, const char *);
@@ -54,6 +54,31 @@ void* fn_80016508(void) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 int fn_80016510(int arg0) { extern void *lbl_8055D550; if (arg0 < (int)lbl_8055D550) return (int)(lbl_8055D544 + arg0 * 0xA8); return (int)(lbl_80357960 + (arg0 - (int)lbl_8055D550) * 0xA8); }
+
+#pragma scheduling invalid_target
+void *fn_80016544(int arg0) {
+    register unsigned char *entry1;
+    register unsigned char *entry2;
+    unsigned char *base;
+    int i;
+    register int j;
+    for (i = 0, entry1 = lbl_80357960; i < (int)lbl_8055D554; entry1 += 0xA8, i++) {
+        if (arg0 == *(int *)(entry1 + 4)) {
+            return lbl_80357960 + i * 0xA8;
+        }
+    }
+    j = 0;
+    base = lbl_8055D544;
+    entry2 = base;
+    for (; j < (int)lbl_8055D550; entry2 += 0xA8, j++) {
+        if (arg0 == *(int *)(entry2 + 4)) {
+            return base + j * 0xA8;
+        }
+    }
+    return base;
+}
+#pragma scheduling on
+
 #pragma scheduling on
 #pragma dont_inline reset
 
