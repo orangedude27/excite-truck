@@ -553,30 +553,26 @@ extern "C" void fn_80145D8C(void *arg0) {
 }
 
 extern "C" void fn_80145DD8(void *arg0) {
-    Queue80145D8C *queue = &lbl_8042FBC0;
-    void **item = queue->data;
-    s32 count = queue->count;
-    s32 i = 0;
+    u8 *item;
+    s32 count;
+    s32 i;
 
-    if (count > 0) {
-        s32 remaining = count;
-        do {
-            if (*item == arg0) {
-                goto found;
-            } else {
-                item++;
-                i++;
-            }
-        } while (--remaining != 0);
+    item = (u8 *)lbl_8042FBC0.data;
+    count = lbl_8042FBC0.count;
+    i = 0;
+    for (; i < count; i++, item += 4) {
+        if (*(void **)item == arg0) {
+            goto found;
+        }
     }
     i = -1;
 found:
-    if ((i >= 0) && (i >= 0) && (i < queue->count)) {
-        s32 last = queue->count - 1;
+    if ((i >= 0) && (i >= 0) && (i < lbl_8042FBC0.count)) {
+        s32 last = lbl_8042FBC0.count - 1;
         if (i != last) {
-            queue->data[i] = queue->data[last];
+            lbl_8042FBC0.data[i] = lbl_8042FBC0.data[last];
         }
-        queue->count = last;
+        lbl_8042FBC0.count = last;
     }
 }
 
@@ -790,6 +786,17 @@ extern "C" void fn_8014647C(void *arg0) {
     ((s32 *)arg0)[1] = 0;
     ((s32 *)arg0)[2] = 0;
 }
+
+extern "C" void fn_80128668(void *);
+extern "C" void fn_80128670(s32);
+extern "C" void fn_80131818(void);
+extern "C" void fn_80145DD8(void *);
+extern "C" void fn_80146584(void *);
+extern "C" void fn_801465C8(void *);
+extern "C" void fn_80146638(void *);
+extern "C" void fn_801466B4(void *);
+extern "C" void fn_80146730(void *);
+extern "C" void fn_801467AC(void *);
 
 extern "C" void *fn_80146490(void *arg0) {
     struct Obj {
