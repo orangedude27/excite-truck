@@ -322,7 +322,7 @@ void fn_8026A248(int arg0, int arg1) {
 extern void fn_802735F4(int, int);
 extern void fn_80135DC4(void *, int, int);
 extern float fn_80134E34(float);
-extern void fn_80136468(int *, void *);
+extern void fn_80136468(int *, void *, float);
 extern void fn_80128670(void);
 extern void fn_8013530C(void *, int);
 extern void fn_80268BD4(void *, int, float, float);
