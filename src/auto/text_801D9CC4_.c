@@ -41,12 +41,17 @@ void fn_801D9F84(void *arg0, int *arg1) {
 }
 #pragma scheduling on
 int fn_801D9FC4(char **arg0, const char *arg1) {
-    char *base = *arg0;
-    int count = *(int *)base;
-    int i;
-    for (i = 0; i < count; i++) {
+    register int count;
+    register char *base;
+    register int i;
+
+    base = *arg0;
+    count = *(int *)base;
+    i = 0;
+    while (i < count) {
         if (strcmp(base + i * 0x18 + 4, arg1) == 0)
             return 1;
+        i++;
     }
     return 0;
 }
@@ -57,6 +62,48 @@ void *fn_801DA03C(int **arg0, int arg1) {
         return (char *)base + arg1 * 0x18 + 4;
     }
     return 0;
+}
+
+#pragma use_lmw_stmw off
+int fn_801DA064(void *arg0, const char *arg1, int arg2) {
+    register int offset;
+    register int count;
+    register char *entries;
+    register int index;
+    char *base;
+
+    base = *(char **)arg0;
+    count = *(int *)base;
+    entries = base + 4;
+    index = 0;
+    offset = 0;
+    while (index < count) {
+        if (strcmp(entries + offset, arg1) == 0) {
+            *(char **)((char *)arg0 + 4) = entries + index * 0x18;
+            return 1;
+        }
+        offset += 0x18;
+        index++;
+    }
+    return 0;
+}
+#pragma use_lmw_stmw reset
+
+void fn_801DA198(void *arg0, float farg0) {
+    int index;
+    void *obj;
+    float *values;
+    *(float *)((char *)arg0 + 0xC) = farg0;
+    *(int *)((char *)arg0 + 8) = 0;
+    obj = *(void **)((char *)arg0 + 4);
+    if (obj == 0) return;
+    for (;;) {
+        index = *(int *)((char *)arg0 + 8);
+        values = *(float **)((char *)obj + 0x14);
+        if (values[index * 8 + 8] > *(float *)((char *)arg0 + 0xC)) return;
+        *(int *)((char *)arg0 + 8) = index + 1;
+        if (index + 2 >= *(int *)((char *)obj + 0x10)) return;
+    }
 }
 
 extern float lbl_80562B40, lbl_80562B44, lbl_80562B48, lbl_80562B4C, lbl_80558DC4;
