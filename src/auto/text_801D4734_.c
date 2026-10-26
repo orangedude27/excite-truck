@@ -538,6 +538,54 @@ void fn_801D5AA8(void *arg0) {
     *(int *)(base + 0x74) = zero;
 }
 
+extern void fn_801D0824(void *);
+void *fn_801D5AF0(void *arg0, int arg1) {
+    void *original = arg0;
+    int field8;
+    int has_field;
+    char *table;
+    char *table2;
+
+    if (original != 0) {
+        field8 = *(int *)((char *)original + 8);
+        table = lbl_80338D20;
+        table2 = table + 0x38;
+        *(void **)original = table;
+        has_field = field8 != 0;
+        *(void **)((char *)original + 4) = table2;
+
+        if (has_field) {
+            *(int *)((char *)original + 8) = 0;
+            if (arg0 != 0) {
+                arg0 = (char *)arg0 + 4;
+                fn_801D0824(arg0);
+            }
+            *(int *)((char *)original + 0xC) = -1;
+        }
+
+        if ((unsigned int)original + 0x70 != 0) {
+            if ((unsigned int)original + 0x70 != 0) {
+                *(int *)((char *)original + 0x70) = 0;
+                *(int *)((char *)original + 0x74) = 0;
+                *(int *)((char *)original + 0x78) = 0;
+            }
+        }
+
+        if ((unsigned int)original + 0x10 != 0) {
+            if ((unsigned int)original + 0x10 != 0) {
+                *(int *)((char *)original + 0x10) = 0;
+                *(int *)((char *)original + 0x14) = 0;
+                *(int *)((char *)original + 0x18) = 0;
+            }
+        }
+
+        if (arg1 > 0) {
+            ((int (*)(void *))fn_80128668)(original);
+        }
+    }
+    return original;
+}
+
 #pragma dont_inline reset
 #pragma scheduling reset
 
@@ -673,29 +721,34 @@ int fn_801D6508(int arg0) {
     return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801D6534(void *self) {
-    extern int fn_80139B5C(int);
+    extern int fn_80139B5C(int, int);
     extern int fn_8017960C(int);
     extern void fn_80267E40(int, float);
     int object;
     int index;
     int filter;
     if (*(int *)((char *)self + 4) != 2) return;
-    if (lbl_8055E3C4 - *(int *)((char *)self + 0x1C) < *(int *)((char *)self + 8)) return;
+    if (lbl_8055E3C4 - *(int *)((char *)self + 0x1C) < *(int *)((char *)self + 8))
+        goto finish;
     index = 0;
     goto fetch;
 process:
     filter = *(int *)((char *)self + 0x14);
-    if (filter == 0 || fn_80139B5C(object) != 0)
+    if (filter == 0 || fn_80139B5C(object, filter) != 0)
         fn_80267E40(object, *(float *)((char *)self + 0x10));
     index++;
 fetch:
     object = fn_8017960C(index);
     if (object != 0) goto process;
+finish:
     if (lbl_8055E3C4 - *(int *)((char *)self + 0x1C) >= *(int *)((char *)self + 8) + *(int *)((char *)self + 0xC))
         *(int *)((char *)self + 4) = 3;
 }
-
+#pragma scheduling reset
+#pragma pop
 void fn_801D6600(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
@@ -1252,7 +1305,6 @@ found:
 #pragma cplusplus on
 extern "C" char lbl_803385D0[];
 #pragma cplusplus on
-#pragma scheduling invalid_target
 extern "C" void fn_801D7874(void *arg0, void *arg1) {
     struct ObjA {
         virtual void *v0();
@@ -1267,7 +1319,8 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
         virtual int v6(char *, int);
     };
 
-    void *node = ((ObjA *)arg1)->v0();
+    ObjA *b = (ObjA *)arg1;
+    void *node = b->v0();
     int match;
     if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && ((ObjB *)node)->v6(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xc)) {
         match = 1;
@@ -1278,10 +1331,9 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
         int count = *(int *)((char *)arg0 + 0x74);
         void **items = *(void ***)((char *)arg0 + 0x70);
         *(int *)((char *)arg0 + 0x74) = count + 1;
-        items[count] = arg1;
+        items[count] = b;
     }
 }
-#pragma scheduling reset
 #pragma cplusplus reset
 
 #pragma pop
