@@ -624,6 +624,31 @@ extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     p[0x344]=p[0x347];p[0x347]=i4; p[0x345]=p[0x346];p[0x346]=i5;
 }
 
+extern "C" void fn_801FE3B8(void *arg0, void *arg1) {
+    char *source = (char *)arg1 + 0x2C;
+    char *item;
+    int count;
+    float first;
+    float second;
+    float result;
+
+    count = *(int *)((char *)arg0 + 0x34);
+    if (count >= 6) {
+        fn_802E317C(lbl_8033B638, 6);
+    }
+    count = *(int *)((char *)arg0 + 0x34);
+    first = *(float *)(source + 0x314);
+    item = (char *)arg0 + count * 8;
+    second = *(float *)(source + 0x318);
+    *(char **)(item + 4) = source;
+    result = fn_80129DC4(0, item, first, second);
+    count = *(int *)((char *)arg0 + 0x34);
+    item = (char *)arg0 + count * 8;
+    *(float *)(item + 8) = result;
+    count = *(int *)((char *)arg0 + 0x34);
+    *(int *)((char *)arg0 + 0x34) = count + 1;
+}
+
 extern "C" void fn_801FEB58(void*);
 extern "C" float lbl_80558DC4;
 #pragma push
