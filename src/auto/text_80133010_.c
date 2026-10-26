@@ -18,6 +18,7 @@ extern const char lbl_8032B8D0[];
 extern int fn_80128668(int);
 extern int fn_80133E10(void **, int, int);
 extern int fn_8013323C(int, int, float);
+extern const char lbl_8032B920[];
 int fn_80133010(void) { int val=lbl_8055E07C; unsigned int tmp=(unsigned int)(-val)|(unsigned int)val; return tmp>>31; }
 extern const char lbl_8032B9FC[];
 
@@ -198,20 +199,23 @@ extern double atof(const char *);
 extern int fn_8002B1D8(void *, void *, int);
 extern int atoi(const char *);
 extern int stricmp(const char *, const char *);
+#pragma peephole off
 char *fn_801337E4(char *arg0) {
     char *p = arg0;
+    unsigned char byte;
+    int c;
     int table = *(int *)((char *)&lbl_802FE850 + 0x38);
     do {
-        int c;
-        p++;
-        c = (signed char)*p;
-        if (c == 0) return p;
-        if (c < 0 || c >= 0x100) return p;
-        if (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100) continue;
-        return p;
+        p = (char *)((unsigned int)p + 1);
+        byte = *(volatile unsigned char *)p;
+        c = (signed char)byte;
+        if (c == 0) break;
+        if ((c < 0 || c >= 0x100) ? 0 : (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100)) continue;
+        break;
     } while (1);
+    return p;
 }
-
+#pragma peephole on
 int fn_80133844(const char *arg0) {
     int c = (signed char)*fn_801337E4((char *)arg0);
     int table = *(int *)(lbl_802FE850 + 0x38);
