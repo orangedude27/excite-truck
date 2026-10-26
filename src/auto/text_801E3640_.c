@@ -1,3 +1,5 @@
+#include <math.h>
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -24,13 +26,114 @@ extern int lbl_80339910, lbl_80339920;
 extern int fn_802CAC28(int *, int);
 extern int fn_802C6FC0(int *, int, int);
 extern int fn_802C7760(int *, float *, int *, int *, float *, int *);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+extern float lbl_80562CF0;
+extern void PSVECCrossProduct(const float *, const float *, float *);
+void fn_801E3640(void *arg0, float *arg1) {
+    float basis[3];
+    float *input = (float *)arg0;
+
+    arg1[6] = input[0];
+    arg1[7] = input[1];
+    arg1[8] = input[2];
+    if (((float)fabs(input[0]) < lbl_80562CF0) &&
+        ((float)fabs(input[2]) < lbl_80562CF0)) {
+        basis[0] = lbl_80562CF4;
+        basis[1] = lbl_80562CF4;
+        basis[2] = lbl_80562CF8;
+    } else {
+        basis[0] = lbl_80562CF4;
+        basis[1] = lbl_80562CF8;
+        basis[2] = lbl_80562CF4;
+    }
+    PSVECCrossProduct(basis, arg1 + 6, arg1);
+    PSVECCrossProduct(arg1 + 6, arg1, arg1 + 3);
+}
+
+void fn_801E370C(float *arg0, int arg1, int arg2) {
+    float out[3];
+    float in[3];
+    float c, half;
+    int i;
+
+    fn_802C8BD0(lbl_8055EA6C);
+    if (fn_802C8DBC(0x11) != 0) {
+        c = lbl_80562CFC;
+        half = lbl_80562D00;
+        out[0] = lbl_80562CF4;
+        out[1] = lbl_80562CF4;
+        out[2] = lbl_80562CF4;
+        i = 0;
+        do {
+            in[0] = ((i + (i >> 1)) & 1) ? lbl_80562CF8 : lbl_80562CFC;
+            in[1] = (i & 2) ? lbl_80562CF8 : lbl_80562CFC;
+            in[2] = c;
+            if (&out[0] == &in[0]) {
+                out[0] = (in[0] * arg0[0] + in[1] * arg0[3]) + in[2] * arg0[6];
+                out[1] = (in[0] * arg0[1] + in[1] * arg0[4]) + in[2] * arg0[7];
+                out[2] = (in[0] * arg0[2] + in[1] * arg0[5]) + in[2] * arg0[8];
+            } else {
+                out[0] = (in[1] * arg0[3] + in[0] * arg0[0]) + in[2] * arg0[6];
+                out[1] = (in[1] * arg0[4] + in[0] * arg0[1]) + in[2] * arg0[7];
+                out[2] = (in[1] * arg0[5] + in[0] * arg0[2]) + in[2] * arg0[8];
+            }
+            out[0] += arg0[9];
+            out[1] += arg0[10];
+            out[2] += arg0[11];
+            fn_802C8E00(arg1, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+            out[0] += arg0[6] * half;
+            out[1] += arg0[7] * half;
+            out[2] += arg0[8] * half;
+            fn_802C8E00(arg2, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+            i = i + 1;
+        } while (i < 5);
+        out[1] += arg0[1] * lbl_80562D00;
+        out[0] += arg0[0] * lbl_80562D00;
+        out[2] += arg0[2] * lbl_80562D00;
+        fn_802C8E00(arg2, 0, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+        out[1] += arg0[4] * lbl_80562D00;
+        out[0] += arg0[3] * lbl_80562D00;
+        out[2] += arg0[5] * lbl_80562D00;
+        fn_802C8E00(arg2, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+        out[0] += arg0[0] * lbl_80562D04 + arg0[6] * lbl_80562D00;
+        out[1] += arg0[1] * lbl_80562D04 + arg0[7] * lbl_80562D00;
+        out[2] += arg0[2] * lbl_80562D04 + arg0[8] * lbl_80562D00;
+        fn_802C8E00(arg2, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+        out[0] += arg0[0] * lbl_80562D00;
+        out[1] += arg0[1] * lbl_80562D00;
+        out[2] += arg0[2] * lbl_80562D00;
+        fn_802C8E00(arg2, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+        out[0] += arg0[3] * lbl_80562D04;
+        out[1] += arg0[4] * lbl_80562D04;
+        out[2] += arg0[5] * lbl_80562D04;
+        fn_802C8E00(arg1, 0, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+        out[0] += arg0[0] * lbl_80562D04;
+        out[1] += arg0[1] * lbl_80562D04;
+        out[2] += arg0[2] * lbl_80562D04;
+        fn_802C8E00(arg1, 0, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+        out[0] += arg0[6] * lbl_80562D04 + arg0[0] * lbl_80562D00 + arg0[3] * lbl_80562D00;
+        out[1] += arg0[7] * lbl_80562D04 + arg0[1] * lbl_80562D00 + arg0[4] * lbl_80562D00;
+        out[2] += arg0[8] * lbl_80562D04 + arg0[2] * lbl_80562D00 + arg0[5] * lbl_80562D00;
+        fn_802C8E00(arg1, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+        out[0] += arg0[0] * lbl_80562D04;
+        out[1] += arg0[1] * lbl_80562D04;
+        out[2] += arg0[2] * lbl_80562D04;
+        fn_802C8E00(arg1, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
+        fn_802C8E48();
+    }
+    fn_802C8D74();
+}
+#pragma scheduling on
+#pragma pop
 void fn_801E3C04(void) {
     int a, c, d, f;
     float b, e;
     lbl_8055EA6C = fn_802CAC28(&lbl_80339910, 0);
     lbl_8055EA64 = fn_802C6FC0(&lbl_80339920, 0, 0);
     fn_802C7760(&a, &b, &c, &d, &e, &f);
-    lbl_8055EA68 = fabsf(e - b) * lbl_80562D08;
+    lbl_8055EA68 = __fabsf(e - b) * lbl_80562D08;
 }
 
 void fn_801E3C88(void) {
@@ -120,6 +223,40 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     fn_802C8D74();
     fn_802C9904();
 }
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_801E3FC8(void *arg0, float farg0) {
+    float sp[12];
+    float zero;
+    float temp_f1;
+    float temp_f2;
+    float temp_f4;
+    int handle;
+
+    zero = lbl_80562CF4;
+    temp_f2 = *(float *)((char *)arg0 + 0);
+    sp[9] = zero;
+    temp_f4 = farg0 / lbl_8055EA68;
+    temp_f1 = *(float *)((char *)arg0 + 4);
+    sp[10] = zero;
+    handle = lbl_8055EA64;
+    sp[0] = temp_f4;
+    sp[1] = zero;
+    sp[2] = zero;
+    sp[3] = zero;
+    sp[4] = temp_f4;
+    sp[5] = zero;
+    sp[6] = zero;
+    sp[7] = zero;
+    sp[8] = temp_f4;
+    sp[9] = temp_f2;
+    sp[10] = temp_f1;
+    sp[11] = *(float *)((char *)arg0 + 8);
+    fn_802C744C(handle, sp);
+}
+#pragma scheduling on
 #pragma pop
 extern float lbl_8055EA68, lbl_80562CF4;
 extern int fn_802C744C(int, float *);
@@ -146,20 +283,40 @@ void fn_801E43BC(void *arg0, float scale, float alpha) {
 }
 
 extern void fn_801E370C();
-void fn_801E44F4(void *arg0, int arg1, float farg0, float farg1, float farg2) {
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_801E44F4(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
     float sp[12];
-    sp[0] = *(float *)((char *)arg0 + 0x0) * farg0;
-    sp[1] = *(float *)((char *)arg0 + 0x4) * farg0;
-    sp[2] = *(float *)((char *)arg0 + 0x8) * farg0;
-    sp[3] = *(float *)((char *)arg0 + 0xC) * farg1;
-    sp[4] = *(float *)((char *)arg0 + 0x10) * farg1;
-    sp[5] = *(float *)((char *)arg0 + 0x14) * farg1;
-    sp[6] = *(float *)((char *)arg0 + 0x18) * farg2;
-    sp[7] = *(float *)((char *)arg0 + 0x1C) * farg2;
-    sp[8] = *(float *)((char *)arg0 + 0x20) * farg2;
-    sp[9] = *(float *)((char *)arg0 + 0x24);
-    sp[10] = *(float *)((char *)arg0 + 0x28);
-    sp[11] = *(float *)((char *)arg0 + 0x2C);
-    fn_801E370C(sp, arg1, sp[0], sp[1], sp[2], sp[3], sp[4], sp[5], sp[6], sp[7], sp[8], sp[9], sp[10]);
-}
+    float temp_f11, temp_f10, temp_f9, temp_f8, temp_f7;
+    float temp_f6, temp_f2, temp_f1, temp_f0, temp_f5, temp_f4, temp_f3;
 
+    temp_f11 = *(float *)((char *)arg0 + 0x00) * farg0;
+    temp_f10 = *(float *)((char *)arg0 + 0x04) * farg0;
+    temp_f9 = *(float *)((char *)arg0 + 0x08) * farg0;
+    temp_f8 = *(float *)((char *)arg0 + 0x0C) * farg1;
+    temp_f7 = *(float *)((char *)arg0 + 0x10) * farg1;
+    temp_f1 = *(float *)((char *)arg0 + 0x1C) * farg2;
+    temp_f6 = *(float *)((char *)arg0 + 0x14) * farg1;
+    temp_f2 = *(float *)((char *)arg0 + 0x18) * farg2;
+    temp_f0 = *(float *)((char *)arg0 + 0x20) * farg2;
+    temp_f5 = *(float *)((char *)arg0 + 0x24);
+    temp_f4 = *(float *)((char *)arg0 + 0x28);
+    temp_f3 = *(float *)((char *)arg0 + 0x2C);
+
+    sp[9] = temp_f5;
+    sp[10] = temp_f4;
+    sp[11] = temp_f3;
+    sp[0] = temp_f11;
+    sp[1] = temp_f10;
+    sp[2] = temp_f9;
+    sp[3] = temp_f8;
+    sp[4] = temp_f7;
+    sp[5] = temp_f6;
+    sp[6] = temp_f2;
+    sp[7] = temp_f1;
+    sp[8] = temp_f0;
+    fn_801E370C(sp, (int)arg1, (int)arg1);
+}
+#pragma scheduling on
+#pragma pop
