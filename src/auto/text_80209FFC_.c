@@ -163,18 +163,21 @@ extern void fn_8012E81C(void*);
 extern void fn_80127C90(void*, const char*);
 extern const char lbl_8033C2DC[];
 extern const char lbl_8033C2F0[];
-extern const char lbl_8055B588[];
+extern const char lbl_8055B588;
 void fn_8020A47C(void) {
-    char name[8];
-    char buf[0x58];
-    s8* flag;
-    s32* value;
+    struct {
+        char name[8];
+        char pad[0x38];
+        char buf[0x38];
+    } local;
+    s32 *value;
+    s8 *flag;
     s32 i;
     s32 zero;
 
     fn_802E30C8(lbl_8033C2DC);
     zero = 0;
-    lbl_8055EDE0 = (void*)zero;
+    lbl_8055EDE0 = (void *)zero;
     i = zero;
     lbl_8055EDD0 = 1;
     value = &lbl_8055B560;
@@ -182,16 +185,16 @@ void fn_8020A47C(void) {
     lbl_8055EDE4 = zero;
     lbl_8055EDE8 = zero;
     do {
-        sprintf(buf, &lbl_8055B568, *value);
+        sprintf(local.buf, &lbl_8055B568, *value);
         *flag = zero;
-        fn_802E30C8(lbl_8033C2F0, buf);
-        fn_8012DDA8(buf);
+        fn_802E30C8(lbl_8033C2F0, local.buf);
+        fn_8012DDA8(local.buf);
         i += 1;
         value++;
         flag++;
     } while (i < 2);
-    fn_80127C90(fn_8020A100, lbl_8055B588);
-    sprintf(name, &lbl_8055B568, lbl_8055B560);
-    fn_8012E81C(name);
+    fn_80127C90(fn_8020A100, &lbl_8055B588);
+    sprintf(local.name, &lbl_8055B568, lbl_8055B560);
+    fn_8012E81C(local.name);
 }
 
