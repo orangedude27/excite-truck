@@ -854,6 +854,16 @@ s32 fn_801CD49C(void) {
     return 0;
 }
 
+void fn_801CD730(s32 *arg0, s32 *arg1) {
+    if (fn_801CE898() != 0) {
+        if (arg0 != 0) *arg0 = 0;
+        if (arg1 != 0) *arg1 = -1;
+    } else {
+        if (arg0 != 0) *arg0 = *(s32 *)((u8 *)lbl_8055E884 + 0x2AC);
+        if (arg1 != 0) *arg1 = *(s32 *)((u8 *)lbl_8055E884 + 0x2B0);
+    }
+}
+
 extern f32 lbl_805629E4, lbl_805629F0, lbl_805629FC, lbl_80562A10, lbl_80562A14, lbl_80562A18;
 extern s32 lbl_802F9930[3];
 extern char lbl_8055AB38[];
@@ -1024,6 +1034,17 @@ void fn_801CE6D0(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
     *arg0 = local;
 }
 
+void fn_801CE6F8(void) {
+    s32 *temp_r31;
+    if (fn_801CE898() != 0) return;
+    temp_r31 = lbl_8055E884;
+    fn_801CBD48((void *)temp_r31, (void *)(temp_r31 + 0x2C0 / 4));
+    if (temp_r31[0x2C8 / 4] != 0)
+        fn_802AE220((void *)(temp_r31 + 0x608 / 4));
+    if (temp_r31[0x2C0 / 4] == 3)
+        fn_8001DFCC();
+}
+
 int fn_801CE75C(void) {
     if (fn_801CE898() != 0) {
         return 1;
@@ -1137,12 +1158,12 @@ fail:
 }
 
 void *fn_801CEB0C(void *arg0, s32 arg1) {
-    if (arg0) {
+    void (*cleanup)(void *);
+    if (arg0 != 0) {
         *(void **)((char *)arg0 + 4) = &lbl_80338010[0];
         fn_801CEB94((char *)arg0 + 8);
         fn_801CEB94((char *)arg0 + 0xC);
-        if (arg0) {
-            void (*cleanup)(void *);
+        if (arg0 != 0) {
             cleanup = fn_801CBD04;
             *(void **)((char *)arg0 + 4) = &lbl_80338038[0];
             cleanup(arg0);
