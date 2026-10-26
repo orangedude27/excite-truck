@@ -24,7 +24,7 @@ typedef int (*GetterI)(void *, const char *);
 typedef void (*SetterV)(void *, const char *);
 extern void fn_801F5344(void *, void *, void *);
 extern void fn_801F70D0(void *, int);
-extern void fn_801F6D60(void *, int);
+extern void *fn_801F6D60(void *, int);
 extern void fn_801F6A08(void *, int);
 extern void fn_801F75A4(void *, void *, void *);
 extern void *fn_801F69C8(void *);
@@ -641,6 +641,25 @@ void *fn_801F69C8(void *arg0) {
     memset(arg0,0,0x900);
     *(int *)((char *)arg0+0x900)=0;
     return arg0;
+}
+
+void fn_801F6A08(void *arg0, int arg1) {
+    int i;
+    void *entry;
+
+    if (arg0 != 0) {
+        entry = arg0;
+        i = 0;
+        do {
+            fn_801F639C(entry);
+            entry = (char *)entry + 0x48;
+            i++;
+        } while (i < *(int *)((char *)arg0 + 0x900));
+        *(int *)((char *)arg0 + 0x900) = 0;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
 }
 
 extern void fn_801F602C(void *, int, int, int, int);
