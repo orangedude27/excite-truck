@@ -458,6 +458,35 @@ extern "C" s32 fn_80191108(void *arg0, s32 arg1) {
     return result + obj2->method(arg1 + result);
 }
 
+#pragma cplusplus on
+extern "C" s32 fn_801B6660(s32);
+#pragma use_lmw_stmw off
+extern "C" void fn_80191178(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, f32 farg0) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5(s32, s32, s32 *, s32 *, f32);
+    };
+    s32 sp14;
+    s32 sp10;
+    s32 spC;
+    s32 sp8;
+    register f32 value = farg0;
+
+    ((Dummy *)*(void **)((u8 *)arg0 + 0xC))->v5(arg1, arg2, &sp14, &sp10, value);
+    ((Dummy *)*(void **)((u8 *)arg0 + 8))->v5(arg1 + sp14, arg2 + sp10, &spC, &sp8, value);
+    *arg3 = sp14 + spC;
+    *arg4 = sp10 + sp8;
+    fn_801B6660(sp10);
+    *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x20) + 0x260C) = 0;
+}
+#pragma use_lmw_stmw reset
+#pragma cplusplus reset
+
 extern "C" s32 fn_80191240(void *arg0, s32 arg1) {
     class Object1 {
     public:
@@ -1391,11 +1420,16 @@ int fn_80192C68(void *arg0) {
 
 #pragma scheduling invalid_target
 extern f32 lbl_8056208C, lbl_80562090, lbl_805620AC;
+#pragma scheduling invalid_target
 f32 fn_80192C7C(void *arg0) {
     u8 byte = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 6);
-    u8 raw = (byte >> 4) | (byte & 0xF0);
-    f32 normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+    u8 raw;
+    f32 normalized;
     f32 value;
+
+    raw = byte >> 4;
+    raw |= byte & 0xF0;
+    normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
     if (lbl_80562090 < normalized) {
         value = lbl_80562090;
     } else {
@@ -1447,13 +1481,13 @@ s32 fn_80192E20(void *arg0) {
 
 #pragma scheduling invalid_target
 f32 fn_80192E3C(void *arg0) {
-    u32 packed;
-    u32 swapped;
+    register u32 swapped;
+    register u32 packed;
     f32 normalized;
     f32 value;
     packed = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 6);
     swapped = packed & 0x0F;
-    swapped = (swapped & ~0xF0) | ((packed << 4) & 0xF0);
+    swapped = __rlwimi(swapped, packed, 4, 24, 27);
     normalized = ((f32)swapped - lbl_8056208C) / lbl_805620AC;
     if (lbl_80562090 < normalized) {
         value = lbl_80562090;
