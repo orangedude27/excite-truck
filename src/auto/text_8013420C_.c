@@ -56,6 +56,7 @@ void *fn_801342B0(Container *arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
+#pragma use_lmw_stmw off
 void fn_8013436C(Container *arg0, s32 arg1) {
     s32 i;
     Entry *entry;
@@ -75,7 +76,7 @@ void fn_8013436C(Container *arg0, s32 arg1) {
         }
     }
 }
-
+#pragma use_lmw_stmw reset
 s32 fn_8012C5B8(s32, s32, s32);
 s32 fn_8012C6F0(void *);
 void fn_8012C720(void *, s32, s32, s32);
