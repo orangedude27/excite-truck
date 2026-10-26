@@ -889,6 +889,7 @@ void fn_801C7394(void) {
     }
 }
 
+#pragma scheduling invalid_target
 void fn_801C73DC(void) {
     s32 count;
     s32 current;
