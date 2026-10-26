@@ -3,13 +3,6 @@
 
 typedef signed int s32;
 typedef float f32;
-#pragma cplusplus on
-struct SortCompareObject { s32 compare(s32, s32); };
-typedef s32 (SortCompareObject::*SortCompareMethod)(s32, s32);
-static inline s32 callSortCompare(void *object, s32 *descriptor, s32 left, s32 right) {
-    return (((SortCompareObject *)object)->*(*((SortCompareMethod *)descriptor)))(left, right);
-}
-#pragma cplusplus off
 #define F(p,o) (*(f32 *)((char *)(p)+(o)))
 #define I(p,o) (*(s32 *)((char *)(p)+(o)))
 #define B(p,o) (*(unsigned char *)((char *)(p)+(o)))
@@ -230,25 +223,29 @@ null_arg:
 s32 fn_8002F768(void *, s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     struct CompareObject { s32 compare(s32, s32); };
     typedef s32 (CompareObject::*CompareMethod)(s32, s32);
-    s32 temp;
+    s32 *item;
+    s32 flag;
+    s32 start;
     s32 length;
     s32 end;
-    s32 start;
     s32 index;
-    s32 flag;
-    s32 *item;
-    CompareMethod *method = (CompareMethod *)arg2;
+    s32 temp;
+    CompareMethod *method;
+    s32 *array;
     *(s32 *)(arg0 + 4) = arg3;
-    length = *(s32 *)arg0;
+    length = *(volatile s32 *)arg0;
+    array = arg1;
+    method = (CompareMethod *)arg2;
     start = 0;
     do {
         index = start + 1;
+        item = array + index;
         end = length;
-        item = arg1 + index;
         flag = 1;
         while (index < length) {
             if ((((CompareObject *)arg0)->*(*method))(item[-1], item[0]) > 0) {
@@ -257,8 +254,8 @@ extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) 
                 item[-1] = item[0];
                 item[0] = temp;
                 if (flag != 0) {
-                    start = index - 2;
-                    if (start < 0) start = 0;
+                    temp = index - 2;
+                    start = temp & ~(temp >> 31);
                 }
                 flag = 0;
             }
@@ -268,6 +265,7 @@ extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) 
         length = end;
     } while (flag == 0);
 }
+#pragma scheduling on
 #pragma cplusplus reset
 #pragma pop
 void fn_8013776C(void *arg0) {
