@@ -29,6 +29,7 @@ extern void fn_80133FCC();
 extern void fn_801341B4(int, int);
 extern void fn_802E6BD8(int, int, int, int, void (*)(void));
 extern void fn_8000DBC8(void (*)(int, int));
+extern void *memmove(void *, const void *, unsigned int);
 #pragma push
 #pragma optimize_for_size on
 void fn_80133024(void) {
@@ -164,7 +165,25 @@ int fn_8013358C(int arg0, int arg1, char *arg2) {
         fn_802E30C8(lbl_8032B8F8, arg2, (char*)result + 0x14);
     }
 }
-#pragma optimize_for_size on
+
+#pragma scheduling invalid_target
+int fn_8013365C(int arg0, int arg1) {
+    int *p = lbl_8042F718;
+    int i = 0;
+    int count;
+    for (count = 8; count != 0; count--) {
+        if (p[1] == 0) {
+            *p = arg1;
+            p[1] = arg0;
+            return i;
+        }
+        p += 2;
+        i++;
+    }
+    fn_802E317C(lbl_8032B920, i);
+    return -1;
+}
+#pragma scheduling on
 int fn_80133780(void *arg0, void *arg1) {
     int second = *(int *)((char *)arg1 + 4);
     int first = *(int *)((char *)arg0 + 4);
@@ -224,15 +243,11 @@ int fn_80133844(const char *arg0) {
 }
 
 int fn_801338D8(const char *arg0) {
-    unsigned char c = *fn_801337E4((char *)arg0);
-    int ch = (signed char)c;
-    int isNumber;
-    if (ch < 0 || ch >= 0x100) isNumber = 0;
-    else {
-        int table = *(int *)(lbl_802FE850 + 0x38);
-        isNumber = *(unsigned short *)(*(int *)(table + 8) + ch * 2) & 8;
-    }
-    if (!isNumber && ch != '-') return fn_80133844(arg0);
+    char *p = fn_801337E4((char *)arg0);
+    int c = (signed char)*p;
+    int table = *(int *)(lbl_802FE850 + 0x38);
+    if (c >= 0 && c < 0x100 && (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 8)) return atoi(arg0);
+    if (c != '-') return fn_80133844(arg0);
     return atoi(arg0);
 }
 
