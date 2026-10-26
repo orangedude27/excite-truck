@@ -1,6 +1,13 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct Obj80262EF8 {
+    void *vtable;
+    unsigned char unk_04[0x10];
+    unsigned int unk_14;
+    float unk_18;
+} Obj80262EF8;
+
 #pragma push
 #pragma scheduling invalid_target
 extern void fn_8000D838(void *);
