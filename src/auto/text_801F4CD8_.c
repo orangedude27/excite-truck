@@ -25,7 +25,8 @@ typedef void (*SetterV)(void *, const char *);
 extern void fn_801F5344(void *, void *, void *);
 extern void fn_801F70D0(void *, int);
 extern void *fn_801F6D60(void *, int);
-extern void fn_801F6A08(void *, int);
+typedef void FN_801F6A08_RETURN;
+extern FN_801F6A08_RETURN fn_801F6A08(void *, int);
 extern void fn_801F75A4(void *, void *, void *);
 extern void *fn_801F69C8(void *);
 extern void *fn_801F6D20(void *);
@@ -643,25 +644,30 @@ void *fn_801F69C8(void *arg0) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_801F6A08(void *arg0, int arg1) {
-    int i;
     void *entry;
+    int i;
 
     if (arg0 != 0) {
         entry = arg0;
         i = 0;
-        do {
-            fn_801F639C(entry);
-            entry = (char *)entry + 0x48;
-            i++;
-        } while (i < *(int *)((char *)arg0 + 0x900));
+        goto check;
+    loop:
+        fn_801F639C(entry);
+        entry = (char *)entry + 0x48;
+        i++;
+    check:
+        if (i < *(int *)((char *)arg0 + 0x900)) {
+            goto loop;
+        }
         *(int *)((char *)arg0 + 0x900) = 0;
         if (arg1 > 0) {
             fn_80128668(arg0);
         }
     }
 }
-
+#pragma scheduling on
 extern void fn_801F602C(void *, int, int, int, int);
 extern char lbl_8033ADF8[];
 extern char lbl_8055B19C[], lbl_8055B1A8[], lbl_8055B1B0[], lbl_8055B1B8[];
