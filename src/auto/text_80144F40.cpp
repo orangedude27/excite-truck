@@ -1,7 +1,5 @@
 #include <types.h>
 #include <stdarg.h>
-
-struct Fn80147CECData { u32 w0; f32 f4; f32 f8; u32 wc; f32 f10; u32 w14; u32 w18; u32 w1c; };
 extern "C" void *fn_801284F8(u32, void *);
 extern "C" void *fn_80131810(s32);
 extern "C" void fn_80146BD4(u8 *, const s8 *, s32);
@@ -344,7 +342,7 @@ extern "C" void fn_80145670(void *arg0, void *arg1) {
 extern "C" s32 fn_8013126C(void *, s32);
 extern "C" s32 fn_80144FB0(void *, s32, s32, const char *);
 #pragma scheduling invalid_target
-extern "C" void fn_801456E8(void *arg0, s32 arg1) {
+extern "C" void fn_801456E8(void *arg0, s32 arg1, s32 arg2) {
     struct Entry { s32 unk0; f32 unk4; f32 unk8; s32 unkC; f32 unk10; s32 unk14; s32 unk18; s32 unk1C; };
     struct List { Entry *entries; s32 count; };
     char *base = lbl_8032CEC8;
@@ -353,8 +351,8 @@ extern "C" void fn_801456E8(void *arg0, s32 arg1) {
     char result[0x138];
     fn_802E3AD0(arg1, base + 0x90);
     fn_802E3AD0(arg1, base + 0xA0);
-    Entry *entry;
     s32 value;
+    Entry *entry;
     s32 offset;
     s32 i;
     i = 0;
@@ -1564,20 +1562,33 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     f32 factor = (f32)arg3;
     f32 y = *(f32 *)(src + 8) + factor * (*(f32 *)(other + 8) - *(f32 *)(src + 8));
     f32 x = *(f32 *)(src + 4) + factor * (*(f32 *)(other + 4) - *(f32 *)(src + 4));
-    f32 z = *(f32 *)(src + 0x10) + factor * (*(f32 *)(other + 0x10) - *(f32 *)(src + 0x10));
+    f32 zBase = *(f32 *)(src + 0x10);
+    f32 z = zBase + factor * (*(f32 *)(other + 0x10) - zBase);
     Pair second;
     Pair first;
     first.f.x = x;
     first.f.y = y;
     second.raw = first.raw;
-    *(u32 *)(dst + 0x0) = *(u32 *)(src + 0x0);
-    *(u32 *)(dst + 0xC) = *(u32 *)(src + 0xC);
-    *(u32 *)(dst + 0x14) = *(u32 *)(src + 0x14);
-    *(u32 *)(dst + 0x1C) = *(u32 *)(src + 0x1C);
-    *(f32 *)(dst + 4) = second.f.x;
-    *(f32 *)(dst + 8) = second.f.y;
-    *(f32 *)(dst + 0x10) = z;
-    *(u32 *)(dst + 0x18) = fn_80147C50(*(u32 *)(src + 0x18), *(u32 *)(other + 0x18), factor);
+    u32 w4 = *(u32 *)(src + 4);
+    u32 w8 = *(u32 *)(src + 8);
+    u32 w0 = *(u32 *)(src + 0);
+    u32 wc = *(u32 *)(src + 0xC);
+    u32 w14 = *(u32 *)(src + 0x14);
+    u32 w18 = *(u32 *)(src + 0x18);
+    u32 w1c = *(u32 *)(src + 0x1C);
+    volatile u32 *d = (volatile u32 *)dst;
+    *(volatile f32 *)(dst + 0x10) = zBase;
+    d[1] = w4;
+    d[2] = w8;
+    d[0] = w0;
+    d[3] = wc;
+    d[5] = w14;
+    d[6] = w18;
+    d[7] = w1c;
+    *(volatile f32 *)(dst + 4) = second.f.x;
+    *(volatile f32 *)(dst + 8) = second.f.y;
+    *(volatile f32 *)(dst + 0x10) = z;
+    d[6] = fn_80147C50(w18, *(u32 *)(other + 0x18), factor);
 }
 #pragma scheduling on
 void fn_80147DC0(void *dst, void *src, void *end, f32 t) {
