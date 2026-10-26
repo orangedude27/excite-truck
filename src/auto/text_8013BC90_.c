@@ -49,7 +49,7 @@ extern const char lbl_8032C3D8[];
 extern const char lbl_80559CE0[];
 extern const char lbl_80559CE8[];
 extern const char lbl_80559CF0[];
-#pragma dont_inline fn_8013BD5C
+#pragma inline off(fn_8013BD5C)
 void fn_8013BD5C(void *arg0, void *arg1) {
     float *v = (float *)arg0;
     void *p;
