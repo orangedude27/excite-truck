@@ -668,6 +668,9 @@ void fn_80161DE4(void) {
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, total + 1);
 }
 #pragma dont_inline off
+extern s32 fn_80012854();
+extern const char lbl_8032F738[];
+
 int fn_80161ECC(void) {
     int i = 0;
     while (fn_80161E40(i) >= 0) {
