@@ -402,13 +402,13 @@ extern int fn_80133348(int, int, int);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801616FC(void) {
-    register u8 *base;
+    register s32 *count_ptr;
     register s32 offset;
     register s32 count;
     void *item;
 
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, lbl_8055A0B8);
-    base = lbl_8042FDEC;
+    count_ptr = (s32 *)((u8 *)lbl_8042FDEC + 4);
     count = 0;
     offset = 0;
     goto test_loop;
@@ -426,10 +426,10 @@ loop:
     offset += 4;
     count += 1;
 test_loop:
-    if (count < *(s32 *)(base + 4)) {
+    if (count < *count_ptr) {
         goto loop;
     }
-    *(s32 *)(base + 4) = 0;
+    *count_ptr = 0;
     lbl_8055E300 = 0;
 }
 #pragma scheduling on
@@ -1766,6 +1766,49 @@ void fn_80164D5C(void) {
 
 void fn_80164D60(void) {
 
+}
+
+void fn_80164F50(void *arg0) {
+    extern void fn_801796BC(s32);
+    extern s32 fn_80160CE4(void);
+    extern s32 fn_80131234(void *);
+    extern void fn_802A95A8(f32 *, f32 *, f32, f32);
+    extern void fn_80276CB0(void *, s32);
+    extern void fn_801DF380(void *, s32, void (*)(void), s32);
+    extern void fn_80161438(void);
+    extern u8 lbl_8055E2DC;
+    extern u8 lbl_8032F588[];
+    extern u8 lbl_8042FDEC[];
+    extern f32 lbl_80561840;
+    extern f32 lbl_80561848;
+    extern f32 lbl_80561888;
+    u8 *base = lbl_8032F588;
+    f32 out[2];
+    f32 in[2];
+    s32 value;
+    s32 first;
+    s32 second;
+
+    fn_801796BC(1);
+    value = fn_80160CE4();
+    if (lbl_8055E2DC != 0 && value <= *(s32 *)(lbl_8042FDEC + 4)) {
+        *(s32 *)((u8 *)arg0 + 8) = value;
+    }
+    if (*(s32 *)((u8 *)arg0 + 8) >= *(s32 *)(lbl_8042FDEC + 4)) {
+        *(s32 *)((u8 *)arg0 + 8) = *(s32 *)(lbl_8042FDEC + 4);
+    }
+    *(u8 *)((u8 *)arg0 + 4) = 0;
+    out[0] = lbl_80561888;
+    out[1] = lbl_80561888;
+    in[0] = lbl_80561840;
+    *(u8 *)((u8 *)arg0 + 6) = 0;
+    in[1] = lbl_80561848;
+    *(u8 *)((u8 *)arg0 + 5) = 0;
+    fn_802A95A8(out, in, lbl_80561840, lbl_80561888);
+    fn_80276CB0(base + 0x630, 0);
+    first = fn_80131234(base + 0x654);
+    second = fn_80131234(base + 0x63C);
+    fn_801DF380((void *)second, first, fn_80161438, 0);
 }
 
 unsigned char fn_80165040(void *arg0) {
