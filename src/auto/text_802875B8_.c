@@ -4,6 +4,8 @@ extern int fn_8012C33C(const char *);
 extern int fn_80131808(const char *);
 extern int sprintf(char *, const char *, ...);
 extern const char lbl_80348A20[];
+extern const char lbl_80348A30[];
+extern const char lbl_80348A40[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80288868(void *);
@@ -370,6 +372,18 @@ void *fn_80287C80(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+
+void fn_80287CE8(int arg0, void *arg1, int arg2, int arg3) {
+    char local[0x40];
+    sprintf(local, lbl_80348A20, arg1);
+    do {
+        if (fn_8012C33C(local) == 0)
+            break;
+        *(void **)arg0 = (void *)fn_80131808(local);
+        fn_80287D70((void *)arg0, arg2, arg3);
+    } while (0);
+}
+
 #pragma scheduling on
 
 #pragma scheduling on
