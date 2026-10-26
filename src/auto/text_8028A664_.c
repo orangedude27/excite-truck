@@ -191,7 +191,7 @@ void fn_8028A9F4(void) {
 extern s32 fn_8029771C(void *, void *, f32);
 #pragma push
 #pragma processor 750
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_8028AB14(void) {
     struct Entry { f32 time; struct { s32 x, y, z; } pos; void *obj; };
     f32 now = fn_801E7E18();
@@ -209,6 +209,7 @@ void fn_8028AB14(void) {
         }
     }
 }
+#pragma scheduling on
 #pragma pop
 
 void fn_8028AD78(void) {
@@ -374,6 +375,26 @@ s32 fn_8028BB14(s32 arg0) {
     return 0x18;
 }
 
+#pragma cplusplus on
+extern "C" void fn_8028BC18(void);
+void *fn_8028BB68(void *arg0, s32 arg1, f32 farg0) {
+    extern char lbl_8055C8BC[];
+    extern char lbl_80348C28[];
+    extern f32 lbl_8056432C;
+    extern f64 lbl_805643B0;
+    s32 offset = arg1 * 0x1C;
+
+    fn_8012850C(offset + 0x10, lbl_8055C8BC, offset);
+    *(s32 *)arg0 = fn_8002F37C((void *)fn_8028BC18, 0, 0x1C, arg1);
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+    *(s32 *)((u8 *)arg0 + 8) = arg1;
+    *(f32 *)((u8 *)arg0 + 0xC) = farg0;
+    *(f32 *)((u8 *)arg0 + 0x10) = lbl_8056432C / farg0;
+    *(s32 *)((u8 *)arg0 + 0x14) = fn_802CAC28(lbl_80348C28, 0);
+    *(f32 *)((u8 *)arg0 + 0x18) = (f32)fn_8002F208(lbl_805643B0);
+    return arg0;
+}
+#pragma cplusplus off
 void fn_8028BC18(void) {
 }
 
@@ -542,7 +563,22 @@ loop_4:
     *(s32 *)(arg0 + 4) = ((s32)var_r4 - *(s32 *)arg0) / 28;
 }
 
-#pragma pop
+#pragma dont_inline on
+void *fn_8028C824(void *arg0, s32 arg1) {
+    s32 size = arg1 * 0x28;
+    void *memory;
+    void *array;
+
+    memory = ((void *(*)(s32, void *, s32))fn_8012850C)(size + 0x10, lbl_80348C34, size);
+    array = ((void *(*)(void *, void *, s32, s32, s32))fn_8002F37C)(memory, fn_8028C8BC, 0, 0x28, arg1);
+    ((void **)arg0)[0] = array;
+    ((s32 *)arg0)[1] = 0;
+    ((s32 *)arg0)[2] = arg1;
+    ((s32 *)arg0)[3] = fn_802CAC28(lbl_80348C40, 0);
+    ((f32 *)arg0)[4] = (f32)fn_8002F208(lbl_805643C8);
+    return arg0;
+}
+#pragma dont_inline off
 void fn_8028C8BC(void) {}
 
 extern void fn_802CAC54(s32);
