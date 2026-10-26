@@ -435,7 +435,42 @@ void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
         out[8] = fn_80144514(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
     }
 }
-#pragma opt_propagation reset
+
+#pragma scheduling invalid_target
+void fn_801C0D6C(void *arg0) {
+    extern void PSVECNormalize(void *, void *);
+    float vec1[3];
+    float cross[3];
+    float vec0[3];
+    float *input = (float *)arg0;
+    float x, y, z, a, b, c;
+    z = input[2];
+    y = input[1];
+    x = input[0];
+    vec0[0] = x;
+    vec0[1] = y;
+    vec0[2] = z;
+    c = input[8];
+    b = input[7];
+    a = input[6];
+    vec1[0] = a;
+    vec1[1] = b;
+    vec1[2] = c;
+    PSVECCrossProduct(vec1, vec0, cross);
+    PSVECNormalize(vec0, vec0);
+    PSVECNormalize(cross, cross);
+    PSVECCrossProduct(vec0, cross, vec1);
+    input[0] = vec0[0];
+    input[1] = vec0[1];
+    input[2] = vec0[2];
+    input[3] = cross[0];
+    input[4] = cross[1];
+    input[5] = cross[2];
+    input[6] = vec1[0];
+    input[7] = vec1[1];
+    input[8] = vec1[2];
+}
+#pragma scheduling on
 extern void PSVECDotProduct(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern float lbl_805628B8;
