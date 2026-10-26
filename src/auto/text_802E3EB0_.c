@@ -6,7 +6,7 @@ extern unsigned char lbl_804FBAA0[0x10 * 0x91];
 extern unsigned int lbl_8055D1B4;
 extern unsigned int lbl_8055D1B8;
 #pragma small_data off
-extern unsigned int lbl_8034D130;
+extern char lbl_8034D130[];
 #pragma small_data on
 extern int strncmp(const char *, const char *, unsigned int);
 extern char *strcpy(char *, const char *);
@@ -106,8 +106,8 @@ extern void DVDInit(void);
 extern int DVDClose(void *);
 extern void fn_802E3F38(void *);
 #pragma small_data off
-extern unsigned int lbl_8034D0E4;
-extern unsigned int lbl_8034D130;
+extern char lbl_8034D0E4[];
+extern char lbl_8034D130[];
 #pragma small_data on
 void *fn_802E41C4(void *arg0, int arg1) {
     void (*release)(void *);
