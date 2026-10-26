@@ -61,9 +61,12 @@ short fn_802BC424(int arg0) {
 }
 
 void fn_802BC44C(void *arg0) {
-    int offset = 0;
-    int i = 0;
     char *entry;
+    int offset;
+    int i;
+
+    offset = 0;
+    i = 0;
     goto check;
 loop:
     entry = *(char **)arg0 + offset;
@@ -78,6 +81,15 @@ void *fn_802BC4D4(void *arg0) {
     return *(void **)(*(char **)((char *)arg0 + 4) + 0xC);
 }
 
+#pragma scheduling invalid_target
+int fn_802BC4E0(void *arg0) {
+    int result = fn_802C9C24(*(int *)((char *)arg0 + 4));
+    if (fn_8012C33C() != 0)
+        fn_802E317C(&lbl_8034AB38, result);
+    fn_802B110C(&fn_802BC334, result);
+    return result;
+}
+#pragma scheduling on
 double fn_8002F234(float, float);
 float fn_802BC540(void *arg0, float farg0) {
     float x = *(float *)arg0;
@@ -453,10 +465,12 @@ void fn_802BD0F4(void *arg0) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void *fn_802BD194(void *arg0, const char *arg1) {
     unsigned int count = *(unsigned int *)arg0;
-    unsigned int i = 0;
     unsigned int offset = 0;
+    unsigned int i = 0;
     char *base;
     while (i < count) {
         base = *(char **)((char *)arg0 + 4);
@@ -467,16 +481,17 @@ void *fn_802BD194(void *arg0, const char *arg1) {
     }
     return 0;
 }
-
+#pragma pop
 void *fn_801284F8(int, int);
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
-#pragma push
-#pragma use_lmw_stmw off
 #pragma scheduling on
-void fn_802BD414(int arg0, volatile int *arg1) {
+void fn_802BD414(int arg0, volatile int *arg1)
+{
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
-    if (result != 0) {
+    if (result == 0)
+        return;
+    {
         int first = arg1[0];
         result[0] = arg1[1];
         result[2] = first;
@@ -484,7 +499,7 @@ void fn_802BD414(int arg0, volatile int *arg1) {
         result[1] = result[1] + arg1[0];
     }
 }
-#pragma pop
+#pragma scheduling reset
 void fn_802BD478(int arg0, volatile int *arg1) {
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
@@ -792,6 +807,27 @@ void fn_802BDFF4(void *arg0, int arg1) {
     }
 }
 
+#pragma scheduling invalid_target
+void *fn_802BE008(void *arg0) {
+    int count = *(int *)((char *)&lbl_804C00D4 + 4);
+    char *entry = *(char **)&lbl_804C00D4;
+    int i;
+    for (i = 0; i < count; i++, entry += 0x60) {
+        char *list = *(char **)(entry + 0x58);
+        if (list != 0) {
+            char *item = *(char **)(list + 8);
+            int found = 0;
+            if ((unsigned)arg0 >= (unsigned)*(int *)item && (unsigned)arg0 < (unsigned)*(int *)item + (unsigned)*(int *)(item + 4) * 0x10) {
+                found = 1;
+            }
+            if (found != 0) {
+                return entry;
+            }
+        }
+    }
+    return 0;
+}
+#pragma scheduling on
 extern void *fn_802BE008(void *);
 extern void *fn_802BE844(short, short, short);
 extern float lbl_80564D10, lbl_80564D2C;
@@ -827,9 +863,10 @@ void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, f
 }
 
 extern int lbl_804C00D4;
+#pragma scheduling invalid_target
 int fn_802BE1D8(void) {
-    int sum = 0;
     int i = 0;
+    int sum = 0;
     int offset = 0;
     while (i < *(int *)((char *)&lbl_804C00D4 + 4)) {
         sum += fn_802BD0C8(*(char **)&lbl_804C00D4 + offset);
@@ -838,7 +875,7 @@ int fn_802BE1D8(void) {
     }
     return sum;
 }
-
+#pragma scheduling on
 void fn_802BE244(void) {
     int offset = 0;
     int i = 0;
