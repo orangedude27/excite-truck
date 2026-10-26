@@ -132,6 +132,7 @@ s32 fn_801C34CC(f32 arg0, f32 arg1) {
     f64 abs = __fabs((f64)diff);
     return (f32)abs <= lbl_80558DC4[0];
 }
+#pragma dont_inline reset
 
 f32 fn_801C34F4(f32 arg0) {
     extern f32 lbl_80562988;
