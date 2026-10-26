@@ -970,16 +970,19 @@ void fn_801955F0(void *arg0, float *arg1) {
 }
 
 void fn_80195830(void *arg0) {
-    float x, y, scale;
-    fn_80195654((unsigned char *)arg0 + 0x20);
-    fn_801933FC(arg0, (unsigned char *)arg0 + 0x20);
-    x=*(float *)((unsigned char *)arg0+0x20); y=*(float *)((unsigned char *)arg0+0x24);
-    *(float *)((unsigned char *)arg0+0x40)=x; *(float *)((unsigned char *)arg0+0x44)=y;
-    scale=(float)fn_8002F234(x*x+y*y);
-    if (lbl_80562148 > scale) {} else { scale=lbl_80562148; }
-    scale=lbl_80562140/scale;
-    *(float *)((unsigned char *)arg0+0x40)*=scale;
-    *(float *)((unsigned char *)arg0+0x44)*=scale;
+    struct Fields { unsigned char pad[0x20]; float x; float y; unsigned char mid[0x18]; float outX; float outY; };
+    struct Fields* obj = (struct Fields*)arg0;
+    float length, denominator, scale;
+    ((void (*)(void*, void*))fn_80195654)(arg0, (void*)((unsigned long)arg0 + 0x20));
+    fn_801933FC(obj, &obj->x);
+    obj->outX = obj->x;
+    obj->outY = obj->y;
+    length = (float)fn_8002F234(obj->x * obj->x + obj->y * obj->y);
+    denominator = lbl_80562148;
+    denominator = denominator > length ? denominator : length;
+    scale = lbl_80562140 / denominator;
+    obj->outX *= scale;
+    obj->outY *= scale;
 }
 
 extern void fn_801958D8(void);
@@ -1426,6 +1429,39 @@ int fn_8019703C(void *arg0, void *arg1) {
     else
         ++*(int *)((char *)arg0 + 0x98);
     return 0;
+}
+
+void fn_801971AC(void *arg0, void *arg1) {
+    extern float lbl_80562264;
+    float sp18[2];
+    double sp10;
+    float sp8[2];
+    float factor;
+    float speed;
+    float old0;
+    float old1;
+    float result0;
+    float result1;
+    float *point;
+    char *base;
+    point = (float *)arg1;
+    base = (char *)arg0;
+    if (*(int *)(base + 0x260) == 0) return;
+    if (*(int *)(base + 0x268) == 1) return;
+    speed = *(float *)(base + 0x264);
+    factor = *(float *)(base + 0x25C) + lbl_80562264;
+    *(float *)(base + 0x25C) = factor;
+    sp18[0] = *(float *)(base + 0x48) + (*(float *)(base + 0x58) * speed);
+    old0 = point[0];
+    sp18[1] = *(float *)(base + 0x4C) + (*(float *)(base + 0x5C) * speed);
+    old1 = point[1];
+    result1 = (factor * (sp18[1] - old1)) + old1;
+    result0 = (factor * (sp18[0] - old0)) + old0;
+    sp8[0] = result0;
+    sp8[1] = result1;
+    sp10 = *(double *)sp8;
+    point[0] = *(float *)&sp10;
+    point[1] = *((float *)&sp10 + 1);
 }
 
 int fn_8019799C(void *arg0, void *arg1) {
