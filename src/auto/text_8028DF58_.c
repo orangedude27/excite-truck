@@ -7,6 +7,8 @@ extern float fn_802C9A4C(float);
 extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
 extern int fn_8028FA1C(int);
+extern char lbl_80348FD0[];
+extern int fn_8002F768(void *, int, int);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_803490D4[];
@@ -722,6 +724,38 @@ void fn_8028FB98(void *arg0, int arg1, float *arg2, float farg0) {
         fn_8028FEE4(arg0, arg1, sp8, lbl_80564420, lbl_80564424);
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma dont_inline on
+extern float fn_80287BC8(float, float);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_8028FC40(void *arg0, int arg1, float *arg2, float farg0) {
+    extern void fn_8028FEE4(void *, int, float *, float, float);
+    float sp8[3];
+    float temp_f2;
+    int result = 0;
+    if (*(float *)((char *)arg0 + 0x9C) >= lbl_80564424 - lbl_80558DC4 &&
+        *(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94)) {
+        result = 1;
+    }
+    if (result != 0) {
+        fn_8028F444(sp8, arg2, (float *)((char *)arg0 + 0x10),
+                    (float *)((char *)arg0 + 0x1C),
+                    *(float *)((char *)arg0 + 0x28), lbl_80564424);
+        temp_f2 = *(float *)((char *)arg0 + 0x2C);
+        fn_8028FEE4(arg0, arg1, sp8,
+                    farg0 + fn_80287BC8(-temp_f2, temp_f2),
+                    lbl_80564424);
+    }
+}
+#pragma scheduling on
+#pragma pop
+
 #pragma pop
 extern int fn_8028F534(int);
 extern double lbl_80564440;
@@ -760,37 +794,37 @@ void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
     float a, b, c, d, e, f, g, h, i, j, k, l, m, n;
     float o, p, q, r, s, t, u, v, w, x, y, z;
     float aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an;
-    volatile float spill10, spill8, spillC;
+    volatile float spillC, spill10, spill8;
 
-    a = lbl_8056444C;
-    b = *(float *)((char *)arg0 + 0xa0);
+    a = *(volatile float *)&lbl_8056444C;
+    b = *(volatile float *)((char *)arg0 + 0xa0);
     c = a * farg0;
     d = farg0 * b;
-    e = lbl_80564448;
-    f = *(float *)((char *)arg0 + 0x34);
-    g = lbl_80564454;
+    e = *(volatile float *)&lbl_80564448;
+    f = *(volatile float *)((char *)arg0 + 0x34);
+    g = *(volatile float *)&lbl_80564454;
     h = g * f;
-    i = lbl_80564450;
+    i = *(volatile float *)&lbl_80564450;
     j = e * d;
-    k = lbl_80564424;
+    k = *(volatile float *)&lbl_80564424;
     l = f * d;
     m = h * d;
-    n = *(float *)((char *)arg0 + 0x30);
+    n = *(volatile float *)((char *)arg0 + 0x30);
     o = j - i;
-    p = lbl_80564458;
+    p = *(volatile float *)&lbl_80564458;
     q = j - k;
     r = o * m;
-    s = *(float *)((char *)arg2 + 0x10);
+    s = *(volatile float *)((char *)arg2 + 0x10);
     t = q * l;
-    u = *(float *)((char *)arg2 + 0xc);
+    u = *(volatile float *)((char *)arg2 + 0xc);
     v = p * n;
     w = k + r;
-    x = *(float *)((char *)arg2 + 0x14);
+    x = *(volatile float *)((char *)arg2 + 0x14);
     y = k + t;
-    z = *(float *)arg2;
-    aa = *(float *)((char *)arg2 + 4);
+    z = *(volatile float *)arg2;
+    aa = *(volatile float *)((char *)arg2 + 4);
     ab = c * w;
-    ac = *(float *)((char *)arg2 + 8);
+    ac = *(volatile float *)((char *)arg2 + 8);
     ad = s * y;
     ae = u * y;
     af = x * y;
