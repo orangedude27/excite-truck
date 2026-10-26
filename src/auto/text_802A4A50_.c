@@ -198,7 +198,7 @@ void fn_802A4D08(void) {
     }
 
     value = *(f32 *)((u8 *)fn_801E7E34() + 0xDC);
-    if (!(__fabsf(value) <= lbl_80558DC4)) {
+    if (!((f32)__fabs((double)value) <= *(f32 *)(void *)&lbl_80558DC4)) {
         scaled = (s32)(lbl_80564850 * (lbl_80564854 * value));
         nonnegative = scaled & ((-scaled & ~scaled) >> 31);
         alpha = 0xFF;
@@ -892,7 +892,7 @@ void fn_802A775C(void *arg0) {
         f29 = *(f32 *)((u8 *)arg0 + 0x38) * (lbl_8056485C - (f32)fn_8002F234(distSq) / *(f32 *)((u8 *)arg0 + 0x18));
     }
 
-    if (((f32)__fabs(f29) <= lbl_80558DC4) != ((f32)__fabs(*(f32 *)((u8 *)arg0 + 0x3C)) <= lbl_80558DC4)) {
+    if (((f32)__fabs(f29) <= *(f32 *)(void *)&lbl_80558DC4) != ((f32)__fabs(*(f32 *)((u8 *)arg0 + 0x3C)) <= *(f32 *)(void *)&lbl_80558DC4)) {
         fn_802C990C(*(s32 *)((u8 *)arg0 + 0x34));
     }
     fn_802C2B78(lbl_80564850, lbl_805648D4, f29);
