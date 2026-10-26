@@ -120,6 +120,38 @@ void fn_8000CE60(void) {
     lbl_8055D420 = -1;
 }
 
+#pragma cplusplus on
+extern "C" void fn_8000CEF0(void) {
+    class Object {
+    public:
+        virtual void release(s32);
+    };
+    Object *p;
+
+    p = (Object *)lbl_8055D418;
+    if (p != NULL) {
+        if (p != NULL)
+            p->release(1);
+        lbl_8055D418 = NULL;
+    }
+    p = (Object *)lbl_8055D41C;
+    if (p != NULL) {
+        if (p != NULL)
+            p->release(1);
+        lbl_8055D41C = NULL;
+    }
+    p = (Object *)lbl_8055D414;
+    if (p != NULL) {
+        if (p != NULL)
+            p->release(1);
+        lbl_8055D414 = NULL;
+    }
+    fn_80209110((s32)&lbl_8055D410);
+    lbl_8055D404 = 0;
+    lbl_8055D405 = 0;
+    lbl_8055D407 = 0;
+}
+#pragma cplusplus off
 void fn_8000D070(void) {
     u8 *base;
     if (lbl_8055D418 != NULL) {
