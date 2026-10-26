@@ -817,10 +817,12 @@ extern "C" void *fn_80146490(void *arg0) {
 
 extern "C" void *fn_801464DC(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
+        void *p;
         *(void **)arg0 = &lbl_8032D1E8;
         fn_80145DD8(arg0);
-        if (*(void **)((u8 *)arg0 + 0x28) != NULL) {
-            fn_80131818();
+        p = *(void **)((u8 *)arg0 + 0x28);
+        if (p != NULL) {
+            fn_80131818(p);
             *(void **)((u8 *)arg0 + 0x28) = NULL;
         }
         fn_80146584((u8 *)arg0 + 0x4C);
