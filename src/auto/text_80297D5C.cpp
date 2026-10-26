@@ -214,6 +214,7 @@ extern void *lbl_8055F7C4;
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" int fn_8029833C(void *arg0, void *arg1, void *arg2, void *arg3, short arg4, float farg0) {
+    register int index;
     short local = arg4;
     void *obj = fn_80298868(arg0);
     if (obj == 0 || fn_802984D0(arg0, obj, arg1, arg2, arg3, &local) == 0) {
@@ -221,9 +222,9 @@ extern "C" int fn_8029833C(void *arg0, void *arg1, void *arg2, void *arg3, short
     }
     *(float *)((char *)obj + 0x24) = farg0;
     *(char *)((char *)obj + 0x28) = 1;
-    arg3 = (void *)(((char *)obj - (char *)arg0) / 44);
-    fn_80299338(lbl_8055F7C4, (unsigned int)arg3, obj, (char *)obj + 0xC, (char *)obj + 0x18, local);
-    return (int)arg3;
+    index = ((char *)obj - (char *)arg0) / 44;
+    fn_80299338(lbl_8055F7C4, index, obj, (char *)obj + 0xC, (char *)obj + 0x18, local);
+    return index;
 }
 #pragma pop
 extern "C" int fn_802984D0(void*, void*, void*, void*, void*, void*);
