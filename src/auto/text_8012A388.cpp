@@ -519,26 +519,41 @@ extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
 }
 
 extern "C" const char lbl_8032A630[];
-extern "C" const char lbl_805599A4[];
+extern "C" const char lbl_805599A4[1];
 extern "C" s32 strstr(const char *, const char *);
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8012BA1C(void *arg0) {
-    s32 i, offset, j, offset2, value;
-    i = 0; offset = 0;
+    const char *strings = lbl_8032A630;
+    s32 offset, i;
+    s32 j, offset2;
+    register s32 value;
+    register u8 *entry;
+    register u32 flags;
+
+    i = 0;
+    offset = 0;
     while (i < *(s32 *)((char *)arg0 + 0x88)) {
-        value = *(s32 *)(*(char **)((char *)arg0 + 0x60) + offset + 0x38);
-        if (value > 0) fn_802E30C8(lbl_8032A630 + 0x470, arg0);
-        offset += 0x44; i++;
+        entry = *(u8 **)((char *)arg0 + 0x60) + offset;
+        value = *(s32 *)(entry + 0x38);
+        if (value > 0) fn_802E30C8(strings + 0x470, arg0);
+        offset += 0x44;
+        i++;
     }
-    if (strstr((const char *)arg0, lbl_805599A4) != 0 && stricmp((const char *)arg0, lbl_8032A630 + 0x4A0) != 0) {
-        j = 0; offset2 = 0;
+    if (strstr((const char *)arg0, &lbl_805599A4[0]) != 0 &&
+        stricmp((const char *)arg0, strings + 0x4A0) != 0) {
+        j = 0;
+        offset2 = 0;
         while (j < *(s32 *)((char *)arg0 + 0x88)) {
-            value = *(s32 *)(*(char **)((char *)arg0 + 0x60) + offset2 + 0x34);
-            if ((value & 0xA) == 8) fn_802E30C8(lbl_8032A630 + 0x4AC, arg0);
-            offset2 += 0x44; j++;
+            entry = *(u8 **)((char *)arg0 + 0x60) + offset2;
+            flags = *(u32 *)(entry + 0x34);
+            if ((flags & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0);
+            offset2 += 0x44;
+            j++;
         }
     }
 }
-
+#pragma pop
 extern "C" u32 fn_8012BB18(void) { return 1; }
 
 extern "C" void fn_8012BC24(void **arg0, void *arg1) {
@@ -550,6 +565,43 @@ extern "C" void fn_8012BC24(void **arg0, void *arg1) {
         }
         var = (void **)((char *)*var + 0xA8);
     }
+}
+
+extern "C" const char lbl_8032AAFC[];
+extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2) {
+    struct Struct8012BC50 {
+        u8 pad[0x34];
+        u32 f0 : 28;
+        u32 f1 : 2;
+        u32 f2 : 1;
+        u32 f3 : 1;
+        s32 field_38;
+        s32 field_3c;
+        s32 field_40;
+    };
+    u8 *r31 = *(u8 **)((u8 *)arg0 - 8);
+    if (r31 == NULL) {
+        return 0;
+    }
+    if (*(s32 *)(r31 + 0x38) != 0) {
+        *(s32 *)(r31 + 0x38) -= 1;
+    } else {
+        fn_802E30C8(lbl_8032AAFC, r31);
+    }
+    if (*(s32 *)(r31 + 0x38) == 0) {
+        if (arg1 != NULL) {
+            ((void (*)(void *, s32))arg1)(arg0, arg2);
+        }
+        if (*(u32 *)(r31 + 0x34) & 4) {
+            Struct8012BC50 *s = (Struct8012BC50 *)r31;
+            fn_80128660(s->field_40);
+            s->f1 = 0;
+            s->f3 = 0;
+            s->field_40 = 0;
+            s->field_3c = 0;
+        }
+    }
+    return *(s32 *)(r31 + 0x38) == 0;
 }
 
 extern "C" void *fn_8012BD3C(void *arg0, const char *arg1) {
@@ -1201,6 +1253,47 @@ extern "C" void fn_8012D8A8(s32 arg0) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_8012DBD0(void) {
+    void *object;
+    s32 i;
+    u32 offset;
+    s32 last;
+    u32 *base;
+
+    if (lbl_8055DFFC != 0) {
+        object = fn_801284F8(0xA24, lbl_8032ACA0);
+        if (object != 0) {
+            *(void **)object = lbl_8032ACB0;
+            *(s32 *)((char *)object + 0xC) = 0x20;
+            *(void ***)((char *)object + 8) = (void **)((char *)object + 0x18);
+            *(void **)((char *)object + 0x14) = 0;
+            *(s32 *)((char *)object + 0x10) = 0;
+            i = 0;
+            offset = 0;
+            goto loop_test;
+        loop_body:
+            base = *(u32 * volatile *)((char *)object + 8);
+            *(u32 *)((char *)base + offset) = (u32)((char *)base + (u32)(i + 1) * 0x50);
+            offset += 0x50;
+            i += 1;
+        loop_test:
+            last = *(s32 *)((char *)object + 0xC) - 1;
+            if (i < last) goto loop_body;
+            base = *(u32 * volatile *)((char *)object + 8);
+            *(u32 *)((char *)base + (u32)last * 0x50) = 0;
+            *(void **)((char *)object + 0x14) = *(void ** volatile *)((char *)object + 8);
+            *(s32 *)((char *)object + 0xA18) = 0;
+            *(void **)((char *)object + 0xA1C) = (char *)object + 0xA18;
+            fn_80127CF4((s32)object, (s32)lbl_8032ACD0);
+            *(u8 *)((char *)object + 0xA20) = 0;
+        }
+        lbl_8055E014 = (nw4r::ef::Effect *)object;
+    }
+}
+#pragma pop
+
 extern "C" s32 fn_80128668(void *);
 extern "C" s32 fn_8012DCC0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
@@ -1298,6 +1391,7 @@ done:
 
 extern "C" s32 fn_8012CC24(void *, void *);
 #pragma push
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 extern "C" void fn_8012DEE4(void *arg0) {
     u8 *obj = (u8 *)arg0;
@@ -1315,10 +1409,10 @@ extern "C" void fn_8012DEE4(void *arg0) {
         if (entry != 0) {
             state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
             if (state == 1) goto after_state;
-            if (state >= 1) goto state_ge_one;
-            if (state >= 0) goto state_zero;
-            goto after_state;
-        state_ge_one:
+            if (state < 1) {
+                if (state >= 0) goto state_zero;
+                goto after_state;
+            }
             if (state < 3) goto state_two;
             goto after_state;
         state_zero:
