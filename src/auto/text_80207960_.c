@@ -21,6 +21,7 @@ extern void* fn_802090B4(void);
 extern signed long fn_802E317C(const char*, ...);
 extern signed long fn_8026A344(signed long);
 extern signed long fn_80206570(signed long);
+extern signed long fn_8020835C(void *);
 extern int __cntlzw(unsigned int);
 
 typedef struct SoundMgrObj {
@@ -248,6 +249,46 @@ signed long fn_8020820C(SoundMgrObj* arg0, SoundMgrObj* arg1) {
         return id == arg0->field_10 || (!other && greater);
     }
     return greater;
+}
+
+#pragma push
+#pragma inline_depth(0)
+void fn_802082C0(void *arg0, void *arg1) {
+    register signed long *source;
+    register signed long *target;
+    register signed long count;
+    register signed long *base;
+    register signed long i;
+    register signed long value;
+    register signed long j;
+    register signed long outerOffset;
+
+    base = *(signed long **)arg1;
+    i = 1;
+    count = *(signed long *)((char *)arg1 + 4);
+    outerOffset = 4;
+    source = (signed long *)((char *)base + 4);
+
+    goto outer_check;
+outer:
+    value = *source;
+    j = i;
+    target = (signed long *)((char *)base + outerOffset);
+    goto inner;
+inner:
+    *target = target[-1];
+    j--;
+    target--;
+    if (j > 0 &&
+        fn_8020820C((SoundMgrObj *)value, (SoundMgrObj *)target[-1]) != 0)
+        goto inner;
+    base[j] = value;
+    source++;
+    i++;
+    outerOffset += 4;
+outer_check:
+    if (i < count)
+        goto outer;
 }
 #pragma pop
 void fn_80208404(void) {
