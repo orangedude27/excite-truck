@@ -125,16 +125,15 @@ void fn_802B218C(void *arg0) {
 #pragma opt_common_subs off
 void fn_802B21D4(void **arg0) {
     void *ptr = *arg0;
-    register int value;
     if (ptr != 0) {
         if (ptr != 0) {
-            value = ((int *)ptr)[2];
-            if (value != -2) {
+            if (((int *)ptr)[2] == -2) {
+            } else {
                 fn_802CAC54();
                 ((int *)ptr)[2] = -2;
             }
-            value = ((int *)ptr)[0];
-            if (value != 0) {
+            if (((int *)ptr)[0] == 0) {
+            } else {
                 fn_802C6C20();
             }
             fn_80128668(ptr);
@@ -485,38 +484,37 @@ int *fn_802B320C(int *arg0, int arg1) {
 }
 
 extern char lbl_8034A3BC[];
-extern void fn_802E30C8(const char *, int, int, int);
+extern void fn_802E30C8(const char *, ...);
 void fn_802B321C(int *param_1, int *param_2, int *param_3, int param_4)
 {
-    int i;
-    int offset;
     int item;
-    int *entry;
-    int *value;
-    int count;
 
-    if (param_4 < 0 || param_3[1] <= param_4) {
-        fn_802E30C8(lbl_8034A3BC, param_4, 0, param_3[1]);
+    if (param_4 >= 0 && param_4 < param_3[1]) {
+        item = *(int *)(*param_3 + param_4 * 4);
+        if (param_1 != 0) {
+            int i = 0;
+            int offset = 0;
+            do {
+                int count;
+                int *entry;
+                i++;
+                count = param_1[1];
+                entry = *(int **)(*(int *)(item + 0x408) + offset);
+                offset += 4;
+                param_1[1] = count + 1;
+                *(int *)((char *)param_1[0] + count * 0xC) =
+                    *(int *)((char *)entry + 0x2A4);
+                *(int *)((char *)param_1[0] + count * 0xC + 4) = (int)entry;
+                *(int *)((char *)param_1[0] + count * 0xC + 8) =
+                    (int)((char *)entry + 0x298);
+            } while (i < *(int *)(item + 0x40C) &&
+                     param_1[1] + 1 <= param_1[2]);
+        }
+        if (param_2 != 0)
+            *param_2 = item + 4;
         return;
     }
-    item = *(int *)(*param_3 + param_4 * 4);
-    if (param_1 != 0) {
-        i = 0;
-        offset = 0;
-        while (i < *(int *)(item + 0x40C) && param_1[1] + 1 <= param_1[2]) {
-            i++;
-            count = param_1[1];
-            entry = *(int **)(*(int *)(item + 0x408) + offset);
-            offset += 4;
-            param_1[1] = count + 1;
-            value = (int *)((char *)param_1[0] + count * 0xC);
-            value[0] = *(int *)((char *)entry + 0x2A4);
-            value[1] = (int)entry;
-            value[2] = (int)((char *)entry + 0x298);
-        }
-    }
-    if (param_2 != 0)
-        *param_2 = item + 4;
+    fn_802E30C8(lbl_8034A3BC, param_4, 0, param_3[1]);
 }
 
 int fn_802B2E00(void *);
@@ -634,13 +632,11 @@ void fn_802B2C7C(void *arg0) {
 }
 #pragma scheduling on
 
-#pragma push
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 int fn_802B2C98(char *arg0) {
-    register Unk802B2C98 *base = &lbl_804BE1FC;
+    Unk802B2C98 *base = &lbl_804BE1FC;
     int result;
     int i;
-
     result = 0;
     i = 0;
     while (i < base->m4) {
@@ -652,7 +648,7 @@ int fn_802B2C98(char *arg0) {
     }
     return result;
 }
-#pragma pop
+#pragma scheduling on
 void fn_802B2D24(void *arg0) {
     int i = 0;
     int j;
