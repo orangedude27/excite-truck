@@ -78,6 +78,34 @@ void *fn_8027D304(void *arg0, int arg1) {
     return obj;
 }
 
+void fn_8027B288(void *);
+void *fn_8027D39C(void *arg0, int arg1) {
+    struct Local {
+        void *vtable;
+        char pad[0x14];
+        int field_18;
+        int field_1C;
+        int field_20;
+    };
+    struct Local *obj = (struct Local *)arg0;
+    if (arg0 != 0) {
+        obj->vtable = lbl_80347CC0;
+        fn_8027B288(obj);
+        if (&obj->field_18 != 0) {
+            fn_8002F634((char *)obj + 0x24, __dt__Q34nw4r2ef6EffectFv_8027D434, 0x3C, 6);
+            if (&obj->field_18 != 0) {
+                obj->field_18 = 0;
+                obj->field_1C = 0;
+                obj->field_20 = 0;
+            }
+        }
+        if (arg1 > 0) {
+            ((void (*)(void *))fn_80128668)(obj);
+        }
+    }
+    return obj;
+}
+
 void *__dt__Q34nw4r2ef6EffectFv_8027D434(void *arg0, int arg1) {
     if (arg0) {
         *(void **)arg0 = lbl_80347CF8;
