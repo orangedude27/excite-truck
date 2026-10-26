@@ -64,9 +64,9 @@ extern int stricmp(const char *, const char *);
 extern void fn_8012F9E8(void *, void *, void *);
 extern void fn_80128670(int);
 int fn_801F4E44(const char *arg0) {
-    int i;
+    unsigned int i;
     i = 0;
-    while (i < 5) {
+    while (5 > i) {
         if (stricmp(arg0, lbl_8033AC9C[i]) == 0) {
             return i + 1;
         }
@@ -152,11 +152,10 @@ typedef int (*F0)(void);
 typedef void *(*F2)(void *, void *);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 int fn_801F52BC(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     int result = 0;
-    int (*check)(void *);
-    check = (int (*)(void *))(*(void ***)arg0)[3];
-    if (check(arg0) != 0) {
+    if (((int (*)(void *))(*(void ***)arg0)[3])(arg0) != 0) {
         result = ((int (*)(int, int, int))fn_8012F9E8)(arg2, arg3, ((int (*)(void *, int))(*(void ***)arg0)[5])(arg0, arg1));
     }
     return result;
