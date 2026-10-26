@@ -70,38 +70,37 @@ int fn_802CA294(int arg0) {
 extern char *fn_80029004(char *, int);
 extern char lbl_8055D048;
 int fn_802CA2A8(void *arg0, int arg1, int arg2) {
+    int remaining = arg1;
     char *dst = (char *)arg0;
     const char *src = (const char *)arg2;
-    int remaining = arg1;
-    char *p = dst;
-    do {
-        char c = *src++;
-        *p++ = c;
-        if ((signed char)c == 0) break;
-        remaining--;
-        if (remaining <= 0) {
-            p[-1] = 0;
-            break;
-        }
-    } while (1);
-    *fn_80029004(dst, '.') = 0;
-    p = dst;
-    while ((signed char)*p != 0) {
-        remaining--;
-        p++;
-    }
-    if (remaining > 0) {
-        const char *suffix = &lbl_8055D048;
-        do {
-            char c = *suffix++;
-            *p++ = c;
-            if ((signed char)c == 0) break;
-            remaining--;
-            if (remaining <= 0) {
-                p[-1] = 0;
+    char *cursor;
+    char *dot;
+    const char *suffix;
+
+    {
+        int copy_count = arg1;
+        char *write = dst;
+        while ((signed char)(*write++ = *src++) != 0) {
+            if (--copy_count <= 0) {
+                write[-1] = 0;
                 break;
             }
-        } while (1);
+        }
+    }
+
+    dot = fn_80029004(dst, '.');
+    *dot = 0;
+    cursor = dst;
+    while ((signed char)*cursor++)
+        --remaining;
+    if (remaining > 0) {
+        suffix = &lbl_8055D048;
+        while ((signed char)(*cursor++ = *suffix++) != 0) {
+            if (--remaining <= 0) {
+                cursor[-1] = 0;
+                break;
+            }
+        }
     }
     return (int)dst;
 }
@@ -173,24 +172,28 @@ int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
 extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
 extern char lbl_8034B634[];
 extern char lbl_8034B658[];
+extern void fn_802CA57C(int, int, int, int);
+#pragma scheduling invalid_target
 int fn_802CA658(int arg0, int arg1) {
-    int sp10;
+    unsigned int sp10;
     int spC;
     signed char sp9 = 0;
     unsigned char sp8 = 0;
     int result;
-    result = fn_8012C370("TEX ", &sp10, &spC, &sp9, &sp8);
+    register unsigned int check;
+    result = ((int (*)(int, int, unsigned int *, int *, signed char *, unsigned char *))fn_8012C370)(arg0, 0x54455820, &sp10, &spC, &sp9, &sp8);
     if (result != 0) {
         if ((result & 0x7F) != 0)
             fn_802E317C(lbl_8034B634, arg0, result);
-        if (sp10 != 0xF)
+        check = sp10;
+        if (check != 0xF)
             fn_802E317C(lbl_8034B658, arg0);
         if (sp8 != 0)
-            fn_802CA57C(result, arg0, 0);
+            fn_802CA57C(result, arg0, 0, arg1);
     }
     return result;
 }
-
+#pragma scheduling on
 char *fn_802CA72C(unsigned int arg0) {
     char *base = lbl_8034B538;
     switch (arg0) {
@@ -223,7 +226,7 @@ int fn_802CA7DC(const unsigned char *arg0) { return ((signed char)*arg0 - 0x2A) 
 int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
 
 extern int fn_802CA824(int);
-extern int fn_802CA57C(int, int, int);
+extern void fn_802CA57C(int, int, int, int);
 extern int fn_802CA4E0(int, int, int, int, int);
 extern int stricmp(const char *, const char *);
 extern unsigned int strlen(const char *);
@@ -384,35 +387,25 @@ extern void fn_802CAD28(int);
 extern char lbl_8034B8E0[];
 #pragma scheduling invalid_target
 void fn_802CAC54(int arg0) {
-    register int value;
-    char *base;
-    char *entry;
-    int offset;
+    int *entry;
 
     if (arg0 == -1)
         return;
     if (arg0 >= 0 && arg0 < 0x200) {
-        offset = arg0 * 0x4C;
-        base = (char *)lbl_8055FCB0;
-        value = *(int *)(base + offset);
-        if (value <= 0) {
-            entry = base + offset;
-            fn_802E317C(lbl_8034B8E0, entry + 4);
-        }
+        if (*(int *)((char *)lbl_8055FCB0 + arg0 * 0x4C) <= 0)
+            fn_802E317C(lbl_8034B8E0, (char *)lbl_8055FCB0 + arg0 * 0x4C + 4);
     }
-    offset = arg0 * 0x4C;
-    entry = (char *)lbl_8055FCB0 + offset;
-    if (*(unsigned char *)(entry + 0x30) != 0) {
+    entry = (int *)((char *)lbl_8055FCB0 + arg0 * 0x4C);
+    if (*(unsigned char *)((char *)entry + 0x30) != 0) {
         fn_802CAD28(arg0);
         return;
     }
-    value = *(int *)entry - 1;
-    *(int *)entry = value;
-    if (value == 0 && *(int *)(entry + 0x2C) != 0) {
+    entry[0]--;
+    if (entry[0] == 0 && entry[0x2C / 4] != 0) {
         fn_802CB82C(arg0);
-        fn_8012C4D8(*(void **)(entry + 0x2C));
-        *(int *)(entry + 0x2C) = 0;
-        ((void (*)(int))fn_802D8FB4)(*(int *)(entry + 0x28));
+        fn_8012C4D8((void *)entry[0x2C / 4]);
+        entry[0x2C / 4] = 0;
+        ((void (*)(int))fn_802D8FB4)(entry[0x28 / 4]);
     }
 }
 #pragma scheduling on
@@ -542,7 +535,7 @@ void fn_802CAF1C(int arg0, signed char arg1, signed char arg2) {
 
 #pragma dont_inline reset
 int fn_802DB2C0(int);
-int fn_802CA57C(int, int, int);
+void fn_802CA57C(int, int, int, int);
 int fn_802CA4E0(int, int, int, int, int);
 int fn_802CA898(int, int, int, int);
 #pragma push
