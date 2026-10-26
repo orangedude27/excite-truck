@@ -551,17 +551,20 @@ extern "C" void fn_80145D8C(void *arg0) {
 }
 
 extern "C" void fn_80145DD8(void *arg0) {
-    u8 *item;
-    s32 count;
     s32 i;
+    void **item;
+    s32 count;
 
-    item = (u8 *)lbl_8042FBC0.data;
+    item = lbl_8042FBC0.data;
     count = lbl_8042FBC0.count;
     i = 0;
-    for (; i < count; i++, item += 4) {
-        if (*(void **)item == arg0) {
-            goto found;
+    for (; i < count; ) {
+        if (*item != arg0) {
+            item++;
+            i++;
+            continue;
         }
+        goto found;
     }
     i = -1;
 found:
@@ -831,17 +834,6 @@ extern "C" void *fn_801464DC(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-
-extern "C" void fn_80128668(void *);
-extern "C" void fn_80128670(s32);
-extern "C" void fn_80131818(void);
-extern "C" void fn_80145DD8(void *);
-extern "C" void fn_80146584(void *);
-extern "C" void fn_801465C8(void *);
-extern "C" void fn_80146638(void *);
-extern "C" void fn_801466B4(void *);
-extern "C" void fn_80146730(void *);
-extern "C" void fn_801467AC(void *);
 
 extern "C" void fn_80146584(void *arg0) {
     void *buf = *(void **)arg0;
