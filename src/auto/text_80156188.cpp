@@ -389,28 +389,30 @@ s32 fn_80156920(s32 arg0, s32 arg1) {
 extern f32 fn_80129DC4(s32, s32, s32, f32, f32);
 extern f32 lbl_8055E3C8;
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_80156960(void *arg0) {
-    void *inp = arg0;
-    s32 count = 0;
+    f32 base = lbl_8055E3C8;
+    s32 value;
     void *out = arg0;
-    f32 f31 = lbl_8055E3C8;
-    
+    s32 count = 0;
+
     do {
-        s32 divisor = ((s32 *)inp)[2];
-        void *data_ptr = (void *)((s32 *)inp)[1];
-        s32 idx = count - ((count / divisor) * divisor);
-        s32 val = *(s32 *)((u8 *)data_ptr + (idx * 8));
-        f32 f1 = ((f32 *)inp)[0xDC / 4];
-        f32 f2 = ((f32 *)inp)[0xE0 / 4];
-        f32 result = fn_80129DC4(4, divisor, (s32)(long)data_ptr, f1, f2);
-        result = f31 + result;
-        ((f32 *)out)[0xE4 / 4] = result;
-        *(s32 *)((u8 *)out + 0xE8) = val;
+        s32 divisor = ((s32 *)arg0)[2];
+        s32 index = count % divisor;
+        value = ((s32 *)((s32 *)arg0)[1])[index * 2];
+        ((f32 *)out)[0xE4 / 4] = base + fn_80129DC4(
+            4,
+            ((s32 *)arg0)[2],
+            (s32)(long)((s32 *)arg0)[1],
+            ((f32 *)arg0)[0xDC / 4],
+            ((f32 *)arg0)[0xE0 / 4]);
+        *(s32 *)((u8 *)out + 0xE8) = value;
         out = (u8 *)out + 8;
         count++;
-    } while (count < 8);
+    } while ((u32)count < 8);
 }
-
+#pragma pop
 void fn_801569FC(void) {
     struct Callback {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
@@ -588,27 +590,30 @@ s32 fn_80156C84(void *arg0, s32 arg1) {
 }
 
 extern s32 fn_80129D90(s32, s32, s32);
-void fn_80156DCC(void *arg0, s32 arg1) {
-    s32 temp_r28 = arg1 * 8;
-    void *temp_r31 = (u8 *)arg0 + temp_r28;
-    f32 temp_f31 = lbl_8055E3C8;
-    u32 temp_r30 = *(u32 *)((u8 *)temp_r31 + 0xE8);
-    s32 temp_r3 = fn_80129D90(4, 0, ((s32 *)arg0)[2]);
-    u32 *temp_r5 = (u32 *)((s32 *)arg0)[1];
-    u32 var_r29 = *(u32 *)((u8 *)temp_r5 + temp_r3 * 8);
-    if (var_r29 == temp_r30) {
-        s32 count = ((s32 *)arg0)[2];
-        s32 next = temp_r3 + 1;
-        s32 index = next - ((next / count) * count);
-        var_r29 = *(u32 *)((u8 *)temp_r5 + index * 8);
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_80156DCC(void *arg0, s32 arg1) {
+    s32 offset = arg1 * 8;
+    u8 *element = (u8 *)arg0 + offset;
+    f32 base = lbl_8055E3C8;
+    u32 oldValue = *(u32 *)(element + 0xE8);
+    s32 count = *(s32 *)((u8 *)arg0 + 8);
+    s32 index = fn_80129D90(4, 0, count);
+    u32 *table = *(u32 **)((u8 *)arg0 + 4);
+    u32 value = *(u32 *)((u8 *)table + index * 8);
+    if (value == oldValue) {
+        s32 next = index + 1;
+        s32 divisor = *(s32 *)((u8 *)arg0 + 8);
+        index = next % divisor;
+        value = *(u32 *)((u8 *)table + index * 8);
     }
-    *(f32 *)((u8 *)arg0 + temp_r28 + 0xE4) = temp_f31 +
-      fn_80129DC4(4, ((s32 *)arg0)[2], (s32)(long)temp_r5,
-                  *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
-    *(u32 *)((u8 *)temp_r31 + 0xE8) = var_r29;
+    ((f32 *)arg0)[arg1 * 2 + 0x39] = base +
+        ((f32 (*)(s32, f32, f32))fn_80129DC4)(
+            4, *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
+    *(u32 *)(element + 0xE8) = value;
 }
-
-extern void* fn_80135420(void*, s32, s32);
+#pragma pop
+extern "C" void* fn_80135420(f32*, s32, s32);
 extern f32 lbl_80561748;
 extern f32 fn_80129DC4(s32, f32, f32);
 void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
