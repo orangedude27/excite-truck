@@ -412,11 +412,11 @@ void fn_8022BAD0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int
                 (float)arg1, (float)arg2, (float)arg3, (float)arg4, (float)arg5, farg0);
 }
 
-extern void fn_80230C30(int, int);
+extern void fn_80230C30(float *, float *, int, int);
 void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
     int iarg0 = (int)farg0;
     int iarg1 = (int)farg1;
-    fn_80230C30(iarg0, iarg1);
+    fn_80230C30(arg0, arg1, iarg0, iarg1);
     *arg0 += farg0 - (float)iarg0;
     *arg1 -= farg1 - (float)iarg1;
 }
