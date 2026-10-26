@@ -506,7 +506,7 @@ extern "C" void fn_802073A4(void* arg0, int arg1, int arg2) {
 }
 
 extern "C" void *fn_802072E4(void *, int, int);
-extern void fn_802065F8(void);
+#undef fn_802065F8
 extern void fn_802085E8(int, void *);
 extern void *fn_80208994(int, int, int, float);
 extern float lbl_805631F8;
