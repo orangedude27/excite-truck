@@ -178,7 +178,7 @@ int fn_8022D97C(int *arg0, int arg1) {
 
 void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float arg5, float arg6) {
     *(int *)((char *)arg0 + 0x18) = arg1;
-    *(int **)arg0 = &lbl_803401A0;
+    *(int **)arg0 = (int *)lbl_803401A0;
     *(float *)((char *)arg0 + 4) = arg2;
     *(float *)((char *)arg0 + 8) = arg3;
     *(float *)((char *)arg0 + 0xC) = arg5;
