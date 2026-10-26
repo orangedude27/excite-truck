@@ -787,6 +787,7 @@ extern "C" int fn_80287E20(void *, const char *);
 extern "C" void *fn_80287E80(void *, const char *);
 extern "C" char lbl_80349508[];
 extern "C" int lbl_8055CA90;
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_8029ADCC(void *arg0) {
     class Dummy {
@@ -802,10 +803,10 @@ extern "C" int fn_8029ADCC(void *arg0) {
         virtual float apply(const char *, float);
     };
     int count;
-    int i;
     void *cursor;
+    int i;
     void *obj;
-    float value;
+    register float value;
 
     fn_8029B1B8(arg0);
     count = fn_80287B14();
@@ -826,6 +827,7 @@ extern "C" int fn_8029ADCC(void *arg0) {
     return (int)arg0;
 }
 #pragma cplusplus reset
+#pragma scheduling on
 
 extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* arg0, int arg1) {
     if (arg0 != 0) {
@@ -1171,3 +1173,8 @@ int fn_8029C190(void* arg0) {
 #include <string.h>
 extern "C" float lbl_805645C8;
 extern "C" float lbl_805645E8;
+extern "C" void* fn_802988A4(void*);
+extern "C" void* fn_8029A6F4(void*);
+extern "C" void* fn_801E87A8(void);
+extern "C" void fn_80287B38(void*);
+extern "C" char lbl_80349408[];
