@@ -162,7 +162,7 @@ int fn_80016804(int arg0, int arg1) {
 
 extern unsigned char lbl_803577F0[];
 extern unsigned char lbl_80357960[];
-extern void *fn_80016474(void);
+extern void *fn_80016474();
 void fn_8001683C(void *arg0, int arg1) {
     void *temp = fn_80016474();
     *(void **)(lbl_803577F0 + arg1 * 0x5C + 4) = arg0;
