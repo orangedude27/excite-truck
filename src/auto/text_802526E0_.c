@@ -30,18 +30,20 @@ void fn_80252BC8(void) {
     lbl_8055F2F8 = 0;
 }
 
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80252BF0(void) {
-    u32 sp8[4];
+    u8 scratch[0x138];
     s32 index = lbl_8055F2F8;
     lbl_8055F2F8 = index + 1;
     fn_801BD808();
-    fn_801BDA70(sp8);
-    fn_801BDA74(index, sp8);
+    fn_801BDA70(scratch);
+    fn_801BDA74(index, scratch);
     memset(lbl_80498D00 + index * 0x78, 0, 0x78);
     fn_80252B88(index);
     lbl_80498D00[index * 0x78 + 0x30] = 1;
 }
+#pragma scheduling on
 #pragma dont_inline reset
 
 void fn_80252C78(void) {
