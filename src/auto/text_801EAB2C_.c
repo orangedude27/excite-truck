@@ -94,6 +94,26 @@ void *fn_801EAD6C(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 0x70) = -1;
     return arg0;
 }
+
+void fn_801EADD8(void *arg0) {
+    s32 value;
+    s32 args[2];
+
+    if (*(s32 *)((u8 *)arg0 + 0x70) == -1) {
+        return;
+    }
+
+    value = 0;
+    if (*(s32 *)((u8 *)arg0 + 0x78) != 0) {
+        fn_802DAC54();
+        args[0] = *(s32 *)((u8 *)arg0 + 0x78);
+        args[1] = -0x100;
+        value = fn_802C7A40(1, &lbl_80488228, 0x50, 1, args, 2);
+    }
+    fn_802C70AC(*(s32 *)((u8 *)arg0 + 0x70), (u8 *)arg0 + 4,
+                value, *(s32 *)((u8 *)arg0 + 0x74));
+}
+
 s32 fn_801EAF20(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -125,7 +145,6 @@ extern void fn_801EABA8(void);
 extern void fn_802DAC54(void);
 extern int fn_802C7A40(int, void *, int, int, void *, int);
 extern void fn_802C70AC(int, void *, int, int);
-extern int lbl_80488228;
 extern int fn_80128668(void);
 extern void fn_802C6CF8(s32);
 extern s32 fn_802C6FC0(s32, s32, s32);
