@@ -4,6 +4,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
 extern s32 lbl_8055F04C;
 extern s32 lbl_8055F070;
 extern void *lbl_8055B9A8;
@@ -111,29 +112,37 @@ void fn_8023158C(void *arg0, const char *arg1) {
 }
 #pragma dont_inline off
 
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_802315FC(s32 arg0) {
     s32 offset = arg0 * 0xC;
     u8 *entry = lbl_8055F068 + offset;
-    s32 refCount = *(s32 *)(entry + 8) - 1;
-    s32 last;
-    s32 lastOffset;
-    void *ptr;
-    if ((*(s32 *)(entry + 8) = refCount) < 1) {
-        ptr = *(void **)entry;
-        fn_802CAC54(*(void **)ptr);
-        fn_8012C4D8(ptr);
+
+    /* Decrement the entry reference count; replace its slot after releasing an expired entry. */
+    if ((*(s32 *)(entry + 8) -= 1) < 1) {
+        u8 *destination;
+        u8 *source;
+        u8 *base;
+        s32 last;
+        s32 lastOffset;
+        fn_802CAC54(*(void **)*(void **)entry);
+        fn_8012C4D8(*(void **)entry);
         fn_80128670(*(void **)(entry + 4));
-        last = *(s32 *)(lbl_8055F068 + 0x168) - 1;
+        base = lbl_8055F068;
+        destination = base + offset;
+        last = *(s32 *)(base + 0x168);
+        last -= 1;
         lastOffset = last * 0xC;
-        *(s32 *)(lbl_8055F068 + 0x168) = last;
-        *(void **)entry = *(void **)(lbl_8055F068 + lastOffset);
-        *(void **)(entry + 4) = *(void **)(lbl_8055F068 + lastOffset + 4);
-        *(s32 *)(entry + 8) = *(s32 *)(lbl_8055F068 + lastOffset + 8);
+        *(s32 *)(base + 0x168) = last;
+        source = base + lastOffset;
+        *(s32 *)destination = *(s32 *)source;
+        *(s32 *)(destination + 4) = *(s32 *)(source + 4);
+        *(s32 *)(destination + 8) = *(s32 *)(source + 8);
         return 1;
     }
     return 0;
 }
-
+#pragma pop
 s32 fn_802316A4(void *arg0) {
     s32 i = 0;
     u8 *entry = lbl_8055F068;
