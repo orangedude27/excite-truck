@@ -87,17 +87,18 @@ void fn_802DB4E4(void) {
     GXLoadTexMtxImm(&m[2], 0x21, 1);
 }
 
+#pragma scheduling invalid_target
 void fn_802DB58C(void) {
-    int m[12];
+    int m[8];
     int *p = (int *)lbl_802FACD8;
+    float *q = (float *)lbl_804DB068;
     m[0] = p[0]; m[1] = p[1]; m[2] = p[2]; m[3] = p[3];
     m[4] = p[4]; m[5] = p[5]; m[6] = p[6]; m[7] = p[7];
-    m[8] = p[8]; m[9] = p[9]; m[10] = p[10]; m[11] = p[11];
-    *(float *)&m[0] = *(float *)(lbl_804DB068 + 0xc);
-    *(float *)&m[6] = *(float *)(lbl_804DB068 + 0xc);
+    *(float *)&m[0] = q[3];
+    *(float *)&m[6] = q[3];
     GXLoadTexMtxImm((float *)m, 0x1e, 1);
 }
-
+#pragma scheduling on
 void fn_802DB620(void) {
     int m[8];
     int *p = (int *)lbl_802FACF8;
