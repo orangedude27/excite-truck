@@ -39,6 +39,37 @@ void fn_802DBDE8(int, int);
 extern char lbl_8055D07D;
 extern float lbl_80564F30;
 #pragma scheduling invalid_target
+extern void fn_802CAC28(int, int);
+void fn_802CA0E4(void) {
+    int i;
+    int offset;
+    int result;
+    char *strings = lbl_8034B538;
+
+    lbl_8055FCB0 = fn_8012850C(0x9800, &lbl_8055D040);
+    fn_802CB424();
+    i = 0;
+    offset = 0;
+    do {
+        memset((void *)(lbl_8055FCB0 + offset), 0, 0x4C);
+        i++;
+        offset += 0x4C;
+    } while (i < 0x200);
+    lbl_8055FCB8 = -2;
+    result = ((int (*)(int, int))fn_802CAC28)(lbl_8055D038, 0);
+    lbl_8055FCB4 = result;
+    if (result == -1)
+        fn_802E317C(strings + 0x40, lbl_8055D038);
+    result = ((int (*)(int, int))fn_802CAC28)((int)(strings + 0x60), 0);
+    lbl_8055D03C = result;
+    if (result != -1) {
+        fn_802E30C8(strings + 0x6C);
+        fn_802D92B8(*(int *)(lbl_8055FCB0 + lbl_8055D03C * 0x4C + 0x28));
+        return;
+    }
+    fn_802E30C8(strings + 0x88);
+}
+
 void fn_802CA1E0(void) {
     int offset;
     int i;
@@ -132,7 +163,7 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     unsigned char c5, c12, c4, c7, c6, c10;
     unsigned short h12, h0, h2;
     int ptr14;
-    register int flags;
+    int flags;
 
     memset(arg0, 0, 0x34);
     c5 = src[5];
@@ -183,53 +214,50 @@ int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
 }
 
 extern void fn_802D8DCC(void *, int);
+#pragma scheduling invalid_target
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
-    register void *resource = arg0;
+    register unsigned char *resource = (unsigned char *)arg0;
     register int context = arg1;
-    volatile unsigned char *base = (volatile unsigned char *)resource;
-    unsigned char old14;
-    unsigned char old17;
-    unsigned char old15;
-    unsigned char old16;
-    unsigned char old0;
-    unsigned char old1;
-    unsigned char old2;
-    unsigned char old3;
-    unsigned char oldC;
-    unsigned char oldD;
-    int pointerOffset;
+    volatile unsigned char *base = resource;
+    unsigned char temp_r10;
+    unsigned char temp_r11;
+    unsigned char temp_r12;
+    unsigned char temp_r29;
+    unsigned char temp_r30;
+    unsigned char temp_r8;
+    unsigned char temp_r9;
+    unsigned char temp_r9_2;
+    unsigned char temp_r0;
     char sp8[0x34];
 
     if ((base[5] & 0x80) == 0) {
-        old14 = base[0x14];
-        old17 = base[0x17];
-        old15 = base[0x15];
-        old16 = base[0x16];
-        base[0x14] = old17;
-        old0 = base[0];
-        old1 = base[1];
-        base[0x17] = old14;
-        old2 = base[2];
-        old3 = base[3];
-        base[0x15] = old16;
-        oldC = base[0xC];
-        oldD = base[0xD];
-        base[0x16] = old15;
-        pointerOffset = *(volatile int *)(base + 0x14);
-        base[0] = old1;
-        pointerOffset += (int)resource;
-        base[1] = old0;
-        base[2] = old3;
-        base[3] = old2;
-        base[0xC] = oldD;
-        base[0xD] = oldC;
-        *(volatile int *)(base + 0x14) = pointerOffset;
-        ((void (*)(void *, int, int, int, int, int, int, int))fn_802CA3F4)(sp8, (int)resource, 0, arg2, arg3, oldD, old3, old1);
+        temp_r9 = base[0x14];
+        temp_r8 = base[0x17];
+        temp_r29 = base[0x15];
+        temp_r0 = base[0x16];
+        base[0x14] = temp_r8;
+        temp_r11 = base[0];
+        temp_r10 = base[1];
+        base[0x17] = temp_r9;
+        temp_r12 = base[2];
+        temp_r9_2 = base[3];
+        base[0x15] = temp_r0;
+        temp_r30 = base[0xC];
+        temp_r8 = base[0xD];
+        base[0x16] = temp_r29;
+        base[0] = temp_r10;
+        base[1] = temp_r11;
+        base[2] = temp_r9_2;
+        base[3] = temp_r12;
+        base[0xC] = temp_r8;
+        base[0xD] = temp_r30;
+        *(int *)(base + 0x14) = (int)(resource + *(int *)(base + 0x14));
+        ((void (*)(void *, int, int, int, int, int, int, int))fn_802CA3F4)(sp8, (int)resource, 0, arg2, arg3, temp_r8, temp_r9_2, temp_r10);
         fn_802D8DCC(sp8, context);
         base[5] |= 0x80;
     }
 }
-
+#pragma scheduling on
 extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
 extern char lbl_8034B634[];
 extern char lbl_8034B658[];
@@ -952,6 +980,55 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
 
 #pragma scheduling invalid_target
 int fn_802CBBE8(register int **link, register int *target, register int *current) { register int removed = 0; goto advance; check: if (current == target) { register int *next = *(int **)((char *)target + 0x14); *link = next; *(int **)((char *)target + 0x14) = 0; removed = 1; goto done; } advance: link = (int **)((char *)current + 0x14); current = *link; if (current != 0) goto check; done: if (removed == 0) fn_802E317C(lbl_8034BA04); }
+
+#pragma use_lmw_stmw off
+extern void fn_8012C720(void *, int, int, int);
+extern char lbl_8034BA28[];
+extern char lbl_8055D088;
+extern void fn_802CBD30(void **, void **, void *);
+#pragma use_lmw_stmw off
+void fn_802CBC3C(void *arg0, int arg1) {
+    register void **root = (void **)arg0;
+    register int limit = arg1;
+    register char *child;
+    register char *node = (char *)root[3];
+    register int zero = 0;
+    register int minusOne = -1;
+    int refCount;
+
+    goto check;
+inspect:
+    if (*(int *)(node + 8) > limit)
+        goto advance;
+    ((void (*)(int, const char *))fn_802CB3F8)(*(int *)node, lbl_8034BA28);
+    ((void (*)(int))fn_802CB3F4)(*(int *)(node + 4));
+    *(int *)(node + 4) = zero;
+    fn_802CBD30(root + 4, root + 3, node);
+    child = *(char **)(node + 0xC);
+    if (child != 0) {
+        refCount = *(int *)(child + 0x10) - 1;
+        *(int *)(child + 0x10) = refCount;
+        if (refCount == 0) {
+            *(int *)(child + 0x10) = minusOne;
+            fn_8012C720(*(void **)child, *(int *)(child + 8),
+                        *(int *)((char *)lbl_8055FCB0 +
+                            *(int *)(child + 4) * 0x4C + 0x3C), 0);
+            ((void (*)(void *, const char *))fn_802CB3F8)(
+                (void *)((char *)lbl_8055FCB0 + *(int *)(child + 4) * 0x4C + 4),
+                &lbl_8055D088);
+        }
+        *(void **)(node + 0xC) = 0;
+    }
+    node = (char *)root[3];
+    goto check;
+advance:
+    node = *(char **)(node + 0x10);
+check:
+    if (node != 0)
+        goto inspect;
+}
+#pragma use_lmw_stmw on
+
 #pragma scheduling on
 void fn_802CBD7C();
 void fn_802CBD30(void **arg0, void **arg1, void *arg2) {
