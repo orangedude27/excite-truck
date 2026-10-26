@@ -1,5 +1,7 @@
 #include <types.h>
 
+extern void *lbl_8055D5D4;
+
 extern u32 fn_8001D220(u32, u32, u32);
 extern void fn_8001D298(s32);
 
