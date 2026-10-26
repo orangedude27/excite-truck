@@ -11,6 +11,7 @@ extern double sin(double);
 extern void *fn_801284F8(int, void *);
 extern void fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void *, int, int, int);
+extern void fn_802BAE30(void *);
 extern char lbl_8034A9F4[];
 extern void *lbl_8055FA7C;
 extern char lbl_804BFFF4[];
