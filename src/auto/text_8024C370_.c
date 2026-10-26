@@ -139,6 +139,7 @@ int fn_8024C578(int arg0) {
     }
     return result;
 }
+#pragma use_lmw_stmw on
 
 #pragma push
 #pragma use_lmw_stmw off
