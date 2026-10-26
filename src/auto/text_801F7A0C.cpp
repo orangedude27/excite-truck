@@ -996,6 +996,25 @@ extern "C" void fn_801FA550(void) {
         other = *(void **)((u8 *)other + 0x68);
     }
 }
+
+extern "C" void fn_801FA618(void) {
+    u32 flags = *(u32 *)((u8 *)fn_801E87A8() + 0x10);
+    s32 mode = 2;
+    if (flags & 2) mode = 1;
+    s32 old = fn_802C9C58(mode);
+    fn_802C7A44();
+    void *node = (void *)lbl_8055EC48;
+    while (node != 0) {
+        if (*(u8 *)((u8 *)node + 0x50) != 0 && fn_801F7A0C() != 0) {
+            fn_802C70AC(*(s32 *)((u8 *)node + 0x3C), (u8 *)node + 4, -1, -0xF);
+        }
+        node = *(void **)((u8 *)node + 0x54);
+    }
+    fn_802C7A50();
+    fn_802C7AD4();
+    fn_802C9C58(old);
+}
+
 #pragma scheduling on
 extern "C" void fn_801FA6B8(void) {
     void *node = lbl_8055EC4C;
