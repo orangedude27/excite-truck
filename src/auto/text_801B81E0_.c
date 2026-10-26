@@ -25,8 +25,6 @@ struct Dummy_801B826C {
     virtual void d5();
     virtual void d6();
     virtual void d7();
-    virtual void d8();
-    virtual void d9();
     virtual float d10(const char *, float);
 };
 struct Dummy_801B8318 {
@@ -167,9 +165,10 @@ int fn_801B81E0(void *arg0) {
 }
 
 #pragma push
-#pragma cplusplus off
+#pragma cplusplus on
+#pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_801B826C(void *arg0) {
+extern "C" void fn_801B826C(void *arg0) {
     int value;
     void *object;
     void *manager;
@@ -187,9 +186,7 @@ void fn_801B826C(void *arg0) {
     }
     manager = fn_8001285C(*(int *)((char *)arg0 + 0x3E4));
     object = *(void **)((char *)manager + 0x20);
-    lbl_8055A910 = ((float (*)(void *, const char *, float))(*(void ***)object)[10])(
-        object, lbl_8033677C, lbl_80562740
-    );
+    lbl_8055A910 = ((Dummy_801B826C *)object)->d10(lbl_8033677C, lbl_80562740);
     lbl_8055E748 = 0;
     fn_80161618();
     lbl_8055E750 = lbl_80562744;
