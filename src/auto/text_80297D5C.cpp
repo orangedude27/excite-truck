@@ -508,27 +508,23 @@ extern "C" void fn_802C8E00(int, unsigned int, float, float, float, float, float
 extern float lbl_805645E0;
 extern float lbl_80564590, lbl_8056459C, lbl_805645E0;
 extern "C" void fn_80299830(void* arg0, int arg1) {
-    float scale;
-    char* var_r31;
-    int temp_r0, var_r30, var_r29;
-    scale = lbl_805645E0;
-    var_r31 = (char*)arg0 + (arg1 << 6);
-    temp_r0 = (int)(scale * *(float*)(var_r31 + 0x3C));
+    float scale = lbl_805645E0;
+    char* var_r31 = (char*)arg0 + (arg1 << 6);
+    int temp_r0 = (int)(scale * *(float*)(var_r31 + 0x3C));
     if (temp_r0 >= 1) {
-        var_r30 = temp_r0 << 24;
-        var_r29 = 0;
+        int var_r30 = temp_r0 << 24;
+        int var_r29 = 0;
         do {
-            float var_f4, var_f5;
-            int temp_r0_2, temp_r3, value;
+            float var_f4;
+            float var_f5;
             if (var_r29 & 1) var_f4 = lbl_80564590;
             else var_f4 = lbl_8056459C;
             if (var_r29 & 2) var_f5 = lbl_8056459C;
             else var_f5 = lbl_80564590;
-            temp_r0_2 = var_r29 ^ 1;
-            temp_r3 = temp_r0_2 >> 1;
-            value = temp_r0_2 & var_r29;
-            value = temp_r3 - value;
-            fn_802C8E00(var_r30, (unsigned int)value >> 31,
+            int t = var_r29 ^ 1;
+            int diff = t >> 1;
+            diff -= t & var_r29;
+            fn_802C8E00(var_r30, (unsigned int)diff >> 31,
                 *(float*)(var_r31 + 4), *(float*)(var_r31 + 8), *(float*)(var_r31 + 0xC), var_f4, var_f5);
             var_r29++;
             var_r31 += 0xC;
@@ -840,7 +836,7 @@ extern "C" int fn_80297D5C(void*, int);
 extern "C" int fn_80297D90(void*, int);
 extern "C" int fn_802E317C(const char*, ...);
 extern "C" int fn_801284F8(int, const char*);
-extern "C" int fn_8029ADCC(void);
+extern "C" int fn_8029ADCC(void*);
 extern "C" int fn_8029BA0C(void*);
 extern "C" void* fn_80288208(int);
 extern "C" int fn_801EF024(void*);
@@ -854,20 +850,24 @@ extern const char lbl_80349550[];
 extern double lbl_805645F8;
 extern int lbl_8055CA84, lbl_8055CA88;
 extern const char lbl_8034951C[], lbl_80349550[];
-void fn_8029B1B8(void* arg0) {
-    char* p=(char*)arg0;
-    *(int*)(p+0x1E4)=fn_802CAC28(lbl_8055CA84,0);
-    *(int*)(p+0x1E8)=fn_802CAC28(lbl_8055CA88,0);
-    if (fn_80297D5C(p+0x1EC,0x10) == 0 || fn_80297D90(p+0x1F0,*(int*)(p+0x1EC)) == 0)
+#pragma dont_inline on
+#pragma scheduling invalid_target
+extern "C" void fn_8029B1B8(void* arg0) {
+    char* p = (char*)arg0;
+    *(int*)(p + 0x1E4) = fn_802CAC28(lbl_8055CA84, 0);
+    *(int*)(p + 0x1E8) = fn_802CAC28(lbl_8055CA88, 0);
+    if (fn_80297D5C(p + 0x1EC, 0x10) == 0 || fn_80297D90(p + 0x1F0, *(int*)(p + 0x1EC)) == 0) {
         fn_802E317C(lbl_8034951C);
-    *(int*)(p+0x1F4)=0x10-(*(unsigned short*)(p+0x1F0)<<1);
-    *(float*)(p+0x1F8)=lbl_80564590 / (float)*(unsigned short*)(p+0x1EC);
+    }
+    *(int*)(p + 0x1F4) = 0x10 - (*(int*)(p + 0x1F0) << 1);
+    *(float*)(p + 0x1F8) = lbl_80564590 / (float)*(int*)(p + 0x1EC);
 }
-
+#pragma scheduling on
+#pragma dont_inline reset
 extern "C" void* fn_8029B938(void* arg0) {
     int result = fn_801284F8(0x1FC, lbl_80349550);
     if (result != 0) {
-        result = fn_8029ADCC();
+        result = fn_8029ADCC((void*)result);
     }
     *(int*)arg0 = result;
     fn_801EEFDC((void*)fn_8029BFF8, 4);
@@ -974,44 +974,50 @@ extern "C" void fn_8029BA94(void*, void*);
 extern "C" int fn_8029C024(int*);
 extern "C" int fn_8029C054(int*);
 extern "C" void fn_8029BE54(void*, void*);
+#pragma scheduling invalid_target
 void fn_8029BE54(void* arg0, void* arg1) {
-    int count = *(int*)((char*)arg0 + 0xA4);
-    void* scan = arg0;
-    int i = 0;
-    while (i < count) {
-        unsigned int key = *(unsigned int*)((char*)arg1 + 0xC);
-        if (key == *(unsigned int*)((char*)scan + 0x10)) {
-            char* dst = (char*)arg0 + i * 0x14;
-            int a = *(int*)arg1;
-            int b = *((int*)arg1 + 1);
-            int c = *((int*)arg1 + 2);
-            unsigned char d = *((unsigned char*)arg1 + 0x10);
-            *(int*)(dst + 4) = a;
-            *(int*)(dst + 8) = b;
-            *(int*)(dst + 0xC) = c;
+    register char* scan = (char*)arg0;
+    register int count = *(int*)((char*)arg0 + 0xA4);
+    register unsigned int key;
+    register int i = 0;
+    for (; i < count; ++i) {
+        key = *(volatile unsigned int*)((char*)arg1 + 0xC);
+        if (key == *(unsigned int*)(scan + 0x10)) {
+            i *= 0x14;
+            register unsigned int c;
+            register unsigned int b;
+            register unsigned int a;
+            a = *(volatile unsigned int*)arg1;
+            b = *(volatile unsigned int*)((char*)arg1 + 4);
+            c = *(volatile unsigned int*)((char*)arg1 + 8);
+            char* dst = (char*)arg0;
+            dst += i;
+            *(unsigned int*)(dst + 4) = a;
+            register unsigned char d = *(volatile unsigned char*)((char*)arg1 + 0x10);
+            *(unsigned int*)(dst + 8) = b;
+            *(unsigned int*)(dst + 0xC) = c;
             *(unsigned int*)(dst + 0x10) = key;
             *(unsigned char*)(dst + 0x14) = d;
             return;
         }
-        scan = (char*)scan + 0x14;
-        i++;
+        scan += 0x14;
     }
-    {
-        char* dst = (char*)arg0 + count * 0x14;
-        int a = *(int*)arg1;
-        int b = *((int*)arg1 + 1);
-        int c = *((int*)arg1 + 2);
-        int key = *((int*)arg1 + 3);
-        unsigned char d = *((unsigned char*)arg1 + 0x10);
-        *(int*)(dst + 4) = a;
-        *(int*)(dst + 8) = b;
-        *(int*)(dst + 0xC) = c;
-        *(int*)(dst + 0x10) = key;
-        *(unsigned char*)(dst + 0x14) = d;
-    }
-    *(int*)((char*)arg0 + 0xA4) = count + 1;
+    key = count * 0x14;
+    char* dst = (char*)arg0;
+    dst += key;
+    register unsigned int c = *(volatile unsigned int*)((char*)arg1 + 8);
+    register unsigned int b = *(volatile unsigned int*)((char*)arg1 + 4);
+    register unsigned int a = *(volatile unsigned int*)arg1;
+    *(unsigned int*)(dst + 4) = a;
+    key = *(volatile unsigned int*)((char*)arg1 + 0xC);
+    *(unsigned int*)(dst + 8) = b;
+    register unsigned char d = *(volatile unsigned char*)((char*)arg1 + 0x10);
+    *(unsigned int*)(dst + 0xC) = c;
+    *(unsigned int*)(dst + 0x10) = key;
+    *(unsigned char*)(dst + 0x14) = d;
+    *(int*)((char*)arg0 + 0xA4) = *(int*)((char*)arg0 + 0xA4) + 1;
 }
-
+#pragma scheduling on
 extern "C" void fn_8029BEF8(void) {
     unsigned char params[0x98];
     fn_8028E61C(params);
