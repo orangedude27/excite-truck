@@ -332,17 +332,21 @@ void fn_80247880(void) {
     lbl_8055BEB0 = (void*)fn_80214D04();
 }
 
+static void fn_80247A0C_init(s32 a, s32 b) {
+    if (a != b) {
+        lbl_8055BEBC = b;
+        if (b == 5) {
+            lbl_8055BEB4 = 1;
+        } else {
+            lbl_8055BEB4 = 0;
+        }
+    }
+}
+
 void fn_80247A0C(void) {
     s32 var_r31;
-    s32 val;
-    int flag;
 
-    if (lbl_8055BEBC != lbl_8055BEA8) {
-        val = lbl_8055BEA8;
-        flag = val == 5;
-        lbl_8055BEBC = val;
-        lbl_8055BEB4 = flag;
-    }
+    fn_80247A0C_init(lbl_8055BEBC, lbl_8055BEA8);
     fn_80214CB4(lbl_8055BEB4);
     if (lbl_8055BEBC == 4) {
         fn_80214B44(2);
