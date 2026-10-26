@@ -1,4 +1,6 @@
 extern int lbl_80435780[];
+extern void *fn_801AF8D0(int);
+extern void fn_801AFABC();
 extern int *lbl_8055E624;
 extern unsigned char *fn_801EA9A0(int);
 extern int fn_801B8728(void);
@@ -218,34 +220,35 @@ void fn_801AF598(void) {
     register int **array;
     int value = lbl_8055E628;
     int zero = 0;
-    lbl_8055E635 = 0;
+    lbl_8055E635 = zero;
     fn_801AFA5C(value);
     array = (int **)lbl_8055E620;
     lbl_8055E628 = zero;
     if (array != 0) {
         slot = array;
-        i = 0;
-        while (i < 8U) {
+        for (i = 0; i < 8U; i++, slot++) {
             entry = *slot;
-            if (entry != 0) {
-                if (entry != 0) {
-                    fn_80128670((void *)*entry);
-                    *entry = zero;
-                    fn_80128668(entry);
-                }
-            }
+            if (entry == 0)
+                goto clear;
+            if (entry == 0)
+                goto clear;
+            fn_80128670((void *)*entry);
+            *entry = zero;
+            fn_80128668(entry);
+        clear:
             *(volatile int **)slot = 0;
-            i++;
-            slot++;
         }
         fn_80128668(array);
     }
-    array = (int **)lbl_8055E624;
-    lbl_8055E620 = 0;
-    if (array != 0) {
-        fn_80128670((void *)*array);
-        *array = 0;
-        fn_80128668(array);
+    {
+        register int **last;
+        last = (int **)lbl_8055E624;
+        lbl_8055E620 = 0;
+        if (last != 0) {
+            fn_80128670((void *)*last);
+            *last = 0;
+            fn_80128668(last);
+        }
     }
     lbl_8055E624 = 0;
 }
@@ -285,18 +288,18 @@ void *fn_801AF8D0(int arg0) {
 #pragma scheduling invalid_target
 void fn_801AF92C(void *arg0) {
     void *base = arg0;
-    int count;
-    int i;
-    int zero = 0;
-    int minusOne = -1;
     char *entry;
+    int count;
+    register int i;
+    register int zero = 0;
+    register int minusOne = -1;
 
     if (fn_801B8728() != 0)
         goto done;
     if (fn_801B2C70(base) != 0)
         goto done;
 
-    count = *(int *)((char *)&lbl_80435780 + 0x3C0);
+    count = lbl_80435780[0x3C0 / 4];
     *(int *)base = count;
     entry = (char *)base + 0x10;
     i = 0;
@@ -304,7 +307,7 @@ void fn_801AF92C(void *arg0) {
     *((signed char *)base + 0xC) = zero;
     *((signed char *)base + 0xD) = 1;
 
-    for (; i < count; i++, entry += 0x14) {
+    for (; i < count; entry += 0x14, i++) {
         void *item = fn_801AF8D0(i);
         if (item != 0) {
             *(int *)(entry + 4) = *(short *)((char *)item + 0xC);
