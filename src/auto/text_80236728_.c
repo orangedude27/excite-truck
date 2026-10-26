@@ -85,6 +85,37 @@ void fn_80236774(void) {
     lbl_8055F0C4 = 0;
 }
 
+extern char *fn_80237C40(void);
+#pragma scheduling invalid_target
+void fn_80236780(void) {
+    char *p;
+    if (lbl_8055F0BC == 0) {
+        p = fn_80237C40();
+        lbl_8055F0BC = p;
+        lbl_8055F0C0 = p;
+    } else {
+        p = fn_80237C40();
+        *(int *)(lbl_8055F0C0 + 0x24) = 0;
+        p = (char *)lbl_8055F0C0 + 0x24;
+        lbl_8055F0C0 = p;
+    }
+    lbl_8055F0C0[0x1F] = lbl_8055F0C7;
+    lbl_8055F0C0[0x20] = 0;
+    if ((int)lbl_8055F0C5 != 0 || (int)lbl_8055F0C6 == 0)
+        lbl_8055F0C0[0x21] = 1;
+    else
+        lbl_8055F0C0[0x21] = 0;
+    *(int *)(lbl_8055F0C0 + 0x28) = lbl_8055F0B0;
+    *(int *)(lbl_8055F0C0 + 0x2C) = lbl_8055F0B4;
+    *(int *)(lbl_8055F0C0 + 0x30) = lbl_8055F0B8;
+    lbl_8055F0C5 = 0;
+    lbl_8055F0C6 = 0;
+    lbl_8055F0C7 = 0;
+    lbl_8055F0B0 = 0;
+    lbl_8055F0B4 = 0;
+    lbl_8055F0B8 = 0;
+}
+#pragma scheduling on
 extern void fn_80237D00(void *);
 void fn_80236848(void) {
     QueueNode_80236848 *end = (QueueNode_80236848 *)lbl_8055F0C0;
@@ -738,29 +769,40 @@ void fn_80237D00(void *arg0) {
 
 #pragma use_lmw_stmw off
 extern float fn_8023659C();
+#pragma use_lmw_stmw off
 void fn_80237DA0(char *name, void *unused) {
-    char *table = *(char **)(lbl_8055F0C0 + 0x30);
-    int outer = 0;
-    int outerOffset = 0;
+    char *context = lbl_8055F0C0;
+    register unsigned char zero = 0;
+    register unsigned char one = 1;
+    register char *table;
+    register int outer;
+    register int offset;
+    outer = 0;
+    table = *(char **)(context + 0x30);
+    offset = 0;
     while (outer < *(int *)(table + 8)) {
-        char *entries = *(char **)(table + 4);
-        char *record = entries + outerOffset;
-        if (stricmp(record, name) == 0) {
-            int inner = 0;
-            int innerOffset = 0;
-            record[0x2d] = 1;
-            *(float *)(record + 0x30) = fn_8023659C();
+        if (stricmp(*(char **)(table + 4) + offset, name) == 0) {
+            register int inner;
+            register int innerOffset;
+            float value;
+            (*(char **)(table + 4) + offset)[0x2d] = one;
+            value = fn_8023659C();
+            inner = 0;
+            innerOffset = 0;
+            *(float *)(*(char **)(table + 4) + offset + 0x30) = value;
             while (inner < *(int *)(table + 8)) {
                 if (inner != outer) {
+                    char *entries = *(char **)(table + 4);
                     char *other = entries + innerOffset;
+                    char *record = (char *)(offset + (int)entries);
                     if (*(int *)(other + 0x20) == *(int *)(record + 0x20))
-                        other[0x2d] = 0;
+                        other[0x2d] = zero;
                 }
                 innerOffset += 0x34;
                 inner++;
             }
         }
-        outerOffset += 0x34;
+        offset += 0x34;
         outer++;
     }
 }
@@ -779,18 +821,27 @@ void fn_80237E7C(char *arg0, int unused) {
     }
 }
 
+#pragma push
+#pragma processor 750
+#pragma opt_propagation off
 int fn_80237EFC(char *arg0) {
-    int found = 0;
-    TrailMgr *manager = *(TrailMgr **)((char *)lbl_8055F0C0 + 0x30);
-    int active = 0;
-    float currentTime = fn_8023659C();
-    int offset = 0;
-    int i;
+    register TrailMgr *manager;
+    register int i;
+    register int active;
+    register int found;
+    register int offset;
+    float currentTime;
 
-    for (i = 0; i < manager->count; i++, offset += 0x34) {
-        TrailEntry *entry = (TrailEntry *)((char *)manager->entries + offset);
-        if (stricmp((char *)entry, arg0) == 0) {
-            if (entry->active != 0) {
+    found = 0;
+    manager = *(TrailMgr **)((char *)lbl_8055F0C0 + 0x30);
+    active = 0;
+    currentTime = fn_8023659C();
+    i = 0;
+    offset = 0;
+    while (i < manager->count) {
+        if (stricmp((char *)manager->entries + offset, arg0) == 0) {
+            if (((TrailEntry *)((char *)manager->entries + offset))->active != 0) {
+                TrailEntry *entry = (TrailEntry *)((char *)manager->entries + offset);
                 float keyTime;
                 found = 1;
                 if (entry->keyCount > 0)
@@ -801,6 +852,8 @@ int fn_80237EFC(char *arg0) {
                     active = 1;
             }
         }
+        offset += 0x34;
+        i++;
     }
     if (found != 0) {
         if (active != 0)
@@ -809,8 +862,7 @@ int fn_80237EFC(char *arg0) {
     }
     return 0;
 }
-
-#pragma use_lmw_stmw reset
+#pragma pop
 void *fn_80237FF8(void *arg0, int arg1) {
     int value;
     if (arg0 != 0) {
