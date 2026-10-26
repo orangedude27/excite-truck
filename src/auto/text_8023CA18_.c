@@ -31,7 +31,7 @@ void* fn_8023D134(void* arg0, s32 arg1) {
     s32* temp;
     if (arg0 == 0) return 0;
     temp = *(s32**)((u8*)arg0 + 0x38);
-    *(s32**)arg0 = &lbl_803415E8;
+    *(s32**)arg0 = (s32*)lbl_803415E8;
     if (temp != 0) {
         vtable = *(s32**)temp;
         ((void (*)(void*, s32))vtable[2])(temp, 1);
