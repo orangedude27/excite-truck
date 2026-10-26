@@ -1301,7 +1301,7 @@ extern "C" void *fn_8014EF00(void *arg0, s32 arg1) {
     };
     if (arg0 != 0) {
         VObj *p0 = *(VObj **)((char *)arg0 + 0x125C);
-        *(void **)arg0 = &lbl_8032E190;
+        *(void **)arg0 = lbl_8032E190;
         if (p0 != 0) {
             if (p0 != 0) p0->d0(1);
         }
