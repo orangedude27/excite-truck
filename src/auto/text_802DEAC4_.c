@@ -730,7 +730,7 @@ extern void fn_801282F4(void);
 extern void *fn_8012850C(u32, void *);
 extern void fn_801284F8(void *, void *);
 extern void fn_801282F4(void);
-extern void fn_8011A168(void);
+extern void *fn_8011A168(void *);
 extern void *fn_802E0C04(u32);
 extern void fn_802E0D44(u32);
 extern char lbl_8034CBD0[];
