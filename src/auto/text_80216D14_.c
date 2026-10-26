@@ -56,6 +56,7 @@ extern "C" void *fn_80217270(void *arg0, int arg1) {
     }
     return arg0;
 }
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8021734C(void *arg0) {
     register char *entry = (char *)arg0;
@@ -86,6 +87,7 @@ check:
         callback();
 }
 #pragma cplusplus off
+#pragma scheduling on
 void fn_802173F8(void *arg0) {
     char *base = (char *)arg0;
     int i;
