@@ -27,6 +27,34 @@ extern void fn_801F70D0(void *, int);
 extern void fn_801F6D60(void *, int);
 extern void fn_801F6A08(void *, int);
 extern void fn_801F75A4(void *, void *, void *);
+extern void *fn_801F69C8(void *);
+extern void *fn_801F6D20(void *);
+extern void *fn_801F7090(void *);
+void fn_801F4CD8(void) {
+    char *data = lbl_8033AC68;
+    void *ptr;
+
+    ptr = fn_801284F8(0x904, data + 0x48);
+    if (ptr != 0) {
+        ptr = fn_801F69C8(ptr);
+    }
+    lbl_8055EC10 = ptr;
+
+    ptr = fn_801284F8(0x2A4, data + 0x5C);
+    if (ptr != 0) {
+        ptr = fn_801F6D20(ptr);
+    }
+    lbl_8055EC14 = ptr;
+
+    ptr = fn_801284F8(0x124, data + 0x70);
+    if (ptr != 0) {
+        ptr = fn_801F7090(ptr);
+    }
+    lbl_8055EC18 = ptr;
+    lbl_8055EC1C = 0;
+    lbl_8055EC20 = 0;
+}
+
 void fn_801F4D64(void) {
     fn_801F70D0(lbl_8055EC18, 1);
     lbl_8055EC18 = 0;
