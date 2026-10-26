@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern int lbl_80488228;
 extern u8 lbl_80339E18[];
 extern void *memset(void *, int, unsigned int);
 
