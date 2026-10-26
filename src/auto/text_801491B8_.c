@@ -1207,8 +1207,8 @@ extern s32 fn_801284F8(s32 arg0, void *arg1);
 extern s32 fn_802ADDD8(s32 arg0);
 extern void fn_8014F194(void *arg0);
 extern s32 fn_80145E70(void *arg0);
-extern s32 lbl_8032DB34;
-extern s32 lbl_8032DB40;
+extern char lbl_8032DB34[];
+extern char lbl_8032DB40[];
 #pragma push
 #pragma opt_pointer_aliasing on
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
@@ -1819,23 +1819,21 @@ extern s32 lbl_8032E1A0[];
 extern f32 lbl_8056171C;
 #pragma scheduling invalid_target
 void fn_80155318(void *arg0) {
-    register f32 value0 = lbl_80561648;
-    register f32 value1 = lbl_8056171C;
-    register s32 zero = 0;
-    register s32 minusOne = -1;
+    f32 f0 = lbl_80561648;
+    f32 f1 = lbl_8056171C;
     *(s32 **)arg0 = lbl_8032E1A0;
-    *(s32 *)((u8 *)arg0 + 0x120) = zero;
-    *(s32 *)((u8 *)arg0 + 0x11C) = zero;
-    *((u8 *)arg0 + 4) = zero;
-    *(f32 *)((u8 *)arg0 + 8) = value1;
-    *(f32 *)((u8 *)arg0 + 0xC) = value0;
-    *(f32 *)((u8 *)arg0 + 0x10) = value0;
-    *(s32 *)((u8 *)arg0 + 0x118) = zero;
-    *(s32 *)((u8 *)arg0 + 0x10C) = minusOne;
-    *((u8 *)arg0 + 5) = zero;
-    *((u8 *)arg0 + 0x14) = zero;
-    *((u8 *)arg0 + 0x64) = zero;
-    *((u8 *)arg0 + 0xB4) = zero;
+    *(s32 *)((u8 *)arg0 + 0x120) = 0;
+    *(s32 *)((u8 *)arg0 + 0x11C) = 0;
+    *((u8 *)arg0 + 4) = 0;
+    *(f32 *)((u8 *)arg0 + 8) = f1;
+    *(f32 *)((u8 *)arg0 + 0xC) = f0;
+    *(f32 *)((u8 *)arg0 + 0x10) = f0;
+    *(s32 *)((u8 *)arg0 + 0x118) = 0;
+    *(s32 *)((u8 *)arg0 + 0x10C) = -1;
+    *((u8 *)arg0 + 5) = 0;
+    *((u8 *)arg0 + 0x14) = 0;
+    *((u8 *)arg0 + 0x64) = 0;
+    *((u8 *)arg0 + 0xB4) = 0;
 }
 #pragma scheduling on
 void fn_80155368(void) {
