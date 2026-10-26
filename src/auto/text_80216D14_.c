@@ -134,9 +134,9 @@ extern "C" void fn_8021749C(void *arg0, int arg1, int arg2) {
         virtual void v10();
         virtual void v11();
         virtual void v12();
-        virtual void v13();
+        virtual void v13(int, int);
         virtual void v14();
-        virtual void v15(int, int);
+        virtual void v15();
         virtual void v16();
         virtual void v17();
         virtual void v18();
@@ -165,7 +165,7 @@ extern "C" void fn_8021749C(void *arg0, int arg1, int arg2) {
         } else {
             fn_80218198(arg0, 0);
         }
-        if (obj != 0) obj->v15(x, y);
+        if (obj != 0) obj->v13(x, y);
     }
 }
 #pragma cplusplus off
