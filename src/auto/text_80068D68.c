@@ -7444,6 +7444,24 @@ BOOLEAN btsnd_hcic_add_SCO_conn(UINT16 handle, UINT16 packet_types) {
     return TRUE;
 }
 
+int btsnd_hcic_reject_conn(void *p_buf, u8 *bd_addr, u8 reason) {
+    u8 *buf = p_buf;
+
+    *(u16 *)(buf + 2) = 0xA;
+    *(u16 *)(buf + 4) = 0;
+    buf[8] = 0xA;
+    buf[9] = 4;
+    buf[0xA] = 7;
+    buf[0xB] = bd_addr[5];
+    buf[0xC] = bd_addr[4];
+    buf[0xD] = bd_addr[3];
+    buf[0xE] = bd_addr[2];
+    buf[0xF] = bd_addr[1];
+    buf[0x10] = bd_addr[0];
+    buf[0x11] = reason;
+    return btu_hcif_send_cmd(buf);
+}
+
 /* Match note: allocate pool 2 directly and send the completed packet with the one-argument helper call. */
 BOOLEAN btsnd_hcic_link_key_req_reply(BD_ADDR bd_addr, LINK_KEY link_key) {
     BT_HDR *p;
