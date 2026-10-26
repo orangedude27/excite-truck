@@ -26,21 +26,18 @@ extern s32 lbl_8055F178;
 extern s32 lbl_8055F17C;
 extern s32 lbl_8055BB70;
 extern f32 lbl_80563738;
-extern void fn_801333E8(s32, void *, u8 *);
+extern void fn_801333E8(s32, s32 *, u8 *);
 extern void fn_801331C4(s32, void *, f32 *);
 extern void fn_801332D0(s32, void *, s32 *);
 extern void fn_80209030(f32);
 extern void fn_80209090(s32);
-#pragma push
-#pragma small_data off
-#pragma pop
 #pragma push
 #pragma scheduling invalid_target
 void fn_8023CA54(void) {
     s32 zero = 0;
     char *base = (char *)&lbl_803414D0;
     lbl_8055F160 = zero;
-    fn_801333E8(4, base, &lbl_8055F160);
+    fn_801333E8(4, ((s32 *)base) + 0, &lbl_8055F160);
     lbl_8055F164 = lbl_80563738;
     fn_801331C4(4, base + 0x10, &lbl_8055F164);
     lbl_8055F168 = lbl_80563738;
