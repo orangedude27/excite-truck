@@ -583,6 +583,31 @@ void *arg0;
     }
 }
 
+void fn_802E0F98(void) {
+    void *allocation;
+    void *object;
+    u32 size;
+    fn_80119214((void *)fn_802E0C04, (void *)fn_802E0D44);
+    fn_80116E54(&fn_8011A168, &lbl_8055D150);
+    fn_801282EC(0x80);
+    fn_801282F4();
+    allocation = fn_8012850C(0x600000, &lbl_8055D158);
+    lbl_8055FEEC = allocation;
+    object = ((void *(*)(u32, void *))fn_801284F8)(0x10, &lbl_8055D160);
+    if (object != 0) {
+        *(u32 *)((char *)object + 0xC) = 0;
+        *(u32 *)((char *)object + 4) = 0x1F;
+        *(u32 *)allocation = 0xABCFEED0;
+        *(u32 *)((char *)allocation + 8) = 0;
+        size = *(u32 *)((char *)object + 4);
+        *(u32 *)((char *)allocation + 4) = 0x600000 - ((size + 0x10) & ~size);
+        *(void **)((char *)allocation + 0xC) = object;
+        *(void **)((char *)object + 8) = allocation;
+        *(u8 *)object = 1;
+    }
+    lbl_8055FEE8 = object;
+}
+
 #pragma dont_inline reset
 void fn_802E1290(void *arg0) {
     extern void fn_802E30C8(const char *, ...);
@@ -739,7 +764,6 @@ extern void fn_801282F4(void);
 extern void *fn_8012850C(u32, void *);
 extern void fn_801284F8(void *, void *);
 extern void fn_801282F4(void);
-extern s32 fn_8011A168;
 extern void *fn_802E0C04(u32);
 extern void fn_802E0D44(u32);
 extern char lbl_8034CBD0[];
