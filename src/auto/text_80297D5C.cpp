@@ -459,7 +459,7 @@ extern "C" void fn_80299504(void* arg0) {
     *(float*)((char*)arg0 + 0xF8) = value;
 }
 
-void fn_80299628(void* arg0) {
+extern "C" void fn_80299628(void* arg0) {
     fn_802C8BD0(*(int*)((char*)arg0 + 0x100));
     if (fn_802C8DBC(0x14) != 0) {
         void* p = arg0;
