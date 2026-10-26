@@ -34,9 +34,11 @@ int fn_801AE618(int arg0) {
 }
 #pragma dont_inline reset
 
+#pragma dont_inline on
 int fn_801AE620(void *arg0) {
     return fn_801AE618(*(unsigned short *)((char *)arg0 + 0xE));
 }
+#pragma dont_inline reset
 
 int fn_801AE790(void *arg0) {
     return *((unsigned char *)arg0 + 0x70) & 3;
@@ -49,6 +51,18 @@ void fn_801AE874(unsigned short *arg0, int arg1) {
     unsigned short value = *arg0 | 1;
     *arg0 = value;
     if (arg1) *arg0 = value | 4;
+}
+
+float fn_801AE9E0(int arg0, float *arg1) {
+    if (arg1 != 0) *arg1 = lbl_80562560;
+    if (arg0 < lbl_8055E624[1]) {
+        void *entry = (char *)lbl_8055E624[0] + arg0 * 0x1C;
+        if (fn_801AE620(entry)) {
+            if (arg1 != 0) *arg1 = lbl_8055E630 / *(float *)((char *)entry + 8);
+            return *(float *)((char *)entry + 8);
+        }
+    }
+    return lbl_80562558;
 }
 
 #pragma small_data off
