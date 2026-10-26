@@ -803,21 +803,31 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
     fn_8020655C(&sp20, 0);
     return 1;
 }
-#pragma pop
-s32 fn_801C6C28(Vec* arg0) {
+#pragma scheduling off
+#pragma paired off
+#pragma paired_single off
+s32 fn_801C6C28(Vec *arg0) {
+    float threshold = lbl_805629CC;
     s32 result = -1;
-    s32 i;
-    
-    for (i = 0; i < lbl_8055E804; i++) {
-        if (PSVECSquareDistance((Vec*)(fn_8017960C(i) + 0x60), arg0) < lbl_805629CC) {
-            result = i;
-            break;
-        }
+    s32 i = 0;
+
+    goto check;
+body:
+    if (PSVECSquareDistance((Vec *)(fn_8017960C(i) + 0x60), arg0) < threshold) {
+        result = i;
+        goto done;
     }
-    
+    i++;
+check:
+    if (i < lbl_8055E804) {
+        goto body;
+    }
+done:
     return result;
 }
-
+#pragma paired_single reset
+#pragma paired reset
+#pragma scheduling reset
 void fn_801C6CB0(void) {
     return;
 }
@@ -832,22 +842,10 @@ void fn_801C6CBC(void) {
 }
 #pragma inline auto
 void fn_801C6D00(void) {
-    s32 *src = lbl_80499050;
-    s32 *dst = lbl_804381F0;
-    s32 temp;
-    
-    temp = *src++;
-    *dst++ = temp;
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst++ = *src++;
+    struct MtxCopy {
+        s32 data[12];
+    };
+    *(struct MtxCopy*)lbl_804381F0 = *(struct MtxCopy*)lbl_80499050;
     lbl_8055E834 = lbl_8055F47C;
 }
 
