@@ -3,8 +3,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_802E317C(void *, ...);
-extern int lbl_802FC638[];
-extern int lbl_802FC69C;
+extern char lbl_802FC638[];
+extern char lbl_802FC69C[];
 extern char lbl_80352AD0[];
 void *fn_800126CC(int arg0) {
     int i = 0;
@@ -84,24 +84,21 @@ char *fn_80012820(int arg0) DECOMP_DONT_INLINE {
     }
     return &lbl_803551E0[(-1 - arg0) * 0x88];
 }
+#pragma scheduling invalid_target
 void *fn_80012870(int arg0, int arg1) {
-    char *p = &lbl_80352AD0[0];
-    int i = 0;
+    unsigned char *p = (unsigned char *)lbl_80352AD0;
+    unsigned int i;
     int j = 0;
     int count = lbl_8055D508;
-    while (count > 0) {
-        if (*(int *)(p + 4) == arg0 && p[0x24] != 0 && j == arg1) {
+    for (i = 0; count > 0; i++, count--, p += 0x28) {
+        if (arg0 == *(int *)(p + 4) && p[0x24] != 0 && j == arg1)
             return &lbl_80352AD0[i * 0x28];
-        }
         j++;
-        p += 0x28;
-        i++;
-        count--;
     }
-    fn_802E317C(&lbl_802FC700, arg0, arg1);
+    fn_802E317C(lbl_802FC700, arg0, arg1);
     return 0;
 }
-
+#pragma scheduling on
 extern void *fn_8001285C();
 extern char *fn_80012820(int);
 extern const char *fn_80007FF0(int);
