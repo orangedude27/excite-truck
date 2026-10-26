@@ -44,7 +44,7 @@ extern unsigned char lbl_8055F650;
 long fn_80019B3C(void);
 extern char lbl_80347A5C[];
 extern char lbl_8055C758;
-extern char lbl_8055C770[];
+extern char lbl_8055C770;
 long fn_80012854(void);
 void *fn_8001285C(long);
 int stricmp(const char *, const char *);
