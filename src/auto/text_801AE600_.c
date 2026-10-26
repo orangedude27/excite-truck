@@ -54,13 +54,12 @@ void fn_801AE874(unsigned short *arg0, int arg1) {
 }
 
 float fn_801AE9E0(int arg0, float *arg1) {
+    char *entry;
     if (arg1 != 0) *arg1 = lbl_80562560;
-    if (arg0 < lbl_8055E624[1]) {
-        void *entry = (char *)lbl_8055E624[0] + arg0 * 0x1C;
-        if (fn_801AE620(entry)) {
-            if (arg1 != 0) *arg1 = lbl_8055E630 / *(float *)((char *)entry + 8);
-            return *(float *)((char *)entry + 8);
-        }
+    entry = (char *)lbl_8055E624[0] + arg0 * 0x1C;
+    if (fn_801AE620(entry)) {
+        if (arg1 != 0) *arg1 = lbl_8055E630 / *(float *)(entry + 8);
+        return *(float *)(entry + 8);
     }
     return lbl_80562558;
 }
