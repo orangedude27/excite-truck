@@ -212,6 +212,7 @@ extern "C" void fn_802E37C4(s32 arg0) {
 extern char lbl_8034CFC0[];
 extern void fn_802E3898(s32, const char *, s32 *);
 #pragma cplusplus on
+extern "C" void fn_802E3898(s32, const char *, s32 *);
 extern "C" void fn_802E3804(s32 arg0, const char *arg1, s32 arg2) {
     s32 object = fn_802E33D8(arg0, lbl_8034CFB4, 0x130);
     s32 value = arg2;
