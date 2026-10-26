@@ -763,6 +763,21 @@ void fn_80161DE4(void) {
     total = addition + total;
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, total + 1);
 }
+
+s32 fn_80161E40(s32 arg0) {
+    s32 i;
+    void *item;
+    for (i = 0; i < fn_80012854(); i++) {
+        item = fn_8001285C(i);
+#pragma cplusplus on
+        if (((Obj_80161C94 *)*(void **)((char *)item + 0x20))->f6(lbl_8032F738, -999) == arg0) {
+            return i;
+        }
+#pragma cplusplus off
+    }
+    return -1;
+}
+
 #pragma dont_inline off
 extern s32 fn_80012854();
 extern const char lbl_8032F738[];
