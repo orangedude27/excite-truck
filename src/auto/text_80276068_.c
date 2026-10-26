@@ -48,7 +48,7 @@ void fn_80276098(void *arg0, void *arg1, float arg2, float arg3, float arg4, int
 
 unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) { return 0; }
 
-extern unsigned char lbl_8049FEE0;
+__declspec(section ".data") extern unsigned char lbl_8049FEE0;
 extern char lbl_8055C638, lbl_8055C63C, lbl_8055C644;
 extern void fn_80277F84(void *, void *, int);
 extern int stricmp(const char *, const char *);
@@ -404,12 +404,16 @@ int fn_80277960(void *arg0, void *arg1, float *arg2) {
     if (p != 0) {
         unsigned int *dst = (unsigned int *)arg1;
         unsigned int *src = (unsigned int *)(p + 4);
-        dst[0] = src[0]; dst[1] = src[1];
-        dst[2] = src[2]; dst[3] = src[3];
-        dst[4] = src[4]; dst[5] = src[5];
-        dst[6] = src[6]; dst[7] = src[7];
-        dst[8] = src[8]; dst[9] = src[9];
-        dst[10] = src[10]; dst[11] = src[11];
+        unsigned int a;
+        unsigned int b;
+
+        b = src[0]; a = src[1]; dst[0] = b; dst[1] = a;
+        a = src[2]; b = src[3]; dst[2] = a; dst[3] = b;
+        a = src[4]; b = src[5]; dst[4] = a; dst[5] = b;
+        a = src[6]; b = src[7]; dst[6] = a; dst[7] = b;
+        a = src[8]; dst[8] = a;
+        b = src[9]; a = src[10]; dst[9] = b; dst[10] = a;
+        b = src[11]; dst[11] = b;
         *arg2 = *(float *)(p + 0x34);
         return 1;
     }
