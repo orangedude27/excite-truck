@@ -74,7 +74,7 @@ extern s32 lbl_804381F0[12];
 extern s32 lbl_80438220[12];
 extern f32 lbl_8056296C;
 extern f32 lbl_8055E3C8;
-extern f32 lbl_80562970;
+extern const f32 lbl_80562970;
 extern f32 cos(f32);
 extern f32 sin(f32);
 extern void fn_801B7C8C(s32, s32, f32 *);
@@ -91,7 +91,7 @@ extern s32 lbl_80437E24[3];
 extern f32 lbl_80558DC4[];
 extern double fn_8002F234(float);
 extern void fn_8012F57C(float *, float *, float *, float);
-extern f32 lbl_8056296C, lbl_80562970, lbl_80562974;
+extern f32 lbl_8056296C, lbl_80562974;
 #pragma scheduling invalid_target
 f32 fn_801C2F58(s32 arg0, f32 arg1) {
     f32 result = lbl_8056296C;
@@ -1269,11 +1269,13 @@ void fn_801C7F64(void) {
     *(volatile u8 *)&lbl_8055E83A = 1;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma opt_propagation off
 void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
     Unk_80437D88 *base = &lbl_80437D88;
     void *obj;
+    register f32 *v;
     lbl_8055E83A = 0;
     obj = fn_801C3C80();
     *(s32 *)((char *)obj + 8) = 6;
@@ -1282,13 +1284,14 @@ void fn_801C7FE4(void) {
     strcpy((char *)obj + 0x114, (char *)base + 0x5F8);
     *(s32 *)((char *)obj + 0x10) = fn_801C3954((s32)obj + 0x14);
     *(s32 *)((char *)obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
+    v = (f32 *)((char *)base + 0x4E0);
     *(f32 *)((char *)obj + 0x214) = *(f32 *)((char *)base + 0x4E0);
-    *(f32 *)((char *)obj + 0x218) = *(f32 *)((char *)base + 0x4E4);
-    *(f32 *)((char *)obj + 0x21C) = *(f32 *)((char *)base + 0x4E8);
+    *(f32 *)((char *)obj + 0x218) = v[1];
+    *(f32 *)((char *)obj + 0x21C) = v[2];
     sprintf((char *)base + 0x238, lbl_80336FB0, *(f32 *)obj);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
-#pragma scheduling on
+#pragma pop
 extern f32 lbl_805629B4;
 extern f32 lbl_8055E85C, lbl_8055E860;
 extern s32 lbl_8055E854;
@@ -2319,16 +2322,14 @@ extern char lbl_80336EC8[];
 extern s32 lbl_8055E7F0;
 extern s32 lbl_8055E7F8;
 #pragma push
-#pragma processor 750
+#pragma scheduling reset
 void fn_801C6B70(void) {
-    f32 val;
     const char *temp_r31;
     const char *temp_r31_2;
 
-    val = *(f32 *)((u8 *)lbl_80437E24 + 8);
-    if (val >= lbl_80562970) {
-        if ((lbl_8055E3C8 < val) || ((lbl_8055E3C8 - val) > lbl_80562978)) {
-            *(f32 *)((u8 *)lbl_80437E24 + 8) = lbl_80562994;
+    if (*(f32 *)&lbl_80437E24[2] >= lbl_80562970) {
+        if ((lbl_8055E3C8 < *(f32 *)&lbl_80437E24[2]) || ((lbl_8055E3C8 - *(f32 *)&lbl_80437E24[2]) > lbl_80562978)) {
+            *(f32 *)&lbl_80437E24[2] = lbl_80562994;
             lbl_80437E24[0] = 0;
             lbl_80437E24[1] = 0;
             return;
