@@ -199,6 +199,23 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detai
     *(unsigned long*)((char*)arg0 + 0x98) = arg3;
 }
 
+extern "C" int fn_80100654(void* arg0) {
+    if (*((unsigned char*)arg0 + 0x1E) == 0)
+        return 0;
+
+    register char* iterator = lbl_8041D4C4 + 4;
+    if (arg0 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CAC, 0x233, lbl_80327C88);
+
+    char* slot = iterator;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
+        lbl_8041D4C4, (void**)&slot, (char*)arg0 + 0x14);
+    *((unsigned char*)arg0 + 0x1C) =
+        *((unsigned char*)Instance__15EmissionManagerFv() + 0x6C32);
+    *((unsigned char*)arg0 + 0x1F) = 1;
+    return 1;
+}
+
 extern "C" void Stop__Q46nw4hbm3snd6detail9WsdPlayerFv(void* arg0) {
     extern char lbl_80327C88[];
     extern char lbl_80327CAC[];
