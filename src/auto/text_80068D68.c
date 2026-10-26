@@ -2114,6 +2114,13 @@ void fn_80071298(void *a, void *b, void *c) {
     if (callback != 0) callback(7, a, b, c);
 }
 
+void bta_sys_init(void) {
+    memset(lbl_803C0AD8, 0, 0x8C);
+    fn_80071510(lbl_803C0AD8 + 0x68, 0x3E8, lbl_80559038[3]);
+    lbl_803C0AD8[0x7D] = fn_8006EB80();
+    lbl_8055DC80 = lbl_80559038[4];
+}
+
 void bta_sys_event(BT_HDR *msg) {
     extern char lbl_80315010[];
     extern char lbl_80315024[];
