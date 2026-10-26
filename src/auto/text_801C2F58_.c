@@ -957,32 +957,34 @@ void fn_801C7524(void) {
     sprintf(lbl_804380F0, lbl_8055AA54, *(f32 *)(lbl_8055E7F8 + index));
 }
 
+#pragma push
+#pragma paired off
+#pragma paired_single off
 void fn_801C7698(void) {
+    struct Entry {
+        f32 score;
+        u8 data[0x308];
+    };
     s32 count;
     s32 index;
-    s32 offset;
-    char *entries;
+    struct Entry *entries;
     f32 value;
     f32 score;
-    f32 result;
     count = lbl_8055E7F0;
     if (count > 0) {
         value = (f32)atof(lbl_804380F0);
         index = lbl_8055E828;
-        entries = (char *)lbl_8055E7F8;
-        offset = index * 0x30C;
-        score = *(f32 *)(entries + offset);
+        entries = (struct Entry *)lbl_8055E7F8;
+        score = entries[index].score;
         if (value + score < lbl_80562970) {
             sprintf(lbl_80437FC0, lbl_80336F0C);
         } else {
             do {
-                score = *(f32 *)(entries + offset);
-                result = fn_801C3450(value + score);
-                *(f32 *)(entries + offset) = result;
+                score = entries[index].score;
+                entries[index].score = fn_801C3450(value + score);
                 index++;
-                offset += 0x30C;
             } while (index < count);
-            qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
+            qsort((void *)lbl_8055E7F8, count, 0x30C,
                   (int (*)(const void *, const void *))fn_801C3B7C);
         }
     }
@@ -2250,21 +2252,29 @@ extern char lbl_80337944[];
 extern char lbl_8055AB10[];
 extern s32 lbl_80562950;
 extern int fn_80238A20(void);
+#pragma scheduling invalid_target
 void fn_801CA5A8(void) {
     if (lbl_8055E7F0 != 0) {
         char buffer[0x100];
-        s32 context = fn_80238A20();
-        char *record = (char *)(s32)lbl_8055E7F8 + lbl_8055E828 * 0x30C;
-        char *name = ((char *(*)(u8 *, s32))fn_801C98F4)((u8 *)(s32)lbl_80562950, *(s32 *)(record + 8));
-        sprintf(buffer, lbl_80337944, name);
+        s32 context;
+        s32 index;
+        s32 y;
+        f32 value;
+        char *record;
+        context = fn_80238A20();
+        index = lbl_8055E828;
+        record = (char *)(s32)lbl_8055E7F8 + index * 0x30C;
+        sprintf(buffer, lbl_80337944,
+                ((char *(*)(u8 *, s32))fn_801C98F4)((u8 *)(s32)lbl_80562950, *(s32 *)(record + 8)));
         ((void (*)(s32, s32, char *, s32))fn_801C94B8)(0x190, 0xB4, buffer, -1);
-        sprintf(buffer, lbl_8055AB10, (double)*(f32 *)record);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(0x190, context + 0xB4, buffer, -1);
-        fn_801CA1C4((char *)(s32)lbl_8055E7F8 + lbl_8055E828 * 0x30C, 0x190, context + 0xB4 + context, context);
+        value = *(f32 *)record;
+        y = context + 0xB4;
+        sprintf(buffer, lbl_8055AB10, value);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(0x190, y, buffer, -1);
+        fn_801CA1C4((char *)(s32)lbl_8055E7F8 + lbl_8055E828 * 0x30C, 0x190, y + context, context);
     }
 }
-
-#pragma pop
+#pragma scheduling on
 extern char lbl_8055E7E0;
 extern char lbl_8055E7E1;
 extern char lbl_8055E80C;
