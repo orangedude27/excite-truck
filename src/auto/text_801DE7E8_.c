@@ -10,7 +10,7 @@ extern char lbl_804873B8[];
 
 #pragma scheduling invalid_target
 void fn_801DE7E8(int arg0) {
-    /* Fix note: preserve the mode selector across both resource initialization calls. */
+    /* Fix note: use the mode value to initialize the corresponding table fields. */
     extern char lbl_804872B0[];
     extern char lbl_803394B0[], lbl_803394BC[];
     extern int fn_80145E70(const char *);
@@ -20,20 +20,44 @@ void fn_801DE7E8(int arg0) {
     case 1:
         value = fn_80145E70(lbl_803394B0);
         index = arg0 * 0x1c;
-        *(int *)((char *)&lbl_804872B0 + index + 0xc) = value;
+        *(int *)(lbl_804872B0 + index + 0xc) = value;
         break;
     case 2:
         index = arg0 * 0x1c;
         value = fn_80145E70(lbl_803394B0);
-        *(int *)((char *)&lbl_804872B0 + index + 0xc) = value;
+        *(int *)(lbl_804872B0 + index + 0xc) = value;
         value = fn_802CAC28(lbl_803394BC, 0);
-        *(int *)((char *)&lbl_804872B0 + index + 0x14) = value;
+        *(int *)(lbl_804872B0 + index + 0x14) = value;
         break;
     }
 }
 #pragma scheduling on
 void fn_801DE88C(void) {
 
+}
+
+unsigned int fn_801DEB6C(const char *arg0) {
+    extern const char *lbl_802F99C8[7];
+    extern int stricmp(const char *, const char *);
+    const char *items[7];
+    const char **src = lbl_802F99C8;
+    const char **p;
+    unsigned int i;
+    items[0] = *src++;
+    items[1] = *src++;
+    items[2] = *src++;
+    items[3] = *src++;
+    items[4] = *src++;
+    items[5] = *src++;
+    items[6] = *src++;
+    p = items;
+    i = 0;
+    do {
+        if (stricmp(arg0, *p) == 0) return i;
+        ++i;
+        ++p;
+    } while (i < 7);
+    return 0;
 }
 
 #pragma scheduling invalid_target
