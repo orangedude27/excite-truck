@@ -88,21 +88,38 @@ extern void fn_8017B164(void);
 extern void fn_8017A580(void *, f32);
 extern f32 lbl_80562598;
 extern f32 lbl_80562588;
-void fn_801B022C(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_801B022C(void *arg0) {
+    class Callback {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+    };
     s32 temp_r0;
     void *var_r31;
-    f32 temp_f1;
     f32 temp_f0;
+    f32 temp_f1;
+    volatile f32 stack_temp[3];
 
     fn_8017B164();
     temp_f1 = lbl_80562578;
     temp_f0 = lbl_80562598;
-    *(f32 *)((u8 *)arg0 + 0x1EC) = temp_f1;
-    *(u8 *)((u8 *)arg0 + 0x1F8) = 0;
-    *(f32 *)((u8 *)arg0 + 0x60) = temp_f1;
-    *(f32 *)((u8 *)arg0 + 0x64) = temp_f0;
-    *(f32 *)((u8 *)arg0 + 0x68) = temp_f1;
-    ((void (*)(void *, f32, f32, f32))fn_8017A580)(arg0, temp_f1, temp_f0, temp_f1);
+    *(volatile f32 *)((u8 *)arg0 + 0x1EC) = temp_f1;
+    *(volatile u8 *)((u8 *)arg0 + 0x1F8) = 0;
+    stack_temp[0] = temp_f1;
+    stack_temp[1] = temp_f0;
+    stack_temp[2] = temp_f1;
+    *(volatile f32 *)((u8 *)arg0 + 0x60) = temp_f1;
+    *(volatile f32 *)((u8 *)arg0 + 0x64) = temp_f0;
+    *(volatile f32 *)((u8 *)arg0 + 0x68) = temp_f1;
+    ((void (*)(void *))fn_8017A580)(arg0);
     temp_r0 = *(s32 *)((u8 *)arg0 + 0x28);
     *(s32 *)((u8 *)arg0 + 0x24) = temp_r0;
     if (temp_r0 > 0) {
@@ -111,13 +128,13 @@ void fn_801B022C(void *arg0) {
         var_r31 = NULL;
     }
     if (var_r31 != NULL) {
-        (*(void (**)(void *))(*(u32 *)var_r31 + 0x28))(var_r31);
+        ((Callback *)var_r31)->f8();
         *(f32 *)((u8 *)var_r31 + 0x24) = lbl_80562588;
     }
     lbl_8055E654 = 0;
     *(s32 *)((u8 *)arg0 + 0x24) = 0;
 }
-
+#pragma cplusplus reset
 extern f32 PSVECMag(void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern f32 PSVECDotProduct(void *, void *);
