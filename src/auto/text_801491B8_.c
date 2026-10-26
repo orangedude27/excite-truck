@@ -885,7 +885,7 @@ extern "C" void fn_8014D700(void *arg0, s32 arg1) {
     fn_80149658(arg1, (void *)((u8 *)arg0 + 0x6C), *(void **)((u8 *)arg0 + 0xC), var_r6);
 }
 
-extern "C" bool fn_8014D794(void *arg0, void *arg1) {
+extern "C" BOOL fn_8014D794(void *arg0, void *arg1) {
     fn_801E7E18();
     if (*(u8 *)((u8 *)arg0 + 0xA0) == 0) {
         if (fn_800167F4() == 2) {
@@ -1433,12 +1433,10 @@ extern "C" s32 fn_80151984(void *arg0, s32 arg1, s32 arg2) {
         count = fn_801E85A4();
         object = (u8 *)arg0;
         for (i = 0; i < count; i++) {
-            if (*((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) == 0) {
-                if (count > 1) {
-                    *(s32 *)(object + 0x454) = 4;
-                } else if (*(s32 *)(object + 0x454) == 2) {
-                    *(object + 0x460) = 1;
-                }
+            if (*((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) != 0 || count > 1) {
+                *(s32 *)(object + 0x454) = 4;
+            } else if (*(s32 *)(object + 0x454) == 2) {
+                *(object + 0x460) = 1;
             }
             object += 0x240;
         }
