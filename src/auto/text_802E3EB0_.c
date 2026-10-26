@@ -2,6 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned int lbl_8055FF38;
+extern unsigned int lbl_8055D1B0;
+extern unsigned int lbl_8034D074;
+extern unsigned int lbl_8034D098;
+extern void DVDInit(void);
+extern void OSReport(const char *, ...);
 extern unsigned char lbl_804FBAA0[0x10 * 0x91];
 extern unsigned int lbl_8055D1B4;
 extern unsigned int lbl_8055D1B8;
