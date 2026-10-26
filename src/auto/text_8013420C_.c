@@ -43,10 +43,12 @@ void *fn_801342B0(Container *arg0, s32 arg1, s32 arg2) {
     if (arg0 != 0) {
         for (i = 0; i < arg0->count; i++) {
             entry = (Entry *)((char *)arg0->entries + i * 0x18);
-            if (entry->state == 1) {
-                fn_802E30C8(lbl_8032BB24);
-                fn_8012C90C(entry->obj);
-                fn_8012C958(entry->obj);
+            if (entry->state != 0) {
+                if (entry->state == 1) {
+                    fn_802E30C8(lbl_8032BB24);
+                    fn_8012C90C(entry->obj);
+                    fn_8012C958(entry->obj);
+                }
             }
         }
         fn_80128670(arg0->entries);
@@ -56,6 +58,7 @@ void *fn_801342B0(Container *arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
+#pragma use_lmw_stmw on
 #pragma use_lmw_stmw off
 void fn_8013436C(Container *arg0, s32 arg1) {
     s32 i;
