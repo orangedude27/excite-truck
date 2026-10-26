@@ -307,17 +307,18 @@ extern "C" void fn_802A1DC0(void) {
     }
 }
 
-extern "C" void* fn_802A1DF4(void* arg0, void* arg1) {
-    s32 value;
-    *(void**)arg0 = &lbl_80349B78;
-    value = (*(s32 (**)(void*, void*))((char*)*(void**)arg1 + 0x14))(arg1, (void*)lbl_8055CBB0);
-    fn_802A2AE8(arg0, value);
-    fn_802A2BF4(arg0, value);
-    fn_802A2D04(arg0, value);
-    fn_802A2E08(arg0, value);
-    return arg0;
+#pragma scheduling invalid_target
+extern "C" void *fn_802A1DF4(void *arg0, DummyReceiver_802A3314 *arg1) {
+    register void *self = arg0;
+    *(void **)self = lbl_80349B78;
+    s32 value = arg1->v3(&lbl_8055CBB0);
+    fn_802A2AE8(self, value);
+    fn_802A2BF4(self, value);
+    fn_802A2D04(self, value);
+    fn_802A2E08(self, value);
+    return self;
 }
-
+#pragma scheduling on
 extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         *(volatile void**)arg0 = &lbl_80349B78;
@@ -330,23 +331,27 @@ extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma scheduling off
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" void fn_802A1F00(void *arg0) {
-    float f31 = lbl_80564734;
-    float f30 = lbl_80564744;
-    s32 count = 0;
-    void* p = arg0;
-    while (count < fn_80287B14(p)) {
-        *(float*)((char*)p + 0x14) = f30;
+    register f32 f31;
+    register f32 f30;
+    f31 = lbl_80564734;
+    f30 = lbl_80564744;
+    register void *p = arg0;
+    register s32 count = 0;
+    while (count < ((s32 (*)(void))fn_80287B14)()) {
+        *(f32 *)((char *)p + 0x14) = f30;
         count++;
-        *(float*)((char*)p + 0x18) = f31;
-        *(float*)((char*)p + 0x1C) = f30;
-        *(float*)((char*)p + 0x20) = f30;
-        p = (char*)p + 0x10;
+        *(f32 *)((char *)p + 0x18) = f31;
+        *(f32 *)((char *)p + 0x1C) = f30;
+        *(f32 *)((char *)p + 0x20) = f30;
+        p = (char *)p + 0x10;
     }
-    fn_802A4524(*(void**)((char*)arg0 + 0x10));
+    fn_802A4524(*(void **)((char *)arg0 + 0x10));
 }
-
+#pragma pop
 extern "C" void* fn_80287B24(s32);
 extern "C" void fn_802A4658(s32);
 extern "C" f32 lbl_80564730, lbl_80564748, lbl_8056474C, lbl_80564750;
