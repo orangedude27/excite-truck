@@ -11,7 +11,7 @@ extern s32 lbl_8055F88C;
 extern char lbl_80349C88[];
 extern s32 fn_801284F8(s32, char *);
 extern s32 fn_802A6944(s32, s32, s32);
-extern s32 fn_8012850C(s32, void *);
+extern s32 fn_8012850C();
 extern s32 fn_8002F37C(s32, void *, s32, s32, s32);
 extern void fn_8001BA68(void);
 extern char lbl_80349CAC[];
@@ -340,6 +340,7 @@ check:
     if (i < lbl_8055F890) goto loop;
 }
 
+#pragma scheduling invalid_target
 void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
     s32 size = arg1 * 0xC;
     s32 buffer = ((s32 (*)(s32, void *, s32))fn_8012850C)(size + 0x10, lbl_80349CA0, size);
@@ -351,7 +352,7 @@ void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
     fn_802A5C1C(arg0);
     return arg0;
 }
-
+#pragma scheduling on
 extern s32 lbl_804BCFA8[];
 extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
@@ -529,8 +530,8 @@ void fn_802A6758(void *arg0, f32 *arg1) {
     base[2] = z;
     *(s32 *)((u8 *)arg0 + 4) += 1;
 }
-#pragma dont_inline reset
-#pragma scheduling pop
+#pragma push
+#pragma processor 750
 void fn_802A6790(void *arg0) {
     f32 sp8;
     f32 spC;
@@ -538,6 +539,7 @@ void fn_802A6790(void *arg0) {
     f32 temp_f1;
     f32 temp_f29;
     f32 temp_f31;
+
     *(s32 *)((u8 *)arg0 + 4) = 0;
     while (*(s32 *)((u8 *)arg0 + 4) < *(s32 *)((u8 *)arg0 + 8)) {
         temp_f1 = fn_80287BC8(*(f32 *)((u8 *)arg0 + 0x24), *(f32 *)((u8 *)arg0 + 0x28));
@@ -549,8 +551,7 @@ void fn_802A6790(void *arg0) {
         fn_802A6758(arg0, &sp8);
     }
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
     s32 *object = (s32 *)arg0;
 
