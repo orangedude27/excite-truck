@@ -108,9 +108,21 @@ unsigned short fn_802E5168(float arg0) {
     return (unsigned short)result;
 }
 
-void fn_802E51D0(void) {
-}
+#pragma scheduling invalid_target
+void fn_802E51D0(int arg0, int arg1) {
+    unsigned char *entry;
 
+    if (arg1 != 0) {
+        return;
+    }
+    ((volatile unsigned char *)lbl_804FC800)[arg0 * 0x2C] = 1;
+    entry = lbl_804FC800 + arg0 * 0x2C;
+    *(int *)(entry + 0x24) = 1;
+    *(int *)(entry + 0x28) = 0;
+    memset(entry + 1, 0, 0x20);
+    ((void (*)(char *, int, ...))fn_802E30C8)(lbl_8034D384, arg0);
+}
+#pragma scheduling on
 void fn_802E5248(int arg0, int arg1) {
     if (arg1 == 0) fn_80060CC0(arg0, 4, (void (*)())fn_802E51D0);
 }
@@ -207,23 +219,26 @@ int fn_802E58A0(void *arg0, int arg1) {
 }
 
 void fn_802E58B8(unsigned char *arg0) {
-    int index = lbl_8055FF78;
-    unsigned char *dst = lbl_804FC558 + (index << 5);
-    char *src = (char *)arg0;
-    int count = 0x20;
-    char value;
-    lbl_8055FF78 = index + 1;
-    while (count > 0) {
-        count--;
-    }
-    dst[-1] = 0;
-    do {
-        value = *src++;
-        *dst++ = (unsigned char)value;
-    } while (value != 0);
-    fn_8012BEF0(arg0);
-    fn_8012C41C(fn_802E589C, 0, arg0);
-}
+       int index;
+       char *src;
+       unsigned char *dst;
+       register volatile unsigned short count = 0x20;
+       char value;
+       index = lbl_8055FF78;
+       *(volatile int *)&lbl_8055FF78 = index + 1;
+       dst = lbl_804FC558 + (index << 5);
+       src = (char *)arg0;
+       do {
+           count--;
+       } while (count != 0);
+       dst[-1] = 0;
+       do {
+           value = *src++;
+           *dst++ = (unsigned char)value;
+       } while (value != 0);
+       fn_8012BEF0(arg0);
+       fn_8012C41C(fn_802E589C, 0, arg0);
+   }
 
 extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
@@ -311,10 +326,10 @@ float fn_802E6040(void *arg0) {
     return lbl_8056512C;
 }
 
-extern unsigned char lbl_8055FF94[];
+extern unsigned char *lbl_8055FF94;
 extern int OSDisableInterrupts(void);
 extern int OSEnableInterrupts(int);
-__declspec(section ".sdata") extern unsigned char lbl_8055FF94[];
+__declspec(section ".sdata") extern unsigned char *lbl_8055FF94;
 void *fn_802E6058(void *arg0) {
     unsigned char *entry;
     int i;
