@@ -16,6 +16,19 @@ extern float lbl_8055E750;
 extern float lbl_80562740;
 extern float lbl_80562744;
 #pragma cplusplus on
+struct Dummy_801B826C {
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void d4();
+    virtual void d5();
+    virtual void d6();
+    virtual void d7();
+    virtual void d8();
+    virtual void d9();
+    virtual float d10(const char *, float);
+};
 struct Dummy_801B8318 {
     virtual void f0(int);
     virtual void f1();
@@ -152,6 +165,38 @@ int fn_801B81E0(void *arg0) {
         return 0;
     }
 }
+
+#pragma push
+#pragma cplusplus off
+#pragma dont_inline on
+void fn_801B826C(void *arg0) {
+    int value;
+    void *object;
+    void *manager;
+
+    value = *(int *)((char *)arg0 + 0x3E8);
+    lbl_8055E74C = value;
+    if (value & 0x200) {
+        lbl_8055E744 = (void *)fn_801B81E0(arg0);
+    } else {
+        object = fn_801284F8(4, lbl_8033676C);
+        if (object != 0) {
+            *(char **)object = lbl_8033678C;
+        }
+        lbl_8055E744 = object;
+    }
+    manager = fn_8001285C(*(int *)((char *)arg0 + 0x3E4));
+    object = *(void **)((char *)manager + 0x20);
+    lbl_8055A910 = ((float (*)(void *, const char *, float))(*(void ***)object)[10])(
+        object, lbl_8033677C, lbl_80562740
+    );
+    lbl_8055E748 = 0;
+    fn_80161618();
+    lbl_8055E750 = lbl_80562744;
+}
+#pragma dont_inline reset
+#pragma pop
+
 #pragma pop
 #pragma cplusplus on
 extern "C" void fn_801B8318(void) {
