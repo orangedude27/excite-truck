@@ -11,6 +11,8 @@ extern float lbl_8055E630;
 extern float lbl_8056255C;
   extern float lbl_80562558;
   extern float lbl_80562560;
+extern int lbl_8055E628;
+extern signed char lbl_8055E635;
   extern int lbl_8055E62C;
   extern double lbl_80562568;
 
