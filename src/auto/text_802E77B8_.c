@@ -65,19 +65,21 @@ float fn_802E78A4(float arg0) {
     float f = v * __fabs(v) - v;
     return v + lbl_80565164 * f;
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void fn_802E7920(int arg0) {
     extern int WPADControlMotor(int, int);
     extern int fn_802D9BF0(void);
     extern int fn_802E2C20(void);
     extern unsigned char lbl_80505978[];
     extern unsigned char lbl_80560008;
-    unsigned char *p;
+    int player = arg0;
     int time;
+    unsigned char *p;
     int motor;
     int value;
 
-    p = lbl_80505978 + arg0 * 0x638;
+    p = lbl_80505978 + player * 0x638;
     time = fn_802E2C20();
     motor = fn_802D9BF0();
     if (*(unsigned short *)(p + 0xB0) < 0x5000) {
@@ -98,9 +100,9 @@ void fn_802E7920(int arg0) {
     } else {
         *(int *)(p + 0xB4) = 0;
     }
-    WPADControlMotor(arg0, motor);
+    WPADControlMotor(player, motor);
 }
-
+#pragma pop
 extern int fn_801282EC(int);
 extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
@@ -233,22 +235,45 @@ extern int fn_8005EE7C(void);
 extern char lbl_8034D908[];
 extern int lbl_8034D8E8;
 extern int lbl_80507268[], lbl_80507258[], lbl_8056000C;
+#pragma push
+#pragma scheduling invalid_target
 void fn_802E7D0C(void) {
-    int i;
-    int *p;
-    for (i = 0, p = lbl_80507268; i < 4; i++, p++)
-        WPADSetSamplingCallback(i, *p);
-    for (i = 0; i < 4; i++)
-        fn_8006022C(i);
+    int *callbacks;
+    int index;
+    int secondIndex;
+    int entryIndex;
+    int *entries;
+
+    callbacks = lbl_80507268;
+    index = 0;
+    do {
+        WPADSetSamplingCallback(index, *callbacks);
+        index++;
+        callbacks++;
+    } while (index < 4);
+
+    secondIndex = 0;
+    do {
+        fn_8006022C(secondIndex);
+        secondIndex++;
+    } while (secondIndex < 4);
+
     fn_8005ED8C();
-    fn_802E30C8((const char *)&lbl_8034D908);
-    while (fn_8005EE7C() == 4) {}
+    fn_802E30C8((const char *)lbl_8034D908);
+    while (fn_8005EE7C() == 4) {
+    }
     fn_802E30C8((const char *)&lbl_8034D8E8);
-    for (i = 0, p = lbl_80507258; i < lbl_8056000C; i++, p++)
-        ((int (*)(int))fn_80128658)(*p);
+
+    entries = lbl_80507258;
+    entryIndex = 0;
+    while (entryIndex < lbl_8056000C) {
+        ((int (*)(int))fn_80128658)(*entries);
+        entries++;
+        entryIndex++;
+    }
     lbl_8056000C = 0;
 }
-
+#pragma pop
 extern double fn_8002EFB0(float, float);
 extern float fn_802E78A4(float);
 extern float lbl_80565160, lbl_8056517C, lbl_80565180, lbl_80565184, lbl_80565188;
