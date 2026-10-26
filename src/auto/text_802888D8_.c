@@ -10,7 +10,7 @@ typedef struct {
     float sp8, spC, sp10, sp14, sp18, sp1C;
     int sp20, sp24;
     float sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44;
-    char pad40[0x8];
+    float sp48, sp4C;
     float sp50, sp54;
     char pad50[0xC];
     int sp64;
@@ -302,6 +302,74 @@ int fn_8028967C(int arg0) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_802896E4(void *arg0) {
+    fn_802897E0Frame frame;
+    register float f9;
+    register float f7;
+    register float f4;
+    register float f3;
+    register float f10;
+    register float f8;
+    register float f6;
+    register float f5;
+    register float f2;
+    register float f1;
+    register float f0;
+    register int size;
+    register int zero;
+
+    fn_8028E61C((int *)&frame.sp20);
+    f8 = *(volatile float *)&lbl_8056428C;
+    size = 0x80;
+    f7 = *(volatile float *)&lbl_805642B0;
+    zero = 0;
+    f4 = *(volatile float *)&lbl_805642F4;
+    f3 = *(volatile float *)&lbl_80564288;
+    f0 = *(volatile float *)&lbl_80564280;
+    f10 = *(volatile float *)&lbl_80564284;
+    f6 = *(volatile float *)&lbl_80564274;
+    f5 = *(volatile float *)&lbl_8056429C;
+    f2 = *(volatile float *)&lbl_805642F8;
+    f1 = *(volatile float *)&lbl_805642A4;
+    f9 = *(volatile float *)&lbl_805642C8;
+    frame.sp24 = size;
+    frame.sp28 = f0;
+    frame.sp2C = f8;
+    frame.sp20 = zero;
+    frame.sp68 = f10;
+    frame.sp64 = 6;
+    frame.sp14 = f7;
+    frame.sp18 = f7;
+    frame.sp1C = f7;
+    frame.sp30 = f7;
+    frame.sp34 = f7;
+    frame.sp38 = f7;
+    frame.sp8 = f8;
+    frame.spC = f8;
+    frame.sp10 = f8;
+    frame.sp3C = f8;
+    frame.sp40 = f8;
+    frame.sp44 = f8;
+    *(float *)((char *)&frame + 0x48) = f6;
+    frame.sp50 = f5;
+    frame.sp54 = f8;
+    frame.sp90 = f4;
+    frame.sp88 = f4;
+    frame.sp80 = f4;
+    frame.sp94 = f3;
+    frame.sp8C = f3;
+    frame.sp84 = f3;
+    frame.sp78 = f2;
+    frame.sp7C = f7;
+    frame.sp70 = f1;
+    frame.sp74 = f9;
+    *(int *)((char *)arg0 + 0xA0) =
+        fn_8028E2F8((int *)&frame.sp20, &lbl_80348B24, lbl_8055C880, zero,
+                    f1, f2, f3, f4, f5, f6, f7);
+}
+#pragma pop
 extern int fn_8028E61C(int *);
 extern int fn_8028E2F8(int *, int *, int, int, float, float, float, float, float, float, float);
 __declspec(section ".data") extern int lbl_80348B34;
