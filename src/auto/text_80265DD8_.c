@@ -320,6 +320,36 @@ void fn_80268D94(void) {
     fn_8013530C(&sp8, 0);
 }
 
+void fn_80268E00(void) {
+    #pragma scheduling invalid_target
+    struct Result {
+        int value;
+        float fraction;
+        int mode;
+        int padding;
+    } result;
+    struct Object {
+        char pad2c[0x2C];
+        void *context;
+        char pad30[0x20];
+        int resource;
+        int field54;
+        int field58;
+    } object;
+
+    fn_80135DC4(&object, 0, 0);
+    fn_80136468((int *)&result, &object, fn_80134E34(lbl_80563C28));
+    if (result.value == 0) {
+        result.value = *(int *)((char *)object.context + 0x1C);
+    }
+    fn_80268BD4(lbl_80499950, result.value, result.fraction, lbl_80563C9C);
+    if (object.resource != 0) {
+        ((void (*)(int))fn_80128670)(object.resource);
+    }
+    object.resource = 0;
+    fn_8013530C(&object, 0);
+}
+
 #pragma dont_inline on
 void fn_8026A248(int arg0, int arg1) {
     *(int *)((char *)fn_80267EE4(arg1) + 0x24) = arg0;
