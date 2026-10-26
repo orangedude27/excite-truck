@@ -4,7 +4,7 @@
 #include "types.h"
 
 extern s32 lbl_803582B0[];
-s32 fn_802E6BD8();
+s32 fn_802E6BD8(s32, s32, void*, s32, s32);
 void *fn_80128668(void *);
 void *fn_800197B0(void *arg0, s32 arg1) {
     void *local = arg0;
@@ -34,10 +34,11 @@ void* fn_8001980C(void* arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling on
 void fn_80019864(void) {
-    fn_802E6BD8(0x52657030, 0, (void*)lbl_803582B0, 0xC, 0);
+    fn_802E6BD8(0x52657030U, 0U, (void *)lbl_803582B0, 12U, 0U);
 }
-
+#pragma scheduling on
 void fn_80019884(void) {
     return;
 }
