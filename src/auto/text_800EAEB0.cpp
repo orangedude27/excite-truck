@@ -488,21 +488,23 @@ extern "C" void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46n
 }
 
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *self) {
+    unsigned char *node = *(unsigned char **)((unsigned char *)self + 4);
+    unsigned char *end = (unsigned char *)self + 4;
+    int priority = 0x80;
+    void *result = 0;
     extern const char lbl_80322CD0[];
     extern const char lbl_80322CF4[];
     extern const char lbl_80322D30[];
     extern const char lbl_80322D54[];
-    unsigned char *end = (unsigned char *)self + 4;
-    unsigned char *node = *(unsigned char **)((unsigned char *)self + 4);
-    void *result = 0;
-    int priority = 0x80;
     while (node != end) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
         int value = *(unsigned char *)(node - 0x5c) + *(int *)(node - 0x90);
         int candidate;
-        if (value > 0x7f) candidate = 0x7f;
-        else candidate = value & ~(value >> 31);
+        if (value <= 0x7f) candidate = value & ~(value >> 31);
+        else candidate = 0x7f;
         if (priority > candidate) {
             if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
             result = node - 0xd0;
@@ -513,7 +515,7 @@ extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlay
     }
     return result;
 }
-
+#pragma pop
 extern "C" void fn_800EBB88(void *arg0) {
     volatile s32 *p = (volatile s32 *)arg0;
     s32 *q = (s32 *)((u8 *)arg0 + 8);
@@ -718,6 +720,8 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800ECB38(void *arg0, 
     return arg0;
 }
 
+#pragma push
+#pragma opt_common_subs off
 extern "C" s32 fn_800ECB90(void *arg0, s32 arg1) {
     extern u8 lbl_803230E8[];
     extern void Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv(void *, const void *);
@@ -732,13 +736,13 @@ extern "C" s32 fn_800ECB90(void *arg0, s32 arg1) {
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x44, file + 0x50, arg1);
     }
     Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv((u8 *)arg0 + 0x10C, (const void *)arg1);
-    detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(arg0, 0x10C);
+    detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(arg0, (s32)((u8 *)arg0 + 0x10C));
     SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl((u8 *)arg0 + 0x10C, (const void *)(*(u32 *)((u8 *)arg0 + 0x124) + (u32)arg1), *(u32 *)((u8 *)arg0 + 0x128));
     fn_800F2EAC((u8 *)arg0 + 0x10C, (const void *)(*(u32 *)((u8 *)arg0 + 0x11C) + (u32)arg1), *(u32 *)((u8 *)arg0 + 0x120));
     *(s32 *)((u8 *)arg0 + 0x108) = arg1;
     return 1;
 }
-
+#pragma pop
 extern "C" void fn_800F27AC(void *);
 extern "C" void fn_800ECC58(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x108) = 0;
@@ -1269,27 +1273,29 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
     return lbl_804127A8;
 }
 extern "C" u64 OSGetTime(void);
-extern "C" void OSSetPeriodicAlarm(void*, u32, u32, u32, u32, u32, void*, u32);
+extern "C" void OSSetPeriodicAlarm(void*, u32, u32, u32, u32, u32, void*);
 extern "C" void fn_800EE568(void*);
 extern "C" void fn_800EEBA8(void*, u64, u64);
-extern "C" void Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void* self_) {
-    u8* self = (u8*)self_;
-    if (self[0] == 0) {
-        u8* p = self + 0x38;
-        s32 i;
-        for (i = 0; i < 4; i++, p += 0xA0) {
+void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
+    u8* p;
+    s32 i;
+    if (((u8*)this)[0] == 0) {
+        p = (u8*)this + 0x38;
+        i = 0;
+        do {
             fn_800EE568(p);
-        }
-        OSCreateAlarm(self + 8);
+            i++;
+            p += 0xA0;
+        } while (i < 4);
+        OSCreateAlarm((u8*)this + 8);
         u64 time = OSGetTime();
         u32 ticks = *(volatile u32*)0x800000F8;
-        u32 a = ticks >> 2;
-        u32 q = a / 125000;
+        u32 q = (ticks >> 2) / 125000;
         u32 period = q * 0x0065B9AB;
         u32 interval = period / 8000;
-        OSSetPeriodicAlarm(self + 8, q, (u32)(time >> 32), (u32)time,
-                           0, interval, (void*)fn_800EEBA8, 0);
-        self[0] = 1;
+        OSSetPeriodicAlarm((u8*)this + 8, q, (u32)(time >> 32), (u32)time,
+                           0, interval, (void*)fn_800EEBA8);
+        ((u8*)this)[0] = 1;
     }
 }
 
