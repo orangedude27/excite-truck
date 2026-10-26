@@ -444,12 +444,18 @@ void fn_80128C5C(void *arg0, int arg1, int arg2) {
 }
 
 void fn_80128DCC(void *arg0) {
-    s32 offset = 0;
-    do {
-        u8 *entry = (u8 *)(*(u32 *)((u8 *)arg0 + 0xC) + offset);
-        if (*(u32 *)entry != 0x53544B41) fn_802E317C(lbl_8032A430, entry);
-        offset += *(s32 *)(entry + 0x28) + 0x40;
-    } while (offset < *(s32 *)((u8 *)arg0 + 4));
+    register s32 *base = (s32 *)arg0;
+    register s32 offset = 0;
+    register s32 *entry;
+    goto check;
+loop:
+    entry = (s32 *)(base[3] + offset);
+    if ((u32)entry[0] != 0x53544B41)
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A430, entry);
+    offset = offset + entry[10] + 0x40;
+check:
+    if (offset < base[1])
+        goto loop;
 }
 
 s32 fn_80128E58(void *arg0, s32 arg1) {
