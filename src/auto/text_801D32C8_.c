@@ -4,10 +4,8 @@
 #pragma cplusplus on
 class Fn801D3610Interface {
 public:
-    virtual void unused0();
-    virtual void unused1();
     virtual void *getValue(int);
-    virtual void unused3();
+    virtual void unused1();
     virtual int isAvailable(int);
 };
 #pragma cplusplus reset
@@ -55,22 +53,24 @@ extern void fn_801D334C(void *, void *);
 extern int lbl_80562AB0;
 extern int lbl_80562AB4;
 extern char lbl_803383BC[];
-void fn_801D3610(void *arg0, int arg1) {
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801D3610(void *arg0, int arg1) {
     int ids[2];
     int *current;
-    int count;
-    void *object;
-    int value;
+    unsigned int count;
+    Fn801D3610Interface *object;
+    void *value;
     ids[0] = lbl_80562AB0;
     current = &ids[0];
     ids[1] = lbl_80562AB4;
     count = 0;
     do {
-        object = fn_80131810(*current);
+        object = (Fn801D3610Interface *)fn_80131810(*current);
         if (object != 0) {
-            if (((int (*)(void *, int))(*(void ***)object)[4])(object, arg1) != 0) {
-                value = ((int (*)(void *, int))(*(void ***)object)[2])(object, arg1);
-                fn_801D334C(arg0, (void *)value);
+            if (object->isAvailable(arg1) != 0) {
+                value = object->getValue(arg1);
+                fn_801D334C(arg0, value);
                 fn_80131818(object);
                 return;
             }
@@ -78,11 +78,11 @@ void fn_801D3610(void *arg0, int arg1) {
         }
         count++;
         current++;
-    } while (count < 2);
+    } while (count < 2U);
     fn_802E317C(lbl_803383BC, arg1);
 }
-
-#pragma use_lmw_stmw reset
+#pragma scheduling on
+#pragma cplusplus reset
 extern int fn_801D411C(void *);
 extern void *lbl_804421D8[];
 #pragma cplusplus on
