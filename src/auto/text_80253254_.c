@@ -502,16 +502,18 @@ void fn_80254354(void *arg0) {
     u8 *p;
     s32 i;
     s32 var_r0;
-    fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x14), (u8 *)arg0 + 0x598, -1, lbl_80563A2C);
+    register float initial;
+    initial = lbl_80563A2C;
+    fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x14), (u8 *)arg0 + 0x598, -1, initial);
     p = (u8 *)arg0 + 0x5D8;
     i = 0;
     do {
         var_r0 = 0;
-        if (i != 0) {
-            if (i == 1) {
-                var_r0 = 1;
-            }
-        }
+        if (i == 0) goto set_result;
+        if (i != 1) goto result_done;
+      set_result:
+        var_r0 = 1;
+      result_done:
         if (var_r0 != 0)
             fn_801F1474(*(s32 *)((u8 *)arg0 + 0x18), p, lbl_80563A2C);
         else
@@ -736,6 +738,7 @@ void fn_80255200(void *arg0, s32 arg1) {
     fn_80255A84(arg0);
 }
 
+#pragma dont_inline fn_80255604
 void fn_80255604(s32 arg0) {
     extern char lbl_803447C0[];
     extern u8 lbl_8055F330;
