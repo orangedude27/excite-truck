@@ -538,23 +538,27 @@ extern "C" s32 fn_8001EE14(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_8001EE54(void) {
-    void* object = &lbl_802FDE48;
-    void** selected;
-    if (fn_801E85A4() == 2) {
-        selected = lbl_8055D600;
-    } else {
-        selected = lbl_8055D5FC;
-    }
-    ((void (*)(void*, void*))(*(void***)*selected)[3])(*selected, object);
-    fn_801476C4();
+    class Pane {
+    public:
+        virtual void v0();
+        virtual void set(void*);
+    };
+    void* object = lbl_802FDE48;
+    void* selected;
 
-    object = &lbl_802FDE54;
-    if (fn_801E85A4() == 2) {
+    if (fn_801E85A4() == 2)
         selected = lbl_8055D600;
-    } else {
+    else
         selected = lbl_8055D5FC;
-    }
-    ((void (*)(void*, void*))(*(void***)*selected)[3])(*selected, object);
-    fn_801476C4();
+    ((Pane*)selected)->set(object);
+    ((void (*)(void))fn_801476C4)();
+
+    object = lbl_802FDE54;
+    if (fn_801E85A4() == 2)
+        selected = lbl_8055D600;
+    else
+        selected = lbl_8055D5FC;
+    ((Pane*)selected)->set(object);
+    ((void (*)(void))fn_801476C4)();
 }
 
