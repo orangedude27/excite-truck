@@ -2,7 +2,7 @@
 extern int lbl_8034AC48, lbl_8055FAA8, lbl_8055FAAC;
 extern void fn_802C126C(void);
 extern void fn_802B8AE0(void *, void *);
-extern char fn_802B05E4(void);
+extern int fn_802B05E4(void);
 extern int fn_802BD210();
 extern void fn_802C2914(void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -627,6 +627,29 @@ void fn_802BD69C(void *arg0, int arg1) {
 }
 
 int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
+
+void fn_802BDBA8(void) {
+    char *strings = (char *)&lbl_8034AB38;
+    void *object;
+    char result;
+
+    fn_802C126C();
+    fn_802BCBDC();
+    fn_802B8AE0(strings + 0xE8, &lbl_8055FAA8);
+    fn_802B8AE0(strings + 0xF4, &lbl_8055FAAC);
+    result = fn_802B05E4();
+    *(unsigned char *)&lbl_8055FAB0 = result == 0;
+    if (result == 0) {
+        return;
+    }
+    fn_802BD210();
+    object = fn_801284F8(8, (int)(strings + 0x104));
+    if (object != 0) {
+        fn_802C2914(object);
+        *(void **)((char *)object + 4) = &lbl_8034AC48;
+    }
+    lbl_8055FABC = object;
+}
 
 void fn_802BDC3C(void* alarm) {
     fn_802C1550(fn_802BD210(alarm));
