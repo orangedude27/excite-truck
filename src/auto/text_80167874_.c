@@ -120,6 +120,8 @@ void fn_801EA1E0(f32 *, s32, f32, f32);
 
 extern s32 lbl_8055A198;
 extern s32 lbl_8055A1A0;
+extern s32 lbl_8055E354;
+extern s32 lbl_80430260[];
 extern s32 fn_80128668(void);
 extern char lbl_80330020[];
 extern char lbl_803300E0[];
