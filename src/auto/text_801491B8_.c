@@ -1187,6 +1187,37 @@ s32 fn_8014E708(s32 arg0) {
 
 s32 fn_8014E738(void) { return 0; }
 
+#pragma processor 750
+void fn_8014E740(void *arg0, f32 arg1) {
+    void *manager;
+    void *entry;
+    s32 count;
+    void **buffer;
+    f32 first;
+    f32 second;
+    f32 third;
+    u32 zero;
+    manager = lbl_8055E268;
+    if (manager != 0) {
+        entry = (void *)fn_801284F8(0x14, &lbl_80559F40);
+        if (entry != 0) {
+            first = *(f32 *)((u8 *)arg0 + 0);
+            zero = 0;
+            second = *(f32 *)((u8 *)arg0 + 4);
+            *(f32 *)((u8 *)entry + 0) = first;
+            third = *(f32 *)((u8 *)arg0 + 8);
+            *(f32 *)((u8 *)entry + 4) = second;
+            *(f32 *)((u8 *)entry + 8) = third;
+            *(f32 *)((u8 *)entry + 0xC) = arg1;
+            *((u8 *)entry + 0x10) = zero;
+        }
+        count = *(s32 *)((u8 *)manager + 0x224);
+        buffer = *(void ***)((u8 *)manager + 0x220);
+        *(s32 *)((u8 *)manager + 0x224) = count + 1;
+        buffer[count] = entry;
+    }
+}
+#pragma processor reset
 void fn_8014E7D8(void) {
 
 }
@@ -2115,14 +2146,13 @@ s32 fn_8014F0C8(s32 arg0, s32 arg1) {
 s32 fn_8014F088(s32 arg0, s32 arg1);
 void fn_8014F108(void *arg0) {
     void *base = arg0;
-    void *entry = arg0;
-    u8 *member = (u8 *)arg0 + 0x454;
+    void *entry = base;
+    u8 *member = (u8 *)base + 0x454;
     u32 i = 0;
-    char *name = lbl_8032DB34;
     do {
-        s32 result = fn_801284F8(8, name);
-        if (result == 0)
-            result = fn_802ADDD8(2);
+        s32 result = fn_801284F8(8, &lbl_8032DB34);
+        if (result != 0)
+            result = ((s32 (*)(s32, s32))fn_802ADDD8)(result, 2);
         *(s32 *)((u8 *)entry + 0x45C) = result;
         fn_8014F194(member);
         i++;
