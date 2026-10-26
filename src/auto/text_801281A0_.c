@@ -131,6 +131,36 @@ do_log:
 done:
     return lbl_8055DF98;
 }
+
+extern char lbl_8032A0A0[];
+void fn_80128AA4(void *, u8 *, s32, s32);
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_80128584(s32 arg0, s32 arg1) {
+    s32 var_r4;
+    u32 start;
+    u32 end;
+    if (((s32)lbl_8055DF80 == 0) || (arg0 != 0)) {
+        fn_80127964();
+        if (((s32)lbl_8055DF80 == 0) && ((u8)lbl_8055DF88 != 0))
+            ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A0A0);
+        var_r4 = 0;
+        start = *(u32 *)(lbl_8041E140 + 0xC);
+        if ((u32)arg0 >= start) {
+            end = start + *(u32 *)(lbl_8041E140 + 8);
+            if ((u32)arg0 < end)
+                var_r4 = 1;
+        }
+        if (var_r4 != 0) {
+            ((void (*)(void *, u8 *, s32))fn_80128AA4)(lbl_8041E140, (u8 *)arg0, arg1);
+            return;
+        }
+        ((void (*)(void *, u8 *, s32))fn_80128AA4)(lbl_8041E160, (u8 *)arg0, arg1);
+    }
+}
+#pragma scheduling on
+#pragma dont_inline reset
+
 #pragma scheduling on
 void fn_80128678(void) {
     lbl_8055DF88 = 1;
@@ -257,37 +287,36 @@ void fn_801286A0(void *arg0, s32 arg1) {
 }
 #pragma scheduling on
 void fn_80128714(void *arg0, s32 arg1, s32 arg2) {
-    void *r29;
-    char *r30;
-    s32 r31;
-    
-    r29 = arg0;
-    r30 = lbl_8032A000;
-    r31 = 0;
-    
-    ((s32 *)arg0)[2] = arg2;
-    ((s32 *)arg0)[1] = 0;
-    ((s32 *)arg0)[4] = 0;
-    ((s32 *)arg0)[3] = arg1;
-    
-    if (arg1 == 0) {
-        goto skip;
+    s32 *obj = (s32 *)arg0;
+    char *base = lbl_8032A000;
+    s32 zero = 0;
+
+    obj[2] = arg2;
+    obj[1] = zero;
+    obj[4] = zero;
+    obj[3] = arg1;
+
+    if (arg1 != 0) {
+        fn_802E30C8(base + 0xE8, (void *)arg1, (void *)arg2);
+        fn_802E30C8(base + 0x10C, &obj[3], (void *)(obj[3] + obj[2]));
+        obj[7] = zero;
+        obj[6] = zero;
+        obj[5] = 0x200;
+        return;
     }
-    
-    fn_802E30C8(&lbl_8032A000[0xE8], (void *)arg1, (void *)arg2);
-    fn_802E30C8(&lbl_8032A000[0x10C], &((s32 *)arg0)[3], (void *)((s32)((s32 *)arg0)[3] + ((s32 *)arg0)[2]));
-    ((s32 *)arg0)[7] = 0;
-    ((s32 *)arg0)[6] = 0;
-    ((s32 *)arg0)[5] = 0x200;
-    return;
-    
-skip:
-    if (arg2 != 0) {
+
+    if (arg2 == 0) {
+        obj[7] = zero;
+        obj[6] = zero;
+        return;
+    }
+
+    {
         s32 shifted = arg2 >> 10;
-        fn_802E317C(&lbl_8032A000[0x130], (void *)(shifted + (shifted >> 31)));
+        fn_802E317C(base + 0x130, (void *)(shifted + (shifted >> 31)));
     }
-    ((s32 *)arg0)[7] = 0;
-    ((s32 *)arg0)[6] = 0;
+    obj[7] = zero;
+    obj[6] = zero;
 }
 
 void fn_801287D0(void *arg0) {
