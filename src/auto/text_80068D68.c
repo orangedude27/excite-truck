@@ -65,6 +65,7 @@ extern char lbl_8031A188[];
 extern char lbl_803192C0[];
 extern char lbl_803192E0[];
 extern void *port_find_dlci_port(unsigned int);
+extern void rfc_port_timer_start(void *, u16);
 extern void port_select_mtu(void *);
 extern void fn_800936BC(void *, u16, u16, u16, u16, u16, u16);
 extern void rfc_send_dm(void *, u8, u8);
