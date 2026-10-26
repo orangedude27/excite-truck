@@ -1,3 +1,4 @@
+extern long fn_802EC104(long);
 extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
 extern long lbl_8055B658;
@@ -193,8 +194,10 @@ null_result:
 extern int fn_8020FB80(void *);
 #pragma scheduling invalid_target
 void fn_8020FC6C(void) {
+    volatile long *count;
     void *data;
-    if (lbl_804900AC.m_count == 0) {
+    count = &lbl_804900AC.m_count;
+    if (*count == 0) {
         ((long (*)(long))fn_8020F3B4)(0);
     } else {
         data = fn_8020FC04();
