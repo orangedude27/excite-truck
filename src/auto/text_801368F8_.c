@@ -6,6 +6,7 @@ typedef float f32;
 #define F(p,o) (*(f32 *)((char *)(p)+(o)))
 #define I(p,o) (*(s32 *)((char *)(p)+(o)))
 #define B(p,o) (*(unsigned char *)((char *)(p)+(o)))
+typedef struct { f32 x, y, z; } Unk80137078Vec3;
 extern s32 lbl_8055E0D4;
 extern s32 lbl_8055E0D0;
 extern s32 lbl_80559BF8;
@@ -152,6 +153,7 @@ s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
     sp8 = temp_f2;
     spC = temp_f1;
     sp10 = temp_f5 - temp_f3;
+    /* The dot-product result is compared with the configured collision threshold. */
     PSVECDotProduct(&sp8, (char *)arg1 + 0x18);
     return PSVECDotProduct(&sp8, (char *)arg1 + 0x18) < lbl_80561368;
 }
