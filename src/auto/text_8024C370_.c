@@ -62,6 +62,7 @@ void *fn_8024C3FC(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma dont_inline on
 void fn_8024C464(void) {
     int i;
     int state;
