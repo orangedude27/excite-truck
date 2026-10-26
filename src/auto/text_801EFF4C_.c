@@ -103,6 +103,20 @@ extern "C" void fn_801F004C(int unused, int arg1, void *arg2) {
     }
     fn_802C6C20(list);
 }
+
+extern "C" void fn_801F0148(void *arg0, void *arg1) {
+    *(float *)((char *)arg0 + 0x18) =
+        ((float (*)(void *, int))(*(void ***)arg1)[9])(arg1, (int)&lbl_8033A400)
+        * lbl_80562F10 * lbl_80562F14;
+    *(float *)((char *)arg0 + 0x1C) =
+        ((float (*)(void *, int))(*(void ***)arg1)[9])(arg1, (int)&lbl_8033A410)
+        * lbl_80562F10 * lbl_80562F14;
+    *(float *)((char *)arg0 + 0x24) = lbl_80562F18;
+    *(float *)((char *)arg0 + 0x20) =
+        ((float (*)(void *, int))(*(void ***)arg1)[9])(arg1, lbl_8055B0C0)
+        * lbl_80562F10;
+}
+
   #pragma cplusplus off
 
 extern int lbl_8055B0E0;
@@ -156,8 +170,6 @@ void fn_801F0488(void *arg0, void *arg1, int arg2) {
 extern float lbl_80562F10;
 extern float lbl_80562F14;
 extern float lbl_80562F18;
-extern int lbl_8033A400;
-extern int lbl_8033A410;
 extern int lbl_8055B0C0;
 extern int lbl_8055EBEC;
 extern int lbl_8055EBF0;
