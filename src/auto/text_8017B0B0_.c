@@ -145,7 +145,7 @@ void fn_8017B6A8(void *arg0) {
 
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80558DC4;
-extern void PSVECCrossProduct(void *, const void *, const void *);
+extern void PSVECCrossProduct();
 void fn_8017B6D4(void *arg0, float *arg1, float *arg2) {
     float sp8, spC, sp10;
     sp8 = arg2[0] - *(float *)((char *)arg0 + 0x60);
@@ -179,7 +179,8 @@ extern double cos(double);
 extern void fn_801ADB44(void *, void *);
 #pragma scheduling invalid_target
 void fn_8017B81C(void *arg0) {
-    float rotation[9], product[9], transpose[9], gravity[3], angle[3], midpoint[3];
+    union { float rotation[9]; float product[9]; } matrixScratch;
+    float transpose[9], gravity[3], angle[3], midpoint[3];
     void **var_r29;
     float temp_f0;
     float temp_f0_2;
@@ -321,7 +322,7 @@ void fn_8017B81C(void *arg0) {
         (*(void (**)(void *))((char *)(*var_r3) + 0x14))(var_r3);
     }
     temp_f1 = (*(float *)((char *)(arg0) + 0x1A0));
-    if (!((float) __fabs(temp_f1) <= lbl_80558DC4)) {
+    if (!((float) __fabs(temp_f1) <= ((float *)&lbl_80558DC4)[0])) {
         var_r4 = arg0;
         var_r6 = 0;
         temp_f6 = lbl_80561BB4 / temp_f1;
@@ -478,41 +479,41 @@ void fn_8017B81C(void *arg0) {
         temp_f3_4 = temp_f30 * temp_f24_3;
         temp_f6_6 = temp_f0_5 * temp_f31;
         temp_f4_8 = temp_f25_2 * temp_f6_6;
-        rotation[0] = temp_f9 + (temp_f0_5 * (temp_f31 * temp_f31));
+        matrixScratch.rotation[0] = temp_f9 + (temp_f0_5 * (temp_f31 * temp_f31));
         temp_f6_7 = temp_f24_3 * temp_f6_6;
         temp_f2_3 = temp_f30 * temp_f25_2;
-        rotation[1] = temp_f4_8 + temp_f3_4;
+        matrixScratch.rotation[1] = temp_f4_8 + temp_f3_4;
         temp_f3_5 = temp_f24_3 * (temp_f0_5 * temp_f25_2);
         temp_f0_6 = temp_f30 * temp_f31;
-        rotation[3] = temp_f4_8 - temp_f3_4;
-        rotation[2] = temp_f6_7 - temp_f2_3;
-        rotation[4] = temp_f9 + (temp_f0_5 * (temp_f25_2 * temp_f25_2));
-        rotation[5] = temp_f3_5 + temp_f0_6;
-        rotation[6] = temp_f6_7 + temp_f2_3;
-        rotation[7] = temp_f3_5 - temp_f0_6;
-        rotation[8] = temp_f9 + (temp_f0_5 * (temp_f24_3 * temp_f24_3));
+        matrixScratch.rotation[3] = temp_f4_8 - temp_f3_4;
+        matrixScratch.rotation[2] = temp_f6_7 - temp_f2_3;
+        matrixScratch.rotation[4] = temp_f9 + (temp_f0_5 * (temp_f25_2 * temp_f25_2));
+        matrixScratch.rotation[5] = temp_f3_5 + temp_f0_6;
+        matrixScratch.rotation[6] = temp_f6_7 + temp_f2_3;
+        matrixScratch.rotation[7] = temp_f3_5 - temp_f0_6;
+        matrixScratch.rotation[8] = temp_f9 + (temp_f0_5 * (temp_f24_3 * temp_f24_3));
     } else {
-        rotation[1] = lbl_80561BA8;
-        rotation[0] = lbl_80561BB4;
-        rotation[2] = lbl_80561BA8;
-        rotation[3] = lbl_80561BA8;
-        rotation[4] = lbl_80561BB4;
-        rotation[5] = lbl_80561BA8;
-        rotation[6] = lbl_80561BA8;
-        rotation[7] = lbl_80561BA8;
-        rotation[8] = lbl_80561BB4;
+        matrixScratch.rotation[1] = lbl_80561BA8;
+        matrixScratch.rotation[0] = lbl_80561BB4;
+        matrixScratch.rotation[2] = lbl_80561BA8;
+        matrixScratch.rotation[3] = lbl_80561BA8;
+        matrixScratch.rotation[4] = lbl_80561BB4;
+        matrixScratch.rotation[5] = lbl_80561BA8;
+        matrixScratch.rotation[6] = lbl_80561BA8;
+        matrixScratch.rotation[7] = lbl_80561BA8;
+        matrixScratch.rotation[8] = lbl_80561BB4;
     }
     temp_r30 = (char *)arg0 + 0x3C;
-    if ((temp_r30 == temp_r30) || (temp_r30 == &rotation[0])) {
-        temp_f31_2 = fn_80144514(rotation[0], (*(float *)((char *)(arg0) + 0x3C)), rotation[3], (*(float *)((char *)(temp_r30) + 4)), rotation[6], (*(float *)((char *)(temp_r30) + 8)));
-        temp_f30_2 = fn_80144514(rotation[0], (*(float *)((char *)(temp_r30) + 0xC)), rotation[3], (*(float *)((char *)(temp_r30) + 0x10)), rotation[6], (*(float *)((char *)(temp_r30) + 0x14)));
-        temp_f29 = fn_80144514(rotation[0], (*(float *)((char *)(temp_r30) + 0x18)), rotation[3], (*(float *)((char *)(temp_r30) + 0x1C)), rotation[6], (*(float *)((char *)(temp_r30) + 0x20)));
-        temp_f28 = fn_80144514(rotation[1], (*(float *)((char *)(arg0) + 0x3C)), rotation[4], (*(float *)((char *)(temp_r30) + 4)), rotation[7], (*(float *)((char *)(temp_r30) + 8)));
-        temp_f27 = fn_80144514(rotation[1], (*(float *)((char *)(temp_r30) + 0xC)), rotation[4], (*(float *)((char *)(temp_r30) + 0x10)), rotation[7], (*(float *)((char *)(temp_r30) + 0x14)));
-        temp_f26 = fn_80144514(rotation[1], (*(float *)((char *)(temp_r30) + 0x18)), rotation[4], (*(float *)((char *)(temp_r30) + 0x1C)), rotation[7], (*(float *)((char *)(temp_r30) + 0x20)));
-        temp_f25_3 = fn_80144514(rotation[2], (*(float *)((char *)(arg0) + 0x3C)), rotation[5], (*(float *)((char *)(temp_r30) + 4)), rotation[8], (*(float *)((char *)(temp_r30) + 8)));
-        temp_f24_4 = fn_80144514(rotation[2], (*(float *)((char *)(temp_r30) + 0xC)), rotation[5], (*(float *)((char *)(temp_r30) + 0x10)), rotation[8], (*(float *)((char *)(temp_r30) + 0x14)));
-        temp_f1_7 = fn_80144514(rotation[2], (*(float *)((char *)(temp_r30) + 0x18)), rotation[5], (*(float *)((char *)(temp_r30) + 0x1C)), rotation[8], (*(float *)((char *)(temp_r30) + 0x20)));
+    if ((temp_r30 == temp_r30) || (temp_r30 == &matrixScratch.rotation[0])) {
+        temp_f31_2 = fn_80144514(matrixScratch.rotation[0], (*(float *)((char *)(arg0) + 0x3C)), matrixScratch.rotation[3], (*(float *)((char *)(temp_r30) + 4)), matrixScratch.rotation[6], (*(float *)((char *)(temp_r30) + 8)));
+        temp_f30_2 = fn_80144514(matrixScratch.rotation[0], (*(float *)((char *)(temp_r30) + 0xC)), matrixScratch.rotation[3], (*(float *)((char *)(temp_r30) + 0x10)), matrixScratch.rotation[6], (*(float *)((char *)(temp_r30) + 0x14)));
+        temp_f29 = fn_80144514(matrixScratch.rotation[0], (*(float *)((char *)(temp_r30) + 0x18)), matrixScratch.rotation[3], (*(float *)((char *)(temp_r30) + 0x1C)), matrixScratch.rotation[6], (*(float *)((char *)(temp_r30) + 0x20)));
+        temp_f28 = fn_80144514(matrixScratch.rotation[1], (*(float *)((char *)(arg0) + 0x3C)), matrixScratch.rotation[4], (*(float *)((char *)(temp_r30) + 4)), matrixScratch.rotation[7], (*(float *)((char *)(temp_r30) + 8)));
+        temp_f27 = fn_80144514(matrixScratch.rotation[1], (*(float *)((char *)(temp_r30) + 0xC)), matrixScratch.rotation[4], (*(float *)((char *)(temp_r30) + 0x10)), matrixScratch.rotation[7], (*(float *)((char *)(temp_r30) + 0x14)));
+        temp_f26 = fn_80144514(matrixScratch.rotation[1], (*(float *)((char *)(temp_r30) + 0x18)), matrixScratch.rotation[4], (*(float *)((char *)(temp_r30) + 0x1C)), matrixScratch.rotation[7], (*(float *)((char *)(temp_r30) + 0x20)));
+        temp_f25_3 = fn_80144514(matrixScratch.rotation[2], (*(float *)((char *)(arg0) + 0x3C)), matrixScratch.rotation[5], (*(float *)((char *)(temp_r30) + 4)), matrixScratch.rotation[8], (*(float *)((char *)(temp_r30) + 8)));
+        temp_f24_4 = fn_80144514(matrixScratch.rotation[2], (*(float *)((char *)(temp_r30) + 0xC)), matrixScratch.rotation[5], (*(float *)((char *)(temp_r30) + 0x10)), matrixScratch.rotation[8], (*(float *)((char *)(temp_r30) + 0x14)));
+        temp_f1_7 = fn_80144514(matrixScratch.rotation[2], (*(float *)((char *)(temp_r30) + 0x18)), matrixScratch.rotation[5], (*(float *)((char *)(temp_r30) + 0x1C)), matrixScratch.rotation[8], (*(float *)((char *)(temp_r30) + 0x20)));
         (*(float *)((char *)(arg0) + 0x3C)) = temp_f31_2;
         (*(float *)((char *)(temp_r30) + 0xC)) = temp_f30_2;
         (*(float *)((char *)(temp_r30) + 0x18)) = temp_f29;
@@ -523,15 +524,15 @@ void fn_8017B81C(void *arg0) {
         (*(float *)((char *)(temp_r30) + 0x14)) = temp_f24_4;
         (*(float *)((char *)(temp_r30) + 0x20)) = temp_f1_7;
     } else {
-        (*(float *)((char *)(arg0) + 0x3C)) = fn_80144514(rotation[0], (*(float *)((char *)(arg0) + 0x3C)), rotation[3], (*(float *)((char *)(temp_r30) + 4)), rotation[6], (*(float *)((char *)(temp_r30) + 8)));
-        (*(float *)((char *)(temp_r30) + 0xC)) = fn_80144514(rotation[0], (*(float *)((char *)(temp_r30) + 0xC)), rotation[3], (*(float *)((char *)(temp_r30) + 0x10)), rotation[6], (*(float *)((char *)(temp_r30) + 0x14)));
-        (*(float *)((char *)(temp_r30) + 0x18)) = fn_80144514(rotation[0], (*(float *)((char *)(temp_r30) + 0x18)), rotation[3], (*(float *)((char *)(temp_r30) + 0x1C)), rotation[6], (*(float *)((char *)(temp_r30) + 0x20)));
-        (*(float *)((char *)(temp_r30) + 4)) = fn_80144514(rotation[1], (*(float *)((char *)(arg0) + 0x3C)), rotation[4], (*(float *)((char *)(temp_r30) + 4)), rotation[7], (*(float *)((char *)(temp_r30) + 8)));
-        (*(float *)((char *)(temp_r30) + 0x10)) = fn_80144514(rotation[1], (*(float *)((char *)(temp_r30) + 0xC)), rotation[4], (*(float *)((char *)(temp_r30) + 0x10)), rotation[7], (*(float *)((char *)(temp_r30) + 0x14)));
-        (*(float *)((char *)(temp_r30) + 0x1C)) = fn_80144514(rotation[1], (*(float *)((char *)(temp_r30) + 0x18)), rotation[4], (*(float *)((char *)(temp_r30) + 0x1C)), rotation[7], (*(float *)((char *)(temp_r30) + 0x20)));
-        (*(float *)((char *)(temp_r30) + 8)) = fn_80144514(rotation[2], (*(float *)((char *)(arg0) + 0x3C)), rotation[5], (*(float *)((char *)(temp_r30) + 4)), rotation[8], (*(float *)((char *)(temp_r30) + 8)));
-        (*(float *)((char *)(temp_r30) + 0x14)) = fn_80144514(rotation[2], (*(float *)((char *)(temp_r30) + 0xC)), rotation[5], (*(float *)((char *)(temp_r30) + 0x10)), rotation[8], (*(float *)((char *)(temp_r30) + 0x14)));
-        (*(float *)((char *)(temp_r30) + 0x20)) = fn_80144514(rotation[2], (*(float *)((char *)(temp_r30) + 0x18)), rotation[5], (*(float *)((char *)(temp_r30) + 0x1C)), rotation[8], (*(float *)((char *)(temp_r30) + 0x20)));
+        (*(float *)((char *)(arg0) + 0x3C)) = fn_80144514(matrixScratch.rotation[0], (*(float *)((char *)(arg0) + 0x3C)), matrixScratch.rotation[3], (*(float *)((char *)(temp_r30) + 4)), matrixScratch.rotation[6], (*(float *)((char *)(temp_r30) + 8)));
+        (*(float *)((char *)(temp_r30) + 0xC)) = fn_80144514(matrixScratch.rotation[0], (*(float *)((char *)(temp_r30) + 0xC)), matrixScratch.rotation[3], (*(float *)((char *)(temp_r30) + 0x10)), matrixScratch.rotation[6], (*(float *)((char *)(temp_r30) + 0x14)));
+        (*(float *)((char *)(temp_r30) + 0x18)) = fn_80144514(matrixScratch.rotation[0], (*(float *)((char *)(temp_r30) + 0x18)), matrixScratch.rotation[3], (*(float *)((char *)(temp_r30) + 0x1C)), matrixScratch.rotation[6], (*(float *)((char *)(temp_r30) + 0x20)));
+        (*(float *)((char *)(temp_r30) + 4)) = fn_80144514(matrixScratch.rotation[1], (*(float *)((char *)(arg0) + 0x3C)), matrixScratch.rotation[4], (*(float *)((char *)(temp_r30) + 4)), matrixScratch.rotation[7], (*(float *)((char *)(temp_r30) + 8)));
+        (*(float *)((char *)(temp_r30) + 0x10)) = fn_80144514(matrixScratch.rotation[1], (*(float *)((char *)(temp_r30) + 0xC)), matrixScratch.rotation[4], (*(float *)((char *)(temp_r30) + 0x10)), matrixScratch.rotation[7], (*(float *)((char *)(temp_r30) + 0x14)));
+        (*(float *)((char *)(temp_r30) + 0x1C)) = fn_80144514(matrixScratch.rotation[1], (*(float *)((char *)(temp_r30) + 0x18)), matrixScratch.rotation[4], (*(float *)((char *)(temp_r30) + 0x1C)), matrixScratch.rotation[7], (*(float *)((char *)(temp_r30) + 0x20)));
+        (*(float *)((char *)(temp_r30) + 8)) = fn_80144514(matrixScratch.rotation[2], (*(float *)((char *)(arg0) + 0x3C)), matrixScratch.rotation[5], (*(float *)((char *)(temp_r30) + 4)), matrixScratch.rotation[8], (*(float *)((char *)(temp_r30) + 8)));
+        (*(float *)((char *)(temp_r30) + 0x14)) = fn_80144514(matrixScratch.rotation[2], (*(float *)((char *)(temp_r30) + 0xC)), matrixScratch.rotation[5], (*(float *)((char *)(temp_r30) + 0x10)), matrixScratch.rotation[8], (*(float *)((char *)(temp_r30) + 0x14)));
+        (*(float *)((char *)(temp_r30) + 0x20)) = fn_80144514(matrixScratch.rotation[2], (*(float *)((char *)(temp_r30) + 0x18)), matrixScratch.rotation[5], (*(float *)((char *)(temp_r30) + 0x1C)), matrixScratch.rotation[8], (*(float *)((char *)(temp_r30) + 0x20)));
     }
     transpose[1] = (*(float *)((char *)(arg0) + 0x40));
     temp_r30_2 = (char *)arg0 + 0xF4;
@@ -552,7 +553,7 @@ void fn_8017B81C(void *arg0) {
     transpose[6] = temp_f3_6;
     transpose[5] = transpose[7];
     transpose[7] = temp_f2_4;
-    if ((&product[0] == &transpose[0]) || (&product[0] == temp_r30_2)) {
+    if ((&matrixScratch.product[0] == &transpose[0]) || (&matrixScratch.product[0] == temp_r30_2)) {
         temp_f31_3 = fn_80144514((*(float *)((char *)(arg0) + 0xF4)), transpose[0], (*(float *)((char *)(temp_r30_2) + 0xC)), transpose[1], (*(float *)((char *)(temp_r30_2) + 0x18)), transpose[2]);
         temp_f30_3 = fn_80144514((*(float *)((char *)(arg0) + 0xF4)), transpose[3], (*(float *)((char *)(temp_r30_2) + 0xC)), transpose[4], (*(float *)((char *)(temp_r30_2) + 0x18)), transpose[5]);
         temp_f29_2 = fn_80144514((*(float *)((char *)(arg0) + 0xF4)), transpose[6], (*(float *)((char *)(temp_r30_2) + 0xC)), transpose[7], (*(float *)((char *)(temp_r30_2) + 0x18)), transpose[8]);
@@ -562,38 +563,38 @@ void fn_8017B81C(void *arg0) {
         temp_f25_4 = fn_80144514((*(float *)((char *)(temp_r30_2) + 8)), transpose[0], (*(float *)((char *)(temp_r30_2) + 0x14)), transpose[1], (*(float *)((char *)(temp_r30_2) + 0x20)), transpose[2]);
         temp_f24_5 = fn_80144514((*(float *)((char *)(temp_r30_2) + 8)), transpose[3], (*(float *)((char *)(temp_r30_2) + 0x14)), transpose[4], (*(float *)((char *)(temp_r30_2) + 0x20)), transpose[5]);
         temp_f1_9 = fn_80144514((*(float *)((char *)(temp_r30_2) + 8)), transpose[6], (*(float *)((char *)(temp_r30_2) + 0x14)), transpose[7], (*(float *)((char *)(temp_r30_2) + 0x20)), transpose[8]);
-        product[0] = temp_f31_3;
-        product[3] = temp_f30_3;
-        product[6] = temp_f29_2;
-        product[1] = temp_f28_2;
-        product[4] = temp_f27_2;
-        product[7] = temp_f26_2;
-        product[2] = temp_f25_4;
-        product[5] = temp_f24_5;
-        product[8] = temp_f1_9;
+        matrixScratch.product[0] = temp_f31_3;
+        matrixScratch.product[3] = temp_f30_3;
+        matrixScratch.product[6] = temp_f29_2;
+        matrixScratch.product[1] = temp_f28_2;
+        matrixScratch.product[4] = temp_f27_2;
+        matrixScratch.product[7] = temp_f26_2;
+        matrixScratch.product[2] = temp_f25_4;
+        matrixScratch.product[5] = temp_f24_5;
+        matrixScratch.product[8] = temp_f1_9;
     } else {
-        product[0] = fn_80144514((*(float *)((char *)(arg0) + 0xF4)), transpose[0], (*(float *)((char *)(temp_r30_2) + 0xC)), transpose[1], (*(float *)((char *)(temp_r30_2) + 0x18)), transpose[2]);
-        product[3] = fn_80144514((*(float *)((char *)(arg0) + 0xF4)), transpose[3], (*(float *)((char *)(temp_r30_2) + 0xC)), transpose[4], (*(float *)((char *)(temp_r30_2) + 0x18)), transpose[5]);
-        product[6] = fn_80144514((*(float *)((char *)(arg0) + 0xF4)), transpose[6], (*(float *)((char *)(temp_r30_2) + 0xC)), transpose[7], (*(float *)((char *)(temp_r30_2) + 0x18)), transpose[8]);
-        product[1] = fn_80144514((*(float *)((char *)(temp_r30_2) + 4)), transpose[0], (*(float *)((char *)(temp_r30_2) + 0x10)), transpose[1], (*(float *)((char *)(temp_r30_2) + 0x1C)), transpose[2]);
-        product[4] = fn_80144514((*(float *)((char *)(temp_r30_2) + 4)), transpose[3], (*(float *)((char *)(temp_r30_2) + 0x10)), transpose[4], (*(float *)((char *)(temp_r30_2) + 0x1C)), transpose[5]);
-        product[7] = fn_80144514((*(float *)((char *)(temp_r30_2) + 4)), transpose[6], (*(float *)((char *)(temp_r30_2) + 0x10)), transpose[7], (*(float *)((char *)(temp_r30_2) + 0x1C)), transpose[8]);
-        product[2] = fn_80144514((*(float *)((char *)(temp_r30_2) + 8)), transpose[0], (*(float *)((char *)(temp_r30_2) + 0x14)), transpose[1], (*(float *)((char *)(temp_r30_2) + 0x20)), transpose[2]);
-        product[5] = fn_80144514((*(float *)((char *)(temp_r30_2) + 8)), transpose[3], (*(float *)((char *)(temp_r30_2) + 0x14)), transpose[4], (*(float *)((char *)(temp_r30_2) + 0x20)), transpose[5]);
-        product[8] = fn_80144514((*(float *)((char *)(temp_r30_2) + 8)), transpose[6], (*(float *)((char *)(temp_r30_2) + 0x14)), transpose[7], (*(float *)((char *)(temp_r30_2) + 0x20)), transpose[8]);
+        matrixScratch.product[0] = fn_80144514((*(float *)((char *)(arg0) + 0xF4)), transpose[0], (*(float *)((char *)(temp_r30_2) + 0xC)), transpose[1], (*(float *)((char *)(temp_r30_2) + 0x18)), transpose[2]);
+        matrixScratch.product[3] = fn_80144514((*(float *)((char *)(arg0) + 0xF4)), transpose[3], (*(float *)((char *)(temp_r30_2) + 0xC)), transpose[4], (*(float *)((char *)(temp_r30_2) + 0x18)), transpose[5]);
+        matrixScratch.product[6] = fn_80144514((*(float *)((char *)(arg0) + 0xF4)), transpose[6], (*(float *)((char *)(temp_r30_2) + 0xC)), transpose[7], (*(float *)((char *)(temp_r30_2) + 0x18)), transpose[8]);
+        matrixScratch.product[1] = fn_80144514((*(float *)((char *)(temp_r30_2) + 4)), transpose[0], (*(float *)((char *)(temp_r30_2) + 0x10)), transpose[1], (*(float *)((char *)(temp_r30_2) + 0x1C)), transpose[2]);
+        matrixScratch.product[4] = fn_80144514((*(float *)((char *)(temp_r30_2) + 4)), transpose[3], (*(float *)((char *)(temp_r30_2) + 0x10)), transpose[4], (*(float *)((char *)(temp_r30_2) + 0x1C)), transpose[5]);
+        matrixScratch.product[7] = fn_80144514((*(float *)((char *)(temp_r30_2) + 4)), transpose[6], (*(float *)((char *)(temp_r30_2) + 0x10)), transpose[7], (*(float *)((char *)(temp_r30_2) + 0x1C)), transpose[8]);
+        matrixScratch.product[2] = fn_80144514((*(float *)((char *)(temp_r30_2) + 8)), transpose[0], (*(float *)((char *)(temp_r30_2) + 0x14)), transpose[1], (*(float *)((char *)(temp_r30_2) + 0x20)), transpose[2]);
+        matrixScratch.product[5] = fn_80144514((*(float *)((char *)(temp_r30_2) + 8)), transpose[3], (*(float *)((char *)(temp_r30_2) + 0x14)), transpose[4], (*(float *)((char *)(temp_r30_2) + 0x20)), transpose[5]);
+        matrixScratch.product[8] = fn_80144514((*(float *)((char *)(temp_r30_2) + 8)), transpose[6], (*(float *)((char *)(temp_r30_2) + 0x14)), transpose[7], (*(float *)((char *)(temp_r30_2) + 0x20)), transpose[8]);
     }
     temp_r29 = (char *)arg0 + 0x148;
     temp_r30_3 = (char *)arg0 + 0x3C;
-    if ((temp_r29 == &product[0]) || (temp_r29 == temp_r30_3)) {
-        temp_f24_6 = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), product[0], (*(float *)((char *)(temp_r30_3) + 0xC)), product[1], (*(float *)((char *)(temp_r30_3) + 0x18)), product[2]);
-        temp_f25_5 = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), product[3], (*(float *)((char *)(temp_r30_3) + 0xC)), product[4], (*(float *)((char *)(temp_r30_3) + 0x18)), product[5]);
-        temp_f26_3 = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), product[6], (*(float *)((char *)(temp_r30_3) + 0xC)), product[7], (*(float *)((char *)(temp_r30_3) + 0x18)), product[8]);
-        temp_f27_3 = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), product[0], (*(float *)((char *)(temp_r30_3) + 0x10)), product[1], (*(float *)((char *)(temp_r30_3) + 0x1C)), product[2]);
-        temp_f28_3 = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), product[3], (*(float *)((char *)(temp_r30_3) + 0x10)), product[4], (*(float *)((char *)(temp_r30_3) + 0x1C)), product[5]);
-        temp_f29_3 = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), product[6], (*(float *)((char *)(temp_r30_3) + 0x10)), product[7], (*(float *)((char *)(temp_r30_3) + 0x1C)), product[8]);
-        temp_f31_4 = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), product[0], (*(float *)((char *)(temp_r30_3) + 0x14)), product[1], (*(float *)((char *)(temp_r30_3) + 0x20)), product[2]);
-        temp_f30_4 = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), product[3], (*(float *)((char *)(temp_r30_3) + 0x14)), product[4], (*(float *)((char *)(temp_r30_3) + 0x20)), product[5]);
-        temp_f1_10 = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), product[6], (*(float *)((char *)(temp_r30_3) + 0x14)), product[7], (*(float *)((char *)(temp_r30_3) + 0x20)), product[8]);
+    if ((temp_r29 == &matrixScratch.product[0]) || (temp_r29 == temp_r30_3)) {
+        temp_f24_6 = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), matrixScratch.product[0], (*(float *)((char *)(temp_r30_3) + 0xC)), matrixScratch.product[1], (*(float *)((char *)(temp_r30_3) + 0x18)), matrixScratch.product[2]);
+        temp_f25_5 = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), matrixScratch.product[3], (*(float *)((char *)(temp_r30_3) + 0xC)), matrixScratch.product[4], (*(float *)((char *)(temp_r30_3) + 0x18)), matrixScratch.product[5]);
+        temp_f26_3 = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), matrixScratch.product[6], (*(float *)((char *)(temp_r30_3) + 0xC)), matrixScratch.product[7], (*(float *)((char *)(temp_r30_3) + 0x18)), matrixScratch.product[8]);
+        temp_f27_3 = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), matrixScratch.product[0], (*(float *)((char *)(temp_r30_3) + 0x10)), matrixScratch.product[1], (*(float *)((char *)(temp_r30_3) + 0x1C)), matrixScratch.product[2]);
+        temp_f28_3 = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), matrixScratch.product[3], (*(float *)((char *)(temp_r30_3) + 0x10)), matrixScratch.product[4], (*(float *)((char *)(temp_r30_3) + 0x1C)), matrixScratch.product[5]);
+        temp_f29_3 = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), matrixScratch.product[6], (*(float *)((char *)(temp_r30_3) + 0x10)), matrixScratch.product[7], (*(float *)((char *)(temp_r30_3) + 0x1C)), matrixScratch.product[8]);
+        temp_f31_4 = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), matrixScratch.product[0], (*(float *)((char *)(temp_r30_3) + 0x14)), matrixScratch.product[1], (*(float *)((char *)(temp_r30_3) + 0x20)), matrixScratch.product[2]);
+        temp_f30_4 = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), matrixScratch.product[3], (*(float *)((char *)(temp_r30_3) + 0x14)), matrixScratch.product[4], (*(float *)((char *)(temp_r30_3) + 0x20)), matrixScratch.product[5]);
+        temp_f1_10 = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), matrixScratch.product[6], (*(float *)((char *)(temp_r30_3) + 0x14)), matrixScratch.product[7], (*(float *)((char *)(temp_r30_3) + 0x20)), matrixScratch.product[8]);
         (*(float *)((char *)(arg0) + 0x148)) = temp_f24_6;
         (*(float *)((char *)(temp_r29) + 0xC)) = temp_f25_5;
         (*(float *)((char *)(temp_r29) + 0x18)) = temp_f26_3;
@@ -604,15 +605,15 @@ void fn_8017B81C(void *arg0) {
         (*(float *)((char *)(temp_r29) + 0x14)) = temp_f30_4;
         (*(float *)((char *)(temp_r29) + 0x20)) = temp_f1_10;
     } else {
-        (*(float *)((char *)(arg0) + 0x148)) = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), product[0], (*(float *)((char *)(temp_r30_3) + 0xC)), product[1], (*(float *)((char *)(temp_r30_3) + 0x18)), product[2]);
-        (*(float *)((char *)(temp_r29) + 0xC)) = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), product[3], (*(float *)((char *)(temp_r30_3) + 0xC)), product[4], (*(float *)((char *)(temp_r30_3) + 0x18)), product[5]);
-        (*(float *)((char *)(temp_r29) + 0x18)) = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), product[6], (*(float *)((char *)(temp_r30_3) + 0xC)), product[7], (*(float *)((char *)(temp_r30_3) + 0x18)), product[8]);
-        (*(float *)((char *)(temp_r29) + 4)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), product[0], (*(float *)((char *)(temp_r30_3) + 0x10)), product[1], (*(float *)((char *)(temp_r30_3) + 0x1C)), product[2]);
-        (*(float *)((char *)(temp_r29) + 0x10)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), product[3], (*(float *)((char *)(temp_r30_3) + 0x10)), product[4], (*(float *)((char *)(temp_r30_3) + 0x1C)), product[5]);
-        (*(float *)((char *)(temp_r29) + 0x1C)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), product[6], (*(float *)((char *)(temp_r30_3) + 0x10)), product[7], (*(float *)((char *)(temp_r30_3) + 0x1C)), product[8]);
-        (*(float *)((char *)(temp_r29) + 8)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), product[0], (*(float *)((char *)(temp_r30_3) + 0x14)), product[1], (*(float *)((char *)(temp_r30_3) + 0x20)), product[2]);
-        (*(float *)((char *)(temp_r29) + 0x14)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), product[3], (*(float *)((char *)(temp_r30_3) + 0x14)), product[4], (*(float *)((char *)(temp_r30_3) + 0x20)), product[5]);
-        (*(float *)((char *)(temp_r29) + 0x20)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), product[6], (*(float *)((char *)(temp_r30_3) + 0x14)), product[7], (*(float *)((char *)(temp_r30_3) + 0x20)), product[8]);
+        (*(float *)((char *)(arg0) + 0x148)) = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), matrixScratch.product[0], (*(float *)((char *)(temp_r30_3) + 0xC)), matrixScratch.product[1], (*(float *)((char *)(temp_r30_3) + 0x18)), matrixScratch.product[2]);
+        (*(float *)((char *)(temp_r29) + 0xC)) = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), matrixScratch.product[3], (*(float *)((char *)(temp_r30_3) + 0xC)), matrixScratch.product[4], (*(float *)((char *)(temp_r30_3) + 0x18)), matrixScratch.product[5]);
+        (*(float *)((char *)(temp_r29) + 0x18)) = fn_80144514((*(float *)((char *)(arg0) + 0x3C)), matrixScratch.product[6], (*(float *)((char *)(temp_r30_3) + 0xC)), matrixScratch.product[7], (*(float *)((char *)(temp_r30_3) + 0x18)), matrixScratch.product[8]);
+        (*(float *)((char *)(temp_r29) + 4)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), matrixScratch.product[0], (*(float *)((char *)(temp_r30_3) + 0x10)), matrixScratch.product[1], (*(float *)((char *)(temp_r30_3) + 0x1C)), matrixScratch.product[2]);
+        (*(float *)((char *)(temp_r29) + 0x10)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), matrixScratch.product[3], (*(float *)((char *)(temp_r30_3) + 0x10)), matrixScratch.product[4], (*(float *)((char *)(temp_r30_3) + 0x1C)), matrixScratch.product[5]);
+        (*(float *)((char *)(temp_r29) + 0x1C)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 4)), matrixScratch.product[6], (*(float *)((char *)(temp_r30_3) + 0x10)), matrixScratch.product[7], (*(float *)((char *)(temp_r30_3) + 0x1C)), matrixScratch.product[8]);
+        (*(float *)((char *)(temp_r29) + 8)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), matrixScratch.product[0], (*(float *)((char *)(temp_r30_3) + 0x14)), matrixScratch.product[1], (*(float *)((char *)(temp_r30_3) + 0x20)), matrixScratch.product[2]);
+        (*(float *)((char *)(temp_r29) + 0x14)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), matrixScratch.product[3], (*(float *)((char *)(temp_r30_3) + 0x14)), matrixScratch.product[4], (*(float *)((char *)(temp_r30_3) + 0x20)), matrixScratch.product[5]);
+        (*(float *)((char *)(temp_r29) + 0x20)) = fn_80144514((*(float *)((char *)(temp_r30_3) + 8)), matrixScratch.product[6], (*(float *)((char *)(temp_r30_3) + 0x14)), matrixScratch.product[7], (*(float *)((char *)(temp_r30_3) + 0x20)), matrixScratch.product[8]);
     }
     (*(float *)((char *)(arg0) + 0x130)) = (float) lbl_80561BA8;
     (*(float *)((char *)(arg0) + 0x134)) = (float) lbl_80561BA8;
