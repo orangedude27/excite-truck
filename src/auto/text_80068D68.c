@@ -23,6 +23,10 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 extern void GAP_Init(void);
 extern void bta_sys_init(void);
 extern void fn_80071510(void *, s32, u8);
+extern u8 *lbl_80559018;
+extern u8 lbl_803C0D18[];
+extern void bta_dm_pm_cback(u8, u8, u8, u8 *);
+extern void bta_dm_pm_btm_cback(void *, s8, s16, s8);
 
 extern void fn_800716F0(void *);
 extern void fn_8006CF44(void *, void *, void *, void *, void *, u32);
