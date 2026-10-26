@@ -230,15 +230,15 @@ void fn_8022ABC8(void *arg0, const char *arg1, int arg2) {
     fn_8023293C(arg0, buffer, lbl_80563588);
 }
 #pragma scheduling on
-extern void fn_8022ACFC(float *, float *, float *, float *, float, float);
+extern void fn_8022ACFC(int, int, float *, float *, float *, float *, float, float);
 __declspec(section ".sdata") extern double lbl_80563590;
 void fn_8022AC1C(int unused0, int unused1, int arg2, int arg3, int *arg4, int *arg5, int *arg6, int *arg7) {
     float a, b, c, d;
-    fn_8022ACFC(&a, &b, &c, &d, (float)(unsigned int)arg2, (float)(unsigned int)arg3);
-    *arg4 = (int)a;
-    *arg5 = (int)b;
-    *arg6 = (int)c;
-    *arg7 = (int)d;
+    fn_8022ACFC(unused0, unused1, &d, &c, &b, &a, (float)(unsigned int)arg2, (float)(unsigned int)arg3);
+    *arg4 = (int)d;
+    *arg5 = (int)c;
+    *arg6 = (int)b;
+    *arg7 = (int)a;
 }
 
 extern float lbl_80563588;
@@ -413,14 +413,14 @@ void fn_8022BAD0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int
 }
 
 extern void fn_80230C30(float *, float *, int, int);
+#pragma push
+#pragma opt_common_subs off
 void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
-    int iarg0 = (int)farg0;
-    int iarg1 = (int)farg1;
-    fn_80230C30(arg0, arg1, iarg0, iarg1);
-    *arg0 += farg0 - (float)iarg0;
-    *arg1 -= farg1 - (float)iarg1;
+    fn_80230C30(arg0, arg1, (int)farg0, (int)farg1);
+    *arg0 += farg0 - (float)(int)farg0;
+    *arg1 -= farg1 - (float)(int)farg1;
 }
-
+#pragma pop
 extern double lbl_805635A0;
 unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
     double a = (double)(unsigned char)(arg0 >> 24);
@@ -606,26 +606,36 @@ __declspec(section ".sdata") extern char lbl_8055B928[];
 extern char lbl_80340070[];
 extern int sscanf(const char *, const char *, ...);
 int fn_8022CD0C(char *arg0) {
-    int sp18;
+    volatile int sp18;
     int sp14;
     int sp10;
     int spC;
     int sp8;
     int result;
+    int high;
+    int low;
 
-    if (sscanf(arg0, lbl_8055B928, &sp18) == 1) {
+    if (sscanf(arg0, lbl_8055B928, (int *)&sp18) == 1)
         return sp18;
-    }
+
     result = sscanf(arg0, lbl_80340070, &sp14, &sp10, &spC, &sp8);
     if (result == 3) {
-        sp18 = ((sp14 & 0xFF) << 16) | ((sp10 & 0xFF) << 8) | (spC & 0xFF) | 0xFF000000;
-        return sp18;
+        high = (sp14 & 0xFF) << 16;
+        low = (sp10 & 0xFF) << 8;
+        low |= spC & 0xFF;
+        high |= 0xFF000000;
+        result = low | high;
+        sp18 = result;
+        return result;
     }
     if (result == 4) {
-        sp18 = ((sp14 & 0xFF) << 24) | ((sp10 & 0xFF) << 16) | ((spC & 0xFF) << 8) | (sp8 & 0xFF);
-        return sp18;
+        result = ((sp14 & 0xFF) << 24) | ((sp10 & 0xFF) << 16) |
+                 ((spC & 0xFF) << 8) | (sp8 & 0xFF);
+        return result;
     }
-    return 0xFFFF00FF;
+    result = 0xFFFF00FF;
+    sp18 = result;
+    return result;
 }
 
 extern char lbl_8033FBE8[];
