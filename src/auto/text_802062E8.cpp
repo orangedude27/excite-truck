@@ -1,5 +1,12 @@
 #include "types.h"
 
+extern "C" void fn_80208B8C(int);
+extern "C" void *fn_80207990(void *, void *);
+extern "C" void fn_8020A368(void);
+extern "C" void fn_802E30C8(const char *, ...);
+extern char lbl_8033BC50[];
+extern char lbl_8033BC68[];
+
 class Obj80206518 {
 public:
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
@@ -179,33 +186,38 @@ extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
     char *self = (char *)arg0;
     *(void **)self = &lbl_8033BDC0;
     strncpy(self + 0x37, (const char *)arg1, 0xC);
-    self[0x43] = 0;
-    *(int *)(self + 0xC) = 0;
+    float zero = *(volatile float *)&lbl_805631FC;
+    int zeroInt = 0;
+    int oneInt = 1;
+    float one = *(volatile float *)&lbl_805631F8;
+    int neg = -0x64;
+    self[0x43] = zeroInt;
+    *(int *)(self + 0xC) = zeroInt;
     *(int *)(self + 0x44) = arg2;
-    *(float *)(self + 4) = lbl_805631F8;
-    *(float *)(self + 8) = lbl_805631F8;
-    self[0x49] = 0;
-    self[0x48] = 0;
-    self[0x4A] = 1;
-    self[0x4C] = 0;
-    self[0x4B] = 0;
-    self[0x4E] = 1;
-    self[0x4D] = 1;
-    self[0x4F] = 1;
-    *(int *)(self + 0x10) = -0x64;
-    *(int *)(self + 0x14) = 0;
-    self[0x18] = 0;
-    self[0x19] = 0;
-    *(float *)(self + 0x20) = lbl_805631FC;
-    *(float *)(self + 0x1C) = lbl_805631F8;
-    *(float *)(self + 0x24) = lbl_805631FC;
-    *(int *)(self + 0x50) = 0;
-    *(float *)(self + 0x28) = lbl_805631FC;
-    self[0x34] = 1;
-    *(float *)(self + 0x2C) = lbl_805631FC;
-    self[0x35] = 1;
-    *(float *)(self + 0x30) = lbl_805631FC;
-    self[0x36] = 1;
+    *(float *)(self + 4) = one;
+    *(float *)(self + 8) = one;
+    self[0x49] = zeroInt;
+    self[0x48] = zeroInt;
+    self[0x4A] = oneInt;
+    self[0x4C] = zeroInt;
+    self[0x4B] = zeroInt;
+    self[0x4E] = oneInt;
+    self[0x4D] = oneInt;
+    self[0x4F] = oneInt;
+    *(int *)(self + 0x10) = neg;
+    *(int *)(self + 0x14) = zeroInt;
+    self[0x18] = zeroInt;
+    self[0x19] = zeroInt;
+    *(float *)(self + 0x20) = zero;
+    *(float *)(self + 0x1C) = one;
+    *(float *)(self + 0x24) = zero;
+    *(int *)(self + 0x50) = zeroInt;
+    *(float *)(self + 0x28) = zero;
+    self[0x34] = oneInt;
+    *(float *)(self + 0x2C) = zero;
+    self[0x35] = oneInt;
+    *(float *)(self + 0x30) = zero;
+    self[0x36] = oneInt;
     return arg0;
 }
 
