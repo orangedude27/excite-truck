@@ -1,4 +1,8 @@
 #include "types.h"
+extern unsigned int lbl_8055FD2C;
+extern void *lbl_8055FE1C;
+extern void *lbl_8055FE20;
+extern void fn_802CFEEC(void);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern char lbl_8034C4B0[];
 extern void fn_802E317C(const char *, ...);
