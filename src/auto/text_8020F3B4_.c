@@ -29,7 +29,7 @@ extern long lbl_8055EED4;
 extern long lbl_8055B658;
 extern long __AXFXGetLfoSinTable_801769CC();
 extern long lbl_8055B674;
-extern long lbl_8033C970;
+extern char lbl_8033C970[];
 extern float lbl_80563400;
 extern void fn_802EC1C0();
 extern void fn_802EC1E4();
@@ -246,7 +246,7 @@ void fn_8020FDE4(long arg0, const char *arg1, char *arg2) {
     char *dst;
     char *src;
     long remaining;
-    signed char value;
+    unsigned char value;
 
     src = arg2;
     block = (char *)((void *(*)(char *))fn_8020FAF0)(src);
@@ -256,16 +256,16 @@ void fn_8020FDE4(long arg0, const char *arg1, char *arg2) {
     dst = block + 4;
     remaining = 0x20;
     while (1) {
-        value = *src;
-        src++;
-        *dst = value;
-        dst++;
-        if (value == 0) {
-            return;
-        }
         remaining--;
         if (remaining <= 0) {
             dst[-1] = 0;
+            return;
+        }
+        value = (unsigned char)*src;
+        src++;
+        *dst = value;
+        dst++;
+        if ((signed char)value == 0) {
             return;
         }
     }
@@ -511,7 +511,7 @@ extern void fn_80209190(long, float);
 extern long __AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(long);
 extern void *fn_8020FAF0(void);
-extern long lbl_8033C970;
+extern char lbl_8033C970[];
 extern long lbl_8055B65C;
 extern long lbl_8055B674;
 extern signed char lbl_8055EEEC;
