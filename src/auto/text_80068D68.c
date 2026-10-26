@@ -738,6 +738,18 @@ void WUDSetSniffMode(BD_ADDR addr, s32 interval)
     BTM_SetPowerMode(lbl_80392960[0x68A], addr, &block);
 }
 
+extern char lbl_803134A0[];
+void (*WUDSetSyncSimpleCallback(void (*pCallback)(s32, s32)))(s32, s32) {
+    void (*pOldCallback)(s32, s32);
+    s32 enabled;
+    DBPrintf_8006CFA8(lbl_803134A0);
+    enabled = OSDisableInterrupts();
+    pOldCallback = *(void (**)(s32, s32))(lbl_80392960 + 4);
+    *(void (**)(s32, s32))(lbl_80392960 + 4) = pCallback;
+    OSRestoreInterrupts(enabled);
+    return pOldCallback;
+}
+
 s32 WUDSetDisableChannel(s8 arg0) {
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern u8 BTM_SetAfhChannels(u8, u8);
