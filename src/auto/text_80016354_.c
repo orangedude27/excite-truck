@@ -1,4 +1,6 @@
 #include "MSL/ctype.h"
+extern void *lbl_8055D550;
+extern void *lbl_8055D554;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -149,12 +151,14 @@ extern unsigned char *lbl_8055D544;
 void fn_800168B0(int arg0, int arg1) {
     int i;
     unsigned char *p;
+    int base;
     for (i = 0, p = lbl_803577F0; i < (int)lbl_8055D554; i++, p += 0x5C) {
         if (arg0 == *(int *)(p + 4)) *(int *)(p + 0x50) = arg1;
     }
-    for (i = 0, p = lbl_8055D540; i < (int)lbl_8055D54C; i++, p += 0x5C) {
+    base = (int)lbl_8055D540;
+    for (i = 0, p = (unsigned char *)base; i < (int)lbl_8055D54C; i++, p += 0x5C) {
         if (arg0 == *(int *)(p + 4)) {
-            *(int *)(lbl_8055D540 + i * 0x5C + 0x50) = arg1;
+            *(int *)(base + i * 0x5C + 0x50) = arg1;
             return;
         }
     }
@@ -177,16 +181,15 @@ void fn_80016928(int arg0, int arg1) {
         }
     }
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void fn_80016970(int arg0, int arg1, int arg2, int arg3) {
-    int offset = arg0 * 0x5C;
-    unsigned char *entry = lbl_803577F0 + offset;
-    *(int *)(entry + 4) = arg1;
-    *(int *)(entry + 0x4C) = *(int *)fn_80016544(arg2);
-    *(int *)(entry + 0x50) = arg3;
+    *(int *)(lbl_803577F0 + arg0 * 0x5C + 4) = arg1;
+    *(int *)(lbl_803577F0 + arg0 * 0x5C + 0x4C) = *(int *)fn_80016544(arg2);
+    *(int *)(lbl_803577F0 + arg0 * 0x5C + 0x50) = arg3;
     *(int *)(lbl_80357960 + arg0 * 0xA8 + 4) = -1000;
 }
-
+#pragma pop
 void fn_800169F8(const char *src, int index) { int count = 0x40; char *dst = (char *)(lbl_803577F0 + index * 0x5C + 8); while ((*dst++ = *src++) != 0) { if (--count <= 0) { dst[-1] = 0; return; } } }
 
 void fn_80016A44(void) {
