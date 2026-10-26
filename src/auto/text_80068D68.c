@@ -2251,6 +2251,17 @@ void fn_80073044(u8 *arg0) {
     }
 }
 
+void bta_dm_acl_change_cback(u8 *bd_addr, s32 arg1, s32 arg2, s32 arg3, u8 event)
+{
+    BT_HDR *buf = GKI_getbuf(0x12);
+    if (buf != NULL) {
+        fn_80070FA4((u8 *)buf + 0xB, bd_addr);
+        ((u8 *)buf)[0xA] = event;
+        buf->event = 0x105;
+        fn_80071450(buf);
+    }
+}
+
 extern void fn_80070FA4(void *, const void *);
 extern void *GKI_getbuf(unsigned short);
 void fn_80073464(void) {
