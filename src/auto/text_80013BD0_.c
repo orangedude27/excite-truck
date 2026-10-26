@@ -109,22 +109,21 @@ void fn_80013DF0(s32 arg0) {
     register void *method = vtable[3];
     ((void (*)(void *, void *))method)(obj, lbl_802FCBEC);
 }
-#pragma scheduling on
-void fn_80013E1C(s32 arg0) {
-    void *obj;
-    void **vt;
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_80013E1C(s32 arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v3(void *);
+    };
     if (fn_802C9A58()) {
-        obj = *(void **)((u8 *)lbl_803577E0[arg0] + 0x50);
-        vt = *(void ***)obj;
-        ((void (*)(void *, void *))vt[3])(obj, lbl_802FCBF8);
+        ((Obj *)*(void **)((u8 *)lbl_803577E0[arg0] + 0x50))->v3(lbl_802FCBF8);
     } else {
-        obj = *(void **)((u8 *)lbl_803577E0[arg0] + 0x50);
-        vt = *(void ***)obj;
-        ((void (*)(void *, void *))vt[3])(obj, lbl_802FCBC8);
+        ((Obj *)*(void **)((u8 *)lbl_803577E0[arg0] + 0x50))->v3(lbl_802FCBC8);
     }
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 void fn_80013EAC(s32 arg0, s32 arg1, s32 arg2) {
     void *obj = *(void **)((u8 *)lbl_803577E0[arg0] + 0x50);
     s32 value = 1;
@@ -240,17 +239,49 @@ void fn_8001480C(void *arg0) {
 }
 
 #pragma dont_inline on
+extern float __fabsf(float);
+extern double __fabs(double);
+#pragma scheduling invalid_target
 void fn_80014820(void *arg0) {
- void *p;
- f32 f;
- *(f32 *)((u8 *)arg0+0xC)=*(f32 *)((u8 *)*(void **)((u8 *)lbl_8055D350+0x2C)+0x34);
- p=*(void **)((u8 *)lbl_8055D350+0x2C);
- f=lbl_805603A8*(fabsf(*(f32 *)((u8 *)arg0+0x10)-*(f32 *)((u8 *)p+0x4C))/lbl_805603A0);
- if (lbl_80560368<f) {} else { lbl_80560368=f; }
- if (lbl_80560368>lbl_805603AC) {} else { lbl_80560368=lbl_805603AC; }
- *(f32 *)((u8 *)arg0+0x10)=*(f32 *)((u8 *)arg0+0x10)+(lbl_80560368*(*(f32 *)((u8 *)p+0x4C)-*(f32 *)((u8 *)arg0+0x10)));
+    void *data;
+    f32 current;
+    f32 divisor;
+    f32 value34;
+    f32 scale;
+    f32 factor;
+    f32 target;
+    f32 delta;
+    f32 amount;
+    f32 cap;
+    data = lbl_8055D350;
+    current = *(f32 *)((u8 *)arg0 + 0x10);
+    data = *(void **)((u8 *)data + 0x2C);
+    divisor = lbl_805603A0;
+    value34 = *(f32 *)((u8 *)data + 0x34);
+    scale = lbl_805603A8;
+    *(f32 *)((u8 *)arg0 + 0xC) = value34;
+    factor = lbl_80560368;
+    data = *(void **)((u8 *)lbl_8055D350 + 0x2C);
+    target = *(f32 *)((u8 *)data + 0x4C);
+    delta = current - target;
+    amount = scale * ((f32)__fabs((f64)delta) / divisor);
+    if (factor < amount) {
+        factor = amount;
+    } else {
+        factor = factor;
+    }
+    cap = lbl_805603AC;
+    if (factor > cap) {
+        factor = cap;
+    } else {
+        factor = factor;
+    }
+    *(f32 *)((u8 *)arg0 + 0x10) =
+        *(f32 *)((u8 *)arg0 + 0x10) +
+        factor * (*(f32 *)((u8 *)data + 0x4C) -
+                  *(f32 *)((u8 *)arg0 + 0x10));
 }
-#pragma dont_inline off
+#pragma scheduling on
 
 void fn_80014A98(void *arg0) {
     void *p;
@@ -567,6 +598,22 @@ void fn_80015658(void *arg0) {
     fn_8000FF88(-0x100, 0xA, lbl_80558BA4, temp_r31, 0, lbl_805603E0, temp_f31 - lbl_805603A0, temp_f30);
     fn_8000FF88(-0x100, 0xA, lbl_80558BA4, temp_r30, 0, lbl_805603E0, temp_f31 - lbl_805603A0, temp_f30 - lbl_805603E4);
 }
+
+void fn_80015AA0(void *, f32);
+void fn_80015EB0(void *, f32);
+#pragma push
+#pragma scheduling invalid_target
+void fn_80015A20(void *arg0, volatile f32 *arg1) {
+    f32 matrix[9];
+    f32 angle1 = arg1[1];
+    f32 angle0 = arg1[0];
+    f32 angle2 = arg1[2];
+    fn_80015EB0(arg0, angle1);
+    fn_80015E30(matrix, angle0);
+    fn_80015B20(arg0, matrix, arg0);
+    fn_80015AA0(matrix, angle2);
+    fn_80015B20(arg0, matrix, arg0);
+}
 #pragma pop
 extern void fn_801476C4(void);
 extern u8 lbl_80558BBC[];
@@ -575,16 +622,29 @@ extern void fn_80015E30(void *, f32);
 extern void fn_80015B20(void *, void *, void *);
 extern f64 cos(void);
 extern f64 sin(f32);
-void fn_80015AA0(void *arg0, f32 angle) {
-    f32 c = (f32)cos();
-    f32 s = (f32)sin(angle);
-    f32 *m = (f32 *)arg0;
-    m[0]=c; m[1]=s; m[2]=lbl_80560360; m[3]=-s;
-    m[4]=c; m[5]=lbl_80560360; m[6]=lbl_80560360; m[7]=lbl_80560360;
-    m[8]=lbl_80560368;
-}
-
 #pragma scheduling invalid_target
+void fn_80015AA0(void *arg0, f32 angle) {
+    f32 c;
+    f32 s;
+    f32 zero;
+    f32 neg;
+    f32 *m;
+    c = (f32)cos();
+    s = (f32)sin(angle);
+    zero = lbl_80560360;
+    m = (f32 *)arg0;
+    m[0] = c;
+    neg = -s;
+    m[1] = s;
+    m[2] = zero;
+    m[3] = neg;
+    m[4] = c;
+    m[5] = zero;
+    m[6] = zero;
+    m[7] = zero;
+    m[8] = lbl_80560368;
+}
+#pragma scheduling on
 void fn_80015B20(void *arg0, void *arg1, void *arg2) {
     f32 *out = (f32 *)arg0;
     f32 *a = (f32 *)arg1;
@@ -622,35 +682,50 @@ void fn_80015B20(void *arg0, void *arg1, void *arg2) {
         out[8] = (b[8] * a[8]) + ((b[2] * a[6]) + (b[5] * a[7]));
     }
 }
-#pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
 void fn_80015E30(void *arg0, f32 angle) {
-    f32 temp_f31 = (f32)cos();
-    f32 temp_f3 = (f32)sin(angle);
-    *(f32 *)((u8 *)arg0 + 4) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 0) = lbl_80560368;
-    *(f32 *)((u8 *)arg0 + 8) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 0xC) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 0x10) = temp_f31;
-    *(f32 *)((u8 *)arg0 + 0x14) = temp_f3;
-    *(f32 *)((u8 *)arg0 + 0x18) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 0x1C) = -temp_f3;
-    *(f32 *)((u8 *)arg0 + 0x20) = temp_f31;
+    f32 negative;
+    f32 zero;
+    f32 one;
+    f32 sine;
+    f32 cosine;
+    cosine = (f32)cos();
+    sine = (f32)sin(angle);
+    zero = lbl_80560360;
+    one = lbl_80560368;
+    *(f32 *)((u8 *)arg0 + 4) = zero;
+    negative = -sine;
+    *(f32 *)((u8 *)arg0 + 0) = one;
+    *(f32 *)((u8 *)arg0 + 8) = zero;
+    *(f32 *)((u8 *)arg0 + 0xC) = zero;
+    *(f32 *)((u8 *)arg0 + 0x10) = cosine;
+    *(f32 *)((u8 *)arg0 + 0x14) = sine;
+    *(f32 *)((u8 *)arg0 + 0x18) = zero;
+    *(f32 *)((u8 *)arg0 + 0x1C) = negative;
+    *(f32 *)((u8 *)arg0 + 0x20) = cosine;
 }
-
+#pragma pop
 void fn_80015EB0(void *arg0, f32 angle) {
-    f32 temp_f31;
-    f32 temp_f3;
-    temp_f31 = (f32)cos();
-    temp_f3 = (f32)sin(angle);
-    *(f32 *)((u8 *)arg0 + 0) = temp_f31;
-    *(f32 *)((u8 *)arg0 + 4) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 8) = -temp_f3;
-    *(f32 *)((u8 *)arg0 + 0xC) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 0x10) = lbl_80560368;
-    *(f32 *)((u8 *)arg0 + 0x14) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 0x18) = temp_f3;
-    *(f32 *)((u8 *)arg0 + 0x1C) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 0x20) = temp_f31;
+    f32 c;
+    f32 s;
+    f32 zero;
+    f32 neg;
+    f32 *m;
+    c = (f32)cos();
+    s = (f32)sin(angle);
+    zero = lbl_80560360;
+    m = (f32 *)arg0;
+    m[0] = c;
+    neg = -s;
+    m[1] = zero;
+    m[2] = neg;
+    m[3] = zero;
+    m[4] = lbl_80560368;
+    m[5] = zero;
+    m[6] = s;
+    m[7] = zero;
+    m[8] = c;
 }
 
 extern f32 lbl_805603F8,lbl_805603FC,lbl_80560408,lbl_8056040C,lbl_80560410,lbl_80560414;
