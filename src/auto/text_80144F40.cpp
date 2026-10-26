@@ -341,7 +341,7 @@ extern "C" void fn_80145670(void *arg0, void *arg1) {
 
 extern "C" s32 fn_8013126C(void *, s32);
 extern "C" s32 fn_80144FB0(void *, s32, s32, const char *);
-extern "C" void fn_801456E8(void *arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_801456E8(void *arg0, s32 arg1) {
     struct Entry { s32 unk0; f32 unk4; f32 unk8; s32 unkC; f32 unk10; s32 unk14; s32 unk18; s32 unk1C; };
     struct List { Entry *entries; s32 count; };
     List *list = (List *)arg0;
