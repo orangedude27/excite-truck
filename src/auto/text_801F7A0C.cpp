@@ -703,18 +703,48 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
 
 #pragma dont_inline on
 extern "C" void fn_801F9928(void *list, s32 arg) {
+    class Node {
+    public:
+        virtual const char *name();
+    };
+    class List {
+    public:
+        virtual void *s4();
+        virtual void *s8();
+        virtual void *sC();
+        virtual void *s10();
+        virtual void *s14();
+        virtual void *s18();
+        virtual void *s1C();
+        virtual void *s20();
+        virtual void *s24();
+        virtual void *s28();
+        virtual void *s2C();
+        virtual void *s30();
+        virtual void *s34();
+        virtual void *s38();
+        virtual void *s3C();
+        virtual void *s40();
+        virtual void *s44();
+        virtual void *s48();
+        virtual void *s4C();
+        virtual void *s50();
+        virtual void *s54();
+        virtual void *s58();
+        virtual void *get(s32);
+    };
     void *cur;
     char *name;
     s32 i = 0;
     goto get_cur;
 body:
-    name = (*(FNodeVT **)cur)->name(cur);
+    name = (char *)((Node *)cur)->name();
     if (stricmp(name, (const char *)&lbl_8055B36C) == 0) {
         fn_801F981C(cur, arg);
     }
     i++;
 get_cur:
-    cur = (*(FListVT **)list)->get(list, i);
+    cur = ((List *)list)->get(i);
     if (cur != 0) {
         goto body;
     }
@@ -943,23 +973,24 @@ extern void* lbl_8055EC5C;
 extern s32 fn_80129D90(s32, s32);
 extern s32 fn_801E6CD0(s32, s32, f32);
 extern "C" void fn_801FA1D4(void) {
-    unsigned char *p = (unsigned char *)lbl_8055EC4C;
-    do {
+    unsigned char *p;
+    void *cur;
+    s32 i;
+    p = (unsigned char *)lbl_8055EC4C;
+    while (p != 0) {
         p[0x40] = 1;
         p = *(unsigned char **)(p + 0x44);
-    } while (p != 0);
-
+    }
     p = (unsigned char *)lbl_8055EC50;
-    do {
+    while (p != 0) {
         p[0x40] = 1;
         p = *(unsigned char **)(p + 0x44);
-    } while (p != 0);
-
-    void *cur = lbl_8055EC5C;
-    do {
+    }
+    cur = lbl_8055EC5C;
+    while (cur != 0) {
         if (*(s32 *)((char *)cur + 0x54) > 0) {
             if (*(s32 *)((char *)cur + 0x60) != 1) {
-                s32 i = fn_80129D90(0, 0);
+                i = fn_80129D90(0, 0);
                 fn_801E6CD0(*(s32 *)((char *)cur + 0x30),
                             *(s32 *)((char *)cur + 0x34 + i * 4),
                             lbl_80562FF0);
@@ -968,7 +999,7 @@ extern "C" void fn_801FA1D4(void) {
             }
         }
         cur = *(void **)((char *)cur + 0x68);
-    } while (cur != 0);
+    }
 }
 
 extern "C" int fn_8020402C(void);
