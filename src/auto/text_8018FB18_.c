@@ -522,21 +522,22 @@ extern "C" void fn_801915FC(void *arg0, void *arg1) {
         virtual void g25();
         virtual int g26();
     };
+    register u8 *self = (u8 *)arg0;
     SecondVTable *second;
     s32 result;
     f32 zero;
-    *(void **)((char *)arg0 + 0x34) = arg1;
-    *(s32 *)((char *)arg0 + 0x3C) = *(s32 *)((char *)arg1 + 0x1EC);
-    ((FirstVTable *)arg0)->f7();
+    *(void **)(self + 0x34) = arg1;
+    *(s32 *)(self + 0x3C) = *(s32 *)((u8 *)arg1 + 0x1EC);
+    ((FirstVTable *)self)->f7();
     zero = lbl_8056208C;
-    *(f32 *)((char *)arg0 + 0x10) = zero;
-    *(f32 *)((char *)arg0 + 0x14) = zero;
-    *(f32 *)((char *)arg0 + 0x18) = zero;
-    memset((char *)arg0 + 0x20, 0, 0x10);
-    *(f32 *)((char *)arg0 + 0x1C) = lbl_80562090;
-    second = *(SecondVTable **)((char *)arg0 + 0x38);
+    *(f32 *)(self + 0x10) = zero;
+    *(f32 *)(self + 0x14) = zero;
+    *(f32 *)(self + 0x18) = zero;
+    memset(self + 0x20, 0, 0x10);
+    *(f32 *)(self + 0x1C) = lbl_80562090;
+    second = *(SecondVTable **)(self + 0x38);
     result = second->g26();
-    fn_801331C4(result, &lbl_8055A480, (f32 *)((char *)arg0 + 0x1C));
+    fn_801331C4(result, &lbl_8055A480, (f32 *)(self + 0x1C));
 }
 #pragma cplusplus reset
 
@@ -1416,6 +1417,7 @@ void fn_80192F74(void *arg0) {
 extern void *__AXGetStudio_80178C90(void);
 extern s32 fn_801B2F54(s32);
 extern f32 fn_8018AE3C(void *);
+#pragma scheduling invalid_target
 void fn_80192F80(void *arg0) {
     s32 result;
     f32 value;
@@ -1427,10 +1429,10 @@ void fn_80192F80(void *arg0) {
     *(f32 *)((u8 *)__AXGetStudio_80178C90() + 8) = value;
     value = fn_8018AE3C(*(void **)((u8 *)arg0 + 0x34));
     *(f32 *)((u8 *)__AXGetStudio_80178C90() + 0xC) = value;
-    value = ((f32 (*)(void *, f32))fn_8018AE4C)(*(void **)((u8 *)arg0 + 0x34), 0.0f);
+    value = ((f32 (*)(void *))fn_8018AE4C)(*(void **)((u8 *)arg0 + 0x34));
     *(f32 *)((u8 *)__AXGetStudio_80178C90() + 0x10) = value;
 }
-
+#pragma scheduling on
 int fn_80193010(void) { return 0x20; }
 
 void fn_80193018(void *arg0, void *arg1) {
