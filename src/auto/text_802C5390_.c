@@ -126,6 +126,7 @@ void fn_802C5720(int arg0) {
     int count;
     void **items;
     int i;
+    fn_802C54D4();
     if (arg0 > 0) {
         void *entry = fn_802C54B4(arg0);
         items = *(void ***)entry;
@@ -134,7 +135,6 @@ void fn_802C5720(int arg0) {
         count = lbl_804C1390[0];
         items = *(void ***)(lbl_804C1390 + 2);
     }
-    fn_802C54D4();
     for (i = 0; i < count; i++) {
         fn_802C5690(items[i]);
     }
