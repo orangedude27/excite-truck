@@ -144,6 +144,78 @@ void *fn_801A538C(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma cplusplus on
+extern "C" void fn_801A5434(void *arg0) {
+    class Obj {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void f21();
+        virtual void f22();
+        virtual void f23();
+        virtual void f24();
+        virtual void f25();
+        virtual void f26();
+        virtual void f27();
+        virtual void f28();
+        virtual void f29();
+        virtual void f30();
+        virtual void f31();
+        virtual void f32();
+        virtual void f33();
+        virtual void f34();
+        virtual void f35();
+        virtual void f36();
+        virtual void f37();
+        virtual void f38();
+        virtual void f39();
+        virtual void f40();
+        virtual void f41(int);
+    };
+    int count;
+    int values[3];
+    int first;
+    int second;
+    void *obj;
+    count = *(int *)((char *)arg0 + 0x2700);
+    if (count == 0 &&
+        ((lbl_8055E3C4 + *(int *)((char *)arg0 + 0x1EC)) & 0x1F) != 0)
+        return;
+    first = *(int *)((char *)arg0 + 0x60);
+    second = *(int *)((char *)arg0 + 0x64);
+    values[0] = first;
+    values[1] = second;
+    values[2] = *(int *)((char *)arg0 + 0x68);
+    if (((int (*)(void *, int *, int))fn_801E9E30)((char *)arg0 + 0x6C, values, first) == 0) {
+        *(int *)((char *)arg0 + 0x2700) = *(int *)((char *)arg0 + 0x2700) + 1;
+    } else {
+        *(int *)((char *)arg0 + 0x2700) = 0;
+    }
+    if (*(int *)((char *)arg0 + 0x2700) > 10) {
+        obj = fn_801B83A0();
+        ((Obj *)obj)->f41(*(int *)((char *)arg0 + 0x1EC));
+        *(int *)((char *)arg0 + 0x2700) = 0;
+    }
+}
 extern void fn_80186DE4(void);
 extern void fn_801A5434(void *);
 extern void fn_801A56A0(void *, void *, float *);
@@ -183,10 +255,16 @@ extern "C" void fn_801A54EC(void *arg0) {
         obj = (char *)obj + 0x24;
     } while (i < 8);
 }
-#pragma scheduling on
-#pragma cplusplus reset
-void fn_801A55BC(void *arg0) {
-    void *obj;
+#pragma cplusplus on
+extern "C" void fn_801A55BC(void *arg0) {
+    class Obj {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6();
+        virtual void f7();
+        virtual void f8(int);
+    };
+    Obj *obj;
     fn_8018381C();
     *(int *)((char *)arg0 + 0x2744) = 0;
     *(int *)((char *)arg0 + 0x2768) = 0;
@@ -197,18 +275,16 @@ void fn_801A55BC(void *arg0) {
     *(int *)((char *)arg0 + 0x281C) = 0;
     *(int *)((char *)arg0 + 0x2840) = 0;
     *(int *)((char *)arg0 + 0x2714) = 1;
-    obj = *(void **)((char *)arg0 + 0x270C);
+    obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
     *(int *)((char *)arg0 + 0x2720) = 0;
     *(float *)((char *)arg0 + 0x271C) = lbl_805623C8;
     *(float *)((char *)arg0 + 0x2718) = lbl_805623C8;
-    ((void (*)(void *, int))(*(void ***)obj)[10])(obj, 0);
-    obj = *(void **)((char *)arg0 + 0x270C);
-    ((void (*)(void *))(*(void ***)obj)[9])(obj);
+    obj->f8(0);
+    obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
+    obj->f7();
     *(int *)((char *)arg0 + 0x2700) = 0;
     *(unsigned char *)((char *)arg0 + 0x2704) = 0;
 }
-
-#pragma cplusplus on
 extern "C" void fn_801A5660(void *arg0) {
     fn_80183DF8();
     ((Dummy_801A5660 *)*(void **)((char *)arg0 + 0x270C))->d11();
@@ -379,18 +455,17 @@ extern "C" int fn_801A5F44(void *arg0, int arg1) {
     VTable *obj = (VTable *)*(void **)((char *)arg0 + 0x270C);
     return (int)((char *)obj->f4(arg1 + 0x44) + 0x44);
 }
-#pragma cplusplus reset
-  void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4, float farg0) {
-      int x, y, a, b;
-      void *obj;
-      fn_8018B0D8(&x, &y);
-      obj = *(void **)((char *)arg0 + 0x270C);
-      ((void (*)(void *, int, int, int *, int *, float))(*(void ***)obj)[7])(obj, arg1 + x, arg2 + y, &a, &b, farg0);
-      *arg3 = x + a;
-      *arg4 = y + b;
-  }
-  
-#pragma cplusplus on
+#pragma scheduling invalid_target
+void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4, float farg0) {
+    int x, y, a, b;
+    void *obj;
+    fn_8018B0D8(&x, &y);
+    obj = *(void **)((char *)arg0 + 0x270C);
+    ((void (*)(void *, int, int, int *, int *, float))(*(void ***)obj)[7])(obj, arg1 + x, arg2 + y, &a, &b, farg0);
+    *arg3 = x + a;
+    *arg4 = y + b;
+}
+#pragma scheduling on
 extern "C" int fn_801A6024(void *arg0, int arg1) {
     class Obj {
     public:
