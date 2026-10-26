@@ -524,6 +524,7 @@ extern "C" void fn_80145C7C(void * __restrict arg0, u32 arg1) {
 #pragma pop
 #pragma dont_inline reset
 
+#pragma processor 750
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
@@ -531,12 +532,12 @@ extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
     f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 value = ((f32 (*)(s32, f32))fn_801451DC)(
         *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
-    ((void (*)(s32, s32, f32, f32, f32, f32, f32, s32))fn_802354A0)(
-        (s32)arg1, arg2, value, temp_f31, lbl_805615D4, temp_f30,
-        *(f32 *)((u8 *)arg0 + 0x14), *(s32 *)((u8 *)arg0 + 0x18));
+    fn_802354A0((s32)arg1, arg2, *(s32 *)((u8 *)arg0 + 0x18),
+        value, temp_f31, lbl_805615D4, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
 }
 #pragma scheduling on
 #pragma dont_inline reset
+#pragma processor reset
 extern "C" void fn_80145D8C(void *arg0) {
     volatile Queue80145D8C *queue = &lbl_8042FBC0;
     s32 count = queue->count;
@@ -790,7 +791,7 @@ extern "C" void fn_8014647C(void *arg0) {
 
 extern "C" void fn_80128668(void *);
 extern "C" void fn_80128670(s32);
-extern "C" void fn_80131818(void);
+extern "C" void fn_80131818(void * = 0);
 extern "C" void fn_80145DD8(void *);
 extern "C" void fn_80146584(void *);
 extern "C" void fn_801465C8(void *);
