@@ -242,8 +242,8 @@ void fn_801310B4(void *arg0, void *arg1, int arg2) {
 }
 
 #pragma scheduling invalid_target
-void *fn_80131234(void) {
-    int result = fn_801302E0();
+void *fn_80131234(int arg0) {
+    int result = fn_801302E0(arg0);
     switch (result) {
     case 0:
         return lbl_80559B00;
@@ -252,12 +252,12 @@ void *fn_80131234(void) {
     }
 }
 #pragma scheduling on
-void fn_80131264(void) {
-    fn_801302E0();
+void fn_80131264(int arg0) {
+    fn_801302E0(arg0);
 }
 
-void fn_80131268(void) {
-    fn_80131234();
+void fn_80131268(int arg0) {
+    fn_80131234(arg0);
 }
 
 extern int lbl_8055E044;
