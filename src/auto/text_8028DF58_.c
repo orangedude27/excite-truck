@@ -175,6 +175,26 @@ void fn_8028E58C(void) { fn_8028FAE4(); }
 
 void fn_8028E590(void) { fn_8028FC40(); }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
+int fn_8028E594(const char *arg0) {
+    char **list;
+    int i;
+
+    list = (char **)&lbl_80348CF8;
+    i = 0;
+    do {
+        if (stricmp(arg0, *list) == 0) {
+            return i;
+        }
+        i++;
+        list++;
+    } while (i < 3);
+    fn_802E317C(lbl_80348D28, arg0);
+    return 3;
+}
+#pragma pop
 void *memset(void *, int, unsigned int);
 #pragma push
 #pragma small_data off
