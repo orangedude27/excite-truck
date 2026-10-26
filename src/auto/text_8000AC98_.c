@@ -173,6 +173,50 @@ void fn_8000AF1C(void *arg0) {
  if(active) { fn_8000ADE0(0xD); fn_80265D74(); fn_80128678(); fn_80206454(); fn_80127930(); fn_802D3E9C(0); }
 }
 
+extern void fn_80127954(void);
+extern void fn_80128684(void);
+extern void fn_80265D78(void);
+extern int fn_80133348(int, int, int);
+extern void fn_802B87A0(void);
+extern void fn_80210904(void);
+extern void fn_8020D1C8(void);
+extern void fn_8000CEF0(void);
+extern void fn_80006E54(void);
+extern void fn_80206228(void);
+extern void fn_801618B4(void);
+extern void fn_801CB8C0(void);
+extern void fn_80238920(void);
+extern void fn_801E8820(void (*)(void));
+extern void fn_801E7DEC(int);
+extern char lbl_802FBEC8[];
+#pragma scheduling invalid_target
+void fn_8000B09C(int arg0) {
+    int *entry;
+    int i;
+
+    fn_80127954();
+    fn_80128684();
+    fn_80265D78();
+    entry = lbl_8034F5B8;
+    i = 0;
+    do {
+        fn_80133348(i + 0xC, (int)lbl_802FBEC8, *entry);
+        i++;
+        entry += 2;
+    } while (i < 4);
+    fn_802B87A0();
+    fn_80210904();
+    fn_8020D1C8();
+    fn_8000CEF0();
+    fn_80006E54();
+    fn_80206228();
+    fn_801618B4();
+    fn_801CB8C0();
+    fn_80238920();
+    fn_801E8820(fn_8000AEC4);
+    fn_801E7DEC(arg0);
+}
+#pragma scheduling on
 int fn_8000B210(void *arg0) {
     extern int fn_80231504(int);
     if (*(void **)lbl_8055D3D0 != 0) {
