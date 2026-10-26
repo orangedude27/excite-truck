@@ -690,9 +690,9 @@ int arg0; void *arg1; double arg2;
 extern int stricmp(const char *, const char *);
 extern char lbl_8034094C[];
 extern void *fn_801284F8(int, char *);
-void fn_80237C40(void)
-{
-  char *p = fn_801284F8(0x34, lbl_8034094C);
+  char *fn_80237C40(void)
+  {
+    char *p = fn_801284F8(0x34, lbl_8034094C);
   int *new_var;
   int i;
   for (i = 0; i < 0x21; i++)
@@ -734,6 +734,36 @@ void fn_80237D00(void *arg0) {
     }
     fn_80128668(arg0);
 }
+
+#pragma use_lmw_stmw off
+extern float fn_8023659C();
+void fn_80237DA0(void *unused, char *name) {
+    char *table = *(char **)(lbl_8055F0C0 + 0x30);
+    int outer = 0;
+    int outerOffset = 0;
+    while (outer < *(int *)(table + 8)) {
+        char *entries = *(char **)(table + 4);
+        char *record = entries + outerOffset;
+        if (stricmp(record, name) == 0) {
+            int inner = 0;
+            int innerOffset = 0;
+            record[0x2d] = 1;
+            *(float *)(record + 0x30) = fn_8023659C();
+            while (inner < *(int *)(table + 8)) {
+                if (inner != outer) {
+                    char *other = entries + innerOffset;
+                    if (*(int *)(other + 0x20) == *(int *)(record + 0x20))
+                        other[0x2d] = 0;
+                }
+                innerOffset += 0x34;
+                inner++;
+            }
+        }
+        outerOffset += 0x34;
+        outer++;
+    }
+}
+#pragma use_lmw_stmw reset
 
 #pragma use_lmw_stmw off
 void fn_80237E7C(char *arg0, int unused) {
