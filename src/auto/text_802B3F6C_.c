@@ -123,25 +123,35 @@ void fn_802B4BDC(void) {
     fn_802B4DC0(lbl_8055F9D0);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802B4CB4(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != NULL) {
-        if (p != NULL) {
+    unsigned int i;
+    char *q;
+    void *p;
+
+    p = *(void **)arg0;
+    if (p != 0) {
+        if (p != 0) {
             if (*(unsigned char *)((char *)p + 0x2000) != 0) {
-                char *q = (char *)p;
-                int i = 0;
+                i = 0;
+                q = (char *)p;
                 do {
+                    int keep;
                     fn_802B4D40(q);
                     i += 1;
+                    keep = i < 0x400;
                     q += 8;
-                } while (i < 0x400);
+                    if (!keep)
+                        break;
+                } while (1);
             }
             fn_80128668(p);
         }
-        *(void **)arg0 = NULL;
+        *(void **)arg0 = 0;
     }
 }
-
+#pragma pop
 void fn_802B4D40(void *arg0) {
     void *p = *(void **)arg0;
     if (p != NULL) {
