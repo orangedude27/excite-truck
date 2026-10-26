@@ -727,22 +727,23 @@ void fn_802C4F2C(void *arg0, s32 *arg1, s32 *arg2) {
     }
 }
 
-void fn_802C4F58(void *arg0, s32 arg1, const char *arg2, s32 arg3) {
-    s32 var_r28 = (s32)arg0;
-    const unsigned char *var_r30 = (const unsigned char *)arg2;
-    unsigned char temp_r0;
-    for (;;) {
-        temp_r0 = *var_r30++;
-        if ((s8)temp_r0 == 0)
-            break;
-        if ((s8)temp_r0 < 0x20 || temp_r0 > 0x7f)
-            fn_802C5024(var_r28, arg1, 0x23, arg3);
+#pragma push
+#pragma inline_depth(0)
+void fn_802C4F58(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
+    s32 var_r31 = arg3;
+    const char *var_r30 = arg2;
+    s32 var_r29 = arg1;
+    s32 var_r28 = arg0;
+    s32 ch;
+    while ((ch = (s8)*var_r30++) != 0) {
+        if ((s8)ch < 0x20 || (u8)ch > 0x7F)
+            fn_802C5024(var_r28, var_r29, 0x23, var_r31);
         else
-            fn_802C5024(var_r28, arg1, (s32)(s8)temp_r0, arg3);
+            fn_802C5024(var_r28, var_r29, ch, var_r31);
         var_r28 += 8;
     }
 }
-
+#pragma pop
 extern unsigned int strlen(const char *);
 unsigned int fn_802C4FF8(const char *s) { return strlen(s) * 8; }
 
