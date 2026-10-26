@@ -84,6 +84,22 @@ loop3:
 check3:
  if(i3<p->count3) goto loop3;
 }
+
+extern s32 fn_8012C370(s32, s32 *, s32, s32, u8 *);
+extern void fn_801CFA48(void *);
+#pragma scheduling invalid_target
+void fn_801CFEAC(void) {
+    s32 spC;
+    u8 sp8;
+    s32 temp_r31;
+
+    spC = 1;
+    sp8 = 0;
+    temp_r31 = fn_8012C370(0x504D7368, &spC, 0, 0, &sp8);
+    if (sp8 != 0) {
+        fn_801CFA48((void *)0);
+    }
+}
 #pragma scheduling on
 void fn_801CFF14(void) {
     fn_8012C4D8();
@@ -91,7 +107,7 @@ void fn_801CFF14(void) {
 
 extern void fn_802C8B08(float *);
 extern void PSVECCrossProduct(const float *, const float *, float *);
-extern float PSVECDotProduct(const float *, const float *);
+
 extern void fn_801E41D8(void *, void *, int, float);
 extern float lbl_80562A38;
 extern float lbl_80562A40;
