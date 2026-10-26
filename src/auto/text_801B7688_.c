@@ -85,29 +85,29 @@ void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
 extern void fn_80135B24(void *, float);
 extern void fn_80136468(void *, float);
 void fn_801B78EC(int arg0, int arg1, int arg2, float farg0, float farg1, float farg2) {
-    int sp8;
-    float spC;
-    int sp10;
-    int sp14;
-    float sp18;
-    int sp1C;
-    int sp20 = 0;
-    float sp24 = lbl_80562708;
-    int sp28 = 0x2710;
+    struct Triple {
+        int first;
+        float second;
+        int third;
+    };
+    struct Triple slots[3];
 
     (void)arg1;
+    slots[2].first = 0;
+    slots[2].second = lbl_80562708;
+    slots[2].third = 0x2710;
     if (arg2 != 0) {
-        fn_80135B24(&sp14, farg1);
-        sp20 = sp14;
-        sp24 = sp18;
-        sp28 = sp1C;
+        fn_80135B24(&slots[1], farg1);
+        slots[2].first = slots[1].first;
+        slots[2].second = slots[1].second;
+        slots[2].third = slots[1].third;
     } else {
-        fn_80136468(&sp8, farg1);
-        sp20 = sp8;
-        sp24 = spC;
-        sp28 = sp10;
+        fn_80136468(&slots[0], farg1);
+        slots[2].first = slots[0].first;
+        slots[2].second = slots[0].second;
+        slots[2].third = slots[0].third;
     }
-    fn_801B7760(arg0, (int)&sp20, farg0, farg2);
+    fn_801B7760(arg0, (int)&slots[2], farg0, farg2);
 }
 
 float fn_801B79AC(void) {
@@ -203,6 +203,35 @@ void fn_801B7C8C(int arg0, float *arg1, float *arg2) {
     *(float **)(arg0) = (float *)0;
 }
 
+extern void *fn_80178C9C(void);
+extern void fn_801B78EC(int, int, int, float, float, float);
+extern void fn_801B8054(int, int, float, float);
+extern float lbl_80562720;
+extern const float lbl_80562730;
+extern float lbl_80562734;
+void fn_801B7F4C(void *arg0, int arg1, int arg2) {
+    void *root;
+    void *container;
+    void *object;
+    float base;
+    float offset;
+
+    (void)arg2;
+    if (*(void **)((char *)*(void **)((char *)fn_80178C9C() + 0x2C) + 0x20) != 0) {
+        container = *(void **)((char *)fn_80178C9C() + 0x2C);
+        object = *(void **)((char *)container + 0x20);
+        base = lbl_80562734 + *(float *)((char *)object + 0x1C);
+        root = fn_80178C9C();
+        offset = lbl_80562720 + base;
+        fn_801B8054((int)arg0, (int)root, lbl_80562708,
+                    offset + (float)arg1 * lbl_80562730);
+    } else {
+        root = fn_80178C9C();
+        fn_801B78EC((int)arg0, (int)root, 0, lbl_80562708,
+                    (float)arg1 * lbl_80562730, lbl_80562708);
+    }
+}
+
 void fn_801B8040(int arg0, int arg1, float farg0) {
     fn_801B7760(arg0, arg1, farg0, lbl_80562708);
 }
@@ -255,29 +284,23 @@ void fn_801B8100(void *arg0, int arg1, int arg2) {
     int result;
     memset(arg0, 0, 0x50);
     if (fn_801796B4() != 0)
-        goto done;
+        return;
     if (fn_801B8630(arg0, arg1, arg2) != 0)
-        goto done;
+        return;
     result = fn_801B7688(arg2);
     *(int *)((char *)arg0 + 0x44) = result;
-    if (result >= 3) {
-        if (result < 5)
-            goto call_f;
-        goto log;
+    switch (result) {
+        case 3:
+        case 4:
+        case 0:
+            fn_801B7F4C(arg0, arg1, arg2);
+            return;
+        case 1:
+        case 2:
+            fn_801B79D4(arg0, arg1, arg2);
+            return;
+        default:
+            fn_802E317C(lbl_80336718, result);
     }
-    if (result == 0)
-        goto call_f;
-    if (result > 0)
-        goto call_d;
-log:
-    fn_802E317C(lbl_80336718, result);
-    goto done;
-call_f:
-    fn_801B7F4C(arg0, arg1, arg2);
-    goto done;
-call_d:
-    fn_801B79D4(arg0, arg1, arg2);
-done:
-    ;
 }
 
