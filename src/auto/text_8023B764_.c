@@ -7,6 +7,7 @@ typedef unsigned short u16;
 typedef signed int s32;
 typedef unsigned int u32;
 extern void fn_80137C80(s32);
+extern void fn_80137C78(s32);
 
 extern void fn_802411C8(void);
 extern int fn_8023FF1C(int);
