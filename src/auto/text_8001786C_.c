@@ -53,6 +53,7 @@ void fn_800178F8(s32 arg0, s32 arg1) {
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
+/* Match note: register count, index, id, and kind as r31-r28; disable lmw/stmw and auto-inlining to preserve the target save sequence and helper calls. */
 void fn_80017944(s32 *arg0) {
     register s32 count;
     register s32 i;
