@@ -90,6 +90,43 @@ void fn_801E6B98(void* arg0) {
     fn_802C6CF8(var_r31[0]);
     fn_80128668((s32)arg0);
 }
+
+extern void *fn_8012C370(const char *, unsigned int, int *, int *, unsigned char *, unsigned char *);
+extern char *strcpy(char *, const char *);
+extern char *fn_80029004(const char *, int);
+extern void fn_80028E00(char *, const char *);
+extern const char lbl_80339A64[];
+extern const char lbl_80339A78[];
+extern char lbl_8055AF00;
+void *fn_801E6BEC(char *arg0) {
+    struct {
+        unsigned char sp8;
+        unsigned char sp9;
+        unsigned char pad[2];
+        int spC;
+        int sp10;
+    } local;
+    char *path = arg0;
+    char *result;
+
+    local.sp10 = 0;
+    local.sp9 = 0;
+    local.sp8 = 0;
+    result = (char *)fn_8012C370(path, 0x416e696d, &local.spC, &local.sp10, &local.sp9, &local.sp8);
+    if (result == 0)
+        fn_802E317C(lbl_80339A64, path);
+    if ((unsigned int)local.spC != 2)
+        fn_802E317C(lbl_80339A78, path, local.spC, 2);
+    strcpy(result + 0x10, path);
+    {
+        char *dot = fn_80029004(result + 0x10, 0x2e);
+        if (dot != 0)
+            *dot = 0;
+    }
+    fn_80028E00(result + 0x10, &lbl_8055AF00);
+    return result;
+}
+
 void fn_801E6CC8(void* arg0, s8 arg1) {
     ((s8*)arg0)[0xC] = arg1;
 }
