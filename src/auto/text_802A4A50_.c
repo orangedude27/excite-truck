@@ -219,18 +219,18 @@ void fn_802A50F8(void) {
 }
 
 extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
-extern s32 lbl_80349C94;
-s32 fn_801284F8(s32, s32 *);
-s32 fn_802A5AE8(s32, s32);
+extern char lbl_80349C94[];
+s32 fn_801284F8(s32, char *);
+s32 fn_802A5AE8();
 void fn_802A52FC(f32 arg0) {
     f32 value = lbl_8056485C;
     s32 result;
     s32 amount;
-    if (value >= arg0) value = arg0;
-    if (value <= lbl_80564858) value = lbl_80564858;
+    value = (value < arg0) ? value : arg0;
+    value = (value > lbl_80564858) ? value : lbl_80564858;
     amount = (s32)(lbl_80564878 * value);
-    result = fn_801284F8(0xBC, &lbl_80349C94);
-    if (result != 0) result = fn_802A5AE8(amount, 0);
+    result = fn_801284F8(0xBC, lbl_80349C94);
+    if (result != 0) result = fn_802A5AE8(result, amount, 0);
     lbl_8055F888 = result;
 }
 
@@ -312,6 +312,38 @@ s32 fn_802A5B8C(s32 arg0) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
+void fn_802A5C1C(void *arg0) {
+    f32 d;
+    f32 b;
+    f32 c;
+    f32 a;
+    f32 *p = (f32 *)arg0;
+    d = lbl_80564858;
+    a = lbl_8056485C;
+    c = lbl_80564850;
+    b = lbl_80564888;
+    p[8] = a;
+    p[9] = c;
+    p[10] = b;
+    p[11] = d;
+    p[12] = d;
+    p[13] = d;
+    p[14] = d;
+    p[15] = d;
+    p[16] = d;
+    p[17] = d;
+    p[18] = d;
+    p[19] = d;
+    p[20] = d;
+    p[21] = a;
+    p[22] = d;
+    p[6] = d;
+    p[5] = d;
+    fn_802A6234(b, c, a);
+    fn_802A6790(arg0);
+}
+#pragma scheduling on
 extern f32 lbl_8056488C;
 extern void *fn_801E8718();
 extern void fn_802A62CC(void *, s32);
