@@ -5,6 +5,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
+extern f32 fn_8023293C(s32, char *, f32);
 extern s32 lbl_8055F04C;
 extern s32 lbl_8055F070;
 extern void *lbl_8055B9A8;
@@ -572,7 +573,8 @@ void fn_802335F0(u8 *arg0, s32 arg1, f32 farg0, f32 farg1) {
 
 #pragma push
 #pragma dont_inline on
-void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2) {
+void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3,
+                   register f32 farg0, register f32 farg1, register f32 farg2) {
     #pragma scheduling invalid_target
     s32 sp8;
 
