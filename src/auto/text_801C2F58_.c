@@ -2250,7 +2250,7 @@ s32 fn_801CA070(s32 *arg0) {
 
 extern void fn_801CA1C4(void *, s32, s32, s32);
 extern char lbl_80337944[];
-extern char lbl_8055AB10[];
+extern s32 lbl_8055AB10;
 extern s32 lbl_80562950;
 extern int fn_80238A20(void);
 #pragma scheduling invalid_target
@@ -2270,7 +2270,7 @@ void fn_801CA5A8(void) {
         ((void (*)(s32, s32, char *, s32))fn_801C94B8)(0x190, 0xB4, buffer, -1);
         value = *(f32 *)record;
         y = context + 0xB4;
-        sprintf(buffer, lbl_8055AB10, value);
+        sprintf(buffer, (char *)&lbl_8055AB10, value);
         ((void (*)(s32, s32, char *, s32))fn_801C94B8)(0x190, y, buffer, -1);
         fn_801CA1C4((char *)(s32)lbl_8055E7F8 + lbl_8055E828 * 0x30C, 0x190, y + context, context);
     }
