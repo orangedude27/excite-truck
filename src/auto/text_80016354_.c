@@ -47,6 +47,38 @@ void *fn_80016464(int arg0) {
     return lbl_8055D540 + arg0 * 0x5C;
 }
 
+#pragma scheduling invalid_target
+void *fn_80016474(void) {
+    register int j;
+    register int i;
+    unsigned char *base;
+    register unsigned char *entry1;
+    register unsigned char *entry2;
+    int key = 0;
+
+    i = 0;
+    entry1 = lbl_803577F0;
+    while (i < (int)lbl_8055D554) {
+        if (key == *(int *)(entry1 + 4)) {
+            return lbl_803577F0 + i * 0x5C;
+        }
+        entry1 += 0x5C;
+        i++;
+    }
+    j = 0;
+    base = lbl_8055D540;
+    entry2 = base;
+    while (j < (int)lbl_8055D54C) {
+        if (key == *(int *)(entry2 + 4)) {
+            return base + j * 0x5C;
+        }
+        entry2 += 0x5C;
+        j++;
+    }
+    return lbl_803577F0;
+}
+#pragma scheduling on
+
 void* fn_80016508(void) {
     return lbl_8055D54C;
 }
@@ -136,8 +168,8 @@ void *fn_8001675C(unsigned int arg0, int arg1) { int i; int found = 0; unsigned 
 #pragma scheduling on
 void *fn_800167B8(int arg0) { return lbl_803577F0 + arg0 * 0x5C; }
 
-void fn_800167CC(void) {
-    fn_80016510(*(int *)((char *)fn_80016474() + 0x4C));
+void *fn_800167CC(int arg0) {
+    return (void *)fn_80016510(*(int *)((char *)fn_800167B8(arg0) + 0x4C));
 }
 
 extern void *lbl_8055D554;
