@@ -40,6 +40,7 @@ void fn_802C205C(int arg0) { fn_802C1F84(arg0 - 4); }
 
 void fn_802C2064(int arg0) { fn_802C1F88(arg0 - 4); }
 
+void fn_802C1F8C();
 void fn_802C206C(int arg0) { fn_802C1F8C(arg0 - 4); }
 
 int fn_802C2074(void *arg0) {
@@ -92,18 +93,43 @@ void fn_802C21C0(void) {
     if (value != 0) fn_802B52C0(lbl_8034AFD8);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_802C21DC(int x, int y, unsigned int color) {
-    int packed;
-    short sx, sy;
+    unsigned int a;
+    unsigned int b;
+    unsigned int packed;
+    short sx;
+    short sy;
     int *state;
+    short yCoord;
+    short xCoord;
+    int height;
+    int width;
+    unsigned int *pixels;
+    int index;
+    int result;
     if (lbl_8055FB54 != 0) {
-        packed = ((color & 0xFF) << 24) | ((color & 0xFF00) << 8) | ((color & 0xFF0000) >> 8) | ((color >> 24) & 0xFF);
+        a = (color << 8) & 0xFF00;
+        a |= color & 0xFF;
+        b = (color << 16) & 0x00FF0000;
+        b |= (color >> 8) << 24;
+        packed = a | b;
         sx = fn_802C2120(x);
         sy = fn_802C2120(y);
         state = (int *)lbl_8055FB54;
-        ((unsigned int *)state[2])[sx + (state[0] * (state[1] - 1 - sy))] = packed;
-        fn_802CA294(lbl_8055FB50, sx, 0, sy, (void *)lbl_8055FB54);
-        fn_802D9628(sx, sy, packed);
+        yCoord = sy;
+        height = state[1];
+        xCoord = sx;
+        width = state[0];
+        height--;
+        pixels = (unsigned int *)state[2];
+        height -= yCoord;
+        index = height * width + xCoord;
+        pixels[index] = packed;
+        result = ((int (*)(int))fn_802CA294)((int)lbl_8055FB50);
+        ((void (*)(void *, int, int, unsigned int))fn_802D9628)((void *)result, sx, sy, packed);
     }
 }
-
+#pragma pop
