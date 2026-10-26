@@ -1257,10 +1257,11 @@ void fn_8016FD60(void *arg0, void *arg1) {
 }
 
 void fn_8016FD9C(f32 *arg0, void *arg1) {
+    register f32 input = *arg0;
     char sp8[0x20];
-    f32 value = *arg0;
-    if (lbl_80561980 > value) {
-        value = lbl_80561980;
+    f32 value = lbl_80561980;
+    if (value > input) {
+        value = input;
     }
     fn_80130978(sp8, 0x20, value);
     fn_8014784C(arg1, lbl_80330B7C, lbl_80330B8C, 0);
@@ -1827,15 +1828,25 @@ extern char lbl_803308A0[];
 extern f32 lbl_80561980;
 extern void fn_802E317C(const char *, ...);
 void fn_80170E98(void *arg0, void *arg1, s32 arg2) {
+    register const char *messages = lbl_803306D0;
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
-    if (value == 1) {
-        fn_801345D8(arg1, arg2, lbl_803306D0 + 0x264, *(s32 *)((u8 *)arg0 + 0x2c));
-    } else if (value >= 0 && value < 1) {
-        fn_801345D8(arg1, arg2, lbl_803306D0 + 0x270, *(s32 *)((u8 *)arg0 + 0x2c));
-    } else if (value >= 0 && value < 3) {
-        fn_801345D8(arg1, arg2, lbl_803306D0 + 0x27c, *(s32 *)((u8 *)arg0 + 0x2c));
-    } else {
-        fn_802E317C(lbl_803306D0 + 0x288);
+
+    switch (value) {
+    case 0:
+        ((void (*)(void *, s32, const char *, ...))fn_801345D8)(
+            arg1, arg2, messages + 0x264, *(s32 *)((u8 *)arg0 + 0x2c));
+        break;
+    case 1:
+        ((void (*)(void *, s32, const char *, ...))fn_801345D8)(
+            arg1, arg2, messages + 0x270, *(s32 *)((u8 *)arg0 + 0x2c));
+        break;
+    case 2:
+        ((void (*)(void *, s32, const char *, ...))fn_801345D8)(
+            arg1, arg2, messages + 0x27c, *(s32 *)((u8 *)arg0 + 0x2c));
+        break;
+    default:
+        fn_802E317C((void *)(messages + 0x288));
+        break;
     }
 }
 
