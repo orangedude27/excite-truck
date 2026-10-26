@@ -84,7 +84,7 @@ int fn_80232BA4(int, int, int, int, float, float, float, float, float);
 
 #pragma scheduling invalid_target
 void fn_8001FD7C(void) {
-    struct cfg_t *p = (struct cfg_t *)lbl_802FE138;
+    struct cfg_t* p = (struct cfg_t*) lbl_802FE138;
     fn_8012E81C(p);
     lbl_8055D64C = fn_80232578(p->f1);
     lbl_8055D650 = fn_80232578(p->f2);
@@ -362,11 +362,17 @@ extern int fn_802354A0(int, int, s32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma dont_inline on
 void fn_80020860(int arg0) {
-    fn_802354A0(lbl_8055D654, 0, (arg0 << 0x18) | 0xFF0000 | 0xFFFF,
-                 lbl_805604F8 * (lbl_805604F0 * (f32) lbl_8055CFF0 / lbl_805604F4),
-                 lbl_805604FC * (f32) lbl_8055CFF4, lbl_805604B4,
-                 lbl_805604F0 * (f32) lbl_8055CFF0 / lbl_805604F4,
-                                    (f32) lbl_8055CFF4);
+    f32 t4;
+    f32 t5;
+
+    t4 = lbl_805604F0 * (f32)lbl_8055CFF0 / lbl_805604F4;
+    t5 = (f32)lbl_8055CFF4;
+    fn_802354A0(lbl_8055D654, 0, (arg0 << 24) | 0xFF0000 | 0xFFFF,
+                lbl_805604F8 * t4,
+                lbl_805604FC * t5,
+                lbl_805604B4,
+                t4,
+                t5);
 }
 #pragma pop
 
@@ -396,17 +402,29 @@ int fn_80021258(void) {
  }
  return 1;
 }
-#pragma dont_inline reset
+#pragma push
+#pragma scheduling invalid_target
+#pragma dont_inline on
 int fn_800213DC(int arg0) {
-    if (!lbl_8055D644) return 0;
-    if (lbl_8055D645) return 1;
-    if (fn_801E8838()) return 1;
-    if (fn_802E4A10()) return 1;
-    if (arg0 == 0x58) fn_8001FEB8();
-    else if (arg0 == 0x1B) fn_8002017C();
-    return 1;
+    int r;
+    if (lbl_8055D644) {
+        if (!lbl_8055D645 && !fn_801E8838() && !fn_802E4A10()) {
+            switch (arg0) {
+                case 0x58:
+                    fn_8001FEB8();
+                    break;
+                case 0x1B:
+                    fn_8002017C();
+                    break;
+            }
+        }
+        r = 1;
+    } else {
+        r = 0;
+    }
+    return r;
 }
-
+#pragma pop
 void fn_8002167C(void) {
     fn_8001FF24();
 }
