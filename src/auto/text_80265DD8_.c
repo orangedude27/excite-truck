@@ -50,21 +50,48 @@ void fn_80265E08(void* arg0) {
     *(int*)((char*)arg0 + 8) = 0;
 }
 
-void fn_80266070(void* arg0, void* arg1, void* arg2, void* arg3) {
-    float scale = *(float*)((char*)arg0 + 0x10);
-    float x = *(float*)((char*)arg3 + 0) * scale;
-    float y = *(float*)((char*)arg3 + 4) * scale;
-    float z = *(float*)((char*)arg3 + 8) * scale;
+void fn_80265E2C(void) {
+    #pragma scheduling invalid_target
+    struct Record { float x; float y; int value; };
+    float scale = lbl_80563C24;
+    struct Record *record = (struct Record *)lbl_804999A0;
+    int count = 0;
+
+    do {
+        record->x = scale * fn_80129DC4(6, -lbl_8055C4E0, lbl_8055C4E0);
+        record->y = scale * fn_80129DC4(6, -lbl_8055C4E4, lbl_8055C4E4);
+        {
+            int value = fn_80129D90(6, lbl_8055C4E8, lbl_8055C4EC);
+            count++;
+            record->value = value;
+        }
+        record++;
+    } while (count < 0x64);
+}
+
+void fn_80266070(void *arg0, void *arg1, void *arg2, void *arg3) {
+    volatile float scaled[3];
     float mag;
     float f;
-    float* out = arg1;
-    float* base = arg2;
-    *(float*)((char*)0 + 0); 
+    float y;
+    float xOut;
+    float yOut;
+    float zOut;
+    float *out = (float *)arg1;
+    float *base = (float *)arg2;
+    float scale = *(float *)((char *)arg0 + 0x10);
+    scaled[0] = *(float *)((char *)arg3 + 0) * scale;
+    scaled[1] = *(float *)((char *)arg3 + 4) * scale;
+    scaled[2] = *(float *)((char *)arg3 + 8) * scale;
     mag = PSVECMag(arg3);
-    f = *(float*)((char*)arg0 + 0x14) * mag;
-    out[0] = base[0] + x;
-    out[1] = base[1] + (y + f);
-    out[2] = base[2] + z;
+    f = *(float *)((char *)arg0 + 0x14) * mag;
+    y = scaled[1] + f;
+    xOut = base[0] + scaled[0];
+    yOut = base[1] + y;
+    zOut = base[2] + scaled[2];
+    out[0] = xOut;
+    out[1] = yOut;
+    out[2] = zOut;
 }
 
 extern float lbl_8055C4C0;
@@ -89,13 +116,22 @@ void fn_80266150(void *arg0) {
 
 void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
     float t;
+    float weight;
     float factor;
+    float x;
+    float y;
+    float z;
+
     t = PSQUATMultiply(arg2, arg4) - lbl_8055C4C4;
+    weight = arg0[3];
     t = t - lbl_80563C20;
-    factor = lbl_80563C20 + arg0[3] * t;
-    arg1[0] = arg2[0] + arg3[0] * factor;
-    arg1[1] = arg2[1] + arg3[1] * factor;
-    arg1[2] = arg2[2] + arg3[2] * factor;
+    factor = lbl_80563C20 + weight * t;
+    x = arg2[0] + arg3[0] * factor;
+    y = arg2[1] + arg3[1] * factor;
+    z = arg2[2] + arg3[2] * factor;
+    arg1[0] = x;
+    arg1[1] = y;
+    arg1[2] = z;
 }
 
 void fn_802670A0(int arg0, int *arg1) {
@@ -121,20 +157,20 @@ void fn_802670A0(int arg0, int *arg1) {
     arg1[15] = b * (arg0 % div);
 }
 
+#pragma scheduling invalid_target
 void fn_80267130(void *arg0) {
     float value;
     float clamp;
-
     clamp = lbl_80563C2C;
     value = (*(float *)((char *)arg0 + 0x30) - lbl_80563C44) / lbl_80563C48;
-    if (clamp < value) clamp = value;
-    if (clamp > lbl_80563C20) clamp = lbl_80563C20;
+    clamp = clamp < value ? value : clamp;
+    clamp = clamp > lbl_80563C20 ? lbl_80563C20 : clamp;
     *(float *)((char *)arg0 + 0x48) = lbl_80563C34 + clamp * lbl_80563C4C;
     if (fn_80178CA4() == 1) value = lbl_80563C2C;
     else value = lbl_80563C50;
     *(float *)((char *)arg0 + 0x4C) = lbl_8055F484 * value;
 }
-
+#pragma scheduling on
 extern float lbl_8055D020;
 extern double lbl_80563C38;
 extern float fn_801EA0E8(unsigned int, float, float, float);
