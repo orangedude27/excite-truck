@@ -889,11 +889,10 @@ void fn_801C7394(void) {
     }
 }
 
-#pragma scheduling invalid_target
 void fn_801C73DC(void) {
     s32 count;
     s32 current;
-    register s32 index;
+    s32 index;
     s32 previousOffset;
     s32 currentOffset;
     char *base;
@@ -925,6 +924,7 @@ done:
 }
 #pragma scheduling on
 
+#pragma scheduling invalid_target
 void fn_801C7480(void) {
     register s32 index = lbl_8055E828;
     register s32 next = index + 1;
@@ -947,7 +947,7 @@ void fn_801C7480(void) {
         }
     }
 }
-
+#pragma scheduling on
 void fn_801C7524(void) {
     s32 index;
     fn_801C957C(1);
