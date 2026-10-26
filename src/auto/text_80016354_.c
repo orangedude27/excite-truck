@@ -1,4 +1,5 @@
 #include "MSL/ctype.h"
+extern void fn_8001766C();
 extern void *lbl_8055D550;
 extern void *lbl_8055D554;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -56,24 +57,18 @@ void *fn_80016474(void) {
     register unsigned char *entry2;
     int key = 0;
 
-    i = 0;
-    entry1 = lbl_803577F0;
-    while (i < (int)lbl_8055D554) {
+    for (i = 0, entry1 = lbl_803577F0; i < (int)lbl_8055D554; entry1 += 0x5C, i++) {
         if (key == *(int *)(entry1 + 4)) {
             return lbl_803577F0 + i * 0x5C;
         }
-        entry1 += 0x5C;
-        i++;
     }
     j = 0;
     base = lbl_8055D540;
     entry2 = base;
-    while (j < (int)lbl_8055D54C) {
+    for (; j < (int)lbl_8055D54C; entry2 += 0x5C, j++) {
         if (key == *(int *)(entry2 + 4)) {
             return base + j * 0x5C;
         }
-        entry2 += 0x5C;
-        j++;
     }
     return lbl_803577F0;
 }
