@@ -38,7 +38,7 @@ extern s32 lbl_8055F888;
 extern s32 lbl_8055F88C;
 extern f32 lbl_8055F8A0;
 s32 fn_802A6A44(s32 *);
-s32 fn_802A5C1C(void);
+void fn_802A5C1C();
 void fn_802A59E0(void);
 extern s32 lbl_804BCFA8[];
 extern s32 lbl_8055F890;
@@ -445,6 +445,33 @@ void *fn_802A69D8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+extern f32 lbl_80564850;
+extern f32 lbl_80564858;
+extern f32 lbl_8056485C;
+extern f32 lbl_80564888;
+s32 fn_802A711C(f32, f32, f32);
+#pragma scheduling invalid_target
+s32 fn_802A6A44(s32 *arg0) {
+    f32 d;
+    f32 b = lbl_80564888;
+    f32 c;
+    f32 a = lbl_8056485C;
+    f32 *p = (f32 *)arg0;
+
+    c = lbl_80564850;
+    d = lbl_80564858;
+    p[5] = a;
+    p[6] = c;
+    p[7] = b;
+    p[8] = d;
+    p[9] = d;
+    p[10] = d;
+    p[14] = d;
+    p[15] = a;
+    p[16] = d;
+    return fn_802A711C(b, c, a);
+}
+#pragma scheduling on
 extern float lbl_8055F884;
 extern float lbl_805648B4;
 extern float fn_802C9A4C(float);
