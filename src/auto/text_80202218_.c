@@ -48,8 +48,8 @@ void fn_802022A0(int *arg0) {
     }
 }
 
-#pragma push
 #pragma ppc_psq_save off
+#pragma scheduling invalid_target
 int fn_802022E4(const Vec *arg0) {
     f32 temp_f1;
     f32 var_f31;
@@ -75,7 +75,8 @@ test:
         goto loop;
     return var_r30;
 }
-#pragma pop
+#pragma ppc_psq_save reset
+#pragma scheduling on
 
 int fn_80202378(int arg0, int arg1, int arg2, int arg3) {
     if (arg3 >= lbl_8055ECC0) return -1;
