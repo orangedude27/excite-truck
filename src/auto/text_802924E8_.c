@@ -225,19 +225,34 @@ int fn_80292FB4(unsigned char *arg0, void *arg1) {
     return 0;
 }
 
-void *fn_80293034(void *arg0, void *arg1, int arg2) {
+#pragma cplusplus on
+extern "C" void *fn_80293034(void *arg0, void *arg1, int arg2) {
+    class EffectArg {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual float value(const char *);
+    };
     *(void **)arg0 = lbl_80349294;
     fn_80293374(arg0, (void *)arg2);
     fn_802935A0(arg0);
     *(float *)((char *)arg0 + 4) = lbl_805644D4;
     if (arg1 != 0) {
         *(float *)((char *)arg0 + 4) =
-            ((float (*)(void *, const char *))(*(void ***)arg1)[10])(arg1, lbl_8055C988);
+            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
     }
     *(int *)((char *)arg0 + 0x2FAC) = 0;
     return arg0;
 }
-
+#pragma cplusplus off
 extern float fn_801E7E24(void*);
 extern void fn_802936C4(void*);
 extern float lbl_80558DC4;
@@ -295,7 +310,7 @@ void* fn_80293A00(void* arg0, void* arg1, int unused, int arg2, int arg3, int ar
     *(float*)((u8*)arg0 + 4) = lbl_8056450C;
     if (arg1) {
         void** vt = *(void***)arg1;
-        *(float*)((u8*)arg0 + 4) = ((float (*)(void*, const char*))vt[10])(arg1, lbl_8055C988);
+        *(float*)((u8*)arg0 + 4) = ((float (*)(void*, const char*))vt[10])(arg1, (const char *)&lbl_8055C988);
     }
     *(int*)((u8*)arg0 + 0x4c2c) = 0;
     return arg0;
