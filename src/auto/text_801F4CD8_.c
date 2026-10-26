@@ -570,7 +570,7 @@ void fn_801F65D0(void *arg0) {
     }
 }
 
-#pragma dont_inline off
+#pragma dont_inline on
 void fn_801F6728(void *arg0) {
     int i;
     int offset;
@@ -592,6 +592,7 @@ void fn_801F6728(void *arg0) {
         i++;
     }
 }
+#pragma dont_inline off
 
 extern void fn_801E8CB8(float *, float *);
 extern float fn_80287BC8(float, float);
