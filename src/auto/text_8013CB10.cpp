@@ -895,42 +895,85 @@ extern "C" f32 fn_80141C9C(f32 arg0) {
 extern "C" u8 *fn_80131234(const char *);
 extern "C" char lbl_80559D80[1];
 extern "C" char lbl_8032CC64[];
-extern "C" void fn_80141DAC(u8 *arg0) {
-    u8 *src = fn_80131234(lbl_8032CC64);
-    u8 *dst;
-    s32 n;
-    s8 c;
-    dst = arg0 + 0xEE;
-    n = 0x14;
-    do {
-        c = *src++;
-        *dst++ = c;
-        if (c == 0) break;
-        n--;
-        if (n <= 0) { dst[-1] = 0; break; }
-    } while (1);
-    src = (u8 *)lbl_80559D80;
-    dst = arg0 + 0xC6;
-    n = 0x14;
-    do {
-        c = *src++;
-        *dst++ = c;
-        if (c == 0) break;
-        n--;
-        if (n <= 0) { dst[-1] = 0; break; }
-    } while (1);
-    src = (u8 *)lbl_80559D80;
-    dst = arg0 + 0xDA;
-    n = 0x14;
-    do {
-        c = *src++;
-        *dst++ = c;
-        if (c == 0) break;
-        n--;
-        if (n <= 0) { dst[-1] = 0; break; }
-    } while (1);
-}
 
+static inline void copy_str(char *dst, const char *src, long len) {
+    char c;
+    goto copy;
+check:
+    if (--len > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c == 0)
+        goto done;
+    goto check;
+done:
+    ;
+}
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_80141DAC(char *arg0) {
+    char *src;
+    char c;
+    long len;
+    char *dst;
+
+    src = (char *)fn_80131234(lbl_8032CC64);
+    dst = arg0 + 0xEE;
+    len = 20;
+    goto copy_a;
+check_a:
+    if (--len > 0)
+        goto copy_a;
+    dst[-1] = 0;
+    goto done_a;
+copy_a:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c == 0)
+        goto done_a;
+    goto check_a;
+done_a:
+
+    dst = arg0 + 0xC6;
+    src = lbl_80559D80;
+    len = 20;
+    goto copy_b;
+check_b:
+    if (--len > 0)
+        goto copy_b;
+    dst[-1] = 0;
+    goto done_b;
+copy_b:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c == 0)
+        goto done_b;
+    goto check_b;
+done_b:
+
+    dst = arg0 + 0xDA;
+    src = lbl_80559D80;
+    len = 20;
+    goto copy_c;
+check_c:
+    if (--len > 0)
+        goto copy_c;
+    dst[-1] = 0;
+    goto done_c;
+copy_c:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c == 0)
+        goto done_c;
+    goto check_c;
+done_c:
+    ;
+}
+#pragma pop
 extern "C" s32 fn_80141E90(f32 *arg0, f32 arg1) {
     return arg1 - *arg0 >= lbl_805614AC;
 }
@@ -1150,31 +1193,28 @@ extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
 }
 #pragma scheduling on
 extern "C" s32 fn_80142870(void *arg0, void *arg1) {
-    f32 time = fn_8013CB3C();
-    f32 elapsed = *(f32 *)((u8 *)arg1 + 0x84);
-    time -= elapsed;
-    f32 offset = *(f32 *)(lbl_8042FB3C + 0x24);
-    time -= offset;
+    f32 time = fn_8013CB3C() - *(f32 *)((u8 *)arg1 + 0x84);
+    time -= *(f32 *)(lbl_8042FB3C + 0x24);
     f32 one = lbl_805614A4;
     f32 span = *(f32 *)(lbl_8042FB3C + 0x20);
     f32 value = lbl_805614AC;
-    f32 denominator = span - one;
     f32 position = *(f32 *)(lbl_8042FB3C + 0x1C);
     time -= one;
-    f32 ratio = time / denominator;
+    f32 ratio = time / (span - one);
 
-    if (value < ratio) value = ratio;
-    if (value > one) value = one;
+    value = value < ratio ? ratio : value;
+    value = value > lbl_805614A4 ? lbl_805614A4 : value;
 
     f32 result = position + value * (lbl_805614A4 - position);
     if (result > lbl_805614A4) {
         f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
-        if (current >= lbl_805614A4) {
-            current += lbl_80561498;
+        f32 rounded;
+        if (!(current < lbl_805614A4)) {
+            rounded = lbl_80561498 + current;
         } else {
-            current -= lbl_80561498;
+            rounded = current - lbl_80561498;
         }
-        return (s32)current;
+        return (s32)rounded;
     }
     return 0;
 }
