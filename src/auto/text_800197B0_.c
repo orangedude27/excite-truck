@@ -4,7 +4,7 @@
 #include "types.h"
 
 extern s32 lbl_803582B0[];
-s32 fn_802E6BD8(s32, s32, void*, s32, s32);
+s32 fn_802E6BD8();
 void *fn_80128668(void *);
 void *fn_800197B0(void *arg0, s32 arg1) {
     void *local = arg0;
