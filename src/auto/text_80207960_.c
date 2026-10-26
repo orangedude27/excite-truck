@@ -22,6 +22,7 @@ extern signed long fn_802E317C(const char*, ...);
 extern signed long fn_8026A344(signed long);
 extern signed long fn_80206570(signed long);
 extern signed long fn_8020835C(void *);
+extern signed long fn_8020815C(void *);
 extern int __cntlzw(unsigned int);
 
 typedef struct SoundMgrObj {
