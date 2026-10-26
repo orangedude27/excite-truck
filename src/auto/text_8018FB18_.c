@@ -25,6 +25,23 @@ void fn_80191084(int, int);
 int fn_801B89E0(void);
 extern char lbl_804349B0[];
 #pragma scheduling invalid_target
+extern s32 fn_8012850C(s32, void *);
+extern s32 fn_80137C74(void);
+extern void fn_802E30C8(const char *, ...);
+extern char lbl_80332E94[], lbl_80332EA0[];
+#pragma use_lmw_stmw off
+void fn_8018FC38(void) {
+    s32 count = fn_80137C74();
+    s32 *p = (s32 *)lbl_804349B0;
+    s32 i = 0;
+    while (i < count) {
+        *p = fn_8012850C(0x46500, lbl_80332E94);
+        p++;
+        i++;
+    }
+    fn_802E30C8(lbl_80332EA0, ((u32)(count * 0x8CA0) >> 7) & 0x3FFFFF);
+}
+#pragma use_lmw_stmw reset
 void fn_8018FCC4(void) {
     s32 count = fn_80137C74();
     register s32 *p = (s32 *)lbl_804349B0;
