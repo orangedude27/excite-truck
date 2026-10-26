@@ -63,7 +63,7 @@ void fn_80297984(void) {
 }
 
 void fn_80297A08();
-void fn_80297C3C(void);
+void fn_80297C3C();
 void fn_80297988(void) {
     fn_80297A08();
 }
