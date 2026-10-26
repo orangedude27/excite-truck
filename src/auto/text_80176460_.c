@@ -180,6 +180,44 @@ void fn_80176858(void) {
     fn_80177138();
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_8017685C(s32 arg0) {
+    s32 i;
+
+    if (arg0 != 3) {
+        __AXDSPInitCallback_801769E0();
+        lbl_8055E3F4 = 5;
+        i = 0;
+        goto first_test;
+    first_body:
+        fn_80176CC8();
+        i += 1;
+        if (i >= 10) {
+            fn_802E317C(lbl_803316EC);
+        }
+    first_test:
+        if (lbl_8055E3F4 == 5) {
+            goto first_body;
+        }
+    }
+    lbl_8055E3E8 = (void *)arg0;
+    lbl_8055E3EC = 1;
+    i = 0;
+    goto second_test;
+second_body:
+    fn_80176CC8();
+    i += 1;
+    if (i >= 10) {
+        fn_802E317C(lbl_8033170C);
+    }
+second_test:
+    if (lbl_8055E3EC != 0) {
+        goto second_body;
+    }
+}
+#pragma scheduling on
+#pragma pop
 int fn_80176F9C(void);
 void fn_801770C8(void);
 void fn_80177048(void);
