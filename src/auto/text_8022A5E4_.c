@@ -406,14 +406,10 @@ check:
 }
 #pragma scheduling reset
 #pragma dont_inline off
-void fn_8022BAD0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, double arg7, int arg8) {
-    int a = arg0 ^ 0x8000;
-    int b = arg1 ^ 0x8000;
-    int c = arg2 ^ 0x8000;
-    int d = arg3 ^ 0x8000;
-    int e = arg4 ^ 0x8000;
-    double f = arg7;
-    fn_8022BD40(c, e, arg8, a - lbl_80563590, b - lbl_80563590, d - lbl_80563590, f - lbl_80563590, arg5, arg6);
+extern void fn_8022BD40(int, int, int, unsigned char, float, float, float, float, float, float);
+void fn_8022BAD0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, float farg0, unsigned char arg8) {
+    fn_8022BD40(arg0, arg6, arg7, arg8,
+                (float)arg1, (float)arg2, (float)arg3, (float)arg4, (float)arg5, farg0);
 }
 
 extern void fn_80230C30(int, int);
@@ -579,10 +575,13 @@ float fn_8022CA40(void *arg0) {
             unsigned int w[2];
         } converted;
         int value = fn_80232B70(*(int *)((char *)arg0 + 8));
+        double raw;
+        double bias;
         converted.w[1] = (unsigned int)value ^ 0x80000000;
         converted.w[0] = 0x43300000;
-        return *(float *)((char *)arg0 + 0x34) /
-            (float)(converted.d - lbl_80563590);
+        raw = converted.d;
+        bias = lbl_80563590;
+        return *(float *)((char *)arg0 + 0x34) / (float)(raw - bias);
     }
 }
 
