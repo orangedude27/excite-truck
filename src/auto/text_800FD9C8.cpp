@@ -65,7 +65,6 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...)
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void*, int);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void*, void*);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" char lbl_80325870[];
 extern "C" char lbl_80325894[];
 extern "C" char lbl_803258A0[];
