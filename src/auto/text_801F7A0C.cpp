@@ -117,8 +117,6 @@ public:
     virtual void v5();
     virtual void v6();
     virtual void v7();
-    virtual void v8();
-    virtual void v9();
     virtual f32 apply(const char *, f32);
 };
 
@@ -327,8 +325,7 @@ extern "C" void fn_801F7E20(void *arg0, void *arg1) {
         *(f32 *)(obj + 0x28) = lbl_80562FF0;
     }
     *(f32 *)(obj + 0x28) =
-        ((f32 (*)(void *, const char *, f32))(*(void ***)arg0)[10])(
-            arg0, lbl_8033AFDC, *(f32 *)(obj + 0x28));
+        ((F7E20VTable *)arg0)->apply(lbl_8033AFDC, *(f32 *)(obj + 0x28));
 }
 
 extern u8 lbl_8033AFE8[];
