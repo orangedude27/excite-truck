@@ -40,7 +40,7 @@ void fn_802B06D4(void) {
 
 extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *);
-extern void *fn_8002F37C(void *, void *, int, int);
+extern void *fn_8002F37C(void *, void (*)(void *), void *(*)(void *, int), int, int);
 extern void fn_802B0860(void *);
 extern char lbl_8034A0A8[];
 extern char lbl_8034A27C[];
@@ -53,8 +53,8 @@ void fn_802B0710(void) {
     int *entry;
     obj = fn_801284F8(0x14, lbl_8034A0A8);
     if (obj != 0) {
-        fn_8012850C(0x550, lbl_8055CD88);
-        fields = (int *)fn_8002F37C(fn_802B0860, fn_802B0808, 0x10, 0x54);
+        fields = (int *)((void *(*)(void *, void *, void *, int, int))fn_8002F37C)(
+            fn_8012850C(0x550, lbl_8055CD88), fn_802B0860, fn_802B0808, 0x10, 0x54);
         ((int **)obj)[1] = fields;
         ((int *)obj)[3] = 0x54;
         ((int *)obj)[2] = 0;
@@ -239,13 +239,17 @@ void fn_802B111C(void *arg0) {
     ((int *)arg0)[2] = 0;
 }
 #pragma scheduling on
+__declspec(section ".data") extern void *lbl_804BE104;
+#pragma use_lmw_stmw off
 void *fn_802B1138(const char *name) {
+    int offset = 0;
     void *result = 0;
     int count = 0;
-    int offset = 0;
-    while (count < ((int *)lbl_804BE104)[1]) {
-        void *entry = ((void **)lbl_804BE104)[offset / 4];
-        if (stricmp(name, (const char *)entry + 0xa3c) == 0) {
+
+    while (count < *(int *)((char *)&lbl_804BE104 + 4)) {
+        void **entries = *(void ***)&lbl_804BE104;
+        void *entry = *(void **)((char *)entries + offset);
+        if (stricmp(name, *(const char **)((char *)entry + 0xa3c)) == 0) {
             result = entry;
             break;
         }
@@ -254,7 +258,7 @@ void *fn_802B1138(const char *name) {
     }
     return result;
 }
-
+#pragma use_lmw_stmw on
 void fn_802B11BC(void *arg0) {
     int i;
     char found = 0;
@@ -351,28 +355,29 @@ int fn_802B12E0(void *arg0, void *arg1, void *arg2, int arg3) {
 #pragma scheduling invalid_target
 void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
     int *self = (int *)arg0;
-    void *tmp;
     int *obj;
-    void *sp8;
     int flag;
+    int sp8;
+    int h;
     volatile int *count = (volatile int *)((char *)self + 0x328);
     if (self == 0) return;
     flag = 0;
-    sp8 = *(void **)arg2;
-    tmp = *(void **)((char *)self + 0xa38);
-    obj = *(int **)tmp;
-    obj[1] = obj[1] - (0x18 - *(unsigned short *)((char *)arg2 + 4));
-    *(void **)((char *)self + 0xa38) = 0;
+    sp8 = ((int *)arg2)[0];
+    obj = *(int **)((char *)self + 0xa38);
+    h = *(unsigned short *)((char *)arg2 + 4);
+    obj = *(int **)obj;
+    obj[1] = obj[1] - (0x18 - h);
+    *(int *)((char *)self + 0xa38) = flag;
     if (arg3 == 4 && farg0 < lbl_80564BD0)
         flag = 1;
-    if (flag) {
+    if (flag != 0) {
         if (*count + 1 <= self[0x32c / 4]) {
             int i = *count;
             float f = lbl_80564BD0 - farg0;
             int *dst = (int *)((char *)self[0x324 / 4] + i * 8);
             *count = i + 1;
             ((float *)dst)[1] = f;
-            *(volatile int *)dst = (int)sp8;
+            dst[0] = sp8;
         }
     }
     fn_802BAFF8(arg1, &sp8);
@@ -547,14 +552,17 @@ extern int fn_802DA704(int, void *, int);
 extern void fn_802DAA18(void);
 void fn_802B1B60(void *arg0) {
     float sp8[3];
+    char *list = *(char **)((char *)arg0 + 0xC);
+    float *out = sp8;
     int count = 0;
     int offset = 0;
-    void *list = *(void **)((char *)arg0 + 0xC);
-    while (count < *(int *)((char *)list + 8)) {
-        char *entry = *(char **)((char *)list + 4) + offset;
-        sp8[count * 3] = *(float *)(entry + 4);
-        sp8[count * 3 + 1] = *(float *)(entry + 8);
-        sp8[count * 3 + 2] = lbl_80564BF8;
+    float val = lbl_80564BF8;
+    while (count < *(int *)(list + 8)) {
+        char *entry = *(char **)(list + 4) + offset;
+        *out = *(float *)(entry + 4);
+        out[1] = *(float *)(entry + 8);
+        out[2] = val;
+        out += 3;
         offset += 0x10;
         count++;
     }
