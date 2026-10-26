@@ -311,6 +311,10 @@ extern void fn_802C6B44(void);
 extern void *fn_802B561C(void *, const char *);
 extern void *fn_802B2C34(void *, int);
 extern int fn_802BC4E0(void *);
+void fn_802BCFB0(int *);
+void fn_802CAC54(int);
+int fn_802C6C20(int);
+void fn_80131818(void);
 extern int fn_802B1DA0(void *);
 extern int fn_801D04D0(void);
 extern int fn_802C143C(void *);
@@ -631,7 +635,7 @@ int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
 void fn_802BDBA8(void) {
     char *strings = (char *)&lbl_8034AB38;
     void *object;
-    char result;
+    int result;
 
     fn_802C126C();
     fn_802BCBDC();
