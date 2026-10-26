@@ -1,6 +1,10 @@
 #pragma dont_inline fn_802CFF50
 extern int lbl_804C9760[];
 extern unsigned char lbl_804C5710[];
+extern unsigned char lbl_8055D0F0;
+extern void *lbl_8055FD64;
+extern void *fn_8012850C(void *, void *);
+extern void *memset(void *, int, unsigned long);
 extern int lbl_804C5650[];
 extern char lbl_8055FD70;
 extern float lbl_80564F8C, lbl_80564FCC, lbl_80564FDC;
@@ -592,24 +596,32 @@ void fn_802D02F8(int arg0, signed char arg1) {
     scratch[2] = (unsigned char)(value >> 8);
 }
 
+#pragma push
+#pragma paired off
+#pragma paired_single off
 void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
     extern float lbl_80564F94;
     extern unsigned char lbl_804C9778[];
     extern unsigned char lbl_804C97B0[];
-    extern double fn_8002EF30(void *, float);
+    extern double fn_8002EF30(double);
+    register unsigned char *p = lbl_804C9778;
+    register int one = 1;
     float result;
-    *(float *)(lbl_804C9778 + 4) = arg0;
-    lbl_804C9778[0] = 1;
-    *(float *)(lbl_804C9778 + 8) = arg1;
-    *(float *)(lbl_804C9778 + 0xc) = arg2;
-    *(float *)(lbl_804C9778 + 0x14) = arg3;
-    result = (float)fn_8002EF30(lbl_804C9778, arg2 * lbl_80564F94);
-    *(float *)(lbl_804C97B0 + 0x14) = arg0;
-    *(float *)(lbl_804C9778 + 0x10) = result;
-    *(float *)(lbl_804C97B0 + 0x18) = arg1;
-    lbl_804C97B0[0x1c] = 1;
-}
 
+    *(float *)(p + 4) = arg0;
+    lbl_804C9778[0] = one;
+    *(float *)(p + 8) = arg1;
+    *(float *)(p + 0xc) = arg2;
+    *(float *)(p + 0x14) = arg3;
+
+    result = fn_8002EF30(arg2 * lbl_80564F94);
+
+    *(float *)(lbl_804C97B0 + 0x14) = arg0;
+    *(float *)(p + 0x10) = result;
+    *(float *)(lbl_804C97B0 + 0x18) = arg1;
+    lbl_804C97B0[0x1c] = one;
+}
+#pragma pop
 extern void *lbl_8055FD54;
 extern void* fn_802D30F0(void);
 extern void fn_802D307C(void);
