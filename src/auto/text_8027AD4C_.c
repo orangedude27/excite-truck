@@ -87,6 +87,18 @@ public:
     virtual void v20();
     virtual long lookup(long);
 };
+class Fn8027BA24Item {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual long valid();
+};
+class Fn8027BA24List {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2();
+    virtual long count();
+    virtual Fn8027BA24Item *item(long);
+};
 #pragma cplusplus reset
 extern long fn_80131810(long *);
 extern long fn_8027AFA0(void *, void *, void *);
@@ -305,6 +317,17 @@ void fn_8027B984(void *arg0, long arg1) {
 
 void fn_8027B9EC(void *arg0) {
     fn_8027B984(arg0, fn_8000DA10());
+}
+
+long fn_8027BA24(void *arg0) {
+    long i = 0;
+    while (i < ((long (*)(void *))(*(void ***)arg0)[3])(arg0)) {
+        void *item = ((void *(*)(void *, long))(*(void ***)arg0)[4])(arg0, i);
+        if (((long (*)(void *))(*(void ***)item)[8])(item) == 0)
+            return 0;
+        i++;
+    }
+    return 1;
 }
 
 long fn_8027BAB8(void *arg0) {
