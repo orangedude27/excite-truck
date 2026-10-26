@@ -31,6 +31,7 @@ extern void bta_dm_pm_cback(u8, u8, u8, u8 *);
 extern void bta_dm_pm_btm_cback(void *, s8, s16, s8);
 
 extern void fn_800716F0(void *);
+extern void bta_hh_clean_up_kdev(void *);
 extern void fn_8006CF44(void *, void *, void *, void *, void *, u32);
 extern void fn_8007BC88(void);
 extern void fn_80076E70(void);
