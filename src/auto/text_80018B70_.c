@@ -228,6 +228,7 @@ extern "C" s32 fn_80019534(void) {
 #pragma cplusplus off
 #pragma push
 #pragma use_lmw_stmw off
+#pragma small_data off
 s32 fn_80019098(s32 arg0) {
     register s32 offset;
     register s32 i;
