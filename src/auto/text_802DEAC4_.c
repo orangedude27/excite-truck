@@ -584,23 +584,23 @@ void *arg0;
 }
 
 void fn_802E0F98(void) {
-    void *allocation;
     void *object;
-    u32 size;
     fn_80119214((void *)fn_802E0C04, (void *)fn_802E0D44);
     fn_80116E54(&fn_8011A168, &lbl_8055D150);
     fn_801282EC(0x80);
     fn_801282F4();
-    allocation = fn_8012850C(0x600000, &lbl_8055D158);
-    lbl_8055FEEC = allocation;
+    lbl_8055FEEC = fn_8012850C(0x600000, &lbl_8055D158);
     object = ((void *(*)(u32, void *))fn_801284F8)(0x10, &lbl_8055D160);
     if (object != 0) {
+        register void *allocation = lbl_8055FEEC;
         *(u32 *)((char *)object + 0xC) = 0;
         *(u32 *)((char *)object + 4) = 0x1F;
         *(u32 *)allocation = 0xABCFEED0;
         *(u32 *)((char *)allocation + 8) = 0;
-        size = *(u32 *)((char *)object + 4);
-        *(u32 *)((char *)allocation + 4) = 0x600000 - ((size + 0x10) & ~size);
+        {
+            u32 size = *(u32 *)((char *)object + 4);
+            *(u32 *)((char *)allocation + 4) = 0x600000 - ((size + 0x10) & ~size);
+        }
         *(void **)((char *)allocation + 0xC) = object;
         *(void **)((char *)object + 8) = allocation;
         *(u8 *)object = 1;
