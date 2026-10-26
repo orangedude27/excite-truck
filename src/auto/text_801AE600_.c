@@ -44,8 +44,39 @@ int fn_801AE620(void *arg0) {
 }
 #pragma dont_inline reset
 
+#pragma dont_inline on
 int fn_801AE790(void *arg0) {
     return *((unsigned char *)arg0 + 0x70) & 3;
+}
+#pragma dont_inline reset
+
+void fn_801AE79C(int arg0) {
+    int flag;
+    int *base;
+    char *entry;
+    int index;
+    short selected;
+
+    flag = 0;
+    if (arg0 == 2 && *(int *)((char *)lbl_80435780 + 0x3C0) > 10)
+        flag = 1;
+    if (flag != 0) {
+        base = lbl_80435780;
+        entry = (char *)base;
+        selected = 0;
+        index = 0;
+        while (index < *(int *)((char *)base + 0x3C0)) {
+            if (*(int *)entry == 0x50 && fn_801AE790(entry) == 0) {
+                void *value = fn_801AF8D0(index);
+                if (value != 0)
+                    selected = *(short *)((char *)value + 0xC);
+            }
+            entry += 0x78;
+            index++;
+        }
+        if (selected >= 1)
+            fn_801AFABC(lbl_8055E628, selected);
+    }
 }
 
 extern int lbl_8055E62C;
