@@ -309,6 +309,79 @@ void *fn_801C0180(void *arg0, int arg1) {
     return arg0;
 }
 
+void fn_801C0204(void *arg0, int *arg1) {
+    struct Setup {
+        int value;
+        int size;
+        float first;
+        float second;
+        float third;
+        float fourth;
+    };
+    struct Frame {
+        float stack0;
+        float stack1;
+        float stack2;
+        float stack3;
+        float stack4;
+        float stack5;
+        float stack6;
+        float stack7;
+        float stack8;
+        float stack9;
+        volatile struct Setup setup;
+    };
+    extern void *memset(void *, int, unsigned int);
+    extern void fn_8017B0F8(void *, void *);
+    extern void *fn_801284F8(int, void *);
+    extern void *fn_801A25F8(void *, void *, int, void *, float);
+    extern void fn_80179F94(void *, void *);
+    extern float lbl_805628B8, lbl_805628D0, lbl_805628D4, lbl_805628D8;
+    extern float lbl_805628DC, lbl_805628E0, lbl_805628E4;
+    extern char lbl_80336AE4[];
+    struct Frame frame;
+    void *result;
+    memset((void *)&frame.setup, 0, 0x18);
+    {
+        float next, first;
+        int value;
+        first = *(volatile float *)&lbl_805628D0;
+        frame.setup.size = 0x18;
+        next = *(volatile float *)&lbl_805628D4;
+        value = *(volatile int *)arg1;
+        frame.setup.value = value;
+        frame.setup.first = first;
+        frame.setup.second = next;
+        frame.setup.third = next;
+        frame.setup.fourth = next;
+    }
+    fn_8017B0F8(arg0, (void *)&frame.setup);
+    {
+        float f3 = lbl_805628B8;
+        float f2 = lbl_805628D8;
+        float f1 = lbl_805628DC;
+        float f0 = lbl_805628E0;
+        *(float *)((char *)arg0 + 0x1FC) = f3;
+        *(float *)((char *)arg0 + 0x200) = f3;
+        *(float *)((char *)arg0 + 0x204) = f2;
+        *(float *)((char *)arg0 + 0x208) = f3;
+        *(float *)((char *)arg0 + 0x20C) = f1;
+        *(float *)((char *)arg0 + 0x210) = f0;
+        frame.stack6 = f3;
+        frame.stack1 = f3;
+        frame.stack5 = f3;
+        result = ((void *(*)(int, const char *, float, float, float))fn_801284F8)(
+            0x34, lbl_80336AE4, f1, f2, f3);
+    }
+    if (result != 0) {
+        float value = lbl_805628E4;
+        int field = *(int *)((char *)arg0 + 0x214);
+        result = fn_801A25F8(result, (char *)arg0 + 0x3C, field, arg0, value);
+    }
+    fn_80179F94(arg0, result);
+    *(unsigned char *)((char *)arg0 + 0x1E8) = 0;
+}
+
 void fn_801C02F4(void *arg0, int arg1) {
     extern float lbl_805628B8, lbl_805628BC, lbl_805628E8, lbl_805628EC;
     float sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
