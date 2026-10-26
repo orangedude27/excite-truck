@@ -69,20 +69,41 @@ void fn_8003A10C(int arg0) {
     }
 }
 
+void fn_8003A1A0(int arg0, void (*arg1)(int, int)) {
+    long long ticks;
+    long long divisor;
+    long long quotient;
+    unsigned int raw;
+    *(int*)(__ErrorInfo + 8) = arg0;
+    ticks = (long long)OSGetTime();
+    raw = *(unsigned int*)0x800000F8;
+    divisor = (long long)(raw >> 2);
+    quotient = ticks / divisor;
+    *(unsigned int*)(__ErrorInfo + 0xC) = (unsigned int)quotient;
+    lbl_8055D8D0 = arg1;
+    if (NANDPrivateCreateDirAsync(lbl_80302384, 0x3F, 0, fn_8003A10C, lbl_8037B6D0) != 0 &&
+        lbl_8055D8D0 != 0) {
+        lbl_8055D8D0(2, 0);
+    }
+}
+
 #pragma scheduling invalid_target
 int DVDCompareDiskID(unsigned char *arg0, unsigned char *arg1) {
-    if ((signed char)arg0[0] != 0 && (signed char)arg1[0] != 0 && strncmp((char *)arg0, (char *)arg1, 4) != 0) {
+    if ((signed char)arg0[0] == 0)
+        goto disk_id_suffix;
+    if ((signed char)arg1[0] == 0)
+        goto disk_id_suffix;
+    if (strncmp((char *)arg0, (char *)arg1, 4) == 0)
+        goto disk_id_suffix;
+    return 0;
+
+disk_id_suffix:
+    if ((signed char)arg0[4] != 0 && (signed char)arg1[4] != 0 && strncmp((char *)arg0 + 4, (char *)arg1 + 4, 2) != 0)
         return 0;
-    }
-    if ((signed char)arg0[4] != 0 && (signed char)arg1[4] != 0 && strncmp((char *)arg0 + 4, (char *)arg1 + 4, 2) != 0) {
+    if (arg0[6] != 0xFF && arg1[6] != 0xFF && arg0[6] != arg1[6])
         return 0;
-    }
-    if (arg0[6] != 0xFF && arg1[6] != 0xFF && arg0[6] != arg1[6]) {
+    if (arg0[7] != 0xFF && arg1[7] != 0xFF && arg0[7] != arg1[7])
         return 0;
-    }
-    if (arg0[7] != 0xFF && arg1[7] != 0xFF && arg0[7] != arg1[7]) {
-        return 0;
-    }
     return 1;
 }
 #pragma scheduling on
