@@ -281,6 +281,7 @@ s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
     return result;
 }
 #pragma dont_inline on
+#pragma scheduling invalid_target
 s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
     s32 i = 0;
     s32 offset = 0;
@@ -299,6 +300,7 @@ s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
         }
     }
 }
+#pragma scheduling reset
 #pragma dont_inline reset
 extern const char lbl_802FD750[];
 s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
@@ -534,6 +536,20 @@ s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     }
     return result;
 }
+
+int fn_8001CF8C(arg0, arg1, arg2, arg3, arg4)
+s32 arg0, arg1, arg2, arg3;
+double arg4;
+{
+    s32 count = fn_8001D25C(arg1);
+    void *result;
+    if (count != 0) {
+        result = fn_8001C540(arg0, count, arg2, 1);
+        return ((int (*)(void *, s32, s32, double))fn_8001CED4)(result, arg1, arg3, arg4);
+    }
+    return 5;
+}
+
 #pragma scheduling reset
 u32 fn_8001D220(u32 arg0, u32 arg1, u32 arg2) {
     u32 result = arg0 | (arg2 << 16);
@@ -623,13 +639,14 @@ inner:
         var_r31 = (u8 *)var_r31 + 0x74;
     } while (var_r29 < arg1);
 }
-#pragma pop
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8001D528(void *arg0) {
-    s32 var_r27;
-    s32 var_r29;
     s32 var_r31;
-    u8 *var_r28;
     u8 *var_r30;
+    s32 var_r29;
+    u8 *var_r28;
+    s32 var_r27;
     s32 (*callback)(s32);
 
     callback = (s32 (*)(s32))arg0;
@@ -639,20 +656,18 @@ loop_outer_528:
     var_r27 = 0;
     var_r28 = lbl_8055D5CC + var_r31;
     var_r30 = var_r28;
-loop_inner_528:
-    if (var_r27 < *(s32 *)(var_r28 + 0x6E00)) {
+    do {
         *(s32 *)(var_r30 + 4) = callback(*(s32 *)(var_r30 + 4));
         var_r30 += 0x2C;
         var_r27 += 1;
-        goto loop_inner_528;
-    }
+    } while (var_r27 < *(s32 *)(var_r28 + 0x6E00));
     ((void (*)(void *, s32, s32 (*)(s32)))fn_8001D484)(var_r28 + 0x6E04, 0xF0, callback);
     var_r29 += 1;
     var_r31 += 0xDAC4;
     if (var_r29 < 4) goto loop_outer_528;
     ((void (*)(void *, s32, s32 (*)(s32)))fn_8001D484)(lbl_8055D5CC + 0x36B10, 0xF0, callback);
 }
-
+#pragma scheduling reset
 extern s32 fn_8001D464(s32);
 extern void fn_8001D528(void *);
 void fn_8001D5D8(void) {
