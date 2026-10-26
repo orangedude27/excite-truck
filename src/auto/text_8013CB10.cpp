@@ -895,24 +895,6 @@ extern "C" f32 fn_80141C9C(f32 arg0) {
 extern "C" u8 *fn_80131234(const char *);
 extern "C" char lbl_80559D80[1];
 extern "C" char lbl_8032CC64[];
-
-static inline void copy_str(char *dst, const char *src, long len) {
-    char c;
-    goto copy;
-check:
-    if (--len > 0)
-        goto copy;
-    dst[-1] = 0;
-    goto done;
-copy:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c == 0)
-        goto done;
-    goto check;
-done:
-    ;
-}
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_80141DAC(char *arg0) {
