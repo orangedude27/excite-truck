@@ -71,31 +71,50 @@ extern void fn_80128670(void);
 extern void fn_80127E28(void*);
 extern char lbl_8033BE08[];
 extern char lbl_8033BEE8[];
-void* fn_80207B60(void* arg0, signed long arg1) {
-    signed long i;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void* fn_80207B60(void* arg0, signed long arg1) {
+    struct Obj {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+    };
     signed long offset;
+    signed long i;
     void* obj;
-    if (arg0 == 0) return arg0;
-    *(void**)arg0 = lbl_8033BEE8;
-    fn_80207DE0(arg0);
-    i = 0; offset = 0;
-    while (i < *(signed long*)((char*)arg0 + 0x10)) {
-        fn_802E30C8(lbl_8033BE08, *(signed long*)((char*)*(void***)((char*)arg0 + 0xC) + offset) + 0x37);
-        offset += 4; i++;
+    if (arg0 != 0) {
+        *(void**)arg0 = lbl_8033BEE8;
+        fn_80207DE0(arg0);
+        i = 0;
+        offset = 0;
+        while (i < *(signed long*)((char*)arg0 + 0x10)) {
+            fn_802E30C8(lbl_8033BE08, *(signed long*)((char*)*(void***)((char*)arg0 + 0xC) + offset) + 0x37);
+            offset += 4;
+            i++;
+        }
+        obj = *(void**)((char*)arg0 + 0xC);
+        if (obj != 0) {
+            ((void (*)(void*))fn_80128670)(obj);
+            *(void**)((char*)arg0 + 0xC) = 0;
+        }
+        obj = *(void**)((char*)arg0 + 0x90);
+        *(signed long*)((char*)arg0 + 0x10) = 0;
+        if (obj != 0) ((Obj*)obj)->f7();
+        fn_80127E28(arg0);
+        *(char*)((char*)arg0 + 4) = 0;
+        if (arg1 > 0) ((void (*)(void*))fn_80128668)(arg0);
     }
-    if (*(void**)((char*)arg0 + 0xC) != 0) {
-        fn_80128670();
-        *(void**)((char*)arg0 + 0xC) = 0;
-    }
-    obj = *(void**)((char*)arg0 + 0x90);
-    *(signed long*)((char*)arg0 + 0x10) = 0;
-    if (obj != 0) (*(void (**)(void*))(*(void**)(*(char**)obj + 0x24)))(obj);
-    fn_80127E28(arg0);
-    *(char*)((char*)arg0 + 4) = 0;
-    if (arg1 > 0) fn_80128668();
     return arg0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 void fn_80207C48(void) {
 	return;
 }
@@ -124,24 +143,39 @@ void fn_80207C7C(void) {
 
 void fn_80207E70(void* arg0);
 
-void fn_80207C80(void* arg0) {
-    signed long i = 0;
-    signed long offset = 0;
-    while (i < *(signed long*)((char*)arg0 + 0x10)) {
-        fn_802067C8(*(signed long*)((char*)*(void***)((char*)arg0 + 0xC) + offset),
-                    (char*)arg0 + 0x5C, *(signed long*)((char*)arg0 + 0x8C));
+void fn_80207C80(void *arg0) {
+    /* Fix note: iterate the item list twice, then run the matching completion callbacks. */
+    struct Object {
+        char pad0[0xC];
+        int *items;
+        signed long count;
+        char pad14[0x48];
+        char field5c[0x30];
+        signed long field8c;
+    };
+    struct Object *object = (struct Object *)arg0;
+    signed long i;
+    signed long offset;
+    signed long i2;
+    signed long offset2;
+
+    i = 0;
+    offset = 0;
+    while (i < object->count) {
+        fn_802067C8(*(int *)((char *)object->items + offset),
+                    object->field5c, object->field8c);
         offset += 4;
         i += 1;
     }
     fn_8020835C(arg0);
     fn_80207F34(arg0);
-    i = 0;
-    offset = 0;
-    while (i < *(signed long*)((char*)arg0 + 0x10)) {
-        fn_80206824(*(signed long*)((char*)*(void***)((char*)arg0 + 0xC) + offset),
-                    (char*)arg0 + 0x5C, *(signed long*)((char*)arg0 + 0x8C));
-        offset += 4;
-        i += 1;
+    i2 = 0;
+    offset2 = 0;
+    while (i2 < object->count) {
+        fn_80206824(*(int *)((char *)object->items + offset2),
+                    object->field5c, object->field8c);
+        offset2 += 4;
+        i2 += 1;
     }
     fn_8020815C(arg0);
     fn_80207E70(arg0);
@@ -234,6 +268,46 @@ extern "C" void fn_80207E70(void *arg0) {
         }
     }
 }
+
+#pragma cplusplus on
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+extern "C" signed long fn_8020815C(void *arg0) {
+    struct Obj {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual signed long check();
+    };
+    register signed long offset;
+    register signed long limit;
+    register signed long matches;
+    register signed long i;
+    void *entry;
+    void *owner;
+
+    limit = *(signed long *)((char *)&lbl_802F9DC8 +
+             (signed long)fn_802090B4() * 0x2C);
+    matches = 0;
+    i = 0;
+    offset = 0;
+    while (i < *(signed long *)((char *)arg0 + 0x10)) {
+        entry = *(void **)((char *)*(void ***)((char *)arg0 + 0xC) + offset);
+        owner = *(void **)((char *)entry + 0xC);
+        if (((Obj *)owner)->check() == 1) matches++;
+        offset += 4;
+        i++;
+    }
+    if (matches > limit) fn_802E317C(lbl_8033BE20, matches, limit);
+}
+#pragma pop
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 #pragma scheduling on
 
