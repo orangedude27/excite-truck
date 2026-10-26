@@ -382,11 +382,12 @@ void fn_80287CE8(int arg0, void *arg1, int arg2, int arg3) {
             break;
         *(void **)arg0 = (void *)fn_80131808(local);
         fn_80287D70((void *)arg0, arg2, arg3);
-    } while (0);
-}
-
-#pragma scheduling invalid_target
-void fn_80287D70(void *arg0, int arg1, int arg2) {
+          } while (0);
+  }
+#pragma dont_inline reset
+  
+  #pragma scheduling invalid_target
+  void fn_80287D70(void *arg0, int arg1, int arg2) {
     char name[0x20];
     const char *format = lbl_80348A40;
 
