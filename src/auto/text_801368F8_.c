@@ -3,6 +3,13 @@
 
 typedef signed int s32;
 typedef float f32;
+#pragma cplusplus on
+struct SortCompareObject { s32 compare(s32, s32); };
+typedef s32 (SortCompareObject::*SortCompareMethod)(s32, s32);
+static inline s32 callSortCompare(void *object, s32 *descriptor, s32 left, s32 right) {
+    return (((SortCompareObject *)object)->*(*((SortCompareMethod *)descriptor)))(left, right);
+}
+#pragma cplusplus reset
 #define F(p,o) (*(f32 *)((char *)(p)+(o)))
 #define I(p,o) (*(s32 *)((char *)(p)+(o)))
 #define B(p,o) (*(unsigned char *)((char *)(p)+(o)))
@@ -64,19 +71,24 @@ void fn_80136E8C(void *arg0, s32 arg1, signed char arg2) {
 }
 
 void fn_80136EA4(void *arg0, s32 arg1) {
-    s32 sp10;
-    s32 spC;
-    s32 sp8;
-    s32 temp_r7;
+    s32 values[3];
+    s32 *source;
+    s32 stride;
+    s32 index;
+    s32 base;
+    s32 destination;
 
-    sp8 = *(s32 *)((char *)&lbl_8032BEB4);
-    spC = *(s32 *)((char *)&lbl_8032BEB4 + 4);
-    sp10 = *(s32 *)((char *)&lbl_8032BEB4 + 8);
-    temp_r7 = *(s32 *)((char *)arg0 + 0x10);
-    fn_801376A8((s32)arg0,
-                (s32 *)(temp_r7 + arg1 * *(s32 *)((char *)arg0 + 0xC) +
-                        *(s32 *)arg0 * 8 + 0x18),
-                (s32)&sp8, arg1, (s32 *)temp_r7);
+    source = lbl_8032BEB4;
+    values[0] = *source++;
+    values[1] = *source++;
+    values[2] = *source++;
+    stride = *(s32 *)((char *)arg0 + 0xC);
+    index = *(s32 *)arg0;
+    base = *(s32 *)((char *)arg0 + 0x10);
+    destination = base + arg1 * stride;
+    destination += index * 8;
+    destination += 0x18;
+    fn_801376A8((s32)arg0, (s32 *)destination, (s32)values, arg1, (s32 *)base);
 }
 
 extern void *fn_801B2ED0(int);
@@ -151,18 +163,26 @@ s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
     return PSVECDotProduct(&sp8, (char *)arg1 + 0x18) < lbl_80561368;
 }
 
+#pragma dont_inline on
 s32 fn_80137140(s32 arg0, s32 arg1) {
-    void *p27 = (void *)fn_8017960C(arg0);
-    void *p28 = (void *)fn_8017960C(arg1);
-    void *p29 = (void *)fn_802C6C34(*(s32 *)((char *)p27 + 0x59C));
-    void *p30 = (void *)fn_802C6C34(*(s32 *)((char *)p28 + 0x59C));
-    s32 result = 0;
+    register void *p27;
+    register void *p28;
+    register void *p29;
+    register void *p30;
+    register s32 p31;
+    p27 = (void *)fn_8017960C(arg0);
+    p28 = (void *)fn_8017960C(arg1);
+    p29 = (void *)fn_802C6C34(*(s32 *)((char *)p27 + 0x59C));
+    p30 = (void *)fn_802C6C34(*(s32 *)((char *)p28 + 0x59C));
+    p31 = 0;
     if (fn_80137078((char *)p27 + 0x3C, (char *)p28 + 0x3C, *(f32 *)((char *)p29 + 0x40), *(f32 *)((char *)p30 + 0x3C))) {
-        if (fn_80137078((char *)p28 + 0x3C, (char *)p27 + 0x3C, *(f32 *)((char *)p30 + 0x40), *(f32 *)((char *)p29 + 0x3C))) result = 1;
+        if (fn_80137078((char *)p28 + 0x3C, (char *)p27 + 0x3C, *(f32 *)((char *)p30 + 0x40), *(f32 *)((char *)p29 + 0x3C))) {
+            p31 = 1;
+        }
     }
-    return result;
+    return p31;
 }
-
+#pragma dont_inline reset
 extern float lbl_80561368;
 extern float lbl_80561394;
 extern float __fabsf(float);
@@ -208,7 +228,12 @@ null_arg:
 }
 
 s32 fn_8002F768(void *, s32, s32);
-void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+    struct CompareObject { s32 compare(s32, s32); };
+    typedef s32 (CompareObject::*CompareMethod)(s32, s32);
     s32 temp;
     s32 length;
     s32 end;
@@ -216,7 +241,7 @@ void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     s32 index;
     s32 flag;
     s32 *item;
-
+    CompareMethod *method = (CompareMethod *)arg2;
     *(s32 *)(arg0 + 4) = arg3;
     length = *(s32 *)arg0;
     start = 0;
@@ -226,7 +251,7 @@ void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
         item = arg1 + index;
         flag = 1;
         while (index < length) {
-            if (((s32 (*)(void *, s32, s32))arg2)((void *)arg0, item[-1], item[0]) > 0) {
+            if ((((CompareObject *)arg0)->*(*method))(item[-1], item[0]) > 0) {
                 temp = item[-1];
                 end = index + 1;
                 item[-1] = item[0];
@@ -243,7 +268,8 @@ void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
         length = end;
     } while (flag == 0);
 }
-
+#pragma cplusplus reset
+#pragma pop
 void fn_8013776C(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
@@ -298,10 +324,9 @@ void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
     s32 difference;
     s32 entries;
     s32 entry;
-    s32 equal;
     unsigned char flag;
-    f32 y;
     f32 x;
+    f32 y;
     f32 scale;
 
     state = lbl_8055E0D0;
@@ -311,8 +336,7 @@ void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
     entries = *(s32 *)((char *)state + 0x10);
     entry = entries + arg1 * stride;
     flag = *(unsigned char *)((char *)entry + 0x14);
-    equal = difference == 0;
-    if ((equal ^ flag) != 0) {
+    if (((difference == 0) ^ flag) != 0) {
         x = *(f32 *)((char *)arg0 + 0x24);
         scale = lbl_8056136C;
         y = *(f32 *)((char *)arg0 + 0x28);
