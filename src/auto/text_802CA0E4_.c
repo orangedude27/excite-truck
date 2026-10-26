@@ -359,15 +359,18 @@ void fn_802CAD68(void) {
 }
 
 #pragma dont_inline fn_802CAD74
-void fn_802CAD74(int arg0) {
+void fn_802CAD74(register int arg0) {
 retry:
     if (arg0 == lbl_8055FCB8)
         return;
     lbl_8055FCB8 = arg0;
-    if (arg0 == -1) {
-        arg0 = lbl_8055FCB4;
-        goto retry;
-    }
+    if (arg0 == -1)
+        goto retry_prev;
+    goto process;
+retry_prev:
+    arg0 = *(volatile int *)&lbl_8055FCB4;
+    goto retry;
+process:
     {
         int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
         int value;
@@ -424,23 +427,28 @@ char *fn_802CAE34(int arg0) {
 }
 #pragma dont_inline on
 void fn_802CAE98(int arg0, char *arg1) {
-    char *dst;
     int count;
+    char *dst;
+    unsigned char c;
+
     if (!((int (*)(int))fn_802CAE00)(arg0))
         return;
     dst = (char *)lbl_8055FCB0 + arg0 * 0x4C + 4;
     count = 0x20;
-    do {
-        count--;
-        if (count <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-        *dst = *arg1;
-        if ((signed char)*arg1++ == 0)
-            break;
-        dst++;
-    } while (1);
+    goto copy;
+count_check:
+    if (--count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *arg1++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
+    goto done;
+done:
+    ;
 }
 
 void fn_802CAF1C(int arg0, signed char arg1, signed char arg2) {
@@ -936,6 +944,28 @@ void fn_802CC518(int arg0, float arg1) {
     magic = lbl_80564F38;
     result = (lbl_80564F30 * arg1) / (float)(number - magic);
     lbl_8055FCC4 = result;
+}
+
+void fn_802CC550(int arg0, float arg1, float arg2) {
+    int offset;
+    char *entry;
+    float limit;
+    float value;
+    float result;
+    if (arg0 == -1)
+        return;
+    offset = arg0 * 0x4C;
+    entry = (char *)lbl_8055FCB0 + offset;
+    if (lbl_8055D07D == 0 || *(int *)(entry + 0x3C) == 0)
+        return;
+    limit = lbl_80564F40;
+    if (limit <= arg1)
+        limit = arg1;
+    value = *(float *)(entry + 0x38);
+    result = arg2 * (lbl_8055FCC4 * limit);
+    if (value < result)
+        value = result;
+    *(float *)(entry + 0x38) = value;
 }
 
 void fn_802CC5B8(int arg0) {
