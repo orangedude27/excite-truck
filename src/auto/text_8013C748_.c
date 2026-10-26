@@ -1,4 +1,20 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+
+#pragma cplusplus on
+class SearchObject {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual const char *name();
+};
+class SearchManager {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual SearchObject *get(int);
+};
+#pragma cplusplus off
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_8013C7D0(void);
@@ -43,6 +59,41 @@ done:
 void fn_8013C800(void) {
     fn_8013C7D0();
 }
+
+extern int fn_80131808(int);
+extern void fn_802E317C(int, ...);
+extern char lbl_8032C4C0[];
+extern char lbl_8032C4D0[];
+#pragma dont_inline on
+void fn_8013C804(void) {
+    void *object;
+    const char *name;
+    void *entry;
+    int index;
+
+    fn_8013C748();
+    lbl_8055E188 = fn_80131808((int)lbl_8032C4C0);
+    if (lbl_8055E188 != 0) {
+        index = 0;
+        goto get_object;
+    }
+    goto report_error;
+loop_body:
+    name = ((const char *(*)(void *))(*(void ***)object)[2])(object);
+    entry = fn_8013C770(name);
+    if (*(int *)((char *)entry + 4) != 6) {
+        *(void **)((char *)entry + 8) = object;
+    }
+    index += 1;
+get_object:
+    object = ((void *(*)(void *, int))(*(void ***)lbl_8055E188)[3])((void *)lbl_8055E188, index);
+    if (object != 0) {
+        goto loop_body;
+    }
+report_error:
+    fn_802E317C((int)lbl_8032C4D0);
+}
+#pragma dont_inline off
 
 #pragma inline off
 void fn_8013C8B8(void) {
