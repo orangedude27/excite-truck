@@ -463,6 +463,20 @@ void fn_802881D4(void) {
 
 s32 fn_80288208(s32 arg0){return lbl_8055F6C0+arg0*0x28;}
 
+extern char lbl_80348A80[];
+extern void fn_8028829C(void);
+extern void fn_80288218(int);
+void fn_80288218(int arg0) {
+    int count = fn_801EA994();
+    int size = count * 0x160;
+    int memory = fn_8012850C(size + 0x10, lbl_80348A80, size);
+    *(void **)lbl_804B3150 = (void *)fn_8002F37C(memory, fn_8028829C, 0, 0x160, count);
+    count = fn_801EA994();
+    *(int *)(lbl_804B3150 + 4) = count;
+    lbl_804B3150[8] = 0;
+    memset(*(void **)lbl_804B3150, 0, count * 0x160);
+}
+
 void fn_8028829C(void) {}
 
 void fn_802882A0(void){if(*(s32*)lbl_804B3150)fn_80128670(*(s32*)lbl_804B3150-0x10);*(s32*)lbl_804B3150=0;*(s32*)(lbl_804B3150+4)=0;lbl_804B3150[8]=0;}
@@ -561,14 +575,18 @@ void fn_802885C0(void) {}
 s32 fn_802885C4(void *arg0, void *arg1) {
     return (s32)(lbl_80564268 * (*(f32 *)((u8 *)arg0 + 8) - *(f32 *)((u8 *)arg1 + 8)));
 }
-#pragma pop
+#pragma scheduling invalid_target
 void fn_802887EC(void) {
+    u8 *base = lbl_804B3150;
+    void (**callback)(void *, s32) = (void (**)(void *, s32))(base + 0x90);
+    s32 *data = (s32 *)((u8 *)callback - 0x90);
     s32 i;
-    for (i = 0; i < lbl_8055F6C0; i++) {
-        ((void (*)(void *, s32))((s32 *)lbl_804B3150)[36 + i])((u8 *)lbl_804B3150 + 16, ((s32 *)lbl_804B3150)[1]);
+
+    for (i = 0; i < lbl_8055F6C0; i++, callback++) {
+        (*callback)(base + 0x10, data[1]);
     }
 }
-
+#pragma scheduling on
 void fn_80288868(void* hi) {
     lbl_8055F6C8 = hi;
 }
