@@ -392,6 +392,20 @@ void fn_8000FBE8(f32 arg0, f32 arg1, f32 arg2) {
     ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(lbl_8055D4D0, 4, temp_f30, temp_f29, temp_f31, temp_f31);
     ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(lbl_8055D4D0, 5, temp_f30 + temp_f31, temp_f29, lbl_805602FC, temp_f31);
 }
+
+#pragma push
+#pragma processor 750
+void fn_8000FF88(s32 arg0, s32 arg1, const char *fmt, f32 farg0, f32 farg1, f32 farg2, ...) {
+    #pragma scheduling invalid_target
+    char buffer[0x200];
+    va_list args;
+
+    va_start(args, farg2);
+    vsprintf(buffer, fmt, args);
+    fn_802344CC(buffer, arg0, arg1, 0, farg1, farg2, lbl_805602C8 * farg0);
+}
+#pragma pop
+
 #pragma scheduling on
 extern f32 lbl_805602B0;
 extern void fn_802344CC(char *, s32, s32, s32, f32, f32, f32);
