@@ -4,7 +4,7 @@
 #include "revolution/MTX/mtxtypes.h"
 
 extern char lbl_80559B10[], lbl_80559B18[], lbl_80559B1C[];
-extern char lbl_8032B7BC[];
+extern char lbl_8032B7BC[], lbl_8032B73C[];
 extern int sscanf(const char*, ...);
 
 extern s32 fn_80128668(void);
@@ -134,24 +134,30 @@ s32 fn_8013181C(void) {
     fn_802E30C8(lbl_8032B510);
     return 0;
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void* fn_8013184C(void) {
     if (lbl_8055E060 == 0) {
-        ((void* volatile*)lbl_8042F53C)[0] = lbl_8032B64C;
-        ((void* volatile*)lbl_8042F53C)[0] = lbl_8032B574;
-        ((void* volatile*)lbl_8042F53C)[5] = 0;
-        ((void* volatile*)lbl_8042F53C)[1] = &lbl_80559B0C;
-        ((void* volatile*)lbl_8042F53C)[2] = &lbl_80559B08;
-        ((void* volatile*)lbl_8042F53C)[3] = 0;
-        ((void* volatile*)lbl_8042F53C)[4] = 0;
-        ((void* volatile*)lbl_8042F53C)[5] = 0;
-        ((void* volatile*)lbl_8042F53C)[6] = 0;
-        __register_global_object(lbl_8042F53C, (void (*)(void*))((s32(*)(s32,s32))fn_80131920), lbl_8042F530);
+        register void *vtable0 = lbl_8032B64C;
+        register void *vtable1 = lbl_8032B574;
+        register void **obj;
+        register void *zero = 0;
+        ((void* volatile*)lbl_8042F53C)[0] = vtable0;
+        ((void* volatile*)lbl_8042F53C)[0] = vtable1;
+        obj = lbl_8042F53C;
+        ((void* volatile*)obj)[5] = zero;
+        ((void* volatile*)obj)[1] = &lbl_80559B0C;
+        ((void* volatile*)obj)[2] = &lbl_80559B08;
+        ((void* volatile*)obj)[3] = zero;
+        ((void* volatile*)obj)[4] = zero;
+        ((void* volatile*)obj)[5] = zero;
+        ((void* volatile*)obj)[6] = zero;
+        __register_global_object(obj, (void (*)(void*))((s32(*)(s32,s32))fn_80131920), lbl_8042F530);
         lbl_8055E060 = 1;
     }
     return lbl_8042F53C;
 }
-
+#pragma pop
 s32 fn_801318E0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -555,52 +561,47 @@ Vec2 fn_801324E0(void *arg0, s32 arg1) {
 
 #pragma pop
 
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_8013284C(void *arg0, s32 arg1) {
-    s32 count;
-    s32 i;
-    void** entries;
-    char* name;
-    void* obj;
-
-    count = *(s32*)((char*)arg0 + 0xC);
+    s32 count = *(s32*)((char*)arg0 + 0xC);
     if (count > 0) {
-        entries = *(void***)((char*)arg0 + 0x10);
-        i = 0;
+        void **entries = *(void***)((char*)arg0 + 0x10);
+        s32 i = 0;
         do {
-            name = entries[i];
+            char *name = (char*)entries[i];
             if (*name == '@') {
                 if (arg1-- == 0) {
-                    obj = *(void**)((char*)arg0 + 0x18);
-                    return (*(s32(**)(void*, void*))(*(s32*)obj + 12))(obj, entries[2 * i + 1]);
+                    void *obj = *(void**)((char*)arg0 + 0x18);
+                    void **vt = *(void**)obj;
+                    return ((s32 (*)(void*, void*))vt[2])(obj, entries[2*i + 1]);
                 }
             }
             i++;
         } while (--count);
     }
-    obj = *(void**)((char*)arg0 + 0x14);
-    if (obj == NULL) {
-        return 0;
-    }
-    return (*(s32(**)(void*))(*(s32*)obj + 24))(obj);
-}
-
-s32 fn_801328D4(void *arg0, s32 arg1) {
-    char buf[0x20];
-    s32 (*vtable[8])(void *, char *);
-    *(void ***)vtable = *(void ***)arg0;
-    if (vtable[3](arg0, buf) != 0) {
-        void *ptr = *(void **)((char *)arg0 + 0x18);
-        s32 (*vt2[4])(void *, s32);
-        *(void ***)vt2 = *(void ***)ptr;
-        return vt2[2](ptr, vtable[5](arg0, buf));
+    {
+        void *obj = *(void**)((char*)arg0 + 0x14);
+        if (obj != NULL) {
+            void **vt = *(void**)obj;
+            return ((s32 (*)(void*))vt[0x18])(obj);
+        }
     }
     return 0;
 }
-
 #pragma push
-#pragma use_lmw_stmw off
 #pragma scheduling on
+s32 fn_801328D4(void *arg0, s32 arg1) {
+    char buf[0x40];
+    sprintf(buf, lbl_80559B50, arg1);
+    if (((s32 (*)(void *, char *))(*(void ***)arg0)[3])(arg0, buf) != 0) {
+        s32 val = ((s32 (*)(void *, char *))(*(void ***)arg0)[5])(arg0, buf);
+        void *ptr = *(void **)((char *)arg0 + 0x18);
+        return ((s32 (*)(void *, s32))(*(void ***)ptr)[2])(ptr, val);
+    }
+    return 0;
+}
+#pragma pop
 struct Unk80132968Vector { s32 x, y, z; } fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
     struct Unk80132968Vector copy;
     struct Unk80132968Vector result;
@@ -679,20 +680,21 @@ s32 fn_80132D1C(void *arg0, char *arg1) {
     }
     return 0;
 }
-#pragma pop
+#pragma scheduling invalid_target
 s32 fn_80132DA8(void *arg0) {
     s32 offset = 0;
     s32 sum = 0xFEEDFACE;
     s32 i = 0;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         char *item = (char *)*(void **)((u8 *)arg0 + 0xC) + offset;
-        sum += ((s32 (*)(void *))(*(void **)((u8 *)(*(void **)item) + 0x64)))(item) + 0x123B;
+        sum += ((s32 (*)(void *))(*(void **)((u8 *)(*(void **)item) + 0x64)))(item);
+        sum += 0x123B;
         offset += 0x1C;
         i++;
     }
     return sum;
 }
-
+#pragma scheduling on
 s32 fn_80132E34(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
