@@ -205,6 +205,53 @@ void fn_801AED74(void) {
     lbl_8055E62C = fn_801B2ED4();
 }
 
+extern void fn_801AFA5C(int);
+extern void fn_80128670(void *);
+extern void fn_80128668();
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+void fn_801AF598(void) {
+    register unsigned int i;
+    register int **slot;
+    register int *entry;
+    register int **array;
+    int value = lbl_8055E628;
+    int zero = 0;
+    lbl_8055E635 = 0;
+    fn_801AFA5C(value);
+    array = (int **)lbl_8055E620;
+    lbl_8055E628 = zero;
+    if (array != 0) {
+        slot = array;
+        i = 0;
+        while (i < 8U) {
+            entry = *slot;
+            if (entry != 0) {
+                if (entry != 0) {
+                    fn_80128670((void *)*entry);
+                    *entry = zero;
+                    fn_80128668(entry);
+                }
+            }
+            *(volatile int **)slot = 0;
+            i++;
+            slot++;
+        }
+        fn_80128668(array);
+    }
+    array = (int **)lbl_8055E624;
+    lbl_8055E620 = 0;
+    if (array != 0) {
+        fn_80128670((void *)*array);
+        *array = 0;
+        fn_80128668(array);
+    }
+    lbl_8055E624 = 0;
+}
+#pragma dont_inline reset
+#pragma pop
+
 #pragma scheduling invalid_target
 void fn_801AF65C(void) {
     int i = 0;
@@ -232,31 +279,51 @@ void *fn_801AF8D0(int arg0) {
     return result;
 }
 
+#pragma small_data off
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_801AF92C(void *arg0) {
+    void *base = arg0;
     int count;
     int i;
+    int zero = 0;
+    int minusOne = -1;
     char *entry;
-    if (fn_801B8728() != 0 || fn_801B2C70(arg0) != 0) return;
-    count = lbl_80435780[0x3C0 / 4];
-    *(int *)arg0 = count;
-    *(int *)((char *)arg0 + 4) = 0;
-    *((signed char *)arg0 + 0xC) = 0;
-    *((signed char *)arg0 + 0xD) = 1;
-    entry = (char *)arg0 + 0x10;
-    for (i = 0; i < count; i++, entry += 0x14) {
+
+    if (fn_801B8728() != 0)
+        goto done;
+    if (fn_801B2C70(base) != 0)
+        goto done;
+
+    count = *(int *)((char *)&lbl_80435780 + 0x3C0);
+    *(int *)base = count;
+    entry = (char *)base + 0x10;
+    i = 0;
+    *(int *)((char *)base + 4) = zero;
+    *((signed char *)base + 0xC) = zero;
+    *((signed char *)base + 0xD) = 1;
+
+    for (; i < count; i++, entry += 0x14) {
         void *item = fn_801AF8D0(i);
         if (item != 0) {
             *(int *)(entry + 4) = *(short *)((char *)item + 0xC);
-            *(int *)(entry + 8) = 0;
-            entry[0x10] = 0;
+            *(int *)(entry + 8) = zero;
+            entry[0x10] = zero;
         } else {
-            *(int *)(entry + 4) = -1;
-            *(int *)(entry + 8) = 0;
-            entry[0x10] = 0;
+            *(int *)(entry + 4) = minusOne;
+            *(int *)(entry + 8) = zero;
+            entry[0x10] = zero;
         }
     }
-}
 
+done:
+    ;
+}
+#pragma scheduling on
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
+#pragma small_data on
 float fn_801AF9EC(int arg0, float *arg1) {
     if (arg1 != 0) *arg1 = lbl_80435740[arg0 * 2 + 1];
     return lbl_80435740[arg0 * 2];
@@ -301,7 +368,6 @@ extern int fn_801284F8(int, const char *);
 extern void fn_801AFA64(int *);
 extern const char lbl_803359A0[];
 extern float lbl_80435740[];
-extern int *lbl_80435780;
 extern int *lbl_8055E624;
 extern unsigned char *fn_801EA9A0(int);
 extern int fn_801B8728(void);
