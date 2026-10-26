@@ -21,6 +21,7 @@ int fn_802CAC28(int, int);
 void fn_802B9FC0(void *);
 int fn_80128668(void *);
 void fn_8002F6AC(int, void (*)(void));
+extern char lbl_804BFFE8[];
 void* fn_802B8DA0(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
@@ -587,10 +588,11 @@ float fn_802BAD90(float farg0) {
 
 #pragma cplusplus on
 extern "C" void fn_802BAE30(void *);
-void fn_802BAD9C(s32 arg0) {
-    void *entry = fn_801284F8(0x10, (void *)&lbl_8034A9F4);
+extern "C" void fn_802BAD9C(s32 arg0) {
+    char *label = (char *)&lbl_8034A9F4;
+    void *entry = fn_801284F8(0x10, label);
     if (entry != 0) {
-        void *buffer = ((void *(*)(int, void *))fn_8012850C)(arg0 * 0x44 + 0x10, (void *)&lbl_8034A9F4);
+        void *buffer = ((void *(*)(int, void *))fn_8012850C)(arg0 * 0x44 + 0x10, label);
         void *items = fn_8002F37C(buffer, fn_802BAE30, 0, 0x44, arg0);
         *(void **)entry = items;
         *(s32 *)((char *)entry + 8) = arg0;
