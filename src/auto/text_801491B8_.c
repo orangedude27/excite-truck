@@ -2,6 +2,7 @@
 
 #include <types.h>
 #include <stdarg.h>
+extern int fn_801476C4();
 #include "revolution/MTX/mtxtypes.h"
 typedef struct { void *pad[3]; void *(*get)(void *, int); } IterFC;
 typedef struct { void *pad[3]; int (*has)(void *, void *); void *(*next)(void *, void *); } IterFD;
@@ -912,16 +913,16 @@ extern "C" BOOL fn_8014D794(void *arg0, void *arg1) {
 extern char *lbl_80559F30;
 extern char *lbl_80559F38;
 void fn_8014D840(void *arg0, void *arg1) {
-    u8 *entry;
     u8 *manager;
     s32 i;
     s32 best;
+    u8 *entry;
     s32 count;
     manager = *(u8 **)((u8 *)arg0 + 0x68);
     best = -1;
     entry = manager + 0x9E4;
-    i = 0;
     count = *(s32 *)(manager + 0xFE4);
+    i = 0;
     while (count > 0) {
         if (best < 0) {
             best = i;
@@ -944,10 +945,10 @@ void fn_8014D840(void *arg0, void *arg1) {
         count--;
     }
     if (*(s32 *)arg0 == best) {
-        ((void (*)(void *, const char *))(*(void ***)arg1)[3])(arg1, lbl_80559F30);
+        ((void (*)(void *, const char *))(*(void ***)arg1)[3])(arg1, (const char *)&lbl_80559F30);
         fn_801476C4();
     } else {
-        ((void (*)(void *, const char *))(*(void ***)arg1)[3])(arg1, lbl_80559F38);
+        ((void (*)(void *, const char *))(*(void ***)arg1)[3])(arg1, (const char *)&lbl_80559F38);
         fn_801476C4();
     }
 }
