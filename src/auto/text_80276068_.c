@@ -159,6 +159,22 @@ void fn_80276BE4(u32 *arg0, f32 *arg1) {
     *arg1 = *(f32 *)(lbl_8049FE98 + 0x34);
 }
 
+void fn_80276CB0(void *arg0, int arg1) {
+    unsigned char *p;
+
+    p = (unsigned char *)fn_80276A44();
+    if (p == 0)
+        p = (unsigned char *)lbl_8055F598;
+    if (arg1 != 0) {
+        fn_80276098(lbl_8049FE98 + 4, p + 4,
+                    *(float *)(lbl_8049FE98 + 0x34), *(float *)(p + 0x34),
+                    lbl_8056404C, 0, 0x22);
+    } else {
+        memcpy(lbl_8049FE98, p, 0x48);
+        *(unsigned char *)&lbl_8049FD58 = 0;
+    }
+}
+
 void fn_80276D3C(int unused, int arg) {
     unsigned char sp10[0x38];
     float sp8;
