@@ -22,6 +22,11 @@ void fn_802B9FC0(void *);
 int fn_80128668(void *);
 void fn_8002F6AC(int, void (*)(void));
 extern char lbl_804BFFE8[];
+extern int lbl_804C0088[];
+extern char lbl_8055CEC8;
+extern int lbl_8055CECC, lbl_8034AA2C;
+extern int fn_802B110C(void *, char *);
+extern int fn_802E317C(const char *, ...);
 extern void *lbl_8055FA78;
 extern void *lbl_8055FA80;
 void fn_802B9DD0(void *);
@@ -197,6 +202,40 @@ void fn_802B9CF4(void *arg0) {
     ((int *)arg0)[1] = 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802B9D08(void) {
+    register int i;
+    register int offset;
+    register void *node;
+    register char *base = lbl_804BFFE8;
+    register int zero;
+    register volatile int *list;
+    fn_802B9DD0(&lbl_8055FA7C);
+    fn_802B9E4C(&lbl_8055FA78);
+    list = (volatile int *)(base + 0x0C);
+    i = 0;
+    offset = 0;
+    zero = 0;
+    while (i < list[1]) {
+        node = *(void **)((char *)*(void **)(base + 0x0C) + offset);
+        if (node != 0) {
+            *(volatile int *)((char *)node + 0x0C) = zero;
+            if (*(int *)((char *)node + 4) != -2) {
+                fn_802CAC54();
+            }
+            fn_80128668(node);
+        }
+        offset += 4;
+        i++;
+    }
+    list[1] = zero;
+    *(int *)(base + 0x68) = zero;
+    fn_802B9EC8(&lbl_8055FA80);
+    memset(base + 0xA0, 0, 0x10);
+    fn_802B9F38(&lbl_8055FA74);
+}
+#pragma pop
 void fn_802B9DD0(void* arg0) {
     void* p = *(void**)arg0;
     if (p != NULL) {
