@@ -426,20 +426,22 @@ void fn_80010188(s32 arg0, s32 arg1, const char *fmt, f32 scale, f32 x, f32 y, .
 #pragma scheduling on
 #pragma pop
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_800103B8(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, const char *fmt, ...) {
-    extern f32 lbl_80560280;
-    extern f32 lbl_80560264;
-    extern f32 lbl_805602C8;
-    extern s32 lbl_8055D490;
-    extern int vsprintf(char *, const char *, va_list);
-    extern void fn_80233010(char *, s32, f32, f32, f32, f32, f32, f32, s32, s32, s32);
-    char buffer[0x220];
+    char buffer[0x200];
     va_list args;
     va_start(args, fmt);
     vsprintf(buffer, fmt, args);
-    fn_80233010(buffer, lbl_8055D490, farg1, farg2, farg3, lbl_805602C8 * farg0, lbl_80560280, lbl_80560264, arg0, arg1, 1);
+    fn_80233010(buffer, lbl_8055D490,
+                farg1, farg2, farg3,
+                lbl_805602C8 * farg0,
+                lbl_80560280, lbl_80560264,
+                arg0, arg1, 1);
 }
-
+#pragma scheduling on
+#pragma pop
 void fn_800105A0(s32 arg0, s32 arg1, s32 unused) {
     extern s32 fn_80137C74(void);
     extern f32 fn_800108C8(f32, s32);
@@ -757,18 +759,22 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
 #pragma pop
 void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     s32 idx;
-    s8 *entry;
+    Unk80350F88 *base;
+    volatile Unk80350F88Entry *entry;
+    char *n;
 
-    idx = *(s32 *)((s8 *)&lbl_80350F88 + 0x288);
-    *(s32 *)((s8 *)&lbl_80350F88 + 0x288) = idx + 1;
-    entry = (s8 *)&lbl_80350F88 + idx * 0x40 + 8;
-    strncpy((char *)entry, name, 0x28);
-    *(entry + 0x28) = 0;
-    *(s32 *)(entry + 0x2c) = a1;
-    *(s32 *)(entry + 0x30) = a2;
-    *(s32 *)(entry + 0x34) = a3;
-    *(s32 *)(entry + 0x38) = a4;
-    *(f32 *)(entry + 0x3c) = f;
+    base = (Unk80350F88 *)&lbl_80350F88;
+    idx = base->unk_0x288;
+    n = name;
+    base->unk_0x288 = idx + 1;
+    entry = &base->entries[idx];
+    strncpy((char *)entry->name, n, 0x28);
+    entry->unk_0x28 = 0;
+    entry->unk_0x2C = a1;
+    entry->unk_0x30 = a2;
+    entry->unk_0x38 = a4;
+    entry->unk_0x3C = f;
+    entry->unk_0x34 = a3;
 }
 
 void fn_8001123C(s32 arg0) {
@@ -1344,37 +1350,41 @@ void fn_800121A4(void) {
 
 extern void fn_801331C4(s32, void *, f32 *);
 extern void *lbl_802FC580;
+__declspec(section ".data") extern void *lbl_802FC580;
+#pragma unroll off
+#pragma scheduling invalid_target
 void fn_800121F0(void) {
     f32 sp8;
-    s32 *base;
-    s32 *p;
+    s32 *var_r3;
     s32 var_ctr;
+    void *temp_r4;
 
     sp8 = lbl_80560264;
-    base = (s32 *)lbl_8055D4AC;
+    var_r3 = (s32 *)lbl_8055D4AC;
     fn_801331C4(4, &lbl_802FC580, &sp8);
     var_ctr = 2;
     do {
-        p = (s32 *)base[1];
-        if (p != 0 && sp8 != *(f32 *)((u8 *)p + 8)) {
-            *((u8 *)p + 0x4D) = 1;
-            *(f32 *)((u8 *)p + 8) = sp8;
+        temp_r4 = (void *)var_r3[1];
+        if (temp_r4 != 0 && sp8 != *(f32 *)((u8 *)temp_r4 + 8)) {
+            *((u8 *)temp_r4 + 0x4D) = 1;
+            *(f32 *)((u8 *)temp_r4 + 8) = sp8;
         }
-        p = (s32 *)base[2];
-        if (p != 0 && sp8 != *(f32 *)((u8 *)p + 8)) {
-            *((u8 *)p + 0x4D) = 1;
-            *(f32 *)((u8 *)p + 8) = sp8;
+        temp_r4 = (void *)var_r3[2];
+        if (temp_r4 != 0 && sp8 != *(f32 *)((u8 *)temp_r4 + 8)) {
+            *((u8 *)temp_r4 + 0x4D) = 1;
+            *(f32 *)((u8 *)temp_r4 + 8) = sp8;
         }
-        p = (s32 *)base[3];
-        if (p != 0 && sp8 != *(f32 *)((u8 *)p + 8)) {
-            *((u8 *)p + 0x4D) = 1;
-            *(f32 *)((u8 *)p + 8) = sp8;
+        temp_r4 = (void *)var_r3[3];
+        if (temp_r4 != 0 && sp8 != *(f32 *)((u8 *)temp_r4 + 8)) {
+            *((u8 *)temp_r4 + 0x4D) = 1;
+            *(f32 *)((u8 *)temp_r4 + 8) = sp8;
         }
-        base += 3;
+        var_r3 += 3;
         var_ctr -= 1;
     } while (var_ctr != 0);
 }
-
+#pragma scheduling on
+#pragma unroll reset
 s32 fn_800122B4(s32 arg0, s32 arg1) {
     struct { char sp8[0x14]; volatile s32 sp1C; } frame;
 
