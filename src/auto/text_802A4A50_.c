@@ -900,7 +900,6 @@ void fn_802A775C(void *arg0) {
 }
 #pragma pop
 extern f32 lbl_80564850, lbl_80564854, lbl_80564858, lbl_8056485C;
-extern f32 lbl_80558DC4;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern s32 fn_802C90F0(s32);
 extern void fn_802C9118(void);
