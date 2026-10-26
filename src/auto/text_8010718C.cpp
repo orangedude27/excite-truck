@@ -55,6 +55,39 @@ extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_801071DC(nw4hbm::ut::FileStre
     }
 }
 
+namespace nw4hbm {
+namespace ut {
+class IOStream {};
+class FileStream {
+public:
+    typedef void (*CancelCallback)(long, IOStream*, void*);
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual s32 v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
+    virtual void v20();
+    virtual s32 v21(CancelCallback callback, void* user);
+    s32 CancelAsync(CancelCallback callback, void* user);
+};
+}
+}
+
 extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv(
     void* this_,
     void (*callback)(s32, void*, void*),
