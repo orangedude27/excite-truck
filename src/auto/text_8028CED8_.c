@@ -225,7 +225,9 @@ void fn_8028D58C(void *arg0) {
     *(unsigned int *)((char *)arg0 + 4) = (dst - base) / 0x28;
 }
 
-#pragma small_data off
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8028D728(void) {
     typedef struct { unsigned char pad[0x14]; int *items; int total; } Entry;
     Entry *entry = (Entry *)&lbl_804B3400;
@@ -239,7 +241,8 @@ void fn_8028D728(void) {
         }
     }
 }
-#pragma small_data on
+#pragma scheduling on
+#pragma pop
 extern double lbl_805643F8;
 extern float lbl_805643F4;
 extern void fn_801E53A8(void *, void *, void *, int, float);
