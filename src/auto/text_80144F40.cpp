@@ -457,7 +457,7 @@ extern "C" s32 fn_80145A24(void *arg0) {
 extern "C" f32 lbl_80561608;
 extern "C" void fn_8001027C(s32, s32, void *, u32, f32, f32, f32);
 extern "C" f32 fn_801452A0(s32, f32);
-extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32);
+extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 lbl_80559E1C;
 extern "C" void fn_80145B50(void *arg0, s32 arg1) {
     f32 value = (f32)arg1;
@@ -527,15 +527,13 @@ extern "C" void fn_80145C7C(void * __restrict arg0, u32 arg1) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
-    f32 temp_f31;
-    f32 temp_f30;
-    temp_f31 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
-    temp_f30 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
+    f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 value = ((f32 (*)(s32, f32))fn_801451DC)(
         *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
-    ((void (*)(s32, s32, s32, f32, f32, f32, f32, f32))fn_802354A0)(
-        (s32)arg1, arg2, *(s32 *)((u8 *)arg0 + 0x18),
-        value, temp_f30, lbl_805615D4, temp_f31, *(f32 *)((u8 *)arg0 + 0x14));
+    ((void (*)(s32, s32, f32, f32, f32, f32, f32, s32))fn_802354A0)(
+        (s32)arg1, arg2, value, temp_f31, lbl_805615D4, temp_f30,
+        *(f32 *)((u8 *)arg0 + 0x14), *(s32 *)((u8 *)arg0 + 0x18));
 }
 #pragma scheduling on
 #pragma dont_inline reset
@@ -808,6 +806,27 @@ extern "C" void *fn_80146490(void *arg0) {
                 ((Obj *)arg0)->v0(1);
             }
             return NULL;
+        }
+    }
+    return arg0;
+}
+
+extern "C" void *fn_801464DC(void *arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        *(void **)arg0 = &lbl_8032D1E8;
+        fn_80145DD8(arg0);
+        if (*(void **)((u8 *)arg0 + 0x28) != NULL) {
+            fn_80131818();
+            *(void **)((u8 *)arg0 + 0x28) = NULL;
+        }
+        fn_80146584((u8 *)arg0 + 0x4C);
+        fn_801465C8((u8 *)arg0 + 0x48);
+        fn_80146638((u8 *)arg0 + 0x2C);
+        fn_801466B4((u8 *)arg0 + 0x30);
+        fn_80146730((u8 *)arg0 + 0x34);
+        fn_801467AC((u8 *)arg0 + 0x3C);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
         }
     }
     return arg0;
