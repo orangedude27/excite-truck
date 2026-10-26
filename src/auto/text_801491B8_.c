@@ -1190,6 +1190,31 @@ s32 fn_8014EFC0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern s32 fn_8014F088(s32, s32);
+void *fn_8014F000(void *arg0, int arg1) {
+    struct Local {
+        int field_0;
+        int field_4;
+        int field_8;
+        int field_C;
+    };
+    struct Local *obj = (struct Local *)arg0;
+    if (arg0 != 0) {
+        if (&obj->field_4 != 0) {
+            fn_8002F634((char *)obj + 0x10, (void *)fn_8014F088, 0xF8, 0x10);
+            if (&obj->field_4 != 0) {
+                obj->field_4 = 0;
+                obj->field_8 = 0;
+                obj->field_C = 0;
+            }
+        }
+        if (arg1 > 0) {
+            ((void (*)(void *))fn_80128668)(obj);
+        }
+    }
+    return obj;
+}
+
 s32 fn_8014F088(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668((void *)arg0);
@@ -2085,18 +2110,18 @@ void fn_8014F108(void *arg0) {
     void *entry = arg0;
     u8 *member = (u8 *)arg0 + 0x454;
     u32 i = 0;
+    char *name = lbl_8032DB34;
     do {
-        s32 result = fn_801284F8(8, &lbl_8032DB34);
-        if (result == 0) {
+        s32 result = fn_801284F8(8, name);
+        if (result == 0)
             result = fn_802ADDD8(2);
-        }
         *(s32 *)((u8 *)entry + 0x45C) = result;
         fn_8014F194(member);
         i++;
         entry = (u8 *)entry + 0x240;
         member += 0x240;
     } while (i < 2);
-    *(s32 *)((u8 *)base + 0x9D8) = fn_80145E70(&lbl_8032DB40);
+    *(s32 *)((u8 *)base + 0x9D8) = fn_80145E70(lbl_8032DB40);
 }
 
 #pragma cplusplus on
