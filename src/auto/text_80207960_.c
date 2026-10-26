@@ -290,6 +290,47 @@ outer_check:
     if (i < count)
         goto outer;
 }
+
+#pragma cplusplus reset
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+extern char lbl_8033BE50[];
+extern char lbl_8033BE70[];
+#pragma cplusplus reset
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+signed long fn_8020835C(void *arg0) {
+    register char *ptr;
+    register signed long i;
+
+    i = 0;
+    ptr = (char *)arg0 + 0x14;
+    do {
+        switch (i) {
+        case 0:
+        case 1:
+        case 2:
+        case 7:
+            break;
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 8:
+            fn_802082C0(arg0, ptr);
+            break;
+        default:
+            fn_802E317C(lbl_8033BE50, lbl_8033BE70, 0x265, fn_80206570(i));
+            break;
+        }
+        i++;
+        ptr += 8;
+    } while (i < 9);
+}
+#pragma pop
+
 #pragma pop
 void fn_80208404(void) {
 
