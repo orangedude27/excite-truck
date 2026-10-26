@@ -94,6 +94,46 @@ void fn_8012960C(void *arg0) {
     }
 }
 
+#pragma dont_inline fn_801294FC
+extern void fn_80129508(void *, s32, void *);
+void fn_80129690(void *arg0, s32 arg1, void *arg2) {
+    u8 *dst = (u8 *)arg0;
+    u8 *params = (u8 *)arg2;
+    s32 *entries;
+    s32 offset;
+    s32 i;
+    s32 active;
+    u8 value;
+
+    active = 0;
+    if (params[2] != 0 && (s32)lbl_8055DFD4 != -1 && (s32)lbl_8055DFD4 == arg1) {
+        active = 1;
+    }
+    dst[8] = 0;
+    if (active != 0) {
+        fn_80129508(arg0, arg1, arg2);
+    }
+    entries = (s32 *)lbl_804223C0;
+    i = 0;
+    do {
+        offset = *entries;
+        if (offset >= 0 && *(u16 *)(params + 4) != 0 && active != 0) {
+            value = dst[offset + 0x3C];
+            if (value != 0) {
+                dst[8] = 1;
+                if (dst[i + 9] == 0) {
+                    fn_801294FC((s32)(dst + i), arg1);
+                }
+                dst[i + 9] = value;
+            }
+        }
+        i++;
+        entries++;
+        params += 2;
+    } while (i < 0xE);
+    fn_8012960C(arg0);
+}
+
 void fn_80129790(void) {
     fn_802E7C64();
     fn_80127C90(fn_80129400, lbl_8032A5B0);
