@@ -861,9 +861,9 @@ void fn_801FA0B0(void **);
 void fn_801FA138(void *);
 extern "C" void clear__Q211J2DBloSaver19CTextureNameConnectFv(void **);
 void fn_80128668(void);
-void fn_801E6CD0(void *, s32, f32);
-void fn_801E6CC4(void *);
-void fn_801E6B98(void *);
+extern "C" void fn_801E6CD0(void *, s32, f32);
+extern "C" void fn_801E6CC4(void *);
+extern "C" void fn_801E6B98(void *);
 void fn_801EF024(void *);
 void fn_80204020(void);
 void fn_80128670(void);
@@ -1303,30 +1303,7 @@ extern "C" void *fn_801FBE1C(void **arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4
 }
 #pragma scheduling invalid_target
 extern "C" void fn_801FBEA8(void* arg0) {
-    void* obj = fn_801284F8(0x2C, lbl_8033B51C);
-    if (obj != 0) {
-        f32 zero, one, x, y;
-        one = lbl_80563010;
-        zero = lbl_80562FFC;
-        *(void**)obj = lbl_80333B98;
-        x = *(f32*)((char*)arg0 + 0x58);
-        *(s32*)((char*)obj + 0xC) = 0;
-        y = *(f32*)((char*)arg0 + 0x5C);
-        *(s32*)((char*)obj + 4) = 0;
-        *(s32*)((char*)obj + 8) = 0;
-        *(s32*)((char*)obj + 0x18) = 0x54554245;
-        *(f32*)((char*)obj + 0x10) = one;
-        *(f32*)((char*)obj + 0x14) = zero;
-        *(s32*)((char*)obj + 0x20) = 100;
-        *(s32*)((char*)obj + 0x1C) = 0;
-        *(f32*)((char*)obj + 0x24) = x;
-        *(f32*)((char*)obj + 0x28) = y;
-        *(void**)obj = lbl_80333918;
-    }
-}
-#pragma scheduling on
-extern "C" void fn_801FBF48(void* arg0) {
- void* obj = fn_801284F8(0x2C, lbl_8033B52C);
+ void* obj = fn_801284F8(0x2C, lbl_8033B51C);
  if (obj != 0) {
  f32 zero, one, x, y;
  one = lbl_80563010;
@@ -1337,16 +1314,41 @@ extern "C" void fn_801FBF48(void* arg0) {
  y = *(f32*)((char*)arg0 + 0x5C);
  *(s32*)((char*)obj + 4) = 0;
  *(s32*)((char*)obj + 8) = 0;
- *(s32*)((char*)obj + 0x18) = 0x52494E47;
+ *(s32*)((char*)obj + 0x18) = 0x54554245;
  *(f32*)((char*)obj + 0x10) = one;
  *(f32*)((char*)obj + 0x14) = zero;
  *(s32*)((char*)obj + 0x20) = 100;
  *(s32*)((char*)obj + 0x1C) = 0;
- *(void**)obj = lbl_803337C8;
+ 
  *(f32*)((char*)obj + 0x24) = x;
  *(f32*)((char*)obj + 0x28) = y;
- 
+ *(void**)obj = lbl_80333918;
  }
+}
+#pragma scheduling on
+extern "C" void fn_801FBF48(void *arg0) {
+    void *obj = fn_801284F8(0x2C, lbl_8033B52C);
+    if (obj != 0) {
+        f32 zero, one, x, y;
+        s32 tag;
+        one = lbl_80563010;
+        zero = lbl_80562FFC;
+        *(void **)obj = lbl_80333B98;
+        x = *(f32 *)((char *)arg0 + 0x58);
+        *(s32 *)((char *)obj + 0xC) = 0;
+        y = *(f32 *)((char *)arg0 + 0x5C);
+        *(s32 *)((char *)obj + 4) = 0;
+        tag = 0x52494E47;
+        *(s32 *)((char *)obj + 8) = 0;
+        *(s32 *)((char *)obj + 0x18) = tag;
+        *(f32 *)((char *)obj + 0x10) = one;
+        *(f32 *)((char *)obj + 0x14) = zero;
+        *(s32 *)((char *)obj + 0x20) = 100;
+        *(s32 *)((char *)obj + 0x1C) = 0;
+        *(void **)obj = lbl_803337C8;
+        *(f32 *)((char *)obj + 0x24) = x;
+        *(f32 *)((char *)obj + 0x28) = y;
+    }
 }
 
 #pragma push
