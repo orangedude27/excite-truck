@@ -145,25 +145,38 @@ extern "C" void fn_802A1590(void) {
     fn_801EEFDC((void *)fn_802A1C30, 5);
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_802A1660(void) {
-    int var_r29;
-    void** var_r30;
-    int var_r31 = 0;
-    fn_801EF024((void*)fn_802A1C30);
+    class Dummy {
+    public:
+        virtual void reset(int);
+    };
+    register void **entries;
+    register int i;
+    register int zero = 0;
+    fn_801EF024((void *)fn_802A1C30);
     fn_802A1DC0();
-    var_r30 = lbl_804BCF88;
-    var_r29 = 0;
-    do {
-        void* obj = *var_r30;
-        if (obj != 0) {
-            ((void (*)(int))(*(void***)obj)[2])(1);
-            *var_r30 = (void*)var_r31;
-        }
-        var_r29++;
-        var_r30++;
-    } while (var_r29 < 8);
+    entries = lbl_804BCF88;
+    i = 0;
+    goto loop;
+loop:
+    {
+        void *obj = *entries;
+        if (obj == 0)
+            goto next;
+        if (obj == 0)
+            goto clear;
+        ((Dummy *)obj)->reset(1);
+clear:
+        *entries = (void *)zero;
+next:
+        i++;
+        entries++;
+        if (i < 8)
+            goto loop;
+    }
 }
-
+#pragma scheduling on
 extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -335,18 +348,16 @@ extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
 #pragma processor 750
 #pragma scheduling invalid_target
 extern "C" void fn_802A1F00(void *arg0) {
-    register f32 f31;
-    register f32 f30;
-    f31 = lbl_80564734;
-    f30 = lbl_80564744;
+    register double f31 = (double)lbl_80564734;
+    register double f30 = (double)lbl_80564744;
     register void *p = arg0;
     register s32 count = 0;
     while (count < ((s32 (*)(void))fn_80287B14)()) {
-        *(f32 *)((char *)p + 0x14) = f30;
+        *(float *)((char *)p + 0x14) = f30;
         count++;
-        *(f32 *)((char *)p + 0x18) = f31;
-        *(f32 *)((char *)p + 0x1C) = f30;
-        *(f32 *)((char *)p + 0x20) = f30;
+        *(float *)((char *)p + 0x18) = f31;
+        *(float *)((char *)p + 0x1C) = f30;
+        *(float *)((char *)p + 0x20) = f30;
         p = (char *)p + 0x10;
     }
     fn_802A4524(*(void **)((char *)arg0 + 0x10));
