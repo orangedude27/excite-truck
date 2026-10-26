@@ -4432,6 +4432,15 @@ void fn_8007ABE8(void *arg0) {
     if (callback != NULL) callback();
 }
 
+void btm_discovery_db_init(void) {
+    *(u8 **)(lbl_803C0F78 + 0x1678) = lbl_803C0F78 + 0x6D4;
+    memset(lbl_803C0F78 + 0x658, 0, 0x1020);
+    *(u16 *)(lbl_803C0F78 + 0x670) = 1;
+    *(u16 *)(lbl_803C0F78 + 0x674) = 2;
+    *(u16 *)(lbl_803C0F78 + 0x678) = 0x1002;
+    SDP_InitDiscoveryDb(*(tSDP_DISCOVERY_DB **)(lbl_803C0F78 + 0x1678), 0xFA0, 1, (tSDP_UUID *)(lbl_803C0F78 + 0x674), 0, 0);
+}
+
 void fn_8007AD38(void) {
 
 }
@@ -5719,6 +5728,32 @@ BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR addr) {
         link += 0x34;
     } while ((unsigned)i < 3);
     return FALSE;
+}
+
+BOOLEAN BTM_SecRegister(tBTM_APPL_INFO *arg0) {
+    u8 *p = lbl_803C0F78;
+    u8 *src = (u8 *)arg0;
+    u32 first = *(u32 *)(src + 0);
+    u32 second = *(u32 *)(src + 4);
+    u8 level = p[0x27C0];
+    u32 third;
+    u32 fourth;
+    u32 fifth;
+    u32 sixth;
+
+    *(u32 *)(p + 0x190C) = first;
+    *(u32 *)(p + 0x1910) = second;
+    third = *(u32 *)(src + 8);
+    fourth = *(u32 *)(src + 0xC);
+    *(u32 *)(p + 0x1914) = third;
+    *(u32 *)(p + 0x1918) = fourth;
+    fifth = *(u32 *)(src + 0x10);
+    sixth = *(u32 *)(src + 0x14);
+    *(u32 *)(p + 0x191C) = fifth;
+    *(u32 *)(p + 0x1920) = sixth;
+    if (level >= 4)
+        fn_8007093C(0xD0003, lbl_80316870);
+    return TRUE;
 }
 
 BOOLEAN BTM_SecAddRmtNameNotifyCallback(tBTM_RMT_NAME_CALLBACK *p_callback) {
