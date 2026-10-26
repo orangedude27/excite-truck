@@ -125,7 +125,7 @@ extern "C" s32 fn_801345D8(s32, s32, const char *, ...);
 extern "C" char lbl_8032E254[];
 extern "C" char lbl_80559FC0;
 extern "C" char lbl_80559FC4;
-extern "C" char lbl_80559FC8[];
+extern "C" char lbl_80559FC8;
 #pragma dont_inline on
 s32 fn_801562BC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 buffer[0x20];
