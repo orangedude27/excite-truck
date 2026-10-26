@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void *fn_80131234();
+#pragma inline off(fn_801302E0)
 extern int fn_801302E0();
 __declspec(section ".sdata") extern char lbl_80559AF8;
 extern char lbl_8032B224[];
@@ -24,20 +25,36 @@ extern char *lbl_8055E050;
 extern int fn_8012BF24(void *);
 extern int stricmp(const char *, const char *);
 void fn_801301E0(unsigned char *arg0) {
+    unsigned char *base;
+    unsigned char *p;
+    unsigned char *q;
     unsigned char a, b, c, d;
-    unsigned char *p = arg0 + 0x44;
-    unsigned char *q = arg0 + 0x48;
     int i;
-    a = arg0[0x40]; b = arg0[0x43]; c = arg0[0x41]; d = arg0[0x42];
-    arg0[0x40] = b; arg0[0x43] = a; arg0[0x41] = d; arg0[0x42] = c;
-    for (i = 0; i < arg0[0x40]; i++) {
-        a=p[0]; b=p[3]; p[0]=b; p[3]=a;
-        a=p[1]; b=p[2]; p[1]=b; p[2]=a;
-        a=q[0]; b=q[3]; q[0]=b; q[3]=a;
-        a=q[1]; b=q[2]; q[1]=b; q[2]=a;
-        *(unsigned int *)p += (unsigned int)arg0;
-        *(unsigned int *)q += (unsigned int)arg0;
-        p += 8; q += 8;
+
+    a = arg0[0x40];
+    b = arg0[0x43];
+    c = arg0[0x41];
+    d = arg0[0x42];
+    arg0[0x40] = b;
+    arg0[0x43] = a;
+    arg0[0x41] = d;
+    arg0[0x42] = c;
+
+    p = arg0 + 0x44;
+    q = arg0 + 0x48;
+    base = arg0;
+    for (i = 0; i < *(int *)(arg0 + 0x40); i++) {
+        a = p[0]; b = p[3]; p[0] = b; p[3] = a;
+        a = p[1]; b = p[2]; p[1] = b; p[2] = a;
+        p += 8;
+
+        a = q[0]; b = q[3]; q[0] = b; q[3] = a;
+        a = q[1]; b = q[2]; q[1] = b; q[2] = a;
+        q += 8;
+
+        *(unsigned int *)(base + 0x44) += (unsigned int)arg0;
+        *(unsigned int *)(base + 0x48) += (unsigned int)arg0;
+        base += 8;
     }
 }
 
@@ -305,18 +322,19 @@ extern char lbl_8032B328[];
 int fn_802E317C(const char *, ...);
 
 char *fn_8013126C(char *arg0, const char *arg1) {
+    const unsigned char *src = (const unsigned char *)arg1;
     int count;
-    char *dst = arg0;
-    const char *src = arg1;
-    char c;
+    unsigned char c;
+    char *dst;
     fn_802E317C(lbl_8032B328);
+    dst = arg0;
     for (count = 0x12c; count > 0; count--) {
     }
     dst[-1] = 0;
     do {
         c = *src++;
         *dst++ = c;
-    } while (c != 0);
+    } while ((signed char)c != 0);
     return arg0;
 }
 extern char lbl_80559B00[];
