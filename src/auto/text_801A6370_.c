@@ -6,8 +6,8 @@ extern void *fn_801A644C(void *);
 extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, int, int, int);
 extern void fn_801A6520(void);
-extern char lbl_80333CA8;
-extern char lbl_80333CB8;
+extern char lbl_80333CA8[];
+extern char lbl_80333CB8[];
 
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 
