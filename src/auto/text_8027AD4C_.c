@@ -810,6 +810,8 @@ void fn_8027CBF8(long arg0, char *arg1, long arg2) {
 done:
     ;
 }
+#pragma scheduling on
+#pragma pop
 
 extern long lbl_80347B4C;
 #pragma use_lmw_stmw off
