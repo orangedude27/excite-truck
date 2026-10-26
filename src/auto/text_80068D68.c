@@ -7719,6 +7719,24 @@ BOOLEAN btsnd_hcic_setup_esco_conn(UINT16 handle, UINT32 tx_bandwidth, UINT32 rx
     return TRUE;
 }
 
+int btsnd_hcic_reject_esco_conn(void *p_buf, u8 *bd_addr, u8 reason) {
+    u8 *buf = p_buf;
+
+    *(u16 *)(buf + 2) = 0xA;
+    *(u16 *)(buf + 4) = 0;
+    buf[8] = 0x2A;
+    buf[9] = 4;
+    buf[0xA] = 7;
+    buf[0xB] = bd_addr[5];
+    buf[0xC] = bd_addr[4];
+    buf[0xD] = bd_addr[3];
+    buf[0xE] = bd_addr[2];
+    buf[0xF] = bd_addr[1];
+    buf[0x10] = bd_addr[0];
+    buf[0x11] = reason;
+    return btu_hcif_send_cmd(buf);
+}
+
 s32 btsnd_hcic_hold_mode_80084A34(u8 *p, u16 handle, u16 max_interval, u16 min_interval) {
     if (p == NULL) {
         p = GKI_getpoolbuf(2);
