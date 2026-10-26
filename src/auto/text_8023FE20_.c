@@ -22,6 +22,7 @@ extern s32 fn_8023512C(char *, s32, char *, s32);
 extern s32 fn_80232578(char *, char *, s32);
 extern char lbl_80498828[];
 extern void *fn_80241098(void *);
+extern void fn_802E317C(char *, ...);
 void fn_8023FE20(void) {
     register int *p = (int *)lbl_80498828;
     *p++ = -1;
@@ -34,6 +35,23 @@ s32 fn_8023FE34(void) {
     if (*p++ >= 0) result = 1;
     if (p[3] < 0) return result;
     return result + 1;
+}
+
+void fn_8023FE60(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
+    s32 i;
+    s32 found = 0;
+    s32 *entry = (s32 *)lbl_80498828;
+    for (i = 0; i < 2; i++, entry += 4) {
+        if (entry[0] < 0) continue;
+        if (found == arg0) {
+            if (arg1 != 0) *arg1 = entry[2];
+            if (arg2 != 0) *arg2 = entry[3];
+            if (arg3 != 0) *arg3 = entry[0];
+            return;
+        }
+        found++;
+    }
+    return;
 }
 
 extern char lbl_80342618[];
@@ -658,29 +676,32 @@ void fn_80241DE8(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 s32 fn_80241E40(void *arg0) {
-    void *entry;
     s32 i;
-    s32 result;
-    s32 value;
+    void *entry;
     void *out;
-    s32 *valuePtr;
+    s32 value;
+    s32 result;
 
     if (*(s32 *)*(s32 **)((char *)arg0 + 0x34) == fn_802E4A10() &&
         *(u8 *)((char *)arg0 + 0x38) == 0) {
         return 0;
     }
-    for (i = 0, entry = arg0; i < *(s32 *)((char *)arg0 + 0x2C); i++, entry = (char *)entry + 4) {
-        valuePtr = *(s32 **)((char *)arg0 + 0x34);
-        value = *valuePtr;
+    entry = arg0;
+    i = 0;
+    while (i < *(s32 *)((char *)arg0 + 0x2C)) {
+        value = *(s32 *)*(s32 **)((char *)arg0 + 0x34);
         result = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30)) ? 1 : 0;
         out = *(void **)((char *)entry + 0x18);
+        entry = (char *)entry + 4;
+        i++;
         *(u8 *)out = result;
         *(s32 *)((char *)out + 4) = value;
     }
     return 1;
 }
-
+#pragma scheduling on
 s32 fn_80241EE8(s32 arg0) {
     return arg0 + 0x4C;
 }
