@@ -433,10 +433,10 @@ extern "C" void fn_801F92A8(void) {
 
 }
 
+#pragma scheduling invalid_target
 extern "C" void *fn_801F92AC(F92Obj *obj) {
-    f32 a = lbl_80562FF0;
     f32 b = lbl_80563000;
-
+    f32 a = lbl_80562FF0;
     obj->w108 = lbl_8033B468;
     obj->w78 = 0;
     obj->f7c = a;
@@ -451,7 +451,7 @@ extern "C" void *fn_801F92AC(F92Obj *obj) {
     obj->w74 = -1;
     return obj;
 }
-
+#pragma scheduling on
 extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg);
 extern "C" int strcmp(const char *, const char *);
 extern "C" void *fn_801F9338(void *self) {
