@@ -117,11 +117,11 @@ void fn_80018CCC(void) {
     }
 }
 
-void fn_80018E3C(void) {
+s32 fn_80018E3C(void) {
     fn_80018B74();
 }
 
-void fn_80018E40(void) {
+s32 fn_80018E40(void) {
     fn_80018B70();
 }
 
@@ -232,26 +232,26 @@ __declspec(section ".data") extern void *lbl_803580A4;
 #pragma small_data off
 #pragma scheduling invalid_target
 s32 fn_80019098(s32 arg0) {
-    register s32 key;
     register s32 index;
     register s32 offset;
-    register char *table;
-    register char *entry;
+    register const char *name;
+    char *entry;
 
-    key = arg0;
-    table = (char *)&lbl_803580A4;
+    name = (const char *)arg0;
     index = 0;
     offset = 0;
-    while (1) {
-        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), (const char *)key) != 0) {
-            offset += 0x10;
-            index++;
-            if (index < *(s32 *)(table + 4)) continue;
-            index = -1;
-            break;
-        }
-        break;
-    }
+    goto loop;
+loop:
+    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0)
+        goto advance;
+    goto found;
+advance:
+    offset += 0x10;
+    index++;
+    if (index < *(s32 *)((char *)&lbl_803580A4 + 4))
+        goto loop;
+    index = -1;
+found:
     entry = (char *)lbl_803580A4 + index * 0x10 + 4;
     if (index < 0) entry = 0;
     if (entry != 0) return *(s32 *)(entry + 8);
@@ -297,31 +297,39 @@ s32 fn_80019144(s32 arg0) {
 
 __declspec(section ".data") extern void *lbl_803580A4;
 __declspec(section ".data") extern void *lbl_802FD2A0;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma small_data off
+#pragma scheduling invalid_target
 int fn_80019258(const char *name, int *out0, int *out1, int unused) {
-    int i = 0;
-    int offset = 0;
+    register s32 i;
+    register s32 offset;
+    register const char *name_r;
+    register char *p;
+
+    name_r = name;
+    i = 0;
+    offset = 0;
     while (1) {
-        if (stricmp(*(const char **)(*(char **)lbl_803580A4 + offset), name) == 0)
+        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name_r) == 0)
             break;
         offset += 0x10;
         i++;
-        if (i >= ((int *)lbl_803580A4)[1]) {
+        if (i >= *(volatile s32 *)((char *)&lbl_803580A4 + 4)) {
             i = -1;
             break;
         }
     }
-    {
-        char *p = *(char **)lbl_803580A4 + i * 0x10 + 4;
-        if (i < 0) p = 0;
-        if (p != 0) {
-            *out0 = *(int *)p;
-            *out1 = *(int *)(p + 4);
-            return 1;
-        }
+    p = (char *)lbl_803580A4 + i * 0x10 + 4;
+    if (i < 0) p = 0;
+    if (p != 0) {
+        *out0 = *(s32 *)p;
+        *out1 = *(s32 *)(p + 4);
+        return 1;
     }
     return 0;
 }
-
+#pragma pop
 extern s32 fn_8001EFC0(s32, s32);
 extern void *lbl_802FD2A0;
 #pragma push
