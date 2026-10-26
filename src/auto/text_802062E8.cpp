@@ -413,7 +413,8 @@ void fn_80206D3C(void* self, void* list, int count) {
     }
 }
 
-extern "C" void fn_802065F8(void);
+extern "C" void *fn_802065F8(void *, int, int);
+#define fn_802065F8() fn_802065F8(arg0, arg1, arg2)
 extern "C" void *fn_80208998(int, int, int, float);
 extern "C" void fn_802085EC(int, void *);
 extern float lbl_80563220;
