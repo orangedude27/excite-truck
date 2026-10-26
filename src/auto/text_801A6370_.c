@@ -1,6 +1,14 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void fn_80182010(void);
+extern void *fn_801A644C(void *);
+extern void *fn_8012850C(int, void *);
+extern void *fn_8002F37C(void *, int, int, int);
+extern void fn_801A6520(void);
+extern char lbl_80333CA8;
+extern char lbl_80333CB8;
+
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 
 #pragma cplusplus on
@@ -25,8 +33,7 @@ float fn_801A6370(float arg0, float arg1, float arg2, float arg3) {
 }
 
 float fn_801A6390(int arg0, int arg1) {
-    int delta = arg0 - arg1;
-    return lbl_8056241C * (float)delta;
+    return (float)(arg0 - arg1) * lbl_8056241C;
 }
 
 #pragma dont_inline on
@@ -93,6 +100,24 @@ void fn_801A6558(void *arg0) {
     memset(*(void **)((char *)arg0 + 0x2700), 0, 0xE7);
     if (*(unsigned char *)((char *)arg0 + 0x2740))
         fn_801A67B0(arg0);
+}
+
+extern void fn_80128668(void *);
+extern void fn_80128670(int);
+extern void fn_801836E0(void *, int);
+extern void fn_80265D44(void);
+void *fn_801A669C(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = (char *)lbl_80333CB8;
+        fn_80265D44();
+        if (*(int *)((char *)arg0 + 0x2700) != 0)
+            fn_80128670(*(int *)((char *)arg0 + 0x2700) - 0x10);
+        *(int *)((char *)arg0 + 0x2700) = 0;
+        fn_801836E0(arg0, 0);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
 }
 
 extern float lbl_80562438;
@@ -400,10 +425,13 @@ extern "C" void fn_801A6C14(void *arg0) {
 }
 #pragma cplusplus reset
 #pragma scheduling reset
-float fn_801A70EC(int arg0, void* arg1, void* arg2, int arg3) {
-    float den=fn_801A63C4(*(int*)((char*)arg2+4),*(int*)((char*)arg1+4));
-    float ratio=fn_801A63C4(arg3,*(int*)((char*)arg1+4))/den;
-    fn_8012F57C(arg0,(char*)arg1+0x2a,(char*)arg2+0x2a,ratio);
+float fn_801A70EC(int arg0, void *arg1, void *arg2, int arg3) {
+    float ratio;
+    float denominator;
+    denominator = fn_801A63C4(*(int *)((char *)arg2 + 4), *(int *)((char *)arg1 + 4));
+    ratio = fn_801A63C4(arg3, *(int *)((char *)arg1 + 4));
+    ratio /= denominator;
+    fn_8012F57C(arg0, (char *)arg1 + 0x2A, (char *)arg2 + 0x2A, ratio);
     return ratio;
 }
 
