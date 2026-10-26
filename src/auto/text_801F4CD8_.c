@@ -866,7 +866,7 @@ extern "C" void fn_801F7280(void *arg0, void *arg1, void *arg2) {
     *(int *)((char *)arg0 + 0x120) = *(int *)((char *)arg0 + 0x120) + 1;
 }
 #pragma cplusplus reset
-extern void fn_801F6A98(void *);
+extern void fn_801F6A98();
 void fn_801F73E0(void) {
     fn_801F6A98(lbl_8055EC10);
 }
