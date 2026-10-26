@@ -9,7 +9,8 @@ extern void fn_8026B11C(void **, void *);
 extern unsigned char lbl_80346988[];
 extern int lbl_8055F4D0, lbl_8055F4CC, lbl_8055F4C8;
 extern float lbl_80563D68;
-extern unsigned char lbl_8055C4FC[], lbl_8055C500[], lbl_8049A028[];
+extern int lbl_8055C4FC, lbl_8055C500;
+extern unsigned char lbl_8049A028[];
 void fn_8026B118(void) {}
 
 extern int lbl_8055F4D0, lbl_8055F4CC;
@@ -45,16 +46,40 @@ extern "C" void deleteThreads__6SystemFv_8026B178(void *arg0) {
 #pragma cplusplus reset
 #pragma pop
 
-void fn_8026B1D0(void *obj) {
-    float a, b;
-    void *dst = lbl_8049A028 + lbl_8055F4C8 * 0xC;
-    a = ((float (*)(void *, void *))(*(void ***)obj)[0x3C/4])(obj, lbl_8055C4FC);
-    b = ((float (*)(void *, void *, float, float))(*(void ***)obj)[0x28/4])(obj, lbl_8055C500, lbl_80563D68, a);
-    *(float *)dst = a;
-    *(float *)((unsigned char *)dst + 4) = a;
-    *(float *)((unsigned char *)dst + 8) = b;
-}
+#pragma cplusplus on
+extern "C" void fn_8026B1D0(void *obj_) {
+    class Object {
+    public:
+        virtual void v00();
+        virtual void v04();
+        virtual void v08();
+        virtual void v0C();
+        virtual void v10();
+        virtual void v14();
+        virtual void v18();
+        virtual void v1C();
+        virtual void v20();
+        virtual void v24();
+        virtual float fn28(unsigned int, float);
+        virtual void v2C();
+        virtual void v30();
+        virtual void v34();
+        virtual void v38();
+        virtual unsigned long long fn3C(unsigned int);
+    };
+    union Pair {
+        unsigned long long bits;
+        float values[2];
+    } pair;
+    Object *obj = (Object *)obj_;
+    float *dst = (float *)(lbl_8049A028 + lbl_8055F4C8 * 0xC);
 
+    pair.bits = obj->fn3C((unsigned int)lbl_8055C4FC);
+    dst[0] = pair.values[0];
+    dst[1] = pair.values[1];
+    dst[2] = obj->fn28((unsigned int)lbl_8055C500, lbl_80563D68);
+}
+#pragma cplusplus reset
 extern int *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(int);
 extern void *fn_80028E00(char *, const char *);
@@ -100,13 +125,15 @@ void fn_8026B260(void) {
 #pragma cplusplus reset
 #pragma pop
 
+#pragma scheduling invalid_target
 void fn_8026B644(void) {
+    register unsigned char *base = lbl_80346988;
     fn_8026B260();
-    fn_801331C4(4, lbl_80346988 + 0xA0, &lbl_8055C4F8);
-    fn_8026B11C((void **)&lbl_8055F4D0, lbl_80346988 + 0xB0);
-    fn_8026B11C((void **)&lbl_8055F4CC, lbl_80346988 + 0xBC);
+    fn_801331C4(4, base + 0xA0, &lbl_8055C4F8);
+    fn_8026B11C((void **)&lbl_8055F4D0, base + 0xB0);
+    fn_8026B11C((void **)&lbl_8055F4CC, base + 0xBC);
 }
-
+#pragma scheduling on
 void fn_8026B69C(void) {
     lbl_8055F4C8 = 0;
     deleteThreads__6SystemFv_8026B178(&lbl_8055F4CC);
@@ -138,8 +165,9 @@ void fn_8026B6E4(void) {
 }
 
 int fn_8026B734(int arg0, float *arg1) {
-    if (*(volatile unsigned char *)(lbl_8049A0E8 + (arg0 << 4))) {
-        *arg1 = *(float *)(lbl_8049A0E8 + (arg0 << 4) + 8);
+    register int index = arg0 << 4;
+    if (lbl_8049A0E8[index] != 0) {
+        *arg1 = *(float *)(lbl_8049A0E8 + index + 8);
         return 1;
     }
     return 0;
