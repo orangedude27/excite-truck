@@ -161,7 +161,7 @@ void fn_802CEC44(void) {
     lbl_8055FD3C = 1;
 }
 
-void fn_802CEC50(unsigned short arg0) {
+void fn_802CEC50(int arg0) {
     extern unsigned long long fn_802E2C9C(void);
     extern float fn_8002FD54(unsigned int, unsigned int);
     extern void fn_802D3900(void);
@@ -172,32 +172,41 @@ void fn_802CEC50(unsigned short arg0) {
     extern float lbl_80564F80, lbl_80564F84;
     unsigned long long now;
     unsigned long long delta;
-    float value;
+    unsigned int oldHigh;
+    unsigned int oldLow;
+    float difference;
     float previous;
-    float diff;
+    float value;
 
-    if (arg0 == 1) {
+    switch (arg0) {
+    case 1:
         now = fn_802E2C9C();
         lbl_8055FD14 = (unsigned int)now;
         lbl_8055FD10 = (unsigned int)(now >> 32);
         lbl_8055FD3C = 0;
-    } else if (arg0 == 2) {
+        break;
+    case 2:
         now = fn_802E2C9C();
-        delta = now - (((unsigned long long)lbl_8055FD10 << 32) | lbl_8055FD14);
-        value = lbl_80564F80 * fn_8002FD54((unsigned int)(delta >> 32), (unsigned int)delta);
+        oldLow = lbl_8055FD14;
+        oldHigh = lbl_8055FD10;
+        delta = now - (((unsigned long long)oldHigh << 32) | oldLow);
+        value = fn_8002FD54((unsigned int)(delta >> 32), (unsigned int)delta);
         previous = lbl_8055D0B4;
-        diff = previous - value;
+        value = lbl_80564F80 * value;
+        difference = previous - value;
         lbl_8055D0B0 = value;
-        lbl_8055D0B4 = value + lbl_80564F84 * diff;
+        lbl_8055D0B4 = value + lbl_80564F84 * difference;
         fn_802D3900();
-    } else {
-        fn_802E317C(lbl_8034BE20, arg0);
+        break;
+    default:
+        fn_802E317C(lbl_8034BE20, (int)arg0);
+        break;
     }
 }
 
 void fn_802CECF4(unsigned int arg0) {
     extern unsigned short lbl_8055D0F6;
-    extern void fn_802CEC50(unsigned short);
+    extern void fn_802CEC50(int);
     unsigned int value;
     do {
         value = lbl_8055D0F6 + 1;
