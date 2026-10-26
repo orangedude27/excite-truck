@@ -1522,14 +1522,20 @@ extern f32 lbl_80563014;
 void fn_8019EECC(void);
 #pragma push
 #pragma processor 750
+extern "C" void fn_8019EECC(void);
 extern "C" void fn_801FC048(void *arg0) {
-    volatile f32 temp_f31 = lbl_80563010;
-    f32 zero = lbl_80562FF0;
-    f32 value = lbl_80563014;
+    volatile f32 sp10;
+    volatile f32 spC;
+    volatile f32 sp8;
+    f32 temp_f31 = lbl_80563010;
     void *heap = lbl_8033B54C;
     void *obj = fn_801284F8(0x54, heap);
     if (obj != 0) {
+        f32 value, zero, x;
+        zero = lbl_80562FF0;
+        value = lbl_80563014;
         *(void **)obj = lbl_80333B98;
+        x = *(f32 *)((u8 *)arg0 + 0x58);
         *(s32 *)((u8 *)obj + 0xC) = 0;
         *(s32 *)((u8 *)obj + 4) = 0;
         *(s32 *)((u8 *)obj + 8) = 0;
@@ -1539,7 +1545,7 @@ extern "C" void fn_801FC048(void *arg0) {
         *(s32 *)((u8 *)obj + 0x20) = 0x64;
         *(s32 *)((u8 *)obj + 0x1C) = 0;
         *(void **)obj = lbl_80333B48;
-        *(f32 *)((u8 *)obj + 0x24) = *(f32 *)((u8 *)arg0 + 0x58);
+        *(f32 *)((u8 *)obj + 0x24) = x;
         *(f32 *)((u8 *)obj + 0x34) = zero;
         *(f32 *)((u8 *)obj + 0x38) = zero;
         *(f32 *)((u8 *)obj + 0x3C) = zero;
@@ -1550,29 +1556,35 @@ extern "C" void fn_801FC048(void *arg0) {
         *(f32 *)((u8 *)obj + 0x50) = zero;
         *(f32 *)((u8 *)obj + 0x28) = zero;
         *(f32 *)((u8 *)obj + 0x2C) = zero;
+        sp8 = zero;
+        spC = zero;
+        sp10 = zero;
         *(f32 *)((u8 *)obj + 0x30) = zero;
-    } else fn_8019EECC();
+        return;
+        fn_8019EECC();
+    }
 }
 
 extern f32 lbl_80563014, lbl_80563018;
 extern u8 lbl_803338C0[], lbl_8033B55C[];
 extern "C" f64 fn_8002F234(void);
 extern u8 lbl_803338C0[], lbl_3B55C[], lbl_8033B55C[];
+#pragma scheduling invalid_target
 extern "C" void *fn_801FC12C(void *arg0) {
     f32 save = lbl_80563010;
     u8 *obj = (u8 *)fn_801284F8(0x38, lbl_8033B55C);
     if (obj != 0) {
-        f32 val14 = lbl_80563014;
         f32 half = lbl_80563018;
-        f32 y, x, z;
+        f32 val14 = lbl_80563014;
+        f32 x, y, z;
         f32 sum;
 
         *(void **)obj = lbl_80333B98;
         *(u32 *)(obj + 0xC) = 0;
-        y = *(f32 *)((u8 *)arg0 + 0x5C) * half;
         *(u32 *)(obj + 0x4) = 0;
         x = *(f32 *)((u8 *)arg0 + 0x58) * half;
         *(u32 *)(obj + 0x8) = 0;
+        y = *(f32 *)((u8 *)arg0 + 0x5C) * half;
         *(u32 *)(obj + 0x18) = 0x424F5820;
         z = *(f32 *)((u8 *)arg0 + 0x60) * half;
         *(f32 *)(obj + 0x10) = save;
@@ -1584,7 +1596,7 @@ extern "C" void *fn_801FC12C(void *arg0) {
         *(f32 *)(obj + 0x28) = y;
         *(f32 *)(obj + 0x2C) = z;
         *(u32 *)(obj + 0x34) = 0;
-        sum = z * z + (x * x + y * y);
+        sum = (z * z) + ((x * x) + (y * y));
         *(f32 *)(obj + 0x30) = lbl_80563014 + (f32)((f64 (*)(f32))fn_8002F234)(sum);
     }
     return obj;
