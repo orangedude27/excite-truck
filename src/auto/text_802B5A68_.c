@@ -86,6 +86,36 @@ void fn_802B5B6C(void) {
     fn_802B59A4(lbl_8055FA3C);
 }
 
+extern void *lbl_8055FA44;
+s32 fn_802B5B74(void *arg0) {
+    s32 workspace[51];
+    s32 result = 0;
+    s32 index;
+    void *object;
+
+    workspace[0] = (s32)&workspace[3];
+    workspace[1] = 0;
+    workspace[2] = 0x10;
+    object = ((void *(*)(void))fn_802B5B6C)();
+    ((void (*)(void *, s32, s32, s32))fn_802B321C)(
+        workspace, 0, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
+
+    index = (s32)lbl_8055FA44;
+    if (index >= 0 && index < workspace[1]) {
+        result = 1;
+    }
+    if (result != 0) {
+        s32 *entry = (s32 *)workspace[0] + index * 3;
+        ((s32 *)arg0)[0] = entry[0];
+        ((s32 *)arg0)[1] = entry[1];
+        ((s32 *)arg0)[2] = entry[2];
+    }
+    workspace[0] = 0;
+    workspace[1] = 0;
+    workspace[2] = 0;
+    return result;
+}
+
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -389,7 +419,7 @@ extern int strcmp(const char *, const char *);
 #pragma dont_inline on
 void fn_802B62A4(const char **arg) {
     s32 i = 0;
-    s32 *entry = &lbl_8034A670;
+    s32 *entry = (s32 *)&lbl_8034A670;
     do {
         if (entry[0] != 0 && strcmp((const char *)entry[0], *arg) == 0) break;
         if (entry[1] != 0 && ((s32 (*)(const char *))entry[1])(*arg) != 0) {
