@@ -32,7 +32,65 @@ void fn_802C1F84(int arg0) {}
 
 void fn_802C1F88(int arg0) {}
 
-#pragma dont_inline off
+extern int lbl_8055FB28;
+extern char lbl_8055CFC0[];
+extern char lbl_8055CFC8[];
+extern char lbl_804C0810[];
+extern int strcmp(const char *, const char *);
+__declspec(section ".sdata") extern char lbl_8055CFC0[];
+__declspec(section ".sdata") extern char lbl_8055CFC8[];
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_802C1F8C(int unused, void *arg1) {
+    class FirstInterface {
+    public:
+        virtual void *resolve();
+    };
+    class SecondInterface {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual char *getName(const char *, const char *);
+    };
+    struct Fn802CEntry {
+        char pad[8];
+        char name[0x2C];
+        void **items;
+        int unk38;
+        int count;
+        char tail[0x20];
+    };
+    struct Fn802CEntry *entry;
+    char *name;
+    int i;
+    SecondInterface *object;
+    FirstInterface *input;
+
+    input = (FirstInterface *)arg1;
+    object = (SecondInterface *)input->resolve();
+    if (object != 0) {
+        name = object->getName(lbl_8055CFC0, lbl_8055CFC8);
+        entry = (struct Fn802CEntry *)lbl_804C0810;
+        i = 0;
+        while (i < lbl_8055FB28) {
+            if (strcmp(name, entry->name) == 0) {
+                volatile int *countPtr = (volatile int *)((char *)entry + 0x3C);
+                void ** volatile *itemsPtr = (void ** volatile *)((char *)entry + 0x34);
+                int count = *countPtr;
+                void **items = *itemsPtr;
+                items[count] = input;
+                *countPtr = count + 1;
+            }
+            entry++;
+            i++;
+        }
+    }
+}
+#pragma cplusplus off
+#pragma pop
 
 void fn_802C2054(int arg0) { fn_802C1F80(arg0 - 4); }
 
