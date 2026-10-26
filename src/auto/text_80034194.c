@@ -161,6 +161,35 @@ void *__DSPHandler(void *arg0) {
     return arg0;
 }
 
+void *DSPAssertTask(void *arg0) {
+    s32 interrupts;
+    s32 irq;
+    void *current;
+
+    interrupts = OSDisableInterrupts();
+    current = lbl_8055D824;
+    if (current == arg0) {
+        lbl_8055D814 = arg0;
+        lbl_8055D810 = 1;
+        OSRestoreInterrupts(interrupts);
+        return arg0;
+    }
+    if (*(u32 *)((u8 *)arg0 + 4) < *(u32 *)((u8 *)current + 4)) {
+        lbl_8055D814 = arg0;
+        lbl_8055D810 = 1;
+        if (*(u32 *)current == 1) {
+            irq = OSDisableInterrupts();
+            *(volatile u16 *)0xCC00500A =
+                (*(volatile u16 *)0xCC00500A & ~0xA8) | 2;
+            OSRestoreInterrupts(irq);
+        }
+        OSRestoreInterrupts(interrupts);
+        return arg0;
+    }
+    OSRestoreInterrupts(interrupts);
+    return 0;
+}
+
 void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
@@ -613,19 +642,19 @@ void cbForCancelSync(void) {
 
 void fn_800356F4(s32 arg0, s32 arg1, s32 arg2) {
     s32 enabled;
-    u32 index;
+    u32 tick;
     u8 *info;
     enabled = OSDisableInterrupts();
-    if (lbl_8055D848 >= 5) {
-        lbl_8055D848 = 0;
+    if (*(volatile u32 *)&lbl_8055D848 >= 5) {
+        *(volatile u32 *)&lbl_8055D848 = 0;
     }
-    index = lbl_8055D848;
-    info = (u8 *)__ErrorInfo + index * 0x14;
-    *(s32 *)(info + 0x1C) = arg0;
-    *(s32 *)(info + 0x20) = arg1;
-    *(s32 *)(info + 0x24) = arg2;
-    *(s32 *)(info + 0x2C) = OSGetTick();
-    lbl_8055D848 = index + 1;
+    info = (u8 *)__ErrorInfo;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = arg0;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = arg1;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = arg2;
+    tick = OSGetTick();
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(enabled);
 }
 
