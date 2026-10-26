@@ -15,6 +15,8 @@ extern int lbl_80344D98;
 __declspec(section ".data") extern int lbl_80344D98;
 extern char lbl_80344D88[];
 extern void *fn_801284F8(int, void *);
+extern char lbl_8055C258[];
+__declspec(section ".sdata") extern char lbl_8055C258[];
 #pragma scheduling invalid_target
 void fn_80258354(void) {
     void *p = fn_801284F8(0x1328, lbl_80344D88);
@@ -56,6 +58,36 @@ void *fn_802583CC(void *o, int arg1, int arg2) {
   if(arg1>0) fn_80128668(o);
  }
  return o;
+}
+
+extern int fn_8023512C(void *);
+void fn_80258550(void *arg0, const char *arg1, const char *arg2, int arg3) {
+    int count;
+    char *entry;
+    char *dst;
+    int n;
+    char c;
+    count = *(int *)((char *)arg0 + 8);
+    entry = *(char **)((char *)arg0 + 4) + count * 0x48;
+    *(int *)((char *)arg0 + 8) = count + 1;
+    dst = entry;
+    n = 0x20;
+    while (--n > 0) {
+        c = *arg1++;
+        *dst++ = c;
+        if (c == 0) break;
+    }
+    if (n == 0) dst[-1] = 0;
+    dst = entry + 0x20;
+    n = 0x20;
+    while (--n > 0) {
+        c = *arg2++;
+        *dst++ = c;
+        if (c == 0) break;
+    }
+    if (n == 0) dst[-1] = 0;
+    *(int *)(entry + 0x40) = fn_8023512C((void *)arg2);
+    *(int *)(entry + 0x44) = arg3;
 }
 
 extern void *fn_80207848(int, int);
