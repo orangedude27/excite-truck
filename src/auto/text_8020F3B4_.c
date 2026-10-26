@@ -1,4 +1,15 @@
 extern long fn_802EC104(long);
+#pragma cplusplus on
+struct Dummy_802113D8 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6(long *, char *);
+};
+#pragma cplusplus off
 extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
 extern long lbl_8055B658;
@@ -518,13 +529,21 @@ extern signed char lbl_8055EEEC;
 extern signed char lbl_8055EEED;
 extern float lbl_80563400;
 void fn_802113D8(void) {
+    struct VTable {
+        void *pad[6];
+        void (*call)(void *, long *, char *);
+    };
+    struct Object {
+        struct VTable *vtable;
+    };
     long mode;
     long n;
     long q;
     long r;
     long zero = 0;
     long minusTwo = -2;
-    long *object;
+    void *base;
+    struct Object *object;
 
     if (fn_80265D64() == 0) {
         __AXDSPInitCallback_801769E0();
@@ -536,8 +555,9 @@ void fn_802113D8(void) {
     lbl_8055B65C = lbl_8055B658;
     lbl_8055EEEC = zero;
     lbl_8055EEED = zero;
-    object = (long *)fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC()) + 8;
-    (*(void (**)(long *, long, long))(*(long **)object)[6])(object, (long)&lbl_8055B674, (long)&lbl_8033C970);
+    base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+    object = *(struct Object **)((char *)base + 0x20);
+    object->vtable->call(object, &lbl_8055B674, lbl_8033C970);
     mode = *(long *)fn_8020FAF0();
     if (mode == 1) {
         lbl_8055EEE0 = -1;
