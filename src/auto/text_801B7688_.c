@@ -5,6 +5,7 @@ extern float lbl_80562708;
 extern float lbl_80562704;
 extern float lbl_80562738;
 void fn_801B7760(int, int, float, float);
+#pragma dont_inline fn_801B78EC
 void fn_801B78EC(int, int, int, float, float, float);
 float fn_8002F234(float, float, float, float, float);
 void fn_801B7C8C(int, float *, float *);
@@ -23,33 +24,90 @@ int fn_801B7688(int arg0) {
     if (flags & 0x100) {
         state = fn_801769B8();
         zero = (state == 0);
-        if (arg0 == 0x52)
-            goto shared;
-        if (arg0 >= 0x52)
-            goto done;
-        if (arg0 == 0x50)
-            goto shared;
-        if (arg0 > 0x50) {
-            if (zero == 0) {
-                if (state == 1)
-                    result = 0;
-            }
-        }
+        if (arg0 == 0x52) goto shared;
+        if (arg0 >= 0x52) goto done;
+        if (arg0 == 0x50) goto shared;
+        if (arg0 >= 0x50) goto middle;
+        if (arg0 < 0x50) goto done;
         goto done;
+
+middle:
+        if (zero != 0) goto shared;
+        if (state == 1) result = 0;
+        goto done;
+
 shared:
-        if (zero != 0)
-            result = 0;
-        if (state == 1)
-            result = 3;
-        if (fn_801769A8() & 0x400)
-            result = 4;
+        if (zero != 0) result = 0;
+        if (state == 1) result = 3;
+        if (fn_801769A8() & 0x400) result = 4;
     } else {
         result = 2;
     }
+
 done:
-    if (fn_801796B4() != 0 && (unsigned)(arg0 - 0x50) <= 1)
-        result = 0;
+    if (fn_801796B4() != 0 && (unsigned)(arg0 - 0x50) <= 1) result = 0;
     return result;
+}
+
+float cos(float);
+float sin(float);
+void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
+    void *p = *(void **)arg1;
+    void *q = *(void **)((char *)p + 0x14);
+    float t = *(float *)((char *)arg1 + 4);
+    float x = *(float *)p + t * (*(float *)q - *(float *)p);
+    float y = *((float *)p + 1) + t * (*((float *)q + 1) - *((float *)p + 1));
+    float z = *((float *)p + 2) + t * (*((float *)q + 2) - *((float *)p + 2));
+    float w0 = *((float *)p + 3);
+    float w = w0 + t * (*((float *)q + 3) - w0);
+    float norm = fn_8002F234(z * z + w * w, 0, 0, 0, 0);
+    float inv = lbl_80562704 / norm;
+    float a = z * inv;
+    float b = w * inv;
+    float c = -b;
+    float dx = c * farg0;
+    x += w * farg0;
+    y += c * farg0;
+    {
+        float pos[2];
+        float dir[2];
+        float co = cos(farg1);
+        float si = sin(farg1);
+        dir[0] = a * co - b * si;
+        dir[1] = a * si + b * co;
+        pos[0] = x;
+        pos[1] = y;
+        fn_801B7C8C(arg0, pos, dir);
+    }
+    *(int *)((char *)arg0 + 0x3C) = 0;
+}
+
+extern void fn_80135B24(void *, float);
+extern void fn_80136468(void *, float);
+void fn_801B78EC(int arg0, int arg1, int arg2, float farg0, float farg1, float farg2) {
+    int sp8;
+    float spC;
+    int sp10;
+    int sp14;
+    float sp18;
+    int sp1C;
+    int sp20 = 0;
+    float sp24 = lbl_80562708;
+    int sp28 = 0x2710;
+
+    (void)arg1;
+    if (arg2 != 0) {
+        fn_80135B24(&sp14, farg1);
+        sp20 = sp14;
+        sp24 = sp18;
+        sp28 = sp1C;
+    } else {
+        fn_80136468(&sp8, farg1);
+        sp20 = sp8;
+        sp24 = spC;
+        sp28 = sp10;
+    }
+    fn_801B7760(arg0, (int)&sp20, farg0, farg2);
 }
 
 float fn_801B79AC(void) {
@@ -81,6 +139,70 @@ void fn_801B7BA8(float *arg0, float *arg1, float *arg2) {
     arg0[6] = b[0]; arg0[7] = b[1]; arg0[8] = b[2];
 }
 
+void fn_801E9DC4(void *, float *, float *);
+int fn_801E9E30(void *, float *);
+void fn_801E9E78(void *, float *, float *, int *);
+void fn_801B7BA8(float *, float *, float *);
+extern float lbl_80562710, lbl_80562724, lbl_80562728, lbl_8056272C;
+void fn_801B7C8C(int arg0, float *arg1, float *arg2) {
+    float base[3];
+    float points[9];
+    float matrix[12];
+    float out[9];
+    float normal[3];
+    float cross[3];
+    float delta1[3];
+    float delta2[3];
+    int flags;
+    int i;
+    float x = arg2[0];
+    float y = arg2[1];
+    float nx = -x;
+    float a = arg1[0];
+    float b = arg1[1];
+    float z = (float)nx;
+
+    base[0] = a;
+    base[1] = lbl_80562708;
+    base[2] = b;
+
+    points[0] = a + x * lbl_80562724;
+    points[1] = lbl_80562708;
+    points[2] = b + y * lbl_80562724;
+    points[3] = a + x * lbl_80562710 + y * lbl_80562710;
+    points[4] = lbl_80562708;
+    points[5] = b + y * lbl_80562710 + z * lbl_80562710;
+    points[6] = a + y * lbl_80562728;
+    points[7] = lbl_80562708;
+    points[8] = b + z * lbl_80562728;
+
+    fn_801E9DC4((char *)arg0 + 0x40, arg1, arg2);
+    for (i = 0; i < 3; i++) {
+        if (fn_801E9E30((char *)arg0 + 0x40, &points[i * 3]) == 0)
+            break;
+    }
+    flags = i < 3;
+    if (!flags) {
+        fn_801E9E78((char *)arg0 + 0x40, base, matrix, (int *)0);
+        delta1[0] = points[3] - points[0];
+        delta1[1] = points[4] - points[1];
+        delta1[2] = points[5] - points[2];
+        delta2[0] = points[6] - points[0];
+        delta2[1] = points[7] - points[1];
+        delta2[2] = points[8] - points[2];
+        PSVECCrossProduct(delta2, delta1, matrix);
+        PSVECNormalize(matrix, matrix);
+    } else {
+        fn_801E9DC4((char *)arg0 + 0x40, arg1, arg2);
+        fn_801E9E78((char *)arg0 + 0x40, base, matrix, (int *)0);
+    }
+    fn_801B7BA8(out, matrix, arg2);
+    base[0] += out[3] * lbl_8056272C;
+    base[1] += out[4] * lbl_8056272C;
+    base[2] += out[5] * lbl_8056272C;
+    *(float **)(arg0) = (float *)0;
+}
+
 void fn_801B8040(int arg0, int arg1, float farg0) {
     fn_801B7760(arg0, arg1, farg0, lbl_80562708);
 }
@@ -93,6 +215,38 @@ void fn_801B8054(int arg0, int arg1, float farg0, float farg1) {
     fn_801B78EC(arg0, arg1, 1, farg0, farg1, lbl_80562708);
 }
 
+#pragma optimize_for_size on
+#pragma scheduling invalid_target
+void fn_801B8060(int arg0, void *arg1) {
+    float position[2];
+    float direction[2];
+    float x;
+    float y;
+    float sum;
+    float xPos;
+    float yPos;
+    float length;
+    float scale;
+
+    x = *(float *)((char *)arg1 + 0x18);
+    y = *(float *)((char *)arg1 + 0x20);
+    sum = x * x + y * y;
+    xPos = *(float *)((char *)arg1 + 0x24);
+    yPos = *(float *)((char *)arg1 + 0x2C);
+    position[0] = xPos;
+    position[1] = yPos;
+    direction[0] = x;
+    direction[1] = y;
+    length = (float)((double (*)(float, float, float, float, float))fn_8002F234)(
+        sum, y, x, yPos, xPos);
+    scale = (lbl_80562738 > length) ? lbl_80562738 : length;
+    scale = lbl_80562704 / scale;
+    direction[0] *= scale;
+    direction[1] *= scale;
+    fn_801B7C8C(arg0, position, direction);
+}
+#pragma scheduling on
+#pragma optimize_for_size off
 extern char lbl_80336718[];
 extern int fn_802E317C(char *, ...);
 void fn_801B8100(void *arg0, int arg1, int arg2) {
