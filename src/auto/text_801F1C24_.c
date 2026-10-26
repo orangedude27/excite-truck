@@ -507,23 +507,24 @@ void *fn_801F31A0(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma unroll off
 void fn_801F31E8(int arg0, unsigned char *arg1) {
     unsigned char *p = arg1 + 0x2C;
-    int i;
-    for (i=0; i<0x20; i++) {
+    int count = 0x20;
+    do {
         unsigned char t;
-        t=p[0]; p[0]=p[3]; p[3]=t;
-        t=p[1]; p[1]=p[2]; p[2]=t;
-        t=p[4]; p[4]=p[7]; p[7]=t;
-        t=p[5]; p[5]=p[6]; p[6]=t;
-        t=p[8]; p[8]=p[11]; p[11]=t;
-        t=p[9]; p[9]=p[10]; p[10]=t;
-        t=p[12]; p[12]=p[15]; p[15]=t;
-        t=p[13]; p[13]=p[14]; p[14]=t;
+        t = p[0]; p[0] = p[3]; p[3] = t;
+        t = p[1]; p[1] = p[2]; p[2] = t;
+        t = p[4]; p[4] = p[7]; p[7] = t;
+        t = p[5]; p[5] = p[6]; p[6] = t;
+        t = p[8]; p[8] = p[11]; p[11] = t;
+        t = p[9]; p[9] = p[10]; p[10] = t;
+        t = p[12]; p[12] = p[15]; p[15] = t;
+        t = p[13]; p[13] = p[14]; p[14] = t;
         p += 0x10;
-    }
+    } while (--count != 0);
 }
-
+#pragma unroll reset
 void fn_801F3280(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x3C) = arg1;
 }
@@ -947,18 +948,18 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
 }
 
 #pragma pop
-void fn_801F41CC(int unused, unsigned char *arg0) {
+void fn_801F41CC(int unused, volatile unsigned char *arg0) {
     unsigned char t;
-    t=arg0[0x2c]; arg0[0x2c]=arg0[0x2f]; arg0[0x2f]=t;
-    t=arg0[0x2d]; arg0[0x2d]=arg0[0x2e]; arg0[0x2e]=t;
-    t=arg0[0x30]; arg0[0x30]=arg0[0x33]; arg0[0x33]=t;
-    t=arg0[0x31]; arg0[0x31]=arg0[0x32]; arg0[0x32]=t;
-    t=arg0[0x34]; arg0[0x34]=arg0[0x37]; arg0[0x37]=t;
-    t=arg0[0x35]; arg0[0x35]=arg0[0x36]; arg0[0x36]=t;
-    t=arg0[0x38]; arg0[0x38]=arg0[0x3b]; arg0[0x3b]=t;
-    t=arg0[0x39]; arg0[0x39]=arg0[0x3a]; arg0[0x3a]=t;
-    t=arg0[0x3c]; arg0[0x3c]=arg0[0x3f]; arg0[0x3f]=t;
-    t=arg0[0x3d]; arg0[0x3d]=arg0[0x3e]; arg0[0x3e]=t;
+    t = arg0[0x2c]; arg0[0x2c] = arg0[0x2f]; arg0[0x2f] = t;
+    t = arg0[0x2d]; arg0[0x2d] = arg0[0x2e]; arg0[0x2e] = t;
+    t = arg0[0x30]; arg0[0x30] = arg0[0x33]; arg0[0x33] = t;
+    t = arg0[0x31]; arg0[0x31] = arg0[0x32]; arg0[0x32] = t;
+    t = arg0[0x34]; arg0[0x34] = arg0[0x37]; arg0[0x37] = t;
+    t = arg0[0x35]; arg0[0x35] = arg0[0x36]; arg0[0x36] = t;
+    t = arg0[0x38]; arg0[0x38] = arg0[0x3b]; arg0[0x3b] = t;
+    t = arg0[0x39]; arg0[0x39] = arg0[0x3a]; arg0[0x3a] = t;
+    t = arg0[0x3c]; arg0[0x3c] = arg0[0x3f]; arg0[0x3f] = t;
+    t = arg0[0x3d]; arg0[0x3d] = arg0[0x3e]; arg0[0x3e] = t;
 }
 
 #pragma scheduling invalid_target
