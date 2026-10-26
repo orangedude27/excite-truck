@@ -164,7 +164,7 @@ void fn_8015EF84(void **arg0) {
 }
 
 #pragma push
-#pragma dont_inline fn_8015ECC0
+#pragma inline_depth 0
 int fn_8015F148(void **arg0, int arg1) {
     int count = 0;
     int i;
