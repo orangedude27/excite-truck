@@ -36,6 +36,7 @@ extern char lbl_80560063;
 extern char lbl_8034E95C;
 extern char lbl_8034E980;
 extern int fn_802E2C20(void);
+extern long fn_802E30C8(char *, long);
 #pragma push
 #pragma scheduling invalid_target
 long *fn_802E9A3C(long arg0, long arg1) {
