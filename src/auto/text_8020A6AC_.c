@@ -119,7 +119,40 @@ int fn_8020A878(void *arg0) {
     fn_802E6B04();
     return 1;
 }
-#pragma scheduling on
+
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8020A978(void *arg0) {
+    class Dispatch {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void clear();
+        virtual int state();
+    };
+    register int offset = 0;
+    register int count = 0;
+    Dispatch *object;
+
+    do {
+        object = *(Dispatch **)((char *)*(void **)((char *)arg0 + 4) + offset);
+        if (object != 0) {
+            if (object->state() != 3) {
+                object = *(Dispatch **)((char *)*(void **)((char *)arg0 + 4) + offset);
+                object->clear();
+            }
+        }
+        count++;
+        offset += 4;
+    } while (count < 0x200);
+    fn_802E6264();
+}
+#pragma cplusplus reset
+#pragma pop
 
 #pragma scheduling on
 
