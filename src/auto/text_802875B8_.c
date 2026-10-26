@@ -481,30 +481,44 @@ void fn_80288070(s32 arg0, s32 arg1, s32 arg2) {
 
 void fn_802880F4(void) {
     extern int fn_801EA994(void);
-    extern int fn_8012850C(int, const void *, int);
+    extern int fn_8012850C(int, const char *, int);
     extern int fn_8002F37C(int, void *, void *, int, int);
     extern int fn_801EA9A0(int);
     extern int fn_801EE0C8(int);
-    extern void fn_80287CE8(int, void *, int, int);
     extern int lbl_80488648[];
     extern int lbl_8055F6C4;
     extern char lbl_80348A74[];
     int count = fn_801EA994();
-    int *table = lbl_80488648;
-    int offset = 0;
-    int i = 0;
-    lbl_8055F6C4 = fn_8002F37C(fn_8012850C(count * 0x28 + 0x10, lbl_80348A74, count * 0x28), fn_80287C30, fn_80287C80, 0x28, count);
-    while (i < fn_801EA994()) {
-        int obj = fn_801EA9A0(i);
-        int id;
-        if ((unsigned)i < 8)
-            id = *table;
-        else
-            id = 0;
-        fn_80287CE8(lbl_8055F6C4 + offset, (void *)(obj + 0x88), fn_801EE0C8(id), *(int *)(obj + 0xB8));
+    int memory = fn_8012850C(count * 0x28 + 0x10, lbl_80348A74, count * 0x28);
+    lbl_8055F6C4 = fn_8002F37C(memory, fn_80287C30, fn_80287C80, 0x28, count);
+    {
+        int *table = lbl_80488648;
+        int offset;
+        int i;
+        i = 0;
+        offset = 0;
+        goto test;
+    loop:
+        {
+            int obj = fn_801EA9A0(i);
+            int id;
+            int value;
+            if ((unsigned)i < 8)
+                id = *table;
+            else
+                id = 0;
+            value = fn_801EE0C8(id);
+            fn_80287CE8(lbl_8055F6C4 + offset,
+                        (void *)(obj + 0x88), value,
+                        *(int *)(obj + 0xB8));
+        }
         table++;
         offset += 0x28;
         i++;
+    test:
+        count = fn_801EA994();
+        if (i < count)
+            goto loop;
     }
 }
 
