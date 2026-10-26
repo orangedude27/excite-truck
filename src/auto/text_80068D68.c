@@ -5731,26 +5731,26 @@ BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR addr) {
 }
 
 BOOLEAN BTM_SecRegister(tBTM_APPL_INFO *arg0) {
-    u8 *p = lbl_803C0F78;
-    u8 *src = (u8 *)arg0;
-    u32 first = *(u32 *)(src + 0);
-    u32 second = *(u32 *)(src + 4);
-    u8 level = p[0x27C0];
+    volatile u32 *dest = (volatile u32 *)(lbl_803C0F78 + 0x190C);
+    volatile u32 *src = (volatile u32 *)arg0;
+    u32 first = src[0];
+    u32 second = src[1];
+    u8 level = lbl_803C0F78[0x27C0];
     u32 third;
     u32 fourth;
     u32 fifth;
     u32 sixth;
 
-    *(u32 *)(p + 0x190C) = first;
-    *(u32 *)(p + 0x1910) = second;
-    third = *(u32 *)(src + 8);
-    fourth = *(u32 *)(src + 0xC);
-    *(u32 *)(p + 0x1914) = third;
-    *(u32 *)(p + 0x1918) = fourth;
-    fifth = *(u32 *)(src + 0x10);
-    sixth = *(u32 *)(src + 0x14);
-    *(u32 *)(p + 0x191C) = fifth;
-    *(u32 *)(p + 0x1920) = sixth;
+    dest[0] = first;
+    dest[1] = second;
+    third = src[2];
+    fourth = src[3];
+    dest[2] = third;
+    dest[3] = fourth;
+    fifth = src[4];
+    sixth = src[5];
+    dest[4] = fifth;
+    dest[5] = sixth;
     if (level >= 4)
         fn_8007093C(0xD0003, lbl_80316870);
     return TRUE;
@@ -11577,6 +11577,30 @@ int port_get_signal_changes(void *arg0, int arg1, int arg2) {
         if (arg2 & 8) signals |= 0x1000;
     }
     return *((int *)((char *)arg0 + 0x88)) & signals;
+}
+
+extern void RFCOMM_ConnectInd(BD_ADDR, UINT16, UINT16, UINT8);
+extern void RFCOMM_ConnectCnf(u16, s16);
+extern void RFCOMM_ConfigInd(u32, u8 *);
+extern void RFCOMM_ConfigCnf_800910D4(u32, u8 *);
+extern void fn_800911DC(void);
+extern void RFCOMM_DisconnectInd(u16, s32);
+extern void RFCOMM_BufDataInd(u32, BT_HDR *);
+extern void RFCOMM_CongestionStatusInd(UINT16, BOOLEAN);
+void rfcomm_l2cap_if_init(void) {
+    tL2CAP_APPL_INFO *info = (tL2CAP_APPL_INFO *)(lbl_803C4828 + 0x14);
+
+    info->pL2CA_ConnectInd_Cb = RFCOMM_ConnectInd;
+    info->pL2CA_ConnectCfm_Cb = (tL2CA_CONNECT_CFM_CB *)RFCOMM_ConnectCnf;
+    info->pL2CA_ConnectPnd_Cb = 0;
+    info->pL2CA_ConfigInd_Cb = (tL2CA_CONFIG_IND_CB *)RFCOMM_ConfigInd;
+    info->pL2CA_ConfigCfm_Cb = (tL2CA_CONFIG_CFM_CB *)RFCOMM_ConfigCnf_800910D4;
+    info->pL2CA_DisconnectInd_Cb = (tL2CA_DISCONNECT_IND_CB *)RFCOMM_DisconnectInd;
+    info->pL2CA_DisconnectCfm_Cb = 0;
+    info->pL2CA_QoSViolationInd_Cb = (tL2CA_QOS_VIOLATION_IND_CB *)fn_800911DC;
+    info->pL2CA_DataInd_Cb = (tL2CA_DATA_IND_CB *)RFCOMM_BufDataInd;
+    info->pL2CA_CongestionStatus_Cb = RFCOMM_CongestionStatusInd;
+    L2CA_Register(3, info);
 }
 
 void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
