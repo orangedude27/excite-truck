@@ -79,7 +79,7 @@ struct Queue80145D8C {
 };
 extern Queue80145D8C lbl_8042FBC0;
 extern char lbl_8032CEC8[];
-extern char lbl_80559E14[];
+__declspec(section ".sdata") extern char lbl_80559E14[];
 void fn_802E30C8(const char *);
 extern char lbl_8032D0D0[];
 void fn_8000FF88(s32, s32, s32, f32, f32, f32);
@@ -386,12 +386,13 @@ extern "C" void fn_801457D0(void *arg0, s32 arg1, s32 arg2) {
     fn_802E3AD0(arg1, lbl_80559E14);
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8014589C(void *arg0, s32 arg1, s32 arg2) {
     char *base = lbl_8032CEC8;
     fn_802E3AD0(arg1, base + 0x170);
     fn_802E3AD0(arg1, base + 0x180);
-    s32 i = 0;
     s32 offset = 0;
+    s32 i = 0;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         u8 *entry = *(u8 **)arg0 + offset;
         fn_802E3AD0(arg1, base + 0x1A8,
@@ -403,7 +404,7 @@ extern "C" void fn_8014589C(void *arg0, s32 arg1, s32 arg2) {
     }
     fn_802E3AD0(arg1, lbl_80559E14);
 }
-
+#pragma scheduling on
 extern "C" void fn_8014595C(void *arg0, const char *arg1) {
     char *base = lbl_8032CEC8;
     fn_802E3AD0((s32)arg1, base + 0x1D0);
@@ -528,12 +529,16 @@ extern "C" void fn_80145C7C(void * __restrict arg0, u32 arg1) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
-    f32 temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
-    f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(
-        *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
-    fn_802354A0((s32)arg1, arg2, *(s32 *)((u8 *)arg0 + 0x18),
-        value, temp_f31, lbl_805615D4, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
+    f32 input10 = *(f32 *)((u8 *)arg0 + 0x10);
+    f32 temp_f31 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), input10);
+    f32 temp_f30 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 input4 = *(f32 *)((u8 *)arg0 + 4);
+    s32 mode = *(s32 *)((u8 *)arg0 + 0xC);
+    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(mode, input4);
+    ((void (*)(s32, s32, f32, f32, f32, f32, f32, s32))fn_802354A0)(
+        (s32)arg1, arg2, value, temp_f30, lbl_805615D4,
+        temp_f31, *(f32 *)((u8 *)arg0 + 0x14),
+        *(s32 *)((u8 *)arg0 + 0x18));
 }
 #pragma scheduling on
 #pragma dont_inline reset
