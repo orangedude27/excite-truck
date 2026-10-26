@@ -1,5 +1,4 @@
 extern void *lbl_80560078;
-extern void OSSleepTicks(unsigned long long);
 extern void *memcpy(void *, const void *, unsigned long);
 extern char lbl_80560060;
 extern char lbl_8052E658[0x610];
@@ -370,23 +369,21 @@ void fn_802EC1E4(void) {
     register int start;
     register unsigned int *timebase;
     unsigned int tick;
+    int current;
 
     fn_802EC1D8();
     ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E95C);
     start = fn_802E2C20();
     timebase = (unsigned int *)0x80000000;
-    for (;;) {
-        int current = fn_802E2C20();
+    do {
+        current = fn_802E2C20();
         if (current - start > 0xBB8) {
             ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E980);
             break;
         }
         tick = timebase[0x3E];
         OSSleepTicks((unsigned long long)(((tick / 1000) & 0x0FFFFFFC) + tick / 4000));
-        if ((unsigned char)lbl_805600C8 == 0) {
-            break;
-        }
-    }
+    } while ((unsigned char)lbl_805600C8 != 0);
 }
 #pragma pop
 extern long fn_800B7C64(long, long);
