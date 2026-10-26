@@ -373,6 +373,7 @@ void *fn_80287C80(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma dont_inline on
 void fn_80287CE8(int arg0, void *arg1, int arg2, int arg3) {
     char local[0x40];
     sprintf(local, lbl_80348A20, arg1);
@@ -437,23 +438,31 @@ void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
     obj = ((Obj *(*)(Obj *, s32))obj->vtable[2])(obj, arg2);
     ((void (*)(Obj *, Obj *, s32))obj->vtable[13])(arg0, obj, arg3);
 }
-#pragma scheduling on
-void fn_80287F90(void *arg0, void **arg1, s32 arg2, s32 arg3, s32 *src) {
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_80287F90(void *arg0, Obj **arg1, s32 arg2, s32 arg3, s32 *src) {
     s32 sp8[3];
-    void *obj;
-    void *ret;
+    Obj *obj;
+    Obj *ret;
+    s32 a;
+    s32 b;
+    s32 c;
     obj = *arg1;
-    if (obj == 0 || ((s32 (*)(void *, s32))(*(void ***)obj)[2])(obj, arg2) == 0) {
+    if (obj == 0 || ((s32 (*)(Obj *, s32))obj->vtable[2])(obj, arg2) == 0) {
         fn_802E317C(lbl_80348A4C, arg2);
     }
-    sp8[0] = src[0];
-    sp8[1] = src[1];
-    sp8[2] = src[2];
+    a = src[0];
+    b = src[1];
+    c = src[2];
+    sp8[0] = a;
+    sp8[1] = b;
+    sp8[2] = c;
     obj = *arg1;
-    ret = ((void *(*)(void *, s32))(*(void ***)obj)[2])(obj, arg2);
-    ((void (*)(void *, void *, s32, s32 *))(*(void ***)ret)[14])(arg0, ret, arg3, sp8);
+    ret = ((Obj *(*)(Obj *, s32))obj->vtable[2])(obj, arg2);
+    ((void (*)(void *, Obj *, s32, s32 *))ret->vtable[14])(arg0, ret, arg3, sp8);
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw reset
 s32 fn_80288060(s32 arg0, s32 arg1) {
     return *(s32 *)(arg0 + (arg1 << 2) + 4);
 }
