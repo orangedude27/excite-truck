@@ -595,7 +595,7 @@ void fn_801EC19C(void) {
 
 }
 extern s32 lbl_802F9A08[];
-extern s32 fn_801EB000();
+extern s32 fn_801EB000(s32 *, void *);
 extern s32 fn_801EB96C(s32 *, s32);
 extern void fn_801EB634(void *, s32);
 #pragma dont_inline on
