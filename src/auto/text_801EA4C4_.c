@@ -11,10 +11,11 @@ extern s32 fn_80265D7C(void);
 extern void fn_80128668(s32);
 extern void *fn_801284F8(s32, void *);
 extern unsigned int memset(void *, int, unsigned int);
+#pragma scheduling invalid_target
 void fn_801EA4C4(void) {
     void *block;
     lbl_8055EB7C = 1;
-    block = fn_801284F8(0x608, &lbl_80339E08);
+    block = fn_801284F8(0x608, lbl_80339E08);
     lbl_8055EB78 = (s32)block;
     memset(block, 0, 0x608);
     *(s32 *)(lbl_8055EB78 + 0x5E8) = 0;
@@ -26,7 +27,7 @@ void fn_801EA4C4(void) {
     *(s32 *)(lbl_8055EB78 + 0x600) = 6;
     *(s32 *)(lbl_8055EB78 + 0x604) = 7;
 }
-
+#pragma scheduling on
 void fn_801EA56C(void) {
     fn_80128668(*(s32 *)&lbl_8055EB78);
     lbl_8055EB78 = 0;
