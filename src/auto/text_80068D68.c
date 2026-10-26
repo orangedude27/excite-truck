@@ -12720,12 +12720,11 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 arg1) {
 }
 
 void rfc_timer_start(void *arg0, u16 arg1) {
-    u8 *mcb = (u8 *)arg0;
     if (lbl_803C4828[0x414] >= 4) {
         fn_80070954(0x90003, lbl_80319EC0, arg1);
     }
-    *(void **)(mcb + 0x10) = mcb;
-    btu_start_timer(mcb, 0xB, arg1);
+    *(void **)((u8 *)arg0 + 0x10) = arg0;
+    btu_start_timer(arg0, 0xB, arg1);
 }
 
 void rfc_timer_stop(void *arg0) {
