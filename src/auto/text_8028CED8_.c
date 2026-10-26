@@ -107,7 +107,7 @@ void fn_8028D084(void *arg0, void *arg1) {
 extern int lbl_804B3470;
 extern char lbl_80348CA0[];
 extern int lbl_8055C8D0;
-extern int fn_801345D8(void *, int, const void *, int);
+extern int fn_801345D8(void *, int, const void *, ...);
 extern void *fn_802AE414(void *);
 extern void fn_8028D084(void *, void *);
 #pragma dont_inline on
