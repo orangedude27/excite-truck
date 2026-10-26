@@ -364,6 +364,7 @@ extern "C" void fn_801456E8(void *arg0, s32 arg1, s32 arg2) {
     fn_802E3AD0(arg1, lbl_80559E14);
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801457D0(void *arg0, s32 arg1, s32 arg2) {
     char *base = lbl_8032CEC8;
     s32 offset;
@@ -385,8 +386,7 @@ extern "C" void fn_801457D0(void *arg0, s32 arg1, s32 arg2) {
     }
     fn_802E3AD0(arg1, lbl_80559E14);
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8014589C(void *arg0, s32 arg1, s32 arg2) {
     char *base = lbl_8032CEC8;
     fn_802E3AD0(arg1, base + 0x170);
