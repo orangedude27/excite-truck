@@ -30,10 +30,7 @@ extern float lbl_80564D7C;
 extern float lbl_80564D80;
 extern float PSVECMag(void *);
 extern char lbl_8034ACC0[];
-#pragma push
-#pragma small_data on
-extern const char lbl_8055CF78[];
-#pragma pop
+extern char lbl_8055CF78[];
 extern unsigned char lbl_8055CF71;
 extern int fn_801E85B4(void);
 extern void fn_802BF160(void);
@@ -45,12 +42,12 @@ extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
 #pragma small_data on
 int fn_802BECE4(const char *arg0, int arg1) {
-    int a, b, c, d;
+    int d, c, b, a;
     int result = arg1;
-    d = c = b = a = 0;
-    if (sscanf(arg0, lbl_8034ACC0, &a, &b, &c, &d) == 4) {
-        result = ((a & 0xff) << 24) | ((b & 0xff) << 16) |
-                 ((c & 0xff) << 8) | (d & 0xff);
+    a = b = c = d = 0;
+    if (sscanf(arg0, lbl_8034ACC0, &d, &c, &b, &a) == 4) {
+        result = ((d & 0xff) << 24) | ((c & 0xff) << 16) |
+                 ((b & 0xff) << 8) | (a & 0xff);
     } else {
         sscanf(arg0, lbl_8055CF78, &result);
     }
