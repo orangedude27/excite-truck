@@ -162,19 +162,38 @@ extern "C" s32 fn_802E36D8(s32 arg0) {
         return fn_802E35C0((const char *)arg0, result);
     return -1;
 }
-#pragma cplusplus off
-void fn_802E3734(s32 *arg0) {
+#pragma cplusplus on
+extern "C" void fn_802E3734(s32 *arg0) {
+    class Result {
+    public:
+        virtual void a0();
+        virtual void a1();
+        virtual void a2();
+        virtual void a3();
+        virtual void a4();
+        virtual void destroy(void *);
+    };
+    class Entry {
+    public:
+        virtual void a0();
+        virtual void a1();
+        virtual void a2();
+        virtual void a3();
+        virtual void a4();
+        virtual void a5();
+        virtual void a6();
+        virtual void a7();
+        virtual void a8();
+        virtual Result *get();
+    };
     s32 obj = fn_802E33D8(*arg0, lbl_8034CFB4, 0xE4);
-    s32 entry = *(s32 *)(obj + 0x24);
-    ((void (*)(s32))(*(s32 *)entry + 0x2C))(entry);
-    ((void (*)(s32, s32))(*(s32 *)entry + 0x1C))(entry, entry);
-    *(s32 *)(obj + 0x24) = 0;
+    Entry *entry = *(Entry **)((unsigned char *)obj + 0x24);
+    Result *result = entry->get();
+    result->destroy(entry);
+    *(void **)((unsigned char *)obj + 0x24) = 0;
     *((unsigned char *)obj + 0x20) = 0;
     *arg0 = -1;
 }
-
-#pragma scheduling invalid_target
-#pragma cplusplus on
 extern "C" void fn_802E37C4(s32 arg0) {
     class Obj {
     public:
