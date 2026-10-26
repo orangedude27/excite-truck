@@ -7,7 +7,9 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 #define btsnd_hcic_reject_conn btsnd_hcic_reject_conn_public
 #define btsnd_hcic_reject_esco_conn btsnd_hcic_reject_esco_conn_public
+#define btsnd_hcic_accept_conn btsnd_hcic_accept_conn_public
 #include "revolution/BTE/stack/include/hcimsgs.h"
+#undef btsnd_hcic_accept_conn
 #undef btsnd_hcic_reject_esco_conn
 #undef btsnd_hcic_reject_conn
 #include "revolution/BTE/bta/include/ptim.h"
