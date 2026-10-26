@@ -153,6 +153,7 @@ void fn_8020F730(void) {
 }
 
 #pragma use_lmw_stmw off
+#pragma dont_inline on
 int fn_8020FB80(void *arg0) {
     int offset;
     int i;
@@ -167,6 +168,7 @@ int fn_8020FB80(void *arg0) {
     }
     return ((int (*)(int))fn_8020F3B4)(0);
 }
+#pragma dont_inline reset
 #pragma use_lmw_stmw reset
 void *fn_8020FC04(void) {
     char *data = (char *)fn_8020FAF0();
