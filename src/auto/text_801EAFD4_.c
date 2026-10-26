@@ -25,7 +25,7 @@ extern void *fn_8012C370(s32, u32 *, void *, void *, u8 *);
 extern s32 fn_8012C33C(void *);
 extern s32 fn_801E2CCC(void *, f32 **);
 extern void fn_801EB6A8(s32);
-extern s32 fn_801EB000();
+extern s32 fn_801EB000(s32 *, void *);
 extern void fn_802CDDC8(s32);
 extern void fn_802E317C(const char *, ...);
 extern void fn_802AE7F4(void);
@@ -55,14 +55,16 @@ s32 fn_801EB000(s32 *arg0, void *arg1) {
     s32 *node;
     s32 *child;
     s32 i;
+    register s32 type;
 
     node = arg0;
     while (node != 0) {
-        if (node[0] & 0x100) {
+        type = node[0];
+        if (type & 0x100) {
             fn_801EAFD4(node);
             fn_801EB000((s32 *)node[2], arg1);
         } else {
-            switch (node[0]) {
+            switch (type) {
             case 0:
                 item = node;
                 i = 0;
