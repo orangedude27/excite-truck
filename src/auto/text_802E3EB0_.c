@@ -5,7 +5,9 @@ extern unsigned int lbl_8055FF38;
 extern unsigned char lbl_804FBAA0[0x10 * 0x91];
 extern unsigned int lbl_8055D1B4;
 extern unsigned int lbl_8055D1B8;
+#pragma small_data off
 extern unsigned int lbl_8034D130;
+#pragma small_data on
 extern int strncmp(const char *, const char *, unsigned int);
 extern char *strcpy(char *, const char *);
 extern void *memset(void *, int, unsigned int);
