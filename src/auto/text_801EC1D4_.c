@@ -187,6 +187,12 @@ void fn_801ECB80(void *arg0) {
         *(long *)((char *)arg0 + 0x3F8) = n > 1 ? 1 : n;
     }
 }
+
+void fn_801ECC70(void *arg0) {
+    void *ptr = *(void **)((char *)arg0 + 0x3C);
+    fn_802C99E8(ptr, *(float *)((char *)lbl_80488668 + 8) * *(float *)((char *)ptr + 0x2CC));
+}
+
 #pragma pop
 
 #pragma scheduling invalid_target
