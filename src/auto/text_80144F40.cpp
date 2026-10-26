@@ -1,5 +1,7 @@
 #include <types.h>
 #include <stdarg.h>
+
+struct Fn80147CECData { u32 w0; f32 f4; f32 f8; u32 wc; f32 f10; u32 w14; u32 w18; u32 w1c; };
 extern "C" void *fn_801284F8(u32, void *);
 extern "C" void *fn_80131810(s32);
 extern "C" void fn_80146BD4(u8 *, const s8 *, s32);
@@ -342,7 +344,7 @@ extern "C" void fn_80145670(void *arg0, void *arg1) {
 extern "C" s32 fn_8013126C(void *, s32);
 extern "C" s32 fn_80144FB0(void *, s32, s32, const char *);
 #pragma scheduling invalid_target
-extern "C" void fn_801456E8(void *arg0, s32 arg1) {
+extern "C" void fn_801456E8(void *arg0, s32 arg1, s32 arg2) {
     struct Entry { s32 unk0; f32 unk4; f32 unk8; s32 unkC; f32 unk10; s32 unk14; s32 unk18; s32 unk1C; };
     struct List { Entry *entries; s32 count; };
     char *base = lbl_8032CEC8;
@@ -351,11 +353,13 @@ extern "C" void fn_801456E8(void *arg0, s32 arg1) {
     char result[0x138];
     fn_802E3AD0(arg1, base + 0x90);
     fn_802E3AD0(arg1, base + 0xA0);
-    s32 i = 0;
-    s32 offset = 0;
-    s32 value;
-    s32 formatted;
     Entry *entry;
+    s32 value;
+    s32 offset;
+    s32 i;
+    i = 0;
+    offset = 0;
+    s32 formatted;
     while (i < list->count) {
         entry = (Entry *)((u8 *)list->entries + offset);
         value = fn_8013126C(result, entry->unk1C);
@@ -1553,7 +1557,7 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
 }
 #pragma scheduling invalid_target
 extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
-    union Pair { struct { f32 y; f32 x; } f; f64 raw; };
+    union Pair { struct { f32 x; f32 y; } f; f64 raw; };
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u8 *other = (u8 *)arg2;
@@ -1561,10 +1565,10 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     f32 y = *(f32 *)(src + 8) + factor * (*(f32 *)(other + 8) - *(f32 *)(src + 8));
     f32 x = *(f32 *)(src + 4) + factor * (*(f32 *)(other + 4) - *(f32 *)(src + 4));
     f32 z = *(f32 *)(src + 0x10) + factor * (*(f32 *)(other + 0x10) - *(f32 *)(src + 0x10));
-    Pair first;
     Pair second;
-    first.f.y = y;
+    Pair first;
     first.f.x = x;
+    first.f.y = y;
     second.raw = first.raw;
     *(u32 *)(dst + 0x0) = *(u32 *)(src + 0x0);
     *(u32 *)(dst + 0xC) = *(u32 *)(src + 0xC);
