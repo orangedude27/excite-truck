@@ -78,6 +78,7 @@ void fn_8024C464(void) {
         }
     }
 }
+#pragma dont_inline reset
 
 #pragma dont_inline on
 int fn_8024C524(void) {
