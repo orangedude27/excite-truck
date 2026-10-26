@@ -14,7 +14,7 @@ extern void *fn_8001285C(void);
 extern void fn_80131818(int);
 extern void fn_80128668(void *);
 #pragma dont_inline fn_80204B2C
-int fn_80204B2C(const char *);
+int fn_80204B2C();
 int *fn_80204AA4(void) {
     int value = *(int *)((char *)fn_8001285C() + 8);
     switch (value) {
