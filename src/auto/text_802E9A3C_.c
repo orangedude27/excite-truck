@@ -366,20 +366,31 @@ extern long lbl_805076A0[];
 extern char lbl_8034E990;
 extern long fn_8012C370(long, long, long *, long *, long, long);
 extern long fn_802E30C8(char *, long);
-void fn_802EC294(long arg0, long arg1) {
-    long spC = 0;
-    long sp8 = 0;
+#pragma push
+#pragma scheduling invalid_target
+void fn_802EC294(int index, int arg1) {
+    register long zero;
+    register int offset;
+    long spC;
+    long sp8;
     long temp_r3;
-    long *temp_r31 = &lbl_805076A0[arg0 * 2];
+    long *base = lbl_805076A0;
+    long *slot;
+
+    zero = 0;
+    offset = index << 3;
+    slot = (long *)((char *)base + offset);
+    spC = zero;
+    sp8 = zero;
     temp_r3 = fn_8012C370(arg1, 0x4D4D5033, &spC, &sp8, 0, 0);
     if (temp_r3 != 0) {
-        temp_r31[0] = temp_r3;
-        temp_r31[1] = sp8;
+        slot[0] = temp_r3;
+        slot[1] = sp8;
     } else {
-        fn_802E30C8(&lbl_8034E990, arg1);
+        ((long (*)(char *, ...))fn_802E30C8)(&lbl_8034E990, arg1);
     }
 }
-
+#pragma pop
 void fn_802EC32C(long arg0, long arg1) {
     if (arg0 != 0 && arg1 > 0) {
         lbl_80560060 = 0;
@@ -430,7 +441,6 @@ typedef signed long s32;
 extern long fn_800B7C64(long, long);
 extern long fn_800B7C60(long, long, long, long);
 extern long lbl_805076A0[];
-extern char lbl_8034E990;
 extern long fn_8012C370(long, long, long *, long *, long, long);
 extern long fn_802E30C8(char *, long);
 extern char lbl_80560060;
