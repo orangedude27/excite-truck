@@ -265,6 +265,21 @@ s32 fn_80190B60(void *arg0) {
     return (s32)((u32)(-bit | bit) >> 31);
 }
 
+#pragma scheduling invalid_target
+f32 fn_80190B7C(void *arg0) {
+    u8 raw = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 2);
+    f32 normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+    f32 value;
+    if (lbl_80562090 < normalized) {
+        value = lbl_80562090;
+    } else {
+        value = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+    }
+    value = value > lbl_8056208C ? value : lbl_8056208C;
+    return lbl_8056208C + value * lbl_80562090;
+}
+#pragma scheduling on
+
 s32 fn_80190C8C(void *arg0) {
     s32 bit = (*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 3) & 1;
     return (s32)((u32)(-bit | bit) >> 31);
@@ -1255,30 +1270,16 @@ int fn_80192C68(void *arg0) {
 extern f32 lbl_8056208C, lbl_80562090, lbl_805620AC, lbl_80562094, lbl_80562138;
 #pragma scheduling invalid_target
 f32 fn_80192D10(void *arg0) {
-    extern f64 lbl_805620B0;
-    typedef union {
-        f64 value;
-        struct { u32 high; u32 low; } words;
-    } DoubleBits;
-    register u8 byteValue = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 5);
-    DoubleBits second;
-    DoubleBits first;
-    f32 lower = lbl_80562090;
+    u8 raw = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 5);
+    f32 normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
     f32 value;
-    first.words.high = 0x43300000;
-    first.words.low = byteValue;
-    value = (f32)(first.value - lbl_805620B0);
-    value = (value - lbl_8056208C) / lbl_805620AC;
-    if (lower < value) {
-        value = lower;
+    if (lbl_80562090 < normalized) {
+        value = lbl_80562090;
     } else {
-        second.words.high = 0x43300000;
-        second.words.low = byteValue;
-        value = (f32)(second.value - lbl_805620B0);
-        value = (value - lbl_8056208C) / lbl_805620AC;
-        if (value > lbl_8056208C) {
-            value = lbl_8056208C;
-        }
+        value = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+    }
+    if (value > lbl_8056208C) {
+        value = lbl_8056208C;
     }
     return lbl_80562094 + value * lbl_80562138;
 }
