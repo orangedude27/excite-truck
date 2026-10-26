@@ -578,6 +578,7 @@ outerTest:
 }
 
 s32 fn_802BAA68(s32, void *);
+#pragma use_lmw_stmw off
 void fn_8016D5B8(void *arg0) {
     u8 *arg = (u8 *)arg0;
     u8 *list;
@@ -618,7 +619,7 @@ outer_check:
     list = *(u8 **)(arg + 0x18);
     if (outerIndex < *(s32 *)(list + 4)) goto outer_setup;
 }
-
+#pragma use_lmw_stmw on
 int fn_8000DA10();
 #pragma cplusplus on
 extern "C" char lbl_80330990[];
