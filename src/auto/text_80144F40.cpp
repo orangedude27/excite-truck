@@ -389,7 +389,7 @@ extern "C" void fn_801457D0(void *arg0, s32 arg1) {
     fn_802E3AD0(arg1, lbl_80559E14);
 }
 #pragma scheduling on
-extern "C" void fn_8014589C(void *arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_8014589C(void *arg0, s32 arg1) {
     char *base = lbl_8032CEC8;
     fn_802E3AD0(arg1, base + 0x170);
     fn_802E3AD0(arg1, base + 0x180);
