@@ -5,6 +5,15 @@ typedef int s32;
 typedef unsigned int u32;
 typedef float f32;
 typedef unsigned char u8;
+
+#pragma cplusplus on
+class EB000Context {
+public:
+    virtual void unused0();
+    virtual void unused1();
+    virtual void dispatch(s32 *, s32, s32);
+};
+#pragma cplusplus reset
 extern char lbl_8033A048[];
 extern s32 *lbl_80339E88;
 extern s32 *lbl_8055EBA0;
@@ -39,21 +48,21 @@ s32 fn_801EAFD4(void *arg0) {
 }
 #pragma dont_inline off
 
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_801EB000(s32 *arg0, void *arg1) {
+    s32 *item;
     s32 *node;
     s32 *child;
-    s32 *item;
     s32 i;
-    s32 type;
 
     node = arg0;
     while (node != 0) {
-        type = node[0];
-        if (type & 0x100) {
+        if (node[0] & 0x100) {
             fn_801EAFD4(node);
             fn_801EB000((s32 *)node[2], arg1);
         } else {
-            switch (type) {
+            switch (node[0]) {
             case 0:
                 item = node;
                 i = 0;
@@ -66,8 +75,8 @@ s32 fn_801EB000(s32 *arg0, void *arg1) {
             case 4:
                 child = (s32 *)node[2];
                 if (child != 0) {
-                    void **vtable = *(void ***)arg1;
-                    ((void (*)(void *, s32 *, s32, s32))vtable[2])(
+                    ((void (*)(void *, s32 *, s32, s32))
+                        ((void **)*(void ***)arg1)[2])(
                         arg1, child, child[2], child[1]);
                 }
                 break;
@@ -76,7 +85,8 @@ s32 fn_801EB000(s32 *arg0, void *arg1) {
         node = (s32 *)node[1];
     }
 }
-
+#pragma scheduling on
+#pragma pop
 s32 fn_801EB0E8(void) { return 0; }
 
 #pragma dont_inline on
