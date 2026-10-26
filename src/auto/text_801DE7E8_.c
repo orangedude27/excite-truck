@@ -8,6 +8,30 @@ extern int lbl_8055E9DC;
 extern int lbl_8055E9E0;
 extern char lbl_804873B8[];
 
+#pragma scheduling invalid_target
+void fn_801DE7E8(int arg0) {
+    /* Fix note: preserve the mode selector across both resource initialization calls. */
+    extern char lbl_804872B0[];
+    extern char lbl_803394B0[], lbl_803394BC[];
+    extern int fn_80145E70(const char *);
+    extern int fn_802CAC28(const char *, int);
+    int index, value;
+    switch (arg0) {
+    case 1:
+        value = fn_80145E70(lbl_803394B0);
+        index = arg0 * 0x1c;
+        *(int *)((char *)&lbl_804872B0 + index + 0xc) = value;
+        break;
+    case 2:
+        index = arg0 * 0x1c;
+        value = fn_80145E70(lbl_803394B0);
+        *(int *)((char *)&lbl_804872B0 + index + 0xc) = value;
+        value = fn_802CAC28(lbl_803394BC, 0);
+        *(int *)((char *)&lbl_804872B0 + index + 0x14) = value;
+        break;
+    }
+}
+#pragma scheduling on
 void fn_801DE88C(void) {
 
 }
@@ -53,7 +77,7 @@ extern int lbl_8055ADF4;
 extern int lbl_8055E9E0;
 extern float lbl_80562BE8;
 extern float lbl_80562BF4;
-extern int lbl_804872B0;
+extern char lbl_804872B0[];
 extern char lbl_804873B8[];
 extern int fn_801E85A4(void);
 extern int fn_801DE9F0(int, int);
