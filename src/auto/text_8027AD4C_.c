@@ -15,7 +15,7 @@ long fn_8027D1F4(void);
 long fn_8000DA10(void);
 void *fn_8001BB58(long, long, long, long);
 long fn_801284F8(long, char *);
-long fn_8027C41C(long);
+void *fn_8027C41C(void *, long);
 long fn_8027C4B4(long, long);
 extern long lbl_8055F658;
 extern char lbl_80347AB0[];
@@ -495,17 +495,14 @@ long fn_8027C1C8(void *arg0, const char *arg1) {
     long index = 0;
     long offset = 0;
 
-    goto compare_entry;
-compare_entry:
-    if ((((unsigned int)__cntlzw((unsigned int)stricmp(arg1, *(char **)(table->entries + offset + 4))) >> 5) == 0))
-        goto increment_entry;
-    goto done;
-increment_entry:
-    offset += 0xC;
-    index++;
-    if (index < table->count)
-        goto compare_entry;
-done:
+    while (index < table->count) {
+        unsigned int equal = (unsigned int)__cntlzw((unsigned int)stricmp(arg1, *(char **)(table->entries + offset + 4))) >> 5;
+        if (equal)
+            break;
+        offset += 0xC;
+        index++;
+    }
+
     index = -1;
     return index;
 }
