@@ -153,6 +153,30 @@ int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
     return 1;
 }
 
+int fn_80292DE8(const char *arg0) {
+    int table[6];
+    int *src = lbl_802FA998;
+    int *dst = table;
+    int *p = table;
+    unsigned int i = 0;
+
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst = *src;
+    do {
+        if (strcmp(arg0, (const char *)p[0]) == 0) {
+            return *(int *)((char *)table + 4 + (i << 3));
+        }
+        ++i;
+        p += 2;
+    } while (i < 3);
+    fn_802E317C(lbl_80349208, arg0);
+    return 0;
+}
+
 typedef unsigned char u8;
 typedef signed char s8;
 extern int fn_8002B1D8(const char *, const char *, int);
