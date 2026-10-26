@@ -68,6 +68,41 @@ extern "C" void fn_800FDE28(void *arg0) {
     }
 }
 
+extern "C" void fn_800FDFF8(void *);
+extern "C" void *fn_8002F53C(void *, void *, void *, s32, s32);
+extern "C" void OSInitMutex(void *);
+extern "C" void *MEMRecordStateForFrmHeap(void *, s32, s32, s32, s32);
+extern "C" u32 MEMResizeForMBlockFrmHeap(void);
+extern "C" void __register_global_object(void *, void *, void *);
+extern "C" void *__dt__Q46nw4hbm3snd6detail11TaskManagerFv(void *, s32);
+#pragma push
+#pragma small_data off
+extern u8 lbl_804190A0[];
+#pragma pop
+extern u8 lbl_8055DE78;
+#pragma dont_inline on
+extern "C" void fn_800FDE60(void) {
+    extern u8 lbl_80326E08[];
+    extern u8 lbl_80326E20[];
+    u8 *base = lbl_804190A0;
+    if ((s8)lbl_8055DE78 == 0) {
+        u8 *manager = base + 0x2050;
+        *(s32 *)(manager + 0x1C) = 0;
+        fn_8002F53C(manager + 0x20, (void *)fn_800FDFF8,
+                    (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0, 0xC, 3);
+        OSInitMutex(manager);
+        *(void **)(manager + 0x18) = MEMRecordStateForFrmHeap(base, 0x2044, 0x40, 4, 0);
+        if (MEMResizeForMBlockFrmHeap() < 0x80)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x37,
+                                        (const char *)lbl_80326E20);
+        __register_global_object(manager,
+                                 (void *)__dt__Q46nw4hbm3snd6detail11TaskManagerFv,
+                                 base + 0x2044);
+        lbl_8055DE78 = 1;
+    }
+}
+#pragma dont_inline reset
+
 extern "C" void *__dt__Q46nw4hbm3snd6detail11TaskManagerFv(void *this_, s32 flag) {
     if (this_) {
         fn_8002F634((u8 *)this_ + 0x20,
@@ -111,17 +146,17 @@ extern "C" s32 MEMFreeByStateToFrmHeap(s32);
 extern "C" s32 Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0)
 {
     u32 temp_r31;
-    const char *base = (const char *)lbl_80326E08;
+    const char (*base)[0xC8] = (const char (*)[0xC8])lbl_80326E08;
     s32 var_r29;
 
     if (*(s32 *)((u8 *)arg0 + 0x18) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u8 *)base + 0), 0x45, base + 0x68);
+        Panic__Q26nw4hbm2dbFPCciPCce(&(*base)[0], 0x45, &(*base)[0x68]);
     }
     temp_r31 = OSDisableInterrupts();
     var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
     while (var_r29 == 0) {
         if (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(arg0) == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u8 *)base + 0), 0x4C, base + 0xA8);
+            Panic__Q26nw4hbm2dbFPCciPCce(&(*base)[0], 0x4C, &(*base)[0xA8]);
         }
         var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
     }
@@ -154,27 +189,35 @@ struct TaskManager {
 }
 }
 
-extern "C" void AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(void *arg0, void *arg1, s32 arg2) {
+void nw4hbm::snd::detail::TaskManager::AppendTask(
+    nw4hbm::snd::detail::Task *task,
+    nw4hbm::snd::detail::TaskManager::TaskPriority priority) {
     u32 level;
-    void *manager;
-    s32 priority;
-    void *task;
     void *list;
     void *it;
     s32 valid;
-    manager = arg0;
-    priority = arg2;
-    task = arg1;
+
     valid = 0;
     if (priority >= 0 && priority < 3) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x7D, (const char *)lbl_80326ED0, priority, 0, 3);
+    if (valid == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x7D, (const char *)lbl_80326ED0, priority, 0, 3);
+    }
     level = OSDisableInterrupts();
-    list = (u8 *)manager + priority * 0xC + 0x20;
+    list = (u8 *)this + priority * 0xC + 0x20;
     it = (u8 *)list + 4;
-    if (task == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326FC8, 0x233, (const char *)lbl_80326FA4);
+    if (task == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326FC8, 0x233, (const char *)lbl_80326FA4);
+    }
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &it, (u8 *)task + 4);
     OSRestoreInterrupts(level);
 }
+
+#pragma dont_inline on
+extern "C" void fn_800FE1D0(void) {
+    do {
+    } while (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv((void *)0) != 0);
+}
+#pragma dont_inline reset
 
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void *, void *);
 extern "C" void *MEMAdjustFrmHeap(void *, void *);
@@ -304,9 +347,12 @@ f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
     return ratio;
 }
 
+#pragma push
+#pragma scheduling on
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
     f32 v;
-    s32 idx;
+    s32 index;
+    u8 *table;
 
     if (value > lbl_805610D4) {
         v = lbl_805610D4;
@@ -316,18 +362,19 @@ extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
         v = value;
     }
 
-    idx = (s32)(lbl_805610DC * v);
-    return lbl_802F5210[idx + 0x388];
+    index = (s32)(lbl_805610DC * v);
+    table = lbl_802F5210;
+    return *(f32 *)(table + (index + 0x388) * 4);
 }
-
 #pragma push
 #pragma scheduling invalid_target
 extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
-    f32 v;
+    register f32 upper = lbl_805610C8;
+    register f32 v;
     f32 t;
 
-    if (pan > lbl_805610C8) {
-        v = lbl_805610C8;
+    if (pan > upper) {
+        v = upper;
     } else if (pan < lbl_805610E0) {
         v = lbl_805610E0;
     } else {
@@ -545,20 +592,18 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(void
 #pragma pop
 extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void) {
     void *cur = *(void **)(lbl_8041D4AC + 4);
-    void *end = lbl_8041D4AC + 4;
-    do {
+    void *end = (u8 *)lbl_8041D4AC + 4;
+    while (cur != end) {
         void *item = cur;
         cur = *(void **)cur;
         if (item == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23D, (char *)lbl_8032734C);
         Stop__Q36nw4hbm3snd10WavePlayerFv((u8 *)item - 0x94);
-    } while (cur != end);
+    }
     if (*(u32 *)lbl_8041D4AC != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327040, 0x319, (char *)lbl_80327304);
 }
 extern "C" s32 fn_80128668(void *);
-
-extern "C" void fn_800FDE60(void);
 
 #pragma push
 #pragma small_data off
