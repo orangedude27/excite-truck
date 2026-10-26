@@ -616,8 +616,7 @@ void fn_802D02F8(int arg0, signed char arg1) {
 }
 
 #pragma push
-#pragma paired off
-#pragma paired_single off
+#pragma processor 750
 void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
     extern float lbl_80564F94;
     extern unsigned char lbl_804C9778[];
@@ -868,6 +867,7 @@ void fn_802D0E48(int arg0) {
     }
 }
 
+#pragma dont_inline fn_802D0EC8
 int fn_802D0EC8(int arg0) {
     switch (arg0) {
     case 8:
