@@ -219,6 +219,7 @@ extern "C" void fn_8029F534(void *arg0, unsigned char *arg1) {
         virtual void v6() = 0;
         virtual void v7() = 0;
         virtual void v8() = 0;
+        virtual void v9() = 0;
         virtual unsigned char getBool(const char *, int) = 0;
     };
     Obj *obj = (Obj *)arg1;
