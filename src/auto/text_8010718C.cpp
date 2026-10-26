@@ -69,8 +69,6 @@ public:
     virtual void v5();
     virtual void v6();
     virtual void v7();
-    virtual void v8();
-    virtual void v9();
     virtual s32 v10();
     virtual void v11();
     virtual void v12();
@@ -88,23 +86,14 @@ public:
 }
 }
 
-extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv(
-    void* this_,
-    void (*callback)(s32, void*, void*),
-    void* user) {
+s32 nw4hbm::ut::FileStream::CancelAsync(CancelCallback callback, void* user) {
     register u8* base = lbl_80328458;
-    s32 result;
-
-    result = ((s32 (*)(void*, void (*)(s32, void*, void*), void*))
-              (*(void***)this_)[0x15])(this_, callback, user);
-    if (result == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)base, 0x4E,
+    if (v21(callback, user) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(base + 0), 0x4E,
                                      (const char*)(base + 0x38));
     }
-
-    result = ((s32 (*)(void*))(*(void***)this_)[0xA])(this_);
-    if (result == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)base, 0x4F,
+    if (v10() == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(base + 0), 0x4F,
                                      (const char*)(base + 0x60));
     }
     return 1;
