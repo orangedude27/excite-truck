@@ -100,6 +100,7 @@ extern "C" void fn_801561E0(s32 arg0) {
 }
 
 extern "C" u8 *fn_80029004(void *, s32);
+#pragma dont_inline fn_801561E8
 extern "C" void fn_801561E8(u8 *arg0) {
     u8 *result = fn_80029004(arg0, 0x2E);
     if (result != 0) {
@@ -616,27 +617,37 @@ extern "C" void fn_80156DCC(void *arg0, s32 arg1) {
 extern "C" void* fn_80135420(f32*, s32, s32);
 extern f32 lbl_80561748;
 extern f32 fn_80129DC4(s32, f32, f32);
-void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
-    f32 sp10 = ((f32*)arg2)[0];
-    f32 sp14 = ((f32*)arg2)[2];
-    f32 f31 = lbl_80561748;
-    s32 r30 = -1;
-    s32 r29 = 0;
-    s32 r31 = 0;
-    do {
-        void *p = fn_80135420(&sp10, 0, *(s32*)((u8*)*(void**)((u8*)arg0 + 4) + r31));
-        f32 f3 = sp14 - ((f32*)p)[1];
-        f32 f2 = sp10 - ((f32*)p)[0];
-        f32 x = f2*f2 + f3*f3;
-        if (x < f31) { r30 = r29; f31 = x; }
-        r31 += 8;
-        r29++;
-    } while (r29 < *(s32*)((u8*)arg0 + 8));
-    s32 value = *(s32*)((u8*)*(void**)((u8*)arg0 + 4) + r30*8);
-    f32 base = lbl_8055E3C8;
-    f32 result = fn_80129DC4(4, *(f32*)((u8*)arg0 + 0xDC), *(f32*)((u8*)arg0 + 0xE0));
-    *(f32*)((u8*)arg0 + arg1*8 + 0xE4) = base + result;
-    *(s32*)((u8*)arg0 + arg1*8 + 0xE8) = value;
+extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
+    f32 point[2];
+    f32 minimum = lbl_80561748;
+    s32 best = -1;
+    s32 i = 0;
+    s32 offset = 0;
+
+    point[0] = ((f32 *)arg2)[0];
+    point[1] = ((f32 *)arg2)[2];
+    while (i < *(s32 *)((u8 *)arg0 + 8)) {
+        void *entry = *(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + offset);
+        void *result = fn_80135420(point, 0, (s32)entry);
+        f32 dy = point[1] - *(f32 *)((u8 *)result + 4);
+        f32 dx = point[0] - *(f32 *)result;
+        f32 distance = dx * dx + dy * dy;
+        if (distance < minimum) {
+            best = i;
+            minimum = distance;
+        }
+        offset += 8;
+        i++;
+    }
+
+    {
+        s32 value = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + best * 8);
+        f32 base = lbl_8055E3C8;
+        f32 result = fn_80129DC4(4, *(f32 *)((u8 *)arg0 + 0xDC),
+                                 *(f32 *)((u8 *)arg0 + 0xE0));
+        *(f32 *)((u8 *)arg0 + arg1 * 8 + 0xE4) = base + result;
+        *(s32 *)((u8 *)arg0 + arg1 * 8 + 0xE8) = value;
+    }
 }
 
 extern "C" s32 fn_801B2F24(void);
