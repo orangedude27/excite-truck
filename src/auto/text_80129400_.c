@@ -66,6 +66,7 @@ void fn_80129458(void) {
     *(u16 *)(b + 0x14) = zero;
 }
 #pragma pop
+void fn_801294FC(s32 arg0, s32 arg1);
 #pragma dont_inline fn_801294FC
 void fn_801294FC(s32 arg0, s32 arg1) {
     fn_802E4800(arg0 | ((arg1 << 12) & 0xF000));
