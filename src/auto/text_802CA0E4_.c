@@ -48,8 +48,8 @@ void fn_802CA1E0(void) {
     }
     fn_802CAC54(lbl_8055FCB4);
     lbl_8055FCB4 = -1;
-    offset = 0;
     i = 0;
+    offset = 0;
     do {
         if (*(int *)(lbl_8055FCB0 + offset) != 0)
             fn_802E317C(lbl_8034B5F0, i, lbl_8055FCB0 + offset + 4);
