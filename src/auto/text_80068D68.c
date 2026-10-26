@@ -4793,6 +4793,18 @@ void fn_8007C794(void) {
     btm_sec_rmt_name_request_complete(0, 0, 0x1F);
 }
 
+void btm_init(void) {
+    u8 *base = lbl_803C0F78;
+
+    memset(base, 0, 0x27C4);
+    base[0x27C0] = 0;
+    fn_8007BC88();
+    fn_80076E70();
+    fn_8007F588(2);
+    fn_8007D4C4();
+    btm_dev_init();
+}
+
 tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
     u8 i;
     u8 *p = lbl_803C0F78 + 0x34;
