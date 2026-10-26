@@ -413,7 +413,7 @@ void fn_802B6284(void) {
     lbl_8055FA40 = ((s32) ~((lbl_8055FA40 - 7) | (7 - lbl_8055FA40)) >> 31) + 7;
 }
 
-extern s32 lbl_8034A670;
+extern char lbl_8034A670[];
 extern s32 lbl_8034A70C;
 extern int strcmp(const char *, const char *);
 #pragma dont_inline on
