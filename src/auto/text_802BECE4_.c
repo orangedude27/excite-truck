@@ -30,7 +30,10 @@ extern float lbl_80564D7C;
 extern float lbl_80564D80;
 extern float PSVECMag(void *);
 extern char lbl_8034ACC0[];
+#pragma push
+#pragma small_data on
 extern char lbl_8055CF78[];
+#pragma pop
 extern unsigned char lbl_8055CF71;
 extern int fn_801E85B4(void);
 extern void fn_802BF160(void);
@@ -40,11 +43,12 @@ extern void *lbl_804C07F0[];
 extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
+#pragma small_data on
 int fn_802BECE4(const char *arg0, int arg1) {
     int a, b, c, d;
     int result = arg1;
-    a = b = c = d = 0;
-    if (sscanf(lbl_8034ACC0, "%x %x %x %x", &a, &b, &c, &d) == 4) {
+    d = c = b = a = 0;
+    if (sscanf(arg0, lbl_8034ACC0, &a, &b, &c, &d) == 4) {
         result = ((a & 0xff) << 24) | ((b & 0xff) << 16) |
                  ((c & 0xff) << 8) | (d & 0xff);
     } else {
@@ -52,7 +56,6 @@ int fn_802BECE4(const char *arg0, int arg1) {
     }
     return result;
 }
-
 void fn_802BED90(float *arg0) {
     float mag = PSVECMag(arg0);
     float scale;
@@ -70,8 +73,9 @@ float fn_802BEFB4(void) {
     fn_801E866C(-1);
     value = (*(float *)((char *)*(void **)((char *)fn_801EA9A0() + 8) + 0x64) - lbl_80564D88) / lbl_80564D8C;
     limit = lbl_80564D80;
-    if (value < limit) limit = value;
-    if (limit > lbl_80564D90) limit = lbl_80564D90;
+    result = limit < value ? value : limit;
+    limit = result;
+    limit = limit > lbl_80564D90 ? lbl_80564D90 : limit;
     result = limit * lbl_80564D94;
     return lbl_80564D84 + result;
 }
@@ -181,6 +185,42 @@ extern "C" void fn_802BF598(int arg0, float farg0) {
         obj->f1(arg0, farg0);
     }
 }
+
+extern float lbl_80564DA8;
+extern float lbl_80564DB0;
+extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
+    float v4 = *(float *)((char *)src + 4);
+    float v10 = *(float *)((char *)src + 0x10);
+    float v1c = *(float *)((char *)src + 0x1C);
+    float v28 = *(float *)((char *)src + 0x28);
+    float scale = lbl_80564DA8;
+    int i0 = *(int *)((char *)src + 0);
+    int i8 = *(int *)((char *)src + 8);
+    int ic = *(int *)((char *)src + 0xC);
+    int i14 = *(int *)((char *)src + 0x14);
+    int i18 = *(int *)((char *)src + 0x18);
+    int i20 = *(int *)((char *)src + 0x20);
+    int i24 = *(int *)((char *)src + 0x24);
+    int i2c = *(int *)((char *)src + 0x2C);
+    *(float *)((char *)dst + 4) = v4;
+    *(float *)((char *)dst + 0x10) = v10;
+    *(float *)((char *)dst + 0x1C) = v1c;
+    *(float *)((char *)dst + 0x28) = v28;
+    *(int *)((char *)dst + 0) = i0;
+    *(int *)((char *)dst + 8) = i8;
+    *(int *)((char *)dst + 0xC) = ic;
+    *(int *)((char *)dst + 0x14) = i14;
+    *(int *)((char *)dst + 0x18) = i18;
+    *(int *)((char *)dst + 0x20) = i20;
+    *(int *)((char *)dst + 0x24) = i24;
+    *(int *)((char *)dst + 0x2C) = i2c;
+    *(float *)((char *)dst + 4) = v4 * scale;
+    *(float *)((char *)dst + 0x10) = v10 * scale;
+    *(float *)((char *)dst + 0x1C) = v1c * scale;
+    *(float *)((char *)dst + 0x28) = v28 * scale;
+    *(float *)((char *)dst + 0x28) += lbl_80564DB0 * lbl_8055FAE0;
+}
+
 extern "C" int fn_802BF6AC(void) {
     struct Dummy {
         virtual void f0(int);
