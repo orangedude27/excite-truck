@@ -32,9 +32,3 @@ void fn_80262EF8(void) {
     __register_global_object((void *)obj, fn_80262F8C, (void *)(base + 5), lbl_80345F70, 0, (void *)base);
 }
 #pragma pop
-typedef struct Obj80262EF8 {
-    void *vtable;
-    unsigned char unk_04[0x10];
-    unsigned int unk_14;
-    float unk_18;
-} Obj80262EF8;
