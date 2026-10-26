@@ -60,6 +60,23 @@ int fn_802C5220(void* arg0) {
     return 1;
 }
 
+#pragma dont_inline on
+int fn_802C5280(int arg0, int arg1, int arg2) {
+    int result;
+
+    if (arg0 != 0) {
+        result = 0;
+        if ((arg1 >= 0) && (arg2 >= 0) &&
+            (arg1 < fn_802C51C0((void*)arg0)) &&
+            (arg2 < fn_802C5220((void*)arg0))) {
+            result = 1;
+        }
+    } else {
+        result = 0;
+    }
+    return result;
+}
+#pragma dont_inline reset
 extern void fn_802353F4(void);
 extern void fn_802354A0(void*, void*, int);
 extern void fn_80235758(void*, float, float, float, float, float, float, int);
