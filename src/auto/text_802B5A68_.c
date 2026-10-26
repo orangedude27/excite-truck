@@ -86,6 +86,28 @@ void fn_802B5B6C(void) {
     fn_802B59A4(lbl_8055FA3C);
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_802B5C24(s32 arg0) {
+    register s32 temp_r31;
+    s32 temp_r3;
+    register s32 value;
+
+loop_1:
+    temp_r3 = arg0 + lbl_8055FA40;
+    value = temp_r3 + 7;
+    temp_r31 = value % 7;
+    lbl_8055FA40 = temp_r31;
+    if (temp_r31 >= fn_802B3F0C(*(s32 *)((u8 *)((void *(*)(void))fn_802B5B6C)() + 8))) {
+        if (temp_r31 != 6) {
+            goto loop_1;
+        }
+    }
+}
+#pragma pop
+
 void fn_802B5CAC(void) {
     fn_802B5C24(1);
 }
@@ -883,6 +905,48 @@ void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
         break;
     }
 }
+
+extern float lbl_8055FA20[];
+#pragma small_data on
+__declspec(section ".sdata") extern float lbl_8055FA20[];
+#pragma small_data on
+#pragma small_data off
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+s32 fn_802B7694(void) {
+    s32 result = 0;
+    f32 value = (f32)fn_802E2C20() / lbl_80564C70;
+    s32 less = value - lbl_8055FA20[1] < lbl_8055FA20[0];
+
+    if (!less) {
+        f32 newValue = (f32)fn_802E2C20() / lbl_80564C70;
+        result = 1;
+        lbl_8055FA20[0] = newValue;
+    }
+    return result;
+}
+#pragma pop
+
+extern s32 fn_802B6270(void);
+#pragma cplusplus on
+extern "C" void fn_802B7884(void *arg0) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void *call(const char *);
+    };
+    register char *base = lbl_8034A598;
+    register void *saved = arg0;
+    Dummy *obj = (Dummy *)lbl_8055FA48;
+    void *result = obj->call(base + 0x144);
+    fn_802B6568(result, (const char *)saved);
+    char *selection = fn_802B6270() ? base + 0x288 : base + 0x294;
+    obj = (Dummy *)lbl_8055FA48;
+    result = obj->call(base + 0x150);
+    fn_802B6568(result, selection);
+}
+#pragma cplusplus reset
 
 extern void lbl_8034A898(void);
 void fn_802B7884(void *);
