@@ -744,10 +744,14 @@ extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
     temp_f5 = -temp_f6;
     temp_f2 = -temp_f8;
     temp_f7 = lbl_805614A4 + var_f4 * lbl_80561548;
-    *(f32 *)arg0 = lbl_805614A4 + (f32)temp_f5;
-    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f8;
-    *(f32 *)arg1 = lbl_805614A4 + temp_f6;
-    *(f32 *)((u8 *)arg1 + 4) = temp_f7 + (f32)temp_f2;
+    f32 out0 = lbl_805614A4 + (f32)temp_f5;
+    f32 out2 = lbl_805614A4 + temp_f6;
+    f32 out1 = temp_f7 + temp_f8;
+    f32 out3 = temp_f7 + (f32)temp_f2;
+    *(f32 *)arg0 = out0;
+    *(f32 *)((u8 *)arg0 + 4) = out1;
+    *(f32 *)arg1 = out2;
+    *(f32 *)((u8 *)arg1 + 4) = out3;
 }
 
 #pragma scheduling invalid_target
@@ -801,11 +805,10 @@ extern "C" void fn_8014052C(void *unused, s32 arg0, u8 *arg1) {
     if (flag != 0 && *(s32 *)(arg1 + 0x80) > 0x32) {
         f32 a = fn_8001DAF0((f32 *)(arg1 + 0x98));
         f32 count = (f32)*(s32 *)(arg1 + 0x80);
-        f32 b = count * (lbl_805614AC - a);
+        f32 b = (lbl_805614AC - a) * count;
         v = *(s32 *)(arg1 + 0x10C) - (s32)b;
     }
-    fn_801E866C(arg0);
-    fn_8001DF08(arg0, v);
+    fn_8001DF08(fn_801E866C(arg0), v);
 }
 
 extern "C" void fn_80147ABC(void *, void *, s32, f32);
@@ -895,15 +898,14 @@ extern "C" void fn_80141C84(void *arg0, s32 arg1) {
 
 extern "C" double floor(double);
 extern "C" f32 lbl_805614AC;
-extern "C" f32 fn_80141C9C(f32 arg0) {
-    return floor(arg0);
-}
-
 extern "C" u8 *fn_80131234(const char *);
 extern "C" char lbl_80559D80[1];
 extern "C" char lbl_8032CC1C[];
 extern "C" char lbl_8032CC40[];
 extern "C" char lbl_8032CC64[];
+extern "C" f32 fn_80141C9C(f32 arg0) {
+    return floor(arg0);
+}
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_80141DAC(char *arg0) {
