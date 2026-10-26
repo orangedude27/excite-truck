@@ -1,4 +1,5 @@
 #include <types.h>
+extern u8 lbl_80323058[], lbl_80323070[];
 extern "C" void DVDClose(void *);
 extern "C" void fn_800F27AC(void *);
 namespace nw4hbm { namespace snd { namespace detail {
@@ -599,6 +600,29 @@ extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, 
         }
     }
     OSRestoreInterrupts(irq);
+}
+
+void nw4hbm::snd::detail::PoolImpl::DestroyImpl(void* buffer, unsigned long size) {
+    extern u8 lbl_80323058[];
+    extern u8 lbl_80323070[];
+    void** link = (void**)this;
+    u32 start = (u32)buffer;
+    u32 end = start + size;
+    if (buffer == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323058, 0x44,
+                                     (const char*)lbl_80323070);
+    }
+    u32 level = OSDisableInterrupts();
+    void* node = *link;
+    while (node != 0) {
+        if ((u32)node >= start && (u32)node < end) {
+            *link = *(void**)node;
+        } else {
+            link = (void**)node;
+        }
+        node = *(void**)node;
+    }
+    OSRestoreInterrupts(level);
 }
 
 void *nw4r::snd::detail::PoolImpl::AllocImpl() {
@@ -1488,15 +1512,19 @@ extern "C" void OSRestoreInterrupts(u32);
 extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void*, bool);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void*, void*);
 extern "C" void* Instance__15EmissionManagerFv(void);
-extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(bool pause, void* self) {
+extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(void* self, bool pause) {
     u32 level;
-    void* track;
     int i;
     level = OSDisableInterrupts();
     *(u8*)((u8*)self + 0x18) = pause;
-    for (i = 0; i < 16; i++) {
-        track = *(void**)((u8*)self + 0x9c + i * 4);
-        if (track) PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(track, pause);
+    for (i = 0; i < 16; i++, self = (char*)self + 4) {
+        void* track = 0;
+        if (i <= 15) {
+            track = *(void**)((char*)self + 0x9c);
+        }
+        if (track != 0) {
+            PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(track, pause);
+        }
     }
     OSRestoreInterrupts(level);
 }
