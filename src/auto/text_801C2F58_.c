@@ -1039,8 +1039,8 @@ void fn_801C77C0(void) {
 
 extern u8 lbl_8055E83F;
 extern u8 lbl_8055E840;
-extern char lbl_8055AA5C[];
-extern char lbl_8055AA64[];
+extern char lbl_8055AA5C;
+extern char lbl_8055AA64;
 extern char lbl_80336F24[];
 void fn_801C77FC(void) {
     char name[0x10];
