@@ -167,19 +167,15 @@ void fn_800196F0(void) {
 
 s32 fn_80019604(void) {
     s32 var_r31;
-    s32 result;
-    s8 tmp;
-
-    tmp = lbl_8055D588;
-    if (tmp == 0) {
+    volatile u16 result;
+    if ((s32)(u8)lbl_8055D588 != 0) {
+        var_r31 = 1;
+    } else {
         var_r31 = 0;
-        fn_80019430();
-        result = fn_8027DE68(2);
-        if (result != 0) {
+        result = (u16)fn_80019430();
+        if ((result != 0) || (fn_8027DE68(2) != 0)) {
             var_r31 = 1;
         }
-    } else {
-        var_r31 = 1;
     }
     return var_r31;
 }
@@ -230,24 +226,33 @@ extern "C" s32 fn_80019534(void) {
     return 0;
 }
 #pragma cplusplus off
+#pragma push
+#pragma use_lmw_stmw off
 s32 fn_80019098(s32 arg0) {
-    void **tbl = (void **)lbl_803580A4;
-    s32 count = ((s32 *)tbl)[1];
-    s32 idx;
-    
-    for (idx = 0; idx < count; idx++) {
-        char **strs = (char **)((u8 *)tbl[0] + (idx * 0x10));
-        if (stricmp(strs[0], (const char *)arg0) == 0) {
-            s32 val = ((s32 *)strs[0])[1];
-            if (val != 0) {
-                s32 result = ((s32 *)strs[0])[2];
-                return result;
-            }
+    register s32 offset;
+    register s32 i;
+    register char *base;
+    register char *result;
+
+    base = (char *)&lbl_803580A4;
+    i = 0;
+    offset = 0;
+    while (1) {
+        if (stricmp(*(const char **)(*(char **)base + offset), (const char *)arg0) == 0)
+            break;
+        offset += 0x10;
+        i++;
+        if (i >= *(s32 *)(base + 4)) {
+            i = -1;
+            break;
         }
     }
-    
+    result = *(char **)base + i * 0x10 + 4;
+    if (i < 0) result = 0;
+    if (result != 0) return *(s32 *)(result + 8);
     return 0;
 }
+#pragma pop
 
 s32 fn_8001EFC0(s32, s32);
 s32 fn_80019144(s32 arg0) {
@@ -367,50 +372,45 @@ s32 fn_80019438(void) {
 }
 
 s32 fn_800194CC(void) {
-    if (lbl_8055D588 != 0) {
-        return 1;
+    s32 var_r31;
+    s32 (* volatile check194C8)(void);
+    check194C8 = fn_800194C8;
+    if ((s32)(u8)lbl_8055D588 != 0) {
+        var_r31 = 1;
+    } else {
+        var_r31 = 0;
+        if ((fn_80019430() != 0) || (check194C8() != 0) || (fn_80019604() != 0)) {
+            var_r31 = 1;
+        }
     }
-    if (fn_80019430() != 0) {
-        return 1;
-    }
-    if (fn_800194C8() != 0) {
-        return 1;
-    }
-    if (fn_80019604() != 0) {
-        return 1;
-    }
-    return 0;
+    return var_r31;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling on
+#pragma dont_inline on
 s32 fn_80018FB4(s32 arg0) {
-    void **base;
-    const char *target;
-    s32 count;
-    s32 idx;
-    s32 len;
-    void *entry;
-    
-    base = (void **)lbl_80357E0C;
+    register s32 offset;
+    register const char *target;
+    register s32 i;
+    register const char *entry;
+
     target = lbl_802FD2F4;
-    count = ((s32 *)base)[1];
-    idx = 0;
-    len = 0;
-    
-    while (1) {
-        entry = (void *)((u8 *)base[0] + idx * 0x14);
-        if (stricmp((char *)entry, target) == 0) {
-            return ((s32 *)entry)[2];
+    i = 0;
+    offset = 0;
+    do {
+        entry = *(const char **)((u8 *)*(void **)lbl_80357E0C + offset);
+        if (stricmp(entry, target) == 0) {
+            return *(s32 *)((u8 *)*(void **)lbl_80357E0C + i * 0x14 + 8);
         }
-        idx++;
-        if (idx >= count) {
-            break;
-        }
-    }
-    
-    fn_802E317C((void *)lbl_802FD308, (void *)lbl_802FD2F4);
+        offset += 0x14;
+        i++;
+    } while (i < *(s32 *)(lbl_80357E0C + 4));
+    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD308, target);
     return 0;
 }
-
+#pragma pop
 void fn_80018F7C(void) {
     s32 val = (s32)lbl_8055D58C;
     fn_80131818(val);
