@@ -152,7 +152,22 @@ void fn_8020F730(void) {
     lbl_8055EEC4 = 0;
 }
 
-#pragma dont_inline on
+#pragma use_lmw_stmw off
+int fn_8020FB80(void *arg0) {
+    int offset;
+    int i;
+    i = 0;
+    offset = 0;
+    while (i < lbl_804900AC.m_count) {
+        if (fn_8002B1D8(*(char **)((char *)lbl_804900AC.m_entries + offset), (char *)arg0, 0x3F) == 0) {
+            return i;
+        }
+        offset += 4;
+        i++;
+    }
+    return ((int (*)(int))fn_8020F3B4)(0);
+}
+#pragma use_lmw_stmw reset
 void *fn_8020FC04(void) {
     char *data = (char *)fn_8020FAF0();
     long type;
