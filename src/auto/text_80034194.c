@@ -837,20 +837,19 @@ check_state:
 
 void fn_80035DA8(s32 arg0) {
     s32 enabled;
-    u32 index;
+    u32 tick;
     u8 *info;
-
     enabled = OSDisableInterrupts();
-    if (lbl_8055D848 >= 5) {
-        lbl_8055D848 = 0;
+    if (*(volatile u32 *)&lbl_8055D848 >= 5) {
+        *(volatile u32 *)&lbl_8055D848 = 0;
     }
-    index = lbl_8055D848;
-    info = (u8 *)__ErrorInfo + index * 0x14;
-    *(s32 *)(info + 0x1C) = 0x10;
-    *(s32 *)(info + 0x20) = 0;
-    *(s32 *)(info + 0x24) = 0;
-    *(s32 *)(info + 0x2C) = OSGetTick();
-    lbl_8055D848 = index + 1;
+    info = (u8 *)__ErrorInfo;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+    tick = OSGetTick();
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(enabled);
     fn_8003AF1C(0, 0, fn_80036624);
     #pragma unused(arg0)
