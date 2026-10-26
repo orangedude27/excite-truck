@@ -61,6 +61,9 @@ public:
     virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
     virtual void d16();
     virtual void v4C(); // 0x4C
+    virtual void d18(); virtual void d19(); virtual void d20();
+    virtual void d21(); virtual void d22(); virtual void d23();
+    virtual s32 v68(); // 0x68
 };
 
 class TObj24 {
@@ -610,15 +613,19 @@ extern f32 lbl_80561500;
 extern "C" void fn_8001DAE0(void *, f32);
 extern "C" f32 fn_8013EFBC(f32 arg0) { return lbl_80561514 - arg0; }
 
-unsigned int fn_8013EFC8(void *arg0) {
- unsigned int result;
- if (__fabsf(*(f32 *)((u8 *)arg0 + 0x250)) <= lbl_80558DC4) {
-  if (*((u8 *)arg0 + 0x13c)) ((TObj4C *)arg0)->v4C();
-  if (*(int *)((u8 *)arg0 + 0x140)) fn_802AE220(0);
- } else ((TObj4C *)arg0)->v4C();
- if (((int (*)(void *))(*(void ***)arg0)[0x68 / 4])(arg0)) fn_8001DFCC();
- result = *(int *)((u8 *)arg0 + 0x134);
- return result == 4;
+extern "C" unsigned int fn_8013EFC8(void *arg0) {
+    f32 magnitude = __fabsf(*(f32 *)((u8 *)arg0 + 0x250));
+    if (magnitude <= lbl_80558DC4) {
+        if (*(u8 *)((u8 *)arg0 + 0x13C) != 0)
+            ((TObj4C *)arg0)->v4C();
+        if (*(s32 *)((u8 *)arg0 + 0x140) != 0)
+            fn_802AE220(0);
+    } else {
+        ((TObj4C *)arg0)->v4C();
+    }
+    if (((int (*)(void *))(*(void ***)arg0)[0x68 / 4])(arg0))
+        fn_8001DFCC();
+    return *(s32 *)((u8 *)arg0 + 0x134) != 4;
 }
 
 extern "C" s32 fn_8013F088(void *arg0) {
@@ -1142,20 +1149,36 @@ extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
 }
 #pragma scheduling on
 extern "C" s32 fn_80142870(void *arg0, void *arg1) {
-    f32 t;
-    f32 x;
-    f32 v;
-    t = (fn_8013CB3C() - *(f32 *)((u8 *)arg1 + 0x84) - *(f32 *)((u8 *)&lbl_8042FB3C + 0x24) - lbl_805614A4)
-        / (*(f32 *)((u8 *)&lbl_8042FB3C + 0x20) - lbl_805614A4);
-    v = lbl_805614AC;
-    if (v < t) v = t;
-    if (v > lbl_805614A4) v = lbl_805614A4;
-    x = *(f32 *)((u8 *)&lbl_8042FB3C + 0x1C) + v * (lbl_805614A4 - *(f32 *)((u8 *)&lbl_8042FB3C + 0x1C));
-    if (x > lbl_805614A4) {
-        x = *(f32 *)((u8 *)&lbl_8042FB3C + 0x1C);
-        if (x < lbl_805614A4) x -= lbl_80561498;
-        else x += lbl_80561498;
-        return (s32)x;
+    f32 time = fn_8013CB3C();
+    f32 elapsed = *(f32 *)((u8 *)arg1 + 0x84);
+    time = time - elapsed;
+    f32 offset = *(f32 *)(lbl_8042FB3C + 0x24);
+    time = time - offset;
+    f32 one = lbl_805614A4;
+    f32 span = *(f32 *)(lbl_8042FB3C + 0x20);
+    f32 value = lbl_805614AC;
+    f32 denominator = span - one;
+    f32 position = *(f32 *)(lbl_8042FB3C + 0x1C);
+    time = time - one;
+    f32 ratio = time / denominator;
+
+    if (value < ratio) {
+        value = ratio;
+    }
+    if (value > lbl_805614A4) {
+        value = lbl_805614A4;
+    }
+
+    f32 result = *(f32 *)(lbl_8042FB3C + 0x1C) +
+                 value * (lbl_805614A4 - *(f32 *)(lbl_8042FB3C + 0x1C));
+    if (result > lbl_805614A4) {
+        f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
+        if (current < lbl_805614A4) {
+            current -= lbl_80561498;
+        } else {
+            current += lbl_80561498;
+        }
+        return (s32)current;
     }
     return 0;
 }
