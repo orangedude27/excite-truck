@@ -613,21 +613,23 @@ extern f32 lbl_80561500;
 extern "C" void fn_8001DAE0(void *, f32);
 extern "C" f32 fn_8013EFBC(f32 arg0) { return lbl_80561514 - arg0; }
 
+#pragma scheduling invalid_target
 extern "C" unsigned int fn_8013EFC8(void *arg0) {
     f32 magnitude = __fabsf(*(f32 *)((u8 *)arg0 + 0x250));
     if (magnitude <= lbl_80558DC4) {
         if (*(u8 *)((u8 *)arg0 + 0x13C) != 0)
             ((TObj4C *)arg0)->v4C();
-        if (*(s32 *)((u8 *)arg0 + 0x140) != 0)
-            fn_802AE220(0);
+        s32 object = *(s32 *)((u8 *)arg0 + 0x140);
+        if (object != 0)
+            ((void (*)(s32, s32))fn_802AE220)(object, 0);
     } else {
         ((TObj4C *)arg0)->v4C();
     }
-    if (((int (*)(void *))(*(void ***)arg0)[0x68 / 4])(arg0))
+    if (((TObj4C *)arg0)->v68())
         fn_8001DFCC();
     return *(s32 *)((u8 *)arg0 + 0x134) != 4;
 }
-
+#pragma scheduling on
 extern "C" s32 fn_8013F088(void *arg0) {
     return (*(s32 *)((u8 *)arg0 + 0x134) - 2) == 0;
 }
@@ -892,7 +894,7 @@ extern "C" f32 fn_80141C9C(f32 arg0) {
 }
 
 extern "C" u8 *fn_80131234(const char *);
-extern "C" char lbl_80559D80[];
+extern "C" char lbl_80559D80[1];
 extern "C" char lbl_8032CC64[];
 extern "C" void fn_80141DAC(u8 *arg0) {
     u8 *src = fn_80131234(lbl_8032CC64);
@@ -1151,32 +1153,27 @@ extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
 extern "C" s32 fn_80142870(void *arg0, void *arg1) {
     f32 time = fn_8013CB3C();
     f32 elapsed = *(f32 *)((u8 *)arg1 + 0x84);
-    time = time - elapsed;
+    time -= elapsed;
     f32 offset = *(f32 *)(lbl_8042FB3C + 0x24);
-    time = time - offset;
+    time -= offset;
     f32 one = lbl_805614A4;
     f32 span = *(f32 *)(lbl_8042FB3C + 0x20);
     f32 value = lbl_805614AC;
     f32 denominator = span - one;
     f32 position = *(f32 *)(lbl_8042FB3C + 0x1C);
-    time = time - one;
+    time -= one;
     f32 ratio = time / denominator;
 
-    if (value < ratio) {
-        value = ratio;
-    }
-    if (value > lbl_805614A4) {
-        value = lbl_805614A4;
-    }
+    if (value < ratio) value = ratio;
+    if (value > one) value = one;
 
-    f32 result = *(f32 *)(lbl_8042FB3C + 0x1C) +
-                 value * (lbl_805614A4 - *(f32 *)(lbl_8042FB3C + 0x1C));
+    f32 result = position + value * (lbl_805614A4 - position);
     if (result > lbl_805614A4) {
         f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
-        if (current < lbl_805614A4) {
-            current -= lbl_80561498;
-        } else {
+        if (current >= lbl_805614A4) {
             current += lbl_80561498;
+        } else {
+            current -= lbl_80561498;
         }
         return (s32)current;
     }
