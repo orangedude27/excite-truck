@@ -244,9 +244,11 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
     extern void *fn_801284F8(int, int);
     extern float lbl_80564D1C, lbl_80564D20;
     extern int lbl_8034AB54[], lbl_80333918[];
+    float bInput = *(float *)((char *)arg0 + 0x1C);
+    float aInput = *(float *)((char *)arg0 + 0x18);
     float value = lbl_80564D1C;
-    float b = *(float *)((char *)arg0 + 0x1C) * scale;
-    float a = *(float *)((char *)arg0 + 0x18) * scale;
+    float b = bInput * scale;
+    float a = aInput * scale;
     char *obj = fn_801284F8(0x2C, (int)&lbl_8034AB54);
     if (obj != 0) {
         float initial = lbl_80564D20;
@@ -255,14 +257,14 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
         *(int *)(obj + 8) = 0;
         *(int *)(obj + 0x18) = 0x54554245;
         *(float *)(obj + 0x10) = value;
-        *(float *)(obj + 0x14) = lbl_80564D20;
+        *(float *)(obj + 0x14) = initial;
         *(int *)(obj + 0x20) = 100;
         *(int *)(obj + 0x1C) = 0;
         *(float *)(obj + 0x24) = b;
         *(float *)(obj + 0x28) = a;
         *(void **)obj = &lbl_80333918;
     }
-    (*(void (***)(void *, int))obj)[16](obj, arg1);
+    ((void (*)(void *, int))(*(void (**)(void *, int))((char *)*(void **)obj + 0x40)))(obj, arg1);
     return obj;
 }
 
@@ -425,6 +427,35 @@ extern "C" void fn_802BCBDC(void) {
 #pragma cplusplus reset
 #pragma pop
 #pragma pop
+void fn_802BCF04(void) {
+    void *base;
+    char *entry;
+    int i;
+    int offset;
+
+    base = *(void **)&lbl_804C00D4;
+    i = 0;
+    offset = 0;
+    goto check;
+loop:
+    entry = (char *)base + offset;
+    fn_802BCFB0((int *)(entry + 0x58));
+    fn_802CAC54(*(int *)(entry + 0x20));
+    fn_802C6C20(*(int *)(entry + 0x18));
+    *(int *)(entry + 0x18) = 0;
+    fn_802CAC54(*(int *)(entry + 0x10));
+    fn_802C6C20(*(int *)(entry + 8));
+    *(int *)(entry + 8) = 0;
+    offset += 0x60;
+    i++;
+check:
+    if (i < *(int *)((char *)&lbl_804C00D4 + 4)) goto loop;
+    *(int *)((char *)&lbl_804C00D4 + 4) = 0;
+    if (lbl_8055FAB4 != 0) {
+        fn_80131818();
+        lbl_8055FAB4 = 0;
+    }
+}
 void fn_802BCFB0(int *arg0) {
     int temp_r31;
     temp_r31 = *arg0;
@@ -633,27 +664,31 @@ void fn_802BD69C(void *arg0, int arg1) {
 
 int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
 
+__declspec(section ".data") extern int lbl_8034AC48;
 #pragma scheduling invalid_target
 void fn_802BDBA8(void) {
     char *strings = (char *)&lbl_8034AB38;
     void *object;
     int result;
+    int failed;
 
     fn_802C126C();
     fn_802BCBDC();
     fn_802B8AE0(strings + 0xE8, &lbl_8055FAA8);
     fn_802B8AE0(strings + 0xF4, &lbl_8055FAAC);
     result = fn_802B05E4();
-    *(unsigned char *)&lbl_8055FAB0 = !result;
-    if (result != 0) {
-        fn_802BD210();
-        object = fn_801284F8(8, (int)(strings + 0x104));
-        if (object != 0) {
-            fn_802C2914(object);
-            *(void **)((char *)object + 4) = &lbl_8034AC48;
-        }
-        lbl_8055FABC = object;
+    failed = result == 0;
+    *(unsigned char *)&lbl_8055FAB0 = failed;
+    if (result == 0) {
+        return;
     }
+    fn_802BD210();
+    object = fn_801284F8(8, (int)(strings + 0x104));
+    if (object != 0) {
+        fn_802C2914(object);
+        *(void **)((char *)object + 4) = &lbl_8034AC48;
+    }
+    lbl_8055FABC = object;
 }
 #pragma scheduling on
 void fn_802BDC3C(void* alarm) {
