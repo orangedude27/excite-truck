@@ -452,7 +452,7 @@ void fn_800216C8(void) {
 extern int lbl_8055D668, lbl_8055D66C;
 extern char *lbl_80558D8C;
 extern int fn_8000DA10(void);
-extern int fn_8001BA90(int, int, int, int);
+extern int fn_8001BA90(int, int, int, int, int);
 extern void fn_8001BA70(int, int, unsigned char *, int);
 #pragma dont_inline on
 int fn_800216D0(void) {
