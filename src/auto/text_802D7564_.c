@@ -225,6 +225,11 @@ void *fn_802D8E9C(void *arg0, void *arg1) {
     return obj;
 }
 
+extern unsigned int lbl_8055FD2C;
+extern void *lbl_8055FE1C;
+extern void *lbl_8055FE20;
+extern void fn_802CFEEC(void);
+
 int fn_802D9068(void) {
     unsigned char *p = (unsigned char *)lbl_8055FE28;
     int i = 0;
