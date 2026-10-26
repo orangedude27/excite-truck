@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern s32 lbl_8055EC48;
 extern "C" s32 fn_802C6B44(void *);
 extern "C" s32 fn_802C6C20(f32);
 extern "C" const char lbl_8033AFDC[];
@@ -456,24 +457,24 @@ return object;
 
 extern u32 lbl_802F9B30[];
 extern u8 lbl_8055B2CC[];
+__declspec(section ".sdata") extern u8 lbl_8055B2CC[];
 extern "C" int fn_801F88F4(void *arg0) {
     class F88Node {
     public:
         virtual void v0();
         virtual void v4();
         virtual void v8();
-        virtual void vC();
-        virtual void v10();
         virtual char *v14(const char *, u32, u32);
     };
     u32 table[3];
-    table[0] = lbl_802F9B30[0];
-    table[1] = lbl_802F9B30[1];
-    table[2] = lbl_802F9B30[2];
+    u32 *source = lbl_802F9B30;
+    table[0] = *source++;
+    table[1] = *source++;
+    table[2] = *source;
     char *name = ((F88Node *)arg0)->v14((const char *)lbl_8055B2CC, table[1], table[0]);
     u32 *entry = table;
     do {
-        if (stricmp((const char *)*entry, name) == 0) return 1;
+        if (stricmp(name, (const char *)*entry) == 0) return 1;
         entry++;
     } while (*entry != 0);
     return 0;
