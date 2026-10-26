@@ -16,7 +16,7 @@ extern void *fn_8012C370(s32, u32 *, void *, void *, u8 *);
 extern s32 fn_8012C33C(void *);
 extern s32 fn_801E2CCC(void *, f32 **);
 extern void fn_801EB6A8(s32);
-extern s32 fn_801EB000(s32 *);
+extern s32 fn_801EB000();
 extern void fn_802CDDC8(s32);
 extern void fn_802E317C(const char *, ...);
 extern void fn_802AE7F4(void);
