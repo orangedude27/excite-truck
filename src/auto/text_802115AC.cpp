@@ -11,7 +11,7 @@ extern "C" s32 fn_80214934(const void *, s32, void *, s32);
 extern "C" s32 fn_80029004(const char *, s32);
 extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
 extern "C" unsigned long strlen(const char *);
-extern "C" char lbl_8055B808[];
+extern "C" const char lbl_8055B808[];
 extern "C" s32 fn_802C4F14(s32);
 extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
 extern "C" s32 fn_8021481C(void *);
