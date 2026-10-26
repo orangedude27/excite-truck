@@ -15,7 +15,6 @@ void fn_802E4C18(void) {
 }
 
 #pragma dont_inline on
-#pragma scheduling off
 void *fn_802E4C1C(int arg0) {
     char *object = fn_801284F8(0xC, &lbl_8055D1C8);
     if (object != 0) {
