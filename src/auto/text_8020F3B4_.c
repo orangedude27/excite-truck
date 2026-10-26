@@ -10,6 +10,8 @@ struct Dummy_802113D8 {
 #pragma cplusplus off
 extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
+extern long lbl_8055EEBC;
+extern long lbl_8055EEE8;
 extern long lbl_8055B658;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
