@@ -143,6 +143,29 @@ extern void fn_80038040(void);
 extern s32 DVDGetCommandBlockStatus(void *block);
 
 extern void *lbl_8055D808;
+void DSPInit(void) {
+    s32 interrupts;
+
+    DBPrintf_800343C8(lbl_80301DB0 + 0x48,
+                      lbl_80301DB0 + 0x68,
+                      lbl_80301DB0 + 0x74);
+    if ((s32)lbl_8055D808 != 1) {
+        OSRegisterVersion(lbl_80558DE8);
+        interrupts = OSDisableInterrupts();
+        __OSSetInterruptHandler(7, __DSPHandler_80034418);
+        __OSUnmaskInterrupts(0x01000000);
+        *(volatile u16 *)0xCC00500A =
+            (*(volatile u16 *)0xCC00500A & ~0xA8) | 0x800;
+        *(volatile u16 *)0xCC00500A &= ~0xAC;
+        lbl_8055D818 = 0;
+        lbl_8055D824 = 0;
+        lbl_8055D81C = 0;
+        lbl_8055D820 = 0;
+        lbl_8055D808 = (void *)1;
+        OSRestoreInterrupts(interrupts);
+    }
+}
+
 void* DSPReset(void) {
     return lbl_8055D808;
 }
