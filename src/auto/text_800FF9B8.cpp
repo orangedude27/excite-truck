@@ -25,8 +25,6 @@ public:
     virtual void unk_44() = 0;
     virtual void unk_48() = 0;
     virtual void unk_4c() = 0;
-    virtual void unk_50() = 0;
-    virtual void unk_54() = 0;
     virtual void unk_0x58() = 0;
     void Prepare(const void *, long, int, const WsdTrack::WsdCallback *, unsigned long);
 };
@@ -71,7 +69,7 @@ void nw4hbm::snd::detail::WaveSound::Prepare(const void *arg1, long arg2, int ar
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x43, base + 0x18);
     if (arg4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x44, base + 0x48);
     if (*(int *)((char *)this + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x45, base + 0x74);
-    ((void (*)(void *))(*(void ***)((char *)this + 0x0))[0x16])(this);
+    this->unk_0x58();
     Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl((char *)this + 0xD8, arg1, arg2, arg3, arg4, arg5);
 }
 
