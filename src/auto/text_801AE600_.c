@@ -9,9 +9,10 @@ extern const char lbl_803359A0[];
 extern char lbl_80558DC4[];
 extern float lbl_8055E630;
 extern float lbl_8056255C;
-extern float lbl_80562560;
-extern int lbl_8055E62C;
-extern double lbl_80562568;
+  extern float lbl_80562558;
+  extern float lbl_80562560;
+  extern int lbl_8055E62C;
+  extern double lbl_80562568;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
