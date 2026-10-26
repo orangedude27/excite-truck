@@ -30,7 +30,7 @@ extern s32 fn_8001D25C(s32);
 extern void fn_8001CD4C(s32, s32, s32);
 extern s32 fn_8001CB8C(s32, const char *, void *);
 extern void *fn_8001BC38();
-extern void *lbl_80358628;
+extern char lbl_80358628[];
 extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
 extern s32 fn_8001CE34(s32, s32, s32, s32);
 extern s32 fn_8001CE74(s32, s32, s32, s32);
