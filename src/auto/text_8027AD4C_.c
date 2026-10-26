@@ -6,6 +6,7 @@ long fn_8000D984(long);
 long fn_8027B8E4(void *, long);
 void *fn_8027B834(void *);
 void fn_8027B984(void *, long);
+long fn_8027BA24(void *);
 long fn_8027BAB8(void *);
 void fn_8027AF94(void *);
 void fn_8027B288(void *);
@@ -225,21 +226,26 @@ next_item:
     *(void **)(self + 4) = 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8027B60C(void *arg0) {
-    long i, offset;
-    if (*(long *)((char *)arg0 + 4) != 0) {
-        i = 0; offset = 0;
+    register int offset;
+    register int i;
+    if (*(int *)((char *)arg0 + 4) != 0) {
+        i = 0;
+        offset = 0;
         do {
             fn_8027B288((char *)*(void **)((char *)arg0 + 8) + offset);
-            offset += 0x1F4; i++;
-        } while (i < *(long *)((char *)arg0 + 0xC));
+            offset += 0x1F4;
+        } while (++i < *(int *)((char *)arg0 + 0xC));
         offset = 0;
-        *(long *)((char *)arg0 + 0xC) = 0;
-        fn_80131818(*(long *)((char *)arg0 + 4));
-        *(long *)((char *)arg0 + 4) = 0;
+        *(int *)((char *)arg0 + 0xC) = 0;
+        fn_80131818(*(int *)((char *)arg0 + 4));
+        *(int *)((char *)arg0 + 4) = 0;
     }
 }
-
+#pragma scheduling on
+#pragma pop
 void fn_8027B77C(void) {
     char *base, *p;
     long outer, i;
@@ -259,7 +265,10 @@ void fn_8027B77C(void) {
 
 #pragma dont_inline reset
 void *fn_8027B878(long arg0) {
-    return lbl_804A4380 + fn_8000DA10() * 0x3B10 + arg0 * 0xBD0 + 0x2370;
+    long v = fn_8000DA10();
+    long a = v * 0x3B10;
+    long b = arg0 * 0xBD0;
+    return lbl_804A4380 + a + b + 0x2370;
 }
 
 void fn_8027B8C0(void* alarm) {
@@ -450,20 +459,34 @@ long *fn_8027C120(long arg0, long arg1) {
     return (long *)(*(long *)arg0 + index * 0x14);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+extern int __cntlzw(unsigned int);
 long fn_8027C1C8(void *arg0, const char *arg1) {
+    struct StringTable {
+        char padding[0xAF0C];
+        char *entries;
+        long count;
+    };
+    struct StringTable *table = (struct StringTable *)arg0;
     long index = 0;
     long offset = 0;
-    while (index < *(long *)((char *)arg0 + 0xAF10)) {
-        if (stricmp(arg1, *(char **)((char *)arg0 + 0xAF0C + offset + 4)) == 0)
-            break;
-        offset += 0xC;
-        index++;
-    }
-    if (index >= *(long *)((char *)arg0 + 0xAF10))
-        index = -1;
+
+    goto compare_entry;
+compare_entry:
+    if ((((unsigned int)__cntlzw((unsigned int)stricmp(arg1, *(char **)(table->entries + offset + 4))) >> 5) == 0))
+        goto increment_entry;
+    goto done;
+increment_entry:
+    offset += 0xC;
+    index++;
+    if (index < table->count)
+        goto compare_entry;
+done:
+    index = -1;
     return index;
 }
-
+#pragma pop
 void *fn_8027C258(void *arg0, long arg1) {
     return (char *)*(void **)((char *)arg0 + 0xAF0C) + arg1 * 0xC;
 }
@@ -560,28 +583,22 @@ long fn_8027C650(void);
 extern char lbl_80347A50[];
 #pragma dont_inline on
 long fn_8027C788(void *arg0) {
-    void *item;
-    long index = 0;
+    register void *item;
+    register long index = 0;
     char *name;
     long value;
-    register char *(*name_fn)(void *);
-    register long (*value_fn)(void *, char *);
-    register void *(*item_fn)(void *, long);
     goto fetch;
 body:
-    name_fn = (char *(*)(void *))(*(void ***)item)[2];
-    name = name_fn(item);
+    name = ((char *(*)(void *))(*(void ***)item)[2])(item);
     if (stricmp(name, lbl_80347A50) == 0) {
-        value_fn = (long (*)(void *, char *))(*(void ***)item)[5];
-        value = value_fn(item, lbl_80347A5C);
+        value = ((long (*)(void *, char *))(*(void ***)item)[5])(item, lbl_80347A5C);
         fn_8027C120(lbl_8055F654, value);
         if (fn_8027C650() == 0)
             return 0;
     }
     index++;
 fetch:
-    item_fn = (void *(*)(void *, long))(*(void ***)*(void **)((char *)arg0 + 8))[24];
-    item = item_fn(*(void **)((char *)arg0 + 8), index);
+    item = ((void *(*)(void *, long))(*(void ***)*(void **)((char *)arg0 + 8))[24])(*(void **)((char *)arg0 + 8), index);
     if (item != 0)
         goto body;
     return 1;
@@ -733,7 +750,9 @@ void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
 
 #pragma scheduling invalid_target
 long fn_8027CE4C(long arg0) {
-    int value = *fn_8027C120(lbl_8055F654, arg0);
+    long *result = fn_8027C120(lbl_8055F654, arg0);
+    register long value;
+    value = result[0];
     switch (value) {
     case 0:
         return fn_8027C8B0();
@@ -764,9 +783,10 @@ extern "C" long fn_8027CFB4(long arg0) {
     return 0;
 }
 void fn_8027C8B8(long, char *, long);
+#pragma push
 #pragma scheduling invalid_target
-void fn_8027D158(long arg0, char *arg1, long arg2) {
-    long *result = fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
+extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
+    int *result = (int *)fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
     switch (*result) {
     case 0:
         fn_8027C8B8((long)result, arg1, arg2);
@@ -780,6 +800,7 @@ void fn_8027D158(long arg0, char *arg1, long arg2) {
     }
 }
 #pragma scheduling on
+#pragma pop
 long fn_8027D1F4(void) {
     return *(long *)((char *)lbl_8055F654 + 0xB01C);
 }
