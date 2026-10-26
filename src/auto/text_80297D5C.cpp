@@ -211,22 +211,21 @@ extern "C" void *fn_80298868(void *);
 extern "C" int fn_802984D0(void *, void *, void *, void *, void *, void *);
 extern "C" void fn_80299338(void *, unsigned int, void *, void *, void *, short);
 extern void *lbl_8055F7C4;
-unsigned int fn_8029833C(void *arg0, void *arg1, void *arg2, void *arg3, short arg4, float farg0) {
-    short local;
-    void *obj;
-    unsigned int index;
-    local = arg4;
-    obj = fn_80298868(arg0);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" int fn_8029833C(void *arg0, void *arg1, void *arg2, void *arg3, short arg4, float farg0) {
+    short local = arg4;
+    void *obj = fn_80298868(arg0);
     if (obj == 0 || fn_802984D0(arg0, obj, arg1, arg2, arg3, &local) == 0) {
-        return 0xFFFFFFFF;
+        return -1;
     }
     *(float *)((char *)obj + 0x24) = farg0;
-    *(signed char *)((char *)obj + 0x28) = 1;
-    index = ((char *)obj - (char *)arg0) / 44;
-    fn_80299338(lbl_8055F7C4, index, obj, (char *)obj + 0xC, (char *)obj + 0x18, local);
-    return index;
+    *(char *)((char *)obj + 0x28) = 1;
+    arg3 = (void *)(((char *)obj - (char *)arg0) / 44);
+    fn_80299338(lbl_8055F7C4, (unsigned int)arg3, obj, (char *)obj + 0xC, (char *)obj + 0x18, local);
+    return (int)arg3;
 }
-
+#pragma pop
 extern "C" int fn_802984D0(void*, void*, void*, void*, void*, void*);
 extern "C" void fn_802994C0(void*, unsigned int);
 extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
@@ -786,7 +785,7 @@ extern "C" void *fn_80288208(int);
 extern "C" int fn_80287E20(void *, const char *);
 extern "C" void *fn_80287E80(void *, const char *);
 extern "C" char lbl_80349508[];
-extern "C" char lbl_8055CA90[];
+extern "C" int lbl_8055CA90;
 #pragma cplusplus on
 extern "C" int fn_8029ADCC(void *arg0) {
     class Dummy {
@@ -799,8 +798,6 @@ extern "C" int fn_8029ADCC(void *arg0) {
         virtual void v5();
         virtual void v6();
         virtual void v7();
-        virtual void v8();
-        virtual void v9();
         virtual float apply(const char *, float);
     };
     int count;
@@ -817,8 +814,8 @@ extern "C" int fn_8029ADCC(void *arg0) {
     while (i < count) {
         obj = fn_80288208(i);
         *(float *)((char *)cursor + 0x1C0) = value;
-        if (fn_80287E20(obj, lbl_8055CA90) != 0) {
-            obj = fn_80287E80(obj, lbl_8055CA90);
+        if (fn_80287E20(obj, (const char *)&lbl_8055CA90) != 0) {
+            obj = fn_80287E80(obj, (const char *)&lbl_8055CA90);
             *(float *)((char *)cursor + 0x1C0) = ((Dummy *)obj)->apply(lbl_80349508, *(float *)((char *)cursor + 0x1C0));
         }
         cursor = (char *)cursor + 4;
