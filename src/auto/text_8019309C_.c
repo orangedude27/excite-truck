@@ -1114,13 +1114,13 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
     float abs0;
     float sp8;
     float spC;
-    float value0;
     float value1;
-    float out0;
+    float value0;
     float out1;
+    float out0;
     int var_r0;
     temp_f5 = farg0 - farg1;
-    temp_f5 = lbl_80562230 + temp_f5;
+    temp_f5 += lbl_80562230;
     temp_f5 /= farg2;
     mag0 = __fabs((double)farg0);
     abs0 = (float)mag0;
@@ -1134,13 +1134,13 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
     }
     if ((float)__fabs((double)farg1) < lbl_80562208)
         goto direct_case;
-    sp8 = temp_f5;
     spC = farg1;
-    if ((int)(*(unsigned int *)&sp8 & 0x80000000U) != (int)(*(unsigned int *)&spC & 0x80000000U))
+    sp8 = temp_f5;
+    if ((int)(*(unsigned int *)&spC & 0x80000000U) != (int)(*(unsigned int *)&sp8 & 0x80000000U))
         goto different_sign;
 direct_case:
-    out0 = (float)__fabs((double)temp_f5) / lbl_80562234;
     out1 = lbl_80562144;
+    out0 = (float)__fabs((double)temp_f5) / lbl_80562234;
     *arg0 = out0;
     *arg1 = out1;
     goto finish;
@@ -1235,17 +1235,16 @@ extern int fn_80129D18(int, int);
 extern void fn_8018A174(void *);
 extern void fn_8017B4AC(void *, float *, float, float);
 extern float lbl_80562240;
-void fn_801964D0(void *arg0) {
-    float sp8;
-    float spC;
-    float sp10;
+#pragma cplusplus on
+extern "C" void fn_801964D0(void *arg0) {
+    float vector[3];
+    float scale;
     float temp_f1;
     float temp_f2;
     float var_f3;
-    void **temp_r3;
-    void *temp_r3_2;
-    temp_r3 = *(void ***)((char *)arg0 + 0x28C);
-    if (fn_80196468(*(int *)((char *)((void *(*)(void *))(*(void ***)temp_r3)[4])(temp_r3) + 4)) != 0) {
+    Vt_80194C4C *controller;
+    controller = (Vt_80194C4C *)*(void **)((char *)arg0 + 0x28C);
+    if (fn_80196468(*(int *)((char *)controller->v2() + 4)) != 0) {
         *((unsigned char *)arg0 + 0x2A7) = 1;
         if (fn_80129D18(3, 10) < 5) {
             fn_8018A174(*(void **)((char *)arg0 + 0x294));
@@ -1253,17 +1252,19 @@ void fn_801964D0(void *arg0) {
                 var_f3 = lbl_805621A4;
             else
                 var_f3 = lbl_80562140;
-            temp_r3_2 = *(void **)((char *)arg0 + 0x294);
-            temp_f2 = lbl_805621AC * *(float *)((char *)temp_r3_2 + 0xD4);
-            temp_f1 = lbl_80562240 * temp_f2 * var_f3;
-            sp8 = *(float *)((char *)temp_r3_2 + 0x3C) * temp_f1;
-            spC = *(float *)((char *)temp_r3_2 + 0x40) * temp_f1;
-            sp10 = *(float *)((char *)temp_r3_2 + 0x44) * temp_f1;
-            fn_8017B4AC(*(void **)((char *)arg0 + 0x294), &sp8, temp_f1, temp_f2);
+            controller = (Vt_80194C4C *)*(void **)((char *)arg0 + 0x294);
+            scale = *(float *)((char *)controller + 0xD4);
+            temp_f2 = lbl_805621AC * scale;
+            temp_f1 = lbl_80562240 * temp_f2;
+            temp_f1 *= var_f3;
+            vector[0] = *(float *)((char *)controller + 0x3C) * temp_f1;
+            vector[1] = *(float *)((char *)controller + 0x40) * temp_f1;
+            vector[2] = *(float *)((char *)controller + 0x44) * temp_f1;
+            fn_8017B4AC(*(void **)((char *)arg0 + 0x294), vector, temp_f1, temp_f2);
         }
     }
 }
-
+#pragma cplusplus reset
 extern float lbl_80562140, lbl_80562144, lbl_80562184, lbl_805621A4;
 extern float lbl_805621EC, lbl_80562244, lbl_80562248;
 extern void fn_801EA18C(void *, void *, int, int, void *, float);
