@@ -51,9 +51,10 @@ extern void fn_80179E00_virtual_call(void *);
 
 #pragma scheduling off
 static f32 fn_load(void) { return lbl_80561B78; }
+#pragma scheduling invalid_target
 void* fn_80179D08(void *arg0) {
-    f32 a = lbl_80561B7C;
-    f32 b = lbl_80561B78;
+    register f32 a = lbl_80561B7C;
+    register f32 b = lbl_80561B78;
     *(s32 *)arg0 = (s32)&lbl_80331C70[0];
     *(s32 *)((u8 *)arg0 + 0xC) = 0;
     *(f32 *)((u8 *)arg0 + 0x3C) = b;
@@ -110,43 +111,82 @@ void fn_80179D94(void *arg0, void *arg1) {
 
 #pragma cplusplus on
 extern "C" void fn_80179E00(void *arg0) {
+    struct Dummy {
+        virtual void m0() = 0; virtual void m1() = 0; virtual void m2() = 0;
+        virtual void m3() = 0; virtual void m4() = 0; virtual void m5() = 0;
+        virtual void m6() = 0; virtual void m7() = 0; virtual void m8() = 0;
+    };
     s32 i;
     void *p;
-    s32 last;
     s32 m, l, k, j, h, g, f, e, d, c, b, a;
+    volatile s32 *base = (volatile s32 *)arg0;
+
+    *(s32 *)((u8 *)arg0 + 4) = 0;
     i = 0;
     p = arg0;
-    *(s32 *)((u8 *)arg0 + 4) = 0;
     goto check;
 loop:
-    fn_80179E00_virtual_call(*(void **)((u8 *)p + 0x14));
+    ((struct Dummy *)*(void **)((u8 *)p + 0x14))->m8();
     p = (u8 *)p + 4;
     i++;
 check:
     if (i < *(s32 *)((u8 *)arg0 + 0x28)) goto loop;
     fn_8017A580(arg0);
-    a = *(s32 *)((u8 *)arg0 + 0x70); b = *(s32 *)((u8 *)arg0 + 0x74);
-    c = *(s32 *)((u8 *)arg0 + 0x78); d = *(s32 *)((u8 *)arg0 + 0x7C);
-    e = *(s32 *)((u8 *)arg0 + 0x80); f = *(s32 *)((u8 *)arg0 + 0x84);
-    g = *(s32 *)((u8 *)arg0 + 0x88); h = *(s32 *)((u8 *)arg0 + 0x8C);
-    j = *(s32 *)((u8 *)arg0 + 0x90); k = *(s32 *)((u8 *)arg0 + 0x94);
-    l = *(s32 *)((u8 *)arg0 + 0x98); m = *(s32 *)((u8 *)arg0 + 0x9C);
-    *(s32 *)((u8 *)arg0 + 0xA0) = a; *(s32 *)((u8 *)arg0 + 0xA4) = b;
+    b = base[0x70 / 4]; a = base[0x74 / 4];
+    c = base[0x78 / 4]; d = base[0x7C / 4];
+    e = base[0x80 / 4]; f = base[0x84 / 4];
+    g = base[0x88 / 4]; h = base[0x8C / 4];
+    j = base[0x90 / 4]; k = base[0x94 / 4];
+    l = base[0x98 / 4]; m = base[0x9C / 4];
+    *(s32 *)((u8 *)arg0 + 0xA0) = b; *(s32 *)((u8 *)arg0 + 0xA4) = a;
     *(s32 *)((u8 *)arg0 + 0xA8) = c; *(s32 *)((u8 *)arg0 + 0xAC) = d;
     *(s32 *)((u8 *)arg0 + 0xB0) = e; *(s32 *)((u8 *)arg0 + 0xB4) = f;
     *(s32 *)((u8 *)arg0 + 0xB8) = g; *(s32 *)((u8 *)arg0 + 0xBC) = h;
     *(s32 *)((u8 *)arg0 + 0xC0) = j; *(s32 *)((u8 *)arg0 + 0xC4) = k;
     *(s32 *)((u8 *)arg0 + 0xC8) = l; *(s32 *)((u8 *)arg0 + 0xCC) = m;
     fn_801E9DC4((u8 *)arg0 + 0x6C);
+    return;
 }
 #pragma cplusplus reset
 void fn_80179EE4(void) {
 
 }
 
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" void fn_80179EE8(void *arg0, s32 arg1) {
+    struct ItemDummy {
+        virtual void m0() = 0;
+        virtual void m1() = 0;
+        virtual void m2(s32) = 0;
+    };
+    u8 *p;
+    void *item;
+    s32 i;
+
+    if (arg0 != NULL) {
+        *(s32 *)arg0 = (s32)&lbl_80331C70[0];
+        p = (u8 *)arg0;
+        i = 0;
+        goto check;
+    loop:
+        item = *(void **)(p + 0x14);
+        if (item != NULL)
+            ((ItemDummy *)item)->m2(1);
+        p += 4;
+        i += 1;
+    check:
+        if (i < *(s32 *)((u8 *)arg0 + 0x28))
+            goto loop;
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+}
+#pragma cplusplus reset
+#pragma dont_inline reset
+
 #pragma push
-#pragma optimization_level 2
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma cplusplus on
 extern "C" void fn_80179F94(void *arg0, void *arg1) {
     s32 count;
@@ -162,12 +202,7 @@ extern "C" void fn_80179F94(void *arg0, void *arg1) {
     *(s32 *)((u8 *)arg0 + 0x28) = count;
     value = ((Fn80179F94Dummy *)arg1)->m13(arg1, slot, count - 1);
     old = *(f32 *)((u8 *)arg0 + 0x2C);
-    if (old <= value)
-        goto update;
-    goto done;
-update:
-    old = value;
-done:
+    old = old <= value ? value : old;
     *(f32 *)((u8 *)arg0 + 0x2C) = old;
 }
 #pragma cplusplus reset
@@ -261,7 +296,7 @@ void fn_8017AB84(void *matrix, float *dst, const float *src) {
     dst[2] += *(float *)((char *)matrix + 0x68);
 }
 
-void fn_80179EE8(void*, s32);
+
 void fn_80128668(void*);
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017B038(long arg0, long arg1) {
     if (arg0 != 0) {
