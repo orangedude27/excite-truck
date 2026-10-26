@@ -55,13 +55,19 @@ extern char lbl_8055D258;
 extern long fn_800B7C34(long, void *);
 extern long fn_800B7C08(long, long *);
 #pragma push
-#pragma processor 750
-long *fn_802E9A6C(long arg0) {
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" long *fn_802E9A6C(long arg0) {
     extern long fn_802E30C8(char *, long);
+    class Obj {
+    public:
+        virtual void f(int);
+    };
     long info[8];
-    long *p;
-    lbl_80560060 = 1;
+    register long *p;
+
     p = lbl_80507600;
+    lbl_80560060 = 1;
     if (p != 0) {
         p[0] = (long)&lbl_8034E9B0;
         p[1] = fn_800B7C34(arg0, &lbl_8055D258);
@@ -76,9 +82,10 @@ long *fn_802E9A6C(long arg0) {
         }
     }
     if (p[1] != 0) return p;
-    if (p != 0) ((void (*)(long *, long))((long *)p[0])[2])(p, 1);
+    if (p != 0) ((Obj *)p)->f(1);
     return 0;
 }
+#pragma cplusplus reset
 #pragma pop
 void *fn_802E9B54(void *arg0, long arg1) {
     long *p = (long *)arg0;
@@ -260,6 +267,39 @@ int fn_802EAA58(int *arg0, int arg1) {
     return result;
 }
 
+#pragma scheduling invalid_target
+#pragma dont_inline on
+int fn_802EBD40(void) {
+    extern void OSSleepTicks(unsigned long long);
+    char *base = (char *)&lbl_8034E260;
+    int zero = 0;
+    register unsigned int *systemBase = (unsigned int *)0x80000000;
+    register unsigned int multiplier = 0x10624DD3;
+    register int elapsed;
+    unsigned int clock;
+
+    lbl_80560062 = zero;
+    ((void (*)(char *, ...))fn_802E30C8)(base + 0x65C);
+    elapsed = 0;
+    goto sleep_loop;
+sleep_loop:
+    clock = systemBase[0x3E] >> 2;
+    ((void (*)(int, int))OSSleepTicks)(
+        0, ((clock / 250) & 0x0FFFFFFC) + (clock / 1000));
+    elapsed += 5;
+    if (elapsed <= 0x3E8) {
+        goto sleep_loop;
+    }
+    ((void (*)(char *, ...))fn_802E30C8)(base + 0x67C);
+    goto check_done;
+check_done:
+    if ((unsigned char)lbl_80560063 != 0) {
+        ((void (*)(char *, ...))fn_802E30C8)(base + 0x6A8);
+    }
+}
+#pragma dont_inline reset
+#pragma scheduling on
+
 int fn_802EBE00(int arg0) {
     if (arg0 == 1) fn_802EBD40();
     return 0;
@@ -366,8 +406,8 @@ extern void OSSleepTicks(unsigned long long);
 #pragma push
 #pragma dont_inline on
 void fn_802EC1E4(void) {
-    register int start;
     register unsigned int *timebase;
+    register int start;
     unsigned int tick;
     int current;
 
