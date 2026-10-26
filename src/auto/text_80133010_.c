@@ -83,8 +83,28 @@ void fn_801331C4(int arg0,int arg1,float *arg2) {
  else fn_8013323C(arg0,arg1,*arg2);
 }
 
+__declspec(section ".sdata") extern const char lbl_80559B5C[];
+#pragma push
+#pragma optimize_for_size on
+#pragma scheduling invalid_target
+int fn_8013323C(int arg0, int arg1, float arg2) {
+    extern float lbl_805612D0;
+    extern int sprintf(char *, const char *, ...);
+    void *sp8;
+    int intValue;
+    fn_80133E10(&sp8, arg0, arg1);
+    intValue = (int)arg2;
+    *(float *)((char *)sp8 + 0x10) = arg2;
+    *(unsigned char *)((char *)sp8 + 8) = lbl_805612D0 != arg2;
+    *(int *)((char *)sp8 + 0x0C) = intValue;
+    ((int (*)(char *, const char *, float))sprintf)((char *)sp8 + 0x14, lbl_80559B5C, arg2);
+    *(int *)sp8 = 4;
+}
+#pragma pop
 extern int fn_80133348(int, int, int);
 extern int fn_80133460(int, int, unsigned char);
+extern const char lbl_8032B940[];
+extern const char lbl_8032B968[];
 extern int sprintf(char *, const char *, ...);
 extern const char lbl_80559B60[];
 extern const char lbl_80559B5C[];
@@ -126,18 +146,20 @@ void fn_801333E8(int arg0, int arg1, unsigned char *arg2) {
         fn_80133460(arg0, arg1, *arg2);
     }
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 int fn_80133460(int arg0, int arg1, unsigned char arg2) {
     void *sp8;
+    int result;
     fn_80133E10(&sp8, arg0, arg1);
     *(unsigned char *)((char *)sp8 + 8) = arg2;
     *(int *)((char *)sp8 + 0xC) = arg2;
     *(float *)((char *)sp8 + 0x10) = (float)arg2;
-    strcpy((char *)sp8 + 0x14, arg2 ? "true" : "false");
+    strcpy((char *)sp8 + 0x14, arg2 ? lbl_80559B68 : lbl_80559B64);
     *(int *)sp8 = 1;
-    return 0;
+    result = 0;
+    return result;
 }
-
+#pragma scheduling on
 void fn_801334F4(int arg0, int arg1, char *arg2, int arg3) {
     void *sp8;
     if (fn_80133E10(&sp8, arg0, arg1) != 0) {
@@ -334,6 +356,31 @@ int fn_80133E10(void **arg0, int arg1, int arg2) {
     }
     return 0;
 }
+
+#pragma dont_inline on
+int fn_80133F3C(int arg0) {
+    unsigned int offset;
+    int i = 0;
+    int *p;
+    int *entry;
+    goto check;
+loop:
+    offset = (unsigned int)i * 0x38;
+    entry = (int *)((char *)p + offset);
+    if (arg0 == entry[3]) {
+        p[1] = p[1] - 1;
+        p = (int *)lbl_8055E07C;
+        memmove((char *)p + offset + 8,
+                (char *)p + offset + 0x40,
+                (unsigned int)((p[1] - i) * 0x38));
+        i--;
+    }
+    i++;
+check:
+    p = (int *)lbl_8055E07C;
+    if (i < p[1]) goto loop;
+}
+#pragma dont_inline reset
 
 extern char lbl_8042F558[], lbl_8032BAC8[];
 void fn_80133FCC(long arg0, long arg_sp0) {
