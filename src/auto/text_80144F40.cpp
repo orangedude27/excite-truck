@@ -1775,6 +1775,20 @@ extern "C" void fn_80148610(void *arg0) {
 
 extern "C" u8 fn_80148624(void *arg0) { return ((u8 *)arg0)[4]; }
 
+extern "C" void *fn_80148D74(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = &lbl_8032D1D8;
+        fn_80148DFC((u8 *)arg0 + 0x14);
+        fn_80148E6C((u8 *)arg0 + 0x10);
+        fn_80148EDC((u8 *)arg0 + 0xC);
+        if (*((u8 *)arg0 + 4) != 0)
+            deleteThreads__6SystemFv((u8 *)arg0 + 8);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_80148DFC(void *);
 extern "C" void fn_80148DFC(void *arg0) {
     void *p = *(void **)arg0;
