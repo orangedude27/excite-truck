@@ -230,28 +230,31 @@ __declspec(section ".data") extern void *lbl_803580A4;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
+#pragma scheduling invalid_target
 s32 fn_80019098(s32 arg0) {
+    register s32 key;
+    register s32 index;
     register s32 offset;
-    register s32 i;
-    register char *base;
-    register char *result;
+    register char *table;
+    register char *entry;
 
-    base = (char *)&lbl_803580A4;
-    i = 0;
+    key = arg0;
+    table = (char *)&lbl_803580A4;
+    index = 0;
     offset = 0;
     while (1) {
-        if (stricmp(*(const char **)(*(char **)base + offset), (const char *)arg0) == 0)
-            break;
-        offset += 0x10;
-        i++;
-        if (i >= *(s32 *)(base + 4)) {
-            i = -1;
+        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), (const char *)key) != 0) {
+            offset += 0x10;
+            index++;
+            if (index < *(s32 *)(table + 4)) continue;
+            index = -1;
             break;
         }
+        break;
     }
-    result = *(char **)base + i * 0x10 + 4;
-    if (i < 0) result = 0;
-    if (result != 0) return *(s32 *)(result + 8);
+    entry = (char *)lbl_803580A4 + index * 0x10 + 4;
+    if (index < 0) entry = 0;
+    if (entry != 0) return *(s32 *)(entry + 8);
     return 0;
 }
 #pragma pop
