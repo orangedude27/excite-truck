@@ -211,32 +211,33 @@ u32 fn_8001BD6C(void *arg0, void *arg1) {
 }
 #pragma scheduling on
 extern void *fn_800167CC(s32);
-extern void *fn_80016BC8(s32);
+extern void *fn_80016BC8(void *, s32);
 #pragma push
 #pragma small_data off
 #pragma pop
 void fn_8001BDA8(void *arg0) {
+    u8 *base = (u8 *)arg0;
     s32 index;
     void *result;
     void *temp;
 
-    if (*(u8 *)((u8 *)arg0 + 0x20) != 0) {
-        if (*(void **)((u8 *)arg0 + 0x18) != &lbl_80358628) {
-            index = *(s32 *)((u8 *)arg0 + 0xC);
-            *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + index * 0xC + 8) =
-                *(s32 *)((u8 *)arg0 + 0x1C);
-            index = *(s32 *)((u8 *)arg0 + 0xC);
-            *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + index * 0xC + 0x10) = 1;
+    if (base[0x20] != 0) {
+        if (*(void **)(base + 0x18) != &lbl_80358628) {
+            index = *(s32 *)(base + 0xC);
+            *(s32 *)((u8 *)*(void **)(base + 0x18) + index * 0xC + 8) =
+                *(s32 *)(base + 0x1C);
+            index = *(s32 *)(base + 0xC);
+            *(u8 *)((u8 *)*(void **)(base + 0x18) + index * 0xC + 0x10) = 1;
             result = fn_800167CC(0);
-            temp = fn_80016BC8(0);
-            *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) +
-                     *(s32 *)((u8 *)arg0 + 0xC) * 0xC + 0xC) =
+            temp = fn_80016BC8((void *)0, 0);
+            *(s32 *)((u8 *)*(void **)(base + 0x18) +
+                     *(s32 *)(base + 0xC) * 0xC + 0xC) =
                 fn_8001D220(*(u32 *)result, *(u32 *)((u8 *)temp + 4),
                             *(u8 *)((u8 *)temp + 8));
             fn_8001D298(*(s32 *)arg0);
         }
     }
-    *(u8 *)((u8 *)arg0 + 0x20) = 0;
+    base[0x20] = 0;
 }
 #pragma scheduling invalid_target
 #pragma scheduling on
