@@ -27,7 +27,7 @@ void fn_8013C8B8(void) {
     lbl_8055E188 = 0;
 }
 #pragma inline auto
-void *fn_8013C770(void);
+void *fn_8013C770();
 extern int lbl_8055E188;
 void fn_80131818(int);
 void fn_8013C748(void);
@@ -35,13 +35,14 @@ __declspec(section ".sdata") extern char lbl_80559D10[];
 int stricmp(const char *, const char *);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_8013C8E8(const char *arg0) {
     class SearchResult {
     public:
         virtual void v0();
         virtual void v1();
-        virtual int query(int, int *, const char **);
+        virtual int query(int, int *, const char **) volatile;
     };
     class SearchHead {
     public:
@@ -69,11 +70,11 @@ extern "C" int fn_8013C8E8(const char *arg0) {
         virtual SearchResult *get(const char *);
     };
     int i;
-    int j;
-    const char *name;
-    int unused;
-    void *manager;
     SearchResult *result;
+    int j;
+    int unused;
+    const char *name;
+    void *manager;
 
     i = 0;
     do {
@@ -83,13 +84,13 @@ extern "C" int fn_8013C8E8(const char *arg0) {
         do {
             if (stricmp(name, arg0) == 0)
                 return *(int *)((char *)manager + 4);
-            j++;
-        } while (result->query(j, &unused, &name) != 0);
+        } while (result->query(++j, &unused, &name) != 0);
         i++;
     } while (i < 5);
     return 6;
 }
 #pragma cplusplus off
+#pragma scheduling on
 #pragma pop
 int fn_8013C9A4(void) {
     return *(int *)((char *)fn_8013C770() + 4);
