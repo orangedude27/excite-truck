@@ -7,14 +7,11 @@ extern char lbl_8055B958[8];
 extern float lbl_805635D0;
 extern float lbl_805635D4;
 extern double lbl_805635C8;
-extern int lbl_803401A0;
+extern char lbl_803401A0[];
 extern float lbl_805635C0;
 extern float lbl_805635C4;
 
 extern char *strcpy(char *, const char *);
-extern int lbl_803401A0;
-extern float lbl_805635C0;
-extern float lbl_805635C4;
 void fn_80128668(void);
 extern char *fn_8022D82C(void *, int, int);
 extern char *strncpy(char *, const char *, unsigned long);
