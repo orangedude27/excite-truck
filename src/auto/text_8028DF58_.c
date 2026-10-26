@@ -659,31 +659,39 @@ void fn_8028F8E0(int arg0, float farg0) {
     *(int *)(p + 0x90) = i;
 }
 
-int fn_8028FA1C(int arg0) {
-    int index;
+#pragma cplusplus on
+#pragma push
+#pragma scheduling invalid_target
+extern "C" int fn_8028FA1C(int arg0) {
+    class ArrayObject {
+    public:
+        virtual void apply(int entries, int count) = 0;
+    };
+    typedef void (ArrayObject::*ApplyMethod)(int, int);
+    ArrayObject *object;
     int count;
+    int index;
     int count2;
-    char *entries;
+    int entries;
 
-    index = *(int *)(arg0 + 0x90);
+    object = (ArrayObject *)arg0;
+    index = *(int *)((char *)arg0 + 0x90);
     if (index < 0) goto done;
-    count = *(int *)(arg0 + 0x94);
+    count = *(int *)((char *)arg0 + 0x94);
     if (index < count) {
-        fn_8002F768((void *)arg0, (int)(*(char **)(arg0 + 0x8c) + index * 0x28), count - index);
+        entries = *(int *)((char *)arg0 + 0x8c) + index * 0x28;
+        (object->*(((ApplyMethod *)lbl_80348FD0)[*(int *)arg0]))(entries, count - index);
         goto done;
     }
-    count2 = *(int *)(arg0 + 0x98);
-    entries = *(char **)(arg0 + 0x8c);
-    fn_8002F768((void *)arg0, (int)(entries + index * 0x28), count2 - index);
-    fn_8002F768((void *)arg0, (int)entries, count);
+    count2 = *(int *)((char *)arg0 + 0x98);
+    entries = *(int *)((char *)arg0 + 0x8c) + index * 0x28;
+    (object->*(((ApplyMethod *)lbl_80348FD0)[*(int *)arg0]))(entries, count2 - index);
+    (object->*(((ApplyMethod *)lbl_80348FD0)[*(int *)arg0]))(*(int *)((char *)arg0 + 0x8c), *(int *)((char *)arg0 + 0x94));
 done:
-    return 0;
+    ;
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
-#pragma dont_inline on
+#pragma pop
+#pragma cplusplus reset
 void fn_8028FAE4(void *arg0, int arg1, float *arg2, float farg0) {
     extern void fn_8028FEE4(void *, int, float *, float, float);
     volatile float *threshold = &lbl_80564424;
