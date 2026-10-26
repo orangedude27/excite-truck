@@ -53,6 +53,55 @@ void fn_801AE874(unsigned short *arg0, int arg1) {
     if (arg1) *arg0 = value | 4;
 }
 
+#pragma scheduling invalid_target
+void fn_801AE894(void *arg0) {
+    float temp_f2;
+    float temp_f4;
+    register int temp_r0;
+
+    temp_r0 = *(short *)((char *)arg0 + 0x18);
+    if (temp_r0 > 0) {
+        temp_f4 = *(float *)arg0;
+        if (temp_f4 > lbl_8056255C) {
+            temp_f2 = (lbl_8055E630 * (float)temp_r0) / temp_f4;
+            *(float *)((char *)arg0 + 4) = temp_f2;
+            *(float *)((char *)arg0 + 4) =
+                temp_f2 * ((float)temp_r0 / (float)lbl_8055E62C);
+            return;
+        }
+    }
+    *(float *)((char *)arg0 + 4) = lbl_80562560;
+}
+
+#pragma processor 750
+#pragma dont_inline on
+void fn_801AE928(void) {
+    int count;
+    float duration;
+    int offset;
+    int index;
+    char *entry;
+    count = fn_801EA994();
+    duration = lbl_80562560;
+    index = 0;
+    offset = 0;
+    while (index < count) {
+        if (index < lbl_8055E624[1]) {
+            entry = (char *)lbl_8055E624[0] + offset;
+            if (!fn_801AE620(entry)) {
+                fn_801AE874((unsigned short *)(entry + 0xE), 1);
+                *(unsigned short *)(entry + 0xE) |= 8;
+                *(float *)entry = duration;
+                fn_801AE894(entry);
+            }
+        }
+        offset += 0x1C;
+        index++;
+    }
+}
+#pragma dont_inline reset
+#pragma processor gekko
+
 float fn_801AE9E0(int arg0, float *arg1) {
     char *entry;
     if (arg1 != 0) *arg1 = lbl_80562560;
@@ -154,6 +203,21 @@ void fn_801AED74(void) {
     lbl_8055E62C = fn_801B2ED4();
 }
 
+#pragma scheduling invalid_target
+void fn_801AF65C(void) {
+    int i = 0;
+    int offset = 0;
+    int *base = lbl_80435780;
+    while (i < base[0x3C0 / 4]) {
+        char *entry = (char *)lbl_8055E624[0] + offset;
+        if (fn_801AE620(entry) && *fn_801EA9A0(i)) {
+            *(unsigned short *)(entry + 0xE) |= 2;
+        }
+        offset += 0x1C;
+        i++;
+    }
+}
+#pragma scheduling on
 void *fn_801AF8D0(int arg0) {
     void *result = 0;
     if (arg0 < lbl_8055E624[1]) {
