@@ -226,6 +226,7 @@ extern "C" s32 fn_80019534(void) {
     return 0;
 }
 #pragma cplusplus off
+__declspec(section ".data") extern void *lbl_803580A4;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
