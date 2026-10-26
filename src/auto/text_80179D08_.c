@@ -154,11 +154,9 @@ void fn_80179EE4(void) {
 
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void fn_80179EE8(void *arg0, s32 arg1) {
+extern "C" void *fn_80179EE8(void *arg0, s32 arg1) {
     struct ItemDummy {
-        virtual void m0() = 0;
-        virtual void m1() = 0;
-        virtual void m2(s32) = 0;
+        virtual void m0(s32) = 0;
     };
     u8 *p;
     void *item;
@@ -172,7 +170,7 @@ extern "C" void fn_80179EE8(void *arg0, s32 arg1) {
     loop:
         item = *(void **)(p + 0x14);
         if (item != NULL)
-            ((ItemDummy *)item)->m2(1);
+            ((ItemDummy *)item)->m0(1);
         p += 4;
         i += 1;
     check:
@@ -181,6 +179,7 @@ extern "C" void fn_80179EE8(void *arg0, s32 arg1) {
         if (arg1 > 0)
             fn_80128668(arg0);
     }
+    return arg0;
 }
 #pragma cplusplus reset
 #pragma dont_inline reset
