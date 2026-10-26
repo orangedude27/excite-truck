@@ -297,30 +297,18 @@ extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_8013DE7C(void *arg0, const char *arg1) {
-    class TObj60 {
-    public:
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
-        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
-        virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
-        virtual void d20(); virtual void d21();
-        virtual s32 v60(s32);
-    };
-    TObj60 *obj = (TObj60 *)arg0;
+extern "C" s32 fn_8013DE7C(TObj60 *arg0, const char *arg1) {
     s32 count = 0;
     s32 i = 0;
 
-    while (obj->v60(i) != 0) {
-        if (fn_8013CB44(arg1, (TObj10 *)obj->v60(i))) {
+    while (arg0->v60(i) != 0) {
+        if (fn_8013CB44(arg1, (TObj10 *)arg0->v60(i))) {
             count++;
         }
         i++;
     }
     return count;
 }
-
 extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
     u8 *out = (u8 *)outPtr;
     TVec2 center = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D58);
