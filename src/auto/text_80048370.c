@@ -305,31 +305,35 @@ void* MEMAllocFromExpHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
 #pragma dont_inline reset
 
 void MEMFreeToExpHeap(MEMiHeapHead* heap, void* memBlock) {
-    MEMiExpHeapMBlock* mblock;
     MEMiExpHeapHead* exp;
+    MEMiExpHeapMBlock* mblock;
+    MEMiExpHeapMBlock* next;
+    MEMiExpHeapMBlock* prev;
     void* region[2];
 
-    if (memBlock == NULL) {
+    if (memBlock == 0) {
         return;
     }
 
     exp = (MEMiExpHeapHead*)(heap + 1);
-    mblock = (MEMiExpHeapMBlock*)((u8*)memBlock - sizeof(MEMiExpHeapMBlock));
+    mblock = (MEMiExpHeapMBlock*)((u8*)memBlock - 0x10);
 
     LockHeap(heap);
 
     region[0] = (void*)((u8*)mblock - mblock->align);
-    region[1] = (void*)((u8*)mblock + sizeof(MEMiExpHeapMBlock) + mblock->size);
+    region[1] = (void*)((u8*)mblock + 0x10 + mblock->size);
 
-    if (mblock->prev != NULL) {
-        mblock->prev->next = mblock->next;
+    next = mblock->next;
+    prev = mblock->prev;
+    if (prev != 0) {
+        prev->next = next;
     } else {
-        exp->usedMBlocks.head = mblock->next;
+        exp->usedMBlocks.head = next;
     }
-    if (mblock->next != NULL) {
-        mblock->next->prev = mblock->prev;
+    if (next != 0) {
+        next->prev = prev;
     } else {
-        exp->usedMBlocks.tail = mblock->prev;
+        exp->usedMBlocks.tail = prev;
     }
 
     RecycleRegion_(exp, region);
@@ -578,17 +582,14 @@ void *MEMGetNextListObject(MEMList *list, void *object) {
 #pragma push
 #pragma paired on
 #pragma paired_single on
+#pragma fp_contract on
 void PSMTXConcat(const Mtx a, const Mtx b, Mtx out) {
-    Mtx tmp;
-    int i, j;
+    int i;
     for (i = 0; i < 3; i++) {
-        for (j = 0; j < 3; j++) {
-            tmp[i][j] = a[i][0] * b[0][j] + a[i][1] * b[1][j] + a[i][2] * b[2][j];
-        }
-        tmp[i][3] = a[i][0] * b[0][3] + a[i][1] * b[1][3] + a[i][2] * b[2][3] + a[i][3];
-    }
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 4; j++) out[i][j] = tmp[i][j];
+        out[i][0] = a[i][0] * b[0][0] + a[i][1] * b[1][0] + a[i][2] * b[2][0];
+        out[i][1] = a[i][0] * b[0][1] + a[i][1] * b[1][1] + a[i][2] * b[2][1];
+        out[i][2] = a[i][0] * b[0][2] + a[i][1] * b[1][2] + a[i][2] * b[2][2];
+        out[i][3] = a[i][0] * b[0][3] + a[i][1] * b[1][3] + a[i][2] * b[2][3] + a[i][3];
     }
 }
 #pragma pop
