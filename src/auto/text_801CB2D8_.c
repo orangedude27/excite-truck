@@ -1185,18 +1185,14 @@ void fn_801CEB94(void *arg0) {
 
 s32 fn_801CEBD8(void *arg0, f32 farg0) {
     s32 temp = *(s32 *)arg0;
-    if (fn_8001BF34(farg0) != 0) {
-        fn_8001BF0C(temp, farg0);
-        if (*(s32 *)((char *)arg0 + 8) != 0) {
-            if (fn_8001BF34(farg0) != 0) {
-                if (*(s32 *)((char *)arg0 + 0xC) != 0) {
-                    if (fn_8001BF34(farg0) != 0) {
-                        return 1;
-                    }
-                }
-            }
-        }
-    }
+    if (((s32 (*)(s32, f32))fn_8001BF34)(temp, farg0) == 0) goto fail;
+    fn_8001BF0C(temp, farg0);
+    if (*(s32 *)((char *)arg0 + 8) != 0 &&
+        ((s32 (*)(s32, f32))fn_8001BF34)(*(s32 *)((char *)arg0 + 8), farg0) == 0) goto fail;
+    if (*(s32 *)((char *)arg0 + 0xC) != 0 &&
+        ((s32 (*)(s32, f32))fn_8001BF34)(*(s32 *)((char *)arg0 + 0xC), farg0) == 0) goto fail;
+    return 1;
+fail:
     return 0;
 }
 
