@@ -33,15 +33,23 @@ extern int lbl_8055A858;
 extern int jumptable_80335578[];
 extern void *fn_801AC330(void *);
 extern void *fn_801AC26C(void);
-void fn_801A9660(void) {
+#pragma scheduling invalid_target
+void *fn_801A9660(void) {
     extern char lbl_80335528[];
     extern char lbl_80335538[];
     unsigned int index = *(unsigned int *)((char *)fn_801792F8() + 0x50) - 6;
     void *obj;
 
-    if (index > 16) goto fallback;
-
     switch (index) {
+    case 6:
+        obj = ((void *(*)(int, const char *))fn_801284F8)(0x258, lbl_80335528);
+        if (obj != 0)
+            return fn_801AC330(obj);
+        return obj;
+    case 11:
+    case 12:
+    case 15:
+        return fn_801AC26C();
     case 0:
     case 3:
     case 8:
@@ -49,30 +57,15 @@ void fn_801A9660(void) {
     case 13:
     case 16:
         fn_802E317C(lbl_80335538);
-        return;
-    case 6:
-        obj = fn_801284F8(0x258, lbl_80335528);
-        if (obj != 0) {
-            fn_801AC330(obj);
-            return;
-        }
-        fn_801AC26C();
-        return;
-    case 11:
-    case 12:
-    case 15:
-        fn_801AC26C();
-        return;
+        return 0;
     default:
-        break;
+        obj = ((void *(*)(int, int *))fn_801284F8)(0x23c, &lbl_8055A858);
+        if (obj != 0)
+            return fn_801A9700(obj);
+        return obj;
     }
-
-fallback:
-    if (fn_801284F8(0x23c, &lbl_8055A858) != 0)
-        fn_801A9700(0);
 }
-
-#pragma scheduling off
+#pragma scheduling on
 void** fn_801A9700(void** arg0) {
     fn_8017B0B0(arg0);
     *arg0 = &lbl_8033585C;
@@ -1132,6 +1125,30 @@ extern "C" void fn_801ABC28(void *arg0) {
 #pragma scheduling on
 void fn_801ABFF4(void) {
     fn_8017A57C();
+}
+
+void fn_801ABFF8(void *self, int **manager) {
+    struct CallbackTable {
+        void *unk[2];
+        void (*call)(void *, void *);
+    };
+    struct CallbackObject {
+        struct CallbackTable *vtable;
+    };
+    void *node;
+
+    node = *(void **)((char *)self + 0x224);
+    if (node != 0 &&
+        *(unsigned char *)((char *)self + 0x223) != 0 &&
+        lbl_8055E3C4 > 1) {
+        do {
+            *(unsigned char *)((char *)node + 0x223) = 0;
+            ((struct CallbackObject *)manager)->vtable->call(manager, node);
+            node = *(void **)((char *)node + 0x224);
+        } while (node != self);
+        *(unsigned char *)((char *)self + 0x223) = 0;
+    }
+    fn_801AC240(self);
 }
 
 #pragma push
