@@ -152,6 +152,36 @@ int fn_802E7AF4(int arg0, int arg1) {
     return 0;
 }
 
+void fn_802E7B6C(int arg0, int arg1) {
+    int var_r30 = arg0;
+    int var_r31 = arg1;
+    int offset;
+    unsigned char *base;
+    unsigned char *record;
+
+    if (var_r30 < 0) {
+        goto done;
+    }
+    if (var_r30 < 4) {
+        goto dispatch;
+    }
+done:
+    return;
+dispatch:
+    if (lbl_80507268[var_r30] != 0) {
+        ((void (*)(void))lbl_80507268[var_r30])();
+    }
+    offset = var_r30 * 0x638;
+    base = lbl_80505978;
+    record = base + offset;
+    if (var_r31 == -1) {
+        record[0xC4] = 0;
+    } else if (var_r31 == 0) {
+        record[0xC4] = 1;
+    }
+    fn_802E6B44(var_r30, var_r31);
+}
+
 #pragma push
 #pragma scheduling invalid_target
 void fn_802E7C14(int arg0) {
@@ -168,6 +198,38 @@ void fn_802E7C40(void) {
     lbl_80560008 = fn_802E9A24();
 }
 
+extern void fn_8005EE78();
+extern int fn_800569D0(void);
+extern void KPADInit(void);
+extern int fn_802E2E0C(int, int);
+extern int lbl_8055D22C;
+#pragma push
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_802E7C64(void) {
+    extern unsigned char lbl_80560009;
+    int *var_r30;
+    int temp_r3;
+    int var_r29;
+
+    fn_8005EE78(&fn_802E7A14, &fn_802E7A70);
+    fn_800569D0();
+    KPADInit();
+    do {
+    } while (fn_8005EE7C() != 3);
+    var_r30 = lbl_80507268;
+    var_r29 = 0;
+    do {
+        temp_r3 = WPADSetSamplingCallback(var_r29, (int)fn_802E7B6C);
+        var_r29 += 1;
+        *var_r30 = temp_r3;
+        var_r30 += 1;
+    } while (var_r29 < 4);
+    fn_802E2E0C((int)fn_802E7AF4, (int)&lbl_8055D22C);
+    fn_802E7C40();
+    lbl_80560009 = 1;
+}
+#pragma pop
 extern int WPADSetSamplingCallback(int, int);
 extern int fn_8006022C(int);
 extern int fn_8005ED8C(void);
