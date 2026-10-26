@@ -442,17 +442,30 @@ next:
 }
 
 void fn_802B6358(const char **arg) {
-    s32 i = 0;
-    s32 *entry = (s32 *)lbl_8034A70C;
-    do {
-        if (entry[0] != 0 && strcmp((const char *)entry[0], *arg) == 0) break;
-        if (entry[1] != 0 && ((s32 (*)(const char *))entry[1])(*arg) != 0) {
-            ((void (*)(const char *, void *))entry[2])(*arg, (void *)entry);
-            return;
-        }
-        i++;
+    register s32 *entry = (s32 *)lbl_8034A70C;
+    register u32 i = 0;
+
+loop:
+    if (entry[0] != 0 && strcmp((const char *)entry[0], *arg) == 0) {
+        goto action;
+    }
+    if (entry[1] != 0 && ((s32 (*)(const char *))entry[1])(*arg) != 0) {
+        goto action;
+    }
+    goto next;
+action:
+    {
+        s32 *actionEntry = (s32 *)(lbl_8034A70C + i * 12);
+        ((void (*)(const char *, void *))actionEntry[2])(*arg, (void *)actionEntry);
+        return;
+    }
+next:
+    i++;
+    if (i < 11) {
         entry += 3;
-    } while (i < 11);
+        goto loop;
+    }
+    entry += 3;
 }
 
 extern f32 fn_800108C8(s32, f32);
@@ -882,29 +895,44 @@ void fn_802B7420(s16 arg0, s16 arg1, s32 arg2) {
 
 extern s16 lbl_8055FA50[4];
 extern s32 fn_802BE8B4(s16, s16, s16);
+#pragma use_lmw_stmw off
 void fn_802B7434(void) {
+    s32 endX, endY, xMinusSize, start, step;
     s16 size, x, y;
-    s16 endX, endY;
-    s32 step;
+
     if (lbl_8055FA38 != 2)
         return;
     for (size = 4; size <= 0x40; size *= 2) {
+        start = size - 0x200;
+        x = (s16)start;
+        endX = x + size;
         step = size * 2;
-        for (x = (s16)(size - 0x200); x < 0x200; x = (s16)(x + step)) {
-            endX = x + size;
-            for (y = (s16)(size - 0x200); y < 0x200; y = (s16)(y + step)) {
-                endY = y + size;
-                if (x - size <= lbl_8055FA50[1] &&
+        while (x < 0x200) {
+            y = (s16)start;
+            endY = y + size;
+            xMinusSize = x - size;
+            while (y < 0x200) {
+                if (xMinusSize <= lbl_8055FA50[1] &&
                     endX >= lbl_8055FA50[0] &&
                     y - size <= lbl_8055FA50[3] &&
                     endY >= lbl_8055FA50[2]) {
                     fn_802BE8B4(x, y, size);
                 }
+                {
+                    s32 nextY = y + step;
+                    endY += step;
+                    y = (s16)nextY;
+                }
+            }
+            {
+                s32 nextX = x + step;
+                endX += step;
+                x = (s16)nextX;
             }
         }
     }
 }
-
+#pragma use_lmw_stmw reset
 void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
     s16 x;
     s16 y;
@@ -1013,50 +1041,52 @@ extern s32 lbl_8055CFF0;
 extern s32 lbl_8055CFF4;
 s32 fn_802B825C(s32 arg0) {
     struct { s32 pad[2]; float *values; } result;
-    s32 changed = 0;
     float *values;
     float value;
+    float delta;
+    float next;
+    s32 changed = 0;
+
     if (fn_802B5B74(&result) != 0) {
         values = result.values;
-        value = values[0] + fn_802B822C(arg0);
-        if (values[1] < value) {
-        } else {
-            value = values[1];
-        }
-        if (value > lbl_80564C98) {
-        } else {
-            value = lbl_80564C98;
-        }
+        value = values[1];
+        delta = fn_802B822C(arg0);
+        next = values[0] + delta;
+        value = value < next ? value : next;
+        value = lbl_80564C98 < value ? lbl_80564C98 : value;
         if (value != values[0]) {
             values[0] = value;
             changed = 1;
-            *(u8 *)((u8 *)values + 8) = 1;
+            *(volatile u8 *)((u8 *)result.values + 8) = 1;
         }
     }
     return changed;
 }
 
 s32 fn_802B8310(s32 arg0) {
-    struct { s32 pad[2]; float *values; } result;
-    s32 changed = 0;
-    float *values;
-    float value;
-    float bound = lbl_80564C9C;
-    if (fn_802B5B74(&result) != 0) {
+    struct Result {
+        s32 pad[2];
+        float *values;
+    };
+    register f32 lower;
+    register f32 bound = lbl_80564C9C;
+    register float *values;
+    register s32 changed = 0;
+    struct Result result;
+    f32 value;
+    s32 valid;
+
+    valid = fn_802B5B74(&result);
+    if (valid != 0) {
         values = result.values;
+        lower = values[0];
         value = values[1] + fn_802B822C(arg0);
-        if (bound < value) {
-        } else {
-            bound = value;
-        }
-        if (bound > values[0]) {
-        } else {
-            bound = values[0];
-        }
+        bound = (bound < value) ? bound : value;
+        bound = (bound > lower) ? bound : lower;
         if (bound != values[1]) {
             values[1] = bound;
+            *(u8 *)((u8 *)result.values + 8) = 1;
             changed = 1;
-            *(u8 *)((u8 *)values + 8) = 1;
         }
     }
     return changed;
