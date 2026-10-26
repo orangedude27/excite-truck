@@ -471,14 +471,19 @@ extern "C" void fn_8027C0D0(void *arg0, long arg1, void *arg2) {
 long *fn_8027C120(long arg0, long arg1) {
     long index = 0;
     long offset = 0;
-    while (index < *(long *)(arg0 + 4)) {
-        if (stricmp((char *)arg1, *(char **)(*(long *)arg0 + offset + 0xC)) == 0)
-            break;
-        offset += 0x14;
-        index++;
-    }
-    if (index >= *(long *)(arg0 + 4))
-        index = -1;
+    goto check;
+loop:
+    if (stricmp((char *)arg1, *(char **)(*(long *)arg0 + offset + 0xC)) != 0)
+        goto advance;
+    goto found;
+advance:
+    offset += 0x14;
+    index++;
+check:
+    if (index < *(volatile long *)(arg0 + 4))
+        goto loop;
+    index = -1;
+found:
     if (index < 0)
         return 0;
     return (long *)(*(long *)arg0 + index * 0x14);
@@ -521,23 +526,29 @@ long *fn_8027C26C(void *arg0, const char *arg1) {
 }
 
 extern void fn_8027C2B8();
+#pragma push
+#pragma scheduling invalid_target
 void *fn_8027C41C(void *arg0, long arg1) {
-    void *temp_r6 = (char *)arg0 + 0xB014;
-    void *temp_r7 = (char *)arg0 + 0xAF18;
-    *(long *)((char *)arg0 + 0xB01C) = arg1;
+    register char *base = (char *)arg0 + 0x10000;
+    register long zero = 0;
+    char *temp_r7 = base - 0x50E8;
+    char *temp_r6 = base - 0x4FEC;
+    *(long *)(base - 0x4FE4) = arg1;
     *(void **)arg0 = (char *)arg0 + 0xC;
     *(long *)((char *)arg0 + 8) = 0x8C0;
-    *(long *)((char *)arg0 + 0xAF14) = 0x14;
-    *(long *)((char *)arg0 + 4) = 0;
-    *(void **)((char *)arg0 + 0xAF0C) = temp_r7;
-    *(long *)((char *)arg0 + 0xAF10) = 0;
-    *(void **)((char *)arg0 + 0xB008) = temp_r6;
-    *(long *)((char *)arg0 + 0xB010) = 2;
-    *(long *)((char *)arg0 + 0xB00C) = 0;
-    fn_8027C2B8(arg0, 0, &lbl_80347B4C, temp_r6, temp_r7, 0);
+    *(long *)(base - 0x50EC) = 0x14;
+    *(long *)((char *)arg0 + 4) = zero;
+    *(void **)(base - 0x50F4) = temp_r7;
+    *(long *)(base - 0x50F0) = zero;
+    *(void **)(base - 0x4FF8) = temp_r6;
+    *(long *)(base - 0x4FF0) = 2;
+    *(long *)(base - 0x4FF4) = zero;
+    fn_8027C2B8(arg0, 0, &lbl_80347B4C, temp_r6, temp_r7, zero);
     fn_8027C2B8(arg0, 1, &lbl_80347B5C);
     return arg0;
 }
+#pragma scheduling on
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
