@@ -244,16 +244,17 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
     extern void *fn_801284F8(int, int);
     extern float lbl_80564D1C, lbl_80564D20;
     extern int lbl_8034AB54[], lbl_80333918[];
+    float bInput = *(float *)((char *)arg0 + 0x1C);
+    float aInput = *(float *)((char *)arg0 + 0x18);
     float value = lbl_80564D1C;
-    float b = *(float *)((char *)arg0 + 0x1C) * scale;
-    float a = *(float *)((char *)arg0 + 0x18) * scale;
+    float b = bInput * scale;
+    float a = aInput * scale;
     char *obj = fn_801284F8(0x2C, (int)&lbl_8034AB54);
     if (obj != 0) {
-        int zero = 0;
         float initial = lbl_80564D20;
-        *(int *)(obj + 0xC) = zero;
-        *(int *)(obj + 4) = zero;
-        *(int *)(obj + 8) = zero;
+        *(int *)(obj + 0xC) = 0;
+        *(int *)(obj + 4) = 0;
+        *(int *)(obj + 8) = 0;
         *(int *)(obj + 0x18) = 0x54554245;
         *(float *)(obj + 0x10) = value;
         *(float *)(obj + 0x14) = initial;
@@ -263,7 +264,7 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
         *(float *)(obj + 0x28) = a;
         *(void **)obj = &lbl_80333918;
     }
-    (*(void (***)(void *, int))obj)[16](obj, arg1);
+    ((void (*)(void *, int))(*(void (**)(void *, int))((char *)*(void **)obj + 0x40)))(obj, arg1);
     return obj;
 }
 
@@ -426,6 +427,7 @@ extern "C" void fn_802BCBDC(void) {
 #pragma cplusplus reset
 #pragma pop
 #pragma pop
+#pragma scheduling invalid_target
 void fn_802BCF04(void) {
     register void *base;
     register char *entry;
