@@ -21,7 +21,7 @@ extern void *__dt__Q34nw4r2ef6EffectFv_8027D434(void*, int);
 extern void *fn_8027D674(void*);
 extern void *fn_8027D504(void*);
 extern void *fn_8027D304(void*, int);
-extern void fn_8027D39C(void);
+extern void *fn_8027D39C(void *, int);
 extern void fn_8027AF94(void*);
 extern void fn_8001D868(int*);
 extern char lbl_80347CA8[];
