@@ -1499,6 +1499,23 @@ extern "C" void fn_80215618(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_802C4C90(*(s32 *)((char *)arg0 + 4), arg1, arg2, rem, 0);
 }
 
+extern "C" void fn_802C4F2C(s32, s32 *, s32 *);
+extern "C" s32 fn_802C4EE4(s32);
+extern "C" s32 fn_802C4EFC(s32);
+#pragma use_lmw_stmw off
+extern "C" void fn_8021568C(void *arg0, s32 arg1, s32 arg2,
+                            s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6,
+                            s32 arg7) {
+    s32 spC = 0;
+    s32 sp8 = 0;
+
+    fn_802C4F2C(*(s32 *)((u8 *)arg0 + 4), &spC, &sp8);
+    *arg3 = arg1 - spC;
+    *arg4 = arg2 - sp8;
+    *arg5 = *arg3 + fn_802C4EE4(*(s32 *)((u8 *)arg0 + 4));
+    *arg6 = *arg4 + fn_802C4EFC(*(s32 *)((u8 *)arg0 + 4));
+}
+#pragma use_lmw_stmw reset
 extern "C" s32 fn_80215730(void *arg0) {
     return fn_802C4F14(*(s32*)((u8*)arg0 + 4));
 }
