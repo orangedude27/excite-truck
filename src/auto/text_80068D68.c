@@ -9,7 +9,7 @@
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #undef btsnd_hcic_reject_conn
 #include "revolution/BTE/bta/include/ptim.h"
-extern BOOLEAN btsnd_hcic_reject_conn(void *, u8 *, u8);
+extern int btsnd_hcic_reject_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
