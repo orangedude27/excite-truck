@@ -470,5 +470,38 @@ int fn_8027DEDC(int arg0, int arg1, int arg2, int arg3, int arg4) {
     }
     return result;
 }
+
+void *fn_80012870(int, int);
+void fn_8023BF4C(void *);
+void fn_8027E024(int arg0, int arg1, int arg2) {
+    struct Args {
+        int list;
+        int found;
+        int arg2;
+        int arg0;
+    } args;
+    int index;
+    int key = arg1;
+    void *result;
+
+    result = fn_8001285C(arg1);
+    args.list = *(int *)((char *)result + 4);
+    args.found = -1;
+    index = *(int *)((char *)((void *(*)(int))fn_80012820)(args.list) + 0x70);
+    goto test;
+loop:
+    if (key != *(int *)fn_80012870(args.list, index)) {
+        goto test;
+    }
+    args.found = index;
+test:
+    if (index-- > 0) {
+        goto loop;
+    }
+    args.arg2 = arg2;
+    args.arg0 = arg0;
+    fn_8023BF4C(&args);
+}
+
 #pragma pop
 
