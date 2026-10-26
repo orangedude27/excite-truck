@@ -1,6 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma cplusplus on
+extern "C" void fn_802E317C(const char *, ...);
+#pragma cplusplus reset
+
 extern int fn_80128668(void *);
 extern int fn_80179EE8(int);
 extern char lbl_80338400[16];
@@ -59,7 +63,7 @@ extern "C" int fn_801D36E8(void) {
         virtual void f14();
         virtual int check();
     };
-    register float bestValue;
+    float bestValue;
     void **entry;
     void *best;
     int index;
@@ -148,6 +152,45 @@ void fn_801D3910(void *arg0) {
     *(int *)&lbl_8055E940 = i + 1;
 }
 
+extern void fn_8017B81C(void);
+extern void fn_801D4598(void *, float);
+extern float lbl_8055E3C8;
+extern float lbl_80562AC0;
+#pragma paired off
+#pragma paired_single off
+void fn_801D3BF0(void *arg0) {
+    float temp_f31;
+    float a, b, c, d, e, f;
+    volatile int reserve[2];
+
+    temp_f31 = lbl_8055E3C8;
+    if (*(int *)((char *)arg0 + 0x230) == 2) {
+        fn_8017B81C();
+        fn_801D4598(arg0, temp_f31);
+        return;
+    }
+    if (temp_f31 < *(float *)((char *)arg0 + 0x224) + *(float *)((char *)arg0 + 0x234)) {
+        fn_8017B81C();
+        a = *(float *)((char *)arg0 + 0x118) * lbl_80562AC0;
+        b = *(float *)((char *)arg0 + 0x11C) * lbl_80562AC0;
+        c = *(float *)((char *)arg0 + 0x120) * lbl_80562AC0;
+        d = *(float *)((char *)arg0 + 0x124) * lbl_80562AC0;
+        e = *(float *)((char *)arg0 + 0x128) * lbl_80562AC0;
+        f = *(float *)((char *)arg0 + 0x12C) * lbl_80562AC0;
+        *(float *)((char *)arg0 + 0x118) = a;
+        *(float *)((char *)arg0 + 0x11C) = b;
+        *(float *)((char *)arg0 + 0x120) = c;
+        *(float *)((char *)arg0 + 0x124) = d;
+        *(float *)((char *)arg0 + 0x128) = e;
+        *(float *)((char *)arg0 + 0x12C) = f;
+        return;
+    }
+    fn_801D411C(arg0);
+    *(int *)((char *)arg0 + 0x1E4) = 0;
+    /* Scale the six stored components only on the timed branch. */
+}
+#pragma paired reset
+#pragma paired_single reset
 extern void fn_8017D2C8(void);
 extern void fn_801796CC(int, float *, int, float, float);
 void fn_801D3E8C(void *arg0, void *arg2, void *arg4) {
