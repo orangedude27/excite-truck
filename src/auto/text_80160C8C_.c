@@ -3,6 +3,22 @@
 
 #include <types.h>
 
+#pragma cplusplus on
+struct Dummy_80161D50 {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual int test(const char *, int);
+};
+#pragma cplusplus off
+
 extern s32 *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C();
 extern void *fn_801284F8(s32, void *);
@@ -657,6 +673,35 @@ s32 fn_80161D14(void) {
     return sp8;
 }
 
+extern char lbl_8032F72C[];
+#pragma use_lmw_stmw off
+s32 fn_80161D50(void) {
+    typedef s32 (*TestFn)(void *, const char *, s32);
+    register s32 count;
+    register s32 total;
+    register s32 i;
+    register void *item;
+
+    count = fn_80161ECC();
+    total = 0;
+    i = 0;
+    goto test_loop;
+loop:
+    fn_80161E40(i);
+    item = fn_8001285C();
+    if (((TestFn)(*(void ***)(*(void **)((u8 *)item + 0x20)))[12])(
+            *(void **)((u8 *)item + 0x20), lbl_8032F72C, 0) != 0) {
+        total += fn_8016208C(*(s32 *)item);
+    }
+    i += 1;
+test_loop:
+    if (i < count) {
+        goto loop;
+    }
+    return total;
+}
+#pragma use_lmw_stmw reset
+
 #pragma dont_inline on
 void fn_80161DE4(void) {
     s32 total;
@@ -793,26 +838,33 @@ void fn_80162174(void) {
 }
 
 void fn_801F62178_dummy(void);
-void fn_80162178(void *arg0, int arg1) {
+#pragma cplusplus on
+extern "C" void fn_80162178(void *arg0, s32 arg1) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void *f4(s32 *, s32 *);
+    };
     extern float lbl_8056184C;
-    extern int fn_80161438;
-    extern void fn_801DF380(int, int *, int);
-    int count;
-    int offset;
-    *(int *)((char *)arg0 + 8) = 0;
-    *(unsigned char *)((char *)arg0 + 0x10) = 0;
+    extern void fn_80161438(void);
+    extern void fn_801DF380(void *, s32, void (*)(void), s32);
+    s32 offset;
+    s32 i;
+
+    *(s32 *)((char *)arg0 + 8) = 0;
+    *(u8 *)((char *)arg0 + 0x10) = 0;
     *(float *)((char *)arg0 + 0xC) = lbl_8056184C;
-    for (count = 0, offset = 0; count < *(int *)((char *)arg0 + 0x38); count++, offset += 8) {
+    for (i = 0, offset = 0; i < *(s32 *)((char *)arg0 + 0x38); offset += 8, i++) {
         void *obj = *(void **)((char *)arg0 + 4);
-        void **vt = *(void ***)obj;
-        ((void (*)(void *, long *, long *))vt[3])(obj, &lbl_8055A0E0, &lbl_8055A0E8);
-        {
-            int *entry = (int *)(*(char **)((char *)arg0 + 0x34) + offset);
-            fn_801DF380(entry[0], &fn_80161438, entry[1]);
-        }
+        char *entries = *(char **)((char *)arg0 + 0x34);
+        s32 *entry = (s32 *)(entries + offset);
+        void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
+        fn_801DF380(result, entry[0], fn_80161438, entry[1]);
     }
 }
-
+#pragma cplusplus off
 void fn_80162214(void) {
     if (fn_801C5B60() == 0) {
         fn_801DF074(8, 0);
