@@ -835,40 +835,46 @@ extern s32 lbl_8055D860;
 extern s32 lbl_8055D8CC;
 extern void fn_80037A8C(void);
 s32 fn_80035CB4(u32 arg0) {
-    u32 temp_r4;
-    if ((arg0 - 0x20000) == 0x400) {
+    u32 diimmval;
+
+    if (arg0 == 0x20400) {
         lbl_8055D8B0 = arg0;
         return 1;
     }
-    temp_r4 = arg0 & 0xFFFFFF;
-    if ((temp_r4 - 0x60000) == 0x2800 ||
-        (temp_r4 - 0x20000) == 0x3A00 ||
-        (temp_r4 - 0x50000) == 0x3000 ||
-        (temp_r4 - 0xB0000) == 0x5A01) {
+
+    diimmval = arg0 & 0x00FFFFFF;
+
+    if (diimmval == 0x62800 ||
+        diimmval == 0x23A00 ||
+        diimmval == 0x53000 ||
+        diimmval == 0xB5A01) {
         return 0;
     }
-    if (arg0 == 0x2000) {
-        if (*(u32 *)(executing_8055D8C8 + 8) == 0x25)
-            goto process;
-        if ((u32)lbl_8055D8CC == (u32)fn_80037A8C)
-            return 0;
+
+    if (diimmval == 0x52000 &&
+        (*(u32 *)(executing_8055D8C8 + 8) == 0x25 ||
+         (void *)lbl_8055D8CC == (void *)fn_80037A8C)) {
+        return 0;
     }
-process:
-    lbl_8055D860++;
-    if (lbl_8055D860 == 2) {
-        if (temp_r4 == lbl_8055D8B0) {
-            lbl_8055D8B0 = temp_r4;
+
+    (*(volatile s32 *)&lbl_8055D860)++;
+
+    if (*(volatile s32 *)&lbl_8055D860 == 2) {
+        if (diimmval == lbl_8055D8B0) {
+            lbl_8055D8B0 = diimmval;
             return 1;
         }
-        lbl_8055D8B0 = temp_r4;
+        lbl_8055D8B0 = diimmval;
         return 2;
     }
-    lbl_8055D8B0 = temp_r4;
-    if ((temp_r4 - 0x30000) == 0x1100)
-        goto check_state;
-check_state:
-    if (*(u32 *)(executing_8055D8C8 + 8) == 5)
+
+    lbl_8055D8B0 = diimmval;
+
+    if (diimmval == 0x31100 ||
+        *(u32 *)(executing_8055D8C8 + 8) == 5) {
         return 2;
+    }
+
     return 3;
 }
 
