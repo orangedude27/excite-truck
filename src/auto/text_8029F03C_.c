@@ -243,6 +243,7 @@ extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
         *(int *)((char *)arg0 + 4) = 0;
     }
 }
+#pragma scheduling on
 #pragma cplusplus off
 #pragma pop
 
