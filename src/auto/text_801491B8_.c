@@ -909,14 +909,19 @@ extern "C" BOOL fn_8014D794(void *arg0, void *arg1) {
 }
 
 #pragma cplusplus off
-extern char lbl_80559F30[];
-extern char lbl_80559F38[];
+extern char *lbl_80559F30;
+extern char *lbl_80559F38;
 void fn_8014D840(void *arg0, void *arg1) {
-    u8 *manager = *(u8 **)((u8 *)arg0 + 0x68);
-    u8 *entry = manager + 0x9E4;
-    s32 i = 0;
-    s32 best = -1;
-    s32 count = *(s32 *)(manager + 0xFE4);
+    u8 *entry;
+    u8 *manager;
+    s32 i;
+    s32 best;
+    s32 count;
+    manager = *(u8 **)((u8 *)arg0 + 0x68);
+    best = -1;
+    entry = manager + 0x9E4;
+    i = 0;
+    count = *(s32 *)(manager + 0xFE4);
     while (count > 0) {
         if (best < 0) {
             best = i;
@@ -926,9 +931,12 @@ void fn_8014D840(void *arg0, void *arg1) {
             s32 threshold = *(s32 *)(entry + 0x90);
             if (value < threshold) {
                 best = i;
-            } else if (value == threshold &&
-                       *(s32 *)(current + 0xA54) > *(s32 *)(entry + 0x70)) {
-                best = i;
+            } else if (value == threshold) {
+                s32 tieValue = *(s32 *)(current + 0xA54);
+                s32 tieThreshold = *(s32 *)(entry + 0x70);
+                if (tieValue > tieThreshold) {
+                    best = i;
+                }
             }
         }
         entry += 0xC0;
