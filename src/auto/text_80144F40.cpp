@@ -1561,21 +1561,18 @@ extern "C" void fn_80147FF0(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_80011280(s32, s32, f64, f64, f32, f32);
+#pragma scheduling invalid_target
 extern "C" void fn_80148070(void *arg0, s32 arg1, s32 arg2) {
-    f32 temp_f31;
-    f32 temp_f30;
+    register f32 temp_f31;
+    register f32 temp_f30;
     temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
     temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 x = *(f32 *)((u8 *)arg0 + 4);
     s32 mode = *(s32 *)((u8 *)arg0 + 0xC);
-    ((void (*)(s32, s32, f64, f64, f32, f32))fn_80011280)(
-        arg1, arg2,
-        ((f64 (*)(s32, f32))fn_801451DC)(mode, x),
-        temp_f31, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
+    f32 temp_f1 = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+    fn_80011280(arg1, arg2, temp_f1, temp_f31, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
 }
-
-#pragma dont_inline reset
-#pragma pop
+#pragma scheduling on
 
 extern "C" void *lbl_8032D1D8;
 extern "C" f32 fn_801451DC(s32);
@@ -1714,6 +1711,7 @@ extern "C" void fn_80148334(s32 arg0, s32 arg1, void *arg2) {
     }
 }
 
+extern "C" void fn_801483D4(s32, s32, void *);
 extern "C" void fn_801483C4(void *arg0, s32 arg1) {
     fn_801483D4(arg1, *(s32 *)((u8 *)arg0 + 0x34), arg0);
 }
