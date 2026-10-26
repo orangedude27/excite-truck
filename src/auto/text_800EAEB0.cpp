@@ -487,12 +487,17 @@ extern "C" void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46n
     ((s32*)pSound)[0x14 / 4] = 0;
 }
 
+extern const char lbl_80322CD0[];
+extern const char lbl_80322CF4[];
+extern const char lbl_80322D30[];
+extern const char lbl_80322D54[];
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *self) {
-    unsigned char *node = *(unsigned char **)((unsigned char *)self + 4);
-    unsigned char *end = (unsigned char *)self + 4;
+    register unsigned char *node = *(unsigned char **)((unsigned char *)self + 4);
+    register unsigned char *end = (unsigned char *)self + 4;
+    int candidate;
     int priority = 0x80;
     void *result = 0;
     extern const char lbl_80322CD0[];
@@ -502,7 +507,6 @@ extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlay
     while (node != end) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
         int value = *(unsigned char *)(node - 0x5c) + *(int *)(node - 0x90);
-        int candidate;
         if (value <= 0x7f) candidate = value & ~(value >> 31);
         else candidate = 0x7f;
         if (priority > candidate) {
