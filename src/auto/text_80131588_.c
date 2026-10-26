@@ -215,27 +215,28 @@ s32 fn_80131B10(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-s32 fn_80131B50(void* arg0) {
-    s32 count = *(s32*)((char*)arg0 + 0xC);
-    s32 h = 0xBABBA;
-    s32 i = 0;
-    if (count > 0) {
-        do {
-            char* s = *(char**)((char*)arg0 + 0x10 + i);
-            char* c;
-            do {
-                c = s++;
-                h = h * 33 + (s8)*c;
-            } while (*c);
-            s = *(char**)((char*)arg0 + 0x10 + i + 4);
-            do {
-                c = s++;
-                h = h * 33 + (s8)*c;
-            } while (*c);
-            i += 8;
-        } while (--count);
+s32 fn_80131B50(void *arg0) {
+    struct Entry {
+        char *first;
+        char *second;
+    };
+    s32 count = *(s32 *)((char *)arg0 + 0xC);
+    struct Entry *entries = *(struct Entry **)((char *)arg0 + 0x10);
+    s32 hash = 0xBABBA;
+    s32 i;
+    for (i = 0; i < count; i++) {
+        char *s = entries[i].first;
+        while (*s != 0) {
+            hash += (s8)*s + 0xBAF;
+            s++;
+        }
+        s = entries[i].second;
+        while (*s != 0) {
+            hash += (s8)*s + 0xBAF;
+            s++;
+        }
     }
-    return h;
+    return hash;
 }
 
 #pragma push
@@ -664,9 +665,11 @@ s32 fn_80132C50(void* arg0, s32 arg1) {
     return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_80132D1C(void *arg0, char *arg1) {
-    s32 i = 0;
     s32 offset = 0;
+    s32 i = 0;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         char *s = *(char **)((u8 *)arg0 + 0xC) + offset;
         if (stricmp(*(char **)(s + 4), arg1) == 0)
@@ -676,14 +679,14 @@ s32 fn_80132D1C(void *arg0, char *arg1) {
     }
     return 0;
 }
-
+#pragma pop
 s32 fn_80132DA8(void *arg0) {
     s32 offset = 0;
-    s32 i = 0;
     s32 sum = 0xFEEDFACE;
+    s32 i = 0;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         char *item = (char *)*(void **)((u8 *)arg0 + 0xC) + offset;
-        sum += ((s32 (*)(void *))(*(void **)(item + 0x64)))(item) + 0x123B;
+        sum += ((s32 (*)(void *))(*(void **)((u8 *)(*(void **)item) + 0x64)))(item) + 0x123B;
         offset += 0x1C;
         i++;
     }
