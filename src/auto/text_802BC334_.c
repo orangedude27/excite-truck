@@ -424,10 +424,6 @@ extern "C" void fn_802BCBDC(void) {
     }
 }
 
-#pragma cplusplus reset
-#pragma pop
-#pragma pop
-#pragma scheduling invalid_target
 void fn_802BCF04(void) {
     register void *base;
     register char *entry;
