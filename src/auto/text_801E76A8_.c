@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void *fn_801284F8(int, void *);
-extern void fn_801E76A8(void *, void *);
+extern void *fn_801E76A8(void *, void *);
 extern void fn_802D68C4(int, int, int, int);
 extern void fn_80128670(void *);
 extern void fn_80128668(void *);
@@ -19,6 +19,12 @@ void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
     }
     return arg0;
 }
+
+void fn_801E7828(void) {
+    int *p = (int *)0;
+    fn_802D68C4(p[0], p[1], p[3], p[4]);
+}
+
 #pragma dont_inline off
 
 void fn_801E7840(void *arg0) {
