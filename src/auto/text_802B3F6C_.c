@@ -131,55 +131,55 @@ extern int lbl_8055F9D0[];
 extern void fn_802B4CB4(void *);
 extern void fn_802B4DC0(void *);
 __declspec(section ".sdata") extern int lbl_8055F9D0[];
+#pragma push
+#pragma scheduling invalid_target
 void fn_802B4BDC(void) {
-    unsigned int i;
+    int zero;
+    int i;
     int *p;
+    int count;
+    int offset;
+    void *entry;
 
+    zero = 0;
     i = 0;
     p = lbl_804BE248;
     do {
         int keep;
         fn_802B4CB4(p);
         i += 1;
-        keep = i < 0x80;
+        keep = (unsigned int)i < 0x80;
         p += 1;
         if (!keep)
             break;
     } while (1);
 
-    {
-        int count;
-        int offset;
-        void *entry;
-        int zero;
-
-        count = 0;
-        offset = 0;
-        zero = 0;
-        goto check_count;
+    count = 0;
+    offset = 0;
+    goto check_count;
 loop:
-        entry = *(void **)((char *)*(void **)*(void **)lbl_8055F9D0 + offset);
+    entry = *(void **)((char *)*(void **)*(void * volatile *)lbl_8055F9D0 + offset);
+    if (entry != 0) {
         if (entry != 0) {
+            int data = *(int *)((char *)entry + 0xC);
+            if (data != 0)
+                fn_80128670(data - 0x10);
             if (entry != 0) {
-                int data = *(int *)((char *)entry + 0xC);
-                if (data != 0)
-                    fn_80128670(data - 0x10);
-                if (entry != 0) {
-                    *(int *)entry = zero;
-                    *(int *)((char *)entry + 4) = zero;
-                    *(int *)((char *)entry + 8) = zero;
-                }
+                *(int *)entry = zero;
+                *(int *)((char *)entry + 4) = zero;
+                *(int *)((char *)entry + 8) = zero;
             }
-            fn_80128668(entry);
         }
-        offset += 4;
-        count += 1;
-check_count:
-        if (count < ((int *)lbl_8055F9D0)[1])
-            goto loop;
+        fn_80128668(entry);
     }
+    offset += 4;
+    count += 1;
+check_count:
+    if (count < ((int *)*(void * volatile *)lbl_8055F9D0)[1])
+        goto loop;
     fn_802B4DC0(lbl_8055F9D0);
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
