@@ -79,7 +79,7 @@ struct Queue80145D8C {
 };
 extern Queue80145D8C lbl_8042FBC0;
 extern char lbl_8032CEC8[];
-__declspec(section ".sdata") extern char lbl_80559E14[];
+__declspec(section ".sdata") extern char lbl_80559E14[6];
 void fn_802E30C8(const char *);
 extern char lbl_8032D0D0[];
 void fn_8000FF88(s32, s32, s32, f32, f32, f32);
