@@ -17,6 +17,14 @@ struct Dummy_80161D50 {
     virtual void v9();
     virtual int test(const char *, int);
 };
+struct Dummy_801616FC_A {
+    virtual void v0();
+    virtual void v1();
+    virtual void invoke();
+};
+struct Dummy_801616FC_B {
+    virtual void reset(int);
+};
 #pragma cplusplus off
 
 extern s32 *__AXFXGetLfoSinTable_801769CC(void);
