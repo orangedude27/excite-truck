@@ -12,6 +12,7 @@ typedef struct {
     volatile float sp68;
     char pad64[4];
     volatile float sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94;
+    char tail[0x20];
 } fn_802897E0Frame;
 
 extern int lbl_8055F6DC;
