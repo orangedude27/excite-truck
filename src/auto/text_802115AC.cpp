@@ -76,7 +76,9 @@ extern "C" s32 fn_80215270(s32, s32);
 extern "C" void fn_8022E4BC(s32);
 extern "C" void fn_8022E960(s32);
 extern "C" s32 fn_80211678(u8 *);
+#pragma small_data on
 extern "C" char lbl_8055B750[];
+#pragma small_data off
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int stricmp(const char *, const char *);
 extern "C" void *memcpy(void *, const void *, unsigned long);
@@ -266,24 +268,31 @@ extern "C" s32 fn_80211678(u8 *);
 extern "C" char lbl_8055B750[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int stricmp(const char *, const char *);
+#pragma small_data on
+#pragma small_data off
 extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
+    char first = *arg1;
     char buf[0x100];
     char *name = arg1;
     void *entry = arg0;
-    if (*arg1 == '#') {
+
+    if (first == '#') {
         name = arg1 + 1;
         sprintf(buf, lbl_8055B750, name);
     }
     for (;;) {
-        s32 id = *(s32 *)((char *)entry + 4);
-        if (id == 0x7B) return 0;
-        if (id == arg2 && *(char **)entry != 0 &&
+        if (*(s32 *)((char *)entry + 4) == arg2 &&
+            *(char **)entry != 0 &&
             (stricmp(*(char **)entry, name) == 0 ||
-             stricmp(*(char **)entry, buf) == 0)) return entry;
+             stricmp(*(char **)entry, buf) == 0)) {
+            return entry;
+        }
         entry = (char *)entry + 0x14;
+        if (*(s32 *)((char *)entry + 4) == 0x7B) {
+            return 0;
+        }
     }
 }
-
 extern "C" s32 fn_80212338(void) { return 0; }
 
 extern "C" void fn_80212340(void *arg0) {
@@ -1240,29 +1249,49 @@ extern "C" f32 fn_80214D48(void) {
     return lbl_8055EF10;
 }
 
+#pragma use_lmw_stmw off
 extern "C" void fn_80214D50(s32 arg0) {
+    struct Entry {
+        s32 unk0;
+        f32 scale;
+        void *objects[4];
+        s32 unk18;
+        s32 unk1C;
+    };
     s32 index;
     s32 offset;
+    Entry *table;
+    Entry *entry;
     void *obj;
-    float value;
-    if (fn_80206430() == 0) return;
+    f32 value;
+
+    if (fn_80206430() == 0)
+        return;
+
     index = lbl_8055EF5C + 1;
     lbl_8055EF5C = index;
-    if (index >= 4) { index = 0; lbl_8055EF5C = 0; }
+    if (index >= 4) {
+        index = 0;
+        lbl_8055EF5C = 0;
+    }
+
     offset = arg0 * 0x18;
-    obj = *(void **)(lbl_80490558 + offset + index * 4 + 8);
-    if (obj != 0) {
-        value = *(float *)(lbl_80490558 + offset + 4) * fn_80209028();
-        if (value != *(float *)((char *)obj + 8)) {
-            *((u8 *)obj + 0x4D) = 1;
-            *(float *)((char *)obj + 8) = value;
-            *((u8 *)obj + 0x49) = 1;
-            *((u8 *)obj + 0x4B) = 0;
-            *((u8 *)obj + 0x4A) = 0;
-        }
+    table = (Entry *)lbl_80490558;
+    entry = (Entry *)((char *)table + offset);
+    obj = entry->objects[index];
+    if (obj == 0)
+        return;
+
+    value = entry->scale * fn_80209028();
+    if (value != *(f32 *)((char *)obj + 8)) {
+        *((u8 *)obj + 0x4D) = 1;
+        *(f32 *)((char *)obj + 8) = value;
+        *((u8 *)obj + 0x49) = 1;
+        *((u8 *)obj + 0x4B) = 0;
+        *((u8 *)obj + 0x4A) = 0;
     }
 }
-
+#pragma use_lmw_stmw reset
 extern "C" void fn_80214FD8(s32 arg0, s32 arg1) {
     ((s32 (*)(s32, s32, s32))fn_80214E10)(arg0, arg1, 0);
 }
