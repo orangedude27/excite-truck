@@ -2,6 +2,17 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma cplusplus on
+class Fn801D3610Interface {
+public:
+    virtual void unused0();
+    virtual void unused1();
+    virtual int getValue(int);
+    virtual void unused3();
+    virtual int isAvailable(int);
+};
+#pragma cplusplus reset
+
+#pragma cplusplus on
 extern "C" void fn_802E317C(const char *, ...);
 #pragma cplusplus reset
 
@@ -37,6 +48,40 @@ int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     fn_801D3FA4(result, arg0, arg1, arg2, arg3, arg4, arg5);
     return result;
 }
+
+extern void *fn_80131810(int);
+extern void fn_80131818(void *);
+extern void fn_801D334C(void *, void *);
+extern int lbl_80562AB0;
+extern int lbl_80562AB4;
+extern char lbl_803383BC[];
+void fn_801D3610(void *arg0, int arg1) {
+    int ids[2];
+    int *current;
+    int count;
+    void *object;
+    int value;
+    ids[0] = lbl_80562AB0;
+    current = &ids[0];
+    ids[1] = lbl_80562AB4;
+    count = 0;
+    do {
+        object = fn_80131810(*current);
+        if (object != 0) {
+            if (((int (*)(void *, int))(*(void ***)object)[4])(object, arg1) != 0) {
+                value = ((int (*)(void *, int))(*(void ***)object)[2])(object, arg1);
+                fn_801D334C(arg0, (void *)value);
+                fn_80131818(object);
+                return;
+            }
+            fn_80131818(object);
+        }
+        count++;
+        current++;
+    } while (count < 2);
+    fn_802E317C(lbl_803383BC, arg1);
+}
+
 #pragma use_lmw_stmw reset
 extern int fn_801D411C(void *);
 extern void *lbl_804421D8[];
