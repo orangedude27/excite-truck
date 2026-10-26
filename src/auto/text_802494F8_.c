@@ -421,7 +421,7 @@ extern char lbl_804989AC[];
 #pragma scheduling invalid_target
 #pragma inline no fn_8024B178
 extern s32 fn_8024B178(s32);
-#pragma dont_inline fn_8024B178
+#pragma inline no fn_8024B178
 s32 fn_8024B178(s32 arg0) {
     void *manager;
     void *object;
