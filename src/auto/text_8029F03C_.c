@@ -148,6 +148,8 @@ check:
     if (i < baseptr[1]) goto loop;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8029F300(void) {
     int offset, i, zero;
     int a, b, c, d;
@@ -171,6 +173,8 @@ loop:
 check:
     if (i < fn_801E85A4()) goto loop;
 }
+#pragma scheduling on
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
@@ -188,38 +192,43 @@ int fn_8029F3BC(unsigned char *arg0) {
 #pragma scheduling on
 #pragma pop
 
-#pragma dont_inline fn_8029F3BC
+#pragma dont_inline on
 void fn_8029F458(unsigned char *arg0, int arg1) {
     unsigned char buf[0x20];
-    unsigned char *src = arg0;
     unsigned char *dst = buf;
+    unsigned char c;
+    int remaining;
     int id;
-    int remaining = 0x20;
-    int i = 0;
-    int offset = 0;
-
-    if (*src == '$')
-        src++;
-
-    while (remaining > 0) {
-        signed char c = (signed char)*src++;
-        *dst++ = (unsigned char)c;
-        remaining--;
-        if (c == 0)
-            break;
-    }
-    if (remaining == 0)
-        dst[-1] = 0;
-
+    int i;
+    int offset;
+    if (*arg0 == '$')
+        arg0++;
+    remaining = 0x20;
+    goto copy;
+copy:
+    c = *arg0++;
+    *dst++ = c;
+    if ((signed char)c == 0)
+        goto lookup;
+    remaining--;
+    if (remaining != 0)
+        goto copy;
+    dst[-1] = 0;
+lookup:
     id = fn_8029F3BC(buf);
-    while (i < lbl_804B9B7C[1]) {
-        unsigned char *entry = (unsigned char *)lbl_804B9B7C[0] + offset;
-        if (*(int *)entry == id)
-            *(int *)(entry + 0x30) = arg1;
-        i++;
-        offset += 0x34;
-    }
+    i = 0;
+    offset = 0;
+    goto check;
+loop:
+    if (*(int *)((unsigned char *)lbl_804B9B7C[0] + offset) == id)
+        *(int *)((unsigned char *)lbl_804B9B7C[0] + offset + 0x30) = arg1;
+    offset += 0x34;
+    i++;
+check:
+    if (i < lbl_804B9B7C[1])
+        goto loop;
 }
+#pragma dont_inline reset
 unsigned char fn_8029F510(unsigned char *arg0, int arg1) {
     if (arg1 != 0) {
         *arg0 = 1;
