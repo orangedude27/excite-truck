@@ -460,8 +460,8 @@ void *fn_802D8C00(void *arg0, void *arg1) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802D8D1C(void) {
-    int i;
     int offset;
+    int i;
 
     lbl_8055FE24 = 0;
     lbl_8055FE20 = 0;
