@@ -198,23 +198,58 @@ void fn_801B02E0(void *arg0) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801B04B0(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
-    s32 temp_r10;
-    s32 temp_r9;
-    s32 temp_r8;
-    s32 temp_r7;
-    s32 temp_r6;
-    s32 temp_r5;
-    s32 *src = (s32 *)arg1;
-    temp_r10=src[5]; temp_r9=src[6]; temp_r8=src[7]; temp_r7=src[8]; temp_r6=src[9]; temp_r5=src[10];
-    *(s32 *)((u8 *)arg0+0x3c)=src[0]; *(s32 *)((u8 *)arg0+0x40)=src[1]; *(s32 *)((u8 *)arg0+0x44)=src[2]; *(s32 *)((u8 *)arg0+0x48)=src[3]; *(s32 *)((u8 *)arg0+0x4c)=src[4];
-    *(s32 *)((u8 *)arg0+0x50)=temp_r10; *(s32 *)((u8 *)arg0+0x54)=temp_r9; *(s32 *)((u8 *)arg0+0x58)=temp_r8; *(s32 *)((u8 *)arg0+0x5c)=temp_r7; *(s32 *)((u8 *)arg0+0x60)=temp_r6; *(s32 *)((u8 *)arg0+0x64)=temp_r5; *(s32 *)((u8 *)arg0+0x68)=src[11];
-    fn_8017A580((void *)temp_r5, (f32)temp_r6);
-    *(f32 *)((u8 *)arg0+0x118)=((f32 *)arg2)[0]; *(f32 *)((u8 *)arg0+0x11c)=((f32 *)arg2)[1]; *(f32 *)((u8 *)arg0+0x120)=((f32 *)arg2)[2];
-    *(f32 *)((u8 *)arg0+0x124)=((f32 *)arg3)[0]; *(f32 *)((u8 *)arg0+0x128)=((f32 *)arg3)[1]; *(f32 *)((u8 *)arg0+0x12c)=((f32 *)arg3)[2];
-    *(s16 *)((u8 *)arg0+0x6c)=*(s16 *)arg4;
-}
+    volatile s32 *src = (volatile s32 *)arg1;
+    f32 *vec1 = (f32 *)arg2;
+    f32 *vec2 = (f32 *)arg3;
+    s16 *value_ptr = (s16 *)arg4;
+    s32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    f32 f0, f1, f2, f3, f4, f5;
+    s16 value;
+    t0 = src[0];
+    t1 = src[1];
+    t2 = src[2];
+    t3 = src[3];
+    t4 = src[4];
+    t5 = src[5];
+    t6 = src[6];
+    t7 = src[7];
+    t8 = src[8];
+    t9 = src[9];
+    t10 = src[10];
+    t11 = src[11];
 
+    *(s32 *)((u8 *)arg0 + 0x3C) = t0;
+    *(s32 *)((u8 *)arg0 + 0x40) = t1;
+    *(s32 *)((u8 *)arg0 + 0x44) = t2;
+    *(s32 *)((u8 *)arg0 + 0x48) = t3;
+    *(s32 *)((u8 *)arg0 + 0x4C) = t4;
+    *(s32 *)((u8 *)arg0 + 0x50) = t5;
+    *(s32 *)((u8 *)arg0 + 0x54) = t6;
+    *(s32 *)((u8 *)arg0 + 0x58) = t7;
+    *(s32 *)((u8 *)arg0 + 0x5C) = t8;
+    *(s32 *)((u8 *)arg0 + 0x60) = t9;
+    *(s32 *)((u8 *)arg0 + 0x64) = t10;
+    *(s32 *)((u8 *)arg0 + 0x68) = t11;
+    ((void (*)(void *))fn_8017A580)(arg0);
+    f5 = vec1[0];
+    f4 = vec1[1];
+    f3 = vec1[2];
+    f2 = vec2[0];
+    f1 = vec2[1];
+    f0 = vec2[2];
+    value = *value_ptr;
+    *(f32 *)((u8 *)arg0 + 0x118) = f5;
+    *(f32 *)((u8 *)arg0 + 0x11C) = f4;
+    *(f32 *)((u8 *)arg0 + 0x120) = f3;
+    *(f32 *)((u8 *)arg0 + 0x124) = f2;
+    *(f32 *)((u8 *)arg0 + 0x128) = f1;
+    *(f32 *)((u8 *)arg0 + 0x12C) = f0;
+    *(s16 *)((u8 *)arg0 + 0x6C) = value;
+}
+#pragma pop
 s32 fn_801B0588(void *arg0, u8 *arg1) {
     if (*arg1 != 0) return 0x21;
     return 1;
@@ -229,23 +264,47 @@ s32 fn_801B05A0(void *arg0, u8 *arg1) {
 
 extern void fn_8017D160(void *, u8 *, u8 *, s32 *, s32 *, f32);
 extern f32 lbl_805625B0;
-void fn_801B05E4(void *arg0, u8 *arg1, u8 *arg2, s32 *arg3, s32 *arg4, f32 arg5) {
+#pragma cplusplus on
+extern "C" void fn_801B05E4(void *arg0, u8 *arg1, u8 *arg2, s32 *arg3, s32 *arg4, f32 arg5) {
+    class Callback0 {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10();
+        virtual s32 get();
+    };
+    class Callback1 {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10();
+        virtual s32 get(u8 *);
+    };
     s32 spC;
     s32 sp8;
-    *arg3 = (*(s32 (**)(void *))(*(u32 *)arg0 + 0x2C))(arg0);
-    *arg4 = (*(s32 (**)(void *, u8 *))(*(u32 *)arg0 + 0x2C))(arg0, arg2);
-    if (*arg1 != 0 && *arg2 != 0) {
-        *(u8 *)((u8 *)arg0 + 0x1F8) = 1;
+    s32 result;
+    u8 firstFlag;
+    f32 zeroValue;
+    f32 resetValue;
+
+    *arg3 = ((Callback0 *)arg0)->get();
+    result = ((Callback1 *)arg0)->get(arg2);
+    firstFlag = *arg1;
+    *arg4 = result;
+    if (firstFlag != 0 && *arg2 != 0) {
+        *(volatile u8 *)((u8 *)arg0 + 0x1F8) = 1;
         fn_8017D160(arg0, arg1 + 1, arg2 + 1, &spC, &sp8, arg5);
     } else {
-        *(u8 *)((u8 *)arg0 + 0x1F8) = 0;
-        *(f32 *)((u8 *)arg0 + 0x64) = lbl_805625B0;
-        *(f32 *)((u8 *)arg0 + 0x118) = lbl_80562578;
-        *(f32 *)((u8 *)arg0 + 0x11C) = lbl_80562578;
-        *(f32 *)((u8 *)arg0 + 0x120) = lbl_80562578;
+        zeroValue = *(volatile f32 *)&lbl_80562578;
+        resetValue = *(volatile f32 *)&lbl_805625B0;
+        *(volatile u8 *)((u8 *)arg0 + 0x1F8) = 0;
+        *(volatile f32 *)((u8 *)arg0 + 0x64) = resetValue;
+        *(volatile f32 *)((u8 *)arg0 + 0x118) = zeroValue;
+        *(volatile f32 *)((u8 *)arg0 + 0x11C) = zeroValue;
+        *(volatile f32 *)((u8 *)arg0 + 0x120) = zeroValue;
     }
 }
-
+#pragma cplusplus reset
 void __AXDSPInitCallback_801AFC38(void) {
     lbl_8055E650 = 0;
 }
