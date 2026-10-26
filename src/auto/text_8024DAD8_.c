@@ -1799,6 +1799,7 @@ void fn_802514B4(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h) {
     fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 3, value, x, y, lbl_80563960, w, h);
     fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 6, -1, x, y, lbl_80563960, w, h);
 }
+#pragma scheduling on
 
 #pragma cplusplus on
 extern "C" void fn_80216D28(void);
