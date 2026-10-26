@@ -58,6 +58,37 @@ void *fn_802583CC(void *o, int arg1, int arg2) {
  return o;
 }
 
+extern void *fn_80207848(int, int);
+extern float lbl_80563AC8;
+#pragma scheduling invalid_target
+void fn_802586F0(void *arg0, void *arg1, int arg2, int arg3) {
+    char *base = (char *)arg0;
+    int index;
+    char *entry;
+    char *dst;
+    char *ptr = (char *)arg1;
+    int count = 0x20;
+    char c;
+    index = *(int *)(base + 0xDA0);
+    entry = *(char **)(base + 0xD9C) + index * 0x2C;
+    *(int *)(base + 0xDA0) = index + 1;
+    dst = entry;
+    while (1) {
+        count--;
+        if (count <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+        do {
+            c = *ptr++;
+            *dst++ = c;
+        } while (c != 0);
+    }
+    *(void **)(entry + 0x20) = fn_80207848(arg2, 0);
+    *(float *)(entry + 0x28) = lbl_80563AC8;
+    *(char *)(entry + 0x24) = arg3;
+}
+#pragma scheduling on
 void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, float y) {
     int index = 0, offset = 0, result, entry;
     float cosine, sine;
@@ -163,7 +194,79 @@ found:
     return lbl_80563AD0;
 }
 
+#pragma push
 #pragma scheduling on
+void *fn_80258B60(void *arg0, const char *arg1) {
+    int index = 0;
+    int offset = 0;
+    int len;
+    goto check;
+loop:
+    len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
+    if (((unsigned int)__cntlzw(len) >> 5))
+        goto found;
+    offset += 0x48;
+    index++;
+check:
+    if (index < *(int *)((char *)arg0 + 8))
+        goto loop;
+    index = -1;
+found:
+    if (index >= 0) {
+        int byte_offset = index;
+        byte_offset *= 0x48;
+        return (void *)((char *)*(unsigned int *)((char *)arg0 + 4) + byte_offset + 0x20);
+    }
+    return 0;
+}
+
+int fn_80258C08(void *arg0, const char *arg1) {
+    int index = 0;
+    int offset = 0;
+    int entry_offset;
+    unsigned int entries;
+    goto check;
+loop:
+    if (((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1)) >> 5) == 0) goto increment;
+found:
+    goto done;
+increment:
+    offset += 0x48;
+    index++;
+check:
+    if (index < *(int *)((char *)arg0 + 8)) goto loop;
+    index = -1;
+done:
+    /* Return the final word of the matching 0x48-byte entry. */
+    if (index >= 0) {
+        entry_offset = index * 0x48;
+        entries = *(unsigned int *)((char *)arg0 + 4);
+        return *(int *)(entries + entry_offset + 0x44);
+    }
+    return 0;
+}
+
+int fn_80258CB0(void *arg0, const char *arg1) {
+    int index = 0;
+    int offset = 0;
+    goto check;
+loop:
+    if (((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 0x910) + offset), arg1)) >> 5) == 0) {
+        offset += 0x24;
+        index++;
+        goto check;
+    }
+    goto found;
+check:
+    if (index < *(int *)((char *)arg0 + 0x914)) goto loop;
+    index = -1;
+found:
+    /* Return the word at offset 0x20 in the matching 0x24-byte entry. */
+    if (index >= 0) return *(int *)(*(unsigned int *)((char *)arg0 + 0x910) + index * 0x24 + 0x20);
+    return 0;
+}
+
+#pragma pop
 extern int stricmp(const char *, const char *);
 extern int fn_80232B70(int, int, int);
 extern double lbl_80563AD8;
@@ -234,4 +337,29 @@ found:
     *(unsigned char *)(obj + 0x4B) = 0;
     *(unsigned char *)(obj + 0x4A) = 0;
 }
+
+#pragma scheduling invalid_target
+void fn_8025904C(void *arg0, int arg1, float farg0) {
+    int index = 0;
+    int offset = 0;
+    int len;
+    goto check;
+loop:
+    len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 0xD9C) + offset), (const char *)arg1);
+    if (((unsigned int)__cntlzw(len) >> 5)) {
+        if (lbl_80563AD0) goto found;
+        else goto found;
+    }
+    offset += 0x2C;
+    index++;
+check:
+    if (index < *(int *)((char *)arg0 + 0xDA0)) goto loop;
+    index = -1;
+found:
+    if (index >= 0) {
+        struct Entry { char pad[0x28]; float value; };
+        ((struct Entry *)(*(unsigned int *)((char *)arg0 + 0xD9C)))[index].value = farg0;
+    }
+}
+#pragma scheduling on
 
