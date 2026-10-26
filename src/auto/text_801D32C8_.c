@@ -6,7 +6,7 @@ class Fn801D3610Interface {
 public:
     virtual void unused0();
     virtual void unused1();
-    virtual int getValue(int);
+    virtual void *getValue(int);
     virtual void unused3();
     virtual int isAvailable(int);
 };
