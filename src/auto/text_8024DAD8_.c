@@ -1792,6 +1792,7 @@ extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern f32 fn_80216CB4(void);
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_802514B4(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h) {
     s32 value = *(s32 *)(*(char **)((char *)arg0 + 0xCC) + arg1 * 0x14 + 0x10);
     fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 0, -1, x, y, lbl_80563960, w, h);
