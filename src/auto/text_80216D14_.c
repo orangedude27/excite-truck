@@ -775,12 +775,17 @@ extern void fn_80219358(float);
 void fn_80218968(void *arg0, int arg1, float arg2) {
     int mask = fn_80216D14(arg1);
     if (*(int *)((char *)arg0 + 0x464) & mask) {
-        int calls = 0;
-        int currentMask = fn_80216D14(arg1);
-        int flags = *(int *)((char *)arg0 + 0x464);
-        char *cursor = (char *)arg0;
-        int i = 0;
+        char *cursor;
+        int calls;
+        int currentMask;
+        int flags;
+        int i;
 
+        calls = 0;
+        currentMask = fn_80216D14(arg1);
+        flags = *(int *)((char *)arg0 + 0x464);
+        cursor = (char *)arg0;
+        i = 0;
         *(int *)((char *)arg0 + 0x464) = flags & ~currentMask;
         goto check;
     loop:
