@@ -63,13 +63,13 @@ void fn_80297984(void) {
 }
 
 void fn_80297A08();
-void fn_80297C3C();
+void fn_80297C3C(void *, void *, int, float, float);
 void fn_80297988(void) {
     fn_80297A08();
 }
 
-void fn_8029798C(void) {
-    fn_80297C3C();
+void fn_8029798C(void *unused, void *arg1, int arg2, float farg0, float farg1) {
+    fn_80297C3C(unused, arg1, arg2, farg0, farg1);
 }
 
 void fn_80297990(void* hi) {
