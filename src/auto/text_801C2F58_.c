@@ -1060,7 +1060,7 @@ void fn_801C77FC(void) {
     if (flag != 0) {
         strcpy(name, (const char *)&lbl_8055AA5C);
     } else {
-        sprintf(name, lbl_8055AA64, lbl_8055E844);
+        sprintf(name, (const char *)&lbl_8055AA64, lbl_8055E844);
     }
     sprintf(lbl_80437FC0, lbl_80336F24, name, *(f32 *)entry);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
