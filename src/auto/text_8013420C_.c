@@ -35,8 +35,7 @@ void *fn_8013420C(void *arg0, s32 arg1, s32 arg2) {
     }
     return arg0;
 }
-#pragma scheduling on
-#pragma unroll reset
+#pragma use_lmw_stmw off
 void *fn_801342B0(Container *arg0, s32 arg1, s32 arg2) {
     s32 i;
     Entry *entry;
@@ -57,9 +56,6 @@ void *fn_801342B0(Container *arg0, s32 arg1, s32 arg2) {
     }
     return arg0;
 }
-
-#pragma use_lmw_stmw on
-#pragma use_lmw_stmw off
 void fn_8013436C(Container *arg0, s32 arg1) {
     s32 i;
     Entry *entry;
