@@ -298,7 +298,7 @@ int fn_8028967C(int arg0) {
 
 extern int fn_8028E61C(int *);
 extern int fn_8028E2F8(int *, int *, int, int, float, float, float, float, float, float, float, ...);
-extern int lbl_80348B34;
+__declspec(section ".data") extern int lbl_80348B34;
 extern int lbl_8055C880;
 extern float lbl_8056427C, lbl_80564284, lbl_8056428C, lbl_8056429C;
 extern float lbl_80564274, lbl_80564280, lbl_80564288, lbl_80564290, lbl_80564294, lbl_80564298, lbl_805642A0, lbl_805642A4, lbl_805642A8, lbl_805642AC;
