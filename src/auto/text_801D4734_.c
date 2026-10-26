@@ -540,50 +540,46 @@ void fn_801D5AA8(void *arg0) {
 
 extern void fn_801D0824(void *);
 void *fn_801D5AF0(void *arg0, int arg1) {
-    void *original = arg0;
     int field8;
-    int has_field;
     char *table;
     char *table2;
 
-    if (original != 0) {
-        field8 = *(int *)((char *)original + 8);
+    if (arg0 != 0) {
+        field8 = *(int *)((char *)arg0 + 8);
+        table2 = lbl_80338D20 + 0x38;
         table = lbl_80338D20;
-        table2 = table + 0x38;
-        *(void **)original = table;
-        has_field = field8 != 0;
-        *(void **)((char *)original + 4) = table2;
+        *(void **)arg0 = table;
+        *(void **)((char *)arg0 + 4) = table2;
 
-        if (has_field) {
-            *(int *)((char *)original + 8) = 0;
+        if (field8 != 0) {
+            *(int *)((char *)arg0 + 8) = 0;
             if (arg0 != 0) {
-                arg0 = (char *)arg0 + 4;
-                fn_801D0824(arg0);
+                fn_801D0824((char *)arg0 + 4);
             }
-            *(int *)((char *)original + 0xC) = -1;
+            *(int *)((char *)arg0 + 0xC) = -1;
         }
 
-        if ((unsigned int)original + 0x70 != 0) {
-            if ((unsigned int)original + 0x70 != 0) {
-                *(int *)((char *)original + 0x70) = 0;
-                *(int *)((char *)original + 0x74) = 0;
-                *(int *)((char *)original + 0x78) = 0;
+        if ((unsigned int)arg0 + 0x70 != 0) {
+            if ((unsigned int)arg0 + 0x70 != 0) {
+                *(int *)((char *)arg0 + 0x70) = 0;
+                *(int *)((char *)arg0 + 0x74) = 0;
+                *(int *)((char *)arg0 + 0x78) = 0;
             }
         }
 
-        if ((unsigned int)original + 0x10 != 0) {
-            if ((unsigned int)original + 0x10 != 0) {
-                *(int *)((char *)original + 0x10) = 0;
-                *(int *)((char *)original + 0x14) = 0;
-                *(int *)((char *)original + 0x18) = 0;
+        if ((unsigned int)arg0 + 0x10 != 0) {
+            if ((unsigned int)arg0 + 0x10 != 0) {
+                *(int *)((char *)arg0 + 0x10) = 0;
+                *(int *)((char *)arg0 + 0x14) = 0;
+                *(int *)((char *)arg0 + 0x18) = 0;
             }
         }
 
         if (arg1 > 0) {
-            ((int (*)(void *))fn_80128668)(original);
+            ((int (*)(void *))fn_80128668)(arg0);
         }
     }
-    return original;
+    return arg0;
 }
 
 #pragma dont_inline reset
@@ -1489,6 +1485,100 @@ int fn_801D8154(void *arg0) {
     return *(int *)((char *)arg0 + 0x40);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" int fn_801D815C(void *arg0, int arg1) {
+    extern int fn_80179630(int);
+    extern int fn_8017960C(int);
+    extern int fn_80179650(void);
+    extern int fn_80139B5C(int, int);
+    extern void *fn_801B2EC0(int);
+    extern void *fn_801B83A0(void);
+    extern char lbl_80339018[];
+    extern char lbl_8055AD34;
+    extern char lbl_8055AD40;
+    extern void fn_802E30C8();
+    struct Name { virtual void *v0(); virtual void *v1(); virtual void *get(); };
+    struct Callback {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual void v23();
+        virtual void v24();
+        virtual void v25();
+        virtual void v26();
+        virtual void v27();
+        virtual void v28();
+        virtual void v29();
+        virtual void v30();
+        virtual void v31();
+        virtual void v32();
+        virtual void v33();
+        virtual void v34();
+        virtual void v35();
+        virtual void v36();
+        virtual void v37();
+        virtual void v38();
+        virtual void v39();
+        virtual void run(int, int);
+    };
+    register void *self = arg0;
+    register int property;
+    register int key;
+    register int index;
+    register int result;
+    Name *name;
+    Callback *callback;
+
+    if (*(int *)((char *)self + 0x40) == 1) {
+        *(int *)((char *)self + 0x34) = lbl_8055E3C4;
+        *(int *)((char *)self + 0x38) = arg1;
+        *(int *)((char *)self + 0x40) = 2;
+        if (*(int *)((char *)self + 0x3C) != 0) {
+            index = 0;
+            while (index < fn_80179650()) {
+                key = fn_80179630(index);
+                result = fn_80139B5C(fn_8017960C(key), *(int *)((char *)self + 0x3C));
+                if (result != 0) {
+                    name = (Name *)fn_801B2EC0(key);
+                    property = *(int *)((char *)name->get() + 4);
+                    callback = (Callback *)fn_801B83A0();
+                    callback->run(key, property);
+                }
+                ((void (*)(const char *, ...))fn_802E30C8)(
+                    lbl_80339018, key,
+                    result != 0 ? &lbl_8055AD34 : &lbl_8055AD40);
+                index++;
+            }
+        }
+        return 1;
+    }
+    return 0;
+}
+#pragma cplusplus reset
+#pragma pop
+
 void *fn_801DA8C8(const char *, const char *);
 void fn_801D825C(void *arg0) {
     if (*(int *)((char *)arg0 + 0x40) != 0) {
@@ -1577,6 +1667,52 @@ int fn_801D83DC(int arg0, int arg1) {
     }
     return arg0;
 }
+
+#pragma push
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" int fn_801D8424(void *arg0, void *arg1) {
+    extern float lbl_80562ADC;
+    extern float lbl_80562B0C;
+    extern char lbl_8055ACB0;
+    extern char lbl_8055ACB8;
+    extern char lbl_8055AD48;
+    extern int fn_8029F3BC(void);
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void set(char *, int);
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual float get(char *, float);
+    };
+    Dummy *obj = (Dummy *)arg1;
+    register float temp_f31;
+    register float temp_f1;
+    register float temp_f2;
+    register float temp_f0;
+    register int temp_r5;
+    register int temp_r0;
+    temp_f31 = obj->get(&lbl_8055ACB0, lbl_80562ADC);
+    temp_f1 = obj->get(&lbl_8055ACB8, lbl_80562ADC);
+    temp_f2 = lbl_80562B0C * temp_f31;
+    temp_f0 = lbl_80562B0C * temp_f1;
+    temp_r5 = (int)temp_f2;
+    temp_r0 = (int)temp_f0;
+    *(int *)((char *)arg0 + 8) = temp_r5;
+    *(int *)((char *)arg0 + 0xC) = temp_r0;
+    obj->set(&lbl_8055AD48, temp_r5);
+    temp_r0 = fn_8029F3BC();
+    *(int *)((char *)arg0 + 0x14) = temp_r0;
+    if (temp_r0 < 0) return 0;
+    *(int *)((char *)arg0 + 4) = 1;
+    return 1;
+}
+#pragma pop
+#pragma cplusplus reset
 
 void *fn_801D8504(void) {
     return lbl_80339038;
@@ -1696,16 +1832,25 @@ extern "C" int fn_801D8634(void *out, void *obj) {
         virtual float v7(void *);
         virtual float v8(void *, float);
     };
+    float initialRate = lbl_80562ADC;
     Dummy *thing = (Dummy *)obj;
-    *(float *)((char *)out + 0xC) = thing->v8(&lbl_8055ACB8, lbl_80562ADC);
+    int result;
+    *(float *)((char *)out + 0xC) = thing->v8(&lbl_8055ACB8, initialRate);
     *(float *)((char *)out + 0x14) = thing->v7(&lbl_8055ACB0);
     *(int *)((char *)out + 8) = thing->v5(lbl_803385D0);
     thing->v3(lbl_80339050);
     *(int *)((char *)out + 0x1C) = fn_801D04D0();
-    if (out != 0) fn_801D0590((char *)out + 4);
-    *(int *)((char *)out + 0x18) = 1;
-    *(float *)((char *)out + 0x10) = lbl_80562ADC;
-    return 1;
+    result = (int)out;
+    if (out != 0) {
+        fn_801D0590((char *)out + 4);
+        {
+            float finalRate = lbl_80562ADC;
+            *(int *)((char *)out + 0x18) = 1;
+            *(float *)((char *)out + 0x10) = finalRate;
+        }
+        result = 1;
+    }
+    return result;
 }
 
 #pragma cplusplus reset
@@ -1871,29 +2016,49 @@ test:
 #pragma pop
 #pragma cplusplus reset
 
-void fn_801D89C0(void *arg0, void *arg1) {
-    void *object;
-    int first;
-    int second;
-    int count;
-    int records;
-    int record;
-
-    object = ((void *(*)(void *))(*(void ***)arg1)[1])(arg1);
+#pragma push
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801D89C0(void *arg0, void *arg1) {
+    extern char lbl_803385D0[];
+    struct NameObject {
+        virtual void *v0();
+        virtual void *v1();
+        virtual void *v2();
+        virtual void *v3();
+        virtual void *v4();
+        virtual void *v5();
+        virtual int find(char *, int);
+    };
+    struct Request {
+        virtual void *getObject();
+        virtual void *v1();
+        virtual void *v2();
+        virtual void *v3();
+        virtual void *v4();
+        virtual void *v5();
+        virtual int getFirst();
+        virtual int getSecond();
+        virtual void finish(int, int, int, int);
+    };
+    struct Record { void *object; int first; int second; };
+    Request *request = (Request *)arg1;
+    int *output = (int *)arg0;
+    NameObject *object = (NameObject *)request->getObject();
     if (object == 0) return;
-    if (((int (*)(void *, char *, int))(*(void ***)object)[8])(object, lbl_803385D0, -1) != *(int *)((char *)arg0 + 8)) return;
-    first = ((int (*)(void *))(*(void ***)arg1)[8])(arg1);
-    second = ((int (*)(void *))(*(void ***)arg1)[9])(arg1);
-    count = *(int *)((char *)arg0 + 0x28);
-    records = *(int *)((char *)arg0 + 0x24);
-    record = records + count * 12;
-    *(int *)((char *)arg0 + 0x28) = count + 1;
-    *(void **)record = arg1;
-    *(int *)(record + 4) = first;
-    *(int *)(record + 8) = second;
-    ((void (*)(void *, int, int, int, int))(*(void ***)arg1)[10])(arg1, -1, record, count + 1, records);
+    if (object->find(lbl_803385D0, -1) != output[2]) return;
+    volatile int first = request->getFirst();
+    int second = request->getSecond();
+    int count = output[0x28 / 4];
+    Record *records = (Record *)output[0x24 / 4];
+    output[0x28 / 4] = count + 1;
+    records[count].object = request;
+    records[count].first = first;
+    records[count].second = second;
+    request->finish(-1, (int)&records[count], count + 1, (int)records);
 }
-
+#pragma pop
+#pragma cplusplus reset
 int fn_801D8AA4(void *arg0) {
     extern float lbl_80562ADC;
     return *(float *)((char *)arg0 + 0x30) < lbl_80562ADC;
@@ -2015,6 +2180,67 @@ int fn_801D8DC8(int arg0, int arg1) {
     }
     return arg0;
 }
+
+#pragma cplusplus on
+extern "C" int fn_801D8E10(void *arg0, void *arg1);
+extern "C" int fn_801D8E10(void *arg0, void *arg1) {
+    extern char lbl_8055ACF0;
+    extern char lbl_8055AD50;
+    extern char lbl_8055ACB8;
+    extern float lbl_80562ADC;
+    extern char lbl_8033908C;
+    extern void fn_802E30C8();
+    struct Lookup {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual char *get(char *, char *);
+    };
+    struct Measure {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual float get(char *, float);
+    };
+    char *src;
+    char *dst;
+    int count;
+    Lookup *lookup;
+    Measure *measure;
+
+    lookup = (Lookup *)arg1;
+    src = lookup->get(&lbl_8055AD50, &lbl_8055ACF0);
+    dst = (char *)arg0 + 8;
+    count = 0x14;
+    goto copy;
+copy:
+    count--;
+    if (count <= 0) {
+        dst[-1] = 0;
+        goto copied;
+    }
+    *dst++ = *src++;
+    if ((signed char)dst[-1] != 0) {
+        goto copy;
+    }
+copied:
+    if ((signed char)*((char *)arg0 + 8) == 0) {
+        ((void (*)(char *))fn_802E30C8)(&lbl_8033908C);
+        return 0;
+    }
+    measure = (Measure *)arg1;
+    *(float *)((char *)arg0 + 0x1C) = measure->get(&lbl_8055ACB8, lbl_80562ADC);
+    *(float *)((char *)arg0 + 0x20) = lbl_80562ADC;
+    *(int *)((char *)arg0 + 4) = 1;
+    return 1;
+}
+#pragma cplusplus reset
 
 char *fn_801D8EF0(void) {
     return lbl_803389B8;
