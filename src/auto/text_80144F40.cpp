@@ -367,7 +367,7 @@ extern "C" void fn_801456E8(void *arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_801457D0(void *arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_801457D0(void *arg0, s32 arg1) {
     char *base = lbl_8032CEC8;
     s32 offset;
     s32 i;
@@ -1550,10 +1550,13 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u8 *other = (u8 *)arg2;
-    f32 factor = (f32)arg3;
-    f32 x = *(f32 *)(src + 4) + factor * (*(f32 *)(other + 4) - *(f32 *)(src + 4));
-    f32 y = *(f32 *)(src + 8) + factor * (*(f32 *)(other + 8) - *(f32 *)(src + 8));
-    f32 z = *(f32 *)(src + 0x10) + factor * (*(f32 *)(other + 0x10) - *(f32 *)(src + 0x10));
+    f32 yDelta = *(f32 *)(other + 8) - *(f32 *)(src + 8);
+    f32 xDelta = *(f32 *)(other + 4) - *(f32 *)(src + 4);
+    f32 zBase = *(f32 *)(src + 0x10);
+    f32 zDelta = *(f32 *)(other + 0x10) - zBase;
+    f32 y = *(f32 *)(src + 8) + (f32)arg3 * yDelta;
+    f32 x = *(f32 *)(src + 4) + (f32)arg3 * xDelta;
+    f32 z = zBase + (f32)arg3 * zDelta;
     *(u32 *)(dst + 0x0) = *(u32 *)(src + 0x0);
     *(u32 *)(dst + 0xC) = *(u32 *)(src + 0xC);
     *(u32 *)(dst + 0x14) = *(u32 *)(src + 0x14);
@@ -1561,7 +1564,7 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     *(f32 *)(dst + 4) = x;
     *(f32 *)(dst + 8) = y;
     *(f32 *)(dst + 0x10) = z;
-    *(u32 *)(dst + 0x18) = fn_80147C50(*(u32 *)(src + 0x18), *(u32 *)(other + 0x18), factor);
+    *(u32 *)(dst + 0x18) = fn_80147C50(*(u32 *)(src + 0x18), *(u32 *)(other + 0x18), (f32)arg3);
 }
 
 void fn_80147DC0(void *dst, void *src, void *end, f32 t) {
