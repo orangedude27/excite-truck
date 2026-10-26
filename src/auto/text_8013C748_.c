@@ -3,15 +3,11 @@
 #pragma cplusplus on
 class SearchObject {
 public:
-    virtual void v0();
-    virtual void v1();
     virtual const char *name();
 };
 class SearchManager {
 public:
     virtual void v0();
-    virtual void v1();
-    virtual void v2();
     virtual SearchObject *get(int);
 };
 #pragma cplusplus off
@@ -64,9 +60,17 @@ extern int fn_80131808(int);
 extern void fn_802E317C(int, ...);
 extern char lbl_8032C4C0[];
 extern char lbl_8032C4D0[];
+#pragma cplusplus on
+extern "C" int fn_80131808(int);
+extern "C" void fn_802E317C(int, ...);
+extern "C" void fn_8013C748(void);
+extern "C" void *fn_8013C770(const char *);
+extern "C" char lbl_8032C4C0[];
+extern "C" char lbl_8032C4D0[];
+extern "C" int lbl_8055E188;
 #pragma dont_inline on
-void fn_8013C804(void) {
-    void *object;
+extern "C" void fn_8013C804(void) {
+    SearchObject *object;
     const char *name;
     void *entry;
     int index;
@@ -79,21 +83,23 @@ void fn_8013C804(void) {
     }
     goto report_error;
 loop_body:
-    name = ((const char *(*)(void *))(*(void ***)object)[2])(object);
+    name = object->name();
     entry = fn_8013C770(name);
     if (*(int *)((char *)entry + 4) != 6) {
         *(void **)((char *)entry + 8) = object;
     }
     index += 1;
 get_object:
-    object = ((void *(*)(void *, int))(*(void ***)lbl_8055E188)[3])((void *)lbl_8055E188, index);
+    object = ((SearchManager *)lbl_8055E188)->get(index);
     if (object != 0) {
         goto loop_body;
     }
+    return;
 report_error:
     fn_802E317C((int)lbl_8032C4D0);
 }
 #pragma dont_inline off
+#pragma cplusplus off
 
 #pragma inline off
 void fn_8013C8B8(void) {
