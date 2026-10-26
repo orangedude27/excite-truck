@@ -20,7 +20,8 @@ extern int fn_802E721C(unsigned int, unsigned int, int);
 extern int fn_802E8D8C(void *, void *, int);
 extern unsigned int lbl_8034D7B0[];
 void fn_802E6B50(void) {
-    memset(lbl_804FC8B0, 0, 0xC8);
+    unsigned int size = 0xC8;
+    memset(lbl_804FC8B0, 0, size);
     lbl_8055FFC0 = 0;
     lbl_8055FFC4 = 1;
     lbl_8055FFC5 = 0;
@@ -34,6 +35,44 @@ void *fn_802E6B98(int arg0) {
     memcpy(&lbl_8055FFC8, &sp8, 4);
     return &lbl_8055FFC8;
 }
+
+#pragma dont_inline on
+extern void fn_802E317C(const char *, ...);
+extern char lbl_8034D690[];
+#pragma dont_inline on
+#pragma scheduling invalid_target
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802E6BD8(unsigned int a, unsigned int b, unsigned int c, unsigned int d, unsigned int e) {
+    unsigned char *record;
+    int i;
+    int count;
+
+    fn_802E30C8(lbl_8034D678, fn_802E6B98(a), b, d);
+    record = lbl_804FC8B0;
+    i = 0;
+    goto loop_check;
+loop_body:
+    if (a == *(unsigned int *)record)
+        fn_802E317C(lbl_8034D690, a);
+    record += 0x14;
+    i++;
+loop_check:
+    if (i < lbl_8055FFC0)
+        goto loop_body;
+
+    count = lbl_8055FFC0;
+    record = lbl_804FC8B0 + count * 0x14;
+    *(unsigned int *)(record + 0) = a;
+    *(unsigned int *)(record + 4) = b;
+    *(unsigned int *)(record + 8) = c;
+    *(unsigned int *)(record + 0xC) = d;
+    lbl_8055FFC0 = count + 1;
+    *(unsigned int *)(record + 0x10) = e;
+}
+#pragma pop
+#pragma scheduling on
+#pragma dont_inline off
 
 void fn_802E6CA4(void) {}
 
