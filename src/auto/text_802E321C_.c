@@ -208,8 +208,19 @@ extern "C" void fn_802E37C4(s32 arg0) {
     s32 entry = *(s32 *)(obj + 0x24);
     ((Obj *)entry)->v4();
 }
+
+extern char lbl_8034CFC0[];
+extern void fn_802E3898(s32, const char *, s32 *);
+#pragma cplusplus on
+extern "C" void fn_802E3804(s32 arg0, const char *arg1, s32 arg2) {
+    s32 object = fn_802E33D8(arg0, lbl_8034CFB4, 0x130);
+    s32 value = arg2;
+    fn_802E3898(arg0, arg1, &value);
+    if (value != arg2) {
+        fn_802E317C(lbl_8034CFC0, arg2, object);
+    }
+}
 #pragma cplusplus off
-#pragma scheduling on
 void fn_802E3898(s32 arg0, const char *arg1, s32 *arg2) {
     s32 total;
     s32 result;
