@@ -1243,6 +1243,29 @@ void fn_80037CEC(void) {
     fn_8003A834(lbl_80376B00, fn_80037DBC);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_80037DBC(u32 arg0) {
+    register u32 value = arg0;
+    s32 interrupts = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 == 0) *(u32 *)(__ErrorInfo + 0x78) = value;
+    else *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+    OSRestoreInterrupts(interrupts);
+    if (value == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+    } else if (value == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+    } else if (value & 1) {
+        lbl_8055D860 = 0;
+        fn_8003684C();
+    } else {
+        fn_800356F4(0x27, 0, 0);
+        fn_8003B218(fn_80035E6C);
+    }
+}
+#pragma pop
+
 extern s32 lbl_8055D874, lbl_8055D870, lbl_8055D880, lbl_8055D8BC, lbl_8055D87C, lbl_8055D85C;
 extern s32 executing_8055D8C8, MotorState_8055D8A8;
 extern u8 lbl_80376AD0[0x30];
