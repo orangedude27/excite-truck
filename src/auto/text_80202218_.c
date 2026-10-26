@@ -109,8 +109,8 @@ void fn_802025D8(void) {
 
     fn_802022A0(&lbl_8055ECD0);
     fn_802022A0(&lbl_8055ECCC);
-    offset = 0;
     count = 0;
+    offset = 0;
     goto test;
 loop:
     fn_802CE6C0(*(int *)((char *)lbl_8055ECC4 + offset + 12));
