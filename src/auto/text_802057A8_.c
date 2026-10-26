@@ -20,7 +20,7 @@ extern void fn_802C8DBC(int);
 extern void fn_802C8E48(void);
 extern void fn_802C8D74(void);
 extern void fn_802057A8(int, int, float, float, float, float);
-#pragma inline no fn_802057A8
+#pragma dont_inline fn_802057A8
 extern float lbl_80563194, lbl_805631A8, lbl_805631B8, lbl_805631BC, lbl_805631C0;
 void fn_80205850(void) {
     fn_802C8CBC(-1);
