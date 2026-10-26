@@ -3,7 +3,6 @@
 
 #include <types.h>
 #include <stddef.h>
-#include <revolution/MTX/mtxtypes.h>
 
 extern void *lbl_8055E650;
 extern void *lbl_8055E654;
