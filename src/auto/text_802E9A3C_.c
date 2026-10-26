@@ -357,6 +357,7 @@ void fn_802EC1C0(float arg0) {
     }
 }
 #pragma pop
+#pragma dont_inline fn_802EC1D8
 void fn_802EC1D8(void) {
     lbl_805600C8 = 1;
 }
