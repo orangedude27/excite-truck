@@ -16,7 +16,7 @@ long fn_801E866C(long);
 long fn_801E89C8(long);
 float fn_802C99E8(void *, float);
 void fn_801ED718(void *);
-void fn_801ECC70(void);
+void fn_801ECC70();
 float fn_801F159C(long);
 long fn_80201018(long, void *, long);
 long fn_801ECB60(void);
