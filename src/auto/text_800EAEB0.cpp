@@ -7,7 +7,8 @@ public:
     void *Alloc(unsigned long, void (*)(void *, unsigned long, void *), void *);
 };
 class EnvGenerator { public: void SetRelease(int); void SetDecay(int); void SetSustain(int); };
- }}}
+class PoolImpl { public: void DestroyImpl(void *, unsigned long); };
+   }}}
 namespace nw4r { namespace snd { namespace detail {
 class PoolImpl { public: void *AllocImpl(); };
 }}}
