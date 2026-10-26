@@ -319,17 +319,17 @@ void fn_8027B9EC(void *arg0) {
     fn_8027B984(arg0, fn_8000DA10());
 }
 
-long fn_8027BA24(void *arg0) {
+#pragma cplusplus on
+extern "C" long fn_8027BA24(void *arg0) {
     long i = 0;
-    while (i < ((long (*)(void *))(*(void ***)arg0)[3])(arg0)) {
-        void *item = ((void *(*)(void *, long))(*(void ***)arg0)[4])(arg0, i);
-        if (((long (*)(void *))(*(void ***)item)[8])(item) == 0)
+    while (i < ((Fn8027BA24List *)arg0)->count()) {
+        if (((Fn8027BA24List *)arg0)->item(i)->valid() == 0)
             return 0;
         i++;
     }
     return 1;
 }
-
+#pragma cplusplus reset
 long fn_8027BAB8(void *arg0) {
     long i;
     for (i = 0; i < ((long (*)(void *))(*(void ***)arg0)[3])(arg0); i++) {
