@@ -44,6 +44,39 @@ extern int lbl_8055B138;
 #pragma pop
 #pragma scheduling invalid_target
 #pragma dont_inline on
+extern void PSVECCrossProduct(float *, float *, float *);
+int fn_801F1C24(void *arg0) {
+    extern float lbl_80562F48;
+    extern float lbl_80562F4C;
+    struct Vec { float x, y, z; };
+    struct Frame { struct Vec a, b, c; };
+    struct Frame *p = (struct Frame *)arg0;
+    char *camera;
+    float f1, f0, f2, cameraX;
+    camera = (char *)fn_802C86DC();
+    f2 = lbl_80562F40;
+    f0 = lbl_80562F44;
+    *(volatile float *)&p->b.x = f2;
+    f1 = lbl_80562F48;
+    *(volatile float *)&p->b.y = f0;
+    p->b.z = f2;
+    cameraX = *(float *)(camera + 0x18);
+    p->c.x = cameraX * f1;
+    p->c.y = *(float *)(camera + 0x1C) * f1;
+    p->c.z = *(float *)(camera + 0x20) * f1;
+    PSVECCrossProduct((float *)&p->b, (float *)&p->c, (float *)&p->a);
+    if (PSVECDotProduct((float *)&p->a, (float *)&p->a) > lbl_80562F4C) {
+        PSVECNormalize((float *)&p->a, (float *)&p->a);
+    } else {
+        f2 = lbl_80562F40;
+        f1 = lbl_80562F44;
+        p->a.y = f2;
+        p->a.x = f1;
+        p->a.z = f2;
+    }
+    PSVECCrossProduct((float *)&p->c, (float *)&p->a, (float *)&p->b);
+}
+
 int *fn_801F1CE8(int arg0) {
     return (int *)(arg0 + 0x2C);
 }
@@ -890,26 +923,25 @@ extern int fn_802C9904(void);
 void fn_801F3F8C(void *arg0, void *arg1) {
     float lower = lbl_80562F40;
     float upper = lbl_80562F44;
-    void *node = arg1;
-    if (node != 0) {
-        do {
-            int index = *(int *)((char *)node + 0x14);
-            if (index >= 0 && index < 0x30) {
-                char *entry = *(char **)((char *)arg0 + 4) + index * 0x18;
-                float value = fn_802C88D4(entry);
-                float threshold = *(float *)(entry + 0x14);
-                if (value > threshold) {
-                    float amount = *(float *)(entry + 0x10) * (value - threshold);
-                    if (amount < upper) amount = upper;
-                    if (amount > lower) amount = lower;
-                    fn_802C9900(amount);
-                    fn_802C7040(*(int *)(entry + 0xC));
-                    fn_802C9904();
-                }
+    void *node;
+    do {
+        int index = *(int *)((char *)arg1 + 0x14);
+        if (index >= 0 && index < 0x30) {
+            char *entry = *(char **)((char *)arg0 + 4) + index * 0x18;
+            float value = fn_802C88D4(entry);
+            float threshold = *(float *)(entry + 0x14);
+            if (value > threshold) {
+                float amount = *(float *)(entry + 0x10) * (value - threshold);
+                if (amount < upper) amount = upper;
+                if (amount > lower) amount = lower;
+                fn_802C9900(amount);
+                fn_802C7040(*(int *)(entry + 0xC));
+                fn_802C9904();
             }
-            node = *(void **)((char *)node + 0xC);
-        } while (node != 0);
-    }
+        }
+        node = *(void **)((char *)arg1 + 0xC);
+        arg1 = node;
+    } while (node != 0);
 }
 
 void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
