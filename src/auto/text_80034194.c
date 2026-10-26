@@ -120,7 +120,9 @@ extern s32 lbl_8055D890;
 extern s32 lbl_8055D880;
 extern s32 lbl_8055D8AC;
 extern s32 lbl_8055D85C;
+#pragma small_data off
 extern u8 lbl_8037B580;
+#pragma small_data on
 extern s32 fn_8003BE40(void);
 extern void fn_80037E94(void);
 extern void fn_8003BB58(void (*callback)(void));
@@ -1192,25 +1194,33 @@ extern void OSSetAlarm(void *, u64, u32, void (*)(void));
 extern u64 __OSGetSystemTime(void);
 extern void fn_80037800(void);
 extern void fn_80035E6C(void);
-#pragma dont_inline(fn_800356F4)
+#pragma push
+#pragma dont_inline on
 void fn_800379A8(u32 arg0) {
+    u64 time;
+    u32 ticks;
+    register void *alarm;
     if (arg0 == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
     } else if (arg0 == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
     } else if (arg0 & 1) {
-        u64 time = __OSGetSystemTime();
+        time = __OSGetSystemTime();
         lbl_8055D8A4 = time;
+        alarm = &lbl_8037B580;
         lbl_8055D8A0 = time >> 32;
         lbl_8055D8AC = 0;
         lbl_8055D85C = 0;
-        OSCreateAlarm(&lbl_8037B580);
-        OSSetAlarm(&lbl_8037B580, ((u64)(*(volatile u32 *)0x800000F8 >> 2) * 0x10624DD3ULL) >> 6, 0x64, fn_80037800);
+        OSCreateAlarm(alarm);
+        ticks = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
+        ((void (*)(void *, u32, u32, u32, void (*)(void)))OSSetAlarm)(
+            alarm, 0x10624DD3, 0, ticks, fn_80037800);
     } else {
         fn_800356F4(0x27, 0, 0);
         fn_8003B218(fn_80035E6C);
     }
 }
+#pragma pop
 extern s32 fn_8003BCDC(s32);
 extern void fn_8003B69C(u32, void*);
 extern void fn_80037B54(void);
