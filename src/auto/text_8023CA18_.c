@@ -31,8 +31,6 @@ s32 fn_8023CB80(void* arg0) {
 extern "C" void fn_80128668(void *);
 extern "C" void *fn_8023D134(void *arg0, s32 arg1) {
     struct VTable_8023D134 {
-        virtual void slot0();
-        virtual void slot1();
         virtual void destroy(s32);
     };
     if (arg0 != NULL) {
