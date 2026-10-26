@@ -1,9 +1,55 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-void strcpy(unsigned char *dst, const unsigned char *src) {
-    while ((*dst++ = *src++) != 0)
-        ;
+unsigned char *strcpy(unsigned char *dst, const unsigned char *src) {
+    unsigned char *p = dst;
+    const unsigned char *q = src;
+    unsigned int align;
+    unsigned int a;
+    unsigned int x;
+    int n;
+
+    if (((unsigned int)p & 3) != (align = (unsigned int)q & 3)) {
+        goto byte_tail;
+    }
+    if (align == 0) {
+        goto word_loop;
+    }
+    if ((*p = *q) == 0) {
+        return dst;
+    }
+    n = 3 - align;
+    while (n-- != 0) {
+        if ((*++p = *++q) == 0) {
+            return dst;
+        }
+    }
+    p++;
+    q++;
+
+word_loop:
+    a = *(const unsigned int *)q;
+    x = a - 0x01010101;
+    x &= ~a;
+    if (x & 0x80808080) {
+        goto byte_tail;
+    }
+    p -= 4;
+    do {
+        *(unsigned int *)(p += 4) = a;
+        a = *(const unsigned int *)(q += 4);
+        x = a - 0x01010101;
+        x &= ~a;
+    } while (!(x & 0x80808080));
+    p += 4;
+
+byte_tail:
+    if ((*p = *q) == 0) {
+        return dst;
+    }
+    while ((*++p = *++q) != 0) {
+    }
+    return dst;
 }
 
 void strncpy(unsigned char *dst, const unsigned char *src, int n) {
