@@ -640,6 +640,8 @@ void cbForCancelSync(void) {
     OSWakeupThread(__DVDThreadQueue);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_800356F4(s32 arg0, s32 arg1, s32 arg2) {
     s32 enabled;
     u32 tick;
@@ -657,7 +659,7 @@ void fn_800356F4(s32 arg0, s32 arg1, s32 arg2) {
     *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(enabled);
 }
-
+#pragma pop
 void fn_800357A8(void) {
 
 }
