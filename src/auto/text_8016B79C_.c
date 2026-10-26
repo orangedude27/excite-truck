@@ -812,19 +812,23 @@ extern f32 lbl_80561998;
 extern void fn_8001B450(s32);
 extern void fn_802BAF98(void *, s8);
 void fn_8016DFB8(void *arg0) {
-    char sp8;
-    char pad[0x28];
-    s32 value = *(s32 *)((u8 *)arg0 + 0x44);
-    if (value == 1) {
-        fn_801345D8(&sp8, 0x1e, lbl_803306D0 + 0x264, *(s32 *)((u8 *)arg0 + 0x2c));
-    } else if (value >= 0 && value < 1) {
-        fn_801345D8(&sp8, 0x1e, lbl_803306D0 + 0x270, *(s32 *)((u8 *)arg0 + 0x2c));
-    } else if (value >= 0 && value < 3) {
-        fn_801345D8(&sp8, 0x1e, lbl_803306D0 + 0x27c, *(s32 *)((u8 *)arg0 + 0x2c));
-    } else {
-        fn_802E317C(lbl_803306D0 + 0x288);
+    char sp8[30];
+    char *base = lbl_803306D0;
+    switch (*(s32 *)((u8 *)arg0 + 0x44)) {
+    case 0:
+        fn_801345D8(sp8, 0x1E, base + 0x264, *(s32 *)((u8 *)arg0 + 0x2C));
+        break;
+    case 1:
+        fn_801345D8(sp8, 0x1E, base + 0x270, *(s32 *)((u8 *)arg0 + 0x2C));
+        break;
+    case 2:
+        fn_801345D8(sp8, 0x1E, base + 0x27C, *(s32 *)((u8 *)arg0 + 0x2C));
+        break;
+    default:
+        fn_802E317C(base + 0x288);
+        break;
     }
-    fn_8016A15C(&sp8);
+    fn_8016A15C(sp8);
 }
 
 void fn_8016E06C(void *arg0) {
@@ -832,16 +836,22 @@ void fn_8016E06C(void *arg0) {
     s32 index = *(s32 *)((u8 *)arg0 + 0x2c);
 
     if (index < *(s32 *)((u8 *)arg0 + 0x3c)) {
+        s32 i;
         u8 *item;
-        s32 i = 0;
-        s32 offset = 0;
+        s32 offset;
+        s32 zero;
+        f32 initialValue;
         baseSlot = *(u8 ***)((u8 *)arg0 + 0x18);
         item = *baseSlot + index * 0x14;
         item[9] = 1;
-        *(f32 *)(item + 0xc) = lbl_8055E3C8;
-        *(s32 *)(item + 0x10) = 0;
-        while (i < *(s32 *)((u8 *)*(void **)item + 4)) {
-            u8 *entry = (u8 *)*(void **)item + offset;
+        i = 0;
+        zero = 0;
+        initialValue = lbl_8055E3C8;
+        offset = 0;
+        *(f32 *)(item + 0xc) = initialValue;
+        *(s32 *)(item + 0x10) = zero;
+        while (i < *(s32 *)((u8 *)*(void * volatile *)item + 4)) {
+            u8 *entry = (u8 *)*(void * volatile *)item + offset;
             if (*(s32 *)(entry + 4) != 0) {
                 fn_802BAF98(entry, 1);
             }
@@ -1809,24 +1819,27 @@ loop_80:
 #pragma cplusplus off
 
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
+#pragma use_lmw_stmw off
 void fn_80170DA8(void *arg0, void *arg1) {
+    u8 (*items)[0x38];
+    u8 *item;
     s32 index;
     s32 next;
     s32 *pool;
-    u8 *items;
-    u8 *item;
     volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
     f32 x;
     f32 y;
     f32 dx;
     f32 dy;
+    f32 distance;
+    f32 threshold;
 
     pool = *(s32 **)((u8 *)arg0 + 4);
     index = *(s32 *)((u8 *)arg0 + 0x10);
     next = index + 1;
     if (next < *(s32 *)((u8 *)pool + 4)) {
-        items = (u8 *)*pool;
-        item = items + next * 0x38;
+        items = (u8 (*)[0x38])*pool;
+        item = items[next];
         x = *(f32 *)((u8 *)arg1 + 0x60);
         y = *(f32 *)((u8 *)arg1 + 0x68);
         dx = *(f32 *)(item + 0x24) - x;
@@ -1837,16 +1850,18 @@ void fn_80170DA8(void *arg0, void *arg1) {
         sp14 = y;
         sp8 = dx;
         spC = dy;
-        if ((f32)fn_8002F234(dx * dx + dy * dy, y, x, dx, dy) < *(f32 *)(item + 0x34)) {
-            *(u8 *)(items + index * 0x38 + 0x30) = 0;
+        distance = (f32)fn_8002F234(dx * dx + dy * dy, y, x, dx, dy);
+        threshold = *(f32 *)(item + 0x34);
+        if (distance < threshold) {
+            items[index][0x30] = 0;
             *(s32 *)((u8 *)arg0 + 0x10) = next;
             pool = *(s32 **)((u8 *)arg0 + 4);
-            items = (u8 *)*pool;
-            *(u8 *)(items + next * 0x38 + 0x30) = 1;
+            items = (u8 (*)[0x38])*pool;
+            items[next][0x30] = 1;
         }
     }
 }
-
+#pragma use_lmw_stmw on
 s32 fn_80170E78(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x1ec); }
 
 f32 fn_80170E80(f32 *arg0) { return *arg0; }
