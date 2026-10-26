@@ -183,14 +183,15 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
 
 #pragma cplusplus reset
 #pragma pop
-extern void fn_802CAC54(void);
+extern void fn_802CAC54(int);
 extern void fn_80128670(void *);
 extern void fn_80128668(void *);
 #pragma use_lmw_stmw off
 void fn_80296838(void *arg0) {
-    void *entry;
-    int i;
     int offset;
+    int i;
+    int entryAddress;
+    int state;
     void *list;
 
     if (arg0 == 0) {
@@ -202,11 +203,11 @@ void fn_80296838(void *arg0) {
         offset = 0;
         while (i < *(int *)((char *)arg0 + 0x2C)) {
             list = *(void **)((char *)arg0 + 0x24);
-            entry = (char *)list + offset;
-            if (*(int *)((char *)entry + 0x18) != -1 &&
-                *(int *)((char *)entry + 0x18) != -2) {
-                fn_802CAC54();
-                *(int *)((char *)entry + 0x18) = -2;
+            entryAddress = (int)list + offset;
+            state = *(int *)(entryAddress + 0x18);
+            if (state != -1 && state != -2) {
+                fn_802CAC54(state);
+                *(int *)(entryAddress + 0x18) = -2;
             }
             offset += 0x30;
             i++;
@@ -464,5 +465,48 @@ int fn_80296D2C(void *arg0, float *arg1, float farg0) {
     }
     return 1;
 }
+
+#pragma push
+#pragma cplusplus on
+extern "C" float fn_802970C8(void *arg0) {
+    int count = *(int *)((char *)arg0 + 0x2C);
+    int processed = 0;
+    int offset = 0;
+    int rest;
+    unsigned int groups;
+    float sum = lbl_8056456C;
+
+    if (count <= 0) return sum;
+    rest = count - 8;
+    if (rest > 0 && count <= 0x7FFFFFFE) {
+        groups = ((unsigned int)rest + 7) >> 3;
+        do {
+            float *base = *(float * volatile *)((char *)arg0 + 0x24);
+            float *record = (float *)((char *)base + offset);
+            sum += *(float *)((char *)record + 0x00);
+            sum += *(float *)((char *)record + 0x30);
+            sum += *(float *)((char *)record + 0x60);
+            sum += *(float *)((char *)record + 0x90);
+            sum += *(float *)((char *)record + 0xC0);
+            sum += *(float *)((char *)record + 0xF0);
+            sum += *(float *)((char *)record + 0x120);
+            sum += *(float *)((char *)record + 0x150);
+            processed += 8;
+            offset += 0x180;
+        } while (--groups != 0);
+    }
+    if (processed < count) {
+        float *base = *(float * volatile *)((char *)arg0 + 0x24);
+        offset = processed * 0x30;
+        rest = count - processed;
+        do {
+            sum += *(float *)((char *)base + offset);
+            offset += 0x30;
+        } while (--rest != 0);
+    }
+    return sum;
+}
+#pragma pop
+
 #pragma scheduling on
 #pragma pop
