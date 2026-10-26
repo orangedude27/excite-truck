@@ -489,6 +489,22 @@ void fn_80232BA4(char *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1,
         fn_80232040((u8 *)arg0, arg1, sp8, arg3, 0, farg0, farg1, farg2, farg3, farg4, lbl_8056368C);
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+void fn_80232C50(char *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
+    s32 sp8 = arg2;
+    f32 spacing = farg3 - farg2 * fn_8023293C(arg1, arg0, farg5);
+
+    spacing /= (f32)strlen(arg0);
+    fn_80231714(&sp8);
+    if ((s8)*arg0 != 0) {
+        fn_80232040((u8 *)arg0, arg1, sp8, arg3, 0, farg0, farg1, farg2, farg4, farg5, spacing);
+    }
+}
+#pragma pop
+
 #pragma pop
 #pragma dont_inline off
 
