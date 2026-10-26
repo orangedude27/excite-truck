@@ -1,7 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
-extern char lbl_804A4380[];
+ // split_file divides it into the game's real files (file_status shows its range).
+ 
+ extern char lbl_804A4380[];
+extern long fn_80012790(long);
+extern long fn_80012794(void);
+extern long fn_80012810(void);
+extern void fn_8027CCB4(long, long, long, long);
+extern void fn_8027CD80(long, long, long, long);
 __declspec(section ".rodata") extern long lbl_80347B4C;
 __declspec(section ".rodata") extern long lbl_80347B5C;
 long fn_8000D984(long);
