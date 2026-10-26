@@ -51,7 +51,7 @@ void fn_8016A0B0(void* alarm) {
 
 extern void fn_8002F6AC(void*, void *(*)(void*, s32));
 extern void* fn_8016B550(void*, s32);
-extern s32 lbl_80430318;
+extern char lbl_80430318[];
 extern Ctr804302F0 lbl_804302F0;
 extern f32 lbl_80561958;
 extern f32 lbl_8056195C;
