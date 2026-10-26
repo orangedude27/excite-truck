@@ -11,6 +11,11 @@ extern s32 lbl_8055F88C;
 extern char lbl_80349C88[];
 extern s32 fn_801284F8(s32, char *);
 extern s32 fn_802A6944(s32, s32, s32);
+extern s32 fn_8012850C(s32, void *);
+extern s32 fn_8002F37C(s32, void *, s32, s32, s32);
+extern void fn_8001BA68(void);
+extern char lbl_80349CAC[];
+extern s32 lbl_8055CBC0;
 typedef union { double d; struct { f32 x, z; }; } Vec2_802A775C;
 typedef struct {
     void *points;
