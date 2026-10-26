@@ -12,7 +12,7 @@ extern s32 lbl_80559BF8;
 extern void fn_80136AA8(void*);
 extern void fn_80136A18(s32, s32);
 extern s32 fn_801284F8(s32, s32*);
-extern s32 fn_801368F8(s32);
+  extern s32 fn_801368F8(s32, s32);
 extern f32 lbl_80561368;
 extern s32 lbl_8032BEB4[];
 extern void fn_801376A8(s32, s32 *, s32, s32, s32 *);
@@ -152,7 +152,6 @@ s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
     sp8 = temp_f2;
     spC = temp_f1;
     sp10 = temp_f5 - temp_f3;
-    /* The dot-product result is compared with the configured collision threshold. */
     PSVECDotProduct(&sp8, (char *)arg1 + 0x18);
     return PSVECDotProduct(&sp8, (char *)arg1 + 0x18) < lbl_80561368;
 }
