@@ -14,7 +14,7 @@ extern int fn_8028F7AC(int, int);
 extern void fn_8028ED8C(void *, int);
 extern void fn_8028F5A0(int, int);
 extern float lbl_80564424;
-extern void fn_8028FB98(float);
+extern void fn_8028FB98(void *, int, float *, float);
 extern float lbl_8055F738;
 extern unsigned char lbl_8055F73C;
 extern int lbl_804B34B0;
@@ -167,8 +167,8 @@ void fn_8028E528(int arg0) {
 }
 
 #pragma pop
-void fn_8028E584(void) {
-    fn_8028FB98(lbl_80564424);
+void fn_8028E584(void *arg0, int arg1, float *arg2) {
+    fn_8028FB98(arg0, arg1, arg2, lbl_80564424);
 }
 
 void fn_8028E58C(void) { fn_8028FAE4(); }
