@@ -4,6 +4,7 @@
 #include <macros.h>
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B538[];
+extern void *jumptable_8034B794[];
 extern char lbl_8034B618[];
 extern int lbl_8055D058;
 extern int fn_802C90E0(void);
@@ -37,17 +38,18 @@ void fn_802DBDE8(int, int);
 
 extern char lbl_8055D07D;
 extern float lbl_80564F30;
+#pragma scheduling invalid_target
 void fn_802CA1E0(void) {
-    int i;
     int offset;
+    int i;
     if (lbl_8055D03C != -1) {
         fn_802CAC54(lbl_8055D03C);
         lbl_8055D03C = -1;
     }
     fn_802CAC54(lbl_8055FCB4);
     lbl_8055FCB4 = -1;
-    i = 0;
     offset = 0;
+    i = 0;
     do {
         if (*(int *)(lbl_8055FCB0 + offset) != 0)
             fn_802E317C(lbl_8034B5F0, i, lbl_8055FCB0 + offset + 4);
@@ -58,7 +60,7 @@ void fn_802CA1E0(void) {
     fn_80128670(lbl_8055FCB0);
     lbl_8055FCB0 = 0;
 }
-
+#pragma scheduling on
 int fn_802CA294(int arg0) {
     int offset = arg0 * 0x4C;
     int *base = (int *)lbl_8055FCB0;
@@ -157,6 +159,17 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
         dst[2] = (c12 & 1) | 4;
 }
 
+int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
+    char sp8[0x34];
+
+    if (fn_802C90E0() == 0 && (unsigned int)arg1 != (unsigned int)lbl_8055D058) {
+        const char *format = lbl_8034B618;
+        fn_802E30C8(format, arg1);
+    }
+    fn_802CA3F4(sp8, arg0, arg2 == 1 ? 3 : 1, arg3, arg4);
+    return fn_802D8E9C(sp8, arg1);
+}
+
 extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
 extern char lbl_8034B634[];
 extern char lbl_8034B658[];
@@ -176,6 +189,28 @@ int fn_802CA658(int arg0, int arg1) {
             fn_802CA57C(result, arg0, 0);
     }
     return result;
+}
+
+char *fn_802CA72C(unsigned int arg0) {
+    char *base = lbl_8034B538;
+    switch (arg0) {
+    case 0: return base + 0x140;
+    case 1: return base + 0x150;
+    case 2: return base + 0x174;
+    case 3: return base + 0x180;
+    case 4: return base + 0x190;
+    case 5: return base + 0x1A0;
+    case 6: return base + 0x1B4;
+    case 7: return base + 0x1C0;
+    case 8: return base + 0x1CC;
+    case 9: return base + 0x1E0;
+    case 10: return base + 0x1F0;
+    case 11: return base + 0x20C;
+    case 12: return base + 0x21C;
+    case 13: return base + 0x228;
+    case 14: return base + 0x244;
+    default: return base + 0x250;
+    }
 }
 
 #pragma dont_inline fn_802CA7D4
