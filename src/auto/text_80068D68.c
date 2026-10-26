@@ -9451,7 +9451,7 @@ void l2c_csm_term_w4_sec_comp(void *p_ccb, u16 event, void *p_msg)
 }
 
 extern char lbl_803183B0[];
-void l2c_csm_w4_l2cap_connect_rsp(void *p_ccb, u16 event, BT_HDR *p_msg)
+void l2c_csm_w4_l2cap_connect_rsp(void *p_ccb, u16 event, void *p_msg)
 {
     void *p_lcb = *(void **)((u8 *)p_ccb + 0x30);
     void (*cb1)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_lcb + 0x18);
