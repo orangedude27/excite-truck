@@ -191,6 +191,34 @@ void fn_8000B288(void* alarm) {
     fn_801DF110(((int (*)(void *))fn_8000B210)(alarm));
 }
 
+extern void fn_802C8530(void);
+extern int fn_801DF060(void);
+extern void fn_801E81B8(int, void (*)(void *));
+extern void fn_801DFFB4(void);
+extern void fn_802C9A70(int);
+extern int fn_801E8838(void);
+extern int fn_800217AC(void);
+extern void fn_802C942C(int);
+extern void fn_802C855C(void);
+extern void fn_802D08C4(int);
+extern void fn_802C2B48(void);
+void fn_8000B2AC(void) {
+    fn_802C8530();
+    fn_801E81B8(1, fn_801DF060() != 0
+        ? (void (*)(void *))fn_8000B288
+        : (void (*)(void *))fn_8000B210);
+    fn_801DFFB4();
+    fn_802C9A70(0);
+    if (fn_801E8838() != 0 && fn_800217AC() != 0) {
+        fn_802C942C(fn_801E8838() << 24);
+    }
+    fn_802C855C();
+    fn_801E85A4();
+    fn_802D08C4(0);
+    fn_802C2B48();
+    fn_802D08C4(1);
+}
+
 int fn_8000B33C(void **arg0, int arg1, int arg2) {
     register void **vtable = (void **)*arg0;
     if (((int (*)(void))((char *)vtable + 0xC))() != 0)
