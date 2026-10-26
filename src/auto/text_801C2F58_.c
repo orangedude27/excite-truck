@@ -923,6 +923,7 @@ void fn_801C73DC(void) {
 done:
     ;
 }
+#pragma scheduling on
 
 void fn_801C7480(void) {
     register s32 index = lbl_8055E828;
