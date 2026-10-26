@@ -66,6 +66,7 @@ void fn_80129458(void) {
     *(u16 *)(b + 0x14) = zero;
 }
 #pragma pop
+#pragma dont_inline fn_801294FC
 void fn_801294FC(s32 arg0, s32 arg1) {
     fn_802E4800(arg0 | ((arg1 << 12) & 0xF000));
 }
@@ -104,6 +105,7 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2) {
     s32 i;
     s32 active;
     u8 value;
+    u16 type;
 
     active = 0;
     if (params[2] != 0 && (s32)lbl_8055DFD4 != -1 && (s32)lbl_8055DFD4 == arg1) {
@@ -117,12 +119,12 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2) {
     i = 0;
     do {
         offset = *entries;
-        if (offset >= 0 && *(u16 *)(params + 4) != 0 && active != 0) {
+        if (offset >= 0 && (type = *(u16 *)(params + 4)) != 0 && active != 0) {
             value = dst[offset + 0x3C];
             if (value != 0) {
                 dst[8] = 1;
                 if (dst[i + 9] == 0) {
-                    fn_801294FC((s32)(dst + i), arg1);
+                    fn_801294FC(type, arg1);
                 }
                 dst[i + 9] = value;
             }
