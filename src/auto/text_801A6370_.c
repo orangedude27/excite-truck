@@ -121,6 +121,39 @@ void fn_801A6558(void *arg0) {
         fn_801A67B0(arg0);
 }
 
+extern void fn_80182074(void);
+extern void *fn_801B2EC0(int);
+extern void fn_80265D40(void *, int, float);
+#pragma scheduling invalid_target
+void fn_801A65FC(void *arg0) {
+    float value0;
+    float value1;
+    int object;
+    fn_80182074();
+    *(void **)((char *)arg0 + 0x2774) =
+        fn_801B2EC0(*(int *)((char *)arg0 + 0x1EC));
+    *(volatile unsigned char *)((char *)arg0 + 0x2740) = 0;
+    *(volatile unsigned char *)((char *)arg0 + 0x2741) = 1;
+    fn_801A6558(arg0);
+    value0 = *(volatile float *)&lbl_80562430;
+    value1 = *(volatile float *)&lbl_8056242C;
+    *(volatile float *)((char *)arg0 + 0x2748) = value0;
+    object = *(volatile int *)((char *)arg0 + 0x1EC);
+    *(volatile float *)((char *)arg0 + 0x2744) = value1;
+    *(volatile float *)((char *)arg0 + 0x274C) = value0;
+    *(volatile float *)((char *)arg0 + 0x2750) = value0;
+    *(volatile float *)((char *)arg0 + 0x2754) = value1;
+    *(volatile float *)((char *)arg0 + 0x2758) = value0;
+    *(volatile float *)((char *)arg0 + 0x275C) = value0;
+    *(volatile float *)((char *)arg0 + 0x2760) = value0;
+    *(volatile float *)((char *)arg0 + 0x2764) = value1;
+    *(volatile float *)((char *)arg0 + 0x2768) = value0;
+    *(volatile float *)((char *)arg0 + 0x276C) = value0;
+    *(volatile float *)((char *)arg0 + 0x2770) = value0;
+    fn_80265D40(arg0, object, value1);
+    *(int *)((char *)arg0 + 0x267C) = 1;
+}
+#pragma scheduling on
 extern void fn_80128668(void *);
 extern void fn_80128670(int);
 extern void fn_801836E0(void *, int);
