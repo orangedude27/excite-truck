@@ -40,6 +40,35 @@ void *fn_8017D688(void) {
     }
     return p;
 }
+
+void *fn_8017D93C(void *arg0, int arg1) {
+    extern char lbl_80331D18[];
+    extern void fn_801D0C84(void *);
+    extern void fn_80179EE8(void *, int);
+    extern void fn_80128668(void *);
+    void *p;
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_80331D18;
+        *(void **)((char *)arg0 + 0x1EC) = lbl_80331D18 + 0x54;
+        if (arg0 != 0) fn_801D0C84((char *)arg0 + 0x1EC);
+        p = *(void **)((char *)arg0 + 0x220);
+        if (p != 0) {
+            if (p != 0) ((void (*)(void *, int))(*(void **)((char *)*(void **)p + 8)))(p, 1);
+        }
+        p = *(void **)((char *)arg0 + 0x21C);
+        if (p != 0) {
+            if (p != 0) ((void (*)(void *, int))(*(void **)((char *)*(void **)p + 8)))(p, 1);
+        }
+        p = *(void **)((char *)arg0 + 0x218);
+        if (p != 0) {
+            if (p != 0) ((void (*)(void *, int))(*(void **)((char *)*(void **)p + 8)))(p, 1);
+        }
+        if (arg0 != 0) fn_80179EE8(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 #pragma scheduling on
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017DA34(long arg0, long arg1) {
     if (arg0 != 0) {
@@ -383,4 +412,6 @@ long fn_8017EAF4(long arg0) { return arg0 + 0x6C; }
 long fn_8017EAFC(long arg0) { return arg0 + 0x118; }
 
 long fn_8017EB04(long arg0) { return arg0 + 0x70; }
-
+#pragma cplusplus on
+struct VObj_8017D93C { virtual void d0(int); };
+#pragma cplusplus reset
