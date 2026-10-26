@@ -97,18 +97,20 @@ void *fn_801EAD6C(void *arg0, s32 arg1) {
 
 void fn_801EADD8(void *arg0) {
     s32 value;
-    s32 args[2];
+    s32 sp8;
+    s32 spC;
 
     if (*(s32 *)((u8 *)arg0 + 0x70) == -1) {
         return;
     }
 
-    value = 0;
-    if (*(s32 *)((u8 *)arg0 + 0x78) != 0) {
+    if (*(s32 *)((u8 *)arg0 + 0x78) == 0) {
+        value = 0;
+    } else {
         fn_802DAC54();
-        args[0] = *(s32 *)((u8 *)arg0 + 0x78);
-        args[1] = -0x100;
-        value = fn_802C7A40(1, &lbl_80488228, 0x50, 1, args, 2);
+        sp8 = *(s32 *)((u8 *)arg0 + 0x78);
+        spC = -0x100;
+        value = fn_802C7A40(1, lbl_80488228, 0x50, 1, &sp8, 2);
     }
     fn_802C70AC(*(s32 *)((u8 *)arg0 + 0x70), (u8 *)arg0 + 4,
                 value, *(s32 *)((u8 *)arg0 + 0x74));
@@ -141,7 +143,7 @@ float fn_801EAF64(void *arg0) {
 
 extern void *fn_802C86DC(void);
 extern float PSVECDotProduct(float *, float *, float);
-extern void fn_801EABA8(void);
+extern void fn_801EABA8(void *, void *);
 extern void fn_802DAC54(void);
 extern int fn_802C7A40(int, void *, int, int, void *, int);
 extern void fn_802C70AC(int, void *, int, int);
