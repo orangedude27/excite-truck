@@ -2,6 +2,19 @@
 // split_file divides it into the game's real files (file_status shows its range).
 extern int fn_802E95E0(void *, void (*)(void), int);
 extern void fn_802E9010(void);
+extern int NANDInit(void);
+extern void fn_802E317C(const char *, ...);
+extern void fn_801282F4(void);
+extern void fn_801282EC(int);
+extern int fn_8012850C(int, const char *);
+extern void fn_802E6B50(void);
+extern void fn_80127C90(void *, void *);
+extern void fn_802E2E0C(void *, void *);
+extern int fn_802E8C6C(int);
+extern char lbl_8034DED4[];
+extern char lbl_8034DEF4[];
+extern char lbl_8055D248;
+extern char lbl_8055D250;
 extern char lbl_8034DEC4[];
 extern char lbl_8034DF00[];
 extern int lbl_80560020;
@@ -259,18 +272,28 @@ extern char lbl_8034E130[];
 extern char lbl_8034E108[];
 #pragma scheduling invalid_target
 void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
-    const char *original = arg1;
-    const char *src = arg1;
-    char *dst = (char *)arg0 + 0xC;
-    int count = 0x100;
+    const char *original;
+    const char *src;
+    char *dst;
+    int count;
+    char c;
+    original = arg1;
     *(int *)((char *)arg0 + 8) = arg2;
+    src = original;
     *(int *)((char *)arg0 + 4) = arg3;
-    while (count > 0) count--;
-    dst[-1] = count;
-    do {
-        char c = *src++;
-        *dst++ = c;
-    } while (dst[-1] != 0);
+    dst = (char *)arg0 + 0xC;
+    count = 0x100;
+    goto copy;
+dec_count:
+    count--;
+    if (count > 0) goto copy;
+    dst[-1] = 0;
+    goto after_copy;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if (c != 0) goto dec_count;
+after_copy:
     *(void **)((char *)arg0 + 0x198) = arg0;
     *(int *)((char *)arg0 + 0x258) = 0;
     *(char *)((char *)arg0 + 0x250) = 0;
