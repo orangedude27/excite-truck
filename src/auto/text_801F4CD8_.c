@@ -7,6 +7,7 @@ extern void *lbl_8055EC10;
 extern void *lbl_8055EC1C;
 extern void *lbl_8055EC20;
 extern char lbl_8033ACE8[32];
+extern void fn_801E8C84(float *);
 extern void *fn_801284F8(int, void *);
 extern char lbl_8033AC68[];
 extern char *lbl_8033AC9C[5];
@@ -465,31 +466,38 @@ void fn_801F639C(void *arg0) {
     fn_802CAC54(*(int*)((char*)arg0 + 0x24));
 }
 
+#pragma scheduling invalid_target
 void fn_801F63F0(void *arg0, float *arg1, float arg2) {
- extern float lbl_80562FB0, lbl_80562FD4, lbl_80562FD8;
- float a,b,c,x,y,z,t,u,v; int i,off,r0,r4; void *p,*q;
- i=0; off=0;
- x=lbl_80562FB0-arg2;
- a=arg1[0]; t=lbl_80562FD8; b=arg1[1]; c=a*t; z=arg1[2]; b=b*t; z=z*t;
- t=lbl_80562FD4; y=-(x); v=c; u=b; x=t-arg2; a=b; b=z;
- do {
-   r4=*(int*)((char*)arg0+4); i++; r0=*(int*)((char*)arg0+8);
-   p=(char*)r4+off; q=(char*)r0+off;
-   c=*(float*)p; c=c*x;
-   t=*(float*)q; t=t*y;
-   a=c+v; b=*(float*)((char*)p+4); b=b*x;
-   z=*(float*)((char*)p+8); z=z*x;
-   t=a+t; *(float*)q=t; c=*(float*)((char*)q+4);
-   c=c*y; b=u+b; z=v+z; *(float*)((char*)q+4)=b+c;
-   off+=0xC;
-   c=*(float*)((char*)q+8); c=c*y; *(float*)((char*)q+8)=z+c;
- } while(i<*(int*)((char*)arg0+0x10));
- r4=*(int*)((char*)arg0+4); *(int*)((char*)arg0+4)=*(int*)((char*)arg0+8); *(int*)((char*)arg0+8)=r4;
-}
+    extern float lbl_80562FB0, lbl_80562FD4, lbl_80562FD8;
+    float a,b,c,x,y,z,t,u,v;
+    int i,off,r0,r4;
+    void *p,*q;
 
+    off=0; i=0;
+    x=lbl_80562FB0-arg2;
+    a=arg1[0]; t=lbl_80562FD8; b=arg1[1]; c=a*t; z=arg1[2]; b=b*t; z=z*t;
+    t=lbl_80562FD4; y=-(x); v=c; u=b; x=t-arg2; a=b; b=z;
+    goto check;
+loop:
+    r4=*(int*)((char*)arg0+4); i++; r0=*(int*)((char*)arg0+8);
+    p=(char*)r4+off; q=(char*)r0+off;
+    c=*(float*)p; c=c*x;
+    t=*(float*)q; t=t*y;
+    a=c+v; b=*(float*)((char*)p+4); b=b*x;
+    z=*(float*)((char*)p+8); z=z*x;
+    t=a+t; *(float*)q=t; c=*(float*)((char*)q+4);
+    c=c*y; b=u+b; z=v+z; *(float*)((char*)q+4)=b+c;
+    off+=0xC;
+    c=*(float*)((char*)q+8); c=c*y; *(float*)((char*)q+8)=z+c;
+check:
+    if (i<*(int*)((char*)arg0+0x10)) goto loop;
+    r4=*(int*)((char*)arg0+4); *(int*)((char*)arg0+4)=*(int*)((char*)arg0+8); *(int*)((char*)arg0+8)=r4;
+}
+#pragma scheduling on
 extern float lbl_80562FB0;
 extern float lbl_80562FD4;
 extern float lbl_80562FD8;
+#pragma scheduling invalid_target
 void fn_801F64E4(void *arg0, float *arg1, float arg2) {
     float sp10, spC, sp8;
     float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
@@ -501,7 +509,7 @@ void fn_801F64E4(void *arg0, float *arg1, float arg2) {
     f9 = lbl_80562FD4 - arg2;
     f10 = -(lbl_80562FB0 - arg2);
     p4 = arg1;
-    do {
+    while (r7 < *(int *)((char *)arg0 + 0x10)) {
         r5 = *(void **)((char *)arg0 + 4);
         r7++;
         r0 = *(int *)((char *)arg0 + 8);
@@ -533,21 +541,21 @@ void fn_801F64E4(void *arg0, float *arg1, float arg2) {
         f0 = f0 * lbl_80562FD8;
         f1 = f4 + f1;
         spC = f7;
-        r6 += 0xC;
         f0 = f3 + f0;
         sp10 = f6;
-        p4 += 3;
         *(float *)((char *)r5 + 4) = f1;
         sp8 = f5;
         spC = f4;
         sp10 = f3;
         *(float *)((char *)r5 + 8) = f0;
-    } while (r7 < *(int *)((char *)arg0 + 0x10));
+        r6 += 0xC;
+        p4 += 3;
+    }
     r4 = *(int *)((char *)arg0 + 4);
     *(int *)((char *)arg0 + 4) = *(int *)((char *)arg0 + 8);
     *(int *)((char *)arg0 + 8) = r4;
 }
-
+#pragma scheduling on
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80562FDC;
 extern float lbl_80562FE0;
