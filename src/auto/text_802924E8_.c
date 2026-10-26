@@ -1,3 +1,7 @@
+extern int lbl_802FA998[];
+extern char lbl_80349208[];
+extern int strcmp(const char *, const char *);
+extern int fn_802E317C(const char *, ...);
 extern unsigned char lbl_80349294[];
 extern unsigned char lbl_8034925C[];
 extern void fn_80294530(void *, int, int, int);
