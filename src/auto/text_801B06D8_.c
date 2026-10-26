@@ -303,26 +303,35 @@ u32 fn_801B0F48(u32 arg0, u32 arg1) {
 extern f32 lbl_805625F0;
 extern void *lbl_8055E68C;
 extern u8 lbl_8055E690;
-s32 fn_801B1130(s32 arg0) {
-    s32 var_r30;
+#pragma cplusplus on
+extern "C" s32 fn_801B1130(s32 arg0) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual s32 f3(s32, s32);
+    };
     s32 var_r31;
+    s32 var_r30;
     s32 var_r3;
+
     var_r31 = 1;
     var_r30 = 0;
-    if (lbl_8055E68C != NULL) {
-        void **obj = (void **)lbl_8055E68C;
-        void **vtable = *(void ***)obj;
-        s32 (*method)(void *, s32, s32) = (s32 (*)(void *, s32, s32))vtable[5];
-        if (method(obj, arg0, *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x7C)) != 0) var_r30 = 1;
+    if (lbl_8055E68C != 0) {
+        Dummy *obj = (Dummy *)lbl_8055E68C;
+        if (obj->f3(arg0, *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x7C)) != 0)
+            var_r30 = 1;
     }
     if (var_r30 == 0) {
         var_r3 = 0;
-        if (lbl_8055E68C == NULL && lbl_8055E690 != 0) var_r3 = 1;
-        if (var_r3 == 0) var_r31 = 0;
+        if (lbl_8055E68C == 0 && lbl_8055E690 != 0)
+            var_r3 = 1;
+        if (var_r3 == 0)
+            var_r31 = 0;
     }
     return var_r31;
 }
-
+#pragma cplusplus reset
 s32 fn_801B11DC(const void *arg0, const void *arg1) {
     extern f32 lbl_80558DC4;
     u32 *a = *(u32 **)arg0;
@@ -406,16 +415,32 @@ extern s32 fn_801366C0(s32,s32,f32);
 extern void fn_801B14BC(s32*,s32,s32);
 extern s32 fn_8026A27C(s32);
 extern void fn_801B1390(s32, s32);
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_801B14E4(void *arg0) {
-    s32 value;
-    if (fn_801366C0(*(s32*)((u8*)arg0+0x58),*(s32*)((u8*)arg0+0x5C)+0x118,lbl_805625F8))
-        *(s32*)((u8*)arg0+0x64) += 1;
-    else
-        *(s32*)((u8*)arg0+0x64) = 0;
-    value=*(s32*)((u8*)arg0+0x64);
-    fn_801B14BC((s32*)((u8*)arg0+4),4,(f32)value >= lbl_805625FC);
-}
+    struct {
+        u8 unk0[0x58];
+        s32 field58;
+        s32 field5C;
+        u8 unk60[4];
+        s32 count;
+    } *base = (void *)arg0;
+    register f32 threshold = lbl_805625F8;
+    s32 passed;
 
+    if (((s32 (*)(f32, s32, s32))fn_801366C0)(
+            threshold,
+            *(s32 *)((u8 *)arg0 + 0x58),
+            base->field5C + 0x118)) {
+        base->count += 1;
+    } else {
+        base->count = 0;
+    }
+    passed = (f32)base->count > lbl_805625FC;
+    fn_801B14BC((s32 *)((u8 *)base + 4), 4, passed);
+}
+#pragma dont_inline reset
+#pragma scheduling on
 void fn_801B157C(void *arg0,s32 arg1) {
     *(u8*)((u8*)arg0+0x2C)=1;*(f32*)((u8*)arg0+0x30)=lbl_8055E3C8;
     if(lbl_8055E690)fn_801CB6B4(*(s32*)((u8*)arg0+0x60),arg1,2);
@@ -917,19 +942,18 @@ void fn_801B24B8(void) {
 }
 
 s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
-    f32 var_f31;
-    f32 var_f1;
-    s32 index0 = *arg0;
     s32 index1 = *arg1;
+    s32 index0 = *arg0;
     void *base = lbl_8055E684;
     void *obj0 = (u8 *)base + (index0 << 7);
     void *obj1 = (u8 *)base + (index1 << 7);
     void **vtable0 = *(void ***)obj0;
     void *result0 = ((void *(*)(void *, s32, void *))vtable0[4])(obj0, index1, base);
+    register f32 var_f31 = *(f32 *)((u8 *)result0 + 0x20);
     void **vtable1 = *(void ***)obj1;
-    ((void (*)(void *))vtable1[4])(obj1);
-    var_f31 = *(f32 *)((u8 *)result0 + 0x20);
-    var_f1 = *(f32 *)((u8 *)obj1 + 0x20);
+    void *result1 = ((void *(*)(void *))vtable1[4])(obj1);
+    f32 var_f1 = *(f32 *)((u8 *)result1 + 0x20);
+
     if (var_f31 < lbl_80562604) var_f31 = lbl_80562610;
     if (var_f1 < lbl_80562604) var_f1 = lbl_80562610;
     if (var_f31 < var_f1) return -1;
