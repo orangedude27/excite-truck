@@ -343,8 +343,8 @@ check:
 #pragma scheduling invalid_target
 void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
     s32 size = arg1 * 0xC;
-    s32 buffer = ((s32 (*)(s32, void *, s32))fn_8012850C)(size + 0x10, lbl_80349CA0, size);
-    *(s32 *)arg0 = fn_8002F37C(buffer, (void *)fn_8001BA68, 0, 0xC, arg1);
+    void *buffer = ((void *(*)(s32, void *, s32))fn_8012850C)(size + 0x10, lbl_80349CA0, size);
+    *(s32 *)arg0 = fn_8002F37C((s32)buffer, (void *)fn_8001BA68, 0, 0xC, arg1);
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 0xC) = fn_802CAC28((void *)lbl_8055CBBC, 0);
     *(s32 *)((u8 *)arg0 + 0x10) = fn_802CAC28((void *)lbl_8055CBB8, 0);
@@ -536,18 +536,18 @@ void fn_802A6790(void *arg0) {
     f32 sp8;
     f32 spC;
     f32 sp10;
-    f32 temp_f1;
+    f32 temp_f30;
     f32 temp_f29;
     f32 temp_f31;
 
     *(s32 *)((u8 *)arg0 + 4) = 0;
     while (*(s32 *)((u8 *)arg0 + 4) < *(s32 *)((u8 *)arg0 + 8)) {
-        temp_f1 = fn_80287BC8(*(f32 *)((u8 *)arg0 + 0x24), *(f32 *)((u8 *)arg0 + 0x28));
-        temp_f29 = *(f32 *)((u8 *)arg0 + 0x20) * temp_f1;
+        temp_f30 = fn_80287BC8(*(f32 *)((u8 *)arg0 + 0x24), *(f32 *)((u8 *)arg0 + 0x28));
+        temp_f29 = *(f32 *)((u8 *)arg0 + 0x20) * temp_f30;
         temp_f31 = fn_80287BC8(-temp_f29, temp_f29);
-        sp8 = temp_f31;
         spC = fn_80287BC8(-temp_f29, temp_f29);
-        sp10 = temp_f1;
+        sp8 = temp_f31;
+        sp10 = temp_f30;
         fn_802A6758(arg0, &sp8);
     }
 }
@@ -583,7 +583,7 @@ extern f32 lbl_80564850;
 extern f32 lbl_80564858;
 extern f32 lbl_8056485C;
 extern f32 lbl_80564888;
-s32 fn_802A711C(f32, f32, f32);
+s32 fn_802A711C(void *, f32, f32, f32);
 #pragma scheduling invalid_target
 s32 fn_802A6A44(s32 *arg0) {
     f32 d;
@@ -603,7 +603,7 @@ s32 fn_802A6A44(s32 *arg0) {
     p[14] = d;
     p[15] = a;
     p[16] = d;
-    return fn_802A711C(b, c, a);
+    return fn_802A711C(arg0, b, c, a);
 }
 #pragma scheduling on
 extern float lbl_8055F884;
