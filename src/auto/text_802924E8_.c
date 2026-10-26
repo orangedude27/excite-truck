@@ -1,5 +1,5 @@
 extern unsigned char lbl_80349294[];
-extern char lbl_8055C988[];
+extern char lbl_8055C988;
 extern float lbl_805644D4;
 extern int fn_80293374(void *, void *);
 extern void *fn_802935A0(void *);
