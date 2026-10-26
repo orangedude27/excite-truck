@@ -196,13 +196,13 @@ extern unsigned char lbl_803577F0[];
 extern unsigned char lbl_80357960[];
 extern void *fn_80016474();
 void fn_8001683C(void *arg0, int arg1) {
-    void *temp = fn_80016474();
+    void *temp = fn_80016474((int)arg0);
     *(void **)(lbl_803577F0 + arg1 * 0x5C + 4) = arg0;
     *(int *)(lbl_803577F0 + arg1 * 0x5C + 0x4C) = *(int *)((char *)temp + 0x4C);
     *(int *)(lbl_803577F0 + arg1 * 0x5C + 0x50) = *(int *)((char *)temp + 0x50);
     *(int *)(lbl_80357960 + arg1 * 0xA8 + 4) = -1000;
 }
-
+#pragma pop
 extern unsigned char *lbl_8055D540;
 extern unsigned char *lbl_8055D544;
 void fn_800168B0(int arg0, int arg1) {
