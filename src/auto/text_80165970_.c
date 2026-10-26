@@ -51,7 +51,7 @@ extern float fn_801660C0(void);
 extern int *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(int);
 extern void fn_80165FAC(void);
-extern void fn_80131808(void *);
+extern void *fn_80131808(void *);
 extern void fn_80131818(void *);
 extern int fn_80204EA0(const char *);
 extern void fn_802E30C8(char *, ...);
