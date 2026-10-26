@@ -497,17 +497,18 @@ extern f32 lbl_80563684;
 extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
 extern void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8D74(void);
-#pragma scheduling off
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
 void fn_80232D3C(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    s32 sp8;
+    s32 sp8 = arg2;
 
-    sp8 = arg2;
     fn_80231714(&sp8);
     if ((s8)*arg0 != 0) {
         fn_80232040(arg0, arg1, sp8, arg3, arg4, farg0, farg1, farg2, farg3, farg4, lbl_8056368C);
     }
 }
-
+#pragma pop
 extern u8 fn_80232B70(void *);
 extern void fn_802344CC(s32, s32, s32, s32, f32, f32, f32);
 extern f32 fn_8023293C(s32, char *, f32);
@@ -572,6 +573,7 @@ void fn_802335F0(u8 *arg0, s32 arg1, f32 farg0, f32 farg1) {
 #pragma push
 #pragma dont_inline on
 void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2) {
+    #pragma scheduling invalid_target
     s32 sp8;
 
     sp8 = arg2;
