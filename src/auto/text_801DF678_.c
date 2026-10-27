@@ -144,6 +144,65 @@ void fn_801DFF1C(int arg0) {
     *(int*)(entry + 0x1C) = -1;
 }
 
+#pragma cplusplus on
+extern "C" void fn_801D0DFC(void *);
+extern "C" void fn_802CAC54(int);
+extern "C" void *fn_801E0150(void *arg0, int arg1) {
+    struct LocalObj {
+        virtual void d0(int);
+    };
+    LocalObj *object;
+    char *p;
+    int i;
+    void *result = arg0;
+
+    if (arg0 != 0) {
+        object = *(LocalObj **)((char *)arg0 + 0x10C);
+        *(void **)arg0 = lbl_80339744;
+        if (object != 0) {
+            if (object != 0)
+                object->d0(1);
+        }
+
+        p = (char *)arg0;
+        i = 0;
+        do {
+            object = *(LocalObj **)(p + 0xFC);
+            if (object != 0) {
+                if (object != 0)
+                    object->d0(1);
+            }
+            ++i;
+            p += 4;
+        } while (i < 3);
+
+        object = *(LocalObj **)((char *)arg0 + 0xF8);
+        if (object != 0) {
+            if (object != 0)
+                object->d0(1);
+        }
+
+        fn_802CAC54(*(int *)((char *)arg0 + 0xF4));
+        fn_802CAC54(*(int *)((char *)arg0 + 0xEC));
+        fn_802CAC54(*(int *)((char *)arg0 + 0xE8));
+        fn_802CAC54(*(int *)((char *)arg0 + 0xF0));
+        lbl_8055EA04 = 0;
+
+        object = *(LocalObj **)((char *)arg0 + 0xE4);
+        if (object != 0)
+            object->d0(1);
+
+        if (arg0 != 0) {
+            *(void **)arg0 = lbl_803381C0;
+            fn_801D0DFC(arg0);
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return result;
+}
+#pragma cplusplus reset
+
 void fn_801E02A8(void) {
 
 }
