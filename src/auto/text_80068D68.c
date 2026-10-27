@@ -25,6 +25,16 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include "revolution/BTE/stack/include/hiddefs.h"
 extern u8 HID_HostCloseDev(u8);
 
+typedef struct {
+    u8 in_use;
+    u8 pad_0x01[9];
+    u8 state;
+    u8 pad_0x0B;
+    u8 conn_tries;
+    u8 pad_0x0D[0x0F];
+    u8 timer_entry[0x18];
+} tHID_HOST_DEV_VIEW;
+
 extern void rfc_port_sm_execute(void *, u16, void *);
 extern char lbl_80319AB0[];
 struct uusb_cb_t;
@@ -4078,20 +4088,26 @@ BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
 }
 
 char *BTM_SecReadDevName(BD_ADDR bd_addr) {
-    u8 *entry;
     s32 i;
+    u8 *entry;
     char *name;
     i = 0;
-    name = 0;
     entry = lbl_803C0F78 + 0x1F30;
+    name = 0;
     do {
-        if ((entry[0x76] & 0x80) && memcmp(entry + 0x1C, bd_addr, 6) == 0) {
-            name = (char *)entry + 0x35;
-            break;
+        if (entry[0x76] & 0x80) {
+            if (memcmp(entry + 0x1C, bd_addr, 6) == 0) {
+                goto found;
+            }
         }
         i++;
         entry += 0x88;
     } while (i < 16);
+    entry = 0;
+found:
+    if (entry != 0) {
+        name = (char *)entry + 0x35;
+    }
     return name;
 }
 
@@ -8892,6 +8908,27 @@ u8 HID_HostOpenDev(u32 arg0) {
         return 10;
     entry[0xC] = 1;
     return hidh_conn_initiate();
+}
+
+u8 HID_HostCloseDev(u8 dev_handle) {
+    extern u8 hidh_conn_disconnect(u32);
+    u8 *hh_cb = lbl_803C3C38;
+    u8 *device;
+    u32 offset;
+    if (hh_cb[0x400] == 0) {
+        return 1;
+    }
+    if (dev_handle > 0x10 || (offset = dev_handle * 0x34, hh_cb[offset] == 0)) {
+        return 5;
+    }
+    device = hh_cb + offset;
+    device[0xC] = 1;
+    fn_80070F90(device + 0x1C);
+    if (device[0xA] != 1) {
+        return 4;
+    }
+    device[0xC] = 1;
+    return hidh_conn_disconnect(dev_handle);
 }
 
 s32 HID_HostSetSecurityLevel(void *p_name, u8 sec_level) {
