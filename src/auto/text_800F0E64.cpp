@@ -2135,9 +2135,9 @@ extern "C" void fn_800F8234(s32 arg0) {
     ((s32 (*)(s32))fn_800F65F0)(arg0 - 0xC);
 }
 
-extern "C" s32 __dt__Q36nw4hbm3snd18SoundArchivePlayerFv(s32);
-extern "C" void fn_800F823C(s32 arg0) {
-    __dt__Q36nw4hbm3snd18SoundArchivePlayerFv(arg0 - 0xC);
+extern "C" void *__dt__Q36nw4hbm3snd18SoundArchivePlayerFv(void *, s32);
+extern "C" void fn_800F823C(s32 arg0, s32 arg1) {
+    __dt__Q36nw4hbm3snd18SoundArchivePlayerFv((void *)(arg0 - 0xC), arg1);
 }
 
 extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **arg0, void *arg1) {
