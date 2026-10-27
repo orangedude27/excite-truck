@@ -17867,43 +17867,4 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
     return 0;
 }
 #pragma pop
-extern "C" s32 VFiPFSTR_ToUpperNStr(s32 arg0, s32 arg1, u8 *arg2) {
-    u8 *dst = arg2;
-    u16 remaining = (u16)arg1;
 
-    if (*(u32 *)((u8 *)arg0 + 0xC) == 1U) {
-        u8 *src = *(u8 **)arg0;
-        while (remaining != 0) {
-            s8 ch = *(s8 *)src;
-            if (ch == 0) {
-                break;
-            }
-            *dst = (u8)fn_800A485C((s32)ch);
-            dst++;
-            src++;
-            remaining--;
-        }
-    } else {
-        u16 *src = *(u16 **)arg0;
-        while (remaining != 0) {
-            u16 ch = *src;
-            if (ch == 0) {
-                *dst = 0;
-                break;
-            }
-            s32 lower = 0;
-            if (ch >= 0x61U && ch <= 0x7AU) {
-                lower = 1;
-            }
-            if (lower != 0) {
-                ch -= 0x20;
-            }
-            dst[0] = (u8)ch;
-            src++;
-            remaining--;
-            dst[1] = (u8)(ch >> 8);
-            dst += 2;
-        }
-    }
-    *dst = 0;
-}
