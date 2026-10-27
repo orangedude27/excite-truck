@@ -87,54 +87,71 @@ extern "C" void fn_80018BA4(void) {
     fn_80265DCC(*(void **)lbl_80357E0C, *(int *)(lbl_80357E0C + 4), 0x14, fn_80018B7C);
 }
 #pragma cplusplus reset
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80018CCC(void) {
+    struct Manager { virtual void unused(); virtual void *get(int); };
+    struct Item {
+        virtual const char *name();
+        virtual void unused1();
+        virtual void unused2();
+        virtual const char *value(const char *);
+        virtual void unused4();
+        virtual const char *property(const char *);
+    };
     extern void *lbl_8055D58C;
-    extern void *lbl_803580A4;
-    extern void *lbl_802FD2A0;
-    extern char lbl_80558C48[];
-    // Fix note: adds unique named objects to the shared table and fills their three metadata fields.
-    int index = 0, num, i, offset, found;
-    void *obj, *table;
-    const char *name;
-    void *(*getAt)(void *, int);
-    const char *(*getName)(void *);
-    const char *(*getValue)(void *, const char *);
-    void *(*getProperty)(void *, const char *);
-    getAt = (void *(*)(void *, int))((void **)*(void **)lbl_8055D58C)[3];
-    while ((obj = getAt(lbl_8055D58C, index)) != 0) {
-        getName = (const char *(*)(void *))((void **)*(void **)obj)[2];
-        if (stricmp(getName(obj), (const char *)&lbl_802FD2A0 + 0x10) == 0) {
-            getValue = (const char *(*)(void *, const char *))((void **)*(void **)obj)[5];
-            name = getValue(obj, (const char *)&lbl_802FD2A0 + 0x20);
-            table = lbl_803580A4;
-            num = *(int *)((char *)table + 4);
-            found = -1;
-            offset = 0;
-            for (i = 0; i < num; i++) {
-                if (stricmp(*(const char **)((char *)*(void **)table + offset), name) == 0) {
-                    found = i;
-                    break;
-                }
-                offset += 0x10;
-            }
-            if (found < 0) {
-                num = *(int *)((char *)table + 4);
-                found = num;
-                *(int *)((char *)table + 4) = num + 1;
-                *(const char **)((char *)*(void **)table + num * 0x10) = name;
-            }
-            table = (char *)*(void **)table + found * 0x10;
-            getProperty = (void *(*)(void *, const char *))((void **)*(void **)obj)[7];
-            *(void **)((char *)table + 4) = getProperty(obj, (const char *)&lbl_802FD2A0 + 0x30);
-            *(void **)((char *)table + 8) = getProperty(obj, lbl_80558C48);
-            getValue = (const char *(*)(void *, const char *))((void **)*(void **)obj)[5];
-            *(const char **)((char *)table + 0xC) = getValue(obj, (const char *)&lbl_802FD2A0 + 0x10);
+    extern void *lbl_803580A4 __attribute__((section(".data")));
+    extern void *lbl_802FD2A0 __attribute__((section(".rodata")));
+    extern const char lbl_80558C48[] __attribute__((section(".sdata")));
+    extern s32 stricmp(const char *, const char *);
+    register char *strings = (char *)&lbl_802FD2A0;
+    register int outer = 0;
+    register Item *object;
+    register char *name;
+    register int offset;
+    register int row;
+
+    goto get_next;
+check_object:
+    if (stricmp(object->name(), strings + 0x10) == 0) {
+        name = (char *)object->value(strings + 0x20);
+        row = 0;
+        offset = 0;
+        goto check_count;
+search:
+        if (stricmp(*(const char **)((char *)*(void **)&lbl_803580A4 + offset), name) != 0)
+            goto search_advance;
+        goto found;
+search_advance:
+        offset += 0x10;
+        row++;
+check_count:
+        if (row < *(int *)((char *)&lbl_803580A4 + 4))
+            goto search;
+        row = -1;
+found:
+        if (row < 0) {
+            row = *(int *)((char *)&lbl_803580A4 + 4);
+            *(int *)((char *)&lbl_803580A4 + 4) = row + 1;
+            ((const char **)*(void **)&lbl_803580A4)[row] = name;
         }
-        index++;
+        name = (char *)*(void **)&lbl_803580A4 + row * 0x10;
+        *(void **)(name + 4) =
+            (void *)object->property(strings + 0x30);
+        *(void **)(name + 8) =
+            (void *)object->property(lbl_80558C48);
+        *(void **)(name + 0xC) =
+            (void *)object->value(strings + 0x10);
     }
+get_next:
+    outer++;
+    object = (Item *)((Manager *)lbl_8055D58C)->get(outer);
+    if (object != 0)
+        goto check_object;
 }
 #pragma cplusplus reset
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
