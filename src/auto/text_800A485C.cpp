@@ -12590,7 +12590,6 @@ extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern "C" const char lbl_8031EA40[];
 extern "C" const char lbl_8031EA4C[];
-extern void* lbl_804077C0;
 extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern "C" void fn_800D24D4(void*, s32);
 extern void* lbl_8055DDBC;
@@ -13266,17 +13265,19 @@ extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt4Paneb(voi
 }
 
 void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
-    u16 i = 0;
-    u8 *entries = (u8 *)*(void **)((u8 *)this + 0xC);
-    u8 *offsets = entries + *(s32 *)(entries + 0x10);
-    while (i < *(u16 *)((u8 *)*(void **)((u8 *)this + 0xC) + 0xE)) {
-        u8 *entry = (u8 *)material + *(s32 *)(offsets + i * 4);
-        if (entry[0x15] == 1 && fn_800D58F0((u8 *)material + 4) != 0) {
-            u8 *link = (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10;
-            *(void **)(link + 8) = this;
+    register u8 *self = (u8 *)this;
+    register volatile u8 * volatile materialPtr = (volatile u8 *)material;
+    register u16 i = 0;
+    register u8 *offsets = (u8 *)*(void **)(self + 0xC);
+    offsets += *(s32 *)(offsets + 0x10);
+    while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
+        u8 *entry = (u8 *)materialPtr + *(s32 *)(offsets + i * 4);
+        if (entry[0x15] == 1 && fn_800D58F0((void *)((u8 *)materialPtr + 4)) != 0) {
+            u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
+            *(void **)(link + 8) = self;
             *(u16 *)(link + 0xC) = i;
             AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                material, (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10);
+                (void *)materialPtr, (u8 *)*(void **)(self + 0x18) + i * 0x10);
         }
         i++;
     }
