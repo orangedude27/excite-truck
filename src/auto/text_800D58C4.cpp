@@ -882,6 +882,8 @@ extern "C" void fn_800D886C(GXColor *arg0, const GXColor *arg1) {
     *arg0 = *arg1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void __as__Q34nw4r3lyt8TevStageFRCQ34nw4r3lyt8TevStage(void *arg0, const void *arg1) {
     u8 *dst = (u8 *)arg0;
     const u8 *src = (const u8 *)arg1;
@@ -902,7 +904,7 @@ extern "C" void __as__Q34nw4r3lyt8TevStageFRCQ34nw4r3lyt8TevStage(void *arg0, co
     dst[0xE] = src[0xE];
     dst[0xF] = src[0xF];
 }
-
+#pragma pop
 extern "C" s32 fn_800D893C(void *arg0) {
     return ((u32)*(u32*)((u8*)arg0 + 0x4C) >> 6U) & 1;
 }
@@ -1952,18 +1954,20 @@ extern "C" void fn_800DAFC4(void* arg0, u32 arg1) {
     extern const char lbl_8031F1D8[];
     void* end = (u8*)arg0 + 0x1C;
     void* node = *(void**)((u8*)arg0 + 0x1C);
-    do {
-        void* next = *(void**)node;
-        if (arg1 == 0 || *(u32*)((u8*)node + 8) == arg1) {
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            void* it = node;
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8*)arg0 + 0x18, &it);
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            *(u32*)((u8*)node + 8) = 0;
-            *(u16*)((u8*)node + 0xC) = 0;
-        }
-        node = next;
-    } while (node != end);
+    while (node != end) {
+        void* current = node;
+        node = *(void**)current;
+        if (arg1 != 0 && *(u32*)((u8*)current + 8) != arg1)
+            continue;
+        if (current == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+        void* it = current;
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8*)arg0 + 0x18, &it);
+        if (current == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+        *(u32*)((u8*)current + 8) = 0;
+        *(u16*)((u8*)current + 0xC) = 0;
+    }
 }
 
 extern "C" void fn_800DB084(void* arg0) {
@@ -2394,6 +2398,35 @@ extern "C" void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb
     ((Obj*)transform)->v2(self, flag);
 }
 
+struct PaneLinkNode {
+    PaneLinkNode* next;
+    PaneLinkNode* prev;
+};
+struct PaneObj {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void UnbindAnimation(void* transform, bool flag);
+    virtual void v17();
+    virtual void UnbindAnimationSelf(void* transform);
+
+    char pad[0x10];
+    PaneLinkNode mChildList;
+};
+
 extern "C" void UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* transform, bool flag) {
     struct LinkNode {
         LinkNode* next;
@@ -2426,8 +2459,8 @@ extern "C" void UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransfor
     PaneObj* pane = (PaneObj*)self;
     pane->UnbindAnimationSelf(transform);
     if (flag) {
-        LinkNode* node = pane->mChildList.next;
         LinkNode* end = &pane->mChildList;
+        LinkNode* node = pane->mChildList.next;
         while (node != end) {
             if (!node) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23d, lbl_8031E8D8);
