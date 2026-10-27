@@ -16,7 +16,8 @@ extern void fn_801345D8(void *, int, void *, ...);
 extern int fn_802C6FC0(int, int, int);
 extern float fn_80129DC4(int, float, float);
 #pragma scheduling invalid_target
-void fn_802C2298(void) {
+#pragma cplusplus on
+extern "C" void fn_802C2298(void) {
     char query[0x20];
     float values[3];
     int temp_r5;
