@@ -2565,6 +2565,7 @@ extern "C" u8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
 
 extern "C" s32 fn_800AB378(void *, s32, ...);
 extern s32 fn_800B5324(void *, void *, u32, u32, u32 *, u32);
+extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     u32 sp8;
     s32 temp_r30;
