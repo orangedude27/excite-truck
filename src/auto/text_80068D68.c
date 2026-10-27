@@ -4806,21 +4806,26 @@ tBTM_STATUS BTM_WritePageTimeout(UINT16 timeout) {
 
 extern char lbl_803162BC[];
 tBTM_STATUS BTM_WriteStoredLinkKey(UINT8 num_keys, BD_ADDR *bd_addr, LINK_KEY *link_key, tBTM_CMPL_CB *p_cb) {
-    if (*(u32 *)(lbl_803C0F78 + 0x570) != 0) {
+    void *buffer;
+
+    if (*(u32 *)(lbl_803C0F78 + 0x570) != 0)
         return BTM_BUSY;
-    }
-    if (*(u8 *)(lbl_803C0F78 + 0x27C0) >= 4) {
+
+    if (*(u8 *)(lbl_803C0F78 + 0x27C0) >= 4)
         fn_80070954(0xD0003, lbl_803162BC, num_keys);
-    }
-    if (num_keys > 0xB) {
+
+    if (num_keys > 0xB)
         num_keys = 0xB;
+
+    buffer = GKI_getpoolbuf(2);
+    if (buffer != NULL) {
+        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570) = p_cb;
+        ((void (*)(void *, UINT8, BD_ADDR *, LINK_KEY *))btsnd_hcic_write_stored_key)(
+            buffer, num_keys, bd_addr, link_key
+        );
+        return BTM_SUCCESS;
     }
-    if (GKI_getpoolbuf(2) == NULL) {
-        return BTM_NO_RESOURCES;
-    }
-    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570) = p_cb;
-    btsnd_hcic_write_stored_key(num_keys, bd_addr, link_key);
-    return BTM_SUCCESS;
+    return BTM_NO_RESOURCES;
 }
 
 tBTM_STATUS BTM_DeleteStoredLinkKey(BD_ADDR bd_addr, tBTM_CMPL_CB *p_cb) {
@@ -12091,35 +12096,33 @@ void l2cu_device_reset(void) {
 
 extern char lbl_80319218[];
 void l2cu_create_conn_after_switch(void *arg0) {
-    register void *lcb = arg0;
-    register UINT8 allow_switch;
-    register UINT8 page_scan_rep_mode;
-    register UINT8 page_scan_mode;
-    register UINT16 clock_offset;
-    register tBTM_INQ_INFO *p_inq_info;
+    UINT32 var_r7;
+    UINT8 temp_r4;
+    UINT8 var_r5;
+    UINT8 var_r6;
+    void *temp_r3;
 
-    allow_switch = (*((UINT8 *)fn_8007A3A4()) >> 5) & 1;
-    *(UINT32 *)((UINT8 *)lcb + 4) = 3;
-    p_inq_info = BTM_InqDbRead((UINT8 *)lcb + 0x2A);
-    if (p_inq_info != NULL) {
-        page_scan_rep_mode = p_inq_info->results.page_scan_rep_mode;
-        page_scan_mode = p_inq_info->results.page_scan_mode;
-        clock_offset = p_inq_info->results.clock_offset | 0x8000;
+    temp_r4 = *((UINT8 *)fn_8007A3A4());
+    *(UINT32 *)((UINT8 *)arg0 + 4) = 3;
+    temp_r3 = BTM_InqDbRead((UINT8 *)arg0 + 0x2A);
+    if (temp_r3 != NULL) {
+        var_r5 = *((UINT8 *)temp_r3 + 0xB);
+        var_r6 = *((UINT8 *)temp_r3 + 0xD);
+        var_r7 = *(UINT16 *)temp_r3 | 0x8000;
     } else {
-        page_scan_rep_mode = 1;
-        page_scan_mode = 0;
-        clock_offset = 0;
+        var_r5 = 1;
+        var_r6 = 0;
+        var_r7 = 0;
     }
-    if (!btsnd_hcic_create_conn((UINT8 *)lcb + 0x2A, 0x18,
-                                page_scan_rep_mode, page_scan_mode,
-                                clock_offset, allow_switch)) {
+    if (!btsnd_hcic_create_conn((UINT8 *)arg0 + 0x2A, 0x18, var_r5, var_r6,
+                                var_r7, (temp_r4 >> 5) & 1)) {
         if (lbl_803C4040[0] >= 1) {
             fn_8007093C(0x80000, lbl_80319218);
         }
-        l2cu_release_lcb(lcb);
+        l2cu_release_lcb(arg0);
         return;
     }
-    btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)lcb + 0x10), 2, 0x3C);
+    btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)arg0 + 0x10), 2, 0x3C);
 }
 
 void *l2cu_find_lcb_by_state(s32 state) {
