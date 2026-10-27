@@ -387,7 +387,7 @@ extern "C" void fn_80128668(void);
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 extern "C" void fn_800DCE10(void*, s32);
 extern "C" u32 fn_80060CC0(void*, u32, u32);
-extern "C" void fn_800D1B1C(void);
+extern "C" void fn_800D1B1C(s32, s32);
 extern "C" void fn_800D16C4();
 
 extern u32 lbl_8055DDB0;
@@ -10016,8 +10016,8 @@ extern "C" s32 lbl_802F4018[];
 extern "C" s32 lbl_802F4060[];
 extern "C" void fn_800C1A80(void *, void *, s32 *);
 extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
-    s32 filtered[9];
     s32 combined[9];
+    s32 filtered[9];
     for (s32 i = 0; i < 9; i++) {
         s32 forward = fixedMul20(arg0[i], lbl_802F4018[i]);
         s32 reverseIndex = 0x11 - i;
