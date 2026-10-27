@@ -26,7 +26,7 @@ extern void fn_8023E1FC(void *);
   extern char *lbl_8055BBA0;
   extern void fn_801A7E54(void *, s32, void *);
 extern void fn_8022D76C();
-extern void fn_8022D894(void *, int, int, ...);
+extern void fn_8022D894(void *, int, int, long, int);
 void* fn_8023D6FC(void) {
     return lbl_8055F18C;
 }
@@ -337,15 +337,16 @@ extern "C" void fn_8023E1FC(void *arg0) {
         char pad1[3];
         char string[0x14];
     } frame;
+    register int zero = 0;
     int i;
     Interface *object;
 
     fn_8022D76C();
     frame.state = *(int *)((char *)arg0 + 0x30);
-    frame.zero = 0;
+    frame.zero = zero;
     for (i = 0; i < 0x11; i++) {
         char *entry = lbl_802FA190 + i * 8;
-        fn_8022D894(arg0, i, 0, *(char **)fn_8023DC38(*(char **)entry), 0);
+        fn_8022D894(arg0, i, 0, (long)*(char **)fn_8023DC38(*(char **)entry), 0);
         object = *(Interface **)((char *)arg0 + 0x34);
         fn_801A7974((const char *)&frame.result, (int)*(char **)entry, (int)object->query());
         if (frame.result == 0) {
@@ -355,19 +356,19 @@ extern "C" void fn_8023E1FC(void *arg0) {
             do {
                 char c = *src++;
                 *dst++ = c;
-                if ((signed char)c == 0) break;
-                count--;
-                if (count <= 0) {
-                    dst[-1] = 0;
-                    break;
+                if ((signed char)c != 0) {
+                    count--;
+                    if (count > 0) continue;
+                    dst[-1] = zero;
                 }
+                break;
             } while (1);
         } else {
-            fn_801A7E54(frame.string, 0x14, (void *)frame.result);
+            fn_801A7E54(frame.string, 0x14, &frame.result);
         }
-        fn_8022D894(arg0, i, 1, frame.string, 0);
+        fn_8022D894(arg0, i, 1, (long)frame.string, 0);
     }
-    fn_8022D894(arg0, 0x11, 0, lbl_80341BE0, 0);
+    fn_8022D894(arg0, 0x11, 0, (long)lbl_80341BE0, 0);
 }
 #pragma cplusplus reset
 #pragma pop
