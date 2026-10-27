@@ -81,6 +81,7 @@ done:
     }
 }
 
+#pragma scheduling on
 #pragma pop
 BOOL fn_802D9BF0(void) {
     return lbl_8055FE3C != 0;
