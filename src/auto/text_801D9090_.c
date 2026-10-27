@@ -29,6 +29,15 @@ struct DtbItem801D9394 {
     virtual void f2();
     virtual const char *getString(const char *);
 };
+static inline void *DtbGetAt801D9394(void *p, int index) {
+    return ((DtbManager801D9394 *)p)->getAt(index);
+}
+static inline const char *DtbGetName801D9394(void *p) {
+    return ((DtbItem801D9394 *)p)->getName();
+}
+static inline const char *DtbGetString801D9394(void *p, const char *key) {
+    return ((DtbItem801D9394 *)p)->getString(key);
+}
 #pragma cplusplus reset
 extern unsigned char lbl_8055E968;
 extern void *lbl_8055E96C;
@@ -141,21 +150,9 @@ void *fn_801D9260(int count) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_801D9394(void **head, void **manager, const char *name, int arg3) {
-    struct Manager {
-        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
-        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
-        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
-        virtual void f20(); virtual void f21(); virtual void *getAt(int);
-    };
-    struct Item {
-        virtual const char *getName();
-        virtual void f1();
-        virtual void f2();
-        virtual const char *getString(const char *);
-    };
+#pragma paired off
+#pragma paired_single off
+extern "C" void fn_801D9394(void **head, DtbManager801D9394 *manager, const char *name, int arg3) {
     struct Node {
         char field00[0x20];
         float value;
@@ -167,13 +164,13 @@ extern "C" void fn_801D9394(void **head, void **manager, const char *name, int a
         char field54[4];
     };
     float value = lbl_80562B2C;
-    int index = 0;
-    Manager *list = (Manager *)manager;
-    Item *item;
     Node *node;
+    DtbItem801D9394 *item;
+    int index = 0;
     const char *text;
+    int left;
     char *out;
-    while ((item = (Item *)list->getAt(index)) != 0) {
+    while ((item = (DtbItem801D9394 *)manager->getAt(index)) != 0) {
         if (strcmp(item->getName(), name) == 0) {
             node = (Node *)fn_801284F8(0x58, name);
             if (node != 0) {
@@ -182,24 +179,21 @@ extern "C" void fn_801D9394(void **head, void **manager, const char *name, int a
                 node->field2C = 0;
                 text = item->getString((const char *)&lbl_8055AD90);
                 out = (char *)node;
-                {
-                    int left = 0x20;
-                    goto copy_check;
+                left = 0x20;
+                goto copy_check;
 copy_loop:
-                    if (--left > 0)
-                        goto copy_check;
-                    out[-1] = 0;
-                    goto copy_done;
+                if (--left > 0)
+                    goto copy_check;
+                out[-1] = 0;
+                goto copy_done;
 copy_check:
-                    {
-                        unsigned char c = *text++;
-                        *out++ = c;
-                        if ((signed char)c != 0)
-                            goto copy_loop;
-                    }
-copy_done:
-                    ;
+                {
+                    unsigned char c = *text++;
+                    *out++ = c;
+                    if ((signed char)c != 0)
+                        goto copy_loop;
                 }
+copy_done:
                 node->field24 = 0;
                 fn_801D94DC((char *)node + 0x24, item, lbl_803391EC, arg3);
                 *(int *)((char *)node + 0x54) = 0;
@@ -211,6 +205,8 @@ copy_done:
         ++index;
     }
 }
+#pragma paired_single reset
+#pragma paired reset
 #pragma cplusplus reset
 extern const char lbl_803391A8[];
 extern const char lbl_803391B4[];
