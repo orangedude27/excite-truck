@@ -1488,9 +1488,10 @@ extern "C" void fn_8019F414(void *arg0) {
     extern f32 lbl_8056237C;
     extern void fn_8019EECC(void*, void*);
     extern void fn_8019EF00(void*);
+    f32 gravity = lbl_8056237C;
     u32 sp[3];
-    void *temp_r4;
     void *temp_r6;
+    void *temp_r4;
 
     temp_r6 = *(void **)((u8*)arg0 + 0x54);
     temp_r4 = *(void **)((u8*)arg0 + 4);
@@ -1498,14 +1499,12 @@ extern "C" void fn_8019F414(void *arg0) {
     sp[1] = *(u32*)((u8*)temp_r6 + 0x34);
     sp[2] = *(u32*)((u8*)temp_r6 + 0x38);
     ((f32*)sp)[0] = (((f32*)sp)[0] - *(f32*)((u8*)temp_r4 + 0x30)) + *(f32*)((u8*)arg0 + 0x58);
-    ((f32*)sp)[1] = (((f32*)sp)[1] - *(f32*)((u8*)temp_r4 + 0x34)) + (lbl_8056237C + *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)temp_r6 + 0xC));
+    ((f32*)sp)[1] = (((f32*)sp)[1] - *(f32*)((u8*)temp_r4 + 0x34)) + (gravity + *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)temp_r6 + 0xC));
     ((f32*)sp)[2] = ((f32*)sp)[2] - *(f32*)((u8*)temp_r4 + 0x38);
     *(f32*)((u8*)arg0 + 0x28) = ((f32*)sp)[0];
     *(f32*)((u8*)arg0 + 0x2C) = ((f32*)sp)[1];
     *(f32*)((u8*)arg0 + 0x30) = ((f32*)sp)[2];
-    if (temp_r4 != 0) {
-        fn_8019EECC(temp_r4, (u8*)arg0 + 0x28);
-    }
+    if (temp_r4 != 0) fn_8019EECC(temp_r4, (u8*)arg0 + 0x28);
     fn_8019EF00(arg0);
 }
 
@@ -2201,17 +2200,18 @@ extern "C" void fn_801A1DD4(void* arg0, void* arg1) {
 }
 
 extern "C" void fn_8019D06C(void*, void*, s32, s32);
-extern s32 fn_8019E2D0(s32, s32, s32, void*, f32, f32, f32);
 extern "C" s32 fn_8019E2D0(s32, s32, s32, void*, f32, f32, f32);
 extern "C" s32 fn_801A1E7C(void* arg0, s32 arg1, s32 arg2, s32 arg3, void* arg4) {
-    f32 a = *(f32*)((u8*)arg0 + 0x24);
+    f32 c = *(f32*)((u8*)arg0 + 0x2c);
     f32 b = *(f32*)((u8*)arg0 + 0x28);
-    f32 c = *(f32*)((u8*)arg0 + 0x2C);
-    void* result = ((void* (*)(void*))(*(u32**)arg0)[0x50 / 4])(arg0);
+    f32 a = *(f32*)((u8*)arg0 + 0x24);
+    void* result = ((VTab1A1E7C*)arg0)->Call();
+
     if (fn_8019E2D0(arg1, arg2, arg3, result, a, b, c)) {
-        *(f32*)arg4 = lbl_805622D0;
+        f32 same = lbl_805622D0;
+        *(f32*)arg4 = same;
         *((f32*)arg4 + 1) = lbl_805622E0;
-        *((f32*)arg4 + 2) = lbl_805622D0;
+        *((f32*)arg4 + 2) = same;
         return 1;
     }
     return 0;
