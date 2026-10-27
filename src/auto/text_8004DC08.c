@@ -338,42 +338,73 @@ extern int IOS_Ioctlv(int, int, int, int, void *);
 extern int _ES_GetTicketViews(int *, unsigned int, unsigned int, void *, unsigned int *);
 extern int _ES_LaunchTitle(int *, unsigned int, unsigned int, void *);
 extern const char lbl_80558F40;
-void fn_8004E3F0(void) {
-    s32 fd;
-    u32 count;
-    s32 result;
-    u64 titleId;
-    struct {
-        void *base;
-        u32 length;
-    } vectors[1] ALIGN(32);
+static inline s32 _ES_InitLib(s32 *fd) {
+    s32 result = 0;
+    *fd = IOS_Open(&lbl_80558F40, 0);
+    if (*fd < 0) {
+        result = *fd;
+    }
+    return result;
+}
+
+static inline s32 _ES_GetTitleId(s32 *fd, u64 *tidOut) {
     u8 tidWork[256] ALIGN(32);
+    u8 vectorWork[32] ALIGN(32);
+    IPCIOVector *pVectors = (IPCIOVector *)vectorWork;
+    u64 *pTid = (u64 *)tidWork;
+    s32 result;
+
+    if (*fd < 0) {
+        return -0x3F9;
+    }
+    if (tidOut == (void *)0) {
+        return -0x3F9;
+    }
+
+    pVectors[0].base = pTid;
+    pVectors[0].length = sizeof(u64);
+
+    result = IOS_Ioctlv(*fd, 0x20, 0, 1, pVectors);
+    if (result == 0) {
+        *tidOut = *pTid;
+    }
+    return result;
+}
+
+void fn_8004E3F0(void) {
     u8 views[256] ALIGN(32);
+    u8 tidWork[256] ALIGN(32);
+    u8 vectorWork[32] ALIGN(32);
+    u64 titleId ALIGN(32);
+    u32 count = 1;
+    s32 fd = -1;
+    s32 result;
+    IPCIOVector *pVectors;
     u64 *pTid;
+    u64 *tidOut;
 
-    count = 1;
-    fd = -1;
     result = 0;
-
     fd = IOS_Open(&lbl_80558F40, 0);
     if (fd < 0) {
         result = fd;
     }
-
     if (result != 0) {
         return;
     }
 
-    if (fd < 0 || &titleId == NULL) {
+    pVectors = (IPCIOVector *)vectorWork;
+    pTid = (u64 *)tidWork;
+    tidOut = &titleId;
+
+    if (fd < 0 || tidOut == (void *)0) {
         result = -0x3F9;
     } else {
-        pTid = (u64 *)tidWork;
-        vectors[0].base = pTid;
-        vectors[0].length = sizeof(u64);
+        pVectors[0].base = pTid;
+        pVectors[0].length = sizeof(u64);
 
-        result = IOS_Ioctlv(fd, 0x20, 0, 1, vectors);
+        result = IOS_Ioctlv(fd, 0x20, 0, 1, pVectors);
         if (result == 0) {
-            titleId = *pTid;
+            *tidOut = *pTid;
         }
     }
 
