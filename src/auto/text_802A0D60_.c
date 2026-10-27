@@ -85,7 +85,7 @@ void fn_802A1548(void) {
 }
 
 void fn_802A1584(void) { fn_802A9428(); }
-#pragma scheduling off
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" void *fn_80156A40(void);
 extern "C" void fn_801352B8(void *);
