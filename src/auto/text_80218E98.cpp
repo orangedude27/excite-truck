@@ -368,7 +368,6 @@ extern "C" void fn_8021AC24(void *, s32, s32, s32, s32);
 extern "C" char lbl_8033F548[];
 #pragma pop
 extern "C" void fn_802C519C(void *);
-extern "C" void fn_8021915C(void *, u32);
 extern "C" s32 fn_80128668(void *);
 extern "C" void *lbl_8033EDC8[];
 extern "C" void *lbl_8033ED44[];
