@@ -12,7 +12,7 @@ extern int lbl_804230D0;
 extern int lbl_80423054;
 extern int lbl_8042F4B8;
 extern char lbl_8055E048;
-extern void fn_8013111C(void);
+extern void fn_8013111C();
 
 typedef struct {
     int f[26];
@@ -285,21 +285,23 @@ __declspec(section ".data") extern int lbl_802FE850;
 extern int atoi(const char *);
 extern int strlen(const char *);
 extern int fn_8002B1D8(const char *, const char *, int);
+#pragma scheduling invalid_target
 void fn_80131368(char *arg0) {
-    register int c;
     int flag = 0;
+    int c;
+    int signedC;
     int isNumber;
     int *p;
     unsigned int i;
 
     c = *(unsigned char *)arg0;
-    c = (signed char)c;
-    if (c < 0 || c >= 0x100)
+    signedC = (signed char)c;
+    if (signedC < 0 || signedC >= 0x100)
         flag = 1;
     if (flag != 0)
         isNumber = 0;
     else
-        isNumber = *(unsigned short *)(*(int *)(*(int *)((char *)&lbl_802FE850 + 0x38) + 8) + c * 2) & 8;
+        isNumber = *(unsigned short *)(*(int *)(*(int *)((char *)&lbl_802FE850 + 0x38) + 8) + signedC * 2) & 8;
 
     if (isNumber) {
         lbl_8055E04C = atoi(arg0);
@@ -317,7 +319,7 @@ void fn_80131368(char *arg0) {
         p += 3;
     } while (i < 2);
 }
-
+#pragma scheduling on
 extern int lbl_8055E044;
 extern char lbl_8032B328[];
 int fn_802E317C(const char *, ...);
