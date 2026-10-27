@@ -2252,6 +2252,24 @@ void bta_dm_pinname_cback(u8 *arg0) {
 
 s32 fn_80072EF4(void) { return 0xB; }
 
+static UINT8 bta_dm_authentication_complete_cback(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, int result) {
+    u8 sec_event[0x110];
+    void (*callback)(int, void *);
+
+    #pragma unused(dev_class)
+    if (result != 0) {
+        fn_80070FA4(sec_event, bd_addr);
+        memcpy(sec_event + 6, bd_name, 0x1F);
+        sec_event[0x25] = 0;
+        sec_event[0x10F] = 0;
+        sec_event[0xFE] = 0;
+        callback = *(void (**)(int, void *))(lbl_803C0C14 + 0x50);
+        if (callback != NULL)
+            callback(3, sec_event);
+    }
+    return 0;
+}
+
 void fn_8007301C(void *arg0) {
     void (**callback)(s32, void *);
     callback = (void (**)(s32, void *))(lbl_803C0C14 + 0x50);
@@ -12832,6 +12850,20 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 arg1) {
         return channel;
     }
     return 0;
+}
+
+void rfc_release_multiplexer_channel(void *arg0) {
+    void *buffer;
+    if (lbl_803C4828[0x414] >= 4)
+        fn_8007093C(0x90003, lbl_80319EB0);
+    fn_80070F90(arg0);
+    do {
+        buffer = GKI_dequeue((BUFFER_Q *)((u8 *)arg0 + 0x18));
+        if (buffer != 0)
+            GKI_freebuf(buffer);
+    } while (buffer != 0);
+    memset(arg0, 0, 0x78);
+    *((u8 *)arg0 + 0x6C) = 0;
 }
 
 void rfc_timer_start(void *arg0, u16 arg1) {
