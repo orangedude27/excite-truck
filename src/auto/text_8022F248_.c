@@ -88,6 +88,56 @@ void fn_8022F364(void *arg0) {
     }
 }
 
+void fn_8022F418(arg0)
+void *arg0;
+{
+    struct Pair { unsigned int a; unsigned int b; };
+    struct Pair *from = (struct Pair *)arg0;
+    struct Pair *to = (struct Pair *)lbl_80497E3C;
+    unsigned int *words = (unsigned int *)arg0;
+    float value;
+    unsigned char byte;
+
+    to[0] = from[0];
+    to[1] = from[1];
+    to[2] = from[2];
+    to[3] = from[3];
+    to[4].a = words[8];
+    *(struct Pair *)((char *)to + 0x24) = *(struct Pair *)((char *)from + 0x24);
+    to[5].b = words[11];
+    to[6].a = (unsigned int)-1;
+    to[6].b = words[13];
+    to[7].a = words[14];
+    strcpy((char *)lbl_80497E3C + 0x3c, (char *)arg0 + 0x3c);
+    value = *(float *)((char *)arg0 + 0x7c);
+    *(float *)((char *)lbl_80497E3C + 0x7c) = value;
+    *(unsigned int *)((char *)lbl_80497E3C + 0x80) = *(unsigned int *)((char *)arg0 + 0x80);
+    *(unsigned int *)((char *)lbl_80497E3C + 0x84) = *(unsigned int *)((char *)arg0 + 0x84);
+    *(unsigned int *)((char *)lbl_80497E3C + 0x88) = *(unsigned int *)((char *)arg0 + 0x88);
+    value = *(float *)((char *)arg0 + 0x8c);
+    *(float *)((char *)lbl_80497E3C + 0x8c) = value;
+    value = *(float *)((char *)arg0 + 0x90);
+    *(float *)((char *)lbl_80497E3C + 0x90) = value;
+    value = *(float *)((char *)arg0 + 0x94);
+    *(float *)((char *)lbl_80497E3C + 0x94) = value;
+    value = *(float *)((char *)arg0 + 0x98);
+    *(float *)((char *)lbl_80497E3C + 0x98) = value;
+    byte = *((unsigned char *)arg0 + 0x9c);
+    *((unsigned char *)lbl_80497E3C + 0x9c) = byte;
+    byte = *((unsigned char *)arg0 + 0x9d);
+    *((unsigned char *)lbl_80497E3C + 0x9d) = byte;
+    value = *(float *)((char *)arg0 + 0xa0);
+    *(float *)((char *)lbl_80497E3C + 0xa0) = value;
+    value = *(float *)((char *)arg0 + 0xa4);
+    *(float *)((char *)lbl_80497E3C + 0xa4) = value;
+    value = *(float *)((char *)arg0 + 0xa8);
+    *(float *)((char *)lbl_80497E3C + 0xa8) = value;
+    value = *(float *)((char *)arg0 + 0xac);
+    *(float *)((char *)lbl_80497E3C + 0xac) = value;
+    value = *(float *)((char *)arg0 + 0xb0);
+    *(float *)((char *)lbl_80497E3C + 0xb0) = value;
+}
+
 void fn_8022F548(void *arg0) {
     struct Pair { unsigned int a; unsigned int b; };
     unsigned int *src = (unsigned int *)lbl_80497E3C;
