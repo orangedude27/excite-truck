@@ -28,6 +28,8 @@ extern "C" char lbl_8055B88C[];
 extern "C" void *fn_8022EE9C(void);
 
 extern "C" char lbl_8033F880[];
+extern "C" char lbl_8033DAAC[];
+extern "C" char lbl_8033DABC[];
 
 extern "C" void fn_80130568(char *);
 
