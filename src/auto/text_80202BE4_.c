@@ -174,6 +174,7 @@ void fn_80202BFC(s32 arg0) {
         p2++;
     } while (i < 2);
 }
+#pragma pop
 
 #pragma paired_single off
 void fn_80202F58(void *arg0, void *arg1, void *arg2) {
