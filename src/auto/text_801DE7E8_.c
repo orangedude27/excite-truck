@@ -7,6 +7,8 @@ extern void fn_801332D0(int, int*, int*);
 extern int lbl_8055E9DC;
 extern int lbl_8055E9E0;
 extern char lbl_804873B8[];
+extern int lbl_803394FC;
+extern void *lbl_8055E9F0;
 
 #pragma scheduling invalid_target
 void fn_801DE7E8(int arg0) {
