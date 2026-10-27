@@ -3323,10 +3323,10 @@ extern "C" s32 fn_800FC7AC(void *arg0) {
 }
 
 extern "C" const char lbl_803268E4[];
-void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC7B4(void *self, s32 bus, f32 value) {
-    if (bus < 0 || bus >= 4) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x322, lbl_803268E4, bus, 0, 4);
-    }
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC7B4(void *self, s32 bus, f32 value) {
+    int valid = 0;
+    if (bus >= 0 && bus < 4) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x322, lbl_803268E4, bus, 0, 4);
     u32 token = OSDisableInterrupts();
     *(f32 *)((u8 *)self + 0x470 + bus * 4) = value;
     OSRestoreInterrupts(token);
