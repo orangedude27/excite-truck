@@ -352,6 +352,14 @@ done:
 extern float lbl_80564070, lbl_80564074;
 extern int sprintf(char*, const char*, ...);
 extern char *strcpy(char*, const char*);
+struct Entry {
+    unsigned char unk_00;
+    float rot[3][3];
+    float pos[3];
+    float unk_34;
+    char name[16];
+};
+
 void fn_80277828(void) {
     unsigned char* def = lbl_8049FE98;
     *(float*)(def + 4) = lbl_8056404C;
