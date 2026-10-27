@@ -1224,17 +1224,31 @@ s32 fn_80119CB0(void *arg0, s32 arg1) {
 }
 
 void fn_80119D40(void *arg0) {
-    if (*(s32 *)((u8 *)arg0 + 0x7C) != 0) {
-        *(s32 *)((u8 *)arg0 + 0xB4) = 1;
-        fn_8011943C((u8 *)arg0 + 0x7C, 0);
-        if (*(s32 *)((u8 *)arg0 + 0x7C) != 0)
-            TRKGetFreeBuffer((void *)*(u32 *)((u8 *)arg0 + 0x7C));
-        if (*(s32 *)((u8 *)arg0 + 0x80) != 0)
-            TRKGetFreeBuffer((void *)*(u32 *)((u8 *)arg0 + 0x80));
-        ((void (*)(s32, s32 *))(*(void **)((u8 *)&lbl_8055DEE0 + 4)))(
-            *(s32 *)((u8 *)arg0 + 0x84), &lbl_8055DEE0);
+    struct CallbackTable {
+        s32 first;
+        void (*callback)(s32, struct CallbackTable *);
+    };
+    struct Context {
+        u8 pad[0x7C];
+        s32 buffer0;
+        s32 buffer1;
+        s32 buffer2;
+        s32 buffer3;
+        u8 pad2[0x2C];
+        s32 flag;
+    };
+    struct Context *ctx = (struct Context *)arg0;
+    if (ctx->buffer0 != 0) {
+        ctx->flag = 1;
+        fn_8011943C(&ctx->buffer0, 0);
+        if (ctx->buffer0 != 0)
+            TRKGetFreeBuffer((void *)ctx->buffer0);
+        if (ctx->buffer1 != 0)
+            TRKGetFreeBuffer((void *)ctx->buffer1);
+        ((struct CallbackTable *)&lbl_8055DEE0)->callback(ctx->buffer2,
+            (struct CallbackTable *)&lbl_8055DEE0);
         lbl_8055DEE8 -= 1;
-        *(s32 *)((u8 *)arg0 + 0x7C) = 0;
+        ctx->buffer0 = 0;
     }
 }
 
@@ -3463,8 +3477,8 @@ void AXFXSetHooks_8011FFB8(void *arg0, void *arg1) {
 extern void *lbl_8055DEF8;
 extern void *lbl_8055DEFC;
 extern u32 lbl_8055DEF4;
-extern void *lbl_80559948[];
-extern u32 lbl_8055994C[];
+extern void **lbl_80559948;
+extern u32 *lbl_8055994C;
 extern void *malloc(u32);
 extern void free(void *);
 extern void *fn_8011FFC4(s32);
@@ -6056,6 +6070,8 @@ void fn_80126EF0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4, s32 arg5) {
     dst[7] = ((u8 *)temp)[63] + src[7];
 }
 
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_80127398(s32 arg0) {
     void *var_r31;
     void *var_r30;
@@ -6069,12 +6085,13 @@ void fn_80127398(s32 arg0) {
     if (var_r31 != 0) {
         var_r30 = var_r31;
         for (var_r29 = 0; var_r29 < *(s32 *)var_r31; var_r29++) {
-            ((void (*)(void))*(void * volatile *)((u8 *)var_r30 + 4))();
+            ((void (*)(void))*(void **) ((u8 *)var_r30 + 4))();
             var_r30 = (u8 *)var_r30 + 4;
         }
     }
 }
-
+#pragma opt_propagation on
+#pragma scheduling on
 extern char lbl_8055DF08;
 char fn_8012742C(void) {
     return lbl_8055DF08;
