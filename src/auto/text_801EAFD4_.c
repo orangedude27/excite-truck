@@ -104,10 +104,12 @@ s32 fn_801EB110(void *arg0) {
 }
 #pragma dont_inline off
 
+#pragma dont_inline on
 void fn_801EB128(void) {
     lbl_8055EB98[0] = lbl_80562E68;
     lbl_8055EB98[1] = lbl_80562E68;
 }
+#pragma dont_inline off
 
 extern void fn_802C61BC(void *, void *, u8, u8, u8, u8, u8, u8);
 extern char lbl_80339F6C[];
