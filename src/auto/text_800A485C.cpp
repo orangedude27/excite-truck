@@ -1977,6 +1977,7 @@ extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
     *(s32 *)(arg0 + 0x1620) = 0;
 }
 
+#pragma use_lmw_stmw off
 #pragma dont_inline on
 extern "C" s32 fn_800A9A4C(void *arg0, s32 arg1, s32 arg2) {
     void *vol;
@@ -1986,7 +1987,7 @@ extern "C" s32 fn_800A9A4C(void *arg0, s32 arg1, s32 arg2) {
     fn_800B77C0((u8 *)vol + 0x1F90);
     result = fn_800B5E14(vol);
     if (result != 0) {
-        fn_800B783C((u8 *)vol + 0x1F90);
+        fn_800B783C((void *)((volatile u8 *)vol + 0x1F90));
         lbl_803D2140[16] = result;
         *(s32 *)((u8 *)vol + 0x1F80) = result;
         return result;
@@ -1997,10 +1998,11 @@ extern "C" s32 fn_800A9A4C(void *arg0, s32 arg1, s32 arg2) {
         lbl_803D2140[16] = result;
         *(s32 *)((u8 *)vol + 0x1F80) = result;
     }
-    fn_800B783C((u8 *)vol + 0x1F90);
+    fn_800B783C((void *)((volatile u8 *)vol + 0x1F90));
     return result;
 }
 #pragma dont_inline reset
+#pragma use_lmw_stmw on
 
 #pragma dont_inline on
 #pragma push
