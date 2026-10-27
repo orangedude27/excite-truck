@@ -26,6 +26,41 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+#define port_select_mtu typed_port_select_mtu
+#define port_find_mcb_dlci_port typed_port_find_mcb_dlci_port
+#define port_find_dlci_port typed_port_find_dlci_port
+#define port_release_port typed_port_release_port
+#define port_allocate_port typed_port_allocate_port
+#define port_set_defaults typed_port_set_defaults
+#define port_find_mcb typed_port_find_mcb
+#define port_find_port typed_port_find_port
+#define port_get_signal_changes typed_port_get_signal_changes
+#define port_flow_control_user typed_port_flow_control_user
+#define port_flow_control_peer typed_port_flow_control_peer
+#define port_open_continue typed_port_open_continue
+#define port_start_port_open typed_port_start_port_open
+#define port_start_par_neg typed_port_start_par_neg
+#define port_start_control typed_port_start_control
+#define port_start_close typed_port_start_close
+#define port_rfc_closed typed_port_rfc_closed
+#include "revolution/BTE/stack/rfcomm/port_int.h"
+#undef port_rfc_closed
+#undef port_start_close
+#undef port_start_control
+#undef port_start_par_neg
+#undef port_start_port_open
+#undef port_open_continue
+#undef port_flow_control_peer
+#undef port_flow_control_user
+#undef port_get_signal_changes
+#undef port_find_port
+#undef port_find_mcb
+#undef port_set_defaults
+#undef port_allocate_port
+#undef port_release_port
+#undef port_find_dlci_port
+#undef port_find_mcb_dlci_port
+#undef port_select_mtu
 #include "revolution/BTE/stack/include/hiddefs.h"
 extern u8 HID_HostCloseDev(u8);
 static tBTM_STATUS btm_set_inq_event_filter(UINT8, UINT8 *);
@@ -12549,12 +12584,12 @@ void *l2cu_find_lcb_by_state(s32 state) {
 }
 
 u8 l2cu_lcb_disconnecting(void) {
+    register u8 result = 0;
     u8 *base = lbl_803C4040;
     u8 *entry = base + 8;
-    u32 i;
-    u8 result = 0;
+    register u32 i = 0;
 
-    for (i = 0; i < 2; i++) {
+    for (; i < 4; i++) {
         if (entry[0] != 0) {
             u8 *link = *(u8 **)(entry + 8);
             if (link == 0 || (s32)*(u32 *)(entry + 4) == 5)
@@ -12564,7 +12599,7 @@ u8 l2cu_lcb_disconnecting(void) {
                 (u32)(*(u32 *)(link + 4) - 7) <= 1)
                 return 1;
         }
-        result++;
+        i++;
         if (entry[0x5C] != 0) {
             u8 *link = *(u8 **)(entry + 0x64);
             if (link == 0 || (s32)*(u32 *)(entry + 0x60) == 5)
@@ -12574,10 +12609,9 @@ u8 l2cu_lcb_disconnecting(void) {
                 (u32)(*(u32 *)(link + 4) - 7) <= 1)
                 return 1;
         }
-        result++;
         entry += 0xB8;
     }
-    return 0;
+    return result;
 }
 
 void RFCOMM_Init(void) {
@@ -14923,15 +14957,17 @@ BOOLEAN SDP_AddUuidSequence(UINT32 handle, UINT16 attr_id, UINT16 num_uuids, UIN
 }
 
 u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
-    u8 *start = out + 1;
     register u8 *p;
-    u32 j;
+    u8 *start;
+    u32 i;
+    s32 j;
     u16 len;
 
     *out = 0x35;
-    p = start;
+    p = out + 1;
+    start = p;
     p++;
-    for (j = 0; j < count; j++) {
+    for (i = 0; i < count; i++) {
         len = *(u16 *)uuid;
         if (len == 2) {
             *p++ = 0x19;
@@ -14946,11 +14982,11 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
         } else {
             *p++ = 0x1C;
             j = 0;
-            do {
+            while (j < (s32)len) {
                 *p++ = uuid[j + 4];
                 j++;
                 len = *(u16 *)uuid;
-            } while (j < len);
+            }
         }
         uuid += 0x14;
     }
