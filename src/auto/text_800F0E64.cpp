@@ -2956,6 +2956,35 @@ extern "C" void fn_800FB620(void *self) {
     }
 }
 
+extern "C" const char lbl_803267AC[];
+void nw4hbm::snd::detail::StrmPlayer::Pause(bool arg1) {
+    u8* self = (u8*)this;
+    self[0x4B] = arg1;
+    if (arg1) {
+        self[0x4E] = 1;
+    }
+    if (self[0x49] != 0) {
+        u32 irq = OSDisableInterrupts();
+        bool paused = false;
+        if (self[0x4B] != 0) {
+            paused = true;
+        }
+        if (self[0x4E] != 0) {
+            paused = true;
+        }
+        if (paused != self[0x4D]) {
+            if (*(s32*)(self + 0x438) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0xD1,
+                                             lbl_803267AC);
+            }
+            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(
+                *(void**)(self + 0x438), paused);
+            self[0x4D] = paused;
+        }
+        OSRestoreInterrupts(irq);
+    }
+}
+
 extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     const u8 *label = (const u8 *)lbl_80326768;
     s32 temp_r29;
