@@ -988,32 +988,46 @@ void GXSetNumTexGens(unsigned int value) {
     __GXData[0x5FC / 4] = flags.reg;
 }
 
-void GXSetMisc(s32 which, unsigned short value) {
-    if (which == 2) {
-        *((unsigned char *)__GXData + 0x5F9) = value != 0;
+void GXSetMisc(s32 which, u32 value) {
+    switch (which) {
+    case 2:
+        goto set_2;
+    case 0:
+        goto out;
+    case 1:
+        goto set_1;
+    case 3:
+        goto set_3;
+    default:
+        goto out;
+    }
+
+set_1:
+    {
+        u32 flag;
+        u32 leading;
+        unsigned int *data;
+        flag = value & 0xFFFF;
+        data = __GXData;
+        *(u16 *)((u8 *)data + 4) = (u16)value;
+        leading = __cntlzw((unsigned int)flag);
+        *(u16 *)data = (u16)(leading >> 5);
+        *(u16 *)((u8 *)data + 2) = 1;
+        if (flag == 0) return;
+        data[0x5FC / 4] |= 8;
         return;
     }
-    if (which < 2) {
-        if (which == 0) {
-            return;
-        }
-        if (which < 0) {
-            return;
-        }
-    } else if (which >= 4) {
-        return;
-    }
-    if (which == 1) {
-        unsigned int *data = __GXData;
-        data[1] = value;
-        *(unsigned short *)data = (unsigned short)__cntlzw(value & 0xFFFF) >> 5;
-        *(unsigned short *)((char *)data + 2) = 1;
-        if (value != 0) {
-            data[0x5FC / 4] |= 8;
-        }
-        return;
-    }
-    *((unsigned char *)__GXData + 0x5FA) = value != 0;
+
+set_2:
+    *((u8 *)__GXData + 0x5F9) = value != 0;
+    return;
+
+set_3:
+    *((u8 *)__GXData + 0x5FA) = value != 0;
+    return;
+
+out:
+    return;
 }
 
 void GXGetVtxDesc(void) {
@@ -2974,7 +2988,7 @@ void GXSetZTexture(s32 op, s32 format, s32 bias) {
             u32 mode : 2;
         } bits;
     } second;
-    register s32 zmode;
+    s32 zmode;
 
     first.value = 0;
     first.bits.bias = bias;
