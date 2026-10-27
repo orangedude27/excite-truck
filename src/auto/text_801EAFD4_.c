@@ -408,6 +408,7 @@ next:
     }
 }
 #pragma cplusplus reset
+#pragma scheduling on
 #pragma dont_inline off
 
 void fn_801EB800(void *object, s32 arg1, s32 arg2) {
