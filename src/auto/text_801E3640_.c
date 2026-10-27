@@ -31,15 +31,19 @@ extern int fn_802C7760(int *, float *, int *, int *, float *, int *);
 #pragma scheduling invalid_target
 extern float lbl_80562CF0;
 extern void PSVECCrossProduct(const float *, const float *, float *);
+#pragma scheduling on
 void fn_801E3640(void *arg0, float *arg1) {
     float basis[3];
-    float *input = (float *)arg0;
+    float temp_f3;
+    float temp_f1;
 
-    arg1[6] = input[0];
-    arg1[7] = input[1];
-    arg1[8] = input[2];
-    if (((float)fabs(input[0]) < lbl_80562CF0) &&
-        ((float)fabs(input[2]) < lbl_80562CF0)) {
+    temp_f3 = *(float *)arg0;
+    temp_f1 = *(float *)((char *)arg0 + 8);
+    arg1[6] = temp_f3;
+    arg1[7] = *(float *)((char *)arg0 + 4);
+    arg1[8] = temp_f1;
+    if (((float)fabs(temp_f3) < lbl_80562CF0) &&
+        ((float)fabs(temp_f1) < lbl_80562CF0)) {
         basis[0] = lbl_80562CF4;
         basis[1] = lbl_80562CF4;
         basis[2] = lbl_80562CF8;
@@ -51,7 +55,7 @@ void fn_801E3640(void *arg0, float *arg1) {
     PSVECCrossProduct(basis, arg1 + 6, arg1);
     PSVECCrossProduct(arg1 + 6, arg1, arg1 + 3);
 }
-
+#pragma scheduling invalid_target
 void fn_801E370C(float *arg0, int arg1, int arg2) {
     float out[3];
     float in[3];
@@ -261,10 +265,12 @@ void fn_801E3FC8(void *arg0, float farg0) {
 extern float lbl_8055EA68, lbl_80562CF4;
 extern int fn_802C744C(int, float *);
 extern int fn_801E4040();
+#pragma dont_inline fn_801E41D8
 void fn_801E41D8(void *arg0, void *arg1, int arg2, float farg0) {
     fn_801E4040(arg0, arg1, arg2, arg2, farg0);
 }
 
+#pragma dont_inline fn_801E41D8
 void fn_801E43BC(void *arg0, float scale, float alpha) {
     float p[3];
     float *v = (float *)arg0;
@@ -281,7 +287,6 @@ void fn_801E43BC(void *arg0, float scale, float alpha) {
     p[2] = v[11] + v[8] * scale;
     fn_801E41D8((char *)arg0 + 0x24, p, 0xFF0000FF, alpha);
 }
-
 extern void fn_801E370C();
 #pragma push
 #pragma processor 750
