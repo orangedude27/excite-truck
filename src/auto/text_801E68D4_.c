@@ -79,6 +79,76 @@ void fn_801E69EC(void) {
         var_r31 += 1;
     } while (var_r30 < 8);
 }
+
+extern s32 *fn_801E592C(void);
+extern s32 fn_801E5990(void *);
+extern s32 fn_802C6FC0(s32, s32, s32);
+extern void *fn_801284F8(s32, const char *);
+extern void *memset(void *, int, unsigned long);
+extern const char lbl_80339A48[];
+extern const char lbl_8055AEF8[];
+extern float lbl_80562D78;
+extern float lbl_80562D7C;
+void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
+    s32 handle;
+    s32 *entry;
+    void *result;
+    s32 i;
+    float f1;
+    float f0;
+    float *dst;
+    float *src;
+    float *tail;
+
+    handle = fn_802C6FC0(arg2, 0, 0);
+    entry = fn_801E592C();
+    if (entry == 0) {
+        fn_802E317C(lbl_80339A48, arg0);
+    }
+    result = fn_801284F8(0x73C, (const char *)&lbl_8055AEF8);
+    memset(result, 0, 0x73C);
+    *(s32 *)((u8 *)result + 8) = fn_801E5990(entry);
+    *(s32 **)((u8 *)result + 4) = entry;
+    *(s32 *)result = handle;
+    f1 = lbl_80562D78;
+    *(float *)((u8 *)result + 0x38) = f1;
+    *(s32 *)((u8 *)result + 0x10) = 0;
+    *(s32 *)((u8 *)result + 0x18) = 0;
+    *(s32 *)((u8 *)result + 0x1C) = -1;
+    *((u8 *)result + 0xD) = 0;
+    if (arg1 == 1) {
+        *((u8 *)result + 0xD) = 1;
+    }
+    *(s32 *)((u8 *)result + 0x14) = 0;
+    *((u8 *)result + 0xC) = 0;
+    f0 = lbl_80562D7C;
+    dst = (float *)((u8 *)result + 0x3C);
+    src = (float *)((u8 *)result + 0x53C);
+    tail = (float *)((u8 *)result + 0x548);
+    i = 0;
+    while (i < *(s32 *)((u8 *)result + 8) + 1) {
+        dst[0] = f1;
+        i++;
+        dst[1] = f1;
+        dst[2] = f1;
+        dst[3] = f0;
+        dst[4] = f1;
+        dst[5] = f1;
+        dst[6] = f1;
+        dst[7] = f0;
+        dst[9] = f1;
+        dst[8] = f1;
+        dst += 10;
+        src[0] = f1;
+        src[1] = f1;
+        src[2] = f1;
+        src += 4;
+        tail[0] = f0;
+        tail += 4;
+    }
+    return result;
+}
+
 #pragma scheduling reset
 void fn_801E6B98(void* arg0) {
     s32* var_r31 = (s32*)arg0;
