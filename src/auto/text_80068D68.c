@@ -11820,12 +11820,13 @@ void l2cu_send_peer_disc_req(void *p_ccb) {
     void *p_buf;
     u8 *p_lcb;
 
-    id = *(u8 *)(*(u8 **)((u8 *)p_ccb + 0x10) + 0x31) + 1;
-    *(u8 *)(*(u8 **)((u8 *)p_ccb + 0x10) + 0x31) = id;
+    p_lcb = *(u8 **)((u8 *)p_ccb + 0x10);
+    id = *(u8 *)(p_lcb + 0x31) + 1;
+    *(u8 *)(p_lcb + 0x31) = id;
     *(volatile u8 *)((u8 *)p_ccb + 0x35) = id;
-    p_lcb = *(u8 * volatile *)((u8 *)p_ccb + 0x10);
     p_buf = ((void *(*)(u16, u8, u8, u8, void *))l2cu_build_header)(
-        *(u16 *)(p_lcb + 0x28), 4, 6, id, p_lcb
+        *(u16 *)(*(u8 * volatile *)((u8 *)p_ccb + 0x10) + 0x28),
+        4, 6, id, p_lcb
     );
     if (p_buf == NULL) {
         if (lbl_803C4040[0] >= 2)
