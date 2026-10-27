@@ -28,7 +28,7 @@ void fn_802C2298(void) {
     void **entry;
 
     *(int *)((char *)lbl_804C109C + 4) = 0;
-    manager = fn_80131810(lbl_8034AFE8);
+    manager = (void **)fn_80131810(lbl_8034AFE8);
     if (manager != 0) {
         iterator = ((void **(*)(void *, void *))(*(void **)((char *)*(void **)manager + 8)))(manager, (void *)&lbl_8055CFD0);
         index = 1;
@@ -38,7 +38,7 @@ void fn_802C2298(void) {
             temp_r5 = *(int *)((char *)lbl_804C109C + 4);
             *(int *)((char *)lbl_804C109C + 4) = temp_r5 + 1;
             record = (void *)((char *)*(void **)lbl_804C109C + temp_r5 * 0x14);
-            *(int *)record = (int)fn_802C6FC0(
+            *(int *)record = fn_802C6FC0(
                 (int)((void *(*)(void *, void *, int, void *))(*(void **)((char *)*(void **)entry + 0x14)))(entry, (void *)&lbl_8055CFE0, temp_r5, *(void **)lbl_804C109C),
                 0, 0);
             ((void (*)(float *, void *, void *))(*(void **)((char *)*(void **)entry + 0x34)))(values, entry, (void *)&lbl_8055CFE8);
@@ -54,6 +54,7 @@ void fn_802C2298(void) {
         fn_80131818(manager);
     }
 }
+#pragma cplusplus reset
 #pragma scheduling on
 
 void fn_802C2410(void) {
