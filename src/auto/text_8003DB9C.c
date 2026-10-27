@@ -3369,7 +3369,6 @@ void GXSetFieldMode(s32 mode, s32 field) {
 }
 
 extern void GXSetCPUFifo(void *);
-extern void *memcpy(void *, const void *, unsigned long);
 extern char lbl_8037C108[];
 u32 GXEndDisplayList(void) {
     void *fifo = lbl_8037C108;
