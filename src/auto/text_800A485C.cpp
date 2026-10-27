@@ -6606,32 +6606,30 @@ extern "C" s32 fn_800B90A8(s32 arg0) {
 
 extern "C" s32 NANDClose(void *);
 extern "C" s32 fn_800B92A8(s32 arg0) {
-    s32 var_r30 = 0;
-    u16 var_r29;
-    u32 var_ctr;
-    u8 *base;
     u8 *entry;
+    s32 closeResult = 0;
+    u16 index;
+
     fn_800B8004(lbl_8055DD30);
     if (arg0 == 0) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    base = (u8 *)lbl_80405D58;
-    var_r29 = 0;
-    var_ctr = 0x17;
-    do {
-        entry = base + var_r29 * 0xF0;
+
+    for (index = 0; index < 0x17; index++) {
+        entry = (u8 *)lbl_80405D58 + index * 0xF0;
         if (*(u32 *)entry == (u32)arg0) {
-            var_r30 = NANDClose(entry + 0x58);
+            closeResult = NANDClose(entry + 0x58);
             fn_800A499C((const char *)entry, 0, 0xF0);
             break;
         }
-        var_r29++;
-    } while (--var_ctr != 0);
+    }
+
     fn_800B8048(lbl_8055DD30);
-    if (var_r30 != 0)
+    if (closeResult != 0) {
         return -0x14;
-    return var_r29 == 0x17 ? -0x16 : 0;
+    }
+    return index == 0x17 ? -0x16 : 0;
 }
 
 extern "C" u8 lbl_80405D58[];
@@ -17943,8 +17941,7 @@ extern "C" void VFiPFSTR_ToUpperNStr(s32 arg0, u16 arg1, u8 *arg2) {
     u32 var_r3;
     u8 *var_r4;
     s32 var_r0;
-    u32 temp_r3;
-    s32 signed_temp;
+    u8 temp_r3;
 
     var_r30 = arg2;
     var_r29 = (u16)arg1;
@@ -17952,7 +17949,7 @@ extern "C" void VFiPFSTR_ToUpperNStr(s32 arg0, u16 arg1, u8 *arg2) {
         var_r31 = *(u8 **)arg0;
         goto single_check;
     single_body:
-        *var_r30 = (u8)fn_800A485C((s32)(s8)temp_r3);
+        *var_r30 = (u8)((s32 (*)(s8))fn_800A485C)((s8)temp_r3);
         var_r30 += 1;
         var_r31 += 1;
         var_r29 -= 1;
@@ -17962,8 +17959,7 @@ extern "C" void VFiPFSTR_ToUpperNStr(s32 arg0, u16 arg1, u8 *arg2) {
             goto single_done;
         }
         temp_r3 = *var_r31;
-        signed_temp = (s8)temp_r3;
-        if (signed_temp != 0) {
+        if ((s8)temp_r3 != 0) {
             goto single_body;
         } else {
             goto single_done;
