@@ -4603,10 +4603,12 @@ extern "C" s32 fn_80226528(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_80226570(void *arg0, s32 arg1) {
-    s32 offset = 0;
-    s32 i = 0;
+    s32 offset;
+    s32 i;
 
-    for (; i < *(s32 *)(*(u8 **)((u8 *)arg0 + 0x244) + 8); i++, offset += 12) {
+    i = 0;
+    offset = 0;
+    for (; i < *(s32 *)(*(u8 **)((u8 *)arg0 + 0x244) + 8); offset += 12, i++) {
         *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset + 4) =
             *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset);
         *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset + 8) -=
