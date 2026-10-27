@@ -27,7 +27,9 @@ extern int fn_80138C28(void *, float *, float *);
 #pragma dont_inline fn_80138BFC
 #pragma dont_inline fn_80138BE4
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
+#pragma optimize_for_size on
+#pragma opt_propagation off
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
