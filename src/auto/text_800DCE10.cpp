@@ -814,7 +814,7 @@ block_241:
 }
 
 extern const char lbl_80320948[];
-extern const char lbl_80559804[];
+extern u32 lbl_80559804;
 #pragma small_data on
 extern "C" void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void *result, s32 font) {
     s32 var_r5;
