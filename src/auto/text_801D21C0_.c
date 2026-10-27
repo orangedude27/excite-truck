@@ -176,31 +176,54 @@ extern "C" u8 fn_801D2550(void *arg0, void *arg1) {
 #pragma cplusplus reset
 extern void fn_801345D8(char*, int, const char*, ...);
 extern const char lbl_8033830C[];
-extern const char lbl_8055ABE4[];
+extern u32 lbl_8055ABE4;
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void fn_801D25BC(void* arg0, void* arg1) {
+void fn_801D25BC(void *arg0, void *arg1) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual s32 fn1C(u32);
+        virtual void f6();
+        virtual void f7();
+        virtual void fn28(void *, f32);
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void *fn5C(u32);
+    };
     char name[0x20];
-    s32 i;
-    UnkObj *item;
-    Vt801D *vt;
-    s32 index;
-    if (((u8 (*)(void))fn_801D2550)() != 0) {
-        *(s32*)((char*)arg0 + 8) = -1;
-        *(s32*)((char*)arg0 + 0x28) = 1;
-        i = 0;
-        do {
+    Dummy *obj;
+    Dummy *item;
+    volatile s32 *count = (volatile s32 *)((char *)arg0 + 0x28);
+    if (((s32 (*)(void))fn_801D2550)() != 0) {
+        *(s32 *)((char *)arg0 + 8) = -1;
+        *count = 1;
+        while (*count < 4) {
             fn_801345D8(name, 0x20, lbl_8033830C);
-            item = (UnkObj*)((UnkObj*)arg1)->vt->fn5C(arg1, (u32)name);
-            if (item == 0) break;
-            vt = (Vt801D*)item->vt;
-            index = vt->fn1C(item, lbl_8055ABE0);
-            *(s32*)((char*)arg0 + *(s32*)((char*)arg0 + 0x28) * 8 + 8) = index;
-            vt->fn28(item, (void*)lbl_8055ABE4, lbl_80562A90);
-            *(f32*)((char*)arg0 + *(s32*)((char*)arg0 + 0x28) * 8 + 0xC) = lbl_80562A90;
-            *(s32*)((char*)arg0 + 0x28) += 1;
-            i++;
-        } while (*(s32*)((char*)arg0 + 0x28) < 4);
+            obj = (Dummy *)arg1;
+            item = (Dummy *)obj->fn5C((u32)name);
+            if (item == 0) {
+                break;
+            }
+            *(s32 *)((char *)arg0 + *count * 8 + 8) =
+                item->fn1C((u32)&lbl_8055ABE0);
+            item->fn28((void *)&lbl_8055ABE4, lbl_80562A90);
+            *(f32 *)((char *)arg0 + *count * 8 + 0xC) = lbl_80562A90;
+            *count = *count + 1;
+        }
     }
 }
 #pragma cplusplus reset
