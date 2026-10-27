@@ -70,21 +70,28 @@ void fn_802E30C8(const char *, ...);
 extern char lbl_8034BCF0[];
 #pragma push
 #pragma scheduling invalid_target
+#pragma optimize_for_size on
+#pragma use_lmw_stmw off
 void fn_802CE4F4(void *arg0, int arg1) {
- int active=0; void *selected=0; int best=-1; int i=0; int offset=0;
+ int zero=0;
+ int minusOne=-1;
+ int active=0;
+ void *selected=0;
+ int best=-1;
+ int i=0;
+ int offset=0;
  while (i < *(int *)((char *)arg0+8)) {
   void *entry=(char *)*(void **)arg0+offset;
   if (*(int *)((char *)entry+0x38)==3 &&
       fn_801345A4(*(int *)((char *)arg0+4), *(int *)((char *)entry+0x2C))) {
-   *(int *)((char *)entry+0x38)=0;
-   *(int *)((char *)entry+0x2C)=-1;
+   *(int *)((char *)entry+0x38)=zero;
+   *(int *)((char *)entry+0x2C)=minusOne;
   }
-  if (*(int *)((char *)entry+0x38)!=0) {
+  if (*(int *)((char *)entry+0x38)!=0)
    active++;
-   if (*(int *)((char *)entry+0x38)==2) {
-    int delta=*(int *)((char *)arg0+0x10)-*(int *)((char *)entry+0x3C);
-    if (delta<=best && selected==0) { best=delta; selected=entry; }
-   }
+  if (*(int *)((char *)entry+0x38)==2) {
+   int delta=*(int *)((char *)arg0+0x10)-*(int *)((char *)entry+0x3C);
+   if (delta<=best && selected==0) { best=delta; selected=entry; }
   }
   offset+=0x40; i++;
  }
@@ -93,8 +100,8 @@ void fn_802CE4F4(void *arg0, int arg1) {
    if (*(int *)((char *)selected+0x38)==2) {
     fn_802C6FB4(*(int *)((char *)selected+0x30));
     fn_802C703C(*(int *)((char *)selected+0x34));
-    *(int *)((char *)selected+0x34)=-1;
-    *(int *)((char *)selected+0x30)=0;
+    *(int *)((char *)selected+0x34)=minusOne;
+    *(int *)((char *)selected+0x30)=zero;
     *(int *)((char *)selected+0x38)=3;
    }
   } else {
