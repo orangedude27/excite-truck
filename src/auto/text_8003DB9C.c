@@ -1,9 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
-#pragma dont_inline GXGetCPUFifo
-#pragma dont_inline GXGetFifoWrap
-#pragma dont_inline GXGetFifoCount
 extern void __GXFlushTextureState(void);
 extern void GXCPInterruptHandler(short, void *);
 typedef void (*GXFifoIntrHandler)(short, void *);
