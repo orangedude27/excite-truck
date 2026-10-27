@@ -24,6 +24,7 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
 
+extern void rfc_port_sm_execute(void *, u16, void *);
 extern void GAP_Init(void);
 extern void bta_sys_init(void);
 extern void fn_80071510(void *, s32, u8);
