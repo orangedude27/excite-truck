@@ -199,21 +199,27 @@ found:
         *(int *)(index + 0x40), *(int *)(index + 0x44), arg3,
         x, y, lbl_80563AD0, cosine, sine);
 }
+#pragma ppc_psq_save off
+#pragma use_lmw_stmw on
+#pragma scheduling invalid_target
 void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale) {
     int index = 0;
     int offset = 0;
     int result;
-    float cosine;
-    float sine;
+    register float cosine;
+    register float sine;
     goto check;
 loop:
     result = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
     if ((unsigned int)__cntlzw(result) >> 5) {
-        offset += 0x48;
-        index++;
-        goto check;
+        if (lbl_80563AD0)
+            goto found;
+        else
+            goto found;
     }
-    goto found;
+    offset += 0x48;
+    index++;
+    goto check;
 check:
     if (index < *(int *)((char *)arg0 + 8))
         goto loop;
@@ -223,8 +229,7 @@ found:
         return;
     index = *(int *)((char *)arg0 + 4) + index * 0x48;
     cosine = scale * fn_80235EF0(*(int *)(index + 0x40), *(int *)(index + 0x44));
-    sine = fn_80235F64(*(int *)(index + 0x40), *(int *)(index + 0x44));
-    sine *= scale;
+    sine = scale * fn_80235F64(*(int *)(index + 0x40), *(int *)(index + 0x44));
     if (flags & 2)
         x -= cosine;
     else if (flags & 4)
