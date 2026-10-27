@@ -928,6 +928,31 @@ acquire_setup:
     OSRestoreInterrupts(interruptState);
     return voice;
 }
+
+extern const char lbl_80321FE8[];
+#pragma use_lmw_stmw off
+extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *manager, void *voice) {
+    if (voice == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x21D, lbl_80321FE8);
+    }
+    unsigned int firstState = OSDisableInterrupts();
+    unsigned int secondState = OSDisableInterrupts();
+    if (voice == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+    }
+    unsigned int linkAddress = (unsigned int)voice + 0x1A8;
+    void *link = (void *)linkAddress;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x14, link);
+    if (voice == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+    }
+    void *iterator = (char *)manager + 0x24;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x20, &iterator, link);
+    OSRestoreInterrupts(secondState);
+    OSRestoreInterrupts(firstState);
+}
+#pragma use_lmw_stmw reset
+
 #pragma pop
 extern "C" void fn_800E402C(void *arg0) {
     OSDisableInterrupts();
@@ -1388,6 +1413,7 @@ extern "C" void fn_800E519C(void *arg0) {
     OSRestoreInterrupts(level);
 }
 
+#pragma use_lmw_stmw off
 extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     unsigned int level;
     unsigned int innerLevel;
@@ -1432,7 +1458,7 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     *((unsigned char *)self + 0x11D) = 0;
     OSRestoreInterrupts(level);
 }
-
+#pragma use_lmw_stmw reset
 extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *this_, u8 paused) {
     unsigned int level = OSDisableInterrupts();
     if (*(u8 *)((char *)this_ + 0x11F) == paused) {
@@ -2064,6 +2090,37 @@ extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4
     }
 }
 
+extern "C" void fn_800E6A44(void *arg0, int arg1, int arg2, void *arg3) {
+    const char (*file)[1] = (const char (*)[1])lbl_803221A8;
+    unsigned short mix[3];
+    unsigned char *voice;
+    int i;
+
+    if (arg1 >= 2) {
+        Panic__Q26nw4hbm2dbFPCciPCce(*file, 0x458, *file + 0x258);
+    }
+    if (arg2 == 0) {
+        if (arg3 == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(*file, 0x45C, *file + 0x2A0);
+        }
+        mix[0] = ((unsigned short *)arg3)[0];
+        mix[1] = ((unsigned short *)arg3)[1];
+        mix[2] = ((unsigned short *)arg3)[2];
+    } else {
+        mix[0] = 0;
+        mix[1] = 0;
+        mix[2] = 0;
+    }
+
+    i = 0;
+    voice = (unsigned char *)arg0 + (arg1 << 4);
+    while (i < *(int *)((unsigned char *)arg0 + 0x108)) {
+        fn_80033AAC(*(void **)(voice + 0xC), mix);
+        voice += 4;
+        i++;
+    }
+}
+
 extern "C" void fn_800337C4(void *, unsigned short *);
 extern float lbl_80560F5C;
 extern "C" int fn_800E6B24(void *arg0) {
@@ -2676,22 +2733,30 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_
 }
 
 extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, float volume, int arg2) {
-    char *p = (char *)this_;
-    float f;
+    struct SoundFields {
+        char pad[0x7C];
+        float current;
+        float target;
+        int total;
+        int elapsed;
+    };
+    float current;
+
     if (!(volume >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x225, lbl_80322830);
     }
-    int a = *(int *)(p + 0x84);
-    int b = *(int *)(p + 0x88);
-    if (b < a) {
-        f = *(float *)(p + 0x7C) + ((float)(b ^ 0x8000) * (*(float *)(p + 0x80) - *(float *)(p + 0x7C))) / (float)(a ^ 0x8000);
+    SoundFields *sound = (SoundFields *)this_;
+    if (sound->elapsed >= sound->total) {
+        current = sound->target;
     } else {
-        f = *(float *)(p + 0x80);
+        current = sound->current +
+                  ((float)sound->elapsed * (sound->target - sound->current)) /
+                      (float)sound->total;
     }
-    *(float *)(p + 0x7C) = f;
-    *(float *)(p + 0x80) = volume;
-    *(int *)(p + 0x84) = arg2;
-    *(int *)(p + 0x88) = 0;
+    sound->current = current;
+    sound->target = volume;
+    sound->total = arg2;
+    sound->elapsed = 0;
 }
 
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
