@@ -1111,22 +1111,25 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void* arg4, v
 }
 
 extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
-    if (__fabsf(f1) == lbl_80558DC4) {
-        if (!(f0 < -f2) && !(f0 > f2)) return 1;
+    if ((f32)__fabs(f1) <= lbl_80558DC4) {
+        if (f0 < -f2) goto ret0;
+        if (f0 <= f2) goto ret1;
+ret0:
         return 0;
+ret1:
+        return 1;
     }
-    f32 lo, hi;
-    if ((-f2 - f0) / f1 < (f2 - f0) / f1) {
-        lo = (-f2 - f0) / f1;
-        hi = (f2 - f0) / f1;
-    } else {
-        lo = (f2 - f0) / f1;
-        hi = (-f2 - f0) / f1;
-    }
-    if (*arg0 > lo) *arg0 = lo;
-    if (*arg1 < hi) *arg1 = hi;
+    f32 neg_f2 = -f2;
+    f2 = (f2 - f0) / f1;
+    f1 = (neg_f2 - f0) / f1;
+    f32 min_t = (f1 < f2) ? f1 : f2;
+    f32 cur_min = *arg0;
+    *arg0 = (cur_min > min_t) ? cur_min : min_t;
+    f32 max_t = (f1 > f2) ? f1 : f2;
+    f32 cur_max = *arg1;
+    *arg1 = (cur_max < max_t) ? cur_max : max_t;
     if (*arg0 > *arg1) return 0;
-    return *arg1 < lbl_805622D0;
+    return !(*arg1 < lbl_805622D0);
 }
 
 extern "C" u8 lbl_80435020[];
@@ -2845,19 +2848,22 @@ extern "C" void fn_801A401C(void *arg0, void *arg1) {
         return;
     }
     if ((u32)(tag + 0xACB00000) == 0x4852U) {
-        SPHRArg* source = (SPHRArg*)arg1;
         u8 buffer[0x300];
-        s32 count = 0x40;
-        f32 factor = lbl_8056234C;
-        fn_801CF080(*(s32 *)((u8 *)arg0 + 0x24), source->data, buffer, &count,
-                    *(s32 *)((u8 *)arg0 + 0x0C), factor * source->scale);
-        u8 *current = buffer;
-        s32 i = 0;
-        do {
+        register u8 *current;
+        register SPHRArg *source = (SPHRArg *)arg1;
+        volatile s32 count = 0x40;
+        register f32 factor = lbl_8056234C;
+        register f32 scale = source->scale;
+        fn_801CF080(*(s32 *)((u8 *)arg0 + 0x24), source->data, buffer,
+                    (s32 *)&count, *(s32 *)((u8 *)arg0 + 0x0C),
+                    factor * scale);
+        current = buffer;
+        register s32 i = 0;
+        while (i < count) {
             fn_8019AA18(source, (s32)current, 0x6E, (s32)arg0);
             current += 0xC;
             i++;
-        } while (i < count);
+        }
     }
 }
 
@@ -3161,7 +3167,7 @@ extern "C" void fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg
         virtual void v6() = 0; virtual void v7() = 0; virtual void v8() = 0;
         virtual void Call(void*, s32, s32) = 0;
     };
-    void* vtable = lbl_803336F8;
+    register void* vtable = lbl_803336F8;
     s32 t11; s32 t10; s32 t9; s32 t8; s32 t7; s32 t6;
     s32 t5; s32 t4; s32 t3; s32 t2; s32 t1; s32 t0;
     t0 = arg4[0]; t1 = arg4[1]; t2 = arg4[2]; t3 = arg4[3];
