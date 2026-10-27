@@ -175,6 +175,7 @@ void *fn_802DA704(int owner, void *data, int count) {
     return result;
 }
 #pragma scheduling on
+#pragma use_lmw_stmw reset
 
 void *fn_802DA80C(int owner, void *data, int count) {
     unsigned char *state = (unsigned char *)lbl_8055FE5C;
