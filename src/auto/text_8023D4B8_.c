@@ -200,7 +200,7 @@ extern char lbl_8055BC70[];
 extern char lbl_8055BC78[];
 extern char lbl_8055BC80[];
 extern void fn_80137D10(void);
-extern void fn_8013358C(int, void *, void *);
+
 extern void fn_802E30C8(void *);
 extern void fn_802E8664(int);
 extern void *lbl_8055F19C;
