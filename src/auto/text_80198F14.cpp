@@ -1496,6 +1496,17 @@ void fn_8019F414(void *arg0) {
     fn_8019EF00(arg0);
 }
 
+extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
+    fn_8019EC84(arg0);
+    f32 scale = -PSVECDotProduct(
+        (const Vec *)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0xC),
+        (const Vec *)arg1);
+    void *vector = *(void **)((u8 *)arg0 + 0xC);
+    volatile f32 sp20 = ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale;
+    volatile f32 spC = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
+    volatile f32 sp1C = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
+}
+
 extern "C" void fn_8019F560(void) {
     fn_8019F1A4();
 }
@@ -1783,15 +1794,34 @@ extern "C" void fn_801A1250(void* arg0) {
     *(s32*)((u8*)arg0 + 0x180) = -1;
 }
 
-void fn_801A12C4(void* arg0, s32 arg1) {
-    *(s32*)((u8*)arg0 + 0x1C) = arg1;
-    VTab12C4* first = *(VTab12C4**)((u8*)arg0 + 0x17C);
-    first->v17();
-    VTab12C4** entries = (VTab12C4**)arg0;
+extern "C" void fn_801A12C4(void *arg0, s32 arg1) {
+    class FirstDispatch {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void d14();
+        virtual void call();
+    };
+    class EntryDispatch {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void d14();
+        virtual void call(s32);
+    };
+
+    *(s32 *)((u8 *)arg0 + 0x1C) = arg1;
+    FirstDispatch *first = *(FirstDispatch **)((u8 *)arg0 + 0x17C);
+    first->call();
+    u8 *entries = (u8 *)arg0;
     s32 i = 0;
-    while (i < *(s32*)((u8*)arg0 + 0x174)) {
-        ((void (*)(VTab12C4*, s32))(*(void***)entries[9])[17])(entries[9], arg1);
-        entries++; i++;
+    while (i < *(s32 *)((u8 *)arg0 + 0x174)) {
+        EntryDispatch *item = *(EntryDispatch **)(entries + 0x24);
+        item->call(arg1);
+        entries += 4;
+        i++;
     }
 }
 
