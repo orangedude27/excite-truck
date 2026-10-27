@@ -29,6 +29,7 @@ typedef struct {
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSContext.h>
 #include <revolution/DVD/dvd.h>
+void fn_8011C120();
 #define M2C_FIELD(base, type, offset) (*(type)((u8 *)(base) + (offset)))
 
 extern void* fn_802ECC74(void*);
@@ -1233,27 +1234,30 @@ extern void fn_80119288(void *, f32);
 extern s32 fn_80119300(void *, s32, s32);
 extern s32 fn_8011943C(void *, s32);
 extern s32 fn_801199A4(void *, s32);
-#pragma optimize_for_size on
+#pragma push
+#pragma optimization_level 1
 s32 fn_80119C0C(void *arg0, s32 arg1) {
     if (arg1 != 0) {
         if (*(s32 *)((u8 *)arg0 + 0x64) == 0) {
-            *(s32 *)((u8 *)arg0 + 0xb0) = 0;
-            *(s32 *)((u8 *)arg0 + 0x64) = 1;
-            *(s32 *)((u8 *)arg0 + 0xb8) = 0;
+            s32 zero = 0;
+            s32 one = 1;
+            *(s32 *)((u8 *)arg0 + 0xb0) = zero;
+            *(s32 *)((u8 *)arg0 + 0x64) = one;
+            *(s32 *)((u8 *)arg0 + 0xb8) = zero;
             *(s32 *)((u8 *)arg0 + 0xbc) = *(s32 *)((u8 *)arg0 + 0xc0);
+            goto exit;
         }
     }
-    if (arg1 == 0) {
-        if (*(s32 *)((u8 *)arg0 + 0x64) != 0) {
-            fn_8011943C((u8 *)arg0 + 0x7c, 0);
-            fn_801199A4((u8 *)arg0 + 0x7c, 1);
-            fn_80119300((u8 *)arg0 + 0x7c, 0, *(s32 *)((u8 *)arg0 + 0x94));
-            *(s32 *)((u8 *)arg0 + 0x64) = 0;
-        }
+    if (arg1 == 0 && *(s32 *)((u8 *)arg0 + 0x64) != 0) {
+        fn_8011943C((u8 *)arg0 + 0x7c, 0);
+        fn_801199A4((u8 *)arg0 + 0x7c, 1);
+        fn_80119300((u8 *)arg0 + 0x7c, 0, *(s32 *)((u8 *)arg0 + 0x94));
+        *(s32 *)((u8 *)arg0 + 0x64) = 0;
     }
+exit:
     return *(s32 *)((u8 *)arg0 + 0x64);
 }
-#pragma optimize_for_size reset
+#pragma pop
 s32 fn_80119CB0(void *arg0, s32 arg1) {
     s32 *var_r3;
     if (arg1 != 0) {
@@ -1900,20 +1904,29 @@ void fn_8011AE68(s32 out, f32 *in, u32 count, f32 scale) {
     }
 }
 
-void fn_8011AED8(s32 arg0, f32 *arg1, u32 arg2, f32 farg0) {
-    s32 *out = (s32 *)arg0;
-    f32 *in = arg1;
-    u32 i;
-    for (i = 0; i < arg2; i++) {
-        f32 v1 = in[0] * farg0;
-        f32 v2 = in[1] * farg0;
-        *(s16 *)((u8 *)out + 2) = (s16)(v1 * 32767.0f + 0.5f);
-        *(s16 *)((u8 *)out + 4) = (s16)(v2 * 32767.0f + 0.5f);
-        in += 2;
-        out += 2;
+#pragma push
+#pragma scheduling invalid_target
+void fn_8011AED8(s32 outArg, f32 *in, u32 count, f32 scale) {
+    s16 *dest = (s16 *)(outArg - 2);
+    f32 *second = in + count;
+
+    if (count != 0) {
+        do {
+            s32 left = (s32)(in[0] * scale);
+            s32 right = (s32)(second[0] * scale);
+            left = left < -0x8000 ? -0x8000 : left;
+            left = left > 0x7FFF ? 0x7FFF : left;
+            right = right < -0x8000 ? -0x8000 : right;
+            right = right > 0x7FFF ? 0x7FFF : right;
+            dest[1] = (s16)left;
+            dest[2] = (s16)right;
+            dest += 2;
+            in++;
+            second++;
+        } while (--count);
     }
 }
-
+#pragma pop
 extern u8 lbl_80329B50[];
 extern f32 lbl_805611E0;
 void fn_8011AF94(f32 *arg0, s32 arg1, void *arg2, f32 *arg3, s32 arg4) {
