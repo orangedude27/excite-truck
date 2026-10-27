@@ -48,5 +48,4 @@ void *fn_80209DE4(void *arg0, int arg1) {
 }
 #pragma scheduling on
 
-extern float lbl_80563278, lbl_8056327C, lbl_80563280, lbl_80563284, lbl_80563288;
 
