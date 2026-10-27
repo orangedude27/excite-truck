@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern "C" void fn_8022EE98(void *);
+
 
 extern "C" void *fn_8022EE9C(void);
 
@@ -3672,25 +3674,23 @@ extern "C" void fn_80223644(void *arg0) {
     s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
     s32 cur = *pIndex;
 
-    goto loop_cond;
-loop_body:
-    {
+    goto test;
+    do {
         u8 *p = (u8 *)arg0 + (cur - i);
         if (p[0x2D0] != 0) {
             *pIndex -= i;
             ((void (*)(void *))fn_8022375C)(arg0);
             return;
         }
-    }
-    i++;
-loop_cond:
-    if (cur - i >= 0) goto loop_body;
+        i++;
+test:   ;
+    } while (cur - i >= 0);
 
     s32 count = *(s32 *)((u8 *)arg0 + 0x2C8);
     u8 *base = (u8 *)arg0 + cur;
     s32 diff = count - cur;
     for (s32 j = diff - 1; j > 0; j--) {
-        u8 *p = base + j;
+        u8 *p = (u8 *)j + (uintptr_t)base;
         if (p[0x2D0] != 0) {
             *pIndex += j;
             ((void (*)(void *))fn_8022375C)(arg0);
