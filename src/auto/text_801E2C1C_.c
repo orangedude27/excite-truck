@@ -50,6 +50,7 @@ int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
 #pragma push
 #pragma small_data on
 extern const char lbl_8055AEB0[3];
+#pragma scheduling invalid_target
 int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
     void *value;
     void *name;
@@ -62,8 +63,7 @@ int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
     value = (void *)zero;
     name = (void *)zero;
     hasSpace = strchr(arg1, ' ') != 0;
-    index = 0;
-    while (fn_801E2C1C(arg0, index, &name, &value) != 0) {
+    for (index = 0; fn_801E2C1C(arg0, index, &name, &value) != 0; index++) {
         buffer[0] = zero;
         buffer[1] = zero;
         buffer[2] = zero;
@@ -88,7 +88,6 @@ int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
             *arg2 = value;
             return 1;
         }
-        index++;
     }
     *arg2 = 0;
     return 0;
@@ -118,7 +117,7 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
     groupIndex = 0;
     groupOffset = 0;
     while (groupIndex < archive->groupCount) {
-        group = (struct Group *)(archive->groups + groupOffset);
+        group = (struct Group *)(*(int *)(archive->groups + groupOffset));
         if (group->magic == 0x4D524A54) {
             item = (char *)group + 0xC;
             index = 0;
