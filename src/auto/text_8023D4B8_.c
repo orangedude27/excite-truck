@@ -298,7 +298,7 @@ void fn_8023E16C(void *arg0, int arg1) {
 extern char lbl_80341BE0[];
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8023E1FC(void *arg0) {
     struct Interface {
