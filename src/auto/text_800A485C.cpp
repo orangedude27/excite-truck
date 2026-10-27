@@ -1989,15 +1989,15 @@ extern "C" s32 fn_800A9A4C(void *arg0, s32 arg1, s32 arg2) {
         fn_800B783C((u8 *)vol + 0x1F90);
         lbl_803D2140[16] = result;
         *(s32 *)((u8 *)vol + 0x1F80) = result;
-    } else {
-        result = fn_800A98B8(vol, (s32)arg0, arg1, (void *)arg2);
-        if (result != 0) {
-            *(s32 *)((u8 *)arg2 + 8) = 0;
-            lbl_803D2140[16] = result;
-            *(s32 *)((u8 *)vol + 0x1F80) = result;
-        }
-        fn_800B783C((u8 *)vol + 0x1F90);
+        return result;
     }
+    result = fn_800A98B8(vol, (s32)arg0, arg1, (void *)arg2);
+    if (result != 0) {
+        *(s32 *)((u8 *)arg2 + 8) = 0;
+        lbl_803D2140[16] = result;
+        *(s32 *)((u8 *)vol + 0x1F80) = result;
+    }
+    fn_800B783C((u8 *)vol + 0x1F90);
     return result;
 }
 #pragma dont_inline reset
@@ -11720,6 +11720,27 @@ extern "C" void fn_800CFAC8(void *arg0) {
     p[9] = 0;
     p[0xA] = 0;
     p[0xB] = 0;
+}
+
+void homebutton::gui::Manager::addComponent(homebutton::gui::Component *arg1) {
+    void *first = arg1->first();
+    arg1->second(this);
+    MEMAllocator *allocator = *(MEMAllocator **)((u8 *)this + 0x14);
+    if (allocator != 0) {
+        void *entry = MEMAllocFromAllocator(allocator, 0x10);
+        if (entry != 0) {
+            *(void **)entry = first;
+            *((void **)entry + 1) = arg1;
+        }
+        List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv((u8 *)this + 8, entry);
+    } else {
+        void *entry = fn_80128520(0x10);
+        if (entry != 0) {
+            *(void **)entry = first;
+            *((void **)entry + 1) = arg1;
+        }
+        List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv((u8 *)this + 8, entry);
+    }
 }
 
 extern "C" void fn_800CFBB8(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x28) = arg1; }
