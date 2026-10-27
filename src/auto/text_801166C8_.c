@@ -1234,30 +1234,28 @@ extern void fn_80119288(void *, f32);
 extern s32 fn_80119300(void *, s32, s32);
 extern s32 fn_8011943C(void *, s32);
 extern s32 fn_801199A4(void *, s32);
-#pragma push
-#pragma optimization_level 1
+#pragma optimization_level 4
 s32 fn_80119C0C(void *arg0, s32 arg1) {
+    u8 *base = (u8 *)arg0;
     if (arg1 != 0) {
         if (*(s32 *)((u8 *)arg0 + 0x64) == 0) {
-            s32 zero = 0;
-            s32 one = 1;
-            *(s32 *)((u8 *)arg0 + 0xb0) = zero;
-            *(s32 *)((u8 *)arg0 + 0x64) = one;
-            *(s32 *)((u8 *)arg0 + 0xb8) = zero;
+            *(s32 *)((u8 *)arg0 + 0xb0) = 0;
+            *(s32 *)((u8 *)arg0 + 0x64) = 1;
+            *(s32 *)((u8 *)arg0 + 0xb8) = 0;
             *(s32 *)((u8 *)arg0 + 0xbc) = *(s32 *)((u8 *)arg0 + 0xc0);
             goto exit;
         }
     }
     if (arg1 == 0 && *(s32 *)((u8 *)arg0 + 0x64) != 0) {
-        fn_8011943C((u8 *)arg0 + 0x7c, 0);
-        fn_801199A4((u8 *)arg0 + 0x7c, 1);
-        fn_80119300((u8 *)arg0 + 0x7c, 0, *(s32 *)((u8 *)arg0 + 0x94));
-        *(s32 *)((u8 *)arg0 + 0x64) = 0;
+        arg0 = (u8 *)arg0 + 0x7c;
+        fn_8011943C(arg0, 0);
+        fn_801199A4(base + 0x7c, 1);
+        fn_80119300(base + 0x7c, 0, *(s32 *)(base + 0x94));
+        *(s32 *)(base + 0x64) = 0;
     }
 exit:
-    return *(s32 *)((u8 *)arg0 + 0x64);
+    return *(s32 *)(base + 0x64);
 }
-#pragma pop
 s32 fn_80119CB0(void *arg0, s32 arg1) {
     s32 *var_r3;
     if (arg1 != 0) {
@@ -2433,6 +2431,49 @@ void fn_8011BCAC(void **head, void *node) {
     *(void **)((u8 *)cur + 4) = node;
 }
 
+void fn_8011BD20(s32 arg0) {
+    struct Node {
+        struct Node *next;
+        struct Node *orderedNext;
+        s32 result;
+        s32 enabled;
+        s32 unk_0x10;
+        s32 (*run)(struct Node *, s32);
+        void (*finish)(struct Node *, s32);
+    };
+    struct Node *node;
+    struct Node *pending;
+    s32 *count;
+    s32 newCount;
+    s32 state;
+
+    count = (s32 *)(arg0 + 0x34);
+    newCount = *count + 1;
+    state = *(s32 *)arg0;
+    *count = newCount;
+    if (state == 1) {
+        node = *(struct Node **)(arg0 + 0x30);
+        pending = 0;
+        while (node != 0) {
+            if (*(s32 *)arg0 != 1) {
+                return;
+            }
+            if (node->enabled == 1) {
+                node->result = node->run(node, *count);
+                if (node->result != 0) {
+                    fn_8011BCAC((void **)&pending, node);
+                }
+            }
+            node = node->next;
+        }
+        node = pending;
+        while (node != 0) {
+            node->finish(node, *count);
+            node = node->orderedNext;
+        }
+    }
+}
+
 void fn_8011BDF0(s32 arg0) {
     s32 temp;
     s32 old;
@@ -2510,6 +2551,26 @@ yield:
 check:
     if (fn_8011C06C((void*)arg0) == 0)
         goto yield;
+}
+
+void fn_8011C120(void *arg0) {
+    if (arg0 != 0) {
+        BOOL enabled = OSDisableInterrupts();
+        s32 count = *(volatile s32 *)((u8 *)arg0 + 4);
+        *(volatile s32 *)((u8 *)arg0 + 4) = count - 1;
+        if (*(volatile s32 *)((u8 *)arg0 + 4) == 0) {
+            if (*(volatile s32 *)arg0 == 0) {
+                u64 time = (u64)OSGetTime();
+                u32 period = (0x3E8U / *(u32 *)((u8 *)arg0 + 0x3C)) *
+                             (*(volatile u32 *)0x800000F8 / 4U / 1000U);
+                ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(s32)))OSSetPeriodicAlarm)(
+                    (u8 *)arg0 + 8, (u32)time, (u32)(time >> 32),
+                    (u32)time, 0, period, fn_8011BDF0);
+            }
+            *(s32 *)arg0 = 1;
+        }
+        OSRestoreInterrupts(enabled);
+    }
 }
 
 #pragma dont_inline on
@@ -4563,20 +4624,21 @@ void fn_80122518(s32 arg0, u8 *arg1, void *arg2) {
     *(arg1 + temp_r3_3) = (temp_f4_5 * temp_f11_12) - (temp_f3_9 * temp_f9_13);
 }
 
+#pragma scheduling invalid_target
+extern void fn_801237C4(s32, void *, void *);
 void fn_80122ED8(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     s32 n = arg0 >> 2;
-    fn_801237C4((u8 *)arg3 + (arg2 - arg0) * 4);
+    fn_801237C4(arg0, arg1, (u8 *)arg3 + (arg2 - arg0) * 4);
     if (arg0 > 0x200) {
         fn_80122E08(n, arg1, arg2, arg3);
         fn_80122ED8(n, (u8 *)arg1 + n * 4, arg2, arg3);
         fn_80122E08(n, (u8 *)arg1 + n * 8, arg2, arg3);
-        fn_80122ED8(n, (u8 *)arg1 + (n - n * 4) * 4, arg2, arg3);
+        fn_80122ED8(n, (u8 *)arg1 + n * 12, arg2, arg3);
         return;
     }
     fn_801231B8(arg0, arg1, arg2, arg3);
 }
-
-#pragma scheduling off
+#pragma scheduling on
 void fn_801233F8(s32 arg0, volatile f32 *arg1, f32 *arg2) {
     f32 temp_f0, temp_f0_2, temp_f0_3, temp_f1, temp_f1_2, temp_f1_3;
     f32 temp_f1_4, temp_f1_5, temp_f1_6, temp_f2, temp_f2_2, temp_f2_3;
