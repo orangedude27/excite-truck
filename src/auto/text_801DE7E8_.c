@@ -45,7 +45,7 @@ void fn_801DE88C(void) {
 }
 
 #pragma small_data off
-int fn_801DE9F0(int arg0, int arg1) {
+void fn_801DE9F0(int arg0, int arg1) {
     float value;
     register float newValue;
     register void* object;
