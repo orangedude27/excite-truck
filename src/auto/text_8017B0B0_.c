@@ -18,6 +18,7 @@ extern char lbl_80331CC4[];
 extern void PSVECCrossProduct();
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80558DC4[];
+typedef struct Vec { float x, y, z; } Vec;
 
 void *fn_8017B0B0(void *arg0) {
     fn_80179D08();
@@ -114,7 +115,7 @@ void fn_8017B3A8(void *arg0, float *arg1, float *arg2) {
 
     if (!((float)__fabs(PSVECDotProduct(arg1, arg1)) <= lbl_80558DC4[0])) {
         float a2_0, a2_1, a2_2, d0;
-        float b0, b1, b2, a0, a1, a2;
+        float x, y, z;
 
         a2_0 = arg2[0];
         a2_1 = arg2[1];
@@ -124,15 +125,12 @@ void fn_8017B3A8(void *arg0, float *arg1, float *arg2) {
         delta[1] = a2_1 - *(float *)((char *)arg0 + 0x64);
         delta[2] = a2_2 - *(float *)((char *)arg0 + 0x68);
         PSVECCrossProduct(delta, arg1, output);
-        b0 = *(float *)((char *)arg0 + 0x130);
-        b1 = *(float *)((char *)arg0 + 0x134);
-        a0 = b0 + arg1[0];
-        b2 = *(float *)((char *)arg0 + 0x138);
-        a1 = b1 + arg1[1];
-        a2 = b2 + arg1[2];
-        *(float *)((char *)arg0 + 0x130) = a0;
-        *(float *)((char *)arg0 + 0x134) = a1;
-        *(float *)((char *)arg0 + 0x138) = a2;
+        x = *(float *)((char *)arg0 + 0x130) + arg1[0];
+        y = *(float *)((char *)arg0 + 0x134) + arg1[1];
+        z = arg1[2] + *(float *)((char *)arg0 + 0x138);
+        *(float *)((char *)arg0 + 0x130) = x;
+        *(float *)((char *)arg0 + 0x134) = y;
+        *(float *)((char *)arg0 + 0x138) = z;
         *(float *)((char *)arg0 + 0x13C) += output[0];
         *(float *)((char *)arg0 + 0x140) += output[1];
         *(float *)((char *)arg0 + 0x144) += output[2];
@@ -823,25 +821,33 @@ check:
 
 extern void fn_8017A028(void);
 extern float lbl_80561BDC;
-#pragma dont_inline fn_8017D140
+#pragma scheduling invalid_target
 void fn_8017D160(void *arg0, unsigned char *arg1, unsigned char *arg2, int *arg3, int *arg4, float farg0) {
-    // Fix note: resets blend state, interpolates the input vectors, stores scaled deltas, and clears both counters.
     float first[3];
     float second[3];
+    float deltaZ;
+    float deltaY;
+    float deltaX;
+    float scale;
+    volatile float *output = (volatile float *)((char *)arg0 + 0x118);
     *(int *)((char *)arg0 + 0x1E4) = 0;
     fn_8017A028();
     fn_8017D140((unsigned char *)first, arg1 + 0x14, 0xC);
     fn_8017D140((unsigned char *)second, arg2 + 0x14, 0xC);
-    *(float *)((char *)arg0 + 0x120) = first[2] + farg0 * (second[2] - first[2]);
-    *(float *)((char *)arg0 + 0x11C) = first[1] + farg0 * (second[1] - first[1]);
-    *(float *)((char *)arg0 + 0x118) = first[0] + farg0 * (second[0] - first[0]);
-    *(float *)((char *)arg0 + 0x16C) = second[0] - first[0];
-    *(float *)((char *)arg0 + 0x170) = second[1] - first[1];
-    *(float *)((char *)arg0 + 0x170) = (second[1] - first[1]) * lbl_80561BDC;
-    *(float *)((char *)arg0 + 0x16C) = (second[0] - first[0]) * lbl_80561BDC;
-    *(float *)((char *)arg0 + 0x174) = (second[2] - first[2]) * lbl_80561BDC;
-    *arg3 = 0x20;
+    deltaZ = second[2] - first[2];
+    deltaY = second[1] - first[1];
+    deltaX = second[0] - first[0];
+    output[2] = first[2] + farg0 * deltaZ;
+    output[1] = first[1] + farg0 * deltaY;
+    output[0] = first[0] + farg0 * deltaX;
+    *(volatile float *)((char *)arg0 + 0x16C) = deltaX;
+    *(volatile float *)((char *)arg0 + 0x170) = deltaY;
+    scale = lbl_80561BDC;
+    *(volatile float *)((char *)arg0 + 0x170) = deltaY * scale;
+    *(volatile float *)((char *)arg0 + 0x16C) = deltaX * scale;
+    *(volatile float *)((char *)arg0 + 0x174) = deltaZ * scale;
     *arg4 = 0x20;
+    *arg3 = 0x20;
 }
 extern void fn_8017A804(void);
 int fn_8017D274(void *arg0, void *arg1) {
