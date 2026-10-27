@@ -144,6 +144,7 @@ extern void fn_802ECEC0(void);
 extern void fn_802ECEC4(void);
 extern char lbl_80341314[];
 extern char lbl_80341328[];
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -154,6 +155,7 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         s32 arg3;
         s32 zero;
         s32 flags;
+        u8 trailing[0x50];
     };
     struct Frame {
         const char *resource;
@@ -162,10 +164,14 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         s32 resource2;
         struct Context context;
     } frame;
+    const char *resource;
+    s32 zero;
     s32 active = fn_802ECEEC();
     if (active != 0) {
         fn_802ECEC0();
-        frame.resource = lbl_80341314;
+        resource = lbl_80341314;
+        zero = 0;
+        frame.resource = resource;
         frame.resource0 = fn_80128314(0);
         frame.resource1 = fn_80128314(1);
         frame.resource2 = fn_80265D58();
@@ -175,9 +181,9 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             fn_801E952C(&frame.context);
             fn_8023B7EC(&frame.context, arg0, arg1, arg3);
             frame.context.arg3 = arg3;
-            frame.context.zero = 0;
-            if (((s32 (*)(s32, s32))fn_8023B764)(arg3, frame.context.value) != 0) {
-                fn_802E30C8(lbl_80341328);
+            frame.context.zero = zero;
+            if (fn_8023B764(arg3, frame.context.value) != 0) {
+                fn_802E30C8(resource + 0x14);
                 frame.context.flags |= 2;
             }
             fn_8023B904(&frame.context, (void *)arg2, arg4);
@@ -190,6 +196,7 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
+#pragma scheduling on
 void fn_8023BB0C(void) {
     s32 sp10, spC, sp8;
     s32 temp_r31 = fn_802411CC();
@@ -379,28 +386,46 @@ void fn_8023BF68(void) {
 }
 
 extern void fn_8000824C(void *, s32);
-extern const char lbl_8055BB3C[];
+extern u32 lbl_8055BB3C;
+#pragma cplusplus on
 void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
-    s32 *temp_r30 = fn_80012820(arg1);
+    struct StringObject {
+        virtual void f0();
+        virtual s32 check(const char *);
+        virtual void f2();
+        virtual const char *get(const char *);
+    };
+    void *temp_r30 = fn_80012820(arg1);
     s32 *temp_r31 = fn_80012870(arg1, arg2);
-    void *obj = *(void **)((u8 *)temp_r31 + 0x20);
-    s32 (*check)(void *, const char *) = (s32 (*)(void *, const char *))(*(u32 **)(obj))[3];
-    char *str;
-    s32 i;
-    if (check(obj, lbl_8055BB3C) != 0) {
-        obj = *(void **)((u8 *)temp_r31 + 0x20);
-        str = ((char *(*)(void *, const char *))(*(u32 **)obj)[5])(obj, lbl_8055BB3C);
+    StringObject *obj = (StringObject *)*(void **)((u8 *)temp_r31 + 0x20);
+    char *source;
+    char *dest;
+    s32 count;
+
+    if (obj->check((const char *)&lbl_8055BB3C) != 0) {
+        source = (char *)obj->get((const char *)&lbl_8055BB3C);
+        dest = (char *)arg0;
+        count = 0x20;
+        while ((s8)(*dest++ = *source++) != 0) {
+            if (--count <= 0) {
+                dest[-1] = 0;
+                break;
+            }
+        }
     } else {
-        str = (char *)temp_r30 + 8;
+        source = (char *)temp_r30 + 8;
+        dest = (char *)arg0;
+        count = 0x20;
+        while ((s8)(*dest++ = *source++) != 0) {
+            if (--count <= 0) {
+                dest[-1] = 0;
+                break;
+            }
+        }
     }
-    for (i = 0; i < 0x20; i++) {
-        char c = *str++;
-        ((char *)arg0)[i] = c;
-        if (c == 0) break;
-    }
-    if (i == 0x20) ((char *)arg0)[0x1f] = 0;
     fn_8000824C((u8 *)arg0 + 0x3e4, *temp_r31);
 }
+#pragma cplusplus reset
 
 void fn_8023C20C(void) {}
 
