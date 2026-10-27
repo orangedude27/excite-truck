@@ -74,26 +74,16 @@ s32 fn_80008C5C(void) {
     if (*(volatile u8 *)&lbl_8055D37A == 0 && fn_802ECC10() == 0 && fn_801298E8(sp, 0) != 0) {
         input = *(u32 *)(sp + 0x40);
         if (input == 8) {
-            s32 mode;
-            switch (fn_8000865C()) {
-            case 0:
-                mode = 0xC;
-                break;
-            default:
+            s32 flag = fn_8000865C();
+            s32 mode = 0xC;
+            if (flag != 0)
                 mode = 0xD;
-                break;
-            }
             lbl_805589EC = mode;
         } else if (input == 2) {
-            s32 mode;
-            switch (fn_8000865C()) {
-            case 0:
-                mode = 0xD;
-                break;
-            default:
+            s32 flag = fn_8000865C();
+            s32 mode = 0xD;
+            if (flag != 0)
                 mode = 0xC;
-                break;
-            }
             lbl_805589EC = mode;
         } else if (input == 4) {
             lbl_805589EC = 7;
@@ -108,15 +98,16 @@ s32 fn_80008C5C(void) {
             lbl_805589EC = 4;
         if (lbl_805589EC != old) {
             if (lbl_8055D394 > lbl_805601B8)
+                goto set_timer;
+            if (old != 4)
                 goto restore_old;
-            if (old == 4)
-                lbl_8055D394 = lbl_805601BC;
+        set_timer:
+            lbl_8055D394 = lbl_805601BC;
             goto state_done;
-        restore_old:
-            lbl_805589EC = old;
-        state_done:
-            ;
         }
+    restore_old:
+        lbl_805589EC = old;
+    state_done:
         lbl_8055D394 += lbl_805601D0;
     }
     return lbl_805589EC;
