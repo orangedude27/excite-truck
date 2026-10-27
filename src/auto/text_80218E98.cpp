@@ -904,6 +904,32 @@ extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, 
     }
 }
 
+extern "C" void *fn_80219E44(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_8033F434;
+        switch (*(s32 *)((u8 *)arg0 + 0x244)) {
+        case 3:
+        case 6:
+        case 8:
+        case 9:
+            if (*(void **)((u8 *)arg0 + 0x248) != 0)
+                fn_80235380(*(void **)((u8 *)arg0 + 0x248));
+            break;
+        case 2:
+        case 4:
+        case 5:
+            if (*(void **)((u8 *)arg0 + 0x248) != 0)
+                fn_802328D4(*(void **)((u8 *)arg0 + 0x248));
+            break;
+        }
+        *(void **)((u8 *)arg0 + 0x248) = 0;
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_8002B1D8(void);
 extern "C" void fn_80219F14(void *arg0) {
     struct Object {
