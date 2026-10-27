@@ -16,6 +16,12 @@ extern void fn_80138AD8(void* this_, u32 a);
 extern u8 lbl_8032E46C[];
 extern u8 lbl_8032E448[];
 
+namespace fn_c_linkage {
+    extern "C" void fn_80138AD8(void *);
+    extern "C" void fn_80128658(void *);
+    extern "C" void fn_80128668(void *);
+}
+
 extern void **lbl_8055E27C;
 
 namespace ebi {
@@ -511,41 +517,43 @@ extern "C" void fn_80156B54(void) {
 extern "C" void fn_80128658(void*);
 extern u8 lbl_8032E424[];
 extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
-    s32 i;
-    s32 offset;
-    s32 zero = 0;
-    if (arg0 != 0) {
-        *(void**)arg0 = lbl_8032E424;
+    register void *this_ = arg0;
+    register s32 deleting = arg1;
+    register s32 i;
+    register s32 offset;
+    register s32 zero = 0;
+    if (this_ != 0) {
+        *(void **)this_ = lbl_8032E424;
         i = 0;
         offset = 0;
-        while (i < *(s32*)((char*)arg0 + 8)) {
-            ((void(*)(void*))fn_80138AD8)((char*)*(void**)((char*)arg0 + 4) + offset);
+        while (i < *(s32 *)((char *)this_ + 8)) {
+            ((void (*)(void *))fn_80138AD8)((char *)*(volatile void **)((char *)this_ + 4) + offset);
             offset += 8;
             i++;
         }
-        *(s32*)((char*)arg0 + 8) = 0;
+        *(s32 *)((char *)this_ + 8) = 0;
         i = 0;
         offset = 0;
-        while (i < *(s32*)((char*)arg0 + 0x94)) {
-            fn_80128658(*(void**)((char*)*(void**)((char*)arg0 + 0x90) + offset));
+        while (i < *(s32 *)((char *)this_ + 0x94)) {
+            fn_80128658(*(void **)((char *)*(volatile void **)((char *)this_ + 0x90) + offset));
             offset += 4;
             i++;
         }
-        if ((char*)arg0 + 0x90 != 0) {
-            *(s32*)((char*)arg0 + 0x94) = zero;
-            *(s32*)((char*)arg0 + 0x90) = zero;
-            *(s32*)((char*)arg0 + 0x94) = zero;
-            *(s32*)((char*)arg0 + 0x98) = zero;
+        *(s32 *)((char *)this_ + 0x94) = zero;
+        if ((char *)this_ + 0x90 != 0) {
+            *(s32 *)((char *)this_ + 0x90) = zero;
+            *(s32 *)((char *)this_ + 0x94) = zero;
+            *(s32 *)((char *)this_ + 0x98) = zero;
         }
-        if ((char*)arg0 + 4 != 0) {
-            *(s32*)((char*)arg0 + 4) = zero;
-            *(s32*)((char*)arg0 + 8) = zero;
-            *(s32*)((char*)arg0 + 0xC) = zero;
+        if ((char *)this_ + 4 != 0) {
+            *(s32 *)((char *)this_ + 4) = zero;
+            *(s32 *)((char *)this_ + 8) = zero;
+            *(s32 *)((char *)this_ + 0xC) = zero;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deleting > 0)
+            fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 extern "C" s32 fn_80156C60(void *arg0, s32 arg1) {
