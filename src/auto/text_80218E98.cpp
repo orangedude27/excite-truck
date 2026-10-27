@@ -3,6 +3,7 @@
 
 #include <types.h>
 
+extern "C" u8 lbl_8033E140[];
 extern "C" void fn_8022EE98(void *);
 extern "C" void fn_8022A8E4(s32);
 extern "C" void *lbl_8033E1C4[];
@@ -1902,17 +1903,17 @@ extern "C" void *__dt__Q34Game10MemoryCard8ResourceFv(void *arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void *fn_8021D7C8(void *arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 arg5,s32 arg6,s32 arg7) {
+extern "C" void *fn_8021D7C8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     f32 value;
-    fn_80219568(arg0,arg1,arg2,0,arg5,arg3,arg4,arg7);
-    *(void**)arg0=&lbl_8033EC2C;
-    value=fn_8023659C()-lbl_805634E8;
-    *(s32*)((u8*)arg0+0x254)=arg6;
-    *(s32*)((u8*)arg0+0x268)=arg5;
-    *(f32*)((u8*)arg0+0x264)=value;
-    *(f32*)((u8*)arg0+0x260)=value;
-    *(s32*)((u8*)arg0+0x258)=0;
-    *(s32*)((u8*)arg0+0x25C)=fn_80228F40(arg1,arg2);
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, arg3, arg4);
+    *(void **)arg0 = lbl_8033EC2C;
+    value = fn_8023659C() - lbl_805634E8;
+    *(s32 *)((u8 *)arg0 + 0x254) = arg6;
+    *(s32 *)((u8 *)arg0 + 0x268) = arg5;
+    *(f32 *)((u8 *)arg0 + 0x264) = value;
+    *(f32 *)((u8 *)arg0 + 0x260) = value;
+    *(s32 *)((u8 *)arg0 + 0x258) = 0;
+    *(s32 *)((u8 *)arg0 + 0x25C) = fn_80228F40(arg1, arg2);
     return arg0;
 }
 
@@ -3710,23 +3711,26 @@ extern "C" void fn_80223644(void *arg0) {
     s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
     s32 cur = *pIndex;
 
-    goto test;
-    do {
-        u8 *p = (u8 *)arg0 + (cur - i);
+    goto loop_cond;
+loop_body:
+    {
+        s32 idx = cur - i;
+        u8 *p = (u8 *)arg0 + idx;
         if (p[0x2D0] != 0) {
             *pIndex -= i;
             ((void (*)(void *))fn_8022375C)(arg0);
             return;
         }
-        i++;
-test:   ;
-    } while (cur - i >= 0);
+    }
+    i++;
+loop_cond:
+    if (cur - i >= 0) goto loop_body;
 
     s32 count = *(s32 *)((u8 *)arg0 + 0x2C8);
     u8 *base = (u8 *)arg0 + cur;
     s32 diff = count - cur;
     for (s32 j = diff - 1; j > 0; j--) {
-        u8 *p = (u8 *)j + (uintptr_t)base;
+        u8 *p = &j[base];
         if (p[0x2D0] != 0) {
             *pIndex += j;
             ((void (*)(void *))fn_8022375C)(arg0);
@@ -4188,8 +4192,10 @@ extern "C" void *fn_80224D40(void *arg0, s32 arg1) {
         }
         fn_802328D4(*(void **)((u8 *)arg0 + 0x248));
         *(s32 *)((u8 *)arg0 + 0x248) = 0;
+        char *dst = (char *)arg0 + 0x259;
+        char *src = &lbl_8055B88C[0];
         *(s32 *)((u8 *)arg0 + 0x244) = 0;
-        strcpy((char *)arg0 + 0x259, lbl_8055B88C);
+        strcpy(dst, src);
         fn_8021915C(arg0, 0);
         if (arg1 > 0) {
             fn_80128668(arg0);
