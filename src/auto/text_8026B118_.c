@@ -92,7 +92,6 @@ extern char *strncpy(char *, const char *, unsigned int);
 extern int stricmp(const char *, const char *);
 extern char lbl_8055C504[], lbl_8055C50C[];
 #pragma push
-#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_8026B260(void) {
     class FileName {
