@@ -7659,19 +7659,19 @@ void btm_sec_collision_timeout(void) {
     extern u8 btm_sec_execute_procedure(void *);
     extern void fn_8007093C(u32, void *);
     extern char lbl_80317264[];
-    u8 *base;
+    u8 status;
     if (lbl_803C0F78[0x27C0] >= 4) fn_8007093C(0xD0003, lbl_80317264);
-    base = lbl_803C0F78;
-    *(u32 *)(base + 0x196C) = 0;
-    if (btm_sec_execute_procedure(*(void **)(base + 0x1938)) != 1) {
-        void *sec = *(void **)(base + 0x1938);
+    *(u32 *)(lbl_803C0F78 + 0x196C) = 0;
+    status = btm_sec_execute_procedure(*(void **)(lbl_803C0F78 + 0x1938));
+    if (status != 1) {
+        void *sec = *(void **)(lbl_803C0F78 + 0x1938);
         if (*(u32 *)((u8 *)sec + 4) != 0) {
             if (*((u8 *)sec + 0x80) != 0) {
                 void *entry = *(void **)sec;
                 if (entry != 0 && *(u32 *)entry == 3) *(u32 *)((u8 *)entry + 4) = 0;
             }
-            ((void (*)(void *, void *, u8))(*(void **)((u8 *)sec + 4)))((u8 *)sec + 0x1C, *(void **)((u8 *)sec + 8), btm_sec_execute_procedure(*(void **)(base + 0x1938)));
-            *(u32 *)(*(u8 **)(base + 0x1938) + 4) = 0;
+            ((void (*)(void *, void *, u8))(*(void **)(*(u8 **)(lbl_803C0F78 + 0x1938) + 4)))((u8 *)*(void **)(lbl_803C0F78 + 0x1938) + 0x1C, *(void **)(*(u8 **)(lbl_803C0F78 + 0x1938) + 8), status);
+            *(u32 *)(*(u8 **)(lbl_803C0F78 + 0x1938) + 4) = 0;
         }
     }
 }
@@ -7961,17 +7961,16 @@ done:
 void btu_hcif_link_key_notification_evt(u8 *p, u16 evt_len) {
     BD_ADDR bda;
     LINK_KEY key;
-    u8 key_type;
-    u8 *key_type_ptr = p + 0x16;
+    u8 *key_type_ptr = p;
 
+    key_type_ptr += sizeof(bda) + sizeof(key);
     bda[5] = p[0]; bda[4] = p[1]; bda[3] = p[2];
     bda[2] = p[3]; bda[1] = p[4]; bda[0] = p[5];
     key[15] = p[6]; key[14] = p[7]; key[13] = p[8]; key[12] = p[9];
     key[11] = p[10]; key[10] = p[11]; key[9] = p[12]; key[8] = p[13];
     key[7] = p[14]; key[6] = p[15]; key[5] = p[16]; key[4] = p[17];
     key[3] = p[18]; key[2] = p[19]; key[1] = p[20]; key[0] = p[21];
-    key_type = *key_type_ptr;
-    btm_sec_link_key_notification(bda, key, key_type);
+    btm_sec_link_key_notification(bda, key, *key_type_ptr);
 }
 
 void fn_8008251C(void) {
@@ -7985,6 +7984,32 @@ void fn_80082548(void) {
  memset(&lbl_803C0A50, 0, 0x84);
  *(u16 *)((u8 *)&lbl_803C0A50 + 0x7e)=0x2a4;
  *(u16 *)((u8 *)&lbl_803C0A50 + 0x80)=1;
+}
+
+BOOLEAN WBT_ExtCreateRecord(void) {
+    UINT8 info[0xFC];
+    UINT32 handle = 0;
+    UINT8 attr[2];
+    UINT16 uuid = 0x1002;
+    register UINT8 *record;
+    register UINT32 zero = 0;
+
+    if (SDP_GetLocalDiRecord((tSDP_DI_GET_RECORD *)info, &handle) != SDP_SUCCESS) {
+        record = info + 2;
+        memset(record, 0, 0xFA);
+        *(UINT16 *)(info + 2) = 0xF;
+        *(UINT16 *)(info + 4) = 1;
+        info[10] = 1;
+        if (SDP_SetLocalDiRecord((tSDP_DI_RECORD *)record, &handle) != SDP_SUCCESS) {
+            handle = zero;
+            return FALSE;
+        }
+    }
+    SDP_AddUuidSequence(handle, 5, 1, &uuid);
+    attr[0] = 0;
+    attr[1] = 1;
+    SDP_AddAttribute(handle, 0x8001, 1, 2, attr);
+    return TRUE;
 }
 
 extern u8 lbl_803C3740[];
