@@ -4738,6 +4738,37 @@ extern "C" void *fn_80226F00(void *arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_80226F94(void *arg0) {
+    struct Object {
+        u8 pad0[4];
+        s32 width;
+        s32 height;
+        u8 pad1[0x238];
+        void *field244;
+        f32 x;
+        f32 y;
+        f32 z;
+        f32 w;
+        s32 index;
+        s32 value;
+        u8 flag;
+    };
+    u8 sp8[0x40];
+    Object *object = (Object *)arg0;
+    if (object->flag != 0) {
+        fn_8022EEF8(sp8, object->value, fn_8022EDC4());
+        fn_8022ED00(sp8);
+    }
+    fn_80230C30(&object->x, &object->y, object->width, object->height);
+    if (object->field244 != 0 && object->index >= 0 && object->index < 0xF) {
+        fn_802354A0((s32)object->field244, object->index, -1,
+                    object->x, object->y, lbl_805634A8, object->w, object->z);
+    }
+    if (object->flag != 0) {
+        fn_8022EDB8();
+    }
+}
+
 #pragma push
 #pragma ppc_psq_save off
 extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
