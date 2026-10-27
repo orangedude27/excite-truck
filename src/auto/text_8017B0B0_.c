@@ -112,17 +112,27 @@ void fn_8017B3A8(void *arg0, float *arg1, float *arg2) {
     float delta[3];
     float output[3];
 
-    if (!((float)__fabs(PSVECDotProduct(arg1, arg1)) <= ((float *)&lbl_80558DC4)[0])) {
-        float dx = arg2[0] - *(float *)((char *)arg0 + 0x60);
-        float dy = arg2[1] - *(float *)((char *)arg0 + 0x64);
-        float dz = arg2[2] - *(float *)((char *)arg0 + 0x68);
-        delta[0] = dx;
-        delta[1] = dy;
-        delta[2] = dz;
+    if (!((float)__fabs(PSVECDotProduct(arg1, arg1)) <= lbl_80558DC4[0])) {
+        float a2_0, a2_1, a2_2, d0;
+        float b0, b1, b2, a0, a1, a2;
+
+        a2_0 = arg2[0];
+        a2_1 = arg2[1];
+        d0 = a2_0 - *(float *)((char *)arg0 + 0x60);
+        a2_2 = arg2[2];
+        delta[0] = d0;
+        delta[1] = a2_1 - *(float *)((char *)arg0 + 0x64);
+        delta[2] = a2_2 - *(float *)((char *)arg0 + 0x68);
         PSVECCrossProduct(delta, arg1, output);
-        *(float *)((char *)arg0 + 0x130) += arg1[0];
-        *(float *)((char *)arg0 + 0x134) += arg1[1];
-        *(float *)((char *)arg0 + 0x138) += arg1[2];
+        b0 = *(float *)((char *)arg0 + 0x130);
+        b1 = *(float *)((char *)arg0 + 0x134);
+        a0 = b0 + arg1[0];
+        b2 = *(float *)((char *)arg0 + 0x138);
+        a1 = b1 + arg1[1];
+        a2 = b2 + arg1[2];
+        *(float *)((char *)arg0 + 0x130) = a0;
+        *(float *)((char *)arg0 + 0x134) = a1;
+        *(float *)((char *)arg0 + 0x138) = a2;
         *(float *)((char *)arg0 + 0x13C) += output[0];
         *(float *)((char *)arg0 + 0x140) += output[1];
         *(float *)((char *)arg0 + 0x144) += output[2];
@@ -801,6 +811,7 @@ void fn_8017D0C8(void *arg0) {
     }
 }
 
+#pragma dont_inline on
 void fn_8017D140(unsigned char *dst, unsigned char *src, int count) {
     goto check;
 loop:
@@ -808,6 +819,7 @@ loop:
 check:
     if (--count >= 0) goto loop;
 }
+#pragma dont_inline reset
 
 extern void fn_8017A028(void);
 extern float lbl_80561BDC;
