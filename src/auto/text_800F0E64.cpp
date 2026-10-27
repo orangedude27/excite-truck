@@ -1285,6 +1285,30 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014(void *arg0, 
     return arg0;
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self, s32 flag) {
+    if (self != 0) {
+        *(void **)((u8 *)self + 8) = (void *)lbl_80325640;
+        *(void **)((u8 *)self + 0xC) = (void *)(lbl_80325640 + 0x14);
+        GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(self);
+        if ((u8 *)self + 0x98 != 0) {
+            if ((u8 *)self + 0x9C != 0)
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x9C, 0);
+        }
+        if ((u8 *)self + 0x88 != 0) {
+            if ((u8 *)self + 0x8C != 0)
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x8C, 0);
+        }
+        if ((u8 *)self + 0x78 != 0) {
+            if ((u8 *)self + 0x7C != 0)
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x7C, 0);
+        }
+        if (flag > 0)
+            ((void (*)(void *))fn_80128668)(self);
+    }
+    return self;
+}
+
 extern "C" void* __dt__Q36nw4hbm3snd11SoundPlayerFv(void*, s32);
 extern "C" void fn_800FA9E8(void*);
 extern "C" void DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(void*, void*, u32);
@@ -2482,18 +2506,25 @@ extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd
     extern u8 lbl_80325D98[];
     extern u8 lbl_80323834[];
     extern u8 lbl_80323810[];
-    void *heap;
     void *iterator;
+    void *heap;
+    void *slot;
+
     if (sound == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x280, (const char *)lbl_80325D98);
     }
     heap = *(void **)((char *)sound + 4);
     if (heap != 0) {
         iterator = (char *)player + 0x1C;
-        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)player + 0x18, &iterator, (char *)heap + 0x2C);
+        if (heap == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323834, 0x233, (const char *)lbl_80323810);
+        }
+        slot = iterator;
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)player + 0x18, &slot, (char *)heap + 0x2C);
     }
-    if (heap != 0)
+    if (heap != 0) {
         *(void **)((char *)heap + 0x34) = 0;
+    }
     *(void **)((char *)sound + 4) = 0;
 }
 
