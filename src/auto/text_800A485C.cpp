@@ -1,5 +1,10 @@
   #include <types.h>
 #include <macros.h>
+extern "C" s32 lbl_80559248;
+extern "C" s32 *lbl_8055DD70;
+extern "C" void *lbl_8055DD7C;
+extern "C" const char lbl_8031B838[];
+extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 extern u32 lbl_8055DDE0;
 extern "C" s32 fn_800A58E0(void *, s32, s32, s32, s32);
 extern "C" void fn_800D120C(void *, void *, s32);
