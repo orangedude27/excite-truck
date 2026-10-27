@@ -220,7 +220,6 @@ int fn_801DF238(int arg0) {
     extern void fn_800121A4(void);
     extern void fn_801331C4(int, int *, float *);
     extern int lbl_804874A8[];
-    extern int lbl_803394FC;
     extern int lbl_8055E9F4;
     extern float lbl_80562BF4;
     // Fix note: handles eligible event types, samples the selected object, and advances the four-entry ring index.
