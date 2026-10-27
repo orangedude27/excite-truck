@@ -17199,7 +17199,6 @@ loop_51:
 extern "C" void fn_800D272C(void*, void*);
 extern "C" char lbl_804077D8[0x400];
 extern "C" const char lbl_805597E4[];
-extern "C" void* lbl_804077C0;
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(void* head, const char* fmt, ...) {
