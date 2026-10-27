@@ -1297,6 +1297,28 @@ matrix[9]+=transformed[0]; matrix[10]+=transformed[1]; matrix[11]+=transformed[2
 }
 return arg0;
 }
+
+extern "C" void *fn_8021B8AC(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        void *ptr = *(void **)((u8 *)arg0 + 0x370);
+        *(void **)arg0 = lbl_8033F180;
+        if (ptr != 0) {
+            fn_8022EE98(ptr);
+            *(void **)((u8 *)arg0 + 0x370) = 0;
+        }
+        fn_8022A8E4(*(s32 *)((u8 *)arg0 + 0x368));
+        if (arg0 != 0) {
+            if (arg0 != 0) {
+                fn_8021915C(arg0, 0);
+            }
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 #pragma dont_inline reset
 extern "C" void fn_8021B944(void *arg0) {
     u8 sp8[0x40];
