@@ -465,8 +465,8 @@ extern void PSVECCrossProduct(const void *, const void *, float *);
 extern float PSVECSquareDistance(const void *, const void *);
 extern void fn_8017A580(void *);
 extern float lbl_80562AAC, lbl_80562AB8, lbl_80562AC8, lbl_80562ACC, lbl_80562AD0, lbl_80562AD4;
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 void fn_801D4598(void *arg0, float farg0) {
     char *p = (char *)arg0;
     float sp8[3], dot, scale, x, y, z;
