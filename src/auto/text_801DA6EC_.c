@@ -15,18 +15,87 @@ extern int lbl_80339258[];
 extern void *lbl_8055AD98;
 extern void *lbl_8055E984;
 
-#pragma scheduling off
+#pragma push
+#pragma scheduling invalid_target
 void fn_801DA6EC(void) {
     void *obj;
-    obj = fn_801284F8(0x580C, lbl_8055AD98);
+    void **table;
+    obj = fn_801284F8(0x580C, &lbl_8055AD98);
     if (obj != 0) {
         *(void **)obj = lbl_803381C0;
         fn_801D0DDC(obj);
-        *(void **)obj = lbl_80339258;
-        *(void **)((char *)obj + 4) = (char *)lbl_80339258 + 0x1C;
+        table = (void **)lbl_80339258;
+        *(void **)obj = table;
+        table = (void **)((char *)table + 0x1C);
+        *(void **)((char *)obj + 4) = table;
         lbl_8055E984 = obj;
         *(int *)((char *)obj + 0x5808) = 0;
     }
+}
+#pragma pop
+extern void *fn_801D9F28(void);
+extern int fn_801D9CC4(int);
+extern void fn_801D9F84(int, int);
+extern char *fn_801DA03C(int, int);
+extern float fn_801DD88C(int, int, int);
+extern int fn_8029F458(unsigned char *, int);
+extern char lbl_8055ADA0[];
+extern char lbl_8055ADA8[];
+extern float lbl_80562B50;
+void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
+    // Fix note: initializes the indexed CollisionSpace record and derives its flag from a returned name string.
+    int index;
+    int count;
+    char *record;
+    unsigned char *src;
+    unsigned char *dst;
+    int handle;
+    int i;
+    char *text;
+    int zero = 0;
+    index = *(int *)((char *)lbl_8055E984 + 0x5808);
+    *(int *)((char *)lbl_8055E984 + 0x5808) = index + 1;
+    record = (char *)lbl_8055E984 + index * 0x2C + 8;
+    src = arg1;
+    dst = (unsigned char *)record;
+    count = 0x10;
+    while (--count > 0) {}
+    *(dst - 1) = 0;
+    do {
+        unsigned char c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0)
+            break;
+    } while (1);
+    *(int *)(record + 0x20) = arg0;
+    handle = 0;
+    if (fn_801284F8(0x10, &lbl_8055ADA0) != 0)
+        handle = (int)fn_801D9F28();
+    *(int *)(record + 0x28) = handle;
+    *(int *)(record + 0x24) = fn_801D9CC4(arg2);
+    fn_801D9F84(*(int *)(record + 0x28), *(int *)(record + 0x24));
+    record[0x19] = 0;
+    i = 0;
+    for (;;) {
+        text = fn_801DA03C(*(int *)(record + 0x28), i++);
+        if (text == 0)
+            break;
+        if (strstr(text, lbl_8055ADA8) != 0) {
+            record[0x19] = 1;
+            break;
+        }
+    }
+    record[0x18] = record[0x19];
+    if (record[0x19] != 0) {
+        *(float *)(record + 0x1C) = lbl_80562B50;
+        record[0x10] = 0;
+    } else {
+        *(int *)(record + 8) = 0;
+        *(int *)(record + 0x10) = 0;
+        *(int *)(record + 0xC) = 0;
+        *(float *)(record + 0x14) = fn_801DD88C(zero, zero, zero) - 0.0f;
+    }
+    fn_8029F458(arg1, arg0);
 }
 
 extern int fn_801D9FC4(char **, const char *);
@@ -124,88 +193,78 @@ void *__dt__14CollisionSpaceFv_801DAB70(void *arg0, int arg1) {
 
 float fn_801DABD4(void *arg0) {
     float value;
+    register float max = lbl_80562B54;
+    register int i = 0;
+    register int offset = 0;
+
+    goto check;
+loop:
+    value = fn_801DA6B8(*(int *)((char *)(*(void ***)((char *)arg0 + 4))[offset / 4] + 0x28));
+    if (max <= value)
+        max = value;
+    offset += 4;
+    i++;
+check:
+    if (i < *(int *)((char *)arg0 + 8))
+        goto loop;
+    return max;
+}
+
+#pragma scheduling invalid_target
+float fn_801DAC5C(void *arg0) {
+    int count = *(int *)((char *)arg0 + 8);
+    int index;
     float max = lbl_80562B54;
-    int offset = 0;
-    int i = 0;
-    while (i < *(int *)((char *)arg0 + 8)) {
-        value = fn_801DA6B8(*(int *)((char *)(*(void ***)((char *)arg0 + 4))[offset / 4] + 0x28));
-        if (max > value) {
-        } else {
+    for (index = 0; index < count; index++) {
+        void **items = *(void ***)((char *)arg0 + 4);
+        void *entry = items[index];
+        void *data = *(void **)((char *)entry + 0x28);
+        float value = *(float *)((char *)data + 0xC);
+        if (max <= value) {
             max = value;
         }
-        offset += 4;
-        i += 1;
     }
     return max;
 }
-
-float fn_801DAC5C(void *arg0) {
-    float value;
-    float max;
-    int count;
-    int offset;
-    int i;
-    void **items;
-    count = *(int *)((char *)arg0 + 8);
-    offset = 0;
-    max = lbl_80562B54;
-    if (count > 0) {
-        items = *(void ***)((char *)arg0 + 4);
-        for (i = 0; i < count; i++) {
-            value = *(float *)((char *)(*(void **)((char *)items[offset / 4] + 0x28)) + 0xC);
-            if (max > value) {
-            } else {
-                max = value;
-            }
-            offset += 4;
-        }
-    }
-    return max;
-}
-
+#pragma scheduling on
 extern void fn_801DA064(int, void *);
 extern void fn_801DA198(int, float);
 extern void fn_802E30C8(char *, int, void *);
 extern char lbl_803392F0[];
+#pragma scheduling invalid_target
 void fn_801DACA0(void *arg0, float arg1) {
     float value;
-    int i;
+    int count;
     int offset;
     void *entry;
-    void *context;
+
     value = lbl_80562B54;
     if (arg1 < value)
-        value = (*(float (**)(void *))(*(char ***)arg0 + 3))(arg0);
-    context = (char *)arg0 + 0x10;
-    i = 0;
+        value = ((float (*)(void *))(*(void ***)(arg0) + 3)[0])(arg0);
+
+    count = 0;
     offset = 0;
-    while (i < *(int *)((char *)arg0 + 8)) {
+    while (count < *(int *)((char *)arg0 + 8)) {
         entry = *(void **)((char *)*(void ***)((char *)arg0 + 4) + offset);
         if (*((unsigned char *)entry + 0x18) != 0)
-            fn_802E30C8(lbl_803392F0, i, context);
+            ((void (*)(char *, ...))fn_802E30C8)((char *)lbl_803392F0, count, (void *)((int *)arg0 + 4));
         *((unsigned char *)entry + 0x18) = 1;
         *((float *)((char *)entry + 0x1C)) = arg1;
-        fn_801DA064(*(int *)((char *)entry + 0x28), context);
+        fn_801DA064(*(int *)((char *)entry + 0x28), (char *)arg0 + 0x10);
         fn_801DA198(*(int *)((char *)entry + 0x28), value);
         offset += 4;
-        i++;
+        count += 1;
     }
 }
-
-#pragma scheduling off
+#pragma scheduling on
 int fn_801DAD7C(void *arg0) {
-    int count;
+    int count = *(int *)((char *)arg0 + 8);
     int index;
-    void **items;
-    count = *(int *)((char *)arg0 + 8);
-    index = 0;
-    items = *(void ***)((char *)arg0 + 4);
-    if (count <= 0)
-        return 1;
-    while (count-- > 0) {
-        if (*((unsigned char *)items[index] + 0x18) != 0)
+    for (index = 0; index < count; index++) {
+        void **items = *(void ***)((char *)arg0 + 4);
+        if (*((unsigned char *)items[index] + 0x18) != 0) {
             return 0;
-        index++;
+        }
     }
     return 1;
 }
@@ -260,13 +319,13 @@ void fn_801DAEF8(void) {
 }
 
 void fn_801DAEFC(void *arg0) {
-    unsigned char *entry;
+    unsigned char *entry = (unsigned char *)arg0 + 8;
     int i;
-    entry = (unsigned char *)arg0 + 8;
-    i = 0;
-    for (; i < *(int *)((char *)arg0 + 0x5808); i++) {
-        unsigned char flag = entry[0x19];
-        fn_801DA198(*(int *)(entry + 0x28), (entry[0x18] = flag, lbl_80562B54));
+    for (i = 0; i < *(int *)((char *)arg0 + 0x5808); i++) {
+        unsigned char flag = *(volatile unsigned char *)(entry + 0x19);
+        float value = *(volatile float *)&lbl_80562B54;
+        *(volatile unsigned char *)(entry + 0x18) = flag;
+        fn_801DA198(*(int *)(entry + 0x28), value);
         entry += 0x2C;
     }
 }
