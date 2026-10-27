@@ -185,27 +185,50 @@ typedef void (*Cross3)(float *, float *, float *);
 typedef void (*Cross4)(float *, float *, float *, float);
 typedef void (*Cross5)(float *, float *, float *, float, float);
 typedef void (*Cross7)(float *, float *, float *, float, float, float, float);
+#pragma push
+#pragma scheduling on
 void fn_80020070(float *arg0) {
-    extern float lbl_805604B4, lbl_805604B8;
-    float sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
-    float temp_f1, temp_f2;
-    sp2C = lbl_805604B4;
-    sp30 = lbl_805604B8;
-    sp34 = lbl_805604B4;
-    ((Cross4)PSVECCrossProduct)(&sp2C, arg0 + 6, arg0, lbl_805604B4);
-    ((Cross3)PSVECCrossProduct)(arg0 + 6, arg0, arg0 + 3);
-    sp8 = arg0[0]; spC = arg0[1]; sp10 = arg0[2];
-    temp_f2 = arg0[8]; temp_f1 = arg0[7];
-    sp20 = arg0[6]; sp24 = temp_f1; sp28 = temp_f2;
-    ((Cross5)PSVECCrossProduct)(&sp20, &sp8, &sp14, temp_f1, temp_f2);
-    PSVECNormalize(&sp8, &sp8);
-    PSVECNormalize(&sp14, &sp14);
-    ((Cross3)PSVECCrossProduct)(&sp8, &sp14, &sp20);
-    arg0[0] = sp8; arg0[1] = spC; arg0[2] = sp10;
-    arg0[3] = sp14; arg0[4] = sp18; arg0[5] = sp1C;
-    arg0[6] = sp20; arg0[7] = sp24; arg0[8] = sp28;
-}
+    float b4 = lbl_805604B4;
+    float b8 = lbl_805604B8;
+    float axis[3];
+    float vec2[3];
+    float cross[3];
+    float vec0[3];
+    float x, y, z, a, b, c;
 
+    axis[0] = b4;
+    axis[1] = b8;
+    axis[2] = b4;
+    ((Cross3)PSVECCrossProduct)(axis, arg0 + 6, arg0);
+    ((Cross3)PSVECCrossProduct)(arg0 + 6, arg0, arg0 + 3);
+
+    z = arg0[2];
+    y = arg0[1];
+    x = arg0[0];
+    vec0[0] = x;
+    vec0[1] = y;
+    vec0[2] = z;
+    c = arg0[8];
+    b = arg0[7];
+    a = arg0[6];
+    vec2[0] = a;
+    vec2[1] = b;
+    vec2[2] = c;
+    ((Cross3)PSVECCrossProduct)(vec2, vec0, cross);
+    PSVECNormalize(vec0, vec0);
+    PSVECNormalize(cross, cross);
+    ((Cross3)PSVECCrossProduct)(vec0, cross, vec2);
+
+    arg0[0] = vec0[0];
+    arg0[1] = vec0[1];
+    arg0[2] = vec0[2];
+    arg0[3] = cross[0];
+    arg0[4] = cross[1];
+    arg0[5] = cross[2];
+    arg0[6] = vec2[0];
+    arg0[7] = vec2[1];
+    arg0[8] = vec2[2];
+}
 void fn_8002017C(void) {
     fn_8000B3DC(0);
 }
@@ -558,14 +581,10 @@ void fn_800217E4(void) {
         temp_r0 = fn_802E2C20() - lbl_8055D63C;
         if (temp_r0 < 0x5DC) {
             var_f4 = lbl_805604B8;
-            if (var_f4 < ((float)temp_r0 - lbl_80560560) / lbl_80560564) {
-            } else {
-                var_f4 = ((float)temp_r0 - lbl_80560560) / lbl_80560564;
-            }
-            if (var_f4 > lbl_805604B4) {
-            } else {
-                var_f4 = lbl_805604B4;
-            }
+            var_f4 = var_f4 < ((float)temp_r0 - lbl_80560560) / lbl_80560564
+                ? var_f4
+                : ((float)temp_r0 - lbl_80560560) / lbl_80560564;
+            var_f4 = var_f4 > lbl_805604B4 ? var_f4 : lbl_805604B4;
             temp_f1 = lbl_80560554 + (var_f4 * lbl_80560568);
             if (temp_f1 < lbl_805604B4) {
                 var_f0 = temp_f1 - lbl_805604FC;
