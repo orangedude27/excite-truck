@@ -48,7 +48,7 @@ extern "C" char *fn_800A4AAC(char *, char *);
 extern "C" void fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
-namespace nw4hbm { namespace lyt { class Pane; class Material; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); }; } }
+namespace nw4hbm { namespace lyt { class Pane; class Material; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); }; } }
 
 extern "C" const char lbl_8031EE58[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
@@ -11594,6 +11594,31 @@ extern "C" void fn_800CF96C(void) {
 
 }
 
+extern "C" void *List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(const void *, const void *);
+extern "C" void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
+extern "C" void *__dt__Q310homebutton3gui7ManagerFv(void *arg0, s32 arg1) {
+    void *node;
+    void *list;
+
+    if (arg0 != 0) {
+        *(void **)arg0 = (void *)lbl_8031E83C;
+        list = (u8 *)arg0 + 8;
+        node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(list, 0);
+        while (node != 0) {
+            List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(list, node);
+            if (*(void **)((u8 *)arg0 + 0x14) != 0) {
+                MEMFreeToAllocator((MEMAllocator *)*(void **)((u8 *)arg0 + 0x14), node);
+            } else {
+                ((void (*)(void *))fn_80128668)(node);
+            }
+            node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(list, 0);
+        }
+        if (arg1 > 0)
+            ((void (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 void homebutton::gui::Manager::init() {
     class ComponentDispatch {
     public:
@@ -13242,15 +13267,16 @@ extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt4Paneb(voi
 
 extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt8Material(void *arg0, void *arg1) {
     u16 i = 0;
-    u8 *entries = (u8 *)*(void **)((u8 *)arg0 + 0xC);
-    u8 *offsets = entries + *(s32 *)(entries + 0x10);
-    while (i < *(u16 *)(entries + 0xE)) {
-        u8 *entry = entries + *(s32 *)(offsets + i * 4);
+    u8 *offsets = (u8 *)*(void **)((u8 *)arg0 + 0xC);
+    offsets += *(s32 *)(offsets + 0x10);
+    while (i < *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0xE)) {
+        u8 *entry = (u8 *)arg1 + *(s32 *)(offsets + i * 4);
         if (entry[0x15] == 1 && fn_800D58F0((u8 *)arg1 + 4) != 0) {
             u8 *link = (u8 *)*(void **)((u8 *)arg0 + 0x18) + i * 0x10;
             *(void **)(link + 8) = arg0;
             *(u16 *)(link + 0xC) = i;
-            AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(arg1, link);
+            AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
+                arg1, (u8 *)*(void **)((u8 *)arg0 + 0x18) + i * 0x10);
         }
         i++;
     }
