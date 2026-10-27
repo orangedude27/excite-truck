@@ -14,6 +14,7 @@ extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
 extern unsigned int * const __GXData;
+extern unsigned char lbl_8055D970;
 extern unsigned short *__cpReg;
 extern unsigned short *__peReg;
 extern unsigned char lbl_8037C0E4[];
