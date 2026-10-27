@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+#include <macros.h>
 
 typedef struct {
     u8 unk_0x0[0x1E4];
@@ -42,47 +43,50 @@ extern const char lbl_80558980[];
 extern const char lbl_80558988[];
 extern const char lbl_80558990[];
 void fn_80007DA0(void) {
-    void *config;
-    void *entry;
-    void **vtable;
-    u32 count;
+    char *base;
+    volatile u32 *global;
     u32 index;
-    u32 offset;
-    void *(*getEntry)(void *, int);
-    void *(*getName)(void *);
-    void *(*func)(void *, const char *, const char *);
 
-    config = fn_80131808(lbl_802FB6E0 + 0x68);
-    lbl_8034EF38.unk_0x1E4 = config;
-    count = 0;
-    *(u32 *)((u8 *)&lbl_8034EF38 + 0x1E0) = 0;
+    base = lbl_802FB6E0;
+    global = (volatile u32 *)&lbl_8034EF38;
+    global[0x79] = (u32)fn_80131808(base + 0x68);
+    global[0x78] = 0;
     index = 0;
-    do {
-        vtable = *(void ***)config;
-        getEntry = (void *(*)(void *, int))vtable[3];
-        entry = getEntry(config, index);
+
+loop:
+    {
+        void *config;
+        void *entry;
+        void *value;
+
+        config = (void *)global[0x79];
+        entry = ((void *(*)(void *, u32))(*(void ***)config)[3])(config, index);
         index++;
-        if (entry != 0) {
-            vtable = *(void ***)entry;
-            getName = (void *(*)(void *))vtable[2];
-            if (stricmp(getName(entry), lbl_80558978) == 0) {
-                const char *value;
-                value = ((const char *(*)(void *, const char *))vtable[5])(entry, lbl_80558980);
-                offset = count * 0xC;
-                *(const char **)((u8 *)&lbl_8034EF38 + offset) = value;
-                func = (void *(*)(void *, const char *, const char *))vtable[6];
-                *(void **)((u8 *)&lbl_8034EF38 + offset + 4) = func(entry, lbl_802FB6E0 + 0x74, lbl_80558988);
-                *(void **)((u8 *)&lbl_8034EF38 + offset + 8) = func(entry, lbl_80558990, lbl_80558988);
-                count++;
-                *(u32 *)((u8 *)&lbl_8034EF38 + 0x1E0) = count;
-                if (count >= 0x28) {
-                    fn_802E317C(lbl_802FB6E0 + 0x84);
-                    break;
-                }
-            }
+        if (entry == 0) {
+            goto done;
         }
-    } while (index != 0);
-    qsort(&lbl_8034EF38, count, 0xC, (int (*)(const void *, const void *))fn_80007D94);
+        if (stricmp(((const char *(*)(void *))(*(void ***)entry)[2])(entry), lbl_80558978) != 0) {
+            goto loop;
+        }
+
+        value = ((void *(*)(void *, const char *))(*(void ***)entry)[5])(entry, lbl_80558980);
+        *(void **)((u8 *)global + global[0x78] * 0xC) = value;
+
+        value = ((void *(*)(void *, const char *, const char *))(*(void ***)entry)[6])(entry, base + 0x74, lbl_80558988);
+        *(void **)((u8 *)global + global[0x78] * 0xC + 4) = value;
+
+        value = ((void *(*)(void *, const char *, const char *))(*(void ***)entry)[6])(entry, lbl_80558990, lbl_80558988);
+        *(void **)((u8 *)global + global[0x78] * 0xC + 8) = value;
+
+        global[0x78] = global[0x78] + 1;
+        if (global[0x78] < 0x28) {
+            goto loop;
+        }
+        fn_802E317C(base + 0x84);
+    }
+
+done:
+    qsort((void *)global, global[0x78], 0xC, (int (*)(const void *, const void *))fn_80007D94);
 }
 
 #pragma dont_inline on
