@@ -17,7 +17,7 @@ namespace nw4hbm { namespace lyt {
         struct Link { Link* next; Link* prev; };
         u8 unk_0[0x14];
         Link children;
-        u8 unk_20[8];
+        u8 unk_20[0xC];
         void* material;
         u8 unk_2C[0xD0];
         void* materials;
@@ -85,7 +85,7 @@ extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* arg0, int arg1) {
     return arg0;
 }
 
-extern "C" void* FindMaterialByName__Q36nw4hbm3lyt6WindowFPCcb(void* self, const char* name, bool searchChildren) {
+void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChildren) {
     struct Pane {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -93,31 +93,29 @@ extern "C" void* FindMaterialByName__Q36nw4hbm3lyt6WindowFPCcb(void* self, const
         virtual void v12(); virtual void v13();
         virtual void* FindMaterialByName(const char*, bool);
     };
-    int doSearch = searchChildren;
     int i;
     int offset;
-    if (*(void**)((char*)self + 0x28) != 0 &&
-        fn_800D58F0((char*)*(void**)((char*)self + 0x28) + 4, name) != 0)
-        return *(void**)((char*)self + 0x28);
+    if (material != 0 && fn_800D58F0((char*)material + 4, name) != 0)
+        return this->material;
     i = 0;
     offset = 0;
-    while (i < *(unsigned char*)((char*)self + 0x100)) {
-        void* candidate = *(void**)(*(char**)((char*)self + 0xFC) + offset + 4);
+    while (i < materialCount) {
+        void* candidate = *(void**)((char*)materials + offset + 4);
         if (fn_800D58F0((char*)candidate + 4, name) != 0)
-            return *(void**)(*(char**)((char*)self + 0xFC) + i * 8 + 4);
+            return *(void**)((char*)materials + i * 8 + 4);
         offset += 8;
         i++;
     }
-    if (doSearch) {
-        char* child = *(char**)((char*)self + 0x14);
-        char* sentinel = (char*)self + 0x14;
+    if (searchChildren) {
+        Link* child = children.next;
+        Link* sentinel = &children;
         while (child != sentinel) {
             if (child == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            void* value = ((Pane*)(child - 4))->FindMaterialByName(name, true);
+            void* value = ((Pane*)((char*)child - 4))->FindMaterialByName(name, true);
             if (value != 0)
                 return value;
-            child = *(char**)child;
+            child = child->next;
         }
     }
     return 0;
