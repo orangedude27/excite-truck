@@ -165,6 +165,7 @@ extern void fn_80179F94(void *, void *);
 extern char lbl_80333B98[];
 extern int lbl_80333B48[];
 extern float lbl_80562AAC, lbl_80562AB8;
+#pragma scheduling invalid_target
 void fn_801D3910(void *arg0) {
     char *p;
     int i;
@@ -173,35 +174,36 @@ void fn_801D3910(void *arg0) {
     p = (char *)arg0 + 0x248;
     *(void **)((char *)arg0 + 0x244) = p;
     if (p != 0) {
-        float zero = lbl_80562AB8;
-        float value = lbl_80562AAC;
+        double value = lbl_80562AAC;
+        double zero = lbl_80562AB8;
         volatile float temp[3];
+        void *initialVtable = lbl_80333B98;
 
-        *(volatile void **)p = lbl_80333B98;
-        temp[0] = zero;
-        temp[1] = zero;
-        temp[2] = zero;
+        *(volatile void **)p = initialVtable;
+        temp[0] = (float)zero;
+        temp[1] = (float)zero;
+        temp[2] = (float)zero;
         *(void **)(p + 0xC) = (char *)arg0 + 0x3C;
         *(void **)(p + 4) = arg0;
         *(int *)(p + 8) = 0;
         *(int *)(p + 0x18) = 0x53504852;
-        *(float *)(p + 0x10) = value;
-        *(float *)(p + 0x14) = value;
+        *(float *)(p + 0x10) = (float)value;
+        *(float *)(p + 0x14) = (float)value;
         *(int *)(p + 0x20) = 100;
         *(int *)(p + 0x1C) = 0;
         *(void **)p = lbl_80333B48;
-        *(float *)(p + 0x24) = value;
-        *(float *)(p + 0x34) = zero;
-        *(float *)(p + 0x38) = zero;
-        *(float *)(p + 0x3C) = zero;
-        *(float *)(p + 0x40) = zero;
-        *(float *)(p + 0x44) = zero;
-        *(float *)(p + 0x48) = zero;
+        *(float *)(p + 0x24) = (float)value;
+        *(float *)(p + 0x34) = (float)zero;
+        *(float *)(p + 0x38) = (float)zero;
+        *(float *)(p + 0x3C) = (float)zero;
+        *(float *)(p + 0x40) = (float)zero;
+        *(float *)(p + 0x44) = (float)zero;
+        *(float *)(p + 0x48) = (float)zero;
         *(char *)(p + 0x4C) = 0;
-        *(float *)(p + 0x50) = zero;
-        *(float *)(p + 0x28) = zero;
-        *(float *)(p + 0x2C) = zero;
-        *(float *)(p + 0x30) = zero;
+        *(float *)(p + 0x50) = (float)zero;
+        *(float *)(p + 0x28) = (float)zero;
+        *(float *)(p + 0x2C) = (float)zero;
+        *(float *)(p + 0x30) = (float)zero;
         if (arg0 != 0)
             fn_8019EECC(arg0, p + 0x28);
     }
@@ -211,7 +213,7 @@ void fn_801D3910(void *arg0) {
     lbl_804421D8[i] = arg0;
     *(int *)&lbl_8055E940 = i + 1;
 }
-
+#pragma scheduling on
 extern void fn_8017B81C(void);
 extern void fn_801D4598(void *, float);
 extern float lbl_8055E3C8;
@@ -251,8 +253,8 @@ void fn_801D3BF0(void *arg0) {
 }
 #pragma paired reset
 #pragma paired_single reset
-extern void fn_8017D2C8(void);
-extern void fn_801796CC(int, float *, int, float, float);
+extern void fn_8017D2C8();
+extern void fn_801796CC();
 void fn_801D3E8C(void *arg0, void *arg2, void *arg4) {
     char *p0 = (char *)arg0;
     char *p2 = (char *)arg2;
