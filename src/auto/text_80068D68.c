@@ -8996,6 +8996,32 @@ u8 hidh_conn_reg(void) {
     return 0;
 }
 
+u8 hidh_conn_disconnect(u32 index) {
+    u8 *conn;
+
+    conn = lbl_803C3C38 + index * 0x34;
+    if (lbl_803C3C38[0x401] >= 4) {
+        fn_8007093C(0x1E0003, lbl_8031787C);
+    }
+    if (*(u16 *)(conn + 0x14) == 0) {
+        if (*(u16 *)(conn + 0x16) == 0) {
+            goto clear_state;
+        }
+    }
+    conn[0x10] = 5;
+    if (*(u16 *)(conn + 0x16) != 0) {
+        L2CA_DisconnectReq(*(u16 *)(conn + 0x16));
+    }
+    if (*(u16 *)(conn + 0x14) != 0) {
+        L2CA_DisconnectReq(*(u16 *)(conn + 0x14));
+    }
+    goto done;
+clear_state:
+    conn[0x10] = 0;
+done:
+    return 0;
+}
+
 extern u8 lbl_8031787C[];
 void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
     u8 *cb = lbl_803C3C38;
