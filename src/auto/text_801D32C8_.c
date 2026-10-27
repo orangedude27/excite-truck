@@ -293,10 +293,15 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
     }
 }
 
+struct Mtx48 {
+    int w[12];
+};
+extern void fn_801A4868(void *, int);
+extern void fn_8017A57C(void *);
 extern double fn_8002F234(float);
 extern void fn_8019F564(void *, void *, float *, void *, float, float, float, float, float, float);
 extern void fn_802E317C(const char *, ...);
-extern float lbl_80562AAC, lbl_80562AB8, lbl_80562AC4;
+extern float lbl_80562AAC, lbl_80562AB8, lbl_80562ABC, lbl_80562AC4;
 extern char lbl_8033837C[];
 extern int lbl_80333918[];
 #pragma cplusplus on
