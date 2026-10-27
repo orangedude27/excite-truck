@@ -820,8 +820,8 @@ int fn_8017D274(void *arg0, void *arg1) {
     return 0x20;
 }
 
-void fn_8017D2C8(void) {
-    fn_8017B3A8();
+void fn_8017D2C8(void *arg0, float *arg1, float *arg2) {
+    fn_8017B3A8(arg0, arg1, arg2);
 }
 
 void fn_8017D2CC(int arg0) {
