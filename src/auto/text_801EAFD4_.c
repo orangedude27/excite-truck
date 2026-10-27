@@ -15,7 +15,7 @@ public:
 };
 #pragma cplusplus reset
 extern char lbl_8033A048[];
-extern s32 *lbl_80339E88;
+extern char lbl_80339E88[];
 extern s32 *lbl_8055EBA0;
 extern s32 lbl_8055AFB8;
 extern s32 lbl_8055AFBC;
@@ -492,6 +492,58 @@ extern "C" void fn_801EB9A4(s32 *arg0) {
     }
     *(ThreadObject **)arg0 = 0;
 }
+
+extern "C" s32 fn_801EB9FC(void *arg0) {
+    u8 sp8;
+    u8 sp9;
+    u32 sp10;
+    void *sp14;
+    f32 *spC;
+    void *result;
+    char *file = (char *)&lbl_80339E88;
+    void (*setResource)(s32, s32);
+
+    result = ((void *(*)(void *, s32, u32 *, void **, u8 *, u8 *))fn_8012C370)(
+        arg0, 0x47524146, &sp10, &sp14, &sp8, &sp9);
+    lbl_8055EBA0 = (s32 *)result;
+    if (result != 0) {
+        if (sp10 == 0x15) {
+            fn_801EB128();
+            fn_801EB854();
+            if (sp9 == 0) {
+                fn_802E317C(file + 0x180, sp10, 0x15);
+            } else {
+                fn_801EB634(result, (s32)result);
+                fn_801EB2D4(*(s32 *)result, (s32)result);
+                fn_801EBB7C((char *)result + 4, (s32)result);
+                fn_801EBB7C((char *)result + 8, (s32)result);
+                setResource = (void (*)(s32, s32))fn_802CDDC8;
+                setResource(((s32 *)result)[1], ((s32 *)result)[1]);
+                setResource(((s32 *)result)[2], ((s32 *)result)[2]);
+                fn_801EB6A8(*(s32 *)result);
+                fn_801EB90C();
+            }
+        } else {
+            fn_802E317C(file + 0x180, sp10, 0x15);
+        }
+    } else {
+        fn_802AE7F4();
+    }
+
+    lbl_8055EBA4 = lbl_80562E6C;
+    if (fn_8012C33C(file + 0x194) != 0) {
+        lbl_8055AFB8 = fn_802C6FC0(file + 0x194, 0, 0);
+        spC = 0;
+        if (fn_801E2CCC(file + 0x1A0, &spC) != 0) {
+            lbl_8055EBA4 = *spC;
+        }
+    } else {
+        lbl_8055AFB8 = -1;
+    }
+    lbl_8055AFBC = fn_802C6FC0(file + 0x1B0, 0, 0);
+    return lbl_8055EBA0 != 0;
+}
+
 #pragma pop
 #pragma cplusplus reset
 extern void fn_801EBB7C(void *, s32);
