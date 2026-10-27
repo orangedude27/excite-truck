@@ -14,7 +14,8 @@ extern char lbl_8034D678[];
 extern int lbl_8055D200;
 extern void *fn_801284E8(void *, int);
 extern void fn_80128658(void *);
-extern unsigned int fn_80132E7C(void *);
+extern unsigned int fn_80132E7C(void *, ...);
+extern void *fn_802E967C(int, void *, int);
 extern int fn_802E7130(void);
 extern int fn_802E721C(unsigned int, unsigned int, int);
 extern int fn_802E8D8C(void *, void *, int);
@@ -210,5 +211,19 @@ second_check:
 void fn_802E7128(void) { fn_802E6FBC(); }
 
 void fn_802E712C(void) {}
+
+#pragma scheduling invalid_target
+int fn_802E7130(void) {
+    int count = lbl_8055FFC0;
+    int total = 0x20D0;
+    int i = 0;
+    unsigned char *entry = lbl_804FC8B0;
+    while (i < count) {
+        total += *(int *)(entry + 0xC);
+        entry += 0x14;
+        i++;
+    }
+    return (total + 0x1FFF) & 0xFFFFE000;
+}
 #pragma scheduling on
 
