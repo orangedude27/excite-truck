@@ -2323,6 +2323,23 @@ void bta_dm_pinname_cback(u8 *arg0) {
 
 s32 fn_80072EF4(void) { return 0xB; }
 
+static UINT8 bta_dm_new_link_key_cback(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, UINT8 *link_key) {
+    u8 sec_event[0x110];
+    void (*callback)(int, void *);
+
+    #pragma unused(dev_class)
+    fn_80070FA4(sec_event, bd_addr);
+    memcpy(sec_event + 6, bd_name, 0x1F);
+    sec_event[0x25] = 0;
+    memcpy(sec_event + 0xFF, link_key, 0x10);
+    sec_event[0xFE] = 1;
+    sec_event[0x10F] = 1;
+    callback = *(void (**)(int, void *))(lbl_803C0C14 + 0x50);
+    if (callback != NULL)
+        callback(3, sec_event);
+    return 1;
+}
+
 static UINT8 bta_dm_authentication_complete_cback(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, int result) {
     u8 sec_event[0x110];
     void (*callback)(int, void *);
