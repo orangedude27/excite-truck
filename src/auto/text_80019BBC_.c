@@ -688,6 +688,7 @@ void fn_8001B7BC(void *arg0) {
     fn_802C2C00(temp_r31); fn_802C9294(-2, 0);
     fn_802C8750(frame.sp58, -1); fn_802C96DC(frame.sp78, -1);
 }
+#pragma scheduling on
 
 #pragma small_data on
 extern float lbl_80560418;
