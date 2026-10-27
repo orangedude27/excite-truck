@@ -11367,9 +11367,10 @@ u8 fn_8008D7C4(void) { return lbl_803C4040[1]; }
 void *l2cu_build_header(u16 arg0, u8 arg1, u8 arg2, s32 arg3) {
     BT_HDR *buf = GKI_getpoolbuf(2);
     u8 *p;
+    u16 length = arg1;
     if (buf == NULL) return NULL;
-    buf->len = arg1 + 0xC;
     buf->offset = 0;
+    buf->len = arg1 + 0xC;
     p = (u8 *)(buf + 1);
     p[0] = arg0 | 0x2000;
     p[1] = (arg0 | 0x2000) >> 8;
@@ -11382,7 +11383,7 @@ void *l2cu_build_header(u16 arg0, u8 arg1, u8 arg2, s32 arg3) {
     p[8] = arg2;
     p[9] = arg3;
     p[10] = arg1;
-    p[11] = arg3 >> 8;
+    p[11] = length >> 8;
     return buf;
 }
 
@@ -13332,11 +13333,11 @@ void rfc_send_ua(void *arg0, s32 arg1, void *arg2) {
 }
 
 void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
-    u8 *buf;
     u8 *data;
-    s32 flag;
+    u8 *buf;
+    u8 flag;
 
-    flag = 1;
+    flag = 2;
     if (((u8 *)arg0)[0x6D] != 0) {
         flag = 0;
     }
@@ -13344,7 +13345,7 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
     if (buf != 0) {
         *(u16 *)(buf + 4) = 9;
         data = buf + 0x11;
-        data[0] = (u8)(((arg1 << 2) & 0x3FC) | ((flag << 1) & 0xFE) | 1);
+        data[0] = (u8)(((arg1 << 2) & 0x3FC) | flag | 1);
         data[1] = (u8)((((-(s32)arg2 | arg2) >> 31) & 0x10) | 0xF);
         data[2] = 1;
         data[3] = fn_8009504C(3, data, data[0]);
