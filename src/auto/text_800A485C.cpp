@@ -329,7 +329,7 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ..
 extern "C" const char lbl_8031E938[];
 #pragma push
 #pragma small_data on
-extern "C" const char lbl_805597D0[];
+extern "C" char lbl_805597D0[];
 #pragma pop
 extern "C" u32 lbl_8055DDA0;
 
@@ -11585,8 +11585,8 @@ extern "C" void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void 
     void *list = (u8 *)arg0 + 8;
     while (i < *(u16 *)((u8 *)arg0 + 0x10)) {
         void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 8, (u16)i);
-        Dummy *obj = (Dummy *)*(void **)((u8 *)entry + 4);
-        obj->Set(arg1);
+        void *obj = *(void **)((u8 *)entry + 4);
+        ((Dummy *)obj)->Set(arg1);
         i++;
         if (list == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
@@ -11786,18 +11786,19 @@ extern "C" void fn_800D0560(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 0x2C) = arg1;
 }
 
-extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(void *arg0, void *arg1) {
-    u16 i = 0;
+extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(u8 *arg0, void *arg1) {
+    register u16 i = 0;
+    void *list = arg0 + 8;
     do {
-        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 0x18, i);
+        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(arg0 + 0x18, i);
         if (*(void **)item == arg1) {
             return *(s32 *)((u8 *)item + 4);
         }
         i++;
-        if ((u8 *)arg0 + 8 == 0) {
+        if (list == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
         }
-    } while (i < *(u16 *)((u8 *)arg0 + 0x10));
+    } while (i < *(u16 *)(arg0 + 0x10));
     return 0;
 }
 
