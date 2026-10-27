@@ -23,6 +23,18 @@ extern unsigned short *__peReg;
 extern unsigned char lbl_8037C0C0[];
 extern unsigned char lbl_8037C0E4[];
 extern unsigned int *__piReg;
+
+typedef struct {
+    void *base;
+    void *top;
+    int size;
+    int hiWatermark;
+    int loWatermark;
+    void *rdPtr;
+    void *wrPtr;
+    int count;
+    unsigned char wrap;
+} GXFifoObjInternal;
 extern unsigned int lbl_8055D974;
 extern f32 lbl_80560B40;
 extern f64 lbl_80560B48;
@@ -137,44 +149,30 @@ void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
     int isMipMap;
     unsigned int shifted;
     unsigned int carry;
-    register unsigned int index;
 
     mipmap = GXGetTexObjMipMap(obj);
     isMipMap = GXGetTexObjAll(obj);
     shifted = region << 29;
     carry = region >> 31;
     shifted -= carry;
-    index = (shifted << 3) | (shifted >> 29);
-    index += carry;
+    region = carry + ((shifted << 3) | (shifted >> 29));
 
-    if (mipmap == 7) {
-        goto common;
+    switch (mipmap) {
+    case 6:
+        if ((unsigned char)isMipMap != 0) {
+            return (char *)__GXData + region * 16 + 0x358;
+        }
+        return (char *)__GXData + region * 16 + 0x2D8;
+    case 8:
+    case 9:
+    case 10:
+        return (char *)__GXData + region * 16 + 0x258;
+    default:
+        if ((unsigned char)isMipMap != 0) {
+            return (char *)__GXData + region * 16 + 0x2D8;
+        }
+        return (char *)__GXData + region * 16 + 0x258;
     }
-    if (mipmap >= 7) {
-        goto high;
-    }
-    if (mipmap >= 6) {
-        goto special;
-    }
-    goto common;
-
-high:
-    if (mipmap >= 11) {
-        goto common;
-    }
-    return (char *)__GXData + index * 16 + 0x258;
-
-special:
-    if ((unsigned char)isMipMap != 0) {
-        return (char *)__GXData + index * 16 + 0x358;
-    }
-    return (char *)__GXData + index * 16 + 0x2D8;
-
-common:
-    if ((unsigned char)isMipMap != 0) {
-        return (char *)__GXData + index * 16 + 0x2D8;
-    }
-    return (char *)__GXData + index * 16 + 0x258;
 }
 
 s32 __GXDefaultTlutRegionCallback(unsigned int region) {
@@ -241,9 +239,9 @@ extern void OSReport(void *, ...);
 extern char lbl_803036E0[];
 extern char lbl_803036F8[];
 int CPGPLinkCheck(void) {
-    int error = 0;
-    unsigned int first;
-    unsigned int second;
+    register int error = 0;
+    register unsigned int first;
+    register unsigned int second;
     int diff1;
     int diff2;
 
