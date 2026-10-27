@@ -11,7 +11,9 @@ extern f32 lbl_80561220;
 extern f32 lbl_80561224;
 extern f64 lbl_80561228;
 extern f32 lbl_80329BC8[];
-
+extern s32 lbl_8055DEE0;
+extern s32 lbl_8055DEE8;
+extern void TRKGetFreeBuffer(void *);
 
 extern void fn_8011AF94(f32 *, s32, void *, f32 *, s32);
 extern void fn_801200BC(s32, s32, f32 *, s32, s32);
@@ -167,50 +169,45 @@ u32 fn_80116BCC(void) {
 }
 
 void fn_80116CC4(s32* arg0, u16 arg1, u32 arg2) {
-    s32* r3;
-    u32 r6;
-    s32 r7;
-    s32 val;
-    s32* p;
+    s32* ptr;
+    s32 fill;
+    u32 blocks;
     u32 count;
-    
-    r3 = arg0;
-    r6 = arg2 >> 1;
-    r7 = arg1;
-    
-    val = (s32)(arg1 & 0xFFFF);
-    val = val | (val << 16);
-    
-    if (r6 != 0) {
-        count = r6 >> 3;
-        if (count != 0) {
-            p = r3;
+    u32 words;
+    ptr = arg0;
+    words = arg2 >> 1;
+    fill = (arg1 & ~0xFFFF0000) | (arg1 << 16);
+    if (words != 0) {
+        blocks = words >> 3;
+        count = blocks;
+        if (blocks != 0) {
             do {
-                p[0] = val;
-                p[1] = val;
-                p[2] = val;
-                p[3] = val;
-                p[4] = val;
-                p[5] = val;
-                p[6] = val;
-                p[7] = val;
-                p += 8;
-                count--;
+                ptr[0] = fill;
+                ptr[1] = fill;
+                ptr[2] = fill;
+                ptr[3] = fill;
+                ptr[4] = fill;
+                ptr[5] = fill;
+                ptr[6] = fill;
+                ptr[7] = fill;
+                ptr += 8;
+                count -= 1;
             } while (count != 0);
-            r6 &= 7;
-        }
-        if (r6 != 0) {
+            words &= 7;
+            if (words != 0)
+                goto tail;
+        } else {
+tail:
+            count = words;
             do {
-                *r3 = val;
-                r3++;
-                r6--;
-            } while (r6 != 0);
+                *ptr = fill;
+                ptr += 1;
+                count -= 1;
+            } while (count != 0);
         }
     }
-    
-    if (arg2 & 1) {
-        *(s16*)r3 = arg1;
-    }
+    if (arg2 & 1)
+        *(s16*)ptr = arg1;
 }
 
 extern s64 OSGetTime(void);
@@ -1027,6 +1024,29 @@ void fn_80119218(void *arg0, s16 arg1, s16 arg2, s16 arg3) {
     *(s32*)((u8*)arg0 + 0x1C) |= 0x212;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_80119288(void* arg0, f32 arg1) {
+    void* saved = arg0;
+    void* first;
+    s32 mode;
+    s32 out1;
+    s32 out2;
+    s32 out3;
+    first = *(void**)((u8*)saved + 0x7C);
+    if (first != 0) {
+        arg0 = first;
+        mode = *(s32*)((u8*)saved + 0x78);
+        out1 = *(s32*)((u8*)saved + 0xA4);
+        out2 = *(s32*)((u8*)saved + 0xA8);
+        out3 = mode == 1 ? *(s32*)((u8*)saved + 0xAC) : 0;
+        ((void (*)(void*, s32, s32, s32))fn_80119218)(arg0, out1, out2, out3);
+    }
+    first = *(void**)((u8*)saved + 0x80);
+    if (first != 0)
+        ((void (*)(void*, s32, s32, s32))fn_80119218)(first, *(s32*)((u8*)saved + 0xA4), 0, *(s32*)((u8*)saved + 0xAC));
+}
+#pragma pop
 extern void AXSetVoiceState(s32);
 s32 fn_8011943C(void *arg0, s32 arg1) {
     s32 temp_r0;
@@ -1772,15 +1792,15 @@ f32 fn_8011AE18(s32 arg0) {
     return temp;
 }
 
-void fn_8011AE68(s32 arg0, f32 *arg1, u32 arg2, f32 farg0) {
-    s32 *out = (s32 *)arg0;
-    f32 *in = arg1;
-    u32 i;
-    for (i = 0; i < arg2; i++) {
-        f32 v = *in * farg0;
-        *(s16 *)((u8 *)out + 2) = (s16)(v * 32767.0f + 0.5f);
+void fn_8011AE68(s32 out, f32 *in, u32 count, f32 scale) {
+    u16 *dest = (u16 *)(out - 2);
+    while (count != 0) {
+        s32 value = (s32)(*in * scale);
+        if (value < -0x8000) value = -0x8000;
+        if (value > 0x7FFF) value = 0x7FFF;
+        *++dest = (u16)(value + 0x7FFF);
         in++;
-        out++;
+        count--;
     }
 }
 
@@ -4967,18 +4987,19 @@ void fn_80123E98(void *arg0, void *arg1) {
     (*(f32 *)((s8 *)arg0 + 0x1C)) = (f32) (temp_f0_5 - temp_f6_7);
 }
 
+#pragma push
+#pragma processor 750
 void fn_80124F90(void *arg0) {
-    f32 r4_f1, r4_f0, r4_f5, r4_f4, r4_f6, r4_f8;
-    f32 r4_f3, r4_f2, r4_f7, r4_f1b, r4_f0b;
-    f32 r4_f9, r4_f10, r4_f11, r4_f12;
+    register f32 r4_f12, r4_f11, r4_f10, r4_f9, r4_f0b, r4_f1b;
+    register f32 r4_f7, r4_f2, r4_f3, r4_f8, r4_f6, r4_f4, r4_f5, r4_f0, r4_f1;
 
-    r4_f1 = *(f32 *)((u8 *)arg0 + 0);
+    r4_f1 = *(f32 *)((u8 *)arg0 + 0x0);
     r4_f0 = *(f32 *)((u8 *)arg0 + 0x10);
-    r4_f5 = *(f32 *)((u8 *)arg0 + 4);
+    r4_f5 = *(f32 *)((u8 *)arg0 + 0x4);
     r4_f4 = *(f32 *)((u8 *)arg0 + 0x14);
     r4_f6 = r4_f1 + r4_f0;
     r4_f8 = r4_f1 - r4_f0;
-    r4_f3 = *(f32 *)((u8 *)arg0 + 8);
+    r4_f3 = *(f32 *)((u8 *)arg0 + 0x8);
     r4_f2 = *(f32 *)((u8 *)arg0 + 0x18);
     r4_f7 = r4_f5 + r4_f4;
     r4_f1b = *(f32 *)((u8 *)arg0 + 0xC);
@@ -4997,7 +5018,7 @@ void fn_80124F90(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x18) = r4_f8 + r4_f12;
     *(f32 *)((u8 *)arg0 + 0x1C) = r4_f9 - r4_f11;
 }
-
+#pragma pop
 void fn_80125014(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
