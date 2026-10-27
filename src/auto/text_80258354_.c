@@ -7,7 +7,6 @@ extern float fn_80235EF0(int, int);
 extern float fn_80235F64(int, int);
 extern void fn_802354A0(int, int, int, float, float, float, float);
 extern float lbl_80563ACC;
-#pragma ppc_psq_save off
 extern void fn_80235380(int);
 extern void fn_802328D4(int);
 extern void fn_80128668(void *);
@@ -213,8 +212,8 @@ void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, flo
     float callY;
     float callColor;
     float callCosine;
-    float sine;
-    float cosine;
+    register float sine;
+    register float cosine;
     goto check;
 loop:
     result = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
