@@ -17948,24 +17948,17 @@ extern "C" void VFiPFSTR_ToUpperNStr(s32 arg0, u16 arg1, u8 *arg2) {
     if (*(u32 *)((u8 *)arg0 + 0xC) == 1U) {
         var_r31 = *(u8 **)arg0;
         goto single_check;
-    single_body:
-        *var_r30 = (u8)((s32 (*)(s8))fn_800A485C)((s8)temp_r3);
-        var_r30 += 1;
-        var_r31 += 1;
-        var_r29 -= 1;
-        goto single_check;
-    single_check:
-        if ((u16)var_r29 == 0) {
-            goto single_done;
-        }
-        temp_r3 = *var_r31;
-        if ((s8)temp_r3 != 0) {
-            goto single_body;
-        } else {
-            goto single_done;
-        }
-    single_done:
-        ;
+        do {
+            *var_r30 = (u8)fn_800A485C((s32)(s8)temp_r3);
+            var_r30 += 1;
+            var_r31 += 1;
+            var_r29 -= 1;
+        single_check:
+            if ((u16)var_r29 == 0) {
+                break;
+            }
+            temp_r3 = *var_r31;
+        } while ((s8)temp_r3 != 0);
     } else {
         var_r4 = *(u8 **)arg0;
         goto wide_check;
