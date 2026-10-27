@@ -1113,15 +1113,18 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void* arg4, v
 extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
     if ((f32)__fabs(f1) <= lbl_80558DC4) {
         if (f0 < -f2) goto ret0;
-        if (f0 <= f2) goto ret1;
+        if (!(f0 > f2)) goto ret1;
 ret0:
         return 0;
 ret1:
         return 1;
     }
+    f32 diff;
     f32 neg_f2 = -f2;
-    f2 = (f2 - f0) / f1;
-    f1 = (neg_f2 - f0) / f1;
+    diff = f2 - f0;
+    f0 = neg_f2 - f0;
+    f2 = diff / f1;
+    f1 = f0 / f1;
     f32 min_t = (f1 < f2) ? f1 : f2;
     f32 cur_min = *arg0;
     *arg0 = (cur_min > min_t) ? cur_min : min_t;
