@@ -7454,6 +7454,41 @@ void btm_sec_auth_complete(register UINT16 handle, register UINT8 status) {
     }
 }
 
+void btm_sec_mkey_comp_event(u16 handle, u8 status, u8 event) {
+    extern char lbl_80316EB0[];
+    extern u8 lbl_80560D40;
+    extern u8 lbl_80560D41;
+    extern u8 lbl_80560D42;
+    extern u8 lbl_80560D43;
+    extern u8 lbl_80560D44;
+    extern u8 lbl_80560D45;
+    u8 bd_addr[6];
+    tBTM_SEC_DEV_REC *dev;
+    void (*callback)(u8 *, u8, u8);
+
+    dev = btm_find_dev_by_handle(handle);
+    bd_addr[0] = lbl_80560D40;
+    bd_addr[1] = lbl_80560D41;
+    bd_addr[2] = lbl_80560D42;
+    bd_addr[3] = lbl_80560D43;
+    bd_addr[4] = lbl_80560D44;
+    bd_addr[5] = lbl_80560D45;
+
+    if (lbl_803C0F78[0x27C0] >= 4) {
+        fn_8007096C(0xD0003, lbl_80316EB0, status,
+                    dev != 0 ? ((u8 *)dev)[0x7F] : 0);
+    }
+
+    callback = *(void (**)(u8 *, u8, u8))(lbl_803C0F78 + 0x27B0);
+    if (callback != 0) {
+        if (dev == 0) {
+            callback(bd_addr, status, event);
+        } else {
+            callback((u8 *)dev + 0x1C, status, event);
+        }
+    }
+}
+
 /* Match note: combine the null and security-bit tests so both failures share the zero return block. */
 s32 fn_8007FEFC(u16 handle) {
     tBTM_SEC_DEV_REC *dev = btm_find_dev_by_handle(handle);
@@ -12074,6 +12109,40 @@ void *l2cu_build_header(u16 arg0, u8 arg1, u8 arg2, s32 arg3) {
     return buf;
 }
 
+extern char lbl_80319158[];
+void l2cu_send_peer_cmd_reject(void *arg0, u16 arg1, u8 arg2, u16 arg3, u16 arg4) {
+    u16 size;
+    void *packet;
+    u8 *p;
+
+    if (arg1 == 1) {
+        size = 2;
+    } else {
+        size = ((s32)~((arg1 - 2) | (2 - arg1)) >> 31) & 4;
+    }
+
+    packet = l2cu_build_header(*(u16 *)((u8 *)arg0 + 0x28), size + 2, 1, arg2);
+    if (packet == 0) {
+        if (lbl_803C4040[0] >= 2) {
+            fn_8007093C(0x80001, lbl_80319158);
+        }
+    } else {
+        ((u8 *)packet)[0x14] = arg1;
+        ((u8 *)packet)[0x15] = arg1 >> 8;
+        p = (u8 *)packet + 0x16;
+        if (size >= 2) {
+            p[0] = arg3;
+            p[1] = arg3 >> 8;
+            p += 2;
+        }
+        if (size >= 4) {
+            p[0] = arg4;
+            p[1] = arg4 >> 8;
+        }
+        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(arg0, 0, packet);
+    }
+}
+
 void l2cu_send_peer_connect_req(void *arg0) {
     void *p;
     extern void *l2cu_build_header(u16, u8, u8, s32);
@@ -15553,9 +15622,8 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
     extern char lbl_8031A38C[];
     u8 *ccb;
     void (*callback)(u16, s32, u8);
-    u32 baseResult;
-    u32 result;
     u8 state;
+    s32 result;
     s32 stateDelta;
     s32 reverseDelta;
     s32 equalityMask;
@@ -15579,12 +15647,12 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
     callback = *(void (**)(u16, s32, u8))(ccb + 0x414);
     if (callback != 0) {
         state = ccb[0];
-        baseResult = 1 << 16;
-        result = baseResult - 15;
+        result = 0x10000;
+        result -= 15;
         stateDelta = state - 3;
         reverseDelta = 3 - state;
         equalityMask = (s32)~(stateDelta | reverseDelta) >> 31;
-        result &= ~equalityMask;
+        result = result & ~equalityMask;
         callback((u16)result, stateDelta, state);
     }
 
