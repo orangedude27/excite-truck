@@ -17867,4 +17867,53 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
     return 0;
 }
 #pragma pop
+extern "C" void VFiPFSTR_ToUpperNStr(s32 arg0, u16 arg1, u8 *arg2) {
+    register u8 *var_r30 = arg2;
+    register u16 var_r29 = arg1;
+    register u8 *var_r31;
 
+    if (*(u32 *)((u8 *)arg0 + 0xC) == 1U) {
+        var_r31 = *(u8 **)arg0;
+    loop_single:
+        if (var_r29 == 0) {
+            goto done_single;
+        }
+        if (*(s8 *)var_r31 == 0) {
+            goto done_single;
+        }
+        *var_r30 = (u8)fn_800A485C((s32)*(s8 *)var_r31);
+        var_r30++;
+        var_r31++;
+        var_r29--;
+        goto loop_single;
+    done_single:
+        *var_r30 = 0;
+        return;
+    }
+
+    var_r31 = *(u8 **)((u8 *)arg0 + 4);
+loop_wide:
+    if (var_r29 == 0) {
+        goto done_wide;
+    }
+    {
+        u16 ch = *(u16 *)var_r31;
+        if (ch == 0) {
+            var_r30[0] = 0;
+            var_r30[1] = 0;
+            return;
+        }
+        if (ch >= 0x61U && ch <= 0x7AU) {
+            ch -= 0x20;
+        }
+        var_r30[0] = (u8)ch;
+        var_r30[1] = (u8)(ch >> 8);
+    }
+    var_r31 += 2;
+    var_r30 += 2;
+    var_r29--;
+    goto loop_wide;
+done_wide:
+    var_r30[0] = 0;
+    var_r30[1] = 0;
+}
