@@ -244,7 +244,52 @@ void fn_801310B4(void *arg0, void *arg1, int arg2) {
     fn_801345D8(arg0, arg1, &lbl_80559AF8, arg2, result + 1);
 }
 
+extern void *fn_8012C370(const char *, unsigned int, unsigned int *, int *, int, void **);
+extern void fn_8012C4D8(void *);
+extern void fn_8012BEF0(void *);
+extern void fn_802E30C8(const char *, ...);
+extern void fn_8012FAB8(void *);
+extern void fn_80131308(void);
+extern void *memcpy(void *, const void *, unsigned int);
+extern char lbl_8032B028[];
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+void fn_8013111C(int index) {
+    int size;
+    unsigned int status;
+    void *out;
+    char *data;
+    char *strings = lbl_8032B028;
+    char *path;
+    void *buffer;
+    if (index < 0)
+        return;
+    if ((unsigned int)index >= 2)
+        return;
+    fn_8013028C();
+    fn_80131308();
+    fn_8012BEF0(*(void **)((char *)lbl_802F8E60 + index * 0xC));
+    path = strings + 0x2E8;
+    size = 0;
+    buffer = fn_8012C370(path, 0x4C414E47, &status, &size, 0, &out);
+    if (buffer != 0) {
+        data = (char *)&lbl_804230D0;
+        memcpy(data + 8, buffer, size);
+        fn_8012C4D8(buffer);
+        if (status == 1) {
+            fn_801301E0((unsigned char *)(data + 8));
+        } else {
+            fn_802E30C8(strings + 0x1C0, path);
+        }
+        *(char **)((char *)&lbl_804230D0 + 4) = (char *)&lbl_804230D0 + 8;
+    } else {
+        fn_802E30C8(strings + 0x1D4, path);
+    }
+    fn_8012FAB8(strings + 0x2F4);
+    lbl_804230D0 = index;
+}
+#pragma scheduling on
+#pragma use_lmw_stmw on
 void *fn_80131234(void *arg0) {
     int result = fn_801302E0(arg0);
     switch (result) {
