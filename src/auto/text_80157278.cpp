@@ -470,7 +470,7 @@ extern "C" void* memset(void*, s32, u32);
 #pragma small_data off
 #pragma use_lmw_stmw off
 extern "C" void* fn_801579F4(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
-    // Note: declare both vtables under small_data off and use the save helpers from the target.
+    // Note: the vtable labels are arrays for full address relocations; the save helpers match the target ABI.
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
     *(void**)arg0 = &lbl_8032F2BC;
@@ -2109,16 +2109,17 @@ int end=0;if(((int(*)(void*))(*(void***)p)[39])(p)){int n=fn_80158D04(a)-1;if(((
 if(fn_80141F7C(*(f32*)(p+0x254))||end){if(*(s32*)(p+0x264)>0)result=((f32(*)(void*,int))fn_8015A368)(a,b);if(!end)fn_8015A318((Unk8015A368C*)a);}else if(*(s32*)(p+0x264)>0)((void(*)(void*))(*(void***)p)[34])(p);return result;}
 
 extern "C" void fn_8015D270(void* arg0, void* arg1) {
-    void* sp8;
-    s32 temp;
-    sp8 = arg1;
+    void* sp8 = arg1;
     fn_80158F34(&sp8);
-    if (*(s32*)((u8*)arg0 + 0x264) > 0) fn_8015A368(arg0);
-    temp = *(s32*)((u8*)arg0 + 0xC);
-    temp = *(s32*)((u8*)arg0 + 8) + (temp - 1) * 0x38;
-    temp = *(s32*)((u8*)temp + 4);
-    if (temp > 0 && fn_80179650() == 1 && *(s32*)((u8*)arg1 + 0x1F0) == 0x50 && fn_801CF064() == 0)
-        fn_8001EF5C(6, temp);
+    if (*(s32*)((u8*)arg0 + 0x264) > 0) {
+        ((f32 (*)(void*, void*))fn_8015A368)(arg0, sp8);
+    }
+    void* r4 = *(void**)((u8*)arg0 + 8);
+    void* r3 = (void*)((s32)r4 + (*(s32*)((u8*)arg0 + 0xC) - 1) * 0x38);
+    s32 r31 = *(s32*)((u8*)r3 + 4);
+    if (r31 > 0 && fn_80179650() == 1 && *(s32*)((u8*)arg1 + 0x1F0) == 0x50 && fn_801CF064() == 0) {
+        fn_8001EF5C(6, r31);
+    }
 }
 
 extern "C" void fn_8015D318(Unk801577F0* arg0, f32 arg1, s32 unused, s32 arg2) {
