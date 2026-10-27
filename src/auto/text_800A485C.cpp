@@ -4610,19 +4610,21 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
 
 extern "C" s32 fn_800A4BF4(s32, u16 *, s16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *dst, s32 src, s32 unused) {
-    s32 count = 0;
-    s32 offset = 0;
-    s16 *out = dst;
-    while (*(s8 *)(src + offset) != 0) {
-        ((s32 (*)(s32, s16 *))(*(u32 *)((u8 *)lbl_803D2140 + 0x48)))(src + offset, out);
+    s32 offset;
+    s32 count;
+    const char *source = (const char *)src;
+    count = 0;
+    offset = 0;
+    while (source[offset] != 0) {
+        s32 result = ((s32 (*)(const char *, s16 *))(*(u32 *)((u8 *)lbl_803D2140 + 0x48)))(source + offset, dst);
         s16 inLen;
         s16 outLen;
-        fn_800A4BF4(0, (u16 *)&inLen, &outLen);
-        count++;
-        out = (s16 *)((u8 *)out + (outLen & ~1));
+        fn_800A4BF4(result, (u16 *)&inLen, &outLen);
+        ++count;
+        dst = (s16 *)((u8 *)dst + (outLen & ~1));
         offset += inLen;
     }
-    *out = 0;
+    *dst = 0;
     return count;
 }
 
@@ -7725,6 +7727,45 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
             }
         }
     }
+}
+
+extern "C" u8 lbl_802F3408[];
+extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
+    register s32 remaining = bitCount;
+    register s32 take;
+    register u16 result = 0;
+    register s32 byteIndex;
+    register s32 bitsInByte;
+    register u32 position;
+    register u32 nextPosition;
+    register s32 startBit;
+    register s32 piece;
+
+    if (remaining == 0)
+        return 0;
+    position = *bitOffset;
+    nextPosition = position + remaining;
+    startBit = position & 7;
+    *bitOffset = nextPosition;
+    byteIndex = (position >> 3) & 0x1FFF;
+    bitsInByte = 8 - startBit;
+    while (remaining > 0) {
+        if (bitsInByte == 0) {
+            byteIndex += 1;
+            byteIndex &= 0x1FFF;
+            bitsInByte = 8;
+        }
+        take = bitsInByte;
+        if ((u32)remaining < (u32)bitsInByte)
+            take = remaining;
+        piece = data[byteIndex] & lbl_802F3408[bitsInByte];
+        piece >>= bitsInByte - take;
+        piece <<= remaining - take;
+        result = (u16)(result | piece);
+        bitsInByte -= take;
+        remaining -= take;
+    }
+    return result;
 }
 
 extern "C" void *lbl_8055DD88;
@@ -11798,7 +11839,7 @@ extern "C" void fn_800D0560(void *arg0, s32 arg1) {
 #pragma small_data on
 extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(u8 *arg0, void *arg1) {
     register void *list = arg0 + 8;
-    register u32 i = 0;
+    u32 i = 0;
     do {
         void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(arg0 + 0x18, (u16)i);
         if (*(void **)item == arg1) {
