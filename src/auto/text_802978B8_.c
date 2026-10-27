@@ -155,7 +155,7 @@ extern void fn_802C7AE0(int, void *, int);
 extern float lbl_80564580;
 extern float lbl_80564584;
 extern float lbl_80564588;
-extern float lbl_80558DC4;
+extern char lbl_80558DC4[];
 #pragma paired_single off
 void fn_80297AFC(void) {
     int cameraPosition[3];
