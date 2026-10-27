@@ -220,6 +220,75 @@ void fn_8000A868(void) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_8000A8C4(void* arg0) {
+    extern void fn_802E3D00(void);
+    extern void* fn_8001285C(void*);
+    extern void fn_800124DC(void*, s32, s32, f32);
+    extern void fn_800125C4(void);
+    extern void fn_80206484(void*);
+    extern s32 fn_801292CC(const char*);
+    extern f32 lbl_805601F4;
+    extern u8 lbl_80558A34;
+    extern u8 lbl_80558A3C;
+
+    char* base = lbl_8034F4C8;
+    char* db = lbl_802FBC08;
+    void* resource;
+    void* object;
+    void* item;
+    char* originalName;
+    s32 compareResult;
+    u32 differs;
+
+    fn_802E3D00();
+    ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x18, 0x40, &lbl_80558A34, arg0);
+    resource = fn_8001285C(*(void**)((u8*)arg0 + 0x3E4));
+    lbl_8055D3B8 = (u32)resource;
+    object = *(void**)((u8*)resource + 0x20);
+#pragma cplusplus on
+    struct ResourceView {
+        virtual void unused0();
+        virtual void unused1();
+        virtual void unused2();
+        virtual void unused3();
+        virtual void* getItem(const char*, s32);
+    };
+    item = ((ResourceView*)object)->getItem(db + 0x40, 0);
+#pragma cplusplus reset
+    if (item != 0) {
+        lbl_8055D3B4 = 1;
+        ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x58, 0x40, db + 0x4C, arg0, (s32)item);
+    } else {
+        lbl_8055D3B4 = 0;
+        ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x58, 0x40, &lbl_80558A34, arg0);
+    }
+    object = *(void**)((u8*)lbl_8055D3B8 + 0x20);
+#pragma cplusplus on
+    struct ManagerView {
+        virtual void unused0();
+        virtual void unused1();
+        virtual void unused2();
+        virtual const char* getName(const char*);
+    };
+    originalName = (char*)((ManagerView*)object)->getName((const char*)&lbl_80558A20);
+#pragma cplusplus reset
+    compareResult = stricmp(originalName, (const char*)&lbl_80558A28);
+    differs = (u32)(-compareResult | compareResult) >> 31;
+    lbl_8055D3B5 = (u8)differs;
+    if (differs != 0) {
+        ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x98, 0x40, db + 0x4C, arg0, (s32)originalName);
+    } else {
+        base[0x98] = 0;
+    }
+    fn_800124DC(db + 0x58, 1, 1, lbl_805601F4);
+    fn_80206484(db + 0x68);
+    lbl_8055D3B0 = (u32)fn_801292CC((const char*)&lbl_80558A3C);
+    fn_800125C4();
+}
+#pragma pop
+
 void fn_8000AA38(void* arg0) {
     char* base = (char*)&lbl_8034F4C8;
     fn_80129324(lbl_8055D3B0);
