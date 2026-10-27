@@ -476,6 +476,8 @@ s32 WUDiDeleteDevice(void)
 {
     s32 i;
     u8 *entry;
+    s32 j;
+    u8 *entry2;
     u32 interrupt_state;
     u8 busy;
     register u8 *base = lbl_80392960;
@@ -490,9 +492,9 @@ s32 WUDiDeleteDevice(void)
         if (entry[0x59] == 1)
             fn_8006B598(entry + 0x40);
     }
-    for (i = 0, entry = base + 0x424; i < 6; i++, entry += 0x60) {
-        if (entry[0x59] == 1)
-            fn_8006B598(entry + 0x40);
+    for (j = 0, entry2 = base + 0x424; j < 6; j++, entry2 += 0x60) {
+        if (entry2[0x59] == 1)
+            fn_8006B598(entry2 + 0x40);
     }
     return 5;
 }
@@ -4916,16 +4918,14 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
 }
 
 tBTM_INQ_INFO *BTM_InqDbFirst(void) {
+    UINT16 xx;
     u8 *entry = lbl_803C0F78 + 0x16E4;
-    s32 i;
-    for (i = 0; i < 2; i++, entry += 0xA8) {
-        if (entry[0x1A]) return (tBTM_INQ_INFO *)(entry + 8);
-        if (entry[0x36]) return (tBTM_INQ_INFO *)(entry + 0x24);
-        if (entry[0x52]) return (tBTM_INQ_INFO *)(entry + 0x40);
-        if (entry[0x6E]) return (tBTM_INQ_INFO *)(entry + 0x5C);
-        if (entry[0x8A]) return (tBTM_INQ_INFO *)(entry + 0x78);
-        if (entry[0xA6]) return (tBTM_INQ_INFO *)(entry + 0x94);
+
+    for (xx = 0; xx < 12; xx++, entry += 0x1C) {
+        if (entry[0x1A])
+            return (tBTM_INQ_INFO *)(entry + 8);
     }
+
     return 0;
 }
 
