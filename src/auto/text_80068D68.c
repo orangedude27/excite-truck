@@ -974,8 +974,9 @@ void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
             return;
         }
         count = lbl_8055DC3A - lbl_8055DC39;
-        if (count >= 0x13) count = 0x13;
+        count = count < 0x13 ? count : 0x13;
         packet[0] = count;
+        count = (u8)count;
         size = count * 0xD;
         memcpy(packet + 1, lbl_80313600 + lbl_8055DC39 * 0xD + 1, size);
         lbl_8055DC39 += count;
@@ -13337,6 +13338,8 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
     u8 *buf;
     u8 flag;
     u8 control;
+    u8 shifted;
+    u8 command;
 
     flag = 1;
     if (((u8 *)arg0)[0x6D] != 0) {
@@ -13348,10 +13351,12 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
         *(u16 *)(buf + 4) = 9;
         data = buf + 0x11;
         control |= 1;
-        data[0] = (u8)(control | ((arg1 << 2) & 0x3FC));
+        shifted = (u8)((arg1 << 2) & 0x3FC);
+        command = (u8)(control | shifted);
+        data[0] = command;
         data[1] = (u8)((((-(s32)arg2 | arg2) >> 31) & 0x10) | 0xF);
         data[2] = 1;
-        data[3] = fn_8009504C(3, data, data[0]);
+        data[3] = fn_8009504C(3, data, command);
         *(u16 *)(buf + 2) = 4;
         rfc_check_send_cmd(arg0, buf);
     }
