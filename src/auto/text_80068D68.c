@@ -1008,6 +1008,34 @@ void *WUDiGetDevInfo(u8 *addr) {
     return result;
 }
 
+extern char lbl_8031377C[];
+void *WUDiGetNewDevInfo(void) {
+    struct DevInfo { u8 data[0x60]; };
+    struct WUDView { u8 pad[0x64]; struct DevInfo stdDevs[1]; };
+    u8 *base = lbl_80392960;
+    u8 *entry;
+    void *result = 0;
+    BOOL enabled;
+    u32 i;
+
+    enabled = OSDisableInterrupts();
+    if (base[0x669] == 0) {
+        entry = base;
+        for (i = 0; i < 10; i++) {
+            if (entry[0xBD] == 0) {
+                DBPrintf_8006CFA8(lbl_8031377C, i);
+                result = &((struct WUDView *)base)->stdDevs[i];
+                break;
+            }
+            entry += 0x60;
+        }
+    } else {
+        result = *(void **)*(void ***)(base + 0x18);
+    }
+    OSRestoreInterrupts(enabled);
+    return result;
+}
+
 void WUDiMoveTopSmpDevInfoPtr(void *arg0, void *arg1) {
     u8 *base = lbl_80392960;
     u8 *node;
@@ -4415,19 +4443,19 @@ u8 fn_80079514(void) {
 }
 
 void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
-    register UINT8 *base = lbl_803C0F78;
+    UINT8 *base = lbl_803C0F78;
     UINT8 status = p[0];
     if (status == 0) {
-        base[0x636] = p[1];
-        *(u16 *)(base + 0x638) = p[2] + (p[3] << 8);
-        base[0x63A] = p[4];
-        *(u16 *)(base + 0x63C) = p[5] + (p[6] << 8);
-        *(u16 *)(base + 0x63E) = p[7] + (p[8] << 8);
+        lbl_803C0F78[0x636] = p[1];
+        *(u16 *)(lbl_803C0F78 + 0x638) = p[2] + (p[3] << 8);
+        lbl_803C0F78[0x63A] = p[4];
+        *(u16 *)(lbl_803C0F78 + 0x63C) = p[5] + (p[6] << 8);
+        *(u16 *)(lbl_803C0F78 + 0x63E) = p[7] + (p[8] << 8);
         lbl_803C0F78[0x64E] = 4;
         lbl_803C0F78[0x64F] = 4;
     } else {
-        lbl_803C0F78[0x64F] = status;
-        lbl_803C0F78[0x64E] = status;
+        base[0x64F] = status;
+        base[0x64E] = status;
         btu_start_timer(base + 0x574, 1, 1);
         ((void (*)(void))btsnd_hcic_reset)();
         return;
