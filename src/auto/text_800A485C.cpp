@@ -327,7 +327,10 @@ extern "C" const char lbl_8031E83C[];
 extern "C" void *List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(void *, u16);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" const char lbl_8031E938[];
+#pragma push
+#pragma small_data on
 extern "C" const char lbl_805597D0[];
+#pragma pop
 extern "C" u32 lbl_8055DDA0;
 
 extern "C" void* __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void*, const void*);
@@ -1561,6 +1564,36 @@ extern "C" void VFiPFCACHE_FreeFATPage(void *arg0, void *arg1) {
     nextHead = *(void **)((u8 *)arg0 + 0x1630);
     *(void **)(page + 0x20) = nextHead;
     tail = *(void **)((u8 *)arg0 + 0x1630);
+    *(void **)(page + 0x24) = *(void **)((u8 *)tail + 0x24);
+    *(void **)((u8 *)nextHead + 0x24) = arg1;
+    *(void **)(*(u8 **)(page + 0x24) + 0x20) = arg1;
+}
+
+extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *arg0, void *arg1) {
+    u8 *page = (u8 *)arg1;
+    volatile void **headSlot = (volatile void **)((u8 *)arg0 + 0x1634);
+    void *head = (void *)*headSlot;
+    void *nextHead;
+    void *tail;
+    if (head == 0)
+        return;
+    *(u32 *)(page + 0xC) = 0;
+    *(u16 *)page &= 0xFFFC;
+    *(u32 *)(page + 0x10) = 0;
+    *(u32 *)(page + 0x18) = -1;
+    *(u32 *)(page + 0x1C) = 0;
+    head = (void *)*headSlot;
+    if (arg1 == head) {
+        *headSlot = *(void **)(page + 0x20);
+        return;
+    }
+    if (arg1 == *(void **)((u8 *)head + 0x24))
+        return;
+    *(void **)(*(u8 **)(page + 0x24) + 0x20) = *(void **)(page + 0x20);
+    *(void **)(*(u8 **)(page + 0x20) + 0x24) = *(void **)(page + 0x24);
+    nextHead = (void *)*headSlot;
+    *(void **)(page + 0x20) = nextHead;
+    tail = (void *)*headSlot;
     *(void **)(page + 0x24) = *(void **)((u8 *)tail + 0x24);
     *(void **)((u8 *)nextHead + 0x24) = arg1;
     *(void **)(*(u8 **)(page + 0x24) + 0x20) = arg1;
@@ -11536,18 +11569,29 @@ extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(void *arg0) {
     } while (i < *(u16 *)((u8 *)arg0 + 0x10));
 }
 
-void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void *arg0, bool arg1) {
-    u16 i = 0;
+#pragma push
+#pragma small_data on
+#pragma pop
+extern "C" void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void *arg0, bool arg1) {
+    struct Dummy {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17();
+        virtual void Set(bool);
+    };
+    u32 i = 0;
     void *list = (u8 *)arg0 + 8;
-    do {
-        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, i);
-        void *obj = *(void **)((u8 *)entry + 4);
-        ((void (*)(void *, bool))(*(u32 *)(*(u32 *)obj + 0x50)))(obj, arg1);
+    while (i < *(u16 *)((u8 *)arg0 + 0x10)) {
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 8, (u16)i);
+        Dummy *obj = (Dummy *)*(void **)((u8 *)entry + 4);
+        obj->Set(arg1);
         i++;
-        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
-    } while (i < *(u16 *)((u8 *)arg0 + 0x10));
+        if (list == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    }
 }
-
 extern "C" s32 fn_800D010C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -11744,15 +11788,16 @@ extern "C" void fn_800D0560(void *arg0, s32 arg1) {
 
 extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(void *arg0, void *arg1) {
     u16 i = 0;
-    void *item;
-    while (i < *(u16 *)((u8 *)arg0 + 0x10)) {
-        if (*(void **)((u8 *)arg0 + 8) == 0) {
+    do {
+        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 0x18, i);
+        if (*(void **)item == arg1) {
+            return *(s32 *)((u8 *)item + 4);
+        }
+        i++;
+        if ((u8 *)arg0 + 8 == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
         }
-        item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 0x18, i);
-        if (*(void **)item == arg1) return *(s32 *)((u8 *)item + 4);
-        i++;
-    }
+    } while (i < *(u16 *)((u8 *)arg0 + 0x10));
     return 0;
 }
 
@@ -13370,28 +13415,35 @@ extern "C" void fn_800C776C(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_800C790C(void *arg0) {
-    u16 *str = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 4) + 8);
-    u16 *var_r7 = str;
+    struct Context {
+        u8 pad0[4];
+        void *inner;
+        u8 pad8[0xB0 - 8];
+        u16 *table[7][6];
+    };
+    Context *ctx = (Context *)arg0;
+    register u16 *var_r7;
     s32 var_r9 = 0;
-    s32 var_r10 = 0;
-    s32 var_r11 = 0;
-    s32 var_r8 = 0;
+    s32 col = 0;
+    s32 in_quote = 0;
+    u16 *str = *(u16 **)((u8 *)ctx->inner + 8);
+    s32 row = 0;
+    var_r7 = str;
 
     while (*var_r7 != 0) {
         if (*var_r7 == 0x22) {
             *var_r7 = 0;
-            if (var_r11 == 0) {
-                s32 temp_r4 = var_r10 * 0x18;
+            if (in_quote == 0) {
                 u16 *elem = &str[var_r9 + 1];
-                var_r10++;
-                var_r11 = 1;
-                *(u16 **)((u8 *)arg0 + var_r8 + temp_r4 + 0xB0) = elem;
-                if (var_r10 == 7) {
-                    var_r10 = 0;
-                    var_r8 += 4;
+                ctx->table[col][row] = elem;
+                col++;
+                in_quote = 1;
+                if (col == 7) {
+                    col = 0;
+                    row++;
                 }
             } else {
-                var_r11 = 0;
+                in_quote = 0;
             }
         }
         var_r7++;
