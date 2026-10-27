@@ -11,7 +11,7 @@ extern void fn_80215EA8(void), fn_80215EC4(void), fn_80215F04(void), fn_80215F1C
 extern char lbl_8033D678[], lbl_8033D684[], lbl_8033D6F0[], lbl_80490510[];
 extern int lbl_8055B840, lbl_8055B848, lbl_8055B850, lbl_8055B858, lbl_8055EEF8;
 extern int lbl_8055EF00, lbl_8055EF04;
-extern char lbl_8055EF50[];
+DECL_SECTION(".sdata") extern char lbl_8055EF50[];
 extern float lbl_80563434, lbl_80563450, lbl_80563454;
 #pragma scheduling invalid_target
 #pragma cplusplus on
