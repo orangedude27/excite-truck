@@ -906,55 +906,54 @@ extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, 
 
 extern "C" void fn_8002B1D8(void);
 extern "C" void fn_80219F14(void *arg0) {
-    s32 state;
-    s32 old;
-    s32 count;
-    u8 *source;
-    u8 *destination;
-    u8 c;
+    struct Object {
+        u8 pad[0x244];
+        s32 state;
+        s32 old;
+        u8 pad24C[12];
+        char *source;
+        char text[0x20];
+    };
+    Object *object = (Object *)arg0;
 
     fn_802192AC(arg0);
-    state = *(s32 *)((u8 *)arg0 + 0x244);
-    if (state != 6) {
-        if (state < 6) {
-            if (state != 3)
+    if (object->state != 6) {
+        if (object->state < 6) {
+            if (object->state != 3)
                 return;
-        } else {
-            if (state >= 10)
-                return;
-            if (state < 8)
-                return;
+            goto process;
         }
+        if (object->state >= 10)
+            return;
+        if (object->state < 8)
+            return;
     }
 
-    source = *(u8 **)((u8 *)arg0 + 0x258);
-    if (((s32 (*)(void *, u8 *, s32))fn_8002B1D8)(
-            (u8 *)arg0 + 0x25C, source, 0x1F) == 0)
+process:
+    if (((s32 (*)(char *, char *, s32))fn_8002B1D8)(
+            object->text, object->source, 0x1F) == 0)
         return;
 
-    old = *(s32 *)((u8 *)arg0 + 0x248);
-    if (old != 0)
-        fn_80235380((void *)old);
-    *(s32 *)((u8 *)arg0 + 0x248) =
-        fn_8023512C(*(s32 *)((u8 *)arg0 + 0x258));
+    if (object->old != 0)
+        fn_80235380((void *)object->old);
+    object->old = fn_8023512C((s32)object->source);
 
-    destination = (u8 *)arg0 + 0x25C;
-    source = *(u8 **)((u8 *)arg0 + 0x258);
-    count = 0x20;
-    goto copy_loop;
-
-count_loop:
-    count--;
-    if (count > 0)
+    {
+        u8 c;
+        char *source = object->source;
+        s32 count = 0x20;
+        char *destination = object->text;
         goto copy_loop;
-    destination[-1] = 0;
-    return;
-
-copy_loop:
-    c = *source++;
-    *destination++ = c;
-    if ((s8)c != 0)
-        goto count_loop;
+    count_loop:
+        count--;
+        if (count > 0) goto copy_loop;
+        destination[-1] = 0;
+        return;
+    copy_loop:
+        c = *source++;
+        *destination++ = c;
+        if ((s8)c != 0) goto count_loop;
+    }
 }
 
 #pragma pop
@@ -5146,7 +5145,7 @@ extern "C" void *fn_80227E84(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     *(void **)arg0 = lbl_8033DF30;
     *(s32 *)((u8 *)arg0 + 0x24C) = arg3;
     value = *(s32 *)((u8 *)arg2 + 0xB0);
-    *(u8 *)((u8 *)arg0 + 0x244) = (value == 1);
+    *(u8 *)((u8 *)arg0 + 0x244) = (s8)((value - 1) == 0);
     value = ((s32 (*)(const char *, s32))fn_80232578)(base + 0x20C, value);
     *(s32 *)((u8 *)arg0 + 0x250) = value;
     if (value == 0)
