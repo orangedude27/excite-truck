@@ -5427,17 +5427,35 @@ extern "C" s32 fn_802299B0(void *arg0) {
     return (value != 0) | result;
 }
 #pragma scheduling on
-void fn_802299FC(void *arg0) {
-    int a = *(int *)((char *)arg0 + 8);
-    int diff = *(int *)((char *)arg0 + 0x10) - a;
-    int (*get)(void *, int) = *(int (**)(void *, int))(*(int *)arg0 + 0x88);
-    int x = get(arg0, a);
-    int (*get2)(void *) = *(int (**)(void *))(*(int *)arg0 + 0x78);
-    int y = get2(arg0);
-    void *p = *(void **)((char *)arg0 + 0x244);
-    ((void (*)(void *, int, int, int, int, int, int))(*(int *)p + 0xC))(p,
-        *(int *)((char *)arg0 + 0x248), *(int *)((char *)arg0 + 0x24C),
-        *(int *)((char *)arg0 + 0x250), y, diff, x);
+extern "C" void fn_802299FC(void *arg0) {
+    class LocalObject {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual s32 At78();
+        virtual void v29(); virtual void v30(); virtual void v31();
+        virtual s32 At88(s32);
+    };
+    class LocalApply {
+    public:
+        virtual void v0();
+        virtual void Apply(s32, s32, s32, s32, s32, s32);
+    };
+    s32 a = *(s32 *)((u8 *)arg0 + 8);
+    s32 x;
+    s32 diff;
+    diff = *(s32 *)((u8 *)arg0 + 0x10) - a;
+    x = ((LocalObject *)arg0)->At88(a);
+    s32 y = ((LocalObject *)arg0)->At78();
+    LocalApply *p = *(LocalApply **)((u8 *)arg0 + 0x244);
+    p->Apply(*(s32 *)((u8 *)arg0 + 0x248),
+             *(s32 *)((u8 *)arg0 + 0x24C),
+             *(s32 *)((u8 *)arg0 + 0x250), y, diff, x);
 }
 
 extern "C" void *lbl_8033DF30[];
