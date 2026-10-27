@@ -585,29 +585,36 @@ void GXSetVtxDescv(unsigned int *desc) {
 
 void __GXSetVCD(void) {
     unsigned int *data = __GXData;
-    unsigned int value;
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
     unsigned int count;
+    unsigned int value;
+    unsigned int compCount;
+    unsigned int vatCount;
+    unsigned int sizeCount;
 
-    *(volatile unsigned char *)0xCC008000 = 8;
-    *(volatile unsigned char *)0xCC008000 = 0x50;
-    *(volatile unsigned int *)0xCC008000 = data[0x14 / 4];
-    *(volatile unsigned char *)0xCC008000 = 8;
-    *(volatile unsigned char *)0xCC008000 = 0x60;
-    *(volatile unsigned int *)0xCC008000 = data[0x18 / 4];
-    if (*(unsigned char *)((char *)data + 0x525)) {
+    *fifo8 = 8;
+    *fifo8 = 0x50;
+    *fifo32 = data[0x14 / 4];
+    *fifo8 = 8;
+    *fifo8 = 0x60;
+    *fifo32 = data[0x18 / 4];
+
+    if (*((unsigned char *)data + 0x525) != 0) {
         count = 2;
     } else {
-        count = *(unsigned char *)((char *)data + 0x524) != 0;
+        unsigned int flag = *((unsigned char *)data + 0x524);
+        count = (unsigned int)(-(int)flag | (int)flag) >> 31;
     }
-    value = (data[0x14 / 4] & 0x78000) >> 15;
-    value = (0x21 - __builtin_clz(value)) >> 1;
-    count = count * 4;
-    value |= count;
-    count = 0x21 - __builtin_clz(data[0x18 / 4] & 0xFFFF);
-    value |= count << 28;
-    *(volatile unsigned char *)0xCC008000 = 0x10;
-    *(volatile unsigned int *)0xCC008000 = 0x1008;
-    *(volatile unsigned int *)0xCC008000 = value;
+
+    compCount = (data[0x14 / 4] >> 15) & 0xF;
+    vatCount = (0x21 - __cntlzw(compCount)) >> 1;
+    sizeCount = 0x21 - __cntlzw(data[0x18 / 4] & 0xFFFF);
+    value = vatCount | (count << 2) | ((sizeCount << 3) & 0xFFFFFFF0);
+
+    *fifo8 = 0x10;
+    *fifo32 = 0x1008;
+    *fifo32 = value;
     *(unsigned short *)((char *)data + 2) = 1;
 }
 
@@ -1159,6 +1166,45 @@ void GXGetVtxAttrFmtv(void) {
     PPCSync();
 }
 
+void GXMiscInit(s32 arg0) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int top : 8;
+            unsigned int middle : 8;
+            unsigned int low : 16;
+        } fields;
+    } command;
+    s32 interruptState;
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
+
+    interruptState = OSDisableInterrupts();
+    *fifo8 = 0x61;
+    command.value = (unsigned int)arg0 | 0x48000000;
+    *fifo = command.value;
+    command.fields.low = (unsigned int)arg0;
+    command.fields.top = 0x47;
+    *fifo8 = 0x61;
+    *fifo = command.value;
+
+    if (__GXData[0x5FC / 4] != 0) {
+        __GXSetDirtyState();
+    }
+
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    PPCSync();
+    ((void (*)(s32))OSRestoreInterrupts)(interruptState);
+    *(unsigned short *)((unsigned char *)__GXData + 2) = 0;
+}
+
 void GXSetDrawSync(void) {
     s32 interruptState = OSDisableInterrupts();
     volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
@@ -1327,6 +1373,7 @@ extern GXPEIntrHandler __OSSetInterruptHandler(int type, GXPEIntrHandler handler
 extern void __GXFifoInit(void);
 extern unsigned int __OSUnmaskInterrupts(unsigned int userMask);
 extern void OSWakeupThread(void *);
+extern void OSSleepThread(void *);
 extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
 #pragma cplusplus on
@@ -2152,21 +2199,54 @@ unsigned int GXGetTexBufferSize(unsigned short width, unsigned short height, uns
 void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_x, int *tiles_y, int *compressed) {
     int shift_x;
     int shift_y;
+
     switch (format) {
-    case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
-    case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15:
-    case 16: case 17: case 18: case 19: case 20: case 21: case 22: case 23:
-    case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31:
-    case 32: case 33: case 34: case 35: case 36: case 37: case 38: case 39:
-    case 40: case 41: case 42: case 43: case 44: case 45: case 46: case 47:
-    case 48: case 49: case 50: case 51: case 52: case 53: case 54: case 55:
-    case 56: case 57: case 58: case 59: case 60:
-        shift_x = 3; shift_y = 3; break;
+    case 0x0:
+    case 0x8:
+    case 0xE:
+    case 0x20:
+    case 0x30:
+        shift_x = 3;
+        shift_y = 3;
+        break;
+    case 0x1:
+    case 0x2:
+    case 0x9:
+    case 0x11:
+    case 0x22:
+    case 0x27:
+    case 0x28:
+    case 0x29:
+    case 0x39:
+    case 0x3A:
+        shift_x = 3;
+        shift_y = 2;
+        break;
+    case 0x3:
+    case 0x4:
+    case 0x5:
+    case 0x6:
+    case 0xA:
+    case 0x13:
+    case 0x16:
+    case 0x23:
+    case 0x2B:
+    case 0x2C:
+    case 0x3C:
+        shift_x = 2;
+        shift_y = 2;
+        break;
     default:
-        shift_x = 0; shift_y = 0; break;
+        shift_x = 0;
+        shift_y = 0;
+        break;
     }
-    if (width == 0) width = 1;
-    if (height == 0) height = 1;
+
+    if (width == 0)
+        width = 1;
+    if (height == 0)
+        height = 1;
+
     *tiles_x = (width + (1 << shift_x) - 1) >> shift_x;
     *tiles_y = (height + (1 << shift_y) - 1) >> shift_y;
     *compressed = (format == 6) || (format == 0x16);
@@ -3368,34 +3448,71 @@ void GXSetFieldMode(s32 mode, s32 field) {
     __GXFlushTextureState();
 }
 
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+void GXBeginDisplayList(void *list, u32 size) {
+    extern char lbl_8037C108[];
+    extern void GXSetCPUFifo(void *);
+    register unsigned char *base = (unsigned char *)lbl_8037C108;
+    register unsigned char *fifo = base;
+    register unsigned int *data = __GXData;
+    register unsigned char *saveArea = base + 0x80;
+    unsigned char *end;
+    if (data[0x5FC / 4] != 0) {
+        __GXSetDirtyState();
+    }
+    if (*(unsigned char *)((unsigned char *)data + 0x5F9) != 0) {
+        memcpy(saveArea, data, 0x600);
+    }
+    end = (unsigned char *)list + size - 4;
+    *(void **)(fifo + 0x0) = list;
+    *(void **)(fifo + 0x4) = end;
+    *(u32 *)(fifo + 0x8) = size;
+    *(u32 *)(fifo + 0x1C) = 0;
+    *(void **)(fifo + 0x14) = list;
+    *(void **)(fifo + 0x18) = list;
+    *((unsigned char *)data + 0x5F8) = 1;
+    GXGetCPUFifo(base + 0x680);
+    GXSetCPUFifo(fifo);
+    GXGetVtxDescv();
+}
+#pragma use_lmw_stmw reset
+#pragma dont_inline reset
 extern void GXSetCPUFifo(void *);
 extern char lbl_8037C108[];
+#pragma optimize_for_size off
 u32 GXEndDisplayList(void) {
-    void *fifo = lbl_8037C108;
+    struct DisplayListStorage {
+        unsigned char display[0x28];
+        unsigned char padding[0x58];
+        unsigned char savedGXData[0x600];
+        unsigned char oldFifo[0x28];
+    };
+    struct DisplayListStorage *fifo = (struct DisplayListStorage *)lbl_8037C108;
     u8 wrap;
     void *data;
     void *data2;
     int interruptState;
     unsigned int saved;
-    GXGetCPUFifo((u8 *)fifo + 0);
-    wrap = GXGetFifoWrap((u8 *)fifo + 0);
-    GXSetCPUFifo((u8 *)fifo + 0x680);
+    GXGetCPUFifo(fifo->display);
+    wrap = GXGetFifoWrap(fifo->display);
+    GXSetCPUFifo(fifo->oldFifo);
     data = __GXData;
     if (*((u8 *)data + 0x5F9) != 0) {
         interruptState = OSDisableInterrupts();
         data2 = *(unsigned int * volatile *)&__GXData;
         saved = *(unsigned int *)((u8 *)data2 + 8);
-        memcpy(data2, (u8 *)fifo + 0x80, 0x600);
+        memcpy(data2, fifo->savedGXData, 0x600);
         *(unsigned int *)((u8 *)data2 + 8) = saved;
         ((void (*)(int))OSRestoreInterrupts)(interruptState);
     }
     *((u8 *)data + 0x5F8) = 0;
     if (wrap == 0) {
-        return GXGetFifoCount((u8 *)fifo + 0);
+        return GXGetFifoCount(fifo->display);
     }
     return 0;
 }
-
+#pragma optimize_for_size reset
 void GXCallDisplayList(unsigned int arg0, unsigned int arg1) {
     volatile unsigned int *data = __GXData;
     unsigned int saved0 = arg0;
@@ -3521,6 +3638,42 @@ void GXSetCurrentMtx(s32 arg0) {
     } *reg = (void *)&__GXData[0x20];
     reg->matrix = arg0;
     __GXData[0x17F] |= 0x04000000;
+}
+
+void GXLoadTexMtxImm(const f32 *mtx, u32 id, s32 type) {
+    u32 addr;
+    u32 num;
+    volatile const f64 *src = (volatile const f64 *)mtx;
+    volatile f64 *fifo = (volatile f64 *)0xCC008000;
+
+    addr = id >= 0x40 ? (id - 0x40) * sizeof(f32) + 0x500 : id * 4 + (u64)0;
+    num = type == 1 ? (u64)(2 * 4) : 3 * 4;
+    *(volatile unsigned char *)0xCC008000 = 0x10;
+    *(volatile unsigned int *)0xCC008000 = ((num - 1) << 16) | addr;
+
+    if (type == 0) {
+        f64 f0 = src[5];
+        f64 f1 = src[4];
+        f64 f2 = src[3];
+        f64 f3 = src[2];
+        f64 f4 = src[1];
+        f64 f5 = src[0];
+        fifo[0] = f5;
+        fifo[0] = f4;
+        fifo[0] = f3;
+        fifo[0] = f2;
+        fifo[0] = f1;
+        fifo[0] = f0;
+    } else {
+        f64 f0 = src[3];
+        f64 f1 = src[2];
+        f64 f2 = src[1];
+        f64 f3 = src[0];
+        fifo[0] = f3;
+        fifo[0] = f2;
+        fifo[0] = f1;
+        fifo[0] = f0;
+    }
 }
 
 void __GXSetViewport(void) {
