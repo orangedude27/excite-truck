@@ -13,10 +13,11 @@ extern int lbl_8055FFDC;
 extern signed char lbl_8055FFE0;
 extern int lbl_8034D7D8;
 extern int fn_802E30C8(int *, int, int, int);
-#pragma dont_inline fn_802E72B8
+#pragma dont_inline on
 int fn_802E72B8(int arg0) {
     return (arg0 + 0x7ff) / 2048;
 }
+#pragma dont_inline reset
 
 void fn_802E7318(void) {
     lbl_8055FFDC = 0;
