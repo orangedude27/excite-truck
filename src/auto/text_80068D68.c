@@ -5458,6 +5458,7 @@ static u8 *btm_inq_db_find_ent(BD_ADDR p_bda) {
     }
     return NULL;
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
