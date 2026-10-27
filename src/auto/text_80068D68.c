@@ -991,23 +991,25 @@ void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
 }
 
 void *WUDiGetDevInfo(u8 *addr) {
-    s32 interrupt;
-    s32 i;
+    u8 *base;
     u8 *entry;
     void *result;
+    s32 interrupt;
+    s32 i;
 
+    base = lbl_80392960;
     result = 0;
     interrupt = OSDisableInterrupts();
-    for (i = 0, entry = lbl_80392960 + 0xA4; i < 10; i++, entry += 0x60) {
+    for (i = 0, entry = base + 0xA4; i < 10; i++, entry += 0x60) {
         if (memcmp(entry, addr, 6) == 0) {
-            result = lbl_80392960 + i * 0x60 + 0x64;
+            result = base + i * 0x60 + 0x64;
             break;
         }
     }
     if (result == 0) {
-        for (i = 0, entry = lbl_80392960 + 0x464; i < 6; i++, entry += 0x60) {
+        for (i = 0, entry = base + 0x464; i < 6; i++, entry += 0x60) {
             if (memcmp(entry, addr, 6) == 0) {
-                result = lbl_80392960 + i * 0x60 + 0x424;
+                result = base + i * 0x60 + 0x424;
                 break;
             }
         }
@@ -14947,6 +14949,30 @@ void sdp_config_ind(u16 cid, void *p_cfg) {
         if (((u8 *)lcb)[1] & 1) fn_8009757C((u8 *)lcb);
         else btu_start_timer((u8 *)lcb + 8, 5, 0x1E);
     }
+}
+
+extern char lbl_8031A3E8[];
+extern void (sdp_server_handle_client_req)(tCONN_CB *, BT_HDR *);
+void sdp_data_ind(u16 l2cap_cid, void *p_msg) {
+    tCONN_CB *p_ccb;
+    u8 con_state;
+
+    p_ccb = l2cu_find_lcb_by_handle_80099E54(l2cap_cid);
+    if (p_ccb != 0) {
+        con_state = p_ccb->con_state;
+        if (con_state == SDP_STATE_CONNECTED) {
+            if (p_ccb->con_flags & SDP_FLAGS_IS_ORIG) {
+                sdp_disc_server_rsp(p_ccb, p_msg);
+            } else {
+                (sdp_server_handle_client_req)(p_ccb, p_msg);
+            }
+        } else if (lbl_803C4C40[0x4630] >= 2) {
+            fn_8007096C(0xA0001, lbl_8031A3B0, con_state, l2cap_cid);
+        }
+    } else if (lbl_803C4C40[0x4630] >= 2) {
+        fn_80070954(0xA0001, lbl_8031A3E8, l2cap_cid);
+    }
+    GKI_freebuf(p_msg);
 }
 
 void sdp_disconnect_cfm(u16 cid, u16 result) {
