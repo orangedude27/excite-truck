@@ -463,6 +463,9 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECCrossProduct(const void *, const void *, float *);
 extern float PSVECSquareDistance(const void *, const void *);
+struct Mtx48 {
+    int w[12];
+};
 extern void fn_8017A580(void *);
 extern void fn_8017A57C(void *);
 extern void fn_801A4868(void *, int);
