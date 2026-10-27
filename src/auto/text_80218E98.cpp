@@ -4,6 +4,7 @@
 #include <types.h>
 
 extern "C" void fn_8021C12C(void *);
+extern "C" void *lbl_8033E3D4[];
 extern "C" void *lbl_8033DF30[];
 extern "C" void fn_802E30C8(const char *, ...);
 
@@ -1238,15 +1239,23 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, 
 extern double lbl_805634B8;
 extern float lbl_805634C4;
 extern "C" void fn_8021AFF4(void *arg0) {
-    f32 *value = *(f32 **)((u8 *)arg0 + 0x254);
     f32 step = (*(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258)) /
                (f32)(*(s32 *)((u8 *)arg0 + 0x260) - 1);
-    *value += (f32)*(s32 *)((u8 *)arg0 + 0x264) * step;
-    *value = step * (f32)(s32)(lbl_805634C4 + (*value / step));
-    if (*value < *(f32 *)((u8 *)arg0 + 0x258))
-        *value = *(f32 *)((u8 *)arg0 + 0x258);
-    if (*value > *(f32 *)((u8 *)arg0 + 0x25C))
-        *value = *(f32 *)((u8 *)arg0 + 0x25C);
+    *(f32 *)*(void **)((u8 *)arg0 + 0x254) +=
+        (f32)*(s32 *)((u8 *)arg0 + 0x264) * step;
+    *(f32 *)*(void **)((u8 *)arg0 + 0x254) =
+        step * (f32)(s32)(lbl_805634C4 +
+                          (*(f32 *)*(void **)((u8 *)arg0 + 0x254) / step));
+    if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) <
+        *(f32 *)((u8 *)arg0 + 0x258)) {
+        *(f32 *)*(void **)((u8 *)arg0 + 0x254) =
+            *(f32 *)((u8 *)arg0 + 0x258);
+    }
+    if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) >
+        *(f32 *)((u8 *)arg0 + 0x25C)) {
+        *(f32 *)*(void **)((u8 *)arg0 + 0x254) =
+            *(f32 *)((u8 *)arg0 + 0x25C);
+    }
 }
 
 extern "C" char lbl_8033F5D0[];
