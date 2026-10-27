@@ -162,18 +162,25 @@ void *fn_801D3894(void *arg0, int arg1) {
 extern void fn_8017B0F8(void);
 extern void fn_8019EECC(void *, void *);
 extern void fn_80179F94(void *, void *);
-extern void *lbl_80333B98;
+extern char lbl_80333B98[];
 extern int lbl_80333B48[];
 extern float lbl_80562AAC, lbl_80562AB8;
 void fn_801D3910(void *arg0) {
     char *p;
     int i;
-    float zero = lbl_80562AB8, value = lbl_80562AAC;
+
     fn_8017B0F8();
     p = (char *)arg0 + 0x248;
     *(void **)((char *)arg0 + 0x244) = p;
     if (p != 0) {
-        *(void **)p = lbl_80333B98;
+        float zero = lbl_80562AB8;
+        float value = lbl_80562AAC;
+        volatile float temp[3];
+
+        *(volatile void **)p = lbl_80333B98;
+        temp[0] = zero;
+        temp[1] = zero;
+        temp[2] = zero;
         *(void **)(p + 0xC) = (char *)arg0 + 0x3C;
         *(void **)(p + 4) = arg0;
         *(int *)(p + 8) = 0;
@@ -184,11 +191,19 @@ void fn_801D3910(void *arg0) {
         *(int *)(p + 0x1C) = 0;
         *(void **)p = lbl_80333B48;
         *(float *)(p + 0x24) = value;
-        *(float *)(p + 0x34) = zero; *(float *)(p + 0x38) = zero; *(float *)(p + 0x3C) = zero;
-        *(float *)(p + 0x40) = zero; *(float *)(p + 0x44) = zero; *(float *)(p + 0x48) = zero;
+        *(float *)(p + 0x34) = zero;
+        *(float *)(p + 0x38) = zero;
+        *(float *)(p + 0x3C) = zero;
+        *(float *)(p + 0x40) = zero;
+        *(float *)(p + 0x44) = zero;
+        *(float *)(p + 0x48) = zero;
         *(char *)(p + 0x4C) = 0;
-        *(float *)(p + 0x50) = zero; *(float *)(p + 0x28) = zero; *(float *)(p + 0x2C) = zero; *(float *)(p + 0x30) = zero;
-        if (arg0 != 0) fn_8019EECC(arg0, p + 0x28);
+        *(float *)(p + 0x50) = zero;
+        *(float *)(p + 0x28) = zero;
+        *(float *)(p + 0x2C) = zero;
+        *(float *)(p + 0x30) = zero;
+        if (arg0 != 0)
+            fn_8019EECC(arg0, p + 0x28);
     }
     fn_80179F94(arg0, *(void **)((char *)arg0 + 0x244));
     *(char *)((char *)arg0 + 0x1E8) = 1;
