@@ -3698,7 +3698,7 @@ void bta_hh_trace_dev_db(void) {
     extern void fn_80070984(u32, void *);
     extern void fn_8007099C(u32, void *);
     u8 *s = lbl_803159E0;
-    u8 i;
+    u32 i;
     u8 *entry;
 
     if (lbl_8055DC80 >= 5)
@@ -3706,11 +3706,11 @@ void bta_hh_trace_dev_db(void) {
     i = 0;
     do {
         if (lbl_8055DC80 >= 5) {
-            entry = lbl_803C0D48 + (i << 5);
-            ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0x504, s + 0x220, i, entry[0x28], entry[0x26]);
+            entry = lbl_803C0D48 + ((u8)i << 5);
+            ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0x504, s + 0x220, (u8)i, entry[0x28], entry[0x26]);
         }
         if (lbl_8055DC80 >= 5) {
-            entry = lbl_803C0D48 + (i << 5);
+            entry = lbl_803C0D48 + ((u8)i << 5);
             ((void (*)(u32, void *, u16, u8, u8, u8))fn_8007099C)(0x504, s + 0x244, *(u16 *)(entry + 0x1E), entry[0x2C], entry[0x23], entry[0x22]);
         }
         i++;
@@ -14644,24 +14644,24 @@ u32 SDP_CreateRecord(void) {
     u8 *base = lbl_803C4C40 + 0x121C;
     u16 count;
     u32 handle;
-    volatile u8 bytes[4];
+    u8 bytes[4];
 
     if (*(u16 *)(lbl_803C4C40 + 0x1222) < 0x14) {
         memset(base + (*(u16 *)(lbl_803C4C40 + 0x1222) * 0x298) + 8, 0, 0x298);
         count = *(u16 *)(base + 6);
-        if (count) {
+        if (count != 0) {
             handle = *(u32 *)(base + ((count - 1) * 0x298) + 8) + 1;
         } else {
             handle = 0x10000;
         }
         *(u32 *)(base + (count * 0x298) + 8) = handle;
-        bytes[0] = handle >> 24;
-        bytes[1] = handle >> 16;
-        bytes[2] = handle >> 8;
-        bytes[3] = handle;
-        count = *(u16 *)(base + 6);
-        *(u16 *)(base + 6) = count + 1;
-        SDP_AddAttribute(handle, 0, 1, 4, (u8 *)bytes);
+        bytes[0] = (u8)(handle >> 24);
+        bytes[1] = (u8)(handle >> 16);
+        bytes[2] = (u8)(handle >> 8);
+        bytes[3] = (u8)handle;
+        count = *(u16 *)(base + 6) + 1;
+        *(u16 *)(base + 6) = count;
+        SDP_AddAttribute(handle, 0, 1, 4, bytes);
         return *(u32 *)(base + ((*(u16 *)(base + 6) - 1) * 0x298) + 8);
     }
     return 0;
