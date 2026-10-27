@@ -46,8 +46,8 @@ public:
 }
 
 extern "C" s32 lbl_804348E8[];
-extern "C" void* lbl_8032F2BC;
-extern "C" void* lbl_8032EBF8;
+extern "C" char lbl_8032F2BC[];
+extern "C" char lbl_8032EBF8[];
 extern "C" void* lbl_8032EE68;
 extern "C" f32 lbl_8056175C;
 extern "C" void* memset(void*, s32, u32);
@@ -377,7 +377,7 @@ extern "C" void *lbl_8032EAFC;
 extern "C" f32 lbl_80561768;
 #pragma push
 #pragma small_data off
-extern void* lbl_8032F2BC;
+extern char lbl_8032F2BC[];
 extern "C" void* lbl_8032EAFC;
 extern void* lbl_8032EFA8;
 #pragma pop
@@ -462,12 +462,15 @@ extern "C" void* fn_80157990(void* arg0, s32 arg1) {
 }
 
 extern "C" s32 lbl_804348E8[];
-extern "C" void* lbl_8032F2BC;
-extern "C" void* lbl_8032EBF8;
+extern "C" char lbl_8032F2BC[];
+extern "C" char lbl_8032EBF8[];
 extern "C" void* lbl_8032EE68;
 extern "C" f32 lbl_8056175C;
 extern "C" void* memset(void*, s32, u32);
+#pragma small_data off
+#pragma use_lmw_stmw off
 extern "C" void* fn_801579F4(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    // Note: declare both vtables under small_data off and use the save helpers from the target.
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
     *(void**)arg0 = &lbl_8032F2BC;
@@ -485,7 +488,8 @@ extern "C" void* fn_801579F4(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(void**)arg0 = &lbl_8032EBF8;
     return arg0;
 }
-
+#pragma use_lmw_stmw reset
+#pragma small_data reset
 extern "C" void* fn_80157A98(void* arg0, s32 arg1) {
  if (arg0 != 0) {
  if (arg0 != 0) {
@@ -750,6 +754,7 @@ extern "C" void fn_801584C4(void **arg0) {
 }
 
 extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2) {
+#pragma use_lmw_stmw off
     struct Dummy {
         virtual void f0(s32, s32, s32);
     };
@@ -763,6 +768,7 @@ extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2) {
         offset += 4;
         i++;
     }
+#pragma use_lmw_stmw reset
 }
 
 #pragma scheduling invalid_target
@@ -2525,6 +2531,7 @@ loop_test:
 }
 
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void fn_8015E238(Unk801577F0V* arg0) {
     struct Dummy {
         virtual void v0();
@@ -2545,6 +2552,7 @@ extern "C" void fn_8015E238(Unk801577F0V* arg0) {
         i++;
     }
 }
+#pragma scheduling on
 #pragma use_lmw_stmw reset
 extern "C" void fn_8015E2C8(Unk801577F0V* arg0) {
     UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
