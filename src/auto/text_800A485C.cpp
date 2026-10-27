@@ -164,6 +164,7 @@ extern "C" void fn_800BAA8C(void);
   }
   }
 extern "C" void fn_800B36D4(s32 arg0);
+extern "C" s32 fn_800B6004(void *);
 extern "C" void fn_800B783C(void *arg0);
 extern "C" s32 fn_800B77C0(void *arg0);
 extern "C" s32 fn_800B5E14(void *arg0);
@@ -2416,27 +2417,30 @@ extern "C" s32 VFiPFENT_findEmptyTailSFN(void *, void *, u32 *);
 extern "C" s32 VFiPFPATH_parseShortNameNumeric(void *);
 extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
     u32 sp8;
+    s8 *name = arg1;
+    s8 *p = name + 1;
     u32 index = 1;
-    s8 *p = arg1 + 1;
-    s8 c = *p;
 
-    while (c != 0x7E && c != 0 && index < 7) {
+    while (*p != 0x7E && *p != 0 && index < 7) {
         index++;
         p++;
-        c = *p;
     }
-    if (index < 7 && c == 0x7E) {
+    if (index < 7 && *p == 0x7E) {
         index++;
-        arg1 += index;
-        do {
-            arg1++;
-            c = *arg1;
-        } while (c >= '0' && c <= '9');
-        if (c == '.' || c == 0) {
-            if (((s32 (*)(void *, void *, u32 *))VFiPFENT_findEmptyTailSFN)(arg0, arg1, &sp8) == 0) {
-                if (sp8 != 1)
-                    VFiPFPATH_parseShortNameNumeric(arg1);
+        p = name + index;
+        p++;
+        while (*p >= '0' && *p <= '9') {
+            p++;
+        }
+        if (*p == '.' || *p == 0) {
+            s32 result = VFiPFENT_findEmptyTailSFN(arg0, name, &sp8);
+            if (result != 0) {
+                return result;
             }
+            if (sp8 == 1) {
+                return 0;
+            }
+            VFiPFPATH_parseShortNameNumeric(name);
         }
     }
     return 0;
@@ -10366,18 +10370,25 @@ extern "C" s32 fn_800C4E5C(s32 arg0, void *arg1) {
     return 0;
 }
 #pragma pop
-void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
-    s32 i = 4;
-    do {
-        s32 right = arg1[0];
-        s32 left = arg0[0];
-        s32 diff = left - right;
-        arg0[0] = left + right;
-        arg1[0] = (s32)(((s64)diff * arg2[0]) >> 24);
-        arg0 += 1;
-        arg1 += 1;
-        arg2 += 1;
-    } while (--i);
+extern "C" void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        s32 right0 = arg1[0], diff0 = arg0[0] - right0;
+        arg0[0] = right0 + arg0[0];
+        arg1[0] = (s32)(((s64)diff0 * arg2[0]) >> 24);
+        s32 right1 = arg1[1], diff1 = arg0[1] - right1;
+        arg0[1] = right1 + arg0[1];
+        arg1[1] = (s32)(((s64)diff1 * arg2[1]) >> 24);
+        s32 right2 = arg1[2], diff2 = arg0[2] - right2;
+        arg0[2] = right2 + arg0[2];
+        arg1[2] = (s32)(((s64)diff2 * arg2[2]) >> 24);
+        s32 right3 = arg1[3], diff3 = arg0[3] - right3;
+        arg0[3] = right3 + arg0[3];
+        arg1[3] = (s32)(((s64)diff3 * arg2[3]) >> 24);
+        arg0 += 4;
+        arg1 += 4;
+        arg2 += 4;
+    }
 }
 
 void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) {
@@ -10392,39 +10403,39 @@ void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) {
 }
 
 void fn_800C5430(s32 *a, s32 *b, s32 *coeff) {
+    s32 i = 4;
     s32 c0 = coeff[0];
     s32 c1 = coeff[1];
     s32 c2 = coeff[2];
     s32 c3 = coeff[3];
-    s32 i = 4;
-    do {
-        s32 b0 = b[0];
-        s32 a0 = a[0];
-        s32 d0 = a0 - b0;
-        s32 sum0 = a0 + b0;
+    for (; i != 0; i--) {
+        register s32 b0 = b[0];
+        register s32 a0 = a[0];
+        register s32 d0 = a0 - b0;
+        register s32 sum0 = a0 + b0;
         a[0] = sum0;
         b[0] = (s32)(((s64)d0 * c0) >> 24);
-        s32 b1 = b[1];
-        s32 a1 = a[1];
-        s32 d1 = a1 - b1;
-        s32 sum1 = a1 + b1;
+        register s32 b1 = b[1];
+        register s32 a1 = a[1];
+        register s32 d1 = a1 - b1;
+        register s32 sum1 = a1 + b1;
         a[1] = sum1;
         b[1] = (s32)(((s64)d1 * c1) >> 24);
-        s32 b2 = b[2];
-        s32 a2 = a[2];
-        s32 d2 = a2 - b2;
-        s32 sum2 = a2 + b2;
+        register s32 b2 = b[2];
+        register s32 a2 = a[2];
+        register s32 d2 = a2 - b2;
+        register s32 sum2 = a2 + b2;
         a[2] = sum2;
         b[2] = (s32)(((s64)d2 * c2) >> 24);
-        s32 b3 = b[3];
-        s32 a3 = a[3];
-        s32 d3 = a3 - b3;
-        s32 sum3 = a3 + b3;
+        register s32 b3 = b[3];
+        register s32 a3 = a[3];
+        register s32 d3 = a3 - b3;
+        register s32 sum3 = a3 + b3;
         a[3] = sum3;
         b[3] = (s32)(((s64)d3 * c3) >> 24);
         a += 8;
         b += 8;
-    } while (--i);
+    }
 }
 
 extern "C" void fn_800C5508(void *arg0, void *arg1, void *arg2) {
