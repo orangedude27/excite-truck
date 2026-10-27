@@ -18022,7 +18022,9 @@ extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *arg0, long arg1, int a
 
 #pragma opt_tail_call on
 #pragma opt_tail_call on
+#if 0
 extern "C" void fn_800D1C48(void);
+#endif
 extern u8 lbl_8055DDC0;
 extern OSAlarm lbl_80407790;
 extern const char lbl_8031E9D0[];
