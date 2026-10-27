@@ -782,6 +782,22 @@ void (*WUDSetSyncSimpleCallback(void (*pCallback)(s32, s32)))(s32, s32) {
     return pOldCallback;
 }
 
+extern char lbl_803134F0[];
+extern s32 StartSyncDevice(u8, s8, BOOL);
+s32 WUDStartFastSyncSimple(void) {
+    s32 started;
+    BOOL interrupts;
+    void (*callback)(s32, s32);
+    DBPrintf_8006CFA8(lbl_803134F0);
+    started = StartSyncDevice(1, -1, 0);
+    interrupts = OSDisableInterrupts();
+    callback = *(void (**)(s32, s32))(lbl_80392960 + 4);
+    OSRestoreInterrupts(interrupts);
+    if (started == 0 && callback != 0)
+        callback(-1, 0);
+    return started;
+}
+
 s32 WUDSetDisableChannel(s8 arg0) {
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern u8 BTM_SetAfhChannels(u8, u8);
