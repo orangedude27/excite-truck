@@ -5190,6 +5190,35 @@ void btm_init(void) {
     btm_dev_init();
 }
 
+tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_cb)
+{
+    UINT8 i;
+    u8 *entry;
+
+    if (mask & BTM_PM_DEREG) {
+        i = *p_pm_id;
+        if (i >= BTM_MAX_PM_RECORDS)
+            return BTM_ILLEGAL_VALUE;
+        lbl_803C0F78[0x558 + i * 8] = BTM_PM_REC_NOT_USED;
+        return BTM_SUCCESS;
+    }
+
+    entry = lbl_803C0F78;
+    for (i = 0; i < BTM_MAX_PM_RECORDS; i++, entry += 8) {
+        if (entry[0x558] == BTM_PM_REC_NOT_USED) {
+            if (mask & BTM_PM_REG_NOTIF) {
+                if (p_cb == NULL)
+                    return BTM_ILLEGAL_VALUE;
+                *(tBTM_PM_STATUS_CBACK **)(lbl_803C0F78 + 0x554 + i * 8) = p_cb;
+            }
+            lbl_803C0F78[0x558 + i * 8] = mask;
+            *p_pm_id = i;
+            return BTM_SUCCESS;
+        }
+    }
+    return BTM_NO_RESOURCES;
+}
+
 tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
     u8 i;
     u8 *p = lbl_803C0F78 + 0x34;
@@ -10332,6 +10361,43 @@ void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
             fn_80089E40(ccb, event + 8, &ci);
         }
     }
+}
+
+extern void *l2cu_find_lcb_by_handle(u16);
+extern void *l2cu_find_lcb_by_state(s32);
+extern BOOLEAN l2cu_create_conn(void *);
+extern void l2cu_release_lcb(void *);
+extern void btm_sco_acl_removed(u8 *);
+BOOLEAN l2c_link_hci_disc_comp(UINT16 handle, UINT8 reason) {
+    u8 *p_lcb;
+    BOOLEAN status = TRUE;
+    u8 *p_next_ccb;
+    u8 *p_ccb;
+    UINT8 reason_copy = reason;
+
+    p_lcb = (u8 *)l2cu_find_lcb_by_handle(handle);
+    if (p_lcb == 0) {
+        status = FALSE;
+    } else {
+        if (lbl_803C0F78[0x27BF] != 0x0E)
+            lbl_803C0F78[0x27BF] = reason_copy;
+
+        p_ccb = *(u8 **)(p_lcb + 8);
+        while (p_ccb != 0) {
+            p_next_ccb = *(u8 **)(p_ccb + 8);
+            fn_80089E40(p_ccb, 3, &reason_copy);
+            p_ccb = p_next_ccb;
+        }
+
+        btm_sco_acl_removed(p_lcb + 0x2A);
+        l2cu_release_lcb(p_lcb);
+    }
+
+    p_lcb = (u8 *)l2cu_find_lcb_by_state(1);
+    if (p_lcb != 0)
+        l2cu_create_conn(p_lcb);
+
+    return status;
 }
 
 extern void *l2cu_find_lcb_by_handle(u16 handle);
