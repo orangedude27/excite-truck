@@ -85,6 +85,7 @@ extern "C" int fn_802B5510(const char *arg0) {
         virtual const char *process(const char *);
     };
     Manager *manager;
+    struct TplLike *list;
     void **entries;
     unsigned int count;
     void *item;
@@ -94,8 +95,9 @@ extern "C" int fn_802B5510(const char *arg0) {
         (void (*)(void *))fn_80131810, (void *)arg0);
     if (manager == 0)
         goto report_error;
+    list = &lbl_804BE454;
     entries = (void **)lbl_804BE454.entries;
-    count = lbl_804BE454.count++;
+    count = list->count++;
     index = 0;
     entries[count] = manager;
     goto fetch_item;
