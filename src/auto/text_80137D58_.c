@@ -322,6 +322,7 @@ extern int fn_8013BFE8(int);
 extern void fn_802E30C8(char *, ...);
 extern char lbl_8032BF20[];
 extern char lbl_8032BF70[];
+#pragma dont_inline on
 void *fn_80138968(int arg0) {
     unsigned char storage[8];
     int valid;
