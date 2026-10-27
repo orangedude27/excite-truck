@@ -1867,33 +1867,26 @@ s32 fn_8007011C(void) { return 0; }
 
 void UUSB_Close(void *arg0) {
     extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
-    typedef struct {
-        u8 pad0[0x29];
-        u8 state;
-        u8 pad2A[2];
-        u8 acl_q[0x10];
-        u8 sco_q[0x10];
-    } uusb_close_view;
     fn_8006EBAC();
     {
-        register uusb_close_view *base = (uusb_close_view *)&lbl_803BD1E0;
-        base->state = 0;
+        register uusb_cb_t *control = &lbl_803BD1E0;
+        control->state = 0;
         fn_8006EB88();
-        if (*(u16 *)(base->acl_q + 8) != 0) {
-            while (*(u16 *)(base->acl_q + 8) != 0) {
-                GKI_freebuf(GKI_dequeue((BUFFER_Q *)base->acl_q));
+        if (*(u16 *)((u8 *)&control->acl_q + 8) != 0) {
+            while (*(u16 *)((u8 *)&control->acl_q + 8) != 0) {
+                GKI_freebuf(GKI_dequeue(&control->acl_q));
             }
         }
     }
     {
-        register uusb_close_view *base = (uusb_close_view *)&lbl_803BD1E0;
-        if (*(u16 *)(base->sco_q + 8) != 0) {
-            while (*(u16 *)(base->sco_q + 8) != 0) {
-                GKI_freebuf(GKI_dequeue((BUFFER_Q *)base->sco_q));
+        register uusb_cb_t *control = &lbl_803BD1E0;
+        if (*(u16 *)((u8 *)&control->sco_q + 8) != 0) {
+            while (*(u16 *)((u8 *)&control->sco_q + 8) != 0) {
+                GKI_freebuf(GKI_dequeue(&control->sco_q));
             }
         }
     }
-    IUSB_CloseDeviceAsync(*(s32 *)&lbl_803BD1E0,
+    IUSB_CloseDeviceAsync(lbl_803BD1E0.fd,
                           (void (*)(void))uusb_CloseDeviceCB, 0);
 }
 
@@ -5237,28 +5230,31 @@ u8 btm_pm_get_set_mode(u32 arg0, void *arg1, void *arg2, void *arg3) {
 }
 
 void btm_pm_proc_cmd_status(UINT8 status) {
+    u8 result;
     u8 *base = lbl_803C0F78;
     u8 state = base[0x564];
-    u8 index;
-    u8 result;
-    u8 *entry;
-    if (state >= 4) return;
+    u8 *record;
+    if (state >= 4) {
+        return;
+    }
+    record = base + state * 0x22;
     if (status == 0) {
+        record[0x4EC] = 4;
         result = 4;
-        base[state * 0x22 + 0x4EC] = result;
     } else {
         result = 5;
     }
-    index = base[0x565];
-    if (index != 0x80) {
-        entry = base + (index << 3);
+    if (lbl_803C0F78[0x565] != 0x80) {
+        u8 *entry = lbl_803C0F78 + (lbl_803C0F78[0x565] << 3);
         if (entry[0x558] & 2) {
-            void (*callback)(void *, s32, s32) = *(void (**)(void *, s32, s32))(entry + 0x554);
-            callback(base + state * 0x11C + 0x3C, 0, status);
+            void *context = lbl_803C0F78 +
+                *(volatile u8 *)(lbl_803C0F78 + 0x564) * 0x11C + 0x3C;
+            void (*callback)(void *, s32, s32, UINT8) =
+                *(void (**)(void *, s32, s32, UINT8))(entry + 0x554);
+            callback(context, result, 0, status);
         }
     }
-    base[0x564] = 4;
-    (void)result;
+    lbl_803C0F78[0x564] = 4;
 }
 
 void fn_8007D4C4(void) {
@@ -12939,7 +12935,24 @@ void fn_800939A0(void *arg0, u8 arg1) { rfc_port_sm_execute(port_find_mcb_dlci_p
 
 void fn_800939CC(void *arg0, u8 arg1, void *arg2) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xE, arg2); }
 
-void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 flag; flag=1; if (*(u8 *)((u8 *)arg0+0x6D)==0) flag=0; buf=GKI_getpoolbuf(2); if(buf) { frame=buf+0x11; *(u16 *)(buf+4)=9; frame[0]=(flag<<1)|1|(arg1<<2); frame[1]=0x3F; frame[2]=1; frame[3]=fn_8009504C(3,frame,0x3F); *(u16 *)(buf+2)=4; rfc_check_send_cmd(arg0,buf); } }
+void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) {
+    BT_HDR *p_buf;
+    u8 *p_data;
+    u8 cr;
+
+    cr = (u8)(((*(u8 *)((u8 *)arg0 + 0x6D) != 0) ? 1 : 0) << 1);
+    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == 0)
+        return;
+
+    p_buf->offset = 9;
+    p_data = (u8 *)(p_buf + 1) + 9;
+    *p_data++ = 1 | cr | (arg1 << 2);
+    *p_data++ = 0x3F;
+    *p_data++ = 1;
+    *p_data = fn_8009504C(3, p_data, 0x3F);
+    p_buf->len = 4;
+    rfc_check_send_cmd(arg0, p_buf);
+}
 
 void rfc_send_ua(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 flag; flag=1; if (*(u8 *)((u8 *)arg0+0x6D)!=0) flag=0; buf=GKI_getpoolbuf(2); if(buf) { frame=buf+0x11; *(u16 *)(buf+4)=9; frame[0]=(flag<<1)|1|(arg1<<2); frame[1]=0x73; frame[2]=1; frame[3]=fn_8009504C(3,frame,0x73); *(u16 *)(buf+2)=4; rfc_check_send_cmd(arg0,buf); } }
 
