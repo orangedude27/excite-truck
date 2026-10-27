@@ -108,7 +108,7 @@ fetch_item:
     }
     return 0;
 }
-
+#pragma dont_inline off
 #pragma cplusplus off
 
 #pragma scheduling invalid_target
