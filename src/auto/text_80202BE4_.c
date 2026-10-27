@@ -14,7 +14,7 @@ extern void fn_802CA294(s32);
 extern void fn_802D050C(s32);
 extern void fn_802D30DC(s32);
 extern void fn_802D9230(void);
-extern void fn_80203B20();
+extern void fn_80203B20(s32, s32, s32);
 extern void fn_802D050C_var(void);
 #define fn_802D050C(...) fn_802D050C_var()
 extern u32 fn_80202BE4(void);
