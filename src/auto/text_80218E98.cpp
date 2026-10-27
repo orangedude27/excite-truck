@@ -4,6 +4,8 @@
 #include <types.h>
 
 extern "C" void fn_8021C12C(void *);
+extern "C" void *lbl_8033DF30[];
+extern "C" void fn_802E30C8(const char *, ...);
 
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" s32 fn_801E4A6C(s32, s32);
@@ -900,6 +902,60 @@ extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, 
     default: fn_802E317C(lbl_8033D8B8); break;
     }
 }
+
+extern "C" void fn_8002B1D8(void);
+extern "C" void fn_80219F14(void *arg0) {
+    s32 state;
+    s32 old;
+    s32 count;
+    u8 *source;
+    u8 *destination;
+    u8 c;
+
+    fn_802192AC(arg0);
+    state = *(s32 *)((u8 *)arg0 + 0x244);
+    if (state != 6) {
+        if (state < 6) {
+            if (state != 3)
+                return;
+        } else {
+            if (state >= 10)
+                return;
+            if (state < 8)
+                return;
+        }
+    }
+
+    source = *(u8 **)((u8 *)arg0 + 0x258);
+    if (((s32 (*)(void *, u8 *, s32))fn_8002B1D8)(
+            (u8 *)arg0 + 0x25C, source, 0x1F) == 0)
+        return;
+
+    old = *(s32 *)((u8 *)arg0 + 0x248);
+    if (old != 0)
+        fn_80235380((void *)old);
+    *(s32 *)((u8 *)arg0 + 0x248) =
+        fn_8023512C(*(s32 *)((u8 *)arg0 + 0x258));
+
+    destination = (u8 *)arg0 + 0x25C;
+    source = *(u8 **)((u8 *)arg0 + 0x258);
+    count = 0x20;
+    goto copy_loop;
+
+count_loop:
+    count--;
+    if (count > 0)
+        goto copy_loop;
+    destination[-1] = 0;
+    return;
+
+copy_loop:
+    c = *source++;
+    *destination++ = c;
+    if ((s8)c != 0)
+        goto count_loop;
+}
+
 #pragma pop
 extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F3B0[];
