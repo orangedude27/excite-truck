@@ -21,6 +21,7 @@ extern float lbl_805613C8;
 extern float lbl_805613D0;
 extern int fn_80138C28(void *, float *, float *);
 #pragma dont_inline fn_80138BFC
+#pragma dont_inline fn_80138BE4
 float fn_80138DF4(void *arg0) { return 0.0f; }
 void fn_80138F38(void *arg0) {
     float sp8;
