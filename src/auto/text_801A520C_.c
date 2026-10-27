@@ -19,7 +19,7 @@ extern float lbl_805623C8;
 extern int lbl_8055E3C4;
 extern char lbl_80333C20[];
 extern int lbl_80435050[];
-extern int fn_801A5AD0(void *);
+extern void fn_801A5AD0(...);
 extern void fn_802E30C8(const char *, ...);
 int fn_801E9E30(void *, int *, int *);
 void *fn_801B83A0(void);
