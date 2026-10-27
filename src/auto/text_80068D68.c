@@ -13336,16 +13336,19 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
     u8 *data;
     u8 *buf;
     u8 flag;
+    u8 control;
 
-    flag = 2;
+    flag = 1;
     if (((u8 *)arg0)[0x6D] != 0) {
         flag = 0;
     }
+    control = (u8)(flag << 1);
     buf = (u8 *)GKI_getpoolbuf(2);
     if (buf != 0) {
         *(u16 *)(buf + 4) = 9;
         data = buf + 0x11;
-        data[0] = (u8)(((arg1 << 2) & 0x3FC) | flag | 1);
+        control |= 1;
+        data[0] = (u8)(control | ((arg1 << 2) & 0x3FC));
         data[1] = (u8)((((-(s32)arg2 | arg2) >> 31) & 0x10) | 0xF);
         data[2] = 1;
         data[3] = fn_8009504C(3, data, data[0]);
