@@ -4432,6 +4432,20 @@ s32 fn_8007A534(s32 arg0) {
     return 0;
 }
 
+void btm_vendor_specific_evt(UINT8 *p, UINT8 evt_len) {
+    u8 *btm = lbl_803C0F78;
+    void (*callback)(UINT8, UINT8 *);
+    if (*(UINT16 *)(btm + 0x63C) != 0x12 && *(UINT8 *)(btm + 0x27C0) >= 4) {
+        fn_8007093C(0xD0003, lbl_803161E0);
+    }
+    callback = *(void (**)(UINT8, UINT8 *))(btm + 0x56C);
+    *(UINT32 *)(btm + 0x61C) = 0;
+    *(UINT8 *)(btm + 0x650) = 0;
+    if (callback != 0) {
+        callback(evt_len, p);
+    }
+}
+
 extern char lbl_80316220[];
 extern void fn_8008534C(void *, u16);
 tBTM_STATUS BTM_WritePageTimeout(UINT16 timeout) {
