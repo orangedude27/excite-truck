@@ -129,7 +129,7 @@ extern "C" const char lbl_803244D4[];
     extern u8 lbl_8055DE68;
     extern "C" void* __dt__10TitleSceneFv(void*, s32);
     extern "C" void __register_global_object(void*, void*, void*, void*);
-    extern "C" void OSSendMessage(void*, void*, u32);
+    extern "C" s32 OSSendMessage(void*, void*, u32);
 extern "C" void OSInitMutex(void*);
 extern "C" const char lbl_80326768[];
 extern "C" const char lbl_8032677C[];
