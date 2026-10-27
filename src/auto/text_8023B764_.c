@@ -397,15 +397,13 @@ void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
     };
     void *temp_r30 = fn_80012820(arg1);
     s32 *temp_r31 = fn_80012870(arg1, arg2);
-    StringObject *obj = (StringObject *)*(void **)((u8 *)temp_r31 + 0x20);
     char *source;
-    char *dest;
     s32 count;
-
-    if (obj->check((const char *)&lbl_8055BB3C) != 0) {
-        source = (char *)obj->get((const char *)&lbl_8055BB3C);
-        dest = (char *)arg0;
+    char *dest;
+    if (((StringObject *)*(void **)((u8 *)temp_r31 + 0x20))->check((const char *)&lbl_8055BB3C) != 0) {
+        source = (char *)((StringObject *)*(void **)((u8 *)temp_r31 + 0x20))->get((const char *)&lbl_8055BB3C);
         count = 0x20;
+        dest = (char *)arg0;
         while ((s8)(*dest++ = *source++) != 0) {
             if (--count <= 0) {
                 dest[-1] = 0;
@@ -414,8 +412,8 @@ void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
         }
     } else {
         source = (char *)temp_r30 + 8;
-        dest = (char *)arg0;
         count = 0x20;
+        dest = (char *)arg0;
         while ((s8)(*dest++ = *source++) != 0) {
             if (--count <= 0) {
                 dest[-1] = 0;
