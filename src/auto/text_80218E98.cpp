@@ -484,24 +484,28 @@ extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
 }
 
 #pragma dont_inline on
-extern "C" void fn_8021915C(void *arg0, u32 arg1) {
-    s32 i;
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void *fn_8021915C(void *arg0, u32 arg1) {
     u8 *entry;
+    s32 i;
 
     if (arg0 != 0) {
         *(void **)arg0 = lbl_8033FB38;
         entry = (u8 *)arg0;
         i = 0;
-        do {
+        while (i < *(s32 *)((u8 *)arg0 + 0x230)) {
             fn_80128670(*(s32 *)(entry + 0x3C));
             entry += 0x10;
             i++;
-        } while (i < *(s32 *)((u8 *)arg0 + 0x230));
+        }
         if ((s32)arg1 > 0) {
             fn_80128668(arg0);
         }
     }
+    return arg0;
 }
+#pragma pop
 #pragma dont_inline off
 
 extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
