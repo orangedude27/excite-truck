@@ -1267,7 +1267,7 @@ extern "C" s32 VFiPFCACHE_SearchForPage(s32 arg0, s32 arg1, s32 arg2) {
     u32 node;
     u32 start;
 
-    if (arg2 + 0x10000 == -1)
+    if (page + 0x10000 == 0xFFFFU)
         return 0;
     if ((*(u16 *)arg1 & 1) == 0)
         return 0;
@@ -5617,31 +5617,31 @@ extern "C" s32 VFiPFAPI_ParseOpenModeString(char *arg0) {
     if (next >= '+') {
         goto check_text;
     }
-    if (next == 0) {
+    switch (next) {
+    case 0:
         goto return_mode;
+    default:
+        goto return_zero;
     }
-    goto return_zero;
 check_text:
-    if (next == 't') {
+    switch (next) {
+    case 't':
         goto return_mode;
+    default:
+        goto return_zero;
     }
-    goto return_zero;
-return_zero:
-    return 0;
 return_mode:
     return mode;
+return_zero:
+    return 0;
 plus:
     tail = arg0[index];
     switch (tail) {
     case 0:
-        goto plus_mode;
+        return mode | 8;
     default:
-        goto plus_zero;
+        return 0;
     }
-plus_mode:
-    return mode | 8;
-plus_zero:
-    return 0;
 }
 
 #pragma dont_inline on
@@ -10392,27 +10392,39 @@ void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) {
 }
 
 void fn_800C5430(s32 *a, s32 *b, s32 *coeff) {
-    int i;
-    for (i = 0; i < 4; i++) {
-        s32 d0 = a[0] - b[0];
-        s32 v0 = b[0];
-        b[0] = (s32)(((s64)d0 * coeff[0]) >> 24);
-        a[0] = v0 + d0;
-        s32 d1 = a[1] - b[1];
-        s32 v1 = b[1];
-        b[1] = (s32)(((s64)d1 * coeff[1]) >> 24);
-        a[1] = v1 + d1;
-        s32 d2 = a[2] - b[2];
-        s32 v2 = b[2];
-        b[2] = (s32)(((s64)d2 * coeff[2]) >> 24);
-        a[2] = v2 + d2;
-        s32 d3 = a[3] - b[3];
-        s32 v3 = b[3];
-        b[3] = (s32)(((s64)d3 * coeff[3]) >> 24);
-        a[3] = v3 + d3;
+    s32 c0 = coeff[0];
+    s32 c1 = coeff[1];
+    s32 c2 = coeff[2];
+    s32 c3 = coeff[3];
+    s32 i = 4;
+    do {
+        s32 b0 = b[0];
+        s32 a0 = a[0];
+        s32 d0 = a0 - b0;
+        s32 sum0 = a0 + b0;
+        a[0] = sum0;
+        b[0] = (s32)(((s64)d0 * c0) >> 24);
+        s32 b1 = b[1];
+        s32 a1 = a[1];
+        s32 d1 = a1 - b1;
+        s32 sum1 = a1 + b1;
+        a[1] = sum1;
+        b[1] = (s32)(((s64)d1 * c1) >> 24);
+        s32 b2 = b[2];
+        s32 a2 = a[2];
+        s32 d2 = a2 - b2;
+        s32 sum2 = a2 + b2;
+        a[2] = sum2;
+        b[2] = (s32)(((s64)d2 * c2) >> 24);
+        s32 b3 = b[3];
+        s32 a3 = a[3];
+        s32 d3 = a3 - b3;
+        s32 sum3 = a3 + b3;
+        a[3] = sum3;
+        b[3] = (s32)(((s64)d3 * c3) >> 24);
         a += 8;
         b += 8;
-    }
+    } while (--i);
 }
 
 extern "C" void fn_800C5508(void *arg0, void *arg1, void *arg2) {
