@@ -2342,7 +2342,7 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
     return 0;
 }
 
-extern "C" s8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
+extern "C" u8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
     u8 scratch[0x20];
     fn_800B78F4(scratch + 0x10, scratch);
     *(s16 *)arg0 = (s16)(((*(s32 *)(scratch + 0x18) & 0x1F) |
@@ -2351,7 +2351,7 @@ extern "C" s8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
     *(s16 *)arg1 = (s16)((((*(s32 *)(scratch + 8) >> 1) & 0x1F) |
                            ((*(s32 *)(scratch + 4) << 5) & 0x7E0)) |
                           ((*(s32 *)scratch << 11) & 0xF800));
-    return (s8)*(s32 *)(scratch + 0xC);
+    return (u8)*(s32 *)(scratch + 0xC);
 }
 
 extern s32 fn_800AB378(void *, s32, s32, s32);
