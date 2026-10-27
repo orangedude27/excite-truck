@@ -869,16 +869,15 @@ extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
     extern const char lbl_80324B7C[];
     extern char lbl_80559868;
     u64 result = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(self, index);
-    u32 type = (u32)(result >> 32);
-    u32 offset = (u32)result;
-    void *base = *(void **)((char *)self + 0x28);
-    if ((u8)type != 3)
+    u8 *bytes = (u8 *)&result;
+    void *base = *(void **)((u8 *)self + 0x28);
+    if (bytes[1] != 3)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559868, 0x72, lbl_80324B7C);
-    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(type, offset, base);
+    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), base);
     if (!data)
         return 0;
-    *(u32 *)((char *)info + 0) = *(u32 *)((char *)data + 0);
-    *(u32 *)((char *)info + 4) = *(u8 *)((char *)data + 8);
+    *(u32 *)info = *(u32 *)data;
+    *(u32 *)((u8 *)info + 4) = *(u8 *)((u8 *)data + 8);
     return 1;
 }
 
