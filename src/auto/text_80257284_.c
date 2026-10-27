@@ -56,39 +56,45 @@ void *fn_80257470(void *arg0) {
 int fn_802574E0(int arg0, int arg1) { int temp_r3; if (arg0 != 0) { temp_r3 = arg0 + 0x18C; if (temp_r3 != 0) fn_8022D7C4(temp_r3, 0); fn_8022D7C4(arg0 + 0x54, -1); fn_8022D7C4(arg0 + 0x1C, -1); if (arg1 > 0) fn_80128668(arg0); } return arg0; }
 
 int fn_80257904(void *arg0, int arg1) {
+    char *self = (char *)arg0;
     switch (arg1) {
     case 0x125:
-        if (*(int *)((char *)arg0 + 0x18) == 1)
-            *(int *)((char *)arg0 + 0x18) = 0;
-        return 1;
+        if (*(int *)(self + 0x18) == 1)
+            *(int *)(self + 0x18) = 0;
+        goto return_one;
     case 0x127:
-        if (*(int *)((char *)arg0 + 0x18) == 0 &&
-            *(int *)((char *)arg0 + 0x5C) > 0)
-            *(int *)((char *)arg0 + 0x18) = 1;
-        return 1;
+        if (*(int *)(self + 0x18) == 0 && *(int *)(self + 0x5C) > 0)
+            *(int *)(self + 0x18) = 1;
+        goto return_one;
+    case 0x126:
     case 0x128:
-        switch (*(int *)((char *)arg0 + 0x18)) {
+        switch (*(int *)(self + 0x18)) {
         case 0: {
-            void *p = (char *)arg0 + 0x1C;
-            void *t = fn_8022D850(p, *(int *)((char *)arg0 + 0x4C), 0, 0);
-            fn_8022D894(p, *(int *)((char *)arg0 + 0x4C), 0, t, 0);
-            fn_80257A6C((int *)((char *)arg0 + 0x4C), 1, *(int *)((char *)arg0 + 0x24));
-            *(char *)((char *)arg0 + 0x50) = 1;
-            break;
+            int use = (unsigned int)arg1 == 0x128u;
+            int value;
+            fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0,
+                        fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0), 0);
+            value = *(int *)(self + 0x24);
+            fn_80257A6C((int *)(self + 0x4C), use ? 1 : -1, value);
+            *(char *)(self + 0x50) = 1;
+            goto return_one;
         }
         case 1: {
-            void *p = (char *)arg0 + 0x54;
-            void *t = fn_8022D850(p, *(int *)((char *)arg0 + 0x84), 0, 0);
-            fn_8022D894(p, *(int *)((char *)arg0 + 0x84), 0, t, 0);
-            fn_80257A6C((int *)((char *)arg0 + 0x84), 1, *(int *)((char *)arg0 + 0x5C));
-            *(char *)((char *)arg0 + 0x88) = 1;
-            break;
+            int use = (unsigned int)arg1 == 0x128u;
+            int value;
+            fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0,
+                        fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0), 0);
+            value = *(int *)(self + 0x5C);
+            fn_80257A6C((int *)(self + 0x84), use ? 1 : -1, value);
+            *(char *)(self + 0x88) = 1;
+            goto return_one;
         }
         }
-        return 1;
-    default:
-        return 0;
+        goto return_one;
     }
+    return 0;
+return_one:
+    return 1;
 }
 
 void fn_80257A6C(int *arg0, int arg1, int arg2) { *arg0 = (*arg0 + (arg2 + arg1)) % arg2; }
