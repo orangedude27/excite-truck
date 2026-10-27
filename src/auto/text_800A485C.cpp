@@ -88,6 +88,8 @@ extern "C" f32 lbl_80560DC8, lbl_80560DCC, lbl_80560DD8;
 extern "C" u8 lbl_8031D840[];
 extern "C" void fn_800CF554(s32, u8 *, f32, f32, f32, f32, f32);
 extern "C" s32 lbl_8031D700[];
+extern "C" const char lbl_8031E764[];
+extern "C" const char lbl_8031E740[];
 #include <revolution/OS/OSAlarm.h>
 #include <stdarg.h>
 namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } s32 Console_GetTotalLines(detail::ConsoleHead *); } }
