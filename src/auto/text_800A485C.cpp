@@ -47,6 +47,7 @@ extern "C" void fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
 namespace nw4hbm { namespace lyt { class Pane; class Material; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); }; } }
+namespace homebutton { namespace gui { class PaneManager { public: s32 getPaneComponentByPane(nw4hbm::lyt::Pane *); }; } }
 extern "C" const char lbl_8031EE58[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
 extern "C" const char lbl_8031F208[];
@@ -11587,8 +11588,8 @@ extern "C" void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void 
         virtual void Set(bool);
     };
     ManagerLayout *self = (ManagerLayout *)arg0;
-    u32 i = 0;
     void *list = &self->list;
+    u32 i = 0;
     while (i < self->count) {
         void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(&self->list, (u16)i);
         void *obj = *(void **)((u8 *)entry + 4);
@@ -11796,14 +11797,14 @@ extern "C" void fn_800D0560(void *arg0, s32 arg1) {
 #pragma push
 #pragma small_data on
 extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(u8 *arg0, void *arg1) {
+    register void *list = arg0 + 8;
     register u32 i = 0;
-    void *list = arg0 + 8;
     do {
         void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(arg0 + 0x18, (u16)i);
         if (*(void **)item == arg1) {
             return *(s32 *)((u8 *)item + 4);
         }
-        i++;
+        ++i;
         if (list == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
         }
