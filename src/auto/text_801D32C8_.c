@@ -255,6 +255,9 @@ void fn_801D3BF0(void *arg0) {
 }
 #pragma paired reset
 #pragma paired_single reset
+struct Vec3 {
+    float x, y, z;
+};
 struct Mtx48 {
     int w[12];
 };
@@ -298,6 +301,75 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
             *(void **)((char *)arg0 + 0x22C) = arg4;
             *(int *)((char *)arg0 + 0x24) = 0;
         }
+    }
+}
+
+int fn_801D411C(void *arg0) {
+    char *p = (char *)arg0;
+    volatile float sp8;
+    volatile float spc;
+    volatile float sp10;
+
+    if (*(int *)(p + 0x230) == 2 && *(void **)(p + 0x228) != 0) {
+        fn_801A4868(*(void **)(p + 0x228), 1);
+    }
+
+    {
+        float neg1000;
+        float one;
+        float zero;
+
+        zero = lbl_80562AB8;
+        one = lbl_80562AAC;
+        *(float *)(p + 0x220) = zero;
+        neg1000 = lbl_80562ABC;
+
+        *(float *)(p + 0x118) = zero;
+        *(float *)(p + 0x11C) = zero;
+        *(float *)(p + 0x120) = zero;
+        *(float *)(p + 0x124) = zero;
+        *(float *)(p + 0x128) = zero;
+        *(float *)(p + 0x12C) = zero;
+        *(float *)(p + 0x130) = zero;
+        *(float *)(p + 0x134) = zero;
+        *(float *)(p + 0x138) = zero;
+        *(float *)(p + 0x13C) = zero;
+        *(float *)(p + 0x140) = zero;
+        *(float *)(p + 0x144) = zero;
+        *(float *)(p + 0x16C) = zero;
+        *(float *)(p + 0x170) = zero;
+        *(float *)(p + 0x174) = zero;
+        *(float *)(p + 0x178) = zero;
+        *(float *)(p + 0x17C) = zero;
+        *(float *)(p + 0x180) = zero;
+
+        *(float *)(p + 0x1F4) = one;
+        *(float *)(p + 0x1F8) = zero;
+        *(float *)(p + 0x1FC) = zero;
+        *(float *)(p + 0x200) = zero;
+        *(float *)(p + 0x204) = one;
+        *(float *)(p + 0x208) = zero;
+        *(float *)(p + 0x20C) = zero;
+        *(float *)(p + 0x210) = zero;
+        *(float *)(p + 0x214) = one;
+        *(float *)(p + 0x218) = zero;
+        *(float *)(p + 0x21C) = neg1000;
+        *(float *)(p + 0x220) = zero;
+
+        sp8 = zero;
+        spc = zero;
+        sp10 = zero;
+        *(float *)(p + 0x30) = zero;
+        *(float *)(p + 0x34) = zero;
+        *(float *)(p + 0x38) = zero;
+        fn_8017A57C(arg0);
+
+        *(struct Mtx48 *)(p + 0x3C) = *(struct Mtx48 *)(p + 0x1F4);
+        fn_8017A580(arg0);
+
+        *(int *)(p + 0x24) = 0;
+        *(int *)(p + 0x1EC) = -1;
+        return 0;
     }
 }
 
