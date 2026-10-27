@@ -63,6 +63,7 @@ void fn_801D2C04(void) {
     qsort(lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
 }
 #pragma scheduling on
+#pragma dont_inline on
 s32 fn_801D2C20(s32 arg0) {
     s32 sp8;
     sp8 = arg0;
@@ -71,6 +72,7 @@ s32 fn_801D2C20(s32 arg0) {
     }
     return fn_800241DC(&sp8, lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
 }
+#pragma dont_inline off
 
 extern u8 lbl_80438898[];
 extern f32 lbl_8055E3C8;
@@ -189,7 +191,7 @@ void fn_801D25BC(void *arg0, void *arg1) {
         virtual s32 fn1C(u32);
         virtual void f6();
         virtual void f7();
-        virtual void fn28(void *, f32);
+        virtual f32 fn28(void *, f32);
         virtual void f9();
         virtual void f10();
         virtual void f11();
@@ -205,24 +207,27 @@ void fn_801D25BC(void *arg0, void *arg1) {
         virtual void *fn5C(u32);
     };
     char name[0x20];
-    Dummy *obj;
     Dummy *item;
-    volatile s32 *count = (volatile s32 *)((char *)arg0 + 0x28);
+    s32 index;
+    f32 value;
+    s32 i;
     if (((s32 (*)(void))fn_801D2550)() != 0) {
         *(s32 *)((char *)arg0 + 8) = -1;
-        *count = 1;
-        while (*count < 4) {
-            fn_801345D8(name, 0x20, lbl_8033830C);
-            obj = (Dummy *)arg1;
-            item = (Dummy *)obj->fn5C((u32)name);
+        i = 0;
+        *(s32 *)((char *)arg0 + 0x28) = ++i;
+        while (*(s32 *)((char *)arg0 + 0x28) < 4) {
+            char *dest = &name[0];
+            fn_801345D8(dest, 0x20, lbl_8033830C);
+            item = (Dummy *)((Dummy *)arg1)->fn5C((u32)name);
             if (item == 0) {
                 break;
             }
-            *(s32 *)((char *)arg0 + *count * 8 + 8) =
-                item->fn1C((u32)&lbl_8055ABE0);
-            item->fn28((void *)&lbl_8055ABE4, lbl_80562A90);
-            *(f32 *)((char *)arg0 + *count * 8 + 0xC) = lbl_80562A90;
-            *count = *count + 1;
+            index = item->fn1C((u32)&lbl_8055ABE0);
+            value = lbl_80562A90;
+            *(s32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x28) * 8 + 8) = index;
+            value = item->fn28((void *)&lbl_8055ABE4, value);
+            *(f32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x28) * 8 + 0xC) = value;
+            *(s32 *)((char *)arg0 + 0x28) = *(s32 *)((char *)arg0 + 0x28) + 1;
         }
     }
 }
