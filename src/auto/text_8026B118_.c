@@ -92,35 +92,63 @@ extern char *strncpy(char *, const char *, unsigned int);
 extern int stricmp(const char *, const char *);
 extern char lbl_8055C504[], lbl_8055C50C[];
 #pragma push
+#pragma use_lmw_stmw off
 #pragma cplusplus on
-void fn_8026B260(void) {
-    class Iterator { public: virtual void *next(int); };
-    class Entry { public: virtual const char *getName(); };
+extern "C" void fn_8026B260(void) {
+    class FileName {
+    public:
+        virtual void v00();
+        virtual void v04();
+        virtual void v08();
+        virtual void v0C();
+        virtual char *getFileName(const char *, int);
+    };
+    class Iterator {
+    public:
+        virtual void v00();
+        virtual void *next(int);
+    };
+    class Entry {
+    public:
+        virtual const char *getName();
+    };
     char name[12];
-    void *obj, *nameObj;
+    char *base = (char *)lbl_80346988;
+    register int iteratorOrZero = 0;
+    void *obj;
+    FileName *nameObj;
     Iterator *it;
     Entry *entry;
     char *dot;
-    int index = 0;
-    lbl_8055F4C8 = 0;
+    int index;
+    lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
-    nameObj = *(void **)((char *)obj + 0x20);
-    if ((char *)((void *(*)(void *, const char *, int))(*(void ***)nameObj)[6])(nameObj, (char *)lbl_80346988, 0) != 0) {
-        strncpy(name, (char *)((void *(*)(void *, const char *, int))(*(void ***)nameObj)[6])(nameObj, (char *)lbl_80346988, 0), 11);
+    nameObj = *(FileName **)((char *)obj + 0x20);
+    dot = nameObj->getFileName(base, 0);
+    if (dot != 0) {
+        strncpy(name, dot, 11);
         dot = strchr(name, '.');
-        if (dot) *dot = 0;
+        if (dot) *dot = iteratorOrZero;
         fn_80028E00(name, lbl_8055C504);
-        if (!fn_8012C33C(name)) { fn_802E30C8((char *)lbl_80346988 + 0xC, name); return; }
-        it = (Iterator *)fn_80131808(name);
+        if (!fn_8012C33C(name)) {
+            fn_802E30C8(base + 0xC, name);
+            return;
+        }
+        iteratorOrZero = (int)fn_80131808(name);
+        it = (Iterator *)iteratorOrZero;
+        index = 0;
         do {
             entry = (Entry *)it->next(index++);
-            if (entry && stricmp(entry->getName(), lbl_8055C50C) == 0) { fn_8026B1D0(entry); lbl_8055F4C8++; }
+            if (entry && stricmp(entry->getName(), lbl_8055C50C) == 0) {
+                fn_8026B1D0(entry);
+                lbl_8055F4C8++;
+            }
         } while (entry);
         fn_80131818(it);
-        fn_802E30C8((char *)lbl_80346988 + 0x34, lbl_8055F4C8, name);
+        fn_802E30C8(base + 0x34, lbl_8055F4C8, name);
         return;
     }
-    fn_802E30C8((char *)lbl_80346988 + 0x5C);
+    fn_802E30C8(base + 0x5C);
 }
 #pragma cplusplus reset
 #pragma pop
