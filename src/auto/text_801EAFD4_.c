@@ -303,6 +303,7 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
 }
 #pragma scheduling on
 #pragma cplusplus off
+#pragma dont_inline on
 void fn_801EB634(void *arg0, s32 arg1) {
     u8 a, b, c, d;
     a = ((u8 *)arg0)[0];
@@ -315,6 +316,7 @@ void fn_801EB634(void *arg0, s32 arg1) {
     ((u8 *)arg0)[2] = b;
     if (*(s32 *)arg0) *(s32 *)arg0 += arg1;
 }
+#pragma dont_inline off
 
 extern void fn_801EB66C(void *, s32);
 void fn_801EB66C(void *arg0, s32 arg1) {
