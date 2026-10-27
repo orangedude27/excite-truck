@@ -370,6 +370,7 @@ extern void *port_find_mcb_dlci_port(void *mcb, u8 dlci);
 extern void rfc_port_timer_stop(void *);
 extern void rfc_send_rls(void *, u8, s32, u8);
 extern void rfc_check_send_cmd(void *, void *);
+extern void rfc_send_pn(void *, s32, s32, s32, s32, s32);
 extern void fn_800916F4(void *, s32, s16 *);
 extern char lbl_803140D0[];
 extern char lbl_80315048[];
@@ -4635,6 +4636,29 @@ void BTM_SendHciReset(void (*arg0)(void)) {
 
 u8 fn_80079514(void) {
     return (u8)((lbl_803C0F78[0x64E] - 5) == 0);
+}
+
+u8 BTM_SetAfhChannels(u8 first, u8 last) {
+    if (lbl_803C0F78[0x27C0] >= 3) {
+        ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(
+            0xD0002, lbl_803160C0, first, lbl_803C0F78[0x27BD],
+            last, lbl_803C0F78[0x27BE]);
+    }
+    if (!(lbl_803C0F78[0x645] & 8) &&
+        !(lbl_803C0F78[0x644] & 0x10) &&
+        !(lbl_803C0F78[0x645] & 0x10)) {
+        return 4;
+    }
+    if (lbl_803C0F78[0x27BD] != first ||
+        lbl_803C0F78[0x27BE] != last) {
+        if (btsnd_hcic_set_afh_channels(first, last)) {
+            lbl_803C0F78[0x27BD] = first;
+            lbl_803C0F78[0x27BE] = last;
+            return 0;
+        }
+        return 3;
+    }
+    return 0;
 }
 
 void fn_8008C04C(s16);
