@@ -7679,7 +7679,7 @@ extern "C" u8 lbl_80559268;
      }
  }
 
-extern "C" s16 fn_800BDD7C(s32, s32 *);
+extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
 extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
 extern s16 lbl_802F3418[];
 extern s16 lbl_802F3478[];
@@ -8106,7 +8106,7 @@ void fn_800BEDE0(void *arg0, void *arg1) {
     *(s32 *)((u8 *)arg1 + 0xC) = *(s32 *)((u8 *)arg0 + 0xED70);
 }
 
-extern "C" s16 fn_800BDD7C(s32, s32 *);
+extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
 extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
 extern s16 lbl_802F3418[];
 extern s16 lbl_802F3478[];
@@ -8114,7 +8114,7 @@ s32 fn_800BEE64(void *arg0, s32 arg1) {
     s32 sp8=0;
     s16 type, status;
     s32 value, result;
-    if(fn_800BDD7C(0x400,&sp8)==0)return 8;
+    if(fn_800BDD7C(0x400,arg1,&sp8)==0)return 8;
     type=fn_800BDE18(*(s32*)((u8*)arg0+0x278),arg1,1,&sp8);
     if(fn_800BDE18(*(s32*)((u8*)arg0+0x278),arg1,2,&sp8)!=1)return 0xD;
     *(s32*)((u8*)arg0+4)=type==0?1:0;
@@ -11516,6 +11516,32 @@ extern "C" void fn_800CF968(void) {
 
 extern "C" void fn_800CF96C(void) {
 
+}
+
+void homebutton::gui::Manager::init() {
+    class ComponentDispatch {
+    public:
+        virtual void d0();
+        virtual void init();
+    };
+    void *list = (u8 *)this + 8;
+    u16 index = 0;
+    void *entry;
+    ComponentDispatch *component;
+
+    do {
+        entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, index);
+        component = *(ComponentDispatch **)((u8 *)entry + 4);
+        component->init();
+        index++;
+    } while (list != 0);
+
+    Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    if (index < *(u16 *)((u8 *)this + 0x10)) {
+        entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, index);
+        component = *(ComponentDispatch **)((u8 *)entry + 4);
+        component->init();
+    }
 }
 
 extern "C" void fn_800CFAC8(void *arg0) {
