@@ -90,23 +90,75 @@ extern s32 lbl_805630B8, lbl_805630C0, lbl_805630C4;
 extern f32 lbl_805630C8, lbl_805630CC, lbl_805630D0, lbl_805630D4;
 extern u16 lbl_802F9D48[];
 extern void fn_802C8C04(s32);
-extern void fn_802C8DB8(f32*, s32, u16*, s32, s32, s32, s32, s32);
+extern void fn_802C8DB8(f32*, s32, u16*, s32, ...);
 void fn_80202BFC(s32 arg0) {
-    f32 sp84, sp80, sp78, sp74, sp70, sp6C, sp68, sp60, sp5C, sp58, sp54, sp50, sp48, sp44, sp40, sp3C, sp38, sp30, sp2C, sp28;
-    s32 sp7C, sp64, sp4C, sp34, sp14, sp10, spC, sp8;
-    u16 sp22, sp20, sp1E, sp1C, sp1A, sp18;
-    f32 f28 = lbl_805630C8, f29 = lbl_805630CC, f30 = lbl_805630D0, f31 = lbl_805630D4;
-    s32 *p1 = &sp10, *p2 = &sp8;
-    s32 i = 0;
-    sp10=lbl_805630B8; sp8=lbl_805630C0; spC=lbl_805630C4; sp14=arg0;
+    typedef struct {
+        s32 pair2[2];
+        s32 pair1[2];
+        u16 table[6];
+        u16 pad[2];
+        f32 values[24];
+    } Work;
+    Work work;
+    register f32 f31 = lbl_805630D4;
+    register f32 f30 = lbl_805630D0;
+    register f32 f29 = lbl_805630CC;
+    register f32 f28 = lbl_805630C8;
+    register s32 *p1;
+    register s32 *p2;
+    register u16 *table = lbl_802F9D48;
+    register u32 i;
+    u16 v0, v1, v2, v3, v4, v5;
+
+    work.pair2[0] = lbl_805630C0;
+    work.pair2[1] = lbl_805630C4;
+    work.pair1[0] = lbl_805630B8;
+    work.pair1[1] = arg0;
+    p1 = work.pair1;
+    p2 = work.pair2;
+    i = 0;
     do {
         fn_802C8C04(*p1);
-        sp18=lbl_802F9D48[0]; sp1A=lbl_802F9D48[1]; sp1C=lbl_802F9D48[2]; sp1E=lbl_802F9D48[3]; sp20=lbl_802F9D48[4]; sp22=lbl_802F9D48[5];
-        sp28=f28; sp2C=f28; sp30=f29; sp40=f30; sp44=f28; sp48=f29; sp58=f28; sp5C=f30; sp60=f29; sp70=f30; sp74=f30; sp78=f29; sp68=f29; sp38=f29; sp80=f31; sp50=f31; sp54=f29; sp3C=f29; sp84=f31; sp6C=f31;
-        sp7C=*p2; sp64=*p2; sp4C=*p2; sp34=*p2;
-        fn_802C8DB8(&sp28,4,&sp18,6,lbl_802F9D48[4],lbl_802F9D48[3],lbl_802F9D48[2],lbl_802F9D48[1]);
-        fn_802C8D74(); i++; p1++; p2++;
-    } while(i<2);
+        v0 = table[0];
+        v1 = table[1];
+        v2 = table[2];
+        v3 = table[3];
+        v4 = table[4];
+        v5 = table[5];
+        work.table[0] = v0;
+        work.table[1] = v1;
+        work.table[2] = v2;
+        work.table[3] = v3;
+        work.table[4] = v4;
+        work.table[5] = v5;
+
+        work.values[0] = f28;
+        work.values[1] = f28;
+        work.values[2] = f29;
+        work.values[6] = f30;
+        work.values[7] = f28;
+        work.values[8] = f29;
+        work.values[12] = f28;
+        work.values[13] = f30;
+        work.values[14] = f29;
+        work.values[18] = f30;
+        work.values[19] = f30;
+        work.values[20] = f29;
+        work.values[16] = f29;
+        work.values[4] = f29;
+        work.values[22] = f31;
+        work.values[10] = f31;
+        work.values[11] = f29;
+        work.values[5] = f29;
+        work.values[23] = f31;
+        work.values[17] = f31;
+
+        fn_802C8DB8(work.values, 4, work.table, 6, *p2, *p2, *p2, *p2);
+        fn_802C8D74();
+        i++;
+        p1++;
+        p2++;
+    } while (i < 2);
 }
 
 #pragma paired_single off
