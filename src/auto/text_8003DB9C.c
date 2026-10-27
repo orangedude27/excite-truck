@@ -2239,8 +2239,8 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_
         shift_y = 2;
         break;
     default:
-        shift_x = 0;
         shift_y = 0;
+        shift_x = 0;
         break;
     }
 
@@ -2251,7 +2251,7 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_
 
     *tiles_x = (width + (1 << shift_x) - 1) >> shift_x;
     *tiles_y = (height + (1 << shift_y) - 1) >> shift_y;
-    *compressed = (format == 6) || (format == 0x16);
+    *compressed = ((int)format == 6 || (int)format == 0x16) ? 2 : 1;
 }
 
 void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap) {
