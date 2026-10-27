@@ -448,6 +448,61 @@ extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
     return result & ((-result | result) >> 31);
 }
 
+extern "C" s32 fn_800A59FC(void *arg0) {
+    struct State {
+        u16 value0;
+        u16 value2;
+        u16 value4;
+        u8 value6;
+        u8 value7;
+        u32 value8;
+        u32 valueC;
+        u8 pad10[0xC];
+        s32 status;
+        volatile u8 shift0;
+        volatile u8 shift1;
+        u8 pad22[2];
+        s16 result24;
+        u8 pad26[6];
+        s32 result2C;
+        s32 result30;
+        u32 result34;
+    };
+    State *state = (State *)arg0;
+    u32 value = state->value0;
+    state->shift0 = 0;
+    do {
+        state->shift0++;
+        value = (value >> 1) & 0x7FFF;
+    } while (value != 0);
+
+    value = state->value6;
+    state->shift1 = 0;
+    do {
+        state->shift1++;
+        value = (value >> 1) & 0x7FFF;
+    } while (value != 0);
+
+    s32 x = ((state->value0 + (state->value4 << 5)) - 1) >> state->shift0;
+    state->result24 = (s16)x;
+    s32 scaled = state->value7 * state->valueC;
+    s32 base = (u16)x + state->value2;
+    s32 total = scaled + base;
+    state->result30 = total;
+    u32 quotient = ((u32)state->value8 - total) >> state->shift1;
+    state->result34 = quotient;
+    if (quotient < 0xFF5) {
+        state->status = 0;
+        state->result2C = state->value2 + scaled;
+    } else if (quotient < 0xFFF5) {
+        state->status = 1;
+        state->result2C = state->value2 + scaled;
+    } else {
+        state->status = 2;
+        state->result2C = 0;
+    }
+}
+
 extern "C" s32 fn_800A59FC(void *);
 extern "C" s32 fn_800A6A40(void *);
 extern "C" s32 fn_800A5AE4(void *arg0, void *arg1) {
@@ -14887,16 +14942,17 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 extern "C" void fn_800CA064(void) {
     typedef void (*SetAlarmCallback)(void);
     typedef void (*SetAlarmFn)(OSAlarm *, u32, u32, s32, SetAlarmCallback);
-    u32 userData = (u32)((void *(*)(void))OSGetAlarmUserData)();
+    u32 userData = (u32)((void *(*)(void))((void *(*)(const OSAlarm *))OSGetAlarmUserData))();
     u32 index = userData >> 16;
     u32 low = userData & 0xFFFF;
     void *base = lbl_8055DD98;
+    void *entry;
     void *alarm;
 
     if (fn_80060C7C((void *)index) != 0) {
-        void *entry = *(void **)((u8 *)base + index * 4 + 0x254);
+        entry = *(void **)((u8 *)base + index * 4 + 0x254);
         if (((s32 (*)(void *))fn_800D1548)(entry) != 0) {
-            ((void (*)(void *, void *, s32))fn_800D120C)(entry, *(void **)((u8 *)base + 0x5C0), low);
+            fn_800D120C(entry, *(void **)((u8 *)base + 0x5C0), low);
             return;
         }
     }
@@ -17811,3 +17867,43 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
     return 0;
 }
 #pragma pop
+extern "C" s32 VFiPFSTR_ToUpperNStr(s32 arg0, s32 arg1, u8 *arg2) {
+    u8 *dst = arg2;
+    u16 remaining = (u16)arg1;
+
+    if (*(u32 *)((u8 *)arg0 + 0xC) == 1U) {
+        u8 *src = *(u8 **)arg0;
+        while (remaining != 0) {
+            s8 ch = *(s8 *)src;
+            if (ch == 0) {
+                break;
+            }
+            *dst = (u8)fn_800A485C((s32)ch);
+            dst++;
+            src++;
+            remaining--;
+        }
+    } else {
+        u16 *src = *(u16 **)arg0;
+        while (remaining != 0) {
+            u16 ch = *src;
+            if (ch == 0) {
+                *dst = 0;
+                break;
+            }
+            s32 lower = 0;
+            if (ch >= 0x61U && ch <= 0x7AU) {
+                lower = 1;
+            }
+            if (lower != 0) {
+                ch -= 0x20;
+            }
+            dst[0] = (u8)ch;
+            src++;
+            remaining--;
+            dst[1] = (u8)(ch >> 8);
+            dst += 2;
+        }
+    }
+    *dst = 0;
+}
