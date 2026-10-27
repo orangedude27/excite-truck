@@ -4,6 +4,7 @@
 #include "revolution/GX/GXTypes.h"
 #include "revolution/GX/GXAttr.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
+struct GetVtxPosResult { f32 x; f32 y; };
 namespace nw4hbm { namespace lyt {
 class ResourceAccessor;
 class Layout {
@@ -203,30 +204,57 @@ extern "C" f32 lbl_80560E68;
 extern "C" f32 lbl_80560E6C;
 extern "C" signed char lbl_8055DDE8;
 extern "C" f32 lbl_80407E40[8];
-void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void* self, u8 size) {
-    void* data = *(void**)((char*)self + 4);
-    u8 max = *(u8*)self;
-    if (!data) return;
-    if (size > max) return;
-    if (!lbl_8055DDE8) {
-        lbl_80407E40[0]=lbl_80560E68; lbl_80407E40[1]=lbl_80560E68;
-        lbl_80407E40[2]=lbl_80560E6C; lbl_80407E40[3]=lbl_80560E68;
-        lbl_80407E40[4]=lbl_80560E68; lbl_80407E40[5]=lbl_80560E6C;
-        lbl_80407E40[6]=lbl_80560E6C; lbl_80407E40[7]=lbl_80560E6C;
-        lbl_8055DDE8=1;
+#pragma optimize_for_size on
+#pragma unroll off
+extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *self, u8 size) {
+    if (*(void **)((u8 *)self + 4) == 0)
+        return;
+    if (size > *(u8 *)self)
+        return;
+    if (lbl_8055DDE8 == 0) {
+        lbl_80407E40[0] = lbl_80560E68;
+        lbl_80407E40[1] = lbl_80560E68;
+        lbl_80407E40[2] = lbl_80560E6C;
+        lbl_80407E40[3] = lbl_80560E68;
+        lbl_80407E40[4] = lbl_80560E68;
+        lbl_80407E40[5] = lbl_80560E6C;
+        lbl_80407E40[6] = lbl_80560E6C;
+        lbl_80407E40[7] = lbl_80560E6C;
+        lbl_8055DDE8 = 1;
     }
-    u8 i=*((u8*)self+1);
-    if (i < size) {
-        do {
-            f32* p=(f32*)((char*)data + (i << 5));
-            p[0]=lbl_80407E40[0]; p[1]=lbl_80407E40[1]; p[2]=lbl_80407E40[2]; p[3]=lbl_80407E40[3];
-            p[4]=lbl_80407E40[4]; p[5]=lbl_80407E40[5]; p[6]=lbl_80407E40[6]; p[7]=lbl_80407E40[7];
-            ++i;
-        } while (i < size);
+    u8 oldSize = *((u8 *)self + 1);
+    register const f32 *values = lbl_80407E40;
+    f32 v7, v6, v5, v4, v3, v2, v1, v0;
+    v0 = values[0];
+    v1 = values[1];
+    v2 = values[2];
+    v3 = values[3];
+    v4 = values[4];
+    v5 = values[5];
+    v6 = values[6];
+    v7 = values[7];
+    for (s32 i = oldSize; i < size; ++i) {
+        s32 offset = i << 5;
+        void *base0 = *(void **)((u8 *)self + 4);
+        *(f32 *)((u8 *)base0 + offset) = v0;
+        ((f32 *)((u8 *)base0 + offset))[1] = v1;
+        void *base1 = *(void **)((u8 *)self + 4);
+        f32 *p2 = (f32 *)((u8 *)base1 + offset);
+        p2[2] = v2;
+        p2[3] = v3;
+        void *base2 = *(void **)((u8 *)self + 4);
+        f32 *p3 = (f32 *)((u8 *)base2 + offset);
+        p3[4] = v4;
+        p3[5] = v5;
+        void *base3 = *(void **)((u8 *)self + 4);
+        f32 *p4 = (f32 *)((u8 *)base3 + offset);
+        p4[6] = v6;
+        p4[7] = v7;
     }
-    *((u8*)self+1)=size;
+    *((u8 *)self + 1) = size;
 }
-
+#pragma unroll reset
+#pragma optimize_for_size reset
 extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const void* src, u8 count) {
     u8* p = (u8*)self;
     if (count > p[0])
@@ -338,27 +366,28 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     extern const char lbl_8031E740[];
     extern const char lbl_8031F718[];
     extern const char lbl_8031F6F4[];
+    GroupLayout* group = (GroupLayout*)arg0;
     void* slot;
-    void* current;
-    void* node;
-    void* end;
-    if (arg0 != 0) {
-        node = *(void**)((u8*)arg0 + 0x10);
-        end = (u8*)arg0 + 0x10;
-        *(void**)arg0 = lbl_8031F628;
+    register GroupListNode* current;
+    register GroupListNode* node;
+    register void* end;
+    if (group != 0) {
+        node = group->children.first;
+        end = &group->children.first;
+        group->vtable = lbl_8031F628;
         while (node != end) {
             current = node;
-            node = *(void**)node;
+            node = node->next;
             slot = current;
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8*)arg0 + 0x0C, &slot);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&group->children, &slot);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E764, 0x23D, lbl_8031E740);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F718, 0x193, lbl_8031F6F4);
             MEMFreeToAllocator(lbl_8055DDF0, current);
         }
-        if ((u32)arg0 + 0x0C != 0)
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void*)((u32)arg0 + 0x0C), 0);
+        if (&group->children != 0)
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&group->children, 0);
         if (arg1 > 0)
             ((void (*)(void*))fn_80128668)(arg0);
     }
@@ -2702,30 +2731,26 @@ extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self, voi
 }
 
 extern "C" f32 lbl_80560EC0;
+#pragma scheduling invalid_target
 extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
+    u8 n = *(u8*)((u8*)self + 0xCC);
     f32 x = lbl_80560EA8;
     f32 y = lbl_80560EA8;
-    s32 n = *(s8*)((u8*)self + 0xCC);
     s32 r = n % 3;
-    switch (r) {
-    case 1:
+    if (r == 1) {
         x = -*(f32*)((u8*)self + 0x4C) * lbl_80560EC0;
-        break;
-    case 2:
+    } else if (r >= 1 && r < 3) {
         x = -*(f32*)((u8*)self + 0x4C);
-        break;
     }
-    switch (n / 3) {
-    case 1:
+    s32 q = n / 3;
+    if (q == 1) {
         y = -*(f32*)((u8*)self + 0x50) * lbl_80560EC0;
-        break;
-    case 2:
+    } else if (q >= 1 && q < 3) {
         y = -*(f32*)((u8*)self + 0x50);
-        break;
     }
     return &x;
 }
-
+#pragma scheduling on
 extern "C" s32 fn_800DC6DC(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
 }
