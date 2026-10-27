@@ -217,8 +217,9 @@ void fn_80017C18(void *arg0, s32 *arg1) {
 extern void fn_80017A2C(void *, s32);
 extern void fn_800178BC(void *, s32, s32);
 extern void fn_80016928(s32, s32);
+#pragma scheduling invalid_target
 void fn_80017DD4(s32 *arg0, s32 arg1, s32 *arg2) {
-    struct { s32 *items; s32 count; s32 capacity; } a, b, c;
+    struct { s32 *items; s32 count; s32 capacity; s32 buf[50]; } c, b, a;
     s32 i, x, y, z;
     *(s32 *)((char *)arg0 + 0x24) = 0;
     *arg0 = 0;
