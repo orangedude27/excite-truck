@@ -68,12 +68,10 @@ int fn_801345A4(int, int);
 void fn_8013436C(int);
 void fn_802E30C8(const char *, ...);
 extern char lbl_8034BCF0[];
+#pragma push
+#pragma scheduling invalid_target
 void fn_802CE4F4(void *arg0, int arg1) {
- int active=0;
- void *selected=0;
- int best=-1;
- int i=0;
- int offset=0;
+ int active=0; void *selected=0; int best=-1; int i=0; int offset=0;
  while (i < *(int *)((char *)arg0+8)) {
   void *entry=(char *)*(void **)arg0+offset;
   if (*(int *)((char *)entry+0x38)==3 &&
@@ -85,14 +83,10 @@ void fn_802CE4F4(void *arg0, int arg1) {
    active++;
    if (*(int *)((char *)entry+0x38)==2) {
     int delta=*(int *)((char *)arg0+0x10)-*(int *)((char *)entry+0x3C);
-    if (delta<=best && selected==0) {
-     best=delta;
-     selected=entry;
-    }
+    if (delta<=best && selected==0) { best=delta; selected=entry; }
    }
   }
-  offset+=0x40;
-  i++;
+  offset+=0x40; i++;
  }
  if (*(int *)((char *)arg0+0xC)-active<1) {
   if (selected!=0) {
@@ -109,6 +103,8 @@ void fn_802CE4F4(void *arg0, int arg1) {
  }
  fn_8013436C(*(int *)((char *)arg0+4));
 }
+#pragma pop
+#pragma scheduling on
 
 #pragma push
 #pragma scheduling invalid_target
