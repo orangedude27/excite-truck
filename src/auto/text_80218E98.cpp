@@ -1610,7 +1610,6 @@ extern "C" void *fn_8021CA0C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 }
 
 extern "C" void fn_802C519C(void *);
-extern "C" void fn_8021915C(void *, u32);
 extern "C" s32 fn_80128668(void *);
 extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
     if (arg0 != 0) {
