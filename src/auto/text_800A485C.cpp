@@ -397,7 +397,7 @@ extern "C" s32 fn_800D1E5C(void *arg0, s32 arg1);
 extern "C" void fn_800D1668(s32 arg0, s32 arg1);
 extern "C" s32 fn_800604E8(s32, s32, void *);
 extern u32 lbl_8055DDF8;
-extern "C" void fn_800D1C48(void);
+extern "C" void fn_800D1C48(s32, s32);
 
 #include <revolution/MEM/mem_allocator.h>
 #include <revolution/MEM/mem_expHeap.h>
@@ -10030,11 +10030,13 @@ extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
         s32 reverseIndex = 0x11 - i;
         s32 right = arg0[reverseIndex];
         s32 reverseK = lbl_802F4018[reverseIndex];
-        s32 forward = fixedMul20(k, left);
-        s32 reverse = fixedMul20(reverseK, right);
+        s64 forwardProduct = (s64)k * left;
+        s64 reverseProduct = (s64)reverseK * right;
+        s32 forward = (s32)(forwardProduct >> 20);
+        s32 reverse = (s32)(reverseProduct >> 20);
         s32 delta = forward - reverse;
         *combinedOut++ = forward + reverse;
-        *filteredOut++ = fixedMul20(c, delta);
+        *filteredOut++ = (s32)(((s64)c * delta) >> 20);
     }
     fn_800C1A80(combined, filtered, arg1);
 }
