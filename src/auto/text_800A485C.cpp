@@ -10012,6 +10012,23 @@ extern "C" void fn_800C18A0(void *arg0, void *arg1) {
     out[26] = -temp[0];
 }
 
+extern "C" s32 lbl_802F4018[];
+extern "C" s32 lbl_802F4060[];
+extern "C" void fn_800C1A80(void *, void *, s32 *);
+extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
+    s32 filtered[9];
+    s32 combined[9];
+    for (s32 i = 0; i < 9; i++) {
+        s32 forward = fixedMul20(arg0[i], lbl_802F4018[i]);
+        s32 reverseIndex = 0x11 - i;
+        s32 reverse = fixedMul20(arg0[reverseIndex], lbl_802F4018[reverseIndex]);
+        s32 delta = forward - reverse;
+        combined[i] = forward + reverse;
+        filtered[i] = fixedMul20(delta, lbl_802F4060[i]);
+    }
+    fn_800C1A80(combined, filtered, arg1);
+}
+
 extern "C" void fn_800C1C1C(void *, s32 *);
 extern "C" void fn_800C1A80(void *arg0, void *arg1, s32 *out) {
     s32 v[19]; s32 d;
@@ -13140,7 +13157,9 @@ extern "C" s32 fn_80116A30(void*);
 extern "C" void fn_800D1C48(void);
 extern "C" s32 fn_80116A38(void*);
 extern "C" u32 fn_80060CC0(void*, u32, u32);
+#if 0
 extern "C" void fn_800D1B1C(void);
+#endif
 
 struct PanicStruct {
     const char *msg;
