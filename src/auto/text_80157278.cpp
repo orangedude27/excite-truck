@@ -67,7 +67,7 @@ public:
 extern "C" s32 lbl_804348E8[];
 extern "C" char lbl_8032F2BC[];
 extern "C" char lbl_8032EBF8[];
-extern "C" void* lbl_8032EE68;
+extern "C" char lbl_8032EE68[];
 extern "C" f32 lbl_8056175C;
 extern "C" void* memset(void*, s32, u32);
 
