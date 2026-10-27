@@ -278,6 +278,9 @@ extern char lbl_80319EC0[];
 extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
 extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
 extern u8 lbl_803C4828[];
+static inline void rfc_store_mcb_slot(UINT16 lcid, void *mcb) {
+    *(void **)(lbl_803C4828 + ((lcid - 0x40) * 4) + 0x3C) = mcb;
+}
 extern void rfc_send_fcon(void *, s32, void *);
 extern void rfc_send_fcon_80093FDC(void *, s32);
 extern void PORT_FlowInd(void *, s32, s32);
