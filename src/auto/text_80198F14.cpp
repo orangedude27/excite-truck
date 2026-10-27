@@ -124,7 +124,7 @@ extern "C" s32 fn_801CF828(s32, s32, s32, s32, s32);
 extern s32 lbl_8055E5A0;
 extern "C" s32 fn_801CFEAC(void*);
 extern s32 lbl_803336EC[];
-extern void fn_801A48E4(void*);
+extern "C" void fn_801A48E4(void*);
 extern "C" void fn_801D2414(...);
 extern "C" void fn_801D0738(void*, void*, void*, void*);
 #pragma push
@@ -2830,19 +2830,32 @@ extern "C" void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
 }
 #pragma pop
 extern "C" void fn_801A401C(void *arg0, void *arg1) {
+    extern f32 lbl_8056234C;
+    struct SPHRArg {
+        u8 pad0[0x18];
+        s32 tag;
+        u8 pad1[8];
+        f32 scale;
+        u8 pad2[0xC];
+        u8 data[1];
+    };
     s32 tag = *(s32 *)((u8 *)arg1 + 0x18);
     if ((u32)(tag + 0xB8AE0000) == 0x5550U) {
         ((Fn801A401CDispatch *)arg1)->Call(arg0);
-    } else if ((u32)(tag + 0xACB00000) == 0x4852U) {
+        return;
+    }
+    if ((u32)(tag + 0xACB00000) == 0x4852U) {
+        SPHRArg* source = (SPHRArg*)arg1;
         u8 buffer[0x300];
         s32 count = 0x40;
-        s32 i = 0;
         f32 factor = lbl_8056234C;
-        f32 scale = *(f32 *)((u8 *)arg1 + 0x24);
-        fn_801CF080(*(s32 *)((u8 *)arg0 + 0x24), (u8 *)arg1 + 0x34, buffer, &count,
-                    *(s32 *)((u8 *)arg0 + 0x0C), factor * scale);
+        fn_801CF080(*(s32 *)((u8 *)arg0 + 0x24), source->data, buffer, &count,
+                    *(s32 *)((u8 *)arg0 + 0x0C), factor * source->scale);
+        u8 *current = buffer;
+        s32 i = 0;
         do {
-            fn_8019AA18(arg1, (s32)&buffer[i * 12], 0x6E, (s32)arg0);
+            fn_8019AA18(source, (s32)current, 0x6E, (s32)arg0);
+            current += 0xC;
             i++;
         } while (i < count);
     }
@@ -3141,37 +3154,39 @@ extern "C" void fn_801A4A10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 #pragma scheduling on
-extern "C" void fn_801A4A8C(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 *arg4, s32 arg5, s32 arg6) {
-    s32 t0 = arg4[0];
-    s32 t1 = arg4[1];
-    s32 t2 = arg4[2];
-    s32 t3 = arg4[3];
-    s32 t4 = arg4[4];
-    s32 t5 = arg4[5];
-    s32 t6 = arg4[6];
-    s32 t7 = arg4[7];
-    s32 t8 = arg4[8];
-    s32 t9 = arg4[9];
-    s32 t10 = arg4[10];
-    s32 t11 = arg4[11];
-    *(void **)arg0 = lbl_803336F8;
-    *(s32 *)((u8 *)arg0 + 4) = t0;
-    *(s32 *)((u8 *)arg0 + 8) = t1;
-    *(s32 *)((u8 *)arg0 + 0xC) = t2;
-    *(s32 *)((u8 *)arg0 + 0x10) = t3;
-    *(s32 *)((u8 *)arg0 + 0x14) = t4;
-    *(s32 *)((u8 *)arg0 + 0x18) = t5;
-    *(s32 *)((u8 *)arg0 + 0x1C) = t6;
-    *(s32 *)((u8 *)arg0 + 0x20) = t7;
-    *(s32 *)((u8 *)arg0 + 0x24) = t8;
-    *(s32 *)((u8 *)arg0 + 0x28) = t9;
-    *(s32 *)((u8 *)arg0 + 0x2C) = t10;
-    *(s32 *)((u8 *)arg0 + 0x30) = t11;
-    *(s32 *)((u8 *)arg0 + 0x34) = arg2;
-    *(s32 *)((u8 *)arg0 + 0x38) = arg1;
-    *(void **)((u8 *)arg0 + 0x3C) = arg3;
-    *(s32 *)((u8 *)arg0 + 0x48) = arg5;
-    ((Fn801A4A8CVTable *)arg3)->Call(arg0, t9, t10);
+extern "C" void fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg4, s32 arg5, s32 arg6) {
+    struct VTable2C {
+        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
+        virtual void v3() = 0; virtual void v4() = 0; virtual void v5() = 0;
+        virtual void v6() = 0; virtual void v7() = 0; virtual void v8() = 0;
+        virtual void Call(void*, s32, s32) = 0;
+    };
+    void* vtable = lbl_803336F8;
+    s32 t11; s32 t10; s32 t9; s32 t8; s32 t7; s32 t6;
+    s32 t5; s32 t4; s32 t3; s32 t2; s32 t1; s32 t0;
+    t0 = arg4[0]; t1 = arg4[1]; t2 = arg4[2]; t3 = arg4[3];
+    t4 = arg4[4]; t5 = arg4[5]; t6 = arg4[6]; t7 = arg4[7];
+    t8 = arg4[8]; t9 = arg4[9]; t10 = arg4[10]; t11 = arg4[11];
+
+    *(void**)arg0 = vtable;
+    *(s32*)((u8*)arg0 + 4) = t0;
+    *(s32*)((u8*)arg0 + 8) = t1;
+    *(s32*)((u8*)arg0 + 0xC) = t2;
+    *(s32*)((u8*)arg0 + 0x10) = t3;
+    *(s32*)((u8*)arg0 + 0x14) = t4;
+    *(s32*)((u8*)arg0 + 0x18) = t5;
+    *(s32*)((u8*)arg0 + 0x1C) = t6;
+    *(s32*)((u8*)arg0 + 0x20) = t7;
+    *(s32*)((u8*)arg0 + 0x24) = t8;
+    *(s32*)((u8*)arg0 + 0x28) = t9;
+    *(s32*)((u8*)arg0 + 0x2C) = t10;
+    *(s32*)((u8*)arg0 + 0x30) = t11;
+    *(s32*)((u8*)arg0 + 0x34) = arg2;
+    *(s32*)((u8*)arg0 + 0x38) = arg1;
+    *(void**)((u8*)arg0 + 0x3C) = arg3;
+    *(s32*)((u8*)arg0 + 0x48) = arg5;
+
+    ((VTable2C*)arg3)->Call(arg0, arg2, (s32)arg3);
     fn_801A48E4(arg0);
 }
 
