@@ -305,7 +305,6 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
 }
 
 #pragma push
-#pragma scheduling off
 int fn_801D411C(void *arg0) {
     char *p = (char *)arg0;
     float sp8;
