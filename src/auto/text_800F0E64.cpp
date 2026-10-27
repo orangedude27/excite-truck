@@ -1722,7 +1722,7 @@ extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3sn
   extern u8 lbl_80326288[];
   extern u8 lbl_80326264[];
 #pragma pop
-extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void);
+extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *);
 extern "C" void fn_800F7110(void *self, unsigned long taskId) {
     unsigned long id = taskId;
     void* manager = ((void* (*)(void))fn_800FDE60)();
