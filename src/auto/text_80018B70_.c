@@ -87,7 +87,8 @@ extern "C" void fn_80018BA4(void) {
     fn_80265DCC(*(void **)lbl_80357E0C, *(int *)(lbl_80357E0C + 4), 0x14, fn_80018B7C);
 }
 #pragma cplusplus reset
-void fn_80018CCC(void) {
+#pragma cplusplus on
+extern "C" void fn_80018CCC(void) {
     extern void *lbl_8055D58C;
     extern void *lbl_803580A4;
     extern void *lbl_802FD2A0;
@@ -133,6 +134,7 @@ void fn_80018CCC(void) {
         index++;
     }
 }
+#pragma cplusplus reset
 
 #pragma push
 #pragma dont_inline on
