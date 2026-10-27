@@ -2573,8 +2573,8 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     s32 temp_r30;
     s32 temp_r3;
     s32 temp_r4;
-    u8 temp_r7;
-    void *temp_r5;
+    register u8 temp_r7;
+    register void *temp_r5;
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
     temp_r30 = *(s32 *)arg0;
     *(void **)((u8 *)arg0 + 4) = temp_r5;
@@ -17774,8 +17774,24 @@ loop_51:
 
 extern "C" void fn_800D272C(void*, void*);
 extern "C" char lbl_804077D8[0x400];
-extern "C" const char lbl_805597E4[];
-extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void *arg0, void *arg1, const char *arg2, void *arg3) {}
+extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597E4[]; }
+extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void *arg0, void *arg1, const char *arg2, void *arg3) {
+    if (arg1 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x368, lbl_8031EA90);
+    }
+    OSLockMutex(&lbl_804077C0);
+    vsnprintf(lbl_804077D8, 0x400, arg2, (VaList1 *)arg3);
+    if (arg1 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x34B, lbl_8031EA90);
+    }
+    if (((u32)arg0 & 2) != 0) {
+        OSReport(lbl_805597E4, lbl_804077D8);
+    }
+    if (((u32)arg0 & 1) != 0) {
+        fn_800D272C(arg1, lbl_804077D8);
+    }
+    OSUnlockMutex(&lbl_804077C0);
+}
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(void* head, const char* fmt, ...) {
