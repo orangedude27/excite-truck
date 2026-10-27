@@ -915,6 +915,20 @@ extern f32 lbl_805634E4;
 extern "C" s32 fn_8021A804(void *arg0, s32 arg1) {
     return fn_802192A4(arg0, arg1);
 }
+
+extern "C" int lbl_8033F298[];
+extern "C" void *fn_8021A808(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    fn_80222340(arg0, arg1, arg2, 0, 0, 0, arg5);
+    *(s32 *)((u8 *)arg0 + 0x254) = arg4;
+    *(void **)arg0 = lbl_8033F298;
+    *(s32 *)((u8 *)arg0 + 0x258) = arg3;
+    if (arg4 != 0) {
+        fn_80219440(arg0, 0, (void *)arg4, 4);
+    }
+    fn_80219440(arg0, 1, fn_80216708(), 1);
+    return arg0;
+}
+
 #pragma dont_inline reset
 extern "C" void fn_8021D044(s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_8022A86C(void *);
@@ -1743,20 +1757,16 @@ extern "C" void fn_8021CEAC(void *arg0) {
 }
 
 extern "C" void fn_8021CF9C(void *arg0) {
-    f32 total;
-    f32 scaled;
-    f32 value;
-    s32 converted;
-    char *buffer = (char *)arg0 + 0x264;
-    value = (f32)*(s32 *)*(void **)((u8 *)arg0 + 0x25C);
-    scaled = value * *(f32 *)((u8 *)arg0 + 0x254);
-    total = *(f32 *)((u8 *)arg0 + 0x258) + scaled;
-    converted = (s32)(lbl_805634C4 + total);
-    sprintf(buffer, *(const char **)((u8 *)arg0 + 0x260), converted, total, scaled, value);
-    fn_80130568(buffer);
+    f32 value = (f32)*(s32 *)*(void **)((u8 *)arg0 + 0x25C);
+    f32 scaled = value * *(f32 *)((u8 *)arg0 + 0x254);
+    f32 total = *(f32 *)((u8 *)arg0 + 0x258) + scaled;
+    s32 converted = (s32)(lbl_805634C4 + total);
+    sprintf((char *)arg0 + 0x264, *(const char **)((u8 *)arg0 + 0x260), converted);
+    fn_80130568((char *)arg0 + 0x264);
     fn_80219718(arg0);
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    }
 }
 
 void fn_8021CF9C(void);
