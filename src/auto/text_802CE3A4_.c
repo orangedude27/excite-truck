@@ -64,25 +64,78 @@ void fn_802CE49C(void *arg0) {
     }
 }
 
+int fn_801345A4(int, int);
+void fn_8013436C(int);
+void fn_802E30C8(const char *, ...);
+extern char lbl_8034BCF0[];
+void fn_802CE4F4(void *arg0, int arg1) {
+ int active=0;
+ void *selected=0;
+ int best=-1;
+ int i=0;
+ int offset=0;
+ while (i < *(int *)((char *)arg0+8)) {
+  void *entry=(char *)*(void **)arg0+offset;
+  if (*(int *)((char *)entry+0x38)==3 &&
+      fn_801345A4(*(int *)((char *)arg0+4), *(int *)((char *)entry+0x2C))) {
+   *(int *)((char *)entry+0x38)=0;
+   *(int *)((char *)entry+0x2C)=-1;
+  }
+  if (*(int *)((char *)entry+0x38)!=0) {
+   active++;
+   if (*(int *)((char *)entry+0x38)==2) {
+    int delta=*(int *)((char *)arg0+0x10)-*(int *)((char *)entry+0x3C);
+    if (delta<=best && selected==0) {
+     best=delta;
+     selected=entry;
+    }
+   }
+  }
+  offset+=0x40;
+  i++;
+ }
+ if (*(int *)((char *)arg0+0xC)-active<1) {
+  if (selected!=0) {
+   if (*(int *)((char *)selected+0x38)==2) {
+    fn_802C6FB4(*(int *)((char *)selected+0x30));
+    fn_802C703C(*(int *)((char *)selected+0x34));
+    *(int *)((char *)selected+0x34)=-1;
+    *(int *)((char *)selected+0x30)=0;
+    *(int *)((char *)selected+0x38)=3;
+   }
+  } else {
+   fn_802E30C8(lbl_8034BCF0, *(int *)((char *)arg0+0x10));
+  }
+ }
+ fn_8013436C(*(int *)((char *)arg0+4));
+}
+
+#pragma push
+#pragma scheduling invalid_target
 void *fn_802CE630(void *arg0, const char *arg1, int arg2) {
     int count = *(int *)((char *)arg0 + 8);
     int offset = 0;
-    char *entry;
+    unsigned char *entry;
+    register void *result = 0;
+
     while (count > 0) {
-        entry = *(char **)arg0 + offset;
+        entry = (unsigned char *)*(char **)arg0 + offset;
         if (*entry == 0 && *(int *)(entry + 0x38) == 0) {
+            char *copy;
+
             entry[0] = 1;
             *(void **)(entry + 4) = arg0;
-            strcpy(entry + 8, arg1);
+            copy = strcpy((char *)entry + 8, arg1);
             *(int *)(entry + 0x28) = arg2;
-            return entry;
+            return copy;
         }
         offset += 0x40;
         count--;
     }
-    return 0;
+    return result;
 }
-
+#pragma pop
+#pragma scheduling on
 void fn_802CE6C0(void *arg0) {
     if (*(int *)((char *)arg0 + 0x38) == 2 && *(int *)((char *)arg0 + 0x38) == 2) {
         fn_802C6FB4(*(int *)((char *)arg0 + 0x30));
@@ -101,17 +154,67 @@ int fn_802CE728(void *arg0) {
     return -1;
 }
 
+extern void fn_802CE7D4(int, int, void *);
+extern int fn_80134424(int, void *, int, int *, void *, void *, int, int);
+#pragma push
+#pragma scheduling invalid_target
+void fn_802CE744(void *arg0) {
+    struct Entry {
+        int padding0;
+        int resource;
+        int padding8;
+        int paddingC;
+        int count;
+    };
+    struct Manager {
+        int padding0;
+        struct Entry *entry;
+        char name[0x24];
+        int result;
+        int padding30;
+        int padding34;
+        int state;
+        int lastCount;
+    };
+    struct Manager *manager = (struct Manager *)arg0;
+    register struct Entry *entry = manager->entry;
+    register int value = entry->count;
+    int result;
+    int sp8;
+
+    manager->lastCount = value;
+    entry->count = value + 1;
+    if (manager->state == 0) {
+        sp8 = 0;
+        result = fn_80134424(
+            entry->resource,
+            (char *)manager + 8,
+            0x4D4F444C,
+            &sp8,
+            (void *)fn_802CE7D4,
+            manager,
+            0,
+            -1);
+        if (result >= 0) {
+            manager->result = result;
+            manager->state = 1;
+        }
+    }
+}
+#pragma pop
+#pragma scheduling on
 void fn_802CE7D4(int arg0, int arg1, void *arg2);
 void fn_802CE7D4(int arg0, int arg1, void *arg2) {
-    if (*(unsigned char *)arg2 != 0) {
-        *(int *)((char *)arg2 + 0x30) = arg0;
-        fn_802C61BC((char *)arg2 + 8);
-        fn_802C6FA8(*(int *)((char *)arg2 + 0x30));
-        *(int *)((char *)arg2 + 0x34) = fn_802C6DC4((char *)arg2 + 8, *(int *)((char *)arg2 + 0x30), 0, 0);
-        *(int *)((char *)arg2 + 0x38) = 2;
+    char *ptr = (char *)arg2;
+    if (*ptr != 0) {
+        *(int *)(ptr + 0x30) = arg0;
+        fn_802C61BC(ptr + 8);
+        fn_802C6FA8(*(int *)(ptr + 0x30));
+        *(int *)(ptr + 0x34) = fn_802C6DC4((int)(ptr + 8), *(int *)(ptr + 0x30), 0, 0);
+        *(int *)(ptr + 0x38) = 2;
     } else {
-        *(int *)((char *)arg2 + 0x38) = 0;
-        *(int *)((char *)arg2 + 0x2C) = -1;
+        *(int *)(ptr + 0x38) = 0;
+        *(int *)(ptr + 0x2C) = -1;
     }
 }
 
