@@ -536,13 +536,12 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
     OSRestoreInterrupts(level);
 }
 
-void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F21FC(void *self, s32 bus, f32 value) {
-    if (bus < 0 || bus >= 4) {
-        if (0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x2B0, lbl_80324534, bus, 0, 4);
-    }
-    u32 token = OSDisableInterrupts();
-    *(f32 *)((u8 *)self + 0x40 + bus * 4) = value;
-    OSRestoreInterrupts(token);
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F21FC(void *self, int bus, float value) {
+    int valid = bus >= 0 && bus < 4;
+    if (!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x2B0, lbl_80324534, bus, 0, 4);
+    int level = OSDisableInterrupts();
+    *(float *)((char *)self + bus * 4 + 0x40) = value;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" s32 GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void *self, s32 index) {
