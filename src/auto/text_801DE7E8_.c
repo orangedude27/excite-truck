@@ -75,6 +75,7 @@ int fn_801DE9F0(int arg0, int arg1) {
         }
     }
 }
+#pragma small_data on
 
 unsigned int fn_801DEB6C(const char *arg0) {
     extern const char *lbl_802F99C8[7];
