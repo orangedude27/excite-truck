@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+struct Fn80224DDCVec3 { f32 x, y, z; };
+
 extern "C" void *fn_8022EE9C(void);
 
 extern "C" char lbl_8033F880[];
@@ -4126,6 +4128,25 @@ extern "C" s32 fn_80224B0C(void *arg0, s32 arg1) {
     return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
 }
 
+extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
+    f32 result[3];
+    f32 scaled[3];
+    f32 temp_f1;
+    f32 temp_f2;
+    s32 handle;
+
+    *(u8 *)((u8 *)arg0 + 0x299) = 1;
+    *(void **)((u8 *)arg0 + 0x29C) = fn_8022EE9C();
+    temp_f1 = lbl_805634F8 * x;
+    temp_f2 = lbl_805634F8 * y;
+    scaled[0] = temp_f1;
+    scaled[1] = temp_f2;
+    scaled[2] = lbl_805634F8 * z;
+    handle = *(s32 *)((u8 *)arg0 + 0x29C);
+    ((void (*)(void *, f32 *, f32, f32))fn_80015A20)(&result[0], &scaled[0], temp_f1, temp_f2);
+    fn_80015B20((void *)handle, &result[0], (void *)handle);
+}
+
 extern "C" u8 lbl_8033DA84[];
 extern "C" u8 lbl_8033DAEC[];
 extern "C" u8 lbl_8033E140[];
@@ -4553,6 +4574,25 @@ extern "C" void *fn_80226F00(void *arg0, s32 arg1) {
             fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
+    f32 result[3];
+    f32 scaled[3];
+    f32 temp_f1;
+    f32 temp_f2;
+    s32 handle;
+
+    *(u8 *)((u8 *)arg0 + 0x260) = 1;
+    *(void **)((u8 *)arg0 + 0x25C) = fn_8022EE9C();
+    temp_f1 = lbl_805634F8 * x;
+    temp_f2 = lbl_805634F8 * y;
+    scaled[0] = temp_f1;
+    scaled[1] = temp_f2;
+    scaled[2] = lbl_805634F8 * z;
+    handle = *(s32 *)((u8 *)arg0 + 0x25C);
+    ((void (*)(void *, f32 *, f32, f32))fn_80015A20)(&result[0], &scaled[0], temp_f1, temp_f2);
+    fn_80015B20((void *)handle, &result[0], (void *)handle);
 }
 
 extern "C" void fn_80227244(void *arg0, s32 arg1) {
