@@ -27,8 +27,56 @@ extern int fn_80138C28(void *, float *, float *);
 #pragma dont_inline fn_80138BFC
 #pragma dont_inline fn_80138BE4
 #pragma push
+#pragma scheduling invalid_target
+#pragma optimize_for_size on
 #pragma use_lmw_stmw off
-float fn_80138DF4(void *arg0) { return 0.0f; }
+float fn_80138DF4(void *arg0) {
+    float spC;
+    float sp8;
+    float temp_f1;
+    float temp_f1_2;
+    float temp_f2;
+    float temp_f3;
+    float temp_f3_2;
+    float var_f31;
+    float var_f4;
+
+    if (fn_80138BFC(*(float *)((char *)arg0 + 0xC) - *(float *)arg0) == 0) {
+        if (fn_80138BFC(*(float *)((char *)arg0 + 0x14) - *(float *)((char *)arg0 + 8)) == 0) {
+            if (fn_80138C28(arg0, &spC, &sp8) != 0) {
+                var_f4 = spC;
+                temp_f1 = (*(float *)((char *)arg0 + 0x10) + (var_f4 * *(float *)((char *)arg0 + 0x14))) - *(float *)((char *)arg0 + 4);
+                if (var_f4 > lbl_805613D0) {
+                } else {
+                    var_f4 = lbl_805613D0;
+                }
+                var_f31 = temp_f1 / var_f4;
+                lbl_8055E100 = -5;
+            } else {
+                var_f31 = sp8;
+                lbl_8055E100 = -4;
+            }
+        } else {
+            temp_f2 = *(float *)((char *)arg0 + 0xC) - *(float *)arg0;
+            temp_f1_2 = *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4);
+            temp_f3 = temp_f1_2 * temp_f1_2;
+            var_f31 = temp_f3 / (lbl_805613C8 * temp_f2);
+            if (fn_80138BE4(temp_f1_2, temp_f2) != 0) {
+                var_f31 = -var_f31;
+            }
+            temp_f3_2 = *(float *)((char *)arg0 + 0xC);
+            if (fn_80138BE4(*(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4), temp_f3_2 - *(float *)arg0) != 0) {
+                lbl_8055E100 = -3;
+            } else {
+                lbl_8055E100 = -2;
+            }
+        }
+    } else {
+        var_f31 = lbl_805613B8;
+        lbl_8055E100 = -1;
+    }
+    return var_f31;
+}
 #pragma pop
 void fn_80138F38(void *arg0) {
     float sp8;
