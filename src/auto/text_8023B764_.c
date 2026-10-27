@@ -172,7 +172,7 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         resource = lbl_80341314;
         zero = 0;
         frame.resource = resource;
-        frame.resource0 = fn_80128314(0);
+        frame.resource0 = fn_80128314(zero);
         frame.resource1 = fn_80128314(1);
         frame.resource2 = fn_80265D58();
         if (fn_80204024() != 0)
@@ -449,4 +449,4 @@ void fn_8023C210(void *dst, void *src) {
 }
 
 void fn_8023C268(void) {}
-
+#pragma cplusplus on
