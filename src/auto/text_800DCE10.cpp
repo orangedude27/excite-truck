@@ -816,6 +816,7 @@ block_241:
 extern const char lbl_80320948[];
 extern u32 lbl_80559804;
 #pragma small_data on
+namespace nw4hbm { namespace ut { struct CharStrmReader { s32 unk0; s32 unk4; s32 unk8; s32 unkC; }; struct Font { CharStrmReader GetCharStrmReader() const; }; } }
 extern "C" void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void *result, s32 font) {
     s32 var_r5;
     s32 var_r6;
