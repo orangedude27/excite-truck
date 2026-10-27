@@ -131,24 +131,20 @@ extern s32 fn_8017960C(void);
 extern u8 lbl_8055E364;
 extern f64 lbl_80561968;
 extern f32 lbl_80561960;
-#pragma push
-#pragma paired_single off
-#pragma ppc_psq_save off
 s32 fn_8016A30C(void) {
- f32 a,b; s32 f,e,g,c,h,d; s32 one=1; void *p;
+ f32 a,b; s32 f,e,g,c,h,d; void *p;
  c=fn_8017960C(); if(c) { a=lbl_80561960; f=0;e=0;g=0;
  goto check;
  loop:
  d=0;h=0;p=(void *)(*(s32 *)&lbl_80430318+g);
- if(*(u8 *)((u8 *)p+0x3c) && !*(u8 *)((u8 *)p+0x3d)) h=one;
+ if(*(u8 *)((u8 *)p+0x3c) && !*(u8 *)((u8 *)p+0x3d)) h=1;
  if(h) { b=(f32)*(s32 *)((u8 *)p+4); if(lbl_8055E364)b+=a;
- if(PSVECSquareDistance((void *)(c+0x60),(u8 *)p+0x30)<b*b) {*(u8 *)((u8 *)p+0x3d)=one;d=one;*(f32 *)((u8 *)p+0x40)=lbl_8055E3C8;} }
+ if(PSVECSquareDistance((void *)(c+0x60),(u8 *)p+0x30)<b*b) {*(u8 *)((u8 *)p+0x3d)=1;d=1;*(f32 *)((u8 *)p+0x40)=lbl_8055E3C8;} }
  if(d)f++; g+=0x48;e++;
  check:
  if(e < *(s32 *)((u8 *)&lbl_80430318+4)) goto loop;
  return f;} return 0;
 }
-#pragma pop
 
 void fn_8016B634(s32 arg0);
 
