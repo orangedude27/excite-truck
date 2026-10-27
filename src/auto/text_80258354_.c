@@ -386,43 +386,53 @@ found:
 }
 
 extern float fn_80209028(void);
-void fn_80258E64(void *arg0, int arg1) {
-    char *base = (char *)arg0;
-    int index = 0, offset = 0, result;
-    char *entry, *obj;
+void fn_80258E64(void *arg0, const char *arg1) {
+    int index = 0;
+    int offset = 0;
+    void *obj;
     float value;
     goto check;
 loop:
-    result = stricmp(*(char **)(base + 0xD9C) + offset, (char *)arg1);
-    if ((unsigned int)__cntlzw(result) >> 5) goto found;
-    offset += 0x2C;
-    index++;
+    switch ((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 0xD9C) + offset), arg1)) >> 5) {
+    case 0:
+        offset += 0x2C;
+        index++;
+        goto check;
+    default:
+        goto found;
+    }
 check:
-    if (index < *(int *)(base + 0xDA0)) goto loop;
+    if (index < *(int *)((char *)arg0 + 0xDA0))
+        goto loop;
     index = -1;
 found:
-    if (index < 0) return;
-    entry = *(char **)(base + 0xD9C) + index * 0x2C;
-    obj = *(char **)(entry + 0x20);
-    if (obj == 0) return;
-    value = *(float *)(entry + 0x28) * fn_80209028();
-    if (value != *(float *)(obj + 8)) {
-        *(unsigned char *)(obj + 0x4D) = 1;
-        *(float *)(obj + 8) = value;
+    if (index < 0)
+        return;
+    index = (int)(*(unsigned int *)((char *)arg0 + 0xD9C) + index * 0x2C);
+    if (*(void **)(index + 0x20) == 0)
+        return;
+    value = *(float *)(index + 0x28) * fn_80209028();
+    obj = *(void **)(index + 0x20);
+    if (value != *(float *)((char *)obj + 8)) {
+        *(unsigned char *)((char *)obj + 0x4D) = 1;
+        *(float *)((char *)obj + 8) = value;
     }
-    if (*(unsigned char *)(entry + 0x24)) {
-        *(unsigned char *)(obj + 0x4A) = 0;
-        *(unsigned char *)(obj + 0x4B) = 1;
-        *(unsigned char *)(obj + 0x49) = 1;
+    if (*(unsigned char *)(index + 0x24)) {
+        obj = *(void **)(index + 0x20);
+        *(unsigned char *)((char *)obj + 0x4A) = 0;
+        *(unsigned char *)((char *)obj + 0x4B) = 1;
+        *(unsigned char *)((char *)obj + 0x49) = 1;
         return;
     }
-    if (*(unsigned char *)(obj + 0x19)) {
-        *(unsigned char *)(obj + 0x4C) = 1;
-        *(unsigned char *)(obj + 0x4A) = 0;
+    obj = *(void **)(index + 0x20);
+    if (*(unsigned char *)((char *)obj + 0x19)) {
+        *(unsigned char *)((char *)obj + 0x4C) = 1;
+        *(unsigned char *)((char *)obj + 0x4A) = 0;
     }
-    *(unsigned char *)(obj + 0x49) = 1;
-    *(unsigned char *)(obj + 0x4B) = 0;
-    *(unsigned char *)(obj + 0x4A) = 0;
+    obj = *(void **)(index + 0x20);
+    *(unsigned char *)((char *)obj + 0x49) = 1;
+    *(unsigned char *)((char *)obj + 0x4B) = 0;
+    *(unsigned char *)((char *)obj + 0x4A) = 0;
 }
 
 void fn_80258F94(void *arg0, const char *arg1) {
