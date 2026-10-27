@@ -857,6 +857,18 @@ extern "C" void fn_8021A744(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x244) = 0;
 }
 
+extern "C" int lbl_8033F324[];
+extern "C" void *fn_8021A77C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    fn_80222340(arg0, arg1, arg2, 0, 0, 0, arg5);
+    *(s32 *)((u8 *)arg0 + 0x254) = arg4;
+    *(void **)arg0 = lbl_8033F324;
+    *(s32 *)((u8 *)arg0 + 0x258) = arg3;
+    if (arg4 != 0) {
+        fn_80219440(arg0, 0, (void *)arg4, 4);
+    }
+    return arg0;
+}
+
 extern "C" s32 fn_8022F638(s32, s32, s32, s32, f32);
 extern "C" s32 fn_8022F8CC(s32);
 extern "C" s32 fn_8022FFE8(s32);
@@ -3008,18 +3020,52 @@ fail_row:
 extern "C" void fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
 #pragma diag_default 1735
 extern "C" void fn_80219440(void *arg0, s32 arg1, void *arg2, s32 arg3);
-#pragma diag_default 1735
-#pragma dont_inline on
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual void v23();
+        virtual void v24();
+        virtual void v25();
+        virtual void v26();
+        virtual void v27();
+        virtual void v28();
+        virtual void v29();
+        virtual void v30();
+        virtual void Init();
+    };
     fn_80218F34(arg0, arg1, arg2, arg1 + arg4, arg2 + arg5, arg3);
     *(s32 *)((u8 *)arg0 + 0x248) = arg1;
     *(void **)arg0 = lbl_8033F90C;
     *(s32 *)((u8 *)arg0 + 0x24C) = arg2;
     *(s32 *)((u8 *)arg0 + 0x250) = arg3;
     *(s32 *)((u8 *)arg0 + 0x244) = arg6;
-    ((void (*)(void *))(*(void ***)arg0)[33])(arg0);
+    return ((Dummy *)arg0)->Init();
 }
-#pragma dont_inline reset
+#pragma pop
 
 #pragma dont_inline on
 extern "C" void fn_802223C4(void *arg0, s32 arg1) {
