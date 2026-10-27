@@ -132,31 +132,38 @@ extern void fn_801D2C70(void*, s32, void*, s32);
 extern void fn_801D2E38(void*, void*, s32, void*, f32);
 extern void fn_802E317C(const char*, ...);
 extern const char lbl_803382DC[];
+#pragma scheduling invalid_target
 void fn_801D2414(void *arg0, s32 arg1, void *arg2) {
-    u32 type = *(u32*)((char*)arg2 + 0x10);
+    u32 type = *(u32 *)((char *)arg2 + 0x10);
     int match = 0;
     void *entry;
-    f32 magnitude;
+
     if (type == 0x43415220 || type == 0x50434152 ||
         type == 0x41434152 || type == 0x4E434152) {
         match = 1;
     }
     if (match != 0) {
-        entry = (void*)fn_801D2C20(*(s32*)((char*)arg0 + 0x34));
+        entry = (void *)fn_801D2C20(*(s32 *)((char *)arg0 + 0x34));
         if (entry != 0) {
-            magnitude = PSVECMag((char*)arg2 + 0x118);
-            if (*((u8*)entry + 4) != 0 && magnitude > *(f32*)((char*)entry + 8)) {
-                fn_801D2C70((char*)entry + 4, arg1, arg2, *(s32*)((char*)arg0 + 0x34));
+            register f32 magnitude = PSVECMag(&((f32 *)arg2)[70]);
+            if (*((u8 *)entry + 4) != 0 &&
+                magnitude > *(f32 *)((char *)entry + 8)) {
+                fn_801D2C70(&((u8 *)entry)[4], arg1, arg2,
+                            *(s32 *)((char *)arg0 + 0x34));
             }
-            if (*((u8*)entry + 0x30) != 0 && magnitude > *(f32*)((char*)entry + 0x34)) {
-                fn_801D2E38((char*)entry + 0x30, arg0, arg1, (char*)arg2 + 0x118, *(f32*)((char*)arg2 + 0xD4));
-                fn_801A4868(arg0, 0);
+            if (*((u8 *)entry + 0x30) != 0) {
+                if (magnitude > *(f32 *)((char *)entry + 0x34)) {
+                    fn_801D2E38(&((u8 *)entry)[0x30], arg0, arg1,
+                                (char *)arg2 + 0x118, *(f32 *)((char *)arg2 + 0xD4));
+                    fn_801A4868(arg0, 0);
+                }
             }
-        } else if (*(s32*)((char*)arg0 + 0x34) > 0) {
+        } else if (*(s32 *)((char *)arg0 + 0x34) > 0) {
             fn_802E317C(lbl_803382DC);
         }
     }
 }
+#pragma scheduling on
 
 #pragma cplusplus on
 extern "C" u8 fn_801D2550(void *arg0, void *arg1) {
