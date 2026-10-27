@@ -15,9 +15,43 @@ extern void fn_80131818(void *);
 extern void fn_801345D8(void *, int, void *, ...);
 extern int fn_802C6FC0(int, int, int);
 extern float fn_80129DC4(int, float, float);
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma cplusplus on
 extern "C" void fn_802C2298(void) {
+    struct Manager {
+        virtual void **get(void *);
+    };
+    struct Iterator {
+        virtual void *m0();
+        virtual void *m1();
+        virtual void *m2();
+        virtual void *m3();
+        virtual void *m4();
+        virtual void *m5();
+        virtual void *m6();
+        virtual void *m7();
+        virtual void *m8();
+        virtual void *m9();
+        virtual void *m10();
+        virtual void *m11();
+        virtual void *m12();
+        virtual void *m13();
+        virtual void *m14();
+        virtual void *m15();
+        virtual void *m16();
+        virtual void *m17();
+        virtual void *m18();
+        virtual void *m19();
+        virtual void *m20();
+        virtual void **find(char *);
+    };
+    struct Entry {
+        virtual void *m0();
+        virtual void *m1();
+        virtual void *m2();
+        virtual void *create(void *, int, void *);
+    };
+
     char query[0x20];
     float values[3];
     int temp_r5;
@@ -31,16 +65,16 @@ extern "C" void fn_802C2298(void) {
     *(int *)((char *)lbl_804C109C + 4) = 0;
     manager = (void **)fn_80131810(lbl_8034AFE8);
     if (manager != 0) {
-        iterator = ((void **(*)(void *, void *))(*(void **)((char *)*(void **)manager + 8)))(manager, (void *)&lbl_8055CFD0);
+        iterator = ((Manager *)manager)->get((void *)&lbl_8055CFD0);
         index = 1;
         fn_801345D8(query, 0x20, (void *)&lbl_8055CFD8, 0);
-        entry = ((void **(*)(void *, void *))(*(void **)((char *)*(void **)iterator + 0x5C)))(iterator, query);
+        entry = ((Iterator *)iterator)->find(query);
         while (entry != 0) {
             temp_r5 = *(int *)((char *)lbl_804C109C + 4);
             *(int *)((char *)lbl_804C109C + 4) = temp_r5 + 1;
             record = (void *)((char *)*(void **)lbl_804C109C + temp_r5 * 0x14);
             *(int *)record = fn_802C6FC0(
-                (int)((void *(*)(void *, void *, int, void *))(*(void **)((char *)*(void **)entry + 0x14)))(entry, (void *)&lbl_8055CFE0, temp_r5, *(void **)lbl_804C109C),
+                (int)((Entry *)entry)->create((void *)&lbl_8055CFE0, temp_r5, *(void **)lbl_804C109C),
                 0, 0);
             ((void (*)(float *, void *, void *))(*(void **)((char *)*(void **)entry + 0x34)))(values, entry, (void *)&lbl_8055CFE8);
             ((float *)record)[1] = values[0];
@@ -50,7 +84,7 @@ extern "C" void fn_802C2298(void) {
             temp_r6 = index;
             index++;
             fn_801345D8(query, 0x20, (void *)&lbl_8055CFD8, temp_r6);
-            entry = ((void **(*)(void *, void *))(*(void **)((char *)*(void **)iterator + 0x5C)))(iterator, query);
+            entry = ((Iterator *)iterator)->find(query);
         }
         fn_80131818(manager);
     }
