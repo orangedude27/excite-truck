@@ -47,14 +47,63 @@ s32 fn_802A9048(void) {
     return result;
 }
 
-void fn_802A93A4(void) {
-    s32 *p;
+#pragma dont_inline on
+extern u8 lbl_8055F8F8;
+extern f32 lbl_8055F900;
+extern f32 lbl_8055F908;
+extern char lbl_80349D88[];
+extern s32 fn_8012C33C(s32);
+extern void fn_802A1120(void *, void *);
+extern void fn_802A9090();
+extern s32 fn_802C6FC0(s32, s32, s32);
+extern s32 fn_802CAC28(void *, s32);
+extern void fn_802A9574(void);
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_802A92CC(void) {
+    f32 value1;
+    f32 value0;
+    u8 result;
+    register s32 *entry;
     u32 i;
+
+    result = (u8)fn_802A9048();
+    lbl_8055F8F0 = result;
+    if (result != 0) {
+        fn_802A1120(&lbl_8055F8F8, &lbl_8055F908);
+        value0 = *(volatile f32 *)&lbl_8055F908;
+        value1 = *((volatile f32 *)&lbl_8055F908 + 1);
+        *(volatile f32 *)&lbl_8055F900 = value0;
+        entry = (s32 *)lbl_804BD740;
+        *((volatile f32 *)&lbl_8055F900 + 1) = value1;
+        i = 0;
+        *(volatile f32 *)&lbl_8055F900 = value1;
+        *((volatile f32 *)&lbl_8055F900 + 1) = -value0;
+        do {
+            if (fn_8012C33C(entry[0]) != 0)
+                entry[1] = fn_802C6FC0(entry[0], 0, 0);
+            i++;
+            entry += 2;
+        } while (i < 4U);
+        fn_802A9090(&lbl_8055F8F8, &lbl_8055F908);
+        lbl_8055F8F1 = 0;
+        lbl_8055CC58 = fn_802CAC28(lbl_80349D88, 0);
+        fn_802A9574();
+    }
+}
+#pragma scheduling on
+#pragma dont_inline reset
+
+#pragma scheduling invalid_target
+void fn_802A93A4(void) {
+    register s32 *p;
+    register s32 value;
+    register u32 i;
     if (lbl_8055F8F0 != 0) {
-        p = (s32 *)&lbl_804BD740;
+        p = (s32 *)lbl_804BD740;
         i = 0;
         do {
-            s32 value = p[1];
+            value = p[1];
             if (value != -1) {
                 fn_802C6CF8();
                 p[1] = -1;
@@ -66,8 +115,8 @@ void fn_802A93A4(void) {
         lbl_8055CC58 = -2;
     }
 }
-
-extern u8 lbl_804BD6F8;
+#pragma scheduling on
+extern char lbl_804BD6F8[];
 extern f32 lbl_80564984;
 extern f32 lbl_80564988;
 extern s32 fn_801E85B4(void);
