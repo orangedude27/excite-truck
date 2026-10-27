@@ -458,6 +458,7 @@ void fn_801EB8BC(void) {
 }
 #pragma dont_inline off
 
+#pragma dont_inline on
 void fn_801EB90C(void) {
     void **p = (void **)lbl_804885E8;
     u32 i = 0;
@@ -469,6 +470,7 @@ void fn_801EB90C(void) {
         if (i < 0x18) p++;
     } while (i < 0x18);
 }
+#pragma dont_inline off
 
 void fn_801EB968(void) {
 
@@ -498,49 +500,51 @@ extern "C" void fn_801EB9A4(s32 *arg0) {
 }
 
 extern "C" s32 fn_801EB9FC(void *arg0) {
-    u8 sp8;
     u8 sp9;
+    u8 sp8;
+    u32 sp14;
     u32 sp10;
-    void *sp14;
     f32 *spC;
-    void *result;
-    char *file = (char *)&lbl_80339E88;
-    void (*setResource)(s32, s32);
+    char *file = lbl_80339E88;
+    char *path;
 
-    result = ((void *(*)(void *, s32, u32 *, void **, u8 *, u8 *))fn_8012C370)(
+    lbl_8055EBA0 = (s32 *)((void *(*)(void *, s32, u32 *, u32 *, u8 *, u8 *))fn_8012C370)(
         arg0, 0x47524146, &sp10, &sp14, &sp8, &sp9);
-    lbl_8055EBA0 = (s32 *)result;
-    if (result != 0) {
-        if (sp10 == 0x15) {
-            fn_801EB128();
-            fn_801EB854();
-            if (sp9 == 0) {
-                fn_802E317C(file + 0x180, sp10, 0x15);
-            } else {
-                fn_801EB634(result, (s32)result);
-                fn_801EB2D4(*(s32 *)result, (s32)result);
-                fn_801EBB7C((char *)result + 4, (s32)result);
-                fn_801EBB7C((char *)result + 8, (s32)result);
-                setResource = (void (*)(s32, s32))fn_802CDDC8;
-                setResource(((s32 *)result)[1], ((s32 *)result)[1]);
-                setResource(((s32 *)result)[2], ((s32 *)result)[2]);
-                fn_801EB6A8(*(s32 *)result);
-                fn_801EB90C();
-            }
-        } else {
-            fn_802E317C(file + 0x180, sp10, 0x15);
-        }
-    } else {
-        fn_802AE7F4();
-    }
+    if (lbl_8055EBA0 == 0)
+        goto no_resource;
+    if (sp10 != 0x15)
+        goto bad_resource;
 
+    fn_801EB128();
+    fn_801EB854();
+    if (sp9 == 0)
+        goto bad_resource;
+
+    fn_801EB634(lbl_8055EBA0, (s32)lbl_8055EBA0);
+    fn_801EB2D4(*lbl_8055EBA0, (s32)lbl_8055EBA0);
+    fn_801EBB7C((char *)lbl_8055EBA0 + 4, (s32)lbl_8055EBA0);
+    fn_801EBB7C((char *)lbl_8055EBA0 + 8, (s32)lbl_8055EBA0);
+    fn_802CDDC8((void *)lbl_8055EBA0[1], lbl_8055EBA0[1]);
+    fn_802CDDC8((void *)lbl_8055EBA0[2], lbl_8055EBA0[2]);
+    fn_801EB6A8(*lbl_8055EBA0);
+    fn_801EB90C();
+    goto common;
+
+bad_resource:
+    fn_802E317C(file + 0x180, sp10, 0x15);
+    goto common;
+
+no_resource:
+    fn_802AE7F4();
+
+common:
     lbl_8055EBA4 = lbl_80562E6C;
-    if (fn_8012C33C(file + 0x194) != 0) {
-        lbl_8055AFB8 = fn_802C6FC0(file + 0x194, 0, 0);
+    path = file + 0x194;
+    if (fn_8012C33C(path) != 0) {
+        lbl_8055AFB8 = fn_802C6FC0(path, 0, 0);
         spC = 0;
-        if (fn_801E2CCC(file + 0x1A0, &spC) != 0) {
+        if (fn_801E2CCC(file + 0x1A0, &spC) != 0)
             lbl_8055EBA4 = *spC;
-        }
     } else {
         lbl_8055AFB8 = -1;
     }
