@@ -184,7 +184,7 @@ void fn_8022A8E4(int arg0) {
     entry[0] = 0;
 }
 
-extern void *fn_8022CA2C(void);
+extern void *fn_8022CA2C();
 int fn_8022AA84(void) {
     return *(int *)((char *)fn_8022CA2C() + 0x38);
 }
