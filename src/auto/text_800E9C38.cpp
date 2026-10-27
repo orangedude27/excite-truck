@@ -5,6 +5,15 @@ typedef signed char s8;
 typedef signed int s32;
 typedef float f32;
 
+struct ChannelManagerLayout {
+    int first;
+    void *head;
+    void *tail;
+    int count;
+    void *begin;
+    void *end;
+};
+
 namespace nw4hbm {
 namespace snd {
 namespace detail {
@@ -57,12 +66,13 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
     *(unsigned short *)((char *)object + 0xC8) = zero;
     *(int *)((char *)object + 0xE0) = zero;
     if ((signed char)lbl_8055DE28 == 0) {
-        char *managerName = lbl_8040EC78;
-        char *globalManager = lbl_80412778;
+        void *head;
+        void *tail;
         *(volatile int *)lbl_80412778 = zero;
+        char *globalManager = lbl_80412778;
         *(void * volatile *)(globalManager + 0x4) = 0;
-        void *head = globalManager + 0x4;
-        void *tail = globalManager + 0x10;
+        head = globalManager + 0x4;
+        tail = globalManager + 0x10;
         *(void * volatile *)(globalManager + 0x8) = 0;
         *(void * volatile *)(globalManager + 0x10) = 0;
         *(void * volatile *)(globalManager + 0x14) = 0;
@@ -73,13 +83,14 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
         *(void **)(globalManager + 0x14) = tail;
         ((void (*)(void *, void *, void *, void *, void *))__register_global_object)(
             globalManager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv,
-            managerName, tail, head);
+            lbl_8040EC78, tail, head);
         lbl_8055DE28 = 1;
     }
-    register char *manager asm("r30") = lbl_80412778;
+    void *head;
+    char *manager = lbl_80412778;
     if (object == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322B0C, 0x43, lbl_80322AE4);
-    register void *head asm("r31") = manager + 4;
+    head = manager + 4;
     if (object == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8, 0x233, lbl_80322AB4);
     void *iterator = head;
