@@ -92,6 +92,7 @@ int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
     *arg2 = 0;
     return 0;
 }
+#pragma scheduling on
 
 #pragma push
 #pragma small_data on
