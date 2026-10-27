@@ -119,6 +119,7 @@ void fn_80171934(void *p) {
         outer++;
     }
 }
+#pragma pop
 void fn_80171A4C(void *arg0) {
     int count = 0;
     int offset = 0;
