@@ -37,8 +37,18 @@ typedef struct {
 
 extern void rfc_port_sm_execute(void *, u16, void *);
 extern char lbl_80319AB0[];
-struct uusb_cb_t;
-extern struct uusb_cb_t lbl_803BD1E0;
+typedef struct uusb_cb_t {
+    s32 fd;
+    u8 pad4[0x24];
+    u8 at_0x28;
+    u8 state;
+    u8 pad2A[2];
+    BUFFER_Q acl_q;
+    u8 pad38[4];
+    BUFFER_Q sco_q;
+} uusb_cb_t;
+#define UUSB_CB_DEFINED_EARLY 1
+extern uusb_cb_t lbl_803BD1E0;
 extern u8 lbl_8055DC50;
 extern u8 lbl_8055DC51;
 extern void uusb_CloseDeviceCB(s8);
