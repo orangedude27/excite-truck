@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+extern "C" void fn_800D120C(void *, void *, s32);
 extern "C" u8 lbl_802F3408[];
 extern "C" void fn_800B78F4(void *, void *);
 extern "C" s32 WPADSetSamplingCallback(s32, void *);
@@ -9814,13 +9815,27 @@ extern "C" void fn_800C1A80(void *arg0, void *arg1, s32 *out) {
     out[17] = v[8] - out[16];
 }
 
-void fn_800C1E88(const s32* a, const s32* b, s32* out) {
+extern "C" void fn_800C1E88(const s32 *a, const s32 *b, s32 *out) {
+    register s32 a0 = a[0];
+    register s32 a1 = a[1];
+    register s32 a2 = a[2];
+    register s32 a3 = a[3];
     s32 i;
     for (i = 0; i < 4; i++) {
-        s64 p = (s64)a[0] * b[0] + (s64)a[1] * b[1] + (s64)a[2] * b[2]
-             + (s64)a[3] * b[3] + (s64)a[4] * b[4] + (s64)a[5] * b[5];
-        *out = (s32)p & 0xFFFFF000 | (s32)(p >> 32) << 12;
-        if (i & 1) out += 4; else out += 2;
+        s32 zero = 0;
+        s64 p = zero;
+        p += (s64)a0 * b[0];
+        p += (s64)a1 * b[1];
+        p += (s64)a2 * b[2];
+        p += (s64)a3 * b[3];
+        p += (s64)a[4] * b[4];
+        p += (s64)a[5] * b[5];
+        *out = (s32)(p >> 20);
+        if (i & 1) {
+            out += 4;
+        } else {
+            out += 2;
+        }
         b += 6;
     }
 }
@@ -13722,17 +13737,19 @@ extern "C" void __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *this_) {
     p[0x2C >> 2] = (u32)this_ + 0x28;
 }
 extern "C" const char lbl_8031F2C8[];
+#pragma push
+#pragma opt_common_subs off
 extern "C" s32 fn_800D53FC(void *arg0, void *arg1, const char *arg2) {
     const char *file = lbl_8031F2C8;
     void *handle = arg1;
     const char *name = arg2;
     void *self = arg0;
     if (*(s32 *)((u8 *)self + 0x20) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0xDC, file + 0x7C);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0xDC, file + 0x7C);
     if (handle == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0xDD, file + 0xA4);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0xDD, file + 0xA4);
     if (name == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0xDE, file + 0xD8);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0xDE, file + 0xD8);
     if (ARCInitHandle(handle, (ARCHandle *)((u8 *)self + 4)) == 0)
         return 0;
     *(void **)((u8 *)self + 0x20) = handle;
@@ -13740,7 +13757,7 @@ extern "C" s32 fn_800D53FC(void *arg0, void *arg1, const char *arg2) {
     *((u8 *)self + 0xAF) = 0;
     return 1;
 }
-
+#pragma pop
 extern "C" void fn_800D54E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_800D51F4(arg0 + 4, arg0 + 0x30, arg1, arg2, arg3, arg1);
 }
@@ -14865,6 +14882,29 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
         if (j_03 == 0) result_03 = -1;
         *(s32 *)(self + 0x14) = result_03;
     }
+}
+
+extern "C" void fn_800CA064(void) {
+    typedef void (*SetAlarmCallback)(void);
+    typedef void (*SetAlarmFn)(OSAlarm *, u32, u32, s32, SetAlarmCallback);
+    u32 userData = (u32)((void *(*)(void))OSGetAlarmUserData)();
+    u32 index = userData >> 16;
+    u32 low = userData & 0xFFFF;
+    void *base = lbl_8055DD98;
+    void *alarm;
+
+    if (fn_80060C7C((void *)index) != 0) {
+        void *entry = *(void **)((u8 *)base + index * 4 + 0x254);
+        if (((s32 (*)(void *))fn_800D1548)(entry) != 0) {
+            ((void (*)(void *, void *, s32))fn_800D120C)(entry, *(void **)((u8 *)base + 0x5C0), low);
+            return;
+        }
+    }
+
+    alarm = (u8 *)base + index * 0x30 + 0x4D0;
+    OSSetAlarmUserData((OSAlarm *)alarm, (void *)((index << 16) | (index + 2)));
+    OSCancelAlarm((OSAlarm *)alarm);
+    ((SetAlarmFn)OSSetAlarm)((OSAlarm *)alarm, 0x10624DD3, 0, (((*(volatile u32 *)0x800000F8) >> 2) / 1000U) * 50, fn_800CA064);
 }
 
 extern "C" void fn_800D15B4(void*);
