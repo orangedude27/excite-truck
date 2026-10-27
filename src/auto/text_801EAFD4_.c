@@ -333,7 +333,7 @@ void fn_801EB6A4(void) {
 
 #pragma dont_inline on
 #pragma cplusplus on
-#pragma scheduling on
+#pragma scheduling off
 extern "C" s32 fn_802C6DC4(const char *, s32, s32, s32);
 extern "C" void fn_802C6FA8(s32);
 extern "C" char lbl_80339FD4[];
@@ -356,27 +356,28 @@ extern "C" void fn_801EB6A8(s32 arg0) {
         virtual void unused8();
         virtual void dispatch(s32 *, s32, s32, s32, s32);
     };
+    enum NodeType { Node0 = 0, Node101 = 0x101, Node102 = 0x102, Node103 = 0x103, Node4 = 4 };
     register s32 *item;
     register s32 *node;
     register s32 *context;
     register s32 *child;
-    register s32 type;
+    register NodeType type;
     register s32 i;
 
     node = (s32 *)arg0;
     while (node != 0) {
-        type = node[0];
-        if (type == 4) goto state4;
-        if (type >= 4) goto high;
+        type = (NodeType)node[0];
+        if (type == Node4) goto state4;
+        if (type >= Node4) goto high;
         switch (type) {
-        case 0:
+        case Node0:
             goto state0;
         default:
             goto error;
         }
 high:
         if (type >= 0x104) goto error;
-        if (type < 0x101) goto error;
+        if (type < Node101) goto error;
         goto state_special;
 state0:
         item = node;
