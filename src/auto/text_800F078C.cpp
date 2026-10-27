@@ -6,6 +6,10 @@
 namespace nw4hbm { namespace snd { namespace detail {
 struct SeqSound { void Shutdown(); };
 }}}
+namespace nw4hbm { namespace ut { struct LinkListNode; }}
+namespace nw4hbm { namespace ut { namespace detail {
+struct LinkListImpl { void Erase(nw4hbm::ut::LinkListNode*); };
+}}}
 extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void);
 extern "C" void fn_800EEE8C(void *, const void *);
 extern "C" char lbl_8032428C[];
@@ -151,7 +155,7 @@ extern "C" const char lbl_80324378[];
 extern "C" const char lbl_80324350[];
 extern "C" const char lbl_80324344[];
 extern "C" const char lbl_80324320[];
-extern "C" void Shutdown__Q46nw4hbm3snd6detail8SeqSoundFv(void *arg0) {
+void nw4hbm::snd::detail::SeqSound::Shutdown() {
     struct SeqLoadCallback {
         virtual void unused0();
         virtual void unused1();
@@ -161,24 +165,24 @@ extern "C" void Shutdown__Q46nw4hbm3snd6detail8SeqSoundFv(void *arg0) {
         virtual void unused0();
         virtual void Shutdown(s32);
     };
-    if (*(u8 *)((u8 *)arg0 + 0x1E8) != 0) {
-        void *ptr = *(void **)((u8 *)arg0 + 0x1EC);
+    if (*(u8 *)((u8 *)this + 0x1E8) != 0) {
+        void *ptr = *(void **)((u8 *)this + 0x1EC);
         if (ptr != 0) {
-            ((SeqLoadCallback*)ptr)->Invoke(*(s32 *)((u8 *)arg0 + 0x1F0));
+            ((SeqLoadCallback*)ptr)->Invoke(*(s32 *)((u8 *)this + 0x1F0));
         }
     }
-    Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(arg0);
-    void *list = *(void **)((u8 *)arg0 + 0x1E4);
-    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324378, 0x86, lbl_80324350);
+    Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(this);
+    void *list = *(void **)((u8 *)this + 0x1E4);
+    if (this == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324378, 0x86, lbl_80324350);
     s32 interrupts = OSDisableInterrupts();
     if (*(s32 *)((u8 *)list + 4) == 0) {
         OSRestoreInterrupts(interrupts);
         return;
     }
-    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)list + 4, (u8 *)arg0 + 0xB8);
-    ((SoundBase*)arg0)->Shutdown(-1);
-    fn_800EC848(list, arg0);
+    if (this == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)list + 4, (u8 *)this + 0xB8);
+    ((SoundBase*)this)->Shutdown(-1);
+    fn_800EC848(list, this);
     OSRestoreInterrupts(interrupts);
 }
 
