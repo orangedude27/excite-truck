@@ -360,7 +360,7 @@ extern f32 lbl_805634A8;
 extern f32 lbl_805634E8;
 extern int lbl_8033F6E0[];
 extern "C" char lbl_8033EBA0[];
-extern "C" void *lbl_8033F658;
+extern "C" char lbl_8033F658[];
 extern "C" s32 lbl_8055FBC0;
 
 extern "C" void fn_80219044(void);
@@ -3143,6 +3143,16 @@ void fn_802225E8(void *arg0, s32 arg1, s32 arg2) {
                 *(s32 *)((u8 *)arg0 + 8), spC, sp8, lbl_805634A8);
 }
 
+#pragma scheduling invalid_target
+extern "C" void fn_8022264C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
+    f32 scale = lbl_805634A4;
+    *arg3 = arg1;
+    *arg4 = arg2;
+    s32 value = (s32)fn_8023293C(*(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8), scale);
+    *arg5 = arg1 + value;
+    *arg6 = arg1 + fn_80232B70(*(s32 *)((u8 *)arg0 + 4));
+}
+#pragma scheduling on
 extern "C" void *fn_802226D4(void *arg0, s32 arg1) {
     extern char lbl_8033F9BC[];
     extern s32 fn_8023512C(s32);
