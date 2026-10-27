@@ -1186,6 +1186,41 @@ void fn_8006D4C4(void *arg) {
     ((u16 *)arg)[4] = 0;
 }
 
+void *GKI_getpoolbuf(UINT8 pool_id) {
+    FREE_QUEUE_T *Q;
+    BUFFER_HDR_T *p_hdr;
+    tGKI_COM_CB *p_cb = &gki_cb.com;
+
+    if (pool_id >= GKI_NUM_TOTAL_BUF_POOLS)
+        return NULL;
+
+    GKI_disable();
+
+    Q = &p_cb->freeq[pool_id];
+    if (Q->cur_cnt < Q->total) {
+        p_hdr = Q->p_first;
+        Q->p_first = p_hdr->p_next;
+
+        if (!Q->p_first)
+            Q->p_last = NULL;
+
+        if (++Q->cur_cnt > Q->max_cnt)
+            Q->max_cnt = Q->cur_cnt;
+
+        GKI_enable();
+
+        p_hdr->task_id = GKI_get_taskid();
+        p_hdr->status = BUF_STATUS_UNLINKED;
+        p_hdr->p_next = NULL;
+        p_hdr->Type = 0;
+
+        return (void *)((UINT8 *)p_hdr + BUFFER_HDR_SIZE);
+    }
+
+    GKI_enable();
+    return GKI_getbuf(p_cb->freeq[pool_id].size);
+}
+
 void *GKI_read_mbox(UINT8 mbox) {
     UINT8 task_id = GKI_get_taskid();
     void *p_buf = NULL;
