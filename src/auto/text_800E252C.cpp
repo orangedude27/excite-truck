@@ -1215,16 +1215,18 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
 extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *, void *);
 #pragma use_lmw_stmw off
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
+    int zero;
     int interruptState = OSDisableInterrupts();
     if (*((unsigned char *)self + 0x11C) == 0) {
         OSRestoreInterrupts(interruptState);
         return;
     }
+    zero = 0;
     char *row = (char *)self;
+    char *entry;
     int rowIndex = 0;
-    int zero = 0;
     while (rowIndex < *((int *)((char *)self + 0x104))) {
-        char *entry = row;
+        entry = row;
         int column = 0;
         while (column < *((int *)((char *)self + 0x108))) {
             if (*((int *)(entry + 0xC)) != 0) {
@@ -2121,13 +2123,15 @@ extern "C" void fn_80033584(void *, void *);
 extern "C" void fn_80033C8C(void *, int);
 extern "C" void fn_80033CD8(void *, void *);
 extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
-    char mix[0x20];
+    char mix[0x30];
     char rmt[0x20];
-    int outer = 0;
     char *row = (char *)self;
+    char *entry;
+    int outer = 0;
+    int inner;
     while (outer < *((int *)((char *)self + 0x104))) {
-        char *entry = row;
-        int inner = 0;
+        entry = row;
+        inner = 0;
         while (inner < *((int *)((char *)self + 0x108))) {
             CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(self, outer, inner, mix);
             fn_80033584(*((void **)(entry + 0xC)), mix);
