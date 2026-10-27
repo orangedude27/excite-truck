@@ -3369,27 +3369,30 @@ void GXSetFieldMode(s32 mode, s32 field) {
 }
 
 extern void GXSetCPUFifo(void *);
-extern void *memcpy(void *, const void *, unsigned int);
+extern void *memcpy(void *, const void *, unsigned long);
 extern char lbl_8037C108[];
 u32 GXEndDisplayList(void) {
     void *fifo = lbl_8037C108;
     u8 wrap;
     void *data;
-    GXGetCPUFifo(fifo);
-    wrap = GXGetFifoWrap(fifo);
+    void *data2;
+    int interruptState;
+    unsigned int saved;
+    GXGetCPUFifo((u8 *)fifo + 0);
+    wrap = GXGetFifoWrap((u8 *)fifo + 0);
     GXSetCPUFifo((u8 *)fifo + 0x680);
     data = __GXData;
     if (*((u8 *)data + 0x5F9) != 0) {
-        int interruptState = OSDisableInterrupts();
-        unsigned int *data2 = *(unsigned int * volatile *)&__GXData;
-        unsigned int saved = *(unsigned int *)((u8 *)data2 + 8);
+        interruptState = OSDisableInterrupts();
+        data2 = *(unsigned int * volatile *)&__GXData;
+        saved = *(unsigned int *)((u8 *)data2 + 8);
         memcpy(data2, (u8 *)fifo + 0x80, 0x600);
         *(unsigned int *)((u8 *)data2 + 8) = saved;
         ((void (*)(int))OSRestoreInterrupts)(interruptState);
     }
     *((u8 *)data + 0x5F8) = 0;
     if (wrap == 0) {
-        return GXGetFifoCount(fifo);
+        return GXGetFifoCount((u8 *)fifo + 0);
     }
     return 0;
 }
