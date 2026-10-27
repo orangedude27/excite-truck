@@ -125,10 +125,10 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
             item = (char *)group + 0xC;
             index = 0;
             while (index < group->itemCount) {
-                name[0] = 0; name[1] = 0; name[2] = 0; name[3] = 0;
-                name[4] = 0; name[5] = 0; name[6] = 0; name[7] = 0;
                 valueBuf[0] = 0; valueBuf[1] = 0; valueBuf[2] = 0; valueBuf[3] = 0;
                 valueBuf[4] = 0; valueBuf[5] = 0; valueBuf[6] = 0; valueBuf[7] = 0;
+                name[0] = 0; name[1] = 0; name[2] = 0; name[3] = 0;
+                name[4] = 0; name[5] = 0; name[6] = 0; name[7] = 0;
                 if (sscanf(item, lbl_8055AEB4, name, valueBuf) >= 1 &&
                     stricmp((const char *)name, (const char *)arg0) == 0) {
                     if (arg1 != 0) {
