@@ -638,13 +638,14 @@ extern "C" s32 VFipdm_disk_convert_sector_into_block(void *arg0, s32 arg1, s32 a
     return result;
 }
 
-extern "C" s32 VFipdm_disk_convert_block_into_sector(u32 arg1, u32 arg2, u32 size, u32 *arg4, u32 *arg5) {
+extern "C" s32 VFipdm_disk_convert_block_into_sector(void *arg0, u32 arg1, u32 arg2, u32 size, u32 *arg4, u32 *arg5) {
     u32 shift;
+    s32 result = 0;
 
     *arg4 = arg1;
+    *arg5 = arg2;
     if (size > 0x200) {
         shift = (size >> 9) & 0x7F;
-        *arg5 = arg2;
         if (shift == 2)
             *arg4 >>= 1;
         else if (shift == 4)
@@ -658,12 +659,10 @@ extern "C" s32 VFipdm_disk_convert_block_into_sector(u32 arg1, u32 arg2, u32 siz
             *arg5 >>= 2;
         else if (shift == 8)
             *arg5 >>= 3;
-    } else {
-        *arg5 = arg2;
-        if (size < 0x200)
-            return 4;
+    } else if (size < 0x200) {
+        result = 4;
     }
-    return 0;
+    return result;
 }
 
 extern "C" int fn_800A499C(const char *, int, int);
@@ -16189,8 +16188,8 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
 #pragma pop
 s32 homebutton::HomeButton::getPaneNo(const char *name) {
     register s32 result = -1;
-    register s32 i;
     register s32 count = *(s32 *)((u8 *)this + 8);
+    register s32 i;
     for (i = 0; i < count; i++) {
         if (strcmp(name, lbl_8031D990[i]) == 0) {
             result = i;
@@ -16199,7 +16198,7 @@ s32 homebutton::HomeButton::getPaneNo(const char *name) {
     }
     for (i = 0; i < 10; i++) {
         if (strcmp(name, lbl_8031E218[i]) == 0) {
-            result = i + count;
+            result = count + i;
             break;
         }
     }
