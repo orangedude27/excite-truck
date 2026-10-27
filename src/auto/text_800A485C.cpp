@@ -7,6 +7,7 @@ extern "C" void fn_800B78F4(void *, void *);
 extern "C" s32 WPADSetSamplingCallback(s32, void *);
 extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
 extern "C" void fn_800A71D0(void *, s32);
+namespace homebutton { namespace gui { class PaneManager { public: void setAllBoundingBoxComponentTriggerTarget(bool); }; } }
 namespace homebutton {
 class GroupAnmController {
 public:
@@ -16873,16 +16874,18 @@ void VFipf_memcpy(void* dst, const void* src, u32 size) {
     while (left--) *d++=*s++;
 }
 
-void fn_800A499C(u8* dst, s8 value, u32 size) {
+extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
+    u8 *dst = (u8 *)dstArg;
+    u32 size = (u32)count;
     u32 words;
     u32 pattern;
 
     while (((u32)dst & 3) != 0) {
-        *dst++ = value;
+        *dst++ = (u8)fill;
         size--;
     }
     words = size >> 2;
-    pattern = (u32)(u8)value;
+    pattern = (u32)(u8)fill;
     pattern |= pattern << 8;
     pattern |= pattern << 16;
     if (size > 3) {
@@ -16914,17 +16917,18 @@ void fn_800A499C(u8* dst, s8 value, u32 size) {
         u32 bytes = size >> 3;
         if (bytes != 0) {
             do {
-                dst[0] = value; dst[1] = value; dst[2] = value; dst[3] = value;
-                dst[4] = value; dst[5] = value; dst[6] = value; dst[7] = value;
+                dst[0] = (u8)fill; dst[1] = (u8)fill; dst[2] = (u8)fill; dst[3] = (u8)fill;
+                dst[4] = (u8)fill; dst[5] = (u8)fill; dst[6] = (u8)fill; dst[7] = (u8)fill;
                 dst += 8;
             } while (--bytes != 0);
             size &= 7;
         }
         while (size != 0) {
-            *dst++ = value;
+            *dst++ = (u8)fill;
             size--;
         }
     }
+    return 0;
 }
 
 #pragma push
