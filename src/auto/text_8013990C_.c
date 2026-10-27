@@ -45,6 +45,55 @@ extern "C" int fn_8013990C(void *arg0) {
     }
     return count;
 }
+
+#pragma dont_inline fn_8013990C
+extern void *fn_801284E8(void *, int);
+extern void fn_801286A0(void *, int);
+extern int sscanf(const char *, const char *, ...);
+extern int lbl_8032C108;
+extern const char lbl_8032C064[];
+extern const char lbl_8032C090[];
+extern const char lbl_80559C48[];
+extern "C" void *fn_801399FC(void *arg0) {
+    char buffer[12];
+    int capacity;
+    int count;
+    char *entry;
+    void *table;
+    void *next;
+    char *name;
+
+    capacity = fn_8013990C(arg0);
+    table = fn_801284E8(&lbl_8032C108, capacity * 8 + 8);
+    *(int *)table = capacity;
+    *(int *)((char *)table + 4) = capacity;
+    next = (char *)table + 8;
+    count = 0;
+    for (;;) {
+        sprintf(buffer, lbl_80559C40, count);
+        entry = ((char *(*)(void *, char *, int))(*(void ***)arg0)[6])(arg0, buffer, 0);
+        if (entry == 0) {
+            break;
+        }
+        if (sscanf(entry, lbl_80559C48, next, (char *)next + 4) == 2) {
+            next = (char *)next + 8;
+            count++;
+        } else {
+            name = ((char *(*)(void *))(*(void ***)arg0)[2])(arg0);
+            fn_802E30C8(lbl_8032C064, name, entry);
+        }
+    }
+    if (count < 3) {
+        name = ((char *(*)(void *))(*(void ***)arg0)[2])(arg0);
+        fn_802E30C8(lbl_8032C090, name, *(int *)table);
+        count = 0;
+    }
+    fn_801286A0(table, (*(int *)table * 8 + 8) - (count * 8 + 8));
+    *(int *)((char *)table + 4) = count;
+    *(int *)table = count;
+    return table;
+}
+
 #pragma cplusplus reset
 #pragma scheduling on
 void fn_80139B5C(void *arg0, int arg1) {
