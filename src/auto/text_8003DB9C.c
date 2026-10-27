@@ -1,6 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+#pragma dont_inline GXGetCPUFifo
+#pragma dont_inline GXGetFifoWrap
+#pragma dont_inline GXGetFifoCount
 extern void __GXFlushTextureState(void);
 extern void GXCPInterruptHandler(short, void *);
 typedef void (*GXFifoIntrHandler)(short, void *);
@@ -2060,30 +2063,46 @@ void GXSetNumChans(s32 num) {
 }
 
 void GXSetChanCtrl(s32 chan, s32 enable, s32 matColor, s32 ambColor, s32 lightMask, s32 diffFn, s32 attnFn) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int pad0 : 17;
+            unsigned int lightHigh : 4;
+            unsigned int attnHigh : 1;
+            unsigned int attnLow : 1;
+            unsigned int diff : 2;
+            unsigned int mat : 1;
+            unsigned int lightLow : 4;
+            unsigned int enable : 1;
+            unsigned int amb : 1;
+        } f;
+    } u;
+    unsigned int *base;
     unsigned int *data;
-    unsigned int value = 0;
     unsigned int idx = chan & 3;
     unsigned int attn = diffFn;
-    value |= (enable << 1);
-    value |= ambColor;
-    value |= matColor << 6;
+    u.value = 0;
+    u.f.enable = enable;
+    u.f.amb = ambColor;
+    u.f.mat = matColor;
     if (attnFn == 0) attn = 0;
-    value |= attn << 7;
-    value |= ((2 - attnFn) | (attnFn - 2)) << 10;
-    value |= (-attnFn | attnFn) << 11;
-    value |= lightMask << 2;
-    value |= lightMask << 7;
-    data = __GXData;
-    data[(0xB8 / 4) + idx] = value;
-    data[0x5FC / 4] |= 0x1000 << idx;
+    u.f.diff = attn;
+    u.f.attnLow = (2 - attnFn) | (attnFn - 2);
+    u.f.attnHigh = -attnFn | attnFn;
+    u.f.lightLow = lightMask;
+    u.f.lightHigh = ((unsigned int)lightMask) >> 4;
+    base = __GXData;
+    data = base + idx;
+    data[0xB8 / 4] = u.value;
+    base[0x5FC / 4] |= 0x1000 << idx;
     if (chan == 4) {
-        data[0xC0 / 4] = value;
-        data[0x5FC / 4] |= 0x5000;
+        base[0xC0 / 4] = u.value;
+        base[0x5FC / 4] |= 0x5000;
         return;
     }
     if (chan == 5) {
-        data[0xC4 / 4] = value;
-        data[0x5FC / 4] |= 0xA000;
+        base[0xC4 / 4] = u.value;
+        base[0x5FC / 4] |= 0xA000;
     }
 }
 
@@ -3255,6 +3274,33 @@ void GXSetZCompLoc(s32 enable) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
+extern u32 lbl_80303CA8[];
+void GXSetPixelFmt(s32 pixelFmt, s32 zFmt) {
+    unsigned int * const gx = __GXData;
+    unsigned int * const table = (unsigned int *)lbl_80303CA8;
+    unsigned int offset = pixelFmt * 4;
+    unsigned int old = gx[0x22C / 4];
+    unsigned int value = old;
+    value = __rlwimi(value, table[pixelFmt], 0, 29, 31);
+    value = __rlwimi(value, zFmt, 3, 26, 28);
+    gx[0x22C / 4] = value;
+    if (old != value) {
+        *(volatile u8 *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = gx[0x22C / 4];
+        gx[0x254 / 4] = __rlwimi(gx[0x254 / 4], __cntlzw(pixelFmt - 2), 4, 22, 22);
+        gx[0x5FC / 4] |= 4;
+    }
+    if (table[pixelFmt] == 4) {
+        unsigned int dstAlpha = gx[0x224 / 4];
+        dstAlpha = __rlwimi(dstAlpha, pixelFmt - 4, 9, 21, 22);
+        dstAlpha = __rlwimi(dstAlpha, 0x42, 24, 0, 7);
+        gx[0x224 / 4] = dstAlpha;
+        *(volatile u8 *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = gx[0x224 / 4];
+    }
+    *(volatile u16 *)((u8 *)gx + 2) = 0;
+}
+
 void GXSetDither(s32 enable) {
     union {
         unsigned int value;
@@ -3603,22 +3649,19 @@ void GXClearGPMetric(void) {
 }
 
 void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    unsigned int high, low;
-    high=((volatile unsigned short *)__cpReg)[0x42/2];
-    do { low=((volatile unsigned short *)__cpReg)[0x40/2]; }
-    while (high != ((volatile unsigned short *)__cpReg)[0x42/2]);
-    *arg2=(high<<16)|low;
-    high=((volatile unsigned short *)__cpReg)[0x46/2];
-    do { low=((volatile unsigned short *)__cpReg)[0x44/2]; }
-    while (high != ((volatile unsigned short *)__cpReg)[0x46/2]);
-    *arg3=(high<<16)|low;
-    high=((volatile unsigned short *)__cpReg)[0x4A/2];
-    do { low=((volatile unsigned short *)__cpReg)[0x48/2]; }
-    while (high != ((volatile unsigned short *)__cpReg)[0x4A/2]);
-    *arg0=(high<<16)|low;
-    high=((volatile unsigned short *)__cpReg)[0x4E/2];
-    do { low=((volatile unsigned short *)__cpReg)[0x4C/2]; }
-    while (high != ((volatile unsigned short *)__cpReg)[0x4E/2]);
-    *arg1=(high<<16)|low;
+    volatile unsigned short *cp;
+    unsigned int first, second, low;
+    cp=__cpReg; first=cp[0x42/2]; second=first;
+    for (;;) { low=cp[0x40/2]; second=cp[0x42/2]; if (second==first) break; }
+    *arg2=(second<<16)|low;
+    cp=__cpReg; first=cp[0x46/2]; second=first;
+    for (;;) { low=cp[0x44/2]; second=cp[0x46/2]; if (second==first) break; }
+    *arg3=(second<<16)|low;
+    cp=__cpReg; first=cp[0x4A/2]; second=first;
+    for (;;) { low=cp[0x48/2]; second=cp[0x4A/2]; if (second==first) break; }
+    *arg0=(second<<16)|low;
+    cp=__cpReg; first=cp[0x4E/2]; second=first;
+    for (;;) { low=cp[0x4C/2]; second=cp[0x4E/2]; if (second==first) break; }
+    *arg1=(second<<16)|low;
 }
 typedef struct { unsigned int unk[9]; unsigned char unk24[3]; } GXSetCPUFifoObj;
