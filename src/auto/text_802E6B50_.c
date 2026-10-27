@@ -124,7 +124,7 @@ int fn_802E6CA8(void) {
                         *(unsigned int *)(allocation + 0x204C));
             fn_802E30C8(messages + 0xC4, payloadSize);
         } else {
-            result = fn_80132E7C(allocation + 0x20D0);
+            result = ((unsigned int (*)(void *))fn_80132E7C)(allocation + 0x20D0);
             if (result != *(unsigned int *)(allocation + 0x2050)) {
                 fn_802E30C8(messages + 0xD4, result);
             } else {
@@ -213,13 +213,13 @@ extern char lbl_8034D784[];
 #pragma push
 #pragma use_lmw_stmw off
 void *fn_802E6FBC(void) {
-    int size = fn_802E7130();
-    unsigned char *allocation;
-    unsigned char *data;
-    unsigned char *entry;
-    unsigned char *descriptor;
+    register unsigned char *entry;
+    register unsigned char *descriptor;
+    register int i;
+    register int size = fn_802E7130();
+    register unsigned char *allocation;
+    register unsigned char *data;
     unsigned int amount;
-    int i;
     void (*callback)(int);
     void *result;
 
@@ -231,8 +231,8 @@ void *fn_802E6FBC(void) {
     *(unsigned int *)(allocation + 0x204C) = size - 0x20D0;
     *(unsigned int *)(allocation + 0x2054) = lbl_8055FFC0;
 
+    memset(allocation + 0x20D0, 0, size - 0x20D0);
     data = allocation + 0x20D0;
-    memset(data, 0, size - 0x20D0);
     entry = lbl_804FC8B0;
     descriptor = allocation + 0x2058;
     i = 0;
