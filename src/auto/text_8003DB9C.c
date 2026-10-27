@@ -2136,29 +2136,45 @@ void GXLoadLightObjImm(void *arg0, s32 arg1) {
 
 void GXSetChanAmbColor_Internal(s32 type, void *color) {
     unsigned int value;
-    unsigned int which;
-    unsigned int *data;
+    register unsigned int which;
+    unsigned int colorValue;
+    unsigned char alpha;
+    union {
+        unsigned int value;
+        struct {
+            unsigned int high : 24;
+            unsigned int low : 8;
+        } fields;
+    } merged;
 
     switch (type) {
     case 0:
-        data = __GXData;
         which = 0;
-        value = (data[0xA8 / 4] & 0xFF) | (*(unsigned int *)color & 0xFFFFFF00);
+        colorValue = *(unsigned int *)color;
+        merged.value = __GXData[0xA8 / 4];
+        merged.fields.high = colorValue >> 8;
+        value = merged.value;
         break;
     case 1:
-        data = __GXData;
         which = 1;
-        value = (data[0xAC / 4] & 0xFF) | (*(unsigned int *)color & 0xFFFFFF00);
+        colorValue = *(unsigned int *)color;
+        merged.value = __GXData[0xAC / 4];
+        merged.fields.high = colorValue >> 8;
+        value = merged.value;
         break;
     case 2:
-        data = __GXData;
         which = 0;
-        value = (data[0xA8 / 4] & 0xFFFFFF00) | ((unsigned char *)color)[3];
+        alpha = ((unsigned char *)color)[3];
+        merged.value = __GXData[0xA8 / 4];
+        merged.fields.low = alpha;
+        value = merged.value;
         break;
     case 3:
-        data = __GXData;
         which = 1;
-        value = (data[0xAC / 4] & 0xFFFFFF00) | ((unsigned char *)color)[3];
+        alpha = ((unsigned char *)color)[3];
+        merged.value = __GXData[0xAC / 4];
+        merged.fields.low = alpha;
+        value = merged.value;
         break;
     case 4:
         which = 0;
@@ -2171,9 +2187,8 @@ void GXSetChanAmbColor_Internal(s32 type, void *color) {
     default:
         return;
     }
-    data = __GXData;
-    data[0x5FC / 4] |= 0x100 << which;
-    data[0xA8 / 4 + which] = value;
+    __GXData[0x5FC / 4] |= 0x100 << which;
+    *(unsigned int *)((unsigned char *)__GXData + 0xA8 + (which << 2)) = value;
 }
 
 void GXSetChanMatColor_Internal(s32 type, void *color) {
