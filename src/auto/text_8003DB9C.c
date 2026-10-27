@@ -155,7 +155,7 @@ void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
     shifted = region << 29;
     carry = region >> 31;
     shifted -= carry;
-    region = carry + ((shifted << 3) | (shifted >> 29));
+    region = (unsigned int)((int)((shifted << 3) | (shifted >> 29)) - -(int)carry);
 
     switch (mipmap) {
     case 6:
