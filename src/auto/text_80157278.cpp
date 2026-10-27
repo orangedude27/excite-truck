@@ -556,7 +556,7 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
         ptr += 0x38;
     } while (ptr < (u8*)arg0 + 0x244);
     f32 value = lbl_8056175C;
-    *(volatile s32*)((u8*)arg0 + 4) = arg2;
+    *(s32*)((u8*)arg0 + 4) = arg2;
     *(s32*)((u8*)arg0 + 0xC) = 0;
     ((Fn80157CF0Obj*)arg0)->unk244 = arg1;
     *(s32*)((u8*)arg0 + 0x258) = 0;
@@ -608,7 +608,7 @@ extern "C" f32 lbl_80561750;
 extern "C" f32 lbl_80561758;
 extern "C" void* __AXFXGetLfoSinTable_801769CC(void);
 extern "C" f32 lbl_80561764;
-extern "C" void* lbl_8032EC98;
+extern "C" char lbl_8032EC98[];
 extern "C" void fn_80157F98(Unk801577F0* self, s32 arg1, s32 arg2) {
     u8* p = (u8*)self + 0x14;
     self->mData = p;
@@ -1825,7 +1825,41 @@ extern "C" void fn_8015C0E8(Unk801577F0* arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
-    // Note: v31 selects slot 0x84; direct field stores retain the target's float literals.
+    // Note: local virtual slot 31 dispatches at 0x84, matching the target callback.
+    struct Entry {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual void v23();
+        virtual void v24();
+        virtual void v25();
+        virtual void v26();
+        virtual void v27();
+        virtual void v28();
+        virtual void v29();
+        virtual void v30();
+        virtual void Call();
+    };
     s32 active = arg0->m260;
     s32 zero = 0;
     arg0->m264 = zero;
@@ -1837,7 +1871,7 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
         arg0->m260 = 0;
         arg0->m254 = lbl_80561754;
         arg0->m25c = lbl_80561750;
-        arg0->v31();
+        ((Entry*)arg0)->Call();
     }
     s32 pending = *(s32*)((u8*)arg0 + 0x26c);
     if (pending > 0) {
