@@ -197,7 +197,8 @@ void fn_8022FF90(void *);
 #pragma dont_inline fn_8022F2FC
 void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, float farg0) {
     void *node;
-    float e8, ec, f0, f4, f8;
+    int width, height;
+    float f8, f4, f0, ec, e8;
 
     if (arg0 == 0) return 0;
     ((void *(*)(void))fn_8022F2FC)();
@@ -214,9 +215,9 @@ void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, 
     if (strcmp(arg0, lbl_80497E3C + 0x3c) != 0) {
         fn_8022FF90(node);
         *((unsigned char *)node + 0x9d) = arg2;
-        *(int *)((char *)node + 0x84) = 0x2d0;
+        width = 0x2d0;
         e8 = lbl_805635E8;
-        *(int *)((char *)node + 0x88) = 0x1e0;
+        height = 0x1e0;
         *((unsigned char *)node + 0x9c) = arg1;
         ec = lbl_805635EC;
         *(float *)((char *)node + 0xa0) = e8;
@@ -228,6 +229,8 @@ void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, 
         *(float *)((char *)node + 0xb0) = f0;
         *(float *)((char *)node + 0xa4) = f4;
         *(float *)((char *)node + 0xa8) = f8;
+        *(int *)((char *)node + 0x84) = width;
+        *(int *)((char *)node + 0x88) = height;
     } else {
         fn_8022F548(node);
     }
@@ -266,9 +269,6 @@ void fn_8022F868(void *arg0, void *arg1) {
     fn_80015B20(arg0, arg1, (void *)temp);
 }
 
-extern void PSVECCrossProduct(float *, const float *, const float *);
-extern void PSVECNormalize(float *, const float *);
-extern void fn_8022FF10(void *, void *);
 
 void fn_8022FF10(void *arg0, void *arg1) {
     int sp8;
