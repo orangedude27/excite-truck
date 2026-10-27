@@ -798,6 +798,24 @@ s32 WUDStartFastSyncSimple(void) {
     return started;
 }
 
+extern char lbl_80313520[];
+extern void fn_80073CA8(void);
+s32 fn_8006AC4C(void) {
+    register u8 *state = lbl_80392960;
+    s32 result = 0;
+    s32 interrupts;
+    DBPrintf_8006CFA8(lbl_80313520);
+    interrupts = OSDisableInterrupts();
+    if ((s8)state[0x688] == 3) {
+        if (state[0xC] == 3)
+            fn_80073CA8();
+        result = 1;
+        state[0x668] = 0;
+    }
+    OSRestoreInterrupts(interrupts);
+    return result;
+}
+
 s32 WUDSetDisableChannel(s8 arg0) {
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern u8 BTM_SetAfhChannels(u8, u8);
@@ -11704,7 +11722,7 @@ void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
     mcb = rfc_alloc_multiplexer_channel(bd_addr, FALSE);
     base = lbl_803C4828;
     offset = (lcid - 0x40) * 4;
-    *(void **)(base + offset + 0x3C) = mcb;
+    *(void **)((base + 0x3C) + offset) = mcb;
     if (mcb == NULL) {
         L2CA_ConnectRsp(bd_addr, local_id, lcid, 4, 0);
         return;
