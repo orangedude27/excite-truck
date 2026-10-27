@@ -360,54 +360,73 @@ struct Entry {
     char name[16];
 };
 
+static inline void init_entry(struct Entry *entry) {
+    entry->rot[0][0] = lbl_8056404C;
+    entry->rot[0][1] = lbl_80564048;
+    entry->rot[0][2] = lbl_80564048;
+    entry->rot[1][0] = lbl_80564048;
+    entry->rot[1][1] = lbl_8056404C;
+    entry->rot[1][2] = lbl_80564048;
+    entry->rot[2][0] = lbl_80564048;
+    entry->rot[2][1] = lbl_80564048;
+    entry->rot[2][2] = lbl_8056404C;
+    entry->pos[0] = lbl_80564048;
+    entry->pos[1] = lbl_80564048;
+    entry->pos[2] = lbl_80564048;
+    entry->unk_34 = lbl_80564070;
+    entry->name[0] = 0;
+    entry->unk_00 = 1;
+}
+
 void fn_80277828(void) {
-    unsigned char* def = lbl_8049FE98;
-    *(float*)(def + 4) = lbl_8056404C;
-    *(float*)(def + 8) = lbl_80564048;
-    *(float*)(def + 0xC) = lbl_80564048;
-    *(float*)(def + 0x10) = lbl_80564048;
-    *(float*)(def + 0x14) = lbl_8056404C;
-    *(float*)(def + 0x18) = lbl_80564048;
-    *(float*)(def + 0x1C) = lbl_80564048;
-    *(float*)(def + 0x20) = lbl_80564048;
-    *(float*)(def + 0x24) = lbl_8056404C;
-    *(float*)(def + 0x28) = lbl_80564048;
-    *(float*)(def + 0x2C) = lbl_80564048;
-    *(float*)(def + 0x30) = lbl_80564048;
-    *(float*)(def + 0x34) = lbl_80564070;
-    def[0x38] = 0;
-    lbl_8049FE98[0] = 1;
+    struct Entry *def = (struct Entry *)lbl_8049FE98;
+    def->rot[0][0] = lbl_8056404C;
+    def->rot[0][1] = lbl_80564048;
+    def->rot[0][2] = lbl_80564048;
+    def->rot[1][0] = lbl_80564048;
+    def->rot[1][1] = lbl_8056404C;
+    def->rot[1][2] = lbl_80564048;
+    def->rot[2][0] = lbl_80564048;
+    def->rot[2][1] = lbl_80564048;
+    def->rot[2][2] = lbl_8056404C;
+    def->pos[0] = lbl_80564048;
+    def->pos[1] = lbl_80564048;
+    def->pos[2] = lbl_80564048;
+    def->unk_34 = lbl_80564070;
+    def->name[0] = 0;
+    ((struct Entry *)lbl_8049FE98)->unk_00 = 1;
+
     if (lbl_8055F598 == 0) {
         char *fmt = *(char**)&lbl_8055C638;
         int i = lbl_8055F5A0;
-        unsigned char* entry = &lbl_8049FEE0 + i * 0x48;
-        *(float*)(entry + 4) = lbl_8056404C;
-        *(float*)(entry + 8) = lbl_80564048;
-        *(float*)(entry + 0xC) = lbl_80564048;
-        *(float*)(entry + 0x10) = lbl_80564048;
-        *(float*)(entry + 0x14) = lbl_8056404C;
-        *(float*)(entry + 0x18) = lbl_80564048;
-        *(float*)(entry + 0x1C) = lbl_80564048;
-        *(float*)(entry + 0x20) = lbl_80564048;
-        *(float*)(entry + 0x24) = lbl_8056404C;
-        *(float*)(entry + 0x28) = lbl_80564048;
-        *(float*)(entry + 0x2C) = lbl_80564048;
-        *(float*)(entry + 0x30) = lbl_80564048;
-        *(float*)(entry + 0x34) = lbl_80564070;
-        entry[0x38] = 0;
+        struct Entry *entry = (struct Entry *)&lbl_8049FEE0 + i;
+        entry->rot[0][0] = lbl_8056404C;
+        entry->rot[0][1] = lbl_80564048;
+        entry->rot[0][2] = lbl_80564048;
+        entry->rot[1][0] = lbl_80564048;
+        entry->rot[1][1] = lbl_8056404C;
+        entry->rot[1][2] = lbl_80564048;
+        entry->rot[2][0] = lbl_80564048;
+        entry->rot[2][1] = lbl_80564048;
+        entry->rot[2][2] = lbl_8056404C;
+        entry->pos[0] = lbl_80564048;
+        entry->pos[1] = lbl_80564048;
+        entry->pos[2] = lbl_80564048;
+        entry->unk_34 = lbl_80564070;
+        entry->name[0] = 0;
         lbl_8055F5A0 = i + 1;
         lbl_8055F598 = (int)entry;
-        entry[0] = 1;
-        sprintf((char*)entry + 0x38, fmt);
+        entry->unk_00 = 1;
+        sprintf(entry->name, fmt);
     }
     if (lbl_8055F59C == 0) {
         int i = lbl_8055F5A0;
-        unsigned char* entry = &lbl_8049FEE0 + i * 0x48;
+        struct Entry *entry = (struct Entry *)&lbl_8049FEE0 + i;
         lbl_8055F59C = (int)entry;
         lbl_8055F5A0 = i + 1;
-        entry[0] = 1;
-        *(float*)(entry + 0x34) = lbl_80564074;
-        strcpy((char*)lbl_8055F59C + 0x38, &lbl_8055C644);
+        entry->unk_00 = 1;
+        entry->unk_34 = lbl_80564074;
+        strcpy(((struct Entry *)lbl_8055F59C)->name, &lbl_8055C644);
     }
 }
 int fn_80277960(void *arg0, void *arg1, float *arg2) {
