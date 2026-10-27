@@ -2573,16 +2573,23 @@ extern u8 lbl_803C0B68[];
 extern u8 lbl_803150DC[];
 s32 bta_dm_l2cap_server_compress_cback(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     s32 result = 0;
-    s32 i;
+    s32 i = 0;
     u8 *entry = lbl_803C0B68;
-    for (i = 0; i < 5; i++, entry += 9) {
-        if (entry[8] == 1 && bdcmp(entry, (u8 *)arg0) == 0) {
+    u8 *scan = entry;
+
+    while (i < 5) {
+        if (entry[8] == 1 && bdcmp(scan, (u8 *)arg0) == 0) {
             if (lbl_8055DC80 >= 4) {
                 fn_80070954(0x503, lbl_803150DC, lbl_803C0B68[i * 9 + 6]);
             }
-            result = ((s32 (*)(u8, s32, s32))fn_8006CFA0)(lbl_803C0B68[i * 9 + 6], arg7, arg8);
+            result = ((s32 (*)(u8, s32, s32))fn_8006CFA0)(
+                lbl_803C0B68[i * 9 + 6], arg7, arg8
+            );
             break;
         }
+        i++;
+        entry += 9;
+        scan += 9;
     }
     return result;
 }
@@ -12785,11 +12792,16 @@ void port_release_port(void *arg0) {
         extern void fn_8007093C(u32, void *);
         extern char lbl_80319670[];
         u8 *mcb;
+        u8 dlci;
+        u8 zero;
+        u8 *mcbDlci;
         if (lbl_803C4828[0x414] >= 5) fn_8007093C(0x90004, lbl_80319670);
         mcb = *(u8 **)(port + 0x6C);
         if (mcb != 0) {
-            mcb = mcb + port[0xD];
-            mcb[0x24] = 0;
+            dlci = port[0xD];
+            zero = 0;
+            mcbDlci = dlci + mcb;
+            mcbDlci[0x24] = zero;
             rfc_check_mcb_active(*(void **)(port + 0x6C));
         }
         rfc_port_timer_stop(port);
@@ -14676,8 +14688,7 @@ u32 SDP_CreateRecord(void) {
     u8 *base = lbl_803C4C40 + 0x121C;
     u32 count;
     u32 handle;
-    volatile u8 bytes[4];
-    register u8 byte1;
+    u8 bytes[4];
     u16 stored_count;
 
     if (*(u16 *)(lbl_803C4C40 + 0x1222) < 0x14) {
@@ -14688,15 +14699,14 @@ u32 SDP_CreateRecord(void) {
         } else {
             handle = 0x10000;
         }
-        byte1 = (u8)(handle >> 16);
+        bytes[1] = (u8)(handle >> 16);
         bytes[0] = (u8)(handle >> 24);
         *(u32 *)(base + (count * 0x298) + 8) = handle;
         stored_count = *(u16 *)(base + 6);
-        bytes[1] = byte1;
         *(volatile u16 *)(base + 6) = stored_count + 1;
         bytes[2] = (u8)(handle >> 8);
         bytes[3] = (u8)handle;
-        SDP_AddAttribute(handle, 0, 1, 4, (u8 *)bytes);
+        SDP_AddAttribute(handle, 0, 1, 4, bytes);
         return *(u32 *)(base + ((*(u16 *)(base + 6) - 1) * 0x298) + 8);
     }
     return 0;
