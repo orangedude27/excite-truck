@@ -339,7 +339,26 @@ extern char lbl_80339FD4[];
 extern s32 lbl_8055AFC0;
 extern "C" s32 fn_802C6DC4(const char *, s32, s32, s32);
 extern "C" void fn_802C6FA8(s32);
-void fn_801EB6A8(s32 arg0) {
+extern "C" char lbl_80339FD4[];
+extern "C" s32 lbl_8055AFC0;
+extern "C" void fn_801EB6A8(s32 arg0) {
+    struct FirstDispatch {
+        virtual void unused0();
+        virtual void unused1();
+        virtual void dispatch(s32 *);
+    };
+    struct SecondDispatch {
+        virtual void unused0();
+        virtual void unused1();
+        virtual void unused2();
+        virtual void unused3();
+        virtual void unused4();
+        virtual void unused5();
+        virtual void unused6();
+        virtual void unused7();
+        virtual void unused8();
+        virtual void dispatch(s32 *, s32, s32, s32, s32);
+    };
     s32 *node = (s32 *)arg0;
     while (node != 0) {
         s32 temp_r4 = node[0];
@@ -366,12 +385,11 @@ void fn_801EB6A8(s32 arg0) {
                 child[1] = fn_802C6DC4((const char *)&lbl_8055AFC0, child[2], 0, 0);
                 fn_802C6FA8(child[2]);
                 if (child[0] == 1) {
-                    void *obj = (void *)fn_801EB110(child);
-                    ((void (*)(void *, s32 *))((void **)*(void ***)obj)[4])(obj, child);
+                    FirstDispatch *first = (FirstDispatch *)fn_801EB110(child);
+                    first->dispatch(child);
                     s32 *context = lbl_8055EBA0;
-                    obj = (void *)fn_801EB110(child);
-                    ((void (*)(void *, s32 *, s32, s32, s32, s32))((void **)*(void ***)obj)[11])(
-                        obj, child, context[1], child[7], context[2], child[6]);
+                    SecondDispatch *second = (SecondDispatch *)fn_801EB110(child);
+                    second->dispatch(child, context[1], child[7], context[2], child[6]);
                 }
             }
         }
@@ -652,3 +670,4 @@ extern s32 fn_801EB96C(s32 *, s32);
 extern void fn_801EB634(void *, s32);
 #pragma dont_inline on
 #pragma cplusplus on
+#pragma scheduling invalid_target
