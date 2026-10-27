@@ -222,36 +222,49 @@ int fn_801DF238(int arg0) {
     extern int lbl_804874A8[];
     extern int lbl_8055E9F4;
     extern float lbl_80562BF4;
-    // Fix note: preserve the sampled float in a register after the output call; current remaining diff is event-branch polarity.
+    // Fix note: isolate the 0xD case in a bounded switch while keeping output conversion and object updates matched.
     float value;
     register float sampled;
     int *object;
     if (lbl_8055E9E8 != 0) {
         if (fn_801769F8() != 0) {
-            if (arg0 == 0x58 || (arg0 < 0x58 && arg0 == 0xD)) {
-                if (lbl_8055E9E8 == 8 && lbl_8055E9E0 < *(int *)((char *)&lbl_804873B8 + 4))
-                    fn_801DE9F0(8, 0);
-                else
-                    fn_801DEB10();
-                object = (int *)lbl_804874A8[lbl_8055E9F4];
-                if (object != 0 && *(unsigned char *)((char *)object + 0x19) == 0) {
-                    value = lbl_80562BF4;
-                    fn_801331C4(4, (int *)lbl_803394FC, &value);
-                    sampled = value;
-                    object = (int *)lbl_804874A8[lbl_8055E9F4];
-                    if (sampled != *(float *)((char *)object + 8)) {
-                        *((unsigned char *)object + 0x4D) = 1;
-                        *(float *)((char *)object + 8) = sampled;
-                    }
-                    object = (int *)lbl_804874A8[lbl_8055E9F4];
-                    *((unsigned char *)object + 0x49) = 1;
-                    *((unsigned char *)object + 0x4B) = 0;
-                    *((unsigned char *)object + 0x4A) = 0;
-                } else {
-                    fn_800121A4();
+            if (arg0 == 0x58) {
+                goto handle;
+            } else if (arg0 < 0x58) {
+                switch (arg0) {
+                case 0xD:
+                    goto handle;
+                default:
+                    goto event_done;
                 }
-                lbl_8055E9F4 = (lbl_8055E9F4 + 1) & 3;
+            } else {
+                goto event_done;
             }
+handle:
+            if (lbl_8055E9E8 == 8 && lbl_8055E9E0 < *(int *)((char *)&lbl_804873B8 + 4))
+                fn_801DE9F0(8, 0);
+            else
+                fn_801DEB10();
+            object = (int *)lbl_804874A8[lbl_8055E9F4];
+            if (object != 0 && *(unsigned char *)((char *)object + 0x19) == 0) {
+                value = lbl_80562BF4;
+                fn_801331C4(4, (int *)lbl_803394FC, &value);
+                sampled = value;
+                object = (int *)lbl_804874A8[lbl_8055E9F4];
+                if (sampled != *(float *)((char *)object + 8)) {
+                    *((unsigned char *)object + 0x4D) = 1;
+                    *(float *)((char *)object + 8) = sampled;
+                }
+                object = (int *)lbl_804874A8[lbl_8055E9F4];
+                *((unsigned char *)object + 0x49) = 1;
+                *((unsigned char *)object + 0x4B) = 0;
+                *((unsigned char *)object + 0x4A) = 0;
+            } else {
+                fn_800121A4();
+            }
+            lbl_8055E9F4 = (lbl_8055E9F4 + 1) & 3;
+event_done:
+            ;
         }
         return 1;
     }
