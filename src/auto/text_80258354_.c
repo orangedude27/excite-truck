@@ -161,8 +161,7 @@ void fn_802586F0(void *arg0, void *arg1, int arg2, int arg3) {
     *(float *)(entry + 0x28) = lbl_80563AC8;
     *(char *)(entry + 0x24) = arg3;
 }
-#pragma ppc_psq_save on
-#pragma ppc_psq_save off
+#pragma scheduling invalid_target
 void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, float y) {
     int index = 0;
     int offset = 0;
@@ -198,10 +197,8 @@ found:
         y += lbl_80563ACC * sine;
     ((void (*)(int, int, int, float, float, float, float, float))fn_802354A0)(
         *(int *)(index + 0x40), *(int *)(index + 0x44), arg3,
-        x, y, cosine, lbl_80563AD0, sine);
+        x, y, lbl_80563AD0, cosine, sine);
 }
-#pragma ppc_psq_save on
-#pragma use_lmw_stmw off
 void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale) {
     int index = 0;
     int offset = 0;
@@ -238,6 +235,7 @@ found:
         y += lbl_80563ACC * sine;
     fn_802354A0(*(int *)(index + 0x40), *(int *)(index + 0x44), arg3, x, y, lbl_80563AD0, cosine);
 }
+#pragma scheduling on
 #pragma ppc_psq_save off
 #pragma use_lmw_stmw reset
 float fn_80258A00(void *arg0, int arg1) {
