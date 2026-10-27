@@ -149,4 +149,6 @@ void fn_802A1120(float *arg0, float *arg1) {
     }
     fn_8013530C(work, -1);
 }
+#pragma paired_single reset
+#pragma paired reset
 #pragma scheduling on
