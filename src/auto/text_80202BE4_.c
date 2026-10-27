@@ -27,6 +27,7 @@ extern s32 lbl_8055ED04;
 extern s32 lbl_8055ED0C;
 extern u8 lbl_8055ED10;
 extern u8 lbl_8055ED08;
+extern int __cntlzw(unsigned int);
 extern f32 lbl_80563134, lbl_80563138, lbl_8056313C;
 extern void fn_802CB274(s32);
 extern void fn_802C9294(s32, s32);
@@ -476,7 +477,40 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
         fn_802D306C(0);
     }
 }
-#pragma scheduling on
+
+#pragma push
+#pragma scheduling invalid_target
+void fn_80203B20(s32 arg0, s32 arg1, s32 arg2) {
+    u8 stack[0x60];
+
+    fn_802CB274(lbl_8055ECFC);
+    if (lbl_8055ED08 != 0) {
+        fn_802C9294(lbl_8055ECFC, 0);
+        ((f32 *)(stack + 0x30))[9] = lbl_805630CC;
+        ((f32 *)(stack + 0x30))[10] = lbl_80563134;
+        ((f32 *)(stack + 0x30))[11] = lbl_805630CC;
+        ((f32 *)(stack + 0x30))[0] = lbl_805630D4;
+        ((f32 *)(stack + 0x30))[1] = lbl_805630CC;
+        ((f32 *)(stack + 0x30))[2] = lbl_805630CC;
+        ((f32 *)(stack + 0x30))[3] = lbl_805630CC;
+        ((f32 *)(stack + 0x30))[4] = lbl_805630CC;
+        ((f32 *)(stack + 0x30))[5] = lbl_805630D4;
+        ((f32 *)(stack + 0x30))[6] = lbl_805630CC;
+        ((f32 *)(stack + 0x30))[7] = lbl_805630F4;
+        ((f32 *)(stack + 0x30))[8] = lbl_805630CC;
+        fn_802C8638((f32 *)(stack + 0x30), lbl_805630D4, lbl_80563134, lbl_805630CC);
+        fn_802C87B4(0, 0, 0x100, 0x100);
+        fn_802C974C(lbl_805630D4, lbl_80563138, lbl_8056313C);
+        fn_802C86E8(0xFF00FF00);
+        fn_802C88BC(-1);
+        fn_80202F58((void *)arg1, (void *)arg0, (s32 *)stack);
+        if (fn_80202BE4() == 0 && arg2 != 0)
+            fn_80203A88((void *)arg1, arg0, (unk_80203A88_dest *)stack);
+        fn_802C9294(-1, 0);
+        lbl_8055ED08 = !lbl_8055ED08;
+    }
+}
+#pragma pop
 extern s32 fn_8012C33C(char *);
 extern void fn_801345D8(char *, s32, const char *, ...);
 extern s32 fn_802CAC28(const char *, s32);
@@ -485,35 +519,50 @@ extern s32 fn_802CAF1C(s32, s32, s32);
 extern s32 fn_802CB128(s32, s32, s32, s32);
 extern const char lbl_8033BA88[];
 extern u8 lbl_8055ED08;
+#pragma push
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw on
 void fn_80203C50(s32 arg0) {
     char name[0x20];
     const char *base;
-    s32 i, count, resource;
+    const char *first;
+    s32 i;
+    s32 count;
+    lbl_8048897C_entry *entries;
+    s32 resource;
+
+    base = lbl_8033BA88;
     lbl_8055ED14 = arg0;
     lbl_8055ED18 = 1;
-    base = lbl_8033BA88;
-    if (arg0 == 1) base += 0xC;
-    lbl_8055ED00 = fn_802CAC28(base, 0);
+    first = base;
+    if (arg0 == 1) {
+        first = base + 0xC;
+    }
+    lbl_8055ED00 = fn_802CAC28(first, 0);
     lbl_8055ED04 = fn_802CAC28(lbl_8033BA88 + 0x18, 0);
     lbl_8055ED0C = fn_802CAC28(lbl_8033BA88 + 0x24, 0);
+
     for (i = 0; i < 0x5A; i++) {
         fn_801345D8(name, 0x20, lbl_8033BA88 + 0x30, i);
         if (fn_8012C33C(name) != 0) {
             resource = fn_802CAC28(name, 0);
             count = lbl_8048897C.count;
+            entries = lbl_8048897C.ptr;
             lbl_8048897C.count = count + 1;
-            lbl_8048897C.ptr[count].w0 = resource;
-            lbl_8048897C.ptr[count].w1 = i;
+            entries[count].w0 = resource;
+            entries[count].w1 = i;
         }
     }
-    lbl_8055ECFC = fn_802CB128(0x100, 0x100, 0, 1);
-    fn_802CAE98(0, lbl_8033BA88);
+
+    resource = fn_802CB128(0x100, 0x100, 0, 1);
+    lbl_8055ECFC = resource;
+    fn_802CAE98(resource, base);
     fn_802CAE98(lbl_8055ED00, lbl_8033BA88 + 0x3C);
     fn_802CAF1C(lbl_8055ECFC, 6, 0x50);
     fn_80202BE4();
     lbl_8055ED08 = 1;
 }
-
+#pragma pop
 void fn_80203D84(s32* arg0) {
     s32 temp_r0;
 
