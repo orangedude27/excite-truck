@@ -2443,15 +2443,18 @@ void fn_8011BD20(s32 arg0) {
     };
     struct Node *node;
     struct Node *pending;
-    s32 *count;
+    volatile s32 *count;
+    volatile s32 *state;
     s32 newCount;
-    s32 state;
+    s32 stateValue;
 
-    count = (s32 *)(arg0 + 0x34);
-    newCount = *count + 1;
-    state = *(s32 *)arg0;
+    count = (volatile s32 *)(arg0 + 0x34);
+    state = (volatile s32 *)arg0;
+    newCount = *count;
+    stateValue = *state;
+    newCount = newCount + 1;
     *count = newCount;
-    if (state == 1) {
+    if (stateValue == 1) {
         node = *(struct Node **)(arg0 + 0x30);
         pending = 0;
         while (node != 0) {
@@ -2561,11 +2564,12 @@ void fn_8011C120(void *arg0) {
         if (*(volatile s32 *)((u8 *)arg0 + 4) == 0) {
             if (*(volatile s32 *)arg0 == 0) {
                 u64 time = (u64)OSGetTime();
+                u32 time_word = (u32)time;
                 u32 period = (0x3E8U / *(u32 *)((u8 *)arg0 + 0x3C)) *
                              (*(volatile u32 *)0x800000F8 / 4U / 1000U);
                 ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(s32)))OSSetPeriodicAlarm)(
-                    (u8 *)arg0 + 8, (u32)time, (u32)(time >> 32),
-                    (u32)time, 0, period, fn_8011BDF0);
+                    (u8 *)arg0 + 8, time_word, (u32)(time >> 32),
+                    time_word, 0, period, fn_8011BDF0);
             }
             *(s32 *)arg0 = 1;
         }
@@ -4622,6 +4626,22 @@ void fn_80122518(s32 arg0, u8 *arg1, void *arg2) {
     *(arg1 + temp_r10_5) = (temp_f2_7 * temp_f6_11) + (temp_f1_8 * temp_f10_10);
     *(arg1 + temp_r8_2) = (temp_f4_5 * temp_f9_13) + (temp_f3_9 * temp_f11_12);
     *(arg1 + temp_r3_3) = (temp_f4_5 * temp_f11_12) - (temp_f3_9 * temp_f9_13);
+}
+
+extern void fn_801233F8(s32, volatile f32 *, f32 *);
+void fn_80122E08(s32 arg0, void *arg1, s32 arg2, void *arg3) {
+    s32 n2;
+    s32 n = arg0 >> 2;
+    n2 = n * 2;
+    fn_801233F8(arg0, (volatile f32 *)arg1, (f32 *)((u8 *)arg3 + (arg2 - n2) * 4));
+    if (arg0 > 0x200) {
+        fn_80122E08(n, arg1, arg2, arg3);
+        fn_80122ED8(n, (u8 *)arg1 + n * 4, arg2, arg3);
+        fn_80122E08(n, (u8 *)arg1 + (n2 * 4), arg2, arg3);
+        fn_80122E08(n, (u8 *)arg1 + ((n * 3) << 2), arg2, arg3);
+        return;
+    }
+    fn_80122FA4(arg0, arg1, arg2, arg3);
 }
 
 #pragma scheduling invalid_target
