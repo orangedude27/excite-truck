@@ -11,7 +11,7 @@ extern void *lbl_8055F014;
 extern float lbl_805635FC;
 extern float lbl_8056360C;
 void fn_8022FB6C(void);
-void fn_80214D48(void);
+float fn_80214D48(void);
 void fn_8022FD9C();
 void fn_80015EB0(float);
 void fn_80015E30(void *, float);
@@ -184,6 +184,48 @@ void fn_8022F548(void *arg0) {
     *(float *)((char *)arg0 + 0xB0) = fvalue;
 }
 
+extern char lbl_803403DC[];
+extern char lbl_8055B98C;
+extern float lbl_805635E8, lbl_805635EC, lbl_805635F0, lbl_805635F4, lbl_805635F8;
+extern int fn_8012C33C(void *);
+extern int fn_802CAC28(void *, int);
+void fn_8022FF90(void *);
+#pragma dont_inline fn_8022F2FC
+void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, float farg0) {
+    void *node;
+
+    if (arg0 == 0) {
+        return 0;
+    }
+    ((void *(*)(void))fn_8022F2FC)();
+    node = fn_801284F8(0xb4, &lbl_8055B98C);
+    if (fn_8012C33C(arg0) != 0) {
+        *(int *)((char *)node + 0x30) = fn_802CAC28(arg0, 0);
+        *(int *)((char *)node + 0x80) = arg3;
+    } else {
+        *(int *)((char *)node + 0x30) = -1;
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_803403DC, arg0);
+        *(int *)((char *)node + 0x80) = 0;
+    }
+    strcpy((char *)node + 0x3c, arg0);
+    if (strcmp(arg0, lbl_80497E3C + 0x3c) != 0) {
+        fn_8022FF90(node);
+        *((unsigned char *)node + 0x9d) = arg2;
+        *((unsigned char *)node + 0x9c) = arg1;
+        *(float *)((char *)node + 0xa0) = lbl_805635E8;
+        *(float *)((char *)node + 0x7c) = farg0;
+        *(float *)((char *)node + 0xac) = lbl_805635EC;
+        *(float *)((char *)node + 0xb0) = lbl_805635F0;
+        *(float *)((char *)node + 0xa4) = lbl_805635F4;
+        *(float *)((char *)node + 0xa8) = lbl_805635F8;
+        *(int *)((char *)node + 0x84) = 0x2d0;
+        *(int *)((char *)node + 0x88) = 0x1e0;
+    } else {
+        fn_8022F548(node);
+    }
+    fn_8022F364(node);
+    return node;
+}
 void fn_8022F77C(void *arg0) {
     void *prev = 0;
     void *node = lbl_8055F014;
@@ -211,6 +253,67 @@ void fn_8022F868(void *arg0, void *arg1) {
     int temp = fn_8022EDC4();
     fn_801BFD34((char *)arg0 + 0x24, (char *)arg1 + 0x24, temp);
     fn_80015B20(arg0, arg1, (void *)temp);
+}
+
+extern void PSVECCrossProduct(float *, const float *, const float *);
+extern void PSVECNormalize(float *, const float *);
+extern void fn_8022FF10(void *, void *);
+void fn_8022FD9C(arg0, farg0)
+void *arg0;
+double farg0;
+{
+    float sp44[3];
+    float sp38;
+    float sp3C;
+    float sp40;
+    float sp2C;
+    float sp30;
+    float sp34;
+    float sp8[3];
+    float sp14[3];
+    float sp20[3];
+    float temp_f5;
+    float temp_f4;
+
+    sp38 = lbl_805635FC;
+    sp3C = lbl_805635FC;
+    sp40 = *(float *)((char *)arg0 + 0x8C) * farg0;
+    if (*((unsigned char *)arg0 + 0x9C) != 0) {
+        fn_8022FF10(sp44, &sp38);
+        fn_80015B20(arg0, arg0, sp44);
+    }
+
+    temp_f5 = *(float *)((char *)arg0 + 0x94) * farg0;
+    temp_f4 = *(float *)((char *)arg0 + 0x98) * farg0;
+    sp2C = temp_f5;
+    sp30 = temp_f4;
+    sp34 = lbl_805635FC;
+    if (*((unsigned char *)arg0 + 0x9D) != 0) {
+        *(float *)((char *)arg0 + 0x24) += temp_f5;
+        *(float *)((char *)arg0 + 0x28) += temp_f4;
+        *(float *)((char *)arg0 + 0x2C) += sp34;
+    }
+
+    sp8[0] = *(float *)((char *)arg0 + 0x0);
+    sp8[1] = *(float *)((char *)arg0 + 0x4);
+    sp8[2] = *(float *)((char *)arg0 + 0x8);
+    sp14[0] = *(float *)((char *)arg0 + 0x18);
+    sp14[1] = *(float *)((char *)arg0 + 0x1C);
+    sp14[2] = *(float *)((char *)arg0 + 0x20);
+    PSVECCrossProduct(sp20, sp8, sp14);
+    PSVECNormalize(sp8, sp8);
+    PSVECNormalize(sp14, sp14);
+    PSVECCrossProduct(sp20, sp8, sp14);
+
+    *(float *)((char *)arg0 + 0x0) = sp8[0];
+    *(float *)((char *)arg0 + 0x4) = sp8[1];
+    *(float *)((char *)arg0 + 0x8) = sp8[2];
+    *(float *)((char *)arg0 + 0xC) = sp14[0];
+    *(float *)((char *)arg0 + 0x10) = sp14[1];
+    *(float *)((char *)arg0 + 0x14) = sp14[2];
+    *(float *)((char *)arg0 + 0x18) = sp20[0];
+    *(float *)((char *)arg0 + 0x1C) = sp20[1];
+    *(float *)((char *)arg0 + 0x20) = sp20[2];
 }
 
 void fn_8022FF10(void *arg0, void *arg1) {
