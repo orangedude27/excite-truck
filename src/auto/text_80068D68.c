@@ -2971,6 +2971,27 @@ void bta_hh_api_disable(void) {
     }
 }
 
+void bta_hh_disc_cmpl(void) {
+    s8 status = 0;
+    u8 *base;
+    u32 i;
+
+    if (HID_HostDeregister() == 0) {
+        return;
+    }
+    status = 6;
+    i = 0;
+    base = lbl_803C0D48;
+    do {
+        fn_800716F0(base + ((u32)(u8)i << 5) + 0x14);
+        i++;
+    } while (i < 16);
+    base = lbl_803C0D48;
+    fn_800716F0(base + 0x228);
+    (*(void (**)(u32, void *))(base + 0x224))(1, &status);
+    memset(base, 0, 0x230);
+}
+
 void bta_hh_sdp_cmpl(void *arg0, u8 *status) {
     u8 info[8];
     u8 result;
@@ -8913,21 +8934,19 @@ u8 HID_HostOpenDev(u32 arg0) {
 
 u8 HID_HostCloseDev(u8 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
-    tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
-    tHID_HOST_DEV_VIEW *device;
+    register tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
     if (lbl_803C3C38[0x400] == 0) {
         return 1;
     }
     if (dev_handle > 0x10 || devices[dev_handle].in_use == 0) {
         return 5;
     }
-    device = &devices[dev_handle];
-    device->conn_tries = 1;
-    fn_80070F90(device->timer_entry);
-    if (device->state != 1) {
+    devices[dev_handle].conn_tries = 1;
+    fn_80070F90(devices[dev_handle].timer_entry);
+    if (devices[dev_handle].state != 1) {
         return 4;
     }
-    device->conn_tries = 1;
+    devices[dev_handle].conn_tries = 1;
     return hidh_conn_disconnect(dev_handle);
 }
 
@@ -9719,6 +9738,26 @@ BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT
  if(result==0)fn_80089E40(ccb,0x15,NULL);
  else{info[0]=result;info[1]=status;if(result==1)fn_80089E40(ccb,0x15,info);else fn_80089E40(ccb,0x16,info);}
  return 1;
+}
+
+BOOLEAN L2CA_DisconnectRsp(UINT16 cid)
+{
+    void *p_ccb;
+
+    if (lbl_803C4040[0] >= 3) {
+        fn_80070954(0x80002, lbl_8031806C, cid);
+    }
+
+    p_ccb = l2cu_find_ccb_by_cid(NULL, cid);
+    if (p_ccb == NULL) {
+        if (lbl_803C4040[0] >= 2) {
+            fn_80070954(0x80001, lbl_80318090, cid);
+        }
+        return FALSE;
+    }
+
+    fn_80089E40(p_ccb, 0x1B, NULL);
+    return TRUE;
 }
 
 extern u8 lbl_80317C20[];
