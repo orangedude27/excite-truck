@@ -520,13 +520,12 @@ extern "C" void fn_800F2084(void* arg0, f32 farg0) {
     OSRestoreInterrupts(level);
 }
 
-void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F20C4(void *self, s32 bus, f32 value) {
-    if (bus < 0 || bus >= 3) {
-        if (0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x295, lbl_803244FC, bus, 0, 3);
-    }
-    u32 token = OSDisableInterrupts();
-    *(f32 *)((u8 *)self + 0x24 + bus * 4) = value;
-    OSRestoreInterrupts(token);
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F20C4(void *self, int bus, float value) {
+    int valid = bus >= 0 && bus < 3;
+    if (!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x295, lbl_803244FC, bus, 0, 3);
+    int level = OSDisableInterrupts();
+    *(float *)((char *)self + bus * 4 + 0x24) = value;
+    OSRestoreInterrupts(level);
 }
 
 void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F2160(void *self, s32 bus, f32 value) {
@@ -3632,7 +3631,7 @@ void FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(void *self) {
     u32 irqState = OSDisableInterrupts();
     u8 *player = (u8 *)self;
     s32 index = 0;
-    s32 zero = 0;
+    register s32 zero = 0;
 
     while (index < *(s32 *)((u8 *)self + 0x4A0)) {
         void *buffer = *(void **)(player + 0x4A8);
