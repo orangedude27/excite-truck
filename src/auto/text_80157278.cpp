@@ -391,12 +391,12 @@ extern "C" void fn_80131234(void*);
 extern "C" void fn_801CB6E4(void*, s32);
 extern void* lbl_8032E668[];
 extern "C" void *fn_802076A0(void *, s32, s32, s32);
-extern "C" void *lbl_8032EAFC;
+extern "C" char lbl_8032EAFC[];
 extern "C" f32 lbl_80561768;
 #pragma push
 #pragma small_data off
 extern char lbl_8032F2BC[];
-extern "C" void* lbl_8032EAFC;
+extern "C" char lbl_8032EAFC[];
 extern char lbl_8032EFA8[];
 #pragma pop
 extern char lbl_8032F0E8[];
@@ -637,36 +637,48 @@ extern "C" void* fn_80157F98(void* self, s32 arg1, s32 arg2) {
     *(f32*)((u8*)self + 0x27C) = f0;
     return self;
 }
-#pragma scheduling on
-#pragma small_data reset
+#pragma small_data off
 extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2) {
-    u8 *entry;
+    struct Tail {
+        u8 pad[0x244];
+        s32 field244;
+        s32 field248;
+        f32 field24C;
+        f32 field250;
+        f32 field254;
+        s32 field258;
+        s32 field25C;
+        s32 field260;
+        s32 field264;
+        s32 field268;
+        u8 pad26C[0x70];
+        void *field2DC;
+    };
     u8 *end;
+    u8 *ptr = (u8 *)arg0 + 0x14;
     s32 zero = 0;
-
-    entry = (u8 *)arg0 + 0x14;
-    *(void **)((u8 *)arg0 + 8) = entry;
     *(void **)arg0 = lbl_8032F2BC;
+    *(void **)((u8 *)arg0 + 8) = ptr;
     *(s32 *)((u8 *)arg0 + 0x10) = 10;
     *(s32 *)((u8 *)arg0 + 0x0C) = 0;
     end = (u8 *)arg0 + 0x244;
     do {
-        memset(entry, 0, 4);
-        entry += 0x38;
-    } while (entry < end);
+        memset(ptr, 0, 4);
+        ptr += 0x38;
+    } while (ptr < end);
+    ((Tail *)arg0)->field250 = lbl_80561768;
     *(s32 *)((u8 *)arg0 + 4) = arg2;
-    *(s32 *)((u8 *)arg0 + 0x0C) = 0;
-    *(s32 *)((u8 *)arg0 + 0x244) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x258) = 0x41206;
-    *(f32 *)((u8 *)arg0 + 0x250) = lbl_80561768;
-    *(s32 *)((u8 *)arg0 + 0x268) = 0;
-    *(s32 *)((u8 *)arg0 + 0x248) = 0;
+    *(s32 *)((u8 *)arg0 + 0x0C) = zero;
+    ((Tail *)arg0)->field244 = arg1;
+    ((Tail *)arg0)->field258 = 0x41206;
+    ((Tail *)arg0)->field268 = zero;
+    ((Tail *)arg0)->field248 = zero;
     *(void **)arg0 = lbl_8032EFA8;
-    *(void **)((u8 *)arg0 + 0x2D8) = fn_802076A0(lbl_8032EAFC, 1, arg2, 0);
-    *(s32 *)((u8 *)arg0 + 0x2CC) = 0;
+    *(void **)((u8 *)arg0 + 0x2D8) = fn_802076A0(&lbl_8032EAFC, 1, arg2, 0);
+    *(s32 *)((u8 *)arg0 + 0x2CC) = zero;
     return arg0;
 }
-
+#pragma small_data on
 extern "C" f32 lbl_8056176C;
 extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern f32 lbl_80561770;
@@ -1507,8 +1519,7 @@ extern "C" void* fn_8015ADAC(void* arg0, s32 arg1) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_8015B0A4(Unk801577F0 *arg0, s32 arg1) {
-    (void)arg1;
+extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
     f32 f;
     s32 count = *(s32*)((u8*)arg0 + 0x260);
     *(s32*)((u8*)arg0 + 0x264) = 0;
