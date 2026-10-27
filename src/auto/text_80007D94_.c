@@ -44,7 +44,19 @@ DECL_SECTION(".sdata") extern const char lbl_80558980[];
 DECL_SECTION(".sdata") extern const char lbl_80558988[];
 DECL_SECTION(".sdata") extern const char lbl_80558990[];
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_80007DA0(void) {
+    struct Config {
+        virtual void unused();
+        virtual void *getEntry(u32);
+    };
+    struct Item {
+        virtual const char *getName();
+        virtual void unused1();
+        virtual void unused2();
+        virtual const char *getValue(const char *);
+        virtual void *getString(const char *, const char *);
+    };
     volatile u32 *global;
     char *base;
     void *initialConfig;
@@ -54,32 +66,35 @@ extern "C" void fn_80007DA0(void) {
     initialConfig = fn_80131808(base + 0x68);
     global = (volatile u32 *)&lbl_8034EF38;
     global[0x79] = (u32)initialConfig;
-    global[0x78] = 0;
     index = 0;
+    global[0x78] = 0;
 
 loop:
     {
         void *config;
-        void *entry;
+        Item *entry;
         void *value;
         u32 count;
+        u32 entryIndex;
 
         config = (void *)global[0x79];
-        entry = ((void *(*)(void *, u32))(*(void ***)config)[3])(config, index++);
+        entryIndex = index;
+        index++;
+        entry = (Item *)((Config *)config)->getEntry(entryIndex);
         if (entry == 0) {
             goto done;
         }
-        if (stricmp(((const char *(*)(void *))(*(void ***)entry)[2])(entry), lbl_80558978) != 0) {
+        if (stricmp(entry->getName(), lbl_80558978) != 0) {
             goto loop;
         }
 
-        value = ((void *(*)(void *, const char *))(*(void ***)entry)[5])(entry, lbl_80558980);
+        value = (void *)entry->getValue(lbl_80558980);
         *(void **)((u8 *)global + global[0x78] * 0xC) = value;
 
-        value = ((void *(*)(void *, const char *, const char *))(*(void ***)entry)[6])(entry, base + 0x74, lbl_80558988);
+        value = entry->getString(base + 0x74, lbl_80558988);
         *(void **)((u8 *)global + global[0x78] * 0xC + 4) = value;
 
-        value = ((void *(*)(void *, const char *, const char *))(*(void ***)entry)[6])(entry, lbl_80558990, lbl_80558988);
+        value = entry->getString(lbl_80558990, lbl_80558988);
         *(void **)((u8 *)global + global[0x78] * 0xC + 8) = value;
 
         count = global[0x78] + 1;
@@ -93,6 +108,7 @@ loop:
 done:
     qsort(&lbl_8034EF38, *(volatile u32 *)((u8 *)&lbl_8034EF38 + 0x1E0), 0xC, (int (*)(const void *, const void *))fn_80007D94);
 }
+#pragma scheduling on
 #pragma cplusplus reset
 
 #pragma dont_inline on
