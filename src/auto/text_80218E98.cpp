@@ -3,6 +3,10 @@
 
 #include <types.h>
 
+extern "C" s32 stricmp(const char *, const char *);
+extern "C" f32 fn_80214D48(void);
+extern "C" void fn_80228AEC(s32, f32);
+
 extern "C" u8 lbl_8033E140[];
 extern "C" void fn_8022EE98(void *);
 extern "C" void fn_8022A8E4(s32);
