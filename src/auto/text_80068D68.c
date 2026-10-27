@@ -472,6 +472,31 @@ s32 WUDiTerminateDevice(void) {
     return 3;
 }
 
+s32 WUDiDeleteDevice(void)
+{
+    s32 i;
+    u8 *entry;
+    u32 interrupt_state;
+    u8 busy;
+    register u8 *base = lbl_80392960;
+
+    interrupt_state = OSDisableInterrupts();
+    busy = base[0x665];
+    OSRestoreInterrupts(interrupt_state);
+    if (busy != 0)
+        return 3;
+
+    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) {
+        if (entry[0x59] == 1)
+            fn_8006B598(entry + 0x40);
+    }
+    for (i = 0, entry = base + 0x424; i < 6; i++, entry += 0x60) {
+        if (entry[0x59] == 1)
+            fn_8006B598(entry + 0x40);
+    }
+    return 5;
+}
+
 void fn_80069D80(void) {
     extern s32 WUDiDeleteDevice(void);
     extern s32 SCCheckStatus(void);
@@ -3098,6 +3123,32 @@ void bta_hh_open_cmpl_act(void *arg0, void *arg1) {
         (*(void (**)(u32, void *))(cb + 0x224))(2, local);
     }
     dev[0x19] = 0;
+}
+
+extern char lbl_8031531C[];
+extern void bta_hh_start_sdp(void *, void *);
+void bta_hh_open_act(void *arg0, void *arg1) {
+    u8 *dev = (u8 *)arg0;
+    u8 value;
+    u32 sp8[4];
+
+    if (arg1 != NULL)
+        value = (u8)*(u16 *)((u8 *)arg1 + 6);
+    else
+        value = dev[0x16];
+
+    if (lbl_8055DC80 >= 4)
+        fn_80070954(0x503, lbl_8031531C, value);
+
+    if (dev[0x15] != 0) {
+        bta_hh_sm_execute((tBTA_HH_DEV_CB *)arg0, 0x170B, arg1);
+        return;
+    }
+
+    dev[0x19] = 1;
+    memset(sp8, 0, 0x10);
+    fn_80070FA4(sp8 + 2, dev + 8);
+    bta_hh_start_sdp(arg0, sp8);
 }
 
 void bta_hh_data_act(void *arg0, void *arg1) {
