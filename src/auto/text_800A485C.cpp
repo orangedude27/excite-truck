@@ -7069,26 +7069,33 @@ extern "C" s32 fn_800BBEA4(IosDevice *, s32, s32 *, s32);
 extern "C" const char lbl_8031B7F8[];
 extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     u32 info[4];
-    u32 word0, word1, factor, exponent;
+    u32 word0, word1;
+    u32 mantissa, factor, exponent, scale;
     s32 result;
+
     fn_800A499C((const char *)info, 0, 0x10);
     result = fn_800BBEA4((IosDevice *)M2C_FIELD(lbl_80407300, void **, 8), 9, (s32 *)info, 0x10);
     if (result != 0) {
         OSReport(lbl_8031B7F8);
         return 0x15;
     }
+
     word0 = info[1];
     word1 = info[2];
     factor = 1U << (((word0 >> 22) & 7) + 2);
+    mantissa = (word0 >> 22) | ((word1 & 3) << 20);
+    mantissa += 1;
     exponent = (word1 >> 20) & 0xF;
-    {
-        u32 combined = (word0 >> 22) | ((word1 << 10) & 0xC00);
-        u32 capped = exponent < 9 ? 9 : (exponent > 0xB ? 0xB : exponent);
-        *outSize = (combined + 1) * factor * (1U << (capped - 9));
+    scale = 9;
+    if (exponent >= 9) {
+        scale = exponent;
+        if (scale > 0xB)
+            scale = 0xB;
     }
+    *outSize = mantissa * factor * (1U << (scale - 9));
     *outBlockSize = 0x200;
-          return 0;
-  }
+    return 0;
+}
 
 extern "C" s32 fn_800BABD0(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
     const char *str = lbl_8031B838;
@@ -13884,27 +13891,7 @@ extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 delet
 }
 
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
-extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt4Paneb(void *arg0, void *arg1, BOOL arg2) {
-    u16 i = 0;
-    u8 *entries = (u8 *)*(void **)((u8 *)arg0 + 0xC);
-    u8 *offsets = entries + *(s32 *)(entries + 0x10);
-    while (i < *(u16 *)(entries + 0xE)) {
-        if (*(u8 *)(entries + *(s32 *)(offsets + i * 4) + 0x15) == 0) {
-            if (((s32 (*)(void *, BOOL))(*(void ***)arg1)[15])(arg1, arg2) != 0) {
-                *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x18) + i * 0x10 + 8) = arg0;
-                *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + i * 0x10 + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(arg1, (u8 *)*(void **)((u8 *)arg0 + 0x18) + i * 0x10);
-            }
-        } else {
-            if (((s32 (*)(void *, BOOL))(*(void ***)arg1)[16])(arg1, arg2) != 0) {
-                *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x18) + i * 0x10 + 8) = arg0;
-                *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + i * 0x10 + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(arg1, (u8 *)*(void **)((u8 *)arg0 + 0x18) + i * 0x10);
-            }
-        }
-        i++;
-    }
-}
+
 
 void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     register u8 *self = (u8 *)this;
