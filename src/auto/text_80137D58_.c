@@ -253,6 +253,7 @@ void fn_801384A0(void *arg0, int arg1) {
 void fn_801384A0();
 void fn_801386D0(float, float, float);
 void fn_80138958(void *, float *);
+#pragma dont_inline fn_80138594
 void fn_80138594(void *arg0) {
     void *node;
 
@@ -322,35 +323,36 @@ extern void fn_802E30C8(char *, ...);
 extern char lbl_8032BF20[];
 extern char lbl_8032BF70[];
 void *fn_80138968(int arg0) {
-    unsigned int size;
+    unsigned char storage[8];
     int valid;
-    void *data;
-    unsigned char swap;
-    int ok = 0;
-    void *obj = fn_8012C370(arg0, 0x494C494E, &size, &valid, &data, &swap);
+    unsigned int size;
+    int ok;
+    void *obj = fn_8012C370(arg0, 0x494C494E, &size, &valid, (void **)storage, storage + 1);
     if (obj != 0) {
+        ok = 0;
         if (valid != 0) {
             if (size == 0x1E) {
                 unsigned int *words = (unsigned int *)obj;
-                unsigned int a = words[0], b = words[1];
-                if (swap) {
+                unsigned int a = words[1];
+                unsigned int b = words[0];
+                if (storage[1]) {
                     unsigned char *p = (unsigned char *)&a;
                     unsigned char *q = (unsigned char *)&b;
                     unsigned char t;
-                    t=p[0]; p[0]=p[3]; p[3]=t;
-                    t=p[1]; p[1]=p[2]; p[2]=t;
-                    t=q[0]; q[0]=q[3]; q[3]=t;
-                    t=q[1]; q[1]=q[2]; q[2]=t;
+                    t = p[0]; p[0] = p[3]; p[3] = t;
+                    t = p[1]; p[1] = p[2]; p[2] = t;
+                    t = q[0]; q[0] = q[3]; q[3] = t;
+                    t = q[1]; q[1] = q[2]; q[2] = t;
                 }
                 if (a == 0x3C && b == 0x30) {
-                    if (swap) {
+                    if (storage[1]) {
                         fn_801381B4(obj);
                         fn_80138594(obj);
                     }
                     *(int *)((char *)obj + 0x28) = fn_8013BFE8(arg0);
                     ok = 1;
                 } else {
-                    fn_802E30C8(lbl_8032BF20, 0x3C, b, 0x30, swap);
+                    fn_802E30C8(lbl_8032BF20, 0x3C, b, 0x30, storage[1]);
                 }
             } else {
                 fn_802E30C8(lbl_8032BF70, 0x1E);
