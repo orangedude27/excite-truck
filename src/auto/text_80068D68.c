@@ -14080,6 +14080,34 @@ void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
     rfc_check_send_cmd(arg0, p_buf);
 }
 
+void rfc_send_pn(void *p_mcb, s32 dlci, s32 is_command, s32 mtu, s32 cl, s32 k) {
+    u8 *buf;
+    u8 *p_data;
+    s32 sign;
+
+    buf = (u8 *)GKI_getpoolbuf(2);
+    if (buf == NULL)
+        return;
+    *(u16 *)(buf + 4) = 0xC;
+    p_data = buf + 0x14;
+    sign = -is_command | is_command;
+    *p_data++ = (u8)(((sign >> 31) & 2) | 0x81);
+    *p_data++ = 0x11;
+    *p_data++ = (u8)dlci;
+    *p_data++ = (u8)cl;
+    if (is_command != 0)
+        *p_data++ = 0;
+    else
+        *p_data++ = lbl_803C4828[0xB];
+    *p_data++ = 0;
+    *p_data++ = (u8)mtu;
+    *p_data++ = (u8)((u16)mtu >> 8);
+    *p_data++ = 0;
+    *p_data = (u8)k;
+    *(u16 *)(buf + 2) = 0xA;
+    rfc_send_buf_uih(p_mcb, 0, (BT_HDR *)buf);
+}
+
 void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
     u8 *buf = GKI_getpoolbuf(2);
     if (buf != 0) {
