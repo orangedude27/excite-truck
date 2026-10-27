@@ -177,6 +177,41 @@ extern "C" u8 fn_801D2550(void *arg0, void *arg1) {
 extern void fn_801345D8(char*, int, const char*, ...);
 extern const char lbl_8033830C[];
 extern const char lbl_8055ABE4[];
+#pragma cplusplus on
+struct Dummy801D25BC {
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void d4();
+    virtual s32 getIndex(u32);
+    virtual void d6();
+    virtual void d7();
+    virtual f32 getValue(const char *, f32);
+    virtual void d9();
+    virtual void d10();
+    virtual void d11();
+    virtual void d12();
+    virtual void d13();
+    virtual void d14();
+    virtual void d15();
+    virtual void d16();
+    virtual void d17();
+    virtual void d18();
+    virtual void d19();
+    virtual void d20();
+    virtual void *getName(char *);
+};
+extern "C" inline void *fn_801D25BC_getName(void *self, char *name) {
+    return ((Dummy801D25BC *)self)->getName(name);
+}
+extern "C" inline s32 fn_801D25BC_getIndex(void *self, u32 key) {
+    return ((Dummy801D25BC *)self)->getIndex(key);
+}
+extern "C" inline f32 fn_801D25BC_getValue(void *self, const char *name, f32 value) {
+    return ((Dummy801D25BC *)self)->getValue(name, value);
+}
+#pragma cplusplus reset
 #pragma dont_inline on
 void fn_801D25BC(void* arg0, void* arg1) {
     char name[0x20];
