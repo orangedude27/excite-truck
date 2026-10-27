@@ -2344,13 +2344,13 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
 
 extern "C" s8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
     u8 scratch[0x20];
-    s32 *date = (s32 *)(scratch + 0x10);
-    s32 *time = (s32 *)scratch;
-    fn_800B78F4(date, time);
-    *(s16 *)arg0 = (s16)(((date[2] & 0x1F) | ((date[1] << 5) & 0x1E0)) |
-                          (((date[0] - 0x7BC) << 9) & 0xFE00));
-    *(s16 *)arg1 = (s16)((((time[2] >> 1) & 0x1F) | ((time[1] << 5) & 0x7E0)) |
-                          ((time[0] << 11) & 0xF800));
+    fn_800B78F4(scratch + 0x10, scratch);
+    *(s16 *)arg0 = (s16)(((*(s32 *)(scratch + 0x18) & 0x1F) |
+                           ((*(s32 *)(scratch + 0x14) << 5) & 0x1E0)) |
+                          (((*(s32 *)(scratch + 0x10) - 0x7BC) << 9) & 0xFE00));
+    *(s16 *)arg1 = (s16)((((*(s32 *)(scratch + 8) >> 1) & 0x1F) |
+                           ((*(s32 *)(scratch + 4) << 5) & 0x7E0)) |
+                          ((*(s32 *)scratch << 11) & 0xF800));
     return (s8)*(s32 *)(scratch + 0xC);
 }
 
@@ -3508,7 +3508,7 @@ extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
 }
 
 extern "C" s32 VFiPFPATH_parseShortName(void *, void *);
-extern "C" s8 fn_800AB2F4(void *, void *, s32);
+
 extern "C" s32 fn_800B51FC(void *, s32);
 #pragma push
 #pragma use_lmw_stmw off
@@ -9446,22 +9446,31 @@ block_25:
     if (arg4 < arg1) goto loop_25;
 }
 #pragma pop
-extern "C" u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
+u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     u32 bits = *arg2;
     u32 index = (bits >> 3) & 0x1FFF;
     s32 shift = 0x18 - (bits & 7);
     *arg2 = bits + arg1;
-    u8 a, b, c;
+    volatile u8 *bytes = (volatile u8 *)arg0;
+    u8 a;
+    u8 b;
+    u8 c;
     if (index < 0x1FFE) {
-        a = arg0[index];
-        b = arg0[index + 1];
-        c = arg0[index + 2];
+        u32 next = index + 1;
+        a = bytes[index];
+        b = bytes[next];
+        next++;
+        c = bytes[next];
     } else {
-        a = arg0[index];
-        b = arg0[(index + 1) & 0x1FFF];
-        c = arg0[(index + 2) & 0x1FFF];
+        u32 next = index + 1;
+        a = bytes[index];
+        next &= 0x1FFF;
+        b = bytes[next];
+        next++;
+        next &= 0x1FFF;
+        c = bytes[next];
     }
-    u32 value = (a << 16) | (b << 8) | c;
+    u32 value = ((u32)a << 16) | ((u32)b << 8) | c;
     return (value & lbl_802F3F54[shift]) >> (shift - arg1);
 }
 
@@ -13360,22 +13369,22 @@ extern "C" void fn_800C776C(void *arg0, s32 arg1) {
     ((u32 *)arg0)[0x24 / 4] = (u32)arg1;
 }
 
-void fn_800C790C(void *arg0) {
-    u16 **ptr = *(u16 ***)((u8 *)arg0 + 4);
-    u16 *var_r7 = *ptr;
+extern "C" void fn_800C790C(void *arg0) {
+    u16 *str = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 4) + 8);
+    u16 *var_r7 = str;
     s32 var_r9 = 0;
     s32 var_r10 = 0;
     s32 var_r11 = 0;
     s32 var_r8 = 0;
-    
+
     while (*var_r7 != 0) {
         if (*var_r7 == 0x22) {
             *var_r7 = 0;
             if (var_r11 == 0) {
                 s32 temp_r4 = var_r10 * 0x18;
+                *(u16 **)((u8 *)arg0 + 0xB0 + temp_r4 + var_r8) = &str[var_r9 + 1];
                 var_r10++;
                 var_r11 = 1;
-                ((u32 *)((u8 *)arg0 + temp_r4 + var_r8))[0xB0 / 4] = (u32)(ptr + (var_r9 + 1) * 2);
                 if (var_r10 == 7) {
                     var_r10 = 0;
                     var_r8 += 4;
@@ -13384,7 +13393,7 @@ void fn_800C790C(void *arg0) {
                 var_r11 = 0;
             }
         }
-        var_r7 += 2;
+        var_r7++;
         var_r9++;
     }
 }
