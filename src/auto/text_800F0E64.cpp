@@ -713,9 +713,9 @@ extern "C" s32 fn_800F2814(void *arg0) {
     return ReadSoundArchivePlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPQ46nw4hbm3snd12SoundArchive22SoundArchivePlayerInfo(*(s32*)((u8*)arg0 + 4));
 }
 
-M2C_UNK ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(s32);
-extern "C" s32 fn_800F281C(void *arg0) {
-    return ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(*(s32*)((u8*)arg0 + 4));
+extern "C" s32 ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(void *, u32, void *);
+extern "C" s32 fn_800F281C(void *arg0, u32 index, void *out) {
+    return ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(*(void **)((u8 *)arg0 + 4), index, out);
 }
 
 M2C_UNK ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(s32);
@@ -2329,14 +2329,9 @@ extern "C" void *__dt__Q36nw4hbm3snd11SoundPlayerFv(void *arg0, s32 arg1) {
         virtual void v3() {}
         virtual void destroy(s32) {}
     };
-    register void *it;
-    register void *head;
-    register void *node;
     if (arg0 != 0) {
-        head = (char *)arg0 + 4;
-        it = *(void **)head;
-        while (it != head) {
-            node = it;
+        for (register void *it = *(void **)((char *)arg0 + 4), *head = (char *)arg0 + 4; it != head; ) {
+            register void *node = it;
             it = *(void **)it;
             if (node == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262E8, 0x23D, (const char *)lbl_803262C4);
@@ -2666,6 +2661,38 @@ extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
         }
     }
     return this_;
+}
+
+extern "C" s32 OSJoinThread(void *, s32);
+extern "C" const char lbl_80326450[];
+extern "C" const char lbl_80326488[];
+s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
+    u8 *thread = (u8 *)this;
+    u8 *queue = lbl_80412CC8;
+
+    if (*(u8 *)(thread + 0x2394) == 0)
+        return 0;
+
+    if ((s8)lbl_8055DE68 == 0) {
+        void *queueEnd = queue + 0x2388;
+        *(u32 *)(queue + 0x2388) = 0;
+        *(u32 *)(queue + 0x238C) = 0;
+        *(u32 *)(queue + 0x2378) = 0;
+        *(u32 *)(queue + 0x237C) = 0;
+        *(u32 *)(queue + 0x2384) = 0;
+        *(void **)(queue + 0x2388) = queueEnd;
+        *(void **)(queue + 0x238C) = queueEnd;
+        *(u8 *)(queue + 0x2394) = 0;
+        __register_global_object(queue, (void *)__dt__10TitleSceneFv, lbl_80412CB8, queueEnd);
+        lbl_8055DE68 = 1;
+    }
+
+    if (OSSendMessage(queue + 0x2338, (void *)2, 0) == 0)
+        return 0;
+    if (OSJoinThread((void *)thread, 0) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326450, 0x70, lbl_80326488);
+    *(u8 *)(thread + 0x2394) = 0;
+    return 1;
 }
 
 extern "C" void fn_800FA6E8(void) {
