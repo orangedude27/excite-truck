@@ -943,27 +943,22 @@ extern "C" void fn_80219F14(void *arg0) {
     Object *object = (Object *)arg0;
 
     fn_802192AC(arg0);
-    if (object->state != 6) {
-        if (object->state < 6) {
-            if (object->state != 3)
-                return;
-            goto process;
-        }
-        if (object->state >= 10)
-            return;
-        if (object->state < 8)
-            return;
+    switch (object->state) {
+    case 3:
+    case 6:
+    case 8:
+    case 9:
+        break;
+    default:
+        return;
     }
 
-process:
     if (((s32 (*)(char *, char *, s32))fn_8002B1D8)(
             object->text, object->source, 0x1F) == 0)
         return;
-
     if (object->old != 0)
         fn_80235380((void *)object->old);
     object->old = fn_8023512C((s32)object->source);
-
     {
         u8 c;
         char *source = object->source;
