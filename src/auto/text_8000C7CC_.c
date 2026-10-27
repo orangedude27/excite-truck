@@ -519,35 +519,54 @@ extern void fn_80148070(void *, s32, s32);
 extern void fn_80148134(f32 *, f32 *, s32, f32, f32);
 extern s32 fn_80131234(s32);
 extern void fn_801476C4(void);
-extern void fn_800103B8(s32, s32, const char *, s32, f32, f32, f32, f32);
+extern void fn_800103B8(s32, s32, f32, f32, f32, f32, const char *, ...);
 extern void fn_80011A2C(void);
 extern f32 lbl_80560248;
 extern s32 lbl_80560240;
 extern s32 lbl_80560244;
 extern const char lbl_80558A70[];
-void fn_8000CD24(void) {
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_8000CD24(void) {
+    struct ConfigService {
+        virtual void slot0();
+        virtual void *lookup(const char *);
+        virtual void slot2();
+        virtual void *open(const char *);
+        virtual void *find(const char *);
+    };
+    ConfigService *service;
     u8 *base = lbl_802FC058;
     void *object;
     void *temp;
     f32 out0;
     f32 out1;
-    s32 names[2];
-    if (lbl_8055D414 == 0) return;
-    object = ((void *(*)(void *, const char *))(*(void ***)lbl_8055D414)[5])(lbl_8055D414, (const char *)base + 0xFC);
+    volatile s32 names[2];
+
+    service = (ConfigService *)lbl_8055D414;
+    if (service == 0) return;
+    object = service->open((const char *)base + 0xFC);
     if (object != 0) {
-        temp = ((void *(*)(void *, const char *))(*(void ***)lbl_8055D414)[6])(lbl_8055D414, (const char *)base + 0x108);
+        temp = ((ConfigService *)*(volatile void ***)&lbl_8055D414)->find((const char *)base + 0x108);
         fn_80148070(object, 0x96FFFFFF, (s32)temp);
     }
-    ((void (*)(void *, const char *))(*(void ***)lbl_8055D414)[3])(lbl_8055D414, (const char *)base + 0x118);
+    ((ConfigService *)*(volatile void ***)&lbl_8055D414)->lookup((const char *)base + 0x118);
     fn_801476C4();
-    temp = ((void *(*)(void *, const char *))(*(void ***)lbl_8055D414)[3])(lbl_8055D414, (const char *)base + 0x12C);
+    temp = ((ConfigService *)*(volatile void ***)&lbl_8055D414)->lookup((const char *)base + 0x12C);
     if (temp == 0) return;
     names[0] = lbl_80560240;
     names[1] = lbl_80560244;
-    out0 = *(f32 *)((u8 *)temp + 4);
-    out1 = *(f32 *)((u8 *)temp + 8);
-    fn_80148134(&out0, &out1, *(s32 *)((u8 *)temp + 0xC), out0, out1);
-    fn_800103B8(*(s32 *)((u8 *)temp + 0x18), *(s32 *)((u8 *)temp + 0x14), lbl_80558A70, fn_80131234(names[lbl_8055D420]), *(f32 *)((u8 *)temp + 0x10), out0, out1, *(f32 *)((u8 *)object + 0x10) - lbl_80560248);
+    fn_80148134(&out0, &out1, *(s32 *)((u8 *)temp + 0xC), *(f32 *)((u8 *)temp + 4), *(f32 *)((u8 *)temp + 8));
+    ((void (*)(s32, s32, f32, f32, f32, f32, const char *, ...))fn_800103B8)(
+        *(s32 *)((u8 *)temp + 0x18),
+        *(s32 *)((u8 *)temp + 0x14),
+        *(f32 *)((u8 *)temp + 0x10),
+        out0,
+        out1,
+        *(f32 *)((u8 *)object + 0x10) - lbl_80560248,
+        lbl_80558A70,
+        fn_80131234(names[lbl_8055D420]));
     fn_80011A2C();
 }
-
+#pragma scheduling on
+#pragma cplusplus off
