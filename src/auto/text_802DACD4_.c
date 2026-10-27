@@ -17,31 +17,50 @@ extern char lbl_8034C918[];
 __declspec(section ".sdata") extern char lbl_8055D130[];
 __declspec(section ".sdata") extern char lbl_8055D138[];
 extern int lbl_8055FE78, lbl_8055FE7C, lbl_8055FE80;
+#pragma push
+#pragma scheduling invalid_target
 void fn_802DACD4(void) {
- int a,b,c,d; int font;
+ register const char *message=lbl_8034C918;
+ volatile int b,c,d;
+ int font;
  fn_801282EC(0x20);
- font=0x120F00;
- if(OSGetFontEncode()==0) font=0x20120;
- lbl_8055FE78=fn_801284E8(lbl_8034C918,font);
+ if ((unsigned short)OSGetFontEncode()==0) {
+  font=0x20120;
+ } else {
+  font=0x120F00;
+ }
+ lbl_8055FE78=fn_801284E8((void *)message,font);
  font=OSInitFont();
- if(OSGetFontEncode()==0x12F00) fn_802E30C8(lbl_8034C918+0xC);
- if(font==0) {
-  fn_802E30C8(lbl_8034C918+0x30);
+ if (OSGetFontEncode()==0x120F00) fn_802E30C8(message+0xC);
+ if (font==0) {
+  fn_802E30C8(message+0x30);
   fn_80128658(lbl_8055FE78);
   lbl_8055FE78=0;
   return;
  }
- d=0; lbl_8055FE7C=0; b=0; c=0;
- OSGetFontTexture(lbl_8055D130,&lbl_8055FE7C,&b,&c,&d);
+ b=0;
+ *(volatile int *)&lbl_8055FE7C=0;
+ c=0;
+ d=0;
+ OSGetFontTexture(lbl_8055D130,&lbl_8055FE7C,(int *)&c,(int *)&d,(int *)&b);
  {
-  unsigned char config[0x34]; unsigned char cfg2[0x20];
-  memset(config,0,0x34); *(int *)(config+4)=1; *(int *)config=0x48;
-  *(int *)(config+0x20)=1; *(int *)(config+0x24)=0x200; *(int *)(config+0x28)=0x200;
-  memset(cfg2,0,0x20); *(int *)(cfg2+4)=lbl_8055FE7C;
+  unsigned char config[0x34];
+  unsigned char cfg2[0x20];
+  memset(config,0,0x34);
+  *(int *)(config+4)=1;
+  *(int *)config=0x48;
+  *(int *)(config+0x20)=1;
+  *(int *)(config+0x24)=0x200;
+  *(int *)(config+0x28)=0x200;
+  memset(cfg2,0,0x20);
+  *(int *)cfg2=0;
+  *(int *)(cfg2+4)=lbl_8055FE7C;
   *(void **)(config+0x2c)=cfg2;
   lbl_8055FE80=fn_802D8E9C(config,lbl_8055D138);
  }
 }
+#pragma pop
+#pragma scheduling on
 
 void fn_802DAE18(void) {
     if (lbl_8055FE78 != 0) {
