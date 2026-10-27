@@ -1984,30 +1984,23 @@ extern "C" void fn_8021D61C(void *arg0) {
 extern "C" void *fn_8021D6A0(void *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4,
                              s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     s32 zero = 0;
-    volatile s32 fields[23];
-    volatile s32 *p;
-    s32 count;
     s32 result;
 
     ((void *(*)(void *, s32, s32, s32, u8 *, s32, s32, s32, s32))fn_8021D044)(
         arg0, arg1, arg2, arg3, arg4, 8, 0, 0, zero);
     *(void **)arg0 = lbl_8033EB14;
-    p = fields;
-    count = 11;
-    do {
-        p[1] = zero;
-        p[2] = zero;
-        p += 2;
-    } while (--count != 0);
-    fields[1] = arg5;
-    fields[3] = arg6;
-    fields[4] = arg7;
-    fields[5] = arg7;
-    fields[6] = arg8;
-    fields[11] = arg7;
-    fields[12] = arg7;
-    fields[13] = arg8;
-    result = fn_8022A86C((void *)&fields[1]);
+    {
+        s32 fields[22] = {};
+        fields[0] = arg5;
+        fields[2] = arg6;
+        fields[3] = arg7;
+        fields[4] = arg7;
+        fields[5] = arg8;
+        fields[10] = arg7;
+        fields[11] = arg7;
+        fields[12] = arg8;
+        result = fn_8022A86C(fields);
+    }
     *(s32 *)((u8 *)arg0 + 0x2C4) = result;
     *(s32 *)((u8 *)arg0 + 0x250) = result;
     fn_80219718(arg0);
