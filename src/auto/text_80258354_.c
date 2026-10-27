@@ -199,6 +199,7 @@ found:
         *(int *)(index + 0x40), *(int *)(index + 0x44), arg3,
         x, y, lbl_80563AD0, cosine, sine);
 }
+#pragma paired_single off
 #pragma ppc_psq_save off
 #pragma use_lmw_stmw on
 #pragma scheduling invalid_target
@@ -206,8 +207,14 @@ void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, flo
     int index = 0;
     int offset = 0;
     int result;
-    register float cosine;
+    int callId0;
+    int callId1;
+    float callX;
+    float callY;
+    float callColor;
+    float callCosine;
     register float sine;
+    register float cosine;
     goto check;
 loop:
     result = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
@@ -238,7 +245,13 @@ found:
         y += sine;
     else if (flags & 0x10)
         y += lbl_80563ACC * sine;
-    fn_802354A0(*(int *)(index + 0x40), *(int *)(index + 0x44), arg3, x, y, lbl_80563AD0, cosine);
+    callX = x;
+    callId0 = *(int *)(index + 0x40);
+    callY = y;
+    callColor = lbl_80563AD0;
+    callCosine = cosine;
+    callId1 = *(int *)(index + 0x44);
+    fn_802354A0(callId0, callId1, arg3, callX, callY, callColor, callCosine);
 }
 #pragma scheduling on
 #pragma ppc_psq_save off
