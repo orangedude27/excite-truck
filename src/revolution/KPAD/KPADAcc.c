@@ -6,7 +6,7 @@ extern void reset_kpad(KPADInsideStatus*);
 extern u16 lbl_80560BF4, lbl_80560BF6, lbl_80560BF8;
 extern u16 lbl_80560BFC, lbl_80560BFE, lbl_80560C00;
 /* Reuse REXE01 shared 1.0f/2.0f constants to avoid local pool growth. */
-extern f32 lbl_80560C04, lbl_80560C08, lbl_80560BE4, lbl_80560BF0;
+extern f32 lbl_80560C04, lbl_80560C08, lbl_80560BD8, lbl_80560BE4, lbl_80560BF0;
 extern f32 lbl_80558EEC, lbl_80558EF0;
 extern f32 lbl_80558EA4, lbl_80558EAC, lbl_8055D994;
 extern u16 lbl_80558EB0;
