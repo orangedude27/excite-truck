@@ -264,6 +264,7 @@ loop_check:
     fn_80128658(allocation);
     return result;
 }
+#pragma pop
 
 void fn_802E7128(void) { fn_802E6FBC(); }
 
