@@ -975,6 +975,8 @@ extern "C" void fn_8021AA18(void *arg0) {
 
 extern "C" s32 fn_8021AB88(void) { return 0; }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" s32 fn_8021AB90(void *arg0, s32 arg1) {
     if (*(u8 *)fn_80216708() == 0)
         goto fallback;
@@ -982,13 +984,13 @@ extern "C" s32 fn_8021AB90(void *arg0, s32 arg1) {
         goto fallback;
     if (arg1 >= 0x127)
         goto checkUpper;
-    if (arg1 >= 0x126)
-        goto callLower;
-    goto fallback;
-checkUpper:
-    if (arg1 >= 0x129)
+    if (arg1 < 0x126)
         goto fallback;
-    goto callUpper;
+    goto callLower;
+checkUpper:
+    if (arg1 < 0x129)
+        goto callUpper;
+    goto fallback;
 callLower:
     fn_80217AC0(*(s32 *)((u8 *)arg0 + 0x2C));
     return 1;
@@ -998,7 +1000,8 @@ callUpper:
 fallback:
     return fn_802192A4(arg0, arg1);
 }
-
+#pragma scheduling on
+#pragma pop
 extern "C" void fn_8021AC24(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     u8 *base = (u8 *)arg0;
     s32 a = fn_802C5220(arg3);
