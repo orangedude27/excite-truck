@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern int lbl_8055F598, lbl_8055F59C, lbl_8055F5A0;
+extern volatile int lbl_8055F598, lbl_8055F59C, lbl_8055F5A0;
 __declspec(section ".data") extern unsigned char lbl_8049FD58[];
 extern float lbl_8055E3C8, lbl_80564054, lbl_80564060;
 extern float lbl_8049FD58_float_dummy;
@@ -351,8 +351,6 @@ extern float lbl_80564070, lbl_80564074;
 extern "C" int sprintf(char*, const char*, ...);
 extern "C" char *strcpy(char*, const char*);
 extern "C" void fn_80277828(void) {
-    int i;
-    unsigned char* entry;
     unsigned char* def = lbl_8049FE98;
     *(float*)(def + 4) = lbl_8056404C;
     *(float*)(def + 8) = lbl_80564048;
@@ -368,10 +366,11 @@ extern "C" void fn_80277828(void) {
     *(float*)(def + 0x30) = lbl_80564048;
     *(float*)(def + 0x34) = lbl_80564070;
     def[0x38] = 0;
-    def[0] = 1;
+    lbl_8049FE98[0] = 1;
     if (lbl_8055F598 == 0) {
-        i = lbl_8055F5A0;
-        entry = &lbl_8049FEE0 + i * 0x48;
+        char *fmt = *(char**)&lbl_8055C638;
+        int i = lbl_8055F5A0;
+        unsigned char* entry = &lbl_8049FEE0 + i * 0x48;
         *(float*)(entry + 4) = lbl_8056404C;
         *(float*)(entry + 8) = lbl_80564048;
         *(float*)(entry + 0xC) = lbl_80564048;
@@ -389,16 +388,16 @@ extern "C" void fn_80277828(void) {
         lbl_8055F5A0 = i + 1;
         lbl_8055F598 = (int)entry;
         entry[0] = 1;
-        sprintf((char*)entry + 0x38, *(char**)&lbl_8055C638);
+        sprintf((char*)entry + 0x38, fmt);
     }
     if (lbl_8055F59C == 0) {
-        i = lbl_8055F5A0;
-        entry = &lbl_8049FEE0 + i * 0x48;
+        int i = lbl_8055F5A0;
+        unsigned char* entry = &lbl_8049FEE0 + i * 0x48;
         lbl_8055F59C = (int)entry;
         lbl_8055F5A0 = i + 1;
         entry[0] = 1;
         *(float*)(entry + 0x34) = lbl_80564074;
-        strcpy((char*)lbl_8055F59C + 0x38, &lbl_8055C644);
+        strcpy((char*)*(volatile int*)&lbl_8055F59C + 0x38, &lbl_8055C644);
     }
 }
 
