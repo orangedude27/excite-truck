@@ -2,7 +2,7 @@
 extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
 extern f32 fn_80129DC4(s32, f32, f32);
 extern f64 cos(void);
-extern f64 sin(f32);
+extern f32 sin(f32);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
 extern s8 lbl_8055F308;
@@ -24,7 +24,60 @@ void fn_802E30C8(const char *, const char *);
 
 extern s32 lbl_8055EAA8, lbl_8055EAAC, lbl_8055F2F8;
 void fn_801BD790(void);
-#pragma dont_inline(fn_80252B88)
+#pragma scheduling invalid_target
+void fn_802526E0(void *arg0) {
+    volatile f32 spC;
+    volatile f32 sp8;
+    volatile f32 *out = (volatile f32 *)arg0;
+    f32 temp_f31;
+    f32 temp_f30;
+    f32 temp_f29;
+    register f32 temp_f4 asm("f4");
+    f32 temp_f4_2;
+    f32 temp_f5;
+    f32 temp_f1;
+    f32 temp_f2;
+    f32 temp_f3;
+    f32 temp_f2_2;
+    f32 temp_f4_3;
+    f32 temp_f5_2;
+    f32 temp_f6;
+
+    temp_f29 = fn_80129DC4(0, lbl_805639CC, lbl_805639D0);
+    temp_f31 = lbl_805639D4;
+    sp8 = temp_f31;
+    spC = lbl_805639CC;
+    temp_f30 = (f32)cos();
+    temp_f4 = (f32)sin(temp_f29);
+    out[10] = lbl_805639CC;
+    temp_f4_2 = temp_f31 * temp_f4;
+    temp_f5 = (temp_f31 * temp_f30) - (spC * temp_f4);
+    temp_f1 = temp_f5 * lbl_805639C8;
+    out[9] = temp_f5;
+    temp_f3 = temp_f4_2 + (spC * temp_f30);
+    sp8 = temp_f5;
+    temp_f2 = temp_f3 * lbl_805639C8;
+    out[11] = temp_f3;
+    spC = temp_f3;
+    out[9] = temp_f1;
+    out[10] = lbl_805639CC * lbl_805639C8;
+    out[11] = temp_f2;
+    temp_f2_2 = -spC;
+    temp_f4_3 = sp8;
+    temp_f5_2 = lbl_805639D8 + ((f32 (*)(s32, f32, f32, f32, f32, f32))fn_801DCF48)(
+        0, temp_f1, temp_f2, temp_f3, temp_f4_2, temp_f5);
+    temp_f6 = sp8;
+    out[10] = temp_f5_2;
+    out[0] = temp_f4_3;
+    out[1] = lbl_805639CC;
+    out[2] = spC;
+    sp8 = temp_f2_2;
+    spC = temp_f6;
+    out[6] = temp_f2_2;
+    out[7] = lbl_805639CC;
+    out[8] = temp_f6;
+    PSVECCrossProduct((void *)(out + 6), (void *)out, (void *)(out + 3));
+}
 void fn_80252B88(s32 arg0) {
     u8 sp8[0x28];
     fn_802526E0(sp8);
