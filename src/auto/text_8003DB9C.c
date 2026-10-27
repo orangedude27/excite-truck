@@ -1182,8 +1182,8 @@ void GXMiscInit(s32 arg0) {
     volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
 
     interruptState = OSDisableInterrupts();
-    *fifo8 = 0x61;
     command.value = (unsigned int)arg0 | 0x48000000;
+    *fifo8 = 0x61;
     *fifo = command.value;
     command.fields.low = (unsigned int)arg0;
     command.fields.top = 0x47;
@@ -1227,6 +1227,37 @@ void GXSetDrawSync(void) {
     *fifo = 0;
     PPCSync();
     lbl_8055D970 = 0;
+    ((void (*)(s32))OSRestoreInterrupts)(interruptState);
+}
+
+void GXSetDrawSyncCallback(void) {
+    register u32 zero;
+    register s32 interruptState;
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
+
+    interruptState = OSDisableInterrupts();
+    *fifo8 = 0x61;
+    *fifo = 0x45000002;
+    if (__GXData[0x5FC / 4] != 0) {
+        __GXSetDirtyState();
+    }
+    zero = 0;
+    *fifo = zero;
+    *fifo = zero;
+    *fifo = zero;
+    *fifo = zero;
+    *fifo = zero;
+    *fifo = zero;
+    *fifo = zero;
+    *fifo = zero;
+    PPCSync();
+    lbl_8055D970 = zero;
+    ((void (*)(s32))OSRestoreInterrupts)(interruptState);
+    interruptState = OSDisableInterrupts();
+    while (lbl_8055D970 == 0) {
+        OSSleepThread(&lbl_8055D968);
+    }
     ((void (*)(s32))OSRestoreInterrupts)(interruptState);
 }
 
@@ -1473,6 +1504,60 @@ void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
     }
     *fifo8 = prim | vtxfmt;
     *fifo16 = nverts;
+}
+
+void __GXSendFlushPrim(void) {
+    volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
+    volatile u16 *fifo16 = (volatile u16 *)0xCC008000;
+    volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
+    u16 *gx = (u16 *)__GXData;
+    u16 width;
+    u16 height;
+    u32 size;
+    u32 end;
+    u32 tail;
+    u32 count;
+    u32 valid;
+    u32 written;
+
+    width = gx[2];
+    height = gx[3];
+    *fifo8 = 0x98;
+    size = width * height;
+    *fifo16 = gx[2];
+    if (size != 0) {
+        end = size + 3;
+        tail = size - 0x20;
+        if ((end >> 2) > 8) {
+            valid = 0;
+            if (end >= 3 && size <= end)
+                valid = 1;
+            if (valid != 0) {
+                count = (tail + 0x1F) >> 5;
+                if (tail > 0) {
+                    written = 0;
+                    do {
+                        *fifo32 = 0;
+                        written += 0x20;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                    } while (--count != 0);
+                }
+            }
+        }
+        if (written < size) {
+            count = (size + 3 - written) >> 2;
+            do {
+                *fifo32 = 0;
+            } while (--count != 0);
+        }
+    }
+    gx[1] = 1;
 }
 
 void GXSetLineWidth(s32 width, s32 format) {
@@ -1723,23 +1808,43 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
     unsigned int result;
     unsigned int value;
     unsigned int tmp;
+    union {
+        unsigned int value;
+        struct {
+            unsigned int tag : 8;
+            unsigned int reserved : 15;
+            unsigned int scale : 9;
+        } fields;
+    } packet = {0};
+    union {
+        unsigned int value;
+        struct {
+            unsigned int reserved : 21;
+            unsigned int flag : 1;
+            unsigned int other : 10;
+        } fields;
+    } copyState;
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC010000;
+    volatile unsigned char *fifo8 = (volatile unsigned char *)fifo;
 
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = 0x4E000000 | (scale & 0x1FF);
+    fifo8[-0x8000] = 0x61;
+    packet.fields.scale = scale;
+    packet.fields.tag = 0x4E;
+    fifo[-0x2000] = packet.value;
     ((volatile unsigned short *)__GXData)[1] = 0;
     tmp = (0x100 - height) | (height - 0x100);
-    __GXData[0x23C / 4] = (__GXData[0x23C / 4] & ~0x400) | ((tmp >> 10) & 0x400);
-    width = (__GXData[0x234 / 4] >> 12) & 0x3FF;
+    copyState.value = __GXData[0x23C / 4];
+    copyState.fields.flag = tmp >> 31;
+    __GXData[0x23C / 4] = copyState.value;
+    width = (__GXData[0x234 / 4] >> 10) & 0x3FF;
     value = width + 1;
     result = (((value - 1) << 8) / height) + 1;
-    if (height <= 0x80 || height >= 0x100) {
-        goto done;
+    if (height > 0x80 && height < 0x100) {
+        do {
+            height >>= 1;
+        } while ((height & 1) == 0);
+        if (value % height == 0) result++;
     }
-loop:
-    height >>= 1;
-    if ((height & 1) == 0) goto loop;
-    if (value % height == 0) result++;
-done:
     if (result > 0x400) result = 0x400;
     return result;
 }
