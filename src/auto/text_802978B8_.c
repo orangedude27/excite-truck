@@ -147,3 +147,107 @@ test:
     lbl_8055F7AC = 0;
 }
 
+extern void *fn_802C86DC(void);
+extern float fn_801E88F0(int);
+extern double fn_8002F234(void);
+extern float PSVECSquareDistance(void *, void *);
+extern void fn_802C7AE0(int, void *, int);
+extern float lbl_80564580;
+extern float lbl_80564584;
+extern float lbl_80564588;
+extern float lbl_80558DC4;
+#pragma paired_single off
+void fn_80297AFC(void) {
+    int cameraPosition[3];
+    void *camera;
+    int i;
+    int offset;
+    char *record;
+    float maximum;
+    float minimum;
+    float divisor;
+    float speed;
+    float value;
+
+    camera = fn_802C86DC();
+    cameraPosition[0] = *(int *)((char *)camera + 0x24);
+    cameraPosition[1] = *(int *)((char *)camera + 0x28);
+    cameraPosition[2] = *(int *)((char *)camera + 0x2C);
+    i = 0;
+    offset = 0;
+    maximum = lbl_80564584;
+    minimum = lbl_80564580;
+    divisor = lbl_80564588;
+
+    for (; i < lbl_8055F7AC; i++, offset += 0x40) {
+        record = (char *)lbl_8055F7A8 + offset;
+        speed = fn_801E88F0(-1);
+        speed = speed * speed;
+        if (PSVECSquareDistance(cameraPosition, record + 0x2C) * speed >
+            *(float *)(record + 0x3C) * *(float *)(record + 0x3C)) {
+            value = (float)fn_8002F234() - *(float *)(record + 0x3C);
+            value = value - maximum;
+            value = value / divisor;
+            if (value < minimum) {
+                value = minimum;
+            }
+            if (value > maximum) {
+                value = maximum;
+            }
+            value = *(float *)(record + 0x38) +
+                    value * (maximum - *(float *)(record + 0x38));
+        } else {
+            value = *(float *)(record + 0x38);
+        }
+
+        if (__fabsf(value) != *(float *)&lbl_80558DC4) {
+            fn_802C7AE0(*(int *)record, record + 8, *(int *)(record + 4));
+        }
+    }
+}
+extern void *fn_802C6FC0(void *, int, int);
+void fn_80297C3C(void *unused, void *arg1, int arg2, float farg0, float farg1) {
+    register int count;
+    register unsigned int *record;
+    register unsigned int *source;
+    register unsigned int temp_r3;
+    register unsigned int temp_r0;
+
+    count = lbl_8055F7AC;
+    if (count >= 0x80)
+        return;
+
+    record = (unsigned int *)lbl_8055F7A8 + count * 0x10;
+    source = (unsigned int *)arg1;
+    temp_r3 = (unsigned int)fn_802C6FC0(unused, 0, 0);
+    record[0] = temp_r3;
+    temp_r3 = source[0];
+    record[1] = (unsigned int)arg2;
+    temp_r0 = source[1];
+    record[2] = temp_r3;
+    temp_r3 = source[2];
+    record[3] = temp_r0;
+    temp_r0 = source[3];
+    record[4] = temp_r3;
+    temp_r3 = source[4];
+    record[5] = temp_r0;
+    temp_r0 = source[5];
+    record[6] = temp_r3;
+    temp_r3 = source[6];
+    record[7] = temp_r0;
+    temp_r0 = source[7];
+    record[8] = temp_r3;
+    temp_r3 = source[8];
+    record[9] = temp_r0;
+    temp_r0 = source[9];
+    record[10] = temp_r3;
+    temp_r3 = source[10];
+    record[11] = temp_r0;
+    temp_r0 = source[11];
+    record[12] = temp_r3;
+    record[13] = temp_r0;
+    *(float *)&record[14] = farg0;
+    *(float *)&record[15] = farg1;
+    lbl_8055F7AC++;
+}
+
