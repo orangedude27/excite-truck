@@ -13905,40 +13905,7 @@ extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 delet
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 
 
-extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt4Paneb(void *arg0, void *arg1, BOOL arg2) {
-    register u8 *self = (u8 *)arg0;
-    register u8 *offsets = (u8 *)*(void **)(self + 0xC);
-    offsets += *(s32 *)(offsets + 0x10);
-    register u16 i = 0;
-    register BOOL bind = arg2;
-    register u8 *pane = (u8 *)arg1;
-    while (i < *(u16 *)(*(u8 **)(self + 0xC) + 0xE)) {
-        u8 *entry = pane + *(s32 *)(offsets + i * 4);
-        void *boundObject;
-        if (entry[0x15] == 0) {
-            boundObject = ((void *(*)(void *, void *, BOOL))(*(void ***)pane)[15])(pane, entry, bind);
-            if (boundObject != 0) {
-                u32 linkOffset = i * 0x10;
-                u8 *link = *(u8 **)(self + 0x18) + linkOffset;
-                *(void **)(link + 8) = self;
-                *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, *(u8 **)(self + 0x18) + linkOffset);
-            }
-        } else {
-            boundObject = ((void *(*)(void *, void *, BOOL))(*(void ***)pane)[16])(pane, entry, bind);
-            if (boundObject != 0) {
-                u32 linkOffset = i * 0x10;
-                u8 *link = *(u8 **)(self + 0x18) + linkOffset;
-                *(void **)(link + 8) = self;
-                *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, *(u8 **)(self + 0x18) + linkOffset);
-            }
-        }
-        i++;
-    }
-}
+
 
 extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void *, u8, void *);
 extern "C" s32 fn_800D9330(void *);
