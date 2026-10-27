@@ -366,6 +366,7 @@ void *fn_80138968(int arg0) {
     }
     return obj;
 }
+#pragma dont_inline reset
 
 void fn_80138AD8(void **arg0) { void *p=*arg0; fn_8013C428(*(int*)((char*)p+0x28),p); fn_8012C4D8(*arg0); *arg0=0; }
 
