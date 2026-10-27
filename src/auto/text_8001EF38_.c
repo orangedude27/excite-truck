@@ -431,6 +431,66 @@ int fn_8001FAC8(int arg0, const char *arg1) {
     }
     return total;
 }
+
+void fn_8001FBE4(s32 arg0, const char *arg1, s32 arg2) {
+    char *record;
+    char *entry;
+    char *name;
+    s32 count;
+    char *dst;
+    s32 found;
+    s32 empty;
+    u32 i;
+    s32 rowOffset;
+    s32 address;
+
+    if (fn_8001FD24() == 0)
+        return;
+
+    name = (char *)fn_80016720(arg1);
+    record = lbl_8035AF38;
+    entry = record + 0x50;
+    found = -1;
+    empty = -1;
+    i = 0;
+    do {
+        if (empty < 0 && (signed char)record[0x50] == 0) {
+            empty = i;
+        } else if (stricmp(entry, name) == 0) {
+            found = i;
+        }
+        i++;
+        record += 0x28;
+        entry += 0x28;
+    } while (i < 0x32);
+
+    if (found < 0) {
+        rowOffset = empty * 0x28;
+        address = (s32)lbl_8035AF38;
+        address += rowOffset;
+        dst = (char *)(address + 0x50);
+        count = 0x20;
+        do {
+            count--;
+            if (count <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+            *dst++ = *name++;
+        } while ((signed char)dst[-1] != 0);
+        address = (s32)lbl_8035AF38;
+        address += rowOffset;
+        address += arg0 * 4;
+        *(s32 *)(address + 0x70) = arg2;
+    } else {
+        rowOffset = found * 0x28;
+        address = (s32)lbl_8035AF38;
+        address += rowOffset;
+        address += arg0 * 4;
+        *(s32 *)(address + 0x70) += arg2;
+    }
+}
+
 #pragma pop
 
 extern s32 fn_801E8838(void);
@@ -447,3 +507,4 @@ void fn_8001FD4C(s8 arg0) {
 }
 
 #pragma dont_inline off
+#pragma scheduling invalid_target
