@@ -4,6 +4,7 @@
   typedef signed int s32;
 extern char lbl_8055BC08[];
 extern char lbl_802FA218[];
+extern char lbl_80341B8C[];
 extern void fn_8023E33C(void *);
 extern void *lbl_8055F190;
 extern int lbl_8055F194;
