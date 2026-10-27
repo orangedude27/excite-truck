@@ -199,6 +199,53 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detai
     *(unsigned long*)((char*)arg0 + 0x98) = arg3;
 }
 
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
+extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
+extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
+extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
+extern "C" void Close__Q46nw4hbm3snd6detail8WsdTrackFv(void *);
+extern "C" void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer(void *, void *);
+extern "C" void NWC24Data_SetDataP(void *, const void *, unsigned long);
+extern "C" int Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void *arg0, const void *arg1, int arg2, int arg3, const void *arg4, unsigned long arg5) {
+    int level1 = OSDisableInterrupts();
+
+    if (*(unsigned char *)((char *)arg0 + 0x1D) != 0) {
+        int level2 = OSDisableInterrupts();
+
+        if (*(unsigned char *)((char *)arg0 + 0x1F) != 0) {
+            if (arg0 == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CAC, 0x233, lbl_80327C88);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(lbl_8041D4C4, (char *)arg0 + 0x14);
+        }
+
+        if (*(unsigned char *)((char *)arg0 + 0x1D) != 0) {
+            void *node = arg0;
+            if (arg0 != 0)
+                node = (char *)arg0 + 8;
+            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
+                GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), node);
+        }
+
+        OSRestoreInterrupts(level2);
+        Close__Q46nw4hbm3snd6detail8WsdTrackFv((char *)arg0 + 0x9C);
+        *(unsigned char *)((char *)arg0 + 0x1D) = 0;
+    }
+
+    InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(arg0, arg3, arg4, arg5);
+    Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer((char *)arg0 + 0x9C, arg0);
+    NWC24Data_SetDataP((char *)arg0 + 0x9C, arg1, arg2);
+
+    void *node = arg0;
+    if (arg0 != 0)
+        node = (char *)arg0 + 8;
+    RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
+        GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), node);
+    *(unsigned char *)((char *)arg0 + 0x1D) = 1;
+    *(unsigned char *)((char *)arg0 + 0x1E) = 1;
+    OSRestoreInterrupts(level1);
+    return 1;
+}
+
 extern "C" int fn_80100654(void* arg0) {
     if (*((unsigned char*)arg0 + 0x1E) == 0)
         return 0;
@@ -459,19 +506,35 @@ extern "C" void* Instance__15EmissionManagerFv(void);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
 extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void*, unsigned char);
 extern "C" char lbl_8041D4C4[];
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) {
-    char* end = lbl_8041D4C4 + 4;
-    char* node = *(char**)(lbl_8041D4C4 + 4);
-    while (node != end) {
-        char* current = node;
-        node = *(char**)node;
-        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327C7C, 0x23D, lbl_80327C58);
-        void** vtable = *(void***)((char*)current - 0x14);
-        (*(void (**)(void*))(vtable[4]))((char*)current - 0x14);
-    }
-    if (*(int*)lbl_8041D4C4 != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x24D, lbl_80327AC4);
-}
+    class PlayerVTable {
+    public:
+        virtual void Dummy0();
+        virtual void Dummy1();
+        virtual void Stop();
+    };
+    void** pList = (void**)(lbl_8041D4C4 + 0x04);
+    void** pHead = (void**)*pList;
+    void** pPlayer;
 
+    while (pHead != pList) {
+        pPlayer = pHead;
+        pHead = (void**)*pPlayer;
+        if (pPlayer == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327C7C, 0x23D,
+                                         (const char*)lbl_80327C58);
+        }
+        ((PlayerVTable*)((char*)pPlayer - 0x14))->Stop();
+    }
+
+    if (*(int*)lbl_8041D4C4 != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327930, 0x24D,
+                                     (const char*)lbl_80327AC4);
+    }
+}
+#pragma pop
 extern "C" void fn_801013B0(void) {
     return;
 }
@@ -522,3 +585,5 @@ extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3s
 extern "C" char lbl_80327AF4[];
 extern "C" void fn_800EC890(void*);
 extern "C" float lbl_80561120;
+#pragma push
+#pragma use_lmw_stmw off
