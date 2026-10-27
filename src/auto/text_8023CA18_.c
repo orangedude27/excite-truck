@@ -145,7 +145,13 @@ void fn_8023D1FC(void *p) {
     n = **(s32 **)((u8 *)p + 0x24);
     if (n >= 0 && n < fn_80208D3C()) {
         item = fn_80208D4C(n);
-        strcpy(*(char **)((u8 *)p + 0x28), ((const char *(*)(void *))(*(s32 **)item)[3])(item));
+#pragma cplusplus on
+        struct ItemView {
+            virtual void unused();
+            virtual const char* getName();
+        };
+        strcpy(*(char **)((u8 *)p + 0x28), ((ItemView*)item)->getName());
+#pragma cplusplus reset
     } else {
         strcpy(*(char **)((u8 *)p + 0x28), (const char*)&lbl_8055BB98);
     }
