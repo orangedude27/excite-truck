@@ -10,7 +10,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
-namespace nw4hbm { namespace snd { class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); }; } }
+namespace nw4hbm { namespace snd { class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); }; namespace detail { class StrmPlayer { public: void Pause(bool); }; } } }
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
 extern "C" void fn_800EAD00(void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
