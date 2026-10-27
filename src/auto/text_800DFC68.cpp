@@ -121,6 +121,7 @@ void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChild
     }
     return 0;
 }
+#pragma use_lmw_stmw reset
 
 extern "C" void* FindAnimationLink__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
     void* result = FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(self, anim);
