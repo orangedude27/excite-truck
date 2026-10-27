@@ -355,7 +355,7 @@ class BoundingPane { public:
 extern "C" Vec2 GetVtxPos__Q34nw4r3lyt4PaneCFv(BoundingPane*, unsigned int);
 extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(const Vec2*, const Size*, unsigned int);
 
-namespace homebutton { namespace gui { class Manager { public: s32 update(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *); }; } }
+namespace homebutton { namespace gui { class Manager { public: s32 update(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *); void init(); }; } }
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -7736,17 +7736,15 @@ extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
     register u16 result = 0;
     register s32 byteIndex;
     register s32 bitsInByte;
-    register u32 position;
-    register u32 nextPosition;
+    register s32 position;
     register s32 startBit;
     register s32 piece;
 
     if (remaining == 0)
         return 0;
     position = *bitOffset;
-    nextPosition = position + remaining;
+    *bitOffset = position + remaining;
     startBit = position & 7;
-    *bitOffset = nextPosition;
     byteIndex = (position >> 3) & 0x1FFF;
     bitsInByte = 8 - startBit;
     while (remaining > 0) {
@@ -7760,8 +7758,7 @@ extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
             take = remaining;
         piece = data[byteIndex] & lbl_802F3408[bitsInByte];
         piece >>= bitsInByte - take;
-        piece <<= remaining - take;
-        result = (u16)(result | piece);
+        result = (u16)(result | (piece << (remaining - take)));
         bitsInByte -= take;
         remaining -= take;
     }
@@ -12348,14 +12345,16 @@ extern "C" void *fn_800D19F8(void *arg0, s32 arg1) {
 }
 
 extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
-    if (((u8 *)this_ptr)[0x1EC] != 0) {
-        OSAlarm *alarm = (OSAlarm *)((u8 *)this_ptr + 0x1A0);
-        OSCreateAlarm(alarm);
-        
+    register u8 *self = (u8 *)this_ptr;
+    if (self[0x1EC] != 0) {
+        OSCreateAlarm((OSAlarm *)(self + 0x1A0));
         OSTime time = OSGetTime();
-        s32 time_base = *(s32 *)0x800000F8;
-        
-        OSSetPeriodicAlarm(alarm, time_base >> 2, 0, (OSAlarmHandler)&fn_800D16C4);
+        u32 ticks = *(volatile u32 *)0x800000F8;
+        u32 q = (ticks >> 2) / 125000U;
+        u32 period = q * 0x0065B9AB;
+        u32 interval = period / 8000U;
+        ((void (*)(void *, u32, u32, u32, u32, u32, void *))OSSetPeriodicAlarm)(
+            self + 0x1A0, q, (u32)(time >> 32), (u32)time, 0, interval, (void *)&fn_800D16C4);
     }
 }
 
