@@ -357,6 +357,8 @@ class BoundingPane { public:
 extern "C" Vec2 GetVtxPos__Q34nw4r3lyt4PaneCFv(BoundingPane*, unsigned int);
 extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(const Vec2*, const Size*, unsigned int);
 
+extern "C" void *fn_80128520(s32);
+extern "C" void List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
 namespace homebutton { namespace gui { class Manager; class Component { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void *first(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17(); virtual void d18(); virtual void second(Manager *); }; class Manager { public: s32 update(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *); void init(); void addComponent(Component *); }; } }
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
