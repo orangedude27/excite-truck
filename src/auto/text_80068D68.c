@@ -5450,9 +5450,9 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
 #pragma use_lmw_stmw off
 tBTM_STATUS BTM_ReadRemoteDeviceName(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     extern char lbl_80316424[];
-    u32 i;
     u8 *entry;
     u8 *p_i;
+    u32 i;
     tBTM_INQ_INFO *p_cur = NULL;
 
     if (lbl_803C0F78[0x27C0] >= 3) {
@@ -5461,9 +5461,8 @@ tBTM_STATUS BTM_ReadRemoteDeviceName(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
                     remote_bda[3], remote_bda[4], remote_bda[5]);
     }
 
-    i = 0;
     entry = lbl_803C0F78 + 0x16E4;
-    for (; i < 0xC; i++, entry += 0x1C) {
+    for (i = 0; i < 0xC; i++, entry += 0x1C) {
         if (entry[0x1A] != 0 && memcmp(entry + 0xA, remote_bda, 6) == 0) {
             p_i = entry;
             goto found;
