@@ -1855,6 +1855,38 @@ void uusb_CloseDeviceCB(s8 arg0) {
 
 s32 fn_8007011C(void) { return 0; }
 
+void UUSB_Close(void *arg0) {
+    extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
+    typedef struct {
+        u8 pad0[0x29];
+        u8 state;
+        u8 pad2A[2];
+        u8 acl_q[0x10];
+        u8 sco_q[0x10];
+    } uusb_close_view;
+    fn_8006EBAC();
+    {
+        register uusb_close_view *base = (uusb_close_view *)&lbl_803BD1E0;
+        base->state = 0;
+        fn_8006EB88();
+        if (*(u16 *)(base->acl_q + 8) != 0) {
+            while (*(u16 *)(base->acl_q + 8) != 0) {
+                GKI_freebuf(GKI_dequeue((BUFFER_Q *)base->acl_q));
+            }
+        }
+    }
+    {
+        register uusb_close_view *base = (uusb_close_view *)&lbl_803BD1E0;
+        if (*(u16 *)(base->sco_q + 8) != 0) {
+            while (*(u16 *)(base->sco_q + 8) != 0) {
+                GKI_freebuf(GKI_dequeue((BUFFER_Q *)base->sco_q));
+            }
+        }
+    }
+    IUSB_CloseDeviceAsync(*(s32 *)&lbl_803BD1E0,
+                          (void (*)(void))uusb_CloseDeviceCB, 0);
+}
+
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
  * BUFFER_Q acl_q @0x2C, BUFFER_Q sco_q @0x3C. */
 typedef struct uusb_cb_t {
@@ -5448,6 +5480,28 @@ void fn_800716F0(void *arg0) {
         GKI_freebuf(buf);
         *(void **)arg0 = NULL;
     }
+}
+
+extern const BD_ADDR BT_BD_ANY;
+void bta_dm_disable(void) {
+    extern void bta_dm_disable_timer_cback(void);
+    extern void bta_sys_disable(void);
+
+    L2CA_SetIdleTimeoutByBdAddr((UINT8 *)BT_BD_ANY, 0);
+    bta_sys_disable();
+    BTM_SetDiscoverability(0, 0, 0);
+    BTM_SetConnectability(0, 0, 0);
+    fn_800740A4();
+
+    if (BTM_GetNumAclLinks() == 0) {
+        *(void (**)(void))(lbl_803C0C14 + 0x7C) = fn_80073464;
+        fn_8007146C((s32)(lbl_803C0C14 + 0x74), 0, 0x3E8);
+        return;
+    }
+
+    lbl_803C0C14[0x72] = 1;
+    *(void (**)(void))(lbl_803C0C14 + 0x7C) = bta_dm_disable_timer_cback;
+    fn_8007146C((s32)(lbl_803C0C14 + 0x74), 0, 0x1388);
 }
 
 void bta_dm_disable_timer_cback(void) {
