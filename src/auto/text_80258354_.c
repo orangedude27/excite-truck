@@ -254,6 +254,7 @@ found:
     fn_802354A0(callId0, callId1, arg3, callX, callY, callColor, callCosine);
 }
 #pragma scheduling on
+#pragma paired_single reset
 #pragma ppc_psq_save off
 #pragma use_lmw_stmw reset
 float fn_80258A00(void *arg0, int arg1) {
