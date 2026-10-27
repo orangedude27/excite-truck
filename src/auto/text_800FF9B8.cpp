@@ -66,9 +66,9 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ..
 extern "C" void Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void *, const void *, long, int, const nw4hbm::snd::detail::WsdTrack::WsdCallback *, unsigned long);
 void nw4hbm::snd::detail::WaveSound::Prepare(const void *arg1, long arg2, int arg3, const nw4hbm::snd::detail::WsdTrack::WsdCallback *arg4, unsigned long arg5) {
     const char *base = lbl_80327500;
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x43, base + 0x18);
-    if (arg4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x44, base + 0x48);
-    if (*(int *)((char *)this + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x45, base + 0x74);
+    if (!arg1) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x43, base + 0x18);
+    if (!arg4) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x44, base + 0x48);
+    if (*(int *)((char *)this + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x45, base + 0x74);
     this->unk_0x58();
     Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl((char *)this + 0xD8, arg1, arg2, arg3, arg4, arg5);
 }
@@ -90,6 +90,59 @@ extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFC9C(in
     SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(arg0 + 0xD8, arg1);
 }
 
+extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *, int);
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
+extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void **, void *);
+extern "C" const char lbl_803257D4[];
+extern "C" const char lbl_803257B0[];
+extern "C" const char lbl_80325804[];
+extern "C" const char lbl_803257E0[];
+extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(void *arg0, int arg1) {
+    int priority;
+    void *list;
+    void *node;
+    void *current;
+    void *sentinel;
+    void *iterator;
+    int value;
+
+    SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
+    value = *(unsigned char *)((char *)arg0 + 0x74) + *(int *)((char *)arg0 + 0x40);
+    if (value > 0x7F) {
+        priority = 0x7F;
+    } else {
+        priority = value & ~(value >> 31);
+    }
+    list = *(void **)((char *)arg0 + 0x1B0);
+    if (arg0 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
+    }
+    node = (char *)arg0 + 0xB8;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)list + 4, node);
+    current = *(void **)((char *)list + 8);
+    sentinel = (char *)list + 8;
+    do {
+        if (current == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23D, lbl_803257E0);
+        }
+        value = *(unsigned char *)((char *)current - 0x44) + *(int *)((char *)current - 0x78);
+        if (value > 0x7F) {
+            value = 0x7F;
+        } else {
+            value &= ~(value >> 31);
+        }
+        if (priority < value) {
+            break;
+        }
+        current = *(void **)current;
+    } while (current != sentinel);
+    if (arg0 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
+    }
+    iterator = current;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)list + 4, &iterator, node);
+}
+
 extern "C" int fn_800FFE54(void *arg0) {
     return *(int *)((char *)arg0 + 0x1AC) != 0;
 }
@@ -107,4 +160,4 @@ extern "C" int fn_800FFE78(int arg0) { return arg0 + 0xD8; }
 extern "C" u32 *fn_800FFE80(void) {
     return &lbl_8055DE88;
 }
-
+#pragma use_lmw_stmw off
