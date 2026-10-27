@@ -418,7 +418,7 @@ void fn_80208994(void) {
 }
 
 void fn_80208998(void) {
-	fn_80208858();
+	((void (*)(void))fn_80208858)();
 }
 
 #pragma push
