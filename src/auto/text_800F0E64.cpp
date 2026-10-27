@@ -1,3 +1,4 @@
+extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, unsigned char);
 typedef signed char s8;
 typedef unsigned char u8;
 typedef signed short s16;
@@ -2229,9 +2230,8 @@ void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
         virtual void update();
     };
 
-    void **list = (void **)((u8 *)self + 4);
-    void *head = *list;
-    void *end = list;
+    void *head = *(void **)((u8 *)self + 4);
+    void *end = (u8 *)self + 4;
     void *node;
 
     while (head != end) {
@@ -3610,6 +3610,34 @@ extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6det
     OSRestoreInterrupts(irq);
     return 1;
 }
+
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+void FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(void *self) {
+    s32 irqState = (s32)OSDisableInterrupts();
+    u8 *player = (u8 *)self;
+    s32 index = 0;
+
+    while (index < *(s32 *)((u8 *)self + 0x4A0)) {
+        void *buffer = *(void **)(player + 0x4A8);
+        if (buffer != 0) {
+            Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), buffer);
+            *(s32 *)(player + 0x4A8) = 0;
+            *(s32 *)(player + 0x4AC) = 0;
+        }
+        player += 0x38;
+        index += 1;
+    }
+
+    *(s32 *)((u8 *)self + 0x4A0) = 0;
+    if (*(void **)((u8 *)self + 0x438) != 0) {
+        Free__Q46nw4hbm3snd6detail7AxVoiceFv(*(void **)((u8 *)self + 0x438));
+        *(s32 *)((u8 *)self + 0x438) = 0;
+    }
+    OSRestoreInterrupts((u32)irqState);
+}
+#pragma use_lmw_stmw reset
+#pragma dont_inline off
 
 extern "C" void VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *voice, s32 status, void *player) {
     const char *base = lbl_80326768;
