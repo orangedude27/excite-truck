@@ -26,6 +26,16 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 
 extern void rfc_port_sm_execute(void *, u16, void *);
 extern char lbl_80319AB0[];
+typedef struct {
+    s32 fd;
+    u8 pad4[0xC];
+    u8 fields_10[4];
+    u8 pad14[0xC];
+    void (*callback)(s32, s8);
+    u8 pad24[4];
+    u8 at_0x28;
+    u8 state;
+} uusb_cb_view;
 struct uusb_cb_t;
 extern struct uusb_cb_t lbl_803BD1E0;
 extern u8 lbl_8055DC50;
@@ -1819,6 +1829,28 @@ int fn_8006F254(s32 arg0) {
 int fn_8006F284(s32 arg0) {
     hcisu_h2_receive_msg((u16)(arg0 - 8 - *(u16 *)((u8 *)&lbl_803BD1A0 + 0x12)), (u8 *)&lbl_803BD1A0);
     return 0;
+}
+
+void uusb_CloseDeviceCB(s8 arg0) {
+    register u8 *control = (u8 *)&lbl_803BD1E0;
+    register s32 zero = 0;
+    void (*callback)(s32, s8);
+
+    *(s32 *)&lbl_803BD1E0 = zero;
+    control[0x10] = zero;
+    control[0x11] = zero;
+    control[0x12] = zero;
+    control[0x13] = zero;
+    lbl_8055DC50 = zero;
+    fn_8009B0E0();
+    fn_8006EBAC();
+    control[0x28] = zero;
+    control[0x29] = 5;
+    lbl_8055DC51 = zero;
+    fn_8006EB88();
+    callback = *(void (**)(s32, s8))(control + 0x20);
+    if (callback != 0)
+        callback(4, arg0);
 }
 
 s32 fn_8007011C(void) { return 0; }
