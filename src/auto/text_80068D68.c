@@ -5874,29 +5874,29 @@ void bta_dm_pin_reply(u8 *arg0) {
     }
 }
 
-void bta_dm_auth_reply(void *arg0) {
+void bta_dm_auth_reply(u8 *arg0) {
     u32 trusted_mask[2];
     u32 service_id;
     u32 word_index;
     u32 *p;
-    p = (u32 *)fn_8008128C((u8 *)arg0 + 8);
-    if (p == 0) {
-        memset(trusted_mask, 0, 8);
-    } else {
+    p = (u32 *)fn_8008128C(arg0 + 8);
+    if (p != 0) {
         memcpy(trusted_mask, p, 8);
+    } else {
+        memset(trusted_mask, 0, 8);
     }
-    if (*((u8 *)arg0 + 0xF) != 2) {
-        if (*((u8 *)arg0 + 0xF) == 0) {
-            u8 index = *((u8 *)arg0 + 0xE);
+    if (arg0[0xF] != 2) {
+        if (arg0[0xF] == 0) {
+            u8 index = arg0[0xE];
             if (index <= 0x17) {
                 service_id = lbl_802EE9C0[index];
                 word_index = (service_id >> 3) & 0x3FC;
                 *(u32 *)((u8 *)trusted_mask + word_index) |= 1 << (service_id - (service_id & 0x1FE0));
             }
         }
-        BTM_DeviceAuthorized((u8 *)arg0 + 8, 0, trusted_mask);
+        BTM_DeviceAuthorized(arg0 + 8, 0, trusted_mask);
     } else {
-        BTM_DeviceAuthorized((u8 *)arg0 + 8, 0xB, trusted_mask);
+        BTM_DeviceAuthorized(arg0 + 8, 0xB, trusted_mask);
     }
 }
 
@@ -11818,23 +11818,20 @@ void l2cu_send_peer_config_rsp(void *arg0, void *arg1)
 void l2cu_send_peer_disc_req(void *p_ccb) {
     u32 id;
     void *p_buf;
+    u8 *p_lcb;
 
     id = *(u8 *)(*(u8 **)((u8 *)p_ccb + 0x10) + 0x31) + 1;
     *(u8 *)(*(u8 **)((u8 *)p_ccb + 0x10) + 0x31) = id;
-    *(u8 *)((u8 *)p_ccb + 0x35) = id;
+    *(volatile u8 *)((u8 *)p_ccb + 0x35) = id;
+    p_lcb = *(u8 * volatile *)((u8 *)p_ccb + 0x10);
     p_buf = ((void *(*)(u16, u8, u8, u8, void *))l2cu_build_header)(
-        *(u16 *)(*(u8 * volatile *)((u8 *)p_ccb + 0x10) + 0x28),
-        4,
-        6,
-        id,
-        *(u8 **)((u8 *)p_ccb + 0x10)
+        *(u16 *)(p_lcb + 0x28), 4, 6, id, p_lcb
     );
     if (p_buf == NULL) {
         if (lbl_803C4040[0] >= 2)
             fn_8007093C(0x80001, lbl_80319174);
         return;
     }
-
     *(u8 *)((u8 *)p_buf + 0x14) = *(u16 *)((u8 *)p_ccb + 0x16);
     *(u8 *)((u8 *)p_buf + 0x15) = *(u16 *)((u8 *)p_ccb + 0x16) >> 8;
     *(u8 *)((u8 *)p_buf + 0x16) = *(u16 *)((u8 *)p_ccb + 0x14);
