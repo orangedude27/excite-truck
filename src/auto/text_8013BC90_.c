@@ -45,10 +45,10 @@ void fn_8013BD30(void *arg0) {
 }
 
 extern void fn_8013BD30(void *);
-extern const char lbl_8032C3D8[];
-extern const char lbl_80559CE0[];
-extern const char lbl_80559CE8[];
-extern const char lbl_80559CF0[];
+extern char lbl_8032C3D8[];
+extern char lbl_80559CE0[];
+extern char lbl_80559CE8[];
+extern char lbl_80559CF0[];
 void fn_8013BD5C(void *arg0, void *arg1) {
     float *v = (float *)arg0;
     void *p;
