@@ -1,5 +1,7 @@
   #include <types.h>
 #include <macros.h>
+extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
+extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *a, void *b);
 class PaneAnimTransformDispatch {
 public:
     virtual void d0(void *, bool);
@@ -7112,9 +7114,7 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     scale = 9;
     factor = one << (((word0 >> 7) & 7) + 2);
     exponent = (word1 >> 8) & 0xF;
-    mantissa = word0 >> 22;
-    mantissa &= 0xFFCFFFFF;
-    mantissa |= (word1 & 3) << 20;
+    mantissa = (word0 >> 22) + ((word1 & 3) << 20);
     mantissa++;
     size = mantissa * factor;
     if (exponent >= 9) {
