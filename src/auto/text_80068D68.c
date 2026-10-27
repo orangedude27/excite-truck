@@ -3416,6 +3416,21 @@ void fn_80076E70(void) {
     lbl_803C0F78[0x27BF] = 0xFF;
 }
 
+u8 btm_handle_to_acl_index(u16 hci_handle) {
+    u8 *base = lbl_803C0F78;
+    u32 index = 0;
+    if (base[0x14D] != 0 && *(u16 *)(base + 0x34) == hci_handle) goto done;
+    index = 1;
+    if (base[0x269] != 0 && *(u16 *)(base + 0x150) == hci_handle) goto done;
+    index = 2;
+    if (base[0x385] != 0 && *(u16 *)(base + 0x26C) == hci_handle) goto done;
+    index = 3;
+    if (base[0x4A1] != 0 && *(u16 *)(base + 0x388) == hci_handle) goto done;
+    index = 4;
+done:
+    return index;
+}
+
 extern u8 lbl_80315CE0[];
 s32 btsnd_hcic_auth_request_80084478(u16);
 s32 btsnd_hcic_auth_request_800844F4(u16);
@@ -7886,6 +7901,27 @@ int btsnd_hcic_reject_esco_conn(void *p_buf, u8 *bd_addr, u8 reason) {
     buf[0x10] = bd_addr[0];
     buf[0x11] = reason;
     return btu_hcif_send_cmd(buf);
+}
+
+s32 btsnd_hcic_exit_sniff_mode(void *arg0, u16 arg1) {
+    u8 *p = (u8 *)arg0;
+    register u8 field8 = 4;
+    register u8 field9 = 8;
+    register u8 field10 = 2;
+    if (p == NULL) {
+        p = GKI_getpoolbuf(2);
+        if (p == NULL)
+            return 0;
+    }
+    *(u16 *)(p + 2) = 5;
+    *(u16 *)(p + 4) = 0;
+    p[8] = field8;
+    p[9] = field9;
+    p[10] = field10;
+    p[11] = arg1;
+    p[12] = arg1 >> 8;
+    btu_hcif_send_cmd(p, field10, field9, field8);
+    return 1;
 }
 
 s32 btsnd_hcic_hold_mode_80084A34(u8 *p, u16 handle, u16 max_interval, u16 min_interval) {
