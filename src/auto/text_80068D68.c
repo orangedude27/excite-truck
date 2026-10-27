@@ -12024,6 +12024,37 @@ void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
     }
 }
 
+void rfc_port_sm_execute(void *p_port, u16 event, void *p_data) {
+    if (p_port == 0) {
+        if (lbl_803C4828[0x414] >= 2)
+            fn_80070954(0x90001, lbl_80319AB0, event);
+        return;
+    }
+
+    switch (*((u8 *)p_port + 0x68)) {
+    case 0:
+        rfc_port_sm_state_closed(p_port, event, p_data);
+        break;
+    case 1:
+        rfc_port_sm_sabme_wait_ua(p_port, event, p_data);
+        break;
+    case 2:
+        rfc_port_sm_orig_wait_sec_check(p_port, event, p_data);
+        break;
+    case 3:
+        rfc_port_sm_term_wait_sec_check(p_port, event, p_data);
+        break;
+    case 4:
+        rfc_port_sm_opened(p_port, event, p_data);
+        break;
+    case 5:
+        rfc_port_sm_disc_wait_ua(p_port, event, p_data);
+        break;
+    default:
+        break;
+    }
+}
+
 void rfc_port_sm_state_closed(void *p_port, u16 event, void *p_data) {
     extern char lbl_80319AC4[];
     extern char lbl_80319AE4[];
