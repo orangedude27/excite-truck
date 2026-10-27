@@ -272,6 +272,24 @@ void fn_8001F76C(void) {
     memset(lbl_8035AF38, 0, 0x820);
 }
 
+#pragma scheduling invalid_target
+int fn_8001F7E4(s32 arg0, s32 arg1) {
+    s32 limit;
+    s32 adjusted;
+
+    if (fn_8001FD24()) {
+        if (arg0 == 0 && *(u8 *)&lbl_8055D614 != 0) {
+            limit = lbl_8055D618 - fn_8001F89C(arg0, fn_8000DA10());
+            adjusted = arg1;
+            if (limit < arg1)
+                adjusted = limit;
+            fn_802E30C8(lbl_802FE060, arg1, adjusted);
+            arg1 = adjusted;
+        }
+        *(s32 *)(arg0 * 4 + (u32)lbl_8035AF38) += arg1;
+    }
+}
+#pragma scheduling on
 extern char lbl_802FE0A0[];
 s32 fn_8001F89C(s32 arg0, s32 arg1) {
     if (arg1 >= 0 && (u32)arg1 < 4) {
@@ -362,31 +380,54 @@ zero:
     return 0;
 }
 
+extern void *fn_80016720(const char *);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 int fn_8001FAC8(int arg0, const char *arg1) {
-    int name = fn_80016720(arg1);
-    int total = 0;
-    int index = fn_8000DA10() * 0x820;
-    int offset = arg0 * 4;
-    char *base = &lbl_80358698[index];
-    char *nameTable = base + 0x50;
-    char *valueTable = base + offset;
-    int i;
+    register char *table = lbl_80358698;
+    register char *name;
+    register int total = 0;
+    register int offset;
+    register unsigned int i;
+    register char *region;
+    register char *nameTable;
+    register char *valueTable;
+
+    name = (char *)fn_80016720(arg1);
+    region = table + fn_8000DA10() * 0x820;
+    offset = arg0 * 4;
+    nameTable = region + 0x50;
+    valueTable = region + offset;
     for (i = 0; i < 0x32; i++) {
-        if (stricmp(nameTable, (const char *)name) == 0) total += *(int *)(valueTable + 0x70);
-        nameTable += 0x28; valueTable += 0x28;
+        if (stricmp(nameTable, name) == 0)
+            total += *(int *)(valueTable + 0x70);
+        nameTable += 0x28;
+        valueTable += 0x28;
     }
-    base = lbl_80358698 + 0x2080; nameTable = base + 0x50; valueTable = base + offset;
+
+    region = table + 0x2080;
+    nameTable = region + 0x50;
+    valueTable = region + offset;
     for (i = 0; i < 0x32; i++) {
-        if (stricmp(nameTable, (const char *)name) == 0) total += *(int *)(valueTable + 0x70);
-        nameTable += 0x28; valueTable += 0x28;
+        if (stricmp(nameTable, name) == 0)
+            total += *(int *)(valueTable + 0x70);
+        nameTable += 0x28;
+        valueTable += 0x28;
     }
-    base = lbl_80358698 + 0x28A0; nameTable = base + 0x50; valueTable = base + offset;
+
+    region = table + 0x28A0;
+    nameTable = region + 0x50;
+    valueTable = region + offset;
     for (i = 0; i < 0x32; i++) {
-        if (stricmp(nameTable, (const char *)name) == 0) total += *(int *)(valueTable + 0x70);
-        nameTable += 0x28; valueTable += 0x28;
+        if (stricmp(nameTable, name) == 0)
+            total += *(int *)(valueTable + 0x70);
+        nameTable += 0x28;
+        valueTable += 0x28;
     }
     return total;
 }
+#pragma pop
 
 extern s32 fn_801E8838(void);
 s32 fn_8001FD24(void) {
