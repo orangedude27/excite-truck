@@ -235,7 +235,7 @@ int CPGPLinkCheck(void) {
         return 0;
     }
     error = 0;
-    first = lbl_8037C0E4;
+    first = *(unsigned int *)&lbl_8037C0E4;
     second = lbl_8037C0C0;
     if (first == second) {
         error = 1;
@@ -379,22 +379,24 @@ typedef struct { unsigned int mode0; unsigned int mode1; } __GXTexObjInt;
 static unsigned char GX2HWFiltConv[6] = { 0x00, 0x04, 0x01, 0x05, 0x02, 0x06 };
 extern unsigned int lbl_8037C0E4;
 int GXGetCPUFifo(void *fifo) {
-    unsigned int *src = &lbl_8037C0E4;
-    unsigned int *dst = fifo;
+    struct Pair {
+        unsigned int first;
+        unsigned int second;
+    };
     if (!lbl_8055D948) {
         return 0;
     }
     GXGetVtxDesc();
     __GXSaveFifo();
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
-    dst[3] = src[3];
-    dst[4] = src[4];
-    dst[5] = src[5];
-    dst[6] = src[6];
-    dst[7] = src[7];
-    dst[8] = src[8];
+    {
+        struct Pair *src = (struct Pair *)&lbl_8037C0E4;
+        struct Pair *dst = (struct Pair *)fifo;
+        dst[0] = src[0];
+        dst[1] = src[1];
+        dst[2] = src[2];
+        dst[3] = src[3];
+        ((unsigned int *)dst)[8] = ((unsigned int *)src)[8];
+    }
     return 1;
 }
 
@@ -2693,22 +2695,40 @@ void __GXFlushTextureState(void) {
 
 extern unsigned int lbl_80303C30[];
 void GXSetTevOp(int stage, int mode) {
-    unsigned int *color;
-    unsigned int *alpha;
     unsigned int *base = lbl_80303C30;
     unsigned int *data;
     unsigned int *tev;
+    unsigned int *color;
+    unsigned int *alpha;
+    unsigned int inputValue;
+    unsigned int oldValue;
     unsigned int value;
-    if (stage == 0) { color = base + mode; alpha = base + 10 + mode; }
-    else { color = base + 5 + mode; alpha = base + 15 + mode; }
+
+    if (stage == 0) {
+        color = base;
+        alpha = base + 10;
+        color += mode;
+        alpha += mode;
+    } else {
+        color = base + 5;
+        alpha = base + 15;
+        color += mode;
+        alpha += mode;
+    }
     data = __GXData;
     tev = data + stage;
+    inputValue = *color;
+    oldValue = tev[0x180 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = (tev[0x180 / 4] & 0xFF000000) | (*color & 0xFFFFFF);
+    value = oldValue & 0xFF000000;
+    value = __rlwimi(value, inputValue, 0, 8, 31);
     *(volatile unsigned int *)0xCC008000 = value;
     tev[0x180 / 4] = value;
-    value = (tev[0x1C0 / 4] & 0xF000000F) | (*alpha & 0x0FFFFFF0);
+    oldValue = tev[0x1C0 / 4];
+    inputValue = *alpha;
+    value = oldValue & 0xFF00000F;
     *(volatile unsigned char *)0xCC008000 = 0x61;
+    value = __rlwimi(value, inputValue, 0, 8, 27);
     *(volatile unsigned int *)0xCC008000 = value;
     tev[0x1C0 / 4] = value;
     *(unsigned short *)((char *)data + 2) = 0;
@@ -3370,7 +3390,7 @@ void GXSetCurrentMtx(s32 arg0) {
 
 void __GXSetViewport(void) {
     unsigned int *d = __GXData;
-    register f32 f6, f2, f3, f1, f0, f7, f4, f5, f8, f9;
+    register f32 f9, f8, f5, f4, f7, f0, f1, f3, f2, f6;
     volatile u8 *bp8 = (volatile u8 *)0xCC008000;
     volatile u32 *bp32 = (volatile u32 *)0xCC008000;
     volatile f32 *bpf = (volatile f32 *)0xCC008000;
