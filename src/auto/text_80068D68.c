@@ -4741,6 +4741,29 @@ void btm_discovery_db_init(void) {
     SDP_InitDiscoveryDb(*(tSDP_DISCOVERY_DB **)(lbl_803C0F78 + 0x1678), 0xFA0, 1, (tSDP_UUID *)(lbl_803C0F78 + 0x674), 0, 0);
 }
 
+void btm_discovery_db_reset(void)
+{
+    void (*callback)(s32);
+
+    fn_80070F90(lbl_803C0F78 + 0x658);
+    if (lbl_803C0F78[0x1674] != 0) {
+        callback = *(void (**)(s32))(lbl_803C0F78 + 0x6D0);
+        lbl_803C0F78[0x1674] = 0;
+        *(void (**)(s32))(lbl_803C0F78 + 0x6D0) = 0;
+        if (callback != 0)
+            callback(0);
+    }
+
+    *(tSDP_DISCOVERY_DB **)(lbl_803C0F78 + 0x1678) =
+        (tSDP_DISCOVERY_DB *)(lbl_803C0F78 + 0x6D4);
+    memset(lbl_803C0F78 + 0x658, 0, 0x1020);
+    *(u16 *)(lbl_803C0F78 + 0x670) = 1;
+    *(u16 *)(lbl_803C0F78 + 0x674) = 2;
+    *(u16 *)(lbl_803C0F78 + 0x678) = 0x1002;
+    SDP_InitDiscoveryDb(*(tSDP_DISCOVERY_DB **)(lbl_803C0F78 + 0x1678),
+                        0xFA0, 1, (tSDP_UUID *)(lbl_803C0F78 + 0x674), 0, 0);
+}
+
 void fn_8007AD38(void) {
 
 }
