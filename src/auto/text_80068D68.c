@@ -77,6 +77,7 @@ typedef struct {
 
 extern void rfc_port_sm_execute(void *, u16, void *);
 extern char lbl_80319AB0[];
+extern char lbl_803160C0[];
 extern char lbl_80319174[];
 typedef struct uusb_cb_t {
     s32 fd;
@@ -14957,15 +14958,14 @@ BOOLEAN SDP_AddUuidSequence(UINT32 handle, UINT16 attr_id, UINT16 num_uuids, UIN
 }
 
 u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
-    register u8 *p;
-    u8 *start;
+    u8 *start = out + 1;
+    u8 *p;
     u32 i;
     s32 j;
     u16 len;
 
     *out = 0x35;
-    p = out + 1;
-    start = p;
+    p = start;
     p++;
     for (i = 0; i < count; i++) {
         len = *(u16 *)uuid;
@@ -14991,7 +14991,7 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
         uuid += 0x14;
     }
     *start = (u8)(p - start - 1);
-    return p;
+    return start + (p - start);
 }
 
 extern void process_service_search_attr_rsp(tCONN_CB *, u8 *, u16);
