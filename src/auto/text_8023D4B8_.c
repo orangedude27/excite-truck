@@ -296,35 +296,81 @@ void fn_8023E16C(void *arg0, int arg1) {
 }
 
 extern char lbl_80341BE0[];
-void fn_8023E1FC(void *arg0) {
-    int i, sp8;
-    char sp18[0x14];
-    char *p;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_8023E1FC(void *arg0) {
+    struct Interface {
+        virtual void slot00();
+        virtual void slot01();
+        virtual void slot02();
+        virtual void slot03();
+        virtual void slot04();
+        virtual void slot05();
+        virtual void slot06();
+        virtual void slot07();
+        virtual void slot08();
+        virtual void slot09();
+        virtual void slot10();
+        virtual void slot11();
+        virtual void slot12();
+        virtual void slot13();
+        virtual void slot14();
+        virtual void slot15();
+        virtual void slot16();
+        virtual void slot17();
+        virtual void slot18();
+        virtual void slot19();
+        virtual void slot20();
+        virtual void slot21();
+        virtual void slot22();
+        virtual void slot23();
+        virtual void slot24();
+        virtual void slot25();
+        virtual void *query();
+    };
+    struct Frame {
+        int result;
+        volatile int state;
+        char pad0[4];
+        volatile char zero;
+        char pad1[3];
+        char string[0x14];
+    } frame;
+    int i;
+    Interface *object;
+
     fn_8022D76C();
+    frame.state = *(int *)((char *)arg0 + 0x30);
+    frame.zero = 0;
     for (i = 0; i < 0x11; i++) {
         char *entry = lbl_802FA190 + i * 8;
         fn_8022D894(arg0, i, 0, *(char **)fn_8023DC38(*(char **)entry), 0);
-        fn_801A7974((const char *)&sp8, (int)*(char **)entry, (int)*(void **)((char *)*(void ***)((char *)arg0 + 0x34) + 0x70));
-        if (sp8 == 0) {
-            p = lbl_8055BBA0;
-            {
-                int n = 0x14;
-                char *q = sp18;
-                do {
-                    char c = *p++;
-                    *q++ = c;
-                    if ((signed char)c == 0) break;
-                    n--;
-                    if (n <= 0) { q[-1] = 0; break; }
-                } while (1);
-            }
+        object = *(Interface **)((char *)arg0 + 0x34);
+        fn_801A7974((const char *)&frame.result, (int)*(char **)entry, (int)object->query());
+        if (frame.result == 0) {
+            char *src = lbl_8055BBA0;
+            char *dst = frame.string;
+            int count = 0x14;
+            do {
+                char c = *src++;
+                *dst++ = c;
+                if ((signed char)c == 0) break;
+                count--;
+                if (count <= 0) {
+                    dst[-1] = 0;
+                    break;
+                }
+            } while (1);
         } else {
-            fn_801A7E54(sp18, 0x14, (void *)sp8);
+            fn_801A7E54(frame.string, 0x14, (void *)frame.result);
         }
-        fn_8022D894(arg0, i, 1, sp18, 0);
+        fn_8022D894(arg0, i, 1, frame.string, 0);
     }
     fn_8022D894(arg0, 0x11, 0, lbl_80341BE0, 0);
 }
+#pragma cplusplus reset
+#pragma pop
 
 void fn_8023E33C(void *arg0) {
     struct NameInfo {
