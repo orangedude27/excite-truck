@@ -8652,6 +8652,41 @@ BOOLEAN btsnd_hcic_setup_esco_conn(UINT16 handle, UINT32 tx_bandwidth, UINT32 rx
     return TRUE;
 }
 
+void btsnd_hcic_accept_esco_conn(BT_HDR *p, BD_ADDR bd_addr, UINT32 tx_bw,
+                                     UINT32 rx_bw, UINT16 max_latency,
+                                     UINT16 content_fmt, UINT8 retrans_effort,
+                                     UINT16 packet_types) {
+    UINT8 *pp = (UINT8 *)(p + 1);
+
+    p->len = 0x18;
+    p->offset = 0;
+    pp[0] = 0x29;
+    pp[1] = 4;
+    pp[2] = 0x15;
+    pp[3] = bd_addr[5];
+    pp[4] = bd_addr[4];
+    pp[5] = bd_addr[3];
+    pp[6] = bd_addr[2];
+    pp[7] = bd_addr[1];
+    pp[8] = bd_addr[0];
+    pp[9] = tx_bw;
+    pp[10] = tx_bw >> 8;
+    pp[11] = tx_bw >> 16;
+    pp[12] = tx_bw >> 24;
+    pp[13] = rx_bw;
+    pp[14] = rx_bw >> 8;
+    pp[15] = rx_bw >> 16;
+    pp[16] = rx_bw >> 24;
+    pp[17] = max_latency;
+    pp[18] = max_latency >> 8;
+    pp[19] = content_fmt;
+    pp[20] = content_fmt >> 8;
+    pp[21] = retrans_effort;
+    pp[22] = packet_types;
+    pp[23] = packet_types >> 8;
+    btu_hcif_send_cmd(p);
+}
+
 int btsnd_hcic_reject_esco_conn(void *p_buf, u8 *bd_addr, u8 reason) {
     u8 *buf = p_buf;
 
@@ -9489,26 +9524,27 @@ u8 HID_HostDeregister(void) {
     extern void fn_80070F90(void *);
     extern void fn_80089248(void);
     u8 *entry;
-    u8 *base = lbl_803C3C38;
-    u32 i;
+    u8 *base;
+    u8 i;
     u32 offset;
     u8 one = 1;
     u8 zero = 0;
 
+    base = lbl_803C3C38;
     if (base[0x400] == 0)
         return 1;
     for (i = 0; i < 0x10; i++) {
         u8 flag = base[0x400];
         u8 active;
-        offset = ((u8)i) * 0x34;
+        offset = i * 0x34;
         entry = base + offset;
         active = base[offset];
-        if (active != 0 && flag != 0 && (u8)i <= 0x10) {
+        if (active != 0 && flag != 0 && i <= 0x10) {
             entry[0xC] = one;
             fn_80070F90(entry + 0x1C);
             if (entry[0xA] == 1) {
                 entry[0xC] = one;
-                hidh_conn_disconnect((u8)i);
+                hidh_conn_disconnect(i);
             }
             entry[0] = zero;
             entry[0x10] = zero;
