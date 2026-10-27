@@ -346,11 +346,13 @@ extern "C" int fn_80277754(void *arg0) {
 done:
     return 1;
 }
+#pragma cplusplus off
+#pragma pop
 
 extern float lbl_80564070, lbl_80564074;
-extern "C" int sprintf(char*, const char*, ...);
-extern "C" char *strcpy(char*, const char*);
-extern "C" void fn_80277828(void) {
+extern int sprintf(char*, const char*, ...);
+extern char *strcpy(char*, const char*);
+void fn_80277828(void) {
     unsigned char* def = lbl_8049FE98;
     *(float*)(def + 4) = lbl_8056404C;
     *(float*)(def + 8) = lbl_80564048;
@@ -397,12 +399,9 @@ extern "C" void fn_80277828(void) {
         lbl_8055F5A0 = i + 1;
         entry[0] = 1;
         *(float*)(entry + 0x34) = lbl_80564074;
-        strcpy((char*)*(volatile int*)&lbl_8055F59C + 0x38, &lbl_8055C644);
+        strcpy((char*)lbl_8055F59C + 0x38, &lbl_8055C644);
     }
 }
-
-#pragma cplusplus off
-#pragma pop
 int fn_80277960(void *arg0, void *arg1, float *arg2) {
     unsigned char *p = (unsigned char *)fn_80276A44();
     if (p != 0) {
