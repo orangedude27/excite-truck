@@ -3,6 +3,16 @@
 
 #include <types.h>
 
+typedef struct {
+    char unk_0x00[0xC];
+    char unk_0x0C[0xC];
+    char unk_0x18[0xC];
+    char unk_0x24[0xC];
+    char unk_0x30[0xC];
+    char unk_0x3C[4];
+} fn_80203C50Data;
+
+
 void fn_80203D84(s32* arg0);
 void fn_80203DC8(void);
 void fn_80203E88(void);
@@ -484,31 +494,31 @@ void fn_80203B20(s32 arg0, s32 arg1, s32 arg2) {
     u8 stack[0x60];
 
     fn_802CB274(lbl_8055ECFC);
-    if (lbl_8055ED08 != 0) {
-        fn_802C9294(lbl_8055ECFC, 0);
-        ((f32 *)(stack + 0x30))[9] = lbl_805630CC;
-        ((f32 *)(stack + 0x30))[10] = lbl_80563134;
-        ((f32 *)(stack + 0x30))[11] = lbl_805630CC;
-        ((f32 *)(stack + 0x30))[0] = lbl_805630D4;
-        ((f32 *)(stack + 0x30))[1] = lbl_805630CC;
-        ((f32 *)(stack + 0x30))[2] = lbl_805630CC;
-        ((f32 *)(stack + 0x30))[3] = lbl_805630CC;
-        ((f32 *)(stack + 0x30))[4] = lbl_805630CC;
-        ((f32 *)(stack + 0x30))[5] = lbl_805630D4;
-        ((f32 *)(stack + 0x30))[6] = lbl_805630CC;
-        ((f32 *)(stack + 0x30))[7] = lbl_805630F4;
-        ((f32 *)(stack + 0x30))[8] = lbl_805630CC;
-        fn_802C8638((f32 *)(stack + 0x30), lbl_805630D4, lbl_80563134, lbl_805630CC);
-        fn_802C87B4(0, 0, 0x100, 0x100);
-        fn_802C974C(lbl_805630D4, lbl_80563138, lbl_8056313C);
-        fn_802C86E8(0xFF00FF00);
-        fn_802C88BC(-1);
-        fn_80202F58((void *)arg1, (void *)arg0, (s32 *)stack);
-        if (fn_80202BE4() == 0 && arg2 != 0)
-            fn_80203A88((void *)arg1, arg0, (unk_80203A88_dest *)stack);
-        fn_802C9294(-1, 0);
-        lbl_8055ED08 = !lbl_8055ED08;
-    }
+    if (lbl_8055ED08 == 0)
+        return;
+    fn_802C9294(lbl_8055ECFC, 0);
+    ((f32 *)(stack + 0x30))[9] = lbl_805630CC;
+    ((f32 *)(stack + 0x30))[10] = lbl_80563134;
+    ((f32 *)(stack + 0x30))[11] = lbl_805630CC;
+    ((f32 *)(stack + 0x30))[0] = lbl_805630D4;
+    ((f32 *)(stack + 0x30))[1] = lbl_805630CC;
+    ((f32 *)(stack + 0x30))[2] = lbl_805630CC;
+    ((f32 *)(stack + 0x30))[3] = lbl_805630CC;
+    ((f32 *)(stack + 0x30))[4] = lbl_805630CC;
+    ((f32 *)(stack + 0x30))[5] = lbl_805630D4;
+    ((f32 *)(stack + 0x30))[6] = lbl_805630CC;
+    ((f32 *)(stack + 0x30))[7] = lbl_805630F4;
+    ((f32 *)(stack + 0x30))[8] = lbl_805630CC;
+    fn_802C8638((f32 *)(stack + 0x30), lbl_805630D4, lbl_80563134, lbl_805630CC);
+    fn_802C87B4(0, 0, 0x100, 0x100);
+    fn_802C974C(lbl_805630D4, lbl_80563138, lbl_8056313C);
+    fn_802C86E8(0xFF00FF00);
+    fn_802C88BC(-1);
+    fn_80202F58((void *)arg1, (void *)arg0, (s32 *)stack);
+    if (fn_80202BE4() == 0 && arg2 != 0)
+        fn_80203A88((void *)arg1, arg0, (unk_80203A88_dest *)stack);
+    fn_802C9294(-1, 0);
+    lbl_8055ED08 = (u8)((u32)__cntlzw((u32)lbl_8055ED08) >> 5);
 }
 #pragma pop
 extern s32 fn_8012C33C(char *);
