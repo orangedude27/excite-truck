@@ -263,7 +263,7 @@ struct Mtx48 {
 };
 extern void fn_801A4868(void *, int);
 extern void fn_8017A57C(void *);
-extern void fn_8017A580(void *);
+extern void fn_8017A580();
 extern void fn_8017B2D0(void *, float, float, float, float);
 extern void fn_801D4294(void *, void *);
 extern void fn_8017D2C8();
