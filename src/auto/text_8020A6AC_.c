@@ -205,63 +205,78 @@ int fn_8020AA98(void *arg0) { volatile int *p = (volatile int *)((char *)arg0 + 
 
 extern const char lbl_8033C3B4[];
 extern const char lbl_8033C3C0[];
-extern const char lbl_8055B5A0[];
-extern const char lbl_8055B5A8[];
-extern const char lbl_8055B5B0[];
+#include <macros.h>
+DECL_SECTION(".sdata") extern const char lbl_8055B5A0[];
+DECL_SECTION(".sdata") extern const char lbl_8055B5A8[];
+DECL_SECTION(".sdata") extern const char lbl_8055B5B0[];
 extern float lbl_805632B4;
 extern void *fn_80131808(const char *);
 extern void fn_80131818(void *);
 extern void fn_802E58B8(int);
 extern int strcmp(const char *, const char *);
-void fn_8020AAC0(int unused, int arg1) {
-    typedef void *(*GetAt)(void *, int);
-    typedef const char *(*GetName)(void *);
-    typedef const char *(*GetString)(void *, const char *, int);
-    typedef float (*GetValue)(void *, const char *, float);
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8020AAC0(int unused, int arg1) {
+    struct List {
+        virtual void dummy0();
+        virtual void *getAt(int);
+    };
+    struct Entry {
+        virtual const char *getName();
+        virtual void dummy1();
+        virtual void dummy2();
+        virtual const char *getString(const char *, int);
+        virtual void dummy4();
+        virtual void dummy5();
+        virtual void dummy6();
+        virtual void dummy7();
+        virtual float getValue(const char *, float);
+    };
     void *list = fn_80131808(lbl_8033C3B4);
     if (list != 0) {
         int index = 0;
         void *item;
-        do {
-            item = ((GetAt)(*(void ***)list)[3])(list, index);
-            if (item != 0) {
-                const char *name = ((GetName)(*(void ***)item)[2])(item);
-                if (strcmp(name, lbl_8055B5A0) == 0) {
-                    int n = (int)lbl_8055EE08;
-                    char *dest = lbl_804892D0 + n * 0x24;
-                    const char *s;
-                    lbl_8055EE08 = (void *)(n + 1);
-                    s = ((GetString)(*(void ***)item)[5])(item, lbl_8055B5A8, n);
-                    {
-                        int left = 0x20;
-                        goto copy_check;
+        char *base = lbl_804892D0;
+        while ((item = ((List *)list)->getAt(index)) != 0) {
+            Entry *entry = (Entry *)item;
+            const char *name = entry->getName();
+            if (strcmp(name, lbl_8055B5A0) == 0) {
+                int n = (int)lbl_8055EE08;
+                char *record = base + n * 0x24;
+                const char *s;
+                lbl_8055EE08 = (void *)(n + 1);
+                s = entry->getString(lbl_8055B5A8, n);
+                {
+                    int left = 0x20;
+                    char *dest = record;
+                    goto copy_check;
 copy_loop:
-                        if (--left > 0)
-                            goto copy_check;
-                        dest[-1] = 0;
-                        goto copy_done;
+                    if (--left > 0)
+                        goto copy_check;
+                    dest[-1] = 0;
+                    goto copy_done;
 copy_check:
-                        {
-                            char c = *s++;
-                            *dest++ = c;
-                            if ((signed char)c != 0)
-                                goto copy_loop;
-                        }
-copy_done:
-                        ;
+                    {
+                        unsigned char c = *s++;
+                        *dest++ = c;
+                        if ((signed char)c != 0)
+                            goto copy_loop;
                     }
-                    ((GetValue)(*(void ***)item)[10])(item, lbl_8055B5B0, lbl_805632B4);
+copy_done:
+                    ;
                 }
-                ++index;
+                *((float *)(record + 0x20)) = entry->getValue(lbl_8055B5B0, lbl_805632B4);
             }
-        } while (item != 0);
+            ++index;
+        }
         fn_80131818(list);
     } else {
         fn_802E317C(lbl_8033C3C0);
     }
     fn_802E58B8(arg1);
 }
-
+#pragma cplusplus reset
+#pragma pop
 extern void fn_802E5950(int, int); void fn_8020AC0C(int arg0, int arg1, int arg2) { fn_802E5950(arg1, arg2); }
 
 extern void fn_802E59BC(void *); void fn_8020AC18(void *arg0, int arg1) { fn_802E59BC((void *)arg1); }
