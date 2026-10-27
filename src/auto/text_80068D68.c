@@ -3802,7 +3802,7 @@ void btm_acl_removed(u8 *addr) {
     }
 }
 
-extern void l2c_link_hci_disc_comp(u16, u8);
+extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
 void btm_acl_device_down(void)
 {
     u8 *entry;
