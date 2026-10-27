@@ -7055,7 +7055,34 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
           return 0;
   }
 
-extern "C" s32 fn_800BABD0(void *arg0, s32 arg1, s32 *arg2, s32 arg3) { return 0; }
+extern "C" s32 fn_800BABD0(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
+    const char *str = lbl_8031B838;
+    s32 result;
+
+    if (lbl_80559248 < 0) {
+        result = (s32)0xC1000000;
+    } else {
+        *(s32 *)lbl_8055DD7C = arg1;
+        *(s32 *)((u8 *)lbl_8055DD7C + 0xC) = arg3;
+        *(s32 *)((u8 *)lbl_8055DD7C + 0x10) = 0;
+        if (arg2 != 0) {
+            result = IOS_Ioctl(*(s32 *)arg0, 2, lbl_8055DD7C, 0x18, lbl_8055DD70, 4);
+            if (result != 0) {
+                OSReport(str + 0x74);
+                result = (s32)0xC1000000;
+            } else {
+                *arg2 = *lbl_8055DD70;
+            }
+        } else {
+            OSReport(str + 0x90);
+            result = (s32)0xC1000000;
+        }
+    }
+    if (result != 0) {
+        OSReport(str + 0xAC, str + 0x60, result);
+    }
+    return result;
+}
 
   extern "C" s32 fn_800BB3F4(s32 arg0) {
     u8 buffer[0x28];
