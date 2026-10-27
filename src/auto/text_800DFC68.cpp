@@ -3,6 +3,15 @@
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void *, u8);
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(f32 *, f32 *, u8, f32 (*)[], s32, u8);
+namespace nw4r {
+namespace math { struct VEC2 { f32 x, y; }; }
+namespace lyt {
+    struct WindowFrameSize { f32 unk0, unk4, unk8, unkC; };
+    struct Window {
+        void DrawContent(const nw4r::math::VEC2 &, const WindowFrameSize &, u8);
+    };
+}
+}
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -245,6 +254,31 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTr
 }
 
 extern "C" void DrawContent__Q34nw4r3lyt6WindowFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt15WindowFrameSizeUc(void *self, const f32 *arg1, const f32 *arg2, u8 arg3) {
+    struct MaterialVTable {
+        virtual void v0();
+        virtual s32 draw(s32, u8);
+    };
+    s32 modulate;
+    s32 useVtxColor;
+    void *vtxColor;
+    f32 quad[4];
+    f32 temp;
+    modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc((u8 *)self + 0xE4, arg3);
+    useVtxColor = ((MaterialVTable *)*(void **)((u8 *)self + 0x28))->draw(modulate, arg3);
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(useVtxColor, *(u8 *)((u8 *)self + 0xF5));
+    if (useVtxColor != 0)
+        vtxColor = (u8 *)self + 0xE4;
+    else
+        vtxColor = 0;
+    temp = *(f32 *)((u8 *)self + 0x50) - arg2[2];
+    quad[1] = (*(f32 *)((u8 *)self + 0xDC) + temp - arg2[3]) + *(f32 *)((u8 *)self + 0xE0);
+    temp = *(f32 *)((u8 *)self + 0x4C) - arg2[0];
+    quad[0] = (*(f32 *)((u8 *)self + 0xD4) + temp - arg2[1]) + *(f32 *)((u8 *)self + 0xD8);
+    quad[3] = (arg1[1] + arg2[2]) - *(f32 *)((u8 *)self + 0xDC);
+    quad[2] = (arg1[0] + arg2[0]) - *(f32 *)((u8 *)self + 0xD4);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(
+        &quad[2], &quad[0], *(u8 *)((u8 *)self + 0xF5),
+        (f32 (*)[])*(void **)((u8 *)self + 0xF8), (s32)vtxColor, arg3);
 }
 
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void *, u8);
