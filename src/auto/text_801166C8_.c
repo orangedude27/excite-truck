@@ -3542,6 +3542,22 @@ void* fn_8011FF24(void) {
     return lbl_8055DEF0;
 }
 
+void *fn_8011FF2C(s32 arg0) {
+    u32 aligned = (arg0 + 0x1F) & ~0x1F;
+    void *res = fn_8011FFC4((s32)lbl_8055DEF0 + aligned);
+    lbl_8055DEF0 = 0;
+    if (res != NULL) {
+        u32 i;
+        u8 *ptr = (u8*)res + aligned;
+        for (i = 0; i < lbl_8055DEF4; i++) {
+            *(void**)lbl_80559948[i] = ptr;
+            ptr += lbl_8055994C[i];
+        }
+    }
+    lbl_8055DEF4 = 0;
+    return res;
+}
+
 void AXFXSetHooks_8011FFB8(void *arg0, void *arg1) {
     lbl_8055DEF8 = arg0;
     lbl_8055DEFC = arg1;
