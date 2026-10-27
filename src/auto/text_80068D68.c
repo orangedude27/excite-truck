@@ -5446,6 +5446,8 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     return status;
 }
 
+#pragma push
+#pragma always_inline on
 static u8 *btm_inq_db_find_ent(BD_ADDR p_bda) {
     u8 *p_ent = lbl_803C0F78 + 0x16E4;
     u32 xx;
