@@ -813,7 +813,64 @@ block_241:
     }
 }
 
-#pragma scheduling invalid_target
+extern const char lbl_80320948[];
+extern const char lbl_80559804[];
+#pragma small_data on
+extern "C" void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void *result, s32 font) {
+    s32 var_r5;
+    s32 var_r6;
+    s32 var_r7;
+    s32 var_r8;
+    s32 var_r9;
+    s32 var_r10;
+    s32 temp_r11;
+    s32 temp_r3;
+    s32 temp_r4;
+    s32 temp_r5;
+
+    temp_r11 = font & 0xFF000000;
+    var_r5 = 1;
+    var_r6 = 1;
+    var_r7 = 1;
+    var_r8 = 1;
+    var_r9 = 1;
+    var_r10 = 1;
+    if (((u32)(temp_r11 + 0x80000000) != 0U) &&
+        ((u32)((font & 0xFF800000) + 0x7F000000) != 0U)) {
+        var_r10 = 0;
+    }
+    if ((var_r10 == 0) &&
+        ((u32)((font & 0xF8000000) + 0x70000000) != 0U)) {
+        var_r9 = 0;
+    }
+    if ((var_r9 == 0) &&
+        ((u32)(temp_r11 + 0x40000000) != 0U)) {
+        var_r8 = 0;
+    }
+    if ((var_r8 == 0) &&
+        ((u32)((font & 0xFF800000) + 0x3F000000) != 0U)) {
+        var_r7 = 0;
+    }
+    if ((var_r7 == 0) &&
+        ((u32)((font & 0xF8000000) + 0x30000000) != 0U)) {
+        var_r6 = 0;
+    }
+    if ((var_r6 == 0) &&
+        ((u32)((font & 0xFFFFC000) + 0x20000000) != 0U)) {
+        var_r5 = 0;
+    }
+    if (var_r5 == 0) {
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(
+            (const char *)&lbl_80559804, 0x75, lbl_80320948, font);
+    }
+    temp_r5 = *(s32 *)((u8 *)font + 4);
+    temp_r4 = *(s32 *)((u8 *)font + 8);
+    temp_r3 = *(s32 *)((u8 *)font + 0xC);
+    *(s32 *)result = 0;
+    *(s32 *)((u8 *)result + 4) = temp_r5;
+    *(s32 *)((u8 *)result + 8) = temp_r4;
+    *(s32 *)((u8 *)result + 0xC) = temp_r3;
+}
 extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 len) {
     struct VTable { void (*slots[27])(void *); };
     struct Object { VTable *vtable; };
