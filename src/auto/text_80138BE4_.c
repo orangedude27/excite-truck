@@ -18,6 +18,7 @@ int fn_80138BFC(float arg0) {
     float b = lbl_805613BC * lbl_80558DC4;
     return a <= b;
 }
+#pragma dont_inline reset
 
 extern float lbl_805613C0;
 extern float lbl_805613C8;
