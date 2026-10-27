@@ -4572,6 +4572,21 @@ extern "C" void *fn_80227D00(void *arg0) {
     return arg0;
 }
 
+extern "C" void *fn_80227D64(void *arg0, s32 arg1) {
+    s32 ptr;
+    if (arg0) {
+        ptr = *(s32 *)((u8 *)arg0 + 0x244);
+        *(void ***)arg0 = lbl_8033DEAC;
+        if (ptr)
+            fn_80235380((void *)ptr);
+        *(s32 *)((u8 *)arg0 + 0x244) = 0;
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" s32 fn_8022DD80(s32);
 extern "C" s32 fn_8022DD88(s32);
 extern "C" s32 fn_8022DD90(s32, s32);
