@@ -52,6 +52,7 @@ extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E90;
 extern "C" f32 lbl_80560E94;
 extern "C" int lbl_80565230;
+extern "C" s32 fn_80128668(void);
 namespace nw4hbm { namespace lyt {
 struct DrawInfo;
 class Pane { public: void CalculateMtx(const DrawInfo &); };
@@ -2587,20 +2588,46 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLi
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self + 0x1c, &iterator, link);
 }
 
-extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb(void* self, void* anim, bool enable, bool recursive) {
-    void* p = ((void*(*)(void*))fn_800D4F98)((char*)self + 0x1c);
-    if (p != 0) *(u8*)((char*)p + 0xe) = !enable;
-    void* obj = *(void**)((char*)self + 0x28);
-    if (obj != 0) ((AnimEnableObject*)obj)->v8();
+extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb(void *self, void *anim, u32 enable, u32 recursive) {
+    struct AnimEnableDispatch {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual void d6();
+        virtual void setEnable(void *, u32);
+        virtual void d8();
+        virtual void d9();
+        virtual void d10();
+        virtual void d11();
+        virtual void d12();
+        virtual void d13();
+        virtual void d14();
+        virtual void d15();
+        virtual void d16();
+        virtual void d17();
+        virtual void d18();
+        virtual void d19();
+        virtual void setRecursive(void *, u32, u32);
+    };
+    void *p = ((void *(*)(void *))fn_800D4F98)((u8 *)self + 0x1C);
+    if (p != 0)
+        *(u8 *)((u8 *)p + 0xE) = !enable;
+    AnimEnableDispatch *obj = (AnimEnableDispatch *)*(void **)((u8 *)self + 0x28);
+    if (obj != 0)
+        obj->setEnable(anim, enable);
     if (recursive) {
-        void* end = (char*)self + 0x14;
-        void* node = *(void**)end;
-        do {
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23d, lbl_8031E8D8);
-            void* item = (char*)node - 4;
-            ((AnimEnableObject*)item)->v0();
-            node = *(void**)node;
-        } while (node != end);
+        void *end = (u8 *)self + 0x14;
+        void *node = *(void **)((u8 *)self + 0x14);
+        while (node != end) {
+            if (node == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            AnimEnableDispatch *item = (AnimEnableDispatch *)((u8 *)node - 4);
+            item->setRecursive(anim, enable, recursive);
+            node = *(void **)node;
+        }
     }
 }
 
