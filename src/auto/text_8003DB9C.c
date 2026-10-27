@@ -378,6 +378,7 @@ extern void __GXSaveFifo(void);
 
 typedef struct { unsigned int mode0; unsigned int mode1; } __GXTexObjInt;
 static unsigned char GX2HWFiltConv[6] = { 0x00, 0x04, 0x01, 0x05, 0x02, 0x06 };
+#pragma dont_inline on
 int GXGetCPUFifo(void *fifo) {
     struct Pair {
         unsigned int first;
@@ -399,6 +400,7 @@ int GXGetCPUFifo(void *fifo) {
     }
     return 1;
 }
+#pragma dont_inline reset
 
 void GXGetFifoPtrs(const void *arg0, void **arg1, void **arg2) {
     const struct {
