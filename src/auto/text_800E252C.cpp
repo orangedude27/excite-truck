@@ -548,9 +548,8 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *arg0, 
 #pragma dont_inline on
 extern "C" void *Instance__15EmissionManagerFv(void) {
     if ((signed char)lbl_8055DE18 == 0) {
-        int *manager = &lbl_80407F6C;
-        fn_800E279C(manager);
-        __register_global_object(manager, (void *)fn_800E2D74, &lbl_80407F60);
+        fn_800E279C(&lbl_80407F6C);
+        __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
         lbl_8055DE18 = 1;
     }
     return &lbl_80407F6C;
@@ -960,21 +959,21 @@ extern "C" void fn_800E4064(void *arg0, void *arg1) {
     OSRestoreInterrupts(interrupts);
 }
 
+#pragma use_lmw_stmw off
 extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
-    unsigned int level = OSDisableInterrupts();
-    void **iterator = *(void ***)((char *)this_ + 0x18);
     void *end = (char *)this_ + 0x18;
+    unsigned int level = OSDisableInterrupts();
+    void *iterator = *(void **)end;
     while (iterator != end) {
-        void *node = *iterator;
-        if (node == 0) {
+        void *node = iterator;
+        iterator = *(void **)iterator;
+        if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-        }
         fn_800E4764((char *)node - 0x1A8);
-        iterator = *(void ***)node;
     }
     OSRestoreInterrupts(level);
 }
-
+#pragma use_lmw_stmw reset
 extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
 extern "C" void AXRegisterAuxBCallback(int, int);
@@ -1947,18 +1946,31 @@ extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int
     } while(i<*(int *)((char *)arg0+0x108));
     OSRestoreInterrupts(irq);
 }
-#pragma dont_inline reset
+#pragma use_lmw_stmw off
 extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7AxVoice9VoiceType(void *self, unsigned int type) {
-    char *group = (char *)self;
-    for (int i = 0; i < *(int *)((char *)self + 0x104); i++, group += 0x10) {
-        char *entry = group;
-        for (int j = 0; j < *(int *)((char *)self + 0x108); j++, entry += 4) {
-            void *voice = *(void **)(entry + 0xC);
-            if (voice != 0) fn_80033538((unsigned short)type);
+    {
+        int j;
+        int i;
+        unsigned char *base;
+        unsigned char *slot;
+        base = (unsigned char *)self;
+        i = 0;
+        while (i < *(int *)((unsigned char *)self + 0x104)) {
+            slot = base;
+            j = 0;
+            while (j < *(int *)((unsigned char *)self + 0x108)) {
+                void *voice = *(void **)(slot + 0xC);
+                if (voice != 0)
+                    ((void (*)(void *, int))fn_80033538)(voice, (unsigned short)type);
+                slot += 4;
+                j++;
+            }
+            base += 0x10;
+            i++;
         }
     }
 }
-
+#pragma use_lmw_stmw reset
 extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *arg0, int arg1) {
     unsigned char *self = (unsigned char *)arg0;
     float scale = (float)(*(unsigned int *)(self + 0x114));
