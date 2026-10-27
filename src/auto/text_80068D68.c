@@ -12410,7 +12410,7 @@ void rfc_port_sm_state_closed(void *p_port, u16 event, void *p_data) {
 
 void rfc_port_sm_orig_wait_sec_check(void *port, u16 event, void *data) {
     extern char lbl_80319AB0[];
-    extern void rfc_send_sabme(void *, s32, void *);
+    extern void rfc_send_sabme();
     extern void rfc_port_closed(void *);
     u8 *p = port;
     char *messages = lbl_80319AB0;
