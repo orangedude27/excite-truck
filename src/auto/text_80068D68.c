@@ -11494,14 +11494,15 @@ void fn_8008EC30(void *arg0) {
     *(u16 *)((u8 *)arg0 + 2) = 0;
 }
 
-void *l2cu_find_rcb_by_psm(u16 psm) {
+void *l2cu_find_rcb_by_psm(UINT16 psm) {
+    UINT16 xx;
     u8 *p_rcb = lbl_803C4040 + 0x650;
-    int i;
-    for (i = 0; i < 8; i++) {
-        if (p_rcb[0] != 0 && *(u16 *)(p_rcb + 2) == psm)
+
+    for (xx = 0; xx < 8; xx++, p_rcb += 0x2C) {
+        if ((p_rcb[0]) && (*(UINT16 *)(p_rcb + 2) == psm))
             return p_rcb;
-        p_rcb += 0x2c;
     }
+
     return 0;
 }
 
