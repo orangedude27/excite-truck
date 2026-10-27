@@ -388,7 +388,7 @@ int GXGetCPUFifo(void *fifo) {
     GXGetVtxDesc();
     __GXSaveFifo();
     {
-        struct Pair *src = (struct Pair *)&lbl_8037C0E4;
+        struct Pair *src = (struct Pair *)lbl_8037C0E4;
         struct Pair *dst = (struct Pair *)fifo;
         dst[0] = src[0];
         dst[1] = src[1];
