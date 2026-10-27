@@ -6,10 +6,13 @@ extern float lbl_80558DC4;
 extern float lbl_805613BC;
 extern float lbl_805613B8;
 void fn_80138F38(void *);
+#pragma dont_inline on
 int fn_80138BE4(float arg0, float arg1) {
     return (arg0 * arg1) < lbl_805613B8;
 }
+#pragma dont_inline reset
 
+#pragma dont_inline on
 int fn_80138BFC(float arg0) {
     float a = __fabsf(arg0);
     float b = lbl_805613BC * lbl_80558DC4;
