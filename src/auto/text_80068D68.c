@@ -1834,7 +1834,6 @@ int fn_8006F284(s32 arg0) {
 void uusb_CloseDeviceCB(s8 arg0) {
     register u8 *control = (u8 *)&lbl_803BD1E0;
     register s32 zero = 0;
-    void (*callback)(s32, s8);
 
     *(s32 *)&lbl_803BD1E0 = zero;
     control[0x10] = zero;
@@ -1844,13 +1843,12 @@ void uusb_CloseDeviceCB(s8 arg0) {
     lbl_8055DC50 = zero;
     fn_8009B0E0();
     fn_8006EBAC();
-    control[0x28] = zero;
     control[0x29] = 5;
+    control[0x28] = zero;
     lbl_8055DC51 = zero;
     fn_8006EB88();
-    callback = *(void (**)(s32, s8))(control + 0x20);
-    if (callback != 0)
-        callback(4, arg0);
+    if (*(void (**)(s32, s8))(control + 0x20) != 0)
+        (*(void (**)(s32, s8))(control + 0x20))(4, arg0);
 }
 
 s32 fn_8007011C(void) { return 0; }
@@ -5420,15 +5418,19 @@ void bta_dm_bond(u8 *arg0)
     BTM_SecBond(arg0 + 8, arg0[0xE], arg0 + 0xF, sp8);
 }
 
-void bta_dm_pin_reply(void *arg0) {
- u32 sp8[2];
- s32 ptr = fn_8008128C((u8 *)arg0 + 8);
- if (ptr) memcpy(sp8, (void *)ptr, 8); else memset(sp8, 0, 8);
- if (((u8 *)arg0)[0xE]) {
-  BTM_PINCodeReply((u8 *)arg0 + 8, 0, ((u8 *)arg0)[0xF], (u8 *)arg0 + 0x10, sp8);
- } else {
-  BTM_PINCodeReply((u8 *)arg0 + 8, 0xB, 0, 0, sp8);
- }
+void bta_dm_pin_reply(u8 *arg0) {
+    u32 sp8[2];
+    void *ptr = (void *)fn_8008128C(arg0 + 8);
+    if (ptr != 0) {
+        memcpy(sp8, ptr, 8);
+    } else {
+        memset(sp8, 0, 8);
+    }
+    if (arg0[0xE]) {
+        BTM_PINCodeReply(arg0 + 8, 0, arg0[0xF], arg0 + 0x10, sp8);
+    } else {
+        BTM_PINCodeReply(arg0 + 8, 0xB, 0, 0, sp8);
+    }
 }
 
 void bta_dm_auth_reply(void *arg0) {
