@@ -2745,11 +2745,29 @@ extern "C" s32 fn_8015E88C(void *arg0) {
 
 #pragma scheduling on
 extern "C" s32 fn_8015E910(void *arg0, s32 arg1) {
+    // Note: v14 selects the target's virtual slot at vtable offset 0x40.
+    struct Entry {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual s32 v14(s32);
+    };
     s32 var_r31 = 0;
     s32 var_r30 = 0;
     while (var_r30 < *(s32 *)((char *)arg0 + 8)) {
-        Unk8015E910V *obj = *(Unk8015E910V **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
-        if (obj->v8(arg1) != 0) return 1;
+        Entry *obj = *(Entry **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
+        if (obj->v14(arg1) != 0) return 1;
         var_r31 += 4;
         var_r30 += 1;
     }
