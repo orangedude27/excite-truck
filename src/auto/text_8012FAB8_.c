@@ -76,7 +76,7 @@ int fn_80130390(void) {
 extern int lbl_80423054;
 extern int lbl_8042F4B8;
 extern char lbl_8055E048;
-extern void fn_8013111C(void);
+extern void fn_8013111C();
 void fn_801303A8(void) {
     int *s = (int *)(lbl_8042F4B8);
     int *d = (int *)(lbl_80423054);
