@@ -6,7 +6,7 @@ void AIRegisterDMACallback_800591F0(s32);
 void fn_802D992C(void);
 void fn_802D98F8(void);
 extern s32 lbl_8055FE3C;
-extern char lbl_8055FE40;
+extern u8 lbl_8055FE40;
 extern s32 lbl_8055FE44;
 extern char lbl_8034C838[];
 extern void *jumptable_8034C848[];
@@ -30,30 +30,54 @@ void fn_802D98F8(void) {
 void fn_802D992C(void) {
     s32 count = (u32)__cntlzw((u32)(lbl_8055FE3C - 1)) >> 5;
     s32 state = DVDGetDriveStatus();
-    if (state >= 0xC) {
-        if (OSGetResetButtonState()) {
-            if (lbl_8055FE40) {
-                lbl_8055FE40 = 0;
-                lbl_8055FE3C = 1;
-            }
-        } else if (lbl_8055FE40) {
-            lbl_8055FE40 = 1;
-        }
-        if (count == 0) {
-            if (lbl_8055FE3C != 2) {
-                lbl_8055FE3C = 1;
-            }
-        }
-        if (lbl_8055FE3C != lbl_8055FE44) {
-            lbl_8055FE44 = lbl_8055FE3C;
-            OSReport(lbl_8034C838);
-        }
-        if (GXGetCurrentGXThread()) {
-            fn_802D3DAC();
-        }
-        return;
+    switch (state) {
+    case -1:
+        lbl_8055FE3C = 0;
+        goto done;
+    case 0:
+        lbl_8055FE3C = 2;
+        goto done;
+    case 1:
+        lbl_8055FE3C = 4;
+        goto done;
+    case 2:
+        lbl_8055FE3C = 5;
+        goto done;
+    case 3:
+        lbl_8055FE3C = 3;
+        goto done;
+    case 4:
+        lbl_8055FE3C = 6;
+        goto done;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+        goto reset;
+    default:
+        goto done;
     }
-    ((void (*)(void))jumptable_8034C848[state + 1])();
+reset:
+    if (OSGetResetButtonState()) {
+        lbl_8055FE40 = 1;
+    } else if (lbl_8055FE40) {
+        lbl_8055FE40 = 0;
+        lbl_8055FE3C = 1;
+    }
+done:
+    if (count != 0 && lbl_8055FE3C != 2) {
+        lbl_8055FE3C = 1;
+    }
+    if (lbl_8055FE3C != lbl_8055FE44) {
+        lbl_8055FE44 = lbl_8055FE3C;
+        OSReport(lbl_8034C838);
+    }
+    if (GXGetCurrentGXThread()) {
+        fn_802D3DAC();
+    }
 }
 
 #pragma pop
