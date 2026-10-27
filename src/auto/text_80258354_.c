@@ -200,7 +200,7 @@ found:
         x, y, lbl_80563AD0, cosine, sine);
 }
 #pragma paired_single off
-#pragma ppc_psq_save off
+#pragma ppc_psq_save on
 #pragma use_lmw_stmw on
 #pragma scheduling invalid_target
 void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale) {
@@ -213,8 +213,8 @@ void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, flo
     float callY;
     float callColor;
     float callCosine;
-    register float sine;
-    register float cosine;
+    float sine;
+    float cosine;
     goto check;
 loop:
     result = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
