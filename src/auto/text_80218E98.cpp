@@ -3447,6 +3447,8 @@ extern "C" void fn_802229FC(void *arg0) {
     }
 }
 
+#pragma paired off
+#pragma paired_single off
 extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     f32 spC;
     f32 sp8;
@@ -3465,7 +3467,8 @@ extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
         }
     }
 }
-
+#pragma paired_single reset
+#pragma paired reset
 extern "C" void fn_80222AFC(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
     *arg3 = arg1;
     *arg4 = arg2;
@@ -5383,6 +5386,25 @@ extern "C" void fn_80228DAC(void *arg0) {
 }
 
 extern "C" void fn_80228DC0(void) { }
+
+extern "C" void fn_80228DC4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    s32 sp8;
+    s32 height;
+    s32 midpoint;
+    u32 rounded;
+
+    fn_802C3034(arg0);
+    fn_80218E98((void *)arg0, &sp8);
+    fn_802C51C0(arg1);
+    height = fn_802C5220(arg1);
+    rounded = (u32)arg4 >> 31;
+    rounded += (u32)arg4;
+    midpoint = arg2 + ((s32)rounded >> 1);
+    fn_80218EE0((void *)arg0, arg2, arg3, midpoint, arg3 + height);
+    fn_80218EBC((void *)arg0, &sp8);
+    fn_80218EE0((void *)arg0, midpoint, arg3, arg2 + arg4, arg3 + height);
+    fn_80218EBC((void *)arg0, &sp8);
+}
 
 extern "C" void fn_80218E98(void *, void *);
 extern "C" void fn_80218EBC(void *, void *);
