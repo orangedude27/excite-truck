@@ -6020,7 +6020,6 @@ extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
 extern "C" void *lbl_8033F0FC;
 extern "C" void *lbl_8033E1C4[];
-extern "C" char lbl_8055B88C[];
 class CallObj80223880 {
 public:
     virtual void dummy0();
