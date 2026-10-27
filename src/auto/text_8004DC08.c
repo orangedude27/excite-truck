@@ -1,5 +1,9 @@
 #include <types.h>
 #include <macros.h>
+typedef struct IPCIOVector {
+    void *base;
+    u32 length;
+} IPCIOVector;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -335,50 +339,62 @@ extern int _ES_GetTicketViews(int *, unsigned int, unsigned int, void *, unsigne
 extern int _ES_LaunchTitle(int *, unsigned int, unsigned int, void *);
 extern const char lbl_80558F40;
 void fn_8004E3F0(void) {
-    int fd;
-    int result;
-    unsigned int count;
-    unsigned int title_hi;
-    unsigned int title_lo;
-    unsigned int views[0x60];
-    unsigned int in[2];
-    unsigned int vec[2];
+    s32 fd;
+    u32 count;
+    s32 result;
+    u64 titleId;
+    struct {
+        void *base;
+        u32 length;
+    } vectors[1] ALIGN(32);
+    u8 tidWork[256] ALIGN(32);
+    u8 views[256] ALIGN(32);
+    u64 *pTid;
 
     count = 1;
     fd = -1;
-    result = IOS_Open(&lbl_80558F40, 0);
-    fd = result;
-    if (result < 0)
-        goto out;
-    if (fd != 0)
-        goto out;
-    if ((result < 0) || (&title_hi == 0)) {
-        result = -0x3F9;
-        goto out;
+    result = 0;
+
+    fd = IOS_Open(&lbl_80558F40, 0);
+    if (fd < 0) {
+        result = fd;
     }
-    vec[0] = (unsigned int)in;
-    vec[1] = 8;
-    result = IOS_Ioctlv(fd, 0x20, 0, 1, vec);
-    if (result != 0)
-        goto out;
-    title_hi = in[0];
-    title_lo = in[1];
-    if (result != 0)
-        goto out;
-    result = _ES_GetTicketViews(&fd, title_hi, title_lo, 0, &count);
-    if (count != 1)
-        goto out;
-    if (result != 0)
-        goto out;
-    result = _ES_GetTicketViews(&fd, title_hi, title_lo, views, &count);
-    if (result != 0)
-        goto out;
-    result = _ES_LaunchTitle(&fd, title_hi, title_lo, views);
-    if (result != 0)
-        goto out;
-    for (;;)
-        ;
-out:
-    return;
+
+    if (result != 0) {
+        return;
+    }
+
+    if (fd < 0 || &titleId == NULL) {
+        result = -0x3F9;
+    } else {
+        pTid = (u64 *)tidWork;
+        vectors[0].base = pTid;
+        vectors[0].length = sizeof(u64);
+
+        result = IOS_Ioctlv(fd, 0x20, 0, 1, vectors);
+        if (result == 0) {
+            titleId = *pTid;
+        }
+    }
+
+    if (result != 0) {
+        return;
+    }
+
+    result = ((s32 (*)(s32 *, u64, void *, u32 *))_ES_GetTicketViews)(&fd, titleId, NULL, &count);
+    if (count != 1 || result != 0) {
+        return;
+    }
+
+    if (((s32 (*)(s32 *, u64, void *, u32 *))_ES_GetTicketViews)(&fd, titleId, views, &count) != 0) {
+        return;
+    }
+
+    if (((s32 (*)(s32 *, u64, void *))_ES_LaunchTitle)(&fd, titleId, views) != 0) {
+        return;
+    }
+
+    while (1) {
+    }
 }
 
