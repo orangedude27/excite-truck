@@ -456,9 +456,9 @@ void fn_80176C4C(void) {
 
 #pragma dont_inline fn_80176C4C
 void fn_80176CC8(void) {
-    u8 *data = (u8 *)&lbl_80430418;
     fn_802E4C14(1);
     if (lbl_80430418 != 0) {
+        u8 *data = (u8 *)&lbl_80430418;
         fn_80178CAC(*(u32 *)(data + 4), *(u32 *)(data + 8));
         lbl_80430418 = 0;
     }
@@ -489,10 +489,13 @@ void fn_80176CC8(void) {
         case 7:
         case 8:
         default:
-            break;
+            goto log_state;
     }
-    fn_802E317C(lbl_80331810, lbl_8055E3F4);
-    if (lbl_8055E3D4 != 0) {
+    goto check_flags;
+log_state:
+    fn_802E317C(lbl_80331810, *(volatile s32 *)&lbl_8055E3F4);
+check_flags:
+    if (*(u8 *)&lbl_8055E3D4 != 0) {
         fn_801B235C();
         lbl_8055E3D4 = 0;
     }
