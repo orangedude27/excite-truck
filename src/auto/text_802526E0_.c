@@ -1,4 +1,10 @@
 #include "types.h"
+extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
+extern f32 fn_80129DC4(s32, f32, f32);
+extern f64 cos(void);
+extern f64 sin(f32);
+extern void PSVECCrossProduct(void *, void *, void *);
+extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
 extern s8 lbl_8055F308;
 extern u8 lbl_80498D00[];
 extern f32 lbl_8055F30C, lbl_805639CC, lbl_805639E0, lbl_805639F8, lbl_805639E8;
@@ -67,8 +73,7 @@ extern void fn_80252C90(void);
 extern void fn_802E30C8(const char *, const char *);
 extern const char lbl_803447A8[];
 extern const char lbl_8055C120;
-#pragma paired off
-#pragma paired_single off
+#pragma scheduling invalid_target
 void fn_80252F50(f32 arg0) {
     f32 threshold = lbl_805639CC;
     f32 step = lbl_805639F8;
@@ -81,15 +86,14 @@ void fn_80252F50(f32 arg0) {
         if (count > 10) {
             if (!lbl_8055F310) {
                 lbl_8055F310 = 1;
-                fn_802E30C8((const char *)&lbl_8055C120, lbl_803447A8);
+                ((void (*)(const char *, const char *, ...))fn_802E30C8)((const char *)&lbl_8055C120, lbl_803447A8);
             }
             lbl_8055F30C = lbl_805639CC;
             break;
         }
     }
 }
-#pragma paired_single reset
-#pragma paired reset
+#pragma scheduling on
 void fn_80253004(s32 index, void *out) {
     u8 *src = lbl_80498D00 + index * 0x78;
     u8 *dst = out;
@@ -127,35 +131,46 @@ void fn_80253004(s32 index, void *out) {
 
 extern f32 lbl_805639FC;
 extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
-    f32 x = *(f32 *)((u8 *)arg1 + 0x12C);
-    f32 y = *(f32 *)((u8 *)arg1 + 0x130);
-    u8 *entry = lbl_80498D00 + arg0 * 0x78;
-    *(f32 *)(entry + 0x34) = x;
-    *(f32 *)(entry + 0x38) = y;
-    *(f32 *)(entry + 0x3C) = *(f32 *)((u8 *)arg1 + 0x134);
-    fn_801BDA74(arg0, entry);
+    s32 index;
+    u8 *base;
+    s32 offset;
+    volatile u8 *entry;
+    u32 args[12];
+    f32 z, y, x;
+    index = arg0;
+    base = lbl_80498D00;
+    offset = index * 0x78;
+    x = *(volatile f32 *)((u8 *)arg1 + 0x12C);
+    y = *(volatile f32 *)((u8 *)arg1 + 0x130);
+    z = *(volatile f32 *)((u8 *)arg1 + 0x134);
+    entry = base + offset;
+    *(volatile f32 *)(entry + 0x34) = x;
+    *(volatile f32 *)(entry + 0x38) = y;
+    *(volatile f32 *)(entry + 0x3C) = z;
+    fn_801BDA74(index, (void *)entry);
+    entry = base + offset;
     if (entry[0x30] == 0) {
-        fn_80252B88(arg0);
+        fn_80252B88(index);
     } else {
-        u32 args[12];
-        args[0] = *(u32 *)(entry + 0);
-        args[1] = *(u32 *)(entry + 4);
-        args[2] = *(u32 *)(entry + 8);
-        args[3] = *(u32 *)(entry + 0xC);
-        args[4] = *(u32 *)(entry + 0x10);
-        args[5] = *(u32 *)(entry + 0x14);
-        args[6] = *(u32 *)(entry + 0x18);
-        args[7] = *(u32 *)(entry + 0x1C);
-        args[8] = *(u32 *)(entry + 0x20);
-        args[9] = *(u32 *)(entry + 0x28);
-        args[10] = *(u32 *)(entry + 0x24);
-        args[11] = *(u32 *)(entry + 0x2C);
-        *(f32 *)(args + 11) = lbl_805639FC + fn_801DCF48(0,args[9],args[8],args[7],args[6],args[5],args[4],args[3],*(f32 *)(entry+0x24),*(f32 *)(entry+0x2C));
-        fn_801BE400(arg0, args, lbl_805639E8);
+        args[9] = *(volatile u32 *)(entry + 0x24);
+        args[11] = *(volatile u32 *)(entry + 0x2C);
+        args[0] = *(volatile u32 *)(entry + 0);
+        args[1] = *(volatile u32 *)(entry + 4);
+        args[2] = *(volatile u32 *)(entry + 8);
+        args[3] = *(volatile u32 *)(entry + 0xC);
+        args[4] = *(volatile u32 *)(entry + 0x10);
+        args[5] = *(volatile u32 *)(entry + 0x14);
+        args[6] = *(volatile u32 *)(entry + 0x18);
+        args[7] = *(volatile u32 *)(entry + 0x1C);
+        args[8] = *(volatile u32 *)(entry + 0x20);
+        args[10] = *(volatile u32 *)(entry + 0x28);
+        *(f32 *)&args[10] = lbl_805639FC + fn_801DCF48(0, args[9], args[8], args[7], args[6], args[5], args[4], args[3], *(f32 *)(entry + 0x24), *(f32 *)(entry + 0x2C));
+        fn_801BE400(index, args, lbl_805639E8);
     }
 }
-
 extern s8 lbl_8055F308;
 extern u8 lbl_80498D00[];
 extern f32 lbl_8055F30C, lbl_805639CC, lbl_805639E0, lbl_805639F8, lbl_805639E8;
