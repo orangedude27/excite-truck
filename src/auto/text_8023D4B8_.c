@@ -298,7 +298,7 @@ void fn_8023E16C(void *arg0, int arg1) {
 extern char lbl_80341BE0[];
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8023E1FC(void *arg0) {
     struct Interface {
@@ -319,13 +319,12 @@ extern "C" void fn_8023E1FC(void *arg0) {
         char string[0x14];
     } frame;
     register char *entry;
-    register int zero;
+    register int zero = 0;
     int i;
     Interface *object;
 
     fn_8022D76C();
     frame.state = *(int *)((char *)arg0 + 0x30);
-    zero = 0;
     entry = lbl_802FA190;
     frame.zero = zero;
     for (i = 0; i < 0x11; i++, entry += 8) {
