@@ -32,6 +32,7 @@ extern char lbl_80358698[0x2080];
 extern char lbl_8035AF38[0x820];
 
 void fn_8001F578();
+void fn_8001FBE4();
 void fn_8001F724();
 void fn_8001F780();
 s32 fn_8001F9A4();
@@ -387,19 +388,20 @@ extern void *fn_80016720(const char *);
 int fn_8001FAC8(int arg0, const char *arg1) {
     register char *table = lbl_80358698;
     register char *name;
-    register int total = 0;
+    register int total;
     register int offset;
-    register unsigned int i;
     register char *region;
     register char *nameTable;
     register char *valueTable;
 
     name = (char *)fn_80016720(arg1);
+    total = 0;
     region = table + fn_8000DA10() * 0x820;
     offset = arg0 * 4;
     nameTable = region + 0x50;
     valueTable = region + offset;
-    for (i = 0; i < 0x32; i++) {
+    arg0 = 0;
+    for (; (unsigned int)arg0 < 0x32; arg0++) {
         if (stricmp(nameTable, name) == 0)
             total += *(int *)(valueTable + 0x70);
         nameTable += 0x28;
@@ -409,7 +411,8 @@ int fn_8001FAC8(int arg0, const char *arg1) {
     region = table + 0x2080;
     nameTable = region + 0x50;
     valueTable = region + offset;
-    for (i = 0; i < 0x32; i++) {
+    arg0 = 0;
+    for (; (unsigned int)arg0 < 0x32; arg0++) {
         if (stricmp(nameTable, name) == 0)
             total += *(int *)(valueTable + 0x70);
         nameTable += 0x28;
@@ -419,7 +422,8 @@ int fn_8001FAC8(int arg0, const char *arg1) {
     region = table + 0x28A0;
     nameTable = region + 0x50;
     valueTable = region + offset;
-    for (i = 0; i < 0x32; i++) {
+    arg0 = 0;
+    for (; (unsigned int)arg0 < 0x32; arg0++) {
         if (stricmp(nameTable, name) == 0)
             total += *(int *)(valueTable + 0x70);
         nameTable += 0x28;
