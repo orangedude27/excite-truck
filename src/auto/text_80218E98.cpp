@@ -318,7 +318,6 @@ extern f32 lbl_8056351C;
 extern f64 lbl_80563520;
 extern "C" void fn_8023986C(s32);
 extern "C" void fn_8023967C(s32, s32);
-extern "C" void fn_8021915C(void *, u32);
 extern "C" s32 fn_80128668(void *);
 extern "C" s32 fn_801284F8(s32, const char *);
 extern "C" s32 fn_8023964C(void);
