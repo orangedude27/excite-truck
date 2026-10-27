@@ -68,6 +68,9 @@ extern void fn_802E317C(const char *, ...);
 extern "C" void fn_80131810(int);
 extern "C" void fn_802E317C(const char *, ...);
 __declspec(section ".sdata") extern const char lbl_8055CE18[];
+#pragma cplusplus on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" int fn_802B5510(const char *arg0) {
     class Manager {
     public:
@@ -92,10 +95,9 @@ extern "C" int fn_802B5510(const char *arg0) {
     if (manager == 0)
         goto report_error;
     entries = (void **)lbl_804BE454.entries;
-    count = lbl_804BE454.count;
-    lbl_804BE454.count = count + 1;
-    entries[count] = manager;
+    count = lbl_804BE454.count++;
     index = 0;
+    entries[count] = manager;
     goto fetch_item;
 
 process_item:
@@ -115,8 +117,6 @@ fetch_item:
 report_error:
     fn_802E317C(lbl_8034A53C, arg0);
 }
-#pragma dont_inline off
-#pragma cplusplus off
 
 #pragma scheduling invalid_target
 void fn_802B561C(void (*fn)(void *), void *arg0) {
