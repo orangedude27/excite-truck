@@ -256,7 +256,7 @@ void fn_8023E1FC(void *arg0) {
     for (i = 0; i < 0x11; i++) {
         char *entry = lbl_802FA190 + i * 8;
         fn_8022D894(arg0, i, 0, *(char **)fn_8023DC38(*(char **)entry), 0);
-        fn_801A7974(&sp8, *(char **)entry, *(void **)((char *)*(void ***)((char *)arg0 + 0x34) + 0x70));
+        fn_801A7974((const char *)&sp8, (int)*(char **)entry, (int)*(void **)((char *)*(void ***)((char *)arg0 + 0x34) + 0x70));
         if (sp8 == 0) {
             p = lbl_8055BBA0;
             {
