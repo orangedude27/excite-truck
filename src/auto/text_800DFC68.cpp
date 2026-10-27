@@ -13,7 +13,17 @@ namespace lyt {
 }
 }
 namespace nw4hbm { namespace lyt {
-    struct Window { void* FindMaterialByName(const char*, bool); };
+    struct Window {
+        struct Link { Link* next; Link* prev; };
+        u8 unk_0[0x14];
+        Link children;
+        u8 unk_20[8];
+        void* material;
+        u8 unk_2C[0xD0];
+        void* materials;
+        u8 materialCount;
+        void* FindMaterialByName(const char*, bool);
+    };
 } }
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -83,8 +93,9 @@ extern "C" void* FindMaterialByName__Q36nw4hbm3lyt6WindowFPCcb(void* self, const
         virtual void v12(); virtual void v13();
         virtual void* FindMaterialByName(const char*, bool);
     };
-    int offset;
+    int doSearch = searchChildren;
     int i;
+    int offset;
     if (*(void**)((char*)self + 0x28) != 0 &&
         fn_800D58F0((char*)*(void**)((char*)self + 0x28) + 4, name) != 0)
         return *(void**)((char*)self + 0x28);
@@ -97,9 +108,9 @@ extern "C" void* FindMaterialByName__Q36nw4hbm3lyt6WindowFPCcb(void* self, const
         offset += 8;
         i++;
     }
-    if (searchChildren) {
+    if (doSearch) {
+        char* child = *(char**)((char*)self + 0x14);
         char* sentinel = (char*)self + 0x14;
-        char* child = *(char**)sentinel;
         while (child != sentinel) {
             if (child == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
@@ -278,16 +289,13 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     s32 useVtxColor;
     void *vtxColor;
     volatile f32 quad[4];
-    f32 diffRight;
-    f32 diffLeft;
-    f32 sumTop;
-    f32 sumLeft;
-    f32 frameBottom;
-    f32 frameTop;
-    f32 x;
-    f32 y;
-    f32 extentX;
-    f32 extentY;
+    register f32 temp_f0;
+    register f32 temp_f1;
+    register f32 temp_f2;
+    register f32 temp_f3;
+    register f32 temp_f4;
+    register f32 temp_f5;
+    register f32 temp_f6;
     s32 texture;
     u8 format;
 
@@ -299,31 +307,38 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     else
         vtxColor = 0;
 
-    extentX = *(volatile f32 *)(self + 0x50);
-    frameBottom = *(volatile f32 *)((u8 *)frame + 8);
-    diffRight = extentX - frameBottom;
-    extentY = *(volatile f32 *)(self + 0x4C);
-    frameTop = *(volatile f32 *)frame;
-    diffLeft = extentY - frameTop;
-    sumTop = *(volatile f32 *)(self + 0xDC);
-    sumTop = sumTop + diffRight;
-    frameBottom = *(volatile f32 *)((u8 *)frame + 0xC);
-    texture = *(volatile s32 *)(self + 0xF8);
-    sumLeft = *(volatile f32 *)(self + 0xD4) + diffLeft;
-    frameTop = *(volatile f32 *)((u8 *)frame + 4);
-    sumTop = sumTop - frameBottom;
-    extentX = *(volatile f32 *)(self + 0xE0);
-    diffLeft = sumLeft - frameTop;
-    extentY = *(volatile f32 *)(self + 0xD8);
-    x = pos[1] + *(volatile f32 *)((u8 *)frame + 8);
-    format = *(volatile u8 *)(self + 0xF5);
-    y = pos[0] + *(volatile f32 *)frame;
-    sumTop = extentX + sumTop;
-    sumLeft = extentY + diffLeft;
-    quad[1] = sumTop;
-    quad[0] = sumLeft;
-    quad[3] = x - *(volatile f32 *)(self + 0xDC);
-    quad[2] = y - *(volatile f32 *)(self + 0xD4);
+    temp_f1 = *(f32 *)(self + 0x50);
+    temp_f6 = frame[2];
+    temp_f3 = temp_f1 - temp_f6;
+    temp_f0 = *(f32 *)(self + 0x4C);
+    temp_f4 = frame[0];
+    temp_f1 = temp_f0 - temp_f4;
+    temp_f2 = *(f32 *)(self + 0xDC);
+    temp_f0 = *(f32 *)(self + 0xD4);
+    temp_f5 = temp_f2 + temp_f3;
+    temp_f3 = frame[3];
+    texture = *(s32 *)(self + 0xF8);
+    temp_f2 = temp_f0 + temp_f1;
+    temp_f1 = frame[1];
+    temp_f5 = temp_f5 - temp_f3;
+    temp_f3 = *(f32 *)(self + 0xE0);
+    temp_f1 = temp_f2 - temp_f1;
+    temp_f0 = *(f32 *)(self + 0xD8);
+    temp_f3 = temp_f3 + temp_f5;
+    format = self[0xF5];
+    temp_f2 = temp_f0 + temp_f1;
+    temp_f1 = pos[1];
+    quad[1] = temp_f3;
+    temp_f3 = temp_f1 + temp_f6;
+    temp_f0 = pos[0];
+    quad[0] = temp_f2;
+    temp_f1 = temp_f0 + temp_f4;
+    temp_f2 = *(f32 *)(self + 0xDC);
+    temp_f0 = *(f32 *)(self + 0xD4);
+    temp_f2 = temp_f3 - temp_f2;
+    temp_f0 = temp_f1 - temp_f0;
+    quad[3] = temp_f2;
+    quad[2] = temp_f0;
 
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(
         (f32 *)&quad[2], (f32 *)&quad[0], format,
