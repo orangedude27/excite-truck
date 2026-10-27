@@ -10,7 +10,9 @@
 #define btsnd_hcic_accept_conn btsnd_hcic_accept_conn_public
 #define btsnd_hcic_write_cur_iac_lap btsnd_hcic_write_cur_iac_lap_hcimsgs
 #define btsnd_hcic_exit_sniff_mode btsnd_hcic_exit_sniff_mode_api
+#define btsnd_hcic_sniff_mode btsnd_hcic_sniff_mode_api
 #include "revolution/BTE/stack/include/hcimsgs.h"
+#undef btsnd_hcic_sniff_mode
 #undef btsnd_hcic_exit_sniff_mode
 #undef btsnd_hcic_write_cur_iac_lap
 #undef btsnd_hcic_accept_conn
@@ -4480,6 +4482,50 @@ void BTM_SendHciReset(void (*arg0)(void)) {
 
 u8 fn_80079514(void) {
     return (u8)((lbl_803C0F78[0x64E] - 5) == 0);
+}
+
+void fn_8008C04C(s16);
+s32 btsnd_hcic_inq_cancel_8008576C(void);
+s32 btsnd_hcic_inq_cancel_80085850(void);
+void btm_read_hci_buf_size_complete(UINT8 *p, UINT16 evt_len) {
+    UINT8 status = p[0];
+
+    if (status == 0) {
+        UINT16 high;
+        UINT16 low;
+        UINT16 size;
+        UINT16 packet_size;
+        UINT16 num;
+        UINT8 num_hi;
+        UINT8 num_lo;
+        UINT8 *base;
+
+        high = p[2];
+        base = lbl_803C0A50;
+        low = p[1];
+        size = low + (high << 8);
+        *(UINT16 *)(base + 0x7C) = size;
+        size = (UINT16)size;
+        packet_size = size + 4;
+        num_hi = p[5];
+        num_lo = p[4];
+        num = num_lo + (num_hi << 8);
+        *(UINT16 *)(base + 0x7E) = packet_size;
+        ((void (*)(UINT16))fn_8008C04C)(num);
+        btsnd_hcic_set_host_buf_size(0x69B, 0x1E, 0x14, 0xA);
+        lbl_803C0F78[0x64E] = 3;
+        lbl_803C0F78[0x64F] = 4;
+    } else {
+        lbl_803C0F78[0x64F] = status;
+        lbl_803C0F78[0x64E] = status;
+        btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 1);
+        ((void (*)(void))btsnd_hcic_reset)();
+        return;
+    }
+    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 1);
+    btsnd_hcic_inq_cancel_8008576C();
+    btsnd_hcic_inq_cancel_80085850();
+    btm_pm_reset();
 }
 
 void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
@@ -9250,30 +9296,29 @@ scan_done:
 #pragma push
 #pragma use_lmw_stmw off
 u8 HID_HostRemoveDev(u32 dev_handle) {
-    extern u8 lbl_803C3C38[];
     extern u8 hidh_conn_disconnect(u32);
-    u8 *entry;
+    register tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
     u32 offset;
+
     if (lbl_803C3C38[0x400] == 0)
         return 1;
     if (dev_handle > 0x10)
         return 5;
     offset = dev_handle * 0x34;
-    entry = lbl_803C3C38 + offset;
-    if (entry[0] == 0)
+    if (devices[dev_handle].in_use == 0)
         return 5;
-    if (entry[0xA] == 1) {
-        entry[0xC] = 1;
-        fn_80070F90(entry + 0x1C);
-        if (entry[0xA] == 1) {
-            entry[0xC] = 1;
+    if (devices[dev_handle].state == 1) {
+        devices[dev_handle].conn_tries = 1;
+        fn_80070F90(devices[dev_handle].timer_entry);
+        if (devices[dev_handle].state == 1) {
+            devices[dev_handle].conn_tries = 1;
             hidh_conn_disconnect(dev_handle);
         }
     }
-    entry[0] = 0;
-    entry[0x10] = 0;
-    entry[0x14] = 0;
-    entry[0x16] = 0;
+    devices[dev_handle].in_use = 0;
+    lbl_803C3C38[offset + 0x10] = 0;
+    *(u16 *)(lbl_803C3C38 + offset + 0x16) = 0;
+    *(u16 *)(lbl_803C3C38 + offset + 0x14) = 0;
     return 0;
 }
 #pragma pop
