@@ -6,6 +6,9 @@ typedef signed short s16;
 typedef unsigned short u16;
 typedef signed int s32;
 typedef unsigned int u32;
+extern s32 fn_80016464(s32);
+extern s32 fn_802E4A10(void);
+extern s32 fn_80137C84(s32, s32);
 extern void fn_80137C80(s32);
 extern void fn_80137C78(s32);
 
@@ -164,9 +167,10 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         s32 resource2;
         struct Context context;
     } frame;
-    const char *resource;
-    s32 zero;
-    s32 active = fn_802ECEEC();
+    register const char *resource;
+    register s32 zero;
+    register s32 active;
+    active = fn_802ECEEC();
     if (active != 0) {
         fn_802ECEC0();
         resource = lbl_80341314;
