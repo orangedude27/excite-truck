@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#pragma paired_single off
 
 __declspec(section ".data") extern s32 lbl_80489BE0;
 __declspec(section ".data") extern s32 lbl_80489C50;
