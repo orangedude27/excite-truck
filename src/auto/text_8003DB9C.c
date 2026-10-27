@@ -160,13 +160,13 @@ void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
     return (char *)__GXData + index * 16 + 0x258;
 
 special:
-    if (isMipMap != 0) {
+    if ((unsigned char)isMipMap != 0) {
         return (char *)__GXData + index * 16 + 0x358;
     }
     return (char *)__GXData + index * 16 + 0x2D8;
 
 common:
-    if (isMipMap != 0) {
+    if ((unsigned char)isMipMap != 0) {
         return (char *)__GXData + index * 16 + 0x2D8;
     }
     return (char *)__GXData + index * 16 + 0x258;
@@ -231,36 +231,37 @@ void GXInitFifoBase(void *arg0, void *arg1, u32 arg2) {
     OSRestoreInterrupts();
 }
 
-extern unsigned int lbl_8037C0C0;
+extern unsigned char lbl_8037C0C0[0x24];
 extern void OSReport(void *, ...);
-extern unsigned int lbl_803036E0;
-extern unsigned int lbl_803036F8;
+extern char lbl_803036E0[];
+extern char lbl_803036F8[];
 int CPGPLinkCheck(void) {
     unsigned int first;
     unsigned int second;
     int diff1;
     int diff2;
-    int error;
+    int error = 0;
 
-    if (lbl_8055D948 == 0 || lbl_8055D949 == 0) {
+    if (lbl_8055D948 == 0 || (unsigned char)lbl_8055D949 == 0) {
         return 0;
     }
-    error = 0;
-    first = *(unsigned int *)&lbl_8037C0E4;
-    second = lbl_8037C0C0;
+    first = *(unsigned int *)lbl_8037C0E4;
+    second = *(unsigned int *)lbl_8037C0C0;
     if (first == second) {
         error = 1;
     }
-    first = *((unsigned int *)&lbl_8037C0E4 + 1);
-    second = *((unsigned int *)&lbl_8037C0C0 + 1);
+    first = *(unsigned int *)(lbl_8037C0E4 + 4);
+    second = *(unsigned int *)(lbl_8037C0C0 + 4);
     if (first == second) {
         error++;
     }
-    if (error == 2) {
+    if ((unsigned int)error == 2) {
         return 1;
     }
-    diff1 = (int)second - (int)lbl_8037C0C0;
-    diff2 = (int)*((unsigned int *)&lbl_8037C0C0 + 1) - (int)*(unsigned int *)&lbl_8037C0E4;
+    diff1 = (int)*(unsigned int *)(lbl_8037C0E4 + 4) -
+            (int)*(unsigned int *)lbl_8037C0C0;
+    diff2 = (int)*(unsigned int *)(lbl_8037C0C0 + 4) -
+            (int)*(unsigned int *)lbl_8037C0E4;
     error = 0;
     if (diff1 > 0) {
         if (diff2 > 0) {
@@ -270,8 +271,9 @@ int CPGPLinkCheck(void) {
         error = 1;
     }
     if (error != 0) {
-        OSReport(&lbl_803036E0);
-        OSReport(&lbl_803036F8, lbl_8037C0C0, *((unsigned int *)&lbl_8037C0C0 + 1));
+        OSReport(lbl_803036E0);
+        OSReport(lbl_803036F8, *(unsigned int *)lbl_8037C0C0,
+                 *(unsigned int *)(lbl_8037C0C0 + 4));
     }
     return 0;
 }
