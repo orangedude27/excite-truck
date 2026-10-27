@@ -1833,7 +1833,7 @@ typedef struct uusb_cb_t {
 
 extern uusb_cb_t lbl_803BD1E0;
 extern OSAlarm lbl_803C0A20;
-extern void uusb_CloseDeviceCB(void);
+extern void uusb_CloseDeviceCB(s8);
 extern u8 lbl_8055DC51;
 extern s32 IUSB_CloseDeviceAsync(s32 fd, void (*callback)(void), void *arg);
 typedef enum {
