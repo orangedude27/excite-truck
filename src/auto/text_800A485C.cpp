@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+extern "C" void fn_800B78F4(void *, void *);
 extern "C" s32 WPADSetSamplingCallback(s32, void *);
 extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
 namespace homebutton {
@@ -5631,6 +5632,18 @@ extern "C" void fn_800B783C(void *arg0) {
 extern void *lbl_8055DD10;
 extern "C" void __AXDSPInitCallback_800B7860(void) {
     lbl_8055DD10 = 0;
+}
+
+extern "C" void fn_800B786C(void *arg0) {
+    void *temp_r3;
+
+    fn_800B8048(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288));
+    temp_r3 = *(void **)((u8 *)arg0 + 8);
+    if (((s32) *(u16 *)((u8 *)temp_r3 + 0x27E) == 0) && (*(s32 *)((u8 *)temp_r3 + 0x280) == 0) && ((s32) lbl_8055DD10 != 0)) {
+        fn_800B7FC4(*(s32 *)((u8 *)temp_r3 + 0x288));
+        *(s32 *)((u8 *)temp_r3 + 0x288) = 0;
+        lbl_8055DD10 = (void *)((s32) lbl_8055DD10 - 1);
+    }
 }
 
 void fn_800B78EC(void) {
