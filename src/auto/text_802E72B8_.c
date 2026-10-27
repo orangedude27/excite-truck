@@ -13,6 +13,7 @@ extern int lbl_8055FFDC;
 extern signed char lbl_8055FFE0;
 extern int lbl_8034D7D8;
 extern int fn_802E30C8(int *, int, int, int);
+#pragma dont_inline fn_802E72B8
 int fn_802E72B8(int arg0) {
     return (arg0 + 0x7ff) / 2048;
 }
@@ -24,8 +25,71 @@ void fn_802E7318(void) {
 }
 
 void fn_802E7330(void) {
+    int *p = &lbl_8034D7D8;
+    int a = lbl_8055FFD8;
+    int b = lbl_8055FFDC;
     lbl_8055FFE0 = 0;
-    ((void (*)(int *, int, int, int, ...))fn_802E30C8)(&lbl_8034D7D8, lbl_8055FFD8, 0x100, lbl_8055FFDC);
+    fn_802E30C8(p, a, 0x100, b);
+}
+
+extern int stricmp(const char *, const char *);
+extern int fn_802E37C4(void);
+extern int fn_802E72B8(int);
+int fn_802E7354(const char *name) {
+    int index = 0;
+    int fileIndex;
+    int size;
+    int blocks;
+    int remaining;
+    unsigned char *entry;
+    char *dst;
+    const char *src;
+    signed char c;
+
+    entry = lbl_804FC978;
+    goto search_test;
+search_body:
+    if (stricmp(name, (char *)(entry + 0x10)) == 0)
+        return index;
+    entry += 0x90;
+    index++;
+search_test:
+    if (index < lbl_8055FFD8)
+        goto search_body;
+
+    fileIndex = fn_802E36D8((void *)name);
+    if (fileIndex == -1)
+        return fileIndex;
+    index = lbl_8055FFD8;
+    entry = lbl_804FC978;
+    entry += index * 0x90;
+    lbl_8055FFD8 = index + 1;
+    dst = (char *)(entry + 0x10);
+    src = name;
+    remaining = 0x80;
+    goto copy_body;
+copy_limit:
+    remaining--;
+    if (remaining > 0)
+        goto copy_body;
+    *--dst = 0;
+    goto copy_end;
+copy_body:
+    c = *src;
+    src++;
+    *dst = c;
+    dst++;
+    if (c != 0)
+        goto copy_limit;
+copy_end:
+    size = fn_802E37C4();
+    blocks = fn_802E72B8(size);
+    *(int *)(entry + 0) = lbl_8055FFDC;
+    lbl_8055FFDC += blocks;
+    *(int *)(entry + 4) = lbl_8055FFDC;
+    *(int *)(entry + 8) = size;
+    fn_802E3734(&fileIndex);
+    return index;
 }
 
 void fn_802E746C(int arg0, int *arg1, int *arg2) {
