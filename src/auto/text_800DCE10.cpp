@@ -816,8 +816,8 @@ block_241:
 extern const char lbl_80320948[];
 extern u32 lbl_80559804;
 #pragma small_data on
-namespace nw4hbm { namespace ut { struct CharStrmReader { s32 unk0; s32 unk4; s32 unk8; s32 unkC; }; struct Font { CharStrmReader GetCharStrmReader() const; }; } }
-extern "C" void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void *result, s32 font) {
+namespace nw4hbm { namespace ut { struct CharStrmReader { s32 unk0; s32 unk4; s32 unk8; s32 unkC; CharStrmReader(s32 a = 0, s32 b = 0, s32 c = 0, s32 d = 0) : unk0(a), unk4(b), unk8(c), unkC(d) {} }; struct Font { CharStrmReader GetCharStrmReader() const; }; } }
+nw4hbm::ut::CharStrmReader nw4hbm::ut::Font::GetCharStrmReader() const {
     s32 var_r5;
     s32 var_r6;
     s32 var_r7;
@@ -825,9 +825,8 @@ extern "C" void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void *result, s32 font) 
     s32 var_r9;
     s32 var_r10;
     s32 temp_r11;
-    s32 temp_r3;
-    s32 temp_r4;
-    s32 temp_r5;
+    s32 font = (s32)this;
+    nw4hbm::ut::CharStrmReader result;
 
     temp_r11 = font & 0xFF000000;
     var_r5 = 1;
@@ -864,13 +863,12 @@ extern "C" void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void *result, s32 font) 
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(
             (const char *)&lbl_80559804, 0x75, lbl_80320948, font);
     }
-    temp_r5 = *(s32 *)((u8 *)font + 4);
-    temp_r4 = *(s32 *)((u8 *)font + 8);
-    temp_r3 = *(s32 *)((u8 *)font + 0xC);
-    *(s32 *)result = 0;
-    *(s32 *)((u8 *)result + 4) = temp_r5;
-    *(s32 *)((u8 *)result + 8) = temp_r4;
-    *(s32 *)((u8 *)result + 0xC) = temp_r3;
+
+    result.unk4 = *(s32 *)((u8 *)font + 4);
+    result.unk0 = 0;
+    result.unk8 = *(s32 *)((u8 *)font + 8);
+    result.unkC = *(s32 *)((u8 *)font + 0xC);
+    return result;
 }
 extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 len) {
     struct VTable { void (*slots[27])(void *); };
