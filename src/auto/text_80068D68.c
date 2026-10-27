@@ -992,26 +992,34 @@ void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
 
 void *WUDiGetDevInfo(u8 *addr) {
     u8 *base;
+    s32 i;
     u8 *entry;
     void *result;
     s32 interrupt;
-    s32 i;
 
     base = lbl_80392960;
     result = 0;
     interrupt = OSDisableInterrupts();
-    for (i = 0, entry = base + 0xA4; i < 10; i++, entry += 0x60) {
+    entry = base + 0xA4;
+    i = 0;
+    while (i < 10) {
         if (memcmp(entry, addr, 6) == 0) {
             result = base + i * 0x60 + 0x64;
             break;
         }
+        i++;
+        entry += 0x60;
     }
     if (result == 0) {
-        for (i = 0, entry = base + 0x464; i < 6; i++, entry += 0x60) {
+        entry = base + 0x464;
+        i = 0;
+        while (i < 6) {
             if (memcmp(entry, addr, 6) == 0) {
                 result = base + i * 0x60 + 0x424;
                 break;
             }
+            i++;
+            entry += 0x60;
         }
     }
     OSRestoreInterrupts(interrupt);
@@ -14535,6 +14543,29 @@ BOOLEAN SDP_AddAttribute(UINT32 handle, UINT16 attr_id, UINT8 attr_type,
         return TRUE;
     }
     return FALSE;
+}
+
+extern char lbl_80319FCC[];
+BOOLEAN SDP_AddUuidSequence(UINT32 handle, UINT16 attr_id, UINT16 num_uuids, UINT16 *p_uuids) {
+    UINT16 xx;
+    UINT8 buff[0xA0];
+    UINT8 *p = buff;
+    INT32 max_len = 0x4D;
+
+    for (xx = 0; xx < num_uuids; xx++, p_uuids++) {
+        p[0] = 0x19;
+        p[1] = *p_uuids >> 8;
+        p[2] = *p_uuids;
+        p += 3;
+
+        if ((p - buff) > max_len) {
+            if (lbl_803C4C40[0x4630] >= 2) {
+                fn_8007096C(0xA0001, lbl_80319FCC, xx, num_uuids);
+            }
+            break;
+        }
+    }
+    return SDP_AddAttribute(handle, attr_id, 6, (UINT32)(p - buff), buff);
 }
 
 u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
