@@ -210,7 +210,10 @@ extern "C" u8 lbl_8033EB14[];
 extern "C" char lbl_8055B87C[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
+#pragma push
+#pragma small_data off
 extern "C" void *lbl_8033F0FC;
+#pragma pop
 extern "C" void *lbl_8033EF68;
 extern "C" void fn_8021BE48(void *);
 extern "C" void fn_802223C4(void *arg0, s32 arg1);
@@ -1408,12 +1411,28 @@ extern "C" void fn_8021B944(void *arg0) {
 
 extern "C" void fn_8021BA64(void *, s32, s32, s32, s32, void *, s32, s32, s32, s32, s32, s32, s32);
 
+#pragma push
+#pragma small_data off
 extern "C" void *fn_8021B9AC(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     fn_80218F80();
     *(void **)arg0 = &lbl_8033F0FC;
+    fn_8021BA64(
+        arg0,
+        *(s32 *)((u8 *)arg1 + 0x14),
+        *(s32 *)((u8 *)arg1 + 0x18),
+        arg2,
+        arg3,
+        (u8 *)arg1 + 0x20,
+        *(s32 *)((u8 *)arg1 + 4),
+        *(s32 *)((u8 *)arg1 + 0x90),
+        *(s32 *)((u8 *)arg1 + 0xA4),
+        *(s32 *)((u8 *)arg1 + 0x94),
+        *(s32 *)((u8 *)arg1 + 0x98),
+        (s32)*(f32 *)((u8 *)arg1 + 0x1C),
+        *(s32 *)((u8 *)arg1 + 0x84));
     return arg0;
 }
-
+#pragma pop
 extern "C" void fn_8022A8E4(s32);
 extern "C" void fn_8021BA64(void *, s32, s32, s32, s32, void *, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_8022EDC4(void);
