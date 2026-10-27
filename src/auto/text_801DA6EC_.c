@@ -39,8 +39,8 @@ extern void fn_801D9F84(int, int);
 extern char *fn_801DA03C(int, int);
 extern float fn_801DD88C(int, int, int);
 extern int fn_8029F458(unsigned char *, int);
-extern char lbl_8055ADA0[];
-extern char lbl_8055ADA8[];
+extern char lbl_8055ADA0;
+extern char lbl_8055ADA8;
 extern float lbl_80562B50;
 void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
     // Fix note: initializes the indexed CollisionSpace record and derives its flag from a returned name string.
