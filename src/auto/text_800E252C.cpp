@@ -122,6 +122,21 @@ public:
 // field, byte field at 0x74, and Remove/Insert calls taking the raw pointers).
 class BasicSound;
 class SoundPlayer;
+namespace nw4hbm {
+namespace snd {
+namespace detail {
+class BasicSound {
+public:
+    char pad[0x7C];
+    float current;
+    float target;
+    int total;
+    int elapsed;
+    void SetVolume(float, int);
+};
+}
+}
+}
 typedef unsigned char u8;
 typedef unsigned short u16;
 extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
