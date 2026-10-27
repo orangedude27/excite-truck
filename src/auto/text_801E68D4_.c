@@ -86,7 +86,7 @@ extern s32 fn_802C6FC0(s32, s32, s32);
 extern void *fn_801284F8(s32, const char *);
 extern void *memset(void *, int, unsigned long);
 extern const char lbl_80339A48[];
-extern const char lbl_8055AEF8[];
+extern char lbl_8055AEF8;
 extern float lbl_80562D78;
 extern float lbl_80562D7C;
 void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
