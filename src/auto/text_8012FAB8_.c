@@ -60,6 +60,7 @@ void fn_801301E0(unsigned char *arg0) {
 }
 
 __declspec(section ".data") extern int lbl_804230D0;
+#pragma dont_inline on
 void fn_8013028C(void) {
     int index = lbl_804230D0;
     if (index >= 0 && (unsigned int)index < 2) {
@@ -67,6 +68,7 @@ void fn_8013028C(void) {
     }
     lbl_804230D0 = -1;
 }
+#pragma dont_inline reset
 
 int fn_80130390(void) {
     int index = lbl_8055E04C;
