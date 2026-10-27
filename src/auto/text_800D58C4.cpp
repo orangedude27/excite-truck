@@ -347,8 +347,8 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, 
     extern const char lbl_8031F694[];
     extern const char lbl_8031F688[];
     extern const char lbl_8031F664[];
-    register void** node = (void**)*(void**)((u8*)arg0 + 4);
-    register void** sentinel = (void**)((u8*)arg0 + 4);
+    void* node = *(void**)((u8*)arg0 + 4);
+    void* sentinel = (u8*)arg0 + 4;
     while (node != sentinel) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
@@ -360,7 +360,7 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, 
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F688, 0x193, lbl_8031F664);
             return group;
         }
-        node = (void**)*node;
+        node = *(void**)node;
     }
     return 0;
 }
@@ -1173,17 +1173,14 @@ extern "C" char* fn_800D9584(char* arg0, const char* arg1) {
 extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, u8 arg1) {
     extern const char lbl_8031F990[];
     extern void memset(void *, int, unsigned int);
-    struct PanicMessages {
-        char data[0x400];
-    };
-    PanicMessages *messages = (PanicMessages *)lbl_8031F990;
+    const char *data = lbl_8031F990;
     u32 capacity = *(u32 *)((u8 *)arg0 + 0x4C) >> 28;
     if ((u32)arg1 > capacity)
-        Panic__Q26nw4hbm2dbFPCciPCce(messages->data, 0x38B, messages->data + 0x330);
+        Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x38B, data + 0x330);
     if (arg1 == 0)
         return;
     if (*(u32 *)((u8 *)arg0 + 0x58) == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(messages->data, 0x38E, messages->data + 0x360);
+        Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x38E, data + 0x360);
     u32 packed = *(u32 *)((u8 *)arg0 + 0x50);
     u8 *texture = (u8 *)*(void **)((u8 *)arg0 + 0x58) + ((packed >> 23) & 0x1E0);
     u32 index = packed >> 28;
