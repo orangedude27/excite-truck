@@ -35,25 +35,25 @@ extern void fn_80209090(s32);
 #pragma scheduling invalid_target
 void fn_8023CA54(void) {
     s32 zero = 0;
-    char *base = (char *)&lbl_803414D0;
+    s32 *base = (s32 *)&lbl_803414D0;
     lbl_8055F160 = zero;
-    fn_801333E8(4, ((s32 *)base) + 0, &lbl_8055F160);
+    fn_801333E8(4, base + 0, &lbl_8055F160);
     lbl_8055F164 = lbl_80563738;
-    fn_801331C4(4, base + 0x10, &lbl_8055F164);
+    fn_801331C4(4, base + 4, &lbl_8055F164);
     lbl_8055F168 = lbl_80563738;
-    fn_801331C4(4, base + 0x20, &lbl_8055F168);
+    fn_801331C4(4, base + 8, &lbl_8055F168);
     lbl_8055F16C = lbl_80563738;
-    fn_801331C4(4, base + 0x30, &lbl_8055F16C);
+    fn_801331C4(4, base + 12, &lbl_8055F16C);
     fn_80209030(lbl_8055F16C);
     lbl_8055F17C = zero;
     fn_801332D0(4, &lbl_8055BB70, &lbl_8055F17C);
     fn_80209090(lbl_8055F17C);
     lbl_8055F170 = lbl_80563738;
-    fn_801331C4(4, base + 0x40, &lbl_8055F170);
+    fn_801331C4(4, base + 16, &lbl_8055F170);
     lbl_8055F174 = lbl_80563738;
-    fn_801331C4(4, base + 0x4C, &lbl_8055F174);
+    fn_801331C4(4, base + 19, &lbl_8055F174);
     lbl_8055F178 = 1;
-    fn_801332D0(4, base + 0x5C, &lbl_8055F178);
+    fn_801332D0(4, base + 23, &lbl_8055F178);
 }
 #pragma pop
 s32 fn_8023CB54(void) {
@@ -131,7 +131,7 @@ extern void fn_80221EA0(void *, s32, s32, s32);
 extern s32 fn_80208D3C(void);
 extern void *fn_80208D4C(s32);
 extern char *strcpy(char *, const char *);
-extern const char lbl_8055BB98[];
+extern u8 lbl_8055BB98;
 void fn_8023D1FC(void *p) {
     s32 n;
     void *item;
@@ -147,7 +147,7 @@ void fn_8023D1FC(void *p) {
         item = fn_80208D4C(n);
         strcpy(*(char **)((u8 *)p + 0x28), ((const char *(*)(void *))(*(s32 **)item)[3])(item));
     } else {
-        strcpy(*(char **)((u8 *)p + 0x28), lbl_8055BB98);
+        strcpy(*(char **)((u8 *)p + 0x28), (const char*)&lbl_8055BB98);
     }
 }
 
