@@ -9659,7 +9659,7 @@ void fn_800869CC(void) {
 extern u8 lbl_803C3C38[];
 extern u8 lbl_803C3AF0[];
 extern u8 hidh_conn_reg(void);
-extern u8 hidh_conn_initiate(void);
+extern u8 hidh_conn_initiate();
 extern void hidd_pm_set_now(void *);
 u8 HID_HostRegister(void *arg0) {
     u8 result;
