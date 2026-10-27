@@ -29,6 +29,7 @@ extern int fn_80138C28(void *, float *, float *);
 #pragma push
 #pragma scheduling invalid_target
 #pragma optimize_for_size on
+#pragma opt_propagation off
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
@@ -48,8 +49,7 @@ float fn_80138DF4(void *arg0) {
             if (fn_80138C28(arg0, &spC, &sp8) != 0) {
                 var_f4 = spC;
                 temp_f1 = (*(float *)((char *)arg0 + 0x10) + (var_f4 * *(float *)((char *)arg0 + 0x14))) - *(float *)((char *)arg0 + 4);
-                if (var_f4 > lbl_805613D0) {
-                } else {
+                if (var_f4 <= lbl_805613D0) {
                     var_f4 = lbl_805613D0;
                 }
                 var_f31 = temp_f1 / var_f4;
@@ -66,7 +66,13 @@ float fn_80138DF4(void *arg0) {
             if (fn_80138BE4(temp_f1_2, temp_f2) != 0) {
                 var_f31 = -var_f31;
             }
-            lbl_8055E100 = (fn_80138BE4(*(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4), *(float *)((char *)arg0 + 0xC) - *(float *)arg0) == 0) ? -2 : -3;
+            temp_f3_2 = *(float *)((char *)arg0 + 0xC);
+            temp_f2 = temp_f3_2 - *(float *)arg0;
+            temp_f1_2 = *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4);
+            lbl_8055E100 = -2;
+            if (fn_80138BE4(temp_f1_2, temp_f2) != 0) {
+                lbl_8055E100 = -3;
+            }
         }
     } else {
         var_f31 = lbl_805613B8;
