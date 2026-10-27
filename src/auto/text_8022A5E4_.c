@@ -568,6 +568,10 @@ loop:
     }
 }
 
+void *fn_8022CA2C(int arg0) {
+    return lbl_80490968 + arg0 * 0x74;
+}
+
 float fn_8022CA40(void *arg0) {
     if (*(float *)((char *)arg0 + 0x34) < lbl_80563588)
         return lbl_80563588;
