@@ -2343,19 +2343,15 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
 }
 
 extern "C" s8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
-    s32 sp18;
-    s32 sp1C;
-    s32 sp20;
-    s32 sp8;
-    s32 spC;
-    s32 sp10;
-    s32 sp14;
-    fn_800B78F4(&sp18, &sp8);
-    *(s16 *)arg0 = (s16)(((sp20 & 0x1F) | ((sp1C << 5) & 0x1E0)) |
-                   (((sp18 - 0x7BC) << 9) & 0xFE00));
-    *(s16 *)arg1 = (s16)((((sp10 >> 1) & 0x1F) | ((spC << 5) & 0x7E0)) |
-                   ((sp8 << 11) & 0xF800));
-    return (s8)sp14;
+    u8 scratch[0x20];
+    s32 *date = (s32 *)(scratch + 0x10);
+    s32 *time = (s32 *)scratch;
+    fn_800B78F4(date, time);
+    *(s16 *)arg0 = (s16)(((date[2] & 0x1F) | ((date[1] << 5) & 0x1E0)) |
+                          (((date[0] - 0x7BC) << 9) & 0xFE00));
+    *(s16 *)arg1 = (s16)((((time[2] >> 1) & 0x1F) | ((time[1] << 5) & 0x7E0)) |
+                          ((time[0] << 11) & 0xF800));
+    return (s8)*(s32 *)(scratch + 0xC);
 }
 
 extern s32 fn_800AB378(void *, s32, s32, s32);
@@ -9179,7 +9175,7 @@ maxForPass = maxOutput;
 }
 
 while (outputIndex < maxForPass) {
-raw = (u32)fn_800C0DF8((u8*)arg1, 0x10, (u32*)&ctx->bitIndex) << 16;
+raw = (u32)((u16 (*)(u8 *, s32, u32 *))fn_800C0DF8)((u8*)arg1, 0x10, (u32*)&ctx->bitIndex) << 16;
 if (type == 0xD || type == 0x10) {
 bits = ctx->bitIndex;
 ctx->bitIndex = bits + 4;
