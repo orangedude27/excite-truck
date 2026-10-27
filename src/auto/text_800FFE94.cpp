@@ -206,18 +206,20 @@ extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackMa
 extern "C" void Close__Q46nw4hbm3snd6detail8WsdTrackFv(void *);
 extern "C" void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer(void *, void *);
 extern "C" void NWC24Data_SetDataP(void *, const void *, unsigned long);
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" int Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void *arg0, const void *arg1, int arg2, int arg3, const void *arg4, unsigned long arg5) {
-    int level1 = OSDisableInterrupts();
+    int level1;
+    int level2;
+    level1 = OSDisableInterrupts();
 
     if (*(unsigned char *)((char *)arg0 + 0x1D) != 0) {
-        int level2 = OSDisableInterrupts();
-
+        level2 = OSDisableInterrupts();
         if (*(unsigned char *)((char *)arg0 + 0x1F) != 0) {
             if (arg0 == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CAC, 0x233, lbl_80327C88);
             Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(lbl_8041D4C4, (char *)arg0 + 0x14);
         }
-
         if (*(unsigned char *)((char *)arg0 + 0x1D) != 0) {
             void *node = arg0;
             if (arg0 != 0)
@@ -225,7 +227,6 @@ extern "C" int Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6deta
             UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
                 GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), node);
         }
-
         OSRestoreInterrupts(level2);
         Close__Q46nw4hbm3snd6detail8WsdTrackFv((char *)arg0 + 0x9C);
         *(unsigned char *)((char *)arg0 + 0x1D) = 0;
@@ -233,7 +234,7 @@ extern "C" int Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6deta
 
     InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(arg0, arg3, arg4, arg5);
     Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer((char *)arg0 + 0x9C, arg0);
-    NWC24Data_SetDataP((char *)arg0 + 0x9C, arg1, arg2);
+    NWC24Data_SetDataP((void *)((unsigned int)arg0 + 0x9C), arg1, arg2);
 
     void *node = arg0;
     if (arg0 != 0)
@@ -245,7 +246,7 @@ extern "C" int Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6deta
     OSRestoreInterrupts(level1);
     return 1;
 }
-
+#pragma pop
 extern "C" int fn_80100654(void* arg0) {
     if (*((unsigned char*)arg0 + 0x1E) == 0)
         return 0;
