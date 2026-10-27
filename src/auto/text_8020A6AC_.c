@@ -232,20 +232,20 @@ extern "C" void fn_8020AAC0(int unused, int arg1) {
         virtual void dummy7();
         virtual float getValue(const char *, float);
     };
-    void *list = fn_80131808(lbl_8033C3B4);
+    char *base;
+    List *list = (List *)fn_80131808(lbl_8033C3B4);
     if (list != 0) {
+        base = lbl_804892D0;
+        Entry *item;
         int index = 0;
-        void *item;
-        char *base = lbl_804892D0;
-        while ((item = ((List *)list)->getAt(index)) != 0) {
-            Entry *entry = (Entry *)item;
-            const char *name = entry->getName();
+        while ((item = (Entry *)list->getAt(index)) != 0) {
+            const char *name = item->getName();
             if (strcmp(name, lbl_8055B5A0) == 0) {
                 int n = (int)lbl_8055EE08;
                 char *record = base + n * 0x24;
                 const char *s;
                 lbl_8055EE08 = (void *)(n + 1);
-                s = entry->getString(lbl_8055B5A8, n);
+                s = item->getString(lbl_8055B5A8, n);
                 {
                     int left = 0x20;
                     char *dest = record;
@@ -265,7 +265,7 @@ copy_check:
 copy_done:
                     ;
                 }
-                *((float *)(record + 0x20)) = entry->getValue(lbl_8055B5B0, lbl_805632B4);
+                *((float *)(record + 0x20)) = item->getValue(lbl_8055B5B0, lbl_805632B4);
             }
             ++index;
         }
