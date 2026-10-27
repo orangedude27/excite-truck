@@ -15,7 +15,7 @@ int fn_802E30C8(const char *, ...);
 void *memset(void *, int, unsigned int);
 extern char lbl_8034C918[];
 __declspec(section ".sdata") extern char lbl_8055D130[];
-extern char lbl_8055D138[];
+__declspec(section ".sdata") extern char lbl_8055D138[];
 extern int lbl_8055FE78, lbl_8055FE7C, lbl_8055FE80;
 void fn_802DACD4(void) {
  int a,b,c,d; int font;
