@@ -2790,20 +2790,61 @@ done:
 }
 
 void GXSetIndTexOrder(s32 arg0, s32 arg1, s32 arg2) {
-    s32 r4 = arg1, r5 = arg2;
-    unsigned int *data = __GXData;
-    if (r5 == 0xff) r5 = 0;
-    if (r4 == 0xff) r4 = 0;
-    switch (arg0) {
-    case 0: data[0x170/4] = (data[0x170/4] & ~7) | (r5 & 7) | ((r4 << 3) & 0x38); break;
-    case 1: data[0x170/4] = (data[0x170/4] & ~0x1c0) | ((r5 << 6) & 0x1c0) | ((r4 << 9) & 0xe00); break;
-    case 2: data[0x170/4] = (data[0x170/4] & ~0x7000) | ((r5 << 12) & 0x7000) | ((r4 << 15) & 0x38000); break;
-    case 3: data[0x170/4] = (data[0x170/4] & ~0x1c0000) | ((r5 << 18) & 0x1c0000) | ((r4 << 21) & 0xe00000); break;
+    s32 r4 = arg1;
+    s32 r5 = arg2;
+    union {
+        unsigned int value;
+        struct {
+            unsigned int unused : 8;
+            unsigned int coord3 : 3;
+            unsigned int map3 : 3;
+            unsigned int coord2 : 3;
+            unsigned int map2 : 3;
+            unsigned int coord1 : 3;
+            unsigned int map1 : 3;
+            unsigned int coord0 : 3;
+            unsigned int map0 : 3;
+        } fields;
+    } reg;
+
+    if (r5 == 0xFF) {
+        r5 = 0;
     }
+    if (r4 == 0xFF) {
+        r4 = 0;
+    }
+
+    switch (arg0) {
+    case 0:
+        reg.value = __GXData[0x170 / 4];
+        reg.fields.map0 = r5;
+        reg.fields.coord0 = r4;
+        __GXData[0x170 / 4] = reg.value;
+        break;
+    case 1:
+        reg.value = __GXData[0x170 / 4];
+        reg.fields.map1 = r5;
+        reg.fields.coord1 = r4;
+        __GXData[0x170 / 4] = reg.value;
+        break;
+    case 2:
+        reg.value = __GXData[0x170 / 4];
+        reg.fields.map2 = r5;
+        reg.fields.coord2 = r4;
+        __GXData[0x170 / 4] = reg.value;
+        break;
+    case 3:
+        reg.value = __GXData[0x170 / 4];
+        reg.fields.map3 = r5;
+        reg.fields.coord3 = r4;
+        __GXData[0x170 / 4] = reg.value;
+        break;
+    }
+
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x170/4];
-    data[0x5fc/4] |= 3;
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = __GXData[0x170 / 4];
+    __GXData[0x5FC / 4] |= 3;
+    *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetNumIndStages(unsigned int value) {
