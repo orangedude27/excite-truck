@@ -298,6 +298,7 @@ void fn_8023E16C(void *arg0, int arg1) {
 extern char lbl_80341BE0[];
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8023E1FC(void *arg0) {
     struct Interface {
@@ -337,32 +338,37 @@ extern "C" void fn_8023E1FC(void *arg0) {
         char pad1[3];
         char string[0x14];
     } frame;
+    register char *entry;
     register int zero = 0;
     int i;
     Interface *object;
 
     fn_8022D76C();
     frame.state = *(int *)((char *)arg0 + 0x30);
+    entry = lbl_802FA190;
     frame.zero = zero;
-    for (i = 0; i < 0x11; i++) {
-        char *entry = lbl_802FA190 + i * 8;
+    for (i = 0; i < 0x11; i++, entry += 8) {
         fn_8022D894(arg0, i, 0, (long)*(char **)fn_8023DC38(*(char **)entry), 0);
         object = *(Interface **)((char *)arg0 + 0x34);
         fn_801A7974((const char *)&frame.result, (int)*(char **)entry, (int)object->query());
         if (frame.result == 0) {
+            char c;
             char *src = lbl_8055BBA0;
-            char *dst = frame.string;
             int count = 0x14;
-            do {
-                char c = *src++;
-                *dst++ = c;
-                if ((signed char)c != 0) {
-                    count--;
-                    if (count > 0) continue;
-                    dst[-1] = zero;
-                }
-                break;
-            } while (1);
+            char *dst = frame.string;
+            goto read;
+        limit:
+            count--;
+            if (count > 0) goto read;
+            dst[-1] = zero;
+            goto copied;
+        read:
+            c = *src++;
+            *dst++ = c;
+            if ((signed char)c != 0) goto limit;
+            goto copied;
+        copied:
+            ;
         } else {
             fn_801A7E54(frame.string, 0x14, &frame.result);
         }
