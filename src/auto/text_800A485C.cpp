@@ -10018,13 +10018,23 @@ extern "C" void fn_800C1A80(void *, void *, s32 *);
 extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
     s32 combined[9];
     s32 filtered[9];
+    s32 *input = arg0;
+    s32 *coeff = lbl_802F4018;
+    s32 *combinedOut = combined;
+    s32 *scale = lbl_802F4060;
+    s32 *filteredOut = filtered;
     for (s32 i = 0; i < 9; i++) {
-        s32 forward = fixedMul20(arg0[i], lbl_802F4018[i]);
+        s32 left = *input++;
+        s32 k = *coeff++;
+        s32 c = *scale++;
         s32 reverseIndex = 0x11 - i;
-        s32 reverse = fixedMul20(arg0[reverseIndex], lbl_802F4018[reverseIndex]);
+        s32 right = arg0[reverseIndex];
+        s32 reverseK = lbl_802F4018[reverseIndex];
+        s32 forward = fixedMul20(k, left);
+        s32 reverse = fixedMul20(reverseK, right);
         s32 delta = forward - reverse;
-        combined[i] = forward + reverse;
-        filtered[i] = fixedMul20(delta, lbl_802F4060[i]);
+        *combinedOut++ = forward + reverse;
+        *filteredOut++ = fixedMul20(c, delta);
     }
     fn_800C1A80(combined, filtered, arg1);
 }
@@ -13072,6 +13082,48 @@ extern "C" void fn_800D1AEC(void) {
     fn_80060CC0(r3, 1, (u32)&fn_800D1B1C);
 }
 
+extern "C" void fn_800D1B1C(s32 index, s32 mode) {
+    u8 *base = (u8 *)lbl_8055DDB0;
+
+    if (base == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0xA3, lbl_8031E9A0);
+    }
+
+    if (mode == -1)
+        goto done;
+    if (mode >= -1)
+        goto play;
+    if (mode >= -2)
+        goto rearm;
+    goto done;
+
+play:
+    if (mode >= 1)
+        goto done;
+    {
+        s32 one = 1;
+        u8 *entry = base + index * 0x68;
+        entry[0x5C] = one;
+        ((u32 (*)(s32, u32, void *, u32))fn_80060CC0)(
+            index, 4, (void *)fn_800D1C48, one);
+    }
+    goto done;
+
+rearm:
+    {
+        void *alarm = base + index * 0x68;
+        OSSetAlarmUserData((OSAlarm *)alarm, (void *)index);
+        OSCancelAlarm((OSAlarm *)alarm);
+        u32 ticks = *(volatile u32 *)0x800000F8;
+        u32 delay = ((ticks >> 2) / 1000U) * 0x32U;
+        ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
+            (OSAlarm *)alarm, 0x10624DD3, 0, delay, (OSAlarmHandler)fn_800D1AEC);
+    }
+
+done:
+    return;
+}
+
 extern "C" void fn_800D1C18(void) {
     void *data = ((void *(*)())OSGetAlarmUserData)();
     fn_80060CC0(data, 4, (u32)&fn_800D1C48);
@@ -13154,7 +13206,9 @@ extern "C" void fn_800D2098(void*);
 extern "C" void __VprintfThunk(const char*, va_list);
 extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void*, void*, const char*, void*);
 extern "C" s32 fn_80116A30(void*);
+#if 0
 extern "C" void fn_800D1C48(void);
+#endif
 extern "C" s32 fn_80116A38(void*);
 extern "C" u32 fn_80060CC0(void*, u32, u32);
 extern "C" void fn_800D1B1C(s32, s32);
