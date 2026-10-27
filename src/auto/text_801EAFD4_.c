@@ -333,6 +333,7 @@ void fn_801EB6A4(void) {
 
 #pragma dont_inline on
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" s32 fn_802C6DC4(const char *, s32, s32, s32);
 extern "C" void fn_802C6FA8(s32);
 extern "C" char lbl_80339FD4[];
@@ -357,8 +358,8 @@ extern "C" void fn_801EB6A8(s32 arg0) {
     };
     register s32 *item;
     register s32 *node;
-    register s32 *child;
     register s32 *context;
+    register s32 *child;
     register s32 type;
     register s32 i;
 
