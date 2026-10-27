@@ -469,8 +469,15 @@ extern "C" f32 lbl_8056175C;
 extern "C" void* memset(void*, s32, u32);
 #pragma small_data off
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void* fn_801579F4(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
-    // Note: the vtable labels are arrays for full address relocations; the save helpers match the target ABI.
+    // Note: a typed final field retains the target's base plus 0x244 store form.
+    struct Tail {
+        u8 pad[0x244];
+        s32 arg1;
+        s32 zero;
+        s32 arg2;
+    };
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
     *(void**)arg0 = &lbl_8032F2BC;
@@ -482,12 +489,13 @@ extern "C" void* fn_801579F4(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     } while (ptr < (u8*)arg0 + 0x244);
     *(s32*)((u8*)arg0 + 4) = arg2;
     *(s32*)((u8*)arg0 + 0xC) = 0;
-    *(s32*)((u8*)arg0 + 0x244) = arg1;
-    *(s32*)((u8*)arg0 + 0x248) = 0;
-    *(s32*)((u8*)arg0 + 0x24C) = arg2;
+    ((Tail*)arg0)->arg1 = arg1;
+    ((Tail*)arg0)->zero = 0;
+    ((Tail*)arg0)->arg2 = arg2;
     *(void**)arg0 = &lbl_8032EBF8;
     return arg0;
 }
+#pragma scheduling on
 #pragma use_lmw_stmw reset
 #pragma small_data reset
 extern "C" void* fn_80157A98(void* arg0, s32 arg1) {
@@ -523,28 +531,31 @@ extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
     *(u8*)((u8*)arg0+0x294)=0; *(s32*)((u8*)arg0+0x298)=arg2;
     *(f32*)((u8*)arg0+0x24C)=lbl_80561754; return arg0;
 }
-#pragma pop
+#pragma scheduling invalid_target
 extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8* ptr = (u8*)arg0 + 0x14;
+    u8* end = (u8*)arg0 + 0x244;
     *(void**)((u8*)arg0 + 8) = ptr;
-    *(void**)arg0 = &lbl_8032F2BC;
+    *(void**)arg0 = lbl_8032F2BC;
     *(s32*)((u8*)arg0 + 0x10) = 10;
     *(s32*)((u8*)arg0 + 0xC) = 0;
     do {
         memset(ptr, 0, 4);
         ptr += 0x38;
-    } while (ptr < (u8*)arg0 + 0x244);
+    } while (ptr < end);
+    f32 value = lbl_8056175C;
+    void* vtable = &lbl_8032EE68;
     *(s32*)((u8*)arg0 + 4) = arg2;
     *(s32*)((u8*)arg0 + 0xC) = 0;
     *(s32*)((u8*)arg0 + 0x244) = arg1;
     *(s32*)((u8*)arg0 + 0x258) = 0;
-    *(f32*)((u8*)arg0 + 0x250) = lbl_8056175C;
+    *(f32*)((u8*)arg0 + 0x250) = value;
     *(s32*)((u8*)arg0 + 0x268) = 0;
     *(s32*)((u8*)arg0 + 0x248) = 0;
-    *(void**)arg0 = &lbl_8032EE68;
+    *(void**)arg0 = vtable;
     return arg0;
 }
-
+#pragma scheduling on
 extern "C" void *fn_80157DA0(void *self, void *arg1, void *arg2) {
     extern void *lbl_8032EF08;
     extern float lbl_80561760;
