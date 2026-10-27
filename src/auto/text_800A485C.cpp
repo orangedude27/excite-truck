@@ -3344,16 +3344,18 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
 extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
     extern s32 fn_800B5618(void *, void *, u16, u16, s32);
     u16 sp8;
+    u16 bits = *(u16 *)arg0;
     u32 offset = arg1 << 1;
-    u16 mask = *(u16 *)arg0 - 1;
     u8 shift = *((u8 *)arg0 + 0x20);
-    u32 index = *(u32 *)((u8 *)arg0 + 0x28) + (offset >> shift);
-    u16 sector = offset & mask;
-    s32 result = 0;
+    u32 indexValue = *(u32 *)((u8 *)arg0 + 0x28) + (offset >> shift);
+    u32 sectorValue = offset & (bits - 1);
+    __sthbrx(arg2, &sp8, 0);
+    u16 index = indexValue;
+    u16 sector = sectorValue;
     u32 i = 0;
-    sp8 = (u16)((arg2 >> 8) | (arg2 << 8));
+    s32 result = 0;
     while (i < *((u8 *)arg0 + 0x22)) {
-        s32 status = fn_800B5618(arg0, &sp8, (u16)index, sector, 2);
+        s32 status = fn_800B5618(arg0, &sp8, index, sector, 2);
         if (status != 0 && result == 0)
             result = status;
         i++;
@@ -12124,8 +12126,10 @@ extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext
 }
 
 extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
+    u8 *base = lbl_80407600;
     s32 temp_r30;
     s32 zero = 0;
+
     *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(s32 *)arg0 = arg1;
     *((u8 *)arg0 + 0x1C) = zero;
@@ -12138,9 +12142,15 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     if (arg1 < 4) {
         temp_r30 = arg1 * 0x30;
         lbl_8055DDA8[arg1] = zero;
-        OSCreateAlarm((OSAlarm *)(lbl_80407600 + temp_r30));
-        OSCreateAlarm((OSAlarm *)(lbl_80407600 + 0xC0 + temp_r30));
-        *(void **)(lbl_80407600 + 0x180 + arg1 * 4) = arg0;
+        OSCreateAlarm((OSAlarm *)(base + temp_r30));
+        {
+            u8 *secondBase = base + 0xC0;
+            OSCreateAlarm((OSAlarm *)(secondBase + temp_r30));
+        }
+        {
+            void **slots = (void **)(base + 0x180);
+            slots[arg1] = arg0;
+        }
     }
     return arg0;
 }
@@ -12515,6 +12525,21 @@ extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1) {
     s32 result = (s32)val;
     s32 neg = -result;
     return (s32)((u32)(neg | result) >> 31);
+}
+
+extern void *lbl_8055DDBC;
+extern "C" void __VprintfThunk(const char *, va_list);
+extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void *, void *, const char *, void *);
+extern "C" void fn_800D1EC4(const char *msg, ...) {
+    va_list vlist;
+    va_start(vlist, msg);
+    void *console = lbl_8055DDBC;
+    if (console != 0) {
+        Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void *)3, console, msg, vlist);
+    } else {
+        __VprintfThunk(msg, vlist);
+    }
+    va_end(vlist);
 }
 
 extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
