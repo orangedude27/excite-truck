@@ -9,8 +9,8 @@ extern char lbl_8032B224[];
 __declspec(section ".sdata") extern char lbl_80559B00[];
 
 extern int lbl_804230D0;
-extern int lbl_80423054;
-extern int lbl_8042F4B8;
+extern char lbl_80423054[];
+extern char lbl_8042F4B8[];
 extern char lbl_8055E048;
 extern void fn_8013111C();
 
@@ -75,83 +75,83 @@ int fn_80130390(void) {
     return *(int *)((char *)lbl_802F8E60 + index * 12);
 }
 
-extern int lbl_80423054;
-extern int lbl_8042F4B8;
+extern char lbl_80423054[];
+extern char lbl_8042F4B8[];
 extern char lbl_8055E048;
 extern void fn_8013111C();
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void fn_801303A8(void) {
-    int *s = (int *)(lbl_8042F4B8);
-    int *d = (int *)(lbl_80423054);
-    int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, c;
+    int *s = (int *)&lbl_8042F4B8;
+    int *d = (int *)&lbl_80423054;
+    int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27;
+    int c;
 
     lbl_8055E048 = 1;
     lbl_804230D0 = -1;
-    fn_8013111C();
-    c = *(char *)(s + 0x70);
-    v0 = s[0x14];
-    v1 = s[0x18];
-    v2 = s[0x19];
-    v3 = s[0x1A];
-    v4 = s[0x1B];
-    v5 = s[0x1C];
-    v6 = s[0x1D];
-    v7 = s[0x1E];
-    v8 = s[0x1F];
-    v9 = s[0x20];
-    v10 = s[0x21];
-    v11 = s[0x22];
-    v12 = s[0x23];
-    v13 = s[0x24];
-    v14 = s[0x25];
-    v15 = s[0x26];
-    v16 = s[0x27];
-    v17 = s[0x28];
-    v18 = s[0x29];
-    v19 = s[0x2A];
-    v20 = s[0x2B];
-    v21 = s[0x2C];
-    v22 = s[0x2D];
-    v23 = s[0x2E];
-    v24 = s[0x2F];
-    v25 = s[0x30];
-    v26 = s[0x31];
-    v27 = s[0x32];
-    d[0x18] = v0;
-    d[0x1A] = v1;
-    d[0x1B] = v2;
-    d[0x1C] = v3;
-    d[0x1D] = v4;
-    d[0x1E] = v5;
-    d[0x1F] = v6;
-    d[0x20] = v7;
-    d[0x21] = v8;
-    d[0x22] = v9;
-    d[0x23] = v10;
-    d[0x24] = v11;
-    d[0x25] = v12;
-    d[0x26] = v13;
-    d[0x27] = v14;
-    d[0x28] = v15;
-    d[0x29] = v16;
-    d[0x2A] = v17;
-    d[0x2B] = v18;
-    d[0x2C] = v19;
-    d[0x2D] = v20;
-    d[0x2E] = v21;
-    d[0x2F] = v22;
-    d[0x30] = v23;
-    d[0x31] = v24;
-    d[0x32] = v25;
-    d[0x33] = v26;
-    d[0x34] = v27;
-    *(char *)(d + 0x78) = c;
-    if (c == 0) {
-        *(char *)lbl_80423054 = 0x2C;
-    } else {
-        *(char *)lbl_80423054 = 0x2E;
-    }
+    fn_8013111C(lbl_8055E04C);
+    c = *(unsigned char *)((char *)s + 0x70);
+    v0 = s[0];
+    v1 = s[1];
+    v2 = s[2];
+    v3 = s[3];
+    v4 = s[4];
+    v5 = s[5];
+    v6 = s[6];
+    v7 = s[7];
+    v8 = s[8];
+    v9 = s[9];
+    v10 = s[10];
+    v11 = s[11];
+    v12 = s[12];
+    v13 = s[13];
+    v14 = s[14];
+    v15 = s[15];
+    v16 = s[16];
+    v17 = s[17];
+    v18 = s[18];
+    v19 = s[19];
+    v20 = s[20];
+    v21 = s[21];
+    v22 = s[22];
+    v23 = s[23];
+    v24 = s[24];
+    v25 = s[25];
+    v26 = s[26];
+    v27 = s[27];
+    d[2] = v0;
+    d[3] = v1;
+    d[4] = v2;
+    d[5] = v3;
+    d[6] = v4;
+    d[7] = v5;
+    d[8] = v6;
+    d[9] = v7;
+    d[10] = v8;
+    d[11] = v9;
+    d[12] = v10;
+    d[13] = v11;
+    d[14] = v12;
+    d[15] = v13;
+    d[16] = v14;
+    d[17] = v15;
+    d[18] = v16;
+    d[19] = v17;
+    d[20] = v18;
+    d[21] = v19;
+    d[22] = v20;
+    d[23] = v21;
+    d[24] = v22;
+    d[25] = v23;
+    d[26] = v24;
+    d[27] = v25;
+    d[28] = v26;
+    d[29] = v27;
+    *(char *)d = c == 0 ? 0x2C : 0x2E;
+    *(char *)(d + 0x78 / 4) = c;
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw on
 void fn_80130518(void) {
     fn_8013028C();
     *(int *)((char *)0x804230D0 + 4) = 0;
