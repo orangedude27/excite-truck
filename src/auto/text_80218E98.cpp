@@ -3602,6 +3602,8 @@ loop_test:
 #pragma scheduling on
 #pragma pop
 extern "C" void fn_8022375C(void);
+extern "C" void fn_802235B4(void *);
+extern "C" void fn_80223644(void *);
 extern "C" s32 fn_802236C8(void *arg0, s32 arg1) {
     if (*(u8 *)((u8 *)arg0 + 0x41C) != 0)
         return (s32)0xE6969696;
@@ -3624,17 +3626,15 @@ extern "C" void fn_80223728(void *arg0) {
 extern "C" void fn_8022375C(void) {
 }
 
-extern "C" void fn_80223644(void);
-extern "C" void fn_802235B4(void);
 extern "C" s32 fn_80223760(void *arg0, s32 arg1) {
     if (*(u8 *)((u8 *)arg0 + 0x41C) != 0)
         return 0;
     switch (arg1) {
     case 0x125:
-        fn_80223644();
+        fn_80223644(arg0);
         return 1;
     case 0x127:
-        fn_802235B4();
+        fn_802235B4(arg0);
         return 1;
     default:
         return 0;
