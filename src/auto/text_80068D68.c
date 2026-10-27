@@ -990,42 +990,47 @@ void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
     fn_8006B330();
 }
 
+#pragma use_lmw_stmw off
 void *WUDiGetDevInfo(u8 *addr) {
-    u8 *base;
-    s32 i;
-    u8 *entry;
+    struct WUDDevInfoView {
+        u8 pad[0x40];
+        u8 addr[6];
+        u8 pad2[0x1A];
+    };
+    struct WUDControlView {
+        u8 pad[0x64];
+        struct WUDDevInfoView stdDevs[10];
+        struct WUDDevInfoView smpDevs[6];
+    };
+    struct WUDControlView *control;
     void *result;
     s32 interrupt;
+    s32 i;
+    u8 *entry;
 
-    base = lbl_80392960;
+    control = (struct WUDControlView *)lbl_80392960;
     result = 0;
     interrupt = OSDisableInterrupts();
-    entry = base + 0xA4;
-    i = 0;
-    while (i < 10) {
+    entry = control->stdDevs[0].addr;
+    for (i = 0; i < 10; i++, entry += 0x60) {
         if (memcmp(entry, addr, 6) == 0) {
-            result = base + i * 0x60 + 0x64;
+            result = &control->stdDevs[i];
             break;
         }
-        i++;
-        entry += 0x60;
     }
     if (result == 0) {
-        entry = base + 0x464;
-        i = 0;
-        while (i < 6) {
+        entry = control->smpDevs[0].addr;
+        for (i = 0; i < 6; i++, entry += 0x60) {
             if (memcmp(entry, addr, 6) == 0) {
-                result = base + i * 0x60 + 0x424;
+                result = &control->smpDevs[i];
                 break;
             }
-            i++;
-            entry += 0x60;
         }
     }
     OSRestoreInterrupts(interrupt);
     return result;
 }
-
+#pragma use_lmw_stmw on
 extern char lbl_8031377C[];
 void *WUDiGetNewDevInfo(void) {
     struct DevInfo { u8 data[0x60]; };
