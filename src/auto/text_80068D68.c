@@ -88,6 +88,8 @@ extern char lbl_8031347C[];
 extern u32 lbl_8055DC30;
 extern u8 lbl_8055DC34;
 extern void fn_800709FC(void);
+extern void fn_8006EBAC(void);
+extern void fn_8006EB88(void);
 extern void fn_80071508(u8);
 extern void fn_800716B0(void *, s32, void *);
 extern u8 fn_80089E20(u8);
@@ -3814,16 +3816,18 @@ block_done:
 }
 
 void btm_acl_removed(u8 *addr) {
-    s32 i;
+    u32 i;
     u8 *entry;
     void (*callback)(u8 *, u32, u32, u32, u32);
 
     entry = lbl_803C0F78 + 0x34;
     for (i = 0; i < 4; i++, entry += 0x11C) {
         if (entry[0x119] != 0 && memcmp(entry + 8, addr, 6) == 0)
-            break;
+            goto found;
     }
-    if (i < 4) {
+    entry = 0;
+found:
+    if (entry != 0) {
         entry[0x119] = 0;
         callback = *(void (**)(u8 *, u32, u32, u32, u32))(lbl_803C0F78 + 0x4C8);
         if (callback != 0)
@@ -11370,6 +11374,31 @@ void l2cu_send_peer_connect_req(void *arg0) {
     }
 }
 
+void l2cu_reject_connection(void *p_lcb, u16 remote_cid, u8 rem_id, u16 result) {
+    void *p_buf;
+    u8 *packet;
+
+    p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 8, 3, rem_id);
+    if (p_buf == NULL) {
+        if (lbl_803C4040[0] >= 2) {
+            fn_8007093C(0x80001, lbl_80319174);
+        }
+        return;
+    }
+
+    packet = p_buf;
+    packet[0x14] = 0;
+    packet[0x15] = 0;
+    packet[0x16] = remote_cid;
+    packet[0x17] = ((s32)remote_cid) >> 8;
+    packet[0x18] = result;
+    packet[0x19] = ((u32)result) >> 8;
+    packet[0x1A] = 0;
+    packet[0x1B] = 0;
+    ((void (*)(void *, u8, void *, s32, u8))l2c_link_check_send_pkts)(
+        p_lcb, 0, p_buf, ((s32)remote_cid) >> 8, 0);
+}
+
 void l2cu_send_peer_config_req(void *arg0, void *arg1)
 {
     extern char lbl_80319174[];
@@ -11548,18 +11577,25 @@ int l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remot
     void *p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 4, 7, remote_id);
     u8 *packet;
 
-    if (p_buf != NULL) {
-        packet = p_buf;
-        packet[0x14] = local_cid;
-        packet[0x15] = local_cid >> 8;
-        packet[0x16] = remote_cid;
-        packet[0x17] = remote_cid >> 8;
-        *(u16 *)(packet + 6) = 0;
-        GKI_enqueue((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_buf);
-        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
-    } else if (lbl_803C4040[0] >= 2) {
-        fn_8007093C(0x80001, lbl_803183B0 + 0xDC4);
+    if (p_buf == NULL) {
+        if (*(volatile u8 *)lbl_803C4040 < 2) {
+            goto done;
+        }
+        fn_8007093C(0x80001, lbl_80319174);
+        goto done;
     }
+
+    packet = p_buf;
+    packet[0x14] = local_cid;
+    packet[0x15] = local_cid >> 8;
+    packet[0x16] = remote_cid;
+    packet[0x17] = (u32)remote_cid >> 8;
+    *(u16 *)(packet + 6) = 0;
+    GKI_enqueue((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_buf);
+    ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
+
+done:
+    ;
 }
 
 void l2cu_send_peer_echo_rsp(void *arg0, s32 arg1, u8 *arg2, u32 arg3) {
@@ -13388,23 +13424,24 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
 }
 
 void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 arg2, u32 arg3) {
-    UINT8 state = 1;
     BT_HDR *p_buf;
     UINT8 *data;
     UINT8 *p_check;
+    UINT8 enabled = 1;
+    UINT8 state;
 
     if (*((UINT8 *)p_mcb + 0x6D) == 0) {
-        state = 0;
+        enabled = 0;
     }
-    state <<= 1;
+    state = enabled << 1;
 
     p_buf = (BT_HDR *)GKI_getpoolbuf(2);
     if (p_buf == NULL) return;
 
     p_buf->offset = 9;
     data = (UINT8 *)(p_buf + 1);
-    p_check = data + 13;
     data[9] = state | 1 | (credits << 2);
+    p_check = data + 13;
     data[10] = 0xFF;
     data[11] = 1;
     data[12] = arg2;
