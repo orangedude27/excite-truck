@@ -159,11 +159,11 @@ int fn_801DF060(void) {
 
 extern float lbl_80562BF8, lbl_80562BFC, lbl_80562C00, lbl_80562C04, lbl_80562C08, lbl_80562C0C, lbl_80562C10;
 extern int lbl_8055AE28;
-extern int lbl_803395C4;
+extern char lbl_803395C4[];
 extern int fn_801769F8(void);
 extern void fn_80011278(int, float, float, float, float);
-extern void fn_800103B8(int, int, int, int, float, float, float, float);
-extern void fn_8000FF88(int, int, int, float, float, float);
+extern void fn_800103B8(int, int, float, float, float, float, const char *, ...);
+extern void fn_8000FF88(int, int, const char *, float, float, float, ...);
 extern void fn_801DE890(int);
 extern void fn_80011A2C(void);
 int fn_801DF110(void) {
