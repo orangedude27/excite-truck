@@ -1,3 +1,5 @@
+#include <types.h>
+#include <macros.h>
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -271,6 +273,62 @@ void fn_8004DDFC(void) {
         __OSLaunchMenu();
     }
 }
+
+extern unsigned char lbl_80560C74, lbl_80560C75, lbl_80560C76, lbl_80560C77;
+void __OSLaunchMenu(void) {
+    struct LocalState {
+        volatile unsigned char b0, b1, b2, b3;
+        int fd;
+        unsigned int count;
+    } state;
+    register int fd = -1;
+    register unsigned int count = 1;
+    int error;
+    int result;
+    unsigned long long title;
+    register unsigned char *titlePtr;
+    register unsigned char b0, b1, b2, b3;
+
+    state.count = count;
+    state.fd = fd;
+    error = 0;
+    title = 0x0000000100000002ULL;
+    titlePtr = lbl_8037D900;
+    b0 = *(volatile unsigned char *)&lbl_80560C74;
+    b1 = *(volatile unsigned char *)&lbl_80560C75;
+    b2 = *(volatile unsigned char *)&lbl_80560C76;
+    b3 = *(volatile unsigned char *)&lbl_80560C77;
+    state.b0 = b0;
+    state.b1 = b1;
+    state.b2 = b2;
+    state.b3 = b3;
+
+    result = ((int (*)(const char *, int, unsigned char, unsigned char, unsigned char))IOS_Open)
+        (&lbl_80558F40, 0, b2, b1, b0);
+    state.fd = result;
+    if (result < 0)
+        error = result;
+    if (error != 0)
+        return;
+
+    result = ((int (*)(int *, unsigned long long, void *, unsigned int *))_ES_GetTicketViews)
+        ((int *)&state.fd, title, 0, (unsigned int *)&state.count);
+    if (state.count != 1)
+        return;
+    if (result != 0)
+        return;
+
+    result = ((int (*)(int *, unsigned long long, void *, unsigned int *))_ES_GetTicketViews)
+        ((int *)&state.fd, title, titlePtr, (unsigned int *)&state.count);
+    if (result != 0)
+        return;
+
+    result = ((int (*)(int *, unsigned long long, void *))_ES_LaunchTitle)
+        ((int *)&state.fd, title, titlePtr);
+    if (result != 0)
+        return;
+}
+
 extern int IOS_Open(const char *, int);
 extern int IOS_Ioctlv(int, int, int, int, void *);
 extern int _ES_GetTicketViews(int *, unsigned int, unsigned int, void *, unsigned int *);
