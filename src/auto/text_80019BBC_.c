@@ -651,28 +651,34 @@ extern void fn_802C8D74(void);
 extern void fn_802C8750(int *, int);
 extern void fn_802C96DC(float *, int);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440, lbl_80560458;
+#pragma scheduling invalid_target
 void fn_8001B7BC(void *arg0) {
-    float sp78[4];
-    int sp58[2];
-    float sp28[12];
-    float temp_f31;
+    struct {
+        int sp58[2];
+        unsigned char pad[8];
+        float sp78[4];
+        float sp28[12];
+    } frame;
+    int temp_padding[2];
+    float angle;
+    float ratio;
     float temp_f4;
     int temp_r31;
     fn_802CB274(*(int *)((char *)arg0 + 4));
     fn_802C9294(*(int *)((char *)arg0 + 4), 0);
-    temp_f31 = lbl_80560458;
-    temp_f4 = (float)fn_8002EF30(temp_f31 * lbl_80560420);
-    temp_f31 = (lbl_80560420 * *(float *)((char *)arg0 + 0x28)) / temp_f4;
-    fn_802C9694(sp78, temp_f31 - lbl_80560424, lbl_80560424 + temp_f31, lbl_80560458, temp_f4);
+    angle = lbl_80560458;
+    temp_f4 = (float)fn_8002EF30(angle * lbl_80560420);
+    ratio = (lbl_80560420 * *(float *)((char *)arg0 + 0x28)) / temp_f4;
+    fn_802C9694(frame.sp78, ratio - lbl_80560424, lbl_80560424 + ratio, angle, temp_f4);
     temp_f4 = *(float *)((char *)arg0 + 0x1C);
-    fn_802C86F0(sp58, 0, 0, (int)temp_f4, (int)temp_f4);
+    fn_802C86F0(frame.sp58, 0, 0, (int)temp_f4, (int)temp_f4);
     fn_802C88CC(0xFFFFFF);
     temp_r31 = fn_802C2C00(0);
-    sp28[9] = lbl_80560418; sp28[10] = temp_f31; sp28[11] = lbl_80560418;
-    sp28[0] = lbl_80560424; sp28[1] = lbl_80560418; sp28[2] = lbl_80560418;
-    sp28[3] = lbl_80560418; sp28[4] = lbl_80560418; sp28[5] = lbl_80560424;
-    sp28[6] = lbl_80560418; sp28[7] = lbl_80560440; sp28[8] = lbl_80560418;
-    fn_802C8638(sp28, lbl_80560424, lbl_80560418);
+    frame.sp28[9] = lbl_80560418; frame.sp28[10] = ratio; frame.sp28[11] = lbl_80560418;
+    frame.sp28[0] = lbl_80560424; frame.sp28[1] = lbl_80560418; frame.sp28[2] = lbl_80560418;
+    frame.sp28[3] = lbl_80560418; frame.sp28[4] = lbl_80560418; frame.sp28[5] = lbl_80560424;
+    frame.sp28[6] = lbl_80560418; frame.sp28[7] = lbl_80560440; frame.sp28[8] = lbl_80560418;
+    fn_802C8638(frame.sp28, lbl_80560424, lbl_80560418);
     fn_802C8BD0(*(int *)((char *)arg0 + 0xC));
     fn_8001B754(*(float *)((char *)arg0 + 0x3C)); fn_802C8D74();
     ((void (*)(int))fn_8001B7B8)(0);
@@ -680,7 +686,7 @@ void fn_8001B7BC(void *arg0) {
     fn_8001B754(*(float *)((char *)arg0 + 0x3C)); fn_802C8D74();
     ((void (*)(int))fn_8001B7B8)(1);
     fn_802C2C00(temp_r31); fn_802C9294(-2, 0);
-    fn_802C8750(sp58, -1); fn_802C96DC(sp78, -1);
+    fn_802C8750(frame.sp58, -1); fn_802C96DC(frame.sp78, -1);
 }
 
 #pragma small_data on
