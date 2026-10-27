@@ -1,6 +1,19 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern char lbl_8033BF18[];
+extern char lbl_8033C058[];
+extern char lbl_8055B4F0;
+extern void *lbl_8055B4D8;
+extern int lbl_8055B4DC;
+extern char lbl_8055B4E8;
+extern void *fn_801284F8(int, void *);
+extern void fn_8000DBC8(void *);
+extern void *fn_802E9A14(void);
+extern void fn_8020A72C(void);
+extern int fn_8013365C(int, int);
+extern void *memset(void *, int, unsigned int);
+
 extern float lbl_8055B4D0;
 extern float lbl_8055B4D4;
 extern float fn_80208A18(float);
@@ -110,26 +123,20 @@ extern "C" void fn_801336E0(int, void (*)(void));
 #pragma scheduling default
 #pragma cplusplus on
 extern "C" void fn_80208D80(int arg0) {
-    struct First {
-        char entries[0x40];
-        int count;
-    };
+    char *entry = lbl_80489258;
+    int enabled;
+    int index = 0;
+    int index2;
     struct Table {
         void *entries[6];
         int count;
         int value;
     };
-    struct First *first;
-    struct Table *table;
-    char *entry;
+    struct Table *base;
     void **items;
-    int enabled;
-    int index = 0;
     void *object;
 
-    first = (struct First *)lbl_80489258;
-    entry = (char *)first;
-    while (index < first->count) {
+    while (index < *(int *)(lbl_80489258 + 0x40)) {
         enabled = *(int *)(entry + 4);
         if (enabled != 0) {
             fn_802E317C(lbl_8033BF28, enabled);
@@ -139,16 +146,16 @@ extern "C" void fn_80208D80(int arg0) {
     }
 
     if (arg0 != 0) {
-        table = (struct Table *)lbl_80489238;
-        items = table->entries;
-        index = 0;
-        while (index < table->count) {
+        items = (void **)lbl_80489238;
+        base = (struct Table *)items;
+        for (index2 = 0; index2 < base->count; items++, index2++) {
             object = *items;
             if (object != 0) {
-                ((void (*)(void *, int))(*(void ***)object)[2])(object, 1);
+                struct Dummy {
+                    virtual void call(int);
+                };
+                ((struct Dummy *)object)->call(1);
             }
-            items++;
-            index++;
         }
     }
 
