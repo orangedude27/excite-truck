@@ -19,7 +19,7 @@ extern float lbl_805623C8;
 extern int lbl_8055E3C4;
 extern char lbl_80333C20[];
 extern int lbl_80435050[];
-extern void fn_801A5AD0(...);
+extern void fn_801A5AD0(void *, unsigned int, void *, void *);
 extern void fn_802E30C8(const char *, ...);
 int fn_801E9E30(void *, int *, int *);
 void *fn_801B83A0(void);
@@ -301,35 +301,55 @@ float fn_801A5A7C(void *arg0, float *arg1, float *arg2) {
 #pragma cplusplus on
 extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
     float values[3];
-    register char *record = (char *)arg0;
-    register char *slot = (char *)arg0 + 0x2724;
-    register void *candidate = 0;
-    register unsigned int count = 4;
-    int value;
-    do {
-        value = *(int *)(record + 0x2744);
-        if ((value == 0 || (unsigned int)value == key) &&
-            (candidate == 0 || *(unsigned int *)((char *)candidate + 0x20) != key))
-            candidate = slot;
-        value = *(int *)(record + 0x2768);
-        slot += 0x24;
-        if ((value == 0 || (unsigned int)value == key) &&
-            (candidate == 0 || *(unsigned int *)((char *)candidate + 0x20) != key))
-            candidate = slot;
-        record += 0x48;
-        slot += 0x24;
-        count--;
-    } while (count != 0);
-    if (candidate != 0)
-        fn_801A5AD0(candidate);
-    else
+    int i;
+    int val;
+    void *slot = (char *)arg0 + 0x2724;
+    void *candidate = 0;
+    void *other = 0;
+    void *record = arg0;
+
+    for (i = 0; i < 4; i++) {
+        val = *(int *)((char *)record + 0x2744);
+        if (val != 0 && (unsigned int)val != key)
+            other = slot;
+        if (candidate == 0 || *(unsigned int *)((char *)candidate + 0x20) != key) {
+            if ((unsigned int)val == key || val == 0)
+                candidate = slot;
+        }
+
+        val = *(int *)((char *)record + 0x2768);
+        slot = (char *)slot + 0x24;
+        if (val != 0 && (unsigned int)val != key)
+            other = slot;
+        if (candidate == 0 || *(unsigned int *)((char *)candidate + 0x20) != key) {
+            if ((unsigned int)val == key || val == 0)
+                candidate = slot;
+        }
+
+        record = (char *)record + 0x48;
+        slot = (char *)slot + 0x24;
+    }
+
+    if (candidate != 0) {
+        fn_801A5AD0(candidate, key, arg0, other);
+    } else {
         fn_802E30C8(lbl_80333C20, lbl_8055E3C4);
+    }
+
     values[0] = lbl_805623C8;
     values[1] = lbl_805623C8;
     values[2] = lbl_805623C8;
     {
-        void *obj = *(void **)((char *)arg0 + 0x270C);
-        ((void (*)(void *, float *, float *, int, int))(*(void ***)obj)[14])(obj, values, values, 0x3EA, 0);
+        class Obj {
+        public:
+            virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+            virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+            virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+            virtual void f12(); virtual void f13();
+            virtual void f14(float *, float *, int, int);
+        };
+        Obj *obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
+        obj->f14(values, values, 0x3EA, 0);
     }
 }
 #pragma cplusplus off
