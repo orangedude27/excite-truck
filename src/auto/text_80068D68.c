@@ -10547,6 +10547,32 @@ block_28:
     return 0;
 }
 
+u8 hidh_conn_initiate(u32 dev_handle) {
+    u8 *entry = lbl_803C3C38 + dev_handle * 0x34;
+    u16 cid;
+    u32 dhandle;
+
+    if (entry[0x10] != 0)
+        return 9;
+
+    *(u16 *)(entry + 0x14) = 0;
+    *(u16 *)(entry + 0x16) = 0;
+    *(u16 *)(entry + 0x1a) = 0x100;
+    entry[0x11] = 1;
+    cid = L2CA_ConnectReq(0x11, entry + 1);
+    *(u16 *)(entry + 0x14) = cid;
+
+    if (cid == 0) {
+        if (lbl_803C3C38[0x401] >= 2)
+            fn_8007093C(0x1e0001, lbl_8031799C);
+        dhandle = (u32)((entry - lbl_803C3C38) / 0x34) / 0x34U;
+        ((void (*)(u8, u32, u8, void *))(*(void **)(lbl_803C3C38 + 0x340)))((u8)dhandle, 1, 0xe, 0);
+    } else {
+        entry[0x10] = 1;
+    }
+    return 0;
+}
+
 extern char lbl_80317CC8[];
 extern char lbl_80317CFC[];
 extern char lbl_80318C8C[];
@@ -15520,6 +15546,49 @@ void sdp_config_ind(u16 cid, void *p_cfg) {
         if (((u8 *)lcb)[1] & 1) fn_8009757C((u8 *)lcb);
         else btu_start_timer((u8 *)lcb + 8, 5, 0x1E);
     }
+}
+
+void sdp_disconnect_ind(u16 handle, u8 reason) {
+    extern char lbl_8031A360[];
+    extern char lbl_8031A38C[];
+    u8 *ccb;
+    void (*callback)(u16, s32, u8);
+    u32 baseResult;
+    u32 result;
+    u8 state;
+    s32 stateDelta;
+    s32 reverseDelta;
+    s32 equalityMask;
+
+    ccb = (u8 *)l2cu_find_lcb_by_handle_80099E54(handle);
+    if (ccb == 0) {
+        if (lbl_803C4C40[0x4630] >= 2) {
+            fn_80070954(0xA0001, lbl_8031A360, handle);
+        }
+        return;
+    }
+
+    if (reason != 0) {
+        L2CA_DisconnectRsp(handle);
+    }
+
+    if (lbl_803C4C40[0x4630] >= 4) {
+        fn_80070954(0xA0003, lbl_8031A38C, handle);
+    }
+
+    callback = *(void (**)(u16, s32, u8))(ccb + 0x414);
+    if (callback != 0) {
+        state = ccb[0];
+        baseResult = 1 << 16;
+        result = baseResult - 15;
+        stateDelta = state - 3;
+        reverseDelta = 3 - state;
+        equalityMask = (s32)~(stateDelta | reverseDelta) >> 31;
+        result &= ~equalityMask;
+        callback((u16)result, stateDelta, state);
+    }
+
+    fn_80099F58(ccb);
 }
 
 extern char lbl_8031A3E8[];
