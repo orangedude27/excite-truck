@@ -12,7 +12,7 @@ extern float lbl_805635FC;
 extern float lbl_8056360C;
 void fn_8022FB6C(void);
 float fn_80214D48(void);
-void fn_8022FD9C();
+void fn_8022FD9C(void *, float);
 void fn_80015EB0(float);
 void fn_80015E30(void *, float);
 void fn_80015B20(void *, void *, void *);
