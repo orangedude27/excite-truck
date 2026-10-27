@@ -2194,12 +2194,15 @@ void fn_800709FC(void) {
     lbl_8055DC6C = &lbl_80559048;
     lbl_8055DC68 = (hcisu_if *)lbl_802EE8D8;
     ((void (*)(u32, void *))bte_hcisu_task)(0, lbl_802EE8D8);
-    while (1) {
-        ((void (*)(s32))fn_8006EAD8)(0x64);
-        if (lbl_80558FF0 == 0) {
-            break;
-        }
+
+    goto wait_check;
+wait_delay:
+    ((void (*)(s32))fn_8006EAD8)(0x64);
+wait_check:
+    if (lbl_80558FF0 != 0) {
+        goto wait_delay;
     }
+
     fn_80070B54();
     time = __OSGetSystemTime();
     time_hi = (u32)(time >> 32);
@@ -2207,13 +2210,15 @@ void fn_800709FC(void) {
     OSCreateAlarm(&lbl_803C0A20);
     ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(void)))OSSetPeriodicAlarm)(
         &lbl_803C0A20, 0x80000000, time_hi, time_lo, 0,
-        (*(u32 *)0x800000F8 / 2000) & 0x07FFFFFE, fn_800709E4);
+        ((*(u32 *)0x800000F8 >> 2) / 500) & 0x07FFFFFE, fn_800709E4);
     ((void (*)(s32))fn_8006EACC)(0);
-    while (1) {
-        ((void (*)(s32))fn_8006EAD8)(0x7D0);
-        if (fn_80073B30() != 0) {
-            break;
-        }
+
+    goto poll_check;
+poll_delay:
+    ((void (*)(s32))fn_8006EAD8)(0x7D0);
+poll_check:
+    if (fn_80073B30() == 0) {
+        goto poll_delay;
     }
 }
 
@@ -16942,26 +16947,29 @@ void WUDStoredLinkKeyCallback(void *msg) {
 
 extern u8 lbl_803130C8[];
 extern u8 lbl_803935C8[];
-void WUDPowerManagerCallback(u8 *addr, s32 result, s32 arg) {
+void WUDPowerManagerCallback(u8 *addr, s32 result, s32 unused, s32 arg) {
+    u8 *strings = lbl_803130C8;
     u8 *dev;
-    DBPrintf_8006CFA8((char *)lbl_803130C8 + 0xd04);
-    DBPrintf_8006CFA8((char *)lbl_803130C8 + 0xd20, arg);
+
+    DBPrintf_8006CFA8((char *)strings + 0xd04);
+    DBPrintf_8006CFA8((char *)strings + 0xd20, arg);
+
     dev = WUDiGetDevInfo(addr);
     if (dev == 0) {
-        if (memcmp(lbl_803935C8 + 0x40, addr, 6) != 0)
-            goto done;
-        dev = lbl_803935C8;
+        if (memcmp(lbl_803935C8 + 0x40, addr, 6) == 0)
+            dev = lbl_803935C8;
     }
-    if (result == 1)
-        goto done;
-    if (result < 1) {
-        if (result >= 0)
-            dev[0x59] = 8;
-    } else if (result < 3) {
+
+    switch (result) {
+    case 0:
+        dev[0x59] = 8;
+        break;
+    case 2:
         dev[0x59] = 9;
+        break;
     }
-done:
-    DBPrintf_8006CFA8((char *)lbl_803130C8 + 0xd30, dev[0x40], dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45], dev[0x59]);
+
+    DBPrintf_8006CFA8((char *)strings + 0xd30, dev[0x40], dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45], dev[0x59]);
 }
 
 void fn_8006BAA4(u32 arg0) {
