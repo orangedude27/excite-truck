@@ -6079,7 +6079,6 @@ void fn_80127398(s32 arg0) {
     void *var_r31;
     void *var_r30;
     s32 var_r29;
-    void (*callback)(void);
 
     if (arg0 >= -1 && arg0 < 4) {
         var_r31 = (u8 *)lbl_8041D728 + arg0 * 0x14 + 0x14;
@@ -6089,9 +6088,8 @@ void fn_80127398(s32 arg0) {
     if (var_r31 != 0) {
         var_r30 = var_r31;
         for (var_r29 = 0; var_r29 < *(s32 *)var_r31; var_r29++) {
-            callback = *(void (**)(void))((u8 *)var_r30 + 4);
-            callback();
-            var_r30 = (u8 *)var_r30 + 4;
+            ((void (*)(void))*(void **) ((u8 *)var_r30 + 4))();
+            var_r30 = (void *)((u32)var_r30 + 4);
         }
     }
 }
