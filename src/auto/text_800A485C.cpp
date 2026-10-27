@@ -9452,9 +9452,9 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     s32 shift = 0x18 - (bits & 7);
     *arg2 = bits + arg1;
     volatile u8 *bytes = (volatile u8 *)arg0;
-    u8 a;
     u8 b;
     u8 c;
+    u8 a;
     if (index < 0x1FFE) {
         u32 next = index + 1;
         a = bytes[index];
@@ -13382,9 +13382,10 @@ extern "C" void fn_800C790C(void *arg0) {
             *var_r7 = 0;
             if (var_r11 == 0) {
                 s32 temp_r4 = var_r10 * 0x18;
-                *(u16 **)((u8 *)arg0 + 0xB0 + temp_r4 + var_r8) = &str[var_r9 + 1];
+                u16 *elem = &str[var_r9 + 1];
                 var_r10++;
                 var_r11 = 1;
+                *(u16 **)((u8 *)arg0 + var_r8 + temp_r4 + 0xB0) = elem;
                 if (var_r10 == 7) {
                     var_r10 = 0;
                     var_r8 += 4;
@@ -17051,33 +17052,9 @@ void Warning(const char* file, int line, const char* msg, ...);
 }
 }
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
-    u32 sp_8[2];
-    u32 sp_C;
-    u32 sp_10;
-    u32 sp_14;
-    u32 sp_18;
-    u32 sp_1C;
-    u32 sp_20;
-    u32 sp_24;
-    u32 sp_68;
-    u32 sp_6C;
-    u32 sp_70;
-    u32 sp_88[16];
-    
-    sp_8[0] = (u32)msg;
-    sp_8[1] = (u32)file;
-    sp_C = (u32)line;
-    sp_10 = 0;
-    sp_14 = 0;
-    sp_18 = 0;
-    sp_1C = 0;
-    sp_20 = 0;
-    sp_24 = 0;
-    sp_68 = 0x3000000;
-    sp_6C = (u32)&sp_88[0];
-    sp_70 = (u32)&sp_8[0];
-    
-    fn_800D2098(&sp_68);
+    va_list vlist;
+    va_start(vlist, msg);
+    ((void (*)(const char *, s32, const char *, va_list))fn_800D2098)(file, line, msg, vlist);
 }
 
 void nw4hbm::db::Warning(const char* file, int line, const char* msg, ...) {
