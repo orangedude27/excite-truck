@@ -5430,38 +5430,26 @@ void fn_80071510(void *arg0, s32 arg1, u8 arg2) {
 
 void ptim_timer_update(tPTIM_CB *p_cb) {
     TIMER_LIST_ENT *p_entry;
-    TIMER_CBACK *p_cback;
-    void *p_buf;
-    UINT16 event;
+    BT_HDR *p_buf;
 
-    GKI_update_timer_list(&p_cb->timer_queue, p_cb->timer_id);
+    GKI_update_timer_list(&p_cb->timer_queue, p_cb->period);
 
-    p_entry = p_cb->timer_queue.p_first;
-    while (p_entry != NULL) {
-        if (p_entry->ticks <= 0) {
-            GKI_remove_from_timer_list(&p_cb->timer_queue, p_entry);
-            p_cback = p_entry->p_cback;
-            if (p_cback != NULL) {
-                p_cback(p_entry);
-            } else {
-                event = p_entry->event;
-                if (event != 0) {
-                    p_buf = GKI_getbuf(8);
-                    if (p_buf != NULL) {
-                        ((UINT16 *)p_buf)[0] = event;
-                        fn_80071450(p_buf);
-                    }
-                }
+    while (p_cb->timer_queue.p_first != NULL && p_cb->timer_queue.p_first->ticks <= 0) {
+        p_entry = p_cb->timer_queue.p_first;
+        GKI_remove_from_timer_list(&p_cb->timer_queue, p_entry);
+        if (p_entry->p_cback != NULL) {
+            p_entry->p_cback(p_entry);
+        } else if (p_entry->event != 0) {
+            p_buf = (BT_HDR *)GKI_getbuf(sizeof(BT_HDR));
+            if (p_buf != NULL) {
+                p_buf->event = p_entry->event;
+                fn_80071450(p_buf);
             }
-            p_entry = p_cb->timer_queue.p_first;
-        } else {
-            p_entry = p_entry->p_next;
         }
     }
 
-    if (p_cb->timer_queue.p_first == NULL) {
+    if (p_cb->timer_queue.p_first == NULL)
         GKI_stop_timer(p_cb->timer_id);
-    }
 }
 
 void ptim_start_timer(tPTIM_CB *p_cb, TIMER_LIST_ENT *p_tle, UINT16 type, INT32 timeout) {
@@ -8158,6 +8146,25 @@ int btsnd_hcic_reject_esco_conn(void *p_buf, u8 *bd_addr, u8 reason) {
     return btu_hcif_send_cmd(buf);
 }
 
+BOOLEAN btsnd_hcic_hold_mode(UINT16 handle, UINT16 max_hold_period, UINT16 min_hold_period) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (p == NULL)
+        return FALSE;
+    *(u16 *)(p + 2) = 9;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 1;
+    p[9] = 8;
+    p[10] = 6;
+    p[11] = handle;
+    p[12] = handle >> 8;
+    p[13] = max_hold_period;
+    p[14] = max_hold_period >> 8;
+    p[15] = min_hold_period;
+    p[16] = min_hold_period >> 8;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 s32 btsnd_hcic_exit_sniff_mode(void *arg0, u16 arg1) {
     u8 *p = (u8 *)arg0;
     register u8 field8 = 4;
@@ -10222,22 +10229,33 @@ void forward_peer_data(void *arg0, void *arg1) {
 
 void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
 {
-    u8 addr[6];
+    typedef struct {
+        UINT8 bd_addr[6];
+        UINT8 status;
+        UINT8 pad;
+        UINT16 psm;
+        UINT16 l2cap_result;
+        UINT16 l2cap_status;
+        UINT16 remote_cid;
+    } tL2C_CONN_INFO_LOCAL;
+    tL2C_CONN_INFO_LOCAL ci;
     void *lcb;
     void *ccb;
-    u8 state;
-    u8 status_copy = status;
-    memcpy(addr, bd_addr, 6);
+    void *next;
+    register s32 event;
+
+    ci.status = status;
+    memcpy(ci.bd_addr, bd_addr, 6);
     lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
     if (lcb == 0) {
-        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80318C8C);
+        if (lbl_803C4040[0] >= 2)
+            fn_8007093C(0x80001, lbl_80318C8C);
     } else {
-        state = status ? 8 : 7;
+        event = -(status == 0);
         ccb = *(void **)((u8 *)lcb + 8);
-        while (ccb != 0) {
-            void *next = *(void **)((u8 *)ccb + 8);
-            fn_80089E40(ccb, state, addr);
-            ccb = next;
+        for (; ccb != 0; ccb = next) {
+            next = *(void **)((u8 *)ccb + 8);
+            fn_80089E40(ccb, event + 8, &ci);
         }
     }
 }
@@ -12939,22 +12957,41 @@ void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) {
     BT_HDR *p_buf;
     u8 *p_data;
     u8 cr;
+    u8 command = 0x3F;
+    u8 initiator = *(u8 *)((u8 *)arg0 + 0x6D);
 
-    cr = (u8)(((*(u8 *)((u8 *)arg0 + 0x6D) != 0) ? 1 : 0) << 1);
+    cr = (u8)((((initiator && 1) || (!initiator && !1)) << 1));
+    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == 0)
+        return;
+
+    p_data = (u8 *)(p_buf + 1) + 9;
+    p_buf->offset = 9;
+    p_data[0] = (u8)(1 | cr | ((u8)arg1 << 2));
+    p_data[1] = command;
+    p_data[2] = 1;
+    p_data[3] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9, command);
+    p_buf->len = 4;
+    rfc_check_send_cmd(arg0, p_buf);
+}
+
+void rfc_send_ua(void *arg0, s32 arg1, void *arg2) {
+    BT_HDR *p_buf;
+    u8 *p_data;
+    u8 cr;
+
+    cr = (u8)((((*(u8 *)((u8 *)arg0 + 0x6D) == 0) ? 1 : 0) << 1));
     if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == 0)
         return;
 
     p_buf->offset = 9;
     p_data = (u8 *)(p_buf + 1) + 9;
     *p_data++ = 1 | cr | (arg1 << 2);
-    *p_data++ = 0x3F;
+    *p_data++ = 0x73;
     *p_data++ = 1;
-    *p_data = fn_8009504C(3, p_data, 0x3F);
+    *p_data = fn_8009504C(3, p_data, 0x73);
     p_buf->len = 4;
     rfc_check_send_cmd(arg0, p_buf);
 }
-
-void rfc_send_ua(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 flag; flag=1; if (*(u8 *)((u8 *)arg0+0x6D)!=0) flag=0; buf=GKI_getpoolbuf(2); if(buf) { frame=buf+0x11; *(u16 *)(buf+4)=9; frame[0]=(flag<<1)|1|(arg1<<2); frame[1]=0x73; frame[2]=1; frame[3]=fn_8009504C(3,frame,0x73); *(u16 *)(buf+2)=4; rfc_check_send_cmd(arg0,buf); } }
 
 void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
     u8 *buf;
@@ -12979,22 +13016,24 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
 }
 
 void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
-    u8 *buf;
-    u8 *frame;
-    s32 flag;
-    flag = 1;
-    if (*((u8 *)arg0 + 0x6D) == 0) flag = 0;
-    buf = GKI_getpoolbuf(2);
-    if (buf != 0) {
-        frame = buf + 0x11;
-        *(u16 *)(buf + 4) = 9;
-        frame[0] = ((flag << 1) | 1) | (arg1 << 2);
-        frame[1] = 0x53;
-        frame[2] = 1;
-        frame[3] = fn_8009504C(3, frame, 0x53);
-        *(u16 *)(buf + 2) = 4;
-        rfc_check_send_cmd(arg0, buf);
-    }
+    BT_HDR *p_buf;
+    u8 *p_data;
+    u8 is_initiator;
+    u8 cr;
+
+    is_initiator = *((u8 *)arg0 + 0x6D);
+    cr = (u8)((((is_initiator) && 1) || (!(is_initiator) && !1)) << 1);
+    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == 0)
+        return;
+
+    p_buf->offset = 9;
+    p_data = (u8 *)(p_buf + 1) + 9;
+    *p_data++ = 1 | cr | (((u8)arg1) << 2);
+    p_data[0] = 0x53;
+    p_data[1] = 1;
+    p_data[2] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9, 0x53);
+    p_buf->len = 4;
+    rfc_check_send_cmd(arg0, p_buf);
 }
 
 void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
