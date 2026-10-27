@@ -26,16 +26,6 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 
 extern void rfc_port_sm_execute(void *, u16, void *);
 extern char lbl_80319AB0[];
-typedef struct {
-    s32 fd;
-    u8 pad4[0xC];
-    u8 fields_10[4];
-    u8 pad14[0xC];
-    void (*callback)(s32, s8);
-    u8 pad24[4];
-    u8 at_0x28;
-    u8 state;
-} uusb_cb_view;
 struct uusb_cb_t;
 extern struct uusb_cb_t lbl_803BD1E0;
 extern u8 lbl_8055DC50;
