@@ -17,8 +17,10 @@ int fn_80138BFC(float arg0) {
 }
 
 extern float lbl_805613C0;
-extern int fn_80138C28(void *, float *, int);
-extern void fn_80138DF4(void *, ...);
+extern float lbl_805613C8;
+extern float lbl_805613D0;
+extern int fn_80138C28(void *, float *, float *);
+extern float fn_80138DF4(void *);
 void fn_80138F38(void *arg0) {
     float sp8;
     struct {
