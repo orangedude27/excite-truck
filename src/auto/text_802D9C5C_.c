@@ -143,27 +143,45 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
 }
 
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling off
 void *fn_802DA704(int owner, void *data, int count) {
-    unsigned char *state = (unsigned char *)lbl_8055FE5C;
-    unsigned char saved = state[0x25];
-    int size = count * 12 + 0x18;
-    int aligned = (size + 3) & ~3;
-    int used = *(int *)(state + 0x10);
-    int limit = *(int *)(state + 0x0C);
-    unsigned char *arena = (unsigned char *)*(unsigned int *)(state + 4);
+    volatile unsigned char *state;
+    unsigned char saved;
     unsigned char *base;
+    int bytes;
+    int size;
+    int rounded;
+    int used;
+    int aligned;
+    int limit;
+    int position;
+    int updated;
     void *result;
+    state = (volatile unsigned char *)lbl_8055FE5C;
+    bytes = count * 12;
+    saved = state[0x25];
     state[0x25] = 0;
+    size = bytes + 0x18;
+    rounded = size + 3;
+    used = *(volatile int *)(state + 0x10);
+    aligned = rounded & ~3;
+    limit = *(volatile int *)(state + 0x0C);
     if (aligned + used + 8 > limit) {
-        fn_802E317C(lbl_80346798, *(int *)(state + 8), size, limit >> 10);
+        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), size, *(volatile int *)(state + 0x0C) / 1024);
         result = 0;
     } else {
-        base = arena + used;
+        base = (unsigned char *)used;
+        base += *(unsigned int *)(state + 4);
         *(int *)base = 1;
         result = base + 4;
-        *(int *)(base + aligned + 4) = aligned;
-        *(int *)(state + 0x10) = aligned + used + 8;
+        position = *(unsigned int *)(state + 4);
+        position += *(volatile int *)(state + 0x10);
+        position += aligned;
+        *(int *)(position + 4) = aligned;
+        updated = *(volatile int *)(state + 0x10);
+        updated += aligned;
+        updated += 8;
+        *(volatile int *)(state + 0x10) = updated;
     }
     *(int *)((char *)result + 0) = 7;
     *(int *)((char *)result + 4) = owner;
@@ -171,7 +189,7 @@ void *fn_802DA704(int owner, void *data, int count) {
     *(int *)((char *)result + 0x0C) = 0;
     *(int *)((char *)result + 0x14) = 0;
     *((unsigned char *)result + 0x10) = saved;
-    memcpy((char *)result + 0x18, data, count * 12);
+    memcpy((char *)result + 0x18, data, bytes);
     return result;
 }
 #pragma scheduling on
