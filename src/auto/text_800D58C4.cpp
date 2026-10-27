@@ -317,20 +317,41 @@ extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned 
 
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void*, const void*, u8, const void*, const void*, u8);
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void*, void*, u8);
+extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *, const void *, u8, const void *, const void *);
+#pragma use_lmw_stmw off
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void* pos, const void* size, u8 count, const void* texCoords, const void* colors, u8 alpha) {
-    u32 white[4] = { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
+    u32 adjusted[4];
+    adjusted[0] = 0xffffffff;
+    adjusted[1] = 0xffffffff;
+    adjusted[2] = 0xffffffff;
+    adjusted[3] = 0xffffffff;
     if (colors != 0) {
-        u8 adjusted[16];
+        int i = 0;
         const u8* src = (const u8*)colors;
-        for (int i = 0; i < 4; ++i) {
-            MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(adjusted + i * 4, (void*)(src + i * 4), alpha);
+        u8* dst = (u8*)adjusted;
+        u8 result[4];
+        u8 color[4];
+        while (i < 4) {
+            color[0] = src[0];
+            color[1] = src[1];
+            color[2] = src[2];
+            color[3] = src[3];
+            MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(result, color, alpha);
+            dst[0] = result[0];
+            dst[1] = result[1];
+            dst[2] = result[2];
+            dst[3] = result[3];
+            src += 4;
+            dst += 4;
+            ++i;
         }
-        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, count, texCoords, adjusted, 0);
-    } else {
-        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, count, texCoords, white, 0);
     }
+    u32 mask = (u32)(-(u32)colors | (u32)colors);
+    mask = (u32)((s32)mask >> 31);
+    const void* out = (const void*)((u32)adjusted & mask);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(pos, size, count, texCoords, out);
 }
-
+#pragma use_lmw_stmw reset
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
     extern f32 lbl_80560E78;
     extern f32 lbl_80560E7C;
@@ -2610,11 +2631,13 @@ extern "C" void fn_800DC204(void* self, void* arg) {
 }
 
 #pragma push
-#pragma opt_loop off
-extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane, void* anim) {
+#pragma opt_propagation off
+extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane_arg, void* anim_arg) {
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
     extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
+    register void* pane = pane_arg;
+    register void* anim = anim_arg;
     void* node;
     void* end;
     void* current;
@@ -2733,20 +2756,32 @@ extern "C" f32 lbl_80560EC0;
 #pragma scheduling invalid_target
 extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
     u8 n = *(u8*)((u8*)self + 0xCC);
-    GetVtxPosResult result;
     s32 r = n % 3;
+    GetVtxPosResult result;
     result.x = lbl_80560EA8;
     result.y = lbl_80560EA8;
-    if (r == 1) {
+    switch (r) {
+    default:
+        result.x = lbl_80560EA8;
+        break;
+    case 1:
         result.x = -*(f32*)((u8*)self + 0x4C) * lbl_80560EC0;
-    } else if (r >= 1 && r < 3) {
+        break;
+    case 2:
         result.x = -*(f32*)((u8*)self + 0x4C);
+        break;
     }
     s32 q = n / 3;
-    if (q == 1) {
+    switch (q) {
+    default:
+        result.y = lbl_80560EA8;
+        break;
+    case 1:
         result.y = -*(f32*)((u8*)self + 0x50) * lbl_80560EC0;
-    } else if (q >= 1 && q < 3) {
+        break;
+    case 2:
         result.y = -*(f32*)((u8*)self + 0x50);
+        break;
     }
     return result;
 }
