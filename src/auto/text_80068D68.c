@@ -4052,6 +4052,36 @@ void fn_80077C94(s16 arg0) {
     *(s16 *)(lbl_803C0F78 + 0x4C6) = arg0;
 }
 
+BOOLEAN BTM_IsAclConnectionUp(BD_ADDR remote_bda) {
+    extern char lbl_80315E80[];
+    u32 i;
+    u8 *entry;
+
+    if (lbl_803C0F78[0x27C0] >= 3) {
+        fn_800709CC(0xD0002, lbl_80315E80,
+                    remote_bda[0], remote_bda[1], remote_bda[2],
+                    remote_bda[3], remote_bda[4], remote_bda[5]);
+    }
+    i = 0;
+    entry = lbl_803C0F78 + 0x34;
+loop:
+    if (entry[0x119] != 0) {
+        if (memcmp(entry + 8, remote_bda, 6) != 0)
+            goto advance;
+        goto found;
+    }
+advance:
+    i++;
+    entry += 0x11C;
+    if (i < 4)
+        goto loop;
+    entry = NULL;
+found:
+    if (entry != NULL)
+        return TRUE;
+    return FALSE;
+}
+
 u16 BTM_GetNumAclLinks(void)
 {
     u8 *p = lbl_803C0F78;
@@ -10463,7 +10493,7 @@ void fn_80089E40(void *p_ccb, u8 event, void *p_data) {
 extern char lbl_80318580[];
 extern char lbl_803185A8[];
 extern void l2cu_release_ccb(void *);
-extern void l2cu_send_peer_connect_rsp(void *, u8, u16);
+extern void l2cu_send_peer_connect_rsp(void *, u16, u16);
 extern void l2c_csm_closed(void *, u16, void *);
 extern void l2c_csm_orig_w4_sec_comp(void *, u16, void *);
 extern void l2c_csm_w4_l2ca_connect_rsp(void *, u16, void *);
