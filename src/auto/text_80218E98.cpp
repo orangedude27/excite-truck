@@ -10,6 +10,7 @@ extern "C" void fn_802E30C8(const char *, ...);
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" s32 fn_801E4A6C(s32, s32);
 extern "C" s32 fn_801E4BA8(s32);
+extern "C" void fn_802328D4(void *);
 extern "C" f32 fn_80214D48(void);
 extern "C" void fn_80228AEC(s32, f32);
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
@@ -5133,6 +5134,31 @@ extern "C" void *fn_80227D64(void *arg0, s32 arg1) {
         if (arg1 > 0)
             fn_80128668(arg0);
     }
+    return arg0;
+}
+
+extern "C" void *fn_80227E84(void *arg0, s32 arg1, void *arg2, s32 arg3) {
+    char *base = lbl_8033D878;
+    s32 value;
+
+    ((void *(*)(void *, void *))fn_80218F80)(arg0, arg2);
+    *(s32 *)((u8 *)arg0 + 0x248) = arg1;
+    *(void **)arg0 = lbl_8033DF30;
+    *(s32 *)((u8 *)arg0 + 0x24C) = arg3;
+    value = *(s32 *)((u8 *)arg2 + 0xB0);
+    *(u8 *)((u8 *)arg0 + 0x244) = (value == 1);
+    value = ((s32 (*)(const char *, s32))fn_80232578)(base + 0x20C, value);
+    *(s32 *)((u8 *)arg0 + 0x250) = value;
+    if (value == 0)
+        fn_802E30C8(base + 0x408);
+    value = ((s32 (*)(const char *))fn_8023512C)(base + 0x42C);
+    *(s32 *)((u8 *)arg0 + 0x254) = value;
+    if (value == 0)
+        fn_802E30C8(base + 0x438);
+    value = ((s32 (*)(const char *))fn_8023512C)(base + 0x3D4);
+    *(s32 *)((u8 *)arg0 + 0x258) = value;
+    if (value == 0)
+        fn_802E30C8(base + 0x3E0);
     return arg0;
 }
 
