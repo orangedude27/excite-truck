@@ -2327,23 +2327,28 @@ handled:
 }
 
 extern "C" void *lbl_8033EF68;
-extern "C" void *lbl_8033E8FC;
+#pragma push
+#pragma small_data off
+extern "C" void *lbl_8033E8FC[];
+#pragma pop
 extern "C" char lbl_80490934[];
 extern "C" void fn_801A7844(s32);
 extern "C" s32 fn_801A7C8C(s32);
 extern "C" void fn_801A7E54(void *, s32, s32);
 extern "C" void fn_802E47E8(void);
+#pragma push
+#pragma small_data off
 extern "C" void *fn_8021F394(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    ((void *(*)(void *, s32, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0, 0);
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0);
+    *(void **)arg0 = &lbl_8033E8FC;
     *(s32 *)((u8 *)arg0 + 0x26C) = arg3;
-    *(void **)arg0 = lbl_8033E8FC;
     *(s32 *)((u8 *)arg0 + 0x270) = arg4;
     fn_801A7E54((u8 *)arg0 + 0x254, 0x18, arg4);
     fn_80219440(arg0, 0, (void *)arg4, 0x10);
     fn_80219718(arg0);
     return arg0;
 }
-
+#pragma pop
 extern "C" void fn_8021F42C(void *arg0) {
     fn_801A7E54((u8 *)arg0 + 0x254, 0x18, *(s32 *)((u8 *)arg0 + 0x270));
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
@@ -4167,7 +4172,26 @@ extern "C" s32 fn_80224B0C(void *arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma small_data on
+extern "C" void *fn_80224D40(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        u8 enabled = *(u8 *)((u8 *)arg0 + 0x299);
+        *(void **)arg0 = lbl_8033E1C4;
+        if (enabled != 0) {
+            fn_8022EE98(*(void **)((u8 *)arg0 + 0x29C));
+        }
+        fn_802328D4(*(void **)((u8 *)arg0 + 0x248));
+        *(s32 *)((u8 *)arg0 + 0x248) = 0;
+        *(s32 *)((u8 *)arg0 + 0x244) = 0;
+        strcpy((char *)arg0 + 0x259, lbl_8055B88C);
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+#pragma pop
 extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
     register f32 inputX = x;
     register f32 inputY = y;
