@@ -5073,6 +5073,33 @@ extern "C" s32 fn_800B5324(void *arg0, u8 *arg1, u32 arg2, u32 arg3, u32 arg4, u
     } else return 10;
     return 0;
 }
+
+extern "C" s32 fn_800B5618(void *arg0, void *arg1, u16 arg2, u16 arg3, s32 arg4) {
+    void *page;
+    u16 limit;
+
+    if (!(*(u16 *)((u8 *)arg0 + 0x1F8C) & 1) ||
+        fn_800A53B4(arg0) == 0 ||
+        (*(u16 *)((u8 *)arg0 + 0x1F8C) & 2)) {
+        return 9;
+    }
+
+    if (arg2 >= *(u32 *)((u8 *)arg0 + 8) ||
+        arg3 >= (limit = *(u16 *)arg0) ||
+        (s32)(arg3 + arg4) > (s32)limit) {
+        return 10;
+    }
+
+    s32 result = fn_800A8EA0(arg0, arg2, &page);
+    if (result != 0) {
+        return result;
+    }
+
+    VFipf_memcpy((u8 *)*(void **)((u8 *)page + 8) + arg3, arg1, arg4);
+    result = fn_800A8FD0(arg0, (s32)page);
+    return result & ((-result | result) >> 31);
+}
+
 #pragma pop
 extern "C" s32 fn_800A53B4(void *);
 extern "C" s32 fn_800A53C0(void *);
