@@ -4,10 +4,10 @@
 extern void *lbl_804C109C[];
 extern void fn_802C6CF8(void *);
 extern char lbl_8034AFE8[];
-extern char lbl_8055CFD0[];
-extern char lbl_8055CFD8[];
-extern char lbl_8055CFE0[];
-extern char lbl_8055CFE8[];
+extern char lbl_8055CFD0;
+extern char lbl_8055CFD8;
+extern char lbl_8055CFE0;
+extern char lbl_8055CFE8;
 extern float lbl_80564E90;
 extern float lbl_80564E94;
 extern void *fn_80131810(void *);
