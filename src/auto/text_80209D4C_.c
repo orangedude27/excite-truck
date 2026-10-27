@@ -22,4 +22,31 @@ void *fn_80209D4C(void *arg0) {
     }
     return obj;
 }
+
+extern void fn_80128668(void *);
+#pragma scheduling invalid_target
+void *fn_80209DE4(void *arg0, int arg1) {
+    register void *p;
+    if (arg0 != 0) {
+        p = *(void **)((char *)arg0 + 8);
+        *(void **)arg0 = lbl_8033C258;
+        if (p != 0) {
+            if (p != 0) {
+                ((void (*)(void *, int))(*(void * volatile **)p)[2])(p, 1);
+            }
+            *(void **)((char *)arg0 + 8) = 0;
+        }
+        p = *(void **)((char *)arg0 + 0xc);
+        if (p != 0) {
+            if (p != 0) {
+                ((void (*)(void *, int))(*(void * volatile **)p)[2])(p, 1);
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
 #pragma scheduling on
+
+extern float lbl_80563278, lbl_8056327C, lbl_80563280, lbl_80563284, lbl_80563288;
+
