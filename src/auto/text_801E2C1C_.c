@@ -16,7 +16,7 @@ extern void fn_802C744C(s32 arg0, void *out);
 extern int sscanf(const char *, const char *, ...);
 extern int stricmp(const char *, const char *);
 extern char *strcpy(char *, const char *);
-extern char lbl_8055AEB4[];
+extern char lbl_8055AEB4;
 extern const char lbl_8055AEB0[];
 
 void fn_8012A260(void*, unsigned int);
@@ -98,6 +98,7 @@ int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
 
 #pragma push
 #pragma small_data on
+#pragma use_lmw_stmw off
 s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
     struct Group {
         int itemCount;
@@ -115,21 +116,23 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
     int groupIndex;
     int groupOffset;
     int index;
+    register int zero;
 
+    zero = 0;
     archive = (struct Archive *)fn_802C6C34();
-    groupIndex = 0;
-    groupOffset = 0;
+    groupIndex = zero;
+    groupOffset = zero;
     while (groupIndex < archive->groupCount) {
         group = (struct Group *)(*(int *)(archive->groups + groupOffset));
         if (group->magic == 0x4D524A54) {
             item = (char *)group + 0xC;
-            index = 0;
+            index = zero;
             while (index < group->itemCount) {
-                valueBuf[0] = 0; valueBuf[1] = 0; valueBuf[2] = 0; valueBuf[3] = 0;
-                valueBuf[4] = 0; valueBuf[5] = 0; valueBuf[6] = 0; valueBuf[7] = 0;
-                name[0] = 0; name[1] = 0; name[2] = 0; name[3] = 0;
-                name[4] = 0; name[5] = 0; name[6] = 0; name[7] = 0;
-                if (sscanf(item, lbl_8055AEB4, name, valueBuf) >= 1 &&
+                valueBuf[0] = zero; valueBuf[1] = zero; valueBuf[2] = zero; valueBuf[3] = zero;
+                valueBuf[4] = zero; valueBuf[5] = zero; valueBuf[6] = zero; valueBuf[7] = zero;
+                name[0] = zero; name[1] = zero; name[2] = zero; name[3] = zero;
+                name[4] = zero; name[5] = zero; name[6] = zero; name[7] = zero;
+                if (sscanf(item, (const char *)(void *)(int)lbl_8055AEB4, name, valueBuf) >= 1 &&
                     stricmp((const char *)name, (const char *)arg0) == 0) {
                     if (arg1 != 0) {
                         strcpy((char *)arg1, (char *)valueBuf);
@@ -200,31 +203,54 @@ void fn_801E323C(s32 *arg0) {
     fn_8012A364((s32)lbl_8055EA50, arg0);
 }
 
+#pragma scheduling invalid_target
 void fn_801E3284(void *out, void *in, s32 arg2) {
-    s32 sp68[12];
-    s32 sp5C[3];
-    s32 sp38[9];
-    s32 sp2C[3];
-    s32 sp8[12];
-    s32 *src = (s32 *)arg2;
+    struct Pair { s32 x[2]; };
+    struct Locals {
+        union {
+            s32 sp8[12];
+            struct { s32 pad[9]; s32 sp2c[3]; } overlap;
+        } result;
+        s32 sp38[9];
+        s32 sp5c[3];
+        s32 sp68[12];
+    } local;
     if (*(void **)((u8 *)in + 4) != 0) {
-        fn_801E3284(sp68, *(void **)((u8 *)in + 4), arg2);
+        fn_801E3284(local.sp68, *(void **)((u8 *)in + 4), arg2);
     } else {
-        sp68[0]=src[0]; sp68[1]=src[1]; sp68[2]=src[2]; sp68[3]=src[3];
-        sp68[4]=src[4]; sp68[5]=src[5]; sp68[6]=src[6]; sp68[7]=src[7];
-        sp68[8]=src[8]; sp68[9]=src[9]; sp68[10]=src[10]; sp68[11]=src[11];
+        s32 *src = (s32 *)arg2;
+        register s32 a11;
+        register s32 a10;
+        register s32 a9;
+        register s32 a8;
+        register s32 a7;
+        register s32 a6;
+        register s32 a5;
+        register s32 a4;
+        register s32 a3;
+        register s32 a2;
+        register s32 a0;
+        register s32 a1;
+        a0=src[0]; a1=src[11]; a2=src[1]; a3=src[2];
+        a4=src[3]; a5=src[4]; a6=src[5]; a7=src[6];
+        a8=src[7]; a9=src[8]; a10=src[9]; a11=src[10];
+        local.sp68[0]=a0; local.sp68[1]=a2; local.sp68[2]=a3; local.sp68[3]=a4;
+        local.sp68[4]=a5; local.sp68[5]=a6; local.sp68[6]=a7; local.sp68[7]=a8;
+        local.sp68[8]=a9; local.sp68[9]=a10; local.sp68[10]=a11; local.sp68[11]=a1;
     }
-    fn_801BFD34(sp5C, (u8 *)in + 0x5C, sp68);
-    fn_80015B20(sp38, (u8 *)in + 0x38, sp68);
-    fn_801BFD34(sp2C, (u8 *)in + 0x2C, sp38);
-    fn_80015B20(sp8, (u8 *)in + 8, sp38);
-    ((s32*)out)[0]=sp8[0]; ((s32*)out)[1]=sp8[1]; ((s32*)out)[2]=sp8[2]; ((s32*)out)[3]=sp8[3];
-    ((s32*)out)[4]=sp8[4]; ((s32*)out)[5]=sp8[5]; ((s32*)out)[6]=sp8[6]; ((s32*)out)[7]=sp8[7];
-    ((s32*)out)[8]=sp8[8]; ((s32*)out)[9]=sp8[9]; ((s32*)out)[10]=sp8[10]; ((s32*)out)[11]=sp8[11];
+    fn_801BFD34(local.sp5c, (u8 *)in + 0x5C, local.sp68);
+    fn_80015B20(local.sp38, (u8 *)in + 0x38, local.sp68);
+    fn_801BFD34(local.result.overlap.sp2c, (u8 *)in + 0x2C, local.sp38);
+    fn_80015B20(local.result.sp8, (u8 *)in + 8, local.sp38);
+    *(struct Pair *)((u8 *)out + 0x00) = *(struct Pair *)((u8 *)local.result.sp8 + 0x00);
+    *(struct Pair *)((u8 *)out + 0x08) = *(struct Pair *)((u8 *)local.result.sp8 + 0x08);
+    *(struct Pair *)((u8 *)out + 0x10) = *(struct Pair *)((u8 *)local.result.sp8 + 0x10);
+    *(struct Pair *)((u8 *)out + 0x18) = *(struct Pair *)((u8 *)local.result.sp8 + 0x18);
+    ((s32 *)out)[8] = local.result.sp8[8];
+    *(struct Pair *)((u8 *)out + 0x24) = *(struct Pair *)((u8 *)local.result.sp8 + 0x24);
+    ((s32 *)out)[11] = local.result.sp8[11];
 }
-
-#pragma push
-#pragma small_data off
+#pragma scheduling on
 void fn_801E33E4(void *arg0, void *arg1) {
     f32 sp[12];
     sp[0] = 1.0f;
