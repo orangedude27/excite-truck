@@ -86,22 +86,27 @@ extern char *fn_8023DCCC(char *);
 #pragma use_lmw_stmw off
 void fn_8023DA64(void *arg0, int arg1, int arg2) {
     typedef struct { int unk0; char *name; } Entry;
+    struct StackLocals { int sp8; int spC; char pad[4]; char sp14; };
+    volatile struct StackLocals locals;
     register int zero = 0;
-    volatile char sp14;
-    int sp8;
-    Entry *entry = (Entry *)lbl_802FA0A8;
-    char *base = (char *)arg0 + 8;
-    int i = 0;
+    Entry *entry;
+    char *base;
+    int i;
+    int j;
     void *found;
 
-    sp14 = zero;
+    locals.spC = (int)arg0;
+    locals.sp14 = (char)zero;
+    base = (char *)arg0 + 8;
+    entry = (Entry *)lbl_802FA0A8;
+    i = 0;
     do {
         found = fn_8023DCCC(entry->name);
         if (found != 0) {
-            sp8 = zero;
+            locals.sp8 = zero;
             if (arg1 == 0)
-                fn_801A7974((const char *)&sp8, (int)entry->name, (int)base);
-            if (sp8 == 0)
+                fn_801A7974((const char *)&locals.sp8, (int)entry->name, (int)base);
+            if (locals.sp8 == 0)
                 fn_8013358C((int)base, (int)entry->name, *(void **)((char *)found + 4));
         } else {
             fn_8013358C((int)base, (int)entry->name, (void *)&lbl_8055BC08);
@@ -111,12 +116,12 @@ void fn_8023DA64(void *arg0, int arg1, int arg2) {
     } while (i < 0x1D);
 
     entry = (Entry *)lbl_802FA218;
-    i = 0;
+    j = 0;
     do {
         fn_8013358C((int)base, entry->unk0, (void *)entry->name);
-        i++;
+        j++;
         entry++;
-    } while (i < 8);
+    } while (j < 8);
 
     fn_8023DA2C((long)base, lbl_80341B8C, 1, arg2);
 }
