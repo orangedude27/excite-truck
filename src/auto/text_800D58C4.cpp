@@ -196,7 +196,7 @@ extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *arg0, u8 arg
     }
 }
 
-extern f32 lbl_80560E68;
+extern "C" f32 lbl_80560E68;
 extern f32 lbl_80560E6C;
 extern signed char lbl_8055DDE8;
 extern f32 lbl_80407E40[8];
@@ -335,14 +335,14 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     extern const char lbl_8031E740[];
     extern const char lbl_8031F718[];
     extern const char lbl_8031F6F4[];
+    void* slot;
+    void* current;
     void* node;
     void* end;
-    void* current;
-    void* slot;
     if (arg0 != 0) {
         node = *(void**)((u8*)arg0 + 0x10);
         end = (u8*)arg0 + 0x10;
-        *(void**)arg0 = &lbl_8031F628;
+        *(void**)arg0 = lbl_8031F628;
         while (node != end) {
             current = node;
             node = *(void**)node;
@@ -354,8 +354,8 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F718, 0x193, lbl_8031F6F4);
             MEMFreeToAllocator(lbl_8055DDF0, current);
         }
-        if ((u8*)arg0 + 0x0C != 0)
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8*)arg0 + 0x0C, 0);
+        if ((u32)arg0 + 0x0C != 0)
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void*)((u32)arg0 + 0x0C), 0);
         if (arg1 > 0)
             ((void (*)(void*))fn_80128668)(arg0);
     }
