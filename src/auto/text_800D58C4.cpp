@@ -78,6 +78,9 @@ extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3
 extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 
 struct GroupNodeV { virtual ~GroupNodeV(); virtual void f(); };
+struct GroupListNode { GroupListNode* next; };
+struct GroupList { u32 count; GroupListNode* first; GroupListNode* last; };
+struct GroupLayout { void* vtable; u32 unk4; u32 unk8; GroupList children; };
 struct Obj_800D7738;
 struct Vtbl_800D7738 {
     virtual void v0();
