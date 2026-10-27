@@ -29,6 +29,7 @@ extern float lbl_80561484;
 extern float lbl_80561488;
 extern float lbl_8056148C;
 extern float lbl_80561490;
+#pragma dont_inline on
 void fn_8013BD30(void *arg0) {
     float e, d, c, b, a;
     float *p = (float *)arg0;
