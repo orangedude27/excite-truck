@@ -2572,10 +2572,10 @@ void bta_dm_link_quality_cback(unsigned char *arg) {
 extern u8 lbl_803C0B68[];
 extern u8 lbl_803150DC[];
 s32 bta_dm_l2cap_server_compress_cback(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
-    s32 result = 0;
-    s32 i = 0;
     u8 *entry = lbl_803C0B68;
     u8 *scan = entry;
+    s32 result = 0;
+    s32 i = 0;
 
     while (i < 5) {
         if (entry[8] == 1 && bdcmp(scan, (u8 *)arg0) == 0) {
