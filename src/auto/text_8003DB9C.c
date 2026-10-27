@@ -187,6 +187,39 @@ void __GXInitRevisionBits(void) {
     *b = 0x10; *w = 0x1012; *w = 1; *b = 0x61; *w = 0x5800000F;
 }
 
+void GXInitFifoBase(void *arg0, void *arg1, u32 arg2) {
+    struct Fifo {
+        u8 *base;
+        u8 *top;
+        u32 size;
+        u32 hi;
+        u32 lo;
+        void *rd;
+        void *wr;
+        s32 count;
+    };
+    struct Fifo *fifo = (struct Fifo *)arg0;
+    s32 temp_r6 = (s32)arg2 - 0x4000;
+    s32 temp_r7 = (s32)((u32)arg1 + arg2) - 4;
+    s32 temp_r0 = (arg2 >> 1) & 0x7FFFFFE0;
+    s32 zero = 0;
+
+    fifo->base = (u8 *)arg1;
+    fifo->top = (u8 *)temp_r7;
+    fifo->size = arg2;
+    fifo->count = zero;
+    fifo->hi = temp_r6;
+    fifo->lo = temp_r0;
+    OSDisableInterrupts();
+    fifo->rd = arg1;
+    fifo->wr = arg1;
+    fifo->count = zero;
+    if (fifo->count < 0) {
+        fifo->count = fifo->size;
+    }
+    OSRestoreInterrupts();
+}
+
 extern unsigned int lbl_8037C0C0;
 extern void OSReport(void *, ...);
 extern unsigned int lbl_803036E0;
@@ -2925,8 +2958,27 @@ void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1) {
 }
 
 void GXSetZTexture(s32 op, s32 format, s32 bias) {
-    s32 zmode;
-    unsigned int value;
+    union {
+        u32 value;
+        struct {
+            u32 top : 8;
+            u32 bias : 24;
+        } bits;
+    } first;
+    union {
+        u32 value;
+        struct {
+            u32 top : 8;
+            u32 reserved : 20;
+            u32 op : 2;
+            u32 mode : 2;
+        } bits;
+    } second;
+    register s32 zmode;
+
+    first.value = 0;
+    first.bits.bias = bias;
+    first.bits.top = 0xF4;
 
     switch (format) {
     case 0x11:
@@ -2942,12 +2994,15 @@ void GXSetZTexture(s32 op, s32 format, s32 bias) {
         zmode = 2;
         break;
     }
-    value = (bias & 0x00FFFFFF) | 0xF4000000;
+
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
-    value = (zmode & 3) | ((op << 2) & 0xC) | 0xF5000000;
+    second.value = 0;
+    second.bits.mode = zmode;
+    *(volatile unsigned int *)0xCC008000 = first.value;
+    second.bits.op = op;
+    second.bits.top = 0xF5;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
+    *(volatile unsigned int *)0xCC008000 = second.value;
     *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
