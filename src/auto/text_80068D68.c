@@ -136,6 +136,7 @@ extern u8 lbl_80393058[];
 extern char lbl_80313238[];
 extern u8 lbl_803C0D48[];
 extern u8 lbl_803C3C38[];
+extern u8 lbl_8031787C[];
 extern char lbl_80317838[];
 extern void *l2cu_find_ccb_by_cid(void *, u16);
 extern u8 lbl_803C0B98[];
@@ -8912,22 +8913,21 @@ u8 HID_HostOpenDev(u32 arg0) {
 
 u8 HID_HostCloseDev(u8 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
-    u8 *hh_cb = lbl_803C3C38;
-    u8 *device;
-    u32 offset;
-    if (hh_cb[0x400] == 0) {
+    tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
+    tHID_HOST_DEV_VIEW *device;
+    if (lbl_803C3C38[0x400] == 0) {
         return 1;
     }
-    if (dev_handle > 0x10 || (offset = dev_handle * 0x34, hh_cb[offset] == 0)) {
+    if (dev_handle > 0x10 || devices[dev_handle].in_use == 0) {
         return 5;
     }
-    device = hh_cb + offset;
-    device[0xC] = 1;
-    fn_80070F90(device + 0x1C);
-    if (device[0xA] != 1) {
+    device = &devices[dev_handle];
+    device->conn_tries = 1;
+    fn_80070F90(device->timer_entry);
+    if (device->state != 1) {
         return 4;
     }
-    device[0xC] = 1;
+    device->conn_tries = 1;
     return hidh_conn_disconnect(dev_handle);
 }
 
