@@ -5,7 +5,7 @@ extern int lbl_8055FE78;
 extern int lbl_8055FE80;
 int fn_802D8FB4(int);
 int fn_80128658(int);
-unsigned int OSGetFontEncode(void);
+unsigned short OSGetFontEncode(void);
 int OSInitFont(void);
 int fn_801282EC(int);
 int fn_801284E8(void *, int);
