@@ -255,46 +255,40 @@ void fn_801D3BF0(void *arg0) {
 #pragma paired_single reset
 extern void fn_8017D2C8();
 extern void fn_801796CC();
-void fn_801D3E8C(void *arg0, void *arg2, void *arg4) {
-    char *p0 = (char *)arg0;
-    char *p2 = (char *)arg2;
-    char *p4 = (char *)arg4;
-    float sp1C;
-    float sp18;
-    float sp14;
-    float sp10;
-    float spC;
-    float sp8;
-    short sp20;
-    int sp24;
-    int sp14_pad;
-    int sp10_pad;
-    int spC_pad;
-    int sp8_pad;
+void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
+    float tmp[8];
 
-    fn_8017D2C8();
-    if (*(int *)(p0 + 0x238) > 0 && arg4 != 0) {
-        sp8 = *(float *)p2;
-        spC = *(float *)(p2 + 4);
-        sp10 = *(float *)(p2 + 8);
-        sp14 = *(float *)(p4 + 0x118);
-        sp18 = *(float *)(p4 + 0x11C);
-        sp1C = *(float *)(p4 + 0x120);
-        sp20 = *(short *)(p4 + 0x6C);
-        sp24 = *(int *)(p0 + 0x238);
-        fn_801796CC(0xA, &sp8, 0x20, *(float *)(p2 + 4), *(float *)p2);
+    fn_8017D2C8(arg0, arg1, arg2);
+    if (*(int *)((char *)arg0 + 0x238) > 0 && arg4 != 0) {
+        float z_val;
+        float y_val;
+        float x_val;
+
+        x_val = *(float *)arg2;
+        y_val = *(float *)((char *)arg2 + 4);
+        z_val = *(float *)((char *)arg2 + 8);
+        tmp[0] = x_val;
+        tmp[1] = y_val;
+        tmp[2] = z_val;
+        tmp[3] = *(float *)((char *)arg4 + 0x118);
+        tmp[4] = *(float *)((char *)arg4 + 0x11C);
+        tmp[5] = *(float *)((char *)arg4 + 0x120);
+        *(short *)((char *)tmp + 0x18) = *(short *)((char *)arg4 + 0x6C);
+        *(int *)((char *)tmp + 0x1C) = *(int *)((char *)arg0 + 0x238);
+        fn_801796CC(10, tmp, sizeof(tmp));
     }
-    if (*(int *)(p0 + 0x230) == 2 && *(void **)(p0 + 0x22C) != arg4 && arg4 != 0) {
-        int result = 0;
-        unsigned int tag = *(unsigned int *)(p4 + 0x10);
-        if (tag - 0x4341 == 0x5220 || tag - 0x5043 == 0x4152 || tag - 0x4143 == 0x4152 || tag - 0x4E43 == 0x4152)
-            result = 1;
-        if (result != 0) {
-            *(void **)(p0 + 0x22C) = arg4;
-            *(int *)(p0 + 0x24) = 0;
+    if (*(int *)((char *)arg0 + 0x230) == 2 && *(void **)((char *)arg0 + 0x22C) != arg4 && arg4 != 0) {
+        int is_car = 0;
+        unsigned int tag = *(unsigned int *)((char *)arg4 + 0x10);
+
+        if (tag == 0x43415220 || tag == 0x50434152 || tag == 0x41434152 || tag == 0x4E434152) {
+            is_car = 1;
+        }
+        if (is_car != 0) {
+            *(void **)((char *)arg0 + 0x22C) = arg4;
+            *(int *)((char *)arg0 + 0x24) = 0;
         }
     }
-    sp14_pad = 0; sp10_pad = 0; spC_pad = 0; sp8_pad = 0;
 }
 
 extern double fn_8002F234(float);
