@@ -5,6 +5,17 @@ typedef signed char s8;
 typedef signed int s32;
 typedef float f32;
 
+namespace nw4hbm {
+namespace snd {
+namespace detail {
+class Channel {
+public:
+    Channel();
+};
+}
+}
+}
+
 extern "C" void fn_800EB3AC(void *);
 extern "C" void fn_800EC890(void *);
 extern float lbl_80560FC0;
@@ -26,6 +37,57 @@ extern "C" int Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveDa
 extern "C" int fn_800E519C(void *);
 extern void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, int);
 extern void *fn_80128668(void *);
+extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
+    register void *object asm("r29") = arg0;
+    int zero = 0;
+
+    *(int *)((char *)object + 0x0) = zero;
+    *(int *)((char *)object + 0x4) = zero;
+    fn_800EB3AC((char *)object + 0x8);
+    fn_800EC890((char *)object + 0x20);
+    float initialVolume = lbl_80560FC0;
+    *(int *)((char *)object + 0x30) = zero;
+    *(float *)((char *)object + 0x34) = initialVolume;
+    *((unsigned char *)object + 0x39) = zero;
+    *((unsigned char *)object + 0x3A) = zero;
+    *((unsigned char *)object + 0x3B) = zero;
+    *((unsigned char *)object + 0xC4) = zero;
+    *((unsigned char *)object + 0xC5) = zero;
+    *(unsigned short *)((char *)object + 0xC6) = zero;
+    *(unsigned short *)((char *)object + 0xC8) = zero;
+    *(int *)((char *)object + 0xE0) = zero;
+    if ((signed char)lbl_8055DE28 == 0) {
+        char *managerName = lbl_8040EC78;
+        char *globalManager = lbl_80412778;
+        *(volatile int *)lbl_80412778 = zero;
+        *(void * volatile *)(globalManager + 0x4) = 0;
+        void *head = globalManager + 0x4;
+        void *tail = globalManager + 0x10;
+        *(void * volatile *)(globalManager + 0x8) = 0;
+        *(void * volatile *)(globalManager + 0x10) = 0;
+        *(void * volatile *)(globalManager + 0x14) = 0;
+        *(void **)(globalManager + 0x4) = head;
+        *(void **)(globalManager + 0x8) = head;
+        *(int *)(globalManager + 0xC) = zero;
+        *(void **)(globalManager + 0x10) = tail;
+        *(void **)(globalManager + 0x14) = tail;
+        ((void (*)(void *, void *, void *, void *, void *))__register_global_object)(
+            globalManager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv,
+            managerName, tail, head);
+        lbl_8055DE28 = 1;
+    }
+    register char *manager asm("r30") = lbl_80412778;
+    if (object == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322B0C, 0x43, lbl_80322AE4);
+    register void *head asm("r31") = manager + 4;
+    if (object == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8, 0x233, lbl_80322AB4);
+    void *iterator = head;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
+        manager, &iterator, object);
+    return object;
+}
+
 extern "C" int __dt__Q46nw4hbm3snd6detail14ChannelManagerFv(int arg0, int arg1) {
     if (arg0 != 0) {
         if (arg0 + 0xC != 0) {
