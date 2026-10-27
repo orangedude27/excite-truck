@@ -70,57 +70,38 @@ void *fn_80209DE4(void *arg0, int arg1) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_80209E94(void *arg0) {
-    RecordSet *set = *(RecordSet **)((char *)arg0 + 4);
-    Record *records = set->records;
-    float total = lbl_80563278;
-    float minimum = lbl_80563278;
-    float bias = lbl_8056327C;
-    float limit = lbl_80563280;
+    struct Notifier {
+        virtual void v0();
+        virtual void v1();
+    };
+    Record *records = (Record *)(*(char **)((char *)arg0 + 4) + 0x23AC);
     float value;
-    float replacement;
+    float total = 0.0f;
     char *obj;
+    int i;
+    Notifier *notify;
 
-    value = records[-1].value - bias;
-    if (records[-1].enabled == 0 && value > minimum) {
-        if (limit < value) {
-            value = limit;
+    for (i = 0; i < 4; i++) {
+        value = records[i].value - 0.8f;
+        if (records[i].enabled == 0 && value > 0.0f) {
+            if (0.25f < value) {
+                value = 0.25f;
+            }
+            total += value;
         }
-        total += value;
-    }
-    value = records[0].value - bias;
-    if (records[0].enabled == 0 && value > minimum) {
-        if (limit < value) {
-            value = limit;
-        }
-        total += value;
-    }
-    value = records[1].value - bias;
-    if (records[1].enabled == 0 && value > minimum) {
-        if (limit < value) {
-            value = limit;
-        }
-        total += value;
-    }
-    value = records[2].value - bias;
-    if (records[2].enabled == 0 && value > minimum) {
-        if (limit < value) {
-            value = limit;
-        }
-        total += value;
     }
 
     obj = *(char **)((char *)arg0 + 8);
-    replacement = lbl_80563284;
-    if (replacement != *(float *)(obj + 4)) {
+    if (1.0f != *(float *)(obj + 4)) {
         *(signed char *)(obj + 0x4e) = 1;
-        *(float *)(obj + 4) = replacement;
+        *(float *)(obj + 4) = 1.0f;
     }
     obj = *(char **)((char *)arg0 + 8);
     if (total != *(float *)(obj + 8)) {
         *(signed char *)(obj + 0x4d) = 1;
         *(float *)(obj + 8) = total;
     }
-    if (total > lbl_80563288) {
+    if (total > 0.001f) {
         obj = *(char **)((char *)arg0 + 8);
         *(signed char *)(obj + 0x4a) = 0;
         *(signed char *)(obj + 0x4b) = 1;
@@ -130,9 +111,9 @@ extern "C" void fn_80209E94(void *arg0) {
         *(signed char *)(obj + 0x4a) = 1;
         *(signed char *)(obj + 0x4c) = 0;
     }
-    obj = *(char **)((char *)arg0 + 0xc);
-    if (obj != 0) {
-        ((void (*)(void *))(*(void ***)obj)[3])(obj);
+    notify = *(Notifier **)((char *)arg0 + 0xc);
+    if (notify != 0) {
+        notify->v1();
     }
 }
 #pragma cplusplus reset
