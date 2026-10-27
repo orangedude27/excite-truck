@@ -3451,6 +3451,51 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
     return *(f32 *)((u8 *)self + 0x490 + bus * 4);
 }
 
+extern "C" void InitParam__Q46nw4hbm3snd6detail10StrmPlayerFi(void* arg0, s32 arg1) {
+    f32 f0 = lbl_805610C4;
+    f32 f1 = lbl_805610C0;
+    *((u8*)arg0 + 0x48) = 0;
+    *((u8*)arg0 + 0x49) = 0;
+    *((u8*)arg0 + 0x4A) = 0;
+    *((u8*)arg0 + 0x53) = 0;
+    *((u8*)arg0 + 0x4B) = 0;
+    *((u8*)arg0 + 0x4C) = 0;
+    *((u8*)arg0 + 0x4D) = 0;
+    *((u8*)arg0 + 0x4E) = 0;
+    *((u8*)arg0 + 0x4F) = 0;
+    *((u8*)arg0 + 0x52) = 0;
+    *((u8*)arg0 + 0x50) = 0;
+    *((u8*)arg0 + 0x51) = 0;
+    *(s32*)((u8*)arg0 + 0x4A0) = 0;
+    *(s32*)((u8*)arg0 + 0x54) = 0;
+    *(f32*)((u8*)arg0 + 0x43C) = f1;
+    *(f32*)((u8*)arg0 + 0x450) = f1;
+    *(f32*)((u8*)arg0 + 0x440) = f0;
+    *(f32*)((u8*)arg0 + 0x444) = f0;
+    *(f32*)((u8*)arg0 + 0x448) = f0;
+    *(f32*)((u8*)arg0 + 0x44C) = f0;
+    *(f32*)((u8*)arg0 + 0x454) = f0;
+    *(s32*)((u8*)arg0 + 0x458) = 1;
+    *(f32*)((u8*)arg0 + 0x45C) = f1;
+    *(f32*)((u8*)arg0 + 0x460) = f0;
+    *(f32*)((u8*)arg0 + 0x464) = f0;
+    *(f32*)((u8*)arg0 + 0x468) = f0;
+    *(f32*)((u8*)arg0 + 0x46C) = f0;
+    *(f32*)((u8*)arg0 + 0x480) = f0;
+    *(f32*)((u8*)arg0 + 0x490) = f0;
+    *(f32*)((u8*)arg0 + 0x484) = f0;
+    *(f32*)((u8*)arg0 + 0x494) = f0;
+    *(f32*)((u8*)arg0 + 0x488) = f0;
+    *(f32*)((u8*)arg0 + 0x498) = f0;
+    *(f32*)((u8*)arg0 + 0x48C) = f0;
+    *(f32*)((u8*)arg0 + 0x49C) = f0;
+    *(s32*)((u8*)arg0 + 0x4A4) = arg1;
+    *(s32*)((u8*)arg0 + 0x4A8) = 0;
+    *(s32*)((u8*)arg0 + 0x4AC) = 0;
+    *(s32*)((u8*)arg0 + 0x4E0) = 0;
+    *(s32*)((u8*)arg0 + 0x4E4) = 0;
+}
+
 extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeader(void *, const void *);
 extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void *, s32);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
