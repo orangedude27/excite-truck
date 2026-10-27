@@ -1244,6 +1244,38 @@ void *GKI_dequeue(BUFFER_Q *p_q) {
     return (void *)((UINT8 *)p_hdr + BUFFER_HDR_SIZE);
 }
 
+void *GKI_remove_from_queue(BUFFER_Q *p_q, void *p_buf)
+{
+    BUFFER_HDR_T *p_hdr;
+    BUFFER_HDR_T *p_prev;
+
+    fn_8006EBAC();
+    if (p_buf == p_q->p_first) {
+        fn_8006EB88();
+        return GKI_dequeue(p_q);
+    }
+
+    p_hdr = (BUFFER_HDR_T *)((u8 *)p_buf - BUFFER_HDR_SIZE);
+    p_prev = (BUFFER_HDR_T *)((u8 *)p_q->p_first - BUFFER_HDR_SIZE);
+    while (p_prev != NULL) {
+        if (p_prev->p_next == p_hdr) {
+            p_prev->p_next = p_hdr->p_next;
+            if (p_buf == p_q->p_last) {
+                p_q->p_last = (u8 *)p_prev + BUFFER_HDR_SIZE;
+            }
+            p_q->count--;
+            p_hdr->p_next = NULL;
+            p_hdr->status = BUF_STATUS_UNLINKED;
+            fn_8006EB88();
+            return p_buf;
+        }
+        p_prev = (BUFFER_HDR_T *)p_prev->p_next;
+    }
+
+    fn_8006EB88();
+    return NULL;
+}
+
 s32 fn_8006DF60(s32 *arg0) {
     return *arg0;
 }
