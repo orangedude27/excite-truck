@@ -1,6 +1,23 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <types.h>
+#include <macros.h>
+
+void Block_link(void *arg0, unsigned int *arg1);
+typedef struct {
+    void (*function)(void *, unsigned int *);
+    unsigned int size;
+    const unsigned long long *extab;
+} BlockLinkExtabIndex;
+
+#pragma section ".extab"
+DECL_SECTION(".extab") const unsigned long long etb_80004520 = 0x1008000000000000ULL;
+#pragma section ".extabindex"
+DECL_SECTION(".extabindex") const BlockLinkExtabIndex eti_80004700 = {
+    Block_link, 0x150, &etb_80004520
+};
+
 extern void SubBlock_merge_next(unsigned int **);
 void Block_link(void *arg0, unsigned int *arg1) {
     unsigned int flags, size, new_size, prev_size;
