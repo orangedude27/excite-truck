@@ -13,18 +13,18 @@ extern float lbl_80564E94;
 extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
 extern void fn_801345D8(void *, int, void *, ...);
-extern int fn_802C6FC0(int, int, ...);
+extern int fn_802C6FC0(int, int, int);
 extern float fn_80129DC4(int, float, float);
 void fn_802C2298(void) {
     char query[0x20];
     float values[3];
     int temp_r5;
     int temp_r6;
-    int index;
-    void **iterator;
-    void **manager;
-    void **entry;
     void *record;
+    void **manager;
+    void **iterator;
+    int index;
+    void **entry;
 
     *(int *)((char *)lbl_804C109C + 4) = 0;
     manager = fn_80131810(lbl_8034AFE8);
@@ -37,8 +37,9 @@ void fn_802C2298(void) {
             temp_r5 = *(int *)((char *)lbl_804C109C + 4);
             *(int *)((char *)lbl_804C109C + 4) = temp_r5 + 1;
             record = (void *)((char *)*(void **)lbl_804C109C + temp_r5 * 0x14);
-            ((void (*)(void *, void *, int, void *))(*(void **)((char *)*(void **)entry + 0x14)))(entry, (void *)&lbl_8055CFE0, temp_r5, *(void **)lbl_804C109C);
-            *(int *)record = fn_802C6FC0(0, 0);
+            *(int *)record = (int)fn_802C6FC0(
+                (int)((void *(*)(void *, void *, int, void *))(*(void **)((char *)*(void **)entry + 0x14)))(entry, (void *)&lbl_8055CFE0, temp_r5, *(void **)lbl_804C109C),
+                0, 0);
             ((void (*)(float *, void *, void *))(*(void **)((char *)*(void **)entry + 0x34)))(values, entry, (void *)&lbl_8055CFE8);
             ((float *)record)[1] = values[0];
             ((float *)record)[2] = values[1];
