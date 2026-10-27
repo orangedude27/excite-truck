@@ -1049,28 +1049,35 @@ extern "C" int fn_800E4520(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma use_lmw_stmw off
 extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
     if (this_ != 0) {
         *(void **)((char *)this_ + 8) = (void *)&lbl_80322498;
-        int **outer = (int **)this_;
-        for (int i = 0; i < 2; i++) {
-            int *inner = outer[1];
-            for (int j = 0; j < 4; j++) {
-                if (inner[0] != 0) {
-                    TRKGetFreeBuffer(&inner[0]);
-                }
-                inner++;
+        unsigned char *base;
+        unsigned char *slot;
+        int i;
+        int j;
+        base = (unsigned char *)this_;
+        i = 0;
+        while (i < 2) {
+            slot = base;
+            j = 0;
+            while (j < 4) {
+                void *buffer = *(void **)(slot + 0xC);
+                if (buffer != 0)
+                    TRKGetFreeBuffer(buffer);
+                slot += 4;
+                j++;
             }
-            outer += 4;
+            base += 0x10;
+            i++;
         }
-        if (arg1 > 0) {
+        if (arg1 > 0)
             fn_80128668(this_);
-        }
     }
     return this_;
 }
-
-#pragma dont_inline on
+#pragma use_lmw_stmw reset
 extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *self, int count, int arg2, void (*callback)(void *, int, void *), void *arg4) {
     int i;
     for (i = 0; i < count; i++) *(int *)((char *)self + 0x2C + i * 0x34) = 0;
@@ -2468,7 +2475,7 @@ extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm
 
 extern void __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *);
 extern void *lbl_80322880;
-void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
+extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
     *(int *)((char *)arg0 + 4) = 0;
     *(void **)arg0 = &lbl_80322880;
     *(int *)((char *)arg0 + 8) = 0;
