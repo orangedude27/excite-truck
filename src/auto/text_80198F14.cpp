@@ -2345,7 +2345,6 @@ extern "C" void fn_801A22A4(void* arg0) {
 #pragma scheduling on
 extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     extern f32 lbl_80562300;
-    extern void* lbl_803338C0;
     extern void* lbl_80333868;
     f32 x = farg3 - lbl_80562300;
     f32 y = farg2 - lbl_80562300;
