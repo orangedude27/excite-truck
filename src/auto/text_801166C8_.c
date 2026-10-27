@@ -1587,13 +1587,13 @@ s32 fn_8011A7CC(DVDFileInfo *info) {
     if (status < 3) {
         if (status == 0) goto call_callback;
         if (status >= 0) goto done;
-        if (status >= -1) goto set_error;
-        goto done;
+        if (status < -1) goto done;
+        goto set_error;
     }
     if (status == 11) goto set_error;
     if (status >= 11) goto done;
-    if (status >= 10) goto done;
-    goto set_error;
+    if (status < 10) goto set_error;
+    goto done;
 
 call_callback:
     fn_8011A6A0(info);
