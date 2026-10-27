@@ -88,8 +88,8 @@ void fn_8023DA64(void *arg0, int arg1, int arg2) {
     register int zero = 0;
     volatile char sp14;
     int sp8;
-    char *base = (char *)arg0 + 8;
     Entry *entry = (Entry *)lbl_802FA0A8;
+    char *base = (char *)arg0 + 8;
     int i = 0;
     void *found;
 
@@ -119,6 +119,7 @@ void fn_8023DA64(void *arg0, int arg1, int arg2) {
 
     fn_8023DA2C((long)base, lbl_80341B8C, 1, arg2);
 }
+#pragma use_lmw_stmw on
 
 void fn_8023DB68(void) {
     long *dst;
