@@ -239,6 +239,7 @@ found:
     fn_802354A0(*(int *)(index + 0x40), *(int *)(index + 0x44), arg3, x, y, lbl_80563AD0, cosine);
 }
 #pragma ppc_psq_save off
+#pragma use_lmw_stmw reset
 float fn_80258A00(void *arg0, int arg1) {
     int index = 0;
     int offset = 0;
