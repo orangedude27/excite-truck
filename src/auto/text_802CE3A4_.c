@@ -73,42 +73,44 @@ extern char lbl_8034BCF0[];
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
 void fn_802CE4F4(void *arg0, int arg1) {
- int zero=0;
- int minusOne=-1;
- int active=0;
- void *selected=0;
- int best=-1;
- int i=0;
- int offset=0;
- while (i < *(int *)((char *)arg0+8)) {
-  void *entry=(char *)*(void **)arg0+offset;
+ void *entry;
+ int best;
+ int active;
+ int i;
+ int offset;
+ void *manager=arg0;
+ void *selected;
+ active=0;
+ selected=0;
+ best=-1;
+ i=0;
+ offset=0;
+ while (i < *(int *)((char *)manager+8)) {
+  entry=(char *)*(void **)manager+offset;
   if (*(int *)((char *)entry+0x38)==3 &&
-      fn_801345A4(*(int *)((char *)arg0+4), *(int *)((char *)entry+0x2C))) {
-   *(int *)((char *)entry+0x38)=zero;
-   *(int *)((char *)entry+0x2C)=minusOne;
+      fn_801345A4(*(int *)((char *)manager+4), *(int *)((char *)entry+0x2C))) {
+   *(int *)((char *)entry+0x38)=0;
+   *(int *)((char *)entry+0x2C)=-1;
   }
-  if (*(int *)((char *)entry+0x38)!=0)
-   active++;
+  if (*(int *)((char *)entry+0x38)!=0) active++;
   if (*(int *)((char *)entry+0x38)==2) {
-   int delta=*(int *)((char *)arg0+0x10)-*(int *)((char *)entry+0x3C);
-   if (delta<=best && selected==0) { best=delta; selected=entry; }
+   int delta=*(int *)((char *)manager+0x10)-*(int *)((char *)entry+0x3C);
+   if (delta>best || selected==0) { best=delta; selected=entry; }
   }
   offset+=0x40; i++;
  }
- if (*(int *)((char *)arg0+0xC)-active<1) {
+ if (*(int *)((char *)manager+0xC)-active<1) {
   if (selected!=0) {
    if (*(int *)((char *)selected+0x38)==2) {
     fn_802C6FB4(*(int *)((char *)selected+0x30));
     fn_802C703C(*(int *)((char *)selected+0x34));
-    *(int *)((char *)selected+0x34)=minusOne;
-    *(int *)((char *)selected+0x30)=zero;
+    *(int *)((char *)selected+0x34)=-1;
+    *(int *)((char *)selected+0x30)=0;
     *(int *)((char *)selected+0x38)=3;
    }
-  } else {
-   fn_802E30C8(lbl_8034BCF0, *(int *)((char *)arg0+0x10));
-  }
+  } else fn_802E30C8(lbl_8034BCF0, *(int *)((char *)manager+0x10));
  }
- fn_8013436C(*(int *)((char *)arg0+4));
+ fn_8013436C(*(int *)((char *)manager+4));
 }
 #pragma pop
 #pragma scheduling on
