@@ -29,6 +29,7 @@ void fn_802B5404(int *arg0) { int temp = *arg0; if (temp != -2) { fn_802CAC54(te
 __declspec(section ".sdata") extern const char lbl_8055CE10[];
 #pragma push
 #pragma cplusplus on
+#pragma dont_inline on
 extern "C" int fn_802B5448(void *arg0) {
     class Obj {
     public:
@@ -52,6 +53,62 @@ extern "C" int fn_802B54CC(void *arg0) {
     };
     return stricmp(lbl_8034A524, ((Obj *)arg0)->getName()) == 0;
 }
+
+extern "C" void fn_802B561C(void (*)(void *), void *);
+extern "C" int fn_802B5448(void *);
+extern "C" int fn_802B5488(void *);
+extern void fn_80131810(int);
+extern const char lbl_8055CE18[];
+extern const char lbl_8034A53C[];
+extern void fn_802E317C(const char *, ...);
+extern "C" int fn_802B5510(const char *arg0) {
+    class Manager {
+    public:
+        virtual void f0();
+        virtual void *get(int);
+    };
+    class Item {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual const char *process(const char *);
+    };
+    Manager *manager;
+    void **entries;
+    unsigned int count;
+    int index;
+    void *item;
+
+    manager = (Manager *)((void *(*)(void (*)(void *), void *))fn_802B561C)(
+        (void (*)(void *))fn_80131810, (void *)arg0);
+    if (manager != 0) {
+        count = lbl_804BE454.count;
+        entries = (void **)lbl_804BE454.entries;
+        lbl_804BE454.count = count + 1;
+        entries[count] = manager;
+        index = 0;
+        goto fetch_item;
+    }
+    fn_802E317C(lbl_8034A53C, arg0);
+    return 0;
+
+process_item:
+    if (fn_802B5448(item) != 0) {
+        fn_802B5510(((Item *)item)->process(lbl_8055CE18));
+    } else if (fn_802B5488(item) != 0 && lbl_8055F9E8 == 0) {
+        lbl_8055F9E8 = item;
+    }
+    index++;
+
+fetch_item:
+    item = manager->get(index);
+    if (item != 0) {
+        goto process_item;
+    }
+    return 0;
+}
+
 #pragma cplusplus off
 
 #pragma scheduling invalid_target
