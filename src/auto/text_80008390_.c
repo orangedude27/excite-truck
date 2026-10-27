@@ -121,6 +121,7 @@ s32 fn_80008C5C(void) {
     }
     return lbl_805589EC;
 }
+#pragma optimization_level reset
 #pragma dont_inline off
 
 s32 fn_8000865C(void) {
