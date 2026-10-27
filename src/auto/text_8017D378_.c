@@ -45,7 +45,9 @@ void *fn_8017D688(void) {
     return p;
 }
 
-void *fn_8017D93C(void *arg0, int arg1) {
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void *fn_8017D93C(void *arg0, int arg1) {
     extern char lbl_80331D18[];
     extern void fn_801D0C84(void *);
     extern void fn_80179EE8(void *, int);
@@ -57,23 +59,23 @@ void *fn_8017D93C(void *arg0, int arg1) {
         if (arg0 != 0) fn_801D0C84((char *)arg0 + 0x1EC);
         p = *(void **)((char *)arg0 + 0x220);
         if (p != 0) {
-            if (p != 0) ((void (*)(void *, int))(*(void **)((char *)*(void **)p + 8)))(p, 1);
+            if (p != 0) ((VObj_8017D93C *)p)->d0(1);
         }
         p = *(void **)((char *)arg0 + 0x21C);
         if (p != 0) {
-            if (p != 0) ((void (*)(void *, int))(*(void **)((char *)*(void **)p + 8)))(p, 1);
+            if (p != 0) ((VObj_8017D93C *)p)->d0(1);
         }
         p = *(void **)((char *)arg0 + 0x218);
         if (p != 0) {
-            if (p != 0) ((void (*)(void *, int))(*(void **)((char *)*(void **)p + 8)))(p, 1);
+            if (p != 0) ((VObj_8017D93C *)p)->d0(1);
         }
         if (arg0 != 0) fn_80179EE8(arg0, 0);
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-
 #pragma scheduling on
+#pragma cplusplus reset
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017DA34(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_802066C8((void*)arg0, 0);
@@ -123,49 +125,75 @@ void fn_8017DA8C(void *arg0) {
     *((char *)arg0 + 0x1FE) = 0;
 }
 
+extern void fn_8017D404(float *, int, float, float, int);
 void fn_8017DB34(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     extern int lbl_8055D430;
     extern float lbl_80561BF4, lbl_80561C10, lbl_80561C14;
     extern void fn_801796EC(int, void *, int);
-    extern void fn_8017D404(float *, int, int, float, float);
     extern void fn_8017D2C8(void *, int, int, int, int);
     float sp[6];
+    float z, x, y;
+    int var_r4;
+    int flags;
     void *p;
+    void *q;
+    volatile float *values;
+    unsigned char *object = (unsigned char *)arg0;
 
-    if (*(unsigned char *)((char *)arg0 + 0x1FE) != 0 &&
-        *(unsigned char *)((char *)arg0 + 0x1FD) != 0 &&
-        (arg3 >= 100 || ((lbl_8055D430 & 1) && (lbl_8055D430 & 0x90))) &&
-        arg3 < 1000) {
-        sp[0] = *(float *)((char *)arg0 + 0x60);
-        sp[1] = *(float *)((char *)arg0 + 0x64);
-        sp[2] = *(float *)((char *)arg0 + 0x68);
-        sp[3] = *(float *)((char *)arg0 + 0x118);
-        sp[4] = *(float *)((char *)arg0 + 0x11C);
-        sp[5] = *(float *)((char *)arg0 + 0x120);
-        fn_801796EC(8, sp, 0x18);
-        fn_8017D404((float *)((char *)arg0 + 0x60), arg4,
-                    *(int *)((char *)arg0 + 0x1F8), lbl_80561C10, lbl_80561C14);
-        p = *(void **)((char *)arg0 + 0x21C);
-        if (p != 0) {
-            *((unsigned char *)p + 0x4A) = 1;
-            *((unsigned char *)p + 0x4C) = 0;
+    if (object[0x1FE] == 0)
+        goto done;
+    if (object[0x1FD] == 0)
+        goto done;
+    if (arg3 < 100) {
+        flags = lbl_8055D430;
+        var_r4 = 0;
+        if (flags & 1) {
+            if (flags & 0x90)
+                var_r4 = 1;
         }
-        p = *(void **)((char *)arg0 + 0x220);
-        if (p != 0) {
-            *(float *)((char *)arg0 + 0x20C) = *(float *)((char *)arg0 + 0x60);
-            *(float *)((char *)arg0 + 0x210) = *(float *)((char *)arg0 + 0x64);
-            *(float *)((char *)arg0 + 0x214) = *(float *)((char *)arg0 + 0x68);
-            if (lbl_80561BF4 != *(float *)((char *)p + 8)) {
-                *((unsigned char *)p + 0x4D) = 1;
-                *(float *)((char *)p + 8) = lbl_80561BF4;
-            }
-            *((unsigned char *)p + 0x49) = 1;
-            *((unsigned char *)p + 0x4B) = 0;
-            *((unsigned char *)p + 0x4A) = 0;
-        }
-        *((unsigned char *)arg0 + 0x1FE) = 0;
-        *((unsigned char *)arg0 + 0x1FC) = 1;
+        if (var_r4 == 0)
+            goto done;
     }
+    if (arg3 >= 1000)
+        goto done;
+
+    sp[0] = *(float *)(object + 0x60);
+    sp[1] = *(float *)(object + 0x64);
+    sp[2] = *(float *)(object + 0x68);
+    sp[3] = *(float *)(object + 0x118);
+    sp[4] = *(float *)(object + 0x11C);
+    sp[5] = *(float *)(object + 0x120);
+    fn_801796EC(8, sp, 0x18);
+    fn_8017D404((float *)(object + 0x60), arg4,
+                lbl_80561C10, lbl_80561C14, *(int *)(object + 0x1F8));
+
+    p = *(void **)(object + 0x21C);
+    if (p != 0) {
+        *((unsigned char *)p + 0x4A) = 1;
+        *((unsigned char *)p + 0x4C) = 0;
+    }
+    p = *(void **)(object + 0x220);
+    if (p != 0) {
+        values = (volatile float *)(object + 0x60);
+        x = values[0];
+        y = values[1];
+        z = values[2];
+        *(volatile float *)(object + 0x20C) = x;
+        x = lbl_80561BF4;
+        *(volatile float *)(object + 0x210) = y;
+        *(volatile float *)(object + 0x214) = z;
+        if (x != *(float *)((char *)p + 8)) {
+            *((unsigned char *)p + 0x4D) = 1;
+            *(float *)((char *)p + 8) = x;
+        }
+        q = *(void * volatile *)(object + 0x220);
+        *((unsigned char *)q + 0x49) = 1;
+        *((unsigned char *)q + 0x4B) = 0;
+        *((unsigned char *)q + 0x4A) = 0;
+    }
+    object[0x1FE] = 0;
+    object[0x1FC] = 1;
+done:
     fn_8017D2C8(arg0, arg1, arg2, arg3, arg4);
 }
 
