@@ -478,7 +478,7 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
 }
 #pragma scheduling on
 extern s32 fn_8012C33C(char *);
-extern void fn_801345D8(char *, s32, const char *, s32);
+extern void fn_801345D8(char *, s32, const char *, ...);
 extern s32 fn_802CAC28(const char *, s32);
 extern s32 fn_802CAE98(s32, const char *);
 extern s32 fn_802CAF1C(s32, s32, s32);
