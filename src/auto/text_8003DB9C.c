@@ -2691,16 +2691,17 @@ void __GXFlushTextureState(void) {
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
-extern unsigned int lbl_80303C30;
+extern unsigned int lbl_80303C30[];
 void GXSetTevOp(int stage, int mode) {
     unsigned int *color;
     unsigned int *alpha;
-    unsigned int *base = &lbl_80303C30;
-    unsigned int *data = __GXData;
+    unsigned int *base = lbl_80303C30;
+    unsigned int *data;
     unsigned int *tev;
     unsigned int value;
     if (stage == 0) { color = base + mode; alpha = base + 10 + mode; }
     else { color = base + 5 + mode; alpha = base + 15 + mode; }
+    data = __GXData;
     tev = data + stage;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     value = (tev[0x180 / 4] & 0xFF000000) | (*color & 0xFFFFFF);
@@ -3368,22 +3369,43 @@ void GXSetCurrentMtx(s32 arg0) {
 }
 
 void __GXSetViewport(void) {
- unsigned int *d=__GXData;
- float f2,f3,f0,f4,f5,f8,f9,f6,f1;
- f2=*(float*)((char*)d+0x550); f3=*(float*)((char*)d+0x54c);
- f0=*(float*)((char*)d+0x544); f4=*(float*)((char*)d+0x548);
- f5=f2*lbl_80560BCC; f8=-f2*lbl_80560BCC;
- f9=*(float*)((char*)d+0x558)* *(float*)((char*)d+0x560);
- f3=f3*lbl_80560BCC;
- f6=f0+f3; f1=f4+f5;
- *(volatile unsigned char*)0xCC008000=16;
- *(volatile unsigned int*)0xCC008000=0x5101a;
- *(volatile float*)0xCC008000=f3;
- *(volatile float*)0xCC008000=f8;
- *(volatile float*)0xCC008000=f9-(*(float*)((char*)d+0x554)* *(float*)((char*)d+0x560));
- *(volatile float*)0xCC008000=lbl_80560BD0+f6;
- *(volatile float*)0xCC008000=lbl_80560BD0+f1;
- *(volatile float*)0xCC008000=f9+*(float*)((char*)d+0x55c);
+    unsigned int *d = __GXData;
+    register f32 f6, f2, f3, f1, f0, f7, f4, f5, f8, f9;
+    volatile u8 *bp8 = (volatile u8 *)0xCC008000;
+    volatile u32 *bp32 = (volatile u32 *)0xCC008000;
+    volatile f32 *bpf = (volatile f32 *)0xCC008000;
+
+    f6 = lbl_80560BCC;
+    f2 = *(f32 *)((u8 *)d + 0x550);
+    f3 = *(f32 *)((u8 *)d + 0x54C);
+    f1 = -f2;
+    f0 = *(f32 *)((u8 *)d + 0x544);
+    f7 = f3 * f6;
+    f4 = *(f32 *)((u8 *)d + 0x548);
+    f5 = f2 * f6;
+    f3 = *(f32 *)((u8 *)d + 0x554);
+    f8 = f1 * f6;
+    f2 = *(f32 *)((u8 *)d + 0x560);
+    f1 = *(f32 *)((u8 *)d + 0x558);
+    f6 = f0 + f7;
+    f0 = *(f32 *)((u8 *)d + 0x55C);
+    f3 = f3 * f2;
+    f9 = f1 * f2;
+
+    *bp8 = 16;
+    f2 = lbl_80560BD0;
+    f1 = f4 + f5;
+    *bp32 = 0x5101A;
+    f3 = f9 - f3;
+    *bpf = f7;
+    f4 = f2 + f6;
+    f1 = f2 + f1;
+    *bpf = f8;
+    f0 = f9 + f0;
+    *bpf = f3;
+    *bpf = f4;
+    *bpf = f1;
+    *bpf = f0;
 }
 
 void GXSetViewportJitter(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
