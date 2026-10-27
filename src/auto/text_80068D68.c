@@ -12299,7 +12299,7 @@ void rfc_mx_sm_state_connected(void *arg0, s32 arg1, void *arg2) {
 void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
     extern void PORT_StartCnf(void *, u16);
     extern void rfc_release_multiplexer_channel(void *);
-    extern void rfc_send_sabme(void *, s32, void *);
+    extern void rfc_send_sabme();
     extern char lbl_80319A70[];
     void (*start)(void *, u16) = PORT_StartCnf;
     void (*disconnect)(u16) = (void (*)(u16))L2CA_DisconnectReq;
