@@ -8905,6 +8905,32 @@ s32 hidd_conn_initiate(void) {
     return 0;
 }
 
+void hidd_proc_repage_timeout(void)
+{
+    u8 *cb;
+    void (*callback)(u8, u8, void *);
+
+    if (lbl_803C3AF0[0x141] >= 5) {
+        fn_8007093C(0x1E0004, lbl_80317700);
+    }
+
+    cb = lbl_803C3AF0;
+    cb[9] = (u8)(cb[9] + 1);
+    if ((u8)hidd_conn_initiate() != 0) {
+        if (cb[9] > 0xF) {
+            callback = *(void (**)(u8, u8, void *))(cb + 0xC4);
+            cb[8] = 0;
+            callback(1, 0, 0);
+            return;
+        }
+        btu_start_timer((TIMER_LIST_ENT *)(cb + 0x1C), 0x16, 1);
+        return;
+    }
+
+    callback = *(void (**)(u8, u8, void *))(cb + 0xC4);
+    callback(2, cb[9], 0);
+}
+
 void hidd_pm_set_now(void *arg0) {
     u8 status = 0;
     u32 spC = 0;
