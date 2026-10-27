@@ -430,8 +430,9 @@ void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
 }
 
 extern int strcmp(const char *, const char *);
-extern char lbl_80559970[], lbl_80559974[];
+extern char lbl_80559970, lbl_80559974;
 void fn_80128C5C(void *arg0, int arg1, int arg2) {
+    register char *text = lbl_8032A000;
     int offset;
     int total;
     int used;
@@ -440,7 +441,7 @@ void fn_80128C5C(void *arg0, int arg1, int arg2) {
     int equal;
     void *message;
     if ((arg1 & 1) != 0) {
-        ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x348);
+        ((void (*)(void *, ...))fn_802E30C8)(text + 0x348);
         offset = 0;
         used = 0;
         count = 0;
@@ -448,13 +449,13 @@ void fn_80128C5C(void *arg0, int arg1, int arg2) {
         while (offset < total) {
             char *record = *(char **)((char *)arg0 + 0xC) + offset;
             if (*(unsigned int *)record != 0x53544B41)
-                ((void (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x380, record);
-            equal = strcmp(record + 4, lbl_8032A000 + 0x5C);
-            message = &lbl_80559974[0];
-            if (*(unsigned char *)(record + 0x24) != 0 && equal == 0)
-                message = &lbl_80559970[0];
+                ((void (*)(void *, ...))fn_802E317C)(text + 0x380, record);
+            equal = !strcmp(record + 4, text + 0x5C);
+            message = (void *)&lbl_80559974;
+            if (*(unsigned char *)(record + 0x24) != 0 && equal)
+                message = (void *)&lbl_80559970;
             size = *(int *)(record + 0x28);
-            fn_802E30C8(lbl_8032A000 + 0x394, message,
+            fn_802E30C8(text + 0x394, message,
                         record + 4, (void *)size, record);
             if (*(unsigned char *)(record + 0x24) == 0)
                 used += size + 0x40;
@@ -463,12 +464,12 @@ void fn_80128C5C(void *arg0, int arg1, int arg2) {
             if ((offset & 0x1F) == 0)
                 fn_802E2D74(1);
         }
-        fn_802E30C8(lbl_8032A000 + 0x3B4, (void *)(total / 1024),
+        fn_802E30C8(text + 0x3B4, (void *)(total / 1024),
                     (void *)(*(int *)((char *)arg0 + 8) / 1024),
                     (void *)((*(int *)((char *)arg0 + 8) - total) / 1024),
                     (void *)(used / 1024));
-        ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x3E8, (void *)count);
-        ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x3F8);
+        ((void (*)(void *, ...))fn_802E30C8)(text + 0x3E8, (void *)count);
+        ((void (*)(void *, ...))fn_802E30C8)(text + 0x3F8);
     }
 }
 
@@ -536,23 +537,26 @@ extern s32 fn_801281F4(s32, s32);
 extern s32 fn_802E317C(void *, void *);
 extern char lbl_8032A470[];
 void *fn_80128F94(void *arg0, s32 arg1, void *arg2, s32 arg3) {
-    s32 size = fn_801281F4(arg1, 0x10);
+    register u32 *header = (u32 *)arg0;
+    register void *logArg = arg2;
+    s32 size = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x10);
     s32 total = size + 0x20;
-    u32 used = *(u32 *)((char *)arg0 + 8);
-    if (total + used > *(u32 *)((char *)arg0 + 0xC)) {
-        ((void (*)(void *, void *, s32))fn_802E317C)(lbl_8032A470, arg2, size >> 10);
+    if (header[2] + total > header[3]) {
+        ((void (*)(void *, ...))fn_802E317C)(lbl_8032A470, logArg, size / 1024);
     }
     {
-        char *base = *(char **)((char *)arg0 + 4) + used;
-        *(u32 *)base = 0xAAAA5555;
+        u32 used = header[2];
+        u8 *start = (u8 *)header[1];
+        u8 *base = start + used;
+        u8 *result = base + 0x10;
+        *(u32 *)(start + used) = 0xAAAA5555;
         *(s32 *)(base + 4) = arg3;
-        *(u32 *)(base + 0x10 + size) = 0xFEEDFACE;
-        *(s32 *)(base + 0x14 + size) = size;
-        *(u32 *)((char *)arg0 + 8) = used + total;
-        memset(base + 0x10, 0xE3, size);
-        if (*(u32 *)((char *)arg0 + 0x10) < used + total)
-            *(u32 *)((char *)arg0 + 0x10) = used + total;
-        return base + 0x10;
+        *(u32 *)(result + size) = 0xFEEDFACE;
+        *(s32 *)(result + size + 4) = size;
+        header[2] = header[2] + total;
+        memset(result, 0xE3, size);
+        if (header[2] > header[4]) header[4] = header[2];
+        return result;
     }
 }
 
