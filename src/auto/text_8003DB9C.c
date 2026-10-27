@@ -20,7 +20,9 @@ extern unsigned int lbl_8055D968;
 extern unsigned char lbl_8055D970;
 extern unsigned short *__cpReg;
 extern unsigned short *__peReg;
+extern unsigned char lbl_8037C0C0[];
 extern unsigned char lbl_8037C0E4[];
+extern unsigned int *__piReg;
 extern unsigned int lbl_8055D974;
 extern f32 lbl_80560B40;
 extern f64 lbl_80560B48;
@@ -148,12 +150,15 @@ void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
     if (mipmap == 7) {
         goto common;
     }
-    if (mipmap < 7) {
-        if (mipmap >= 6) {
-            goto special;
-        }
-        goto common;
+    if (mipmap >= 7) {
+        goto high;
     }
+    if (mipmap >= 6) {
+        goto special;
+    }
+    goto common;
+
+high:
     if (mipmap >= 11) {
         goto common;
     }
@@ -236,22 +241,22 @@ extern void OSReport(void *, ...);
 extern char lbl_803036E0[];
 extern char lbl_803036F8[];
 int CPGPLinkCheck(void) {
+    int error = 0;
     unsigned int first;
     unsigned int second;
     int diff1;
     int diff2;
-    int error = 0;
 
     if (lbl_8055D948 == 0 || (unsigned char)lbl_8055D949 == 0) {
         return 0;
     }
-    first = *(unsigned int *)lbl_8037C0E4;
     second = *(unsigned int *)lbl_8037C0C0;
+    first = *(unsigned int *)lbl_8037C0E4;
     if (first == second) {
         error = 1;
     }
-    first = *(unsigned int *)(lbl_8037C0E4 + 4);
     second = *(unsigned int *)(lbl_8037C0C0 + 4);
+    first = *(unsigned int *)(lbl_8037C0E4 + 4);
     if (first == second) {
         error++;
     }
@@ -263,11 +268,7 @@ int CPGPLinkCheck(void) {
     diff2 = (int)*(unsigned int *)(lbl_8037C0C0 + 4) -
             (int)*(unsigned int *)lbl_8037C0E4;
     error = 0;
-    if (diff1 > 0) {
-        if (diff2 > 0) {
-            error = 1;
-        }
-    } else if (diff1 < 0 && diff2 < 0) {
+    if ((diff1 > 0 && diff2 > 0) || (diff1 < 0 && diff2 < 0)) {
         error = 1;
     }
     if (error != 0) {
