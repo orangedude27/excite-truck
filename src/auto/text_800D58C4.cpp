@@ -76,7 +76,7 @@ extern "C" f32 lbl_80560EB0;
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
 extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(void*, void*, void*);
-extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
+extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 
 struct GroupNodeV { virtual ~GroupNodeV(); virtual void f(); };
 struct GroupListNode { GroupListNode* next; };
@@ -223,18 +223,17 @@ extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *self, u8 siz
         lbl_8055DDE8 = 1;
     }
     u8 oldSize = *((u8 *)self + 1);
-    register const f32 *values = lbl_80407E40;
     f32 v7, v6, v5, v4, v3, v2, v1, v0;
-    v0 = values[0];
-    v1 = values[1];
-    v2 = values[2];
-    v3 = values[3];
-    v4 = values[4];
-    v5 = values[5];
-    v6 = values[6];
-    v7 = values[7];
-    for (s32 i = oldSize; i < size; ++i) {
-        s32 offset = i << 5;
+    v0 = lbl_80407E40[0];
+    v1 = lbl_80407E40[1];
+    v2 = lbl_80407E40[2];
+    v3 = lbl_80407E40[3];
+    v4 = lbl_80407E40[4];
+    v5 = lbl_80407E40[5];
+    v6 = lbl_80407E40[6];
+    v7 = lbl_80407E40[7];
+    for (register s32 i = oldSize; i < size; ++i) {
+        register s32 offset = i << 5;
         void *base0 = *(void **)((u8 *)self + 4);
         *(f32 *)((u8 *)base0 + offset) = v0;
         ((f32 *)((u8 *)base0 + offset))[1] = v1;
@@ -2463,15 +2462,15 @@ extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, vo
 #pragma pop
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
 extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(void*, void*, void*);
-extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
+extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 extern "C" void DrawSelf__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, void* info) {
     if (*(s32*)((u8*)self + 0xC) != 0 && ((*(u8*)((u8*)info + 0x50) >> 3) & 1)) {
         void (**vtable)(void) = *(void (***)(void))self;
         vtable[0x60 / 4]();
         u32 color = 0xFF00FF;
-        void* pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
+        GetVtxPosResult pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
         void* args[2];
-        args[0] = pos;
+        args[0] = &pos;
         args[1] = (u8*)self + 0x4C;
         DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(args, args[1], &color);
     }
@@ -2732,23 +2731,24 @@ extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self, voi
 
 extern "C" f32 lbl_80560EC0;
 #pragma scheduling invalid_target
-extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
+extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
     u8 n = *(u8*)((u8*)self + 0xCC);
-    f32 x = lbl_80560EA8;
-    f32 y = lbl_80560EA8;
+    GetVtxPosResult result;
     s32 r = n % 3;
+    result.x = lbl_80560EA8;
+    result.y = lbl_80560EA8;
     if (r == 1) {
-        x = -*(f32*)((u8*)self + 0x4C) * lbl_80560EC0;
+        result.x = -*(f32*)((u8*)self + 0x4C) * lbl_80560EC0;
     } else if (r >= 1 && r < 3) {
-        x = -*(f32*)((u8*)self + 0x4C);
+        result.x = -*(f32*)((u8*)self + 0x4C);
     }
     s32 q = n / 3;
     if (q == 1) {
-        y = -*(f32*)((u8*)self + 0x50) * lbl_80560EC0;
+        result.y = -*(f32*)((u8*)self + 0x50) * lbl_80560EC0;
     } else if (q >= 1 && q < 3) {
-        y = -*(f32*)((u8*)self + 0x50);
+        result.y = -*(f32*)((u8*)self + 0x50);
     }
-    return &x;
+    return result;
 }
 #pragma scheduling on
 extern "C" s32 fn_800DC6DC(void *arg0) {
