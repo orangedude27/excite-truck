@@ -10,7 +10,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
-namespace nw4hbm { namespace snd { class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); }; namespace detail { class StrmPlayer { public: void Pause(bool); }; } } }
+namespace nw4hbm { namespace snd { class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); }; namespace detail { class StrmPlayer { public: void Pause(bool); }; class SeqTrack { public: void ReleaseAllChannel(int); }; } } }
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
 extern "C" void fn_800EAD00(void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
@@ -336,7 +336,7 @@ extern "C" const char lbl_803243F0[];
 #pragma use_lmw_stmw off
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void* arg0, int arg1) {
     UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(arg0);
-    u32 irq = OSDisableInterrupts();
+    register u32 irq = OSDisableInterrupts();
     fn_800E402C(Instance__15EmissionManagerFv());
     void* channel = *(void**)((u8*)arg0 + 0xB8);
     while (channel != 0) {
@@ -2730,36 +2730,33 @@ extern "C" void fn_800FA9E8(void* arg0) {
 }
 
 extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
-    register void *base = arg0;
+    register void *pool = arg0;
     OSDisableInterrupts();
-    int used = *(int *)((char *)base + 0x10);
-    int count = *(int *)((char *)base + 0xC);
-    if (used >= count) {
-        OSRestoreInterrupts(0);
-        return 0;
-    }
-    int limit = (count + 7) >> 3;
-    for (int i = 0; i < limit; i++) {
-        unsigned char *bits = (unsigned char *)base + 0x14 + i;
-        unsigned char value = *bits;
-        if (value != 0xFF) {
-            unsigned int mask = 1;
-            int j = 0;
-            for (; j < 8; j++) {
-                if ((value & mask) == 0) {
-                    *bits = value | mask;
-                    int index = j + (i << 3);
-                    int stride = *(int *)((char *)base + 8);
-                    void *result = (char *)(*(void **)base) + stride * index;
-                    *(int *)((char *)base + 0x10) = used + 1;
-                    OSRestoreInterrupts(0);
-                    return result;
+    s32 capacity = *(s32 *)((u8 *)pool + 0xC);
+    s32 used = *(s32 *)((u8 *)pool + 0x10);
+    if (used < capacity) {
+        s32 byteCount = (capacity + 7) / 8;
+        for (s32 i = 0; i < byteCount; ++i) {
+            volatile u8 *bits = (volatile u8 *)pool + 0x14;
+            if (bits[i] != 0xFF) {
+                u8 mask = 1;
+                for (s32 bit = 0; bit < 8; ++bit) {
+                    if ((bits[i] & mask) == 0) {
+                        bits[i] |= mask;
+                        s32 index = bit + (i << 3);
+                        s32 stride = *(s32 *)((u8 *)pool + 8);
+                        s32 oldUsed = *(s32 *)((u8 *)pool + 0x10);
+                        void *result = (u8 *)*(void **)pool + stride * index;
+                        *(s32 *)((u8 *)pool + 0x10) = oldUsed + 1;
+                        ((void (*)(void))OSRestoreInterrupts)();
+                        return result;
+                    }
+                    mask <<= 1;
                 }
-                mask <<= 1;
             }
         }
     }
-    OSRestoreInterrupts(0);
+    ((void (*)(void))OSRestoreInterrupts)();
     return 0;
 }
 
