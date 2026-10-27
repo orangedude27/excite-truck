@@ -26,41 +26,6 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
-#define port_select_mtu typed_port_select_mtu
-#define port_find_mcb_dlci_port typed_port_find_mcb_dlci_port
-#define port_find_dlci_port typed_port_find_dlci_port
-#define port_release_port typed_port_release_port
-#define port_allocate_port typed_port_allocate_port
-#define port_set_defaults typed_port_set_defaults
-#define port_find_mcb typed_port_find_mcb
-#define port_find_port typed_port_find_port
-#define port_get_signal_changes typed_port_get_signal_changes
-#define port_flow_control_user typed_port_flow_control_user
-#define port_flow_control_peer typed_port_flow_control_peer
-#define port_open_continue typed_port_open_continue
-#define port_start_port_open typed_port_start_port_open
-#define port_start_par_neg typed_port_start_par_neg
-#define port_start_control typed_port_start_control
-#define port_start_close typed_port_start_close
-#define port_rfc_closed typed_port_rfc_closed
-#include "revolution/BTE/stack/rfcomm/port_int.h"
-#undef port_rfc_closed
-#undef port_start_close
-#undef port_start_control
-#undef port_start_par_neg
-#undef port_start_port_open
-#undef port_open_continue
-#undef port_flow_control_peer
-#undef port_flow_control_user
-#undef port_get_signal_changes
-#undef port_find_port
-#undef port_find_mcb
-#undef port_set_defaults
-#undef port_allocate_port
-#undef port_release_port
-#undef port_find_dlci_port
-#undef port_find_mcb_dlci_port
-#undef port_select_mtu
 #include "revolution/BTE/stack/include/hiddefs.h"
 extern u8 HID_HostCloseDev(u8);
 static tBTM_STATUS btm_set_inq_event_filter(UINT8, UINT8 *);
