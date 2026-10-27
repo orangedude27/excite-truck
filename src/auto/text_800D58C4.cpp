@@ -201,7 +201,7 @@ extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *arg0, u8 arg
 
 extern "C" f32 lbl_80560E68;
 extern "C" f32 lbl_80560E6C;
-extern signed char lbl_8055DDE8;
+extern "C" signed char lbl_8055DDE8;
 extern f32 lbl_80407E40[8];
 void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void* self, u8 size) {
     void* data = *(void**)((char*)self + 4);
@@ -2581,6 +2581,8 @@ extern "C" void fn_800DC204(void* self, void* arg) {
     ((Obj*)self)->v16(0, arg);
 }
 
+#pragma push
+#pragma opt_loop off
 extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane, void* anim) {
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
@@ -2611,7 +2613,7 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
         *(u16*)((char*)current + 0xc) = 0;
     }
 }
-
+#pragma pop
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void* self, void* link) {
     extern const char lbl_8031FF90[];
     extern const char lbl_803200F8[];
