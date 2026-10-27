@@ -48,6 +48,7 @@ void fn_801DE88C(void) {
 int fn_801DE9F0(int arg0, int arg1) {
     float value;
     register float newValue;
+    register void* object;
     int bits;
     unsigned long long time;
 
@@ -68,19 +69,15 @@ int fn_801DE9F0(int arg0, int arg1) {
             value = lbl_80562BF4;
             fn_801331C4(4, (int *)lbl_803394FC, &value);
             newValue = value;
-            {
-                void* object = lbl_8055E9F0;
-                if (newValue != *(float*)((char*)object + 8)) {
-                    *((unsigned char*)object + 0x4D) = 1;
-                    *(float*)((char*)object + 8) = newValue;
-                }
+            object = lbl_8055E9F0;
+            if (newValue != *(float*)((char*)object + 8)) {
+                *((unsigned char*)object + 0x4D) = 1;
+                *(float*)((char*)object + 8) = newValue;
             }
-            {
-                void* object = lbl_8055E9F0;
-                *((unsigned char*)object + 0x49) = 1;
-                *((unsigned char*)object + 0x4B) = 0;
-                *((unsigned char*)object + 0x4A) = 0;
-            }
+            object = lbl_8055E9F0;
+            *((unsigned char*)object + 0x49) = 1;
+            *((unsigned char*)object + 0x4B) = 0;
+            *((unsigned char*)object + 0x4A) = 0;
         }
     }
 }
@@ -215,7 +212,6 @@ int fn_801DF110(void) {
 
 int fn_801DF238(int arg0) {
     extern int fn_801769F8(void);
-    extern int fn_801DE9F0(int, int);
     extern void fn_801DEB10(void);
     extern void fn_800121A4(void);
     extern void fn_801331C4(int, int *, float *);
