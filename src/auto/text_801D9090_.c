@@ -237,33 +237,28 @@ struct Node1D94DC {
 };
 #pragma use_lmw_stmw off
 extern "C" int fn_801D94DC(void *head, void *list, const char *name, int object) {
+    Node1D94DC *node;
+    DtbItem801D94DC *item;
     int index = 0;
-    void *item;
-    void *found;
-    void *node;
-    void *obj = (void *)object;
-    item = ((void *(*)(void*, int))(*(void***)list)[0x60 / 4])(list, index);
-    while (item != 0) {
-        const char *text = ((const char *(*)(void*))(*(void***)item)[2])(item);
-        if (strcmp(text, name) == 0) {
-            node = fn_801284F8(0x10, name);
+    const char *found;
+    while ((item = (DtbItem801D94DC *)((DtbManager801D9394 *)list)->getAt(index)) != 0) {
+        if (strcmp(item->getName(), name) == 0) {
+            node = (Node1D94DC *)fn_801284F8(0x10, name);
             if (node != 0) {
-                *(float*)((char*)node + 0) = ((float(*)(void*, const float*))(*(void***)item)[0x24 / 4])(item, &lbl_8055AD68);
-                *(float*)((char*)node + 4) = ((float(*)(void*, const float*))(*(void***)item)[0x24 / 4])(item, &lbl_8055AD70);
-                found = ((void*(*)(void*, const char*))(*(void***)item)[0x14 / 4])(item, lbl_803391A8);
-                if (((int(*)(void*, void*))(*(void***)obj)[0x10 / 4])(obj, found) == 0)
-                    fn_802E317C(lbl_803391B4, (const char *)found);
-                found = ((void*(*)(void*, void*))(*(void***)obj)[2])(obj, found);
-                *(int*)((char*)node + 8) = ((int(*)(void*, const int*))(*(void***)found)[0x1C / 4])(found, &lbl_8055AD78);
-                *(void**)((char*)node + 0xC) = 0;
+                node->field0 = item->getFloat(&lbl_8055AD68);
+                node->field4 = item->getFloat(&lbl_8055AD70);
+                found = (const char *)item->find(lbl_803391A8);
+                if (((DtbObject801D94DC *)object)->check((void *)found) == 0) {
+                    fn_802E317C(lbl_803391B4, found);
+                }
+                node->field8 = ((DtbObject801D94DC *)object)->get((void *)found)->getInt(&lbl_8055AD78);
+                node->next = 0;
             }
-            *(void**)((char*)node + 0xC) = *(void**)head;
-            *(void**)head = node;
+            node->next = *(Node1D94DC **)head;
+            *(Node1D94DC **)head = node;
         }
         index++;
-        item = ((void *(*)(void*, int))(*(void***)list)[0x60 / 4])(list, index);
     }
-    return 0;
 }
 #pragma use_lmw_stmw on
 #pragma cplusplus reset
@@ -405,34 +400,33 @@ int fn_801D9B28(void *arg0, int arg1) {
 
 void fn_801D9B58(void) {
     float workspace[4];
-    void *child;
-    void *node;
-    int markOffset;
-    void *markNode;
+    register void *node;
+    register void *markNode;
+    register int markOffset;
+    register int count;
+    register float *sampleDest;
     float threshold;
-    int count;
-    float *weight;
-    float *sampleDest;
-    int maximum;
+    void *child;
 
     fn_802C7040(lbl_8055E960);
     markNode = lbl_8055E96C;
-    do {
+    while (markNode != 0) {
         if (*(float *)((char *)markNode + 0x20) > lbl_80562B2C) {
             int markIndex = 0;
             markOffset = 0;
             do {
                 ++markIndex;
-                *(unsigned char *)((char *)*(void **)((char *)*(void **)((char *)markNode + 0x28) + markOffset) + 0x30) = 1;
+                child = *(void **)((char *)*(void **)((char *)markNode + 0x28) + markOffset);
+                *(unsigned char *)((char *)child + 0x30) = 1;
                 markOffset += 4;
             } while (markIndex < *(int *)((char *)markNode + 0x2C));
         }
         markNode = *(void **)((char *)markNode + 0x54);
-    } while (markNode != 0);
+    }
 
     node = lbl_8055E964;
     threshold = lbl_80562B30;
-    do {
+    while (node != 0) {
         if (*(unsigned char *)((char *)node + 0x30) != 0) {
             int sampleIndex = 0;
             int sampleOffset = 0;
@@ -451,7 +445,6 @@ void fn_801D9B58(void) {
                     maximum = threshold;
                 fn_802C9900(maximum);
             }
-
             fn_802C7040(*(int *)*(void **)((char *)node + 0x14));
             {
                 int playIndex = 1;
@@ -467,7 +460,7 @@ void fn_801D9B58(void) {
             *(unsigned char *)((char *)node + 0x30) = 0;
         }
         node = *(void **)((char *)node + 0x34);
-    } while (node != 0);
+    }
     fn_802C9904();
 }
 
