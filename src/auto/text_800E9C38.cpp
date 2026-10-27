@@ -4,6 +4,17 @@
 typedef signed char s8;
 typedef signed int s32;
 typedef float f32;
+
+extern "C" void fn_800EB3AC(void *);
+extern "C" void fn_800EC890(void *);
+extern float lbl_80560FC0;
+extern "C" unsigned char lbl_8055DE28;
+extern "C" char lbl_80412778[];
+extern "C" char lbl_8040EC78[];
+extern "C" char lbl_80322B0C[];
+extern "C" char lbl_80322AE4[];
+extern "C" char lbl_80322AD8[];
+extern "C" char lbl_80322AB4[];
 extern int SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *, int);
 extern "C" int fn_800EC8B4(void *);
 extern "C" int fn_800EB41C(void *);
@@ -40,13 +51,13 @@ extern "C" int __dt__Q46nw4hbm3snd6detail7ChannelFv(void* arg0, int arg1) {
     if (arg0 != 0) {
         if ((signed char)lbl_8055DE28 == 0) {
             void* manager = lbl_80412778;
-            *(void**)((char*)manager + 4) = 0;
+            *(volatile void**)((char*)manager + 4) = 0;
             void* head = (char*)manager + 4;
             void* tail = (char*)manager + 0x10;
-            *(void**)((char*)manager + 8) = 0;
-            *(void**)((char*)manager + 0x10) = 0;
-            *(void**)((char*)manager + 0x14) = 0;
-            *(int*)lbl_80412778 = 0;
+            *(volatile void**)((char*)manager + 8) = 0;
+            *(volatile void**)((char*)manager + 0x10) = 0;
+            *(volatile void**)((char*)manager + 0x14) = 0;
+            *(volatile int*)lbl_80412778 = 0;
             *(void**)((char*)manager + 4) = head;
             *(void**)((char*)manager + 8) = head;
             *(int*)((char*)manager + 0xC) = 0;
@@ -55,11 +66,12 @@ extern "C" int __dt__Q46nw4hbm3snd6detail7ChannelFv(void* arg0, int arg1) {
             __register_global_object(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78, manager, tail, head);
             lbl_8055DE28 = 1;
         }
+        void* list = lbl_80412778;
         if (arg0 == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AA0, 0x54, lbl_80322A78);
         if (arg0 == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8, 0x233, lbl_80322AB4);
-        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(lbl_80412778, arg0);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(list, arg0);
         if (arg1 > 0)
             fn_80128668(arg0);
     }
@@ -223,34 +235,59 @@ extern "C" char lbl_803229AC[];
 extern "C" char lbl_803229D0[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...) __attribute__((noreturn));
 extern "C" void Update__Q46nw4hbm3snd6detail7ChannelFb(void *, int);
+#pragma use_lmw_stmw off
 extern "C" void UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv(void) {
-    char *manager = lbl_80412778;
-    void *head = manager + 4;
-    void *tail = manager + 0x10;
+    char *manager;
+    int zero = 0;
+    int one = 1;
+    void *head;
+    void *end;
     void *node;
+    void *current;
     if ((signed char)lbl_8055DE28 == 0) {
-        *(void **)(manager + 4) = 0;
-        *(void **)(manager + 8) = 0;
-        *(void **)(manager + 0x10) = 0;
-        *(void **)(manager + 0x14) = 0;
-        *(int *)manager = 0;
-        *(void **)(manager + 4) = head;
-        *(void **)(manager + 8) = head;
-        *(int *)(manager + 0xC) = 0;
-        *(void **)(manager + 0x10) = tail;
-        *(void **)(manager + 0x14) = tail;
-        __register_global_object(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78, manager, tail, head);
-        lbl_8055DE28 = 1;
+        manager = lbl_80412778;
+        head = manager + 0x10;
+        *(void **)(manager + 4) = (void *)zero;
+        void *initTail = manager + 4;
+        *(void **)(manager + 8) = (void *)zero;
+        *(void **)(manager + 0x10) = (void *)zero;
+        *(void **)(manager + 0x14) = (void *)zero;
+        *(int *)lbl_80412778 = zero;
+        *(void **)(manager + 4) = initTail;
+        *(void **)(manager + 8) = initTail;
+        *(int *)(manager + 0xC) = zero;
+        *(void **)(manager + 0x10) = head;
+        *(void **)(manager + 0x14) = head;
+        ((void (*)(void *, void *, void *))__register_global_object)(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78);
+        lbl_8055DE28 = one;
     }
+    manager = lbl_80412778;
+    end = manager + 0x10;
     node = *(void **)(manager + 0x10);
-    while (node != tail) {
-        void *current = node;
-        node = *(void **)node;
-        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803229D0, 0x23D, lbl_803229AC);
+    do {
+        current = node;
+        node = *reinterpret_cast<void **>(node);
+        if (current == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803229D0, 0x23D, lbl_803229AC);
         Update__Q46nw4hbm3snd6detail7ChannelFb(current, 1);
-    }
+        if ((signed char)lbl_8055DE28 == 0) {
+            head = manager + 4;
+            *(void **)(manager + 4) = (void *)zero;
+            void *initTail = manager + 0x10;
+            *(void **)(manager + 8) = (void *)zero;
+            *(void **)(manager + 0x10) = (void *)zero;
+            *(void **)(manager + 0x14) = (void *)zero;
+            *(int *)lbl_80412778 = zero;
+            *(void **)(manager + 4) = head;
+            *(void **)(manager + 8) = head;
+            *(int *)(manager + 0xC) = zero;
+            *(void **)(manager + 0x10) = initTail;
+            *(void **)(manager + 0x14) = initTail;
+            ((void (*)(void *, void *, void *, void *, void *))__register_global_object)(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78, initTail, head);
+            lbl_8055DE28 = one;
+        }
+    } while (node != end);
 }
-
 extern void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, int);
 extern void *fn_80128668(void *);
 extern "C" {
