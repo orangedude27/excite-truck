@@ -68,6 +68,7 @@ typedef int (*Fn80160850NamedCall)(void *, const char *);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
+/* Virtual slots and the scalar key address reproduce the target lookup sequence. */
 extern "C" void fn_80160850(void) {
     class Audio {
     public:
