@@ -242,3 +242,5 @@ void* fn_802B59A4(unsigned int index) {
 void* fn_802B59CC(void) {
     return lbl_8055F9E8;
 }
+#pragma cplusplus on
+#pragma use_lmw_stmw off
