@@ -10,10 +10,6 @@ class Layout {
 public:
     s32 Build(const void *, ResourceAccessor *);
 };
-class GroupContainer {
-public:
-    void* FindGroupByName(const char*);
-};
 }}
 extern "C" f32 lbl_80560EA8;
 extern "C" void *lbl_8032012C;
