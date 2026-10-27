@@ -47,13 +47,13 @@ extern "C" int fn_8013990C(void *arg0) {
 }
 
 #pragma dont_inline fn_8013990C
-extern void *fn_801284E8(void *, int);
-extern void fn_801286A0(void *, int);
-extern int sscanf(const char *, const char *, ...);
-extern int lbl_8032C108;
-extern const char lbl_8032C064[];
-extern const char lbl_8032C090[];
-extern const char lbl_80559C48[];
+extern "C" void *fn_801284E8(void *, int);
+extern "C" void fn_801286A0(void *, int);
+extern "C" int sscanf(const char *, const char *, ...);
+extern "C" __declspec(section ".data") int lbl_8032C108;
+extern "C" const char lbl_8032C064[];
+extern "C" const char lbl_8032C090[];
+extern "C" __declspec(section ".sdata") const char lbl_80559C48[];
 extern "C" void *fn_801399FC(void *arg0) {
     char buffer[12];
     int capacity;
