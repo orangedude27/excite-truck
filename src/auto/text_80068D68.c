@@ -8262,19 +8262,17 @@ BOOLEAN btsnd_hcic_set_host_buf_size(UINT16 acl_len, UINT8 sco_len, UINT16 acl_n
 
 s32 btsnd_hcic_write_policy_set_80085668(u16 arg0, u16 arg1) {
     u8 *buf = GKI_getpoolbuf(2);
-    register u16 first = arg0;
-    register u16 second = arg1;
-    if (buf == NULL) return 0;
+    if (buf == 0) return 0;
     *(u16 *)(buf + 2) = 7;
     *(u16 *)(buf + 4) = 0;
     buf[8] = 0x37;
-    buf[9] = 0xC;
+    buf[9] = 0x0C;
     buf[10] = 4;
-    buf[11] = first;
-    buf[12] = first >> 8;
-    buf[13] = second;
-    buf[14] = second >> 8;
-    btu_hcif_send_cmd(first >> 8, 4, 0xC, 0x37);
+    buf[11] = arg0;
+    buf[12] = arg0 >> 8;
+    buf[13] = arg1;
+    buf[14] = arg1 >> 8;
+    btu_hcif_send_cmd(buf);
     return 1;
 }
 
