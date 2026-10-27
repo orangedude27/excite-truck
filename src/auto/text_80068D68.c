@@ -13029,6 +13029,18 @@ void rfc_port_closed(void *arg0) {
     port_rfc_closed(arg0, 0x13);
 }
 
+extern char lbl_80319F28[];
+void rfc_inc_credit(struct t_port_info *p_port, u8 credit) {
+    u16 newCredit;
+    if ((*(u8 **)((u8 *)p_port + 0x6C))[0x72] != 2)
+        return;
+    newCredit = (*(u16 *)((u8 *)p_port + 0x98) += credit);
+    if (lbl_803C4828[0x414] >= 4)
+        fn_80070954(0x90003, lbl_80319F28, newCredit);
+    if (*((u8 *)p_port + 0x24) == 1)
+        PORT_FlowInd(*(void **)((u8 *)p_port + 0x6C), *((u8 *)p_port + 0xD), 1);
+}
+
 void fn_8009578C(void *arg0) {
     void *port = *(void **)((u8 *)arg0 + 0x6c);
     u16 credit;
