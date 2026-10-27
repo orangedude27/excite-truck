@@ -2184,8 +2184,8 @@ extern void fn_80082548();
 extern u8 fn_80073B30(void);
 void fn_800709FC(void) {
     u64 time;
-    u32 time_hi;
     u32 time_lo;
+    u32 time_hi;
 
     lbl_8055DC74 = 0;
     GKI_init();
@@ -2205,20 +2205,16 @@ wait_check:
 
     fn_80070B54();
     time = __OSGetSystemTime();
-    time_hi = (u32)(time >> 32);
     time_lo = (u32)time;
+    time_hi = (u32)(time >> 32);
     OSCreateAlarm(&lbl_803C0A20);
     ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(void)))OSSetPeriodicAlarm)(
         &lbl_803C0A20, 0x80000000, time_hi, time_lo, 0,
         ((*(u32 *)0x800000F8 >> 2) / 500) & 0x07FFFFFE, fn_800709E4);
     ((void (*)(s32))fn_8006EACC)(0);
 
-    goto poll_check;
-poll_delay:
-    ((void (*)(s32))fn_8006EAD8)(0x7D0);
-poll_check:
-    if (fn_80073B30() == 0) {
-        goto poll_delay;
+    while (fn_80073B30() == 0) {
+        ((void (*)(s32))fn_8006EAD8)(0x7D0);
     }
 }
 
@@ -3175,20 +3171,33 @@ void bta_dm_pm_btm_cback(void *arg0, s8 arg1, s16 arg2, s8 arg3) {
 }
 
 void bta_dm_pm_timer_cback(void *arg) {
-    u32 idx = 0;
-    if (lbl_803C0C14[0xB6] != 0 && arg == lbl_803C0C14 + 0x98) lbl_803C0C14[0xB6] = 0;
-    else { idx = 1;
-        if (lbl_803C0C14[0xD6] != 0 && arg == lbl_803C0C14 + 0xB8) lbl_803C0C14[0xD6] = 0;
-        else { idx = 2;
-            if (lbl_803C0C14[0xF6] != 0 && arg == lbl_803C0C14 + 0xD8) lbl_803C0C14[0xF6] = 0;
-            else idx = 3;
-        }
+    u8 *base = lbl_803C0C14;
+    register void *buf;
+    register u8 idx = 0;
+
+    if (base[0xB6] != 0 && (void *)(base + 0x98) == arg) {
+        base[0xB6] = 0;
+        goto done;
     }
+    idx = 1;
+    if (base[0xD6] != 0 && (void *)(base + 0xB8) == arg) {
+        base[0xD6] = 0;
+        goto done;
+    }
+    idx = 2;
+    if (base[0xF6] != 0 && (void *)(base + 0xD8) == arg) {
+        base[0xF6] = 0;
+        goto done;
+    }
+    idx = 3;
+
+done:
     if (idx != 3) {
-        void *buf = GKI_getbuf(0xE);
+        buf = GKI_getbuf(0xE);
         if (buf != 0) {
             *(u16 *)buf = 0x10A;
-            fn_80070FA4((u8 *)buf + 8, lbl_803C0C14 + 0xB0 + (idx << 5));
+            fn_80070FA4((u8 *)buf + 8,
+                         lbl_803C0C14 + 0xB0 + ((u32)idx << 5));
             fn_80071450(buf);
         }
     }
@@ -9363,41 +9372,22 @@ BOOLEAN btsnd_hcic_set_afh_channels(u8 first, u8 last) {
 }
 
 void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, void *p_cmd_cplt_cback) {
+    BT_HDR *header = (BT_HDR *)buffer;
     u8 *p = (u8 *)buffer;
-    u8 *pp = p + 8;
-    u16 cmd = 0xFC00 | opcode;
-    *(u16 *)(p + 2) = 3 + len;
-    *(u16 *)(p + 4) = 0;
-    *(void **)pp = p_cmd_cplt_cback;
-    pp += 4;
-    *pp = (u8)cmd;
-    pp[1] = (u8)(cmd >> 8);
-    pp[2] = len;
-    pp += 3;
-    if (len > 0) {
-        if (len > 8) {
-            if (len < 8 || len > 0x7FFFFFFE) {
-                ;
-            } else {
-                u8 blocks = (len - 8 + 7) >> 3;
-                u8 *src = p_data;
-                u8 i;
-                u8 j;
-                for (i = 0; i < blocks; i++) {
-                    *pp = *src;
-                    src++;
-                    for (j = 1; j < 8; j++) pp[j] = *src++;
-                    pp += 8;
-                }
-                for (i = 0; i * 8 < len - 8; i++) *pp++ = *src++;
-            }
-        } else {
-            u8 i;
-            u8 *src = p_data;
-            for (i = 0; i < len; i++) *pp++ = *src++;
-        }
-    }
-    btu_hcif_send_cmd(p);
+    u8 *dst;
+    u16 cmd = 0xfc00 | opcode;
+
+    header->len = len + 3;
+    dst = p + 0xb;
+    header->offset = 0;
+    p[8] = (u8)cmd;
+    p[9] = (u8)(cmd >> 8);
+    p[10] = len;
+
+    if (len > 0)
+        memcpy(dst, p_data, len);
+
+    btu_hcif_send_cmd(buffer);
 }
 
 extern void hidd_proc_repage_timeout(void);
@@ -12965,6 +12955,44 @@ void PORT_FlowInd(void *p_mcb, s32 dlci, s32 enable_data) {
     }
 }
 
+extern char lbl_803194FC[];
+extern void fn_800939CC(void *, u8, void *);
+extern int port_flow_control_user(void *);
+u32 port_rfc_send_tx_data(void *port) {
+    u8 *p = (u8 *)port;
+    u32 events = 0;
+    void *packet;
+
+    if (*(s32 *)(p + 0x28) != 0) {
+        for (;;) {
+            packet = GKI_dequeue((BUFFER_Q *)(p + 0x18));
+            if (packet != 0) {
+                if (lbl_803C4828[0x414] >= 4)
+                    fn_8007093C(0x90003, lbl_803194FC);
+
+                *(s32 *)(p + 0x28) -= *(u16 *)((u8 *)packet + 2);
+                fn_800939CC(*(void **)(p + 0x6c), p[0xd], packet);
+                events |= 0x4000;
+                if (*(s32 *)(p + 0x28) != 0)
+                    continue;
+                events |= 4;
+                goto flow;
+            }
+            events |= 4;
+            goto flow;
+        }
+    }
+
+flow:
+    if (p[0x24] == 0) {
+        void *mcb = *(void **)(p + 0x6c);
+        if (mcb != 0 && *((u8 *)mcb + 0x71) == 0)
+            events |= port_flow_control_user(port);
+    }
+
+    return events & *(u32 *)(p + 0x88);
+}
+
 extern u8 lbl_80319514[],lbl_80319540[];
 void port_rfc_closed(void *arg0,s32 arg1) {
  void *mcb=*(void **)((u8 *)arg0+0x6C); s32 signals=0;
@@ -16393,6 +16421,48 @@ static void USB_ERR(const char *fmt, ...) {
         vprintf(fmt, list);
         va_end(list);
     }
+}
+
+s32 IUSB_OpenLib(void) {
+    extern s32 lbl_805590A0;
+    extern s32 lbl_8055DC88;
+    extern u32 lbl_8055DC8C;
+    union {
+        void *pointer;
+        s32 value;
+    } currentHeap;
+    register char *base = lbl_8031A620;
+    s32 result = 0;
+    s32 interruptState;
+
+    interruptState = OSDisableInterrupts();
+    currentHeap.pointer = (void *)lbl_805590A0;
+    if (currentHeap.value != -1) {
+        USB_LOG(base + 0xC);
+        goto done;
+    }
+
+    if (lbl_8055DC88 == 0) {
+        lbl_8055DC88 = (s32)IPCGetBufferLo();
+        USB_LOG(base + 0x3C, 0x80, lbl_8055DC88,
+                (lbl_8055DC8C = (u32)IPCGetBufferHi()));
+
+        if ((u32)lbl_8055DC88 + 0x1000 > lbl_8055DC8C) {
+            USB_ERR(base + 0x5C);
+            result = -0x16;
+            goto done;
+        }
+        IPCSetBufferLo((void *)((u32)lbl_8055DC88 + 0x1000));
+    }
+
+    if ((lbl_805590A0 = iosCreateHeap((void *)lbl_8055DC88, 0x1000)) < 0) {
+        USB_ERR(base + 0x74);
+        result = -0x16;
+    }
+
+done:
+    OSRestoreInterrupts(interruptState);
+    return result;
 }
 
 u32 fn_8009B0E0(void) {
