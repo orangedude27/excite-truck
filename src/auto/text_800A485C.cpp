@@ -96,7 +96,7 @@ extern "C" void OSUnlockMutex(void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
-extern void* lbl_804077C0;
+extern "C" char lbl_804077C0[];
 extern "C" s32 fn_800A53B4(void *);
 extern "C" const char lbl_8031F2C8[];
 extern "C" const char lbl_8031F2E4[];
