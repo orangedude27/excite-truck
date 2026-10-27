@@ -1376,6 +1376,47 @@ extern "C" s32 VFiPFCACHE_SearchForFreePage(void *arg0, void **arg1) {
     return 0;
 }
 
+extern "C" s32 fn_800A7B34(void *arg0, void *arg1) {
+    u32 out;
+    u8 shift;
+    u32 base;
+    u32 expected;
+    s32 result;
+    u32 pageCount;
+    u32 blockEnd;
+    s32 blockLength;
+
+    if (arg1 != 0) {
+        if ((*(u16 *)arg1 & 2) != 0) {
+            base = *(u32 *)((u8 *)arg1 + 0x18);
+            if (base != 0xFFFFFFFFU) {
+                blockLength = *(s32 *)((u8 *)arg1 + 0x0C);
+                if (blockLength == 0) {
+                    expected = *(u32 *)((u8 *)arg1 + 0x14);
+                    result = fn_800A58E0(arg0, *(s32 *)((u8 *)arg1 + 4), (s32)base, (s32)expected, (s32)&out);
+                } else {
+                    shift = *(u8 *)((u8 *)arg0 + 0x20);
+                    pageCount = (*(u32 *)((u8 *)arg1 + 0x10) >> shift) - ((u32)blockLength >> shift) + 1;
+                    blockEnd = base + (((u32)blockLength - *(u32 *)((u8 *)arg1 + 4)) >> shift);
+                    result = fn_800A58E0(arg0, blockLength, (s32)blockEnd, (s32)pageCount, (s32)&out);
+                    expected = pageCount;
+                }
+                if (result != 0) {
+                    return result;
+                }
+                if (out != expected) {
+                    return 0x11;
+                }
+                u32 flags = *(u16 *)arg1;
+                *(u32 *)((u8 *)arg1 + 0x0C) = 0;
+                *(u32 *)((u8 *)arg1 + 0x10) = 0;
+                *(u16 *)arg1 = (u16)(flags & 0xFFFFFFFD);
+            }
+        }
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800A7B34(void *, void *);
 extern "C" s32 fn_800A8504(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 temp_r0;
@@ -17896,52 +17937,66 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
 }
 #pragma pop
 extern "C" void VFiPFSTR_ToUpperNStr(s32 arg0, u16 arg1, u8 *arg2) {
-    register u8 *var_r30 = arg2;
-    register u16 var_r29 = arg1;
-    register u8 *var_r31;
+    u8 *var_r31;
+    u8 *var_r30;
+    s32 var_r29;
+    u32 var_r3;
+    u8 *var_r4;
+    s32 var_r0;
+    u32 temp_r3;
+    s32 signed_temp;
 
+    var_r30 = arg2;
+    var_r29 = (u16)arg1;
     if (*(u32 *)((u8 *)arg0 + 0xC) == 1U) {
         var_r31 = *(u8 **)arg0;
-    loop_single:
-        if (var_r29 == 0) {
-            goto done_single;
+        goto single_check;
+    single_body:
+        *var_r30 = (u8)fn_800A485C((s32)(s8)temp_r3);
+        var_r30 += 1;
+        var_r31 += 1;
+        var_r29 -= 1;
+        goto single_check;
+    single_check:
+        if ((u16)var_r29 == 0) {
+            goto single_done;
         }
-        if (*(s8 *)var_r31 == 0) {
-            goto done_single;
+        temp_r3 = *var_r31;
+        signed_temp = (s8)temp_r3;
+        if (signed_temp != 0) {
+            goto single_body;
+        } else {
+            goto single_done;
         }
-        *var_r30 = (u8)fn_800A485C((s32)*(s8 *)var_r31);
-        var_r30++;
-        var_r31++;
-        var_r29--;
-        goto loop_single;
-    done_single:
+    single_done:
+        ;
+    } else {
+        var_r4 = *(u8 **)arg0;
+        goto wide_check;
+    wide_body:
+        var_r0 = 0;
+        if ((var_r3 >= 0x61U) && (var_r3 <= 0x7AU)) {
+            var_r0 = 1;
+        }
+        if (var_r0 != 0) {
+            var_r3 -= 0x20;
+        }
+        var_r30[0] = (u8)var_r3;
+        var_r4 += 2;
+        var_r29 -= 1;
+        var_r30[1] = (u8)(var_r3 >> 8);
+        var_r30 += 2;
+        goto wide_check;
+    wide_check:
+        if ((u16)var_r29 == 0) {
+            goto wide_done;
+        }
+        var_r3 = *(u16 *)var_r4;
+        if (var_r3 != 0) {
+            goto wide_body;
+        }
+    wide_done:
         *var_r30 = 0;
-        return;
     }
-
-    var_r31 = *(u8 **)((u8 *)arg0 + 4);
-loop_wide:
-    if (var_r29 == 0) {
-        goto done_wide;
-    }
-    {
-        u16 ch = *(u16 *)var_r31;
-        if (ch == 0) {
-            var_r30[0] = 0;
-            var_r30[1] = 0;
-            return;
-        }
-        if (ch >= 0x61U && ch <= 0x7AU) {
-            ch -= 0x20;
-        }
-        var_r30[0] = (u8)ch;
-        var_r30[1] = (u8)(ch >> 8);
-    }
-    var_r31 += 2;
-    var_r30 += 2;
-    var_r29--;
-    goto loop_wide;
-done_wide:
-    var_r30[0] = 0;
-    var_r30[1] = 0;
+    *var_r30 = 0;
 }
