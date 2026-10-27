@@ -7,6 +7,10 @@ extern int fn_802B5510(const char *);
 extern int fn_8013184C(void);
 extern const char lbl_8034A588[];
 extern int stricmp(const char *, const char *);
+#pragma cplusplus on
+extern "C" void fn_80131810(int);
+extern "C" void fn_802E317C(const char *, ...);
+#pragma cplusplus off
 extern const char lbl_8034A510[];
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
@@ -61,6 +65,8 @@ extern void fn_80131810(int);
 extern const char lbl_8055CE18[];
 extern const char lbl_8034A53C[];
 extern void fn_802E317C(const char *, ...);
+extern "C" void fn_80131810(int);
+extern "C" void fn_802E317C(const char *, ...);
 extern "C" int fn_802B5510(const char *arg0) {
     class Manager {
     public:
