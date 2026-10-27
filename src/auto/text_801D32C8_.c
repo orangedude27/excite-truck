@@ -503,6 +503,7 @@ void fn_801D4598(void *arg0, float farg0) {
         fn_8017A580(arg0);
     } else fn_801D411C(arg0);
 }
+#pragma pop
 
 int fn_801D470C(void) { return 0; }
 
