@@ -16,7 +16,7 @@ extern void fn_802C744C(s32 arg0, void *out);
 extern int sscanf(const char *, const char *, ...);
 extern int stricmp(const char *, const char *);
 extern char *strcpy(char *, const char *);
-extern const char lbl_8055AEB4[];
+extern char lbl_8055AEB4[];
 extern const char lbl_8055AEB0[];
 
 void fn_8012A260(void*, unsigned int);
@@ -49,39 +49,42 @@ int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
 
 #pragma push
 #pragma small_data on
+extern const char lbl_8055AEB0[3];
 int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
-    void *name;
     void *value;
-    char buffer[64];
-    int index;
+    void *name;
+    int buffer[16];
     BOOL hasSpace;
+    int index;
+    register int zero;
 
-    name = 0;
-    value = 0;
+    zero = 0;
+    value = (void *)zero;
+    name = (void *)zero;
     hasSpace = strchr(arg1, ' ') != 0;
     index = 0;
     while (fn_801E2C1C(arg0, index, &name, &value) != 0) {
-        buffer[0] = 0;
-        buffer[1] = 0;
-        buffer[2] = 0;
-        buffer[3] = 0;
-        buffer[4] = 0;
-        buffer[5] = 0;
-        buffer[6] = 0;
-        buffer[7] = 0;
-        buffer[8] = 0;
-        buffer[9] = 0;
-        buffer[10] = 0;
-        buffer[11] = 0;
-        buffer[12] = 0;
-        buffer[13] = 0;
-        buffer[14] = 0;
-        buffer[15] = 0;
+        buffer[0] = zero;
+        buffer[1] = zero;
+        buffer[2] = zero;
+        buffer[3] = zero;
+        buffer[4] = zero;
+        buffer[5] = zero;
+        buffer[6] = zero;
+        buffer[7] = zero;
+        buffer[8] = zero;
+        buffer[9] = zero;
+        buffer[10] = zero;
+        buffer[11] = zero;
+        buffer[12] = zero;
+        buffer[13] = zero;
+        buffer[14] = zero;
+        buffer[15] = zero;
         if (!hasSpace)
-            sscanf(name, lbl_8055AEB0, buffer);
+            sscanf((const char *)name, lbl_8055AEB0, (char *)buffer);
         else
-            strcpy(buffer, name);
-        if (stricmp(buffer, arg1) == 0) {
+            strcpy((char *)buffer, (const char *)name);
+        if (stricmp((char *)buffer, arg1) == 0) {
             *arg2 = value;
             return 1;
         }
@@ -90,6 +93,58 @@ int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
     *arg2 = 0;
     return 0;
 }
+
+#pragma push
+#pragma small_data on
+s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
+    struct Group {
+        int itemCount;
+        int magic;
+    };
+    struct Archive {
+        char pad[0x10];
+        int groupCount;
+        int groups;
+    } *archive;
+    struct Group *group;
+    char *item;
+    int name[8];
+    int valueBuf[8];
+    int groupIndex;
+    int groupOffset;
+    int index;
+
+    archive = (struct Archive *)fn_802C6C34();
+    groupIndex = 0;
+    groupOffset = 0;
+    while (groupIndex < archive->groupCount) {
+        group = (struct Group *)(archive->groups + groupOffset);
+        if (group->magic == 0x4D524A54) {
+            item = (char *)group + 0xC;
+            index = 0;
+            while (index < group->itemCount) {
+                name[0] = 0; name[1] = 0; name[2] = 0; name[3] = 0;
+                name[4] = 0; name[5] = 0; name[6] = 0; name[7] = 0;
+                valueBuf[0] = 0; valueBuf[1] = 0; valueBuf[2] = 0; valueBuf[3] = 0;
+                valueBuf[4] = 0; valueBuf[5] = 0; valueBuf[6] = 0; valueBuf[7] = 0;
+                if (sscanf(item, lbl_8055AEB4, name, valueBuf) >= 1 &&
+                    stricmp((const char *)name, (const char *)arg0) == 0) {
+                    if (arg1 != 0) {
+                        strcpy((char *)arg1, (char *)valueBuf);
+                    }
+                    return (s32)group + index * 0x50 + 0xC;
+                }
+                item += 0x50;
+                index++;
+            }
+        }
+        groupOffset += 4;
+        groupIndex++;
+    }
+    return 0;
+}
+#pragma pop
+
 #pragma pop
 void fn_801E2F00(void) {
     void *p = fn_801284F8(0x20, lbl_803398D8);
@@ -211,16 +266,16 @@ void fn_801E3488(void *arg0, void *arg1) {
     ((void (*)(void *, void *, f32 *))fn_801E3440)(arg0, arg1, sp);
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801E34E4(s32 *arg0, s32 arg1) {
     s32 sp8[12];
-    s32 sentinel = *arg0;
+    register s32 sentinel = *arg0;
     if (sentinel != -1) {
         fn_801E3284(&sp8[0], arg0, arg1);
         fn_802C744C(*arg0, &sp8[0]);
     }
 }
-#pragma scheduling default
+#pragma scheduling on
 s32 fn_801E3534(s32 *arg0) {
     return *arg0;
 }
