@@ -2,7 +2,7 @@
 extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
 extern f32 fn_80129DC4(s32, f32, f32);
 extern f64 cos(void);
-extern f32 sin(f32);
+extern f64 sin(f32);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
 extern s8 lbl_8055F308;
