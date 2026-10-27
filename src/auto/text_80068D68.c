@@ -10231,6 +10231,28 @@ BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT
  return 1;
 }
 
+BOOLEAN L2CA_ConfigRsp(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
+    extern char lbl_80317FC4[];
+    extern char lbl_80317FF0[];
+    void *p_ccb;
+
+    if (lbl_803C4040[0] >= 3)
+        fn_8007096C(0x80002, lbl_80317FC4, cid, p_cfg->result);
+
+    p_ccb = l2cu_find_ccb_by_cid(NULL, cid);
+    if (p_ccb == NULL) {
+        if (lbl_803C4040[0] >= 2)
+            fn_80070954(0x80001, lbl_80317FF0, cid);
+        return FALSE;
+    }
+
+    if (p_cfg->result == 0)
+        fn_80089E40(p_ccb, 0x18, p_cfg);
+    else
+        fn_80089E40(p_ccb, 0x19, p_cfg);
+    return TRUE;
+}
+
 BOOLEAN L2CA_DisconnectReq(UINT16 cid) {
     void *ccb;
     if (lbl_803C4040[0] >= 3) {
@@ -12104,7 +12126,7 @@ void l2cu_create_conn_after_switch(void *arg0) {
 
     temp_r4 = *((UINT8 *)fn_8007A3A4());
     *(UINT32 *)((UINT8 *)arg0 + 4) = 3;
-    temp_r3 = BTM_InqDbRead((UINT8 *)arg0 + 0x2A);
+    temp_r3 = BTM_InqDbRead(*((BD_ADDR *)&((UINT8 *)arg0)[0x2A]));
     if (temp_r3 != NULL) {
         var_r5 = *((UINT8 *)temp_r3 + 0xB);
         var_r6 = *((UINT8 *)temp_r3 + 0xD);
