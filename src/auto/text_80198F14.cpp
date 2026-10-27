@@ -1760,6 +1760,11 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
 extern "C" void fn_801A0378(void* arg0, void* arg1) {
     extern f32 PSVECMag(const Vec*);
     extern f32 lbl_805622E8;
+    struct EffectArg {
+        u8 pad[0x24];
+        f32 radius;
+        Vec position;
+    };
     class Dispatch {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -1768,14 +1773,16 @@ extern "C" void fn_801A0378(void* arg0, void* arg1) {
         virtual void v12(); virtual void v13();
         virtual void Call(s32, void*);
     };
+    EffectArg* effect = (EffectArg*)arg1;
     *(void**)((u8*)arg0 + (*(s32*)((u8*)arg0 + 0x174) << 2) + 0x24) = arg1;
     u8* record = (u8*)arg0 + (*(s32*)((u8*)arg0 + 0x174) << 4);
-    *(f32*)(record + 0x64) = *(f32*)((u8*)arg1 + 0x28);
-    *(f32*)(record + 0x68) = *(f32*)((u8*)arg1 + 0x2C);
-    *(f32*)(record + 0x6C) = *(f32*)((u8*)arg1 + 0x30);
-    *(f32*)(record + 0x70) = *(f32*)((u8*)arg1 + 0x24);
+    *(f32*)(record + 0x64) = effect->position.x;
+    *(f32*)(record + 0x68) = effect->position.y;
+    *(f32*)(record + 0x6C) = effect->position.z;
+    *(f32*)(record + 0x70) = effect->radius;
     ((Dispatch*)*(void**)((u8*)arg0 + (*(s32*)((u8*)arg0 + 0x174) << 2) + 0x24))->Call(*(s32*)((u8*)arg0 + 0x20), record);
-    f32 value = PSVECMag((Vec*)((u8*)arg1 + 0x28)) + *(f32*)((u8*)arg1 + 0x24);
+    f32 length = PSVECMag(&effect->position);
+    f32 value = length + effect->radius;
     value = lbl_805622E8 + value;
     if (value > *(f32*)((u8*)arg0 + 0x178)) {
         *(f32*)((u8*)arg0 + 0x178) = value;
