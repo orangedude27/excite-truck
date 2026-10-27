@@ -1,6 +1,7 @@
   #include <types.h>
 #include <macros.h>
 extern "C" u8 lbl_80407560[0x18];
+extern "C" const char lbl_8031E9A0[];
 extern "C" s32 lbl_8055DD6C;
 extern "C" s32 lbl_80559248;
 extern "C" s32 *lbl_8055DD70;
