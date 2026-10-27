@@ -219,16 +219,16 @@ extern void fn_800178BC(void *, s32, s32);
 extern void fn_80016928(s32, s32);
 #pragma scheduling invalid_target
 void fn_80017DD4(s32 *arg0, s32 arg1, s32 *arg2) {
-    struct { s32 *items; s32 count; s32 capacity; s32 buf[50]; } c, b, a;
+    struct { s32 *items; s32 count; s32 capacity; s32 buf[50]; } a, b, c;
     s32 i, x, y, z;
     *(s32 *)((char *)arg0 + 0x24) = 0;
     *arg0 = 0;
     if (arg1 > 0) {
-        a.items = 0; a.count = 0; a.capacity = 50;
+        a.items = a.buf; a.count = 0; a.capacity = 50;
         fn_80017A2C(&a, (s32)arg2);
-        b.items = 0; b.count = 0; b.capacity = 50;
+        b.capacity = 50; b.items = b.buf; b.count = 0;
         fn_80017B40(&b, (s32)arg2);
-        c.items = 0; c.count = 0; c.capacity = 50;
+        c.capacity = 50; c.items = c.buf; c.count = 0;
         fn_80017C18(&c, arg2);
         for (i = 0; i < arg1; i++) {
             x = a.items[i % a.count];
@@ -238,13 +238,12 @@ void fn_80017DD4(s32 *arg0, s32 arg1, s32 *arg2) {
             if (fn_800178F0()) fn_800178F8(x, y);
             else fn_80016928(x, z);
         }
-        a.items = 0; a.count = 0; a.capacity = 0;
-        b.items = 0; b.count = 0; b.capacity = 0;
         c.items = 0; c.count = 0; c.capacity = 0;
+        b.items = 0; b.count = 0; b.capacity = 0;
+        a.items = 0; a.count = 0; a.capacity = 0;
     }
 }
-
-#pragma dont_inline off
+#pragma scheduling reset
 s32 fn_80017F40(void) {
     return fn_800167F4() == 1;
 }
