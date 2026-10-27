@@ -749,12 +749,20 @@ extern "C" void fn_801584C4(void **arg0) {
     *arg0 = (void *)&lbl_8032F350;
 }
 
-extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32* state = (s32*)&lbl_8042FD34;
-    s32 i;
-    Unk801584D4** entries = (Unk801584D4**)state[0];
-    for (i = 0; i < state[1]; i++)
-        entries[i]->call(arg0, arg1, arg2);
+extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2) {
+    struct Dummy {
+        virtual void f0(s32, s32, s32);
+    };
+    int offset;
+    int i;
+    i = 0;
+    offset = 0;
+    while (i < ((UnkFD34*)lbl_8042FD34)->count) {
+        void *obj = *(void **)((char *)((UnkFD34*)lbl_8042FD34)->items + offset);
+        ((Dummy *)obj)->f0(arg0, arg1, arg2);
+        offset += 4;
+        i++;
+    }
 }
 
 #pragma scheduling invalid_target
@@ -944,26 +952,32 @@ extern "C" void fn_80158A74(void *arg0, f32 farg0) {
 }
 
 extern "C" f32 lbl_80561754;
+#pragma scheduling off
 extern "C" void fn_80158A84(Unk801577F0 *arg0) {
-    f32 zero = lbl_80561754;
-    s32 i, offset;
-    *((u8 *)arg0 + 0x273) = 0;
-    *((u8 *)arg0 + 0x270) = 0;
-    *((u8 *)arg0 + 0x271) = 0;
-    *((u8 *)arg0 + 0x272) = 0;
-    for (i = 0, offset = 0; i < arg0->mCount; i++, offset += 0x38) {
-        *(s32 *)(arg0->mData + offset) = 0;
-        *(s32 *)(arg0->mData + offset + 4) = 0;
-        *(s32 *)(arg0->mData + offset + 8) = 0;
+    s32 zeroWord = 0;
+    f32 zero = *(volatile f32*)&lbl_80561754;
+    *((volatile u8 *)arg0 + 0x273) = (u8)zeroWord;
+    s32 i = 0;
+    s32 offset = 0;
+    *((volatile u8 *)arg0 + 0x270) = (u8)zeroWord;
+    *((volatile u8 *)arg0 + 0x271) = (u8)zeroWord;
+    *((volatile u8 *)arg0 + 0x272) = (u8)zeroWord;
+    while (i < arg0->mCount) {
+        i++;
+        *(s32 *)(arg0->mData + offset) = zeroWord;
+        *(s32 *)(arg0->mData + offset + 4) = zeroWord;
+        *(s32 *)(arg0->mData + offset + 8) = zeroWord;
         *(f32 *)(arg0->mData + offset + 0xC) = zero;
+        offset += 0x38;
     }
-    *(f32 *)((u8 *)arg0 + 0x25C) = zero;
-    *(f32 *)((u8 *)arg0 + 0x260) = zero;
-    *(f32 *)((u8 *)arg0 + 0x258) = zero;
-    *(f32 *)((u8 *)arg0 + 0x264) = zero;
+    f32 finalZero = *(volatile f32*)&lbl_80561754;
+    *(f32 *)((u8 *)arg0 + 0x25C) = finalZero;
+    *(f32 *)((u8 *)arg0 + 0x260) = finalZero;
+    *(f32 *)((u8 *)arg0 + 0x258) = finalZero;
+    *(f32 *)((u8 *)arg0 + 0x264) = finalZero;
     arg0->v31();
 }
-
+#pragma scheduling on
 extern "C" s32 fn_80158D04(void* arg0) {
     return *(s32*)((u8*)arg0 + 0xC);
 }
@@ -2546,17 +2560,32 @@ extern "C" void fn_8015E4CC(Unk801577F0V* arg0, s32 arg1, f32 arg2) {
     }
 }
 
+#pragma use_lmw_stmw off
 extern "C" void fn_8015E568(Unk801577F0V* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void Call(s32, s32, s32);
+    };
     if (arg0->m54 != 0) {
-        UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
-        s32 count = arg0->mCount;
-        for (s32 j = 0; j < count; j++) {
-            entries[j]->v16(arg1, arg2, arg3);
+        s32 offset;
+        s32 i;
+        i = 0;
+        offset = 0;
+        while (i < *(s32*)((u8*)arg0 + 8)) {
+            void* item = *(void**)((u8*)*(void**)((u8*)arg0 + 4) + offset);
+            ((Dummy*)item)->Call(arg1, arg2, arg3);
+            offset += 4;
+            i++;
         }
     }
 }
-
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw reset
 extern "C" void fn_8015E5F4(Unk801577F0V* arg0, s32 arg1) {
     class Base {
     public:
