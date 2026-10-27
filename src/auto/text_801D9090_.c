@@ -235,8 +235,7 @@ struct Node1D94DC {
     int field8;
     Node1D94DC *next;
 };
-#pragma cplusplus reset
-int fn_801D94DC(void *head, void *list, const char *name, int object) {
+extern "C" int fn_801D94DC(void *head, void *list, const char *name, int object) {
     int index = 0;
     void *item;
     void *found;
@@ -252,7 +251,7 @@ int fn_801D94DC(void *head, void *list, const char *name, int object) {
                 *(float*)((char*)node + 4) = ((float(*)(void*, const float*))(*(void***)item)[0x24 / 4])(item, &lbl_8055AD70);
                 found = ((void*(*)(void*, const char*))(*(void***)item)[0x14 / 4])(item, lbl_803391A8);
                 if (((int(*)(void*, void*))(*(void***)obj)[0x10 / 4])(obj, found) == 0)
-                    fn_802E317C(lbl_803391B4, found);
+                    fn_802E317C(lbl_803391B4, (const char *)found);
                 found = ((void*(*)(void*, void*))(*(void***)obj)[2])(obj, found);
                 *(int*)((char*)node + 8) = ((int(*)(void*, const int*))(*(void***)found)[0x1C / 4])(found, &lbl_8055AD78);
                 *(void**)((char*)node + 0xC) = 0;
@@ -265,6 +264,7 @@ int fn_801D94DC(void *head, void *list, const char *name, int object) {
     }
     return 0;
 }
+#pragma cplusplus reset
 
 void fn_801D9828(void) {
     fn_802C6CF8(lbl_8055E960);
@@ -402,31 +402,28 @@ int fn_801D9B28(void *arg0, int arg1) {
 }
 
 void fn_801D9B58(void) {
-    float workspace[8];
+    float workspace[4];
     void *child;
     void *node;
+    int markOffset;
     void *markNode;
     float threshold;
     int count;
-    int offset;
-    int i;
-    float *sampleDest;
     float *weight;
-    int one = 1;
-    float maximum;
+    float *sampleDest;
+    int maximum;
 
     fn_802C7040(lbl_8055E960);
     markNode = lbl_8055E96C;
     do {
         if (*(float *)((char *)markNode + 0x20) > lbl_80562B2C) {
-            i = 0;
-            offset = 0;
+            int markIndex = 0;
+            markOffset = 0;
             do {
-                ++i;
-                child = *(void **)((char *)*(void **)((char *)markNode + 0x28) + offset);
-                offset += 4;
-                *(unsigned char *)((char *)child + 0x30) = one;
-            } while (i < *(int *)((char *)markNode + 0x2C));
+                ++markIndex;
+                *(unsigned char *)((char *)*(void **)((char *)*(void **)((char *)markNode + 0x28) + markOffset) + 0x30) = 1;
+                markOffset += 4;
+            } while (markIndex < *(int *)((char *)markNode + 0x2C));
         }
         markNode = *(void **)((char *)markNode + 0x54);
     } while (markNode != 0);
@@ -435,31 +432,35 @@ void fn_801D9B58(void) {
     threshold = lbl_80562B30;
     do {
         if (*(unsigned char *)((char *)node + 0x30) != 0) {
-            i = 0;
-            offset = 0;
-            sampleDest = (float *)workspace;
+            int sampleIndex = 0;
+            int sampleOffset = 0;
+            sampleDest = workspace;
             do {
-                ++i;
-                child = *(void **)((char *)*(void **)node + offset);
-                offset += 4;
+                ++sampleIndex;
+                child = *(void **)((char *)*(void **)node + sampleOffset);
+                sampleOffset += 4;
                 *sampleDest++ = *(float *)((char *)child + 0x20);
-            } while (i < (count = *(int *)((char *)node + 4)));
+            } while (sampleIndex < (count = *(int *)((char *)node + 4)));
 
-            fn_801D9120((float *)workspace + 2, (float *)workspace, count, lbl_80562B28);
-            maximum = workspace[2];
-            if (threshold > maximum)
-                maximum = threshold;
-            fn_802C9900(maximum);
+            fn_801D9120(workspace + 2, workspace, count, lbl_80562B28);
+            {
+                float maximum = workspace[2];
+                if (threshold > maximum)
+                    maximum = threshold;
+                fn_802C9900(maximum);
+            }
 
             fn_802C7040(*(int *)*(void **)((char *)node + 0x14));
-            i = 1;
-            offset = 4;
-            weight = (float *)workspace + 3;
-            while (i < (count = *(int *)((char *)node + 0x18))) {
-                fn_802C9900(*weight++);
-                fn_802C7040(*(int *)((char *)*(void **)((char *)node + 0x14) + offset));
-                offset += 4;
-                ++i;
+            {
+                int playIndex = 1;
+                int playOffset = 4;
+                float *playWeight = workspace + 3;
+                while (playIndex < (count = *(int *)((char *)node + 0x18))) {
+                    fn_802C9900(*playWeight++);
+                    fn_802C7040(*(int *)((char *)*(void **)((char *)node + 0x14) + playOffset));
+                    playOffset += 4;
+                    ++playIndex;
+                }
             }
             *(unsigned char *)((char *)node + 0x30) = 0;
         }
