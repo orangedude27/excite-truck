@@ -1239,6 +1239,27 @@ extern "C" s32 fn_800A76A0(void *arg0) {
     return 0;
 }
 
+extern "C" void fn_800A76B4(void *arg0, s32 arg1) {
+    u16 index;
+
+    for (index = 0; index < 0x1A; index++) {
+        u8 *entry = (u8 *)lbl_803D1640 + index * 0x28;
+        s32 flags = *(s32 *)(entry + 0x61C);
+
+        if ((flags & 1) == 0)
+            continue;
+        if (*(void **)(entry + 0x620) != arg0)
+            continue;
+
+        *(s32 *)(entry + 0x61C) = flags | 2;
+        if (arg1 == 0 && *(void (**)(void))(entry + 0x640) != 0) {
+            (*(void (**)(void))(entry + 0x640))();
+        } else if (*(void (**)(void))(entry + 0x63C) != 0) {
+            (*(void (**)(void))(entry + 0x63C))();
+        }
+    }
+}
+
 extern "C" s32 VFiPFCACHE_SearchForPage(s32 arg0, s32 arg1, s32 arg2) {
     u32 page = (u32)arg2;
     u32 node;
@@ -6415,7 +6436,6 @@ extern "C" u8 lbl_802F31F8[];
 extern "C" s32 lbl_8055DD2C;
 extern "C" s32 NANDInit(void);
 extern "C" s32 NANDGetCurrentDir(char *);
-extern "C" s32 lbl_80405D18;
 extern "C" const char lbl_8031B190[];
 extern "C" const char lbl_8031B1C0[];
 extern "C" s32 fn_800B76E8(s8);
