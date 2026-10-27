@@ -354,10 +354,7 @@ static inline s32 _ES_GetTitleId(s32 *fd, u64 *tidOut) {
     u64 *pTid = (u64 *)tidWork;
     s32 result;
 
-    if (*fd < 0) {
-        return -0x3F9;
-    }
-    if (tidOut == (void *)0) {
+    if (*fd < 0 || tidOut == ((void *)NULL)) {
         return -0x3F9;
     }
 
@@ -373,42 +370,16 @@ static inline s32 _ES_GetTitleId(s32 *fd, u64 *tidOut) {
 
 void fn_8004E3F0(void) {
     u8 views[256] ALIGN(32);
-    u8 tidWork[256] ALIGN(32);
-    u8 vectorWork[32] ALIGN(32);
     u64 titleId ALIGN(32);
     u32 count = 1;
     s32 fd = -1;
     s32 result;
-    IPCIOVector *pVectors;
-    u64 *pTid;
-    u64 *tidOut;
 
-    result = 0;
-    fd = IOS_Open(&lbl_80558F40, 0);
-    if (fd < 0) {
-        result = fd;
-    }
-    if (result != 0) {
+    if (_ES_InitLib(&fd) != 0) {
         return;
     }
 
-    pVectors = (IPCIOVector *)vectorWork;
-    pTid = (u64 *)tidWork;
-    tidOut = &titleId;
-
-    if (fd < 0 || tidOut == (void *)0) {
-        result = -0x3F9;
-    } else {
-        pVectors[0].base = pTid;
-        pVectors[0].length = sizeof(u64);
-
-        result = IOS_Ioctlv(fd, 0x20, 0, 1, pVectors);
-        if (result == 0) {
-            *tidOut = *pTid;
-        }
-    }
-
-    if (result != 0) {
+    if (_ES_GetTitleId(&fd, &titleId) != 0) {
         return;
     }
 
