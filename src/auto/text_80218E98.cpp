@@ -604,7 +604,7 @@ extern "C" void fn_80219440(void *arg0, s32 arg1, void *arg2, s32 arg3) {
 }
 #pragma dont_inline reset
 
-extern void fn_802179A0(s32);
+extern "C" void fn_802179A0(s32);
 extern void fn_80218198(s32, s32);
 #pragma dont_inline on
 extern "C" void fn_802194F4(void* arg0) {
