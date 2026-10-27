@@ -4066,11 +4066,9 @@ BOOLEAN BTM_IsAclConnectionUp(BD_ADDR remote_bda) {
     entry = lbl_803C0F78 + 0x34;
 loop:
     if (entry[0x119] != 0) {
-        if (memcmp(entry + 8, remote_bda, 6) != 0)
-            goto advance;
-        goto found;
+        if (memcmp(entry + 8, remote_bda, 6) == 0)
+            goto found;
     }
-advance:
     i++;
     entry += 0x11C;
     if (i < 4)
@@ -11714,6 +11712,31 @@ void l2cu_send_peer_connect_req(void *arg0) {
         *(u8 *)((u8 *)p + 0x17) = *(u16 *)((u8 *)arg0 + 0x14) >> 8;
         l2c_link_check_send_pkts(*(void **)((u8 *)arg0 + 0x10), 0, p, 0);
     }
+}
+
+void l2cu_send_peer_connect_rsp(void *p_ccb, u16 result, u16 status) {
+    void *p_buf;
+    u8 *p;
+
+    p_buf = l2cu_build_header(
+        *(u16 *)(*(u8 **)((u8 *)p_ccb + 0x10) + 0x28),
+        8, 3, *(u8 *)((u8 *)p_ccb + 0x36)
+    );
+    if (p_buf == NULL) {
+        if (lbl_803C4040[0] >= 2) {
+            fn_8007093C(0x80001, lbl_80319174);
+        }
+        return;
+    }
+
+    p = (u8 *)p_buf + 0x14;
+    UINT16_TO_STREAM(p, *(u16 *)((u8 *)p_ccb + 0x14));
+    UINT16_TO_STREAM(p, *(u16 *)((u8 *)p_ccb + 0x16));
+    UINT16_TO_STREAM(p, result);
+    UINT16_TO_STREAM(p, status);
+    ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(
+        *(void **)((u8 *)p_ccb + 0x10), 0, p_buf
+    );
 }
 
 void l2cu_reject_connection(void *p_lcb, u16 remote_cid, u8 rem_id, u16 result) {
