@@ -4098,6 +4098,36 @@ void btm_read_rssi_complete(u8 *arg0) {
     }
 }
 
+tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
+    u32 i = 0;
+    u8 *entry = lbl_803C0F78 + 0x34;
+    u16 handle;
+
+loop:
+    if (entry[0x119] == 0)
+        goto next;
+    if (memcmp(entry + 8, bd_addr, 6) != 0)
+        goto next;
+    goto found;
+
+next:
+    i++;
+    entry += 0x11C;
+    if (i < 4)
+        goto loop;
+    entry = 0;
+
+found:
+    if (entry != 0)
+        handle = *(u16 *)entry;
+    else
+        handle = 0xFFFF;
+
+    if (btsnd_hcic_disconnect(handle, 0x13) == 0)
+        return 3;
+    return 0;
+}
+
 void btm_chg_all_acl_pkt_types(BOOLEAN start) {
     u8 *cb = lbl_803C0F78;
     u8 *p = cb + 0x34;
@@ -5192,26 +5222,24 @@ void btm_init(void) {
 
 tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_cb)
 {
-    UINT8 i;
+    int i;
     u8 *entry;
 
     if (mask & BTM_PM_DEREG) {
-        i = *p_pm_id;
-        if (i >= BTM_MAX_PM_RECORDS)
+        if (*p_pm_id >= BTM_MAX_PM_RECORDS)
             return BTM_ILLEGAL_VALUE;
-        lbl_803C0F78[0x558 + i * 8] = BTM_PM_REC_NOT_USED;
+        *(lbl_803C0F78 + *p_pm_id * 8 + 0x558) = BTM_PM_REC_NOT_USED;
         return BTM_SUCCESS;
     }
 
-    entry = lbl_803C0F78;
-    for (i = 0; i < BTM_MAX_PM_RECORDS; i++, entry += 8) {
+    for (i = 0, entry = lbl_803C0F78; i < BTM_MAX_PM_RECORDS; entry += 8, i++) {
         if (entry[0x558] == BTM_PM_REC_NOT_USED) {
             if (mask & BTM_PM_REG_NOTIF) {
                 if (p_cb == NULL)
                     return BTM_ILLEGAL_VALUE;
-                *(tBTM_PM_STATUS_CBACK **)(lbl_803C0F78 + 0x554 + i * 8) = p_cb;
+                *(tBTM_PM_STATUS_CBACK **)(lbl_803C0F78 + i * 8 + 0x554) = p_cb;
             }
-            lbl_803C0F78[0x558 + i * 8] = mask;
+            *(u8 *)(lbl_803C0F78 + i * 8 + 0x558) = mask;
             *p_pm_id = i;
             return BTM_SUCCESS;
         }
