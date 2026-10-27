@@ -10,7 +10,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
-namespace nw4hbm { namespace snd { class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); }; namespace detail { class StrmPlayer { public: void Pause(bool); }; } } }
+namespace nw4hbm { namespace snd { class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); }; namespace detail { class StrmPlayer { public: void Pause(bool); }; class SoundThread { public: s32 Shutdown(); }; } } }
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
 extern "C" void fn_800EAD00(void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
@@ -2329,10 +2329,11 @@ extern "C" void *__dt__Q36nw4hbm3snd11SoundPlayerFv(void *arg0, s32 arg1) {
         virtual void v3() {}
         virtual void destroy(s32) {}
     };
-    void *node;
-    void *it;
+    register void *it;
+    register void *head;
+    register void *node;
     if (arg0 != 0) {
-        void *head = (char *)arg0 + 4;
+        head = (char *)arg0 + 4;
         it = *(void **)head;
         while (it != head) {
             node = it;
