@@ -103,7 +103,7 @@ void fn_8023DA64(void *arg0, int arg1, int arg2) {
             if (sp8 == 0)
                 fn_8013358C((int)base, (int)entry->name, *(void **)((char *)found + 4));
         } else {
-            fn_8013358C((int)base, (int)entry->name, lbl_8055BC08);
+            fn_8013358C((int)base, (int)entry->name, (void *)&lbl_8055BC08);
         }
         i++;
         entry++;
