@@ -21,11 +21,12 @@ extern char lbl_803582C0[];
 #pragma small_data on
 extern double cos(double);
 extern double sin(double);
+#pragma scheduling invalid_target
 void fn_80019BBC(void) {
+    float initial = lbl_80560418;
     float angle = lbl_80560418;
     float step = lbl_8056041C;
-    float initial = angle;
-    float *p = (float *)&lbl_803582C0;
+    float *p = (float *)lbl_803582C0;
     int i = 0;
     do {
         *p++ = (float)cos(angle);
@@ -35,11 +36,11 @@ void fn_80019BBC(void) {
         angle += step;
         i++;
     } while (i < 20);
-    ((float *)&lbl_803582C0)[60] = lbl_80560418;
-    ((float *)&lbl_803582C0)[61] = lbl_80560418;
-    ((float *)&lbl_803582C0)[62] = lbl_80560418;
+    ((float *)lbl_803582C0)[60] = lbl_80560418;
+    ((float *)lbl_803582C0)[61] = lbl_80560418;
+    ((float *)lbl_803582C0)[62] = lbl_80560418;
 }
-
+#pragma scheduling on
 void fn_8001A1F0(void) {
 }
 
@@ -107,7 +108,7 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     s32 *data;
     volatile u32 *destination;
     volatile u32 *destination2;
-    u32 *source;
+    volatile u32 *source;
     void *global;
     void *record;
     void *part;
@@ -115,7 +116,8 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     f32 result;
     f32 f21;
     f32 f25;
-    u32 a, b, c, d, e, f, g, h, i, j, k, l;
+    u32 a, b;
+    u32 l, k, j, i, h, g, f, e, d, c;
     f32 ratio;
     f32 v;
     void *desc;
@@ -125,7 +127,7 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     f32 actorY;
     s32 flag;
     s32 color;
-    u32 *ring;
+    register u32 *ring;
     f32 u, w, z, sx, sy, sz, px, py, pz;
 
     if (obj == 0) return;
@@ -133,19 +135,16 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     global = lbl_8055D5B4;
     source = (u32 *)fn_801E8718(*(s32 *)((u8 *)obj + 0x44));
     destination = frame.matrix;
-    a = source[6]; b = source[8]; destination[6] = a;
-    c = source[0]; destination[8] = b;
-    d = source[1]; destination[0] = c;
-    e = source[2]; destination[1] = d;
-    f = source[3]; destination[2] = e;
-    g = source[4]; destination[3] = f;
-    h = source[5]; destination[4] = g;
-    i = source[7]; destination[5] = h;
-    j = source[9]; destination[7] = i;
-    k = source[10]; destination[9] = j;
-    l = source[11]; destination[10] = k;
-    destination[11] = l;
-    result = (f32)fn_8002EFB0(*(f32 *)&destination[6], *(f32 *)&destination[8]);
+    b = source[6]; a = source[8]; destination[6] = b;
+    c = source[0]; destination[8] = a;
+    d = source[1]; e = source[2]; f = source[3]; g = source[4];
+    h = source[5]; i = source[7]; j = source[9]; k = source[10]; l = source[11];
+    angle = *(volatile f32 *)&destination[6];
+    result = *(volatile f32 *)&destination[8];
+    destination[0] = c; destination[1] = d; destination[2] = e; destination[3] = f;
+    destination[4] = g; destination[5] = h; destination[7] = i; destination[9] = j;
+    destination[10] = k; destination[11] = l;
+    result = (f32)fn_8002EFB0(angle, result);
     *(f32 *)((u8 *)global + 0x10) = result;
     record = fn_801EA9A0(resource);
     *(u32 *)((u8 *)global + 4) = *(u32 *)((u8 *)record + 0x1C);
@@ -171,19 +170,16 @@ recordCheck:
 
     source = (u32 *)fn_801E8718(*(s32 *)((u8 *)obj + 0x44));
     destination2 = frame.matrix2;
-    a = source[6]; b = source[8]; destination2[6] = a;
-    c = source[0]; destination2[8] = b;
-    d = source[1]; destination2[0] = c;
-    e = source[2]; destination2[1] = d;
-    f = source[3]; destination2[2] = e;
-    g = source[4]; destination2[3] = f;
-    h = source[5]; destination2[4] = g;
-    i = source[7]; destination2[5] = h;
-    j = source[9]; destination2[7] = i;
-    k = source[10]; destination2[9] = j;
-    l = source[11]; destination2[10] = k;
-    destination2[11] = l;
-    result = (f32)fn_8002EFB0(*(f32 *)&destination2[6], *(f32 *)&destination2[8]);
+    b = source[6]; a = source[8]; destination2[6] = b;
+    c = source[0]; destination2[8] = a;
+    d = source[1]; e = source[2]; f = source[3]; g = source[4];
+    h = source[5]; i = source[7]; j = source[9]; k = source[10]; l = source[11];
+    angle = *(volatile f32 *)&destination2[6];
+    result = *(volatile f32 *)&destination2[8];
+    destination2[0] = c; destination2[1] = d; destination2[2] = e; destination2[3] = f;
+    destination2[4] = g; destination2[5] = h; destination2[7] = i; destination2[9] = j;
+    destination2[10] = k; destination2[11] = l;
+    result = (f32)fn_8002EFB0(angle, result);
     angle = -result;
     index = 0;
     offset = 0;
@@ -437,65 +433,103 @@ subtractCheck:
     }
 }
 #pragma scheduling on
+struct EntryData {
+    int first;
+    int second;
+    float x;
+    float y;
+    unsigned char occupied;
+};
 int fn_8001B308(void *arg0, int arg1, int arg2) {
-    unsigned char *var_r7;
-    int temp_r8;
-    int temp_r8_2;
-    int temp_r8_3;
-    int var_ctr;
-    int var_r6;
-    int var_r6_2;
-    int var_r6_3;
-    int var_r6_4;
-    int var_r8;
-    var_ctr = 4;
-    var_r7 = (unsigned char *)&lbl_803583C8;
-    var_r8 = 0;
-loop_1:
-    if (var_r7[0x10] == 0) {
-        *(int *)(var_r7 + 0) = arg1;
-        var_r6 = 1;
-        *(int *)(var_r7 + 4) = arg2;
-        *(float *)(var_r7 + 8) = *(float *)arg0;
-        *(float *)(var_r7 + 0xC) = *((float *)arg0 + 1);
-        var_r7[0x10] = 1;
-    } else var_r6 = 0;
-    if (var_r6 != 0) return var_r8;
-    temp_r8_3 = var_r8 + 1;
-    if (var_r7[0x24] == 0) {
-        *(int *)(var_r7 + 0x14) = arg1;
-        var_r6_2 = 1;
-        *(int *)(var_r7 + 0x18) = arg2;
-        *(float *)(var_r7 + 0x1C) = *(float *)arg0;
-        *(float *)(var_r7 + 0x20) = *((float *)arg0 + 1);
-        var_r7[0x24] = 1;
-    } else var_r6_2 = 0;
-    if (var_r6_2 != 0) return temp_r8_3;
-    temp_r8_2 = temp_r8_3 + 1;
-    if (var_r7[0x38] == 0) {
-        *(int *)(var_r7 + 0x28) = arg1;
-        var_r6_3 = 1;
-        *(int *)(var_r7 + 0x2C) = arg2;
-        *(float *)(var_r7 + 0x30) = *(float *)arg0;
-        *(float *)(var_r7 + 0x34) = *((float *)arg0 + 1);
-        var_r7[0x38] = 1;
-    } else var_r6_3 = 0;
-    if (var_r6_3 != 0) return temp_r8_2;
-    temp_r8 = temp_r8_2 + 1;
-    if (var_r7[0x4C] == 0) {
-        *(int *)(var_r7 + 0x3C) = arg1;
-        var_r6_4 = 1;
-        *(int *)(var_r7 + 0x40) = arg2;
-        *(float *)(var_r7 + 0x44) = *(float *)arg0;
-        *(float *)(var_r7 + 0x48) = *((float *)arg0 + 1);
-        var_r7[0x4C] = 1;
-    } else var_r6_4 = 0;
-    if (var_r6_4 != 0) return temp_r8;
-    var_r7 += 0x50;
-    var_r8 = temp_r8 + 1;
-    var_ctr -= 1;
-    if (var_ctr == 0) return -1;
-    goto loop_1;
+    int group;
+    int one;
+    int status;
+    unsigned char *base;
+    int index;
+
+    one = 1;
+    status = 0;
+    base = (unsigned char *)&lbl_803583C8;
+    index = 0;
+    for (group = 0; group < 4; group++) {
+        if (base[0x10] == 0) {
+            *(int *)(base + 0) = arg1;
+            status = one;
+            {
+                float first = *(float *)arg0;
+                *(int *)(base + 4) = arg2;
+                {
+                    float second = *((float *)arg0 + 1);
+                    *(float *)(base + 8) = first;
+                    *(float *)(base + 0xC) = second;
+                }
+            }
+            base[0x10] = (unsigned char)one;
+        } else {
+            status = 0;
+        }
+        if (status != 0) return index;
+        index++;
+
+        if (base[0x24] == 0) {
+            *(int *)(base + 0x14) = arg1;
+            status = one;
+            {
+                float first = *(float *)arg0;
+                *(int *)(base + 0x18) = arg2;
+                {
+                    float second = *((float *)arg0 + 1);
+                    *(float *)(base + 0x1C) = first;
+                    *(float *)(base + 0x20) = second;
+                }
+            }
+            base[0x24] = (unsigned char)one;
+        } else {
+            status = 0;
+        }
+        if (status != 0) return index;
+        index++;
+
+        if (base[0x38] == 0) {
+            *(int *)(base + 0x28) = arg1;
+            status = one;
+            {
+                float first = *(float *)arg0;
+                *(int *)(base + 0x2C) = arg2;
+                {
+                    float second = *((float *)arg0 + 1);
+                    *(float *)(base + 0x30) = first;
+                    *(float *)(base + 0x34) = second;
+                }
+            }
+            base[0x38] = (unsigned char)one;
+        } else {
+            status = 0;
+        }
+        if (status != 0) return index;
+        index++;
+
+        if (base[0x4C] == 0) {
+            *(int *)(base + 0x3C) = arg1;
+            status = one;
+            {
+                float first = *(float *)arg0;
+                *(int *)(base + 0x40) = arg2;
+                {
+                    float second = *((float *)arg0 + 1);
+                    *(float *)(base + 0x44) = first;
+                    *(float *)(base + 0x48) = second;
+                }
+            }
+            base[0x4C] = (unsigned char)one;
+        } else {
+            status = 0;
+        }
+        if (status != 0) return index;
+        index++;
+        base += 0x50;
+    }
+    return -1;
 }
 
 extern void fn_801352B8(void *);
