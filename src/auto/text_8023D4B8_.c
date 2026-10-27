@@ -25,6 +25,8 @@ extern void fn_8023E1FC(void *);
   extern s32 fn_802E317C(const char *, ...);
   extern char *lbl_8055BBA0;
   extern void fn_801A7E54(void *, s32, void *);
+extern void fn_8022D76C();
+extern void fn_8022D894(void *, int, int, ...);
 void* fn_8023D6FC(void) {
     return lbl_8055F18C;
 }
