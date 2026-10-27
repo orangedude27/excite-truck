@@ -10,7 +10,7 @@ class GroupAnmController {
 public:
     virtual void d0();
     virtual void calc();
-    u8 pad8[4];
+    u8 pad4[8];
     f32 m_value;
     u8 pad10[4];
     s32 m_state;
@@ -11575,11 +11575,9 @@ void homebutton::GroupAnmController::do_calc() {
     };
     struct Node { Node *next; u32 pad; void *object; };
     struct List { u8 pad[0x10]; Node *head; };
-    Node *node;
-    Node *end;
-    const char *message;
-    const char *file;
-    s32 active;
+    register Node *node;
+    register Node *end;
+    register s32 active;
     if (*(s32 *)((u8 *)this + 0x14) == 1) {
         calc();
         active = 1;
@@ -11591,11 +11589,8 @@ void homebutton::GroupAnmController::do_calc() {
     node = list->head;
     end = (Node *)((u8 *)list + 0x10);
     while (node != end) {
-        if (node == 0) {
-            file = lbl_8031E764;
-            message = lbl_8031E740;
-            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x23D, message);
-        }
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E764, 0x23D, lbl_8031E740);
         void *object = node->object;
         ((ComponentDispatch *)object)->apply(*(void **)((u8 *)this + 0x24), active, 0);
         node = node->next;
