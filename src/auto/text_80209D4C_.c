@@ -7,6 +7,7 @@ extern int lbl_8055B548;
 extern void *fn_801284F8(unsigned int, void *);
 extern void *fn_802077A4(void *, int, void *, void *);
 extern void *fn_8020CA3C(void *);
+extern float lbl_80563278, lbl_8056327C, lbl_80563280, lbl_80563284, lbl_80563288;
 #pragma scheduling invalid_target
 void *fn_80209D4C(void *arg0) {
     void *obj;
