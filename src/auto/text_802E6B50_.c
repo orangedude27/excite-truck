@@ -14,7 +14,7 @@ extern char lbl_8034D678[];
 extern int lbl_8055D200;
 extern void *fn_801284E8(void *, int);
 extern void fn_80128658(void *);
-extern unsigned int fn_80132E7C(void *, ...);
+extern unsigned int fn_80132E7C(void *, int);
 extern void *fn_802E967C(int, void *, int);
 extern int fn_802E7130(void);
 extern int fn_802E721C(unsigned int, unsigned int, int);
