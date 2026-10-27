@@ -1580,14 +1580,27 @@ done:
 s32 fn_8011A7CC(DVDFileInfo *info) {
     s32 *p = (s32 *)info;
     s32 status;
+
     if (p[0x20 / 4] != 0) return 0;
     if (p[0x50 / 4] != 0) return 0;
     status = DVDGetDriveStatus();
-    if (status == 0) {
-        fn_8011A6A0(info);
-    } else if (status == 0xB) {
-        p[0x20 / 4] = 1;
+    if (status < 3) {
+        if (status == 0) goto call_callback;
+        if (status >= 0) goto done;
+        if (status >= -1) goto set_error;
+        goto done;
     }
+    if (status == 11) goto set_error;
+    if (status >= 11) goto done;
+    if (status >= 10) goto done;
+    goto set_error;
+
+call_callback:
+    fn_8011A6A0(info);
+    goto done;
+set_error:
+    p[0x20 / 4] = 1;
+done:
     return p[0x24 / 4];
 }
 
@@ -3519,6 +3532,12 @@ u32 fn_8011FC2C(void* arg0, s32 arg1, s32 arg2, s32* arg3, s32 arg4, s32 arg5, s
 }
 
 extern void *lbl_8055DEF0;
+extern void *lbl_8055DEF8;
+extern void *lbl_8055DEFC;
+extern u32 lbl_8055DEF4;
+extern void **lbl_80559948;
+extern u32 *lbl_8055994C;
+extern void *fn_8011FFC4(s32);
 void* fn_8011FF24(void) {
     return lbl_8055DEF0;
 }
@@ -3528,14 +3547,8 @@ void AXFXSetHooks_8011FFB8(void *arg0, void *arg1) {
     lbl_8055DEFC = arg1;
 }
 
-extern void *lbl_8055DEF8;
-extern void *lbl_8055DEFC;
-extern u32 lbl_8055DEF4;
-extern void **lbl_80559948;
-extern u32 *lbl_8055994C;
 extern void *malloc(u32);
 extern void free(void *);
-extern void *fn_8011FFC4(s32);
 void *fn_8011FFC4(s32 arg0) {
     s32 base;
     u8 offset;
