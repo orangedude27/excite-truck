@@ -11,7 +11,9 @@
 #define btsnd_hcic_write_cur_iac_lap btsnd_hcic_write_cur_iac_lap_hcimsgs
 #define btsnd_hcic_exit_sniff_mode btsnd_hcic_exit_sniff_mode_api
 #define btsnd_hcic_sniff_mode btsnd_hcic_sniff_mode_api
+#define btsnd_hcic_accept_esco_conn btsnd_hcic_accept_esco_conn_api
 #include "revolution/BTE/stack/include/hcimsgs.h"
+#undef btsnd_hcic_accept_esco_conn
 #undef btsnd_hcic_sniff_mode
 #undef btsnd_hcic_exit_sniff_mode
 #undef btsnd_hcic_write_cur_iac_lap
@@ -9486,10 +9488,10 @@ u8 HID_HostDeregister(void) {
     extern u8 hidh_conn_disconnect(u32);
     extern void fn_80070F90(void *);
     extern void fn_80089248(void);
-    u8 *base = lbl_803C3C38;
     u8 *entry;
-    u32 offset;
+    u8 *base = lbl_803C3C38;
     u32 i;
+    u32 offset;
     u8 one = 1;
     u8 zero = 0;
 
@@ -9497,16 +9499,16 @@ u8 HID_HostDeregister(void) {
         return 1;
     for (i = 0; i < 0x10; i++) {
         u8 flag = base[0x400];
-        offset = i * 0x34;
+        u8 active;
+        offset = ((u8)i) * 0x34;
         entry = base + offset;
-        if (flag != 0 && i <= 0x10 && base[offset] != 0) {
+        active = base[offset];
+        if (active != 0 && flag != 0 && (u8)i <= 0x10) {
+            entry[0xC] = one;
+            fn_80070F90(entry + 0x1C);
             if (entry[0xA] == 1) {
                 entry[0xC] = one;
-                fn_80070F90(entry + 0x1C);
-                if (entry[0xA] == 1) {
-                    entry[0xC] = one;
-                    hidh_conn_disconnect((u8)i);
-                }
+                hidh_conn_disconnect((u8)i);
             }
             entry[0] = zero;
             entry[0x10] = zero;
@@ -9515,7 +9517,7 @@ u8 HID_HostDeregister(void) {
         }
     }
     fn_80089248();
-    base[0x400] = 0;
+    lbl_803C3C38[0x400] = 0;
     return 0;
 }
 
