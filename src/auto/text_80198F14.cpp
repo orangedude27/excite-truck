@@ -1521,7 +1521,35 @@ extern "C" void *fn_8019F564(void *arg0,s32 arg1,void *arg2,s32 arg3,f32 a,f32 b
  *(f32*)((u8*)arg0+0xB4)=z;*(f32*)((u8*)arg0+0xB8)=z;*(f32*)((u8*)arg0+0xBC)=z;*(f32*)((u8*)arg0+0xC0)=z;return arg0;
 }
 
-void fn_8019F6F0(void *arg0) { fn_8019F03C(arg0); *(f32*)((u8*)arg0+0x64)=lbl_805622D0; *(f32*)((u8*)arg0+0x68)=lbl_805622D0; *(f32*)((u8*)arg0+0x6C)=lbl_805622D0; *(f32*)((u8*)arg0+0x70)=lbl_805622D0; *(f32*)((u8*)arg0+0x74)=lbl_805622D0; *(f32*)((u8*)arg0+0x78)=lbl_805622D0; *(f32*)((u8*)arg0+0x7C)=lbl_805622D0; *(f32*)((u8*)arg0+0x80)=lbl_805622D0; *(f32*)((u8*)arg0+0x84)=lbl_805622D0; *(f32*)((u8*)arg0+0x88)=lbl_805622D0; *(f32*)((u8*)arg0+0x8C)=lbl_805622D0; *(f32*)((u8*)arg0+0x90)=lbl_805622D0; *(f32*)((u8*)arg0+0x94)=lbl_805622D0; *(f32*)((u8*)arg0+0x98)=lbl_805622D0; *(f32*)((u8*)arg0+0x9C)=lbl_805622D0; *(f32*)((u8*)arg0+0xA0)=lbl_805622D0; *(f32*)((u8*)arg0+0xA4)=lbl_805622D0; *(f32*)((u8*)arg0+0xA8)=lbl_805622D0; *(f32*)((u8*)arg0+0xAC)=lbl_805622D0; *(f32*)((u8*)arg0+0xB0)=lbl_805622D0; *(f32*)((u8*)arg0+0xB4)=lbl_805622D0; *(f32*)((u8*)arg0+0xB8)=lbl_805622D0; *(f32*)((u8*)arg0+0xBC)=lbl_805622D0; *(f32*)((u8*)arg0+0xC0)=lbl_805622D0; }
+extern "C" void fn_8019F6F0(void *arg0) {
+    f32 value;
+    fn_8019F03C(arg0);
+    value = lbl_805622D0;
+    *(f32 *)((u8 *)arg0 + 0x64) = value;
+    *(f32 *)((u8 *)arg0 + 0x68) = value;
+    *(f32 *)((u8 *)arg0 + 0x6C) = value;
+    *(f32 *)((u8 *)arg0 + 0x70) = value;
+    *(f32 *)((u8 *)arg0 + 0x74) = value;
+    *(f32 *)((u8 *)arg0 + 0x78) = value;
+    *(f32 *)((u8 *)arg0 + 0x7C) = value;
+    *(f32 *)((u8 *)arg0 + 0x80) = value;
+    *(f32 *)((u8 *)arg0 + 0x84) = value;
+    *(f32 *)((u8 *)arg0 + 0x88) = value;
+    *(f32 *)((u8 *)arg0 + 0x8C) = value;
+    *(f32 *)((u8 *)arg0 + 0x90) = value;
+    *(f32 *)((u8 *)arg0 + 0x94) = value;
+    *(f32 *)((u8 *)arg0 + 0x98) = value;
+    *(f32 *)((u8 *)arg0 + 0x9C) = value;
+    *(f32 *)((u8 *)arg0 + 0xA0) = value;
+    *(f32 *)((u8 *)arg0 + 0xA4) = value;
+    *(f32 *)((u8 *)arg0 + 0xA8) = value;
+    *(f32 *)((u8 *)arg0 + 0xAC) = value;
+    *(f32 *)((u8 *)arg0 + 0xB0) = value;
+    *(f32 *)((u8 *)arg0 + 0xB4) = value;
+    *(f32 *)((u8 *)arg0 + 0xB8) = value;
+    *(f32 *)((u8 *)arg0 + 0xBC) = value;
+    *(f32 *)((u8 *)arg0 + 0xC0) = value;
+}
 
 extern "C" void fn_8019FF88(void* arg0) {
     ((void (*)(void))fn_8019EBC0)();
@@ -2932,15 +2960,16 @@ void fn_801A49FC(s32 arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801A4A10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    if (*(s32*)((u8*)arg0 + 0x40) != 0) {
-        fn_801D2414(NULL, 0, NULL);
-        if (*(s32*)((u8*)arg0 + 0x48) != 0) {
+    if (*(u8*)((u8*)arg0 + 0x40)) {
+        fn_801D2414();
+        if (*(s32*)((u8*)arg0 + 0x48)) {
             fn_801D0738((void*)arg0, (void*)arg1, (void*)arg2, (void*)arg3);
         }
     }
 }
-
+#pragma scheduling on
 extern "C" void fn_801A4A8C(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 *arg4, s32 arg5, s32 arg6) {
     s32 t0 = arg4[0];
     s32 t1 = arg4[1];
