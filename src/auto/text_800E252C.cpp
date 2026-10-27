@@ -20,7 +20,7 @@ extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveD
 extern float lbl_80560F88, lbl_80560F8C, lbl_80560F90;
 extern double lbl_80560F98, lbl_80560FA0;
 extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
-extern "C" void fn_800E6A44(void);
+extern "C" void fn_800E6A44(void *, int, int, void *);
 extern "C" void fn_80033538(unsigned short);
 extern "C" void AIRegisterDMACallback(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
