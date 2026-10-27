@@ -2567,11 +2567,12 @@ extern "C" s32 fn_800AB378(void *, s32, ...);
 extern s32 fn_800B5324(void *, void *, u32, u32, u32 *, u32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
+    u32 one = 1;
     u32 sp8;
+    s32 var_r31;
     s32 temp_r30;
     s32 temp_r3;
     s32 temp_r4;
-    s32 var_r31;
     u8 temp_r7;
     void *temp_r5;
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
@@ -2580,18 +2581,24 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     temp_r7 = *(u8 *)((u8 *)temp_r5 + 0x20) - 5;
     *(s32 *)arg0 = arg1;
     *(u8 *)((u8 *)arg0 + 0x6C) = temp_r7;
-    *(u16 *)((u8 *)arg0 + 0x4A) = (1 << temp_r7) - 1;
+    *(u16 *)((u8 *)arg0 + 0x4A) = (one << temp_r7) - 1;
     *(s32 *)((u8 *)arg0 + 0x40) = -1;
-    temp_r3 = fn_800AB378(arg0, 0, 1, temp_r7);
+    temp_r3 = ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
     var_r31 = temp_r3;
     if (temp_r3 != 0) {
         *(s32 *)arg0 = temp_r30;
-        fn_800AB378(arg0, 0, 0, 0);
+        ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
     } else {
-        if (*(s32 *)((u8 *)arg0 + 0x44) == -0x10000) {
+        if (*(u32 *)((u8 *)arg0 + 0x44) == 0xFFFFFFFFU) {
             temp_r4 = 0x10;
         } else {
-            temp_r3 = fn_800B5324(*(void **)((u8 *)arg0 + 4), (u8 *)arg0 + 0x4C, *(u16 *)((u8 *)arg0 + 0x48), 0x20, &sp8, 0);
+            temp_r3 = fn_800B5324(*(void **)((u8 *)arg0 + 4),
+                                   (u8 *)arg0 + 0x4C,
+                                   *(u32 *)((u8 *)arg0 + 0x44),
+                                   *(u16 *)((u8 *)arg0 + 0x48),
+                                   0x20,
+                                   &sp8,
+                                   0);
             temp_r4 = 0x11;
             if (sp8 == 0x20)
                 temp_r4 = temp_r3;
@@ -17768,6 +17775,7 @@ loop_51:
 extern "C" void fn_800D272C(void*, void*);
 extern "C" char lbl_804077D8[0x400];
 extern "C" const char lbl_805597E4[];
+extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void *arg0, void *arg1, const char *arg2, void *arg3) {}
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(void* head, const char* fmt, ...) {
