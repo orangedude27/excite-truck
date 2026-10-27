@@ -2035,23 +2035,46 @@ extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg
 extern "C" void fn_801A17B8(void* arg0) {
     extern f32 lbl_8056234C;
     extern void fn_801E41D8(f32*, f32*, s32, f32, f32, void*, void*, f32, f32, f32, f32, f32, f32, f32, f32, f32);
-    void* matrix = *(void**)((u8*)arg0 + 0xC);
-    f32 width = *(f32*)((u8*)arg0 + 0x28);
-    f32 a = *(f32*)((u8*)matrix + 0x18);
-    f32 b = *(f32*)((u8*)matrix + 0x1C);
-    f32 c = *(f32*)((u8*)matrix + 0x20);
-    f32 d = *(f32*)((u8*)matrix + 0x24);
-    f32 e = *(f32*)((u8*)matrix + 0x28);
-    f32 f = *(f32*)((u8*)matrix + 0x2C);
-    f32 highX = d + a * width;
-    f32 highY = e + b * width;
-    f32 highZ = f + c * width;
-    f32 lowX = d + a * -width;
-    f32 lowY = e + b * -width;
-    f32 lowZ = f + c * -width;
-    fn_801E41D8((f32*)((u8*)arg0 + 0x14), (f32*)((u8*)arg0 + 8), 0x40FFFF00,
-                e, d, matrix, arg0, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24),
-                lowY, lowX, f, c, e, b, d, a);
+    f32 sp34;
+    f32 sp30;
+    f32 sp2C;
+    f32 sp28;
+    f32 sp24;
+    f32 sp20;
+    f32 sp1C;
+    f32 sp18;
+    f32 sp14;
+    f32 sp10;
+    f32 spC;
+    f32 sp8;
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f2;
+    f32 temp_f3;
+    f32 temp_r6;
+    f32 temp_r7;
+    void* temp_r8;
+
+    temp_r8 = *(void**)((u8*)arg0 + 0xC);
+    temp_f0 = *(f32*)((u8*)arg0 + 0x28);
+    sp20 = *(f32*)((u8*)temp_r8 + 0x18);
+    sp24 = *(f32*)((u8*)temp_r8 + 0x1C);
+    temp_r7 = *(f32*)((u8*)temp_r8 + 0x24);
+    sp28 = *(f32*)((u8*)temp_r8 + 0x20);
+    temp_r6 = *(f32*)((u8*)temp_r8 + 0x28);
+    sp2C = temp_r7;
+    sp30 = temp_r6;
+    sp34 = *(f32*)((u8*)temp_r8 + 0x2C);
+    sp14 = sp2C + (sp20 * temp_f0);
+    sp18 = sp30 + (sp24 * temp_f0);
+    sp1C = sp34 + (sp28 * temp_f0);
+    temp_f0_2 = -*(f32*)((u8*)arg0 + 0x28);
+    temp_f3 = sp2C + (sp20 * temp_f0_2);
+    temp_f2 = sp30 + (sp24 * temp_f0_2);
+    sp8 = temp_f3;
+    spC = temp_f2;
+    sp10 = sp34 + (sp28 * temp_f0_2);
+    fn_801E41D8(&sp14, &sp8, 0x40FFFF00, temp_r6, temp_r7, temp_r8, arg0, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24), temp_f2, temp_f3, sp34, sp28, sp30, sp24, sp2C, sp20);
 }
 
 extern int lbl_80333918[64];
@@ -2086,46 +2109,38 @@ void fn_801A18D4(void* arg0, f32* arg1, f32* arg2) {
 }
 
 extern "C" void fn_8019CF60(void*);
-extern "C" void fn_8019DC04(void*);
+extern "C" void fn_8019DC04(void*, void*);
 extern "C" void fn_8019CE3C(void*, s32);
 extern "C" void fn_802E30C8(const char*, ...);
 extern "C" const char lbl_80333650[];
+#pragma scheduling on
 extern "C" void fn_801A1ABC(void* arg0, void* arg1) {
-    u32 value = *(u32*)((u8*)arg1 + 0x18);
-    if (value == 0x52414744) {
-        return;
-    } else if (value < 0x52414744) {
-        if (value == 0x504F4C59) {
-            return;
-        } else if (value < 0x47525550) {
-            if (value == 0x424F5820) {
-                fn_8019EA7C(arg1, (void**)arg0);
-                return;
-            }
-        } else if (value == 0x47525550) {
-            fn_8019EA7C(arg1, (void**)arg0);
-            return;
-        } else if (value < 0x464C5352) {
-        } else if (value == 0x464C5352) {
-            fn_8019CF60(arg1);
-            return;
-        }
-    } else {
-        if (value == 0x53504852) {
-            fn_8019CE3C(arg1, (s32)arg0);
-            return;
-        } else if (value < 0x53504852) {
-            if (value == 0x52494E47) {
-                return;
-            }
-        } else if (value == 0x54554245) {
-            fn_8019DC04(arg1);
-            return;
-        }
+    s32 value = *(s32*)((u8*)arg1 + 0x18);
+    switch (value) {
+    case 'RAGD':
+    case 'POLY':
+    case 'RING':
+        break;
+    case 'FLSR':
+        fn_8019CF60(arg0);
+        break;
+    case 'SPHR':
+        fn_8019CE3C(arg1, (s32)arg0);
+        break;
+    case 'BOX ':
+        fn_8019EA7C(arg0, arg1);
+        break;
+    case 'TUBE':
+        fn_8019DC04(arg0, arg1);
+        break;
+    case 'GRUP':
+        fn_8019EA7C(arg0, *(void**)((u8*)arg1 + 0x17C));
+        break;
+    default:
+        fn_802E30C8(lbl_80333650, value);
+        break;
     }
-    fn_802E30C8(lbl_80333650, value);
 }
-
 void fn_801A1B9C(void* arg0) {
     void* mat = *(void**)((u8*)arg0 + 0xC);
     f32 w = *(f32*)((u8*)arg0 + 0x28);
@@ -2345,10 +2360,10 @@ extern "C" void fn_801A22A4(void* arg0) {
 #pragma scheduling on
 extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     extern f32 lbl_80562300;
-    extern void* lbl_80333868;
-    f32 x = farg3 - lbl_80562300;
-    f32 y = farg2 - lbl_80562300;
-    f32 z = farg4 - lbl_80562300;
+    extern char lbl_80333868[];
+    f32 diffX = farg3 - lbl_80562300;
+    f32 diffY = farg2 - lbl_80562300;
+    f32 diffZ = farg4 - lbl_80562300;
     *(f32*)((u8*)arg0 + 0x10) = farg0;
     *(s32*)((u8*)arg0 + 0xC) = arg1;
     *(s32*)((u8*)arg0 + 4) = arg3;
@@ -2357,18 +2372,23 @@ extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 far
     *(f32*)((u8*)arg0 + 0x14) = farg1;
     *(s32*)((u8*)arg0 + 0x20) = 100;
     *(s32*)((u8*)arg0 + 0x1C) = 0;
-    *(void**)arg0 = &lbl_803338C0;
-    *(f32*)((u8*)arg0 + 0x24) = y;
-    *(f32*)((u8*)arg0 + 0x28) = x;
-    *(f32*)((u8*)arg0 + 0x2C) = z;
+    *(void**)arg0 = lbl_803338C0;
+    *(f32*)((u8*)arg0 + 0x24) = diffY;
+    *(f32*)((u8*)arg0 + 0x28) = diffX;
+    *(f32*)((u8*)arg0 + 0x2C) = diffZ;
     *(s32*)((u8*)arg0 + 0x34) = 0;
-    f32 dist = x*x + y*y + z*z;
-    f32 radius = lbl_80562300 + (f32)fn_8002F234(dist);
-    *(f32*)((u8*)arg0 + 0x38) = *(f32*)arg2;
+    f32 dist = diffX * diffX + diffY * diffY + diffZ * diffZ;
+    f64 distance = fn_8002F234(dist);
+    f32 base = lbl_80562300;
+    f32 x = *(f32*)arg2;
+    f32 y = *(f32*)((u8*)arg2 + 4);
+    f32 radius = base + (f32)distance;
+    f32 z = *(f32*)((u8*)arg2 + 8);
+    *(f32*)((u8*)arg0 + 0x38) = x;
     *(f32*)((u8*)arg0 + 0x30) = radius;
-    *(void**)arg0 = &lbl_80333868;
-    *(f32*)((u8*)arg0 + 0x3C) = *(f32*)((u8*)arg2 + 4);
-    *(f32*)((u8*)arg0 + 0x40) = *(f32*)((u8*)arg2 + 8);
+    *(void**)arg0 = lbl_80333868;
+    *(f32*)((u8*)arg0 + 0x3C) = y;
+    *(f32*)((u8*)arg0 + 0x40) = z;
     return arg0;
 }
 
