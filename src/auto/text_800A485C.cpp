@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+extern u32 lbl_8055DDE0;
 extern "C" s32 fn_800A58E0(void *, s32, s32, s32, s32);
 extern "C" void fn_800D120C(void *, void *, s32);
 extern "C" u8 lbl_802F3408[];
