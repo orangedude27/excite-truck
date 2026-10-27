@@ -54,17 +54,17 @@ extern u32 lbl_80559950;
 extern u32 lbl_80329DA8[];
 extern u8 lbl_802F6990[];
 
-extern char lbl_80559930[];
+extern char lbl_80559930;
 extern char lbl_80329B28[];
 extern void OSPanic(const char *, s32, const char *, ...);
 BOOL ARCInitHandle(void *bin, ARCHandle *handle) {
     u32 magic = *(u32 *)bin;
     u8 *base = (u8 *)bin;
-    u8 *fst;
     u32 entries;
+    u8 *fst;
 
     if (magic != 0x55AA382D) {
-        OSPanic(lbl_80559930, 0x47, lbl_80329B28);
+        OSPanic((const char *)&lbl_80559930, 0x47, lbl_80329B28);
     }
     handle->archiveStartAddr = bin;
     fst = base + *(u32 *)(base + 4);
