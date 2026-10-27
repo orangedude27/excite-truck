@@ -100,7 +100,7 @@ extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hb
     return 1;
 }
 
-extern "C" char lbl_80327880[], lbl_803278AC[], lbl_803278D8[], lbl_80559908[], lbl_80559910[], lbl_80559918[];
+extern "C" char lbl_80327880[], lbl_803278AC[], lbl_803278D8[], lbl_80559908[], lbl_80559910[];
 extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(void* arg0, void* arg1, int arg2, int arg3) {
     unsigned char* base = (unsigned char*)*(void**)((char*)arg0 + 4);
     unsigned char* data = base + 8;
