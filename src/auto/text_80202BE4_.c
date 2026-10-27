@@ -14,7 +14,7 @@ extern void fn_802CA294(s32);
 extern void fn_802D050C(s32);
 extern void fn_802D30DC(s32);
 extern void fn_802D9230(void);
-extern void fn_80203B20(void);
+extern void fn_80203B20();
 extern void fn_802D050C_var(void);
 #define fn_802D050C(...) fn_802D050C_var()
 extern u32 fn_80202BE4(void);
@@ -397,68 +397,68 @@ void fn_80203380(void *argp) {
     fn_802C8E48();
     fn_802C8D74();
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
-    struct lbl_80488B88_t* var_r28;
-    s32 temp_r0;
-    s32 temp_r5;
-    s32 temp_r6;
-    s32 temp_r7;
-    s32 temp_r8;
-    s32 temp_r9;
-    s32 temp_r10;
-    s32 temp_r11;
-    s32 temp_r12;
-    s32 temp_r29;
-    s32 temp_r30;
-    s32 temp_r31;
+    struct lbl_80488B88_t* dest;
+    s32 w0;
+    s32 w1;
+    s32 w2;
+    s32 w3;
+    s32 w4;
+    s32 w5;
+    s32 w6;
+    s32 w7;
+    s32 w8;
+    s32 w9;
+    s32 w10;
+    s32 w11;
 
     lbl_8055ED1C = -1;
     fn_802C8BD0(-1);
-    temp_r29 = arg1->w[0];
-    temp_r30 = arg1->w[1];
-    temp_r31 = arg1->w[2];
-    temp_r12 = arg1->w[3];
-    temp_r11 = arg1->w[4];
-    temp_r10 = arg1->w[5];
-    temp_r9 = arg1->w[6];
-    temp_r8 = arg1->w[7];
-    temp_r7 = arg1->w[8];
-    temp_r6 = arg1->w[9];
-    temp_r5 = arg1->w[10];
-    temp_r0 = arg1->w[11];
-    var_r28 = &lbl_80488B88;
-    var_r28->w[0] = temp_r29;
-    var_r28->w[1] = temp_r30;
-    var_r28->w[2] = temp_r31;
-    var_r28->w[3] = temp_r12;
-    var_r28->w[4] = temp_r11;
-    var_r28->w[5] = temp_r10;
-    var_r28->w[6] = temp_r9;
-    var_r28->w[7] = temp_r8;
-    var_r28->w[8] = temp_r7;
-    var_r28->w[9] = temp_r6;
-    var_r28->w[10] = temp_r5;
-    var_r28->w[11] = temp_r0;
-    fn_802BE07C(arg0 + 0x24, (s32)fn_802036E4, temp_r5, temp_r6, temp_r7, temp_r8, temp_r9, temp_r10);
+    dest = &lbl_80488B88;
+    w0 = arg1->w[0];
+    w1 = arg1->w[1];
+    w2 = arg1->w[2];
+    w3 = arg1->w[3];
+    w4 = arg1->w[4];
+    w5 = arg1->w[5];
+    w6 = arg1->w[6];
+    w7 = arg1->w[7];
+    w8 = arg1->w[8];
+    w9 = arg1->w[9];
+    w10 = arg1->w[10];
+    w11 = arg1->w[11];
+    dest->w[0] = w0;
+    dest->w[1] = w1;
+    dest->w[2] = w2;
+    dest->w[3] = w3;
+    dest->w[4] = w4;
+    dest->w[5] = w5;
+    dest->w[6] = w6;
+    dest->w[7] = w7;
+    dest->w[8] = w8;
+    dest->w[9] = w9;
+    dest->w[10] = w10;
+    dest->w[11] = w11;
+    fn_802BE07C(arg0 + 0x24, (s32)fn_802036E4, w10, w9, w8, w7, w6, w5);
     fn_802C8D74();
 }
-
 #pragma scheduling on
 void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
     f32 var_f0;
     f32 var_f1;
     f32 var_f2;
     f32 var_f3;
+    volatile f32* input = (volatile f32*)arg0;
 
     if (fn_80202BE4() == 0) {
         fn_802D3050(1);
         fn_802D306C(0x5A);
-        var_f2 = ((f32*)arg0)[1];
+        var_f2 = input[1];
         var_f0 = lbl_80563130;
-        var_f3 = ((f32*)arg0)[0];
+        var_f3 = input[0];
         var_f0 = var_f2 + var_f0;
-        var_f1 = ((f32*)arg0)[2];
+        var_f1 = input[2];
         arg2->x = var_f3;
         arg2->z = var_f1;
         arg2->y = var_f0;
@@ -467,7 +467,7 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
         fn_802D306C(0);
     }
 }
-#pragma scheduling reset
+#pragma scheduling on
 extern s32 fn_8012C33C(char *);
 extern void fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_802CAC28(const char *, s32);
