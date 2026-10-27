@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern void __GXSetDirtyState(void);
 extern void __GXFlushTextureState(void);
 extern void GXCPInterruptHandler(short, void *);
 typedef void (*GXFifoIntrHandler)(short, void *);
@@ -3365,6 +3366,32 @@ void GXSetFieldMode(s32 mode, s32 field) {
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = mode | 0x68000000;
     __GXFlushTextureState();
+}
+
+extern void GXSetCPUFifo(void *);
+extern void *memcpy(void *, const void *, unsigned int);
+extern char lbl_8037C108[];
+u32 GXEndDisplayList(void) {
+    void *fifo = lbl_8037C108;
+    u8 wrap;
+    void *data;
+    GXGetCPUFifo(fifo);
+    wrap = GXGetFifoWrap(fifo);
+    GXSetCPUFifo((u8 *)fifo + 0x680);
+    data = __GXData;
+    if (*((u8 *)data + 0x5F9) != 0) {
+        int interruptState = OSDisableInterrupts();
+        unsigned int *data2 = *(unsigned int * volatile *)&__GXData;
+        unsigned int saved = *(unsigned int *)((u8 *)data2 + 8);
+        memcpy(data2, (u8 *)fifo + 0x80, 0x600);
+        *(unsigned int *)((u8 *)data2 + 8) = saved;
+        ((void (*)(int))OSRestoreInterrupts)(interruptState);
+    }
+    *((u8 *)data + 0x5F8) = 0;
+    if (wrap == 0) {
+        return GXGetFifoCount(fifo);
+    }
+    return 0;
 }
 
 void GXCallDisplayList(unsigned int arg0, unsigned int arg1) {
