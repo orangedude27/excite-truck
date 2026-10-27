@@ -2357,7 +2357,7 @@ extern "C" void fn_801A22A4(void* arg0) {
     ((Fn801E44F4)fn_801E44F4)(words, 0x50000000, value9, tailX, tailY, tailZ);
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     extern f32 lbl_80562300;
     extern char lbl_80333868[];
@@ -2391,7 +2391,7 @@ extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 far
     *(f32*)((u8*)arg0 + 0x40) = z;
     return arg0;
 }
-
+#pragma scheduling on
 extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
