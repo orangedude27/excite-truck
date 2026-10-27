@@ -369,7 +369,7 @@ static inline s32 _ES_GetTitleId(s32 *fd, u64 *tidOut) {
 }
 
 void fn_8004E3F0(void) {
-    u8 views[256] ALIGN(32);
+    u8 views[0xD8] ALIGN(32);
     u64 titleId ALIGN(32);
     u32 count = 1;
     s32 fd = -1;
