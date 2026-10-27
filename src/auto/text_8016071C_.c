@@ -55,7 +55,95 @@ void fn_801607F8(void) {
     lbl_8042FD60[3] = -1;
     lbl_8042FD60[4] = -1;
 }
-#pragma dont_inline off
+
+extern void **__AXFXGetLfoSinTable_801769CC(void);
+extern void *fn_8001285C(void *);
+extern void *fn_80204EA0(const char *);
+extern void *fn_80131808(const char *);
+extern void fn_80131818(void *);
+extern void fn_802E30C8(const char *, ...);
+extern const char lbl_8055A0A8[];
+typedef int (*Fn80160850Call)(void *, void *);
+typedef int (*Fn80160850NamedCall)(void *, const char *);
+#pragma cplusplus on
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+extern "C" void fn_80160850(void) {
+    class Audio {
+    public:
+        virtual void a0();
+        virtual void a1();
+        virtual void a2();
+        virtual void a3();
+        virtual void a4();
+        virtual void a5();
+        virtual void a6();
+        virtual void a7();
+        virtual void a8();
+        virtual void a9();
+        virtual void a10();
+        virtual void a11();
+        virtual void a12();
+        virtual void a13();
+        virtual void a14();
+        virtual void a15();
+        virtual void a16();
+        virtual void a17();
+        virtual void a18();
+        virtual void a19();
+        virtual void a20();
+        virtual int apply(void *);
+    };
+    class Resource {
+    public:
+        virtual int get(const char *);
+        virtual void r1();
+        virtual int validate(const char *);
+    };
+    const char *base;
+    int succeeded;
+    const char *name;
+    const char *key;
+    Audio *audio;
+    void *parameter;
+    Resource *resource;
+    int result;
+
+    base = lbl_8032F4C8;
+    fn_801607F8();
+    name = base + 0x10;
+    succeeded = 0;
+    key = (const char *)&lbl_8055A0A8;
+    audio = (Audio *)*((void **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20));
+    parameter = fn_80204EA0(base + 0x1C);
+    result = audio->apply(parameter);
+    if (((unsigned int)(-result | result) >> 31) != 0) {
+        result = audio->apply(parameter);
+        fn_8016071C((Obj *)result);
+        succeeded = 1;
+    } else {
+        resource = (Resource *)fn_80131808(name);
+        if (resource != 0) {
+            if (resource->validate(key) != 0) {
+                result = resource->get(key);
+                fn_8016071C((Obj *)result);
+                succeeded = 1;
+            } else {
+                fn_802E30C8(base + 0x28, key, name);
+            }
+            fn_80131818(resource);
+        } else {
+            fn_802E30C8(base + 0x68, name);
+        }
+    }
+    if (succeeded == 0) {
+        fn_802E30C8(base + 0x88);
+        fn_801607BC();
+    }
+}
+#pragma use_lmw_stmw on
+#pragma scheduling on
+#pragma cplusplus off
 
 #pragma dont_inline on
 int fn_80160998(int arg0) {
