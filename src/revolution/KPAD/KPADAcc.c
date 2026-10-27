@@ -1,6 +1,7 @@
 #include "src/review_kpad.h"
 #include "src/review___kpad.h"
 
+extern f64 fn_8002F234(f32);
 extern void reset_kpad(KPADInsideStatus*);
 extern u16 lbl_80560BF4, lbl_80560BF6, lbl_80560BF8;
 extern u16 lbl_80560BFC, lbl_80560BFE, lbl_80560C00;
@@ -34,42 +35,27 @@ static void calc_acc_horizon(KPADInsideStatus* kp, f32* acc, f32 acc2) {
 
 static void calc_acc_vertical(KPADInsideStatus* kp) {
     f32 f1, vx, vy, ax, ay;
-    f1 = fn_8002F234(kp->hard_acc.x * kp->hard_acc.x + kp->hard_acc.y * kp->hard_acc.y);
-    if (f1 == 0.0f || f1 >= lbl_80560BF0) {
-        return;
-    }
+    f1 = (f32)fn_8002F234(kp->hard_acc.x * kp->hard_acc.x + kp->hard_acc.y * kp->hard_acc.y);
+    if (f1 == 0.0f || f1 >= lbl_80560BF0) return;
     ax = kp->hard_acc.x / f1;
     ay = kp->hard_acc.y / f1;
-
-    if (f1 > lbl_80560BE4) {
-        f1 = lbl_80560BF0 - f1;
-    }
+    if (f1 > lbl_80560BE4) f1 = lbl_80560BF0 - f1;
     f1 *= f1 * lbl_80558EA4;
-
     vx = kp->accXY_nrm_hori.x * ax + kp->accXY_nrm_hori.y * ay;
     vy = kp->accXY_nrm_hori.y * ax - kp->accXY_nrm_hori.x * ay;
     ax = (vx - kp->acc_horizon.x) * f1 + kp->acc_horizon.x;
     ay = (vy - kp->acc_horizon.y) * f1 + kp->acc_horizon.y;
-
-    f1 = fn_8002F234(ax * ax + ay * ay);
-    if (f1 == 0.0f) {
-        return;
-    }
+    f1 = (f32)fn_8002F234(ax * ax + ay * ay);
+    if (f1 == 0.0f) return;
     kp->acc_horizon.x = ax / f1;
     kp->acc_horizon.y = ay / f1;
-
     kp->ah_circle_pos.x += (kp->acc_horizon.x - kp->ah_circle_pos.x) * lbl_80558EAC;
     kp->ah_circle_pos.y += (kp->acc_horizon.y - kp->ah_circle_pos.y) * lbl_80558EAC;
-
     vx = kp->acc_horizon.x - kp->ah_circle_pos.x;
     vy = kp->acc_horizon.y - kp->ah_circle_pos.y;
     if (vx * vx + vy * vy <= lbl_8055D994) {
-        if (kp->ah_circle_ct) {
-            --kp->ah_circle_ct;
-        }
-    } else {
-        kp->ah_circle_ct = lbl_80558EB0;
-    }
+        if (kp->ah_circle_ct) --kp->ah_circle_ct;
+    } else kp->ah_circle_ct = lbl_80558EB0;
 }
 
 static void read_kpad_acc_head(KPADInsideStatus* kp) {
@@ -124,6 +110,7 @@ void read_kpad_acc(KPADInsideStatus* kp, KPADUnifiedWpadStatus* uwp, u32 dev_typ
     f32 acc_scale_fs_x;
     f32 acc_scale_fs_y;
     f32 acc_scale_fs_z;
+    f32 v1, v2, v3;
 
     acc_scale_x = lbl_80560C04;
     acc_scale_y = lbl_80560C04;
