@@ -222,7 +222,6 @@ void *fn_802E6FBC(void) {
     unsigned int amount;
     void (*callback)(int);
     void *result;
-
     allocation = (unsigned char *)fn_801284E8(lbl_8034D6B8, size);
     memset(allocation, 0, 0x20D0);
     *(unsigned int *)(allocation + 0x2040) = 0x4D435348;
@@ -230,7 +229,6 @@ void *fn_802E6FBC(void) {
     *(unsigned int *)(allocation + 0x2048) = 0x20D0;
     *(unsigned int *)(allocation + 0x204C) = size - 0x20D0;
     *(unsigned int *)(allocation + 0x2054) = lbl_8055FFC0;
-
     memset(allocation + 0x20D0, 0, size - 0x20D0);
     data = allocation + 0x20D0;
     entry = lbl_804FC8B0;
@@ -250,13 +248,12 @@ loop_body:
         callback(4);
     amount = *(unsigned int *)(entry + 0xC);
     i++;
-    entry += 0x14;
     data += amount;
+    entry += 0x14;
     descriptor += 0xC;
 loop_check:
     if (i < lbl_8055FFC0)
         goto loop_body;
-
     *(unsigned int *)(allocation + 0x2050) =
         fn_80132E7C(allocation + 0x20D0, *(unsigned int *)(allocation + 0x204C));
     fn_802E30C8(lbl_8034D784, (size + 0x1FFF) / 0x2000, size);
