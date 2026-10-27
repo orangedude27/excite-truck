@@ -263,11 +263,13 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
         float z_val;
         float y_val;
         float x_val;
+        int size;
 
         x_val = *(float *)arg2;
         y_val = *(float *)((char *)arg2 + 4);
         z_val = *(float *)((char *)arg2 + 8);
         tmp[0] = x_val;
+        size = 0x20;
         tmp[1] = y_val;
         tmp[2] = z_val;
         tmp[3] = *(float *)((char *)arg4 + 0x118);
@@ -275,7 +277,7 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
         tmp[5] = *(float *)((char *)arg4 + 0x120);
         *(short *)((char *)tmp + 0x18) = *(short *)((char *)arg4 + 0x6C);
         *(int *)((char *)tmp + 0x1C) = *(int *)((char *)arg0 + 0x238);
-        fn_801796CC(10, tmp, sizeof(tmp));
+        fn_801796CC(10, tmp, size);
     }
     if (*(int *)((char *)arg0 + 0x230) == 2 && *(void **)((char *)arg0 + 0x22C) != arg4 && arg4 != 0) {
         int is_car = 0;
@@ -461,8 +463,10 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECCrossProduct(const void *, const void *, float *);
 extern float PSVECSquareDistance(const void *, const void *);
-extern void fn_8017A580(void *, float, float, float, float, float, float, float);
+extern void fn_8017A580(void *);
 extern float lbl_80562AAC, lbl_80562AB8, lbl_80562AC8, lbl_80562ACC, lbl_80562AD0, lbl_80562AD4;
+#pragma paired off
+#pragma paired_single off
 void fn_801D4598(void *arg0, float farg0) {
     char *p = (char *)arg0;
     float sp8[3], dot, scale, x, y, z;
@@ -496,7 +500,7 @@ void fn_801D4598(void *arg0, float farg0) {
         *(float *)(p + 0x64) = *(float *)(p + 0x21C);
         *(float *)(p + 0x60) = *(float *)(p + 0x218);
         *(float *)(p + 0x68) = *(float *)(p + 0x220);
-        fn_8017A580(arg0, z, *(float *)(p + 0x218), sp8[2] * lbl_80562AD4, lbl_80562AD4, z, y, x);
+        fn_8017A580(arg0);
     } else fn_801D411C(arg0);
 }
 
