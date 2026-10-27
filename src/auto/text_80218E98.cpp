@@ -556,7 +556,29 @@ extern "C" void fn_802192A0(void) {
 
 #pragma dont_inline on
 extern "C" s32 fn_802192A4(void *, s32) { return 0; }
-#pragma dont_inline reset
+
+extern "C" int memcmp(const void *, const void *, size_t);
+extern "C" void *memcpy(void *, const void *, size_t);
+#pragma use_lmw_stmw off
+extern "C" void fn_802192AC(void *arg0) {
+    s32 i;
+    void *dst;
+    void *src;
+    size_t size;
+    char *p = (char *)arg0;
+
+    for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x230); p += 0x10, i++) {
+        size = *(size_t *)(p + 0x38);
+        dst = *(void **)(p + 0x3C);
+        src = *(void **)(p + 0x30);
+        if (memcmp(src, dst, size) != 0) {
+            memcpy(dst, src, size);
+            ((Fn80229900VTable *)arg0)->Call(*(s32 *)(p + 0x34), *(s32 *)(p + 0x30));
+        }
+    }
+    ((void (*)(void *))fn_80219044)(arg0);
+}
+#pragma use_lmw_stmw reset
 extern "C" void fn_8021889C(s32, s32, f32);
 extern "C" void fn_80218968(s32, s32, f32);
 
@@ -1760,6 +1782,8 @@ extern "C" void fn_8021CEAC(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8021CF9C(void *arg0) {
     f32 value = (f32)*(s32 *)*(void **)((u8 *)arg0 + 0x25C);
     f32 scaled = value * *(f32 *)((u8 *)arg0 + 0x254);
@@ -1768,11 +1792,11 @@ extern "C" void fn_8021CF9C(void *arg0) {
     sprintf((char *)arg0 + 0x264, *(const char **)((u8 *)arg0 + 0x260), converted);
     fn_80130568((char *)arg0 + 0x264);
     fn_80219718(arg0);
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
-    }
 }
-
+#pragma scheduling on
+#pragma pop
 void fn_8021CF9C(void);
 void fn_8021AC24(void *, int, int, int);
 extern "C" void fn_8021CF9C(void);
@@ -2702,17 +2726,35 @@ extern "C" s32 fn_80220948(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_80220A50(void *arg0, s32 arg1) {
+    struct Dispatch {
+        virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
+        virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
+        virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
+        virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
+        virtual s32 v16(); virtual s32 v17(); virtual s32 v18(); virtual s32 v19();
+        virtual s32 v20(); virtual s32 v21(); virtual s32 v22(); virtual s32 v23();
+        virtual s32 v24(); virtual s32 v25(); virtual s32 v26(); virtual s32 v27();
+        virtual s32 get();
+    };
     *(u8 *)((u8 *)arg0 + 0x258) = 1;
-    s32 field4 = *(s32 *)((u8 *)arg0 + 4);
-    s32 field250 = *(s32 *)((u8 *)arg0 + 0x250);
-    s32 (*fn)(void) = ((s32 (**)(void))(*(void **)arg0))[0x78 / 4];
-    s32 r = field250 + ((s32)(((s32)(arg1 - field4 - 5) * (s32)(*(s32 *)((u8 *)arg0 + 0x254) - field250)) / (fn() - 0xA)));
-    if (r < field250)
-        r = field250;
-    s32 top = *(s32 *)((u8 *)arg0 + 0x254) - 1;
-    if (r >= top)
-        r = top;
-    *(s32 *)*(void **)((u8 *)arg0 + 0x244) = r;
+    register s32 frame = arg1;
+    register s32 field4 = *(s32 *)((u8 *)arg0 + 4);
+    register s32 field250 = *(s32 *)((u8 *)arg0 + 0x250);
+    register s32 duration = ((Dispatch *)arg0)->get();
+    register s32 range = *(volatile s32 *)((u8 *)arg0 + 0x254);
+    register s32 frameDiff = frame - field4;
+    register s32 time = frameDiff - 5;
+    register s32 rangeDiff = range - field250;
+    register s32 product = rangeDiff * time;
+    duration = duration - 10;
+    register s32 quotient = product / duration;
+    register s32 result = field250 + quotient;
+    if (result < field250)
+        result = field250;
+    register s32 limit = *(volatile s32 *)((u8 *)arg0 + 0x254) - 1;
+    if (result >= limit)
+        result = limit;
+    *(s32 *)*(void **)((u8 *)arg0 + 0x244) = result;
 }
 
 extern "C" void fn_80220AFC(void *arg0) {
@@ -5095,6 +5137,42 @@ extern "C" void fn_8022897C(void *arg0) {
 extern "C" void fn_80228990(void) {
 }
 
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_80228994(void *arg0) {
+    class CopyDispatch {
+    public:
+        virtual void v0();
+        virtual void copy(char *);
+    };
+    struct Object {
+        u8 pad[0x244];
+        char *source;
+        char text[0x20];
+        CopyDispatch *dispatch;
+    };
+    Object *object = (Object *)arg0;
+    if (object->source != 0 && stricmp(object->text, object->source) != 0) {
+        u8 c;
+        char *source = object->source;
+        s32 count = 0x20;
+        char *destination = object->text;
+        goto copy_loop;
+    count_loop:
+        count--;
+        if (count > 0) goto copy_loop;
+        destination[-1] = 0;
+        goto copy_done;
+    copy_loop:
+        c = *source++;
+        *destination++ = c;
+        if ((s8)c != 0) goto count_loop;
+    copy_done:
+        object->dispatch->copy(object->text);
+    }
+    fn_80228AEC((s32)object, fn_80214D48());
+}
+#pragma pop
 extern "C" f32 fn_80214D48(void);
 extern "C" void fn_80228AEC(s32, f32);
 extern "C" void fn_802C86F0(void *, s32, s32, s32, s32);
