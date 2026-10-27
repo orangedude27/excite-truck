@@ -9550,6 +9550,23 @@ UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
     return 1;
 }
 
+void L2CA_Deregister(UINT16 psm) {
+    extern void *l2cu_find_rcb_by_psm(UINT16);
+    extern void fn_8008EC30(void *);
+    void *rcb;
+    if (lbl_803C4040[0] >= 3) {
+        fn_80070954(0x80002, lbl_80317CC8, psm);
+    }
+    rcb = l2cu_find_rcb_by_psm(psm);
+    if (rcb != 0) {
+        fn_8008EC30(rcb);
+        return;
+    }
+    if (lbl_803C4040[0] >= 2) {
+        fn_80070954(0x80001, lbl_80317CFC, psm);
+    }
+}
+
 BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT16 status) {
  void *lcb,*ccb; s16 info[2];
  if(lbl_803C4040[0]>=3)fn_80070984(0x80002,lbl_80317C20+0x26C);
