@@ -15,7 +15,7 @@ struct Dummy {
 void fn_802CCBC0(void) {}
 
 extern void *memcpy(void *, const void *, unsigned int);
-extern float PSVECDotProduct(float *, float *, ...);
+extern float PSVECDotProduct(float *, float *);
 int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
     float box[4];
     float delta[3];
@@ -32,7 +32,7 @@ int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
     delta[0] = arg1[0] - *(float *)((char *)arg0 + 0x10);
     delta[1] = arg1[1] - *(float *)((char *)arg0 + 0x14);
     delta[2] = arg1[2] - *(float *)((char *)arg0 + 0x18);
-    dot = ((float (*)(float *, float *))PSVECDotProduct)(delta, delta);
+    dot = PSVECDotProduct(delta, delta);
     dot = arg3 * (arg2 + dot);
     mask = 0;
 
