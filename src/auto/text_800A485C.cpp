@@ -1375,7 +1375,7 @@ extern "C" s32 VFiPFCACHE_SearchForFreePage(void *arg0, void **arg1) {
     return 0;
 }
 
-extern "C" s32 fn_800A7B34(void *);
+extern "C" s32 fn_800A7B34(void *, void *);
 extern "C" s32 fn_800A8504(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 temp_r0;
     s32 temp_r3;
