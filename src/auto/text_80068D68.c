@@ -11527,7 +11527,7 @@ void *l2cu_allocate_lcb(u8 *addr) {
     u16 id;
     s32 i;
     for (i = 0, lcb = lbl_803C4040 + 8; i < 4; i++, lcb += 0x5C) {
-        if (!lcb[0]) {
+        if (lcb[0] == 0) {
             memset(lcb, 0, 0x5C);
             lcb[0] = 1;
             memcpy(lcb + 0x2A, addr, 6);
@@ -11541,7 +11541,7 @@ void *l2cu_allocate_lcb(u8 *addr) {
             lcb[0x31] = 0;
             id = *(u16 *)(lbl_803C4040 + 0x7B8);
             *(u16 *)(lbl_803C4040 + 0x7B8) = id + 1;
-            ((void (*)(u16, void *, u32))l2c_link_adjust_allocation)(id, 0, 0);
+            l2c_link_adjust_allocation();
             return lcb;
         }
     }
@@ -11813,6 +11813,37 @@ void l2cu_send_peer_config_rsp(void *arg0, void *arg1)
         ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(
             *(void **)(ccb + 0x10), 0, packet);
     }
+}
+
+void l2cu_send_peer_disc_req(void *p_ccb) {
+    u32 id;
+    void *p_buf;
+
+    id = *(u8 *)(*(u8 **)((u8 *)p_ccb + 0x10) + 0x31) + 1;
+    *(u8 *)(*(u8 **)((u8 *)p_ccb + 0x10) + 0x31) = id;
+    *(u8 *)((u8 *)p_ccb + 0x35) = id;
+    p_buf = ((void *(*)(u16, u8, u8, u8, void *))l2cu_build_header)(
+        *(u16 *)(*(u8 * volatile *)((u8 *)p_ccb + 0x10) + 0x28),
+        4,
+        6,
+        id,
+        *(u8 **)((u8 *)p_ccb + 0x10)
+    );
+    if (p_buf == NULL) {
+        if (lbl_803C4040[0] >= 2)
+            fn_8007093C(0x80001, lbl_80319174);
+        return;
+    }
+
+    *(u8 *)((u8 *)p_buf + 0x14) = *(u16 *)((u8 *)p_ccb + 0x16);
+    *(u8 *)((u8 *)p_buf + 0x15) = *(u16 *)((u8 *)p_ccb + 0x16) >> 8;
+    *(u8 *)((u8 *)p_buf + 0x16) = *(u16 *)((u8 *)p_ccb + 0x14);
+    *(u8 *)((u8 *)p_buf + 0x17) = *(u16 *)((u8 *)p_ccb + 0x14) >> 8;
+    *(u16 *)((u8 *)p_buf + 6) = 0;
+    GKI_enqueue((BUFFER_Q *)(*(u8 **)((u8 *)p_ccb + 0x10) + 0x44), p_buf);
+    ((void (*)(void *, void *, void *))l2c_link_check_send_pkts)(
+        *(u8 **)((u8 *)p_ccb + 0x10), NULL, NULL
+    );
 }
 
 int l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
@@ -12118,14 +12149,16 @@ void l2cu_device_reset(void) {
 
 extern char lbl_80319218[];
 void l2cu_create_conn_after_switch(void *arg0) {
-    UINT32 var_r7;
     UINT8 temp_r4;
+    UINT32 allow_switch;
+    UINT32 var_r7;
     UINT8 var_r5;
     UINT8 var_r6;
     void *temp_r3;
 
     temp_r4 = *((UINT8 *)fn_8007A3A4());
     *(UINT32 *)((UINT8 *)arg0 + 4) = 3;
+    allow_switch = (temp_r4 >> 5) & 1;
     temp_r3 = BTM_InqDbRead(*((BD_ADDR *)&((UINT8 *)arg0)[0x2A]));
     if (temp_r3 != NULL) {
         var_r5 = *((UINT8 *)temp_r3 + 0xB);
@@ -12137,7 +12170,7 @@ void l2cu_create_conn_after_switch(void *arg0) {
         var_r7 = 0;
     }
     if (!btsnd_hcic_create_conn((UINT8 *)arg0 + 0x2A, 0x18, var_r5, var_r6,
-                                var_r7, (temp_r4 >> 5) & 1)) {
+                                var_r7, allow_switch)) {
         if (lbl_803C4040[0] >= 1) {
             fn_8007093C(0x80000, lbl_80319218);
         }
