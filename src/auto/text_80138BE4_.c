@@ -78,6 +78,7 @@ float fn_80138DF4(void *arg0) {
     return var_f31;
 }
 #pragma pop
+#pragma scheduling on
 void fn_80138F38(void *arg0) {
     float sp8;
     struct {
