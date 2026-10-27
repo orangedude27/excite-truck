@@ -7046,10 +7046,12 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
         *outSize = (combined + 1) * factor * (1U << (capped - 9));
     }
     *outBlockSize = 0x200;
-    return 0;
-}
+          return 0;
+  }
 
-extern "C" s32 fn_800BB3F4(s32 arg0) {
+extern "C" s32 fn_800BABD0(void *arg0, s32 arg1, s32 *arg2, s32 arg3) { return 0; }
+
+  extern "C" s32 fn_800BB3F4(s32 arg0) {
     u8 buffer[0x28];
     void* context = buffer;
     u32 flags;
@@ -10202,19 +10204,52 @@ void fn_800C2DBC(s32 *arg0, s32 *arg1, s32 *arg2) {
 }
 
 extern "C" s32 lbl_8031D778[];
-void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
-    out[0] = in[0]; negOut[0] = 0;
-    out[1] = in[1]; negOut[-1] = 0;
-    out[2] = in[2]; negOut[-2] = 0;
-    out[3] = in[3]; negOut[-3] = 0;
-    out[4] = in[4]; negOut[-4] = 0;
-    out[5] = in[5]; negOut[-5] = 0;
-    out[6] = ((s64)in[6] * lbl_8031D778[0]) >> 20;
-    negOut[-6] = ((s64)in[6] * lbl_8031D778[1]) >> 20;
-    out[7] = ((s64)in[7] * lbl_8031D778[2]) >> 20;
-    negOut[-7] = ((s64)in[7] * lbl_8031D778[3]) >> 20;
-    out[8] = ((s64)in[8] * lbl_8031D778[4]) >> 20;
-    negOut[-8] = ((s64)in[8] * lbl_8031D778[5]) >> 20;
+extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
+    const s32 *k = lbl_8031D778;
+    s32 zero = 0;
+    s32 value;
+    s32 coefficient;
+    s32 result;
+    s32 negative;
+    s64 product;
+    s64 second;
+
+    value = in[0]; out[0] = value; negOut[0] = zero;
+    value = in[1]; out[1] = value; negOut[-1] = zero;
+    value = in[2]; out[2] = value; negOut[-2] = zero;
+    value = in[3]; out[3] = value; negOut[-3] = zero;
+    value = in[4]; out[4] = value; negOut[-4] = zero;
+    value = in[5]; out[5] = value; negOut[-5] = zero;
+
+    value = in[6];
+    coefficient = *k++;
+    product = (s64)value * coefficient;
+    coefficient = *k++;
+    second = (s64)value * coefficient;
+    result = (s32)(product >> 20);
+    negative = (s32)(second >> 20);
+    out[6] = result;
+    negOut[-6] = negative;
+
+    value = in[7];
+    coefficient = *k++;
+    product = (s64)value * coefficient;
+    coefficient = *k++;
+    second = (s64)value * coefficient;
+    result = (s32)(product >> 20);
+    negative = (s32)(second >> 20);
+    out[7] = result;
+    negOut[-7] = negative;
+
+    value = in[8];
+    coefficient = *k++;
+    product = (s64)value * coefficient;
+    coefficient = *k++;
+    second = (s64)value * coefficient;
+    result = (s32)(product >> 20);
+    negative = (s32)(second >> 20);
+    out[8] = result;
+    negOut[-8] = negative;
 }
 
 extern "C" const s32 lbl_8031D790[];
@@ -12351,6 +12386,52 @@ extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hb
     } while (i < *(u16 *)(arg0 + 0x10));
     return 0;
 }
+
+#pragma push
+#pragma small_data on
+void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool arg0) {
+    u8 *self = (u8 *)this;
+    u32 index = 0;
+    void *list = self + 8;
+    void *typeId = &lbl_8055DDE0;
+    struct ParentDispatch { virtual void v0(); virtual void *parent(); };
+    struct TriggerDispatch {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void setTarget(bool);
+    };
+    goto loop_check;
+loop_body:
+    {
+        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(self + 0x18, (u16)index);
+        void *component = *(void **)item;
+        void *node = ((ParentDispatch *)component)->parent();
+        u32 found;
+        goto node_check;
+node_compare:
+        if (node != typeId) goto node_parent;
+        found = 1;
+        goto type_done;
+node_parent:
+        node = *(void **)node;
+node_check:
+        if (node != 0) goto node_compare;
+        found = 0;
+type_done:
+        component = found ? component : 0;
+        if (component != 0) {
+            ((TriggerDispatch *)*(void **)((u8 *)item + 4))->setTarget(arg0);
+        }
+    }
+    ++index;
+loop_check:
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    if (index < *(u16 *)(self + 0x10)) goto loop_body;
+}
+#pragma pop
+
 #pragma pop
 extern "C" void PSMTXConcatArray(const f32*, const f32*, f32*, u32);
 extern "C" void PSMTXMultVec(const f32*, const f32*, f32*);
@@ -16879,18 +16960,24 @@ extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
     u8 *dst = (u8 *)dstArg;
     u32 size = (u32)count;
     u32 words;
+    u32 blocks;
     u32 pattern;
+    u32 adjust;
 
-    while (((u32)dst & 3) != 0) {
+    do {
         *dst++ = (u8)fill;
         size--;
-    }
-    words = size >> 2;
-    pattern = (u32)(u8)fill;
-    pattern |= pattern << 8;
-    pattern |= pattern << 16;
+    } while (((u32)dst & 3) != 0);
+
+    pattern = (u32)fill;
+    pattern |= (u32)fill << 8;
+    pattern |= (u32)fill << 16;
+    pattern |= (u32)fill << 24;
+
     if (size > 3) {
-        u32 blocks = words >> 3;
+        words = size >> 2;
+        blocks = words >> 3;
+        adjust = -(s32)(words << 2);
         if (blocks != 0) {
             do {
                 ((u32*)dst)[0] = pattern;
@@ -16903,17 +16990,16 @@ extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
                 ((u32*)dst)[7] = pattern;
                 dst += 32;
             } while (--blocks != 0);
-            words &= 7;
-        } else {
-            words &= 7;
         }
+        words &= 7;
         while (words != 0) {
             *(u32*)dst = pattern;
             dst += 4;
             words--;
         }
-        size += -(s32)((size >> 2) << 2);
+        size += adjust;
     }
+
     if ((s32)size != 0) {
         u32 bytes = size >> 3;
         if (bytes != 0) {
@@ -16929,7 +17015,6 @@ extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
             size--;
         }
     }
-    return 0;
 }
 
 #pragma push
