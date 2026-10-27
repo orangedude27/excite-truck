@@ -27,6 +27,7 @@ void fn_80131818(void*);
 void fn_802E317C(const char*, ...);
 
 int stricmp(const char*, const char*);
+extern void qsort(void *, u32, u32, int (*)(const void *, const void *));
 const char* fn_80008158(s32);
 void fn_80012794(void);
 void fn_80279488(void);
@@ -43,13 +44,15 @@ DECL_SECTION(".sdata") extern const char lbl_80558980[];
 DECL_SECTION(".sdata") extern const char lbl_80558988[];
 DECL_SECTION(".sdata") extern const char lbl_80558990[];
 void fn_80007DA0(void) {
-    char *base;
     volatile u32 *global;
+    char *base;
+    void *initialConfig;
     u32 index;
 
     base = lbl_802FB6E0;
+    initialConfig = fn_80131808(base + 0x68);
     global = (volatile u32 *)&lbl_8034EF38;
-    global[0x79] = (u32)fn_80131808(base + 0x68);
+    global[0x79] = (u32)initialConfig;
     global[0x78] = 0;
     index = 0;
 
@@ -58,10 +61,10 @@ loop:
         void *config;
         void *entry;
         void *value;
+        u32 count;
 
         config = (void *)global[0x79];
-        entry = ((void *(*)(void *, u32))(*(void ***)config)[3])(config, index);
-        index++;
+        entry = ((void *(*)(void *, u32))(*(void ***)config)[3])(config, index++);
         if (entry == 0) {
             goto done;
         }
@@ -78,15 +81,16 @@ loop:
         value = ((void *(*)(void *, const char *, const char *))(*(void ***)entry)[6])(entry, lbl_80558990, lbl_80558988);
         *(void **)((u8 *)global + global[0x78] * 0xC + 8) = value;
 
-        global[0x78] = global[0x78] + 1;
-        if (global[0x78] < 0x28) {
+        count = global[0x78] + 1;
+        global[0x78] = count;
+        if (count < 0x28) {
             goto loop;
         }
         fn_802E317C(base + 0x84);
     }
 
 done:
-    qsort((void *)global, global[0x78], 0xC, (int (*)(const void *, const void *))fn_80007D94);
+    qsort(&lbl_8034EF38, *(volatile u32 *)((u8 *)&lbl_8034EF38 + 0x1E0), 0xC, (int (*)(const void *, const void *))fn_80007D94);
 }
 
 #pragma dont_inline on
