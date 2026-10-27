@@ -3951,6 +3951,33 @@ extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *arg0) {
     *(s32 *)(arg0 + 0x161C) = 0;
 }
 
+extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
+    void *context;
+    s32 result;
+
+    *arg2 = 0;
+    context = ((void *(*)(void))fn_800B36D4)();
+    fn_800B77C0((u8 *)context + 0x1F90);
+    result = fn_800B6004(context);
+
+    if (result != 0 && (result != 0xB || arg1 != 2)) {
+        fn_800B783C((u8 *)context + 0x1F90);
+        lbl_803D2140[16] = result;
+        *(s32 *)((u8 *)context + 0x1F80) = result;
+    } else {
+        result = fn_800B143C(context, arg0, arg1, (void **)arg2);
+        if (result != 0) {
+            lbl_803D2140[16] = result;
+            *(s32 *)((u8 *)context + 0x1F80) = result;
+        } else {
+            ++*(s32 *)((u8 *)context + 0x161C);
+        }
+    }
+
+    fn_800B783C((u8 *)context + 0x1F90);
+    return result;
+}
+
 extern "C" s32 fn_800B6004(void *);
 extern "C" void fn_800B786C(void *);
 extern "C" void *fn_800B1BDC(void *arg0) {
@@ -16949,28 +16976,27 @@ extern "C" s32 fn_800A4D74(void *arg0, u32 arg1) {
 
 extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
     s16 count = 0;
-    u8 *str;
     struct Data { u8 *pos; u8 *secondary; u32 unk; u32 mode; };
     struct Table { u8 pad[0x54]; s32 (*is_lead)(s8, s32); s32 (*length)(u8 *); };
     Data *data = (Data *)arg0;
     if (data->mode == 1) {
         Table *table = (Table *)lbl_803D2140;
-        str = data->pos;
+        u8 *str = data->pos;
         while (arg1 != 0) {
             if (table->is_lead((s8)*str, 1) != 0)
-                count++;
+                count = (s16)(count + 1);
             count++;
             arg1--;
         }
     } else {
         Table *table = (Table *)lbl_803D2140;
-        str = data->pos;
+        u8 *str = data->pos;
         s16 i = 0;
         while (i < arg1) {
-            s16 len = (s16)table->length(str);
+            s32 len = table->length(str);
             str += len * 2;
             i++;
-            count += len;
+            count += (s16)len;
         }
     }
     data->pos += count;
@@ -16991,6 +17017,35 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
 
 extern "C" u16 fn_800A4F08(void *arg0) {
     return (u16)(*(u32 *)((u8 *)arg0 + 4) - *(u32 *)arg0);
+}
+
+extern "C" u16 VFiPFSTR_StrNumChar(s32 arg0, s32 arg1) {
+    u8 *str;
+    u16 count;
+
+    if ((u32)arg1 == 1U) {
+        str = *(u8 **)arg0;
+    } else {
+        str = *(u8 **)((u8 *)arg0 + 4);
+    }
+
+    if (*(u32 *)((u8 *)arg0 + 0xC) == 1U) {
+        count = 0;
+        while ((s8)*str != 0) {
+            if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)*str, 1) != 0) {
+                str++;
+            }
+            str++;
+            count++;
+        }
+    } else {
+        count = 0;
+        while ((s8)str[0] != 0 || (s8)str[1] != 0) {
+            str += ((s32 (**)(u8 *))((u8 *)lbl_803D2140 + 0x58))[0](str);
+            count++;
+        }
+    }
+    return count;
 }
 
 #pragma dont_inline on
