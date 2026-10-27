@@ -37,6 +37,7 @@ typedef struct {
 
 extern void rfc_port_sm_execute(void *, u16, void *);
 extern char lbl_80319AB0[];
+extern char lbl_80319174[];
 typedef struct uusb_cb_t {
     s32 fd;
     u8 pad4[0x24];
@@ -4443,19 +4444,19 @@ u8 fn_80079514(void) {
 }
 
 void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
-    UINT8 *base = lbl_803C0F78;
+    register UINT8 *base = lbl_803C0F78;
     UINT8 status = p[0];
     if (status == 0) {
-        lbl_803C0F78[0x636] = p[1];
-        *(u16 *)(lbl_803C0F78 + 0x638) = p[2] + (p[3] << 8);
-        lbl_803C0F78[0x63A] = p[4];
-        *(u16 *)(lbl_803C0F78 + 0x63C) = p[5] + (p[6] << 8);
-        *(u16 *)(lbl_803C0F78 + 0x63E) = p[7] + (p[8] << 8);
+        base[0x636] = p[1];
+        *(u16 *)(base + 0x638) = p[2] + (p[3] << 8);
+        base[0x63A] = p[4];
+        *(u16 *)(base + 0x63C) = p[5] + (p[6] << 8);
+        *(u16 *)(base + 0x63E) = p[7] + (p[8] << 8);
         lbl_803C0F78[0x64E] = 4;
         lbl_803C0F78[0x64F] = 4;
     } else {
-        base[0x64F] = status;
-        base[0x64E] = status;
+        lbl_803C0F78[0x64F] = status;
+        lbl_803C0F78[0x64E] = status;
         btu_start_timer(base + 0x574, 1, 1);
         ((void (*)(void))btsnd_hcic_reset)();
         return;
@@ -11543,6 +11544,24 @@ void l2cu_send_peer_config_rsp(void *arg0, void *arg1)
     }
 }
 
+int l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
+    void *p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 4, 7, remote_id);
+    u8 *packet;
+
+    if (p_buf != NULL) {
+        packet = p_buf;
+        packet[0x14] = local_cid;
+        packet[0x15] = local_cid >> 8;
+        packet[0x16] = remote_cid;
+        packet[0x17] = remote_cid >> 8;
+        *(u16 *)(packet + 6) = 0;
+        GKI_enqueue((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_buf);
+        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
+    } else if (lbl_803C4040[0] >= 2) {
+        fn_8007093C(0x80001, lbl_803183B0 + 0xDC4);
+    }
+}
+
 void l2cu_send_peer_echo_rsp(void *arg0, s32 arg1, u8 *arg2, u32 arg3) {
     extern void *l2cu_build_header(u16, u8, u8, s32);
     extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
@@ -13369,21 +13388,28 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
 }
 
 void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 arg2, u32 arg3) {
-    u8 state = *(u8 *)((u8 *)p_mcb + 0x6D);
-    void *p_buf;
-    u8 *p;
-    if (state == 0) state = 0;
-    else state = 1;
-    p_buf = GKI_getpoolbuf(2);
+    UINT8 state = 1;
+    BT_HDR *p_buf;
+    UINT8 *data;
+    UINT8 *p_check;
+
+    if (*((UINT8 *)p_mcb + 0x6D) == 0) {
+        state = 0;
+    }
+    state <<= 1;
+
+    p_buf = (BT_HDR *)GKI_getpoolbuf(2);
     if (p_buf == NULL) return;
-    p = p_buf;
-    *(u16 *)(p + 4) = 9;
-    p[0x11] = (state << 1) | 1 | (credits << 2);
-    p[0x12] = 0xFF;
-    p[0x13] = 1;
-    p[0x14] = arg2;
-    p[0x15] = fn_8009504C(2, p + *(u16 *)(p + 4) + 8, 9);
-    *(u16 *)(p + 2) = 5;
+
+    p_buf->offset = 9;
+    data = (UINT8 *)(p_buf + 1);
+    p_check = data + 13;
+    data[9] = state | 1 | (credits << 2);
+    data[10] = 0xFF;
+    data[11] = 1;
+    data[12] = arg2;
+    *p_check = fn_8009504C(2, (UINT8 *)p_buf + p_buf->offset + 8, 9);
+    p_buf->len = 5;
     rfc_check_send_cmd(p_mcb, p_buf);
 }
 
