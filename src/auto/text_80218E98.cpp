@@ -561,11 +561,11 @@ extern "C" int memcmp(const void *, const void *, size_t);
 extern "C" void *memcpy(void *, const void *, size_t);
 #pragma use_lmw_stmw off
 extern "C" void fn_802192AC(void *arg0) {
-    s32 i;
-    void *dst;
-    void *src;
-    size_t size;
     char *p = (char *)arg0;
+    size_t size;
+    void *src;
+    void *dst;
+    s32 i;
 
     for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x230); p += 0x10, i++) {
         size = *(size_t *)(p + 0x38);
