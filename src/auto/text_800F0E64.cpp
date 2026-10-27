@@ -326,6 +326,41 @@ done:
     return 0;
 }
 
+extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void*);
+extern "C" void fn_800E402C(void*);
+extern "C" void fn_800E4064(void*);
+extern "C" void SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(void*, int);
+extern "C" void Release__Q46nw4hbm3snd6detail7ChannelFv(void*);
+extern "C" const char lbl_803243F0[];
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void* arg0, int arg1) {
+    UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(arg0);
+    u32 irq = OSDisableInterrupts();
+    fn_800E402C(Instance__15EmissionManagerFv());
+    void* channel = *(void**)((u8*)arg0 + 0xB8);
+    while (channel != 0) {
+        if (*((u8*)channel + 0x3A) != 0) {
+            if (arg1 >= 0) {
+                int valid = 0;
+                if (arg1 >= 0 && arg1 <= 0x7F) {
+                    valid = 1;
+                }
+                if (valid == 0) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x10E,
+                                                 lbl_803243F0, arg1, 0, 0x7F);
+                }
+                SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(
+                    (u8*)channel + 8, (u8)arg1);
+            }
+            Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
+        }
+        channel = *(void**)((u8*)channel + 0xE4);
+    }
+    fn_800E4064(Instance__15EmissionManagerFv());
+    OSRestoreInterrupts(irq);
+}
+#pragma pop
 extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void *arg0, u8 arg1) {
     u32 token = OSDisableInterrupts();
     u8 *track = (u8 *)arg0;
@@ -1289,8 +1324,8 @@ extern "C" void *__dt__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self, s32 flag)
     if (self != 0) {
         *(void **)((u8 *)self + 8) = (void *)lbl_80325640;
         *(void **)((u8 *)self + 0xC) = (void *)(lbl_80325640 + 0x14);
-        GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(self);
+        ((void (*)(void *, void *))UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase)(
+            GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), self);
         if ((u8 *)self + 0x98 != 0) {
             if ((u8 *)self + 0x9C != 0)
                 __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x9C, 0);
