@@ -9,7 +9,9 @@
 #define btsnd_hcic_reject_esco_conn btsnd_hcic_reject_esco_conn_public
 #define btsnd_hcic_accept_conn btsnd_hcic_accept_conn_public
 #define btsnd_hcic_write_cur_iac_lap btsnd_hcic_write_cur_iac_lap_hcimsgs
+#define btsnd_hcic_exit_sniff_mode btsnd_hcic_exit_sniff_mode_api
 #include "revolution/BTE/stack/include/hcimsgs.h"
+#undef btsnd_hcic_exit_sniff_mode
 #undef btsnd_hcic_write_cur_iac_lap
 #undef btsnd_hcic_accept_conn
 #undef btsnd_hcic_reject_esco_conn
