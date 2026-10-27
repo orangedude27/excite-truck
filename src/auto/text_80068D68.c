@@ -8023,6 +8023,7 @@ void btu_hcif_connection_request_evt(u8 *event) {
 
 void btu_hcif_qos_setup_comp_evt(void *event) {
     register u8 *p = (u8 *)event;
+    register UINT8 *stream = p + 5;
     FLOW_SPEC flow;
     UINT8 status;
     UINT16 handle;
@@ -8030,10 +8031,10 @@ void btu_hcif_qos_setup_comp_evt(void *event) {
     handle = (UINT16)((p[1] + (p[2] << 8)));
     flow.qos_flags = p[3];
     flow.service_type = p[4];
-    flow.token_rate = ((u32)p[8] << 24) + ((u32)p[7] << 16) + ((u32)p[6] << 8) + p[5];
-    flow.peak_bandwidth = ((u32)p[12] << 24) + ((u32)p[11] << 16) + ((u32)p[10] << 8) + p[9];
-    flow.latency = ((u32)p[16] << 24) + ((u32)p[15] << 16) + ((u32)p[14] << 8) + p[13];
-    flow.delay_variation = ((u32)p[20] << 24) + ((u32)p[19] << 16) + ((u32)p[18] << 8) + p[17];
+    STREAM_TO_UINT32(flow.token_rate, stream);
+    STREAM_TO_UINT32(flow.peak_bandwidth, stream);
+    STREAM_TO_UINT32(flow.latency, stream);
+    STREAM_TO_UINT32(flow.delay_variation, stream);
     btm_qos_setup_complete(status, handle, &flow);
 }
 
@@ -12100,6 +12101,7 @@ extern void l2c_link_adjust_allocation(void);
 void l2cu_release_lcb(void *arg0) {
     u8 *lcb = (u8 *)arg0;
     void *buf;
+    void *ccb;
     u16 old_count;
     void (*callback)(u8);
 
@@ -12114,9 +12116,11 @@ void l2cu_release_lcb(void *arg0) {
 
     btm_remove_sco_links(lcb + 0x2A);
 
-    while (*(void **)(lcb + 8) != 0) {
-        l2cu_release_ccb(*(void **)(lcb + 8));
-    }
+    ccb = *(void **)(lcb + 8);
+    do {
+        l2cu_release_ccb(ccb);
+        ccb = *(void **)(lcb + 8);
+    } while (ccb != 0);
 
     if (*(u32 *)(lcb + 4) - 4 <= 1) {
         btm_acl_removed(lcb + 0x2A);
