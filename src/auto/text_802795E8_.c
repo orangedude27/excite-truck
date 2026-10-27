@@ -80,6 +80,7 @@ f32 fn_802798E8(void *arg0) {
 
 extern f32 lbl_805640F0;
 extern f32 lbl_805640F4;
+extern f32 lbl_805640F0;
 unsigned char fn_802798F0(u32 arg0, u32 arg1, f32 farg0) {
     s32 var_r0;
     s32 temp_r3;
@@ -104,26 +105,62 @@ extern unsigned char fn_802798F0(unsigned int, unsigned int, float);
 extern float lbl_80564100, lbl_80564104;
 #pragma dont_inline on
 void fn_802799EC(void *arg0, float amount) {
-    unsigned char *base = (unsigned char *)arg0 + 4;
-    float end = *(float *)((unsigned char *)arg0 + 0x294);
-    float current = *(float *)((unsigned char *)arg0 + 0x298);
-    float remaining = end - amount;
-    float factor;
-    int i;
     unsigned char *p;
-    if (current > remaining) remaining = current;
-    if (end > lbl_80564100) end = lbl_80564100;
-    *(float *)(base + 0x290) = remaining;
-    factor = lbl_80564104 - remaining / end;
+    unsigned char *base;
+    int i;
+    float end;
+    float current;
+    float remaining;
+    float selected;
+    float limit;
+    register float factor;
+
+    base = (unsigned char *)arg0 + 4;
+    end = *(float *)((unsigned char *)arg0 + 0x294);
+    current = *(float *)((unsigned char *)arg0 + 0x298);
+    remaining = end - amount;
+    selected = current;
+    if (current > remaining) {
+        selected = current;
+    } else {
+        selected = remaining;
+    }
+    if (end > lbl_80564100) {
+        limit = lbl_80564100;
+    } else {
+        limit = end;
+    }
+
+    factor = lbl_80564104 - selected / limit;
+    *(float *)(base + 0x290) = selected;
     *(int *)(base + 0x298) = 0;
+
     p = base;
-    for (i = 0; i < 0xA4; i++, p += 4) {
+    for (i = 0; i < 0xA4; ++i, p += 4) {
         p[0] = fn_802798F0(p[0], 0x80, factor);
         p[1] = fn_802798F0(p[1], 0x80, factor);
         p[2] = fn_802798F0(p[2], 0x80, factor);
         p[3] = fn_802798F0(p[3], 0, factor);
     }
-    for (i = 0; i < 0x12; i++) base[0x2A0 + i] = 0;
+
+    base[0x2A0] = 0;
+    base[0x2A1] = 0;
+    base[0x2A2] = 0;
+    base[0x2A3] = 0;
+    base[0x2A4] = 0;
+    base[0x2A5] = 0;
+    base[0x2A6] = 0;
+    base[0x2A7] = 0;
+    base[0x2A8] = 0;
+    base[0x2A9] = 0;
+    base[0x2AA] = 0;
+    base[0x2AB] = 0;
+    base[0x2AC] = 0;
+    base[0x2AD] = 0;
+    base[0x2AE] = 0;
+    base[0x2AF] = 0;
+    base[0x2B0] = 0;
+    base[0x2B1] = 0;
 }
 void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     unsigned char *target = arg1 - 1;
