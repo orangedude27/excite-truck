@@ -5793,6 +5793,33 @@ extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80229B78(void *arg0, s32 
     return arg0;
 }
 
+extern "C" void fn_80229BE8(void *arg0) {
+    struct Dispatch {
+        virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
+        virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
+        virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
+        virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
+        virtual s32 v16(); virtual s32 v17(); virtual s32 v18(); virtual s32 v19();
+        virtual s32 v20(); virtual s32 v21(); virtual s32 v22(); virtual s32 v23();
+        virtual s32 v24(); virtual s32 v25(); virtual s32 v26(); virtual s32 v27();
+        virtual s32 get();
+    };
+    fn_802192AC(arg0);
+    char *name = *(char **)((u8 *)arg0 + 0x244);
+    if (strcmp(name, (char *)arg0 + 0x248) != 0) {
+        strcpy((char *)arg0 + 0x248, name);
+        s32 height = fn_801E4A6C(*(s32 *)((u8 *)arg0 + 0x348),
+                                  *(s32 *)((u8 *)arg0 + 0x244));
+        s32 width = ((Dispatch *)arg0)->get();
+        if (width > height)
+            height = width;
+        fn_80219284(arg0, height,
+                    fn_801E4BA8(*(s32 *)((u8 *)arg0 + 0x348)));
+        if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+            *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    }
+}
+
 extern "C" s32 fn_80229C9C(s32 arg0) {
     return arg0 + 0x264;
 }
