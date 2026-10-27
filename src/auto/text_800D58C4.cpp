@@ -202,7 +202,7 @@ extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *arg0, u8 arg
 extern "C" f32 lbl_80560E68;
 extern "C" f32 lbl_80560E6C;
 extern "C" signed char lbl_8055DDE8;
-extern f32 lbl_80407E40[8];
+extern "C" f32 lbl_80407E40[8];
 void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void* self, u8 size) {
     void* data = *(void**)((char*)self + 4);
     u8 max = *(u8*)self;
