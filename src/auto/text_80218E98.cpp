@@ -1185,38 +1185,60 @@ extern "C" void fn_8021ACC0(void *arg0, s32 arg1) {
 }
 
 extern "C" f32 lbl_805634EC;
+#pragma ppc_psq_save on
+#pragma scheduling invalid_target
 extern "C" void fn_8021AE18(void *arg0) {
-    f32 temp_f0;
-    f32 temp_f29;
-    f32 temp_f30;
-    f32 temp_f31;
-    s32 var_r31;
-    VfObj *obj = (VfObj *)arg0;
-
-    if (*(u8 *)((u8 *)arg0 + 0x244) != 0 && *(u8 *)((u8 *)arg0 + 0x18) != 0) {
-        temp_f29 = lbl_805634A8;
-        temp_f0 = *(f32 *)((u8 *)arg0 + 0x248) - fn_80214D48();
-        *(f32 *)((u8 *)arg0 + 0x248) = temp_f0;
-        if (temp_f0 < temp_f29) {
-            temp_f30 = lbl_805634A4;
-            var_r31 = 10;
-            temp_f31 = lbl_805634EC;
-            do {
-                *(f32 *)((u8 *)arg0 + 0x248) += *(f32 *)((u8 *)arg0 + 0x24C);
-                obj->vf31();
-                var_r31 -= 1;
-                *(f32 *)((u8 *)arg0 + 0x24C) = temp_f30 / (temp_f31 + temp_f30 / *(f32 *)((u8 *)arg0 + 0x24C));
-            } while (var_r31 >= 0 && *(f32 *)((u8 *)arg0 + 0x248) < temp_f29);
-            if (*(f32 *)((u8 *)arg0 + 0x248) >= temp_f29)
-                *(f32 *)((u8 *)arg0 + 0x248) = *(f32 *)((u8 *)arg0 + 0x24C);
+    struct Dispatch {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28(); virtual void v29(); virtual void v30();
+        virtual void Update(f32);
+    };
+    register f32 base;
+    register f32 step;
+    register f32 threshold;
+    if (*(u8 *)((u8 *)arg0 + 0x244) != 0 &&
+        *(u8 *)((u8 *)arg0 + 0x18) != 0) {
+        f32 now = fn_80214D48();
+        f32 current = *(f32 *)((u8 *)arg0 + 0x248);
+        threshold = *(volatile f32 *)&lbl_805634A8;
+        current -= now;
+        *(f32 *)((u8 *)arg0 + 0x248) = current;
+        if (current < threshold) {
+            step = lbl_805634A4;
+            base = lbl_805634EC;
+            s32 count = 10;
+            goto loop_test;
+        loop_body:
+            register f32 old = *(f32 *)((u8 *)arg0 + 0x248);
+            *(f32 *)((u8 *)arg0 + 0x248) =
+                old + *(f32 *)((u8 *)arg0 + 0x24C);
+            ((Dispatch *)arg0)->Update(old);
+            *(f32 *)((u8 *)arg0 + 0x24C) =
+                step / (base + step / *(f32 *)((u8 *)arg0 + 0x24C));
+            count--;
+            if (count < 0)
+                goto done;
+        loop_test:
+            if (*(f32 *)((u8 *)arg0 + 0x248) < threshold)
+                goto loop_body;
+        done:
+            *(f32 *)((u8 *)arg0 + 0x248) = *(f32 *)((u8 *)arg0 + 0x24C);
         }
     } else {
-        *(f32 *)((u8 *)arg0 + 0x248) = lbl_805634A8;
-        *(f32 *)((u8 *)arg0 + 0x24C) = lbl_805634E8;
+        f32 resetDelta = lbl_805634E8;
+        f32 resetTime = lbl_805634A8;
+        *(f32 *)((u8 *)arg0 + 0x248) = resetTime;
+        *(f32 *)((u8 *)arg0 + 0x24C) = resetDelta;
     }
 }
-
-#pragma dont_inline on
+#pragma ppc_psq_save reset
+#pragma scheduling on
 extern "C" void *fn_8021AF0C(void *arg0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, f32 x, f32 y) {
     fn_8021AC24(arg0, a1, a2, a6, a4);
     *(s32 *)((u8 *)arg0 + 0x254) = a3;
@@ -1238,6 +1260,7 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, 
 
 extern double lbl_805634B8;
 extern float lbl_805634C4;
+#pragma scheduling invalid_target
 extern "C" void fn_8021AFF4(void *arg0) {
     f32 step = (*(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258)) /
                (f32)(*(s32 *)((u8 *)arg0 + 0x260) - 1);
@@ -1257,7 +1280,7 @@ extern "C" void fn_8021AFF4(void *arg0) {
             *(f32 *)((u8 *)arg0 + 0x25C);
     }
 }
-
+#pragma scheduling on
 extern "C" char lbl_8033F5D0[];
 #pragma dont_inline on
 extern "C" void *fn_8021B0CC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
@@ -2859,6 +2882,26 @@ extern "C" void fn_8022071C(void *arg0) {
     }
 }
 
+extern "C" void *fn_80220778(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    extern void *lbl_8033E668[];
+    fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
+    *(s32 *)((u8 *)arg0 + 0x244) = arg5;
+    *(void **)arg0 = lbl_8033E668;
+    *(s32 *)((u8 *)arg0 + 0x250) = arg6;
+    *(s32 *)((u8 *)arg0 + 0x254) = arg7;
+    fn_80219440(arg0, 0, (void *)arg5, 4);
+    *(s32 *)((u8 *)arg0 + 0x248) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9B0);
+    *(s32 *)((u8 *)arg0 + 0x24C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9BC);
+    if (*(s32 *)((u8 *)arg0 + 0x248) != 0) {
+        s32 count = fn_802C5220(*(s32 *)((u8 *)arg0 + 0x248));
+        fn_80219284(arg0, ((Vf78 *)arg0)->get(), count);
+    }
+    *(u8 *)((u8 *)arg0 + 0x258) = 0;
+    *(s32 *)((u8 *)arg0 + 0x25C) = 0;
+    *(s32 *)((u8 *)arg0 + 0x260) = fn_80228F40(arg1, arg2);
+    return arg0;
+}
+
 extern "C" void *lbl_8033E668[];
 extern "C" void *fn_80220874(void *arg0, s32 arg1) {
     if (arg0 != 0) {
@@ -3266,19 +3309,20 @@ extern "C" void fn_80221EA0(void *arg0, s32 arg1, void *arg2, s32 arg3) {
 #pragma dont_inline reset
 extern "C" s32 fn_80221EA8(void *arg0) {
     extern char lbl_8033DA2C[];
-    u32 value = *(u32*)((u8*)*(void**)((u8*)arg0 + 0x14) + 0x238);
-    s32 i = 0;
-    do {
-        if (value == (1u << i)) return i;
-        if (value == (1u << (i + 1))) return i + 1;
-        if (value == (1u << (i + 2))) return i + 2;
-        if (value == (1u << (i + 3))) return i + 3;
-        if (value == (1u << (i + 4))) return i + 4;
-        if (value == (1u << (i + 5))) return i + 5;
-        if (value == (1u << (i + 6))) return i + 6;
-        if (value == (1u << (i + 7))) return i + 7;
-        i += 8;
-    } while (i < 32);
+    struct Bar {
+        u8 pad[0x238];
+        u32 mask;
+    };
+    struct Foo {
+        u8 pad[0x14];
+        Bar *bar;
+    };
+    u32 value = ((Foo *)arg0)->bar->mask;
+    for (s32 i = 0; i < 32; i++) {
+        if (value == (1U << i)) {
+            return i;
+        }
+    }
     fn_802E317C(lbl_8033DA2C);
     return 0;
 }
@@ -4079,11 +4123,13 @@ extern "C" void fn_80223880(void *arg0) {
     fn_8021818C(*(s32 *)((u8 *)arg0 + 0x2C));
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_802238D0(void *arg0, s32 arg1) {
-    f32 value;
+    register f32 value;
     s32 texture;
     s32 index = 0;
-    do {
+    while (index < fn_802237E8(arg0)) {
         if (index == **(s32 **)((u8 *)arg0 + 0x420)) {
             if (arg1 == 2) value = lbl_805634A8;
             else value = lbl_805634E8;
@@ -4096,11 +4142,11 @@ extern "C" void fn_802238D0(void *arg0, s32 arg1) {
             fn_8021889C(texture, fn_802237F0((s32)arg0, index), value);
         }
         index++;
-    } while (index < fn_802237E8(arg0));
+    }
     if (*(u8 *)((u8 *)arg0 + 0x1A))
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
-
+#pragma pop
 extern "C" s32 fn_802239C8(void *arg0, s32 arg1) {
     if (*(u8 *)fn_80216708() == 0)
         goto fallback;
@@ -4133,6 +4179,29 @@ extern "C" void fn_80223A58(void *arg0) {
 
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void *fn_80223AB4(void *arg0, void *arg1, s32 arg2) {
+    fn_80218F80();
+    *(void **)arg0 = lbl_8033E3D4;
+    fn_80230C30((f32 *)((u8 *)arg0 + 0x244),
+                (f32 *)((u8 *)arg0 + 0x248),
+                *(s32 *)((u8 *)arg1 + 8),
+                *(s32 *)((u8 *)arg1 + 0xC));
+    *(s32 *)((u8 *)arg0 + 0x24C) = *(s32 *)((u8 *)arg1 + 0x9C);
+    if ((u8 *)arg1 + 0x40 != 0) {
+        *(s32 *)((u8 *)arg0 + 0x250) = ((s32 (*)(void *))fn_802C5130)((u8 *)arg1 + 0x40);
+    } else {
+        *(s32 *)((u8 *)arg0 + 0x250) = 0;
+    }
+    *(f32 *)((u8 *)arg0 + 0x254) = (f32)*(s32 *)((u8 *)arg1 + 0x14);
+    *(f32 *)((u8 *)arg0 + 0x25C) = lbl_805634A4;
+    *(f32 *)((u8 *)arg0 + 0x258) = (f32)*(s32 *)((u8 *)arg1 + 0x14);
+    *(s32 *)((u8 *)arg0 + 0x260) = (s32)fn_8022EE9C();
+    *(s32 *)((u8 *)arg0 + 0x264) = arg2;
+    return arg0;
+}
+#pragma pop
 extern "C" void *lbl_8033E3D4[];
 extern "C" void *fn_80223B94(void *arg0, s32 arg1) {
     if (arg0 != 0) {
