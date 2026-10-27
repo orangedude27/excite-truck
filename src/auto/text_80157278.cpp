@@ -1264,7 +1264,7 @@ extern "C" s32 fn_80159E6C(void) {
 extern "C" void* fn_80159E74(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         void* r0 = *(void**)((char*)arg0 + 0x2D8);
-        *(void**)arg0 = (void*)&lbl_8032EFA8;
+        *(void**)arg0 = lbl_8032EFA8;
         if (r0 != 0) {
             if (r0 != 0) {
                 struct Dummy {
