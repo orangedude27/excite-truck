@@ -5006,6 +5006,38 @@ void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
 
 s32 fn_8007A3B4(s32 value) { s32 old = *(s32 *)(lbl_803C0F78 + 0x568); *(s32 *)(lbl_803C0F78 + 0x568) = value; return old; }
 
+tBTM_STATUS BTM_VendorSpecificCommand(UINT16 opcode, UINT8 param_len, UINT8 *p_param_buf, tBTM_VSC_CMPL_CB *p_cb)
+{
+    extern char lbl_8031615C[];
+    extern char lbl_8031619C[];
+    void *buffer;
+    UINT8 *base;
+
+    if (lbl_803C0F78[0x27C0] >= 4) {
+        fn_8007096C(0xD0003, lbl_8031615C, opcode, param_len);
+    }
+    base = lbl_803C0F78;
+    if (base[0x650] != 0) {
+        if (base[0x27C0] >= 4) {
+            fn_8007093C(0xD0003, lbl_8031619C);
+        }
+        return 2;
+    }
+    buffer = GKI_getbuf(param_len + 0xB);
+    if (buffer != 0) {
+        *(tBTM_VSC_CMPL_CB **)(base + 0x61C) = p_cb;
+        if (p_cb != 0) {
+            base[0x650] = 1;
+        }
+        ((void (*)(void *, UINT16, UINT8, UINT8 *))btsnd_hcic_vendor_spec_cmd)(buffer, opcode, param_len, p_param_buf);
+        if (p_cb != 0) {
+            return 1;
+        }
+        return 0;
+    }
+    return 3;
+}
+
 void btm_vsc_complete(UINT8 *p, UINT16 cc_opcode, UINT16 evt_len, tBTM_CMPL_CB *p_vsc_cplt_cback) {
     u8 packet[0x108];
     u8 *src = p;
@@ -12061,6 +12093,55 @@ void *l2cu_allocate_lcb(u8 *addr) {
     return 0;
 }
 
+extern void *GKI_dequeue(BUFFER_Q *);
+extern void btm_remove_sco_links(u8 *);
+extern void btm_acl_removed(u8 *);
+extern void l2c_link_adjust_allocation(void);
+void l2cu_release_lcb(void *arg0) {
+    u8 *lcb = (u8 *)arg0;
+    void *buf;
+    u16 old_count;
+    void (*callback)(u8);
+
+    lcb[0] = 0;
+    fn_80070F90(lcb + 0x10);
+
+    buf = *(void **)(lcb + 0x50);
+    if (buf != 0) {
+        GKI_freebuf(buf);
+        *(void **)(lcb + 0x50) = 0;
+    }
+
+    btm_remove_sco_links(lcb + 0x2A);
+
+    while (*(void **)(lcb + 8) != 0) {
+        l2cu_release_ccb(*(void **)(lcb + 8));
+    }
+
+    if (*(u32 *)(lcb + 4) - 4 <= 1) {
+        btm_acl_removed(lcb + 0x2A);
+    }
+
+    while (*(void **)(lcb + 0x44) != 0) {
+        buf = GKI_dequeue((BUFFER_Q *)(lcb + 0x44));
+        GKI_freebuf(buf);
+    }
+
+    if (*(u16 *)(lbl_803C4040 + 0x7B8) >= 1) {
+        *(u16 *)(lbl_803C4040 + 0x7B8) -= 1;
+    }
+
+    old_count = *(u16 *)(lbl_803C4040 + 4);
+    *(u16 *)(lbl_803C4040 + 4) = old_count + *(u16 *)(lcb + 0x38);
+    ((void (*)(u16, void *))l2c_link_adjust_allocation)(old_count, lbl_803C4040);
+
+    callback = *(void (**)(u8))(lcb + 0x54);
+    if (callback != 0) {
+        *(void (**)(u8))(lcb + 0x54) = 0;
+        callback(1);
+    }
+}
+
 extern u8 lbl_803C4040[];
 extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
 extern void l2cu_create_conn_after_switch(void *p_lcb);
@@ -12115,13 +12196,16 @@ void l2cu_send_peer_cmd_reject(void *arg0, u16 arg1, u8 arg2, u16 arg3, u16 arg4
     void *packet;
     u8 *p;
 
-    if (arg1 == 1) {
-        size = 2;
-    } else {
-        size = ((s32)~((arg1 - 2) | (2 - arg1)) >> 31) & 4;
+    if (arg1 != 1) {
+        goto calc_size;
     }
-
-    packet = l2cu_build_header(*(u16 *)((u8 *)arg0 + 0x28), size + 2, 1, arg2);
+    size = 2;
+    goto size_done;
+calc_size:
+    size = ((s32)~((arg1 - 2) | (2 - arg1)) >> 31) & 4;
+size_done:
+    packet = ((void *(*)(u16, u16, u8, s32))l2cu_build_header)(
+        *(u16 *)((u8 *)arg0 + 0x28), size + 2, 1, arg2);
     if (packet == 0) {
         if (lbl_803C4040[0] >= 2) {
             fn_8007093C(0x80001, lbl_80319158);
