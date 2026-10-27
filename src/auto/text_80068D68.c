@@ -26,6 +26,11 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 
 extern void rfc_port_sm_execute(void *, u16, void *);
 extern char lbl_80319AB0[];
+struct uusb_cb_t;
+extern struct uusb_cb_t lbl_803BD1E0;
+extern u8 lbl_8055DC50;
+extern u8 lbl_8055DC51;
+extern void uusb_CloseDeviceCB(s8);
 extern void rfc_port_sm_state_closed(void *, u16, void *);
 extern void rfc_port_sm_sabme_wait_ua(void *, u16, void *);
 extern void rfc_port_sm_orig_wait_sec_check(void *, u16, void *);
