@@ -27,7 +27,6 @@ public:
     virtual void unk_4c() = 0;
     virtual void unk_0x58() = 0;
     void Prepare(const void *, long, int, const WsdTrack::WsdCallback *, unsigned long);
-    void SetPlayerPriority(int);
 };
 }}}
 
