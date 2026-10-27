@@ -131,6 +131,8 @@ extern s32 fn_8017960C(void);
 extern u8 lbl_8055E364;
 extern f64 lbl_80561968;
 extern f32 lbl_80561960;
+#pragma push
+#pragma ppc_psq_save off
 s32 fn_8016A30C(void) {
  f32 a,b; s32 c,d,e,f,g,h; void *p;
  c=fn_8017960C(); if(c) { a=lbl_80561960; f=0;e=0;g=0;
@@ -140,6 +142,7 @@ s32 fn_8016A30C(void) {
  if(PSVECSquareDistance((void *)(c+0x60),(u8 *)p+0x30)<b*b) {*(u8 *)((u8 *)p+0x3d)=1;d=1;*(f32 *)((u8 *)p+0x40)=lbl_8055E3C8;} }
  if(d)f++; g+=0x48;e++;goto loop;} return f;} return 0;
 }
+#pragma pop
 
 void fn_8016B634(s32 arg0);
 
@@ -149,36 +152,23 @@ void fn_8016A68C(void* arg0) {
 
 extern f32 lbl_80561970;
 typedef struct { f32 first; f32 second; } FloatPair8016A6B0;
-u64 fn_8016A6B0(const char *arg0, s32 arg1) {
+FloatPair8016A6B0 fn_8016A6B0(const char *arg0, s32 arg1) {
     /* Fix note: compare each name and item ID, then return both selected float bit patterns. */
-    s32 i = 0;
-    s32 nameOffset = 0;
-    s32 itemOffset = 0;
-    volatile s32 *nameCount = (volatile s32 *)&lbl_80430340.unk_0x4;
-    volatile s32 *recordBase = (volatile s32 *)lbl_80430318;
-    union FloatBits {
-        f32 f;
-        u32 i;
-    };
-    union Result {
-        struct {
-            u32 first;
-            u32 second;
-        } words;
-        u64 value;
-    } result;
-
+    register s32 nameOffset;
+    register s32 itemOffset;
+    register s32 i;
+    register volatile s32 *nameCount = (volatile s32 *)&lbl_80430340.unk_0x4;
+    i = 0;
+    nameOffset = 0;
+    itemOffset = 0;
     while (i < *nameCount) {
         if (stricmp(lbl_80430340.unk_0x0 + nameOffset + 1, arg0) == 0) {
-            volatile s32 *records = (volatile s32 *)*recordBase;
-            if (arg1 == *(records + itemOffset / 4 + 1)) {
-                union FloatBits first;
-                union FloatBits second;
-                first.f = *(f32 *)((char *)records + i * 0x48 + 0x30);
-                second.f = *(f32 *)((char *)records + i * 0x48 + 0x38);
-                result.words.first = first.i;
-                result.words.second = second.i;
-                return result.value;
+            char *records = *(char **)lbl_80430318;
+            if (arg1 == *(s32 *)(records + itemOffset + 4)) {
+                FloatPair8016A6B0 result;
+                result.second = *(f32 *)(records + i * 0x48 + 0x38);
+                result.first = *(f32 *)(records + i * 0x48 + 0x30);
+                return result;
             }
         }
         nameOffset += 0x2c;
@@ -186,12 +176,11 @@ u64 fn_8016A6B0(const char *arg0, s32 arg1) {
         i++;
     }
     {
-        union FloatBits fallback;
-        fallback.f = lbl_80561970;
-        result.words.first = fallback.i;
-        result.words.second = fallback.i;
+        FloatPair8016A6B0 result;
+        result.first = lbl_80561970;
+        result.second = lbl_80561970;
+        return result;
     }
-    return result.value;
 }
 
 #pragma use_lmw_stmw off
