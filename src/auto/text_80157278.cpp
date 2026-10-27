@@ -1688,20 +1688,29 @@ extern "C" void fn_8015B708(Unk801577F0* arg0) {
 
 extern "C" void* fn_8017960C(s32);
 extern "C" f32 lbl_805617C0;
+#pragma push
+#pragma processor 750
 extern "C" void fn_8015B788(void* arg0, s32 arg1, f32 farg0) {
-    f32 value = farg0;
     void* obj = fn_8017960C(arg1);
-    if (obj != 0 && (f32)__fabs((f64)*(f32*)((u8*)obj + 0x2690)) <= *(volatile f32*)0x80558DC4) {
-        f32* p = (f32*)((u8*)arg0 + arg1 * 8);
-        if ((f32)__fabs((f64)p[0]) <= *(volatile f32*)0x80558DC4) {
-            p[1] = value;
-        } else if (value > p[1]) {
-            p[1] = value;
-        }
-        p[0] = lbl_805617C0;
+    BOOL invalid;
+    if (obj != 0) {
+        invalid = !((f32)__fabs(*(f32*)((u8*)obj + 0x2690)) <= lbl_80558DC4[0]);
+    } else {
+        invalid = FALSE;
     }
+    if (invalid) {
+        return;
+    }
+    u8* p = (u8*)arg0 + arg1 * 8;
+    if ((f32)__fabs(*(f32*)(p + 0x24C)) <= lbl_80558DC4[0]) {
+        *(f32*)(p + 0x250) = farg0;
+    } else {
+        f32 cur = *(f32*)(p + 0x250);
+        *(f32*)(p + 0x250) = (farg0 > cur) ? farg0 : cur;
+    }
+    *(f32*)(p + 0x24C) = lbl_805617C0;
 }
-
+#pragma pop
 extern "C" void fn_8015B864(void *arg0) {
     struct Obj {
         virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4();
@@ -3113,20 +3122,23 @@ extern "C" f32 lbl_80561788;
 extern "C" f32 lbl_8056178C;
 extern "C" f32 lbl_80561790;
 extern "C" void fn_80159624(void *arg0, void *arg1) {
-    void *obj = *(void **)((u8 *)arg0 + 0x278);
-    if (obj != 0) {
-        s32 flag = 0;
-        f32 value = *(f32 *)((u8 *)arg1 + 0x25D4);
-        f32 abs_diff = fabs(*(f32 *)((u8 *)arg1 + 0x2690));
-        if (abs_diff == lbl_80558DC4[0] && value > lbl_80561788 && *(f32 *)((u8 *)arg0 + 0x270) < lbl_80561760) {
-            f32 dot = fabs(PSVECDotProduct((const void *)((u8 *)arg1 + 0x118), (const void *)((u8 *)arg1 + 0x3C)));
-            f32 scale = *(s32 *)((u8 *)arg0 + 0x274) != 0 ? lbl_8056178C : lbl_80561790;
-            if (!(dot > value * scale)) {
-                flag = 0;
-            }
+    if (*(void **)((u8 *)arg0 + 0x278) != 0) {
+        u8 enabled;
+        f32 value;
+        s32 result = 0;
+        if ((f32)__fabs((f64)*(f32 *)((u8 *)arg1 + 0x2690)) <= lbl_80558DC4[0] &&
+            ((enabled = *(u8 *)((u8 *)arg0 + 0x274)),
+             (value = *(f32 *)((u8 *)arg1 + 0x25D4)) > lbl_80561788) &&
+            *(f32 *)((u8 *)arg0 + 0x270) < lbl_80561760) {
+            f32 dot = (f32)__fabs((f64)PSVECDotProduct((const void *)((u8 *)arg1 + 0x118),
+                                                       (const void *)((u8 *)arg1 + 0x3C)));
+            f32 scale = enabled != 0 ? lbl_8056178C : lbl_80561790;
+            if (!(dot > value * scale))
+                result = 0;
         }
+        void *obj = *(void **)((u8 *)arg0 + 0x278);
         *(u8 *)((u8 *)obj + 0x4A) = 1;
-        *(u8 *)((u8 *)obj + 0x4C) = flag;
+        *(u8 *)((u8 *)obj + 0x4C) = result;
     }
 }
 
