@@ -16,6 +16,7 @@ extern const char lbl_80559C40[];
 extern __declspec(section ".sdata") const char lbl_80559C40[];
 #pragma scheduling invalid_target
 #pragma cplusplus on
+#pragma dont_inline on
 extern "C" int fn_8013990C(void *arg0) {
     class Object {
     public:
@@ -45,8 +46,8 @@ extern "C" int fn_8013990C(void *arg0) {
     }
     return count;
 }
+#pragma dont_inline reset
 
-#pragma dont_inline fn_8013990C
 extern "C" void *fn_801284E8(void *, int);
 extern "C" void fn_801286A0(void *, int);
 extern "C" int sscanf(const char *, const char *, ...);
@@ -55,42 +56,52 @@ extern "C" const char lbl_8032C064[];
 extern "C" const char lbl_8032C090[];
 extern "C" __declspec(section ".sdata") const char lbl_80559C48[];
 extern "C" void *fn_801399FC(void *arg0) {
+    class Object {
+    public:
+        virtual char *getName(void);
+        virtual int f1(void);
+        virtual int f2(void);
+        virtual int f3(void);
+        virtual char *check(char *, int);
+    };
     char buffer[12];
-    int capacity;
     int count;
-    char *entry;
+    int index;
+    int usedBytes;
+    int allocatedBytes;
     void *table;
-    void *next;
-    char *name;
+    int *cursor;
+    char *entry;
+    Object *obj = (Object *)arg0;
 
-    capacity = fn_8013990C(arg0);
-    table = fn_801284E8(&lbl_8032C108, capacity * 8 + 8);
-    *(int *)table = capacity;
-    *(int *)((char *)table + 4) = capacity;
-    next = (char *)table + 8;
-    count = 0;
+    count = fn_8013990C(arg0);
+    table = fn_801284E8(&lbl_8032C108, count * 8 + 8);
+    *(int *)table = count;
+    *(int *)((char *)table + 4) = count;
+    cursor = (int *)((char *)table + 8);
+    index = 0;
     for (;;) {
-        sprintf(buffer, lbl_80559C40, count);
-        entry = ((char *(*)(void *, char *, int))(*(void ***)arg0)[6])(arg0, buffer, 0);
+        sprintf(buffer, lbl_80559C40, index);
+        entry = obj->check(buffer, 0);
         if (entry == 0) {
             break;
         }
-        if (sscanf(entry, lbl_80559C48, next, (char *)next + 4) == 2) {
-            next = (char *)next + 8;
-            count++;
+        if (sscanf(entry, lbl_80559C48, cursor, cursor + 1) == 2) {
+            cursor += 2;
+            index++;
         } else {
-            name = ((char *(*)(void *))(*(void ***)arg0)[2])(arg0);
-            fn_802E30C8(lbl_8032C064, name, entry);
+            fn_802E30C8(lbl_8032C064, obj->getName(), entry);
         }
     }
-    if (count < 3) {
-        name = ((char *(*)(void *))(*(void ***)arg0)[2])(arg0);
-        fn_802E30C8(lbl_8032C090, name, *(int *)table);
-        count = 0;
+    if (index < 3) {
+        fn_802E30C8(lbl_8032C090, obj->getName(), *(int *)table);
+        index = 0;
     }
-    fn_801286A0(table, (*(int *)table * 8 + 8) - (count * 8 + 8));
-    *(int *)((char *)table + 4) = count;
-    *(int *)table = count;
+    usedBytes = index * 8 + 8;
+    allocatedBytes = *(int *)table * 8 + 8;
+    fn_801286A0(table, allocatedBytes - usedBytes);
+    *(int *)((char *)table + 4) = index;
+    *(int *)table = index;
     return table;
 }
 
