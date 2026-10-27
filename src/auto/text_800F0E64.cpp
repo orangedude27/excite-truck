@@ -1110,7 +1110,7 @@ extern "C" long ReadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPvll(void *
     return length;
 }
 
-void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *self) {
+void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv_old(void *self) {
     class Sound {
     public:
         virtual void v0();
