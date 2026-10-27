@@ -360,24 +360,6 @@ struct Entry {
     char name[16];
 };
 
-static inline void init_entry(struct Entry *entry) {
-    entry->rot[0][0] = lbl_8056404C;
-    entry->rot[0][1] = lbl_80564048;
-    entry->rot[0][2] = lbl_80564048;
-    entry->rot[1][0] = lbl_80564048;
-    entry->rot[1][1] = lbl_8056404C;
-    entry->rot[1][2] = lbl_80564048;
-    entry->rot[2][0] = lbl_80564048;
-    entry->rot[2][1] = lbl_80564048;
-    entry->rot[2][2] = lbl_8056404C;
-    entry->pos[0] = lbl_80564048;
-    entry->pos[1] = lbl_80564048;
-    entry->pos[2] = lbl_80564048;
-    entry->unk_34 = lbl_80564070;
-    entry->name[0] = 0;
-    entry->unk_00 = 1;
-}
-
 void fn_80277828(void) {
     struct Entry *def = (struct Entry *)lbl_8049FE98;
     def->rot[0][0] = lbl_8056404C;
