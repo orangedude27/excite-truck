@@ -833,6 +833,7 @@ extern "C" void *fn_80219A28(void *arg0, void *arg1, s32 arg2, s32 arg3) {
 extern "C" s32 fn_80232B70(s32);
 extern "C" f32 fn_8023293C(s32, s32, f32);
 extern "C" s32 fn_8023512C(s32);
+extern "C" void fn_80235380(void *);
 extern char lbl_8033D8B8[];
 #pragma push
 #pragma ppc_psq_save off
