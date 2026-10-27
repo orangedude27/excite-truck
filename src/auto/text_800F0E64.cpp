@@ -842,10 +842,14 @@ extern "C" const char lbl_80324BA8[];
 extern "C" char lbl_80559870;
 extern "C" s32 ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13StrmSoundInfo(void *self, u32 index, void *outInfo) {
     u64 refInfo = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(self, index);
+    void *base = *(void **)((u8 *)self + 0x28);
     u8 *bytes = (u8 *)&refInfo;
     if (bytes[1] != 2)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559870, 0x71, lbl_80324BA8);
-    return GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), *(void **)((u8 *)self + 0x28)) != 0;
+    s32 entry = (s32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), base);
+    if (entry == 0)
+        return 0;
+    return 1;
 }
 
 extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13WaveSoundInfo(void *self, u32 index, void *info) {
@@ -2130,25 +2134,41 @@ extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void* arg0, 
     DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(arg0, arg1, arg2);
 }
 
-void __ct__Q36nw4hbm3snd11SoundPlayerFv(void* self) {
+extern "C" void __ct__Q36nw4hbm3snd11SoundPlayerFv(void* self) {
     u8* p = (u8*)self;
-    *(void**)(p + 4) = 0; *(void**)(p + 8) = 0;
-    *(void**)(p + 0x10) = 0; *(void**)(p + 0x14) = 0;
-    *(void**)(p + 0x1c) = 0; *(void**)(p + 0x20) = 0;
-    *(void**)p = 0;
-    *(void**)(p + 4) = p + 4; *(void**)(p + 8) = p + 4;
-    *(u32*)(p + 0xc) = 0;
-    *(void**)(p + 0x10) = p + 0x10; *(void**)(p + 0x14) = p + 0x10;
-    *(u32*)(p + 0x18) = 0;
-    *(void**)(p + 0x1c) = p + 0x1c; *(void**)(p + 0x20) = p + 0x1c;
-    *(u16*)(p + 0x24) = 1; *(u16*)(p + 0x26) = 1;
-    *(u8*)(p + 0x2d) = 0; *(f32*)(p + 0x28) = lbl_805610B8;
-    *(u32*)(p + 0x30) = 1; *(u8*)(p + 0x2c) = 0;
-    *(f32*)(p + 0x34) = lbl_805610B8;
-    *(f32*)(p + 0x38) = lbl_805610B8;
-    *(f32*)(p + 0x3c) = lbl_805610B8;
-    *(f32*)(p + 0x40) = lbl_805610B8;
-    *(f32*)(p + 0x44) = lbl_805610B8;
+    register u32 zero = 0;
+    register u32 one = 1;
+    register f32 initialValue = lbl_805610B8;
+    register u8* firstList = p + 4;
+    register u8* secondList = p + 0x10;
+    register u8* thirdList = p + 0x1c;
+
+    *(volatile u32*)(p + 4) = zero;
+    *(volatile u32*)(p + 8) = zero;
+    *(volatile u32*)(p + 0x10) = zero;
+    *(volatile u32*)(p + 0x14) = zero;
+    *(volatile u32*)(p + 0x1c) = zero;
+    *(volatile u32*)(p + 0x20) = zero;
+    *(u32*)p = zero;
+    *(u32*)(p + 4) = (u32)firstList;
+    *(u32*)(p + 8) = (u32)firstList;
+    *(u32*)(p + 0xc) = zero;
+    *(u32*)(p + 0x10) = (u32)secondList;
+    *(u32*)(p + 0x14) = (u32)secondList;
+    *(u32*)(p + 0x18) = zero;
+    *(u32*)(p + 0x1c) = (u32)thirdList;
+    *(u32*)(p + 0x20) = (u32)thirdList;
+    *(u16*)(p + 0x24) = one;
+    *(u16*)(p + 0x26) = one;
+    *(u8*)(p + 0x2d) = zero;
+    *(f32*)(p + 0x28) = initialValue;
+    *(u32*)(p + 0x30) = one;
+    *(u8*)(p + 0x2c) = zero;
+    *(f32*)(p + 0x34) = initialValue;
+    *(f32*)(p + 0x38) = initialValue;
+    *(f32*)(p + 0x3c) = initialValue;
+    *(f32*)(p + 0x40) = initialValue;
+    *(f32*)(p + 0x44) = initialValue;
 }
 
 extern "C" void fn_800F8520(void *arg0) {
@@ -2201,37 +2221,53 @@ extern "C" void *__dt__Q36nw4hbm3snd11SoundPlayerFv(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma use_lmw_stmw off
 void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
-    void *pHead = *(void **)((u8 *)self + 4);
-    void *pEnd = (u8 *)self + 4;
-    void *pPlayer;
-    while (pHead != pEnd) {
-        pPlayer = pHead;
-        if (pPlayer == 0) {
+    struct Dummy {
+        virtual ~Dummy();
+        virtual void f0();
+        virtual void update();
+    };
+
+    void **list = (void **)((u8 *)self + 4);
+    void *head = *list;
+    void *end = list;
+    void *node;
+
+    while (head != end) {
+        node = head;
+        head = *(void **)node;
+        if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262E8, 0x23D, (const char *)lbl_803262C4);
         }
-        pHead = *(void **)pPlayer;
-        Update__Q36nw4hbm3snd11SoundPlayerFv((u8 *)pPlayer - 0xC0);
+        ((Dummy *)((u8 *)node - 0xC0))->update();
     }
     detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(self);
 }
-
+#pragma use_lmw_stmw reset
 void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
-    void *pHead = *(void **)((u8 *)self + 4);
-    void *pEnd = (u8 *)self + 4;
-    void *pPlayer;
-    while (pHead != pEnd) {
-        pPlayer = pHead;
-        if (pPlayer == 0) {
+    struct Dummy {
+        virtual ~Dummy();
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void stopAllSound(s32);
+    };
+
+    register void *end = (u8 *)self + 4;
+    register void *head = *(void **)((u8 *)self + 4);
+    void *node;
+
+    while (head != end) {
+        node = head;
+        head = *(void **)node;
+        if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262E8, 0x23D, (const char *)lbl_803262C4);
         }
-        pHead = *(void **)pPlayer;
-        StopAllSound__Q36nw4hbm3snd11SoundPlayerFi((u8 *)pPlayer - 0xC0, arg1);
+        ((Dummy *)((u8 *)node - 0xC0))->stopAllSound(arg1);
     }
 }
-
-#pragma push
-#pragma scheduling on
+#pragma use_lmw_stmw reset
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *arg0, f32 farg0) {
     if (!(farg0 >= lbl_805610BC)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
     *(f32 *)((u8 *)arg0 + 0x28) = farg0;
@@ -3285,10 +3321,12 @@ void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC7B4(vo
     OSRestoreInterrupts(token);
 }
 
-f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32 arg0, s32 arg1) {
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32 arg0, s32 arg1) {
     s32 valid = 0;
-    if (arg1 >= 0 && arg1 < 4) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x329, lbl_803268E4, arg1, 0, 4);
+    if (arg1 >= 0 && arg1 < 4)
+        valid = 1;
+    if (valid == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x329, lbl_803268E4, arg1, 0, 4);
     return *(f32 *)(arg0 + arg1 * 4 + 0x470);
 }
 
