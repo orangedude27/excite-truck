@@ -2184,6 +2184,23 @@ extern "C" void* fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
+extern "C" void fn_801A1DD4(void* arg0, void* arg1) {
+    switch (*(s32*)((u8*)arg1 + 0x18)) {
+    case 'FLSR':
+        fn_8019D06C(arg1, arg0, 0, 0);
+        break;
+    case 'SPHR':
+        fn_8019BD54(arg1, arg0, 0, 0);
+        break;
+    case 'TUBE':
+        fn_8019EA7C(arg1, arg0);
+        break;
+    case 'GRUP':
+        ((Fn801A401CDispatch*)arg1)->Call(arg0);
+        break;
+    }
+}
+
 extern "C" void fn_8019D06C(void*, void*, s32, s32);
 extern s32 fn_8019E2D0(s32, s32, s32, void*, f32, f32, f32);
 extern "C" s32 fn_8019E2D0(s32, s32, s32, void*, f32, f32, f32);
