@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern "C" void *fn_8022EE9C(void);
+
 extern "C" char lbl_8033F880[];
 
 extern "C" void fn_80130568(char *);
