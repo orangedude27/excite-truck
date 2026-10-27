@@ -1488,24 +1488,24 @@ extern "C" void fn_8019F414(void *arg0) {
     extern f32 lbl_8056237C;
     extern void fn_8019EECC(void*, void*);
     extern void fn_8019EF00(void*);
-    f32 sp10;
-    f32 spC;
-    f32 sp8;
+    u32 sp[3];
     void *temp_r4;
     void *temp_r6;
 
     temp_r6 = *(void **)((u8*)arg0 + 0x54);
     temp_r4 = *(void **)((u8*)arg0 + 4);
-    sp8 = *(f32*)((u8*)temp_r6 + 0x30);
-    spC = *(f32*)((u8*)temp_r6 + 0x34);
-    sp10 = *(f32*)((u8*)temp_r6 + 0x38);
-    sp8 = (sp8 - *(f32*)((u8*)temp_r4 + 0x30)) + *(f32*)((u8*)arg0 + 0x58);
-    spC = (spC - *(f32*)((u8*)temp_r4 + 0x34)) + (lbl_8056237C + *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)temp_r6 + 0xC));
-    sp10 = sp10 - *(f32*)((u8*)temp_r4 + 0x38);
-    *(f32*)((u8*)arg0 + 0x28) = sp8;
-    *(f32*)((u8*)arg0 + 0x2C) = spC;
-    *(f32*)((u8*)arg0 + 0x30) = sp10;
-    if (temp_r4 != 0) fn_8019EECC(temp_r4, (u8*)arg0 + 0x28);
+    sp[0] = *(u32*)((u8*)temp_r6 + 0x30);
+    sp[1] = *(u32*)((u8*)temp_r6 + 0x34);
+    sp[2] = *(u32*)((u8*)temp_r6 + 0x38);
+    ((f32*)sp)[0] = (((f32*)sp)[0] - *(f32*)((u8*)temp_r4 + 0x30)) + *(f32*)((u8*)arg0 + 0x58);
+    ((f32*)sp)[1] = (((f32*)sp)[1] - *(f32*)((u8*)temp_r4 + 0x34)) + (lbl_8056237C + *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)temp_r6 + 0xC));
+    ((f32*)sp)[2] = ((f32*)sp)[2] - *(f32*)((u8*)temp_r4 + 0x38);
+    *(f32*)((u8*)arg0 + 0x28) = ((f32*)sp)[0];
+    *(f32*)((u8*)arg0 + 0x2C) = ((f32*)sp)[1];
+    *(f32*)((u8*)arg0 + 0x30) = ((f32*)sp)[2];
+    if (temp_r4 != 0) {
+        fn_8019EECC(temp_r4, (u8*)arg0 + 0x28);
+    }
     fn_8019EF00(arg0);
 }
 
@@ -2275,14 +2275,45 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
 }
 
 extern "C" void fn_801A22A4(void* arg0) {
-    struct WordBlock { u32 value[12]; };
-    WordBlock* result = (WordBlock*)((VTab1A1E7C*)arg0)->Call();
-    WordBlock words = *result;
+    volatile u32* result = (volatile u32*)((VTab1A1E7C*)arg0)->Call();
+    volatile u32 words[12];
+    u32 value1;
+    u32 value0;
+    value0 = result[0];
+    value1 = result[1];
+    words[0] = value0;
+    words[1] = value1;
+    u32 value3;
+    u32 value2;
+    value2 = result[2];
+    value3 = result[3];
+    words[2] = value2;
+    words[3] = value3;
+    u32 value5;
+    u32 value4;
+    value4 = result[4];
+    value5 = result[5];
+    words[4] = value4;
+    words[5] = value5;
+    u32 value7;
+    u32 value6;
+    value6 = result[6];
+    value7 = result[7];
+    words[6] = value6;
+    words[7] = value7;
+    u32 value8 = result[8];
+    words[8] = value8;
+    u32 value9 = result[9];
+    u32 value10 = result[10];
+    words[9] = value9;
+    words[10] = value10;
+    u32 value11 = result[11];
+    words[11] = value11;
     f32 tailZ = *(f32*)((u8*)arg0 + 0x2c);
     f32 tailY = *(f32*)((u8*)arg0 + 0x28);
     f32 tailX = *(f32*)((u8*)arg0 + 0x24);
-    typedef void (*Fn801E44F4)(WordBlock*, u32, u32, f32, f32, f32);
-    ((Fn801E44F4)fn_801E44F4)(&words, 0x50000000, result->value[9], tailX, tailY, tailZ);
+    typedef void (*Fn801E44F4)(volatile u32*, u32, u32, f32, f32, f32);
+    ((Fn801E44F4)fn_801E44F4)(words, 0x50000000, value9, tailX, tailY, tailZ);
 }
 
 #pragma scheduling on
@@ -2539,7 +2570,6 @@ extern "C" void fn_801A3174(void *arg0) {
 
 extern char lbl_80333778[];
 extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *arg5, f32 farg0, f32 farg1) {
-    s32 i;
     u8 *dst = (u8*)arg0;
     u8 *src = (u8*)arg2;
     *(s32*)(dst + 0xC) = arg1;
@@ -2553,7 +2583,7 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
     *(void**)dst = lbl_80333778;
     *(s32*)(dst + 0xDC) = 0;
     *(s32*)(dst + 0xBC) = arg3;
-    for (i = 0; i < arg3; i++) {
+    for (s32 i = 0; i < *(s32*)((u8*)arg0 + 0xBC); i++) {
         *(s32*)(dst + 0x3C) = *(s32*)src;
         *(s32*)(dst + 0x40) = *(s32*)(src + 4);
         *(s32*)(dst + 0x44) = *(s32*)(src + 8);
@@ -2561,12 +2591,18 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
         src += 0x10;
         dst += 0x10;
     }
-    *(f32*)((u8*)arg0 + 0x24) = ((f32*)arg4)[0];
-    *(f32*)((u8*)arg0 + 0x28) = ((f32*)arg4)[1];
-    *(f32*)((u8*)arg0 + 0x2C) = ((f32*)arg4)[2];
-    *(f32*)((u8*)arg0 + 0x30) = ((f32*)arg5)[0];
-    *(f32*)((u8*)arg0 + 0x34) = ((f32*)arg5)[1];
-    *(f32*)((u8*)arg0 + 0x38) = ((f32*)arg5)[2];
+    f32 a0 = ((f32*)arg4)[0];
+    f32 a1 = ((f32*)arg4)[1];
+    f32 a2 = ((f32*)arg4)[2];
+    f32 b0 = ((f32*)arg5)[0];
+    f32 b1 = ((f32*)arg5)[1];
+    f32 b2 = ((f32*)arg5)[2];
+    *(f32*)((u8*)arg0 + 0x24) = a0;
+    *(f32*)((u8*)arg0 + 0x28) = a1;
+    *(f32*)((u8*)arg0 + 0x2C) = a2;
+    *(f32*)((u8*)arg0 + 0x30) = b0;
+    *(f32*)((u8*)arg0 + 0x34) = b1;
+    *(f32*)((u8*)arg0 + 0x38) = b2;
 }
 
 #pragma scheduling invalid_target
