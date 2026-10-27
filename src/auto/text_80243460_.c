@@ -23,12 +23,13 @@ void fn_80243470(void* arg0) {
 
 #pragma dont_inline on
 s32 fn_80243478(s32 arg0) {
-    s32 count = 0;
     s32 (*entry)[3] = lbl_803428B0[arg0];
+    s32 count = 0;
     s32 i;
     for (i = 0; i < 16; i++) {
-        if (entry[i][0] == 0) return count;
+        if ((*entry)[0] == 0) break;
         count++;
+        entry++;
     }
     return count;
 }
@@ -71,6 +72,7 @@ s32 fn_80243528(s32 arg0, s32 arg1) {
     return sum;
 }
 
+#pragma unroll on
 s32 fn_8024360C(s32 value, s32 tableIndex) {
     s32 *entry = (s32 *)lbl_803428B0 + tableIndex * 48;
     s32 start = 0;
@@ -79,31 +81,18 @@ s32 fn_8024360C(s32 value, s32 tableIndex) {
     s32 length;
     s32 end;
     s32 i;
+    s32 j;
     for (i = 0; i < 4; i++) {
-        length = entry[1];
-        end = start + length;
-        if (length > 0) best = index;
-        if (value >= start && value < end) return index;
-        start = end;
-        index++;
-        length = entry[4];
-        end = start + length;
-        if (length > 0) best = index;
-        if (value >= start && value < end) return index;
-        start = end;
-        index++;
-        length = entry[7];
-        end = start + length;
-        if (length > 0) best = index;
-        if (value >= start && value < end) return index;
-        start = end;
-        index++;
-        length = entry[10];
-        end = start + length;
-        if (length > 0) best = index;
-        if (value >= start && value < end) return index;
-        start = end;
-        index++;
+        for (j = 0; j < 4; j++) {
+            length = entry[1 + j * 3];
+            end = start + length;
+            if (length > 0)
+                best = index;
+            if (value >= start && value < end)
+                return index;
+            start = end;
+            index++;
+        }
         entry += 12;
     }
     return best;
@@ -177,28 +166,36 @@ __declspec(section ".sdata") extern char lbl_8055BE14[];
 void fn_80243938(char *arg0, char *arg1) {
     register int len = strlen(arg0);
     register char *dst = arg0;
+    register char *src;
 
-    if (!len) return;
-    if (arg0[len - 1] == '_') return;
-    if (len + 1 >= (s32)arg1) return;
-
-    arg1 = (char *)((s32)arg1 - 1);
-    while (*dst != 0) {
-        arg1 = (char *)(arg1 - 1);
-        dst += 1;
+    if (len != 0) {
+        if (arg0[len - 1] == '_') goto done;
+        if (len + 1 >= (s32)arg1) goto done;
     }
-    if ((s32)arg1 <= 0) return;
 
-    {
-        char *src = lbl_8055BE14;
-        while ((*dst++ = *src++) != 0) {
-            arg1 = (char *)(arg1 - 1);
-            if ((s32)arg1 <= 0) {
-                dst[-1] = 0;
-                return;
-            }
-        }
-    }
+    src = lbl_8055BE14;
+    goto scan_test;
+
+scan_body:
+    arg1 = (char *)(arg1 - 1);
+    dst += 1;
+
+scan_test:
+    if (*dst != 0) goto scan_body;
+    if ((s32)arg1 <= 0) goto done;
+    goto copy_body;
+
+copy_check:
+    arg1 = (char *)(arg1 - 1);
+    if ((s32)arg1 > 0) goto copy_body;
+    dst[-1] = 0;
+    goto done;
+
+copy_body:
+    while ((*dst++ = *src++) != 0) goto copy_check;
+
+done:
+    return;
 }
 
 #pragma scheduling invalid_target
@@ -288,11 +285,11 @@ void fn_80243C18(void) {
 
 extern void fn_80243938(char *, char *);
 void fn_802443C0(void *arg0) {
-    char *str;
+    u8 *str;
     fn_802438EC(*(char **)((u8 *)arg0 + 0x18));
-    str = *(char **)((u8 *)arg0 + 0x18);
-    if (strlen(str) != 0) {
-        str[strlen(str) - 1] = 0;
+    str = (u8 *)*(char **)((u8 *)arg0 + 0x18);
+    if (strlen((char *)str) != 0) {
+        *(u8 *)(str + strlen((char *)str) - 1) = (u8)0;
     }
     fn_80243938(*(char **)((u8 *)arg0 + 0x18), *(char **)((u8 *)arg0 + 0x1C));
 }
