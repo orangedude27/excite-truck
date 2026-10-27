@@ -101,6 +101,7 @@ s32 fn_80008C5C(void) {
     }
     return lbl_805589EC;
 }
+#pragma dont_inline off
 
 int fn_80008DBC(int arg0) {
     switch (arg0) {
