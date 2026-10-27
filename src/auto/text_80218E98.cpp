@@ -1412,7 +1412,7 @@ extern "C" void fn_8021BA64(void *, s32, s32, s32, s32, void *, s32, s32, s32, s
 #pragma small_data off
 extern "C" void *fn_8021B9AC(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     fn_80218F80();
-    *(void **)arg0 = &lbl_8033F0FC;
+    *(u32 *)arg0 = (u32)(void *)&lbl_8033F0FC;
     fn_8021BA64(
         arg0,
         *(s32 *)((u8 *)arg1 + 0x14),
@@ -3447,19 +3447,21 @@ extern "C" void fn_802229FC(void *arg0) {
     }
 }
 
-extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     f32 spC;
     f32 sp8;
-    s32 field = *(s32 *)((u8 *)arg0 + 4);
-    if (fn_802C51AC(field) != 0) {
-        f32 value = lbl_805634A8;
+    register f32 value;
+    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 4)) != 0) {
+        value = lbl_805634A8;
         spC = value;
         sp8 = value;
         fn_80230C30(&spC, &sp8, arg1, arg2);
-        if ((u32)(arg5 + 0x10000) != 0xFFFFFFFF) {
-            s32 count = fn_802C51AC(field);
-            fn_802C5320(field, arg5 % count, spC, sp8, value,
-                        *(f32 *)((u8 *)arg0 + 8), *(f32 *)((u8 *)arg0 + 0xC));
+        if ((u32)(arg4 + 0x10000) != 0xFFFFU) {
+            fn_802C5320(*(s32 *)((u8 *)arg0 + 4),
+                        arg4 % fn_802C51AC(*(s32 *)((u8 *)arg0 + 4)),
+                        spC, sp8, value,
+                        *(f32 *)((u8 *)arg0 + 8),
+                        *(f32 *)((u8 *)arg0 + 0xC));
         }
     }
 }
@@ -5381,6 +5383,29 @@ extern "C" void fn_80228DAC(void *arg0) {
 }
 
 extern "C" void fn_80228DC0(void) { }
+
+extern "C" void fn_80218E98(void *, void *);
+extern "C" void fn_80218EBC(void *, void *);
+extern "C" void fn_80218EE0(void *, s32, s32, s32, s32);
+extern "C" void fn_80228E80(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    s32 sp8;
+    s32 width;
+    s32 height;
+    s32 midpoint;
+    u32 rounded;
+
+    fn_802C3034(arg0);
+    fn_80218E98((void *)arg0, &sp8);
+    width = fn_802C51C0(arg1);
+    height = fn_802C5220(arg1);
+    rounded = (u32)arg4 >> 31;
+    rounded += (u32)arg4;
+    midpoint = arg3 + ((s32)rounded >> 1);
+    fn_80218EE0((void *)arg0, arg2, arg3, arg2 + height, midpoint);
+    fn_80218EBC((void *)arg0, &sp8);
+    fn_80218EE0((void *)arg0, arg2, midpoint, arg2 + width, arg3 + arg4);
+    fn_80218EBC((void *)arg0, &sp8);
+}
 
 extern "C" s32 fn_80228F40(s32 arg0, s32 arg1) {
     return arg0 + arg1 * 1000;
