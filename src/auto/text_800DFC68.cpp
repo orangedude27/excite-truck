@@ -48,36 +48,38 @@ extern "C" void fn_800D2DD4(void);
 extern "C" void __dt__Q36nw4hbm3lyt4PaneFv(void*, int);
 extern "C" void fn_80128668(void*);
 extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* arg0, int arg1) {
-    int count, offset;
-    int* entries;
-    void* pane;
-    void** vtable;
+    struct LocalObj { virtual void destroy(int); };
+    int offset;
+    int count;
+    int hasEntries;
+    LocalObj *pane;
+    char *self = (char *)arg0;
+
     if (arg0 != 0) {
-        *(void**)arg0 = (void*)lbl_80320CFC;
-        entries = *(int**)((char*)arg0 + 0xFC);
-        if (entries != 0) {
+        hasEntries = *(int *)(self + 0xFC);
+        *(void **)arg0 = (void *)lbl_80320CFC;
+        if (hasEntries != 0) {
             count = 0;
             offset = 0;
-            while (count < *(unsigned char*)((char*)arg0 + 0x100)) {
-                pane = *(void**)((char*)entries + offset + 4);
-                vtable = *(void***)pane;
-                ((void (*)(void*, int))vtable[2])(pane, -1);
-                MEMFreeToAllocator(lbl_8055DDF0, pane);
+            while (count < *(u8 *)(self + 0x100)) {
+                pane = *(LocalObj **)(*(char **)(self + 0xFC) + offset + 4);
+                pane->destroy(-1);
+                MEMFreeToAllocator(lbl_8055DDF0, *(void **)(*(char **)(self + 0xFC) + offset + 4));
                 offset += 8;
                 count++;
             }
-            MEMFreeToAllocator(lbl_8055DDF0, entries);
+            MEMFreeToAllocator(lbl_8055DDF0, *(void **)(self + 0xFC));
         }
-        pane = *(void**)((char*)arg0 + 0x28);
-        if (pane != 0 && *((unsigned char*)pane + 0x54) == 0) {
-            vtable = *(void***)pane;
-            ((void (*)(void*, int))vtable[2])(pane, -1);
-            MEMFreeToAllocator(lbl_8055DDF0, pane);
-            *(void**)((char*)arg0 + 0x28) = 0;
+
+        pane = *(LocalObj **)(self + 0x28);
+        if (pane != 0 && *((u8 *)pane + 0x54) == 0) {
+            pane->destroy(-1);
+            MEMFreeToAllocator(lbl_8055DDF0, *(void **)(self + 0x28));
+            *(void **)(self + 0x28) = 0;
         }
-        fn_800D598C((char*)arg0 + 0xF4);
-        if ((char*)arg0 + 0xE4 != 0)
-            fn_8002F634((char*)arg0 + 0xE4, (void*)fn_800D2DD4, 4, 4);
+        fn_800D598C(self + 0xF4);
+        if (self + 0xE4 != 0)
+            fn_8002F634(self + 0xE4, (void *)fn_800D2DD4, 4, 4);
         __dt__Q36nw4hbm3lyt4PaneFv(arg0, 0);
         if (arg1 > 0)
             fn_80128668(arg0);
@@ -200,48 +202,50 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc_800E03BC(void* th
 extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(f64* out, void* self, u8 a, u32 b);
 extern "C" void GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self);
 extern "C" void fn_800E0434(void* self) {
+    struct WindowV {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21();
+        virtual void fn60();
+        virtual void v64();
+        virtual void v68();
+        virtual void fn6c(f64*, f64*, u8);
+        virtual void fn70(f64*, u32, f64*, u8);
+        virtual void fn74(f64*, u32, f64*, u8);
+        virtual void fn78(f64*, u32, f64*, u8);
+    };
+    struct Pos { f32 x; f32 y; };
+    union PosBits { Pos pos; f64 value; };
+    struct Scratch {
+        PosBits posret;
+        f64 pos;
+        f64 frameA;
+        f64 frameB;
+        f64 copyA;
+        f64 copyB;
+    };
     u8* bytes = (u8*)self;
-    void** vtable = *(void***)self;
-
-    void (*fn0)(void*) = (void (*)(void*))vtable[0x60 / 4];
-    fn0(self);
-
-    f64 sp18;
-    f64 sp20;
-    f64 sp28;
-    f64 sp30;
-    f64 sp10;
-    u32 spC;
-    u32 sp8;
-
-    GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(&sp18, self, bytes[0x100], *(u32*)(bytes + 0xFC));
-    sp28 = sp18;
-    sp30 = sp20;
-
-    GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
-    spC = *(u32*)(bytes + 0xC);
-    sp8 = *(u32*)(bytes + 0x8);
-    sp10 = *(f64*)(bytes + 0x10);
-
-    void (*fn1)(void*, f64*, f64*, u8) = (void (*)(void*, f64*, f64*, u8))vtable[0x6C / 4];
-    fn1(self, &sp10, &sp28, bytes[0xCE]);
-
+    Scratch scratch;
+    ((WindowV*)self)->fn60();
+    GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(&scratch.frameA, self, bytes[0x100], *(u32*)(bytes + 0xFC));
+    scratch.copyA = scratch.frameA;
+    scratch.copyB = scratch.frameB;
+    scratch.posret.pos = ((Pos (*)(void*))GetVtxPos__Q34nw4r3lyt4PaneCFv)(self);
+    scratch.pos = scratch.posret.value;
+    ((WindowV*)self)->fn6c(&scratch.pos, &scratch.copyA, bytes[0xCE]);
     switch (bytes[0x100]) {
-    case 1: {
-        void (*fn2)(void*, f64*, u32, f64*, u8) = (void (*)(void*, f64*, u32, f64*, u8))vtable[0x70 / 4];
-        fn2(self, &sp10, *(u32*)(bytes + 0xFC), &sp28, bytes[0xCE]);
+    case 1:
+        ((WindowV*)self)->fn70(&scratch.pos, *(u32*)(bytes + 0xFC), &scratch.copyA, bytes[0xCE]);
         break;
-    }
-    case 4: {
-        void (*fn3)(void*, f64*, u32, f64*, u8) = (void (*)(void*, f64*, u32, f64*, u8))vtable[0x74 / 4];
-        fn3(self, &sp10, *(u32*)(bytes + 0xFC), &sp28, bytes[0xCE]);
+    case 4:
+        ((WindowV*)self)->fn74(&scratch.pos, *(u32*)(bytes + 0xFC), &scratch.copyA, bytes[0xCE]);
         break;
-    }
-    case 8: {
-        void (*fn4)(void*, f64*, u32, f64*, u8) = (void (*)(void*, f64*, u32, f64*, u8))vtable[0x78 / 4];
-        fn4(self, &sp10, *(u32*)(bytes + 0xFC), &sp28, bytes[0xCE]);
+    case 8:
+        ((WindowV*)self)->fn78(&scratch.pos, *(u32*)(bytes + 0xFC), &scratch.copyA, bytes[0xCE]);
         break;
-    }
     }
 }
 
