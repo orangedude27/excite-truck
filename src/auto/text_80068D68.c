@@ -11146,6 +11146,33 @@ void l2c_link_role_change_failed(void) {
         if (entry[0] != 0 && *(s32 *)(entry + 4) == 2) l2cu_create_conn_after_switch(entry);
 }
 
+extern char lbl_80318E20[];
+void l2c_link_segments_xmitted(BT_HDR *p_msg) {
+    u8 *p;
+    u16 handle;
+    void *p_lcb;
+
+    p = (u8 *)p_msg + p_msg->offset;
+    handle = (u16)((p[8] + (p[9] << 8)) & 0x0fff);
+    p_lcb = l2cu_find_lcb_by_handle(handle);
+    if (p_lcb == NULL) {
+        if (lbl_803C4040[0] >= 2) {
+            fn_80070954(0x80001, lbl_80318E20, handle);
+        }
+        GKI_freebuf(p_msg);
+        return;
+    }
+
+    if (*(s32 *)((u8 *)p_lcb + 4) == 4) {
+        *(u16 *)((u8 *)p_msg + 6) = 0;
+        GKI_enqueue_head((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_msg);
+        *(u8 *)((u8 *)p_lcb + 0x40) = 0;
+        ((void (*)(void *, void *, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
+    } else {
+        GKI_freebuf(p_msg);
+    }
+}
+
 void fn_8008C464(u8 *bd_addr) {
     void *lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
     if (lcb != 0 && *(u32 *)((u8 *)lcb + 8) == 0)
