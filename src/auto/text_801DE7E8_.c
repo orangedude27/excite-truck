@@ -176,15 +176,13 @@ extern "C" void fn_801DEE3C(void) {
     register char *row = lbl_804872B0;
     register unsigned int i = 0;
     Dummy *object;
-    register char *array;
-    register unsigned int j;
 
     do {
         object = ((struct Row *)row)->object;
         if (object != 0) {
             if (object != 0)
                 object->d0(1);
-            ((struct Row *)row)->object = 0;
+            ((struct Row *)row)->object = (Dummy *)zero;
         }
         {
             int state = ((struct Row *)row)->state;
@@ -203,22 +201,24 @@ extern "C" void fn_801DEE3C(void) {
     if (object != 0) {
         if (object != 0)
             object->d0(1);
-        lbl_8055E9F0 = 0;
+        lbl_8055E9F0 = (void *)zero;
     }
 
-    array = (char *)lbl_804874A8;
-    j = 0;
-    i = 0;
-    do {
-        object = *(Dummy **)array;
-        if (object != 0) {
-            if (object != 0)
-                object->d0(1);
-            *(int *)array = 0;
-        }
-        ++i;
-        array += 4;
-    } while (i < 4);
+    {
+        register unsigned int j = 0;
+        zero = (int)lbl_804874A8;
+        sentinel = 0;
+        do {
+            object = *(Dummy **)zero;
+            if (object != 0) {
+                if (object != 0)
+                    object->d0(1);
+                *(int *)zero = sentinel;
+            }
+            ++j;
+            zero += 4;
+        } while (j < 4);
+    }
 
     if (lbl_8055E9E4 != 0) {
         ((void (*)(int))fn_80131818)(lbl_8055E9E4);
