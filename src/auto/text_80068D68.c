@@ -136,6 +136,7 @@ extern char lbl_80317700[];
 extern void hidd_pm_set_now(void *);
 extern void fn_80086468(void *);
 extern u8 lbl_803C4040[];
+extern char lbl_803181F0[];
 extern void fn_80089E40(void *, u8, void *);
 extern u8 lbl_803151D8[];
 extern char lbl_8031801C[];
