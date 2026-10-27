@@ -235,6 +235,7 @@ struct Node1D94DC {
     int field8;
     Node1D94DC *next;
 };
+#pragma use_lmw_stmw off
 extern "C" int fn_801D94DC(void *head, void *list, const char *name, int object) {
     int index = 0;
     void *item;
