@@ -1635,11 +1635,17 @@ extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(voi
     int valid = 0;
     if (channel >= 0 && channel < 3) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2D9, lbl_80322338, channel, 0, 3);
-    if (volume > lbl_80560F38) volume = lbl_80560F38;
-    else if (volume < lbl_80560F3C) volume = lbl_80560F3C;
+    float result;
+    if (volume > lbl_80560F38) {
+        result = lbl_80560F38;
+    } else if (volume < lbl_80560F3C) {
+        result = lbl_80560F3C;
+    } else {
+        result = volume;
+    }
     float *slot = (float *)((unsigned char *)self + 0x148 + channel * 4);
-    if (volume != *slot) {
-        *slot = volume;
+    if (result != *slot) {
+        *slot = result;
         *((unsigned char *)self + 0x123) |= 0x20;
     }
 }
