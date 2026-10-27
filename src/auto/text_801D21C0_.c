@@ -156,21 +156,30 @@ void fn_801D2414(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
-u8 fn_801D2550(void *arg0, UnkObj *arg1) {
+#pragma cplusplus on
+extern "C" u8 fn_801D2550(void *arg0, void *arg1) {
+    struct Dummy {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual f32 fn28(f32, void *);
+    };
     if (arg1 != NULL) {
-        *(u8 *)arg0 = 1;
-        *(f32 *)((u8 *)arg0 + 4) = arg1->vt->fn28(arg1, lbl_80338300, lbl_80562A90);
+        u8 flag = 1;
+        f32 value = lbl_80562A90;
+        *(u8 *)arg0 = flag;
+        *(f32 *)((u8 *)arg0 + 4) = ((Dummy *)arg1)->fn28(value, lbl_80338300);
     } else {
         *(u8 *)arg0 = 0;
     }
     return *(u8 *)arg0;
 }
-
+#pragma cplusplus reset
 extern void fn_801345D8(char*, int, const char*, ...);
 extern const char lbl_8033830C[];
 extern const char lbl_8055ABE4[];
 #pragma dont_inline on
-void fn_801D25BC(void* arg0, void* arg1) {
+#pragma cplusplus on
+extern "C" void fn_801D25BC(void* arg0, void* arg1) {
     char name[0x20];
     s32 i;
     UnkObj *item;
