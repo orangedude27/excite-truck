@@ -4974,6 +4974,25 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     return status;
 }
 
+tBTM_INQ_INFO *BTM_InqDbRead(BD_ADDR p_bda) {
+    extern char lbl_80316484[];
+    u32 i;
+    u8 *cb = lbl_803C0F78;
+    u8 *entry = cb + 0x16E4;
+
+    if (cb[0x27C0] >= 3) {
+        fn_800709CC(0xD0002, lbl_80316484,
+                    p_bda[0], p_bda[1], p_bda[2],
+                    p_bda[3], p_bda[4], p_bda[5]);
+    }
+
+    for (i = 0; i < 0xC; i++, entry += 0x1C) {
+        if (entry[0x1A] != 0 && memcmp(entry + 0xA, p_bda, 6) == 0)
+            return (tBTM_INQ_INFO *)(entry + 8);
+    }
+    return NULL;
+}
+
 tBTM_INQ_INFO *BTM_InqDbFirst(void) {
     UINT16 xx;
     u8 *entry = lbl_803C0F78 + 0x16E4;
