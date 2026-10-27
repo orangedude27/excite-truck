@@ -85,6 +85,7 @@ extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* arg0, int arg1) {
     return arg0;
 }
 
+#pragma use_lmw_stmw off
 void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChildren) {
     struct Pane {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
