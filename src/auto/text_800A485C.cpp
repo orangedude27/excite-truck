@@ -1546,8 +1546,8 @@ extern "C" void fn_800A8BB8(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" s32 fn_800A7774(void *, void *, void *, void *, u16, void *, s32, ...);
-s32 VFiPFCACHE_InitCaches(void *arg0) {
+extern "C" s32 fn_800A7774(void *, void *, void *, void *, u16, void *, s32);
+extern "C" s32 VFiPFCACHE_InitCaches(void *arg0) {
     u32 flags = M2C_FIELD(arg0, u32 *, 0x1624);
     u16 count = M2C_FIELD(arg0, u16 *, 0x1628);
     u16 extra = M2C_FIELD(arg0, u16 *, 0x162A);
@@ -1558,7 +1558,7 @@ s32 VFiPFCACHE_InitCaches(void *arg0) {
     s32 result = fn_800A7774(arg0, (u8 *)arg0 + 0x1630,
                              M2C_FIELD(arg0, void **, 0x162C),
                              M2C_FIELD(arg0, void **, 0x1638), count,
-                             M2C_FIELD(arg0, void **, 0x163C), 1, 0);
+                             M2C_FIELD(arg0, void **, 0x163C), 1);
     if (result != 0) {
         return result;
     }
@@ -1568,7 +1568,7 @@ s32 VFiPFCACHE_InitCaches(void *arg0) {
                              (u8 *)base + count * 0x28,
                              (u8 *)M2C_FIELD(arg0, void **, 0x1638) + (count << 9),
                              M2C_FIELD(arg0, u16 *, 0x162A),
-                             M2C_FIELD(arg0, void **, 0x1640), 0, base);
+                             M2C_FIELD(arg0, void **, 0x1640), 0);
     return status & ((-status | status) >> 31);
 }
 
@@ -11575,9 +11575,11 @@ void homebutton::GroupAnmController::do_calc() {
     };
     struct Node { Node *next; u32 pad; void *object; };
     struct List { u8 pad[0x10]; Node *head; };
-    register Node *node;
-    register Node *end;
-    register s32 active;
+    Node *node;
+    Node *end;
+    const char *message;
+    const char *file;
+    s32 active;
     if (*(s32 *)((u8 *)this + 0x14) == 1) {
         calc();
         active = 1;
@@ -11589,8 +11591,11 @@ void homebutton::GroupAnmController::do_calc() {
     node = list->head;
     end = (Node *)((u8 *)list + 0x10);
     while (node != end) {
-        if (node == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E764, 0x23D, lbl_8031E740);
+        if (node == 0) {
+            file = lbl_8031E764;
+            message = lbl_8031E740;
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x23D, message);
+        }
         void *object = node->object;
         ((ComponentDispatch *)object)->apply(*(void **)((u8 *)this + 0x24), active, 0);
         node = node->next;
