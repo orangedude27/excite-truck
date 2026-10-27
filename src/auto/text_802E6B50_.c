@@ -8,7 +8,7 @@ extern int lbl_8055FFC0;
 extern unsigned char lbl_8055FFC4;
 extern unsigned char lbl_8055FFC5;
 extern void *memset(void *, int, unsigned long);
-extern void fn_802E6FBC(void);
+extern void *fn_802E6FBC(void);
 extern int fn_802E30C8(const char *, ...);
 extern char lbl_8034D678[];
 extern int lbl_8055D200;
