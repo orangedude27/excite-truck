@@ -100,13 +100,13 @@ extern float fn_802A0F7C(void *, void *, void *);
 extern "C" void *fn_80156A40(void);
 struct Dummy802A1120 {
     virtual void *getFirst(s32);
-    virtual void *getSecond(s32);
+    virtual s32 getSecond(s32);
 };
 extern "C" inline void *fn_802A1120_getFirst(void) {
     return ((Dummy802A1120 *)fn_80156A40())->getFirst(0);
 }
 extern "C" inline void *fn_802A1120_getSecond(void) {
-    return ((Dummy802A1120 *)fn_80156A40())->getSecond(0);
+    return (void *)((Dummy802A1120 *)fn_80156A40())->getSecond(0);
 }
 #pragma cplusplus reset
 #pragma paired off
