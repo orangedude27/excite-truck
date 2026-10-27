@@ -90,14 +90,11 @@ extern s32 lbl_805630B8, lbl_805630C0, lbl_805630C4;
 extern f32 lbl_805630C8, lbl_805630CC, lbl_805630D0, lbl_805630D4;
 extern u16 lbl_802F9D48[];
 extern void fn_802C8C04(s32);
-extern void fn_802C8DB8(f32*, s32, u16*, s32, ...);
+extern void fn_802C8DB8(f32*, s32, u16*, s32);
 #pragma push
 #pragma paired_single off
 void fn_80202BFC(s32 arg0) {
-    typedef union {
-        f32 f;
-        s32 s;
-    } WorkValue;
+    typedef union { f32 f; s32 s; } WorkValue;
     typedef struct {
         s32 pair2[2];
         s32 pair1[2];
@@ -106,10 +103,10 @@ void fn_80202BFC(s32 arg0) {
         WorkValue values[24];
     } Work;
     Work work;
-    f32 f31 = lbl_805630D4;
-    f32 f30 = lbl_805630D0;
-    f32 f29 = lbl_805630CC;
-    f32 f28 = lbl_805630C8;
+    register f64 f31 = lbl_805630D4;
+    register f64 f30 = lbl_805630D0;
+    register f64 f29 = lbl_805630CC;
+    register f64 f28 = lbl_805630C8;
     register volatile u16 *table = lbl_802F9D48;
     register s32 *p1;
     register s32 *p2;
