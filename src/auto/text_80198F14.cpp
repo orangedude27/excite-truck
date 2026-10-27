@@ -1218,13 +1218,14 @@ s32 fn_8019EA7C(void* arg0, void** arg1) {
     f32 sp1C;
     f32 spC;
 
-    temp_r3 = ((void* (*)(void*))(*(u32*)(*(u32*)arg1 + 0x50)))(arg1);
+    temp_r3 = ((Fn8019EA7CDispatch*)arg1)->Get();
     temp_r5 = *(void**)((u8*)arg0 + 0xC);
     temp_f3 = *(f32*)((u8*)temp_r5 + 0x28);
     temp_f4 = *(f32*)((u8*)temp_r5 + 0x24) - *(f32*)((u8*)temp_r3 + 0x24);
     temp_f1 = *(f32*)((u8*)temp_r5 + 0x2C);
     temp_f2 = temp_f3 - *(f32*)((u8*)temp_r3 + 0x28);
-    sp20 = temp_f4; spC = temp_f2;
+    sp20 = temp_f4;
+    spC = temp_f2;
     sp1C = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
     return fn_8019E874(arg0, arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
 }
@@ -1253,7 +1254,7 @@ extern "C" void fn_8019EBC0(void* arg0) {
     p->v16();
 }
 
-extern "C" void fn_8019EBE0(void* self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
+extern "C" void fn_8019EBE0(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
     s32 v1 = (s32)self;
     s32 v2 = a;
     s32 v3 = b;
@@ -1261,19 +1262,14 @@ extern "C" void fn_8019EBE0(void* self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f
     s32 v5 = d;
     s32 v6 = e;
     s32 v7 = f;
-    s32 obj = *(s32*)((u8*)self + 4);
+    s32 obj = *(s32 *)((u8 *)self + 4);
 
     if (obj != 0) {
         fn_8017B5D4(obj, v1, v2, v3, v4, v5, v6);
-        return;
+    } else {
+        obj = *(s32 *)((u8 *)self + 8);
+        if (obj != 0) fn_801A4A10(obj, v4, v7, v3);
     }
-
-    obj = *(s32*)((u8*)self + 8);
-    if (obj != 0) {
-        fn_801A4A10(obj, v4, v7);
-    }
-
-    return (void)v1, (void)v2, (void)v3, (void)v5, (void)v6;
 }
 
 extern "C" void fn_8019EC84(void* this_) {
@@ -1512,10 +1508,18 @@ extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
         (const Vec *)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0xC),
         (const Vec *)arg1);
     void *vector = *(void **)((u8 *)arg0 + 0xC);
-    volatile f32 scratch[10];
-    scratch[6] = ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale;
-    scratch[1] = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
-    scratch[5] = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
+    struct Scratch {
+        f32 pad0;
+        f32 spC;
+        f32 pad8[3];
+        f32 sp1C;
+        f32 sp20;
+        f32 tail[3];
+    };
+    volatile Scratch scratch;
+    scratch.sp20 = ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale;
+    scratch.spC = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
+    scratch.sp1C = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
 }
 #pragma scheduling on
 extern "C" void fn_8019F560(void) {
@@ -2989,7 +2993,7 @@ void fn_801A49E8(void* arg0) {
 extern "C" void fn_801D06C4(void);
 extern "C" void fn_8019BD54(void*, void*, s32, s32);
 extern "C" void fn_8019D06C(void*, void*, s32, s32);
-extern "C" void fn_8019EA7C(void*, void*);
+extern "C" s32 fn_8019EA7C(void*, void*);
 extern f32 lbl_8056237C;
 extern f32 lbl_80562300;
 extern void fn_8019EECC(void*, void*);
