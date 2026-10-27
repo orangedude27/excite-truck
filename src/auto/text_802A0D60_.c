@@ -142,3 +142,4 @@ extern "C" void fn_802A1120(float *arg0, float *arg1) {
     fn_8013530C(work, -1);
 }
 #pragma cplusplus reset
+#pragma scheduling on
