@@ -4576,6 +4576,27 @@ extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *arg0) {
     return length;
 }
 
+typedef s32 (*UnicodeLengthCallback)(const u16 *, void *);
+extern "C" s32 VFiPFPATH_GetLengthFromUnicode(const u16 *text) {
+    struct Scratch {
+        void *state;
+        s16 inputLength;
+        s16 outputLength;
+    } scratch;
+    s32 inputIndex = 0;
+    s32 outputTotal = 0;
+    UnicodeLengthCallback callback;
+
+    while (text[inputIndex] != 0) {
+        callback = *(UnicodeLengthCallback *)((u8 *)lbl_803D2140 + 0x4C);
+        fn_800A4BF4(callback(text + inputIndex, &scratch.state),
+                    (u16 *)&scratch.outputLength, &scratch.inputLength);
+        outputTotal += scratch.outputLength;
+        inputIndex += scratch.inputLength >> 1;
+    }
+    return outputTotal;
+}
+
 #define fn_800A4B9C_CALL fn_800A4B9C
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
     u8 *out = (u8 *)arg0;
@@ -7739,6 +7760,35 @@ extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
             return 0;
     }
     return 1;
+}
+
+extern "C" s16 fn_800BDE18(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
+    register s32 remaining = arg2;
+    register s32 take;
+    register u32 result = 0;
+    register u8 *mask = lbl_802F3408;
+    register s32 bitsInByte;
+    register s32 position = *arg3;
+    register s32 piece;
+
+    bitsInByte = 8 - (position & 7);
+    arg1 += position >> 3;
+    while (remaining > 0) {
+        if (bitsInByte == 0) {
+            bitsInByte = 8;
+            arg1++;
+        }
+        take = bitsInByte;
+        if ((u32)remaining < (u32)bitsInByte)
+            take = remaining;
+        piece = ((u8 *)arg1)[0] & mask[bitsInByte];
+        piece >>= bitsInByte - take;
+        result = (u16)(result | (piece << (remaining - take)));
+        bitsInByte -= take;
+        remaining -= take;
+    }
+    *arg3 += arg2;
+    return result;
 }
 
 extern "C" u8 lbl_802F3408[];
