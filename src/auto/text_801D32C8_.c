@@ -374,6 +374,7 @@ int fn_801D411C(void *arg0) {
         return 0;
     }
 }
+#pragma pop
 
 extern double fn_8002F234(float);
 extern void fn_8019F564(void *, void *, float *, void *, float, float, float, float, float, float);
