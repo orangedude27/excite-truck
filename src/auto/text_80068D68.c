@@ -5393,6 +5393,38 @@ BOOLEAN btm_inq_find_bdaddr(BD_ADDR addr) {
     return FALSE;
 }
 
+static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_filt_cond) {
+    void *p_buf;
+    UINT8 condition_length = 6;
+    UINT8 condition_buf[6];
+    UINT8 *p_cond = condition_buf;
+
+    p_buf = GKI_getpoolbuf(2);
+    if (p_buf != NULL) {
+        switch (filter_cond_type) {
+        case 1:
+            memcpy(condition_buf, p_filt_cond, 3);
+            memcpy(&condition_buf[3], p_filt_cond + 3, 3);
+            break;
+        case 2:
+            p_cond = p_filt_cond;
+            break;
+        case 0:
+            condition_length = 0;
+            break;
+        default:
+            return 5;
+        }
+
+        lbl_803C0F78[0x1844] = 1;
+        ((BOOLEAN (*)(void *, UINT8, UINT8, UINT8 *, UINT8))btsnd_hcic_set_event_filter)(
+            p_buf, 1, filter_cond_type, p_cond, condition_length);
+        return 1;
+    }
+
+    return 3;
+}
+
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
     void (*callback)(void *);
     u8 result;
@@ -9452,33 +9484,38 @@ u8 HID_HostRegister(void *arg0) {
 u8 HID_HostDeregister(void) {
     extern u8 lbl_803C3C38[];
     extern u8 hidh_conn_disconnect(u32);
-    extern void fn_80070F90(void*);
+    extern void fn_80070F90(void *);
     extern void fn_80089248(void);
+    u8 *base = lbl_803C3C38;
     u8 *entry;
     u32 offset;
     u32 i;
-    if (lbl_803C3C38[0x400] == 0)
+    u8 one = 1;
+    u8 zero = 0;
+
+    if (base[0x400] == 0)
         return 1;
-    for (i = 0; i <= 0x10; i++) {
+    for (i = 0; i < 0x10; i++) {
+        u8 flag = base[0x400];
         offset = i * 0x34;
-        entry = lbl_803C3C38 + offset;
-        if (entry[0] == 0)
-            continue;
-        if (entry[0xA] == 1) {
-            entry[0xC] = 1;
-            fn_80070F90(entry + 0x1C);
+        entry = base + offset;
+        if (flag != 0 && i <= 0x10 && base[offset] != 0) {
             if (entry[0xA] == 1) {
-                entry[0xC] = 1;
-                hidh_conn_disconnect(i);
+                entry[0xC] = one;
+                fn_80070F90(entry + 0x1C);
+                if (entry[0xA] == 1) {
+                    entry[0xC] = one;
+                    hidh_conn_disconnect((u8)i);
+                }
             }
+            entry[0] = zero;
+            entry[0x10] = zero;
+            *(u16 *)(entry + 0x16) = 0;
+            *(u16 *)(entry + 0x14) = 0;
         }
-        entry[0] = 0;
-        entry[0x10] = 0;
-        *(u16 *)(entry + 0x16) = 0;
-        *(u16 *)(entry + 0x14) = 0;
     }
     fn_80089248();
-    lbl_803C3C38[0x400] = 0;
+    base[0x400] = 0;
     return 0;
 }
 
