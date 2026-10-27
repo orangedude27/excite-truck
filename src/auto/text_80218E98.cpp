@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma ppc_psq_save off
 #include <types.h>
 
 extern "C" s32 stricmp(const char *, const char *);
@@ -4605,21 +4606,25 @@ extern "C" s32 fn_80226528(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_80226570(void *arg0, s32 arg1) {
-    s32 i = 0, offset = 0;
-    f32 delta = (f32)arg1;
-    f32 *records = *(f32 **)((u8 *)arg0 + 0x278);
-    s32 count = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8);
-    if (count > 0) do {
-        f32 *record = (f32 *)((u8 *)records + offset);
-        record[1] = record[0];
-        record[2] -= *(f32 *)((u8 *)arg0 + 0x25C) * delta;
-        if (record[2] > *(f32 *)((u8 *)arg0 + 0x264))
-            record[2] -= *(f32 *)((u8 *)arg0 + 0x260);
-        if (record[2] < *(f32 *)((u8 *)arg0 + 0x268))
-            record[2] += *(f32 *)((u8 *)arg0 + 0x260);
-        offset += 12;
-        i++;
-    } while (i < count);
+    s32 i = 0;
+    s32 offset = 0;
+
+    for (; i < *(s32 *)(*(u8 **)((u8 *)arg0 + 0x244) + 8); i++, offset += 12) {
+        *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset + 4) =
+            *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset);
+        *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset + 8) -=
+            *(f32 *)((u8 *)arg0 + 0x25C) * (f32)arg1;
+        if (*(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset + 8) >
+            *(f32 *)((u8 *)arg0 + 0x264)) {
+            *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset + 8) -=
+                *(f32 *)((u8 *)arg0 + 0x260);
+        }
+        if (*(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset + 8) <
+            *(f32 *)((u8 *)arg0 + 0x268)) {
+            *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x278) + offset + 8) +=
+                *(f32 *)((u8 *)arg0 + 0x260);
+        }
+    }
 }
 
 extern "C" void *fn_80226630(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
