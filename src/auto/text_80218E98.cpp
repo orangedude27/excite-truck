@@ -6,6 +6,7 @@
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" f32 fn_80214D48(void);
 extern "C" void fn_80228AEC(s32, f32);
+extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 
 extern "C" u8 lbl_8033E140[];
 extern "C" void fn_8022EE98(void *);
@@ -2742,18 +2743,18 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
     register s32 field250 = *(s32 *)((u8 *)arg0 + 0x250);
     register s32 duration = ((Dispatch *)arg0)->get();
     register s32 range = *(volatile s32 *)((u8 *)arg0 + 0x254);
-    register s32 frameDiff = frame - field4;
-    register s32 time = frameDiff - 5;
-    register s32 rangeDiff = range - field250;
-    register s32 product = rangeDiff * time;
-    duration = duration - 10;
-    register s32 quotient = product / duration;
-    register s32 result = field250 + quotient;
-    if (result < field250)
-        result = field250;
-    register s32 limit = *(volatile s32 *)((u8 *)arg0 + 0x254) - 1;
-    if (result >= limit)
-        result = limit;
+    register s32 time = frame - field4;
+    time -= 5;
+    register s32 distance = range - field250;
+    register s32 adjusted = distance * time;
+    duration -= 10;
+    adjusted /= duration;
+    register s32 result = field250;
+    result = result + adjusted;
+    result = result < field250 ? field250 : result;
+    register s32 max = *(volatile s32 *)((u8 *)arg0 + 0x254);
+    max -= 1;
+    result = result >= max ? max : result;
     *(s32 *)*(void **)((u8 *)arg0 + 0x244) = result;
 }
 
