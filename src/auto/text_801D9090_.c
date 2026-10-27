@@ -13,6 +13,23 @@ extern const char lbl_803391EC[];
 extern int strcmp(const char *, const char *);
 extern void *fn_801284F8(int, const char *);
 extern int fn_801D94DC(void *, void *, const char *, int);
+
+#pragma cplusplus on
+struct DtbManager801D9394 {
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+    virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+    virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+    virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+    virtual void f20(); virtual void f21(); virtual void *getAt(int);
+};
+struct DtbItem801D9394 {
+    virtual const char *getName();
+    virtual void f1();
+    virtual void f2();
+    virtual const char *getString(const char *);
+};
+#pragma cplusplus reset
 extern unsigned char lbl_8055E968;
 extern void *lbl_8055E96C;
 extern float lbl_80562B2C;
@@ -59,48 +76,45 @@ void fn_801D9110(int arg0) { fn_801D893C(arg0 - 4); }
 
 void fn_801D9118(int arg0) { fn_801D89C0(arg0 - 4); }
 
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_801D9120(float *out, float *values, int count, float weight) {
-    extern float lbl_80562B28;
-    int last = count - 1;
-    float value = *(float *)((char *)values + last * 4);
+    float value = values[count - 1];
     if (count == 1) {
         out[1] = weight * value;
         out[0] = weight * (lbl_80562B28 - value);
     } else {
-        fn_801D9120(out, values, last, weight * (lbl_80562B28 - value));
-        fn_801D9120(out + (1 << last), values, last, weight * value);
+        fn_801D9120(out, values, count - 1, weight * (lbl_80562B28 - value));
+        fn_801D9120(out + (1 << (count - 1)), values, count - 1, weight * value);
     }
 }
 #pragma dont_inline off
+#pragma scheduling default
 void fn_801D91D8(void) {
     extern void *lbl_8055E96C;
     extern void *lbl_8055E964;
     void *node;
     void *item;
-    int index;
-    int offset;
-    int n;
+    int count;
+    int i;
     void **entries;
+    int found;
     for (node = lbl_8055E96C; node != 0; node = *(void **)((char *)node + 0x54)) {
         for (item = lbl_8055E964; item != 0; item = *(void **)((char *)item + 0x34)) {
             entries = *(void ***)item;
-            n = *(int *)((char *)item + 4);
-            index = 0;
-            offset = 0;
-            while (n > 0) {
-                if (entries[offset / 4] == node)
+            count = *(int *)((char *)item + 4);
+            found = -1;
+            for (i = 0; i < count; i++) {
+                if (entries[i] == node) {
+                    found = i;
                     break;
-                offset += 4;
-                index++;
-                n--;
+                }
             }
-            if (n <= 0)
-                index = -1;
-            if (index != -1) {
+            if (found != -1) {
                 int used = *(int *)((char *)node + 0x2C);
+                int base = *(int *)((char *)node + 0x28);
                 *(int *)((char *)node + 0x2C) = used + 1;
-                *(void **)(*(char **)((char *)node + 0x28) + used * 4) = item;
+                *(void **)((char *)base + used * 4) = item;
             }
         }
     }
@@ -126,47 +140,143 @@ void *fn_801D9260(int count) {
     return node;
 }
 
-void fn_801D9394(void **head, void **manager, const char *name, int arg3) {
+#pragma cplusplus on
+extern "C" void fn_801D9394(void **head, void **manager, const char *name, int arg3) {
+    struct Manager {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+        virtual void f20(); virtual void f21(); virtual void *getAt(int);
+    };
+    struct Item {
+        virtual const char *getName();
+        virtual void f1();
+        virtual void f2();
+        virtual const char *getString(const char *);
+    };
+    struct Node {
+        char field00[0x20];
+        float value;
+        int field24;
+        char *textPtr;
+        int field2C;
+        int field30;
+        char field34[0x20];
+        char field54[4];
+    };
     float value = lbl_80562B2C;
     int index = 0;
-    int n;
-    void *item;
-    void *node;
+    Manager *list = (Manager *)manager;
+    Item *item;
+    Node *node;
     const char *text;
     char *out;
-    for (;;) {
-        item = ((void *(*)(void *, int))(*(void ***)manager)[0x60 / 4])(manager, index);
-        if (item == 0) break;
-        if (strcmp(((const char *(*)(void *))(*(void ***)item)[2])(item), name) == 0) {
-            node = fn_801284F8(0x58, name);
+    while ((item = (Item *)list->getAt(index)) != 0) {
+        if (strcmp(item->getName(), name) == 0) {
+            node = (Node *)fn_801284F8(0x58, name);
             if (node != 0) {
-                *(void **)((char *)node + 0x28) = (char *)node + 0x34;
-                *(int *)((char *)node + 0x30) = 8;
-                *(int *)((char *)node + 0x2C) = 0;
-                text = ((const char *(*)(void *, unsigned int))(*(void ***)item)[0x14 / 4])(item, lbl_8055AD90);
-                out = (char *)node + 0x34;
-                n = 0x20;
-                while (*text != 0 && n > 0) {
-                    *out++ = *text++;
-                    n--;
+                node->textPtr = (char *)node + 0x34;
+                node->field30 = 8;
+                node->field2C = 0;
+                text = item->getString((const char *)&lbl_8055AD90);
+                out = (char *)node;
+                {
+                    int left = 0x20;
+                    goto copy_check;
+copy_loop:
+                    if (--left > 0)
+                        goto copy_check;
+                    out[-1] = 0;
+                    goto copy_done;
+copy_check:
+                    {
+                        unsigned char c = *text++;
+                        *out++ = c;
+                        if ((signed char)c != 0)
+                            goto copy_loop;
+                    }
+copy_done:
+                    ;
                 }
-                if (n == 0) out[-1] = 0;
-                *(int *)((char *)node + 0x24) = 0;
+                node->field24 = 0;
                 fn_801D94DC((char *)node + 0x24, item, lbl_803391EC, arg3);
                 *(int *)((char *)node + 0x54) = 0;
-                *(float *)((char *)node + 0x20) = value;
+                node->value = value;
             }
             *(void **)((char *)node + 0x54) = *head;
             *head = node;
         }
-        index++;
+        ++index;
     }
+}
+#pragma cplusplus reset
+extern const char lbl_803391A8[];
+extern const char lbl_803391B4[];
+extern float lbl_8055AD68;
+extern float lbl_8055AD70;
+extern int lbl_8055AD78;
+extern void fn_802E317C(const char*, const char*, ...);
+int fn_801D94DC(void *head, void *list, const char *name, int object) {
+    int index = 0;
+    void *item;
+    void *found;
+    void *node;
+    void *obj = (void *)object;
+    item = ((void *(*)(void*, int))(*(void***)list)[0x60 / 4])(list, index);
+    while (item != 0) {
+        const char *text = ((const char *(*)(void*))(*(void***)item)[2])(item);
+        if (strcmp(text, name) == 0) {
+            node = fn_801284F8(0x10, name);
+            if (node != 0) {
+                *(float*)((char*)node + 0) = ((float(*)(void*, const float*))(*(void***)item)[0x24 / 4])(item, &lbl_8055AD68);
+                *(float*)((char*)node + 4) = ((float(*)(void*, const float*))(*(void***)item)[0x24 / 4])(item, &lbl_8055AD70);
+                found = ((void*(*)(void*, const char*))(*(void***)item)[0x14 / 4])(item, lbl_803391A8);
+                if (((int(*)(void*, void*))(*(void***)obj)[0x10 / 4])(obj, found) == 0)
+                    fn_802E317C(lbl_803391B4, found);
+                found = ((void*(*)(void*, void*))(*(void***)obj)[2])(obj, found);
+                *(int*)((char*)node + 8) = ((int(*)(void*, const int*))(*(void***)found)[0x1C / 4])(found, &lbl_8055AD78);
+                *(void**)((char*)node + 0xC) = 0;
+            }
+            *(void**)((char*)node + 0xC) = *(void**)head;
+            *(void**)head = node;
+        }
+        index++;
+        item = ((void *(*)(void*, int))(*(void***)list)[0x60 / 4])(list, index);
+    }
+    return 0;
 }
 
 void fn_801D9828(void) {
     fn_802C6CF8(lbl_8055E960);
     fn_801D985C((int *)&lbl_8055E96C);
     fn_801D9948((int *)&lbl_8055E964);
+}
+
+extern void fn_801D98F0(void **);
+int fn_801D985C(int *arg0) {
+    register s32 zero = 0;
+    register void *node = *(void **)arg0;
+    register void *next;
+
+    goto check;
+loop:
+    next = *(void **)((char *)node + 0x54);
+    fn_801D98F0((void **)((char *)node + 0x24));
+    if ((char *)node + 0x28 != 0) {
+        if ((char *)node + 0x28 != 0) {
+            *(s32 *)((char *)node + 0x28) = zero;
+            *(s32 *)((char *)node + 0x2C) = zero;
+            *(s32 *)((char *)node + 0x30) = zero;
+        }
+    }
+    fn_80128668(node);
+    node = next;
+check:
+    if (node != 0)
+        goto loop;
+    *arg0 = 0;
 }
 
 void fn_801D98F0(void **arg0) {
@@ -177,6 +287,50 @@ void fn_801D98F0(void **arg0) {
         node = next;
     }
     *arg0 = 0;
+}
+
+int fn_801D9948(int *arg0) {
+    /* Fix note: walk and release each node, clear its embedded arrays, then reset the head. */
+    struct Node {
+        int field0, field4, field8, fieldC, field10;
+        int *items;
+        int count;
+        int field1C, field20, field24, field28, field2C, field30;
+        struct Node *next;
+    };
+    register struct Node *node = (struct Node *)*arg0;
+    register int *head = arg0;
+    register int zero = 0;
+    register int i;
+    register int offset;
+    while (node != 0) {
+        register struct Node *next = node->next;
+        if (node == 0) break;
+        i = 0;
+        offset = 0;
+        while (i < node->count) {
+            fn_802C6CF8(*(int *)((char *)node->items + offset));
+            offset += 4;
+            i += 1;
+        }
+        if ((char *)node + 0x14 != 0) {
+            if ((char *)node + 0x14 != 0) {
+                node->items = (int *)zero;
+                node->count = zero;
+                node->field1C = zero;
+            }
+        }
+        if (node != 0) {
+            if (node != 0) {
+                node->field0 = zero;
+                node->field4 = zero;
+                node->field8 = zero;
+            }
+        }
+        fn_80128668(node);
+        node = next;
+    }
+    *head = zero;
 }
 
 void fn_801D9A08(void) {
@@ -227,5 +381,70 @@ int fn_801D9B28(void *arg0, int arg1) {
         node = *(void **)((char *)node + 0xC);
     }
     return 0;
+}
+
+void fn_801D9B58(void) {
+    void *node;
+    void *child;
+    void *array;
+    int i;
+    int offset;
+    int count;
+    int processed;
+    float samples[8];
+    float weights[8];
+    float threshold = lbl_80562B30;
+    float value;
+    float maximum;
+    fn_802C7040(lbl_8055E960);
+    node = lbl_8055E96C;
+    while (node != 0) {
+        if (*(float *)((char *)node + 0x20) > lbl_80562B2C) {
+            count = *(int *)((char *)node + 0x2C);
+            array = *(void **)((char *)node + 0x28);
+            i = 0;
+            offset = 0;
+            while (i < count) {
+                child = *(void **)((char *)array + offset);
+                *(unsigned char *)((char *)child + 0x30) = 1;
+                i++;
+                offset += 4;
+            }
+        }
+        node = *(void **)((char *)node + 0x54);
+    }
+    node = lbl_8055E964;
+    while (node != 0) {
+        if (*(unsigned char *)((char *)node + 0x30) != 0) {
+            count = *(int *)((char *)node + 4);
+            array = *(void **)node;
+            i = 0;
+            offset = 0;
+            while (i < count) {
+                child = *(void **)((char *)array + offset);
+                samples[i] = *(float *)((char *)child + 0x20);
+                i++;
+                offset += 4;
+            }
+            fn_801D9120(weights, samples, count, lbl_80562B28);
+            maximum = weights[0];
+            if (threshold > maximum) maximum = threshold;
+            fn_802C9900(maximum);
+            array = *(void **)((char *)node + 0x14);
+            fn_802C7040(*(int *)array);
+            count = *(int *)((char *)node + 0x18);
+            processed = 1;
+            i = 1;
+            while (i < count) {
+                fn_802C9900(weights[i]);
+                fn_802C7040(*(int *)((char *)array + i * 4));
+                i++;
+                processed++;
+            }
+            *(unsigned char *)((char *)node + 0x30) = 0;
+        }
+        node = *(void **)((char *)node + 0x34);
+    }
+    fn_802C9904();
 }
 
