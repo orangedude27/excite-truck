@@ -1204,10 +1204,10 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
+extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
-s32 fn_8019EA7C(void* arg0, void** arg1) {
+extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     void* temp_r3;
     void* temp_r5;
     f32 temp_f1;
@@ -1227,7 +1227,7 @@ s32 fn_8019EA7C(void* arg0, void** arg1) {
     sp20 = temp_f4;
     spC = temp_f2;
     sp1C = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
-    return fn_8019E874(arg0, arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
+    return fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
 }
 
 void fn_8019EB14(u8 *arg0, s32 arg1) {
