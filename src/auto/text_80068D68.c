@@ -263,7 +263,7 @@ void btu_stop_timer(void *);
 #define BTA_HH_API_CLOSE_EVT 0x1701
 extern void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data);
 extern u8 lbl_80315CA0[];
-extern u8 lbl_80559060[];
+extern u8 lbl_80559060[1];
 extern s32 btsnd_hcic_reset_800857CC(void);
 extern u8 lbl_803C0AD8[];
 extern u8 lbl_8055DC80;
@@ -4178,6 +4178,22 @@ tBTM_SEC_DEV_REC *btm_find_oldest_dev(void) {
     return p_oldest;
 }
 
+#pragma small_data on
+void btm_dev_init(void) {
+    memcpy(lbl_803C0F78 + 0x648, &lbl_80559060, 3);
+    *(u16 *)(lbl_803C0F78 + 0x64C) = 0x1400;
+    *(u32 *)(lbl_803C0F78 + 0x584) = 1;
+    *(u32 *)(lbl_803C0F78 + 0x5A0) = 2;
+    *(u32 *)(lbl_803C0F78 + 0x5BC) = 4;
+    *(u16 *)(lbl_803C0F78 + 0x654) = 0xCC18;
+    *(u16 *)(lbl_803C0F78 + 0x656) = 0x3F;
+    lbl_803C0F78[0x27BD] = 0xFF;
+    lbl_803C0F78[0x27BE] = 0xFF;
+    lbl_803C0F78[0x64E] = 0;
+    lbl_803C0F78[0x64F] = 5;
+    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
+    ((void (*)(void))btsnd_hcic_reset)();
+}
 void btm_db_reset(void) {
     u8 param = 12;
     btm_inq_db_reset();
