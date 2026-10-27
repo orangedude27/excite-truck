@@ -207,7 +207,10 @@ extern "C" void *lbl_8033EF68;
 extern "C" void fn_8021BE48(void *);
 extern "C" void fn_802223C4(void *arg0, s32 arg1);
 extern f32 lbl_805634C4;
-extern "C" void *lbl_8033EC2C;
+#pragma push
+#pragma small_data off
+extern "C" void *lbl_8033EC2C[];
+#pragma pop
 extern "C" f32 fn_8023659C(void);
 extern "C" s32 fn_80228F40(s32, s32);
 extern "C" s32 fn_80216D28();
