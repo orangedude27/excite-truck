@@ -4106,9 +4106,12 @@ tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
 loop:
     if (entry[0x119] == 0)
         goto next;
-    if (memcmp(entry + 8, bd_addr, 6) != 0)
+
+    if (memcmp(entry + 8, bd_addr, 6) != 0) {
         goto next;
-    goto found;
+    } else {
+        goto found;
+    }
 
 next:
     i++;
@@ -14462,6 +14465,29 @@ void sdp_config_ind(u16 cid, void *p_cfg) {
         if (((u8 *)lcb)[1] & 1) fn_8009757C((u8 *)lcb);
         else btu_start_timer((u8 *)lcb + 8, 5, 0x1E);
     }
+}
+
+void sdp_disconnect_cfm(u16 cid, u16 result) {
+    extern char lbl_8031A460[];
+    extern char lbl_8031A490[];
+    u16 handle = cid;
+    tCONN_CB *p_ccb;
+    u16 (*p_callback)(u16);
+
+    p_ccb = l2cu_find_lcb_by_handle_80099E54(handle);
+    if (p_ccb == NULL) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_80070954(0xA0001, lbl_8031A460, handle);
+        return;
+    }
+
+    if (lbl_803C4C40[0x4630] >= 4)
+        fn_80070954(0xA0003, lbl_8031A490, handle);
+
+    p_callback = *(u16 (**)(u16))((u8 *)p_ccb + 0x414);
+    if (p_callback != NULL)
+        p_callback(*(u16 *)((u8 *)p_ccb + 0x472));
+    fn_80099F58(p_ccb);
 }
 
 void sdp_conn_timeout(tCONN_CB *p_ccb) {
