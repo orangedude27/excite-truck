@@ -9740,6 +9740,22 @@ BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT
  return 1;
 }
 
+BOOLEAN L2CA_DisconnectReq(UINT16 cid) {
+    void *ccb;
+    if (lbl_803C4040[0] >= 3) {
+        fn_80070954(0x80002, lbl_8031801C, cid);
+    }
+    ccb = l2cu_find_ccb_by_cid(0, cid);
+    if (ccb == 0) {
+        if (lbl_803C4040[0] >= 2) {
+            fn_80070954(0x80001, lbl_80318040, cid);
+        }
+        return 0;
+    }
+    fn_80089E40(ccb, 0x1A, 0);
+    return 1;
+}
+
 BOOLEAN L2CA_DisconnectRsp(UINT16 cid)
 {
     void *p_ccb;
@@ -12939,15 +12955,22 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
     u8 *p = p_buf;
     u16 len = *(u16 *)(p + 4);
     u16 count;
+    u16 i;
+    u8 byte;
     u8 *src;
     u8 *dst;
+
     if (len < 0x10) {
-        count = *(u16 *)(p + 2);
-        src = p + len + count + 7;
-        dst = p + count + 0x17;
-        do {
-            *dst-- = *src--;
-        } while (++len < count);
+        src = p + len + *(u16 *)(p + 2) + 7;
+        dst = p + *(u16 *)(p + 2) + 0x17;
+        i = 0;
+        while (i < *(u16 *)(p + 2)) {
+            byte = *src;
+            ++i;
+            --src;
+            *dst = byte;
+            --dst;
+        }
         *(u16 *)(p + 4) = 0x10;
     }
     len = *(u16 *)(p + 4) - 2;
@@ -12956,7 +12979,7 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
     p[len + 9] = (*(u16 *)(p + 2) << 1) | 1;
     count = *(u16 *)(p + 2);
     *(u16 *)(p + 2) = count + 2;
-    rfc_send_buf_uih(0, count);
+    rfc_send_buf_uih(p, 0);
 }
 
 void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 arg2, u32 arg3) {
