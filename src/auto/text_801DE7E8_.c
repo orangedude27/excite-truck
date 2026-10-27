@@ -6,6 +6,7 @@ extern int fn_8000DA10(void);
 extern void fn_801332D0(int, int*, int*);
 extern int lbl_8055E9DC;
 extern int lbl_8055E9E0;
+extern int lbl_8055E9EC;
 extern char lbl_804873B8[];
 extern char lbl_803394FC[];
 extern void *lbl_8055E9F0;
@@ -221,8 +222,9 @@ int fn_801DF238(int arg0) {
     extern int lbl_804874A8[];
     extern int lbl_8055E9F4;
     extern float lbl_80562BF4;
-    // Fix note: handles eligible event types, samples the selected object, and advances the four-entry ring index.
+    // Fix note: preserve the sampled float in a register after the output call; current remaining diff is event-branch polarity.
     float value;
+    register float sampled;
     int *object;
     if (lbl_8055E9E8 != 0) {
         if (fn_801769F8() != 0) {
@@ -235,16 +237,19 @@ int fn_801DF238(int arg0) {
                 if (object != 0 && *(unsigned char *)((char *)object + 0x19) == 0) {
                     value = lbl_80562BF4;
                     fn_801331C4(4, (int *)lbl_803394FC, &value);
-                      object = (int *)lbl_804874A8[lbl_8055E9F4];
-                    if (value != *(float *)((char *)object + 8)) {
+                    sampled = value;
+                    object = (int *)lbl_804874A8[lbl_8055E9F4];
+                    if (sampled != *(float *)((char *)object + 8)) {
                         *((unsigned char *)object + 0x4D) = 1;
-                        *(float *)((char *)object + 8) = value;
+                        *(float *)((char *)object + 8) = sampled;
                     }
                     object = (int *)lbl_804874A8[lbl_8055E9F4];
                     *((unsigned char *)object + 0x49) = 1;
                     *((unsigned char *)object + 0x4B) = 0;
                     *((unsigned char *)object + 0x4A) = 0;
-                } else fn_800121A4();
+                } else {
+                    fn_800121A4();
+                }
                 lbl_8055E9F4 = (lbl_8055E9F4 + 1) & 3;
             }
         }
