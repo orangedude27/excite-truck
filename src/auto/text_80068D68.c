@@ -5369,11 +5369,8 @@ BOOLEAN btm_inq_find_bdaddr(BD_ADDR addr) {
     u16 i;
 
     entry = *(u8 **)(state + 0x16DC);
-    if ((state[0x1848] & 4) != 0)
-        goto scan;
-    if (entry == NULL)
+    if ((state[0x1848] & 4) != 0 || entry == NULL)
         return FALSE;
-scan:
     count = *(u16 *)(state + 0x16E0);
     for (i = 0; i < count; i++, entry += 0xC) {
         if (memcmp(entry + 4, addr, 6) == 0 &&
