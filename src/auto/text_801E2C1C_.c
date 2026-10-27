@@ -51,6 +51,7 @@ int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
 #pragma small_data on
 extern const char lbl_8055AEB0[3];
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
     void *value;
     void *name;
