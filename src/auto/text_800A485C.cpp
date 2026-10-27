@@ -1546,7 +1546,7 @@ extern "C" void fn_800A8BB8(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" s32 fn_800A7774(void *, void *, void *, void *, u16, void *, s32, void *);
+extern "C" s32 fn_800A7774(void *, void *, void *, void *, u16, void *, s32, ...);
 s32 VFiPFCACHE_InitCaches(void *arg0) {
     u32 flags = M2C_FIELD(arg0, u32 *, 0x1624);
     u16 count = M2C_FIELD(arg0, u16 *, 0x1628);
