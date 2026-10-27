@@ -11677,6 +11677,26 @@ void rfcomm_l2cap_if_init(void) {
     L2CA_Register(3, info);
 }
 
+void *rfc_alloc_multiplexer_channel(u8 *, s8);
+void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
+    u8 local_id = id;
+    void *mcb;
+    u8 *base;
+    u32 offset;
+
+    #pragma unused(psm)
+    mcb = rfc_alloc_multiplexer_channel(bd_addr, FALSE);
+    base = lbl_803C4828;
+    offset = (lcid - 0x40) * 4;
+    *(void **)(base + offset + 0x3C) = mcb;
+    if (mcb == NULL) {
+        L2CA_ConnectRsp(bd_addr, local_id, lcid, 4, 0);
+        return;
+    }
+    *(UINT16 *)((u8 *)mcb + 0x68) = lcid;
+    fn_800916F4(mcb, 0xA, (s16 *)&local_id);
+}
+
 void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
     s32 index = (s32)arg0 - 0x40;
     void *port;
@@ -12853,17 +12873,15 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 arg1) {
 }
 
 void rfc_release_multiplexer_channel(void *arg0) {
+    u8 *channel = (u8 *)arg0;
     void *buffer;
     if (lbl_803C4828[0x414] >= 4)
         fn_8007093C(0x90003, lbl_80319EB0);
-    fn_80070F90(arg0);
-    do {
-        buffer = GKI_dequeue((BUFFER_Q *)((u8 *)arg0 + 0x18));
-        if (buffer != 0)
-            GKI_freebuf(buffer);
-    } while (buffer != 0);
-    memset(arg0, 0, 0x78);
-    *((u8 *)arg0 + 0x6C) = 0;
+    fn_80070F90(channel);
+    while ((buffer = GKI_dequeue((BUFFER_Q *)(channel + 0x18))) != 0)
+        GKI_freebuf(buffer);
+    memset(channel, 0, 0x78);
+    channel[0x6C] = 0;
 }
 
 void rfc_timer_start(void *arg0, u16 arg1) {
