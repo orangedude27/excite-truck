@@ -1207,21 +1207,16 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
 extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
+#pragma scheduling invalid_target
 extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
-    struct StackArgs {
-        u32 pad0;
-        volatile f32 spC;
-        u32 pad1[3];
-        volatile f32 sp1C;
-        volatile f32 sp20;
-        u32 pad2;
-    } stack;
     void* temp_r3;
     void* temp_r5;
     f32 temp_f1;
     f32 temp_f2;
     f32 temp_f3;
     f32 temp_f4;
+    volatile f32 sp[9];
+    s32 result;
 
     temp_r3 = ((Fn8019EA7CDispatch*)arg1)->Get();
     temp_r5 = *(void**)((u8*)arg0 + 0xC);
@@ -1229,12 +1224,13 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     temp_f4 = *(f32*)((u8*)temp_r5 + 0x24) - *(f32*)((u8*)temp_r3 + 0x24);
     temp_f1 = *(f32*)((u8*)temp_r5 + 0x2C);
     temp_f2 = temp_f3 - *(f32*)((u8*)temp_r3 + 0x28);
-    stack.sp20 = temp_f4;
-    stack.spC = temp_f2;
-    stack.sp1C = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
-    return fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
+    sp[6] = temp_f4;
+    sp[1] = temp_f2;
+    sp[5] = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
+    result = fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4);
+    return result != 0;
 }
-
+#pragma scheduling on
 extern "C" void fn_8019EB14(s32 arg0_raw, s32 arg1) {
     u8 *arg0 = (u8 *)arg0_raw;
     u32 offset = arg1 * 8;
@@ -1899,27 +1895,55 @@ check:
 }
 
 extern "C" void fn_801A1474(void* arg0, f32 scale) {
-    u8* p = (u8*)arg0;
-    f32* src = (f32*)(p + 0x64);
-    void* obj = *(void**)(p + 0x24);
+    f32* src = (f32*)((u8*)arg0 + 0x64);
+    u8* object = (u8*)arg0;
     s32 i = 0;
-    *(f32*)(p + 0x178) = *(f32*)(p + 0x170) * scale;
-    do {
-        f32 x = src[0] * scale;
-        f32 y = src[1] * scale;
-        f32 z = src[2] * scale;
-        *(f32*)((u8*)obj + 0x28) = x;
-        *(f32*)((u8*)obj + 0x2c) = y;
-        *(f32*)((u8*)obj + 0x30) = z;
-        *(f32*)((u8*)obj + 0x24) = src[3] * scale;
-        src += 4;
-        obj = *(void**)(p + 0x28 + i * 4);
-        i++;
-    } while (i < *(s32*)(p + 0x174));
-    obj = *(void**)(p + 0x17c);
-    *(f32*)((u8*)obj + 0x24) = *(f32*)(p + 0x164) * scale;
-    *(f32*)((u8*)obj + 0x28) = *(f32*)(p + 0x168) * scale;
-    *(f32*)((u8*)obj + 0x2c) = *(f32*)(p + 0x16c) * scale;
+    volatile f32 tmp[3];
+    void* dst;
+
+    *(f32*)((u8*)arg0 + 0x178) = *(f32*)((u8*)arg0 + 0x170) * scale;
+    goto check;
+
+loop:
+    f32 zRaw;
+    f32 yRaw;
+    f32 xRaw;
+    f32 z;
+    f32 y;
+    f32 x;
+    xRaw = src[0];
+    i++;
+    yRaw = src[1];
+    x = xRaw * scale;
+    zRaw = src[2];
+    dst = *(void**)(object + 0x24);
+    y = yRaw * scale;
+    z = zRaw * scale;
+    *(f32*)((u8*)dst + 0x28) = x;
+    *(f32*)((u8*)dst + 0x2c) = y;
+    *(f32*)((u8*)dst + 0x30) = z;
+
+    f32 w = src[3] * scale;
+    src += 4;
+    dst = *(void**)(object + 0x24);
+    object += 4;
+    tmp[0] = x;
+    tmp[1] = y;
+    tmp[2] = z;
+    *(f32*)((u8*)dst + 0x24) = w;
+
+check:
+    if (i < *(s32*)((u8*)arg0 + 0x174)) {
+        goto loop;
+    }
+
+    dst = *(void**)((u8*)arg0 + 0x17c);
+    f32 tailX = *(f32*)((u8*)arg0 + 0x164) * scale;
+    f32 tailY = *(f32*)((u8*)arg0 + 0x168) * scale;
+    f32 tailZ = *(f32*)((u8*)arg0 + 0x16c) * scale;
+    *(f32*)((u8*)dst + 0x24) = tailX;
+    *(f32*)((u8*)dst + 0x28) = tailY;
+    *(f32*)((u8*)dst + 0x2c) = tailZ;
 }
 
 extern "C" void fn_8019ECC4(void);
