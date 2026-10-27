@@ -1,5 +1,23 @@
   #include <types.h>
 #include <macros.h>
+class PaneAnimTransformDispatch {
+public:
+    virtual void d0(void *, bool);
+    virtual void d1(void *, bool);
+    virtual void d2(void *, bool);
+    virtual void d3(void *, bool);
+    virtual void d4(void *, bool);
+    virtual void d5(void *, bool);
+    virtual void d6(void *, bool);
+    virtual void d7(void *, bool);
+    virtual void d8(void *, bool);
+    virtual void d9(void *, bool);
+    virtual void d10(void *, bool);
+    virtual void d11(void *, bool);
+    virtual void d12(void *, bool);
+    virtual void *bindPane(void *, bool);
+    virtual void *bindMaterial(void *, bool);
+};
 extern "C" u8 lbl_80407560[0x18];
 extern "C" const char lbl_8031E9A0[];
 extern "C" s32 lbl_8055DD6C;
@@ -7093,10 +7111,12 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     word1 = info[2];
     scale = 9;
     factor = one << (((word0 >> 7) & 7) + 2);
-    mantissa = (word0 >> 22) | ((word1 & 3) << 20);
-    mantissa += 1;
-    size = mantissa * factor;
     exponent = (word1 >> 8) & 0xF;
+    mantissa = word0 >> 22;
+    mantissa &= 0xFFCFFFFF;
+    mantissa |= (word1 & 3) << 20;
+    mantissa++;
+    size = mantissa * factor;
     if (exponent >= 9) {
         scale = exponent;
         if (scale > 0xB)
