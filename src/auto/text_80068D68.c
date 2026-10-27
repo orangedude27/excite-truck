@@ -12117,10 +12117,10 @@ void l2cu_release_lcb(void *arg0) {
     btm_remove_sco_links(lcb + 0x2A);
 
     ccb = *(void **)(lcb + 8);
-    do {
+    while (ccb != 0) {
         l2cu_release_ccb(ccb);
         ccb = *(void **)(lcb + 8);
-    } while (ccb != 0);
+    }
 
     if (*(u32 *)(lcb + 4) - 4 <= 1) {
         btm_acl_removed(lcb + 0x2A);
