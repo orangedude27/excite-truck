@@ -198,9 +198,10 @@ found:
         y += lbl_80563ACC * sine;
     ((void (*)(int, int, int, float, float, float, float, float))fn_802354A0)(
         *(int *)(index + 0x40), *(int *)(index + 0x44), arg3,
-        x, y, lbl_80563AD0, cosine, sine);
+        x, y, cosine, lbl_80563AD0, sine);
 }
 #pragma ppc_psq_save on
+#pragma use_lmw_stmw off
 void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale) {
     int index = 0;
     int offset = 0;
