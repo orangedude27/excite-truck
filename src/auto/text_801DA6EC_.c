@@ -80,7 +80,7 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
         text = fn_801DA03C(*(int *)(record + 0x28), i++);
         if (text == 0)
             break;
-        if (strstr(text, lbl_8055ADA8) != 0) {
+        if (strstr(text, &lbl_8055ADA8) != 0) {
             record[0x19] = 1;
             break;
         }
