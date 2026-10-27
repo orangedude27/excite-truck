@@ -2524,19 +2524,28 @@ loop_test:
     return obj;
 }
 
+#pragma use_lmw_stmw off
 extern "C" void fn_8015E238(Unk801577F0V* arg0) {
-    f32 zero = lbl_80561750;
-    s32 i = 0;
-    s32 off = 0;
-    arg0->m54 = 1;
-    *(f32*)((u8*)arg0->mData + arg0->m50 * 4) = zero;
-    UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
-    s32 count = arg0->mCount;
-    for (s32 j = 0; j < count; j++) {
-        entries[j]->v13();
+    struct Dummy {
+        virtual void v0();
+        virtual void Call();
+    };
+    s32 offset;
+    s32 i;
+    offset = 0;
+    i = 0;
+    volatile u8* self = (volatile u8*)arg0;
+    s32 valueIndex = *(s32*)(self + 0x58);
+    *(u8*)(self + 0x54) = 1;
+    lbl_8042FD08[valueIndex] = lbl_80561750;
+    while (i < *(volatile s32*)(self + 8)) {
+        void* item = *(void**)((u8*)*(void* volatile*)(self + 4) + offset);
+        ((Dummy*)item)->Call();
+        offset += 4;
+        i++;
     }
 }
-
+#pragma use_lmw_stmw reset
 extern "C" void fn_8015E2C8(Unk801577F0V* arg0) {
     UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
     s32 count = arg0->mCount;
@@ -2670,16 +2679,35 @@ check:
 done:;
 }
 
+#pragma use_lmw_stmw off
 extern "C" void fn_8015E778(Unk801577F0V* arg0, s32 arg1, s32 arg2, f32 farg0) {
+    // Note: use_lmw_stmw off selects the target's save helpers; this interface selects slot 0x2c.
+    struct Entry {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void Call(s32, s32, f32);
+    };
     if (arg0->m54 != 0) {
-        UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
-        s32 count = arg0->mCount;
-        for (s32 j = 0; j < count; j++) {
-            entries[j]->v16(arg1, arg2, farg0);
+        s32 offset;
+        s32 i;
+        i = 0;
+        offset = 0;
+        while (i < *(s32*)((u8*)arg0 + 8)) {
+            void* item = *(void**)((u8*)*(void**)((u8*)arg0 + 4) + offset);
+            ((Entry*)item)->Call(arg1, arg2, farg0);
+            offset += 4;
+            i++;
         }
     }
 }
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw reset
 extern "C" void fn_8015E80C(void* arg0, s32 arg1) {
     class Entry {
     public:
