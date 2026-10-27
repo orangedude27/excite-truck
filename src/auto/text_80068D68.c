@@ -2176,6 +2176,47 @@ void fn_800709E4(void) {
     OSSwitchFiber(btu_task_msg_handler, (u8 *)&lbl_803BFA20 + 0x1000);
 }
 
+extern s32 lbl_80558FF0;
+extern char lbl_802EE8D8[];
+extern u8 lbl_80559048;
+extern void fn_80070B54();
+extern void fn_80082548();
+extern u8 fn_80073B30(void);
+void fn_800709FC(void) {
+    u64 time;
+    u32 time_hi;
+    u32 time_lo;
+
+    lbl_8055DC74 = 0;
+    GKI_init();
+    fn_8006EB88();
+    fn_80082548();
+    lbl_8055DC6C = &lbl_80559048;
+    lbl_8055DC68 = (hcisu_if *)lbl_802EE8D8;
+    ((void (*)(u32, void *))bte_hcisu_task)(0, lbl_802EE8D8);
+    while (1) {
+        ((void (*)(s32))fn_8006EAD8)(0x64);
+        if (lbl_80558FF0 == 0) {
+            break;
+        }
+    }
+    fn_80070B54();
+    time = __OSGetSystemTime();
+    time_hi = (u32)(time >> 32);
+    time_lo = (u32)time;
+    OSCreateAlarm(&lbl_803C0A20);
+    ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(void)))OSSetPeriodicAlarm)(
+        &lbl_803C0A20, 0x80000000, time_hi, time_lo, 0,
+        (*(u32 *)0x800000F8 / 2000) & 0x07FFFFFE, fn_800709E4);
+    ((void (*)(s32))fn_8006EACC)(0);
+    while (1) {
+        ((void (*)(s32))fn_8006EAD8)(0x7D0);
+        if (fn_80073B30() != 0) {
+            break;
+        }
+    }
+}
+
 void fn_80070AF0(s32 arg0) {
     lbl_8055DC74 = arg0;
     OSCancelAlarm(&lbl_803C0A20);
@@ -2576,6 +2617,29 @@ void fn_80073044(u8 *arg0) {
     }
 }
 
+extern void bta_dm_rssi_cback(unsigned char *);
+extern void bta_dm_link_quality_cback(unsigned char *);
+void bta_dm_signal_strength_timer_cback(void *arg0) {
+    u8 i;
+    u16 timeout;
+
+    if (lbl_803C0C14[0x6C] & 1) {
+        for (i = 0; i < lbl_803C0C14[0x4D]; i++) {
+            BTM_ReadRSSI(lbl_803C0C14 + i * 0xB, (tBTM_CMPL_CB *)bta_dm_rssi_cback);
+        }
+    }
+    if (lbl_803C0C14[0x6C] & 2) {
+        for (i = 0; i < lbl_803C0C14[0x4D]; i++) {
+            BTM_ReadLinkQuality(lbl_803C0C14 + i * 0xB, (tBTM_CMPL_CB *)bta_dm_link_quality_cback);
+        }
+    }
+    timeout = *(u16 *)(lbl_803C0C14 + 0x70);
+    if (timeout != 0) {
+        *(void (**)(void *))(lbl_803C0C14 + 0x5C) = bta_dm_signal_strength_timer_cback;
+        fn_8007146C((s32)(lbl_803C0C14 + 0x54), 0, timeout * 1000);
+    }
+}
+
 void bta_dm_acl_change_cback(u8 *bd_addr, s32 arg1, s32 arg2, s32 arg3, u8 event)
 {
     BT_HDR *buf = GKI_getbuf(0x12);
@@ -2775,6 +2839,37 @@ void BTA_DmPinReply(u8 *bd_addr, u8 accept, u8 pin_len, u8 *pin_code) {
         }
         fn_80071450(buf);
     }
+}
+
+u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
+    u32 service_mask[2];
+    u32 bit;
+    u32 mapped;
+    u32 offset;
+    u32 bit_index;
+    u8 index = 0;
+    u8 result;
+
+    memset(service_mask, 0, 8);
+    if (is_trusted != 0) {
+        do {
+            bit = 1 << index;
+            if (trusted_mask & bit) {
+                trusted_mask &= ~bit;
+                mapped = lbl_802EE9C0[index];
+                offset = (mapped >> 3) & 0x3FC;
+                bit_index = mapped - (mapped & 0x1FE0);
+                *(u32 *)((u8 *)service_mask + offset) |= 1 << bit_index;
+            }
+            index++;
+        } while (trusted_mask != 0 && index < 0x17);
+    }
+    fn_8006EAD0();
+    result = ((BOOLEAN (*)(BD_ADDR, DEV_CLASS, BD_NAME, BD_FEATURES,
+                           UINT32 *, LINK_KEY))BTM_SecAddDevice)(
+        bd_addr, 0, 0, 0, service_mask, link_key);
+    fn_8006EAD4();
+    return result == 0;
 }
 
 u8 fn_80073E5C(u8 *arg0) {
