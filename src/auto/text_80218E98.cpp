@@ -1726,16 +1726,24 @@ extern "C" int lbl_8033D934[];
 extern "C" void *fn_8021CA0C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) {
     s32 spC;
     s32 sp8;
-    fn_80218F34(arg0, arg1 + arg3, arg2 + arg4, 0, 0, 0);
-    *(void ***)((u8 *)arg0 + 0x248) = (void **)arg5;
-    *(void ***)arg0 = (void **)lbl_8033ED44;
-    *((u8 *)arg0 + 0x244) = 0;
-    (*(void (**)(s32 *, s32 *))(*(u32 *)*(void **)arg5 + 0xC))(&spC, &sp8);
-    if (sp8 > 0) fn_80219440(arg0, 0, &spC, sp8);
-    *(s32 *)((u8 *)arg0 + 0x24C) = fn_802C5130(0, lbl_8033D924);
-    *(s32 *)((u8 *)arg0 + 0x250) = fn_802C5130(0, lbl_8033D934);
-    *(s32 *)((u8 *)arg0 + 0x254) = fn_802C51C0(0);
-    *(f32 *)((u8 *)arg0 + 0x258) = lbl_805634A0;
+    struct Arg5Type {
+        virtual void v0();
+        virtual void get_dims(s32 *, s32 *);
+    };
+
+    fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
+    *(void **)((u8 *)arg0 + 0x248) = arg5;
+    *(void **)arg0 = lbl_8033ED44;
+    *(u8 *)((u8 *)arg0 + 0x244) = 0;
+    ((Arg5Type *)arg5)->get_dims(&spC, &sp8);
+    if (sp8 > 0)
+        fn_80219440(arg0, 0, (void *)spC, sp8);
+    *(s32 *)((u8 *)arg0 + 0x24C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D924);
+    *(s32 *)((u8 *)arg0 + 0x250) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D934);
+    s32 res = ((s32 (*)(void))fn_802C51C0)();
+    f32 f = lbl_805634A0;
+    *(s32 *)((u8 *)arg0 + 0x254) = res;
+    *(f32 *)((u8 *)arg0 + 0x258) = f;
     return arg0;
 }
 
