@@ -236,8 +236,8 @@ int fn_801DF238(int arg0) {
                 object = (int *)lbl_804874A8[lbl_8055E9F4];
                 if (object != 0 && *(unsigned char *)((char *)object + 0x19) == 0) {
                     value = lbl_80562BF4;
-                    fn_801331C4(4, &lbl_803394FC, &value);
-                    object = (int *)lbl_804874A8[lbl_8055E9F4];
+                    fn_801331C4(4, (int *)lbl_803394FC, &value);
+                      object = (int *)lbl_804874A8[lbl_8055E9F4];
                     if (value != *(float *)((char *)object + 8)) {
                         *((unsigned char *)object + 0x4D) = 1;
                         *(float *)((char *)object + 8) = value;
