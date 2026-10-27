@@ -26,6 +26,7 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
 extern u8 HID_HostCloseDev(u8);
+static tBTM_STATUS btm_set_inq_event_filter(UINT8, UINT8 *);
 
 typedef struct {
     u8 in_use;
