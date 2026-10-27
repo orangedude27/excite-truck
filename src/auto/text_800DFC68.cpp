@@ -12,6 +12,9 @@ namespace lyt {
     };
 }
 }
+namespace nw4hbm { namespace lyt {
+    struct Window { void* FindMaterialByName(const char*, bool); };
+} }
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -73,17 +76,26 @@ extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* arg0, int arg1) {
 }
 
 extern "C" void* FindMaterialByName__Q36nw4hbm3lyt6WindowFPCcb(void* self, const char* name, bool searchChildren) {
-    void* value;
+    struct Pane {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13();
+        virtual void* FindMaterialByName(const char*, bool);
+    };
+    int offset;
     int i;
-    char* entries;
     if (*(void**)((char*)self + 0x28) != 0 &&
-        fn_800D58F0(*(char**)(*(char**)((char*)self + 0x28) + 4), name) != 0)
+        fn_800D58F0((char*)*(void**)((char*)self + 0x28) + 4, name) != 0)
         return *(void**)((char*)self + 0x28);
-    entries = *(char**)((char*)self + 0xFC);
-    for (i = 0; i < *(unsigned char*)((char*)self + 0x100); i++) {
-        value = *(void**)(entries + i * 8 + 4);
-        if (fn_800D58F0((char*)value + 4, name) != 0)
-            return value;
+    i = 0;
+    offset = 0;
+    while (i < *(unsigned char*)((char*)self + 0x100)) {
+        void* candidate = *(void**)(*(char**)((char*)self + 0xFC) + offset + 4);
+        if (fn_800D58F0((char*)candidate + 4, name) != 0)
+            return *(void**)(*(char**)((char*)self + 0xFC) + i * 8 + 4);
+        offset += 8;
+        i++;
     }
     if (searchChildren) {
         char* sentinel = (char*)self + 0x14;
@@ -91,8 +103,9 @@ extern "C" void* FindMaterialByName__Q36nw4hbm3lyt6WindowFPCcb(void* self, const
         while (child != sentinel) {
             if (child == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            value = (*(void* (**)(void*, const char*, int))(*(int*)(*(int*)(child - 4)) + 0x40))(child - 4, name, 1);
-            if (value != 0) return value;
+            void* value = ((Pane*)(child - 4))->FindMaterialByName(name, true);
+            if (value != 0)
+                return value;
             child = *(char**)child;
         }
     }
@@ -253,32 +266,68 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTr
     UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(self, anim);
 }
 
-extern "C" void DrawContent__Q34nw4r3lyt6WindowFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt15WindowFrameSizeUc(void *self, const f32 *arg1, const f32 *arg2, u8 arg3) {
+void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::lyt::WindowFrameSize &arg2, u8 arg3) {
     struct MaterialVTable {
         virtual void v0();
         virtual s32 draw(s32, u8);
     };
+    u8 *self = (u8 *)this;
+    const f32 *pos = (const f32 *)&arg1;
+    const f32 *frame = (const f32 *)&arg2;
     s32 modulate;
     s32 useVtxColor;
     void *vtxColor;
-    f32 quad[4];
-    f32 temp;
-    modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc((u8 *)self + 0xE4, arg3);
-    useVtxColor = ((MaterialVTable *)*(void **)((u8 *)self + 0x28))->draw(modulate, arg3);
-    SetVertexFormat__Q34nw4r3lyt6detailFbUc(useVtxColor, *(u8 *)((u8 *)self + 0xF5));
+    volatile f32 quad[4];
+    f32 diffRight;
+    f32 diffLeft;
+    f32 sumTop;
+    f32 sumLeft;
+    f32 frameBottom;
+    f32 frameTop;
+    f32 x;
+    f32 y;
+    f32 extentX;
+    f32 extentY;
+    s32 texture;
+    u8 format;
+
+    modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xE4, arg3);
+    useVtxColor = ((MaterialVTable *)*(void **)(self + 0x28))->draw(modulate, arg3);
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(useVtxColor, self[0xF5]);
     if (useVtxColor != 0)
-        vtxColor = (u8 *)self + 0xE4;
+        vtxColor = self + 0xE4;
     else
         vtxColor = 0;
-    temp = *(f32 *)((u8 *)self + 0x50) - arg2[2];
-    quad[1] = (*(f32 *)((u8 *)self + 0xDC) + temp - arg2[3]) + *(f32 *)((u8 *)self + 0xE0);
-    temp = *(f32 *)((u8 *)self + 0x4C) - arg2[0];
-    quad[0] = (*(f32 *)((u8 *)self + 0xD4) + temp - arg2[1]) + *(f32 *)((u8 *)self + 0xD8);
-    quad[3] = (arg1[1] + arg2[2]) - *(f32 *)((u8 *)self + 0xDC);
-    quad[2] = (arg1[0] + arg2[0]) - *(f32 *)((u8 *)self + 0xD4);
+
+    extentX = *(volatile f32 *)(self + 0x50);
+    frameBottom = *(volatile f32 *)((u8 *)frame + 8);
+    diffRight = extentX - frameBottom;
+    extentY = *(volatile f32 *)(self + 0x4C);
+    frameTop = *(volatile f32 *)frame;
+    diffLeft = extentY - frameTop;
+    sumTop = *(volatile f32 *)(self + 0xDC);
+    sumTop = sumTop + diffRight;
+    frameBottom = *(volatile f32 *)((u8 *)frame + 0xC);
+    texture = *(volatile s32 *)(self + 0xF8);
+    sumLeft = *(volatile f32 *)(self + 0xD4) + diffLeft;
+    frameTop = *(volatile f32 *)((u8 *)frame + 4);
+    sumTop = sumTop - frameBottom;
+    extentX = *(volatile f32 *)(self + 0xE0);
+    diffLeft = sumLeft - frameTop;
+    extentY = *(volatile f32 *)(self + 0xD8);
+    x = pos[1] + *(volatile f32 *)((u8 *)frame + 8);
+    format = *(volatile u8 *)(self + 0xF5);
+    y = pos[0] + *(volatile f32 *)frame;
+    sumTop = extentX + sumTop;
+    sumLeft = extentY + diffLeft;
+    quad[1] = sumTop;
+    quad[0] = sumLeft;
+    quad[3] = x - *(volatile f32 *)(self + 0xDC);
+    quad[2] = y - *(volatile f32 *)(self + 0xD4);
+
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(
-        &quad[2], &quad[0], *(u8 *)((u8 *)self + 0xF5),
-        (f32 (*)[])*(void **)((u8 *)self + 0xF8), (s32)vtxColor, arg3);
+        (f32 *)&quad[2], (f32 *)&quad[0], format,
+        (f32 (*)[])texture, (s32)vtxColor, arg3);
 }
 
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void *, u8);
