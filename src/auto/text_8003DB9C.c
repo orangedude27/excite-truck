@@ -1118,6 +1118,29 @@ void GXGetVtxAttrFmtv(void) {
     PPCSync();
 }
 
+void GXSetDrawSync(void) {
+    s32 interruptState = OSDisableInterrupts();
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
+
+    *fifo8 = 0x61;
+    *fifo = 0x45000002;
+    if (__GXData[0x5FC / 4] != 0) {
+        __GXSetDirtyState();
+    }
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    PPCSync();
+    lbl_8055D970 = 0;
+    ((void (*)(s32))OSRestoreInterrupts)(interruptState);
+}
+
 void __GXSetGenMode(void) {
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = __GXData[0x22C / 4];
