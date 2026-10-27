@@ -29,6 +29,64 @@ extern int lbl_8055A950;
 extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int, int);
 extern "C" int fn_80128670(int);
 #pragma dont_inline on
+extern "C" int fn_8012850C(int, const char *);
+extern "C" char lbl_80336AF0[];
+extern "C" float lbl_80562908;
+extern "C" int fn_801C109C(int arg0, int arg1, int arg2, int arg3, int arg4) {
+    int *base = (int *)arg0;
+    int size1 = arg2 * 0x14;
+    base[2] = arg2;
+    base[1] = arg1;
+    int size2 = arg3 * 0x18;
+    base[3] = arg3;
+    int size3 = arg4 * 0x1C;
+    base[4] = arg4;
+    int size4 = arg1 * 0x30;
+    int total = size3 + size4;
+    int size = size2 + size1;
+    int memory = fn_8012850C(total + size, lbl_80336AF0);
+    int step12 = arg1 * 0xC;
+    base[0] = memory;
+    base[9] = memory;
+    int p = memory + step12;
+    base[10] = p;
+    p += step12;
+    base[11] = p;
+    p += step12;
+    base[12] = p;
+    int step4 = arg1 * 4;
+    p += step4;
+    base[13] = p;
+    p += step4;
+    base[14] = p;
+    p += step4;
+    base[18] = p;
+    p += size1;
+    base[19] = p;
+    p += size2;
+    if (arg4 > 0) base[20] = p;
+    else base[20] = 0;
+    register float a = lbl_8056290C;
+    register float b = lbl_80562908;
+    register float c = lbl_80562904;
+    register float d = lbl_80562900;
+    base[5] = 0;
+    base[6] = 0;
+    base[7] = 0;
+    base[8] = 0;
+    *(float *)(arg0 + 0x54) = d;
+    *(float *)(arg0 + 0x3C) = c;
+    *(float *)(arg0 + 0x40) = b;
+    *(float *)(arg0 + 0x44) = c;
+    *(float *)(arg0 + 0x64) = c;
+    *(float *)(arg0 + 0x68) = a;
+    *(float *)(arg0 + 0x6C) = c;
+    *(float *)(arg0 + 0x58) = c;
+    *(float *)(arg0 + 0x5C) = c;
+    *(float *)(arg0 + 0x60) = c;
+    return arg0;
+}
+
 extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int arg0, int arg1) {
     if (arg0 != 0) {
         fn_80128670(*(int *)arg0);
@@ -38,7 +96,7 @@ extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int arg
 }
 #pragma dont_inline reset
 extern float lbl_80562910, lbl_80562914;
-extern "C" void fn_801C1218(void *arg0) {
+void fn_801C1218(void *arg0) {
     char *base = (char *)arg0;
     int count = 0;
     register float factor0 = lbl_80562910;
@@ -171,7 +229,7 @@ extern "C" void fn_801C1C7C(int arg0) {
 }
 
 extern float lbl_8056292C;
-extern void PSVECCrossProduct(const float *, const float *, float *);
+extern "C" void PSVECCrossProduct(const float *, const float *, float *);
 extern "C" void PSVECCrossProduct(const float *, const float *, float *);
 extern "C" void fn_801C256C(void *arg0, float *arg1, float *arg2, float *arg3) {
     char *base = (char *)arg0;
@@ -179,24 +237,31 @@ extern "C" void fn_801C256C(void *arg0, float *arg1, float *arg2, float *arg3) {
     float delta[3];
     int index = 0;
     int offset = 0;
-    float scale = lbl_8056292C;
+    register float scale = lbl_8056292C;
     goto check;
 loop:
     {
-        float *src = (float *)(*(char **)(base + 0x24) + offset);
-        float *dst = (float *)(*(char **)(base + 0x28) + offset);
-        delta[0] = src[0] - arg2[0];
-        delta[1] = src[1] - arg2[1];
-        delta[2] = src[2] - arg2[2];
+        float dx = *(float *)(*(char **)(base + 0x24) + offset) - arg2[0];
+        float dy = *(float *)(*(char **)(base + 0x24) + offset + 4) - arg2[1];
+        float dz = *(float *)(*(char **)(base + 0x24) + offset + 8) - arg2[2];
+        delta[0] = dx;
+        delta[1] = dy;
+        delta[2] = dz;
         PSVECCrossProduct(arg3, delta, cross);
         index++;
-        cross[0] += arg1[0];
-        cross[1] += arg1[1];
-        cross[2] += arg1[2];
-        dst[0] = src[0] + cross[0] * scale;
+        float x = cross[0] + arg1[0];
+        float y = cross[1] + arg1[1];
+        float z = cross[2] + arg1[2];
+        cross[0] = x;
+        cross[1] = y;
+        cross[2] = z;
+        *(float *)(*(char **)(base + 0x28) + offset) =
+            *(float *)(*(char **)(base + 0x24) + offset) + x * scale;
         offset += 0xC;
-        dst[1] = src[1] + cross[1] * scale;
-        dst[2] = src[2] + cross[2] * scale;
+        *(float *)(*(char **)(base + 0x28) + offset - 8) =
+            *(float *)(*(char **)(base + 0x24) + offset - 8) + y * scale;
+        *(float *)(*(char **)(base + 0x28) + offset - 4) =
+            *(float *)(*(char **)(base + 0x24) + offset - 4) + z * scale;
     }
 check:
     if (index < *(int *)(base + 0x14))
