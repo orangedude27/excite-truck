@@ -201,6 +201,41 @@ extern float lbl_8055AD68;
 extern float lbl_8055AD70;
 extern int lbl_8055AD78;
 extern void fn_802E317C(const char*, const char*, ...);
+
+#pragma cplusplus on
+struct DtbItem801D94DC {
+    virtual const char *getName();
+    virtual void f1();
+    virtual void f2();
+    virtual void *find(const char *);
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual float getFloat(const float *);
+};
+
+struct DtbObj2_801D94DC {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual int getInt(const int *);
+};
+
+struct DtbObject801D94DC {
+    virtual DtbObj2_801D94DC *get(void *);
+    virtual void f1();
+    virtual int check(void *);
+};
+
+struct Node1D94DC {
+    float field0;
+    float field4;
+    int field8;
+    Node1D94DC *next;
+};
+#pragma cplusplus reset
 int fn_801D94DC(void *head, void *list, const char *name, int object) {
     int index = 0;
     void *item;
@@ -367,16 +402,18 @@ int fn_801D9B28(void *arg0, int arg1) {
 }
 
 void fn_801D9B58(void) {
-    float workspace[10];
+    float workspace[8];
+    void *child;
+    void *node;
+    void *markNode;
+    float threshold;
+    int count;
+    int offset;
+    int i;
     float *sampleDest;
     float *weight;
-    float threshold;
-    void *markNode;
-    void *node;
-    void *child;
-    int i;
-    int offset;
-    int count;
+    int one = 1;
+    float maximum;
 
     fn_802C7040(lbl_8055E960);
     markNode = lbl_8055E96C;
@@ -388,7 +425,7 @@ void fn_801D9B58(void) {
                 ++i;
                 child = *(void **)((char *)*(void **)((char *)markNode + 0x28) + offset);
                 offset += 4;
-                *(unsigned char *)((char *)child + 0x30) = 1;
+                *(unsigned char *)((char *)child + 0x30) = one;
             } while (i < *(int *)((char *)markNode + 0x2C));
         }
         markNode = *(void **)((char *)markNode + 0x54);
@@ -398,29 +435,27 @@ void fn_801D9B58(void) {
     threshold = lbl_80562B30;
     do {
         if (*(unsigned char *)((char *)node + 0x30) != 0) {
-            count = *(int *)((char *)node + 4);
             i = 0;
             offset = 0;
-            sampleDest = workspace;
+            sampleDest = (float *)workspace;
             do {
                 ++i;
                 child = *(void **)((char *)*(void **)node + offset);
                 offset += 4;
                 *sampleDest++ = *(float *)((char *)child + 0x20);
-            } while (i < count);
+            } while (i < (count = *(int *)((char *)node + 4)));
 
-            fn_801D9120(workspace + 2, workspace, count, lbl_80562B28);
-            if (threshold > workspace[2])
-                fn_802C9900(threshold);
-            else
-                fn_802C9900(workspace[2]);
+            fn_801D9120((float *)workspace + 2, (float *)workspace, count, lbl_80562B28);
+            maximum = workspace[2];
+            if (threshold > maximum)
+                maximum = threshold;
+            fn_802C9900(maximum);
 
             fn_802C7040(*(int *)*(void **)((char *)node + 0x14));
-            count = *(int *)((char *)node + 0x18);
             i = 1;
             offset = 4;
-            weight = workspace + 3;
-            while (i < count) {
+            weight = (float *)workspace + 3;
+            while (i < (count = *(int *)((char *)node + 0x18))) {
                 fn_802C9900(*weight++);
                 fn_802C7040(*(int *)((char *)*(void **)((char *)node + 0x14) + offset));
                 offset += 4;
