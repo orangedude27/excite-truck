@@ -39,7 +39,7 @@ void fn_801D32DC(void) {
 }
 
 int fn_801D36E8(void);
-int fn_801D3FA4(int, int, int, int, int, int, int);
+void fn_801D3FA4();
 #pragma use_lmw_stmw off
 int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     int result;
@@ -325,6 +325,7 @@ int fn_801D411C(void *arg0) {
         *(float *)(p + 0x220) = zero;
         neg1000 = lbl_80562ABC;
 
+#pragma scheduling off
         *(float *)(p + 0x118) = zero;
         *(float *)(p + 0x11C) = zero;
         *(float *)(p + 0x120) = zero;
@@ -357,12 +358,13 @@ int fn_801D411C(void *arg0) {
         *(float *)(p + 0x21C) = neg1000;
         *(float *)(p + 0x220) = zero;
 
-        *(volatile float *)&sp8 = zero;
-        *(volatile float *)&spc = zero;
         *(volatile float *)&sp10 = zero;
+        *(volatile float *)&spc = zero;
+        *(volatile float *)&sp8 = zero;
         *(float *)(p + 0x30) = zero;
         *(float *)(p + 0x34) = zero;
         *(float *)(p + 0x38) = zero;
+#pragma scheduling on
         fn_8017A57C(arg0);
 
         *(struct Mtx48 *)(p + 0x3C) = *(struct Mtx48 *)(p + 0x1F4);
