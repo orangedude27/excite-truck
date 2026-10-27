@@ -303,7 +303,6 @@ extern "C" void *lbl_8033F90C[];
 extern "C" int lbl_8033FA28[];
 extern "C" void fn_802CAC54(void);
 extern "C" void *lbl_8033DFB4;
-extern "C" void fn_8021915C(void *, u32);
 extern "C" s32 fn_80128668(void *);
 extern "C" void fn_80219440(void *, s32, void *, s32);
 extern "C" void fn_80128670(s32);
@@ -3661,10 +3660,10 @@ extern "C" void fn_802235B4(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80223644(void *arg0) {
-    s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
-    s32 i = 1;
-    s32 cur = *pIndex;
-    while (cur - i >= 0) {
+    register u32 *pIndex = *(u32 **)((u8 *)arg0 + 0x2CC);
+    register s32 i = 1;
+    register u32 cur = *pIndex;
+    while ((s32)(cur - i) >= 0) {
         u8 *p = (u8 *)arg0 + (cur - i);
         if (p[0x2D0] != 0) {
             *pIndex -= i;
