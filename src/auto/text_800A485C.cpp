@@ -1245,7 +1245,7 @@ extern "C" s32 VFiPFCACHE_SearchForPage(s32 arg0, s32 arg1, s32 arg2) {
 
 extern "C" s32 VFiPFCACHE_SearchForFreePage(void *arg0, void **arg1) {
     void *page = *(void **)((u8 *)arg0 + 0x24);
-    do {
+    while (page != arg0) {
         u16 flags = *(u16 *)page;
         if ((flags & 1) == 0) {
             *arg1 = page;
@@ -1256,7 +1256,15 @@ extern "C" s32 VFiPFCACHE_SearchForFreePage(void *arg0, void **arg1) {
             return 0;
         }
         page = *(void **)((u8 *)page + 0x24);
-    } while (page != arg0);
+    }
+    if ((*(u16 *)page & 1) == 0) {
+        *arg1 = page;
+        return 1;
+    }
+    if (*(u32 *)((u8 *)page + 0x18) != 0xFFFFFFFF) {
+        *arg1 = page;
+        return 0;
+    }
     *arg1 = 0;
     return 0;
 }
@@ -2332,6 +2340,22 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
         }
     }
     return 0;
+}
+
+extern "C" s8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
+    s32 sp18;
+    s32 sp1C;
+    s32 sp20;
+    s32 sp8;
+    s32 spC;
+    s32 sp10;
+    s32 sp14;
+    fn_800B78F4(&sp18, &sp8);
+    *(s16 *)arg0 = (s16)(((sp20 & 0x1F) | ((sp1C << 5) & 0x1E0)) |
+                   (((sp18 - 0x7BC) << 9) & 0xFE00));
+    *(s16 *)arg1 = (s16)((((sp10 >> 1) & 0x1F) | ((spC << 5) & 0x7E0)) |
+                   ((sp8 << 11) & 0xF800));
+    return (s8)sp14;
 }
 
 extern s32 fn_800AB378(void *, s32, s32, s32);
