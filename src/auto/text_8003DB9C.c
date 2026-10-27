@@ -1510,16 +1510,18 @@ void __GXSendFlushPrim(void) {
     volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
     volatile u16 *fifo16 = (volatile u16 *)0xCC008000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
-    u16 *gx = (u16 *)__GXData;
-    u16 width;
-    u16 height;
+    register u16 *gx = (u16 *)__GXData;
+    register u32 written;
+    u32 zero = 0;
     u32 size;
     u32 end;
     u32 tail;
     u32 count;
     u32 valid;
-    u32 written;
+    u16 height;
+    u16 width;
 
+    written = 0;
     width = gx[2];
     height = gx[3];
     *fifo8 = 0x98;
@@ -1534,26 +1536,26 @@ void __GXSendFlushPrim(void) {
                 valid = 1;
             if (valid != 0) {
                 count = (tail + 0x1F) >> 5;
-                if (tail > 0) {
-                    written = 0;
+                if (tail <= 0) {
+                } else {
                     do {
-                        *fifo32 = 0;
+                        *fifo32 = zero;
                         written += 0x20;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
+                        *fifo32 = zero;
+                        *fifo32 = zero;
+                        *fifo32 = zero;
+                        *fifo32 = zero;
+                        *fifo32 = zero;
+                        *fifo32 = zero;
+                        *fifo32 = zero;
                     } while (--count != 0);
                 }
             }
         }
+        count = (size + 3 - written) >> 2;
         if (written < size) {
-            count = (size + 3 - written) >> 2;
             do {
-                *fifo32 = 0;
+                *fifo32 = zero;
             } while (--count != 0);
         }
     }
@@ -1804,6 +1806,7 @@ extern f32 lbl_80560B40;
 unsigned int GXSetDispCopyYScale(f32 yScale) {
     unsigned int scale = (unsigned int)(lbl_80560B40 / yScale);
     unsigned int height = scale & 0x1FF;
+    unsigned int small = height <= 0x80;
     unsigned int width;
     unsigned int result;
     unsigned int value;
@@ -1815,7 +1818,7 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
             unsigned int reserved : 15;
             unsigned int scale : 9;
         } fields;
-    } packet = {0};
+    } packet;
     union {
         unsigned int value;
         struct {
@@ -1824,13 +1827,14 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
             unsigned int other : 10;
         } fields;
     } copyState;
-    volatile unsigned int *fifo = (volatile unsigned int *)0xCC010000;
-    volatile unsigned char *fifo8 = (volatile unsigned char *)fifo;
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
 
-    fifo8[-0x8000] = 0x61;
+    *fifo8 = 0x61;
+    packet.value = 0;
     packet.fields.scale = scale;
     packet.fields.tag = 0x4E;
-    fifo[-0x2000] = packet.value;
+    *fifo = packet.value;
     ((volatile unsigned short *)__GXData)[1] = 0;
     tmp = (0x100 - height) | (height - 0x100);
     copyState.value = __GXData[0x23C / 4];
@@ -1839,7 +1843,7 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
     width = (__GXData[0x234 / 4] >> 10) & 0x3FF;
     value = width + 1;
     result = (((value - 1) << 8) / height) + 1;
-    if (height > 0x80 && height < 0x100) {
+    if (!small && height < 0x100) {
         do {
             height >>= 1;
         } while ((height & 1) == 0);
@@ -2174,29 +2178,45 @@ void GXSetChanAmbColor_Internal(s32 type, void *color) {
 
 void GXSetChanMatColor_Internal(s32 type, void *color) {
     unsigned int value;
-    unsigned int which;
-    unsigned int *data;
+    register unsigned int which;
+    unsigned int colorValue;
+    unsigned char alpha;
+    union {
+        unsigned int value;
+        struct {
+            unsigned int high : 24;
+            unsigned int low : 8;
+        } fields;
+    } merged;
 
     switch (type) {
     case 0:
-        data = __GXData;
         which = 0;
-        value = (data[0xB0 / 4] & 0xFF) | (*(unsigned int *)color & 0xFFFFFF00);
+        colorValue = *(unsigned int *)color;
+        merged.value = __GXData[0xB0 / 4];
+        merged.fields.high = colorValue >> 8;
+        value = merged.value;
         break;
     case 1:
-        data = __GXData;
         which = 1;
-        value = (data[0xB4 / 4] & 0xFF) | (*(unsigned int *)color & 0xFFFFFF00);
+        colorValue = *(unsigned int *)color;
+        merged.value = __GXData[0xB4 / 4];
+        merged.fields.high = colorValue >> 8;
+        value = merged.value;
         break;
     case 2:
-        data = __GXData;
         which = 0;
-        value = (data[0xB0 / 4] & 0xFFFFFF00) | ((unsigned char *)color)[3];
+        alpha = ((unsigned char *)color)[3];
+        merged.value = __GXData[0xB0 / 4];
+        merged.fields.low = alpha;
+        value = merged.value;
         break;
     case 3:
-        data = __GXData;
         which = 1;
-        value = (data[0xB4 / 4] & 0xFFFFFF00) | ((unsigned char *)color)[3];
+        alpha = ((unsigned char *)color)[3];
+        merged.value = __GXData[0xB4 / 4];
+        merged.fields.low = alpha;
+        value = merged.value;
         break;
     case 4:
         which = 0;
@@ -2209,9 +2229,8 @@ void GXSetChanMatColor_Internal(s32 type, void *color) {
     default:
         return;
     }
-    data = __GXData;
-    data[0x5FC / 4] |= 0x400 << which;
-    data[0xB0 / 4 + which] = value;
+    __GXData[0x5FC / 4] |= 0x400 << which;
+    *(unsigned int *)((unsigned char *)__GXData + 0xB0 + (which << 2)) = value;
 }
 
 void GXSetNumChans(s32 num) {
