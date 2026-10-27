@@ -7765,13 +7765,11 @@ extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
 extern "C" s16 fn_800BDE18(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
     register s32 remaining = arg2;
     register s32 take;
-    register u32 result = 0;
-    register u8 *mask = lbl_802F3408;
-    register s32 bitsInByte;
+    register u16 result = 0;
     register s32 position = *arg3;
+    register s32 bitsInByte = 8 - (position & 7);
     register s32 piece;
 
-    bitsInByte = 8 - (position & 7);
     arg1 += position >> 3;
     while (remaining > 0) {
         if (bitsInByte == 0) {
@@ -7781,7 +7779,7 @@ extern "C" s16 fn_800BDE18(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         take = bitsInByte;
         if ((u32)remaining < (u32)bitsInByte)
             take = remaining;
-        piece = ((u8 *)arg1)[0] & mask[bitsInByte];
+        piece = ((u8 *)arg1)[0] & lbl_802F3408[bitsInByte];
         piece >>= bitsInByte - take;
         result = (u16)(result | (piece << (remaining - take)));
         bitsInByte -= take;
@@ -11668,15 +11666,21 @@ extern "C" void fn_800CFDBC(void *arg0, s32 arg1, void *arg2) {
 }
 
 extern "C" void calc__Q310homebutton3gui7ManagerFv_800CFDEC(void *arg0) {
-    u16 i = 0;
-    void *list = (u8 *)arg0 + 8;
-    do {
-        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, i);
-        void *obj = *(void **)((u8 *)entry + 4);
-        ((void (*)(void *))(*(u32 *)(*(u32 *)obj + 0x10)))(obj);
-        i++;
-        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
-    } while (i < *(u16 *)((u8 *)arg0 + 0x10));
+    class ComponentDispatch {
+    public:
+        virtual void d0();
+        virtual void d1();
+        virtual void calc();
+    };
+    u32 listAddress = (u32)arg0 + 8;
+
+    for (s32 i = 0; (u32)i < (u32)*(u16 *)((u8 *)arg0 + 0x10); i++) {
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 8, (u16)i);
+        ComponentDispatch *obj = *(ComponentDispatch **)((u8 *)entry + 4);
+        obj->calc();
+        if (listAddress == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    }
 }
 
 extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(void *arg0) {
