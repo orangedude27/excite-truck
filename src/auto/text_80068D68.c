@@ -10161,6 +10161,35 @@ UINT8 L2CA_DataWrite(UINT16 lcid, BT_HDR *p_buf) {
     return 0;
 }
 
+BOOLEAN L2CA_SetIdleTimeout(UINT16 cid, UINT16 timeout, BOOLEAN is_global)
+{
+    u8 *p_ccb;
+    u8 *p_lcb;
+
+    if (is_global) {
+        *(UINT16 *)(lbl_803C4040 + 0x7BA) = timeout;
+        goto success;
+    }
+
+    p_ccb = (u8 *)l2cu_find_ccb_by_cid(0, cid);
+    if (p_ccb == 0) {
+        if (lbl_803C4040[0] >= 2) {
+            fn_80070954(0x80001, lbl_803181F0, cid);
+        }
+        return FALSE;
+    }
+
+    p_lcb = *(u8 **)(p_ccb + 0x10);
+    if (p_lcb != 0 && p_lcb[0] != 0 && *(s32 *)(p_lcb + 4) == 4) {
+        *(UINT16 *)(p_lcb + 0x58) = timeout;
+        goto success;
+    }
+    return FALSE;
+
+success:
+    return TRUE;
+}
+
 extern u8 lbl_80560D48[];
 BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
     void *p;
