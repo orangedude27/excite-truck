@@ -173,6 +173,7 @@ void *fn_802DA704(int owner, void *data, int count) {
     memcpy((char *)result + 0x18, data, count * 12);
     return result;
 }
+#pragma scheduling on
 
 void *fn_802DA80C(int owner, void *data, int count) {
     unsigned char *state = (unsigned char *)lbl_8055FE5C;
