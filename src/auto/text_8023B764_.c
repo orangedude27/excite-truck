@@ -23,7 +23,7 @@ extern s32 atoi(void);
 extern void fn_802E317C(const char *);
 extern const char lbl_80341354[];
 extern s32 lbl_8055BB30;
-extern void fn_802054EC(s32, s32, s32);
+extern s32 fn_802054EC(s32, s32, s32);
 extern void fn_802ECC18(s32);
 extern void fn_802445FC(s32, s32, s32);
 extern void fn_8020A634(void);
@@ -132,8 +132,64 @@ s32 fn_8023B9AC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma scheduling invalid_target
+extern s32 fn_80128314(s32);
+extern s32 fn_80265D58(void);
+extern s32 fn_80204024(void);
+extern void fn_8012BF28(void);
+extern void fn_801E952C(void *);
+extern void fn_802E30C8(const char *, ...);
+extern void fn_80129AEC(s32);
+extern s32 fn_802ECEEC(void);
+extern void fn_802ECEC0(void);
+extern void fn_802ECEC4(void);
+extern char lbl_80341314[];
+extern char lbl_80341328[];
+#pragma use_lmw_stmw off
 #pragma dont_inline on
+void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    struct Context {
+        u8 pad[0x3E4];
+        s32 value;
+        s32 unk;
+        s32 arg3;
+        s32 zero;
+        s32 flags;
+    };
+    struct Frame {
+        const char *resource;
+        s32 resource0;
+        s32 resource1;
+        s32 resource2;
+        struct Context context;
+    } frame;
+    s32 active = fn_802ECEEC();
+    if (active != 0) {
+        fn_802ECEC0();
+        frame.resource = lbl_80341314;
+        frame.resource0 = fn_80128314(0);
+        frame.resource1 = fn_80128314(1);
+        frame.resource2 = fn_80265D58();
+        if (fn_80204024() != 0)
+            fn_8012BF28();
+        do {
+            fn_801E952C(&frame.context);
+            fn_8023B7EC(&frame.context, arg0, arg1, arg3);
+            frame.context.arg3 = arg3;
+            frame.context.zero = 0;
+            if (((s32 (*)(s32, s32))fn_8023B764)(arg3, frame.context.value) != 0) {
+                fn_802E30C8(lbl_80341328);
+                frame.context.flags |= 2;
+            }
+            fn_8023B904(&frame.context, (void *)arg2, arg4);
+            fn_8023B8AC((s32)&frame.context);
+        } while (fn_80204024() != 0);
+        fn_80129AEC(0);
+        if (active != 0)
+            fn_802ECEC4();
+    }
+}
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
 void fn_8023BB0C(void) {
     s32 sp10, spC, sp8;
     s32 temp_r31 = fn_802411CC();
@@ -185,6 +241,41 @@ int fn_8023BCAC(int arg0, int arg1) {
     return arg0;
 }
 
+extern u8 lbl_8055F291;
+#pragma opt_propagation off
+void fn_8023BCEC(void) {
+    s32 sp20[0x2C];
+    s32 sp1C;
+    s32 sp18;
+    s32 sp14;
+    s32 sp10;
+    s32 spC;
+    s32 sp8;
+    u8 temp_r31;
+
+    fn_80137C78(1);
+    fn_80137C84(fn_802E4A10(), 0);
+    sp1C = *(s32 *)((u8 *)fn_80016464(0) + 4);
+    sp18 = *(s32 *)((u8 *)fn_80016510(*(s32 *)((u8 *)fn_80016464(0) + 0x4C)) + 4);
+    sp14 = *(s32 *)((u8 *)fn_80016464(0) + 0x50);
+    sp10 = 0;
+    spC = 0;
+    sp8 = 0;
+loop:
+    if (((int (*)(s32 *, s32 *, s32 *, s32))fn_8023BC24)(&sp1C, &sp18, &sp14, 0) == 0) {
+        goto loop;
+    }
+    temp_r31 = lbl_8055F291;
+    fn_8000DA10();
+    fn_800169F8(fn_8000DB34(), 0);
+    fn_80016970(0, sp1C, sp18, sp14);
+    fn_8023B9EC(sp10, spC, (s32)sp20, sp8, temp_r31);
+    fn_80137C80(0);
+    if (fn_8024A4C4((s32)&sp10, (s32)&spC, (s32)&sp8) != 0) {
+        goto loop;
+    }
+}
+#pragma opt_propagation reset
 extern int fn_80128668(void);
 extern int fn_8027DB40(int);
 extern int fn_8024DAE0(int, int, int, int, int, int);
