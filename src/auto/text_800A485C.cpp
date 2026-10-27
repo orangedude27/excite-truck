@@ -60,7 +60,7 @@ extern "C" char *fn_800A4AAC(char *, char *);
 extern "C" void fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
-namespace nw4hbm { namespace lyt { class Pane; class Material; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); }; } }
+namespace nw4hbm { namespace lyt { class Pane; class Material; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); }; } }
 
 extern "C" const char lbl_8031EE58[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
@@ -7069,8 +7069,16 @@ extern "C" s32 fn_800BBEA4(IosDevice *, s32, s32 *, s32);
 extern "C" const char lbl_8031B7F8[];
 extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     u32 info[4];
-    u32 word0, word1;
-    u32 mantissa, factor, exponent, scale;
+    u32 word0;
+    u32 one;
+    u32 word1;
+    u16 scale;
+    u16 factor;
+    u16 exponent;
+    u16 shift;
+    u16 multiplier;
+    u32 mantissa;
+    u32 size;
     s32 result;
 
     fn_800A499C((const char *)info, 0, 0x10);
@@ -7081,18 +7089,22 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     }
 
     word0 = info[1];
+    one = 1;
     word1 = info[2];
-    factor = 1U << (((word0 >> 22) & 7) + 2);
+    scale = 9;
+    factor = one << (((word0 >> 7) & 7) + 2);
     mantissa = (word0 >> 22) | ((word1 & 3) << 20);
     mantissa += 1;
-    exponent = (word1 >> 20) & 0xF;
-    scale = 9;
+    size = mantissa * factor;
+    exponent = (word1 >> 8) & 0xF;
     if (exponent >= 9) {
         scale = exponent;
         if (scale > 0xB)
             scale = 0xB;
     }
-    *outSize = mantissa * factor * (1U << (scale - 9));
+    shift = scale - 9;
+    multiplier = one << shift;
+    *outSize = size * multiplier;
     *outBlockSize = 0x200;
     return 0;
 }
@@ -13893,21 +13905,35 @@ extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 delet
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 
 
-void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
-    register u8 *self = (u8 *)this;
+extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt4Paneb(void *arg0, void *arg1, BOOL arg2) {
+    register u8 *self = (u8 *)arg0;
     register u8 *offsets = (u8 *)*(void **)(self + 0xC);
     offsets += *(s32 *)(offsets + 0x10);
     register u16 i = 0;
-    register u8 *materialPtr = (u8 *)material;
-    while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
-        u8 *entry = materialPtr + *(s32 *)(offsets + i * 4);
-        if (entry[0x15] == 1) {
-            if (fn_800D58F0(materialPtr + 4) != 0) {
-                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
+    register BOOL bind = arg2;
+    register u8 *pane = (u8 *)arg1;
+    while (i < *(u16 *)(*(u8 **)(self + 0xC) + 0xE)) {
+        u8 *entry = pane + *(s32 *)(offsets + i * 4);
+        void *boundObject;
+        if (entry[0x15] == 0) {
+            boundObject = ((void *(*)(void *, void *, BOOL))(*(void ***)pane)[15])(pane, entry, bind);
+            if (boundObject != 0) {
+                u32 linkOffset = i * 0x10;
+                u8 *link = *(u8 **)(self + 0x18) + linkOffset;
+                *(void **)(link + 8) = self;
+                *(u16 *)(link + 0xC) = i;
+                AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(
+                    boundObject, *(u8 **)(self + 0x18) + linkOffset);
+            }
+        } else {
+            boundObject = ((void *(*)(void *, void *, BOOL))(*(void ***)pane)[16])(pane, entry, bind);
+            if (boundObject != 0) {
+                u32 linkOffset = i * 0x10;
+                u8 *link = *(u8 **)(self + 0x18) + linkOffset;
                 *(void **)(link + 8) = self;
                 *(u16 *)(link + 0xC) = i;
                 AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                    materialPtr, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+                    boundObject, *(u8 **)(self + 0x18) + linkOffset);
             }
         }
         i++;
