@@ -397,7 +397,7 @@ extern "C" f32 lbl_80561768;
 #pragma small_data off
 extern char lbl_8032F2BC[];
 extern "C" void* lbl_8032EAFC;
-extern void* lbl_8032EFA8;
+extern char lbl_8032EFA8[];
 #pragma pop
 extern char lbl_8032F0E8[];
 extern f32 lbl_80561750;
@@ -556,15 +556,14 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
         ptr += 0x38;
     } while (ptr < (u8*)arg0 + 0x244);
     f32 value = lbl_8056175C;
-    void* vtable = lbl_8032EE68;
-    *(s32*)((u8*)arg0 + 4) = arg2;
+    *(volatile s32*)((u8*)arg0 + 4) = arg2;
     *(s32*)((u8*)arg0 + 0xC) = 0;
-    *(s32*)((u8*)arg0 + 0x244) = arg1;
+    ((Fn80157CF0Obj*)arg0)->unk244 = arg1;
     *(s32*)((u8*)arg0 + 0x258) = 0;
     *(f32*)((u8*)arg0 + 0x250) = value;
     *(s32*)((u8*)arg0 + 0x268) = 0;
     *(s32*)((u8*)arg0 + 0x248) = 0;
-    *(void**)arg0 = vtable;
+    *(void**)arg0 = lbl_8032EE68;
     return arg0;
 }
 #pragma scheduling on
@@ -1263,23 +1262,33 @@ extern "C" s32 fn_80159E6C(void) {
 }
 
 extern "C" void* fn_80159E74(void* arg0, s32 arg1) {
-    if (arg0 == 0) {
-        return arg0;
-    }
-    void* r0 = *(void**)((char*)arg0 + 0x2D8);
-    *(void**)((char*)arg0 + 0) = lbl_8032EFA8;
-    if (r0 != 0) {
-        void* r4 = *(void**)r0;
-        void (*method)(void*, s32) = *(void (**)(void*, s32))((u8**)r4 + 0x8);
-        method(r0, 1);
-    }
-    if (arg0 != 0 && (char*)arg0 + 8 != 0) {
-        *(u32*)((char*)arg0 + 8) = 0;
-        *(u32*)((char*)arg0 + 0xC) = 0;
-        *(u32*)((char*)arg0 + 0x10) = 0;
-    }
-    if (arg1 > 0) {
-        fn_80128668(arg0);
+    if (arg0 != 0) {
+        void* r0 = *(void**)((char*)arg0 + 0x2D8);
+        *(void**)arg0 = (void*)&lbl_8032EFA8;
+        if (r0 != 0) {
+            if (r0 != 0) {
+                struct Dummy {
+                    virtual void f0(s32);
+                };
+                ((Dummy*)r0)->f0(1);
+            }
+        }
+        if (arg0 != 0) {
+            if (arg0 != 0) {
+                if ((u32)arg0 + 8 != 0) {
+                    if ((u32)arg0 + 8 != 0) {
+                        if ((u32)arg0 + 8 != 0) {
+                            *(u32*)((char*)arg0 + 8) = 0;
+                            *(u32*)((char*)arg0 + 0xC) = 0;
+                            *(u32*)((char*)arg0 + 0x10) = 0;
+                        }
+                    }
+                }
+            }
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
@@ -1816,7 +1825,7 @@ extern "C" void fn_8015C0E8(Unk801577F0* arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
-    // Note: v31 selects target slot 0x84; reversed literal temps map 61754 to f1 and 61750 to f0.
+    // Note: v31 selects slot 0x84; direct field stores retain the target's float literals.
     s32 active = arg0->m260;
     s32 zero = 0;
     arg0->m264 = zero;
@@ -1826,10 +1835,8 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
             fn_801CB6E4(resource, *(s32*)((u8*)arg0 + 4));
         }
         arg0->m260 = 0;
-        f32 second = lbl_80561750;
-        f32 first = lbl_80561754;
-        arg0->m254 = first;
-        arg0->m25c = second;
+        arg0->m254 = lbl_80561754;
+        arg0->m25c = lbl_80561750;
         arg0->v31();
     }
     s32 pending = *(s32*)((u8*)arg0 + 0x26c);
@@ -1837,8 +1844,8 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
         fn_801CB6E4((void*)0x48203, *(s32*)((u8*)arg0 + 4));
         *(s32*)((u8*)arg0 + 0x26c) = 0;
     }
-    *(s32*)((u8*)arg0 + 0x274) = 0;
     f32 tail = lbl_80561754;
+    *(s32*)((u8*)arg0 + 0x274) = zero;
     *(f32*)((u8*)arg0 + 0x278) = tail;
     *(f32*)((u8*)arg0 + 0x27c) = tail;
 }
