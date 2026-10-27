@@ -14383,6 +14383,35 @@ tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
     return NULL;
 }
 
+BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 uuid_len, int nest_level)
+{
+    UINT8 *p_end = p + seq_len;
+    UINT8 type;
+    UINT32 len;
+
+    if (nest_level > 3)
+        return FALSE;
+
+    while (p < p_end)
+    {
+        type = *p++;
+        p = sdpu_get_len_from_type(p, type, &len);
+        type = type >> 3;
+        if (type == UUID_DESC_TYPE)
+        {
+            if (sdpu_compare_uuid_arrays(p, len, p_uuid, uuid_len))
+                return TRUE;
+        }
+        else if (type == DATA_ELE_SEQ_DESC_TYPE)
+        {
+            if (find_uuid_in_seq(p, len, p_uuid, uuid_len, nest_level + 1))
+                return TRUE;
+        }
+        p = p + len;
+    }
+    return FALSE;
+}
+
 tSDP_RECORD *sdp_db_find_record(UINT32 handle) {
     u8 *start = &lbl_803C4C40[0x1224];
     u8 *end = start + (u32)(*(u16 *)&lbl_803C4C40[0x1222]) * 0x298;
