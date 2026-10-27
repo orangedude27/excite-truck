@@ -61,6 +61,15 @@ public:
     virtual void Dummy0();
     virtual void Call();
 };
+class Fn8019EA7CDispatch {
+public:
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
+    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17();
+    virtual void* Get();
+};
 
 #pragma opt_tail_call on
 __declspec(section ".data") extern f32 lbl_80558DC4;
@@ -1496,17 +1505,19 @@ void fn_8019F414(void *arg0) {
     fn_8019EF00(arg0);
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
     fn_8019EC84(arg0);
     f32 scale = -PSVECDotProduct(
         (const Vec *)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0xC),
         (const Vec *)arg1);
     void *vector = *(void **)((u8 *)arg0 + 0xC);
-    volatile f32 sp20 = ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale;
-    volatile f32 spC = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
-    volatile f32 sp1C = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
+    volatile f32 scratch[10];
+    scratch[6] = ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale;
+    scratch[1] = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
+    scratch[5] = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
 }
-
+#pragma scheduling on
 extern "C" void fn_8019F560(void) {
     fn_8019F1A4();
 }
