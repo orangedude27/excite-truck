@@ -119,7 +119,7 @@ unsigned long long fn_80139C5C(void *arg0) {
 
 void *fn_80131810(void);
 void *fn_801284F8(int, const char *);
-void *fn_801399FC(void);
+void *fn_801399FC();
 extern const char lbl_8032C0C8[];
 #pragma scheduling invalid_target
 void *fn_80139D4C(void) {
@@ -218,17 +218,25 @@ extern const char lbl_80559C50[];
 extern const char lbl_80559C58[];
 extern const char lbl_8032C0D4[];
 extern const char lbl_8032C0E4[];
-void fn_80139F5C(void *arg0) {
+extern __declspec(section ".sdata") const char lbl_80559C50[];
+extern __declspec(section ".sdata") const char lbl_80559C58[];
+#pragma cplusplus on
+extern "C" void fn_80139F5C(void *arg0) {
+    class Source {
+    public:
+        virtual void unused0();
+        virtual void unused1();
+        virtual void unused2();
+        virtual void unused3();
+        virtual char *getPath(const char *, char *);
+    };
     char name[0x40];
     char path[0x80];
+    int id = fn_80007F90(*(int *)((char *)arg0 + 8));
     char *result;
     int hasSlash;
-    void *obj;
-    void **vtable;
-    sprintf(name, lbl_80559C50, fn_80007F90(*(int *)((char *)arg0 + 8)));
-    obj = *(void **)((char *)arg0 + 0x20);
-    vtable = *(void ***)obj;
-    result = ((char *(*)(void *, const char *, char *))vtable[6])(obj, lbl_8032C0D4, name);
+    sprintf(name, lbl_80559C50, id);
+    result = ((Source *)*(void **)((char *)arg0 + 0x20))->getPath(lbl_8032C0D4, name);
     hasSlash = strchr(result, '/') != 0;
     if (hasSlash) {
         strncpy(path, result, 0x80);
@@ -237,14 +245,13 @@ void fn_80139F5C(void *arg0) {
     }
     lbl_8055E138 = ((int (*)(char *))fn_80131810)(path);
     if (lbl_8055E138 == 0 && !hasSlash) {
-        fn_80029004(path, '.');
-        strcpy(path, lbl_80559C58);
+        strcpy(((char *(*)(char *, int))fn_80029004)(path, '.'), lbl_80559C58);
         lbl_8055E138 = ((int (*)(char *))fn_80131810)(path + 1);
     }
-    strcpy((char *)&lbl_8042F7C0, path);
-    lbl_8055E13C = (int)obj;
+    strcpy(*(char (*)[1])&lbl_8042F7C0, path);
+    lbl_8055E13C = (int)*(void **)((char *)arg0 + 0x20);
 }
-
+#pragma cplusplus reset
 extern __declspec(section ".data") unsigned char lbl_8042F7C0;
 void fn_8013A074(void) {
     int state = lbl_8055E138;
