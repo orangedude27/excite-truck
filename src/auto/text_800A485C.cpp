@@ -5895,7 +5895,7 @@ extern "C" s32 fn_800B76A8(s32, s32);
 extern "C" s32 lbl_8055DD18;
 extern "C" s32 lbl_8055DD1C;
 extern "C" s32 lbl_8055DD20;
-s32 fn_800B7CE8(s32 arg0) {
+extern "C" s32 fn_800B7CE8(s32 arg0) {
     s32 temp_r3;
     s32 temp_r3_2;
 
@@ -11561,6 +11561,45 @@ extern "C" s32 fn_800CF2B0(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+void homebutton::GroupAnmController::do_calc() {
+    class ComponentDispatch {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void apply(void *, s32, s32);
+    };
+    struct Node { Node *next; u32 pad; void *object; };
+    struct List { u8 pad[0x10]; Node *head; };
+    Node *node;
+    Node *end;
+    const char *message;
+    const char *file;
+    s32 active;
+    if (*(s32 *)((u8 *)this + 0x14) == 1) {
+        calc();
+        active = 1;
+        *(f32 *)((u8 *)*(void **)((u8 *)this + 0x24) + 0x10) = *(f32 *)((u8 *)this + 0xC);
+    } else {
+        active = 0;
+    }
+    List *list = *(List **)((u8 *)this + 0x20);
+    node = list->head;
+    end = (Node *)((u8 *)list + 0x10);
+    while (node != end) {
+        if (node == 0) {
+            file = lbl_8031E764;
+            message = lbl_8031E740;
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x23D, message);
+        }
+        void *object = node->object;
+        ((ComponentDispatch *)object)->apply(*(void **)((u8 *)this + 0x24), active, 0);
+        node = node->next;
+    }
 }
 
 extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) {
