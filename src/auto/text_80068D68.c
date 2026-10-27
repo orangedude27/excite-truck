@@ -4415,15 +4415,23 @@ u8 fn_80079514(void) {
 }
 
 void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
-    if (p[0] == 0) {
-        lbl_803C0F78[0x636] = p[1];
-        *(u16 *)(lbl_803C0F78 + 0x638) = p[2] + (p[3] << 8);
-        lbl_803C0F78[0x63A] = p[4];
-        *(u16 *)(lbl_803C0F78 + 0x63C) = p[5] + (p[6] << 8);
-        *(u16 *)(lbl_803C0F78 + 0x63E) = p[7] + (p[8] << 8);
+    register UINT8 *base = lbl_803C0F78;
+    UINT8 status = p[0];
+    if (status == 0) {
+        base[0x636] = p[1];
+        *(u16 *)(base + 0x638) = p[2] + (p[3] << 8);
+        base[0x63A] = p[4];
+        *(u16 *)(base + 0x63C) = p[5] + (p[6] << 8);
+        *(u16 *)(base + 0x63E) = p[7] + (p[8] << 8);
+        lbl_803C0F78[0x64E] = 4;
+        lbl_803C0F78[0x64F] = 4;
+    } else {
+        lbl_803C0F78[0x64F] = status;
+        lbl_803C0F78[0x64E] = status;
+        btu_start_timer(base + 0x574, 1, 1);
+        ((void (*)(void))btsnd_hcic_reset)();
+        return;
     }
-    lbl_803C0F78[0x64E] = 4;
-    lbl_803C0F78[0x64F] = 4;
     btu_start_timer(lbl_803C0F78 + 0x574, 1, 1);
     btsnd_hcic_reset_800857CC();
 }
@@ -8804,6 +8812,30 @@ void HID_DevInit(void) {
     *(u16*)&lbl_803C3AF0[0x108] = 0x40;
     *(void**)&lbl_803C3AF0[0x2C] = &hidd_proc_repage_timeout;
     lbl_803C3AF0[0x141] = 0;
+}
+
+extern char lbl_803176D0[];
+extern char lbl_803176E8[];
+s32 hidd_conn_initiate(void) {
+    u16 cid;
+    u8 *cb = lbl_803C3AF0;
+
+    if (cb[0x141] >= 4) {
+        fn_8007093C(0x1E0003, lbl_803176D0);
+    }
+    *(u16 *)(cb + 0x14) = 0;
+    *(s16 *)(cb + 0x16) = 0;
+    cb[0x11] = 1;
+    cid = L2CA_ConnectReq(0x11, lbl_803C3AF0);
+    *(u16 *)(cb + 0x14) = cid;
+    if (cid == 0) {
+        if (lbl_803C3AF0[0x141] >= 2) {
+            fn_8007093C(0x1E0001, lbl_803176E8);
+        }
+        return 0xE;
+    }
+    cb[0x10] = 1;
+    return 0;
 }
 
 void hidd_pm_set_now(void *arg0) {
