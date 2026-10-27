@@ -18,7 +18,7 @@ extern float lbl_80562900, lbl_80562904, lbl_8056290C;
 extern float lbl_80562934, lbl_80562938, lbl_8056293C, lbl_80562940, lbl_80562944;
 }
 
-extern "C" void fn_801C1218(void);
+extern "C" void fn_801C1218(void *);
 extern "C" void fn_801C1364(int);
 extern "C" void fn_801C1320(void*);
 extern "C" void fn_801C1B60(int);
@@ -38,44 +38,61 @@ extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int arg
 }
 #pragma dont_inline reset
 extern float lbl_80562910, lbl_80562914;
-void fn_801C1218(void *arg0) {
+extern "C" void fn_801C1218(void *arg0) {
     char *base = (char *)arg0;
-    int i = 0;
     int count = 0;
-    char *p0, *p1, *p2;
-    float sp8, spC, sp10;
-    float f4, f5, f6, f4b, f5b, f6b;
-    float f9, f9b;
+    register float factor0 = lbl_80562910;
+    int offset = 0;
+    register float factor1 = lbl_80562914;
+    char *p0;
+    char *p1;
+    char *p2;
+    float x;
+    float y;
+    float z;
+    float scale;
+    volatile unsigned int savedX;
+    volatile unsigned int savedY;
+    volatile unsigned int savedZ;
+
     goto check;
 loop:
     count += 1;
-    p0 = *(char **)(base + 0x24) + i;
-    p1 = *(char **)(base + 0x28) + i;
-    p2 = *(char **)(base + 0x2C) + i;
-    sp8 = *(float *)(p0 + 0);
-    f6 = *(float *)(p0 + 0) * lbl_80562910;
-    spC = *(float *)(p0 + 4);
-    i += 0xC;
-    *(float *)(p0 + 0) = f6;
-    f5 = *(float *)(p0 + 4) * lbl_80562910;
-    sp10 = *(float *)(p0 + 8);
-    *(float *)(p0 + 4) = f5;
-    f4 = *(float *)(p0 + 8) * lbl_80562910;
-    *(float *)(p0 + 8) = f4;
-    f6b = f6 + *(float *)(p1 + 0) * lbl_80562914;
-    *(float *)(p0 + 0) = f6b;
-    f5b = f5 + *(float *)(p1 + 4) * lbl_80562914;
-    *(float *)(p0 + 4) = f5b;
-    f4b = f4 + *(float *)(p1 + 8) * lbl_80562914;
-    *(float *)(p0 + 8) = f4b;
-    f9 = *(float *)(base + 0x54);
-    f9b = f9 * f9;
-    *(float *)(p0 + 0) = f6b + *(float *)(p2 + 0) * f9b;
-    *(float *)(p0 + 4) = f5b + *(float *)(p2 + 4) * f9b;
-    *(float *)(p0 + 8) = f4b + *(float *)(p2 + 8) * f9b;
-    *(float *)(p1 + 0) = sp8;
-    *(float *)(p1 + 4) = spC;
-    *(float *)(p1 + 8) = sp10;
+    p0 = *(char **)(base + 0x24) + offset;
+    p1 = *(char **)(base + 0x28) + offset;
+    p2 = *(char **)(base + 0x2C) + offset;
+
+    x = *(float *)(p0 + 0);
+    savedX = *(unsigned int *)(p0 + 0);
+    x = x * factor0;
+    y = *(float *)(p0 + 4);
+    savedY = *(unsigned int *)(p0 + 4);
+    offset += 0xC;
+    z = *(float *)(p0 + 8);
+    savedZ = *(unsigned int *)(p0 + 8);
+    *(float *)(p0 + 0) = x;
+    x = *(volatile float *)&savedX;
+    y = *(float *)(p0 + 4) * factor0;
+    *(float *)(p0 + 4) = y;
+    z = *(float *)(p0 + 8) * factor0;
+    *(float *)(p0 + 8) = z;
+
+    x += *(float *)(p1 + 0) * factor1;
+    *(float *)(p0 + 0) = x;
+    y += *(float *)(p1 + 4) * factor1;
+    *(float *)(p0 + 4) = y;
+    z += *(float *)(p1 + 8) * factor1;
+    *(float *)(p0 + 8) = z;
+
+    scale = *(float *)(base + 0x54);
+    scale = scale * scale;
+    *(float *)(p0 + 0) = x + *(float *)(p2 + 0) * scale;
+    *(float *)(p0 + 4) = y + *(float *)(p2 + 4) * scale;
+    *(float *)(p0 + 8) = z + *(float *)(p2 + 8) * scale;
+
+    *(float *)(p1 + 0) = *(volatile float *)&savedX;
+    *(float *)(p1 + 4) = *(volatile float *)&savedY;
+    *(float *)(p1 + 8) = *(volatile float *)&savedZ;
 check:
     if (count < *(int *)(base + 0x14))
         goto loop;
@@ -103,16 +120,16 @@ void fn_801C1320(void *arg0) {
 #pragma dont_inline reset
 extern void fn_801C1B60(int);
 #pragma force_active on
-void fn_801C1218(void);
+void fn_801C1218(void *);
 void fn_801C1364(int);
 void fn_801C1320(void*);
 void fn_801C1B60(int arg0);
-extern "C" void fn_801C1218(void);
+extern "C" void fn_801C1218(void *);
 extern "C" void fn_801C1364(int);
 extern "C" void fn_801C1320(void*);
 #pragma dont_inline on
 extern "C" void fn_801C1B60(int arg0) {
-    fn_801C1218();
+    fn_801C1218((void *)arg0);
     fn_801C1364(arg0);
     fn_801C1320((void*)arg0);
 }
