@@ -391,7 +391,6 @@ extern "C" void fn_80131234(void*);
 extern "C" void fn_801CB6E4(void*, s32);
 extern void* lbl_8032E668[];
 extern "C" void *fn_802076A0(void *, s32, s32, s32);
-extern "C" char lbl_8032EAFC[];
 extern "C" f32 lbl_80561768;
 #pragma push
 #pragma small_data off
