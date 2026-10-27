@@ -2164,7 +2164,7 @@ extern "C" void fn_801A1CA0(void* arg0) {
     }
 }
 #pragma scheduling on
-extern void* lbl_803338C0;
+extern char lbl_803338C0[];
 extern "C" void* fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
     u8 temp_r12, temp_r22, temp_r23, temp_r24, temp_r25;
     u8 temp_r26, temp_r27, temp_r28, temp_r29, temp_r30;
