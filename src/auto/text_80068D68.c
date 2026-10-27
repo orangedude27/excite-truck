@@ -1889,6 +1889,7 @@ void UUSB_Close(void *arg0) {
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
  * BUFFER_Q acl_q @0x2C, BUFFER_Q sco_q @0x3C. */
+#ifndef UUSB_CB_DEFINED_EARLY
 typedef struct uusb_cb_t {
     s32 fd;              /* 0x0 */
     u8 pad4[0x24];
@@ -1899,6 +1900,7 @@ typedef struct uusb_cb_t {
     u8 pad38[4];
     BUFFER_Q sco_q;      /* 0x3C */
 } uusb_cb_t;
+#endif
 
 extern uusb_cb_t lbl_803BD1E0;
 extern OSAlarm lbl_803C0A20;
