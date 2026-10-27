@@ -2474,7 +2474,7 @@ extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm
 }
 
 extern void __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *);
-extern void *lbl_80322880;
+extern char lbl_80322880[];
 extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
     *(int *)((char *)arg0 + 4) = 0;
     *(void **)arg0 = &lbl_80322880;
