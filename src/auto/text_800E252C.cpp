@@ -1660,13 +1660,15 @@ extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(void *self, int i
     if (index >= 0 && index < 4) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2E5, lbl_803222F0, index, 0, 4);
 
-    float adjusted = value + lbl_80560F38;
-    if (adjusted <= lbl_80560F38) {
-        if (adjusted < lbl_80560F3C) adjusted = lbl_80560F3C;
+    value += lbl_80560F38;
+    if (value > lbl_80560F38) {
+        value = value;
+    } else if (value < lbl_80560F3C) {
+        value = lbl_80560F3C;
     }
     float *send = (float *)((unsigned char *)self + 0x164 + index * 4);
-    if (adjusted != *send) {
-        *send = adjusted;
+    if (value != *send) {
+        *send = value;
         *((unsigned char *)self + 0x123) |= 0x20;
     }
 }
@@ -1719,7 +1721,7 @@ extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void
 }
 
 extern "C" void fn_800E5A8C(void) {
-    fn_800E6A44();
+    ((void (*)(void))fn_800E6A44)();
 }
 
 extern "C" void fn_80033538(unsigned short);
