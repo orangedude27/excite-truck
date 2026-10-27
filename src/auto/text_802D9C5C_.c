@@ -143,7 +143,7 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
 }
 
 #pragma use_lmw_stmw off
-#pragma scheduling off
+#pragma scheduling invalid_target
 void *fn_802DA704(int owner, void *data, int count) {
     volatile unsigned char *state;
     unsigned char saved;
