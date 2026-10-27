@@ -97,6 +97,7 @@ s32 fn_8024360C(s32 value, s32 tableIndex) {
     }
     return best;
 }
+#pragma unroll reset
 
 s32 fn_80243710(s32 arg0, s32 arg1) {
     s32 result = 0;
