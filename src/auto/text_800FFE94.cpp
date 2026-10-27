@@ -79,7 +79,7 @@ extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hb
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559918, 0x6F, lbl_803278D8);
     ref = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0xC], *(unsigned int*)(entry + 0x10), data);
     if (ref[1] != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559920, 0x6F, lbl_80327904);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559920, 0x6F, lbl_80327904);
     wave = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(unsigned int*)(ref + 4), data);
     if (*(unsigned short*)((char*)*(void**)arg0 + 6) == 0x102) {
         *(float*)arg1 = *(float*)wave;
