@@ -62,35 +62,75 @@ void *fn_802583CC(void *o, int arg1, int arg2) {
 }
 
 extern int fn_8023512C(void *);
+#pragma scheduling invalid_target
 void fn_80258550(void *arg0, const char *arg1, const char *arg2, int arg3) {
+    struct Entry { char first[0x20]; char second[0x20]; void *field; int value; };
+    struct Entry *entry;
     int count;
-    char *entry;
     char *dst;
-    int n;
-    char c;
-    count = *(int *)((char *)arg0 + 8);
-    entry = *(char **)((char *)arg0 + 4) + count * 0x48;
-    *(int *)((char *)arg0 + 8) = count + 1;
-    dst = entry;
-    n = 0x20;
-    while (--n > 0) {
-        c = *arg1++;
-        *dst++ = c;
-        if (c == 0) break;
+    count = 0x20;
+    entry = &((struct Entry *)(*(unsigned int *)((char *)arg0 + 4)))[(*(int *)((char *)arg0 + 8))++];
+    dst = entry->first;
+    while (1) {
+        count--;
+        if (count <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+        if ((*dst++ = *arg1++) == 0) break;
     }
-    if (n == 0) dst[-1] = 0;
-    dst = entry + 0x20;
-    n = 0x20;
-    while (--n > 0) {
-        c = *arg2++;
-        *dst++ = c;
-        if (c == 0) break;
+    arg1 = arg2;
+    dst = entry->second;
+    count = 0x20;
+    while (1) {
+        count--;
+        if (count <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+        if ((*dst++ = *arg1++) == 0) break;
     }
-    if (n == 0) dst[-1] = 0;
-    *(int *)(entry + 0x40) = fn_8023512C((void *)arg2);
-    *(int *)(entry + 0x44) = arg3;
+    entry->field = (void *)fn_8023512C((void *)arg2);
+    entry->value = arg3;
 }
+#pragma scheduling on
+void fn_8025861C(void *arg0, const char *arg1, void *arg2) {
+    register int count;
+    register unsigned char *base;
+    register unsigned char *dst;
+    register int n;
+    unsigned char c;
+    void *p;
 
+    count = *(int *)((char *)arg0 + 0x914);
+    base = *(unsigned char **)((char *)arg0 + 0x910) + count * 0x24;
+    *(int *)((char *)arg0 + 0x914) = count + 1;
+    dst = base;
+    n = 0x20;
+    goto copy;
+check:
+    n--;
+    if (n > 0) goto copy;
+    dst[-1] = 0;
+    goto copied;
+copy:
+    c = *arg1++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto check;
+copied:
+    p = fn_801284F8(0x14, lbl_8055C258);
+    if (p != 0) {
+        *(int *)((char *)p + 0) = 0;
+        *(int *)((char *)p + 4) = -1;
+        *(int *)((char *)p + 8) = 9;
+        *(float *)((char *)p + 0xC) = lbl_80563AC8;
+        *(float *)((char *)p + 0x10) = lbl_80563AC8;
+        *(int *)((char *)p + 0) = fn_80232578(arg2);
+    }
+    /* Store the new object's pointer beside its bounded copied name. */
+    *(void **)(base + 0x20) = p;
+}
+#pragma scheduling on
 extern void *fn_80207848(int, int);
 extern float lbl_80563AC8;
 #pragma scheduling invalid_target
@@ -305,30 +345,44 @@ extern int fn_80232B70(int, int, int);
 extern double lbl_80563AD8;
 void *fn_80258D58(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     char *base = (char *)arg0;
-    int offset = 0;
     int index = 0;
+    int offset = 0;
+    int compare;
     char *obj;
-    int old, temp;
+    unsigned int old;
+    unsigned int temp;
+    unsigned int mask;
     goto check;
 loop:
-    if (stricmp(*(char **)(base + 0x910) + offset, (char *)arg1) == 0)
+    compare = stricmp(*(char **)(base + 0x910) + offset, (char *)arg1);
+    switch ((unsigned int)__cntlzw((unsigned int)compare) >> 5) {
+    case 0:
+        goto increment;
+    default:
         goto found;
+    }
+increment:
     offset += 0x24;
-    index += 1;
+    index++;
 check:
     if (index < *(int *)(base + 0x914))
         goto loop;
     index = -1;
 found:
-    if (index < 0)
-        return 0;
-    obj = *(char **)(*(char **)(base + 0x910) + index * 0x24 + 0x20);
-    old = *(int *)(obj + 8);
-    temp = (arg2 & 7) | (old & ~7);
-    *(int *)(obj + 8) = (temp & ~0x58) | (arg2 & 0x78);
-    *(float *)(obj + 0xC) = (float)arg3 / (float)fn_80232B70(*(int *)obj, temp, old);
-    *(int *)(obj + 4) = arg4;
-    return obj;
+    if (index >= 0) {
+        int divisor;
+        obj = *(char **)(*(char **)(base + 0x910) + index * 0x24 + 0x20);
+        temp = (unsigned int)arg2 & 7;
+        old = *(unsigned int *)(obj + 8);
+        mask = (unsigned int)arg2 & 0x78;
+        temp = __rlwimi(temp, old, 0, 0, 28);
+        *(unsigned int *)(obj + 8) = (temp & ~0x58U) | mask;
+        divisor = fn_80232B70(*(int *)obj, temp, old);
+        *(float *)(obj + 0xC) = (float)arg3 / (float)divisor;
+        *(int *)(obj + 4) = arg4;
+        return obj;
+    }
+    return 0;
 }
 
 extern float fn_80209028(void);
