@@ -5446,6 +5446,49 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     return status;
 }
 
+static u8 *btm_inq_db_find_ent(BD_ADDR p_bda) {
+    u8 *p_ent = lbl_803C0F78 + 0x16E4;
+    u32 xx;
+
+    for (xx = 0; xx < 0xC; xx++, p_ent += 0x1C) {
+        if ((p_ent[0x1A] != 0) && (memcmp(p_ent + 0xA, p_bda, 6) == 0))
+            return p_ent;
+    }
+    return NULL;
+}
+
+#pragma push
+#pragma use_lmw_stmw off
+tBTM_STATUS BTM_ReadRemoteDeviceName(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
+    extern char lbl_80316424[];
+    u32 i;
+    u8 *entry;
+    u8 *p_i;
+    tBTM_INQ_INFO *p_cur = NULL;
+
+    if (lbl_803C0F78[0x27C0] >= 3) {
+        fn_800709CC(0xD0002, lbl_80316424,
+                    remote_bda[0], remote_bda[1], remote_bda[2],
+                    remote_bda[3], remote_bda[4], remote_bda[5]);
+    }
+
+    i = 0;
+    entry = lbl_803C0F78 + 0x16E4;
+    for (; i < 0xC; i++, entry += 0x1C) {
+        if (entry[0x1A] != 0 && memcmp(entry + 0xA, remote_bda, 6) == 0) {
+            p_i = entry;
+            goto found;
+        }
+    }
+    p_i = NULL;
+found:
+    if (p_i != NULL)
+        p_cur = (tBTM_INQ_INFO *)(p_i + 8);
+
+    return btm_initiate_rem_name(remote_bda, p_cur, 1, 0x28, p_cb);
+}
+#pragma pop
+
 tBTM_INQ_INFO *BTM_InqDbRead(BD_ADDR p_bda) {
     extern char lbl_80316484[];
     u32 i;
