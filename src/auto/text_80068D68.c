@@ -7988,20 +7988,19 @@ void fn_80082548(void) {
 
 BOOLEAN WBT_ExtCreateRecord(void) {
     UINT8 info[0xFC];
-    UINT32 handle = 0;
+    volatile UINT32 handle = 0;
     UINT8 attr[2];
     UINT16 uuid = 0x1002;
     register UINT8 *record;
-    register UINT32 zero = 0;
 
-    if (SDP_GetLocalDiRecord((tSDP_DI_GET_RECORD *)info, &handle) != SDP_SUCCESS) {
+    if (SDP_GetLocalDiRecord((tSDP_DI_GET_RECORD *)info, (UINT32 *)&handle) != SDP_SUCCESS) {
         record = info + 2;
         memset(record, 0, 0xFA);
         *(UINT16 *)(info + 2) = 0xF;
         *(UINT16 *)(info + 4) = 1;
         info[10] = 1;
-        if (SDP_SetLocalDiRecord((tSDP_DI_RECORD *)record, &handle) != SDP_SUCCESS) {
-            handle = zero;
+        if (SDP_SetLocalDiRecord((tSDP_DI_RECORD *)record, (UINT32 *)&handle) != SDP_SUCCESS) {
+            handle = 0;
             return FALSE;
         }
     }
