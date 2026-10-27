@@ -4,7 +4,7 @@
 #include <types.h>
 
 namespace nw4hbm { namespace snd { namespace detail {
-struct SeqSound { void Shutdown(); };
+struct SeqSound { void Shutdown(); void SetPlayerPriority(int); };
 }}}
 namespace nw4hbm { namespace ut { struct LinkListNode; }}
 namespace nw4hbm { namespace ut { namespace detail {
@@ -168,7 +168,7 @@ void nw4hbm::snd::detail::SeqSound::Shutdown() {
     if (*(u8 *)((u8 *)this + 0x1E8) != 0) {
         void *ptr = *(void **)((u8 *)this + 0x1EC);
         if (ptr != 0) {
-            ((SeqLoadCallback*)ptr)->Invoke(*(s32 *)((u8 *)this + 0x1F0));
+            ((SeqLoadCallback *)ptr)->Invoke(*(s32 *)((u8 *)this + 0x1F0));
         }
     }
     Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(this);
@@ -181,7 +181,7 @@ void nw4hbm::snd::detail::SeqSound::Shutdown() {
     }
     if (this == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)list + 4, (u8 *)this + 0xB8);
-    ((SoundBase*)this)->Shutdown(-1);
+    ((SoundBase *)this)->Shutdown(-1);
     fn_800EC848(list, this);
     OSRestoreInterrupts(interrupts);
 }
@@ -212,6 +212,8 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *, in
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void **, void *);
 extern "C" const char lbl_80324314[];
 extern "C" const char lbl_803242F0[];
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, int arg1) {
     int priority;
     void *list;
@@ -244,8 +246,7 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, i
         Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)list + 4, &iterator, soundNode);
     }
 }
-
-#pragma small_data on
+#pragma pop
 extern "C" s32 fn_800F0E24(void* arg0) {
     return *(s32*)((u8*)arg0 + 0x1E0) != 0;
 }
