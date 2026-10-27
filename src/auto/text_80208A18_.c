@@ -92,27 +92,88 @@ void fn_80208D60(int arg0) { lbl_80489238[7] = arg0; }
 
 int fn_80208D70(void) { return lbl_80489238[7]; }
 
+extern const char lbl_8033BF28[];
+extern char lbl_8055B4E8;
+extern int lbl_8055B4DC;
+extern void fn_802E317C(const char *, ...);
+extern void fn_80133348(int, void *, int);
+extern void fn_801336E0(int, void (*)(void));
+#pragma scheduling default
+#pragma cplusplus on
+extern "C" const char lbl_8033BF28[];
+extern "C" char lbl_8055B4E8;
+extern "C" int lbl_8055B4DC;
+extern "C" void fn_802E317C(const char *, ...);
+extern "C" void fn_80133348(int, void *, int);
+extern "C" void fn_801336E0(int, void (*)(void));
+#pragma cplusplus reset
+#pragma scheduling default
+#pragma cplusplus on
+extern "C" void fn_80208D80(int arg0) {
+    struct First {
+        char entries[0x40];
+        int count;
+    };
+    struct Table {
+        void *entries[6];
+        int count;
+        int value;
+    };
+    struct First *first;
+    struct Table *table;
+    char *entry;
+    void **items;
+    int enabled;
+    int index = 0;
+    void *object;
+
+    first = (struct First *)lbl_80489258;
+    entry = (char *)first;
+    while (index < first->count) {
+        enabled = *(int *)(entry + 4);
+        if (enabled != 0) {
+            fn_802E317C(lbl_8033BF28, enabled);
+        }
+        entry += 8;
+        index++;
+    }
+
+    if (arg0 != 0) {
+        table = (struct Table *)lbl_80489238;
+        items = table->entries;
+        index = 0;
+        while (index < table->count) {
+            object = *items;
+            if (object != 0) {
+                ((void (*)(void *, int))(*(void ***)object)[2])(object, 1);
+            }
+            items++;
+            index++;
+        }
+    }
+
+    fn_80133348(4, &lbl_8055B4E8, ((struct Table *)lbl_80489238)->value);
+    fn_8013323C(4, lbl_8033BEF8, lbl_8055B4D0);
+    fn_80133348(4, &lbl_8055B4E0, (int)lbl_8055EDA8);
+    fn_801336E0(lbl_8055B4DC, fn_80208A78);
+}
+#pragma cplusplus reset
 float fn_80209028(void) {
     return lbl_8055B4D4;
 }
 
+#pragma scheduling invalid_target
+#pragma push
+#pragma inline_depth(0)
 void fn_80209030(float arg0) {
-    float value = lbl_80563230;
-    if (value < arg0) {
-        value = value;
-    } else {
-        value = arg0;
-    }
-    if (value > lbl_80563234) {
-        value = value;
-    } else {
-        value = lbl_80563234;
-    }
-    lbl_8055B4D4 = value;
-    fn_8013323C(4, lbl_8033BEF8, value);
-    fn_80208A50(&value);
+    float value = lbl_80563230 < arg0 ? lbl_80563230 : arg0;
+    value = value > lbl_80563234 ? value : lbl_80563234;
+    lbl_8055B4D0 = value;
+    fn_8013323C(4, lbl_8033BEF8, (float)(double)value);
+    ((void (*)(void))fn_80208A50)();
 }
-
+#pragma pop
+#pragma scheduling on
 void fn_80209090(int arg0) {
     if (arg0 >= 0 && arg0 <= 2) {
         lbl_8055EDA8 = (void *)arg0;
@@ -230,8 +291,10 @@ int fn_8020921C(void) {
     extern struct Config lbl_8048929C;
     extern unsigned int lbl_8055E044;
     extern void fn_80131318(void);
-    volatile struct Config *config = &lbl_8048929C;
-    unsigned int version = config->version;
+    unsigned int version;
+    volatile struct Config *config;
+    config = &lbl_8048929C;
+    version = config->version;
     if (version != lbl_8055E044)
         fn_80131318();
     config = &lbl_8048929C;
