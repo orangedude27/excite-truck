@@ -208,6 +208,63 @@ second_check:
     return 0;
 }
 
+extern char lbl_8034D6B8[];
+extern char lbl_8034D784[];
+#pragma push
+#pragma use_lmw_stmw off
+void *fn_802E6FBC(void) {
+    int size = fn_802E7130();
+    unsigned char *allocation;
+    unsigned char *data;
+    unsigned char *entry;
+    unsigned char *descriptor;
+    unsigned int amount;
+    int i;
+    void (*callback)(int);
+    void *result;
+
+    allocation = (unsigned char *)fn_801284E8(lbl_8034D6B8, size);
+    memset(allocation, 0, 0x20D0);
+    *(unsigned int *)(allocation + 0x2040) = 0x4D435348;
+    *(unsigned int *)(allocation + 0x2044) = 4;
+    *(unsigned int *)(allocation + 0x2048) = 0x20D0;
+    *(unsigned int *)(allocation + 0x204C) = size - 0x20D0;
+    *(unsigned int *)(allocation + 0x2054) = lbl_8055FFC0;
+
+    data = allocation + 0x20D0;
+    memset(data, 0, size - 0x20D0);
+    entry = lbl_804FC8B0;
+    descriptor = allocation + 0x2058;
+    i = 0;
+    goto loop_check;
+loop_body:
+    *(unsigned int *)(descriptor + 0) = *(unsigned int *)(entry + 0);
+    *(unsigned int *)(descriptor + 4) = *(unsigned int *)(entry + 4);
+    *(unsigned int *)(descriptor + 8) = *(unsigned int *)(entry + 0xC);
+    callback = *(void (**)(int))(entry + 0x10);
+    if (callback != 0)
+        callback(3);
+    memcpy(data, *(void **)(entry + 8), *(unsigned int *)(entry + 0xC));
+    callback = *(void (**)(int))(entry + 0x10);
+    if (callback != 0)
+        callback(4);
+    amount = *(unsigned int *)(entry + 0xC);
+    i++;
+    entry += 0x14;
+    data += amount;
+    descriptor += 0xC;
+loop_check:
+    if (i < lbl_8055FFC0)
+        goto loop_body;
+
+    *(unsigned int *)(allocation + 0x2050) =
+        fn_80132E7C(allocation + 0x20D0, *(unsigned int *)(allocation + 0x204C));
+    fn_802E30C8(lbl_8034D784, (size + 0x1FFF) / 0x2000, size);
+    result = fn_802E967C(lbl_8055D200, allocation, size);
+    fn_80128658(allocation);
+    return result;
+}
+
 void fn_802E7128(void) { fn_802E6FBC(); }
 
 void fn_802E712C(void) {}
