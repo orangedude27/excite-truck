@@ -2,6 +2,17 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void *lbl_8055FE5C;
+extern void *fn_801284F8(int, void *);
+extern int fn_8012850C(int, void *);
+extern void fn_802D9C5C(void);
+extern void fn_802D9DE4(void);
+extern char lbl_8034C8F8[];
+extern char lbl_8034C908[];
+extern char lbl_8055D128[];
+extern float lbl_80565030;
+extern float lbl_80565034;
+extern float lbl_804DAC48[];
+extern float lbl_804DB434[];
 extern char lbl_80346798[];
 extern void fn_802E317C(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
@@ -147,14 +158,13 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
 void *fn_802DA704(int owner, void *data, int count) {
     volatile unsigned char *state;
     unsigned char saved;
+    unsigned char *base;
     int bytes;
     int size;
     int rounded;
     int used;
     int aligned;
     int limit;
-    int required;
-    int address;
     int position;
     int updated;
     void *result;
@@ -167,16 +177,14 @@ void *fn_802DA704(int owner, void *data, int count) {
     used = *(volatile int *)(state + 0x10);
     aligned = rounded & ~3;
     limit = *(volatile int *)(state + 0x0C);
-    required = aligned + used;
-    required += 8;
-    if (required > limit) {
+    if (aligned + used + 8 > limit) {
         fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), size, *(volatile int *)(state + 0x0C) / 1024);
         result = 0;
     } else {
-        address = used;
-        address += *(unsigned int *)(state + 4);
-        *(int *)address = 1;
-        result = (void *)(address + 4);
+        base = (unsigned char *)used;
+        base += *(unsigned int *)(state + 4);
+        *(int *)base = 1;
+        result = base + 4;
         position = *(unsigned int *)(state + 4);
         position += *(volatile int *)(state + 0x10);
         position += aligned;
@@ -205,11 +213,9 @@ void *fn_802DA80C(int owner, void *data, int count) {
     unsigned char saved;
     unsigned char *base;
     int bytes;
-    int size;
-    int rounded;
     int used;
+    int size;
     int aligned;
-    int limit;
     int position;
     int updated;
     void *result;
@@ -218,24 +224,25 @@ void *fn_802DA80C(int owner, void *data, int count) {
     saved = state[0x25];
     state[0x25] = 0;
     size = bytes + 0x18;
-    rounded = size + 3;
     used = *(volatile int *)(state + 0x10);
-    aligned = rounded & ~3;
-    limit = *(volatile int *)(state + 0x0C);
-    if (aligned + used + 8 > limit) {
-        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), size, *(volatile int *)(state + 0x0C) / 1024);
+    aligned = (size + 3) & ~3;
+    if (aligned + used + 8 > *(volatile int *)(state + 0x0C)) {
+        int limit = *(volatile int *)(state + 0x0C);
+        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), size, limit / 1024);
         result = 0;
     } else {
-        base = (unsigned char *)used;
-        base += *(unsigned int *)(state + 4);
+        position = *(volatile int *)(state + 0x10);
+        base = (unsigned char *)position;
+        position = *(unsigned int *)(state + 4);
+        base += position;
         *(int *)base = 1;
         result = base + 4;
         position = *(unsigned int *)(state + 4);
-        position += *(volatile int *)(state + 0x10);
-        position += aligned;
+        used = *(volatile int *)(state + 0x10);
+        used += position;
+        position = used + aligned;
         *(int *)(position + 4) = aligned;
-        updated = *(volatile int *)(state + 0x10);
-        updated += aligned;
+        updated = aligned + *(volatile int *)(state + 0x10);
         updated += 8;
         *(volatile int *)(state + 0x10) = updated;
     }
