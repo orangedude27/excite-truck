@@ -1213,8 +1213,7 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
 extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
 extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *, void *);
-#pragma dont_inline on
-#pragma dont_inline reset
+#pragma use_lmw_stmw off
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     int interruptState = OSDisableInterrupts();
     if (*((unsigned char *)self + 0x11C) == 0) {
@@ -1239,14 +1238,14 @@ extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
         rowIndex++;
     }
     *((int *)((char *)self + 0x104)) = zero;
-    GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-    UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(0, self);
-    Instance__15EmissionManagerFv();
-    FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(0, self);
+    UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
+        GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), self);
+    FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(
+        Instance__15EmissionManagerFv(), self);
     *((unsigned char *)self + 0x11C) = zero;
     OSRestoreInterrupts(interruptState);
 }
-
+#pragma use_lmw_stmw reset
 extern float lbl_80560F44;
 extern const char lbl_803222A0[];
 extern "C" void fn_800E5E74(void *, int, int, int, int, int, int);
@@ -1464,26 +1463,21 @@ extern "C" void fn_800E5338(void *arg0, float arg1) {
 extern "C" void SetVeVolume__Q46nw4hbm3snd6detail7AxVoiceFff(void *self, float arg0, float arg1) {
     float f0 = lbl_80560F3C;
     if (arg1 < f0) {
-        float f2 = lbl_80560F38;
-        if (arg0 <= f2) {
-            if (arg0 < f0) f2 = f0;
-            else f2 = arg0;
-        }
+        float f2 = arg0 > lbl_80560F38
+            ? lbl_80560F38
+            : (arg0 < f0 ? f0 : arg0);
         if (f2 != *(float *)((char *)self + 0x1A0)) {
             *(float *)((char *)self + 0x1A0) = f2;
             *(unsigned char *)((char *)self + 0x123) |= 0x10;
         }
     } else {
-        float f3 = lbl_80560F38;
-        if (arg0 <= f3) {
-            if (arg0 < f0) f3 = f0;
-            else f3 = arg0;
-        }
+        float f3 = arg0 > lbl_80560F38
+            ? lbl_80560F38
+            : (arg0 < f0 ? f0 : (f0 = arg0));
         float f1 = lbl_80560F38;
-        if (arg1 <= f1) {
-            f1 = lbl_80560F3C;
-            if (arg1 >= f1) f1 = arg1;
-        }
+        f1 = arg1 > f1
+            ? f1
+            : (f1 = lbl_80560F3C, (arg1 < f1 ? f1 : arg1));
         if (f1 != *(float *)((char *)self + 0x19C) || f3 != *(float *)((char *)self + 0x1A0)) {
             *(float *)((char *)self + 0x19C) = f1;
             *(float *)((char *)self + 0x1A0) = f3;
@@ -2153,14 +2147,19 @@ extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
 }
 
 extern "C" int GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void* arg0, unsigned long arg1, int arg2) {
-    unsigned int base = (unsigned int)arg0;
-    int result = 0;
+    u32 base = (u32)arg0;
     if (base != 0) base += 0x80000000;
+    int result = 0;
     switch (arg2) {
     case 0: {
-        unsigned int q = (unsigned int)arg1 / 7;
-        unsigned int t = (((unsigned int)arg1 - q) >> 1) + q;
-        result = (int)((unsigned int)arg1 - ((t >> 3) * 0xE) + (base * 2) + ((t * 2) & 0xFFFFFFF0) + 2);
+        u32 sample = (u32)arg1;
+        u32 doubledBase = base << 1;
+        u32 quotient = sample / 7;
+        u32 block = quotient + ((sample - quotient) >> 1);
+        u32 remainder = sample - ((block >> 3) * 14);
+        result = (int)(remainder + doubledBase);
+        result += (int)((block << 1) & 0xFFFFFFF0);
+        result += 2;
         break;
     }
     case 25: result = base + arg1; break;
