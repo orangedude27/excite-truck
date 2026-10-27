@@ -52,6 +52,7 @@ int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
 extern const char lbl_8055AEB0[3];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
+#pragma cfile static_cfile("str reuse")
 int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
     void *value;
     void *name;
@@ -101,8 +102,8 @@ int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
 #pragma use_lmw_stmw off
 s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
     struct Group {
-        int itemCount;
         int magic;
+        int itemCount;
     };
     struct Archive {
         char pad[0x10];
@@ -111,8 +112,8 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
     } *archive;
     struct Group *group;
     char *item;
-    int name[8];
-    int valueBuf[8];
+    char name[32];
+    char valueBuf[32];
     int groupIndex;
     int groupOffset;
     int index;
@@ -128,14 +129,16 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
             item = (char *)group + 0xC;
             index = zero;
             while (index < group->itemCount) {
-                valueBuf[0] = zero; valueBuf[1] = zero; valueBuf[2] = zero; valueBuf[3] = zero;
-                valueBuf[4] = zero; valueBuf[5] = zero; valueBuf[6] = zero; valueBuf[7] = zero;
-                name[0] = zero; name[1] = zero; name[2] = zero; name[3] = zero;
-                name[4] = zero; name[5] = zero; name[6] = zero; name[7] = zero;
-                if (sscanf(item, (const char *)(void *)(int)lbl_8055AEB4, name, valueBuf) >= 1 &&
-                    stricmp((const char *)name, (const char *)arg0) == 0) {
+                ((int *)valueBuf)[0] = zero; ((int *)valueBuf)[1] = zero; ((int *)valueBuf)[2] = zero;
+                ((int *)valueBuf)[3] = zero; ((int *)valueBuf)[4] = zero; ((int *)valueBuf)[5] = zero;
+                ((int *)valueBuf)[6] = zero;
+                ((int *)name)[0] = zero; ((int *)name)[1] = zero; ((int *)name)[2] = zero;
+                ((int *)name)[3] = zero; ((int *)name)[4] = zero; ((int *)name)[5] = zero;
+                ((int *)name)[6] = zero;
+                if (sscanf(item, (const char *)&lbl_8055AEB4, name, valueBuf) >= 1 &&
+                    stricmp(name, (const char *)arg0) == 0) {
                     if (arg1 != 0) {
-                        strcpy((char *)arg1, (char *)valueBuf);
+                        strcpy((char *)arg1, valueBuf);
                     }
                     return (s32)group + index * 0x50 + 0xC;
                 }
