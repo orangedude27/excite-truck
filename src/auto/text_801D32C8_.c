@@ -464,42 +464,53 @@ extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECCrossProduct(const void *, const void *, float *);
 extern float PSVECSquareDistance(const void *, const void *);
 extern void fn_8017A580(void *);
-extern float lbl_80562AAC, lbl_80562AB8, lbl_80562AC8, lbl_80562ACC, lbl_80562AD0, lbl_80562AD4;
+extern void fn_8017A57C(void *);
+extern void fn_801A4868(void *, int);
+extern float lbl_80562AAC, lbl_80562AB8, lbl_80562ABC, lbl_80562AC8, lbl_80562ACC, lbl_80562AD0, lbl_80562AD4;
 #pragma push
 #pragma processor 750
 void fn_801D4598(void *arg0, float farg0) {
     char *p = (char *)arg0;
-    float sp8[3], dot, scale, x, y, z;
+    float sp8[3], dot, scale;
     void *other;
     dot = PSVECDotProduct(p + 0x54, p + 0x20C);
-    if (farg0 >= (*(float *)(p + 0x224) + *(float *)(p + 0x234)) && dot >= lbl_80562AC8 &&
-        (other = *(void **)(p + 0x22C)) != 0 &&
-        PSVECSquareDistance((char *)other + 0x60, p + 0x218) <
-        ((lbl_80562AAC + *(float *)(p + 0x240)) * (lbl_80562AAC + *(float *)(p + 0x240)))) {
+    if (farg0 < (*(float *)(p + 0x224) + *(float *)(p + 0x234)) ||
+        dot < lbl_80562AC8 ||
+        ((other = *(void **)(p + 0x22C)) != 0 &&
+         PSVECSquareDistance((char *)other + 0x60, p + 0x218) <
+         ((lbl_80562AAC + *(float *)(p + 0x240)) * (lbl_80562AAC + *(float *)(p + 0x240))))) {
+        float f5, f6, f7;
+        float step;
         PSVECCrossProduct(p + 0x54, p + 0x20C, sp8);
         scale = dot - lbl_80562ACC;
-        *(float *)(p + 0x118) = lbl_80562AB8;
-        *(float *)(p + 0x11C) = lbl_80562AB8;
-        *(float *)(p + 0x120) = lbl_80562AB8;
-        if (scale > lbl_80562AB8) scale = lbl_80562AB8;
-        else scale = lbl_80562AB8;
-        scale = lbl_80562AD0 + scale;
-        if (scale < lbl_80562AB8) scale = lbl_80562AB8;
-        x = *(float *)(p + 0x124) * scale;
-        y = *(float *)(p + 0x128) * scale;
-        z = *(float *)(p + 0x12C) * scale;
-        *(float *)(p + 0x124) = x;
-        *(float *)(p + 0x128) = y;
-        *(float *)(p + 0x12C) = z;
-        x += sp8[0] * lbl_80562AD4;
-        y += sp8[1] * lbl_80562AD4;
-        z += sp8[2] * lbl_80562AD4;
-        *(float *)(p + 0x124) = x;
-        *(float *)(p + 0x128) = y;
-        *(float *)(p + 0x12C) = z;
-        *(float *)(p + 0x64) = *(float *)(p + 0x21C);
-        *(float *)(p + 0x60) = *(float *)(p + 0x218);
-        *(float *)(p + 0x68) = *(float *)(p + 0x220);
+        {
+            float zero = lbl_80562AB8;
+            *(float *)(p + 0x118) = zero;
+            *(float *)(p + 0x11C) = zero;
+            *(float *)(p + 0x120) = zero;
+            zero = (zero < scale) ? zero : scale;
+            scale = lbl_80562AD0 + zero;
+        }
+        scale = (lbl_80562AB8 > scale) ? lbl_80562AB8 : scale;
+        f7 = *(float *)(p + 0x124) * scale;
+        f6 = *(float *)(p + 0x128) * scale;
+        f5 = *(float *)(p + 0x12C) * scale;
+        step = lbl_80562AD4;
+        *(float *)(p + 0x124) = f7;
+        *(float *)(p + 0x128) = f6;
+        *(float *)(p + 0x12C) = f5;
+        {
+            float py = *(float *)(p + 0x21C);
+            float px = *(float *)(p + 0x218);
+            float pz = *(float *)(p + 0x220);
+            *(float *)(p + 0x124) = f7 + sp8[0] * step;
+            *(float *)(p + 0x128) = f6 + sp8[1] * step;
+            f5 += sp8[2] * step;
+            *(float *)(p + 0x64) = py;
+            *(float *)(p + 0x60) = px;
+            *(float *)(p + 0x68) = pz;
+            *(float *)(p + 0x12C) = f5;
+        }
         fn_8017A580(arg0);
     } else fn_801D411C(arg0);
 }
