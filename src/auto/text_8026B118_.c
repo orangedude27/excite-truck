@@ -92,6 +92,7 @@ extern char *strncpy(char *, const char *, unsigned int);
 extern int stricmp(const char *, const char *);
 extern char lbl_8055C504, lbl_8055C50C;
 #pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8026B260(void) {
     class FileName {
@@ -100,7 +101,7 @@ extern "C" void fn_8026B260(void) {
         virtual void v04();
         virtual void v08();
         virtual void v0C();
-        virtual char *getFileName(const char *, int);
+        virtual const char *getFileName(const char *, int);
     };
     class Iterator {
     public:
@@ -117,13 +118,13 @@ extern "C" void fn_8026B260(void) {
     void *obj;
     FileName *nameObj;
     register Iterator *it;
+    register int index;
     register Entry *entry;
     char *dot;
-    register int index;
     lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     nameObj = *(FileName **)((char *)obj + 0x20);
-    dot = nameObj->getFileName(base, 0);
+    dot = (char *)nameObj->getFileName(base, 0);
     if (dot != 0) {
         strncpy(name, dot, 11);
         dot = strchr(name, '.');
