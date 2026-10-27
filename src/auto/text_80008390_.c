@@ -52,13 +52,9 @@ void fn_80008618(s32 arg0) {
     fn_8026E204(result);
 }
 
-s32 fn_8000865C(void) {
-    return (*(u32 *)((char *)fn_801E87A8() + 0x10) >> 1) & 1;
-}
-
+extern s32 fn_8000865C(void);
 typedef unsigned char u8;
 typedef float f32;
-extern s32 fn_8000865C(void);
 extern s32 fn_801298E8(void *, s32);
 extern s32 fn_802ECC10(void);
 extern s32 lbl_805589EC;
@@ -70,38 +66,63 @@ extern f32 lbl_805601D0;
 #pragma dont_inline on
 s32 fn_80008C5C(void) {
     unsigned char sp[0x68];
-    s32 old = lbl_805589EC;
+    s32 old = *(volatile s32 *)&lbl_805589EC;
     u32 input;
     u32 bit;
     s32 allowed;
-    if (lbl_8055D37A == 0 && fn_802ECC10() == 0 && fn_801298E8(sp + 8, 0) != 0) {
-        input = *(u32 *)(sp + 0x48);
+    if (*(volatile u8 *)&lbl_8055D37A == 0 && fn_802ECC10() == 0 && fn_801298E8(sp, 0) != 0) {
+        input = *(u32 *)(sp + 0x40);
         if (input == 8) {
-            lbl_805589EC = fn_8000865C() ? 0xD : 0xC;
+            s32 mode;
+            s32 flag = fn_8000865C();
+            if (flag == 0) {
+                mode = 0xC;
+                goto store_mode_8;
+            }
+            mode = 0xD;
+        store_mode_8:
+            lbl_805589EC = mode;
         } else if (input == 2) {
-            lbl_805589EC = fn_8000865C() ? 0xC : 0xD;
+            s32 mode;
+            s32 flag = fn_8000865C();
+            if (flag == 0) {
+                mode = 0xD;
+                goto store_mode_2;
+            }
+            mode = 0xC;
+        store_mode_2:
+            lbl_805589EC = mode;
         } else if (input == 4) {
             lbl_805589EC = 7;
         } else if (input == 1) {
             lbl_805589EC = 0xE;
         }
         allowed = 0;
-        bit = input - 1;
+        bit = *(volatile u32 *)(sp + 0x40) - 1;
         if (bit <= 7 && ((1 << bit) & 0x8B))
             allowed = 1;
         if (allowed == 0 && lbl_8055D394 > lbl_805601B8 && lbl_805589EC != 4)
             lbl_805589EC = 4;
         if (lbl_805589EC != old) {
-            if (lbl_8055D394 <= lbl_805601B8 && old == 4)
+            if (lbl_8055D394 > lbl_805601B8)
+                goto restore_old;
+            if (old == 4)
                 lbl_8055D394 = lbl_805601BC;
-            else if (lbl_8055D394 <= lbl_805601B8)
-                lbl_805589EC = old;
+            goto state_done;
+        restore_old:
+            lbl_805589EC = old;
+        state_done:
+            ;
         }
         lbl_8055D394 += lbl_805601D0;
     }
     return lbl_805589EC;
 }
 #pragma dont_inline off
+
+s32 fn_8000865C(void) {
+    return (*(u32 *)((char *)fn_801E87A8() + 0x10) >> 1) & 1;
+}
 
 int fn_80008DBC(int arg0) {
     switch (arg0) {
