@@ -26,6 +26,15 @@ extern s32 lbl_8055ED00;
 extern s32 lbl_8055ED04;
 extern s32 lbl_8055ED0C;
 extern u8 lbl_8055ED10;
+extern u8 lbl_8055ED08;
+extern f32 lbl_80563134, lbl_80563138, lbl_8056313C;
+extern void fn_802CB274(s32);
+extern void fn_802C9294(s32, s32);
+extern void fn_802C8638(f32 *, f32, f32, f32);
+extern void fn_802C87B4(s32, s32, s32, s32);
+extern void fn_802C974C(f32, f32, f32);
+extern void fn_802C86E8(s32);
+extern void fn_802C88BC(s32);
 extern s32 lbl_8055ED14;
 #pragma use_lmw_stmw off
 #pragma dont_inline on
