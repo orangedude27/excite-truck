@@ -10030,13 +10030,11 @@ extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
         s32 reverseIndex = 0x11 - i;
         s32 right = arg0[reverseIndex];
         s32 reverseK = lbl_802F4018[reverseIndex];
-        s64 forwardProduct = (s64)k * left;
-        s64 reverseProduct = (s64)reverseK * right;
-        s32 forward = (s32)(forwardProduct >> 20);
-        s32 reverse = (s32)(reverseProduct >> 20);
+        s32 forward = fixedMul20(left, k);
+        s32 reverse = fixedMul20(right, reverseK);
         s32 delta = forward - reverse;
         *combinedOut++ = forward + reverse;
-        *filteredOut++ = (s32)(((s64)c * delta) >> 20);
+        *filteredOut++ = fixedMul20(c, delta);
     }
     fn_800C1A80(combined, filtered, arg1);
 }
@@ -13129,6 +13127,39 @@ done:
 extern "C" void fn_800D1C18(void) {
     void *data = ((void *(*)())OSGetAlarmUserData)();
     fn_80060CC0(data, 4, (u32)&fn_800D1C48);
+}
+
+extern "C" void fn_800D1C48(s32 index, s32 mode) {
+    u8 *base = (u8 *)lbl_8055DDB0;
+
+    if (base == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0xDE, lbl_8031E9A0);
+    }
+
+    switch (mode) {
+    case 0: {
+        u8 *entry = base + index * 0x68;
+        entry[0x62] = 1;
+        break;
+    }
+    case -1: {
+        u8 *entry = base + index * 0x68;
+        entry[0x62] = 0;
+        break;
+    }
+    case -2: {
+        void *alarm = base + index * 0x68;
+        OSSetAlarmUserData((OSAlarm *)alarm, (void *)index);
+        OSCancelAlarm((OSAlarm *)alarm);
+        u32 ticks = *(volatile u32 *)0x800000F8;
+        u32 delay = ((ticks >> 2) / 1000U) * 0x32U;
+        ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
+            (OSAlarm *)alarm, 0x10624DD3, 0, delay, (OSAlarmHandler)fn_800D1C18);
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *this_ptr, s32 arg1) {
