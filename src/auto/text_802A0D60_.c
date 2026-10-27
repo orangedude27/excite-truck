@@ -109,5 +109,44 @@ extern "C" inline void *fn_802A1120_getSecond(void) {
     return ((Dummy802A1120 *)fn_80156A40())->getSecond(0);
 }
 #pragma cplusplus reset
-void fn_802A1120(float *arg0, float *arg1) {}
+#pragma paired off
+#pragma paired_single off
+void fn_802A1120(float *arg0, float *arg1) {
+    struct Search { s32 index; float value; s32 max; };
+    char work[0x14];
+    struct Search search;
+    void *manager;
+    void *entry;
+    register float end;
+    register float increment;
+    register float baseline;
+    register float step;
+    manager = fn_802A1120_getFirst();
+    arg1[0] = *(float *)(*(char **)((char *)manager + 0x1C) + 8);
+    arg1[1] = *(float *)(*(char **)((char *)manager + 0x1C) + 0xC);
+    fn_801352B8(work);
+    entry = fn_802A1120_getSecond();
+    fn_80135D60(work, (s32)entry);
+    search.index = 0;
+    search.max = 0x2710;
+    search.value = lbl_805646F0;
+    fn_801355C0(work, *(void **)((char *)manager + 0x1C), 0, &search, 0);
+    entry = fn_802A1040(*(void **)((char *)manager + 0x1C), (void *)search.index, entry);
+    step = lbl_805646F0;
+    baseline = lbl_805646F0;
+    increment = lbl_80564700;
+    end = lbl_805646F4;
+    while (step < end) {
+        arg0[0] = *(float *)entry + step * (*(float *)*(void **)((char *)entry + 0x14) -
+                                             *(float *)entry);
+        arg0[1] = *(float *)((char *)entry + 4) +
+                  step * (*(float *)((char *)*(void * volatile *)((char *)entry + 0x14) + 4) -
+                          *(float *)((char *)entry + 4));
+        if (fn_802A0F7C((char *)*(char **)((char *)manager + 0x1C) + 8, arg0,
+                        *(void **)((char *)manager + 0x1C)) >= baseline)
+            break;
+        step += increment;
+    }
+    fn_8013530C(work, -1);
+}
 #pragma scheduling on
