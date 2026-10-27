@@ -1541,6 +1541,30 @@ extern "C" void fn_8021BEBC(void *arg0) {
     fn_8021BE48(arg0);
 }
 
+extern "C" char lbl_8033EEDC[];
+extern "C" void *fn_8021BEC0(void *arg0, s32 arg1, s32 arg2, void *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    struct Callback {
+        virtual void v0();
+        virtual void Call(s32 *, s32 *);
+    };
+    s32 spC;
+    s32 sp8;
+
+    fn_80219568(arg0, arg1, arg2, 0, arg4, 0, 0, arg7);
+    *(void **)((u8 *)arg0 + 0x2A4) = arg3;
+    *(void **)arg0 = lbl_8033EEDC;
+    *(s32 *)((u8 *)arg0 + 0x2B0) = arg5;
+    *(s32 *)((u8 *)arg0 + 0x2B4) = arg6;
+    *(s32 *)((u8 *)arg0 + 0x2B8) = arg7;
+    ((Callback *)arg3)->Call(&spC, &sp8);
+    if (sp8 > 0)
+        fn_80219440(arg0, 0, (void *)spC, sp8);
+    fn_8021C12C(arg0);
+    *(s32 *)((u8 *)arg0 + 0x2A8) = 0;
+    *(s32 *)((u8 *)arg0 + 0x2AC) = fn_80228F40(arg1, arg2);
+    return arg0;
+}
+
 extern "C" s32 fn_80129BC4(void);
 extern "C" void *fn_80217BD8(s32, s32, void *);
 extern "C" void fn_8021BE48(void *);
