@@ -110,7 +110,7 @@ extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46n
     unsigned char* wave;
     unsigned char* voice;
     unsigned int index = arg3 * 8;
-    if (entry[0xD] != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559918, 0x6F, lbl_803278D8);
+          if (entry[0xD] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559918, 0x6F, lbl_803278D8);
     ref = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0xC], *(unsigned int*)(entry + 0x10), data);
     if (ref[0x11] != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559908, 0x6F, lbl_80327880);
     note = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0x10], *(unsigned int*)(ref + 0x14), data);
