@@ -307,41 +307,45 @@ found:
 #pragma pop
 
 s32 fn_8001EFC0(s32, s32);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma small_data off
+#pragma scheduling invalid_target
 s32 fn_80019144(s32 arg0) {
-    s32 i = 0;
-    s32 offset = 0;
-    s32 found;
-    void *entry;
+    register s32 index;
+    register s32 offset;
+    register const char *name;
+    char *entry;
     s32 value0;
     s32 value1;
 
-    while (1) {
-        if (stricmp(*(const char **)(*(char **)lbl_803580A4 + offset), (const char *)arg0) == 0)
-            break;
-        offset += 0x10;
-        i++;
-        if (i >= ((s32 *)lbl_803580A4)[1]) {
-            i = -1;
-            break;
-        }
-    }
-    entry = *(char **)lbl_803580A4 + i * 0x10 + 4;
-    if (i < 0)
-        entry = 0;
-    if (entry == 0)
-        return 0;
-    if (lbl_8055D588 != 0)
-        return 1;
+    name = (const char *)arg0;
+    index = 0;
+    offset = 0;
+    goto loop;
+loop:
+    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0)
+        goto advance;
+    goto found;
+advance:
+    offset += 0x10;
+    index++;
+    if (index < *(s32 *)((char *)&lbl_803580A4 + 4))
+        goto loop;
+    index = -1;
+found:
+    entry = (char *)lbl_803580A4 + index * 0x10 + 4;
+    if (index < 0) entry = 0;
+    if (entry == 0) return 0;
+    if (lbl_8055D588 != 0) return 1;
     value0 = fn_8001EFC0(0, arg0);
-    found = *(s32 *)entry <= value0;
+    offset = *(s32 *)entry <= value0;
     value1 = fn_8001EFC0(1, arg0);
-    if (found != 0)
-        return 1;
-    if (*(s32 *)((char *)entry + 4) <= value1)
-        return 1;
+    if (offset != 0) return 1;
+    if (*(s32 *)(entry + 4) <= value1) return 1;
     return 0;
 }
-
+#pragma pop
 __declspec(section ".data") extern void *lbl_803580A4;
 __declspec(section ".data") extern void *lbl_802FD2A0;
 #pragma push
@@ -381,38 +385,41 @@ extern s32 fn_8001EFC0(s32, s32);
 extern void *lbl_802FD2A0;
 #pragma push
 #pragma use_lmw_stmw off
-void fn_8001931C(const char *name) {
-    void **tbl = (void **)lbl_803580A4;
-    s32 count = ((s32 *)tbl)[1];
-    s32 i = 0;
-    s32 offset = 0;
-    while (1) {
-        if (stricmp(*(const char **)(*(char **)tbl + offset), name) == 0)
-            break;
-        offset += 0x10;
-        i++;
-        if (i >= count) {
-            i = -1;
-            break;
+#pragma small_data off
+#pragma scheduling invalid_target
+void fn_8001931C(s32 name) {
+    register s32 name_r = name;
+    register s32 offset = 0;
+    register s32 i = 0;
+    char *p;
+
+loop:
+    if (stricmp(*(const char **)(*(char **)&lbl_803580A4 + offset), (const char *)name_r) != 0)
+        goto advance;
+    goto found;
+advance:
+    offset += 0x10;
+    i++;
+    if (i < *(s32 *)((char *)&lbl_803580A4 + 4))
+        goto loop;
+    i = -1;
+found:
+    p = *(char **)&lbl_803580A4 + i * 0x10 + 4;
+    if (i < 0)
+        p = 0;
+    if (p != 0) {
+        s32 inRange = *(s32 *)p <= fn_8001EFC0(0, name_r);
+        s32 pastEnd = fn_8001EFC0(1, name_r) >= *(s32 *)(p + 4);
+        if (pastEnd) {
+            fn_80131234((char *)&lbl_802FD2A0 + 0x94);
+            return;
+        }
+        if (inRange) {
+            fn_80131234((char *)&lbl_802FD2A0 + 0xBC);
+            return;
         }
     }
-    {
-        char *p = *(char **)tbl + i * 0x10 + 4;
-        if (i < 0) p = 0;
-        if (p != 0) {
-            s32 val0 = *(s32 *)p;
-            s32 val1 = fn_8001EFC0(0, (s32)name);
-            if (val0 <= val1) {
-                if (*(s32 *)(p + 4) != fn_8001EFC0(1, (s32)name)) {
-                    fn_80131234((char *)lbl_802FD2A0 + 0x94);
-                    return;
-                }
-                fn_80131234((char *)lbl_802FD2A0 + 0xBC);
-                return;
-            }
-        }
-    }
-    fn_80131234((char *)lbl_802FD2A0 + 0xE4);
+    fn_80131234((char *)&lbl_802FD2A0 + 0xE4);
 }
 #pragma pop
 s32 fn_80019438(void) {
