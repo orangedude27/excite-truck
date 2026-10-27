@@ -6,7 +6,10 @@
 extern "C" void fn_8022EE98(void *);
 extern "C" void fn_8022A8E4(s32);
 extern "C" void *lbl_8033E1C4[];
+#pragma push
+#pragma small_data on
 extern "C" char lbl_8055B88C[];
+#pragma pop
 
 
 extern "C" void *fn_8022EE9C(void);
