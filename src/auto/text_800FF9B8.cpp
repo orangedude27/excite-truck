@@ -27,6 +27,7 @@ public:
     virtual void unk_4c() = 0;
     virtual void unk_0x58() = 0;
     void Prepare(const void *, long, int, const WsdTrack::WsdCallback *, unsigned long);
+    void SetPlayerPriority(int);
 };
 }}}
 
@@ -97,52 +98,50 @@ extern "C" const char lbl_803257D4[];
 extern "C" const char lbl_803257B0[];
 extern "C" const char lbl_80325804[];
 extern "C" const char lbl_803257E0[];
-extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(void *arg0, int arg1) {
+#pragma use_lmw_stmw off
+extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(void* arg0, int arg1) {
+    void* soundNode;
     int priority;
-    void *list;
-    void *node;
-    void *current;
-    void *sentinel;
-    void *iterator;
-    int value;
+    void* list;
+    void* end;
+    void* cursor;
 
     SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
-    value = *(unsigned char *)((char *)arg0 + 0x74) + *(int *)((char *)arg0 + 0x40);
-    if (value > 0x7F) {
-        priority = 0x7F;
+    priority = *(unsigned char*)((unsigned char*)arg0 + 0x74) + *(int*)((unsigned char*)arg0 + 0x40);
+    if (priority > 0x7f) {
+        priority = 0x7f;
     } else {
-        priority = value & ~(value >> 31);
+        priority &= ~(priority >> 31);
     }
-    list = *(void **)((char *)arg0 + 0x1B0);
+    list = *(void**)((unsigned char*)arg0 + 0x1b0);
     if (arg0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
     }
-    node = (char *)arg0 + 0xB8;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)list + 4, node);
-    current = *(void **)((char *)list + 8);
-    sentinel = (char *)list + 8;
-    do {
-        if (current == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23D, lbl_803257E0);
+    soundNode = (unsigned char*)arg0 + 0xb8;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, soundNode);
+    cursor = *(void**)((unsigned char*)list + 8);
+    end = (unsigned char*)list + 8;
+    while (cursor != end) {
+        if (cursor == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23d, lbl_803257E0);
         }
-        value = *(unsigned char *)((char *)current - 0x44) + *(int *)((char *)current - 0x78);
-        if (value > 0x7F) {
-            value = 0x7F;
+        int value = *(unsigned char*)((unsigned char*)cursor - 0x44) + *(int*)((unsigned char*)cursor - 0x78);
+        if (value > 0x7f) {
+            value = 0x7f;
         } else {
             value &= ~(value >> 31);
         }
         if (priority < value) {
             break;
         }
-        current = *(void **)current;
-    } while (current != sentinel);
+        cursor = *(void**)cursor;
+    }
     if (arg0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
     }
-    iterator = current;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)list + 4, &iterator, node);
+    void* node = cursor;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, &node, soundNode);
 }
-
 extern "C" int fn_800FFE54(void *arg0) {
     return *(int *)((char *)arg0 + 0x1AC) != 0;
 }
