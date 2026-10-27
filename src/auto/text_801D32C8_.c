@@ -17,7 +17,9 @@ extern "C" void fn_802E317C(const char *, ...);
 extern int fn_80128668(void *);
 extern int fn_80179EE8(int);
 extern char lbl_80338400[16];
+extern float lbl_80562AAC;
 extern float lbl_80562AB8;
+extern float lbl_80562ABC;
 
 void fn_801D32C8(void) {
 
