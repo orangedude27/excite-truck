@@ -4,6 +4,7 @@
 #include <types.h>
 
 extern "C" void fn_8022EE98(void *);
+extern "C" void fn_8022A8E4(s32);
 
 
 extern "C" void *fn_8022EE9C(void);
