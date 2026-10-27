@@ -54,7 +54,12 @@ extern void fn_80277F84(void *, void *, int);
 extern int stricmp(const char *, const char *);
 extern char *strncpy(char *, const char *, unsigned int);
 void fn_80276ACC(void *arg0, int arg1) {
-    char *name = (*(char * (**)(void *, const char *, int))((char *)*(void **)arg0 + 0x18))(arg0, &lbl_8055C63C, arg1);
+    struct NameVtable {
+        void *reserved[6];
+        char *(*GetName)(void *, const char *, int);
+    };
+    char *name = ((struct NameVtable *)*(void **)arg0)->GetName(
+        arg0, &lbl_8055C63C, arg1);
     int i = lbl_8055F5A0;
     unsigned char *entry = &lbl_8049FEE0 + i * 0x48;
     lbl_8055F5A0 = i + 1;
@@ -64,7 +69,7 @@ void fn_80276ACC(void *arg0, int arg1) {
         lbl_8055F59C = (int)entry;
         return;
     }
-    if (stricmp(name, &lbl_8055C638) == 0)
+    if (stricmp(name, *(char **)&lbl_8055C638) == 0)
         lbl_8055F598 = (int)entry;
 }
 
@@ -343,9 +348,9 @@ done:
 }
 
 extern float lbl_80564070, lbl_80564074;
-extern int sprintf(char*, const char*, ...);
-extern int strcpy(char*, const char*);
-void fn_80277828(void) {
+extern "C" int sprintf(char*, const char*, ...);
+extern "C" char *strcpy(char*, const char*);
+extern "C" void fn_80277828(void) {
     int i;
     unsigned char* entry;
     unsigned char* def = lbl_8049FE98;
@@ -384,7 +389,7 @@ void fn_80277828(void) {
         lbl_8055F5A0 = i + 1;
         lbl_8055F598 = (int)entry;
         entry[0] = 1;
-        sprintf((char*)entry + 0x38, &lbl_8055C638, entry, i);
+        sprintf((char*)entry + 0x38, *(char**)&lbl_8055C638);
     }
     if (lbl_8055F59C == 0) {
         i = lbl_8055F5A0;
@@ -393,7 +398,7 @@ void fn_80277828(void) {
         lbl_8055F5A0 = i + 1;
         entry[0] = 1;
         *(float*)(entry + 0x34) = lbl_80564074;
-        strcpy((char*)entry + 0x38, &lbl_8055C644);
+        strcpy((char*)lbl_8055F59C + 0x38, &lbl_8055C644);
     }
 }
 
