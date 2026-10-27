@@ -255,6 +255,11 @@ void fn_801D3BF0(void *arg0) {
 }
 #pragma paired reset
 #pragma paired_single reset
+struct Mtx48 {
+    int w[12];
+};
+extern void fn_801A4868(void *, int);
+extern void fn_8017A57C(void *);
 extern void fn_8017D2C8();
 extern void fn_801796CC();
 void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
