@@ -307,7 +307,7 @@ void fn_8022FFE8(int arg0) {
     float scale;
     fn_8022FB6C();
     scale = fn_80214D48();
-    fn_8022FD9C(arg0, scale);
+    fn_8022FD9C((void *)arg0, scale);
 }
 
 int fn_80230020(void) {
