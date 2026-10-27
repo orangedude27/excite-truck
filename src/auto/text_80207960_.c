@@ -15,7 +15,7 @@ struct LoopItem_80207E70 {
 #pragma cplusplus reset
 
 extern void fn_80208408(void);
-extern void fn_80208858();
+extern void fn_80208858(void *, signed long, signed long);
 extern signed long fn_80128668(void);
 extern void* fn_802090B4(void);
 extern signed long fn_802E317C(const char*, ...);
