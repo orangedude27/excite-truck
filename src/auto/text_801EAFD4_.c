@@ -333,10 +333,6 @@ void fn_801EB6A4(void) {
 
 #pragma dont_inline on
 #pragma cplusplus on
-extern s32 fn_802C6DC4(const char *, s32, s32, s32);
-extern void fn_802C6FA8(s32);
-extern char lbl_80339FD4[];
-extern s32 lbl_8055AFC0;
 extern "C" s32 fn_802C6DC4(const char *, s32, s32, s32);
 extern "C" void fn_802C6FA8(s32);
 extern "C" char lbl_80339FD4[];
@@ -359,42 +355,52 @@ extern "C" void fn_801EB6A8(s32 arg0) {
         virtual void unused8();
         virtual void dispatch(s32 *, s32, s32, s32, s32);
     };
-    s32 *node = (s32 *)arg0;
+    register s32 *item;
+    register s32 *node;
+    register s32 *child;
+    register s32 *context;
+    register s32 type;
+    register s32 i;
+
+    node = (s32 *)arg0;
     while (node != 0) {
-        s32 temp_r4 = node[0];
-        if (temp_r4 != 4) {
-            if (temp_r4 < 4) {
-                if (temp_r4 != 0) goto block_16;
-                s32 *item = node;
-                s32 i = 0;
-                while (i < node[5]) {
-                    fn_801EB6A8(item[7]);
-                    item += 2;
-                    i += 1;
-                }
-            } else if (temp_r4 < 0x104) {
-                if (temp_r4 < 0x101) goto block_16;
-                fn_801EAFD4(node);
-                fn_801EB6A8(node[2]);
-            } else {
-                goto block_16;
-            }
-        } else {
-            s32 *child = (s32 *)node[2];
-            if (child != 0) {
-                child[1] = fn_802C6DC4((const char *)&lbl_8055AFC0, child[2], 0, 0);
-                fn_802C6FA8(child[2]);
-                if (child[0] == 1) {
-                    FirstDispatch *first = (FirstDispatch *)fn_801EB110(child);
-                    first->dispatch(child);
-                    s32 *context = lbl_8055EBA0;
-                    SecondDispatch *second = (SecondDispatch *)fn_801EB110(child);
-                    second->dispatch(child, context[1], child[7], context[2], child[6]);
-                }
+        type = node[0];
+        if (type == 4) goto state4;
+        if (type >= 4) goto high;
+        if (type == 0) goto state0;
+        goto error;
+high:
+        if (type >= 0x104) goto error;
+        if (type < 0x101) goto error;
+        goto state_special;
+state0:
+        item = node;
+        i = 0;
+        while (i < node[5]) {
+            fn_801EB6A8(item[7]);
+            item += 2;
+            i++;
+        }
+        goto next;
+state_special:
+        fn_801EAFD4(node);
+        fn_801EB6A8(node[2]);
+        goto next;
+state4:
+        child = (s32 *)node[2];
+        if (child != 0) {
+            child[1] = fn_802C6DC4((const char *)&lbl_8055AFC0, child[2], 0, 0);
+            fn_802C6FA8(child[2]);
+            if (child[0] == 1) {
+                FirstDispatch *first = (FirstDispatch *)fn_801EB110(child);
+                first->dispatch(child);
+                context = lbl_8055EBA0;
+                SecondDispatch *second = (SecondDispatch *)fn_801EB110(child);
+                second->dispatch(child, context[1], child[7], context[2], child[6]);
             }
         }
         goto next;
-block_16:
+error:
         fn_802E317C(lbl_80339FD4);
 next:
         node = (s32 *)node[1];
