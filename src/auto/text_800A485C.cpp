@@ -4,6 +4,7 @@ extern "C" u8 lbl_802F3408[];
 extern "C" void fn_800B78F4(void *, void *);
 extern "C" s32 WPADSetSamplingCallback(s32, void *);
 extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
+extern "C" void fn_800A71D0(void *, s32);
 namespace homebutton {
 class GroupAnmController {
 public:
@@ -2051,41 +2052,33 @@ extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
 }
 #pragma pop
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
-    u16 tmp;
-    u32 tmp32;
+    u8 byteB = p_buf[0xB];
+    u8 byteC = p_buf[0xC];
+    u8 byteD = p_buf[0xD];
 
-    p_ent[0x21C] = p_buf[0xB];
-    p_ent[0x21B] = p_buf[0xC];
-    p_ent[0x21D] = p_buf[0xD];
+    p_ent[0x21C] = byteB;
+    p_ent[0x21B] = byteC;
+    p_ent[0x21D] = byteD;
 
-    tmp = *(u16 *)&p_buf[0xE];
-    *(u16 *)&p_ent[0x21E] = (u16)((tmp << 8) | (tmp >> 8));
+    __sthbrx(*(u16 *)(p_buf + 0xE), p_ent + 0x21E, 0);
+    __sthbrx(*(u16 *)(p_buf + 0x10), p_ent + 0x220, 0);
+    __sthbrx(*(u16 *)(p_buf + 0x12), p_ent + 0x222, 0);
+    __sthbrx(*(u16 *)(p_buf + 0x16), p_ent + 0x224, 0);
+    __sthbrx(*(u16 *)(p_buf + 0x18), p_ent + 0x226, 0);
 
-    tmp = *(u16 *)&p_buf[0x10];
-    *(u16 *)&p_ent[0x220] = (u16)((tmp << 8) | (tmp >> 8));
-
-    tmp = *(u16 *)&p_buf[0x12];
-    *(u16 *)&p_ent[0x222] = (u16)((tmp << 8) | (tmp >> 8));
-
-    tmp = *(u16 *)&p_buf[0x16];
-    *(u16 *)&p_ent[0x224] = (u16)((tmp << 8) | (tmp >> 8));
-
-    tmp = *(u16 *)&p_buf[0x18];
-    *(u16 *)&p_ent[0x226] = (u16)((tmp << 8) | (tmp >> 8));
-
-    tmp32 = *(u32 *)&p_buf[0x1C];
-    p_ent[0x228] = (u8)((tmp32 >> 24) & 0xFF);
-    p_ent[0x229] = (u8)((tmp32 >> 16) & 0xFF);
-    p_ent[0x22A] = (u8)((tmp32 >> 8) & 0xFF);
-    p_ent[0x22B] = (u8)(tmp32 & 0xFF);
-
-    tmp = *(u16 *)&p_buf[0x1A];
-    p_ent[0x234] = (u8)((tmp >> 8) & 0xFF);
-    p_ent[0x235] = (u8)(tmp & 0xFF);
-
-    tmp = *(u16 *)&p_buf[0x14];
-    p_ent[0x236] = (u8)((tmp >> 8) & 0xFF);
-    p_ent[0x237] = (u8)(tmp & 0xFF);
+    {
+        u32 word1C = *(u32 *)(p_buf + 0x1C);
+        u16 short1A = *(u16 *)(p_buf + 0x1A);
+        u16 short14 = *(u16 *)(p_buf + 0x14);
+        *(u32 *)(p_ent + 0x228) =
+            (word1C << 24) | ((word1C & 0xFF00) << 8) |
+            ((word1C >> 8) & 0xFF00) | (word1C >> 24);
+        *(u32 *)(p_ent + 0x234) =
+            ((u32)(short14 & 0xFF) << 24) |
+            ((u32)(short14 & 0xFF00) << 8) |
+            ((u32)(short1A & 0xFF) << 8) |
+            (short1A >> 8);
+    }
 }
 
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
@@ -7763,25 +7756,26 @@ extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
 }
 
 extern "C" s16 fn_800BDE18(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
-    register s32 remaining = arg2;
-    register s32 take;
-    register u16 result = 0;
-    register s32 position = *arg3;
-    register s32 bitsInByte = 8 - (position & 7);
-    register s32 piece;
+    s32 remaining = arg2;
+    s32 take;
+    s32 bitsInByte;
+    s32 position = *arg3;
+    s32 piece;
+    s16 result = 0;
+    u8 *data = (u8 *)arg1 + (position >> 3);
 
-    arg1 += position >> 3;
+    bitsInByte = 8 - (position & 7);
     while (remaining > 0) {
         if (bitsInByte == 0) {
             bitsInByte = 8;
-            arg1++;
+            data++;
         }
         take = bitsInByte;
         if ((u32)remaining < (u32)bitsInByte)
             take = remaining;
-        piece = ((u8 *)arg1)[0] & lbl_802F3408[bitsInByte];
+        piece = data[0] & lbl_802F3408[bitsInByte];
         piece >>= bitsInByte - take;
-        result = (u16)(result | (piece << (remaining - take)));
+        result = (s16)(result | (piece << (remaining - take)));
         bitsInByte -= take;
         remaining -= take;
     }
@@ -11672,13 +11666,13 @@ extern "C" void calc__Q310homebutton3gui7ManagerFv_800CFDEC(void *arg0) {
         virtual void d1();
         virtual void calc();
     };
-    u32 listAddress = (u32)arg0 + 8;
+    void *list = (u8 *)arg0 + 8;
 
     for (s32 i = 0; (u32)i < (u32)*(u16 *)((u8 *)arg0 + 0x10); i++) {
         void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 8, (u16)i);
         ComponentDispatch *obj = *(ComponentDispatch **)((u8 *)entry + 4);
         obj->calc();
-        if (listAddress == 0)
+        if (list == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     }
 }
@@ -13453,13 +13447,15 @@ extern "C" void fn_800D54E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_800D51F4(arg0 + 4, arg0 + 0x30, arg1, arg2, arg3, arg1);
 }
 
-int fn_800D5500(void *obj, const char *name) {
-    void *entry = *(void **)((char *)obj + 0x28);
-    while (entry != (char *)obj + 0x28) {
-        if (entry == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
+extern "C" s32 fn_800D5500(void *obj, const char *name) {
+    void *entry = *(void **)((u8 *)obj + 0x28);
+    while (entry != (u8 *)obj + 0x28) {
+        if (entry == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
         if (strcmp(name, (char *)entry + 8) == 0) {
-            if (entry == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
-            return *(int *)((char *)entry + 0x88);
+            if (entry == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
+            return *(s32 *)((u8 *)entry + 0x88);
         }
         entry = *(void **)entry;
     }
@@ -13507,18 +13503,19 @@ extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     return 0;
 }
 #pragma pop
-extern "C" int fn_800D56FC(void* arg0, const char* arg1, int) {
-    char* node = *(char**)((char*)arg0 + 0x14);
-    char* end = (char*)arg0 + 0x14;
-    for (;;) {
-        if (node == end) return 0;
-        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23D, lbl_8031F510);
-        if (strcmp(arg1, node + 8) == 0) {
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23D, lbl_8031F510);
-            return *(int*)(node + 0x88);
+extern "C" s32 fn_800D56FC(void *obj, const char *name, s32 unused) {
+    u32 node = *(u32 *)((u8 *)obj + 0x14);
+    u32 end = (u32)obj + 0x14;
+    for (; node != end; node = *(u32 *)node) {
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
+        if (strcmp(name, (char *)(node + 8)) == 0) {
+            if (node == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
+            return *(s32 *)(node + 0x88);
         }
-        node = *(char**)node;
     }
+    return 0;
 }
 
 extern "C" void* fn_800D57AC(void* arg0, const void* arg1) {
@@ -16694,35 +16691,27 @@ extern "C" u16 fn_800A4F08(void *arg0) {
 }
 
 #pragma dont_inline on
+typedef s32 (*UnicodeCompareCallback)(s32, u16 *);
 extern "C" s32 VFiPFSTR_StrCmp(void *arg0, s32 arg1) {
     u16 converted;
+    register u8 *table;
+    register u16 *cursor;
+    register s32 code = arg1;
     u16 current;
-    u8 *var_r30;
-    s32 var_r29 = arg1;
-    u8 *var_r31;
 
-    if (*(u32 *)((u8 *)arg0 + 0xC) == 1) {
+    if (*(volatile u32 *)((u8 *)arg0 + 0xC) == 1)
         return fn_800A4AD0(*(u8 **)arg0, (u8 *)arg1);
-    }
-    var_r30 = *(u8 **)arg0;
-    var_r31 = (u8 *)lbl_803D2140;
-    for (;;) {
-        current = *(u16 *)var_r30;
-        ((s32 (**)(s32, u16 *))(var_r31 + 0x48))[0](var_r29, &converted);
-        ++var_r29;
-        var_r30 += 2;
-        if (current != converted) {
-            break;
-        }
-        if (*(u16 *)(var_r30 - 2) == 0) {
-            continue;
-        }
-        if (converted != 0) {
-            continue;
-        }
-        break;
-    }
-    return *(u16 *)(var_r30 - 2) - converted;
+
+    table = (u8 *)lbl_803D2140;
+    cursor = *(u16 **)arg0;
+loop:
+    ((UnicodeCompareCallback *)(table + 0x48))[0](code, &converted);
+    current = *cursor;
+    code++;
+    cursor++;
+    if (current == converted && *(cursor - 1) != 0 && converted != 0)
+        goto loop;
+    return *(cursor - 1) - converted;
 }
 
 extern "C" s32 VFiPFSTR_StrNCmp(s32 arg0_, const void *arg1_, s32 arg2_, s32 arg3, s32 arg4_) {
