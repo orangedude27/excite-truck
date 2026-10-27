@@ -171,7 +171,12 @@ extern void fn_800103B8(int, int, float, float, float, float, const char *, ...)
 extern void fn_8000FF88(int, int, const char *, float, float, float, ...);
 extern void fn_801DE890(int);
 extern void fn_80011A2C(void);
-int fn_801DF110(void) {
+#pragma cplusplus on
+extern "C" int fn_801DF110(void) {
+    struct Dummy {
+        virtual void unused();
+        virtual void call();
+    };
     struct Entry {
         int field0;
         int arg1;
@@ -192,22 +197,21 @@ int fn_801DF110(void) {
             } else {
                 fn_80011278(-1, lbl_80562BF8, lbl_80562BFC, lbl_80562C00, lbl_80562C04);
                 entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
-                ((void (*)(int, int, float, float, float, float, const char *, ...))fn_800103B8)(
-                    -1, 0xC, lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C, (const char *)&lbl_8055AE28, entry->arg1);
-                ((void (*)(int, int, const char *, float, float, float, ...))fn_8000FF88)(
-                    -1, 0xC, (const char *)lbl_803395C4, lbl_80562BF4, lbl_80562BE8, lbl_80562C10);
+                fn_800103B8(-1, 0xC, lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C, (const char *)&lbl_8055AE28, entry->arg1);
+                fn_8000FF88(-1, 0xC, (const char *)lbl_803395C4, lbl_80562BF4, lbl_80562BE8, lbl_80562C10);
                 fn_801DE890(lbl_8055E9E8);
             }
 
             entry = (struct Entry *)(lbl_804872B0 + lbl_8055E9E8 * 0x1C);
             if (entry->object != 0)
-                ((void (*)(void *))(*(void **)((char *)(*(void **)entry->object) + 0xC)))(entry->object);
+                ((Dummy *)entry->object)->call();
             fn_80011A2C();
             return 1;
         }
     }
     return 0;
 }
+#pragma cplusplus reset
 
 int fn_801DF238(int arg0) {
     extern int fn_801769F8(void);
