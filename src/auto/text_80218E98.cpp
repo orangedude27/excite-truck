@@ -639,14 +639,12 @@ extern "C" void fn_802193C8(void *arg0, f32 value) {
 
 #pragma dont_inline on
 extern "C" void fn_80219440(void *arg0, s32 arg1, void *arg2, s32 arg3) {
-    s32 idx;
-    s32 value = fn_8012850C((void *)arg3, lbl_8033D878);
-    idx = *(s32 *)((u8 *)arg0 + 0x230);
-    *(s32 *)((u8 *)arg0 + idx * 16 + 0x34) = arg1;
-    *(s32 *)((u8 *)arg0 + idx * 16 + 0x30) = (s32)arg2;
-    *(s32 *)((u8 *)arg0 + idx * 16 + 0x38) = arg3;
-    *(s32 *)((u8 *)arg0 + idx * 16 + 0x3C) = value;
-    memcpy((void *)value, arg2, (unsigned long)arg3);
+    void *value = (void *)fn_8012850C((void *)arg3, lbl_8033D878);
+    *(s32 *)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x230)) << 4) + 0x34) = arg1;
+    *(s32 *)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x230)) << 4) + 0x30) = (s32)arg2;
+    *(s32 *)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x230)) << 4) + 0x38) = arg3;
+    *(void **)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x230)) << 4) + 0x3C) = value;
+    memcpy(value, arg2, (unsigned long)arg3);
     *(s32 *)((u8 *)arg0 + 0x230) = *(s32 *)((u8 *)arg0 + 0x230) + 1;
 }
 #pragma dont_inline reset
@@ -3427,24 +3425,17 @@ extern "C" void fn_802E317C(const char *, ...);
 extern f32 lbl_8056351C;
 extern f64 lbl_80563520;
 extern "C" void *fn_80222BDC(void *arg0, void *arg1, s32 arg2) {
-    s32 sp8;
-    s32 spC;
-    f32 f;
-    f64 d;
-    fn_80218F80();
+    ((void *(*)(void *, void *))fn_80218F80)(arg0, arg1);
     *(s32 *)((u8 *)arg0 + 0x244) = arg2;
     *(void **)arg0 = lbl_8033E560;
-    sp8 = fn_80232578((s32)((u8 *)arg1 + 0x40));
-    *(s32 *)((u8 *)arg0 + 0x248) = sp8;
-    if (sp8 != 0) {
+    s32 res = fn_80232578((s32)((u8 *)arg1 + 0x40));
+    *(s32 *)((u8 *)arg0 + 0x248) = res;
+    if (res == 0) {
         fn_802E317C(lbl_8033DA60, (u8 *)arg1 + 0x40);
     }
-    spC = 0x43300000;
     *(s32 *)((u8 *)arg0 + 0x24C) = *(s32 *)((u8 *)arg1 + 0xA0);
-    f = lbl_8056351C;
-    d = lbl_80563520;
-    *(f32 *)((u8 *)arg0 + 0x254) = f;
-    *(f32 *)((u8 *)arg0 + 0x250) = *(f32 *)((u8 *)arg1 + 0x9C) - (f32) d;
+    *(f32 *)((u8 *)arg0 + 0x254) = lbl_8056351C;
+    *(f32 *)((u8 *)arg0 + 0x250) = *(u32 *)((u8 *)arg1 + 0x9C);
     return arg0;
 }
 
