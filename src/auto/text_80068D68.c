@@ -5363,21 +5363,27 @@ void fn_8007BC88(void) {
 }
 
 BOOLEAN btm_inq_find_bdaddr(BD_ADDR addr) {
+    u8 *state = lbl_803C0F78;
+    u16 count;
     u8 *entry;
     u16 i;
-    u16 count;
-    if ((lbl_803C0F78[0x1848] & 4) != 0) return FALSE;
-    entry = *(u8 **)(lbl_803C0F78 + 0x16DC);
-    if (entry == NULL) return FALSE;
-    count = *(u16 *)(lbl_803C0F78 + 0x16E0);
+
+    entry = *(u8 **)(state + 0x16DC);
+    if ((state[0x1848] & 4) != 0)
+        goto scan;
+    if (entry == NULL)
+        return FALSE;
+scan:
+    count = *(u16 *)(state + 0x16E0);
     for (i = 0; i < count; i++, entry += 0xC) {
         if (memcmp(entry + 4, addr, 6) == 0 &&
-            *(u32 *)entry == *(u32 *)(lbl_803C0F78 + 0x16C0)) return TRUE;
+            *(u32 *)entry == *(u32 *)(state + 0x16C0))
+            return TRUE;
     }
-    if (i < *(u16 *)(lbl_803C0F78 + 0x16E2)) {
-        *(u32 *)entry = *(u32 *)(lbl_803C0F78 + 0x16C0);
+    if (i < *(u16 *)(state + 0x16E2)) {
+        *(u32 *)entry = *(u32 *)(state + 0x16C0);
         memcpy(entry + 4, addr, 6);
-        *(u16 *)(lbl_803C0F78 + 0x16E0) = count + 1;
+        *(u16 *)(state + 0x16E0) = *(u16 *)(state + 0x16E0) + 1;
     }
     return FALSE;
 }
@@ -7679,6 +7685,34 @@ s32 fn_8008128C(void *arg0) {
         return (s32)dev + 0x10;
     }
     return 0;
+}
+
+void btu_hcif_connection_comp_evt(u8 *p) {
+    u8 status;
+    u16 handle;
+    BD_ADDR bda;
+    u8 link_type;
+    u8 enc_mode;
+    tBTM_ESCO_DATA data;
+
+    status = p[0];
+    handle = (u16)((p[1] + (p[2] << 8)) & 0x0fff);
+    bda[5] = p[3];
+    bda[4] = p[4];
+    bda[3] = p[5];
+    bda[2] = p[6];
+    bda[1] = p[7];
+    bda[0] = p[8];
+    link_type = p[9];
+    enc_mode = p[10];
+    if (link_type == 1) {
+        btm_sec_connected(bda, handle, status, enc_mode);
+        l2c_link_hci_conn_comp(status, handle, bda);
+    } else {
+        memset(&data, 0, 0xE);
+        memcpy(data.bd_addr, bda, 6);
+        btm_sco_connected(status, bda, handle, &data);
+    }
 }
 
 void btu_hcif_connection_request_evt(u8 *event) {
