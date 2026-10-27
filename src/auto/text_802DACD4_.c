@@ -19,7 +19,9 @@ __declspec(section ".sdata") extern char lbl_8055D138[];
 extern int lbl_8055FE78, lbl_8055FE7C, lbl_8055FE80;
 #pragma push
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802DACD4(void) {
+ struct StringStart { char first; };
  register const char *message=lbl_8034C918;
  volatile int b,c,d;
  int font;
@@ -29,7 +31,7 @@ void fn_802DACD4(void) {
  } else {
   font=0x120F00;
  }
- lbl_8055FE78=fn_801284E8((void *)message,font);
+ lbl_8055FE78=fn_801284E8(&((struct StringStart *)message)->first,font);
  font=OSInitFont();
  if (OSGetFontEncode()==0x120F00) fn_802E30C8(message+0xC);
  if (font==0) {
