@@ -1208,15 +1208,20 @@ extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
 extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
+    struct StackArgs {
+        u32 pad0;
+        volatile f32 spC;
+        u32 pad1[3];
+        volatile f32 sp1C;
+        volatile f32 sp20;
+        u32 pad2;
+    } stack;
     void* temp_r3;
     void* temp_r5;
     f32 temp_f1;
     f32 temp_f2;
     f32 temp_f3;
     f32 temp_f4;
-    f32 sp20;
-    f32 sp1C;
-    f32 spC;
 
     temp_r3 = ((Fn8019EA7CDispatch*)arg1)->Get();
     temp_r5 = *(void**)((u8*)arg0 + 0xC);
@@ -1224,24 +1229,30 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     temp_f4 = *(f32*)((u8*)temp_r5 + 0x24) - *(f32*)((u8*)temp_r3 + 0x24);
     temp_f1 = *(f32*)((u8*)temp_r5 + 0x2C);
     temp_f2 = temp_f3 - *(f32*)((u8*)temp_r3 + 0x28);
-    sp20 = temp_f4;
-    spC = temp_f2;
-    sp1C = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
+    stack.sp20 = temp_f4;
+    stack.spC = temp_f2;
+    stack.sp1C = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
     return fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
 }
 
-void fn_8019EB14(u8 *arg0, s32 arg1) {
+extern "C" void fn_8019EB14(s32 arg0_raw, s32 arg1) {
+    u8 *arg0 = (u8 *)arg0_raw;
     u32 offset = arg1 * 8;
     u8 *p = arg0 + offset;
     u8 t;
-    t = p[0]; p[0] = p[1]; p[1] = t;
+
+    t = arg0[offset];
+    arg0[offset] = p[1];
+    p[1] = t;
+
     t = p[2]; p[2] = p[3]; p[3] = t;
     t = p[4]; p[4] = p[5]; p[5] = t;
     t = p[6]; p[6] = p[7]; p[7] = t;
+
     if (*(u16 *)(p + 4) != 0) {
         s32 i;
         for (i = 0; i < 4; i++) {
-            fn_8019EB14(arg0, *(u16 *)(p + 4) + i);
+            fn_8019EB14(arg0_raw, *(u16 *)(p + 4) + i);
         }
     }
 }
