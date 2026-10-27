@@ -151,7 +151,6 @@ extern float lbl_80562BF4;
 extern char lbl_804872B0[];
 extern char lbl_804873B8[];
 extern int fn_801E85A4(void);
-extern int fn_801DE9F0(int, int);
 extern int fn_80209190(int, float);
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_801769EC(void);
