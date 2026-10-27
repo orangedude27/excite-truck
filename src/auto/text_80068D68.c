@@ -4651,13 +4651,18 @@ u8 BTM_SetAfhChannels(u8 first, u8 last) {
     }
     if (lbl_803C0F78[0x27BD] != first ||
         lbl_803C0F78[0x27BE] != last) {
-        if (btsnd_hcic_set_afh_channels(first, last)) {
-            lbl_803C0F78[0x27BD] = first;
-            lbl_803C0F78[0x27BE] = last;
-            return 0;
+        if (!btsnd_hcic_set_afh_channels(first, last)) {
+            goto no_resources;
         }
-        return 3;
+        lbl_803C0F78[0x27BD] = first;
+        lbl_803C0F78[0x27BE] = last;
+        goto success;
     }
+    goto success;
+
+no_resources:
+    return 3;
+success:
     return 0;
 }
 
