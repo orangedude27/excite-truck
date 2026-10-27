@@ -179,6 +179,7 @@ extern const char lbl_8033830C[];
 extern const char lbl_8055ABE4[];
 #pragma dont_inline on
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_801D25BC(void* arg0, void* arg1) {
     char name[0x20];
     s32 i;
