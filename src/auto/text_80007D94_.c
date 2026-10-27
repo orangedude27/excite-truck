@@ -43,7 +43,8 @@ DECL_SECTION(".sdata") extern const char lbl_80558978[];
 DECL_SECTION(".sdata") extern const char lbl_80558980[];
 DECL_SECTION(".sdata") extern const char lbl_80558988[];
 DECL_SECTION(".sdata") extern const char lbl_80558990[];
-void fn_80007DA0(void) {
+#pragma cplusplus on
+extern "C" void fn_80007DA0(void) {
     volatile u32 *global;
     char *base;
     void *initialConfig;
@@ -92,6 +93,7 @@ loop:
 done:
     qsort(&lbl_8034EF38, *(volatile u32 *)((u8 *)&lbl_8034EF38 + 0x1E0), 0xC, (int (*)(const void *, const void *))fn_80007D94);
 }
+#pragma cplusplus reset
 
 #pragma dont_inline on
 void fn_80007F04(void) {
