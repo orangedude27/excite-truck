@@ -1217,7 +1217,6 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     f32 temp_f3;
     f32 temp_f4;
     volatile f32 sp[9];
-    s32 result;
 
     temp_r3 = ((Fn8019EA7CDispatch*)arg1)->Get();
     temp_r5 = *(void**)((u8*)arg0 + 0xC);
@@ -1228,8 +1227,7 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     sp[6] = temp_f4;
     sp[1] = temp_f2;
     sp[5] = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
-    result = fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4);
-    return result != 0;
+    return (s32)(bool)fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4);
 }
 #pragma scheduling on
 extern "C" void fn_8019EB14(s32 arg0_raw, s32 arg1) {
@@ -1486,7 +1484,7 @@ extern "C" s32 fn_8019F3D4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_8019F414(void *arg0) {
+extern "C" void fn_8019F414(void *arg0) {
     extern f32 lbl_8056237C;
     extern void fn_8019EECC(void*, void*);
     extern void fn_8019EF00(void*);
@@ -1495,8 +1493,9 @@ void fn_8019F414(void *arg0) {
     f32 sp8;
     void *temp_r4;
     void *temp_r6;
+
     temp_r6 = *(void **)((u8*)arg0 + 0x54);
-    temp_r4 = *(void **)arg0;
+    temp_r4 = *(void **)((u8*)arg0 + 4);
     sp8 = *(f32*)((u8*)temp_r6 + 0x30);
     spC = *(f32*)((u8*)temp_r6 + 0x34);
     sp10 = *(f32*)((u8*)temp_r6 + 0x38);
@@ -2274,6 +2273,18 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
         corner+=3; sameCorner+=3;
     }
 }
+
+extern "C" void fn_801A22A4(void* arg0) {
+    struct WordBlock { u32 value[12]; };
+    WordBlock* result = (WordBlock*)((VTab1A1E7C*)arg0)->Call();
+    WordBlock words = *result;
+    f32 tailZ = *(f32*)((u8*)arg0 + 0x2c);
+    f32 tailY = *(f32*)((u8*)arg0 + 0x28);
+    f32 tailX = *(f32*)((u8*)arg0 + 0x24);
+    typedef void (*Fn801E44F4)(WordBlock*, u32, u32, f32, f32, f32);
+    ((Fn801E44F4)fn_801E44F4)(&words, 0x50000000, result->value[9], tailX, tailY, tailZ);
+}
+
 #pragma scheduling on
 extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     extern f32 lbl_80562300;
@@ -2526,7 +2537,7 @@ extern "C" void fn_801A3174(void *arg0) {
     ((void (*)(s32, s32, f32))fn_801E3FC8)(*(s32*)((u8*)arg0 + 0xC) + 0x24, lbl_8055E598, *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28));
 }
 
-extern s32 lbl_80333778;
+extern char lbl_80333778[];
 extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *arg5, f32 farg0, f32 farg1) {
     s32 i;
     u8 *dst = (u8*)arg0;
@@ -2539,7 +2550,7 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
     *(f32*)(dst + 0x14) = farg1;
     *(s32*)(dst + 0x20) = 100;
     *(s32*)(dst + 0x1C) = 0;
-    *(void**)dst = &lbl_80333778;
+    *(void**)dst = lbl_80333778;
     *(s32*)(dst + 0xDC) = 0;
     *(s32*)(dst + 0xBC) = arg3;
     for (i = 0; i < arg3; i++) {
