@@ -131,38 +131,45 @@ typedef struct _GXLightObjImpl {
   extern int OSDisableInterrupts(void);
   extern void OSRestoreInterrupts(void);
 void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
-    int mipmap = GXGetTexObjMipMap(obj);
-    int isMipMap = GXGetTexObjAll(obj);
-    unsigned int carry = region >> 31;
-    unsigned int index = ((region << 29) - carry);
-    index = (index << 3) | (index >> 29);
+    int mipmap;
+    int isMipMap;
+    unsigned int shifted;
+    unsigned int carry;
+    register unsigned int index;
+
+    mipmap = GXGetTexObjMipMap(obj);
+    isMipMap = GXGetTexObjAll(obj);
+    shifted = region << 29;
+    carry = region >> 31;
+    shifted -= carry;
+    index = (shifted << 3) | (shifted >> 29);
     index += carry;
 
     if (mipmap == 7) {
-        if (isMipMap != 0) {
-            return (char *)__GXData + index * 0x10 + 0x2D8;
-        }
-        return (char *)__GXData + index * 0x10 + 0x258;
+        goto common;
     }
     if (mipmap < 7) {
-        if (mipmap < 6) {
-            if (isMipMap != 0) {
-                return (char *)__GXData + index * 0x10 + 0x2D8;
-            }
-            return (char *)__GXData + index * 0x10 + 0x258;
+        if (mipmap >= 6) {
+            goto special;
         }
-        if (isMipMap != 0) {
-            return (char *)__GXData + index * 0x10 + 0x358;
-        }
-        return (char *)__GXData + index * 0x10 + 0x2D8;
+        goto common;
     }
-    if (mipmap < 0xB) {
-        return (char *)__GXData + index * 0x10 + 0x258;
+    if (mipmap >= 11) {
+        goto common;
     }
+    return (char *)__GXData + index * 16 + 0x258;
+
+special:
     if (isMipMap != 0) {
-        return (char *)__GXData + index * 0x10 + 0x2D8;
+        return (char *)__GXData + index * 16 + 0x358;
     }
-    return (char *)__GXData + index * 0x10 + 0x258;
+    return (char *)__GXData + index * 16 + 0x2D8;
+
+common:
+    if (isMipMap != 0) {
+        return (char *)__GXData + index * 16 + 0x2D8;
+    }
+    return (char *)__GXData + index * 16 + 0x258;
 }
 
 s32 __GXDefaultTlutRegionCallback(unsigned int region) {
@@ -272,7 +279,7 @@ int CPGPLinkCheck(void) {
 void GXSetGPFifo(unsigned int *fifo) {
     int intStatus;
     unsigned int tmp;
-    unsigned int *gx = &lbl_8037C0C0;
+    unsigned int *gx = (unsigned int *)lbl_8037C0C0;
     unsigned int *gd = __GXData;
 
     intStatus = OSDisableInterrupts();
@@ -1231,28 +1238,25 @@ void GXSetDrawSync(void) {
 }
 
 void GXSetDrawSyncCallback(void) {
-    register u32 zero;
-    register s32 interruptState;
+    s32 interruptState = OSDisableInterrupts();
     volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
     volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
 
-    interruptState = OSDisableInterrupts();
     *fifo8 = 0x61;
     *fifo = 0x45000002;
     if (__GXData[0x5FC / 4] != 0) {
         __GXSetDirtyState();
     }
-    zero = 0;
-    *fifo = zero;
-    *fifo = zero;
-    *fifo = zero;
-    *fifo = zero;
-    *fifo = zero;
-    *fifo = zero;
-    *fifo = zero;
-    *fifo = zero;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
+    *fifo = 0;
     PPCSync();
-    lbl_8055D970 = zero;
+    lbl_8055D970 = 0;
     ((void (*)(s32))OSRestoreInterrupts)(interruptState);
     interruptState = OSDisableInterrupts();
     while (lbl_8055D970 == 0) {
@@ -1511,8 +1515,7 @@ void __GXSendFlushPrim(void) {
     volatile u16 *fifo16 = (volatile u16 *)0xCC008000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
     register u16 *gx = (u16 *)__GXData;
-    register u32 written;
-    u32 zero = 0;
+    u32 written;
     u32 size;
     u32 end;
     u32 tail;
@@ -1539,15 +1542,15 @@ void __GXSendFlushPrim(void) {
                 if (tail <= 0) {
                 } else {
                     do {
-                        *fifo32 = zero;
+                        *fifo32 = 0;
                         written += 0x20;
-                        *fifo32 = zero;
-                        *fifo32 = zero;
-                        *fifo32 = zero;
-                        *fifo32 = zero;
-                        *fifo32 = zero;
-                        *fifo32 = zero;
-                        *fifo32 = zero;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
+                        *fifo32 = 0;
                     } while (--count != 0);
                 }
             }
@@ -1555,7 +1558,7 @@ void __GXSendFlushPrim(void) {
         count = (size + 3 - written) >> 2;
         if (written < size) {
             do {
-                *fifo32 = zero;
+                *fifo32 = 0;
             } while (--count != 0);
         }
     }
