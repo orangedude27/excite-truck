@@ -44,6 +44,7 @@ void fn_8013BD30(void *arg0) {
     p[4] = d;
     p[3] = e;
 }
+#pragma dont_inline reset
 
 extern void fn_8013BD30(void *);
 extern char lbl_8032C3D8[];
