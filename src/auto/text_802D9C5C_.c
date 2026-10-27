@@ -16,45 +16,73 @@ extern void fn_802DAA18(void);
 extern void fn_80128668(void *);
 extern void fn_80128670(int);
 extern char lbl_8034C8E8[];
-void fn_802DA1F4(int arg0, unsigned int *arg1, int arg2) {
+#pragma scheduling on
+#pragma opt_propagation off
+void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     extern int lbl_804DB458[];
     extern signed char lbl_8055FE58;
-    unsigned int *dst;
-    int count;
-    int i;
-    int n;
+    int *var_r3;
+    int *var_r4;
+    int temp_r0;
+    int temp_r0_2;
+    int temp_r6;
+    int temp_r7;
+    int temp_r7_2;
+    int var_ctr_2;
+    int var_r8;
+    int var_r9 = 0;
+    unsigned int var_ctr;
+    int *var_r7;
+    int *var_r8_2;
 
-    if (arg2 <= 0)
-        goto done;
-    i = 0;
-    n = arg2 - 8;
-    if (n > 0 && arg2 <= 0x7FFFFFFE) {
-        count = (n + 7) >> 3;
-        dst = (unsigned int *)(&lbl_804DB458[arg0]);
-        for (i = 0; i < count; i++) {
-            dst[0] = arg1[0];
-            dst[1] = arg1[1];
-            dst[2] = arg1[2];
-            dst[3] = arg1[3];
-            dst[4] = arg1[4];
-            dst[5] = arg1[5];
-            dst[6] = arg1[6];
-            dst[7] = arg1[7];
-            dst += 8;
-            arg1 += 8;
+    if (arg2 > 0) {
+        temp_r7 = arg2 - 8;
+        if (arg2 > 8) {
+            var_r8 = 0;
+            if (arg2 >= 0 && arg2 <= 0x7FFFFFFE)
+                var_r8 = 1;
+            if (var_r8 != 0) {
+                var_ctr = (unsigned int)(temp_r7 + 7) >> 3;
+                var_r7 = (int *)arg1;
+                var_r8_2 = &lbl_804DB458[arg0];
+                if (temp_r7 > 0) {
+                    do {
+                        var_r9 += 8;
+                        var_r8_2[0] = var_r7[0];
+                        var_r8_2[1] = var_r7[1];
+                        var_r8_2[2] = var_r7[2];
+                        var_r8_2[3] = var_r7[3];
+                        var_r8_2[4] = var_r7[4];
+                        temp_r6 = var_r7[6];
+                        var_r8_2[5] = var_r7[5];
+                        temp_r0 = var_r7[7];
+                        var_r7 += 8;
+                        var_r8_2[6] = temp_r6;
+                        var_r8_2[7] = temp_r0;
+                        var_r8_2 += 8;
+                        var_ctr -= 1;
+                    } while (var_ctr != 0);
+                }
+            }
+        }
+        temp_r7_2 = var_r9 * 4;
+        var_ctr_2 = arg2 - var_r9;
+        var_r4 = (int *)((char *)arg1 + temp_r7_2);
+        var_r3 = (int *)((char *)lbl_804DB458 + temp_r7_2 + (arg0 * 4));
+        if (var_r9 < arg2) {
+            do {
+                temp_r0_2 = *var_r4;
+                var_r4 += 1;
+                *var_r3 = temp_r0_2;
+                var_r3 += 1;
+                var_ctr_2 -= 1;
+            } while (var_ctr_2 != 0);
         }
     }
-    count = (i << 3);
-    dst = (unsigned int *)(&lbl_804DB458[arg0 + count]);
-    count += 0;
-    while (count < arg2) {
-        *dst++ = *arg1++;
-        count++;
-    }
-done:
     lbl_8055FE58 = 1;
 }
-
+#pragma opt_propagation reset
+#pragma scheduling off
 void *fn_802DA450(void *arg0,int arg1) {
  if(arg0) { *(void**)arg0=(void*)((char*)&lbl_8034C8E8+0x10000); fn_80128670(*(int*)((char*)arg0+4)); if(arg0) *(int*)((char*)arg0+4)=0; if(arg1>0) fn_80128668(arg0); }
  return arg0;
@@ -114,6 +142,7 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
     return rec2;
 }
 
+#pragma scheduling off
 void *fn_802DA704(int owner, void *data, int count) {
     unsigned char *state = (unsigned char *)lbl_8055FE5C;
     unsigned char saved = state[0x25];
@@ -182,7 +211,7 @@ extern void fn_802E317C(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
 extern char lbl_80346798[];
 void *fn_802DA918(float arg0, float arg1, float arg2) {
-    float c, a, b;
+    float a, b, c;
     unsigned char saved;
     unsigned char *p;
     void *result;
