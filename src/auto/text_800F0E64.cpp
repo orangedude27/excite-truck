@@ -326,6 +326,21 @@ done:
     return 0;
 }
 
+extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void *arg0, u8 arg1) {
+    u32 token = OSDisableInterrupts();
+    u8 *track = (u8 *)arg0;
+    void *channel = *(void **)(track + 0xB8);
+    while (channel != 0) {
+        u8 *p = (u8 *)channel;
+        if (p[0x3A] != 0 && arg1 != (p[0x39] != 0)) {
+            p[0x39] = arg1;
+            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)(p + 0xE0), arg1);
+        }
+        channel = *(void **)(p + 0xE4);
+    }
+    OSRestoreInterrupts(token);
+}
+
 extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, u8);
 extern "C" void fn_800EAD00(void *);
 extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
@@ -3614,27 +3629,28 @@ extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6det
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(void *self) {
-    s32 irqState = (s32)OSDisableInterrupts();
+    u32 irqState = OSDisableInterrupts();
     u8 *player = (u8 *)self;
     s32 index = 0;
+    s32 zero = 0;
 
     while (index < *(s32 *)((u8 *)self + 0x4A0)) {
         void *buffer = *(void **)(player + 0x4A8);
         if (buffer != 0) {
             Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), buffer);
-            *(s32 *)(player + 0x4A8) = 0;
-            *(s32 *)(player + 0x4AC) = 0;
+            *(s32 *)(player + 0x4A8) = zero;
+            *(s32 *)(player + 0x4AC) = zero;
         }
         player += 0x38;
         index += 1;
     }
 
-    *(s32 *)((u8 *)self + 0x4A0) = 0;
+    *(s32 *)((u8 *)self + 0x4A0) = zero;
     if (*(void **)((u8 *)self + 0x438) != 0) {
         Free__Q46nw4hbm3snd6detail7AxVoiceFv(*(void **)((u8 *)self + 0x438));
-        *(s32 *)((u8 *)self + 0x438) = 0;
+        *(s32 *)((u8 *)self + 0x438) = zero;
     }
-    OSRestoreInterrupts((u32)irqState);
+    OSRestoreInterrupts(irqState);
 }
 #pragma use_lmw_stmw reset
 #pragma dont_inline off
