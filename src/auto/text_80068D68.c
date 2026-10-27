@@ -26,6 +26,12 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 
 extern void rfc_port_sm_execute(void *, u16, void *);
 extern char lbl_80319AB0[];
+extern void rfc_port_sm_state_closed(void *, u16, void *);
+extern void rfc_port_sm_sabme_wait_ua(void *, u16, void *);
+extern void rfc_port_sm_orig_wait_sec_check(void *, u16, void *);
+extern void rfc_port_sm_term_wait_sec_check(void *, u16, void *);
+extern void rfc_port_sm_opened(void *, u16, void *);
+extern void rfc_port_sm_disc_wait_ua(void *, s32, void *);
 extern void GAP_Init(void);
 extern void bta_sys_init(void);
 extern void fn_80071510(void *, s32, u8);
