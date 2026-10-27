@@ -9,6 +9,12 @@ extern int lbl_8055E9E0;
 extern char lbl_804873B8[];
 extern int lbl_803394FC;
 extern void *lbl_8055E9F0;
+extern char lbl_804872B0[];
+extern int lbl_8055ADF0, lbl_8055ADF4, lbl_8055E9E8;
+extern float lbl_80562BF4;
+extern void *memcpy(void *, const void *, unsigned int);
+extern unsigned long long fn_802E2C9C(int);
+extern void fn_801331C4(int, int *, float *);
 
 #pragma scheduling invalid_target
 void fn_801DE7E8(int arg0) {
