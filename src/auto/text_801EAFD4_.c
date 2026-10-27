@@ -35,6 +35,7 @@ extern s32 lbl_804885E8[];
 extern f32 lbl_80562E68;
 extern f32 lbl_8055EB98[2];
 extern void fn_801EB9A4(s32 *);
+extern void fn_801EBB7C(void *, s32);
 #pragma dont_inline on
 s32 fn_801EAFD4(void *arg0) {
     s32 temp = *(s32 *)arg0;
@@ -356,28 +357,24 @@ extern "C" void fn_801EB6A8(s32 arg0) {
         virtual void unused8();
         virtual void dispatch(s32 *, s32, s32, s32, s32);
     };
-    enum NodeType { Node0 = 0, Node101 = 0x101, Node102 = 0x102, Node103 = 0x103, Node4 = 4 };
     register s32 *item;
     register s32 *node;
     register s32 *context;
     register s32 *child;
-    register NodeType type;
+    register s32 type;
     register s32 i;
-
     node = (s32 *)arg0;
     while (node != 0) {
-        type = (NodeType)node[0];
-        if (type == Node4) goto state4;
-        if (type >= Node4) goto high;
+        type = node[0];
+        if (type == 4) goto state4;
+        if (type >= 4) goto high;
         switch (type) {
-        case Node0:
-            goto state0;
-        default:
-            goto error;
+        case 0: goto state0;
+        default: goto error;
         }
 high:
         if (type >= 0x104) goto error;
-        if (type < Node101) goto error;
+        if (type < 0x101) goto error;
         goto state_special;
 state0:
         item = node;
