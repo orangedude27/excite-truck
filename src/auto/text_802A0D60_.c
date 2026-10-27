@@ -86,60 +86,28 @@ void fn_802A1548(void) {
 
 void fn_802A1584(void) { fn_802A9428(); }
 #pragma scheduling on
+extern void *fn_80156A40(void);
+extern void fn_801352B8(void *);
+extern s32 fn_80135D60(void *, s32);
+extern void fn_801355C0(void *, void *, s32, void *, s32);
+extern void *fn_802A1040(void *, void *, void *);
+extern void fn_8013530C(void *, s32);
+extern float lbl_805646F0;
+extern float lbl_805646F4;
+extern float lbl_80564700;
+extern float fn_802A0F7C(void *, void *, void *);
 #pragma cplusplus on
 extern "C" void *fn_80156A40(void);
-extern "C" void fn_801352B8(void *);
-extern "C" s32 fn_80135D60(void *, s32);
-extern "C" void fn_801355C0(void *, void *, s32, void *, s32);
-extern "C" void *fn_802A1040(void *, void *, void *);
-extern "C" void fn_8013530C(void *, s32);
-extern "C" float lbl_805646F0;
-extern "C" float lbl_805646F4;
-extern "C" float lbl_80564700;
-extern "C" float fn_802A0F7C(void *, void *, void *);
-extern "C" void fn_802A1120(float *arg0, float *arg1) {
-    struct Dummy {
-        virtual void *getFirst(s32);
-        virtual void *getSecond(s32);
-    };
-    struct Search {
-        s32 index;
-        float value;
-        s32 max;
-    };
-    char work[0x14];
-    Search search;
-    void *manager;
-    void *entry;
-    register float end;
-    register float increment;
-    register float baseline;
-    register float step;
-    manager = ((Dummy *)fn_80156A40())->getFirst(0);
-    arg1[0] = *(float *)(*(char **)((char *)manager + 0x1C) + 8);
-    arg1[1] = *(float *)(*(char **)((char *)manager + 0x1C) + 0xC);
-    fn_801352B8(work);
-    entry = ((Dummy *)fn_80156A40())->getSecond(0);
-    fn_80135D60(work, (s32)entry);
-    search.index = 0;
-    search.max = 0x2710;
-    search.value = lbl_805646F0;
-    fn_801355C0(work, *(void **)((char *)manager + 0x1C), 0, &search, 0);
-    entry = fn_802A1040(*(void **)((char *)manager + 0x1C), (void *)search.index, entry);
-    step = lbl_805646F0;
-    baseline = lbl_805646F0;
-    increment = lbl_80564700;
-    end = lbl_805646F4;
-    while (step < end) {
-        void *next = *(void **)((char *)entry + 0x14);
-        arg0[0] = *(float *)entry + step * (*(float *)next - *(float *)entry);
-        arg0[1] = *(float *)((char *)entry + 4) +
-                  step * (*(float *)((char *)next + 4) - *(float *)((char *)entry + 4));
-        if (fn_802A0F7C((char *)*(char **)((char *)manager + 0x1C) + 8, arg0, *(void **)((char *)manager + 0x1C)) >= baseline)
-            break;
-        step += increment;
-    }
-    fn_8013530C(work, -1);
+struct Dummy802A1120 {
+    virtual void *getFirst(s32);
+    virtual void *getSecond(s32);
+};
+extern "C" inline void *fn_802A1120_getFirst(void) {
+    return ((Dummy802A1120 *)fn_80156A40())->getFirst(0);
+}
+extern "C" inline void *fn_802A1120_getSecond(void) {
+    return ((Dummy802A1120 *)fn_80156A40())->getSecond(0);
 }
 #pragma cplusplus reset
+void fn_802A1120(float *arg0, float *arg1) {}
 #pragma scheduling on
