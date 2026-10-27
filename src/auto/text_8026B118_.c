@@ -90,7 +90,7 @@ extern int fn_802E30C8(const char *, ...);
 extern char *strchr(const char *, int);
 extern char *strncpy(char *, const char *, unsigned int);
 extern int stricmp(const char *, const char *);
-extern char lbl_8055C504[], lbl_8055C50C[];
+extern char lbl_8055C504, lbl_8055C50C;
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8026B260(void) {
@@ -116,10 +116,10 @@ extern "C" void fn_8026B260(void) {
     register int iteratorOrZero = 0;
     void *obj;
     FileName *nameObj;
-    Iterator *it;
-    Entry *entry;
+    register Iterator *it;
+    register Entry *entry;
     char *dot;
-    int index;
+    register int index;
     lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     nameObj = *(FileName **)((char *)obj + 0x20);
@@ -128,7 +128,7 @@ extern "C" void fn_8026B260(void) {
         strncpy(name, dot, 11);
         dot = strchr(name, '.');
         if (dot) *dot = iteratorOrZero;
-        fn_80028E00(name, lbl_8055C504);
+        fn_80028E00(name, (const char *)&lbl_8055C504);
         if (!fn_8012C33C(name)) {
             fn_802E30C8(base + 0xC, name);
             return;
@@ -138,7 +138,7 @@ extern "C" void fn_8026B260(void) {
         index = 0;
         do {
             entry = (Entry *)it->next(index++);
-            if (entry && stricmp(entry->getName(), lbl_8055C50C) == 0) {
+            if (entry && stricmp(entry->getName(), (const char *)&lbl_8055C50C) == 0) {
                 fn_8026B1D0(entry);
                 lbl_8055F4C8++;
             }
