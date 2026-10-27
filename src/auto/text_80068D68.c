@@ -11404,6 +11404,25 @@ void PORT_StartCnf(void *mux_id, u16 status) {
     if (found) rfc_check_mcb_active(mux_id);
 }
 
+void PORT_StartInd(void *arg0) {
+    extern char lbl_803192B0[];
+    extern void fn_8007093C(u32, void *);
+    extern void fn_800934D8(void *, s16);
+    u8 *entry;
+    s32 i;
+    if (lbl_803C4828[0x414] >= 4) {
+        fn_8007093C(0x90003, lbl_803192B0);
+    }
+    for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4) {
+        void *current = *(void **)(entry + 0x6C);
+        if (current == 0 || current == arg0) {
+            fn_800934D8(arg0, 0);
+            return;
+        }
+    }
+    fn_800934D8(arg0, 1);
+}
+
 void PORT_ParNegInd(void *mcb, u8 dlci, u16 mtu, u8 mode, u8 param) {
     u8 *port=(u8*)port_find_mcb_dlci_port(mcb,dlci);
     u16 value; u8 state,limit;
