@@ -6000,6 +6000,20 @@ BOOLEAN BTM_SecDeleteRmtNameNotifyCallback(tBTM_RMT_NAME_CALLBACK *p_callback) {
     return FALSE;
 }
 
+extern char lbl_80316908[];
+void BTM_SetPinType(UINT8 pin_type, PIN_CODE pin_code, UINT8 pin_code_len) {
+    if (lbl_803C0F78[0x27C0] >= 3) {
+        ((void (*)(u32, void *, UINT8, PIN_CODE_PTR, UINT8))fn_80070984)(
+            0xD0002, lbl_80316908, pin_type, pin_code, pin_code_len);
+    }
+    if (lbl_803C0F78[0x64E] > 1) {
+        btsnd_hcic_write_pin_type(pin_type);
+    }
+    lbl_803C0F78[0x20] = pin_type;
+    lbl_803C0F78[0x21] = pin_code_len;
+    memcpy(&lbl_803C0F78[0x22], pin_code, pin_code_len);
+}
+
 BOOLEAN BTM_SetSecurityLevel(BOOLEAN is_originator, char *p_name, UINT8 service_id, UINT16 sec_level, UINT16 psm, UINT32 mx_proto_id, UINT32 mx_chan_id) {
     char *trace = lbl_80316870;
     u8 *entry = lbl_803C0F78 + 0x1990;
@@ -12954,15 +12968,18 @@ void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
 void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
     u8 *p = p_buf;
     u16 len = *(u16 *)(p + 4);
+    u16 new_len;
     u16 count;
-    u16 i;
-    u8 byte;
     u8 *src;
+    u16 i;
     u8 *dst;
+    u8 byte;
 
     if (len < 0x10) {
-        src = p + len + *(u16 *)(p + 2) + 7;
-        dst = p + *(u16 *)(p + 2) + 0x17;
+        count = *(u16 *)(p + 2);
+        src = p + len + count + 7;
+        dst = p + count;
+        dst += 0x17;
         i = 0;
         while (i < *(u16 *)(p + 2)) {
             byte = *src;
@@ -12973,13 +12990,13 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
         }
         *(u16 *)(p + 4) = 0x10;
     }
-    len = *(u16 *)(p + 4) - 2;
-    *(u16 *)(p + 4) = len;
-    p[len + 8] = (((-arg1 | arg1) >> 31) & 2) | 0x21;
-    p[len + 9] = (*(u16 *)(p + 2) << 1) | 1;
+    new_len = *(u16 *)(p + 4) - 2;
+    *(u16 *)(p + 4) = new_len;
+    p[new_len + 8] = (((-arg1 | arg1) >> 31) & 2) | 0x21;
+    p[new_len + 9] = (*(u16 *)(p + 2) << 1) | 1;
     count = *(u16 *)(p + 2);
     *(u16 *)(p + 2) = count + 2;
-    rfc_send_buf_uih(p, 0);
+    rfc_send_buf_uih((void *)arg0, 0);
 }
 
 void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 arg2, u32 arg3) {
