@@ -168,22 +168,53 @@ BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
     return TRUE;
 }
 
-BOOL ARCReadDir(ARCDir* dir, ARCDirEntry* entry) {
-    ARCHandle* handle = dir->handle;
-    u32 location = dir->location;
-    u32 entryAddr = (u32)handle->FSTStart + location * 0xC;
-    u32 entryData = *(u32*)entryAddr;
-    u8 highByte = entryData >> 24;
-    
-    if (location >= dir->entryNum || dir->next <= location) {
-        return FALSE;
+BOOL ARCReadDir(ARCDir *dir, ARCDirEntry *entry) {
+    typedef struct ARCNode {
+        union {
+            struct {
+                u32 is_folder : 8;
+                u32 name : 24;
+            };
+            u32 packed_type_name;
+        };
+        union {
+            struct {
+                u32 offset;
+                u32 size;
+            } file;
+            struct {
+                u32 parent;
+                u32 sibling_next;
+            } folder;
+        };
+    } ARCNode;
+    u32 it;
+    ARCNode *nodes;
+    ARCHandle *handle = dir->handle;
+    u32 next;
+
+    nodes = (ARCNode *)handle->FSTStart;
+    it = dir->location;
+    while (1) {
+        if (it <= dir->entryNum || dir->next <= it) {
+            return FALSE;
+        }
+        entry->handle = handle;
+        entry->entryNum = it;
+        entry->isDir = (nodes[it].packed_type_name & 0xFF000000) ? TRUE : FALSE;
+        entry->name = handle->FSTStringStart + (nodes[it].packed_type_name & 0x00FFFFFF);
+        if (entry->name[0] == '.' && entry->name[1] == '\0') {
+            ++it;
+            continue;
+        }
+        if (nodes[it].packed_type_name & 0xFF000000) {
+            next = nodes[it].folder.sibling_next;
+        } else {
+            next = it + 1;
+        }
+        dir->location = next;
+        return TRUE;
     }
-    
-    entry->handle = handle;
-    entry->entryNum = location;
-    entry->isDir = (s8)highByte < 0;
-    
-    return TRUE;
 }
 
 u32 fn_80116BCC(void) {
@@ -237,29 +268,24 @@ extern s32 lbl_8055DEC0;
 extern u32 lbl_8055DEC4;
 #pragma dont_inline on
 s32 fn_80116D30(void) {
-    s64 time = OSGetTime();
-    u32 time_high;
-    s32 time_low;
-    s32 saved_low;
+    u64 time = (u64)OSGetTime();
+    u32 saved_low;
     u32 saved_high;
-    s64 delta;
-    
-    time_high = (u32)(time >> 32);
-    time_low = (s32)time;
-    
-    saved_low = lbl_8055DEC0;
-    saved_high = lbl_8055DEC4;
-    
-    if (saved_low == 0 && saved_high == 0) {
-        lbl_8055DEC4 = time_high;
-        lbl_8055DEC0 = time_low;
-        saved_high = time_high;
-        saved_low = time_low;
+    u64 delta;
+    u32 quotient;
+    u64 remainder;
+
+    if (lbl_8055DEC0 | lbl_8055DEC4) {
+    } else {
+        lbl_8055DEC4 = (u32)time;
+        lbl_8055DEC0 = (u32)(time >> 32);
     }
-    
-    delta = time - ((s32)saved_high << 32 | saved_low);
-    
-    return (s32)(delta * 70811LL / 2317483787LL);
+    saved_low = *(volatile u32 *)&lbl_8055DEC4;
+    saved_high = *(volatile u32 *)&lbl_8055DEC0;
+    delta = time - (((u64)saved_high << 32) | saved_low);
+    quotient = (u32)(delta >> 32) * 70699U;
+    remainder = delta - ((u64)quotient * 60750U);
+    return (s32)(quotient + (u32)((remainder * 0x8A15866BULL) >> 47));
 }
 
 extern void* fn_8011FF24(void);
@@ -1207,24 +1233,27 @@ extern void fn_80119288(void *, f32);
 extern s32 fn_80119300(void *, s32, s32);
 extern s32 fn_8011943C(void *, s32);
 extern s32 fn_801199A4(void *, s32);
+#pragma optimize_for_size on
 s32 fn_80119C0C(void *arg0, s32 arg1) {
-    s32 state = *(s32 *)((u8 *)arg0 + 0x64);
     if (arg1 != 0) {
-        if (state == 0) {
+        if (*(s32 *)((u8 *)arg0 + 0x64) == 0) {
             *(s32 *)((u8 *)arg0 + 0xb0) = 0;
             *(s32 *)((u8 *)arg0 + 0x64) = 1;
             *(s32 *)((u8 *)arg0 + 0xb8) = 0;
             *(s32 *)((u8 *)arg0 + 0xbc) = *(s32 *)((u8 *)arg0 + 0xc0);
         }
-    } else if (state != 0) {
-        fn_8011943C((u8 *)arg0 + 0x7c, 0);
-        fn_801199A4((u8 *)arg0 + 0x7c, 1);
-        fn_80119300((u8 *)arg0 + 0x7c, 0, *(s32 *)((u8 *)arg0 + 0x94));
-        *(s32 *)((u8 *)arg0 + 0x64) = 0;
+    }
+    if (arg1 == 0) {
+        if (*(s32 *)((u8 *)arg0 + 0x64) != 0) {
+            fn_8011943C((u8 *)arg0 + 0x7c, 0);
+            fn_801199A4((u8 *)arg0 + 0x7c, 1);
+            fn_80119300((u8 *)arg0 + 0x7c, 0, *(s32 *)((u8 *)arg0 + 0x94));
+            *(s32 *)((u8 *)arg0 + 0x64) = 0;
+        }
     }
     return *(s32 *)((u8 *)arg0 + 0x64);
 }
-
+#pragma optimize_for_size reset
 s32 fn_80119CB0(void *arg0, s32 arg1) {
     s32 *var_r3;
     if (arg1 != 0) {
