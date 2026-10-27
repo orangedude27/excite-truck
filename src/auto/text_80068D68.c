@@ -4322,6 +4322,7 @@ void btm_dev_init(void) {
     btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
     ((void (*)(void))btsnd_hcic_reset)();
 }
+void btm_discovery_db_reset(void);
 void btm_db_reset(void) {
     u8 param = 12;
     btm_inq_db_reset();
