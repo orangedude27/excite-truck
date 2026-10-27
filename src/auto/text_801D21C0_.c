@@ -203,6 +203,7 @@ extern "C" void fn_801D25BC(void* arg0, void* arg1) {
         } while (*(s32*)((char*)arg0 + 0x28) < 4);
     }
 }
+#pragma cplusplus reset
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801D2A24(void *obj_) {
