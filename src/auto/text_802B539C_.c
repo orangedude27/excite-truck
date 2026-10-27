@@ -67,6 +67,7 @@ extern const char lbl_8034A53C[];
 extern void fn_802E317C(const char *, ...);
 extern "C" void fn_80131810(int);
 extern "C" void fn_802E317C(const char *, ...);
+__declspec(section ".sdata") extern const char lbl_8055CE18[];
 extern "C" int fn_802B5510(const char *arg0) {
     class Manager {
     public:
@@ -83,21 +84,19 @@ extern "C" int fn_802B5510(const char *arg0) {
     Manager *manager;
     void **entries;
     unsigned int count;
-    int index;
     void *item;
+    int index;
 
     manager = (Manager *)((void *(*)(void (*)(void *), void *))fn_802B561C)(
         (void (*)(void *))fn_80131810, (void *)arg0);
-    if (manager != 0) {
-        count = lbl_804BE454.count;
-        entries = (void **)lbl_804BE454.entries;
-        lbl_804BE454.count = count + 1;
-        entries[count] = manager;
-        index = 0;
-        goto fetch_item;
-    }
-    fn_802E317C(lbl_8034A53C, arg0);
-    return 0;
+    if (manager == 0)
+        goto report_error;
+    entries = (void **)lbl_804BE454.entries;
+    count = lbl_804BE454.count;
+    lbl_804BE454.count = count + 1;
+    entries[count] = manager;
+    index = 0;
+    goto fetch_item;
 
 process_item:
     if (fn_802B5448(item) != 0) {
@@ -109,10 +108,12 @@ process_item:
 
 fetch_item:
     item = manager->get(index);
-    if (item != 0) {
+    if (item != 0)
         goto process_item;
-    }
-    return 0;
+    return;
+
+report_error:
+    fn_802E317C(lbl_8034A53C, arg0);
 }
 #pragma dont_inline off
 #pragma cplusplus off
@@ -242,5 +243,6 @@ void* fn_802B59A4(unsigned int index) {
 void* fn_802B59CC(void) {
     return lbl_8055F9E8;
 }
+#pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma use_lmw_stmw off
