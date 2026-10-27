@@ -64,6 +64,7 @@ extern f32 lbl_805601B8;
 extern f32 lbl_805601BC;
 extern f32 lbl_805601D0;
 #pragma dont_inline on
+#pragma optimization_level 2
 s32 fn_80008C5C(void) {
     unsigned char sp[0x68];
     s32 old = *(volatile s32 *)&lbl_805589EC;
@@ -74,23 +75,25 @@ s32 fn_80008C5C(void) {
         input = *(u32 *)(sp + 0x40);
         if (input == 8) {
             s32 mode;
-            s32 flag = fn_8000865C();
-            if (flag == 0) {
+            switch (fn_8000865C()) {
+            case 0:
                 mode = 0xC;
-                goto store_mode_8;
+                break;
+            default:
+                mode = 0xD;
+                break;
             }
-            mode = 0xD;
-        store_mode_8:
             lbl_805589EC = mode;
         } else if (input == 2) {
             s32 mode;
-            s32 flag = fn_8000865C();
-            if (flag == 0) {
+            switch (fn_8000865C()) {
+            case 0:
                 mode = 0xD;
-                goto store_mode_2;
+                break;
+            default:
+                mode = 0xC;
+                break;
             }
-            mode = 0xC;
-        store_mode_2:
             lbl_805589EC = mode;
         } else if (input == 4) {
             lbl_805589EC = 7;
