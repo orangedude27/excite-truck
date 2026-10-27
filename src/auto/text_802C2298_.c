@@ -15,45 +15,25 @@ extern void fn_80131818(void *);
 extern void fn_801345D8(void *, int, void *, ...);
 extern int fn_802C6FC0(int, int, int);
 extern float fn_80129DC4(int, float, float);
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" void fn_802C2298(void) {
-    struct Manager {
-        virtual void **get(void *);
-    };
+    struct Manager { virtual void **get(void *); };
     struct Iterator {
-        virtual void *m0();
-        virtual void *m1();
-        virtual void *m2();
-        virtual void *m3();
-        virtual void *m4();
-        virtual void *m5();
-        virtual void *m6();
-        virtual void *m7();
-        virtual void *m8();
-        virtual void *m9();
-        virtual void *m10();
-        virtual void *m11();
-        virtual void *m12();
-        virtual void *m13();
-        virtual void *m14();
-        virtual void *m15();
-        virtual void *m16();
-        virtual void *m17();
-        virtual void *m18();
-        virtual void *m19();
-        virtual void *m20();
-        virtual void **find(char *);
+        virtual void *m0(); virtual void *m1(); virtual void *m2(); virtual void *m3();
+        virtual void *m4(); virtual void *m5(); virtual void *m6(); virtual void *m7();
+        virtual void *m8(); virtual void *m9(); virtual void *m10(); virtual void *m11();
+        virtual void *m12(); virtual void *m13(); virtual void *m14(); virtual void *m15();
+        virtual void *m16(); virtual void *m17(); virtual void *m18(); virtual void *m19();
+        virtual void *m20(); virtual void **find(char *);
     };
     struct Entry {
-        virtual void *m0();
-        virtual void *m1();
-        virtual void *m2();
+        virtual void *m0(); virtual void *m1(); virtual void *m2();
         virtual void *create(void *, int, void *);
     };
-
     char query[0x20];
     float values[3];
+    float value0, arg1, arg2;
     int temp_r5;
     int temp_r6;
     void *record;
@@ -76,11 +56,17 @@ extern "C" void fn_802C2298(void) {
             *(int *)record = fn_802C6FC0(
                 (int)((Entry *)entry)->create((void *)&lbl_8055CFE0, temp_r5, *(void **)lbl_804C109C),
                 0, 0);
-            ((void (*)(float *, void *, void *))(*(void **)((char *)*(void **)entry + 0x34)))(values, entry, (void *)&lbl_8055CFE8);
-            ((float *)record)[1] = values[0];
+            {
+                void (*fill)(float *, void *, void *) = (void (*)(float *, void *, void *))(*(void **)((char *)*(void **)entry + 0x34));
+                fill(values, entry, (void *)&lbl_8055CFE8);
+            }
+            value0 = values[0];
+            arg1 = lbl_80564E90;
+            ((float *)record)[1] = value0;
+            arg2 = lbl_80564E94;
             ((float *)record)[2] = values[1];
             ((float *)record)[3] = values[2];
-            ((float *)record)[4] = fn_80129DC4(0, lbl_80564E90, lbl_80564E94);
+            ((float *)record)[4] = fn_80129DC4(0, arg1, arg2);
             temp_r6 = index;
             index++;
             fn_801345D8(query, 0x20, (void *)&lbl_8055CFD8, temp_r6);
