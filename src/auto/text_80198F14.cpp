@@ -1254,6 +1254,7 @@ extern "C" void fn_8019EBC0(void* arg0) {
     p->v16();
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8019EBE0(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
     s32 v1 = (s32)self;
     s32 v2 = a;
@@ -1271,7 +1272,7 @@ extern "C" void fn_8019EBE0(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f
         if (obj != 0) fn_801A4A10(obj, v4, v7, v3);
     }
 }
-
+#pragma scheduling on
 extern "C" void fn_8019EC84(void* this_) {
     VTab19* p = *(VTab19**)((u8*)this_ + 4);
     if (p == NULL) {
@@ -2147,6 +2148,7 @@ extern "C" void* fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
+extern "C" void fn_8019D06C(void*, void*, s32, s32);
 extern s32 fn_8019E2D0(s32, s32, s32, void*, f32, f32, f32);
 extern "C" s32 fn_8019E2D0(s32, s32, s32, void*, f32, f32, f32);
 extern "C" s32 fn_801A1E7C(void* arg0, s32 arg1, s32 arg2, s32 arg3, void* arg4) {
