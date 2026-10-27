@@ -47,6 +47,7 @@ void fn_801DE88C(void) {
 #pragma small_data off
 int fn_801DE9F0(int arg0, int arg1) {
     float value;
+    register float newValue;
     int bits;
     unsigned long long time;
 
@@ -55,23 +56,31 @@ int fn_801DE9F0(int arg0, int arg1) {
             int count = lbl_8055E9E0;
             int *table = *(int**)lbl_804873B8;
             memcpy(lbl_804872B0 + 0xE0, (char*)table + count * 0x1C, 0x1C);
-            lbl_8055E9E0 = count + 1;
+            lbl_8055E9E0 = lbl_8055E9E0 + 1;
         }
         bits = lbl_8055E9DC;
         lbl_8055E9E8 = arg0;
         lbl_8055E9DC = bits | (1 << arg0);
         time = fn_802E2C9C(bits);
-        *(unsigned long long*)&lbl_8055ADF0 = time;
+        lbl_8055ADF4 = (int)time;
+        lbl_8055ADF0 = (int)(time >> 32);
         if (lbl_8055E9F0 != 0 && arg1 != 0) {
             value = lbl_80562BF4;
-            fn_801331C4(4, &lbl_803394FC, &value);
-            if (value != *(float*)((char*)lbl_8055E9F0 + 8)) {
-                *((unsigned char*)lbl_8055E9F0 + 0x4D) = 1;
-                *(float*)((char*)lbl_8055E9F0 + 8) = value;
+            fn_801331C4(4, (int *)lbl_803394FC, &value);
+            newValue = value;
+            {
+                void* object = lbl_8055E9F0;
+                if (newValue != *(float*)((char*)object + 8)) {
+                    *((unsigned char*)object + 0x4D) = 1;
+                    *(float*)((char*)object + 8) = newValue;
+                }
             }
-            *((unsigned char*)lbl_8055E9F0 + 0x49) = 1;
-            *((unsigned char*)lbl_8055E9F0 + 0x4B) = 0;
-            *((unsigned char*)lbl_8055E9F0 + 0x4A) = 0;
+            {
+                void* object = lbl_8055E9F0;
+                *((unsigned char*)object + 0x49) = 1;
+                *((unsigned char*)object + 0x4B) = 0;
+                *((unsigned char*)object + 0x4A) = 0;
+            }
         }
     }
 }
