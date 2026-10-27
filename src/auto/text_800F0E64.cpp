@@ -1110,6 +1110,44 @@ extern "C" long ReadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPvll(void *
     return length;
 }
 
+extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *self) {
+    class Sound {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual s32 m8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void m16();
+        virtual void m17(s32, s32);
+        virtual void v18();
+        virtual s32 Check();
+    };
+
+    Sound *sound = *(Sound **)((u8 *)self + 0x21C);
+    if (sound && sound->Check()) {
+        sound = *(Sound **)((u8 *)self + 0x21C);
+        if (sound->m8()) {
+            sound = *(Sound **)((u8 *)self + 0x21C);
+            sound->m17(0, 0);
+        } else {
+            sound = *(Sound **)((u8 *)self + 0x21C);
+            sound->m16();
+        }
+    }
+}
+
 void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv_old(void *self) {
     class Sound {
     public:
@@ -3296,13 +3334,30 @@ extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void)
         UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)p)[-0x08]);
     }
 }
-#pragma pop
+#pragma push
+#pragma small_data off
+#pragma use_lmw_stmw off
+#pragma cplusplus on
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
-    void *node = *(void **)((u8 *)&lbl_8041506C + 4); void *end = (u8 *)&lbl_8041506C + 4;
-    while (node != end) { void *player = node; node = *(void **)node; if (!player) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326B8C, 0x23D, lbl_80326B68); void **vt = *(void ***)((u8 *)player - 8); ((void (*)(void *))*(void **)((u8 *)vt + 0x10))((u8 *)player - 8); }
-    if (lbl_8041506C) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x2EE, lbl_8032687C);
+    void* pHead = *(void**)&lbl_8041506C[0x04];
+    void* pList = &lbl_8041506C[0x04];
+    void* p;
+    while (pHead != pList) {
+        p = pHead;
+        pHead = *(void**)pHead;
+        if (p == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
+                                         (const char*)lbl_80326B68);
+        }
+        ((DummyStrmUpdate*)(&((u8*)p)[-0x08]))->f2();
+    }
+    if (*(u32*)lbl_8041506C != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326768, 0x2EE,
+                                     (const char*)lbl_8032687C);
+    }
 }
-
+#pragma cplusplus reset
+#pragma pop
 extern "C" void fn_800FC5B8(void *arg0, f32 value) {
     u32 token = OSDisableInterrupts();
     *(f32 *)((u8 *)arg0 + 0x45C) = value;
