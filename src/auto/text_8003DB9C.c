@@ -249,7 +249,7 @@ int CPGPLinkCheck(void) {
         return 1;
     }
     diff1 = (int)second - (int)lbl_8037C0C0;
-    diff2 = (int)*((unsigned int *)&lbl_8037C0C0 + 1) - (int)lbl_8037C0E4;
+    diff2 = (int)*((unsigned int *)&lbl_8037C0C0 + 1) - (int)*(unsigned int *)&lbl_8037C0E4;
     error = 0;
     if (diff1 > 0) {
         if (diff2 > 0) {
