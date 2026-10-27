@@ -762,7 +762,6 @@ s32 fn_8006A460(s32 arg0) {
     return 1;
 }
 
-extern void fn_8006B598(void *);
 void fn_8006A7D0(s32 arg0, s32 arg1) {
     s32 saved = OSDisableInterrupts();
     *(s32 *)(lbl_80392960 + 0x674) = arg0;
