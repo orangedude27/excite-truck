@@ -450,3 +450,5 @@ void fn_8023C210(void *dst, void *src) {
 
 void fn_8023C268(void) {}
 #pragma cplusplus on
+extern "C" void fn_8023BFBC(s32 arg0, s32 arg1) {}
+#pragma cplusplus reset
