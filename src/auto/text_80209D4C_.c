@@ -67,7 +67,9 @@ void *fn_80209DE4(void *arg0, int arg1) {
 }
 
 #pragma scheduling on
-void fn_80209E94(void *arg0) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_80209E94(void *arg0) {
     RecordSet *set = *(RecordSet **)((char *)arg0 + 4);
     Record *records = set->records;
     float total = lbl_80563278;
