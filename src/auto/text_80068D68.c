@@ -4143,6 +4143,31 @@ s32 fn_80078310(s32 arg0)
     return 0;
 }
 
+void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
+    tBTM_CMPL_CB *p_cb = btm_cb.devcb.p_qossu_cmpl_cb;
+    tBTM_QOS_SETUP_CMPL qossu;
+
+    BTM_TRACE_DEBUG0("btm_qos_setup_complete");
+    btu_stop_timer(&btm_cb.devcb.qossu_timer);
+    btm_cb.devcb.p_qossu_cmpl_cb = NULL;
+
+    if (p_cb) {
+        memset(&qossu, 0, sizeof(tBTM_QOS_SETUP_CMPL));
+        qossu.status = status;
+        qossu.handle = handle;
+        if (p_flow != NULL) {
+            qossu.flow.qos_flags = p_flow->qos_flags;
+            qossu.flow.service_type = p_flow->service_type;
+            qossu.flow.token_rate = p_flow->token_rate;
+            qossu.flow.peak_bandwidth = p_flow->peak_bandwidth;
+            qossu.flow.latency = p_flow->latency;
+            qossu.flow.delay_variation = p_flow->delay_variation;
+        }
+        BTM_TRACE_DEBUG1("BTM: p_flow->delay_variation: 0x%02x", qossu.flow.delay_variation);
+        (*p_cb)(&qossu);
+    }
+}
+
 void btm_read_rssi_complete(u8 *arg0) {
     u8 spB[6];
     u8 spA;
@@ -4817,6 +4842,36 @@ tBTM_STATUS BTM_WritePageTimeout(UINT16 timeout) {
         return 0;
     }
     return 3;
+}
+
+tBTM_STATUS BTM_ReadStoredLinkKey(BD_ADDR bd_addr, tBTM_CMPL_CB *p_cb) {
+    extern char lbl_80316290[];
+    extern u8 lbl_80559064;
+    extern u8 lbl_8055906C;
+    BD_ADDR local_bd_addr;
+    BOOLEAN read_all_flag = FALSE;
+    u8 *p_buf;
+
+    if (*(u32 *)(lbl_803C0F78 + 0x570) != 0)
+        return BTM_BUSY;
+    if (bd_addr == NULL) {
+        read_all_flag = TRUE;
+        bd_addr = local_bd_addr;
+    }
+    if (lbl_803C0F78[0x27C0] >= 4) {
+        fn_80070954(
+            0xD0003,
+            lbl_80316290,
+            read_all_flag ? (u16)&lbl_80559064 : (u16)&lbl_8055906C
+        );
+    }
+    p_buf = GKI_getpoolbuf(2);
+    if (p_buf != NULL) {
+        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570) = p_cb;
+        ((void (*)())btsnd_hcic_read_stored_key)(p_buf, bd_addr, read_all_flag, lbl_803C0F78);
+        return BTM_SUCCESS;
+    }
+    return BTM_NO_RESOURCES;
 }
 
 extern char lbl_803162BC[];
