@@ -41,37 +41,52 @@ s32 fn_80018B7C(void *arg0, void *arg1) {
     return diff;
 }
 
-void fn_80018BA4(void) {
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_80018BA4(void) {
+    struct Manager { virtual void unused(); virtual void *get(int); };
+    struct Item {
+        virtual const char *name();
+        virtual void unused1();
+        virtual void unused2();
+        virtual const char *value(const char *);
+        virtual void unused4();
+        virtual const char *other(const char *);
+    };
     extern void *lbl_8055D58C;
     extern unsigned char lbl_80357E0C[12];
-    extern void *lbl_802FD2A0;
+    extern void *lbl_802FD2A0 __attribute__((section(".rodata")));
     extern int strcmp(const char *, const char *);
     extern int fn_80265DCC(void *, int, int, void *);
-    extern char lbl_80558C30[];
-    extern char lbl_80558C38[];
-    extern char lbl_80558C40[];
-    // Fix note: scans the manager's objects, appends matching metadata, and sorts the global result table.
-    int found = 0, index = 0, count;
-    void *object, *manager = lbl_8055D58C, *entry;
-    for (;;) {
-        object = ((void *(*)(void *, int))((void **)*(void **)manager)[3])(manager, index);
-        if (object == 0) break;
-        if (strcmp(((const char *(*)(void *))((void **)*(void **)object)[2])(object),
-                   (const char *)lbl_802FD2A0) == 0) {
-            count = *(int *)((char *)lbl_80357E0C + 4);
-            *(int *)((char *)lbl_80357E0C + 4) = count + 1;
-            entry = (char *)*(void **)lbl_80357E0C + count * 0x14;
-            *(int *)entry = ((int (*)(void *, const char *))((void **)*(void **)object)[5])(object, lbl_80558C30);
-            *(int *)((char *)entry + 4) = ((int (*)(void *, const char *))((void **)*(void **)object)[5])(object, lbl_80558C38);
-            *(int *)((char *)entry + 8) = ((int (*)(void *, const char *))((void **)*(void **)object)[7])(object, lbl_80558C40);
-            *(char *)((char *)entry + 0xC) = 0;
-            *(int *)((char *)entry + 0x10) = found++;
-        }
-        index++;
-    }
-    fn_80265DCC(*(void **)lbl_80357E0C, *(int *)((char *)lbl_80357E0C + 4), 0x14, fn_80018B7C);
-}
+    extern const char lbl_80558C30[] __attribute__((section(".sdata")));
+    extern const char lbl_80558C38[] __attribute__((section(".sdata")));
+    extern const char lbl_80558C40[] __attribute__((section(".sdata")));
+    int *entry;
+    register int found = 0;
+    register int index = 0;
+    register int zero = 0;
+    Item *object;
 
+    for (;;) {
+        object = (Item *)((Manager *)lbl_8055D58C)->get(index);
+        if (object == 0)
+            break;
+        if (strcmp(object->name(), (const char *)&lbl_802FD2A0) == 0) {
+            entry = (int *)((char *)*(void **)lbl_80357E0C +
+                            *(int *)(lbl_80357E0C + 4) * 0x14);
+            *(int *)(lbl_80357E0C + 4) = *(int *)(lbl_80357E0C + 4) + 1;
+            entry[0] = (int)object->value(lbl_80558C30);
+            entry[1] = (int)object->value(lbl_80558C38);
+            entry[2] = (int)object->other(lbl_80558C40);
+            *((char *)entry + 0xC) = (char)zero;
+            entry[4] = found++;
+        }
+        ++index;
+    }
+    fn_80265DCC(*(void **)lbl_80357E0C, *(int *)(lbl_80357E0C + 4), 0x14, fn_80018B7C);
+}
+#pragma cplusplus reset
 void fn_80018CCC(void) {
     extern void *lbl_8055D58C;
     extern void *lbl_803580A4;
@@ -318,31 +333,33 @@ s32 fn_80019144(s32 arg0) {
     char *entry;
     s32 value0;
     s32 value1;
+    s32 found2;
+    s32 result;
 
     name = (const char *)arg0;
     index = 0;
     offset = 0;
-    goto loop;
-loop:
-    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0)
-        goto advance;
-    goto found;
-advance:
-    offset += 0x10;
-    index++;
-    if (index < *(s32 *)((char *)&lbl_803580A4 + 4))
-        goto loop;
+    while (index < *(volatile s32 *)((char *)&lbl_803580A4 + 4)) {
+        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
+            goto found;
+        offset += 0x10;
+        index++;
+    }
     index = -1;
 found:
     entry = (char *)lbl_803580A4 + index * 0x10 + 4;
     if (index < 0) entry = 0;
-    if (entry == 0) return 0;
-    if (lbl_8055D588 != 0) return 1;
-    value0 = fn_8001EFC0(0, arg0);
-    offset = *(s32 *)entry <= value0;
-    value1 = fn_8001EFC0(1, arg0);
-    if (offset != 0) return 1;
-    if (*(s32 *)(entry + 4) <= value1) return 1;
+    if (entry != 0) {
+        if ((u8)lbl_8055D588 != 0) return 1;
+        value0 = fn_8001EFC0(0, arg0);
+        offset = *(s32 *)entry <= value0;
+        value1 = fn_8001EFC0(1, arg0);
+        found2 = *(s32 *)(entry + 4) <= value1;
+        result = 0;
+        if (offset != 0 || found2 != 0)
+            result = 1;
+        return result;
+    }
     return 0;
 }
 #pragma pop
@@ -389,8 +406,9 @@ extern void *lbl_802FD2A0;
 #pragma scheduling invalid_target
 void fn_8001931C(s32 name) {
     register s32 name_r = name;
-    register s32 offset = 0;
+    register char *strings = (char *)&lbl_802FD2A0;
     register s32 i = 0;
+    register s32 offset = 0;
     char *p;
 
 loop:
@@ -398,9 +416,9 @@ loop:
         goto advance;
     goto found;
 advance:
-    offset += 0x10;
     i++;
-    if (i < *(s32 *)((char *)&lbl_803580A4 + 4))
+    offset += 0x10;
+    if (i < *(volatile s32 *)((char *)&lbl_803580A4 + 4))
         goto loop;
     i = -1;
 found:
@@ -411,15 +429,15 @@ found:
         s32 inRange = *(s32 *)p <= fn_8001EFC0(0, name_r);
         s32 pastEnd = fn_8001EFC0(1, name_r) >= *(s32 *)(p + 4);
         if (pastEnd) {
-            fn_80131234((char *)&lbl_802FD2A0 + 0x94);
+            fn_80131234(strings + 0x94);
             return;
         }
         if (inRange) {
-            fn_80131234((char *)&lbl_802FD2A0 + 0xBC);
+            fn_80131234(strings + 0xBC);
             return;
         }
     }
-    fn_80131234((char *)&lbl_802FD2A0 + 0xE4);
+    fn_80131234(strings + 0xE4);
 }
 #pragma pop
 s32 fn_80019438(void) {
