@@ -15,25 +15,26 @@ struct Dummy {
 void fn_802CCBC0(void) {}
 
 extern void *memcpy(void *, const void *, unsigned int);
-extern float PSVECDotProduct(float *, float *, float, float, float, float);
+extern float PSVECDotProduct(float *, float *, ...);
 int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
-    unsigned int a, b, c, d;
     float box[4];
     float delta[3];
+    unsigned int words[4];
     float dot;
-    int mask = 0;
+    int mask;
 
-    a = *(unsigned int *)((char *)arg0 + 0);
-    b = *(unsigned int *)((char *)arg0 + 4);
-    c = *(unsigned int *)((char *)arg0 + 8);
-    d = *(unsigned int *)((char *)arg0 + 12);
-    memcpy(box, &a, 0x10);
+    words[0] = *(unsigned int *)((char *)arg0 + 0);
+    words[1] = *(unsigned int *)((char *)arg0 + 4);
+    words[2] = *(unsigned int *)((char *)arg0 + 8);
+    words[3] = *(unsigned int *)((char *)arg0 + 12);
+    memcpy(box, words, 0x10);
 
     delta[0] = arg1[0] - *(float *)((char *)arg0 + 0x10);
     delta[1] = arg1[1] - *(float *)((char *)arg0 + 0x14);
     delta[2] = arg1[2] - *(float *)((char *)arg0 + 0x18);
-    dot = PSVECDotProduct(delta, delta, delta[2], delta[1], delta[0], 0.0f);
+    dot = ((float (*)(float *, float *))PSVECDotProduct)(delta, delta);
     dot = arg3 * (arg2 + dot);
+    mask = 0;
 
     if (box[0] > dot) mask |= 1;
     if (box[0] < -dot) mask |= 2;
