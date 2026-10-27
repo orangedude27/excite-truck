@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+extern "C" u8 lbl_802F3408[];
 extern "C" void fn_800B78F4(void *, void *);
 extern "C" s32 WPADSetSamplingCallback(s32, void *);
 extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
@@ -7729,6 +7730,17 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
     }
 }
 
+extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
+    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, arg2);
+    while ((value & 0xFFFFU) != 0xFFFU) {
+        value = (value * 2) & 0xFFFEU;
+        value |= ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 1, arg2);
+        if (*arg2 > 0x3FFF)
+            return 0;
+    }
+    return 1;
+}
+
 extern "C" u8 lbl_802F3408[];
 extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
     register s32 remaining = bitCount;
@@ -11525,23 +11537,18 @@ void homebutton::gui::Manager::init() {
         virtual void init();
     };
     void *list = (u8 *)this + 8;
-    u16 index = 0;
+    s32 index = 0;
     void *entry;
     ComponentDispatch *component;
 
     do {
-        entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, index);
+        entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)this + 8, (u16)index);
         component = *(ComponentDispatch **)((u8 *)entry + 4);
         component->init();
         index++;
-    } while (list != 0);
-
-    Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
-    if (index < *(u16 *)((u8 *)this + 0x10)) {
-        entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, index);
-        component = *(ComponentDispatch **)((u8 *)entry + 4);
-        component->init();
-    }
+        if (list == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    } while ((u32)index < *(u16 *)((u8 *)this + 0x10));
 }
 
 extern "C" void fn_800CFAC8(void *arg0) {
@@ -11623,15 +11630,26 @@ extern "C" void calc__Q310homebutton3gui7ManagerFv_800CFDEC(void *arg0) {
 }
 
 extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(void *arg0) {
-    u16 i = 0;
+    class ComponentDispatch {
+    public:
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void draw();
+    };
+    typedef void (*PanicFn)(const char *, s32, const char *, ...);
     void *list = (u8 *)arg0 + 8;
+    s32 i = 0;
+
     do {
-        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, i);
-        void *obj = *(void **)((u8 *)entry + 4);
-        ((void (*)(void *))(*(u32 *)(*(u32 *)obj + 0x18)))(obj);
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 8, (u16)i);
+        ComponentDispatch *obj = *(ComponentDispatch **)((u8 *)entry + 4);
+        obj->draw();
         i++;
-        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
-    } while (i < *(u16 *)((u8 *)arg0 + 0x10));
+        if (list == 0)
+            ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)(lbl_805597D0, 0xCF, lbl_8031E938);
+    } while ((u32)i < *(u16 *)((u8 *)arg0 + 0x10));
 }
 
 #pragma push
