@@ -67,7 +67,7 @@ extern f32 lbl_8055D394;
 extern f32 lbl_805601B8;
 extern f32 lbl_805601BC;
 extern f32 lbl_805601D0;
-#pragma dont_inline fn_8000865C
+#pragma dont_inline on
 s32 fn_80008C5C(void) {
     unsigned char sp[0x68];
     s32 old = lbl_805589EC;
