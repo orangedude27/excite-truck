@@ -3409,11 +3409,11 @@ void GXSetClipMode(s32 arg0) {
 }
 
 void __GXSetMatrixIndex(s32 arg0) {
-    unsigned int *data = __GXData;
-
+    unsigned int *data;
     if (arg0 < 5) {
         *(volatile unsigned char *)0xCC008000 = 8;
         *(volatile unsigned char *)0xCC008000 = 0x30;
+        data = __GXData;
         *(volatile unsigned int *)0xCC008000 = data[0x80 / 4];
         *(volatile unsigned char *)0xCC008000 = 0x10;
         *(volatile unsigned int *)0xCC008000 = 0x1018;
@@ -3421,6 +3421,7 @@ void __GXSetMatrixIndex(s32 arg0) {
     } else {
         *(volatile unsigned char *)0xCC008000 = 8;
         *(volatile unsigned char *)0xCC008000 = 0x40;
+        data = __GXData;
         *(volatile unsigned int *)0xCC008000 = data[0x84 / 4];
         *(volatile unsigned char *)0xCC008000 = 0x10;
         *(volatile unsigned int *)0xCC008000 = 0x1019;
