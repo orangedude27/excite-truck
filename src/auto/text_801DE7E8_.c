@@ -44,6 +44,38 @@ void fn_801DE88C(void) {
 
 }
 
+#pragma small_data off
+int fn_801DE9F0(int arg0, int arg1) {
+    float value;
+    int bits;
+    unsigned long long time;
+
+    if (arg0 != 8 || lbl_8055E9E0 < *(int*)((char*)lbl_804873B8 + 4)) {
+        if (arg0 == 8) {
+            int count = lbl_8055E9E0;
+            int *table = *(int**)lbl_804873B8;
+            memcpy(lbl_804872B0 + 0xE0, (char*)table + count * 0x1C, 0x1C);
+            lbl_8055E9E0 = count + 1;
+        }
+        bits = lbl_8055E9DC;
+        lbl_8055E9E8 = arg0;
+        lbl_8055E9DC = bits | (1 << arg0);
+        time = fn_802E2C9C(bits);
+        *(unsigned long long*)&lbl_8055ADF0 = time;
+        if (lbl_8055E9F0 != 0 && arg1 != 0) {
+            value = lbl_80562BF4;
+            fn_801331C4(4, &lbl_803394FC, &value);
+            if (value != *(float*)((char*)lbl_8055E9F0 + 8)) {
+                *((unsigned char*)lbl_8055E9F0 + 0x4D) = 1;
+                *(float*)((char*)lbl_8055E9F0 + 8) = value;
+            }
+            *((unsigned char*)lbl_8055E9F0 + 0x49) = 1;
+            *((unsigned char*)lbl_8055E9F0 + 0x4B) = 0;
+            *((unsigned char*)lbl_8055E9F0 + 0x4A) = 0;
+        }
+    }
+}
+
 unsigned int fn_801DEB6C(const char *arg0) {
     extern const char *lbl_802F99C8[7];
     extern int stricmp(const char *, const char *);
@@ -134,25 +166,41 @@ extern void fn_8000FF88(int, int, int, float, float, float);
 extern void fn_801DE890(int);
 extern void fn_80011A2C(void);
 int fn_801DF110(void) {
-    int idx = lbl_8055E9E8;
-    int *base = (int *)((char *)&lbl_804872B0);
-    int *entry;
-    int (*callback)(int, int);
-    int *object;
-    if (idx == 0) return 0;
-    if (fn_801769F8() == 0) return 1;
-    entry = base + idx * 7;
-    callback = (int (*)(int,int))entry[6];
-    if (callback == 0) {
-        fn_80011278(-1, lbl_80562BF8, lbl_80562BFC, lbl_80562C00, lbl_80562C04);
-        fn_800103B8(-1, 0xC, (int)&lbl_8055AE28, entry[1], lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C);
-        fn_8000FF88(-1, 0xC, (int)&lbl_803395C4, lbl_80562BF4, lbl_80562BE8, lbl_80562C10);
-        fn_801DE890(idx);
-    } else callback(entry[2], entry[1]);
-    object = (int *)entry[4];
-    if (object != 0) (*(void (**)(void))(*(int *)*object + 0xC))();
-    fn_80011A2C();
-    return 1;
+    struct Entry {
+        int field0;
+        int arg1;
+        int arg2;
+        int field3;
+        void *object;
+        int field5;
+        int (*callback)(int, int);
+    };
+    if (lbl_8055E9E8 != 0) {
+        if (fn_801769F8() != 0) {
+            char *base = lbl_804872B0;
+            struct Entry *entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
+            int (*callback)(int, int) = entry->callback;
+
+            if (callback != 0) {
+                callback(entry->arg2, entry->arg1);
+            } else {
+                fn_80011278(-1, lbl_80562BF8, lbl_80562BFC, lbl_80562C00, lbl_80562C04);
+                entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
+                ((void (*)(int, int, float, float, float, float, const char *, ...))fn_800103B8)(
+                    -1, 0xC, lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C, (const char *)&lbl_8055AE28, entry->arg1);
+                ((void (*)(int, int, const char *, float, float, float, ...))fn_8000FF88)(
+                    -1, 0xC, (const char *)lbl_803395C4, lbl_80562BF4, lbl_80562BE8, lbl_80562C10);
+                fn_801DE890(lbl_8055E9E8);
+            }
+
+            entry = (struct Entry *)(lbl_804872B0 + lbl_8055E9E8 * 0x1C);
+            if (entry->object != 0)
+                ((void (*)(void *))(*(void **)((char *)(*(void **)entry->object) + 0xC)))(entry->object);
+            fn_80011A2C();
+            return 1;
+        }
+    }
+    return 0;
 }
 
 int fn_801DF238(int arg0) {
