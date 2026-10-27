@@ -486,6 +486,27 @@ extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     *(s32 *)((u8 *)arg0 + 0x2C) = zero;
 }
 
+#pragma dont_inline on
+extern "C" void fn_8021915C(void *arg0, u32 arg1) {
+    s32 i;
+    u8 *entry;
+
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_8033FB38;
+        entry = (u8 *)arg0;
+        i = 0;
+        do {
+            fn_80128670(*(s32 *)(entry + 0x3C));
+            entry += 0x10;
+            i++;
+        } while (i < *(s32 *)((u8 *)arg0 + 0x230));
+        if ((s32)arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+}
+#pragma dont_inline off
+
 extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r0;
     s32 temp_r3;
@@ -954,28 +975,27 @@ extern "C" void fn_8021AA18(void *arg0) {
 extern "C" s32 fn_8021AB88(void) { return 0; }
 
 extern "C" s32 fn_8021AB90(void *arg0, s32 arg1) {
-    u8 *base = (u8 *)arg0;
-    s32 ret;
-    if (*(u8 *)fn_80216708() != 0 && arg1 != 0x127) {
-        if (arg1 < 0x127) {
-            if (arg1 < 0x126) {
-                ret = fn_802192A4(arg0, arg1);
-            } else {
-                fn_80217AC0(*(s32 *)(base + 0x2C));
-                ret = 1;
-            }
-        } else {
-            if (arg1 < 0x129) {
-                fn_802179A0(*(s32 *)(base + 0x2C));
-                ret = 1;
-            } else {
-                ret = fn_802192A4(arg0, arg1);
-            }
-        }
-    } else {
-        ret = fn_802192A4(arg0, arg1);
-    }
-    return ret;
+    if (*(u8 *)fn_80216708() == 0)
+        goto fallback;
+    if (arg1 == 0x127)
+        goto fallback;
+    if (arg1 >= 0x127)
+        goto checkUpper;
+    if (arg1 >= 0x126)
+        goto callLower;
+    goto fallback;
+checkUpper:
+    if (arg1 >= 0x129)
+        goto fallback;
+    goto callUpper;
+callLower:
+    fn_80217AC0(*(s32 *)((u8 *)arg0 + 0x2C));
+    return 1;
+callUpper:
+    fn_802179A0(*(s32 *)((u8 *)arg0 + 0x2C));
+    return 1;
+fallback:
+    return fn_802192A4(arg0, arg1);
 }
 
 extern "C" void fn_8021AC24(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -1074,33 +1094,34 @@ extern "C" void *fn_8021B0CC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     *(s32 *)((u8 *)arg0 + 0x260) = arg6;
     return arg0;
 }
-#pragma dont_inline reset
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8021B134(void *arg0) {
     s32 *p = *(s32 **)((u8 *)arg0 + 0x254);
     s32 increment = *(s32 *)((u8 *)arg0 + 0x260);
     s32 value = *p;
-    s32 start = *(s32 *)((u8 *)arg0 + 0x258);
-    s32 end = *(s32 *)((u8 *)arg0 + 0x25C);
-    *p = value + increment;
-    s32 flag = end - start - 2 == 0;
-    p = *(s32 **)((u8 *)arg0 + 0x254);
-    if (*p >= end) {
-        if (flag)
-            *p = *(s32 *)((u8 *)arg0 + 0x258);
-        else
-            *p = end - 1;
-    }
-    p = *(s32 **)((u8 *)arg0 + 0x254);
+    s32 end;
+    s32 start;
     start = *(s32 *)((u8 *)arg0 + 0x258);
-    if (*p < start) {
+    end = *(s32 *)((u8 *)arg0 + 0x25C);
+    *p = value + increment;
+    s32 *check = *(s32 **)((u8 *)arg0 + 0x254);
+    s32 flag = end - start - 2 == 0;
+    if (*check >= *(s32 *)((u8 *)arg0 + 0x25C)) {
         if (flag)
-            *p = *(s32 *)((u8 *)arg0 + 0x25C) - 1;
+            *check = *(s32 *)((u8 *)arg0 + 0x258);
         else
-            *p = start;
+            *check = *(s32 *)((u8 *)arg0 + 0x25C) - 1;
+    }
+    if (*(*(s32 **)((u8 *)arg0 + 0x254)) < *(s32 *)((u8 *)arg0 + 0x258)) {
+        if (flag)
+            *(*(s32 **)((u8 *)arg0 + 0x254)) = *(s32 *)((u8 *)arg0 + 0x25C) - 1;
+        else
+            *(*(s32 **)((u8 *)arg0 + 0x254)) = *(s32 *)((u8 *)arg0 + 0x258);
     }
 }
-
-#pragma dont_inline on
+#pragma scheduling on
+#pragma pop
 extern "C" void *fn_8021B1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     void *vtable;
 
@@ -1180,7 +1201,6 @@ extern "C" void fn_8021B3BC(void *arg0, s32 arg1) {
     fn_802C3424(*(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 0x248), *(s32 *)((u8 *)arg0 + 0x24C), *(s32 *)((u8 *)arg0 + 0x250), *(s32 *)((u8 *)arg0 + 0x254));
 }
 
-extern "C" void fn_8021915C(void*, u32);
 extern "C" s32 fn_80128668(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
     void* this_, s32 flag) {
@@ -3616,8 +3636,56 @@ loop_test:
         lbl_805634EC + temp_f29, temp_f31 - lbl_805634EC,
         *(f32 *)((u8 *)arg0 + 0x404), lbl_805634A8, lbl_805634A4);
 }
+
+extern "C" void fn_802235B4(void *arg0) {
+    s32 *position = (s32 *)((u8 *)arg0 + 0x2CC);
+    s32 index = *position;
+    s32 limit = *(s32 *)((u8 *)arg0 + 0x2C8);
+    s32 i;
+
+    for (i = 1; i < limit - index; i++) {
+        if (((u8 *)arg0)[0x2D0 + index + i] != 0) {
+            *position += i;
+            fn_8022375C();
+            return;
+        }
+    }
+
+    for (i = index; i > 0; i--) {
+        if (((u8 *)arg0)[0x2D0 + index - i] != 0) {
+            *position -= i;
+            fn_8022375C();
+            return;
+        }
+    }
+}
+
+#pragma scheduling invalid_target
+extern "C" void fn_80223644(void *arg0) {
+    s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
+    s32 i = 1;
+    s32 cur = *pIndex;
+    while (cur - i >= 0) {
+        u8 *p = (u8 *)arg0 + (cur - i);
+        if (p[0x2D0] != 0) {
+            *pIndex -= i;
+            fn_8022375C();
+            return;
+        }
+        i++;
+    }
+    s32 count = *(s32 *)((u8 *)arg0 + 0x2C8);
+    u8 *base = (u8 *)arg0 + cur;
+    for (s32 j = count - cur - 1; j > 0; j--) {
+        u8 *p = base + j;
+        if (p[0x2D0] != 0) {
+            *pIndex += j;
+            fn_8022375C();
+            return;
+        }
+    }
+}
 #pragma scheduling on
-#pragma pop
 extern "C" void fn_8022375C(void);
 extern "C" void fn_802235B4(void *);
 extern "C" void fn_80223644(void *);
