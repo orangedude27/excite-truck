@@ -1076,14 +1076,28 @@ extern "C" void *fn_8021B0CC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 }
 #pragma dont_inline reset
 extern "C" void fn_8021B134(void *arg0) {
- s32 *p=*(s32 **)((u8 *)arg0+0x254);
- *p += *(s32 *)((u8 *)arg0+0x260);
- s32 flag=(*(s32 *)((u8 *)arg0+0x25c)-*(s32 *)((u8 *)arg0+0x258)-2)==0;
- s32 end=*(s32 *)((u8 *)arg0+0x25c);
- if (*p>=end) { if(flag) *p=*(s32 *)((u8 *)arg0+0x258); else *p=end-1; }
- p=*(s32 **)((u8 *)arg0+0x254);
- s32 start=*(s32 *)((u8 *)arg0+0x258);
- if (*p<start) { if(flag) *p=*(s32 *)((u8 *)arg0+0x25c)-1; else *p=start; }
+    s32 *p = *(s32 **)((u8 *)arg0 + 0x254);
+    s32 increment = *(s32 *)((u8 *)arg0 + 0x260);
+    s32 value = *p;
+    s32 start = *(s32 *)((u8 *)arg0 + 0x258);
+    s32 end = *(s32 *)((u8 *)arg0 + 0x25C);
+    *p = value + increment;
+    s32 flag = end - start - 2 == 0;
+    p = *(s32 **)((u8 *)arg0 + 0x254);
+    if (*p >= end) {
+        if (flag)
+            *p = *(s32 *)((u8 *)arg0 + 0x258);
+        else
+            *p = end - 1;
+    }
+    p = *(s32 **)((u8 *)arg0 + 0x254);
+    start = *(s32 *)((u8 *)arg0 + 0x258);
+    if (*p < start) {
+        if (flag)
+            *p = *(s32 *)((u8 *)arg0 + 0x25C) - 1;
+        else
+            *p = start;
+    }
 }
 
 #pragma dont_inline on
@@ -3489,6 +3503,7 @@ outer_test:
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
 
 extern "C" s32 fn_802236C8(void *, s32);
+extern "C" void fn_8022375C(void);
 extern "C" void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
 extern "C" f32 lbl_805634F4;
 extern "C" f32 lbl_80563534;
