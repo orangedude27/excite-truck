@@ -16187,8 +16187,8 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
 
 #pragma pop
 s32 homebutton::HomeButton::getPaneNo(const char *name) {
-    register s32 result = -1;
     register s32 count = *(s32 *)((u8 *)this + 8);
+    register s32 result = -1;
     register s32 i;
     for (i = 0; i < count; i++) {
         if (strcmp(name, lbl_8031D990[i]) == 0) {
@@ -16196,9 +16196,10 @@ s32 homebutton::HomeButton::getPaneNo(const char *name) {
             break;
         }
     }
-    for (i = 0; i < 10; i++) {
-        if (strcmp(name, lbl_8031E218[i]) == 0) {
-            result = count + i;
+    register s32 j;
+    for (j = 0; j < 10; j++) {
+        if (strcmp(name, lbl_8031E218[j]) == 0) {
+            result = j + count;
             break;
         }
     }
