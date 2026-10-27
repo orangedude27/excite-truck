@@ -38,10 +38,10 @@ void fn_80007D94(const char** arg0, const char** arg1) {
 
 extern void *fn_80131808(void *);
 extern char lbl_802FB6E0[];
-extern const char lbl_80558978[];
-extern const char lbl_80558980[];
-extern const char lbl_80558988[];
-extern const char lbl_80558990[];
+DECL_SECTION(".sdata") extern const char lbl_80558978[];
+DECL_SECTION(".sdata") extern const char lbl_80558980[];
+DECL_SECTION(".sdata") extern const char lbl_80558988[];
+DECL_SECTION(".sdata") extern const char lbl_80558990[];
 void fn_80007DA0(void) {
     char *base;
     volatile u32 *global;
