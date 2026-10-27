@@ -56,6 +56,7 @@ void fn_802D992C(void) {
     ((void (*)(void))jumptable_8034C848[state + 1])();
 }
 
+#pragma pop
 BOOL fn_802D9BF0(void) {
     return lbl_8055FE3C != 0;
 }
