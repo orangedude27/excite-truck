@@ -131,7 +131,7 @@ struct PaneAnimLink {
 extern "C" const char lbl_8031E8FC[];
 extern "C" const char lbl_8031E8D8[];
 
-extern "C" void *lbl_8031F628;
+extern "C" char lbl_8031F628[];
 extern "C" const char lbl_8031F6C4[];
 extern "C" const char lbl_8031F6E8[];
 extern "C" void *memcpy(void *, const void *, unsigned int);
@@ -326,6 +326,39 @@ extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
 extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
     extern s32 fn_80128668(void);
     if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
+extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
+extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
+    extern const char lbl_8031E764[];
+    extern const char lbl_8031E740[];
+    extern const char lbl_8031F718[];
+    extern const char lbl_8031F6F4[];
+    void* node;
+    void* end;
+    void* current;
+    void* slot;
+    if (arg0 != 0) {
+        node = *(void**)((u8*)arg0 + 0x10);
+        end = (u8*)arg0 + 0x10;
+        *(void**)arg0 = &lbl_8031F628;
+        while (node != end) {
+            current = node;
+            node = *(void**)node;
+            slot = current;
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8*)arg0 + 0x0C, &slot);
+            if (current == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E764, 0x23D, lbl_8031E740);
+            if (current == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F718, 0x193, lbl_8031F6F4);
+            MEMFreeToAllocator(lbl_8055DDF0, current);
+        }
+        if ((u8*)arg0 + 0x0C != 0)
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8*)arg0 + 0x0C, 0);
+        if (arg1 > 0)
+            ((void (*)(void*))fn_80128668)(arg0);
+    }
     return arg0;
 }
 
