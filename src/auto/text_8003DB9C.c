@@ -433,6 +433,40 @@ unsigned int GXSetBreakPtCallback(unsigned int value) {
     return old;
 }
 
+void GXEnableBreakPt(u32 address) {
+    s32 interruptState = OSDisableInterrupts();
+    s32 value;
+    s32 cleared;
+    u32 addressField;
+    unsigned char *data;
+
+    data = (unsigned char *)__GXData;
+    addressField = (address >> 16) & 0x3FFF;
+    value = *(u32 *)(data + 8);
+    cleared = __rlwinm(value, 0, 0, 30);
+    *(u32 *)(data + 8) = cleared;
+    *(volatile s16 *)((u8 *)__cpReg + 2) = (s16)cleared;
+    *(volatile s16 *)((u8 *)__cpReg + 0x3C) = (s16)address;
+    *(volatile s16 *)((u8 *)__cpReg + 0x3E) = (s16)addressField;
+
+    value = *(u32 *)(data + 8);
+    value = __rlwinm(value, 0, 31, 29);
+    cleared = __rlwinm(value, 0, 27, 25);
+    *(u32 *)(data + 8) = cleared;
+    *(volatile s16 *)((u8 *)__cpReg + 2) = (s16)cleared;
+
+    value = *(u32 *)(data + 8) | 0x22;
+    *(u32 *)(data + 8) = value;
+    *(volatile s16 *)((u8 *)__cpReg + 2) = (s16)value;
+
+    lbl_8055D950 = address;
+    value = *(u32 *)(data + 8) | 1;
+    *(u32 *)(data + 8) = value;
+    *(volatile s16 *)((u8 *)__cpReg + 2) = (s16)value;
+
+    ((void (*)(s32))OSRestoreInterrupts)(interruptState);
+}
+
 void GXDisableBreakPt(void) {
     unsigned char *data;
     unsigned int value;
@@ -3569,18 +3603,22 @@ void GXClearGPMetric(void) {
 }
 
 void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    volatile unsigned short *cp;
-    unsigned int first, second, low;
-    cp=__cpReg; first=cp[0x42/2]; second=first;
-    do { low=cp[0x40/2]; second=cp[0x42/2]; } while (second != first);
-    *arg2=(second<<16)|low;
-    cp=__cpReg; first=cp[0x46/2]; second=first;
-    do { low=cp[0x44/2]; second=cp[0x46/2]; } while (second != first);
-    *arg3=(second<<16)|low;
-    cp=__cpReg; first=cp[0x4A/2]; second=first;
-    do { low=cp[0x48/2]; second=cp[0x4A/2]; } while (second != first);
-    *arg0=(second<<16)|low;
-    cp=__cpReg; first=cp[0x4E/2]; second=first;
-    do { low=cp[0x4C/2]; second=cp[0x4E/2]; } while (second != first);
-    *arg1=(second<<16)|low;
-}typedef struct { unsigned int unk[9]; unsigned char unk24[3]; } GXSetCPUFifoObj;
+    unsigned int high, low;
+    high=((volatile unsigned short *)__cpReg)[0x42/2];
+    do { low=((volatile unsigned short *)__cpReg)[0x40/2]; }
+    while (high != ((volatile unsigned short *)__cpReg)[0x42/2]);
+    *arg2=(high<<16)|low;
+    high=((volatile unsigned short *)__cpReg)[0x46/2];
+    do { low=((volatile unsigned short *)__cpReg)[0x44/2]; }
+    while (high != ((volatile unsigned short *)__cpReg)[0x46/2]);
+    *arg3=(high<<16)|low;
+    high=((volatile unsigned short *)__cpReg)[0x4A/2];
+    do { low=((volatile unsigned short *)__cpReg)[0x48/2]; }
+    while (high != ((volatile unsigned short *)__cpReg)[0x4A/2]);
+    *arg0=(high<<16)|low;
+    high=((volatile unsigned short *)__cpReg)[0x4E/2];
+    do { low=((volatile unsigned short *)__cpReg)[0x4C/2]; }
+    while (high != ((volatile unsigned short *)__cpReg)[0x4E/2]);
+    *arg1=(high<<16)|low;
+}
+typedef struct { unsigned int unk[9]; unsigned char unk24[3]; } GXSetCPUFifoObj;
