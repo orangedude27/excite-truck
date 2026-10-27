@@ -40,8 +40,6 @@ void AXFXSetHooks_8011FFB8();
 void fn_80120084();
 extern void *lbl_8055DEF8;
 extern void *lbl_8055DEFC;
-extern void *lbl_80559948[];
-extern u32 lbl_8055994C[];
 extern void fn_80127F70(void*);
 extern void fn_80127F94(void*);
 extern s32 fn_8011A7CC(DVDFileInfo *);
@@ -1223,6 +1221,21 @@ s32 fn_80119CB0(void *arg0, s32 arg1) {
         *(s32 *)((u8 *)arg0 + 0xb4) = 0;
     }
     return *var_r3;
+}
+
+void fn_80119D40(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 0x7C) != 0) {
+        *(s32 *)((u8 *)arg0 + 0xB4) = 1;
+        fn_8011943C((u8 *)arg0 + 0x7C, 0);
+        if (*(s32 *)((u8 *)arg0 + 0x7C) != 0)
+            TRKGetFreeBuffer((void *)*(u32 *)((u8 *)arg0 + 0x7C));
+        if (*(s32 *)((u8 *)arg0 + 0x80) != 0)
+            TRKGetFreeBuffer((void *)*(u32 *)((u8 *)arg0 + 0x80));
+        ((void (*)(s32, s32 *))(*(void **)((u8 *)&lbl_8055DEE0 + 4)))(
+            *(s32 *)((u8 *)arg0 + 0x84), &lbl_8055DEE0);
+        lbl_8055DEE8 -= 1;
+        *(s32 *)((u8 *)arg0 + 0x7C) = 0;
+    }
 }
 
 extern s32 TRKInitializeMessageBuffers(s32, s32, s32);
@@ -6041,6 +6054,25 @@ void fn_80126EF0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4, s32 arg5) {
     dst[5] = ((u8 *)temp)[59] + src[5];
     dst[6] = ((u8 *)temp)[62] + src[6];
     dst[7] = ((u8 *)temp)[63] + src[7];
+}
+
+void fn_80127398(s32 arg0) {
+    void *var_r31;
+    void *var_r30;
+    s32 var_r29;
+
+    if (arg0 >= -1 && arg0 < 4) {
+        var_r31 = (u8 *)lbl_8041D728 + arg0 * 0x14 + 0x14;
+    } else {
+        var_r31 = 0;
+    }
+    if (var_r31 != 0) {
+        var_r30 = var_r31;
+        for (var_r29 = 0; var_r29 < *(s32 *)var_r31; var_r29++) {
+            ((void (*)(void))*(void * volatile *)((u8 *)var_r30 + 4))();
+            var_r30 = (u8 *)var_r30 + 4;
+        }
+    }
 }
 
 extern char lbl_8055DF08;
