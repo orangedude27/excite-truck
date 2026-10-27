@@ -3,7 +3,6 @@
 
 #include <types.h>
 
-struct Fn80224DDCVec3 { f32 x, y, z; };
 
 extern "C" void *fn_8022EE9C(void);
 
@@ -3669,24 +3668,30 @@ extern "C" void fn_802235B4(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80223644(void *arg0) {
-    register u32 *pIndex = *(u32 **)((u8 *)arg0 + 0x2CC);
-    register s32 i = 1;
-    register u32 cur = *pIndex;
-    while ((s32)(cur - i) >= 0) {
+    s32 i = 1;
+    s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
+    s32 cur = *pIndex;
+
+    goto loop_cond;
+loop_body:
+    {
         u8 *p = (u8 *)arg0 + (cur - i);
         if (p[0x2D0] != 0) {
             *pIndex -= i;
             fn_8022375C();
             return;
         }
-        i++;
     }
+    i++;
+loop_cond:
+    if (cur - i >= 0) goto loop_body;
+
     s32 count = *(s32 *)((u8 *)arg0 + 0x2C8);
     u8 *base = (u8 *)arg0 + cur;
-    for (s32 j = count - cur - 1; j > 0; j--) {
-        u8 *p = base + j;
+    for (cur = count - cur - 1; cur > 0; cur--) {
+        u8 *p = base + cur;
         if (p[0x2D0] != 0) {
-            *pIndex += j;
+            *pIndex += cur;
             fn_8022375C();
             return;
         }
@@ -4128,7 +4133,12 @@ extern "C" s32 fn_80224B0C(void *arg0, s32 arg1) {
     return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
+    register f32 inputX = x;
+    register f32 inputY = y;
+    register f32 inputZ = z;
     f32 result[3];
     f32 scaled[3];
     f32 temp_f1;
@@ -4137,16 +4147,17 @@ extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
 
     *(u8 *)((u8 *)arg0 + 0x299) = 1;
     *(void **)((u8 *)arg0 + 0x29C) = fn_8022EE9C();
-    temp_f1 = lbl_805634F8 * x;
-    temp_f2 = lbl_805634F8 * y;
+    temp_f1 = lbl_805634F8 * inputX;
+    temp_f2 = lbl_805634F8 * inputY;
     scaled[0] = temp_f1;
     scaled[1] = temp_f2;
-    scaled[2] = lbl_805634F8 * z;
+    scaled[2] = lbl_805634F8 * inputZ;
     handle = *(s32 *)((u8 *)arg0 + 0x29C);
     ((void (*)(void *, f32 *, f32, f32))fn_80015A20)(&result[0], &scaled[0], temp_f1, temp_f2);
     fn_80015B20((void *)handle, &result[0], (void *)handle);
 }
-
+#pragma scheduling on
+#pragma pop
 extern "C" u8 lbl_8033DA84[];
 extern "C" u8 lbl_8033DAEC[];
 extern "C" u8 lbl_8033E140[];
@@ -4576,6 +4587,8 @@ extern "C" void *fn_80226F00(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma ppc_psq_save off
 extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     f32 result[3];
     f32 scaled[3];
@@ -4594,7 +4607,7 @@ extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     ((void (*)(void *, f32 *, f32, f32))fn_80015A20)(&result[0], &scaled[0], temp_f1, temp_f2);
     fn_80015B20((void *)handle, &result[0], (void *)handle);
 }
-
+#pragma pop
 extern "C" void fn_80227244(void *arg0, s32 arg1) {
     register void *obj = arg0;
     if (obj == 0)
