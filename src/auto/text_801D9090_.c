@@ -265,6 +265,7 @@ extern "C" int fn_801D94DC(void *head, void *list, const char *name, int object)
     }
     return 0;
 }
+#pragma use_lmw_stmw on
 #pragma cplusplus reset
 
 void fn_801D9828(void) {
