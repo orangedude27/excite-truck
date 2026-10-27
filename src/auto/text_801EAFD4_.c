@@ -333,7 +333,7 @@ void fn_801EB6A4(void) {
 
 #pragma dont_inline on
 #pragma cplusplus on
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" s32 fn_802C6DC4(const char *, s32, s32, s32);
 extern "C" void fn_802C6FA8(s32);
 extern "C" char lbl_80339FD4[];
@@ -368,8 +368,12 @@ extern "C" void fn_801EB6A8(s32 arg0) {
         type = node[0];
         if (type == 4) goto state4;
         if (type >= 4) goto high;
-        if (type == 0) goto state0;
-        goto error;
+        switch (type) {
+        case 0:
+            goto state0;
+        default:
+            goto error;
+        }
 high:
         if (type >= 0x104) goto error;
         if (type < 0x101) goto error;
