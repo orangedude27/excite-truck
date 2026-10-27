@@ -1,5 +1,7 @@
   #include <types.h>
 #include <macros.h>
+extern "C" u8 lbl_80407560[0x18];
+extern "C" s32 lbl_8055DD6C;
 extern "C" s32 lbl_80559248;
 extern "C" s32 *lbl_8055DD70;
 extern "C" void *lbl_8055DD7C;
@@ -2573,8 +2575,8 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     s32 temp_r30;
     s32 temp_r3;
     s32 temp_r4;
-    register u8 temp_r7;
-    register void *temp_r5;
+    u8 temp_r7;
+    void *temp_r5;
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
     temp_r30 = *(s32 *)arg0;
     *(void **)((u8 *)arg0 + 4) = temp_r5;
@@ -2629,27 +2631,48 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void* arg0) {
 }
 
 extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
-    u32 index = M2C_FIELD(arg0, u32 *, 0);
-    u32 next = index + 1;
+    void *iter = arg0;
     s32 result;
-    if (index == next && M2C_FIELD(arg0, u32 *, 0x44) + 0x10000 == 0xFFFFFFFF && arg1 == 0) {
-        M2C_FIELD(arg0, u32 *, 0) = next;
-        result = fn_800AB378(arg0, 0, 0, 0);
-        if (result) {
-            M2C_FIELD(arg0, u32 *, 0) = index;
-            fn_800AB378(arg0, 0, 0, 0);
-            return result;
-        }
+    s32 error;
+    u32 length;
+    u32 next;
+    u32 index = *(u32 *)iter;
+    next = index + 1;
+
+    if (index != next)
+        goto normal;
+    if (*(u32 *)((u8 *)iter + 0x44) + 0x10000 != 0xFFFF)
+        goto normal;
+    if (arg1 != 0)
+        goto zero;
+    *(u32 *)iter = next;
+    result = ((s32 (*)(void *, s32))fn_800AB378)(iter, arg1);
+    if (result != 0) {
+        *(u32 *)iter = index;
+        ((s32 (*)(void *, s32))fn_800AB378)(iter, 0);
+        goto done;
     }
-    if (M2C_FIELD(arg0, u32 *, 0x44) + 0x10000 == 0xFFFFFFFF) {
-        result = 0x10;
+normal:
+    if (*(u32 *)((u8 *)iter + 0x44) + 0x10000 == 0xFFFF) {
+        error = 0x10;
     } else {
-        u32 length;
-        result = fn_800B5324((void *)M2C_FIELD(arg0, s32 *, 4), (u8 *)arg0 + 0x4C,
-                             (u32)M2C_FIELD(arg0, u16 *, 0x48), 0x20, &length, 0);
-        if (length != 0x20) result = 0x11;
+        result = fn_800B5324(*(void **)((u8 *)iter + 4),
+                             (u8 *)iter + 0x4C,
+                             *(u32 *)((u8 *)iter + 0x44),
+                             *(u16 *)((u8 *)iter + 0x48),
+                             0x20,
+                             &length,
+                             0);
+        error = 0x11;
+        if (length == 0x20)
+            error = result;
     }
-    result &= (s32)(-(u32)result | (u32)result) >> 31;
+    result = error & ((-error | error) >> 31);
+    if (result != 0)
+        return result;
+zero:
+    result = 0;
+done:
     return result;
 }
 
