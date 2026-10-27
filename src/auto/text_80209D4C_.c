@@ -135,6 +135,8 @@ extern "C" void fn_80209E94(void *arg0) {
         ((void (*)(void *))(*(void ***)obj)[3])(obj);
     }
 }
+#pragma cplusplus reset
+#pragma pop
 #pragma scheduling on
 
 #pragma scheduling on
