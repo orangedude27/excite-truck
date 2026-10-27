@@ -4271,6 +4271,23 @@ extern "C" void fn_8022419C(void *arg0) {
  s32 ptr=*(s32 *)((u8 *)arg0+0x254); if(ptr) fn_802ED038(ptr,*(f32 *)((u8 *)arg0+0x244),*(f32 *)((u8 *)arg0+0x248),*(f32 *)((u8 *)arg0+0x24C),*(f32 *)((u8 *)arg0+0x250));
 }
 
+extern "C" void *fn_802241C8(void *arg0, void *arg1) {
+    char sp8[256];
+    fn_80218F80();
+    *(void **)arg0 = lbl_8033E2CC;
+    fn_80230C30((f32 *)((u8 *)arg0 + 0x244), (f32 *)((u8 *)arg0 + 0x248),
+                *(s32 *)((u8 *)arg1 + 8), *(s32 *)((u8 *)arg1 + 0xC));
+    *(f32 *)((u8 *)arg0 + 0x24C) = *(s32 *)((u8 *)arg1 + 0x14);
+    *(f32 *)((u8 *)arg0 + 0x250) = *(s32 *)((u8 *)arg1 + 0x18);
+    sprintf(sp8, lbl_8033DAAC, (char *)arg1 + 0x40);
+    s32 res = ((s32 (*)(void *))fn_802C5130)(sp8);
+    *(s32 *)((u8 *)arg0 + 0x254) = res;
+    if (res == 0) {
+        fn_802E30C8(lbl_8033DABC, sp8);
+    }
+    return arg0;
+}
+
 extern "C" void *fn_802242A4(void *arg0,s32 arg1) {
  s32 ptr; if(arg0){ ptr=*(s32 *)((u8 *)arg0+0x254); *(void ***)arg0=lbl_8033E2CC; if(ptr) fn_802C519C((void *)ptr); *(s32 *)((u8 *)arg0+0x254)=0; fn_8021915C(arg0,0); if(arg1>0) fn_80128668(arg0); } return arg0;
 }
