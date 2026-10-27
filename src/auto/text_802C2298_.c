@@ -54,6 +54,7 @@ void fn_802C2298(void) {
         fn_80131818(manager);
     }
 }
+#pragma scheduling on
 
 void fn_802C2410(void) {
     int i = 0;
