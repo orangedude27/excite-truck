@@ -801,10 +801,12 @@ s32 WUDStartFastSyncSimple(void) {
 extern char lbl_80313520[];
 extern void fn_80073CA8(void);
 s32 fn_8006AC4C(void) {
-    register u8 *state = lbl_80392960;
-    s32 result = 0;
     s32 interrupts;
+    s32 result;
+    register u8 *state;
     DBPrintf_8006CFA8(lbl_80313520);
+    state = lbl_80392960;
+    result = 0;
     interrupts = OSDisableInterrupts();
     if ((s8)state[0x688] == 3) {
         if (state[0xC] == 3)
