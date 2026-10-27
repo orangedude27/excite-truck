@@ -5160,6 +5160,26 @@ tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
     return 0;
 }
 
+tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
+    register u8 *base = lbl_803C0F78;
+    u8 *entry;
+    tBTM_INQ_DB_CHANGE_CB *callback;
+    u16 i;
+
+    if (base[0x1848] != 0 || base[0x16AE] != 0 || base[0x1844] != 0)
+        return BTM_BUSY;
+
+    for (i = 0, entry = base + 0x16E4; i < 0xC; i++, entry += 0x1C) {
+        if (entry[0x1A] != 0 && (p_bda == NULL || memcmp(entry + 0xA, p_bda, BD_ADDR_LEN) == 0)) {
+            entry[0x1A] = FALSE;
+            callback = *(tBTM_INQ_DB_CHANGE_CB **)(base + 0x16BC);
+            if (callback != NULL)
+                callback(entry + 8, FALSE);
+        }
+    }
+    return BTM_SUCCESS;
+}
+
 void btm_inq_db_reset(void) {
     tBTM_REMOTE_DEV_NAME rem_name;
     tBTM_INQUIRY_VAR_ST *p_inq = &btm_cb.btm_inq_vars;
@@ -8436,6 +8456,36 @@ BOOLEAN btsnd_hcic_hold_mode(UINT16 handle, UINT16 max_hold_period, UINT16 min_h
     p[14] = max_hold_period >> 8;
     p[15] = min_hold_period;
     p[16] = min_hold_period >> 8;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
+BOOLEAN btsnd_hcic_sniff_mode(BT_HDR *p, s16 handle, s16 max_sniff_period, s16 min_sniff_period, s16 sniff_attempt, UINT16 sniff_timeout) {
+    UINT8 *bytes;
+
+    if (p == NULL) {
+        p = GKI_getpoolbuf(2);
+        if (p == NULL) {
+            return FALSE;
+        }
+    }
+
+    bytes = (UINT8 *)p;
+    p->len = 0xD;
+    p->offset = 0;
+    bytes[8] = 3;
+    bytes[9] = 8;
+    bytes[10] = 0xA;
+    bytes[11] = handle;
+    bytes[12] = handle >> 8;
+    bytes[13] = max_sniff_period;
+    bytes[14] = max_sniff_period >> 8;
+    bytes[15] = min_sniff_period;
+    bytes[16] = min_sniff_period >> 8;
+    bytes[17] = sniff_attempt;
+    bytes[18] = sniff_attempt >> 8;
+    bytes[19] = sniff_timeout;
+    bytes[20] = sniff_timeout >> 8;
     btu_hcif_send_cmd(p);
     return TRUE;
 }
