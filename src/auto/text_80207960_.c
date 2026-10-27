@@ -15,7 +15,7 @@ struct LoopItem_80207E70 {
 #pragma cplusplus reset
 
 extern void fn_80208408(void);
-extern void fn_80208858(void);
+extern void fn_80208858();
 extern signed long fn_80128668(void);
 extern void* fn_802090B4(void);
 extern signed long fn_802E317C(const char*, ...);
@@ -153,29 +153,27 @@ void fn_80207C80(void *arg0) {
         char field5c[0x30];
         signed long field8c;
     };
-    struct Object *object = (struct Object *)arg0;
+    volatile struct Object *object = (volatile struct Object *)arg0;
     signed long i;
     signed long offset;
-    signed long i2;
-    signed long offset2;
 
     i = 0;
     offset = 0;
     while (i < object->count) {
         fn_802067C8(*(int *)((char *)object->items + offset),
-                    object->field5c, object->field8c);
+                    (void *)&object->field5c, object->field8c);
         offset += 4;
         i += 1;
     }
     fn_8020835C(arg0);
     fn_80207F34(arg0);
-    i2 = 0;
-    offset2 = 0;
-    while (i2 < object->count) {
-        fn_80206824(*(int *)((char *)object->items + offset2),
-                    object->field5c, object->field8c);
-        offset2 += 4;
-        i2 += 1;
+    offset = 0;
+    i = 0;
+    while (i < object->count) {
+        fn_80206824(*(int *)((char *)object->items + offset),
+                    (void *)&object->field5c, object->field8c);
+        offset += 4;
+        i += 1;
     }
     fn_8020815C(arg0);
     fn_80207E70(arg0);
