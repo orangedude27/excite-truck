@@ -83,6 +83,7 @@ void fn_8023DA2C(long arg0, void *arg1, char arg2, long arg3) {
 }
 
 extern char *fn_8023DCCC(char *);
+#pragma use_lmw_stmw off
 void fn_8023DA64(void *arg0, int arg1, int arg2) {
     typedef struct { int unk0; char *name; } Entry;
     register int zero = 0;
