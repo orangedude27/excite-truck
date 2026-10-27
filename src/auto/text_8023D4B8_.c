@@ -71,6 +71,7 @@ void fn_8023D70C(void) {
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
+#pragma dont_inline on
 void fn_8023DA2C(long arg0, void *arg1, char arg2, long arg3) {
     char sp8;
     sp8 = arg2;
