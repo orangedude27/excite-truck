@@ -6041,7 +6041,7 @@ extern "C" s32 fn_800B814C(void *arg0) {
 }
 
 extern "C" s32 fn_800B8318(void *arg0, s32 arg1) {
- extern s32 NANDCreate(void*,s32,s32); extern s32 NANDGetType(void*); extern s32 NANDOpen(void*,void*,s32); extern s32 NANDPrivateCreateDir(void*,s32,s32); extern s32 fn_800A499C(void*,s32,s32); extern s32 fn_800A4AD0(void*,void*); extern s32 lbl_80559244, lbl_80559240, lbl_80405D18;
+ extern s32 NANDCreate(void*,s32,s32); extern s32 NANDGetType(void*); extern s32 NANDOpen(void*,void*,s32); extern s32 NANDPrivateCreateDir(void*,s32,s32); extern s32 fn_800A499C(void*,s32,s32); extern s32 fn_800A4AD0(void*,void*); extern s32 lbl_80559244, lbl_80559240;
  u8 path[0x10]; u16 part=0,total=0; s32 result; u8 *src=(u8*)arg0+4,*dst;
  if(*(u32*)((u8*)arg0+0xE4)&4)return 0;
  fn_800A499C(path,0,0x10); dst=path;
