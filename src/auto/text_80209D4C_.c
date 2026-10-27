@@ -8,6 +8,20 @@ extern void *fn_801284F8(unsigned int, void *);
 extern void *fn_802077A4(void *, int, void *, void *);
 extern void *fn_8020CA3C(void *);
 extern float lbl_80563278, lbl_8056327C, lbl_80563280, lbl_80563284, lbl_80563288;
+
+// 0x74-byte record: value at 0x68, enable byte at 0x6c.
+typedef struct {
+    /* 0x00 */ char pad_00[0x68];
+    /* 0x68 */ float value;
+    /* 0x6c */ signed char enabled;
+    /* 0x6d */ char pad_6D[7];
+} Record;
+
+// The record array starts at 0x2420 of the object fn_80209E94 loads.
+typedef struct {
+    /* 0x0000 */ char pad_0[0x2420];
+    /* 0x2420 */ Record records[3];
+} RecordSet;
 #pragma scheduling invalid_target
 void *fn_80209D4C(void *arg0) {
     void *obj;
