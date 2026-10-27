@@ -92,83 +92,48 @@ extern u16 lbl_802F9D48[];
 extern void fn_802C8C04(s32);
 extern void fn_802C8DB8(f32*, s32, u16*, s32);
 #pragma push
-#pragma paired_single off
+#pragma paired_single reset
 void fn_80202BFC(s32 arg0) {
     typedef union { f32 f; s32 s; } WorkValue;
-    typedef struct {
-        s32 pair2[2];
-        s32 pair1[2];
-        u16 table[6];
-        u16 pad[2];
-        WorkValue values[24];
-    } Work;
+    typedef struct { s32 pair2[2]; s32 pair1[2]; u16 table[6]; u16 pad[2]; WorkValue values[24]; } Work;
     Work work;
-    register f64 f31 = lbl_805630D4;
-    register f64 f30 = lbl_805630D0;
-    register f64 f29 = lbl_805630CC;
-    register f64 f28 = lbl_805630C8;
+    register f32 f31 = lbl_805630D4;
+    register f32 f30 = lbl_805630D0;
+    register f32 f29 = lbl_805630CC;
+    register f32 f28 = lbl_805630C8;
     register volatile u16 *table = lbl_802F9D48;
     register s32 *p1;
     register s32 *p2;
     register u32 i;
     u16 v0, v1, v2, v3, v4, v5;
-    s32 pairB8, pairC0, pairC4;
+    s32 pair;
 
-    pairB8 = *(volatile s32 *)&lbl_805630B8;
-    pairC0 = *(volatile s32 *)&lbl_805630C0;
-    pairC4 = *(volatile s32 *)&lbl_805630C4;
-    work.pair1[0] = pairB8;
+    work.pair1[0] = *(volatile s32 *)&lbl_805630B8;
     work.pair1[1] = arg0;
-    work.pair2[0] = pairC0;
-    work.pair2[1] = pairC4;
+    work.pair2[0] = *(volatile s32 *)&lbl_805630C0;
+    work.pair2[1] = *(volatile s32 *)&lbl_805630C4;
     p1 = work.pair1;
     p2 = work.pair2;
     i = 0;
     do {
         fn_802C8C04(*p1);
-        v0 = table[0];
-        v1 = table[1];
-        v2 = table[2];
-        v3 = table[3];
-        v4 = table[4];
-        v5 = table[5];
-        work.table[0] = v0;
-        work.table[1] = v1;
-        work.table[2] = v2;
-        work.table[3] = v3;
-        work.table[4] = v4;
-        work.table[5] = v5;
-
-        work.values[0].f = f28;
-        work.values[1].f = f28;
-        work.values[2].f = f29;
-        work.values[6].f = f30;
-        work.values[7].f = f28;
-        work.values[8].f = f29;
-        work.values[12].f = f28;
-        work.values[13].f = f30;
-        work.values[14].f = f29;
-        work.values[18].f = f30;
-        work.values[19].f = f30;
-        work.values[20].f = f29;
-        work.values[16].f = f29;
-        work.values[4].f = f29;
-        work.values[22].f = f31;
-        work.values[10].f = f31;
-        work.values[11].f = f29;
-        work.values[5].f = f29;
-        work.values[23].f = f31;
-        work.values[17].f = f31;
-        work.values[21].s = *p2;
-        work.values[15].s = *p2;
-        work.values[9].s = *p2;
-        work.values[3].s = *p2;
-
+        v0 = table[0]; v1 = table[1]; v2 = table[2];
+        v3 = table[3]; v4 = table[4]; v5 = table[5];
+        work.table[0] = v0; work.table[1] = v1; work.table[2] = v2;
+        work.table[3] = v3; work.table[4] = v4; work.table[5] = v5;
+        work.values[0].f = f28; work.values[1].f = f28; work.values[2].f = f29;
+        work.values[6].f = f30; work.values[7].f = f28; work.values[8].f = f29;
+        work.values[12].f = f28; work.values[13].f = f30; work.values[14].f = f29;
+        work.values[18].f = f30; work.values[19].f = f30; work.values[20].f = f29;
+        work.values[16].f = f29; work.values[4].f = f29; work.values[22].f = f31;
+        work.values[10].f = f31; work.values[11].f = f29; work.values[5].f = f29;
+        work.values[23].f = f31; work.values[17].f = f31;
+        pair = *p2;
+        work.values[21].s = pair; work.values[15].s = pair;
+        work.values[9].s = pair; work.values[3].s = pair;
         fn_802C8DB8(&work.values[0].f, 4, work.table, 6);
         fn_802C8D74();
-        i++;
-        p1++;
-        p2++;
+        i++; p1++; p2++;
     } while (i < 2);
 }
 #pragma pop
