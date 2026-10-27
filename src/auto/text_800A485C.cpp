@@ -13157,9 +13157,7 @@ extern "C" s32 fn_80116A30(void*);
 extern "C" void fn_800D1C48(void);
 extern "C" s32 fn_80116A38(void*);
 extern "C" u32 fn_80060CC0(void*, u32, u32);
-#if 0
-extern "C" void fn_800D1B1C(void);
-#endif
+extern "C" void fn_800D1B1C(s32, s32);
 
 struct PanicStruct {
     const char *msg;
