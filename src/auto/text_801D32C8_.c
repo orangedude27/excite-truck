@@ -304,11 +304,13 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
     }
 }
 
+#pragma push
+#pragma scheduling off
 int fn_801D411C(void *arg0) {
     char *p = (char *)arg0;
-    volatile float sp8;
-    volatile float spc;
-    volatile float sp10;
+    float sp8;
+    float spc;
+    float sp10;
 
     if (*(int *)(p + 0x230) == 2 && *(void **)(p + 0x228) != 0) {
         fn_801A4868(*(void **)(p + 0x228), 1);
@@ -356,9 +358,9 @@ int fn_801D411C(void *arg0) {
         *(float *)(p + 0x21C) = neg1000;
         *(float *)(p + 0x220) = zero;
 
-        sp8 = zero;
-        spc = zero;
-        sp10 = zero;
+        *(volatile float *)&sp8 = zero;
+        *(volatile float *)&spc = zero;
+        *(volatile float *)&sp10 = zero;
         *(float *)(p + 0x30) = zero;
         *(float *)(p + 0x34) = zero;
         *(float *)(p + 0x38) = zero;
