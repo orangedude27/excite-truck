@@ -1038,13 +1038,11 @@ extern "C" s32 fn_800A6B74(void *arg0) {
 
 extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
     u16 value;
-    u32 result;
-    u32 shift;
     fn_800A6298(*(void **)((u8 *)arg0 + 4), &value);
     if (arg2 == value)
         return arg1 + M2C_FIELD(arg0, u32 *, 0xC);
-    result = M2C_FIELD(arg0, u32 *, 0xC);
-    shift = (value >> 9) & 0x7F;
+    u32 shift = (value >> 9) & 0x7F;
+    u32 result = M2C_FIELD(arg0, u32 *, 0xC);
     if (shift == 2)
         result <<= 1;
     else if (shift == 4)
@@ -1548,27 +1546,29 @@ extern "C" void fn_800A8BB8(void *arg0, s32 arg1) {
 
 extern "C" s32 fn_800A7774(void *, void *, void *, void *, u16, void *, s32);
 extern "C" s32 VFiPFCACHE_InitCaches(void *arg0) {
-    u32 flags = M2C_FIELD(arg0, u32 *, 0x1624);
-    u16 count = M2C_FIELD(arg0, u16 *, 0x1628);
-    u16 extra = M2C_FIELD(arg0, u16 *, 0x162A);
-    flags = (flags & ~1) | 2;
-    flags &= ~4;
-    M2C_FIELD(arg0, u32 *, 0x1624) = flags;
-    fn_800A499C((const char *)M2C_FIELD(arg0, void **, 0x1638), 0, (count + extra) << 9);
+    u32 flags = *(u32 *)((u8 *)arg0 + 0x1624);
+    u16 count = *(u16 *)((u8 *)arg0 + 0x1628);
+    flags = (flags & ~1U) | 2U;
+    u16 extra = *(u16 *)((u8 *)arg0 + 0x162A);
+    flags &= ~4U;
+    s32 total = (s32)count + (s32)extra;
+    *(u32 *)((u8 *)arg0 + 0x1624) = flags;
+    fn_800A499C((const char *)*(void **)((u8 *)arg0 + 0x1638), 0, total << 9);
     s32 result = fn_800A7774(arg0, (u8 *)arg0 + 0x1630,
-                             M2C_FIELD(arg0, void **, 0x162C),
-                             M2C_FIELD(arg0, void **, 0x1638), count,
-                             M2C_FIELD(arg0, void **, 0x163C), 1);
+                             *(void **)((u8 *)arg0 + 0x162C),
+                             *(void **)((u8 *)arg0 + 0x1638),
+                             *(u16 *)((u8 *)arg0 + 0x1628),
+                             *(void **)((u8 *)arg0 + 0x163C), 1);
     if (result != 0) {
         return result;
     }
-    count = M2C_FIELD(arg0, u16 *, 0x1628);
-    void *base = M2C_FIELD(arg0, void **, 0x162C);
+    u16 secondCount = *(u16 *)((u8 *)arg0 + 0x1628);
+    void *base = *(void **)((u8 *)arg0 + 0x162C);
     s32 status = fn_800A7774(arg0, (u8 *)arg0 + 0x1634,
-                             (u8 *)base + count * 0x28,
-                             (u8 *)M2C_FIELD(arg0, void **, 0x1638) + (count << 9),
-                             M2C_FIELD(arg0, u16 *, 0x162A),
-                             M2C_FIELD(arg0, void **, 0x1640), 0);
+                             (u8 *)base + secondCount * 0x28,
+                             (u8 *)*(void **)((u8 *)arg0 + 0x1638) + (secondCount << 9),
+                             *(u16 *)((u8 *)arg0 + 0x162A),
+                             *(void **)((u8 *)arg0 + 0x1640), 0);
     return status & ((-status | status) >> 31);
 }
 
@@ -5583,26 +5583,64 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
 extern "C" s32 fn_800A4BF4(s32, u16*, s16*);
 extern "C" s32 fn_800B72E4(void) { return 0; }
 
-s32 VFiPFAPI_ParseOpenModeString(char* arg0) {
+extern "C" s32 VFiPFAPI_ParseOpenModeString(char *arg0) {
     s32 mode;
     s32 index;
-    signed char c;
-    if (arg0 == 0) return 10;
-    c = arg0[0];
-    index = 1;
-    if (c == 'r') mode = 2;
-    else if (c >= 's') {
-        if (c == 'w') mode = 1;
-        else return 0;
-    } else if (c == 'a') mode = 4;
-    else return 0;
-    if (arg0[1] == 'b') index = 2;
-    c = arg0[index];
-    if (c == '+') {
-        if (arg0[index + 1] != 0) return 0;
-        return mode | 8;
+    signed char first;
+    signed char next;
+    signed char tail;
+    if (arg0 == 0) {
+        return 10;
     }
-    if (c == 0) return mode;
+    first = arg0[0];
+    index = 1;
+    switch (first) {
+    case 'r':
+        mode = 2;
+        break;
+    case 'w':
+        mode = 1;
+        break;
+    case 'a':
+        mode = 4;
+        break;
+    default:
+        return 0;
+    }
+    if (arg0[1] == 'b') {
+        index = 2;
+    }
+    next = arg0[index++];
+    if (next == '+') {
+        goto plus;
+    }
+    if (next >= '+') {
+        goto check_text;
+    }
+    if (next == 0) {
+        goto return_mode;
+    }
+    goto return_zero;
+check_text:
+    if (next == 't') {
+        goto return_mode;
+    }
+    goto return_zero;
+return_zero:
+    return 0;
+return_mode:
+    return mode;
+plus:
+    tail = arg0[index];
+    switch (tail) {
+    case 0:
+        goto plus_mode;
+    default:
+        goto plus_zero;
+    }
+plus_mode:
+    return mode | 8;
+plus_zero:
     return 0;
 }
 
@@ -6893,6 +6931,7 @@ extern "C" s32 fn_800BB4B0(s32 a,s32 b,s32 c,s32 d) {
 extern "C" s32 lbl_8055DD6C;
 extern "C" s32 *lbl_8055DD70;
 extern "C" s32 lbl_8055DD78;
+extern "C" void *lbl_8055DD7C;
 extern "C" u8 lbl_80407560[0x18];
 extern "C" const char lbl_8031B838[];
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
@@ -10376,39 +10415,41 @@ void fn_800C5430(s32 *a, s32 *b, s32 *coeff) {
     }
 }
 
-void fn_800C5508(void* arg0, void* arg1, void* arg2) {
-    s32 temp_r0 = *(s32*)arg2;
-    s32 temp_r5 = *((s32*)arg2 + 1);
-    s32 i;
-    for (i = 0; i < 4; i++) {
-        s32* a = (s32*)((u8*)arg0 + i * 0x20);
-        s32* b = (s32*)((u8*)arg1 + i * 0x20);
-        s32 d = a[0] - b[0];
-        a[0] += b[0];
-        b[0] = (d * temp_r0) >> 24;
-        d = a[1] - b[1];
-        a[1] += b[1];
-        b[1] = (d * temp_r5) >> 24;
-        d = a[4] - b[4];
-        a[4] += b[4];
-        b[4] = (d * temp_r0) >> 24;
-        d = a[5] - b[5];
-        a[5] += b[5];
-        b[5] = (d * temp_r5) >> 24;
+extern "C" void fn_800C5508(void *arg0, void *arg1, void *arg2) {
+    s32 scale0 = ((s32 *)arg2)[0];
+    s32 scale1 = ((s32 *)arg2)[1];
+    s32 *dst = (s32 *)arg0;
+    s32 *src = (s32 *)arg1;
+    for (s32 i = 0; i < 4; i++) {
+        s32 b0 = src[0]; s32 a0 = dst[0]; s32 d0 = a0 - b0; s32 sum0 = a0 + b0;
+        dst[0] = sum0; src[0] = (s32)(((s64)d0 * scale0) >> 24);
+        s32 b1 = src[1]; s32 a1 = dst[1]; s32 d1 = a1 - b1; s32 sum1 = a1 + b1;
+        dst[1] = sum1; src[1] = (s32)(((s64)d1 * scale1) >> 24);
+        s32 b2 = src[4]; s32 a2 = dst[4]; s32 d2 = a2 - b2; s32 sum2 = a2 + b2;
+        dst[4] = sum2; src[4] = (s32)(((s64)d2 * scale0) >> 24);
+        s32 b3 = src[5]; s32 a3 = dst[5]; s32 d3 = a3 - b3; s32 sum3 = a3 + b3;
+        dst[5] = sum3; src[5] = (s32)(((s64)d3 * scale1) >> 24);
+        dst += 8;
+        src += 8;
     }
 }
 
 extern "C" void fn_800C55D8(void *arg0, void *arg1, s32 *arg2) {
-    s32 n = 4;
     s32 scale = *arg2;
-    while (n) {
-        s32 a = *(s32 *)arg1;
-        s32 b = *(s32 *)arg0;
-        *(s32 *)arg0 = a + b;
-        *(s32 *)arg1 = (a - b) * scale;
-        arg0 = (char *)arg0 + 0x20;
-        arg1 = (char *)arg1 + 0x20;
-        n--;
+    s32 *dst = (s32 *)arg0;
+    s32 *src = (s32 *)arg1;
+    s64 product;
+    for (s32 i = 0; i < 4; i++) {
+        s32 b0 = src[0]; s32 a0 = dst[0];
+        dst[0] = a0 + b0; product = (s64)(a0 - b0) * scale; src[0] = (s32)(product >> 24);
+        s32 b1 = src[2]; s32 a1 = dst[2];
+        dst[2] = a1 + b1; product = (s64)(a1 - b1) * scale; src[2] = (s32)(product >> 24);
+        s32 b2 = src[4]; s32 a2 = dst[4];
+        dst[4] = a2 + b2; product = (s64)(a2 - b2) * scale; src[4] = (s32)(product >> 24);
+        s32 b3 = src[6]; s32 a3 = dst[6];
+        dst[6] = a3 + b3; product = (s64)(a3 - b3) * scale; src[6] = (s32)(product >> 24);
+        dst += 8;
+        src += 8;
     }
 }
 
