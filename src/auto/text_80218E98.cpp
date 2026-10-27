@@ -687,13 +687,14 @@ extern "C" void fn_80219718(void *arg0) {
     fn_80219284(arg0, spC - sp14, var_r0_4 - sp10);
 }
 
-extern "C" void fn_80219870(void *arg0, s32 arg1, s32 arg2, char *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    fn_80219568(arg0, arg1, arg2, 0, arg7, 0, 0, 0);
+extern "C" void *fn_80219870(void *arg0, s32 arg1, s32 arg2, char *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0, arg7);
     *(void **)arg0 = lbl_8033F768;
     strcpy((char *)arg0 + 0x258, arg3);
     *(s32 *)((u8 *)arg0 + 0x254) = arg4;
     fn_80219440(arg0, 0, (void *)arg4, 1);
     fn_80219718(arg0);
+    return arg0;
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80219900(void *arg0, int arg1) {
