@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern int lbl_80339570;
+__declspec(section ".data") extern int lbl_80339570;
 extern int fn_8000DA10(void);
 extern void fn_801332D0(int, int*, int*);
 extern int fn_80133348(int, int, int);
@@ -50,6 +50,49 @@ void fn_801DE7E8(int arg0) {
 void fn_801DE88C(void) {
 
 }
+
+#pragma cplusplus off
+extern void fn_801473F8(void *, const char *, ...);
+extern int fn_802E2C20(void);
+extern void fn_801476D8(int, int, int);
+extern void fn_80147F30(int, int, int, float, float, float, float, float, float, float, float);
+extern void fn_8014E7D8(int, int, int);
+extern unsigned int lbl_8055CFF0;
+extern float lbl_80562BE0, lbl_80562BE4, lbl_80562BE8, lbl_80562BEC, lbl_80562BF0, lbl_80562BF4;
+extern char lbl_803394B0[], lbl_804872B0[];
+#pragma cplusplus on
+extern "C" void fn_801DE890(int arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void *call(const char *);
+    };
+    char *text = lbl_803394B0;
+    char *entry = lbl_804872B0 + arg0 * 0x1C;
+    switch (arg0) {
+    case 1:
+        fn_801473F8(*(void **)(entry + 0xC), text + 0x18, text + 0x28);
+        break;
+    case 2:
+        if ((fn_802E2C20() / 500) % 2 != 0) {
+            struct Dummy *object = *(struct Dummy **)(entry + 0xC);
+            void *result = object->call(text + 0x38);
+            if (result != 0) {
+                fn_801476D8((int)result, -1, *(int *)(entry + 0x14));
+                fn_80147F30(0xFFC8C800, 0x3E8, -1,
+                    *(float *)((char *)result + 4) + *(float *)((char *)result + 0x10) * lbl_80562BE4,
+                    *(float *)((char *)result + 8) + *(float *)((char *)result + 0x14) * lbl_80562BE4,
+                    lbl_80562BE0 * (*(float *)((char *)result + 0x10) * lbl_80562BE4),
+                    lbl_80562BE8, lbl_80562BEC, lbl_80562BF0, lbl_80562BE8, lbl_80562BE8);
+            }
+        }
+        break;
+    case 3:
+        fn_8014E7D8(lbl_8055CFF0 / 2, 0x6E, 0x32);
+        break;
+    }
+}
+#pragma cplusplus reset
 
 #pragma small_data off
 void fn_801DE9F0(int arg0, int arg1) {
@@ -113,6 +156,80 @@ unsigned int fn_801DEB6C(const char *arg0) {
     } while (i < 7);
     return 0;
 }
+
+#pragma cplusplus on
+extern "C" void fn_801DEE3C(void) {
+    struct Dummy {
+        virtual void d0(int);
+    };
+    struct Row {
+        int field0;
+        int field1;
+        int field2;
+        Dummy *object;
+        int field4;
+        int state;
+        int field6;
+    };
+    register int sentinel = -1;
+    register int zero = 0;
+    register char *row = lbl_804872B0;
+    register unsigned int i = 0;
+    Dummy *object;
+    register char *array;
+    register unsigned int j;
+
+    do {
+        object = ((struct Row *)row)->object;
+        if (object != 0) {
+            if (object != 0)
+                object->d0(1);
+            ((struct Row *)row)->object = 0;
+        }
+        {
+            int state = ((struct Row *)row)->state;
+            if (state != -1) {
+                ((void (*)(int))fn_802CAC54)(state);
+                ((struct Row *)row)->state = sentinel;
+            }
+        }
+        ((void (*)(unsigned int))fn_801DE88C)(i);
+        ++i;
+        row += 0x1C;
+    } while (i < 9);
+
+    fn_80209110((void *)&lbl_8055E9EC);
+    object = (Dummy *)lbl_8055E9F0;
+    if (object != 0) {
+        if (object != 0)
+            object->d0(1);
+        lbl_8055E9F0 = 0;
+    }
+
+    array = (char *)lbl_804874A8;
+    j = 0;
+    i = 0;
+    do {
+        object = *(Dummy **)array;
+        if (object != 0) {
+            if (object != 0)
+                object->d0(1);
+            *(int *)array = 0;
+        }
+        ++i;
+        array += 4;
+    } while (i < 4);
+
+    if (lbl_8055E9E4 != 0) {
+        ((void (*)(int))fn_80131818)(lbl_8055E9E4);
+        lbl_8055E9E4 = 0;
+    }
+    sentinel = 0;
+    lbl_8055E9E8 = sentinel;
+    fn_80133348(fn_8000DA10() + 0xC, (int)&lbl_80339570, lbl_8055E9DC);
+    lbl_8055E9DC = sentinel;
+}
+#pragma cplusplus reset
 
 #pragma scheduling invalid_target
 void fn_801DEF98(void) {
