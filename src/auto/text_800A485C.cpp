@@ -13266,18 +13266,20 @@ extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt4Paneb(voi
 
 void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     register u8 *self = (u8 *)this;
-    register volatile u8 * volatile materialPtr = (volatile u8 *)material;
+    register u8 *materialPtr = (u8 *)material;
     register u16 i = 0;
     register u8 *offsets = (u8 *)*(void **)(self + 0xC);
     offsets += *(s32 *)(offsets + 0x10);
     while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
-        u8 *entry = (u8 *)materialPtr + *(s32 *)(offsets + i * 4);
-        if (entry[0x15] == 1 && fn_800D58F0((void *)((u8 *)materialPtr + 4)) != 0) {
-            u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
-            *(void **)(link + 8) = self;
-            *(u16 *)(link + 0xC) = i;
-            AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                (void *)materialPtr, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+        u8 *entry = materialPtr + *(s32 *)(offsets + i * 4);
+        if (entry[0x15] == 1) {
+            if (fn_800D58F0(materialPtr + 4) != 0) {
+                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
+                *(void **)(link + 8) = self;
+                *(u16 *)(link + 0xC) = i;
+                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
+                    materialPtr, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+            }
         }
         i++;
     }
@@ -17375,7 +17377,6 @@ extern "C" void OSUnlockMutex(void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
-extern void* lbl_804077C0;
 extern "C" void fn_800A71D0(void *, s32);
 
 extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 arg11) {
