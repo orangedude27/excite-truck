@@ -2650,15 +2650,36 @@ extern "C" void fn_8015E778(Unk801577F0V* arg0, s32 arg1, s32 arg2, f32 farg0) {
         }
     }
 }
-#pragma scheduling off
-extern "C" void fn_8015E80C(Unk801577F0V* arg0, s32 arg1) {
-    UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
-    s32 count = arg0->mCount;
-    for (s32 j = 0; j < count; j++) {
-        entries[j]->v18(arg1);
+#pragma scheduling invalid_target
+extern "C" void fn_8015E80C(void* arg0, s32 arg1) {
+    class Entry {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void dispatch(s32);
+    };
+    struct List {
+        s32 unk0;
+        Entry** entries;
+        s32 count;
+    };
+    List* list = (List*)arg0;
+    s32 off = 0;
+    s32 i = 0;
+    while (i < list->count) {
+        list->entries[off / 4]->dispatch(arg1);
+        i += (off += 4, 1);
     }
 }
-
+#pragma scheduling on
 extern "C" s32 fn_8015E910(void *arg0, s32 arg1) {
     s32 var_r31 = 0;
     s32 var_r30 = 0;
@@ -2692,6 +2713,38 @@ extern "C" void fn_8015EA24(void *arg0, s32 arg1) {
         var_r30 += 1;
     }
 }
+
+#pragma scheduling invalid_target
+extern "C" s32 fn_8015EAA4(void *arg0) {
+    struct Entry {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual s32 v12();
+    };
+    s32 var_r31 = 0;
+    s32 var_r30 = 0;
+    while (var_r30 < *(s32 *)((char *)arg0 + 8)) {
+        Entry *obj = *(Entry **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
+        if (obj->v12() != 0) {
+            return 1;
+        }
+        var_r31 += 4;
+        var_r30 += 1;
+    }
+    return 0;
+}
+#pragma scheduling on
+
 #pragma scheduling on
 extern "C" void fn_8015EB28(void *arg0) {
     struct Entry {
