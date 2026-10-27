@@ -2668,8 +2668,12 @@ normal:
             error = result;
     }
     result = error & ((-error | error) >> 31);
-    if (result != 0)
-        return result;
+    switch (result) {
+    case 0:
+        goto zero;
+    default:
+        goto done;
+    }
 zero:
     result = 0;
 done:
@@ -9982,7 +9986,7 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     return (value & lbl_802F3F54[shift]) >> (shift - arg1);
 }
 
-extern "C" void fn_800C1984(s32 *);
+extern "C" void fn_800C1984(s32 *, s32 *);
 extern "C" void fn_800C18A0(void *arg0, void *arg1) {
     s32 temp[0x12];
     s32 *out = (s32 *)arg1;
