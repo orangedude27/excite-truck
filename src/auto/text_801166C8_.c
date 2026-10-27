@@ -54,6 +54,30 @@ extern u32 lbl_80559950;
 extern u32 lbl_80329DA8[];
 extern u8 lbl_802F6990[];
 
+extern char lbl_80559930[];
+extern char lbl_80329B28[];
+extern void OSPanic(const char *, s32, const char *, ...);
+BOOL ARCInitHandle(void *bin, ARCHandle *handle) {
+    u32 magic = *(u32 *)bin;
+    u8 *base = (u8 *)bin;
+    u8 *fst;
+    u32 entries;
+
+    if (magic != 0x55AA382D) {
+        OSPanic(lbl_80559930, 0x47, lbl_80329B28);
+    }
+    handle->archiveStartAddr = bin;
+    fst = base + *(u32 *)(base + 4);
+    handle->FSTStart = fst;
+    handle->fileStart = base + *(u32 *)(base + 0xC);
+    entries = *(u32 *)(fst + 8);
+    handle->entryNum = entries;
+    handle->FSTStringStart = (char *)(fst + entries * 0xC);
+    handle->FSTLength = *(u32 *)(base + 8);
+    handle->currDir = 0;
+    return TRUE;
+}
+
 BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
     u32 *nodes = (u32 *)handle->FSTStart;
     s32 offset;
@@ -2504,33 +2528,60 @@ void fn_8011C3A8(s32 arg0, void *arg1, s32 arg2, u32 arg3, s32 arg4, s32 arg5, s
 }
 
 s32 fn_8011C400(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, s32 arg4) {
-    s32 var_r7 = arg4;
-    s32 var_r8 = arg4;
-    s32 var_r9 = 0;
-    u8 *out = arg1;
-    u8 *left = arg2;
-    u8 *right = arg3;
-    u8 temp;
-    do {
-        var_r9++;
-        if (arg0 & 1) {
-            temp = *right;
-            var_r8--;
-            right++;
-        } else {
-            temp = *left;
-            var_r7--;
-            left++;
-        }
-        *out = temp;
-        out++;
-        arg0 >>= 1;
-        if (var_r7 == 0 || var_r8 == 0) break;
-    } while (1);
+    s32 var_r7;
+    s32 var_r8;
+    s32 var_r9;
+    u32 var_r3;
+    u8 *var_r4;
+    u8 *var_r5;
+    u8 *var_r6;
+    u8 temp_r0;
+    u8 temp_r0_2;
+    u8 temp_r0_3;
+    u8 temp_r0_4;
+
+    var_r3 = arg0;
+    var_r4 = arg1;
+    var_r5 = arg2;
+    var_r6 = arg3;
+    var_r7 = arg4;
+    var_r8 = var_r7;
+    var_r9 = 0;
+loop_1:
+    var_r9 += 1;
+    if (var_r3 & 1) {
+        temp_r0 = *var_r6;
+        var_r8 -= 1;
+        var_r6 += 1;
+        *var_r4 = temp_r0;
+        var_r4 += 1;
+    } else {
+        temp_r0_2 = *var_r5;
+        var_r7 -= 1;
+        var_r5 += 1;
+        *var_r4 = temp_r0_2;
+        var_r4 += 1;
+    }
+    var_r3 = var_r3 >> 1U;
+    if ((var_r7 != 0) && (var_r8 != 0)) {
+        goto loop_1;
+    }
     if (var_r7 != 0) {
-        do { temp = *left; var_r7--; left++; *out = temp; out++; } while (var_r7 != 0);
+        do {
+            temp_r0_3 = *var_r5;
+            var_r7 -= 1;
+            var_r5 += 1;
+            *var_r4 = temp_r0_3;
+            var_r4 += 1;
+        } while (var_r7 != 0);
     } else if (var_r8 != 0) {
-        do { temp = *right; var_r8--; right++; *out = temp; out++; } while (var_r8 != 0);
+        do {
+            temp_r0_4 = *var_r6;
+            var_r8 -= 1;
+            var_r6 += 1;
+            *var_r4 = temp_r0_4;
+            var_r4 += 1;
+        } while (var_r8 != 0);
     }
     return var_r9;
 }
