@@ -442,86 +442,87 @@ struct EntryData {
 };
 int fn_8001B308(void *arg0, int arg1, int arg2) {
     int group;
-    int one;
     int status;
     unsigned char *base;
     int index;
+    int one;
 
     one = 1;
     status = 0;
     base = (unsigned char *)&lbl_803583C8;
     index = 0;
     for (group = 0; group < 4; group++) {
-        if (base[0x10] == 0) {
+        status = (base[16] == 0);
+        if (status) {
             *(int *)(base + 0) = arg1;
-            status = one;
+            status = 1;
             {
-                float first = *(float *)arg0;
+                float second = *((float *)arg0 + 1);
                 *(int *)(base + 4) = arg2;
                 {
-                    float second = *((float *)arg0 + 1);
+                    float first = *(float *)arg0;
                     *(float *)(base + 8) = first;
-                    *(float *)(base + 0xC) = second;
+                    *(float *)(base + 12) = second;
                 }
             }
-            base[0x10] = (unsigned char)one;
+            base[16] = one;
         } else {
             status = 0;
         }
         if (status != 0) return index;
         index++;
-
-        if (base[0x24] == 0) {
-            *(int *)(base + 0x14) = arg1;
-            status = one;
+        status = (base[36] == 0);
+        if (status) {
+            *(int *)(base + 20) = arg1;
+            status = 1;
             {
-                float first = *(float *)arg0;
-                *(int *)(base + 0x18) = arg2;
+                float second = *((float *)arg0 + 1);
+                *(int *)(base + 24) = arg2;
                 {
-                    float second = *((float *)arg0 + 1);
-                    *(float *)(base + 0x1C) = first;
-                    *(float *)(base + 0x20) = second;
+                    float first = *(float *)arg0;
+                    *(float *)(base + 28) = first;
+                    *(float *)(base + 32) = second;
                 }
             }
-            base[0x24] = (unsigned char)one;
+            base[36] = one;
         } else {
             status = 0;
         }
         if (status != 0) return index;
         index++;
-
-        if (base[0x38] == 0) {
-            *(int *)(base + 0x28) = arg1;
-            status = one;
+        status = (base[56] == 0);
+        if (status) {
+            *(int *)(base + 40) = arg1;
+            status = 1;
             {
-                float first = *(float *)arg0;
-                *(int *)(base + 0x2C) = arg2;
+                float second = *((float *)arg0 + 1);
+                *(int *)(base + 44) = arg2;
                 {
-                    float second = *((float *)arg0 + 1);
-                    *(float *)(base + 0x30) = first;
-                    *(float *)(base + 0x34) = second;
+                    float first = *(float *)arg0;
+                    *(float *)(base + 48) = first;
+                    *(float *)(base + 52) = second;
                 }
             }
-            base[0x38] = (unsigned char)one;
+            base[56] = one;
         } else {
             status = 0;
         }
         if (status != 0) return index;
         index++;
-
-        if (base[0x4C] == 0) {
-            *(int *)(base + 0x3C) = arg1;
-            status = one;
+        status = (base[76] == 0);
+        if (status) {
+            *(int *)(base + 60) = arg1;
+            status = 1;
             {
-                float first = *(float *)arg0;
-                *(int *)(base + 0x40) = arg2;
+                float second = *((float *)arg0 + 1);
+                *(int *)(base + 64) = arg2;
                 {
-                    float second = *((float *)arg0 + 1);
-                    *(float *)(base + 0x44) = first;
-                    *(float *)(base + 0x48) = second;
+                    float first = *(float *)arg0;
+                    *(float *)(base + 68) = first;
+                    *(float *)(base + 72) = second;
                 }
             }
-            base[0x4C] = (unsigned char)one;
+            base[76] = one;
         } else {
             status = 0;
         }
@@ -610,6 +611,7 @@ int fn_8001B478(float farg0) {
 
 #pragma push
 #pragma cplusplus on
+#pragma dont_inline on
 extern "C" int fn_8001B754(float arg0) {
     class Callback {
     public:
