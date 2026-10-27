@@ -27,7 +27,7 @@ void fn_802D98F8(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling off
 void fn_802D992C(void) {
     s32 count = (u32)__cntlzw((u32)(lbl_8055FE3C - 1)) >> 5;
     s32 state = DVDGetDriveStatus();
