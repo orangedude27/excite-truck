@@ -14782,6 +14782,36 @@ extern "C" void fn_800CA148(OSAlarm *alarm, OSContext *ctx) {
     fn_800D15B4(OSGetAlarmUserData(alarm));
 }
 
+extern "C" void fn_8005EE6C(void);
+extern "C" void fn_8005EE70(void);
+extern "C" void fn_800CA16C(OSAlarm *alarm, OSContext *ctx) {
+    u8 *base = (u8 *)lbl_8055DD98;
+    void *userData;
+    s32 active;
+    u32 ticks;
+    u32 period;
+
+    userData = OSGetAlarmUserData(alarm);
+    active = 0;
+    if (userData == 0) {
+        if (((s32 (*)(void))fn_8005EE6C)() != 0) {
+            base[0x89] = 1;
+            active = 1;
+        }
+    } else if (((s32 (*)(void))fn_8005EE70)() != 0) {
+        active = 1;
+    }
+
+    if (active == 0) {
+        OSCancelAlarm((OSAlarm *)(base + 0x590));
+        OSSetAlarmUserData((OSAlarm *)(base + 0x590), userData);
+        ticks = *(volatile u32 *)0x800000F8;
+        period = ((ticks >> 2) / 1000U) * 100;
+        ((void (*)(OSAlarm *, u32, u32, s32, OSAlarmHandler))OSSetAlarm)(
+            (OSAlarm *)(base + 0x590), 0x10624DD3, 0, period, fn_800CA16C);
+    }
+}
+
 extern "C" void fn_800CA234(s32 arg0, s32 arg1) {
     if (arg0 == 1) {
         *(u8 *)((u8 *)lbl_8055DD98 + 0x8a) = 1;
