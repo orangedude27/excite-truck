@@ -1166,6 +1166,29 @@ extern "C" char* fn_800D9584(char* arg0, const char* arg1) {
     return strncpy(arg0 + 4, arg1, 0x14);
 }
 
+extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, u8 arg1) {
+    extern const char lbl_8031F990[];
+    extern void memset(void *, int, unsigned int);
+    const char *data = lbl_8031F990;
+    u32 capacity = *(u32 *)((u8 *)arg0 + 0x4C) >> 28;
+    if ((u32)arg1 > capacity)
+        Panic__Q26nw4hbm2dbFPCciPCce(data, 0x38B, data + 0x330);
+    if (arg1 == 0)
+        return;
+    if (*(u32 *)((u8 *)arg0 + 0x58) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(data, 0x38E, data + 0x360);
+    u32 packed = *(u32 *)((u8 *)arg0 + 0x50);
+    u32 index = packed >> 28;
+    u8 *texture = (u8 *)*(void **)((u8 *)arg0 + 0x58) + ((packed >> 23) & 0x1E0);
+    while (index < arg1) {
+        memset(texture, 0, 0x20);
+        texture += 0x20;
+        index++;
+    }
+    *(u32 *)((u8 *)arg0 + 0x50) =
+        (*(u32 *)((u8 *)arg0 + 0x50) & 0x0FFFFFFF) | ((u32)arg1 << 28);
+}
+
 extern "C" const char lbl_8031F990[];
 extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void* self, unsigned char count) {
     u32* p = (u32*)self;
@@ -1987,6 +2010,10 @@ extern "C" void fn_800DB084(void* arg0) {
     ((Obj*)arg0)->v3(0);
 }
 
+static inline void AssertNode(void* node) {
+    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void fn_800DB098(void* arg0, void* arg1) {
@@ -1998,8 +2025,6 @@ extern "C" void fn_800DB098(void* arg0, void* arg1) {
         virtual void v4();
         virtual void Animate(u16, void*);
     };
-    extern const char lbl_8031F1FC[];
-    extern const char lbl_8031F1D8[];
     void* node = *(void**)((u8*)arg0 + 0x1C);
     void* end = (u8*)arg0 + 0x1C;
     while (node != end) {
