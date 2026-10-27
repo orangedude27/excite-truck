@@ -132,6 +132,7 @@ extern void rfc_release_multiplexer_channel(void *);
 extern void port_release_port(void *);
 extern void rfc_check_mcb_active(void *);
 extern u8 lbl_803C3AF0[];
+extern char lbl_80317700[];
 extern void hidd_pm_set_now(void *);
 extern void fn_80086468(void *);
 extern u8 lbl_803C4040[];
@@ -13351,7 +13352,7 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
         *(u16 *)(buf + 4) = 9;
         data = buf + 0x11;
         control |= 1;
-        shifted = (u8)((arg1 << 2) & 0x3FC);
+        shifted = (u8)(arg1 << 2);
         command = (u8)(control | shifted);
         data[0] = command;
         data[1] = (u8)((((-(s32)arg2 | arg2) >> 31) & 0x10) | 0xF);
