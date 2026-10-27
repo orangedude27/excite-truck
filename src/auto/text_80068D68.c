@@ -1187,14 +1187,18 @@ void fn_8006D4C4(void *arg) {
 }
 
 void *GKI_getpoolbuf(UINT8 pool_id) {
+    extern u32 lbl_803946C0[];
+    extern void fn_8006EBAC(void);
+    extern void fn_8006EB88(void);
+    extern u8 fn_8006EB80(void);
     FREE_QUEUE_T *Q;
     BUFFER_HDR_T *p_hdr;
-    tGKI_COM_CB *p_cb = &gki_cb.com;
+    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((UINT8 *)lbl_803946C0 + 0x54);
 
     if (pool_id >= GKI_NUM_TOTAL_BUF_POOLS)
         return NULL;
 
-    GKI_disable();
+    fn_8006EBAC();
 
     Q = &p_cb->freeq[pool_id];
     if (Q->cur_cnt < Q->total) {
@@ -1207,9 +1211,9 @@ void *GKI_getpoolbuf(UINT8 pool_id) {
         if (++Q->cur_cnt > Q->max_cnt)
             Q->max_cnt = Q->cur_cnt;
 
-        GKI_enable();
+        fn_8006EB88();
 
-        p_hdr->task_id = GKI_get_taskid();
+        p_hdr->task_id = fn_8006EB80();
         p_hdr->status = BUF_STATUS_UNLINKED;
         p_hdr->p_next = NULL;
         p_hdr->Type = 0;
@@ -1217,7 +1221,7 @@ void *GKI_getpoolbuf(UINT8 pool_id) {
         return (void *)((UINT8 *)p_hdr + BUFFER_HDR_SIZE);
     }
 
-    GKI_enable();
+    fn_8006EB88();
     return GKI_getbuf(p_cb->freeq[pool_id].size);
 }
 
@@ -9559,27 +9563,26 @@ u8 HID_HostDeregister(void) {
     extern void fn_80070F90(void *);
     extern void fn_80089248(void);
     u8 *entry;
-    u8 *base;
-    u8 i;
+    u8 *base = lbl_803C3C38;
+    u32 i;
     u32 offset;
     u8 one = 1;
     u8 zero = 0;
 
-    base = lbl_803C3C38;
     if (base[0x400] == 0)
         return 1;
     for (i = 0; i < 0x10; i++) {
         u8 flag = base[0x400];
         u8 active;
-        offset = i * 0x34;
+        offset = ((u8)i) * 0x34;
         entry = base + offset;
         active = base[offset];
-        if (active != 0 && flag != 0 && i <= 0x10) {
+        if (active != 0 && flag != 0 && (u8)i <= 0x10) {
             entry[0xC] = one;
             fn_80070F90(entry + 0x1C);
             if (entry[0xA] == 1) {
                 entry[0xC] = one;
-                hidh_conn_disconnect(i);
+                hidh_conn_disconnect((u8)i);
             }
             entry[0] = zero;
             entry[0x10] = zero;
