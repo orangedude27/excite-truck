@@ -390,7 +390,6 @@ extern "C" void fn_8001EF5C(s32, s32);
 extern "C" void fn_80131234(void*);
 extern "C" void fn_801CB6E4(void*, s32);
 extern void* lbl_8032E668[];
-extern void* lbl_8032EFA8;
 extern "C" void *fn_802076A0(void *, s32, s32, s32);
 extern "C" void *lbl_8032EAFC;
 extern "C" f32 lbl_80561768;
@@ -557,7 +556,7 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
         ptr += 0x38;
     } while (ptr < (u8*)arg0 + 0x244);
     f32 value = lbl_8056175C;
-    void* vtable = &lbl_8032EE68;
+    void* vtable = lbl_8032EE68;
     *(s32*)((u8*)arg0 + 4) = arg2;
     *(s32*)((u8*)arg0 + 0xC) = 0;
     *(s32*)((u8*)arg0 + 0x244) = arg1;
