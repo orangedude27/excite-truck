@@ -8,7 +8,7 @@ extern void fn_802D9C5C(void);
 extern void fn_802D9DE4(void);
 extern char lbl_8034C8F8[];
 extern char lbl_8034C908[];
-extern char lbl_8055D128[];
+__declspec(section ".sdata") extern char lbl_8055D128[];
 extern float lbl_80565030;
 extern float lbl_80565034;
 extern float lbl_804DAC48[];
@@ -92,6 +92,76 @@ void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     }
     lbl_8055FE58 = 1;
 }
+
+void fn_802DA2F4(void) {
+    void *object;
+    void *buffer;
+    float *matrix;
+    register int count;
+    float value0;
+    float value1;
+    float *last;
+
+    object = fn_801284F8(0x28, lbl_8055D128);
+    if (object != 0) {
+        buffer = (void *)fn_8012850C(0x19000, lbl_8034C908);
+        *(void **)((char *)object + 8) = lbl_8034C8F8;
+        *(int *)((char *)object + 0x10) = 0;
+        *(int *)((char *)object + 0xC) = 0x19000;
+        *(void **)((char *)object + 4) = buffer;
+        *(void **)object = lbl_8034C8E8;
+        *(void **)((char *)object + 0x14) = (void *)fn_802D9C5C;
+        *(void **)((char *)object + 0x18) = (void *)fn_802D9DE4;
+        *(void **)((char *)object + 0x1C) = (void *)fn_802DA1F4;
+    }
+    lbl_8055FE5C = object;
+
+    value0 = lbl_80565030;
+    value1 = lbl_80565034;
+    matrix = lbl_804DAC48;
+    count = 0xB;
+    do {
+        matrix[0] = value0;
+        matrix[1] = value1;
+        matrix[2] = value1;
+        matrix[3] = value1;
+        matrix[4] = value0;
+        matrix[5] = value1;
+        matrix[6] = value1;
+        matrix[7] = value1;
+        matrix[8] = value0;
+        matrix[9] = value1;
+        matrix[10] = value1;
+        matrix[11] = value1;
+        matrix[12] = value0;
+        matrix[13] = value1;
+        matrix[14] = value1;
+        matrix[15] = value1;
+        matrix[16] = value0;
+        matrix[17] = value1;
+        matrix[18] = value1;
+        matrix[19] = value1;
+        matrix[20] = value0;
+        matrix[21] = value1;
+        matrix[22] = value1;
+        matrix[23] = value1;
+        matrix += 24;
+    } while (--count != 0);
+
+    value0 = lbl_80565030;
+    value1 = lbl_80565034;
+    last = lbl_804DB434;
+    *last++ = value0;
+    *last++ = value1;
+    *last++ = value1;
+    *last++ = value1;
+    *last++ = value0;
+    *last++ = value1;
+    *last++ = value1;
+    *last++ = value1;
+    *last = value0;
+}
+
 #pragma opt_propagation reset
 #pragma scheduling off
 void *fn_802DA450(void *arg0,int arg1) {
