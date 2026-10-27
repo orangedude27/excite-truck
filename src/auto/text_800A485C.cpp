@@ -13266,10 +13266,10 @@ extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt4Paneb(voi
 
 void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     register u8 *self = (u8 *)this;
-    register u8 *materialPtr = (u8 *)material;
-    register u16 i = 0;
     register u8 *offsets = (u8 *)*(void **)(self + 0xC);
     offsets += *(s32 *)(offsets + 0x10);
+    register u16 i = 0;
+    register u8 *materialPtr = (u8 *)material;
     while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
         u8 *entry = materialPtr + *(s32 *)(offsets + i * 4);
         if (entry[0x15] == 1) {
@@ -16990,14 +16990,13 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
     void *r30 = arg0;
     if (fn_800D2E14() != 0) {
         if (((u8 *)r30)[0x22] != 0) {
-            void **r31 = (void **)&lbl_804077C0;
-            OSLockMutex(r31);
+            OSLockMutex(&lbl_804077C0);
             fn_800D2E3C(*(s16 *)((u8 *)r30 + 0x1C) - 6, *(s16 *)((u8 *)r30 + 0x1E) - 3,
                         (s32)(*(u16 *)((u8 *)r30 + 4)) * 6 + 12,
                         (s32)(*(u16 *)((u8 *)r30 + 0x20)) * 0xA + 4);
             fn_800D24D4(r30, 0);
             fn_800D2FC8();
-            OSUnlockMutex(r31);
+            OSUnlockMutex(&lbl_804077C0);
         }
     }
 }
