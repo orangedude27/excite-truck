@@ -22,6 +22,7 @@ extern void fn_801376A8(s32, s32 *, s32, s32, s32 *);
 extern void fn_80136D20(void *, s32);
 extern s32 fn_8017960C(s32);
 extern s32 fn_802C6C34(s32);
+extern void *fn_801B2ED0(s32);
 #pragma push
 #pragma scheduling invalid_target
 extern s32 lbl_8032BE98[];
