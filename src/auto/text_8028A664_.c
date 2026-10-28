@@ -564,43 +564,52 @@ void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
 
 extern f32 fn_801E7E24(void);
 extern f32 lbl_80564328, lbl_8056432C, lbl_80564338, lbl_805643B8;
+#pragma push
+#pragma scheduling invalid_target
 void fn_8028BFEC(s32 arg0) {
-    f32 sp10, spC, sp8, temp_f1, temp_f31, temp_f4, temp_f5, temp_f6, temp_f7, temp_f8;
-    s32 var_r3, var_r5;
-    void *temp_r6;
-    void *var_r4;
-    temp_f31 = fn_801E7E18() - *(f32 *)(arg0 + 0xC);
-    temp_f1 = fn_801E7E24();
-    var_r5 = 0;
-    var_r3 = 0;
-    temp_f7 = lbl_80564338 * (lbl_805643B8 * temp_f1);
-    temp_f8 = lbl_8056432C - (lbl_80564328 * temp_f1);
-    var_r4 = *(void **)arg0;
-loop_4:
-    if (var_r5 < *(s32 *)(arg0 + 4)) {
-        temp_r6 = (void *)(*(s32 *)arg0 + var_r3);
-        if (*(f32 *)((s32)temp_r6 + 0x18) > temp_f31) {
-            temp_f6 = *(f32 *)((s32)temp_r6 + 0xC) * temp_f8;
-            temp_f5 = *(f32 *)((s32)temp_r6 + 0x14) * temp_f8;
-            sp8 = temp_f6;
-            temp_f4 = (*(f32 *)((s32)temp_r6 + 0x10) * temp_f8) - temp_f7;
-            sp10 = temp_f5; spC = temp_f4;
-            *(f32 *)var_r4 = *(f32 *)temp_r6 + temp_f6 * temp_f1;
-            *(f32 *)((s32)var_r4 + 4) = *(f32 *)((s32)temp_r6 + 4) + temp_f4 * temp_f1;
-            *(f32 *)((s32)var_r4 + 8) = *(f32 *)((s32)temp_r6 + 8) + temp_f5 * temp_f1;
-            *(f32 *)((s32)var_r4 + 0xC) = temp_f6;
-            *(f32 *)((s32)var_r4 + 0x10) = temp_f4;
-            *(f32 *)((s32)var_r4 + 0x14) = temp_f5;
-            *(f32 *)((s32)var_r4 + 0x18) = *(f32 *)((s32)temp_r6 + 0x18);
-            var_r4 = (void *)((s32)var_r4 + 0x1C);
-        }
-        var_r3 += 0x1C; var_r5++;
-        goto loop_4;
-    }
-    *(s32 *)(arg0 + 4) = ((s32)var_r4 - *(s32 *)arg0) / 28;
-}
+    struct Entry { f32 x, y, z, vx, vy, vz, age; };
+    struct List { struct Entry *data; s32 count; s32 pad; f32 time; };
+    struct List *list = (struct List *)arg0;
+    register struct Entry *out;
+    register struct Entry *in;
+    register s32 count;
+    register u8 *offset;
+    f32 vz;
+    f32 vy;
+    f32 vx;
+    f32 elapsed;
+    f32 time;
+    f32 f7;
+    f32 f8;
+    volatile f32 temp[3];
 
-#pragma dont_inline on
+    elapsed = fn_801E7E18() - list->time;
+    time = fn_801E7E24();
+    f7 = lbl_80564338 * (lbl_805643B8 * time);
+    f8 = lbl_8056432C - (lbl_80564328 * time);
+    out = list->data;
+    for (count = 0, offset = 0; count < list->count; count++, offset += 0x1C) {
+        in = (struct Entry *)((u32)list->data + (u32)offset);
+        if (in->age > elapsed) {
+            vx = in->vx * f8;
+            vy = (in->vy * f8) - f7;
+            vz = in->vz * f8;
+            temp[0] = vx;
+            temp[1] = vy;
+            temp[2] = vz;
+            out->x = in->x + vx * time;
+            out->y = in->y + vy * time;
+            out->z = in->z + vz * time;
+            out->vx = vx;
+            out->vy = vy;
+            out->vz = vz;
+            out->age = in->age;
+            out = (struct Entry *)((u8 *)out + 0x1C);
+        }
+    }
+    list->count = ((s32)out - (s32)list->data) / 28;
+}
+#pragma pop
 void *fn_8028C824(void *arg0, s32 arg1) {
     s32 size = arg1 * 0x28;
     void *memory;
@@ -643,40 +652,61 @@ void fn_8028C92C(void *arg0) {
     ((s32 *)arg0)[1] = 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma paired off
+#pragma paired_single off
 void fn_8028C938(s32 arg0) {
     extern f32 fn_801E7E24(void);
     extern f32 lbl_8056432C, lbl_805643B8, lbl_805643D0, lbl_805643D4;
-    f32 elapsed = fn_801E7E18() - lbl_805643D0;
-    f32 step = fn_801E7E24();
-    f32 scale = lbl_805643B8 * step;
-    f32 delta = lbl_805643D4 * scale;
-    s32 i = 0;
-    s32 offset = 0;
-    void *dst = *(void **)arg0;
-    void *src;
-    while (i < *(s32 *)(arg0 + 4)) {
-        src = (u8 *)*(void **)arg0 + offset;
-        if (*(f32 *)((u8 *)src + 0x24) > elapsed) {
-            f32 vx = *(f32 *)((u8 *)src + 0xC) * lbl_8056432C;
-            f32 vy = *(f32 *)((u8 *)src + 0x10) * lbl_8056432C - delta;
-            f32 vz = *(f32 *)((u8 *)src + 0x14) * lbl_8056432C;
-            *(f32 *)((u8 *)dst + 0x0) = *(f32 *)((u8 *)src + 0x0) + vx * step;
-            *(f32 *)((u8 *)dst + 0x4) = *(f32 *)((u8 *)src + 0x4) + vy * step;
-            *(f32 *)((u8 *)dst + 0x8) = *(f32 *)((u8 *)src + 0x8) + vz * step;
-            *(f32 *)((u8 *)dst + 0xC) = vx;
-            *(f32 *)((u8 *)dst + 0x10) = vy;
-            *(f32 *)((u8 *)dst + 0x14) = vz;
-            *(f32 *)((u8 *)dst + 0x18) = *(f32 *)((u8 *)src + 0x18);
-            *(f32 *)((u8 *)dst + 0x1C) = *(f32 *)((u8 *)src + 0x1C);
-            *(f32 *)((u8 *)dst + 0x20) = *(f32 *)((u8 *)src + 0x20);
-            *(f32 *)((u8 *)dst + 0x24) = *(f32 *)((u8 *)src + 0x24);
-            dst = (u8 *)dst + 0x28;
+    struct Entry { f32 x, y, z, vx, vy, vz, u0, u1, u2, age; };
+    struct List { struct Entry *data; s32 count; };
+    struct List *list = (struct List *)arg0;
+    register struct Entry *out;
+    register struct Entry *in;
+    register s32 count;
+    register u8 *offset;
+    f32 vz;
+    f32 vy;
+    f32 vx;
+    f32 elapsed;
+    f32 step;
+    f32 scale;
+    f32 delta;
+    f32 factor;
+    volatile f32 temp[3];
+
+    elapsed = fn_801E7E18() - lbl_805643D0;
+    step = fn_801E7E24();
+    scale = lbl_805643B8 * step;
+    delta = lbl_805643D4 * scale;
+    out = list->data;
+    factor = lbl_8056432C;
+    for (count = 0, offset = 0; count < list->count; count++, offset += 0x28) {
+        in = (struct Entry *)((u32)list->data + (u32)offset);
+        if (in->age > elapsed) {
+            vx = in->vx * factor;
+            vy = (in->vy * factor) - delta;
+            vz = in->vz * factor;
+            temp[0] = vx;
+            temp[1] = vy;
+            temp[2] = vz;
+            out->x = in->x + vx * step;
+            out->y = in->y + vy * step;
+            out->z = in->z + vz * step;
+            out->vx = vx;
+            out->vy = vy;
+            out->vz = vz;
+            out->u0 = in->u0;
+            out->u1 = in->u1;
+            out->u2 = in->u2;
+            out->age = in->age;
+            out = (struct Entry *)((u8 *)out + 0x28);
         }
-        offset += 0x28;
-        i++;
     }
-    *(s32 *)(arg0 + 4) = ((u8 *)dst - (u8 *)*(void **)arg0) / 0x28;
+    list->count = ((s32)out - (s32)list->data) / 40;
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
