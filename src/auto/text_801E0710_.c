@@ -219,42 +219,51 @@ void fn_801E1520(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-void *fn_801E1568(void *arg0, int arg1, int arg2) {
-    int i = 0;
-    int offset = 0;
-    int zero = 0;
+void *fn_801E1568(void *arg0, int arg1) {
+    int i;
+    void **item;
+    int offset;
+    int zero;
+
     if (arg0 != 0) {
+        int val1;
+        int val2;
         *(void **)arg0 = &lbl_80339818;
-        fn_801777D0(&lbl_80339818);
-        while (i < *(int *)((char *)arg0 + 0x80)) {
-            int *item = (int *)(*(int *)((char *)arg0 + 0x7C) + offset);
+        fn_801777D0(arg0);
+        i = 0;
+        offset = 0;
+        zero = 0;
+        for (; i < *(int *)((char *)arg0 + 0x80); offset += 0x1c, i++) {
+            item = (void **)(*(char **)((char *)arg0 + 0x7c) + offset);
             if (*item != 0) {
-                fn_80128658();
-                *item = zero;
+                fn_80128658(*item);
+                item[0] = (void *)zero;
                 fn_80128670(item[1]);
-                item[1] = zero;
+                item[1] = (void *)zero;
             }
-            offset += 0x1C;
-            i++;
         }
+        val1 = *(int *)((char *)arg0 + 4);
         *(int *)((char *)arg0 + 0x80) = 0;
-        if (*(int *)((char *)arg0 + 4) != -2) {
-            fn_802CAC54();
+        if (val1 != -2) {
+            fn_802CAC54(val1);
             *(int *)((char *)arg0 + 4) = -2;
         }
-        if (*(int *)((char *)arg0 + 8) != -2) {
-            fn_802CAC54();
+        val2 = *(int *)((char *)arg0 + 8);
+        if (val2 != -2) {
+            fn_802CAC54(val2);
             *(int *)((char *)arg0 + 8) = -2;
         }
-        if ((char *)arg0 + 0x7C != 0) {
-            fn_8002F634((char *)arg0 + 0x88, &fn_801E07E8, 0x1C, 0x64);
-            if ((char *)arg0 + 0x7C != 0) {
-                *(int *)((char *)arg0 + 0x7C) = 0;
+        if ((char *)arg0 + 0x7c != 0) {
+            fn_8002F634((char *)arg0 + 0x88, fn_801E07E8, 0x1c, 0x64);
+            if ((char *)arg0 + 0x7c != 0) {
+                *(int *)((char *)arg0 + 0x7c) = 0;
                 *(int *)((char *)arg0 + 0x80) = 0;
                 *(int *)((char *)arg0 + 0x84) = 0;
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
