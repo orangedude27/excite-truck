@@ -937,7 +937,6 @@ s32 fn_8016E1A4(s32 *arg0, s32 arg1) {
 }
 
 void fn_8016E1B4(void *arg0, s32 arg1) {
-    struct Entry { u8 pad[9]; u8 flag; u8 tail[2]; f32 value; };
     char sp8[0x28];
     register char *format = lbl_803306D0;
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
@@ -957,16 +956,16 @@ void fn_8016E1B4(void *arg0, s32 arg1) {
     }
     fn_8016A240(sp8);
     if (arg1 < *(s32 *)((u8 *)arg0 + 0x3c)) {
+        register s32 i;
         register void **list = *(void ***)((u8 *)arg0 + 0x18);
         s32 delta = arg1 * 0x14;
         register u8 *base = (u8 *)*list;
-        register struct Entry *item = (struct Entry *)(base + delta);
-        register s32 i;
+        register u8 *item = base + delta;
         s32 offset;
-        item->flag = 0;
+        *(u8 *)(item + 9) = 0;
         i = 0;
         offset = 0;
-        item->value = lbl_8055E3C8;
+        *(f32 *)(item + 0xc) = lbl_8055E3C8;
         while (i < *(s32 *)((u8 *)*(void **)item + 4)) {
             u8 *entries = (u8 *)*(void **)*(void **)item;
             void *handle = *(void **)(entries + offset + 4);
