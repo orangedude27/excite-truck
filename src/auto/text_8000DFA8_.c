@@ -45,6 +45,8 @@ extern void fn_80234470(void);
 extern void fn_802328D4();
 
 extern s32 lbl_8055D4A8;
+extern s32 lbl_8055D484;
+extern s32 lbl_8055D488;
 extern s32 lbl_802ED758[4];
 extern s32 lbl_802ED770[4];
 extern f32 lbl_80350F28[][6];
