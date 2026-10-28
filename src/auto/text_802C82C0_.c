@@ -195,17 +195,24 @@ void *fn_802C8750(void *arg0, int arg1) {
     return arg0;
 }
 
-void fn_802C87B4(int x,int y,int w,int h){
-int half;
-if((unsigned char)lbl_8055FC74==0 && (unsigned char)lbl_8055FC8D!=0){
-half=(lbl_8055CFF4+((unsigned int)lbl_8055CFF4>>31))>>1;
-h=(int)(lbl_80564F18+(float)h*lbl_8055D024);
-y=half+(int)(lbl_80564F18+(float)(y-half)*lbl_8055D024);
+#pragma push
+#pragma scheduling invalid_target
+void fn_802C87B4(int x, int y, int w, int h) {
+    int half;
+    if ((unsigned char)lbl_8055FC74 == 0 && (unsigned char)lbl_8055FC8D != 0) {
+        half = (int)(lbl_8055CFF4 + ((unsigned int)lbl_8055CFF4 >> 31)) >> 1;
+        h = (int)(lbl_80564F18 + (float)h * lbl_8055D024);
+        y = half + (int)(lbl_80564F18 + (float)(y - half) * lbl_8055D024);
+    }
+    lbl_8055FC64 = (void *)w;
+    lbl_8055FC5C = (void *)x;
+    lbl_8055FC60 = (void *)y;
+    lbl_8055FC68 = (void *)h;
+    lbl_8055FC6C = (float)w / (float)h;
+    fn_802D01E0(x, y, w);
+    fn_802CC518(w, lbl_8055FC44);
 }
-lbl_8055FC64=(void*)w;lbl_8055FC5C=(void*)x;lbl_8055FC60=(void*)y;lbl_8055FC68=(void*)h;
-lbl_8055FC6C=(float)w/(float)h;
-fn_802D01E0(x,y,w);fn_802CC518(w,lbl_8055FC44);
-}
+#pragma pop
 
 void fn_802C88BC(int arg0) {
     fn_802D02F8(lbl_8055D018, arg0 & 1);
