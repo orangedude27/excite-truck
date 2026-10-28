@@ -80,6 +80,9 @@ void fn_802B1FC0(void *arg0) {
     ((int *)arg0)[1] = 0;
 }
 
+extern void *lbl_8055F9BC;
+extern struct Unk802B2C98 lbl_804BE1FC;
+void fn_802B21D4(void **);
 void fn_80128670(void *);
 void fn_802B218C(void *);
 void fn_8002F6AC(int, void (*)(void));
