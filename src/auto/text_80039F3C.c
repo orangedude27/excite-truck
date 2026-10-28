@@ -12,7 +12,7 @@ extern int IOS_IoctlAsync(int, int, void *, int, void *, int, void (*)(int, void
 extern unsigned char lbl_8055D8E1;
 extern unsigned char lbl_8055D900;
 extern int lbl_8055D8F4;
-extern unsigned int lbl_8037B8C0;
+extern unsigned char lbl_8037B8C0[];
 extern const char lbl_80302848[];
 void OSReport(const char *, ...);
 extern void (*FatalFunc_8055D8D8)(void);
