@@ -629,20 +629,65 @@ void fn_801791A4(void) {
 
 }
 
-void fn_801791A8(void) {
+#pragma cplusplus on
+extern "C" void fn_801B537C(long (*)(void *));
+extern "C" void fn_801E1D9C(void);
+extern "C" void fn_8026785C(void);
+extern "C" void fn_8017D334(void);
+extern "C" void fn_80128658(int);
+extern "C" void fn_80128670(void *);
+extern "C" void fn_801AE50C(void);
+extern "C" void fn_801E222C(void);
+extern "C" void fn_801E1520(void);
+extern "C" void fn_801DEE3C(void);
+extern "C" void fn_801CB518(void);
+extern "C" void fn_801D483C(void);
+extern "C" void fn_801D9828(void);
+extern "C" void fn_801D32DC(void);
+extern "C" void fn_801D2210(void);
+extern "C" void fn_801C1BA0(void);
+extern "C" void fn_8026B69C(void);
+extern "C" void fn_801B228C(void);
+extern "C" void fn_801AFBE8(void);
+extern "C" void fn_801B06CC(void);
+extern "C" void fn_801C4B74(void);
+extern "C" void fn_8020C45C(void);
+extern "C" void fn_801DE0E8(void);
+extern "C" void fn_80181FC4(void);
+extern "C" void fn_801CECB4(void);
+extern "C" void fn_801B8BBC(void);
+extern "C" void fn_801A4E54(void);
+extern "C" void fn_801B3B28(void);
+extern "C" void fn_801B60A8(void);
+extern "C" void fn_801B531C(void);
+extern "C" void fn_801CEFC4(void);
+extern "C" void fn_80206550(int);
+extern "C" void fn_801D0E70(void);
+extern "C" void fn_801D0CFC(void);
+#pragma cplusplus on
+extern "C" void fn_801791A8(void) {
+    class Element {
+    public:
+        virtual void f0();
+        virtual void disable(int);
+    };
+    class Owner {
+    public:
+        virtual void destroy(int);
+    };
     int offset;
-    register int i;
-    void *object;
+    int i;
+    Element *object;
     fn_80177A18();
     fn_801B537C(fn_80178C4C);
     fn_801E1D9C(); fn_8026785C(); fn_8017D334();
     fn_80128658(lbl_8055E450);
     lbl_8055E450 = 0;
-    offset = 0;
     i = 0;
+    offset = 0;
     while (i < lbl_8055E438) {
-        object = *(void **)((char *)lbl_8055E434 + offset);
-        if (object != 0) ((void (*)(void *, int))(*(void ***)object)[3])(object, 1);
+        object = (Element *)*(void **)((char *)lbl_8055E434 + offset);
+        if (object != 0) object->disable(1);
         offset += 4;
         i++;
     }
@@ -653,13 +698,13 @@ void fn_801791A8(void) {
     fn_8026B69C(); fn_801B228C(); fn_801AFBE8(); fn_801B06CC(); fn_801C4B74();
     fn_8020C45C(); fn_801DE0E8(); fn_80181FC4(); fn_801CECB4(); fn_801B8BBC();
     fn_801A4E54(); fn_801B3B28(); fn_801B60A8(); fn_801B531C();
-    if (lbl_8055E414 != 0) ((void (*)(void *, int))(*(void ***)lbl_8055E414)[2])(lbl_8055E414, 1);
+    if (lbl_8055E414 != 0) ((Owner *)lbl_8055E414)->destroy(1);
     lbl_8055E414 = 0;
     fn_801CEFC4(); fn_80206550(1); fn_801D0E70();
     lbl_8055E8F8 = 0;
     fn_801D0CFC();
 }
-
+#pragma cplusplus off
 void fn_801792F4(void) {
     fn_801E21B4();
 }
