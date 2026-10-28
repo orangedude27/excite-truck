@@ -478,33 +478,45 @@ extern int fn_80232BA4(int, int, int, float, float, float, float, float);
 extern int lbl_802FA300[3];
 extern char lbl_80342898[];
 extern float lbl_8056375C, lbl_80563760, lbl_80563764;
+#pragma processor 750
 void fn_8024122C(void *arg0) {
-    int sp10;
+    char sp10[0x1E];
     float y, x;
     int index;
     float value;
-    int a, b, c;
+    int b;
+    int text;
+    int *thresholds;
+    volatile int *tag;
+    int currentTag;
     fn_80230C30(&y, &x, *(int *)((char *)arg0 + 4), *(int *)((char *)arg0 + 8));
     if (*(int *)((char *)arg0 + 0x1C) >= 0) {
-        int tag = **(int **)((char *)arg0 + 0x24);
+        tag = *(volatile int * volatile *)((char *)arg0 + 0x24);
+        thresholds = lbl_802FA300;
+        currentTag = *tag;
         index = 0;
-        if (tag && tag >= lbl_802FA300[0]) index = 1;
-        tag = **(int **)((char *)arg0 + 0x24);
-        if (tag && tag >= lbl_802FA300[1]) index = 2;
-        tag = **(int **)((char *)arg0 + 0x24);
-        if (tag && tag >= lbl_802FA300[2]) index = 3;
-        fn_801345D8(&sp10, 0x1E, lbl_80342898, index);
+        if (currentTag != 0 && currentTag >= thresholds[0])
+            index = 1;
+        tag = *(volatile int * volatile *)((char *)arg0 + 0x24);
+        currentTag = *tag;
+        if (currentTag != 0 && currentTag >= thresholds[1])
+            index = 2;
+        tag = *(volatile int * volatile *)((char *)arg0 + 0x24);
+        currentTag = *tag;
+        if (currentTag != 0 && currentTag >= thresholds[2])
+            index = 3;
+        ((int (*)(void *, int, void *, ...))fn_801345D8)(sp10, 0x1E, lbl_80342898, *(int *)((char *)arg0 + 0x1C), index);
         value = lbl_8056375C;
         b = 0xA;
         if (*(unsigned char *)*(void **)((char *)arg0 + 0x20)) {
             value = lbl_80563760;
             b = 9;
         }
-        fn_80131234(&sp10);
-        fn_80232BA4(*(int *)((char *)arg0 + 0x18), -0x100, b, y, x, value, lbl_80563758, lbl_80563764);
+        text = fn_80131234(sp10);
+        ((int (*)(int, int, int, int, float, float, float, float, float))fn_80232BA4)(text, *(int *)((char *)arg0 + 0x18), -0x100, b, y, x, value, lbl_80563758, lbl_80563764);
     }
 }
-
+#pragma processor reset
 extern void fn_80216D28(void);
 extern int fn_80214D50(int);
 extern float fn_8023659C(int *);
