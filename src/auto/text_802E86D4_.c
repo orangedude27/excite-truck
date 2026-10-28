@@ -265,7 +265,7 @@ extern char lbl_80560034;
 extern int fn_802E95E0(void *, void (*)(void), int);
 extern int fn_802E2C20(void);
 extern char lbl_8034E024[];
-extern int lbl_80507288;
+__declspec(section ".data") extern int lbl_80507288;
 extern unsigned char lbl_80560035;
 extern char lbl_8034E0BC[];
 extern int fn_802ECC10(void);
