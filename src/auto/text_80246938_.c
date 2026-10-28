@@ -3,7 +3,7 @@ extern s32 fn_802E4A10(void);
 extern void fn_802146BC(void *, s32, s32, s32);
 extern s32 fn_80131234(s32 *);
 extern s32 lbl_802FA378[5];
-extern const s32 lbl_804988F0[5];
+extern s32 lbl_804988F0[5];
 extern char lbl_80343720[];
 extern char lbl_80343280[];
 extern char lbl_80343294[];
