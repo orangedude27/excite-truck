@@ -1,4 +1,5 @@
 #include "types.h"
+extern "C" f64 fn_8002F234(f32);
 extern "C" s32 fn_801E9E30(void *, f32 *);
 extern "C" s32 fn_80136594(void **, s32, f32 *, f32);
 extern "C" s32 fn_80178C9C(void);
@@ -845,30 +846,45 @@ extern "C" void fn_8014052C(void *unused, s32 arg0, u8 *arg1) {
 extern "C" s32 fn_80147ABC(void *, void *, const char *, f64, ...);
 extern "C" char lbl_8032CA48[];
 extern "C" char lbl_8032CA58[];
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_80140614(void *arg0, void *arg1, void *arg2) {
     class Item {
     public:
         virtual void d0();
         virtual void *lookup(void *);
     };
-    f32 d1 = fn_8001DAE8((char *)arg2 + 0xA8) - *(f32 *)((char *)arg2 + 0xAC);
+    struct Bounds {
+        u8 pad[0xA0];
+        volatile f32 low0;
+        volatile f32 high0;
+        volatile f32 low1;
+        volatile f32 high1;
+    };
+    Bounds *bounds = (Bounds *)arg2;
+    f32 d1 = fn_8001DAE8((void *)&bounds->low1) - bounds->high1;
     s32 flag = 0;
-    if (d1 >= lbl_805614A4 && d1 < *(volatile f32 *)((char *)arg2 + 0xA8))
-        flag = 1;
-    if (flag == 0) {
-        f32 d2 = fn_8001DAE8((char *)arg2 + 0xA0) - *(f32 *)((char *)arg2 + 0xA4);
-        flag = 0;
-        if (d2 >= lbl_805614A4 && d2 < *(volatile f32 *)((char *)arg2 + 0xA0))
+    if (d1 >= lbl_805614A4) {
+        if (d1 < bounds->low1)
             flag = 1;
+    }
+    if (flag == 0) {
+        f32 d2 = fn_8001DAE8((void *)&bounds->low0) - bounds->high0;
+        flag = 0;
+        if (d2 >= lbl_805614A4) {
+            if (d2 < bounds->low0)
+                flag = 1;
+        }
     }
     if (flag != 0) {
         void *r1 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(lbl_8032CA48);
         void *r2 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(lbl_8032CA58);
-        f32 d = fn_8001DAF0((f32 *)((char *)arg2 + 0xA0));
+        f32 d = fn_8001DAF0((f32 *)&bounds->low0);
         fn_80147ABC(r1, r2, (const char *)*(s32 *)((char *)r1 + 0x1C), (f64)(d * d));
     }
 }
-
+#pragma scheduling reset
+#pragma pop
 extern "C" void fn_8013EB30(void);
 extern "C" void fn_80140B98(void *, void *, s32);
 extern "C" void fn_80141558(void *, s32, s32, s32);
@@ -1125,28 +1141,32 @@ extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
     s32 result = 1;
     if (lbl_8055E1BC != 0) {
         f32 old = *(f32 *)((u8 *)arg0 + 0x94);
-        f32 v = old + arg1 / lbl_8056149C;
-        if (v < lbl_805614AC) v = lbl_805614AC;
-        if (v > lbl_805614A4) v = lbl_805614A4;
+        f32 step = arg1 / lbl_8056149C;
+        f32 v = old + step;
+        v = v < lbl_805614AC ? lbl_805614AC : v;
+        v = v > lbl_805614A4 ? lbl_805614A4 : v;
         f32 r = v;
         *(f32 *)((u8 *)arg0 + 0x94) = v;
         if (old < r) {
             *(f32 *)((u8 *)arg0 + 0xEC) = r - old;
-        } else if ((f32)__fabs((f64)r) <= (f32)lbl_80558DC4 && (f32)__fabs((f64)old) <= (f32)lbl_80558DC4) {
-            s32 n = *(s32 *)((u8 *)arg0 + 0xE4);
-            if (n > 0) {
-                *(s32 *)((u8 *)arg0 + 0xF4) = n;
-                fn_8013CB3C();
+        } else {
+            s32 close = (f32)__fabs((f64)r) <= (f32)lbl_80558DC4;
+            if (close != 0) {
+                if ((f32)__fabs((f64)old) <= (f32)lbl_80558DC4) {
+                    s32 n = *(s32 *)((u8 *)arg0 + 0xE4);
+                    if (n > 0) {
+                        *(s32 *)((u8 *)arg0 + 0xF4) = n;
+                        *(f32 *)((u8 *)arg0 + 0xF0) = fn_8013CB3C();
+                    }
+                    *(volatile s32 *)((u8 *)arg0 + 0xE4) = 0;
+                    n = *(s32 *)((u8 *)arg0 + 0x100);
+                    if (n > 0) *(f32 *)((u8 *)arg0 + 0xD4) = fn_8001DAE8((u8 *)arg0 + 0xD0);
+                    *(s32 *)((u8 *)arg0 + 0x100) = 0;
+                    *(f32 *)((u8 *)arg0 + 0xAC) = fn_8001DAE8((u8 *)arg0 + 0xA8);
+                    if (lbl_8055E1BC == 0) *(u8 *)((u8 *)arg0 + 0xF8) = 1;
+                    result = 0;
+                }
             }
-            *(s32 *)((u8 *)arg0 + 0xE4) = 0;
-            n = *(s32 *)((u8 *)arg0 + 0x100);
-            if (n > 0) {
-                *(f32 *)((u8 *)arg0 + 0xD4) = fn_8001DAE8((u8 *)arg0 + 0xD0);
-            }
-            *(s32 *)((u8 *)arg0 + 0x100) = 0;
-            *(f32 *)((u8 *)arg0 + 0xAC) = fn_8001DAE8((u8 *)arg0 + 0xA8);
-            if (lbl_8055E1BC == 0) *(u8 *)((u8 *)arg0 + 0xF8) = 1;
-            result = 0;
         }
     }
     return result;
@@ -1817,59 +1837,71 @@ extern "C" void fn_80143C54(void *arg0) {
 }
 
 extern "C" void fn_802AE0E0(int);
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_80143CB0(void *arg0) {
-    int ref = *(int *)((char *)arg0 + 0xC);
-    void *item14;
-    void *item18;
-    void *item1C;
-    void *item24;
-    void *item28;
-    void *item2C;
-    *(int *)((char *)arg0 + 0x00) = 0;
-    *(float *)((char *)arg0 + 0x04) = lbl_805614BC;
-    *((u8 *)arg0 + 0x08) = 1;
-    *((u8 *)arg0 + 0x09) = 0;
-    *((u8 *)arg0 + 0x10) = 0;
-    *(int *)((char *)arg0 + 0x10C) = 0;
-    *(int *)((char *)arg0 + 0x110) = 0;
-    *(int *)((char *)arg0 + 0x114) = 0;
-    *(int *)((char *)arg0 + 0x118) = 0;
-    if (ref != 0) {
-        fn_802AE0E0(ref);
-    }
-    item14 = *(void **)((char *)arg0 + 0x14);
-    if (item14 != 0) {
-        *((u8 *)item14 + 0x4A) = 1;
-        *((u8 *)item14 + 0x4C) = 0;
-    }
-    item18 = *(void **)((char *)arg0 + 0x18);
-    if (item18 != 0) {
-        *((u8 *)item18 + 0x4A) = 1;
-        *((u8 *)item18 + 0x4C) = 0;
-    }
-    item1C = *(void **)((char *)arg0 + 0x1C);
-    if (item1C != 0) {
-        *((u8 *)item1C + 0x4A) = 1;
-        *((u8 *)item1C + 0x4C) = 0;
-    }
-    item24 = *(void **)((char *)arg0 + 0x24);
-    *((u8 *)arg0 + 0x20) = 0;
-    if (item24 != 0) {
-        *((u8 *)item24 + 0x4A) = 1;
-        *((u8 *)item24 + 0x4C) = 0;
-    }
-    item28 = *(void **)((char *)arg0 + 0x28);
-    if (item28 != 0) {
-        *((u8 *)item28 + 0x4A) = 1;
-        *((u8 *)item28 + 0x4C) = 0;
-    }
-    item2C = *(void **)((char *)arg0 + 0x2C);
-    if (item2C != 0) {
-        *((u8 *)item2C + 0x4A) = 1;
-        *((u8 *)item2C + 0x4C) = 0;
-    }
+    struct Item {
+        u8 pad0[0x4A];
+        u8 active;
+        u8 pad4B;
+        u8 state;
+    };
+    struct Manager {
+        int value0;
+        float value4;
+        u8 flag8;
+        u8 flag9;
+        u8 padA[2];
+        int ref;
+        u8 flag10;
+        u8 pad11[3];
+        Item *item14;
+        Item *item18;
+        Item *item1C;
+        u8 flag20;
+        u8 pad21[3];
+        Item *item24;
+        Item *item28;
+        Item *item2C;
+        u8 pad30[0xDC];
+        int value10C;
+        int value110;
+        int value114;
+        int value118;
+    };
+    Manager *p = (Manager *)arg0;
+    int ref = p->ref;
+    Item *item14;
+    Item *item18;
+    Item *item1C;
+    Item *item24;
+    Item *item28;
+    Item *item2C;
+    p->value0 = 0;
+    p->value4 = lbl_805614BC;
+    p->flag8 = 1;
+    p->flag9 = 0;
+    p->flag10 = 0;
+    p->value10C = 0;
+    p->value110 = 0;
+    p->value114 = 0;
+    p->value118 = 0;
+    if (ref != 0) fn_802AE0E0(ref);
+    item14 = p->item14;
+    if (item14 != 0) { item14->active = 1; item14->state = 0; }
+    item18 = p->item18;
+    if (item18 != 0) { item18->active = 1; item18->state = 0; }
+    item1C = p->item1C;
+    if (item1C != 0) { item1C->active = 1; item1C->state = 0; }
+    item24 = p->item24;
+    p->flag20 = 0;
+    if (item24 != 0) { item24->active = 1; item24->state = 0; }
+    item28 = p->item28;
+    if (item28 != 0) { item28->active = 1; item28->state = 0; }
+    item2C = p->item2C;
+    if (item2C != 0) { item2C->active = 1; item2C->state = 0; }
 }
-
+#pragma pop
 extern "C" void fn_80130980(void *, s32, s32, f32);
 extern "C" s32 fn_80204CF0(void);
 extern "C" s32 fn_80207848(void *, s32);
