@@ -1448,48 +1448,47 @@ extern "C" void *fn_8012E460(void *);
 extern "C" s32 fn_8012E490(s32 *);
 extern "C" const char lbl_8032ACE0[];
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" void fn_8012DDA8(s32 arg0) {
     nw4r::ef::Effect *obj;
-    void *node;
-    s32 found = 0;
+    Unk8012DFCCNode *node;
+    s32 found;
 
     if (fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0) {
         return;
     }
-
     obj = lbl_8055E014;
     if (obj == 0) {
         return;
     }
 
-    node = (void *)fn_8012E490((s32 *)((char *)obj + 0xA18));
+    found = 0;
+    node = (Unk8012DFCCNode *)fn_8012E490((s32 *)((char *)obj + 0xA18));
     do {
-        if (stricmp((const char *)((char *)node + 0xC), (const char *)arg0) == 0) {
+        if (stricmp(node->unk_0xC, (const char *)arg0) == 0) {
             found = 1;
-            *(s32 *)((char *)node + 8) += 1;
+            node->unk_0x8 += 1;
             break;
         }
-        node = *(void **)((char *)node + 4);
+        node = node->next;
     } while (node != 0);
 
     if (found == 0) {
         fn_802E30C8(lbl_8032ACE0, (const char *)arg0);
-        node = fn_8012E460((char *)obj + 8);
+        node = (Unk8012DFCCNode *)fn_8012E460((char *)obj + 8);
         if (node == 0) {
             fn_8012E2CC(obj);
-            node = fn_8012E460((char *)obj + 8);
+            node = (Unk8012DFCCNode *)fn_8012E460((char *)obj + 8);
         }
         if (node != 0) {
             fn_8012DFE8(node, (const char *)arg0, (s32)fn_8012E060((char *)obj + 4, (const char *)arg0));
-            fn_8012DFCC((Unk8012DFCCList *)((char *)obj + 0xA18), (Unk8012DFCCNode *)node);
+            fn_8012DFCC((Unk8012DFCCList *)((char *)obj + 0xA18), node);
             fn_8012DEE4(obj);
             found = 1;
         }
-    }
-
-    if (found == 0) {
-        ((void *(*)(const char *, void **))fn_8012BD98)((const char *)arg0, &lbl_8055E000);
+        if (found == 0) {
+            ((void *(*)(const char *, void **))fn_8012BD98)((const char *)arg0, &lbl_8055E000);
+        }
     }
 }
 #pragma pop
@@ -1653,6 +1652,56 @@ extern "C" void *fn_8012E460(void *arg0) {
 
 extern "C" s32 fn_8012E490(s32 *arg0) {
     return *arg0;
+}
+
+extern "C" const char lbl_8032ACF4[];
+extern "C" void fn_8012E498(void *arg0) {
+    void *object;
+    void *effect;
+    void *entry;
+    s32 remaining;
+    s32 removed;
+
+    fn_8012E81C((s32)arg0);
+    object = fn_8012BD3C(lbl_8055E000, (const char *)arg0);
+    if (object != 0) {
+        remaining = *(s32 *)((u8 *)object + 0x9C) - 1;
+        *(s32 *)((u8 *)object + 0x9C) = remaining;
+        if (remaining == 0) {
+            effect = lbl_8055E014;
+            if (effect != 0) {
+                removed = 0;
+                entry = (void *)fn_8012E490((s32 *)((u8 *)effect + 0xA18));
+                while (entry != 0) {
+                    if (stricmp((const char *)((u8 *)entry + 0xC), (const char *)arg0) == 0) {
+                        fn_8012E67C((s32)effect, (s32)arg0);
+                        break;
+                    }
+                    entry = *(void **)((u8 *)entry + 4);
+                }
+
+                entry = (void *)fn_8012E490((s32 *)((u8 *)effect + 0xA18));
+                while (entry != 0) {
+                    if (stricmp((const char *)((u8 *)entry + 0xC), (const char *)arg0) == 0) {
+                        fn_802E317C(lbl_8032ACF4);
+                    }
+                    entry = *(void **)((u8 *)entry + 4);
+                }
+
+                for (entry = (void *)fn_8012E674((u8 *)effect + 8);
+                     entry != 0; entry = *(void **)entry) {
+                    if (stricmp((const char *)((u8 *)entry + 0xC), (const char *)arg0) == 0) {
+                        fn_8012E630(entry);
+                        fn_8012E5E4((u8 *)effect + 8, entry);
+                        removed = 1;
+                        continue;
+                    }
+                }
+                if (removed != 0) return;
+            }
+            fn_8012BB20((s32)&lbl_8055E000, object);
+        }
+    }
 }
 
 extern "C" void fn_8012E5E4(void *arg0, void *arg1) {
