@@ -501,8 +501,6 @@ void fn_802E0BE0(void) {
 
 extern void fn_802E317C(char *, ...);
 extern char lbl_8034BB28[];
-#pragma push
-#pragma cse off
 void *fn_802E0C04(u32 size) {
     int best = 0x7FFFFFFF;
     void **bestLink = 0;
