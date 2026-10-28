@@ -116,6 +116,9 @@ void fn_801EC4A8(void *arg0, long arg1) {
 }
 
 #pragma cplusplus on
+struct Vec3 {
+    float x, y, z;
+};
 struct Parent {
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
@@ -125,9 +128,18 @@ struct Parent {
     virtual void d20();
     virtual void *get(int);
 };
+struct Property {
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10();
+    virtual Vec3 getVector(char *);
+};
 extern "C" {
 static inline void *fn_801EC59C_parent_get(void *parent, int index) {
     return ((Parent *)parent)->get(index);
+}
+static inline void fn_801EC59C_property_get(void *out, void *property, char *label) {
+    *(Vec3 *)out = ((Property *)property)->getVector(label);
 }
 }
 #pragma cplusplus reset
@@ -135,8 +147,6 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
     extern char lbl_8055AFDC, lbl_8055AFE4;
     extern float lbl_80562E88, lbl_80562E8C;
     typedef union { struct { float x, y, z; } f; unsigned int u[3]; } Vec3;
-    typedef Vec3 (*GetVector)(void *, char *);
-    typedef struct { void *slots[14]; } VTable;
     void *result;
     Vec3 first, second;
     float x0, y0, x1, y1;
@@ -145,8 +155,8 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
     *(volatile int *)out = value;
     result = fn_801EC59C_parent_get(parent, index);
     if (result != 0) {
-        first = ((GetVector)((VTable *)*(void **)result)->slots[0x34 / 4])(result, &lbl_8055AFDC);
-        second = ((GetVector)((VTable *)*(void **)result)->slots[0x34 / 4])(result, &lbl_8055AFE4);
+        fn_801EC59C_property_get(&first, result, &lbl_8055AFDC);
+        fn_801EC59C_property_get(&second, result, &lbl_8055AFE4);
         x0 = first.f.x * scale - bias;
         x1 = second.f.x * scale - bias;
         y0 = first.f.y * lbl_80562E8C;
