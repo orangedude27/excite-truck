@@ -159,7 +159,8 @@ extern void fn_802D3E9C(int);
 extern void fn_8000AEC4(void);
 #pragma push
 #pragma small_data off
-void fn_8000AF1C(void *arg0) {
+#pragma use_lmw_stmw off
+  void fn_8000AF1C(void *arg0) {
  int i, active, val; int *entry;
  lbl_8055D3D8=0; lbl_8055D3E8=0; active=fn_80204024(); lbl_8055D3DC=0;
  fn_801E7C1C(arg0); fn_801E8818(fn_8000AEC4,lbl_802FBC90+0x21C); fn_8012E81C(lbl_802FBC90+0x228);
