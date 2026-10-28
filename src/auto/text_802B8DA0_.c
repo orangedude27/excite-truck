@@ -17,6 +17,8 @@ extern int lbl_8055CEF0;
 extern char lbl_8034A990[];
 extern char lbl_8034AA1C[];
 extern void fn_802B8AE0(void *, void *);
+extern void fn_802B9CF4(void *);
+extern void *fn_802B9C9C(void *, s32);
 extern void *lbl_8055FA7C;
 extern char lbl_804BFFF4[];
 extern int lbl_8055FA6C, lbl_8055FA70;
