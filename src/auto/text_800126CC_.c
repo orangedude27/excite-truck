@@ -148,9 +148,12 @@ void fn_80012954(void) {
     fn_80012938(*(float *)(p + 0x78));
 }
 
+#pragma use_lmw_stmw off
 void fn_80012984(int arg0) {
     char sp8[0x80];
-    char *base = lbl_802FC610;
+    register char *base = lbl_802FC610;
+    register char *p;
+    register int i;
     void *temp_r3;
     int val;
 
@@ -178,13 +181,11 @@ void fn_80012984(int arg0) {
     lbl_8055D510 = lbl_8055D508;
 
     if (*(unsigned char *)((char *)temp_r3 + 0x11) != 0) {
-        char *p = lbl_80352AD0;
-        char *table = lbl_803518C0;
-        int i;
-        for (i = 0; i < lbl_8055D510; i++, p += 0x28) {
+        p = lbl_80352AD0;
+        for (i = 0; i < lbl_8055D510; p += 0x28, i++) {
             fn_801345D8(sp8, 0x80, base + 0x144,
                         *(int *)((char *)temp_r3 + 4),
-                        table + *(int *)(p + 4) * 0x84 + 8,
+                        lbl_803518C0 + *(int *)(p + 4) * 0x84 + 8,
                         fn_80007F90(*(int *)(p + 8)));
         }
     }
@@ -192,7 +193,7 @@ void fn_80012984(int arg0) {
     fn_8013C8B8();
     lbl_8055D500 = 1;
 }
-
+#pragma use_lmw_stmw reset
 int fn_800132E4(void *arg0, int arg1, int arg2) {
     if (((int (*)(void))(*(void ***)arg0)[3])() != 0) {
         return ((int (*)(void *, int))(*(void ***)arg0)[7])(arg0, arg1);
