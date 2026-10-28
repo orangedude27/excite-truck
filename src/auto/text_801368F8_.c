@@ -94,7 +94,7 @@ void fn_80136A18(s32 arg0, s32 arg1) {
 void fn_80136CB8(void *arg0, s32 arg1) {
     s32 base;
     f32 value;
-    fn_80136D20();
+    fn_80136D20(arg0, arg1);
     value = lbl_80561368;
     base = *(s32 *)((char *)arg0 + 0x10) + arg1 * *(s32 *)((char *)arg0 + 0xC);
     *(f32 *)((char *)base + 8) = value;
