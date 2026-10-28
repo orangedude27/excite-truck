@@ -162,14 +162,15 @@ extern int fn_802E30C8();
 #pragma small_data off
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-#pragma scheduling invalid_target
-void fn_8000AF1C(void *arg0) {
+#pragma scheduling on
+  void fn_8000AF1C(void *arg0) {
     int zero = 0;
     char *config = lbl_802FBC90;
     int active;
-    int i;
-    int val;
     int *entry;
+    register int i;
+    int outValue;
+    register int val;
     int limit = 0x22;
     void (*callback)(void);
     void *startupMessage;
@@ -178,7 +179,6 @@ void fn_8000AF1C(void *arg0) {
     lbl_8055D3E8 = zero;
     active = fn_80204024();
     lbl_8055D3DC = zero;
-
     fn_801E7C1C(arg0);
     callback = fn_8000AEC4;
     startupMessage = config + 0x21C;
@@ -197,26 +197,26 @@ void fn_8000AF1C(void *arg0) {
     fn_801769EC();
     ((void (*)(int))fn_8000AF04)(*(int *)((char *)arg0 + 0x3E8));
 
-    i = 0;
     entry = lbl_8034F5B8;
+    i = 0;
     do {
         memset(entry, 0, 8);
-        val = *(int *)&lbl_8034F5D8;
-        fn_801332D0(i + 0xC, config + 0x238, &val);
+        outValue = *(int *)&lbl_8034F5D8;
+        fn_801332D0(i + 0xC, config + 0x238, &outValue);
+        val = outValue;
         if (val >= limit) goto invalid;
         if (val < 0) {
         invalid:
-            fn_802E30C8(config + 0x248, i);
-            val = *(int *)&lbl_8034F5D8;
+            ((int (*)(const char *, ...))fn_802E30C8)(config + 0x248, i);
+            outValue = *(int *)&lbl_8034F5D8;
         } else if (fn_8000AEC8(val) == 0) {
-            val = *(int *)&lbl_8034F5D8;
+            outValue = *(int *)&lbl_8034F5D8;
         }
         i++;
-        entry[0] = val;
+        entry[0] = outValue;
         entry[1] = limit;
         entry += 2;
     } while (i < 4);
-
     lbl_8055D3D5 = 0;
     lbl_8055D3D4 = 1;
     lbl_8055D3D0 = 0;
