@@ -417,6 +417,65 @@ extern "C" void fn_80298BBC(void *arg0) {
     }
 }
 
+extern "C" char lbl_803494C4[];
+extern float lbl_805645D4;
+extern float lbl_805645CC;
+extern float lbl_805645D0;
+extern "C" void fn_802991BC(void *out) {
+    struct Frame {
+        float x00, x04, x08, x0C, x10, x14;
+        int x18, x1C;
+        float x20, x24, x28, x2C, x30, x34, x38, x3C, x40;
+        char pad44[4];
+        float x48, x4C;
+        char pad50[12];
+        int x5C;
+        char pad60[8];
+        float x68, x6C, x70, x74, x78, x7C, x80, x84, x88, x8C;
+        char pad90[8];
+        float x98;
+        int x9C;
+        char xa0[8];
+    } frame;
+
+    fn_8028E61C(&frame.x18);
+    frame.x1C = 0x80;
+    frame.x20 = lbl_805645C8;
+    frame.x24 = lbl_80564598;
+    frame.x18 = 1;
+    frame.x5C = 2;
+    frame.x0C = lbl_805645C8;
+    frame.x10 = lbl_805645C8;
+    frame.x14 = lbl_805645C8;
+    frame.x28 = lbl_805645C8;
+    frame.x2C = lbl_805645C8;
+    frame.x30 = lbl_805645C8;
+    frame.x00 = lbl_80564590;
+    frame.x04 = lbl_80564590;
+    frame.x08 = lbl_80564590;
+    frame.x34 = lbl_80564590;
+    frame.x38 = lbl_80564590;
+    frame.x3C = lbl_80564590;
+    frame.x40 = lbl_805645CC;
+    frame.x48 = lbl_805645D0;
+    frame.x4C = lbl_8056459C;
+    frame.x68 = lbl_80564594;
+    frame.x6C = lbl_80564598;
+    frame.x70 = lbl_805645B8;
+    frame.x74 = lbl_80564590;
+    frame.x88 = lbl_805645B0;
+    frame.x80 = lbl_805645B0;
+    frame.x78 = lbl_805645B0;
+    frame.x8C = lbl_805645D4;
+    frame.x84 = lbl_805645D4;
+    frame.x7C = lbl_805645D4;
+    frame.x98 = lbl_80564598;
+    frame.x9C = 0x40;
+    frame.xa0[0] = 1;
+    frame.xa0[1] = 1;
+    *(void **)((char *)out + 4) = fn_8028E2F8(&frame.x18, lbl_803494C4, lbl_8055CA80);
+}
+
 extern "C" void* fn_802992C4(void* arg0, int arg1) {
     if (arg0 != 0) {
         *(int*)((char*)arg0 + 0x34) = 0;
