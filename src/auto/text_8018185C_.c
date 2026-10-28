@@ -82,6 +82,10 @@ extern void fn_801BE400(int, float *, float);
 extern void fn_801D1810(int, int);
 extern void fn_801E9DD0(void *, float, float);
 extern void fn_8026A394(void *, int, int);
+extern void fn_8018A8A8();
+extern double fn_8002EFB4(float, double);
+extern double lbl_80561F20, lbl_80561F30, lbl_80561F40;
+extern float lbl_80561F38, lbl_80561F3C, lbl_80561F48, lbl_80561F4C, lbl_80561F50;
 typedef struct Mtx3x4Words { int value[12]; } Mtx3x4Words;
 #pragma cplusplus on
 struct BA54Obj {
