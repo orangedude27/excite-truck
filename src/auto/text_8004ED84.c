@@ -8,51 +8,74 @@ extern int *lbl_8055DA50;
 extern int *lbl_8055DA54;
 extern unsigned short lbl_803049F0[];
 extern unsigned short lbl_80304B70[];
-extern int ReadFont(int, int, ...);
+extern int ReadFont(int, int, int);
 extern char *ParseStringS(int, char *, int **, int *);
 extern void *ParseStringW(int, void *, int *, int *, int);
 extern int IOS_IoctlvReboot(int, int, int, int, void *, int);
 int IOS_Ioctlv(int, int, int, int, void *, int);
 int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, unsigned int size, int *outCount) {
     struct Frame {
-        char pad0[0x20];
-        int vec[4];
-        char pad1[0x10];
+        int vec[6];
+        char pad0[8];
         int args[2];
-        char pad2[0x18];
+        char pad1[0x18];
         int output;
-        char pad3[0xBC];
+        char pad2[0x9C];
     } __attribute__((aligned(32))) frame;
     int result;
-    frame.args[0] = inputA;
-    frame.args[1] = inputB;
+
     if (*fd < 0) return -0x3F9;
     if (outCount == 0) return -0x3F9;
     if (size & 0x1F) return -0x3F9;
+
+    frame.args[0] = inputA;
+    frame.args[1] = inputB;
     if (size == 0) {
-        frame.vec[0] = (int)&frame.args[0]; frame.vec[1] = 8;
-        frame.vec[2] = (int)&frame.output; frame.vec[3] = 4;
-        result = IOS_Ioctlv(*fd, 0x12, 1, 1, &frame.vec[0], 0);
+        frame.vec[0] = (int)&frame.args[0];
+        frame.vec[1] = 8;
+        frame.vec[2] = (int)&frame.output;
+        frame.vec[3] = 4;
+        result = ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x12, 1, 1, &frame.vec[0]);
         if (result == 0) *outCount = frame.output;
         return result;
     }
+
     if (*outCount == 0) return -0x3F9;
-    frame.vec[0] = (int)&frame.args[0]; frame.vec[1] = 8;
-    frame.vec[2] = (int)&frame.output; frame.vec[3] = 4;
-    return IOS_Ioctlv(*fd, 0x13, 2, 1, &frame.vec[0], size);
+    frame.vec[0] = (int)&frame.args[0];
+    frame.vec[1] = 8;
+    frame.vec[2] = (int)&frame.output;
+    frame.vec[3] = 4;
+    frame.vec[4] = size;
+    frame.output = *outCount;
+    frame.vec[5] = *outCount * 0xD8;
+    return ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x13, 2, 1, &frame.vec[0]);
 }
 
-int _ES_LaunchTitle(int *fd, int arg1, int arg2, int arg3, void *arg4, int *arg5, int arg6) {
-    unsigned char work[0x140] __attribute__((aligned(32)));
-    void *vec[2];
-    int lens[2];
-    if (*fd < 0) return -0x3F9;
-    if ((arg3 & 31) != 0) return -0x3F9;
-    vec[0] = work;
-    vec[1] = (void *)arg3;
-    lens[0] = 8;
-    lens[1] = 0xD8;
-    return IOS_IoctlvReboot(*fd, 8, 2, 0, vec, 8);
+int _ES_LaunchTitle(int *fd, int unused, int tidHigh, int tidLow, void *views)
+{
+    struct Vector {
+        void *base;
+        unsigned int length;
+    } vectors[2];
+    unsigned char work[0x100] __attribute__((aligned(32)));
+    struct Vector *pVectors = vectors;
+    unsigned int *pTid = (unsigned int *)work;
+
+    if (*fd < 0)
+        return -0x3F9;
+    if (((unsigned int)views & 31) != 0)
+        return -0x3F9;
+
+    {
+        int eight = 8;
+        pTid[1] = tidLow;
+        pTid[0] = tidHigh;
+        pVectors[0].base = pTid;
+        pVectors[0].length = eight;
+        pVectors[1].base = views;
+        pVectors[1].length = 0xD8;
+        return IOS_IoctlvReboot(*fd, eight, 2, 0, pVectors, eight);
+    }
 }
 
 extern void OSGetFontTexel(char *, unsigned char *, int, int, int *);
@@ -225,32 +248,58 @@ void Decode(unsigned char *src, unsigned char *dst) {
 }
 
 extern int IOS_IoctlvReboot(int,int,int,int,void*,int);
+#pragma opt_propagation off
 unsigned short OSGetFontEncode(void) {
- unsigned short x=lbl_80558F58; int v;
- if (x==(unsigned short)-1) { v=*(volatile int*)0x800000CC; if(v==0) { x=(*(volatile unsigned short*)0xCC00206E>>1)&1; lbl_80558F58=x; } else if(v<0) { x=0; lbl_80558F58=x; } else { x=0; lbl_80558F58=x; } lbl_8055DA48=ParseStringS; }
- return x;
-}
-
-unsigned short OSSetFontEncode(unsigned short arg0) {
-    unsigned short encode = lbl_80558F58;
-    if (encode == 0xFFFF) {
-        if (*(int *)0x800000CC == 0) {
-            encode = (*(unsigned short *)0xCC00206E >> 1) & 1;
+    unsigned short x = lbl_80558F58;
+    int v;
+    if (x == (unsigned short)-1) {
+        v = *(volatile int *)0x800000CC;
+        if (v == 0) {
+            x = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
+            lbl_80558F58 = x;
+        } else if (v < 0) {
+            x = 0;
+            lbl_80558F58 = x;
         } else {
-            encode = 0;
+            x = 0;
+            lbl_80558F58 = x;
         }
-        lbl_80558F58 = encode;
-        lbl_8055DA48 = (void *)ParseStringS;
+        lbl_8055DA48 = ParseStringS;
     }
+    return x;
+}
+#pragma opt_propagation reset
+unsigned short OSSetFontEncode(unsigned short arg0) {
+    u16 result = lbl_80558F58;
+    s32 mode;
+    if (result == 0xFFFF) {
+        goto initialize;
+    } else {
+        goto check_argument;
+    }
+initialize:
+    mode = *(volatile s32 *)0x800000CC;
+    if (mode == 0)
+        goto read_encode;
+    if (mode < 0)
+        goto store_zero;
+    goto store_zero;
+read_encode:
+    result = (*(volatile u16 *)0xCC00206E >> 1) & 1;
+    lbl_80558F58 = result;
+    goto set_string_s;
+store_zero:
+    result = 0;
+    lbl_80558F58 = result;
+set_string_s:
+    lbl_8055DA48 = (void *)ParseStringS;
+check_argument:
     if (arg0 <= 5) {
-        if (arg0 >= 3) {
-            lbl_80558F58 = arg0;
-            if (arg0 <= 5) {
-                lbl_8055DA48 = (void *)ParseStringW;
-            }
-        }
+        lbl_80558F58 = arg0;
+        if (arg0 >= 3 && arg0 <= 5)
+            lbl_8055DA48 = (void *)ParseStringW;
     }
-    return encode;
+    return result;
 }
 
 int OSLoadFont(int arg0, int arg1) {
