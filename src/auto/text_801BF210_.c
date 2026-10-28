@@ -198,6 +198,49 @@ void fn_801BFECC(void *arg0, void *arg1) {
     *(int *)((char *)arg0 + 0x68) = a11;
     ((void (*)(void *, void *, int, int, int, int, int, int))fn_8017A580)(arg0, arg1, a10, a9, a8, a7, a6, a5);
 }
+
+static inline void inline_transform_vec(float *out, const float *in, const float *m) {
+    if (out == in) {
+        float y = in[1];
+        float y0 = y * m[3];
+        float y1 = y * m[4];
+        float y2 = y * m[5];
+
+        float x = in[0];
+        float x0 = x * m[0];
+        float x1 = x * m[1];
+        float x2 = x * m[2];
+
+        float z = in[2];
+        float z0 = z * m[6];
+        float z1 = z * m[7];
+        float z2 = z * m[8];
+
+        out[0] = (x0 + y0) + z0;
+        out[1] = (x1 + y1) + z1;
+        out[2] = (x2 + y2) + z2;
+    } else {
+        {
+            float y0 = in[1] * m[3];
+            float x0 = in[0] * m[0];
+            float z0 = in[2] * m[6];
+            out[0] = (x0 + y0) + z0;
+        }
+        {
+            float y1 = in[1] * m[4];
+            float x1 = in[0] * m[1];
+            float z1 = in[2] * m[7];
+            out[1] = (x1 + y1) + z1;
+        }
+        {
+            float y2 = in[1] * m[5];
+            float x2 = in[0] * m[2];
+            float z2 = in[2] * m[8];
+            out[2] = (x2 + y2) + z2;
+        }
+    }
+}
+
 void fn_801BFF64(void *out, void *in, void *m) {
     float x, y, z, a, b, c;
     if (out == in) {
@@ -390,6 +433,8 @@ static inline void helper_801C02F4(void *self, int flag) {
     }
 }
 
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 void fn_801C02F4(void *arg0) {
     struct Mat43 {
         float m[4][3];
@@ -397,15 +442,18 @@ void fn_801C02F4(void *arg0) {
     extern float lbl_805628B8, lbl_805628BC, lbl_805628E8, lbl_805628EC;
     extern void fn_8017B164(void *);
     struct Mat43 mat;
+    float f;
+    int flag;
 
+    f = lbl_805628E8;
     *(int *)((char *)arg0 + 0x1EC) = 0;
-    *(float *)((char *)arg0 + 0x218) = lbl_805628E8;
-    goto else_lbl;
-    *(int *)((char *)arg0 + 0x1F0) = 0;
-    goto end_lbl;
-else_lbl:
-    *(int *)((char *)arg0 + 0x1F0) = -1;
-end_lbl:
+    *(float *)((char *)arg0 + 0x218) = f;
+    flag = 0;
+    if (flag) {
+        *(int *)((char *)arg0 + 0x1F0) = 0;
+    } else {
+        *(int *)((char *)arg0 + 0x1F0) = -1;
+    }
     fn_8017B164(arg0);
 
     mat.m[0][0] = lbl_805628BC;
@@ -427,9 +475,10 @@ end_lbl:
     ((void (*)(void *))fn_8017A580)(arg0);
 
     {
-        float f0 = lbl_805628BC;
-        float f1 = lbl_805628E8;
-        float f2 = lbl_805628B8;
+        float f0, f1, f2;
+        f2 = lbl_805628B8;
+        f1 = lbl_805628E8;
+        f0 = lbl_805628BC;
         *(float *)((char *)arg0 + 0x118) = f2;
         *(float *)((char *)arg0 + 0x11C) = f2;
         *(float *)((char *)arg0 + 0x120) = f2;
@@ -444,7 +493,8 @@ end_lbl:
         *(float *)((char *)arg0 + 0x274) = f2;
     }
 }
-
+#pragma opt_dead_assignments reset
+#pragma opt_propagation reset
 int fn_801C0440(void *arg0) {
     return *(int *)((char *)arg0 + 0x1EC) != 0;
 }
