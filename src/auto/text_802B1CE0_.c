@@ -297,7 +297,7 @@ void fn_802B224C(void *arg0) {
         fn_802B2C7C(object);
         index = 1;
         do {
-            fn_801345D8(name, 0x10, lbl_8055CDC8, index);
+            fn_801345D8(name, 0x10, (const char *)&lbl_8055CDC8, index);
             if (((int (*)(void *, void *))fn_802B2C44)(arg0, name) == 0)
                 break;
             child = fn_801284F8(0x454, lbl_8034A2D8);
