@@ -479,27 +479,34 @@ extern "C" u32 GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hb
 extern "C" u32 GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(u32, u32);
 extern "C" s32 IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
 extern u8 lbl_8032737C[], lbl_803273A0[], lbl_803273AC[], lbl_803273D0[], lbl_803273DC[], lbl_80327400[];
+#pragma use_lmw_stmw off
 extern "C" s32 IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(void *arg0) {
-    s32 sample;
-    u32 current, format, start, end;
+    void *rawWave;
     void *wave;
+    u32 current, format, start, end;
+    s32 sample;
     if (!*(void **)((u8 *)arg0 + 0x18)) return 0;
     if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(*(void **)((u8 *)arg0 + 0x18))) return 0;
     if (*(s32 *)((u8 *)arg0 + 4) == 0) return 0;
-    if (*(s32 *)((u8 *)arg0 + 4) != 0)
+    if (*(s32 *)((u8 *)arg0 + 4) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327400, 0x1f6, (const char *)lbl_803273DC);
-    wave = *(void **)((u8 *)arg0 + 8);
-    if (!wave) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803273A0, 0x242, (const char *)lbl_8032737C);
-    wave = (u8 *)wave - 0x18;
+    rawWave = *(void **)((u8 *)arg0 + 8);
+    if (!rawWave) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803273A0, 0x242, (const char *)lbl_8032737C);
+    wave = (u8 *)rawWave - 0x18;
     if (!wave) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803273D0, 0x1bf, (const char *)lbl_803273AC);
     current = GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(*(void **)((u8 *)arg0 + 0x18));
     format = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + 0x118);
     sample = GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(*(u32 *)((u8 *)wave + 0x10), format);
     start = GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(*(void **)((u8 *)wave + 8), 0, format);
     end = GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(*(void **)((u8 *)wave + 8), sample, format);
-    return current >= start && current <= end;
+    if (current < start) goto yes;
+    if (end > current) goto no;
+yes:
+    return 1;
+no:
+    return 0;
 }
-
+#pragma use_lmw_stmw reset
 extern "C" s32 IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(void *);
 extern "C" void UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(void *);
 extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *, BOOL);
