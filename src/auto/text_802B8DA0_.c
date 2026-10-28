@@ -144,9 +144,9 @@ extern void fn_801345D8(void *, int, const char *, ...);
 extern int lbl_804C004C[];
 extern float lbl_80564CC0;
 extern float lbl_80564CC4;
-extern char lbl_8055CED4[];
-extern char lbl_8055CEDC[];
-extern char lbl_8055CEE4[];
+extern char lbl_8055CED4;
+extern char lbl_8055CEDC;
+extern char lbl_8055CEE4;
 extern char lbl_8034A990[];
 void *fn_802B8FE0(int arg0) {
     struct Record {
@@ -155,18 +155,19 @@ void *fn_802B8FE0(int arg0) {
         int flags;
     };
     struct Vtable {
-        void *unknown[4];
+        void *unknown0[8];
         int (*setInteger)(void *, const char *, int);
+        void *unknown9;
         float (*setFloat)(void *, const char *, float);
-        void *reserved[17];
+        void *reserved[12];
         void *(*find)(void *, const char *);
     };
     struct Object {
         struct Vtable *vtable;
     };
     float initial;
+    int *state;
     void *base;
-    int *counter;
     int index;
     int offset;
     int next;
@@ -178,28 +179,28 @@ void *fn_802B8FE0(int arg0) {
     struct Object *settings;
 
     initial = lbl_80564CC0;
-    base = *(void **)lbl_804C004C;
-    counter = (int *)((char *)lbl_804C004C + 4);
-    index = *counter;
+    state = lbl_804C004C;
+    base = (void *)state[0];
+    index = state[1];
     offset = index * 12;
     next = index + 1;
-    *counter = next;
+    state[1] = next;
     record = (struct Record *)((char *)base + offset);
     record->flags = 0;
     record->parameter = initial;
 
-    object = fn_802B59CC(offset, next, counter, base);
-    fn_801345D8(buffer, 0x20, lbl_8055CED4, arg0 + 1);
+    object = fn_802B59CC(offset, next, state + 1, base);
+    fn_801345D8(buffer, 0x20, (const char *)&lbl_8055CED4, arg0 + 1);
 
     finder = (struct Object *)object;
     found = (char *)finder->vtable->find(finder, buffer);
     if (found == 0)
-        found = (char *)finder->vtable->find(finder, lbl_8055CEDC);
+        found = (char *)finder->vtable->find(finder, (const char *)&lbl_8055CEDC);
 
     if (found != 0) {
         settings = (struct Object *)found;
         record->parameter = settings->vtable->setFloat(settings, lbl_8034A990, record->parameter);
-        record->flags = settings->vtable->setInteger(settings, lbl_8055CEE4, record->flags);
+        record->flags = settings->vtable->setInteger(settings, (const char *)&lbl_8055CEE4, record->flags);
     }
 
     record->value = lbl_80564CC4;
@@ -342,6 +343,52 @@ void fn_802B9B40(void *arg0) {
 
 int fn_802B9B50(int **arg0, int **arg1) {
     return (*arg0)[2] - (*arg1)[2];
+}
+
+void fn_802B9B68(void) {
+    struct Manager {
+        void *pool;
+        void *records;
+        int index;
+        int count;
+        void *allocation;
+    };
+    struct Record {
+        void *data;
+        int state;
+        int kind;
+        int unused;
+    };
+    struct Manager *manager;
+    void *memory;
+    int i;
+
+    fn_802B8AE0(lbl_8034A990 + 0xC, &lbl_8055FA6C);
+    fn_802B8AE0(lbl_8034A990 + 0x18, &lbl_8055FA70);
+    memset(lbl_804C0088, 0, 0x10);
+    manager = fn_801284F8(0x14, lbl_8034A990 + 0x24);
+    if (manager != 0) {
+        memory = ((void *(*)(int, void *))fn_8012850C)(0x5010, &lbl_8055CEF0);
+        manager->records = ((void *(*)(void *, void *, void *, int, int))fn_8002F37C)(
+            memory, (void *)fn_802B9CF4, (void *)fn_802B9C9C, 0x10, 0x500);
+        manager->count = 0x500;
+        manager->index = 0;
+        manager->allocation = manager->records;
+        manager->pool = ((void *(*)(int, void *))fn_8012850C)(0x5000, lbl_8034AA1C);
+        for (i = 0; i < manager->count; i++) {
+            int index = manager->index;
+            struct Record *record;
+            manager->index = index + 1;
+            record = (struct Record *)((char *)manager->records + index * 0x10);
+            record->data = (char *)manager->pool + i * 0x10;
+            record->kind = 4;
+            record->state = 0;
+        }
+        manager->index = 0;
+    }
+    lbl_8055FA74 = manager;
+    lbl_8055FA7C = 0;
+    lbl_8055FA78 = 0;
 }
 
 void* fn_802B9C9C(void* arg0, s32 arg1) {
