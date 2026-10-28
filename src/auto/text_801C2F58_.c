@@ -331,15 +331,7 @@ void fn_801C4B10(void) {
     lbl_8055E7F8 = fn_8012850C(0xC300, lbl_80336D84);
     fn_801C3D88(lbl_80336D90);
 }
-#define UNK_80437D88_DEFINED
-extern struct Unk_80437D88 {
-    char pad_0[0x4D4];
-    Vec f_4D4;
-    Vec f_4E0;
-    char pad_1[0x6F8 - 0x4EC];
-    Vec f_6F8;
-} lbl_80437D88;
-typedef struct Unk_80437D88 Unk_80437D88;
+
 
 void fn_801C4B74(void) {
     fn_801C98F0();
@@ -973,19 +965,19 @@ void fn_801C7524(void) {
 #pragma paired_single off
 #pragma scheduling invalid_target
 void fn_801C756C(void) {
-    register f32 value;
+    register f64 value;
     register u32 offset;
     register s32 maxRank;
     register s32 i;
     if (lbl_8055E7F0 <= 0)
         goto done;
-    value = (f32)atof(lbl_804380F0);
+    value = (f64)(f32)atof(lbl_804380F0);
     maxRank = 0;
     i = 0;
     offset = 0;
     goto check;
 loop:
-    if (fn_801C34CC(*(f32*)((u8*)lbl_8055E7F8 + offset), value)) {
+    if (fn_801C34CC(*(f32*)((u8*)lbl_8055E7F8 + offset), (f32)value)) {
         s32 rank = *(s32*)((u8*)lbl_8055E7F8 + offset + 4);
         if (rank > maxRank)
             maxRank = rank;
@@ -996,16 +988,17 @@ check:
     if (i < lbl_8055E7F0)
         goto loop;
     {
-        volatile u8 *base = (volatile u8*)lbl_8055E7F8;
+        u8 *base = (u8*)lbl_8055E7F8;
         u32 index = lbl_8055E828;
         u32 indexOffset = index * 0x30C;
-        if (*(volatile s32*)(base + indexOffset + 8) == 1) {
-            *(volatile f32*)(base + indexOffset + 0x58) =
-                value + (*(volatile f32*)(base + indexOffset + 0x58) -
-                         *(volatile f32*)(base + indexOffset));
+        if (*(s32*)(base + indexOffset + 8) == 1) {
+            *(f32*)(base + indexOffset + 0x58) =
+                (f32)value + (*(f32*)(base + indexOffset + 0x58) -
+                              ((f32*)base)[index * 195]);
         }
     }
-    *(f32*)((u8*)lbl_8055E7F8 + lbl_8055E828 * 0x30C) = fn_801C3450(value);
+    *(f32*)((u8*)lbl_8055E7F8 + lbl_8055E828 * 0x30C) =
+        fn_801C3450((f32)value);
     *(s32*)((u8*)lbl_8055E7F8 + lbl_8055E828 * 0x30C + 4) = maxRank + 1;
     qsort((void*)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
           (int (*)(const void*, const void*))fn_801C3B7C);
