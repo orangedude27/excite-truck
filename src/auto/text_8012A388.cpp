@@ -1513,6 +1513,54 @@ extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 8) = 1;
 }
 
+#pragma push
+#pragma peephole off
+extern "C" void fn_8012E2CC(void *arg0) {
+    u8 *obj = (u8 *)arg0;
+    void *done;
+    void *entry;
+    void *node;
+    s32 state;
+
+    done = *(void **)(obj + 0xA18);
+    if (done == 0) return;
+    goto check_status;
+retry_status:
+    fn_80127464();
+    fn_802E2D74(0xA);
+check_status:
+    if (fn_8012D838(*(s32 *)((u8 *)done + 0x4C)) != 2) goto retry_status;
+    if (obj[0xA20] != 0) return;
+    obj[0xA20] = 1;
+    do {
+        done = 0;
+        entry = (void *)fn_8012E490((s32 *)(obj + 0xA18));
+        if (entry != 0) {
+            state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
+            if (state == 1) goto after_state;
+            if (state >= 1) goto state_ge_one;
+            if (state < 0) goto after_state;
+            goto state_zero;
+state_ge_one:
+            if (state < 3) goto state_two;
+            goto after_state;
+state_two:
+            fn_8012E40C((void *)*(s32 *)((u8 *)entry + 0x4C), (s32)((u8 *)entry + 0xC));
+            goto after_state;
+state_zero:
+            node = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
+            *(s32 *)((u8 *)node + 0x9C) = *(s32 *)((u8 *)entry + 8);
+            *(u8 *)((u8 *)node + 0xAD) = 1;
+            fn_8012E3D4(obj + 0xA18);
+            done = (void *)1;
+after_state:
+            ;
+        }
+    } while (done != 0);
+    obj[0xA20] = 0;
+}
+#pragma pop
+
 extern "C" void *fn_8012E3D4(void *arg0) {
     void *temp_r0;
     void *temp_r4;
