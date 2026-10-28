@@ -331,6 +331,16 @@ void fn_801C4B10(void) {
     lbl_8055E7F8 = fn_8012850C(0xC300, lbl_80336D84);
     fn_801C3D88(lbl_80336D90);
 }
+#define UNK_80437D88_DEFINED
+extern struct Unk_80437D88 {
+    char pad_0[0x4D4];
+    Vec f_4D4;
+    Vec f_4E0;
+    char pad_1[0x6F8 - 0x4EC];
+    Vec f_6F8;
+} lbl_80437D88;
+typedef struct Unk_80437D88 Unk_80437D88;
+
 void fn_801C4B74(void) {
     fn_801C98F0();
     if (lbl_8055E7F8 != 0) {
