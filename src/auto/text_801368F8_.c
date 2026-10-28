@@ -164,19 +164,27 @@ extern "C" void fn_80136F08(void *arg0) {
     }
     count = *(int*)arg0;
     pairCount = count * (count - 1) / 2;
-    pairOffset = 0;
     j = 0;
+    pairOffset = 0;
     while (j < pairCount) {
-        void *pair = (char*)*(void**)((char*)arg0 + 8) + pairOffset;
-        int stride = *(int*)((char*)arg0 + 0xC);
-        void *base = *(void**)((char*)arg0 + 0x10);
-        void *a = (char*)base + *(int*)((char*)pair + 0xC) * stride;
-        void *b = (char*)base + *(int*)((char*)pair + 0x14) * stride;
+        void *p;
+        void *a;
+        void *b;
+        int stride;
+        void *base;
+        void *pair;
+
+        stride = *(int*)((char*)arg0 + 0xC);
+        pair = (char*)*(void**)((char*)arg0 + 8) + pairOffset;
+        base = *(void**)((char*)arg0 + 0x10);
+        a = (char*)base + *(int*)((char*)pair + 0xC) * stride;
+        b = (char*)base + *(int*)((char*)pair + 0x14) * stride;
         *(float*)((char*)pair + 0x24) = *(float*)((char*)b + 8) - *(float*)((char*)a + 8);
         *(float*)((char*)pair + 0x28) = *(float*)((char*)b + 0xC) - *(float*)((char*)a + 0xC);
-        *(float*)((char*)pair + 0x1C) = *(float*)b - *(float*)a;
-        *(float*)((char*)pair + 0x20) = *(float*)((char*)b + 4) - *(float*)((char*)a + 4);
-        fn_8013776C(pair);
+        p = (char*)*(void**)((char*)arg0 + 8) + pairOffset;
+        *(float*)((char*)p + 0x1C) = *(float*)((char*)b + 0) - *(float*)((char*)a + 0);
+        *(float*)((char*)p + 0x20) = *(float*)((char*)b + 4) - *(float*)((char*)a + 4);
+        fn_8013776C((char*)*(void**)((char*)arg0 + 8) + pairOffset);
         pairOffset += 0x2C;
         j++;
     }
