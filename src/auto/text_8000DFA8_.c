@@ -700,53 +700,49 @@ void fn_80010D88(f32 farg0, f32 farg1, f32 farg2) {
     volatile f32 sp10;
     volatile f32 spC;
     volatile f32 sp8;
-    f32 temp_f4;
-    f32 temp_f5;
-    f32 temp_f6;
-    s32 index;
-    s32 next;
-    Unk0x18 *entry;
-    Unk0x18 *nextEntry;
+    f32 temp_f4, temp_f5, temp_f6;
+    s32 temp_r0, temp_r5;
+    Unk0x18 *temp_r8, *temp_r10;
 
-    index = lbl_8055D4A8;
-    if (index < 0xFF) {
-        sp28 = *(f32 *)&lbl_802ED788[2];
-        sp10 = *(f32 *)&lbl_802ED7A0[2];
-        sp20 = *(f32 *)&lbl_802ED788[0];
-        sp24 = *(f32 *)&lbl_802ED788[1];
-        sp2C = *(f32 *)&lbl_802ED788[3];
-        sp8 = *(f32 *)&lbl_802ED7A0[0];
-        spC = *(f32 *)&lbl_802ED7A0[1];
-        sp14 = *(f32 *)&lbl_802ED7A0[3];
+    temp_r0 = lbl_8055D4A8 * 0x18;
+    if (lbl_8055D4A8 < 0xFF) {
+        *(volatile u32 *)&sp28 = lbl_802ED788[2];
+        temp_r8 = (Unk0x18 *)((u8 *)lbl_8034F6B0 + temp_r0);
+        temp_f6 = (f32)farg2;
+        temp_r8->unk_0x00 = farg0;
+        temp_r5 = lbl_8055D4A8 + 1;
+        temp_r8->unk_0x04 = farg1;
+        temp_r8->unk_0x08 = sp28;
+        temp_r10 = (Unk0x18 *)((u8 *)lbl_8034F6B0 + temp_r5 * 0x18);
+        temp_r8->unk_0x0C = temp_f6;
+        temp_r8->unk_0x10 = lbl_8055D484;
+        temp_r8->unk_0x14 = lbl_8055D484;
+        temp_f5 = lbl_80560264 + farg0;
+        temp_f4 = farg1 - lbl_80560264;
+        *(volatile u32 *)&sp10 = lbl_802ED7A0[2];
+        temp_r10->unk_0x00 = temp_f5;
+        *(volatile u32 *)&sp20 = lbl_802ED788[0];
+        temp_r10->unk_0x04 = temp_f4;
+        temp_r10->unk_0x08 = sp10;
+        temp_r10->unk_0x0C = temp_f6;
+        *(volatile u32 *)&sp24 = lbl_802ED788[1];
+        *(volatile u32 *)&sp2C = lbl_802ED788[3];
+        *(volatile u32 *)&sp8 = lbl_802ED7A0[0];
+        *(volatile u32 *)&spC = lbl_802ED7A0[1];
+        *(volatile u32 *)&sp14 = lbl_802ED7A0[3];
+        temp_r10->unk_0x10 = lbl_8055D488;
         sp20 = farg0;
         sp24 = farg1;
         sp2C = farg2;
         sp30 = lbl_8055D484;
         sp34 = lbl_8055D484;
-        temp_f5 = lbl_80560264 + farg0;
-        temp_f4 = farg1 - lbl_80560264;
         sp8 = temp_f5;
         spC = temp_f4;
         sp14 = farg2;
         sp18 = lbl_8055D488;
         sp1C = lbl_8055D488;
-        index = lbl_8055D4A8;
-        entry = &lbl_8034F6B0[index];
-        next = index + 1;
-        nextEntry = &lbl_8034F6B0[next];
-        entry->unk_0x00 = farg0;
-        entry->unk_0x04 = farg1;
-        entry->unk_0x08 = sp28;
-        entry->unk_0x0C = farg2;
-        entry->unk_0x10 = lbl_8055D484;
-        entry->unk_0x14 = lbl_8055D484;
-        nextEntry->unk_0x00 = temp_f5;
-        nextEntry->unk_0x04 = temp_f4;
-        nextEntry->unk_0x08 = sp10;
-        nextEntry->unk_0x0C = farg2;
-        nextEntry->unk_0x10 = lbl_8055D488;
-        nextEntry->unk_0x14 = lbl_8055D488;
-        lbl_8055D4A8 = next + 1;
+        lbl_8055D4A8 = temp_r5 + 1;
+        temp_r10->unk_0x14 = lbl_8055D488;
     }
 }
 
@@ -1553,8 +1549,9 @@ void fn_8000E15C(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
     x = ((f32)mode * lbl_80560250) / lbl_80560260;
     y = arg3 + lbl_80560254 * lbl_8056025C;
     fn_800109E4(arg1, arg2, y, x, lbl_80560254);
-    fn_80010074(-1, 0x11, (const char *)&lbl_80558AA4, arg0,
-                lbl_80560264, lbl_80560270 + arg2, arg3);
+    ((void (*)(s32, s32, const char *, void *, f32, f32, f32))fn_80010074)(
+        -1, 0x11, (const char *)&lbl_80558AA4, arg0,
+        lbl_80560264, lbl_80560270 + arg2, arg3);
 }
 
 s32 fn_8000E2D8(s32 arg0) {
