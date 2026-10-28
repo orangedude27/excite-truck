@@ -209,6 +209,7 @@ void fn_8028E398(int arg0) {
     }
 }
 
+extern int fn_8028EF44(void *, unsigned int);
 extern int lbl_804B36B8[];
 void fn_8028E528(int arg0) {
     if (fn_8028EF44(&lbl_804B36B8[0], arg0) != 0) {
@@ -498,13 +499,22 @@ void fn_8028F2EC(int *arg0) {
 extern float fn_80129DC4(int, float, float);
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0, float farg1) {
-    arg0[0] = arg1[0] * arg3[0] + farg1 * fn_80129DC4(0, -arg2[0], arg2[0]);
-    arg0[1] = arg1[1] * arg3[1] + farg1 * fn_80129DC4(0, -arg2[1], arg2[1]);
+    float first = arg2[0];
+    float x;
+    float y;
+    float z;
+    x = arg1[0] * arg3[0] + farg1 * fn_80129DC4(0, -first, first);
+    arg0[0] = x;
+    y = arg1[1] * arg3[1] + farg1 * fn_80129DC4(0, -arg2[1], arg2[1]);
+    arg0[1] = y;
+    z = arg1[2] * arg3[2] + farg1 * fn_80129DC4(0, -arg2[2], arg2[2]);
     arg0[1] += farg1 * farg0;
-    arg0[2] = arg1[2] * arg3[2] + farg1 * fn_80129DC4(0, -arg2[2], arg2[2]);
+    arg0[2] = z;
 }
-
+#pragma scheduling on
+#pragma pop
 extern char lbl_80348F9C[];
 #pragma scheduling invalid_target
 int fn_8028F534(int arg0) {
