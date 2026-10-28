@@ -172,6 +172,7 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
         *(unsigned char*)((char*)entry + 0x16) = 0;
     }
 }
+#pragma opt_propagation reset
 #pragma scheduling reset
 #pragma cplusplus reset
 #pragma pop
