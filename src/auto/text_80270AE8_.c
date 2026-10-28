@@ -466,6 +466,7 @@ extern int fn_80272C24(float, float, float, float);
 #pragma push
 #pragma processor 750
 #pragma scheduling on
+#pragma optimize_for_size on
 extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     struct Manager {
         virtual void v0() = 0;
