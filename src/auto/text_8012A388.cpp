@@ -470,40 +470,62 @@ extern "C" void *fn_8012B32C(const char *arg0) {
 #pragma scheduling on
 
 extern "C" char *fn_80029004(char *, int);
-void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *arg4) {
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *arg4) {
     char *src;
     char *dst;
     char *slash;
-    int n;
+    char ch;
+
     src = arg4;
     dst = arg0;
-    while (arg1-- > 0) {
-        *dst++ = *src;
-        if (*src++ == 0)
-            break;
-    }
-    if (arg1 <= 0)
-        dst[-1] = 0;
+copy_first:
+    ch = *src++;
+    *dst++ = ch;
+    if (ch != 0)
+        goto check_first;
+    goto first_done;
+check_first:
+    arg1--;
+    if (arg1 > 0)
+        goto copy_first;
+    dst[-1] = 0;
+first_done:
+
     slash = fn_80029004(arg0, 0x2F);
-    dst = arg2;
-    n = arg3;
     if (slash != 0) {
         *slash = 0;
         src = slash + 1;
-    } else {
-        *arg0 = 0;
-        src = arg4;
+copy_slash:
+        ch = *src++;
+        *arg2++ = ch;
+        if (ch != 0)
+            goto check_slash;
+        return;
+check_slash:
+        arg3--;
+        if (arg3 > 0)
+            goto copy_slash;
+        arg2[-1] = 0;
+        return;
     }
-    while (1) {
-        *dst++ = *src;
-        if (*src++ == 0)
-            return;
-        if (--n <= 0) {
-            dst[-1] = 0;
-            return;
-        }
-    }
+
+    *arg0 = 0;
+    src = arg4;
+copy_fallback:
+    ch = *src++;
+    *arg2++ = ch;
+    if (ch != 0)
+        goto check_fallback;
+    return;
+check_fallback:
+    arg3--;
+    if (arg3 > 0)
+        goto copy_fallback;
+    arg2[-1] = 0;
 }
+#pragma pop
 
 #pragma scheduling invalid_target
 extern "C" u8 *fn_8012B4E4(u8 *arg0, s8 *arg1) {
