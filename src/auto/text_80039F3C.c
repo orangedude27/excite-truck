@@ -14,6 +14,7 @@ extern unsigned char lbl_8055D900;
 extern int lbl_8055D8F4;
 extern unsigned int lbl_8037B8C0;
 extern const char lbl_80302848[];
+void OSReport(const char *, ...);
 extern void (*FatalFunc_8055D8D8)(void);
 extern unsigned char lbl_80560B08, lbl_80560B09, lbl_80560B0A, lbl_80560B0B;
 extern const char *lbl_802EE878[];
@@ -106,14 +107,33 @@ disk_id_suffix:
         return 0;
     return 1;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void __DVDShowFatalMessage(void) {
- unsigned char bg[4]={0,0,0,0}; unsigned char fg[4]={255,255,255,0}; const char *msg;
- if(SCGetLanguage()==0) OSSetFontEncode(1); else OSSetFontEncode(0);
- msg=(SCGetLanguage()>6)?lbl_802EE878[1]:lbl_802EE878[SCGetLanguage()];
- OSFatal(fg,bg,msg);
-}
+    unsigned char color[4];
+    int zero = 0;
+    int foreground;
+    int background;
+    const char *message;
 
+    color[0] = lbl_80560B08;
+    color[1] = lbl_80560B09;
+    color[2] = lbl_80560B0A;
+    color[3] = lbl_80560B0B;
+    background = zero;
+    if (SCGetLanguage() == 0) {
+        OSSetFontEncode(1);
+    } else {
+        OSSetFontEncode(0);
+    }
+    if (SCGetLanguage() > 6) {
+        message = lbl_802EE878[1];
+    } else {
+        message = lbl_802EE878[SCGetLanguage()];
+    }
+    foreground = *(int *)color;
+    OSFatal(&foreground, &background, message);
+}
+#pragma scheduling on
 extern void __DVDShowFatalMessage(void);
 extern void (*lbl_8055D8D0)(int, int);
 int DVDSetAutoFatalMessaging(int enable) {
