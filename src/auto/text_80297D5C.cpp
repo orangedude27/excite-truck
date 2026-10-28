@@ -330,6 +330,7 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     return 1;
 }
 
+#pragma paired_single off
 #pragma scheduling invalid_target
 extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
     char *entry = (char *)arg1;
@@ -972,43 +973,44 @@ extern "C" int lbl_80488648[];
 extern "C" float lbl_80564608;
 #pragma dont_inline on
 extern "C" void fn_8029A4B4(void *arg0, int arg1) {
+    register void *dest = arg0;
+    register int index = arg1;
+    register void *data;
     float a[3], b[3], c[3], screen[6];
-    void *data;
-    int selector;
+    int selector, handle;
+    unsigned int *src, *dst;
+    unsigned int v0, v1;
 
-    data = (void *)fn_80287B24(arg1);
-    if ((unsigned int)arg1 < 8U)
-        selector = lbl_80488648[arg1];
+    data = (void *)fn_80287B24(index);
+    if ((unsigned int)index < 8U)
+        selector = lbl_80488648[index];
     else
         selector = 0;
-    fn_801EE0C8(selector);
-    fn_802C77F0(selector, screen);
+    handle = fn_801EE0C8(selector);
+    fn_802C77F0(handle, screen);
 
-    *(unsigned int *)((char *)arg0 + 0x00) = ((unsigned int *)data)[0];
-    *(unsigned int *)((char *)arg0 + 0x04) = ((unsigned int *)data)[1];
-    *(unsigned int *)((char *)arg0 + 0x08) = ((unsigned int *)data)[2];
-    *(unsigned int *)((char *)arg0 + 0x0C) = ((unsigned int *)data)[3];
-    *(unsigned int *)((char *)arg0 + 0x10) = ((unsigned int *)data)[4];
-    *(unsigned int *)((char *)arg0 + 0x14) = ((unsigned int *)data)[5];
-    *(unsigned int *)((char *)arg0 + 0x18) = ((unsigned int *)data)[6];
-    *(unsigned int *)((char *)arg0 + 0x1C) = ((unsigned int *)data)[7];
-    *(unsigned int *)((char *)arg0 + 0x20) = ((unsigned int *)data)[8];
-    *(unsigned int *)((char *)arg0 + 0x24) = ((unsigned int *)data)[9];
-    *(unsigned int *)((char *)arg0 + 0x28) = ((unsigned int *)data)[10];
-    *(unsigned int *)((char *)arg0 + 0x2C) = ((unsigned int *)data)[11];
+    src = (unsigned int *)data;
+    dst = (unsigned int *)dest;
+    v0=src[0]; v1=src[1]; dst[0]=v0; dst[1]=v1;
+    v0=src[2]; v1=src[3]; dst[2]=v0; dst[3]=v1;
+    v0=src[4]; v1=src[5]; dst[4]=v0; dst[5]=v1;
+    v0=src[6]; v1=src[7]; dst[6]=v0; dst[7]=v1;
+    v0=src[8]; v1=src[9]; dst[8]=v0; dst[9]=v1;
+    dst[10]=src[10];
+    v0=src[11]; dst[11]=v0;
 
-    *(float *)((char *)arg0 + 0x30) = screen[0];
-    *(float *)((char *)arg0 + 0x34) = screen[2];
-    *(float *)((char *)arg0 + 0x38) = screen[4];
-    *(unsigned int *)((char *)arg0 + 0x3C) = (unsigned int)arg1;
+    *(float *)((char *)dest + 0x30) = screen[0];
+    *(float *)((char *)dest + 0x34) = screen[2];
+    *(float *)((char *)dest + 0x38) = screen[4];
+    *(unsigned int *)((char *)dest + 0x3C) = (unsigned int)index;
 
-    a[0] = a[1] = a[2] = lbl_8056459C;
-    b[0] = b[1] = b[2] = lbl_8056459C;
-    c[0] = c[1] = c[2] = lbl_8056459C;
+    c[0] = lbl_8056459C; c[1] = lbl_8056459C; c[2] = lbl_8056459C;
+    b[0] = lbl_8056459C; b[1] = lbl_8056459C; b[2] = lbl_8056459C;
+    a[0] = lbl_8056459C; a[1] = lbl_8056459C; a[2] = lbl_8056459C;
     ((void (*)(void *, float *, float *, float *, float, float, float))fn_8029A318)
-        (arg0, a, b, c, screen[0], screen[2], screen[4]);
-    *(int *)((char *)arg0 + 0x40) =
-        fn_8029833C(lbl_8055F7C0, a, b, c, *(short *)((char *)data + 0x30), lbl_80564608);
+        (dest, c, b, a, screen[0], screen[2], screen[4]);
+    *(int *)((char *)dest + 0x40) =
+        fn_8029833C(lbl_8055F7C0, c, b, a, *(short *)((char *)data + 0x30), lbl_80564608);
 }
 
 extern "C" void fn_8029A318(float*, float*, float*, int, int, int, int);
