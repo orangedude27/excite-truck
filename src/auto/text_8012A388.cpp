@@ -1406,6 +1406,8 @@ extern "C" nw4r::ef::Effect *lbl_8055E014;
 struct Unk8012DFCCNode {
     void *unk_0x0;
     Unk8012DFCCNode *next;
+    s32 unk_0x8;
+    char unk_0xC[0x40];
 };
 struct Unk8012DFCCList {
     Unk8012DFCCNode *head;
