@@ -156,8 +156,9 @@ void *fn_8024E920(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma opt_common_subs off
-void fn_8024EA1C(void *arg0) {
-    s32 base = fn_8001668C((s32)((u8 *)arg0 + 0x60), 0);
+#pragma scheduling invalid_target
+void fn_8024EA1C(s32 arg0) {
+    s32 base = fn_8001668C(arg0 + 0x60, 0);
     s32 *secondary;
     s32 choiceBase;
     s32 selected;
@@ -178,8 +179,8 @@ void fn_8024EA1C(void *arg0) {
         *(s32 *)((u8 *)base +
                  *(s32 *)((u8 *)arg0 + 0x2C) * 4 + 0x64);
 
-    secondary = (s32 *)fn_8001668C((s32)((u8 *)arg0 + 0x60), 0);
-    choiceBase = fn_8001668C((s32)((u8 *)arg0 + 0x60), 0);
+    secondary = (s32 *)fn_8001668C(arg0 + 0x60, 0);
+    choiceBase = fn_8001668C(arg0 + 0x60, 0);
     if (lbl_80498C48[4] != 0) {
         selected = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceBase, 0)[0];
     } else {
