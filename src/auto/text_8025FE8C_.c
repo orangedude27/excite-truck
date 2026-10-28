@@ -47,39 +47,82 @@ extern s32 lbl_8055C400;
 #pragma push
 #pragma small_data off
 extern u8 lbl_80345B40[];
-#pragma pop
-s32 fn_8025FECC(s32 a, s32 b, s32 c, s32 d, s32 e) {
-    void *obj;
-    void *inner;
-    s32 (*check)(void *);
-    void *(*get)(void *, void *);
-    s32 (*method)(void *, void *, s32);
-    void *handle = 0;
-    s32 result;
-    if (lbl_8055C400 >= 0) return 1;
-    fn_800167FC(1);
-    obj = fn_80012820(c);
-    result = 0;
-    if (obj != 0 && *(void **)((u8 *)obj + 0x80) != 0) {
-        inner = *(void **)((u8 *)obj + 0x80);
-        check = *(s32 (**)(void *))(*(u32 *)*(void **)inner + 0x5c);
-        if (check((u8 *)&lbl_80345B40 + 0x90)) {
-            inner = *(void **)((u8 *)obj + 0x80);
-            get = *(void *(**)(void *, void *))(*(u32 *)*(void **)inner + 0x5c);
-            inner = get(inner, (u8 *)&lbl_80345B40 + 0x90);
-            method = *(s32 (**)(void *, void *, s32))(*(u32 *)*(void **)inner + 0x18);
-            result = method(inner, (u8 *)&lbl_80345B40 + 0xa0, 0);
-        } else fn_802E317C((u8 *)&lbl_80345B40 + 0xb0);
-    } else fn_802E317C((u8 *)&lbl_80345B40 + 0xb0);
-    if (result != 0) {
-        handle = fn_8025007C(1);
-        ((void (*)(void *, s32, s32, s32))(*(u32 *)*(void **)handle + 0xc))(handle,result,1,0);
-    } else fn_802E317C((u8 *)&lbl_80345B40 + 0x104);
-    result = fn_8024DAE0(a,b,0,handle,d);
-    if (handle) ((void (*)(void *,s32))(*(u32 *)*(void **)handle + 8))(handle,1);
-    return result;
-}
+#pragma push
+#pragma cplusplus on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+extern "C" s32 fn_8025FECC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    struct Inner3 {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual s32 vfunc_18(const void*, s32);
+    };
 
+    struct Inner2 {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual Inner3* vfunc_5c(const void*);
+    };
+
+    struct Obj {
+        u8 pad[0x80];
+        Inner2* inner;
+    };
+
+    struct Handle {
+        virtual ~Handle();
+        virtual void vfunc_0c(s32, s32, s32);
+    };
+
+    const char* base = (const char*)lbl_80345B40;
+    if (lbl_8055C400 >= 0) {
+        return 1;
+    }
+
+    fn_800167FC(1);
+    Obj* obj = (Obj*)fn_80012820(arg2);
+    s32 val = 0;
+    s32 check;
+    if (obj != 0 && obj->inner != 0 && (check = (s32)obj->inner->vfunc_5c(base + 0x90), ((u32)(-check | check) >> 31) != 0)) {
+        val = obj->inner->vfunc_5c(base + 0x90)->vfunc_18(base + 0xa0, 0);
+    } else {
+        fn_802E317C((void*)(base + 0xb0));
+    }
+
+    Handle* handle = 0;
+    if (val != 0) {
+        handle = (Handle*)fn_8025007C(1);
+        handle->vfunc_0c(val, 1, 0);
+    } else {
+        fn_802E317C((void*)(base + 0x104));
+    }
+
+    s32 ret = fn_8024DAE0(arg0, arg1, 0, handle, arg3);
+    delete handle;
+    return ret;
+}
+#pragma pop
 void fn_802607C4(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
 }
