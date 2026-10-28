@@ -729,6 +729,21 @@ check:
     if (i < *(s32 *)(lbl_8055F420 + 0xC)) goto loop;
 }
 
+extern void fn_801345D8(char *, s32, const char *, ...);
+extern s32 fn_80131234(const void *);
+#pragma push
+#pragma small_data off
+extern char lbl_80345DE0[];
+extern char lbl_80345E0C[];
+extern u8 lbl_80498F20;
+extern s32 lbl_802FA6D4[];
+#pragma pop
+#pragma push
+#pragma small_data on
+extern u8 lbl_8055C418;
+extern u8 lbl_8055C420;
+#pragma pop
+
 void fn_80261AE8(s32 *arg0, s32 arg1) { *arg0 = arg1; }
 
 #pragma cplusplus on
