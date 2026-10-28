@@ -104,6 +104,10 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
     extern int lbl_8055F550;
     extern unsigned char lbl_8055F564;
     extern void fn_80272738(void *, void *);
+#pragma push
+#pragma small_data off
+    extern int lbl_8049F9D8;
+#pragma pop
     unsigned int bits = arg1;
     char *name = lbl_80346B00;
     int i;
@@ -134,7 +138,7 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
         DBPrintf_80270B00(name + 0x224);
         lbl_8049F9D8 = (int)lbl_8049EDC8;
         if (flag != 0)
-            fn_80272738(&lbl_8049F9D8, arg0);
+            fn_80272738((void *)&lbl_8049F9D8, arg0);
         lbl_8055F554 = 1;
     }
 }
@@ -703,7 +707,10 @@ int fn_80273978(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma small_data off
 extern int lbl_8049F9D8;
+#pragma pop
 #pragma push
 #pragma small_data off
 extern unsigned char lbl_8049A258[];
