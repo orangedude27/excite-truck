@@ -201,20 +201,17 @@ void fn_801BFECC(void *arg0, void *arg1) {
 
 static inline void inline_transform_vec(float *out, const float *in, const float *m) {
     if (out == in) {
-        float y = in[1];
-        float y0 = m[3] * y;
-        float y1 = m[4] * y;
-        float y2 = m[5] * y;
+        float y0 = m[3] * in[1];
+        float y1 = m[4] * in[1];
+        float y2 = m[5] * in[1];
 
-        float x = in[0];
-        float x0 = m[0] * x;
-        float x1 = m[1] * x;
-        float x2 = m[2] * x;
+        float x0 = m[0] * in[0];
+        float x1 = m[1] * in[0];
+        float x2 = m[2] * in[0];
 
-        float z = in[2];
-        float z0 = m[6] * z;
-        float z1 = m[7] * z;
-        float z2 = m[8] * z;
+        float z0 = m[6] * in[2];
+        float z1 = m[7] * in[2];
+        float z2 = m[8] * in[2];
 
         out[0] = z0 + (x0 + y0);
         out[1] = z1 + (x1 + y1);
