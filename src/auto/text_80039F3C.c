@@ -250,7 +250,6 @@ int fn_8003AC24(void *arg0) {
     int offset;
     unsigned char *base;
     unsigned char *entry;
-    unsigned int busy;
     unsigned int one = 1;
     int result;
 
@@ -265,8 +264,7 @@ int fn_8003AC24(void *arg0) {
     slot = lbl_8055D8E8;
     offset = slot * 0x20;
     entry = base + offset;
-    busy = entry[8];
-    if (((busy | (0U - busy)) >> 31) == 1) {
+    if ((((unsigned int)entry[8] | (0U - (unsigned int)entry[8])) >> 31) == 1) {
         OSReport(msg + 0x218);
         OSReport(msg + 0x250);
         for (;;) {}
@@ -604,12 +602,17 @@ int fn_8003BB48(void) {
     return ((int *)lbl_8037B8A0)[1];
 }
 
+#pragma scheduling invalid_target
 int fn_8003BB58(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
+    unsigned char *base;
     int slot;
     unsigned char *entry;
+    unsigned int busy;
+    int next;
     int result;
+
     lbl_8055D8E4 = index;
     if (index >= 4) {
         index = 0;
@@ -617,27 +620,36 @@ int fn_8003BB58(void *arg0) {
     }
     lbl_8055D8FC[index * 0x20] = 0x7A;
     lbl_8055D8E0 = 1;
+    base = lbl_8037B820;
     slot = lbl_8055D8E8;
-    entry = lbl_8037B820 + slot * 0x20;
-    if ((signed char)entry[8] != 0) {
+    entry = base + slot * 0x20;
+    busy = entry[8];
+    if (((busy | (0U - busy)) >> 31) == 1) {
         OSReport(msg + 0x218);
         OSReport(msg + 0x250);
         for (;;) {}
     }
-    if (*(unsigned int *)(entry + 0xC) != 0xFEEBDAED) {
+    if ((*(unsigned int *)(entry + 0xC) + 0x01150000U) != 0xDAEDU) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
-    *(void **)entry = arg0;
+    ((unsigned int *)base)[slot * 8] = (unsigned int)arg0;
     *(unsigned int *)(entry + 4) = 1;
     entry[8] = 1;
-    slot = slot + 1;
-    if (slot >= 4) slot = 0;
-    lbl_8055D8E8 = slot;
-    result = IOS_IoctlAsync(lbl_80558E18, 0x7A, lbl_8055D8FC + index * 0x20, 0x20, &lbl_8037B8C0, 0x20, (void (*)(int, void *))doPrepareCoverRegisterCallback, entry);
+    next = slot + 1;
+    lbl_8055D8E8 = next;
+    if (next >= 4) {
+        next = 0;
+        lbl_8055D8E8 = 0;
+    }
+    result = IOS_IoctlAsync(lbl_80558E18, 0x7A,
+        lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20,
+        &lbl_8037B8C0, 0x20,
+        (void (*)(int, void *))doPrepareCoverRegisterCallback,
+        base + slot * 0x20);
     if (result != 0) {
         OSReport(msg + 0xB30, result);
-        entry[8] = 0;
+        (base + slot * 0x20)[8] = 0;
         return 0;
     }
     return 1;
