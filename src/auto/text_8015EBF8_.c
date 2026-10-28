@@ -190,36 +190,36 @@ int fn_8015F148(void **arg0, int arg1) {
 extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
 #pragma push
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 #pragma processor 750
 void fn_8015F1E4(void *arg0, void *arg1) {
-    struct Vec3 {
-        f32 x;
-        f32 y;
-        f32 z;
-    };
+    void *inputState = *(void **)((char *)arg1 + 0xC);
     f32 base = *(f32 *)((char *)arg1 + 0x24);
-    f32 x = *(f32 *)((char *)*(void **)((char *)arg1 + 0xC) + 0x18);
-    f32 z = *(f32 *)((char *)*(void **)((char *)arg1 + 0xC) + 0x20);
-    f32 speed = (f32)((double (*)(void *, f32, f32))fn_8002F234)(arg0, x * x + z * z, z);
-    struct Vec3 result;
-    *(f32 *)((char *)arg0 + 0xC) = base + lbl_805617DC * (lbl_805617D8 * speed);
+    f32 x = *(f32 *)((char *)inputState + 0x18);
+    f32 z = *(f32 *)((char *)inputState + 0x20);
+    f32 speed = (f32)((double (*)(void *, f32, f32))fn_8002F234)(arg0, z * z + x * x, z);
+    void *state = *(void **)((char *)arg1 + 0xC);
+    f32 threshold = lbl_805617D4;
+    f32 scaled = lbl_805617D8 * speed;
+    f32 angle = base + lbl_805617DC * scaled;
+    f32 result[5];
+    *(f32 *)((char *)arg0 + 0xC) = angle;
     {
-        f32 *state = *(f32 **)((char *)arg1 + 0xC);
-        f32 y = state[7];
-        if (y < lbl_805617D4) {
+        f32 y = *(f32 *)((char *)state + 0x1C);
+        if (y < threshold) {
             f32 delta = *(f32 *)((char *)arg1 + 0x28) - lbl_805617E0;
-            result.x = state[9] + state[6] * delta;
-            result.y = state[10] + state[7] * delta;
-            result.z = state[11] + state[8] * delta;
+            result[2] = *(f32 *)((char *)state + 0x24) + *(f32 *)((char *)state + 0x18) * delta;
+            result[3] = *(f32 *)((char *)state + 0x28) + *(f32 *)((char *)state + 0x1C) * delta;
+            result[4] = *(f32 *)((char *)state + 0x2C) + *(f32 *)((char *)state + 0x20) * delta;
         } else {
             f32 delta = -(*(f32 *)((char *)arg1 + 0x28) - lbl_805617E0);
-            result.x = state[9] + state[6] * delta;
-            result.y = state[10] + state[7] * delta;
-            result.z = state[11] + state[8] * delta;
+            result[2] = *(f32 *)((char *)state + 0x24) + *(f32 *)((char *)state + 0x18) * delta;
+            result[3] = *(f32 *)((char *)state + 0x28) + *(f32 *)((char *)state + 0x1C) * delta;
+            result[4] = *(f32 *)((char *)state + 0x2C) + *(f32 *)((char *)state + 0x20) * delta;
         }
     }
-    *(f32 *)((char *)arg0 + 4) = result.x;
-    *(f32 *)((char *)arg0 + 8) = result.z;
+    *(f32 *)((char *)arg0 + 4) = result[2];
+    *(f32 *)((char *)arg0 + 8) = result[4];
     *(u16 *)((char *)arg0 + 2) = 0;
 }
 #pragma pop
@@ -280,15 +280,18 @@ extern int fn_8015F3EC(unsigned short *, unsigned short *);
 extern char lbl_8032F4A0[];
 extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
 void fn_8015F3FC(void *arg0) {
-    register int *src;
     register int offset;
-    register int index;
+    register int *src;
     register int i;
+    register int index;
     int max;
     int count;
     int *dst, *array, *out;
-    if (*(int *)(lbl_8055E29C + 4) <= 0) return;
-    fn_80265DCC(*(void **)lbl_8055E29C, *(int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
+    {
+        int *list = (int *)lbl_8055E29C;
+        if (list[1] <= 0) return;
+        fn_80265DCC((void *)list[0], list[1], 0x10, fn_8015F3EC);
+    }
     count = (int)(*(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16);
     dst = (int *)fn_801284F8(0x10, lbl_8032F4A0);
     if (!dst) return;
@@ -309,11 +312,10 @@ void fn_8015F3FC(void *arg0) {
             if (index >= max) break;
         } while (*(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i);
         max = *(int *)(lbl_8055E29C + 4) - 1;
-        if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
+        if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i)
             src = (int *)*(int *)lbl_8055E29C;
-        } else {
+        else
             src = (int *)((char *)*(int *)lbl_8055E29C + offset);
-        }
         out = *(int **)&lbl_8055E2A0;
         index = out[1];
         out[1] = index + 1;
