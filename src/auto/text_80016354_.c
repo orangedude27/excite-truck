@@ -439,32 +439,46 @@ void fn_80016ED4(void *arg0) {
     lbl_8055D54C = (void *)(*(int *)lbl_8055D54C + 1);
 }
 
-extern char lbl_802FD00C[1];
-extern char lbl_802FD040[1];
+extern char lbl_802FD00C[];
+extern char lbl_802FD040[];
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80017558(void) {
-    int i, j;
-    int offset;
-    unsigned char *p, *q;
-    for (i = 0; i < (int)lbl_8055D54C; i++) {
-        for (j = i + 1; j < (int)lbl_8055D54C; j++) {
-            p = lbl_8055D540 + i * 0x5C;
-            q = lbl_8055D540 + j * 0x5C;
-            if (*(int *)(p + 4) == *(int *)(q + 4)) {
-                fn_802E317C(lbl_802FD00C, (char *)p + 8, (char *)q + 8);
+    register char *format;
+
+    {
+        register int j;
+        register int i;
+        register int outerOffset;
+        register int innerOffset;
+
+        format = lbl_802FD00C;
+        for (i = 0, outerOffset = 0; i < (int)lbl_8055D54C; i++, outerOffset += 0x5C) {
+            for (j = i + 1, innerOffset = j * 0x5C; j < (int)lbl_8055D54C; j++, innerOffset += 0x5C) {
+                if (*(int *)(innerOffset + lbl_8055D540 + 4) == *(int *)(outerOffset + lbl_8055D540 + 4)) {
+                    fn_802E317C(format, outerOffset + lbl_8055D540 + 8, innerOffset + lbl_8055D540 + 8);
+                }
             }
         }
     }
-    for (i = 0; i < (int)lbl_8055D550; i++) {
-        for (j = i + 1; j < (int)lbl_8055D550; j++) {
-            p = lbl_8055D544 + i * 0xA8;
-            q = lbl_8055D544 + j * 0xA8;
-            if (*(int *)(p + 4) == *(int *)(q + 4)) {
-                fn_802E317C(lbl_802FD040, (char *)p + 0x2C, (char *)q + 0x2C);
+
+    {
+        register int j;
+        register int i;
+        register int outerOffset;
+        register int innerOffset;
+
+        format = lbl_802FD040;
+        for (i = 0, outerOffset = 0; i < (int)lbl_8055D550; i++, outerOffset += 0xA8) {
+            for (j = i + 1, innerOffset = j * 0xA8; j < (int)lbl_8055D550; j++, innerOffset += 0xA8) {
+                if (*(int *)(outerOffset + lbl_8055D544 + 4) == *(int *)(innerOffset + lbl_8055D544 + 4)) {
+                    fn_802E317C(format, outerOffset + lbl_8055D544 + 0x2C, innerOffset + lbl_8055D544 + 0x2C);
+                }
             }
         }
     }
 }
-
+#pragma pop
 extern unsigned char lbl_802FD07C[];
 extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
