@@ -1218,9 +1218,10 @@ s32 fn_80007B8C(void) {
     return fn_8000C630(0x20, -1);
 }
 
-s32 fn_80007B98(s32 arg0, s32 arg1) {
-    if (arg1 != 0) return 0;
-    return fn_80006580();
+s32 fn_80007B98(s32 arg0, s32 arg1, u32 arg2, u32 arg3) {
+    if (arg1 != 0)
+        return 0;
+    return ((s32 (*)(void *, u32, u32, u32))fn_80006580)((void *)arg0, arg1, arg2, arg3);
 }
 
 extern u8 lbl_802FB668[];
