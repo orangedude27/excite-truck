@@ -261,6 +261,58 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     fn_802C8D74();
 }
 
+extern void *fn_802C86DC(void);
+extern double fn_8002EFB4(float, double, float, float, float);
+extern float lbl_80561A44, lbl_80561A68, lbl_80561A6C;
+extern float lbl_80561A70, lbl_80561A74, lbl_80561A7C;
+extern double lbl_80561A88;
+extern float lbl_80561A70, lbl_80561A74;
+#pragma optimization_level 3
+#pragma scheduling invalid_target
+void fn_8017248C(int arg0) {
+    float sp[3];
+    void *state;
+    float value;
+    float clamp;
+    float temp_f31;
+    float temp_f30;
+    float temp_f29;
+    float wave;
+    float offset;
+
+    state = fn_8017960C(arg0);
+    value = (PSQUATMultiply((char *)state + 0x60,
+                            (char *)fn_802C86DC() + 0x24) - lbl_80561A68) /
+            lbl_80561A6C;
+    clamp = lbl_80561A40;
+    if (clamp < value) {
+        clamp = value;
+    } else {
+        clamp = clamp;
+    }
+    if (clamp > lbl_80561A44) {
+        clamp = lbl_80561A44;
+    } else {
+        clamp = clamp;
+    }
+
+    temp_f31 = lbl_80561A70 + (clamp * lbl_80561A70);
+    sp[0] = *(float *)((char *)state + 0x60);
+    temp_f30 = lbl_80561A74;
+    sp[1] = *(float *)((char *)state + 0x64);
+    temp_f29 = lbl_80561A78;
+    sp[2] = *(float *)((char *)state + 0x68);
+
+    wave = (float)fn_8002EFB4(
+        (lbl_80561A7C * (lbl_80561A80 * (float)arg0)) + lbl_8055E3C8,
+        lbl_80561A88, lbl_8055E3C8, clamp * lbl_80561A70, lbl_80561A70) -
+        lbl_80561A40;
+    offset = temp_f30 + (temp_f29 * (lbl_80561A40 - ((wave * wave) / lbl_80561A40)));
+    sp[1] += offset;
+    fn_801720FC(sp, -0x100, temp_f31);
+}
+#pragma scheduling on
+#pragma optimization_level reset
 float fn_801725C8(float arg0) {
     extern float lbl_8043038C[];
     extern float lbl_80561A40;
@@ -1172,24 +1224,26 @@ extern void fn_802AE118(void);
 extern float lbl_8055E3C8, lbl_80561A40, lbl_80561A44;
 #pragma cplusplus on
 extern "C" int fn_801758CC(void *arg0, int arg1, int arg2) {
-    class Query { public:
+    class Query {
+    public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
         virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
         virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-        virtual void v24(); virtual int query();
+        virtual int query();
     };
     int result = 0;
     if (((Query *)arg0)->query() != 0 && arg2 == 0x58) {
-        if (*(int *)((char *)arg0 + 0x1AC) == 2) *((unsigned char *)arg0 + 0x1B5) = 1;
+        if (*(int *)((char *)arg0 + 0x1AC) == 2)
+            *((unsigned char *)arg0 + 0x1B5) = 1;
         result = 1;
     } else if (*(int *)((char *)arg0 + 0x1AC) != 0) {
-        if (*(int *)((char *)arg0 + 0x1AC) == 1 && *((unsigned char *)arg0 + 0x1BC) == 0) {
-            float total = lbl_8055E3C8;
-            float time = *(float *)((char *)arg0 + 0x1B0);
-            if (time > lbl_80561A44 && total - time < lbl_80561A40) {
+        if (*(int *)((char *)arg0 + 0x1AC) == 1 &&
+            *((unsigned char *)arg0 + 0x1BC) == 0) {
+            if (*(float *)((char *)arg0 + 0x1B0) > lbl_80561A44 &&
+                lbl_8055E3C8 - *(float *)((char *)arg0 + 0x1B0) < lbl_80561A40) {
                 void *p;
                 int handle = *(int *)((char *)arg0 + 0x1B8);
                 *((unsigned char *)arg0 + 0x1BC) = 1;
@@ -1203,7 +1257,7 @@ extern "C" int fn_801758CC(void *arg0, int arg1, int arg2) {
                 p = *(void **)((char *)arg0 + 0x1D8);
                 if (p) { *((unsigned char *)p + 0x4A) = 1; *((unsigned char *)p + 0x4C) = 0; }
                 *((unsigned char *)arg0 + 0x1B4) = 0;
-                *(float *)((char *)arg0 + 0x1B0) = total - lbl_80561A40;
+                *(float *)((char *)arg0 + 0x1B0) = lbl_8055E3C8 - lbl_80561A40;
             }
         }
         result = 1;
