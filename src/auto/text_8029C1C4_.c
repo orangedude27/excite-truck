@@ -39,7 +39,7 @@ extern int fn_802BF4F0(void);
 extern int lbl_8055F7F4;
 extern int lbl_8055F7FC;
 extern void fn_80287B38(void *);
-extern void fn_8029C450();
+extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
 extern double lbl_80564680;
 extern float fn_801E88F0(int);
@@ -136,7 +136,8 @@ void *__dt__Q34nw4r2ef6EffectFv_8029C3F0(void *arg0, int arg1) {
 }
 
 #pragma push
-#pragma ppc_psq_save off
+#pragma ppc_psq_save on
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8029C450(void *arg0, int arg1) {
     extern float fn_801E7E24(void);
