@@ -58,9 +58,7 @@ static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
 
 #pragma scheduling invalid_target
 float fn_80135278(float *a, float *b, float *c) {
-    float dx = b[0] - c[0];
-    float dy = b[1] - c[1];
-    return a[0] * dx + a[1] * dy;
+    return a[0] * (b[0] - c[0]) + a[1] * (b[1] - c[1]);
 }
 #pragma scheduling invalid_target
 void *fn_801352B8(Unk_80135278 *arg0) {
@@ -281,10 +279,10 @@ s32 fn_80135D60(Unk_80135278 *arg0, s32 arg1) {
     if ((unsigned long)arg1 != (unsigned long)arg0->unk_2c) {
         fn_80135354(arg0);
         arg0->unk_2c = arg1;
-        if (arg1 != 0) {
-            return 1;
+        if (arg1 == 0) {
+            return 0;
         }
-        return 0;
+        return 1;
     }
     return 2;
 }
@@ -336,18 +334,20 @@ void fn_80135EA8(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)arg0 = fn_8012850C(temp * 4, lbl_8032BE20);
 }
 
-#pragma dont_inline off
+#pragma scheduling invalid_target
 void fn_80135EF0(void *arg0, s32 arg1) {
-    Unk_80135278 *obj = (Unk_80135278 *)arg0;
+    register s32 zero = 0;
+    register Unk_80135278 *obj = (Unk_80135278 *)arg0;
     if (fn_80135D60(obj, arg1) == 1) {
-        obj->unk_34 = 0;
-        obj->unk_5c = 0;
+        obj->unk_34 = zero;
+        obj->unk_5c = zero;
         if (obj->unk_50 != 0) {
-            obj->unk_54 = *(s32 *)(*(char **)((u8 *)obj + 0x2c) + 0x18) >> 16;
+            register s32 value = *(s32 *)((u8 *)obj->unk_2c + 0x18);
+            obj->unk_54 = value >> 16;
         }
     }
 }
-
+#pragma scheduling reset
 void fn_80135F4C(void *arg0) {
     int x = *(int *)(*(char **)((char *)arg0 + 0x2C) + 0x1C);
     fn_80135F64((int)arg0, x, x + 8, 1, 0);
@@ -561,47 +561,59 @@ extern const char lbl_8032BE30[];
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
-    Unk_80135278 *p = (Unk_80135278 *)self->unk_2c;
-    float zero = lbl_80561320;
+    char *p = (char *)*(void **)((char *)self + 0x2c);
+    char *latestP;
+    char *sentinel;
+    register char *cursor;
+    register char *q;
+    register float *period;
     float d;
-    Unk_80135278 *q;
+    s32 mode;
     s32 limit;
     if (p == 0) {
-        out->unk_0 = 0;
-        out->unk_c = 0x2710;
-        out->unk_8 = zero;
+        float zero = lbl_80561320;
+        *(s32 *)out = 0;
+        *(s32 *)((char *)out + 8) = 0x2710;
+        *(float *)((char *)out + 4) = zero;
         return;
     }
-    if (f > zero) {
-        d = (float)fn_8002EFB4((double)f, (double)p->unk_8);
+    mode = *(s32 *)((char *)self + 0xc);
+    period = (float *)(p + 8);
+    if (f > lbl_80561320) {
+        d = (float)fn_8002EFB4((double)f, (double)*period);
     } else {
-        d = p->unk_8 - (float)fn_8002EFB4((double)-f, (double)p->unk_8);
+        d = *period - (float)fn_8002EFB4((double)-f, (double)*period);
     }
-    q = (Unk_80135278 *)p->unk_50;
     limit = 0x2710;
-    while (q != (Unk_80135278 *)p->unk_50) {
-        if (q->unk_4c != d) {
-            limit--;
-            q = (Unk_80135278 *)q->unk_54;
-            if (limit <= 0) {
-                fn_802E30C8(lbl_8032BE30, self->unk_c, p->unk_8);
-                d = zero;
-                q = (Unk_80135278 *)p->unk_50;
-                break;
-            }
-        } else {
+    cursor = *(char **)(p + 0x1c);
+    latestP = (char *)*(void * volatile *)((char *)self + 0x2c);
+    sentinel = *(char **)(latestP + 0x1c);
+    while (1) {
+        q = *(char **)(cursor + 0x14);
+        if (q == sentinel)
+            break;
+        if (*(float *)(q + 0x1c) >= d)
+            break;
+        limit--;
+        cursor = q;
+        if (limit <= 0) {
+            fn_802E30C8(lbl_8032BE30, mode, (double)d, (double)*period);
+            d = lbl_80561320;
             break;
         }
     }
-    if (q->unk_60 != p->unk_60) {
-        d = zero;
+    latestP = (char *)*(void * volatile *)((char *)self + 0x2c);
+    sentinel = *(char **)(latestP + 0x1c);
+    if (*(u8 *)(sentinel + 0x34) != *(u8 *)(q + 0x34)) {
+        d = lbl_80561320;
     } else {
-        d = (d - q->unk_4c) / q->unk_48;
+        d = (d - *(float *)(sentinel + 0x1c)) / *(float *)(sentinel + 0x18);
     }
-    out->unk_0 = (s32)q;
-    out->unk_8 = d;
-    out->unk_c = self->unk_c;
+    *(s32 *)out = (s32)q;
+    *(float *)((char *)out + 4) = d;
+    *(s32 *)((char *)out + 8) = mode;
 }
+#pragma cplusplus reset
 
 #pragma scheduling invalid_target
 void fn_80136594(void *arg0, s32 arg1, s32 arg2) {
@@ -612,7 +624,8 @@ void fn_80136594(void *arg0, s32 arg1, s32 arg2) {
     *(float *)(p + 1) = f;
     fn_801355C0((void *)arg1, arg2, 0, arg0, 0);
 }
-#pragma scheduling reset
+#pragma push
+#pragma scheduling invalid_target
 float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
     s32 same, offset, pos, count, i, j;
     unsigned long length;
@@ -640,7 +653,7 @@ float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
         result = lbl_8055E3C8;
     return result - value;
 }
-
+#pragma pop
 s32 fn_801366C0(void *arg0, void *arg1, float farg0) {
     if (*(s32 *)((char *)arg0 + 4) == 0 ||
         *(s32 *)(*(s32 *)((char *)arg0 + 0x2C) + 0x1C) == 0)
