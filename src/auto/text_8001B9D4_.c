@@ -8,6 +8,9 @@ extern void *fn_801284F8(s32, const char *);
 extern void fn_802E6BD8(u32, s32, void *, u32, void (*)(s32));
 extern void fn_8000DBC8(void *);
 extern s32 fn_80131808(const char *);
+extern void memset(void *, s32, u32);
+extern void fn_8001D5F0(s32);
+extern void fn_8001D728(s32, s32);
 
 extern void *lbl_8055D5D4;
 
