@@ -1413,6 +1413,8 @@ void fn_801ACB30(void *arg0, int arg1) {
     }
 }
 
+typedef struct { u8 pad[0x23C]; void *unk_0x23C; u8 pad2[0x14]; s32 unk_0x254; } Obj_801ACF94;
+typedef struct { u8 pad[0x254]; s32 unk_0x254; } Mesh_801ACF94;
 extern int lbl_8055E5EC, lbl_8055E5F0;
 extern float lbl_8056247C, lbl_805624AC, lbl_80562510;
 extern void fn_801C2694(void *, int *, float *, float *, float *, float *, float *, float, float);
@@ -1423,8 +1425,9 @@ void fn_801ACF94(void) {
     char sp3c[0x54];
     char sp90[0xED0];
     void **obj;
-    int i, j, zero;
-    void *root, *o, *a;
+    int i, j, zero, first;
+    void *root, *a;
+    register void *o;
     float *src, *dst;
     float fill, special, tail, x, y, z;
 
@@ -1451,7 +1454,6 @@ void fn_801ACF94(void) {
             o = *obj;
             a = *(void **)((char *)o + 0x23C);
             if (a != 0) {
-                register int first;
                 first = *(int *)((char *)a + 0x254);
                 src = (float *)(sp90 + first * 12);
                 dst = (float *)sp3c;
