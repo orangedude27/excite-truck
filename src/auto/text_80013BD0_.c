@@ -566,6 +566,67 @@ void fn_8001529C(void *arg0, u32 arg1, f32 a, f32 b, f32 c, f32 d, f32 e) {
         x, positive ? y : bottom, lbl_80560360, lbl_80560360);
 }
 
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+extern void fn_80010B80(s32, f32, f32, f32, f32);
+extern f32 fn_80011E60(void);
+extern f32 fn_8013672C(void);
+extern void *fn_801E7E3C(void);
+extern s32 fn_801EA994();
+extern void *fn_801EA9A0(s32);
+extern f32 lbl_805603C0, lbl_805603C4, lbl_805603C8;
+extern f64 lbl_80560390;
+void fn_80015364(void *arg0) {
+    f32 temp_f31;
+    f32 temp_f30;
+    f32 var_f29;
+    f32 temp_f28;
+    f32 var_f27;
+    s32 temp_r31;
+    s32 var_r30;
+    s32 var_r29;
+    s32 var_r4;
+    void *temp_r28;
+    f32 selected;
+    f32 delta;
+    f32 total;
+    s32 frameCount;
+    s32 value;
+    s32 index;
+    s32 activeCount;
+    s32 resultIndex;
+    if (*(s32 *)((u8 *)lbl_8055D350 + 0x18) == 1) {
+        selected = lbl_805603C0;
+    } else {
+        selected = fn_80011E60();
+    }
+    fn_80010B80(0xC80000C8, lbl_805603C4, selected, lbl_805603C8, lbl_805603B4);
+    delta = fn_8013672C();
+    frameCount = *(s32 *)((u8 *)fn_801E7E3C() + 8);
+    total = delta * (f32)frameCount;
+    index = 0;
+    activeCount = 0;
+    while (index < fn_801EA994()) {
+        void *record = fn_801EA9A0(index);
+        f32 amount = lbl_80560360;
+        temp_r28 = *(void **)((u8 *)record + 8);
+        value = *(s32 *)((u8 *)record + 0x1C);
+        if (value > 0) {
+            amount = (*(f32 *)((u8 *)temp_r28 + 0x2C8) +
+                      (f32)(value - 1) * delta) / total;
+        }
+        if (*(u8 *)record != 0) {
+            resultIndex = activeCount;
+            activeCount++;
+        } else {
+            resultIndex = -1;
+        }
+        fn_8001529C(arg0, (u32)resultIndex, amount, lbl_805603C4,
+                    selected, lbl_805603C8, lbl_805603B4);
+        index++;
+    }
+}
+
 extern s32 fn_801EA994(void);
 extern s32 fn_801EA9B0(s32);
 extern void fn_8000FF88(s32, s32, void *, s32, s32, f32, f32, f32);
@@ -609,16 +670,16 @@ extern f32 lbl_80560360, lbl_805603A0;
 #pragma push
 #pragma optimize_for_size on
 #pragma use_lmw_stmw on
+#pragma scheduling invalid_target
 void fn_80015658(void *arg0) {
     char sp9;
     char sp8;
-    char *out = &sp9;
     f32 temp_f31;
     f32 temp_f30;
     s32 temp_r31;
     s32 temp_r30;
 
-    temp_r31 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 0, out);
+    temp_r31 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 0, &sp9);
     temp_r30 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 1, &sp8);
     temp_f31 = fn_80011DEC(*(void **)((u8 *)lbl_8055D350 + 0x1C)) - lbl_805603D4;
     temp_f30 = fn_80011DC0(*(void **)((u8 *)lbl_8055D350 + 0x1C)) - lbl_805603D8;
