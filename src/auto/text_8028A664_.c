@@ -41,8 +41,7 @@ extern s32 fn_80128668(void);
 #pragma cplusplus on
 #pragma cplusplus off
 #pragma push
-#pragma processor 750
-#pragma optimize_for_size off
+#pragma optimize_for_size on
 #pragma scheduling invalid_target
 void fn_8028A664(void) {
     extern char lbl_80348B98[];
@@ -63,10 +62,12 @@ void fn_8028A664(void) {
     extern s32 fn_8028BA44(void *);
     extern s32 fn_8028BA9C(void *);
     extern s32 fn_8028BB14(s32);
+    struct Data { char first; };
     register char *data asm("r31") = lbl_80348B98;
+    volatile struct Data *header = (volatile struct Data *)data;
     void *p;
 
-    p = fn_801284F8(0xDC, data + 0);
+    p = fn_801284F8(0xDC, (void *)&header->first);
     if (p != 0) p = fn_8028BB68(p, 0x80, lbl_80564328);
     lbl_8055F6F0 = (s32)p;
     p = fn_801284F8(0xDC, data + 0x10);
