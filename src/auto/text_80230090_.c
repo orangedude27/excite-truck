@@ -66,6 +66,88 @@ void fn_80230114(void) {
     fn_802324D8(); fn_8022EBF0();
 }
 
+extern f32 lbl_8056362C;
+extern f32 lbl_80563630;
+extern f32 fn_8023293C(s32, s32, f32);
+extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);
+extern void fn_80233354(s32, s32, s32, s32, f32, f32, f32, f32);
+#pragma paired off
+#pragma paired_single off
+void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
+                 f32 farg0, f32 farg1, f32 farg2, f32 farg3,
+                 f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
+    f32 spC;
+    f32 sp8;
+    f32 temp_f1;
+    f32 temp_f26;
+    f32 temp_f27;
+    f32 temp_f28;
+    f32 temp_f4;
+    f32 var_f2;
+    s32 var_r0;
+
+    (void)arg_sp0;
+    temp_f28 = farg3 * fn_8023293C(arg1, arg0, lbl_80563610);
+    temp_f27 = lbl_8056362C - farg6;
+    temp_f1 = farg1 + (farg5 * farg4);
+    temp_f26 = lbl_80563630 + farg6;
+    temp_f4 = temp_f1 - temp_f28;
+    spC = temp_f1;
+    sp8 = temp_f4;
+    fn_80230C9C(&sp8, &spC, temp_f27, temp_f26, -temp_f27 + temp_f26);
+    var_r0 = 0;
+    var_f2 = lbl_8056362C;
+    if (sp8 < temp_f27) {
+        var_r0 = 1;
+        var_f2 = sp8 + (-temp_f27 + temp_f26) + temp_f28;
+    }
+    if (spC > temp_f26) {
+        var_r0 = 1;
+        var_f2 = spC - (-temp_f27 + temp_f26);
+    }
+    if (var_r0 != 0) {
+        fn_80233354(arg0, arg1, arg2, arg3, farg0, var_f2, farg3, farg2);
+    }
+    fn_80233354(arg0, arg1, arg2, arg3, farg0, spC, farg3, farg2);
+}
+#pragma paired_single reset
+#pragma paired reset
+#pragma cplusplus on
+extern "C" void fn_80230924(void *, f32, f32, f32, f32, f32);
+extern "C" void fn_802C8B98(s32, s32);
+extern "C" void fn_802C8D74(void);
+extern "C" void fn_802C8DB8(void);
+extern "C" void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
+extern "C" s32 fn_80230B9C(u32);
+extern "C" f32 lbl_80563614;
+extern "C" u16 lbl_802F9FD8[6];
+void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
+    struct Frame {
+        u16 indices[6];
+        u8 pad1[4];
+        f32 sp20[6];
+        f32 sp38[6];
+        f32 sp50[6];
+        f32 sp68[6];
+    } __attribute__((aligned(16))) frame;
+    s32 state;
+    fn_802C8B98(-1, (s32)fn_8022EDC4());
+    state = fn_80230B9C((u32)arg0);
+    fn_80231380(frame.sp20, state, x, y, v, lbl_80563614, lbl_80563614);
+    fn_80231380(frame.sp38, state, z, y, v, lbl_80563614, lbl_80563614);
+    fn_80231380(frame.sp50, state, x, w, v, lbl_80563614, lbl_80563614);
+    fn_80231380(frame.sp68, state, z, w, v, lbl_80563614, lbl_80563614);
+    frame.indices[0] = lbl_802F9FD8[0];
+    frame.indices[1] = lbl_802F9FD8[1];
+    frame.indices[2] = lbl_802F9FD8[2];
+    frame.indices[3] = lbl_802F9FD8[3];
+    frame.indices[4] = lbl_802F9FD8[4];
+    frame.indices[5] = lbl_802F9FD8[5];
+    fn_802C8DB8();
+    fn_802C8D74();
+}
+#pragma cplusplus reset
+
 void fn_80230A68(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     u32 *p = (u32 *)arg0;
     p[0] = *(u32 *)&farg0;
@@ -354,5 +436,61 @@ void fn_80231380(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
     p[0] = farg0; p[1] = farg1; p[2] = farg2;
     *(s32 *)(p + 3) = arg1;
     p[4] = farg3; p[5] = farg4;
+}
+
+void *fn_8023139C(void *buf, int len, u32 val) {
+    int temp = len - 1;
+    int n = temp - (temp - 1) / 3;
+    int p = 1;
+    int used = 0;
+    int i;
+    u32 max;
+    char *dst;
+    int digits;
+
+    if (n > 0) {
+        int m = n - 8;
+        if (n > 8) {
+            int ok = 0;
+            if (n >= 0 && n <= 0x7FFFFFFE)
+                ok = 1;
+            if (ok) {
+                u32 count = (u32)(m + 7) >> 3;
+                if (m > 0) {
+                    do {
+                        p *= 100000000;
+                        used += 8;
+                    } while (--count != 0);
+                }
+            }
+        }
+        i = n - used;
+        if (used < n) {
+            do {
+                p *= 10;
+            } while (--i != 0);
+        }
+    }
+
+    max = p - 1;
+    if (val < max)
+        max = val;
+
+    dst = (char *)buf + len;
+    dst[-1] = '\0';
+    digits = 4;
+    dst -= 2;
+    do {
+        if (--digits == 0) {
+            *dst = ',';
+            digits = 3;
+            dst--;
+        }
+        *dst = (max % 10) + '0';
+        max /= 10;
+        dst--;
+    } while (max != 0);
+
+    return dst + 1;
 }
 
