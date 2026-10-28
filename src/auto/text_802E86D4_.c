@@ -293,22 +293,21 @@ extern char lbl_8055D250;
 extern char lbl_8034DEC4[];
 u32 fn_802E8D84(void) { return 1; }
 
+#pragma push
+#pragma optimization_level 3
 void fn_802E9010(void) {
-    char *data = (char *)(((unsigned int)&lbl_80507288 & 0xFFFF0000) |
-                         ((unsigned int)&lbl_80507288 & 0x0000FFFF));
-    int state;
+    char *data = (char *)&lbl_80507288;
     fn_802E9254(data + 4);
-    state = *(int *)data;
-    switch (state) {
+    switch ((&lbl_80507288)[0]) {
     case 2:
         fn_802E91D8(data + 4, lbl_8034E108, *(int *)(data + 0x260), *(int *)(data + 0x264));
-        *(int *)data = 3;
+        (&lbl_80507288)[0] = 3;
         break;
     case 3:
         if (fn_802E91BC((int *)(data + 4)) != 0) {
             if (fn_802E91AC((int *)(data + 4)) == 0) {
                 fn_802E91D8(data + 4, data + 0x270, *(int *)(data + 0x268), *(int *)(data + 0x26C));
-                *(int *)data = 4;
+                (&lbl_80507288)[0] = 4;
             } else fn_802E9160(data);
         }
         break;
@@ -320,7 +319,7 @@ void fn_802E9010(void) {
         break;
     }
 }
-
+#pragma pop
 void fn_802E9118(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)((char*)arg0+0x260)=0; *(int*)((char*)arg0+0x264)=0; *(int*)((char*)arg0+0x268)=0; *(int*)((char*)arg0+0x26c)=0; *(int*)arg0=0; }
 
 void fn_802E9160(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)((char*)arg0+0x260)=0; *(int*)((char*)arg0+0x264)=0; *(int*)((char*)arg0+0x268)=0; *(int*)((char*)arg0+0x26c)=0; *(int*)arg0=1; }
@@ -500,6 +499,7 @@ void fn_802E9254(void *arg0) {
 #pragma scheduling on
 void fn_802E95CC(int arg0, void **arg1) { void *obj=*arg1; *(int*)((char*)obj+0x254)=arg0; *(char*)((char*)obj+0x250)=1; }
 
+#pragma dont_inline on
 #pragma scheduling invalid_target
 int fn_802E95E0(void *arg0, void (*callback)(void), int arg2) {
     void *log_arg = arg0;
