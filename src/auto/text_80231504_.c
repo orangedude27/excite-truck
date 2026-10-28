@@ -747,10 +747,10 @@ extern IndexList_80233EC0 lbl_802F9FFC;
 #pragma scheduling invalid_target
 void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
     register void *object = arg0;
-    register s32 offset;
     register s32 font;
+    register s32 offset;
     u8 out3[0x18], out2[0x18], out1[0x18], out0[0x18];
-    IndexList_80233EC0 values;
+    u16 values[6];
     u8 *entry;
     if (arg1 != 0x20) {
         offset = arg1 * 0x1C;
@@ -767,9 +767,14 @@ void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
         fn_80231380(out3, font, farg3, farg4, farg5,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
-        values = lbl_802F9FFC;
-        fn_802C8DB8(out0, 4, values.idx, 6,
-                    values.idx[4], values.idx[3], values.idx[2], values.idx[1]);
+        values[0] = lbl_802F9FFC.idx[0];
+        values[1] = lbl_802F9FFC.idx[1];
+        values[2] = lbl_802F9FFC.idx[2];
+        values[3] = lbl_802F9FFC.idx[3];
+        values[4] = lbl_802F9FFC.idx[4];
+        values[5] = lbl_802F9FFC.idx[5];
+        fn_802C8DB8(out0, 4, values, 6,
+                    lbl_802F9FFC.idx[4], lbl_802F9FFC.idx[3], lbl_802F9FFC.idx[2], lbl_802F9FFC.idx[1]);
     }
 }
 #pragma pop
