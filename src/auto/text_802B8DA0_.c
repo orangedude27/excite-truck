@@ -365,7 +365,7 @@ void fn_802B9B68(void) {
     struct Manager {
         void *pool;
         void *records;
-        int index;
+        volatile int index;
         int count;
         void *allocation;
     };
@@ -376,7 +376,7 @@ void fn_802B9B68(void) {
         int unused;
     };
     struct Manager *manager;
-    struct Record *records;
+    volatile struct Record *records;
     void *pool;
     int i;
     int offset;
@@ -384,7 +384,7 @@ void fn_802B9B68(void) {
 
     fn_802B8AE0(lbl_8034A990 + 0xC, &lbl_8055FA6C);
     fn_802B8AE0(lbl_8034A990 + 0x18, &lbl_8055FA70);
-    memset((char *)&lbl_804C0088, 0, 0x10);
+    memset(lbl_804C0088, 0, 0x10);
     manager = fn_801284F8(0x14, lbl_8034A990 + 0x24);
     if (manager != 0) {
         manager->records = ((void *(*)(void *, void (*)(void *),
@@ -395,8 +395,8 @@ void fn_802B9B68(void) {
         manager->index = 0;
         manager->allocation = manager->records;
         manager->pool = ((void *(*)(int, void *))fn_8012850C)(
-            manager->count << 4, lbl_8034AA1C);
-        records = (struct Record *)manager->records;
+            manager->count * 0x10, lbl_8034AA1C);
+        records = (volatile struct Record *)manager->records;
         pool = manager->pool;
         i = 0;
         offset = 0;
@@ -404,7 +404,7 @@ void fn_802B9B68(void) {
             index = manager->index;
             i++;
             pool = manager->pool;
-            records = (struct Record *)manager->records;
+            records = (volatile struct Record *)manager->records;
             manager->index = index + 1;
             records[index].data = (char *)pool + offset;
             offset += 0x10;
@@ -894,7 +894,9 @@ void fn_802BAE30(void *arg0) {
     *(volatile unsigned char *)((char *)arg0 + 0xC) = 1;
 }
 
-extern int lbl_8034AA00, lbl_8034AA10, lbl_8034A064, lbl_8055CEF0;
+extern char lbl_8034AA00[];
+extern char lbl_8034AA10[];
+extern int lbl_8034A064, lbl_8055CEF0;
 extern void *lbl_8055FA80;
 extern int fn_802E2C20(void *);
 extern void fn_802B9108(short);
@@ -902,27 +904,55 @@ extern void fn_801286A0(void *, int);
 extern void fn_80265DCC(void *, void *, int, int (**)(int **, int **));
 extern void fn_802E30C8(void *, ...);
 void fn_802BAE50(void) {
-    int start, total = 0, n;
-    short size = 4;
+    short size;
+    short doubled;
+    int total;
+    int dimension;
+    int start;
+    int n;
     void *table;
-    start = fn_802E2C20(&lbl_8034AA00);
-    do { int dim = 0x400 / (size * 2); total += dim * dim * 5; size *= 2; } while (size <= 0x40);
+    void *items;
+    char *name;
+
+    name = (char *)&lbl_8034AA00;
+    start = fn_802E2C20(name);
+
+    total = 0;
+    size = 4;
+    do {
+        doubled = size * 2;
+        dimension = 0x400 / doubled;
+        total += dimension * dimension * 5;
+        size = doubled;
+    } while (size <= 0x40);
+
     table = fn_801284F8(0x10, &lbl_8034AA10);
-    if (table) {
-        void *items = ((void *(*)(int, void *))fn_8012850C)(total * 4, &lbl_8055CEF0);
-        ((void **)table)[0] = items; ((int *)table)[2] = total;
-        ((int *)table)[1] = 0; ((void **)table)[3] = items;
+    if (table != 0) {
+        items = ((void *(*)(int, void *))fn_8012850C)(total * 4, &lbl_8055CEF0);
+        ((void **)table)[0] = items;
+        ((int *)table)[2] = total;
+        ((int *)table)[1] = 0;
+        ((void **)table)[3] = items;
     }
     lbl_8055FA80 = table;
-    for (size = 4; size <= 0x40; size *= 2) fn_802B9108(size);
+
+    size = 4;
+    do {
+        fn_802B9108(size);
+        size *= 2;
+    } while (size <= 0x40);
+
     table = lbl_8055FA80;
     if (((int *)table)[1] < ((int *)table)[2]) {
         n = ((int *)table)[2] - ((int *)table)[1];
         fn_801286A0(((void **)table)[3], n * 4);
         ((int *)table)[2] = ((int *)table)[1];
     }
-    fn_80265DCC(*(void **)lbl_804BFFF4, *((void **)lbl_804BFFF4 + 1), 4, (int (**)(int **, int **))fn_802B9B50);
-    if (fn_802E2C20(0) - start > 0x1F4) fn_802E30C8(&lbl_8034A064, &lbl_8034AA00);
+
+    fn_80265DCC(*(void **)lbl_804BFFF4, *((void **)lbl_804BFFF4 + 1), 4,
+                (int (**)(int **, int **))fn_802B9B50);
+    if (fn_802E2C20(0) - start > 0x1F4)
+        fn_802E30C8(&lbl_8034A064, name);
 }
 
 typedef signed char s8;
