@@ -942,9 +942,6 @@ calculate:
 done:
     ;
 }
-#pragma scheduling on
-#pragma paired_single reset
-#pragma paired reset
 
 extern "C" void fn_802A3500(void *arg0, s32 arg1) {
     char stack[0xA8];
