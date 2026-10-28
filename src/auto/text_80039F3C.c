@@ -399,20 +399,19 @@ int fn_8003B0B0(void *arg0, void *arg1) {
     return 1;
 }
 
+#pragma scheduling invalid_target
 int fn_8003B218(void *arg0) {
     int slot = lbl_8055D8E8;
     unsigned char *base = lbl_8037B820;
     const char *msg = lbl_80302848;
-    int one = 1;
     int offset = slot << 5;
     unsigned int flag;
-    unsigned char *p;
+    unsigned char *p = base + offset;
     unsigned char *entry;
     int index;
     int result;
 
-    lbl_8055D8E0 = one;
-    p = base + offset;
+    lbl_8055D8E0 = 1;
     flag = p[8];
     if (((flag | -flag) >> 31) == 1U) {
         OSReport(msg + 0x218);
@@ -425,8 +424,8 @@ int fn_8003B218(void *arg0) {
     }
     ((void **)base)[slot * 8] = arg0;
     index = slot + 1;
-    *(unsigned int *)(p + 4) = one;
-    p[8] = one;
+    *(unsigned int *)(p + 4) = 1;
+    p[8] = 1;
     lbl_8055D8E8 = index;
     if (index >= 4) {
         lbl_8055D8E8 = 0;
@@ -447,7 +446,7 @@ int fn_8003B218(void *arg0) {
     }
     return 1;
 }
-
+#pragma scheduling on
 int fn_8003B380(int value) {
     lbl_8055D8F0 = value;
     return 1;
@@ -684,6 +683,12 @@ typedef struct DVDLowContext {
     unsigned char pad2[12];
 } DVDLowContext;
 
+static inline void nextCommandBuf(void) {
+    if ((int)++lbl_8055D8E4 >= 4) {
+        lbl_8055D8E4 = 0;
+    }
+}
+
 static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const char *msg) {
     int id;
     unsigned int flag;
@@ -715,24 +720,21 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
 int fn_8003BCDC(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
+    int ioctl = 0x86;
     DVDLowContext *ctx;
     int result;
-    int fd;
-    void (*cb)(int, void *);
 
     lbl_8055D8E4 = index;
     if (index >= 4) {
         index = 0;
         lbl_8055D8E4 = 0;
     }
-    lbl_8055D8FC[index * 0x20] = 0x86;
+    lbl_8055D8FC[index * 0x20] = ioctl;
     lbl_8055D8E0 = 1;
 
     ctx = newContext(arg0, 1, msg);
 
-    cb = (void (*)(int, void *))doTransactionCallback;
-    fd = lbl_80558E18;
-    result = IOS_IoctlAsync(fd, 0x86, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, 0, 0, cb, ctx);
+    result = IOS_IoctlAsync(lbl_80558E18, ioctl, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, ctx);
     if (result != 0) {
         OSReport(msg + 0xB74, result);
         ctx->inUse = 0;
