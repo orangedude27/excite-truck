@@ -1386,6 +1386,8 @@ extern "C" void fn_802A4658(s32 arg0) {
     list->phase = list->phase + advance;
 }
 #pragma scheduling on
+#pragma paired_single reset
+#pragma paired reset
 
 extern "C" s32 fn_802A47A8(void *arg0) {
     char *obj=(char*)arg0;
