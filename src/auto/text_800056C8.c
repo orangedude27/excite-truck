@@ -72,10 +72,13 @@ extern u8 lbl_802FB0C8[];
 extern s32 lbl_8055D354;
 extern s32 fn_80007554(s32, s32, s32);
 #pragma scheduling invalid_target
+#pragma push
+#pragma dont_inline on
 void fn_800056C8(s32 arg0, s32 arg1) {
     s32 *p = (s32 *)((u8 *)&lbl_8034EEB8 + (arg0 << 4));
     *(p + 4) = arg1;
 }
+#pragma pop
 #pragma scheduling on
 
 #pragma push
