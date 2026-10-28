@@ -12,6 +12,7 @@ static inline int fn_801CD130_dispatch(void *obj, f32 value) { return ((Dummy_80
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int fn_80019BA8(void);
+extern s32 *__AXFXGetLfoSinTable_801769CC(void);
 extern int fn_800167F4(void);
 extern int fn_8001C0EC(int);
 extern int fn_8001C0E8(int, int);
@@ -420,6 +421,55 @@ void fn_801CCBB4(void) {
     *((signed char *)lbl_8055E884 + 0x10) = 0;
 }
 
+extern void fn_8001BDA8(void *);
+extern int fn_8001BBB4(s32, s32, void *, s32, s32, f32);
+#pragma scheduling invalid_target
+void fn_801CCBC4(void) {
+    s32 *state;
+    void *entry;
+    void *object;
+    s32 i;
+    s32 offset;
+
+    state = lbl_8055E884;
+    if (*(u8 *)((u8 *)state + 0x10) != 0)
+        return;
+
+    i = 0;
+    offset = 0;
+    goto check_first;
+first_loop:
+    entry = *(void **)(*(u8 **)((u8 *)state + 0x18) + offset);
+    if (entry != 0)
+        fn_8001BDA8(*(void **)entry);
+    offset += 4;
+    i += 1;
+check_first:
+    if (i < state[0x1C / 4])
+        goto first_loop;
+
+    if (fn_801CE898() != 0)
+        return;
+    if (state[0x2AC / 4] == 0)
+        return;
+
+    i = 0;
+    goto check_second;
+second_loop:
+    object = fn_801EA9A0(i);
+    if (*(s32 *)((u8 *)object + 0x44) == 0x50) {
+        ((int (*)(s32, s32, s32, void *, s32, s32, f32))fn_8001BBB4)(
+            fn_8000DA10(), state[0], state[1], (u8 *)object + 0x48,
+            state[0x2AC / 4], state[0x2B0 / 4],
+            *(f32 *)((u8 *)state + 0x2B8));
+        return;
+    }
+    i += 1;
+check_second:
+    if (i < fn_801EA994())
+        goto second_loop;
+}
+#pragma scheduling on
 extern void fn_80235380(void);
 extern void deleteThreads__6SystemFv(void *);
 #pragma cplusplus on
