@@ -187,6 +187,42 @@ int fn_8015F148(void **arg0, int arg1) {
     return count;
 }
 
+extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
+#pragma push
+#pragma scheduling invalid_target
+#pragma processor 750
+void fn_8015F1E4(void *arg0, void *arg1) {
+    struct Vec3 {
+        f32 x;
+        f32 y;
+        f32 z;
+    };
+    f32 base = *(f32 *)((char *)arg1 + 0x24);
+    f32 x = *(f32 *)((char *)*(void **)((char *)arg1 + 0xC) + 0x18);
+    f32 z = *(f32 *)((char *)*(void **)((char *)arg1 + 0xC) + 0x20);
+    f32 speed = (f32)((double (*)(void *, f32, f32))fn_8002F234)(arg0, x * x + z * z, z);
+    struct Vec3 result;
+    *(f32 *)((char *)arg0 + 0xC) = base + lbl_805617DC * (lbl_805617D8 * speed);
+    {
+        f32 *state = *(f32 **)((char *)arg1 + 0xC);
+        f32 y = state[7];
+        if (y < lbl_805617D4) {
+            f32 delta = *(f32 *)((char *)arg1 + 0x28) - lbl_805617E0;
+            result.x = state[9] + state[6] * delta;
+            result.y = state[10] + state[7] * delta;
+            result.z = state[11] + state[8] * delta;
+        } else {
+            f32 delta = -(*(f32 *)((char *)arg1 + 0x28) - lbl_805617E0);
+            result.x = state[9] + state[6] * delta;
+            result.y = state[10] + state[7] * delta;
+            result.z = state[11] + state[8] * delta;
+        }
+    }
+    *(f32 *)((char *)arg0 + 4) = result.x;
+    *(f32 *)((char *)arg0 + 8) = result.z;
+    *(u16 *)((char *)arg0 + 2) = 0;
+}
+#pragma pop
 void fn_8015F1E4();
 extern f64 fn_8002F234(f32, f32, f32);
 void fn_8015EC50(unsigned short *, void *);
@@ -253,7 +289,7 @@ void fn_8015F3FC(void *arg0) {
     int *dst, *array, *out;
     if (*(int *)(lbl_8055E29C + 4) <= 0) return;
     fn_80265DCC(*(void **)lbl_8055E29C, *(int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
-    count = *(int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16;
+    count = (int)(*(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16);
     dst = (int *)fn_801284F8(0x10, lbl_8032F4A0);
     if (!dst) return;
     array = (int *)fn_8012850C(count * 4, (int)&lbl_8055A098);
@@ -263,7 +299,6 @@ void fn_8015F3FC(void *arg0) {
     dst[3] = (int)array;
     *(int *)&lbl_8055E2A0 = (int)dst;
     if (count <= 0) return;
-
     for (i = 0; i < count; i++) {
         index = 0;
         offset = 0;
@@ -273,7 +308,6 @@ void fn_8015F3FC(void *arg0) {
             index++;
             if (index >= max) break;
         } while (*(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i);
-
         max = *(int *)(lbl_8055E29C + 4) - 1;
         if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
             src = (int *)*(int *)lbl_8055E29C;
