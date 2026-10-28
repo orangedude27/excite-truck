@@ -1087,6 +1087,41 @@ extern "C" void fn_8029B1B8(void* arg0) {
     *(float*)(p + 0x1F8) = lbl_80564590 / (float)*(int*)(p + 0x1EC);
     *(int*)(p + 0x1F4) = 0x10 - (v << 1);
 }
+
+extern "C" void* fn_80288060(void*, int);
+extern "C" void fn_8029B43C(void*, void*, unsigned char, float, float, float, float, float, float = 0.0f, float = 0.0f, float = 0.0f);
+extern "C" void fn_8029B824(void *arg0) {
+    int i = 0;
+    char *entry = (char *)arg0;
+    char *item = (char *)arg0;
+
+    while (i < fn_80287B14()) {
+        if (*(unsigned char *)(entry + 0x35) != 0) {
+            void *info = fn_80288208(i);
+            int count = *(int *)((char *)info + 0x24);
+            int j = 0;
+            while (j < count) {
+                void *object = fn_80288060(info, j);
+                int value = fn_80287B24(i);
+                fn_801BFD34(item + 0x24, (char *)object + 0x24, value);
+                fn_80015B20(item, object, value);
+
+                float scale = *(float *)(entry + 0x30);
+                float x = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
+                float y = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
+                float z = *(float *)(item + 0x2C) + *(float *)(item + 0x14) * scale;
+                fn_8029B43C(arg0, entry, *(unsigned char *)(entry + 0x34), scale,
+                            *(float *)(item + 0x14) * scale, y, x,
+                            *(float *)(item + 0x0C) * scale);
+                ++j;
+            }
+        }
+        entry += 0x38;
+        item += 0x38;
+        ++i;
+    }
+}
+
 #pragma dont_inline reset
 extern "C" void* fn_8029B938(void* arg0) {
     int result = fn_801284F8(0x1FC, lbl_80349550);
@@ -1319,33 +1354,42 @@ extern "C" void fn_80298DE0(void*, void*, int);
 extern "C" void fn_8029BBD4(void*, void*, int);
 extern "C" void fn_8029A208(void*, int, int);
 extern "C" void fn_8029A904(void*, void*, float, float);
-extern "C" void fn_8029C084(void* arg0, int arg1) {
+extern "C" void fn_8029C084(void *arg0, int arg1) {
     float temp_f31 = fn_801E7E24();
-    if (__fabsf(temp_f31) != lbl_80558DC4) {
-        int i = 0;
-        while (i < arg1) {
-            unsigned char flag = *(unsigned char*)((char*)arg0 + 0xC);
-            int flag2 = 0;
-            void* obj = *(void**)((char*)arg0 + 4);
-            void* data = *(void**)arg0;
-            if (flag != 0 && *(int*)((char*)data + 0x5C) == 0xB) {
-                flag2 = 1;
-            }
-            fn_80298DE0(lbl_8055F7C8, obj, flag2);
-            fn_8029BBD4(lbl_8055F7D8, obj, flag);
-            if (lbl_8055F7D0 != 0) {
-                int flag3 = 0;
-                if (flag != 0 && *(int*)((char*)data + 0x5C) == 0xC) {
-                    flag3 = 1;
-                }
-                fn_8029A208(obj, flag3, 0);
-            }
-            if (lbl_8055F7D4 != 0) {
-                fn_8029A904(obj, data, temp_f31, *(float*)((char*)arg0 + 8));
-            }
-            arg0 = (char*)arg0 + 0x10;
-            i++;
+    if (__fabsf(temp_f31) <= lbl_80558DC4) {
+        return;
+    }
+    int i = 0;
+    while (i < arg1) {
+        void *data;
+        void *obj;
+        unsigned char flag;
+        int enabled;
+        void *ctx;
+
+        flag = *(unsigned char *)((char *)arg0 + 0xC);
+        enabled = 0;
+        obj = *(void **)((char *)arg0 + 4);
+        data = *(void **)arg0;
+        ctx = lbl_8055F7C8;
+        if (flag != 0 && *(int *)((char *)data + 0x5C) == 0xB) {
+            enabled = 1;
         }
+        fn_80298DE0(ctx, obj, enabled);
+        fn_8029BBD4(lbl_8055F7D8, obj, flag);
+        if (lbl_8055F7D0 != 0) {
+            int enabled2 = 0;
+            if (flag != 0 && *(int *)((char *)data + 0x5C) == 0xC) {
+                enabled2 = 1;
+            }
+            ((void (*)(void *, void *, int))fn_8029A208)(lbl_8055F7D0, obj, enabled2);
+        }
+        if (lbl_8055F7D4 != 0) {
+            ((void (*)(void *, void *, void *, float, float))fn_8029A904)(
+                lbl_8055F7D4, obj, data, temp_f31, *(float *)((char *)arg0 + 8));
+        }
+        arg0 = (char *)arg0 + 0x10;
+        i += 1;
     }
 }
 
