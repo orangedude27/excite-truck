@@ -956,6 +956,47 @@ void fn_801C7524(void) {
     sprintf(lbl_804380F0, lbl_8055AA54, *(f32 *)(lbl_8055E7F8 + index));
 }
 
+void fn_801C756C(void) {
+    register f32 value;
+    register u32 offset;
+    register s32 maxRank;
+    register s32 i;
+    if (lbl_8055E7F0 <= 0)
+        goto done;
+    value = (f32)atof(lbl_804380F0);
+    maxRank = 0;
+    i = 0;
+    offset = 0;
+    goto check;
+loop:
+    if (fn_801C34CC(*(f32*)((u8*)lbl_8055E7F8 + offset), value)) {
+        s32 rank = *(s32*)((u8*)lbl_8055E7F8 + offset + 4);
+        if (rank > maxRank)
+            maxRank = rank;
+    }
+    offset += 0x30C;
+    i++;
+check:
+    if (i < lbl_8055E7F0)
+        goto loop;
+    {
+        register u8 *base = (u8*)lbl_8055E7F8;
+        register u32 index = lbl_8055E828;
+        register u32 indexOffset = index * 0x30C;
+        if (*(s32*)(base + indexOffset + 8) == 1) {
+            *(f32*)(base + indexOffset + 0x58) =
+                value + (*(f32*)(base + indexOffset + 0x58) -
+                         *(f32*)(base + indexOffset));
+        }
+    }
+    *(f32*)((u8*)lbl_8055E7F8 + lbl_8055E828 * 0x30C) = fn_801C3450(value);
+    *(s32*)((u8*)lbl_8055E7F8 + lbl_8055E828 * 0x30C + 4) = maxRank + 1;
+    qsort((void*)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
+          (int (*)(const void*, const void*))fn_801C3B7C);
+done:
+    fn_801C957C(0);
+}
+
 #pragma push
 #pragma paired off
 #pragma paired_single off
@@ -997,6 +1038,8 @@ extern int atoi(const char *);
 extern char lbl_8055E83B;
 extern char lbl_8055E83D;
 extern Vec lbl_80438250;
+#ifndef UNK_80437D88_DEFINED
+#define UNK_80437D88_DEFINED
 typedef struct Unk_80437D88 {
     char pad_0[0x4D4];
     Vec f_4D4;
@@ -1004,6 +1047,7 @@ typedef struct Unk_80437D88 {
     char pad_1[0x6F8 - 0x4EC];
     Vec f_6F8;
 } Unk_80437D88;
+#endif
 extern Unk_80437D88 lbl_80437D88;
 extern void fn_801C7964(void);
 extern s32 lbl_8055E828;
@@ -2164,6 +2208,37 @@ void fn_801C96E4(void) {
     lbl_8055E82C = lbl_8055E828 / 10;
 }
 
+#pragma scheduling invalid_target
+s32 fn_801C9708(s32 arg0) {
+    switch (arg0) {
+    case 0xD: ((void (*)(void))fn_801C95EC)(); break;
+    case 0x126: fn_801C968C(-1); break;
+    case 0x128: fn_801C968C(1); break;
+    case 0x8:
+    case 0x12E:
+        if (strlen(lbl_804380F0) != 0)
+            *(char*)((u32)lbl_804380F0 + strlen(lbl_804380F0) - 1) = 0;
+        break;
+    default: {
+        u32 length;
+        char *end;
+        if ((arg0 >= 0x41 && arg0 <= 0x7A) ||
+            (arg0 >= 0x30 && arg0 <= 0x39) ||
+            arg0 == 0x3A || arg0 == 0x2E || arg0 == 0x20 || arg0 == 0x2D) {
+            length = strlen(lbl_804380F0);
+            if (length < 0xFF) {
+                lbl_804380F0[length] = (char)arg0;
+                end = (char*)length;
+                end += (u32)lbl_804380F0;
+                end[1] = 0;
+            }
+        }
+        break;
+    }
+    }
+    return 1;
+}
+#pragma scheduling on
 void fn_801C9830(void) {
     return;
 }
