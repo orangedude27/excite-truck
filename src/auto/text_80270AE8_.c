@@ -462,7 +462,8 @@ extern float lbl_8055F568;
 extern float lbl_80563F50;
 extern float PSQUATMultiply(void *, void *);
 extern int fn_80272C24(float, float, float, float);
-int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
+#pragma cplusplus on
+extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     void *obj;
     void *manager;
     void **vtable;
@@ -496,6 +497,7 @@ int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     else *arg2 = lbl_80563F50 / (lbl_80563F50 + value);
     return result;
 }
+#pragma cplusplus reset
 
 void fn_80273354(void) {
     int *ptr = (int *)lbl_8049A258;
