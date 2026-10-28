@@ -270,45 +270,89 @@ extern unsigned char lbl_804BCFB8[];
 extern s32 lbl_8055CBE8;
 s32 fn_80287B14(void);
 void *fn_80288208(s32);
-s32 fn_80287E20(s32);
+s32 fn_80287E20(void *, s32);
 void *fn_80287E80(void *, s32);
 void fn_8028E61C(void *);
 s32 fn_8028E2F8(void *, void *, void *, f32, f32, f32, f32);
 int sprintf(char *, const char *, ...);
-void fn_802A50F8(void) {
-    struct { s32 a; s32 b; f32 c[28]; } init;
+#pragma scheduling on
+#pragma cplusplus on
+extern "C" void fn_802A50F8(void) {
+    struct Init { s32 a, b; f32 c[28]; };
+    struct Frame { u8 pad[0x18]; struct Init init; u8 unkTail[0x10]; };
+    struct Lookup {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void *get(const char *);
+    };
+    struct Frame frame;
     char name[4];
-    s32 i = 0, j;
+    u8 *base;
+    u8 *entry;
+    s32 i;
     void *obj;
-    fn_8028E61C(&init);
-    init.b = 0x100; init.a = 0;
-    init.c[0] = lbl_80564868; init.c[1] = lbl_8056485C;
-    init.c[2] = lbl_8056486C; init.c[3] = lbl_8056486C; init.c[4] = lbl_8056486C;
-    init.c[5] = lbl_8056485C; init.c[6] = lbl_8056485C; init.c[7] = lbl_8056485C;
-    init.c[10] = lbl_8056485C; init.c[16] = 5;
-    init.c[20] = lbl_80564874; init.c[19] = lbl_80564870; init.c[18] = lbl_80564870;
-    init.c[21] = lbl_8056485C; init.c[22] = lbl_8056485C;
-    init.c[24] = lbl_8056485C; init.c[25] = lbl_8056485C; init.c[26] = lbl_8056485C;
-    lbl_8055F894 = fn_8028E2F8(&init, lbl_80349BF0 + 0x80, lbl_80349BF0 + 0x1c, lbl_80564870, lbl_8056486C, lbl_8056485C, lbl_80564868);
-    for (i = 0; i < fn_80287B14(); i++) {
-        unsigned char *entry = lbl_804BCFB8 + i * 0xC4;
-        *(s32 *)(entry + 0xC0) = 0;
+    struct Init *initPtr;
+    base = lbl_80349BF0;
+    fn_8028E61C(&frame.init);
+    frame.init.b = 0x100;
+    frame.init.a = 0;
+    frame.init.c[0] = lbl_80564868;
+    frame.init.c[1] = lbl_8056485C;
+    frame.init.c[2] = lbl_8056486C;
+    frame.init.c[3] = lbl_8056486C;
+    frame.init.c[4] = lbl_8056486C;
+    frame.init.c[5] = lbl_8056485C;
+    frame.init.c[6] = lbl_8056485C;
+    frame.init.c[7] = lbl_8056485C;
+    frame.init.c[10] = lbl_8056485C;
+    ((s32 *)&frame.init)[17] = 5;
+    frame.init.c[19] = lbl_80564870;
+    frame.init.c[18] = lbl_80564870;
+    frame.init.c[21] = lbl_8056485C;
+    frame.init.c[20] = lbl_80564874;
+    frame.init.c[27] = lbl_8056485C;
+    frame.init.c[25] = lbl_8056485C;
+    frame.init.c[23] = lbl_8056485C;
+    initPtr = &frame.init;
+    lbl_8055F894 = fn_8028E2F8(initPtr, base + 0x80, base + 0x1c, lbl_80564870, lbl_8056486C, lbl_8056485C, lbl_80564868);
+    entry = lbl_804BCFB8;
+    for (i = 0; i < fn_80287B14(); ++i, entry += 0xC4) {
         obj = fn_80288208(i);
-        if (fn_80287E20(lbl_8055CBE8)) {
-            obj = fn_80287E80(obj, lbl_8055CBE8);
+        *(s32 *)(entry + 0xC0) = 0;
+        if (((s32 (*)(void *, s32))fn_80287E20)(obj, (s32)&lbl_8055CBE8)) {
+            obj = fn_80287E80(obj, (s32)&lbl_8055CBE8);
             *(s32 *)(entry + 0xC0) = 0;
-            for (j = 0; j < 4; ) {
+            while (*(volatile s32 *)(entry + 0xC0) < 4) {
                 void *value;
-                sprintf(name, (char *)lbl_80349BF0 + 0x8c, j + 1);
-                value = ((void *(*)(void *, const char *))(*(void ***)obj)[0x5c/4])(obj, name);
-                if (!fn_802A4FA8((float *)(entry + j * 0x30), value)) break;
-                *(s32 *)(entry + 0xC0) = ++j;
+                sprintf(name, (char *)(base + 0x8c), *(volatile s32 *)(entry + 0xC0) + 1);
+                value = ((Lookup *)obj)->get(name);
+                if (!fn_802A4FA8((float *)(entry + *(volatile s32 *)(entry + 0xC0) * 0x30), value)) break;
+                *(volatile s32 *)(entry + 0xC0) = *(volatile s32 *)(entry + 0xC0) + 1;
             }
         }
     }
 }
-
-#pragma scheduling invalid_target
+#pragma cplusplus reset
+#pragma scheduling on
 void fn_802A5270(f32 arg0) {
     f32 value = *(volatile f32 *)&lbl_8056485C;
     s32 amount;
@@ -938,71 +982,89 @@ extern f32 fn_802C9A50(void);
 extern f32 lbl_805648B0;
 extern f32 lbl_805648C0;
 void fn_802A6F70(void *arg0, void *arg1) {
-    u8 *state = (u8 *)arg0;
-    u8 *basePos = (u8 *)arg1;
-    f32 *out;
-    u8 *points;
-    u8 *entry;
-    volatile f32 sp14;
-    volatile f32 sp18;
+    struct Vec3 {
+        f32 x;
+        f32 y;
+        f32 z;
+    };
     volatile f32 sp1C;
-    volatile f32 sp8;
-    volatile f32 spC;
+    volatile f32 sp18;
+    volatile f32 sp14;
     volatile f32 sp10;
+    volatile f32 spC;
+    volatile f32 sp8;
+    f32 divisor;
     f32 dt;
     f32 speed;
     f32 scale;
+    f32 xVelocity;
+    f32 yVelocity;
+    f32 zVelocity;
+    f32 xBase;
+    f32 yBase;
+    f32 zBase;
     f32 xOffset;
     f32 yOffset;
     f32 zOffset;
     f32 pointX;
     f32 pointY;
     f32 pointZ;
-    f32 radiusX;
-    f32 radiusY;
-    f32 xLimit;
-    f32 yLimit;
-    s32 i = 0;
-    s32 offset = 0;
+    f32 radiusBase;
+    s32 offset;
+    s32 count;
+    struct Vec3 *out;
 
-    dt = *(f32 *)(state + 0x14);
-    speed = dt / fn_802C9A50();
+    divisor = fn_802C9A50();
+    dt = *(f32 *)((u8 *)arg0 + 0x14);
+    speed = dt / divisor;
     scale = lbl_805648C0 * fn_802A4AD4();
-    sp14 = *(f32 *)(basePos + 0) + *(f32 *)(state + 0x38) * scale;
-    sp18 = *(f32 *)(basePos + 4) + *(f32 *)(state + 0x3C) * scale;
-    sp1C = *(f32 *)(basePos + 8) + *(f32 *)(state + 0x40) * scale;
-    xOffset = sp14;
-    yOffset = sp18;
-    zOffset = sp1C;
-    out = *(f32 **)state;
+    count = 0;
+    xVelocity = *(f32 *)((u8 *)arg0 + 0x38) * scale;
+    offset = 0;
+    xBase = *(f32 *)((u8 *)arg1 + 0);
+    yVelocity = *(f32 *)((u8 *)arg0 + 0x3C) * scale;
+    yBase = *(f32 *)((u8 *)arg1 + 4);
+    zVelocity = *(f32 *)((u8 *)arg0 + 0x40) * scale;
+    xOffset = xBase + xVelocity;
+    zBase = *(f32 *)((u8 *)arg1 + 8);
+    yOffset = yBase + yVelocity;
+    out = *(struct Vec3 **)arg0;
+    zOffset = zBase + zVelocity;
+    sp14 = xOffset;
+    sp18 = yOffset;
+    sp1C = zOffset;
+    radiusBase = lbl_805648B0;
     goto check;
 loop:
-    points = *(u8 **)state;
-    entry = points + offset;
-    pointX = *(f32 *)(entry + 0) + xOffset;
-    pointZ = *(f32 *)(entry + 8) + zOffset;
-    pointY = *(f32 *)(entry + 4) + yOffset;
+    {
+        u8 *pointBase = *(u8 **)arg0;
+        pointX = *(f32 *)(pointBase + offset);
+        pointZ = *(f32 *)(pointBase + offset + 8);
+        pointY = *(f32 *)(pointBase + offset + 4);
+        pointX += xOffset;
+        pointZ += zOffset;
+        pointY += yOffset;
+    }
     sp8 = pointX;
     spC = pointY;
     sp10 = pointZ;
-    if (pointZ > *(f32 *)(state + 0x18) &&
-        pointZ < *(f32 *)(state + 0x1C)) {
-        xLimit = lbl_805648B0 + pointZ * speed;
-        if (!(pointX * pointX >= xLimit * xLimit)) {
-            yLimit = lbl_805648B0 + pointZ * dt;
-            if (!(pointY * pointY >= yLimit * yLimit)) {
-                out[0] = sp8;
-                out[1] = spC;
-                out[2] = sp10;
-                out += 3;
-            }
-        }
+    if (pointZ > *(f32 *)((u8 *)arg0 + 0x18) &&
+        pointZ < *(f32 *)((u8 *)arg0 + 0x1C) &&
+        pointX * pointX < (radiusBase + pointZ * speed) *
+            (radiusBase + pointZ * speed) &&
+        pointY * pointY < (radiusBase + pointZ * dt) *
+            (radiusBase + pointZ * dt)) {
+        out->x = pointX;
+        out->y = pointY;
+        out->z = pointZ;
+        out++;
     }
     offset += 0xC;
-    i++;
+    count++;
 check:
-    if (i < *(s32 *)(state + 4)) goto loop;
-    *(s32 *)(state + 4) = ((s32)((u8 *)out - *(u8 **)state)) / 12;
+    if (count < *(s32 *)((u8 *)arg0 + 4)) goto loop;
+    *(s32 *)((u8 *)arg0 + 4) =
+        ((u8 *)out - *(u8 **)arg0) / 12;
 }
 
 #pragma pop
