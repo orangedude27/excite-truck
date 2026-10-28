@@ -733,6 +733,7 @@ extern char lbl_8055B19C[], lbl_8055B1A8[], lbl_8055B1B0[], lbl_8055B1B8[];
 extern float lbl_80562FE8;
 typedef float (*Getter)(void *, const char *);
 typedef void (*Setter)(void *, const char *);
+#pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_801F6C04(void *self, int a, int b, void *object, int flags, int extra) {
     int count, old, got;
@@ -755,6 +756,7 @@ extern "C" void fn_801F6C04(void *self, int a, int b, void *object, int flags, i
     *(int *)((char *)self + 0x900) = *(int *)((char *)self + 0x900) + 1;
 }
 #pragma cplusplus reset
+#pragma dont_inline off
 
 void *fn_801F6D20(void *arg0) {
     int size = 0x2A0;
