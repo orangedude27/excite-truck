@@ -1448,7 +1448,7 @@ extern "C" void *fn_8012E460(void *);
 extern "C" s32 fn_8012E490(s32 *);
 extern "C" const char lbl_8032ACE0[];
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" void fn_8012DDA8(s32 arg0) {
     nw4r::ef::Effect *obj;
     Unk8012DFCCNode *node;
