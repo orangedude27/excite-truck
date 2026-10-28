@@ -419,6 +419,7 @@ int fn_8028EF44(void *arg0, unsigned int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
+#pragma dont_inline on
 void fn_8028EFC4(int arg0, int *arg1) {
     int *base;
     int *cursor;
