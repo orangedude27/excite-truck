@@ -325,30 +325,28 @@ extern void fn_801345D8(char *, int, const char *, ...);
 extern int fn_802CAC44(char *, int);
 extern int fn_802CAF8C(void);
 extern int fn_802CAFF0(void);
-extern void fn_802CAFC8(int);
+extern int fn_802CAFC8(int);
 __declspec(section ".sdata") extern const char lbl_8055D010[];
-void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    char name[0x100];
+void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3) {
     char temp[0x100];
+    char name[0x100];
     int value;
     int index;
     u16 result;
 
-    fn_802C595C(name, 0x100, (const char *)((char *)arg0 + 4), arg1);
+    fn_802C595C(name, 0x100, (char *)arg0 + 4, arg1);
     if (arg3 != 0) {
         fn_801345D8(temp, 0x100, lbl_8055D010, arg3, name);
         if (fn_8012C33C(temp) != 0) {
-            int count;
             char *src = temp;
             char *dst = name;
-            for (count = 0x100; count > 0; count--) {
-                char c = *src++;
-                *dst++ = c;
-                if (c == 0)
+            int count = 0x100;
+            while (*dst++ = *src++) {
+                if (--count <= 0) {
+                    dst[-1] = '\0';
                     break;
+                }
             }
-            if (count == 0)
-                dst[-1] = 0;
         }
     }
     value = *(int *)arg0;
