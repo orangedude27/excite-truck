@@ -1,4 +1,5 @@
 __declspec(section ".data") extern float lbl_80558DC4;
+extern float lbl_80564628;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void fn_8029CD14(void);
