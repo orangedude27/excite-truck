@@ -58,12 +58,12 @@ void fn_80253258(void) {
 #pragma scheduling on
 
 void *fn_8025343C(void *arg0) {
-    extern void fn_802532BC(void);
+    extern void fn_802532BC(void *);
     extern float fn_8023659C(void);
     extern int fn_801F0008(void);
     extern int fn_801284E8(char *, int);
     extern char lbl_803447C0[], lbl_803447CC[];
-    fn_802532BC();
+    fn_802532BC(arg0);
     *(float *)((u8 *)arg0 + 4) = fn_8023659C();
     *(s32 *)((u8 *)arg0 + 0xC) = 0;
     *(s32 *)((u8 *)arg0 + 8) = 0;
