@@ -143,24 +143,30 @@ extern void fn_80062278(int, void *, int);
 extern void AXRmtAdvancePtr(int);
 extern unsigned char lbl_804FC6C0[];
 extern int lbl_8055FFA8;
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802E52EC(void) {
     unsigned char *entry = lbl_804FC800;
     short *samples = (short *)lbl_804FC6C0;
-    int any = 0;
-    int i = 0;
+    int i;
+    int any;
     int zero = 0;
     int one = 1;
+
+    any = 0;
+    i = 0;
     do {
         int state = OSDisableInterrupts();
         if (WPADCanSendStreamData(i) && fn_802E86B4(i) > 0x55 &&
             AXRmtGetSamples(i, samples, 0x28) == 0x28) {
             any = 1;
             if (entry[0] && (lbl_8055FFA8 & (one << i))) {
+                unsigned char buf[0x14];
                 int active = *(int *)(entry + 0x24);
                 int encode = active == 0;
                 if (active) *(int *)(entry + 0x24) = zero;
-                WENCGetEncodeData(entry + 1, encode, samples, 0x28, &zero);
-                fn_80062278(i, &zero, 0x14);
+                WENCGetEncodeData(entry + 1, encode, samples, 0x28, buf);
+                fn_80062278(i, buf, 0x14);
             } else {
                 *(int *)(entry + 0x24) = one;
             }
@@ -172,7 +178,7 @@ void fn_802E52EC(void) {
     } while (i < 4);
     if (any) AXRmtAdvancePtr(0x28);
 }
-
+#pragma pop
 int fn_802E540C(int arg0) {
     if (arg0 == 1) TRKReadBuffer_ui32();
     return 0;
@@ -330,19 +336,31 @@ extern unsigned char *lbl_8055FF94;
 extern int OSDisableInterrupts(void);
 extern int OSEnableInterrupts(int);
 __declspec(section ".sdata") extern unsigned char *lbl_8055FF94;
+#pragma scheduling invalid_target
 void *fn_802E6058(void *arg0) {
     unsigned char *entry;
-    int i;
-    i = 0;
-    for (;;) {
-        entry = lbl_8055FF94 + ((((i << 27) - (i >> 31)) << 5) + (i >> 31)) * 0x2C;
+    register int i;
+    unsigned int unsignedIndex;
+    unsigned int shifted;
+    float zeroValue;
+    float oneValue;
+
+    for (i = 0; i < 0x20; i++) {
+        unsignedIndex = (unsigned int)i;
+        shifted = unsignedIndex << 27;
+        entry = lbl_8055FF94 +
+                (((((shifted - (unsignedIndex >> 31)) << 5) |
+                   ((shifted - (unsignedIndex >> 31)) >> 27)) +
+                  (unsignedIndex >> 31)) * 0x2C);
         if (entry[0x20] == 0) {
             OSDisableInterrupts();
             entry[0x20] = 1;
+            oneValue = lbl_80565128;
+            zeroValue = lbl_8056512C;
             *(void **)(entry + 0x1C) = arg0;
-            *(float *)(entry + 8) = lbl_80565128;
-            *(float *)(entry + 0xC) = lbl_8056512C;
-            *(float *)(entry + 0x14) = lbl_80565128;
+            *(float *)(entry + 8) = oneValue;
+            *(float *)(entry + 0xC) = zeroValue;
+            *(float *)(entry + 0x14) = oneValue;
             *(int *)(entry + 0x18) = 0;
             *(float *)(entry + 0x10) = *(float *)((char *)arg0 + 0xA8);
             entry[0x23] = 0;
@@ -351,15 +369,14 @@ void *fn_802E6058(void *arg0) {
             entry[0x21] = 1;
             entry[0x22] = 0;
             *(int *)(entry + 0x28) = 0;
-            OSEnableInterrupts(0);
+            ((void (*)(void))OSEnableInterrupts)();
             ++lbl_8055FF98;
             return entry;
         }
-        if (++i == 0x20) break;
     }
     return 0;
 }
-
+#pragma scheduling on
 void fn_802E6138(void *arg0) {
     if (((unsigned char *)arg0)[0x23] != 0) {
         fn_802E317C(lbl_8034D5B0, *(int *)arg0, *(void **)((char *)arg0 + 0x1C));
