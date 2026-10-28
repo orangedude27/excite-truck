@@ -342,15 +342,15 @@ extern "C" void fn_80217874(void *arg0, int arg1) {
     int i;
     Obj *obj;
     int found;
-    float threshold;
-    fn_80216D34();
+    void (*reset)(void) = fn_80216D34;
+    reset();
     if (*(int *)(base + 0x44C) == 0) {
         obj = *(Obj **)(base + 0x450);
         if (obj != 0 && obj->check(arg1)) {
             fn_80218E08(arg0, arg1);
             return;
         }
-        threshold = lbl_80563490;
+        register float threshold = lbl_80563490;
         cursor = base;
         i = 0;
         while (i < *(int *)(base + 0x430)) {
@@ -504,6 +504,8 @@ void *fn_80217BD8(void *arg0, int arg1, int arg2) {
     return base + 0x498;
 }
 #pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
 void fn_80217C4C(void *arg0) {
     char *base = (char *)arg0;
     char *entry;
@@ -557,6 +559,7 @@ void fn_80217C4C(void *arg0) {
         }
     }
 }
+#pragma pop
 
 void fn_80217D84(void *arg0) {
     char *base = (char *)arg0;
