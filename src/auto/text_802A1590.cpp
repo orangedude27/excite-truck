@@ -875,6 +875,9 @@ extern "C" void fn_802A31DC(void *arg0, s32 arg1) {
         ((s32 (*)(void *, void *, s32))fn_8028E2F8)(
             &stack[0x18], &lbl_80349A54, arg1);
 }
+#pragma paired_single reset
+#pragma paired reset
+#pragma scheduling on
 
 #pragma scheduling invalid_target
 extern "C" void* fn_802A3314(void* arg0, DummyReceiver_802A3314* arg1) {
