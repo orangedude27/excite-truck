@@ -417,6 +417,7 @@ void fn_802179A0(void *arg0) {
         fn_802E30C8(lbl_8033D824);
     }
 }
+#pragma cplusplus reset
 #pragma paired_single reset
 #pragma pop
 
