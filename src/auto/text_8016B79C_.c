@@ -1,5 +1,18 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
+extern s32 fn_801284F8(s32, const char *);
+extern void fn_80144504(void **);
+extern void *fn_8016CEC0(void *, s32);
+extern void fn_8016CEFC(void *);
+extern void *fn_8016CF08(void *);
+extern void *fn_8016D024(void *);
+extern void fn_8016D278(void *);
+extern void fn_8016CE9C(void *, void **);
+extern void fn_8016A0B0(void);
+extern void fn_8016C328(void *);
+extern s32 fn_80207848(void *, s32);
+extern char lbl_80330990[];
+extern s32 lbl_8055E378;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -831,36 +844,34 @@ void fn_8016DFB8(void *arg0) {
     fn_8016A15C(sp8);
 }
 
+#pragma scheduling invalid_target
 void fn_8016E06C(void *arg0) {
     u8 **baseSlot;
     s32 index = *(s32 *)((u8 *)arg0 + 0x2c);
 
     if (index < *(s32 *)((u8 *)arg0 + 0x3c)) {
-        s32 i;
+        s32 i = 0;
         u8 *item;
         s32 offset;
-        s32 zero;
-        f32 initialValue;
         baseSlot = *(u8 ***)((u8 *)arg0 + 0x18);
         item = *baseSlot + index * 0x14;
         item[9] = 1;
         i = 0;
-        zero = 0;
-        initialValue = lbl_8055E3C8;
+        *(f32 *)(item + 0xc) = lbl_8055E3C8;
         offset = 0;
-        *(f32 *)(item + 0xc) = initialValue;
-        *(s32 *)(item + 0x10) = zero;
+        *(volatile s32 *)(item + 0x10) = 0;
         while (i < *(s32 *)((u8 *)*(void * volatile *)item + 4)) {
-            u8 *entry = (u8 *)*(void * volatile *)item + offset;
-            if (*(s32 *)(entry + 4) != 0) {
-                fn_802BAF98(entry, 1);
+            register u8 *list = (u8 *)*(void * volatile *)item;
+            s32 value = *(s32 *)(list + offset + 4);
+            if (value != 0) {
+                fn_802BAF98((void *)value, 1);
             }
             offset += 0x44;
             i += 1;
         }
     }
 }
-
+#pragma scheduling on
 void fn_8016E118(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x24);
     if (value != -1) {
@@ -1853,11 +1864,12 @@ void fn_80170DA8(void *arg0, void *arg1) {
         distance = (f32)fn_8002F234(dx * dx + dy * dy, y, x, dx, dy);
         threshold = *(f32 *)(item + 0x34);
         if (distance < threshold) {
+            u32 nextOffset = next * 0x38;
             items[index][0x30] = 0;
             *(s32 *)((u8 *)arg0 + 0x10) = next;
             pool = *(s32 **)((u8 *)arg0 + 4);
             items = (u8 (*)[0x38])*pool;
-            items[next][0x30] = 1;
+            *(u8 *)((u8 *)items + nextOffset + 0x30) = 1;
         }
     }
 }
