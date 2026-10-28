@@ -652,6 +652,7 @@ int fn_802BD694(int arg0, int arg1) { return arg0 + arg1; }
 #pragma push
 #pragma inline_depth(0)
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802BD69C(void *arg0, int arg1) {
     unsigned char *p = arg0;
     unsigned char *entry;
