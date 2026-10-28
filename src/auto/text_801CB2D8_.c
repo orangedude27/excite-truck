@@ -323,7 +323,61 @@ void fn_801CBD04(void *arg0) {
     }
 }
 
-void fn_801CC768(void *arg0, float arg1) {
+extern int fn_80145E70(void *);
+extern int fn_8001BA74(int);
+extern void fn_801CC8FC(void *);
+extern void fn_801CC8EC(void *);
+extern void *fn_801CC7A0(void *);
+extern void **fn_801CC784(void *);
+extern void *fn_801CB954();
+extern void fn_801CC768(void *, float);
+extern void fn_801CC594(void *);
+extern void *fn_80207848(void *, int);
+extern void *fn_8023512C(void *);
+extern float lbl_80562A04;
+void fn_801CC470(void) {
+    register void *object;
+    register int i;
+    register s32 *table;
+    register void *item;
+    void **slot;
+    void *field;
+
+    object = fn_801284F8(0x618, lbl_80337AC8 + 0x190);
+    if (object != 0) {
+        fn_801CC8FC((char *)object + 0x18);
+        fn_801CC8EC((char *)object + 0x29C);
+        fn_801CC7A0((char *)object + 0x2C0);
+        *(int *)((char *)object + 0x40) = fn_80145E70(lbl_80337AC8 + 0x19C);
+        *(int *)((char *)object + 0x2A4) = fn_80145E70(lbl_80337AC8 + 0x1AC);
+        *((unsigned char *)object + 0x10) = 0;
+        table = __AXFXGetLfoSinTable_801769CC();
+        *(s32 *)object = table[0];
+        *((s32 *)object + 1) = table[2];
+        *((unsigned char *)object + 0x11) = 1;
+        *((unsigned char *)object + 0x12) = 1;
+        *((unsigned char *)object + 0x13) = 1;
+        *((unsigned char *)object + 0x14) = 1;
+        i = 1;
+        do {
+            int mode = fn_8001BA74(i);
+            item = ((void *(*)(int, void *))fn_801CB954)(mode, object);
+            slot = fn_801CC784((char *)object + 0x18);
+            i++;
+            *slot = item;
+        } while (i <= 7);
+        field = fn_80207848(lbl_80337AC8 + 0x1BC, 1);
+        *(void **)((char *)object + 8) = field;
+        if (field != 0)
+            fn_801CC768(field, lbl_80562A04);
+        *(void **)((char *)object + 0xC) = fn_8023512C(lbl_80337AC8 + 0x1C8);
+        fn_801CC594(object);
+    }
+    lbl_8055E884 = (s32 *)object;
+  }
+#pragma cplusplus reset
+
+  void fn_801CC768(void *arg0, float arg1) {
     if (arg1 != *(float *)((char *)arg0 + 8)) {
         *(float *)((char *)arg0 + 8) = arg1;
         *((char *)arg0 + 0x4D) = 1;
