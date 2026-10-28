@@ -52,8 +52,8 @@ extern f32 lbl_80562618;
 #pragma cplusplus on
 struct Dummy_801B30E0 {
     virtual void d0(); virtual void d1(); virtual void d2();
-    virtual void d3(); virtual void d4(); virtual void d5();
-    virtual void d6(); virtual void *d7(); virtual void *d8();
+    virtual void d3(); virtual void d4(); virtual void *d5();
+    virtual void *d6(); virtual void *d7(); virtual void *d8();
 };
 struct Dummy_801B0DF0 {
     virtual void d0();
@@ -465,12 +465,23 @@ void fn_801B157C(void *arg0,s32 arg1) {
     if(lbl_8055E690)fn_801CB6B4(*(s32*)((u8*)arg0+0x60),arg1,2);
 }
 
-void fn_801B179C(void *arg0, s32 arg1, s32 arg2) {
-    void *obj;
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801B179C(void *arg0, s32 arg1, s32 arg2) {
+    struct Manager {
+        virtual void d0();
+        virtual void d1();
+        virtual void *getFirst(s32);
+        virtual void *getSecond(s32);
+    };
+    struct Target {
+        virtual void d0();
+        virtual void set(void *);
+    };
     void *first;
+    void *obj;
     void *second;
     void *value;
-    void **vtable;
     s32 size = arg1 + 1;
     *(s32*)((u8*)arg0 + 0x60) = arg1;
     *(s32*)((u8*)arg0 + 0x5C) = arg2;
@@ -479,25 +490,22 @@ void fn_801B179C(void *arg0, s32 arg1, s32 arg2) {
     obj = fn_80156A40();
     first = fn_801284F8(0x68, lbl_80335B28);
     if (first != 0) {
-        vtable = *(void***)obj;
-        value = ((void* (*)(void*, s32))vtable[4])(obj, arg1);
+        value = ((Manager *)obj)->getFirst(arg1);
         first = fn_80135DC4(first, 1, value);
     }
     *(void**)((u8*)arg0 + 0x58) = first;
     second = fn_801284F8(0x34, lbl_80335B3C);
     if (second != 0) second = fn_801352B8();
     *(void**)((u8*)arg0 + 0x3C) = second;
-    *(void**)((u8*)second + 0x30) = first;
-    vtable = *(void***)obj;
-    value = ((void* (*)(void*, s32))vtable[5])(obj, arg1);
-    vtable = *(void***)second;
-    ((void (*)(void*, void*))vtable[3])(second, value);
+    *(void**)((u8*)second + 0x30) = *(void**)((u8*)arg0 + 0x58);
+    value = ((Manager *)obj)->getSecond(arg1);
+    ((Target *)*(void**)((u8*)arg0 + 0x3C))->set(value);
     if ((u32)(*(u32*)((u8*)arg2 + 0x10) + 0xAFBD0000U) == 0x4152U) {
         lbl_8055E67C += 1;
     }
 }
-
-#pragma dont_inline on
+#pragma scheduling on
+#pragma cplusplus reset
 extern void fn_80135F64(s32, f32 *, f32 *, s32, s32, void *, f32, f32, f32, f32, f32);
 extern void fn_801353C8(s32, f32 *, f32 *, s32);
 void fn_801B18B8(void *arg0, s32 arg1, s32 arg2) {
