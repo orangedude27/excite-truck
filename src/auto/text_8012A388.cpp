@@ -567,7 +567,7 @@ extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     u8 *entry;
     register u8 *header;
