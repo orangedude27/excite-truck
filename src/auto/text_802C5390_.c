@@ -285,8 +285,6 @@ u16 fn_802C5A50(int arg0, int arg1) {
     return (u16)((arg0 << 8) | arg1);
 }
 
-#pragma push
-#pragma scheduling invalid_target
 void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     struct Entry {
         s32 key0;
@@ -318,7 +316,7 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
 
     if (match == 0) {
         if (freeEntry == 0) {
-            if (count < *(volatile s32 *)((char *)lbl_804C13A8 + 4)) {
+            if (count < lbl_804C13A8[1]) {
                 s32 next = *(volatile s32 *)&lbl_804C13A8[0];
                 void *base = *(void * volatile *)&lbl_804C13A8[2];
                 freeEntry = (struct Entry *)((char *)base + next * 0x10);
@@ -342,7 +340,6 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     match->refs++;
     return match;
 }
-#pragma pop
 
 extern void fn_802CAC54(int);
 extern s8 lbl_8055FC21;
@@ -533,44 +530,63 @@ extern const char lbl_8034B258[];
 extern const char lbl_8034B294[];
 extern int (*fn_802E30C8_varargs)(const char *, ...);
 void fn_802C6080(void) {
+    struct SubList {
+        int count;
+        int capacity;
+        void *buf;
+    };
     int i;
     int offset;
     void *ptr;
     char *base = (char *)lbl_804C1338;
-    int *list = *(int **)(base + 0x64 + 8);
+    struct SubList *e64 = (struct SubList *)(base + 0x64);
+    struct SubList *e7c;
+    struct SubList *e58;
+    struct SubList *e70;
+    struct SubList *e0;
 
     for (i = 0, offset = 0; i < *(int *)(base + 0x64); i++, offset += 0x10) {
-        if (*(int *)((char *)list + offset) > 0) {
-            fn_802E30C8(lbl_8034B258, i);
-            fn_802E30C8(lbl_8034B294, ((int (*)(int))fn_802C7A10)(i));
+        if (*(int *)((char *)e64->buf + offset) > 0) {
+            ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B258, i);
+            ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B294, ((int (*)(int))fn_802C7A10)(i));
         }
     }
 
-    fn_80128670(*(void **)(base + 0x7C + 8));
+    e7c = (struct SubList *)(base + 0x7C);
+    fn_80128670(e7c->buf);
     ptr = *(void **)(base + 0x70 + 8);
-    *(int *)(base + 0x7C + 8) = 0;
-    *(int *)(base + 0x7C + 4) = 0;
+    e7c->buf = 0;
+    e7c->capacity = 0;
     *(int *)(base + 0x7C) = 0;
-    if (ptr != 0) fn_80128670((char *)ptr - 0x10);
+    if (ptr != 0) {
+        fn_80128670((char *)ptr - 0x10);
+    }
 
-    fn_80128670(*(void **)(base + 0x58 + 8));
+    e58 = (struct SubList *)(base + 0x58);
+    e70 = (struct SubList *)(base + 0x70);
     *(int *)(base + 0x70) = 0;
-    *(int *)(base + 0x70 + 8) = 0;
-    *(int *)(base + 0x70 + 4) = 0;
-    *(int *)(base + 0x58 + 8) = 0;
-    *(int *)(base + 0x58 + 4) = 0;
-    *(int *)(base + 0x58) = 0;
+    e70->buf = 0;
+    e70->capacity = 0;
+    fn_80128670(e58->buf);
 
-    fn_80128670(*(void **)(base + 8));
-    *(int *)(base + 8) = 0;
-    *(int *)(base + 4) = 0;
-    *(int *)base = 0;
+    e0 = (struct SubList *)base;
+    e58->buf = 0;
+    e58->capacity = 0;
+    *(int *)(base + 0x58) = 0;
+    fn_80128670(e0->buf);
 
     ptr = *(void **)(base + 0x64 + 8);
-    if (ptr != 0) fn_80128670((char *)ptr - 0x10);
+    e0->buf = 0;
+    e0->capacity = 0;
+    *(int *)base = 0;
+    if (ptr != 0) {
+        fn_80128670((char *)ptr - 0x10);
+    }
+
+    e64 = (struct SubList *)(base + 0x64);
     *(int *)(base + 0x64) = 0;
-    *(int *)(base + 0x64 + 8) = 0;
-    *(int *)(base + 0x64 + 4) = 0;
+    e64->buf = 0;
+    e64->capacity = 0;
 }
 
 void fn_802C6A84(s32 *arg0, s32 arg1) {
@@ -843,43 +859,67 @@ s32 fn_802C7830(char *arg0, s32 arg1, signed char c) {
     return value;
 }
 
+#pragma scheduling invalid_target
 void fn_802C7888(void *src, s32 count) {
     s32 i;
     if (count <= 0) return;
     for (i = 0; i < count; i++) {
-        u8 *source = (u8 *)src;
-        u8 *dest;
+        volatile u8 *source = (volatile u8 *)src;
+        register volatile u8 *dest;
         s32 index;
-        if (*(s32 *)(source + 0x28) != 0) *(s32 *)(source + 0x28) = -1;
+        s32 *key = *(s32 **)((u8 *)src + 0x28);
+        register u8 a, b;
+        u32 word;
+        if (key != 0) *key = -1;
         index = lbl_804C13B4[0];
         if (index < lbl_804C13B4[1]) {
-            dest = (u8 *)lbl_804C13B4[2] + index * 0x2C;
+            dest = (volatile u8 *)(unsigned long)lbl_804C13B4[2] + index * 0x2C;
             lbl_804C13B4[0] = index + 1;
         } else dest = 0;
-        dest[0] = source[0];
-        dest[1] = source[1]; dest[2] = source[2];
-        dest[3] = source[3]; dest[4] = source[4];
-        dest[5] = source[5]; dest[6] = source[6];
-        dest[7] = source[7]; dest[8] = source[8];
-        dest[9] = source[9]; dest[10] = source[10];
-        dest[11] = source[11]; dest[12] = source[12];
-        dest[13] = source[13]; dest[14] = source[14];
-        dest[15] = source[15];
-        *(s32 *)(dest + 0x10) = *(s32 *)(source + 0x10);
-        dest[0x14] = source[0x14]; dest[0x15] = source[0x15];
-        dest[0x16] = source[0x16]; dest[0x17] = source[0x17];
-        dest[0x18] = source[0x18]; dest[0x19] = source[0x19];
-        dest[0x1A] = source[0x1A]; dest[0x1B] = source[0x1B];
-        dest[0x1C] = source[0x1C]; dest[0x1D] = source[0x1D];
-        dest[0x1E] = source[0x1E]; dest[0x1F] = source[0x1F];
-        dest[0x20] = source[0x20]; dest[0x21] = source[0x21];
-        dest[0x22] = source[0x22]; dest[0x23] = source[0x23];
-        *(s32 *)(dest + 0x24) = *(s32 *)(source + 0x24);
-        *(s32 *)(dest + 0x28) = *(s32 *)(source + 0x28);
-        src = source + 0x2C;
+        a = source[0]; b = source[1]; dest[0] = a;
+        a = source[2]; dest[1] = b;
+        b = source[3]; dest[2] = a;
+        a = source[4]; dest[3] = b;
+        b = source[5]; dest[4] = a;
+        a = source[6]; dest[5] = b;
+        b = source[7]; dest[6] = a;
+        a = source[8]; dest[7] = b;
+        b = source[9]; dest[8] = a;
+        a = source[10]; dest[9] = b;
+        b = source[11]; dest[10] = a;
+        a = source[12]; dest[11] = b;
+        b = source[13]; dest[12] = a;
+        a = source[14]; dest[13] = b;
+        b = source[15];
+        dest[14] = a;
+        word = *(volatile u32 *)(source + 0x10);
+        dest[15] = b;
+        b = source[0x14];
+        *(volatile u32 *)(dest + 0x10) = word;
+        a = source[0x15]; dest[0x14] = b;
+        b = source[0x16]; dest[0x15] = a;
+        a = source[0x17]; dest[0x16] = b;
+        b = source[0x18]; dest[0x17] = a;
+        a = source[0x19]; dest[0x18] = b;
+        b = source[0x1A]; dest[0x19] = a;
+        a = source[0x1B]; dest[0x1A] = b;
+        b = source[0x1C]; dest[0x1B] = a;
+        a = source[0x1D]; dest[0x1C] = b;
+        b = source[0x1E]; dest[0x1D] = a;
+        a = source[0x1F]; dest[0x1E] = b;
+        b = source[0x20]; dest[0x1F] = a;
+        a = source[0x21]; dest[0x20] = b;
+        b = source[0x22]; dest[0x21] = a;
+        a = source[0x23]; dest[0x22] = b;
+        word = *(volatile u32 *)(source + 0x24);
+        dest[0x23] = a;
+        *(volatile u32 *)(dest + 0x24) = word;
+        word = *(volatile u32 *)(source + 0x28);
+        *(volatile u32 *)(dest + 0x28) = word;
+        src = (u8 *)src + 0x2C;
     }
 }
-
+#pragma scheduling on
 extern int lbl_804C13B4[];
 extern void fn_802C7A00(void);
 void fn_802C7A00(void) {
