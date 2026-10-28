@@ -400,9 +400,10 @@ int fn_8003B0B0(void *arg0, void *arg1) {
 }
 
 int fn_8003B218(void *arg0) {
-    const char *msg = lbl_80302848;
-    unsigned char *base = lbl_8037B820;
     int slot = lbl_8055D8E8;
+    unsigned char *base = lbl_8037B820;
+    const char *msg = lbl_80302848;
+    int one = 1;
     int offset = slot << 5;
     unsigned int flag;
     unsigned char *p;
@@ -410,7 +411,7 @@ int fn_8003B218(void *arg0) {
     int index;
     int result;
 
-    lbl_8055D8E0 = 1;
+    lbl_8055D8E0 = one;
     p = base + offset;
     flag = p[8];
     if (((flag | -flag) >> 31) == 1U) {
@@ -424,8 +425,8 @@ int fn_8003B218(void *arg0) {
     }
     ((void **)base)[slot * 8] = arg0;
     index = slot + 1;
-    *(unsigned int *)(p + 4) = 1;
-    p[8] = 1;
+    *(unsigned int *)(p + 4) = one;
+    p[8] = one;
     lbl_8055D8E8 = index;
     if (index >= 4) {
         lbl_8055D8E8 = 0;
@@ -685,7 +686,6 @@ typedef struct DVDLowContext {
 
 static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const char *msg) {
     int id;
-    int next;
     unsigned int flag;
 
     flag = ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].inUse;
@@ -700,23 +700,25 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     }
 
     ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].callback = callback;
-    next = lbl_8055D8E8 + 1;
     ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].WORD_0x4 = arg2;
     ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].inUse = 1;
+
     id = lbl_8055D8E8;
-    lbl_8055D8E8 = next;
-    if (next >= 4) {
+    if ((int)++lbl_8055D8E8 >= 4) {
         lbl_8055D8E8 = 0;
     }
 
     return &((DVDLowContext *)lbl_8037B820)[id];
 }
 
+#pragma scheduling invalid_target
 int fn_8003BCDC(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
     DVDLowContext *ctx;
     int result;
+    int fd;
+    void (*cb)(int, void *);
 
     lbl_8055D8E4 = index;
     if (index >= 4) {
@@ -728,7 +730,9 @@ int fn_8003BCDC(void *arg0) {
 
     ctx = newContext(arg0, 1, msg);
 
-    result = IOS_IoctlAsync(lbl_80558E18, 0x86, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, ctx);
+    cb = (void (*)(int, void *))doTransactionCallback;
+    fd = lbl_80558E18;
+    result = IOS_IoctlAsync(fd, 0x86, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, 0, 0, cb, ctx);
     if (result != 0) {
         OSReport(msg + 0xB74, result);
         ctx->inUse = 0;
@@ -736,6 +740,6 @@ int fn_8003BCDC(void *arg0) {
     }
     return 1;
 }
-
+#pragma scheduling reset
 int fn_8003BE40(void) { return 0; }
 
