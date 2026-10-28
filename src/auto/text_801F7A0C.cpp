@@ -772,6 +772,11 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
         virtual void c();
         virtual void *find(const char *);
     };
+    struct Dispatch {
+        u8 padding[0x108];
+        virtual void a();
+        virtual void run(void *, void *);
+    };
     extern void fn_802E30C8(const char *, ...);
     extern s32 fn_80204CF0(void);
     extern int strcmp(const char *, const char *);
@@ -783,21 +788,24 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
 
     *(s32 *)(result + 0x34) = 0;
     *(s32 *)(result + 0x30) = 0;
-    ((void (*)(void *, void *, void *))(*(volatile void ***)((u8 *)current + 0x108))[3])(
-        current, result, object);
+    ((Dispatch *)current)->run(result, object);
 
-    if (*(u8 *)((u8 *)current + 0x2C) != 0 && (flags & 4) == 0) {
-        fn_802E317C(base + 0x2A0, current);
-        if (*(s32 *)(result + 0x38) != fn_80204CF0()) {
-            fn_802E30C8(base + 0x2E0, name);
-            goto call_tail;
-        }
-    }
-    if (lbl_8055EC42 != 0 &&
-        strcmp(name, (const char *)lbl_8055B37C) == 0) {
-        fn_802E30C8(base + 0x318, name);
+    if (*(u8 *)((u8 *)current + 0x2C) == 0 || (flags & 4) != 0)
+        goto check_name;
+    fn_802E317C(base + 0x2A0, current);
+    if (*(s32 *)(result + 0x38) == fn_80204CF0())
+        goto check_name;
+    fn_802E30C8(base + 0x2E0, name);
+    goto call_tail;
+
+check_name:
+    if (lbl_8055EC42 == 0)
         goto call_tail;
-    }
+    if (strcmp(name, (const char *)lbl_8055B37C) != 0)
+        goto call_tail;
+    fn_802E30C8(base + 0x318, name);
+    goto call_tail;
+
 call_tail:
     return ((void *(*)(void *, void *, u32))fn_801F973C)(
         current, result, (u32)flags);
@@ -1384,10 +1392,10 @@ extern "C" s32 fn_801FB244(s32 arg0, s32 arg1) {
 }
 
 extern "C" f32 fn_801EA0E8(f32, f32, f32, f32, f32, f32);
-extern "C" void fn_801F7D10(void);
+extern "C" void fn_801F7D10(void *, void *, void *);
 extern "C" void fn_801FB284(void *arg0, void *arg1) {
     f32 temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f3_2, temp_f4, temp_f5, temp_f6, temp_f6_2;
-    fn_801F7D10();
+    ((void (*)(void))fn_801F7D10)();
     if (*(u32 *)((u8 *)arg0 + 0x190) & 0x100) {
         temp_f3 = -*(f32 *)((u8 *)arg0 + 0x28);
         temp_f5 = *(f32 *)((u8 *)arg1 + 0x24);
