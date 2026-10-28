@@ -304,7 +304,7 @@ after5:
 
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void *fn_8016BE60(void *arg0) {
     u8 *object = (u8 *)fn_801284F8(0x1B4, lbl_803306D0 + 0x20);
     char *strings = lbl_803306D0;
