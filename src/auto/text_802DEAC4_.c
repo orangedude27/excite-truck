@@ -558,6 +558,7 @@ void *fn_802E0C04(u32 size) {
     }
     return result;
 }
+#pragma pop
 
 void fn_802E0D44(u32 size) {
     u8 *head = (u8 *)lbl_8055FEE8;
