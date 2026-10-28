@@ -1,6 +1,15 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void *fn_801284F8(int, const char *);
+extern void fn_801345D8(char *, int, const char *, ...);
+extern void fn_802B2C7C(void *);
+extern void fn_802B2384(void *, void **);
+extern void *fn_802B23A8(void *, void *, void *);
+extern int fn_802B2C44(void *);
+extern char lbl_8034A2C4[];
+extern char lbl_8034A2D8[];
+extern const char lbl_8055CDC8[];
+extern const char lbl_8055CDD0[];
 
 #pragma dont_inline on
 int fn_802B2E00(void *);
@@ -72,6 +81,56 @@ extern "C" int fn_802B1DE8(void *arg0) {
     };
     return stricmp((char *)&lbl_8055CDB8, ((Obj *)arg0)->getName()) == 0;
 }
+
+extern "C" void fn_802B1E28(void) {
+    typedef struct Pool {
+        void *data;
+        void *nodes;
+        int used;
+        int capacity;
+        void *storage;
+    } Pool;
+    Pool *pool;
+    void *nodeStorage;
+    void *nodes;
+    void *data;
+    void *entry;
+    int i;
+    int offset;
+    int index;
+    fn_802B8AE0(lbl_8034A288 + 0xC, &lbl_8055F9B4);
+    fn_802B8AE0(lbl_8034A288 + 0x18, &lbl_8055F9B0);
+    pool = (Pool *)fn_801284F8(0x14, lbl_8034A288 + 0x28);
+    if (pool != 0) {
+        nodeStorage = fn_8012850C(0x610, lbl_8055CDC0);
+        nodes = fn_8002F37C(nodeStorage, fn_802B1FC0, 0x10, 0x60);
+        pool->nodes = nodes;
+        pool->capacity = 0x60;
+        pool->used = 0;
+        pool->storage = nodeStorage;
+        index = 0x60 << 6;
+        nodeStorage = fn_8012850C(index * 0x14 + 0x10, lbl_8034A3F8);
+        data = fn_8002F37C(nodeStorage, fn_802B1F64, 0x14, index);
+        pool->data = data;
+        i = 0;
+        offset = 0;
+        do {
+            index = pool->used;
+            i++;
+            data = pool->data;
+            nodes = pool->nodes;
+            pool->used = index + 1;
+            entry = (char *)nodes + index * 0x10;
+            *(void **)entry = (char *)data + offset;
+            offset += 0x500;
+            *(int *)((char *)entry + 8) = 0x40;
+            *(int *)((char *)entry + 4) = 0;
+        } while (i < pool->capacity);
+        pool->used = 0;
+    }
+    lbl_8055F9BC = pool;
+}
+
 #pragma cplusplus reset
 #pragma pop
 void fn_802B1F64(void) {
@@ -101,9 +160,8 @@ void fn_802B1FC0(void *arg0) {
 #pragma dont_inline on
 #pragma opt_common_subs off
 void fn_802B1FD4(void) {
-    int i;
     void *table;
-    int zero;
+    int i;
     void *r27;
     int j;
     void *r25;
@@ -117,7 +175,6 @@ void fn_802B1FD4(void) {
     table = &lbl_804BE1FC;
     i = 0;
     off_i = 0;
-    zero = 0;
     for (; i < *(int *)((char *)table + 4); off_i += 4, i++) {
         r27 = *(void **)(*(char **)&lbl_804BE1FC + off_i);
         if (r27 != 0) {
@@ -131,23 +188,23 @@ void fn_802B1FD4(void) {
                             fn_80128668(r23);
                         }
                     }
-                    *(int *)((char *)r25 + 0x40c) = zero;
+                    *(int *)((char *)r25 + 0x40c) = 0;
                     if ((char *)r25 + 0x408 != 0) {
                         if ((char *)r25 + 0x408 != 0) {
-                            *(int *)((char *)r25 + 0x408) = zero;
-                            *(int *)((char *)r25 + 0x40c) = zero;
-                            *(int *)((char *)r25 + 0x410) = zero;
+                            *(int *)((char *)r25 + 0x408) = 0;
+                            *(int *)((char *)r25 + 0x40c) = 0;
+                            *(int *)((char *)r25 + 0x410) = 0;
                         }
                     }
                     fn_80128668(r25);
                 }
             }
-            *(int *)((char *)r27 + 4) = zero;
+            *(int *)((char *)r27 + 4) = 0;
             if (r27 != 0) {
                 if (r27 != 0) {
-                    *(int *)r27 = zero;
-                    *((int *)r27 + 1) = zero;
-                    *((int *)r27 + 2) = zero;
+                    *(int *)r27 = 0;
+                    *((int *)r27 + 1) = 0;
+                    *((int *)r27 + 2) = 0;
                 }
             }
             fn_80128668(r27);
