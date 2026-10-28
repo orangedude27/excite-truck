@@ -275,14 +275,12 @@ extern "C" void fn_802A1B20(void* arg0, s32 count) {
         virtual void invoke(void*, s32);
     };
     f32 value;
-    void** table;
     void* obj;
     s32 off;
     s32 i;
     s32 j;
     value = __fabs(fn_801E7E24());
     if (!(value <= lbl_80558DC4)) {
-        table = (void**)&lbl_804BCF88;
         i = 0;
         while (i < count) {
             if (*(u8*)((char*)arg0 + 0xC) != 0) {
@@ -292,9 +290,10 @@ extern "C" void fn_802A1B20(void* arg0, s32 count) {
                     obj = (char*)*(void**)arg0 + off;
                     if (*(u8*)((char*)obj + 0xA0) != 0) {
                         s32 item = *(s32*)((char*)obj + 0xA8);
-                        if (item >= 0 && item < 8 && table[item] != 0 &&
+                        if (item >= 0 && item < 8 &&
+                            ((void**)&lbl_804BCF88)[item] != 0 &&
                             (fn_802BF4F0() == 0 || *(f32*)((char*)obj + 0x80) > fn_802BF590())) {
-                            ((Dummy*)table[*(s32*)((char*)obj + 0xA8)])->invoke(arg0, j);
+                            ((Dummy*)((void**)&lbl_804BCF88)[*(s32*)((char*)obj + 0xA8)])->invoke(arg0, j);
                         }
                     }
                     j++;
