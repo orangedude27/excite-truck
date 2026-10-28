@@ -134,48 +134,61 @@ float fn_801659D0(int arg0) {
 extern int strcmp(const char *, const char *);
 extern float lbl_80561898;
 extern float lbl_805618A0;
-extern char lbl_8055A150[];
-extern char lbl_8055A158[];
+__declspec(section ".sdata") extern char lbl_8055A150[];
+__declspec(section ".sdata") extern char lbl_8055A158[];
 #pragma push
 #pragma small_data on
 __declspec(section ".sdata") extern char lbl_8055A160[];
 __declspec(section ".sdata") extern char lbl_8055A168[];
-#pragma pop
-void fn_80165A30(void *arg0, int arg1) {
-    int i;
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_80165A30(void *arg0, int arg1) {
+    struct List {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+        virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+        virtual void d20(); virtual void d21();
+        virtual void *getAt(int);
+    };
+    struct Entry {
+        virtual const char *getName();
+        virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6();
+        virtual float getValue(const char *);
+    };
     int count;
     int j = 0;
-    void *item;
-    void **vtable;
-    float x, y, z;
     void *entry;
+    float x, y, z;
+    List *list = (List *)arg0;
+    Entry *item;
     *(int *)((char *)&lbl_8042FEB0 + 4) = 0;
-    for (;;) {
-        vtable = *(void ***)arg0;
-        item = ((void *(*)(void *, int))vtable[24])(arg0, j);
-        if (item == 0) break;
-        vtable = *(void ***)item;
-        if (strcmp(((char *(*)(void *))vtable[2])(item), lbl_8055A150) == 0) {
-            count = *(int *)((char *)&lbl_8042FEB0 + 4);
-            *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
-            entry = *(void **)&lbl_8042FEB0;
-            entry = (char *)entry + count * 0x14;
-            vtable = *(void ***)item;
-            x = ((float (*)(void *, const char *))vtable[9])(item, lbl_8055A158);
-            vtable = *(void ***)item;
-            y = ((float (*)(void *, const char *))vtable[9])(item, lbl_8055A160);
-            vtable = *(void ***)item;
-            *(float *)entry = ((float (*)(void *, const char *))vtable[9])(item, lbl_8055A168);
-            z = x * lbl_80561898;
-            *(float *)((char *)entry + 4) = y;
-            *(float *)((char *)entry + 8) = z;
-            *(int *)((char *)entry + 0x10) = -1;
-            *(float *)((char *)entry + 0xC) = lbl_8055E318 - fn_80129DC4(3, lbl_8056189C, lbl_805618A0 * z, 0.0f);
-        }
-        j++;
+    goto next_item;
+body:
+    if (strcmp(item->getName(), lbl_8055A150) == 0) {
+        count = *(int *)((char *)&lbl_8042FEB0 + 4);
+        *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
+        entry = *(void **)&lbl_8042FEB0;
+        entry = (char *)entry + count * 0x14;
+        x = item->getValue(lbl_8055A158);
+        y = item->getValue(lbl_8055A160);
+        *(float *)entry = item->getValue(lbl_8055A168);
+        z = x * lbl_80561898;
+        *(float *)((char *)entry + 4) = y;
+        *(float *)((char *)entry + 8) = z;
+        *(int *)((char *)entry + 0x10) = -1;
+        *(float *)((char *)entry + 0xC) =
+            lbl_8055E318 - fn_80129DC4(3, lbl_8056189C, lbl_805618A0 * z, 0.0f);
     }
+next_item:
+    ++j;
+    item = (Entry *)list->getAt(j);
+    if (item != 0) goto body;
 }
-
+#pragma cplusplus reset
+#pragma pop
 extern double atof(const char *);
 extern char *strchr(const char *, int);
 extern float fn_80204CFC(const char *);
@@ -776,20 +789,33 @@ extern float lbl_805618A0, lbl_805618F4, lbl_805618F8, lbl_805618FC;
 #pragma optimization_level 2
 #pragma scheduling on
 float fn_80166F90(float *arg0) {
- float x, value, start, end;
- x = (float)fn_8002EFB4(lbl_8055E318 - arg0[3], lbl_805618A0 * arg0[2], lbl_805618A0);
- if (x > arg0[2]) x = lbl_805618A0 * arg0[2] - x;
- x /= arg0[2];
- value = lbl_805618F4;
- if (x < value) {} else {
- value = lbl_805618D0;
- if (x > value) {} else if (x > lbl_8056189C)
- value = x * (x * (lbl_805618F8 * x)) + x * (lbl_805618FC * x);
- else value = x * (x * (lbl_805618F8 * x)) - x * (lbl_805618FC * x);
- }
- end = arg0[1];
- start = arg0[0];
- return start + value * (end - start);
+    register float f3 = lbl_805618A0;
+    register float f2 = arg0[2];
+    register float f0 = arg0[3];
+    register float f1 = lbl_8055E318;
+    float x;
+    float value;
+    float start;
+    float end;
+    x = (float)fn_8002EFB4(f1 - f0, f3 * f2, f3);
+    if (x > arg0[2]) {
+        x = lbl_805618A0 * arg0[2] - x;
+    }
+    x /= arg0[2];
+    if (x < lbl_805618F4) {
+        value = lbl_805618F4;
+    } else {
+        if (x > lbl_805618D0) {
+            value = lbl_805618D0;
+        } else if (x > lbl_8056189C) {
+            value = x * (x * (lbl_805618F8 * x)) + x * (lbl_805618FC * x);
+        } else {
+            value = x * (x * (lbl_805618F8 * x)) - x * (lbl_805618FC * x);
+        }
+    }
+    end = arg0[1];
+    start = arg0[0];
+    return start + value * (end - start);
 }
 
 #pragma push
