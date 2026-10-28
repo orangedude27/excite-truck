@@ -100,14 +100,15 @@ extern char *fn_8012F2F0(void *, int, int);
 extern char lbl_8055B9E0[5];
 extern unsigned char lbl_803406B0[];
 extern void fn_80265940(void);
-void fn_80234EF4(void *arg0, const char *arg1, int arg2) {
-    void *source, *last = 0, *item;
-    int count, i;
+#pragma scheduling invalid_target
+void fn_80234EF4(void *arg0, const char *arg1) {
     if (fn_8012C33C(arg1)) {
-        source = fn_8012F150(arg1);
-        count = fn_8012F2E8();
+        void *source = fn_8012F150(arg1);
+        int count = fn_8012F2E8();
+        void *last = 0;
+        int i;
         for (i = 0; i < count; i++) {
-            item = fn_801284F8(0x1c, (const char *)lbl_8055B9E0);
+            void *item = fn_801284F8(0x1c, lbl_8055B9E0);
             *(float *)item = (float)atof(fn_8012F2F0(source, i, 0));
             *(float *)((char *)item + 4) = (float)atof(fn_8012F2F0(source, i, 1));
             *(float *)((char *)item + 8) = (float)atof(fn_8012F2F0(source, i, 2));
@@ -124,8 +125,7 @@ void fn_80234EF4(void *arg0, const char *arg1, int arg2) {
         fn_802E317C((const char *)lbl_803406B0, arg1);
     }
 }
-
-#pragma dont_inline on
+#pragma scheduling on
 void *fn_8023505C(void *arg0, int arg1) {
     void *node;
     int i;
