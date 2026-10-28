@@ -97,7 +97,7 @@ extern void *fn_8012F150(const char *);
 extern int fn_8012F2E4(void *);
 extern int fn_8012F2E8(void);
 extern char *fn_8012F2F0(void *, int, int);
-extern unsigned char lbl_8055B9E0[];
+extern char lbl_8055B9E0[5];
 extern unsigned char lbl_803406B0[];
 extern void fn_80265940(void);
 void fn_80234EF4(void *arg0, const char *arg1, int arg2) {
@@ -320,12 +320,13 @@ extern const char lbl_80340834[];
 extern float lbl_805636B8;
 extern int fn_8012C33C(const char *);
 extern int fn_802CAC28(const char *, int);
+#pragma scheduling invalid_target
 void fn_80236134(void *arg0, int arg1, const char *arg2) {
-    int id;
-    int count;
-    char *entry;
+    unsigned char ch;
     char *dst;
-    char ch;
+    char *entry;
+    register int count;
+    int id;
 
     if (fn_8012C33C(arg2) != 0) {
         id = fn_802CAC28(arg2, 0);
@@ -345,13 +346,14 @@ void fn_80236134(void *arg0, int arg1, const char *arg2) {
         ch = *arg2++;
         *dst = ch;
         dst++;
-        if (ch != 0)
+        if ((signed char)ch != 0)
             goto count_check;
     finish:
         *(int *)(entry + 0x28) = arg1;
         *(int *)(entry + 0x24) = id;
     }
 }
+#pragma scheduling on
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
 extern const char lbl_80340834[];
