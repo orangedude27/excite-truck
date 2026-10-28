@@ -16,6 +16,9 @@ typedef s32 (*UnkFunc)(s32);
 extern s32 lbl_8055FA38;
 extern float lbl_8055FA18;
 extern s32 lbl_8055FA2C;
+extern u8 lbl_8055FA58;
+extern s32 fn_80204054(void *, s32, s32, void *, s32, s32);
+extern void *fn_802C86DC(void);
 __declspec(section ".data") extern s32 lbl_804BE7D8;
 extern void **lbl_8055FA48;
 extern char lbl_8034A598[];
@@ -861,23 +864,51 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
 }
 #pragma pop
 s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
+    extern float lbl_80564C74;
     extern float lbl_80564C78;
     extern float lbl_80564C88;
     extern void fn_801E41D8(void *, void *, s32, f32);
-    f32 sp[6];
-    f32 x1 = lbl_80564C88 + (f32)x * lbl_80564C58;
-    f32 y1 = lbl_80564C88 + (f32)y * lbl_80564C58;
-    f32 height = lbl_80564C78 + fn_801DCF48(sp, x1, y1);
-    sp[0] = x1;
-    sp[1] = height;
-    sp[2] = y1;
-    sp[3] = height;
-    sp[4] = height + farg0;
+    union ScaleConvert {
+        double d;
+        u32 word[2];
+    } scaleConvert;
+    f32 points[6];
+    f32 x1;
+    f32 y1;
+    f32 height;
+    f32 scale;
+    u32 magic;
+    s16 scaleValue;
+    s32 color;
+    s32 alpha;
+
+    magic = 0x43300000;
+    points[4] = lbl_80564C74;
+    x1 = lbl_80564C88 + (f32)x * lbl_80564C58;
+    points[3] = x1;
+    y1 = lbl_80564C88 + (f32)y * lbl_80564C58;
+    points[5] = y1;
+    height = lbl_80564C78 + fn_801DCF48(0, x1, y1);
+
+    *(u32 *)&points[0] = *(u32 *)&points[3];
+    points[4] = height;
+    *(u32 *)&points[2] = *(u32 *)&points[5];
+    *(u32 *)&points[1] = *(u32 *)&points[4];
+    points[4] = height + farg0;
+
+    scaleValue = (s16)fn_802B6E30();
+    scaleConvert.word[0] = magic;
+    scaleConvert.word[1] = (u32)scaleValue ^ 0x80000000;
+    scale = lbl_80564C88 * (f32)(scaleConvert.d - lbl_80564C68);
+
+    color = arg2;
+    alpha = arg3;
     if (arg2 == 0) {
-        arg3 = 0xFF000000;
-        arg2 = 0x20;
+        alpha = 0xFF000000;
+        color = 0x20;
     }
-    fn_801E41D8(&sp[0], &sp[3], (arg2 << 24) | (arg3 & 0xFFFFFF), lbl_80564C88 * (f32)fn_802B6E30());
+    fn_801E41D8(&points[3], &points[0],
+                 (color << 24) | (alpha & 0xFFFFFF), scale);
     return 0;
 }
 
@@ -1032,6 +1063,57 @@ void fn_802B7D1C(void) {
     fn_802B7B08();
 }
 
+#pragma scheduling invalid_target
+s32 fn_802B8110(u32 arg0, s32 arg1) {
+    struct Work {
+        s32 *items;
+        s32 count;
+        s32 capacity;
+        s32 entries[51];
+    } work;
+    s32 *temp_r6;
+    s32 temp_r29;
+    s32 temp_r3_2;
+    s32 temp_r3_3;
+    s32 temp_r4;
+    s32 temp_r5;
+    s32 var_r0;
+    s32 var_r0_2;
+    s32 var_r30;
+    void *temp_r3;
+
+    /* Match note: reserve the stack entry table and cast the void helper to its pointer-returning convention. */
+    var_r30 = 0;
+    temp_r29 = fn_802B5D94(arg1);
+    temp_r3 = ((void *(*)(void))fn_802B5B6C)();
+    work.items = work.entries;
+    work.capacity = 0x10;
+    work.count = 0;
+    ((void (*)(void *, s32, s32, s32))fn_802B321C)(
+        &work.items, 0, *(s32 *)((u8 *)temp_r3 + 8), lbl_8055FA40);
+    temp_r6 = *(s32 **)((u8 *)work.items + temp_r29 * 0xC + 4);
+    temp_r4 = *temp_r6;
+    var_r0 = 0x80;
+    temp_r5 = temp_r4 + (((s32)((arg0 >> 31) + arg0)) >> 1);
+    temp_r3_2 = temp_r5 & (s32)((-temp_r5 & ~temp_r5) >> 31);
+    if (temp_r3_2 < 0x80)
+        var_r0 = temp_r3_2;
+    if (temp_r4 != var_r0) {
+        temp_r3_3 = temp_r5 & (s32)((~(temp_r5 - 1) & ~temp_r5) >> 31);
+        var_r0_2 = 0x80;
+        if (temp_r3_3 < 0x80)
+            var_r0_2 = temp_r3_3;
+        *temp_r6 = var_r0_2;
+        fn_802B32E0(*(s32 *)((u8 *)temp_r3 + 8));
+        fn_802B4E44(*(s32 *)((u8 *)temp_r3 + 8));
+        var_r30 = 1;
+    }
+    work.items = 0;
+    work.count = 0;
+    work.capacity = 0;
+    return var_r30;
+}
+#pragma scheduling on
 f32 fn_802B822C(s32 arg0) {
     return lbl_80564C98 * (f32)arg0;
 }
@@ -1096,6 +1178,10 @@ s32 fn_802B8310(s32 arg0) {
 
 void fn_802B83CC(void) {
     Struct804BFF80 *state = (Struct804BFF80 *)&lbl_804BFF80;
+    Struct804BFF80 *callbackState;
+    char *callbackName;
+    Fn802B83CCEntry *entry;
+    Fn802B83CCEntry *actionEntry;
     s32 difference;
     u32 i;
 
@@ -1106,19 +1192,23 @@ void fn_802B83CC(void) {
         return;
 
     for (i = 0; i < 3; i++) {
-        Fn802B83CCEntry *entry = &lbl_8034A95C[i];
-        if (entry->name != 0 && strcmp(entry->name, state->str1) == 0)
-            return;
-        if (entry->predicate != 0 && entry->predicate(state->str1) != 0) {
-            if (entry->action(difference, state->str1) != 0) {
-                state->unk54[0] = state->unk0[0];
-                state->unk54[1] = state->unk0[1];
-                state->unk54[2] = state->unk0[2];
-                state->unk54[3] = state->unk0[3];
-                state->unk54[4] = state->unk0[4];
-            }
-            return;
+        entry = &lbl_8034A95C[i];
+        if (entry->name == 0 || strcmp(entry->name, state->str1) != 0) {
+            if (entry->predicate == 0 || entry->predicate(state->str1) == 0)
+                continue;
         }
+
+        actionEntry = (Fn802B83CCEntry *)(volatile void *)&lbl_8034A95C[i];
+        callbackState = (Struct804BFF80 *)&lbl_804BFF80;
+        callbackName = callbackState->str1;
+        if (actionEntry->action(difference, callbackName) != 0) {
+            callbackState->unk54[0] = *(u32 *)&lbl_804BFF80;
+            callbackState->unk54[1] = callbackState->unk0[1];
+            callbackState->unk54[2] = callbackState->unk0[2];
+            callbackState->unk54[3] = callbackState->unk0[3];
+            callbackState->unk54[4] = callbackState->unk0[4];
+        }
+        return;
     }
 }
 
@@ -1129,7 +1219,54 @@ void fn_802B84E4(void *arg0) {
 }
 
 #pragma push
-#pragma small_data off
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+s32 fn_802B8510(s32 arg0) {
+    struct Entry {
+        u8 unk[0x20];
+        u32 first;
+        u32 second;
+        u8 pixels[0x100];
+    } copy;
+    struct Entry *entry;
+    s32 index;
+    s32 width;
+    s32 height;
+    u32 row;
+    u32 col;
+    u8 *pixelData;
+
+    if ((u32)(arg0 - 6) > 1U) return;
+    index = lbl_8055FA2C;
+    if (index < 0) return;
+    if (index >= *(s32 *)((u8 *)&lbl_804BE7D8 + 4)) return;
+    entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8) + index;
+    copy = *entry;
+
+    width = copy.second;
+    pixelData = copy.pixels;
+    row = 0;
+    entry->first = width;
+    height = copy.first;
+    entry->second = height;
+
+    while (row < entry->first) {
+        col = 0;
+        while (col < entry->second) {
+            if (arg0 == 6) {
+                entry->pixels[row + col * entry->first] =
+                    height * (row + 1) - 1 - col;
+            } else {
+                entry->pixels[row + col * entry->first] =
+                    (width - row - 1) * height + col;
+            }
+            col++;
+        }
+        row++;
+    }
+}
+#pragma pop
 void fn_802B8624(void *arg0) {
     #pragma small_data off
     s32 *p = (s32 *)&lbl_804BFF80;
@@ -1268,45 +1405,61 @@ void fn_802B8848(void) {
 }
 
 extern char lbl_8055FA59;
-s32 fn_802B8998(s32 arg0) {
-    if (lbl_8055FA48 == 0) return 0;
-    switch (arg0) {
-    case 0x125:
-    case 0x127:
-        if (lbl_8055FA38 == 0) fn_802B5C24(arg0 == 0x125 ? -1 : 1);
-        *(s32 *)&lbl_804BFF80 = 8;
-        *(s32 *)&lbl_8055FA44 = -1;
-        *(unsigned char *)((char *)&lbl_804BFF80 + 0x34) = 0;
-        *(unsigned char *)((char *)&lbl_804BFF80 + 0x14) = 0;
-        break;
-    case 0x5: {
-        void *obj = lbl_8055FA48;
-        ((void (*)(void *))(*(void ***)obj)[8])(obj);
-        break;
-    }
-    case 0x65:
-        fn_802B8510(6);
-        break;
-    case 0x6d:
-        break;
-    case 0x6e:
-        lbl_8055FA59 = lbl_8055FA59 == 0;
-        break;
-    case 0x73: {
-        void *obj = lbl_8055FA48;
-        ((void (*)(void *))(*(void ***)obj)[10])(obj);
-        break;
-    }
-    case 0x77:
-        lbl_8055FA32 = lbl_8055FA32 == 0;
-        break;
-    default:
-        return 0;
-    }
-    return 1;
-}
-
+#pragma push
 #pragma small_data off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" s32 fn_802B8998(s32 arg0) {
+    struct Handler {
+        virtual void method0();
+        virtual void method1();
+        virtual void method2();
+        virtual void method3();
+        virtual void method4();
+        virtual void method5();
+        virtual void method6();
+        virtual void method7();
+        virtual void method8();
+    };
+
+    /* Match note: retain target virtual dispatch, unsigned zero tests, and explicit state writes. */
+    if (lbl_8055FA48 != 0) {
+        switch (arg0) {
+        case 0x125:
+        case 0x127:
+            if (lbl_8055FA38 == 0)
+                fn_802B5C24((u32)arg0 == 0x125U ? -1 : 1);
+            *(s32 *)&lbl_804BFF80 = 8;
+            *(s32 *)&lbl_8055FA44 = -1;
+            *(u8 *)((u8 *)&lbl_804BFF80 + 0x34) = 0;
+            *(u8 *)((u8 *)&lbl_804BFF80 + 0x14) = 0;
+            break;
+        case 0x5:
+            ((Handler *)(void *)lbl_8055FA48)->method6();
+            break;
+        case 0x65:
+            fn_802B8510(6);
+            break;
+        case 0x6d:
+            break;
+        case 0x73:
+            ((Handler *)(void *)lbl_8055FA48)->method8();
+            break;
+        case 0x6e:
+            lbl_8055FA59 = ((u8)lbl_8055FA59 == 0);
+            break;
+        case 0x77:
+            lbl_8055FA32 = ((u8)lbl_8055FA32 == 0);
+            break;
+        default:
+            return 0;
+        }
+        return 1;
+    }
+    return 0;
+}
+#pragma cplusplus reset
+#pragma pop
 void fn_802B8AE0(const char *arg0, s32 arg1) {
     struct Local { char name[32]; volatile s32 savedArg; volatile s32 zero; } local;
     s32 i, count;
