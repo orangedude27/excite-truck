@@ -457,27 +457,43 @@ check:
     }
 }
 #pragma cplusplus reset
+typedef struct Result_802A0098 {
+    int count;
+    float data[10];
+} Result_802A0098;
 extern "C" float PSVECMag(const void *);
 extern float lbl_805646BC;
-extern "C" void fn_802A0098(void *out, void *arg0, void *arg1) {
-    float span = *(float *)((char *)arg0 + 4) * PSVECMag((char *)arg1 + 0xC);
+extern "C" void fn_802A0098(void *out_ptr, void *arg0, Unk802A0794Params *arg1) {
+    float span = *(float *)((char *)arg0 + 4) * PSVECMag(&arg1->values[3]);
     float limit = lbl_805646BC;
-    float width = limit;
-    if (span > limit) width = span;
-    *(int *)out = (int)(*(float *)((char *)arg0 + 8) + *(float *)((char *)arg0 + 0xC) * width);
-    *(float *)((char *)out + 4) = *(float *)arg1 + *(float *)((char *)arg0 + 0x30);
-    *(float *)((char *)out + 8) = *(float *)((char *)arg1 + 4) + *(float *)((char *)arg0 + 0x34);
-    *(float *)((char *)out + 0xC) = *(float *)((char *)arg1 + 8) + *(float *)((char *)arg0 + 0x38);
-    {
-        float scale = *(float *)((char *)arg0 + 0x3C);
-        *(float *)((char *)out + 0x10) = *(float *)((char *)arg1 + 0xC) * scale;
-        *(float *)((char *)out + 0x14) = *(float *)((char *)arg1 + 0x10) * *(float *)((char *)arg0 + 0x40);
-        *(float *)((char *)out + 0x18) = *(float *)((char *)arg1 + 0x14) * scale;
-    }
-    *(float *)((char *)out + 0x1C) = *(float *)((char *)arg0 + 0x10) + *(float *)((char *)arg0 + 0x18) * width;
-    *(float *)((char *)out + 0x20) = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x1C) * width;
-    *(float *)((char *)out + 0x24) = *(float *)((char *)arg0 + 0x20) + *(float *)((char *)arg0 + 0x28) * width;
-    *(float *)((char *)out + 0x28) = *(float *)((char *)arg0 + 0x24) + *(float *)((char *)arg0 + 0x2C) * width;
+    float width = (span > limit) ? span : limit;
+
+    int count = (int)(*(float *)((char *)arg0 + 8) + *(float *)((char *)arg0 + 0xC) * width);
+    float d6 = *(float *)((char *)arg0 + 0x10) + *(float *)((char *)arg0 + 0x18) * width;
+    float d7 = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x1C) * width;
+    float d8 = *(float *)((char *)arg0 + 0x20) + *(float *)((char *)arg0 + 0x28) * width;
+    float d9 = *(float *)((char *)arg0 + 0x24) + *(float *)((char *)arg0 + 0x2C) * width;
+
+    float d0 = arg1->values[0] + *(float *)((char *)arg0 + 0x30);
+    float d1 = arg1->values[1] + *(float *)((char *)arg0 + 0x34);
+    float d2 = arg1->values[2] + *(float *)((char *)arg0 + 0x38);
+
+    float scale = *(float *)((char *)arg0 + 0x3C);
+    float d5 = arg1->values[5] * scale;
+    float d3 = arg1->values[3] * scale;
+    float d4 = arg1->values[4] * *(float *)((char *)arg0 + 0x40);
+
+    *(int *)out_ptr = count;
+    *(float *)((char *)out_ptr + 4) = d0;
+    *(float *)((char *)out_ptr + 8) = d1;
+    *(float *)((char *)out_ptr + 0xC) = d2;
+    *(float *)((char *)out_ptr + 0x10) = d3;
+    *(float *)((char *)out_ptr + 0x14) = d4;
+    *(float *)((char *)out_ptr + 0x18) = d5;
+    *(float *)((char *)out_ptr + 0x1C) = d6;
+    *(float *)((char *)out_ptr + 0x20) = d7;
+    *(float *)((char *)out_ptr + 0x24) = d8;
+    *(float *)((char *)out_ptr + 0x28) = d9;
 }
 
 extern "C" float fn_80287BC8(float, float);
