@@ -289,46 +289,45 @@ s32 fn_802D62E4(void *arg0) {
     return (s32)arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
-    extern u8 lbl_804CA438[];
     extern s32 lbl_8055FDF0;
     extern s32 lbl_8055FDF4;
     extern s32 lbl_8055FDF8;
     extern void GXBeginDisplayList(void *, u32);
     extern u32 GXEndDisplayList(void);
     extern void fn_802D5DE8(u32);
-    u8 *entry = lbl_804CA438;
-    u8 key = *(u8 *)((u8 *)arg0 + 9);
-    u32 id = *(u32 *)((u8 *)arg0 + 0xC);
-    s32 count = lbl_8055FDF0;
+    register CacheEntry *scan = (CacheEntry *)lbl_804CA438;
+    register u32 key = *(u8 *)((u8 *)arg0 + 9);
+    register u32 id = *(volatile u32 *)((u8 *)arg0 + 0xC);
+    s32 count = *(volatile s32 *)&lbl_8055FDF0;
     s32 i;
+    CacheEntry *write;
     s32 size;
 
-    if (count > 0) {
-        for (i = 0; i < count; i++, entry += 0x10) {
-            if (*(u32 *)entry == id && entry[4] == key) {
-                *arg1 = *(s32 *)(entry + 8);
-                *arg2 = *(s32 *)(entry + 0xC);
-                return;
-            }
+    for (i = 0; i < count; i++, scan++) {
+        if (scan->id == id && scan->key == key) {
+            *arg1 = scan->start;
+            *arg2 = scan->size;
+            return;
         }
     }
 
     count = lbl_8055FDF0;
-    entry = lbl_804CA438 + count * 0x10;
-    *(u32 *)entry = id;
+    write = (CacheEntry *)lbl_804CA438 + count;
+    write->id = id;
     lbl_8055FDF0 = count + 1;
-    entry[4] = key;
+    write->key = key;
     GXBeginDisplayList((void *)lbl_8055FDF8, lbl_8055FDF4 + 0x4000 - lbl_8055FDF8);
     fn_802D5DE8(id);
     size = GXEndDisplayList();
-    *(s32 *)(entry + 8) = lbl_8055FDF8;
-    *(s32 *)(entry + 0xC) = size;
+    write->start = lbl_8055FDF8;
+    write->size = size;
     lbl_8055FDF8 += size;
-    *arg1 = *(s32 *)(entry + 8);
-    *arg2 = *(s32 *)(entry + 0xC);
+    *arg1 = write->start;
+    *arg2 = write->size;
 }
-
+#pragma scheduling on
 void fn_802D657C(s32 *arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
@@ -454,7 +453,7 @@ void fn_802D6860(void) {
 }
 #pragma scheduling on
 void fn_802D6B08(void *arg0) {
-    fn_802D61BC();
+    fn_802D61BC(arg0);
     if (lbl_8055FD1C & 8) {
         fn_802D6170(arg0);
         return;
