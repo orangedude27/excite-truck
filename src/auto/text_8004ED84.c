@@ -273,36 +273,16 @@ unsigned short OSGetFontEncode(void) {
 }
 #pragma opt_propagation reset
 unsigned short OSSetFontEncode(unsigned short arg0) {
-    u16 result = lbl_80558F58;
-    s32 mode;
-    if (result == 0xFFFF) {
-        goto initialize;
-    } else {
-        goto check_argument;
-    }
-initialize:
-    mode = *(volatile s32 *)0x800000CC;
-    if (mode == 0)
-        goto read_encode;
-    if (mode < 0)
-        goto store_zero;
-    goto store_zero;
-read_encode:
-    result = (*(volatile u16 *)0xCC00206E >> 1) & 1;
-    lbl_80558F58 = result;
-    goto set_string_s;
-store_zero:
-    result = 0;
-    lbl_80558F58 = result;
-set_string_s:
-    lbl_8055DA48 = (void *)ParseStringS;
-check_argument:
+    u16 old = OSGetFontEncode();
+
     if (arg0 <= 5) {
         lbl_80558F58 = arg0;
-        if (arg0 >= 3 && arg0 <= 5)
+        if (arg0 >= 3 && arg0 <= 5) {
             lbl_8055DA48 = (void *)ParseStringW;
+        }
     }
-    return result;
+
+    return old;
 }
 
 int OSLoadFont(int arg0, int arg1) {
