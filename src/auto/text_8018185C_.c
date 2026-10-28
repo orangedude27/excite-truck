@@ -1464,23 +1464,30 @@ void fn_8018A750(void *arg0, int arg_sp0) {
 }
 
 #pragma paired_single off
+#pragma scheduling invalid_target
 void fn_8018A8A8(void *arg0) {
-    float sp[15];
+    struct {
+        float sp8[3];
+        float sp14[3];
+        float sp20[3];
+        float sp2C[3];
+        float sp38[3];
+    } stack;
     float angle;
     float value;
     float calculated;
     register float temp_f31;
     register float temp_f30;
 
-    sp[12] = lbl_80561CAC;
-    sp[13] = lbl_80561DBC;
-    sp[14] = lbl_80561CAC;
-    sp[9] = lbl_80561CAC;
-    sp[10] = lbl_80561CD0;
-    sp[11] = lbl_80561CAC;
-    sp[6] = lbl_80561CAC;
-    sp[7] = lbl_80561CAC;
-    sp[8] = lbl_80561CAC;
+    stack.sp38[0] = lbl_80561CAC;
+    stack.sp38[1] = lbl_80561DBC;
+    stack.sp38[2] = lbl_80561CAC;
+    stack.sp2C[0] = lbl_80561CAC;
+    stack.sp2C[1] = lbl_80561CD0;
+    stack.sp2C[2] = lbl_80561CAC;
+    stack.sp20[0] = lbl_80561CAC;
+    stack.sp20[1] = lbl_80561CAC;
+    stack.sp20[2] = lbl_80561CAC;
     if (*(int *)((char *)arg0 + 0x26C4) != 0) {
         temp_f31 = lbl_8055E3C8;
         angle = (float)fn_8002EFB4(temp_f31, lbl_80561F20);
@@ -1490,17 +1497,17 @@ void fn_8018A8A8(void *arg0) {
         value = angle - lbl_80561F3C;
         calculated = lbl_80561F38 * value;
         angle = (float)fn_8002EFB4(temp_f31, lbl_80561F40);
-        sp[4] = calculated;
+        stack.sp14[1] = calculated;
         value = angle - lbl_80561F4C;
-        sp[5] = temp_f30;
-        sp[3] = lbl_80561F48 * value;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), &sp[12], &sp[9], &sp[3], &sp[6]);
+        stack.sp14[2] = temp_f30;
+        stack.sp14[0] = lbl_80561F48 * value;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), stack.sp38, stack.sp2C, stack.sp14, stack.sp20);
     }
     if (*(int *)((char *)arg0 + 0x26C8) != 0) {
-        sp[0] = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
-        sp[1] = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
-        sp[2] = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), &sp[12], &sp[9], &sp[0], &sp[6]);
+        stack.sp8[0] = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
+        stack.sp8[1] = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
+        stack.sp8[2] = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), stack.sp38, stack.sp2C, stack.sp8, stack.sp20);
     }
 }
 #pragma paired_single reset
