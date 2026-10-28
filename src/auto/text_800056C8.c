@@ -122,27 +122,54 @@ void fn_800057BC(void) {
 #pragma pop
 
 #pragma cplusplus on
+#pragma push
+#pragma scheduling invalid_target
 extern "C" s32 fn_800057D0(void) {
+    struct Obj {
+        virtual s32 v0() = 0;
+        virtual s32 v1() = 0;
+        virtual s32 v2() = 0;
+        virtual s32 v3() = 0;
+        virtual s32 v4() = 0;
+        virtual s32 v5() = 0;
+        virtual s32 v6() = 0;
+        virtual s32 v7() = 0;
+        virtual s32 v8() = 0;
+        virtual s32 v9() = 0;
+        virtual s32 v10() = 0;
+        virtual s32 v11() = 0;
+        virtual s32 check() = 0;
+    };
     s32 *base;
     s32 *cursor;
     s32 count, i;
-    if (fn_801769A8() & 0x4000) { fn_800056E0(lbl_8034EEB8[0]); return; }
-    if (lbl_8034EEB8[1] != 0 &&
-        ((s32 (*)(void))(*(void ***)lbl_8034EEB8[1])[14])() == 0) {
-        fn_800056E0(lbl_8034EEB8[1]); return;
+
+    if (fn_801769A8() & 0x4000) {
+        fn_800056E0(lbl_8034EEB8[0]);
+        return;
     }
-    if (fn_80005694() != 0) { fn_800056E0(lbl_8034EEB8[3]); return; }
+    if (lbl_8034EEB8[1] != 0 &&
+        ((Obj *)lbl_8034EEB8[1])->check() == 0) {
+        fn_800056E0(lbl_8034EEB8[1]);
+        return;
+    }
+    if (fn_80005694() != 0) {
+        fn_800056E0(lbl_8034EEB8[3]);
+        return;
+    }
     if (fn_80005678() != 0) {
         if (lbl_8034EEB8[2] != 0 &&
-            ((s32 (*)(void))(*(void ***)lbl_8034EEB8[2])[14])() == 0) {
-            fn_800056E0(lbl_8034EEB8[2]); return;
+            ((Obj *)lbl_8034EEB8[2])->check() == 0) {
+            fn_800056E0(lbl_8034EEB8[2]);
+            return;
         }
-        fn_800056E0(lbl_8034EEB8[23]); return;
+        fn_800056E0(lbl_8034EEB8[23]);
+        return;
     }
-    count = ((s32 *)lbl_8055D350)[5];
-    base = lbl_8034EEB8;
-    cursor = base;
-    for (i = 0; i < count; i++, cursor += 4) {
+    count = *(s32 *)((u8 *)lbl_8055D350 + 0x14);
+    cursor = lbl_8034EEB8;
+    base = cursor;
+    for (i = 0; i < count; cursor += 4, i++) {
         if (fn_80005580(i) != 0) {
             fn_800056C8(i, base[0x58 / 4]);
         } else {
@@ -466,7 +493,6 @@ void fn_800060E0(u8 arg0, u8 arg1) {
     fn_8017691C();
 }
 
-#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80006110(void *arg0) {
     class VTable {
@@ -516,8 +542,8 @@ extern "C" void fn_80006110(void *arg0) {
     }
     if (flag == 0) {
         if (fn_80005564() == 0) {
-            s32 *settings2 = (s32 *)lbl_8055D350;
-            s32 *entries = (s32 *)lbl_8034EEB8;
+            register s32 *entries = (s32 *)lbl_8034EEB8;
+            register s32 *settings2 = (s32 *)lbl_8055D350;
             s32 index2 = settings2[7];
             s32 *p = entries + index2 * 4;
             void *obj = *(void **)(p + 7);
@@ -547,7 +573,6 @@ extern "C" void fn_80006110(void *arg0) {
     }
 }
 #pragma cplusplus off
-#pragma scheduling on
 s32 ARCClose(void) {
     return 0;
 }
