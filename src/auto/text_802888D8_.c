@@ -928,6 +928,85 @@ void fn_80289FC4(int **arg0, int arg1, int arg2) {
         fn_8028A330((int *)arg0, arg1);
     }
 }
+
+int fn_8028A084(int arg0) {
+    fn_80289394Frame frame;
+    register float f0;
+    register float f1;
+    register float f2;
+    register float f3;
+    register float f4;
+    register float f5;
+    register float f6;
+    register float f7;
+    register float f8;
+    register float f9;
+    register float f10;
+    register float f11;
+    register float f12;
+    register float f13;
+    register float f31;
+    register int size;
+    register int six;
+
+    fn_8028E61C((int *)&frame.sp20);
+    f9 = *(volatile float *)&lbl_8056428C;
+    size = 0x80;
+    f11 = *(volatile float *)&lbl_80564298;
+    f4 = *(volatile float *)&lbl_80564300;
+    f3 = *(volatile float *)&lbl_80564324;
+    six = 6;
+    f12 = *(volatile float *)&lbl_80564284;
+    f10 = *(volatile float *)&lbl_80564314;
+    f2 = *(volatile float *)&lbl_805642AC;
+    f31 = *(volatile float *)&lbl_805642D4;
+    f13 = *(volatile float *)&lbl_805642A4;
+    f8 = *(volatile float *)&lbl_80564274;
+    f7 = *(volatile float *)&lbl_80564318;
+    f6 = *(volatile float *)&lbl_8056431C;
+    f5 = *(volatile float *)&lbl_80564320;
+    f1 = *(volatile float *)&lbl_805642C4;
+    f0 = *(volatile float *)&lbl_805642B0;
+    frame.sp24 = size;
+    frame.sp28 = f31;
+    frame.sp2C = f13;
+    frame.sp20 = 2;
+    frame.sp68 = f12;
+    frame.sp64 = six;
+    frame.sp14 = f11;
+    frame.sp18 = f10;
+    frame.sp1C = f11;
+    frame.sp30 = f11;
+    frame.sp34 = f10;
+    frame.sp38 = f11;
+    frame.sp8 = f9;
+    frame.spC = f9;
+    frame.sp10 = f9;
+    frame.sp3C = f9;
+    frame.sp40 = f9;
+    frame.sp44 = f9;
+    frame.sp48 = f8;
+    frame.sp4C = f7;
+    frame.sp50 = f6;
+    frame.sp54 = f5;
+    frame.sp90 = f4;
+    frame.sp88 = f4;
+    frame.sp80 = f4;
+    frame.sp94 = f3;
+    frame.sp8C = f3;
+    frame.sp84 = f3;
+    frame.sp78 = f2;
+    frame.sp7C = f12;
+    frame.sp70 = f1;
+    frame.sp74 = f0;
+    frame.sp98 = f2;
+    frame.sp9C = f9;
+    *(int *)((char *)arg0 + 4) =
+        ((int (*)(int *, int *, int, float, float, float, float, float, float, float))fn_8028E2F8)(
+            (int *)&frame.sp20, (int *)(void *)lbl_80348B6C, lbl_8055C880,
+            f1, f2, f3, f4, f5, f6, f7);
+}
+
 #pragma scheduling on
 #pragma pop
 extern int fn_80288208(int);
