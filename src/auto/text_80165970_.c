@@ -329,6 +329,7 @@ void *fn_80166040(int arg0) {
     }
     return found;
 }
+#pragma dont_inline reset
 #pragma pop
 void fn_80166098(void) {
     fn_80179630(-1);
