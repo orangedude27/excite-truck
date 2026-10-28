@@ -817,6 +817,38 @@ void fn_802D01B0(float *p, float v) {
     out[3] = v;
     *((unsigned char *)&lbl_804C97D0 + 0x5C) = 1;
 }
+
+#pragma push
+#pragma scheduling invalid_target
+void fn_802D2218(void);
+#pragma push
+#pragma paired off
+#pragma paired_single off
+#pragma scheduling invalid_target
+void fn_802D01E0(int arg0, int arg1, int arg2, int arg3) {
+    int var_r31;
+    int var_r29;
+
+    var_r29 = arg1;
+    var_r31 = arg3;
+    if (lbl_8055FE24 == 0) {
+        var_r29 = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)arg1) / lbl_80564FBC));
+        var_r31 = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)arg3) / lbl_80564FBC));
+    }
+    fn_802D2218();
+    *(int *)(lbl_804C9778 + 0x1C) = arg0;
+    *(int *)(lbl_804C9778 + 0x20) = var_r29;
+    *(int *)(lbl_804C9778 + 0x24) = arg2;
+    *(int *)(lbl_804C9778 + 0x28) = var_r31;
+    lbl_804C9778[1] = 1;
+    lbl_804C9778[0] = 1;
+    *(float *)(lbl_804C9778 + 0x18) = (float)arg2 / (float)var_r31;
+}
+#pragma scheduling on
+#pragma paired_single reset
+#pragma paired reset
+#pragma pop
+
 #pragma scheduling on
 void fn_802D02F8(int arg0, signed char arg1) {
     extern unsigned char lbl_804C9778[];
@@ -1170,6 +1202,8 @@ extern void GXGetLightDir_Internal(void *, float, float, float, float, float, fl
 extern void GXInitLightAttn(void *, float, float, float, float, float, float);
 extern float PSVECMag(float *);
 extern float lbl_80564F80, lbl_80564F88, lbl_80564F8C, lbl_80564F90, lbl_80564F94;
+#pragma push
+#pragma scheduling invalid_target
 void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
     unsigned char c0, c1, c2, c3;
     unsigned char rgba[4];
@@ -1198,6 +1232,8 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
         GXInitLightAttn(light,lbl_80564F88,lbl_80564F88,lbl_80564F8C,v,lbl_80564F88,lbl_80564F8C-v);
     }
 }
+#pragma scheduling on
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
