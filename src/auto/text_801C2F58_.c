@@ -2371,6 +2371,7 @@ void fn_801C98F4(u8 *p, s32 n) {
 extern char lbl_80336B00[];
 extern s32 lbl_8055E814;
 extern s32 fn_802E367C(void);
+extern const char *fn_80007F90(u32);
 extern void fn_802E3734(s32 *);
 extern void fn_802E3AD0(s32, const char *, ...);
 s32 fn_801CA070(s32 *arg0) {
