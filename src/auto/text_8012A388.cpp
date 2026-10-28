@@ -566,44 +566,48 @@ extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma dont_inline on
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     u8 *entry;
+    u8 *header;
     void *object;
     s32 handle;
     s32 startTime;
-    s32 fileIndex;
     s32 bufferSize;
+    s32 allocSize;
     u32 flags;
-    const char *strings = lbl_8032A630;
+    const char *strings;
 
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
+    strings = lbl_8032A630;
     if (!(flags & 8)) {
         bufferSize = *(s32 *)(entry + 0x28);
+        allocSize = bufferSize + 0x80;
         ((void (*)(s32))fn_801282F4)(bufferSize);
         fn_801282EC(0x80);
-        object = ((void *(*)(void *, s32))fn_801284F0)(entry, bufferSize + 0x80);
+        object = ((void *(*)(void *, s32))fn_801284F0)(entry, allocSize);
         if (object != 0) {
             startTime = fn_802E2C20();
             handle = ((s32 (*)(void *))fn_802E36D8)((u8 *)arg0 + 0x20);
-            fileIndex = handle;
-            if (fileIndex != -1) {
+            if (handle != -1) {
                 *(void **)((u8 *)object + 0x78) = entry;
                 *(u32 *)((u8 *)object + 0x7C) = 0x4D474921;
-                fn_802E3A14(fileIndex, *(s32 *)(entry + 0x2C) + *(s32 *)((u8 *)arg0 + 0x80));
-                fn_802E3804(fileIndex, (u8 *)object + 0x80, *(s32 *)(entry + 0x28));
-                if (*(u32 *)(entry + 0x30) == (u32)fn_80132E7C((u8 *)object + 0x80, *(s32 *)(entry + 0x28))) {
+                header = (u8 *)object + 0x78;
+                fn_802E3A14(handle, *(s32 *)(entry + 0x2C) + *(s32 *)((u8 *)arg0 + 0x80));
+                fn_802E3804(handle, header + 8, *(s32 *)(entry + 0x28));
+                if (*(u32 *)(entry + 0x30) == (u32)fn_80132E7C(header + 8, *(s32 *)(entry + 0x28))) {
                     flags = *(u32 *)(entry + 0x34) | 0xC;
                     *(u32 *)(entry + 0x34) = flags;
-                    *(void **)(entry + 0x3C) = (u8 *)object + 0x78;
+                    *(void **)(entry + 0x3C) = header;
                     *(void **)(entry + 0x40) = object;
-                    fn_8012A46C((u8 *)object + 0x80, strings + 0x3B0);
+                    fn_8012A46C(header + 8, strings + 0x3B0);
                     fn_802E30C8(strings + 0x3C0, arg0, entry, fn_802E2C20() - startTime);
                 } else {
                     fn_802E30C8(strings + 0x3E4, entry);
                     fn_8012A7FC();
                 }
-                fn_802E3734(&fileIndex);
+                fn_802E3734(&handle);
             }
             flags = *(u32 *)(entry + 0x34);
             if (!(flags & 8)) {
@@ -1742,14 +1746,17 @@ extern "C" void fn_8012E498(void *arg0) {
                 }
                 entry = *(s32 *)(entry + 4);
             }
-            for (entry = fn_8012E674((void *)(effect + 8));
-                 entry != 0; entry = *(s32 *)entry) {
-                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) == 0) {
-                    fn_8012E630((void *)entry);
-                    fn_8012E5E4((void *)(effect + 8), (void *)entry);
-                    removed = 1;
-                    continue;
-                }
+            entry = fn_8012E674((void *)(effect + 8));
+            while (entry != 0) {
+                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) != 0)
+                    goto skip_delete;
+                fn_8012E630((void *)entry);
+                fn_8012E5E4((void *)(effect + 8), (void *)entry);
+                removed = 1;
+            skip_delete:
+                goto loop_update;
+            loop_update:
+                entry = *(s32 *)entry;
             }
             if (removed != 0) return;
         }
