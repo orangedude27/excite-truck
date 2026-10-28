@@ -399,6 +399,50 @@ void fn_8000FBE8(f32 arg0, f32 arg1, f32 arg2) {
 
 #pragma push
 #pragma processor 750
+#pragma paired_single off
+void fn_8000FC8C(s32 arg0, s32 arg1) {
+    extern s32 fn_80232B70(s32);
+    extern f32 fn_80011E54(void);
+    extern f32 fn_80011E70(void);
+    extern f32 fn_80235EF0(s32, s32);
+    extern f32 fn_80235F64(s32, s32);
+    extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
+    extern void fn_802337A0(f32, s32, f32, s32, f32, f32, s32, f32, const char *, ...);
+    extern f32 lbl_80560300;
+    extern f32 lbl_80560304;
+    extern f32 lbl_805602B0;
+    f32 temp_f30;
+    f32 temp_f29;
+    f32 temp_f28;
+    f32 temp_f31;
+    f32 temp_f27;
+    f32 temp_f26;
+    f32 temp_f1;
+    f32 temp_f1_2;
+
+    temp_f1 = (f32)fn_80232B70(lbl_8055D4C4);
+    temp_f30 = lbl_80560300 / temp_f1;
+    temp_f29 = fn_80011E70();
+    temp_f28 = fn_80011E54();
+    if (lbl_8055D4C0 != 0) {
+        temp_f31 = fn_80235EF0(lbl_8055D4C0, 0);
+        temp_f1_2 = temp_f31 + fn_80235EF0(lbl_8055D4C0, 1);
+        temp_f27 = temp_f29 - (lbl_8056025C * temp_f1_2);
+        temp_f26 = (temp_f28 - lbl_80560304) + (lbl_8056025C * fn_80235F64(lbl_8055D4C0, 0));
+        ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(lbl_8055D4C0, 0, temp_f27, temp_f26, lbl_80560280, lbl_80560280);
+        ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(lbl_8055D4C0, 1, temp_f27 + temp_f31, temp_f26, lbl_80560280, lbl_80560280);
+    }
+    fn_802337A0(lbl_805602B0 + temp_f29, lbl_8055D4C4, temp_f28 - lbl_805602B0,
+                0xFF000000, lbl_80560280, temp_f30, 0xC, lbl_80560264,
+                (const char *)&lbl_80558AA4, arg0);
+    fn_802337A0(temp_f29, lbl_8055D4C4, temp_f28, -1,
+                lbl_80560280, temp_f30, 0xC, lbl_80560264,
+                (const char *)&lbl_80558AA4, arg0);
+}
+#pragma pop
+
+#pragma push
+#pragma processor 750
 void fn_8000FF88(s32 arg0, s32 arg1, const char *fmt, f32 farg0, f32 farg1, f32 farg2, ...) {
     #pragma scheduling invalid_target
     char buffer[0x200];
