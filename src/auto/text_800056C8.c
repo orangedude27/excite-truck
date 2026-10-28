@@ -647,6 +647,54 @@ void fn_80006550(void *arg0, s32 arg1) {
     if (*(s32 *)((u8 *)arg0 + 0x10) >= 3) *(s32 *)((u8 *)arg0 + 0x10) = 2;
 }
 
+#pragma push
+#pragma dont_inline on
+s32 fn_80006580(void *arg0, u32 arg1, u32 arg2, u32 arg3) {
+    s32 state;
+    s32 event;
+    s32 result = 0;
+    s32 direction;
+    s32 i;
+
+    if (arg2 == 0x3E8) {
+        state = *(s32 *)((u8 *)arg0 + 4);
+        event = (u32)arg3 & 0xFFFF;
+        switch (state) {
+        case 3:
+            if (event == 0x58) {
+                s32 value = *(s32 *)((u8 *)arg0 + 0x10);
+                ((void (*)(s32, s32))fn_800060E0)((value - 2) == 0, (value - 1) == 0);
+                fn_800121A4();
+                result = 1;
+            } else if ((u32)event == 0x126 || (u32)event == 0x128) {
+                direction = (u32)event == 0x126 ? -1 : 1;
+                fn_80006550(arg0, direction);
+                for (i = 0; i < 3; i++) {
+                    if (*(s32 *)((u8 *)arg0 + 0x10) == 2)
+                        fn_8027AA48();
+                }
+                fn_80230E90(1);
+                fn_80012158();
+            }
+            break;
+        case 2:
+            if (event == 0x58 && fn_801CB880() != 0) {
+                *(s32 *)((u8 *)arg0 + 4) = 3;
+                result = 1;
+            }
+            break;
+        case 1:
+            if (event == 0x58) {
+                *(s32 *)((u8 *)arg0 + 4) = 2;
+                result = 1;
+            }
+            break;
+        }
+    }
+    return result;
+}
+#pragma pop
+
 extern void fn_8027AA48(void);
 extern void fn_80011E70(void);
 extern void fn_80011E90(void);
@@ -824,7 +872,7 @@ extern "C" void fn_800070DC(void) {
     s32 zero;
     register f32 factor = lbl_80560130;
 
-    fn_80209190(lbl_8055D354, factor);
+    ((void (*)(s32, f32))fn_80209190)(lbl_8055D354, factor);
     base = lbl_8034EEB8;
     ((Item *)base[3])->dispatch();
     ((Item *)*(void **)((u8 *)base + 0x5C))->dispatch();
