@@ -71,6 +71,9 @@ extern f32 lbl_80563630;
 extern f32 fn_8023293C(s32, s32, f32);
 extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);
 extern void fn_80233354(s32, s32, s32, s32, f32, f32, f32, f32);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma paired off
 #pragma paired_single off
 void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
@@ -78,14 +81,15 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
                  f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
     f32 spC, sp8;
     f32 temp_f1, temp_f3, temp_f4;
-    f32 temp_f28, temp_f27, temp_f26;
+    f32 temp_f31, temp_f28, temp_f27, temp_f26;
     f32 var_f2;
     s32 var_r0;
 
     (void)arg_sp0;
+    temp_f31 = farg3;
     temp_f1 = fn_8023293C(arg1, arg0, lbl_80563610);
     temp_f3 = farg5 * farg4;
-    temp_f28 = farg3 * temp_f1;
+    temp_f28 = temp_f31 * temp_f1;
     temp_f27 = lbl_8056362C - farg6;
     temp_f1 = farg1 + temp_f3;
     temp_f26 = lbl_80563630 + farg6;
@@ -97,7 +101,8 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     var_f2 = lbl_8056362C;
     if (sp8 < temp_f27) {
         var_r0 = 1;
-        var_f2 = sp8 + (-temp_f27 + temp_f26) + temp_f28;
+        temp_f4 = sp8 + (-temp_f27 + temp_f26);
+        var_f2 = temp_f4 + temp_f28;
     }
     if (spC > temp_f26) {
         var_r0 = 1;
@@ -108,16 +113,17 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     }
     fn_80233354(arg0, arg1, arg2, arg3, farg0, spC, farg3, farg2);
 }
-#pragma paired_single reset
-#pragma paired reset
+#pragma pop
+#pragma cplusplus on
+extern "C" void fn_80230924(void *, f32, f32, f32, f32, f32);
+extern "C" void fn_802C8B98(s32, s32);
+extern "C" void fn_802C8D74(void);
+extern "C" void fn_802C8DB8(void);
+extern "C" void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
+extern "C" s32 fn_80230B9C(u32);
+extern "C" f32 lbl_80563614;
+extern "C" u16 lbl_802F9FD8[6];
 void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
-    extern void fn_802C8B98(s32, s32);
-    extern void fn_802C8D74(void);
-    extern void fn_802C8DB8(void);
-    extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
-    extern s32 fn_80230B9C(u32);
-    extern f32 lbl_80563614;
-    extern u16 lbl_802F9FD8[6];
     struct Frame {
         u16 indices[6];
         u8 pad1[4];
@@ -133,15 +139,20 @@ void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
     fn_80231380(frame.sp38, state, z, y, v, lbl_80563614, lbl_80563614);
     fn_80231380(frame.sp50, state, x, w, v, lbl_80563614, lbl_80563614);
     fn_80231380(frame.sp68, state, z, w, v, lbl_80563614, lbl_80563614);
-    frame.indices[0] = lbl_802F9FD8[0];
-    frame.indices[1] = lbl_802F9FD8[1];
-    frame.indices[2] = lbl_802F9FD8[2];
-    frame.indices[3] = lbl_802F9FD8[3];
-    frame.indices[4] = lbl_802F9FD8[4];
-    frame.indices[5] = lbl_802F9FD8[5];
-    fn_802C8DB8();
+    {
+        u16 *source = lbl_802F9FD8;
+        frame.indices[0] = *source++;
+        frame.indices[1] = *source++;
+        frame.indices[2] = *source++;
+        frame.indices[3] = *source++;
+        frame.indices[4] = *source++;
+        frame.indices[5] = *source++;
+    }
+    ((void (*)(void *, s32, u16 *, s32))fn_802C8DB8)(
+        frame.sp20, 4, frame.indices, 6);
     fn_802C8D74();
 }
+#pragma cplusplus reset
 
 void fn_80230A68(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     u32 *p = (u32 *)arg0;
