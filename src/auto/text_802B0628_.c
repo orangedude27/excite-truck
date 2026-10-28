@@ -132,6 +132,8 @@ void fn_802B0914(void) {
 }
 #pragma scheduling on
 extern void *fn_802B0AC0(void *, int);
+__declspec(section ".data") extern void *lbl_804BE104;
+#pragma use_lmw_stmw off
 #pragma dont_inline on
 void fn_802B0954(int arg0) {
     extern void *lbl_804BE104;
