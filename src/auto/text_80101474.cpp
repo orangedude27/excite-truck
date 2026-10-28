@@ -815,7 +815,6 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color, nw4hbm::ut::C
     self[0x13]=product_13/255; self[0x17]=product_17/255;
 }
 
-#pragma scheduling invalid_target
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
     int var_r10 = 1, var_r9 = 1, var_r8 = 1, var_r7 = 1, var_r6 = 1, var_r5 = 1;
@@ -830,7 +829,6 @@ first_ok:
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x20A, lbl_8032818C, arg0);
     return *(float *)((char *)arg0 + 0x24);
 }
-#pragma scheduling on
 
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(void *arg0) {
     unsigned int temp_r11;
