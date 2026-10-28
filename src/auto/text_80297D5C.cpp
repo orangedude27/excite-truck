@@ -340,8 +340,8 @@ extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
         ((void (*)(void *, int))fn_8029840C)(arg0, index);
         return;
     }
-    float firstAngle = lbl_805645B8;
     float secondArg = lbl_80564590;
+    float firstAngle = lbl_805645B8;
     int mode = 0;
     *(float *)(entry + 0x24) = remaining - deltaTime;
     float angle = fn_80129DC4(mode, firstAngle, secondArg);
@@ -957,7 +957,7 @@ done:
     return result;
 }
 #pragma scheduling on
-extern "C" void fn_8029A318(float *a, float *b, float *c, int x, int y, int z, int w) {
+extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
  if ((unsigned char *)b==(unsigned char *)a+0x30) {
  b[0]=a[14]*a[3]+a[12]*a[0]+a[14]*a[6]; b[1]=a[14]*a[4]+a[12]*a[1]+a[14]*a[7]; b[2]=a[14]*a[5]+a[12]*a[2]+a[14]*a[8];
  } else {
@@ -965,7 +965,7 @@ extern "C" void fn_8029A318(float *a, float *b, float *c, int x, int y, int z, i
  }
  b[0]+=a[9];b[1]+=a[10];b[2]+=a[11];
  c[0]=a[0]*lbl_805645C8;c[1]=a[1]*lbl_805645C8;c[2]=a[2]*lbl_805645C8;
- ((float *)w)[0]=a[6]*lbl_805645E8;((float *)w)[1]=a[7]*lbl_805645E8;((float *)w)[2]=a[8]*lbl_805645E8;
+ d[0]=a[6]*lbl_805645E8;d[1]=a[7]*lbl_805645E8;d[2]=a[8]*lbl_805645E8;
 }
 
 extern "C" int fn_801EE0C8(int);
@@ -977,7 +977,7 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     register void *dest = arg0;
     register int index = arg1;
     register void *data;
-    float a[3], b[3], c[3], screen[6];
+    float home[3], a[3], b[3], c[3], screen[6];
     int selector, handle;
     unsigned int *src, *dst;
     unsigned int v0, v1;
@@ -1000,21 +1000,23 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     dst[10]=src[10];
     v0=src[11]; dst[11]=v0;
 
-    *(float *)((char *)dest + 0x30) = screen[0];
-    *(float *)((char *)dest + 0x34) = screen[2];
-    *(float *)((char *)dest + 0x38) = screen[4];
+    home[0] = screen[0];
+    home[1] = screen[2];
+    home[2] = screen[4];
+    *(float *)((char *)dest + 0x30) = home[0];
+    *(float *)((char *)dest + 0x34) = home[1];
+    *(float *)((char *)dest + 0x38) = home[2];
     *(unsigned int *)((char *)dest + 0x3C) = (unsigned int)index;
 
     c[0] = lbl_8056459C; c[1] = lbl_8056459C; c[2] = lbl_8056459C;
     b[0] = lbl_8056459C; b[1] = lbl_8056459C; b[2] = lbl_8056459C;
     a[0] = lbl_8056459C; a[1] = lbl_8056459C; a[2] = lbl_8056459C;
-    ((void (*)(void *, float *, float *, float *, float, float, float))fn_8029A318)
-        (dest, c, b, a, screen[0], screen[2], screen[4]);
+    fn_8029A318((float *)dest, a, b, c, home[0], home[1], home[2]);
     *(int *)((char *)dest + 0x40) =
-        fn_8029833C(lbl_8055F7C0, c, b, a, *(short *)((char *)data + 0x30), lbl_80564608);
+        fn_8029833C(lbl_8055F7C0, a, b, c, *(short *)((char *)data + 0x30), lbl_80564608);
 }
 
-extern "C" void fn_8029A318(float*, float*, float*, int, int, int, int);
+extern "C" void fn_8029A318(float*, float*, float*, float*, float, float, float);
 #pragma dont_inline on
 extern "C" void fn_8029A60C(void* arg0, void* arg1) {
     struct Vectors {
