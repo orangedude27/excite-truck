@@ -308,6 +308,7 @@ void fn_801D5488(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801D5520(char *arg0) {
  struct Manager { virtual void v0(); virtual void *get(int); };
@@ -1045,17 +1046,6 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
         virtual void v5();
         virtual float value(char *, float);
     };
-    struct Record {
-        int status;
-        char pad0[4];
-        char name[0x20];
-        float value;
-        float zero;
-        float second;
-        char flag;
-        char pad1[3];
-        int link;
-    };
     extern char lbl_80338888[];
     extern char lbl_803388C8[];
     extern char lbl_8055AC80;
@@ -1066,21 +1056,19 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
     extern int fn_80207848(char *, int);
     extern void fn_802E30C8(char *);
     Dummy *obj;
-    Record *out;
     char *src;
     int remaining;
     char *dst;
-    const char *message;
+    volatile int *status;
 
     obj = (Dummy *)arg1;
-    out = (Record *)arg0;
+    status = (volatile int *)((char *)arg0 + 4);
     if (obj->check(&lbl_8055AC80) == 0) {
-        message = lbl_80338888;
-        ((void (*)(const char *, ...))fn_802E30C8)(message);
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80338888);
         return 0;
     }
     src = obj->get(&lbl_8055AC80);
-    dst = out->name;
+    dst = (char *)arg0 + 8;
     remaining = 0x1E;
     goto copy_body;
 copy_limit:
@@ -1092,12 +1080,12 @@ copy_body:
     if ((signed char)(*dst++ = *src++) != 0)
         goto copy_limit;
 copy_done:
-    out->value = obj->value(&lbl_8055ACB8, lbl_80562ADC);
-    out->second = obj->value(&lbl_8055ACB0, lbl_80562AEC);
-    out->status = 1;
-    out->zero = lbl_80562ADC;
-    out->flag = 0;
-    out->link = fn_80207848(lbl_803388C8, 1);
+    *(float *)((char *)arg0 + 0x28) = obj->value(&lbl_8055ACB8, lbl_80562ADC);
+    *(float *)((char *)arg0 + 0x30) = obj->value(&lbl_8055ACB0, lbl_80562AEC);
+    *status = 1;
+    *(float *)((char *)arg0 + 0x2C) = lbl_80562ADC;
+    *((char *)arg0 + 0x34) = 0;
+    *(int *)((char *)arg0 + 0x38) = fn_80207848(lbl_803388C8, 1);
     return 1;
 }
 
@@ -2028,11 +2016,14 @@ extern "C" void fn_801D875C(void *arg0) {
     float time;
     Dummy *item;
     char *entry;
-    if (*(int *)((char *)arg0 + 0x18) != 2) return;
+    if (*(int *)((char *)arg0 + 0x18) != 2)
+        return;
     time = lbl_8055E3C8;
     if (*(int *)((char *)arg0 + 0x20) == 0) {
-        if (!(time - *(float *)((char *)arg0 + 0x10) > *(float *)((char *)arg0 + 0xC))) return;
-        count = 0; offset = 0;
+        if (!(time - *(float *)((char *)arg0 + 0x10) > *(float *)((char *)arg0 + 0xC)))
+            return;
+        count = 0;
+        offset = 0;
         goto first_test;
 first_loop:
         entry = (char *)*(int *)((char *)arg0 + 0x24) + offset;
@@ -2040,23 +2031,33 @@ first_loop:
         item->first(*(int *)((char *)arg0 + 0x1C));
         item = *(Dummy **)entry;
         item->second(*(int *)(entry + 8));
-        offset += 0xC; count += 1;
+        offset += 0xC;
+        count += 1;
 first_test:
-        if (count < *(int *)((char *)arg0 + 0x28)) goto first_loop;
+        if (count < *(int *)((char *)arg0 + 0x28))
+            goto first_loop;
         *(int *)((char *)arg0 + 0x20) = 1;
     } else {
-        if (!(time - *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 0xC) > *(float *)((char *)arg0 + 0x14))) return;
-        count = 0; offset = 0;
+        int count2;
+        int offset2;
+        char *entry2;
+        Dummy *item2;
+        if (!(time - *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 0xC) > *(float *)((char *)arg0 + 0x14)))
+            return;
+        count2 = 0;
+        offset2 = 0;
         goto second_test;
 second_loop:
-        entry = (char *)*(int *)((char *)arg0 + 0x24) + offset;
-        item = *(Dummy **)entry;
-        item->first(*(int *)(entry + 4));
-        item = *(Dummy **)entry;
-        item->second(-1);
-        offset += 0xC; count += 1;
+        entry2 = (char *)*(int *)((char *)arg0 + 0x24) + offset2;
+        item2 = *(Dummy **)entry2;
+        item2->first(*(int *)(entry2 + 4));
+        item2 = *(Dummy **)entry2;
+        item2->second(-1);
+        offset2 += 0xC;
+        count2 += 1;
 second_test:
-        if (count < *(int *)((char *)arg0 + 0x28)) goto second_loop;
+        if (count2 < *(int *)((char *)arg0 + 0x28))
+            goto second_loop;
         *(int *)((char *)arg0 + 0x18) = 1;
     }
 }
