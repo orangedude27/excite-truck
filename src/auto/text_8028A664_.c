@@ -694,7 +694,7 @@ void fn_8028C938(s32 arg0) {
             vy = (in->vy * factor) - delta;
             vz = in->vz * factor;
             temp_x = vx;
-            temp_z = vz;
+            temp_z = (vz * step, vz);
             temp_y = vy;
             out->x = in->x + vx * step;
             out->y = in->y + vy * step;
@@ -842,6 +842,7 @@ extern f32 lbl_805643E4;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling off
+#pragma dont_inline on
 s32 fn_8028CD80(s32 arg0, s32 arg1, void *arg2, f32 *arg3, f32 farg0) {
     struct Entry { f32 f[10]; } *dst;
     f32 *src = (f32 *)arg2;
