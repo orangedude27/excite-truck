@@ -1277,26 +1277,44 @@ extern "C" s32 fn_801634F0(void *arg0) {
 }
 
 extern "C" void fn_80163550(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 count, i, offset, type;
+    s32 offset;
+    s32 i;
+    s32 type;
     s32 *entry;
-    if (*(u32 *)(lbl_804348E8[arg2] + 0x10) == 0x50434152 &&
-        *(s32 *)((char *)arg0 + 0x5AC) < *(s32 *)((char *)arg0 + 0x574) &&
-        ((Dummy_80163550 *)arg0)->f8() == 0) {
-        count = *(s32 *)((char *)arg0 + 0x574); i = 0; offset = 0;
-        do {
-            entry = (s32 *)(*(s32 *)((char *)arg0 + 0x570) + offset);
-            if (*(u8 *)((char *)entry + 8) == 0) {
-                type = entry[0];
-                if (type == arg1 || (type == 4 && arg1 == 5) || (type == 11 && arg1 == 12)) {
-                    if (entry[1] <= arg3) {
-                        *(u8 *)((char *)entry + 8) = 1;
-                        *(s32 *)((char *)arg0 + 0x5AC) = *(s32 *)((char *)arg0 + 0x5AC) + 1;
-                    }
-                }
+    s32 active;
+
+    if (*(u32 *)(lbl_804348E8[arg2] + 0x10) != 0x50434152)
+        return;
+    if (*(s32 *)((char *)arg0 + 0x5AC) >= *(s32 *)((char *)arg0 + 0x574))
+        return;
+    if (((Dummy_80163550 *)arg0)->f7() != 0)
+        return;
+
+    i = 0;
+    offset = 0;
+    active = 1;
+    goto loop_check;
+
+loop_body:
+    entry = (s32 *)(*(s32 *)((char *)arg0 + 0x570) + offset);
+    if (*(u8 *)((char *)entry + 8) == 0) {
+        type = entry[0];
+        if (type == arg1 ||
+            (type == 4 && arg1 == 5) ||
+            (type == 11 && arg1 == 12)) {
+            if (entry[1] <= arg3) {
+                *(u8 *)((char *)entry + 8) = active;
+                *(s32 *)((char *)arg0 + 0x5AC) =
+                    *(s32 *)((char *)arg0 + 0x5AC) + 1;
             }
-            offset += 0xC; i++;
-        } while (i < count);
+        }
     }
+    offset += 0xC;
+    i++;
+
+loop_check:
+    if (i < *(s32 *)((char *)arg0 + 0x574))
+        goto loop_body;
 }
 
 #pragma cplusplus off
