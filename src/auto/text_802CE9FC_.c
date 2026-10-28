@@ -582,6 +582,8 @@ extern void GXGetVtxAttrFmtv(void);
 extern int GXInit(int, int);
 extern int VIConfigure(void *);
 extern void fn_802CF850(void);
+#pragma push
+#pragma dont_inline on
 void fn_802CFD74(void) {
     extern int lbl_8055FD6C;
     extern void *lbl_8055FD64;
