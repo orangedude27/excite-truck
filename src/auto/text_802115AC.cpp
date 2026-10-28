@@ -4,6 +4,20 @@
 #include <types.h>
 
 extern "C" void fn_802E30C8(const char *, ...);
+extern "C" s32 fn_80128314(s32);
+extern "C" void fn_80127A24(void);
+extern "C" void fn_802141A0(void **, void *, s32, s32, s32, s32);
+extern "C" void fn_80218D54(void *, s32);
+extern "C" void fn_80212340(void *);
+extern "C" s32 fn_802168F0(void *);
+extern "C" void fn_8021683C(void *);
+extern "C" void fn_80236918(void *, void *, void (*)(void));
+extern "C" void fn_80236950(void);
+extern "C" void fn_802D08C4(s32);
+extern "C" void fn_802E3D00(void);
+extern "C" void fn_802E47E8(void);
+extern "C" char lbl_8033D1E0[];
+extern "C" u8 *lbl_8055B6BC;
 
 extern "C" s32 fn_80218C14(s32, s32);
 extern "C" s32 fn_802E317C(const char *);
