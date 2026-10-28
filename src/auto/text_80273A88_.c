@@ -351,8 +351,8 @@ void fn_80274EA8(void *arg0) {
 static inline void helper_80274F74(void *arg0, void *arg1) {
     register float x;
     register float sine;
-    register float z;
-    register float y;
+    float z;
+    float y;
     float magnitude;
     float scale;
     float cosine;
