@@ -520,25 +520,25 @@ void fn_8000BD98(void) {
 }
 
 int fn_8000BD9C(int arg0, int arg1, int arg2) {
-    int i;
-    int found;
     int *p;
+    int count, found, i;
     int *out = (int *)arg2;
 
     switch (arg1) {
     case 0:
-        p = (int *)&lbl_8034F5D8;
+        p = lbl_8034F5D8;
+        count = lbl_8055D3E0;
         found = 0;
-        for (i = 0; i < lbl_8055D3E0; i++) {
+        for (i = 0; i < count; i++) {
             if (*out == *p) {
-                *out = ((int *)&lbl_8034F5D8)[(i + 1) % lbl_8055D3E0];
+                *out = lbl_8034F5D8[(i + 1) % count];
                 found = 1;
                 break;
             }
             p++;
         }
-        if (found == 0) *out = *(int *)&lbl_8034F5D8;
-        return 1;
+        if (found == 0) *out = lbl_8034F5D8[0];
+        break;
     case 0x170: *out = 0; return 1;
     case 0x171: *out = 1; return 1;
     case 0x172: *out = 2; return 1;
@@ -548,8 +548,9 @@ int fn_8000BD9C(int arg0, int arg1, int arg2) {
     case 0x175: *out = 6; return 1;
     case 0x176: *out = 10; return 1;
     case 0x376: *out = 16; return 1;
-    default: return 0;
+    default: break;
     }
+    return 0;
 }
 
 void fn_8000BF10(int arg0, int arg1) { fn_8000BD9C(0, arg0, arg1); }
