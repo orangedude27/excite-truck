@@ -285,6 +285,64 @@ u16 fn_802C5A50(int arg0, int arg1) {
     return (u16)((arg0 << 8) | arg1);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
+    struct Entry {
+        s32 key0;
+        u16 refs;
+        s16 key2;
+        s32 reserved;
+        s32 key1;
+    };
+    struct Entry *entry;
+    register s32 savedArg0 = arg0;
+    s32 count = lbl_804C13A8[0];
+    struct Entry *match = 0;
+    struct Entry *freeEntry = 0;
+    s32 zero = 0;
+    s32 one = 1;
+    s32 i;
+
+    entry = (struct Entry *)(unsigned long)lbl_804C13A8[2];
+    for (i = count; i > 0; i--, entry++) {
+        if (entry->refs != 0) {
+            if (entry->key1 == arg1 && entry->key2 == arg2 && entry->key0 == arg0) {
+                match = entry;
+                break;
+            }
+        } else {
+            freeEntry = entry;
+        }
+    }
+
+    if (match == 0) {
+        if (freeEntry == 0) {
+            if (count < *(volatile s32 *)((char *)lbl_804C13A8 + 4)) {
+                s32 next = *(volatile s32 *)&lbl_804C13A8[0];
+                void *base = *(void * volatile *)&lbl_804C13A8[2];
+                freeEntry = (struct Entry *)((char *)base + next * 0x10);
+                lbl_804C13A8[0] = next + 1;
+            } else {
+                freeEntry = 0;
+            }
+            if (freeEntry == 0) {
+                fn_802E317C(lbl_8034B1D8);
+            }
+            freeEntry->key0 = savedArg0;
+        }
+        freeEntry->refs = zero;
+        match = freeEntry;
+        freeEntry->key2 = arg2;
+        freeEntry->reserved = zero;
+        freeEntry->key1 = arg1;
+        lbl_8055FC21 = one;
+    }
+
+    match->refs++;
+    return match;
+}
+
 extern void fn_802CAC54(int);
 extern s8 lbl_8055FC21;
 void fn_802C5BA0(int *arg0) {
