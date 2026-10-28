@@ -855,17 +855,12 @@ int fn_801D6D80(int arg0, int arg1) {
 
 #pragma cplusplus on
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
     struct Dummy {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual char *get(char *, char *);
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
+        virtual void v5(); virtual void v6(); virtual void v7();
         virtual float value(char *, float);
     };
     extern char lbl_8055ACB0;
@@ -874,37 +869,35 @@ extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
     extern char lbl_8055ACF4;
     extern float lbl_80562B14;
     Dummy *obj = (Dummy *)arg1;
+    float initial = lbl_80562B14;
     char *src;
-    int remaining;
-    char c;
-    char *dst;
+    int remaining1;
+    char *dst1;
+    int remaining2;
+    char *dst2;
 
-    *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB0, lbl_80562B14);
+    *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB0, initial);
     src = obj->get(&lbl_8055ACE8, &lbl_8055ACF0);
-    dst = (char *)arg0 + 0xC;
-    remaining = 0x40;
+    dst1 = (char *)arg0 + 0xC;
+    remaining1 = 0x40;
     goto copy_first;
 count_first:
-    if (--remaining > 0) goto copy_first;
-    dst[-1] = 0;
+    if (--remaining1 > 0) goto copy_first;
+    dst1[-1] = 0;
     goto done_first;
 copy_first:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto count_first;
+    if ((signed char)(*dst1++ = *src++) != 0) goto count_first;
 done_first:
     src = obj->get(&lbl_8055ACF4, &lbl_8055ACF0);
-    dst = (char *)arg0 + 0x4C;
-    remaining = 0x40;
+    dst2 = (char *)arg0 + 0x4C;
+    remaining2 = 0x40;
     goto copy_second;
 count_second:
-    if (--remaining > 0) goto copy_second;
-    dst[-1] = 0;
+    if (--remaining2 > 0) goto copy_second;
+    dst2[-1] = 0;
     goto done_second;
 copy_second:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto count_second;
+    if ((signed char)(*dst2++ = *src++) != 0) goto count_second;
 done_second:
     *(int *)((char *)arg0 + 4) = 1;
     return 1;
@@ -1444,6 +1437,46 @@ int fn_801D7C80(void *arg0, int arg1) {
     }
     return 0;
 }
+
+void fn_801D7D20(void *arg0) {
+    int temp_r31;
+    int temp_r0;
+    float var_f6;
+    float temp_f1;
+    float current;
+    float target;
+    float value;
+
+    if (*(int *)((char *)arg0 + 0x28) == 2) {
+        temp_r31 = (lbl_8055E3C4 - *(int *)((char *)arg0 + 0x1C)) -
+                   *(int *)((char *)arg0 + 0x10);
+        if (temp_r31 >= 0) {
+            var_f6 = lbl_80562AE0;
+            temp_f1 = (float)*(int *)((char *)arg0 + 0x0C) - lbl_80562ADC;
+            current = *(float *)((char *)arg0 + 0x20);
+            target = *(float *)((char *)arg0 + 0x24);
+            if (var_f6 < (((float)temp_r31 - lbl_80562ADC) / temp_f1)) {
+            } else {
+                var_f6 = ((float)temp_r31 - lbl_80562ADC) / temp_f1;
+            }
+            if (var_f6 > lbl_80562ADC) {
+            } else {
+                var_f6 = lbl_80562ADC;
+            }
+            value = current + var_f6 * (target - current);
+            temp_r0 = *(int *)((char *)arg0 + 4);
+            if (temp_r0 != 0) {
+                fn_801D9AB8((void *)temp_r0, value);
+            } else {
+                fn_80178DBC(*(int *)((char *)arg0 + 8), value);
+            }
+        }
+        if (temp_r31 >= *(int *)((char *)arg0 + 0x0C)) {
+            *(int *)((char *)arg0 + 0x28) = 3;
+        }
+    }
+}
+
 #pragma pop
 
 void fn_801D7E3C(int arg0) {
