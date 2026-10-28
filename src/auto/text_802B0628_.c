@@ -135,73 +135,59 @@ extern void *fn_802B0AC0(void *, int);
 __declspec(section ".data") extern void *lbl_804BE104;
 #pragma use_lmw_stmw off
 #pragma dont_inline on
+#pragma opt_common_subs off
 void fn_802B0954(int arg0) {
-    extern void *lbl_804BE104;
     extern void fn_8002F634(void *, void *, int, int);
     extern void fn_802B0690(int *);
     extern void fn_802B0874(void);
     extern void fn_80128668(void *);
-    int i = 0, outer_off = 0, outer = 0, row_off = 0, column = 0, column_off = 0;
-    int *array;
-    int outer_count;
-    void *obj;
+    int i, off_i;
+
     fn_802B0874();
-    array = *(int **)&lbl_804BE104;
-    outer_count = *(int *)((char *)&lbl_804BE104 + 4);
-    goto outer_check;
-outer_loop:
-    obj = *(void **)((char *)array + outer_off);
-    if (obj != 0) {
-        outer = 0; row_off = 0;
-        goto row_check;
-row_loop:
-        {
-            char *row = *(char **)((char *)obj + 0xC) + row_off;
-            fn_802B0690((int *)(row + 0x7C));
-            column = 0; column_off = 0;
-            goto col_check;
-col_loop:
-            fn_802B0690((int *)(*(char **)(row + 4) + column_off));
-            column_off += 0x10; ++column;
-col_check:
-            if (column < *(int *)(row + 8)) goto col_loop;
-            *(int *)(row + 8) = 0;
-            row_off += 0x80; ++outer;
-row_check:
-            if (outer < *(int *)((char *)obj + 0x10)) goto row_loop;
-        }
-        *(int *)((char *)obj + 0x10) = 0;
-        if (*(int *)((char *)obj + 8) == *(int *)((char *)obj + 4))
-            *(int *)((char *)obj + 8) = -2;
-        fn_802B0690((int *)((char *)obj + 4));
-        fn_802B0690((int *)((char *)obj + 8));
-        if ((char *)obj + 0x324 != 0) {
+    for (i = 0, off_i = 0; i < *(int *)((char *)&lbl_804BE104 + 4); i++, off_i += 4) {
+        void *obj = *(void **)(*(char **)&lbl_804BE104 + off_i);
+        if (obj != 0) {
+            int j, off_j;
+            for (j = 0, off_j = 0; j < *(int *)((char *)obj + 0x10); j++, off_j += 0x80) {
+                char *row = *(char **)((char *)obj + 0xc) + off_j;
+                int k, off_k;
+                fn_802B0690((int *)(row + 0x7c));
+                for (k = 0, off_k = 0; k < *(int *)(row + 8); k++, off_k += 0x10) {
+                    fn_802B0690((int *)(*(char **)(row + 4) + off_k));
+                }
+                *(int *)(row + 8) = 0;
+            }
+            *(int *)((char *)obj + 0x10) = 0;
+            if (*(int *)((char *)obj + 8) == *(int *)((char *)obj + 4)) {
+                *(int *)((char *)obj + 8) = -2;
+            }
+            fn_802B0690((int *)((char *)obj + 4));
+            fn_802B0690((int *)((char *)obj + 8));
             if ((char *)obj + 0x324 != 0) {
-                *(int *)((char *)obj + 0x324) = 0;
-                *(int *)((char *)obj + 0x328) = 0;
-                *(int *)((char *)obj + 0x32C) = 0;
+                if ((char *)obj + 0x324 != 0) {
+                    *(int *)((char *)obj + 0x324) = 0;
+                    *(int *)((char *)obj + 0x328) = 0;
+                    *(int *)((char *)obj + 0x32c) = 0;
+                }
             }
-        }
-        if ((char *)obj + 0x318 != 0) {
             if ((char *)obj + 0x318 != 0) {
-                *(int *)((char *)obj + 0x318) = 0;
-                *(int *)((char *)obj + 0x31C) = 0;
-                *(int *)((char *)obj + 0x320) = 0;
+                if ((char *)obj + 0x318 != 0) {
+                    *(int *)((char *)obj + 0x318) = 0;
+                    *(int *)((char *)obj + 0x31c) = 0;
+                    *(int *)((char *)obj + 0x320) = 0;
+                }
             }
-        }
-        if ((char *)obj + 0xC != 0) {
-            fn_8002F634((char *)obj + 0x18, fn_802B0AC0, 0x80, 6);
-            if ((char *)obj + 0xC != 0) {
-                *(int *)((char *)obj + 0xC) = 0;
-                *(int *)((char *)obj + 0x10) = 0;
-                *(int *)((char *)obj + 0x14) = 0;
+            if ((char *)obj + 0xc != 0) {
+                fn_8002F634((char *)obj + 0x18, fn_802B0AC0, 0x80, 6);
+                if ((char *)obj + 0xc != 0) {
+                    *(int *)((char *)obj + 0xc) = 0;
+                    *(int *)((char *)obj + 0x10) = 0;
+                    *(int *)((char *)obj + 0x14) = 0;
+                }
             }
+            fn_80128668(obj);
         }
-        fn_80128668(obj);
     }
-    outer_off += 4; ++i;
-outer_check:
-    if (i < outer_count) goto outer_loop;
     *(int *)((char *)&lbl_804BE104 + 4) = 0;
 }
 #pragma dont_inline reset
