@@ -193,29 +193,48 @@ extern "C" void fn_8012A67C(void) {
     lbl_8055E008 = 0;
 }
 
-s32 fn_8012A6C8(void *arg0, const char *arg1, u32 arg2) {
-    u8 buffer[5];
+#pragma push
+#pragma scheduling invalid_target
+extern "C" s32 fn_8012A6C8(s32 arg0, s32 arg1, s32 arg2) {
+    const char *messages = lbl_8032A630;
+    u32 *data = (u32 *)arg0;
+    volatile u8 buffer[5];
+    u8 first;
+    u8 second;
     u32 value;
-    fn_80132E7C(arg0, 0x30);
-    if (*(u32 *)arg0 != 0x52535430) {
-        fn_802E30C8(lbl_8032A630 + 0xDC, arg1, "0TSR");
-        return 0;
+
+    fn_80132E7C((void *)arg0, 0x30);
+    value = data[0];
+    if (value != 0x52535430) {
+        *(volatile u32 *)buffer = 0x52535430;
+        first = buffer[0];
+        second = buffer[1];
+        buffer[0] = buffer[3];
+        buffer[3] = first;
+        buffer[1] = buffer[2];
+        buffer[2] = second;
+        buffer[4] = 0;
+        fn_802E30C8(messages + 0xDC, (const char *)arg1, value, (const char *)buffer);
+        goto failed;
     }
-    value = *(u32 *)((char *)arg0 + 8);
+    value = data[2];
     if (value != 8) {
-        fn_802E30C8(lbl_8032A630 + 0x114, arg1, 8);
-        return 0;
+        fn_802E30C8(messages + 0x114, (const char *)arg1, value, 8);
+        goto failed;
     }
-    value = *(u32 *)((char *)arg0 + 4);
+    value = data[1];
     if (value != 0x34) {
-        fn_802E30C8(lbl_8032A630 + 0x148, arg1, 0x34);
-        return 0;
+        fn_802E30C8(messages + 0x148, (const char *)arg1, value, 0x34);
+        goto failed;
     }
-    if (*(u32 *)((char *)arg0 + 0x10) != arg2 && arg2 != 0) {
-        fn_802E30C8(lbl_8032A630 + 0x180, arg1, arg2);
-        return 0;
+    value = data[4];
+    if (value != (u32)arg2 && arg2 != 0) {
+        fn_802E30C8(messages + 0x180, (const char *)arg1, value, arg2);
+        goto failed;
     }
     return 1;
+failed:
+    return 0;
 }
 
 extern "C" s32 fn_802E2D74(s32);
@@ -1784,23 +1803,35 @@ extern "C" void fn_8012C720(void *, s32, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012EE80(void *arg0) {
-    register char *entry = (char *)arg0 + 4;
-    register int end = *(int *)((char *)arg0 + 0x28);
-    register char *base = (char *)arg0;
-    register char *cursor = entry;
-    register int i;
-    register int status;
-    register int pos;
-    register int len;
-    register int request;
-    register int limit;
+    struct Entry {
+        s32 first;
+        void *file;
+        s32 position;
+        s32 state;
+    };
+    struct Buffer {
+        s32 size;
+        Entry entries[2];
+        s32 limit;
+        s32 boundary;
+    };
 
-    for (i = 0; i < 2; i++, cursor += 0x10) {
-        status = *(int *)(cursor + 0xC);
+    Buffer *buffer = (Buffer *)arg0;
+    Entry *entries = buffer->entries;
+    Entry *cursor = entries;
+    s32 i;
+    s32 end = buffer->boundary;
+    s32 status;
+    s32 pos;
+    s32 len;
+    s32 request;
+
+    for (i = 0; i < 2; i++, cursor++) {
+        status = cursor->state;
         if (status != 0) {
-            if (status == 1 && fn_8012C7FC(*(void **)(cursor + 4), 0))
-                *(int *)(cursor + 0xC) = 2;
-            pos = *(int *)(cursor + 8) + *(int *)base;
+            if (status == 1 && fn_8012C7FC(cursor->file, 0))
+                cursor->state = 2;
+            pos = cursor->position + buffer->size;
             if (pos > end)
                 end = pos;
         }
@@ -1808,34 +1839,33 @@ extern "C" void fn_8012EE80(void *arg0) {
 
     i = 0;
     cursor = 0;
-    for (; i < 2; i++, entry += 0x10) {
-        status = *(int *)(entry + 0xC);
+    for (; i < 2; i++, entries++) {
+        status = entries->state;
         if (status != 0)
             goto check_state;
-        if (*(int *)(entry + 4) != 0)
+        if (entries->file != 0)
             goto process_entry;
 
 check_state:
         if (status != 2)
             goto next_entry;
-        pos = *(int *)(entry + 8) + *(int *)base;
-        if (pos >= *(int *)(base + 0x28))
+        pos = entries->position + buffer->size;
+        if (pos >= buffer->boundary)
             goto next_entry;
 
 process_entry:
-        *(int *)(entry + 8) = end;
+        entries->position = end;
         pos = end;
-        len = *(int *)base;
-        limit = *(int *)(base + 0x24);
+        len = buffer->size;
         end += len;
         request = len;
-        if (pos + len > limit)
-            request = limit - pos;
+        if (pos + len > buffer->limit)
+            request = buffer->limit - pos;
         if (request > 0) {
-            fn_8012C720(*(void **)(entry + 4), *(int *)entry, request, pos);
-            *(int *)(entry + 0xC) = 1;
+            fn_8012C720(entries->file, entries->first, request, pos);
+            entries->state = 1;
         } else {
-            *(int *)(entry + 0xC) = (int)cursor;
+            entries->state = (s32)cursor;
         }
 
 next_entry:
@@ -1953,35 +1983,62 @@ extern "C" void *fn_8012C58C(void *arg0) {
 
 extern "C" const char lbl_8032ABF8[];
 extern "C" const char lbl_8032AC08[];
-void *fn_8012C5B8(u32 arg0, s32 *arg1, s32 arg2) {
+extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
     s32 index;
-    s32 result;
+    s32 result = 0;
     s32 *manager;
     s32 *entry;
-    void *allocation;
-    manager = (s32 *)((s32 (*)(u32, s32 *, s32))fn_8012B534)(arg0, &index, 1);
-    result = 0;
+
+    manager = ((s32 *(*)(s32, s32 *, s32))fn_8012B534)(arg0, &index, 1);
     if (manager != 0) {
         entry = (s32 *)((char *)*(void **)((char *)manager + 0x60) + index * 0x44);
-        if ((u32)entry[8] == arg0) {
-            *arg1 = entry[9];
-            allocation = fn_8012A570(0x18, (void *)lbl_8032ABF8);
+        if (*(u32 *)((char *)entry + 0x20) == (u32)arg1) {
+            *(s32 *)arg2 = *(s32 *)((char *)entry + 0x24);
+            void *allocation = fn_8012A570(0x18, (void *)lbl_8032ABF8);
             if (allocation != 0) {
-                *(s32 *)((char *)allocation + 0xC) = -1;
-                *(s32 *)((char *)allocation + 0x10) = 0;
-                *(s32 *)((char *)allocation + 4) = 0;
-                *(s32 *)((char *)allocation + 8) = 0;
-                *(s32 *)((char *)allocation + 0x14) = 0;
-                *(s32 *)allocation = 0x19AFEE2A;
-                *(s32 **)((char *)allocation + 4) = entry;
+                volatile s32 *fields = (volatile s32 *)allocation;
+                fields[3] = -1;
+                fields[4] = 0;
+                fields[1] = 0;
+                fields[2] = 0;
+                fields[5] = 0;
+                fields[0] = 0x19AFEE2A;
+                fields[1] = (s32)entry;
                 result = (s32)allocation;
-                *(void **)((char *)allocation + 8) = manager;
+                fields[2] = (s32)manager;
             }
         } else {
-            fn_802E30C8(lbl_8032AC08, arg0, entry[8]);
+            char queryText[5];
+            char entryText[5];
+            char zero = 0;
+            char q0, q3, q1, q2;
+            char e0, e3, e1, e2;
+
+            *(u32 *)queryText = (u32)arg1;
+            queryText[4] = zero;
+            q0 = queryText[0];
+            q3 = queryText[3];
+            q1 = queryText[1];
+            q2 = queryText[2];
+            queryText[0] = q3;
+            queryText[3] = q0;
+            queryText[1] = q2;
+            queryText[2] = q1;
+
+            *(u32 *)entryText = *(u32 *)((char *)entry + 0x20);
+            entryText[4] = zero;
+            e0 = entryText[0];
+            e3 = entryText[3];
+            e1 = entryText[1];
+            e2 = entryText[2];
+            entryText[0] = e3;
+            entryText[3] = e0;
+            entryText[1] = e2;
+            entryText[2] = e1;
+            fn_802E30C8(lbl_8032AC08, queryText, entryText);
         }
     }
-    return (void *)result;
+    return result;
 }
 
 extern "C" s32 fn_8012C6F0(void *arg0) {
