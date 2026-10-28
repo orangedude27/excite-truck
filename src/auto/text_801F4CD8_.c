@@ -565,9 +565,9 @@ void fn_801F65D0(void *arg0) {
     float delta[3];
     float var_f31, var_f30;
     float weight, dot;
+    int offset, i;
     unsigned char *entry;
     float *a, *b;
-    int i, offset;
 
     var_f31 = lbl_80562FDC;
     var_f30 = lbl_80562FE0;
@@ -859,30 +859,31 @@ extern "C" void fn_801F6F3C(void *arg0, int arg1, int arg2, void *arg3, int arg4
         virtual void d10();
         virtual void d11();
         virtual void d12();
-        virtual void getVector(float *, const char *);
+        virtual Vec3_801F4F9C getVector(const char *);
     };
 
-    int old, got;
     char *slot;
-    float sp[3];
-    DummyDispatch *object = (DummyDispatch *)arg3;
+    int old, got;
+    Vec3_801F4F9C sp;
 
     if (*(int *)((char *)arg0 + 0x2A0) >= 8) {
         fn_802E317C(lbl_8033AE20);
     }
     slot = (char *)arg0 + *(int *)((char *)arg0 + 0x2A0) * 0x54;
-    old = ((int (*)(const char *))fn_801F4E44)(object->getName(lbl_8055B19C));
+    old = ((int (*)(const char *))fn_801F4E44)(
+        ((DummyDispatch *)arg3)->getName(lbl_8055B19C));
     got = ((int (*)(void *))fn_801F4ECC)(arg3);
     fn_801F602C(slot, arg1, arg2, old, got);
     *(int *)(slot + 0x34) = arg4;
     slot[0x38] = 1;
-    *(float *)(slot + 0x3C) = lbl_80562FE8 * object->getFloat(lbl_8055B1A8);
-    *(float *)(slot + 0x40) = object->getFloat(lbl_8055B1B0);
-    *(float *)(slot + 0x44) = object->getFloat(lbl_8055B1B8);
-    object->getVector(sp, lbl_8033AE48);
-    *(float *)(slot + 0x48) = sp[0];
-    *(float *)(slot + 0x4C) = sp[1];
-    *(float *)(slot + 0x50) = sp[2];
+    *(float *)(slot + 0x3C) =
+        lbl_80562FE8 * ((DummyDispatch *)arg3)->getFloat(lbl_8055B1A8);
+    *(float *)(slot + 0x40) = ((DummyDispatch *)arg3)->getFloat(lbl_8055B1B0);
+    *(float *)(slot + 0x44) = ((DummyDispatch *)arg3)->getFloat(lbl_8055B1B8);
+    sp = ((DummyDispatch *)arg3)->getVector(lbl_8033AE48);
+    *(float *)(slot + 0x48) = sp.x;
+    *(float *)(slot + 0x4C) = sp.y;
+    *(float *)(slot + 0x50) = sp.z;
     *(int *)((char *)arg0 + 0x2A0) =
         *(int *)((char *)arg0 + 0x2A0) + 1;
 }
