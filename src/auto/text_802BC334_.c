@@ -268,6 +268,11 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
     return obj;
 }
 
+struct CurveData {
+    int w[6];
+    float f6;
+    float f7;
+};
 extern void fn_802BC588(void *, void *, void *, void *, void *);
 extern int fn_802C1500(void *, int);
 extern void *fn_801FA8E0(void *, void *, int);
