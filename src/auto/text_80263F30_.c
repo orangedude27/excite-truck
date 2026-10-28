@@ -86,6 +86,7 @@ void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
     }
     fn_8020A648(prev_state);
 }
+#pragma use_lmw_stmw on
 
 void fn_80264098(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 4) = arg1;
