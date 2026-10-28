@@ -77,7 +77,7 @@ static inline void fn_80164CDC_call(void *arg0) {
 #pragma cplusplus on
 struct Dummy_80163550 {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual s32 f8();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual s32 f7(); virtual s32 f8();
 };
 #pragma cplusplus off
 
