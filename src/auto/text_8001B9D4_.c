@@ -500,6 +500,7 @@ void fn_8001C9C4(void) {
     lbl_8055D5D4 = (void *)fn_80131808(lbl_802FD6D8 + 0x390);
     lbl_8055D5D8 = 1;
 }
+#pragma pop
 
 extern void fn_80131818(void *);
 extern int fn_80128668();
