@@ -342,15 +342,15 @@ extern "C" void fn_80217874(void *arg0, int arg1) {
     int i;
     Obj *obj;
     int found;
-    void (*reset)(void) = fn_80216D34;
-    reset();
+    float threshold;
+    ((void (*)(void))fn_80216D34)();
     if (*(int *)(base + 0x44C) == 0) {
         obj = *(Obj **)(base + 0x450);
         if (obj != 0 && obj->check(arg1)) {
             fn_80218E08(arg0, arg1);
             return;
         }
-        register float threshold = lbl_80563490;
+        threshold = lbl_80563490;
         cursor = base;
         i = 0;
         while (i < *(int *)(base + 0x430)) {
@@ -505,6 +505,7 @@ void *fn_80217BD8(void *arg0, int arg1, int arg2) {
 }
 #pragma scheduling on
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_80217C4C(void *arg0) {
     char *base = (char *)arg0;
@@ -523,11 +524,12 @@ void fn_80217C4C(void *arg0) {
     matches = 0;
     i = 0;
     for (; i < count; i++, entry += 8) {
-        int eligible = 0;
+        int eligible;
         if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
         item = *(char **)(entry + 0x4A4);
+        eligible = 0;
         if (*(unsigned char *)(item + 0x1A) != 0) goto first_yes;
-        if (threshold <= *(float *)(item + 0x20)) goto first_yes;
+        if (*(float *)(item + 0x20) >= threshold) goto first_yes;
         goto first_check;
     first_yes:
         eligible = 1;
@@ -541,10 +543,11 @@ void fn_80217C4C(void *arg0) {
         for (step = 1; step < count; step++) {
             int idx = (last + step) % count;
             char *current = base + idx * 8;
-            int eligible = 0;
+            int eligible;
             item = *(char **)(current + 0x4A4);
+            eligible = 0;
             if (*(unsigned char *)(item + 0x1A) != 0) goto second_yes;
-            if (threshold <= *(float *)(item + 0x20)) goto second_yes;
+            if (*(float *)(item + 0x20) >= threshold) goto second_yes;
             goto second_check;
         second_yes:
             eligible = 1;
