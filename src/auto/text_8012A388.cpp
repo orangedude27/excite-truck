@@ -566,7 +566,7 @@ extern "C" s32 fn_80128668(void *);
 extern "C" u32 fn_8012BB18(void) { return 1; }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
     s32 i;
     s32 offset;
