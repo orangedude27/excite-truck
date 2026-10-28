@@ -161,21 +161,73 @@ extern void fn_8000AEC4(void);
 #pragma small_data off
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-  void fn_8000AF1C(void *arg0) {
- int i, active, val; int *entry;
- lbl_8055D3D8=0; lbl_8055D3E8=0; active=fn_80204024(); lbl_8055D3DC=0;
- fn_801E7C1C(arg0); fn_801E8818(fn_8000AEC4,lbl_802FBC90+0x21C); fn_8012E81C(lbl_802FBC90+0x228);
- fn_8000AB44(); fn_8023889C(); fn_801CB808(); fn_801617BC(); fn_802061F8(); fn_80006D9C();
- fn_8000CE60(); fn_8020D178(); fn_802108C8(); fn_802B8744(); fn_801769EC(); fn_8000AF04();
- entry=(int *)&lbl_8034F5B8; i=0;
- do { memset(entry,0,8); val=*(int *)&lbl_8034F5D8; fn_801332D0(i+0xC,lbl_802FBC90+0x238,&val);
-   if(val>=0x22) { fn_802E30C8(lbl_802FBC90+0x248); val=*(int *)&lbl_8034F5D8; }
-   else if(val<0) { fn_802E30C8(lbl_802FBC90+0x248); val=*(int *)&lbl_8034F5D8; }
-   else if(fn_8000AEC8(val)==0) val=*(int *)&lbl_8034F5D8;
-   entry[0]=val; entry[1]=0x22; entry+=2; i++; } while(i<4);
- lbl_8055D3D5=0; lbl_8055D3D4=1; lbl_8055D3D0=0;
- if(active) { fn_8000ADE0(0xD); fn_80265D74(); fn_80128678(); fn_80206454(); fn_80127930(); fn_802D3E9C(0); }
- }
+void fn_8000AF1C(void *arg0) {
+    int zero = 0;
+    char *config = lbl_802FBC90;
+    int active;
+    int i;
+    int val;
+    int *entry;
+    int limit = 0x22;
+    void (*callback)(void);
+    void *startupMessage;
+
+    lbl_8055D3D8 = zero;
+    lbl_8055D3E8 = zero;
+    active = fn_80204024();
+    lbl_8055D3DC = zero;
+
+    fn_801E7C1C(arg0);
+    callback = fn_8000AEC4;
+    startupMessage = config + 0x21C;
+    fn_801E8818(callback, startupMessage);
+    fn_8012E81C(config + 0x228);
+    fn_8000AB44();
+    fn_8023889C();
+    fn_801CB808();
+    fn_801617BC();
+    fn_802061F8();
+    fn_80006D9C();
+    fn_8000CE60();
+    fn_8020D178();
+    fn_802108C8();
+    fn_802B8744();
+    fn_801769EC();
+    ((void (*)(int))fn_8000AF04)(*(int *)((char *)arg0 + 0x3E8));
+
+    entry = lbl_8034F5B8;
+    i = 0;
+    do {
+        memset(entry, 0, 8);
+        val = *(int *)&lbl_8034F5D8;
+        fn_801332D0(i + 0xC, config + 0x238, &val);
+        if (val >= limit) goto invalid;
+        if (val < 0) {
+        invalid:
+            fn_802E30C8(config + 0x248, i);
+            val = *(int *)&lbl_8034F5D8;
+        } else if (fn_8000AEC8(val) == 0) {
+            val = *(int *)&lbl_8034F5D8;
+        }
+        i++;
+        entry[0] = val;
+        entry[1] = limit;
+        entry += 2;
+    } while (i < 4);
+
+    lbl_8055D3D5 = 0;
+    lbl_8055D3D4 = 1;
+    lbl_8055D3D0 = 0;
+    if (active != 0) {
+        fn_8000ADE0(0xD);
+        fn_80265D74();
+        fn_80128678();
+        fn_80206454();
+        fn_80127930();
+        fn_802D3E9C(0);
+    }
+  }
+#pragma scheduling on
 #pragma dont_inline reset
   #pragma pop
   
