@@ -898,10 +898,10 @@ extern float lbl_80564FC0;
 extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag();
 #pragma use_lmw_stmw off
-void fn_802D03F4(float *arg0, float arg1) {
+void fn_802D03F4(register float *arg0, float arg1) {
     volatile unsigned long *src = (volatile unsigned long *)arg0;
     unsigned long *dst = lbl_804C56C0;
-    register unsigned long t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    unsigned long t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     float sp[3];
     float mag;
     float scale;
@@ -1836,36 +1836,49 @@ void *fn_802D39A4(float value) {
 void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
 
 extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE8, lbl_80564FEC;
+#pragma push
+#pragma paired off
+#pragma paired_single off
+#pragma scheduling off
 int fn_802D3A5C(void *arg0, float *arg1) {
- extern unsigned char lbl_804C9778[];
- int x=(int)arg1[0];
- int y=(int)(lbl_80564FB8*arg1[1]/lbl_80564FBC);
- float target;
- if (*((unsigned char *)arg0+0xD)) target=lbl_80564F8C;
- else target=lbl_80564F88;
- if(x>=0 && x<640 && y>=0 && y<448) {
-  float z, delta, nearZ, farZ, a, b;
-  *(int *)arg0=x;
-  z=-arg1[2];
-  *((int *)arg0+1)=y;
-  nearZ=*(float *)(lbl_804C9778+4);
- farZ=*(float *)(lbl_804C9778+8);
- delta=farZ-nearZ;
- a=-nearZ/delta;
- b=farZ*nearZ/delta;
-  *((unsigned int *)arg0+2)=(unsigned int)(lbl_80564FE8+lbl_80564FE8*((z*a-b)/-z));
-  if(*(int *)(lbl_804C9984+0x700)<64) {
-   *(void **)(lbl_804C9984+0x600+*(int *)(lbl_804C9984+0x700)*4)=arg0;
-   ++*(int *)(lbl_804C9984+0x700);
-  }
- } else *((unsigned char *)arg0+0xD)=0;
- {
-  float old=*(float *)((char *)arg0+0x14);
-  float value=old+*(float *)((char *)arg0+0x10)*(target-old);
-  *(float *)((char *)arg0+0x14)=value;
-  return value>=lbl_80564FEC;
- }
+    extern unsigned char lbl_804C9778[];
+    int x = (int)arg1[0];
+    int y = (int)(lbl_80564FB8 * arg1[1] / lbl_80564FBC);
+    float target;
+
+    if (*((unsigned char *)arg0 + 0xD))
+        target = lbl_80564F8C;
+    else
+        target = lbl_80564F88;
+
+    if (x >= 0 && x < 640 && y >= 0 && y < 448) {
+        float z, delta, nearZ, farZ, a, b;
+
+        *(int *)arg0 = x;
+        z = -arg1[2];
+        *((int *)arg0 + 1) = y;
+        nearZ = *(float *)(lbl_804C9778 + 4);
+        farZ = *(float *)(lbl_804C9778 + 8);
+        delta = farZ - nearZ;
+        a = -nearZ / delta;
+        b = farZ * nearZ / delta;
+        *((unsigned int *)arg0 + 2) = (unsigned int)(lbl_80564FE8 + lbl_80564FE8 * ((z * a - b) / -z));
+        if (*(int *)(lbl_804C9984 + 0x700) < 64) {
+            *(void **)(lbl_804C9984 + 0x600 + *(int *)(lbl_804C9984 + 0x700) * 4) = arg0;
+            ++*(int *)(lbl_804C9984 + 0x700);
+        }
+    } else {
+        *((unsigned char *)arg0 + 0xD) = 0;
+    }
+
+    {
+        float old = *(float *)((char *)arg0 + 0x14);
+        float value = old + *(float *)((char *)arg0 + 0x10) * (target - old);
+        *(float *)((char *)arg0 + 0x14) = value;
+        return value >= lbl_80564FEC;
+    }
 }
+#pragma pop
 
 void fn_802D3BB0(void) {}
 
