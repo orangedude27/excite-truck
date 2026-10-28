@@ -116,35 +116,49 @@ void fn_801EC4A8(void *arg0, long arg1) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
+struct Parent {
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+    virtual void d20();
+    virtual void *get(int);
+};
+extern "C" {
+static inline void *fn_801EC59C_parent_get(void *parent, int index) {
+    return ((Parent *)parent)->get(index);
+}
+}
+#pragma cplusplus reset
+void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
     extern char lbl_8055AFDC, lbl_8055AFE4;
     extern float lbl_80562E88, lbl_80562E8C;
-    typedef struct { void *slots[24]; } VTable;
-    typedef struct { VTable *vtable; } Object;
-    typedef struct { float x, y, z; } Vec3;
+    typedef union { struct { float x, y, z; } f; unsigned int u[3]; } Vec3;
     typedef Vec3 (*GetVector)(void *, char *);
+    typedef struct { void *slots[14]; } VTable;
     void *result;
     Vec3 first, second;
     float x0, y0, x1, y1;
     float dx, dy, slopeX, slopeY;
 
     *(volatile int *)out = value;
-    result = ((void *(*)(void *, int))((VTable *)((Object *)parent)->vtable)->slots[0x5C / 4])(parent, index);
+    result = fn_801EC59C_parent_get(parent, index);
     if (result != 0) {
         first = ((GetVector)((VTable *)*(void **)result)->slots[0x34 / 4])(result, &lbl_8055AFDC);
         second = ((GetVector)((VTable *)*(void **)result)->slots[0x34 / 4])(result, &lbl_8055AFE4);
-        x0 = first.x * scale - bias;
-        x1 = second.x * scale - bias;
-        y0 = first.y * lbl_80562E8C;
-        y1 = second.y * lbl_80562E8C;
+        x0 = first.f.x * scale - bias;
+        x1 = second.f.x * scale - bias;
+        y0 = first.f.y * lbl_80562E8C;
+        y1 = second.f.y * lbl_80562E8C;
         dx = x0 - x1;
-        dy = first.z * lbl_80562E8C - second.z * lbl_80562E8C;
+        dy = first.f.z * lbl_80562E8C - second.f.z * lbl_80562E8C;
         slopeX = (y1 - y0) / dx;
         slopeY = dy / dx;
         *(float *)((char *)out + 4) = slopeX;
         *(float *)((char *)out + 0xC) = slopeY;
         *(float *)((char *)out + 8) = y0 - slopeX * x1;
-        *(float *)((char *)out + 0x10) = first.z * lbl_80562E8C - slopeY * x1;
+        *(float *)((char *)out + 0x10) = first.f.z * lbl_80562E8C - slopeY * x1;
     } else {
         *(float *)((char *)out + 0x10) = lbl_80562E88;
         *(float *)((char *)out + 0xC) = lbl_80562E88;
@@ -152,7 +166,6 @@ extern "C" void fn_801EC59C(void *out, void *parent, int index, int value, float
         *(float *)((char *)out + 4) = lbl_80562E88;
     }
 }
-#pragma cplusplus reset
 #pragma pop
 void fn_801EC714(void *arg0, float *arg1, float *arg2) {
     *arg1 = *(float *)((char *)arg0 + 8) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 4));
