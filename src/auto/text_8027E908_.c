@@ -387,51 +387,74 @@ extern "C" int fn_8027EE88(void) {
 extern "C" void fn_8027F09C(int arg0) {
     extern int fn_801345D8(char *, int, const char *, const char *, int);
     extern int fn_80131234(int);
-    extern int lbl_802FA8AC;
-    extern int lbl_804B3018;
+    extern char lbl_802FA8AC[];
+    extern char lbl_804B3018[];
     extern int lbl_8055C7D0;
     extern int lbl_8055C7D8;
-    int args[30];
-    char buffer[0x64];
+    struct Local {
+        int args[30];
+        char buffer[0x64];
+        char pad[8];
+    } local;
+    register int b0, b1, b2, b3, b4;
+    register int a0, a2, a3, a4;
+    register int c7d8, six, b860, minusTwo, thirteen;
     register const char *base = lbl_80347E50;
     int result1;
     int result2;
+    int *atable;
 
     ((int (*)(char *, int, const char *, ...))fn_801345D8)(
-        buffer, 0x64, base + 0x3D8, arg0);
-    args[5] = 0;
-    args[6] = 5;
-    args[7] = (int)&lbl_804B3018;
-    args[8] = 0;
-    args[9] = 0;
+        local.buffer, 0x64, base + 0x3D8, arg0);
+    local.args[5] = 0;
+    local.args[6] = 5;
+    local.args[7] = (int)lbl_804B3018;
+    local.args[8] = 0;
+    local.args[9] = 0;
     result1 = ((int (*)(int, int))fn_80131234)(
-        (int)(base + 0x40C), (int)&lbl_804B3018);
-    args[12] = result1;
-    args[11] = 3;
-    args[10] = (int)&lbl_8055C7D0;
-    args[13] = 0;
-    args[14] = 0;
-    result2 = fn_80131234((int)buffer);
-    args[17] = result2;
-    args[16] = 3;
-    args[15] = (int)&lbl_8055C7D8;
-    args[18] = 0;
-    args[19] = 0;
-    args[20] = (int)&lbl_8055B860;
-    args[21] = 6;
-    args[22] = 0;
-    args[23] = -2;
-    args[24] = 13;
-    args[25] = ((int *)&lbl_804B2FF8)[0];
-    args[26] = ((int *)&lbl_804B2FF8)[1];
-    args[27] = ((int *)&lbl_804B2FF8)[2];
-    args[28] = ((int *)&lbl_804B2FF8)[3];
-    args[29] = ((int *)&lbl_804B2FF8)[4];
-    args[0] = ((int *)&lbl_802FA8AC)[0];
-    args[2] = ((int *)&lbl_802FA8AC)[2];
-    args[3] = ((int *)&lbl_802FA8AC)[3];
-    args[4] = ((int *)&lbl_802FA8AC)[4];
-    args[1] = (int)&args[5];
+        (int)(base + 0x40C), (int)lbl_804B3018);
+    local.args[12] = result1;
+    local.args[11] = 3;
+    local.args[10] = (int)&lbl_8055C7D0;
+    local.args[13] = 0;
+    local.args[14] = 0;
+    result2 = fn_80131234((int)local.buffer);
+    local.args[17] = result2;
+    local.args[16] = 3;
+    local.args[18] = 0;
+    local.args[19] = 0;
+
+    c7d8 = (int)&lbl_8055C7D8;
+    six = 6;
+    b860 = (int)&lbl_8055B860;
+    minusTwo = -2;
+    thirteen = 13;
+    b0 = ((int *)&lbl_804B2FF8)[0];
+    b1 = ((int *)&lbl_804B2FF8)[1];
+    b2 = ((int *)&lbl_804B2FF8)[2];
+    b3 = ((int *)&lbl_804B2FF8)[3];
+    b4 = ((int *)&lbl_804B2FF8)[4];
+    atable = (int *)lbl_802FA8AC;
+    a0 = *atable++;
+    a2 = atable[1];
+    a3 = atable[2];
+    a4 = atable[3];
+    local.args[15] = c7d8;
+    local.args[20] = b860;
+    local.args[21] = six;
+    local.args[22] = 0;
+    local.args[23] = minusTwo;
+    local.args[24] = thirteen;
+    local.args[25] = b0;
+    local.args[26] = b1;
+    local.args[27] = b2;
+    local.args[28] = b3;
+    local.args[29] = b4;
+    local.args[0] = a0;
+    local.args[2] = a2;
+    local.args[3] = a3;
+    local.args[4] = a4;
+    local.args[1] = (int)&local.args[5];
 #pragma cplusplus on
     class Draw {
     public:
@@ -442,7 +465,8 @@ extern "C" void fn_8027F09C(int arg0) {
     };
     ((Draw *)fn_8027ED70())->use(base + 0x214);
 #pragma cplusplus reset
-    ((int (*)(int *, int, int, int))fn_802146BC)(args, -0x3E7, -0x3E7, 1);
+    ((int (*)(int *, int, int, int))fn_802146BC)(
+        local.args, -0x3E7, -0x3E7, 1);
 }
 
 #pragma cplusplus off
@@ -1030,6 +1054,82 @@ int fn_8027F958(int *selection, void *collection) {
 extern int fn_80216D28(void);
 int fn_80280898(void) { extern unsigned int lbl_8055F688; if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
 
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" int fn_802808D0(void) {
+    class CheckObj {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual int f7();
+    };
+    extern int fn_80019714(void);
+    extern int fn_80214D50(int);
+    extern void fn_801345D8();
+    extern void fn_80236954(char *);
+    extern char lbl_80348480[];
+    char buffer[0x1E];
+    void **base;
+    void **p;
+    void *entry;
+    int count;
+    int index;
+    int active;
+
+    count = lbl_804B3048.count;
+    index = 0;
+    base = lbl_804B3048.items;
+    p = base;
+    for (; index < count; index++, p++) {
+        if (*p == (void *)lbl_8055F688)
+            goto found_item;
+    }
+    index = -1;
+found_item:
+    if (index >= 0) {
+        entry = base[index];
+        active = 0;
+        if (*(void **)((char *)entry + 0x60) != 0) {
+            if (fn_80019714() == 0 &&
+                ((CheckObj *)*(void **)((char *)entry + 0x60))->f7()) {
+                active = 1;
+            }
+        }
+        if (active != 0) {
+            if (*(unsigned char *)((char *)lbl_8055F688 + 0x64) != 0) {
+                index = 5;
+            } else {
+                count = lbl_804B3048.count;
+                index = 0;
+                p = lbl_804B3048.items;
+                for (; index < count; index++, p++) {
+                    if (*p == (void *)lbl_8055F688)
+                        goto found_item_2;
+                }
+                index = -1;
+found_item_2:
+                ;
+            }
+            ((void (*)(char *, int, const char *, ...))fn_801345D8)(
+                buffer, 0x1E, lbl_80348480, index + 1);
+            fn_80236954(buffer);
+            return 1;
+        }
+        fn_80216D28();
+        fn_80214D50(1);
+        return 0;
+    }
+    fn_80216D28();
+    return 0;
+}
+#pragma cplusplus reset
+#pragma scheduling on
+
 int fn_80280A38(void) { return 0; }
 
 extern unsigned char lbl_804B3068[];
@@ -1147,6 +1247,91 @@ extern "C" int fn_80280F7C(void) {
     } else fn_80216D28();
     return 0;
 }
+
+#pragma scheduling invalid_target
+extern "C" int fn_80281138(void) {
+    extern int fn_801345D8(char *, int, const char *, const char *, int);
+    extern int fn_802368EC(void);
+    extern void fn_80236954(char *);
+    extern void *lbl_8055F694;
+    extern char lbl_8034848C[];
+    extern char lbl_8034849C[];
+    void **items;
+    void *key;
+    void *selected;
+    int count;
+    int index;
+    char buffer1[0x1E];
+    char buffer2[0x1E];
+
+    count = lbl_804B3048.count;
+    index = 0;
+    key = (void *)lbl_8055F688;
+    items = lbl_804B3048.items;
+    for (; count > 0; --count) {
+        if (*items != key) {
+            ++items;
+            ++index;
+            continue;
+        } else {
+            goto found_first;
+        }
+    }
+    index = -1;
+found_first:
+    if (index >= 0 && fn_802368EC() != 0) {
+        if (*(unsigned char *)((char *)lbl_8055F688 + 0x64) != 0) {
+            index = 5;
+        } else {
+            count = lbl_804B3048.count;
+            index = 0;
+            key = (void *)lbl_8055F688;
+            items = lbl_804B3048.items;
+            for (; count > 0; --count) {
+                if (*items != key) {
+                    ++items;
+                    ++index;
+                    continue;
+                } else {
+                    goto found_second;
+                }
+            }
+            index = -1;
+found_second:
+            ;
+        }
+        ((void (*)(char *, int, const char *, ...))fn_801345D8)(
+            buffer1, 0x1E, lbl_8034848C, index + 1);
+        fn_80236954(buffer1);
+    }
+    selected = lbl_8055F694;
+    if (selected != 0) {
+        lbl_8055F688 = 0;
+        if (*(unsigned char *)((char *)selected + 0x64) != 0) {
+            index = 5;
+        } else {
+            count = lbl_804B3048.count;
+            index = 0;
+            items = lbl_804B3048.items;
+            for (; count > 0; --count) {
+                if (*items != selected) {
+                    ++items;
+                    ++index;
+                    continue;
+                } else {
+                    goto found_third;
+                }
+            }
+            index = -1;
+found_third:
+            ;
+        }
+        ((void (*)(char *, int, const char *, ...))fn_801345D8)(
+            buffer2, 0x1E, lbl_8034849C, index + 1);
+        fn_80236954(buffer2);
+    }
+}
+#pragma scheduling on
 
 #pragma cplusplus on
 extern "C" unsigned char lbl_80348678[];
