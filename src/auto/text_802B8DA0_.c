@@ -13,6 +13,9 @@ extern void fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void *, int, int, int);
 extern void fn_802BAE30(void *);
 extern int lbl_8034A9F4;
+extern char lbl_8034A990[];
+extern char lbl_8034AA1C[];
+extern void fn_802B8AE0(void *, void *);
 extern void *lbl_8055FA7C;
 extern char lbl_804BFFF4[];
 extern int lbl_8055FA6C, lbl_8055FA70;
@@ -91,40 +94,115 @@ void *fn_802B8EB8(s32 arg0, s32 arg1, u32 arg2, s32 arg3) {
 #pragma push
 #pragma scheduling invalid_target
 void *fn_802B8EF0(int arg0, void *arg1) {
-    void **table;
-    int index;
-    void *entry;
-    int state;
+    struct Entry {
+        char *name;
+        int state;
+        void *data;
+        int reserved;
+    };
+    struct List {
+        void **items;
+        int count;
+    };
+    void **table = (void **)lbl_804C0088;
+    struct Entry *entry = (struct Entry *)table[arg0];
     char *name;
-    void **items;
+    void *data;
+    int state;
+    struct List *list;
     int count;
-    table = (void **)lbl_804C0088;
-    index = arg0;
-    entry = table[index];
     if (entry == 0) {
         name = &lbl_8055CEC8;
-        entry = fn_801284F8(0x10, &lbl_8055CECC);
+        entry = (struct Entry *)fn_801284F8(0x10, &lbl_8055CECC);
         if (entry != 0) {
-            *(char **)entry = name;
-            arg1 = *(void **)((char *)arg1 + 8);
+            entry->name = name;
+            data = *(void **)((char *)arg1 + 8);
             if ((signed char)*name != 0)
                 state = fn_802B110C((void *)fn_802B8E50, name);
             else
                 state = -2;
-            *(int *)((char *)entry + 4) = state;
+            entry->state = state;
             if (state == -2 && (signed char)*name != 0)
-                fn_802E317C((char *)&lbl_8034AA2C, name);
-            *(int *)((char *)entry + 0xC) = 0;
-            *(void **)((char *)entry + 8) = arg1;
+                fn_802E317C(lbl_8034AA2C, name);
+            entry->reserved = 0;
+            entry->data = data;
         }
-        table[index] = entry;
-        items = *(void ***)lbl_804BFFF4;
-        count = *(int *)(lbl_804BFFF4 + 4);
-        *(int *)(lbl_804BFFF4 + 4) = count + 1;
-        items[count] = entry;
+        table[arg0] = entry;
+        list = (struct List *)lbl_804BFFF4;
+        count = list->count;
+        list->count = count + 1;
+        list->items[count] = (void *)entry;
     }
-    return table[index];
+    return table[arg0];
 }
+
+extern void *fn_802B59CC(int, int, void *, void *);
+extern void fn_801345D8(void *, int, const char *, ...);
+extern int lbl_804C004C[];
+extern float lbl_80564CC0;
+extern float lbl_80564CC4;
+extern char lbl_8055CED4[];
+extern char lbl_8055CEDC[];
+extern char lbl_8055CEE4[];
+extern char lbl_8034A990[];
+void *fn_802B8FE0(int arg0) {
+    struct Record {
+        float value;
+        float parameter;
+        int flags;
+    };
+    struct Vtable {
+        void *unknown[4];
+        int (*setInteger)(void *, const char *, int);
+        float (*setFloat)(void *, const char *, float);
+        void *reserved[17];
+        void *(*find)(void *, const char *);
+    };
+    struct Object {
+        struct Vtable *vtable;
+    };
+    float initial;
+    void *base;
+    int *counter;
+    int index;
+    int offset;
+    int next;
+    struct Record *record;
+    void *object;
+    char buffer[0x20];
+    struct Object *finder;
+    char *found;
+    struct Object *settings;
+
+    initial = lbl_80564CC0;
+    base = *(void **)lbl_804C004C;
+    counter = (int *)((char *)lbl_804C004C + 4);
+    index = *counter;
+    offset = index * 12;
+    next = index + 1;
+    *counter = next;
+    record = (struct Record *)((char *)base + offset);
+    record->flags = 0;
+    record->parameter = initial;
+
+    object = fn_802B59CC(offset, next, counter, base);
+    fn_801345D8(buffer, 0x20, lbl_8055CED4, arg0 + 1);
+
+    finder = (struct Object *)object;
+    found = (char *)finder->vtable->find(finder, buffer);
+    if (found == 0)
+        found = (char *)finder->vtable->find(finder, lbl_8055CEDC);
+
+    if (found != 0) {
+        settings = (struct Object *)found;
+        record->parameter = settings->vtable->setFloat(settings, lbl_8034A990, record->parameter);
+        record->flags = settings->vtable->setInteger(settings, lbl_8055CEE4, record->flags);
+    }
+
+    record->value = lbl_80564CC4;
+    return record;
+}
+
 #pragma pop
 int fn_802B9100(void) {
     return 0;
@@ -157,24 +235,65 @@ void fn_802B9960(void) {
 }
 
 void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
- s32 *cell, *list, *node, *slot=0; s32 i,j,k; s16 size=*(s16*)arg0;
- cell=(s32*)(*(char**)((char*)arg0+4)+((((arg2-size+0x200)/(size*2))+((arg3-size+0x200)/(size*2))*(0x400/(size*2)))*8));
- list=*(s32**)((char*)arg0+0xC);
- node=*(s32**)((char*)cell+4);
- if (node==0 || node[1]+1>node[2]) {
-   if (*(s32*)((char*)list+8)+1 <= *(s32*)((char*)list+0xC)) {
-    i=*(s32*)((char*)list+8); *(s32*)((char*)list+8)=i+1;
-    node=(s32*)((char*)*(s32**)((char*)list+4)+i*4);
-    node[1]=0; node[3]=0;
-   } else node=0;
-   if(node) {
-    if(*(s32**)cell==0) *(s32**)cell=node;
-    if(*(s32**)((char*)cell+4)) *(s32**)((char*)*(s32**)((char*)cell+4)+0xC)=node;
-    *(s32**)((char*)cell+4)=node; node[3]=0;
-    node=*(s32**)((char*)cell+4); i=node[1]; node[1]=i+1; slot=(s32*)node[0]+i;
-   }
- } else { i=node[1]; node[1]=i+1; slot=(s32*)node[0]+i; }
- if(slot) *slot=arg1;
+    typedef struct Node {
+        s32 *data;
+        volatile s32 used;
+        s32 capacity;
+        struct Node *next;
+    } Node;
+    typedef struct Pool {
+        void *unused;
+        Node *nodes;
+        volatile s32 used;
+        s32 capacity;
+    } Pool;
+    s32 size;
+    s32 *data, *slot;
+    s32 denom, y, rows, x, index, item, used;
+    Node **cell;
+    Pool *pool;
+    Node *node, *new_node, *tail;
+
+    size = *(s16 *)arg0;
+    denom = size * 2;
+    y = (arg3 - size + 0x200) / denom;
+    rows = 0x400 / denom;
+    x = (arg2 - size + 0x200) / denom;
+    index = x + y * rows;
+    cell = (Node **)((char *)*(void **)((char *)arg0 + 4) + index * 8);
+    pool = *(Pool **)((char *)arg0 + 0xC);
+    node = cell[1];
+    slot = 0;
+
+    if (node == 0 || node->used + 1 > node->capacity) {
+        node = 0;
+        if (pool->used + 1 <= pool->capacity) {
+            used = pool->used;
+            new_node = &pool->nodes[used];
+            pool->used = used + 1;
+            node = new_node;
+            node->used = 0;
+            node->next = 0;
+        }
+        if (node != 0) {
+            if (cell[0] == 0) cell[0] = node;
+            if (cell[1] != 0) cell[1]->next = node;
+            cell[1] = node;
+            node->next = 0;
+            tail = cell[1];
+            data = tail->data;
+            item = tail->used;
+            tail->used = item + 1;
+            slot = data + item;
+        }
+    } else {
+        tail = node;
+        data = tail->data;
+        item = tail->used;
+        tail->used = item + 1;
+        slot = data + item;
+    }
+    if (slot != 0) *slot = arg1;
 }
 
 extern double ceil(double);
@@ -753,34 +872,44 @@ void fn_802BAFA0(void) {
 #pragma scheduling on
 #pragma pop
 void fn_802BAFF8(void ***arg0, int *arg1) {
-    void **p = *arg0;
-    while (*p != 0) {
-        void *entry = *p, *queue = *(void **)((char *)entry + 4);
-        int *slot = 0;
+    register int zero = 0;
+    arg0 = (void ***)*arg0;
+    while (*(void **)arg0 != 0) {
+        register void *entry = *(void **)arg0;
+        register void *queue = *(void **)((char *)entry + 4);
+        register int *slot = 0;
+        register void *pool = *(void * volatile *)&lbl_8055FA74;
+        register int count;
+
         if (queue == 0 || *(int *)((char *)queue + 4) + 1 > *(int *)((char *)queue + 8)) {
-            int count = *(int *)((char *)lbl_8055FA74 + 8);
-            if (count + 1 <= *(int *)((char *)lbl_8055FA74 + 0xC)) {
-                void *node = (char *)*(void **)((char *)lbl_8055FA74 + 4) + count * 0x10;
-                *(int *)((char *)lbl_8055FA74 + 8) = count + 1;
-                *(int *)((char *)node + 4) = 0;
-                *(int *)((char *)node + 0xC) = 0;
-                if (*(void **)entry == 0) *(void **)entry = node;
+            register void *node = 0;
+            register int pool_count = *(int *)((char *)pool + 8);
+            if (pool_count + 1 <= *(int *)((char *)pool + 0xC)) {
+                node = (char *)*(void **)((char *)pool + 4) +
+                       (*(int *)((char *)pool + 8))++ * 0x10;
+                *(int *)((char *)node + 4) = zero;
+                *(int *)((char *)node + 0xC) = zero;
+            }
+            if (node != 0) {
+                if (*(void **)entry == 0)
+                    *(void **)entry = node;
                 queue = *(void **)((char *)entry + 4);
-                if (queue != 0) *(void **)((char *)queue + 0xC) = node;
+                if (queue != 0)
+                    *(void **)((char *)queue + 0xC) = node;
                 *(void **)((char *)entry + 4) = node;
-                *(void **)((char *)node + 0xC) = 0;
+                *(void **)((char *)node + 0xC) = (void *)zero;
                 queue = *(void **)((char *)entry + 4);
                 count = *(int *)((char *)queue + 4);
-                *(int *)((char *)queue + 4) = count + 1;
                 slot = (int *)(*(int *)queue + count * 4);
+                *(int *)((char *)queue + 4) = count + 1;
             }
         } else {
-            int count = *(int *)((char *)queue + 4);
-            *(int *)((char *)queue + 4) = count + 1;
+            count = *(int *)((char *)queue + 4);
             slot = (int *)(*(int *)queue + count * 4);
+            *(int *)((char *)queue + 4) = count + 1;
         }
         if (slot) { *slot = *arg1; lbl_8055FA70++; }
-        p++;
+        arg0 = (void ***)((char *)arg0 + 4);
     }
 }
 
