@@ -360,6 +360,7 @@ void fn_801ED354(void *arg0) {
         fn_801EDD68(arg0);
     }
 }
+#pragma pop
 
 void fn_801ED68C(long arg0) {
     fn_801ECCE0(arg0, 1);
