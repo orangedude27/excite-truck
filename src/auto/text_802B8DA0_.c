@@ -148,7 +148,8 @@ extern char lbl_8055CED4;
 extern char lbl_8055CEDC;
 extern char lbl_8055CEE4;
 extern char lbl_8034A990[];
-void *fn_802B8FE0(int arg0) {
+#pragma cplusplus on
+extern "C" void *fn_802B8FE0(int arg0) {
     struct Record {
         float value;
         float parameter;
@@ -165,7 +166,7 @@ void *fn_802B8FE0(int arg0) {
     struct Object {
         struct Vtable *vtable;
     };
-    float initial;
+    float initial = lbl_80564CC0;
     int *state;
     void *base;
     int index;
@@ -178,7 +179,6 @@ void *fn_802B8FE0(int arg0) {
     char *found;
     struct Object *settings;
 
-    initial = lbl_80564CC0;
     state = lbl_804C004C;
     base = (void *)state[0];
     index = state[1];
@@ -189,7 +189,7 @@ void *fn_802B8FE0(int arg0) {
     record->flags = 0;
     record->parameter = initial;
 
-    object = fn_802B59CC(offset, next, state + 1, base);
+    object = fn_802B59CC(offset, next, state, base);
     fn_801345D8(buffer, 0x20, (const char *)&lbl_8055CED4, arg0 + 1);
 
     finder = (struct Object *)object;
@@ -206,6 +206,7 @@ void *fn_802B8FE0(int arg0) {
     record->value = lbl_80564CC4;
     return record;
 }
+#pragma cplusplus reset
 
 #pragma pop
 int fn_802B9100(void) {
@@ -353,15 +354,14 @@ void fn_802B9B68(void) {
         int count;
         void *allocation;
     };
-    struct Record {
-        void *data;
-        int state;
-        int kind;
-        int unused;
-    };
     struct Manager *manager;
     void *memory;
+    void *pool;
+    void *records;
+    void *entry;
     int i;
+    int offset;
+    int index;
 
     fn_802B8AE0(lbl_8034A990 + 0xC, &lbl_8055FA6C);
     fn_802B8AE0(lbl_8034A990 + 0x18, &lbl_8055FA70);
@@ -369,20 +369,27 @@ void fn_802B9B68(void) {
     manager = fn_801284F8(0x14, lbl_8034A990 + 0x24);
     if (manager != 0) {
         memory = ((void *(*)(int, void *))fn_8012850C)(0x5010, &lbl_8055CEF0);
-        manager->records = ((void *(*)(void *, void *, void *, int, int))fn_8002F37C)(
-            memory, (void *)fn_802B9CF4, (void *)fn_802B9C9C, 0x10, 0x500);
+        manager->records = ((void *(*)(void *, void (*)(void *),
+                          void *(*)(void *, s32), int, int))fn_8002F37C)(
+            memory, fn_802B9CF4, fn_802B9C9C, 0x10, 0x500);
         manager->count = 0x500;
         manager->index = 0;
         manager->allocation = manager->records;
-        manager->pool = ((void *(*)(int, void *))fn_8012850C)(0x5000, lbl_8034AA1C);
-        for (i = 0; i < manager->count; i++) {
-            int index = manager->index;
-            struct Record *record;
+        manager->pool = ((void *(*)(int, void *))fn_8012850C)(
+            0x500 << 4, lbl_8034AA1C);
+        i = 0;
+        offset = 0;
+        while (i < manager->count) {
+            index = manager->index;
+            i++;
+            pool = manager->pool;
+            records = manager->records;
             manager->index = index + 1;
-            record = (struct Record *)((char *)manager->records + index * 0x10);
-            record->data = (char *)manager->pool + i * 0x10;
-            record->kind = 4;
-            record->state = 0;
+            entry = (char *)records + index * 0x10;
+            *(void **)entry = (char *)pool + offset;
+            offset += 0x10;
+            *(int *)((char *)entry + 8) = 4;
+            *(int *)((char *)entry + 4) = 0;
         }
         manager->index = 0;
     }
