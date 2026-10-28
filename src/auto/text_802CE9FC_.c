@@ -890,6 +890,41 @@ void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
     *(float *)(lbl_804C97B0 + 0x18) = arg1;
     lbl_804C97B0[0x1c] = 1;
 }
+
+extern unsigned long lbl_804C56C0[];
+extern float lbl_804C56F0[3];
+extern float lbl_80564FC0;
+extern void PSVECCrossProduct(float *, float *, float *);
+extern float PSVECMag();
+#pragma use_lmw_stmw off
+void fn_802D03F4(register float *arg0, float arg1) {
+    register unsigned long *src = (unsigned long *)arg0;
+    register unsigned long *dst = lbl_804C56C0;
+    unsigned long t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
+    float sp[3];
+    float mag;
+    float scale;
+
+    fn_802D6C78();
+    dst[0] = src[0];
+    t1 = src[1]; t2 = src[2]; t3 = src[3]; t4 = src[4];
+    t5 = src[5]; t6 = src[6]; t7 = src[7]; t8 = src[8];
+    t9 = src[9]; t10 = src[10]; t11 = src[11];
+    dst[1] = t1; dst[2] = t2; dst[3] = t3;
+    dst[4] = t4; dst[5] = t5; dst[6] = t6; dst[7] = t7;
+    dst[8] = t8; dst[9] = t9; dst[10] = t10; dst[11] = t11;
+    sp[0] = lbl_80564F88; sp[1] = lbl_80564F8C; sp[2] = lbl_80564F88;
+    PSVECCrossProduct(sp, arg0 + 6, lbl_804C56F0);
+    mag = PSVECMag(lbl_804C56F0);
+    mag = mag > lbl_80564FC0 ? mag : lbl_80564FC0;
+    scale = lbl_80564F8C / mag;
+    lbl_8055FD70 = 1;
+    lbl_804C56F0[0] = lbl_804C56F0[0] * scale;
+    lbl_804C56F0[1] = lbl_804C56F0[1] * scale;
+    lbl_804C56F0[2] = lbl_804C56F0[2] * scale;
+}
+#pragma use_lmw_stmw reset
+
 #pragma pop
 extern void *lbl_8055FD54;
 extern void* fn_802D30F0(void);
@@ -1113,9 +1148,9 @@ void fn_802D0C98(void) {
     extern void *lbl_8055FD64;
     extern int lbl_804C9760[];
     unsigned short temp_r31;
-    int temp_r30;
+    int temp_r30 = 0;
+    unsigned char *display;
 
-    temp_r30 = 0;
     lbl_8055FD4C = temp_r30;
     GXSetZMode(1, 3, 1);
     GXSetColorUpdate(1);
@@ -1124,12 +1159,17 @@ void fn_802D0C98(void) {
     lbl_8055FD74 |= 1;
     GXSetZMode(1, 7, 1);
     lbl_8055FD74 = (lbl_8055FD74 | 2) & ~4U;
-    temp_r31 = GXSetDispCopyYScale(GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6), *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
-    GXSetDispCopySrc(0, 0, *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6));
+    temp_r31 = (unsigned short)GXSetDispCopyYScale(
+        GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
+                          *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
+    display = (unsigned char *)lbl_8055FD64;
+    GXSetDispCopySrc(0, 0, *(unsigned short *)(display + 4), *(unsigned short *)(display + 6));
     GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
-    GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19), (unsigned char *)lbl_8055FD64 + 0x1A, 1, (unsigned char *)lbl_8055FD64 + 0x32);
-    GXCopyDisp(&lbl_804C9760[1], 1);
-    VISetNextFrameBuffer(&lbl_804C9760[1]);
+    GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19),
+                    (unsigned char *)lbl_8055FD64 + 0x1A, 1,
+                    (unsigned char *)lbl_8055FD64 + 0x32);
+    GXCopyDisp((void *)lbl_804C9760[1], 1);
+    VISetNextFrameBuffer((void *)lbl_804C9760[1]);
     if (lbl_8055FD48 > 0) {
         lbl_8055FD48 -= 1;
         VISetBlack(1);
@@ -1207,24 +1247,22 @@ extern float lbl_80564F80, lbl_80564F88, lbl_80564F8C, lbl_80564F90, lbl_80564F9
 #pragma paired_single off
 #pragma scheduling invalid_target
 void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
-    unsigned char c0, c1, c2, c3;
+    unsigned char c2, c0, c3;
     unsigned char rgba[4];
+    float vec[3];
     float x, y, z, mag, k;
-    c0=color[0]; c2=color[2]; c3=color[3]; c1=color[1];
-    rgba[1]=c1; rgba[0]=c0; rgba[2]=c2; rgba[3]=c3;
+    c0=color[0]; c2=color[2]; c3=color[3];
+    rgba[1]=color[1]; rgba[0]=c0; rgba[2]=c2; rgba[3]=c3;
     GXInitLightColor(light, rgba);
     x=a[0]+b[0];
     y=a[1]+b[1];
     z=a[2]+b[2];
-    {
-        float vec[3];
-        vec[0]=x; vec[1]=y; vec[2]=z;
-        mag=PSVECMag(vec);
-        mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
-        k=lbl_80564F90/mag;
-        x=vec[0]*k; y=vec[1]*k; z=vec[2]*k;
-        vec[0]=x; vec[1]=y; vec[2]=z;
-    }
+    vec[0]=x; vec[1]=y; vec[2]=z;
+    mag=PSVECMag(vec);
+    mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
+    k=lbl_80564F90/mag;
+    x=vec[0]*k; y=vec[1]*k; z=vec[2]*k;
+    vec[0]=x; vec[1]=y; vec[2]=z;
     GXGetLightDir_Internal(light,b[0],b[1],-b[2],x,y,-z);
     {
         float v=scale*lbl_80564F94;
