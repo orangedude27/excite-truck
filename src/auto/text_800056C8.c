@@ -118,7 +118,8 @@ void fn_800057BC(void) {
 }
 #pragma pop
 
-s32 fn_800057D0(void) {
+#pragma cplusplus on
+extern "C" s32 fn_800057D0(void) {
     s32 *base;
     s32 *cursor;
     s32 count, i;
@@ -146,6 +147,7 @@ s32 fn_800057D0(void) {
         }
     }
 }
+#pragma cplusplus off
 
 #pragma push
 #pragma dont_inline on
@@ -461,53 +463,88 @@ void fn_800060E0(u8 arg0, u8 arg1) {
     fn_8017691C();
 }
 
-void fn_80006110(void *arg0) {
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_80006110(void *arg0) {
+    class VTable {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7(s32 *);
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual s32 v21(s32);
+        virtual void v22();
+        virtual s32 v23();
+    };
     extern void fn_8001071C(s32);
-    extern void *lbl_802FB69C;
-    s32 flag = 0;
-    f32 threshold = lbl_8056011C;
-    f32 f2 = *(f32 *)((s8 *)arg0 + ((s32 *)lbl_8055D350)[7] * 4 + 4);
+    extern u8 lbl_802FB69C[];
+    f32 threshold;
+    s32 flag;
+    register s32 *settings;
+    register s32 index;
+    f32 f2;
+
+    threshold = lbl_8056011C;
+    flag = 0;
+    settings = (s32 *)lbl_8055D350;
+    index = settings[7];
+    f2 = *(f32 *)((s8 *)arg0 + index * 4 + 4);
     if (f2 >= threshold) {
-        f32 f0 = ((f32 *)lbl_8055D350)[4] - f2;
-        if (f0 > threshold) flag = 1;
+        f32 f0 = *(f32 *)(settings + 4) - f2;
+        if (f0 > threshold)
+            flag = 1;
     }
     if (flag == 0) {
         if (fn_80005564() == 0) {
-            s32 *p = (s32 *)lbl_8034EEB8 + ((s32 *)lbl_8055D350)[7] * 4;
+            s32 *settings2 = (s32 *)lbl_8055D350;
+            s32 *entries = (s32 *)lbl_8034EEB8;
+            s32 index2 = settings2[7];
+            s32 *p = entries + index2 * 4;
             void *obj = *(void **)(p + 7);
-            void *vtable = *(void **)obj;
-            void (*call)(void *, s32 *) = *(void (**)(void *, s32 *))((char *)vtable + 0x24);
-            call(obj, p);
+            ((VTable *)obj)->v7(p);
         }
     } else {
-        s32 *p;
         if (fn_80005564() != 0) {
-            void *obj = fn_801B83A0();
-            if (obj != 0) {
-                void *vtable = *(void **)obj;
-                void (*call)(void *) = *(void (**)(void *))((char *)vtable + 0x60);
-                call(obj);
-                if (fn_801B83A0() != 0) {
-                    void *obj2 = fn_801B83A0();
-                    void *vtable2 = *(void **)obj2;
-                    s32 (*call2)(void *, s32) = *(s32 (**)(void *, s32))((char *)vtable2 + 0x58);
-                    s32 result = call2(obj2, ((s32 *)lbl_8055D350)[7]);
-                    *(s8 *)((s8 *)arg0 + 0x14) = (s8)(result == 0);
-                    return;
-                }
+            VTable *obj = (VTable *)fn_801B83A0();
+            s32 result = obj->v23();
+            if (result != 0) {
+                VTable *obj2 = (VTable *)fn_801B83A0();
+                result = obj2->v21(((s32 *)lbl_8055D350)[7]);
+                s32 normalized = (result == 0);
+                *(s8 *)((s8 *)arg0 + 0x14) = normalized;
+                return;
             }
         }
-        *(s8 *)((s8 *)arg0 + 0x14) = 1;
-        p = 0;
-        if (*(s8 *)((s8 *)*(void **)((s8 *)lbl_8055D350 + 0x30) + 0x28) != 0) {
-            p = (s32 *)lbl_802FB69C;
-        }
-        if (p != 0) {
-            fn_8001071C((s32)p);
-        }
+        *(u8 *)((u8 *)arg0 + 0x14) = 1;
+        s32 *settings3 = (s32 *)lbl_8055D350;
+        void *object = *(void **)((u8 *)settings3 + 0x30);
+        s32 index3 = settings3[7];
+        u8 *p = 0;
+        if (*(u8 *)((u8 *)object + 0x28) != 0)
+            p = lbl_802FB69C;
+        if (p != 0)
+            ((void (*)(s32, s32))fn_8001071C)((s32)p, index3);
     }
 }
-
+#pragma cplusplus off
+#pragma scheduling on
 s32 ARCClose(void) {
     return 0;
 }
