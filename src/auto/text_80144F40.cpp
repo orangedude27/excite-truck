@@ -1666,19 +1666,18 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     d[6] = fn_80147C50(w18, *(u32 *)(other + 0x18), factor);
 }
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     struct State { u32 m0; f32 m4; f32 m8; u32 mC; f32 m10; f32 m14; f32 m18; f32 m1C; f32 m20; f32 m24; };
     union Pair { struct { f32 x; f32 y; } f; f64 raw; };
     volatile State *src = (volatile State *)srcArg;
     volatile State *end = (volatile State *)endArg;
-    f32 end4, src4, end8, src8, diff8, src18, diff4, src10, prod8, src1C;
+    register f32 end4, src4, end8, src8, diff8, src18, diff4, src10, prod8, src1C;
     f32 prod4, out8, src20, end20, out4, diff20, end18, end1C, diff18;
     f32 end10, diff1C, src14, diff10, prod18, prod20, prod1C, prod10;
     f32 out20, end24, end14, src24, diff24, out18, diff14, out1C;
     f32 prod24, prod14, out10, out24, out14;
     u32 w4, w0, wC, w8;
-
     end8 = end->m8;
     src8 = src->m8;
     end4 = end->m4;
