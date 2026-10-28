@@ -15,7 +15,7 @@ void fn_80189CB4(void);
 void fn_8018AF00(void);
 void fn_80183DF8(void);
 void fn_8018381C(void);
-extern float lbl_805623C8;
+extern float lbl_805623C8, lbl_805623EC, lbl_805623F4, lbl_805623F8, lbl_805623FC, lbl_80562400;
 extern int lbl_8055E3C4;
 extern char lbl_80333C20[];
 extern int lbl_80435050[];
@@ -301,12 +301,17 @@ float fn_801A5A7C(void *arg0, float *arg1, float *arg2) {
 #pragma cplusplus on
 extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
     float values[3];
-    int i;
+    void *record;
+    void *other;
+    void *slot;
     int val;
-    void *slot = (char *)arg0 + 0x2724;
-    void *candidate = 0;
-    void *other = 0;
-    void *record = arg0;
+    int i;
+    void *candidate;
+
+    slot = (char *)arg0 + 0x2724;
+    other = 0;
+    record = arg0;
+    candidate = 0;
 
     for (i = 0; i < 4; i++) {
         val = *(int *)((char *)record + 0x2744);
@@ -345,11 +350,10 @@ extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
             virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
             virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
             virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
-            virtual void f12(); virtual void f13();
-            virtual void f14(float *, float *, int, int);
+            virtual void f12(float *, float *, int, int);
         };
         Obj *obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
-        obj->f14(values, values, 0x3EA, 0);
+        obj->f12(values, values, 0x3EA, 0);
     }
 }
 #pragma cplusplus off
