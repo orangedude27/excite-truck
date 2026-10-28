@@ -419,19 +419,42 @@ void* fn_802D94DC(void) {
 }
 
 extern float lbl_80565028;
+#pragma push
+#pragma unroll off
 void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
-    unsigned int *dst = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000);
-    unsigned int *src1 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg1 + 0x24) - 0x40000000);
-    unsigned int *src2 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg2 + 0x24) - 0x40000000);
-    unsigned int count = (GXGetTexObjWrapS((char *)arg0 + 0x24) * GXGetTexObjWrapT((char *)arg0 + 0x24) * 16) / 32;
-    unsigned int blend = (unsigned int)(lbl_80565028 * farg0), inv = 256 - blend;
-    while (count-- > 0) {
-        unsigned int a=*src1++, b=*src2++;
-        unsigned int c0=(a&255)*inv+(b&255)*blend, c1=((a>>8)&255)*inv+((b>>8)&255)*blend;
-        unsigned int c2=((a>>16)&255)*inv+((b>>16)&255)*blend, c3=((a>>24)&255)*inv+((b>>24)&255)*blend;
-        *dst++=(c0>>8)|(c1&0xFFFFFF00)|((c2<<8)&0xFFFF0000)|((c3<<16)&0xFF000000);
+    unsigned int *dst;
+    unsigned int *src1;
+    unsigned int *src2;
+    int wrapS;
+    int wrapT;
+    int count;
+    unsigned int blend;
+    unsigned int inv;
+    int i;
+
+    wrapS = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFFFF;
+    wrapT = GXGetTexObjWrapT((char *)arg0 + 0x24) & 0xFFFF;
+    count = (wrapS * wrapT * 16) / 32;
+
+    dst = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000);
+    src1 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg1 + 0x24) - 0x40000000);
+    src2 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg2 + 0x24) - 0x40000000);
+
+    blend = (unsigned int)(lbl_80565028 * farg0);
+    inv = 0x100 - blend;
+
+    for (i = 0; i < count; i++) {
+        unsigned int a = *src1++;
+        unsigned int b = *src2++;
+        unsigned int c0 = (a & 0xFF) * inv + (b & 0xFF) * blend;
+        unsigned int c1 = ((a >> 8) & 0xFF) * inv + ((b >> 8) & 0xFF) * blend;
+        unsigned int c2 = ((a >> 16) & 0xFF) * inv + ((b >> 16) & 0xFF) * blend;
+        unsigned int c3 = ((a >> 24) & 0xFF) * inv + ((b >> 24) & 0xFF) * blend;
+        *dst++ = (c0 >> 8) | (c1 & 0xFFFFFF00) |
+                 ((c2 << 8) & 0xFFFF0000) | ((c3 << 16) & 0xFF000000);
     }
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -534,25 +557,28 @@ extern float lbl_8056501C;
 #pragma scheduling invalid_target
 void *fn_802D8C00(void *arg0, void *arg1) {
     void *obj;
-    int h;
     int w;
+    int h;
     unsigned char *p;
-    u32 lod;
 
     obj = fn_802D8A84(arg0, arg1);
     h = *(int *)((char *)arg0 + 0x28);
-    *(unsigned char *)((char *)obj + 0xCC) = 1;
     w = *(int *)((char *)arg0 + 0x24);
+    *(volatile unsigned char *)((char *)obj + 0xCC) = 1;
     GXGetTexBufferSize((unsigned short)w, (unsigned short)h, 0xE, 0, 1);
     p = *(unsigned char **)(*(unsigned char **)((char *)arg0 + 0x2C) + 8);
     DCFlushRange(p, (w * h) / 2);
     {
         int fmt = *(int *)((char *)arg0 + 0x20);
-        lod = (u32)(((fmt ^ 2) >> 1) - ((fmt ^ 2) & fmt)) >> 31;
-    }
-    GXInitTexObj((char *)obj + 0x78, p, (unsigned short)w, (unsigned short)h, 0, 1, 1, lod);
-    if (lod != 0) {
-        GXInitTexObjLOD((char *)obj + 0x78, 5, 1, 0, 1, 0, lbl_80565018, (float)(*(int *)((char *)arg0 + 0x20) - 1), lbl_8056501C);
+        int b = fmt ^ 2;
+        int a = b >> 1;
+        u32 lod;
+        b = b & fmt;
+        lod = (u32)(a - b) >> 31;
+        GXInitTexObj((char *)obj + 0x78, p, (unsigned short)w, (unsigned short)h, 0, 1, 1, lod);
+        if (lod != 0) {
+            GXInitTexObjLOD((char *)((u32)obj + 0x78), 5, 1, 0, 1, 0, lbl_80565018, (float)(*(int *)((char *)arg0 + 0x20) - 1), lbl_8056501C);
+        }
     }
     fn_802D7780(obj, arg0);
     return obj;
