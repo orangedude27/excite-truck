@@ -1,4 +1,12 @@
 #include "types.h"
+extern void DCFlushRange(void *, unsigned int);
+extern unsigned int GXGetTexBufferSize(unsigned short, unsigned short, unsigned int, int, unsigned char);
+extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, unsigned int);
+extern void GXInitTexObjLOD(void *, int, int, float, float, float, int, int, int);
+extern void GXInvalidateTexAll(void);
+extern float lbl_80565018;
+extern float lbl_8056501C;
+extern double lbl_80565020;
 extern void GXInitTexObjFilter(void *, int, int);
 extern void GXInitTexObjWrapMode(void *, int, int);
 extern unsigned int lbl_8055FD2C;
