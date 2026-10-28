@@ -1417,45 +1417,48 @@ extern int lbl_8055E5EC, lbl_8055E5F0;
 extern float lbl_8056247C, lbl_805624AC, lbl_80562510;
 extern void fn_801C2694(void *, int *, float *, float *, float *, float *, float *, float, float);
 extern void fn_801796CC(int, void *, int);
+#pragma scheduling invalid_target
 void fn_801ACF94(void) {
     char sp8[0x34];
     char sp3c[0x54];
-    char sp90[0xEC0];
-    float *p;
-    int i, j;
+    char sp90[0xED0];
     void **obj;
+    int i, j, zero;
+    void *root, *o, *a;
     float *src, *dst;
-    void *root;
+    float fill, special, tail, x, y, z;
 
     root = (void *)lbl_8055E5F0;
     if (root != 0) {
-        float fill, special, tail;
         fill = lbl_8056247C;
         special = lbl_805624AC;
         tail = lbl_80562510;
         *(int *)sp8 = 0x13C;
-        p = (float *)(sp8 + 4);
-        p[0] = fill; p[1] = fill; p[2] = fill;
-        p[3] = fill; p[4] = fill; p[5] = fill;
-        p[6] = fill; p[7] = special; p[8] = fill;
-        p[9] = fill; p[10] = tail; p[11] = fill;
+        ((float *)sp8)[1] = fill; ((float *)sp8)[2] = fill;
+        ((float *)sp8)[3] = fill; ((float *)sp8)[4] = fill;
+        ((float *)sp8)[5] = fill; ((float *)sp8)[6] = fill;
+        ((float *)sp8)[7] = fill; ((float *)sp8)[8] = special;
+        ((float *)sp8)[9] = fill; ((float *)sp8)[10] = fill;
+        ((float *)sp8)[11] = tail; ((float *)sp8)[12] = fill;
         fn_801C2694(root, (int *)sp90, (float *)sp8,
-                    p + 9, p + 6, p + 3, p, special, fill);
+                    (float *)(sp8 + 0x28), (float *)(sp8 + 0x1C),
+                    (float *)(sp8 + 0x10), (float *)(sp8 + 4),
+                    special, fill);
         obj = (void **)lbl_80435628;
-        i = 0;
         j = 0;
-        do {
-            void *o = *obj;
-            void *a = *(void **)((char *)o + 0x23C);
+        zero = 0;
+        while (j < lbl_8055E5EC) {
+            o = *obj;
+            a = *(void **)((char *)o + 0x23C);
             if (a != 0) {
-                int first = *(int *)((char *)a + 0x254);
-                float x, y, z;
-                *(int *)sp3c = i;
-                *(int *)(sp3c + 4) = j;
-                *(int *)(sp3c + 8) =
-                    *(int *)((char *)o + 0x254) - first + 1;
+                register int first;
+                first = *(int *)((char *)a + 0x254);
                 src = (float *)(sp90 + first * 12);
                 dst = (float *)sp3c;
+                *(int *)sp3c = zero;
+                *(int *)(sp3c + 8) =
+                    *(int *)((char *)o + 0x254) - first + 1;
+                *(int *)(sp3c + 4) = j;
                 i = 0;
                 while (i < *(int *)(sp3c + 8)) {
                     x = src[0];
@@ -1472,7 +1475,7 @@ void fn_801ACF94(void) {
             }
             obj++;
             j++;
-        } while (j < lbl_8055E5EC);
+        }
     }
 }
 
@@ -1506,7 +1509,40 @@ void fn_801AD0E0(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, fl
     *(float *)((char *)arg0 + 0x24) = farg1;
     *(float *)((char *)arg0 + 0x20) = e;
 }
+
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
+    Vec sp14;
+    Vec sp8;
+    f32 diffX, diffY, diffZ;
+    f32 outX, outY, outZ;
+
+    fn_8017AB84(*(void **)((char *)arg0 + 0x34), &sp14, arg1);
+    if (arg2 != 0) {
+        diffX = sp14.x - *(f32 *)((char *)arg2 + 0x60);
+        sp8.x = diffX;
+        diffY = sp14.y - *(f32 *)((char *)arg2 + 0x64);
+        sp8.y = diffY;
+        diffZ = sp14.z - *(f32 *)((char *)arg2 + 0x68);
+        sp8.z = diffZ;
+
+        outX = ((diffY * *(f32 *)((char *)arg2 + 0x40)) + (diffX * *(f32 *)((char *)arg2 + 0x3C))) + (diffZ * *(f32 *)((char *)arg2 + 0x44));
+        outY = ((diffY * *(f32 *)((char *)arg2 + 0x4C)) + (diffX * *(f32 *)((char *)arg2 + 0x48))) + (diffZ * *(f32 *)((char *)arg2 + 0x50));
+        outZ = ((diffY * *(f32 *)((char *)arg2 + 0x58)) + (diffX * *(f32 *)((char *)arg2 + 0x54))) + (diffZ * *(f32 *)((char *)arg2 + 0x5C));
+
+        sp8.x = outX;
+        sp8.y = outY;
+        sp8.z = outZ;
+    } else {
+        sp8.x = sp14.x;
+        sp8.y = sp14.y;
+        sp8.z = sp14.z;
+    }
+    fn_801AD0E0(arg0, &sp8, arg2, arg1, farg0, farg1);
+}
 #pragma scheduling on
+#pragma processor reset
 extern void fn_801AD0E0(void *, void *, void *, void *, f32, f32);
 #pragma scheduling invalid_target
 void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 farg0) {
