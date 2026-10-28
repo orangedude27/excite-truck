@@ -16,7 +16,7 @@ extern unsigned char lbl_80435370[];
 extern unsigned int lbl_8055CFF0;
 extern unsigned int lbl_8055CFF4;
 extern double lbl_80562450;
-extern int fn_80127A84(int *, int *, unsigned int *);
+extern void fn_80127A84(int *, int *, unsigned int *);
 extern int fn_80129AE8(void *, int);
 extern void *memset(void *, int, unsigned int);
 extern int fn_801A8E38(void);
@@ -92,27 +92,36 @@ void fn_801A7628(void) {
     lbl_8055E5D0 = count;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801A7844(int arg0) {
+    char *entry;
+    int i;
     int sp10;
     int spC;
     unsigned int sp8;
-    int i;
+    int val0;
+    int val1;
     int a;
     int b;
     float x;
     float y;
 
     if (arg0 != 0) {
-        char *entry = (char *)lbl_80435050;
-        for (i = 0; i < 4; i++) {
+        entry = (char *)lbl_80435050;
+        i = 0;
+        do {
             memset(entry, 0, 0x64);
             fn_80129AE8(entry, i);
+            i++;
             entry += 0x64;
-        }
+        } while (i < 4);
     }
     fn_80127A84(&sp10, &spC, &sp8);
-    a = ((int)(lbl_8055CFF0 >> 31) + lbl_8055CFF0) >> 1;
-    b = ((int)(lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1;
+    val0 = (int)lbl_8055CFF0;
+    val1 = (int)lbl_8055CFF4;
+    a = val0 / 2;
+    b = val1 / 2;
     x = (float)(sp10 - a) / (float)a;
     y = (float)(spC - b) / (float)b;
     lbl_80435370[8] = sp8 & 1;
@@ -121,7 +130,7 @@ void fn_801A7844(int arg0) {
     *(float *)&lbl_80435370[0] = x;
     *(float *)&lbl_80435370[4] = y;
 }
-
+#pragma pop
 extern void fn_801334F4(int, int, int *, int);
 #pragma push
 #pragma scheduling invalid_target
@@ -742,43 +751,86 @@ int fn_801A8EE4(unsigned int *arg0) {
 done:
     return result;
 }
-#pragma pop
+#pragma push
+#pragma processor 750
 int fn_801A8F10(int *arg0) {
-    extern int lbl_80435050[];
-    extern int jumptable_80334F04[];
-    extern int lbl_80334EE0;
-    extern void fn_802E317C(int *);
+    struct Struct16 {
+        unsigned int a;
+        unsigned int b;
+        unsigned int c;
+        unsigned int d;
+    };
+    struct Entry {
+        unsigned char pad[0x44];
+        struct Struct16 flags;
+        unsigned char pad2[0x64 - 0x54];
+    };
+    extern char lbl_80334EE0[];
+    extern void fn_802E317C(const char *, ...);
+
     int state = arg0[0];
-    int *entry = &lbl_80435050[arg0[1] * 0x64];
-    int a = entry[0x11];
-    int b = entry[0x12];
-    int c = entry[0x13];
-    int d = entry[0x14];
-    if (state == 4)
-        return (a >> 1) & 1;
+    int idx = arg0[1];
+    struct Entry *entry = &((struct Entry *)lbl_80435050)[idx];
+    struct Struct16 flags = entry->flags;
+
+    if (state == 4) {
+        return (flags.a >> 15) & 1;
+    }
     if (state == 3) {
-        int bit = (1 << arg0[2]) & b;
-        return (-bit | bit) >> 31;
+        unsigned int bit = flags.b & (1 << arg0[2]);
+        return (unsigned int)(-bit | bit) >> 31;
     }
     if (state == 2) {
-        if (arg0[2] <= 0x1E) {
-            switch (arg0[2]) {
-            case 0: return (a >> 31) & 1;
-            case 1: return (a >> 1) & 1;
-            case 2: return (a >> 28) & 1;
-            case 3: return (a >> 29) & 1;
-            case 4: return (a >> 27) & 1;
-            case 5: return (a >> 26) & 1;
-            case 6: return (a >> 25) & 1;
-            default: return (a >> 24) & 1;
-            }
+        unsigned int axis = arg0[2];
+        switch (axis) {
+        case 0:
+        case 1:
+        case 16:
+        case 24:
+            return flags.a & 1;
+        case 2:
+        case 3:
+        case 17:
+        case 25:
+            return (flags.a >> 1) & 1;
+        case 4:
+        case 5:
+        case 18:
+        case 26:
+            return (flags.a >> 3) & 1;
+        case 6:
+        case 7:
+        case 19:
+        case 27:
+            return (flags.a >> 2) & 1;
+        case 8:
+        case 9:
+        case 20:
+        case 28:
+            return (flags.a >> 4) & 1;
+        case 10:
+        case 11:
+        case 21:
+        case 29:
+            return (flags.a >> 5) & 1;
+        case 12:
+        case 13:
+        case 22:
+        case 30:
+            return (flags.a >> 6) & 1;
+        case 14:
+        case 15:
+        case 23:
+        case 31:
+            return (flags.a >> 7) & 1;
+        default:
+            fn_802E317C(lbl_80334EE0, arg0[2]);
+            return 0;
         }
-        fn_802E317C(&lbl_80334EE0);
-        return 0;
     }
-    return (-state | state) >> 31;
+    return (unsigned int)(-state | state) >> 31;
 }
-
+#pragma pop
 extern void fn_801A7628(void);
 extern void fn_801A9110(void *, const char *);
 extern void *fn_801A9234(const char *);
@@ -813,14 +865,16 @@ void fn_801A90A4(char *arg0, int arg1, const char *arg2) {
 
 void fn_801A9110(void *arg0, const char *arg1) {
     int i;
-    const char **table;
+    int offset;
     fn_801A7628();
-    table = lbl_8055E5CC;
+    i = 0;
+    offset = 0;
     for (i = 0; i < lbl_8055E5D0; i++) {
-        if (stricmp(table[i * 3], arg1) == 0) {
-            fn_801A91B0(arg0, &table[i * 3]);
+        if (stricmp(*(const char **)((char *)lbl_8055E5CC + offset), arg1) == 0) {
+            fn_801A91B0(arg0, (char *)lbl_8055E5CC + i * 0x18);
             return;
         }
+        offset += 0x18;
     }
     *(int *)arg0 = 0;
 }
