@@ -296,17 +296,52 @@ __declspec(section ".data") extern int lbl_804B2FF8;
 __declspec(section ".data") extern int lbl_803480A8;
 extern int lbl_8055C7C8, lbl_8055B860;
 void fn_8027ED78(int arg0, int arg1, int arg2) {
- volatile int sp6c,sp68,sp64,sp60,sp5c;
- volatile int sp58=13,sp54=-2,sp50=0,sp4c=6;
- int * volatile sp48=&lbl_8055B860;
- volatile int sp44=0,sp40=0,sp3c=arg1,sp38=3;
- int * volatile sp34=&lbl_803480A8;
- volatile int sp30=0,sp2c=0,sp28=arg0,sp24=3;
- int * volatile sp20=&lbl_8055C7C8;
- volatile int sp18,sp14,sp10,sp0c,sp08;
- sp5c=((int*)&lbl_804B2FF8)[0]; sp60=((int*)&lbl_804B2FF8)[1]; sp64=((int*)&lbl_804B2FF8)[2]; sp68=((int*)&lbl_804B2FF8)[3]; sp6c=((int*)&lbl_804B2FF8)[4];
- sp08=lbl_802FA848; sp10=((int*)&lbl_802FA848)[2]; sp14=((int*)&lbl_802FA848)[3]; sp18=((int*)&lbl_802FA848)[4];
- fn_802146BC((int*)&sp08,-999,-999,1,sp18,sp14,sp10,sp08);
+    register int a0 = ((int *)&lbl_802FA848)[0];
+    register int a2 = ((int *)&lbl_802FA848)[2];
+    register int a3 = ((int *)&lbl_802FA848)[3];
+    register int a4 = ((int *)&lbl_802FA848)[4];
+    register int b0 = ((int *)&lbl_804B2FF8)[0];
+    register int b1 = ((int *)&lbl_804B2FF8)[1];
+    register int b2 = ((int *)&lbl_804B2FF8)[2];
+    register int b3 = ((int *)&lbl_804B2FF8)[3];
+    register int b4 = ((int *)&lbl_804B2FF8)[4];
+    register int ptrA8 = (int)&lbl_803480A8;
+    register int ptrC7 = (int)&lbl_8055C7C8;
+    register int ptrB8 = (int)&lbl_8055B860;
+    register int zero = 0;
+    register int three = 3;
+    register int six = 6;
+    register int minusTwo = -2;
+    register int thirteen = 13;
+    int block[26];
+
+    block[0] = a0;
+    block[1] = (int)&block[6];
+    block[2] = a2;
+    block[3] = a3;
+    block[4] = a4;
+    block[6] = ptrC7;
+    block[7] = three;
+    block[8] = arg0;
+    block[9] = zero;
+    block[10] = zero;
+    block[11] = ptrA8;
+    block[12] = three;
+    block[13] = arg1;
+    block[14] = zero;
+    block[15] = zero;
+    block[16] = ptrB8;
+    block[17] = six;
+    block[18] = zero;
+    block[19] = minusTwo;
+    block[20] = thirteen;
+    block[21] = b0;
+    block[22] = b1;
+    block[23] = b2;
+    block[24] = b3;
+    block[25] = b4;
+    ((int (*)(int *, int, int, int, int))fn_802146BC)(
+        block, -999, -999, 1, block[0]);
 }
 
 void fn_8027EE74(int arg0) {
@@ -348,6 +383,68 @@ extern "C" int fn_8027EE88(void) {
     }
     return 0;
 }
+
+extern "C" void fn_8027F09C(int arg0) {
+    extern int fn_801345D8(char *, int, const char *, const char *, int);
+    extern int fn_80131234(int);
+    extern int lbl_802FA8AC;
+    extern int lbl_804B3018;
+    extern int lbl_8055C7D0;
+    extern int lbl_8055C7D8;
+    int args[30];
+    char buffer[0x64];
+    register const char *base = lbl_80347E50;
+    int result1;
+    int result2;
+
+    ((int (*)(char *, int, const char *, ...))fn_801345D8)(
+        buffer, 0x64, base + 0x3D8, arg0);
+    args[5] = 0;
+    args[6] = 5;
+    args[7] = (int)&lbl_804B3018;
+    args[8] = 0;
+    args[9] = 0;
+    result1 = ((int (*)(int, int))fn_80131234)(
+        (int)(base + 0x40C), (int)&lbl_804B3018);
+    args[12] = result1;
+    args[11] = 3;
+    args[10] = (int)&lbl_8055C7D0;
+    args[13] = 0;
+    args[14] = 0;
+    result2 = fn_80131234((int)buffer);
+    args[17] = result2;
+    args[16] = 3;
+    args[15] = (int)&lbl_8055C7D8;
+    args[18] = 0;
+    args[19] = 0;
+    args[20] = (int)&lbl_8055B860;
+    args[21] = 6;
+    args[22] = 0;
+    args[23] = -2;
+    args[24] = 13;
+    args[25] = ((int *)&lbl_804B2FF8)[0];
+    args[26] = ((int *)&lbl_804B2FF8)[1];
+    args[27] = ((int *)&lbl_804B2FF8)[2];
+    args[28] = ((int *)&lbl_804B2FF8)[3];
+    args[29] = ((int *)&lbl_804B2FF8)[4];
+    args[0] = ((int *)&lbl_802FA8AC)[0];
+    args[2] = ((int *)&lbl_802FA8AC)[2];
+    args[3] = ((int *)&lbl_802FA8AC)[3];
+    args[4] = ((int *)&lbl_802FA8AC)[4];
+    args[1] = (int)&args[5];
+#pragma cplusplus on
+    class Draw {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void use(const char *);
+    };
+    ((Draw *)fn_8027ED70())->use(base + 0x214);
+#pragma cplusplus reset
+    ((int (*)(int *, int, int, int))fn_802146BC)(args, -0x3E7, -0x3E7, 1);
+}
+
 #pragma cplusplus off
 #pragma dont_inline reset
 #pragma pop
@@ -367,57 +464,51 @@ extern "C" const char lbl_80348270[];
 extern "C" void fn_8027F204(char *src) {
     char *dst;
     int len;
+    int count;
     struct Fn8027F204State *state = (struct Fn8027F204State *)lbl_8055F69C;
 
     if (state == 0) return;
-    if (state->count + 1 > state->max) goto report_error;
-    len = 0x1e;
-    dst = state->buffer + state->count++ * 0x1e;
-    goto enter;
-    for (;;) {
-        if (--len <= 0) {
-            dst[-1] = 0;
-            return;
-        }
-    enter:
-        if ((*dst++ = *src++) == 0) {
-            return;
+    count = state->count;
+    if (count + 1 <= state->max) {
+        len = 0x1e;
+        dst = state->buffer + state->count++ * 0x1e;
+        goto enter;
+        for (;;) {
+            if (--len <= 0) {
+                dst[-1] = 0;
+                return;
+            }
+        enter:
+            if ((*dst++ = *src++) == 0) {
+                return;
+            }
         }
     }
-report_error:
     fn_802E30C8(lbl_80348270);
 }
 #pragma scheduling reset
 #pragma cplusplus off
 void *fn_8027F834(void *arg0, int arg1) {
     int temp_r0, var_r7;
-    unsigned int *var_r6;
+    unsigned char *var_r6;
     int count;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80348798;
         if (lbl_8055F688 == (unsigned int)arg0) lbl_8055F688 = 0;
-        var_r6 = (unsigned int *)lbl_804B3048.items;
+        var_r6 = (unsigned char *)lbl_804B3048.items;
         count = lbl_804B3048.count;
         var_r7 = 0;
-        if (count > 0) {
-loop_4:
-            if (*var_r6 == (unsigned int)arg0) {
-            } else {
-                var_r6 += 4;
-                var_r7 += 1;
-                count -= 1;
-                if (count == 0) goto block_7;
-                goto loop_4;
-            }
-        } else {
-block_7:
-            var_r7 = -1;
+        for (; var_r7 < count; ++var_r7) {
+            if (*(unsigned int *)var_r6 == (unsigned int)arg0) goto found_scan;
+            var_r6 += 4;
         }
-        if (var_r7 != -1 && var_r7 >= 0 && var_r7 < lbl_804B3048.count) {
-            temp_r0 = lbl_804B3048.count - 1;
+        var_r7 = -1;
+found_scan:
+        if (var_r7 != -1 && var_r7 >= 0 && var_r7 < *(volatile int *)&lbl_804B3048.count) {
+            temp_r0 = *(volatile int *)&lbl_804B3048.count - 1;
             if (var_r7 != temp_r0)
                 ((unsigned int *)lbl_804B3048.items)[var_r7] = ((unsigned int *)lbl_804B3048.items)[temp_r0];
-            lbl_804B3048.count = lbl_804B3048.count - 1;
+            *(volatile int *)&lbl_804B3048.count = *(volatile int *)&lbl_804B3048.count - 1;
         }
         if (arg0 != 0) {
             *((unsigned char *)arg0 + 0x18) = 0;
@@ -434,506 +525,505 @@ block_7:
 
 #pragma push
 #pragma scheduling invalid_target
-         int fn_8027F958(int *selection, void *collection) {
-             extern char lbl_80347E50[];
-             extern int lbl_8055BAB8, lbl_8055BAC0, lbl_8055C7EC;
-             extern int lbl_8055C7F0, lbl_8055C7F8, lbl_8055C800, lbl_8055C808, lbl_8055C810;
-             extern int lbl_8055F68C, lbl_8055F690;
-             extern void *lbl_8055F694;
-             extern unsigned char lbl_8055F6A0;
-             extern float lbl_805641F8, lbl_805641FC, lbl_80564200;
-             extern int fn_80131234(int);
-             extern int fn_802808D0(void), fn_80280A38(void), fn_80280C00(void), fn_80280F7C(void), fn_80281138(void);
-             extern int fn_80280DC8(void), fn_80280898(void);
-             typedef void *(*GetItem)(void *, int);
-             typedef int (*GetInt)(void *);
-             typedef unsigned char (*GetByte)(void *);
-             typedef char *(*GetString)(void *);
-                      void *object, *item;
-      void **vtable;
-             Fn8027F958Widget *widget;
-             void **items, **storage;
-             register char *constants = (char *)&lbl_802FA848;
-             register char *state = (char *)&lbl_804B2FF8;
-             register char *strings = lbl_80347E50;
-             float defaultValue;
-             float defaultScale;
-             void *widgetVtable;
-             char *src, *dst;
-             register int i, j, index, remaining, result, mode, count, reported;
-             register float *value;
-          Fn8027F958Stack stack;
-              vtable = *(void ***)collection;
-      object = ((GetItem)vtable[4])(collection, 0);
-             mode = ((GetInt)(*(void ***)object)[5])(object);
-             defaultScale = lbl_805641F8;
-             defaultValue = lbl_805641FC;
-             widgetVtable = lbl_80348798;
-             index = ((struct Fn8027F834List *)(state + 0x50))->count;
-             storage = ((struct Fn8027F834List *)(state + 0x50))->items;
-             stack.widgets[0].unk14 = 0;
-             stack.widgets[0].unk38 = defaultScale;
-             stack.widgets[0].unk40 = 2;
-             stack.widgets[0].unk3C = defaultValue;
-             stack.widgets[0].unk18 = 0;
-             stack.widgets[0].unk50 = 0;
-             stack.widgets[0].unk5C = 0;
-             stack.widgets[0].unk24 = 2;
-             stack.widgets[0].unk20 = 0;
-             stack.widgets[0].unk44 = 0;
-             stack.widgets[0].vtable = widgetVtable;
-             stack.widgets[0].object = 0;
-             stack.widgets[0].unk64 = 0;
-             stack.widgets[0].unk70 = 0;
-             stack.widgets[0].unk74 = 0;
-             ((struct Fn8027F834List *)(state + 0x50))->count = index + 1;
-             storage[index] = &stack.widgets[0];
-             stack.widgets[0].unk7E = 0;
-             stack.widgets[0].unkB0 = 0;
-             index = ((struct Fn8027F834List *)(state + 0x50))->count;
-             storage = ((struct Fn8027F834List *)(state + 0x50))->items;
-             stack.widgets[1].unk14 = 0;
-             stack.widgets[1].unk38 = defaultScale;
-             stack.widgets[1].unk40 = 2;
-             stack.widgets[1].unk3C = defaultValue;
-             stack.widgets[1].unk18 = 0;
-             stack.widgets[1].unk50 = 0;
-             stack.widgets[1].unk5C = 0;
-             stack.widgets[1].unk24 = 2;
-             stack.widgets[1].unk20 = 0;
-             stack.widgets[1].unk44 = 0;
-             stack.widgets[1].vtable = widgetVtable;
-             stack.widgets[1].object = 0;
-             stack.widgets[1].unk64 = 0;
-             stack.widgets[1].unk70 = 0;
-             stack.widgets[1].unk74 = 0;
-             ((struct Fn8027F834List *)(state + 0x50))->count = index + 1;
-             storage[index] = &stack.widgets[1];
-             stack.widgets[1].unk7E = 0;
-             stack.widgets[1].unkB0 = 0;
-             index = ((struct Fn8027F834List *)(state + 0x50))->count;
-             storage = ((struct Fn8027F834List *)(state + 0x50))->items;
-             stack.widgets[2].unk14 = 0;
-             stack.widgets[2].unk38 = defaultScale;
-             stack.widgets[2].unk40 = 2;
-             stack.widgets[2].unk3C = defaultValue;
-             stack.widgets[2].unk18 = 0;
-             stack.widgets[2].unk50 = 0;
-             stack.widgets[2].unk5C = 0;
-             stack.widgets[2].unk24 = 2;
-             stack.widgets[2].unk20 = 0;
-             stack.widgets[2].unk44 = 0;
-             stack.widgets[2].vtable = widgetVtable;
-             stack.widgets[2].object = 0;
-             stack.widgets[2].unk64 = 0;
-             stack.widgets[2].unk70 = 0;
-             stack.widgets[2].unk74 = 0;
-             ((struct Fn8027F834List *)(state + 0x50))->count = index + 1;
-             storage[index] = &stack.widgets[2];
-             stack.widgets[2].unk7E = 0;
-             stack.widgets[2].unkB0 = 0;
-             index = ((struct Fn8027F834List *)(state + 0x50))->count;
-             storage = ((struct Fn8027F834List *)(state + 0x50))->items;
-             stack.widgets[3].unk14 = 0;
-             stack.widgets[3].unk38 = defaultScale;
-             stack.widgets[3].unk40 = 2;
-             stack.widgets[3].unk3C = defaultValue;
-             stack.widgets[3].unk18 = 0;
-             stack.widgets[3].unk50 = 0;
-             stack.widgets[3].unk5C = 0;
-             stack.widgets[3].unk24 = 2;
-             stack.widgets[3].unk20 = 0;
-             stack.widgets[3].unk44 = 0;
-             stack.widgets[3].vtable = widgetVtable;
-             stack.widgets[3].object = 0;
-             stack.widgets[3].unk64 = 0;
-             stack.widgets[3].unk70 = 0;
-             stack.widgets[3].unk74 = 0;
-             ((struct Fn8027F834List *)(state + 0x50))->count = index + 1;
-             storage[index] = &stack.widgets[3];
-             stack.widgets[3].unk7E = 0;
-             stack.widgets[3].unkB0 = 0;
-             index = ((struct Fn8027F834List *)(state + 0x50))->count;
-             storage = ((struct Fn8027F834List *)(state + 0x50))->items;
-             stack.widgets[4].unk14 = 0;
-             stack.widgets[4].unk38 = defaultScale;
-             stack.widgets[4].unk40 = 2;
-             stack.widgets[4].unk3C = defaultValue;
-             stack.widgets[4].unk18 = 0;
-             stack.widgets[4].unk50 = 0;
-             stack.widgets[4].unk5C = 0;
-             stack.widgets[4].unk24 = 2;
-             stack.widgets[4].unk20 = 0;
-             stack.widgets[4].unk44 = 0;
-             stack.widgets[4].vtable = widgetVtable;
-             stack.widgets[4].object = 0;
-             stack.widgets[4].unk64 = 0;
-             stack.widgets[4].unk70 = 0;
-             stack.widgets[4].unk74 = 0;
-             ((struct Fn8027F834List *)(state + 0x50))->count = index + 1;
-             storage[index] = &stack.widgets[4];
-             stack.widgets[4].unk7E = 0;
-             stack.widgets[4].unkB0 = 0;
-             reported = ((GetInt)(*(void ***)collection)[3])(collection);
-             count = 5;
-             if (reported < 5) count = reported;
-             #pragma scheduling on
-     widget = stack.widgets;
-             for (i = 0; i < count; ++widget, ++i) {
-                 widget->object = ((GetItem)(*(void ***)collection)[4])(collection, i);
-                 widget->unk64 = 0;
-                 value = widget->values;
-                 for (j = 0; j < ((GetInt)(*(void ***)widget->object)[6])(widget->object); ++j) {
-                     item = ((GetItem)(*(void ***)widget->object)[7])(widget->object, j);
-                     *value++ = ((GetInt)(*(void ***)item)[16])(item) ? lbl_805641FC : lbl_80564200;
-                 }
-                 widget->unkCC = ((GetByte)(*(void ***)widget->object)[10])(widget->object);
-             }
-             stack.menu.entries[0].value = (void *)(&fn_80281138);
-             stack.menu.entries[1].label = (void *)(strings + 0x518);
-             stack.menu.entries[0].type = (int)(8);
-             stack.menu.entries[0].label = (void *)(&lbl_8055BAC0);
-             stack.menu.entries[0].flags = (int)(0);
-             stack.menu.entries[0].id = (int)(0);
-             stack.menu.entries[1].type = (int)(3);
-             stack.menu.entries[1].value = (void *)(state + 0x70);
-             stack.menu.entries[1].flags = (int)(0);
-             stack.menu.entries[1].id = (int)(0);
-             stack.menu.entries[2].type = (int)(5);
-             stack.menu.entries[2].label = (void *)(&lbl_8055C7F0);
-             stack.menu.entries[2].value = (void *)(&stack.widgets[0].vtable);
-             stack.menu.entries[2].flags = (int)(0);
-             stack.menu.entries[2].id = (int)(0);
-             stack.menu.entries[3].type = (int)(2);
-             stack.menu.entries[3].label = (void *)(strings + 0x524);
-             stack.menu.entries[3].value = (void *)(&stack.widgets[0].unk70);
-             stack.menu.entries[3].flags = (int)(0);
-             stack.menu.entries[3].id = (int)(0);
-             object = stack.widgets[0].object;
-             stack.menu.entries[4].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
-             stack.menu.entries[4].label = (void *)(strings + 0x530);
-             stack.menu.entries[4].type = (int)(3);
-             stack.menu.entries[4].flags = (int)(0);
-             stack.menu.entries[4].id = (int)(0);
-             stack.menu.entries[5].type = (int)(3);
-             stack.menu.entries[5].label = (void *)(strings + 0x53C);
-             stack.menu.entries[5].value = (void *)(&stack.widgets[0].unk74);
-             stack.menu.entries[5].flags = (int)(0);
-             stack.menu.entries[5].id = (int)(0);
-             stack.menu.entries[6].type = (int)(5);
-             stack.menu.entries[6].label = (void *)(&lbl_8055C7F8);
-             stack.menu.entries[6].value = (void *)(&stack.widgets[1].vtable);
-             stack.menu.entries[6].flags = (int)(0);
-             stack.menu.entries[6].id = (int)(0);
-             stack.menu.entries[7].type = (int)(2);
-             stack.menu.entries[7].label = (void *)(strings + 0x550);
-             stack.menu.entries[7].value = (void *)(&stack.widgets[1].unk70);
-             stack.menu.entries[7].flags = (int)(0);
-             stack.menu.entries[7].id = (int)(0);
-             object = stack.widgets[1].object;
-             stack.menu.entries[8].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
-             stack.menu.entries[8].label = (void *)(strings + 0x55C);
-             stack.menu.entries[8].type = (int)(3);
-             stack.menu.entries[8].flags = (int)(0);
-             stack.menu.entries[8].id = (int)(0);
-             stack.menu.entries[9].type = (int)(3);
-             stack.menu.entries[9].label = (void *)(strings + 0x568);
-             stack.menu.entries[9].value = (void *)(&stack.widgets[1].unk74);
-             stack.menu.entries[9].flags = (int)(0);
-             stack.menu.entries[9].id = (int)(0);
-             stack.menu.entries[10].type = (int)(5);
-             stack.menu.entries[10].label = (void *)(&lbl_8055C800);
-             stack.menu.entries[10].value = (void *)(&stack.widgets[2].vtable);
-             stack.menu.entries[10].flags = (int)(0);
-             stack.menu.entries[10].id = (int)(0);
-             stack.menu.entries[11].type = (int)(2);
-             stack.menu.entries[11].label = (void *)(strings + 0x57C);
-             stack.menu.entries[11].value = (void *)(&stack.widgets[2].unk70);
-             stack.menu.entries[11].flags = (int)(0);
-             stack.menu.entries[11].id = (int)(0);
-             object = stack.widgets[2].object;
-             stack.menu.entries[12].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
-             stack.menu.entries[12].label = (void *)(strings + 0x588);
-             stack.menu.entries[12].type = (int)(3);
-             stack.menu.entries[12].flags = (int)(0);
-             stack.menu.entries[12].id = (int)(0);
-             stack.menu.entries[13].type = (int)(3);
-             stack.menu.entries[13].label = (void *)(strings + 0x594);
-             stack.menu.entries[13].value = (void *)(&stack.widgets[2].unk74);
-             stack.menu.entries[13].flags = (int)(0);
-             stack.menu.entries[13].id = (int)(0);
-             stack.menu.entries[14].type = (int)(5);
-             stack.menu.entries[14].label = (void *)(&lbl_8055C808);
-             stack.menu.entries[14].value = (void *)(&stack.widgets[3].vtable);
-             stack.menu.entries[14].flags = (int)(0);
-             stack.menu.entries[14].id = (int)(0);
-             stack.menu.entries[15].type = (int)(2);
-             stack.menu.entries[15].label = (void *)(strings + 0x5A8);
-             stack.menu.entries[15].value = (void *)(&stack.widgets[3].unk70);
-             stack.menu.entries[15].flags = (int)(0);
-             stack.menu.entries[15].id = (int)(0);
-             object = stack.widgets[3].object;
-             stack.menu.entries[16].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
-             stack.menu.entries[16].label = (void *)(strings + 0x5B4);
-             stack.menu.entries[16].type = (int)(3);
-             stack.menu.entries[16].flags = (int)(0);
-             stack.menu.entries[16].id = (int)(0);
-             stack.menu.entries[17].type = (int)(3);
-             stack.menu.entries[17].label = (void *)(strings + 0x5C0);
-             stack.menu.entries[17].value = (void *)(&stack.widgets[3].unk74);
-             stack.menu.entries[17].flags = (int)(0);
-             stack.menu.entries[17].id = (int)(0);
-             stack.menu.entries[18].type = (int)(5);
-             stack.menu.entries[18].label = (void *)(&lbl_8055C810);
-             stack.menu.entries[18].value = (void *)(&stack.widgets[4].vtable);
-             stack.menu.entries[18].flags = (int)(0);
-             stack.menu.entries[18].id = (int)(0);
-             stack.menu.entries[19].type = (int)(2);
-             stack.menu.entries[19].label = (void *)(strings + 0x5D4);
-             stack.menu.entries[19].value = (void *)(&stack.widgets[4].unk70);
-             stack.menu.entries[19].flags = (int)(0);
-             stack.menu.entries[19].id = (int)(0);
-             stack.textIds[0][0] = *(int *)(constants + 0x2c);
-             stack.textIds[0][1] = *(int *)(constants + 0x30);
-             stack.textIds[0][2] = *(int *)(constants + 0x34);
-             stack.textIds[1][0] = *(int *)(constants + 0x38);
-             stack.textIds[1][1] = *(int *)(constants + 0x3c);
-             stack.textIds[1][2] = *(int *)(constants + 0x40);
-             stack.textIds[2][0] = *(int *)(constants + 0x44);
-             stack.textIds[2][1] = *(int *)(constants + 0x48);
-             stack.textIds[2][2] = *(int *)(constants + 0x4c);
-             stack.menu.entries[20].type = (int)(3);
-             stack.menu.entries[20].label = (void *)(strings + 0x5E0);
-             object = stack.widgets[4].object;
-             stack.menu.entries[20].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
-             stack.menu.entries[20].flags = (int)(0);
-             stack.menu.entries[20].id = (int)(0);
-             stack.menu.entries[21].type = (int)(3);
-             stack.menu.entries[21].label = (void *)(strings + 0x5EC);
-             stack.menu.entries[21].value = (void *)(&stack.widgets[4].unk74);
-             stack.menu.entries[21].flags = (int)(0);
-             stack.menu.entries[21].id = (int)(0);
-             stack.menu.entries[22].type = (int)(3);
-             stack.menu.entries[22].label = (void *)(strings + 0x600);
-             stack.menu.entries[22].value = (void *)(stack.textIds[2][mode]);
-             stack.menu.entries[22].flags = (int)(0);
-             stack.menu.entries[22].id = (int)(0);
-             stack.menu.entries[23].type = (int)(3);
-             stack.menu.entries[23].label = (void *)(strings + 0x610);
-             stack.menu.entries[23].value = (void *)(stack.textIds[1][mode]);
-             stack.menu.entries[23].flags = (int)(0);
-             stack.menu.entries[23].id = (int)(0);
-             stack.menu.entries[24].value = (void *)(fn_80131234(stack.textIds[0][mode]));
-             stack.menu.entries[24].label = (void *)(strings + 0x620);
-             stack.menu.entries[24].type = (int)(3);
-             stack.menu.entries[24].flags = (int)(0);
-             stack.menu.entries[24].id = (int)(0);
-             stack.menu.entries[25].label = (void *)(&lbl_8055B860);
-             stack.menu.entries[25].type = (int)(6);
-             stack.menu.entries[25].value = (void *)(&fn_80280F7C);
-             stack.menu.entries[25].flags = (int)(0);
-             stack.menu.entries[25].id = (int)(0x125);
-             stack.menu.entries[26].label = (void *)(&lbl_8055B860);
-             stack.menu.entries[26].type = (int)(6);
-             stack.menu.entries[26].value = (void *)(&fn_80280DC8);
-             stack.menu.entries[26].flags = (int)(0);
-             stack.menu.entries[26].id = (int)(0x127);
-             stack.menu.entries[27].label = (void *)(&lbl_8055B860);
-             stack.menu.entries[27].type = (int)(6);
-             stack.menu.entries[27].value = (void *)(&fn_80280C00);
-             stack.menu.entries[27].flags = (int)(0);
-             stack.menu.entries[27].id = (int)(0x128);
-             stack.menu.entries[28].label = (void *)(&lbl_8055B860);
-             stack.menu.entries[28].type = (int)(6);
-             stack.menu.entries[28].value = (void *)(&fn_80280A38);
-             stack.menu.entries[28].flags = (int)(0);
-             stack.menu.entries[28].id = (int)(0x126);
-             stack.menu.entries[29].label = (void *)(&lbl_8055B860);
-             stack.menu.entries[29].type = (int)(6);
-             stack.menu.entries[29].value = (void *)(&fn_802808D0);
-             stack.menu.entries[29].flags = (int)(-2);
-             stack.menu.entries[29].id = (int)(0xD);
-             stack.menu.entries[30].label = (void *)(&lbl_8055B860);
-             stack.menu.entries[30].type = (int)(6);
-             stack.menu.entries[30].value = (void *)(&fn_80280898);
-             stack.menu.entries[30].flags = (int)(-1);
-             stack.menu.entries[30].id = (int)(0x1B);
-             stack.menu.entries[31].label = (void *)(&lbl_8055BAB8);
-             stack.menu.entries[31].type = (int)(8);
-             stack.menu.entries[31].value = (void *)(&fn_8027EE74);
-             stack.menu.entries[31].flags = (int)(2);
-             stack.menu.entries[31].id = (int)(0);
-             stack.menu.header[0] = *(int *)(constants + 0x108);
-             stack.menu.footer[0] = ((int *)&lbl_804B2FF8)[0];
-             stack.menu.header[1] = *(int *)(constants + 0x10c);
-             stack.menu.footer[1] = ((int *)&lbl_804B2FF8)[1];
-             stack.menu.header[2] = *(int *)(constants + 0x110);
-             stack.menu.footer[2] = ((int *)&lbl_804B2FF8)[2];
-             stack.menu.header[3] = *(int *)(constants + 0x114);
-             stack.menu.footer[3] = ((int *)&lbl_804B2FF8)[3];
-             stack.menu.header[4] = *(int *)(constants + 0x118);
-             stack.menu.footer[4] = ((int *)&lbl_804B2FF8)[4];
-             stack.menu.header[1] = (int)stack.menu.entries;
-             if (lbl_8055F6A0 != 0) {
-                 lbl_8055F6A0 = 0;
-             *(char *)(state + 0x70) = 0;
-             index = *selection;
-             if (index >= 0 && index < ((struct Fn8027F834List *)(state + 0x50))->count) {
-                 object = ((struct Fn8027F834List *)(state + 0x50))->items[index];
-                 lbl_8055F688 = (unsigned int)object;
-                 if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
-                     item = ((Fn8027F958Widget *)object)->object;
-                     src = ((GetString)(*(void ***)item)[12])(item);
-                     dst = state + 0x70;
-                     remaining = 100;
-                     do {
-                         char c = *src++;
-                         *dst++ = c;
-                         if (c == 0) break;
-                         if (--remaining <= 0) { dst[-1] = 0; break; }
-                     } while (1);
-                 }
-             } else lbl_8055F688 = 0;
-         
-                 if (*selection < ((GetInt)(*(void ***)collection)[3])(collection) - 1) {
-                     ++*selection;
-                     lbl_8055F694 = &stack.widgets[*selection];
-                 }
-             }
-          else {
-             *(char *)(state + 0x70) = 0;
-             index = *selection;
-             if (index >= 0 && index < ((struct Fn8027F834List *)(state + 0x50))->count) {
-                 object = ((struct Fn8027F834List *)(state + 0x50))->items[index];
-                 lbl_8055F688 = (unsigned int)object;
-                 if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
-                     item = ((Fn8027F958Widget *)object)->object;
-                     src = ((GetString)(*(void ***)item)[12])(item);
-                     dst = state + 0x70;
-                     remaining = 100;
-                     do {
-                         char c = *src++;
-                         *dst++ = c;
-                         if (c == 0) break;
-                         if (--remaining <= 0) { dst[-1] = 0; break; }
-                     } while (1);
-                 }
-             } else lbl_8055F688 = 0;
-             }
-             result = (((int (*)(int *, int, int, int))fn_802146BC)(stack.menu.header, -999, -999, 1) + 2) == 0;
-             if (result) {
-                 for (i = 0; i < ((struct Fn8027F834List *)(state + 0x50))->count; ++i)
-                     if ((unsigned int)((struct Fn8027F834List *)(state + 0x50))->items[i] == lbl_8055F688) break;
-                 *selection = i < ((struct Fn8027F834List *)(state + 0x50))->count ? i : -1;
-             }
-             lbl_8055F688 = 0;
-             ((struct Fn8027F834List *)(state + 0x50))->count = 0;
-             lbl_8055F68C = 0;
-             lbl_8055F690 = 0;
-             *(char *)(state + 0x70) = 0;
-             lbl_8055F694 = 0;
-             widget = &stack.widgets[4];
-             widget->vtable = widgetVtable;
-             if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-             items = ((struct Fn8027F834List *)(state + 0x50))->items;
-             count = ((struct Fn8027F834List *)(state + 0x50))->count;
-             for (index = 0; index < count; ++items, ++index) {
-                 if (*items == widget) break;
-             }
-             if (index == count) index = -1;
-             if (index != -1 && index >= 0 && index < ((struct Fn8027F834List *)(state + 0x50))->count) {
-                 count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-                 if (index != count) ((struct Fn8027F834List *)(state + 0x50))->items[index] = ((struct Fn8027F834List *)(state + 0x50))->items[count];
-                 ((struct Fn8027F834List *)(state + 0x50))->count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-             }
-             widget->unk18 = 0;
-             widget->unk50 = 0;
-             widget->unk5C = 0;
-             widget->unk24 = 1;
-             widget->unk20 = 0;
-             widget->unk44 = 0;
-             widget = &stack.widgets[3];
-             widget->vtable = widgetVtable;
-             if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-             items = ((struct Fn8027F834List *)(state + 0x50))->items;
-             count = ((struct Fn8027F834List *)(state + 0x50))->count;
-             for (index = 0; index < count; ++items, ++index) {
-                 if (*items == widget) break;
-             }
-             if (index == count) index = -1;
-             if (index != -1 && index >= 0 && index < ((struct Fn8027F834List *)(state + 0x50))->count) {
-                 count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-                 if (index != count) ((struct Fn8027F834List *)(state + 0x50))->items[index] = ((struct Fn8027F834List *)(state + 0x50))->items[count];
-                 ((struct Fn8027F834List *)(state + 0x50))->count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-             }
-             widget->unk18 = 0;
-             widget->unk50 = 0;
-             widget->unk5C = 0;
-             widget->unk24 = 1;
-             widget->unk20 = 0;
-             widget->unk44 = 0;
-             widget = &stack.widgets[2];
-             widget->vtable = widgetVtable;
-             if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-             items = ((struct Fn8027F834List *)(state + 0x50))->items;
-             count = ((struct Fn8027F834List *)(state + 0x50))->count;
-             for (index = 0; index < count; ++items, ++index) {
-                 if (*items == widget) break;
-             }
-             if (index == count) index = -1;
-             if (index != -1 && index >= 0 && index < ((struct Fn8027F834List *)(state + 0x50))->count) {
-                 count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-                 if (index != count) ((struct Fn8027F834List *)(state + 0x50))->items[index] = ((struct Fn8027F834List *)(state + 0x50))->items[count];
-                 ((struct Fn8027F834List *)(state + 0x50))->count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-             }
-             widget->unk18 = 0;
-             widget->unk50 = 0;
-             widget->unk5C = 0;
-             widget->unk24 = 1;
-             widget->unk20 = 0;
-             widget->unk44 = 0;
-             widget = &stack.widgets[1];
-             widget->vtable = widgetVtable;
-             if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-             items = ((struct Fn8027F834List *)(state + 0x50))->items;
-             count = ((struct Fn8027F834List *)(state + 0x50))->count;
-             for (index = 0; index < count; ++items, ++index) {
-                 if (*items == widget) break;
-             }
-             if (index == count) index = -1;
-             if (index != -1 && index >= 0 && index < ((struct Fn8027F834List *)(state + 0x50))->count) {
-                 count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-                 if (index != count) ((struct Fn8027F834List *)(state + 0x50))->items[index] = ((struct Fn8027F834List *)(state + 0x50))->items[count];
-                 ((struct Fn8027F834List *)(state + 0x50))->count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-             }
-             widget->unk18 = 0;
-             widget->unk50 = 0;
-             widget->unk5C = 0;
-             widget->unk24 = 1;
-             widget->unk20 = 0;
-             widget->unk44 = 0;
-             widget = &stack.widgets[0];
-             widget->vtable = widgetVtable;
-             if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-             items = ((struct Fn8027F834List *)(state + 0x50))->items;
-             count = ((struct Fn8027F834List *)(state + 0x50))->count;
-             for (index = 0; index < count; ++items, ++index) {
-                 if (*items == widget) break;
-             }
-             if (index == count) index = -1;
-             if (index != -1 && index >= 0 && index < ((struct Fn8027F834List *)(state + 0x50))->count) {
-                 count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-                 if (index != count) ((struct Fn8027F834List *)(state + 0x50))->items[index] = ((struct Fn8027F834List *)(state + 0x50))->items[count];
-                 ((struct Fn8027F834List *)(state + 0x50))->count = ((struct Fn8027F834List *)(state + 0x50))->count - 1;
-             }
-             widget->unk18 = 0;
-             widget->unk50 = 0;
-             widget->unk5C = 0;
-             widget->unk24 = 1;
-             widget->unk20 = 0;
-             widget->unk44 = 0;
-             return result;
-         }
+int fn_8027F958(int *selection, void *collection) {
+    extern char lbl_80347E50[];
+    extern int lbl_8055BAB8, lbl_8055BAC0, lbl_8055C7EC;
+    extern int lbl_8055C7F0, lbl_8055C7F8, lbl_8055C800, lbl_8055C808, lbl_8055C810;
+    extern int lbl_8055F68C, lbl_8055F690;
+    extern void *lbl_8055F694;
+    extern unsigned char lbl_8055F6A0;
+    extern float lbl_805641F8, lbl_805641FC, lbl_80564200;
+    extern int fn_80131234(int);
+    extern int fn_802808D0(void), fn_80280A38(void), fn_80280C00(void), fn_80280F7C(void), fn_80281138(void);
+    extern int fn_80280DC8(void), fn_80280898(void);
+    typedef void *(*GetItem)(void *, int);
+    typedef int (*GetInt)(void *);
+    typedef unsigned char (*GetByte)(void *);
+    typedef char *(*GetString)(void *);
+    Fn8027F958Stack stack;
+    struct Fn8027F834List *list;
+    void *object, *item;
+    Fn8027F958Widget *widget;
+    void **items, **storage;
+    char *constants = (char *)&lbl_802FA848;
+    char *state = (char *)&lbl_804B2FF8;
+    char *strings = lbl_80347E50;
+    float defaultValue;
+    float defaultScale;
+    void *widgetVtable;
+    char *src, *dst;
+    int i, j, index, remaining, result, mode, count, reported;
+    float *value;
+    list = (struct Fn8027F834List *)(state + 0x50);
+    object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
+    mode = ((GetInt)(*(void ***)object)[5])(object);
+    defaultScale = lbl_805641F8;
+    defaultValue = lbl_805641FC;
+    widgetVtable = lbl_80348798;
+    index = list->count;
+    storage = list->items;
+    stack.widgets[0].unk14 = 0;
+    stack.widgets[0].unk38 = defaultScale;
+    stack.widgets[0].unk40 = 2;
+    stack.widgets[0].unk3C = defaultValue;
+    stack.widgets[0].unk18 = 0;
+    stack.widgets[0].unk50 = 0;
+    stack.widgets[0].unk5C = 0;
+    stack.widgets[0].unk24 = 2;
+    stack.widgets[0].unk20 = 0;
+    stack.widgets[0].unk44 = 0;
+    stack.widgets[0].vtable = widgetVtable;
+    stack.widgets[0].object = 0;
+    stack.widgets[0].unk64 = 0;
+    stack.widgets[0].unk70 = 0;
+    stack.widgets[0].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &stack.widgets[0];
+    stack.widgets[0].unk7E = 0;
+    stack.widgets[0].unkB0 = 0;
+    index = list->count;
+    storage = list->items;
+    stack.widgets[1].unk14 = 0;
+    stack.widgets[1].unk38 = defaultScale;
+    stack.widgets[1].unk40 = 2;
+    stack.widgets[1].unk3C = defaultValue;
+    stack.widgets[1].unk18 = 0;
+    stack.widgets[1].unk50 = 0;
+    stack.widgets[1].unk5C = 0;
+    stack.widgets[1].unk24 = 2;
+    stack.widgets[1].unk20 = 0;
+    stack.widgets[1].unk44 = 0;
+    stack.widgets[1].vtable = widgetVtable;
+    stack.widgets[1].object = 0;
+    stack.widgets[1].unk64 = 0;
+    stack.widgets[1].unk70 = 0;
+    stack.widgets[1].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &stack.widgets[1];
+    stack.widgets[1].unk7E = 0;
+    stack.widgets[1].unkB0 = 0;
+    index = list->count;
+    storage = list->items;
+    stack.widgets[2].unk14 = 0;
+    stack.widgets[2].unk38 = defaultScale;
+    stack.widgets[2].unk40 = 2;
+    stack.widgets[2].unk3C = defaultValue;
+    stack.widgets[2].unk18 = 0;
+    stack.widgets[2].unk50 = 0;
+    stack.widgets[2].unk5C = 0;
+    stack.widgets[2].unk24 = 2;
+    stack.widgets[2].unk20 = 0;
+    stack.widgets[2].unk44 = 0;
+    stack.widgets[2].vtable = widgetVtable;
+    stack.widgets[2].object = 0;
+    stack.widgets[2].unk64 = 0;
+    stack.widgets[2].unk70 = 0;
+    stack.widgets[2].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &stack.widgets[2];
+    stack.widgets[2].unk7E = 0;
+    stack.widgets[2].unkB0 = 0;
+    index = list->count;
+    storage = list->items;
+    stack.widgets[3].unk14 = 0;
+    stack.widgets[3].unk38 = defaultScale;
+    stack.widgets[3].unk40 = 2;
+    stack.widgets[3].unk3C = defaultValue;
+    stack.widgets[3].unk18 = 0;
+    stack.widgets[3].unk50 = 0;
+    stack.widgets[3].unk5C = 0;
+    stack.widgets[3].unk24 = 2;
+    stack.widgets[3].unk20 = 0;
+    stack.widgets[3].unk44 = 0;
+    stack.widgets[3].vtable = widgetVtable;
+    stack.widgets[3].object = 0;
+    stack.widgets[3].unk64 = 0;
+    stack.widgets[3].unk70 = 0;
+    stack.widgets[3].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &stack.widgets[3];
+    stack.widgets[3].unk7E = 0;
+    stack.widgets[3].unkB0 = 0;
+    index = list->count;
+    storage = list->items;
+    stack.widgets[4].unk14 = 0;
+    stack.widgets[4].unk38 = defaultScale;
+    stack.widgets[4].unk40 = 2;
+    stack.widgets[4].unk3C = defaultValue;
+    stack.widgets[4].unk18 = 0;
+    stack.widgets[4].unk50 = 0;
+    stack.widgets[4].unk5C = 0;
+    stack.widgets[4].unk24 = 2;
+    stack.widgets[4].unk20 = 0;
+    stack.widgets[4].unk44 = 0;
+    stack.widgets[4].vtable = widgetVtable;
+    stack.widgets[4].object = 0;
+    stack.widgets[4].unk64 = 0;
+    stack.widgets[4].unk70 = 0;
+    stack.widgets[4].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &stack.widgets[4];
+    stack.widgets[4].unk7E = 0;
+    stack.widgets[4].unkB0 = 0;
+    reported = ((GetInt)(*(void ***)collection)[3])(collection);
+    count = 5;
+    if (reported < 5) count = reported;
+    widget = stack.widgets;
+    for (i = 0; i < count; ++widget, ++i) {
+        widget->object = ((GetItem)(*(void ***)collection)[4])(collection, i);
+        widget->unk64 = 0;
+        value = widget->values;
+        for (j = 0; j < ((GetInt)(*(void ***)widget->object)[6])(widget->object); ++j) {
+            item = ((GetItem)(*(void ***)widget->object)[7])(widget->object, j);
+            *value++ = ((GetInt)(*(void ***)item)[16])(item) ? lbl_805641FC : lbl_80564200;
+        }
+        widget->unkCC = ((GetByte)(*(void ***)widget->object)[10])(widget->object);
+    }
+    stack.menu.entries[0].value = (void *)(&fn_80281138);
+    stack.menu.entries[1].label = (void *)(strings + 0x518);
+    stack.menu.entries[0].type = (int)(8);
+    stack.menu.entries[0].label = (void *)(&lbl_8055BAC0);
+    stack.menu.entries[0].flags = (int)(0);
+    stack.menu.entries[0].id = (int)(0);
+    stack.menu.entries[1].type = (int)(3);
+    stack.menu.entries[1].value = (void *)(state + 0x70);
+    stack.menu.entries[1].flags = (int)(0);
+    stack.menu.entries[1].id = (int)(0);
+    stack.menu.entries[2].type = (int)(5);
+    stack.menu.entries[2].label = (void *)(&lbl_8055C7F0);
+    stack.menu.entries[2].value = (void *)(&stack.widgets[0].vtable);
+    stack.menu.entries[2].flags = (int)(0);
+    stack.menu.entries[2].id = (int)(0);
+    stack.menu.entries[3].type = (int)(2);
+    stack.menu.entries[3].label = (void *)(strings + 0x524);
+    stack.menu.entries[3].value = (void *)(&stack.widgets[0].unk70);
+    stack.menu.entries[3].flags = (int)(0);
+    stack.menu.entries[3].id = (int)(0);
+    object = stack.widgets[0].object;
+    stack.menu.entries[4].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    stack.menu.entries[4].label = (void *)(strings + 0x530);
+    stack.menu.entries[4].type = (int)(3);
+    stack.menu.entries[4].flags = (int)(0);
+    stack.menu.entries[4].id = (int)(0);
+    stack.menu.entries[5].type = (int)(3);
+    stack.menu.entries[5].label = (void *)(strings + 0x53C);
+    stack.menu.entries[5].value = (void *)(&stack.widgets[0].unk74);
+    stack.menu.entries[5].flags = (int)(0);
+    stack.menu.entries[5].id = (int)(0);
+    stack.menu.entries[6].type = (int)(5);
+    stack.menu.entries[6].label = (void *)(&lbl_8055C7F8);
+    stack.menu.entries[6].value = (void *)(&stack.widgets[1].vtable);
+    stack.menu.entries[6].flags = (int)(0);
+    stack.menu.entries[6].id = (int)(0);
+    stack.menu.entries[7].type = (int)(2);
+    stack.menu.entries[7].label = (void *)(strings + 0x550);
+    stack.menu.entries[7].value = (void *)(&stack.widgets[1].unk70);
+    stack.menu.entries[7].flags = (int)(0);
+    stack.menu.entries[7].id = (int)(0);
+    object = stack.widgets[1].object;
+    stack.menu.entries[8].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    stack.menu.entries[8].label = (void *)(strings + 0x55C);
+    stack.menu.entries[8].type = (int)(3);
+    stack.menu.entries[8].flags = (int)(0);
+    stack.menu.entries[8].id = (int)(0);
+    stack.menu.entries[9].type = (int)(3);
+    stack.menu.entries[9].label = (void *)(strings + 0x568);
+    stack.menu.entries[9].value = (void *)(&stack.widgets[1].unk74);
+    stack.menu.entries[9].flags = (int)(0);
+    stack.menu.entries[9].id = (int)(0);
+    stack.menu.entries[10].type = (int)(5);
+    stack.menu.entries[10].label = (void *)(&lbl_8055C800);
+    stack.menu.entries[10].value = (void *)(&stack.widgets[2].vtable);
+    stack.menu.entries[10].flags = (int)(0);
+    stack.menu.entries[10].id = (int)(0);
+    stack.menu.entries[11].type = (int)(2);
+    stack.menu.entries[11].label = (void *)(strings + 0x57C);
+    stack.menu.entries[11].value = (void *)(&stack.widgets[2].unk70);
+    stack.menu.entries[11].flags = (int)(0);
+    stack.menu.entries[11].id = (int)(0);
+    object = stack.widgets[2].object;
+    stack.menu.entries[12].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    stack.menu.entries[12].label = (void *)(strings + 0x588);
+    stack.menu.entries[12].type = (int)(3);
+    stack.menu.entries[12].flags = (int)(0);
+    stack.menu.entries[12].id = (int)(0);
+    stack.menu.entries[13].type = (int)(3);
+    stack.menu.entries[13].label = (void *)(strings + 0x594);
+    stack.menu.entries[13].value = (void *)(&stack.widgets[2].unk74);
+    stack.menu.entries[13].flags = (int)(0);
+    stack.menu.entries[13].id = (int)(0);
+    stack.menu.entries[14].type = (int)(5);
+    stack.menu.entries[14].label = (void *)(&lbl_8055C808);
+    stack.menu.entries[14].value = (void *)(&stack.widgets[3].vtable);
+    stack.menu.entries[14].flags = (int)(0);
+    stack.menu.entries[14].id = (int)(0);
+    stack.menu.entries[15].type = (int)(2);
+    stack.menu.entries[15].label = (void *)(strings + 0x5A8);
+    stack.menu.entries[15].value = (void *)(&stack.widgets[3].unk70);
+    stack.menu.entries[15].flags = (int)(0);
+    stack.menu.entries[15].id = (int)(0);
+    object = stack.widgets[3].object;
+    stack.menu.entries[16].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    stack.menu.entries[16].label = (void *)(strings + 0x5B4);
+    stack.menu.entries[16].type = (int)(3);
+    stack.menu.entries[16].flags = (int)(0);
+    stack.menu.entries[16].id = (int)(0);
+    stack.menu.entries[17].type = (int)(3);
+    stack.menu.entries[17].label = (void *)(strings + 0x5C0);
+    stack.menu.entries[17].value = (void *)(&stack.widgets[3].unk74);
+    stack.menu.entries[17].flags = (int)(0);
+    stack.menu.entries[17].id = (int)(0);
+    stack.menu.entries[18].type = (int)(5);
+    stack.menu.entries[18].label = (void *)(&lbl_8055C810);
+    stack.menu.entries[18].value = (void *)(&stack.widgets[4].vtable);
+    stack.menu.entries[18].flags = (int)(0);
+    stack.menu.entries[18].id = (int)(0);
+    stack.menu.entries[19].type = (int)(2);
+    stack.menu.entries[19].label = (void *)(strings + 0x5D4);
+    stack.menu.entries[19].value = (void *)(&stack.widgets[4].unk70);
+    stack.menu.entries[19].flags = (int)(0);
+    stack.menu.entries[19].id = (int)(0);
+    stack.textIds[0][0] = *(int *)(constants + 0x2c);
+    stack.textIds[0][1] = *(int *)(constants + 0x30);
+    stack.textIds[0][2] = *(int *)(constants + 0x34);
+    stack.textIds[1][0] = *(int *)(constants + 0x38);
+    stack.textIds[1][1] = *(int *)(constants + 0x3c);
+    stack.textIds[1][2] = *(int *)(constants + 0x40);
+    stack.textIds[2][0] = *(int *)(constants + 0x44);
+    stack.textIds[2][1] = *(int *)(constants + 0x48);
+    stack.textIds[2][2] = *(int *)(constants + 0x4c);
+    stack.menu.entries[20].type = (int)(3);
+    stack.menu.entries[20].label = (void *)(strings + 0x5E0);
+    object = stack.widgets[4].object;
+    stack.menu.entries[20].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    stack.menu.entries[20].flags = (int)(0);
+    stack.menu.entries[20].id = (int)(0);
+    stack.menu.entries[21].type = (int)(3);
+    stack.menu.entries[21].label = (void *)(strings + 0x5EC);
+    stack.menu.entries[21].value = (void *)(&stack.widgets[4].unk74);
+    stack.menu.entries[21].flags = (int)(0);
+    stack.menu.entries[21].id = (int)(0);
+    stack.menu.entries[22].type = (int)(3);
+    stack.menu.entries[22].label = (void *)(strings + 0x600);
+    stack.menu.entries[22].value = (void *)(stack.textIds[2][mode]);
+    stack.menu.entries[22].flags = (int)(0);
+    stack.menu.entries[22].id = (int)(0);
+    stack.menu.entries[23].type = (int)(3);
+    stack.menu.entries[23].label = (void *)(strings + 0x610);
+    stack.menu.entries[23].value = (void *)(stack.textIds[1][mode]);
+    stack.menu.entries[23].flags = (int)(0);
+    stack.menu.entries[23].id = (int)(0);
+    stack.menu.entries[24].value = (void *)(fn_80131234(stack.textIds[0][mode]));
+    stack.menu.entries[24].label = (void *)(strings + 0x620);
+    stack.menu.entries[24].type = (int)(3);
+    stack.menu.entries[24].flags = (int)(0);
+    stack.menu.entries[24].id = (int)(0);
+    stack.menu.entries[25].label = (void *)(&lbl_8055B860);
+    stack.menu.entries[25].type = (int)(6);
+    stack.menu.entries[25].value = (void *)(&fn_80280F7C);
+    stack.menu.entries[25].flags = (int)(0);
+    stack.menu.entries[25].id = (int)(0x125);
+    stack.menu.entries[26].label = (void *)(&lbl_8055B860);
+    stack.menu.entries[26].type = (int)(6);
+    stack.menu.entries[26].value = (void *)(&fn_80280DC8);
+    stack.menu.entries[26].flags = (int)(0);
+    stack.menu.entries[26].id = (int)(0x127);
+    stack.menu.entries[27].label = (void *)(&lbl_8055B860);
+    stack.menu.entries[27].type = (int)(6);
+    stack.menu.entries[27].value = (void *)(&fn_80280C00);
+    stack.menu.entries[27].flags = (int)(0);
+    stack.menu.entries[27].id = (int)(0x128);
+    stack.menu.entries[28].label = (void *)(&lbl_8055B860);
+    stack.menu.entries[28].type = (int)(6);
+    stack.menu.entries[28].value = (void *)(&fn_80280A38);
+    stack.menu.entries[28].flags = (int)(0);
+    stack.menu.entries[28].id = (int)(0x126);
+    stack.menu.entries[29].label = (void *)(&lbl_8055B860);
+    stack.menu.entries[29].type = (int)(6);
+    stack.menu.entries[29].value = (void *)(&fn_802808D0);
+    stack.menu.entries[29].flags = (int)(-2);
+    stack.menu.entries[29].id = (int)(0xD);
+    stack.menu.entries[30].label = (void *)(&lbl_8055B860);
+    stack.menu.entries[30].type = (int)(6);
+    stack.menu.entries[30].value = (void *)(&fn_80280898);
+    stack.menu.entries[30].flags = (int)(-1);
+    stack.menu.entries[30].id = (int)(0x1B);
+    stack.menu.entries[31].label = (void *)(&lbl_8055BAB8);
+    stack.menu.entries[31].type = (int)(8);
+    stack.menu.entries[31].value = (void *)(&fn_8027EE74);
+    stack.menu.entries[31].flags = (int)(2);
+    stack.menu.entries[31].id = (int)(0);
+    stack.menu.header[0] = *(int *)(constants + 0x108);
+    stack.menu.footer[0] = ((int *)&lbl_804B2FF8)[0];
+    stack.menu.header[1] = *(int *)(constants + 0x10c);
+    stack.menu.footer[1] = ((int *)&lbl_804B2FF8)[1];
+    stack.menu.header[2] = *(int *)(constants + 0x110);
+    stack.menu.footer[2] = ((int *)&lbl_804B2FF8)[2];
+    stack.menu.header[3] = *(int *)(constants + 0x114);
+    stack.menu.footer[3] = ((int *)&lbl_804B2FF8)[3];
+    stack.menu.header[4] = *(int *)(constants + 0x118);
+    stack.menu.footer[4] = ((int *)&lbl_804B2FF8)[4];
+    stack.menu.header[1] = (int)stack.menu.entries;
+    if (lbl_8055F6A0 != 0) {
+        lbl_8055F6A0 = 0;
+    *(char *)(state + 0x70) = 0;
+    index = *selection;
+    if (index >= 0 && index < list->count) {
+        object = list->items[index];
+        lbl_8055F688 = (unsigned int)object;
+        if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
+            item = ((Fn8027F958Widget *)object)->object;
+            src = ((GetString)(*(void ***)item)[12])(item);
+            dst = state + 0x70;
+            remaining = 100;
+            do {
+                char c = *src++;
+                *dst++ = c;
+                if (c == 0) break;
+                if (--remaining <= 0) { dst[-1] = 0; break; }
+            } while (1);
+        }
+    } else lbl_8055F688 = 0;
+
+        if (*selection < ((GetInt)(*(void ***)collection)[3])(collection) - 1) {
+            ++*selection;
+            lbl_8055F694 = &stack.widgets[*selection];
+        }
+    }
+ else {
+    *(char *)(state + 0x70) = 0;
+    index = *selection;
+    if (index >= 0 && index < list->count) {
+        object = list->items[index];
+        lbl_8055F688 = (unsigned int)object;
+        if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
+            item = ((Fn8027F958Widget *)object)->object;
+            src = ((GetString)(*(void ***)item)[12])(item);
+            dst = state + 0x70;
+            remaining = 100;
+            do {
+                char c = *src++;
+                *dst++ = c;
+                if (c == 0) break;
+                if (--remaining <= 0) { dst[-1] = 0; break; }
+            } while (1);
+        }
+    } else lbl_8055F688 = 0;
+    }
+    result = (((int (*)(int *, int, int, int))fn_802146BC)(stack.menu.header, -999, -999, 1) + 2) == 0;
+    if (result) {
+        for (i = 0; i < list->count; ++i)
+            if ((unsigned int)list->items[i] == lbl_8055F688) break;
+        *selection = i < list->count ? i : -1;
+    }
+    lbl_8055F688 = 0;
+    list->count = 0;
+    lbl_8055F68C = 0;
+    lbl_8055F690 = 0;
+    *(char *)(state + 0x70) = 0;
+    lbl_8055F694 = 0;
+    widget = &stack.widgets[4];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    count = list->count;
+    for (index = 0; index < count; ++items, ++index) {
+        if (*items == widget) break;
+    }
+    if (index == count) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    widget = &stack.widgets[3];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    count = list->count;
+    for (index = 0; index < count; ++items, ++index) {
+        if (*items == widget) break;
+    }
+    if (index == count) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    widget = &stack.widgets[2];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    count = list->count;
+    for (index = 0; index < count; ++items, ++index) {
+        if (*items == widget) break;
+    }
+    if (index == count) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    widget = &stack.widgets[1];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    count = list->count;
+    for (index = 0; index < count; ++items, ++index) {
+        if (*items == widget) break;
+    }
+    if (index == count) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    widget = &stack.widgets[0];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    count = list->count;
+    for (index = 0; index < count; ++items, ++index) {
+        if (*items == widget) break;
+    }
+    if (index == count) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    return result;
+}
 #pragma scheduling on
 #pragma pop
 
@@ -1058,6 +1148,589 @@ extern "C" int fn_80280F7C(void) {
     return 0;
 }
 
+#pragma cplusplus on
+extern "C" unsigned char lbl_80348678[];
+extern "C" unsigned char lbl_8055F6A0;
+extern "C" int lbl_802FA848;
+extern "C" int lbl_804B2FF8;
+extern "C" float lbl_80564204, lbl_805641FC, lbl_80564200, lbl_80564208;
+extern "C" unsigned char lbl_80348738[];
+extern "C" char lbl_8055C818[];
+extern "C" void *lbl_8055F698;
+extern "C" void fn_801308F4(char *, int, const char *);
+extern "C" void *__AXGetStackHead(void);
+extern "C" void *fn_801284F8(int, const char *);
+extern "C" char lbl_8055C818[], lbl_8055C820[];
+extern "C" void fn_80236008(void *, int, int);
+extern "C" int fn_802054EC(void *, int, int);
+extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
+    struct Item { void **vtable; };
+    struct List { void **vtable; };
+    class Child {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual int value();
+        virtual void f7(); virtual void f8(); virtual void f9(); virtual const char *text();
+        virtual void f11(); virtual void f12(); virtual void f13();
+        virtual int isZero();
+    };
+    struct Record {
+        void *vtable;
+        unsigned char pad04[0x10];
+        int unk14;
+        unsigned char unk18;
+        unsigned char pad19[7];
+        int unk20;
+        int unk24;
+        unsigned char pad28[0x10];
+        float unk38;
+        float unk3C;
+        int unk40;
+        unsigned char unk44;
+        unsigned char pad45[0x1B];
+        void *child;
+        unsigned char pad64[8];
+        char name[0x1E];
+        char text[10];
+        int selected;
+        unsigned char flag98, flag99;
+        unsigned char pad9A[2];
+        int mode;
+    };
+    volatile unsigned char frame[0xAB0];
+    volatile unsigned char *sp = frame;
+    Item *item = (Item *)arg1; List *list = (List *)arg3;
+    char *p24 = (char *)&lbl_802FA848, *p25 = (char *)&lbl_804B2FF8, *p26 = lbl_80347E50;
+    float f30, f31;
+    int selectedIndex;
+    void *ret = ((void *(*)(void *))item->vtable[5])(item);
+    int flag = ((volatile unsigned char *)arg2)[0xE];
+    *(volatile void **)(sp + 0xAB8) = ret;
+    *(volatile void **)(sp + 0x230) = lbl_80348678;
+    *(volatile void **)(sp + 0x234) = lbl_80348678 + 0x50;
+    *(volatile int *)(sp + 0x248) = 0;
+    *(volatile void **)(sp + 0x270) = (void *)(sp + 0x27C);
+    *(volatile int *)(sp + 0x278) = 10;
+    *(volatile int *)(sp + 0x274) = 0;
+    lbl_8055F69C = (int)(sp + 0x230);
+    *(volatile int *)(sp + 0x24C) = 0;
+    *(volatile int *)(sp + 0x250) = 0;
+    *(volatile int *)(sp + 0x254) = -1;
+    *(volatile int *)(sp + 0x3AC) = -1;
+    *(volatile unsigned char *)(sp + 0x25B) = 0;
+    *(volatile int *)(sp + 0x260) = 0;
+    *(volatile int *)(sp + 0x25C) = 0;
+    *(volatile unsigned char *)(sp + 0x264) = 0;
+    *(volatile int *)(sp + 0x268) = 0;
+    *(volatile unsigned char *)(sp + 0x26C) = 0;
+    if (flag != 0) {
+        int i = 0;
+        while (i < ((int (*)(void *))list->vtable[3])(list)) {
+            if (((Item *(*)(void *, int))list->vtable[4])(list, i) == item) break;
+            ++i;
+        }
+        int n = ((int (*)(void *))list->vtable[3])(list);
+        if (i < n - 1) ((Item *(*)(void *, int))list->vtable[4])(list, i + 1);
+        if (i < n) {
+            *(volatile void **)(sp + 0x25C) = item;
+            *(volatile int *)(sp + 0x260) = 0;
+            *(volatile unsigned char *)(sp + 0x25B) = 1;
+            *(volatile unsigned char *)(sp + 0x26C) = 1;
+            lbl_8055F6A0 = 0;
+        }
+    }
+    if (((unsigned char *)arg2)[0x10] != 0) *(volatile unsigned char *)(sp + 0x26C) = 1;
+    if (((unsigned char *)arg2)[0x11] != 0) *(volatile unsigned char *)(sp + 0x26C) = 1;
+    *(volatile unsigned char *)(sp + 0x271) = (unsigned char)(p24 != p25);
+    *(volatile unsigned char *)(sp + 0x272) = (unsigned char)(p26 != 0);
+
+    {
+        volatile unsigned char *o = sp + 0x798;
+        volatile Record *rec = (volatile Record *)o;
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        rec->unk14 = 0;
+        rec->unk40 = 1;
+        rec->unk38 = lbl_80564204;
+        rec->unk3C = lbl_805641FC;
+        rec->unk18 = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x50) = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x5C) = 0;
+        rec->unk24 = 2;
+        rec->unk20 = 0;
+        rec->unk44 = 0;
+        rec->vtable = lbl_80348738;
+        rec->child = 0;
+        pool[count] = (void *)o;
+        *(int *)(base + 0xE4) = count + 1;
+    }
+
+    {
+        volatile unsigned char *o = sp + 0x798;
+        volatile Record *rec = (volatile Record *)o;
+        void *child = (void *)rec->child;
+        if (child != 0) {
+            void **vt = *(void ***)child;
+            const char *src = ((const char *(*)(void *))vt[10])(child);
+            fn_801308F4((char *)o + 0x6C, 0x1E, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            src = ((const char *(*)(void *))vt[15])(child);
+            fn_801308F4((char *)(sp + 0xB0), 0x14, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0xB0); int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            rec->mode = ((int (*)(void *))vt[16])(child) != 0;
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            int mode = ((int (*)(void *))vt[11])(child);
+            if (mode >= 0 && mode < 5) {
+                char *s = (char *)__AXGetStackHead();
+                char *d = (char *)o + 0x8A; int n = 10;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+        }
+        rec->selected = (lbl_8055F698 == (void *)o);
+    }
+
+
+    {
+        volatile unsigned char *o = sp + 0x838;
+        volatile Record *rec = (volatile Record *)o;
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        rec->unk14 = 0;
+        rec->unk40 = 1;
+        rec->unk38 = lbl_80564204;
+        rec->unk3C = lbl_805641FC;
+        rec->unk18 = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x50) = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x5C) = 0;
+        rec->unk24 = 2;
+        rec->unk20 = 0;
+        rec->unk44 = 0;
+        rec->vtable = lbl_80348738;
+        rec->child = 0;
+        pool[count] = (void *)o;
+        *(int *)(base + 0xE4) = count + 1;
+    }
+
+    {
+        volatile unsigned char *o = sp + 0x838;
+        volatile Record *rec = (volatile Record *)o;
+        void *child = (void *)rec->child;
+        if (child != 0) {
+            void **vt = *(void ***)child;
+            const char *src = ((const char *(*)(void *))vt[10])(child);
+            fn_801308F4((char *)o + 0x6C, 0x1E, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            src = ((const char *(*)(void *))vt[15])(child);
+            fn_801308F4((char *)(sp + 0x9C), 0x14, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0x9C); int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            rec->mode = ((int (*)(void *))vt[16])(child) != 0;
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            int mode = ((int (*)(void *))vt[11])(child);
+            if (mode >= 0 && mode < 5) {
+                char *s = (char *)__AXGetStackHead();
+                char *d = (char *)o + 0x8A; int n = 10;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+        }
+        rec->selected = (lbl_8055F698 == (void *)o);
+    }
+
+
+    {
+        volatile unsigned char *o = sp + 0x8D8;
+        volatile Record *rec = (volatile Record *)o;
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        rec->unk14 = 0;
+        rec->unk40 = 1;
+        rec->unk38 = lbl_80564204;
+        rec->unk3C = lbl_805641FC;
+        rec->unk18 = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x50) = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x5C) = 0;
+        rec->unk24 = 2;
+        rec->unk20 = 0;
+        rec->unk44 = 0;
+        rec->vtable = lbl_80348738;
+        rec->child = 0;
+        pool[count] = (void *)o;
+        *(int *)(base + 0xE4) = count + 1;
+    }
+
+    {
+        volatile unsigned char *o = sp + 0x8D8;
+        volatile Record *rec = (volatile Record *)o;
+        void *child = (void *)rec->child;
+        if (child != 0) {
+            void **vt = *(void ***)child;
+            const char *src = ((const char *(*)(void *))vt[10])(child);
+            fn_801308F4((char *)o + 0x6C, 0x1E, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            src = ((const char *(*)(void *))vt[15])(child);
+            fn_801308F4((char *)(sp + 0x88), 0x14, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0x88); int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            rec->mode = ((int (*)(void *))vt[16])(child) != 0;
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            int mode = ((int (*)(void *))vt[11])(child);
+            if (mode >= 0 && mode < 5) {
+                char *s = (char *)__AXGetStackHead();
+                char *d = (char *)o + 0x8A; int n = 10;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+        }
+        rec->selected = (lbl_8055F698 == (void *)o);
+    }
+
+    {
+        volatile unsigned char *o = sp + 0x978;
+        volatile Record *rec = (volatile Record *)o;
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        rec->unk14 = 0;
+        rec->unk40 = 1;
+        rec->unk38 = lbl_80564204;
+        rec->unk3C = lbl_805641FC;
+        rec->unk18 = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x50) = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x5C) = 0;
+        rec->unk24 = 2;
+        rec->unk20 = 0;
+        rec->unk44 = 0;
+        rec->vtable = lbl_80348738;
+        rec->child = 0;
+        pool[count] = (void *)o;
+        *(int *)(base + 0xE4) = count + 1;
+    }
+
+    {
+        volatile unsigned char *o = sp + 0x978;
+        volatile Record *rec = (volatile Record *)o;
+        void *child = (void *)rec->child;
+        if (child != 0) {
+            void **vt = *(void ***)child;
+            const char *src = ((const char *(*)(void *))vt[10])(child);
+            fn_801308F4((char *)o + 0x6C, 0x1E, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            src = ((const char *(*)(void *))vt[15])(child);
+            fn_801308F4((char *)(sp + 0x88), 0x14, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0x88); int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            rec->mode = ((int (*)(void *))vt[16])(child) != 0;
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            int mode = ((int (*)(void *))vt[11])(child);
+            if (mode >= 0 && mode < 5) {
+                char *s = (char *)__AXGetStackHead();
+                char *d = (char *)o + 0x8A; int n = 10;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+        }
+        rec->selected = (lbl_8055F698 == (void *)o);
+    }
+
+    {
+        volatile unsigned char *o = sp + 0xA18;
+        volatile Record *rec = (volatile Record *)o;
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        rec->unk14 = 0;
+        rec->unk40 = 1;
+        rec->unk38 = lbl_80564204;
+        rec->unk3C = lbl_805641FC;
+        rec->unk18 = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x50) = 0;
+        *(volatile unsigned char *)((unsigned char *)o + 0x5C) = 0;
+        rec->unk24 = 2;
+        rec->unk20 = 0;
+        rec->unk44 = 0;
+        rec->vtable = lbl_80348738;
+        rec->child = 0;
+        pool[count] = (void *)o;
+        *(int *)(base + 0xE4) = count + 1;
+    }
+
+    {
+        volatile unsigned char *o = sp + 0xA18;
+        volatile Record *rec = (volatile Record *)o;
+        void *child = (void *)rec->child;
+        if (child != 0) {
+            void **vt = *(void ***)child;
+            const char *src = ((const char *(*)(void *))vt[10])(child);
+            fn_801308F4((char *)o + 0x6C, 0x1E, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            src = ((const char *(*)(void *))vt[15])(child);
+            fn_801308F4((char *)(sp + 0x88), 0x14, src);
+            {
+                char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0x88); int n = 0x1E;
+                while (*d && --n) ++d;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            rec->mode = ((int (*)(void *))vt[16])(child) != 0;
+            child = (void *)rec->child;
+            vt = *(void ***)child;
+            int mode = ((int (*)(void *))vt[11])(child);
+            if (mode >= 0 && mode < 5) {
+                char *s = (char *)__AXGetStackHead();
+                char *d = (char *)o + 0x8A; int n = 10;
+                while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                if (n < 0) d[-1] = 0;
+            }
+        }
+        rec->selected = (lbl_8055F698 == (void *)o);
+    }
+
+    int limit = ((int (*)(void *))item->vtable[6])(item);
+    if (limit >= 5) limit = 5;
+    fn_80236008((void *)(sp + 0xD8), limit,
+        fn_802054EC(p26 + 0x658, ((int (*)(void *))item->vtable[5])(item), -1));
+    selectedIndex = *arg0;
+    int state = -1;
+    if (((unsigned char *)arg2)[0] != 0) {
+        void *current = ((void *(*)(void *, int))item->vtable[7])(item, selectedIndex);
+        int advance;
+        if (((int (*)(void *))item->vtable[8])(item) != 0) {
+            void **cv = *(void ***)current;
+            advance = ((int (*)(void *))cv[18])(current);
+        } else {
+            void **cv = *(void ***)current;
+            advance = ((int (*)(void *))cv[16])(current);
+        }
+        if (advance != 0 && selectedIndex < limit - 1) ++selectedIndex;
+    }
+    f30 = lbl_80564208;
+    f31 = lbl_80564200;
+    {
+        int i = 0;
+        volatile Record *rec = (volatile Record *)(sp + 0x798);
+        for (; i < limit; ++i, rec = (volatile Record *)((volatile unsigned char *)rec + 0xA0)) {
+            void *child = ((void *(*)(void *, int))item->vtable[7])(item, i);
+            void **cv = *(void ***)child;
+            if (((unsigned char *)arg2)[0] != 0 &&
+                arg2[2] == ((int (*)(void *))cv[8])(child)) {
+                int delta = arg2[1];
+                state = i;
+                *(volatile void **)(sp + 0x24C) = child;
+                *(volatile int *)(sp + 0x254) = i;
+                if (delta > 0) {
+                    int value = ((int (*)(void *))cv[10])(child);
+                    void *entry = fn_801284F8(0x14, p26 + 0x664);
+                    if (entry != 0) {
+                        *(int *)entry = value - delta;
+                        *(int *)((char *)entry + 4) = value;
+                        *(unsigned char *)((char *)entry + 0xC) = 0;
+                        *(float *)((char *)entry + 8) = f30;
+                    }
+                    *(volatile void **)(sp + 0x250) = entry;
+                    *(float *)((char *)entry + 0x10) = f31;
+                }
+                *(volatile int *)(sp + 0x3AC) = selectedIndex;
+                rec->child = (void *)(sp + 0x230);
+            } else {
+                rec->child = child;
+            }
+            void *object = (void *)rec->child;
+            if (object != 0) {
+                void **vt = *(void ***)object;
+                const char *src = ((const char *(*)(void *))vt[10])(object);
+                fn_801308F4((char *)rec + 0x6C, 0x1E, src);
+                {
+                    char *d = (char *)rec + 0x6C;
+                    const char *s = lbl_8055C818;
+                    int n = 0x1E;
+                    while (*d && --n) ++d;
+                    while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                    if (n < 0) d[-1] = 0;
+                }
+                object = (void *)rec->child;
+                vt = *(void ***)object;
+                src = ((const char *(*)(void *))vt[15])(object);
+                fn_801308F4((char *)(sp + 0x4C), 0x14, src);
+                {
+                    char *d = (char *)rec + 0x6C;
+                    const char *s = (const char *)(sp + 0x4C);
+                    int n = 0x1E;
+                    while (*d && --n) ++d;
+                    while (n-- > 0) { *d = *s++; if (!*d++) break; }
+                    if (n < 0) d[-1] = 0;
+                }
+                object = (void *)rec->child;
+                vt = *(void ***)object;
+                rec->mode = ((int (*)(void *))vt[16])(object) != 0;
+                object = (void *)rec->child;
+                vt = *(void ***)object;
+                int mode = ((int (*)(void *))vt[11])(object);
+                if (mode >= 0 && mode < 5) {
+                    char *srcHead = (char *)__AXGetStackHead();
+                    char *d = (char *)rec + 0x8A;
+                    int n = 10;
+                    while (n-- > 0) { *d = *srcHead++; if (!*d++) break; }
+                    if (n < 0) d[-1] = 0;
+                }
+            }
+            rec->selected = (lbl_8055F698 == (void *)rec);
+            ((void (*)(void *))cv[8])(child);
+        }
+        *(volatile int *)(sp + 0x34) = state;
+    }
+    {
+        void *object = (void *)(sp + 0xA18);
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        int i = 0;
+        if (lbl_8055F698 == object) lbl_8055F698 = 0;
+        for (; i < count; ++i) if (pool[i] == object) break;
+        if (i < count) {
+            if (i < count - 1) pool[i] = pool[count - 1];
+            *(int *)(base + 0xE4) = count - 1;
+        }
+    }
+    {
+        void *object = (void *)(sp + 0x978);
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        int i = 0;
+        if (lbl_8055F698 == object) lbl_8055F698 = 0;
+        for (; i < count; ++i) if (pool[i] == object) break;
+        if (i < count) {
+            if (i < count - 1) pool[i] = pool[count - 1];
+            *(int *)(base + 0xE4) = count - 1;
+        }
+    }
+    {
+        void *object = (void *)(sp + 0x8D8);
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        int i = 0;
+        if (lbl_8055F698 == object) lbl_8055F698 = 0;
+        for (; i < count; ++i) if (pool[i] == object) break;
+        if (i < count) {
+            if (i < count - 1) pool[i] = pool[count - 1];
+            *(int *)(base + 0xE4) = count - 1;
+        }
+    }
+    {
+        void *object = (void *)(sp + 0x838);
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        int i = 0;
+        if (lbl_8055F698 == object) lbl_8055F698 = 0;
+        for (; i < count; ++i) if (pool[i] == object) break;
+        if (i < count) {
+            if (i < count - 1) pool[i] = pool[count - 1];
+            *(int *)(base + 0xE4) = count - 1;
+        }
+    }
+    {
+        void *object = (void *)(sp + 0x798);
+        char *base = (char *)&lbl_804B2FF8;
+        int count = *(int *)(base + 0xE4);
+        void **pool = *(void ***)(base + 0xE0);
+        int i = 0;
+        if (lbl_8055F698 == object) lbl_8055F698 = 0;
+        for (; i < count; ++i) if (pool[i] == object) break;
+        if (i < count) {
+            if (i < count - 1) pool[i] = pool[count - 1];
+            *(int *)(base + 0xE4) = count - 1;
+        }
+    }
+    f30 = lbl_80564208;
+    f31 = lbl_80564200;
+    *(volatile unsigned char *)(sp + 0x270) = (unsigned char)(f30 != f31);
+    {
+        int value = *(volatile int *)(sp + 0x250);
+        *(volatile void **)(sp + 0x230) = lbl_80348678;
+        *(volatile void **)(sp + 0x234) = lbl_80348678 + 0x50;
+        *(volatile int *)&lbl_8055F69C = 0;
+        if (value != 0) fn_80128668();
+        *(volatile int *)(sp + 0x270) = 0;
+        *(volatile int *)(sp + 0x274) = 0;
+        *(volatile int *)(sp + 0x278) = 0;
+    }
+    if (selectedIndex >= 0) *(volatile int *)arg0 = -1;
+    return (int)arg1;
+}
+
 #pragma pop
 
 extern int fn_80216D28();
@@ -1073,9 +1746,9 @@ int fn_802837D4(int arg0, int arg1) {
 }
 
 void *fn_80283938(void *arg0, int arg1) {
-    register void *base;
-    register void *next;
-    register void *field;
+    void *base;
+    void *next;
+    void *field;
     if (arg0 != 0) {
         base = lbl_80348678;
         next = (char *)base + 0x50;
@@ -1119,13 +1792,20 @@ extern "C" int fn_802839D0(void) {
 }
 #pragma cplusplus reset
 int fn_80283A50(void) {
-    int i = 0, count = (int)lbl_804B30D8[1];
+    int i = 0;
+    int count = (int)lbl_804B30D8[1];
     unsigned int *p = (unsigned int *)lbl_804B30D8[0];
     unsigned int value = (unsigned int)lbl_8055F698;
-    for (; count > 0; --count) {
-        if (*p == value) return 1;
-        p += 4; ++i;
+    if (count > 0) {
+        do {
+            if (*p == value) goto found;
+            p++;
+            i++;
+        } while (--count != 0);
     }
+    i = -1;
+found:
+    if (i >= 0) return 1;
     fn_80216D28();
     return 0;
 }
@@ -1497,9 +2177,8 @@ extern "C" void fn_8028693C(void* arg0) {
 typedef unsigned int (*GetFn)(void *);
 typedef int (*CmpFn)(void *);
 int fn_80286950(void **arg0) {
-    unsigned int a;
-    a = (*(GetFn *)((char *)*arg0 + 0x4C))(arg0);
-    return (int)a <= (*(CmpFn *)((char *)*arg0 + 0x28))(arg0);
+    unsigned int a = ((GetFn *)*arg0)[19](arg0);
+    return (int)a <= ((CmpFn *)*arg0)[10](arg0);
 }
 
 #pragma cplusplus on
