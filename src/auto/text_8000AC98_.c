@@ -157,12 +157,13 @@ extern int fn_8000AEC8(int);
 extern void fn_80265D74(void), fn_80128678(void), fn_80206454(void), fn_80127930(void);
 extern void fn_802D3E9C(int);
 extern void fn_8000AEC4(void);
+extern int fn_802E30C8();
 #pragma push
 #pragma small_data off
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling invalid_target
-  void fn_8000AF1C(void *arg0) {
+void fn_8000AF1C(void *arg0) {
     int zero = 0;
     char *config = lbl_802FBC90;
     int active;
@@ -196,8 +197,8 @@ extern void fn_8000AEC4(void);
     fn_801769EC();
     ((void (*)(int))fn_8000AF04)(*(int *)((char *)arg0 + 0x3E8));
 
-    entry = lbl_8034F5B8;
     i = 0;
+    entry = lbl_8034F5B8;
     do {
         memset(entry, 0, 8);
         val = *(int *)&lbl_8034F5D8;
@@ -227,7 +228,7 @@ extern void fn_8000AEC4(void);
         fn_80127930();
         fn_802D3E9C(0);
     }
-  }
+}
 #pragma scheduling on
 #pragma dont_inline reset
   #pragma pop
