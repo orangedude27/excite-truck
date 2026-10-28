@@ -395,8 +395,8 @@ static inline void helper_80274F74(void *arg0, void *arg1) {
             }
         }
     } else {
-        float zero = lbl_80563FB0;
         float one = lbl_80563FAC;
+        float zero = lbl_80563FB0;
         *(float *)((char *)arg0 + 0x5C) = zero;
         *(float *)((char *)arg0 + 0x58) = one;
         *(float *)((char *)arg0 + 0x60) = zero;
