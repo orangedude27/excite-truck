@@ -1578,8 +1578,4 @@ void fn_802B8C98(void) {
 struct Texture802B { s32 width; s32 height; u32 *pixels; };
 struct Entry802B { char name[0x20]; s32 width; s32 height; char pixels[1]; };
 struct Entries802B { s32 pad; s32 count; struct Entry802B *entries; };
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
-#pragma cplusplus on
 
