@@ -69,33 +69,34 @@ void TRKPostEvent(s32 arg0) {
     extern void __OSSetInterruptHandler(int, void (*)(void *, void *));
     extern void __OSUnmaskInterrupts(u32);
     extern void TRKGetNextEvent(void *, void *);
+    register s32 zero asm("r7") = 0;
     s32 irq;
     u32 ticks;
     if ((s32)lbl_8055D6A8 != 1) {
         OSRegisterVersion(lbl_80558DD0);
-        lbl_8055D6D0 = 0;
-        ticks = *(volatile u32 *)0x800000F8 / 500000;
-        lbl_8055D6C8 = 0;
-        lbl_8055D6C0 = 0;
-        lbl_8055D6B8 = 0;
-        lbl_8055D6B0 = 0;
+        ticks = (*(volatile u32 *)0x800000F8 >> 2) / 125000;
+        lbl_8055D6D0 = zero;
+        lbl_8055D6C8 = zero;
+        lbl_8055D6C0 = zero;
+        lbl_8055D6B8 = zero;
+        lbl_8055D6B0 = zero;
         lbl_8055D6D4 = (ticks * 0x7B24) / 8000;
         lbl_8055D6CC = (ticks * 0xA428) / 8000;
         lbl_8055D6C4 = (ticks * 0xA410) / 8000;
         lbl_8055D6BC = (ticks * 0xF618) / 8000;
         lbl_8055D6B4 = (ticks * 0xBB8) / 8000;
         *(volatile u32 *)0xCD006C00 &= ~0x15;
-        *(volatile u32 *)0xCD006C04 = 0;
-        *(volatile u32 *)0xCD006C0C = 0;
+        *(volatile u32 *)0xCD006C04 = zero;
+        *(volatile u32 *)0xCD006C0C = zero;
         *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & 0xFFFFFFDF) | 0x20;
-        if (((*(volatile u32 *)0xCD006C00 >> 6) & 1) == 0) {
+        if (((*(volatile u32 *)0xCD006C00 >> 25) ^ 1) == 0) {
             *(volatile u32 *)0xCD006C00 &= 0xFFFFFFBF;
             irq = OSDisableInterrupts();
             TRKInitializeNub();
             *(volatile u32 *)0xCD006C00 |= 0x40;
             OSRestoreInterrupts(irq);
         }
-        lbl_8055D6E0 = 0;
+        lbl_8055D6E0 = (void *)zero;
         lbl_8055D6DC = arg0;
         __OSSetInterruptHandler(5, TRKGetNextEvent);
         __OSUnmaskInterrupts(0x04000000);
@@ -124,7 +125,15 @@ void TRKGetNextEvent(void *arg0, void *restoreContext) {
     OSSetCurrentContext(restoreContext);
 }
 
-void TRKInitializeEventQueue(void) { }
+extern s32 lbl_8055D6D8;
+void TRKInitializeEventQueue(void) {
+    u32 saved;
+    void (*callback)(void);
+    *(volatile u32 *)0x8055D6D8 = (u32)&saved - 8;
+    callback = (void (*)(void))*(volatile u32 *)0x8055D6DC;
+    callback();
+    saved = *(volatile u32 *)0x8055D6D8;
+}
 
 extern s32 lbl_8055D6B0, lbl_8055D6B4, lbl_8055D6B8, lbl_8055D6BC;
 extern s32 lbl_8055D6C0, lbl_8055D6C4, lbl_8055D6C8, lbl_8055D6CC;
@@ -244,6 +253,53 @@ void TRKAppendBuffer_ui32(void) {
         a += 16; b += 16;
     } while (--i);
 }
+
+void TRKAppendBuffer1_ui64(void) {
+    u32 *a;
+    u32 *b;
+    s32 count;
+    lbl_8055D6E8 = 0;
+    a = lbl_8035BF20;
+    b = (u32 *)lbl_8035BEA0;
+    count = 2;
+    do {
+        *(u32 *)((u8 *)a + 0x00) = 0;
+        *(u32 *)((u8 *)b + 0x00) = 0;
+        *(u32 *)((u8 *)a + 0x04) = 0;
+        *(u32 *)((u8 *)b + 0x04) = 0;
+        *(u32 *)((u8 *)a + 0x08) = 0;
+        *(u32 *)((u8 *)b + 0x08) = 0;
+        *(u32 *)((u8 *)a + 0x0C) = 0;
+        *(u32 *)((u8 *)b + 0x0C) = 0;
+        *(u32 *)((u8 *)a + 0x10) = 0;
+        *(u32 *)((u8 *)b + 0x10) = 0;
+        *(u32 *)((u8 *)a + 0x14) = 0;
+        *(u32 *)((u8 *)b + 0x14) = 0;
+        *(u32 *)((u8 *)a + 0x18) = 0;
+        *(u32 *)((u8 *)b + 0x18) = 0;
+        *(u32 *)((u8 *)a + 0x1C) = 0;
+        *(u32 *)((u8 *)b + 0x1C) = 0;
+        *(u32 *)((u8 *)a + 0x20) = 0;
+        *(u32 *)((u8 *)b + 0x20) = 0;
+        *(u32 *)((u8 *)a + 0x24) = 0;
+        *(u32 *)((u8 *)b + 0x24) = 0;
+        *(u32 *)((u8 *)a + 0x28) = 0;
+        *(u32 *)((u8 *)b + 0x28) = 0;
+        *(u32 *)((u8 *)a + 0x2C) = 0;
+        *(u32 *)((u8 *)b + 0x2C) = 0;
+        *(u32 *)((u8 *)a + 0x30) = 0;
+        *(u32 *)((u8 *)b + 0x30) = 0;
+        *(u32 *)((u8 *)a + 0x34) = 0;
+        *(u32 *)((u8 *)b + 0x34) = 0;
+        *(u32 *)((u8 *)a + 0x38) = 0;
+        *(u32 *)((u8 *)b + 0x38) = 0;
+        *(u32 *)((u8 *)a + 0x3C) = 0;
+        a += 16;
+        *(u32 *)((u8 *)b + 0x3C) = 0;
+        b += 16;
+    } while (--count);
+}
+
 #pragma pop
 void TRKReadBuffer(void *arg0) {
     u32 old = lbl_8035BEA0[0];
@@ -305,6 +361,7 @@ void TRKGetFreeBuffer(void *arg0) {
     OSRestoreInterrupts(level);
 }
 
+#pragma use_lmw_stmw off
 void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern s32 OSDisableInterrupts(void);
     extern void OSRestoreInterrupts(s32);
@@ -315,17 +372,19 @@ void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (buf != 0)
         lbl_8035BEA0[0] = *(u32 *)buf;
     if (buf == 0) {
-        for (index = 1; index < arg0; ++index) {
-            void *first = (void *)lbl_8035BEA0[index];
+        u32 *firstp = (u32 *)lbl_8035BEA0 + 1;
+        u32 *lastp = lbl_8035BF20 + 1;
+        for (index = 1; index < arg0; ++index, ++firstp, ++lastp) {
+            u32 first = *firstp;
             if (first != 0) {
-                void *last = (void *)lbl_8035BF20[index];
+                u32 last = *lastp;
                 if (first == last) {
-                    lbl_8035BF20[index] = 0;
-                    lbl_8035BEA0[index] = 0;
-                    buf = first;
+                    *lastp = 0;
+                    buf = (void *)first;
+                    *firstp = 0;
                 } else if (last != 0) {
-                    buf = last;
-                    lbl_8035BF20[index] = *(u32 *)((u8 *)last + 4);
+                    buf = (void *)last;
+                    *lastp = *(u32 *)((u8 *)last + 4);
                     *(u32 *)((u8 *)buf + 4) = 0;
                 }
             }
@@ -357,6 +416,7 @@ void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     OSRestoreInterrupts(irq);
     return buf;
 }
+#pragma use_lmw_stmw reset
 
 #pragma pop
 void TRKProcessInput(void *arg0, s32 arg1) {
@@ -378,6 +438,64 @@ void TRKProcessInput(void *arg0, s32 arg1) {
     }
     *(s32 *)((u8 *)arg0 + 0xC) = arg1;
     OSRestoreInterrupts(irq);
+}
+
+void TRKGetInput(void) {
+    extern u8 lbl_8035BFA0[];
+    extern s32 lbl_8055D6F8;
+    extern s32 lbl_8055D6F4;
+    extern s32 lbl_8055D6F0;
+    u32 *first;
+    u32 *second;
+    u32 *third;
+    int i;
+
+    lbl_8055D728 = 0;
+    first = (u32 *)lbl_8035BFA0;
+    second = (u32 *)(lbl_8035BFA0 + 0xD80);
+    third = (u32 *)(lbl_8035BFA0 + 0x1B00);
+    lbl_8055D724 = 0;
+    lbl_8055D720 = 0;
+    lbl_8055D71C = 0;
+    lbl_8055D718 = 0;
+    lbl_8055D714 = 0;
+    lbl_8055D6F8 = 0;
+    lbl_8055D6F4 = 1;
+    lbl_8055D6F0 = 2;
+    i = 0x20;
+    do {
+        first[0] = 0;
+        second[0] = 0;
+        third[0] = 0;
+        first[1] = 0;
+        second[1] = 0;
+        third[1] = 0;
+        first[2] = 0;
+        second[2] = 0;
+        third[2] = 0;
+        first[3] = 0;
+        second[3] = 0;
+        third[3] = 0;
+        first[4] = 0;
+        second[4] = 0;
+        third[4] = 0;
+        first[5] = 0;
+        second[5] = 0;
+        third[5] = 0;
+        first[6] = 0;
+        second[6] = 0;
+        third[6] = 0;
+        first[7] = 0;
+        second[7] = 0;
+        third[7] = 0;
+        first[8] = 0;
+        first += 9;
+        second[8] = 0;
+        second += 9;
+        third[8] = 0;
+        third += 9;
+        i--;
+    } while (i != 0);
 }
 
 void usr_puts_serial(void) {
@@ -953,42 +1071,24 @@ extern void DSPInit(void);
 extern void DSPAssertInt(void *);
 #pragma scheduling on
 void fn_80032004(void) {
-    struct Task {
-        u8 pad[4];
-        u32 unk4;
-        u8 pad8[4];
-        void *unkC;
-        u32 unk10;
-        u32 unk14;
-        void *unk18;
-        u32 unk1C;
-        u32 unk20;
-        u16 unk24;
-        u16 unk26;
-        void (*unk28)(void);
-        void (*unk2C)(void);
-        void (*unk30)(void);
-        void (*unk34)(void);
-    };
-    void *resource = lbl_802FFD60;
-    struct Task *task = (struct Task *)lbl_8035FB80;
-    register u32 zero = 0;
+    register u32 *task = (u32 *)lbl_8035FB80;
 
-    task->unk4 = zero;
-    lbl_8055D770 = zero;
-    task->unkC = resource;
-    task->unk10 = lbl_80558DE4;
-    task->unk14 = zero;
-    task->unk18 = lbl_8035FBD0;
-    task->unk1C = 0x2000;
-    task->unk20 = zero;
-    task->unk24 = lbl_80558DE0;
-    task->unk26 = lbl_80558DE2;
-    task->unk28 = __AXDSPInitCallback_80031F90;
-    task->unk2C = fn_80031F9C;
-    task->unk30 = __AXDSPDoneCallback;
-    task->unk34 = fn_80032000;
-    lbl_8055D76C = zero;
+    task[1] = 0;
+    lbl_8055D770 = 0;
+    task[3] = (u32)lbl_802FFD60;
+    task[4] = lbl_80558DE4;
+    task[5] = 0;
+    task[6] = (u32)lbl_8035FBD0;
+    task[7] = 0x2000;
+    task[8] = 0;
+    *(u16 *)&task[9] = lbl_80558DE0;
+    *(u16 *)&task[9] = lbl_80558DE0;
+    ((u16 *)task)[0x13] = lbl_80558DE2;
+    task[10] = (u32)__AXDSPInitCallback_80031F90;
+    task[11] = (u32)fn_80031F9C;
+    task[12] = (u32)__AXDSPDoneCallback;
+    task[13] = (u32)fn_80032000;
+    lbl_8055D76C = 0;
     OSInitThreadQueue(&lbl_8055D760);
     if (DSPReset() == 0) DSPInit();
     DSPAssertInt(lbl_8035FB80);
