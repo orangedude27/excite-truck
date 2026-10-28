@@ -600,13 +600,17 @@ void fn_800109E4(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
 
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8DB8(void *, s32, u16 *, s32);
-extern u16 lbl_802ED748[6];
+struct IndexList802ED748 {
+    u16 idx[6];
+};
+extern struct IndexList802ED748 lbl_802ED748;
 #pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling off
+#pragma scheduling on
 void fn_80010A50(f32 farg0, f32 farg1, f32 farg2, f32 farg3, s32 arg4, s32 arg5) {
     struct Frame {
-        u16 indices[6];
+        struct IndexList802ED748 indices;
         u8 pad[4];
         f32 sp20[6];
         f32 sp38[6];
@@ -618,13 +622,8 @@ void fn_80010A50(f32 farg0, f32 farg1, f32 farg2, f32 farg3, s32 arg4, s32 arg5)
     fn_80231380(frame.sp38, arg5, farg0 + farg2, farg1, lbl_80560264, lbl_80560280, lbl_80560280);
     fn_80231380(frame.sp50, arg4, farg0, farg1 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
     fn_80231380(frame.sp68, arg5, farg0 + farg2, farg1 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
-    frame.indices[0] = lbl_802ED748[0];
-    frame.indices[1] = lbl_802ED748[1];
-    frame.indices[2] = lbl_802ED748[2];
-    frame.indices[3] = lbl_802ED748[3];
-    frame.indices[4] = lbl_802ED748[4];
-    frame.indices[5] = lbl_802ED748[5];
-    fn_802C8DB8(frame.sp20, 4, frame.indices, 6);
+    frame.indices = lbl_802ED748;
+    fn_802C8DB8(frame.sp20, 4, frame.indices.idx, 6);
 }
 #pragma pop
 void fn_80010B74(void) {
@@ -767,51 +766,70 @@ void fn_80010D88(f64 farg0, f64 farg1, f64 farg2) {
     volatile f32 sp8;
     register s32 index;
     register s32 next;
-    volatile Unk0x18 *table;
-    volatile u32 *configA;
-    volatile u32 *configB;
-    f32 temp_f4, temp_f5, temp_f6;
+    register s32 offset;
+    register Unk0x18 *base;
+    register Unk0x18 *current;
+    register Unk0x18 *following;
+    register u32 *configA;
+    register u32 *configB;
+    register s32 value484;
+    register s32 value488;
+    register f32 temp_f0;
+    register f32 temp_f5;
+    register f32 temp_f6;
+    register f32 temp_f4;
+    u32 word;
 
     index = lbl_8055D4A8;
     if (index < 0xFF) {
-        table = (volatile Unk0x18 *)lbl_8034F6B0;
-        configA = (volatile u32 *)&lbl_802ED788;
-        configB = (volatile u32 *)&lbl_802ED7A0;
-        *(volatile u32 *)&sp28 = configA[2];
-        temp_f6 = farg2;
-        table[index].unk_0x00 = farg0;
+        configA = (u32 *)&lbl_802ED788;
+        value484 = *(volatile s32 *)&lbl_8055D484;
+        temp_f0 = (f32)farg0;
+        offset = index * 0x18;
+        word = configA[2];
+        temp_f5 = (f32)farg1;
+        value488 = *(volatile s32 *)&lbl_8055D488;
+        base = lbl_8034F6B0;
+        temp_f6 = (f32)farg2;
+        *(volatile u32 *)&sp28 = word;
+        current = (Unk0x18 *)((u8 *)base + offset);
+        current->unk_0x00 = temp_f0;
         next = index + 1;
-        table[index].unk_0x04 = farg1;
-        table[index].unk_0x08 = sp28;
-        table[index].unk_0x0C = temp_f6;
-        table[index].unk_0x10 = lbl_8055D484;
-        table[index].unk_0x14 = lbl_8055D484;
-        temp_f5 = *(volatile f32 *)&lbl_80560264 + farg0;
-        temp_f4 = farg1 - *(volatile f32 *)&lbl_80560264;
+        current->unk_0x04 = temp_f5;
+        current->unk_0x08 = sp28;
+        current->unk_0x0C = temp_f6;
+        current->unk_0x10 = value484;
+        current->unk_0x14 = value484;
+        temp_f4 = *(volatile f32 *)&lbl_80560264;
+        temp_f5 = temp_f4 + (f32)farg0;
+        temp_f4 = (f32)farg1 - temp_f4;
+        configB = (u32 *)&lbl_802ED7A0;
         *(volatile u32 *)&sp10 = configB[2];
-        table[next].unk_0x00 = temp_f5;
+        offset = next * 0x18;
+        following = (Unk0x18 *)((u8 *)base + offset);
+        following->unk_0x00 = temp_f5;
         *(volatile u32 *)&sp20 = configA[0];
-        table[next].unk_0x04 = temp_f4;
-        table[next].unk_0x08 = sp10;
-        table[next].unk_0x0C = temp_f6;
+        following->unk_0x04 = temp_f4;
+        following->unk_0x08 = sp10;
+        following->unk_0x0C = temp_f6;
         *(volatile u32 *)&sp24 = configA[1];
         *(volatile u32 *)&sp2C = configA[3];
         *(volatile u32 *)&sp8 = configB[0];
         *(volatile u32 *)&spC = configB[1];
         *(volatile u32 *)&sp14 = configB[3];
-        table[next].unk_0x10 = lbl_8055D488;
-        sp20 = farg0;
-        sp24 = farg1;
-        sp2C = farg2;
-        sp30 = lbl_8055D484;
-        sp34 = lbl_8055D484;
+        following->unk_0x10 = value488;
+        sp20 = (f32)farg0;
+        sp24 = (f32)farg1;
+        sp2C = (f32)farg2;
+        sp30 = value484;
+        sp34 = value484;
         sp8 = temp_f5;
         spC = temp_f4;
-        sp14 = farg2;
-        sp18 = lbl_8055D488;
-        sp1C = lbl_8055D488;
+        sp14 = (f32)farg2;
+        sp18 = value488;
+        sp1C = value488;
         lbl_8055D4A8 = next + 1;
-        table[next].unk_0x14 = lbl_8055D488;
+        following->unk_0x14 = value488;
     }
 }
 #pragma pop
