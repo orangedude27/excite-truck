@@ -100,8 +100,6 @@ void fn_801A7844(int arg0) {
     int sp10;
     int spC;
     unsigned int sp8;
-    int val0;
-    int val1;
     int a;
     int b;
     float x;
@@ -118,10 +116,8 @@ void fn_801A7844(int arg0) {
         } while (i < 4);
     }
     fn_80127A84(&sp10, &spC, &sp8);
-    val0 = (int)lbl_8055CFF0;
-    val1 = (int)lbl_8055CFF4;
-    a = val0 / 2;
-    b = val1 / 2;
+    a = lbl_8055CFF0 / 2;
+    b = lbl_8055CFF4 / 2;
     x = (float)(sp10 - a) / (float)a;
     y = (float)(spC - b) / (float)b;
     lbl_80435370[8] = sp8 & 1;
@@ -262,39 +258,51 @@ void fn_801A7DFC(int arg0, const char *arg1, int arg2) {
 #pragma cplusplus on
 extern "C" void fn_801A7E54(char *dst, int len, const char *name) {
     void *found = fn_801A9234(name);
-    char *src;
-    int remaining;
-    char ch;
+
     if (found != 0) {
         const char **entry = fn_801A75B4(*(const char **)found);
         if (entry != 0) {
-            src = (char *)entry[1];
-            remaining = len;
-            for (;;) {
-                remaining--;
-                if (remaining <= 0) { dst[-1] = 0; break; }
-                ch = *src++; *dst++ = ch;
-                if ((signed char)ch == 0) break;
+            const char *source = entry[1];
+            int count;
+            char *dest;
+            dest = dst;
+            count = len;
+            while ((signed char)(*dest++ = *source++) != 0) {
+                if (--count <= 0) {
+                    dest[-1] = 0;
+                    break;
+                }
             }
         } else {
-            src = *(char **)((char *)found + 4);
-            if (src == 0) src = (char *)found + 0x10;
-            remaining = len;
-            for (;;) {
-                remaining--;
-                if (remaining <= 0) { dst[-1] = 0; break; }
-                ch = *src++; *dst++ = ch;
-                if ((signed char)ch == 0) break;
+            int count;
+            char *dest;
+            const char *source;
+            source = *(const char **)((char *)found + 4);
+            switch ((int)source) {
+            case 0:
+                source = (const char *)found + 0x10;
+                break;
+            }
+            dest = dst;
+            count = len;
+            while ((signed char)(*dest++ = *source++) != 0) {
+                if (--count <= 0) {
+                    dest[-1] = 0;
+                    break;
+                }
             }
         }
     } else {
-        src = (char *)&lbl_8055A850;
-        remaining = len;
-        for (;;) {
-            remaining--;
-            if (remaining <= 0) { dst[-1] = 0; break; }
-            ch = *src++; *dst++ = ch;
-            if ((signed char)ch == 0) break;
+        const char *source = &lbl_8055A850;
+        int count;
+        char *dest;
+        dest = dst;
+        count = len;
+        while ((signed char)(*dest++ = *source++) != 0) {
+            if (--count <= 0) {
+                dest[-1] = 0;
+                break;
+            }
         }
     }
     dst[len - 1] = 0;
