@@ -1,4 +1,12 @@
 typedef signed long s32;
+extern s32 fn_80131234(s32 *);
+extern s32 lbl_802FA378[5];
+extern s32 lbl_804988F0[5];
+extern char lbl_80343720[];
+extern char lbl_80343280[];
+extern char lbl_80343294[];
+extern char lbl_8055BE80;
+extern char lbl_8055BE88;
 extern s32 lbl_8055F26C;
 s32 fn_802411D4(void);
 s32 fn_80214B44(s32);
@@ -396,15 +404,15 @@ void fn_802478A4(void) {
     extern s32 lbl_802FA3F0[];
     extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
     s32 data[40];
-    s32 a0 = lbl_802FA3F0[0];
-    s32 a2 = lbl_802FA3F0[2];
-    s32 a3 = lbl_802FA3F0[3];
-    s32 a4 = lbl_802FA3F0[4];
     s32 b0 = lbl_804988F0[0];
     s32 b1 = lbl_804988F0[1];
     s32 b2 = lbl_804988F0[2];
     s32 b3 = lbl_804988F0[3];
     s32 b4 = lbl_804988F0[4];
+    s32 a0 = lbl_802FA3F0[0];
+    s32 a2 = lbl_802FA3F0[2];
+    s32 a3 = lbl_802FA3F0[3];
+    s32 a4 = lbl_802FA3F0[4];
 
     data[0] = a0;
     data[1] = (s32)&data[5];
