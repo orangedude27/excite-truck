@@ -113,21 +113,23 @@ void* fn_802C83C4(void) {
 }
 
 void fn_802C83CC(void) {
-    int ten = 10;
+    register int ten = 10;
     float temp_f1 = (float)ten;
+    register float color0 = lbl_80564EF8;
+    register float color1 = lbl_80564F00;
 
-    ((float *)lbl_804C1410)[0] = lbl_80564EF8;
-    ((float *)lbl_804C1410)[1] = lbl_80564F00;
-    ((float *)lbl_804C1410)[2] = lbl_80564F00;
-    ((float *)lbl_804C1410)[3] = lbl_80564F00;
-    ((float *)lbl_804C1410)[4] = lbl_80564EF8;
-    ((float *)lbl_804C1410)[5] = lbl_80564F00;
-    ((float *)lbl_804C1410)[6] = lbl_80564F00;
-    ((float *)lbl_804C1410)[7] = lbl_80564F00;
-    ((float *)lbl_804C1410)[8] = lbl_80564EF8;
-    ((float *)lbl_804C1410)[9] = lbl_80564F00;
-    ((float *)lbl_804C1410)[10] = lbl_80564F00;
-    ((float *)lbl_804C1410)[11] = lbl_80564F00;
+    ((float *)lbl_804C1410)[0] = color0;
+    ((float *)lbl_804C1410)[1] = color1;
+    ((float *)lbl_804C1410)[2] = color1;
+    ((float *)lbl_804C1410)[3] = color1;
+    ((float *)lbl_804C1410)[4] = color0;
+    ((float *)lbl_804C1410)[5] = color1;
+    ((float *)lbl_804C1410)[6] = color1;
+    ((float *)lbl_804C1410)[7] = color1;
+    ((float *)lbl_804C1410)[8] = color0;
+    ((float *)lbl_804C1410)[9] = color1;
+    ((float *)lbl_804C1410)[10] = color1;
+    ((float *)lbl_804C1410)[11] = color1;
 
     lbl_8055FC5C = 0;
     lbl_8055FC60 = 0;
@@ -961,7 +963,7 @@ void fn_802CA094(int *arg0) {
 }
 
 void fn_802CA09C(void) {
-    fn_802C9E94();
+    ((int (*)(void))fn_802C9E94)();
 }
 
 void fn_802CA0A0(void *arg0) { fn_802CA008(arg0); }
