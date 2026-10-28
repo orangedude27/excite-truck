@@ -1,4 +1,5 @@
 #include "math.h"
+extern f32 lbl_805617D4;
 extern f64 fn_8002F234(f32, f32, f32);
 struct Hit { float x; s32 y; };
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -197,10 +198,10 @@ void fn_8015F1E4(void *arg0, void *arg1) {
     f32 base = *(f32 *)((char *)arg1 + 0x24);
     f32 x = *(f32 *)((char *)inputState + 0x18);
     f32 z = *(f32 *)((char *)inputState + 0x20);
-    f32 speed = (f32)((double (*)(f32))fn_8002F234)(x * x + z * z);
+    f32 speed = (f32)((double (*)())fn_8002F234)(x * x + z * z);
     void *state = *(void **)((char *)arg1 + 0xC);
     f32 threshold = lbl_805617D4;
-    f32 angle = base + ((lbl_805617D8 * speed) * lbl_805617DC);
+    f32 angle = base + lbl_805617DC * (lbl_805617D8 * speed);
     f32 result[5];
     *(f32 *)((char *)arg0 + 0xC) = angle;
     {
@@ -279,17 +280,19 @@ extern int fn_8015F3EC(unsigned short *, unsigned short *);
 extern char lbl_8032F4A0[];
 extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
 void fn_8015F3FC(void *arg0) {
+    register int max;
     register int offset;
+    register int index;
     register int *src;
     register int i;
-    register int index;
     register int outIndex;
-    int max;
+    register unsigned int *node;
     int count;
     int *dst, *array, *out;
-    if (*(int *)(lbl_8055E29C + 4) <= 0) return;
-    fn_80265DCC(*(void **)lbl_8055E29C, *(int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
-    count = (int)(*(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16);
+    if (*(volatile int *)(lbl_8055E29C + 4) <= 0) return;
+    fn_80265DCC(*(void **)lbl_8055E29C, *(volatile int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
+    node = (unsigned int *)*(int *)((char *)arg0 + 0x2c);
+    count = (int)(node[6] >> 16);
     dst = (int *)fn_801284F8(0x10, lbl_8032F4A0);
     if (!dst) return;
     array = (int *)fn_8012850C(count * 4, (int)&lbl_8055A098);
@@ -302,13 +305,13 @@ void fn_8015F3FC(void *arg0) {
     for (i = 0; i < count; i++) {
         index = 0;
         offset = 0;
-        max = *(int *)(lbl_8055E29C + 4) - 1;
+        max = *(volatile int *)(lbl_8055E29C + 4) - 1;
         do {
             offset += 0x10;
             index++;
             if (index >= max) break;
         } while (*(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i);
-        max = *(int *)(lbl_8055E29C + 4) - 1;
+        max = *(volatile int *)(lbl_8055E29C + 4) - 1;
         if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
             src = (int *)*(int *)lbl_8055E29C;
             out = *(int **)&lbl_8055E2A0;
