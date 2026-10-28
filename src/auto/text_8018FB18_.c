@@ -107,6 +107,7 @@ void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
     lbl_8055A468 = limit;
     return arg0;
 }
+#pragma scheduling on
 
 void *fn_8018FE8C(void *arg0, s32 arg1) {
     s32 temp_r0;
