@@ -428,7 +428,7 @@ extern int fn_802E2C20(void);
 extern int lbl_8055D3D8;
 int fn_8000BB08(void) {
     unsigned char sp8[0x68];
-    int temp_r31, var_r29, var_r30;
+    int temp_r31, var_r30, var_r29, old;
     if (fn_80019BA8() != 0) {
         temp_r31 = fn_802E2C20();
         var_r30 = 0;
@@ -446,15 +446,20 @@ int fn_8000BB08(void) {
             }
             var_r29++;
         } while (var_r29 < 4);
-        if (var_r30 == 0) {
-            int old = lbl_8055D3D8;
-            if (old != 0 && temp_r31 > old) {
-                int elapsed = temp_r31 - old;
-                if (elapsed > 0xEA60) return 1;
-            }
-            if (old == 0) lbl_8055D3D8 = temp_r31;
-        }
+        if (var_r30 != 0) goto update;
+        old = lbl_8055D3D8;
+        if (old == 0) goto update;
+        if (old == 0) goto update_end;
+        if (temp_r31 <= old) goto update_end;
+        if (temp_r31 - old <= 0xEA60) goto update_end;
+        return 1;
     }
+    goto exit;
+update:
+    lbl_8055D3D8 = temp_r31;
+update_end:
+    return 0;
+exit:
     return 0;
 }
 
