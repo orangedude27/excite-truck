@@ -2,6 +2,7 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 extern void fn_802E317C(const char *, ...);
 extern s32 fn_802DAC64(void);
+extern void fn_802D61BC(void *);
 extern const char lbl_8034C2F8[];
 extern const char lbl_8034C334[];
 typedef struct CacheEntry {
