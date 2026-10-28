@@ -476,54 +476,42 @@ extern "C" void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *ar
     char *src;
     char *dst;
     char *slash;
-    char ch;
+    int count;
 
     src = arg4;
     dst = arg0;
-copy_first:
-    ch = *src++;
-    *dst++ = ch;
-    if (ch != 0)
-        goto check_first;
-    goto first_done;
-check_first:
-    arg1--;
-    if (arg1 > 0)
-        goto copy_first;
-    dst[-1] = 0;
-first_done:
+    count = arg1;
+    while ((signed char)(*dst++ = *src++) != 0) {
+        if (--count <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+    }
 
     slash = fn_80029004(arg0, 0x2F);
     if (slash != 0) {
         *slash = 0;
         src = slash + 1;
-copy_slash:
-        ch = *src++;
-        *arg2++ = ch;
-        if (ch != 0)
-            goto check_slash;
-        return;
-check_slash:
-        arg3--;
-        if (arg3 > 0)
-            goto copy_slash;
-        arg2[-1] = 0;
-        return;
+        dst = arg2;
+        count = arg3;
+        while ((signed char)(*dst++ = *src++) != 0) {
+            if (--count <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        }
+    } else {
+        *arg0 = 0;
+        src = arg4;
+        dst = arg2;
+        count = arg3;
+        while ((signed char)(*dst++ = *src++) != 0) {
+            if (--count <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        }
     }
-
-    *arg0 = 0;
-    src = arg4;
-copy_fallback:
-    ch = *src++;
-    *arg2++ = ch;
-    if (ch != 0)
-        goto check_fallback;
-    return;
-check_fallback:
-    arg3--;
-    if (arg3 > 0)
-        goto copy_fallback;
-    arg2[-1] = 0;
 }
 #pragma pop
 
@@ -1655,6 +1643,51 @@ extern "C" void fn_8012E630(void *arg0) {
 
 extern "C" s32 fn_8012E674(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
+}
+
+extern "C" const char lbl_8032AD2C[];
+extern "C" const char lbl_8032AD6C[];
+extern "C" const char lbl_8032AD88[];
+extern "C" void fn_8012E81C(s32 arg0) {
+    nw4r::ef::Effect *effect = lbl_8055E014;
+    const char *name = (const char *)arg0;
+    void *entry;
+    s32 start;
+    s32 limit;
+    s32 current;
+
+    if (effect == 0) return;
+    entry = (void *)fn_8012E490((s32 *)((u8 *)effect + 0xA18));
+    while (entry != 0) {
+        const char *entryName = (const char *)((u8 *)entry + 0xC);
+        if (stricmp(name, entryName) == 0) {
+            start = fn_802E2C20();
+            limit = start + 0x7D0;
+            do {
+                fn_80127464();
+                fn_802E2D74(0xA);
+                current = fn_802E2C20();
+            } while (current <= limit);
+            fn_802E30C8(lbl_8032AD88, entryName);
+            limit = current + 0x7D0;
+            if (fn_8012D838(*(s32 *)((u8 *)entry + 0x4C)) == 2) {
+                fn_8012DEE4(effect);
+                current = fn_802E2C20();
+                fn_802E30C8(lbl_8032AD6C, entryName, current - start);
+                return;
+            }
+        }
+        entry = *(void **)((u8 *)entry + 4);
+    }
+
+    {
+        void *found = fn_8012BD3C(lbl_8055E000, name);
+        if (found != 0) {
+            *(u8 *)((u8 *)found + 0xAD) = 0;
+            return;
+        }
+    }
+    fn_802E30C8(lbl_8032AD2C, name);
 }
 
 extern "C" s32 fn_8012E938(s32 arg0) {
