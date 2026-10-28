@@ -1211,6 +1211,7 @@ extern "C" void fn_802A4524(void *arg0) {
 
 extern "C" f32 fn_80287BC8(f32, f32);
 extern "C" f32 fn_801E7E18(void);
+#pragma use_lmw_stmw off
 #pragma paired off
 #pragma paired_single off
 #pragma scheduling on
