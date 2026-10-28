@@ -606,7 +606,6 @@ extern f32 fn_80011DC0(void *);
 extern void fn_802354A0(void *, s32, s32, f32, f32, f32, f32, f32);
 extern f32 lbl_805603D4, lbl_805603D8, lbl_805603DC, lbl_805603E0, lbl_805603E4;
 extern f32 lbl_80560360, lbl_805603A0;
-extern char lbl_80558BA4[];
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80015658(void *arg0) {
