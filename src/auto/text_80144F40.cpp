@@ -459,10 +459,11 @@ extern "C" f32 lbl_805615F4;
 extern "C" f32 lbl_805615F8;
 extern "C" f32 lbl_805615FC;
 extern "C" f64 lbl_80561600;
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
-extern "C" u64 fn_80145A24(void *arg0) {
+#pragma dont_inline on
+extern "C" FloatPair80145A24 fn_80145A24(void *arg0) {
     f32 out0 = fn_80145A08(lbl_805615D4, (f32)fn_802C9C48(),
                            lbl_805615D4, lbl_805615F4,
                            (f32)*(s32 *)((u8 *)arg0 + 4));
@@ -477,17 +478,15 @@ extern "C" u64 fn_80145A24(void *arg0) {
                            base + lbl_805615F8 * (f32)fn_802C9C48(),
                            lbl_805615D4, lbl_805615FC,
                            (f32)*(s32 *)((u8 *)arg0 + 8));
-    union {
-        u64 bits;
-        f32 values[2];
-    } result;
-    result.values[0] = out0;
-    result.values[1] = out1;
-    return result.bits;
+    FloatPair80145A24 result;
+    result.first = out0;
+    result.second = out1;
+    return result;
 }
 #pragma scheduling on
-#pragma paired reset
-#pragma paired_single reset
+#pragma pop
+#pragma dont_inline reset
+#pragma processor reset
 
 extern "C" f32 lbl_80561608;
 extern "C" void fn_8001027C(s32, s32, void *, u32, f32, f32, f32);
