@@ -639,6 +639,7 @@ void fn_802D8FB4(void);
 extern int lbl_8055D058;
 extern int lbl_8055D078;
 #pragma scheduling invalid_target
+#pragma dont_inline fn_802CB38C
 int fn_802CB38C(void *arg0, void *arg1, void *arg2) {
     register void *saved0 = arg0;
     register void *saved2 = arg2;
@@ -722,32 +723,32 @@ char fn_802CAFF0(int arg0) {
 
 extern char lbl_8034B940[];
 int fn_802CB018(void) {
-    int group;
-    unsigned char *base = (unsigned char *)lbl_8055FCB0 + 0x4C;
+    register int *base = (int *)lbl_8055FCB0 + 0x13;
+    register int index = 1;
     int result = -1;
-    int index = 1;
+    int group;
 
     for (group = 0; group < 0x49; group++) {
-        if (*(int *)(base + 0x00) == 0) { result = index; goto found; }
+        if (base[0] == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x4C) == 0) { result = index; goto found; }
+        if (base[0x13] == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x98) == 0) { result = index; goto found; }
+        if (base[0x26] == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0xE4) == 0) { result = index; goto found; }
+        if (base[0x39] == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x130) == 0) { result = index; goto found; }
+        if (base[0x4C] == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x17C) == 0) { result = index; goto found; }
+        if (base[0x5F] == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x1C8) == 0) { result = index; goto found; }
+        if (base[0x72] == 0) { result = index; goto found; }
         index++;
-        base += 0x214;
+        base += 0x85;
     }
 found:
     if (result < 0)
         fn_802E317C(lbl_8034B940);
-    return (int)((unsigned char *)lbl_8055FCB0 + result * 0x4C);
+    return (int)(lbl_8055FCB0 + result * 0x4C);
 }
 
 #pragma push
@@ -1184,6 +1185,27 @@ void *fn_802CC2C8(void *arg0, int arg1) {
 
 int fn_802CC404(void *arg0) {
     return *(int *)(*(char **)((char *)arg0 + 0x38) + 4);
+}
+
+extern int fn_8012C7FC(void *, int *);
+void fn_802CC410(void *arg0) {
+    int temporary;
+    int *node = *(int **)arg0;
+    int *entry;
+    int result;
+    while (node != 0) {
+        if (node[4] == -1) {
+            result = fn_8012C7FC((void *)node[0], &temporary);
+            if (result != 0) {
+                entry = (int *)(lbl_8055FCB0 + node[1] * 0x4C);
+                entry[0x44 / 4] = node[2];
+                entry[0x40 / 4] = fn_802CB38C((void *)result, (void *)node[3],
+                    (void *)entry[0x34 / 4]);
+                node[3] = 0;
+            }
+        }
+        node = *(int **)((char *)node + 0x14);
+    }
 }
 
 extern double lbl_80564F38;
