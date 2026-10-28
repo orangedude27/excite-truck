@@ -258,6 +258,7 @@ void *fn_801E1568(void *arg0, int arg1, int arg2) {
     }
     return arg0;
 }
+#pragma pop
 
 void fn_801E1684(void) {
 
