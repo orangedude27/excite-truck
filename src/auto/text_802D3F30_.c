@@ -215,6 +215,7 @@ void fn_802D56D4(void *arg0) {
     GXSetArray(10, *(void **)((u8 *)object + 0x24), 3);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
+#pragma scheduling on
 
 extern f32 *fn_802D2D04(void);
 extern f32 PSVECDotProduct(const f32 *, const f32 *);
