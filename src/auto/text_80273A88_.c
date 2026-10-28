@@ -366,33 +366,40 @@ static inline void helper_80274F74(void *arg0, void *arg1) {
         sine = (float)sin(magnitude);
         cosine = (float)cos(magnitude);
         {
-            float xx = x * x;
-            float yy = y * y;
-            float t = lbl_80563FAC - cosine;
-            float zz = z * z;
-            float sz = sine * z;
-            float tx = t * x;
-            float txx = t * xx;
-            float tyy = t * yy;
-            float ty = t * y;
-            float txy = y * tx;
-            float m00 = cosine + txx;
-            float tzz = t * zz;
-            float txz = z * tx;
-            float sy = sine * y;
+            float xx, yy, t, zz, sz, tx, txx, tyy, ty, txy, m00, tzz, m01, m11, m10, m22, txz, sy, tyz, sx, m02, m20, m12, m21;
+            xx = x * x;
+            yy = y * y;
+            t = lbl_80563FAC - cosine;
+            zz = z * z;
+            sz = sine * z;
+            tx = t * x;
+            txx = t * xx;
+            tyy = t * yy;
+            ty = t * y;
+            txy = y * tx;
+            m00 = cosine + txx;
+            tzz = t * zz;
+            m01 = txy + sz;
+            m11 = cosine + tyy;
             *(float *)((char *)arg0 + 0x58) = m00;
-            *(float *)((char *)arg0 + 0x5C) = txy + sz;
-            {
-                float tyz = z * ty;
-                float sx = sine * x;
-                *(float *)((char *)arg0 + 0x64) = txy - sz;
-                *(float *)((char *)arg0 + 0x60) = txz - sy;
-                *(float *)((char *)arg0 + 0x68) = cosine + tyy;
-                *(float *)((char *)arg0 + 0x6C) = tyz + sx;
-                *(float *)((char *)arg0 + 0x70) = txz + sy;
-                *(float *)((char *)arg0 + 0x74) = tyz - sx;
-                *(float *)((char *)arg0 + 0x78) = cosine + tzz;
-            }
+            m10 = txy - sz;
+            m22 = cosine + tzz;
+            txz = z * tx;
+            sy = sine * y;
+            *(float *)((char *)arg0 + 0x5C) = m01;
+            tyz = z * ty;
+            sx = sine * x;
+            m02 = txz - sy;
+            m20 = txz + sy;
+            *(float *)((char *)arg0 + 0x64) = m10;
+            m12 = tyz + sx;
+            m21 = tyz - sx;
+            *(float *)((char *)arg0 + 0x60) = m02;
+            *(float *)((char *)arg0 + 0x68) = m11;
+            *(float *)((char *)arg0 + 0x6C) = m12;
+            *(float *)((char *)arg0 + 0x70) = m20;
+            *(float *)((char *)arg0 + 0x74) = m21;
+            *(float *)((char *)arg0 + 0x78) = m22;
         }
     } else {
         float one = lbl_80563FAC;
