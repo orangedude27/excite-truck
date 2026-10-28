@@ -6,6 +6,18 @@ extern void fn_802E317C(void *, ...);
 extern char lbl_802FC638[];
 extern char lbl_802FC69C[];
 extern char lbl_80352AD0[];
+extern char lbl_802FC610[];
+extern int lbl_8055D51C;
+extern int lbl_8055D50C;
+extern int lbl_8055D510;
+extern void fn_8013C804(void);
+extern void fn_8013C8B8(void);
+extern int fn_8019B3C(void);
+extern int fn_8019B54(void);
+extern void fn_80013724(void);
+extern int fn_80007F90(int);
+extern int fn_801345D8(void *, int, const char *, ...);
+void fn_80012984();
 #pragma scheduling invalid_target
 void *fn_800126CC(int arg0) {
     volatile int *table = (volatile int *)lbl_802FC638;
