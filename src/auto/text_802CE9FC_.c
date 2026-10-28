@@ -22,6 +22,10 @@ extern int fn_80015B20(void *, void *, void *);
 extern int fn_802D0DD4(void *, void *);
 extern char lbl_8055FD70;
 extern float lbl_80564F8C, lbl_80564FCC, lbl_80564FDC;
+extern int lbl_8055FE24;
+extern unsigned char lbl_804C9778[];
+extern double lbl_80564FB0;
+extern float lbl_80564FB8, lbl_80564FBC;
 extern int GXLoadPosMtxImm(void *, int);
 extern int GXSetDstAlpha(int, int);
 extern void C_MTXOrtho(void *, float, float, float, float, float, float);
@@ -610,17 +614,17 @@ int fn_802CFDE0(void) {
     extern char lbl_8034C058[];
     extern void fn_802ECA48(void);
     extern int fn_802E2C20(void);
-    int next;
-    int latest;
+    register int temp_r0;
+    register int var_r4;
     int end;
     int start;
 
     fn_802ECA48();
-    next = (int)lbl_8055FD94 + lbl_8055FD9C;
-    latest = (int)lbl_8055FD98;
-    if (next > latest) {
-        latest = next;
-        lbl_8055FD98 = (unsigned int)latest;
+    temp_r0 = (int)lbl_8055FD94 + lbl_8055FD9C;
+    var_r4 = (int)lbl_8055FD98;
+    if (temp_r0 > var_r4) {
+        var_r4 = temp_r0;
+        lbl_8055FD98 = (unsigned int)var_r4;
     }
     fn_802D6C78();
     GXGetVtxDesc();
