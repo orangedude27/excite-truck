@@ -398,65 +398,74 @@ done:
 extern char lbl_80558BEC, lbl_80558BF4, lbl_80558BFC;
 extern char lbl_802FCF10[];
 extern void fn_801345D8(char *, int, const char *, int);
-void fn_80016ED4(void *arg0) {
-    int index;
+#pragma cplusplus on
+extern "C" void fn_80016ED4(void *arg0) {
+    struct Interface {
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual char *m4(const char *, int);
+        virtual void m5();
+        virtual int m6(const char *, int);
+    };
+    struct Entry {
+        int id;
+        int value;
+        char name[0x40];
+        int unk48;
+        int unk4C;
+        int unk50;
+        int unk54;
+        void *obj;
+    };
+    Entry *entry;
     int value;
-    unsigned char *entry;
     char *name;
-    char *dst;
     int n;
-    int (*get1)(void *, const char *, int);
-    char *(*get2)(void *, const char *, int);
-    index = (int)lbl_8055D54C;
-    entry = lbl_8055D540 + index * 0x5C;
-    *(void **)(entry + 0x58) = arg0;
-    *(int *)entry = index;
-    get1 = *(int (**)(void *, const char *, int))(*(void ***)arg0 + 8);
-    value = get1(arg0, &lbl_80558BEC, *(int *)lbl_8055D54C);
-    get2 = *(char *(**)(void *, const char *, int))(*(void ***)arg0 + 6);
-    name = get2(arg0, &lbl_80558BF4, 0);
+    char *dst;
+
+    entry = (Entry *)(lbl_8055D540 + (int)lbl_8055D54C * 0x5C);
+    entry->obj = arg0;
+    entry->id = (int)lbl_8055D54C;
+    value = ((Interface *)arg0)->m6(&lbl_80558BEC, (int)lbl_8055D54C);
+    name = ((Interface *)arg0)->m4(&lbl_80558BF4, 0);
     if (name != 0) {
-        dst = (char *)(entry + 8);
         n = 0x40;
-        do {
-            n--;
-            if (n <= 0) {
+        dst = entry->name;
+        while (*dst++ = *name++) {
+            if (--n <= 0) {
                 dst[-1] = 0;
                 break;
             }
-            *dst = *name++;
-            dst++;
-        } while (*name != 0);
+        }
     } else {
-        fn_801345D8((char *)(entry + 8), 0x40, lbl_802FCF10, *(int *)entry);
+        ((void (*)(char *, int, const char *, ...))fn_801345D8)(entry->name, 0x40, lbl_802FCF10, entry->id);
     }
-    *(int *)(entry + 4) = value;
-    *(int *)(entry + 0x54) = -1;
-    get1 = *(int (**)(void *, const char *, int))(*(void ***)arg0 + 8);
-    *(int *)(entry + 0x48) = get1(arg0, &lbl_80558BFC, value);
-    *(int *)(entry + 0x4C) = -1;
-    *(int *)(entry + 0x50) = 0xFF008040;
-    lbl_8055D54C = (void *)(*(int *)lbl_8055D54C + 1);
+    entry->value = value;
+    entry->unk54 = -1;
+    entry->unk48 = ((Interface *)arg0)->m6(&lbl_80558BFC, value);
+    entry->unk4C = -1;
+    entry->unk50 = 0xFF008040;
+    lbl_8055D54C = (void *)((int)lbl_8055D54C + 1);
 }
-
+#pragma cplusplus reset
 extern char lbl_802FD00C[];
 extern char lbl_802FD040[];
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling on
 void fn_80017558(void) {
-    register char *format;
-
     {
-        register int j;
-        register int i;
-        register int outerOffset;
         register int innerOffset;
+        register int outerOffset;
+        register int i;
+        register int j;
 
-        format = lbl_802FD00C;
-        for (i = 0, outerOffset = 0; i < (int)lbl_8055D54C; i++, outerOffset += 0x5C) {
-            for (j = i + 1, innerOffset = j * 0x5C; j < (int)lbl_8055D54C; j++, innerOffset += 0x5C) {
-                if (*(int *)(innerOffset + lbl_8055D540 + 4) == *(int *)(outerOffset + lbl_8055D540 + 4)) {
-                    fn_802E317C(format, outerOffset + lbl_8055D540 + 8, innerOffset + lbl_8055D540 + 8);
+        for (i = 0, outerOffset = 0; i < (int)lbl_8055D54C; outerOffset += 0x5C, i++) {
+            for (j = i + 1, innerOffset = j * 0x5C; j < (int)lbl_8055D54C; innerOffset += 0x5C, j++) {
+                if (*(int *)(lbl_8055D540 + innerOffset + 4) == *(int *)((u32)outerOffset + (u32)lbl_8055D540 + 4)) {
+                    fn_802E317C(lbl_802FD00C, (void *)((u32)outerOffset + (u32)lbl_8055D540 + 8), lbl_8055D540 + innerOffset + 8);
                 }
             }
         }
@@ -465,14 +474,13 @@ void fn_80017558(void) {
     {
         register int j;
         register int i;
-        register int outerOffset;
         register int innerOffset;
+        register int outerOffset;
 
-        format = lbl_802FD040;
-        for (i = 0, outerOffset = 0; i < (int)lbl_8055D550; i++, outerOffset += 0xA8) {
-            for (j = i + 1, innerOffset = j * 0xA8; j < (int)lbl_8055D550; j++, innerOffset += 0xA8) {
-                if (*(int *)(outerOffset + lbl_8055D544 + 4) == *(int *)(innerOffset + lbl_8055D544 + 4)) {
-                    fn_802E317C(format, outerOffset + lbl_8055D544 + 0x2C, innerOffset + lbl_8055D544 + 0x2C);
+        for (i = 0, outerOffset = 0; i < (int)lbl_8055D550; outerOffset += 0xA8, i++) {
+            for (j = i + 1, innerOffset = j * 0xA8; j < (int)lbl_8055D550; innerOffset += 0xA8, j++) {
+                if (*(int *)((u32)outerOffset + (u32)lbl_8055D544 + 4) == *(int *)(lbl_8055D544 + innerOffset + 4)) {
+                    fn_802E317C(lbl_802FD040, (void *)((u32)outerOffset + (u32)lbl_8055D544 + 0x2C), lbl_8055D544 + innerOffset + 0x2C);
                 }
             }
         }
