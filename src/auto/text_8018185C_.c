@@ -1462,6 +1462,7 @@ void fn_8018A750(void *arg0, int arg_sp0) {
     }
 }
 
+#pragma paired_single off
 void fn_8018A8A8(void *arg0) {
     float sp38[3];
     float sp2C[3];
