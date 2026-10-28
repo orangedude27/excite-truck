@@ -101,6 +101,7 @@ void fn_8029F124(void) {
     } while (i < fn_801E85A4());
 }
 
+#pragma use_lmw_stmw off
 void fn_8029F188(void) {
     int i;
     int offset;
@@ -463,39 +464,26 @@ typedef struct Result_802A0098 {
 } Result_802A0098;
 extern "C" float PSVECMag(const void *);
 extern float lbl_805646BC;
-extern "C" void fn_802A0098(void *out_ptr, void *arg0, Unk802A0794Params *arg1) {
-    float span = *(float *)((char *)arg0 + 4) * PSVECMag(&arg1->values[3]);
-    float limit = lbl_805646BC;
-    float width = (span > limit) ? span : limit;
+#pragma optimization_level 2
+extern "C" void fn_802A0098(Result_802A0098 *out, const float *arg0, const Unk802A0794Params *arg1) {
+    register float width;
+    float span = arg0[1] * PSVECMag(&arg1->values[3]);
+    width = lbl_805646BC;
+    if (width < span) width = span;
 
-    int count = (int)(*(float *)((char *)arg0 + 8) + *(float *)((char *)arg0 + 0xC) * width);
-    float d6 = *(float *)((char *)arg0 + 0x10) + *(float *)((char *)arg0 + 0x18) * width;
-    float d7 = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x1C) * width;
-    float d8 = *(float *)((char *)arg0 + 0x20) + *(float *)((char *)arg0 + 0x28) * width;
-    float d9 = *(float *)((char *)arg0 + 0x24) + *(float *)((char *)arg0 + 0x2C) * width;
-
-    float d0 = arg1->values[0] + *(float *)((char *)arg0 + 0x30);
-    float d1 = arg1->values[1] + *(float *)((char *)arg0 + 0x34);
-    float d2 = arg1->values[2] + *(float *)((char *)arg0 + 0x38);
-
-    float scale = *(float *)((char *)arg0 + 0x3C);
-    float d5 = arg1->values[5] * scale;
-    float d3 = arg1->values[3] * scale;
-    float d4 = arg1->values[4] * *(float *)((char *)arg0 + 0x40);
-
-    *(int *)out_ptr = count;
-    *(float *)((char *)out_ptr + 4) = d0;
-    *(float *)((char *)out_ptr + 8) = d1;
-    *(float *)((char *)out_ptr + 0xC) = d2;
-    *(float *)((char *)out_ptr + 0x10) = d3;
-    *(float *)((char *)out_ptr + 0x14) = d4;
-    *(float *)((char *)out_ptr + 0x18) = d5;
-    *(float *)((char *)out_ptr + 0x1C) = d6;
-    *(float *)((char *)out_ptr + 0x20) = d7;
-    *(float *)((char *)out_ptr + 0x24) = d8;
-    *(float *)((char *)out_ptr + 0x28) = d9;
+    out->count = (int)(arg0[2] + arg0[3] * width);
+    out->data[0] = arg1->values[0] + arg0[12];
+    out->data[1] = arg1->values[1] + arg0[13];
+    out->data[2] = arg1->values[2] + arg0[14];
+    out->data[3] = arg1->values[3] * arg0[15];
+    out->data[4] = arg1->values[4] * arg0[16];
+    out->data[5] = arg1->values[5] * arg0[15];
+    out->data[6] = arg0[4] + arg0[6] * width;
+    out->data[7] = arg0[5] + arg0[7] * width;
+    out->data[8] = arg0[8] + arg0[10] * width;
+    out->data[9] = arg0[9] + arg0[11] * width;
 }
-
+#pragma optimization_level reset
 extern "C" float fn_80287BC8(float, float);
 extern void fn_802A0098(void *, void *, Unk802A0794Params *);
 extern int fn_8028E584(int, float *, float *);
@@ -543,6 +531,48 @@ void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
         }
     }
 }
+
+#pragma push
+#pragma cplusplus on
+#pragma processor 750
+extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
+    class TargetObj {
+    public:
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+        virtual void v3() = 0;
+        virtual void call(float *, float *, short, int) = 0;
+    };
+    Result_802A0098 out;
+    float a[3];
+    float b[3];
+    float a0, a1, a2;
+    float b0, b1, b2;
+    int i;
+
+    fn_802A0098(&out, arg0, params);
+    out.data[4] += *(float *)((char *)arg0 + 0x74);
+
+    for (i = 0; i < out.count; i++) {
+        a2 = out.data[2] + fn_80287BC8(-out.data[6], out.data[6]);
+        a1 = out.data[1] + fn_80287BC8(-out.data[7], out.data[7]);
+        a0 = out.data[0] + fn_80287BC8(-out.data[6], out.data[6]);
+        a[1] = a1;
+        a[2] = a2;
+        a[0] = a0;
+
+        b2 = out.data[5] + fn_80287BC8(-out.data[8], out.data[8]);
+        b1 = out.data[4] + fn_80287BC8(-out.data[9], out.data[9]);
+        b0 = out.data[3] + fn_80287BC8(-out.data[8], out.data[8]);
+        b[1] = b1;
+        b[2] = b2;
+
+        (*(TargetObj **)((char *)arg0 + 0x70))->call(a, (b[0] = b0, b), params->unk_0x18, -1);
+    }
+}
+#pragma pop
+
 #pragma pop
 #pragma cplusplus on
 extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
