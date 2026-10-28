@@ -834,7 +834,7 @@ extern "C" void fn_802A30BC(void* arg0, s32 arg1) {
 
 #pragma paired off
 #pragma paired_single off
-#pragma scheduling off
+#pragma scheduling invalid_target
 struct Fn802A31DCConfig {
     f32 f00, f04, f08, f0c, f10, f14;
     s32 f18, f1c;
