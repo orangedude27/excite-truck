@@ -129,6 +129,7 @@ extern "C" s32 fn_80230B9C(u32);
 extern "C" f32 lbl_80563614;
 extern "C" u16 lbl_802F9FD8[6];
 void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
+    s32 state;
     struct Frame {
         u16 indices[6];
         u8 pad1[4];
@@ -137,7 +138,6 @@ void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
         f32 sp50[6];
         f32 sp68[6];
     } __attribute__((aligned(16))) frame;
-    s32 state;
     fn_802C8B98(-1, (s32)fn_8022EDC4());
     state = fn_80230B9C((u32)arg0);
     fn_80231380(frame.sp20, state, x, y, v, lbl_80563614, lbl_80563614);
@@ -203,6 +203,7 @@ void fn_80230B5C(void *arg0) {
 }
 
 #pragma scheduling invalid_target
+#pragma dont_inline on
 s32 fn_80230B9C(u32 arg0) {
     u8 spB, spA, sp9, sp8;
     void *object;
@@ -219,6 +220,7 @@ s32 fn_80230B9C(u32 arg0) {
     return (sp8 & ~0xFF00) | ((sp9 << 8) & 0xFF00) |
            (((spA << 16) & ~0xFF000000) | (encoded << 24));
 }
+#pragma dont_inline reset
 #pragma scheduling on
 void fn_80230C30(float *arg0, float *arg1, s32 arg2, s32 arg3) {
     s32 sign;
