@@ -132,6 +132,8 @@ void* fn_801D4B34(void* arg0) {
 }
 #pragma dont_inline reset
 
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void *fn_801D4B60(void *arg0, int arg1) {
  extern char lbl_80338D80[], lbl_80338490[];
@@ -141,24 +143,25 @@ extern "C" void *fn_801D4B60(void *arg0, int arg1) {
   *(void **)arg0=lbl_80338D80;
   if(*(int *)((char *)arg0+4)) {
    count=*(int *)((char *)arg0+0x34); *(int *)((char *)arg0+4)=0; offset=count*4;
-loop:
-   items=*(void ***)((char *)arg0+0x30); entry=(Ref *)items[count];
-   if(count>=0 && count<*(int *)((char *)arg0+0x34)) {
-    if(count!=*(int *)((char *)arg0+0x34)-1) items[count]=items[*(int *)((char *)arg0+0x34)-1];
-    *(int *)((char *)arg0+0x34)=*(int *)((char *)arg0+0x34)-1;
-   }
-   if(entry) entry->release(1);
-   if(count>0) { offset-=4; count--; goto loop; }
+   do {
+    items=*(void ***)((char *)arg0+0x30); entry=(Ref *)items[count];
+    if(count>=0 && count<*(int *)((char *)arg0+0x34)) {
+     if(count!=*(int *)((char *)arg0+0x34)-1) items[count]=items[*(int *)((char *)arg0+0x34)-1];
+     *(int *)((char *)arg0+0x34)=*(int *)((char *)arg0+0x34)-1;
+    }
+    if(entry) entry->release(1);
+    offset-=4;
+   } while(count-- > 0);
   }
-  src=lbl_80338490; dst=(char *)arg0+8; i=0x14; goto copy;
+  dst=(char *)arg0+8; src=lbl_80338490; i=0x14; goto copy;
 copy:
   i--; if(i<=0) { dst[-1]=0; goto copied; }
   *dst++=*src++;
   if((signed char)dst[-1]!=0) goto copy;
 copied:
-  if((char *)arg0+0x30) {
-   if((char *)arg0+0x30) {
-    *(volatile int *)((char *)arg0+0x30)=0; *(int *)((char *)arg0+0x34)=0; *(int *)((char *)arg0+0x38)=0;
+  if((int)arg0+0x30) {
+   if((int)arg0+0x30) {
+    *(int *)((int)arg0+0x30)=0; *(int *)((int)arg0+0x34)=0; *(int *)((int)arg0+0x38)=0;
    }
   }
   if(arg1>0) ((void (*)(void *))fn_80128668)(arg0);
@@ -166,6 +169,7 @@ copied:
  return arg0;
 }
 #pragma cplusplus reset
+#pragma pop
 int fn_801D4CB8(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -2007,6 +2011,8 @@ int fn_801D873C(int arg0) {
 }
 
 #pragma cplusplus on
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_801D875C(void *arg0) {
     struct Dummy {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -2034,25 +2040,22 @@ first_test:
         if (count < *(int *)((char *)arg0 + 0x28)) goto first_loop;
         *(int *)((char *)arg0 + 0x20) = 1;
     } else {
-        register int count2;
-        register int offset2;
-        register char *entry2;
-        register Dummy *item2;
         if (!(time - *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 0xC) > *(float *)((char *)arg0 + 0x14))) return;
-        count2 = 0; offset2 = 0;
+        count = 0; offset = 0;
         goto second_test;
 second_loop:
-        entry2 = (char *)*(int *)((char *)arg0 + 0x24) + offset2;
-        item2 = *(Dummy **)entry2;
-        item2->first(*(int *)(entry2 + 4));
-        item2 = *(Dummy **)entry2;
-        item2->second(-1);
-        offset2 += 0xC; count2 += 1;
+        entry = (char *)*(int *)((char *)arg0 + 0x24) + offset;
+        item = *(Dummy **)entry;
+        item->first(*(int *)(entry + 4));
+        item = *(Dummy **)entry;
+        item->second(-1);
+        offset += 0xC; count += 1;
 second_test:
-        if (count2 < *(int *)((char *)arg0 + 0x28)) goto second_loop;
+        if (count < *(int *)((char *)arg0 + 0x28)) goto second_loop;
         *(int *)((char *)arg0 + 0x18) = 1;
     }
 }
+#pragma pop
 #pragma cplusplus reset
 
 #pragma cplusplus on
