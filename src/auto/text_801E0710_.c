@@ -37,20 +37,22 @@ extern s32 fn_802CAC28(void *, s32);
 extern void fn_801777CC(void *);
 extern u8 lbl_80339780[];
 extern u8 lbl_80339818[];
+#pragma scheduling invalid_target
 void fn_801E0710(void) {
     void *obj;
     void *base;
     void *row;
     s32 i;
     s32 value;
+    void *ref = lbl_80339780;
     if (((u32 *)__AXFXGetLfoSinTable_801769CC())[1] & 0x200000) {
-        obj = fn_801284F8(0xB78, lbl_80339780);
+        obj = fn_801284F8(0xB78, ref);
         if (obj != 0) {
             fn_801E1038((void **)obj);
             *(void **)obj = lbl_80339818;
             fn_801E0FC4((u8 *)obj + 0x7C);
-            *(s32 *)((u8 *)obj + 4) = fn_802CAC28(lbl_80339780 + 0xC, 0);
-            *(s32 *)((u8 *)obj + 8) = fn_802CAC28(lbl_80339780 + 0x1C, 0);
+            *(s32 *)((u8 *)obj + 4) = fn_802CAC28((u8 *)ref + 0xC, 0);
+            *(s32 *)((u8 *)obj + 8) = fn_802CAC28((u8 *)ref + 0x1C, 0);
             fn_801E0890(obj);
             base = obj;
             row = (u8 *)obj + 0xC;
@@ -64,8 +66,7 @@ void fn_801E0710(void) {
         }
     }
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern void fn_80128658();
 void *fn_801E07E8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
@@ -215,6 +216,9 @@ void fn_801E1520(void) {
     }
 }
 #pragma cplusplus off
+#pragma push
+#pragma use_lmw_stmw off
+#pragma opt_common_subs off
 void *fn_801E1568(void *arg0, int arg1, int arg2) {
     int i = 0;
     int offset = 0;
