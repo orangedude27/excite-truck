@@ -57,20 +57,27 @@ extern float fn_80129DC4(int, float, float);
 extern float lbl_805644D0, lbl_805644D4, lbl_805644D8, lbl_805644DC, lbl_805644E0;
 #pragma processor 750
 void fn_802924F4(void) {
-    float x, y, z, w, q;
-    float one = lbl_805644D4;
+    struct Vec {
+        float x, y, z;
+    } v;
     float offset = lbl_805644D8;
-    int i;
+    float one = lbl_805644D4;
+    float x, y, z, w, q;
     unsigned char *p = lbl_804B4030;
+    int i;
+
     for (i = 0; i < 6; i++, p += 0x34) {
         x = fn_80129DC4(0, lbl_805644D0, one);
-        y = (float)fn_8002F234((one - x * x) - offset);
-        z = (float)fn_8002F234((one - x * x) - offset);
+        y = fn_8002F234((one - x * x) - offset);
+        z = fn_8002F234((one - x * x) - offset);
         w = fn_80129DC4(0, -z, y);
-        q = (float)fn_8002F234((one - x * x) - w * w);
-        *(float *)(p + 0) = x;
-        *(float *)(p + 4) = w;
-        *(float *)(p + 8) = q * (fn_80129DC4(0, lbl_805644D0, one) > offset ? one : lbl_805644D0);
+        q = fn_8002F234((one - x * x) - w * w);
+        v.x = x;
+        v.y = w;
+        v.z = q * (fn_80129DC4(0, lbl_805644D0, one) > offset ? one : lbl_805644D0);
+        *(float *)(p + 0) = v.x;
+        *(float *)(p + 4) = v.y;
+        *(float *)(p + 8) = v.z;
         *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
     }
 }
@@ -818,8 +825,8 @@ body:
     }
     i++; cur += 0x44;
 check:
-    if (i < *(int *)(base + 0x222c)) goto body;
-          *(int *)(base + 0x222c) = (out - (base + 0x2c)) / 0x44;
+          if (i < *(int *)(base + 0x222c)) goto body;
+      *(int *)(base + 0x222c) = (out - (base + 0x2c)) / 0x44;
   }
 
-  #pragma scheduling invalid_target
+  #pragma scheduling on
