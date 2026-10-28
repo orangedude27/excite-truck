@@ -88,6 +88,8 @@ void WPADiSamplingCallback(s32 chan, s32 result) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void *FindContainHeap_(MEMList *list, u32 addr) {
     MEMiHeapHead *heap;
     MEMiHeapHead *child;
@@ -117,6 +119,7 @@ void *FindContainHeap_(MEMList *list, u32 addr) {
     }
     return 0;
 }
+#pragma pop
 
 void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 align) {
 MEMiExpHeapMBlock *prev=blk->prev,*next=blk->next,*first,*last,*p; u32 alloc=(u32)mem,before=alloc-(align&0x7F),end=(u32)blk+blk->size+0x10,after=alloc+size;
@@ -247,11 +250,7 @@ s32 RecycleRegion_(MEMiExpHeapHead *exp, void **region) {
         return 0;
     }
 
-    mblock = (MEMiExpHeapMBlock *)reg[0];
-    mblock->state = 0x4652;
-    mblock->settings = 0;
-    mblock->size = (u32)reg[1] - ((u32)reg[0] + sizeof(MEMiExpHeapMBlock));
-    mblock->next = 0;
+    mblock = InitFreeMBlock_(reg);
     mblock->prev = prev;
 
     {
