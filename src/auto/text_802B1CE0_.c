@@ -285,8 +285,9 @@ void fn_802B21D4(void **arg0) {
 void fn_802B224C(void *arg0) {
     char name[16];
     void *object;
-    void *child;
     int index;
+    void *child;
+    void *item;
     int count;
     void **items;
     int value;
@@ -309,10 +310,11 @@ void fn_802B224C(void *arg0) {
                 value = (*(int (**)(void *, void *))((char *)*(void **)arg0 + 0x5C))(arg0, name);
                 child = fn_802B23A8(child, (void *)value, (void *)(index - 1));
             }
-            fn_802B2384(object, &child);
+            item = child;
+            fn_802B2384(object, &item);
             index++;
         } while (1);
-        get_value = (void *(*)(void *, const char *))((char *)*(void **)arg0 + 0x14);
+        get_value = *(void *(* *)(void *, const char *))((char *)*(void **)arg0 + 0x14);
         *(void **)((char *)object + 0x24) = get_value(arg0, (const char *)&lbl_8055CDD0);
     }
 
@@ -332,26 +334,23 @@ extern void fn_802B2934(void *, void **);
 extern void fn_802B257C(void *);
 #pragma push
 #pragma use_lmw_stmw off
-#pragma unroll off
 void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     void *sp8;
-    int i;
-    int val;
-    char *p;
+    int i = 16;
+    int val = 0;
+    char *p = (char *)arg0;
     void *item;
     void *alloc;
     int (*get_name)(void *, const char *, int);
     void *(*get_item)(void *, int);
 
     *(int *)((char *)arg0 + 0x40C) = 0;
-    *(int *)((char *)arg0 + 0x410) = 0x10;
+    *(int *)((char *)arg0 + 0x410) = i;
     *(void **)((char *)arg0 + 0x408) = (char *)arg0 + 0x414;
     *(char *)((char *)arg0 + 4) = 0;
     *(char *)((char *)arg0 + 5) = 0;
 
-    p = (char *)arg0;
-    val = 0;
-    for (i = 0; i < 16; i++) {
+    do {
         *(int *)(p + 8) = val++;
         *(int *)(p + 0xC) = val++;
         *(int *)(p + 0x10) = val++;
@@ -361,7 +360,7 @@ void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
         *(int *)(p + 0x20) = val++;
         *(int *)(p + 0x24) = val++;
         p += 0x20;
-    }
+    } while (--i != 0);
 
     fn_802B2504((int *)((char *)arg0 + 8), 0x80);
     get_name = *(int (**)(void *, const char *, int))(*(void ***)arg1 + 0x30 / 4);
