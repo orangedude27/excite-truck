@@ -101,6 +101,9 @@ void fn_8029F124(void) {
     } while (i < fn_801E85A4());
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8029F188(void) {
     int i;
