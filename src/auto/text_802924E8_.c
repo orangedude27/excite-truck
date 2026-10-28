@@ -60,23 +60,24 @@ void fn_802924F4(void) {
     struct Vec {
         float x, y, z;
     } v;
-    float offset = lbl_805644D8;
     float one = lbl_805644D4;
-    float x, y, z, w, q;
+    float offset = lbl_805644D8;
+    float x, y, z, w, q, factor;
     unsigned char *p = lbl_804B4030;
     int i;
 
     for (i = 0; i < 6; i++, p += 0x34) {
         x = fn_80129DC4(0, lbl_805644D0, one);
-        y = fn_8002F234((one - x * x) - offset);
-        z = fn_8002F234((one - x * x) - offset);
+        y = (float)fn_8002F234((one - x * x) - offset);
+        z = (float)fn_8002F234((one - x * x) - offset);
         w = fn_80129DC4(0, -z, y);
-        q = fn_8002F234((one - x * x) - w * w);
+        q = (float)fn_8002F234((one - x * x) - w * w);
+        factor = (fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
         v.x = x;
+        *(float *)(p + 0) = (float)(double)x;
         v.y = w;
-        v.z = q * (fn_80129DC4(0, lbl_805644D0, one) > offset ? one : lbl_805644D0);
-        *(float *)(p + 0) = v.x;
-        *(float *)(p + 4) = v.y;
+        *(float *)(p + 4) = (float)(double)w;
+        v.z = q * factor;
         *(float *)(p + 8) = v.z;
         *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
     }
@@ -182,26 +183,35 @@ extern float PSVECDotProduct(void *, void *);
 extern float lbl_805644D8, lbl_805644E8;
 extern double fabs(double);
 extern double __fabs(double);
+#pragma processor 750
 int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
-    float sp8, spC, sp10;
-    float dot, scale;
-    sp8 = arg0[0] - arg2[0];
-    spC = arg0[1] - arg2[1];
-    sp10 = arg0[2] - arg2[2];
-    dot = PSVECDotProduct(&sp8, arg3);
-    if (dot >= lbl_805644D8) return 0;
-    scale = -dot;
-    dot = PSVECDotProduct(arg1, arg3);
-    arg0[0] = arg0[0] + arg3[0] * scale;
-    arg0[1] = arg0[1] + arg3[1] * scale;
-    arg0[2] = arg0[2] + arg3[2] * scale;
-    scale = lbl_805644E8 * (float)__fabs((double)dot) - dot;
-    arg1[0] = arg1[0] + arg3[0] * scale;
-    arg1[1] = arg1[1] + arg3[1] * scale;
-    arg1[2] = arg1[2] + arg3[2] * scale;
-    return 1;
+    float delta[3];
+    register float x = arg2[0];
+    register float y = arg2[1];
+    register float z;
+    float firstDot, secondDot, scale;
+    float nx;
+    delta[0] = arg0[0] - x;
+    z = arg2[2];
+    delta[1] = arg0[1] - y;
+    delta[2] = arg0[2] - z;
+    firstDot = PSVECDotProduct(delta, arg3);
+    if (firstDot < lbl_805644D8) {
+        secondDot = PSVECDotProduct(arg1, arg3);
+        nx = arg3[0];
+        scale = -firstDot;
+        arg0[0] += nx * scale;
+        arg0[1] += arg3[1] * scale;
+        arg0[2] += arg3[2] * scale;
+        scale = lbl_805644E8 * (float)__fabs((double)secondDot) - secondDot;
+        arg1[0] += nx * scale;
+        arg1[1] += arg3[1] * scale;
+        arg1[2] += arg3[2] * scale;
+        return 1;
+    }
+    return 0;
 }
-
+#pragma processor reset
 extern void *fn_802C6B44(void);
 extern void fn_802C6C20(void *);
 extern int fn_802C7888(void *, int);
@@ -569,6 +579,7 @@ check:
     if (i < *(s32 *)((u8 *)arg0 + 0x4C2C)) goto body;
 }
 
+#pragma optimize_for_size on
 #pragma use_lmw_stmw off
 void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
     int count;
@@ -625,6 +636,7 @@ void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
     *(s32 *)(object + 0x4C2C) = count + 1;
 }
 #pragma use_lmw_stmw reset
+#pragma optimize_for_size reset
 extern int fn_8012C33C(void *);
 extern void fn_801345D8(void *, int, const char *, int, int);
 extern void fn_80292CD8(void *, int, u8 *);
@@ -726,35 +738,64 @@ body:
 check:
     if (i < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern int fn_80287B5C(int, void *, float, float, float);
 void fn_80294408(void *arg0, float *arg1, float *arg2) {
-    int count = *(int *)((char *)arg0 + 0x222C);
-    if (count < 0x80 && *(int *)((char *)arg0 + 0x28) != 0) {
-        char *record = (char *)arg0 + count * 0x44;
-        int index = fn_80129D18(0, 6);
-        char *template = (char *)lbl_804B4030 + index * 0x34;
-        *(float *)(record + 0x50) = arg1[0];
-        *(float *)(record + 0x54) = arg1[1];
-        *(float *)(record + 0x58) = arg1[2];
-        *(int *)(record + 0x2C) = *(int *)(template + 0x10);
-        *(int *)(record + 0x30) = *(int *)(template + 0x14);
-        *(int *)(record + 0x34) = *(int *)(template + 0x18);
-        *(int *)(record + 0x38) = *(int *)(template + 0x1C);
-        *(int *)(record + 0x3C) = *(int *)(template + 0x20);
-        *(int *)(record + 0x40) = *(int *)(template + 0x24);
-        *(int *)(record + 0x44) = *(int *)(template + 0x28);
-        *(int *)(record + 0x48) = *(int *)(template + 0x2C);
-        *(int *)(record + 0x4C) = *(int *)(template + 0x30);
-        *(float *)(record + 0x5C) = arg2[0];
-        *(float *)(record + 0x60) = arg2[1];
-        *(float *)(record + 0x64) = arg2[2];
-        *(float *)(record + 0x68) = lbl_805644D8;
-        *(unsigned char *)(record + 0x6C) = fn_80287B5C(*(int *)((char *)arg0 + 0x28), template, arg2[2], arg2[1], arg2[0]);
-        *(unsigned char *)(record + 0x6D) = index;
-        *(int *)((char *)arg0 + 0x222C) = count + 1;
-    }
+    int count;
+    register int index;
+    int offset;
+    register u8 *object;
+    register u8 *record;
+    register u8 *template;
+    register float *first;
+    register float *second;
+    float x, y, z, a, b, c;
+    unsigned int secondWord, firstWord;
+    object = (u8 *)arg0;
+    first = arg1;
+    second = arg2;
+    count = *(s32 *)(object + 0x222C);
+    if (count >= 0x80) return;
+    if (*(s32 *)(object + 0x28) == 0) return;
+    record = object + count * 0x44;
+    index = fn_80129D18(0, 6);
+    offset = index * 0x34;
+    x = first[0];
+    y = first[1];
+    *(float *)(record + 0x50) = x;
+    z = first[2];
+    *(float *)(record + 0x54) = y;
+    template = lbl_804B4030 + offset;
+    a = second[0];
+    *(float *)(record + 0x58) = z;
+    first = (float *)index;
+    b = second[1];
+    firstWord = *(unsigned int *)(template + 0x10);
+    secondWord = *(unsigned int *)(template + 0x14);
+    *(unsigned int *)(record + 0x2C) = firstWord;
+    *(unsigned int *)(record + 0x30) = secondWord;
+    *(unsigned int *)(record + 0x34) = *(unsigned int *)(template + 0x18);
+    secondWord = *(unsigned int *)(template + 0x1C);
+    firstWord = *(unsigned int *)(template + 0x20);
+    *(unsigned int *)(record + 0x38) = secondWord;
+    *(unsigned int *)(record + 0x3C) = firstWord;
+    *(unsigned int *)(record + 0x40) = *(unsigned int *)(template + 0x24);
+    secondWord = *(unsigned int *)(template + 0x28);
+    firstWord = *(unsigned int *)(template + 0x2C);
+    *(unsigned int *)(record + 0x44) = secondWord;
+    *(unsigned int *)(record + 0x48) = firstWord;
+    *(unsigned int *)(record + 0x4C) = *(unsigned int *)(template + 0x30);
+    *(float *)(record + 0x5C) = a;
+    *(float *)(record + 0x60) = b;
+    c = second[2];
+    *(float *)(record + 0x64) = c;
+    *(float *)(record + 0x68) = lbl_805644D8;
+    *(unsigned char *)(record + 0x6C) = fn_80287B5C(*(int *)(object + 0x28), template, c, b, a);
+    *(unsigned char *)(record + 0x6D) = (unsigned char)first;
+    count = *(int *)(object + 0x222C);
+    *(int *)(object + 0x222C) = count + 1;
 }
+#pragma scheduling on
 
 void fn_80294530(void *arg0, int arg1, int arg2, int arg3) {
     char name[0x20];
