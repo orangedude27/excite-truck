@@ -934,6 +934,7 @@ extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     fn_80161D14();
     fn_802E7128();
 }
+#pragma cplusplus off
 #pragma dont_inline reset
 #pragma pop
 
