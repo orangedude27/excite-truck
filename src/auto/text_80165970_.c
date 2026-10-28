@@ -1,16 +1,22 @@
 #pragma push
 #pragma cplusplus on
+struct DummySub8016707C {
+    char pad[0x24];
+    int unk24;
+};
+
 class Dummy8016707C {
 public:
     virtual void v0();
     virtual void v1();
-    virtual void v2();
+    virtual DummySub8016707C *v2();
     virtual void v3();
     virtual void *get();
     virtual void v5(int, int);
     virtual void v6();
     virtual void run(int, int);
 };
+#pragma dont_inline fn_80166040
 extern "C" {
     double atof(const char *);
     char *strchr(const char *, int);
