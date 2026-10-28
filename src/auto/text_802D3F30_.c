@@ -62,6 +62,56 @@ void fn_802D3FFC(void *arg0) {
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_802D4060(void *arg0) {
+    extern s32 fn_802CFF64(s32);
+    extern f32 lbl_804DB068[];
+    extern f32 lbl_80564FF0;
+    register void *object = arg0;
+    register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
+    register s32 count = *(s32 *)((u8 *)object + 0x1C);
+    f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
+    s32 i;
+    if (base == 0) return;
+    {
+        f32 factor = lbl_80564FF0;
+        register volatile f32 *out = base;
+        f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
+        for (i = 0; i < count; i++) {
+            u8 a, b, c, d;
+            f32 weight1, weight2;
+            f32 *direction;
+            f32 x, y, z;
+            a = src[0xE];
+            b = src[0xC];
+            weight1 = factor * (f32)a;
+            direction = (f32 *)((u8 *)directions + b * 12);
+            c = src[0xD];
+            d = src[0xF];
+            weight2 = factor * (f32)d;
+            x = *(f32 *)((u8 *)src + 0x0) + direction[0] * weight1;
+            out[0] = x;
+            y = *(f32 *)((u8 *)src + 0x4) + direction[1] * weight1;
+            out[1] = y;
+            z = *(f32 *)((u8 *)src + 0x8) + direction[2] * weight1;
+            out[2] = z;
+            direction = (f32 *)((u8 *)directions + c * 12);
+            src += 0x10;
+            out[0] = x + direction[0] * weight2;
+            out[1] = y + direction[1] * weight2;
+            out[2] = z + direction[2] * weight2;
+            out += 3;
+        }
+    }
+    GXSetArray(9, base, 12);
+    GXSetArray(13, *(void **)((u8 *)object + 0x28), 4);
+    GXSetArray(14, *(void **)((u8 *)object + 0x24), 4);
+    GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
+}
+#pragma scheduling on
+#pragma pop
 void fn_802D41C8(void *arg0) {
     GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
@@ -178,7 +228,7 @@ void fn_802D56D4(void *arg0) {
     extern f32 lbl_80564FF0;
     extern void fn_802D5680(void *);
     register void *object = arg0;
-    register u8 *src = *(u8 **)((u8 *)object + 0x20);
+    register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
     f32 *base = (f32 *)fn_802CFF64(count * 12);
     s32 i;
@@ -189,25 +239,25 @@ void fn_802D56D4(void *arg0) {
     {
         f32 factor = lbl_80564FF0;
         register volatile f32 *out = base;
+        f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
         for (i = 0; i < count; i++) {
             u8 a = src[0xE];
             u8 b = src[0xC];
             u8 c = src[0xD];
             u8 d = src[0xF];
-            register f32 *first = (f32 *)((u8 *)lbl_804DB068 + b * 12);
-            register f32 *second = (f32 *)((u8 *)lbl_804DB068 + c * 12);
             f32 weight1 = factor * (f32)a;
             f32 weight2 = factor * (f32)d;
-            f32 x = *(f32 *)(src + 0x0) + first[0] * weight1;
-            f32 y = *(f32 *)(src + 0x4) + first[1] * weight1;
-            f32 z = *(f32 *)(src + 0x8) + first[2] * weight1;
+            f32 x, y, z;
+            x = *(f32 *)((u8 *)src + 0x0) + directions[b][0] * weight1;
             out[0] = x;
+            y = *(f32 *)((u8 *)src + 0x4) + directions[b][1] * weight1;
             out[1] = y;
+            z = *(f32 *)((u8 *)src + 0x8) + directions[b][2] * weight1;
             out[2] = z;
             src += 0x10;
-            out[0] = x + second[0] * weight2;
-            out[1] = y + second[1] * weight2;
-            out[2] = z + second[2] * weight2;
+            out[0] = x + directions[c][0] * weight2;
+            out[1] = y + directions[c][1] * weight2;
+            out[2] = z + directions[c][2] * weight2;
             out += 3;
         }
     }
@@ -621,3 +671,4 @@ extern const char lbl_8034C428[];
 extern void fn_802D5FE4(void *);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
+#pragma scheduling invalid_target
