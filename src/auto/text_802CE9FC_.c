@@ -1,3 +1,4 @@
+#pragma dont_inline fn_802D1678
 #pragma dont_inline fn_802CFF50
 #pragma dont_inline fn_802D2ED8
 #pragma dont_inline fn_802CFD74
@@ -897,19 +898,21 @@ extern float lbl_80564FC0;
 extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag();
 #pragma use_lmw_stmw off
-void fn_802D03F4(register float *arg0, float arg1) {
-    register unsigned long *src = (unsigned long *)arg0;
-    register unsigned long *dst = lbl_804C56C0;
-    unsigned long t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
+void fn_802D03F4(float *arg0, float arg1) {
+    volatile unsigned long *src = (volatile unsigned long *)arg0;
+    unsigned long *dst = lbl_804C56C0;
+    register unsigned long t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     float sp[3];
     float mag;
     float scale;
 
     fn_802D6C78();
-    dst[0] = src[0];
-    t1 = src[1]; t2 = src[2]; t3 = src[3]; t4 = src[4];
-    t5 = src[5]; t6 = src[6]; t7 = src[7]; t8 = src[8];
-    t9 = src[9]; t10 = src[10]; t11 = src[11];
+    t0 = src[0];
+    t1 = src[1];
+    dst[0] = t0;
+    t2 = src[2]; t3 = src[3]; t4 = src[4]; t5 = src[5];
+    t6 = src[6]; t7 = src[7]; t8 = src[8]; t9 = src[9];
+    t10 = src[10]; t11 = src[11];
     dst[1] = t1; dst[2] = t2; dst[3] = t3;
     dst[4] = t4; dst[5] = t5; dst[6] = t6; dst[7] = t7;
     dst[8] = t8; dst[9] = t9; dst[10] = t10; dst[11] = t11;
