@@ -560,37 +560,45 @@ void fn_801F64E4(void *arg0, float *arg1, float arg2) {
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80562FDC;
 extern float lbl_80562FE0;
+#pragma paired_single off
 void fn_801F65D0(void *arg0) {
     float delta[3];
-    unsigned char *indices;
-    float *vertices;
-    int i;
-    int count;
+    float var_f31, var_f30;
+    float weight, dot;
+    unsigned char *entry;
+    float *a, *b;
+    int i, offset;
 
-    vertices = *(float **)((unsigned char *)arg0 + 4);
-    indices = *(unsigned char **)((unsigned char *)arg0 + 0x14);
-    count = *(int *)((unsigned char *)arg0 + 0x18);
-    for (i = 0; i < count; i++) {
-        unsigned char *entry = indices + i * 8;
-        float *a = vertices + *(unsigned short *)entry * 3;
-        float *b = vertices + *(unsigned short *)(entry + 2) * 3;
-        float weight = *(float *)(entry + 4);
-        float dot;
+    var_f31 = lbl_80562FDC;
+    var_f30 = lbl_80562FE0;
+    i = 0;
+    offset = 0;
+    goto check;
 
-        delta[0] = b[0] - a[0];
-        delta[1] = b[1] - a[1];
-        delta[2] = b[2] - a[2];
-        dot = PSVECDotProduct(delta, delta);
-        weight = weight / (weight + dot);
-        weight = 1.0f - weight;
-        a[0] += delta[0] * (lbl_80562FDC * weight);
-        a[1] += delta[1] * (lbl_80562FDC * weight);
-        a[2] += delta[2] * (lbl_80562FDC * weight);
-        b[0] += delta[0] * (lbl_80562FE0 * weight);
-        b[1] += delta[1] * (lbl_80562FE0 * weight);
-        b[2] += delta[2] * (lbl_80562FE0 * weight);
-    }
+loop:
+    entry = *(unsigned char **)((char *)arg0 + 0x14) + offset;
+    a = (float *)(*(unsigned char **)((char *)arg0 + 4) +
+                  *(unsigned short *)entry * 0xC);
+    b = (float *)(*(unsigned char **)((char *)arg0 + 4) +
+                  *(unsigned short *)(entry + 2) * 0xC);
+    delta[0] = b[0] - a[0];
+    delta[1] = b[1] - a[1];
+    delta[2] = b[2] - a[2];
+    dot = PSVECDotProduct(delta, delta);
+    weight = *(float *)(entry + 4);
+    offset += 8;
+    i += 1;
+    weight = var_f31 - weight / (weight + dot);
+    a[0] += delta[0] * (var_f31 * weight);
+    a[1] += delta[1] * (var_f31 * weight);
+    a[2] += delta[2] * (var_f31 * weight);
+    b[0] += delta[0] * (var_f30 * weight);
+    b[1] += delta[1] * (var_f30 * weight);
+    b[2] += delta[2] * (var_f30 * weight);
+check:
+    if (i < *(int *)((char *)arg0 + 0x18)) goto loop;
 }
+#pragma paired_single reset
 
 #pragma dont_inline on
 void fn_801F6728(void *arg0) {
@@ -833,31 +841,53 @@ void *fn_801F6D60(void *arg0, int arg1) {
 extern char lbl_8033AE20[], lbl_8033AE48[];
 extern int fn_801F4E44(const char *);
 extern int fn_801F4ECC(void *);
-void fn_801F6F3C(void *arg0, int arg1, int arg2, void *arg3, int arg4) {
-    int count, old, got;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801F6F3C(void *arg0, int arg1, int arg2, void *arg3, int arg4) {
+    class DummyDispatch {
+    public:
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual const char *getName(const char *);
+        virtual void d6();
+        virtual void d7();
+        virtual void d8();
+        virtual float getFloat(const char *);
+        virtual void d10();
+        virtual void d11();
+        virtual void d12();
+        virtual void getVector(float *, const char *);
+    };
+
+    int old, got;
     char *slot;
-    void **vtable;
     float sp[3];
-    count = *(int *)((char *)arg0 + 0x2A0);
-    if (count >= 8) fn_802E317C(lbl_8033AE20);
-    count = *(int *)((char *)arg0 + 0x2A0);
-    slot = (char *)arg0 + count * 0x54;
-    vtable = *(void ***)arg3;
-    old = fn_801F4E44(((char *(*)(void *, const char *))vtable[5])(arg3, lbl_8055B19C));
-    got = fn_801F4ECC(arg3);
+    DummyDispatch *object = (DummyDispatch *)arg3;
+
+    if (*(int *)((char *)arg0 + 0x2A0) >= 8) {
+        fn_802E317C(lbl_8033AE20);
+    }
+    slot = (char *)arg0 + *(int *)((char *)arg0 + 0x2A0) * 0x54;
+    old = ((int (*)(const char *))fn_801F4E44)(object->getName(lbl_8055B19C));
+    got = ((int (*)(void *))fn_801F4ECC)(arg3);
     fn_801F602C(slot, arg1, arg2, old, got);
     *(int *)(slot + 0x34) = arg4;
     slot[0x38] = 1;
-    *(float *)(slot + 0x3C) = lbl_80562FE8 * ((float (*)(void *, const char *))vtable[9])(arg3, lbl_8055B1A8);
-    *(float *)(slot + 0x40) = ((float (*)(void *, const char *))vtable[9])(arg3, lbl_8055B1B0);
-    *(float *)(slot + 0x44) = ((float (*)(void *, const char *))vtable[9])(arg3, lbl_8055B1B8);
-    ((void (*)(void *, float *, const char *))vtable[13])(arg3, sp, lbl_8033AE48);
+    *(float *)(slot + 0x3C) = lbl_80562FE8 * object->getFloat(lbl_8055B1A8);
+    *(float *)(slot + 0x40) = object->getFloat(lbl_8055B1B0);
+    *(float *)(slot + 0x44) = object->getFloat(lbl_8055B1B8);
+    object->getVector(sp, lbl_8033AE48);
     *(float *)(slot + 0x48) = sp[0];
     *(float *)(slot + 0x4C) = sp[1];
     *(float *)(slot + 0x50) = sp[2];
-    *(int *)((char *)arg0 + 0x2A0) = count + 1;
+    *(int *)((char *)arg0 + 0x2A0) =
+        *(int *)((char *)arg0 + 0x2A0) + 1;
 }
-
+#pragma cplusplus off
+#pragma pop
 void *fn_801F7090(void *arg0) {
     memset(arg0,0,0x120);
     *(int *)((char *)arg0+0x120)=0;
@@ -1011,13 +1041,13 @@ extern char lbl_8033AF20[];
 extern char lbl_8033AF08[];
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
     char *data = lbl_8033AC68;
     void *sp8[0x1A];
     void *temp_r30;
     void *temp_r29;
-    void *allocated;
+    void **allocated;
 
     temp_r30 = ((void *(*)(void *))fn_802AE414)(arg1);
     if (temp_r30 == 0) {
@@ -1030,9 +1060,9 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
         ((void (*)(void *, void *, void *, void *, int))fn_801F6C04)(
             lbl_8055EC10, sp8, temp_r29, temp_r30, arg3);
         if (arg2 != 0 && lbl_8055EC1C == 0) {
-            allocated = fn_801284F8(4, data + 0x240);
+            allocated = ((void **(*)(int, void *))fn_801284F8)(4, data + 0x240);
             if (allocated != 0) {
-                *(void **)allocated = lbl_8033AF20;
+                *allocated = lbl_8033AF20;
                 lbl_8055EC1C = allocated;
                 fn_802CD320(arg2, (int)allocated);
             }
@@ -1040,9 +1070,9 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
     } else {
         fn_801F6F3C(lbl_8055EC14, (int)sp8, (int)temp_r29, temp_r30, arg3);
         if (arg2 != 0 && lbl_8055EC20 == 0) {
-            allocated = fn_801284F8(4, data + 0x254);
+            allocated = ((void **(*)(int, void *))fn_801284F8)(4, data + 0x254);
             if (allocated != 0) {
-                *(void **)allocated = lbl_8033AF08;
+                *allocated = lbl_8033AF08;
                 lbl_8055EC20 = allocated;
                 fn_802CD320(arg2, (int)allocated);
             }
