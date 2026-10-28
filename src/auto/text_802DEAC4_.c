@@ -505,13 +505,21 @@ extern char lbl_8034BB28[];
 #pragma optimization_level 3
 #pragma scheduling invalid_target
 void *fn_802E0C04(u32 size) {
-    volatile int *head;
     int needed;
+    volatile int *head;
     void **link;
     int best;
+    void *freeNode;
     void **bestLink;
+    void *split;
+    int align;
+    int left;
     void *result;
     void *node;
+    int freeSize;
+    void *next;
+    char *p;
+    int align2;
 
     best = 0x7FFFFFFF;
     bestLink = 0;
@@ -522,7 +530,7 @@ void *fn_802E0C04(u32 size) {
     needed = (size + needed) & ~needed;
 
     while ((node = *link) != 0) {
-        int freeSize = *(int *)((char *)node + 4);
+        freeSize = *(int *)((char *)node + 4);
         if (freeSize >= needed && best > freeSize) {
             bestLink = link;
             best = freeSize;
@@ -531,17 +539,15 @@ void *fn_802E0C04(u32 size) {
     }
 
     if (bestLink != 0) {
-        void *freeNode = *bestLink;
-        void *split = 0;
-        int align = head[1];
-        int freeSize = *(int *)((char *)freeNode + 4);
-        void *next = *(void **)((char *)freeNode + 8);
-        int r3 = (align + 0x10) & ~align;
-        int left = freeSize - needed;
+        freeNode = *bestLink;
+        split = 0;
+        align = head[1];
+        freeSize = *(int *)((char *)freeNode + 4);
+        next = *(void **)((char *)freeNode + 8);
+        left = freeSize - needed;
 
-        if (left > r3 + 0x20) {
-            char *p = (char *)freeNode + align + needed;
-            int align2;
+        if (left > ((align + 0x10) & ~align) + 0x20) {
+            p = (char *)freeNode + align + needed;
             *(int *)(p + 1) = 0xABCFEED0;
             split = p + 1;
             *(int *)(p + 9) = 0;
@@ -730,7 +736,7 @@ void fn_802E1058(void) {
             fn_802E30C8(lbl_8034BB7C, total >> 10);
 
             otherTotal = 0;
-            fn_802E30C8(lbl_8055D098);
+            fn_802E30C8((const char *)&lbl_8055D098);
             node = *(void **)((char *)root + 8);
             while (node != 0) {
                 fn_802E30C8(lbl_8034BB68, (char *)node + 0x10,
