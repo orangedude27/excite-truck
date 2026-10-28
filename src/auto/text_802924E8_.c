@@ -56,12 +56,35 @@ extern double fn_8002F234(float);
 extern float fn_80129DC4(int, float, float);
 extern float lbl_805644D0, lbl_805644D4, lbl_805644D8, lbl_805644DC, lbl_805644E0;
 #pragma processor 750
+struct Vec_802924F4 {
+    float x, y, z;
+};
+static inline void init_all_802924F4(float one, float offset) {
+    struct Vec_802924F4 v;
+    unsigned char *p = lbl_804B4030;
+    int i;
+    for (i = 0; i < 6; i++, p += 0x34) {
+        float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
+        float y = (float)fn_8002F234((one - x * x) - offset);
+        float z = (float)fn_8002F234((one - x * x) - offset);
+        float w = fn_80129DC4(0, -z, y);
+        float q = (float)fn_8002F234((one - x * x) - w * w);
+        float factor = (fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
+        v.x = x;
+        *(float *)(p + 0) = (float)(double)x;
+        *(float *)(p + 4) = (float)(double)w;
+        v.y = w;
+        v.z = q * factor;
+        *(float *)(p + 8) = v.z;
+        *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
+    }
+}
 void fn_802924F4(void) {
     struct Vec {
         float x, y, z;
     } v;
-    float one = lbl_805644D4;
-    float offset = lbl_805644D8;
+    register float one = lbl_805644D4;
+    register float offset = lbl_805644D8;
     unsigned char *p = lbl_804B4030;
     int i;
 
@@ -74,8 +97,8 @@ void fn_802924F4(void) {
         float factor = (fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
         v.x = x;
         *(float *)(p + 0) = (float)(double)x;
-        v.y = w;
         *(float *)(p + 4) = (float)(double)w;
+        v.y = w;
         v.z = q * factor;
         *(float *)(p + 8) = v.z;
         *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
