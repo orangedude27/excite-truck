@@ -1320,6 +1320,8 @@ extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
     *(s32*)((char*)arg0 + 4) = *(s32*)((char*)arg0 + 4) + 1;
 }
 
+#pragma paired off
+#pragma paired_single off
 #pragma scheduling invalid_target
 extern "C" void fn_802A4658(s32 arg0) {
     struct Entry { f32 x, y, z, vx, vy, vz, age, pad; };
@@ -1360,8 +1362,8 @@ extern "C" void fn_802A4658(s32 arg0) {
             vy = (in->vy * factor) - scale;
             vz = in->vz * factor;
             temp_x = vx;
-            temp_z = (vz * step, vz);
             temp_y = vy;
+            temp_z = vz;
             out->x = in->x + vx * step;
             out->y = in->y + vy * step;
             out->z = in->z + vz * step;
