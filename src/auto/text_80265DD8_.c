@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern int lbl_80499E50[];
+extern double lbl_80563C38;
 extern int lbl_8055C4B4;
 extern int lbl_8055C4B8;
 extern float lbl_8055C4BC;
@@ -116,6 +117,52 @@ void fn_80266150(void *arg0) {
     *(int *)((char *)arg0 + 4) = 0;
     *(int *)((char *)arg0 + 0) = 0;
     *(float *)((char *)arg0 + 8) = lbl_8055C4C0;
+}
+
+void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
+    float var_f0;
+    float temp_f0;
+    float temp_f0_2;
+    float temp_f4;
+    float var_f3;
+    float var_f4;
+    int temp_r0;
+    int temp_r0_2;
+
+    if (arg3 != 0) {
+        *(int *)((char *)arg0 + 0) = arg1;
+        *(int *)((char *)arg0 + 4) = 0;
+        var_f0 = lbl_8055C4BC * farg0;
+        if (var_f0 >= lbl_8055C4C0) var_f0 = lbl_8055C4C0;
+        *(float *)((char *)arg0 + 8) = var_f0;
+    }
+    if (arg2 != 0) {
+        *(int *)((char *)arg0 + 0) = arg1;
+        return;
+    }
+    temp_r0 = arg1 - *(int *)((char *)arg0 + 0);
+    *(int *)((char *)arg0 + 0) = arg1;
+    temp_r0_2 = *(int *)((char *)arg0 + 4) + temp_r0;
+    *(int *)((char *)arg0 + 4) = temp_r0_2;
+    var_f4 = lbl_80563C2C;
+    temp_f0 = (float)lbl_8055C4B4;
+    temp_f0_2 = ((float)temp_r0_2 - temp_f0) / ((float)lbl_8055C4B8 - temp_f0);
+    if (var_f4 >= temp_f0_2) var_f4 = temp_f0_2;
+    if (var_f4 <= lbl_80563C20) var_f4 = lbl_80563C20;
+    var_f3 = lbl_80563C28;
+    temp_f4 = lbl_80563C20 + (var_f4 * lbl_80563C2C);
+    if (temp_f4 >= var_f3) {
+        if (temp_f4 > lbl_80563C2C) {
+            var_f3 = lbl_80563C2C;
+        } else if (temp_f4 > lbl_80563C20) {
+            var_f3 = (temp_f4 * (lbl_80563C30 * temp_f4 * temp_f4)) +
+                     (lbl_80563C34 * temp_f4 * temp_f4);
+        } else {
+            var_f3 = (temp_f4 * (lbl_80563C30 * temp_f4 * temp_f4)) -
+                     (lbl_80563C34 * temp_f4 * temp_f4);
+        }
+    }
+    *(float *)((char *)arg0 + 0xC) = var_f3;
 }
 
 void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
@@ -490,14 +537,13 @@ void fn_8026A394(void *arg0) {
    unsigned int value9;
    unsigned int value11;
    one = 1;
-   factor = lbl_80563CBC;
+   factor = *(volatile float *)&lbl_80563CBC;
    *(volatile unsigned char *)(p + 0x139) = one;
    threshold = lbl_80563C2C;
    *(volatile unsigned char *)(p + 0x138) = one;
    q = *(char * volatile *)(p + 0x140);
    factor = *(float *)(q + 0x25d4) * factor;
-   threshold = threshold < factor ? factor : threshold;
-   *(float *)(p + 0x13c) = threshold;
+   *(float *)(p + 0x13c) = threshold < factor ? factor : threshold;
    zero = lbl_80563C20;
    *(float *)(p + 0x154) = zero;
    *(float *)(p + 0x158) = zero;
