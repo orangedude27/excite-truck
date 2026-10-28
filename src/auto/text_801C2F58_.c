@@ -2387,7 +2387,9 @@ extern "C" s32 fn_801CA070(s32 *arg0) {
  handle=fn_802E367C();
  if(handle!=-1) {
   value=lbl_8055E814;
-  if(value!=0) goto common;
+  if(value==0) goto init;
+  goto common;
+init:
   obj=(Dummy*)fn_801C3D5C();
   if(obj->v1(base+0x130)!=0) {
    obj=(Dummy*)fn_801C3D5C();
