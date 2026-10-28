@@ -71,9 +71,9 @@ extern f32 lbl_80563630;
 extern f32 fn_8023293C(s32, s32, f32);
 extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);
 extern void fn_80233354(s32, s32, s32, s32, f32, f32, f32, f32);
-#pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
 void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
@@ -113,7 +113,11 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     }
     fn_80233354(arg0, arg1, arg2, arg3, farg0, spC, farg3, farg2);
 }
-#pragma pop
+#pragma processor gekko
+#pragma use_lmw_stmw on
+#pragma scheduling on
+#pragma paired_single on
+#pragma paired on
 #pragma cplusplus on
 extern "C" void fn_80230924(void *, f32, f32, f32, f32, f32);
 extern "C" void fn_802C8B98(s32, s32);
