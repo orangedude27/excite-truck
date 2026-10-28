@@ -524,10 +524,9 @@ void fn_8028BD60(s32 arg0) {
     if (*(s32 *)(arg0 + 4) > 0) {
         f32 saved = fn_802C9A4C(*(f32 *)(arg0 + 0x18));
         fn_802C8BD0(*(s32 *)(arg0 + 0x14));
-        if (fn_801E8758(index) == 0) {
-            s32 *target = (s32 *)(arg0 + index * 0x30 + 0x1C);
-            fn_8028C11C((void *)arg0, (s32 *)&copy, target);
-        } else
+        if (fn_801E8758(index) == 0)
+            fn_8028C11C((void *)arg0, (s32 *)&copy, (s32 *)(arg0 + index * 0x30 + 0x1C));
+        else
             fn_8028C11C((void *)arg0, (s32 *)&copy, (s32 *)&copy);
         fn_802C8D74();
         fn_802C9A4C(saved);
