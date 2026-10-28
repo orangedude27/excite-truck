@@ -41,6 +41,9 @@ extern long lbl_8055B658;
 extern long __AXFXGetLfoSinTable_801769CC();
 extern long lbl_8055B674;
 extern char lbl_8033C970[];
+extern char lbl_8033C980[];
+extern void fn_802E30C8(const char *, ...);
+extern void fn_802EC1D8(void);
 extern float lbl_80563400;
 extern void fn_802EC1C0();
 extern void fn_802EC1E4();
@@ -421,25 +424,34 @@ struct Record_802101F8 {
     float f14;
     long f18;
 };
+#pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct Record_802101F8 *arg3) {
     long temp_r31;
     struct Record_802101F8 rec;
     long i;
 
-    if (arg0 != 0 && arg3 != 0) {
-        temp_r31 = arg0->v4();
-        rec = *arg3;
-        for (i = 0; i < 3; i++) {
-            long step = arg2 + i;
-            if (i == 1) {
-                float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
-                rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
-            } else {
-                rec.f10 = fn_80235EF0(temp_r31, step);
+    if (arg0 != 0) {
+        if (arg3 != 0) {
+            temp_r31 = arg0->v4();
+            rec.f0 = arg3->f0;
+            rec.f4 = arg3->f4;
+            rec.f8 = arg3->f8;
+            rec.fC = arg3->fC;
+            rec.f10 = arg3->f10;
+            rec.f14 = arg3->f14;
+            rec.f18 = arg3->f18;
+            for (i = 0; i < 3; i++) {
+                long step = arg2 + i;
+                if (i == 1) {
+                    float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
+                    rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
+                } else {
+                    rec.f10 = fn_80235EF0(temp_r31, step);
+                }
+                fn_80147940(arg0, &rec, arg1, step);
+                rec.f4 += rec.f10;
             }
-            fn_80147940(arg0, &rec, arg1, step);
-            rec.f4 += rec.f10;
         }
     }
 }
