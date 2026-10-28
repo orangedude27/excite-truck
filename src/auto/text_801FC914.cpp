@@ -860,28 +860,37 @@ extern "C" int fn_80129D18(int);
 void fn_801FCAE0(void*, void*);
 void fn_801FD024(void*, void*);
 extern "C" void fn_801FEB58(void* value) {
-    char* name = (char*)value;
     char* base = (char*)lbl_8055EC94;
-    char* entry = base;
     int i = 0;
-    for (;;) {
-        if (i >= *(int*)(base + 0x4C0)) entry = 0;
-        else if (stricmp(name, entry) == 0) entry = base + i * 0x98;
-        else { entry += 0x98; i++; continue; }
-        break;
+    char* item = base;
+    char* name = (char*)value;
+    while (i < *(int*)(base + 0x4C0)) {
+        if (stricmp(name, item) == 0) {
+            base += i * 0x98;
+            goto found;
+        }
+        item += 0x98;
+        i++;
     }
-    if (entry == 0) fn_802E317C(lbl_8033B84C, name);
-    if (*(int*)(entry + 0x90) > 0) {
+    base = 0;
+found:
+    if (base == 0) {
+        fn_802E317C(lbl_8033B84C, name);
+    }
+    int count = *(int*)(base + 0x90);
+    if (count > 0) {
         int index = fn_80129D18(0);
-        int selected = *(int*)(entry + 0x10 + index * 4);
+        int selected = *(int*)(base + 0x10 + index * 4);
         int j = index + 1;
-        int* p = (int*)(entry + j * 4);
-        for (; j < *(int*)(entry + 0x90); j++, p++) p[3] = p[4];
-        *(int*)(entry + 0x90) = j - 1;
+        int* p = (int*)(base + j * 4);
+        for (; j < *(int*)(base + 0x90); j++, p++) {
+            p[3] = p[4];
+        }
+        *(int*)(base + 0x90) -= 1;
         fn_801FCAE0((void*)selected, name);
-        int count = *(int*)(entry + 0x94);
-        *(int*)(entry + 0x50 + count * 4) = selected;
-        *(int*)(entry + 0x94) = count + 1;
+        int count = *(int*)(base + 0x94);
+        *(int*)(base + 0x50 + count * 4) = selected;
+        *(int*)(base + 0x94) = count + 1;
     }
 }
 
@@ -922,30 +931,41 @@ extern "C" void fn_801FEC74(void* arg) {
 }
 
 extern "C" int stricmp(const char *, const char *);
-extern "C" int fn_80129D18(int);
 void fn_801FEDA4(void *arg0) {
- char *base=(char *)lbl_8055EC98;
- char *entry=base;
- int i=0;
- for(;;){
-  if(i>=*(int *)(base+0x2c0)) entry=0;
-  else if(stricmp((char *)arg0+4,entry)==0) entry=base+i*0x58;
-  else {entry+=0x58;i++;continue;}
-  break;
- }
- if(entry==0) fn_802E317C(lbl_8033B84C,(char *)arg0+4);
- if(*(int *)(entry+0x50)>0){
-  int index=fn_80129D18(0);
-  int selected=*(int *)(entry+0x10+index*4);
-  int j=index+1;
-  int *p=(int *)(entry+j*4);
-  for(;j<*(int *)(entry+0x50);j++,p++) p[3]=p[4];
-  *(int *)(entry+0x50)=j-1;
-  fn_801FD024((void *)selected,arg0);
-  int count=*(int *)(entry+0x54);
-  *(int *)(entry+0x30+count*4)=selected;
-  *(int *)(entry+0x54)=count+1;
- }
+    struct Obj {
+        int unused;
+        char name[1];
+    };
+    Obj *obj = (Obj *)arg0;
+    char *base = (char *)lbl_8055EC98;
+    int i = 0;
+    char *entry = base;
+
+search:
+    if (stricmp(obj->name, entry) != 0) goto advance;
+    base += i * 0x58;
+    goto selected;
+advance:
+    entry += 0x58;
+    i++;
+    if (i < *(volatile int *)(base + 0x2C0)) goto search;
+    base = 0;
+selected:
+    if (base == 0) fn_802E317C(lbl_8033B84C, obj->name);
+    if (*(int *)(base + 0x50) > 0) {
+        int index = fn_80129D18(0);
+        int selected = *(int *)(base + 0x10 + index * 4);
+        int j = index + 1;
+        int *p = (int *)(base + j * 4);
+        for (; j < *(int *)(base + 0x50); j++, p++) p[3] = p[4];
+        *(int *)(base + 0x50) = j - 1;
+        fn_801FD024((void *)selected, arg0);
+        {
+            int count = *(int *)(base + 0x54);
+            *(int *)(base + 0x30 + count * 4) = selected;
+            *(int *)(base + 0x54) = count + 1;
+        }
+    }
 }
 
 #pragma push
