@@ -1234,10 +1234,7 @@ extern "C" void fn_802A4524(void *arg0) {
 
 extern "C" f32 fn_80287BC8(f32, f32);
 extern "C" f32 fn_801E7E18(void);
-#pragma use_lmw_stmw off
-#pragma paired off
-#pragma paired_single off
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
     register f32 saved = farg0;
     s32 index = *(s32*)((char*)arg0 + 4);
