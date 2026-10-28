@@ -202,6 +202,7 @@ outer_check:
     if (i < outer_count) goto outer_loop;
     *(int *)((char *)&lbl_804BE104 + 4) = 0;
 }
+#pragma dont_inline reset
 
 #pragma opt_common_subs off
 void *fn_802B0AC0(void *arg0, int arg1) {
