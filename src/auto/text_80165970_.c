@@ -158,6 +158,8 @@ __declspec(section ".sdata") extern char lbl_8055A168[];
 #pragma pop
 #pragma push
 #pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw on
 #pragma cplusplus on
 extern "C" void fn_80165A30(void *arg0, int arg1) {
     struct List {
@@ -181,7 +183,10 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
     int count;
     void *entry;
     float x, y, z;
+    float scaleX, scaleY;
     int minusOne;
+    scaleX = lbl_80561898;
+    scaleY = lbl_805618A0;
     *(int *)((char *)&lbl_8042FEB0 + 4) = 0;
     list = (List *)arg0;
     j = 0;
@@ -191,20 +196,21 @@ body:
     if (strcmp(item->getName(), lbl_8055A150) == 0) {
         count = *(int *)((char *)&lbl_8042FEB0 + 4);
         *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
-        entry = *(void * volatile *)&lbl_8042FEB0;
+        entry = *(void **)&lbl_8042FEB0;
         entry = (char *)entry + count * 0x14;
         x = item->getValue(lbl_8055A158);
         y = item->getValue(lbl_8055A160);
         *(float *)entry = item->getValue(lbl_8055A168);
-        z = x * lbl_80561898;
+        z = x * scaleX;
         *(float *)((char *)entry + 4) = y;
         *(float *)((char *)entry + 8) = z;
         *(int *)((char *)entry + 0x10) = minusOne;
         *(float *)((char *)entry + 0xC) =
-            lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, lbl_8056189C, lbl_805618A0 * z);
+            lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, lbl_8056189C, scaleY * z);
     }
 next_item:
-    item = (Entry *)list->getAt(++j);
+    ++j;
+    item = (Entry *)list->getAt(j);
     if (item != 0) goto body;
 }
 #pragma cplusplus reset
@@ -845,8 +851,8 @@ float fn_80166F90(float *arg0) {
 extern int fn_801B8570(void);
 extern void *fn_80166040(int);
 extern float lbl_805618A0, lbl_805618DC, lbl_805618E0, lbl_805618E4;
-#pragma optimization_level 4
 extern "C" void fn_8016707C(void *arg0, register void **arg1) {
+    Entry8016707C *entry = (Entry8016707C *)arg0;
     void *cur;
     float f1;
     float f2;
@@ -854,29 +860,28 @@ extern "C" void fn_8016707C(void *arg0, register void **arg1) {
     float res;
     float ret2;
 
-    if (*(unsigned char *)((char *)arg0 + 4) != 0) {
+    if (entry->unk4 != 0) {
         return;
     }
 
     fn_80179630(-1);
     if (fn_801B8570() == 0) {
-        cur = *(void **)((char *)arg0 + 0x58);
+        cur = entry->unk58;
         if (cur != 0) {
             *(int *)((char *)cur + 0x10) = -1;
         }
-        *(void **)((char *)arg0 + 0x58) = 0;
-        f1 = lbl_805618A0;
-        ret1 = ((float (*)(int, float, float))fn_80129DC4)(3, f1, lbl_805618E4);
+        entry->unk58 = 0;
+        ret1 = ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618A0, lbl_805618E4);
         f2 = lbl_805618E0;
         res = lbl_8055E318 + ret1;
         f1 = lbl_805618DC;
-        *(float *)((char *)arg0 + 0x1C) = res;
+        entry->unk1C = res;
         ret2 = ((float (*)(int, float, float))fn_80129DC4)(3, f1, f2);
-        *(float *)((char *)arg0 + 0x20) = lbl_8055E318 + ret2;
+        entry->unk20 = lbl_8055E318 + ret2;
         return;
     }
 
-    if (*(void **)((char *)arg0 + 0x58) != 0) {
+    if (entry->unk58 != 0) {
         return;
     }
 
@@ -884,21 +889,21 @@ extern "C" void fn_8016707C(void *arg0, register void **arg1) {
         return;
     }
 
-    cur = fn_80166040(*(int *)arg0);
+    cur = fn_80166040(entry->unk0);
     {
-        void *old = *(void **)((char *)arg0 + 0x58);
+        void *old = entry->unk58;
         if (old != 0) {
             *(int *)((char *)old + 0x10) = -1;
         }
     }
-    *(void **)((char *)arg0 + 0x58) = cur;
+    entry->unk58 = cur;
     ret1 = ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618A0, lbl_805618E4);
     f2 = lbl_805618E0;
     res = lbl_8055E318 + ret1;
     f1 = lbl_805618DC;
-    *(float *)((char *)arg0 + 0x1C) = res;
+    entry->unk1C = res;
     ret2 = ((float (*)(int, float, float))fn_80129DC4)(3, f1, f2);
-    *(float *)((char *)arg0 + 0x20) = lbl_8055E318 + ret2;
+    entry->unk20 = lbl_8055E318 + ret2;
 }
 
 #pragma pop
