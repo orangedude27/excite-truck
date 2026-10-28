@@ -1401,6 +1401,7 @@ extern "C" void fn_8012DEE4(void *);
 extern "C" void fn_8012DFCC(Unk8012DFCCList *, Unk8012DFCCNode *);
 extern "C" void *fn_8012E060(void *, const char *);
 extern "C" s32 fn_8012D838(s32);
+extern "C" void *fn_8012E3D4(void *);
 extern "C" void fn_8012E40C(void *, s32);
 extern "C" void fn_8012E2CC(void *);
 extern "C" void *fn_8012E460(void *);
