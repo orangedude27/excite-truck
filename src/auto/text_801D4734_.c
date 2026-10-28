@@ -223,12 +223,15 @@ void fn_801D50B0(int arg0) {
 }
 #pragma dont_inline reset
 
+#pragma push
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 void fn_801D5328(int arg0, int arg1) {
  struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual int state(); virtual void v6(); virtual int apply(int); };
- int mode, changed, count, offset;
+ int state, count, changed, mode, offset;
  Dummy *item;
- if (*(int *)(arg0+4)!=1) return;
+ state = *(int *)(arg0+4);
+ if (state != 1) return;
  *(unsigned char *)(arg0+0x2c)=arg1;
  mode=((unsigned char)arg1==0); changed=0; count=0; offset=0;
  goto test1;
@@ -251,6 +254,7 @@ done:
  *(int *)(arg0+4)=2;
 }
 #pragma cplusplus reset
+#pragma pop
 
 int fn_801D544C(void) {
     return 0;
@@ -875,8 +879,9 @@ extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
     char *dst1;
     int remaining2;
     char *dst2;
-
-    *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB0, initial);
+    float result;
+    result = obj->value(&lbl_8055ACB0, initial);
+    *(float *)((char *)arg0 + 8) = result;
     src = obj->get(&lbl_8055ACE8, &lbl_8055ACF0);
     dst1 = (char *)arg0 + 0xC;
     remaining1 = 0x40;
@@ -1441,7 +1446,7 @@ int fn_801D7C80(void *arg0, int arg1) {
 void fn_801D7D20(void *arg0) {
     int temp_r31;
     int temp_r0;
-    float temp_f1;
+    register float temp_f1;
     float current;
     float target;
     float var_f6;
@@ -1453,14 +1458,12 @@ void fn_801D7D20(void *arg0) {
         if (temp_r31 >= 0) {
             var_f6 = lbl_80562AE0;
             temp_f1 = (float)*(int *)((char *)arg0 + 0x0C) - lbl_80562ADC;
-            current = *(float *)((char *)arg0 + 0x20);
             target = *(float *)((char *)arg0 + 0x24);
-            if (var_f6 >= (((float)temp_r31 - lbl_80562ADC) / temp_f1)) {
-                var_f6 = ((float)temp_r31 - lbl_80562ADC) / temp_f1;
-            }
-            if (var_f6 <= lbl_80562ADC) {
-                var_f6 = lbl_80562ADC;
-            }
+            current = *(float *)((char *)arg0 + 0x20);
+            var_f6 = var_f6 < (((float)temp_r31 - lbl_80562ADC) / temp_f1)
+                         ? var_f6
+                         : ((float)temp_r31 - lbl_80562ADC) / temp_f1;
+            var_f6 = var_f6 > lbl_80562ADC ? var_f6 : lbl_80562ADC;
             value = current + var_f6 * (target - current);
             temp_r0 = *(int *)((char *)arg0 + 4);
             if (temp_r0 != 0) {
