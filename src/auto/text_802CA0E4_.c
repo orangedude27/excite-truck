@@ -819,6 +819,7 @@ extern char lbl_8034BB88[];
 extern char lbl_8034BB9C[];
 extern char lbl_8034BBA8[];
 extern char lbl_8055D098;
+#pragma use_lmw_stmw off
 void fn_802CB6B4(void) {
     void *root = *(void **)lbl_8055FCBC;
     void *record;
@@ -866,6 +867,7 @@ void fn_802CB6B4(void) {
     }
     *(void **)lbl_8055FCBC = 0;
 }
+#pragma use_lmw_stmw on
 
 extern void fn_8012C90C(int);
 extern void fn_802D915C(void *);
