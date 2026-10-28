@@ -199,8 +199,10 @@ extern "C" s32 fn_8012A6C8(s32 arg0, s32 arg1, s32 arg2) {
     const char *messages = lbl_8032A630;
     u32 *data = (u32 *)arg0;
     volatile u8 buffer[5];
-    u8 first;
-    u8 second;
+    register u8 first;
+    register u8 fourth;
+    register u8 second;
+    register u8 third;
     u32 value;
 
     fn_80132E7C((void *)arg0, 0x30);
@@ -208,10 +210,12 @@ extern "C" s32 fn_8012A6C8(s32 arg0, s32 arg1, s32 arg2) {
     if (value != 0x52535430) {
         *(volatile u32 *)buffer = 0x52535430;
         first = buffer[0];
+        fourth = buffer[3];
         second = buffer[1];
-        buffer[0] = buffer[3];
+        third = buffer[2];
+        buffer[0] = fourth;
         buffer[3] = first;
-        buffer[1] = buffer[2];
+        buffer[1] = third;
         buffer[2] = second;
         buffer[4] = 0;
         fn_802E30C8(messages + 0xDC, (const char *)arg1, value, (const char *)buffer);
@@ -1985,6 +1989,8 @@ extern "C" void *fn_8012C58C(void *arg0) {
 
 extern "C" const char lbl_8032ABF8[];
 extern "C" const char lbl_8032AC08[];
+#pragma push
+#pragma scheduling invalid_target
 extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
     s32 index;
     s32 result = 0;
@@ -2042,6 +2048,7 @@ extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
     }
     return result;
 }
+#pragma pop
 
 extern "C" s32 fn_8012C6F0(void *arg0) {
     s32 temp_r4;
