@@ -216,6 +216,42 @@ void fn_8000B09C(int arg0) {
     fn_801E8820(fn_8000AEC4);
     fn_801E7DEC(arg0);
 }
+
+extern void fn_8017685C(int);
+extern void fn_801AF6FC(void);
+extern void fn_801AF92C(void *);
+extern void *fn_801EA9A0();
+extern int fn_802E30C8();
+extern unsigned char lbl_8055D3D5;
+extern int lbl_8055D3E8;
+extern char lbl_802FBF38[];
+void fn_8000B150(void *arg0) {
+    int i;
+    int value;
+    char *entry;
+
+    fn_8017685C(1);
+    fn_801AF6FC();
+    if (arg0 == 0)
+        return;
+    fn_801AF92C(arg0);
+    *(unsigned char *)((char *)arg0 + 0xE) = lbl_8055D3D5;
+    if (lbl_8055D3D5 == 0) {
+        int counter = lbl_8055D3E8 + 1;
+        lbl_8055D3E8 = counter;
+        *(int *)((char *)arg0 + 8) = counter;
+        ((void (*)(char *, ...))fn_802E30C8)(lbl_802FBF38, lbl_8055D3E8);
+    }
+    entry = (char *)arg0;
+    i = 0;
+    while (i < *(int *)arg0) {
+        value = *(int *)((char *)((void *(*)(int))fn_801EA9A0)(i) + 0xAC);
+        i++;
+        *(int *)(entry + 0x10) = value;
+        entry += 0x14;
+    }
+}
+
 #pragma scheduling on
 int fn_8000B210(void *arg0) {
     extern int fn_80231504(int);
@@ -352,25 +388,38 @@ void fn_8000B838(void) {
     int sp8;
     char *p = (char *)&lbl_8034F5B8;
     int i = 0;
-    while (i < fn_801E85A4()) {
-        spC = 0;
-        sp8 = 0;
-        if (fn_801E868C(i, &spC, &sp8)) {
-            if (spC == 3) {
-                fn_801E86F8(i);
-                if (*(int *)((char *)fn_801EA9A0() + 0x30) != 3)
-                    fn_801E7E04(i, fn_801E7DF0(i) ? 0 : 3);
-            } else if (spC == 0) {
-                fn_801E86F8(i);
-                if (*(int *)((char *)fn_801EA9A0() + 0x30) != 3)
-                    fn_8000BD9C(i, 0, (int)p);
-            } else {
-                fn_80007554(i, sp8);
+
+    goto check;
+
+loop:
+    spC = 0;
+    sp8 = 0;
+    if (fn_801E868C(i, &spC, &sp8) != 0) {
+        switch (spC) {
+        case 3:
+            fn_801E86F8(i);
+            if (*(int *)((char *)fn_801EA9A0() + 0x30) != 3) {
+                if (fn_801E7DF0(i) != 0)
+                    fn_801E7E04(i, 0);
+                else
+                    fn_801E7E04(i, 3);
             }
+            break;
+        case 0:
+            fn_801E86F8(i);
+            if (*(int *)((char *)fn_801EA9A0() + 0x30) != 3)
+                fn_8000BD9C(i, 0, (int)p);
+            break;
+        default:
+            ((int (*)(int, int, int))fn_80007554)(i, spC, sp8);
+            break;
         }
-        p += 8;
-        i++;
     }
+    p += 8;
+    i++;
+check:
+    if (i < fn_801E85A4())
+        goto loop;
 }
 
 extern int fn_80019BA8(void);
