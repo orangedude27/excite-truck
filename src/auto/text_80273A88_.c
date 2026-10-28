@@ -349,13 +349,13 @@ void fn_80274EA8(void *arg0) {
 }
 
 static inline void helper_80274F74(void *arg0, void *arg1) {
+    float magnitude;
+    float cosine;
+    float scale;
     float x;
     float sine;
     float z;
     float y;
-    float magnitude;
-    float scale;
-    float cosine;
 
     magnitude = PSVECMag(arg1);
     if (magnitude > lbl_80564020) {
