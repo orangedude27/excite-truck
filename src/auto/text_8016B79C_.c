@@ -418,6 +418,69 @@ void *fn_8016C598(void *arg0, int arg1, int arg2) {
     return arg0;
 }
 
+#pragma cplusplus on
+extern "C" void *fn_8000AC38(void);
+extern "C" void *fn_80204EA0(const char *);
+extern "C" void *fn_80131810(void);
+extern "C" void fn_801345D8(void *, s32, const char *, ...);
+extern "C" int strcmp(const char *, const char *);
+extern "C" char *strstr(const char *, const char *);
+extern "C" char lbl_803307C8[];
+extern "C" char lbl_803307D8[];
+extern "C" char lbl_8055A218[];
+extern "C" char lbl_8055A220[];
+extern "C" s32 fn_8016C5F0(void) {
+    struct Manager {
+        virtual void m0();
+        virtual void *probe(void *);
+        virtual void m2();
+        virtual void release(void *);
+    };
+    struct SourceList {
+        virtual void m0();
+        virtual void *at(s32);
+    };
+    struct Entry {
+        virtual const char *name();
+        virtual void m1();
+        virtual void m2();
+        virtual const char *search(const char *);
+    };
+
+    Manager *manager = *(Manager **)((char *)fn_8000AC38() + 0x20);
+    void *resource = fn_80204EA0(lbl_803307C8);
+    s32 count = 0;
+    char buffer[0x1E];
+
+    if (manager->probe(resource) != 0) {
+        manager->release(resource);
+        SourceList *list = (SourceList *)fn_80131810();
+        if (list != 0) {
+            for (;;) {
+                s32 found = 0;
+                s32 i;
+
+                fn_801345D8(buffer, 0x1E, lbl_8055A218, count);
+                for (i = 0; list->at(i) != 0; i++) {
+                    Entry *entry = (Entry *)list->at(i);
+                    if (strcmp(entry->name(), lbl_803307D8) == 0 &&
+                        strstr(entry->search(lbl_8055A220), buffer) != 0) {
+                        found = 1;
+                        count++;
+                        break;
+                    }
+                }
+                if (found == 0) {
+                    break;
+                }
+            }
+            fn_80131818((s32)list);
+        }
+    }
+    return count;
+}
+#pragma cplusplus reset
+
 int fn_8016C760(void *arg0) { return ((int *)arg0)[1]; }
 
 extern f32 lbl_805619A0;
@@ -1386,7 +1449,8 @@ extern f32 lbl_80561980, lbl_80561984, lbl_805619A4, lbl_80561A0C, lbl_805619D0,
 extern "C" void fn_802C744C(s32, void *);
 extern "C" void fn_802C9900(void);
 extern "C" void fn_802C9904(void);
-extern "C" void fn_8016FE2C(void *arg0, s32 arg1) {
+#pragma cplusplus reset
+void fn_8016FE2C(void *arg0, s32 arg1) {
     register f32 f29 = lbl_80561980;
     register f32 f28 = lbl_80561984;
     register s32 i = 0;
@@ -1395,23 +1459,20 @@ extern "C" void fn_8016FE2C(void *arg0, s32 arg1) {
     register s32 offset = 0;
     register f32 f27 = lbl_805619D0;
     u8 *entry;
-    u8 *items;
     s32 j;
     s32 suboff;
     u8 *item;
     f32 t;
     f32 v;
-
     goto outer_check;
 outer_body:
     entry = *(u8 **)*(void **)((u8 *)arg0 + 0x48) + offset;
     if (*(u8 *)(entry + 9) != 0) {
         j = 0;
         suboff = 0;
-        items = *(u8 **)*(void **)entry;
         goto first_check;
 first_body:
-        item = items + suboff;
+        item = *(u8 **)*(void **)entry + suboff;
         if (*(s32 *)(item + 0xC) == 1) {
             fn_802C744C(*(s32 *)item, item + 0x14);
         }
@@ -1421,11 +1482,12 @@ first_check:
         if (j < *(s32 *)((u8 *)*(void **)entry + 4)) {
             goto first_body;
         }
-    } else {
+    }
+    if (*(u8 *)(entry + 9) == 0) {
         t = lbl_8055E3C8 - *(f32 *)(entry + 0xC);
         if (t < f27) {
             v = (t - f29) / f27;
-            if (v > f28) {
+            if (f28 < v) {
                 v = f28;
             }
             if (v > f29) {
@@ -1435,10 +1497,9 @@ first_check:
                 fn_802C9900();
                 j = 0;
                 suboff = 0;
-                items = *(u8 **)*(void **)entry;
                 goto second_check;
 second_body:
-                item = items + suboff;
+                item = *(u8 **)*(void **)entry + suboff;
                 if (*(s32 *)(item + 0xC) == 1) {
                     fn_802C744C(*(s32 *)item, item + 0x14);
                 }
@@ -1459,6 +1520,7 @@ outer_check:
         goto outer_body;
     }
 }
+#pragma cplusplus on
 
 #pragma cplusplus reset
 void fn_8016FF98(void *arg0) {
