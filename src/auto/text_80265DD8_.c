@@ -1,6 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern int lbl_80499E50[];
+extern int lbl_8055C4B4;
+extern int lbl_8055C4B8;
+extern float lbl_8055C4BC;
+extern float lbl_80563C30;
 extern void fn_80135DC4(void *, int, int);
 extern float fn_80134E34(float);
 extern void fn_80136468(int *, void *, float);
@@ -461,21 +465,84 @@ char fn_8026A38C(void) {
 
 extern float lbl_80563CBC, lbl_80563C2C, lbl_80563C20, lbl_8055E3C8;
 void fn_8026A394(void *arg0) {
- int i=0;
- while (i<4) {
-  char *p=(char *)fn_80267EE4(i);
-  if (*(void **)(p+0x140)==arg0) {
-   float f=lbl_80563CBC * *(float *)((char *)arg0+0x25d4);
-   *(char *)(p+0x139)=1; *(char *)(p+0x138)=1;
-   *(float *)(p+0x13c)= f < lbl_80563C2C ? lbl_80563C2C : f;
-   *(float *)(p+0x154)=lbl_80563C20; *(float *)(p+0x158)=lbl_80563C20;
-   *(int *)(p+0x1f8)=*(int *)(p+0x58); *(int *)(p+0x1fc)=*(int *)(p+0x5c);
-   *(int *)(p+0x200)=*(int *)(p+0x60); *(int *)(p+0x204)=*(int *)(p+0x64);
-   *(int *)(p+0x208)=*(int *)(p+0x68); *(int *)(p+0x20c)=*(int *)(p+0x6c);
-   *(int *)(p+0x210)=*(int *)(p+0x70); *(int *)(p+0x214)=*(int *)(p+0x74);
-   *(int *)(p+0x218)=*(int *)(p+0x78); *(int *)(p+0x21c)=*(int *)(p+0x7c);
-   *(int *)(p+0x220)=*(int *)(p+0x80); *(int *)(p+0x224)=*(int *)(p+0x84);
-   *(float *)(p+0x1f4)=*(float *)(p+0xbc); *(float *)(p+0x1f0)=lbl_8055E3C8;
+ int i = 0;
+ while (i < 4) {
+  char *p = (char *)fn_80267EE4(i);
+  if (*(void **)(p + 0x140) == arg0) {
+   char *q;
+   volatile unsigned int *src;
+   volatile unsigned int *dst;
+   unsigned int one;
+   float factor;
+   float threshold;
+   float zero;
+   float copy;
+   unsigned int value1;
+   unsigned int value0;
+   unsigned int value3;
+   unsigned int value2;
+   unsigned int value5;
+   unsigned int value4;
+   unsigned int value7;
+   unsigned int value6;
+   unsigned int value8;
+   unsigned int value10;
+   unsigned int value9;
+   unsigned int value11;
+   one = 1;
+   factor = lbl_80563CBC;
+   *(volatile unsigned char *)(p + 0x139) = one;
+   threshold = lbl_80563C2C;
+   *(volatile unsigned char *)(p + 0x138) = one;
+   q = *(char * volatile *)(p + 0x140);
+   factor = *(float *)(q + 0x25d4) * factor;
+   threshold = threshold < factor ? factor : threshold;
+   *(float *)(p + 0x13c) = threshold;
+   zero = lbl_80563C20;
+   *(float *)(p + 0x154) = zero;
+   *(float *)(p + 0x158) = zero;
+   src = (volatile unsigned int *)(p + 0x58);
+   dst = (volatile unsigned int *)(p + 0x1f8);
+   value0 = src[0];
+   value1 = src[1];
+   dst[0] = value0;
+   dst[1] = value1;
+   src = (volatile unsigned int *)(p + 0x60);
+   dst = (volatile unsigned int *)(p + 0x200);
+   value2 = src[0];
+   value3 = src[1];
+   dst[0] = value2;
+   dst[1] = value3;
+   src = (volatile unsigned int *)(p + 0x68);
+   dst = (volatile unsigned int *)(p + 0x208);
+   value4 = src[0];
+   value5 = src[1];
+   dst[0] = value4;
+   dst[1] = value5;
+   src = (volatile unsigned int *)(p + 0x70);
+   dst = (volatile unsigned int *)(p + 0x210);
+   value6 = src[0];
+   value7 = src[1];
+   dst[0] = value6;
+   dst[1] = value7;
+   src = (volatile unsigned int *)(p + 0x78);
+   dst = (volatile unsigned int *)(p + 0x218);
+   value8 = src[0];
+   dst[0] = value8;
+   src = (volatile unsigned int *)(p + 0x7c);
+   dst = (volatile unsigned int *)(p + 0x21c);
+   value9 = src[0];
+   value10 = src[1];
+   dst[0] = value9;
+   dst[1] = value10;
+   src = (volatile unsigned int *)(p + 0x84);
+   dst = (volatile unsigned int *)(p + 0x224);
+   value11 = src[0];
+   dst[0] = value11;
+   copy = *(float *)(p + 0xbc);
+   *(float *)(p + 0x1f4) = copy;
+   copy = lbl_8055E3C8;
+   *(float *)(p + 0x1f0) = copy;
    return;
   }
   i++;
