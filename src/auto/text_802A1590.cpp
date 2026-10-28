@@ -834,7 +834,7 @@ extern "C" void fn_802A30BC(void* arg0, s32 arg1) {
 
 #pragma paired off
 #pragma paired_single off
-#pragma scheduling invalid_target
+#pragma scheduling off
 struct Fn802A31DCConfig {
     f32 f00, f04, f08, f0c, f10, f14;
     s32 f18, f1c;
@@ -846,45 +846,45 @@ struct Fn802A31DCConfig {
 };
 
 extern "C" void fn_802A31DC(void *arg0, s32 arg1) {
-    char stack[0xA8];
-    fn_8028E61C(&stack[0x18]);
-    *(s32 *)(stack + 0x1c) = 0x40;
-    *(f32 *)(stack + 0x20) = lbl_805647D4;
-    *(f32 *)(stack + 0x24) = lbl_805647F4;
-    *(s32 *)(stack + 0x18) = 2;
-    *(f32 *)(stack + 0x60) = lbl_80564734;
-    *(f32 *)(stack + 0x0c) = lbl_80564798;
-    *(f32 *)(stack + 0x10) = lbl_80564760;
-    *(f32 *)(stack + 0x14) = lbl_80564798;
-    *(f32 *)(stack + 0x28) = lbl_80564798;
-    *(f32 *)(stack + 0x2c) = lbl_80564760;
-    *(f32 *)(stack + 0x30) = lbl_80564798;
-    *(f32 *)(stack + 0x00) = lbl_8056479C;
-    *(f32 *)(stack + 0x04) = lbl_8056479C;
-    *(f32 *)(stack + 0x08) = lbl_8056479C;
-    *(f32 *)(stack + 0x34) = lbl_8056479C;
-    *(f32 *)(stack + 0x38) = lbl_8056479C;
-    *(f32 *)(stack + 0x3c) = lbl_8056479C;
-    *(f32 *)(stack + 0x40) = lbl_8056479C;
-    *(f32 *)(stack + 0x44) = lbl_805647BC;
-    *(f32 *)(stack + 0x48) = lbl_805647EC;
-    *(f32 *)(stack + 0x4c) = lbl_805647AC;
-    *(s32 *)(stack + 0x5c) = 4;
-    *(f32 *)(stack + 0x88) = lbl_80564750;
-    *(f32 *)(stack + 0x80) = lbl_80564750;
-    *(f32 *)(stack + 0x78) = lbl_80564750;
-    *(f32 *)(stack + 0x8c) = lbl_80564798;
-    *(f32 *)(stack + 0x84) = lbl_80564798;
-    *(f32 *)(stack + 0x7c) = lbl_80564798;
-    *(f32 *)(stack + 0x70) = lbl_805647F8;
-    *(f32 *)(stack + 0x74) = lbl_805647FC;
-    *(f32 *)(stack + 0x68) = lbl_80564800;
-    *(f32 *)(stack + 0x6c) = lbl_805647B4;
-    *(f32 *)(stack + 0x90) = lbl_8056475C;
-    *(f32 *)(stack + 0x94) = lbl_80564730;
+    Fn802A31DCConfig cfg;
+    fn_8028E61C(&cfg.f18);
+    cfg.f1c = 0x40;
+    cfg.f20 = lbl_805647D4;
+    cfg.f24 = lbl_805647F4;
+    cfg.f18 = 2;
+    cfg.f60 = lbl_80564734;
+    cfg.f0c = lbl_80564798;
+    cfg.f10 = lbl_80564760;
+    cfg.f14 = lbl_80564798;
+    cfg.f28 = lbl_80564798;
+    cfg.f2c = lbl_80564760;
+    cfg.f30 = lbl_80564798;
+    cfg.f00 = lbl_8056479C;
+    cfg.f04 = lbl_8056479C;
+    cfg.f08 = lbl_8056479C;
+    cfg.f34 = lbl_8056479C;
+    cfg.f38 = lbl_8056479C;
+    cfg.f3c = lbl_8056479C;
+    cfg.f40 = lbl_8056479C;
+    cfg.f44 = lbl_805647BC;
+    cfg.f48 = lbl_805647EC;
+    cfg.f4c = lbl_805647AC;
+    cfg.f5c = 4;
+    cfg.f88 = lbl_80564750;
+    cfg.f80 = lbl_80564750;
+    cfg.f78 = lbl_80564750;
+    cfg.f8c = lbl_80564798;
+    cfg.f84 = lbl_80564798;
+    cfg.f7c = lbl_80564798;
+    cfg.f70 = lbl_805647F8;
+    cfg.f74 = lbl_805647FC;
+    cfg.f68 = lbl_80564800;
+    cfg.f6c = lbl_805647B4;
+    cfg.f90 = lbl_8056475C;
+    cfg.f94 = lbl_80564730;
     *(s32 *)((char *)arg0 + 8) =
         ((s32 (*)(void *, void *, s32))fn_8028E2F8)(
-            &stack[0x18], lbl_80349A54, arg1);
+            &cfg.f18, lbl_80349A54, arg1);
 }
 #pragma paired_single reset
 #pragma paired reset
