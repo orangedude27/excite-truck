@@ -1501,6 +1501,10 @@ extern "C" void fn_801476C4(void *arg0) {
         fn_80145B94(arg0, *(u32 *)((u8 *)arg0 + 0x1c));
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8BD0(s32);
     extern s32 fn_802C8DBC(s32);
@@ -1549,6 +1553,10 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
         fn_802C8D74();
     }
 }
+#pragma scheduling on
+#pragma pop
+#pragma dont_inline reset
+#pragma processor reset
 
 extern "C" void fn_8014784C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     class V {
