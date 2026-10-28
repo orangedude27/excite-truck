@@ -724,32 +724,32 @@ char fn_802CAFF0(int arg0) {
 extern char lbl_8034B940[];
 #pragma scheduling invalid_target
 int fn_802CB018(void) {
-    register int *base = (int *)lbl_8055FCB0 + 0x13;
-    register int index = 1;
+    int index = 1;
     int result = -1;
     int group;
+    unsigned char *base = (unsigned char *)lbl_8055FCB0 + 0x4C;
 
     for (group = 0; group < 0x49; group++) {
-        if (base[0] == 0) { result = index; goto found; }
+        if (*(int *)(base + 0x00) == 0) { result = index; goto found; }
         index++;
-        if (base[0x13] == 0) { result = index; goto found; }
+        if (*(int *)(base + 0x4C) == 0) { result = index; goto found; }
         index++;
-        if (base[0x26] == 0) { result = index; goto found; }
+        if (*(int *)(base + 0x98) == 0) { result = index; goto found; }
         index++;
-        if (base[0x39] == 0) { result = index; goto found; }
+        if (*(int *)(base + 0xE4) == 0) { result = index; goto found; }
         index++;
-        if (base[0x4C] == 0) { result = index; goto found; }
+        if (*(int *)(base + 0x130) == 0) { result = index; goto found; }
         index++;
-        if (base[0x5F] == 0) { result = index; goto found; }
+        if (*(int *)(base + 0x17C) == 0) { result = index; goto found; }
         index++;
-        if (base[0x72] == 0) { result = index; goto found; }
+        if (*(int *)(base + 0x1C8) == 0) { result = index; goto found; }
         index++;
-        base += 0x85;
+        base += 0x214;
     }
 found:
     if (result < 0)
         fn_802E317C(lbl_8034B940);
-    return (int)(lbl_8055FCB0 + result * 0x4C);
+    return (int)((unsigned char *)lbl_8055FCB0 + result * 0x4C);
 }
 #pragma scheduling on
 
@@ -1190,26 +1190,53 @@ int fn_802CC404(void *arg0) {
 }
 
 extern int fn_8012C7FC(void *, int *);
+#pragma dont_inline on
+extern char lbl_8055D090;
+#pragma scheduling invalid_target
+#pragma dont_inline on
+#pragma use_lmw_stmw off
 void fn_802CC410(void *arg0) {
+    register int zero = 0;
+    register int *node;
+    register int value = -2;
+    register int done = 2;
+    register char *root = (char *)arg0;
     int temporary;
-    int *node = *(int **)arg0;
-    int *entry;
     int result;
-    while (node != 0) {
+
+outer:
+    node = *(int **)root;
+    value = -2;
+    do {
         if (node[4] == -1) {
             result = fn_8012C7FC((void *)node[0], &temporary);
             if (result != 0) {
-                entry = (int *)(lbl_8055FCB0 + node[1] * 0x4C);
-                entry[0x44 / 4] = node[2];
-                entry[0x40 / 4] = fn_802CB38C((void *)result, (void *)node[3],
-                    (void *)entry[0x34 / 4]);
-                node[3] = 0;
+                value = lbl_8055FCB0 + node[1] * 0x4C;
+                *(int *)(value + 0x44) = node[2];
+                *(int *)(value + 0x40) = fn_802CB38C((void *)result,
+                    (void *)node[3],
+                    (void *)*(int *)(lbl_8055FCB0 + node[1] * 0x4C + 0x34));
+                node[3] = zero;
+                fn_8012C958(node[0]);
+                node[0] = zero;
+                node[2] = zero;
+                fn_802CBB9C((int **)(root + 4), (int)root, node);
+                ((void (*)(void *, const char *))fn_802CB3F8)(
+                    (void *)(value + 4), &lbl_8055D090);
+                *(int *)(root + 0x18) += *(int *)(value + 0x3C);
+                value = node[1];
             }
         }
         node = *(int **)((char *)node + 0x14);
+    } while (node != 0);
+    if (value != -2) {
+        *(int *)(root + value * 0x14 + 0x40) = done;
+        goto outer;
     }
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw on
+#pragma dont_inline reset
 extern double lbl_80564F38;
 #pragma fp_contract on
 void fn_802CC518(int arg0, float arg1) {
@@ -1259,6 +1286,51 @@ void fn_802CC5B8(int arg0) {
     offset = arg0 * 0x4C;
     *(int *)((char *)lbl_8055FCB0 + offset + 0x48) = 1000000;
 }
+
+extern int lbl_8055FCC0;
+extern float lbl_80564F48;
+extern int fn_802E2C20(void);
+#pragma scheduling invalid_target
+void fn_802CC60C(void) {
+    register float value = lbl_80564F48;
+    register int offset = 0;
+    int i;
+    register int zero = 0;
+    register int counter;
+    int next;
+    void *root;
+
+    for (i = 0; i < 0x40; i++) {
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x38) = value;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x48) = zero;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x84) = value;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x94) = zero;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0xD0) = value;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0xE0) = zero;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x11C) = value;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x12C) = zero;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x168) = value;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x178) = zero;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x1B4) = value;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x1C4) = zero;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x200) = value;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x210) = zero;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x24C) = value;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x25C) = zero;
+        offset += 0x260;
+    }
+
+    root = (void *)*(volatile void **)lbl_8055FCBC;
+    counter = lbl_8055FCC0;
+    *(int *)((char *)root + 0x2844) = zero;
+    *(int *)((char *)root + 0x283C) = zero;
+    next = counter + 1;
+    *(int *)((char *)root + 0x2840) = zero;
+    lbl_8055FCC0 = next;
+    if ((unsigned char)counter == 0)
+        *(int *)((char *)root + 0x1C) = fn_802E2C20();
+}
+#pragma scheduling on
 
 void fn_802CC73C(char arg0) {
     lbl_8055D07D = arg0;
