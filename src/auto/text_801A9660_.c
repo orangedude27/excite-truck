@@ -33,6 +33,7 @@ extern int lbl_8055A858;
 extern int jumptable_80335578[];
 extern void *fn_801AC330(void *);
 extern void *fn_801AC26C(void);
+extern void fn_8017AB84(void *, Vec *, void *);
 #pragma scheduling invalid_target
 void *fn_801A9660(void) {
     extern char lbl_80335528[];
@@ -1417,51 +1418,61 @@ extern float lbl_8056247C, lbl_805624AC, lbl_80562510;
 extern void fn_801C2694(void *, int *, float *, float *, float *, float *, float *, float, float);
 extern void fn_801796CC(int, void *, int);
 void fn_801ACF94(void) {
-    char sp90[0xED0];
-    int sp8[1];
-    float *p;
-    int index, inner, count;
-    void **obj;
-    float *src;
+    char sp8[0x34];
     char sp3c[0x54];
-    float fill, special, tail;
+    char sp90[0xEC0];
+    float *p;
+    int i, j;
+    void **obj;
+    float *src, *dst;
+    void *root;
 
-    fill = lbl_8056247C;
-    special = lbl_805624AC;
-    tail = lbl_80562510;
-    if (lbl_8055E5F0 != 0) {
-        sp8[0] = 0x13C;
-        p = (float *)((char *)sp8 + 4);
+    root = (void *)lbl_8055E5F0;
+    if (root != 0) {
+        float fill, special, tail;
+        fill = lbl_8056247C;
+        special = lbl_805624AC;
+        tail = lbl_80562510;
+        *(int *)sp8 = 0x13C;
+        p = (float *)(sp8 + 4);
         p[0] = fill; p[1] = fill; p[2] = fill;
         p[3] = fill; p[4] = fill; p[5] = fill;
         p[6] = fill; p[7] = special; p[8] = fill;
         p[9] = fill; p[10] = tail; p[11] = fill;
-        fn_801C2694((void *)lbl_8055E5F0, (int *)sp90, (float *)sp8,
+        fn_801C2694(root, (int *)sp90, (float *)sp8,
                     p + 9, p + 6, p + 3, p, special, fill);
         obj = (void **)lbl_80435628;
-        index = 0;
-        inner = 0;
+        i = 0;
+        j = 0;
         do {
             void *o = *obj;
             void *a = *(void **)((char *)o + 0x23C);
             if (a != 0) {
                 int first = *(int *)((char *)a + 0x254);
-                count = *(int *)((char *)o + 0x254) - first + 1;
+                float x, y, z;
+                *(int *)sp3c = i;
+                *(int *)(sp3c + 4) = j;
+                *(int *)(sp3c + 8) =
+                    *(int *)((char *)o + 0x254) - first + 1;
                 src = (float *)(sp90 + first * 12);
-                *(int *)sp3c = inner;
-                *(int *)(sp3c + 4) = index;
-                *(int *)(sp3c + 8) = count;
-                for (inner = 0; inner < count; inner++) {
-                    *(float *)(sp3c + 12 + inner * 12) = src[0];
-                    *(float *)(sp3c + 16 + inner * 12) = src[1];
-                    *(float *)(sp3c + 20 + inner * 12) = src[2];
+                dst = (float *)sp3c;
+                i = 0;
+                while (i < *(int *)(sp3c + 8)) {
+                    x = src[0];
+                    i++;
+                    y = src[1];
+                    dst[3] = x;
+                    z = src[2];
                     src += 3;
+                    dst[4] = y;
+                    dst[5] = z;
+                    dst += 3;
                 }
                 fn_801796CC(6, sp3c, 0x54);
             }
             obj++;
-            index++;
-        } while (index < lbl_8055E5EC);
+            j++;
+        } while (j < lbl_8055E5EC);
     }
 }
 
