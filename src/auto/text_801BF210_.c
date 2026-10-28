@@ -209,34 +209,40 @@ static inline void inline_transform_vec(float *out, const float *in, const float
         float x1 = m[1] * in[0];
         float x2 = m[2] * in[0];
 
-        float xy0 = x0 + y0;
         float z0 = m[6] * in[2];
-        float xy1 = x1 + y1;
         float z1 = m[7] * in[2];
-        float xy2 = x2 + y2;
         float z2 = m[8] * in[2];
 
-        out[0] = z0 + xy0;
-        out[1] = z1 + xy1;
-        out[2] = z2 + xy2;
+        out[0] = z0 + (x0 + y0);
+        out[1] = z1 + (x1 + y1);
+        out[2] = z2 + (x2 + y2);
     } else {
         {
-            float y0 = m[3] * in[1];
-            float x0 = m[0] * in[0];
-            float z0 = m[6] * in[2];
-            out[0] = z0 + (x0 + y0);
+            float m3 = m[3];
+            float y0 = in[1] * m3;
+            float m0 = m[0];
+            float x0 = in[0] * m0;
+            float m6 = m[6];
+            float z0 = in[2] * m6;
+            out[0] = (x0 + y0) + z0;
         }
         {
-            float y1 = m[4] * in[1];
-            float x1 = m[1] * in[0];
-            float z1 = m[7] * in[2];
-            out[1] = z1 + (x1 + y1);
+            float m4 = m[4];
+            float y1 = in[1] * m4;
+            float m1 = m[1];
+            float x1 = in[0] * m1;
+            float m7 = m[7];
+            float z1 = in[2] * m7;
+            out[1] = (x1 + y1) + z1;
         }
         {
-            float y2 = m[5] * in[1];
-            float x2 = m[2] * in[0];
-            float z2 = m[8] * in[2];
-            out[2] = z2 + (x2 + y2);
+            float m5 = m[5];
+            float y2 = in[1] * m5;
+            float m2 = m[2];
+            float x2 = in[0] * m2;
+            float m8 = m[8];
+            float z2 = in[2] * m8;
+            out[2] = (x2 + y2) + z2;
         }
     }
 }
