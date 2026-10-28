@@ -46,22 +46,22 @@ void fn_802E1728(void *arg0) {
 unsigned int fn_802E176C(unsigned int arg0) {
     return 1U << (32 - __cntlzw(arg0));
 }
-#pragma dont_inline reset
-#pragma scheduling reset
+#pragma scheduling invalid_target
 void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
-    int x;
-    int y;
+    unsigned int count = arg1 >> 3;
+    int x = 0;
+    int y = 0;
     int row;
 
-    x = 0;
-    y = 0;
     for (row = 0; row < 4; row++) {
+        int rowOffset = row * arg2;
         int i;
-        for (i = 0; i < (arg1 >> 3); i++) {
-            unsigned char *p = (unsigned char *)arg0 + (i + row * arg2) * 2;
-            p[0] = (unsigned char)(x - i + 0x80);
+        for (i = 0; i < count; i++) {
+            int offset = (i + rowOffset) * 2;
+            int yMinusRow = y - row;
+            ((unsigned char *)arg0)[offset] = (unsigned char)(x - i + 0x80);
             y++;
-            p[1] = (unsigned char)(y - row - 1 + 0x80);
+            ((unsigned char *)arg0)[offset + 1] = (unsigned char)(yMinusRow + 0x80);
             if (y == 4) {
                 y = 0;
                 x++;
@@ -69,38 +69,54 @@ void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
         }
     }
 }
+#pragma optimization_level 2
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride)
+{
+    register unsigned int row;
+    register unsigned int outer;
+    register unsigned int dstOffset;
+    register unsigned int outerCount;
+    register unsigned int innerCount;
+    register unsigned int total3;
+    register unsigned int total2;
+    register unsigned int total;
 
-int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride) {
-    int total = count * stride;
-    int rowStride = total * 2;
-    int lastStride = total * 3;
-    int dstOffset = 0;
-    int outer = 0;
-    int row = 0;
-    do {
-        int srcOffset = row * total;
-        int i;
-        for (i = 0; i < (total >> 3); i++) {
-            unsigned char *s = (unsigned char *)src + srcOffset;
-            unsigned char *d = (unsigned char *)dst + dstOffset;
-            *(unsigned int *)(d + 0) = *(unsigned int *)(s + 0);
-            *(unsigned int *)(d + 4) = *(unsigned int *)(s + 4);
-            *(unsigned int *)(d + 8) = *(unsigned int *)(s + total);
-            *(unsigned int *)(d + 12) = *(unsigned int *)(s + total + 4);
-            *(unsigned int *)(d + 16) = *(unsigned int *)(s + rowStride);
-            *(unsigned int *)(d + 20) = *(unsigned int *)(s + rowStride + 4);
-            *(unsigned int *)(d + 24) = *(unsigned int *)(s + lastStride);
-            *(unsigned int *)(d + 28) = *(unsigned int *)(s + lastStride + 4);
-            dstOffset += 32;
-            srcOffset += 8;
+    total = (unsigned int)count * (unsigned int)stride;
+    outerCount = (unsigned int)outerBytes >> 2;
+    innerCount = total >> 3;
+    total2 = total << 1;
+    total3 = (total << 2) - total;
+    dstOffset = 0;
+    outer = 0;
+    row = 0;
+
+    for (; outer < outerCount; outer++) {
+        unsigned int srcOffset = row * total;
+        unsigned int i = innerCount;
+        if (i != 0) {
+            do {
+                unsigned int *s = (unsigned int *)((char *)src + srcOffset);
+                unsigned int *d = (unsigned int *)((char *)dst + dstOffset);
+                d[0] = s[0];
+                d[1] = s[1];
+                d[2] = *(unsigned int *)((char *)s + total);
+                d[3] = *(unsigned int *)((char *)s + total + 4);
+                d[4] = *(unsigned int *)((char *)s + total2);
+                d[5] = *(unsigned int *)((char *)s + total2 + 4);
+                d[6] = *(unsigned int *)((char *)s + total3);
+                d[7] = *(unsigned int *)((char *)s + total3 + 4);
+                dstOffset += 0x20;
+                srcOffset += 8;
+            } while (--i != 0);
         }
         row += 4;
-        outer++;
-    } while (outer < (outerBytes >> 2));
-    return 0;
+    }
 }
-
-#pragma scheduling invalid_target
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
+#pragma optimization_level reset
 int fn_802E18D4(int arg0, int arg1, int arg2, int arg3, void *arg4, int arg5) {
     GXInitTexObj((GXTexObj *)arg4, (void *)arg5, (unsigned short)arg0, (unsigned short)arg1,
                  arg2, arg3, arg3, 0);
@@ -126,25 +142,36 @@ void fn_802E1A38(void *arg0, int arg1) {
 
 extern int fn_802E1954(int);
 extern unsigned int fn_802E1960(unsigned int);
+#pragma optimization_level 2
+#pragma use_lmw_stmw off
 #pragma dont_inline on
 void fn_802E1A9C(void *arg0, int *arg1, int *arg2, int *arg3, int *arg4, int *arg5, int *arg6, int *arg7, int arg8) {
- int a, b, c, d, e, f, g;
- a = *(int *)((char *)arg0 + 0x18) ? *(int *)((char *)arg0 + 4) : 0;
- b = *(int *)((char *)arg0 + 0x3C) ? *(int *)((char *)arg0 + 4) : 0;
- c = *(int *)((char *)arg0 + 0x24) ? *(int *)((char *)arg0 + 0xC) : 0;
- d = fn_802E1954(a * *(int *)((char *)arg0 + 8));
- e = fn_802E1954(b * *(int *)((char *)arg0 + 8));
- f = fn_802E1954(c * *(int *)((char *)arg0 + 0x10));
- g = fn_802E1954(fn_802E1960(*(int *)((char *)arg0 + 0xC)) << 3);
- *arg5 = fn_802E1954(fn_802E1960(*(int *)((char *)arg0 + 4)) << 3) + g;
- *arg3 = d;
- *arg1 = d + e;
- *arg2 = f + d + e;
- *arg4 = ((f << 1) + d) + e;
- *arg6 = a | b;
- *arg7 = c;
+    int d, e, f, g;
+    int width, height;
+    int a, b, c;
+    int sum, out;
+    a = *(int *)((char *)arg0 + 0x18) ? *(int *)((char *)arg0 + 4) : 0;
+    b = *(int *)((char *)arg0 + 0x3C) ? *(int *)((char *)arg0 + 4) : 0;
+    c = *(int *)((char *)arg0 + 0x24) ? *(int *)((char *)arg0 + 0xC) : 0;
+    width = *(int *)((char *)arg0 + 8);
+    height = *(int *)((char *)arg0 + 0x10);
+    d = fn_802E1954(a * width);
+    e = fn_802E1954(b * width);
+    f = fn_802E1954(c * height);
+    g = fn_802E1954(fn_802E1960(*(int *)((char *)arg0 + 0xC)) << 3);
+    out = fn_802E1954(fn_802E1960(*(int *)((char *)arg0 + 4)) << 3);
+    out += g;
+    *arg5 = out;
+    sum = d + e;
+    *arg3 = d;
+    *arg1 = sum;
+    *arg2 = f + sum;
+    *arg4 = sum + (f << 1);
+    *arg6 = a | b;
+    *arg7 = c;
 }
-
+#pragma use_lmw_stmw reset
+#pragma optimization_level reset
 int fn_802E1BB4(void *arg0, int arg1) {
     int sp20, sp1C, sp18, sp14, sp10, spC, sp8;
     int temp, i;
@@ -254,21 +281,23 @@ extern void fn_802E2CFC(void *);
 extern void fn_802E27F0(void);
 extern void fn_80127C90(void *, void *);
 extern char lbl_8034CCE0[];
+#pragma scheduling invalid_target
 int fn_802E2A5C(void) {
     unsigned short local[12];
+    register char *base;
+    base = lbl_8034CCE0;
     OSInit(); fn_8005954C(); LCEnable(); fn_802E77A8(); fn_802E3498();
     fn_801293B4(); fn_802E302C(); fn_802E2A54(); fn_8012820C(0x02000000);
     fn_802E98D0(); fn_802E7318(); fn_802E46B0(); fn_80127C8C();
     fn_802E8CA8(); fn_80127538(); fn_80129790(); fn_802E5478();
     fn_802E7578(); fn_802EBE2C(); fn_802CF600(); fn_802EC614();
     fn_802E2CFC(local);
-    fn_802E30C8(lbl_8034CCE0 + 0x78, local[1], local[2], local[0], *(int *)((char *)local + 0x10));
-    fn_802E30C8(lbl_8034CCE0 + 0x8C, local[3], local[4], local[5]);
+    fn_802E30C8(base + 0x78, local[1], local[2], local[0], *(int *)((char *)local + 0x10));
+    fn_802E30C8(base + 0x8C, local[3], local[4], local[5]);
     fn_802E27F0();
-    fn_80127C90(fn_802E2A1C, lbl_8034CCE0 + 0xA0);
+    fn_80127C90(fn_802E2A1C, base + 0xA0);
     return 1;
 }
-
 extern void DCStoreRange(void *, int);
 extern void fn_80127D58(void *);
 extern void fn_802E29AC(void);
@@ -363,15 +392,17 @@ void fn_802E2CFC(void *arg0) {
     *(int *)((char *)arg0 + 0xC) = calendar.msec;
 }
 
+#pragma scheduling invalid_target
 u64 fn_802E2D74(int arg0) {
     long long limit = (long long)arg0 * 1000;
     u64 start = fn_802E2C9C();
     u64 now;
-    do { now = fn_802E2C9C(); } while ((long long)(now - start) < limit);
-    return now - start;
+    do {
+        now = fn_802E2C9C();
+    } while ((long long)(now - start) < limit && (long long)now >= (long long)start);
+    return now;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802E2E0C(int arg0, int arg1) {
     int index = lbl_8055FF00;
     lbl_8055FF00 = index + 1;
