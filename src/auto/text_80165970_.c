@@ -306,6 +306,7 @@ extern "C" void fn_80165FAC(void) {
 #pragma cplusplus off
 #pragma scheduling on
 #pragma pop
+#pragma dont_inline on
 void *fn_80166040(int arg0) {
     void *base;
     void *cur;
