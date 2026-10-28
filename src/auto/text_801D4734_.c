@@ -850,21 +850,63 @@ int fn_801D6D80(int arg0, int arg1) {
 }
 
 #pragma cplusplus on
+#pragma push
+#pragma scheduling invalid_target
 extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
- struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual char *get(char *, char *); virtual void v7(); virtual void v8(); virtual void v9(); virtual float value(char *, float); };
- extern char lbl_8055ACB0;
- extern char lbl_8055ACE8;
- extern char lbl_8055ACF0;
- extern char lbl_8055ACF4;
- extern float lbl_80562B14;
- Dummy *obj=(Dummy *)arg1; char *src; char *dst; int i;
- *(float *)((char *)arg0+8)=obj->value(&lbl_8055ACB0,lbl_80562B14);
- src=obj->get(&lbl_8055ACE8,&lbl_8055ACF0); dst=(char *)arg0+0xC;
- for(i=0;i<0x40 && (*dst++=*src++)!=0;i++) {} if(i==0x40) dst[-1]=0;
- src=obj->get(&lbl_8055ACF4,&lbl_8055ACF0); dst=(char *)arg0+0x4C;
- for(i=0;i<0x40 && (*dst++=*src++)!=0;i++) {} if(i==0x40) dst[-1]=0;
- *(int *)((char *)arg0+4)=1; return 1;
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual char *get(char *, char *);
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual float value(char *, float);
+    };
+    extern char lbl_8055ACB0;
+    extern char lbl_8055ACE8;
+    extern char lbl_8055ACF0;
+    extern char lbl_8055ACF4;
+    extern float lbl_80562B14;
+    Dummy *obj = (Dummy *)arg1;
+    char *src;
+    int remaining;
+    char c;
+    char *dst;
+
+    *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB0, lbl_80562B14);
+    src = obj->get(&lbl_8055ACE8, &lbl_8055ACF0);
+    dst = (char *)arg0 + 0xC;
+    remaining = 0x40;
+    goto copy_first;
+count_first:
+    if (--remaining > 0) goto copy_first;
+    dst[-1] = 0;
+    goto done_first;
+copy_first:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto count_first;
+done_first:
+    src = obj->get(&lbl_8055ACF4, &lbl_8055ACF0);
+    dst = (char *)arg0 + 0x4C;
+    remaining = 0x40;
+    goto copy_second;
+count_second:
+    if (--remaining > 0) goto copy_second;
+    dst[-1] = 0;
+    goto done_second;
+copy_second:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto count_second;
+done_second:
+    *(int *)((char *)arg0 + 4) = 1;
+    return 1;
 }
+#pragma pop
+#pragma scheduling reset
 #pragma cplusplus reset
 
 extern char lbl_80338868[];
