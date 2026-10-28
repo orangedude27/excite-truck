@@ -1705,6 +1705,8 @@ extern "C" void fn_8012E498(void *arg0) {
         }
     }
 }
+#pragma pop
+#pragma scheduling reset
 
 extern "C" void fn_8012E5E4(void *arg0, void *arg1) {
     void **link = (void **)((u8 *)arg0 + 8);
