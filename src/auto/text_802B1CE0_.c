@@ -363,6 +363,7 @@ extern void fn_802B257C(void *);
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma opt_common_subs off
+#pragma opt_loop_invariants off
 extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     class Obj {
     public:
@@ -426,7 +427,7 @@ extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
             alloc = fn_801284F8(0x2A8, lbl_8034A2E8);
             if (alloc != 0) {
                 sp8 = fn_802B2958(alloc, item);
-                fn_802B2934((char *)arg0 + 0x408, &sp8);
+                fn_802B2934((unsigned char *)arg0 + 0x408, &sp8);
             }
         }
     }
