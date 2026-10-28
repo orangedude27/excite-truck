@@ -347,42 +347,49 @@ extern s32 fn_80014ADC(void);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_80014B9C(void *arg0) {
+    struct Obj {
+        u8 pad0[0x24];
+        s32 state;
+        u8 pad28[4];
+        f32 value;
+    };
+    struct Obj *obj = (struct Obj *)arg0;
     s32 state, reverse, result;
-    f32 *value = (f32 *)((u8 *)arg0 + 0x2C);
+
     reverse = fn_80014ADC();
-    result = fn_80014AE4();
-    state = *(s32 *)((u8 *)arg0 + 0x24);
+    result = ((s32 (*)(void *))fn_80014AE4)(obj);
+    state = obj->state;
     if (state == 0) {
         if (reverse != 0 || result != 0) {
             s32 newState;
-            fn_80013CFC(value);
-            if (reverse != 0) fn_80014A98(arg0);
-            else fn_800148A0(arg0);
-            if (lbl_80560360 == *value) {
+            fn_80013CFC(&obj->value);
+            if (reverse != 0) fn_80014A98(obj);
+            else fn_800148A0(obj);
+            if (lbl_80560360 == obj->value) {
                 newState = 1;
                 if (reverse != 0) newState = 2;
-                *(s32 *)((u8 *)arg0 + 0x24) = newState;
+                obj->state = newState;
             }
         } else {
-            *value = lbl_80560368;
+            obj->value = lbl_80560368;
         }
     } else if (state == 2) {
         if (reverse != 0) {
-            if (*value > lbl_80560360) fn_80013CFC(value);
-            fn_80014A98(arg0);
+            if (obj->value > lbl_80560360) fn_80013CFC(&obj->value);
+            fn_80014A98(obj);
         } else {
-            fn_80013C98(value);
-            fn_80014A98(arg0);
-            if (lbl_80560368 == *value) *(s32 *)((u8 *)arg0 + 0x24) = 0;
+            fn_80013C98(&obj->value);
+            fn_80014A98(obj);
+            if (lbl_80560368 == obj->value) obj->state = 0;
         }
     } else {
         if (result != 0) {
-            if (*value > lbl_80560360) fn_80013CFC(value);
-            fn_800148A0(arg0);
+            if (obj->value > lbl_80560360) fn_80013CFC(&obj->value);
+            fn_800148A0(obj);
         } else {
-            fn_80013C98(value);
-            fn_800148A0(arg0);
-            if (lbl_80560368 == *value) *(s32 *)((u8 *)arg0 + 0x24) = 0;
+            fn_80013C98(&obj->value);
+            fn_800148A0(obj);
+            if (lbl_80560368 == obj->value) obj->state = 0;
         }
     }
 }
