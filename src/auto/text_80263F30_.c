@@ -17,6 +17,26 @@ extern void fn_80236914(void);
 extern void fn_80264098(void *, int);
 extern void *fn_80264A54(void);
 extern void *fn_80264580(void);
+
+extern char lbl_80346338[];
+extern int lbl_8055C450;
+extern unsigned char lbl_8055F450;
+
+extern int fn_8020A69C(void);
+extern void fn_8020A648(int);
+extern void fn_80265A74(void);
+extern void *fn_80131810(void *);
+extern void fn_80131818(void *);
+extern int fn_802ECF00(int);
+extern int fn_802ECF04(void);
+extern void fn_802E317C(const char *, ...);
+extern void fn_80265940(void);
+extern void fn_802646D0(void *);
+extern void fn_8026451C(void *);
+extern int stricmp(const char *, const char *);
+extern int fn_802656C8(void *);
+extern int fn_80264538(int, int);
+extern void *fn_80264968(void *, int);
 #pragma dont_inline on
 void fn_80264098(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 4) = arg1;
