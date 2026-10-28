@@ -226,12 +226,13 @@ s32 fn_8023A8B0(void) {
     return 0;
 }
 
-#pragma push
-#pragma small_data off
-extern s32 lbl_80341290;
+__declspec(section ".data") extern s32 lbl_80341290;
 extern void *fn_8012850C(s32,s32 *);
 #pragma push
 #pragma small_data off
+#pragma push
+#pragma small_data off
+#pragma scheduling invalid_target
 void *fn_8023A8D8(register void *arg0, register s32 arg1, register s32 arg2, ...) {
  va_list ap;
  s32 offset;
