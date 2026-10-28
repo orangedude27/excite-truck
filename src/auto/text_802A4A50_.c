@@ -219,7 +219,7 @@ void fn_802A4D08(void) {
 #pragma scheduling on
 extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag(float *);
-extern void fn_802E317C(const char *);
+extern void fn_802E317C(const char *, ...);
 extern const char lbl_80349C48[];
 extern const char lbl_8055CBD0, lbl_8055CBD4, lbl_8055CBDC, lbl_8055CBE0;
 extern float lbl_80564860, lbl_80564864;
@@ -862,6 +862,7 @@ void fn_802A6D68(void *arg0) {
 
 extern float lbl_80564850, lbl_8056485C, lbl_80564860, lbl_80564890, lbl_805648B4, lbl_805648B8, lbl_805648BC;
 #pragma push
+#pragma optimization_level 2
 #pragma processor 750
 void fn_802A6E34(void *arg0) {
     f32 sp14;
@@ -891,8 +892,8 @@ void fn_802A6E34(void *arg0) {
     temp_f10 = (f32)fn_8002EF30(temp_f30);
     *(f32 *)((u8 *)arg0 + 0x14) = temp_f10;
     temp_f7 = temp_f29 * lbl_805648BC;
-    *(f32 *)((u8 *)arg0 + 0x18) = lbl_8056485C + temp_f31;
     temp_f30_2 = temp_f29 + temp_f31;
+    *(f32 *)((u8 *)arg0 + 0x18) = lbl_8056485C + temp_f31;
     temp_f9 = lbl_805648B8 * temp_f30_2;
     temp_f8 = lbl_80564860 * temp_f29 * temp_f31;
     temp_f6 = temp_f31 * temp_f7;
