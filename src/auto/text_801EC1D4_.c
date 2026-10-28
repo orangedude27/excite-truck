@@ -121,15 +121,17 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
     typedef struct { void *slots[24]; } VTable;
     typedef struct { VTable *vtable; } Object;
     typedef struct { float x, y, z; } Vec3;
+    typedef Vec3 (*GetVector)(void *, char *);
     void *result;
     Vec3 first, second;
     float x0, y0, x1, y1;
     float dx, dy, slopeX, slopeY;
-    *(int *)out = value;
+
+    *(volatile int *)out = value;
     result = ((void *(*)(void *, int))((VTable *)((Object *)parent)->vtable)->slots[0x5C / 4])(parent, index);
     if (result != 0) {
-        ((void (*)(Vec3 *, void *, char *))((VTable *)*(void **)result)->slots[0x34 / 4])(&first, result, &lbl_8055AFDC);
-        ((void (*)(Vec3 *, void *, char *))((VTable *)*(void **)result)->slots[0x34 / 4])(&second, result, &lbl_8055AFE4);
+        first = ((GetVector)((VTable *)*(void **)result)->slots[0x34 / 4])(result, &lbl_8055AFDC);
+        second = ((GetVector)((VTable *)*(void **)result)->slots[0x34 / 4])(result, &lbl_8055AFE4);
         x0 = first.x * scale - bias;
         x1 = second.x * scale - bias;
         y0 = first.y * lbl_80562E8C;
@@ -317,25 +319,20 @@ extern unsigned char lbl_8055EBC4;
 #pragma push
 #pragma dont_inline on
 void fn_801ED354(void *arg0) {
-    char *entry;
-    char *current;
-    char *base;
-    char *p;
-    long i;
-    long offset;
-
     if (fn_801E8954(-1) != 0) {
-        entry = (char *)*(void **)((char *)arg0 + 0x170) +
-                *(long *)((char *)arg0 + 0x3F8) * 8;
         fn_801ECF58(arg0);
         fn_801ECFE0(arg0);
-        if (*(unsigned char *)(entry + 4) != 0) {
-            current = (char *)arg0;
-            base = *(char **)((char *)arg0 + 0x3C);
+        if (*(unsigned char *)((char *)*(void **)((char *)arg0 + 0x170) +
+                               *(long *)((char *)arg0 + 0x3F8) * 8 + 4) != 0) {
+            long i;
+            long offset;
+            long current;
+            char *p;
+            current = (long)arg0;
             i = 0;
             offset = 0;
             do {
-                p = base + offset;
+                p = (char *)*(void **)((char *)arg0 + 0x3C) + offset;
                 fn_801F131C(*(void **)(current + 0x4D4), 1, p,
                             *(float *)(p + 0xB0));
                 i++;
@@ -345,18 +342,23 @@ void fn_801ED354(void *arg0) {
         }
     } else if (fn_801E897C(-1) != 0 || lbl_8055EBC4 != 0) {
         fn_801ECC70(arg0);
-        current = (char *)arg0;
-        base = *(char **)((char *)arg0 + 0x3C);
-        i = 0;
-        offset = 0;
-        do {
-            p = base + offset;
-            fn_801F1378(*(void **)(current + 0x4D4), p,
-                        *(float *)(p + 0xB0));
-            i++;
-            offset += 0x6C;
-            current += 4;
-        } while (i < 4);
+        {
+            long i;
+            long current;
+            long offset;
+            char *p;
+            current = (long)arg0;
+            i = 0;
+            offset = 0;
+            do {
+                p = (char *)*(void **)((char *)arg0 + 0x3C) + offset;
+                fn_801F1378(*(void **)(current + 0x4D4), p,
+                            *(float *)(p + 0xB0));
+                i++;
+                offset += 0x6C;
+                current += 4;
+            } while (i < 4);
+        }
         fn_801EDD68(arg0);
     }
 }
