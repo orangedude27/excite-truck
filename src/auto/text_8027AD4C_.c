@@ -624,6 +624,7 @@ check:
 }
 #pragma cplusplus reset
 extern char lbl_80347B30[];
+#pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_8027C0D0(void *arg0, long arg1, void *arg2) {
     struct Dummy {
@@ -692,6 +693,71 @@ long *fn_8027C26C(void *arg0, const char *arg1) {
     if (index < 0)
         return 0;
     return *(long **)((char *)arg0 + 0xAF0C) + index * 0xC;
+}
+
+void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
+    extern char lbl_80347A50[];
+    extern void *fn_80131808(void *);
+    char *objectBase = (char *)arg0 + 0x10000;
+    void **outerArray;
+    void *outerList;
+    void *outerItem;
+    void *innerItem;
+    void **tableArray;
+    char *record;
+    char *names = lbl_80347A50;
+    int outerCount;
+    int outerIndex;
+    int tableCount;
+    int innerIndex;
+    int itemCount;
+    char *name;
+
+    outerList = fn_80131808(arg2);
+    if (outerList == 0)
+        return;
+
+    outerCount = *(int *)(objectBase - 0x4FF4);
+    outerArray = *(void ***)(objectBase - 0x4FF8);
+    *(int *)(objectBase - 0x4FF4) = outerCount + 1;
+    outerArray[outerCount] = outerList;
+    outerIndex = 0;
+    goto fetch_outer;
+
+outer_loop:
+    name = ((char *(*)(void *))(*(void ***)outerItem)[2])(outerItem);
+    if (stricmp(name, (const char *)&lbl_8055C760) == 0) {
+        tableCount = *(int *)(objectBase - 0x50F0);
+        tableArray = *(void ***)(objectBase - 0x50F4);
+        record = (char *)tableArray + tableCount * 0xC;
+        *(int *)(objectBase - 0x50F0) = tableCount + 1;
+        fn_8027C0D0(record, arg1, outerItem);
+
+        innerIndex = 0;
+        goto fetch_inner;
+inner_loop:
+        name = ((char *(*)(void *))(*(void ***)innerItem)[2])(innerItem);
+        if (stricmp(name, names) == 0) {
+            itemCount = *(int *)((char *)arg0 + 4);
+            tableArray = *(void ***)arg0;
+            *(int *)((char *)arg0 + 4) = itemCount + 1;
+            fn_8027C014((char *)tableArray + itemCount * 0x14,
+                        arg1, *(long *)(record + 4), innerItem);
+        }
+        innerIndex++;
+fetch_inner:
+        innerItem = ((void *(*)(void *, long))(*(void ***)outerItem)[24])(
+            outerItem, innerIndex);
+        if (innerItem != 0)
+            goto inner_loop;
+    }
+
+    outerIndex++;
+fetch_outer:
+    outerItem = ((void *(*)(void *, long))(*(void ***)outerList)[3])(
+        outerList, outerIndex);
+    if (outerItem != 0)
+        goto outer_loop;
 }
 
 extern void fn_8027C2B8();
