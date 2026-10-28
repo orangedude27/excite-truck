@@ -116,7 +116,42 @@ extern "C" void fn_80292864(void) {
     }
 }
 #pragma scheduling on
-#pragma cplusplus off
+#pragma cplusplus reset
+
+extern char lbl_80349170[];
+extern void *fn_801284F8(int, const void *);
+extern void *fn_80293034(void *, void *, int);
+extern void *fn_80293A00(void *, void *, int, int, int);
+extern void *fn_80294254(void *, void *, int, int, int);
+int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+    char *str = lbl_80349170;
+    void *ptr;
+
+    switch (arg1) {
+    case 1:
+        ptr = fn_801284F8(0x2FF0, str + 0);
+        if (ptr != 0) {
+            return (int)fn_80293034(ptr, (void *)arg0, arg2);
+        }
+        break;
+    case 2:
+        ptr = fn_801284F8(0x4C30, str + 0x10);
+        if (ptr != 0) {
+            return (int)fn_80293A00(ptr, (void *)arg0, arg2, arg3, arg4);
+        }
+        break;
+    case 3:
+        ptr = fn_801284F8(0x2230, str + 0x20);
+        if (ptr != 0) {
+            return (int)fn_80294254(ptr, (void *)arg0, arg2, arg3, arg4);
+        }
+        break;
+    default:
+        fn_802E317C(str + 0x30);
+        return 0;
+    }
+    return (int)ptr;
+}
 extern int fn_802928D4(int, int, int, int, int, int);
 void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
     fn_802928D4(0, arg0, arg1, arg2, arg3, arg1);
