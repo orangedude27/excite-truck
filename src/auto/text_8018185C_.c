@@ -1,3 +1,5 @@
+extern float lbl_80561CA0, lbl_80561CA4, lbl_80561CA8;
+extern float lbl_80561CB0, lbl_80561CB4, lbl_80561CB8, lbl_80561CBC;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void fn_801BEB30();
 // split_file divides it into the game's real files (file_status shows its range).
@@ -1406,6 +1408,59 @@ void fn_8018A750(void *arg0, int arg_sp0) {
             }
         }
         fn_801C1CBC(*(int *)(base + 0x26C8), count * 2, (void *)((char *)&arg_sp0 + 0x70), (void *)((char *)&arg_sp0 + 0x30), count, (void *)((char *)&arg_sp0 - 0x58));
+    }
+}
+
+void fn_8018A8A8(void *arg0) {
+    float sp40;
+    float sp3C;
+    float sp38;
+    float sp34;
+    float sp30;
+    float sp2C;
+    float sp28;
+    float sp24;
+    float sp20;
+    float sp1C;
+    float sp18;
+    float sp14;
+    float sp10;
+    float spC;
+    float sp8;
+    float angle;
+    float value;
+    register float temp_f31;
+    register float temp_f30;
+
+    sp38 = lbl_80561CAC;
+    sp3C = lbl_80561DBC;
+    sp40 = lbl_80561CAC;
+    sp2C = lbl_80561CAC;
+    sp30 = lbl_80561CD0;
+    sp34 = lbl_80561CAC;
+    sp20 = lbl_80561CAC;
+    sp24 = lbl_80561CAC;
+    sp28 = lbl_80561CAC;
+    if (*(int *)((char *)arg0 + 0x26C4) != 0) {
+        temp_f31 = lbl_8055E3C8;
+        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F20);
+        value = angle - lbl_80561D00;
+        temp_f30 = lbl_80561F28 * value;
+        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F30);
+        value = angle - lbl_80561F3C;
+        temp_f31 = lbl_80561F38 * value;
+        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F40);
+        sp18 = temp_f31;
+        value = angle - lbl_80561F4C;
+        sp1C = temp_f30;
+        sp14 = lbl_80561F48 * value;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), &sp38, &sp2C, &sp14, &sp20);
+    }
+    if (*(int *)((char *)arg0 + 0x26C8) != 0) {
+        sp8 = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
+        spC = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
+        sp10 = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), &sp38, &sp2C, &sp8, &sp20);
     }
 }
 
