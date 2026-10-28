@@ -24,6 +24,9 @@ extern "C" void *fn_80146204(void *, const char *, s32);
 extern "C" void *fn_80146310(void *, const char *, s32);
 extern "C" void fn_8014647C(void *);
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *, s32);
+extern "C" {
+__declspec(section ".sdata") extern char lbl_80559E48[];
+}
 extern "C" void *fn_80146490(void *);
 extern "C" void fn_80145D8C(void *);
 
@@ -792,6 +795,60 @@ extern "C" void *fn_80146204(void *arg0, const char *arg1, s32 arg2) {
 
 extern "C" void fn_8014630C(void) {
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+extern "C" void *fn_80146310(void *arg0, const char *arg1, s32 arg2) {
+    struct Result {
+        void *data;
+        s32 count;
+        s32 size;
+        void *end;
+    };
+    class Collection {
+    public:
+        virtual void a();
+        virtual void *get(s32);
+    };
+    class Item {
+    public:
+        virtual void a();
+        virtual const char *name();
+    };
+
+    Result *result;
+    s32 size = fn_80145140(arg0, arg1);
+    result = (Result *)fn_801284F8(0x10, lbl_8032D108);
+    if (result != 0) {
+        void *arena = fn_8012850C(size * 0xC + 0x10, lbl_80559E48);
+        result->data = ((void *(*)(void *, void *, void *, s32, s32))fn_8002F37C)(
+            arena, (void *)fn_8014647C,
+            (void *)__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C, 0xC, size);
+        result->size = size;
+        result->count = 0;
+        result->end = result->data;
+    }
+
+    s32 i = 0;
+    while (1) {
+        void *item = ((Collection *)arg0)->get(i);
+        if (item == 0)
+            break;
+        const char *name = ((Item *)item)->name();
+        if (stricmp(name, arg1) == 0) {
+            s32 count = result->count;
+            void *data = result->data;
+            s32 offset = count * 0xC;
+            result->count = count + 1;
+            fn_80145670((char *)data + offset, item);
+        }
+        i++;
+    }
+    return result;
+}
+#pragma dont_inline reset
+#pragma pop
 
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
