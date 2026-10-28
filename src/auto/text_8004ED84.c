@@ -250,23 +250,26 @@ void Decode(unsigned char *src, unsigned char *dst) {
 extern int IOS_IoctlvReboot(int,int,int,int,void*,int);
 #pragma opt_propagation off
 unsigned short OSGetFontEncode(void) {
-    unsigned short x = lbl_80558F58;
-    int v;
-    if (x == (unsigned short)-1) {
-        v = *(volatile int *)0x800000CC;
-        if (v == 0) {
-            x = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
-            lbl_80558F58 = x;
-        } else if (v < 0) {
-            x = 0;
-            lbl_80558F58 = x;
-        } else {
-            x = 0;
-            lbl_80558F58 = x;
-        }
-        lbl_8055DA48 = ParseStringS;
+    if (lbl_80558F58 != 0xFFFF) {
+        return lbl_80558F58;
     }
-    return x;
+
+    switch (*(int *)0x800000CC) {
+    case 0:
+        lbl_80558F58 = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    default:
+        lbl_80558F58 = 0;
+        break;
+    }
+
+    lbl_8055DA48 = (void *)ParseStringS;
+    return lbl_80558F58;
 }
 #pragma opt_propagation reset
 unsigned short OSSetFontEncode(unsigned short arg0) {
@@ -305,17 +308,35 @@ check_argument:
 int OSLoadFont(int arg0, int arg1) {
     unsigned short encode = lbl_80558F58;
     int result;
+    int mode;
+
     if (encode == 0xFFFF) {
-        int console = *(volatile int *)0x800000CC;
-        if (console == 0) {
-            encode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
-            lbl_80558F58 = encode;
-        } else {
-            encode = 0;
-            lbl_80558F58 = 0;
-        }
-        lbl_8055DA48 = (void *)ParseStringS;
+        goto initialize;
+    } else {
+        goto check_encoding;
     }
+
+initialize:
+    mode = *(volatile int *)0x800000CC;
+    if (mode == 0)
+        goto read_encode;
+    if (mode < 0)
+        goto store_zero;
+    goto store_zero;
+
+read_encode:
+    encode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
+    lbl_80558F58 = encode;
+    goto set_string_s;
+
+store_zero:
+    encode = 0;
+    lbl_80558F58 = encode;
+
+set_string_s:
+    lbl_8055DA48 = (void *)ParseStringS;
+
+check_encoding:
     switch (encode) {
     case 0:
         lbl_8055DA54 = (int *)arg0;
@@ -325,22 +346,17 @@ int OSLoadFont(int arg0, int arg1) {
         lbl_8055DA50 = (int *)arg0;
         result = ReadFont(arg1, 1, arg0);
         break;
-    case 2:
-        result = 0;
-        break;
     case 3:
     case 4:
-    case 5: {
-        int first;
+    case 5:
         lbl_8055DA54 = (int *)arg0;
-        first = ReadFont(arg1, 0, arg0);
-        result = first;
-        if (first != 0) {
-            lbl_8055DA50 = (int *)((char *)lbl_8055DA54 + first);
-            result += ReadFont(arg1, 1, (int)((char *)lbl_8055DA54 + first));
+        result = ReadFont(arg1, 0, arg0);
+        if (result != 0) {
+            lbl_8055DA50 = (int *)((char *)lbl_8055DA54 + result);
+            result += ReadFont(arg1, 1, (int)lbl_8055DA50);
         }
         break;
-    }
+    case 2:
     default:
         result = 0;
         break;
