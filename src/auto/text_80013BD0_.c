@@ -586,8 +586,8 @@ void fn_80015364(void *arg0) {
     f32 delta;
     f32 total;
     s32 frameCount;
-    s32 index;
     s32 activeCount;
+    s32 index;
     s32 value;
     s32 resultIndex;
     void *entry;
@@ -598,13 +598,13 @@ void fn_80015364(void *arg0) {
     } else {
         selected = fn_80011E60();
     }
+    activeCount = 0;
     fn_80010B80(0xC80000C8, lbl_805603C4, selected, lbl_805603C8, lbl_805603B4);
     delta = fn_8013672C();
     frameCount = *(s32 *)((u8 *)fn_801E7E3C() + 8);
-    total = delta * (f32)frameCount;
     index = 0;
-    activeCount = 0;
-    do {
+    total = delta * (f32)frameCount;
+    while (index < fn_801EA994()) {
         record = fn_801EA9A0(index);
         entry = *(void **)((u8 *)record + 8);
         amount = lbl_80560360;
@@ -624,7 +624,7 @@ void fn_80015364(void *arg0) {
         fn_8001529C(arg0, (u32)resultIndex, amount, lbl_805603C4,
                     selected, lbl_805603C8, lbl_805603B4);
         index++;
-    } while (index < fn_801EA994());
+    }
 }
 extern s32 fn_801EA994(void);
 extern s32 fn_801EA9B0(s32);
