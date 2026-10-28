@@ -832,6 +832,9 @@ extern "C" void fn_802A30BC(void* arg0, s32 arg1) {
     *(s32*)((char*)arg0 + 4) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(&stack[0x18], (void*)lbl_80349A40, arg1);
 }
 
+#pragma paired off
+#pragma paired_single off
+#pragma scheduling invalid_target
 extern "C" void fn_802A31DC(void *arg0, s32 arg1) {
     char stack[0xA8];
     fn_8028E61C(&stack[0x18]);
