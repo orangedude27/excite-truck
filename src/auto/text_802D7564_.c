@@ -532,7 +532,6 @@ extern float lbl_8056501C;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma optimize_for_size on
 void *fn_802D8C00(void *arg0, void *arg1) {
     void *obj;
     int h;
