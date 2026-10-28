@@ -236,6 +236,8 @@ extern "C" s32 fn_8012A6C8(s32 arg0, s32 arg1, s32 arg2) {
 failed:
     return 0;
 }
+#pragma pop
+#pragma scheduling reset
 
 extern "C" s32 fn_802E2D74(s32);
 extern "C" s32 fn_802E39D0(s32, s32);
@@ -2008,11 +2010,11 @@ extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
                 fields[2] = (s32)manager;
             }
         } else {
-            char queryText[5];
-            char entryText[5];
-            char zero = 0;
-            char q0, q3, q1, q2;
-            char e0, e3, e1, e2;
+            u8 queryText[5];
+            u8 entryText[5];
+            u8 zero = 0;
+            u8 q0, q3, q1, q2;
+            u8 e0, e3, e1, e2;
 
             *(u32 *)queryText = (u32)arg1;
             queryText[4] = zero;
