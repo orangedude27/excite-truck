@@ -240,6 +240,38 @@ void fn_802AD414(void *arg0, float farg0) {
         outer++;
     }
 }
+
+#pragma push
+#pragma processor 750
+extern void fn_8023895C(void);
+extern void fn_80238B44(int, int, int, int, int);
+extern void fn_80238A80(int, int, int, const char *, ...);
+extern void fn_802389E4(void);
+extern char lbl_80349F84[];
+extern char lbl_80349F98[];
+extern int lbl_8055CD1C;
+extern void *lbl_804BD7C0[];
+void fn_802ADBB4(void) {
+    int t = fn_802E2C20();
+    float f;
+    int valid;
+
+    if ((unsigned char)lbl_8055F94C != 0) {
+        lbl_8055F944 = t - lbl_8055F948;
+    }
+    f = (float)(t - lbl_8055F944) * 0.001f;
+    fn_8023895C();
+    fn_80238B44(0, 0, 0x12C, 0x32, 0xC0000000);
+    valid = (lbl_8055F940 >= 0 && lbl_8055F940 < (int)lbl_8055F93C);
+    fn_80238A80(10, 10, 0xC0FFFFFF, lbl_80349F84, lbl_8055F940, valid ? lbl_804BD7C0[lbl_8055F940] : &lbl_8055CD1C);
+    fn_80238A80(10, 30, 0xC0FFFFFF, lbl_80349F98, f);
+    fn_802389E4();
+    if (lbl_8055F940 >= 0 && lbl_8055F940 < (int)lbl_8055F93C) {
+        fn_802AD4C4(lbl_804BD7C0[lbl_8055F940], 0, f);
+    }
+}
+#pragma pop
+
 #pragma scheduling on
 int fn_802ADCF8(int arg0) {
     int var_r0;
