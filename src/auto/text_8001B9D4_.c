@@ -291,16 +291,14 @@ s32 fn_8001BF34(s32 arg0, f32 arg1) {
     s32 temp_r3;
     s32 var_r31;
 
+    if (fn_8001BCF0((void *)arg0) == 0 &&
+        ((s32 (*)(void *))fn_8001BD30)((void *)arg0) == 0) {
+        goto return_one;
+    }
     if (fn_8001BCF0((void *)arg0) != 0) {
-        goto return_one;
-    }
-    if (fn_8001BD30((void *)arg0) == 0) {
-        goto return_one;
-    }
-    if (fn_8001BCF0((void *)arg0) == 0) {
-        var_f31 = fn_8001BEC4(arg0);
-    } else {
         var_f31 = fn_8001BEE8(arg0);
+    } else {
+        var_f31 = fn_8001BEC4(arg0);
     }
     temp_r3 = fn_8001BD28((void *)arg0);
     var_r31 = temp_r3 & 0x60000;
@@ -311,18 +309,23 @@ s32 fn_8001BF34(s32 arg0, f32 arg1) {
             var_r31 = 0x40000;
         }
     }
-    if (var_r31 == 0x40000) {
-        return arg1 > var_f31;
-    }
-    if (var_r31 == 0x20000) {
-        return arg1 < var_f31;
+    switch (var_r31) {
+    case 0x40000:
+        goto compare_greater;
+    case 0x20000:
+        goto compare_less;
+    default:
+        break;
     }
     {
         s32 logBits = fn_8001BD28((void *)arg0) & 0x60000;
         s32 logValue = fn_8001BD28((void *)arg0);
         ((void (*)(const char *, ...))fn_802E317C)(lbl_802FD6D8, logValue, logBits);
     }
+compare_greater:
     return arg1 > var_f31;
+compare_less:
+    return arg1 < var_f31;
 return_one:
     return 1;
 }
@@ -432,10 +435,13 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     struct TextBuffer *descriptor = (struct TextBuffer *)lbl_8055D5D0;
     s32 count = list->count;
     char *input = (char *)arg2;
+    char *records;
+    s32 offset;
     char *entry;
     char *p;
     char *out;
     s32 room;
+    char c;
 
     if (count + 1 > list->capacity) {
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD750, arg0, 0x280);
@@ -443,8 +449,10 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
 
     list = (struct List *)lbl_80358658[arg0];
     count = list->count;
+    records = (char *)list->data;
+    offset = count * 0x2C;
     list->count = count + 1;
-    entry = (char *)list->data + count * 0x2C;
+    entry = records + offset;
     *(s32 *)entry = arg1;
 
     descriptor = (struct TextBuffer *)lbl_8055D5D0;
@@ -459,18 +467,15 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
         }
         p++;
         if (*p == 0) {
-            out = p;
             room = descriptor->size - (p - descriptor->data) - 1;
-            while (room > 0) {
-                char c = *input++;
-                *out++ = c;
-                room--;
-                if (c == 0) {
-                    break;
-                }
-            }
-            if (room == 0) {
-                out[-1] = 0;
+            if (room <= 0) {
+                p[-1] = 0;
+            } else {
+                out = p;
+                do {
+                    c = *input++;
+                    *out++ = c;
+                } while (c != 0);
             }
             break;
         }
@@ -774,28 +779,45 @@ void fn_8001D298(s32 arg0) {
 extern const char lbl_802FDAAC[];
 extern const char lbl_802FDAD8[];
 s32 fn_8001D2E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 *a = (s32 *)(arg0 + arg1 * 0xC);
-    s32 *b = (s32 *)(arg2 + arg3 * 0xC);
-    s32 value = *(s32 *)arg0;
+    u8 *a = (u8 *)(arg0 + arg1 * 0xC);
+    u8 *b;
+    s32 value;
     s32 kind;
-    if (*(u8 *)((u8 *)a + 0x10) == 0) return *(u8 *)((u8 *)b + 0x10);
-    if (*(u8 *)((u8 *)b + 0x10) == 0) return -1;
+
+    if (*(u8 *)(a + 0x10) == 0) {
+        return *(u8 *)(arg2 + arg3 * 0xC + 0x10);
+    }
+    b = (u8 *)(arg2 + arg3 * 0xC);
+    if (*(u8 *)(b + 0x10) == 0) {
+        return -1;
+    }
+    value = *(s32 *)arg0;
     switch (value & 0x300) {
     case 0x100:
         kind = value & 0x60000;
         switch (kind) {
-        case 0x20000: return *(f32 *)((u8 *)a + 8) < *(f32 *)((u8 *)b + 8) ? -1 : 1;
-        case 0x40000: return *(f32 *)((u8 *)a + 8) > *(f32 *)((u8 *)b + 8) ? -1 : 1;
-        default: fn_802E317C(lbl_802FDAAC); return 0;
+        case 0x20000:
+            return *(f32 *)(a + 8) < *(f32 *)(b + 8) ? -1 : 1;
+        case 0x40000:
+            return *(f32 *)(a + 8) > *(f32 *)(b + 8) ? -1 : 1;
+        default:
+            ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC);
+            return 0;
         }
     case 0x200:
         kind = value & 0x60000;
         switch (kind) {
-        case 0x20000: return *(s32 *)((u8 *)a + 8) < *(s32 *)((u8 *)b + 8) ? -1 : 1;
-        case 0x40000: return *(s32 *)((u8 *)a + 8) > *(s32 *)((u8 *)b + 8) ? -1 : 1;
-        default: fn_802E317C(lbl_802FDAAC); return 0;
+        case 0x20000:
+            return *(s32 *)(a + 8) < *(s32 *)(b + 8) ? -1 : 1;
+        case 0x40000:
+            return *(s32 *)(a + 8) > *(s32 *)(b + 8) ? -1 : 1;
+        default:
+            ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC);
+            return 0;
         }
-    default: fn_802E317C(lbl_802FDAD8); return 0;
+    default:
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAD8);
+        return 0;
     }
 }
 
