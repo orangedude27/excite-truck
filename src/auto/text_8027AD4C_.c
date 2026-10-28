@@ -102,11 +102,18 @@ public:
 };
 class Fn8027BA24List {
 public:
-    virtual void v0();
-    virtual long count();
-    virtual Fn8027BA24Item *item(long);
-};
-#pragma cplusplus reset
+      virtual void v0();
+      virtual long count();
+      virtual Fn8027BA24Item *item(long);
+  };
+  class Fn8027C8B8Formatter {
+  public:
+      virtual void v0();
+      virtual void v1();
+      virtual void v2();
+      virtual long format(const char *);
+  };
+  #pragma cplusplus reset
 extern long fn_80131810(long *);
 extern long fn_8027AFA0(void *, void *, void *);
 extern int strcmp(const char *, const char *);
@@ -263,10 +270,56 @@ void fn_8027B60C(void *arg0) {
         *(int *)((char *)arg0 + 4) = 0;
     }
 }
-#pragma scheduling on
-#pragma pop
+
 #pragma push
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+void fn_8027B690(void) {
+    register long state;
+    register char *base;
+    register char *row;
+    register long outer;
+    register unsigned long inner;
+    long newState;
+
+    state = fn_80012810();
+    if (state != 0x130) {
+        if (state != 0x134)
+            fn_80012794();
+        fn_80012790(0x130);
+    }
+    base = lbl_804A4380;
+    outer = 0;
+outer_loop:
+    row = base;
+    inner = 0;
+first_loop:
+    ((void (*)(long, long, long))fn_8027CCB4)((long)row, outer, inner);
+    inner++;
+    row += 0xBD0;
+    if (inner < 3)
+        goto first_loop;
+    row = base + 0x2370;
+    inner = 0;
+second_loop:
+    ((void (*)(long, long, long))fn_8027CD80)((long)row, outer, inner);
+    inner++;
+    row += 0xBD0;
+    if (inner < 2)
+        goto second_loop;
+    outer++;
+    base += 0x3B10;
+    if (outer < 4)
+        goto outer_loop;
+    lbl_8055F650 = 1;
+    newState = fn_80012810();
+    if (state != newState) {
+        if (newState != 0x134)
+            fn_80012794();
+        if (state != 0x134)
+            fn_80012790(state);
+    }
+}
+#pragma pop
 void fn_8027B77C(void) {
     char *base;
     unsigned int outer;
