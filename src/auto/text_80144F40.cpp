@@ -2141,6 +2141,7 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
         } while (i < *(u32 *)(*(u8 **)(self + 0xC) + 4));
     }
 }
+#pragma pop
 
 extern "C" void fn_8014822C(void) {
 
