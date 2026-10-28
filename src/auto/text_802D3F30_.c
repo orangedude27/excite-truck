@@ -158,6 +158,7 @@ void fn_802D5270(void *arg0) {
     }
 }
 
+#pragma dont_inline on
 void fn_802D5680(void *arg0) {
     void * volatile array = *(void **)((char *)arg0 + 0x20);
     GXSetArray(9, array, 0x10);
@@ -170,30 +171,43 @@ extern f32 lbl_804DB068[];
 extern f32 lbl_80564FF0;
 extern f64 lbl_80564FF8;
 void fn_802D56D4(void *arg0) {
+    extern s32 fn_802CFF64(s32);
+    extern f32 lbl_804DB068[];
+    extern f32 lbl_80564FF0;
+    extern f64 lbl_80564FF8;
+    extern void fn_802D5680(void *);
     s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
     u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
-    f32 *dst = (f32 *)fn_802CFF64(count * 12);
-    s32 i;
-    if (dst == 0) {
+    f32 *base = (f32 *)fn_802CFF64(count * 12);
+    f32 *out = base;
+    if (base == 0) {
         fn_802D5680(arg0);
         return;
     }
-    for (i = 0; i < count; i++) {
-        u8 a = src[0xE], b = src[0xC], c = src[0xD], d = src[0xF];
-        f32 *v1 = (f32 *)((u8 *)lbl_804DB068 + b * 12);
-        f32 *v2 = (f32 *)((u8 *)lbl_804DB068 + c * 12);
-        f32 f = lbl_80564FF0 * (f32)a;
-        f32 g = lbl_80564FF0 * (f32)d;
-        f32 x = *(f32 *)src + v1[0] * f;
-        f32 y = *(f32 *)(src + 4) + v1[1] * f;
-        f32 z = *(f32 *)(src + 8) + v1[2] * f;
-        dst[0] = x + v2[0] * g;
-        dst[1] = y + v2[1] * g;
-        dst[2] = z + v2[2] * g;
-        src += 0x10;
-        dst += 3;
+    if (count > 0) {
+        do {
+            u8 firstScale = src[0xE];
+            u8 firstIndex = src[0xC];
+            u8 secondIndex = src[0xD];
+            u8 secondScale = src[0xF];
+            f32 *first = (f32 *)((u8 *)lbl_804DB068 + firstIndex * 12);
+            f32 *second = (f32 *)((u8 *)lbl_804DB068 + secondIndex * 12);
+            f32 scale1 = lbl_80564FF0 * (f32)firstScale;
+            f32 scale2 = lbl_80564FF0 * (f32)secondScale;
+            f32 x = *(f32 *)(src + 0x0) + first[0] * scale1;
+            f32 y = *(f32 *)(src + 0x4) + first[1] * scale1;
+            f32 z = *(f32 *)(src + 0x8) + first[2] * scale1;
+            out[0] = x;
+            out[1] = y;
+            out[2] = z;
+            src += 0x10;
+            out[0] = x + second[0] * scale2;
+            out[1] = y + second[1] * scale2;
+            out[2] = z + second[2] * scale2;
+            out += 3;
+        } while (--count != 0);
     }
-    GXSetArray(9, (void *)fn_802CFF64(count * 12), 12);
+    GXSetArray(9, base, 12);
     GXSetArray(10, *(void **)((u8 *)arg0 + 0x24), 3);
     GXCallDisplayList(*(void **)((u8 *)arg0 + 0x30), *(u32 *)((u8 *)arg0 + 0x2C));
 }
