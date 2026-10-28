@@ -680,25 +680,24 @@ extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
     };
     extern float PSVECDotProduct(float *, float *);
     extern void fn_801796CC(int, void *, int);
-    Dummy *obj = (Dummy *)arg1;
     Data data;
     float dot;
-    int count, offset, id, valid;
-    void *found, *vec;
+    int count, offset, valid;
+    void *found;
+    float *transformed;
     if (*(int *)((char *)arg0 + 0x14) <= 0) return;
-    found = obj->get();
-    id = *(int *)((char *)arg0 + 0xC);
-    valid = id >= 0 && found != 0 &&
-        ((Dummy *)found)->find(lbl_803385D0, -1) == id;
+    found = ((Dummy *)arg1)->get();
+    valid = *(int *)((char *)arg0 + 0xC) >= 0 && found != 0 &&
+        ((Dummy *)found)->find(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xC);
     if (valid == 0) return;
     data.input[0] = *(float *)arg2;
     data.input[1] = *((float *)arg2 + 1);
     data.input[2] = *((float *)arg2 + 2);
-    vec = obj->transform(data.input[0], data.input[1], data.input[2]);
-    data.output[0] = *(float *)vec;
-    data.output[1] = *((float *)vec + 1);
-    data.output[2] = *((float *)vec + 2);
-    data.index = obj->index();
+    transformed = (float *)((Dummy *)arg1)->transform(data.input[0], data.input[1], data.input[2]);
+    data.output[0] = transformed[0];
+    data.output[1] = transformed[1];
+    data.output[2] = transformed[2];
+    data.index = ((Dummy *)arg1)->index();
     dot = PSVECDotProduct(data.output, data.output);
     count = 0;
     offset = 0;
@@ -819,6 +818,8 @@ int fn_801D6630(int arg0, int arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma paired off
+#pragma paired_single off
 #pragma cplusplus on
 extern "C" int fn_801D6678(void *out, void *object) {
     extern char lbl_80338798[];
