@@ -501,86 +501,115 @@ void fn_802E0BE0(void) {
 
 extern void fn_802E317C(char *, ...);
 extern char lbl_8034BB28[];
+#pragma push
+#pragma cse off
 void *fn_802E0C04(u32 size) {
-    u8 *head = (u8 *)lbl_8055FEE8;
-    u32 align = *(u32 *)(head + 4);
-    u8 **link = (u8 **)(head + 8);
-    u32 needed = (size + align) & ~align;
-    u32 best = 0x7FFFFFFF;
-    u8 **bestLink = 0;
-    u8 *node;
-    u8 *result = 0;
+    int best = 0x7FFFFFFF;
+    void **bestLink = 0;
+    void *result = 0;
+    char *head = (char *)lbl_8055FEE8;
+    int needed = (size + *(int *)(head + 4)) & ~*(int *)(head + 4);
+    void **link = (void **)(head + 8);
+    void *node;
+
     while ((node = *link) != 0) {
-        u32 freeSize = *(u32 *)(node + 4);
+        int freeSize = *(int *)((char *)node + 4);
         if (freeSize >= needed && best > freeSize) {
             bestLink = link;
             best = freeSize;
         }
-        link = (u8 **)(node + 8);
+        link = (void **)((char *)node + 8);
     }
+
     if (bestLink != 0) {
-        u8 *freeNode = *bestLink;
-        u8 *next = *(u8 **)(freeNode + 8);
-        u32 left = *(u32 *)(freeNode + 4) - needed;
-        u8 *split = 0;
-        if (left > (((align + 0x10) & ~align) + 0x20)) {
-            split = freeNode + align + needed;
-            *(u32 *)(split + 1) = 0xABCFEED0;
-            *(u32 *)(split + 9) = 0;
-            *(u32 *)(split + 5) = left - ((align + 0x10) & ~align);
-            *(u8 **)(split + 0xD) = head;
-            *(u32 *)(freeNode + 4) = needed;
+        void *freeNode = *bestLink;
+        void *split = 0;
+        int align = *(int *)(head + 4);
+        int freeSize = *(int *)((char *)freeNode + 4);
+        void *next = *(void **)((char *)freeNode + 8);
+        int r3 = (align + 0x10) & ~align;
+        int left = freeSize - needed;
+
+        if (left > r3 + 0x20) {
+            char *p = (char *)freeNode + align + needed;
+            *(int *)(p + 1) = 0xABCFEED0;
+            split = p + 1;
+            *(int *)(p + 9) = 0;
+            *(int *)(p + 5) = left - ((*(int *)(head + 4) + 0x10) & ~*(int *)(head + 4));
+            *(void **)(p + 0xD) = head;
+            *(int *)((char *)freeNode + 4) = needed;
         }
+
         if (split != 0) {
-            *(u8 **)(split + 8) = next;
+            *(void **)((char *)split + 8) = next;
             *bestLink = split;
-        } else *bestLink = next;
-        *(u8 **)(freeNode + 8) = *(u8 **)(head + 0xC);
-        *(u8 **)(head + 0xC) = freeNode;
-        result = freeNode + align + 1;
+        } else {
+            *bestLink = next;
+        }
+
+        *(void **)((char *)freeNode + 8) = *(void **)(head + 0xC);
+        *(void **)(head + 0xC) = freeNode;
+        result = (char *)freeNode + *(int *)(head + 4) + 1;
     }
-    if (result == 0 && head[0] != 0) fn_802E317C(lbl_8034BB28);
+
+    if (result == 0 && *(char *)head != 0) {
+        fn_802E317C(lbl_8034BB28);
+    }
     return result;
 }
 
 void fn_802E0D44(u32 size) {
     u8 *head = (u8 *)lbl_8055FEE8;
-    u8 **link = (u8 **)(head + 0xC);
-    u8 *block = (u8 *)(size - (*(u32 *)(head + 4) + 1));
-    u8 *node;
-    u8 **a;
-    u8 **b;
-    u32 align = *(u32 *)(head + 4);
-    u32 merged = 0;
-    while ((node = *link) != 0) {
-        if (node == block) { *link = *(u8 **)(block + 8); break; }
+    u32 align0 = *(u32 *)(head + 4);
+    u8 *block = (u8 *)(size - (align0 + 1));
+    u8 **link = (u8 **)(head + 12);
+    u8 *node = (u8 *)size;
+    do {
+        if (node == block) {
+            *link = *(u8 **)(block + 8);
+            break;
+        }
         link = (u8 **)(node + 8);
-    }
+        node = *link;
+    } while (node != 0);
     *(u8 **)(block + 8) = *(u8 **)(head + 8);
     *(u8 **)(head + 8) = block;
-    a = (u8 **)(head + 8);
-    do {
-        b = (u8 **)(head + 8);
-        merged = 0;
-        while (*b != 0) {
-            u8 *x = *a;
-            u8 *y = *b;
-            u32 sx = *(u32 *)(x + 4);
-            u32 sy = *(u32 *)(y + 4);
-            if (x + sx + align + 1 == y || y + sy + align + 1 == x) {
-                u8 **first = a;
-                u8 **second = b;
-                if (y + sy + align + 1 == x) { first = b; second = a; }
-                *(u32 *)(*first + 4) = (*(u32 *)(*first + 4) + *(u32 *)(*second + 4) + ((align + 0x10) & ~align));
-                *second = *(u8 **)(*second + 8);
-                a = first;
-                merged = 1;
-                break;
+    {
+        u8 **anchor = (u8 **)(head + 8);
+        u32 changed;
+        do {
+            u8 **scan = (u8 **)(head + 8);
+            u32 didMerge = 0;
+            while (*scan != 0) {
+                u8 *current = *scan;
+                u8 *other = *anchor;
+                u32 adjacent = 1;
+                u32 align = *(u32 *)(head + 4);
+                if (other + align + *(u32 *)(other + 4) + 1 != current &&
+                    current + align + *(u32 *)(current + 4) + 1 != other) {
+                    adjacent = 0;
+                }
+                if (adjacent != 0) {
+                    u8 **selected = anchor;
+                    if (current + align + *(u32 *)(current + 4) + 1 == other) {
+                        selected = scan;
+                        scan = anchor;
+                    }
+                    {
+                        u8 *kept = *selected;
+                        u8 *removed = *scan;
+                        anchor = selected;
+                        didMerge = 1;
+                        *(u32 *)(kept + 4) = *(u32 *)(kept + 4) + *(u32 *)(removed + 4) + ((align + 16) & ~align);
+                        *scan = *(u8 **)(removed + 8);
+                    }
+                } else {
+                    scan = (u8 **)(current + 8);
+                }
             }
-            b = (u8 **)(y + 8);
-        }
-        if (!merged) break;
-    } while (1);
+            changed = didMerge;
+        } while (changed != 0);
+    }
 }
 
 void fn_802E0E60(arg0)
@@ -593,6 +622,51 @@ void *arg0;
         fn_802E1728((u8 *)arg0 + 0x50);
         fn_80118DC0((void *)*field);
         *field = 0;
+    }
+}
+
+extern s32 fn_802E36D8(void *);
+extern void fn_802E3804(void *, u32);
+extern void fn_802E3734(s32 *);
+extern s32 fn_8011770C(void *, u32);
+extern void fn_80117618(s32, void *);
+extern s32 fn_802E1BB4(void *);
+extern void fn_801176FC(s32, void *);
+void fn_802E0EAC(void *arg0) {
+    s32 sp8;
+    s32 sp10;
+    s32 sp14;
+    s32 sp18;
+    s32 sp1C;
+    s32 sp20;
+    s32 sp24;
+    s32 sp28;
+    s32 sp2C;
+    s32 sp30;
+    s32 sp34;
+    s32 sp38;
+    s32 sp3C;
+    char *label;
+    fn_802E0E60(arg0);
+    label = lbl_8034CB68;
+    sp8 = fn_802E36D8((u8 *)arg0 + 8);
+    if (sp8 != -1) {
+        fn_802E3804(&sp10, 0x20);
+        fn_802E3734(&sp8);
+    }
+    sp10 = fn_8011770C((u8 *)arg0 + 8, 0x10400);
+    *(s32 *)((u8 *)arg0 + 4) = sp10;
+    if (sp10 != 0) {
+        fn_802E30C8(label + 0x10, (u8 *)arg0 + 8);
+        fn_80117618(sp10, (u8 *)arg0 + 0x150);
+        fn_80117618(sp10, (u8 *)arg0 + 0x150);
+        if (fn_802E1BB4((u8 *)arg0 + 0x50) == 0) {
+            fn_802E317C(label + 0x20);
+        }
+        fn_801176FC(sp10, (u8 *)arg0 + 0x150);
+        *(s32 *)((u8 *)arg0 + 0x4C) = ((s32 (*)(void))fn_802E2C20)();
+    } else {
+        fn_802E30C8(label + 0x48, (u8 *)arg0 + 8);
     }
 }
 
@@ -667,6 +741,35 @@ void fn_802E1290(void *arg0) {
     ((void (*)(void *))fn_802E0BE0)(arg0);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802E12DC(void) {
+    void *object = fn_802E0BA4();
+    s32 current;
+    if (*(void **)((char *)object + 4) != 0 &&
+        *(s32 *)((char *)(*(void **)((char *)object + 4)) + 0x1C) != 0) {
+        fn_802E30C8(lbl_8034CBE0);
+        fn_802E0E60(object);
+    }
+    if (*(void **)((char *)object + 4) == 0)
+        fn_802E0EAC(object);
+    if (*(void **)((char *)object + 4) != 0) {
+        fn_802E27B8((char *)object + 0x50);
+        fn_801186B8(*(void **)((char *)object + 4));
+        current = ((s32 (*)(void))fn_802E2C20)();
+        if (current - *(s32 *)((char *)object + 0x4C) > 0x96) {
+            fn_802E30C8(lbl_8034CBF8);
+            *(s32 *)((char *)object + 0x4C) = current - 0x20;
+        }
+        if (current - *(s32 *)((char *)object + 0x4C) > 0x1E) {
+            if (((s32 (*)(void))fn_802ECC10)() == 0)
+                fn_80118C44(*(void **)((char *)object + 4));
+            *(s32 *)((char *)object + 0x4C) += 0x20;
+        }
+        fn_802E27A0((char *)object + 0x50);
+    }
+}
+#pragma pop
 extern void GXSetZMode(GXBool, GXCompare, GXBool);
 extern void fn_802C8C04(s32);
 extern void fn_802C8D74(void);
