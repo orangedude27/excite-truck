@@ -460,26 +460,24 @@ extern "C" f32 lbl_805615FC;
 extern "C" f64 lbl_80561600;
 #pragma paired off
 #pragma paired_single off
+#pragma scheduling invalid_target
 extern "C" u64 fn_80145A24(void *arg0) {
-    s32 time0Bits = fn_802C9C48();
-    f64 time0 = (f64)time0Bits;
-    f32 out0 = fn_80145A08(lbl_805615D4, time0, lbl_805615D4, lbl_805615F4,
-                           (f64)*(s32 *)((u8 *)arg0 + 4));
+    s32 time0 = fn_802C9C48();
+    s32 field0 = *(s32 *)((u8 *)arg0 + 4);
+    f32 out0 = fn_80145A08(lbl_805615D4, (f32)time0, lbl_805615D4,
+                           lbl_805615F4, (f32)field0);
 
-    s32 time1Bits = fn_802C9C48();
-    f64 time1 = (f64)time1Bits;
+    s32 time1 = fn_802C9C48();
     f32 scaled = lbl_805615F8 * (f32)time1;
     f32 correction = scaled * lbl_805615D0;
     u32 converted = (u32)fn_802C9C38();
-    u32 rounded = (converted >> 31) + converted;
-    volatile s32 half = (s32)rounded >> 1;
-    f32 base = (f32)(f64)half - correction;
+    s32 half = (s32)((converted >> 31) + converted) >> 1;
+    f32 base = (f32)half - correction;
 
-    s32 time2Bits = fn_802C9C48();
-    f64 time2 = (f64)time2Bits;
+    s32 time2 = fn_802C9C48();
+    s32 field1 = *(s32 *)((u8 *)arg0 + 8);
     f32 out1 = fn_80145A08(base, base + lbl_805615F8 * (f32)time2,
-                           lbl_805615D4, lbl_805615FC,
-                           (f64)*(s32 *)((u8 *)arg0 + 8));
+                           lbl_805615D4, lbl_805615FC, (f32)field1);
     union {
         u64 bits;
         f32 values[2];
@@ -488,6 +486,7 @@ extern "C" u64 fn_80145A24(void *arg0) {
     result.values[1] = out1;
     return result.bits;
 }
+#pragma scheduling on
 #pragma paired reset
 #pragma paired_single reset
 
@@ -1671,68 +1670,61 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
-    struct State {
-        u32 m0;
-        f32 m4;
-        f32 m8;
-        u32 mC;
-        f32 m10;
-        f32 m14;
-        f32 m18;
-        f32 m1C;
-        f32 m20;
-        f32 m24;
-    };
-    union Pair {
-        struct { f32 x; f32 y; } f;
-        f64 raw;
-    };
+    struct State { u32 m0; f32 m4; f32 m8; u32 mC; f32 m10; f32 m14; f32 m18; f32 m1C; f32 m20; f32 m24; };
+    union Pair { struct { f32 x; f32 y; } f; f64 raw; };
     volatile State *src = (volatile State *)srcArg;
     volatile State *end = (volatile State *)endArg;
-    f32 end8 = end->m8;
-    f32 src8 = src->m8;
-    f32 end4 = end->m4;
-    f32 src4 = src->m4;
-    f32 diff8 = end8 - src8;
-    f32 src18 = src->m18;
-    f32 diff4 = end4 - src4;
-    f32 src10 = src->m10;
-    f32 prod8 = t * diff8;
-    f32 src1C = src->m1C;
-    f32 prod4 = t * diff4;
-    f32 out8 = src8 + prod8;
-    f32 src20 = src->m20;
-    f32 end20 = end->m20;
-    f32 out4 = src4 + prod4;
-    f32 diff20 = end20 - src20;
-    f32 end18 = end->m18;
-    f32 end1C = end->m1C;
-    f32 diff18 = end18 - src18;
-    f32 end10 = end->m10;
-    f32 diff1C = end1C - src1C;
-    f32 src14 = src->m14;
-    f32 diff10 = end10 - src10;
-    f32 prod18 = t * diff18;
-    u32 w4 = *(volatile u32 *)((u8 *)srcArg + 4);
-    f32 prod20 = t * diff20;
-    u32 w0 = *(volatile u32 *)((u8 *)srcArg + 0);
-    f32 prod1C = t * diff1C;
-    f32 prod10 = t * diff10;
-    u32 wC = *(volatile u32 *)((u8 *)srcArg + 0xC);
-    f32 out20 = src20 + prod20;
-    f32 end24 = end->m24;
-    f32 end14 = end->m14;
-    f32 src24 = src->m24;
-    f32 diff24 = end24 - src24;
-    u32 w8 = *(volatile u32 *)((u8 *)srcArg + 8);
-    f32 out18 = src18 + prod18;
-    f32 diff14 = end14 - src14;
-    f32 out1C = src1C + prod1C;
-    f32 prod24 = t * diff24;
-    f32 prod14 = t * diff14;
-    f32 out10 = src10 + prod10;
-    f32 out24 = src24 + prod24;
-    f32 out14 = src14 + prod14;
+    f32 end8, src8, end4, src4, diff8, src18, diff4, src10, prod8, src1C;
+    f32 prod4, out8, src20, end20, out4, diff20, end18, end1C, diff18;
+    f32 end10, diff1C, src14, diff10, prod18, prod20, prod1C, prod10;
+    f32 out20, end24, end14, src24, diff24, out18, diff14, out1C;
+    f32 prod24, prod14, out10, out24, out14;
+    u32 w4, w0, wC, w8;
+
+    end8 = end->m8;
+    src8 = src->m8;
+    end4 = end->m4;
+    src4 = src->m4;
+    diff8 = end8 - src8;
+    src18 = src->m18;
+    diff4 = end4 - src4;
+    src10 = src->m10;
+    prod8 = t * diff8;
+    src1C = src->m1C;
+    prod4 = t * diff4;
+    out8 = src8 + prod8;
+    src20 = src->m20;
+    end20 = end->m20;
+    out4 = src4 + prod4;
+    diff20 = end20 - src20;
+    end18 = end->m18;
+    end1C = end->m1C;
+    diff18 = end18 - src18;
+    end10 = end->m10;
+    diff1C = end1C - src1C;
+    src14 = src->m14;
+    diff10 = end10 - src10;
+    prod18 = t * diff18;
+    w4 = *(volatile u32 *)((u8 *)srcArg + 4);
+    prod20 = t * diff20;
+    w0 = *(volatile u32 *)((u8 *)srcArg + 0);
+    prod1C = t * diff1C;
+    prod10 = t * diff10;
+    wC = *(volatile u32 *)((u8 *)srcArg + 0xC);
+    out20 = src20 + prod20;
+    end24 = end->m24;
+    end14 = end->m14;
+    src24 = src->m24;
+    diff24 = end24 - src24;
+    w8 = *(volatile u32 *)((u8 *)srcArg + 8);
+    out18 = src18 + prod18;
+    diff14 = end14 - src14;
+    out1C = src1C + prod1C;
+    prod24 = t * diff24;
+    prod14 = t * diff14;
+    out10 = src10 + prod10;
+    out24 = src24 + prod24;
+    out14 = src14 + prod14;
     Pair first;
     Pair second;
     first.f.x = out4;
