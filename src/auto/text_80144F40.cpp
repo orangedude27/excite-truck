@@ -442,12 +442,14 @@ extern "C" void fn_8014595C(void *arg0, const char *arg1) {
     fn_802E3AD0((s32)arg1, lbl_80559E14);
 }
 #pragma use_lmw_stmw reset
+#pragma dont_inline on
 extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     f32 span = farg3 - farg2;
     f32 den = farg1 - farg0;
     f32 num = farg4 - farg0;
     return farg2 + (num / den) * span;
 }
+#pragma dont_inline reset
 
 extern "C" u32 fn_802C9C38(f64, f64);
 extern "C" s32 fn_802C9C48(void);
