@@ -1187,6 +1187,7 @@ extern "C" void* fn_8014E3CC(void* arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma cplusplus off
 extern void *memset(void *, s32, s32);
 void *fn_8014E4BC(void *arg0) {
     u8 *base = (u8*)arg0;
@@ -1583,8 +1584,9 @@ extern s32 fn_801E85B4(void);
 #pragma use_lmw_stmw off
 extern f32 fn_801495D4(s32);
 void fn_80151B48(void *arg0) {
-    s32 self = fn_801E85B4();
-    s32 index = fn_801E866C(self);
+    s32 self = (s32)arg0;
+    s32 index;
+    s32 addr;
     s32 i, j;
     s32 flag;
     void *entry;
@@ -1592,22 +1594,25 @@ void fn_80151B48(void *arg0) {
     void *p;
     f32 f;
 
-    if (((s32 (*)(s32, s32))((void **)self)[5])(self, index) == 0) goto done;
-    if (self + index * 0xC0 + 0x9E4 == 0) goto done;
-    if (*(s32 *)(self + index * 0xC0 + 0x9E4 + 4) == 0) {
+    fn_801E85B4();
+    index = ((s32 (*)(void))fn_801E866C)();
+    if (((s32 (*)(void *, s32))(*(void ***)self)[8])((void *)self, index) == 0) goto done;
+    addr = self + index * 0xC0 + 0x9E4;
+    if (addr == 0) goto done;
+    if (*(s32 *)(addr + 4) == 0) {
         flag = 0;
-    } else if (*(s32 *)(self + index * 0xC0 + 0x9E4 + 4) == 1) {
+    } else if (*(s32 *)(addr + 4) == 1) {
         flag = 1;
     } else {
-        flag = (f32)__fabs((f64)(*(f32 *)(self + index * 0xC0 + 0x9E4 + 0x1C) - lbl_8056164C)) <= lbl_80558DC4[0];
+        flag = (f32)__fabs((f64)(*(f32 *)(addr + 0x1C) - lbl_8056164C)) <= lbl_80558DC4[0];
     }
     i = 0;
     j = 0;
     while (i < *(s32 *)(self + 0x18)) {
         entry = *(void **)(*(s32 *)(self + 0x14) + j);
-        f = ((f32 *)entry)[0x34 / 4];
+        f = *(f32 *)((u8 *)entry + 0x34);
         if (fn_80141F7C(f) != 0 && flag != 0 && ((u8 *)entry)[0xCC] != 0) {
-            fn_801495D4(0x40);
+            f = ((f32 (*)(void))fn_80149650)();
             obj = fn_801538E4(entry);
             p = fn_801538E4(entry);
             fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f);
@@ -1885,18 +1890,35 @@ void fn_801537C8(void) {
 
 }
 
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_801537CC(s32 arg0, s32 arg1, f32 t) {
     u8 *a = (u8 *)&arg0;
     u8 *b = (u8 *)&arg1;
-    s8 out0 = (s8)(a[0] + t * ((f32)b[0] - (f32)a[0]));
-    s8 out1 = (s8)(a[1] + t * ((f32)b[1] - (f32)a[1]));
-    s8 out2 = (s8)(a[2] + t * ((f32)b[2] - (f32)a[2]));
-    s8 out3 = (s8)(a[3] + t * ((f32)b[3] - (f32)a[3]));
-    u8 *dst = (u8 *)&arg0;
-    dst[0] = out0; dst[1] = out1; dst[2] = out2; dst[3] = out3;
-    return arg0;
+    f32 b0 = (f32)b[0];
+    f32 a0 = (f32)a[0];
+    f32 b1 = (f32)b[1];
+    f32 a1 = (f32)a[1];
+    f32 b2 = (f32)b[2];
+    f32 a2 = (f32)a[2];
+    f32 b3 = (f32)b[3];
+    f32 a3 = (f32)a[3];
+    f32 delta0 = b0 - a0;
+    f32 delta1 = b1 - a1;
+    f32 delta2 = b2 - a2;
+    f32 delta3 = b3 - a3;
+    u8 c0 = (u8)(a0 + t * delta0);
+    u8 c1 = (u8)(a1 + t * delta1);
+    u8 c2 = (u8)(a2 + t * delta2);
+    u8 c3 = (u8)(a3 + t * delta3);
+    u8 out[4];
+    out[0] = c0;
+    out[1] = c1;
+    out[2] = c2;
+    out[3] = c3;
+    return *(s32 *)out;
 }
-
+#pragma pop
 void *fn_801538E4(void *arg0) {
     return (void *)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x38) + *(s32 *)((u8 *)arg0 + 0x14)) * 0x14) + 0x3C);
 }
@@ -2389,22 +2411,22 @@ void fn_8014F108(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_8014FB7C(void *arg0) {
+extern "C" void fn_8014FB7C(register u8 *arg0) {
     class VObj {
     public:
         virtual void d0(s32);
     };
-    VObj *p;
-    p = *(VObj **)((u8 *)arg0 + 0x9D8);
+    register VObj *p;
+    p = *(VObj **)(arg0 + 0x9D8);
     if (p != 0) {
         if (p != 0) p->d0(1);
-        *(VObj **)((u8 *)arg0 + 0x9D8) = 0;
+        *(VObj **)(arg0 + 0x9D8) = 0;
     }
-    s32 i = 1;
-    u8 *obj = (u8 *)arg0 + 0x240;
+    register s32 i = 1;
+    register u8 *obj = arg0 + 0x240;
     do {
         if (*(void **)(obj + 0x45C) != 0) {
-            fn_802ADE60((void **)obj + 0x45C, 1);
+            fn_802ADE60((void **)*(void **)(obj + 0x45C), 1);
             *(s32 *)(obj + 0x45C) = 0;
         }
         p = *(VObj **)(obj + 0x464);
