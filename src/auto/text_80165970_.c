@@ -1,5 +1,15 @@
 #pragma push
 #pragma cplusplus on
+struct Entry8016707C {
+    int unk0;
+    unsigned char unk4;
+    char pad5[0x17];
+    float unk1C;
+    float unk20;
+    char pad24[0x34];
+    void *unk58;
+};
+
 struct DummySub8016707C {
     char pad[0x24];
     int unk24;
@@ -147,6 +157,7 @@ __declspec(section ".sdata") extern char lbl_8055A160[];
 __declspec(section ".sdata") extern char lbl_8055A168[];
 #pragma pop
 #pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80165A30(void *arg0, int arg1) {
     struct List {
@@ -164,19 +175,23 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
         virtual void d4(); virtual void d5(); virtual void d6();
         virtual float getValue(const char *);
     };
+    Entry *item;
+    int j;
+    List *list;
     int count;
-    int j = 0;
     void *entry;
     float x, y, z;
-    List *list = (List *)arg0;
-    Entry *item;
+    int minusOne;
     *(int *)((char *)&lbl_8042FEB0 + 4) = 0;
+    list = (List *)arg0;
+    j = 0;
+    minusOne = -1;
     goto next_item;
 body:
     if (strcmp(item->getName(), lbl_8055A150) == 0) {
         count = *(int *)((char *)&lbl_8042FEB0 + 4);
         *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
-        entry = *(void **)&lbl_8042FEB0;
+        entry = *(void * volatile *)&lbl_8042FEB0;
         entry = (char *)entry + count * 0x14;
         x = item->getValue(lbl_8055A158);
         y = item->getValue(lbl_8055A160);
@@ -184,13 +199,12 @@ body:
         z = x * lbl_80561898;
         *(float *)((char *)entry + 4) = y;
         *(float *)((char *)entry + 8) = z;
-        *(int *)((char *)entry + 0x10) = -1;
+        *(int *)((char *)entry + 0x10) = minusOne;
         *(float *)((char *)entry + 0xC) =
-            lbl_8055E318 - fn_80129DC4(3, lbl_8056189C, lbl_805618A0 * z, 0.0f);
+            lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, lbl_8056189C, lbl_805618A0 * z);
     }
 next_item:
-    ++j;
-    item = (Entry *)list->getAt(j);
+    item = (Entry *)list->getAt(++j);
     if (item != 0) goto body;
 }
 #pragma cplusplus reset
@@ -831,31 +845,61 @@ float fn_80166F90(float *arg0) {
 extern int fn_801B8570(void);
 extern void *fn_80166040(int);
 extern float lbl_805618A0, lbl_805618DC, lbl_805618E0, lbl_805618E4;
-extern "C" void fn_8016707C(void *arg0, void **arg1) {
-    void *old;
-    if (*(unsigned char *)((char *)arg0 + 4) != 0) return;
-    fn_80179630(-1);
-    if (fn_801B8570() == 0) {
-        old = *(void **)((char *)arg0 + 0x58);
-        if (old) *(int *)((char *)old + 0x10) = -1;
-        *(void **)((char *)arg0 + 0x58) = 0;
-        *(float *)((char *)arg0 + 0x1C) = lbl_8055E318 + ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618A0, lbl_805618E4);
-        *(float *)((char *)arg0 + 0x20) = lbl_8055E318 + ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618DC, lbl_805618E0);
+#pragma optimization_level 4
+extern "C" void fn_8016707C(void *arg0, register void **arg1) {
+    void *cur;
+    float f1;
+    float f2;
+    float ret1;
+    float res;
+    float ret2;
+
+    if (*(unsigned char *)((char *)arg0 + 4) != 0) {
         return;
     }
-    if (*(void **)((char *)arg0 + 0x58) != 0) return;
-    if (((Dummy8016707C *)*arg1)->get() != 0) return;
-    old = fn_80166040(*(int *)arg0);
-    {
-        void *current = *(void **)((char *)arg0 + 0x58);
-        if (current) *(int *)((char *)current + 0x10) = -1;
+
+    fn_80179630(-1);
+    if (fn_801B8570() == 0) {
+        cur = *(void **)((char *)arg0 + 0x58);
+        if (cur != 0) {
+            *(int *)((char *)cur + 0x10) = -1;
+        }
+        *(void **)((char *)arg0 + 0x58) = 0;
+        f1 = lbl_805618A0;
+        ret1 = ((float (*)(int, float, float))fn_80129DC4)(3, f1, lbl_805618E4);
+        f2 = lbl_805618E0;
+        res = lbl_8055E318 + ret1;
+        f1 = lbl_805618DC;
+        *(float *)((char *)arg0 + 0x1C) = res;
+        ret2 = ((float (*)(int, float, float))fn_80129DC4)(3, f1, f2);
+        *(float *)((char *)arg0 + 0x20) = lbl_8055E318 + ret2;
+        return;
     }
-    *(void **)((char *)arg0 + 0x58) = old;
-    *(float *)((char *)arg0 + 0x1C) = lbl_8055E318 + ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618A0, lbl_805618E4);
-    *(float *)((char *)arg0 + 0x20) = lbl_8055E318 + ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618DC, lbl_805618E0);
+
+    if (*(void **)((char *)arg0 + 0x58) != 0) {
+        return;
+    }
+
+    if (((Dummy8016707C *)arg1)->v2()->unk24 != 0) {
+        return;
+    }
+
+    cur = fn_80166040(*(int *)arg0);
+    {
+        void *old = *(void **)((char *)arg0 + 0x58);
+        if (old != 0) {
+            *(int *)((char *)old + 0x10) = -1;
+        }
+    }
+    *(void **)((char *)arg0 + 0x58) = cur;
+    ret1 = ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618A0, lbl_805618E4);
+    f2 = lbl_805618E0;
+    res = lbl_8055E318 + ret1;
+    f1 = lbl_805618DC;
+    *(float *)((char *)arg0 + 0x1C) = res;
+    ret2 = ((float (*)(int, float, float))fn_80129DC4)(3, f1, f2);
+    *(float *)((char *)arg0 + 0x20) = lbl_8055E318 + ret2;
 }
-#pragma cplusplus off
-#pragma pop
 
 #pragma pop
 unsigned char fn_801671AC(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5C)); }
