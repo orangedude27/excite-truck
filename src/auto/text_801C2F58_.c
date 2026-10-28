@@ -2371,20 +2371,27 @@ extern s32 fn_801C9920(s32, s32);
 extern const char *fn_80007F90(u32);
 extern void fn_802E3734(s32 *);
 extern void fn_802E3AD0(s32, const char *, ...);
-s32 fn_801CA070(s32 *arg0) {
+#pragma cplusplus on
+extern "C" s32 fn_801CA070(s32 *arg0) {
+ struct Dummy {
+  virtual void v0();
+  virtual s32 v1(char *);
+  virtual void v2();
+  virtual s32 v3(char *);
+ };
  s32 handle;
  s32 i, offset;
  s32 value;
- void *obj;
+ Dummy *obj;
  char *base=lbl_80336B00;
  handle=fn_802E367C();
  if(handle!=-1) {
   value=lbl_8055E814;
   if(value==0) {
-   obj=(void*)fn_801C3D5C();
-   if(((s32(*)(void*,char*))(*(void***)obj)[3])(obj,base+0x130)!=0) {
-    obj=(void*)fn_801C3D5C();
-    value=((s32(*)(void*,char*))(*(void***)obj)[5])(obj,base+0x130);
+   obj=(Dummy*)fn_801C3D5C();
+   if(obj->v1(base+0x130)!=0) {
+    obj=(Dummy*)fn_801C3D5C();
+    value=obj->v3(base+0x130);
    } else value=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
   }
   fn_802E3AD0(handle,base+0xD04,value);
@@ -2396,6 +2403,7 @@ s32 fn_801CA070(s32 *arg0) {
   sprintf(lbl_80437FC0,base+0xD30,arg0);
  } else sprintf(lbl_80437FC0,base+0xD48,arg0);
 }
+#pragma cplusplus reset
 
 extern void fn_801CA1C4(void *, s32, s32, s32);
 extern char lbl_80337944[];
