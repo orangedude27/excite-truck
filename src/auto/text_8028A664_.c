@@ -654,7 +654,7 @@ void fn_8028C92C(void *arg0) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
 void fn_8028C938(s32 arg0) {
