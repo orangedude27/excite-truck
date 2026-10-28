@@ -24,6 +24,7 @@ extern void fn_80292EB4(void *);
 extern int fn_80292FB4(unsigned char *, void *);
 extern unsigned char lbl_804B4030[];
 extern float lbl_805644D8;
+extern int fn_80287B5C(int, void *, float, float, float);
 extern int fn_80129D18(int, int);
 extern unsigned int lbl_80488648[];
 extern float lbl_805644EC;
