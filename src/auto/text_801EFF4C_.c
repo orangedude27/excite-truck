@@ -1,3 +1,4 @@
+#include "revolution/MTX/mtxtypes.h"
 extern float lbl_80562F1C;
 extern float lbl_80562F18;
 extern int __cntlzw(unsigned int);
@@ -178,6 +179,52 @@ void fn_801F0488(void *arg0, void *arg1, int arg2) {
         *(float *)((char *)arg0 + 0x24) = *(float *)((char *)arg0 + 0x20) / (bounds[1] - bounds[0]);
     }
 }
+
+#pragma push
+#pragma dont_inline on
+#pragma cplusplus on
+extern int lbl_8055B100;
+extern int lbl_8055B108;
+extern int lbl_8055B0F0;
+extern int lbl_8055B10C;
+extern char lbl_8033A4A4[];
+extern char lbl_8033A4C8[];
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" int fn_8012C33C(char *);
+extern "C" void *fn_80131808(void *);
+extern "C" void fn_80131818(void *);
+extern "C" void fn_801F0208(void *, void *, char *);
+extern "C" void fn_801F0488(void *, void *, int);
+extern "C" void fn_801F06DC(void *, void *);
+extern "C" void fn_801F08AC(int, const char *);
+extern "C" void fn_801F08AC(int arg0, const char *arg1) {
+    class Fn801F08ACResource {
+    public:
+        virtual void *lookup(const char *);
+        virtual void unused();
+        virtual int has(const char *);
+    };
+
+    char name[0x20];
+    Fn801F08ACResource *resource;
+    strncpy((char *)arg0, arg1, 0x10);
+    *(char *)(arg0 + 0xF) = 0;
+    sprintf(name, (const char *)&lbl_8055B100, arg1);
+    if (fn_8012C33C(name) == 0) {
+        fn_802E317C(lbl_8033A4A4, arg1);
+    }
+    resource = (Fn801F08ACResource *)fn_80131808(name);
+    fn_801F0148((void *)arg0, resource->lookup(lbl_8033A4C8));
+    fn_801F0208((void *)arg0, resource->lookup((const char *)&lbl_8055B108), name);
+    ((void (*)(void *, void *))fn_801F0488)((void *)arg0, resource->lookup((const char *)&lbl_8055B0F0));
+    if (resource->has((const char *)&lbl_8055B10C) != 0) {
+        fn_801F06DC((char *)arg0 + 0xEC, resource->lookup((const char *)&lbl_8055B10C));
+    } else {
+        *(int *)(arg0 + 0x12C) = 0;
+    }
+    fn_80131818(resource);
+}
+#pragma pop
 
 #pragma pop
 extern float lbl_80562F10;
@@ -457,31 +504,49 @@ void fn_801F1474(int *arg0, void *arg1) {
     fn_802C7AE0(*(int *)(base + 0xEC), arg1, -1);
 }
 
+#pragma push
+#pragma processor 750
 int fn_801F1494(int arg0, void *arg1, short arg2) {
-    int base = *(int *)arg0;
-    char *table = (char *)(base + 0xEC);
+    struct Entry {
+        int id;
+        float limit;
+    };
+    struct Table {
+        struct Entry entries[8];
+        int count;
+        float f44;
+        float f48;
+    };
+
     short saved = arg2;
+    int base = *(int *)arg0;
+    struct Table *table = (struct Table *)(base + 0xEC);
     float speed = ((float (*)(int, int))fn_801E88F0)(-1, base);
     float squared = speed * speed;
-    float value = ((float (*)(void *))fn_802C88E8)((char *)arg0 + 0x3C) * squared;
-    int index = *(int *)(table + 0x40) - 1;
-    char *cursor = table + index * 8;
-    while (index >= 0 && value < *(float *)(cursor + 4)) { cursor -= 8; index--; }
-    if (value < *(float *)(table + 0x48) && index >= 0) {
-        int vec[3];
-        vec[0] = *(int *)((char *)arg1 + 0x24);
-        vec[1] = *(int *)((char *)arg1 + 0x28);
-        vec[2] = *(int *)((char *)arg1 + 0x2C);
-        if (fn_801EA03C(&saved, vec)) {
+    float value = ((float (*)(void *))fn_802C88E8)((char *)arg0 + 0x3C);
+    struct Entry *entry;
+    int count;
+
+    value = value * squared;
+    count = table->count - 1;
+    entry = &table->entries[count];
+    while (count >= 0 && value < entry->limit) {
+        entry--;
+        count--;
+    }
+
+    if (value < table->f48 && count >= 0) {
+        Vec vec = *(Vec *)((char *)arg1 + 0x24);
+        if (fn_801EA03C(&saved, &vec)) {
             float second = *(float *)((char *)arg1 + 0x28);
-            if (second > *(float *)&vec[1]) {
-                float f = *(float *)(table + 0x44) + second - *(float *)&vec[1];
-                fn_802C7AE0(*(int *)(table + index * 8), arg1, -1, f);
+            if (second > vec.y) {
+                float f = table->f44 + second - vec.y;
+                fn_802C7AE0(table->entries[count].id, arg1, -1, f);
             }
         }
     }
 }
-
+#pragma pop
 float fn_801F159C(void **arg0) {
     return *(float *)((char *)*arg0 + 0x18);
 }
