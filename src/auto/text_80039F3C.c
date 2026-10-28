@@ -232,7 +232,7 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     unsigned int flag;
 
     flag = ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].inUse;
-    if (((flag | -flag) >> 31) == 1U) {
+    if (((-flag | flag) >> 31) == 1U) {
         OSReport(msg + 0x218, (int)lbl_8055D8E8);
         OSReport(msg + 0x250);
         for (;;) {}
@@ -618,6 +618,7 @@ int fn_8003B81C(void *arg0, int arg1, int arg2, int arg3) {
  if(result!=0){OSReport(msg+0xA4C,result);entry[8]=0;return 0;}return 1;
 }
 
+#pragma scheduling invalid_target
 int fn_8003B9CC(void *arg0, void *arg1) {
     const char *msg = lbl_80302848;
     DVDLowContext *ctx;
@@ -627,10 +628,10 @@ int fn_8003B9CC(void *arg0, void *arg1) {
     ctx = newContext(arg1, 1, msg);
 
     nextCommandBuf();
-    lbl_8055D8FC[lbl_8055D8E4 * 0x20] = 0xAB;
-    *(void **)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = arg0;
+    ((DVDLowDICommand *)lbl_8055D8FC)[lbl_8055D8E4].command = 0xAB;
+    ((DVDLowDICommand *)lbl_8055D8FC)[lbl_8055D8E4].arg1 = (unsigned int)arg0;
 
-    result = IOS_IoctlAsync(lbl_80558E18, 0xAB, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, ctx);
+    result = IOS_IoctlAsync(lbl_80558E18, 0xAB, &((DVDLowDICommand *)lbl_8055D8FC)[lbl_8055D8E4], 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, ctx);
     if (result != 0) {
         OSReport(msg + 0xA80, result);
         ctx->inUse = 0;
@@ -638,7 +639,7 @@ int fn_8003B9CC(void *arg0, void *arg1) {
     }
     return 1;
 }
-
+#pragma scheduling reset
 int fn_8003BB48(void) {
     return ((int *)lbl_8037B8A0)[1];
 }
