@@ -2278,7 +2278,7 @@ extern char lbl_8055E7E0;
 extern char lbl_8055E7E1;
 extern char lbl_8055E80C;
 extern s32 lbl_8033701C;
-s32 fn_801C9708(void);
+s32 fn_801C9708();
 s32 fn_80176780(s32, s32);
 s32 fn_801CA070(s32 *);
 void fn_801C9514(void);
