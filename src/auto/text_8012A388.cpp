@@ -604,6 +604,7 @@ extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
     fn_80128668(arg1);
 }
 
+#pragma pop
 extern "C" void fn_8012BC24(void **arg0, void *arg1) {
     void **var = arg0;
     while (*var != 0) {
