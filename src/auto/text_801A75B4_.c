@@ -186,57 +186,61 @@ void fn_801A7A5C(void) {
     base[0x334] = base[0x328]; base[0x335] = base[0x329]; base[0x336] = base[0x32a];
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma processor 750
 int fn_801A7C8C(void *arg0) {
     extern const char **lbl_8055E5CC;
     extern int lbl_8055E5D0;
-    extern double lbl_80562460;
-    extern float lbl_80562468;
+    extern const double lbl_80562460;
+    extern const float lbl_80562468;
+    extern void fn_801A7628(void);
     extern void fn_801A91B0(void *, const void *);
     extern int fn_801A8EE4(unsigned int *);
     extern int fn_801A8A10(void *);
     extern float fn_801A85E8(void *);
-    int sp8[3];
-    unsigned char sp14;
-    int i;
+    extern double __fabs(double);
+    struct {
+        int unk0;
+        int unk4;
+        int unk8;
+        unsigned char unkC;
+    } local;
     int offset;
-    int result;
+    int i;
     float value;
+
     fn_801A7628();
-    result = 0;
-    offset = 0;
-    for (i = 0; i < lbl_8055E5D0; i++) {
+    for (i = 0, offset = 0; i < lbl_8055E5D0; offset += 0x18, i++) {
         if (*(unsigned char *)((char *)lbl_8055E5CC + offset + 0x14) == 0) {
-            sp8[1] = 0;
-            sp14 = 0;
-            fn_801A91B0(sp8, (char *)lbl_8055E5CC + offset);
-            if (sp8[0] != 5 && sp8[0] != 6) {
-                if (fn_801A8EE4((unsigned int *)sp8) != 0) {
-                    if (fn_801A8E38() != 0 && fn_801A8A10(sp8) == 0) {
-                        *(int *)arg0 = sp8[0];
-                        *((int *)arg0 + 1) = sp8[1];
-                        *((int *)arg0 + 2) = sp8[2];
-                        *((unsigned char *)arg0 + 0xC) = sp14;
-                        result = 1;
-                        break;
+            local.unk4 = 0;
+            local.unkC = 0;
+            fn_801A91B0(&local, (char *)lbl_8055E5CC + offset);
+            if (local.unk0 != 5 && local.unk0 != 6) {
+                if (fn_801A8EE4((unsigned int *)&local) != 0) {
+                    if (((int (*)(void *))fn_801A8E38)(&local) != 0 && fn_801A8A10(&local) == 0) {
+                        *(int *)arg0 = local.unk0;
+                        *((int *)arg0 + 1) = local.unk4;
+                        *((int *)arg0 + 2) = local.unk8;
+                        *((unsigned char *)arg0 + 0xC) = local.unkC;
+                        return 1;
                     }
                 } else {
-                    value = fn_801A7F98();
-                    if (fabsf(fn_801A85E8(sp8)) < lbl_80562460 && value > lbl_80562468) {
-                        *(int *)arg0 = sp8[0];
-                        *((int *)arg0 + 1) = sp8[1];
-                        *((int *)arg0 + 2) = sp8[2];
-                        *((unsigned char *)arg0 + 0xC) = sp14;
-                        result = 1;
-                        break;
+                    value = ((float (*)(void *))fn_801A7F98)(&local);
+                    if ((float)__fabs(fn_801A85E8(&local)) < lbl_80562460 && value > lbl_80562468) {
+                        *(int *)arg0 = local.unk0;
+                        *((int *)arg0 + 1) = local.unk4;
+                        *((int *)arg0 + 2) = local.unk8;
+                        *((unsigned char *)arg0 + 0xC) = local.unkC;
+                        return 1;
                     }
                 }
             }
         }
-        offset += 0x18;
     }
-    return result;
+    return 0;
 }
-
+#pragma pop
 void fn_801A9110(void *, const char *);
 #pragma dont_inline on
 void fn_801A7DFC(int arg0, const char *arg1, int arg2) {
