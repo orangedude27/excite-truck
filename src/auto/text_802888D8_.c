@@ -298,17 +298,7 @@ extern float lbl_80564274, lbl_8056427C, lbl_80564280, lbl_80564284, lbl_8056428
 extern float lbl_8056428C, lbl_80564290, lbl_80564294, lbl_80564298, lbl_8056429C;
 extern float lbl_805642A0, lbl_805642A4, lbl_805642A8, lbl_805642AC;
 int fn_80289154(int arg0) {
-    struct Frame {
-        float sp8, spC, sp10, sp14, sp18, sp1C;
-        int sp20, sp24;
-        float sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44;
-        float sp48, sp4C, sp50, sp54;
-        unsigned char pad58[0xC];
-        int sp64;
-        float sp68;
-        unsigned char pad6C[4];
-        float sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94, sp98, sp9C;
-    } frame;
+    fn_802897E0Frame frame;
     register float f9;
     register float f10;
     register float f5;
@@ -378,42 +368,39 @@ int fn_80289154(int arg0) {
     frame.sp7C = f2;
     frame.sp70 = f1;
     frame.sp74 = f5;
-    frame.sp98 = f0;
-    frame.sp9C = f9;
+    *(float *)frame.tail = f0;
+    *(float *)(frame.tail + 4) = f9;
 
     return *(int *)((char *)arg0 + 0x60) =
-        ((int (*)(int *, int *, int, int, float, float, float, float, float,
-                  float, float, float, float, float, float, float, float))fn_8028E2F8)(
-            (int *)&frame.sp20, (int *)&lbl_80348AE8, lbl_8055C880, two,
-            f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13);
+        fn_8028E2F8((int *)&frame.sp20, (int *)&lbl_80348AE8, lbl_8055C880, two,
+                    f1, f2, f3, f4, f5, f6, f7);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 int fn_80289394(int arg0) {
     fn_80289394Frame frame;
-    register float f9;
-    register float f5;
-    register float f11;
-    register float f10;
-    register float f31;
-    register float f13;
-    register float f12;
-    register float f8;
-    register float f7;
-    register float f6;
-    register float f4;
-    register float f3;
-    register float f2;
     register float f1;
-    register float f0;
+    register float f2;
+    register float f3;
+    register float f4;
+    register float f5;
+    register float f6;
+    register float f7;
+    register float f8;
+    register float f9;
+    register float f10;
+    register float f11;
+    register float f12;
+    register float f13;
+    register float f31;
     register int size;
-    register int two;
     register int five;
 
     fn_8028E61C((int *)&frame.sp20);
     f9 = *(volatile float *)&lbl_805642BC;
     size = 0x100;
     f5 = *(volatile float *)&lbl_805642C8;
-    two = 2;
     f11 = *(volatile float *)&lbl_805642E0;
     f10 = *(volatile float *)&lbl_805642C0;
     five = 5;
@@ -427,11 +414,10 @@ int fn_80289394(int arg0) {
     f3 = *(volatile float *)&lbl_805642E8;
     f2 = *(volatile float *)&lbl_805642EC;
     f1 = *(volatile float *)&lbl_805642D8;
-    f0 = *(volatile float *)&lbl_8056428C;
     frame.sp24 = size;
     frame.sp28 = f31;
     frame.sp2C = f13;
-    frame.sp20 = two;
+    frame.sp20 = 2;
     frame.sp68 = f12;
     frame.sp64 = five;
     frame.sp14 = f11;
@@ -461,12 +447,12 @@ int fn_80289394(int arg0) {
     frame.sp70 = f3;
     frame.sp74 = f2;
     frame.sp98 = f1;
-    frame.sp9C = f0;
+    frame.sp9C = *(volatile float *)&lbl_8056428C;
     *(int *)((char *)arg0 + 0x68) =
-        fn_8028E2F8((int *)&frame.sp20, (int *)(void *)&lbl_80348B10, lbl_8055C880, two,
-                    f1, f2, f3, f4, f5, f6, f7);
+        ((int (*)(int *, int *, int, float, float, float, float, float, float, float))fn_8028E2F8)(
+            (int *)&frame.sp20, (int *)(void *)&lbl_80348B10, lbl_8055C880,
+            f1, f2, f3, f4, f5, f6, f7);
 }
-
 #pragma pop
 void fn_802896E4(void *);
 int fn_802894B4(int arg0) {
