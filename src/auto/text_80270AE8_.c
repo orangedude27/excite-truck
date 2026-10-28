@@ -97,34 +97,35 @@ void fn_80270B74(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma small_data off
 void fn_80270C04(void *arg0, unsigned int arg1) {
     extern char lbl_80346B00[];
     extern char lbl_8049EDC8[];
     extern int lbl_8055F550;
     extern unsigned char lbl_8055F564;
     extern void fn_80272738(void *, void *);
-    register unsigned int bits = arg1;
+    unsigned int bits = arg1;
     char *name = lbl_80346B00;
-    int count;
     int i;
-    unsigned char flag;
     char *record;
+    unsigned char flag;
+    char *table;
 
-    flag = (bits >> 8) & 1;
     fn_80270B74();
     if (lbl_8055F550 == 0)
         return;
+    flag = (bits >> 8) & 1;
     lbl_8055F564 = flag;
     DBPrintf_80270B00(name + 0x1E0);
-    record = lbl_8049EDC8;
     i = 0;
+    record = lbl_8049EDC8;
+    table = (char *)&lbl_8049F9D8;
     while (i < lbl_8055F550) {
         DBPrintf_80270B00(name + 0x1F8, i);
         DBPrintf_80270B00(name + 0x208);
-        count = lbl_8055F554;
-        *(char **)((unsigned char *)&lbl_8049F9D8 + count * 0x1C) = record;
+        *(char **)(table + lbl_8055F554 * 0x1C) = record;
         if (flag != 0)
-            fn_80272738((unsigned char *)&lbl_8049F9D8 + count * 0x1C, arg0);
+            fn_80272738(table + lbl_8055F554 * 0x1C, arg0);
         record += 0x60;
         i++;
         lbl_8055F554++;
@@ -544,12 +545,11 @@ int fn_802734F0(int arg0) {
     int flags = 0;
     unsigned char *entry;
     unsigned char *state;
-    int test;
 
     if (lbl_8055F480 != 0) {
         flags |= 8;
     } else if (status != 6 && status != 0) {
-        entry = (unsigned char *)&lbl_8049A258 + status * 0x14;
+        entry = lbl_8049A258 + status * 0x14;
         state = lbl_80346BA0 + (*(int *)(entry + 0xC) + *(int *)(entry + 4)) * 0x28;
         if (state[0x24] == 0)
             flags |= 1;
@@ -560,24 +560,22 @@ int fn_802734F0(int arg0) {
         if (state[0x25] == 0)
             flags |= 4;
     } else {
-        test = (arg0 == 1);
-        if (test == 0) {
-            if (test == 0) {
-                if (arg0 < 1) {
-                    if (arg0 < 0)
-                        goto fallback;
-                    flags |= 8;
-                } else if (arg0 < 3) {
-                    flags |= 6;
-                } else {
-                    goto fallback;
-                }
-            } else {
+        if (arg0 == 1) goto done;
+        if (arg0 == 1) goto fallback;
+        if (arg0 >= 1) goto check3;
+        if (0 <= arg0) goto flag8;
+        goto fallback;
+check3:
+        if (arg0 >= 3) goto fallback;
+        flags |= 6;
+        goto done;
+flag8:
+        flags |= 8;
+        goto done;
 fallback:
-                flags |= 5;
-            }
-        }
+        flags |= 5;
     }
+done:
     return flags;
 }
 #pragma dont_inline reset
