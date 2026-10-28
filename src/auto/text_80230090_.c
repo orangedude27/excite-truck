@@ -122,7 +122,7 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 extern "C" void fn_80230924(void *, f32, f32, f32, f32, f32);
 extern "C" void fn_802C8B98(s32, s32);
 extern "C" void fn_802C8D74(void);
-extern "C" void fn_802C8DB8(void);
+extern "C" void fn_802C8DB8(void *, s32, u16 *, s32);
 extern "C" void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
 extern "C" s32 fn_80230B9C(u32);
 extern "C" f32 lbl_80563614;
