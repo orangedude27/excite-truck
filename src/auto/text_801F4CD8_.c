@@ -560,6 +560,8 @@ void fn_801F64E4(void *arg0, float *arg1, float arg2) {
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80562FDC;
 extern float lbl_80562FE0;
+#pragma push
+#pragma paired off
 #pragma paired_single off
 void fn_801F65D0(void *arg0) {
     float delta[3];
@@ -598,7 +600,7 @@ loop:
 check:
     if (i < *(int *)((char *)arg0 + 0x18)) goto loop;
 }
-#pragma paired_single reset
+#pragma pop
 
 #pragma dont_inline on
 void fn_801F6728(void *arg0) {
