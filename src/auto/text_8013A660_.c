@@ -25,8 +25,8 @@ extern void *fn_8001285C(int);
 extern void *fn_80012820(int);
 extern float lbl_80561438;
 extern float lbl_8056143C;
-extern char lbl_80559CB8[];
-extern char lbl_80559CBC[];
+extern char lbl_80559CB8;
+extern char lbl_80559CBC;
 extern int fn_8013A9C0(void *, void *, void *, void *);
 extern int fn_8027AA48(void);
 extern void fn_802E30C8(char *, ...);
@@ -133,6 +133,27 @@ extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
         ((char *(*)(char *, int, int))fn_8013A708)(sp28, arg2, arg1));
     return temp_f1 + arg3 * (temp_f31 - temp_f1);
 }
+
+extern "C" void fn_8013AB08(float *arg0, int *arg1) {
+    char *base = lbl_8032C1A0;
+    void *obj1 = fn_8001285C(*arg1);
+    void *obj2 = fn_80012820(*(int *)((char *)obj1 + 4));
+
+    if (((int (*)(float *, void *, void *))fn_8013A860)(arg0, *(void **)((char *)obj1 + 0x20), base + 0x78) == 0 &&
+        ((int (*)(float *, void *, void *))fn_8013A860)(arg0, *(void **)((char *)obj2 + 0x80), base + 0x88) == 0 &&
+        fn_8013A9C0(arg0, *(void **)((char *)obj1 + 0x20), arg1, base + 0x78) == 0 &&
+        fn_8013A9C0(arg0, *(void **)((char *)obj2 + 0x80), arg1, base + 0x88) == 0) {
+        arg0[0] = lbl_80561438;
+        arg0[1] = lbl_8056143C;
+        fn_802E30C8(base + 0x94);
+    }
+
+    if (fn_8027AA48() == 0) {
+        arg0[0] += fn_8013AA68(*(void **)((char *)obj1 + 0x20), 0, base + 0x78, arg1);
+        arg0[1] += fn_8013AA68(*(void **)((char *)obj1 + 0x20), 0, base + 0x78, arg1);
+    }
+}
+
 #pragma cplusplus off
 
 #pragma cplusplus off
