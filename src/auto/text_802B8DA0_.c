@@ -180,7 +180,7 @@ extern "C" void *fn_802B8FE0(int arg0) {
         virtual void method20();
         virtual char *find(const char *);
     };
-    float initial;
+    float initial = lbl_80564CC0;
     int zero = 0;
     int *state;
     void *base;
@@ -194,7 +194,6 @@ extern "C" void *fn_802B8FE0(int arg0) {
     char *found;
     Dummy *settings;
 
-    initial = *(volatile float *)&lbl_80564CC0;
     state = lbl_804C004C;
     base = (void *)state[0];
     index = state[1];
