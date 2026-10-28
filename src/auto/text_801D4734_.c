@@ -659,7 +659,6 @@ extern "C" void fn_801D6080(void *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-#pragma paired off
 #pragma paired_single off
 #pragma cplusplus on
 extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
