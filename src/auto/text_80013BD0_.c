@@ -46,13 +46,22 @@ void fn_80148134(f32 *, f32 *, s32, f32, f32);
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3(void *);
+    };
     char first[20];
     char second[20];
     u8 *base = lbl_802FCB98;
-    ((void (*)(void *, void *))(*(void ***)arg0)[3])(arg0, base);
+    ((Obj *)arg0)->v3(base + 0);
     fn_801476C4();
-    ((void (*)(void *, void *))(*(void ***)arg0)[3])(arg0, base + 0xC);
+    ((Obj *)arg0)->v3(base + 0xC);
     fn_801476C4();
     fn_80130FCC(first, 20, arg1);
     fn_801473F8(arg0, base + 0x1C, first);
@@ -143,7 +152,7 @@ extern void *fn_80145E70(void *);
 #pragma push
 #pragma cplusplus on
 extern "C" void *fn_80014524(void *arg0, s32 arg1) {
- class Obj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); };
+ class Obj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); };
  u8 *obj=(u8 *)arg0; u8 *base=lbl_802FCB98;
  *(void **)obj=lbl_802FCE18; lbl_803577E0[arg1]=arg0; obj[8]=0;
  *(void **)(obj+0x34)=fn_8023512C(base+0x130);
@@ -156,7 +165,7 @@ extern "C" void *fn_80014524(void *arg0, s32 arg1) {
  *(void **)(obj+0x48)=fn_80019C68(arg1);
  if(fn_800167F4()==1) *(void **)(obj+0x50)=fn_80145E70(base+0x178);
  else *(void **)(obj+0x50)=fn_80145E70(base+0x184);
- ((Obj *)obj)->v4(); return arg0;
+ ((Obj *)obj)->v5(); return arg0;
 }
 #pragma pop
 
