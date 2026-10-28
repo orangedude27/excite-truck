@@ -27,6 +27,7 @@ extern int lbl_804C139C[];
 extern int lbl_804C13A8[];
 extern int lbl_804C13B4[];
 extern const char lbl_8034B1D8[];
+extern s8 lbl_8055FC21;
 char *fn_802CAE34(char *);
 int stricmp(const char *, const char *);
 extern const char lbl_8034B3DC[];
