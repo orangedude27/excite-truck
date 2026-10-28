@@ -180,7 +180,7 @@ int doPrepareCoverRegisterCallback(int arg0, void *arg1) {
     int (*callback)(int);
 
     lbl_8055D8E0 = 0;
-    ((unsigned int *)lbl_8037B8A0)[1] = lbl_8037B8C0;
+    ((unsigned int *)lbl_8037B8A0)[1] = *(unsigned int *)&lbl_8037B8C0;
     if (((unsigned int)*(unsigned int *)((char *)arg1 + 0xC) + 0x01150000) != 0xFEEBDAED) {
         OSReport(lbl_80302848);
         *(unsigned int *)((char *)arg1 + 0xC) = 0xFEEBDAED;
