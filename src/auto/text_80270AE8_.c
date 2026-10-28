@@ -98,28 +98,29 @@ void fn_80270B74(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
+#pragma scheduling invalid_target
 void fn_80270C04(void *arg0, unsigned int arg1) {
     extern char lbl_80346B00[];
     extern char lbl_8049EDC8[];
+    extern char lbl_8049F9D8[];
     extern int lbl_8055F550;
     extern unsigned char lbl_8055F564;
     extern void fn_80272738(void *, void *);
-    unsigned int bits = arg1;
-    char *name = lbl_80346B00;
-    int i;
-    char *record;
-    unsigned char flag;
-    char *table;
+    register int i = arg1;
+    register char *name = lbl_80346B00;
+    register char *record;
+    register unsigned char flag;
+    register char *table;
 
     fn_80270B74();
     if (lbl_8055F550 == 0)
         return;
-    flag = (bits >> 8) & 1;
+    flag = (i >> 8) & 1;
     lbl_8055F564 = flag;
     DBPrintf_80270B00(name + 0x1E0);
-    i = 0;
     record = lbl_8049EDC8;
-    table = (char *)&lbl_8049F9D8;
+    table = lbl_8049F9D8;
+    i = 0;
     while (i < lbl_8055F550) {
         DBPrintf_80270B00(name + 0x1F8, i);
         DBPrintf_80270B00(name + 0x208);
@@ -134,7 +135,7 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
         DBPrintf_80270B00(name + 0x224);
         *(int *)lbl_8049F9D8 = (int)lbl_8049EDC8;
         if (flag != 0)
-            fn_80272738((void *)lbl_8049F9D8, arg0);
+            fn_80272738(lbl_8049F9D8, arg0);
         lbl_8055F554 = 1;
     }
 }
