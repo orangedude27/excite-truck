@@ -17,6 +17,45 @@ extern f32 lbl_80561368;
 extern s32 lbl_8032BEB4[];
 extern void fn_801376A8(s32, s32 *, s32, s32, s32 *);
 extern void fn_80136D20(void);
+#pragma push
+#pragma scheduling invalid_target
+extern s32 lbl_8032BE98[];
+extern s32 lbl_8032BEA8[];
+extern s32 fn_8012850C(s32, s32);
+extern s32 fn_801284E8(s32, s32);
+extern s32 fn_8002F37C(s32, s32, s32, s32);
+extern void *memset(void *, s32, s32);
+extern float fn_8013672C(void);
+extern void fn_801369EC(void *);
+#pragma push
+#pragma scheduling invalid_target
+s32 fn_801368F8(s32 arg0, s32 arg1) {
+    s32 pairs;
+    s32 count;
+    s32 stride;
+    s32 size;
+    s32 data;
+    pairs = ((s32)((arg1 * (arg1 - 1)) >> 31) + arg1 * (arg1 - 1)) >> 1;
+    *(s32 *)arg0 = arg1;
+    count = 1;
+    if (pairs > 1)
+        count = pairs;
+    fn_8012850C(count * 0x2C + 0x10, (s32)lbl_8032BE98);
+    *(s32 *)(arg0 + 8) = fn_8002F37C((s32)&fn_801369EC, 0, 0x2C, count);
+    stride = arg1 * 4 - arg1;
+    size = stride * 4 + 0x18;
+    *(s32 *)(arg0 + 0xC) = size;
+    data = arg1 * size;
+    *(s32 *)(arg0 + 0x10) = fn_801284E8((s32)lbl_8032BEA8, data);
+    if (*(s32 *)(arg0 + 0x10) != 0 && *(s32 *)(arg0 + 8) != 0) {
+        memset((void *)0, 0, data);
+        fn_80136AA8((void *)arg0);
+    }
+    *(f32 *)(arg0 + 0x14) = fn_8013672C();
+    return arg0;
+}
+#pragma pop
+
 void fn_801369EC(void *arg0) {
     f32 value = lbl_80561368;
     *(s32 *)((char *)arg0 + 0x14) = -1;
@@ -181,41 +220,51 @@ extern float lbl_80561394;
 extern float __fabsf(float);
 extern double __fabs(double);
 int fn_80137598(void *arg0, void *arg1, void *arg2) {
-    unsigned int id;
     unsigned char a;
     unsigned char b;
+    int id;
     float diff;
+
     if (arg1 == 0 || arg2 == 0)
         goto null_arg;
-    id = *(unsigned int*)((char*)arg0 + 4);
-    if (id == *(unsigned int*)((char*)arg1 + 0xC))
+
+    id = *(int*)((char*)arg0 + 4);
+    if (id == *(int*)((char*)arg1 + 0xC))
         a = *(unsigned char*)((char*)arg1 + 8);
     else
         a = *(unsigned char*)((char*)arg1 + 0x10);
-    if (id == *(unsigned int*)((char*)arg2 + 0xC))
+
+    if (id == *(int*)((char*)arg2 + 0xC))
         b = *(unsigned char*)((char*)arg2 + 8);
     else
         b = *(unsigned char*)((char*)arg2 + 0x10);
-    if (a != b)
-        return a == 0 ? 1 : -1;
-    if (a == 0 || b == 0)
-        return 0;
-    a = *(unsigned char*)arg1;
-    if (a == 0) {
-        b = *(unsigned char*)arg2;
-        if (b == 0)
-            goto compare_float;
+
+    if (a ^ b) {
+        if (a != 0)
+            return -1;
+        return 1;
+    }
+
+    if (a != 0 && b != 0) {
+        if (*(unsigned char*)arg1 != 0 || *(unsigned char*)arg2 != 0) {
+            if (*(unsigned char*)arg1 ^ *(unsigned char*)arg2) {
+                if (*(unsigned char*)arg1 == 0)
+                    return -1;
+                return 1;
+            }
+            return 0;
+        }
+
+        diff = *(float*)((char*)arg1 + 4) - *(float*)((char*)arg2 + 4);
+        if ((float)__fabs(diff) < lbl_80561394)
+            return 0;
+        if (diff > lbl_80561368)
+            return 1;
         return -1;
     }
-    b = *(unsigned char*)arg2;
-    if (a != b)
-        return 1;
+
     return 0;
-compare_float:
-    diff = *(float*)((char*)arg1 + 4) - *(float*)((char*)arg2 + 4);
-    if (__fabsf(diff) < lbl_80561394)
-        return 0;
-    return diff > lbl_80561368 ? 1 : -1;
+
 null_arg:
     return arg1 == 0 ? 1 : -1;
 }
