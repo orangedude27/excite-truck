@@ -41,7 +41,7 @@ extern s32 fn_80128668(void);
 #pragma cplusplus on
 #pragma cplusplus off
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_8028A664(void) {
     extern char lbl_80348B98[];
     extern char lbl_8055C8A0;
