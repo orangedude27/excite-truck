@@ -553,9 +553,12 @@ void fn_80231220(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v
     extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
     extern s32 fn_80230B9C(u32);
     extern f32 lbl_80563614;
-    extern u16 lbl_802F9FE4[];
+    struct IndexList {
+        u16 idx[6];
+    };
+    extern struct IndexList lbl_802F9FE4;
     struct Frame {
-        u16 indices[6];
+        struct IndexList indices;
         u8 pad1[4];
         f32 sp20[6];
         f32 sp38[6];
@@ -564,7 +567,6 @@ void fn_80231220(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v
     } __attribute__((aligned(16))) frame;
     s32 state;
     f32 zero;
-    const u16 *src;
 
     fn_802C8B98((s32)arg0, (s32)fn_8022EDC4());
     state = fn_80230B9C((u32)arg1);
@@ -573,14 +575,8 @@ void fn_80231220(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v
     fn_80231380(frame.sp38, state, x + w, y, zero, u1, v0);
     fn_80231380(frame.sp50, state, x, y - h, zero, u0, v1);
     fn_80231380(frame.sp68, state, x + w, y - h, zero, u1, v1);
-    src = lbl_802F9FE4;
-    frame.indices[0] = *src;
-    frame.indices[1] = src[1];
-    frame.indices[2] = src[2];
-    frame.indices[3] = src[3];
-    frame.indices[4] = src[4];
-    frame.indices[5] = src[5];
-    fn_802C8DB8(frame.sp20, 4, frame.indices, 6);
+    frame.indices = lbl_802F9FE4;
+    fn_802C8DB8(frame.sp20, 4, frame.indices.idx, 6);
     fn_802C8D74();
 }
 #pragma pop
