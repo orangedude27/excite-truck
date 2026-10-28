@@ -795,30 +795,51 @@ extern const char lbl_8055B3D0[6];
 extern const char lbl_8055B3D8[7];
 extern "C" void* fn_802AE414(int);
 extern "C" char* strncpy(char*, const char*, unsigned long);
-#pragma cplusplus on
+#pragma use_lmw_stmw off
 extern "C" int fn_801FE88C(void* unused, void* out) {
     struct Obj {
-        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual const char* f5(const char*);
-        virtual void f6(); virtual void f7(); virtual void f8(); virtual float f9(const char*);
-        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13();
-        virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17();
-        virtual void f18(); virtual void f19(); virtual void f20(); virtual unsigned short f21(const char*, void*);
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual const char* getName(const char*);
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual float getFloat(const char*);
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual unsigned short getUshort(const char*, const char*);
     };
+    const char *base = lbl_8033B5D8;
+    const char *strA = base + 0xA0;
+    const char *strB = base + 0xB0;
     Obj* obj = (Obj*)fn_802AE414(*(int*)out);
-    if (obj == 0) fn_802E317C(lbl_8033B5D8 + 0xC8);
-    strncpy((char*)out + 4, obj->f5(lbl_8055B3C8), 0x10);
+    if (obj == 0) {
+        fn_802E317C(base + 0xC8);
+    }
+    strncpy((char*)out + 4, obj->getName(lbl_8055B3C8), 0x10);
     *((char*)out + 0x13) = 0;
-    *(unsigned short*)((char*)out + 0x14) = obj->f21(lbl_8055B3D0, (void*)(lbl_8033B5D8 + 0xA0));
-    *(unsigned short*)((char*)out + 0x16) = obj->f21(lbl_8055B3D8, (void*)(lbl_8033B5D8 + 0xB0));
+    *(unsigned short*)((char*)out + 0x14) = obj->getUshort(lbl_8055B3D0, strA);
+    *(unsigned short*)((char*)out + 0x16) = obj->getUshort(lbl_8055B3D8, strB);
     if (*(unsigned short*)((char*)out + 0x14) == 1) {
-       *(float*)((char*)out + 0x18) = obj->f9(lbl_8033B5D8 + 0x104);
-       *(float*)((char*)out + 0x1C) = obj->f9(lbl_8033B5D8 + 0x114);
-       *(float*)((char*)out + 0x20) = lbl_80563034;
+        float val;
+        float zero;
+        *(float*)((char*)out + 0x18) = obj->getFloat(base + 0x104);
+        val = obj->getFloat(base + 0x114);
+        zero = lbl_80563034;
+        *(float*)((char*)out + 0x1C) = val;
+        *(float*)((char*)out + 0x20) = zero;
     }
 }
-#pragma cplusplus reset
-
 extern "C" void* fn_801FE9A8(void* arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668(arg0);
