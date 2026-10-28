@@ -115,7 +115,8 @@ void fn_801EC4A8(void *arg0, long arg1) {
     }
 }
 
-void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
+#pragma cplusplus on
+extern "C" void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
     extern char lbl_8055AFDC, lbl_8055AFE4;
     extern float lbl_80562E88, lbl_80562E8C;
     typedef struct { void *slots[24]; } VTable;
@@ -151,7 +152,7 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
         *(float *)((char *)out + 4) = lbl_80562E88;
     }
 }
-
+#pragma cplusplus reset
 #pragma pop
 void fn_801EC714(void *arg0, float *arg1, float *arg2) {
     *arg1 = *(float *)((char *)arg0 + 8) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 4));
