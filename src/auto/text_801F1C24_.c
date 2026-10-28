@@ -1047,15 +1047,38 @@ __declspec(section ".data") extern int lbl_8033AAA8, lbl_8033AA60;
 #pragma push
 #pragma small_data off
 #pragma pop
-void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4) {
-    void *path = (char *)arg2 + 0x2C;
+#pragma cplusplus on
+extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4) {
+    struct Dummy {
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+        virtual void v3() = 0;
+        virtual void v4() = 0;
+        virtual void v5() = 0;
+        virtual void v6() = 0;
+        virtual void v7() = 0;
+        virtual void v8() = 0;
+        virtual void v9() = 0;
+        virtual void v10() = 0;
+        virtual void v11() = 0;
+        virtual void v12() = 0;
+        virtual void v13() = 0;
+        virtual void v14() = 0;
+        virtual void v15() = 0;
+        virtual void v16() = 0;
+        virtual float get(int) = 0;
+    };
+    void *path;
     void *obj;
     void *entry;
     void *item;
     float f;
     int count;
+    int value;
 
     obj = *(void **)((char *)arg0 + 4);
+    path = (char *)arg2 + 0x2C;
     if (obj == 0) {
         obj = fn_801284F8(0x108, (void *)&lbl_8033AAA8);
         if (obj != 0) {
@@ -1066,22 +1089,23 @@ void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4) {
         }
     }
     obj = *(void **)((char *)arg0 + 4);
-    entry = (char *)obj + (*(int *)((char *)obj + 0x104) << 4);
-    *(int *)((char *)entry + 4) = *(int *)((char *)arg2 + 4);
-    *(int *)((char *)entry + 8) = arg3;
+    value = *(int *)((char *)arg2 + 4);
+    count = *(int *)((char *)obj + 0x104);
     f = lbl_80562F40;
+    entry = (char *)obj + (count << 4);
+    *(int *)((char *)entry + 4) = value;
+    *(int *)((char *)entry + 8) = arg3;
     *(float *)((char *)entry + 0xC) = f;
     *(float *)((char *)entry + 0x10) = f;
     item = fn_802AE414(path);
     if (item != 0) {
-        *(float *)((char *)entry + 0xC) =
-            (*(float (**)(void *, int))(*(int *)*(void **)item + 0x4C))(item, (int)&lbl_8055B150);
-        *(float *)((char *)entry + 0x10) =
-            (*(float (**)(void *, int))(*(int *)*(void **)item + 0x4C))(item, (int)&lbl_8055B148);
+        *(float *)((char *)entry + 0xC) = ((Dummy *)item)->get((int)&lbl_8055B150);
+        *(float *)((char *)entry + 0x10) = ((Dummy *)item)->get((int)&lbl_8055B148);
     }
     count = *(int *)((char *)obj + 0x104);
     *(int *)((char *)obj + 0x104) = count + 1;
 }
+#pragma cplusplus reset
 void fn_801F447C(void) {
 
 }
