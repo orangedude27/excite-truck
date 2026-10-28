@@ -80,6 +80,55 @@ int fn_802AC2B4(void **arg0, int arg1, float *arg2) {
     return 0;
 }
 
+#pragma push
+#pragma processor 750
+#pragma cplusplus on
+extern "C" float fn_802AC344(void *arg0, void *arg1, float *arg2) {
+    struct InterfaceA {
+        virtual void v0();
+        virtual int hasKey(const char *);
+        virtual void v2();
+        virtual char *getKey(const char *);
+    };
+    struct InterfaceB {
+        virtual void v0();
+        virtual int hasEntry(const char *);
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual float getFloat(const char *);
+    };
+
+    float f31;
+    float f30;
+    char *str;
+
+    if (arg2 != 0) {
+        f31 = *arg2;
+    } else {
+        f31 = lbl_80564AB0;
+    }
+
+    if (((InterfaceA *)arg0)->hasKey(&lbl_8055CCB8) != 0) {
+        str = ((InterfaceA *)arg0)->getKey(&lbl_8055CCB8);
+        f30 = lbl_80564AB0;
+        if (*str == '+') {
+            f30 = f31;
+            str++;
+        }
+        if (arg1 != 0 && ((InterfaceB *)arg1)->hasEntry(str) != 0) {
+            f30 += ((InterfaceB *)arg1)->getFloat(str);
+        } else {
+            f30 += (float)atof(str);
+        }
+        return f30;
+    }
+    return f31;
+}
+#pragma pop
+
 extern float fn_802AC344(void *, void *, float *);
 float fn_802AC454(void *arg0, void *arg1, float *arg2) { return fn_802AC344(arg0, arg1, arg2); }
 
