@@ -19,7 +19,7 @@ extern f32 lbl_80561370;
 extern f32 lbl_80561374;
 extern s32 lbl_8032BEB4[];
 extern void fn_801376A8(s32, s32 *, s32, s32, s32 *);
-extern void fn_80136D20();
+extern void fn_80136D20(void *, s32);
 extern s32 fn_8017960C(s32);
 extern s32 fn_802C6C34(s32);
 #pragma push
