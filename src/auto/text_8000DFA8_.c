@@ -441,6 +441,27 @@ void fn_80010188(s32 arg0, s32 arg1, const char *fmt, f32 scale, f32 x, f32 y, .
                 x, y, lbl_805602C8 * scale,
                 lbl_80560280, lbl_80560264);
 }
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_8001027C(s32 arg0, s32 arg1, const char *fmt, f32 last, f32 value, f32 scale, ...) {
+    char buffer[0x200];
+    va_list args;
+
+    if (lbl_8055D494 != 0) {
+        va_start(args, scale);
+        vsprintf(buffer, fmt, args);
+        if (strlen(buffer) >= 0x200)
+            fn_802E317C((void *)lbl_802FC518, strlen(buffer), fmt);
+        fn_802337A0(value, lbl_8055D494, scale, arg0,
+                    lbl_80560280, last, arg1, lbl_80560264,
+                    (const char *)&lbl_80558AA4, buffer);
+    }
+}
+#pragma scheduling on
+#pragma pop
+
 #pragma scheduling on
 #pragma pop
 
@@ -532,6 +553,39 @@ extern s32 lbl_8055D494;
     ((void (*)(s32, s32))fn_80010FDC)(arg0, 0xD);
 }
 
+#pragma push
+#pragma processor 750
+#pragma paired_single off
+void fn_80010724(s32 arg0, s32 arg1, s32 arg2) {
+    extern s32 fn_8001084C(s32);
+    extern s32 fn_80010964(s32);
+    extern f32 fn_800109A0(s32);
+    extern void fn_80010B80(s32, f32, f32, f32, f32);
+    extern f32 lbl_80560310;
+    extern f32 lbl_8056031C;
+    extern f32 lbl_80560320;
+    extern f32 lbl_805602F4;
+    f32 temp_f1;
+    f32 temp_f30;
+    f32 temp_f31;
+    f32 temp_f31_2;
+    f32 temp_f4;
+    f32 temp_f5;
+    f32 temp_f6;
+    f32 result;
+
+    temp_f1 = (f32)((s32 (*)(s32, s32))fn_8001084C)(0x10, arg2);
+    temp_f31 = lbl_80560310 + temp_f1;
+    temp_f4 = lbl_8056031C + (f32)fn_80010964(0x10);
+    temp_f6 = (f32)arg0;
+    temp_f5 = temp_f6 - lbl_80560320;
+    temp_f30 = temp_f5 - (temp_f31 * lbl_8056025C);
+    temp_f31_2 = (lbl_805602F4 - (f32)arg1) + (temp_f4 * lbl_8056025C);
+    ((void (*)(s32, f32, f32, f32, f32, f32, f32))fn_80010B80)(0x80000000, temp_f30, temp_f31_2, temp_f31, temp_f4, temp_f5, temp_f6);
+    result = fn_800109A0(lbl_80558A90);
+    ((void (*)(s32, s32, const char *, f32, ...))fn_8000FF88)(-1, 0x14, (const char *)&lbl_80558AA4, result, arg2, temp_f30, temp_f31_2);
+}
+#pragma pop
 s32 fn_8001084C(s32 arg0) {
     return (s32)(((f32)arg0 * fn_8023293C(lbl_8055D490, lbl_80560264)) / (f32)lbl_80558A90);
 }
