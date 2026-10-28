@@ -109,44 +109,43 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
 #pragma dont_inline off
 #pragma opt_propagation reset
 
-void fn_801BFD34(void *out, void *in, void *m) {
-    float x, y, z, a, b, c;
+void fn_801BFD34(float *out, float *in, const float *m) {
     if (out == in) {
-        y = *(float *)((char *)in + 4);
-        x = *(float *)((char *)in + 0);
-        z = *(float *)((char *)in + 8);
-        a = x * *(float *)((char *)m + 0);
-        b = y * *(float *)((char *)m + 0xC);
-        c = z * *(float *)((char *)m + 0x18);
-        *(float *)out = (a + b) + c;
-        a = x * *(float *)((char *)m + 4);
-        b = y * *(float *)((char *)m + 0x10);
-        c = z * *(float *)((char *)m + 0x1C);
-        *(float *)((char *)out + 4) = (a + b) + c;
-        a = x * *(float *)((char *)m + 8);
-        b = y * *(float *)((char *)m + 0x14);
-        c = z * *(float *)((char *)m + 0x20);
-        *(float *)((char *)out + 8) = (a + b) + c;
+        float y = in[1];
+        float y0 = y * m[3];
+        float y1 = y * m[4];
+        float y2 = y * m[5];
+
+        float x = in[0];
+        float x0 = x * m[0];
+        float x1 = x * m[1];
+        float x2 = x * m[2];
+
+        float z = in[2];
+        float z0 = z * m[6];
+        float z1 = z * m[7];
+        float z2 = z * m[8];
+
+        out[0] = (x0 + y0) + z0;
+        out[1] = (x1 + y1) + z1;
+        out[2] = (x2 + y2) + z2;
     } else {
-        x = *(float *)((char *)in + 0);
-        y = *(float *)((char *)in + 4);
-        z = *(float *)((char *)in + 8);
-        a = x * *(float *)((char *)m + 0);
-        b = y * *(float *)((char *)m + 0xC);
-        c = z * *(float *)((char *)m + 0x18);
-        *(float *)out = (a + b) + c;
-        a = x * *(float *)((char *)m + 4);
-        b = y * *(float *)((char *)m + 0x10);
-        c = z * *(float *)((char *)m + 0x1C);
-        *(float *)((char *)out + 4) = (a + b) + c;
-        a = x * *(float *)((char *)m + 8);
-        b = y * *(float *)((char *)m + 0x14);
-        c = z * *(float *)((char *)m + 0x20);
-        *(float *)((char *)out + 8) = (a + b) + c;
+        float m0 = m[0], m1 = m[1], m2 = m[2];
+        float m3 = m[3], m4 = m[4], m5 = m[5];
+        float m6 = m[6], m7 = m[7], m8 = m[8];
+
+        out[0] = (m3 * in[1] + m0 * in[0]) + m6 * in[2];
+        out[1] = (m4 * in[1] + m1 * in[0]) + m7 * in[2];
+        out[2] = (m5 * in[1] + m2 * in[0]) + m8 * in[2];
     }
-    *(float *)out += *(float *)((char *)m + 0x24);
-    *(float *)((char *)out + 4) += *(float *)((char *)m + 0x28);
-    *(float *)((char *)out + 8) += *(float *)((char *)m + 0x2C);
+    {
+        float tx = out[0] + m[9];
+        float ty = out[1] + m[10];
+        float tz = out[2] + m[11];
+        out[0] = tx;
+        out[1] = ty;
+        out[2] = tz;
+    }
 }
 
 void fn_801BFE7C(float *arg0, float *arg1, float *arg2) {
@@ -383,44 +382,67 @@ void fn_801C0204(void *arg0, int *arg1) {
     *(unsigned char *)((char *)arg0 + 0x1E8) = 0;
 }
 
-void fn_801C02F4(void *arg0, int arg1) {
+static inline void helper_801C02F4(void *self, int flag) {
+    if (flag) {
+        *(int *)((char *)self + 0x1F0) = 0;
+    } else {
+        *(int *)((char *)self + 0x1F0) = -1;
+    }
+}
+
+void fn_801C02F4(void *arg0) {
+    struct Mat43 {
+        float m[4][3];
+    };
     extern float lbl_805628B8, lbl_805628BC, lbl_805628E8, lbl_805628EC;
-    float sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
+    extern void fn_8017B164(void *);
+    struct Mat43 mat;
+
     *(int *)((char *)arg0 + 0x1EC) = 0;
     *(float *)((char *)arg0 + 0x218) = lbl_805628E8;
+    goto else_lbl;
+    *(int *)((char *)arg0 + 0x1F0) = 0;
+    goto end_lbl;
+else_lbl:
     *(int *)((char *)arg0 + 0x1F0) = -1;
+end_lbl:
     fn_8017B164(arg0);
-    sp8 = lbl_805628BC; spC = lbl_805628B8; sp10 = lbl_805628B8;
-    sp14 = lbl_805628B8; sp18 = lbl_805628BC; sp1C = lbl_805628B8;
-    sp20 = lbl_805628B8; sp24 = lbl_805628B8; sp28 = lbl_805628BC;
-    sp2C = lbl_805628B8; sp34 = lbl_805628B8; sp30 = lbl_805628EC;
+
+    mat.m[0][0] = lbl_805628BC;
+    mat.m[0][1] = lbl_805628B8;
+    mat.m[0][2] = lbl_805628B8;
+    mat.m[1][0] = lbl_805628B8;
+    mat.m[1][1] = lbl_805628BC;
+    mat.m[1][2] = lbl_805628B8;
+    mat.m[2][0] = lbl_805628B8;
+    mat.m[2][1] = lbl_805628B8;
+    mat.m[2][2] = lbl_805628BC;
+    mat.m[3][0] = lbl_805628B8;
+    mat.m[3][2] = lbl_805628B8;
+    mat.m[3][1] = lbl_805628EC;
+
     *(int *)((char *)arg0 + 0x1F4) = -1;
     *(int *)((char *)arg0 + 0x1F8) = 0;
-    *(float *)((char *)arg0 + 0x3C) = sp8;
-    *(float *)((char *)arg0 + 0x40) = spC;
-    *(float *)((char *)arg0 + 0x44) = sp10;
-    *(float *)((char *)arg0 + 0x48) = sp14;
-    *(float *)((char *)arg0 + 0x4C) = sp18;
-    *(float *)((char *)arg0 + 0x50) = sp1C;
-    *(float *)((char *)arg0 + 0x54) = sp20;
-    *(float *)((char *)arg0 + 0x58) = sp24;
-    *(float *)((char *)arg0 + 0x5C) = sp28;
-    *(float *)((char *)arg0 + 0x60) = sp2C;
-    *(float *)((char *)arg0 + 0x64) = sp30;
-    *(float *)((char *)arg0 + 0x68) = sp34;
-    ((void (*)(void *, int, int, int, int, int, int, int, int, int))fn_8017A580)(arg0, *(int *)&sp30, *(int *)&sp2C, *(int *)&sp28, *(int *)&sp24, *(int *)&sp20, *(int *)&sp1C, *(int *)&sp18, *(int *)&sp8, *(int *)&spC);
-    *(float *)((char *)arg0 + 0x118) = lbl_805628B8;
-    *(float *)((char *)arg0 + 0x11C) = lbl_805628B8;
-    *(float *)((char *)arg0 + 0x120) = lbl_805628B8;
-    *(float *)((char *)arg0 + 0x124) = lbl_805628B8;
-    *(float *)((char *)arg0 + 0x128) = lbl_805628B8;
-    *(float *)((char *)arg0 + 0x12C) = lbl_805628B8;
-    *(float *)((char *)arg0 + 0x260) = lbl_805628B8;
-    *(float *)((char *)arg0 + 0x264) = lbl_805628E8;
-    *(float *)((char *)arg0 + 0x268) = lbl_805628B8;
-    *(float *)((char *)arg0 + 0x26C) = lbl_805628B8;
-    *(float *)((char *)arg0 + 0x270) = lbl_805628BC;
-    *(float *)((char *)arg0 + 0x274) = lbl_805628B8;
+    *(struct Mat43 *)((char *)arg0 + 0x3C) = mat;
+    ((void (*)(void *))fn_8017A580)(arg0);
+
+    {
+        float f0 = lbl_805628BC;
+        float f1 = lbl_805628E8;
+        float f2 = lbl_805628B8;
+        *(float *)((char *)arg0 + 0x118) = f2;
+        *(float *)((char *)arg0 + 0x11C) = f2;
+        *(float *)((char *)arg0 + 0x120) = f2;
+        *(float *)((char *)arg0 + 0x124) = f2;
+        *(float *)((char *)arg0 + 0x128) = f2;
+        *(float *)((char *)arg0 + 0x12C) = f2;
+        *(float *)((char *)arg0 + 0x260) = f2;
+        *(float *)((char *)arg0 + 0x264) = f1;
+        *(float *)((char *)arg0 + 0x268) = f2;
+        *(float *)((char *)arg0 + 0x26C) = f2;
+        *(float *)((char *)arg0 + 0x270) = f0;
+        *(float *)((char *)arg0 + 0x274) = f2;
+    }
 }
 
 int fn_801C0440(void *arg0) {
