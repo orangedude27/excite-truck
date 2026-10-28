@@ -2381,7 +2381,7 @@ extern "C" s32 fn_801CA070(s32 *arg0) {
  };
  char *base=lbl_80336B00;
  s32 handle;
- s32 i, offset;
+ s32 offset, i;
  s32 value;
  Dummy *obj;
  handle=fn_802E367C();
