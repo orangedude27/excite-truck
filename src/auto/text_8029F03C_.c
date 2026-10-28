@@ -148,6 +148,7 @@ loop:
 check:
     if (i < baseptr[1]) goto loop;
 }
+#pragma use_lmw_stmw reset
 
 #pragma push
 #pragma scheduling invalid_target
