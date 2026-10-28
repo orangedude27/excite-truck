@@ -832,6 +832,8 @@ extern "C" void fn_802A30BC(void* arg0, s32 arg1) {
     *(s32*)((char*)arg0 + 4) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(&stack[0x18], (void*)lbl_80349A40, arg1);
 }
 
+#pragma push
+#pragma processor 750
 #pragma paired off
 #pragma paired_single off
 #pragma scheduling invalid_target
