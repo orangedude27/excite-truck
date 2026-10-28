@@ -162,10 +162,10 @@ void fn_8024EA1C(s32 arg0) {
     s32 *secondary;
     s32 choiceBase;
     s32 selected;
-    u8 *dst;
-    u8 *src;
-    s32 count;
-    u8 c;
+    register u8 *src;
+    register u8 c;
+    register s32 count;
+    register u8 *dst;
 
     if (lbl_80498C48[4] != 0) {
         ((s32 *(*)(s32, s32))fn_80016BC8)(base, 0)[0] =
@@ -188,12 +188,17 @@ void fn_8024EA1C(s32 arg0) {
     }
 
     {
+        void *object = *(void **)((u8 *)arg0 + 0x4C);
         s32 value = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0xCC) +
                              *(s32 *)((u8 *)arg0 + 0x2C) * 0x14 + 0x10);
         if (value == 0) {
-            value = *(s32 *)((u8 *)secondary + selected * 4 + 0x64);
+            goto lookup_value;
         }
-        fn_80255918(*(void **)((u8 *)arg0 + 0x4C), value);
+        goto use_value;
+    lookup_value:
+        value = *(s32 *)((u8 *)secondary + selected * 4 + 0x64);
+    use_value:
+        fn_80255918(object, value);
     }
 
     fn_801345D8((u8 *)arg0 + 0xE0, 0x100, lbl_8034287C,
@@ -2163,5 +2168,3 @@ s32 fn_802524BC(void *arg0, s32 arg1) {
     s32 *base = *(s32 **)((char *)arg0 + 4);
     return *(s32 *)((char *)base + offset + 0x44);
 }
-#pragma push
-#pragma opt_common_subs off
