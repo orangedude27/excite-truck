@@ -822,7 +822,7 @@ extern int fn_802BF4F0(void);
 extern int lbl_8055F7F4;
 extern int lbl_8055F7FC;
 extern void fn_80287B38(void *);
-extern void fn_8029C450();
+extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
 #pragma push
 #pragma processor 750
