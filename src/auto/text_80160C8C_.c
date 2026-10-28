@@ -868,8 +868,18 @@ extern s32 fn_80161D14(void);
 extern s32 fn_8023BEC4(s32, void *);
 extern s32 fn_802E4A10(void);
 extern s32 fn_802E7128(void);
-extern int lbl_8032F744;
-extern int lbl_8032F750;
+#pragma cplusplus on
+struct Obj_80161F10 {
+    virtual void unused0();
+    virtual s32 has(const char *);
+    virtual void unused2();
+    virtual void set(const char *);
+    virtual void unused4();
+    virtual s32 index(const char *);
+};
+#pragma cplusplus off
+extern char lbl_8032F744[];
+extern char lbl_8032F750[];
 extern s32 lbl_8055A0BC;
 extern s32 lbl_8055A0C0;
 #pragma push
