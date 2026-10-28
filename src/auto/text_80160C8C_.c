@@ -896,8 +896,6 @@ extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     s32 value;
     void *obj;
     void *subobj;
-    register void *label1 = &lbl_8032F744;
-    register void *label2 = &lbl_8032F750;
 
     fn_80161D14();
     value = fn_80161E40(arg0);
@@ -908,16 +906,16 @@ extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     manager = *(s32 **)((char *)fn_80016464(0) + 4);
     item = *(s32 **)((char *)fn_800165DC((s32)manager) + 4);
     subobj = *(void **)((char *)obj + 0x20);
-    if (((s32 (*)(void *, void *))(*(void **)(*(void ***)subobj + 3)))(subobj, label1)) {
+    if (((Obj_80161F10 *)subobj)->has(lbl_8032F744)) {
         subobj = *(void **)((char *)obj + 0x20);
-        ((void (*)(void *, void *))(*(void **)(*(void ***)subobj + 5)))(subobj, label1);
+        ((Obj_80161F10 *)subobj)->set(lbl_8032F744);
         item = *(s32 **)((char *)fn_8001668C(0) + 4);
     }
     selection = *(s32 *)((char *)fn_80016464((s32)manager) + 0x50);
     subobj = *(void **)((char *)obj + 0x20);
-    if (((s32 (*)(void *, void *))(*(void **)(*(void ***)subobj + 3)))(subobj, label2)) {
+    if (((Obj_80161F10 *)subobj)->has(lbl_8032F750)) {
         subobj = *(void **)((char *)obj + 0x20);
-        index = ((s32 (*)(void *, void *))(*(void **)(*(void ***)subobj + 7)))(subobj, label2);
+        index = ((Obj_80161F10 *)subobj)->index(lbl_8032F750);
         selection = *(s32 *)((char *)fn_80016544((s32)item) + index * 4 + 0x64);
     }
     fn_8000DA10();
@@ -1965,7 +1963,6 @@ void fn_80164F50(void *arg0) {
     extern void fn_802A95A8(f32 *, f32 *, f32, f32);
     extern void fn_80276CB0(void *, s32);
     extern void fn_801DF380(void *, s32, void (*)(void), s32);
-    extern void fn_80161438(void);
     extern u8 lbl_8055E2DC;
     extern u8 lbl_8032F588[];
     extern u8 lbl_8042FDEC[];
