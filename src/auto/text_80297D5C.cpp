@@ -617,22 +617,33 @@ extern "C" void fn_80299628(void* arg0) {
     fn_802C8D74();
 }
 
+#pragma scheduling invalid_target
 extern "C" int fn_802996B0(void *arg0, int *out) {
- register int state, best=-1, found=0, output=0;
- state=*(int*)((char*)arg0+0x34);
- if(state==0){*out=output;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0x38)<*(float*)((char*)arg0-8))){best=0;found=1;}
- output=1; state=*(int*)((char*)arg0+0x74);
- if(state==0){*out=output;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0x78)<*(float*)((char*)arg0+(best<<6)+0x38))){best=1;found=1;}
- output=2; state=*(int*)((char*)arg0+0xB4);
- if(state==0){*out=output;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0xB8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=2;found=1;}
- output=3; state=*(int*)((char*)arg0+0xF4);
- if(state==0){*out=output;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=3;found=1;}
- if(found)*out=best;
- return found;
+    register int output = 0;
+    register int state;
+    register int best = -1;
+    register int found = 0;
+
+    state = *(int *)((char *)arg0 + 0x34);
+    if (state == 0) { *out = output; return 1; }
+    if (state == 2 && (!found || *(float *)((char *)arg0 + 0x38) < *(float *)((char *)arg0 + (best << 6) + 0x38))) { best = 0; found = 1; }
+
+    output = 1;
+    state = *(int *)((char *)arg0 + 0x74);
+    if (state == 0) { *out = output; return 1; }
+    if (state == 2 && (!found || *(float *)((char *)arg0 + 0x78) < *(float *)((char *)arg0 + (best << 6) + 0x38))) { best = 1; found = 1; }
+
+    output = 2;
+    state = *(int *)((char *)arg0 + 0xB4);
+    if (state == 0) { *out = output; return 1; }
+    if (state == 2 && (!found || *(float *)((char *)arg0 + 0xB8) < *(float *)((char *)arg0 + (best << 6) + 0x38))) { best = 2; found = 1; }
+
+    output = 3;
+    state = *(int *)((char *)arg0 + 0xF4);
+    if (state == 0) { *out = output; return 1; }
+    if (state == 2 && (!found || *(float *)((char *)arg0 + 0xF8) < *(float *)((char *)arg0 + (best << 6) + 0x38))) { best = 3; found = 1; }
+    if (found) *out = best;
+    return found;
 }
 
 extern "C" void *fn_802997F4(void *arg0, int arg1) {
@@ -1255,6 +1266,53 @@ extern "C" void fn_8029B1B8(void* arg0) {
     int v = *(int*)(p + 0x1F0);
     *(float*)(p + 0x1F8) = lbl_80564590 / (float)*(int*)(p + 0x1EC);
     *(int*)(p + 0x1F4) = 0x10 - (v << 1);
+}
+
+extern "C" void *fn_802C86DC(void);
+extern "C" void fn_8029B274(void *, float *, unsigned char, void *, void *, float, float);
+extern "C" void fn_8029B6E4(void *arg0) {
+    float vector[3];
+    float scaleFactor;
+    void *context;
+    void *transform;
+    char *entry;
+    char *item;
+    int i;
+
+    context = fn_802C86DC();
+    transform = (char *)fn_802C86DC() + 0xC;
+    scaleFactor = lbl_805645C8;
+    entry = (char *)arg0;
+    item = (char *)arg0;
+    i = 0;
+
+    while (i < fn_80287B14()) {
+        if (*(unsigned char *)(entry + 0x35) != 0) {
+            void *info = fn_80288208(i);
+            int count = *(int *)((char *)info + 0x24);
+            void *objectInfo = info;
+            int j = 0;
+
+            while (j < count) {
+                void *object = fn_80288060(objectInfo, j);
+                int value = fn_80287B24(i);
+                fn_801BFD34(item + 0x24, (char *)object + 0x24, value);
+                fn_80015B20(item, object, value);
+
+                float scale = *(volatile float *)(entry + 0x30);
+                vector[0] = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
+                vector[1] = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
+                vector[2] = *(float *)(item + 0x2C) + *(float *)(item + 0x14) * scale;
+                float finalScale = *(volatile float *)(entry + 0x30);
+                fn_8029B274(arg0, vector, *(unsigned char *)(entry + 0x34),
+                            context, transform, scaleFactor * finalScale, scale);
+                ++j;
+            }
+        }
+        entry += 0x38;
+        item += 0x38;
+        ++i;
+    }
 }
 
 extern "C" void* fn_80288060(void*, int);
