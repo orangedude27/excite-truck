@@ -89,10 +89,10 @@ void WPADiSamplingCallback(s32 chan, s32 result) {
 }
 
 void *FindContainHeap_(MEMList *list, u32 addr) {
-    MEMiHeapHead *found;
-    MEMiHeapHead *block;
-    MEMiHeapHead *child;
     MEMiHeapHead *heap;
+    MEMiHeapHead *child;
+    MEMiHeapHead *block;
+    MEMiHeapHead *found;
 
     heap = 0;
     while ((heap = (MEMiHeapHead *)MEMGetNextListObject(list, heap)) != 0) {
@@ -202,69 +202,55 @@ static inline MEMiExpHeapMBlock* RemoveMBlock_(MEMiExpHeapMBlockList* list, MEMi
     return prev;
 }
 
+static inline MEMiExpHeapMBlock* InitMBlock_(void** region, u16 state) {
+    MEMiExpHeapMBlock* mblock = (MEMiExpHeapMBlock*)region[0];
+    mblock->state = state;
+    mblock->settings = 0;
+    mblock->size = (u32)region[1] - ((u32)mblock + sizeof(MEMiExpHeapMBlock));
+    mblock->prev = 0;
+    mblock->next = 0;
+    return mblock;
+}
+
+static inline MEMiExpHeapMBlock* InitFreeMBlock_(void** region) {
+    return InitMBlock_(region, 0x4652);
+}
+
 s32 RecycleRegion_(MEMiExpHeapHead *exp, void **region) {
-    void *rStart;
-    void *rEnd;
+    void *reg[2];
     MEMiExpHeapMBlock *it;
     MEMiExpHeapMBlock *prev;
     MEMiExpHeapMBlock *mblock;
 
     prev = 0;
-    rStart = region[0];
-    rEnd = region[1];
+    reg[0] = region[0];
+    reg[1] = region[1];
 
     for (it = exp->freeMBlocks.head; it != 0; it = it->next) {
         if ((u32)it < (u32)region[0]) {
             prev = it;
         } else {
             if ((u32)it == (u32)region[1]) {
-                rEnd = (void *)((u32)it + it->size + 0x10);
-                {
-                    MEMiExpHeapMBlock *p = it->prev;
-                    MEMiExpHeapMBlock *n = it->next;
-                    if (p != 0) {
-                        p->next = n;
-                    } else {
-                        exp->freeMBlocks.head = n;
-                    }
-                    if (n != 0) {
-                        n->prev = p;
-                    } else {
-                        exp->freeMBlocks.tail = p;
-                    }
-                }
+                reg[1] = (void *)((u32)it + it->size + sizeof(MEMiExpHeapMBlock));
+                RemoveMBlock_(&exp->freeMBlocks, it);
             }
             break;
         }
     }
 
-    if (prev != 0 && (void *)((u32)prev + prev->size + 0x10) == region[0]) {
-        rStart = prev;
-        {
-            MEMiExpHeapMBlock *p = prev->prev;
-            MEMiExpHeapMBlock *n = prev->next;
-            if (p != 0) {
-                p->next = n;
-            } else {
-                exp->freeMBlocks.head = n;
-            }
-            if (n != 0) {
-                n->prev = p;
-            } else {
-                exp->freeMBlocks.tail = p;
-            }
-            prev = p;
-        }
+    if (prev != 0 && (void *)((u32)prev + prev->size + sizeof(MEMiExpHeapMBlock)) == region[0]) {
+        reg[0] = prev;
+        prev = RemoveMBlock_(&exp->freeMBlocks, prev);
     }
 
-    if ((u32)rEnd - (u32)rStart < 0x10) {
+    if ((u32)reg[1] - (u32)reg[0] < sizeof(MEMiExpHeapMBlock)) {
         return 0;
     }
 
-    mblock = (MEMiExpHeapMBlock *)rStart;
+    mblock = (MEMiExpHeapMBlock *)reg[0];
     mblock->state = 0x4652;
     mblock->settings = 0;
-    mblock->size = (u32)rEnd - ((u32)rStart + 0x10);
+    mblock->size = (u32)reg[1] - ((u32)reg[0] + sizeof(MEMiExpHeapMBlock));
     mblock->next = 0;
     mblock->prev = prev;
 
@@ -496,7 +482,9 @@ u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead *heap, s32 align) {
     return result;
 }
 
-MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 align, u32 unitSize, u16 opt) {
+#pragma push
+#pragma use_lmw_stmw off
+MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 align, u16 opt) {
     u32 base = ((u32)start + 3) & ~3;
     u32 end = ((u32)start + size) & ~3;
     u32 area = base + 0x3C;
@@ -506,12 +494,12 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 align, u32 uni
     u32 count;
     u32 next;
 
-    if (base > end) {
+    if ((s32)(base - end) > 0) {
         return 0;
     }
     head = (area + align + 7) & mask;
     stride = (align + unitSize - 1) & mask;
-    if (head > end) {
+    if ((s32)(head - end) > 0) {
         return 0;
     }
     count = (end - head) / stride;
@@ -532,7 +520,7 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 align, u32 uni
     *(u32 *)next = 0;
     return (MEMiHeapHead *)base;
 }
-
+#pragma pop
 BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) {
     u8 *base = (u8 *)heap;
     u32 size;
