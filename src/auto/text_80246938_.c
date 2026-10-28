@@ -400,6 +400,7 @@ void fn_80247880(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma optimization_level 3
 void fn_802478A4(void) {
     extern s32 lbl_802FA3F0[];
     extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
