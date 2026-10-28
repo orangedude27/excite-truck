@@ -157,8 +157,6 @@ void *fn_8024E920(void *arg0, s32 arg1) {
 #pragma push
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
-#pragma opt_propagation off
-#pragma optimization_level 2
 void fn_8024EA1C(s32 arg0) {
     s32 base = fn_8001668C(arg0 + 0x60, 0);
     s32 *secondary;
