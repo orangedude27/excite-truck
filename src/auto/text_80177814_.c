@@ -128,24 +128,43 @@ void fn_80177A54(void) {
     lbl_8055E3C0 = 0;
 }
 
-void fn_80177CEC(void) {
+#pragma cplusplus on
+extern "C" void fn_80177CEC(void) {
+    class RotationObject {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual int isValid();
+    };
     int index = lbl_8055E43C;
-    void *object;
+    RotationObject *object;
     Vec right;
     Vec up;
     Vec forward;
     float a, b, c, d, e, f;
     if (index >= lbl_8055E438) { index = 0; lbl_8055E43C = 0; }
-    object = lbl_8055E434[index];
-    if (object != 0 && ((int (*)(void *))(*(void ***)object)[0x40 / 4])(object) != 0) {
-        a = *(float *)((char *)object + 0x44);
+    object = (RotationObject *)lbl_8055E434[index];
+    if (object != 0 && object->isValid() != 0) {
+        c = *(float *)((char *)object + 0x44);
         b = *(float *)((char *)object + 0x40);
-        c = *(float *)((char *)object + 0x3C);
-        forward.x = c; forward.y = b; forward.z = a;
-        d = *(float *)((char *)object + 0x5C);
+        a = *(float *)((char *)object + 0x3C);
+        forward.x = a; forward.y = b; forward.z = c;
+        f = *(float *)((char *)object + 0x5C);
         e = *(float *)((char *)object + 0x58);
-        f = *(float *)((char *)object + 0x54);
-        right.x = f; right.y = e; right.z = d;
+        d = *(float *)((char *)object + 0x54);
+        right.x = d; right.y = e; right.z = f;
         PSVECCrossProduct(&right, &forward, &up);
         PSVECNormalize(&forward, &forward);
         PSVECNormalize(&up, &up);
@@ -162,7 +181,7 @@ void fn_80177CEC(void) {
     }
     lbl_8055E43C++;
 }
-
+#pragma cplusplus off
 void fn_80177EE4(void) {
     int i;
     if (lbl_8055E44C != 0) {
