@@ -886,7 +886,8 @@ extern s32 lbl_8055A0C0;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_80161F10(s32 arg0, s32 arg1) {
+#pragma cplusplus on
+extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     s32 pad[2];
     s32 *manager;
     s32 *item;
