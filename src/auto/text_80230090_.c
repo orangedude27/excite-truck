@@ -76,20 +76,18 @@ extern void fn_80233354(s32, s32, s32, s32, f32, f32, f32, f32);
 void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
                  f32 farg0, f32 farg1, f32 farg2, f32 farg3,
                  f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
-    f32 spC;
-    f32 sp8;
-    f32 temp_f1;
-    f32 temp_f26;
-    f32 temp_f27;
-    f32 temp_f28;
-    f32 temp_f4;
+    f32 spC, sp8;
+    f32 temp_f1, temp_f3, temp_f4;
+    f32 temp_f28, temp_f27, temp_f26;
     f32 var_f2;
     s32 var_r0;
 
     (void)arg_sp0;
-    temp_f28 = farg3 * fn_8023293C(arg1, arg0, lbl_80563610);
+    temp_f1 = fn_8023293C(arg1, arg0, lbl_80563610);
+    temp_f3 = farg5 * farg4;
+    temp_f28 = farg3 * temp_f1;
     temp_f27 = lbl_8056362C - farg6;
-    temp_f1 = farg1 + (farg5 * farg4);
+    temp_f1 = farg1 + temp_f3;
     temp_f26 = lbl_80563630 + farg6;
     temp_f4 = temp_f1 - temp_f28;
     spC = temp_f1;
@@ -112,16 +110,14 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 }
 #pragma paired_single reset
 #pragma paired reset
-#pragma cplusplus on
-extern "C" void fn_80230924(void *, f32, f32, f32, f32, f32);
-extern "C" void fn_802C8B98(s32, s32);
-extern "C" void fn_802C8D74(void);
-extern "C" void fn_802C8DB8(void);
-extern "C" void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
-extern "C" s32 fn_80230B9C(u32);
-extern "C" f32 lbl_80563614;
-extern "C" u16 lbl_802F9FD8[6];
 void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
+    extern void fn_802C8B98(s32, s32);
+    extern void fn_802C8D74(void);
+    extern void fn_802C8DB8(void);
+    extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
+    extern s32 fn_80230B9C(u32);
+    extern f32 lbl_80563614;
+    extern u16 lbl_802F9FD8[6];
     struct Frame {
         u16 indices[6];
         u8 pad1[4];
@@ -146,7 +142,6 @@ void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
     fn_802C8DB8();
     fn_802C8D74();
 }
-#pragma cplusplus reset
 
 void fn_80230A68(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     u32 *p = (u32 *)arg0;
