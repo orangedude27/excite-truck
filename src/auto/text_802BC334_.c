@@ -270,7 +270,7 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
 
 extern void fn_802BC588(void *, void *, void *, void *, void *);
 extern int fn_802C1500(void *, int);
-extern void *fn_801FA8E0(void *, int);
+extern void *fn_801FA8E0(void *, void *, int);
 extern int lbl_8055FAB0;
 extern float lbl_80564D14, lbl_80564D24, lbl_80564D28;
 void fn_802BCA8C(void *arg0, void *arg1, void *arg2) {
@@ -425,10 +425,10 @@ extern "C" void fn_802BCBDC(void) {
 }
 
 void fn_802BCF04(void) {
-    register void *base;
-    register char *entry;
-    register int i;
-    register int offset;
+    void *base;
+    char *entry;
+    int i;
+    int offset;
 
     base = *(void **)&lbl_804C00D4;
     i = 0;
