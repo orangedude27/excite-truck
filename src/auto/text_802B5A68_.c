@@ -1467,8 +1467,8 @@ extern char lbl_8055FA59;
 extern "C" s32 fn_802B8998(s32 arg0) {
     struct Handler {
         virtual void method0();
-        virtual void method1();
         virtual void method2();
+        virtual void method1();
         virtual void method3();
         virtual void method4();
         virtual void method5();
@@ -1478,15 +1478,15 @@ extern "C" s32 fn_802B8998(s32 arg0) {
     };
 
     /* Match note: retain target virtual dispatch, unsigned zero tests, and explicit state writes. */
-    if (lbl_8055FA48 != 0) {
+    if (lbl_8055FA48) {
         switch (arg0) {
         case 0x125:
         case 0x127:
             if (lbl_8055FA38 == 0)
-                fn_802B5C24((u32)arg0 == 0x125U ? -1 : 1);
+                fn_802B5C24(arg0 == 0x125U ? -1 : 1);
             *(s32 *)&lbl_804BFF80 = 8;
-            *(s32 *)&lbl_8055FA44 = -1;
             *(u8 *)((u8 *)&lbl_804BFF80 + 0x34) = 0;
+            *(s32 *)&lbl_8055FA44 = -1;
             *(u8 *)((u8 *)&lbl_804BFF80 + 0x14) = 0;
             break;
         case 0x5:
