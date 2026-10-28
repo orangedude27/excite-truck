@@ -387,6 +387,7 @@ extern void GXSetZMode(int, int, int);
 extern void GXSetColorUpdate(int);
 extern void fn_802CFF50(void);
 #pragma push
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802D9418(void) {
     void *obj;
@@ -426,26 +427,44 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     }
 }
 
-void fn_802D9628(void *arg0, s32 arg1, s32 arg2, u8 arg3) {
-    int mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
-    int fmt = (int)GXGetTexObjFmt((char *)arg0 + 0x24);
-    int wrap = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFF;
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802D9628(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    int mip;
+    int wrap;
+    int base;
+    int tile;
+    unsigned int ysign;
+    unsigned int yoff;
+    unsigned int xsign;
+    unsigned int xoff;
+    int pixel;
+
+    mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
+    wrap = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFFFF;
     GXGetTexObjWrapT((char *)arg0 + 0x24);
+    base = (int)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000;
     if (mip == 0) {
-        int x = (arg1 * arg2) >> 8;
-        int y = (arg1 * arg2) >> 10;
-        int row = ((arg1 / 8) + ((arg2 / 8) * (wrap / 8))) << 5;
-        int i = (x + y) * 4;
-        if (arg2 & 1) {
-            u8 *p = (u8 *)((char *)arg0 + 0x2C + i);
-            *p = (arg3 >> 4) & ~0xF0 | (*p & 0xF0);
+        tile = arg1 / 8 + (arg2 / 8) * (wrap / 8);
+        base += tile << 5;
+
+        ysign = (unsigned int)arg2 >> 31;
+        yoff = (arg2 << 29) - ysign;
+        xsign = (unsigned int)arg1 >> 31;
+        xoff = (arg1 << 29) - xsign;
+        pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign +
+                      ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
+
+        if ((arg1 & 1) == 0) {
+            unsigned char old = *(unsigned char *)(base + pixel);
+            *(unsigned char *)(base + pixel) = (unsigned char)(((arg3 >> 4) & 0xF) | (old & 0xF0));
+        } else {
+            unsigned char old = *(unsigned char *)(base + pixel);
+            *(unsigned char *)(base + pixel) = (unsigned char)((arg3 & 0xF0) | (old & 0x0F));
         }
-                  else {
-            u8 *p = (u8 *)((char *)arg0 + 0x2C + i);
-            *p = (arg3 & 0xF0) & ~0xF | (*p & 0xF);
-          }
-      }
-  }
+    }
+}
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
