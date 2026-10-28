@@ -566,8 +566,6 @@ long fn_80210570(void) {
         return 0;
     }
 }
-#pragma opt_dead_assignments reset
-#pragma optimize_for_size reset
 
  
 extern long fn_80145E70(void *);
