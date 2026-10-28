@@ -466,6 +466,7 @@ check:
 }
 
 #pragma push
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8001C9C4(void) {
