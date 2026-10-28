@@ -107,35 +107,47 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
 extern s32 fn_801784DC(f32 *, f32 *, s32, s32, s32, f32);
 extern void fn_801B8040(void *, void *, f32);
 extern f32 lbl_805625BC, lbl_805625C8, lbl_805625CC, lbl_805625D0, lbl_805625D4, lbl_805625D8;
+#pragma scheduling invalid_target
 void fn_801B07B4(void *arg0, void *arg1) {
-    void *sp18 = *(void **)arg1;
-    s32 first = (s32)sp18;
-    f32 sp1C = *(f32 *)((u8 *)arg1 + 4);
-    s32 sp20 = *(s32 *)((u8 *)arg1 + 8);
-    f32 sp14, sp10, spC, sp8;
+    register s32 first = *(s32 *)arg1;
+    f32 argAngle = *(f32 *)((u8 *)arg1 + 4);
+    s32 argWord = *(s32 *)((u8 *)arg1 + 8);
+    volatile s32 sp20;
+    volatile f32 sp1C;
+    void * volatile sp18;
+    volatile s32 sp14, sp10, spC;
+    volatile f32 sp8;
+    f32 x, scale, angle, finalPos, finalScale;
+
+    sp18 = (void *)first;
+    sp1C = argAngle;
+    sp20 = argWord;
     while (fn_801B06D8(sp18, (u8 *)sp18 + 8, first))
         sp18 = *(void **)((u8 *)sp18 + 0x14);
-    fn_801B8040(arg0, &sp18, lbl_805625BC);
-    *(s32 *)((u8 *)arg0 + 0x3C) = 0;
-    {
-        f32 scale = lbl_805625C8;
-        *(f32 *)((u8 *)arg0 + 0x30) = *(f32 *)((u8 *)arg0 + 0x18) * scale;
-        *(f32 *)((u8 *)arg0 + 0x34) = *(f32 *)((u8 *)arg0 + 0x1C) * scale;
-        *(f32 *)((u8 *)arg0 + 0x38) = *(f32 *)((u8 *)arg0 + 0x20) * scale;
+    fn_801B8040(arg0, (void *)&sp18, lbl_805625BC);
+    x = *(f32 *)((u8 *)arg0 + 0x18);
+    scale = lbl_805625C8;
+    *(f32 *)((u8 *)arg0 + 0x30) = x * scale;
+    *(f32 *)((u8 *)arg0 + 0x34) = *(f32 *)((u8 *)arg0 + 0x1C) * scale;
+    *(volatile s32 *)((u8 *)arg0 + 0x3C) = 0;
+    *(f32 *)((u8 *)arg0 + 0x38) = *(f32 *)((u8 *)arg0 + 0x20) * scale;
+    spC = *(s32 *)((u8 *)arg0 + 0x24);
+    sp10 = *(s32 *)((u8 *)arg0 + 0x28);
+    sp14 = *(s32 *)((u8 *)arg0 + 0x2C);
+    if (*(volatile s32 *)&lbl_8055E670 &&
+        fn_80139EC4(*(f32 *)(void *)&spC, *(f32 *)(void *)&sp14)) {
+        angle = *(f32 *)(void *)&sp10;
+        *(f32 *)(void *)&sp10 = angle + lbl_805625CC;
+        if (fn_801784DC((f32 *)(void *)&spC, (f32 *)(void *)&sp8, 0, 0, 0,
+                        angle))
+            *(f32 *)((u8 *)arg0 + 0x28) = lbl_805625D0 + *(f32 *)(void *)&sp8;
     }
-    spC = *(f32 *)((u8 *)arg0 + 0x24);
-    sp10 = *(f32 *)((u8 *)arg0 + 0x28);
-    sp14 = *(f32 *)((u8 *)arg0 + 0x2C);
-    if (lbl_8055E670 && fn_80139EC4(spC, sp14)) {
-        sp10 += lbl_805625CC;
-        if (fn_801784DC(&spC, &sp8, 0, 0, 0, sp10))
-            *(f32 *)((u8 *)arg0 + 0x28) = lbl_805625D0 + sp8;
-    }
-    *(f32 *)((u8 *)arg0 + 0x34) = lbl_805625D8;
-    *(f32 *)((u8 *)arg0 + 0x28) += lbl_805625D4;
+    finalPos = *(f32 *)((u8 *)arg0 + 0x28) + lbl_805625D4;
+    finalScale = lbl_805625D8;
+    *(f32 *)((u8 *)arg0 + 0x34) = finalScale;
+    *(f32 *)((u8 *)arg0 + 0x28) = finalPos;
 }
-
-#pragma pop
+#pragma scheduling on
 u32 fn_801B08E8(u32 arg0, u32 arg1, s32 arg2) {
     u32 var_r4;
     var_r4 = arg1;
@@ -199,51 +211,55 @@ extern s32 fn_801B8928(s32, void *, s32);
 extern void fn_801B0BB0(void *, void *);
 extern void fn_801B07B4(void *, void *);
 extern void fn_801B08FC(void *, void *);
-void fn_801B0C78(s32 arg0) {
-    s16 sp60;
-    u8 sp20[0x20];
-    s32 sp14;
-    f32 sp18;
-    s32 sp1C;
-    u32 sp8[3];
+#pragma cplusplus on
+extern "C" void fn_801B0C78(s32 arg0) {
+    struct Item {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void *getPayload(); virtual void *getMetadata();
+    };
+    struct Context {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual s32 check(void *, s32, s32, s32);
+    };
+    struct Scratch {
+        u32 raw[3]; s32 value; f32 weight; s32 limit;
+        u8 request[0x20]; u8 pad[0x20]; s16 marker;
+    } scratch;
     void *base = lbl_8055E684;
-    void *obj = (u8 *)base + (arg0 << 7);
-    void *result;
-    s32 isResource;
+    Item *obj = (Item *)((u8 *)base + (arg0 << 7));
+    void *meta;
+    bool isResource;
 
-    sp60 = -1;
-    result = ((void *(*)(void *, void *))(*(void ***)obj)[8])(obj, base);
-    isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
+    scratch.marker = -1;
+    meta = obj->getMetadata();
+    isResource = *(u32 *)((u8 *)meta + 0x10) == 0x50434152;
     if (isResource) {
         fn_801B30D0(arg0);
         fn_801B30E0(arg0);
     }
-    if (fn_801B8928(arg0, sp20, 0) != 0) goto done;
+    if (fn_801B8928(arg0, scratch.request, 0) != 0) goto done;
     if (lbl_8055E68C != 0 &&
-        ((s32 (*)(void *, s32, s32, s32))(*(void ***)lbl_8055E68C)[10])
-            (sp20, arg0, *(s32 *)((u8 *)base + 0x7C), 0) != 0) goto done;
-    sp14 = 0;
-    sp1C = 0x2710;
-    sp18 = lbl_805625BC;
+        ((Context *)lbl_8055E68C)->check(scratch.request, arg0,
+            *(s32 *)((u8 *)*(void * volatile *)&lbl_8055E684 + 0x7C), 0) != 0) goto done;
+    scratch.value = 0;
+    scratch.limit = 0x2710;
+    scratch.weight = lbl_805625BC;
     if (isResource) {
-        void *payload = ((void *(*)(void *))(*(void ***)obj)[7])(obj);
-        fn_801B0BB0(sp8, payload);
-        sp14 = sp8[0];
-        sp18 = *(f32 *)&sp8[1];
-        sp1C = sp8[2];
+        fn_801B0BB0(scratch.raw, obj->getPayload());
+        scratch.value = scratch.raw[0];
+        scratch.weight = *(f32 *)&scratch.raw[1];
+        scratch.limit = scratch.raw[2];
     } else {
-        sp14 = *(s32 *)((u8 *)obj + 0x4C);
-        sp18 = *(f32 *)((u8 *)obj + 0x50);
-        sp1C = *(s32 *)((u8 *)obj + 0x54);
+        scratch.value = *(s32 *)((u8 *)obj + 0x4C);
+        scratch.weight = *(f32 *)((u8 *)obj + 0x50);
+        scratch.limit = *(s32 *)((u8 *)obj + 0x54);
     }
-    fn_801B07B4(sp20, &sp14);
-    fn_801B08FC(obj, sp20);
-    return;
+    fn_801B07B4(scratch.request, &scratch.value);
 done:
-    fn_801B08FC(obj, sp20);
+    fn_801B08FC(obj, scratch.request);
 }
-
-#pragma pop
+#pragma cplusplus off
 s32 fn_801B0DE0(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x3C);
 }
@@ -347,33 +363,62 @@ extern "C" s32 fn_801B1130(s32 arg0) {
     }
     return var_r31;
 }
-#pragma cplusplus reset
-s32 fn_801B11DC(const void *arg0, const void *arg1) {
-    extern f32 lbl_80558DC4;
-    u32 *a = *(u32 **)arg0;
-    u32 *b = *(u32 **)arg1;
-    void *base = lbl_8055E684;
-    void *obj0 = (u8 *)base + (a[0] << 7);
-    void *obj1 = (u8 *)base + (b[0] << 7);
-    void **vt0 = *(void ***)obj0;
-    void **vt1 = *(void ***)obj1;
-    s32 cmp0 = ((s32 (*)(void *, s32, void *))vt0[4])(obj0, b[0], base);
-    s32 cmp1 = ((s32 (*)(void *))vt1[4])(obj1);
-    s32 next0 = *(s32 *)((u8 *)obj0 + 0x10);
-    s32 next1 = *(s32 *)((u8 *)obj1 + 0x10);
-    if (cmp0 == 0 && cmp1 == 0) {
-        f32 f0 = *(f32 *)((u8 *)obj0 + 0x70);
-        f32 f1 = *(f32 *)((u8 *)obj1 + 0x70);
-        if (__fabsf(f0 - f1) <= lbl_80558DC4) return 0;
-        if (f0 < f1) return 1;
+#pragma cplusplus on
+#pragma scheduling invalid_target
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
+    extern int __cntlzw(unsigned int);
+    struct Item {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void *get();
+    };
+    u32 idx0 = *(volatile const u32 *)arg0;
+    u32 offset0;
+    u32 cutoff = *(volatile u32 *)&lbl_8055E680;
+    u32 offset1;
+    void *base = *(void * volatile *)&lbl_8055E684;
+    u32 idx1 = *(volatile const u32 *)arg1;
+    Item *obj0;
+    Item *obj1;
+    u32 flag0;
+    u32 flag1;
+    s32 key0;
+    s32 key1;
+    s32 tie0;
+    s32 tie1;
+    offset0 = idx0 << 7;
+    offset1 = idx1 << 7;
+    obj0 = (Item *)((u8 *)base + offset0);
+    obj1 = (Item *)((u8 *)base + offset1);
+    cutoff += 1;
+    flag0 = (u32)__cntlzw(*(u32 *)((u8 *)obj0 + 0x68) - cutoff) >> 5;
+    flag1 = (u32)__cntlzw(*(u32 *)((u8 *)obj1 + 0x68) - cutoff) >> 5;
+    key0 = *(s32 *)((u8 *)obj0->get() + 0x10);
+    key1 = *(s32 *)((u8 *)obj1->get() + 0x10);
+    tie0 = *(s32 *)((u8 *)obj0 + 0x74);
+    tie1 = *(s32 *)((u8 *)obj1 + 0x74);
+    if (flag0 != 0 && flag1 != 0) {
+        f32 a = *(f32 *)((u8 *)obj0 + 0x70);
+        f32 b = *(f32 *)((u8 *)obj1 + 0x70);
+        f32 difference = (f32)(double)__fabsf(a - b);
+        if (difference <= lbl_80558DC4) return 0;
+        if (b < a) return 1;
         return -1;
     }
-    if (cmp0 == 0) return -1;
-    if (cmp1 == 0) return 1;
-    if (next0 == next1) return *(s32 *)((u8 *)obj0 + 0x74) - *(s32 *)((u8 *)obj1 + 0x74);
-    return next0 - next1;
+    if (flag0 != 0) goto compare_keys;
+    if (flag1 == 0) goto compare_keys;
+    if (flag0 == 0) return 1;
+    return -1;
+compare_keys:
+    if (key0 == key1) return tie1 - tie0;
+    return key1 - key0;
 }
-
+#pragma pop
+#pragma scheduling on
+#pragma cplusplus off
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
 
 extern s32 fn_801B11DC(const void *, const void *);
@@ -1518,6 +1563,55 @@ void fn_801B30C0(s32 arg0, s32 arg1, s32 arg2) {
 void fn_801B30D0(s32 arg0) {
     fn_801B196C((s32)((u8 *)lbl_8055E684 + (arg0 << 7)), (s32)lbl_8055E684);
 }
+
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801B30E0(s32 index) {
+    void *record = (u8 *)lbl_8055E684 + (index << 7);
+    void *header = ((Dummy_801B30E0 *)record)->d5();
+    void *reference = *(void **)((u8 *)record + 0x40);
+    void *bestNode;
+    if (reference != 0) {
+        s32 bestDiff = 0x7FFFFFFF;
+        s32 referenceValue = *(s32 *)((u8 *)reference + 0x10);
+        void *parent = *(void **)((u8 *)header + 0x2C);
+        void *first = *(void **)((u8 *)parent + 0x1C);
+        void *node = first;
+        bestNode = 0;
+        do {
+            s32 difference = *(s32 *)((u8 *)node + 0x10) - referenceValue;
+            s32 sign = difference >> 31;
+            difference = (difference ^ sign) - sign;
+            if (difference < bestDiff) {
+                bestDiff = difference;
+                bestNode = node;
+            }
+            node = *(void **)((u8 *)node + 0x14);
+        } while (node != first);
+    } else {
+        bestNode = 0;
+    }
+    {
+        void *data = ((Dummy_801B30E0 *)record)->d6();
+        f32 scale = *(f32 *)((u8 *)data + 0x5BC);
+        f32 scaleX = *(f32 *)((u8 *)data + 0x54) * scale;
+        f32 scaleZ = *(f32 *)((u8 *)data + 0x5C) * scale;
+        f32 scaleY = *(f32 *)((u8 *)data + 0x58) * scale;
+        f32 x = *(f32 *)((u8 *)data + 0x94) + scaleX;
+        f32 y = *(f32 *)((u8 *)data + 0x98) + scaleY;
+        f32 z = *(f32 *)((u8 *)data + 0x9C) + scaleZ;
+        f32 slots[5];
+        slots[2] = x;
+        slots[3] = y;
+        slots[4] = z;
+        slots[0] = x;
+        slots[1] = z;
+        ((void (*)(void *, f32 *, s32, void *, f32, f32, f32, f32, f32, f32))fn_801353C8)(
+            header, slots, 0, bestNode, scaleZ, y, scaleY, x, scaleX, scale);
+    }
+}
+#pragma cplusplus off
+#pragma scheduling on
 
 #pragma push
 #pragma processor 750
