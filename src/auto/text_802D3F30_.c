@@ -171,46 +171,49 @@ extern s32 fn_802CFF64(s32);
 extern f32 lbl_804DB068[];
 extern f32 lbl_80564FF0;
 extern f64 lbl_80564FF8;
+#pragma scheduling invalid_target
 void fn_802D56D4(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
     extern f32 lbl_80564FF0;
-    extern f64 lbl_80564FF8;
     extern void fn_802D5680(void *);
-    s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
-    u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
+    register void *object = arg0;
+    register u8 *src = *(u8 **)((u8 *)object + 0x20);
+    register s32 count = *(s32 *)((u8 *)object + 0x1C);
     f32 *base = (f32 *)fn_802CFF64(count * 12);
-    f32 *out = base;
+    s32 i;
     if (base == 0) {
-        fn_802D5680(arg0);
+        fn_802D5680(object);
         return;
     }
-    if (count > 0) {
-        do {
-            u8 firstScale = src[0xE];
-            u8 firstIndex = src[0xC];
-            u8 secondIndex = src[0xD];
-            u8 secondScale = src[0xF];
-            f32 *first = (f32 *)((u8 *)lbl_804DB068 + firstIndex * 12);
-            f32 *second = (f32 *)((u8 *)lbl_804DB068 + secondIndex * 12);
-            f32 scale1 = lbl_80564FF0 * (f32)firstScale;
-            f32 scale2 = lbl_80564FF0 * (f32)secondScale;
-            f32 x = *(f32 *)(src + 0x0) + first[0] * scale1;
-            f32 y = *(f32 *)(src + 0x4) + first[1] * scale1;
-            f32 z = *(f32 *)(src + 0x8) + first[2] * scale1;
+    {
+        f32 factor = lbl_80564FF0;
+        register volatile f32 *out = base;
+        for (i = 0; i < count; i++) {
+            u8 a = src[0xE];
+            u8 b = src[0xC];
+            u8 c = src[0xD];
+            u8 d = src[0xF];
+            register f32 *first = (f32 *)((u8 *)lbl_804DB068 + b * 12);
+            register f32 *second = (f32 *)((u8 *)lbl_804DB068 + c * 12);
+            f32 weight1 = factor * (f32)a;
+            f32 weight2 = factor * (f32)d;
+            f32 x = *(f32 *)(src + 0x0) + first[0] * weight1;
+            f32 y = *(f32 *)(src + 0x4) + first[1] * weight1;
+            f32 z = *(f32 *)(src + 0x8) + first[2] * weight1;
             out[0] = x;
             out[1] = y;
             out[2] = z;
             src += 0x10;
-            out[0] = x + second[0] * scale2;
-            out[1] = y + second[1] * scale2;
-            out[2] = z + second[2] * scale2;
+            out[0] = x + second[0] * weight2;
+            out[1] = y + second[1] * weight2;
+            out[2] = z + second[2] * weight2;
             out += 3;
-        } while (--count != 0);
+        }
     }
     GXSetArray(9, base, 12);
-    GXSetArray(10, *(void **)((u8 *)arg0 + 0x24), 3);
-    GXCallDisplayList(*(void **)((u8 *)arg0 + 0x30), *(u32 *)((u8 *)arg0 + 0x2C));
+    GXSetArray(10, *(void **)((u8 *)object + 0x24), 3);
+    GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
 
 extern f32 *fn_802D2D04(void);
