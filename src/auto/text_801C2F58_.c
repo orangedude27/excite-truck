@@ -339,14 +339,14 @@ void fn_801C4B74(void) {
     }
 }
 #define UNK_80437D88_DEFINED
-typedef struct Unk_80437D88 {
+extern struct Unk_80437D88 {
     char pad_0[0x4D4];
     Vec f_4D4;
     Vec f_4E0;
     char pad_1[0x6F8 - 0x4EC];
     Vec f_6F8;
-} Unk_80437D88;
-extern Unk_80437D88 lbl_80437D88;
+} lbl_80437D88;
+typedef struct Unk_80437D88 Unk_80437D88;
 
 #pragma scheduling on
 s32 fn_801C5B60(void) {
@@ -966,6 +966,10 @@ void fn_801C7524(void) {
     sprintf(lbl_804380F0, lbl_8055AA54, *(f32 *)(lbl_8055E7F8 + index));
 }
 
+#pragma push
+#pragma paired off
+#pragma paired_single off
+#pragma scheduling invalid_target
 void fn_801C756C(void) {
     register f32 value;
     register u32 offset;
@@ -1006,11 +1010,7 @@ check:
 done:
     fn_801C957C(0);
 }
-
-#pragma push
-#pragma paired off
-#pragma paired_single off
-#pragma scheduling invalid_target
+#pragma pop
 void fn_801C7698(void) {
     s32 offset;
     s32 index;
