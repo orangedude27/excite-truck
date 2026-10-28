@@ -121,12 +121,13 @@ int fn_802D76DC(int arg0) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802D7780(void *arg0, void *arg1) {
-    register u32 filter = *(u32 *)((u8 *)arg1 + 0x10);
-    register u32 opts = *(u32 *)((u8 *)arg1 + 0x18);
-    register int wrapS = filter & 1;
-    register int wrapT = (filter & 2) != 0;
-    register u32 flags;
-    u32 bit0;
+    u32 filter = *(u32 *)((u8 *)arg1 + 0x10);
+    u32 opts = *(u32 *)((u8 *)arg1 + 0x18);
+    int wrapS = filter & 1;
+    int wrapT = (filter & 2) != 0;
+    u32 firstMode;
+    u32 transfer;
+    u8 modeByte;
     u32 id;
 
     if ((opts & 2) == 0) {
@@ -138,15 +139,13 @@ void fn_802D7780(void *arg0, void *arg1) {
     if (*(u8 *)((u8 *)arg0 + 0xCC) != 0)
         GXInitTexObjWrapMode((u8 *)arg0 + 0x78, wrapS, wrapT);
 
-    bit0 = *(u32 *)((u8 *)arg1 + 0x14) & 1;
-    *(u32 *)((u8 *)arg0 + 0xDC) = *(u32 *)((u8 *)arg1 + 0x0C);
-    *(u8 *)((u8 *)arg0 + 0xE4) = *(u8 *)((u8 *)arg1 + 0x1C);
-    flags = 0;
-    *(u32 *)((u8 *)arg0 + 0xE0) = flags;
-    if (bit0) {
-        flags |= 4;
-        *(u32 *)((u8 *)arg0 + 0xE0) = flags;
-    }
+    firstMode = *(u32 *)((u8 *)arg1 + 0x14);
+    transfer = *(u32 *)((u8 *)arg1 + 0x0C);
+    modeByte = *(u8 *)((u8 *)arg1 + 0x1C);
+    *(u32 *)((u8 *)arg0 + 0xDC) = transfer;
+    *(u8 *)((u8 *)arg0 + 0xE4) = modeByte;
+    *(u32 *)((u8 *)arg0 + 0xE0) = 0;
+    if (firstMode & 1) *(u32 *)((u8 *)arg0 + 0xE0) |= 4;
     if (*(u32 *)((u8 *)arg1 + 0x14) & 2)
         *(u32 *)((u8 *)arg0 + 0xE0) |= 2;
     if (*(u32 *)((u8 *)arg1 + 0x14) == 7)
@@ -609,9 +608,9 @@ int fn_802D972C(void *arg0, int arg1, int arg2) {
 }
 #pragma pop
 extern void DCFlushRange(void *, unsigned int);
-extern unsigned int GXGetTexBufferSize(unsigned short, unsigned short, int, int, int);
+extern unsigned int GXGetTexBufferSize(unsigned short, unsigned short, unsigned int, int, unsigned char);
 extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, unsigned int);
-extern void GXInitTexObjLOD(void *, int, int, int, int, int, float, float, float);
+extern void GXInitTexObjLOD(void *, int, int, float, float, float, int, int, int);
 extern float lbl_80565018;
 extern float lbl_8056501C;
 extern double lbl_80565020;
