@@ -1478,6 +1478,7 @@ void fn_801ACF94(void) {
         }
     }
 }
+#pragma scheduling 750
 
 extern float lbl_8056250C;
 extern float lbl_80562514;
