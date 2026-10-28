@@ -34,7 +34,7 @@ extern u8 lbl_802FCB98[];
 extern u8 lbl_802FCE18[];
 extern void fn_80130FCC(void *, s32, s32);
 extern void fn_801473F8(void *, void *, ...);
-extern char lbl_80558BA4[], lbl_80558BA8[], lbl_80558BAC[], lbl_80558BB4[];
+extern char lbl_80558BA4; extern char lbl_80558BA8[], lbl_80558BAC[], lbl_80558BB4[];
 extern f32 lbl_805603B8;
 void fn_80014B9C(void *);
 s32 fn_800151DC(void *);
