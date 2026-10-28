@@ -55,6 +55,7 @@ void fn_802924E8(void) {
 extern double fn_8002F234(float);
 extern float fn_80129DC4(int, float, float);
 extern float lbl_805644D0, lbl_805644D4, lbl_805644D8, lbl_805644DC, lbl_805644E0;
+#pragma processor 750
 void fn_802924F4(void) {
     float x, y, z, w, q;
     float one = lbl_805644D4;
@@ -73,7 +74,6 @@ void fn_802924F4(void) {
         *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
     }
 }
-
 void fn_80292618(void) {
 }
 
@@ -195,6 +195,66 @@ int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
     return 1;
 }
 
+extern void *fn_802C6B44(void);
+extern void fn_802C6C20(void *);
+extern int fn_802C7888(void *, int);
+extern char *fn_802C9C24(int);
+extern void *memset(void *, int, unsigned int);
+#pragma scheduling invalid_target
+void fn_80292CD8(void *arg0, int arg1, unsigned char *arg2) {
+    void *list;
+    char temp[0x2C];
+    char *src;
+    char c;
+    char *dst;
+    register int count;
+    int offset = arg1;
+    int cursor = (int)arg2;
+
+    list = fn_802C6B44();
+    memset(temp, 0, 0x2C);
+
+    dst = temp + 0x14;
+    count = 0x10;
+    goto copy_second;
+count_second:
+    count--;
+    if (count > 0) goto copy_second;
+    dst[-1] = 0;
+    goto copied_second;
+copy_second:
+    c = *(char *)cursor++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto count_second;
+copied_second:
+
+    *(int *)(temp + 0x10) = offset;
+    cursor = 0;
+    offset = 0;
+    goto check_list;
+copy_first:
+    src = fn_802C9C24(*(int *)((char *)list + 4) + offset);
+    dst = temp;
+    count = 0x10;
+    goto copy_entry;
+count_entry:
+    count--;
+    if (count > 0) goto copy_entry;
+    dst[-1] = 0;
+    goto copied_entry;
+copy_entry:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto count_entry;
+copied_entry:
+    fn_802C7888(temp, 1);
+    offset += 0x10;
+    cursor++;
+check_list:
+    if (cursor < *(int *)list) goto copy_first;
+    fn_802C6C20(list);
+}
+#pragma scheduling on
 int fn_80292DE8(const char *arg0) {
     int table[6];
     int *src = lbl_802FA998;
@@ -398,6 +458,47 @@ void fn_80293530(void* arg0) {
         i++;
     }
 }
+
+void *fn_802935A0(void *arg0) {
+    register u8 *out = (u8 *)arg0;
+    register unsigned int *table = lbl_80488648;
+    register float scale = lbl_805644EC;
+    register unsigned int color;
+    register unsigned int checkValue;
+    register unsigned int count = 0;
+    register s32 temp;
+    register s32 component;
+    s32 packed;
+    void *item;
+    goto check_loop;
+body:
+    if (count < 8U) item = (void *)*table;
+    else item = 0;
+    color = *(unsigned int *)((u8 *)item + 0x3EC);
+    component = 0xFF;
+    temp = (s32)(scale * (float)(u8)color);
+    if (temp <= 0xFF) component = temp;
+    packed = component & 0xFF;
+    component = 0xFF;
+    temp = (s32)(scale * (float)(u8)(color >> 8));
+    if (temp <= 0xFF) component = temp;
+    packed |= (component & 0xFF) << 8;
+    component = 0xFF;
+    temp = (s32)(scale * (float)(u8)(color >> 16));
+    if (temp <= 0xFF) component = temp;
+    packed = (((component & 0xFF) << 16) | 0xFF000000) | packed;
+    *(unsigned int *)(out + 0x2FB0) = (unsigned int)packed;
+    *(unsigned int *)(out + 0x2FB4) = color;
+    table++;
+    count++;
+    out += 8;
+check_loop:
+    if (count < 8U) checkValue = *table;
+    else checkValue = 0;
+    if (checkValue != 0) goto body;
+    return out;
+}
+
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
@@ -461,36 +562,62 @@ check:
     if (i < *(s32 *)((u8 *)arg0 + 0x4C2C)) goto body;
 }
 
+#pragma use_lmw_stmw off
 void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
-    int count = *(int *)((char *)arg0 + 0x4C2C);
-    if (count < 0x100) {
-        char *record = (char *)arg0 + count * 0x4C;
-        int index = fn_80129D18(0, 6);
-        char *template = (char *)lbl_804B4030 + index * 0x34;
-        *(float *)(record + 0x50) = arg1[0];
-        *(float *)(record + 0x54) = arg1[1];
-        *(float *)(record + 0x58) = arg1[2];
-        *(int *)(record + 0x2C) = *(int *)(template + 0x10);
-        *(int *)(record + 0x30) = *(int *)(template + 0x14);
-        *(int *)(record + 0x34) = *(int *)(template + 0x18);
-        *(int *)(record + 0x38) = *(int *)(template + 0x1C);
-        *(int *)(record + 0x3C) = *(int *)(template + 0x20);
-        *(int *)(record + 0x40) = *(int *)(template + 0x24);
-        *(int *)(record + 0x44) = *(int *)(template + 0x28);
-        *(int *)(record + 0x48) = *(int *)(template + 0x2C);
-        *(int *)(record + 0x4C) = *(int *)(template + 0x30);
-        *(float *)(record + 0x5C) = arg2[0];
-        *(float *)(record + 0x60) = arg2[1];
-        *(float *)(record + 0x64) = arg2[2];
-        *(float *)(record + 0x68) = lbl_805644D8;
-        *(short *)(record + 0x6C) = arg3;
-        *(int *)(record + 0x70) = 2;
-        *(unsigned char *)(record + 0x74) = fn_80129D18(0, *(int *)((char *)arg0 + 0x28));
-        *(unsigned char *)(record + 0x75) = index;
-        *(int *)((char *)arg0 + 0x4C2C) = count + 1;
-    }
+    int count;
+    int index;
+    int offset;
+    int flags, zero;
+    u8 *object;
+    u8 *record;
+    u8 *template;
+    float x, y, z, a, b;
+    unsigned int secondWord, firstWord;
+    object = (u8 *)arg0;
+    count = *(s32 *)(object + 0x4C2C);
+    if (count >= 0x100) return;
+    record = object + count * 0x4C;
+    index = fn_80129D18(0, 6);
+    offset = index * 0x34;
+    x = arg1[0];
+    y = arg1[1];
+    *(float *)(record + 0x50) = x;
+    z = arg1[2];
+    *(float *)(record + 0x54) = y;
+    template = lbl_804B4030 + offset;
+    a = arg2[0];
+    *(float *)(record + 0x58) = z;
+    arg1 = (float *)index;
+    b = arg2[1];
+    firstWord = *(unsigned int *)(template + 0x10);
+    flags = 2;
+    secondWord = *(unsigned int *)(template + 0x14);
+    zero = 0;
+    *(unsigned int *)(record + 0x2C) = firstWord;
+    *(unsigned int *)(record + 0x30) = secondWord;
+    *(unsigned int *)(record + 0x34) = *(unsigned int *)(template + 0x18);
+    firstWord = *(unsigned int *)(template + 0x1C);
+    secondWord = *(unsigned int *)(template + 0x20);
+    *(unsigned int *)(record + 0x38) = firstWord;
+    *(unsigned int *)(record + 0x3C) = secondWord;
+    *(unsigned int *)(record + 0x40) = *(unsigned int *)(template + 0x24);
+    firstWord = *(unsigned int *)(template + 0x28);
+    secondWord = *(unsigned int *)(template + 0x2C);
+    *(unsigned int *)(record + 0x44) = firstWord;
+    *(unsigned int *)(record + 0x48) = secondWord;
+    *(unsigned int *)(record + 0x4C) = *(unsigned int *)(template + 0x30);
+    *(float *)(record + 0x5C) = a;
+    *(float *)(record + 0x60) = b;
+    *(float *)(record + 0x64) = arg2[2];
+    *(float *)(record + 0x68) = lbl_805644D8;
+    *(short *)(record + 0x6C) = arg3;
+    *(unsigned int *)(record + 0x70) = flags;
+    *(u8 *)(record + 0x74) = fn_80129D18(zero, *(s32 *)(object + 0x28));
+    *(u8 *)(record + 0x75) = (u8)arg1;
+    count = *(s32 *)(object + 0x4C2C);
+    *(s32 *)(object + 0x4C2C) = count + 1;
 }
-
+#pragma use_lmw_stmw reset
 extern int fn_8012C33C(void *);
 extern void fn_801345D8(void *, int, const char *, int, int);
 extern void fn_80292CD8(void *, int, u8 *);
@@ -692,7 +819,7 @@ body:
     i++; cur += 0x44;
 check:
     if (i < *(int *)(base + 0x222c)) goto body;
-    *(int *)(base + 0x222c) = (out - (base + 0x2c)) / 0x44;
-}
+          *(int *)(base + 0x222c) = (out - (base + 0x2c)) / 0x44;
+  }
 
-#pragma scheduling on
+  #pragma scheduling invalid_target
