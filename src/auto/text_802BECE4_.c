@@ -35,7 +35,7 @@ extern unsigned char lbl_8055CF71;
 extern int fn_801E85B4(void);
 extern void fn_802BF160(void);
 extern int fn_802C2C00(int);
-extern void fn_802C6CF8(void);
+extern void fn_802C6CF8();
 extern void *lbl_804C07F0[];
 extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
@@ -257,48 +257,59 @@ extern void fn_802CB228(void *);
 extern int lbl_8055FAFC;
 extern void *lbl_8055FB00;
 extern char lbl_8034AE40[];
+#pragma use_lmw_stmw off
 void *fn_802BFA58(void *arg0, int arg1) {
-    void *temp;
-    void **entry;
+    int id;
+    int c;
+    void *table;
+    void **cur;
     int i;
+    int val;
+
     if (arg0 != 0) {
-        temp = *(void **)((char *)arg0 + 8);
-        *(void **)arg0 = lbl_8034AE40;
-        if (temp != (void *)-2) {
-            fn_802CB228(temp);
+        id = *(int *)((char *)arg0 + 8);
+        *(char **)arg0 = lbl_8034AE40;
+        if (id != -2) {
+            fn_802CB228((void *)id);
             *(int *)((char *)arg0 + 8) = -2;
         }
-        temp = *(void **)((char *)arg0 + 0xC);
-        if (temp != (void *)-1) {
+        c = *(int *)((char *)arg0 + 0xC);
+        if (c != -1) {
             fn_802C6CF8();
             *(int *)((char *)arg0 + 0xC) = -1;
         }
-        temp = *(void **)((char *)arg0 + 0x10);
-        if (temp != (void *)-1) {
+        c = *(int *)((char *)arg0 + 0x10);
+        if (c != -1) {
             fn_802C6CF8();
             *(int *)((char *)arg0 + 0x10) = -1;
         }
         if (*(int *)((char *)arg0 + 4) != 0) {
-            lbl_8055FAFC--;
-            if (lbl_8055FAFC == 0) {
-                entry = (void **)lbl_8055FB00;
-                if (entry != 0) {
-                    for (i = 0; i < 6; i++, entry += 1)
-                        fn_802CB228(*entry);
-                    if (*(int *)((char *)lbl_8055FB00 + 0x18) != -2)
-                        fn_802CAC54(*(int *)((char *)lbl_8055FB00 + 0x18));
-                    fn_80128668(lbl_8055FB00);
+            if (--lbl_8055FAFC == 0) {
+                table = lbl_8055FB00;
+                if (table != 0) {
+                    cur = (void **)table;
+                    i = 0;
+                    do {
+                        fn_802CB228(*cur);
+                        i++;
+                        cur++;
+                    } while (i < 6);
+                    val = *(int *)((char *)table + 0x18);
+                    if (val != -2) {
+                        fn_802CAC54(val);
+                    }
+                    fn_80128668(table);
                 }
                 lbl_8055FB00 = 0;
             }
             *(int *)((char *)arg0 + 4) = 0;
         }
-        if (arg1 > 0)
+        if (arg1 > 0) {
             fn_80128668(arg0);
+        }
     }
     return arg0;
 }
-
 extern float lbl_80564DCC, lbl_80564DD0, lbl_80564DD4;
 extern unsigned short lbl_802FAC20;
 extern void fn_80015A20(void *, float *, float, float, float, float, float);
