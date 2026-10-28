@@ -155,11 +155,15 @@ cleanup_body:
 cleanup_check:
    if(count-- > 0) { offset-=4; goto cleanup_body; }
   }
-  dst=(char *)arg0+8; src=lbl_80338490; i=0x14; goto copy;
-copy:
-  i--; if(i<=0) { dst[-1]=0; goto copied; }
+  src=lbl_80338490; dst=(char *)arg0+8; i=0x14; goto copy_body;
+copy_check:
+  i--;
+  if(i>0) goto copy_body;
+  dst[-1]=0;
+  goto copied;
+copy_body:
   *dst++=*src++;
-  if((signed char)dst[-1]!=0) goto copy;
+  if((signed char)dst[-1]!=0) goto copy_check;
 copied:
   if((int)arg0+0x30) {
    if((int)arg0+0x30) {
@@ -809,33 +813,49 @@ extern "C" int fn_801D6678(void *out, void *object) {
     extern char lbl_8055ACD0;
     extern char lbl_8055ACD4;
     extern float lbl_80562B0C;
-    typedef float (*FloatFn)(void *, char *, float);
-    typedef void (*VecFn)(float *, void *, char *);
-    typedef int (*IntFn)(void *, char *);
-    typedef unsigned char (*ByteFn)(void *, char *, int);
-    float v14[3];
-    float v8[3];
+    struct Vec3 {
+        float x;
+        float y;
+        float z;
+    };
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual int id(char *);
+        virtual void v6();
+        virtual void v7();
+        virtual float value(char *, float);
+        virtual void v9();
+        virtual unsigned char flag(char *, int);
+        virtual Vec3 vector(char *);
+    };
+    Dummy *obj = (Dummy *)object;
     float first;
     float second;
     float scale;
 
-    first = ((FloatFn)((void ***)object)[0][10])(object, &lbl_8055ACB0, lbl_80562ADC);
-    second = ((FloatFn)((void ***)object)[0][10])(object, &lbl_8055ACB8, lbl_80562ADC);
+    first = obj->value(&lbl_8055ACB0, lbl_80562ADC);
+    second = obj->value(&lbl_8055ACB8, lbl_80562ADC);
     scale = lbl_80562B0C;
     *(int *)((char *)out + 8) = (int)(scale * first);
     *(int *)((char *)out + 0xC) = (int)(scale * second);
-    ((VecFn)((void ***)object)[0][13])(v14, object, &lbl_8055ACD0);
-    *(float *)((char *)out + 0x14) = v14[0];
-    *(float *)((char *)out + 0x18) = v14[1];
-    *(float *)((char *)out + 0x1C) = v14[2];
-    ((VecFn)((void ***)object)[0][13])(v8, object, &lbl_8055ACD4);
-    *(float *)((char *)out + 0x20) = v8[0];
-    *(float *)((char *)out + 0x24) = v8[1];
-    *(float *)((char *)out + 0x28) = v8[2];
-    *(int *)((char *)out + 0x2C) =
-        ((IntFn)((void ***)object)[0][7])(object, lbl_803387B8);
-    *(unsigned char *)((char *)out + 0x30) =
-        ((ByteFn)((void ***)object)[0][12])(object, lbl_80338798, 0);
+    {
+        const Vec3 &v14 = obj->vector(&lbl_8055ACD0);
+        *(float *)((char *)out + 0x14) = v14.x;
+        *(float *)((char *)out + 0x18) = v14.y;
+        *(float *)((char *)out + 0x1C) = v14.z;
+    }
+    {
+        const Vec3 &v8 = obj->vector(&lbl_8055ACD4);
+        *(float *)((char *)out + 0x20) = v8.x;
+        *(float *)((char *)out + 0x24) = v8.y;
+        *(float *)((char *)out + 0x28) = v8.z;
+    }
+    *(int *)((char *)out + 0x2C) = obj->id(lbl_803387B8);
+    *(unsigned char *)((char *)out + 0x30) = obj->flag(lbl_80338798, 0);
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
