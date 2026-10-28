@@ -567,10 +567,9 @@ extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     u8 *entry;
-    register u8 *header;
     void *object;
     s32 handle;
     s32 startTime;
@@ -578,6 +577,7 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     register s32 allocSize;
     u32 flags;
     register const char *strings;
+    register u8 *header;
 
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
