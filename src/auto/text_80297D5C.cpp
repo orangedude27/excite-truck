@@ -330,6 +330,47 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     return 1;
 }
 
+extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
+    char *entry = (char *)arg1;
+    float remaining = *(float *)(entry + 0x24);
+    if (deltaTime > remaining) {
+        int index = ((int)arg1 - (int)arg0) / 0x2C;
+        ((void (*)(void *, int))fn_8029840C)(arg0, index);
+        return;
+    }
+    *(float *)(entry + 0x24) = remaining - deltaTime;
+    float angle = fn_80129DC4(0, lbl_805645B8, lbl_80564590);
+    float angle2 = angle * angle;
+    float otherAngle = (float)fn_8002F234(lbl_80564590 - angle2);
+    float cosine = fn_80129DC4(0, -otherAngle, otherAngle);
+
+    float target[3];
+    float positions[3];
+    target[0] = lbl_8056459C;
+    target[1] = lbl_8056459C;
+    target[2] = lbl_8056459C;
+
+    float x = *(float *)(entry + 0x00) + *(float *)(entry + 0x0C) * angle;
+    positions[0] = x;
+    float y = *(float *)(entry + 0x04) + *(float *)(entry + 0x10) * angle;
+    positions[1] = y;
+    float z = *(float *)(entry + 0x08) + *(float *)(entry + 0x14) * angle;
+    positions[2] = z;
+
+    x = x + *(float *)(entry + 0x18) * cosine;
+    positions[0] = x;
+    y = y + *(float *)(entry + 0x1C) * cosine;
+    positions[1] = y + lbl_805645BC;
+    z = z + *(float *)(entry + 0x20) * cosine;
+    positions[2] = z;
+
+    float zOffset = *(float *)(entry + 0x20);
+    float zVelocity = zOffset * cosine;
+    ((void (*)(void *, float *, float *, float, float, float, float, float))fn_8028E584)(
+        *(void **)((char *)arg0 + 0xB0), positions, target, zVelocity, zOffset, z, y, x);
+    fn_80288A40(positions, target);
+}
+
 extern "C" void* fn_80298868(void* arg0) {
     char* p = (char*)arg0;
     int i = 0;
@@ -873,13 +914,13 @@ extern "C" void fn_8029A17C(void* arg0) {
     }
 }
 
-extern "C" void fn_8029A4B4(void);
-extern "C" void fn_8029840C(void);
-extern "C" void fn_8029A208(void* arg0, int arg1, int arg2) {
-    int index;
-    unsigned char* entry;
-    if (arg2 != 0 && *(int*)((char*)arg0 + 0x40) == -1) {
-        fn_8029A4B4();
+extern "C" void fn_8029A4B4(void*, int);
+  extern "C" void fn_8029840C(void);
+  extern "C" void fn_8029A208(void* arg0, int arg1, int arg2) {
+      int index;
+      unsigned char* entry;
+      if (arg2 != 0 && *(int*)((char*)arg0 + 0x40) == -1) {
+          fn_8029A4B4(arg0, arg1);
         return;
     }
     if (arg2 == 0 && arg1 == *(int*)((char*)arg0 + 0x3C)) {
@@ -1288,7 +1329,7 @@ extern "C" void fn_8029B6E4(void *arg0) {
 
     context = fn_802C86DC();
     transform = (char *)fn_802C86DC() + 0xC;
-    register float scaleFactor = lbl_805645C8;
+    float scaleFactor = lbl_805645C8;
     entry = (char *)arg0;
     item = (char *)arg0;
     i = 0;
