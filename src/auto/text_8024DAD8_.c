@@ -68,6 +68,7 @@ void fn_8024DADC(void) {
 
 #pragma push
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void *fn_8024E6E4(void *arg0, s32 arg1) {
     extern unsigned char lbl_80344410[];
     extern unsigned char lbl_8034453C[];
@@ -96,6 +97,7 @@ extern "C" void *fn_8024E6E4(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+#pragma scheduling on
 #pragma pop
 void *fn_8024E818(void *arg0, s32 arg1) {
     extern unsigned int lbl_8055F2EC;
