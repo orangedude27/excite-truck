@@ -1262,10 +1262,6 @@ extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
     dst[7] = saved;
     *(s32*)((char*)arg0 + 4) = *(s32*)((char*)arg0 + 4) + 1;
 }
-#pragma use_lmw_stmw on
-#pragma paired_single reset
-#pragma paired reset
-#pragma scheduling off
 
 extern "C" void fn_802A4658(s32 arg0) {
     void *obj=(void *)arg0;
