@@ -1376,8 +1376,6 @@ extern "C" void fn_800EEBA8(void* arg0, u64 unused1, u64 unused2) {
     }
 }
 #pragma pop
-#pragma push
-#pragma scheduling invalid_target
 extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const void* data) {
     const u8* bytes = (const u8*)data;
     const u8 (*file)[0x100] = (const u8 (*)[0x100])lbl_803239C0;
@@ -1413,7 +1411,6 @@ check_valid:
     if (*(const u32*)*(void**)((u8*)self + 4) != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce((const char*)*file, 0x50, (const char*)(*file + 0xE0));
     return self;
 }
-#pragma pop
 
 void *nw4hbm::snd::detail::SeqFileReader::GetBaseAddress() const {
     const u8 *self = (const u8 *)this;
