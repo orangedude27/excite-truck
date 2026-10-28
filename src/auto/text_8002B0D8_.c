@@ -60,21 +60,31 @@ check:
 }
 
 int stricmp(unsigned char *a, unsigned char *b) {
-    int c1, c2;
-    unsigned char *tbl;
-    tbl = *(unsigned char **)(*(unsigned int *)(lbl_802FE850 + 0x38) + 0x10);
+    register int base = (int)(unsigned char *)lbl_802FE850;
+    register int locale;
+    register signed char c1;
+    register signed char c2;
+    register int skip;
+
+    locale = *(int *)(base + 0x38);
     for (;;) {
+        skip = 0;
         c1 = (signed char)*a;
         a++;
-        if (c1 >= 0 && c1 < 256) c1 = tbl[c1];
+        if (c1 < 0 || c1 >= 256) skip = 1;
+        if (skip != 0) goto cont;
+        c1 = (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c1);
+    cont:
+        skip = 0;
         c2 = (signed char)*b;
         b++;
-        if (c2 >= 0 && c2 < 256) c2 = tbl[c2];
-        c1 = (signed char)c1;
-        c2 = (signed char)c2;
+        if (c2 < 0 || c2 >= 256) skip = 1;
+        if (skip != 0) goto cont2;
+        c2 = (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c2);
+    cont2:
         if (c1 < c2) return -1;
         if (c1 > c2) return 1;
-        if (!c1) return 0;
+        if (c1 == 0) return 0;
     }
 }
 
@@ -410,24 +420,29 @@ double x;
 
 extern double lbl_80560950, lbl_80560958, lbl_80560960, lbl_80560968, lbl_80560970, lbl_80560978, lbl_80560980, lbl_80560988, lbl_80560990;
 double __kernel_cos(double x, double y) {
-    double z, v, r;
-    int hx;
-    union { double d; int i[2]; } u;
-    z = x;
-    hx = *(int *)&z & 0x7fffffff;
-    if (hx < 0x3e400000 && (int)x == 0) return x;
-    z = x * x;
-    v = z * x;
-    r = lbl_80560958 + z * (lbl_80560960 + z * (lbl_80560968 + z * (lbl_80560970 + z * (lbl_80560978 + lbl_80560980 * z))));
-    if (hx < 0x3fd33333)
-        return lbl_80560950 - ((lbl_80560988 * z) - ((z * v) - (x * y)));
-    if (hx > 0x3fe90000)
-        u.d = lbl_80560990;
-    else {
-        u.i[0] = hx + 0xffe00000;
-        u.i[1] = 0;
+    double a, hz, z, r, qx;
+    int ix, hx;
+
+    hx = *(int *)&x;
+    ix = hx & 0x7fffffff;
+    if (ix < 0x3e400000) {
+        if ((int)x == 0) return lbl_80560950;
     }
-    return (lbl_80560950 - u.d) - (((lbl_80560988 * z) - u.d) - ((z * v) - (x * y)));
+    z = x * x;
+    r = z * (lbl_80560958 + z * (lbl_80560960 + z * (lbl_80560968 + z * (lbl_80560970 + z * (lbl_80560978 + lbl_80560980 * z)))));
+    if (ix < 0x3fd33333) {
+        return lbl_80560950 - (lbl_80560988 * z - (z * r - x * y));
+    } else {
+        if (ix > 0x3fe90000) {
+            qx = lbl_80560990;
+        } else {
+            ((int *)&qx)[0] = ix - 0x00200000;
+            ((int *)&qx)[1] = 0;
+        }
+        hz = lbl_80560988 * z - qx;
+        a = lbl_80560950 - qx;
+        return a - (hz - (z * r - x * y));
+    }
 }
 
 extern int lbl_802EE690[];
@@ -703,7 +718,9 @@ extern double lbl_80560A80;
 extern double __kernel_cos(double, double);
 extern double __kernel_sin(int, double, double);
 __declspec(section ".sdata") extern double lbl_80560A80;
-#pragma dont_inline __kernel_sin
+#pragma push
+#pragma dont_inline on
+#pragma scheduling 750
 double cos(double x) {
     double y[2];
     int n, ix;
@@ -722,7 +739,7 @@ double cos(double x) {
         }
     }
 }
-
+#pragma pop
 double floor(double x) {
     int i0, i1, j0;
     unsigned i, j;
@@ -834,7 +851,9 @@ double ldexp(int arg0, double x) {
 }
 
 __declspec(section ".sdata") extern double lbl_80560AC8;
-#pragma dont_inline __kernel_sin
+#pragma push
+#pragma dont_inline on
+#pragma scheduling invalid_target
 double sin(double x) {
     double y[2];
     int n, ix;
@@ -853,7 +872,7 @@ double sin(double x) {
         }
     }
 }
-
+#pragma pop
 double fn_8002EF30(double x) {
     int hx;
     double y[2];
