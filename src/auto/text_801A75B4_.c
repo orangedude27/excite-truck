@@ -19,7 +19,7 @@ extern double lbl_80562450;
 extern void fn_80127A84(int *, int *, unsigned int *);
 extern int fn_80129AE8(void *, int);
 extern void *memset(void *, int, unsigned int);
-extern int fn_801A8E38(void);
+extern int fn_801A8E38();
 
 extern char lbl_8055E5C8;
 #pragma push
@@ -907,56 +907,53 @@ void fn_801A91B0(void *arg0, const void *arg1) {
 void *fn_801A9234(const char *arg0) {
     extern int lbl_8055E5D0;
     extern const char **lbl_8055E5CC;
-    int i;
-    int count;
-    const char **base;
     const char *entry;
+    const char **base;
+    int count;
+    int i;
     int type;
+
     fn_801A7628();
     count = lbl_8055E5D0;
-    i = 0;
     base = lbl_8055E5CC;
-    entry = (const char *)base;
-    if (count > 0) {
-        for (; i < count; i++) {
-            type = *(int *)arg0;
-            if (type == *(int *)(entry + 8)) {
-                switch (type) {
-                case 4: goto check_word_a;
-                case 2: goto check_word_b;
-                case 3: goto check_word_c;
-                case 5: goto check_word_d;
-                case 6: goto check_word_e;
-                case 1: goto check_byte;
-                default: goto next;
-                }
-check_word_a:
-                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
-                    return (char *)base + i * 0x18;
-                goto next;
-check_word_b:
-                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
-                    return (char *)base + i * 0x18;
-                goto next;
-check_word_c:
-                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
-                    return (char *)base + i * 0x18;
-                goto next;
-check_word_d:
-                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
-                    return (char *)base + i * 0x18;
-                goto next;
-check_word_e:
-                if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
-                    return (char *)base + i * 0x18;
-                goto next;
-check_byte:
-                if (*(unsigned char *)(arg0 + 8) == (unsigned char)*(int *)(entry + 0xC))
-                    return (char *)base + i * 0x18;
+    for (i = 0, entry = (const char *)base; i < count; entry += 0x18, i++) {
+        type = *(int *)arg0;
+        if (type == *(int *)(entry + 8)) {
+            switch (type) {
+            case 4: goto check_word_a;
+            case 2: goto check_word_b;
+            case 3: goto check_word_c;
+            case 5: goto check_word_d;
+            case 6: goto check_word_e;
+            case 1: goto check_byte;
+            default: goto next;
             }
-next:
-            entry += 0x18;
+check_word_a:
+            if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                return (char *)base + i * 0x18;
+            goto next;
+check_word_b:
+            if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                return (char *)base + i * 0x18;
+            goto next;
+check_word_c:
+            if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                return (char *)base + i * 0x18;
+            goto next;
+check_word_d:
+            if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                return (char *)base + i * 0x18;
+            goto next;
+check_word_e:
+            if (*(int *)(arg0 + 8) == *(int *)(entry + 0xC))
+                return (char *)base + i * 0x18;
+            goto next;
+check_byte:
+            if (*(unsigned char *)(arg0 + 8) == (unsigned char)*(int *)(entry + 0xC))
+                return (char *)base + i * 0x18;
         }
+next:
+        ;
     }
     return 0;
 }
