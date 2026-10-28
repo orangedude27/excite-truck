@@ -368,6 +368,8 @@ MEMiHeapHead* MEMDestroyFrmHeap(MEMiHeapHead* heap) {
     return heap;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void* MEMAllocFromFrmHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
     u32 start;
     u32 end;
@@ -594,6 +596,51 @@ void PSMTXConcat(register const Mtx a, register const Mtx b, register Mtx out) {
         out[i][3] = a[i][0] * b[0][3] + a[i][1] * b[1][3] + a[i][2] * b[2][3] + a[i][3];
     }
 }
+
+#pragma push
+#pragma paired on
+#pragma paired_single on
+u32 PSMTXInvXpose(Mtx m, s32 axis, f64 sinArg, f64 cosArg) {
+    register f32 sinA = (f32)sinArg;
+    register f32 cosA = (f32)cosArg;
+    register f32 negSin = -sinA;
+    register f32 zero = lbl_80560C4C;
+    register f32 one = lbl_80560C48;
+    u32 mode = (u32)axis | 0x20;
+
+    if (mode == 0x78) goto x_axis;
+    if (mode == 0x79) goto y_axis;
+    if (mode == 0x7A) goto z_axis;
+    return (u32)m;
+
+x_axis:
+    m[0][0] = one;
+    *(double *)&m[0][1] = (double)zero;
+    *(double *)&m[0][3] = (double)zero;
+    *(double *)&m[1][3] = (double)zero;
+    m[2][3] = zero;
+    m[2][1] = sinA; m[2][2] = cosA;
+    m[1][1] = cosA; m[1][2] = negSin;
+    return (u32)m;
+y_axis:
+    *(double *)&m[1][2] = (double)zero;
+    m[0][0] = cosA; m[0][1] = zero;
+    m[2][2] = cosA; m[2][3] = zero;
+    m[1][0] = zero; m[1][1] = one;
+    m[0][2] = sinA; m[0][3] = zero;
+    m[2][0] = negSin; m[2][1] = zero;
+    return (u32)m;
+z_axis:
+    *(double *)&m[0][2] = (double)zero;
+    *(double *)&m[1][2] = (double)zero;
+    *(double *)&m[2][0] = (double)zero;
+    m[1][0] = sinA; m[1][1] = cosA;
+    m[0][0] = cosA; m[0][1] = negSin;
+    m[2][2] = one; m[2][3] = zero;
+    return (u32)m;
+}
+#pragma pop
+
 #pragma pop
 extern f32 lbl_80560C48;
 extern f32 lbl_80560C4C;
