@@ -464,26 +464,27 @@ extern "C" void fn_801F7FA0(void *output, void *input, void *unused) {
     };
     extern const char lbl_8033AFF4[];
     extern const char lbl_8033B000[];
-    extern const char lbl_8055B2A8[];
-    extern const char lbl_8055B2B0[];
-    extern const char lbl_8055B2B8[];
-    extern const char lbl_8055B2C0[];
     extern int stricmp(const char *, const char *);
 
-    register u8 *out = (u8 *)output;
+    register u8 *record;
+    register s32 count;
+    register s32 index;
+    register Child *child;
     register Parent *parent = (Parent *)input;
+    register u8 *out = (u8 *)output;
+
     *(void **)out = parent->first(lbl_8055B2A8);
     *(f32 *)(out + 4) = parent->getFloat(lbl_8033AFF4);
     *(f32 *)(out + 8) = parent->getFloat(lbl_8033B000);
 
-    register s32 index = 0;
-    register s32 count = 0;
-    register u8 *record = out;
+    record = out;
+    count = 0;
+    index = 0;
     while (parent->getChild(index) != 0) {
-        register Child *child = parent->getChild(index);
+        child = parent->getChild(index);
         if (stricmp(child->name(), lbl_8055B2B0) == 0) {
             f32 values[3];
-            ((void (*)(f32 *, Child *, const char *))(*(void ***)child)[11])(
+            ((void (*)(f32 *, Child *, const char *))(*(void ***)child)[13])(
                 values, child, lbl_8055B2B8);
             *(f32 *)(record + 0x0C) = values[0];
             *(f32 *)(record + 0x10) = values[1];
@@ -1797,14 +1798,14 @@ extern "C" void fn_801FC4E8(void *self, void *arg1) {
     struct Data { s32 a; s32 b; s32 c; u8 d; u8 pad[3]; void *item; };
     Data *data = (Data *)fn_801284F8(0x18, (void *)lbl_8055B3B8);
     if (data != 0) {
-        u8 *input = (u8 *)arg1;
-        s32 a = *(s32 *)(input + 0x24);
+        volatile s32 *input = (volatile s32 *)arg1;
+        s32 a = input[9];
         const char *name = lbl_8055B2C4;
-        s32 b = *(s32 *)(input + 0x28);
+        s32 b = input[10];
         data->a = a;
-        s32 c = *(s32 *)(input + 0x2C);
+        s32 c = input[11];
         data->b = b;
-        ResourceGet *resource = *(ResourceGet **)(input + 0x34);
+        ResourceGet *resource = *(ResourceGet **)((u8 *)arg1 + 0x34);
         data->c = c;
         s32 first = ((ManagerLookup *)lbl_8055EC70)->lookup(name, data->b);
         s32 key = resource->get(name, first);
