@@ -1088,34 +1088,42 @@ extern "C" u8 lbl_8033CAE8[];
 extern "C" s32 lbl_80490510[];
 extern "C" s32 lbl_802F9EA4[];
 extern "C" u8 lbl_8055B860;
+#pragma use_lmw_stmw off
 extern "C" s32 fn_8021481C(void *arg0) {
-    s32 args[19];
+    u8 *base = lbl_8033CAE8;
+    s32 *values;
+    s32 *map;
+    s32 args[20];
     if (fn_802ECEEC() == 0) {
-        fn_802E30C8((const char *)(lbl_8033CAE8 + 0x72C), arg0);
-        args[0] = lbl_802F9EA4[0];
+        fn_802E30C8((const char *)(base + 0x72C), arg0);
+        values = lbl_80490510;
+        map = lbl_802F9EA4;
+        args[0] = map[0];
         args[1] = 0;
-        args[2] = lbl_802F9EA4[2];
-        args[3] = lbl_802F9EA4[3];
-        args[4] = lbl_802F9EA4[4];
-        args[5] = (s32)(lbl_8033CAE8 + 0x750);
+        args[2] = map[2];
+        args[3] = map[3];
+        args[4] = map[4];
+        args[5] = (s32)(base + 0x750);
         args[6] = 3;
-        args[7] = 0;
+        args[7] = (s32)arg0;
         args[8] = 0;
-        args[9] = (s32)&lbl_8055B860;
-        args[10] = 6;
-        args[11] = 0;
-        args[12] = -2;
-        args[13] = 0xD;
-        args[14] = lbl_80490510[0];
-        args[15] = lbl_80490510[1];
-        args[16] = lbl_80490510[2];
-        args[17] = lbl_80490510[3];
-        args[18] = lbl_80490510[4];
-        fn_802146BC(args, -0x3E7, -0x3E7, 1, lbl_802F9EA4[4], lbl_802F9EA4[3], lbl_802F9EA4[2], lbl_802F9EA4[0]);
-        fn_802E30C8((const char *)(lbl_8033CAE8 + 0x760), arg0);
+        args[9] = 0;
+        args[10] = (s32)&lbl_8055B860;
+        args[11] = 6;
+        args[12] = 0;
+        args[13] = -2;
+        args[14] = 0xD;
+        args[15] = values[0];
+        args[16] = values[1];
+        args[17] = values[2];
+        args[18] = values[3];
+        args[19] = values[4];
+        args[1] = (s32)&args[5];
+        fn_802146BC(args, -0x3E7, -0x3E7, 1, map[4], map[3], map[2], map[0]);
+        fn_802E30C8((const char *)(base + 0x760), arg0);
     }
-    return 0;
 }
+#pragma use_lmw_stmw reset
 
 #pragma push
 #pragma small_data on
