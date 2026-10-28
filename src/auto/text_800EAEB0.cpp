@@ -212,6 +212,8 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
     OSRestoreInterrupts(level);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(void* object, u32 size, void* user) {
     extern u8 lbl_80322B44[];
     extern u8 lbl_80322B20[];
@@ -238,8 +240,8 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
         node = *(void**)node;
         if (current == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
-        void** vtable = *(void***)current;
-        ((void (*)(void*, void*, u32, void*))vtable[3])(current, object, (u32)end, user);
+        void** vtable = *(void***)( (u8*)current + 8 );
+        ((void (*)(void*, void*, void*))vtable[3])(current, object, end);
         level = OSDisableInterrupts();
         if ((s8)lbl_8055DE30 == 0) {
             void* sentinel = lbl_8041279C + 4;
@@ -258,7 +260,9 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
     }
     OSRestoreInterrupts(outerLevel);
 }
-
+#pragma pop
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(void* object, u32 size, void* user) {
     extern u8 lbl_80322B44[];
     extern u8 lbl_80322B20[];
@@ -305,6 +309,7 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
     }
     OSRestoreInterrupts(outerLevel);
 }
+#pragma pop
 
 extern "C" void fn_800EB36C(void *arg0) {
     DVDClose((u8 *)arg0 + 0x14C);
@@ -1314,35 +1319,40 @@ extern "C" s32 AXRmtGetSamplesLeft(void);
 extern "C" s32 AXRmtGetSamples(s32, void*, s32);
 extern "C" void AXRmtAdvancePtr(s32);
 extern "C" void* fn_800EE5E8(void*, void*);
+#pragma push
+#pragma scheduling on
+#pragma use_lmw_stmw off
 extern "C" void fn_800EEBA8(void* arg0, u64 unused1, u64 unused2) {
     extern u8 lbl_803238F8[];
-    u8 sampleBuffer[0x28];
+    const char* message = (const char*)lbl_803238F8;
+    u8 sampleBuffer[0x48];
     u8* state;
-    u8* channel;
     u8* end;
+    u8* channel;
     s32 i;
 
     if ((s8)lbl_8055DE40 == 0) {
-        lbl_804127A8[0] = 0;
-        channel = lbl_804127A8 + 0x38;
-        end = lbl_804127A8 + 0x2B8;
+        state = lbl_804127A8;
+        state[0] = 0;
+        channel = state + 0x38;
+        end = state + 0x2B8;
         do { fn_800EE4F0(channel); channel += 0xA0; } while (channel < end);
-        *(s32*)(lbl_804127A8 + 0x64) = 0;
-        *(s32*)(lbl_804127A8 + 0x104) = 1;
-        *(s32*)(lbl_804127A8 + 0x1A4) = 2;
-        *(s32*)(lbl_804127A8 + 0x244) = 3;
+        *(s32*)(state + 0x64) = 0;
+        *(s32*)(state + 0x104) = 1;
+        *(s32*)(state + 0x1A4) = 2;
+        *(s32*)(state + 0x244) = 3;
         lbl_8055DE40 = 1;
     }
     state = lbl_804127A8;
     if (state + 8 != (u8*)arg0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803238F8, 0x8D, (const char*)lbl_803238F8 + 0x6C);
+        Panic__Q26nw4hbm2dbFPCciPCce(message, 0x8D, message + 0x6C);
     if (AXRmtGetSamplesLeft() >= 0x28) {
         channel = state + 0x38;
         i = 0;
         do {
             if (state[0x39] != 0) {
                 if (AXRmtGetSamples(i, sampleBuffer, 0x28) != 0x28)
-                    Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803238F8, 0x9D, (const char*)lbl_803238F8 + 0xAC);
+                    Warning__Q26nw4hbm2dbFPCciPCce(message, 0x9D, message + 0xAC);
                 fn_800EE5E8(channel, sampleBuffer);
             }
             ++i;
@@ -1352,7 +1362,7 @@ extern "C" void fn_800EEBA8(void* arg0, u64 unused1, u64 unused2) {
         AXRmtAdvancePtr(0x28);
     }
 }
-
+#pragma pop
 extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const void* data) {
     const u8* bytes = (const u8*)data;
     const u8* file = (const u8*)lbl_803239C0;
@@ -1413,48 +1423,38 @@ extern "C" s32 fn_800EEEC4(s32 arg0, s32 arg1) {
 }
 
 extern f32 lbl_80561068;
-extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail14NoteOnCallback(void* self, s32 arg, void* callback) {
+extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail14NoteOnCallback(void *self, s32 arg, void *callback) {
     register f32 zeroValue = lbl_8056106C;
     register f32 baseValue = lbl_80561068;
-    *(u8*)((u8*)self + 0x16) = 0; *(u8*)((u8*)self + 0x17) = 0;
-    *(u8*)((u8*)self + 0x18) = 0; *(u8*)((u8*)self + 0x19) = 0;
-    *(u8*)((u8*)self + 0x14) = 0;
-    *(f32*)((u8*)self + 0x84) = baseValue;
-    *(u16*)((u8*)self + 0x88) = 0x1A0;
-    *(f32*)((u8*)self + 0x1C) = baseValue; *(f32*)((u8*)self + 0x34) = baseValue;
-    *(f32*)((u8*)self + 0x20) = zeroValue; *(f32*)((u8*)self + 0x24) = zeroValue;
-    *(f32*)((u8*)self + 0x2C) = zeroValue; *(f32*)((u8*)self + 0x30) = zeroValue;
-    *(f32*)((u8*)self + 0x28) = baseValue;
-    *(f32*)((u8*)self + 0x38) = zeroValue; *(u32*)((u8*)self + 0x3C) = 1;
-    *(f32*)((u8*)self + 0x44) = zeroValue; *(f32*)((u8*)self + 0x40) = baseValue;
-    *(f32*)((u8*)self + 0x48) = zeroValue; *(f32*)((u8*)self + 0x4C) = zeroValue;
-    *(f32*)((u8*)self + 0x50) = zeroValue; *(f32*)((u8*)self + 0x64) = zeroValue;
-    *(f32*)((u8*)self + 0x74) = zeroValue; *(f32*)((u8*)self + 0x68) = zeroValue;
-    *(f32*)((u8*)self + 0x78) = zeroValue; *(f32*)((u8*)self + 0x6C) = zeroValue;
-    *(f32*)((u8*)self + 0x7C) = zeroValue; *(f32*)((u8*)self + 0x70) = zeroValue;
-    *(f32*)((u8*)self + 0x80) = zeroValue;
-    *(u32*)((u8*)self + 0xFC) = 0;
-    *(s32*)((u8*)self + 0x8C) = arg;
-    *(u16*)((u8*)self + 0x92) = 0x78;
-    *(u8*)((u8*)self + 0x90) = 0x7F; *(u8*)((u8*)self + 0x91) = 0x40;
-    *(void**)((u8*)self + 0x94) = callback;
-    *(s16*)((u8*)self + 0xDC) = -1; *(s16*)((u8*)self + 0xDE) = -1;
-    *(s16*)((u8*)self + 0xE0) = -1; *(s16*)((u8*)self + 0xE2) = -1;
-    *(s16*)((u8*)self + 0xE4) = -1; *(s16*)((u8*)self + 0xE6) = -1;
-    *(s16*)((u8*)self + 0xE8) = -1; *(s16*)((u8*)self + 0xEA) = -1;
-    *(s16*)((u8*)self + 0xEC) = -1; *(s16*)((u8*)self + 0xEE) = -1;
-    *(s16*)((u8*)self + 0xF0) = -1; *(s16*)((u8*)self + 0xF2) = -1;
-    *(s16*)((u8*)self + 0xF4) = -1; *(s16*)((u8*)self + 0xF6) = -1;
-    *(s16*)((u8*)self + 0xF8) = -1; *(s16*)((u8*)self + 0xFA) = -1;
-    u32 zeroWords = 0;
-    *(u32*)((u8*)self + 0x9C) = zeroWords; *(u32*)((u8*)self + 0xA0) = zeroWords;
-    *(u32*)((u8*)self + 0xA4) = zeroWords; *(u32*)((u8*)self + 0xA8) = zeroWords;
-    *(u32*)((u8*)self + 0xAC) = zeroWords; *(u32*)((u8*)self + 0xB0) = zeroWords;
-    *(u32*)((u8*)self + 0xB4) = zeroWords; *(u32*)((u8*)self + 0xB8) = zeroWords;
-    *(u32*)((u8*)self + 0xBC) = zeroWords; *(u32*)((u8*)self + 0xC0) = zeroWords;
-    *(u32*)((u8*)self + 0xC4) = zeroWords; *(u32*)((u8*)self + 0xC8) = zeroWords;
-    *(u32*)((u8*)self + 0xCC) = zeroWords; *(u32*)((u8*)self + 0xD0) = zeroWords;
-    *(u32*)((u8*)self + 0xD4) = zeroWords; *(u32*)((u8*)self + 0xD8) = zeroWords;
+    u8 *p = (u8 *)self;
+    s32 i;
+
+    p[0x16] = 0; p[0x17] = 0;
+    p[0x18] = 0; p[0x19] = 0;
+    p[0x14] = 0;
+    *(f32 *)(p + 0x84) = baseValue;
+    *(u16 *)(p + 0x88) = 0x1A0;
+    *(f32 *)(p + 0x1C) = baseValue; *(f32 *)(p + 0x34) = baseValue;
+    *(f32 *)(p + 0x20) = zeroValue; *(f32 *)(p + 0x24) = zeroValue;
+    *(f32 *)(p + 0x2C) = zeroValue; *(f32 *)(p + 0x30) = zeroValue;
+    *(f32 *)(p + 0x28) = baseValue;
+    *(f32 *)(p + 0x38) = zeroValue; *(u32 *)(p + 0x3C) = 1;
+    *(f32 *)(p + 0x44) = zeroValue; *(f32 *)(p + 0x40) = baseValue;
+    *(f32 *)(p + 0x48) = zeroValue; *(f32 *)(p + 0x4C) = zeroValue;
+    *(f32 *)(p + 0x50) = zeroValue; *(f32 *)(p + 0x64) = zeroValue;
+    *(f32 *)(p + 0x74) = zeroValue; *(f32 *)(p + 0x68) = zeroValue;
+    *(f32 *)(p + 0x78) = zeroValue; *(f32 *)(p + 0x6C) = zeroValue;
+    *(f32 *)(p + 0x7C) = zeroValue; *(f32 *)(p + 0x70) = zeroValue;
+    *(f32 *)(p + 0x80) = zeroValue;
+    *(u32 *)(p + 0xFC) = 0;
+    *(s32 *)(p + 0x8C) = arg;
+    *(u16 *)(p + 0x92) = 0x78;
+    p[0x90] = 0x7F; p[0x91] = 0x40;
+    *(void **)(p + 0x94) = callback;
+    for (i = 0; i < 16; ++i)
+        *(s16 *)(p + 0xDC + i * 2) = -1;
+    for (i = 0; i < 16; ++i)
+        *(u32 *)(p + 0x9C + i * 4) = 0;
 }
 
 extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *this_, const void *data, s32 size) {
