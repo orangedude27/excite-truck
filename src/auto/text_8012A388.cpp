@@ -620,6 +620,7 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     return (flags >> 3) & 1;
 }
 #pragma dont_inline reset
+#pragma scheduling reset
 #pragma pop
 
 extern "C" const char lbl_8032A630[];
