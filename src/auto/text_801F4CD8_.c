@@ -1,3 +1,9 @@
+typedef struct GridEdge_801F5508 {
+    short from;
+    short to;
+    float distance;
+} GridEdge_801F5508;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void *fn_8012850C();
 extern float PSVECSquareDistance(float *, float *);
@@ -208,77 +214,87 @@ int fn_801F52BC(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     return result;
 }
 
+#pragma scheduling invalid_target
 void fn_801F5508(void *arg0) {
-    int rows = *(int *)((char *)arg0 + 0x2C);
-    int cols = *(int *)((char *)arg0 + 0x30);
-    int edgeCount = (cols - 1) * rows + cols * (rows - 1);
-    char *edges = (char *)((void *(*)(int, void *))fn_8012850C)(
-        edgeCount * 8, lbl_8033AD94);
-    int edge = 0;
-    int outer = 0;
-    int inner;
-    int base;
-    int offset;
-    int from;
-    int to;
-    float *vertices;
-    char *entry;
+    int temp_r5 = *(int *)((char *)arg0 + 0x2C);
+    int temp_r6 = *(int *)((char *)arg0 + 0x30);
+    int temp_r30 = ((temp_r6 - 1) * temp_r5) + (temp_r6 * (temp_r5 - 1));
+    char *temp_r31 = (char *)((void *(*)(int, void *))fn_8012850C)(
+        temp_r30 * 8, lbl_8033AD94);
+    int var_r29 = 0;
+    int var_r24 = 0;
+    int var_r25;
+    int var_r23;
+    int temp_r28;
+    int temp_r5_2;
+    int temp_r0;
+    char *temp_r27;
+    void *temp_r4;
+    int var_r27;
+    char *temp_r24;
+    int temp_r5_3;
+    void *temp_r4_2;
+    int temp_r0_2;
+    int temp_r5_4;
 
-    goto first_outer_check;
-first_outer_body:
-    rows = *(int *)((char *)arg0 + 0x2C);
-    offset = edge * 8;
-    inner = 1;
-    base = outer * rows;
-    goto first_inner_check;
-first_inner_body:
-    to = base + inner;
-    vertices = *(float **)((char *)arg0 + 4);
-    from = to - 1;
-    entry = edges + offset;
-    *(short *)entry = (short)from;
-    *(short *)(entry + 2) = (short)to;
-    edge++;
-    offset += 8;
-    *(float *)(entry + 4) =
-        PSVECSquareDistance(vertices + from * 3, vertices + to * 3);
-    inner++;
-first_inner_check:
-    if (inner < *(int *)((char *)arg0 + 0x2C)) goto first_inner_body;
-    outer++;
-first_outer_check:
-    if (outer < *(int *)((char *)arg0 + 0x30)) goto first_outer_body;
+    goto loop_5;
+loop_3:
+    temp_r5 = *(int *)((char *)arg0 + 0x2C);
+    var_r25 = var_r29 * 8;
+    var_r23 = 1;
+    temp_r28 = var_r24 * temp_r5;
+    goto loop_1;
+loop_2:
+    temp_r5_2 = temp_r28 + var_r23;
+    temp_r4 = *(void **)((char *)arg0 + 4);
+    temp_r0 = temp_r5_2 - 1;
+    *(short *)(temp_r31 + var_r25) = (short)temp_r0;
+    temp_r27 = temp_r31 + var_r25;
+    *(short *)(temp_r27 + 2) = (short)temp_r5_2;
+    var_r29 += 1;
+    var_r25 += 8;
+    *(float *)(temp_r27 + 4) = PSVECSquareDistance(
+        (float *)((char *)temp_r4 + temp_r0 * 0xC),
+        (float *)((char *)temp_r4 + temp_r5_2 * 0xC));
+    var_r23 += 1;
+    goto loop_1;
+loop_1:
+    if (var_r23 < *(int *)((char *)arg0 + 0x2C)) goto loop_2;
+    var_r24 += 1;
+loop_5:
+    if (var_r24 < *(int *)((char *)arg0 + 0x30)) goto loop_3;
 
-    outer = 0;
-    goto second_outer_check;
-second_outer_body:
-    offset = edge * 8;
-    inner = 1;
-    goto second_inner_check;
-second_inner_body:
-    rows = *(int *)((char *)arg0 + 0x2C);
-    from = outer + (inner - 1) * rows;
-    to = outer + inner * rows;
-    vertices = *(float **)((char *)arg0 + 4);
-    entry = edges + offset;
-    *(short *)entry = (short)from;
-    *(short *)(entry + 2) = (short)to;
-    edge++;
-    offset += 8;
-    *(float *)(entry + 4) =
-        PSVECSquareDistance(vertices + from * 3, vertices + to * 3);
-    inner++;
-second_inner_check:
-    if (inner < *(int *)((char *)arg0 + 0x30)) goto second_inner_body;
-    outer++;
-second_outer_check:
-    if (outer < *(int *)((char *)arg0 + 0x2C)) goto second_outer_body;
+    temp_r28 = 0;
+    goto loop_11;
+loop_9:
+    var_r25 = var_r29 * 8;
+    var_r27 = 1;
+    goto loop_8;
+loop_10:
+    temp_r5_3 = *(int *)((char *)arg0 + 0x2C);
+    temp_r4_2 = *(void **)((char *)arg0 + 4);
+    temp_r24 = temp_r31 + var_r25;
+    temp_r0_2 = temp_r28 + ((var_r27 - 1) * temp_r5_3);
+    temp_r5_4 = temp_r28 + (var_r27 * temp_r5_3);
+    *(short *)(temp_r31 + var_r25) = (short)temp_r0_2;
+    *(short *)(temp_r24 + 2) = (short)temp_r5_4;
+    var_r29 += 1;
+    var_r25 += 8;
+    *(float *)(temp_r24 + 4) = PSVECSquareDistance(
+        (float *)((char *)temp_r4_2 + temp_r0_2 * 0xC),
+        (float *)((char *)temp_r4_2 + temp_r5_4 * 0xC));
+    var_r27 += 1;
+    goto loop_8;
+loop_8:
+    if (var_r27 < *(int *)((char *)arg0 + 0x30)) goto loop_10;
+    temp_r28 += 1;
+loop_11:
+    if (temp_r28 < *(int *)((char *)arg0 + 0x2C)) goto loop_9;
 
-    *(void **)((char *)arg0 + 0x14) = edges;
-    *(int *)((char *)arg0 + 0x18) = edgeCount;
+    *(void **)((char *)arg0 + 0x14) = temp_r31;
+    *(int *)((char *)arg0 + 0x18) = temp_r30;
 }
-
-#pragma pop
+#pragma scheduling on
 extern void *fn_8002F37C();
 extern void *fn_8012850C();
 extern char lbl_8033ADA4[];
@@ -643,7 +659,8 @@ extern float lbl_80562FE0;
 #pragma paired_single reset
 void fn_801F65D0(void *arg0) {
     float delta[3];
-    float var_f31, var_f30;
+    register float var_f31;
+    register float var_f30;
     float weight, dot;
     int offset, i;
     unsigned char *entry;
