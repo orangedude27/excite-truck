@@ -598,6 +598,60 @@ void fn_802CFD74(void) {
     fn_802CF850();
     VIConfigure(lbl_8055FD64);
 }
+
+#pragma scheduling invalid_target
+int fn_802CFDE0(void) {
+    extern unsigned int lbl_8055FD98;
+    extern unsigned int lbl_8055FDA8;
+    extern int lbl_8055FD2C;
+    extern int lbl_8055FD38;
+    extern unsigned char lbl_8055FD34;
+    extern int lbl_8055FD40;
+    extern char lbl_8034C058[];
+    extern void fn_802ECA48(void);
+    extern int fn_802E2C20(void);
+    int next;
+    int latest;
+    int end;
+    int start;
+
+    fn_802ECA48();
+    next = (int)lbl_8055FD94 + lbl_8055FD9C;
+    latest = (int)lbl_8055FD98;
+    if (next > latest) {
+        latest = next;
+        lbl_8055FD98 = (unsigned int)latest;
+    }
+    fn_802D6C78();
+    GXGetVtxDesc();
+    GXMiscInit(2);
+    end = (int)lbl_8055FD94;
+    start = lbl_8055FDA4;
+    lbl_8055FDA8 = (unsigned int)end;
+    if (start < end) {
+        DCFlushRange((void *)(lbl_8055FDA0 + start), (unsigned long)(end - start));
+    } else {
+        DCFlushRange((void *)(lbl_8055FDA0 + start), (unsigned long)(0x177000 - start));
+    }
+    DCFlushRange((void *)lbl_8055FDA0, (unsigned long)lbl_8055FDA8);
+    lbl_8055FD38 = 0;
+    lbl_8055FD34 = 1;
+    for (;;) {
+        if (*(volatile int *)&lbl_8055FD38 > 10) {
+            OSReport(lbl_8034C058);
+            fn_802CED78();
+            fn_802CFD74();
+            fn_802CF048(1);
+            lbl_8055FD40 = fn_802E2C20();
+        }
+        if ((unsigned char)lbl_8055FD3C != 0) break;
+    }
+    lbl_8055FD34 = 0;
+    lbl_8055FD2C = (int)lbl_8055FD30 - 1;
+    GXDisableBreakPt();
+}
+#pragma scheduling on
+
 #pragma pop
 
 extern void fn_802CFCA0(void*);
