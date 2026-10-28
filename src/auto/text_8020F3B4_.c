@@ -522,6 +522,7 @@ void fn_80210510(void) {
     fn_802EC1C0();
 }
 
+#pragma unroll off
 long fn_80210570(void) {
     long val = 3;
     char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
