@@ -420,6 +420,8 @@ void* fn_802D94DC(void) {
 
 extern float lbl_80565028;
 #pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma unroll off
 void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     unsigned int *dst;
@@ -430,10 +432,9 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     int count;
     unsigned int blend;
     unsigned int inv;
-    int i;
 
-    wrapS = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFFFF;
-    wrapT = GXGetTexObjWrapT((char *)arg0 + 0x24) & 0xFFFF;
+    wrapS = GXGetTexObjWrapS((char *)arg0 + 0x24);
+    wrapT = GXGetTexObjWrapT((char *)arg0 + 0x24);
     count = (wrapS * wrapT * 16) / 32;
 
     dst = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000);
@@ -441,17 +442,19 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     src2 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg2 + 0x24) - 0x40000000);
 
     blend = (unsigned int)(lbl_80565028 * farg0);
-    inv = 0x100 - blend;
+    inv = 256 - blend;
 
-    for (i = 0; i < count; i++) {
-        unsigned int a = *src1++;
-        unsigned int b = *src2++;
-        unsigned int c0 = (a & 0xFF) * inv + (b & 0xFF) * blend;
-        unsigned int c1 = ((a >> 8) & 0xFF) * inv + ((b >> 8) & 0xFF) * blend;
-        unsigned int c2 = ((a >> 16) & 0xFF) * inv + ((b >> 16) & 0xFF) * blend;
-        unsigned int c3 = ((a >> 24) & 0xFF) * inv + ((b >> 24) & 0xFF) * blend;
-        *dst++ = (c0 >> 8) | (c1 & 0xFFFFFF00) |
-                 ((c2 << 8) & 0xFFFF0000) | ((c3 << 16) & 0xFF000000);
+    if (count > 0) {
+        do {
+            unsigned int a = *src1++;
+            unsigned int b = *src2++;
+            unsigned int c0 = (a & 255) * inv + (b & 255) * blend;
+            unsigned int c1 = ((a >> 8) & 255) * inv + ((b >> 8) & 255) * blend;
+            unsigned int c2 = ((a >> 16) & 255) * inv + ((b >> 16) & 255) * blend;
+            unsigned int c3 = ((a >> 24) & 255) * inv + ((b >> 24) & 255) * blend;
+            *dst++ = (c0 >> 8) | (c1 & 0xFFFFFF00) |
+                     ((c2 << 8) & 0xFFFF0000) | ((c3 << 16) & 0xFF000000);
+        } while (--count != 0);
     }
 }
 #pragma pop
