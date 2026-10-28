@@ -282,6 +282,52 @@ void fn_802D5F88(s32 arg0) {
         lbl_8055FDEC = mode;
     }
 }
+
+void fn_802D61BC(void *arg0) {
+    extern u8 lbl_804C5700[];
+    extern s32 lbl_8055FD20;
+    extern volatile s8 lbl_8055FD25;
+    extern u32 lbl_8055FD28;
+    extern u8 lbl_8055FDFC;
+    extern void fn_802D2614(void);
+    extern void fn_802D2B0C(void);
+    u8 *object = (u8 *)arg0;
+    u8 flags;
+    u8 modeFlag;
+    lbl_8055FD25 = (*(u8 *)(object + 0xA) >> 3) & 1;
+    modeFlag = (*(u8 *)(object + 0xA) >> 4) & 1;
+    *(volatile s32 *)(lbl_804C5700 + 4) = 6;
+    lbl_804C5700[9] = modeFlag;
+    switch (*(u8 *)(object + 8)) {
+    case 16:
+        *(s32 *)(lbl_804C5700 + 4) = 2;
+        break;
+    case 18:
+        *(s32 *)(lbl_804C5700 + 4) = 1;
+        break;
+    default:
+        flags = *(u8 *)(object + 0xA);
+        if (flags & 1) {
+            *(s32 *)(lbl_804C5700 + 4) = 3;
+        } else if (flags & 2) {
+            if (lbl_8055FDFC != 0)
+                *(s32 *)(lbl_804C5700 + 4) = 5;
+            else
+                *(s32 *)(lbl_804C5700 + 4) = 4;
+        } else {
+            *(s32 *)(lbl_804C5700 + 4) = 0;
+        }
+        break;
+    }
+    if (*(u8 *)(object + 0xA) & 4) {
+        if (lbl_8055FD28 != *(u32 *)(object + 0x14))
+            lbl_8055FD20 |= 0x20;
+        lbl_8055FD28 = *(u32 *)(object + 0x14);
+    }
+    fn_802D2614();
+    fn_802D2B0C();
+}
+
 #pragma scheduling on
 s32 fn_802D62E4(void *arg0) {
     if ((u32)(*(u32 *)arg0 + 0xB1BC0000) != 0x4C32U) {
