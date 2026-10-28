@@ -517,7 +517,7 @@ void fn_8028BD60(s32 arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
     struct Ring {
         void *data;
