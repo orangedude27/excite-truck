@@ -187,6 +187,7 @@ int fn_8015F148(void **arg0, int arg1) {
 }
 
 void fn_8015F1E4();
+extern f64 fn_8002F234(f32, f32, f32);
 void fn_8015EC50(unsigned short *, void *);
 int fn_8015ECC0(void *);
 void fn_8015F320(void **arg0, int arg1, void *arg2) {
@@ -242,31 +243,46 @@ extern int fn_8015F3EC(unsigned short *, unsigned short *);
 extern char lbl_8032F4A0[];
 extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
 void fn_8015F3FC(void *arg0) {
-    int i, j, index, max;
-    unsigned int count;
-    int *src, *dst, *array, *out;
+    register int *src;
+    register int offset;
+    register int index;
+    register int i;
+    int max;
+    int count;
+    int *dst, *array, *out;
     if (*(int *)(lbl_8055E29C + 4) <= 0) return;
     fn_80265DCC(*(void **)lbl_8055E29C, *(int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
-    count = *(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16;
+    count = *(int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16;
     dst = (int *)fn_801284F8(0x10, lbl_8032F4A0);
     if (!dst) return;
     array = (int *)fn_8012850C(count * 4, (int)&lbl_8055A098);
-    dst[0] = (int)array; dst[2] = count; dst[1] = 0; dst[3] = (int)array;
+    dst[0] = (int)array;
+    dst[2] = count;
+    dst[1] = 0;
+    dst[3] = (int)array;
     *(int *)&lbl_8055E2A0 = (int)dst;
-    if ((int)count <= 0) return;
-    src = (int *)*(int *)lbl_8055E29C;
-    max = *(int *)(lbl_8055E29C + 4) - 1;
+    if (count <= 0) return;
+
     for (i = 0; i < count; i++) {
-        index = 0; j = 0;
-        while (index < max && *(unsigned short *)((char *)src + j) < i) { j += 0x10; index++; }
-        out = *(int **)&lbl_8055E2A0;
-        if (index == max && *(unsigned short *)((char *)src + j) < i) {
-            out[1]++;
-            *(int *)(out[0] + 4 * (out[1] - 1)) = (int)src;
+        index = 0;
+        offset = 0;
+        max = *(int *)(lbl_8055E29C + 4) - 1;
+        do {
+            offset += 0x10;
+            index++;
+            if (index >= max) break;
+        } while (*(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i);
+
+        max = *(int *)(lbl_8055E29C + 4) - 1;
+        if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
+            src = (int *)*(int *)lbl_8055E29C;
         } else {
-            out[1]++;
-            *(int *)(out[0] + 4 * (out[1] - 1)) = (int)((char *)src + j);
+            src = (int *)((char *)*(int *)lbl_8055E29C + offset);
         }
+        out = *(int **)&lbl_8055E2A0;
+        index = out[1];
+        out[1] = index + 1;
+        *(int *)(out[0] + 4 * index) = (int)src;
     }
 }
 
