@@ -873,7 +873,7 @@ struct Obj_80161F10 {
     virtual void unused0();
     virtual s32 has(const char *);
     virtual void unused2();
-    virtual void set(const char *);
+    virtual void *set(const char *);
     virtual void unused4();
     virtual s32 index(const char *);
 };
