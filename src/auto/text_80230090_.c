@@ -66,6 +66,54 @@ void fn_80230114(void) {
     fn_802324D8(); fn_8022EBF0();
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma paired off
+#pragma paired_single off
+void fn_802304EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
+                 f32 farg0, f32 farg1, f32 farg2, f32 farg3,
+                 f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
+    extern f32 fn_8023293C(s32, s32, f32);
+    extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);
+    extern void fn_80232BA4(s32, s32, s32, s32, f32, f32, f32, f32, f32);
+    extern f32 lbl_80563610, lbl_80563618, lbl_8056361C;
+    f32 spC, sp8;
+    f32 temp_f1, temp_f3, temp_f4;
+    f32 temp_f31, temp_f28, temp_f27, temp_f26;
+    f32 var_f1;
+    s32 var_r0;
+
+    (void)arg_sp0;
+    temp_f31 = farg3;
+    temp_f1 = fn_8023293C(arg1, arg0, lbl_80563610);
+    temp_f3 = farg5 * farg4;
+    temp_f28 = temp_f31 * temp_f1;
+    temp_f27 = lbl_80563618 - farg6;
+    temp_f1 = farg0 + temp_f3;
+    temp_f26 = lbl_8056361C + farg6;
+    temp_f4 = temp_f1 + temp_f28;
+    spC = temp_f1;
+    sp8 = temp_f4;
+    fn_80230C9C(&spC, &sp8, temp_f27, temp_f26, -temp_f27 + temp_f26);
+    var_r0 = 0;
+    var_f1 = lbl_80563618;
+    if (spC < temp_f27) {
+        var_r0 = 1;
+        var_f1 = spC + (-temp_f27 + temp_f26);
+    }
+    if (sp8 > temp_f26) {
+        var_r0 = 1;
+        var_f1 = (sp8 - (-temp_f27 + temp_f26)) - temp_f28;
+    }
+    if (var_r0 != 0) {
+        fn_80232BA4(arg0, arg1, arg2, arg3, var_f1, farg1, farg3, farg2, lbl_80563610);
+    }
+    fn_80232BA4(arg0, arg1, arg2, arg3, spC, farg1, farg3, farg2, lbl_80563610);
+}
+#pragma pop
+
 extern f32 lbl_8056362C;
 extern f32 lbl_80563630;
 extern f32 fn_8023293C(s32, s32, f32);
@@ -495,6 +543,47 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
         *arg3 -= (s32)f0;
     }
 }
+
+#pragma push
+#pragma processor 750
+void fn_80231220(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v0, f32 u1, f32 v1) {
+    extern void fn_802C8B98(s32, s32);
+    extern void fn_802C8D74(void);
+    extern void fn_802C8DB8(void *, s32, u16 *, s32);
+    extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
+    extern s32 fn_80230B9C(u32);
+    extern f32 lbl_80563614;
+    extern u16 lbl_802F9FE4[];
+    struct Frame {
+        u16 indices[6];
+        u8 pad1[4];
+        f32 sp20[6];
+        f32 sp38[6];
+        f32 sp50[6];
+        f32 sp68[6];
+    } __attribute__((aligned(16))) frame;
+    s32 state;
+    f32 zero;
+    const u16 *src;
+
+    fn_802C8B98((s32)arg0, (s32)fn_8022EDC4());
+    state = fn_80230B9C((u32)arg1);
+    zero = lbl_80563614;
+    fn_80231380(frame.sp20, state, x, y, zero, u0, v0);
+    fn_80231380(frame.sp38, state, x + w, y, zero, u1, v0);
+    fn_80231380(frame.sp50, state, x, y - h, zero, u0, v1);
+    fn_80231380(frame.sp68, state, x + w, y - h, zero, u1, v1);
+    src = lbl_802F9FE4;
+    frame.indices[0] = *src;
+    frame.indices[1] = src[1];
+    frame.indices[2] = src[2];
+    frame.indices[3] = src[3];
+    frame.indices[4] = src[4];
+    frame.indices[5] = src[5];
+    fn_802C8DB8(frame.sp20, 4, frame.indices, 6);
+    fn_802C8D74();
+}
+#pragma pop
 
 void fn_80231380(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     f32 *p = (f32 *)arg0;
