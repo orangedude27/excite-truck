@@ -566,8 +566,8 @@ void fn_80010724(s32 arg0, s32 arg1, s32 arg2) {
     extern f32 lbl_80560320;
     extern f32 lbl_805602F4;
     f32 temp_f1;
-    f32 temp_f30;
     f32 temp_f31;
+    f32 temp_f30;
     f32 temp_f31_2;
     f32 temp_f4;
     f32 temp_f5;
