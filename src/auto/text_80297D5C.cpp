@@ -330,6 +330,7 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     return 1;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
     char *entry = (char *)arg1;
     float remaining = *(float *)(entry + 0x24);
@@ -338,11 +339,14 @@ extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
         ((void (*)(void *, int))fn_8029840C)(arg0, index);
         return;
     }
+    float firstAngle = lbl_805645B8;
+    float secondArg = lbl_80564590;
+    int mode = 0;
     *(float *)(entry + 0x24) = remaining - deltaTime;
-    float angle = fn_80129DC4(0, lbl_805645B8, lbl_80564590);
+    float angle = fn_80129DC4(mode, firstAngle, secondArg);
     float angle2 = angle * angle;
     float otherAngle = (float)fn_8002F234(lbl_80564590 - angle2);
-    float cosine = fn_80129DC4(0, -otherAngle, otherAngle);
+    float cosine = fn_80129DC4(mode, -otherAngle, otherAngle);
 
     float target[3];
     float positions[3];
@@ -356,16 +360,14 @@ extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
     positions[1] = y;
     float z = *(float *)(entry + 0x08) + *(float *)(entry + 0x14) * angle;
     positions[2] = z;
-
     x = x + *(float *)(entry + 0x18) * cosine;
     positions[0] = x;
-    y = y + *(float *)(entry + 0x1C) * cosine;
-    positions[1] = y + lbl_805645BC;
-    z = z + *(float *)(entry + 0x20) * cosine;
-    positions[2] = z;
-
+    float yAdjusted = y + *(float *)(entry + 0x1C) * cosine;
     float zOffset = *(float *)(entry + 0x20);
     float zVelocity = zOffset * cosine;
+    positions[1] = yAdjusted + lbl_805645BC;
+    z = z + zVelocity;
+    positions[2] = z;
     ((void (*)(void *, float *, float *, float, float, float, float, float))fn_8028E584)(
         *(void **)((char *)arg0 + 0xB0), positions, target, zVelocity, zOffset, z, y, x);
     fn_80288A40(positions, target);
@@ -961,6 +963,50 @@ extern "C" void fn_8029A318(float *a, float *b, float *c, int x, int y, int z, i
  b[0]+=a[9];b[1]+=a[10];b[2]+=a[11];
  c[0]=a[0]*lbl_805645C8;c[1]=a[1]*lbl_805645C8;c[2]=a[2]*lbl_805645C8;
  ((float *)w)[0]=a[6]*lbl_805645E8;((float *)w)[1]=a[7]*lbl_805645E8;((float *)w)[2]=a[8]*lbl_805645E8;
+}
+
+extern "C" void fn_801EE0C8(int);
+extern "C" void fn_802C77F0(int, float *);
+extern "C" int lbl_80488648[];
+extern "C" float lbl_80564608;
+extern "C" void fn_8029A4B4(void *arg0, int arg1) {
+    float a[3], b[3], c[3], screen[6];
+    void *data;
+    int selector;
+
+    data = (void *)fn_80287B24(arg1);
+    if ((unsigned int)arg1 < 8U)
+        selector = lbl_80488648[arg1];
+    else
+        selector = 0;
+    fn_801EE0C8(selector);
+    fn_802C77F0(selector, screen);
+
+    *(unsigned int *)((char *)arg0 + 0x00) = ((unsigned int *)data)[0];
+    *(unsigned int *)((char *)arg0 + 0x04) = ((unsigned int *)data)[1];
+    *(unsigned int *)((char *)arg0 + 0x08) = ((unsigned int *)data)[2];
+    *(unsigned int *)((char *)arg0 + 0x0C) = ((unsigned int *)data)[3];
+    *(unsigned int *)((char *)arg0 + 0x10) = ((unsigned int *)data)[4];
+    *(unsigned int *)((char *)arg0 + 0x14) = ((unsigned int *)data)[5];
+    *(unsigned int *)((char *)arg0 + 0x18) = ((unsigned int *)data)[6];
+    *(unsigned int *)((char *)arg0 + 0x1C) = ((unsigned int *)data)[7];
+    *(unsigned int *)((char *)arg0 + 0x20) = ((unsigned int *)data)[8];
+    *(unsigned int *)((char *)arg0 + 0x24) = ((unsigned int *)data)[9];
+    *(unsigned int *)((char *)arg0 + 0x28) = ((unsigned int *)data)[10];
+    *(unsigned int *)((char *)arg0 + 0x2C) = ((unsigned int *)data)[11];
+
+    *(float *)((char *)arg0 + 0x30) = screen[0];
+    *(float *)((char *)arg0 + 0x34) = screen[2];
+    *(float *)((char *)arg0 + 0x38) = screen[4];
+    *(unsigned int *)((char *)arg0 + 0x3C) = (unsigned int)arg1;
+
+    a[0] = a[1] = a[2] = lbl_8056459C;
+    b[0] = b[1] = b[2] = lbl_8056459C;
+    c[0] = c[1] = c[2] = lbl_8056459C;
+    ((void (*)(void *, float *, float *, float *, float, float, float))fn_8029A318)
+        (arg0, a, b, c, screen[0], screen[2], screen[4]);
+    *(int *)((char *)arg0 + 0x40) =
+        fn_8029833C(lbl_8055F7C0, a, b, c, *(short *)((char *)data + 0x30), lbl_80564608);
 }
 
 extern "C" void fn_8029A318(float*, float*, float*, int, int, int, int);
