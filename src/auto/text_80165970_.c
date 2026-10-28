@@ -105,7 +105,7 @@ extern float fn_8013672C(int);
 extern float lbl_8056189C;
 extern double lbl_80561890;
 extern unsigned char lbl_8042FE38;
-extern unsigned char lbl_8042FEB0;
+__declspec(section ".data") extern unsigned char lbl_8042FEB0;
 extern float lbl_8055E320;
 #pragma push
 #pragma small_data off
@@ -145,6 +145,7 @@ __declspec(section ".sdata") extern char lbl_8055A158[];
 #pragma small_data on
 __declspec(section ".sdata") extern char lbl_8055A160[];
 __declspec(section ".sdata") extern char lbl_8055A168[];
+#pragma pop
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_80165A30(void *arg0, int arg1) {
