@@ -387,7 +387,8 @@ extern "C" s32 fn_802A5878(void) {
 done:
     ;
 }
-#pragma cplusplus reset
+#pragma cplusplus off
+#pragma pop
 
 void *fn_802A7614(void *, s32);
 s32 fn_802A597C(void) {
