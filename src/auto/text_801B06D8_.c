@@ -1,5 +1,6 @@
 #include <types.h>
 typedef s32 M2C_UNK;
+typedef struct StackArg_801B07B4 { void *node; f32 angle; s32 word; } StackArg_801B07B4;
 extern void *fn_801B83A0(void);
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 extern void *fn_80156A40(void);
