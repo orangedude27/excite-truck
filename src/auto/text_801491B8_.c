@@ -1189,27 +1189,26 @@ extern "C" void* fn_8014E3CC(void* arg0, s32 arg1) {
 
 #pragma cplusplus off
 extern void *memset(void *, s32, s32);
-#pragma scheduling invalid_target
 void *fn_8014E4BC(void *arg0) {
-    u8 *base = (u8*)arg0;
-    u8 *p;
-    u8 *end;
-    void *zero = 0;
-    *(void**)(base + 8) = zero; *(void**)(base + 0x10) = zero;
-    *(void**)(base + 0x14) = zero; *(void**)(base + 0x18) = zero;
-    memset(base + 0x2C, 0x7A, 3); base[0x2F] = (u8)zero;
-    memset(base + 0x40, 0x7A, 3); base[0x43] = (u8)zero;
-    memset(base + 0x45, 0x7A, 3); base[0x48] = (u8)zero;
-    memset(base + 0x59, 0x7A, 3); base[0x5C] = (u8)zero;
-    memset(base + 0x6D, 0x7A, 3); base[0x70] = (u8)zero;
-    memset(base + 0x81, 0x7A, 3); base[0x84] = (u8)zero;
-    memset(base + 0x8B, 0x7A, 3); base[0x8E] = (u8)zero;
-    p = base + 0x95; end = base + 0x149;
-    do { memset(p, 0x7A, 3); p[3] = (u8)zero; p += 0x14; } while (p < end);
-    p = end; end = base + 0x1FD;
-    do { memset(p, 0x7A, 3); p[3] = (u8)zero; p += 0x14; } while (p < end);
-    memset(end, 0x7A, 3); base[0x200] = (u8)zero;
-    memset(base + 0x225, 0x7A, 3); base[0x228] = (u8)zero;
+    u8 *base = (u8 *)arg0;
+    u32 p;
+    u32 end;
+    s32 zero = 0;
+    *(u32 *)(base + 8) = zero; *(u32 *)(base + 0x10) = zero;
+    *(u32 *)(base + 0x14) = zero; *(u32 *)(base + 0x18) = zero;
+    memset(base + 0x2C, 0x7A, 3); base[0x2F] = zero;
+    memset(base + 0x40, 0x7A, 3); base[0x43] = zero;
+    memset(base + 0x45, 0x7A, 3); base[0x48] = zero;
+    memset(base + 0x59, 0x7A, 3); base[0x5C] = zero;
+    memset(base + 0x6D, 0x7A, 3); base[0x70] = zero;
+    memset(base + 0x81, 0x7A, 3); base[0x84] = zero;
+    memset(base + 0x8B, 0x7A, 3); base[0x8E] = zero;
+    p = (u32)base + 0x95; end = (u32)base + 0x149;
+    do { memset((void *)p, 0x7A, 3); *(u8 *)(p + 3) = zero; p += 0x14; } while (p < end);
+    p = end; end = (u32)base + 0x1FD;
+    do { memset((void *)p, 0x7A, 3); *(u8 *)(p + 3) = zero; p += 0x14; } while (p < end);
+    memset((void *)end, 0x7A, 3); base[0x200] = zero;
+    memset(base + 0x225, 0x7A, 3); base[0x228] = zero;
     return arg0;
 }
 #pragma scheduling on
@@ -1586,21 +1585,33 @@ extern s32 fn_801E85B4(void);
 #pragma push
 #pragma use_lmw_stmw off
 extern f32 fn_801495D4(s32);
-void fn_80151B48(void *arg0) {
-    s32 self = (s32)arg0;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_80151B48(void *arg0) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual s32 check(s32);
+    };
+    void *self = arg0;
     s32 index;
-    s32 addr;
-    s32 i, j;
     s32 flag;
+    s32 i;
     void *entry;
     void *obj;
     void *p;
+    s32 addr;
     f32 f;
 
     fn_801E85B4();
     index = ((s32 (*)(void))fn_801E866C)();
-    if (((s32 (*)(void *, s32))(*(void ***)self)[8])((void *)self, index) == 0) goto done;
-    addr = self + index * 0xC0 + 0x9E4;
+    if (((struct Dummy *)self)->check(index) == 0) goto done;
+    addr = (s32)self + index * 0xC0 + 0x9E4;
     if (addr == 0) goto done;
     if (*(s32 *)(addr + 4) == 0) {
         flag = 0;
@@ -1610,9 +1621,9 @@ void fn_80151B48(void *arg0) {
         flag = (f32)__fabs((f64)(*(f32 *)(addr + 0x1C) - lbl_8056164C)) <= lbl_80558DC4[0];
     }
     i = 0;
-    j = 0;
-    while (i < *(s32 *)(self + 0x18)) {
-        entry = *(void **)(*(s32 *)(self + 0x14) + j);
+    index = 0;
+    while (i < *(s32 *)((s32)self + 0x18)) {
+        entry = *(void **)(*(s32 *)((s32)self + 0x14) + index);
         f = *(f32 *)((u8 *)entry + 0x34);
         if (fn_80141F7C(f) != 0 && flag != 0 && ((u8 *)entry)[0xCC] != 0) {
             f = ((f32 (*)(void))fn_80149650)();
@@ -1621,14 +1632,14 @@ void fn_80151B48(void *arg0) {
             fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f);
             fn_80151C98(entry, (s32)obj);
         }
-        j += 4;
+        index += 4;
         i += 1;
     }
 done:
     fn_80167844();
     fn_8016A438();
 }
-
+#pragma cplusplus reset
 extern double cos(double), sin(double), fn_8002EFB4(double,double);
 extern f32 fn_80144514(f32,f32,f32,f32,f32,f32);
 extern s32 fn_802E2C20(void);
