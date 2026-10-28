@@ -459,23 +459,31 @@ extern "C" f32 lbl_805615F8;
 extern "C" f32 lbl_805615FC;
 extern "C" f64 lbl_80561600;
 extern "C" s32 fn_80145A24(void *arg0) {
-    s32 result;
-    f32 out0;
-    f32 out1;
-    f64 v1 = (f64)fn_802C9C48() - lbl_80561600;
-    f64 v2 = (f64)fn_802C9C48() - lbl_80561600;
-    out0 = fn_80145A08(lbl_805615D4, v1, lbl_805615D4, lbl_805615F4, *(f32 *)((u8 *)arg0 + 4));
-    f32 m = lbl_805615F8 * (f32)v1;
-    f32 p = m * lbl_805615D0;
-    s32 i = fn_802C9C38(v2, v1);
-    s32 s = (i >> 31) + i;
-    s32 t = (s >> 1) ^ 0x8000;
-    f32 q = (f32)((f64)t + (f64)fn_802C9C48() - lbl_80561600 - p);
-    out1 = fn_80145A08(q, q + lbl_805615F8 * (f32)v1, lbl_805615D4, lbl_805615FC, *(f32 *)((u8 *)arg0 + 8));
+    s32 time0Bits = fn_802C9C48();
+    s32 field0Bits = *(s32 *)((u8 *)arg0 + 4);
+    f64 time0 = (f64)time0Bits - lbl_80561600;
+    f64 field0 = (f64)field0Bits - lbl_80561600;
+    f32 out0 = fn_80145A08(lbl_805615D4, time0, lbl_805615D4, lbl_805615F4, field0);
+
+    s32 time1Bits = fn_802C9C48();
+    f64 time1 = (f64)time1Bits - lbl_80561600;
+    f32 scaled = lbl_805615F8 * (f32)time1;
+    f32 correction = scaled * lbl_805615D0;
+    u32 converted = fn_802C9C38(time1, time0);
+    u32 rounded = (converted >> 31) + converted;
+    s32 shifted = ((s32)rounded >> 1) ^ 0x8000;
+
+    s32 time2Bits = fn_802C9C48();
+    f64 time2 = (f64)time2Bits - lbl_80561600;
+    f64 base = (f64)shifted + time2 - correction;
+    s32 field1Bits = *(s32 *)((u8 *)arg0 + 8);
+    f64 field1 = (f64)field1Bits - lbl_80561600;
+    f32 out1 = fn_80145A08((f32)base, (f32)base + lbl_805615F8 * (f32)time2,
+                           lbl_805615D4, lbl_805615FC, field1);
+
     *(f32 *)((u8 *)arg0 + 8) = out0;
     *(f32 *)((u8 *)arg0 + 0xC) = out1;
-    result = *(s32 *)((u8 *)arg0 + 8);
-    return result;
+    return *(s32 *)((u8 *)arg0 + 8);
 }
 
 extern "C" f32 lbl_80561608;
@@ -1600,7 +1608,7 @@ extern "C" void fn_80147ABC(void *arg0, void *arg1, const char *format, f64 valu
 
 extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
     s32 temp[12];
-    fn_80147DC0((u32 *)temp, arg0, arg1);
+    ((void (*)(void *, s32, s32))fn_80147DC0)((u32 *)temp, arg0, arg1);
     fn_801476D8((u32 *)temp, fn_80147C50(arg2, arg3, arg5), arg4);
 }
 
@@ -1657,33 +1665,30 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
 }
 #pragma scheduling on
 void fn_80147DC0(void *dst, void *src, void *end, f32 t) {
-    u8 *d = (u8 *)dst;
-    u8 *s = (u8 *)src;
-    u8 *e = (u8 *)end;
-    f32 y, x;
-    *(u32 *)d = *(u32 *)s;
-    *(u32 *)(d + 4) = *(u32 *)(s + 4);
-    *(u32 *)(d + 8) = *(u32 *)(s + 8);
-    *(u32 *)(d + 0xC) = *(u32 *)(s + 0xC);
-    *(f32 *)(d + 0x10) = *(f32 *)(s + 0x10);
-    *(f32 *)(d + 0x18) = *(f32 *)(s + 0x18);
-    *(f32 *)(d + 0x1C) = *(f32 *)(s + 0x1C);
-    x = *(f32 *)(s + 4);
-    y = *(f32 *)(s + 8);
-    *(f32 *)(d + 4) = x + t * (*(f32 *)(e + 4) - x);
-    *(f32 *)(d + 8) = y + t * (*(f32 *)(e + 8) - y);
-    x = *(f32 *)(s + 0x18);
-    *(f32 *)(d + 0x18) = x + t * (*(f32 *)(e + 0x18) - x);
-    x = *(f32 *)(s + 0x20);
-    *(f32 *)(d + 0x20) = x + t * (*(f32 *)(e + 0x20) - x);
-    x = *(f32 *)(s + 0x1C);
-    *(f32 *)(d + 0x1C) = x + t * (*(f32 *)(e + 0x1C) - x);
-    x = *(f32 *)(s + 0x24);
-    *(f32 *)(d + 0x24) = x + t * (*(f32 *)(e + 0x24) - x);
-    x = *(f32 *)(s + 0x10);
-    *(f32 *)(d + 0x10) = x + t * (*(f32 *)(e + 0x10) - x);
-    x = *(f32 *)(s + 0x14);
-    *(f32 *)(d + 0x14) = x + t * (*(f32 *)(e + 0x14) - x);
+    struct State {
+        u32 m0;
+        f32 m4;
+        f32 m8;
+        u32 mC;
+        f32 m10;
+        f32 m14;
+        f32 m18;
+        f32 m1C;
+        f32 m20;
+        f32 m24;
+    };
+    State *d = (State *)dst;
+    State *s = (State *)src;
+    State *e = (State *)end;
+    *d = *s;
+    d->m4 = s->m4 + t * (e->m4 - s->m4);
+    d->m8 = s->m8 + t * (e->m8 - s->m8);
+    d->m18 = s->m18 + t * (e->m18 - s->m18);
+    d->m20 = s->m20 + t * (e->m20 - s->m20);
+    d->m1C = s->m1C + t * (e->m1C - s->m1C);
+    d->m24 = s->m24 + t * (e->m24 - s->m24);
+    d->m10 = s->m10 + t * (e->m10 - s->m10);
+    d->m14 = s->m14 + t * (e->m14 - s->m14);
 }
 
 #pragma dont_inline off
