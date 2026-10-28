@@ -62,17 +62,16 @@ void fn_802924F4(void) {
     } v;
     float one = lbl_805644D4;
     float offset = lbl_805644D8;
-    float x, y, z, w, q, factor;
     unsigned char *p = lbl_804B4030;
     int i;
 
     for (i = 0; i < 6; i++, p += 0x34) {
-        x = fn_80129DC4(0, lbl_805644D0, one);
-        y = (float)fn_8002F234((one - x * x) - offset);
-        z = (float)fn_8002F234((one - x * x) - offset);
-        w = fn_80129DC4(0, -z, y);
-        q = (float)fn_8002F234((one - x * x) - w * w);
-        factor = (fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
+        float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
+        float y = (float)fn_8002F234((one - x * x) - offset);
+        float z = (float)fn_8002F234((one - x * x) - offset);
+        float w = fn_80129DC4(0, -z, y);
+        float q = (float)fn_8002F234((one - x * x) - w * w);
+        float factor = (fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
         v.x = x;
         *(float *)(p + 0) = (float)(double)x;
         v.y = w;
@@ -738,25 +737,27 @@ body:
 check:
     if (i < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern int fn_80287B5C(int, void *, float, float, float);
 void fn_80294408(void *arg0, float *arg1, float *arg2) {
     int count;
     register int index;
     int offset;
+    register float *second;
+    register float *first;
     register u8 *object;
     register u8 *record;
     register u8 *template;
-    register float *first;
-    register float *second;
     float x, y, z, a, b, c;
     unsigned int secondWord, firstWord;
-    object = (u8 *)arg0;
-    first = arg1;
     second = arg2;
+    first = arg1;
+    object = (u8 *)arg0;
     count = *(s32 *)(object + 0x222C);
-    if (count >= 0x80) return;
-    if (*(s32 *)(object + 0x28) == 0) return;
+    if (count >= 0x80) goto done;
+    if (*(s32 *)(object + 0x28) != 0) goto body;
+    goto done;
+body:
     record = object + count * 0x44;
     index = fn_80129D18(0, 6);
     offset = index * 0x34;
@@ -794,6 +795,8 @@ void fn_80294408(void *arg0, float *arg1, float *arg2) {
     *(unsigned char *)(record + 0x6D) = (unsigned char)first;
     count = *(int *)(object + 0x222C);
     *(int *)(object + 0x222C) = count + 1;
+done:
+    ;
 }
 #pragma scheduling on
 
