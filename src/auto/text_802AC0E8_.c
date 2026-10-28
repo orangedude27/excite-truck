@@ -12,7 +12,6 @@ extern float lbl_80564AB0;
 extern double atof(const char *);
 extern int fn_802E2C20(void);
 extern int sscanf(const char *, const char *, ...);
-extern float fn_802AC344();
 void *fn_802AC0E8(void *arg0, const char *arg1, int arg2) {
     char *node = (char *)arg0;
     int key = arg2;
