@@ -340,6 +340,49 @@ special:
     return ((s32 (*)(f32))fn_802A52FC)(lbl_8056485C);
 }
 
+extern void *fn_802AE4C8(s32);
+extern s32 fn_802A7370(s32, void *);
+extern int strncmp(const char *, const char *, unsigned long);
+extern char lbl_8055CBF0;
+#pragma cplusplus on
+extern "C" s32 fn_802A5878(void) {
+    struct Item {
+        virtual const char *name();
+        virtual void *child(s32);
+    };
+    Item *list;
+    Item *child;
+    s32 *table;
+    s32 i;
+    s32 j;
+    s32 check;
+
+    lbl_8055F890 = 0;
+    if (fn_800167F4() <= 1) {
+        table = lbl_804BCFA8;
+        i = 0;
+        list = (Item *)fn_802AE4C8(i);
+        while (list != 0) {
+            j = 0;
+            child = (Item *)list->child(j);
+            while (child != 0) {
+                if (strncmp(child->name(), &lbl_8055CBF0, 4) == 0) {
+                    check = fn_801284F8(0x40, &lbl_8055CBF0);
+                    if (check != 0) {
+                        s32 value = fn_802A7370(check, child);
+                        table[lbl_8055F890++] = value;
+                    }
+                }
+                j++;
+                child = (Item *)list->child(j);
+            }
+            i++;
+            list = (Item *)fn_802AE4C8(i);
+        }
+    }
+}
+#pragma cplusplus reset
+
 void *fn_802A7614(void *, s32);
 s32 fn_802A597C(void) {
     s32 *ptr = lbl_804BCFA8;
