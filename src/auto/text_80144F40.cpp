@@ -451,7 +451,7 @@ extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4
 }
 #pragma dont_inline reset
 
-extern "C" u32 fn_802C9C38(f64, f64);
+extern "C" s32 fn_802C9C38(void);
 extern "C" s32 fn_802C9C48(void);
 extern "C" f32 fn_80145A08(f32, f32, f32, f32, f32);
 extern "C" f32 lbl_805615F4;
@@ -470,7 +470,7 @@ extern "C" u64 fn_80145A24(void *arg0) {
     f64 time1 = (f64)time1Bits;
     f32 scaled = lbl_805615F8 * (f32)time1;
     f32 correction = scaled * lbl_805615D0;
-    u32 converted = fn_802C9C38(time1, time0);
+    u32 converted = (u32)fn_802C9C38();
     u32 rounded = (converted >> 31) + converted;
     volatile s32 half = (s32)rounded >> 1;
     f32 base = (f32)(f64)half - correction;
