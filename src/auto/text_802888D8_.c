@@ -22,6 +22,21 @@ typedef struct {
       char tail[0x18];
 } fn_802897E0Frame;
 
+typedef struct {
+    float sp8, spC, sp10, sp14, sp18, sp1C;
+    int sp20, sp24;
+    float sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44;
+    float sp48, sp4C;
+    float sp50, sp54;
+    char pad50[0xC];
+    int sp64;
+    float sp68;
+    char pad64[4];
+    float sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94;
+    float sp98, sp9C;
+    char tail[8];
+} fn_80289394Frame;
+
 extern int lbl_8055F6DC;
 extern int lbl_8055C880;
 extern float lbl_80564280, lbl_8056428C, lbl_8056429C, lbl_805642A4, lbl_805642BC, lbl_805642C0, lbl_805642C4, lbl_805642C8, lbl_805642D4, lbl_805642D8, lbl_805642DC, lbl_805642E0, lbl_805642E4, lbl_805642E8, lbl_805642EC;
@@ -279,85 +294,84 @@ void fn_80289084(void *arg0) {
 }
 
 int fn_80289394(int arg0) {
-    volatile float sp9C;
-    volatile float sp98;
-    volatile float sp94;
-    volatile float sp90;
-    volatile float sp8C;
-    volatile float sp88;
-    volatile float sp84;
-    volatile float sp80;
-    volatile float sp7C;
-    volatile float sp78;
-    volatile float sp74;
-    volatile float sp70;
-    volatile float sp68;
-    volatile int sp64;
-    volatile float sp54;
-    volatile float sp50;
-    volatile float sp4C;
-    volatile float sp48;
-    volatile float sp44;
-    volatile float sp40;
-    volatile float sp3C;
-    volatile float sp38;
-    volatile float sp34;
-    volatile float sp30;
-    volatile float sp2C;
-    volatile float sp28;
-    volatile int sp24;
-    volatile int sp20;
-    volatile float sp1C;
-    volatile float sp18;
-    volatile float sp14;
-    volatile float sp10;
-    volatile float spC;
-    volatile float sp8;
+    fn_802897E0Frame frame;
+    register float f9;
+    register float f5;
+    register float f11;
+    register float f10;
+    register float f31;
+    register float f13;
+    register float f12;
+    register float f8;
+    register float f7;
+    register float f6;
+    register float f4;
+    register float f3;
+    register float f2;
+    register float f1;
+    register float f0;
+    register int size;
+    register int two;
+    register int five;
 
-    fn_8028E61C((int *)&sp20);
-    sp24 = 0x100;
-    sp28 = lbl_805642D4;
-    sp2C = lbl_805642A4;
-    sp20 = 2;
-    sp68 = lbl_805642DC;
-    sp64 = 5;
-    sp14 = lbl_805642E0;
-    sp18 = lbl_805642C0;
-    sp1C = lbl_805642E0;
-    sp30 = lbl_805642E0;
-    sp34 = lbl_805642C0;
-    sp38 = lbl_805642E0;
-    sp8 = lbl_805642BC;
-    spC = lbl_805642BC;
-    sp10 = lbl_805642BC;
-    sp3C = lbl_805642BC;
-    sp40 = lbl_805642BC;
-    sp44 = lbl_805642BC;
-    sp48 = lbl_805642C0;
-    sp4C = lbl_805642C4;
-    sp50 = lbl_8056429C;
-    sp54 = lbl_80564280;
-    sp90 = lbl_805642C8;
-    sp88 = lbl_805642C8;
-    sp80 = lbl_805642C8;
-    sp94 = lbl_805642C8;
-    sp8C = lbl_805642C8;
-    sp84 = lbl_805642C8;
-    sp78 = lbl_805642E4;
-    sp7C = lbl_805642E0;
-    sp70 = lbl_805642E8;
-    sp74 = lbl_805642EC;
-    sp98 = lbl_805642D8;
-    sp9C = lbl_8056428C;
+    fn_8028E61C((int *)&frame.sp20);
+    f9 = *(volatile float *)&lbl_805642BC;
+    size = 0x100;
+    f5 = *(volatile float *)&lbl_805642C8;
+    two = 2;
+    f11 = *(volatile float *)&lbl_805642E0;
+    f10 = *(volatile float *)&lbl_805642C0;
+    five = 5;
+    f31 = *(volatile float *)&lbl_805642D4;
+    f13 = *(volatile float *)&lbl_805642A4;
+    f12 = *(volatile float *)&lbl_805642DC;
+    f8 = *(volatile float *)&lbl_805642C4;
+    f7 = *(volatile float *)&lbl_8056429C;
+    f6 = *(volatile float *)&lbl_80564280;
+    f4 = *(volatile float *)&lbl_805642E4;
+    f3 = *(volatile float *)&lbl_805642E8;
+    f2 = *(volatile float *)&lbl_805642EC;
+    f1 = *(volatile float *)&lbl_805642D8;
+    f0 = *(volatile float *)&lbl_8056428C;
+    frame.sp24 = size;
+    frame.sp28 = f31;
+    frame.sp2C = f13;
+    frame.sp20 = two;
+    frame.sp68 = f12;
+    frame.sp64 = five;
+    frame.sp14 = f11;
+    frame.sp18 = f10;
+    frame.sp1C = f11;
+    frame.sp30 = f11;
+    frame.sp34 = f10;
+    frame.sp38 = f11;
+    frame.sp8 = f9;
+    frame.spC = f9;
+    frame.sp10 = f9;
+    frame.sp3C = f9;
+    frame.sp40 = f9;
+    frame.sp44 = f9;
+    frame.sp48 = f10;
+    frame.sp4C = f8;
+    frame.sp50 = f7;
+    frame.sp54 = f6;
+    frame.sp90 = f5;
+    frame.sp88 = f5;
+    frame.sp80 = f5;
+    frame.sp94 = f5;
+    frame.sp8C = f5;
+    frame.sp84 = f5;
+    frame.sp78 = f4;
+    frame.sp7C = f11;
+    frame.sp70 = f3;
+    frame.sp74 = f2;
+    frame.sp98 = f1;
+    frame.sp9C = f0;
     *(int *)((char *)arg0 + 0x68) =
         ((int (*)(int *, int *, int, int, float, float, float, float, float,
                   float, float, float, float, float, float, float, float))fn_8028E2F8)(
-            (int *)&sp20, &lbl_80348B10, lbl_8055C880, 2,
-            lbl_805642D8, lbl_805642EC, lbl_805642E8, lbl_805642E4,
-            lbl_805642C8, lbl_80564280, lbl_8056429C, lbl_805642C4,
-            lbl_805642BC, lbl_805642C0, lbl_805642E0, lbl_805642DC,
-            lbl_805642A4);
-    return 0;
+            (int *)&frame.sp20, &lbl_80348B10, lbl_8055C880, two,
+            f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13);
 }
 
 #pragma pop
