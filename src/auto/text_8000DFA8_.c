@@ -412,20 +412,14 @@ extern void fn_802344CC(char *, s32, s32, s32, f32, f32, f32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_80010074(s32 arg0, s32 arg1, const char *fmt, ...) {
-    char buffer[0x220];
+void fn_80010074(s32 arg0, s32 arg1, const char *fmt, f32 farg0, f32 farg1, f32 farg2, ...) {
+    char buffer[0x200];
     va_list args;
-    s32 x, y;
-    f32 fx, fy;
-    va_start(args, fmt);
-    x = va_arg(args, s32);
-    y = va_arg(args, s32);
-    fx = va_arg(args, f32);
-    fy = va_arg(args, f32);
-    va_end(args);
+    va_start(args, farg2);
     vsprintf(buffer, fmt, args);
-    fn_802344CC(buffer, x & 0xFF000000, y, 0, lbl_805602B0 + fy, fx - lbl_805602B0, lbl_805602C8 * fx);
-    fn_802344CC(buffer, x, y, 0, fy, fx, lbl_805602C8 * fx);
+    fn_802344CC(buffer, arg0 & 0xFF000000, arg1, 0,
+                lbl_805602B0 + farg1, farg2 - lbl_805602B0, lbl_805602C8 * farg0);
+    fn_802344CC(buffer, arg0, arg1, 0, farg1, farg2, lbl_805602C8 * farg0);
 }
 #pragma scheduling on
 #pragma pop
