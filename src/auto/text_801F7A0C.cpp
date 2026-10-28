@@ -783,18 +783,22 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
 
     *(s32 *)(result + 0x34) = 0;
     *(s32 *)(result + 0x30) = 0;
-    ((void (*)(void *, void *, void *))(*(void ***)((u8 *)current + 0x108))[3])(
+    ((void (*)(void *, void *, void *))(*(volatile void ***)((u8 *)current + 0x108))[3])(
         current, result, object);
 
     if (*(u8 *)((u8 *)current + 0x2C) != 0 && (flags & 4) == 0) {
         fn_802E317C(base + 0x2A0, current);
         if (*(s32 *)(result + 0x38) != fn_80204CF0()) {
             fn_802E30C8(base + 0x2E0, name);
-        } else if (lbl_8055EC42 != 0 &&
-                   strcmp(name, (const char *)lbl_8055B37C) == 0) {
-            fn_802E30C8(base + 0x318, name);
+            goto call_tail;
         }
     }
+    if (lbl_8055EC42 != 0 &&
+        strcmp(name, (const char *)lbl_8055B37C) == 0) {
+        fn_802E30C8(base + 0x318, name);
+        goto call_tail;
+    }
+call_tail:
     return ((void *(*)(void *, void *, u32))fn_801F973C)(
         current, result, (u32)flags);
 }
@@ -911,31 +915,44 @@ extern "C" void fn_801F9BE8(void) {
     extern void *fn_8012850C(u32, void *);
     extern int qsort(void *, u32, u32, int (*)(const void *, const void *));
     extern int fn_801F9BD0(const void *, const void *);
-    void *node;
-    s32 count = 0;
+    s32 index;
     lbl_8055EC58 = 0;
-    for (node = lbl_8055EC4C; node != 0; node = *(void **)((u8 *)node + 0x44)) {
-        if (*(s32 *)((u8 *)node + 0x3C) >= 0)
-            lbl_8055EC58 = ++count;
-    }
-    for (node = lbl_8055EC50; node != 0; node = *(void **)((u8 *)node + 0x44)) {
-        if (*(s32 *)((u8 *)node + 0x3C) >= 0)
-            lbl_8055EC58 = ++count;
-    }
-    if (count >= 1) {
-        void **entries;
-        s32 index = 0;
-        entries = (void **)fn_8012850C(count * 4, lbl_8033B32C);
-        lbl_8055EC54 = entries;
-        for (node = lbl_8055EC4C; node != 0; node = *(void **)((u8 *)node + 0x44)) {
+    {
+        void *node = lbl_8055EC4C;
+        while (node != 0) {
             if (*(s32 *)((u8 *)node + 0x3C) >= 0)
-                entries[index++] = node;
+                ++lbl_8055EC58;
+            node = *(void **)((u8 *)node + 0x44);
         }
-        for (node = lbl_8055EC50; node != 0; node = *(void **)((u8 *)node + 0x44)) {
+    }
+    {
+        void *node = lbl_8055EC50;
+        while (node != 0) {
             if (*(s32 *)((u8 *)node + 0x3C) >= 0)
-                entries[index++] = node;
+                ++lbl_8055EC58;
+            node = *(void **)((u8 *)node + 0x44);
         }
-        qsort(entries, lbl_8055EC58, 4, fn_801F9BD0);
+    }
+    if (lbl_8055EC58 >= 1) {
+        lbl_8055EC54 = (void **)fn_8012850C(lbl_8055EC58 * 4, lbl_8033B32C);
+        index = 0;
+        {
+            void *node = lbl_8055EC4C;
+            while (node != 0) {
+                if (*(s32 *)((u8 *)node + 0x3C) >= 0)
+                    ((void **)lbl_8055EC54)[index++] = node;
+                node = *(void **)((u8 *)node + 0x44);
+            }
+        }
+        {
+            void *node = lbl_8055EC50;
+            while (node != 0) {
+                if (*(s32 *)((u8 *)node + 0x3C) >= 0)
+                    ((void **)lbl_8055EC54)[index++] = node;
+                node = *(void **)((u8 *)node + 0x44);
+            }
+        }
+        qsort(lbl_8055EC54, lbl_8055EC58, 4, fn_801F9BD0);
     }
 }
 #pragma scheduling on
