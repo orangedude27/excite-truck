@@ -134,6 +134,8 @@ extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
     return temp_f1 + arg3 * (temp_f31 - temp_f1);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8013AB08(float *arg0, int *arg1) {
     char *base = lbl_8032C1A0;
     void *obj1 = fn_8001285C(*arg1);
@@ -143,18 +145,21 @@ extern "C" void fn_8013AB08(float *arg0, int *arg1) {
         ((int (*)(float *, void *, void *))fn_8013A860)(arg0, *(void **)((char *)obj2 + 0x80), base + 0x88) == 0 &&
         fn_8013A9C0(arg0, *(void **)((char *)obj1 + 0x20), arg1, base + 0x78) == 0 &&
         fn_8013A9C0(arg0, *(void **)((char *)obj2 + 0x80), arg1, base + 0x88) == 0) {
-        arg0[0] = lbl_80561438;
-        arg0[1] = lbl_8056143C;
+        float y;
+        float x;
+        x = lbl_80561438;
+        y = lbl_8056143C;
+        arg0[0] = x;
+        arg0[1] = y;
         fn_802E30C8(base + 0x94);
     }
 
     if (fn_8027AA48() == 0) {
-        arg0[0] += fn_8013AA68(*(void **)((char *)obj1 + 0x20), 0, base + 0x78, arg1);
-        arg0[1] += fn_8013AA68(*(void **)((char *)obj1 + 0x20), 0, base + 0x78, arg1);
+        arg0[0] += fn_8013AA68(*(void **)((char *)obj1 + 0x20), &lbl_80559CB8, base + 0x78, arg1);
+        arg0[1] += fn_8013AA68(*(void **)((char *)obj1 + 0x20), &lbl_80559CBC, base + 0x78, arg1);
     }
 }
-
-#pragma cplusplus off
+#pragma pop
 
 #pragma cplusplus off
 extern void *fn_8001285C(int);
