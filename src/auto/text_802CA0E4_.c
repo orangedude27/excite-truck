@@ -655,7 +655,7 @@ void fn_802CB3F4(void) {
 void fn_802CB3F8(void) {
 }
 
-extern char lbl_8055FCBC[];
+DECL_SECTION(".sdata") extern char lbl_8055FCBC[];
 #pragma push
 #pragma small_data on
 DECL_SECTION(".sdata") extern int lbl_8055FCB0;
@@ -1292,11 +1292,11 @@ extern float lbl_80564F48;
 extern int fn_802E2C20(void);
 #pragma scheduling invalid_target
 void fn_802CC60C(void) {
-    register float value = lbl_80564F48;
-    register int offset = 0;
+    float value = lbl_80564F48;
+    int offset = 0;
     int i;
-    register int zero = 0;
-    register int counter;
+    int zero = 0;
+    int counter;
     int next;
     void *root;
 
@@ -1320,11 +1320,11 @@ void fn_802CC60C(void) {
         offset += 0x260;
     }
 
-    root = (void *)*(volatile void **)lbl_8055FCBC;
+    root = *(void **)lbl_8055FCBC;
     counter = lbl_8055FCC0;
     *(int *)((char *)root + 0x2844) = zero;
-    *(int *)((char *)root + 0x283C) = zero;
     next = counter + 1;
+    *(int *)((char *)root + 0x283C) = zero;
     *(int *)((char *)root + 0x2840) = zero;
     lbl_8055FCC0 = next;
     if ((unsigned char)counter == 0)
