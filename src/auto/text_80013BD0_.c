@@ -437,7 +437,7 @@ void fn_80014D04(void *arg0) {
                 }
             }
             if (*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 2) {
-                fn_801473F8(*(void **)((u8 *)arg0 + 0x50), base + 0x1F0, lbl_80558BA4,
+                fn_801473F8(*(void **)((u8 *)arg0 + 0x50), base + 0x1F0, &lbl_80558BA4,
                            *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x30) + 0x4));
                 fn_801473F8(*(void **)((u8 *)arg0 + 0x50), base + 0x200, lbl_80558BA8,
                            fn_80130FE0(*(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x30) + 0x4)));
