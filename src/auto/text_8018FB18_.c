@@ -33,6 +33,7 @@ extern s32 fn_80137C74(void);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_80332E94[], lbl_80332EA0[];
 #pragma use_lmw_stmw off
+#pragma inline off(fn_8018FC38)
 void fn_8018FC38(void) {
     s32 count = fn_80137C74();
     s32 *p = (s32 *)lbl_804349B0;
@@ -363,6 +364,62 @@ extern "C" void fn_80190E08(void) {
 void fn_80190E6C(void) {
     fn_80190E08();
 }
+
+#pragma push
+#pragma cplusplus on
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+#pragma opt_propagation off
+extern "C" void fn_80190EAC(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+    };
+    s32 zero = 0;
+    s32 one = 1;
+    void *sub;
+    s32 z;
+    f32 f0;
+    f32 f1;
+
+    *(s8 *)((s8 *)arg0 + 0x25) = (s8)zero;
+    *(s8 *)((s8 *)arg0 + 0x26) = (zero == 0);
+    *(s8 *)((s8 *)arg0 + 0x24) = (s8)one;
+    lbl_8055E520 = (u8)zero;
+    sub = *(void **)((s8 *)arg0 + 4);
+    if (fn_801CF050() != 0) {
+        *(s32 *)((s8 *)sub + 0xC) = zero;
+        lbl_8055E524 = zero;
+    }
+    *(s32 *)((s8 *)sub + 8) = *(s32 *)((s8 *)sub + 0x18);
+    (*(VTable **)((s8 *)arg0 + 8))->f10();
+    (*(VTable **)((s8 *)arg0 + 0xC))->f10();
+    fn_80191084((int)arg0, zero);
+    fn_80191084((int)arg0, fn_80191100(arg0));
+    fn_801B6658();
+    z = 0;
+    f1 = lbl_8056208C;
+    f0 = lbl_805620BC;
+    *(volatile s8 *)((s8 *)arg0 + 0x34) = (s8)z;
+    *(f32 *)((s8 *)arg0 + 0x30) = f1;
+    *(s8 *)((s8 *)arg0 + 0x34) = 1;
+    *(f32 *)((s8 *)arg0 + 0x2C) = f0;
+}
+#pragma opt_propagation reset
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
+#pragma cplusplus reset
+#pragma pop
 
 void fn_80190F90(void) {
     fn_80191758();
