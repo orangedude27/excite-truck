@@ -223,6 +223,7 @@ extern void fn_802E317C(const char *, ...);
 extern const char lbl_80349C48[];
 extern const char lbl_8055CBD0, lbl_8055CBD4, lbl_8055CBDC, lbl_8055CBE0;
 extern float lbl_80564860, lbl_80564864;
+#pragma scheduling invalid_target
 s32 fn_802A4FA8(float *out, void *object) {
     float v0[3], v1[3], v2[3], v3[3], cross[3];
     if (object != 0) {
@@ -240,6 +241,7 @@ s32 fn_802A4FA8(float *out, void *object) {
     }
     return 0;
 }
+#pragma scheduling on
 
 extern f32 lbl_8056485C, lbl_80564868, lbl_8056486C, lbl_80564870, lbl_80564874;
 extern s32 lbl_8055F894;
