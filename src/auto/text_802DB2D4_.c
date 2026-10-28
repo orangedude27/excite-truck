@@ -1,3 +1,4 @@
+#include "revolution/GX/GXHardware.h"
 extern void fn_802D0610(int);
 extern void fn_802D68C4(int, int, int, int);
 extern void GXSetZMode(int, int, int);
@@ -308,11 +309,12 @@ void fn_802DBF30(void) {
 }
 
 extern void GXBegin(int, int, unsigned short);
-#pragma scheduling invalid_target
+#pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802DBF54(int verts, int count) {
     int n;
     int i;
+    unsigned short val;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     while (count > 0) {
         n = *(unsigned short *)verts;
@@ -320,8 +322,9 @@ void fn_802DBF54(int verts, int count) {
         GXBegin(0xA0, 0, n);
         count -= n + 1;
         for (i = 0; i < n; i++) {
-            *fifo = *(unsigned short *)verts;
+            val = *(unsigned short *)verts;
             verts += 2;
+            *fifo = val;
         }
     }
 }
