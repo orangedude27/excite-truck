@@ -313,14 +313,15 @@ void fn_801D5488(void) {
 extern "C" void fn_801D5520(char *arg0) {
  struct Manager { virtual void v0(); virtual void *get(int); };
  struct Node { virtual const char *name(); };
- extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void *); extern int fn_801D4CF8(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *,const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
+ struct Releasable { virtual void release(int); };
+ extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void *); extern int fn_801D4CF8(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *, const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
  char *base=(char *)&lbl_80338460;
+ void *obj;
  Manager *manager=(Manager *)fn_80131810();
  Node *node;
  const char *name;
  int i;
- void *obj;
- if(!manager) { fn_802E30C8(base+0x120,arg0); return; }
+ if(!manager) { ((void (*)(const char *, ...))fn_802E30C8)(base+0x120,arg0); return; }
  i=0;
  goto fetch;
 body:
@@ -333,7 +334,7 @@ body:
    void **items=(void **)lbl_804423A4[0];
    lbl_804423A4[1]=n+1;
    items[n]=obj;
-  } else if(obj) ((void (*)(void *,int))(*(void ***)obj)[2])(obj,1);
+  } else if(obj) ((Releasable *)obj)->release(1);
  }
  i++;
 fetch:
@@ -2016,14 +2017,11 @@ extern "C" void fn_801D875C(void *arg0) {
     float time;
     Dummy *item;
     char *entry;
-    if (*(int *)((char *)arg0 + 0x18) != 2)
-        return;
+    if (*(int *)((char *)arg0 + 0x18) != 2) return;
     time = lbl_8055E3C8;
     if (*(int *)((char *)arg0 + 0x20) == 0) {
-        if (!(time - *(float *)((char *)arg0 + 0x10) > *(float *)((char *)arg0 + 0xC)))
-            return;
-        count = 0;
-        offset = 0;
+        if (!(time - *(float *)((char *)arg0 + 0x10) > *(float *)((char *)arg0 + 0xC))) return;
+        count = 0; offset = 0;
         goto first_test;
 first_loop:
         entry = (char *)*(int *)((char *)arg0 + 0x24) + offset;
@@ -2031,21 +2029,17 @@ first_loop:
         item->first(*(int *)((char *)arg0 + 0x1C));
         item = *(Dummy **)entry;
         item->second(*(int *)(entry + 8));
-        offset += 0xC;
-        count += 1;
+        offset += 0xC; count += 1;
 first_test:
-        if (count < *(int *)((char *)arg0 + 0x28))
-            goto first_loop;
+        if (count < *(int *)((char *)arg0 + 0x28)) goto first_loop;
         *(int *)((char *)arg0 + 0x20) = 1;
     } else {
-        int count2;
-        int offset2;
-        char *entry2;
-        Dummy *item2;
-        if (!(time - *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 0xC) > *(float *)((char *)arg0 + 0x14)))
-            return;
-        count2 = 0;
-        offset2 = 0;
+        register int count2;
+        register int offset2;
+        register char *entry2;
+        register Dummy *item2;
+        if (!(time - *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 0xC) > *(float *)((char *)arg0 + 0x14))) return;
+        count2 = 0; offset2 = 0;
         goto second_test;
 second_loop:
         entry2 = (char *)*(int *)((char *)arg0 + 0x24) + offset2;
@@ -2053,11 +2047,9 @@ second_loop:
         item2->first(*(int *)(entry2 + 4));
         item2 = *(Dummy **)entry2;
         item2->second(-1);
-        offset2 += 0xC;
-        count2 += 1;
+        offset2 += 0xC; count2 += 1;
 second_test:
-        if (count2 < *(int *)((char *)arg0 + 0x28))
-            goto second_loop;
+        if (count2 < *(int *)((char *)arg0 + 0x28)) goto second_loop;
         *(int *)((char *)arg0 + 0x18) = 1;
     }
 }
