@@ -766,35 +766,37 @@ extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
 }
 
 extern "C" void *fn_801F981C(void *object, s32 flags) {
-    struct Lookup { virtual void a(); virtual void b(); virtual void c(); virtual void *find(const char *); };
-    struct Extract { virtual void a(); virtual void b(); virtual void c(); virtual void get(void *, void *); };
-    extern void *fn_801F96C8(void);
-    extern void fn_802E317C(const char *, void *);
-    extern void fn_802E30C8(const char *, void *);
+    struct Lookup {
+        virtual void a();
+        virtual void b();
+        virtual void c();
+        virtual void *find(const char *);
+    };
+    extern void fn_802E30C8(const char *, ...);
     extern s32 fn_80204CF0(void);
     extern int strcmp(const char *, const char *);
-    extern void *fn_801F973C(void *, void *, s32);
     extern u8 lbl_8055EC42;
-    extern char lbl_8033AF80[];
-    Lookup *lookup = *(Lookup **)object;
-    char *name = (char *)lookup->find((const char *)lbl_8055B374);
-    void *current = fn_801F96C8();
+    register char *base = lbl_8033AF80;
+    char *name = (char *)((Lookup *)object)->find((const char *)lbl_8055B374);
+    void *current = fn_801F96C8(name);
     u8 result[0x40];
-    *(s32 *)(result + 0x38) = 0;
-    *(s32 *)(result + 0x3C) = 0;
-    ((Extract *)*(void **)((u8 *)current + 0x108))->get(result, object);
+
+    *(s32 *)(result + 0x34) = 0;
+    *(s32 *)(result + 0x30) = 0;
+    ((void (*)(void *, void *, void *))(*(void ***)((u8 *)current + 0x108))[3])(
+        current, result, object);
+
     if (*(u8 *)((u8 *)current + 0x2C) != 0 && (flags & 4) == 0) {
-        fn_802E317C(lbl_8033AF80 + 0x2A0, current);
-        if (*(s32 *)(result + 0x38) != fn_80204CF0())
-            fn_802E30C8(lbl_8033AF80 + 0x2E0, name);
-        else if (lbl_8055EC42 != 0 && strcmp(name, (const char *)lbl_8055B37C) == 0)
-            fn_802E30C8(lbl_8033AF80 + 0x318, name);
-        else
-            return fn_801F973C(current, result, flags);
-    } else {
-        return fn_801F973C(current, result, flags);
+        fn_802E317C(base + 0x2A0, current);
+        if (*(s32 *)(result + 0x38) != fn_80204CF0()) {
+            fn_802E30C8(base + 0x2E0, name);
+        } else if (lbl_8055EC42 != 0 &&
+                   strcmp(name, (const char *)lbl_8055B37C) == 0) {
+            fn_802E30C8(base + 0x318, name);
+        }
     }
-    return current;
+    return ((void *(*)(void *, void *, u32))fn_801F973C)(
+        current, result, (u32)flags);
 }
 
 #pragma dont_inline on
@@ -900,6 +902,7 @@ extern "C" s32 fn_801F9BD0(s32 **arg0, s32 **arg1) {
     return (*arg0)[15] - (*arg1)[15];
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801F9BE8(void) {
     extern void *lbl_8055EC4C, *lbl_8055EC50;
     extern void **lbl_8055EC54;
@@ -908,8 +911,8 @@ extern "C" void fn_801F9BE8(void) {
     extern void *fn_8012850C(u32, void *);
     extern int qsort(void *, u32, u32, int (*)(const void *, const void *));
     extern int fn_801F9BD0(const void *, const void *);
-    s32 count = 0;
     void *node;
+    s32 count = 0;
     lbl_8055EC58 = 0;
     for (node = lbl_8055EC4C; node != 0; node = *(void **)((u8 *)node + 0x44)) {
         if (*(s32 *)((u8 *)node + 0x3C) >= 0)
@@ -920,8 +923,9 @@ extern "C" void fn_801F9BE8(void) {
             lbl_8055EC58 = ++count;
     }
     if (count >= 1) {
+        void **entries;
         s32 index = 0;
-        void **entries = (void **)fn_8012850C(count * 4, lbl_8033B32C);
+        entries = (void **)fn_8012850C(count * 4, lbl_8033B32C);
         lbl_8055EC54 = entries;
         for (node = lbl_8055EC4C; node != 0; node = *(void **)((u8 *)node + 0x44)) {
             if (*(s32 *)((u8 *)node + 0x3C) >= 0)
@@ -934,6 +938,7 @@ extern "C" void fn_801F9BE8(void) {
         qsort(entries, lbl_8055EC58, 4, fn_801F9BD0);
     }
 }
+#pragma scheduling on
 
 extern "C" s32 fn_801F9CF8(void *arg0) {
     if (lbl_8055EC54 != 0) {
