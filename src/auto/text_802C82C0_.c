@@ -112,6 +112,44 @@ void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
 
+void fn_802C83CC(void) {
+    int ten = 10;
+    float *matrix = (float *)lbl_804C1410;
+
+    matrix[0] = lbl_80564EF8;
+    matrix[1] = lbl_80564F00;
+    matrix[2] = lbl_80564F00;
+    matrix[3] = lbl_80564F00;
+    matrix[4] = lbl_80564EF8;
+    matrix[5] = lbl_80564F00;
+    matrix[6] = lbl_80564F00;
+    matrix[7] = lbl_80564F00;
+    matrix[8] = lbl_80564EF8;
+    matrix[9] = lbl_80564F00;
+    matrix[10] = lbl_80564F00;
+    matrix[11] = lbl_80564F00;
+
+    lbl_8055FC5C = 0;
+    lbl_8055FC60 = 0;
+    lbl_8055FC64 = (void *)ten;
+    lbl_8055FC68 = (void *)ten;
+    lbl_8055FC6C = (float)ten / (float)ten;
+
+    fn_802C5F48((float)ten, ten, matrix, lbl_80564F00, lbl_80564EF8);
+    lbl_8055FC34 = 0;
+    fn_802C974C(lbl_80564EF8, lbl_80564F04, lbl_80564F08);
+    lbl_8055FC70 = 0;
+    fn_802CFFAC(0xC9, 0xC9, 0xEB);
+    ((void (*)(void))fn_802C7758)();
+    fn_802C82C4(0);
+    fn_802C9C58(0);
+
+    if (fn_80133010() != 0) {
+        fn_801332D0(1, lbl_8034B498, (int *)&lbl_8055FC90);
+        lbl_8055D028 = fn_8013365C((int)&lbl_8055D02C, (int)fn_802C82C0);
+    }
+}
+
 extern int fn_80133010(void);
 extern void fn_801336E0(int, void (*)(void));
 extern void fn_802C6080(void);
@@ -334,9 +372,9 @@ void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsig
     width = (int)lbl_8055FC64;
     x = (int)lbl_8055FC5C;
     scale = lbl_80564F18;
-    ((float *)arg0)[10] = scale * (float)y + (float)height;
+    ((float *)arg0)[10] = (float)y + scale * (float)height;
     ((float *)arg0)[11] = var_f2;
-    ((float *)arg0)[9] = scale * (float)x + (float)width;
+    ((float *)arg0)[9] = (float)x + scale * (float)width;
 }
 void fn_802C8B08(unsigned int *arg0) {
     struct Pair { unsigned int first; unsigned int second; };
@@ -514,12 +552,11 @@ void fn_802C92D8(void) {
 }
 
 void fn_802C92DC(int x0, int y0, int x1, int y1, int screen) {
-    float zero = lbl_80564F00;
     if (((int (*)(int))fn_801E4F20)(4) != 0) {
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x1, (float)y0, zero, zero, zero);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x0, (float)y0, zero, zero, zero);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x1, (float)y1, zero, zero, zero);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x0, (float)y1, zero, zero, zero);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x1, (float)y0, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x0, (float)y0, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x1, (float)y1, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x0, (float)y1, 0.0f, 0.0f, 0.0f);
         fn_801E4FF4();
     }
 }
