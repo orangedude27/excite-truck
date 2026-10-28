@@ -304,33 +304,35 @@ after5:
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void *fn_8016BE60(void *arg0) {
+    u8 *object = (u8 *)fn_801284F8(0x1B4, lbl_803306D0 + 0x20);
     char *strings = lbl_803306D0;
-    void *object = (void *)fn_801284F8(0x1B4, strings + 0x20);
+    s32 index = 0;
     if (object != 0) {
         fn_80144504((void **)object);
         *(void **)object = lbl_80330990;
-        fn_8016D278((u8 *)object + 4);
-        fn_8016D024((u8 *)object + 0x30);
-        fn_8016CF08((u8 *)object + 0xAC);
+        fn_8016D278(object + 4);
+        fn_8016D024(object + 0x30);
+        fn_8016CF08(object + 0xAC);
         lbl_8055E378 = (s32)object;
-        fn_8016CEFC((u8 *)object + 4);
-        for (s32 index = 0; index < *(s32 *)((u8 *)arg0 + 0x3E0); index++) {
-            void *entry = 0;
+        fn_8016CEFC(object + 4);
+        for (index = 0; index < *(s32 *)((u8 *)arg0 + 0x3E0); index++) {
             void *allocation = (void *)fn_801284F8(0x10, strings + 0x30);
-            if (allocation != 0) {
-                entry = fn_8016CEC0(allocation, index);
-            }
-            fn_8016CE9C((u8 *)object + 4, &entry);
+            if (allocation != 0) allocation = fn_8016CEC0(allocation, index);
+            void *entry = allocation;
+            fn_8016CE9C(object + 4, &entry);
         }
         fn_8016A0B0();
-        fn_8016C328((u8 *)object + 0x30);
-        *(s32 *)((u8 *)object + 0x98) = 0;
-        *(u8 *)((u8 *)object + 0x9C) = 1;
-        *(f32 *)((u8 *)object + 0xA0) = lbl_80561998;
-        *(s32 *)((u8 *)object + 0xA4) = fn_80207848(strings + 0x3C, 1);
-        *(u8 *)((u8 *)object + 0xA8) = 0;
+        fn_8016C328(object + 0x30);
+        index = 0;
+        f32 initialValue = lbl_80561998;
+        *(s32 *)(object + 0x98) = index;
+        s32 flag = 1;
+        *(u8 *)(object + 0x9C) = (u8)flag;
+        *(f32 *)(object + 0xA0) = initialValue;
+        *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, flag);
+        *(u8 *)(object + 0xA8) = (u8)index;
     }
     return object;
 }
