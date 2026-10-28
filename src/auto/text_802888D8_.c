@@ -617,7 +617,7 @@ void fn_80289C80(int *arg0) {
         lbl_8056428C, lbl_80564304, lbl_80564284, lbl_80564300, lbl_8056427C);
 }
 
-extern int lbl_80348B58;
+extern char lbl_80348B58[];
 extern float lbl_80564290, lbl_80564294, lbl_805642B8, lbl_805642D8;
 extern float lbl_80564308, lbl_8056430C, lbl_80564310;
 int fn_80289D94(void *arg0) {
