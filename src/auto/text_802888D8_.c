@@ -1,3 +1,4 @@
+__declspec(section ".data") extern int lbl_80348AE8;
 extern int fn_8028E61C(int *);
 extern int fn_8028E2F8(int *, int *, int, int, float, float, float, float, float, float, float);
 extern float fn_801E7E24(void);
