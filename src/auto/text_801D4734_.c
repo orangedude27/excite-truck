@@ -800,7 +800,8 @@ int fn_801D6630(int arg0, int arg1) {
     return arg0;
 }
 
-int fn_801D6678(void *out, void *object) {
+#pragma cplusplus on
+extern "C" int fn_801D6678(void *out, void *object) {
     extern char lbl_80338798[];
     extern char lbl_803387B8[];
     extern char lbl_8055ACB0;
@@ -838,6 +839,7 @@ int fn_801D6678(void *out, void *object) {
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
+#pragma cplusplus reset
 
 int fn_801D67D4(void) {
     return (int)lbl_803387C8;
