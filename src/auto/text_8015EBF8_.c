@@ -1,4 +1,5 @@
 #include "math.h"
+extern f64 fn_8002F234(f32, f32, f32);
 struct Hit { float x; s32 y; };
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
