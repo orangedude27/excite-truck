@@ -262,7 +262,7 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
 }
 
 extern void *fn_802C86DC(void);
-extern double fn_8002EFB4(float, double, float, float, float);
+extern double fn_8002EFB4(float, double);
 extern float lbl_80561A44, lbl_80561A68, lbl_80561A6C;
 extern float lbl_80561A70, lbl_80561A74, lbl_80561A7C;
 extern double lbl_80561A88;
@@ -272,6 +272,7 @@ extern float lbl_80561A70, lbl_80561A74;
 void fn_8017248C(int arg0) {
     float sp[3];
     void *state;
+    void *camera;
     float value;
     float clamp;
     float temp_f31;
@@ -281,8 +282,9 @@ void fn_8017248C(int arg0) {
     float offset;
 
     state = fn_8017960C(arg0);
+    camera = fn_802C86DC();
     value = (PSQUATMultiply((char *)state + 0x60,
-                            (char *)fn_802C86DC() + 0x24) - lbl_80561A68) /
+                            (char *)camera + 0x24) - lbl_80561A68) /
             lbl_80561A6C;
     clamp = lbl_80561A40;
     if (clamp < value) {
@@ -303,10 +305,9 @@ void fn_8017248C(int arg0) {
     temp_f29 = lbl_80561A78;
     sp[2] = *(float *)((char *)state + 0x68);
 
-    wave = (float)fn_8002EFB4(
+    wave = (float)((double (*)(float, double))fn_8002EFB4)(
         (lbl_80561A7C * (lbl_80561A80 * (float)arg0)) + lbl_8055E3C8,
-        lbl_80561A88, lbl_8055E3C8, clamp * lbl_80561A70, lbl_80561A70) -
-        lbl_80561A40;
+        lbl_80561A88) - lbl_80561A40;
     offset = temp_f30 + (temp_f29 * (lbl_80561A40 - ((wave * wave) / lbl_80561A40)));
     sp[1] += offset;
     fn_801720FC(sp, -0x100, temp_f31);
@@ -1236,14 +1237,15 @@ extern "C" int fn_801758CC(void *arg0, int arg1, int arg2) {
     };
     int result = 0;
     if (((Query *)arg0)->query() != 0 && arg2 == 0x58) {
-        if (*(int *)((char *)arg0 + 0x1AC) == 2)
+        if (*(volatile int *)((char *)arg0 + 0x1AC) == 2)
             *((unsigned char *)arg0 + 0x1B5) = 1;
         result = 1;
-    } else if (*(int *)((char *)arg0 + 0x1AC) != 0) {
-        if (*(int *)((char *)arg0 + 0x1AC) == 1 &&
+    } else if (*(volatile int *)((char *)arg0 + 0x1AC) != 0) {
+        float total = lbl_8055E3C8;
+        if (*(volatile int *)((char *)arg0 + 0x1AC) == 1 &&
             *((unsigned char *)arg0 + 0x1BC) == 0) {
             if (*(float *)((char *)arg0 + 0x1B0) > lbl_80561A44 &&
-                lbl_8055E3C8 - *(float *)((char *)arg0 + 0x1B0) < lbl_80561A40) {
+                total - *(float *)((char *)arg0 + 0x1B0) < lbl_80561A40) {
                 void *p;
                 int handle = *(int *)((char *)arg0 + 0x1B8);
                 *((unsigned char *)arg0 + 0x1BC) = 1;
@@ -1256,8 +1258,11 @@ extern "C" int fn_801758CC(void *arg0, int arg1, int arg2) {
                 if (p) { *((unsigned char *)p + 0x4A) = 1; *((unsigned char *)p + 0x4C) = 0; }
                 p = *(void **)((char *)arg0 + 0x1D8);
                 if (p) { *((unsigned char *)p + 0x4A) = 1; *((unsigned char *)p + 0x4C) = 0; }
-                *((unsigned char *)arg0 + 0x1B4) = 0;
-                *(float *)((char *)arg0 + 0x1B0) = lbl_8055E3C8 - lbl_80561A40;
+                {
+                    float finalTime = lbl_8055E3C8 - lbl_80561A40;
+                    *((unsigned char *)arg0 + 0x1B4) = 0;
+                    *(float *)((char *)arg0 + 0x1B0) = finalTime;
+                }
             }
         }
         result = 1;
