@@ -1030,7 +1030,7 @@ void fn_801F78D8(void) {
 
 }
 
-extern void fn_801F75A4(void *, void *, void *);
+extern void fn_801F75A4();
 #pragma scheduling invalid_target
 void fn_801F78DC(void *arg0, void *arg1) {
     fn_801F75A4(arg1, (char *)arg1 + 0x2C, arg0);
