@@ -1652,44 +1652,45 @@ extern "C" const char lbl_8032AD88[];
 #pragma scheduling invalid_target
 extern "C" void fn_8012E81C(s32 arg0) {
     nw4r::ef::Effect *effect = lbl_8055E014;
-    const char *name = (const char *)arg0;
+    s32 limit;
     void *entry;
     s32 start;
-    s32 limit;
     s32 current;
+    const char *format;
 
     if (effect == 0) return;
     entry = (void *)fn_8012E490((s32 *)((u8 *)effect + 0xA18));
     while (entry != 0) {
-        const char *entryName = (const char *)((u8 *)entry + 0xC);
-        if (stricmp(name, entryName) == 0) {
+        if (stricmp((const char *)arg0,
+                    (const char *)((u8 *)entry + 0xC)) == 0) {
             start = fn_802E2C20();
             limit = start + 0x7D0;
+            format = lbl_8032AD88;
             do {
                 fn_80127464();
                 fn_802E2D74(0xA);
                 current = fn_802E2C20();
             } while (current <= limit);
-            fn_802E30C8(lbl_8032AD88, entryName);
+            fn_802E30C8(format, (const char *)((u8 *)entry + 0xC));
             limit = current + 0x7D0;
             if (fn_8012D838(*(s32 *)((u8 *)entry + 0x4C)) == 2) {
                 fn_8012DEE4(effect);
-                current = fn_802E2C20();
-                fn_802E30C8(lbl_8032AD6C, entryName, current - start);
+                fn_802E30C8(lbl_8032AD6C,
+                            (const char *)((u8 *)entry + 0xC),
+                            fn_802E2C20() - start);
                 return;
             }
         }
         entry = *(void **)((u8 *)entry + 4);
     }
-
     {
-        void *found = fn_8012BD3C(lbl_8055E000, name);
+        void *found = fn_8012BD3C(lbl_8055E000, (const char *)arg0);
         if (found != 0) {
             *(u8 *)((u8 *)found + 0xAD) = 0;
             return;
         }
     }
-    fn_802E30C8(lbl_8032AD2C, name);
+    fn_802E30C8(lbl_8032AD2C, (const char *)arg0);
 }
 #pragma pop
 
@@ -1780,58 +1781,68 @@ extern "C" s32 fn_8012EE78(void *arg0) {
 
 extern "C" s32 fn_8012C7FC(void *, s32 *);
 extern "C" void fn_8012C720(void *, s32, s32, s32);
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8012EE80(void *arg0) {
-    char *base = (char *)arg0;
-    char *entry;
-    int i;
-    int end = *(int *)(base + 0x28);
-    int status;
-    int pos;
-    int len;
-    int request;
-    int limit;
+    register char *entry = (char *)arg0 + 4;
+    register int end = *(int *)((char *)arg0 + 0x28);
+    register char *base = (char *)arg0;
+    register char *cursor = entry;
+    register int i;
+    register int status;
+    register int pos;
+    register int len;
+    register int request;
+    register int limit;
 
-    entry = base + 4;
-    for (i = 0; i < 2; i++, entry += 0x10) {
-        status = *(int *)(entry + 0xC);
+    for (i = 0; i < 2; i++, cursor += 0x10) {
+        status = *(int *)(cursor + 0xC);
         if (status != 0) {
-            if (status == 1 && fn_8012C7FC(*(void **)(entry + 4), 0))
-                *(int *)(entry + 0xC) = 2;
-            pos = *(int *)(entry + 8) + *(int *)base;
+            if (status == 1 && fn_8012C7FC(*(void **)(cursor + 4), 0))
+                *(int *)(cursor + 0xC) = 2;
+            pos = *(int *)(cursor + 8) + *(int *)base;
             if (pos > end)
                 end = pos;
         }
     }
 
-    entry = base + 4;
-    for (i = 0; i < 2; i++, entry += 0x10) {
+    i = 0;
+    cursor = 0;
+    for (; i < 2; i++, entry += 0x10) {
         status = *(int *)(entry + 0xC);
-        if (status == 0) {
-            if (*(int *)(entry + 4) == 0)
-                continue;
-        } else {
-            if (status != 2)
-                continue;
-            if (*(int *)(entry + 8) + *(int *)base >= *(int *)(base + 0x28))
-                continue;
-        }
+        if (status != 0)
+            goto check_state;
+        if (*(int *)(entry + 4) != 0)
+            goto process_entry;
 
+check_state:
+        if (status != 2)
+            goto next_entry;
+        pos = *(int *)(entry + 8) + *(int *)base;
+        if (pos >= *(int *)(base + 0x28))
+            goto next_entry;
+
+process_entry:
         *(int *)(entry + 8) = end;
         pos = end;
         len = *(int *)base;
-        request = len;
         limit = *(int *)(base + 0x24);
+        end += len;
+        request = len;
         if (pos + len > limit)
             request = limit - pos;
-        end = pos + len;
         if (request > 0) {
             fn_8012C720(*(void **)(entry + 4), *(int *)entry, request, pos);
             *(int *)(entry + 0xC) = 1;
         } else {
-            *(int *)(entry + 0xC) = 0;
+            *(int *)(entry + 0xC) = (int)cursor;
         }
+
+next_entry:
+        ;
     }
 }
+#pragma pop
 
 extern "C" s32 fn_8012EFB0(void *arg0, void *arg1, s32 arg2) {
     s32 pos = *(s32 *)((u8 *)arg0 + 0x28);
