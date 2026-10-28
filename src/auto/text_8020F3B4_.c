@@ -291,7 +291,7 @@ void fn_8020FC6C(void) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" long fn_8020FCC4(void) {
+extern "C" void fn_8020FCC4(void) {
     long result;
     long index;
     long current;
@@ -316,10 +316,16 @@ extern "C" long fn_8020FCC4(void) {
         }
     }
     current = lbl_8055B658;
-    if (current != -1 && current != index) {
-        fn_802EC1D8();
-        lbl_8055B658 = index;
+    if (current == -1) {
+        goto done;
     }
+    if (current == index) {
+        goto done;
+    }
+    fn_802EC1D8();
+    lbl_8055B658 = index;
+done:
+    ;
 }
 #pragma cplusplus off
 #pragma scheduling on
@@ -506,15 +512,13 @@ extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct R
     struct Record_802101F8 rec;
     long i;
 
-    if (arg0 != 0) {
-        if (arg3 != 0) goto body;
-        return;
-    body:
+    if (arg0 == 0 || arg3 == 0) {
+    } else {
         temp_r31 = arg0->v4();
         rec.f0 = arg3->f0;
         {
-            long f8 = arg3->f8;
             long f4 = arg3->f4;
+            long f8 = arg3->f8;
             rec.f4 = f4;
             rec.f8 = f8;
         }
@@ -549,7 +553,7 @@ void fn_8021031C(void) {
  
 extern long fn_80207848(void *, long);
 extern long fn_802EC12C(void);
-extern long fn_8020FCC4(void);
+extern void fn_8020FCC4(void);
 extern char lbl_8033C9AC[];
 extern long lbl_8055EED0;
 #pragma scheduling invalid_target
