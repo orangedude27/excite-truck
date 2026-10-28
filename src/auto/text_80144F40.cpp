@@ -1672,7 +1672,7 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     union Pair { struct { f32 x; f32 y; } f; f64 raw; };
     volatile State *src = (volatile State *)srcArg;
     volatile State *end = (volatile State *)endArg;
-    register f32 end4, src4, end8, src8, diff8, src18, diff4, src10, prod8, src1C;
+    f32 end4, src4, end8, src8, diff8, src18, diff4, src10, prod8, src1C;
     f32 prod4, out8, src20, end20, out4, diff20, end18, end1C, diff18;
     f32 end10, diff1C, src14, diff10, prod18, prod20, prod1C, prod10;
     f32 out20, end24, end14, src24, diff24, out18, diff14, out1C;
@@ -2096,16 +2096,14 @@ extern "C" void deleteThreads__6SystemFv(void *arg0) {
     }
 }
 
-void fn_80148FA4(void *object, void *unused) {
+#pragma push
+#pragma dont_inline on
+extern "C" void fn_80148FA4(void *object, void *unused) {
     struct VTable {
         virtual void v0();
-        virtual void v1();
-        virtual int v2(u32);
-        virtual void *v3(u32);
+        virtual s32 v1(u32);
+        virtual void *v2(u32);
     };
-    extern void fn_80148070(u32, void *);
-    extern void fn_8014784C(void *, u32, u32, u32);
-    extern void fn_801473F8(void *, u32, void *, u32);
     u8 *self = (u8 *)object;
     VTable *v = *(VTable **)(self + 8);
     u32 i, offset;
@@ -2114,17 +2112,20 @@ void fn_80148FA4(void *object, void *unused) {
         i = 0;
         offset = 0;
         do {
-            u8 *entry = *(u8 **)(*(u8 **)(self + 0x14)) + offset;
-            void *result = v->v3(*(u32 *)(entry + 4));
-            if (v->v2(*(u32 *)entry) != 0 && result != 0)
-                fn_80148070(*(u32 *)(entry + 8), result);
+            u8 *list = *(u8 **)(self + 0x14);
+            u8 *entry = *(u8 **)list + offset;
+            void *result = v->v2(*(u32 *)(entry + 4));
+            s32 found = v->v1(*(u32 *)entry);
+            if (found != 0 && result != 0)
+                fn_80148070((void *)found, *(s32 *)(entry + 8), (s32)result);
             offset += 0xC;
             i++;
         } while (i < *(u32 *)(*(u8 **)(self + 0x14) + 4));
         i = 0;
         offset = 0;
         do {
-            u8 *entry = *(u8 **)(*(u8 **)(self + 0x10)) + offset;
+            u8 *list = *(u8 **)(self + 0x10);
+            u8 *entry = *(u8 **)list + offset;
             fn_8014784C(v, *(u32 *)entry, *(u32 *)(entry + 4), *(u32 *)(entry + 8));
             offset += 0xC;
             i++;
@@ -2132,8 +2133,9 @@ void fn_80148FA4(void *object, void *unused) {
         i = 0;
         offset = 0;
         do {
-            u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
-            fn_801473F8(v, *(u32 *)entry, &lbl_80559E1C, *(u32 *)(entry + 4));
+            u8 *list = *(u8 **)(self + 0xC);
+            u8 *entry = *(u8 **)list + offset;
+            fn_801473F8(v, *(u32 *)entry, (const char *)&lbl_80559E1C, *(u32 *)(entry + 4));
             offset += 8;
             i++;
         } while (i < *(u32 *)(*(u8 **)(self + 0xC) + 4));
