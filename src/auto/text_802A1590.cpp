@@ -1296,13 +1296,13 @@ extern "C" f32 fn_80287BC8(f32, f32);
 extern "C" f32 fn_801E7E18(void);
 #pragma scheduling invalid_target
 extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
-    register f32 saved = farg0;
-    s32 index = *(s32*)((char*)arg0 + 4);
+    f32 saved = farg0;
+    long index = *(s32*)((char*)arg0 + 4);
     if (index >= *(s32*)((char*)arg0 + 8))
         return;
     s32 valid = *(f32*)((char*)arg0 + 0x18) >
         lbl_80564730 - lbl_80558DC4;
-    if (valid == 0)
+    if (!valid)
         return;
     f32 first = *(f32*)arg1;
     f32 second = *(f32*)((char*)arg1 + 4);
@@ -1318,7 +1318,7 @@ extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
          fn_80287BC8(-*(f32*)((char*)arg0 + 0x2c), *(f32*)((char*)arg0 + 0x2c)));
     dst[5] = *(f32*)((char*)arg2 + 8) * *(f32*)((char*)arg0 + 0x24) +
         fn_80287BC8(-*(f32*)((char*)arg0 + 0x30), *(f32*)((char*)arg0 + 0x30));
-    dst[6] = fn_801E7E18();
+    dst[6] = ((f32 (*)(void))fn_801E7E18)();
     dst[7] = saved;
     *(s32*)((char*)arg0 + 4) = *(s32*)((char*)arg0 + 4) + 1;
 }
