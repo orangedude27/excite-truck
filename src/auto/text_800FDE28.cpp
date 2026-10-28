@@ -84,22 +84,28 @@ extern u8 lbl_8055DE78;
 extern "C" void *fn_800FDE60(void) {
     extern u8 lbl_80326E08[];
     extern u8 lbl_80326E20[];
+    struct Manager {
+        u8 pad[0x1C];
+        volatile s32 unk_0x1C;
+    };
     u8 *base = lbl_804190A0;
     if ((s8)lbl_8055DE78 == 0) {
-        u8 *manager = base + 0x2050;
-        *(s32 *)(manager + 0x1C) = 0;
-        fn_8002F53C(manager + 0x20, (void *)fn_800FDFF8,
+        Manager *manager = (Manager *)(base + 0x2050);
+        manager->unk_0x1C = 0;
+        fn_8002F53C((u8 *)manager + 0x20, (void *)fn_800FDFF8,
                     (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0, 0xC, 3);
-        OSInitMutex(manager);
-        *(void **)(manager + 0x18) = MEMRecordStateForFrmHeap(base, 0x2044, 0x40, 4, 0);
+        OSInitMutex((void *)manager);
+        *(void **)((u8 *)manager + 0x18) =
+            MEMRecordStateForFrmHeap((void *)(base + 0), 0x2044, 0x40, 4, 0);
         if (MEMResizeForMBlockFrmHeap() < 0x80)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x37,
                                         (const char *)lbl_80326E20);
-        __register_global_object(manager,
+        __register_global_object(base + 0x2050,
                                  (void *)__dt__Q46nw4hbm3snd6detail11TaskManagerFv,
                                  base + 0x2044);
         lbl_8055DE78 = 1;
     }
+    return base + 0x2050;
 }
 #pragma dont_inline reset
 
@@ -546,22 +552,27 @@ extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(s32, s32, f32);
 extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(s32, s32, f32);
 extern f32 lbl_80561110;
 extern "C" void fn_800FF708(void *arg0) {
- u8 *p=(u8*)arg0; s32 i; s32 voice=*(s32*)(p+0x18);
- if (!voice) return;
- fn_800E5338(voice,*(f32*)(p+0x30));
- fn_800E5444(*(s32*)(p+0x18),*(f32*)(p+0x3c));
- fn_800E5464(*(s32*)(p+0x18),*(f32*)(p+0x34));
- fn_800E54A8(*(s32*)(p+0x18),*(f32*)(p+0x38));
- fn_800E5550(*(s32*)(p+0x18),lbl_80561110+*(f32*)(p+0x40));
- fn_800E5594(*(s32*)(p+0x18),*(s32*)(p+0x44));
- fn_800E55B4(*(s32*)(p+0x18),*(f32*)(p+0x48));
- fn_800E56D0(*(s32*)(p+0x18),*(f32*)(p+0x5c));
- for(i=0;i<3;i++) SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(*(s32*)(p+0x18),i,*(f32*)(p+0x60+i*4));
- for(i=0;i<4;i++) {
-  SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32*)(p+0x18),i,*(f32*)(p+0x4c+i*4));
-  SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32*)(p+0x18),i,*(f32*)(p+0x6c+i*4));
-  SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(*(s32*)(p+0x18),i,*(f32*)(p+0x6c+i*4));
- }
+    s32 i;
+    u8 *ptr;
+    if (*(s32 *)((u8 *)arg0 + 0x18) == 0) return;
+    fn_800E5338(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x30));
+    fn_800E5444(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x3C));
+    fn_800E5464(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x34));
+    fn_800E54A8(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x38));
+    fn_800E5550(*(s32 *)((u8 *)arg0 + 0x18), lbl_80561110 + *(f32 *)((u8 *)arg0 + 0x40));
+    fn_800E5594(*(s32 *)((u8 *)arg0 + 0x18), *(s32 *)((u8 *)arg0 + 0x44));
+    fn_800E55B4(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x48));
+    fn_800E56D0(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x5C));
+    ptr = (u8 *)arg0;
+    for (i = 0; i < 3; i++, ptr += 4) {
+        SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(*(s32 *)((u8 *)arg0 + 0x18), i, *(f32 *)(ptr + 0x60));
+    }
+    ptr = (u8 *)arg0;
+    for (i = 0; i < 4; i++, ptr += 4) {
+        SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32 *)((u8 *)arg0 + 0x18), i, *(f32 *)(ptr + 0x4C));
+        SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32 *)((u8 *)arg0 + 0x18), i, *(f32 *)(ptr + 0x6C));
+        SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(*(s32 *)((u8 *)arg0 + 0x18), i, *(f32 *)(ptr + 0x6C));
+    }
 }
 
 #pragma push
