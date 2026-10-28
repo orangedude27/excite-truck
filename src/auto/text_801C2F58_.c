@@ -325,6 +325,22 @@ void fn_801C4AD0(void) {
 extern void fn_801C98F0(void);
 
 #pragma scheduling on
+#define UNK_80437D88_DEFINED
+extern struct Unk_80437D88 {
+    char pad_0[0x4D4];
+    Vec f_4D4;
+    Vec f_4E0;
+    char pad_1[0x6F8 - 0x4EC];
+    Vec f_6F8;
+} lbl_80437D88;
+typedef struct Unk_80437D88 Unk_80437D88;
+extern s32 lbl_8055E800, lbl_8055E7F4, lbl_8055E7F0;
+extern char lbl_8055E7FC, lbl_8055E7E8, lbl_8055E7E9, lbl_8055E7E3;
+extern f32 lbl_805629A8;
+extern u32 fn_801769A8(void);
+extern s32 fn_80179630(s32);
+extern void fn_8020C8FC(void);
+extern void fn_8020C8F8(void);
 void fn_801C4B10(void) {
     for (lbl_8055E804 = 0; fn_8017960C(lbl_8055E804); lbl_8055E804++) {
     }
