@@ -5,7 +5,7 @@ struct Dummy_802113D8 {
     virtual void f1();
     virtual void f2();
     virtual void f3();
-    virtual void f6(long *, char *);
+    virtual long f6(long *, char *);
 };
 #pragma cplusplus off
 extern long lbl_8055EEE0;
@@ -421,46 +421,29 @@ struct Record_802101F8 {
     float f14;
     long f18;
 };
-#pragma processor 750
-void fn_802101F8(void **arg0, long arg1, long arg2, void *arg3) {
-    long sp20;
-    float sp1C;
-    float sp18;
-    long sp14;
-    long sp10;
-    float spC;
-    long sp8;
-    float temp_f31;
-    long temp_r29;
+#pragma cplusplus on
+extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct Record_802101F8 *arg3) {
     long temp_r31;
-    long var_r30;
+    struct Record_802101F8 rec;
+    long i;
 
-    if (arg0 != 0) {
-        if (arg3 == 0) return;
-        temp_r31 = ((long (*)(void *))(*(void ***)*arg0)[3])(*arg0);
-        var_r30 = 0;
-        sp8 = *(long *)((char *)arg3 + 0);
-        spC = *(float *)((char *)arg3 + 4);
-        sp10 = *(long *)((char *)arg3 + 8);
-        sp14 = *(long *)((char *)arg3 + 0xC);
-        sp18 = *(float *)((char *)arg3 + 0x10);
-        sp1C = *(float *)((char *)arg3 + 0x14);
-        sp20 = *(long *)((char *)arg3 + 0x18);
-        do {
-            temp_r29 = arg2 + var_r30;
-            if (var_r30 == 1) {
-                temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
-                sp18 = (*(float *)((char *)arg3 + 0x10) - fn_80235EF0(temp_r31, arg2)) - temp_f31;
+    if (arg0 != 0 && arg3 != 0) {
+        temp_r31 = arg0->v4();
+        rec = *arg3;
+        for (i = 0; i < 3; i++) {
+            long step = arg2 + i;
+            if (i == 1) {
+                float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
+                rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
             } else {
-                sp18 = fn_80235EF0(temp_r31, temp_r29);
+                rec.f10 = fn_80235EF0(temp_r31, step);
             }
-            fn_80147940(arg0, &sp8, arg1, temp_r29);
-            var_r30 += 1;
-            spC += sp18;
-        } while (var_r30 < 3);
+            fn_80147940(arg0, &rec, arg1, step);
+            rec.f4 += rec.f10;
+        }
     }
 }
-
+#pragma cplusplus reset
  
 void fn_8021031C(void) {
     long type;
