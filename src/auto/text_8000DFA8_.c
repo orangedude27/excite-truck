@@ -1490,7 +1490,7 @@ void fn_80011F64(void) {
     extern char lbl_802FC550[];
     extern char lbl_802FC560[];
     extern char lbl_802FC570[];
-    extern void *lbl_802FC580;
+    extern char lbl_802FC580[];
     extern s32 *lbl_8055D4AC;
     f32 sp8;
     s32 *temp_r3;
@@ -1522,7 +1522,7 @@ void fn_80011F64(void) {
             var_r28_2 += 1;
         } while (var_r29_2 < 3);
         sp8 = lbl_80560264;
-        fn_801331C4(4, &lbl_802FC580, &sp8);
+        fn_801331C4(4, (void *)lbl_802FC580, &sp8);
         var_ctr = 2;
         var_r3 = temp_r3;
         do {
@@ -1618,8 +1618,8 @@ void fn_800121A4(void) {
 }
 
 extern void fn_801331C4(s32, void *, f32 *);
-extern void *lbl_802FC580;
-__declspec(section ".data") extern void *lbl_802FC580;
+extern char lbl_802FC580[];
+__declspec(section ".data") extern char lbl_802FC580[];
 #pragma unroll off
 #pragma optimize_for_size on
 #pragma scheduling invalid_target
@@ -1631,7 +1631,7 @@ void fn_800121F0(void) {
 
     sp8 = lbl_80560264;
     var_r3 = (s32 *)lbl_8055D4AC;
-    fn_801331C4(4, &lbl_802FC580, &sp8);
+    fn_801331C4(4, (void *)lbl_802FC580, &sp8);
     var_ctr = 2;
     do {
         temp_r4 = (void *)var_r3[1];
