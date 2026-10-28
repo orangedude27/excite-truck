@@ -342,17 +342,17 @@ extern "C" f32 PSQUATMultiply(void *, void *);
 extern "C" f32 lbl_80561498, lbl_805614A4;
 extern "C" void fn_8013E19C(void *arg0, f32 arg1) {
     f32 *p = (f32 *)arg0;
-    f32 unit = lbl_805614A4;
+    f32 unit = *(volatile f32 *)&lbl_805614A4;
+    void *other = (char *)arg0 + 0xC;
     p[4] = unit;
     p[1] = unit;
-    void *other = (char *)arg0 + 0xC;
     f32 t = arg1 / PSQUATMultiply(arg0, other);
-    f32 a = p[5];
-    f32 b = p[2];
-    f32 c = p[4];
     f32 d = p[1];
-    f32 e = p[3];
+    f32 b = p[2];
     f32 g = p[0];
+    f32 e = p[3];
+    f32 c = p[4];
+    f32 a = p[5];
     f32 x = b + lbl_80561498 * (a - b);
     f32 y = d + lbl_80561498 * (c - d);
     f32 z = g + lbl_80561498 * (e - g);
@@ -843,27 +843,28 @@ extern "C" void fn_8014052C(void *unused, s32 arg0, u8 *arg1) {
 }
 
 extern "C" void fn_80147ABC(void *, void *, s32, f32);
-extern "C" void *lbl_8032CA48;
-extern "C" void *lbl_8032CA58;
-extern "C" void fn_80140614(void *arg0, void *arg2) {
-    void *obj = arg0;
-    void *src = arg2;
+extern "C" char lbl_8032CA48[];
+extern "C" char lbl_8032CA58[];
+extern "C" void fn_80140614(void *arg0, void *arg1, void *arg2) {
+    class Item {
+    public:
+        virtual void d0();
+        virtual void *lookup(void *);
+    };
+    f32 d1 = fn_8001DAE8((char *)arg2 + 0xA8) - *(f32 *)((char *)arg2 + 0xAC);
     s32 flag = 0;
-    {
-        f32 d1 = fn_8001DAE8((char *)src + 0xA8) - *(f32 *)((char *)src + 0xAC);
-        if (d1 > lbl_805614A4 && d1 < *(f32 *)((char *)src + 0xA8))
-            flag = 1;
-    }
+    if (d1 >= lbl_805614A4 && d1 < *(f32 *)((char *)arg2 + 0xA8))
+        flag = 1;
     if (flag == 0) {
-        f32 d2 = fn_8001DAE8((char *)src + 0xA0) - *(f32 *)((char *)src + 0xA4);
-        if (d2 > lbl_805614A4 && d2 < *(f32 *)((char *)src + 0xA0))
+        f32 d2 = fn_8001DAE8((char *)arg2 + 0xA0) - *(f32 *)((char *)arg2 + 0xA4);
+        flag = 0;
+        if (d2 >= lbl_805614A4 && d2 < *(f32 *)((char *)arg2 + 0xA0))
             flag = 1;
     }
     if (flag != 0) {
-        void *item = *(void **)((char *)obj + 0x54);
-        void *r1 = ((void *(*)(void *, void *))(*(void ***)item)[0xC / 4])(item, (void *)0x8032CA48);
-        void *r2 = ((void *(*)(void *, void *))(*(void ***)item)[0xC / 4])(item, (void *)0x8032CA58);
-        f32 d = fn_8001DAF0((f32 *)((char *)src + 0xA0));
+        void *r1 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(&lbl_8032CA48);
+        void *r2 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(&lbl_8032CA58);
+        f32 d = fn_8001DAF0((f32 *)((char *)arg2 + 0xA0));
         fn_80147ABC(r1, r2, *(s32 *)((char *)r1 + 0x1C), d * d);
     }
 }
