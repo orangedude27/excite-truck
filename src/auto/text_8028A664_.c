@@ -842,7 +842,7 @@ extern f32 lbl_805643E4;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling off
 s32 fn_8028CD80(s32 arg0, s32 arg1, void *arg2, f32 *arg3, f32 farg0) {
     struct Ring { void *data; s32 head; s32 tail; } *ring = (struct Ring *)arg0;
     f32 *src = (f32 *)arg2;
