@@ -1459,15 +1459,21 @@ extern "C" void fn_8015180C(void *ctx, void *a, void *b, void *unused, void *vec
     s32 first = 1;
     s32 second = 1;
     if (*(s32 *)((u8 *)a + 0x1F0) == 0x50 && *(s32 *)((u8 *)b + 0x1F0) == 0x50) {
-        first = *(f32 *)((u8 *)a + 0x25D4) > *(f32 *)((u8 *)b + 0x25D4);
+        f32 valueB = *(f32 *)((u8 *)b + 0x25D4);
+        f32 valueA = *(f32 *)((u8 *)a + 0x25D4);
+        first = valueA > valueB;
         second = !first;
     }
     if (first) {
-        void *slot = (u8 *)ctx + *(s32 *)((u8 *)a + 0x1EC) * 0xC0 + 0x9E4;
+        s32 address = (s32)ctx;
+        address += *(s32 *)((u8 *)a + 0x1EC) * 0xC0;
+        void *slot = (void *)(address + 0x9E4);
         if (slot) ((Dummy_8015180C *)*(void **)((u8 *)slot + 0x10))->call(*(s32 *)((u8 *)b + 0x1EC), mag);
     }
     if (second) {
-        void *slot = (u8 *)ctx + *(s32 *)((u8 *)b + 0x1EC) * 0xC0 + 0x9E4;
+        s32 address = (s32)ctx;
+        address += *(s32 *)((u8 *)b + 0x1EC) * 0xC0;
+        void *slot = (void *)(address + 0x9E4);
         if (slot) ((Dummy_8015180C *)*(void **)((u8 *)slot + 0x10))->call(*(s32 *)((u8 *)a + 0x1EC), mag);
     }
 }
@@ -1524,29 +1530,39 @@ void fn_80151A40(void *arg0) {
     s32 self = fn_801E85B4();
     s32 index = fn_801E866C(self);
     s32 entry_base = (s32)arg0 + index * 0xC0 + 0x9E4;
-    s32 *entry = (s32 *)entry_base;
+    s32 *check = (s32 *)entry_base;
+    s32 offset;
     s32 global_value;
-    s32 i = 0;
-    s32 offset = 0;
-    f32 y_offset = lbl_805616FC;
-    if (entry != 0 && entry[1] != 0) {
+    s32 i;
+    f32 y_offset;
+    if (check != 0 && check[1] != 0) {
         global_value = lbl_8055E230;
         i = 0;
     }
+    y_offset = lbl_805616FC;
+    offset = 0;
     while (i < *(s32 *)((s32)arg0 + 0x224)) {
         s32 item = *(s32 *)(*(s32 *)((s32)arg0 + 0x220) + offset);
         if (*((u8 *)item + 0x10) != 0) {
-            s32 first[3];
             s32 second[3];
-            first[0] = *(s32 *)(item + 0);
-            first[1] = *(s32 *)(item + 4);
+            s32 first[3];
+            s32 x = *(s32 *)(item + 0);
+            s32 y = *(s32 *)(item + 4);
+            f32 y_minus;
+            f32 y_plus;
+            first[1] = y;
+            first[0] = x;
+            y_minus = ((f32 *)first)[1] - y_offset;
             first[2] = *(s32 *)(item + 8);
-            second[0] = *(s32 *)(item + 0);
-            second[1] = *(s32 *)(item + 4);
+            x = *(s32 *)(item + 0);
+            y = *(s32 *)(item + 4);
+            second[1] = y;
+            second[0] = x;
+            y_plus = ((f32 *)second)[1] + y_offset;
             second[2] = *(s32 *)(item + 8);
-            ((f32 *)first)[1] = ((f32 *)first)[1] - y_offset;
-            ((f32 *)second)[1] = ((f32 *)second)[1] + y_offset;
-            fn_801E41D8(first, second, global_value, *(s32 *)item, *(f32 *)(item + 0xC));
+            ((f32 *)first)[1] = y_minus;
+            ((f32 *)second)[1] = y_plus;
+            fn_801E41D8(first, second, global_value, x, *(f32 *)(item + 0xC));
         }
         offset += 4;
         i += 1;
@@ -2374,30 +2390,39 @@ void fn_8014F108(void *arg0) {
 
 #pragma cplusplus on
 extern "C" void fn_8014FB7C(void *arg0) {
-    class VObj { public: virtual void d0(s32); };
+    class VObj {
+    public:
+        virtual void d0(s32);
+    };
     VObj *p;
-    u8 *base = (u8 *)arg0;
-    p = *(VObj **)(base + 0x9D8);
+    p = *(VObj **)((u8 *)arg0 + 0x9D8);
     if (p != 0) {
         if (p != 0) p->d0(1);
-        *(VObj **)(base + 0x9D8) = 0;
+        *(VObj **)((u8 *)arg0 + 0x9D8) = 0;
     }
-    s32 i;
-    u8 *obj;
-    i = 1;
-    obj = base + 0x240;
+    s32 i = 1;
+    u8 *obj = (u8 *)arg0 + 0x240;
     do {
         if (*(void **)(obj + 0x45C) != 0) {
-            fn_802ADE60((void **)(obj + 0x45C), 1);
+            fn_802ADE60((void **)obj + 0x45C, 1);
             *(s32 *)(obj + 0x45C) = 0;
         }
         p = *(VObj **)(obj + 0x464);
-        if (p != 0) { if (p != 0) p->d0(1); *(VObj **)(obj + 0x464) = 0; }
+        if (p != 0) {
+            if (p != 0) p->d0(1);
+            *(VObj **)(obj + 0x464) = 0;
+        }
         p = *(VObj **)(obj + 0x468);
-        if (p != 0) { if (p != 0) p->d0(1); *(VObj **)(obj + 0x468) = 0; }
+        if (p != 0) {
+            if (p != 0) p->d0(1);
+            *(VObj **)(obj + 0x468) = 0;
+        }
         p = *(VObj **)(obj + 0x46C);
-        if (p != 0) { if (p != 0) p->d0(1); *(VObj **)(obj + 0x46C) = 0; }
-        i--;
+        if (p != 0) {
+            if (p != 0) p->d0(1);
+            *(VObj **)(obj + 0x46C) = 0;
+        }
+        --i;
         obj -= 0x240;
     } while (i >= 0);
 }
