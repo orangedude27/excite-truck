@@ -113,6 +113,57 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     }
     fn_80233354(arg0, arg1, arg2, arg3, farg0, spC, farg3, farg2);
 }
+
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma paired off
+#pragma paired_single off
+void fn_802307AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
+                 f32 farg0, f32 farg1, f32 farg2, f32 farg3,
+                 f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
+    extern s32 fn_80232B70(s32);
+    extern void fn_80232BA4(s32, s32, s32, s32, f32, f32, f32, f32, f32);
+    extern f32 lbl_80563620, lbl_80563624;
+    f32 spC, sp8;
+    f32 temp_f1, temp_f3, temp_f4;
+    f32 temp_f31, temp_f28, temp_f27, temp_f26;
+    f32 var_f2;
+    s32 var_r0;
+    (void)arg_sp0;
+    temp_f31 = farg3;
+    temp_f1 = (f32)fn_80232B70(arg1);
+    temp_f3 = farg5 * farg4;
+    temp_f28 = temp_f31 * temp_f1;
+    temp_f27 = lbl_80563620 - farg6;
+    temp_f1 = farg1 + temp_f3;
+    temp_f26 = lbl_80563624 + farg6;
+    temp_f4 = temp_f1 - temp_f28;
+    spC = temp_f1;
+    sp8 = temp_f4;
+    fn_80230C9C(&sp8, &spC, temp_f27, temp_f26, -temp_f27 + temp_f26);
+    var_r0 = 0;
+    var_f2 = lbl_80563620;
+    if (sp8 < temp_f27) {
+        var_r0 = 1;
+        temp_f4 = sp8 + (-temp_f27 + temp_f26);
+        var_f2 = temp_f4 + temp_f28;
+    }
+    if (spC > temp_f26) {
+        var_r0 = 1;
+        var_f2 = spC - (-temp_f27 + temp_f26);
+    }
+    if (var_r0 != 0) {
+        fn_80232BA4(arg0, arg1, arg2, arg3, farg0, var_f2, farg3, farg2, lbl_80563610);
+    }
+    fn_80232BA4(arg0, arg1, arg2, arg3, farg0, spC, farg3, farg2, lbl_80563610);
+}
+#pragma processor gekko
+#pragma use_lmw_stmw on
+#pragma scheduling on
+#pragma paired on
+#pragma paired_single on
+
 #pragma processor gekko
 #pragma use_lmw_stmw on
 #pragma scheduling invalid_target
