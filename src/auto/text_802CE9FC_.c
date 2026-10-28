@@ -1840,11 +1840,12 @@ extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE
 #pragma processor 750
 #pragma paired off
 #pragma paired_single off
-#pragma scheduling invalid_target
+#pragma scheduling off
 int fn_802D3A5C(void *arg0, float *arg1) {
     extern unsigned char lbl_804C9778[];
-    float yValue = lbl_80564FB8 * arg1[1] / lbl_80564FBC;
+    float scaledY = lbl_80564FB8 * arg1[1];
     float xValue = arg1[0];
+    float yValue = scaledY / lbl_80564FBC;
     int x = (int)xValue;
     int y = (int)yValue;
     float target;
