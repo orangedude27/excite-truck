@@ -3,6 +3,7 @@
 
 #include <types.h>
 extern s32 lbl_8055D864;
+extern void cbForCancel(void);
 #include <revolution/OS/OSContext.h>
 extern s32 lbl_8055D810;
 extern void *lbl_8055D814;
