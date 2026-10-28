@@ -308,7 +308,6 @@ after5:
 extern "C" void *fn_8016BE60(void *arg0) {
     u8 *object = (u8 *)fn_801284F8(0x1B4, lbl_803306D0 + 0x20);
     char *strings = lbl_803306D0;
-    s32 index = 0;
     if (object != 0) {
         fn_80144504((void **)object);
         *(void **)object = lbl_80330990;
@@ -317,7 +316,7 @@ extern "C" void *fn_8016BE60(void *arg0) {
         fn_8016CF08(object + 0xAC);
         lbl_8055E378 = (s32)object;
         fn_8016CEFC(object + 4);
-        for (index = 0; index < *(s32 *)((u8 *)arg0 + 0x3E0); index++) {
+        for (s32 index = 0; index < *(s32 *)((u8 *)arg0 + 0x3E0); index++) {
             void *allocation = (void *)fn_801284F8(0x10, strings + 0x30);
             if (allocation != 0) allocation = fn_8016CEC0(allocation, index);
             void *entry = allocation;
@@ -325,14 +324,14 @@ extern "C" void *fn_8016BE60(void *arg0) {
         }
         fn_8016A0B0();
         fn_8016C328(object + 0x30);
-        index = 0;
+        s32 zero = 0;
         f32 initialValue = lbl_80561998;
-        *(s32 *)(object + 0x98) = index;
+        *(volatile s32 *)(object + 0x98) = zero;
         s32 flag = 1;
-        *(u8 *)(object + 0x9C) = (u8)flag;
-        *(f32 *)(object + 0xA0) = initialValue;
-        *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, flag);
-        *(u8 *)(object + 0xA8) = (u8)index;
+        *(volatile u8 *)(object + 0x9C) = (u8)flag;
+        *(volatile f32 *)(object + 0xA0) = initialValue;
+        *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, 1);
+        *(volatile u8 *)(object + 0xA8) = (u8)zero;
     }
     return object;
 }
@@ -938,27 +937,41 @@ s32 fn_8016E1A4(s32 *arg0, s32 arg1) {
 }
 
 void fn_8016E1B4(void *arg0, s32 arg1) {
-    char sp8[0x30];
+    struct Entry { u8 pad[9]; u8 flag; u8 tail[2]; f32 value; };
+    char sp8[0x28];
+    register char *format = lbl_803306D0;
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
-    if (value == 0) {
-        fn_801345D8(sp8, 0x1e, lbl_803306D0 + 0x264, *(s32 *)((u8 *)arg0 + 0x2c));
-    } else if (value == 1) {
-        fn_801345D8(sp8, 0x1e, lbl_803306D0 + 0x270, *(s32 *)((u8 *)arg0 + 0x2c));
-    } else if (value == 2) {
-        fn_801345D8(sp8, 0x1e, lbl_803306D0 + 0x27c, *(s32 *)((u8 *)arg0 + 0x2c));
-    } else {
-        fn_802E317C(lbl_803306D0 + 0x288);
+    switch (value) {
+    case 0:
+        fn_801345D8(sp8, 0x1e, format + 0x264, *(s32 *)((u8 *)arg0 + 0x2c));
+        break;
+    case 1:
+        fn_801345D8(sp8, 0x1e, format + 0x270, *(s32 *)((u8 *)arg0 + 0x2c));
+        break;
+    case 2:
+        fn_801345D8(sp8, 0x1e, format + 0x27c, *(s32 *)((u8 *)arg0 + 0x2c));
+        break;
+    default:
+        fn_802E317C(format + 0x288);
+        break;
     }
     fn_8016A240(sp8);
     if (arg1 < *(s32 *)((u8 *)arg0 + 0x3c)) {
-        u8 *item = (u8 *)*(void **)((u8 *)arg0 + 0x18) + arg1 * 0x14;
-        s32 i = 0;
-        s32 offset = 0;
-        *(u8 *)(item + 9) = 0;
-        *(f32 *)(item + 0xc) = lbl_8055E3C8;
-        while (i < *(s32 *)item) {
-            if (*(s32 *)((u8 *)*(void **)item + offset + 4) != 0) {
-                fn_802BAF98((u8 *)*(void **)item + offset, 0);
+        register void **list = *(void ***)((u8 *)arg0 + 0x18);
+        s32 delta = arg1 * 0x14;
+        register u8 *base = (u8 *)*list;
+        register struct Entry *item = (struct Entry *)(base + delta);
+        register s32 i;
+        s32 offset;
+        item->flag = 0;
+        i = 0;
+        offset = 0;
+        item->value = lbl_8055E3C8;
+        while (i < *(s32 *)((u8 *)*(void **)item + 4)) {
+            u8 *entries = (u8 *)*(void **)*(void **)item;
+            void *handle = *(void **)(entries + offset + 4);
+            if (handle != 0) {
+                fn_802BAF98(handle, 0);
             }
             offset += 0x44;
             i += 1;
@@ -2001,40 +2014,57 @@ extern "C" s32 fn_80171094(void *arg0, s32 unused, s32 arg2) {
         virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
         virtual s32 f24();
     };
+    s32 mode;
     f32 value;
     f32 endTime;
 
     if (((Dummy *)arg0)->f24() != 0 && arg2 == 0x58) {
-        if (M2C_FIELD(arg0, s32 *, 0xAC) == 2)
-            M2C_FIELD(arg0, u8 *, 0xB5) = 1;
+        if (*(volatile s32 *)((u8 *)arg0 + 0xAC) == 2)
+            *(u8 *)((u8 *)arg0 + 0xB5) = 1;
         return 1;
     }
-    if (M2C_FIELD(arg0, s32 *, 0xAC) != 0) {
-        if (M2C_FIELD(arg0, s32 *, 0xAC) == 1 && M2C_FIELD(arg0, u8 *, 0xBC) == 0) {
-            value = M2C_FIELD(arg0, f32 *, 0xB0);
-            endTime = lbl_8055E3C8;
+    if (*(volatile s32 *)((u8 *)arg0 + 0xAC) != 0) {
+        endTime = lbl_8055E3C8;
+        mode = *(volatile s32 *)((u8 *)arg0 + 0xAC);
+        if (mode == 1 && *(u8 *)((u8 *)arg0 + 0xBC) == 0) {
+            value = *(f32 *)((u8 *)arg0 + 0xB0);
             if (value > lbl_80561980 && endTime - value < lbl_80561984) {
-                M2C_FIELD(arg0, u8 *, 0xBC) = 1;
-                if (M2C_FIELD(arg0, void **, 0xB8) != 0)
+                register void *handle;
+                void *node;
+                handle = *(void **)((u8 *)arg0 + 0xB8);
+                *(u8 *)((u8 *)arg0 + 0xBC) = 1;
+                if (handle != 0)
                     fn_802AE118();
-                if (M2C_FIELD(arg0, void **, 0xC0) != 0) {
-                    M2C_FIELD(M2C_FIELD(arg0, void **, 0xC0), u8 *, 0x4A) = 1;
-                    M2C_FIELD(M2C_FIELD(arg0, void **, 0xC0), u8 *, 0x4C) = 0;
+                node = *(void **)((u8 *)arg0 + 0xC0);
+                if (node != 0) {
+                    *(u8 *)((u8 *)node + 0x4A) = 1;
+                    *(u8 *)((u8 *)node + 0x4C) = 0;
                 }
-                if (M2C_FIELD(arg0, void **, 0xC4) != 0) {
-                    M2C_FIELD(M2C_FIELD(arg0, void **, 0xC4), u8 *, 0x4A) = 1;
-                    M2C_FIELD(M2C_FIELD(arg0, void **, 0xC4), u8 *, 0x4C) = 0;
+                node = *(void **)((u8 *)arg0 + 0xC4);
+                if (node != 0) {
+                    *(u8 *)((u8 *)node + 0x4A) = 1;
+                    *(u8 *)((u8 *)node + 0x4C) = 0;
                 }
-                if (M2C_FIELD(arg0, void **, 0xD4) != 0) {
-                    M2C_FIELD(M2C_FIELD(arg0, void **, 0xD4), u8 *, 0x4A) = 1;
-                    M2C_FIELD(M2C_FIELD(arg0, void **, 0xD4), u8 *, 0x4C) = 0;
+                node = *(void **)((u8 *)arg0 + 0xD4);
+                if (node != 0) {
+                    *(u8 *)((u8 *)node + 0x4A) = 1;
+                    *(u8 *)((u8 *)node + 0x4C) = 0;
                 }
-                if (M2C_FIELD(arg0, void **, 0xD8) != 0) {
-                    M2C_FIELD(M2C_FIELD(arg0, void **, 0xD8), u8 *, 0x4A) = 1;
-                    M2C_FIELD(M2C_FIELD(arg0, void **, 0xD8), u8 *, 0x4C) = 0;
+                node = *(void **)((u8 *)arg0 + 0xD8);
+                if (node != 0) {
+                    *(u8 *)((u8 *)node + 0x4A) = 1;
+                    *(u8 *)((u8 *)node + 0x4C) = 0;
                 }
-                M2C_FIELD(arg0, u8 *, 0xB4) = 0;
-                M2C_FIELD(arg0, f32 *, 0xB0) = lbl_8055E3C8 - lbl_80561984;
+                {
+                    f32 floorValue;
+                    f32 finalEnd;
+                    s32 zero;
+                    finalEnd = lbl_8055E3C8;
+                    zero = 0;
+                    floorValue = lbl_80561984;
+                    if ((*(volatile u8 *)((u8 *)arg0 + 0xB4) = zero) == 0)
+                        *(f32 *)((u8 *)arg0 + 0xB0) = finalEnd - floorValue;
+                }
             }
         }
         return 1;
@@ -2054,40 +2084,50 @@ extern void fn_801B8060(void *, void *);
 extern f32 lbl_80561A20;
 extern f32 lbl_80561A24;
 s32 fn_80171210(void *arg0, s32 arg1, void *arg2) {
-    s32 i;
     s32 count;
+    register f32 reset = lbl_80561980;
+    register void *item;
+    register void *list;
+    register void *entry;
+    register void *record;
+    s32 index;
     s32 nextIndex;
-    void *item;
-    void *list;
-    void *entry;
-    void *records;
-    void *record;
+    f32 x;
+    f32 scale;
+    f32 scaledX;
+    f32 z;
 
     item = ((void **)M2C_FIELD(arg0, void **, 4))[arg1];
     M2C_FIELD(item, u8 *, 8) = 0;
-    M2C_FIELD(item, f32 *, 0xC) = lbl_80561980;
+    M2C_FIELD(item, f32 *, 0xC) = reset;
     count = M2C_FIELD(arg0, s32 *, 0x5C);
     if (count < M2C_FIELD(arg0, s32 *, 0x6C)) {
         list = M2C_FIELD(arg0, void **, 0x48);
         entry = (u8 *)M2C_FIELD(list, void **, 0) + count * 0x14;
-        records = M2C_FIELD(entry, void **, 4);
-        if (records != 0 && M2C_FIELD(records, s32 *, 4) > 0 &&
-            *((u8 *)M2C_FIELD(records, void **, 0) + M2C_FIELD(entry, s32 *, 0x10) * 0x38 + 0x30) != 0) {
-            list = M2C_FIELD(entry, void **, 4);
-            i = M2C_FIELD(entry, s32 *, 0x10);
-            records = M2C_FIELD(list, void **, 0);
-            nextIndex = i + 1;
+        list = M2C_FIELD(entry, void **, 4);
+        if (list != 0 && M2C_FIELD(list, s32 *, 4) > 0 &&
+            *((u8 *)M2C_FIELD(list, void **, 0) +
+              *(volatile s32 *)((u8 *)entry + 0x10) * 0x38 + 0x30) != 0) {
+            list = *(void * volatile *)((u8 *)entry + 4);
+            index = *(volatile s32 *)((u8 *)entry + 0x10);
+            nextIndex = index + 1;
             if (nextIndex < M2C_FIELD(list, s32 *, 4))
-                record = (u8 *)records + nextIndex * 0x38;
+                record = (u8 *)M2C_FIELD(list, void * volatile *, 0) + nextIndex * 0x38;
             else
-                record = (u8 *)records + i * 0x38;
+                record = (u8 *)M2C_FIELD(list, void * volatile *, 0) + index * 0x38;
             fn_801B8060(arg2, record);
-            M2C_FIELD(arg2, f32 *, 0x30) = M2C_FIELD(record, f32 *, 0x18) * lbl_80561A20;
-            M2C_FIELD(arg2, f32 *, 0x34) = M2C_FIELD(record, f32 *, 0x1C) * lbl_80561A20;
-            M2C_FIELD(arg2, f32 *, 0x28) += lbl_80561A24;
-            M2C_FIELD(arg2, f32 *, 0x38) = M2C_FIELD(record, f32 *, 0x20) * lbl_80561A20;
+            x = *(volatile f32 *)((u8 *)record + 0x18);
+            scale = lbl_80561A20;
+            z = *(volatile f32 *)((u8 *)arg2 + 0x28);
+            scaledX = x * scale;
+            z = z + *(volatile f32 *)&lbl_80561A24;
+            *(f32 *)((u8 *)arg2 + 0x30) = scaledX;
+            *(f32 *)((u8 *)arg2 + 0x34) = *(f32 *)((u8 *)record + 0x1C) * scale;
+            *(f32 *)((u8 *)arg2 + 0x38) = *(f32 *)((u8 *)record + 0x20) * scale;
+            *(f32 *)((u8 *)arg2 + 0x28) = z;
             return 1;
         }
+        return 0;
     }
     return 0;
 }
