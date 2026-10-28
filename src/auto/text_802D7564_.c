@@ -193,50 +193,56 @@ extern void *fn_802D8C00(void *, void *);
 extern void fn_802D9340(void *);
 extern char lbl_8034C5C8[];
 void *fn_802D8E9C(void *arg0, void *arg1) {
+    void *obj = 0;
     int kind = *(int *)arg0;
-    void *obj;
-    if (kind == 0x17) {
-        obj = fn_802D8C00(arg0, arg1);
-    } else if (kind < 0x17) {
-        if (kind == 0x10) {
-            obj = fn_802D8A84(arg0, arg1);
-        } else if (kind < 0x10) {
-            if (kind < 2) {
-                if (kind >= 0) {
-                    fn_802E317C(lbl_8034C5C8, kind);
-                    obj = 0;
-                } else {
-                    obj = fn_802D7FA0(arg0, arg1);
-                }
-            } else if (kind < 4) {
-                obj = fn_802D7D98(arg0, arg1);
-            } else {
-                obj = fn_802D7B5C(arg0, arg1);
-            }
-        } else {
-            obj = fn_802D7FA0(arg0, arg1);
-        }
-    } else if (kind == 0x44) {
-        obj = fn_802D8A84(arg0, arg1);
-    } else if (kind < 0x44) {
-        if (kind < 0x42) {
-            if (kind < 0x40) {
-                fn_802E317C(lbl_8034C5C8, kind);
-                obj = 0;
-            } else {
-                obj = fn_802D7B5C(arg0, arg1);
-            }
-        } else {
-            obj = fn_802D8C00(arg0, arg1);
-        }
-    } else if (kind == 0x47) {
-        obj = fn_802D7B5C(arg0, arg1);
-    } else if (kind < 0x4C) {
-        obj = fn_802D7FA0(arg0, arg1);
-    } else {
-        fn_802E317C(lbl_8034C5C8, kind);
-        obj = 0;
-    }
+    void *name = arg1;
+
+    if (kind == 0x17) goto use_a84;
+    if (kind >= 0x17) goto high_range;
+    if (kind == 0x10) goto use_a84;
+    if (kind >= 0x10) goto low_mid;
+    if (kind >= 0x02) goto low_two;
+    if (kind < 0) goto report_error;
+    goto use_b5c;
+
+low_two:
+    if (kind < 0x04) goto use_d98;
+    goto report_error;
+
+low_mid:
+    if (kind < 0x12) goto use_c00;
+    goto report_error;
+
+high_range:
+    if (kind == 0x44) goto use_c00;
+    if (kind >= 0x44) goto high_tail;
+    if (kind >= 0x42) goto use_a84;
+    if (kind < 0x40) goto report_error;
+    goto use_b5c;
+
+high_tail:
+    if (kind == 0x47) goto use_d98;
+    if (kind < 0x47) goto use_fa0;
+    if (kind >= 0x4C) goto report_error;
+
+use_fa0:
+    obj = fn_802D7FA0(arg0, name);
+    goto finish;
+use_b5c:
+    obj = fn_802D7B5C(arg0, name);
+    goto finish;
+use_a84:
+    obj = fn_802D8A84(arg0, name);
+    goto finish;
+use_c00:
+    obj = fn_802D8C00(arg0, name);
+    goto finish;
+use_d98:
+    obj = fn_802D7D98(arg0, name);
+    goto finish;
+report_error:
+    fn_802E317C(lbl_8034C5C8, kind);
+finish:
     fn_802D9340(obj);
     return obj;
 }
@@ -430,7 +436,7 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802D9628(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void fn_802D9628(register void *arg0, register s32 arg1, register s32 arg2, register s32 arg3) {
     int mip;
     int wrap;
     int base;
@@ -455,13 +461,15 @@ void fn_802D9628(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         xoff = (arg1 << 29) - xsign;
         pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign +
                       ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
-
-        if ((arg1 & 1) == 0) {
-            unsigned char old = *(unsigned char *)(base + pixel);
-            *(unsigned char *)(base + pixel) = (unsigned char)(((arg3 >> 4) & 0xF) | (old & 0xF0));
-        } else {
-            unsigned char old = *(unsigned char *)(base + pixel);
-            *(unsigned char *)(base + pixel) = (unsigned char)((arg3 & 0xF0) | (old & 0x0F));
+        {
+            unsigned char value = (unsigned char)arg3;
+            if (arg1 & 1) {
+                unsigned char old = *(unsigned char *)(base + pixel);
+                *(unsigned char *)(base + pixel) = (unsigned char)((value & 0xF0) | (old & 0x0F));
+            } else {
+                unsigned char old = *(unsigned char *)(base + pixel);
+                *(unsigned char *)(base + pixel) = (unsigned char)(((value >> 4) & 0x0F) | (old & 0xF0));
+            }
         }
     }
 }
@@ -521,6 +529,9 @@ extern void GXInitTexObjLOD(void *, int, int, int, int, int, float, float, float
 extern float lbl_80565018;
 extern float lbl_8056501C;
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void *fn_802D8C00(void *arg0, void *arg1) {
     void *obj;
     int h = *(int *)((char *)arg0 + 0x28);
