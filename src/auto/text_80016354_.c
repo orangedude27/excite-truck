@@ -252,50 +252,49 @@ void fn_80016A44(void) {
 void fn_80016A48(void *arg0, int arg1) {
     extern unsigned char lbl_80357C20[];
     extern void *fn_8027953C(void *);
-    int index;
     int found;
+    int index;
 
     found = -1;
-    index = 0;
-    do {
-        int value;
-        value = *(int *)((unsigned char *)fn_80016510(*(int *)((unsigned char *)fn_800167B8(index) + 0x4C)) + 4);
-        if (arg1 == value)
+    for (index = 0; index < *(int *)&lbl_8055D554 && found == -1; index++) {
+        if (arg1 == *(int *)((unsigned char *)fn_80016510(*(int *)((unsigned char *)fn_800167B8(index) + 0x4C)) + 4))
             found = index;
-        index++;
-    } while (index < *(int *)&lbl_8055D554 && found == -1);
-    if (found != -1 && lbl_80357C20[found * 0x68] != 0) {
-        unsigned char *record = lbl_80357C20 + found * 0x68;
-        *(unsigned char *)arg0 = record[4];
-        *(float *)((unsigned char *)arg0 + 4) = *(float *)(record + 8);
-        *(float *)((unsigned char *)arg0 + 8) = *(float *)(record + 0xC);
-        *(float *)((unsigned char *)arg0 + 0xC) = *(float *)(record + 0x10);
-        *(float *)((unsigned char *)arg0 + 0x10) = *(float *)(record + 0x14);
-        *(float *)((unsigned char *)arg0 + 0x14) = *(float *)(record + 0x18);
-        *(float *)((unsigned char *)arg0 + 0x18) = *(float *)(record + 0x1C);
-        *(float *)((unsigned char *)arg0 + 0x1C) = *(float *)(record + 0x20);
-        *(float *)((unsigned char *)arg0 + 0x20) = *(float *)(record + 0x24);
-        *(float *)((unsigned char *)arg0 + 0x24) = *(float *)(record + 0x28);
-        *(float *)((unsigned char *)arg0 + 0x28) = *(float *)(record + 0x2C);
-        *(float *)((unsigned char *)arg0 + 0x2C) = *(float *)(record + 0x30);
-        *(float *)((unsigned char *)arg0 + 0x30) = *(float *)(record + 0x34);
-        *(float *)((unsigned char *)arg0 + 0x34) = *(float *)(record + 0x38);
-        *(float *)((unsigned char *)arg0 + 0x38) = *(float *)(record + 0x3C);
-        *(float *)((unsigned char *)arg0 + 0x3C) = *(float *)(record + 0x40);
-        *(float *)((unsigned char *)arg0 + 0x40) = *(float *)(record + 0x44);
-        *(float *)((unsigned char *)arg0 + 0x44) = *(float *)(record + 0x48);
-        *(float *)((unsigned char *)arg0 + 0x48) = *(float *)(record + 0x4C);
-        *(float *)((unsigned char *)arg0 + 0x4C) = *(float *)(record + 0x50);
-        *(float *)((unsigned char *)arg0 + 0x50) = *(float *)(record + 0x54);
-        *(float *)((unsigned char *)arg0 + 0x54) = *(float *)(record + 0x58);
-        *(float *)((unsigned char *)arg0 + 0x58) = *(float *)(record + 0x5C);
-        *(float *)((unsigned char *)arg0 + 0x5C) = *(float *)(record + 0x60);
-        *(float *)((unsigned char *)arg0 + 0x60) = *(float *)(record + 0x64);
-        return;
+    }
+    if (found != -1) {
+        unsigned char *base = lbl_80357C20;
+        int offset = found * 0x68;
+        if (base[offset] != 0) {
+            unsigned char *record = base + offset;
+            *(unsigned char *)arg0 = record[4];
+            *(float *)((unsigned char *)arg0 + 4) = *(float *)(record + 8);
+            *(float *)((unsigned char *)arg0 + 8) = *(float *)(record + 0xC);
+            *(float *)((unsigned char *)arg0 + 0xC) = *(float *)(record + 0x10);
+            *(float *)((unsigned char *)arg0 + 0x10) = *(float *)(record + 0x14);
+            *(float *)((unsigned char *)arg0 + 0x14) = *(float *)(record + 0x18);
+            *(float *)((unsigned char *)arg0 + 0x18) = *(float *)(record + 0x1C);
+            *(float *)((unsigned char *)arg0 + 0x1C) = *(float *)(record + 0x20);
+            *(float *)((unsigned char *)arg0 + 0x20) = *(float *)(record + 0x24);
+            *(float *)((unsigned char *)arg0 + 0x24) = *(float *)(record + 0x28);
+            *(float *)((unsigned char *)arg0 + 0x28) = *(float *)(record + 0x2C);
+            *(float *)((unsigned char *)arg0 + 0x2C) = *(float *)(record + 0x30);
+            *(float *)((unsigned char *)arg0 + 0x30) = *(float *)(record + 0x34);
+            *(float *)((unsigned char *)arg0 + 0x34) = *(float *)(record + 0x38);
+            *(float *)((unsigned char *)arg0 + 0x38) = *(float *)(record + 0x3C);
+            *(float *)((unsigned char *)arg0 + 0x3C) = *(float *)(record + 0x40);
+            *(float *)((unsigned char *)arg0 + 0x40) = *(float *)(record + 0x44);
+            *(float *)((unsigned char *)arg0 + 0x44) = *(float *)(record + 0x48);
+            *(float *)((unsigned char *)arg0 + 0x48) = *(float *)(record + 0x4C);
+            *(float *)((unsigned char *)arg0 + 0x4C) = *(float *)(record + 0x50);
+            *(float *)((unsigned char *)arg0 + 0x50) = *(float *)(record + 0x54);
+            *(float *)((unsigned char *)arg0 + 0x54) = *(float *)(record + 0x58);
+            *(float *)((unsigned char *)arg0 + 0x58) = *(float *)(record + 0x5C);
+            *(float *)((unsigned char *)arg0 + 0x5C) = *(float *)(record + 0x60);
+            *(float *)((unsigned char *)arg0 + 0x60) = *(float *)(record + 0x64);
+            return;
+        }
     }
     fn_8027953C(arg0);
 }
-
 void *fn_80016BC8(void *arg0, int arg1) {
     int *var_r3;
 
