@@ -165,6 +165,7 @@ void fn_802D5680(void *arg0) {
     GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
+#pragma dont_inline reset
 
 extern s32 fn_802CFF64(s32);
 extern f32 lbl_804DB068[];
