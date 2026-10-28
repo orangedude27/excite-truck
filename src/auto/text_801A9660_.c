@@ -1419,15 +1419,16 @@ extern int lbl_8055E5EC, lbl_8055E5F0;
 extern float lbl_8056247C, lbl_805624AC, lbl_80562510;
 extern void fn_801C2694(void *, int *, float *, float *, float *, float *, float *, float, float);
 extern void fn_801796CC(int, void *, int);
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_801ACF94(void) {
     char sp8[0x34];
     char sp3c[0x54];
     char sp90[0xED0];
-    void **obj;
+    Obj_801ACF94 **obj;
     int i, j, zero, first;
-    void *root, *a;
-    register void *o;
+    Obj_801ACF94 *o;
+    Mesh_801ACF94 *a;
+    void *root;
     float *src, *dst;
     float fill, special, tail, x, y, z;
 
@@ -1447,19 +1448,18 @@ void fn_801ACF94(void) {
                     (float *)(sp8 + 0x28), (float *)(sp8 + 0x1C),
                     (float *)(sp8 + 0x10), (float *)(sp8 + 4),
                     special, fill);
-        obj = (void **)lbl_80435628;
+        obj = (Obj_801ACF94 **)lbl_80435628;
         j = 0;
         zero = 0;
         while (j < lbl_8055E5EC) {
             o = *obj;
-            a = *(void **)((char *)o + 0x23C);
+            a = (Mesh_801ACF94 *)o->unk_0x23C;
             if (a != 0) {
-                first = *(int *)((char *)a + 0x254);
+                first = a->unk_0x254;
                 src = (float *)(sp90 + first * 12);
                 dst = (float *)sp3c;
                 *(int *)sp3c = zero;
-                *(int *)(sp3c + 8) =
-                    *(int *)((char *)o + 0x254) - first + 1;
+                *(int *)(sp3c + 8) = o->unk_0x254 - first + 1;
                 *(int *)(sp3c + 4) = j;
                 i = 0;
                 while (i < *(int *)(sp3c + 8)) {
