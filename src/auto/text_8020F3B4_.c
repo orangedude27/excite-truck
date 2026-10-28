@@ -42,6 +42,7 @@ extern long __AXFXGetLfoSinTable_801769CC();
 extern long lbl_8055B674;
 extern char lbl_8033C970[];
 extern char lbl_8033C980[];
+extern void *fn_8001285C(long);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_802EC1D8(void);
 extern float lbl_80563400;
