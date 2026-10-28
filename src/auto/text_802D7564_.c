@@ -420,13 +420,15 @@ void* fn_802D94DC(void) {
 
 extern float lbl_80565028;
 #pragma push
+#pragma paired off
+#pragma paired_single off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma unroll off
 void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
-    unsigned int *dst;
-    unsigned int *src1;
-    unsigned int *src2;
+    volatile unsigned int *dst;
+    volatile unsigned int *src1;
+    volatile unsigned int *src2;
     int wrapS;
     int wrapT;
     int count;
@@ -437,24 +439,35 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     wrapT = GXGetTexObjWrapT((char *)arg0 + 0x24);
     count = (wrapS * wrapT * 16) / 32;
 
-    dst = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000);
-    src1 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg1 + 0x24) - 0x40000000);
-    src2 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg2 + 0x24) - 0x40000000);
+    dst = (volatile unsigned int *)((char *)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000);
+    src1 = (volatile unsigned int *)((char *)GXGetTexObjFmt((char *)arg1 + 0x24) - 0x40000000);
+    src2 = (volatile unsigned int *)((char *)GXGetTexObjFmt((char *)arg2 + 0x24) - 0x40000000);
 
     blend = (unsigned int)(lbl_80565028 * farg0);
     inv = 256 - blend;
 
     if (count > 0) {
         do {
-            unsigned int a = *src1++;
-            unsigned int b = *src2++;
-            unsigned int c0 = (a & 255) * inv + (b & 255) * blend;
-            unsigned int c1 = ((a >> 8) & 255) * inv + ((b >> 8) & 255) * blend;
-            unsigned int c2 = ((a >> 16) & 255) * inv + ((b >> 16) & 255) * blend;
-            unsigned int c3 = ((a >> 24) & 255) * inv + ((b >> 24) & 255) * blend;
+            unsigned int a;
+            unsigned int b;
+            unsigned int c0;
+            unsigned int c1;
+            unsigned int c2;
+            unsigned int c3;
+
+            a = *src1++;
+            b = *src2++;
+            c0 = (a & 255) * inv + (b & 255) * blend;
+            a >>= 8;
+            b >>= 8;
+            c1 = (a & 255) * inv + (b & 255) * blend;
+            a >>= 8;
+            b >>= 8;
+            c2 = (a & 255) * inv + (b & 255) * blend;
+            c3 = (a >> 8) * inv + (b >> 8) * blend;
             *dst++ = (c0 >> 8) | (c1 & 0xFFFFFF00) |
                      ((c2 << 8) & 0xFFFF0000) | ((c3 << 16) & 0xFF000000);
-        } while (--count != 0);
+        } while (--count);
     }
 }
 #pragma pop
