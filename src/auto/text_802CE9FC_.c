@@ -1839,7 +1839,7 @@ extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE
 #pragma push
 #pragma paired off
 #pragma paired_single off
-#pragma scheduling off
+#pragma scheduling on
 int fn_802D3A5C(void *arg0, float *arg1) {
     extern unsigned char lbl_804C9778[];
     int x = (int)arg1[0];
