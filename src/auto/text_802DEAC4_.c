@@ -509,7 +509,8 @@ void *fn_802E0C04(u32 size) {
     void **bestLink = 0;
     void *result = 0;
     volatile int *head = (volatile int *)lbl_8055FEE8;
-    int needed = (size + head[1]) & ~head[1];
+    int align = head[1];
+    int needed = (size + align) & ~align;
     void **link = (void **)&head[2];
     void *node;
 
@@ -533,10 +534,12 @@ void *fn_802E0C04(u32 size) {
 
         if (left > r3 + 0x20) {
             char *p = (char *)freeNode + align + needed;
+            int align2;
             *(int *)(p + 1) = 0xABCFEED0;
             split = p + 1;
             *(int *)(p + 9) = 0;
-            *(int *)(p + 5) = left - ((head[1] + 0x10) & ~head[1]);
+            align2 = head[1];
+            *(int *)(p + 5) = left - ((align2 + 0x10) & ~align2);
             *(volatile int **)(p + 0xD) = head;
             *(int *)((char *)freeNode + 4) = needed;
         }
@@ -695,6 +698,51 @@ void fn_802E0F98(void) {
         *(u8 *)object = 1;
     }
     lbl_8055FEE8 = object;
+}
+
+void fn_802E1058(void) {
+    void *root;
+    void *node;
+    int total;
+    int otherTotal;
+    int size;
+    int otherSize;
+
+    root = lbl_8055FEE8;
+    if (root != 0) {
+        if (*(int *)((char *)root + 0xC) != 0) {
+            fn_802E30C8(lbl_8034BBA8, lbl_8034BB1C);
+            fn_802E30C8(lbl_8034BB9C);
+
+            node = *(void **)((char *)root + 0xC);
+            total = 0;
+            while (node != 0) {
+                fn_802E30C8(lbl_8034BB88, (char *)node + 0x10,
+                            *(int *)((char *)node + 4));
+                size = *(int *)((char *)node + 4);
+                node = *(void **)((char *)node + 8);
+                total += size;
+            }
+            fn_802E30C8(lbl_8034BB7C, total >> 10);
+
+            otherTotal = 0;
+            fn_802E30C8(lbl_8055D098);
+            node = *(void **)((char *)root + 8);
+            while (node != 0) {
+                fn_802E30C8(lbl_8034BB68, (char *)node + 0x10,
+                            *(int *)((char *)node + 4));
+                otherSize = *(int *)((char *)node + 4);
+                node = *(void **)((char *)node + 8);
+                otherTotal += otherSize;
+            }
+            fn_802E30C8(lbl_8034BB5C, otherTotal >> 10);
+            fn_802E317C(lbl_8034BAEC);
+        }
+        fn_80128668(root);
+    }
+    lbl_8055FEE8 = 0;
+    fn_80128670(lbl_8055FEEC);
+    lbl_8055FEEC = 0;
 }
 
 #pragma push
@@ -921,4 +969,5 @@ extern char lbl_8034CBD0[];
 extern u8 lbl_8055D150, lbl_8055D158, lbl_8055D160;
 extern void *lbl_8055FEE8, *lbl_8055FEEC;
 s32 fn_802E1718(void) { return 0; }
+#pragma use_lmw_stmw off
 
