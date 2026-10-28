@@ -514,7 +514,7 @@ extern s32 lbl_802FA498[5];
 extern void fn_8020A600(void);
 #pragma push
 #pragma use_lmw_stmw off
-#pragma optimization_level 3
+#pragma optimization_level 4
 #pragma scheduling invalid_target
 void fn_80248668(s32 arg0) {
     s32 work[0x1B];
