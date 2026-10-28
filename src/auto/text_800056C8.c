@@ -9,7 +9,7 @@ extern s32 fn_80005694(void);
 extern u8 lbl_802FB5F0[];
 extern u8 lbl_802FB5D8[];
 extern s32 fn_801B880C(void);
-extern s32 fn_80006580(void);
+extern s32 fn_80006580();
 extern void fn_801B84C0(void *);
 extern s32 fn_801769B8(void);
 extern s32 fn_8000C630(s32, s32);
@@ -746,6 +746,46 @@ void fn_80006D30(void) {
     }
 }
 
+extern void fn_800201F0(void);
+extern void fn_801A7F8C(void);
+extern void fn_800054E0(void);
+extern void fn_8000F0E4(void *);
+extern void fn_8000F884(void);
+extern void fn_80011F64(void);
+extern s32 fn_80137C74(void);
+extern s32 fn_802090D4(void *);
+extern void fn_801331C4(s32, void *, s32 *);
+extern void fn_80005464(void);
+extern void fn_8001DB54(void);
+extern s32 lbl_8055892C;
+#pragma push
+#pragma cplusplus on
+#pragma dont_inline on
+void fn_80006D9C(void) {
+    u8 *resource = lbl_802FB0C8;
+    u8 *state;
+    void *object;
+    fn_800201F0();
+    fn_801A7F8C();
+    fn_800054E0();
+    fn_8000F0E4(resource + 0x1EC);
+    fn_8000F884();
+    fn_80011F64();
+    state = lbl_8034EE84;
+    *(void **)(state + 8) = fn_801E87A8();
+    *(s32 *)(state + 0x14) = fn_80137C74();
+    lbl_8055D354 = fn_802090D4(resource + 0x1F8);
+    fn_801331C4(4, resource + 0x204, &lbl_8055892C);
+    fn_80005464();
+    fn_80005C88();
+    fn_80011A5C(((s32 *)lbl_8055D350)[5]);
+    fn_8001DB54();
+    object = fn_801B83A0();
+    ((void (*)(void *))(*(void **)((u8 *)*(void **)object + 0xF8)))(object);
+    fn_800070DC();
+}
+#pragma pop
+
 void fn_80006E50(void) {
 }
 
@@ -756,26 +796,60 @@ void fn_800070D4(void) {
 void fn_800070D8(void) {
 }
 
-void fn_800070DC(void) {
-    s32 *base = lbl_8034EEB8;
+#pragma cplusplus on
+extern "C" void fn_80209190(s32, f32);
+extern "C" void fn_8001DEA8(void);
+extern "C" void fn_80011A50(void);
+extern "C" void fn_80005464(void);
+extern "C" void fn_800070DC(void) {
+    class Item {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void dispatch();
+    };
+    s32 *base;
+    Item *item;
+    void *obj;
+    u8 *cursor;
     s32 i;
+    s32 zero;
+
     fn_80209190(lbl_8055D354, lbl_80560130);
-    ((void (*)(void))(*(void ***)*(void **)(base + 3))[7])();
-    ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 0x5C))[7])();
-    ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 0x58))[7])();
-    if (*(void **)((u8 *)base + 0x50)) ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 0x50))[7])();
-    if (*(void **)((u8 *)base + 8)) ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 8))[7])();
-    if (*(void **)((u8 *)base + 4)) ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 4))[7])();
-    for (i = 0; i < ((s32 *)lbl_8055D350)[5]; i++) {
-        void *obj = *(void **)((u8 *)base + i * 0x10 + 0x18);
-        ((void (*)(void))(*(void ***)obj)[7])();
-        *(s32 *)((u8 *)base + i * 0x10 + 0x20) = 0;
+    base = lbl_8034EEB8;
+    ((Item *)base[3])->dispatch();
+    ((Item *)*(void **)((u8 *)base + 0x5C))->dispatch();
+    ((Item *)*(void **)((u8 *)base + 0x58))->dispatch();
+    if (base[20] != 0) {
+        ((Item *)base[20])->dispatch();
     }
+    if (lbl_8034EEB8[2] != 0) {
+        ((Item *)lbl_8034EEB8[2])->dispatch();
+    }
+    if (lbl_8034EEB8[1] != 0) {
+        ((Item *)lbl_8034EEB8[1])->dispatch();
+    }
+
+    cursor = (u8 *)lbl_8034EEB8;
+    i = 0;
+    zero = 0;
+    do {
+        obj = *(void **)(cursor + 0x18);
+        item = (Item *)obj;
+        item->dispatch();
+        *(s32 *)(cursor + 0x10) = zero;
+        cursor += 0x10;
+        i++;
+    } while (i < ((s32 *)lbl_8055D350)[5]);
+
     fn_8001DEA8();
     fn_80011A50();
     fn_80005464();
 }
-
+#pragma cplusplus reset
 void fn_80007210(void) {
     fn_800070DC();
     lbl_8055D348 = fn_802E2C20();
