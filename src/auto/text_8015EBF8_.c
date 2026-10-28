@@ -190,6 +190,8 @@ int fn_8015F148(void **arg0, int arg1) {
 extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
 #pragma push
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+#pragma processor 750
 void fn_8015F1E4(void *arg0, void *arg1) {
     void *inputState = *(void **)((char *)arg1 + 0xC);
     f32 base = *(f32 *)((char *)arg1 + 0x24);
