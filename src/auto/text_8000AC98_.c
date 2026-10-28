@@ -157,6 +157,8 @@ extern int fn_8000AEC8(int);
 extern void fn_80265D74(void), fn_80128678(void), fn_80206454(void), fn_80127930(void);
 extern void fn_802D3E9C(int);
 extern void fn_8000AEC4(void);
+#pragma push
+#pragma small_data off
 void fn_8000AF1C(void *arg0) {
  int i, active, val; int *entry;
  lbl_8055D3D8=0; lbl_8055D3E8=0; active=fn_80204024(); lbl_8055D3DC=0;
@@ -172,6 +174,7 @@ void fn_8000AF1C(void *arg0) {
  lbl_8055D3D5=0; lbl_8055D3D4=1; lbl_8055D3D0=0;
  if(active) { fn_8000ADE0(0xD); fn_80265D74(); fn_80128678(); fn_80206454(); fn_80127930(); fn_802D3E9C(0); }
 }
+#pragma pop
 
 extern void fn_80127954(void);
 extern void fn_80128684(void);
