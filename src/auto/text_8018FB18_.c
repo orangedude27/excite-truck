@@ -80,16 +80,11 @@ void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
     f32 value;
     f32 result;
     f32 limit;
-    s32 index;
     s32 zero = 0;
-    void **table;
 
     *(void**)arg0 = lbl_80333018;
     if (lbl_8055E518 == 0) ((void (*)(void))fn_8018FC38)();
-    index = *(volatile s32 *)&lbl_8055E518;
-    table = lbl_804349A0;
-    ((void * volatile *)table)[index++] = arg0;
-    *(volatile s32 *)&lbl_8055E518 = index;
+    lbl_804349A0[lbl_8055E518++] = arg0;
     ((u8*)arg0)[0x38] = 1;
     lbl_8055E520 = (u8)zero;
     lbl_8055E523 = (u8)zero;
@@ -103,7 +98,7 @@ void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
     result = value - lbl_8056207C;
     limit = lbl_80562080;
     lbl_8055A46C = value;
-    if (limit > result) limit = result;
+    limit = (limit > result) ? limit : result;
     lbl_8055A468 = limit;
     return arg0;
 }
