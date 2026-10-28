@@ -903,6 +903,7 @@ arg_done:
         *(float *)((u8 *)arg0 + 0x34) = lbl_80563A60;
     }
 }
+#pragma scheduling on
 #pragma use_lmw_stmw reset
 
 void fn_80255A7C(void) {
