@@ -160,6 +160,10 @@ void ConfigureVideo(short arg0, short arg1) {
     VIConfigurePan(0,0,0x280,0x1E0);
 }
 
+static inline BOOL IsSjisTrailByte(u8 ch) {
+    return (0x40 <= ch && ch <= 0xFC) && (ch != 0x7F);
+}
+
 unsigned short GetFontCode(unsigned int mode, unsigned short code) {
     unsigned int lead;
     unsigned int trail;
