@@ -352,7 +352,7 @@ extern int lbl_8055A0DC;
 extern f32 lbl_80561844;
 extern void fn_80148070(void *, s32, s32);
 extern void fn_80148134(f32 *, f32 *, s32, f32, f32);
-extern void fn_800103B8(s32, s32, f32, f32, f32, f32, const char *, ...);
+extern void fn_800103B8(s32, s32, s32 *, s32, f32, f32, f32, f32);
 extern void fn_801473F8(void *, const char *, ...);
 #pragma cplusplus on
 extern "C" void fn_80161438(void) {}
