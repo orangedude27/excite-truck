@@ -428,11 +428,12 @@ extern const char lbl_802FD750[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     struct List { void *data; s32 count; s32 capacity; };
     struct TextBuffer { char *data; s32 size; };
     struct List *list = (struct List *)lbl_80358658[arg0];
-    struct TextBuffer *descriptor = (struct TextBuffer *)lbl_8055D5D0;
+    struct TextBuffer *descriptor;
     s32 count = list->count;
     char *input = (char *)arg2;
     char *records;
@@ -781,44 +782,44 @@ extern const char lbl_802FDAD8[];
 s32 fn_8001D2E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 *a = (u8 *)(arg0 + arg1 * 0xC);
     u8 *b;
-    s32 value;
+    s32 type;
     s32 kind;
 
-    if (*(u8 *)(a + 0x10) == 0) {
-        return *(u8 *)(arg2 + arg3 * 0xC + 0x10);
-    }
-    b = (u8 *)(arg2 + arg3 * 0xC);
-    if (*(u8 *)(b + 0x10) == 0) {
+    if (*(u8 *)(a + 0x10) != 0) {
+        b = (u8 *)(arg2 + arg3 * 0xC);
+        if (*(u8 *)(b + 0x10) != 0) {
+            type = *(s32 *)arg0 & 0x300;
+            switch (type) {
+            case 0x100:
+                kind = *(s32 *)arg0 & 0x60000;
+                switch (kind) {
+                case 0x20000:
+                    return *(f32 *)(a + 8) < *(f32 *)(b + 8) ? -1 : 1;
+                case 0x40000:
+                    return *(f32 *)(a + 8) > *(f32 *)(b + 8) ? -1 : 1;
+                default:
+                    ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC, kind);
+                    return 0;
+                }
+            case 0x200:
+                kind = *(s32 *)arg0 & 0x60000;
+                switch (kind) {
+                case 0x20000:
+                    return *(s32 *)(a + 8) < *(s32 *)(b + 8) ? -1 : 1;
+                case 0x40000:
+                    return *(s32 *)(a + 8) > *(s32 *)(b + 8) ? -1 : 1;
+                default:
+                    ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC, kind);
+                    return 0;
+                }
+            default:
+                ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAD8, type);
+                return 0;
+            }
+        }
         return -1;
     }
-    value = *(s32 *)arg0;
-    switch (value & 0x300) {
-    case 0x100:
-        kind = value & 0x60000;
-        switch (kind) {
-        case 0x20000:
-            return *(f32 *)(a + 8) < *(f32 *)(b + 8) ? -1 : 1;
-        case 0x40000:
-            return *(f32 *)(a + 8) > *(f32 *)(b + 8) ? -1 : 1;
-        default:
-            ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC);
-            return 0;
-        }
-    case 0x200:
-        kind = value & 0x60000;
-        switch (kind) {
-        case 0x20000:
-            return *(s32 *)(a + 8) < *(s32 *)(b + 8) ? -1 : 1;
-        case 0x40000:
-            return *(s32 *)(a + 8) > *(s32 *)(b + 8) ? -1 : 1;
-        default:
-            ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC);
-            return 0;
-        }
-    default:
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAD8);
-        return 0;
-    }
+    return *(u8 *)(arg2 + arg3 * 0xC + 0x10);
 }
 
 s32 fn_8001D464(s32 arg0) {
