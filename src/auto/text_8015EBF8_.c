@@ -299,6 +299,7 @@ __declspec(section ".sdata") extern char lbl_8055A0A0[];
 extern int lbl_8055A098, lbl_8055E29C;
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8015F670(void **arg0, s32 arg1) {
     struct Resource {
@@ -320,9 +321,12 @@ extern "C" void fn_8015F670(void **arg0, s32 arg1) {
     count = fn_8015F148(arg0, arg1);
     count += fn_8015ED90(object);
     if (count > 0) {
-        record = fn_801284F8(0x10, lbl_8032F4B8);
+        register const char *recordName = lbl_8032F4B8;
+        record = fn_801284F8(0x10, recordName);
         if (record != 0) {
-            array = fn_8012850C((count << 4) + 0x10, (int)&lbl_8055A098);
+            register int arraySize = (count << 4) + 0x10;
+            register int arrayTag = (int)&lbl_8055A098;
+            array = fn_8012850C(arraySize, arrayTag);
             array = fn_8002F37C(array, (void (*)(void *))fn_8015F79C, 0, 0x10, count);
             *(void **)record = array;
             *(s32 *)((char *)record + 8) = count;
