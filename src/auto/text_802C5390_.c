@@ -342,6 +342,7 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     match->refs++;
     return match;
 }
+#pragma pop
 
 extern void fn_802CAC54(int);
 extern s8 lbl_8055FC21;
