@@ -107,8 +107,8 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
     extern unsigned char lbl_8055F564;
     extern void fn_80272738(void *, void *);
     register int i = arg1;
-    register const char *name = lbl_80346B00;
-    register const char *record;
+    register char *name = lbl_80346B00;
+    register char *record;
     register unsigned char flag;
     register char *table;
 
@@ -124,7 +124,7 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
     while (i < lbl_8055F550) {
         DBPrintf_80270B00(name + 0x1F8, i);
         DBPrintf_80270B00(name + 0x208);
-        *(char **) (table + lbl_8055F554 * 0x1C) = (char *)record;
+        *(char **)(table + lbl_8055F554 * 0x1C) = record;
         if (flag != 0)
             fn_80272738(table + lbl_8055F554 * 0x1C, arg0);
         record += 0x60;
@@ -443,6 +443,7 @@ int fn_802726EC(float farg0, float farg1, float farg2) {
     return result;
 }
 
+#pragma dont_inline on
 int fn_80272C24(float farg0, float farg1, float farg2, float farg3) {
     int result;
     if (farg1 == farg2) return 1;
@@ -454,6 +455,7 @@ int fn_80272C24(float farg0, float farg1, float farg2, float farg3) {
     if ((farg0 >= farg1) && (farg0 <= farg2)) result = 1;
     return result;
 }
+#pragma dont_inline reset
 
 extern unsigned char lbl_8055F564;
 extern float lbl_8055F568;
