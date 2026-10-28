@@ -465,7 +465,7 @@ extern int fn_80272C24(float, float, float, float);
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     struct Manager {
         virtual void v0() = 0;
@@ -474,11 +474,10 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
         virtual void v3() = 0;
         virtual void *getCamera() = 0;
     };
-    register float initial = lbl_80563F48;
     float height;
     int result;
 
-    *arg2 = initial;
+    *arg2 = lbl_80563F48;
     if (*(int *)((char *)*(void **)arg0 + 0x58) == 0) return 0;
     if (arg3 != -1 && arg3 != *(int *)((char *)*(void **)arg0 + 0x5C)) return 0;
     result = 1;
