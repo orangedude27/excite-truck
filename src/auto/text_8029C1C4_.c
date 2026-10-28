@@ -39,7 +39,7 @@ extern int fn_802BF4F0(void);
 extern int lbl_8055F7F4;
 extern int lbl_8055F7FC;
 extern void fn_80287B38(void *);
-extern void fn_8029C450(void);
+extern void fn_8029C450();
 extern float lbl_8056469C;
 extern double lbl_80564680;
 extern float fn_801E88F0(int);
@@ -72,6 +72,53 @@ void fn_8029C25C(void) {
     }
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_8029C2D4(void) {
+    float spC[3];
+    float sp8;
+    float difference;
+    float bestValue;
+    int *entries;
+    void *object;
+    void *best;
+    int i;
+
+    if (lbl_8055CAA8 != -1)
+        fn_802C7040(lbl_8055CAA8);
+
+    bestValue = lbl_80564628;
+    entries = lbl_804B5010;
+    best = 0;
+    i = 0;
+    while (i < *(volatile int *)&lbl_8055F7F0) {
+        object = (void *)*entries;
+        if (fn_8029D4CC(object)) {
+            fn_8029D550(object, spC, &sp8);
+            difference = fn_802C88D4(spC) - sp8;
+            if (best == 0 || difference < bestValue) {
+                best = object;
+                bestValue = difference;
+            }
+        }
+        entries++;
+        i++;
+    }
+
+    if (best != 0)
+        fn_8029D644(best);
+
+    entries = lbl_804B5030;
+    i = 0;
+    while (i < *(volatile int *)&lbl_8055F7F4) {
+        if (fn_8029EAE8((void *)*entries))
+            ((void (*)(void *))fn_8029E8E0)((void *)*entries);
+        entries++;
+        i++;
+    }
+}
+#pragma pop
 void fn_8029C3EC(void) {
 }
 
