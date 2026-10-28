@@ -7,6 +7,8 @@ extern unsigned int lbl_804C9940;
 extern void OSReport(const char *, ...);
 extern int DCFlushRange(void *, unsigned long);
 extern void GXDisableBreakPt(void);
+extern void fn_802CED78(void);
+extern void fn_802D6C78(void);
 extern unsigned char lbl_804C5710[];
 extern unsigned char lbl_8055D0F0;
 extern void *lbl_8055FD64;
