@@ -370,42 +370,48 @@ MEMiHeapHead* MEMDestroyFrmHeap(MEMiHeapHead* heap) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void* MEMAllocFromFrmHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
+void *MEMAllocFromFrmHeapEx(MEMiHeapHead *heap, u32 size, s32 align) {
     u32 start;
     u32 end;
     u32 alloc;
     u32 mask;
-    u32 flags;
     u32 result;
-    BOOL locked;
-    if (size == 0) size = 1;
+
+    if (size == 0)
+        size = 1;
     size = (size + 3) & ~3;
-    flags = *(u32 *)((u8 *)heap + 0x38);
-    locked = (flags & 4) != 0;
-    if (locked) OSLockMutex((OSMutex *)((u8 *)heap + 0x20));
+    if (*(u32 *)((u8 *)heap + 0x38) & 4)
+        OSLockMutex((OSMutex *)((u8 *)heap + 0x20));
     if (align >= 0) {
         start = *(u32 *)((u8 *)heap + 0x3C);
         mask = ~(align - 1);
-        result = (start + align - 1) & mask;
+        result = (align + start - 1) & mask;
         alloc = size + result;
         end = *(u32 *)((u8 *)heap + 0x40);
-        if (alloc > end) result = 0;
-        else {
-            if (flags & 1) memset((void *)start, 0, alloc - start);
+        if (alloc > end) {
+            result = 0;
+        } else {
+            u32 clearSize = alloc - start;
+            if (*(u32 *)((u8 *)heap + 0x38) & 1)
+                memset((void *)start, 0, clearSize);
             *(u32 *)((u8 *)heap + 0x3C) = alloc;
         }
     } else {
         end = *(u32 *)((u8 *)heap + 0x40);
-        mask = ~(~align);
+        mask = ~(-align - 1);
         result = (end - size) & mask;
         start = *(u32 *)((u8 *)heap + 0x3C);
-        if (result < start) result = 0;
-        else {
-            if (flags & 1) memset((void *)result, 0, end - result);
+        if (result < start) {
+            result = 0;
+        } else {
+            u32 clearSize = end - result;
+            if (*(u32 *)((u8 *)heap + 0x38) & 1)
+                memset((void *)result, 0, clearSize);
             *(u32 *)((u8 *)heap + 0x40) = result;
         }
     }
-    if (locked) OSUnlockMutex((OSMutex *)((u8 *)heap + 0x20));
+    if (*(u32 *)((u8 *)heap + 0x38) & 4)
+        OSUnlockMutex((OSMutex *)((u8 *)heap + 0x20));
     return (void *)result;
 }
 #pragma pop
