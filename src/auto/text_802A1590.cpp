@@ -282,7 +282,7 @@ extern "C" void fn_802A1B20(void* arg0, s32 count) {
     s32 j;
     value = __fabs(fn_801E7E24());
     if (!(value <= lbl_80558DC4)) {
-        table = lbl_804BCF88;
+        table = (void**)&lbl_804BCF88;
         i = 0;
         while (i < count) {
             if (*(u8*)((char*)arg0 + 0xC) != 0) {
@@ -1212,6 +1212,8 @@ extern "C" void fn_802A4524(void *arg0) {
 
 extern "C" f32 fn_80287BC8(f32, f32);
 extern "C" f32 fn_801E7E18(void);
+#pragma paired off
+#pragma paired_single off
 #pragma scheduling on
 extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
     register f32 saved = farg0;
@@ -1236,7 +1238,7 @@ extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
          fn_80287BC8(-*(f32*)((char*)arg0 + 0x2c), *(f32*)((char*)arg0 + 0x2c)));
     dst[5] = *(f32*)((char*)arg2 + 8) * *(f32*)((char*)arg0 + 0x24) +
         fn_80287BC8(-*(f32*)((char*)arg0 + 0x30), *(f32*)((char*)arg0 + 0x30));
-    dst[6] = ((f32 (*)(void))fn_801E7E18)();
+    dst[6] = fn_801E7E18();
     dst[7] = saved;
     *(s32*)((char*)arg0 + 4) = *(s32*)((char*)arg0 + 4) + 1;
 }
