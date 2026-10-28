@@ -1,5 +1,10 @@
 #include <types.h>
 extern "C" void fn_801282F4(void);
+extern "C" void fn_801284F0(void *, void *);
+extern "C" s32 fn_802E36D8(void);
+extern "C" void fn_802E3A14(s32, s32);
+extern "C" s32 fn_802E3804(s32, void *, s32);
+extern "C" void fn_802E3734(s32 *);
 extern "C" s8 lbl_8055DFF8;
 extern "C" u8 lbl_805599B8;
 extern "C" const char lbl_8032AE9C[];
