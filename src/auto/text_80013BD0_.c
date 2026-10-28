@@ -607,16 +607,18 @@ extern void fn_802354A0(void *, s32, s32, f32, f32, f32, f32, f32);
 extern f32 lbl_805603D4, lbl_805603D8, lbl_805603DC, lbl_805603E0, lbl_805603E4;
 extern f32 lbl_80560360, lbl_805603A0;
 #pragma push
+#pragma optimize_for_size on
 #pragma use_lmw_stmw on
 void fn_80015658(void *arg0) {
     char sp9;
     char sp8;
+    char *out = &sp9;
     f32 temp_f31;
     f32 temp_f30;
     s32 temp_r31;
     s32 temp_r30;
 
-    temp_r31 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 0, &sp9);
+    temp_r31 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 0, out);
     temp_r30 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 1, &sp8);
     temp_f31 = fn_80011DEC(*(void **)((u8 *)lbl_8055D350 + 0x1C)) - lbl_805603D4;
     temp_f30 = fn_80011DC0(*(void **)((u8 *)lbl_8055D350 + 0x1C)) - lbl_805603D8;
