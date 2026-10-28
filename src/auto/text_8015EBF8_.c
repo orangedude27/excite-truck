@@ -194,26 +194,32 @@ void fn_8015F320(void **arg0, int arg1, void *arg2) {
     int inner;
     int offset;
     void **list;
+    void *child;
     void *item;
     void *entry;
+    int (*predicate)(void *);
+    void (*apply)(unsigned short *, void *);
 
+    predicate = fn_8015ECC0;
+    apply = fn_8015EC50;
     list = arg0;
     outer = 0;
     while (outer < arg1) {
-        item = *list;
-        if (item != 0) {
+        child = *list;
+        if (child != 0) {
             inner = 0;
             offset = 0;
-            while (inner < *(int *)item) {
-                entry = *(void **)((char *)*((void ***)((char *)item + 4)) + offset);
-                entry = *(void **)((char *)entry + 0x3C);
-                if (fn_8015ECC0(entry)) {
-                    int count = *(int *)(lbl_8055E29C + 4);
-                    void *array = *(void **)lbl_8055E29C;
-                    *(int *)(lbl_8055E29C + 4) = count + 1;
-                    entry = (char *)array + count * 0x10;
-                    fn_8015F1E4(entry);
-                    fn_8015EC50(entry, arg2);
+            while (inner < *(int *)child) {
+                item = *(void **)((char *)*((void ***)((char *)child + 4)) + offset);
+                entry = *(void **)((char *)item + 0x3C);
+                if (predicate(entry)) {
+                    volatile int *registry = (volatile int *)lbl_8055E29C;
+                    int count = registry[1];
+                    void *array = (void *)registry[0];
+                    registry[1] = count + 1;
+                    item = (char *)array + count * 0x10;
+                    fn_8015F1E4(item, entry);
+                    apply((unsigned short *)item, arg2);
                 }
                 offset += 4;
                 inner++;
@@ -277,6 +283,61 @@ void fn_8015F584(int *arg0) { void *p=*(void **)arg0; if(p) { if(p) { fn_8012867
 
 void fn_8015F5F4(int *arg0) { void *p=*(void **)arg0; if(p) { if(p) { s32 x=((s32*)p)[3]; if(x) fn_80128670(x-0x10); if(p) { ((s32*)p)[0]=0; ((s32*)p)[1]=0; ((s32*)p)[2]=0; } fn_80128668(p); } *(void **)arg0=0; } }
 
+extern void *fn_80178C9C(void);
+extern void **fn_80131810(const char *);
+extern void fn_80131818(void **);
+extern int fn_8015F148(void **, int);
+extern int fn_8015ED90(void **);
+extern void fn_8015F320(void **, int, void *);
+extern void fn_8015EF84(void **);
+extern void fn_8015EE14(void **, void *);
+extern void fn_8015F3FC(void *);
+extern void *fn_8002F37C(void *, void (*)(void *), void (*)(void *), int, int);
+extern void fn_8015F79C(void);
+extern char lbl_8032F4AC[], lbl_8032F4B8[];
+extern char lbl_8055A0A0[];
+extern int lbl_8055A098, lbl_8055E29C;
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8015F670(void **arg0, s32 arg1) {
+    struct Resource {
+        virtual void **get(const char *);
+    };
+    void *context = fn_80178C9C();
+    void **resource = fn_80131810(lbl_8032F4AC);
+    void **object;
+    s32 count;
+    void *record;
+    void *array;
+    if (resource != 0) {
+        object = ((Resource *)resource)->get((const char *)lbl_8055A0A0);
+    } else {
+        object = 0;
+    }
+    count = fn_8015F148(arg0, arg1) + fn_8015ED90(object);
+    if (count > 0) {
+        record = fn_801284F8(0x10, lbl_8032F4B8);
+        if (record != 0) {
+            array = fn_8012850C((count << 4) + 0x10, (int)&lbl_8055A098);
+            array = fn_8002F37C(array, (void (*)(void *))fn_8015F79C, 0, 0x10, count);
+            *(void **)record = array;
+            *(s32 *)((char *)record + 8) = count;
+            *(s32 *)((char *)record + 4) = 0;
+            *(void **)((char *)record + 0xC) = array;
+        }
+        lbl_8055E29C = (s32)record;
+        fn_8015F320(arg0, arg1, context);
+        fn_8015EF84(object);
+        fn_8015EE14(object, context);
+        fn_8015F3FC(context);
+    }
+    if (resource != 0) {
+        fn_80131818(resource);
+    }
+}
+#pragma cplusplus reset
+#pragma pop
+
 void fn_8015F79C(void) {
 }
 
@@ -307,32 +368,38 @@ s32 fn_8015F848(f32 *arg0, f32 farg0) {
     f32 *var_r6;
     f32 temp_f2;
     f32 temp_f6;
+    f32 threshold;
+    f32 spacing;
+    f32 multiplier;
+    f64 magic;
     s32 temp_r0;
     s32 var_ctr;
-    s32 var_r8;
     s32 var_r9;
+    s32 var_r8;
 
     var_r5 = arg0;
-    var_r9 = -1;
-    var_r8 = 0;
+    var_r8 = -1;
+    var_r9 = 0;
+    threshold = lbl_8055E2A4;
+    spacing = lbl_80561808;
+    multiplier = lbl_805617DC;
+    magic = *(volatile f64 *)&lbl_805617F8;
     do {
         temp_f6 = *var_r5;
         if (temp_f6 < farg0) {
-            if (var_r9 > 0) {
-                temp_r0 = var_r9 * 8;
+            if (var_r8 > 0) {
+                temp_r0 = var_r8 * 8;
                 temp_r7 = (f32 *)((char *)arg0 + temp_r0);
-                if ((f32)fabs((double)(*temp_r7 - temp_f6)) < farg0 * lbl_805617DC &&
-                    lbl_8055E2A4 * (f32)(var_r8 - var_r9) < lbl_80561808) {
-                    var_ctr = (var_r8 + 1) - var_r9;
+                if ((f32)fabs((double)(*temp_r7 - temp_f6)) < farg0 * multiplier &&
+                    threshold * (f32)((double)(var_r9 - var_r8) - magic) < spacing) {
+                    var_ctr = (var_r9 + 1) - var_r8;
                     var_r6 = temp_r7;
-                    if (var_r9 <= var_r8) {
+                    if (var_r8 <= var_r9) {
                         do {
                             temp_f2 = *var_r5;
                             temp_f6 = *temp_r7;
-                            if (temp_f6 < temp_f2) {
-                            } else {
+                            if (temp_f6 < temp_f2)
                                 temp_f6 = temp_f2;
-                            }
                             *var_r6 = temp_f6;
                             var_r6 = (f32 *)((char *)var_r6 + 8);
                             temp_r7 = (f32 *)((char *)temp_r7 + 8);
@@ -340,30 +407,47 @@ s32 fn_8015F848(f32 *arg0, f32 farg0) {
                     }
                 }
             }
-            var_r9 = var_r8;
+            var_r8 = var_r9;
         }
-        var_r8 += 1;
+        var_r9 += 1;
         var_r5 = (f32 *)((char *)var_r5 + 8);
-    } while (var_r8 < 0x40);
-    return ((u32)var_r9 >> 31) ^ 1;
+    } while (var_r9 < 0x40);
+    return ((u32)var_r8 >> 31) ^ 1;
 }
 
 extern long lbl_8055E2A8;
 extern float lbl_8056180C;
 void fn_8015F92C(float *arg0, float farg0) {
-    long count = (long)((lbl_8055E2A8 + (lbl_8055E2A8 >> 31)) >> 1) + 1;
-    long i;
+    s32 v = lbl_8055E2A8;
+    register s32 i = 0;
+    s32 count = (((s32)(v + ((u32)v >> 31))) >> 1) + 1;
     float value = farg0;
     float temp;
-    for (i = 0; i < count; i++) {
-        temp = *(float *)((char *)arg0 + 0x100 + i * 8);
-        if (value >= temp) value = temp;
-        temp = *(float *)((char *)arg0 + (0x20 - i) * 8);
-        if (value >= temp) value = temp;
+    register float *base = arg0;
+    for (; i < count; i++) {
+        temp = base[64];
+        if (value < temp) value = temp;
+        temp = arg0[(32 - i) * 2];
+        if (value < temp) value = temp;
+        base += 2;
     }
-    for (i = 0; i < 8; i++) {
-        temp = arg0[i * 2];
-        arg0[i * 2] = temp + lbl_8056180C * (temp - value);
+    {
+        float scale = lbl_8056180C;
+        float delta;
+        float result;
+        float current0, current1, current2, current3;
+        float current4, current5, current6, current7;
+        for (i = 0; i < 8; i++) {
+            current0 = arg0[0]; delta = current0 - value; result = delta * scale; arg0[0] = current0 + result;
+            current1 = arg0[2]; delta = current1 - value; result = delta * scale; arg0[2] = current1 + result;
+            current2 = arg0[4]; delta = current2 - value; result = delta * scale; arg0[4] = current2 + result;
+            current3 = arg0[6]; delta = current3 - value; result = delta * scale; arg0[6] = current3 + result;
+            current4 = arg0[8]; delta = current4 - value; result = delta * scale; arg0[8] = current4 + result;
+            current5 = arg0[10]; delta = current5 - value; result = delta * scale; arg0[10] = current5 + result;
+            current6 = arg0[12]; delta = current6 - value; result = delta * scale; arg0[12] = current6 + result;
+            current7 = arg0[14]; delta = current7 - value; result = delta * scale; arg0[14] = current7 + result;
+            arg0 += 16;
+        }
     }
 }
 
