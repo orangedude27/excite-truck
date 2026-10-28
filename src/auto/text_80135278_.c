@@ -560,7 +560,8 @@ extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8032BE30[];
 #pragma push
 #pragma use_lmw_stmw off
-void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
+#pragma cplusplus on
+extern "C" void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
     char *p = (char *)*(void **)((char *)self + 0x2c);
     char *latestP;
     char *sentinel;
