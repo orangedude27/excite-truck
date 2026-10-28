@@ -21,6 +21,15 @@ extern int fn_802E317C(char *, ...);
 extern char lbl_8032C1A0[];
 extern char lbl_8032C1E8[];
 extern char lbl_8032C1F8[];
+extern void *fn_8001285C(int);
+extern void *fn_80012820(int);
+extern float lbl_80561438;
+extern float lbl_8056143C;
+extern char lbl_80559CB8[];
+extern char lbl_80559CBC[];
+extern int fn_8013A9C0(void *, void *, void *, void *);
+extern int fn_8027AA48(void);
+extern void fn_802E30C8(char *, ...);
 typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
 typedef struct { int pad[7]; int (*m_fn)(void); } unkVtable7;
 typedef struct { int pad[9]; float (*m_float)(char *); } unkVtableFloat;
@@ -99,6 +108,32 @@ extern "C" int fn_8013A860(float *arg0, void *arg1) {
     }
     return result;
 }
+
+#pragma cplusplus on
+extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
+    class LocalVtable {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual float get(char *);
+    };
+    char sp28[0x20];
+    char sp8[0x20];
+    float temp_f1;
+    float temp_f31;
+    temp_f31 = ((LocalVtable *)arg0)->get(
+        ((char *(*)(char *, int, int))fn_8013A708)(sp8, arg2 + 1, arg1));
+    temp_f1 = ((LocalVtable *)arg0)->get(
+        ((char *(*)(char *, int, int))fn_8013A708)(sp28, arg2, arg1));
+    return temp_f1 + arg3 * (temp_f31 - temp_f1);
+}
+#pragma cplusplus off
+
 #pragma cplusplus off
 extern void *fn_8001285C(int);
 extern void *fn_80012820(int);
