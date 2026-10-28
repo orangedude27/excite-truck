@@ -1089,7 +1089,7 @@ extern "C" void fn_8029B1B8(void* arg0) {
 }
 
 extern "C" void* fn_80288060(void*, int);
-extern "C" void fn_8029B43C(void*, void*, unsigned char, float, float, float, float, float, float = 0.0f, float = 0.0f, float = 0.0f);
+extern "C" void fn_8029B43C(void*, void*, unsigned char, float, float, float, float, float);
 extern "C" void fn_8029B824(void *arg0) {
     int i = 0;
     char *entry = (char *)arg0;
