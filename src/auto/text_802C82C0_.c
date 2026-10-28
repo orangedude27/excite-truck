@@ -9,14 +9,6 @@ extern void fn_801332D0(int, void *, int *);
 extern int fn_8013365C(int, int);
 extern int fn_802C9C58(int);
 extern void fn_802C974C(float, float, float);
-extern char lbl_8055FC34;
-extern int lbl_8055D02C;
-extern float lbl_80564F04;
-extern float lbl_80564F08;
-extern void fn_802C5F48(float, int, float *, float, float);
-extern void fn_801332D0(int, void *, int *);
-extern int fn_8013365C(int, int);
-extern int fn_802C9C58(int);
 extern float lbl_8055FC6C;
 extern void fn_802D362C(int);
 extern void fn_802D3304(void);
@@ -940,6 +932,46 @@ int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(int *arg
         if (arg1 > 0) fn_802C9D88((int)arg0);
     }
     return arg0;
+}
+
+extern void fn_801E7890(void);
+int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float farg2, float farg3, float farg4) {
+    float q[3];
+    float diff[3];
+    float result;
+    float current;
+    float step;
+    int old_count;
+
+    if (*(int *)((char *)arg0 + 0x14) == 0) {
+        *(float *)((char *)arg0 + 4) = farg0;
+        *(float *)((char *)arg0 + 8) = farg1;
+        *(float *)((char *)arg0 + 0xC) = farg2;
+        *(float *)((char *)arg0 + 0x10) = lbl_80564F00;
+    } else {
+        q[0] = farg0;
+        q[1] = farg1;
+        q[2] = farg2;
+        result = ((float (*)(void *, float *))PSQUATMultiply)((char *)arg0 + 4, q);
+        if (result > *(float *)((char *)arg0 + 0x10)) {
+            diff[0] = q[0] - *(float *)((char *)arg0 + 4);
+            diff[1] = q[1] - *(float *)((char *)arg0 + 8);
+            diff[2] = q[2] - *(float *)((char *)arg0 + 0xC);
+            PSVECNormalize(diff, diff);
+            current = *(float *)((char *)arg0 + 0x10);
+            step = lbl_80564F18 * (result - current);
+            *(float *)((char *)arg0 + 4) = *(float *)((char *)arg0 + 4) + diff[0] * step;
+            *(float *)((char *)arg0 + 8) = *(float *)((char *)arg0 + 8) + diff[1] * step;
+            *(float *)((char *)arg0 + 0x10) = lbl_80564F18 * (current + result);
+            *(float *)((char *)arg0 + 0xC) = *(float *)((char *)arg0 + 0xC) + diff[2] * step;
+        }
+    }
+
+    ((void (*)(void *, int, int, float, float, float, float, float))fn_801E7890)(
+        *(void **)arg0, arg1, arg2, farg0, farg1, farg2, farg3, farg4);
+    old_count = *(int *)((char *)arg0 + 0x14);
+    *(int *)((char *)arg0 + 0x14) = old_count + 1;
+    return old_count;
 }
 
 void fn_802CA008(void *arg0) {
