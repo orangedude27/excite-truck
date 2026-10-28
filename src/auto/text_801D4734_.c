@@ -658,6 +658,7 @@ extern "C" void fn_801D6080(void *arg0) {
 #pragma cplusplus reset
 
 #pragma push
+#pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
 #pragma cplusplus on
@@ -681,19 +682,22 @@ extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
     extern float PSVECDotProduct(float *, float *);
     extern void fn_801796CC(int, void *, int);
     Data data;
-    float dot;
-    int count, offset, valid;
+    float dot, x, y, z;
+    int offset, count;
     void *found;
     float *transformed;
     if (*(int *)((char *)arg0 + 0x14) <= 0) return;
     found = ((Dummy *)arg1)->get();
-    valid = *(int *)((char *)arg0 + 0xC) >= 0 && found != 0 &&
-        ((Dummy *)found)->find(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xC);
-    if (valid == 0) return;
-    data.input[0] = *(float *)arg2;
-    data.input[1] = *((float *)arg2 + 1);
-    data.input[2] = *((float *)arg2 + 2);
-    transformed = (float *)((Dummy *)arg1)->transform(data.input[0], data.input[1], data.input[2]);
+    if (*(int *)((char *)arg0 + 0xC) < 0) return;
+    if (found == 0) return;
+    if (*(int *)((char *)arg0 + 0xC) != ((Dummy *)found)->find(lbl_803385D0, -1)) return;
+    x = *(float *)arg2;
+    y = *((float *)arg2 + 1);
+    z = *((float *)arg2 + 2);
+    data.input[0] = x;
+    data.input[1] = y;
+    data.input[2] = z;
+    transformed = (float *)((Dummy *)arg1)->transform(x, y, z);
     data.output[0] = transformed[0];
     data.output[1] = transformed[1];
     data.output[2] = transformed[2];
@@ -705,11 +709,11 @@ extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
 loop:
     {
         char *entry = (char *)*(int *)((char *)arg0 + 0x10) + offset;
-        if (dot >= *(float *)(entry + 4)) {
-            data.value = *(int *)entry;
-            fn_801796CC(10, &data, 32);
-        }
+        if (dot < *(float *)(entry + 4)) goto skip;
+        data.value = *(int *)entry;
+        fn_801796CC(10, &data, 32);
     }
+skip:
     offset += 8;
     count += 1;
 test:
