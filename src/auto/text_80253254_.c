@@ -523,7 +523,7 @@ void fn_80254354(void *arg0) {
         p += 0x30;
     } while (i < 4);
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802543FC(void *arg0) {
     extern void *fn_802C86DC(void);
     extern s32 fn_802C7A34(s32, void *, s32);
@@ -537,6 +537,10 @@ void fn_802543FC(void *arg0) {
     union { s32 i; float f; } c, b, a;
     s32 index;
     u8 *point;
+    float sourceY;
+    float difference;
+    float zero;
+    float scale;
 
     if (*(s32 *)(base + 0x28) != -1) {
         v = fn_802C86DC();
@@ -547,32 +551,46 @@ void fn_802543FC(void *arg0) {
         *(float *)(point + 0x3C) = a.f;
         *(float *)(point + 0x40) = b.f;
         *(float *)(point + 0x44) = c.f;
+        scale = lbl_80563A10;
         point = base + *(s32 *)(base + 0x30) * 12;
-        *(float *)(point + 0x3C) = a.f * lbl_80563A10;
-        *(float *)(point + 0x40) = b.f * lbl_80563A10;
-        *(float *)(point + 0x44) = c.f * lbl_80563A10;
+        *(float *)(point + 0x3C) = a.f * scale;
+        *(float *)(point + 0x40) = b.f * scale;
+        *(float *)(point + 0x44) = c.f * scale;
         p = *(void **)(base + 0x3FC);
         if (p != 0) {
+            zero = lbl_80563A04;
             index = *(s32 *)((u8 *)p + 0xCC);
+            sourceY = *(float *)(base + 0x5C8);
+            difference = *(float *)(base + 0x424);
+            difference = sourceY - difference;
             point = base + index * 12;
-            *(float *)(point + 0x3C) = lbl_80563A04;
-            *(float *)(point + 0x40) = *(float *)(base + 0x5C8) - *(float *)(base + 0x424);
-            *(float *)(point + 0x44) = lbl_80563A04;
+            *(float *)(point + 0x3C) = zero;
+            *(float *)(point + 0x40) = difference;
+            *(float *)(point + 0x44) = zero;
             index = *(s32 *)((u8 *)p + 0xD0);
+            sourceY = *(float *)(base + 0x5CC);
+            difference = *(float *)(base + 0x424);
+            difference = sourceY - difference;
             point = base + index * 12;
-            *(float *)(point + 0x3C) = lbl_80563A04;
-            *(float *)(point + 0x40) = *(float *)(base + 0x5CC) - *(float *)(base + 0x424);
-            *(float *)(point + 0x44) = lbl_80563A04;
+            *(float *)(point + 0x3C) = zero;
+            *(float *)(point + 0x40) = difference;
+            *(float *)(point + 0x44) = zero;
             index = *(s32 *)((u8 *)p + 0xD4);
+            sourceY = *(float *)(base + 0x5D0);
+            difference = *(float *)(base + 0x424);
+            difference = sourceY - difference;
             point = base + index * 12;
-            *(float *)(point + 0x3C) = lbl_80563A04;
-            *(float *)(point + 0x40) = *(float *)(base + 0x5D0) - *(float *)(base + 0x424);
-            *(float *)(point + 0x44) = lbl_80563A04;
+            *(float *)(point + 0x3C) = zero;
+            *(float *)(point + 0x40) = difference;
+            *(float *)(point + 0x44) = zero;
             index = *(s32 *)((u8 *)p + 0xD8);
+            sourceY = *(float *)(base + 0x5D4);
+            difference = *(float *)(base + 0x424);
+            difference = sourceY - difference;
             point = base + index * 12;
-            *(float *)(point + 0x3C) = lbl_80563A04;
-            *(float *)(point + 0x40) = *(float *)(base + 0x5D4) - *(float *)(base + 0x424);
-            *(float *)(point + 0x44) = lbl_80563A04;
+            *(float *)(point + 0x3C) = zero;
+            *(float *)(point + 0x40) = difference;
+            *(float *)(point + 0x44) = zero;
         }
         index = fn_802C7A34(1, base + 0x48, *(s32 *)(base + 0x34));
         fn_802C70AC(*(s32 *)(base + 0x28), vertices, index, *(s32 *)(base + 0x38));
