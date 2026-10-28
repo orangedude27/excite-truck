@@ -313,6 +313,69 @@ extern "C" s32 fn_8013DE7C(TObj60 *arg0, const char *arg1) {
     }
     return count;
 }
+
+#pragma scheduling invalid_target
+extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
+    f32 unit = lbl_805614A4;
+    f32 factor = lbl_805614AC;
+    f32 *from = (f32 *)arg1;
+    f32 *to = (f32 *)arg2;
+    f32 *out = (f32 *)arg0;
+    volatile f32 temp[10];
+    u32 i = 0;
+    do {
+        f32 startZ;
+        f32 startX;
+        f32 dz;
+        f32 dx;
+        f32 endZ;
+        f32 endX;
+        startX = from[0];
+        endX = to[0];
+        startZ = from[2];
+        endZ = to[2];
+        dx = endX - startX;
+        temp[8] = startX;
+        dz = endZ - startZ;
+        temp[9] = startZ;
+        f32 xx = dx * dx;
+        f32 zz = dz * dz;
+        temp[6] = endX;
+        temp[7] = endZ;
+        f32 squared = xx + zz;
+        temp[4] = dx;
+        temp[5] = dz;
+        f32 length = (f32)fn_8002F234(squared);
+        f32 currentX = out[0];
+        i++;
+        f32 sx = temp[8];
+        f32 vx = temp[4];
+        f32 scale = factor / length;
+        f32 vz = temp[5];
+        f32 currentZ = out[2];
+        f32 sz = temp[9];
+        f32 dirX = vx * scale;
+        temp[2] = currentX;
+        f32 offsetX = currentX - sx;
+        from += 3;
+        f32 dirZ = vz * scale;
+        to += 3;
+        f32 offsetZ = currentZ - sz;
+        temp[4] = dirX;
+        temp[5] = dirZ;
+        f32 projection = dirX * offsetX + dirZ * offsetZ;
+        f32 resultX = sx + dirX * projection;
+        f32 resultZ = sz + dirZ * projection;
+        out[0] = resultX;
+        out[1] = unit;
+        out[2] = resultZ;
+        out += 3;
+        temp[2] = resultX;
+        temp[3] = resultZ;
+    } while (i < 2);
+}
+#pragma scheduling on
+
 extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
     u8 *out = (u8 *)outPtr;
     TVec2 center = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D58);
@@ -1153,15 +1216,15 @@ extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
             s32 close = (f32)__fabs((f64)r) <= (f32)lbl_80558DC4;
             if (close != 0) {
                 if ((f32)__fabs((f64)old) <= (f32)lbl_80558DC4) {
-                    s32 n = *(s32 *)((u8 *)arg0 + 0xE4);
+                    s32 n = *(volatile s32 *)((u8 *)arg0 + 0xE4);
                     if (n > 0) {
                         *(s32 *)((u8 *)arg0 + 0xF4) = n;
                         *(f32 *)((u8 *)arg0 + 0xF0) = fn_8013CB3C();
                     }
                     *(volatile s32 *)((u8 *)arg0 + 0xE4) = 0;
-                    n = *(s32 *)((u8 *)arg0 + 0x100);
+                    n = *(volatile s32 *)((u8 *)arg0 + 0x100);
                     if (n > 0) *(f32 *)((u8 *)arg0 + 0xD4) = fn_8001DAE8((u8 *)arg0 + 0xD0);
-                    *(s32 *)((u8 *)arg0 + 0x100) = 0;
+                    *(volatile s32 *)((u8 *)arg0 + 0x100) = 0;
                     *(f32 *)((u8 *)arg0 + 0xAC) = fn_8001DAE8((u8 *)arg0 + 0xA8);
                     if (lbl_8055E1BC == 0) *(u8 *)((u8 *)arg0 + 0xF8) = 1;
                     result = 0;
