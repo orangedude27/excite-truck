@@ -17,6 +17,8 @@ extern f32 lbl_80561368;
 extern s32 lbl_8032BEB4[];
 extern void fn_801376A8(s32, s32 *, s32, s32, s32 *);
 extern void fn_80136D20(void);
+extern s32 fn_8017960C(s32);
+extern s32 fn_802C6C34(s32);
 #pragma push
 #pragma scheduling invalid_target
 extern s32 lbl_8032BE98[];
@@ -125,16 +127,34 @@ void fn_80136EA4(void *arg0, s32 arg1) {
 
 extern void *fn_801B2ED0(int);
 extern void fn_8013776C(void*);
-void fn_80136F08(void *arg0) {
-    int i = 0;
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void *fn_801B2ED0(int);
+extern "C" void fn_8013776C(void*);
+extern "C" void fn_80136F08(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void *v6();
+    };
+    void *entry;
+    int i;
     int count;
     int pairCount;
     int pairOffset;
+    int j;
+
+    i = 0;
     while (i < *(int*)arg0) {
         int stride = *(int*)((char*)arg0 + 0xC);
-        void *entry = (char*)*(void**)((char*)arg0 + 0x10) + i * stride;
+        entry = (char*)*(void**)((char*)arg0 + 0x10) + i * stride;
         void *obj = fn_801B2ED0(i);
-        obj = (*(void* (**)(void*))((char*)*(void**)obj + 0x20))(obj);
+        obj = ((Dummy*)obj)->v6();
         *(float*)entry = *(float*)((char*)obj + 0x60);
         *(float*)((char*)entry + 4) = *(float*)((char*)obj + 0x68);
         *(float*)((char*)entry + 8) = *(float*)((char*)obj + 0x118);
@@ -145,8 +165,8 @@ void fn_80136F08(void *arg0) {
     count = *(int*)arg0;
     pairCount = count * (count - 1) / 2;
     pairOffset = 0;
-    i = 0;
-    while (i < pairCount) {
+    j = 0;
+    while (j < pairCount) {
         void *pair = (char*)*(void**)((char*)arg0 + 8) + pairOffset;
         int stride = *(int*)((char*)arg0 + 0xC);
         void *base = *(void**)((char*)arg0 + 0x10);
@@ -158,10 +178,12 @@ void fn_80136F08(void *arg0) {
         *(float*)((char*)pair + 0x20) = *(float*)((char*)b + 4) - *(float*)((char*)a + 4);
         fn_8013776C(pair);
         pairOffset += 0x2C;
-        i++;
+        j++;
     }
 }
-
+#pragma scheduling reset
+#pragma cplusplus reset
+#pragma pop
 s32 fn_8013705C(f32 arg0, f32 arg1) {
     return arg0 * arg1 >= lbl_80561368;
 }
