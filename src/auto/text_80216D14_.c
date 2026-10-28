@@ -506,7 +506,7 @@ void *fn_80217BD8(void *arg0, int arg1, int arg2) {
 #pragma scheduling on
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80217C4C(void *arg0) {
     char *base = (char *)arg0;
     char *entry;
@@ -515,7 +515,7 @@ void fn_80217C4C(void *arg0) {
     int last;
     int matches;
     int i;
-    float threshold;
+    register float threshold;
     count = *(int *)(base + 0x494);
     if (count < 1) return;
     threshold = lbl_80563490;
@@ -575,14 +575,13 @@ void fn_80217D84(void *arg0) {
     last = -1;
     matches = 0;
     do {
-        entry -= 8;
-        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i - 1;
+        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
         item = *(char **)(entry + 0x4A4);
         item_ok = 0;
-        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) <= lbl_80563490) item_ok = 1;
+        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) < lbl_80563490) item_ok = 1;
         if (item_ok && *(unsigned char *)(item + 0x1B) != 0) matches++;
-        i--;
-    } while (i > 0);
+        entry -= 8;
+    } while (i-- > 0);
     step = 1;
     found = -1;
     while (step < count) {
@@ -590,7 +589,7 @@ void fn_80217D84(void *arg0) {
         e2 = base + idx * 8;
         item = *(char **)(e2 + 0x4A4);
         item_ok = 0;
-        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) <= lbl_80563490) item_ok = 1;
+        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) < lbl_80563490) item_ok = 1;
         if (item_ok && *(unsigned char *)(item + 0x1B) != 0) { found = idx; break; }
         step++;
     }
