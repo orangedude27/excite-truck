@@ -156,6 +156,7 @@ void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
     fn_802C8D74();
 }
 #pragma scheduling on
+#pragma ppc_psq_save reset
 #pragma cplusplus reset
 
 void fn_80230A68(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
