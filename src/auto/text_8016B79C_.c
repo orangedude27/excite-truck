@@ -51,6 +51,7 @@ extern void *fn_8016C168(void *, s32);
 extern void *fn_8016C29C(void *, int);
 extern int fn_8016C25C(int, int);
 #pragma cplusplus on
+extern "C" void fn_80131818(s32);
 class TObj4C {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
