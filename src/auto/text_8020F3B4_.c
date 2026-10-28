@@ -522,13 +522,14 @@ void fn_80210510(void) {
     fn_802EC1C0();
 }
 
-#pragma unroll off
+#pragma optimize_for_size on
 long fn_80210570(void) {
     long val = 3;
     char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
-    long i;
+    long i = 16;
+    long j = 0;
 
-    for (i = 0; i < 48; i += 3) {
+    do {
         if (val == 3) {
             val = *(long *)(ptr + 0x000);
         } else if (*(long *)(ptr + 0x000) != val) {
@@ -554,7 +555,8 @@ long fn_80210570(void) {
         }
 
         ptr += 0x190;
-    }
+        j += 3;
+    } while (--i != 0);
 
     switch (val) {
     case 0:
@@ -567,6 +569,7 @@ long fn_80210570(void) {
         return 0;
     }
 }
+#pragma optimize_for_size reset
 
  
 extern long fn_80145E70(void *);
