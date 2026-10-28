@@ -31,7 +31,7 @@ void fn_80182074(void);
 void fn_8018B09C(void);
 int fn_80265D38(void *, int);
 extern char lbl_80333C48[];
-extern double PSVECDotProduct(float *, float *);
+extern float PSVECDotProduct(float *, float *);
 void *fn_801A520C(void *arg0, void *arg1) {
     fn_80182010();
     *(void **)((char *)arg0 + 0x270C) = arg1;
@@ -303,12 +303,14 @@ extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg
     float sp8[3];
     float *p4;
     float f2;
-    float dot;
+    double dot;
     float bound;
     float neg;
+    float f0;
+    float f1;
     char *p2 = (char *)arg2;
 
-    if (*(void **)((char *)arg0 + 0x20) == 0) {
+    if (*(volatile unsigned int *)((char *)arg0 + 0x20) == 0) {
         p4 = *(float **)((char *)arg1 + 0xC);
         f2 = lbl_805623F8;
         *(float *)((char *)arg0 + 0) = p4[0];
@@ -324,9 +326,12 @@ extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg
             float scale = lbl_805623FC;
             float v1 = *(float *)((char *)arg0 + 4);
             float v2 = *(float *)((char *)arg0 + 8);
-            *(float *)((char *)arg0 + 0) = v0 * scale;
-            *(float *)((char *)arg0 + 4) = v1 * scale;
-            *(float *)((char *)arg0 + 8) = v2 * scale;
+            v0 = v0 * scale;
+            v1 = v1 * scale;
+            v2 = v2 * scale;
+            *(float *)((char *)arg0 + 0) = v0;
+            *(float *)((char *)arg0 + 4) = v1;
+            *(float *)((char *)arg0 + 8) = v2;
         }
 
         *(float *)((char *)arg0 + 0x14) = fn_801A5A7C(arg0, sp8, (float *)((char *)*(void **)((char *)arg1 + 0xC) + 0x24));
@@ -338,11 +343,14 @@ extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg
         bound = (bound < neg) ? bound : neg;
         bound = (bound > lbl_80562400) ? bound : lbl_80562400;
 
-        *(float *)((char *)arg0 + 0x1C) = lbl_805623F4;
-        *(float *)((char *)arg0 + 0x18) = lbl_805623C8;
-        *(float *)((char *)arg0 + 0x10) = lbl_805623F4 * bound;
+        f2 = lbl_805623F4;
+        f0 = lbl_805623C8;
+        f1 = f2 * bound;
+        *(float *)((char *)arg0 + 0x1C) = f2;
+        *(float *)((char *)arg0 + 0x18) = f0;
+        *(float *)((char *)arg0 + 0x10) = f1;
         *(unsigned int *)((char *)arg0 + 0x20) = arg1;
-    } else if (*(unsigned int *)((char *)arg0 + 0x20) == arg1) {
+    } else if (*(volatile unsigned int *)((char *)arg0 + 0x20) == arg1) {
         *(float *)((char *)arg0 + 0x18) = lbl_805623C8;
     }
 }
