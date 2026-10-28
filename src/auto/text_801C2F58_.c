@@ -338,6 +338,16 @@ void fn_801C4B74(void) {
         lbl_8055E7F8 = 0;
     }
 }
+#define UNK_80437D88_DEFINED
+typedef struct Unk_80437D88 {
+    char pad_0[0x4D4];
+    Vec f_4D4;
+    Vec f_4E0;
+    char pad_1[0x6F8 - 0x4EC];
+    Vec f_6F8;
+} Unk_80437D88;
+extern Unk_80437D88 lbl_80437D88;
+
 #pragma scheduling on
 s32 fn_801C5B60(void) {
     return (u8)lbl_8055E7E2;
