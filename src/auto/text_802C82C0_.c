@@ -114,28 +114,29 @@ void* fn_802C83C4(void) {
 
 void fn_802C83CC(void) {
     int ten = 10;
-    float *matrix = (float *)lbl_804C1410;
+    float temp_f1 = (float)ten;
 
-    matrix[0] = lbl_80564EF8;
-    matrix[1] = lbl_80564F00;
-    matrix[2] = lbl_80564F00;
-    matrix[3] = lbl_80564F00;
-    matrix[4] = lbl_80564EF8;
-    matrix[5] = lbl_80564F00;
-    matrix[6] = lbl_80564F00;
-    matrix[7] = lbl_80564F00;
-    matrix[8] = lbl_80564EF8;
-    matrix[9] = lbl_80564F00;
-    matrix[10] = lbl_80564F00;
-    matrix[11] = lbl_80564F00;
+    ((float *)lbl_804C1410)[0] = lbl_80564EF8;
+    ((float *)lbl_804C1410)[1] = lbl_80564F00;
+    ((float *)lbl_804C1410)[2] = lbl_80564F00;
+    ((float *)lbl_804C1410)[3] = lbl_80564F00;
+    ((float *)lbl_804C1410)[4] = lbl_80564EF8;
+    ((float *)lbl_804C1410)[5] = lbl_80564F00;
+    ((float *)lbl_804C1410)[6] = lbl_80564F00;
+    ((float *)lbl_804C1410)[7] = lbl_80564F00;
+    ((float *)lbl_804C1410)[8] = lbl_80564EF8;
+    ((float *)lbl_804C1410)[9] = lbl_80564F00;
+    ((float *)lbl_804C1410)[10] = lbl_80564F00;
+    ((float *)lbl_804C1410)[11] = lbl_80564F00;
 
     lbl_8055FC5C = 0;
     lbl_8055FC60 = 0;
     lbl_8055FC64 = (void *)ten;
     lbl_8055FC68 = (void *)ten;
-    lbl_8055FC6C = (float)ten / (float)ten;
+    lbl_8055FC6C = temp_f1 / (float)ten;
 
-    fn_802C5F48((float)ten, ten, matrix, lbl_80564F00, lbl_80564EF8);
+    fn_802C5F48(temp_f1, ten, (float *)lbl_804C1410,
+                lbl_80564F00, lbl_80564EF8);
     lbl_8055FC34 = 0;
     fn_802C974C(lbl_80564EF8, lbl_80564F04, lbl_80564F08);
     lbl_8055FC70 = 0;
@@ -372,9 +373,9 @@ void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsig
     width = (int)lbl_8055FC64;
     x = (int)lbl_8055FC5C;
     scale = lbl_80564F18;
-    ((float *)arg0)[10] = (float)y + scale * (float)height;
+    ((float *)arg0)[10] = scale * (float)y + (float)height;
     ((float *)arg0)[11] = var_f2;
-    ((float *)arg0)[9] = (float)x + scale * (float)width;
+    ((float *)arg0)[9] = scale * (float)x + (float)width;
 }
 void fn_802C8B08(unsigned int *arg0) {
     struct Pair { unsigned int first; unsigned int second; };
@@ -566,6 +567,7 @@ void fn_802C9118(void) {
     fn_802C8D74();
 }
 
+#pragma processor 750
 void fn_802C9124(float farg0, float farg1, float farg2, float farg3, int x0, int y0, int x1, int y1, int screen) {
     if (((int (*)(int))fn_801E4F20)(4) != 0) {
         ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x1, (float)y0, lbl_80564F00, farg2, farg1);
@@ -575,6 +577,7 @@ void fn_802C9124(float farg0, float farg1, float farg2, float farg3, int x0, int
         fn_801E4FF4();
     }
 }
+#pragma processor reset
 
 #pragma dont_inline on
 void fn_802C942C(int arg0) {
