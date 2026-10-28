@@ -986,7 +986,6 @@ extern "C" void fn_80162178(void *arg0, s32 arg1) {
         virtual void *f4(s32 *, s32 *);
     };
     extern float lbl_8056184C;
-    extern void fn_80161438(void);
     extern void fn_801DF380(void *, s32, void (*)(void), s32);
     s32 offset;
     s32 i;
