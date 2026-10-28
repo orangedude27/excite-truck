@@ -309,7 +309,7 @@ void fn_802B224C(void *arg0) {
             index++;
         } while (1);
         get_value = (void *(*)(void *, const char *))((char *)*(void **)arg0 + 0x14);
-        *(void **)((char *)object + 0x24) = get_value(arg0, lbl_8055CDD0);
+        *(void **)((char *)object + 0x24) = get_value(arg0, (const char *)&lbl_8055CDD0);
     }
 
     items = *(void ***)&lbl_804BE1FC;
