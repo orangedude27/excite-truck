@@ -64,6 +64,7 @@ void *fn_8024C3FC(void *arg0, int arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8024C464(void) {
     char *buffer = lbl_80498A00;
     int *state = lbl_80498A48;
@@ -73,7 +74,7 @@ void fn_8024C464(void) {
     int two = 2;
     do {
         fn_801345D8(buffer, 0x12, lbl_8055C018, fn_8000DB34(i));
-        if ((fn_8000DBAC(i) == 0) && (i == fn_8000DA10())) {
+        if (fn_8000DBAC(i) == 0 && i == fn_8000DA10()) {
             if (fn_8000DB8C(i) != 0)
                 *state = two;
             else
@@ -433,6 +434,73 @@ loop_19:
     }
     return (unsigned int) ((-1 - var_r16) | (var_r16 + 1)) >> 0x1FU;
 }
+
+void fn_8024CAAC(int arg0) {
+    extern char lbl_80498A58[];
+    extern char lbl_80498AA0[];
+    extern const char lbl_80343FA0[];
+    extern const char lbl_80343FB4[];
+    extern unsigned char lbl_8055F2D0;
+    extern int fn_8001EF98(int, int);
+    extern void fn_801308F4(void *, int, int);
+    extern void *memset(void *, int, unsigned int);
+
+    char sp8[0x64];
+    char *p27 = lbl_80498A58;
+    char *p26 = lbl_80498AA0;
+    unsigned char *p25;
+    int i;
+
+    i = 0;
+    p25 = &lbl_8055F2D0;
+
+    do {
+        if (fn_8000DBAC(i) != 0) {
+            const char *src = (const char *)fn_80131234(lbl_80343FA0);
+            int count = 0x12;
+            char *dst = p27;
+            goto copy_char1;
+        count_more1:
+            count--;
+            if (count > 0)
+                goto copy_char1;
+            dst[-1] = 0;
+            goto copy_done1;
+        copy_char1:
+            if ((signed char)(*dst++ = *src++) != 0)
+                goto count_more1;
+        copy_done1:
+            memset(p26, 0, 0x64);
+            *p25 = arg0;
+        } else {
+            const char *src;
+            int count;
+            char *dst;
+            fn_801345D8(sp8, 0x64, lbl_80343FB4, i + 1);
+            src = (const char *)fn_80131234(sp8);
+            count = 0x12;
+            dst = p27;
+            goto copy_char2;
+        count_more2:
+            count--;
+            if (count > 0)
+                goto copy_char2;
+            dst[-1] = 0;
+            goto copy_done2;
+        copy_char2:
+            if ((signed char)(*dst++ = *src++) != 0)
+                goto count_more2;
+        copy_done2:
+            fn_801308F4(p26, 0x64, ((int (*)(int, int))fn_8001EF98)(0, i));
+            *p25 = 1;
+        }
+        i++;
+        p27 += 0x12;
+        p26 += 0x64;
+        p25++;
+    } while (i < 4);
+}
+
 #pragma dont_inline reset
 #pragma scheduling on
 extern unsigned char lbl_8055F2D0;
