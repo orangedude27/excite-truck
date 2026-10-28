@@ -85,6 +85,12 @@ void fn_802889F0(void) {
 
 void fn_80288A1C(void) {}
 
+#pragma push
+#pragma peephole off
+void fn_80288A20(void) {
+    fn_801E7E24();
+}
+#pragma pop
 extern void *lbl_8055F6E0;
 extern int fn_8028E584(int, int, int);
 void fn_80288A40(int arg0, int arg1) { fn_8028E584(*(int *)((char *)lbl_8055F6E0 + 4), arg0, arg1); }
@@ -528,8 +534,9 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     fn_8028E584(arg0, (int)sp14, (int)sp8);
 }
 #pragma pop
+void fn_80289C80(int *);
 int fn_80289BE8(int arg0) {
-    fn_80289C80();
+    fn_80289C80((int *)arg0);
     fn_80289D94(arg0);
     return arg0;
 }
