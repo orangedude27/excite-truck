@@ -1648,6 +1648,8 @@ extern "C" s32 fn_8012E674(void *arg0) {
 extern "C" const char lbl_8032AD2C[];
 extern "C" const char lbl_8032AD6C[];
 extern "C" const char lbl_8032AD88[];
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8012E81C(s32 arg0) {
     nw4r::ef::Effect *effect = lbl_8055E014;
     const char *name = (const char *)arg0;
