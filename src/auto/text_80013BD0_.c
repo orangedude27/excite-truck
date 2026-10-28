@@ -379,6 +379,7 @@ void fn_80014B9C(void *arg0) {
         }
     }
 }
+#pragma pop
 
 extern s32 fn_8000D75C(void);
 extern void fn_8000FBE4(void);
