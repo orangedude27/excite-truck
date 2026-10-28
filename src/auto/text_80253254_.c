@@ -578,6 +578,7 @@ void fn_802543FC(void *arg0) {
         fn_802C70AC(*(s32 *)(base + 0x28), vertices, index, *(s32 *)(base + 0x38));
     }
 }
+#pragma scheduling on
 
 void fn_80254568(void *arg0, s32 arg1, const char *arg2) {
     struct Result {
