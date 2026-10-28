@@ -501,13 +501,16 @@ void fn_802E0BE0(void) {
 
 extern void fn_802E317C(char *, ...);
 extern char lbl_8034BB28[];
+#pragma push
+#pragma optimization_level 3
+#pragma scheduling invalid_target
 void *fn_802E0C04(u32 size) {
     int best = 0x7FFFFFFF;
     void **bestLink = 0;
     void *result = 0;
-    char *head = (char *)lbl_8055FEE8;
-    int needed = (size + *(int *)(head + 4)) & ~*(int *)(head + 4);
-    void **link = (void **)(head + 8);
+    volatile int *head = (volatile int *)lbl_8055FEE8;
+    int needed = (size + head[1]) & ~head[1];
+    void **link = (void **)&head[2];
     void *node;
 
     while ((node = *link) != 0) {
@@ -522,7 +525,7 @@ void *fn_802E0C04(u32 size) {
     if (bestLink != 0) {
         void *freeNode = *bestLink;
         void *split = 0;
-        int align = *(int *)(head + 4);
+        int align = head[1];
         int freeSize = *(int *)((char *)freeNode + 4);
         void *next = *(void **)((char *)freeNode + 8);
         int r3 = (align + 0x10) & ~align;
@@ -533,8 +536,8 @@ void *fn_802E0C04(u32 size) {
             *(int *)(p + 1) = 0xABCFEED0;
             split = p + 1;
             *(int *)(p + 9) = 0;
-            *(int *)(p + 5) = left - ((*(int *)(head + 4) + 0x10) & ~*(int *)(head + 4));
-            *(void **)(p + 0xD) = head;
+            *(int *)(p + 5) = left - ((head[1] + 0x10) & ~head[1]);
+            *(volatile int **)(p + 0xD) = head;
             *(int *)((char *)freeNode + 4) = needed;
         }
 
@@ -545,12 +548,12 @@ void *fn_802E0C04(u32 size) {
             *bestLink = next;
         }
 
-        *(void **)((char *)freeNode + 8) = *(void **)(head + 0xC);
-        *(void **)(head + 0xC) = freeNode;
-        result = (char *)freeNode + *(int *)(head + 4) + 1;
+        *(void **)((char *)freeNode + 8) = (void *)head[3];
+        head[3] = (int)freeNode;
+        result = (char *)freeNode + head[1] + 1;
     }
 
-    if (result == 0 && *(char *)head != 0) {
+    if (result == 0 && *(volatile char *)head != 0) {
         fn_802E317C(lbl_8034BB28);
     }
     return result;
