@@ -1149,6 +1149,53 @@ void fn_80036D24(u32 arg0) {
     fn_800356F4(0x27, 0, 0);
     fn_8003B218(fn_80035E6C);
 }
+
+void fn_8003727C(u32 arg0) {
+    register u32 value = arg0;
+    s32 interrupts = OSDisableInterrupts();
+    s32 resetDone;
+    void *block;
+    void (*callback)(s32, void *);
+
+    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+        *(u32 *)(__ErrorInfo + 0x78) = value;
+    } else {
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+    }
+    OSRestoreInterrupts(interrupts);
+
+    if (value == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+    } else if (value == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+    } else if (value & 1) {
+        *(volatile s32 *)&lbl_8055D860 = 0;
+        if (*(volatile s32 *)&lbl_8055D858 != 0) {
+            block = (void *)executing_8055D8C8;
+            lbl_8055D85C = 0;
+            lbl_8055D858 = 0;
+            executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+            *(s32 *)((u8 *)block + 0xC) = 0xA;
+            callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
+            if (callback != 0)
+                callback(-3, block);
+            if (lbl_8055D8B8 != 0)
+                lbl_8055D8B8(0, block);
+            fn_80038040();
+            resetDone = 1;
+        } else {
+            resetDone = 0;
+        }
+        if (resetDone == 0) {
+            *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 1;
+            fn_80038368((void *)executing_8055D8C8);
+        }
+    } else {
+        fn_800356F4(0x27, 0, 0);
+        fn_8003B218(fn_80035E6C);
+    }
+}
+
 #pragma dont_inline reset
 extern s32 MotorState_8055D8A8;
 extern s32 lbl_8055D8BC;
