@@ -657,24 +657,25 @@ void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         u8 pad[4];
         f32 output[4][6];
     } frame;
+    register void *object = arg0;
+    register s32 mode;
+    register s32 offset;
     u8 *entry;
-    s32 offset;
-    s32 mode;
 
     if (arg1 != 0x20) {
-        offset = arg1 * 0x1C;
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
         mode = lbl_8055F050;
+        offset = arg1 * 0x1C;
+        entry = *(u8 **)((u8 *)object + 0x10) + offset;
 
         fn_80231380(frame.output[0], mode, farg0, farg1, farg4,
                     *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        entry = *(u8 **)((u8 *)object + 0x10) + offset;
         fn_80231380(frame.output[1], mode, farg2, farg1, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        entry = *(u8 **)((u8 *)object + 0x10) + offset;
         fn_80231380(frame.output[2], mode, farg0, farg3, farg4,
                     *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        entry = *(u8 **)((u8 *)object + 0x10) + offset;
         fn_80231380(frame.output[3], mode, farg2, farg3, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
 
@@ -744,26 +745,37 @@ void fn_80233EBC(void) {
 }
 
 extern u16 lbl_802F9FFC[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma optimization_level 3
 void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
-    register void *object = arg0;
-    register s32 font = lbl_8055F050;
-    u8 out3[0x18], out2[0x18], out1[0x18], out0[0x18];
-    u16 values[6];
+    struct IndexList {
+        u16 idx[6];
+    };
+    struct Frame {
+        struct IndexList indices;
+        u8 pad[4];
+        f32 out0[6];
+        f32 out1[6];
+        f32 out2[6];
+        f32 out3[6];
+    } frame;
+    void *object = arg0;
+    s32 font;
     u8 *entry;
-
     if (arg1 != 0x20) {
-        entry = *(u8 **)((u8 *)object + 0x10) + arg1 * 0x1C;
-        fn_80231380(out0, font, farg0, farg1, farg2, *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
-        entry = *(u8 **)((u8 *)object + 0x10) + arg1 * 0x1C;
-        fn_80231380(out1, font, farg3, farg1, farg2, *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)object + 0x10) + arg1 * 0x1C;
-        fn_80231380(out2, font, farg0, farg4, farg5, *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
-        entry = *(u8 **)((u8 *)object + 0x10) + arg1 * 0x1C;
-        fn_80231380(out3, font, farg3, farg4, farg5, *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
-        values[0] = lbl_802F9FFC[0]; values[1] = lbl_802F9FFC[1];
-        values[2] = lbl_802F9FFC[2]; values[3] = lbl_802F9FFC[3];
-        values[4] = lbl_802F9FFC[4]; values[5] = lbl_802F9FFC[5];
-        fn_802C8DB8(out0, 4, values, 6, lbl_802F9FFC[1], lbl_802F9FFC[2], lbl_802F9FFC[3], lbl_802F9FFC[4]);
+        s32 stride = arg1 * 0x1C;
+        font = lbl_8055F050;
+        entry = *(u8 **)((u8 *)object + 0x10) + stride;
+        fn_80231380(frame.out0, font, farg0, farg1, farg2, *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
+        entry = *(u8 **)((u8 *)object + 0x10) + stride;
+        fn_80231380(frame.out1, font, farg3, farg1, farg2, *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
+        entry = *(u8 **)((u8 *)object + 0x10) + stride;
+        fn_80231380(frame.out2, font, farg0, farg4, farg5, *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
+        entry = *(u8 **)((u8 *)object + 0x10) + stride;
+        fn_80231380(frame.out3, font, farg3, farg4, farg5, *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
+        frame.indices = *(struct IndexList *)(void *)lbl_802F9FFC;
+        fn_802C8DB8(frame.out0, 4, frame.indices.idx, 6, lbl_802F9FFC[4], lbl_802F9FFC[3], lbl_802F9FFC[2], lbl_802F9FFC[1]);
     }
 }
 
