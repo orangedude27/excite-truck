@@ -2309,7 +2309,7 @@ s32 fn_801CB114(s32 arg0) {
     return 0;
 }
 
-extern s32 strlen(const char*);
+
 extern void fn_8000FC8C(const char*);
 extern void fn_8000FDF0(const char*);
 extern f32 fn_801C3B6C(void);
