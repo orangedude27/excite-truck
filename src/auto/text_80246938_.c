@@ -168,7 +168,6 @@ void fn_80246CAC(float farg0) {
 #pragma dont_inline reset
 
 extern char lbl_803436C0[];
-extern s32 lbl_804988F0[5];
 extern void fn_80216CA8(void);
 extern void fn_802146BC(void *, s32, s32, s32);
 #pragma push
