@@ -259,7 +259,6 @@ s32 fn_80246AE8(void) {
     values[18] = lbl_804988F0[3];
     values[19] = lbl_804988F0[4];
     args[1] = (s32)values;
-    lbl_80498908 = 0;
     fn_802146BC(args, -0x3E7, -0x3E7, 1);
     text[0] = (s32)lbl_80343780;
     fn_80235380(result);
@@ -389,6 +388,70 @@ extern s32 lbl_8055BEB4;
 void fn_80247880(void) {
     lbl_8055BEB0 = (void*)fn_80214D04();
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802478A4(void) {
+    extern s32 lbl_802FA3F0[];
+    extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
+    s32 data[40];
+    s32 a0 = lbl_802FA3F0[0];
+    s32 a2 = lbl_802FA3F0[2];
+    s32 a3 = lbl_802FA3F0[3];
+    s32 a4 = lbl_802FA3F0[4];
+    s32 b0 = lbl_804988F0[0];
+    s32 b1 = lbl_804988F0[1];
+    s32 b2 = lbl_804988F0[2];
+    s32 b3 = lbl_804988F0[3];
+    s32 b4 = lbl_804988F0[4];
+
+    data[0] = a0;
+    data[1] = (s32)&data[5];
+    data[2] = a2;
+    data[3] = a3;
+    data[4] = a4;
+    data[5] = (s32)&lbl_8055BAC0;
+    data[6] = 8;
+    data[7] = (s32)fn_8024778C;
+    data[8] = 0;
+    data[9] = 0;
+    data[10] = (s32)&lbl_8055BABC;
+    data[11] = 8;
+    data[12] = (s32)fn_80247880;
+    data[13] = 1;
+    data[14] = 0;
+    data[15] = (s32)(lbl_80343270 + 0x2A0);
+    data[16] = 0;
+    data[17] = 0;
+    data[18] = 3;
+    data[19] = 0;
+    data[20] = (s32)(lbl_80343270 + 0x2AC);
+    data[21] = 0;
+    data[22] = 0;
+    data[23] = 4;
+    data[24] = 0;
+    data[25] = (s32)(lbl_80343270 + 0x2B8);
+    data[26] = 0;
+    data[27] = 0;
+    data[28] = 5;
+    data[29] = 0;
+    data[30] = (s32)&lbl_8055B860;
+    data[31] = 6;
+    data[32] = 0;
+    data[33] = -1;
+    data[34] = 0x1B;
+    data[35] = b0;
+    data[36] = b1;
+    data[37] = b2;
+    data[38] = b3;
+    data[39] = b4;
+    ((void (*)(s32 *, s32, s32, s32, s32, s32, s32, s32))fn_802146BC)(
+        data, -999, -999, 1, (s32)(lbl_80343270 + 0x2A0),
+        (s32)(lbl_80343270 + 0x2AC), (s32)(lbl_80343270 + 0x2B8),
+        (s32)&data[5]);
+}
+#pragma pop
+
 
 static void fn_80247A0C_init(s32 a, s32 b) {
     if (a != b) {
