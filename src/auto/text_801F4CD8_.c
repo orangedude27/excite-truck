@@ -645,6 +645,7 @@ void fn_801F6778(float *out, int count, float *angles, float offset, float scale
     }
 }
 
+#pragma paired_single off
 #pragma scheduling invalid_target
 void fn_801F6880(void *arg0) {
     extern float fn_802C9A4C(float);
@@ -704,6 +705,7 @@ void fn_801F6880(void *arg0) {
     fn_802C9A4C(temp_f31);
 }
 #pragma scheduling on
+#pragma paired_single reset
 
 void *fn_801F69C8(void *arg0) {
     memset(arg0,0,0x900);
