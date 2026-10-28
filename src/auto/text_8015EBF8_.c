@@ -27,12 +27,13 @@ void* fn_8015EBF8(void* arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma dont_inline fn_8015EC50
+#pragma dont_inline on
 void fn_8015EC50(unsigned short *arg0, void *arg1) {
     int value;
     fn_80136594(&value, arg1, (char *)arg0 + 4);
     *arg0 = (value - ((int *)((void **)arg1)[11])[7]) / 60;
 }
+#pragma dont_inline reset
 
 int fn_8015ECC0(void *arg0) {
     register int result = 0;
@@ -160,10 +161,7 @@ extern "C" void fn_8015EE14(void **collection, void *arg1) {
                 s32 count = registry[1];
                 void *array = (void *)registry[0];
                 void *entry = (char *)array + count * 0x10;
-                union {
-                    u64 bits;
-                    f32 floats[2];
-                } packed;
+                union { u64 bits; f32 floats[2]; } packed;
                 registry[1] = count + 1;
                 packed.bits = ((Item *)node)->getPacked((const char *)lbl_8055A080);
                 *(f32 *)((char *)entry + 4) = packed.floats[0];
