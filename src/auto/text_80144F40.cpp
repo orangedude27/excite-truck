@@ -2141,7 +2141,7 @@ extern "C" void deleteThreads__6SystemFv(void *arg0) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma dont_inline on
 extern "C" void fn_80148FA4(void *object, void *unused) {
     struct VTable {
@@ -2156,7 +2156,7 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
     if (*(VTable **)(self + 8) != 0) {
         {
             u8 *entry;
-            s32 i, offset;
+            s32 offset, i;
             i = 0;
             offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0x14) + 4)) {
@@ -2170,22 +2170,22 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
             }
         }
         {
-            s32 i, offset;
+            register s32 i, offset;
             i = 0;
             offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0x10) + 4)) {
-                u8 *entry = *(u8 **)(*(u8 **)(self + 0x10)) + offset;
+                register u8 *entry = *(u8 **)(*(u8 **)(self + 0x10)) + offset;
                 fn_8014784C(*(VTable **)(self + 8), *(u32 *)entry, *(u32 *)(entry + 4), *(u32 *)(entry + 8));
                 offset += 0xC;
                 i++;
             }
         }
         {
-            s32 i, offset;
+            register s32 i, offset;
             i = 0;
             offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0xC) + 4)) {
-                u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
+                register u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
                 const char *format = (const char *)&lbl_80559E1C;
                 fn_801473F8(*(VTable **)(self + 8), *(u32 *)entry, format, *(u32 *)(entry + 4));
                 offset += 8;
