@@ -1,4 +1,5 @@
 __declspec(section ".data") extern float lbl_80558DC4;
+extern float PSQUATMultiply(float *, float *);
 extern float lbl_80564628;
 extern int lbl_804B5030[];
 extern void fn_8029E8E0(float *, int);
