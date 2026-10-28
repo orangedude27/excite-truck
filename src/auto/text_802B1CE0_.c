@@ -8,8 +8,8 @@ extern void *fn_802B23A8(void *, void *, void *);
 extern int fn_802B2C44(void *);
 extern char lbl_8034A2C4[];
 extern char lbl_8034A2D8[];
-extern const char lbl_8055CDC8[];
-extern const char lbl_8055CDD0[];
+extern char lbl_8055CDC8;
+extern char lbl_8055CDD0;
 
 #pragma dont_inline on
 int fn_802B2E00(void *);
