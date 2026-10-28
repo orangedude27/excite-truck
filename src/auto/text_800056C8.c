@@ -140,6 +140,10 @@ extern "C" s32 fn_800057D0(void) {
         virtual s32 v11() = 0;
         virtual s32 check() = 0;
     };
+    struct Manager {
+        u8 pad[0x14];
+        s32 count;
+    };
     s32 *base;
     s32 *cursor;
     s32 count, i;
@@ -166,7 +170,7 @@ extern "C" s32 fn_800057D0(void) {
         fn_800056E0(lbl_8034EEB8[23]);
         return;
     }
-    count = *(s32 *)((u8 *)lbl_8055D350 + 0x14);
+    count = ((Manager *)lbl_8055D350)->count;
     cursor = lbl_8034EEB8;
     base = cursor;
     for (i = 0; i < count; cursor += 4, i++) {
@@ -177,7 +181,6 @@ extern "C" s32 fn_800057D0(void) {
         }
     }
 }
-#pragma pop
 #pragma cplusplus off
 
 #pragma push
