@@ -88,6 +88,63 @@ extern unsigned char lbl_803432EC[];
 extern void fn_80246CB8(void *);
 extern char lbl_80343780[];
 extern float lbl_8055F264;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma optimization_level 3
+#pragma scheduling invalid_target
+s32 fn_80246938(void) {
+    s32 index;
+    struct {
+        volatile s32 args[5];
+        s32 text;
+        s32 pad0[4];
+        s32 zero;
+        s32 itemIndex;
+        s32 pad1[2];
+        s32 values[20];
+    } frame;
+
+    index = fn_802E4A10();
+    if (index >= 0 && index < 4) {
+        fn_80214A9C(0x1F);
+        while (((s32 (*)(s32))fn_802E8690)(index) != 0) {
+            frame.zero = 0;
+            frame.text = (s32)lbl_80343720;
+            frame.itemIndex = index;
+            frame.values[0] = 0;
+            frame.values[1] = 5;
+            frame.values[2] = (s32)&frame.text;
+            frame.values[3] = 0;
+            frame.values[4] = 0;
+            frame.values[5] = (s32)&lbl_8055BE80;
+            frame.values[6] = 3;
+            frame.values[7] = fn_80131234((s32 *)lbl_80343280);
+            frame.values[8] = 0;
+            frame.values[9] = 0;
+            frame.values[10] = (s32)&lbl_8055BE88;
+            frame.values[11] = 3;
+            frame.values[12] = fn_80131234((s32 *)lbl_80343294);
+            frame.values[13] = 0;
+            frame.values[14] = 0;
+            frame.values[15] = lbl_804988F0[0];
+            frame.values[16] = lbl_804988F0[1];
+            frame.values[17] = lbl_804988F0[2];
+            frame.values[18] = lbl_804988F0[3];
+            frame.values[19] = lbl_804988F0[4];
+            frame.args[0] = lbl_802FA378[0];
+            frame.args[1] = lbl_802FA378[1];
+            frame.args[2] = lbl_802FA378[2];
+            frame.args[3] = lbl_802FA378[3];
+            frame.args[4] = lbl_802FA378[4];
+            frame.args[1] = (s32)&frame.values[0];
+            fn_802146BC((s32 *)frame.args, -0x3E7, -0x3E7, 1);
+        }
+        fn_80214AF0(0x1F);
+    }
+    return 1;
+}
+#pragma pop
+
 int fn_80246AA8(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668((void *)arg0);
     return arg0;
@@ -407,21 +464,17 @@ void fn_802478A4(void) {
     extern s32 lbl_802FA3F0[];
     extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
     s32 data[40];
+    s32 *p = lbl_802FA3F0;
+    s32 a0 = *p++;
+    s32 a2 = p[1];
+    s32 a3 = p[2];
+    s32 a4 = p[3];
     s32 b0 = lbl_804988F0[0];
     s32 b1 = lbl_804988F0[1];
     s32 b2 = lbl_804988F0[2];
     s32 b3 = lbl_804988F0[3];
     s32 b4 = lbl_804988F0[4];
-    s32 a0 = lbl_802FA3F0[0];
-    s32 a2 = lbl_802FA3F0[2];
-    s32 a3 = lbl_802FA3F0[3];
-    s32 a4 = lbl_802FA3F0[4];
 
-    data[0] = a0;
-    data[1] = (s32)&data[5];
-    data[2] = a2;
-    data[3] = a3;
-    data[4] = a4;
     data[5] = (s32)&lbl_8055BAC0;
     data[6] = 8;
     data[7] = (s32)fn_8024778C;
@@ -457,6 +510,11 @@ void fn_802478A4(void) {
     data[37] = b2;
     data[38] = b3;
     data[39] = b4;
+    data[0] = a0;
+    data[2] = a2;
+    data[3] = a3;
+    data[4] = a4;
+    data[1] = (s32)&data[5];
     ((void (*)(s32 *, s32, s32, s32, s32, s32, s32, s32))fn_802146BC)(
         data, -999, -999, 1, (s32)(lbl_80343270 + 0x2A0),
         (s32)(lbl_80343270 + 0x2AC), (s32)(lbl_80343270 + 0x2B8),
