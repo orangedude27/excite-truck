@@ -1211,7 +1211,6 @@ void *fn_8014E4BC(void *arg0) {
     memset(base + 0x225, 0x7A, 3); base[0x228] = zero;
     return arg0;
 }
-#pragma scheduling on
 
 #pragma cplusplus off
 extern s32 fn_801DF074(s32, s32);
