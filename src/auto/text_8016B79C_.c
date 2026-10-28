@@ -1450,6 +1450,7 @@ extern "C" void fn_802C744C(s32, void *);
 extern "C" void fn_802C9900(void);
 extern "C" void fn_802C9904(void);
 #pragma cplusplus off
+#pragma use_lmw_stmw off
 void fn_8016FE2C(void *arg0, s32 arg1) {
     register f32 f29 = lbl_80561980;
     register f32 f28 = lbl_80561984;
@@ -1520,6 +1521,7 @@ outer_check:
         goto outer_body;
     }
 }
+#pragma use_lmw_stmw on
 #pragma cplusplus on
 
 #pragma cplusplus reset
