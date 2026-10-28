@@ -90,7 +90,6 @@ extern "C" void fn_802B1E28(void) {
         volatile int capacity;
         void *storage;
     } Pool;
-    typedef void *(*AllocArray)(void *, void (*)(void *), void *(*)(void *, int), int, int);
     Pool *pool;
     void *storage;
     void *nodes;
@@ -105,9 +104,8 @@ extern "C" void fn_802B1E28(void) {
     fn_802B8AE0(lbl_8034A288 + 0x18, &lbl_8055F9B0);
     pool = (Pool *)fn_801284F8(0x14, lbl_8034A288 + 0x28);
     if (pool != 0) {
-        const char *name = (const char *)&lbl_8055CDC0;
-        storage = fn_8012850C(0x610, name);
-        nodes = ((AllocArray)fn_8002F37C)(storage, fn_802B1FC0, fn_802B1F68, 0x10, 0x60);
+        storage = fn_8012850C(0x610, (const char *)&lbl_8055CDC0);
+        nodes = fn_8002F37C(storage, fn_802B1FC0, fn_802B1F68, 0x10, 0x60);
         pool->nodes = nodes;
         pool->capacity = 0x60;
         pool->used = 0;
@@ -115,7 +113,7 @@ extern "C" void fn_802B1E28(void) {
         count = pool->capacity;
         size = count << 6;
         storage = fn_8012850C(size * 0x14 + 0x10, lbl_8034A3F8);
-        data = ((AllocArray)fn_8002F37C)(storage, (void (*)(void *))fn_802B1F64, (void *(*)(void *, int))0, 0x14, size);
+        data = fn_8002F37C(storage, (void (*)(void *))fn_802B1F64, (void *(*)(void *, int))0, 0x14, size);
         pool->data = data;
         i = 0;
         offset = 0;
@@ -361,24 +359,53 @@ extern void *fn_802B2958(void *, void *);
 extern void fn_802B2934(void *, void **);
 extern void fn_802B257C(void *);
 #pragma push
+#pragma cplusplus on
 #pragma use_lmw_stmw off
-void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
-    void *sp8;
-    int i = 16;
-    int val = 0;
-    char *p = (char *)arg0;
+extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual int v10(const char *, int);
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void *v22(int);
+    };
+
+    Obj *self = (Obj *)arg1;
     void *item;
     void *alloc;
-    int (*get_name)(void *, const char *, int);
-    void *(*get_item)(void *, int);
+    void *sp8;
+    int val;
+    char *p;
+    int count = 16;
 
     *(int *)((char *)arg0 + 0x40C) = 0;
-    *(int *)((char *)arg0 + 0x410) = i;
+    *(int *)((char *)arg0 + 0x410) = count;
     *(void **)((char *)arg0 + 0x408) = (char *)arg0 + 0x414;
+    p = (char *)arg0;
     *(char *)((char *)arg0 + 4) = 0;
+    val = 0;
     *(char *)((char *)arg0 + 5) = 0;
 
-    do {
+    for (int i = 0; i < count; i++) {
         *(int *)(p + 8) = val++;
         *(int *)(p + 0xC) = val++;
         *(int *)(p + 0x10) = val++;
@@ -388,15 +415,13 @@ void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
         *(int *)(p + 0x20) = val++;
         *(int *)(p + 0x24) = val++;
         p += 0x20;
-    } while (--i != 0);
+    }
 
     fn_802B2504((int *)((char *)arg0 + 8), 0x80);
-    get_name = *(int (**)(void *, const char *, int))(*(void ***)arg1 + 0x30 / 4);
-    *(char *)((char *)arg0 + 5) = get_name(arg1, &lbl_8055CDD8, 1);
+    *(char *)((char *)arg0 + 5) = self->v10(&lbl_8055CDD8, 1);
     *(char *)((char *)arg0 + 4) = *(char *)((char *)arg0 + 5);
 
-    get_item = *(void *(**)(void *, int))(*(void ***)arg1 + 0x60 / 4);
-    for (i = 0; (item = get_item(arg1, i)) != 0; i++) {
+    for (int i = 0; (item = self->v22(i)) != 0; i++) {
         if (fn_802B1DE8(item) != 0) {
             alloc = fn_801284F8(0x2A8, lbl_8034A2E8);
             if (alloc != 0) {
@@ -405,10 +430,12 @@ void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
             }
         }
     }
+
     fn_802B257C(arg0);
     *(void **)arg0 = arg2;
     return arg0;
 }
+#pragma cplusplus reset
 #pragma pop
 
 #pragma pop
