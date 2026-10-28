@@ -458,12 +458,13 @@ extern "C" f32 lbl_805615F4;
 extern "C" f32 lbl_805615F8;
 extern "C" f32 lbl_805615FC;
 extern "C" f64 lbl_80561600;
-extern "C" s32 fn_80145A24(void *arg0) {
+#pragma paired off
+#pragma paired_single off
+extern "C" u64 fn_80145A24(void *arg0) {
     s32 time0Bits = fn_802C9C48();
-    s32 field0Bits = *(s32 *)((u8 *)arg0 + 4);
     f64 time0 = (f64)time0Bits - lbl_80561600;
-    f64 field0 = (f64)field0Bits - lbl_80561600;
-    f32 out0 = fn_80145A08(lbl_805615D4, time0, lbl_805615D4, lbl_805615F4, field0);
+    f32 out0 = fn_80145A08(lbl_805615D4, time0, lbl_805615D4, lbl_805615F4,
+                           (f64)*(s32 *)((u8 *)arg0 + 4) - lbl_80561600);
 
     s32 time1Bits = fn_802C9C48();
     f64 time1 = (f64)time1Bits - lbl_80561600;
@@ -471,20 +472,24 @@ extern "C" s32 fn_80145A24(void *arg0) {
     f32 correction = scaled * lbl_805615D0;
     u32 converted = fn_802C9C38(time1, time0);
     u32 rounded = (converted >> 31) + converted;
-    s32 shifted = ((s32)rounded >> 1) ^ 0x8000;
+    volatile s32 half = (s32)rounded >> 1;
+    f32 base = (f32)((f64)half - lbl_80561600) - correction;
 
     s32 time2Bits = fn_802C9C48();
     f64 time2 = (f64)time2Bits - lbl_80561600;
-    f64 base = (f64)shifted + time2 - correction;
-    s32 field1Bits = *(s32 *)((u8 *)arg0 + 8);
-    f64 field1 = (f64)field1Bits - lbl_80561600;
-    f32 out1 = fn_80145A08((f32)base, (f32)base + lbl_805615F8 * (f32)time2,
-                           lbl_805615D4, lbl_805615FC, field1);
-
-    *(f32 *)((u8 *)arg0 + 8) = out0;
-    *(f32 *)((u8 *)arg0 + 0xC) = out1;
-    return *(s32 *)((u8 *)arg0 + 8);
+    f32 out1 = fn_80145A08(base, base + lbl_805615F8 * (f32)time2,
+                           lbl_805615D4, lbl_805615FC,
+                           (f64)*(s32 *)((u8 *)arg0 + 8) - lbl_80561600);
+    union {
+        u64 bits;
+        f32 values[2];
+    } result;
+    result.values[0] = out0;
+    result.values[1] = out1;
+    return result.bits;
 }
+#pragma paired reset
+#pragma paired_single reset
 
 extern "C" f32 lbl_80561608;
 extern "C" void fn_8001027C(s32, s32, void *, u32, f32, f32, f32);
@@ -1664,7 +1669,7 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     d[6] = fn_80147C50(w18, *(u32 *)(other + 0x18), factor);
 }
 #pragma scheduling on
-void fn_80147DC0(void *dst, void *src, void *end, f32 t) {
+extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     struct State {
         u32 m0;
         f32 m4;
@@ -1677,18 +1682,53 @@ void fn_80147DC0(void *dst, void *src, void *end, f32 t) {
         f32 m20;
         f32 m24;
     };
-    State *d = (State *)dst;
-    State *s = (State *)src;
-    State *e = (State *)end;
-    *d = *s;
-    d->m4 = s->m4 + t * (e->m4 - s->m4);
-    d->m8 = s->m8 + t * (e->m8 - s->m8);
-    d->m18 = s->m18 + t * (e->m18 - s->m18);
-    d->m20 = s->m20 + t * (e->m20 - s->m20);
-    d->m1C = s->m1C + t * (e->m1C - s->m1C);
-    d->m24 = s->m24 + t * (e->m24 - s->m24);
-    d->m10 = s->m10 + t * (e->m10 - s->m10);
-    d->m14 = s->m14 + t * (e->m14 - s->m14);
+    union Pair {
+        struct { f32 x; f32 y; } f;
+        f64 raw;
+    };
+    State *src = (State *)srcArg;
+    State *end = (State *)endArg;
+    f32 x4 = src->m4;
+    f32 x8 = src->m8;
+    f32 x10 = src->m10;
+    f32 x14 = src->m14;
+    f32 x18 = src->m18;
+    f32 x1C = src->m1C;
+    f32 x20 = src->m20;
+    f32 x24 = src->m24;
+    f32 y4 = x4 + t * (end->m4 - x4);
+    f32 y8 = x8 + t * (end->m8 - x8);
+    f32 y18 = x18 + t * (end->m18 - x18);
+    f32 y20 = x20 + t * (end->m20 - x20);
+    f32 y1C = x1C + t * (end->m1C - x1C);
+    f32 y24 = x24 + t * (end->m24 - x24);
+    f32 y10 = x10 + t * (end->m10 - x10);
+    f32 y14 = x14 + t * (end->m14 - x14);
+    Pair first;
+    Pair second;
+    first.f.x = y4;
+    first.f.y = y8;
+    second.raw = first.raw;
+    u32 w4 = *(u32 *)((u8 *)src + 4);
+    u32 w8 = *(u32 *)((u8 *)src + 8);
+    u32 w0 = *(u32 *)((u8 *)src + 0);
+    u32 wC = *(u32 *)((u8 *)src + 0xC);
+    volatile State *d = (volatile State *)dst;
+    d->m18 = x18;
+    d->m1C = x1C;
+    d->m10 = x10;
+    *(volatile u32 *)((u8 *)dst + 4) = w4;
+    *(volatile u32 *)((u8 *)dst + 8) = w8;
+    *(volatile u32 *)((u8 *)dst + 0) = w0;
+    *(volatile u32 *)((u8 *)dst + 0xC) = wC;
+    d->m4 = second.f.x;
+    d->m8 = second.f.y;
+    d->m18 = y18;
+    d->m20 = y20;
+    d->m1C = y1C;
+    d->m24 = y24;
+    d->m10 = y10;
+    d->m14 = y14;
 }
 
 #pragma dont_inline off
