@@ -654,7 +654,7 @@ void fn_8028C92C(void *arg0) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma paired off
 #pragma paired_single off
 void fn_8028C938(s32 arg0) {
@@ -694,8 +694,8 @@ void fn_8028C938(s32 arg0) {
             vy = (in->vy * factor) - delta;
             vz = in->vz * factor;
             temp_x = vx;
-            temp_y = vy;
             temp_z = vz;
+            temp_y = vy;
             out->x = in->x + vx * step;
             out->y = in->y + vy * step;
             out->z = in->z + vz * step;
