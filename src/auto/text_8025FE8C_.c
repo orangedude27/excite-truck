@@ -200,7 +200,7 @@ void *fn_802608D4(void *arg0, s32 arg1) {
 extern void *lbl_8055F3E4;
 extern u8 lbl_8055F3E8;
 extern s32 lbl_802FA6C0[];
-extern u8 lbl_80498F00;
+extern u8 lbl_80498F00[];
 extern s32 fn_80012810(void);
 extern void fn_80012794(void);
 extern void fn_80012790(s32);
@@ -748,28 +748,31 @@ void fn_80261AE8(s32 *arg0, s32 arg1) { *arg0 = arg1; }
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80261AF0(s32 *arg0, s32 arg1) {
-    s32 args[5];
-    s32 objects[6][5];
-    char buffer[100];
+    struct Frame {
+        s32 args[6];
+        s32 objects[6][5];
+        char buffer[100];
+    } frame;
 
-    fn_801345D8(buffer, 0x64, lbl_80345DE0, arg1);
+    fn_801345D8(frame.buffer, 0x64, lbl_80345DE0, arg1);
 
-    fn_802619E8(&objects[0], 0, (s32)&lbl_80498F20);
-    fn_80261980(&objects[1], (s32)&lbl_8055C418, fn_80131234(lbl_80345E0C), 0);
-    fn_80261980(&objects[2], (s32)&lbl_8055C420, fn_80131234(buffer), 0);
-    fn_80261688(&objects[3], 0xD, -2, 0);
-    fn_80261A18(&objects[4], (s32)fn_80261A40);
-    fn_80260E04((s32*)&objects[5], (s32*)&lbl_80498F00);
+    fn_802619E8(&frame.objects[0], 0, (s32)lbl_80498F20);
+    fn_80261980(&frame.objects[1], (s32)&lbl_8055C418, fn_80131234(lbl_80345E0C), 0);
+    fn_80261980(&frame.objects[2], (s32)&lbl_8055C420, fn_80131234(frame.buffer), 0);
+    fn_80261688(&frame.objects[3], 0xD, -2, 0);
+    fn_80261A18(&frame.objects[4], (s32)fn_80261A40);
+    fn_80260E04((s32*)&frame.objects[5], (s32*)&lbl_80498F00);
 
-    args[0] = lbl_802FA6D4[0];
-    args[1] = lbl_802FA6D4[1];
-    args[2] = lbl_802FA6D4[2];
-    args[3] = lbl_802FA6D4[3];
-    args[4] = lbl_802FA6D4[4];
-    args[1] = (s32)objects;
+    frame.args[0] = lbl_802FA6D4[0];
+    frame.args[1] = lbl_802FA6D4[1];
+    frame.args[2] = lbl_802FA6D4[2];
+    frame.args[3] = lbl_802FA6D4[3];
+    frame.args[4] = lbl_802FA6D4[4];
+    frame.args[1] = (s32)frame.objects;
 
-    fn_802146BC(args, -0x3E7, -0x3E7, 1);
+    fn_802146BC(frame.args, -0x3E7, -0x3E7, 1);
 }
 #pragma pop
 
