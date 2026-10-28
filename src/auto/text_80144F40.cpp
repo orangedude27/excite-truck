@@ -813,7 +813,6 @@ extern "C" void *fn_80146310(void *arg0, const char *arg1, s32 arg2) {
     };
     class Item {
     public:
-        virtual void a();
         virtual const char *name();
     };
 
