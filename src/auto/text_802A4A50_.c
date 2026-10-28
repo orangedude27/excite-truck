@@ -358,7 +358,6 @@ extern "C" s32 fn_802A5878(void) {
     s32 j;
     Item *child;
     s32 check;
-    s32 value;
     s32 count;
 
     lbl_8055F890 = 0;
@@ -374,11 +373,11 @@ extern "C" s32 fn_802A5878(void) {
             if (strncmp(child->name(), &lbl_8055CBF0, 4) == 0) {
                 check = fn_801284F8(0x40, &lbl_8055CBF0);
                 if (check != 0) {
-                    value = fn_802A7370(check, child);
-                    count = lbl_8055F890;
-                    table[count] = value;
-                    lbl_8055F890 = count + 1;
+                    check = fn_802A7370(check, child);
                 }
+                count = lbl_8055F890;
+                table[count] = check;
+                lbl_8055F890 = count + 1;
             }
             j++;
         }
