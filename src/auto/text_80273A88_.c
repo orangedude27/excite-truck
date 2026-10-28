@@ -395,17 +395,17 @@ static inline void helper_80274F74(void *arg0, void *arg1) {
             }
         }
     } else {
-        float one = lbl_80563FAC;
-        float zero = lbl_80563FB0;
-        *(float *)((char *)arg0 + 0x5C) = zero;
-        *(float *)((char *)arg0 + 0x58) = one;
-        *(float *)((char *)arg0 + 0x60) = zero;
-        *(float *)((char *)arg0 + 0x64) = zero;
-        *(float *)((char *)arg0 + 0x68) = one;
-        *(float *)((char *)arg0 + 0x6C) = zero;
-        *(float *)((char *)arg0 + 0x70) = zero;
-        *(float *)((char *)arg0 + 0x74) = zero;
-        *(float *)((char *)arg0 + 0x78) = one;
+        float f0 = lbl_80563FB0;
+        float f1 = lbl_80563FAC;
+        *(float *)((char *)arg0 + 0x5C) = f0;
+        *(float *)((char *)arg0 + 0x58) = f1;
+        *(float *)((char *)arg0 + 0x60) = f0;
+        *(float *)((char *)arg0 + 0x64) = f0;
+        *(float *)((char *)arg0 + 0x68) = f1;
+        *(float *)((char *)arg0 + 0x6C) = f0;
+        *(float *)((char *)arg0 + 0x70) = f0;
+        *(float *)((char *)arg0 + 0x74) = f0;
+        *(float *)((char *)arg0 + 0x78) = f1;
     }
 }
 
