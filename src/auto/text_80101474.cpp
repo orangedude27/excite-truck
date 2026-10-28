@@ -56,7 +56,7 @@ namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; st
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
-class WsdTrack { public: struct WsdCallback; static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); void Close(); int ParseNextTick(const WsdCallback *, unsigned long, bool); int Parse(const WsdCallback *, unsigned long, bool); };
+class WsdTrack { public: struct WsdCallback { virtual int f0() const; virtual int GetWave(void *, void *, void *, int, int, int, unsigned long) const; }; static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); void Close(); int ParseNextTick(const WsdCallback *, unsigned long, bool); int Parse(const WsdCallback *, unsigned long, bool); };
 }}}
 extern int fn_801013B0(int);
 extern int InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(int);
