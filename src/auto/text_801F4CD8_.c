@@ -207,6 +207,46 @@ int fn_801F52BC(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     }
     return result;
 }
+
+void fn_801F5508(void *arg0) {
+    int rows = *(int *)((char *)arg0 + 0x2C);
+    int cols = *(int *)((char *)arg0 + 0x30);
+    int edgeCount = (cols - 1) * rows + cols * (rows - 1);
+    float *vertices = *(float **)((char *)arg0 + 4);
+    short *edges = (short *)((void *(*)(int, void *))fn_8012850C)(
+        edgeCount * 8, lbl_8033AD94);
+    int edge = 0;
+    int i, j;
+
+    for (i = 0; i < cols; i++) {
+        int base = i * rows;
+        for (j = 1; j < rows; j++) {
+            int from = base + j - 1;
+            int to = base + j;
+            short *entry = edges + edge * 4;
+            entry[0] = (short)from;
+            entry[1] = (short)to;
+            *(float *)(entry + 2) =
+                PSVECSquareDistance(vertices + from * 3, vertices + to * 3);
+            edge++;
+        }
+    }
+    for (i = 0; i < rows; i++) {
+        for (j = 1; j < cols; j++) {
+            int from = i + (j - 1) * rows;
+            int to = i + j * rows;
+            short *entry = edges + edge * 4;
+            entry[0] = (short)from;
+            entry[1] = (short)to;
+            *(float *)(entry + 2) =
+                PSVECSquareDistance(vertices + from * 3, vertices + to * 3);
+            edge++;
+        }
+    }
+    *(void **)((char *)arg0 + 0x14) = edges;
+    *(int *)((char *)arg0 + 0x18) = edgeCount;
+}
+
 #pragma pop
 extern void *fn_8002F37C();
 extern void *fn_8012850C();
@@ -560,7 +600,11 @@ void fn_801F64E4(void *arg0, float *arg1, float arg2) {
     *(int *)((char *)arg0 + 8) = r4;
 }
 #pragma scheduling on
+#pragma push
+#pragma paired off
+#pragma paired_single off
 extern float PSVECDotProduct(const void *, const void *);
+#pragma pop
 extern float lbl_80562FDC;
 extern float lbl_80562FE0;
 #pragma push
