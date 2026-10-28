@@ -75,25 +75,30 @@ extern u8 lbl_8055E520, lbl_8055E523;
 extern f64 lbl_80562070;
 extern f32 lbl_80562078, lbl_8056207C, lbl_80562080;
 #pragma dont_inline fn_8018FC38
+#pragma scheduling invalid_target
 void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
     f32 value;
     f32 result;
     f32 limit;
     s32 index;
+    s32 zero = 0;
+    void **table;
+
     *(void**)arg0 = lbl_80333018;
-    if (lbl_8055E518 == 0) fn_8018FC38();
-    index = lbl_8055E518;
-    lbl_804349A0[index] = arg0;
-    lbl_8055E518 = index + 1;
+    if (lbl_8055E518 == 0) ((void (*)(void))fn_8018FC38)();
+    index = *(volatile s32 *)&lbl_8055E518;
+    table = lbl_804349A0;
+    ((void * volatile *)table)[index++] = arg0;
+    *(volatile s32 *)&lbl_8055E518 = index;
     ((u8*)arg0)[0x38] = 1;
-    lbl_8055E520 = 0;
-    lbl_8055E523 = 0;
+    lbl_8055E520 = (u8)zero;
+    lbl_8055E523 = (u8)zero;
     *(s32*)((u8*)arg0 + 8) = arg1;
     *(s32*)((u8*)arg0 + 0xC) = arg2;
-    *(s32*)((u8*)arg0 + 0x10) = 0;
-    *(s32*)((u8*)arg0 + 4) = 0;
+    *(s32*)((u8*)arg0 + 0x10) = zero;
+    *(s32*)((u8*)arg0 + 4) = zero;
     *(s32*)((u8*)arg0 + 0x28) = 0x10000;
-    if (fn_801B6668(0, 1, index + 1) == 0) fn_801B664C();
+    if (fn_801B6668() == 0) fn_801B664C();
     value = lbl_80562078 * (f32)fn_801293A4();
     result = value - lbl_8056207C;
     limit = lbl_80562080;
@@ -740,62 +745,54 @@ void fn_801916F4(void *arg0) {
 
 extern char *strcpy(char *, const char *);
 extern unsigned char lbl_804A16E8[];
+#pragma scheduling invalid_target
 int fn_80191758(arg0)
 void *arg0;
 {
-    char *dst;
-    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    strcpy(dst, *(char **)((char *)arg0 + 0x20) + 0x234);
-    {
-        char *p;
-        p = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-        *(float *)(p + 0x28) = lbl_8056208C;
-        *(float *)(p + 0x24) = lbl_8056208C;
-        *(float *)(p + 0x20) = lbl_8056208C;
-        *(float *)(p + 0x34) = lbl_80562090;
-        *(float *)(p + 0x30) = lbl_80562090;
-        *(float *)(p + 0x2C) = lbl_80562090;
-        *(float *)(p + 0x38) = lbl_80562090;
-        *(float *)(p + 0x3C) = lbl_80562090;
-    }
-    {
-        char *p;
-        p = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-        *(float *)(p + 0x48) = lbl_8056208C;
-        *(float *)(p + 0x44) = lbl_8056208C;
-        *(float *)(p + 0x40) = lbl_8056208C;
-        *(float *)(p + 0x54) = lbl_80562090;
-        *(float *)(p + 0x50) = lbl_80562090;
-        *(float *)(p + 0x4C) = lbl_80562090;
-        *(float *)(p + 0x58) = lbl_80562090;
-        *(float *)(p + 0x5C) = lbl_80562090;
-    }
-    {
-        char *p;
-        p = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-        *(float *)(p + 0x68) = lbl_8056208C;
-        *(float *)(p + 0x64) = lbl_8056208C;
-        *(float *)(p + 0x60) = lbl_8056208C;
-        *(float *)(p + 0x74) = lbl_80562090;
-        *(float *)(p + 0x70) = lbl_80562090;
-        *(float *)(p + 0x6C) = lbl_80562090;
-        *(float *)(p + 0x78) = lbl_80562090;
-        *(float *)(p + 0x7C) = lbl_80562090;
-    }
-    {
-        char *p;
-        p = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-        *(float *)(p + 0x88) = lbl_8056208C;
-        *(float *)(p + 0x84) = lbl_8056208C;
-        *(float *)(p + 0x80) = lbl_8056208C;
-        *(float *)(p + 0x94) = lbl_80562090;
-        *(float *)(p + 0x90) = lbl_80562090;
-        *(float *)(p + 0x8C) = lbl_80562090;
-        *(float *)(p + 0x98) = lbl_80562090;
-        *(float *)(p + 0x9C) = lbl_80562090;
-    }
+    struct Row {
+        char name[0x20];
+        float value[32];
+    } *row;
+    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
+    strcpy(row->name, *(char **)((char *)arg0 + 0x20) + 0x234);
+    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
+    row->value[2] = lbl_8056208C;
+    row->value[1] = lbl_8056208C;
+    row->value[0] = lbl_8056208C;
+    row->value[5] = lbl_80562090;
+    row->value[4] = lbl_80562090;
+    row->value[3] = lbl_80562090;
+    row->value[6] = lbl_80562090;
+    row->value[7] = lbl_80562090;
+    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
+    row->value[10] = lbl_8056208C;
+    row->value[9] = lbl_8056208C;
+    row->value[8] = lbl_8056208C;
+    row->value[13] = lbl_80562090;
+    row->value[12] = lbl_80562090;
+    row->value[11] = lbl_80562090;
+    row->value[14] = lbl_80562090;
+    row->value[15] = lbl_80562090;
+    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
+    row->value[18] = lbl_8056208C;
+    row->value[17] = lbl_8056208C;
+    row->value[16] = lbl_8056208C;
+    row->value[21] = lbl_80562090;
+    row->value[20] = lbl_80562090;
+    row->value[19] = lbl_80562090;
+    row->value[22] = lbl_80562090;
+    row->value[23] = lbl_80562090;
+    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
+    row->value[26] = lbl_8056208C;
+    row->value[25] = lbl_8056208C;
+    row->value[24] = lbl_8056208C;
+    row->value[29] = lbl_80562090;
+    row->value[28] = lbl_80562090;
+    row->value[27] = lbl_80562090;
+    row->value[30] = lbl_80562090;
+    row->value[31] = lbl_80562090;
 }
-
+#pragma scheduling on
 int fn_80191A98(void *arg0) {
     int bit = (*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 1) & 1;
     return (int)((unsigned int)(-bit | bit) >> 31);
