@@ -740,7 +740,8 @@ void fn_80233EBC(void) {
     fn_802C8D74();
 }
 
-extern u16 lbl_802F9FFC[];
+typedef struct IndexList_80233EC0 { u16 idx[6]; } IndexList_80233EC0;
+extern IndexList_80233EC0 lbl_802F9FFC;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
