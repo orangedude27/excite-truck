@@ -328,8 +328,9 @@ extern int fn_802CAFF0(void);
 extern int fn_802CAFC8(int);
 __declspec(section ".sdata") extern const char lbl_8055D010[];
 void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3) {
-    char temp[0x100];
     char name[0x100];
+    char temp[0x100];
+    int other;
     int value;
     int index;
     u16 result;
@@ -339,8 +340,8 @@ void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3) {
         fn_801345D8(temp, 0x100, lbl_8055D010, arg3, name);
         if (fn_8012C33C(temp) != 0) {
             char *src = temp;
-            char *dst = name;
             int count = 0x100;
+            char *dst = name;
             while (*dst++ = *src++) {
                 if (--count <= 0) {
                     dst[-1] = '\0';
@@ -354,9 +355,8 @@ void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3) {
     if (arg2 != 0) {
         result = fn_802C5BEC(value, fn_802CAF8C());
     } else {
-        int other = fn_802CAFF0();
-        fn_802CAFC8(index);
-        result = fn_802C5A50(other, 0);
+        other = fn_802CAFF0();
+        result = fn_802C5A50(fn_802CAFC8(index), other);
     }
     *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(index, value, result);
 }
