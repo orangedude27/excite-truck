@@ -80,7 +80,8 @@ int fn_802AC2B4(void **arg0, int arg1, float *arg2) {
     return 0;
 }
 
-void fn_802AC454(void) { fn_802AC344(); }
+extern float fn_802AC344(void *, void *, float *);
+float fn_802AC454(void *arg0, void *arg1, float *arg2) { return fn_802AC344(arg0, arg1, arg2); }
 
 void fn_802AC458(void) {
     lbl_8055F93C = 0;
