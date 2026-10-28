@@ -42,7 +42,7 @@ extern s32 fn_80128668(void);
 #pragma cplusplus off
 #pragma push
 #pragma processor 750
-#pragma optimize_for_size on
+#pragma optimize_for_size off
 #pragma scheduling invalid_target
 void fn_8028A664(void) {
     extern char lbl_80348B98[];
