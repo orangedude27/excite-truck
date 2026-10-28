@@ -572,7 +572,6 @@ extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
     s32 offset;
     u32 flags;
     u8 *entry;
-    u8 *checkEntry;
 
     if (((u32 (*)(void *))fn_8012BB18)(arg1) == 0) return;
     fn_8012BA1C(arg1);
@@ -582,8 +581,8 @@ extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
         i = 0;
         offset = 0;
         while (i < *(s32 *)((u8 *)arg1 + 0x88)) {
-            checkEntry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
-            flags = *(u32 *)(checkEntry + 0x34);
+            entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
+            flags = *(u32 *)(entry + 0x34);
             if ((flags & 4) != 0) {
                 fn_802E317C(lbl_8032AE20);
             }
@@ -1401,6 +1400,8 @@ extern "C" void fn_8012DFE8(void *, const char *, s32);
 extern "C" void fn_8012DEE4(void *);
 extern "C" void fn_8012DFCC(Unk8012DFCCList *, Unk8012DFCCNode *);
 extern "C" void *fn_8012E060(void *, const char *);
+extern "C" s32 fn_8012D838(s32);
+extern "C" void fn_8012E40C(void *, s32);
 extern "C" void fn_8012E2CC(void *);
 extern "C" void *fn_8012E460(void *);
 extern "C" s32 fn_8012E490(s32 *);
