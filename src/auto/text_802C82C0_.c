@@ -1,5 +1,15 @@
 #include <revolution/MTX/mtxtypes.h>
 extern char lbl_8055FC34;
+extern int lbl_8055D028;
+extern int lbl_8055D02C;
+extern float lbl_80564F04;
+extern float lbl_80564F08;
+extern void fn_802C5F48(float, int, float *, float, float);
+extern void fn_801332D0(int, void *, int *);
+extern int fn_8013365C(int, int);
+extern int fn_802C9C58(int);
+extern void fn_802C974C(float, float, float);
+extern char lbl_8055FC34;
 extern int lbl_8055D02C;
 extern float lbl_80564F04;
 extern float lbl_80564F08;
@@ -286,10 +296,11 @@ void fn_802C88FC(float *arg0) {
     arg0[9] = (float)(unsigned int)lbl_8055FC5C + scale * (float)(unsigned int)lbl_8055FC64;
 }
 
+#pragma scheduling invalid_target
 void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3, unsigned int arg4, unsigned int arg5, unsigned int arg6, unsigned int arg7) {
-    float fill;
     float var_f2;
     float var_f4;
+    float fill;
     float scale;
     int height;
     int y;
@@ -300,7 +311,11 @@ void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsig
     if ((unsigned char)lbl_8055FC74 == 0) {
         var_f2 *= lbl_80564EF8 / lbl_8055D020;
     }
-    var_f4 = (unsigned char)lbl_8055FC74 != 0 ? lbl_80564EF8 : lbl_80564EF8 / lbl_8055D020;
+    if ((unsigned char)lbl_8055FC74 != 0) {
+        var_f4 = lbl_80564EF8;
+    } else {
+        var_f4 = lbl_80564EF8 / lbl_8055D020;
+    }
 
     fill = lbl_80564F00;
     var_f2 = -var_f2;
@@ -323,8 +338,6 @@ void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsig
     ((float *)arg0)[11] = var_f2;
     ((float *)arg0)[9] = scale * (float)x + (float)width;
 }
-
-#pragma scheduling on
 void fn_802C8B08(unsigned int *arg0) {
     struct Pair { unsigned int first; unsigned int second; };
     struct Tail { unsigned int first; struct Pair pair; unsigned int last; };
