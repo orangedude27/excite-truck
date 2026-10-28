@@ -1837,17 +1837,16 @@ void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
 
 extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE8, lbl_80564FEC;
 #pragma push
-#pragma processor 750
+#pragma processor 7400
 #pragma paired off
 #pragma paired_single off
 #pragma scheduling invalid_target
 int fn_802D3A5C(void *arg0, float *arg1) {
     extern unsigned char lbl_804C9778[];
-    float scaledY = lbl_80564FB8 * arg1[1];
-    float xValue = arg1[0];
-    float yValue = scaledY / lbl_80564FBC;
-    int x = (int)xValue;
-    int y = (int)yValue;
+    register float xValue = arg1[0];
+    register float yValue = lbl_80564FB8 * arg1[1] / lbl_80564FBC;
+    register int x = (int)xValue;
+    register int y = (int)yValue;
     float target;
 
     if (*((unsigned char *)arg0 + 0xD))
