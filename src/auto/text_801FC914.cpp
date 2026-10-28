@@ -856,7 +856,7 @@ extern "C" void* fn_801FE9E8(void* arg0, int arg1) {
 
 extern const char lbl_8033B84C[];
 extern "C" int stricmp(const char*, const char*);
-extern "C" int fn_80129D18(int);
+extern "C" int fn_80129D18(int, int = 0);
 void fn_801FCAE0(void*, void*);
 void fn_801FD024(void*, void*);
 extern "C" void fn_801FEB58(void* value) {
