@@ -224,23 +224,43 @@ extern const char lbl_80349C48[];
 extern const char lbl_8055CBD0, lbl_8055CBD4, lbl_8055CBDC, lbl_8055CBE0;
 extern float lbl_80564860, lbl_80564864;
 #pragma scheduling invalid_target
-s32 fn_802A4FA8(float *out, void *object) {
-    float v0[3], v1[3], v2[3], v3[3], cross[3];
+#pragma cplusplus on
+extern "C" s32 fn_802A4FA8(float *out, void *object) {
+    struct Vec3 {
+        float x, y, z;
+    };
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual Vec3 get(const char *);
+    };
     if (object != 0) {
-        (*(void (***)(void *, void *, const char *))object)[13](v0, object, &lbl_8055CBD0);
-        out[0] = v0[0]; out[1] = v0[1]; out[2] = v0[2];
-        (*(void (***)(void *, void *, const char *))object)[13](v1, object, &lbl_8055CBD4);
-        out[3] = v1[0]; out[4] = v1[1]; out[5] = v1[2];
-        (*(void (***)(void *, void *, const char *))object)[13](v2, object, &lbl_8055CBDC);
-        out[6] = v2[0]; out[7] = v2[1]; out[8] = v2[2];
-        (*(void (***)(void *, void *, const char *))object)[13](v3, object, &lbl_8055CBE0);
-        out[9] = v3[0]; out[10] = v3[1]; out[11] = v3[2];
-        PSVECCrossProduct(out + 6, out + 9, cross);
-        if (lbl_80564864 * PSVECMag(cross) < lbl_80564860) fn_802E317C(lbl_80349C48);
+        const Vec3 &v0 = ((Dummy *)object)->get(&lbl_8055CBD0);
+        out[0] = v0.x; out[1] = v0.y; out[2] = v0.z;
+        const Vec3 &v1 = ((Dummy *)object)->get(&lbl_8055CBD4);
+        out[3] = v1.x; out[4] = v1.y; out[5] = v1.z;
+        const Vec3 &v2 = ((Dummy *)object)->get(&lbl_8055CBDC);
+        out[6] = v2.x; out[7] = v2.y; out[8] = v2.z;
+        const Vec3 &v3 = ((Dummy *)object)->get(&lbl_8055CBE0);
+        out[9] = v3.x; out[10] = v3.y; out[11] = v3.z;
+        Vec3 cross;
+        PSVECCrossProduct(out + 6, out + 9, &cross.x);
+        if (lbl_80564864 * PSVECMag(&cross.x) < lbl_80564860)
+            fn_802E317C(lbl_80349C48);
         return 1;
     }
     return 0;
 }
+#pragma cplusplus reset
 #pragma scheduling on
 
 extern f32 lbl_8056485C, lbl_80564868, lbl_8056486C, lbl_80564870, lbl_80564874;
@@ -912,6 +932,79 @@ void fn_802A6E34(void *arg0) {
         (f32)((-temp_f29_2 + (f32)fn_8002F234(disc)) /
             (lbl_80564860 * temp_f30_2));
 }
+
+extern f32 fn_802A4AD4(void);
+extern f32 fn_802C9A50(void);
+extern f32 lbl_805648B0;
+extern f32 lbl_805648C0;
+void fn_802A6F70(void *arg0, void *arg1) {
+    u8 *state = (u8 *)arg0;
+    u8 *basePos = (u8 *)arg1;
+    f32 *out;
+    u8 *points;
+    u8 *entry;
+    volatile f32 sp14;
+    volatile f32 sp18;
+    volatile f32 sp1C;
+    volatile f32 sp8;
+    volatile f32 spC;
+    volatile f32 sp10;
+    f32 dt;
+    f32 speed;
+    f32 scale;
+    f32 xOffset;
+    f32 yOffset;
+    f32 zOffset;
+    f32 pointX;
+    f32 pointY;
+    f32 pointZ;
+    f32 radiusX;
+    f32 radiusY;
+    f32 xLimit;
+    f32 yLimit;
+    s32 i = 0;
+    s32 offset = 0;
+
+    dt = *(f32 *)(state + 0x14);
+    speed = dt / fn_802C9A50();
+    scale = lbl_805648C0 * fn_802A4AD4();
+    sp14 = *(f32 *)(basePos + 0) + *(f32 *)(state + 0x38) * scale;
+    sp18 = *(f32 *)(basePos + 4) + *(f32 *)(state + 0x3C) * scale;
+    sp1C = *(f32 *)(basePos + 8) + *(f32 *)(state + 0x40) * scale;
+    xOffset = sp14;
+    yOffset = sp18;
+    zOffset = sp1C;
+    out = *(f32 **)state;
+    goto check;
+loop:
+    points = *(u8 **)state;
+    entry = points + offset;
+    pointX = *(f32 *)(entry + 0) + xOffset;
+    pointZ = *(f32 *)(entry + 8) + zOffset;
+    pointY = *(f32 *)(entry + 4) + yOffset;
+    sp8 = pointX;
+    spC = pointY;
+    sp10 = pointZ;
+    if (pointZ > *(f32 *)(state + 0x18) &&
+        pointZ < *(f32 *)(state + 0x1C)) {
+        xLimit = lbl_805648B0 + pointZ * speed;
+        if (!(pointX * pointX >= xLimit * xLimit)) {
+            yLimit = lbl_805648B0 + pointZ * dt;
+            if (!(pointY * pointY >= yLimit * yLimit)) {
+                out[0] = sp8;
+                out[1] = spC;
+                out[2] = sp10;
+                out += 3;
+            }
+        }
+    }
+    offset += 0xC;
+    i++;
+check:
+    if (i < *(s32 *)(state + 4)) goto loop;
+    *(s32 *)(state + 4) = ((s32)((u8 *)out - *(u8 **)state)) / 12;
+}
+
 #pragma pop
 s32 fn_802A711C(void *arg0, f32 arg1, f32 arg2, f32 arg3) {
     f32 values[3];
