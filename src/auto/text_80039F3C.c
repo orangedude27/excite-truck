@@ -654,6 +654,7 @@ int fn_8003BB58(void *arg0) {
     }
     return 1;
 }
+#pragma scheduling on
 
 void *fn_8003BCC0(void) { return *(void **)&lbl_8037B8A0; }
 
