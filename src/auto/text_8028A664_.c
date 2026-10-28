@@ -842,38 +842,53 @@ extern f32 lbl_805643E4;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_8028CD80(s32 arg0, s32 arg1, void *arg2, f32 *arg3, f32 farg0) {
-    struct Entry { f32 f[10]; } *dst;
+    struct Ring { void *data; s32 head; s32 tail; } *ring = (struct Ring *)arg0;
     f32 *src = (f32 *)arg2;
-    f32 *vel = (f32 *)arg3;
-    s32 *arr = (s32 *)arg0;
-    s32 count = arr[2] - arr[1];
-    s32 max = arg1 & (-arg1 & ~arg1) >> 31;
-    f32 now = fn_801E7E18();
-    f32 t;
-    f32 a;
-    f32 b;
-    f32 c;
-    s32 i;
-    if (max < count) count = max;
-    for (i = 0; i < count; i++) {
-        dst = (struct Entry *)(arr[0] + (arr[1] + i) * 0x28);
-        dst->f[0] = src[0];
-        dst->f[1] = src[1];
-        dst->f[2] = src[2];
-        t = vel[2] + fn_80287BC8(now, -farg0);
-        dst->f[3] = vel[1] + fn_80287BC8(now, -farg0);
-        dst->f[4] = vel[0] + fn_80287BC8(now, -farg0);
-        a = fn_80287BC8(lbl_805643E0, lbl_805643E4);
-        b = fn_80287BC8(lbl_805643E0, lbl_805643E4);
-        c = fn_80287BC8(lbl_805643E0, lbl_805643E4);
-        dst->f[5] = i;
-        dst->f[6] = c;
-        dst->f[7] = b;
-        dst->f[8] = now;
+    f32 *vel = arg3;
+    register s32 count;
+    register s32 limit;
+    register s32 i;
+    f32 now;
+    f32 src0;
+    f32 src1;
+    f32 src2;
+    f32 temp_y;
+    f32 temp_z;
+    f32 temp_x;
+    f32 rand0;
+    f32 rand1;
+    f32 rand2;
+    f32 *dst;
+
+    now = fn_801E7E18();
+    count = ring->tail - ring->head;
+    limit = arg1 & ((-arg1 & ~arg1) >> 31);
+    if (limit < count) count = limit;
+    for (i = 0; i < count;) {
+        dst = (f32 *)((u8 *)ring->data + (ring->head + i) * 0x28);
+        src0 = src[0];
+        src1 = src[1];
+        dst[0] = src0;
+        src2 = src[2];
+        dst[1] = src1;
+        dst[2] = src2;
+        temp_z = vel[2] + fn_80287BC8(-farg0, farg0);
+        temp_y = vel[1] + fn_80287BC8(-farg0, farg0);
+        temp_x = vel[0] + fn_80287BC8(-farg0, farg0);
+        dst[3] = temp_x;
+        dst[4] = temp_y;
+        dst[5] = temp_z;
+        rand0 = fn_80287BC8(lbl_805643E0, lbl_805643E4);
+        rand1 = fn_80287BC8(lbl_805643E0, lbl_805643E4);
+        rand2 = fn_80287BC8(lbl_805643E0, lbl_805643E4);
+        dst[6] = rand2;
+        i++;
+        dst[7] = rand1;
+        dst[8] = rand0;
+        dst[9] = now;
     }
-    arr[1] += count;
-    return 0;
+    ring->head += count;
 }
 #pragma pop
