@@ -286,33 +286,43 @@ extern int fn_802C1500(void *, int);
 extern void *fn_801FA8E0(void *, void *, int);
 extern int lbl_8055FAB0;
 extern float lbl_80564D14, lbl_80564D24, lbl_80564D28;
-void fn_802BCA8C(void *arg0, void *arg1, void *arg2) {
-    char pad[0x20];
-    int sp28;
-    int sp8, spC, sp10, sp14, sp18, sp1C;
-    float sp20, sp24;
+#pragma opt_common_subs off
+void fn_802BCA8C(void *arg0, void *arg1, struct Arg2 *arg2) {
+    struct CurveData curveData;
+    char sp28[0x38];
     int value;
-    void *curve, *result;
-    fn_802BC588((char *)arg0 + 0xC, &sp28, arg0, arg1, arg2);
-    value = fn_802C1500((char *)arg0 + 0xC, *(int *)((char *)arg2 + 0x28));
+    void *result;
+
+    fn_802BC588((char *)arg0 + 0xC, sp28, arg0, arg1, arg2);
+    value = fn_802C1500((char *)arg0 + 0xC, arg2->val28);
     if (*(unsigned char *)&lbl_8055FAB0 != 0) {
-        curve = fn_802BC9B0((char *)arg2 + 0x34, *(int *)((char *)arg2 + 0x2C), *(float *)((char *)arg1 + 0x10));
-        result = ((void *(*)(void *, void *, int))fn_801FA8E0)(curve, &sp28, value);
+        result = fn_801FA8E0(fn_802BC9B0(&arg2->curve, arg2->type2c, *(volatile float *)((char *)arg1 + 0x10)), sp28, value);
         *(void **)((char *)arg0 + 0x3C) = result;
         *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg0 + 0x34) - *(float *)((char *)result + 0x28);
-        if (*(unsigned char *)((char *)arg2 + 0x30) != 0 && *(int *)((char *)arg2 + 0x2C) != 0x74) {
-            float f3 = *(float *)((char *)arg2 + 0x4C);
-            float f2 = *(float *)((char *)arg2 + 0x50) + lbl_80564D24;
-            sp8 = *(int *)((char *)arg2 + 0x34);
-            spC = *(int *)((char *)arg2 + 0x38);
-            sp10 = *(int *)((char *)arg2 + 0x3C);
-            sp14 = *(int *)((char *)arg2 + 0x40);
-            sp18 = *(int *)((char *)arg2 + 0x44);
-            sp1C = *(int *)((char *)arg2 + 0x48);
-            sp20 = f3 + lbl_80564D28;
-            sp24 = f2;
-            curve = ((void *(*)(void *, int, float, int, int, int, int, int, int, float, float, float))fn_802BC9B0)(&sp8, 0x3EB, *(float *)((char *)arg1 + 0x10), sp18, sp14, sp10, spC, sp8, sp1C, f2, f3 + lbl_80564D28, f3);
-            ((void *(*)(void *, void *, int))fn_801FA8E0)(curve, &sp28, value);
+        if (arg2->flag30 != 0 && arg2->type2c != 0x74) {
+            float f3 = arg2->curve.f6;
+            float f2 = arg2->curve.f7;
+            float f0;
+            int r9, r8, r7, r6, r5, r0;
+
+            curveData.f6 = f3;
+            f0 = f3 + lbl_80564D28;
+            f2 += lbl_80564D24;
+            r9 = arg2->curve.w0;
+            r8 = arg2->curve.w1;
+            r7 = arg2->curve.w2;
+            r6 = arg2->curve.w3;
+            r5 = arg2->curve.w4;
+            r0 = arg2->curve.w5;
+            curveData.w0 = r9;
+            curveData.w1 = r8;
+            curveData.w2 = r7;
+            curveData.w3 = r6;
+            curveData.w4 = r5;
+            curveData.w5 = r0;
+            curveData.f7 = f2;
+            curveData.f6 = f0;
+            fn_801FA8E0(fn_802BC9B0(&curveData, 0x3EB, *(volatile float *)((char *)arg1 + 0x10)), sp28, value);
         }
     } else {
         *(void **)((char *)arg0 + 0x3C) = 0;
@@ -320,7 +330,7 @@ void fn_802BCA8C(void *arg0, void *arg1, void *arg2) {
     }
     *(int *)((char *)arg0 + 4) = 0;
 }
-
+#pragma opt_common_subs reset
 extern void fn_80131810(void);
 extern void fn_802C6B44(void);
 extern void *fn_802B561C(void *, const char *);
@@ -639,6 +649,9 @@ void fn_802BD5B0(void *arg0, int arg1) {
 
 int fn_802BD694(int arg0, int arg1) { return arg0 + arg1; }
 
+#pragma push
+#pragma inline_depth(0)
+#pragma use_lmw_stmw off
 void fn_802BD69C(void *arg0, int arg1) {
     unsigned char *p = arg0;
     unsigned char *entry;
@@ -671,6 +684,7 @@ void fn_802BD69C(void *arg0, int arg1) {
         offset+=0x44; i++;
     }
 }
+#pragma pop
 
 int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
 
@@ -911,29 +925,49 @@ extern void *fn_802BE008(void *);
 extern void *fn_802BE844(short, short, short);
 extern float lbl_80564D10, lbl_80564D2C;
 void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, float)) {
-    int x = (int)(*(float *)arg0 / lbl_80564D10);
-    int z = (int)(*(float *)((char *)arg0 + 8) / lbl_80564D10);
-    short baseX = ((short)x & (short)~0x7F) + 0x40;
-    short baseZ = ((short)z & (short)~0x7F) + 0x40;
-    short row;
-    short col;
-    for (row = baseZ - 0x80; row <= baseZ; row += 0x80) {
-        for (col = baseX - 0x80; col <= baseX; col += 0x80) {
-            void *cell = fn_802BE844(row, col, 0x40);
-            void *node = *(void **)((char *)cell + 4);
-            while (node) {
-                void *obj = fn_802BE008(node);
-                void *map = *(void **)((char *)obj + 0x58);
-                if (map && *(int *)((char *)obj + 0x24) <= 10) {
-                    void *mesh = *(void **)((char *)obj + 0x18);
-                    short ix = *(short *)((char *)node + 0xA);
-                    short iz = *(short *)((char *)node + 8);
-                    float dx = *(float *)((char *)mesh + 0x30) - *(float *)((char *)mesh + 0x2C);
-                    float dz = *(float *)((char *)mesh + 0x38) - *(float *)((char *)mesh + 0x34);
-                    int (*callback)(int, int, int, short, float, float, float) = (int (*)(int,int,int,short,float,float,float))arg1;
-                    callback(*(int *)((char *)obj + 0x20),
-                        *(int *)*(void **)map + ix * 0x44 + 0x30, 0x44, iz,
-                        dx * lbl_80564D2C, dz, dx);
+    float worldZ, worldX, scale, weight;
+    register float normZ;
+    register float normX;
+    int coordX, coordZ, baseX, baseZ;
+    int zCell, xCell, zOffset, xOffset;
+    void *cell, *node, *obj, *map, *mesh;
+    int ix;
+    short iz;
+    float dx, dz;
+
+    worldX = *(volatile float *)arg0;
+    scale = lbl_80564D10;
+    xOffset = -0x80;
+    worldZ = *(volatile float *)((char *)arg0 + 8);
+    normX = worldX / scale;
+    weight = lbl_80564D2C;
+    normZ = worldZ / scale;
+    coordX = (short)(int)normX;
+    coordZ = (short)(int)normZ;
+    baseX = (short)((coordX / 0x80) * 0x80 + 0x40);
+    baseZ = (short)((coordZ / 0x80) * 0x80 + 0x40);
+
+    for (xCell = baseX - 0x80; xOffset <= 0x80;
+         xOffset += 0x80, xCell += 0x80) {
+        for (zOffset = -0x80, zCell = baseZ - 0x80;
+             zOffset <= 0x80;
+             zOffset += 0x80, zCell += 0x80) {
+            cell = fn_802BE844((short)xCell, (short)zCell, 0x40);
+            node = *(void **)((char *)cell + 4);
+            while (node != 0) {
+                obj = fn_802BE008(node);
+                map = *(void **)((char *)obj + 0x58);
+                if (map != 0 && *(int *)((char *)obj + 0x24) <= 10) {
+                    mesh = *(void **)((char *)obj + 0x18);
+                    ix = *(short *)((char *)node + 0xA);
+                    iz = *(short *)((char *)node + 8);
+                    dx = *(float *)((char *)mesh + 0x30) -
+                         *(float *)((char *)mesh + 0x2C);
+                    dz = *(float *)((char *)mesh + 0x38) -
+                         *(float *)((char *)mesh + 0x34);
+                    arg1(*(int *)((char *)obj + 0x20),
+                         *(int *)*(void **)map + ix * 0x44 + 0x30,
+                         0x44, iz, dx * weight, dz, dx);
                 }
                 node = *(void **)node;
             }
