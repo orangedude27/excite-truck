@@ -409,6 +409,9 @@ void fn_8000FF88(s32 arg0, s32 arg1, const char *fmt, f32 farg0, f32 farg1, f32 
 #pragma scheduling on
 extern f32 lbl_805602B0;
 extern void fn_802344CC(char *, s32, s32, s32, f32, f32, f32);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_80010074(s32 arg0, s32 arg1, const char *fmt, ...) {
     char buffer[0x220];
     va_list args;
@@ -424,6 +427,8 @@ void fn_80010074(s32 arg0, s32 arg1, const char *fmt, ...) {
     fn_802344CC(buffer, x & 0xFF000000, y, 0, lbl_805602B0 + fy, fx - lbl_805602B0, lbl_805602C8 * fx);
     fn_802344CC(buffer, x, y, 0, fy, fx, lbl_805602C8 * fx);
 }
+#pragma scheduling on
+#pragma pop
 
 extern void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma push
@@ -677,6 +682,74 @@ void *fn_80010BEC(void *arg0) {
         lbl_8055D4A8 = 0;
     }
 }
+
+extern u32 lbl_802ED788[];
+extern u32 lbl_802ED7A0[];
+extern s32 lbl_8055D484;
+extern s32 lbl_8055D488;
+void fn_80010D88(f32 farg0, f32 farg1, f32 farg2) {
+    volatile s32 sp34;
+    volatile s32 sp30;
+    volatile f32 sp2C;
+    volatile f32 sp28;
+    volatile f32 sp24;
+    volatile f32 sp20;
+    volatile s32 sp1C;
+    volatile s32 sp18;
+    volatile f32 sp14;
+    volatile f32 sp10;
+    volatile f32 spC;
+    volatile f32 sp8;
+    f32 temp_f4;
+    f32 temp_f5;
+    f32 temp_f6;
+    s32 index;
+    s32 next;
+    Unk0x18 *entry;
+    Unk0x18 *nextEntry;
+
+    index = lbl_8055D4A8;
+    if (index < 0xFF) {
+        sp28 = *(f32 *)&lbl_802ED788[2];
+        sp10 = *(f32 *)&lbl_802ED7A0[2];
+        sp20 = *(f32 *)&lbl_802ED788[0];
+        sp24 = *(f32 *)&lbl_802ED788[1];
+        sp2C = *(f32 *)&lbl_802ED788[3];
+        sp8 = *(f32 *)&lbl_802ED7A0[0];
+        spC = *(f32 *)&lbl_802ED7A0[1];
+        sp14 = *(f32 *)&lbl_802ED7A0[3];
+        sp20 = farg0;
+        sp24 = farg1;
+        sp2C = farg2;
+        sp30 = lbl_8055D484;
+        sp34 = lbl_8055D484;
+        temp_f5 = lbl_80560264 + farg0;
+        temp_f4 = farg1 - lbl_80560264;
+        sp8 = temp_f5;
+        spC = temp_f4;
+        sp14 = farg2;
+        sp18 = lbl_8055D488;
+        sp1C = lbl_8055D488;
+        index = lbl_8055D4A8;
+        entry = &lbl_8034F6B0[index];
+        next = index + 1;
+        nextEntry = &lbl_8034F6B0[next];
+        entry->unk_0x00 = farg0;
+        entry->unk_0x04 = farg1;
+        entry->unk_0x08 = sp28;
+        entry->unk_0x0C = farg2;
+        entry->unk_0x10 = lbl_8055D484;
+        entry->unk_0x14 = lbl_8055D484;
+        nextEntry->unk_0x00 = temp_f5;
+        nextEntry->unk_0x04 = temp_f4;
+        nextEntry->unk_0x08 = sp10;
+        nextEntry->unk_0x0C = farg2;
+        nextEntry->unk_0x10 = lbl_8055D488;
+        nextEntry->unk_0x14 = lbl_8055D488;
+        lbl_8055D4A8 = next + 1;
+    }
+}
+
 #pragma scheduling on
 #pragma dont_inline reset
 
