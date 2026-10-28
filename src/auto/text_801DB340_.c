@@ -104,7 +104,9 @@ int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
 extern float lbl_80562B64;
 extern float lbl_80562B68;
 extern float lbl_80562B6C;
+#pragma push
 #pragma paired_single off
+#pragma opt_common_subs off
 #pragma scheduling invalid_target
 float fn_801DB398(float grid[4][4], float t, float u) {
     float values[4];
