@@ -801,6 +801,8 @@ extern "C" void fn_80209190(s32, f32);
 extern "C" void fn_8001DEA8(void);
 extern "C" void fn_80011A50(void);
 extern "C" void fn_80005464(void);
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_800070DC(void) {
     class Item {
     public:
@@ -817,8 +819,9 @@ extern "C" void fn_800070DC(void) {
     u8 *cursor;
     s32 i;
     s32 zero;
+    register f32 factor = lbl_80560130;
 
-    fn_80209190(lbl_8055D354, lbl_80560130);
+    fn_80209190(lbl_8055D354, factor);
     base = lbl_8034EEB8;
     ((Item *)base[3])->dispatch();
     ((Item *)*(void **)((u8 *)base + 0x5C))->dispatch();
@@ -836,14 +839,14 @@ extern "C" void fn_800070DC(void) {
     cursor = (u8 *)lbl_8034EEB8;
     i = 0;
     zero = 0;
-    do {
+    while (i < ((s32 *)lbl_8055D350)[5]) {
         obj = *(void **)(cursor + 0x18);
         item = (Item *)obj;
         item->dispatch();
         *(s32 *)(cursor + 0x10) = zero;
         cursor += 0x10;
         i++;
-    } while (i < ((s32 *)lbl_8055D350)[5]);
+    }
 
     fn_8001DEA8();
     fn_80011A50();
