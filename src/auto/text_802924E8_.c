@@ -196,6 +196,51 @@ void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
 }
 
 #pragma cplusplus on
+extern "C" int fn_80292EC0(void *, const char *, int *, int);
+extern "C" int fn_80292DE8(const char *);
+extern "C" void *fn_802AE414(void *);
+extern "C" void fn_80292F40(void *, void *, const char *);
+extern char lbl_8055C968;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" int fn_802929F8(const char *name, int unused) {
+    class Object {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual const char *getName(const char *);
+        virtual int getType(const char *, int);
+        virtual void v5();
+        virtual int getSize(const char *, int);
+    };
+    register char *strings = lbl_80349170;
+    volatile int index = -1;
+    if (((int (*)(void *, const char *, int *))fn_80292EC0)(lbl_804B4168, name, (int *)&index) != 0) {
+        unsigned char *entry = lbl_804B4168 + index * 0x18;
+        int count = *(int *)(entry + 0x14);
+        *(int *)(entry + 0x14) = count + 1;
+        return *(int *)(entry + 0x10);
+    }
+    Object *object = (Object *)fn_802AE414((void *)name);
+    if (object == 0) {
+        fn_802E317C(strings + 0x50, name);
+    }
+    const char *key = object->getName(&lbl_8055C968);
+    int id = fn_80292DE8(key);
+    int type = (int)object->getName(strings + 0x70);
+    int size = object->getSize(strings + 0x7C, 0);
+    int flag = object->getType(strings + 0x88, 0);
+    int result = ((int (*)(int, int, int, int, int))fn_802928D4)((int)object, id, type, size, flag);
+    fn_80292F40(lbl_804B4168, (void *)result, name);
+    return result;
+}
+#pragma cplusplus off
+#pragma pop
+
+#pragma cplusplus on
 extern "C" void fn_80292B48(void *arg0) {
     if (fn_80292FB4(lbl_804B4168, arg0) != 0 && arg0 != 0) {
         ((Dummy_80292B48 *)arg0)->f0(1);
@@ -484,6 +529,66 @@ void fn_80293178(void *arg0, int unused) {
     fn_802C9994(temp_r29);
     fn_802C9950(temp_r30);
 }
+
+void fn_80293230(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
+    int count;
+    int index;
+    int offset;
+    int mode;
+    u8 *object;
+    u8 *record;
+    u8 *template;
+    float x, y, z, a, b, c;
+    unsigned int secondWord, firstWord;
+    object = (u8 *)arg0;
+    count = *(s32 *)(object + 0x2FAC);
+    if (count >= 0xA0) return;
+    if (*(s32 *)(object + 0x28) == 0) return;
+    record = object + count * 0x4C;
+    index = fn_80129D18(0, 6);
+    offset = index * 0x34;
+    x = arg1[0];
+    y = arg1[1];
+    *(float *)(record + 0x50) = x;
+    z = arg1[2];
+    *(float *)(record + 0x54) = y;
+    template = lbl_804B4030 + offset;
+    a = arg2[0];
+    *(float *)(record + 0x58) = z;
+    arg1 = (float *)index;
+    b = arg2[1];
+    firstWord = *(unsigned int *)(template + 0x10);
+    secondWord = *(unsigned int *)(template + 0x14);
+    *(unsigned int *)(record + 0x2C) = firstWord;
+    *(unsigned int *)(record + 0x30) = secondWord;
+    *(unsigned int *)(record + 0x34) = *(unsigned int *)(template + 0x18);
+    firstWord = *(unsigned int *)(template + 0x1C);
+    secondWord = *(unsigned int *)(template + 0x20);
+    *(unsigned int *)(record + 0x38) = firstWord;
+    *(unsigned int *)(record + 0x3C) = secondWord;
+    *(unsigned int *)(record + 0x40) = *(unsigned int *)(template + 0x24);
+    firstWord = *(unsigned int *)(template + 0x28);
+    secondWord = *(unsigned int *)(template + 0x2C);
+    *(unsigned int *)(record + 0x44) = firstWord;
+    *(unsigned int *)(record + 0x48) = secondWord;
+    *(unsigned int *)(record + 0x4C) = *(unsigned int *)(template + 0x30);
+    *(float *)(record + 0x5C) = a;
+    *(float *)(record + 0x60) = b;
+    c = arg2[2];
+    *(float *)(record + 0x64) = c;
+    *(float *)(record + 0x68) = lbl_805644D8;
+    *(short *)(record + 0x6C) = arg3;
+    mode = 3;
+    if (fn_80287B5C(3, (void *)firstWord, c, b, a) != 0)
+        mode = 2;
+    *(int *)(record + 0x70) = mode;
+    *(unsigned char *)(record + 0x74) = ((int (*)(int))fn_80287B5C)(*(int *)(object + 0x28));
+    *(unsigned char *)(record + 0x75) = (unsigned char)arg1;
+    *(unsigned char *)(record + 0x76) = (unsigned char)arg4;
+    count = *(int *)(object + 0x2FAC);
+    *(int *)(object + 0x2FAC) = count + 1;
+}
+
 #pragma use_lmw_stmw reset
 
 #pragma push
