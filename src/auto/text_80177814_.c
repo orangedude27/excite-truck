@@ -188,6 +188,7 @@ long fn_801781C0(unsigned int arg0) {
     }
     return 0;
 }
+#pragma dont_inline on
 #pragma scheduling invalid_target
 unsigned char *fn_801781F4(long arg0) {
     volatile unsigned char *p = &lbl_8055E46C;
@@ -206,6 +207,7 @@ unsigned char *fn_801781F4(long arg0) {
     p[2] = b;
     return (unsigned char *)p;
 }
+#pragma dont_inline off
 
 void fn_80178224(void) {
     if (fn_801284F8(0x2780, &lbl_8055A304) != 0)
