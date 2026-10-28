@@ -532,25 +532,28 @@ extern float lbl_8056501C;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma optimize_for_size on
 void *fn_802D8C00(void *arg0, void *arg1) {
     void *obj;
-    int h = *(int *)((char *)arg0 + 0x28);
-    int w = *(int *)((char *)arg0 + 0x24);
+    int h;
+    int w;
     unsigned char *p;
-    int fmt, size, align, lod;
+    u32 lod;
 
     obj = fn_802D8A84(arg0, arg1);
+    h = *(int *)((char *)arg0 + 0x28);
     *(unsigned char *)((char *)obj + 0xCC) = 1;
+    w = *(int *)((char *)arg0 + 0x24);
     GXGetTexBufferSize((unsigned short)w, (unsigned short)h, 0xE, 0, 1);
-    size = w * h;
     p = *(unsigned char **)(*(unsigned char **)((char *)arg0 + 0x2C) + 8);
-    align = ((size >> 31) + size) >> 1;
-    DCFlushRange(p, (unsigned int)align);
-    fmt = *(int *)((char *)arg0 + 0x20);
-    lod = (((fmt ^ 2) >> 1) - ((fmt ^ 2) & fmt)) >> 31;
-    GXInitTexObj((char *)obj + 0x78, p, (unsigned short)w, (unsigned short)h, 0, 1, 1, (unsigned int)lod);
+    DCFlushRange(p, (w * h) / 2);
+    {
+        int fmt = *(int *)((char *)arg0 + 0x20);
+        lod = (u32)(((fmt ^ 2) >> 1) - ((fmt ^ 2) & fmt)) >> 31;
+    }
+    GXInitTexObj((char *)obj + 0x78, p, (unsigned short)w, (unsigned short)h, 0, 1, 1, lod);
     if (lod != 0) {
-        GXInitTexObjLOD((char *)obj + 0x78, 5, 1, 0, 1, 0, lbl_80565018, (float)(fmt - 1), lbl_8056501C);
+        GXInitTexObjLOD((char *)obj + 0x78, 5, 1, 0, 1, 0, lbl_80565018, (float)(*(int *)((char *)arg0 + 0x20) - 1), lbl_8056501C);
     }
     fn_802D7780(obj, arg0);
     return obj;
