@@ -1513,6 +1513,8 @@ extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 8) = 1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8012E2CC(void *arg0) {
     u8 *obj = (u8 *)arg0;
     void *done;
@@ -1557,6 +1559,7 @@ after_state:
     } while (done != 0);
     obj[0xA20] = 0;
 }
+#pragma pop
 
 extern "C" void *fn_8012E3D4(void *arg0) {
     void *temp_r0;
