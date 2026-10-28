@@ -323,6 +323,7 @@ void fn_802B224C(void *arg0) {
     *(int *)((char *)&lbl_804BE1FC + 4) = count + 1;
     items[count] = object;
 }
+#pragma cplusplus reset
 #pragma pop
 
 extern char lbl_8034A2E8[];
