@@ -309,6 +309,58 @@ void fn_801ECFE0(void *arg0) {
     } while (i < 4);
 }
 
+extern long fn_801E8954(long);
+extern long fn_801E897C(long);
+extern void fn_801F1378(void *, void *, float);
+extern void fn_801EDD68(void *);
+extern unsigned char lbl_8055EBC4;
+#pragma push
+#pragma dont_inline on
+void fn_801ED354(void *arg0) {
+    char *entry;
+    char *current;
+    char *base;
+    char *p;
+    long i;
+    long offset;
+
+    if (fn_801E8954(-1) != 0) {
+        entry = (char *)*(void **)((char *)arg0 + 0x170) +
+                *(long *)((char *)arg0 + 0x3F8) * 8;
+        fn_801ECF58(arg0);
+        fn_801ECFE0(arg0);
+        if (*(unsigned char *)(entry + 4) != 0) {
+            current = (char *)arg0;
+            base = *(char **)((char *)arg0 + 0x3C);
+            i = 0;
+            offset = 0;
+            do {
+                p = base + offset;
+                fn_801F131C(*(void **)(current + 0x4D4), 1, p,
+                            *(float *)(p + 0xB0));
+                i++;
+                offset += 0x6C;
+                current += 4;
+            } while (i < 4);
+        }
+    } else if (fn_801E897C(-1) != 0 || lbl_8055EBC4 != 0) {
+        fn_801ECC70(arg0);
+        current = (char *)arg0;
+        base = *(char **)((char *)arg0 + 0x3C);
+        i = 0;
+        offset = 0;
+        do {
+            p = base + offset;
+            fn_801F1378(*(void **)(current + 0x4D4), p,
+                        *(float *)(p + 0xB0));
+            i++;
+            offset += 0x6C;
+            current += 4;
+        } while (i < 4);
+        fn_801EDD68(arg0);
+    }
+}
+
 void fn_801ED68C(long arg0) {
     fn_801ECCE0(arg0, 1);
 }
