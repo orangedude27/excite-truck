@@ -287,6 +287,45 @@ void fn_8020FC6C(void) {
     }
 }
 
+#pragma push
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" long fn_8020FCC4(void) {
+    long index;
+    long result;
+    long current;
+    void *base;
+    struct Dummy_802113D8 *object;
+
+    base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+    object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
+    result = object->f6(&lbl_8055B674, lbl_8033C970);
+
+    index = ((long (*)(void))fn_8020FC6C)();
+    if (index >= 0 && index < lbl_804900AC.m_count) {
+        fn_802E30C8(lbl_8033C980, index, lbl_804900AC.m_entries[index], result);
+    }
+
+    if (index == ((long (*)(long))fn_8020F3B4)(0)) {
+        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
+            index = ((long (*)(long))fn_8020F3B4)(1);
+        }
+    }
+    if (index == ((long (*)(long))fn_8020F3B4)(0)) {
+        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(2)) {
+            index = ((long (*)(long))fn_8020F3B4)(2);
+        }
+    }
+
+    current = lbl_8055B658;
+    if (current != -1 && current != index) {
+        fn_802EC1D8();
+        lbl_8055B658 = index;
+    }
+}
+#pragma cplusplus off
+#pragma pop
+
 extern char *strncpy(char *, const char *, unsigned long);
 void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
     char *block;
@@ -432,27 +471,26 @@ extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct R
     struct Record_802101F8 rec;
     long i;
 
-    if (arg0 != 0) {
-        if (arg3 != 0) {
-            temp_r31 = arg0->v4();
-            rec.f0 = arg3->f0;
-            rec.f4 = arg3->f4;
-            rec.f8 = arg3->f8;
-            rec.fC = arg3->fC;
-            rec.f10 = arg3->f10;
-            rec.f14 = arg3->f14;
-            rec.f18 = arg3->f18;
-            for (i = 0; i < 3; i++) {
-                long step = arg2 + i;
-                if (i == 1) {
-                    float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
-                    rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
-                } else {
-                    rec.f10 = fn_80235EF0(temp_r31, step);
-                }
-                fn_80147940(arg0, &rec, arg1, step);
-                rec.f4 += rec.f10;
+    if (arg0 == 0) return;
+    if (arg3 != 0) {
+        temp_r31 = arg0->v4();
+        rec.f0 = arg3->f0;
+        rec.f4 = arg3->f4;
+        rec.f8 = arg3->f8;
+        rec.fC = arg3->fC;
+        rec.f10 = arg3->f10;
+        rec.f14 = arg3->f14;
+        rec.f18 = arg3->f18;
+        for (i = 0; i < 3; i++) {
+            long step = arg2 + i;
+            if (i == 1) {
+                float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
+                rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
+            } else {
+                rec.f10 = fn_80235EF0(temp_r31, step);
             }
+            fn_80147940(arg0, &rec, arg1, step);
+            *(float *)&rec.f4 += rec.f10;
         }
     }
 }
@@ -505,7 +543,8 @@ void fn_802103BC(void) {
 }
 #pragma dont_inline reset
 extern long fn_80009C84(long);
-extern signed char lbl_8055EEC0, lbl_8055EEC8, lbl_8055B660;
+extern unsigned char lbl_8055EEC0;
+extern signed char lbl_8055EEC8, lbl_8055B660;
 extern long lbl_8055EECC, lbl_8055B658;
 void fn_80210444(void) {
     register lbl_8055B660 = 1;
@@ -650,6 +689,48 @@ long fn_802111E4(long arg0) {
     fn_80012158();
     return 1;
 }
+
+void fn_802112AC(void) {
+    long mode;
+    long n;
+    long quotient;
+    long remainder;
+    long count;
+    void *base;
+    struct Dummy_802113D8 *object;
+
+    if (lbl_8055EEC0 != 0) {
+        lbl_8055EEE0 = -2;
+        if (lbl_8055EEBC > 0) {
+            fn_8020FCC4();
+            base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+            object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
+            object->f6(&lbl_8055B674, lbl_8033C970);
+            mode = *(long *)fn_8020FAF0();
+            if (mode == 1) {
+                lbl_8055EEE0 = -1;
+            } else if (mode == 2) {
+                n = lbl_8055B658;
+                if (n >= 0) {
+                    quotient = n / 10;
+                    remainder = n % 10;
+                    lbl_8055EEE4 = quotient;
+                    lbl_8055EEE0 = remainder;
+                }
+            }
+        }
+    }
+    count = lbl_8055EEBC / 10;
+    lbl_8055EEE8 = count;
+    if ((lbl_8055EEBC % 10) != 0 || lbl_8055EEBC == 0) {
+        count++;
+        lbl_8055EEE8 = count;
+    }
+    if (lbl_8055EEE4 >= count) {
+        lbl_8055EEE4 = 0;
+    }
+}
+
 #pragma scheduling on
 extern long fn_80265D64(void);
 extern void __AXDSPInitCallback_801769E0(void);
