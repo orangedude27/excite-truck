@@ -402,7 +402,26 @@ void fn_8020FFE4(long arg0) {
 }
 
 extern float fn_80235EF0(long, long);
-extern void fn_80147940(void *, long *, long, long);
+extern void fn_80147940(void *, void *, long, long);
+#pragma cplusplus on
+struct Dummy_802101F8 {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual long v4();
+};
+#pragma cplusplus reset
+struct Record_802101F8 {
+    long f0;
+    float f4;
+    long f8;
+    long fC;
+    float f10;
+    float f14;
+    long f18;
+};
+#pragma processor 750
 void fn_802101F8(void **arg0, long arg1, long arg2, void *arg3) {
     long sp20;
     float sp1C;
