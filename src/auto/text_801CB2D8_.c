@@ -374,7 +374,7 @@ void fn_801CC470(void) {
         fn_801CC594(object);
     }
     lbl_8055E884 = (s32 *)object;
-  }
+}
 
   void fn_801CC768(void *arg0, float arg1) {
     if (arg1 != *(float *)((char *)arg0 + 8)) {
@@ -392,32 +392,40 @@ void **fn_801CC784(void *arg0) {
 
 extern void *memset(void *, int, unsigned long);
 void *fn_801CC7A0(void *arg0) {
-    unsigned char *end;
-    unsigned char *p;
-    long zero;
-    unsigned char *base;
-    base = (unsigned char *)arg0;
-    end = base + 0x14C;
-    zero = 0;
-    p = base + 0x20;
+    unsigned char *base = (unsigned char *)arg0;
+    unsigned char *end = base + 0x14C;
+    long zero = 0;
+    unsigned char *p = base + 0x20;
+
     *(long *)(base + 8) = zero;
     *(long *)(base + 0xC) = zero;
     *(long *)(base + 0x10) = zero;
     *(long *)(base + 0x14) = zero;
     do {
-        memset(p, 0x7A, 3); p[3] = zero;
-        memset(p + 0x14, 0x7A, 3); p[0x17] = zero;
-        memset(p + 0x28, 0x7A, 3); p[0x2B] = zero;
+        memset(p, 0x7A, 3);
+        p[3] = zero;
+        memset(p + 0x14, 0x7A, 3);
+        p[0x17] = zero;
+        memset(p + 0x28, 0x7A, 3);
+        p[0x2B] = zero;
         p += 0x3C;
     } while (p < end);
-    memset(end, 0x7A, 3); base[0x14F] = 0;
-    memset(base + 0x160, 0x7A, 3); base[0x163] = 0;
-    memset(base + 0x174, 0x7A, 3); base[0x177] = 0;
-    memset(base + 0x188, 0x7A, 3); base[0x18B] = 0;
-    memset(base + 0x19C, 0x7A, 3); base[0x19F] = 0;
-    memset(base + 0x200, 0x7A, 3); base[0x203] = 0;
-    memset(base + 0x264, 0x7A, 3); base[0x267] = 0;
-    memset(base + 0x276, 0x7A, 3); base[0x279] = 0;
+    memset(end, 0x7A, 3);
+    base[0x14F] = 0;
+    memset(base + 0x160, 0x7A, 3);
+    base[0x163] = 0;
+    memset(base + 0x174, 0x7A, 3);
+    base[0x177] = 0;
+    memset(base + 0x188, 0x7A, 3);
+    base[0x18B] = 0;
+    memset(base + 0x19C, 0x7A, 3);
+    base[0x19F] = 0;
+    memset(base + 0x200, 0x7A, 3);
+    base[0x203] = 0;
+    memset(base + 0x264, 0x7A, 3);
+    base[0x267] = 0;
+    memset(base + 0x276, 0x7A, 3);
+    base[0x279] = 0;
     return arg0;
 }
 
@@ -987,6 +995,72 @@ void fn_801CD4CC(int arg0, int arg1) {
     } else {
         ((void (*)(char *, ...))fn_802E317C)(lbl_80337D34);
     }
+}
+
+extern int fn_8001BBB8(int, int, int, float);
+extern void fn_8001EFC4(int, void *, int);
+extern char lbl_80337D5C[];
+extern void fn_8001EFC4();
+void fn_801CD5B4(int arg0, int arg1, int arg2) {
+    unsigned char *base;
+    unsigned char *object;
+    int index;
+    int status;
+    void *data;
+    int current;
+
+    if (fn_801CE898() != 0)
+        return;
+    base = (unsigned char *)lbl_8055E884;
+    if (base[0x10] != 0)
+        return;
+
+    object = ((unsigned char *(*)(int))fn_801EA9A0)(arg0);
+    if (object[0] != 0)
+        index = object[0xB4] & 3;
+    else
+        index = -1;
+    if (index >= 0)
+        status = (base + index)[0x11];
+    else
+        status = 1;
+    if (status != 0)
+        return;
+
+    object = ((unsigned char *(*)(int))fn_801EA9A0)(arg0);
+    if (object[0] == 0)
+        return;
+    if (*(int *)(base + 0x2AC) != 0)
+        goto warning;
+
+    *(int *)(base + 0x2AC) = arg1;
+    *(int *)(base + 0x2B0) = arg2;
+    fn_8001EF5C(0, arg1);
+    if (*(int *)(base + 0x2B0) == 0)
+        fn_8001EF5C(2, 1);
+
+    object = ((unsigned char *(*)(int))fn_801EA9A0)(arg0);
+    data = object + 0x88;
+    ((void (*)(int, void *, int))fn_8001EFC4)(0, data, 1);
+    if (arg2 == 0)
+        ((void (*)(int, void *, int))fn_8001EFC4)(1, data, 1);
+
+    if (*(int *)(base + 0x2B4) < 0 && base[0x2BC] != 0) {
+        index = *(int *)(base + 0x2AC);
+        if (index >= 0) {
+            current = fn_8000DA10();
+            *(int *)(base + 0x2B4) =
+                ((int (*)(int, int, int, int, float))fn_8001BBB8)(
+                    current, *(int *)base, *((int *)base + 1), index,
+                    *(float *)(base + 0x2B8));
+        }
+    }
+    goto done;
+
+warning:
+    ((void (*)(char *, ...))fn_802E317C)(lbl_80337D5C);
+done:
+    return;
 }
 
 void fn_801CD730(s32 *arg0, s32 *arg1) {
