@@ -24,7 +24,7 @@ extern char lbl_8055C018[];
 void fn_8024C370(void) {}
 
 extern void fn_80232BA4(char *, int, int, int, float, float, float, float, float);
-extern char lbl_8055C08C[];
+extern char lbl_8055C08C;
 extern float lbl_80563930, lbl_80563940;
 extern float fn_8023293C();
 extern void fn_80230924(void *, float, float, float, float, float);
@@ -632,40 +632,68 @@ void fn_8024D0EC(void *arg0) {
 extern float lbl_80563948, lbl_80563944, lbl_8056394C;
 extern char lbl_8055C094;
 extern char lbl_80343F38[], lbl_80343F20[];
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_8024D248(void *arg0) {
-    float f30;
+    extern float lbl_80563948, lbl_80563944, lbl_8056394C;
+    extern char lbl_8055C094;
+    extern char lbl_80343F38[], lbl_80343F20[];
+    extern int fn_80232B70(int);
+    extern int __cntlzw(unsigned int);
+
     float f31;
-    char *text;
-    char *dst;
+    float f30;
+    float f0;
+    float f2;
+    float f_den;
+    int den_int;
+    int toggle;
     int count;
+    char *dst;
+    const char *src;
+
     f31 = (float)*(int *)((char *)arg0 + 0xC) / lbl_80563948;
     f30 = (float)*(int *)((char *)arg0 + 0x10) * lbl_80563944;
-    f31 = (f31 - lbl_8056394C) /
-        (*(float *)((char *)arg0 + 0x84) *
-         ((float (*)(int, const char *, float, float))fn_8023293C)(
-            *(int *)((char *)arg0 + 0x78), &lbl_8055C094,
-            *(float *)((char *)arg0 + 0x88), lbl_80563944));
-    f30 = (f30 - lbl_8056394C) /
-        (float)fn_80232B70(*(int *)((char *)arg0 + 0x78));
-    if (f30 < f31)
-        f31 = f30;
-    *(float *)((char *)arg0 + 0x84) = f31;
-    *(unsigned char *)((char *)arg0 + 0x6C) = 1;
-    text = lbl_80343F38;
-    if (*(unsigned char *)((char *)arg0 + 0x6C) != 0)
-        text = lbl_80343F20;
-    text = (char *)fn_80131234(text);
-    dst = (char *)arg0 + 0x6D;
-    count = 0xA;
-    for (;;) {
-        char c = *text++;
-        *dst++ = c;
-        if ((signed char)c == 0) break;
-        count--;
-        if (count <= 0) { dst[-1] = 0; break; }
-    }
-}
 
+    f31 = (f31 - lbl_8056394C) /
+          (*(float *)((char *)arg0 + 0x84) *
+           ((float (*)(int, const char *, float, float))fn_8023293C)(
+               *(int *)((char *)arg0 + 0x78), &lbl_8055C094,
+               *(float *)((char *)arg0 + 0x88), lbl_80563944));
+
+    den_int = fn_80232B70(*(int *)((char *)arg0 + 0x78));
+    f2 = f30 - lbl_8056394C;
+    f_den = (float)den_int;
+    f0 = f2 / f_den;
+
+    f0 = (f0 < f31) ? f0 : f31;
+
+    *(float *)((char *)arg0 + 0x84) = f0;
+    src = lbl_80343F38;
+    toggle = (unsigned int)__cntlzw(0) >> 5;
+    *(char *)((char *)arg0 + 0x6C) = toggle;
+    if (toggle) {
+        src = lbl_80343F20;
+    }
+    src = (const char *)fn_80131234(src);
+
+    count = 10;
+    dst = (char *)arg0 + 0x6D;
+    goto copy_char;
+count_more:
+    count--;
+    if (count > 0)
+        goto copy_char;
+    dst[-1] = 0;
+    goto copy_done;
+copy_char:
+    if ((signed char)(*dst++ = *src++) != 0)
+        goto count_more;
+copy_done:
+    ;
+}
+#pragma pop
 extern char lbl_80343F00[];
 extern void *memset(void *, int, unsigned int);
 extern void *memmove(void *, const void *, unsigned int);
