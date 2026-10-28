@@ -73,6 +73,7 @@ extern s32 lbl_8055E518;
 extern u8 lbl_8055E520, lbl_8055E523;
 extern f64 lbl_80562070;
 extern f32 lbl_80562078, lbl_8056207C, lbl_80562080;
+#pragma dont_inline fn_8018FC38
 void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
     f32 value;
     f32 result;
@@ -741,7 +742,7 @@ extern unsigned char lbl_804A16E8[];
 int fn_80191758(arg0)
 void *arg0;
 {
-    char *dst;
+    register char *dst;
     dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
     strcpy(dst, *(char **)((char *)arg0 + 0x20) + 0x234);
     dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
