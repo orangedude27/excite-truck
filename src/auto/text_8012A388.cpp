@@ -128,27 +128,29 @@ extern "C" void fn_8012A46C(void *, const char *) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
-    register u8 *buffer = (u8 *)arg3;
-    s32 result;
     register const char *strings = lbl_8032A630;
+    register char *buffer;
+    s32 result;
 
-    buffer += *(s32 *)((char *)arg2 + 0x2C);
-    buffer -= 8;
+    buffer = (char *)arg3 + *(s32 *)((char *)arg2 + 0x2C) - 8;
     *(void **)((char *)arg2 + 0x3C) = buffer;
     fn_8012A46C(buffer + 8, strings);
     result = (u32)__cntlzw((u32)*(s32 *)((char *)arg2 + 0x30) -
-                           (u32)fn_80132E7C(buffer + 8, *(s32 *)((char *)arg2 + 0x28))) >> 5;
+                           (u32)fn_80132E7C((char *)*(void **)((char *)arg2 + 0x3C) + 8,
+                                            *(s32 *)((char *)arg2 + 0x28))) >> 5;
     if (result) {
         if (*(u32 *)((char *)arg2 + 0x34) & 8) {
             fn_802E30C8(strings + 0xC);
             fn_802E30C8(strings + 0x34);
             fn_802E30C8(strings + 0x5C);
             fn_802E30C8(strings + 0xC);
-            fn_802E317C(strings + 0x88, arg0, arg1, arg2);
+            const char *message = strings + 0x88;
+            fn_802E317C(message, arg0, arg1, arg2);
         }
         *(u32 *)((char *)arg2 + 0x34) |= 8;
     } else {
-        fn_802E30C8(strings + 0xA8, arg0, arg1, arg2);
+        const char *message = strings + 0xA8;
+        fn_802E30C8(message, arg0, arg1, arg2);
     }
     return result;
 }
@@ -558,6 +560,9 @@ extern "C" void fn_8012BA1C(void *arg0) {
     }
 }
 #pragma pop
+extern "C" void fn_8012BC24(void **, void *);
+extern "C" void fn_8012C4D8(void *);
+extern "C" s32 fn_80128668(void *);
 extern "C" u32 fn_8012BB18(void) { return 1; }
 
 extern "C" void fn_8012BC24(void **arg0, void *arg1) {
