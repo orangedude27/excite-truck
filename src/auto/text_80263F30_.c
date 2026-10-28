@@ -37,51 +37,62 @@ extern int stricmp(const char *, const char *);
 extern int fn_802656C8(void *);
 extern int fn_80264538(int, int);
 extern void *fn_80264968(void *, int);
+
+static inline void *call_get_item(void *list, int idx) {
+    register void **vtab asm("r12") = *(void ***)list;
+    return ((void *(*)(void *, int))vtab[3])(list, idx);
+}
+
+static inline const char *call_get_name(void *item) {
+    register void **vtab asm("r12") = *(void ***)item;
+    return ((const char *(*)(void *))vtab[2])(item);
+}
+
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
     char sp8[0x28];
     char sp30[0xE0];
-    int prev_state;
-    void *list;
-    int cont;
-    int i;
-    void *item;
+    register const char *base asm("r31") = lbl_80346338;
+    register int prev_state asm("r30");
+    register void *list asm("r29");
+    register void *item asm("r28");
+    register int cont asm("r27");
+    register int r_arg0 asm("r26") = arg0;
+    register int r_arg2 asm("r25") = arg2;
 
     lbl_8055F450 = arg1;
     prev_state = fn_8020A69C();
     fn_8020A648(1);
-    if (arg0 != 0) {
+    if (r_arg0 != 0) {
         fn_80265A74();
     }
-    list = fn_80131810(lbl_80346338 + 0x68);
+    list = fn_80131810((void *)(base + 0x68));
     if (list != 0) {
         if (fn_802ECF00(lbl_8055C450) == 0) {
-            fn_802E317C(lbl_80346338 + 0x74, lbl_8055C450);
+            fn_802E317C(base + 0x74, lbl_8055C450);
         }
         fn_80265940();
         fn_802646D0(sp30);
         fn_8026451C(sp8);
         cont = 1;
-        for (i = 0; cont != 0; i++) {
-            item = ((void *(*)(void *, int))(*(void ***)list)[3])(list, i);
-            if (item == 0) {
-                break;
-            }
-            if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_80346338 + 0xAC) == 0) {
+        r_arg0 = 0;
+        while (cont != 0 && (item = ((void *(*)(void *, int))(*(void ***)list)[3])(list, r_arg0)) != 0) {
+            if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), base + 0xAC) == 0) {
                 cont = fn_802656C8(item);
             }
+            r_arg0++;
         }
         fn_8020A648(-1);
         fn_80265A74();
         if (fn_802ECF04() == 0) {
-            fn_802E317C(lbl_80346338 + 0xC0);
+            fn_802E317C(base + 0xC0);
         }
         fn_80131818(list);
         fn_80264538((int)sp8, -1);
         fn_80264968(sp30, -1);
     }
-    if (arg2 != 0) {
+    if (r_arg2 != 0) {
         fn_80265940();
     }
     fn_8020A648(prev_state);
