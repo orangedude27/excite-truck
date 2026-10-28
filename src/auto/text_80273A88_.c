@@ -349,67 +349,6 @@ void fn_80274EA8(void *arg0) {
 }
 
 static inline void helper_80274F74(void *arg0, void *arg1) {
-    float x;
-    float sine;
-    float z;
-    float y;
-    float magnitude;
-    float scale;
-    float cosine;
-
-    magnitude = PSVECMag(arg1);
-    if (magnitude > lbl_80564020) {
-        scale = lbl_80563FAC / magnitude;
-        x = scale * *(float *)arg1;
-        y = scale * *(float *)((char *)arg1 + 4);
-        z = scale * *(float *)((char *)arg1 + 8);
-        sine = (float)sin(magnitude);
-        cosine = (float)cos(magnitude);
-        {
-            float xx = x * x;
-            float yy = y * y;
-            float t = lbl_80563FAC - cosine;
-            float zz = z * z;
-            float sz = sine * z;
-            float tx = t * x;
-            float txx = t * xx;
-            float tyy = t * yy;
-            float ty = t * y;
-            float txy = y * tx;
-            float m00 = cosine + txx;
-            float tzz = t * zz;
-            float txz = z * tx;
-            float sy = sine * y;
-            *(float *)((char *)arg0 + 0x58) = m00;
-            *(float *)((char *)arg0 + 0x5C) = txy + sz;
-            {
-                float tyz = z * ty;
-                float sx = sine * x;
-                *(float *)((char *)arg0 + 0x64) = txy - sz;
-                *(float *)((char *)arg0 + 0x60) = txz - sy;
-                *(float *)((char *)arg0 + 0x68) = cosine + tyy;
-                *(float *)((char *)arg0 + 0x6C) = tyz + sx;
-                *(float *)((char *)arg0 + 0x70) = txz + sy;
-                *(float *)((char *)arg0 + 0x74) = tyz - sx;
-                *(float *)((char *)arg0 + 0x78) = cosine + tzz;
-            }
-        }
-    } else {
-        float zero = lbl_80563FB0;
-        float one = lbl_80563FAC;
-        *(float *)((char *)arg0 + 0x5C) = zero;
-        *(float *)((char *)arg0 + 0x58) = one;
-        *(float *)((char *)arg0 + 0x60) = zero;
-        *(float *)((char *)arg0 + 0x64) = zero;
-        *(float *)((char *)arg0 + 0x68) = one;
-        *(float *)((char *)arg0 + 0x6C) = zero;
-        *(float *)((char *)arg0 + 0x70) = zero;
-        *(float *)((char *)arg0 + 0x74) = zero;
-        *(float *)((char *)arg0 + 0x78) = one;
-    }
-}
-
-void fn_80274F74(void *arg0, void *arg1, float angle) {
     register float x;
     register float sine;
     register float z;
@@ -468,6 +407,10 @@ void fn_80274F74(void *arg0, void *arg1, float angle) {
         *(float *)((char *)arg0 + 0x74) = zero;
         *(float *)((char *)arg0 + 0x78) = one;
     }
+}
+
+void fn_80274F74(void *arg0, void *arg1, float angle) {
+    helper_80274F74(arg0, arg1);
     *(float *)((char *)arg0 + 0xBC) = angle;
 }
 
