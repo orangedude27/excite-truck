@@ -739,8 +739,9 @@ typedef void (*Setter)(void *, const char *);
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_801F6C04(void *self, int a, int b, void *object, int flags, int extra) {
-    int count, old, got;
+    int count, got;
     unsigned char *slot;
+    int old;
     DummyObj_801F7280 *object2;
 
     count = *(int *)((char *)self + 0x900);
