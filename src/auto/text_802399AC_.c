@@ -301,6 +301,7 @@ extern s32 lbl_803412B8;
 extern s32 lbl_803412C8;
 #pragma push
 #pragma small_data off
+#pragma scheduling invalid_target
 void *fn_8023AB78(void *arg0, s32 arg1, s32 arg2, ...) {
  va_list ap;
  register s32 offset;
@@ -453,6 +454,29 @@ zero_b:
 success:
     return 1;
 }
+
+#pragma push
+#pragma scheduling on
+void fn_8023AFD0(void *arg0) {
+    s32 temp_r28;
+    s32 temp_r29;
+    s32 temp_r30;
+    s32 temp_r31;
+    s32 temp_r3;
+    s32 sp8;
+    float factor;
+    void *p = arg0;
+    temp_r28 = *(s32 *)((char *)p + 0x10);
+    temp_r29 = *(s32 *)((char *)p + 0xC);
+    temp_r30 = *(s32 *)((char *)p + 8);
+    temp_r31 = *(s32 *)((char *)p + 4);
+    temp_r3 = fn_80131234(&lbl_8034127C[0]);
+    sp8 = 0;
+    factor = lbl_80563730;
+    fn_8022BAD0(0xCB, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3,
+                *(s32 *)((char *)p + 0x1C), sp8, factor);
+}
+#pragma pop
 
 void fn_8023B04C(void) {}
 
@@ -626,41 +650,44 @@ void fn_8023B400(void) {}
 
 s32 fn_8023B404(void) { return 0; }
 
+#pragma push
+#pragma scheduling off
 void fn_8023B40C(void *arg0) {
-    unsigned char state;
+    s32 state;
     void *obj;
-    void **vtable;
-    s32 (*call)(void *, s32);
+    s32 result;
+    register s32 (**method)(void *, s32);
 
-    state = fn_802104D0();
-    if (state == 1) {
+    if ((unsigned int)(state = fn_802104D0()) == 1) {
         fn_80214B94(3);
     } else {
         obj = *(void **)((char *)arg0 + 0x1C);
-        vtable = *(void ***)((char *)obj + 0xC);
-        call = (s32 (*)(void *, s32))((char *)vtable + 0x34);
-        call(obj, 0);
+        method = (s32 (**)(void *, s32))*(void **)((char *)obj + 0xC);
+        method[13](obj, 0);
         if (fn_80214D04() == 2) fn_80214CB4((void *)1);
         fn_80214B44(3);
     }
     if (state == 0) {
         *(s32 *)((char *)arg0 + 0x18) = 4;
-    } else if (fn_80214D04() == 2) {
-        *(s32 *)((char *)arg0 + 0x18) = 1;
     } else {
-        *(s32 *)((char *)arg0 + 0x18) = 0;
+        switch (fn_80214D04()) {
+        case 2:
+            *(s32 *)((char *)arg0 + 0x18) = 1;
+            break;
+        default:
+            *(s32 *)((char *)arg0 + 0x18) = 0;
+            break;
+        }
     }
-    if (*(unsigned char *)((char *)arg0 + 0x20) != state && state != 0) {
+    if (*(unsigned char *)((char *)arg0 + 0x20) != (unsigned int)state && state != 0) {
+        result = fn_80210570();
         obj = *(void **)((char *)arg0 + 0x1C);
-        vtable = *(void ***)((char *)obj + 0xC);
-        call = (s32 (*)(void *, s32))((char *)vtable + 0x34);
-        call(obj, fn_80210570());
+        method = (s32 (**)(void *, s32))*(void **)((char *)obj + 0xC);
+        method[13](obj, result);
         *(unsigned char *)((char *)arg0 + 0x20) = state;
     }
 }
-
-#pragma push
-#pragma small_data off
+#pragma pop
 extern s32 lbl_80341228[];
 #pragma pop
 #pragma push
