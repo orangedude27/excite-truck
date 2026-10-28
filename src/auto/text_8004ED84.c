@@ -306,38 +306,9 @@ check_argument:
 }
 
 int OSLoadFont(int arg0, int arg1) {
-    unsigned short encode = lbl_80558F58;
     int result;
-    int mode;
 
-    if (encode == 0xFFFF) {
-        goto initialize;
-    } else {
-        goto check_encoding;
-    }
-
-initialize:
-    mode = *(volatile int *)0x800000CC;
-    if (mode == 0)
-        goto read_encode;
-    if (mode < 0)
-        goto store_zero;
-    goto store_zero;
-
-read_encode:
-    encode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
-    lbl_80558F58 = encode;
-    goto set_string_s;
-
-store_zero:
-    encode = 0;
-    lbl_80558F58 = encode;
-
-set_string_s:
-    lbl_8055DA48 = (void *)ParseStringS;
-
-check_encoding:
-    switch (encode) {
+    switch (OSGetFontEncode()) {
     case 0:
         lbl_8055DA54 = (int *)arg0;
         result = ReadFont(arg1, 0, arg0);
