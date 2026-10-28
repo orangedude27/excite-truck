@@ -306,29 +306,42 @@ void fn_801D5488(void) {
     obj[0x4c] = 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_801D5520(char *arg0) {
  struct Manager { virtual void v0(); virtual void *get(int); };
  struct Node { virtual const char *name(); };
  extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void *); extern int fn_801D4CF8(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *,const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
- Manager *manager=(Manager *)fn_80131810(); int i=0;
- if(!manager) { fn_802E30C8((char *)&lbl_80338460+0x120,arg0); return; }
- for(;;) {
-  void *node=manager->get(i); if(!node) break;
-  const char *name=((Node *)node)->name();
-  if(stricmp(name,(char *)&lbl_80338460+0x150)==0) {
-   void *obj=fn_801284F8(0x13c,(char *)&lbl_80338460+0x160);
-   if(obj) obj=fn_801D4B34(obj);
-   if(fn_801D4CF8(obj,node)) {
-    int n=lbl_804423A4[1]++;
-    ((void **)lbl_804423A4[0])[n]=obj;
-   } else if(obj) ((void (*)(void *,int))(*(void ***)obj)[2])(obj,1);
-  }
-  i++;
+ char *base=(char *)&lbl_80338460;
+ Manager *manager=(Manager *)fn_80131810();
+ Node *node;
+ const char *name;
+ int i;
+ void *obj;
+ if(!manager) { fn_802E30C8(base+0x120,arg0); return; }
+ i=0;
+ goto fetch;
+body:
+ name=node->name();
+ if(stricmp(name,base+0x150)==0) {
+  obj=fn_801284F8(0x13c,base+0x160);
+  if(obj) obj=fn_801D4B34(obj);
+  if(fn_801D4CF8(obj,node)) {
+   int n=lbl_804423A4[1];
+   void **items=(void **)lbl_804423A4[0];
+   lbl_804423A4[1]=n+1;
+   items[n]=obj;
+  } else if(obj) ((void (*)(void *,int))(*(void ***)obj)[2])(obj,1);
  }
+ i++;
+fetch:
+ node=(Node *)manager->get(i);
+ if(node) goto body;
  fn_80131818(manager);
 }
 #pragma cplusplus reset
+#pragma pop
 
 extern int lbl_804423A4[];
 extern void fn_801D50B8(int);
