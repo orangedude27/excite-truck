@@ -657,6 +657,9 @@ extern "C" void fn_801D6080(void *arg0) {
 #pragma pop
 #pragma cplusplus reset
 
+#pragma push
+#pragma paired off
+#pragma paired_single off
 #pragma cplusplus on
 extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
     struct Dummy {
@@ -668,26 +671,35 @@ extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
         virtual void v5();
         virtual int find(char *, int);
     };
+    struct Data {
+        float input[3];
+        float output[3];
+        short index;
+        short pad;
+        int value;
+    };
     extern float PSVECDotProduct(float *, float *);
     extern void fn_801796CC(int, void *, int);
     Dummy *obj = (Dummy *)arg1;
-    float input[3], output[3], dot;
-    int count, offset, id, value;
+    Data data;
+    float dot;
+    int count, offset, id, valid;
     void *found, *vec;
     if (*(int *)((char *)arg0 + 0x14) <= 0) return;
     found = obj->get();
     id = *(int *)((char *)arg0 + 0xC);
-    if (id < 0 || found == 0) return;
-    if (((Dummy *)found)->find(lbl_803385D0, -1) != id) return;
-    input[0] = *(float *)arg2;
-    input[1] = *((float *)arg2 + 1);
-    input[2] = *((float *)arg2 + 2);
-    vec = obj->transform(input[0], input[1], input[2]);
-    output[0] = *(float *)vec;
-    output[1] = *((float *)vec + 1);
-    output[2] = *((float *)vec + 2);
-    obj->index();
-    dot = PSVECDotProduct(output, output);
+    valid = id >= 0 && found != 0 &&
+        ((Dummy *)found)->find(lbl_803385D0, -1) == id;
+    if (valid == 0) return;
+    data.input[0] = *(float *)arg2;
+    data.input[1] = *((float *)arg2 + 1);
+    data.input[2] = *((float *)arg2 + 2);
+    vec = obj->transform(data.input[0], data.input[1], data.input[2]);
+    data.output[0] = *(float *)vec;
+    data.output[1] = *((float *)vec + 1);
+    data.output[2] = *((float *)vec + 2);
+    data.index = obj->index();
+    dot = PSVECDotProduct(data.output, data.output);
     count = 0;
     offset = 0;
     goto test;
@@ -695,8 +707,8 @@ loop:
     {
         char *entry = (char *)*(int *)((char *)arg0 + 0x10) + offset;
         if (dot >= *(float *)(entry + 4)) {
-            value = *(int *)entry;
-            fn_801796CC(10, input, 32);
+            data.value = *(int *)entry;
+            fn_801796CC(10, &data, 32);
         }
     }
     offset += 8;
@@ -705,6 +717,7 @@ test:
     if (count < *(int *)((char *)arg0 + 0x14)) goto loop;
 }
 #pragma cplusplus reset
+#pragma pop
 
 void fn_801D628C(void *arg0) {
     *(int *)((char *)arg0 + 4) = 0;
