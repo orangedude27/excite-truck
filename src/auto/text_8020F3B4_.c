@@ -289,10 +289,11 @@ void fn_8020FC6C(void) {
 
 #pragma push
 #pragma dont_inline on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" long fn_8020FCC4(void) {
-    long index;
     long result;
+    long index;
     long current;
     void *base;
     struct Dummy_802113D8 *object;
@@ -300,12 +301,10 @@ extern "C" long fn_8020FCC4(void) {
     base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
     object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
     result = object->f6(&lbl_8055B674, lbl_8033C970);
-
     index = ((long (*)(void))fn_8020FC6C)();
     if (index >= 0 && index < lbl_804900AC.m_count) {
         fn_802E30C8(lbl_8033C980, index, lbl_804900AC.m_entries[index], result);
     }
-
     if (index == ((long (*)(long))fn_8020F3B4)(0)) {
         if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
             index = ((long (*)(long))fn_8020F3B4)(1);
@@ -316,7 +315,6 @@ extern "C" long fn_8020FCC4(void) {
             index = ((long (*)(long))fn_8020F3B4)(2);
         }
     }
-
     current = lbl_8055B658;
     if (current != -1 && current != index) {
         fn_802EC1D8();
@@ -324,6 +322,7 @@ extern "C" long fn_8020FCC4(void) {
     }
 }
 #pragma cplusplus off
+#pragma scheduling on
 #pragma pop
 
 extern char *strncpy(char *, const char *, unsigned long);
@@ -444,6 +443,42 @@ void fn_8020FFE4(long arg0) {
     if (old != lbl_8055EEE0) fn_8020FE90();
 }
 
+extern long lbl_8055B67C;
+extern signed char lbl_8055EEEC, lbl_8055EEED;
+long fn_802100AC(void) {
+    long state;
+    long index;
+    void *base;
+    struct Dummy_802113D8 *object;
+
+    fn_802EC12C();
+    state = lbl_8055EEE0;
+    if (state == -2) {
+        base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+        object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
+        fn_8020FDE4(0, (const char *)&lbl_8055B67C,
+                    (char *)object->f6(&lbl_8055B674, lbl_8033C970));
+        if ((unsigned char)lbl_8055EEEC != 0) {
+            fn_8020F608(0, fn_8000DA10());
+        }
+    } else if (state == -1) {
+        base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+        object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
+        fn_8020FDE4(1, (const char *)&lbl_8055B67C,
+                    (char *)object->f6(&lbl_8055B674, lbl_8033C970));
+        if ((unsigned char)lbl_8055EEED != 0) {
+            fn_8020F608(1, fn_8000DA10());
+        }
+    } else {
+        index = state + lbl_8055EEE4 * 10;
+        base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+        object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
+        fn_8020FDE4(2, (const char *)lbl_804900AC.m_entries[index],
+                    (char *)object->f6(&lbl_8055B674, lbl_8033C970));
+        lbl_8055B658 = index;
+    }
+}
+
 extern float fn_80235EF0(long, long);
 extern void fn_80147940(void *, void *, long, long);
 #pragma cplusplus on
@@ -471,12 +506,18 @@ extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct R
     struct Record_802101F8 rec;
     long i;
 
-    if (arg0 == 0) return;
-    if (arg3 != 0) {
+    if (arg0 != 0) {
+        if (arg3 != 0) goto body;
+        return;
+    body:
         temp_r31 = arg0->v4();
         rec.f0 = arg3->f0;
-        rec.f4 = arg3->f4;
-        rec.f8 = arg3->f8;
+        {
+            long f8 = arg3->f8;
+            long f4 = arg3->f4;
+            rec.f4 = f4;
+            rec.f8 = f8;
+        }
         rec.fC = arg3->fC;
         rec.f10 = arg3->f10;
         rec.f14 = arg3->f14;
