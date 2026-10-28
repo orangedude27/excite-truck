@@ -90,7 +90,7 @@ extern char lbl_80343780[];
 extern float lbl_8055F264;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma optimization_level 3
+#pragma optimization_level 4
 #pragma scheduling invalid_target
 s32 fn_80246938(void) {
     register s32 zero;
