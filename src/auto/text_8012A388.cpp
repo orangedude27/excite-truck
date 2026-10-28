@@ -1691,6 +1691,7 @@ extern "C" void fn_8012E81C(s32 arg0) {
     }
     fn_802E30C8(lbl_8032AD2C, name);
 }
+#pragma pop
 
 extern "C" s32 fn_8012E938(s32 arg0) {
     return fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0;
