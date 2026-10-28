@@ -192,16 +192,19 @@ int fn_8029F3BC(unsigned char *arg0) {
 #pragma scheduling on
 #pragma pop
 
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_8029F458(unsigned char *arg0, int arg1) {
     unsigned char buf[0x20];
+    signed char first;
     unsigned char c;
     int remaining;
     unsigned char *dst;
     int id;
-    int offset;
+    int *table;
     int i;
-    if (*(signed char *)arg0 == '$')
+    int offset;
+    if ((first = *(volatile signed char *)arg0) == '$')
         arg0++;
     dst = buf;
     remaining = 0x20;
@@ -219,22 +222,24 @@ copy:
         goto decrement;
 lookup:
     id = fn_8029F3BC(buf);
-    offset = 0;
+    table = lbl_804B9B7C;
     i = 0;
+    offset = 0;
     goto check;
 loop:
     {
-        unsigned char *entry = (unsigned char *)*(volatile int *)&lbl_804B9B7C[0] + offset;
-        if (*(int *)entry == id)
-            *(int *)(entry + 0x30) = arg1;
+        int address = *(volatile int *)&lbl_804B9B7C[0] + offset;
+        if (*(int *)address == id)
+            *(int *)(address + 0x30) = arg1;
     }
     offset += 0x34;
     i++;
 check:
-    if (i < *(volatile int *)&lbl_804B9B7C[1])
+    if (i < ((volatile int *)table)[1])
         goto loop;
 }
 #pragma dont_inline reset
+#pragma scheduling on
 unsigned char fn_8029F510(unsigned char *arg0, int arg1) {
     if (arg1 != 0) {
         *arg0 = 1;
@@ -476,31 +481,39 @@ extern "C" void fn_802A0098(void *out, void *arg0, void *arg1) {
     *(float *)((char *)out + 0x28) = *(float *)((char *)arg0 + 0x24) + *(float *)((char *)arg0 + 0x2C) * width;
 }
 
-extern float fn_80287BC8(float, float);
+extern "C" float fn_80287BC8(float, float);
 extern void fn_802A0098(void *, void *, Unk802A0794Params *);
 extern int fn_8028E584(int, float *, float *);
 extern int fn_8028E590(int, float *, float *, float);
 extern float lbl_805646C4;
+#pragma push
+#pragma cplusplus off
 void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
-    struct Result { int count; float data[12]; } out;
-    float a[3], b[3];
-    int i = 0;
+    struct Result {
+        int count;
+        float data[10];
+    } out;
+    float a[3];
+    float b[3];
+    int i;
+
     fn_802A0098(&out, arg0, params);
-    while (i < out.count) {
+    for (i = 0; i < out.count; i++) {
         a[2] = out.data[2] + fn_80287BC8(-out.data[6], out.data[6]);
         a[1] = out.data[1] + fn_80287BC8(-out.data[7], out.data[7]);
         a[0] = out.data[0] + fn_80287BC8(-out.data[6], out.data[6]);
-        b[2] = out.data[8] + fn_80287BC8(-out.data[9], out.data[9]);
-        b[1] = out.data[7] + fn_80287BC8(-out.data[10], out.data[10]);
-        b[0] = out.data[6] + fn_80287BC8(-out.data[9], out.data[9]);
-        if (*(unsigned char *)((char *)arg0 + 0x68))
+        b[2] = out.data[5] + fn_80287BC8(-out.data[8], out.data[8]);
+        b[1] = out.data[4] + fn_80287BC8(-out.data[9], out.data[9]);
+        b[0] = out.data[3] + fn_80287BC8(-out.data[8], out.data[8]);
+
+        if (*(unsigned char *)((char *)arg0 + 0x68) != 0) {
             fn_8028E590(*(int *)((char *)arg0 + 0x64), a, b, lbl_805646C4);
-        else
+        } else {
             fn_8028E584(*(int *)((char *)arg0 + 0x64), a, b);
-        i++;
+        }
     }
 }
-
+#pragma pop
 extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
 extern void* fn_801E8718(int);
 extern float PSVECDotProduct(const float*, const float*);
