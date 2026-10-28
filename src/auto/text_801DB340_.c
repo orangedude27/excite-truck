@@ -228,6 +228,7 @@ float fn_801DB398(float grid[4][4], float t, float u) {
         return p1 + coeff2;
     }
 }
+#pragma scheduling on
 
 float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     float a[4], b[4];
