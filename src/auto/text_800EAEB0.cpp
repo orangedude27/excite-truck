@@ -1809,6 +1809,7 @@ extern "C" bool ParseNextTick__Q46nw4hbm3snd6detail9SeqPlayerFb(void *self, bool
     } while (i < 16);
     return failed == 0;
 }
+#pragma use_lmw_stmw reset
 
 extern "C" u8 lbl_80323DDC[];
 extern "C" u8 lbl_80324024[];
