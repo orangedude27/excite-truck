@@ -6,6 +6,7 @@ extern float fn_80133960(const char *);
 extern int fn_80133844(const char *);
 extern unsigned long strlen(const char *);
 extern const char lbl_8032B8F8[];
+extern const char lbl_8032BA90[];
 
 extern int lbl_8055E07C;
 extern int lbl_80559B58;
