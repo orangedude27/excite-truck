@@ -77,13 +77,11 @@ void fn_8028A664(void) {
     *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
     fn_8028ABE8(p);
     fn_8028B3CC();
-#pragma scheduling off
     fn_801EEFDC((s32)fn_8028B93C, 0);
     fn_801EEFDC((s32)fn_8028B500, 1);
     fn_801EEFDC((s32)fn_8028BA44, 2);
     fn_801EEFDC((s32)fn_8028BA9C, 7);
     fn_801EEFDC((s32)fn_8028BB14, 8);
-#pragma scheduling on
 }
 #pragma cplusplus on
 
@@ -516,7 +514,7 @@ void fn_8028BD60(s32 arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
     struct Ring {
         void *data;
