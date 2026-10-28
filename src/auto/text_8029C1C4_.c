@@ -404,7 +404,7 @@ extern float lbl_8056464C, lbl_80564654, lbl_80564658, lbl_8056465C, lbl_8056466
 extern unsigned char lbl_8034968C[], lbl_80349698[];
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma small_data off
 extern "C" void fn_8029CBA0(void) {
