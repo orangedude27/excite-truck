@@ -164,50 +164,46 @@ static inline BOOL IsSjisTrailByte(u8 ch) {
     return (0x40 <= ch && ch <= 0xFC) && (ch != 0x7F);
 }
 
-unsigned short GetFontCode(unsigned int mode, unsigned short code) {
-    unsigned int lead;
-    unsigned int trail;
-    unsigned int base;
-    unsigned int valid;
-    if (mode == 1) {
-        if (code >= 0x20 && code <= 0xDF)
+u32 GetFontCode(u16 encode, u16 code) {
+    u32 tmp;
+    s32 trail;
+
+    if (encode == 1) {
+        if (code >= 0x20 && code <= 0xDF) {
             return lbl_803049F0[code - 0x20];
-        if (code > 0x889E && code <= 0x9872) {
-            lead = (code >> 8) - 0x88;
-            base = lead * 0xBC;
+        } else if (code > 0x889E && code <= 0x9872) {
+            tmp = ((code >> 8) - 0x88) * 0xBC;
             trail = code & 0xFF;
-            valid = 0;
-            if (trail >= 0x40) {
-                if (trail <= 0xFC) {
-                    if (trail != 0x7F)
-                        valid = 1;
-                }
+
+            if (!IsSjisTrailByte(trail)) {
+                return 0;
             }
-            if (valid == 0) return 0;
+
             trail -= 0x40;
-            if (trail >= 0x40) trail -= 1;
-            return base + trail + 0x2BE;
-        }
-        if (code >= 0x8140 && code < 0x879E) {
-            lead = (code >> 8) - 0x81;
-            base = lead * 0xBC;
+            if (trail >= 0x40) {
+                trail--;
+            }
+
+            return tmp + trail + 0x2BE;
+        } else if (code >= 0x8140 && code < 0x879E) {
+            tmp = ((code >> 8) - 0x81) * 0xBC;
             trail = code & 0xFF;
-            valid = 0;
-            if (trail >= 0x40) {
-                if (trail <= 0xFC) {
-                    if (trail != 0x7F)
-                        valid = 1;
-                }
+
+            if (!IsSjisTrailByte(trail)) {
+                return 0;
             }
-            if (valid == 0) return 0;
+
             trail -= 0x40;
-            if (trail >= 0x40) trail -= 1;
-            return lbl_80304B70[base + trail];
+            if (trail >= 0x40) {
+                trail--;
+            }
+
+            return lbl_80304B70[tmp + trail];
         }
-        return 0;
-    }
-    if (code > 0x20 && code <= 0xFF)
+    } else if (code > 0x20 && code <= 0xFF) {
         return code - 0x20;
+    }
+
     return 0;
 }
 
