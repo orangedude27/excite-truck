@@ -639,12 +639,12 @@ void fn_802D8FB4(void);
 extern int lbl_8055D058;
 extern int lbl_8055D078;
 #pragma scheduling invalid_target
-void fn_802CB38C(void *arg0, void *arg1, void *arg2) {
+int fn_802CB38C(void *arg0, void *arg1, void *arg2) {
     register void *saved0 = arg0;
     register void *saved2 = arg2;
     register void *saved1 = arg1;
     ((void (*)(void *, int, int, void *))fn_802CA57C)(saved0, (int)&lbl_8055D078, 0, saved2);
-    fn_802CA4E0((int)saved0, lbl_8055D058, 0, (int)saved1, (int)saved2);
+    return fn_802CA4E0((int)saved0, lbl_8055D058, 0, (int)saved1, (int)saved2);
 }
 #pragma scheduling on
 void fn_802CB3F4(void) {
@@ -722,10 +722,10 @@ char fn_802CAFF0(int arg0) {
 
 extern char lbl_8034B940[];
 int fn_802CB018(void) {
-    int result = -1;
-    int index = 1;
     int group;
     unsigned char *base = (unsigned char *)lbl_8055FCB0 + 0x4C;
+    int result = -1;
+    int index = 1;
 
     for (group = 0; group < 0x49; group++) {
         if (*(int *)(base + 0x00) == 0) { result = index; goto found; }
