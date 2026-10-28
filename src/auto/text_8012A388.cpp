@@ -1655,6 +1655,8 @@ extern "C" s32 fn_8012E490(s32 *arg0) {
 }
 
 extern "C" const char lbl_8032ACF4[];
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8012E498(void *arg0) {
     void *object;
     void *effect;
