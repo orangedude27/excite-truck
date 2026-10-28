@@ -1,4 +1,5 @@
 #include <types.h>
+extern "C" void fn_801282F4(void);
 extern "C" s8 lbl_8055DFF8;
 extern "C" u8 lbl_805599B8;
 extern "C" const char lbl_8032AE9C[];
@@ -1452,7 +1453,7 @@ extern "C" const char lbl_8032ACE0[];
 extern "C" void fn_8012DDA8(s32 arg0) {
     nw4r::ef::Effect *obj;
     Unk8012DFCCNode *node;
-    s32 found;
+    bool found;
 
     if (fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0) {
         return;
@@ -1462,18 +1463,18 @@ extern "C" void fn_8012DDA8(s32 arg0) {
         return;
     }
 
-    found = 0;
+    found = false;
     node = (Unk8012DFCCNode *)fn_8012E490((s32 *)((char *)obj + 0xA18));
     do {
         if (stricmp(node->unk_0xC, (const char *)arg0) == 0) {
-            found = 1;
+            found = true;
             node->unk_0x8 += 1;
             break;
         }
         node = node->next;
     } while (node != 0);
 
-    if (found == 0) {
+    if (!found) {
         fn_802E30C8(lbl_8032ACE0, (const char *)arg0);
         node = (Unk8012DFCCNode *)fn_8012E460((char *)obj + 8);
         if (node == 0) {
@@ -1484,9 +1485,9 @@ extern "C" void fn_8012DDA8(s32 arg0) {
             fn_8012DFE8(node, (const char *)arg0, (s32)fn_8012E060((char *)obj + 4, (const char *)arg0));
             fn_8012DFCC((Unk8012DFCCList *)((char *)obj + 0xA18), node);
             fn_8012DEE4(obj);
-            found = 1;
+            found = true;
         }
-        if (found == 0) {
+        if (!found) {
             ((void *(*)(const char *, void **))fn_8012BD98)((const char *)arg0, &lbl_8055E000);
         }
     }
@@ -1658,51 +1659,44 @@ extern "C" const char lbl_8032ACF4[];
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012E498(void *arg0) {
-    void *object;
-    void *effect;
-    void *entry;
-    s32 remaining;
     s32 removed;
+    s32 entry;
+    s32 effect;
+    s32 object;
 
     fn_8012E81C((s32)arg0);
-    object = fn_8012BD3C(lbl_8055E000, (const char *)arg0);
-    if (object != 0) {
-        remaining = *(s32 *)((u8 *)object + 0x9C) - 1;
-        *(s32 *)((u8 *)object + 0x9C) = remaining;
-        if (remaining == 0) {
-            effect = lbl_8055E014;
-            if (effect != 0) {
-                removed = 0;
-                entry = (void *)fn_8012E490((s32 *)((u8 *)effect + 0xA18));
-                while (entry != 0) {
-                    if (stricmp((const char *)((u8 *)entry + 0xC), (const char *)arg0) == 0) {
-                        fn_8012E67C((s32)effect, (s32)arg0);
-                        break;
-                    }
-                    entry = *(void **)((u8 *)entry + 4);
+    object = (s32)fn_8012BD3C(lbl_8055E000, (const char *)arg0);
+    if (object != 0 && --*(s32 *)(object + 0x9C) == 0) {
+        effect = (s32)lbl_8055E014;
+        if (effect != 0) {
+            removed = 0;
+            entry = fn_8012E490((s32 *)(effect + 0xA18));
+            while (entry != 0) {
+                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) == 0) {
+                    fn_8012E67C(effect, (s32)arg0);
+                    break;
                 }
-
-                entry = (void *)fn_8012E490((s32 *)((u8 *)effect + 0xA18));
-                while (entry != 0) {
-                    if (stricmp((const char *)((u8 *)entry + 0xC), (const char *)arg0) == 0) {
-                        fn_802E317C(lbl_8032ACF4);
-                    }
-                    entry = *(void **)((u8 *)entry + 4);
-                }
-
-                for (entry = (void *)fn_8012E674((u8 *)effect + 8);
-                     entry != 0; entry = *(void **)entry) {
-                    if (stricmp((const char *)((u8 *)entry + 0xC), (const char *)arg0) == 0) {
-                        fn_8012E630(entry);
-                        fn_8012E5E4((u8 *)effect + 8, entry);
-                        removed = 1;
-                        continue;
-                    }
-                }
-                if (removed != 0) return;
+                entry = *(s32 *)(entry + 4);
             }
-            fn_8012BB20((s32)&lbl_8055E000, object);
+            entry = fn_8012E490((s32 *)(effect + 0xA18));
+            while (entry != 0) {
+                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) == 0) {
+                    fn_802E317C(lbl_8032ACF4);
+                }
+                entry = *(s32 *)(entry + 4);
+            }
+            for (entry = fn_8012E674((void *)(effect + 8));
+                 entry != 0; entry = *(s32 *)entry) {
+                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) == 0) {
+                    fn_8012E630((void *)entry);
+                    fn_8012E5E4((void *)(effect + 8), (void *)entry);
+                    removed = 1;
+                    continue;
+                }
+            }
+            if (removed != 0) return;
         }
+        fn_8012BB20((s32)&lbl_8055E000, (void *)object);
     }
 }
 #pragma pop
