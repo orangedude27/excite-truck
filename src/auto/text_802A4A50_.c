@@ -661,7 +661,7 @@ void fn_802A62CC(void *arg0, s32 arg1) {
             (lbl_80564890 * temp_f30_2 * (temp_f6 - (temp_f2 / (lbl_80564860 * temp_f10)))))) /
         (lbl_80564860 * temp_f30_2));
 }
-
+#pragma scheduling on
 #pragma pop
 f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898;
