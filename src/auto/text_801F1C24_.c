@@ -1071,6 +1071,7 @@ extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4
     };
     void *path;
     void *obj;
+    void *newobj;
     void *entry;
     void *item;
     float f;
@@ -1080,12 +1081,12 @@ extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4
     obj = *(void **)((char *)arg0 + 4);
     path = (char *)arg2 + 0x2C;
     if (obj == 0) {
-        obj = fn_801284F8(0x108, (void *)&lbl_8033AAA8);
-        if (obj != 0) {
-            *(void **)obj = (void *)&lbl_8033AA60;
-            *(int *)((char *)obj + 0x104) = 0;
-            *(void **)((char *)arg0 + 4) = obj;
-            fn_802CD320(arg1, obj);
+        newobj = fn_801284F8(0x108, (void *)&lbl_8033AAA8);
+        if (newobj != 0) {
+            *(void **)newobj = (void *)&lbl_8033AA60;
+            *(int *)((char *)newobj + 0x104) = 0;
+            *(void **)((char *)arg0 + 4) = newobj;
+            fn_802CD320(arg1, newobj);
         }
     }
     obj = *(void **)((char *)arg0 + 4);
@@ -1227,43 +1228,48 @@ void fn_801F49F4(void) {
 }
 
 void fn_801F49F8(void *arg0, int arg1) {
-    void *selected[0x60];
+    void *selected[0x2C];
+    register char *next;
     char *entry;
-    char *next;
+    register unsigned int offset;
     int count;
     int i;
-    int j;
-    float value;
-    float maximum;
     float minimum;
-    entry = (char *)arg0;
+    float maximum;
+    float value;
+
     next = (char *)arg0 + 4;
+    entry = (char *)arg0;
+    offset = 0;
     count = 0;
     i = 0;
-    j = 0;
-    while (j < *(int *)((char *)arg0 + 0x544)) {
+    while (i < *(int *)((char *)arg0 + 0x544)) {
         if (fn_802CDB20(arg1, *(int *)(entry + 0x1C)) != 0) {
-            selected[i] = next;
+            selected[offset >> 2] = next;
             count++;
-            i++;
+            offset += 4;
         }
         entry += 0x1C;
         next += 0x1C;
-        j++;
+        i++;
     }
     maximum = lbl_80562F44;
     minimum = lbl_80562F40;
-    for (j = 0; j < count; j++) {
-        void *item = selected[j];
+    offset = (unsigned int)selected;
+    i = 0;
+    while (i < count) {
+        void *item = *(void **)offset;
         value = fn_802C88D4(item);
         if (value > *(float *)((char *)item + 0x14)) {
             value = *(float *)((char *)item + 0x10) * (value - *(float *)((char *)item + 0x14));
-            if (value > maximum) value = maximum;
-            if (value < minimum) value = minimum;
+            value = (maximum < value) ? maximum : value;
+            value = (value > minimum) ? value : minimum;
             fn_802C9900(value);
             fn_802C7040(*(int *)((char *)item + 0xC));
             fn_802C9904();
         }
+        offset += 4;
+        i++;
     }
 }
 
@@ -1274,6 +1280,64 @@ int fn_801F4B0C(void) { return 3; }
 void fn_801F4B14(void) {
 
 }
+
+#pragma push
+#pragma paired_single off
+#pragma paired off
+extern double fn_8002EFB4(float, double);
+extern int fn_802C7A3C(float, float, float);
+extern double lbl_80562FA0;
+extern float lbl_80562FA8;
+void fn_801F4B18(void *arg0, int arg1) {
+    struct LocalValues {
+        float scaledLow;
+        float scaledHigh;
+        float values[12];
+    } local;
+    register float scale;
+    register float first;
+    float low;
+    float high;
+    float value10;
+    float value0C;
+    int result;
+    char *entry;
+    int index;
+
+    scale = fn_801E7E18();
+    low = lbl_80562F40;
+    high = lbl_80562F44;
+    local.values[1] = low;
+    local.values[0] = high;
+    local.values[2] = low;
+    local.values[3] = low;
+    local.values[4] = high;
+    local.values[5] = low;
+    local.values[6] = low;
+    local.values[7] = low;
+    local.values[8] = high;
+    local.values[9] = low;
+    local.values[10] = low;
+    local.values[11] = low;
+
+    entry = (char *)arg0;
+    index = 0;
+    while (index < *(int *)((char *)arg0 + 0x104)) {
+        if (fn_802CDB20(arg1, *(int *)(entry + 8)) != 0) {
+            value10 = *(float *)(entry + 0x10);
+            value0C = *(float *)(entry + 0x0C);
+            local.scaledHigh = value10 * scale;
+            local.scaledLow = value0C * scale;
+            first = (float)fn_8002EFB4(local.scaledHigh, lbl_80562FA0);
+            result = fn_802C7A3C((float)fn_8002EFB4(local.scaledLow, lbl_80562FA0),
+                                 first, lbl_80562FA8);
+            fn_802C70AC(*(int *)(entry + 4), local.values, result, -1);
+        }
+        entry += 0x10;
+        index++;
+    }
+}
+#pragma pop
 
 extern int fn_801F1CF0(int);
 extern int fn_802CDAFC(int, int);
