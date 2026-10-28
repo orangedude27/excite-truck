@@ -564,6 +564,55 @@ extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
     return 0;
 }
 
+extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
+    u8 *entry;
+    void *object;
+    s32 handle;
+    s32 startTime;
+    s32 fileIndex;
+    s32 bufferSize;
+    u32 flags;
+    const char *strings = lbl_8032A630;
+
+    entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
+    flags = *(u32 *)(entry + 0x34);
+    if (!(flags & 8)) {
+        bufferSize = *(s32 *)(entry + 0x28);
+        ((void (*)(s32))fn_801282F4)(bufferSize);
+        fn_801282EC(0x80);
+        object = ((void *(*)(void *, s32))fn_801284F0)(entry, bufferSize + 0x80);
+        if (object != 0) {
+            startTime = fn_802E2C20();
+            handle = ((s32 (*)(void *))fn_802E36D8)((u8 *)arg0 + 0x20);
+            fileIndex = handle;
+            if (fileIndex != -1) {
+                *(void **)((u8 *)object + 0x78) = entry;
+                *(u32 *)((u8 *)object + 0x7C) = 0x4D474921;
+                fn_802E3A14(fileIndex, *(s32 *)(entry + 0x2C) + *(s32 *)((u8 *)arg0 + 0x80));
+                fn_802E3804(fileIndex, (u8 *)object + 0x80, *(s32 *)(entry + 0x28));
+                if (*(u32 *)(entry + 0x30) == (u32)fn_80132E7C((u8 *)object + 0x80, *(s32 *)(entry + 0x28))) {
+                    flags = *(u32 *)(entry + 0x34) | 0xC;
+                    *(u32 *)(entry + 0x34) = flags;
+                    *(void **)(entry + 0x3C) = (u8 *)object + 0x78;
+                    *(void **)(entry + 0x40) = object;
+                    fn_8012A46C((u8 *)object + 0x80, strings + 0x3B0);
+                    fn_802E30C8(strings + 0x3C0, arg0, entry, fn_802E2C20() - startTime);
+                } else {
+                    fn_802E30C8(strings + 0x3E4, entry);
+                    fn_8012A7FC();
+                }
+                fn_802E3734(&fileIndex);
+            }
+            flags = *(u32 *)(entry + 0x34);
+            if (!(flags & 8)) {
+                fn_80128660((s32)object);
+            }
+        }
+    }
+    flags = *(u32 *)(entry + 0x34);
+    return (flags >> 3) & 1;
+}
+
 extern "C" const char lbl_8032A630[];
 extern "C" const char lbl_805599A4[1];
 extern "C" s32 strstr(const char *, const char *);
@@ -1662,7 +1711,7 @@ extern "C" s32 fn_8012E490(s32 *arg0) {
 
 extern "C" const char lbl_8032ACF4[];
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" void fn_8012E498(void *arg0) {
     s32 removed;
     s32 entry;
