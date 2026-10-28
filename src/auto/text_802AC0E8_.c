@@ -36,26 +36,32 @@ int fn_802AC174(const char *arg0) {
 extern char *strstr(const char *, const char *);
 extern int lbl_802FAA50[];
 int fn_802AC1BC(const char *arg0, int arg1) {
-    struct Entry { const char *text; int flags; unsigned char align; };
-    struct Entry entries[12];
-    struct Entry *entry;
-    int i;
+    int entries[24];
+    int *src = lbl_802FAA50 - 1;
+    int *dst = entries - 1;
+    int i = 12;
     int flags = 0;
     int has_align = 0;
     int has_no_align = 0;
-    for (i = 0; i < 12; ++i) {
-        entries[i].text = ((struct Entry *)lbl_802FAA50)[i].text;
-        entries[i].flags = ((struct Entry *)lbl_802FAA50)[i].flags;
-        entries[i].align = ((struct Entry *)lbl_802FAA50)[i].align;
-    }
-    entry = entries;
-    while (entry->text != 0) {
-        if (strstr(arg0, entry->text) != 0) {
-            flags = (flags & (entry->align ? ~7 : 7)) | entry->flags;
-            if (has_align == 0 || entry->align != 0) has_align = 1;
-            if (has_no_align == 0 || entry->align == 0) has_no_align = 1;
+    do {
+        dst[1] = src[1];
+        dst[2] = src[2];
+        src += 2;
+        dst += 2;
+    } while (--i != 0);
+    {
+        int *entry = entries;
+        while (entry[0] != 0) {
+            if (strstr(arg0, (const char *)entry[0]) != 0) {
+                unsigned char align = ((unsigned char *)entry)[8];
+                int masked = flags & 7;
+                if (align != 0) masked = flags & ~7;
+                flags = masked | entry[1];
+                has_align = (has_align == 0 || align != 0);
+                has_no_align = (has_no_align == 0 || align == 0);
+            }
+            entry = (int *)((char *)entry + 12);
         }
-        entry++;
     }
     if (has_align == 0) flags |= 4;
     if (has_no_align == 0) flags |= 0x10;
@@ -99,31 +105,45 @@ extern void fn_802E30C8(const char *, ...);
 extern void *fn_801284F8(int, void *, void *);
 extern void *fn_8012850C(int, void *);
 extern int fn_802AC4A8(const char *, int);
+extern void fn_80128668(void *);
+extern void fn_80128670(void *);
+extern void fn_802328D4(void *);
+extern void fn_802C6CF8(void *);
 void fn_802AD308(void) {}
 
+#pragma scheduling invalid_target
 void fn_802AD414(void *arg0, float farg0) {
- int outer, offset, inner, byteOffset, count, idx; char *group,*entries,*entry,*records,*record; int *p; float a,b;
- outer=0; offset=0;
- while (outer < *(int *)((char *)arg0+0x24)) {
-  inner=0; byteOffset=0; group=*(char **)((char *)arg0+0x28)+offset;
-  count=*(int *)(group+4)-1;
-  if (count>0) {
-   entries=*(char **)(group+8);
-   do {
-    a=*(float *)(entries+byteOffset); entry=entries+byteOffset;
-    b=*(float *)(entries+(inner+1)*0x38);
-    if (farg0>=a && farg0<=lbl_80564ACC+b) {
-     idx=*(int *)group; records=*(char **)((char *)arg0+0x20); record=records+idx*0x28;
-     p=*(int **)(record+4); if(p) *p=*(int *)(entry+0x34);
-     break;
+    float base = lbl_80564ACC;
+    int outer = 0;
+    int offset = 0;
+    while (outer < *(int *)((char *)arg0 + 0x24)) {
+        int inner = 0;
+        int byteOffset = 0;
+        char *group = *(char **)((char *)arg0 + 0x28) + offset;
+        int count = *(int *)(group + 4);
+        if (count > 0) {
+            char *entries = *(char **)(group + 8);
+            do {
+                float a = *(float *)(entries + byteOffset);
+                char *entry = entries + byteOffset;
+                float b = *(float *)(entries + byteOffset + 0x38);
+                if (farg0 >= a && farg0 <= base + b) {
+                    int idx = *(int *)group;
+                    char *records = *(char **)((char *)arg0 + 0x20);
+                    char *record = records + idx * 0x28;
+                    int *p = *(int **)(record + 4);
+                    if (p) *p = *(int *)(entry + 0x34);
+                    break;
+                }
+                byteOffset += 0x38;
+                inner++;
+            } while (--count > 0);
+        }
+        offset += 0xC;
+        outer++;
     }
-    byteOffset+=0x38; inner++;
-   } while(--count);
-  }
-  offset+=0xC; outer++;
- }
 }
-
+#pragma scheduling on
 int fn_802ADCF8(int arg0) {
     int var_r0;
     int temp_r4;
@@ -172,11 +192,10 @@ void *fn_802ADE60(void **arg0, int arg1) {
     if (arg0 != 0) {
         count = *(int *)((char *)*arg0 + 4);
         offset = count * 0x74;
-        for (;;) {
+        do {
             fn_802AD30C(*(void **)(*(char **)*arg0 + offset + 0x64));
             offset -= 0x74;
-            if (!(count-- > 0)) break;
-        }
+        } while (!(count-- <= 0));
         *(int *)((char *)*arg0 + 4) = 0;
         obj = *arg0;
         if (obj != 0) {
@@ -195,21 +214,48 @@ void *fn_802ADE60(void **arg0, int arg1) {
     }
     return arg0;
 }
-#pragma scheduling on
-int fn_802ADF34(void **arg0,char *arg1,int arg2) {
- int result,index,count; char *header,*entry,*dst; char c;
- result=fn_802AC4A8(arg1,arg2);
- if(result!=0){
-  header=(char *)*arg0; index=*(int *)(header+4); entry=*(char **)header+index*0x74;
-  *(int *)(header+4)=index+1; dst=entry; count=0x64;
-  while(count>0){c=*arg1++;*dst++=c;if((signed char)c==0)break;count--;}
-  if(count==0)dst[-1]=0;
-  *(int *)(entry+0x64)=result;entry[0x68]=0;entry[0x69]=0;
-  return *(int *)(header+4)-1;
- }
- return -1;
-}
+#pragma scheduling invalid_target
+int fn_802ADF34(void **arg0, char *arg1, int arg2) {
+    int result;
+    char *header;
+    int index;
+    char *base;
+    char *entry;
+    char *dst;
+    int count;
+    char c;
 
+    result = fn_802AC4A8(arg1, arg2);
+    if (result != 0) {
+        header = (char *)*arg0;
+        index = *(int *)(header + 4);
+        base = *(char **)header;
+        entry = base + index * 0x74;
+        index++;
+        *(int *)(header + 4) = index;
+        dst = entry;
+        count = 0x64;
+        goto copy;
+check:
+        count--;
+        if (count > 0) goto copy;
+        dst[-1] = 0;
+        goto copied;
+copy:
+        c = *arg1++;
+        *dst++ = c;
+        if ((signed char)c != 0) goto check;
+copied:
+        /* Store the result and clear both entry flags after the bounded copy. */
+        *(int *)(entry + 0x64) = result;
+        entry[0x68] = 0;
+        entry[0x69] = 0;
+        header = (char *)*arg0;
+        return *(int *)(header + 4) - 1;
+    }
+    return -1;
+}
+#pragma scheduling on
 void fn_802ADFF4(int **arg0,int arg1){unsigned char *p=*(unsigned char **)*arg0+arg1*0x74;if(p[0x68]==0){p[0x68]=1;p[0x69]=0;*(float *)(p+0x6c)=lbl_8055E3C8;}}
 
 void fn_802AE02C(void *arg0, int arg1) {
