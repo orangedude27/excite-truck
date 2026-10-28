@@ -153,6 +153,66 @@ void *fn_8024E920(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+
+void fn_8024EA1C(void *arg0) {
+    s32 base = fn_8001668C((s32)((u8 *)arg0 + 0x60), 0);
+    s32 *secondary;
+    s32 choiceBase;
+    s32 selected;
+    u8 *dst;
+    u8 *src;
+    s32 count;
+    u8 c;
+
+    if (lbl_80498C48[4] != 0) {
+        ((s32 *(*)(s32, s32))fn_80016BC8)(base, 0)[0] =
+            *(s32 *)((u8 *)arg0 + 0x2C);
+    } else {
+        ((s32 *(*)(s32, s32))fn_80016BC8)(base, 0)[1] =
+            *(s32 *)((u8 *)arg0 + 0x2C);
+    }
+
+    *(s32 *)*(s32 **)((u8 *)arg0 + 0xDC) =
+        *(s32 *)((u8 *)base +
+                 *(s32 *)((u8 *)arg0 + 0x2C) * 4 + 0x64);
+
+    secondary = (s32 *)fn_8001668C((s32)((u8 *)arg0 + 0x60), 0);
+    choiceBase = fn_8001668C((s32)((u8 *)arg0 + 0x60), 0);
+    if (lbl_80498C48[4] != 0) {
+        selected = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceBase, 0)[0];
+    } else {
+        selected = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceBase, 0)[1];
+    }
+
+    {
+        s32 value = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0xCC) +
+                             *(s32 *)((u8 *)arg0 + 0x2C) * 0x14 + 0x10);
+        if (value == 0) {
+            value = *(s32 *)((u8 *)secondary + selected * 4 + 0x64);
+        }
+        fn_80255918(*(void **)((u8 *)arg0 + 0x4C), value);
+    }
+
+    fn_801345D8((u8 *)arg0 + 0xE0, 0x100, lbl_8034287C,
+                *(s32 *)((u8 *)arg0 + 0x2C) + 1);
+    src = fn_80131234((u8 *)arg0 + 0xE0);
+    dst = (u8 *)arg0 + 0xE0;
+    count = 0x100;
+    goto copy_loop;
+copy_count:
+    count--;
+    if (count <= 0) {
+        dst[-1] = 0;
+        return;
+    }
+copy_loop:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0) {
+        goto copy_count;
+    }
+}
+
 #pragma pop
 s32 fn_8024EB94(void *arg0) { return *(s32 *)((char *)arg0 + 0x1C); }
 
@@ -2009,12 +2069,12 @@ void *fn_802522A8(void *arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_80252320(void *arg0, u8 *arg1, signed char arg2, signed char arg3) {
-    s32 index = *(s32 *)((u8 *)arg0 + 8);
+void fn_80252320(void *arg0, u8 *arg1, signed char arg2, int arg3) {
+    register s32 index = *(s32 *)((u8 *)arg0 + 8);
     u8 *record = *(u8 **)((u8 *)arg0 + 4) + index * 0x48;
-    u8 *src;
-    u8 *dst;
-    s32 count;
+    register u8 *dst;
+    register u8 *src;
+    register s32 count;
     u8 c;
     *(s32 *)((u8 *)arg0 + 8) = index + 1;
     src = arg1;
@@ -2100,4 +2160,5 @@ s32 fn_802524BC(void *arg0, s32 arg1) {
     s32 *base = *(s32 **)((char *)arg0 + 4);
     return *(s32 *)((char *)base + offset + 0x44);
 }
-
+#pragma push
+#pragma opt_common_subs off
