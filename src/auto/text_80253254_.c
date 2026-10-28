@@ -839,6 +839,7 @@ void fn_80255920(void *arg0, s8 arg1) {
 __declspec(section ".sdata") extern char lbl_8055C1C0[];
 __declspec(section ".sdata") extern float lbl_80563A60;
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80255928(void *arg0, char *arg1) {
     extern void *lbl_80498E08[];
     extern s32 lbl_8055F33C;
@@ -852,7 +853,7 @@ void fn_80255928(void *arg0, char *arg1) {
     char ch;
     s32 count;
 
-    if (*(s8 *)((u8 *)arg0 + 0x58) != 0) {
+    if (*(volatile s8 *)((u8 *)arg0 + 0x58) != 0) {
         entries = lbl_80498E08;
         i = 0;
         goto scan_test;
@@ -951,27 +952,33 @@ struct Obj_80256548 {
 void fn_80256548(void *arg0) {
     extern float lbl_80563A04;
     extern unsigned char lbl_8055F330, lbl_8055F344, lbl_8055F345, lbl_8055F346, lbl_8055F347;
-    extern char lbl_803447C0[], lbl_8055C1D0[];
+    extern char lbl_803447C0[], lbl_8055C1D0;
     extern int lbl_8055CFF0, lbl_8055CFF4;
     extern void fn_80253004(s32, void *);
     extern void fn_802545C4(void *, int, int);
     extern void fn_80203E88(void *, float *, int);
-    extern void fn_802E30C8(char *, char *);
+    extern void fn_802E30C8(void *, ...);
     extern void fn_802C86E8(int);
     extern void fn_802C87B4(int, int, int, int);
     extern void fn_802C88BC(int);
-    float vec[3], out[3];
+    char *str_base = lbl_803447C0;
+    float vec[3];
+    struct Obj_80256548 out;
+
     vec[0] = lbl_80563A04; vec[1] = lbl_80563A04; vec[2] = lbl_80563A04;
     if (*(int *)((char *)arg0 + 0x120) == 0) {
-        if (lbl_8055F330 != 0) fn_80253004(*(int *)((char *)arg0 + 4), out);
-        else fn_802545C4(out, *(int *)((char *)arg0 + 0xE4), *(int *)((char *)arg0 + 8));
-        vec[0] = out[0]; vec[1] = out[1]; vec[2] = out[2];
+        if (lbl_8055F330 != 0) {
+            fn_80253004(*(int *)((char *)arg0 + 4), &out);
+        } else {
+            fn_802545C4(&out, *(int *)((char *)arg0 + 0xE4), *(int *)((char *)arg0 + 8));
+        }
+        vec[0] = out.pos[0]; vec[1] = out.pos[1]; vec[2] = out.pos[2];
     }
     fn_80203E88((char *)arg0 + 0xA8, vec, 0);
-    if (!lbl_8055F344) { lbl_8055F344 = 1; fn_802E30C8(lbl_8055C1D0, lbl_803447C0 + 0x314); }
-    if (!lbl_8055F345) { lbl_8055F345 = 1; fn_802E30C8(lbl_8055C1D0, lbl_803447C0 + 0x338); }
-    if (!lbl_8055F346) { lbl_8055F346 = 1; fn_802E30C8(lbl_8055C1D0, lbl_803447C0 + 0x36C); }
-    if (!lbl_8055F347) { lbl_8055F347 = 1; fn_802E30C8(lbl_8055C1D0, lbl_803447C0 + 0x398); }
+    if (!lbl_8055F344) { lbl_8055F344 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x314); }
+    if (!lbl_8055F345) { lbl_8055F345 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x338); }
+    if (!lbl_8055F346) { lbl_8055F346 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x36C); }
+    if (!lbl_8055F347) { lbl_8055F347 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x398); }
     fn_802C86E8(0);
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(-1);
