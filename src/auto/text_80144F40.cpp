@@ -22,6 +22,8 @@ extern "C" void *fn_80145FEC(void *, const char *, s32);
 extern "C" void *fn_801460F8(void *, const char *, s32);
 extern "C" void *fn_80146204(void *, const char *, s32);
 extern "C" void *fn_80146310(void *, const char *, s32);
+extern "C" void fn_8014647C(void *);
+extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *, s32);
 extern "C" void *fn_80146490(void *);
 extern "C" void fn_80145D8C(void *);
 
