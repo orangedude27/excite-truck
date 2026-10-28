@@ -29,7 +29,7 @@ extern void fn_801F70D0(void *, int);
 extern void *fn_801F6D60(void *, int);
 typedef void *FN_801F6A08_RETURN;
 extern FN_801F6A08_RETURN fn_801F6A08(void *, int);
-extern void fn_801F75A4(void *, void *, void *);
+extern void fn_801F75A4();
 extern void *fn_801F69C8(void *);
 extern void *fn_801F6D20(void *);
 extern void *fn_801F7090(void *);
