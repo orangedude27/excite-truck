@@ -608,8 +608,8 @@ extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80562FDC;
 extern float lbl_80562FE0;
 #pragma push
-#pragma paired on
-#pragma paired_single on
+#pragma paired off
+#pragma paired_single off
 void fn_801F65D0(void *arg0) {
     float delta[3];
     float var_f31, var_f30;
