@@ -722,6 +722,7 @@ char fn_802CAFF0(int arg0) {
 }
 
 extern char lbl_8034B940[];
+#pragma scheduling invalid_target
 int fn_802CB018(void) {
     register int *base = (int *)lbl_8055FCB0 + 0x13;
     register int index = 1;
@@ -750,6 +751,7 @@ found:
         fn_802E317C(lbl_8034B940);
     return (int)(lbl_8055FCB0 + result * 0x4C);
 }
+#pragma scheduling on
 
 #pragma push
 #pragma small_data on
