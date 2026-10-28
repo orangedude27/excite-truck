@@ -602,7 +602,6 @@ int fn_8003BB48(void) {
     return ((int *)lbl_8037B8A0)[1];
 }
 
-#pragma scheduling invalid_target
 int fn_8003BB58(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
