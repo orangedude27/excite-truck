@@ -772,6 +772,56 @@ extern "C" void* fn_80299FA8(void* arg0, void* arg1) {
     *(void**)arg1 = 0;
 }
 
+extern "C" float fn_80129DC4(int, float, float);
+extern "C" void fn_80288A58(void *, float *);
+extern float lbl_80564600;
+#pragma paired_single off
+#pragma scheduling invalid_target
+extern "C" void fn_80299FE0(void *unused, void *arg1, float unusedTime) {
+    register float upper = lbl_80564590;
+    float time = *(float *)((char *)arg1 + 0x98);
+    if (time > upper - lbl_80558DC4) {
+        register void *obj = arg1;
+        register char *entry = (char *)obj;
+        register int i = 0;
+        float previous[3];
+        float interpolated[3];
+        previous[0] = lbl_8056459C;
+        previous[1] = lbl_8056459C;
+        previous[2] = lbl_8056459C;
+        while (i < *(int *)((char *)obj + 0x94)) {
+            float amount = fn_80129DC4(0, lbl_8056459C, lbl_80564590);
+            int count = *(int *)((char *)obj + 0x94);
+            int nextIndex = (i + 1) % count;
+            char *next = (char *)obj + nextIndex * 0xC;
+            float z = *(float *)(entry + 0xC);
+            float y = *(float *)(entry + 8);
+            float x = *(float *)(entry + 4);
+            float deltaZ = *(float *)(next + 0xC) - z;
+            float deltaY = *(float *)(next + 8) - y;
+            float deltaX = *(float *)(next + 4) - x;
+            float scaledZ = amount * deltaZ;
+            float scaledY = amount * deltaY;
+            float scaledX = amount * deltaX;
+            float resultZ = z + scaledZ;
+            float resultY = y + scaledY;
+            float resultX = x + scaledX;
+            interpolated[0] = resultX;
+            interpolated[1] = resultY;
+            interpolated[2] = resultZ;
+            ((void (*)(int, float *, float *, float, float, float, float, float, float))fn_8028E584)(
+                *(int *)obj, interpolated, previous, resultZ, resultY, scaledZ, x, y, z);
+            fn_80288A58(interpolated, previous);
+            entry += 0xC;
+            i += 1;
+        }
+        *(float *)((char *)obj + 0x98) += lbl_80564600;
+    } else {
+        *(float *)((char *)arg1 + 0x98) = time + lbl_80564594;
+    }
+}
+#pragma scheduling on
+#pragma paired_single reset
 extern "C" void fn_8029A114(void* arg0) {
     float value0 = lbl_8056459C;
     float value1 = lbl_80564590;
@@ -921,26 +971,37 @@ extern "C" unsigned int lbl_8055CA8C;
 extern "C" char lbl_803494FC[];
 extern float lbl_805645C0;
 extern float lbl_8056460C;
+#pragma scheduling invalid_target
 extern "C" void *fn_8029A6F4(void *arg0) {
     struct Local {
         volatile float extra[6];
         unsigned char config[0x8C];
     } local;
+    int one;
+    int size;
+    int two;
+    int forty;
+    float value90;
+    float value9C;
+    float valueB8;
+    float value98;
+    float valueC0;
+    float value6460C;
 
     fn_8029A8B8(arg0);
     fn_8028E61C(local.config);
     memset(local.config, 0, 0x8C);
 
-    float value90 = lbl_80564590;
-    int one = 1;
-    float value9C = lbl_8056459C;
-    int size = 0x1F4;
-    float valueB8 = lbl_805645B8;
-    float value98 = lbl_80564598;
-    int two = 2;
-    float valueC0 = lbl_805645C0;
-    int forty = 0x40;
-    float value6460C = lbl_8056460C;
+    value90 = lbl_80564590;
+    value9C = lbl_8056459C;
+    valueB8 = lbl_805645B8;
+    value98 = lbl_80564598;
+    valueC0 = lbl_805645C0;
+    value6460C = lbl_8056460C;
+    one = 1;
+    size = 0x1F4;
+    two = 2;
+    forty = 0x40;
 
     *(int *)local.config = one;
     *(int *)(local.config + 0x04) = size;
@@ -952,12 +1013,12 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     *(float *)(local.config + 0x10) = value9C;
     *(float *)(local.config + 0x14) = value9C;
     *(float *)(local.config + 0x18) = value9C;
-    *(float *)(local.config + 0x1C) = value90;
-    *(float *)(local.config + 0x20) = value90;
-    *(float *)(local.config + 0x24) = value90;
     local.extra[0] = value90;
     local.extra[1] = value90;
     local.extra[2] = value90;
+    *(float *)(local.config + 0x1C) = value90;
+    *(float *)(local.config + 0x20) = value90;
+    *(float *)(local.config + 0x24) = value90;
     *(float *)(local.config + 0x30) = valueB8;
     *(float *)(local.config + 0x34) = valueC0;
     *(int *)(local.config + 0x44) = two;
@@ -965,16 +1026,16 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     *(float *)(local.config + 0x54) = value90;
     *(float *)(local.config + 0x58) = valueB8;
     *(float *)(local.config + 0x5C) = value90;
-    *(float *)(local.config + 0x60) = valueB8;
-    *(float *)(local.config + 0x64) = value90;
-    *(float *)(local.config + 0x68) = valueB8;
-    *(float *)(local.config + 0x6C) = value90;
     *(float *)(local.config + 0x70) = valueB8;
+    *(float *)(local.config + 0x68) = valueB8;
+    *(float *)(local.config + 0x60) = valueB8;
     *(float *)(local.config + 0x74) = value90;
-    *(float *)(local.config + 0x7C) = value6460C;
-    *(int *)(local.config + 0x80) = forty;
-    local.config[0x88] = (unsigned char)one;
-    local.config[0x89] = (unsigned char)one;
+    *(float *)(local.config + 0x6C) = value90;
+    *(float *)(local.config + 0x64) = value90;
+    *(float *)(local.config + 0x80) = value6460C;
+    *(int *)(local.config + 0x84) = forty;
+    local.config[0x88] = one;
+    local.config[0x89] = one;
 
     *(void **)((char *)arg0 + 0x160) =
         ((void *(*)(void *, const char *, unsigned int, int, int, int,
@@ -985,8 +1046,7 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     fn_801EEFDC((void *)fn_8029C024, 0xD);
     return arg0;
 }
-
-#pragma dont_inline reset
+#pragma scheduling on
 extern "C" void* fn_8029A820(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_801EF024((void *)fn_8029C024);
@@ -1087,6 +1147,7 @@ extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* arg0, int arg1) {
     return arg0;
 }
 
+#pragma paired_single off
 #pragma scheduling invalid_target
 extern "C" int fn_8029AF24(int arg0) {
     if (*(int *)((char *)arg0 + 0x1E0) >= 1) {
@@ -1104,7 +1165,7 @@ extern "C" int fn_8029AF24(int arg0) {
         }
         int value = *(int *)((char *)obj + 0x1EC);
         float ratio = (float)(-value) / lbl_80564618;
-        float temp_f31 = ((float (*)(float))fn_802C9A4C)(ratio);
+        float temp_f31 = fn_802C9A4C(ratio);
         fn_802C8BD0(*(int *)((char *)obj + 0x1E8));
         if (fn_802C8DBC(total * 4) != 0) {
             fn_8029B6E4(obj);
@@ -1117,10 +1178,11 @@ extern "C" int fn_8029AF24(int arg0) {
             fn_802C8E48();
             fn_802C8D74();
         }
-        ((float (*)(float))fn_802C9A4C)(temp_f31);
+        fn_802C9A4C(temp_f31);
     }
 }
 #pragma scheduling on
+#pragma paired_single reset
 extern "C" int fn_80287B24(int);
 extern "C" void fn_801BFD34(void*, void*, int);
 extern "C" void fn_80015B20(void*, void*, int);
@@ -1280,6 +1342,105 @@ extern "C" int fn_8029BA0C(void *arg0) {
 extern "C" void fn_8029BA8C(void* arg0) {
     fn_8029AF24(*(int*)arg0);
 }
+
+extern "C" void *fn_80288060(void *, int);
+extern "C" int lbl_802FA9F0[];
+extern float lbl_805645C4;
+#pragma scheduling invalid_target
+extern "C" void fn_8029BA94(void *arg0, void *arg1) {
+    struct Args {
+        int index;
+        float rate;
+        int unused;
+        int value;
+    };
+    int count;
+    int index;
+    char *record;
+    int size;
+    void *info;
+
+    if (((const Args *)arg1)->index < 0)
+        return;
+    count = fn_80287B14();
+    index = ((const Args *)arg1)->index;
+    if (index >= count)
+        return;
+    record = (char *)arg0 + index * 0x14;
+    switch (((*(unsigned int *)(record + 4)) & 0xF)) {
+    case 1:
+        info = fn_80288208(index);
+        index = ((const Args *)arg1)->index;
+        size = *(int *)((char *)info + 0x24);
+        record = (char *)arg0 + index * 0x14;
+        if (((const Args *)arg1)->value < 0) {
+            *(int *)(record + 4) = 2;
+            *(float *)(record + 8) = ((const Args *)arg1)->rate;
+            *(float *)(record + 0xC) = fn_80287BC8(lbl_80564598, lbl_80564590);
+            int choice = fn_80287B5C(size);
+            *(int *)(record + 0x10) = choice;
+            choice = ((int *)lbl_802FA9F0)[choice] % size;
+            *(int *)(record + 0x14) = (int)fn_80288060(info, choice);
+        } else {
+            *(int *)(record + 4) = 0x12;
+            *(float *)(record + 8) = ((const Args *)arg1)->rate;
+            float result = fn_80287BC8(lbl_805645C4, lbl_805645C0);
+            int remainderSource = ((const Args *)arg1)->value;
+            int zero = 0;
+            *(float *)(record + 0xC) = result;
+            int remainder = remainderSource % size;
+            *(int *)(record + 0x10) = zero;
+            *(int *)(record + 0x14) = (int)fn_80288060(info, remainder);
+        }
+        break;
+    default:
+        break;
+    }
+}
+#pragma scheduling invalid_target
+extern "C" void fn_8029BBD4(void *arg0, void *arg1, int arg2) {
+    void *base = arg0;
+    char *record = (char *)base + (int)arg1 * 0x14;
+    int index = (int)arg1;
+    unsigned int state;
+    if (arg2 == 0) {
+        if (*(int *)(record + 4) != 0) *(int *)(record + 4) = 3;
+        *(int *)(record + 0x14) = 0;
+        goto done;
+    }
+    state = *(unsigned int *)(record + 4);
+    if (state == 3) {
+        *(int *)(record + 4) = 1;
+        goto done;
+    }
+    if ((state & 0xF) != 2) goto done;
+    float deltaTime = fn_801E7E24();
+    float threshold = lbl_8056459C;
+    float currentTime = *(float *)(record + 0xC);
+    float elapsed = currentTime - deltaTime;
+    *(float *)(record + 0xC) = elapsed;
+    if (elapsed < threshold) {
+        *(int *)(record + 4) = 1;
+        *(float *)(record + 0xC) = threshold;
+        *(int *)(record + 0x14) = 0;
+        goto done;
+    }
+    if ((*(unsigned int *)(record + 4) & 0x10) != 0) goto done;
+    if (fn_80287B5C(0x28) != 0) goto done;
+    void *info = fn_80288208(index);
+    volatile int *table = (volatile int *)lbl_802FA9F0;
+    int size = *(volatile int *)((char *)info + 0x24);
+    int sequence = *(int *)(record + 0x10) + 1;
+    sequence %= 8;
+    int seed = table[sequence];
+    *(int *)(record + 0x10) = sequence;
+    int value = seed % size;
+    *(void **)(record + 0x14) = fn_80288060(info, value);
+done:
+    fn_8029B044(*(void **)base, index, *(void **)(record + 0x14));
+}
+
+#pragma scheduling on
 
 #pragma scheduling off
 extern "C" int fn_8029BD14(int arg0) {
