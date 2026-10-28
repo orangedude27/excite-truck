@@ -1,7 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <math.h>
+#define MEMRecordStateForFrmHeap MEMRecordStateForFrmHeap_SDK
 #include <revolution/MEM.h>
+#undef MEMRecordStateForFrmHeap
 #include "revolution/KPAD/__KPAD.h"
 #include "revolution/OS/OSInterrupt.h"
 #include "revolution/MTX/mtxtypes.h"
@@ -87,27 +89,23 @@ void WPADiSamplingCallback(s32 chan, s32 result) {
 }
 
 void *FindContainHeap_(MEMList *list, u32 addr) {
-    void *heap;
-    void *child;
-    void *block;
-    void *found;
+    MEMiHeapHead *found;
+    MEMiHeapHead *block;
+    MEMiHeapHead *child;
+    MEMiHeapHead *heap;
 
-    for (heap = MEMGetNextListObject(list, 0); heap != 0;
-         heap = MEMGetNextListObject(list, heap)) {
-        if (*(u32 *)((u8 *)heap + 0x18) <= addr &&
-            addr < *(u32 *)((u8 *)heap + 0x1C)) {
-            for (child = MEMGetNextListObject((MEMList *)((u8 *)heap + 0xC), 0);
-                 child != 0;
-                 child = MEMGetNextListObject((MEMList *)((u8 *)heap + 0xC), child)) {
-                if (*(u32 *)((u8 *)child + 0x18) <= addr &&
-                    addr < *(u32 *)((u8 *)child + 0x1C)) {
-                    for (block = MEMGetNextListObject((MEMList *)((u8 *)child + 0xC), 0);
-                         block != 0;
-                         block = MEMGetNextListObject((MEMList *)((u8 *)child + 0xC), block)) {
-                        if (*(u32 *)((u8 *)block + 0x18) <= addr &&
-                            addr < *(u32 *)((u8 *)block + 0x1C)) {
-                            found = FindContainHeap_((MEMList *)((u8 *)block + 0xC), addr);
-                            if (found != 0) return found;
+    heap = 0;
+    while ((heap = (MEMiHeapHead *)MEMGetNextListObject(list, heap)) != 0) {
+        if ((u32)heap->start <= addr && addr < (u32)heap->end) {
+            child = 0;
+            while ((child = (MEMiHeapHead *)MEMGetNextListObject(&heap->list, child)) != 0) {
+                if ((u32)child->start <= addr && addr < (u32)child->end) {
+                    block = 0;
+                    while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
+                        if ((u32)block->start <= addr && addr < (u32)block->end) {
+                            found = (MEMiHeapHead *)FindContainHeap_(&block->list, addr);
+                            if (found != 0)
+                                return found;
                             return block;
                         }
                     }
