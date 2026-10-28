@@ -99,7 +99,8 @@ void fn_80270B74(void) {
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
-void fn_80270C04(void *arg0, unsigned int arg1) {
+#pragma cplusplus on
+extern "C" void fn_80270C04(void *arg0, unsigned int arg1) {
     extern char lbl_80346B00[];
     extern char lbl_8049EDC8[];
     extern char lbl_8049F9D8[];
@@ -107,8 +108,8 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
     extern unsigned char lbl_8055F564;
     extern void fn_80272738(void *, void *);
     register int i = arg1;
-    register char *name = lbl_80346B00;
-    register char *record;
+    register const char *name = lbl_80346B00;
+    register const char *record;
     register unsigned char flag;
     register char *table;
 
@@ -124,7 +125,7 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
     while (i < lbl_8055F550) {
         DBPrintf_80270B00(name + 0x1F8, i);
         DBPrintf_80270B00(name + 0x208);
-        *(char **)(table + lbl_8055F554 * 0x1C) = record;
+        *(char **) (table + lbl_8055F554 * 0x1C) = (char *)record;
         if (flag != 0)
             fn_80272738(table + lbl_8055F554 * 0x1C, arg0);
         record += 0x60;
