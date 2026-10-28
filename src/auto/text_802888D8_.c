@@ -41,7 +41,7 @@ typedef struct {
 extern int lbl_8055F6DC;
 extern int lbl_8055C880;
 extern float lbl_80564280, lbl_8056428C, lbl_8056429C, lbl_805642A4, lbl_805642BC, lbl_805642C0, lbl_805642C4, lbl_805642C8, lbl_805642D4, lbl_805642D8, lbl_805642DC, lbl_805642E0, lbl_805642E4, lbl_805642E8, lbl_805642EC;
-extern int lbl_80348B10;
+extern char lbl_80348B10[];
 extern void *lbl_8055F6E0;
 extern int lbl_8055F6E4;
 extern int fn_80289554(int);
