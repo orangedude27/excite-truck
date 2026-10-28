@@ -107,54 +107,56 @@ struct BA54CallObj {
     virtual void *method4(float, float);
 };
 #pragma cplusplus reset
-void fn_8018185C(void *out_, const float *in) {
-    float *out = (float *)out_;
-    float x = in[1];
+#pragma scheduling invalid_target
+void fn_8018185C(void *arg0, const float *arg1) {
+    register float slope1 asm("f31");
+    float *out = (float *)arg0;
+    float x;
     float y;
-    float t;
     float delta;
     float denom;
     float first;
-    float slope1;
+    float second;
     float x2;
     float y2;
-    float v;
-    float slope2;
+    float t;
 
+    x = arg1[1];
     out[7] = x;
-    out[10] = in[3];
-    out[6] = lbl_80561CA0 * in[5];
+    out[10] = arg1[3];
+    out[6] = lbl_80561CA0 * arg1[5];
 
     if (x <= lbl_80561CA4) {
         x = lbl_80561CA4;
     }
-
-    y = (lbl_80561CA8 * in[0]) / x;
+    y = (lbl_80561CA8 * arg1[0]) / x;
     out[9] = lbl_80561CAC;
-    delta = out[7] - in[3];
-    first = lbl_80561CA0 * in[2];
-    t = lbl_80561CA0 * y;
+    delta = out[7] - arg1[3];
+    first = lbl_80561CA0 * arg1[2];
+    y = lbl_80561CA0 * y;
     denom = delta * delta;
     if (denom <= lbl_80561CA4) {
         denom = lbl_80561CA4;
     }
-    slope1 = (t - first) / denom;
+    slope1 = (y - first) / denom;
     out[8] = y / lbl_80561CB4;
     out[0] = slope1;
-    out[1] = out[6] + lbl_80561CB0 * slope1 * in[3];
-    out[2] = first + slope1 * (in[3] * in[3]);
+    out[1] = out[6] + (lbl_80561CB0 * slope1) * arg1[3];
+    out[2] = first + slope1 * (arg1[3] * arg1[3]);
 
-    x2 = in[4] - out[10];
+    x2 = arg1[4] - out[10];
     y2 = x2 * x2;
-    v = lbl_80561CA0 * (lbl_80561CB8 * in[2]) - first;
+    second = lbl_80561CA0 * (lbl_80561CB8 * arg1[2]);
+    t = lbl_80561CA0 * arg1[2];
     if (y2 <= lbl_80561CBC) {
         y2 = lbl_80561CBC;
     }
-    slope2 = v / y2;
-    out[3] = slope2;
-    out[5] = first + slope2 * (out[10] * out[10]);
-    out[4] = out[6] + lbl_80561CB0 * slope2 * out[10];
+    second = (second - t) / y2;
+    out[3] = second;
+    out[5] = t + second * (out[10] * out[10]);
+    out[4] = out[6] + (lbl_80561CB0 * second) * out[10];
 }
+#pragma scheduling on
 
 void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, float farg2) {
     float values[6];
@@ -1463,53 +1465,43 @@ void fn_8018A750(void *arg0, int arg_sp0) {
 #pragma paired_single off
 #pragma scheduling invalid_target
 void fn_8018A8A8(void *arg0) {
-    struct {
-        float sp8[3];
-        float sp14[3];
-        float sp20[3];
-        float sp2C[3];
-        float sp38[3];
-    } stack;
-    float angle;
-    float value;
-    float calculated;
-    float temp_f31;
-    float temp_f30;
+    float sp[15];
+    float temp_f1, temp_f2, temp_f3, temp_f3_2;
+    float temp_f4, temp_f4_2, temp_f31_2;
+    double temp_f30;
+    double temp_f31;
 
-    stack.sp38[0] = lbl_80561CAC;
-    stack.sp38[1] = lbl_80561DBC;
-    stack.sp38[2] = lbl_80561CAC;
-    stack.sp2C[0] = lbl_80561CAC;
-    stack.sp2C[1] = lbl_80561CD0;
-    stack.sp2C[2] = lbl_80561CAC;
-    stack.sp20[0] = lbl_80561CAC;
-    stack.sp20[1] = lbl_80561CAC;
-    stack.sp20[2] = lbl_80561CAC;
+    sp[12] = lbl_80561CAC;
+    sp[13] = lbl_80561DBC;
+    sp[14] = lbl_80561CAC;
+    sp[9] = lbl_80561CAC;
+    sp[10] = lbl_80561CD0;
+    sp[11] = lbl_80561CAC;
+    sp[6] = lbl_80561CAC;
+    sp[7] = lbl_80561CAC;
+    sp[8] = lbl_80561CAC;
     if (*(int *)((char *)arg0 + 0x26C4) != 0) {
         temp_f31 = lbl_8055E3C8;
-        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F20);
-        value = angle - lbl_80561D00;
-        temp_f30 = lbl_80561F28 * value;
-        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F30);
-        value = angle - lbl_80561F3C;
-        calculated = lbl_80561F38 * value;
-        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F40);
-        stack.sp14[1] = calculated;
-        value = angle - lbl_80561F4C;
-        stack.sp14[2] = temp_f30;
-        stack.sp14[0] = lbl_80561F48 * value;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), stack.sp38, stack.sp2C, stack.sp14, stack.sp20);
+        temp_f4 = (float)fn_8002EFB4((float)temp_f31, lbl_80561F20);
+        temp_f3 = temp_f4 - lbl_80561D00;
+        temp_f30 = lbl_80561F28 * temp_f3;
+        temp_f4_2 = (float)fn_8002EFB4((float)temp_f31, lbl_80561F30);
+        temp_f3_2 = temp_f4_2 - lbl_80561F3C;
+        temp_f31_2 = lbl_80561F38 * temp_f3_2;
+        temp_f2 = (float)fn_8002EFB4((float)temp_f31, lbl_80561F40);
+        temp_f1 = temp_f2 - lbl_80561F4C;
+        sp[4] = temp_f31_2;
+        sp[5] = (float)temp_f30;
+        sp[3] = lbl_80561F48 * temp_f1;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), &sp[12], &sp[9], &sp[3], &sp[6]);
     }
     if (*(int *)((char *)arg0 + 0x26C8) != 0) {
-        stack.sp8[0] = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
-        stack.sp8[1] = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
-        stack.sp8[2] = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), stack.sp38, stack.sp2C, stack.sp8, stack.sp20);
+        sp[0] = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
+        sp[1] = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
+        sp[2] = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), &sp[12], &sp[9], &sp[0], &sp[6]);
     }
 }
-#pragma scheduling on
-#pragma paired_single reset
-
 extern void fn_801C2BDC(void *, unsigned int *, unsigned int *, unsigned int *);
 void fn_8018A9F0(void *arg0, void *arg1) {
     float sp54, sp50, sp4C, sp48, sp44, sp40, sp3C, sp38, sp34, sp30, sp2C;
