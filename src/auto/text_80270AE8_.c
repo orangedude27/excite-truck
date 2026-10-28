@@ -501,6 +501,7 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     }
     return result;
 }
+#pragma pop
 #pragma cplusplus reset
 
 void fn_80273354(void) {
