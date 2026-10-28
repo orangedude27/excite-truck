@@ -136,23 +136,32 @@ __declspec(section ".data") extern void *lbl_804BE104;
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma opt_common_subs off
-void fn_802B0954(int arg0) {
+void fn_802B0954(void) {
     extern void fn_8002F634(void *, void *, int, int);
     extern void fn_802B0690(int *);
     extern void fn_802B0874(void);
     extern void fn_80128668(void *);
-    int i, off_i;
+    void *obj;
+    int off_i;
+    int i;
+    void *table;
+    int j;
+    int k;
+    char *row;
+    int off_j;
+    int off_k;
 
     fn_802B0874();
-    for (i = 0, off_i = 0; i < *(int *)((char *)&lbl_804BE104 + 4); i++, off_i += 4) {
-        void *obj = *(void **)(*(char **)&lbl_804BE104 + off_i);
+    table = &lbl_804BE104;
+    i = 0;
+    off_i = 0;
+    for (; i < *(int *)((char *)table + 4); off_i += 4, i++) {
+        obj = *(void **)(*(char **)&lbl_804BE104 + off_i);
         if (obj != 0) {
-            int j, off_j;
-            for (j = 0, off_j = 0; j < *(int *)((char *)obj + 0x10); j++, off_j += 0x80) {
-                char *row = *(char **)((char *)obj + 0xc) + off_j;
-                int k, off_k;
+            for (j = 0, off_j = 0; j < *(int *)((char *)obj + 0x10); off_j += 0x80, j++) {
+                row = *(char **)((char *)obj + 0xc) + off_j;
                 fn_802B0690((int *)(row + 0x7c));
-                for (k = 0, off_k = 0; k < *(int *)(row + 8); k++, off_k += 0x10) {
+                for (k = 0, off_k = 0; k < *(int *)(row + 8); off_k += 0x10, k++) {
                     fn_802B0690((int *)(*(char **)(row + 4) + off_k));
                 }
                 *(int *)(row + 8) = 0;
@@ -188,7 +197,7 @@ void fn_802B0954(int arg0) {
             fn_80128668(obj);
         }
     }
-    *(int *)((char *)&lbl_804BE104 + 4) = 0;
+    *(int *)((char *)table + 4) = 0;
 }
 #pragma dont_inline reset
 
