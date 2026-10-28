@@ -191,13 +191,13 @@ void fn_8024EA1C(s32 arg0) {
         void *object = *(void **)((u8 *)arg0 + 0x4C);
         s32 value = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0xCC) +
                              *(s32 *)((u8 *)arg0 + 0x2C) * 0x14 + 0x10);
-        if (value == 0) {
-            goto lookup_value;
+        switch (value) {
+        case 0:
+            value = *(s32 *)((u8 *)secondary + selected * 4 + 0x64);
+            break;
+        default:
+            break;
         }
-        goto use_value;
-    lookup_value:
-        value = *(s32 *)((u8 *)secondary + selected * 4 + 0x64);
-    use_value:
         fn_80255918(object, value);
     }
 
