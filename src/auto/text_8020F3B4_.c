@@ -76,12 +76,14 @@ void fn_8020F5DC(void) {
     lbl_8055EEF4 = 0;
 }
  
+#pragma dont_inline on
 #pragma scheduling invalid_target
 void *fn_8020F5F0(long arg0) {
     long offset = (arg0 << 6) * 100;
     return (void *)((char *)&lbl_80489CA0 + offset);
 }
 #pragma scheduling on
+#pragma dont_inline reset
 extern void *memset(void *, int, unsigned long);
 #pragma dont_inline on
 long fn_8020F608(long arg0, long arg1) {
@@ -519,6 +521,52 @@ long fn_802104FC(void) {
 void fn_80210510(void) {
     fn_802EC1C0();
 }
+
+long fn_80210570(void) {
+    long val = 3;
+    char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
+    long i;
+
+    for (i = 0; i < 48; i += 3) {
+        if (val == 3) {
+            val = *(long *)(ptr + 0x000);
+        } else if (*(long *)(ptr + 0x000) != val) {
+            return 2;
+        }
+
+        if (val == 3) {
+            val = *(long *)(ptr + 0x064);
+        } else if (*(long *)(ptr + 0x064) != val) {
+            return 2;
+        }
+
+        if (val == 3) {
+            val = *(long *)(ptr + 0x0C8);
+        } else if (*(long *)(ptr + 0x0C8) != val) {
+            return 2;
+        }
+
+        if (val == 3) {
+            val = *(long *)(ptr + 0x12C);
+        } else if (*(long *)(ptr + 0x12C) != val) {
+            return 2;
+        }
+
+        ptr += 0x190;
+    }
+
+    switch (val) {
+    case 0:
+        return 0;
+    case 1:
+        return 1;
+    case 2:
+        return 2;
+    default:
+        return 0;
+    }
+}
+
  
 extern long fn_80145E70(void *);
 extern long fn_802090D4(void *);
