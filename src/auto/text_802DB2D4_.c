@@ -76,18 +76,34 @@ void fn_802DB3FC(void) {
     GXSetTevAlphaOp(3, 0, 0, 0, 1, 0);
     GXSetTevAlphaIn(3, 7, 0, 4, 7);
 }
-#pragma pop
-void fn_802DB4E4(void) {
-    float m[12] = {0};
-    m[0] = *(float *)(lbl_804DB068 + 0xc);
-    m[6] = *(float *)(lbl_804DB068 + 0x10);
-    m[2] = *(float *)(lbl_804DB068 + 0x18);
-    m[8] = *(float *)(lbl_804DB068 + 0x1c);
-    GXLoadTexMtxImm(m, 0x1e, 1);
-    GXLoadTexMtxImm(&m[2], 0x21, 1);
-}
-
 #pragma scheduling invalid_target
+void fn_802DB4E4(void) {
+    volatile int m[16];
+    register float *q = (float *)lbl_804DB068;
+    m[8] = 0;
+    m[14] = 0;
+    m[0] = 0;
+    m[6] = 0;
+    m[9] = 0;
+    m[10] = 0;
+    m[11] = 0;
+    m[12] = 0;
+    m[13] = 0;
+    m[15] = 0;
+    *(volatile float *)&m[8] = q[3];
+    *(volatile float *)&m[14] = q[4];
+    m[1] = 0;
+    m[2] = 0;
+    m[3] = 0;
+    m[4] = 0;
+    m[5] = 0;
+    m[7] = 0;
+    *(volatile float *)&m[0] = q[6];
+    *(volatile float *)&m[6] = q[7];
+    GXLoadTexMtxImm((float *)&m[8], 0x1e, 1);
+    GXLoadTexMtxImm((float *)m, 0x21, 1);
+}
+#pragma scheduling on
 void fn_802DB58C(void) {
     int m[8];
     int *p = (int *)lbl_802FACD8;
@@ -292,32 +308,21 @@ void fn_802DBF30(void) {
 }
 
 extern void GXBegin(int, int, unsigned short);
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_802DBF54(int verts, int count) {
-    volatile unsigned short *dst = (volatile unsigned short *)0xCC008000;
-    unsigned short *src = (unsigned short *)verts;
+    int n;
+    int i;
+    volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     while (count > 0) {
-        int n = *src++;
+        n = *(unsigned short *)verts;
+        verts += 2;
         GXBegin(0xA0, 0, n);
-        if (n > 0) {
-            int i = 0;
-            if (n >= 8) {
-                for (; i + 8 <= n; i += 8) {
-                    *dst++ = *src++;
-                    *dst++ = *src++;
-                    *dst++ = *src++;
-                    *dst++ = *src++;
-                    *dst++ = *src++;
-                    *dst++ = *src++;
-                    *dst++ = *src++;
-                    *dst++ = *src++;
-                }
-            }
-            for (; i < n; i++) {
-                *dst++ = *src++;
-            }
-        }
         count -= n + 1;
+        for (i = 0; i < n; i++) {
+            *fifo = *(unsigned short *)verts;
+            verts += 2;
+        }
     }
 }
 #pragma push
