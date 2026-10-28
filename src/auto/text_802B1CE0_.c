@@ -348,6 +348,7 @@ extern "C" void fn_802B224C(void *arg0) {
     *(int *)((char *)&lbl_804BE1FC + 4) = count + 1;
     items[count] = object;
 }
+#pragma scheduling on
 #pragma cplusplus reset
 #pragma pop
 
