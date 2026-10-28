@@ -221,6 +221,7 @@ extern void fn_80246938(void);
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma optimization_level 3
 s32 fn_80246AE8(void) {
     s32 args[5];
     s32 text[6];
