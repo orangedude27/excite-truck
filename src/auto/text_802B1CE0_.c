@@ -544,6 +544,90 @@ void *fn_802B3DA4(void *arg0, int arg1, int arg2) {
     return result;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
+    extern int lbl_8055F9B8;
+    extern void *lbl_8055F9BC;
+    typedef struct Entry802B3E00 {
+        short value;
+        unsigned short padding;
+        float x;
+        float y;
+        float z;
+        float weight;
+    } Entry802B3E00;
+    typedef struct Node802B3E00 {
+        void *data;
+        volatile int count;
+        int capacity;
+        struct Node802B3E00 *next;
+    } Node802B3E00;
+    typedef struct Queue802B3E00 {
+        Node802B3E00 *head;
+        Node802B3E00 *tail;
+    } Queue802B3E00;
+    typedef struct Pool802B3E00 {
+        void *unknown0;
+        Node802B3E00 *nodes;
+        volatile int used;
+        int capacity;
+    } Pool802B3E00;
+    Queue802B3E00 *queue = (Queue802B3E00 *)arg0;
+    Node802B3E00 *tail = queue->tail;
+    Node802B3E00 *node;
+    Pool802B3E00 *pool = (Pool802B3E00 *)lbl_8055F9BC;
+    Entry802B3E00 *out = 0;
+    int index;
+    void *data;
+
+    if (tail == 0 || tail->count + 1 > tail->capacity) {
+        Node802B3E00 *newNode = 0;
+        if (pool->used + 1 <= pool->capacity) {
+            newNode = (Node802B3E00 *)((char *)pool->nodes + pool->used++ * 0x10);
+            newNode->count = 0;
+            newNode->next = 0;
+        }
+        if (newNode != 0) {
+            if (queue->head == 0) {
+                queue->head = newNode;
+            }
+            {
+                Node802B3E00 *prev = queue->tail;
+                if (prev != 0) {
+                    prev->next = newNode;
+                }
+            }
+            queue->tail = newNode;
+            newNode->next = 0;
+            node = queue->tail;
+            index = node->count;
+            data = node->data;
+            out = (Entry802B3E00 *)((char *)data + index * 0x14);
+            node->count = index + 1;
+        }
+    } else {
+        index = tail->count;
+        data = tail->data;
+        out = (Entry802B3E00 *)((char *)data + index * 0x14);
+        tail->count = index + 1;
+    }
+    if (out != 0) {
+        float x = ((float *)arg1)[0];
+        float y = ((float *)arg1)[1];
+        out->x = x;
+        {
+            float z = ((float *)arg1)[2];
+            out->y = y;
+            out->z = z;
+        }
+        out->value = arg2;
+        out->weight = farg0;
+    } else {
+        lbl_8055F9B8 += 1;
+    }
+}
+#pragma pop
 int fn_802B3F0C(void *arg0) {
     return ((int *)arg0)[1];
 }
@@ -575,7 +659,7 @@ typedef struct {
     int (*m5C)(void);
 } Unk802B2C44;
 
-typedef struct {
+typedef struct Unk802B2C98 {
     void *m0;
     int m4;
     int m8;
