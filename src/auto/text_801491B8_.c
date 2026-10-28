@@ -1189,25 +1189,27 @@ extern "C" void* fn_8014E3CC(void* arg0, s32 arg1) {
 
 #pragma cplusplus off
 extern void *memset(void *, s32, s32);
+#pragma scheduling invalid_target
 void *fn_8014E4BC(void *arg0) {
     u8 *base = (u8*)arg0;
     u8 *p;
     u8 *end;
-    *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
-    *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
-    memset(base + 0x2C, 0x7A, 3); base[0x2F] = 0;
-    memset(base + 0x40, 0x7A, 3); base[0x43] = 0;
-    memset(base + 0x45, 0x7A, 3); base[0x48] = 0;
-    memset(base + 0x59, 0x7A, 3); base[0x5C] = 0;
-    memset(base + 0x6D, 0x7A, 3); base[0x70] = 0;
-    memset(base + 0x81, 0x7A, 3); base[0x84] = 0;
-    memset(base + 0x8B, 0x7A, 3); base[0x8E] = 0;
+    void *zero = 0;
+    *(void**)(base + 8) = zero; *(void**)(base + 0x10) = zero;
+    *(void**)(base + 0x14) = zero; *(void**)(base + 0x18) = zero;
+    memset(base + 0x2C, 0x7A, 3); base[0x2F] = (u8)zero;
+    memset(base + 0x40, 0x7A, 3); base[0x43] = (u8)zero;
+    memset(base + 0x45, 0x7A, 3); base[0x48] = (u8)zero;
+    memset(base + 0x59, 0x7A, 3); base[0x5C] = (u8)zero;
+    memset(base + 0x6D, 0x7A, 3); base[0x70] = (u8)zero;
+    memset(base + 0x81, 0x7A, 3); base[0x84] = (u8)zero;
+    memset(base + 0x8B, 0x7A, 3); base[0x8E] = (u8)zero;
     p = base + 0x95; end = base + 0x149;
-    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
+    do { memset(p, 0x7A, 3); p[3] = (u8)zero; p += 0x14; } while (p < end);
     p = end; end = base + 0x1FD;
-    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
-    memset(end, 0x7A, 3); base[0x200] = 0;
-    memset(base + 0x225, 0x7A, 3); base[0x228] = 0;
+    do { memset(p, 0x7A, 3); p[3] = (u8)zero; p += 0x14; } while (p < end);
+    memset(end, 0x7A, 3); base[0x200] = (u8)zero;
+    memset(base + 0x225, 0x7A, 3); base[0x228] = (u8)zero;
     return arg0;
 }
 
