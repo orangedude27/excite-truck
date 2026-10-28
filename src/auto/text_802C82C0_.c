@@ -199,10 +199,15 @@ void *fn_802C8750(void *arg0, int arg1) {
 #pragma scheduling invalid_target
 void fn_802C87B4(int x, int y, int w, int h) {
     int half;
+    int delta;
+    unsigned int rounding;
     if ((unsigned char)lbl_8055FC74 == 0 && (unsigned char)lbl_8055FC8D != 0) {
-        half = (int)(lbl_8055CFF4 + ((unsigned int)lbl_8055CFF4 >> 31)) >> 1;
+        rounding = (unsigned int)lbl_8055CFF4 >> 31;
+        rounding += (unsigned int)lbl_8055CFF4;
+        half = (int)rounding >> 1;
+        delta = y - half;
+        y = half + (int)(lbl_80564F18 + lbl_8055D024 * (float)delta);
         h = (int)(lbl_80564F18 + (float)h * lbl_8055D024);
-        y = half + (int)(lbl_80564F18 + (float)(y - half) * lbl_8055D024);
     }
     lbl_8055FC64 = (void *)w;
     lbl_8055FC5C = (void *)x;
