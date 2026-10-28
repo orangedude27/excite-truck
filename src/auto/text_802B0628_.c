@@ -48,13 +48,14 @@ extern char lbl_8055CD88[];
 void fn_802B0710(void) {
     void *obj;
     int *fields;
-    int i;
-    int offset;
+    register int i;
+    register int offset;
     int *entry;
+
     obj = fn_801284F8(0x14, lbl_8034A0A8);
     if (obj != 0) {
-        fields = (int *)((void *(*)(void *, void *, void *, int, int))fn_8002F37C)(
-            fn_8012850C(0x550, lbl_8055CD88), fn_802B0860, fn_802B0808, 0x10, 0x54);
+        fields = (int *)fn_8002F37C(fn_8012850C(0x550, lbl_8055CD88),
+            fn_802B0860, fn_802B0808, 0x10, 0x54);
         ((int **)obj)[1] = fields;
         ((int *)obj)[3] = 0x54;
         ((int *)obj)[2] = 0;
@@ -131,6 +132,7 @@ void fn_802B0914(void) {
 }
 #pragma scheduling on
 extern void *fn_802B0AC0(void *, int);
+#pragma dont_inline on
 void fn_802B0954(int arg0) {
     extern void *lbl_804BE104;
     extern void fn_8002F634(void *, void *, int, int);
@@ -311,44 +313,72 @@ int fn_802B127C(void *arg0, Vec3_802B *src) {
 }
 
 int fn_802B12E0(void *arg0, void *arg1, void *arg2, int arg3) {
-    int index, size, used, result = 0, next;
-    int *entry, *pool, *list;
-    void *slot, *node;
+    typedef struct Node_802B {
+        void *data;
+        volatile int size;
+        int capacity;
+        struct Node_802B *next;
+    } Node_802B;
+
+    typedef struct Pool_802B {
+        void *buf;
+        Node_802B *entries;
+        volatile int used;
+        int capacity;
+    } Pool_802B;
+
+    register Node_802B *entry;
+    register Pool_802B *pool;
+    register void *result;
+    register int next;
+    int index;
+    int size;
+    void *data;
+
     if (arg0 == 0) return 0;
-    if ((arg3 <= 4) || (((unsigned char *)arg0)[1] != 0)) index = ((int *)arg2)[2] & 0x3f;
-    else index = 0;
-    list = (int *)((char *)arg0 + index * 4);
-    slot = (void *)list[0x934 / 4];
-    pool = (int *)lbl_8055F9A0;
-    if (slot == 0 || ((int *)slot)[1] + 0x18 > ((int *)slot)[2]) {
-        node = 0;
-        if (pool[2] + 1 <= pool[3]) {
-            used = pool[2];
-            pool[2] = used + 1;
-            node = (char *)pool[1] + used * 0x10;
-            ((int *)node)[1] = 0;
-            ((int *)node)[3] = 0;
+
+    if ((arg3 <= 4) || (((unsigned char *)arg0)[1] != 0)) {
+        index = ((int *)arg2)[2] & 0x3f;
+    } else {
+        index = 0;
+    }
+
+    pool = (Pool_802B *)lbl_8055F9A0;
+    arg2 = (char *)arg0 + index * 4;
+    entry = *(Node_802B **)(arg2 = (char *)arg2 + 0x934);
+    result = 0;
+
+    if (entry == 0 || entry->size + 0x18 > entry->capacity) {
+        entry = 0;
+        if (pool->used + 1 <= pool->capacity) {
+            entry = &pool->entries[pool->used++];
+            entry->size = 0;
+            entry->next = 0;
         }
-        if (node != 0) {
-            ((int *)node)[3] = list[0x934 / 4];
-            list[0x934 / 4] = (int)node;
-            entry = (int *)node;
-            size = entry[1];
-            entry[1] = size + 0x18;
-            result = entry[0] + size * 2;
+        if (entry != 0) {
+            entry->next = *(Node_802B **)arg2;
+            *(Node_802B **)arg2 = entry;
+            size = entry->size;
+            data = entry->data;
+            entry->size = size + 0x18;
+            result = (char *)data + size * 2;
         }
     } else {
-        entry = (int *)slot;
-        size = entry[1];
-        entry[1] = size + 0x18;
-        result = entry[0] + size * 2;
+        size = entry->size;
+        data = entry->data;
+        entry->size = size + 0x18;
+        result = (char *)data + size * 2;
     }
+
     if (result != 0) {
-        *(int *)arg1 = result;
+        *(void **)arg1 = result;
         *(short *)((char *)arg1 + 6) = 0x18;
     }
+
     next = (result == 0) ? 0 : 1;
-    if (next != 0) ((int *)arg0)[0xA38 / 4] = (int)list;
+    if (next != 0) {
+        *(void **)((char *)arg0 + 0xA38) = arg2;
+    }
     return next;
 }
 
