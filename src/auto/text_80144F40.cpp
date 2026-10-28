@@ -198,11 +198,13 @@ done:
     return count;
 }
 
+#pragma dont_inline on
 extern "C" f32 fn_801452A0(s32 arg0, f32 arg1) {
     if (arg0 & 0x20)
         arg1 /= lbl_8055D020;
     return arg1;
 }
+#pragma dont_inline reset
 
 #pragma dont_inline on
 extern "C" f32 fn_801452B4(f32 arg0) { f32 result = lbl_805615F0 - arg0; result = result + lbl_8055E204; return result; }
@@ -1506,28 +1508,42 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern f32 fn_801452A0(s32, f32);
-    f32 x, y, angle, tx;
-    s32 mode;
     if (arg0 != 0) {
-        x = *(f32 *)((u8 *)arg0 + 4);
-        y = *(f32 *)((u8 *)arg0 + 8);
-        mode = *(s32 *)((u8 *)arg0 + 0xC);
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
-            angle = fn_801452B4(y);
-            tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4, *(f32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x1C));
-            angle = fn_801452B4(y);
-            tx = fn_801452A0(mode, *(f32 *)((u8 *)arg0 + 0x10));
-            tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4, *(f32 *)((u8 *)arg0 + 0x20), *(f32 *)((u8 *)arg0 + 0x1C));
-            angle = fn_801452B4(y + *(f32 *)((u8 *)arg0 + 0x14));
-            tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4, *(f32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x24));
-            angle = fn_801452B4(y + *(f32 *)((u8 *)arg0 + 0x14));
-            tx = fn_801452A0(mode, *(f32 *)((u8 *)arg0 + 0x10));
-            tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4, *(f32 *)((u8 *)arg0 + 0x20), *(f32 *)((u8 *)arg0 + 0x24));
+            f32 angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+            f32 tx = ((f32 (*)(s32, f32))fn_801451DC)(
+                *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+            fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
+                        *(f32 *)((u8 *)arg0 + 0x18),
+                        *(f32 *)((u8 *)arg0 + 0x1C));
+
+            angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+            tx = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC),
+                             *(f32 *)((u8 *)arg0 + 0x10));
+            tx += ((f32 (*)(s32, f32))fn_801451DC)(
+                *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+            fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
+                        *(f32 *)((u8 *)arg0 + 0x20),
+                        *(f32 *)((u8 *)arg0 + 0x1C));
+
+            angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8) +
+                                *(f32 *)((u8 *)arg0 + 0x14));
+            tx = ((f32 (*)(s32, f32))fn_801451DC)(
+                *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+            fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
+                        *(f32 *)((u8 *)arg0 + 0x18),
+                        *(f32 *)((u8 *)arg0 + 0x24));
+
+            angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8) +
+                                *(f32 *)((u8 *)arg0 + 0x14));
+            tx = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC),
+                             *(f32 *)((u8 *)arg0 + 0x10));
+            tx += ((f32 (*)(s32, f32))fn_801451DC)(
+                *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+            fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
+                        *(f32 *)((u8 *)arg0 + 0x20),
+                        *(f32 *)((u8 *)arg0 + 0x24));
             fn_802C8E48();
         }
         fn_802C8D74();
@@ -2101,44 +2117,51 @@ extern "C" void deleteThreads__6SystemFv(void *arg0) {
 extern "C" void fn_80148FA4(void *object, void *unused) {
     struct VTable {
         virtual void v0();
-        virtual s32 v1(u32);
-        virtual void *v2(u32);
+        virtual void v1();
+        virtual void v2();
+        virtual s32 v3(u32);
+        virtual void *v4(u32);
     };
     u8 *self = (u8 *)object;
-    VTable *v = *(VTable **)(self + 8);
-    u32 i, offset;
     #pragma unused(unused)
-    if (v != 0) {
-        i = 0;
-        offset = 0;
-        do {
-            u8 *list = *(u8 **)(self + 0x14);
-            u8 *entry = *(u8 **)list + offset;
-            void *result = v->v2(*(u32 *)(entry + 4));
-            s32 found = v->v1(*(u32 *)entry);
-            if (found != 0 && result != 0)
-                fn_80148070((void *)found, *(s32 *)(entry + 8), (s32)result);
-            offset += 0xC;
-            i++;
-        } while (i < *(u32 *)(*(u8 **)(self + 0x14) + 4));
-        i = 0;
-        offset = 0;
-        do {
-            u8 *list = *(u8 **)(self + 0x10);
-            u8 *entry = *(u8 **)list + offset;
-            fn_8014784C(v, *(u32 *)entry, *(u32 *)(entry + 4), *(u32 *)(entry + 8));
-            offset += 0xC;
-            i++;
-        } while (i < *(u32 *)(*(u8 **)(self + 0x10) + 4));
-        i = 0;
-        offset = 0;
-        do {
-            u8 *list = *(u8 **)(self + 0xC);
-            u8 *entry = *(u8 **)list + offset;
-            fn_801473F8(v, *(u32 *)entry, (const char *)&lbl_80559E1C, *(u32 *)(entry + 4));
-            offset += 8;
-            i++;
-        } while (i < *(u32 *)(*(u8 **)(self + 0xC) + 4));
+    if (*(VTable **)(self + 8) != 0) {
+        {
+            register s32 i = 0;
+            register s32 offset = 0;
+            while (i < *(s32 *)(*(u8 **)(self + 0x14) + 4)) {
+                register u8 *list = *(u8 **)(self + 0x14);
+                register u8 *entry = *(u8 **)list + offset;
+                void *result = (*(VTable **)(self + 8))->v4(*(u32 *)(entry + 4));
+                s32 found = (*(VTable **)(self + 8))->v3(*(u32 *)entry);
+                if (found != 0 && result != 0)
+                    fn_80148070((void *)found, *(s32 *)(entry + 8), (s32)result);
+                offset += 0xC;
+                i++;
+            }
+        }
+        {
+            register s32 i = 0;
+            register s32 offset = 0;
+            while (i < *(s32 *)(*(u8 **)(self + 0x10) + 4)) {
+                register u8 *list = *(u8 **)(self + 0x10);
+                register u8 *entry = *(u8 **)list + offset;
+                fn_8014784C(*(VTable **)(self + 8), *(u32 *)entry, *(u32 *)(entry + 4), *(u32 *)(entry + 8));
+                offset += 0xC;
+                i++;
+            }
+        }
+        {
+            register s32 i = 0;
+            register s32 offset = 0;
+            while (i < *(s32 *)(*(u8 **)(self + 0xC) + 4)) {
+                register u8 *list = *(u8 **)(self + 0xC);
+                register u8 *entry = *(u8 **)list + offset;
+                const char *format = (const char *)&lbl_80559E1C;
+                fn_801473F8(*(VTable **)(self + 8), *(u32 *)entry, format, *(u32 *)(entry + 4));
+                offset += 8;
+                i++;
+            }
+        }
     }
 }
 #pragma pop
