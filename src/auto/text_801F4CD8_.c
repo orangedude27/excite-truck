@@ -212,37 +212,68 @@ void fn_801F5508(void *arg0) {
     int rows = *(int *)((char *)arg0 + 0x2C);
     int cols = *(int *)((char *)arg0 + 0x30);
     int edgeCount = (cols - 1) * rows + cols * (rows - 1);
-    float *vertices = *(float **)((char *)arg0 + 4);
-    short *edges = (short *)((void *(*)(int, void *))fn_8012850C)(
+    char *edges = (char *)((void *(*)(int, void *))fn_8012850C)(
         edgeCount * 8, lbl_8033AD94);
     int edge = 0;
-    int i, j;
+    int outer = 0;
+    int inner;
+    int base;
+    int offset;
+    int from;
+    int to;
+    float *vertices;
+    char *entry;
 
-    for (i = 0; i < cols; i++) {
-        int base = i * rows;
-        for (j = 1; j < rows; j++) {
-            int from = base + j - 1;
-            int to = base + j;
-            short *entry = edges + edge * 4;
-            entry[0] = (short)from;
-            entry[1] = (short)to;
-            *(float *)(entry + 2) =
-                PSVECSquareDistance(vertices + from * 3, vertices + to * 3);
-            edge++;
-        }
-    }
-    for (i = 0; i < rows; i++) {
-        for (j = 1; j < cols; j++) {
-            int from = i + (j - 1) * rows;
-            int to = i + j * rows;
-            short *entry = edges + edge * 4;
-            entry[0] = (short)from;
-            entry[1] = (short)to;
-            *(float *)(entry + 2) =
-                PSVECSquareDistance(vertices + from * 3, vertices + to * 3);
-            edge++;
-        }
-    }
+    goto first_outer_check;
+first_outer_body:
+    rows = *(int *)((char *)arg0 + 0x2C);
+    offset = edge * 8;
+    inner = 1;
+    base = outer * rows;
+    goto first_inner_check;
+first_inner_body:
+    to = base + inner;
+    vertices = *(float **)((char *)arg0 + 4);
+    from = to - 1;
+    entry = edges + offset;
+    *(short *)entry = (short)from;
+    *(short *)(entry + 2) = (short)to;
+    edge++;
+    offset += 8;
+    *(float *)(entry + 4) =
+        PSVECSquareDistance(vertices + from * 3, vertices + to * 3);
+    inner++;
+first_inner_check:
+    if (inner < *(int *)((char *)arg0 + 0x2C)) goto first_inner_body;
+    outer++;
+first_outer_check:
+    if (outer < *(int *)((char *)arg0 + 0x30)) goto first_outer_body;
+
+    outer = 0;
+    goto second_outer_check;
+second_outer_body:
+    offset = edge * 8;
+    inner = 1;
+    goto second_inner_check;
+second_inner_body:
+    rows = *(int *)((char *)arg0 + 0x2C);
+    from = outer + (inner - 1) * rows;
+    to = outer + inner * rows;
+    vertices = *(float **)((char *)arg0 + 4);
+    entry = edges + offset;
+    *(short *)entry = (short)from;
+    *(short *)(entry + 2) = (short)to;
+    edge++;
+    offset += 8;
+    *(float *)(entry + 4) =
+        PSVECSquareDistance(vertices + from * 3, vertices + to * 3);
+    inner++;
+second_inner_check:
+    if (inner < *(int *)((char *)arg0 + 0x30)) goto second_inner_body;
+    outer++;
+second_outer_check:
+    if (outer < *(int *)((char *)arg0 + 0x2C)) goto second_outer_body;
+
     *(void **)((char *)arg0 + 0x14) = edges;
     *(int *)((char *)arg0 + 0x18) = edgeCount;
 }
@@ -608,8 +639,8 @@ extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80562FDC;
 extern float lbl_80562FE0;
 #pragma push
-#pragma paired off
-#pragma paired_single off
+#pragma paired reset
+#pragma paired_single reset
 void fn_801F65D0(void *arg0) {
     float delta[3];
     float var_f31, var_f30;
