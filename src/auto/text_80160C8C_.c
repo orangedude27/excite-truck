@@ -1014,7 +1014,7 @@ extern "C" void fn_80162178(void *arg0, s32 arg1) {
         char *entries = *(char **)((char *)arg0 + 0x34);
         s32 *entry = (s32 *)(entries + offset);
         void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
-        fn_801DF380(result, entry[0], fn_80161438, entry[1]);
+        fn_801DF380(result, entry[0], (void (*)())fn_80161438, entry[1]);
         offset += 8;
         i++;
     }
