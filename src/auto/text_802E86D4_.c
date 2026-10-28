@@ -528,28 +528,36 @@ extern char lbl_8034E0E8[];
 extern char lbl_8034E0F8[];
 extern void *memcpy(void *, const void *, unsigned int);
 int fn_802E967C(char *arg0, void *arg1, int arg2) {
-    char *data = (char *)&lbl_80507288;
-    char *p;
+    char *data;
+    int val;
+    int count;
+    char *dst;
     int sp8;
-    if (fn_802E95E0(lbl_8034D9C0 + 0x694, fn_802E8838, 0) == 0) {
+
+    if (((int (*)(void *, void (*)(void)))fn_802E95E0)(lbl_8034D9C0 + 0x694, fn_802E8838) == 0) {
         fn_802E30C8(lbl_8034D9C0 + 0x6A8);
         return 0;
     }
-    if (lbl_80560034 != 0) {
+    if ((unsigned char)lbl_80560034 != 0) {
         fn_802E30C8(lbl_8034D9C0 + 0x6D8);
         return 0;
     }
     memcpy((void *)lbl_80560020, arg1, arg2);
-    *(int *)data = 2;
+    val = lbl_80560020;
+    *(int *)&lbl_80507288 = 2;
     fn_8012E81C(lbl_8034E0F8);
+    data = (char *)&lbl_80507288;
     *(int *)(data + 0x260) = fn_8012C370(lbl_8034E0E8, 0x5256424E, &sp8, data + 0x264, 0, 0);
-    *(int *)(data + 0x268) = lbl_80560020;
-    *(int *)(data + 0x26c) = arg2;
-    p = data + 0x270;
-    do {
-        *p = *arg0++;
-    } while (*p++ != 0);
-    if (p - (data + 0x270) == 0x100) p[-1] = 0;
+    dst = data + 0x270;
+    count = 0x100;
+    *(int *)(data + 0x268) = val;
+    *(int *)(data + 0x26C) = arg2;
+    while ((*dst++ = *arg0++) != 0) {
+        if (--count <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+    }
     return 1;
 }
 
