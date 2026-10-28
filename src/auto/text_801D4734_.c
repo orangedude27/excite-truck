@@ -138,20 +138,22 @@ void* fn_801D4B34(void* arg0) {
 extern "C" void *fn_801D4B60(void *arg0, int arg1) {
  extern char lbl_80338D80[], lbl_80338490[];
  struct Ref { virtual void release(int); };
+ struct ResetFields { char pad[0x30]; int buffer; int count; int capacity; };
  char *src; int i; char *dst; int count, offset; void **items; Ref *entry;
  if(arg0) {
   *(void **)arg0=lbl_80338D80;
   if(*(int *)((char *)arg0+4)) {
    count=*(int *)((char *)arg0+0x34); *(int *)((char *)arg0+4)=0; offset=count*4;
-   do {
-    items=*(void ***)((char *)arg0+0x30); entry=(Ref *)items[count];
-    if(count>=0 && count<*(int *)((char *)arg0+0x34)) {
-     if(count!=*(int *)((char *)arg0+0x34)-1) items[count]=items[*(int *)((char *)arg0+0x34)-1];
-     *(int *)((char *)arg0+0x34)=*(int *)((char *)arg0+0x34)-1;
-    }
-    if(entry) entry->release(1);
-    offset-=4;
-   } while(count-- > 0);
+   goto cleanup_check;
+cleanup_body:
+   items=*(void ***)((char *)arg0+0x30); entry=(Ref *)items[count];
+   if(count>=0 && count<*(int *)((char *)arg0+0x34)) {
+    if(count!=*(int *)((char *)arg0+0x34)-1) items[count]=items[*(int *)((char *)arg0+0x34)-1];
+    *(int *)((char *)arg0+0x34)=*(int *)((char *)arg0+0x34)-1;
+   }
+   if(entry) entry->release(1);
+cleanup_check:
+   if(count-- > 0) { offset-=4; goto cleanup_body; }
   }
   dst=(char *)arg0+8; src=lbl_80338490; i=0x14; goto copy;
 copy:
@@ -161,7 +163,9 @@ copy:
 copied:
   if((int)arg0+0x30) {
    if((int)arg0+0x30) {
-    *(int *)((int)arg0+0x30)=0; *(int *)((int)arg0+0x34)=0; *(int *)((int)arg0+0x38)=0;
+    ((ResetFields *)arg0)->buffer=0;
+    ((ResetFields *)arg0)->count=0;
+    ((ResetFields *)arg0)->capacity=0;
    }
   }
   if(arg1>0) ((void (*)(void *))fn_80128668)(arg0);
@@ -794,6 +798,45 @@ int fn_801D6630(int arg0, int arg1) {
         if (arg1 > 0) fn_80128668();
     }
     return arg0;
+}
+
+int fn_801D6678(void *out, void *object) {
+    extern char lbl_80338798[];
+    extern char lbl_803387B8[];
+    extern char lbl_8055ACB0;
+    extern char lbl_8055ACB8;
+    extern char lbl_8055ACD0;
+    extern char lbl_8055ACD4;
+    extern float lbl_80562B0C;
+    typedef float (*FloatFn)(void *, char *, float);
+    typedef void (*VecFn)(float *, void *, char *);
+    typedef int (*IntFn)(void *, char *);
+    typedef unsigned char (*ByteFn)(void *, char *, int);
+    float v14[3];
+    float v8[3];
+    float first;
+    float second;
+    float scale;
+
+    first = ((FloatFn)((void ***)object)[0][10])(object, &lbl_8055ACB0, lbl_80562ADC);
+    second = ((FloatFn)((void ***)object)[0][10])(object, &lbl_8055ACB8, lbl_80562ADC);
+    scale = lbl_80562B0C;
+    *(int *)((char *)out + 8) = (int)(scale * first);
+    *(int *)((char *)out + 0xC) = (int)(scale * second);
+    ((VecFn)((void ***)object)[0][13])(v14, object, &lbl_8055ACD0);
+    *(float *)((char *)out + 0x14) = v14[0];
+    *(float *)((char *)out + 0x18) = v14[1];
+    *(float *)((char *)out + 0x1C) = v14[2];
+    ((VecFn)((void ***)object)[0][13])(v8, object, &lbl_8055ACD4);
+    *(float *)((char *)out + 0x20) = v8[0];
+    *(float *)((char *)out + 0x24) = v8[1];
+    *(float *)((char *)out + 0x28) = v8[2];
+    *(int *)((char *)out + 0x2C) =
+        ((IntFn)((void ***)object)[0][7])(object, lbl_803387B8);
+    *(unsigned char *)((char *)out + 0x30) =
+        ((ByteFn)((void ***)object)[0][12])(object, lbl_80338798, 0);
+    *(int *)((char *)out + 4) = 1;
+    return 1;
 }
 
 int fn_801D67D4(void) {
@@ -2442,3 +2485,4 @@ void fn_801D8FE0(int arg0) {
 }
 extern char lbl_803385D0[];
 extern char lbl_803385D0[];
+#pragma cplusplus on
