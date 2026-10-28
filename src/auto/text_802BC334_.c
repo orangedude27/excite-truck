@@ -269,7 +269,7 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
 }
 
 struct CurveData {
-    int w[6];
+    int w0, w1, w2, w3, w4, w5;
     float f6;
     float f7;
 };
