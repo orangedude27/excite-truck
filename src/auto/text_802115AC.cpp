@@ -1094,6 +1094,80 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     }
     *(s32 *)&lbl_8055EF38 = -1;
 }
+
+#pragma push
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+extern "C" s32 fn_802146BC(void *arg0, s32 arg1, s32 arg2, s32 arg3,
+                            s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    void *sp8;
+    s32 temp_r31;
+    s32 temp_r30;
+    s32 temp_r3;
+    u8 temp_r3_2;
+    s32 var_r4;
+    u8 *var_r5;
+    u8 *var_r6;
+    void *data;
+    s32 (*savedCallback)(s32 *);
+
+    fn_802D08C4(1);
+    temp_r30 = fn_80128314(0);
+    fn_802141A0(&sp8, arg0, arg1, arg2, arg3, 0);
+    fn_80127A24();
+    fn_802E47E8();
+    savedCallback = lbl_8055EF0C;
+    fn_80218D54(sp8, 0);
+    lbl_8055EF0C = *(s32 (**)(s32 *))((char *)arg0 + 8);
+    data = *(void **)arg0;
+    {
+        register void *obj = sp8;
+        *(void **)((char *)obj + 0x434) = (void *)fn_80211FF0;
+        fn_80236918(data, obj, fn_80211FF0);
+    }
+    temp_r31 = fn_802168F0(sp8);
+    if (lbl_8055EF40 != 0) fn_802E3D00();
+    fn_80236950();
+    fn_8021683C(sp8);
+    lbl_8055EF0C = savedCallback;
+    fn_80212340(arg0);
+    temp_r3 = fn_80128314(0);
+    if (temp_r3 != temp_r30) {
+        fn_802E30C8(lbl_8033D1E0, *(void **)arg0, temp_r3, temp_r30);
+    }
+    fn_802D08C4(0);
+
+    var_r6 = *(u8 **)arg0;
+    switch ((s32)var_r6) {
+    case 0:
+        var_r6 = lbl_8055B6BC;
+        break;
+    default:
+        break;
+    }
+    var_r5 = lbl_8033CAE8;
+    var_r4 = 0x64;
+    goto copy_char;
+count_check:
+    var_r4--;
+    if (var_r4 > 0) goto copy_char;
+    var_r5[-1] = 0;
+    goto copy_done;
+copy_char:
+    temp_r3_2 = *var_r6;
+    var_r6++;
+    *var_r5 = temp_r3_2;
+    var_r5++;
+    if ((s8)temp_r3_2 != 0) goto count_check;
+copy_done:
+    return temp_r31;
+}
+#pragma scheduling on
+#pragma use_lmw_stmw reset
+#pragma dont_inline reset
+#pragma pop
+
 #pragma scheduling on
 extern "C" s32 fn_802ECEEC(void);
 extern "C" void fn_802E30C8(const char *, ...);
