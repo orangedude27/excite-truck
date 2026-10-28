@@ -1320,29 +1320,68 @@ extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
     *(s32*)((char*)arg0 + 4) = *(s32*)((char*)arg0 + 4) + 1;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_802A4658(s32 arg0) {
-    void *obj=(void *)arg0;
-    f32 temp_f31=((f32 (*)(void))fn_801E7E18)()-*(f32 *)((char *)obj+0xC);
-    f32 temp_f1=fn_801E7E24(), temp_f7=temp_f1* *(f32 *)((char *)obj+0x38);
-    f32 temp_f8=lbl_80564730-(*(f32 *)((char *)obj+0x3C)*temp_f1), sp8, spC, sp10;
-    unsigned char *base=*(unsigned char **)obj, *dst=base;
-    s32 off=0, i=0;
-    while(i<*(s32 *)((char *)obj+4)) {
-        unsigned char *entry=base+off;
-        if(*(f32 *)(entry+0x18)>temp_f31) {
-            f32 x=*(f32 *)(entry+0xC)*temp_f8, z=*(f32 *)(entry+0x14)*temp_f8;
-            f32 y=*(f32 *)(entry+0x10)*temp_f8-temp_f7;
-            sp8=x; spC=y; sp10=z;
-            *(f32 *)dst=*(f32 *)entry+x*temp_f1; *(f32 *)(dst+4)=*(f32 *)(entry+4)+y*temp_f1; *(f32 *)(dst+8)=*(f32 *)(entry+8)+z*temp_f1;
-            *(f32 *)(dst+0xC)=x; *(f32 *)(dst+0x10)=y; *(f32 *)(dst+0x14)=z;
-            *(f32 *)(dst+0x18)=*(f32 *)(entry+0x18); *(f32 *)(dst+0x1C)=*(f32 *)(entry+0x1C); dst+=0x20;
+    struct Entry { f32 x, y, z, vx, vy, vz, age, pad; };
+    struct List {
+        struct Entry *data;
+        s32 count;
+        f32 unk8, elapsed, unk10, advance, phase;
+        f32 reserved[7];
+        f32 scale, factor;
+    };
+    struct List *list = (struct List *)arg0;
+    register struct Entry *out;
+    register u8 *offset;
+    register s32 count;
+    register struct Entry *in;
+    f32 vz;
+    f32 vy;
+    f32 vx;
+    f32 elapsed;
+    f32 step;
+    f32 scale;
+    f32 factor;
+    volatile f32 temp_z;
+    volatile f32 temp_y;
+    volatile f32 temp_x;
+
+    elapsed = fn_801E7E18() - list->elapsed;
+    step = fn_801E7E24();
+    scale = step * list->scale;
+    factor = lbl_80564730 - (list->factor * step);
+    out = list->data;
+    count = 0;
+    offset = 0;
+    while (count < list->count) {
+        in = (struct Entry *)((u32)list->data + (u32)offset);
+        if (in->age > elapsed) {
+            vx = in->vx * factor;
+            vy = (in->vy * factor) - scale;
+            vz = in->vz * factor;
+            temp_x = vx;
+            temp_z = (vz * step, vz);
+            temp_y = vy;
+            out->x = in->x + vx * step;
+            out->y = in->y + vy * step;
+            out->z = in->z + vz * step;
+            out->vx = vx;
+            out->vy = vy;
+            out->vz = vz;
+            out->age = in->age;
+            out->pad = in->pad;
+            out = (struct Entry *)((u8 *)out + 0x20);
         }
-        off+=0x20; i++;
+        offset += 0x20;
+        count++;
     }
-    f32 t=*(f32 *)((char *)obj+0x18);
-    *(s32 *)((char *)obj+4)=(dst-base)/0x20;
-    if(t>lbl_80564730-lbl_80558DC4) *(f32 *)((char *)obj+0x18)=t-lbl_80564730;
-    *(f32 *)((char *)obj+0x18)=*(f32 *)((char *)obj+0x18)+*(f32 *)((char *)obj+0x14);
+    f32 one = lbl_80564730;
+    f32 phase = list->phase;
+    f32 advance = list->advance;
+    list->count = ((s32)out - (s32)list->data) / 32;
+    if (phase > one - lbl_80558DC4)
+        list->phase = phase - one;
+    list->phase = list->phase + advance;
 }
 
 extern "C" s32 fn_802A47A8(void *arg0) {
