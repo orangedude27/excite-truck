@@ -76,25 +76,26 @@ float fn_802BEFB4(void) {
     return lbl_80564D84 + result;
 }
 
-extern float lbl_802FABA0;
+extern u32 lbl_802FABA0[];
 float fn_802BF02C(float arg0, int arg1) {
-    float values[14];
-    float *p = values + 2;
+    u32 values[14];
+    float *p = (float *)values + 2;
     int i;
-    values[0] = *(float *)((char *)&lbl_802FABA0 + 0x00);
-    values[1] = *(float *)((char *)&lbl_802FABA0 + 0x04);
-    values[2] = *(float *)((char *)&lbl_802FABA0 + 0x08);
-    values[3] = *(float *)((char *)&lbl_802FABA0 + 0x0C);
-    values[4] = *(float *)((char *)&lbl_802FABA0 + 0x10);
-    values[5] = *(float *)((char *)&lbl_802FABA0 + 0x14);
-    values[6] = *(float *)((char *)&lbl_802FABA0 + 0x18);
-    values[7] = *(float *)((char *)&lbl_802FABA0 + 0x1C);
-    values[8] = *(float *)((char *)&lbl_802FABA0 + 0x20);
-    values[9] = *(float *)((char *)&lbl_802FABA0 + 0x24);
-    values[10] = *(float *)((char *)&lbl_802FABA0 + 0x28);
-    values[11] = *(float *)((char *)&lbl_802FABA0 + 0x2C);
-    values[12] = *(float *)((char *)&lbl_802FABA0 + 0x30);
-    values[13] = *(float *)((char *)&lbl_802FABA0 + 0x34);
+
+    values[0] = *(u32 *)((char *)&lbl_802FABA0 + 0x00);
+    values[1] = *(u32 *)((char *)&lbl_802FABA0 + 0x04);
+    values[2] = *(u32 *)((char *)&lbl_802FABA0 + 0x08);
+    values[3] = *(u32 *)((char *)&lbl_802FABA0 + 0x0C);
+    values[4] = *(u32 *)((char *)&lbl_802FABA0 + 0x10);
+    values[5] = *(u32 *)((char *)&lbl_802FABA0 + 0x14);
+    values[6] = *(u32 *)((char *)&lbl_802FABA0 + 0x18);
+    values[7] = *(u32 *)((char *)&lbl_802FABA0 + 0x1C);
+    values[8] = *(u32 *)((char *)&lbl_802FABA0 + 0x20);
+    values[9] = *(u32 *)((char *)&lbl_802FABA0 + 0x24);
+    values[10] = *(u32 *)((char *)&lbl_802FABA0 + 0x28);
+    values[11] = *(u32 *)((char *)&lbl_802FABA0 + 0x2C);
+    values[12] = *(u32 *)((char *)&lbl_802FABA0 + 0x30);
+    values[13] = *(u32 *)((char *)&lbl_802FABA0 + 0x34);
     for (i = 0; i < 6; i++, p += 2) {
         if (*p > arg0) {
             float t = (arg0 - p[-2]) / (p[0] - p[-2]);
@@ -103,7 +104,7 @@ float fn_802BF02C(float arg0, int arg1) {
             return p[-1] + t * (p[1] - p[-1]);
         }
     }
-    return values[13];
+    return *(float *)&values[13];
 }
 
 void fn_802BF350(void) {
@@ -257,14 +258,28 @@ extern void fn_802CB228(void *);
 extern int lbl_8055FAFC;
 extern void *lbl_8055FB00;
 extern char lbl_8034AE40[];
+#pragma cplusplus on
 #pragma use_lmw_stmw off
-void *fn_802BFA58(void *arg0, int arg1) {
+extern "C" void *fn_802BFA58(void *arg0, int arg1) {
+    struct SharedTable {
+        void *items[6];
+        int val;
+        void cleanup() {
+            void **cur = items;
+            int i = 0;
+            do {
+                fn_802CB228(*cur);
+                cur++;
+                i++;
+            } while (i < 6);
+            if (val != -2) {
+                fn_802CAC54(val);
+            }
+            fn_80128668(this);
+        }
+    };
     int id;
     int c;
-    void *table;
-    void **cur;
-    int i;
-    int val;
 
     if (arg0 != 0) {
         id = *(int *)((char *)arg0 + 8);
@@ -275,30 +290,19 @@ void *fn_802BFA58(void *arg0, int arg1) {
         }
         c = *(int *)((char *)arg0 + 0xC);
         if (c != -1) {
-            fn_802C6CF8();
+            fn_802C6CF8(c);
             *(int *)((char *)arg0 + 0xC) = -1;
         }
         c = *(int *)((char *)arg0 + 0x10);
         if (c != -1) {
-            fn_802C6CF8();
+            fn_802C6CF8(c);
             *(int *)((char *)arg0 + 0x10) = -1;
         }
         if (*(int *)((char *)arg0 + 4) != 0) {
             if (--lbl_8055FAFC == 0) {
-                table = lbl_8055FB00;
+                SharedTable *table = (SharedTable *)lbl_8055FB00;
                 if (table != 0) {
-                    cur = (void **)table;
-                    i = 0;
-                    do {
-                        fn_802CB228(*cur);
-                        i++;
-                        cur++;
-                    } while (i < 6);
-                    val = *(int *)((char *)table + 0x18);
-                    if (val != -2) {
-                        fn_802CAC54(val);
-                    }
-                    fn_80128668(table);
+                    table->cleanup();
                 }
                 lbl_8055FB00 = 0;
             }
@@ -310,6 +314,7 @@ void *fn_802BFA58(void *arg0, int arg1) {
     }
     return arg0;
 }
+#pragma cplusplus reset
 extern float lbl_80564DCC, lbl_80564DD0, lbl_80564DD4;
 extern unsigned short lbl_802FAC20;
 extern void fn_80015A20(void *, float *, float, float, float, float, float);
