@@ -607,8 +607,7 @@ extern void fn_802354A0(void *, s32, s32, f32, f32, f32, f32, f32);
 extern f32 lbl_805603D4, lbl_805603D8, lbl_805603DC, lbl_805603E0, lbl_805603E4;
 extern f32 lbl_80560360, lbl_805603A0;
 #pragma push
-#pragma optimize_for_size on
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 void fn_80015658(void *arg0) {
     char sp9;
     char sp8;
