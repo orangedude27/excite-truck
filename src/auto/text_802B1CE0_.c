@@ -9,6 +9,16 @@ int fn_802B2E08(int);
 int fn_802B3340(int);
 extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
+extern char lbl_8034A288[];
+extern char lbl_8034A3F8[];
+extern const char lbl_8055CDC0[];
+extern void fn_802B8AE0(void *, void *);
+extern void *fn_801284F8(int, const char *);
+extern void *fn_8012850C(int, const char *);
+extern void *fn_8002F37C(void *, void *, int, int);
+extern void fn_802B1FC0(void *);
+extern void fn_802B1F64(void);
+extern void *fn_802B1F68(void *, int);
 
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
@@ -90,8 +100,9 @@ void fn_802B1FC0(void *arg0) {
 #pragma dont_inline on
 #pragma opt_common_subs off
 void fn_802B1FD4(void) {
-    register int i;
-    register void *table;
+    int i;
+    void *table;
+    int zero;
     void *r27;
     int j;
     void *r25;
@@ -105,6 +116,7 @@ void fn_802B1FD4(void) {
     table = &lbl_804BE1FC;
     i = 0;
     off_i = 0;
+    zero = 0;
     for (; i < *(int *)((char *)table + 4); off_i += 4, i++) {
         r27 = *(void **)(*(char **)&lbl_804BE1FC + off_i);
         if (r27 != 0) {
@@ -118,23 +130,23 @@ void fn_802B1FD4(void) {
                             fn_80128668(r23);
                         }
                     }
-                    *(int *)((char *)r25 + 0x40c) = 0;
+                    *(int *)((char *)r25 + 0x40c) = zero;
                     if ((char *)r25 + 0x408 != 0) {
                         if ((char *)r25 + 0x408 != 0) {
-                            *(int *)((char *)r25 + 0x408) = 0;
-                            *(int *)((char *)r25 + 0x40c) = 0;
-                            *(int *)((char *)r25 + 0x410) = 0;
+                            *(int *)((char *)r25 + 0x408) = zero;
+                            *(int *)((char *)r25 + 0x40c) = zero;
+                            *(int *)((char *)r25 + 0x410) = zero;
                         }
                     }
                     fn_80128668(r25);
                 }
             }
-            *(int *)((char *)r27 + 4) = 0;
+            *(int *)((char *)r27 + 4) = zero;
             if (r27 != 0) {
                 if (r27 != 0) {
-                    *(int *)r27 = 0;
-                    *((int *)r27 + 1) = 0;
-                    *((int *)r27 + 2) = 0;
+                    *(int *)r27 = zero;
+                    *((int *)r27 + 1) = zero;
+                    *((int *)r27 + 2) = zero;
                 }
             }
             fn_80128668(r27);
