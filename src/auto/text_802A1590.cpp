@@ -835,6 +835,16 @@ extern "C" void fn_802A30BC(void* arg0, s32 arg1) {
 #pragma paired off
 #pragma paired_single off
 #pragma scheduling invalid_target
+struct Fn802A31DCConfig {
+    f32 f00, f04, f08, f0c, f10, f14;
+    s32 f18, f1c;
+    f32 f20, f24, f28, f2c, f30, f34, f38, f3c;
+    f32 f40, f44, f48, f4c, f50, f54, f58;
+    s32 f5c;
+    f32 f60, f64, f68, f6c, f70, f74, f78, f7c;
+    f32 f80, f84, f88, f8c, f90, f94, f98, f9c, fa0, fa4;
+};
+
 extern "C" void fn_802A31DC(void *arg0, s32 arg1) {
     char stack[0xA8];
     fn_8028E61C(&stack[0x18]);
