@@ -498,6 +498,7 @@ extern void fn_802C8BD0(s32);
 extern void fn_802C8D74(void);
 extern f32 fn_802C9A4C(f32);
 #pragma push
+#pragma processor 750
 #pragma scheduling on
 void fn_8028BD60(s32 arg0) {
     struct Pair { s32 first, second; };
