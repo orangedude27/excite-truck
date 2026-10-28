@@ -93,6 +93,7 @@ extern float lbl_8055F264;
 #pragma optimization_level 3
 #pragma scheduling invalid_target
 s32 fn_80246938(void) {
+    register s32 zero;
     s32 index;
     struct {
         volatile s32 args[5];
@@ -107,25 +108,26 @@ s32 fn_80246938(void) {
     index = fn_802E4A10();
     if (index >= 0 && index < 4) {
         fn_80214A9C(0x1F);
+        zero = 0;
         while (((s32 (*)(s32))fn_802E8690)(index) != 0) {
-            frame.zero = 0;
+            frame.zero = zero;
             frame.text = (s32)lbl_80343720;
             frame.itemIndex = index;
-            frame.values[0] = 0;
+            frame.values[0] = zero;
             frame.values[1] = 5;
             frame.values[2] = (s32)&frame.text;
-            frame.values[3] = 0;
-            frame.values[4] = 0;
+            frame.values[3] = zero;
+            frame.values[4] = zero;
             frame.values[5] = (s32)&lbl_8055BE80;
             frame.values[6] = 3;
             frame.values[7] = fn_80131234((s32 *)lbl_80343280);
-            frame.values[8] = 0;
-            frame.values[9] = 0;
+            frame.values[8] = zero;
+            frame.values[9] = zero;
             frame.values[10] = (s32)&lbl_8055BE88;
             frame.values[11] = 3;
             frame.values[12] = fn_80131234((s32 *)lbl_80343294);
-            frame.values[13] = 0;
-            frame.values[14] = 0;
+            frame.values[13] = zero;
+            frame.values[14] = zero;
             frame.values[15] = lbl_804988F0[0];
             frame.values[16] = lbl_804988F0[1];
             frame.values[17] = lbl_804988F0[2];
@@ -460,42 +462,49 @@ void fn_80247880(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma optimization_level 3
+#pragma scheduling invalid_target
 void fn_802478A4(void) {
     extern s32 lbl_802FA3F0[];
     extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
     s32 data[40];
-    s32 *p = lbl_802FA3F0;
-    s32 a0 = *p++;
-    s32 a2 = p[1];
-    s32 a3 = p[2];
-    s32 a4 = p[3];
+    volatile s32 *q = (volatile s32 *)lbl_804988F0;
+    volatile s32 *p = (volatile s32 *)lbl_802FA3F0;
     s32 b0 = lbl_804988F0[0];
-    s32 b1 = lbl_804988F0[1];
-    s32 b2 = lbl_804988F0[2];
-    s32 b3 = lbl_804988F0[3];
-    s32 b4 = lbl_804988F0[4];
+    s32 b1, b2, b3, b4;
+    s32 a0, a2, a3, a4;
+    s32 stringBase;
 
-    data[5] = (s32)&lbl_8055BAC0;
+    b1 = q[1];
     data[6] = 8;
+    b2 = q[2];
+    data[11] = 8;
+    a0 = *p++;
+    stringBase = (s32)lbl_80343270;
+    b3 = q[3];
+    a2 = p[1];
+    b4 = q[4];
+    a3 = p[2];
+    a4 = p[3];
+
     data[7] = (s32)fn_8024778C;
+    data[12] = (s32)fn_80247880;
+    data[5] = (s32)&lbl_8055BAC0;
+    data[10] = (s32)&lbl_8055BABC;
+    data[13] = 1;
     data[8] = 0;
     data[9] = 0;
-    data[10] = (s32)&lbl_8055BABC;
-    data[11] = 8;
-    data[12] = (s32)fn_80247880;
-    data[13] = 1;
     data[14] = 0;
-    data[15] = (s32)(lbl_80343270 + 0x2A0);
+    data[15] = stringBase + 0x2A0;
     data[16] = 0;
     data[17] = 0;
     data[18] = 3;
     data[19] = 0;
-    data[20] = (s32)(lbl_80343270 + 0x2AC);
+    data[20] = stringBase + 0x2AC;
     data[21] = 0;
     data[22] = 0;
     data[23] = 4;
     data[24] = 0;
-    data[25] = (s32)(lbl_80343270 + 0x2B8);
+    data[25] = stringBase + 0x2B8;
     data[26] = 0;
     data[27] = 0;
     data[28] = 5;
@@ -516,9 +525,8 @@ void fn_802478A4(void) {
     data[4] = a4;
     data[1] = (s32)&data[5];
     ((void (*)(s32 *, s32, s32, s32, s32, s32, s32, s32))fn_802146BC)(
-        data, -999, -999, 1, (s32)(lbl_80343270 + 0x2A0),
-        (s32)(lbl_80343270 + 0x2AC), (s32)(lbl_80343270 + 0x2B8),
-        (s32)&data[5]);
+        data, -999, -999, 1, stringBase + 0x2A0,
+        stringBase + 0x2AC, stringBase + 0x2B8, (s32)&data[5]);
 }
 #pragma pop
 
