@@ -1,6 +1,15 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct DVDPrepareEntry {
+    void *arg;
+    unsigned int status;
+    unsigned char busy;
+    unsigned char _pad[3];
+    unsigned int magic;
+    unsigned char _tail[0x10];
+} DVDPrepareEntry;
+
 extern unsigned char lbl_8037B8A0[32];
 extern unsigned int lbl_8055D8F0;
 extern unsigned char lbl_8055D8E0;
@@ -400,6 +409,7 @@ int fn_8003B0B0(void *arg0, void *arg1) {
 }
 
 int fn_8003B218(void *arg0) {
+    unsigned char *base = lbl_8037B820;
     const char *msg = lbl_80302848;
     int slot = lbl_8055D8E8;
     unsigned int flag;
@@ -410,7 +420,7 @@ int fn_8003B218(void *arg0) {
     int result;
 
     lbl_8055D8E0 = 1;
-    p = lbl_8037B820 + slot * 0x20;
+    p = base + slot * 0x20;
     flag = p[8];
     if (((flag | -flag) >> 31) == 1U) {
         OSReport(msg + 0x218);
@@ -421,7 +431,7 @@ int fn_8003B218(void *arg0) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
-    *(void **)&lbl_8037B820[slot * 0x20] = arg0;
+    ((void **)base)[slot * 8] = arg0;
     index = slot + 1;
     *(unsigned int *)(p + 4) = 1;
     p[8] = 1;
@@ -431,11 +441,11 @@ int fn_8003B218(void *arg0) {
     }
     index = lbl_8055D8E4 + 1;
     lbl_8055D8E4 = index;
+    entry = base + slot * 0x20;
     if (index >= 4) {
         index = 0;
         lbl_8055D8E4 = 0;
     }
-    entry = lbl_8037B820 + slot * 0x20;
     request = lbl_8055D8FC + index * 0x20;
     request[0] = 0xE0;
     result = IOS_IoctlAsync(lbl_80558E18, 0xE0, request, 0x20, lbl_8037B8A0, 0x20, (void (*)(int, void *))doTransactionCallback, entry);
