@@ -567,17 +567,17 @@ extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     u8 *entry;
-    u8 *header;
+    register u8 *header;
     void *object;
     s32 handle;
     s32 startTime;
     s32 bufferSize;
-    s32 allocSize;
+    register s32 allocSize;
     u32 flags;
-    const char *strings;
+    register const char *strings;
 
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
@@ -602,7 +602,7 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
                     *(u32 *)(entry + 0x34) = flags;
                     *(void **)(entry + 0x3C) = header;
                     *(void **)(entry + 0x40) = object;
-                    fn_8012A46C(header + 8, strings + 0x3B0);
+                    ((void (*)(void *, const char *))fn_8012A46C)(header + 8, strings + 0x3B0);
                     fn_802E30C8(strings + 0x3C0, arg0, entry, fn_802E2C20() - startTime);
                 } else {
                     fn_802E30C8(strings + 0x3E4, entry);
@@ -1751,14 +1751,11 @@ extern "C" void fn_8012E498(void *arg0) {
             }
             entry = fn_8012E674((void *)(effect + 8));
             while (entry != 0) {
-                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) != 0)
-                    goto skip_delete;
-                fn_8012E630((void *)entry);
-                fn_8012E5E4((void *)(effect + 8), (void *)entry);
-                removed = 1;
-            skip_delete:
-                goto loop_update;
-            loop_update:
+                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) == 0) {
+                    fn_8012E630((void *)entry);
+                    fn_8012E5E4((void *)(effect + 8), (void *)entry);
+                    removed = 1;
+                }
                 entry = *(s32 *)entry;
             }
             if (removed != 0) return;
