@@ -1512,39 +1512,59 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern f32 fn_801452A0(s32, f32);
+    f32 tx;
+    f32 angle;
     if (arg0 != 0) {
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
-            f32 angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-            f32 tx = ((f32 (*)(s32, f32))fn_801451DC)(
-                *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+            angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+            {
+                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            }
             fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x18),
                         *(f32 *)((u8 *)arg0 + 0x1C));
 
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-            tx = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC),
-                             *(f32 *)((u8 *)arg0 + 0x10));
-            tx += ((f32 (*)(s32, f32))fn_801451DC)(
-                *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+            {
+                f32 scaleInput = *(volatile f32 *)((u8 *)arg0 + 0x10);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx = fn_801452A0(mode, scaleInput);
+            }
+            {
+                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            }
             fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x20),
                         *(f32 *)((u8 *)arg0 + 0x1C));
 
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8) +
                                 *(f32 *)((u8 *)arg0 + 0x14));
-            tx = ((f32 (*)(s32, f32))fn_801451DC)(
-                *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+            {
+                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            }
             fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x18),
                         *(f32 *)((u8 *)arg0 + 0x24));
 
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8) +
                                 *(f32 *)((u8 *)arg0 + 0x14));
-            tx = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC),
-                             *(f32 *)((u8 *)arg0 + 0x10));
-            tx += ((f32 (*)(s32, f32))fn_801451DC)(
-                *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+            {
+                f32 scaleInput = *(volatile f32 *)((u8 *)arg0 + 0x10);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx = fn_801452A0(mode, scaleInput);
+            }
+            {
+                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            }
             fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x20),
                         *(f32 *)((u8 *)arg0 + 0x24));
@@ -2121,6 +2141,7 @@ extern "C" void deleteThreads__6SystemFv(void *arg0) {
 }
 
 #pragma push
+#pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_80148FA4(void *object, void *unused) {
     struct VTable {
@@ -2134,11 +2155,12 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
     #pragma unused(unused)
     if (*(VTable **)(self + 8) != 0) {
         {
-            register s32 i = 0;
-            register s32 offset = 0;
+            u8 *entry;
+            s32 i, offset;
+            i = 0;
+            offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0x14) + 4)) {
-                register u8 *list = *(u8 **)(self + 0x14);
-                register u8 *entry = *(u8 **)list + offset;
+                entry = *(u8 **)(*(u8 **)(self + 0x14)) + offset;
                 void *result = (*(VTable **)(self + 8))->v4(*(u32 *)(entry + 4));
                 s32 found = (*(VTable **)(self + 8))->v3(*(u32 *)entry);
                 if (found != 0 && result != 0)
@@ -2148,22 +2170,22 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
             }
         }
         {
-            register s32 i = 0;
-            register s32 offset = 0;
+            s32 i, offset;
+            i = 0;
+            offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0x10) + 4)) {
-                register u8 *list = *(u8 **)(self + 0x10);
-                register u8 *entry = *(u8 **)list + offset;
+                u8 *entry = *(u8 **)(*(u8 **)(self + 0x10)) + offset;
                 fn_8014784C(*(VTable **)(self + 8), *(u32 *)entry, *(u32 *)(entry + 4), *(u32 *)(entry + 8));
                 offset += 0xC;
                 i++;
             }
         }
         {
-            register s32 i = 0;
-            register s32 offset = 0;
+            s32 i, offset;
+            i = 0;
+            offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0xC) + 4)) {
-                register u8 *list = *(u8 **)(self + 0xC);
-                register u8 *entry = *(u8 **)list + offset;
+                u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
                 const char *format = (const char *)&lbl_80559E1C;
                 fn_801473F8(*(VTable **)(self + 8), *(u32 *)entry, format, *(u32 *)(entry + 4));
                 offset += 8;
