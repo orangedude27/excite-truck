@@ -292,6 +292,7 @@ int fn_8003AC24(void *arg0) {
     }
     return 1;
 }
+#pragma scheduling on
 
 int fn_8003AD88(void *arg0, int arg1, int arg2, unsigned int arg3) {
     const char *msg = lbl_80302848;
