@@ -354,9 +354,56 @@ extern void fn_80148070(void *, s32, s32);
 extern void fn_80148134(f32 *, f32 *, s32, f32, f32);
 extern void fn_800103B8(s32, s32, s32 *, s32, f32, f32, f32, f32);
 extern void fn_801473F8(void *, const char *, ...);
+#pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_80161438(void) {}
+extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
+    struct Service {
+        virtual void f0();
+        virtual void *find(const char *);
+        virtual void f2();
+        virtual void *lookup(const char *);
+        virtual s32 create(const char *);
+    };
+    u8 *text = lbl_8032F588;
+    f32 spC;
+    f32 sp8;
+    void *temp_r3;
+    void *temp_r3_2;
+    void *temp_r3_3;
+
+    if (lbl_8055E2E0 != 0) {
+        temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
+        if (temp_r3 != 0) {
+            fn_80148070(temp_r3, 0x96FFFFFF,
+                (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
+        }
+        temp_r3_2 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xE4);
+        if (temp_r3_2 != 0) {
+            fn_80148070(temp_r3_2, -1,
+                (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
+        }
+        temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
+        {
+            f32 value4;
+            f32 value8;
+            s32 valueC;
+            value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
+            value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
+            valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
+            fn_80148134(&spC, &sp8, valueC, value4, value8);
+        }
+        fn_800103B8(*(s32 *)((u8 *)temp_r3_3 + 0x18),
+            *(s32 *)((u8 *)temp_r3_3 + 0x14), (s32 *)&lbl_8055A0DC, arg1,
+            *(f32 *)((u8 *)temp_r3_3 + 0x10), spC, sp8,
+            *(f32 *)((u8 *)temp_r3 + 0x10) - lbl_80561844);
+        fn_801473F8(lbl_8055E2E0, (const char *)text + 0xFC,
+            &lbl_8055A0DC, arg0);
+        ((Service *)lbl_8055E2E0)->find((const char *)text + 0x110);
+        fn_801476C4();
+    }
+}
 #pragma cplusplus off
+#pragma scheduling on
 
 s32 fn_801615B4(s32 arg0) {
     s32 total = 0;
