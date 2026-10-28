@@ -855,7 +855,7 @@ int fn_801D6D80(int arg0, int arg1) {
 
 #pragma cplusplus on
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
     struct Dummy {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -1441,10 +1441,10 @@ int fn_801D7C80(void *arg0, int arg1) {
 void fn_801D7D20(void *arg0) {
     int temp_r31;
     int temp_r0;
-    float var_f6;
     float temp_f1;
     float current;
     float target;
+    float var_f6;
     float value;
 
     if (*(int *)((char *)arg0 + 0x28) == 2) {
@@ -1455,12 +1455,10 @@ void fn_801D7D20(void *arg0) {
             temp_f1 = (float)*(int *)((char *)arg0 + 0x0C) - lbl_80562ADC;
             current = *(float *)((char *)arg0 + 0x20);
             target = *(float *)((char *)arg0 + 0x24);
-            if (var_f6 < (((float)temp_r31 - lbl_80562ADC) / temp_f1)) {
-            } else {
+            if (var_f6 >= (((float)temp_r31 - lbl_80562ADC) / temp_f1)) {
                 var_f6 = ((float)temp_r31 - lbl_80562ADC) / temp_f1;
             }
-            if (var_f6 > lbl_80562ADC) {
-            } else {
+            if (var_f6 <= lbl_80562ADC) {
                 var_f6 = lbl_80562ADC;
             }
             value = current + var_f6 * (target - current);
