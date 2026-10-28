@@ -408,6 +408,7 @@ void* MEMAllocFromFrmHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
     if (locked) OSUnlockMutex((OSMutex *)((u8 *)heap + 0x20));
     return (void *)result;
 }
+#pragma pop
 
 void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags) {
     MEMiFrmHeapHead *frm = (MEMiFrmHeapHead *)(heap + 1);
