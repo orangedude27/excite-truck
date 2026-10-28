@@ -325,17 +325,17 @@ int fn_802B12E0(void *arg0, void *arg1, void *arg2, int arg3) {
         int capacity;
     } Pool_802B;
 
-    register Node_802B *entry;
-    register Pool_802B *pool;
-    register void *result;
-    register int next;
     int index;
+    Node_802B *entry;
+    Pool_802B *pool;
+    void *result;
+    int next;
     int size;
     void *data;
 
     if (arg0 == 0) return 0;
 
-    if ((arg3 <= 4) || (((unsigned char *)arg0)[1] != 0)) {
+    if ((4 >= arg3) || (((unsigned char *)arg0)[1] != 0)) {
         index = ((int *)arg2)[2] & 0x3f;
     } else {
         index = 0;
@@ -358,14 +358,14 @@ int fn_802B12E0(void *arg0, void *arg1, void *arg2, int arg3) {
             *(Node_802B **)arg2 = entry;
             size = entry->size;
             data = entry->data;
-            entry->size = size + 0x18;
             result = (char *)data + size * 2;
+            entry->size = size + 0x18;
         }
     } else {
         size = entry->size;
         data = entry->data;
-        entry->size = size + 0x18;
         result = (char *)data + size * 2;
+        entry->size = size + 0x18;
     }
 
     if (result != 0) {
@@ -374,7 +374,7 @@ int fn_802B12E0(void *arg0, void *arg1, void *arg2, int arg3) {
     }
 
     next = (result == 0) ? 0 : 1;
-    if (next != 0) {
+    if (next) {
         *(void **)((char *)arg0 + 0xA38) = arg2;
     }
     return next;
