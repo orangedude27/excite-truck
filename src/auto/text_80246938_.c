@@ -209,6 +209,82 @@ extern void fn_802E4A10(void), fn_80137C84(int), fn_8023BCEC(void);
 extern void fn_8025812C(void), fn_8025C054(void), fn_800196FC(void), fn_80161DE4(void);
 extern void fn_8027DE6C(void), fn_80263F30(int,int,int);
 extern void fn_802E317C(const char *, ...);
+extern s32 lbl_802FA38C[5];
+extern char lbl_803432C0[];
+extern char lbl_80343970[];
+extern char lbl_80498908;
+extern char lbl_8055BE90;
+extern s32 lbl_8055F25C;
+extern s32 lbl_8055B860;
+extern s32 fn_8023512C(void *);
+extern void fn_80246938(void);
+
+s32 fn_80246AE8(void) {
+    s32 sp8;
+    s32 spC;
+    s32 sp10;
+    s32 sp14;
+    s32 sp18;
+    s32 sp20;
+    s32 sp34;
+    s32 sp38;
+    s32 sp40;
+    s32 sp44;
+    s32 sp48;
+    s32 sp4C;
+    s32 sp50;
+    s32 sp54;
+    s32 sp58;
+    s32 sp5C;
+    s32 sp60;
+    s32 sp64;
+    s32 sp68;
+    s32 sp6C;
+    s32 sp70;
+    s32 sp74;
+    s32 sp78;
+    s32 sp7C;
+    s32 sp80;
+    s32 sp84;
+    s32 sp88;
+    s32 sp8C;
+
+    lbl_8055F25C = fn_802E2C20();
+    sp20 = (s32)lbl_80343780;
+    sp34 = 0;
+    sp38 = fn_8023512C(lbl_80343970);
+    spC = lbl_802FA38C[1];
+    sp8 = lbl_802FA38C[0];
+    sp10 = lbl_802FA38C[2];
+    sp14 = lbl_802FA38C[3];
+    sp18 = lbl_802FA38C[4];
+    sp44 = 5;
+    sp40 = (s32)lbl_803432C0;
+    sp48 = (s32)&sp20;
+    sp4C = 0;
+    sp50 = 0;
+    sp58 = 3;
+    sp54 = (s32)&lbl_8055BE90;
+    sp5C = (s32)&lbl_80498908;
+    sp60 = 0x40;
+    sp64 = 0;
+    sp6C = 6;
+    sp68 = (s32)&lbl_8055B860;
+    sp70 = (s32)fn_80246938;
+    sp74 = -2;
+    sp78 = 0xD;
+    sp7C = lbl_804988F0[0];
+    sp80 = lbl_804988F0[1];
+    sp84 = lbl_804988F0[2];
+    sp88 = lbl_804988F0[3];
+    sp8C = lbl_804988F0[4];
+    spC = (s32)&sp40;
+    fn_802146BC(&sp8, -0x3E7, -0x3E7, 1);
+    sp20 = (s32)lbl_80343780;
+    fn_80235380(sp38);
+    return 1;
+}
+
 void fn_802473A4(void) {
     int again = 1;
     int prior;
@@ -676,6 +752,57 @@ int fn_80248C94(void *arg0, int arg1) {
     } else {
         return 0;
     }
+}
+
+extern float lbl_805638D0, lbl_805638D4, lbl_805638D8;
+extern s32 fn_802C942C(s32);
+void fn_80248CD8(void *arg0) {
+    register s32 elapsed;
+    s32 limit;
+    register s32 alpha;
+    s32 converted;
+    float factor;
+    float amount;
+    float value;
+    float next;
+    s32 now;
+
+    now = fn_802E2C20();
+    factor = lbl_805638B0;
+    elapsed = now - *(s32 *)((char *)arg0 + 0x1C);
+    if (elapsed < 0x1F4) {
+        if (factor <= lbl_80563898 - (float)elapsed / lbl_805638D0)
+            goto update_first;
+        goto after_first;
+update_first:
+        factor = lbl_80563898 - (float)elapsed / lbl_805638D0;
+after_first:
+        ;
+    }
+    limit = *(s32 *)((char *)arg0 + 0x20);
+    if (limit != 0 || *(s32 *)((char *)arg0 + 0x18) != 1) {
+        if (elapsed > limit - 0x1F4) {
+            value = lbl_80563898 - (float)(limit - elapsed) / lbl_805638D0;
+            if (factor <= value)
+                goto update_second;
+            goto after_second;
+update_second:
+            factor = value;
+after_second:
+            ;
+        }
+    }
+    amount = lbl_805638D4 * factor;
+    if (amount < lbl_805638B0)
+        next = amount - lbl_805638D8;
+    else
+        next = lbl_805638D8 + amount;
+    alpha = 0xFF;
+    converted = (s32)next;
+    converted = converted & ((-converted & ~converted) >> 31);
+    if (converted < 0xFF)
+        alpha = converted;
+    fn_802C942C((alpha << 24) | 0xFFFFFF);
 }
 
 #pragma scheduling off
