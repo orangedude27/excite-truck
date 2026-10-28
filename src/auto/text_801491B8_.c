@@ -1598,11 +1598,11 @@ extern "C" void fn_80151B48(void *arg0) {
         virtual s32 check(s32);
     };
     void *self = arg0;
-    s32 index;
-    s32 flag;
-    s32 i;
-    void *entry;
     void *obj;
+    s32 flag;
+    void *entry;
+    s32 index;
+    s32 i;
     void *p;
     s32 addr;
     f32 f;
@@ -1995,6 +1995,81 @@ s32 fn_80153A38(void *arg0) {
 }
 
 u32 fn_80153AC8(void) { return 1; }
+
+#pragma cplusplus on
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+extern "C" s32 fn_80153AD0(void *arg0, s32 arg1) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual void v23();
+        virtual s32 method();
+    };
+    extern void fn_8001DFCC(void);
+    u8 *base = (u8 *)arg0;
+    Dummy *obj = (Dummy *)arg0;
+    s32 count = fn_80179650();
+    u8 *entry = base + fn_801E86F8(arg1) * 0xC0;
+    u8 *target = entry + 0x9E4;
+    if (entry[0xA84] == 0) {
+        u8 *entry2 = base + fn_801E866C(arg1) * 0xC0;
+        u8 *target2 = entry2 + 0x9E4;
+        if (target2 != 0 && arg1 >= 0 && (u32)arg1 < 2U) {
+            fn_8014D794(target2, base + arg1 * 0x240 + 0x454);
+        }
+    } else {
+        fn_8014D6EC(target);
+    }
+    if (obj->method() != 0 && count > 1) {
+        s32 scanCount = *(s32 *)(base + 0xFE4);
+        u8 *cursor = base + 0x9E4;
+        s32 found = 0;
+        s32 i;
+        for (i = 0; i < scanCount; i++) {
+            if (cursor[0xA0] == 0) found = 1;
+            cursor += 0xC0;
+        }
+        if (found != 0) fn_8014D840(target, (void *)lbl_8055E248);
+    }
+    if (obj->method() != 0 && arg1 == 0) fn_8001DFCC();
+    s32 i;
+    s32 result;
+    for (i = 0; i < count; i++) {
+        if (*(s32 *)(base + 0x454) != 4) {
+            result = 0;
+            goto finish;
+        }
+        base += 0x240;
+    }
+    result = 1;
+finish:
+    return !result;
+}
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
+#pragma cplusplus reset
 
 #pragma cplusplus on
 #pragma use_lmw_stmw off
