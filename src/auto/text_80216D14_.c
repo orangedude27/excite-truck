@@ -369,6 +369,7 @@ void fn_80217874(void *arg0, int arg1) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma paired_single off
+#pragma cplusplus on
 void fn_802179A0(void *arg0) {
     char *base = (char *)arg0;
     int scan;
