@@ -1223,6 +1223,8 @@ int fn_801758B8(void *arg0) { return *(int *)((char *)arg0 + 0x1AC) == 2; }
 
 extern void fn_802AE118(void);
 extern float lbl_8055E3C8, lbl_80561A40, lbl_80561A44;
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_801758CC(void *arg0, int arg1, int arg2) {
     class Query {
@@ -1259,9 +1261,14 @@ extern "C" int fn_801758CC(void *arg0, int arg1, int arg2) {
                 p = *(void **)((char *)arg0 + 0x1D8);
                 if (p) { *((unsigned char *)p + 0x4A) = 1; *((unsigned char *)p + 0x4C) = 0; }
                 {
-                    float finalTime = lbl_8055E3C8 - lbl_80561A40;
-                    *((unsigned char *)arg0 + 0x1B4) = 0;
-                    *(float *)((char *)arg0 + 0x1B0) = finalTime;
+                    float finalFloor;
+                    float finalTotal;
+                    int zero;
+                    finalTotal = lbl_8055E3C8;
+                    zero = 0;
+                    finalFloor = lbl_80561A40;
+                    if ((*((volatile unsigned char *)arg0 + 0x1B4) = zero) == 0)
+                        *(float *)((char *)arg0 + 0x1B0) = finalTotal - finalFloor;
                 }
             }
         }
@@ -1269,7 +1276,9 @@ extern "C" int fn_801758CC(void *arg0, int arg1, int arg2) {
     }
     return result;
 }
+#pragma scheduling on
 #pragma cplusplus reset
+#pragma pop
 
 int fn_80175A38(void *arg0, float *arg1, float *arg2, int arg3, int arg4, int *arg5) {
     char *p = (char *)arg0 + arg3 * 0x24;
