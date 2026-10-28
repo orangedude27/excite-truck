@@ -1775,18 +1775,19 @@ extern "C" s32 fn_8012EE78(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
 }
 
-extern int fn_8012C7FC(void *, int);
-extern void fn_8012C720(void *, int);
-void fn_8012EE80(void *arg0, int unused) {
+extern "C" s32 fn_8012C7FC(void *, s32 *);
+extern "C" void fn_8012C720(void *, s32, s32, s32);
+extern "C" void fn_8012EE80(void *arg0) {
     char *base = (char *)arg0;
     char *entry;
     int i;
     int end = *(int *)(base + 0x28);
     int status;
-    int start;
-    int len;
     int pos;
+    int len;
+    int request;
     int limit;
+
     entry = base + 4;
     for (i = 0; i < 2; i++, entry += 0x10) {
         status = *(int *)(entry + 0xC);
@@ -1798,24 +1799,30 @@ void fn_8012EE80(void *arg0, int unused) {
                 end = pos;
         }
     }
+
     entry = base + 4;
     for (i = 0; i < 2; i++, entry += 0x10) {
         status = *(int *)(entry + 0xC);
-        start = *(int *)(entry + 4);
-        if (status == 0 && start != 0) {
-            /* handled below */
-        } else if (status != 2 || *(int *)(entry + 8) + *(int *)base >= *(int *)(base + 0x28)) {
-            continue;
+        if (status == 0) {
+            if (*(int *)(entry + 4) == 0)
+                continue;
+        } else {
+            if (status != 2)
+                continue;
+            if (*(int *)(entry + 8) + *(int *)base >= *(int *)(base + 0x28))
+                continue;
         }
+
         *(int *)(entry + 8) = end;
+        pos = end;
         len = *(int *)base;
+        request = len;
         limit = *(int *)(base + 0x24);
-        pos = end + len;
-        end += len;
-        if (pos > limit)
-            len = limit - end + len;
-        if (len > 0) {
-            fn_8012C720(*(void **)(entry + 4), *(int *)entry);
+        if (pos + len > limit)
+            request = limit - pos;
+        end = pos + len;
+        if (request > 0) {
+            fn_8012C720(*(void **)(entry + 4), *(int *)entry, request, pos);
             *(int *)(entry + 0xC) = 1;
         } else {
             *(int *)(entry + 0xC) = 0;
