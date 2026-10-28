@@ -1514,6 +1514,45 @@ extern "C" s32 fn_80151984(void *arg0, s32 arg1, s32 arg2) {
     }
     return 0;
 }
+
+#pragma cplusplus off
+void fn_80151A40(void *arg0) {
+    extern s32 fn_801E85B4(void);
+    extern s32 fn_801E41D8(s32 *, s32 *, s32, s32, f32);
+    extern s32 lbl_8055E230;
+    extern f32 lbl_805616FC;
+    s32 self = fn_801E85B4();
+    s32 index = fn_801E866C(self);
+    s32 entry_base = (s32)arg0 + index * 0xC0 + 0x9E4;
+    s32 *entry = (s32 *)entry_base;
+    s32 global_value;
+    s32 i = 0;
+    s32 offset = 0;
+    f32 y_offset = lbl_805616FC;
+    if (entry != 0 && entry[1] != 0) {
+        global_value = lbl_8055E230;
+        i = 0;
+    }
+    while (i < *(s32 *)((s32)arg0 + 0x224)) {
+        s32 item = *(s32 *)(*(s32 *)((s32)arg0 + 0x220) + offset);
+        if (*((u8 *)item + 0x10) != 0) {
+            s32 first[3];
+            s32 second[3];
+            first[0] = *(s32 *)(item + 0);
+            first[1] = *(s32 *)(item + 4);
+            first[2] = *(s32 *)(item + 8);
+            second[0] = *(s32 *)(item + 0);
+            second[1] = *(s32 *)(item + 4);
+            second[2] = *(s32 *)(item + 8);
+            ((f32 *)first)[1] = ((f32 *)first)[1] - y_offset;
+            ((f32 *)second)[1] = ((f32 *)second)[1] + y_offset;
+            fn_801E41D8(first, second, global_value, *(s32 *)item, *(f32 *)(item + 0xC));
+        }
+        offset += 4;
+        i += 1;
+    }
+}
+
 #pragma cplusplus off
 #pragma pop
 extern s32 fn_80141F7C(f32);
