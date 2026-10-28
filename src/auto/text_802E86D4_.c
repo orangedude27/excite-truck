@@ -1,6 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern int fn_802E2C20(void);
-extern int lbl_80507288;
+__declspec(section ".data") extern int lbl_80507288;
 extern int NANDCheck(unsigned int, unsigned int, unsigned int *);
 extern char lbl_8034D9C0[];
 // split_file divides it into the game's real files (file_status shows its range).
@@ -65,41 +65,35 @@ void fn_802E870C(void) {
 }
 
 extern int fn_80131234(int, int, int, int, int, int, int, int);
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 int fn_802E8744(void *arg0) {
-    int *p = (int *)arg0;
-    int v0 = p[0], v1 = p[1], v2 = p[2], v3 = p[3];
-    int v4 = p[4], v5 = p[5], v6 = p[6], v7 = p[7];
-    int v8 = p[8], v9 = p[9], v10 = p[10], v11 = p[11];
-    int v12 = p[12], v13 = p[13];
+    volatile int *p = (volatile int *)arg0;
+    int v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
     int values[14];
+    int *out;
     int i;
-    int *src;
-    int *dst;
-    values[0] = v0;
-    values[1] = v1;
-    values[2] = v2;
-    values[3] = v3;
-    values[4] = v4;
-    values[5] = v5;
-    values[6] = v6;
-    values[7] = v7;
-    values[8] = v8;
-    values[9] = v9;
-    values[10] = v10;
-    values[11] = v11;
-    values[12] = v12;
-    values[13] = v13;
+    v0 = p[0]; v1 = p[1]; v2 = p[2]; v3 = p[3];
+    v4 = p[4]; v5 = p[5]; v6 = p[6]; v7 = p[7];
+    v8 = p[8]; v9 = p[9]; v10 = p[10]; v11 = p[11];
+    v12 = p[12]; v13 = p[13];
+    values[0] = v0; values[1] = v1; values[2] = v2; values[3] = v3;
+    values[4] = v4; values[5] = v5; values[6] = v6; values[7] = v7;
+    values[8] = v8; values[9] = v9; values[10] = v10; values[11] = v11;
+    values[12] = v12; values[13] = v13;
     values[1] = fn_80131234(v1, v12, v11, v10, v9, v8, v7, v6);
-    src = p + 6;
-    dst = values + 6;
+    out = values;
+    p = (volatile int *)arg0;
     for (i = 0; i < 4; i++) {
-        if (src[0] != 0) dst[0] = ((int (*)(int))fn_80131234)(src[0]);
-        src += 2;
-        dst += 2;
+        int value = p[6];
+        if (value != 0) out[6] = ((int (*)(int))fn_80131234)(value);
+        p += 2;
+        out += 2;
     }
-    return ((int (*)(void *, int *))(*(void ***)((void *)lbl_80560024))[2])(lbl_80560024, values);
+    return ((int (*)(void *, int *))(*(void ***)((void *)lbl_80560024))[4])(lbl_80560024, values);
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw reset
 void fn_802E8838(void) {
     fn_80127464();
 }
@@ -139,6 +133,45 @@ void fn_802E8918(void) {
     fn_802E2E38(1);
 }
 
+#pragma scheduling invalid_target
+void fn_802E8920(int arg0) {
+    unsigned int flags = 0;
+    char *messages = lbl_8034D9C0;
+    int result = NANDCheck((arg0 + 0x3FFF) / 0x4000 + 4, 2, &flags);
+    if (result == 0) {
+        for (;;) {
+            if (flags & 1) {
+                fn_802E30C8(messages + 0x328);
+            }
+            if (flags & 2) {
+                fn_802E30C8(messages + 0x35C);
+            }
+            if (flags & 0xF) {
+                int request = 3;
+                if (flags & 5) {
+                    request = 2;
+                }
+                if (fn_802E888C(request) != 0) {
+                    fn_802E8918();
+                    break;
+                }
+                if (fn_802E88D8() != 0) {
+                    break;
+                }
+            } else {
+                if (fn_802E888C(7) != 0) {
+                    break;
+                }
+                if (fn_802E88D8() != 0) {
+                    break;
+                }
+            }
+        }
+    } else {
+        fn_802E30C8(messages + 0x398, result);
+    }
+}
+#pragma scheduling on
 int fn_802E8AE8(const char *arg0) {
     unsigned char sp8[0x88];
     int result = 0;
