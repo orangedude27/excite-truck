@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned long u32;
 typedef signed long s32;
 typedef float f32;
+extern double fn_8002F234(double);
 extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
 extern s32 lbl_8055F88C;
 extern char lbl_80349C88[];
@@ -654,6 +655,58 @@ void fn_802A6790(void *arg0) {
         fn_802A6758(arg0, values);
     }
 }
+
+extern float fn_802C9A50(void);
+extern void fn_802A6758(void *, float *);
+extern double __fabs(double);
+extern float lbl_80564850, lbl_80564858, lbl_8056485C;
+void fn_802A6838(void *arg0) {
+    unsigned char *p = (unsigned char *)arg0;
+    float samples[2];
+    float values[3];
+    float divisor;
+    float dt;
+    float speed;
+    float rx;
+    float scale;
+    float one;
+    float curve;
+    float product;
+    double absX;
+    double absY;
+    float ax;
+    float ay;
+    float ry;
+    float end;
+    float start;
+    float next;
+
+    divisor = fn_802C9A50();
+    dt = *(float *)(p + 0x20);
+    speed = dt / divisor;
+    scale = lbl_80564850;
+    one = lbl_8056485C;
+    while (*(int *)(p + 4) < *(int *)(p + 8)) {
+        curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
+        product = scale * curve;
+        samples[1] = *(float *)(p + 0x54) * (scale - product);
+        samples[0] = *(float *)(p + 0x50) * (scale - product);
+        absX = __fabs((double)samples[0]);
+        absY = __fabs((double)samples[1]);
+        ax = one - (float)absX;
+        ay = one - (float)absY;
+        rx = fn_80287BC8(-ax, ax);
+        ry = fn_80287BC8(-ay, ay);
+        end = *(float *)(p + 0x28);
+        start = *(float *)(p + 0x24);
+        next = start + curve * (end - start);
+        values[2] = next;
+        values[1] = dt * next * (samples[1] + ry);
+        values[0] = speed * next * (samples[0] + rx);
+        fn_802A6758(arg0, values);
+    }
+}
+
 #pragma pop
 s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
     s32 *object = (s32 *)arg0;
