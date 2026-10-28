@@ -1442,41 +1442,52 @@ extern "C" void fn_8012E2CC(void *);
 extern "C" void *fn_8012E460(void *);
 extern "C" s32 fn_8012E490(s32 *);
 extern "C" const char lbl_8032ACE0[];
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8012DDA8(s32 arg0) {
-    const char *name = (const char *)arg0;
-    nw4r::ef::Effect *obj = lbl_8055E014;
+    nw4r::ef::Effect *obj;
     void *node;
     s32 found = 0;
-    s32 len;
-    if (fn_8012BD3C(lbl_8055E000, name) != 0) goto done;
-    if (obj == 0) goto done;
+
+    if (fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0) {
+        return;
+    }
+
+    obj = lbl_8055E014;
+    if (obj == 0) {
+        return;
+    }
+
     node = (void *)fn_8012E490((s32 *)((char *)obj + 0xA18));
-    while (node != 0) {
-        if (stricmp((const char *)((char *)node + 0xC), name) == 0) {
+    do {
+        if (stricmp((const char *)((char *)node + 0xC), (const char *)arg0) == 0) {
             found = 1;
             *(s32 *)((char *)node + 8) += 1;
             break;
         }
         node = *(void **)((char *)node + 4);
-    }
+    } while (node != 0);
+
     if (found == 0) {
-        fn_802E30C8(lbl_8032ACE0, name);
+        fn_802E30C8(lbl_8032ACE0, (const char *)arg0);
         node = fn_8012E460((char *)obj + 8);
         if (node == 0) {
             fn_8012E2CC(obj);
             node = fn_8012E460((char *)obj + 8);
         }
         if (node != 0) {
-            len = (s32)fn_8012E060((char *)obj + 4, name);
-            fn_8012DFE8(node, name, len);
+            fn_8012DFE8(node, (const char *)arg0, (s32)fn_8012E060((char *)obj + 4, (const char *)arg0));
             fn_8012DFCC((Unk8012DFCCList *)((char *)obj + 0xA18), (Unk8012DFCCNode *)node);
             fn_8012DEE4(obj);
             found = 1;
         }
     }
-done:
-    if (found == 0) fn_8012BD98(name, &lbl_8055E000, 0);
+
+    if (found == 0) {
+        ((void *(*)(const char *, void **))fn_8012BD98)((const char *)arg0, &lbl_8055E000);
+    }
 }
+#pragma pop
 
 extern "C" s32 fn_8012CC24(void *, void *);
 #pragma push
