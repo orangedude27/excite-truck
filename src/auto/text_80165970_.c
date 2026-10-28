@@ -16,7 +16,6 @@ public:
     virtual void v6();
     virtual void run(int, int);
 };
-#pragma dont_inline fn_80166040
 extern "C" {
     double atof(const char *);
     char *strchr(const char *, int);
