@@ -45,6 +45,8 @@ extern void fn_80234470(void);
 extern void fn_802328D4();
 
 extern s32 lbl_8055D4A8;
+extern s32 lbl_802ED758[4];
+extern s32 lbl_802ED770[4];
 extern f32 lbl_80350F28[][6];
 
 typedef struct Unk0x18 {
@@ -681,7 +683,9 @@ extern u32 lbl_802ED788[];
 extern u32 lbl_802ED7A0[];
 extern s32 lbl_8055D484;
 extern s32 lbl_8055D488;
-void fn_80010D88(f32 farg0, f32 farg1, f32 farg2) {
+#pragma push
+#pragma scheduling invalid_target
+void fn_80010D88(register f32 farg0, register f32 farg1, register f32 farg2) {
     volatile s32 sp34;
     volatile s32 sp30;
     volatile f32 sp2C;
@@ -694,37 +698,41 @@ void fn_80010D88(f32 farg0, f32 farg1, f32 farg2) {
     volatile f32 sp10;
     volatile f32 spC;
     volatile f32 sp8;
-    f32 temp_f4, temp_f5, temp_f6;
-    s32 temp_r0, temp_r5;
-    Unk0x18 *temp_r8, *temp_r10;
+    register f32 temp_f0;
+    register f32 temp_f5;
+    register f32 temp_f6;
+    register f32 temp_f4;
+    register s32 index;
+    register s32 next;
 
-    temp_r0 = lbl_8055D4A8 * 0x18;
-    if (lbl_8055D4A8 < 0xFF) {
+    index = lbl_8055D4A8;
+    if (index < 0xFF) {
         *(volatile u32 *)&sp28 = lbl_802ED788[2];
-        temp_r8 = (Unk0x18 *)((u8 *)lbl_8034F6B0 + temp_r0);
-        temp_f6 = (f32)farg2;
-        temp_r8->unk_0x00 = farg0;
-        temp_r5 = lbl_8055D4A8 + 1;
-        temp_r8->unk_0x04 = farg1;
-        temp_r8->unk_0x08 = sp28;
-        temp_r10 = (Unk0x18 *)((u8 *)lbl_8034F6B0 + temp_r5 * 0x18);
-        temp_r8->unk_0x0C = temp_f6;
-        temp_r8->unk_0x10 = lbl_8055D484;
-        temp_r8->unk_0x14 = lbl_8055D484;
-        temp_f5 = lbl_80560264 + farg0;
-        temp_f4 = farg1 - lbl_80560264;
+        temp_f0 = farg0;
         *(volatile u32 *)&sp10 = lbl_802ED7A0[2];
-        temp_r10->unk_0x00 = temp_f5;
+        temp_f5 = farg1;
+        temp_f6 = farg2;
+        lbl_8034F6B0[index].unk_0x00 = temp_f0;
+        next = index + 1;
+        lbl_8034F6B0[index].unk_0x04 = temp_f5;
+        lbl_8034F6B0[index].unk_0x08 = sp28;
+        lbl_8034F6B0[index].unk_0x0C = temp_f6;
+        lbl_8034F6B0[index].unk_0x10 = lbl_8055D484;
+        lbl_8034F6B0[index].unk_0x14 = lbl_8055D484;
+        temp_f4 = lbl_80560264;
+        temp_f5 = temp_f4 + farg0;
+        temp_f4 = farg1 - temp_f4;
+        lbl_8034F6B0[next].unk_0x00 = temp_f5;
         *(volatile u32 *)&sp20 = lbl_802ED788[0];
-        temp_r10->unk_0x04 = temp_f4;
-        temp_r10->unk_0x08 = sp10;
-        temp_r10->unk_0x0C = temp_f6;
+        lbl_8034F6B0[next].unk_0x04 = temp_f4;
+        lbl_8034F6B0[next].unk_0x08 = sp10;
+        lbl_8034F6B0[next].unk_0x0C = temp_f6;
         *(volatile u32 *)&sp24 = lbl_802ED788[1];
         *(volatile u32 *)&sp2C = lbl_802ED788[3];
         *(volatile u32 *)&sp8 = lbl_802ED7A0[0];
         *(volatile u32 *)&spC = lbl_802ED7A0[1];
         *(volatile u32 *)&sp14 = lbl_802ED7A0[3];
-        temp_r10->unk_0x10 = lbl_8055D488;
+        lbl_8034F6B0[next].unk_0x10 = lbl_8055D488;
         sp20 = farg0;
         sp24 = farg1;
         sp2C = farg2;
@@ -735,13 +743,11 @@ void fn_80010D88(f32 farg0, f32 farg1, f32 farg2) {
         sp14 = farg2;
         sp18 = lbl_8055D488;
         sp1C = lbl_8055D488;
-        lbl_8055D4A8 = temp_r5 + 1;
-        temp_r10->unk_0x14 = lbl_8055D488;
+        lbl_8055D4A8 = next + 1;
+        lbl_8034F6B0[next].unk_0x14 = lbl_8055D488;
     }
 }
-
-#pragma scheduling on
-#pragma dont_inline reset
+#pragma pop
 
 void fn_80010EF0(void);
 void fn_80010F08(void);
