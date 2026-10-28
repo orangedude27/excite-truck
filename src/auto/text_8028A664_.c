@@ -77,6 +77,7 @@ void fn_8028A664(void) {
     *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
     fn_8028ABE8(p);
     fn_8028B3CC();
+#pragma scheduling off
     fn_801EEFDC((s32)fn_8028B93C, 0);
     fn_801EEFDC((s32)fn_8028B500, 1);
     fn_801EEFDC((s32)fn_8028BA44, 2);
