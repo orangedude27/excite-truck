@@ -418,7 +418,7 @@ struct Dummy_802101F8 {
 #pragma cplusplus reset
 struct Record_802101F8 {
     long f0;
-    float f4;
+    long f4;
     long f8;
     long fC;
     float f10;
