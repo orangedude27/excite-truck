@@ -161,7 +161,8 @@ extern void fn_8000AEC4(void);
 #pragma small_data off
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void fn_8000AF1C(void *arg0) {
+#pragma scheduling invalid_target
+  void fn_8000AF1C(void *arg0) {
     int zero = 0;
     char *config = lbl_802FBC90;
     int active;
