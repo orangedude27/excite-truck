@@ -2022,7 +2022,7 @@ void fn_80164F50(void *arg0) {
     fn_80276CB0(base + 0x630, 0);
     first = fn_80131234(base + 0x654);
     second = fn_80131234(base + 0x63C);
-    fn_801DF380((void *)second, first, fn_80161438, 0);
+    fn_801DF380((void *)second, first, (void (*)())fn_80161438, 0);
 }
 #pragma scheduling on
 unsigned char fn_80165040(void *arg0) {
