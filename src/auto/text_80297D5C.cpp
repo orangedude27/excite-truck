@@ -374,6 +374,7 @@ extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
     fn_80288A40(positions, target);
 }
 #pragma scheduling on
+#pragma paired_single reset
 
 extern "C" void* fn_80298868(void* arg0) {
     char* p = (char*)arg0;
