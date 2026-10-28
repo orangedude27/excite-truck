@@ -335,7 +335,8 @@ extern void fn_801CC594(void *);
 extern void *fn_80207848(void *, int);
 extern void *fn_8023512C(void *);
 extern float lbl_80562A04;
-void fn_801CC470(void) {
+#pragma cplusplus on
+extern "C" void fn_801CC470(void) {
     register void *object;
     register int i;
     register s32 *table;
