@@ -59,7 +59,7 @@ void fn_8028A664(void) {
     extern s32 fn_8028BA44(void *);
     extern s32 fn_8028BA9C(void *);
     extern s32 fn_8028BB14(s32);
-    char *data = lbl_80348B98;
+    register char *data asm("r31") = lbl_80348B98;
     void *p;
 
     p = fn_801284F8(0xDC, data + 0);
@@ -82,6 +82,7 @@ void fn_8028A664(void) {
     fn_801EEFDC((s32)fn_8028BA44, 2);
     fn_801EEFDC((s32)fn_8028BA9C, 7);
     fn_801EEFDC((s32)fn_8028BB14, 8);
+#pragma scheduling on
 }
 #pragma cplusplus on
 
