@@ -366,6 +366,8 @@ void fn_80217874(void *arg0, int arg1) {
 }
 
 #pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 #pragma paired_single off
 void fn_802179A0(void *arg0) {
     char *base = (char *)arg0;
