@@ -20,6 +20,7 @@ void fn_80216D28(void) {
     lbl_8055EFAC = 1;
 }
 
+#pragma noinline
 void fn_80216D34(void) {
     lbl_8055EFAC = 0;
 }
