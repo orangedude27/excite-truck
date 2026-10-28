@@ -418,6 +418,82 @@ long fn_8027BAB8(void *arg0) {
     return 1;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" long fn_8027BB4C(long arg0, long arg1, long arg2, long arg3) {
+    class OuterList {
+    public:
+        virtual void v0();
+        virtual long count();
+        virtual void *item(long);
+    };
+    class InnerList {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual long count();
+        virtual void *item(long);
+    };
+    class Item {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual long id();
+    };
+    class SizedItem {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16();
+        virtual long size();
+    };
+    long sum;
+    long total;
+    OuterList *outer;
+    long outerIndex;
+    InnerList *inner;
+    long innerIndex;
+    Item *item;
+    long key;
+    long size;
+    long limit;
+    void *resource;
+
+    sum = 0;
+    total = 0;
+    outer = (OuterList *)fn_8027B834((void *)arg0);
+    outerIndex = 0;
+    while (outerIndex < outer->count()) {
+        inner = (InnerList *)outer->item(outerIndex);
+        innerIndex = 0;
+        while (innerIndex < inner->count()) {
+            item = (Item *)inner->item(innerIndex);
+            key = item->id();
+            resource = fn_8001BB58(fn_8000DA10(), key, arg0, 0);
+            if (resource != 0) {
+                if (arg3 != 0) {
+                    size = ((SizedItem *)item)->size();
+                    limit = *(long *)((char *)resource + 4);
+                    if (size < limit) limit = size;
+                    sum += limit;
+                } else {
+                    sum += *(long *)((char *)resource + 4);
+                }
+            }
+            total += ((SizedItem *)item)->size();
+            innerIndex++;
+        }
+        outerIndex++;
+    }
+    if (arg1 != 0) *(long *)arg1 = sum;
+    if (arg2 != 0) *(long *)arg2 = total;
+}
+#pragma cplusplus reset
+#pragma use_lmw_stmw on
+#pragma pop
+
 long fn_8027BB4C(long, long, long, long);
 void fn_8027BCC0(long arg0, long arg1, long arg2) {
     fn_8027BB4C(arg0, arg1, arg2, 0);
