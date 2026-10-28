@@ -104,10 +104,129 @@ int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
 extern float lbl_80562B64;
 extern float lbl_80562B68;
 extern float lbl_80562B6C;
+#pragma scheduling invalid_target
 float fn_801DB398(float grid[4][4], float t, float u) {
-float sp8,spC,sp10,sp14; float *o=&sp8,*s=&grid[0][0]; float q=t*t,c=q*t; int i;
-for(i=0;i<2;i++){float x0=s[0],y0=s[1],x1=s[4],y1=s[5],x2=s[8],y2=s[9],x3=s[12],y3=s[13]; float dx=x1-x0,dy=y1-y0,dx2=x3-x2; float a=lbl_80562B64*dx,b=lbl_80562B64*dx2,d=lbl_80562B68*a,e=lbl_80562B68*dy,f=lbl_80562B6C*dy-d-b,g=(a+b)-e; o[0]=y0+a*t+g*c+f*q; a=lbl_80562B64*(y1-s[3]); b=lbl_80562B64*(y3-y2); d=lbl_80562B68*(x1-x2); dy=y1-y2; o[1]=y2+a*t+(((a+b)-lbl_80562B68*dy)*c)+((lbl_80562B6C*dy-d-b)*q); o+=2;s+=2;}
-{float a=u*u,b=lbl_80562B64*(sp10-sp8),d=sp10-spC,e=lbl_80562B64*(sp14-spC),c=lbl_80562B64*(sp14-sp8);return spC+b*u+(((b+e)-lbl_80562B68*d)*(a*u))+((lbl_80562B6C*d-lbl_80562B68*c-e)*a);}
+    float values[4];
+    float *src = &grid[0][0];
+    float *out = values;
+    float t2;
+    float t3;
+    float p2;
+    float p0;
+    float p1;
+    float p3;
+    float dp20;
+    float dp21;
+    float dp31;
+    float half20;
+    float half31;
+    float twice20;
+    float twice21;
+    float sum;
+    float coeff2;
+    float coeff3;
+    float base;
+    float term1;
+    float term2;
+    float p2y;
+    float p0y;
+    float p3y;
+    float p1y;
+    float dy20;
+    float dy21;
+    float dy31;
+    float yhalf20;
+    float yhalf31;
+    float ytwice20;
+    float ytwice21;
+    float ysum;
+    float ycoeff2;
+    float ycoeff3;
+    float ybase;
+    float yterm1;
+    float yterm2;
+    int i;
+
+    t2 = t * t;
+    t3 = t2 * t;
+    for (i = 0; i < 2; i++) {
+        p2 = src[8];
+        p0 = src[0];
+        p1 = src[4];
+        dp20 = p2 - p0;
+        p3 = src[12];
+        dp21 = p2 - p1;
+        p2y = src[9];
+        dp31 = p3 - p1;
+        half20 = lbl_80562B64 * dp20;
+        p0y = src[1];
+        half31 = lbl_80562B64 * dp31;
+        p3y = src[13];
+
+        twice20 = lbl_80562B68 * half20;
+        sum = half20 + half31;
+        twice21 = lbl_80562B68 * dp21;
+        coeff3 = lbl_80562B6C * dp21;
+        coeff3 = coeff3 - twice20;
+        base = half20 * t;
+        coeff2 = sum - twice21;
+        coeff3 = coeff3 - half31;
+        term1 = coeff2 * t3;
+        term2 = coeff3 * t2;
+        coeff2 = term1 + term2;
+        coeff2 = base + coeff2;
+        out[0] = p1 + coeff2;
+
+        p1y = src[5];
+        src += 2;
+        dy20 = p2y - p0y;
+        dy21 = p2y - p1y;
+        dy31 = p3y - p1y;
+        yhalf31 = lbl_80562B64 * dy31;
+        yhalf20 = lbl_80562B64 * dy20;
+        ytwice20 = lbl_80562B68 * yhalf20;
+        ysum = yhalf20 + yhalf31;
+        ytwice21 = lbl_80562B68 * dy21;
+        ycoeff3 = lbl_80562B6C * dy21;
+        ycoeff3 = ycoeff3 - ytwice20;
+        ybase = yhalf20 * t;
+        ycoeff2 = ysum - ytwice21;
+        ycoeff3 = ycoeff3 - yhalf31;
+        yterm1 = ycoeff2 * t3;
+        yterm2 = ycoeff3 * t2;
+        ycoeff2 = yterm1 + yterm2;
+        ycoeff2 = ybase + ycoeff2;
+        out[1] = p1y + ycoeff2;
+
+        out += 2;
+    }
+
+    {
+        float p0 = values[0];
+        float p1 = values[1];
+        float p2 = values[2];
+        float p3 = values[3];
+        float d20 = p2 - p1;
+        float d21 = p2 - p0;
+        float d31 = p3 - p1;
+        float half20 = lbl_80562B64 * d21;
+        float half31 = lbl_80562B64 * d31;
+        float two20 = lbl_80562B68 * half20;
+        float sum = half20 + half31;
+        float two21 = lbl_80562B68 * d20;
+        float coeff3 = lbl_80562B6C * d20;
+        float base = half20 * u;
+        float coeff2 = sum - two21;
+        float u2 = u * u;
+        float u3 = u2 * u;
+        coeff3 = coeff3 - two20;
+        coeff3 = coeff3 - half31;
+        coeff2 = coeff2 * u3;
+        coeff3 = coeff3 * u2;
+        coeff2 = coeff2 + coeff3;
+        coeff2 = base + coeff2;
+        return p1 + coeff2;
+    }
 }
 
 float fn_801DB514(float grid[4][4], void *out, float t, float u) {
