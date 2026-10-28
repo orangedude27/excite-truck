@@ -63,6 +63,7 @@ int fn_8018FD38(void) {
 }
 
 extern s32 fn_801293A4(void);
+#pragma dont_inline fn_8018FC38
 extern void fn_8018FC38(void);
 extern void fn_801B664C(void);
 extern s32 fn_801B6668();
@@ -742,45 +743,57 @@ extern unsigned char lbl_804A16E8[];
 int fn_80191758(arg0)
 void *arg0;
 {
-    register char *dst;
+    char *dst;
     dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
     strcpy(dst, *(char **)((char *)arg0 + 0x20) + 0x234);
-    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    *(float *)(dst + 0x28) = lbl_8056208C;
-    *(float *)(dst + 0x24) = lbl_8056208C;
-    *(float *)(dst + 0x20) = lbl_8056208C;
-    *(float *)(dst + 0x34) = lbl_80562090;
-    *(float *)(dst + 0x30) = lbl_80562090;
-    *(float *)(dst + 0x2C) = lbl_80562090;
-    *(float *)(dst + 0x38) = lbl_80562090;
-    *(float *)(dst + 0x3C) = lbl_80562090;
-    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    *(float *)(dst + 0x48) = lbl_8056208C;
-    *(float *)(dst + 0x44) = lbl_8056208C;
-    *(float *)(dst + 0x40) = lbl_8056208C;
-    *(float *)(dst + 0x54) = lbl_80562090;
-    *(float *)(dst + 0x50) = lbl_80562090;
-    *(float *)(dst + 0x4C) = lbl_80562090;
-    *(float *)(dst + 0x58) = lbl_80562090;
-    *(float *)(dst + 0x5C) = lbl_80562090;
-    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    *(float *)(dst + 0x68) = lbl_8056208C;
-    *(float *)(dst + 0x64) = lbl_8056208C;
-    *(float *)(dst + 0x60) = lbl_8056208C;
-    *(float *)(dst + 0x74) = lbl_80562090;
-    *(float *)(dst + 0x70) = lbl_80562090;
-    *(float *)(dst + 0x6C) = lbl_80562090;
-    *(float *)(dst + 0x78) = lbl_80562090;
-    *(float *)(dst + 0x7C) = lbl_80562090;
-    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    *(float *)(dst + 0x88) = lbl_8056208C;
-    *(float *)(dst + 0x84) = lbl_8056208C;
-    *(float *)(dst + 0x80) = lbl_8056208C;
-    *(float *)(dst + 0x94) = lbl_80562090;
-    *(float *)(dst + 0x90) = lbl_80562090;
-    *(float *)(dst + 0x8C) = lbl_80562090;
-    *(float *)(dst + 0x98) = lbl_80562090;
-    *(float *)(dst + 0x9C) = lbl_80562090;
+    {
+        char *p;
+        p = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+        *(float *)(p + 0x28) = lbl_8056208C;
+        *(float *)(p + 0x24) = lbl_8056208C;
+        *(float *)(p + 0x20) = lbl_8056208C;
+        *(float *)(p + 0x34) = lbl_80562090;
+        *(float *)(p + 0x30) = lbl_80562090;
+        *(float *)(p + 0x2C) = lbl_80562090;
+        *(float *)(p + 0x38) = lbl_80562090;
+        *(float *)(p + 0x3C) = lbl_80562090;
+    }
+    {
+        char *p;
+        p = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+        *(float *)(p + 0x48) = lbl_8056208C;
+        *(float *)(p + 0x44) = lbl_8056208C;
+        *(float *)(p + 0x40) = lbl_8056208C;
+        *(float *)(p + 0x54) = lbl_80562090;
+        *(float *)(p + 0x50) = lbl_80562090;
+        *(float *)(p + 0x4C) = lbl_80562090;
+        *(float *)(p + 0x58) = lbl_80562090;
+        *(float *)(p + 0x5C) = lbl_80562090;
+    }
+    {
+        char *p;
+        p = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+        *(float *)(p + 0x68) = lbl_8056208C;
+        *(float *)(p + 0x64) = lbl_8056208C;
+        *(float *)(p + 0x60) = lbl_8056208C;
+        *(float *)(p + 0x74) = lbl_80562090;
+        *(float *)(p + 0x70) = lbl_80562090;
+        *(float *)(p + 0x6C) = lbl_80562090;
+        *(float *)(p + 0x78) = lbl_80562090;
+        *(float *)(p + 0x7C) = lbl_80562090;
+    }
+    {
+        char *p;
+        p = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+        *(float *)(p + 0x88) = lbl_8056208C;
+        *(float *)(p + 0x84) = lbl_8056208C;
+        *(float *)(p + 0x80) = lbl_8056208C;
+        *(float *)(p + 0x94) = lbl_80562090;
+        *(float *)(p + 0x90) = lbl_80562090;
+        *(float *)(p + 0x8C) = lbl_80562090;
+        *(float *)(p + 0x98) = lbl_80562090;
+        *(float *)(p + 0x9C) = lbl_80562090;
+    }
 }
 
 int fn_80191A98(void *arg0) {
