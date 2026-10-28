@@ -121,6 +121,7 @@ void fn_801D490C(void) {
  do { caret=strchr(part,0x5e); if(caret)*caret=0; fn_8000FF88(color,0xC,lbl_8055AD58,part,lbl_80562AE0,lbl_80562ADC,y); if(caret)part=caret+1;else part=0; y-=dy; } while(part&&(signed char)*part);
 }
 
+#pragma dont_inline on
 void* fn_801D4B34(void* arg0) {
     *(void**)arg0 = lbl_80338D80;
     *(int*)((char*)arg0 + 4) = 0;
@@ -129,6 +130,7 @@ void* fn_801D4B34(void* arg0) {
     *(int*)((char*)arg0 + 0x34) = 0;
     return arg0;
 }
+#pragma dont_inline reset
 
 #pragma cplusplus on
 extern "C" void *fn_801D4B60(void *arg0, int arg1) {
@@ -1019,30 +1021,71 @@ int fn_801D7034(int arg0, int arg1) {
 
 #pragma cplusplus on
 extern "C" int fn_801D707C(void *arg0, void *arg1) {
- struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual char *check(char *); virtual void v4(); virtual char *get(char *); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual float value(char *, float); };
- extern char lbl_80338888[];
- extern char lbl_803388C8[];
- extern char lbl_8055AC80;
- extern char lbl_8055ACB0;
- extern char lbl_8055ACB8;
- extern float lbl_80562ADC;
- extern float lbl_80562AEC;
- extern int fn_80207848(char *, int);
- extern void fn_802E30C8(char *);
- Dummy *obj=(Dummy *)arg1;
- char *src; char *dst; int i; float temp;
- if (obj->check(&lbl_8055AC80)==0) { fn_802E30C8(lbl_80338888); return 0; }
- src=obj->get(&lbl_8055AC80); dst=(char *)arg0+8;
- for(i=0;i<30 && (*dst++=*src++)!=0;i++) {}
- if(i==30) dst[-1]=0;
- *(float *)((char *)arg0+0x28)=obj->value(&lbl_8055ACB8,lbl_80562ADC);
- temp=obj->value(&lbl_8055ACB0,lbl_80562AEC);
- *(int *)((char *)arg0+4)=1;
- *(float *)((char *)arg0+0x30)=temp;
- *(float *)((char *)arg0+0x2C)=lbl_80562ADC;
- *((char *)arg0+0x34)=0;
- *(int *)((char *)arg0+0x38)=fn_80207848(lbl_803388C8,1);
- return 1;
+    struct Dummy {
+        virtual void v0();
+        virtual char *check(char *);
+        virtual void v1();
+        virtual char *get(char *);
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual float value(char *, float);
+    };
+    struct Record {
+        int status;
+        char pad0[4];
+        char name[0x20];
+        float value;
+        float zero;
+        float second;
+        char flag;
+        char pad1[3];
+        int link;
+    };
+    extern char lbl_80338888[];
+    extern char lbl_803388C8[];
+    extern char lbl_8055AC80;
+    extern char lbl_8055ACB0;
+    extern char lbl_8055ACB8;
+    extern float lbl_80562ADC;
+    extern float lbl_80562AEC;
+    extern int fn_80207848(char *, int);
+    extern void fn_802E30C8(char *);
+    Dummy *obj;
+    Record *out;
+    char *src;
+    int remaining;
+    char *dst;
+    const char *message;
+
+    obj = (Dummy *)arg1;
+    out = (Record *)arg0;
+    if (obj->check(&lbl_8055AC80) == 0) {
+        message = lbl_80338888;
+        ((void (*)(const char *, ...))fn_802E30C8)(message);
+        return 0;
+    }
+    src = obj->get(&lbl_8055AC80);
+    dst = out->name;
+    remaining = 0x1E;
+    goto copy_body;
+copy_limit:
+    if (--remaining > 0)
+        goto copy_body;
+    dst[-1] = 0;
+    goto copy_done;
+copy_body:
+    if ((signed char)(*dst++ = *src++) != 0)
+        goto copy_limit;
+copy_done:
+    out->value = obj->value(&lbl_8055ACB8, lbl_80562ADC);
+    out->second = obj->value(&lbl_8055ACB0, lbl_80562AEC);
+    out->status = 1;
+    out->zero = lbl_80562ADC;
+    out->flag = 0;
+    out->link = fn_80207848(lbl_803388C8, 1);
+    return 1;
 }
 
 #pragma push
