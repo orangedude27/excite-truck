@@ -685,6 +685,7 @@ void fn_802BD69C(void *arg0, int arg1) {
         offset+=0x44; i++;
     }
 }
+#pragma scheduling on
 #pragma pop
 
 int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
