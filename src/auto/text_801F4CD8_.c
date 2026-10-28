@@ -694,6 +694,7 @@ FN_801F6A08_RETURN fn_801F6A08(void *arg0, int arg1) {
 
 extern float fn_801E7E24(void);
 extern unsigned char fn_802CDB20(int, int);
+#pragma scheduling invalid_target
 void fn_801F6A98(void *arg0, int arg1) {
     extern float lbl_80558DC4;
     float sp[6];
@@ -702,7 +703,7 @@ void fn_801F6A98(void *arg0, int arg1) {
     void *entry;
     int i;
 
-    enabled = ((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4) ? 1 : 0;
+    enabled = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
     entry = arg0;
     i = 0;
     goto check;
@@ -725,7 +726,6 @@ loop:
 check:
     if (i < *(int *)((char *)arg0 + 0x900)) goto loop;
 }
-
 #pragma scheduling on
 extern void fn_801F602C(void *, int, int, int, int);
 extern char lbl_8033ADF8[];
@@ -733,29 +733,28 @@ extern char lbl_8055B19C[], lbl_8055B1A8[], lbl_8055B1B0[], lbl_8055B1B8[];
 extern float lbl_80562FE8;
 typedef float (*Getter)(void *, const char *);
 typedef void (*Setter)(void *, const char *);
-void fn_801F6C04(void *self, int a, int b, void *object, int flags, int extra) {
-    unsigned char *p;
-    void **vtable;
+#pragma cplusplus on
+extern "C" void fn_801F6C04(void *self, int a, int b, void *object, int flags, int extra) {
     int count, old, got;
-    float value;
-    p = (unsigned char *)self;
-    count = *(int *)(p + 0x900);
+    unsigned char *slot;
+    DummyObj_801F7280 *object2;
+
+    count = *(int *)((char *)self + 0x900);
     if (count >= 0x20) fn_802E317C(lbl_8033ADF8);
-    vtable = *(void ***)object;
-    ((Setter)vtable[5])(object, lbl_8055B19C);
-    count = *(int *)(p + 0x900);
-    p = (unsigned char *)self + count * 0x48;
-    old = fn_801F4E44(object);
+    count = *(int *)((char *)self + 0x900);
+    slot = (unsigned char *)self + count * 0x48;
+    object2 = (DummyObj_801F7280 *)object;
+    old = fn_801F4E44(object2->d5(lbl_8055B19C));
     got = fn_801F4ECC(object);
-    fn_801F602C(p, a, b, old, got);
-    *(int *)(p + 0x34) = flags;
-    p[0x38] = 1;
-    value = ((Getter)vtable[9])(object, lbl_8055B1A8);
-    *(float *)(p + 0x3C) = lbl_80562FE8 * value;
-    *(float *)(p + 0x40) = ((Getter)vtable[9])(object, lbl_8055B1B0);
-    *(float *)(p + 0x44) = ((Getter)vtable[9])(object, lbl_8055B1B8);
-    *(int *)((unsigned char *)self + 0x900) += 1;
+    fn_801F602C(slot, a, b, old, got);
+    *(int *)(slot + 0x34) = flags;
+    slot[0x38] = 1;
+    *(float *)(slot + 0x3C) = lbl_80562FE8 * object2->d9(lbl_8055B1A8);
+    *(float *)(slot + 0x40) = object2->d9(lbl_8055B1B0);
+    *(float *)(slot + 0x44) = object2->d9(lbl_8055B1B8);
+    *(int *)((char *)self + 0x900) = *(int *)((char *)self + 0x900) + 1;
 }
+#pragma cplusplus reset
 
 void *fn_801F6D20(void *arg0) {
     int size = 0x2A0;
