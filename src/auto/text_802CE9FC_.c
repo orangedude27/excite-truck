@@ -1203,6 +1203,8 @@ extern void GXInitLightAttn(void *, float, float, float, float, float, float);
 extern float PSVECMag(float *);
 extern float lbl_80564F80, lbl_80564F88, lbl_80564F8C, lbl_80564F90, lbl_80564F94;
 #pragma push
+#pragma paired off
+#pragma paired_single off
 #pragma scheduling invalid_target
 void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
     unsigned char c0, c1, c2, c3;
@@ -1218,10 +1220,7 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
         float vec[3];
         vec[0]=x; vec[1]=y; vec[2]=z;
         mag=PSVECMag(vec);
-        if (mag > lbl_80564F80) {
-        } else {
-            mag=lbl_80564F80;
-        }
+        mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
         k=lbl_80564F90/mag;
         x=vec[0]*k; y=vec[1]*k; z=vec[2]*k;
         vec[0]=x; vec[1]=y; vec[2]=z;
@@ -1233,6 +1232,8 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
     }
 }
 #pragma scheduling on
+#pragma paired_single reset
+#pragma paired reset
 #pragma pop
 
 #pragma push
