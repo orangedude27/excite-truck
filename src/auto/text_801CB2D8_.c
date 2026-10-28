@@ -375,7 +375,6 @@ void fn_801CC470(void) {
     }
     lbl_8055E884 = (s32 *)object;
   }
-#pragma cplusplus reset
 
   void fn_801CC768(void *arg0, float arg1) {
     if (arg1 != *(float *)((char *)arg0 + 8)) {
