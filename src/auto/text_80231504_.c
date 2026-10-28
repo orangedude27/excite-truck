@@ -589,8 +589,7 @@ void fn_802335F0(u8 *arg0, s32 arg1, f32 farg0, f32 farg1) {
 
 #pragma push
 #pragma dont_inline on
-void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3,
-                   register f32 farg0, register f32 farg1, register f32 farg2) {
+void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2) {
     #pragma scheduling invalid_target
     s32 sp8;
 
@@ -624,12 +623,12 @@ void fn_802337A0(f32 a, s32 b, f32 c, s32 d, f32 e, f32 f, s32 g, f32 h, const c
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_8023389C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, const char *fmt, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, ...) {
-    char buffer[0x100];
+void fn_8023389C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, const char *fmt, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, ...) {
+    char buffer[0x80];
     va_list args;
     va_start(args, farg4);
     vsprintf(buffer, fmt, args);
-    fn_80232D3C((u8 *)buffer, arg0, arg1, arg2, arg3, farg0, farg1, farg2, farg3, farg4);
+    fn_80232D3C((u8 *)buffer, arg0, arg1, arg2, arg3, farg0, farg1, farg3, farg2, farg4);
 }
 #pragma pop
 
