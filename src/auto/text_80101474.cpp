@@ -56,7 +56,7 @@ namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; st
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
-class WsdTrack { public: struct WsdCallback; static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); void Close(); int ParseNextTick(const WsdCallback *, unsigned long, bool); };
+class WsdTrack { public: struct WsdCallback; static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); void Close(); int ParseNextTick(const WsdCallback *, unsigned long, bool); int Parse(const WsdCallback *, unsigned long, bool); };
 }}}
 extern int fn_801013B0(int);
 extern int InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(int);
@@ -215,6 +215,48 @@ void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char 
         }
         channel = *(void **)((char *)channel + 0xE4);
     } while (channel != 0);
+}
+
+extern "C" void *AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(int, int, int, void (*)(void *, int, unsigned long), void *);
+extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl(void *, int, unsigned long);
+extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *, const void *, int);
+extern "C" int Parse__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(void *arg0, const void *arg1, unsigned long arg2, bool arg3) {
+    struct CallbackVtable {
+        virtual int f0();
+        virtual int GetWave(void *, void *, void *, int, int, int, unsigned long);
+    };
+    unsigned char sp8[0x10];
+    unsigned char sp18[0x90];
+
+    if (*(void **)((char *)arg0 + 0x2C) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0x189, lbl_80327CCC);
+    }
+    if (*(int *)((char *)arg0 + 8) == 0) {
+        if (!((CallbackVtable *)arg1)->GetWave((char *)arg0 + 0x20, sp8, sp18,
+                                                *(int *)arg0, *(int *)((char *)arg0 + 4), 0, arg2)) return -1;
+        int voices = sp18[2] > 2 ? 2 : sp18[2];
+        void *owner = *(void **)((char *)arg0 + 0x2C);
+        void *channel = AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
+            voices, *(int *)((char *)owner + 0x8C),
+            *((unsigned char *)arg0 + 0x1D) + *(unsigned char *)((char *)owner + 0x90),
+            ChannelCallbackFunc__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl,
+            arg0);
+        if (channel == 0) return -1;
+        SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, sp8[4]);
+        SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, sp8[5]);
+        SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, sp8[6]);
+        SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, sp8[7]);
+        Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(channel, sp18, -1);
+        *(void **)((char *)channel + 0xE4) = *(void **)((char *)arg0 + 0x30);
+        *(void **)((char *)arg0 + 0x30) = channel;
+        *(int *)((char *)arg0 + 8) += 1;
+    } else if (*(void **)((char *)arg0 + 0x30) == 0) {
+        return -1;
+    }
+    return 0;
 }
 
 extern "C" const char lbl_80327CB8[];
@@ -420,16 +462,15 @@ extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *arg0
 }
 
 extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(int arg0) {
-    unsigned char r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
-    unsigned int p = (unsigned int)arg0;
-    unsigned int top = p & 0xFF000000U;
-    if (top + 0x80000000U >= 1U && ((p & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
-    if (r10 == 0 && ((p & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
-    if (r9 == 0 && top + 0x40000000U >= 1U) r8 = 0;
-    if (r8 == 0 && ((p & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
-    if (r7 == 0 && ((p & 0xF8000000U) + 0x30000000U) >= 1U) r6 = 0;
-    if (r6 == 0 && ((p & 0xFFFFC000U) + 0x20000000U) >= 1U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x97, lbl_8032818C, arg0);
+    int var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1, var_r10 = 1;
+    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+    if (temp_r11 + 0x80000000U >= 1U && (((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) >= 1U) var_r10 = 0;
+    if (var_r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) >= 1U) var_r9 = 0;
+    if (var_r9 == 0 && temp_r11 + 0x40000000U >= 1U) var_r8 = 0;
+    if (var_r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) >= 1U) var_r7 = 0;
+    if (var_r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) >= 1U) var_r6 = 0;
+    if (var_r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) >= 1U) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x97, lbl_8032818C, arg0);
     return *(int *)((char *)arg0 + 0x48);
 }
 
@@ -684,26 +725,55 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     GXSetVtxDesc(0xB, 1);
     GXSetVtxDesc(0xD, 1);
 }
+#pragma push
+#pragma processor 750
+#pragma paired_single off
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2) {
+    int var_r5 = 1;
+    int var_r6 = 1;
+    int var_r7 = 1;
+    int var_r8 = 1;
+    int var_r9 = 1;
+    int var_r10 = 1;
     unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
-    if (temp_r11 + 0x80000000U != 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0) r10 = 0;
-    if (r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0) r9 = 0;
-    if (r9 == 0 && temp_r11 + 0x40000000U != 0) r8 = 0;
-    if (r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0) r7 = 0;
-    if (r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0) r6 = 0;
-    if (r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0xEB, "this", arg0);
-    *(unsigned char *)((char *)arg0 + 0) = *(unsigned char *)((char *)arg1 + 0);
-    *(unsigned char *)((char *)arg0 + 1) = *(unsigned char *)((char *)arg1 + 1);
-    *(unsigned char *)((char *)arg0 + 2) = *(unsigned char *)((char *)arg1 + 2);
-    *(unsigned char *)((char *)arg0 + 3) = *(unsigned char *)((char *)arg1 + 3);
-    *(unsigned char *)((char *)arg0 + 4) = *(unsigned char *)((char *)arg2 + 0);
-    *(unsigned char *)((char *)arg0 + 5) = *(unsigned char *)((char *)arg2 + 1);
-    *(unsigned char *)((char *)arg0 + 6) = *(unsigned char *)((char *)arg2 + 2);
-    *(unsigned char *)((char *)arg0 + 7) = *(unsigned char *)((char *)arg2 + 3);
+    unsigned char c7, c6, c5, c4, c3, c2, c1, c0;
+    if ((temp_r11 + 0x80000000U) >= 1U &&
+        ((((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) >= 1U))
+        var_r10 = 0;
+    if (var_r10 == 0 &&
+        (((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) >= 1U)
+        var_r9 = 0;
+    if (var_r9 == 0 && (temp_r11 + 0x40000000U) >= 1U)
+        var_r8 = 0;
+    if (var_r8 == 0 &&
+        (((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) >= 1U)
+        var_r7 = 0;
+    if (var_r7 == 0 &&
+        (((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) >= 1U)
+        var_r6 = 0;
+    if (var_r6 == 0 &&
+        (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) >= 1U)
+        var_r5 = 0;
+    if (var_r5 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0xEB, lbl_8032818C, arg0);
+    c0 = ((unsigned char *)arg1)[0];
+    c1 = ((unsigned char *)arg1)[1];
+    c2 = ((unsigned char *)arg1)[2];
+    c3 = ((unsigned char *)arg1)[3];
+    c4 = ((unsigned char *)arg2)[0];
+    c5 = ((unsigned char *)arg2)[1];
+    c6 = ((unsigned char *)arg2)[2];
+    c7 = ((unsigned char *)arg2)[3];
+    ((unsigned char *)arg0)[0] = c0;
+    ((unsigned char *)arg0)[1] = c1;
+    ((unsigned char *)arg0)[2] = c2;
+    ((unsigned char *)arg0)[3] = c3;
+    ((unsigned char *)arg0)[4] = c4;
+    ((unsigned char *)arg0)[5] = c5;
+    ((unsigned char *)arg0)[6] = c6;
+    ((unsigned char *)arg0)[7] = c7;
 }
-
+#pragma pop
 void nw4hbm::ut::CharWriter::SetGradationMode(GradationMode mode) {
     unsigned char *self=(unsigned char *)this;
     unsigned char *self2;
@@ -830,27 +900,16 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv(int arg0) {
 }
 
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(void *arg0) {
-    unsigned int temp_r11;
-    int var_r10;
-    int var_r5;
-    int var_r6;
-    int var_r7;
-    int var_r8;
-    int var_r9;
-    temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    var_r5 = 1;
-    var_r6 = 1;
-    var_r7 = 1;
-    var_r8 = 1;
-    var_r9 = 1;
-    var_r10 = 1;
-    if (((unsigned int)(temp_r11 + 0x80000000U) != 0U) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0U)) var_r10 = 0;
-    if ((var_r10 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0U)) var_r9 = 0;
-    if ((var_r9 == 0) && ((unsigned int)(temp_r11 + 0x40000000U) != 0U)) var_r8 = 0;
-    if ((var_r8 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0U)) var_r7 = 0;
-    if ((var_r7 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0U)) var_r6 = 0;
-    if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U)) var_r5 = 0;
-    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0x21A, "this", arg0);
+    int var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1, var_r10 = 1;
+    unsigned int p = (unsigned int)arg0;
+    unsigned int temp_r11 = p & 0xFF000000U;
+    if (temp_r11 + 0x80000000U >= 1U && ((p & 0xFF800000U) + 0x7F000000U) >= 1U) var_r10 = 0;
+    if (var_r10 == 0 && ((p & 0xF8000000U) + 0x70000000U) >= 1U) var_r9 = 0;
+    if (var_r9 == 0 && temp_r11 + 0x40000000U >= 1U) var_r8 = 0;
+    if (var_r8 == 0 && ((p & 0xFF800000U) + 0x3F000000U) >= 1U) var_r7 = 0;
+    if (var_r7 == 0 && ((p & 0xF8000000U) + 0x30000000U) >= 1U) var_r6 = 0;
+    if (var_r6 == 0 && ((p & 0xFFFFC000U) + 0x20000000U) >= 1U) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x21A, lbl_8032818C, arg0);
     return *(float *)((char *)arg0 + 0x28);
 }
 
@@ -991,13 +1050,13 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) 
 #pragma processor 750
 #pragma paired_single off
 extern "C" unsigned char IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
-    int var_r5 = 1;
-    int var_r6 = 1;
-    int var_r7 = 1;
-    int var_r8 = 1;
-    int var_r9 = 1;
-    int var_r10 = 1;
-    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+    register int var_r5 = 1;
+    register int var_r6 = 1;
+    register int var_r7 = 1;
+    register int var_r8 = 1;
+    register int var_r9 = 1;
+    register int var_r10 = 1;
+    register unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
     if ((temp_r11 + 0x80000000U) >= 1U &&
         ((((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) >= 1U))
         var_r10 = 0;
