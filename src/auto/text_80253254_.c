@@ -14,6 +14,7 @@ extern char lbl_80344BC0[];
 extern void fn_80255200(void *, s32);
 extern void fn_80015A20(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
+extern float fn_8023659C(void);
 
 static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
     float outX;
@@ -851,7 +852,7 @@ extern void fn_80255604(s32);
 extern void fn_80252BF0(void);
 extern void fn_80252F50(float);
 extern s32 fn_802C6FC0(void *, s32, s32);
-#pragma dont_inline fn_80255604
+#pragma dont_inline on
 void fn_80255A84(void *arg0) {
     if (lbl_8055F340 == 0) {
         fn_80255604(*(s32 *)((char *)arg0 + 0x120));
@@ -873,7 +874,7 @@ void fn_80255A84(void *arg0) {
     *(float *)((char *)arg0 + 0xA0) = lbl_80563A6C;
     *(float *)((char *)arg0 + 0xA4) = lbl_80563A70;
 }
-
+#pragma dont_inline reset
 void fn_80256548(void *arg0) {
     extern float lbl_80563A04;
     extern unsigned char lbl_8055F330, lbl_8055F344, lbl_8055F345, lbl_8055F346, lbl_8055F347;
