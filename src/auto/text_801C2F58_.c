@@ -2371,6 +2371,7 @@ extern s32 fn_801C9920(s32, s32);
 extern const char *fn_80007F90(u32);
 extern void fn_802E3734(s32 *);
 extern void fn_802E3AD0(s32, const char *, ...);
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" s32 fn_801CA070(s32 *arg0) {
  struct Dummy {
