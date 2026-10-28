@@ -357,6 +357,64 @@ void fn_801C4B74(void) {
     }
 }
 
+void fn_801C4BAC(void) {
+    register Unk_80437D88 *state;
+    register s32 zero;
+    register f32 *fields;
+    f32 *tail;
+    s32 flag;
+    state = &lbl_80437D88;
+    zero = 0;
+    lbl_8055E800 = zero;
+    lbl_8055E7FC = 1;
+    lbl_8055E7E8 = zero;
+    lbl_8055E7F4 = zero;
+    lbl_8055E7E3 = zero;
+    lbl_8055E7E4 = lbl_80562970;
+    memset(&state->pad_0[0], zero, 0x9C);
+    fields = (f32 *)state;
+    fields[5] = lbl_8056296C;
+    fields[6] = lbl_80562970;
+    fields[7] = lbl_80562970;
+    fields[8] = lbl_80562970;
+    fields[9] = lbl_8056296C;
+    fields[10] = lbl_80562970;
+    fields[11] = lbl_80562970;
+    fields[12] = lbl_80562970;
+    fields[13] = lbl_8056296C;
+    fields[20] = lbl_805629A8;
+    fields[26] = lbl_8056296C;
+    fields[27] = lbl_80562970;
+    fields[28] = lbl_80562970;
+    fields[29] = lbl_80562970;
+    fields[30] = lbl_8056296C;
+    fields[31] = lbl_80562970;
+    fields[32] = lbl_80562970;
+    fields[33] = lbl_80562970;
+    fields[34] = lbl_8056296C;
+    fields[35] = lbl_80562970;
+    fields[36] = lbl_80562970;
+    fields[37] = lbl_80562970;
+    fields[38] = lbl_805629A8;
+    tail = (f32 *)state + 0x27;
+    tail[2] = lbl_80562994;
+    *(s32 *)tail = zero;
+    if (lbl_8055E7F0 == 0) {
+        lbl_8055E7E2 = zero;
+        return;
+    }
+    if ((u8)lbl_8055E7E9 != 0) {
+        fn_8020C8FC();
+        fn_8020C8F8();
+        lbl_8055E7E9 = 0;
+    }
+    flag = (fn_801769A8() >> 14) & 1;
+    lbl_8055E7E2 = flag;
+    if (flag != 0) {
+        memset((u8 *)state + 0xA8, zero, 0xA0);
+        fn_8017960C(fn_80179630(0));
+    }
+}
 
 #pragma scheduling on
 s32 fn_801C5B60(void) {
@@ -977,9 +1035,9 @@ void fn_801C7524(void) {
 }
 
 #pragma push
-#pragma paired off
-#pragma paired_single off
-#pragma scheduling invalid_target
+#pragma paired reset
+#pragma paired_single reset
+#pragma scheduling reset
 void fn_801C756C(void) {
     register f64 value;
     register u32 offset;
@@ -1004,12 +1062,11 @@ check:
     if (i < lbl_8055E7F0)
         goto loop;
     {
-        u8 *base = (u8*)lbl_8055E7F8;
-        u32 index = lbl_8055E828;
-        u32 indexOffset = index * 0x30C;
-        if (*(s32*)(base + indexOffset + 8) == 1) {
-            *(f32*)(base + indexOffset + 0x58) =
-                (f32)value + (*(f32*)(base + indexOffset + 0x58) -
+        register s32 index = lbl_8055E828;
+        register u8 *base = (u8*)lbl_8055E7F8;
+        if (*(s32*)(base + index * 0x30C + 8) == 1) {
+            *(f32*)(base + index * 0x30C + 0x58) =
+                (f32)value + (*(f32*)(base + index * 0x30C + 0x58) -
                               ((f32*)base)[index * 195]);
         }
     }
@@ -2330,7 +2387,7 @@ s32 fn_801CA070(s32 *arg0) {
    if(((s32(*)(void*,char*))(*(void***)obj)[3])(obj,base+0x130)!=0) {
     obj=(void*)fn_801C3D5C();
     value=((s32(*)(void*,char*))(*(void***)obj)[5])(obj,base+0x130);
-   } else value=fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
+   } else value=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
   }
   fn_802E3AD0(handle,base+0xD04,value);
   fn_802E3AD0(handle,base+0xD10,lbl_8055A958);
