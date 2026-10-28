@@ -111,6 +111,51 @@ extern void fn_802328D4(void *);
 extern void fn_802C6CF8(void *);
 void fn_802AD308(void) {}
 
+void fn_802AD30C(void *arg0) {
+    struct Record {
+        int type;
+        int pad4;
+        int pad8;
+        void *ptr;
+        int pad10[6];
+    };
+    struct Group {
+        int pad0;
+        int pad4;
+        void *ptr;
+    };
+    int ref;
+    int i;
+
+    ref = *(int *)((char *)arg0 + 0x18) - 1;
+    *(int *)((char *)arg0 + 0x18) = ref;
+    if (ref <= 0) {
+        lbl_8055F93C = (char *)lbl_8055F93C - 1;
+        for (i = 0; i < *(int *)((char *)arg0 + 0x1C); i++) {
+            if ((*(struct Record **)((char *)arg0 + 0x20))[i].type == 1) {
+                fn_802328D4((*(struct Record **)((char *)arg0 + 0x20))[i].ptr);
+            } else if ((*(struct Record **)((char *)arg0 + 0x20))[i].type == 2) {
+                fn_802C6CF8((*(struct Record **)((char *)arg0 + 0x20))[i].ptr);
+            }
+        }
+
+        for (i = 0; i < *(int *)((char *)arg0 + 0x24); i++) {
+            void *ptr = (*(struct Group **)((char *)arg0 + 0x28))[i].ptr;
+            if (ptr != 0) {
+                fn_80128670((char *)ptr - 0x10);
+            }
+        }
+
+        if (*(void **)((char *)arg0 + 0x20) != 0) {
+            fn_80128670(*(void **)((char *)arg0 + 0x20));
+        }
+        if (*(void **)((char *)arg0 + 0x28) != 0) {
+            fn_80128670(*(void **)((char *)arg0 + 0x28));
+        }
+        fn_80128668(arg0);
+    }
+}
+
 #pragma scheduling invalid_target
 void fn_802AD414(void *arg0, float farg0) {
     float base = lbl_80564ACC;
