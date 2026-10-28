@@ -649,6 +649,7 @@ extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8DB8(void *, s32, u16 *, s32, s32, s32, s32, s32);
 extern u16 lbl_802F9FF0[];
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     struct Frame {
