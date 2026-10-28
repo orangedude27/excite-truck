@@ -210,6 +210,17 @@ typedef struct DVDLowContext {
     unsigned char pad2[12];
 } DVDLowContext;
 
+typedef struct DVDLowDICommand {
+    unsigned char command;
+    unsigned int arg1;
+    unsigned int arg2;
+    unsigned int arg3;
+    unsigned int arg4;
+    unsigned int arg5;
+    unsigned int arg6;
+    unsigned int arg7;
+} DVDLowDICommand;
+
 static inline void nextCommandBuf(void) {
     if ((int)++lbl_8055D8E4 >= 4) {
         lbl_8055D8E4 = 0;
@@ -609,44 +620,20 @@ int fn_8003B81C(void *arg0, int arg1, int arg2, int arg3) {
 
 int fn_8003B9CC(void *arg0, void *arg1) {
     const char *msg = lbl_80302848;
-    int slot = lbl_8055D8E8;
-    int index;
-    unsigned char *entry;
+    DVDLowContext *ctx;
     int result;
+
     lbl_8055D8E0 = 1;
-    entry = lbl_8037B820 + slot * 0x20;
-    if ((entry[8] & -entry[8]) == 1) {
-        OSReport(msg + 0x218, slot);
-        OSReport(msg + 0x250);
-        for (;;) {}
-    }
-    if (((unsigned int)*(unsigned int *)(entry + 0xC) + 0x01150000) != 0xFEEBDAED) {
-        OSReport(msg + 0x280);
-        for (;;) {}
-    }
-    *(void **)entry = arg1;
-    slot = slot + 1;
-    if (slot < 4) {
-        *(unsigned int *)(entry + 4) = 1;
-        entry[8] = 1;
-        lbl_8055D8E8 = slot;
-    } else {
-        slot = 0;
-        lbl_8055D8E8 = 0;
-    }
-    index = lbl_8055D8E4 + 1;
-    if (index < 4) {
-        lbl_8055D8E4 = index;
-    } else {
-        index = 0;
-        lbl_8055D8E4 = 0;
-    }
-    entry = lbl_8037B820 + slot * 0x20;
-    lbl_8055D8FC[index * 0x20] = 0xAB;
-    result = IOS_IoctlAsync(lbl_80558E18, 0xAB, lbl_8055D8FC + index * 0x20, 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, entry);
+    ctx = newContext(arg1, 1, msg);
+
+    nextCommandBuf();
+    lbl_8055D8FC[lbl_8055D8E4 * 0x20] = 0xAB;
+    *(void **)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = arg0;
+
+    result = IOS_IoctlAsync(lbl_80558E18, 0xAB, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, ctx);
     if (result != 0) {
         OSReport(msg + 0xA80, result);
-        entry[8] = 0;
+        ctx->inUse = 0;
         return 0;
     }
     return 1;
