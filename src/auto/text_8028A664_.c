@@ -52,7 +52,7 @@ extern "C" void fn_8028A664(void) {
     extern void *fn_802974CC(void *);
     extern void fn_8028ABE8(void *);
     extern void fn_8028B3CC(void);
-    extern void fn_801EEFDC(void *, s32);
+    extern void fn_801EEFDC(s32, s32);
     extern s32 fn_8028B93C(f32 *);
     extern s32 fn_8028B500(void *);
     extern s32 fn_8028BA44(void *);
@@ -61,7 +61,7 @@ extern "C" void fn_8028A664(void) {
     char *data = lbl_80348B98;
     void *p;
 
-    p = fn_801284F8(0xDC, data);
+    p = fn_801284F8(0xDC, data + 0);
     if (p != 0) p = fn_8028BB68(p, 0x80, lbl_80564328);
     lbl_8055F6F0 = (s32)p;
     p = fn_801284F8(0xDC, data + 0x10);
@@ -73,15 +73,16 @@ extern "C" void fn_8028A664(void) {
     lbl_8055F6FC = fn_802929D8(1, &lbl_8055C8A0, 0, 0);
     p = fn_802974CC(data + 0x2C);
     *(volatile s32 *)&lbl_8055F700 = (s32)p;
-    lbl_804B32B8[0x50] = 0;
+    *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
     fn_8028ABE8(p);
     fn_8028B3CC();
-    fn_801EEFDC((void *)fn_8028B93C, 0);
-    fn_801EEFDC((void *)fn_8028B500, 1);
-    fn_801EEFDC((void *)fn_8028BA44, 2);
-    fn_801EEFDC((void *)fn_8028BA9C, 7);
-    fn_801EEFDC((void *)fn_8028BB14, 8);
+    fn_801EEFDC((s32)fn_8028B93C, 0);
+    fn_801EEFDC((s32)fn_8028B500, 1);
+    fn_801EEFDC((s32)fn_8028BA44, 2);
+    fn_801EEFDC((s32)fn_8028BA9C, 7);
+    fn_801EEFDC((s32)fn_8028BB14, 8);
 }
+#pragma cplusplus on
 
 extern "C" void fn_8028A784(void) {
     class Obj {
