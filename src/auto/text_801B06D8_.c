@@ -1,6 +1,5 @@
 #include <types.h>
 typedef s32 M2C_UNK;
-typedef struct StackArg_801B07B4 { void *node; f32 angle; s32 word; } StackArg_801B07B4;
 extern void *fn_801B83A0(void);
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 extern void *fn_80156A40(void);
@@ -110,7 +109,7 @@ extern void fn_801B8040(void *, void *, f32);
 extern f32 lbl_805625BC, lbl_805625C8, lbl_805625CC, lbl_805625D0, lbl_805625D4, lbl_805625D8;
 #pragma scheduling invalid_target
 void fn_801B07B4(void *arg0, void *arg1) {
-    register s32 first = *(s32 *)arg1;
+    void *first = *(void **)arg1;
     f32 argAngle = *(f32 *)((u8 *)arg1 + 4);
     s32 argWord = *(s32 *)((u8 *)arg1 + 8);
     volatile s32 sp20;
@@ -120,10 +119,10 @@ void fn_801B07B4(void *arg0, void *arg1) {
     volatile f32 sp8;
     f32 x, scale, angle, finalPos, finalScale;
 
-    sp18 = (void *)first;
+    sp18 = first;
     sp1C = argAngle;
     sp20 = argWord;
-    while (fn_801B06D8(sp18, (u8 *)sp18 + 8, first))
+    while (fn_801B06D8(sp18, (u8 *)sp18 + 8, (s32)first))
         sp18 = *(void **)((u8 *)sp18 + 0x14);
     fn_801B8040(arg0, (void *)&sp18, lbl_805625BC);
     x = *(f32 *)((u8 *)arg0 + 0x18);
