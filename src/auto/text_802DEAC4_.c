@@ -32,7 +32,7 @@ extern void fn_80128670();
 extern char lbl_8034BAEC[], lbl_8034BB1C[], lbl_8034BB5C[], lbl_8034BB68[];
 extern char lbl_8034BB7C[], lbl_8034BB88[], lbl_8034BB9C[], lbl_8034BBA8[];
 extern char lbl_8034CB68[];
-extern char lbl_8055D098[];
+extern char lbl_8055D098;
 #include <revolution/GX/GXTypes.h>
 #include <revolution/GX/GXTev.h>
 extern void *lbl_8055FEE8;
