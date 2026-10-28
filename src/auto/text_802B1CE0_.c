@@ -85,6 +85,63 @@ void fn_802B1FC0(void *arg0) {
     ((int *)arg0)[1] = 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma opt_common_subs off
+void fn_802B1FD4(void) {
+    void *r27;
+    int off_i;
+    int i;
+    void *table;
+    int j;
+    int k;
+    void *r25;
+    void *r23;
+    int off_j;
+    int off_k;
+
+    fn_802B2104(&lbl_8055F9BC);
+    table = &lbl_804BE1FC;
+    i = 0;
+    off_i = 0;
+    for (; i < *(int *)((char *)table + 4); off_i += 4, i++) {
+        r27 = *(void **)(*(char **)&lbl_804BE1FC + off_i);
+        if (r27 != 0) {
+            for (j = 0, off_j = 0; j < *(int *)((char *)r27 + 4); off_j += 4, j++) {
+                r25 = *(void **)(*(char **)r27 + off_j);
+                if (r25 != 0) {
+                    for (k = 0, off_k = 0; k < *(int *)((char *)r25 + 0x40c); off_k += 4, k++) {
+                        r23 = *(void **)(*(char **)((char *)r25 + 0x408) + off_k);
+                        if (r23 != 0) {
+                            fn_802B21D4((void **)((char *)r23 + 0xc));
+                            fn_80128668(r23);
+                        }
+                    }
+                    *(int *)((char *)r25 + 0x40c) = 0;
+                    if ((char *)r25 + 0x408 != 0) {
+                        if ((char *)r25 + 0x408 != 0) {
+                            *(int *)((char *)r25 + 0x408) = 0;
+                            *(int *)((char *)r25 + 0x40c) = 0;
+                            *(int *)((char *)r25 + 0x410) = 0;
+                        }
+                    }
+                    fn_80128668(r25);
+                }
+            }
+            *(int *)((char *)r27 + 4) = 0;
+            if (r27 != 0) {
+                if (r27 != 0) {
+                    *(int *)r27 = 0;
+                    *((int *)r27 + 1) = 0;
+                    *((int *)r27 + 2) = 0;
+                }
+            }
+            fn_80128668(r27);
+        }
+    }
+    *(int *)((char *)table + 4) = 0;
+}
+
 void fn_80128670(void *);
 void fn_802B218C(void *);
 void fn_8002F6AC(int, void (*)(void));
