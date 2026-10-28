@@ -576,7 +576,7 @@ extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
 extern char lbl_80343544[], lbl_80343550[];
 extern void fn_80247A0C(void);
 extern void fn_80247AAC(void);
-extern s32 lbl_804988F0[5], lbl_802FA404[5];
+extern s32 lbl_802FA404[5];
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80247AD0(void) {
