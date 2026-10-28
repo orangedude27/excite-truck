@@ -618,6 +618,7 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     flags = *(u32 *)(entry + 0x34);
     return (flags >> 3) & 1;
 }
+#pragma dont_inline reset
 #pragma pop
 
 extern "C" const char lbl_8032A630[];
