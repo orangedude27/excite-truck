@@ -336,22 +336,47 @@ extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" f32 PSQUATMultiply(void *, void *);
 extern "C" f32 lbl_80561498, lbl_805614A4;
 extern "C" void fn_8013E19C(void *arg0, f32 arg1) {
- f32 *p=(f32*)arg0;
- p[4]=lbl_805614A4; p[1]=lbl_805614A4;
- f32 t=arg1/PSQUATMultiply(arg0,(char*)arg0+0xC);
- f32 a=p[5]; f32 b=p[2]; f32 c=p[4]; f32 d=p[1]; f32 e=p[3]; f32 g=p[0];
- f32 x=b+lbl_80561498*(a-b);
- f32 y=d+lbl_80561498*(c-d);
- f32 z=g+lbl_80561498*(e-g);
- f32 bx=b-x, by=d-y, bz=g-z;
- f32 ax=a-x, ay=c-y, az=e-z;
- f32 qx=x+t*bx, qy=y+t*by, qz=z+t*bz;
- f32 rx=x+t*ax, ry=y+t*ay, rz=z+t*az;
- p[2]=qx; p[0]=qz; p[1]=qy; p[3]=rz; p[4]=ry; p[5]=rx;
+    f32 *p = (f32 *)arg0;
+    f32 unit = lbl_805614A4;
+    p[4] = unit;
+    p[1] = unit;
+    void *other = (char *)arg0 + 0xC;
+    f32 t = arg1 / PSQUATMultiply(arg0, other);
+    f32 a = p[5];
+    f32 b = p[2];
+    f32 c = p[4];
+    f32 d = p[1];
+    f32 e = p[3];
+    f32 g = p[0];
+    f32 x = b + lbl_80561498 * (a - b);
+    f32 y = d + lbl_80561498 * (c - d);
+    f32 z = g + lbl_80561498 * (e - g);
+    f32 bx = b - x;
+    f32 by = d - y;
+    f32 bz = g - z;
+    f32 ax = a - x;
+    f32 ay = c - y;
+    f32 az = e - z;
+    f32 qx = x + t * bx;
+    f32 qy = y + t * by;
+    f32 qz = z + t * bz;
+    f32 rx = x + t * ax;
+    f32 ry = y + t * ay;
+    f32 rz = z + t * az;
+    p[2] = qx;
+    p[0] = qz;
+    p[1] = qy;
+    p[3] = rz;
+    p[4] = ry;
+    p[5] = rx;
 }
+#pragma scheduling reset
+#pragma pop
 
 extern "C" void fn_8013E2AC(void *arg0, void *arg1) {
     volatile u32 *src = (volatile u32 *)arg1;
