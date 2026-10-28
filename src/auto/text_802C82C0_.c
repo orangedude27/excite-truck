@@ -157,7 +157,7 @@ extern int fn_80133010(void);
 extern void fn_801336E0(int, void (*)(void));
 extern void fn_802C6080(void);
 extern int lbl_8055D028;
-extern int fn_802C9E94(void);
+extern int fn_802C9E94(void *, int, int, float, float, float, float, float);
 extern int fn_801E7894(int);
 void fn_802C84EC(void) {
     if (fn_80133010() != 0) {
