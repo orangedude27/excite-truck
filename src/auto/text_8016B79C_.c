@@ -1449,7 +1449,7 @@ extern f32 lbl_80561980, lbl_80561984, lbl_805619A4, lbl_80561A0C, lbl_805619D0,
 extern "C" void fn_802C744C(s32, void *);
 extern "C" void fn_802C9900(void);
 extern "C" void fn_802C9904(void);
-#pragma cplusplus reset
+#pragma cplusplus off
 void fn_8016FE2C(void *arg0, s32 arg1) {
     register f32 f29 = lbl_80561980;
     register f32 f28 = lbl_80561984;
