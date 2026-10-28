@@ -18,6 +18,12 @@ extern s32 DSPReadMailFromDSP(void);
 extern void DSPSendMailToDSP(u32);
 #include <ctype.h>
 extern void fn_80038368(void *);
+extern void fn_80035A04(u32);
+extern s32 fn_8003B81C(void *, s32, s32, s32);
+extern s32 lbl_8055D8CC;
+extern u8 lbl_80376A80[];
+extern char lbl_80302120[];
+__declspec(section ".sdata") extern char lbl_80558E0C[];
 
 extern s32 __DVDPushWaitingQueue(s32, void *);
 
