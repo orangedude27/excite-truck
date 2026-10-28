@@ -372,6 +372,7 @@ extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
         *(void **)((char *)arg0 + 0xB0), positions, target, zVelocity, zOffset, z, y, x);
     fn_80288A40(positions, target);
 }
+#pragma scheduling on
 
 extern "C" void* fn_80298868(void* arg0) {
     char* p = (char*)arg0;
