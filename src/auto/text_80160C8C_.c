@@ -888,7 +888,7 @@ extern s32 lbl_8055A0C0;
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
-    s32 pad[2];
+    s32 pad[0x2e];
     s32 *manager;
     s32 *item;
     s32 selection;
@@ -896,31 +896,33 @@ extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     s32 value;
     void *obj;
     void *subobj;
+    register const char *label1;
+    register const char *label2;
 
     fn_80161D14();
     value = fn_80161E40(arg0);
     obj = fn_8001285C();
     fn_80137C78(1);
-    fn_802E4A10();
-    fn_80137C84(0);
+    label1 = lbl_8032F744;
+    label2 = lbl_8032F750;
+    ((void (*)(s32, s32))fn_80137C84)(fn_802E4A10(), 0);
     manager = *(s32 **)((char *)fn_80016464(0) + 4);
     item = *(s32 **)((char *)fn_800165DC((s32)manager) + 4);
     subobj = *(void **)((char *)obj + 0x20);
-    if (((Obj_80161F10 *)subobj)->has(lbl_8032F744)) {
+    if (((Obj_80161F10 *)subobj)->has(label1)) {
         subobj = *(void **)((char *)obj + 0x20);
-        ((Obj_80161F10 *)subobj)->set(lbl_8032F744);
-        item = *(s32 **)((char *)fn_8001668C(0) + 4);
+        item = *(s32 **)((char *)((void *(*)(void *, s32))fn_8001668C)(
+            ((Obj_80161F10 *)subobj)->set(label1), 0) + 4);
     }
     selection = *(s32 *)((char *)fn_80016464((s32)manager) + 0x50);
     subobj = *(void **)((char *)obj + 0x20);
-    if (((Obj_80161F10 *)subobj)->has(lbl_8032F750)) {
+    if (((Obj_80161F10 *)subobj)->has(label2)) {
         subobj = *(void **)((char *)obj + 0x20);
-        index = ((Obj_80161F10 *)subobj)->index(lbl_8032F750);
+        index = ((Obj_80161F10 *)subobj)->index(label2);
         selection = *(s32 *)((char *)fn_80016544((s32)item) + index * 4 + 0x64);
     }
     fn_8000DA10();
-    fn_8000DB34();
-    fn_800169F8(0);
+    ((s32 (*)(s32, s32))fn_800169F8)(fn_8000DB34(), 0);
     fn_80016970(0, (s32)manager, (s32)item, selection);
     lbl_8055A0BC = arg0;
     lbl_8055A0C0 = fn_801615B4(arg0);
@@ -1124,7 +1126,6 @@ extern "C" void fn_801625E0(void *arg0) {
     };
     extern float lbl_80561848;
     extern float lbl_8056184C;
-    extern void fn_80161438(void);
     extern void fn_801DF380(void *, s32, void (*)(void), s32);
     extern void fn_801EA140(void *);
     extern void fn_802A95A8(f32 *, f32 *, f32, f32);
