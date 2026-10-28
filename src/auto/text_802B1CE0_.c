@@ -323,52 +323,61 @@ extern char lbl_8034A2E8[];
 extern char lbl_8055CDD8;
 extern void *fn_801284F8(int, const char *);
 extern void fn_802B2504(int *, int);
-extern void *fn_802B2958(void *);
+extern void *fn_802B2958(void *, void *);
 extern void fn_802B2934(void *, void **);
 extern void fn_802B257C(void *);
+#pragma push
+#pragma use_lmw_stmw off
 void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
+    void *sp8;
     int i;
-    void *result;
+    int val;
+    char *p;
     void *item;
+    void *alloc;
     int (*get_name)(void *, const char *, int);
     void *(*get_item)(void *, int);
+
     *(int *)((char *)arg0 + 0x40C) = 0;
     *(int *)((char *)arg0 + 0x410) = 0x10;
-    *(void ***)((char *)arg0 + 0x408) = (void **)((char *)arg0 + 0x414);
+    *(void **)((char *)arg0 + 0x408) = (char *)arg0 + 0x414;
     *(char *)((char *)arg0 + 4) = 0;
     *(char *)((char *)arg0 + 5) = 0;
+
+    p = (char *)arg0;
+    val = 0;
     for (i = 0; i < 16; i++) {
-        int *p = (int *)((char *)arg0 + 8 + i * 0x20);
-        p[0] = i * 8;
-        p[1] = i * 8 + 1;
-        p[2] = i * 8 + 2;
-        p[3] = i * 8 + 3;
-        p[4] = i * 8 + 4;
-        p[5] = i * 8 + 5;
-        p[6] = i * 8 + 6;
-        p[7] = i * 8 + 7;
+        *(int *)(p + 8) = val++;
+        *(int *)(p + 0xC) = val++;
+        *(int *)(p + 0x10) = val++;
+        *(int *)(p + 0x14) = val++;
+        *(int *)(p + 0x18) = val++;
+        *(int *)(p + 0x1C) = val++;
+        *(int *)(p + 0x20) = val++;
+        *(int *)(p + 0x24) = val++;
+        p += 0x20;
     }
+
     fn_802B2504((int *)((char *)arg0 + 8), 0x80);
-    get_name = *(int (**)(void *, const char *, int))(*(void ***)arg1 + 0x30/4);
+    get_name = *(int (**)(void *, const char *, int))(*(void ***)arg1 + 0x30 / 4);
     *(char *)((char *)arg0 + 5) = get_name(arg1, &lbl_8055CDD8, 1);
     *(char *)((char *)arg0 + 4) = *(char *)((char *)arg0 + 5);
-    get_item = *(void *(**)(void *, int))(*(void ***)arg1 + 0x60/4);
-    i = 0;
-    while ((item = get_item(arg1, i)) != 0) {
+
+    get_item = *(void *(**)(void *, int))(*(void ***)arg1 + 0x60 / 4);
+    for (i = 0; (item = get_item(arg1, i)) != 0; i++) {
         if (fn_802B1DE8(item) != 0) {
-            result = fn_801284F8(0x2A8, lbl_8034A2E8);
-            if (result != 0) {
-                result = fn_802B2958(item);
-                *(void **)((char *)arg0 + 8) = result;
-                fn_802B2934((char *)arg0 + 0x408, (void **)((char *)arg0 + 8));
+            alloc = fn_801284F8(0x2A8, lbl_8034A2E8);
+            if (alloc != 0) {
+                sp8 = fn_802B2958(alloc, item);
+                fn_802B2934((char *)arg0 + 0x408, &sp8);
             }
         }
-        i++;
     }
     fn_802B257C(arg0);
     *(void **)arg0 = arg2;
     return arg0;
 }
+#pragma pop
 
 #pragma pop
 int fn_80129D90(int, int, int);
