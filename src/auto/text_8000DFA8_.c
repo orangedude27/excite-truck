@@ -599,28 +599,32 @@ void fn_800109E4(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
 }
 
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
-extern void fn_802C8DB8(void);
+extern void fn_802C8DB8(void *, s32, u16 *, s32);
 extern u16 lbl_802ED748[6];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling off
 void fn_80010A50(f32 farg0, f32 farg1, f32 farg2, f32 farg3, s32 arg4, s32 arg5) {
-    f32 sp20[6];
-    f32 sp38[6];
-    f32 sp50[6];
-    f32 sp68[6];
-    s32 sp10[6];
-    fn_80231380(&sp20[0], arg4, lbl_80560280, farg0, farg1, lbl_80560264, lbl_80560280);
-    fn_80231380(&sp38[0], arg5, farg0 + farg1, farg2, lbl_80560264, lbl_80560280, lbl_80560280);
-    fn_80231380(&sp50[0], arg4, farg0, farg2 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
-    fn_80231380(&sp68[0], arg5, farg0 + farg1, farg2 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
-    sp10[0] = lbl_802ED748[0];
-    sp10[1] = lbl_802ED748[1];
-    sp10[2] = lbl_802ED748[2];
-    sp10[3] = lbl_802ED748[3];
-    sp10[4] = lbl_802ED748[4];
-    sp10[5] = lbl_802ED748[5];
-    fn_802C8DB8();
+    struct Frame {
+        u16 indices[6];
+        u8 pad[4];
+        f32 sp20[6];
+        f32 sp38[6];
+        f32 sp50[6];
+        f32 sp68[6];
+    } __attribute__((aligned(16))) frame;
+
+    fn_80231380(frame.sp20, arg4, farg0, farg1, lbl_80560264, lbl_80560280, lbl_80560280);
+    fn_80231380(frame.sp38, arg5, farg0 + farg2, farg1, lbl_80560264, lbl_80560280, lbl_80560280);
+    fn_80231380(frame.sp50, arg4, farg0, farg1 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
+    fn_80231380(frame.sp68, arg5, farg0 + farg2, farg1 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
+    frame.indices[0] = lbl_802ED748[0];
+    frame.indices[1] = lbl_802ED748[1];
+    frame.indices[2] = lbl_802ED748[2];
+    frame.indices[3] = lbl_802ED748[3];
+    frame.indices[4] = lbl_802ED748[4];
+    frame.indices[5] = lbl_802ED748[5];
+    fn_802C8DB8(frame.sp20, 4, frame.indices, 6);
 }
 #pragma pop
 void fn_80010B74(void) {
