@@ -836,6 +836,77 @@ void fn_80255920(void *arg0, s8 arg1) {
     *(s8 *)((u8 *)arg0 + 0x118) = arg1;
 }
 
+__declspec(section ".sdata") extern char lbl_8055C1C0[];
+__declspec(section ".sdata") extern float lbl_80563A60;
+#pragma use_lmw_stmw off
+void fn_80255928(void *arg0, char *arg1) {
+    extern void *lbl_80498E08[];
+    extern s32 lbl_8055F33C;
+    extern void fn_8012D3D8(s32);
+    extern int stricmp(const char *, const char *);
+    s32 i;
+    s32 count;
+    s32 *refCount;
+    void *object;
+    char *src;
+    char *dst;
+    char ch;
+
+    if (*(s8 *)((u8 *)arg0 + 0x58) != 0) {
+        i = 0;
+    scan:
+        if (i < lbl_8055F33C) {
+            if (stricmp((char *)lbl_80498E08[i], (char *)arg0 + 0x58) == 0) {
+                object = lbl_80498E08[i];
+                refCount = (s32 *)((u8 *)object + 0x24);
+                *refCount -= 1;
+                if (*refCount == 0) {
+                    fn_8012D3D8(*(s32 *)((u8 *)object + 0x20));
+                    src = lbl_8055C1C0;
+                    dst = (char *)object;
+                    count = 0x20;
+                copy_name:
+                    ch = *src++;
+                    *dst++ = ch;
+                    if ((s8)ch != 0) {
+                        count -= 1;
+                        if (count <= 0) {
+                            dst[-1] = 0;
+                        } else {
+                            goto copy_name;
+                        }
+                    }
+                }
+            } else {
+                i += 1;
+                goto scan;
+            }
+        }
+        *(u8 *)((u8 *)arg0 + 0x58) = 0;
+    }
+    src = arg1;
+    dst = (char *)arg0 + 0x10;
+    count = 0x20;
+    copy_arg:
+    ch = *src++;
+    *dst++ = ch;
+    if ((s8)ch != 0) {
+        count -= 1;
+        if (count <= 0) {
+            dst[-1] = 0;
+        } else {
+            goto copy_arg;
+        }
+    }
+    *(u8 *)((u8 *)arg0 + 0x30) = 1;
+    if (*(s8 *)((u8 *)arg0 + 0x78) != 0) {
+        *(float *)((u8 *)arg0 + 0x34) = fn_8023659C();
+    } else {
+        *(float *)((u8 *)arg0 + 0x34) = lbl_80563A60;
+    }
+}
+#pragma use_lmw_stmw reset
+
 void fn_80255A7C(void) {
 }
 
