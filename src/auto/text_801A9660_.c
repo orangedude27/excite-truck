@@ -1419,7 +1419,7 @@ extern int lbl_8055E5EC, lbl_8055E5F0;
 extern float lbl_8056247C, lbl_805624AC, lbl_80562510;
 extern void fn_801C2694(void *, int *, float *, float *, float *, float *, float *, float, float);
 extern void fn_801796CC(int, void *, int);
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_801ACF94(void) {
     char sp8[0x34];
     char sp3c[0x54];
