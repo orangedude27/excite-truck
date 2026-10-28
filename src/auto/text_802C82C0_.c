@@ -570,10 +570,10 @@ void fn_802C9118(void) {
 #pragma processor 750
 void fn_802C9124(float farg0, float farg1, float farg2, float farg3, int x0, int y0, int x1, int y1, int screen) {
     if (((int (*)(int))fn_801E4F20)(4) != 0) {
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x1, (float)y0, lbl_80564F00, farg2, farg1);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x0, (float)y0, lbl_80564F00, farg0, farg1);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x1, (float)y1, lbl_80564F00, farg2, farg3);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x0, (float)y1, lbl_80564F00, farg0, farg3);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x1, (float)y0, 0.0f, farg2, farg1);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x0, (float)y0, 0.0f, farg0, farg1);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x1, (float)y1, 0.0f, farg2, farg3);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x0, (float)y1, 0.0f, farg0, farg3);
         fn_801E4FF4();
     }
 }
