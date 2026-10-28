@@ -332,6 +332,7 @@ extern void fn_802B2934(void *, void **);
 extern void fn_802B257C(void *);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma unroll off
 void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     void *sp8;
     int i;
