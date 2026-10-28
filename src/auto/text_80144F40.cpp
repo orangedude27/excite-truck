@@ -454,6 +454,7 @@ extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4
 extern "C" s32 fn_802C9C38(void);
 extern "C" s32 fn_802C9C48(void);
 extern "C" f32 fn_80145A08(f32, f32, f32, f32, f32);
+struct FloatPair80145A24 { f32 first; f32 second; };
 extern "C" f32 lbl_805615F4;
 extern "C" f32 lbl_805615F8;
 extern "C" f32 lbl_805615FC;
@@ -462,22 +463,20 @@ extern "C" f64 lbl_80561600;
 #pragma paired_single off
 #pragma scheduling invalid_target
 extern "C" u64 fn_80145A24(void *arg0) {
-    s32 time0 = fn_802C9C48();
-    s32 field0 = *(s32 *)((u8 *)arg0 + 4);
-    f32 out0 = fn_80145A08(lbl_805615D4, (f32)time0, lbl_805615D4,
-                           lbl_805615F4, (f32)field0);
+    f32 out0 = fn_80145A08(lbl_805615D4, (f32)fn_802C9C48(),
+                           lbl_805615D4, lbl_805615F4,
+                           (f32)*(s32 *)((u8 *)arg0 + 4));
 
-    s32 time1 = fn_802C9C48();
-    f32 scaled = lbl_805615F8 * (f32)time1;
+    f32 scaled = lbl_805615F8 * (f32)fn_802C9C48();
     f32 correction = scaled * lbl_805615D0;
     u32 converted = (u32)fn_802C9C38();
     s32 half = (s32)((converted >> 31) + converted) >> 1;
     f32 base = (f32)half - correction;
 
-    s32 time2 = fn_802C9C48();
-    s32 field1 = *(s32 *)((u8 *)arg0 + 8);
-    f32 out1 = fn_80145A08(base, base + lbl_805615F8 * (f32)time2,
-                           lbl_805615D4, lbl_805615FC, (f32)field1);
+    f32 out1 = fn_80145A08(base,
+                           base + lbl_805615F8 * (f32)fn_802C9C48(),
+                           lbl_805615D4, lbl_805615FC,
+                           (f32)*(s32 *)((u8 *)arg0 + 8));
     union {
         u64 bits;
         f32 values[2];
@@ -1674,7 +1673,7 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     union Pair { struct { f32 x; f32 y; } f; f64 raw; };
     volatile State *src = (volatile State *)srcArg;
     volatile State *end = (volatile State *)endArg;
-    f32 end8, src8, end4, src4, diff8, src18, diff4, src10, prod8, src1C;
+    f32 end4, src4, end8, src8, diff8, src18, diff4, src10, prod8, src1C;
     f32 prod4, out8, src20, end20, out4, diff20, end18, end1C, diff18;
     f32 end10, diff1C, src14, diff10, prod18, prod20, prod1C, prod10;
     f32 out20, end24, end14, src24, diff24, out18, diff14, out1C;
@@ -1705,18 +1704,18 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     src14 = src->m14;
     diff10 = end10 - src10;
     prod18 = t * diff18;
-    w4 = *(volatile u32 *)((u8 *)srcArg + 4);
+    w4 = *(u32 *)((u8 *)srcArg + 4);
     prod20 = t * diff20;
-    w0 = *(volatile u32 *)((u8 *)srcArg + 0);
+    w0 = *(u32 *)((u8 *)srcArg + 0);
     prod1C = t * diff1C;
     prod10 = t * diff10;
-    wC = *(volatile u32 *)((u8 *)srcArg + 0xC);
+    wC = *(u32 *)((u8 *)srcArg + 0xC);
     out20 = src20 + prod20;
     end24 = end->m24;
     end14 = end->m14;
     src24 = src->m24;
     diff24 = end24 - src24;
-    w8 = *(volatile u32 *)((u8 *)srcArg + 8);
+    w8 = *(u32 *)((u8 *)srcArg + 8);
     out18 = src18 + prod18;
     diff14 = end14 - src14;
     out1C = src1C + prod1C;
