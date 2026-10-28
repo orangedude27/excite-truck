@@ -43,6 +43,7 @@ extern int lbl_8055C880;
 extern float lbl_80564280, lbl_8056428C, lbl_8056429C, lbl_805642A4, lbl_805642BC, lbl_805642C0, lbl_805642C4, lbl_805642C8, lbl_805642D4, lbl_805642D8, lbl_805642DC, lbl_805642E0, lbl_805642E4, lbl_805642E8, lbl_805642EC;
 extern char lbl_80348B10[];
 extern char lbl_80348B6C[];
+extern float lbl_80564298, lbl_80564284, lbl_805642AC, lbl_805642B0, lbl_80564300, lbl_80564314, lbl_80564318, lbl_8056431C, lbl_80564320, lbl_80564324;
 extern void *lbl_8055F6E0;
 extern int lbl_8055F6E4;
 extern int fn_80289554(int);
