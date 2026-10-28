@@ -653,6 +653,7 @@ void fn_8028C92C(void *arg0) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
@@ -663,18 +664,20 @@ void fn_8028C938(s32 arg0) {
     struct List { struct Entry *data; s32 count; };
     struct List *list = (struct List *)arg0;
     register struct Entry *out;
-    register struct Entry *in;
     register s32 count;
     register u8 *offset;
+    register struct Entry *in;
     f32 vz;
     f32 vy;
     f32 vx;
     f32 elapsed;
     f32 step;
     f32 scale;
-    f32 delta;
     f32 factor;
-    volatile f32 temp[3];
+    f32 delta;
+    volatile f32 temp_z;
+    volatile f32 temp_y;
+    volatile f32 temp_x;
 
     elapsed = fn_801E7E18() - lbl_805643D0;
     step = fn_801E7E24();
@@ -688,9 +691,9 @@ void fn_8028C938(s32 arg0) {
             vx = in->vx * factor;
             vy = (in->vy * factor) - delta;
             vz = in->vz * factor;
-            temp[0] = vx;
-            temp[1] = vy;
-            temp[2] = vz;
+            temp_x = vx;
+            temp_z = vz;
+            temp_y = vy;
             out->x = in->x + vx * step;
             out->y = in->y + vy * step;
             out->z = in->z + vz * step;
