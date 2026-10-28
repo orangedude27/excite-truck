@@ -342,7 +342,7 @@ extern "C" void* fn_80298868(void* arg0) {
 
 extern "C" void fn_8029B6E4(void *);
 extern "C" void fn_8029B824(void *);
-extern "C" float fn_802C9A4C(int, float);
+extern "C" float fn_802C9A4C(float);
 extern float lbl_80564618;
 extern "C" void fn_80298A48(void) {
 }
@@ -914,6 +914,78 @@ extern "C" void fn_8029A60C(void* arg0, void* arg1) {
     ((void (*)(void*, float*, float*, float*))fn_8029A318)(arg0, (float *)&vectors.a[0], (float *)&vectors.b[0], (float *)&vectors.c[0]);
     fn_80298458((int)lbl_8055F7C0, *(int *)((char *)arg0 + 0x40), (void *)&vectors.a[0], (void *)&vectors.b[0], (void *)&vectors.c[0], *(short *)((char *)arg1 + 0x30));
 }
+
+extern "C" void* memset(void*, int, unsigned long);
+extern "C" void fn_8029A8B8(void *);
+extern "C" unsigned int lbl_8055CA8C;
+extern "C" char lbl_803494FC[];
+extern float lbl_805645C0;
+extern float lbl_8056460C;
+extern "C" void *fn_8029A6F4(void *arg0) {
+    struct Local {
+        volatile float extra[6];
+        unsigned char config[0x8C];
+    } local;
+
+    fn_8029A8B8(arg0);
+    fn_8028E61C(local.config);
+    memset(local.config, 0, 0x8C);
+
+    float value90 = lbl_80564590;
+    int one = 1;
+    float value9C = lbl_8056459C;
+    int size = 0x1F4;
+    float valueB8 = lbl_805645B8;
+    float value98 = lbl_80564598;
+    int two = 2;
+    float valueC0 = lbl_805645C0;
+    int forty = 0x40;
+    float value6460C = lbl_8056460C;
+
+    *(int *)local.config = one;
+    *(int *)(local.config + 0x04) = size;
+    *(float *)(local.config + 0x08) = value98;
+    *(float *)(local.config + 0x0C) = value90;
+    local.extra[3] = value9C;
+    local.extra[4] = value9C;
+    local.extra[5] = value9C;
+    *(float *)(local.config + 0x10) = value9C;
+    *(float *)(local.config + 0x14) = value9C;
+    *(float *)(local.config + 0x18) = value9C;
+    *(float *)(local.config + 0x1C) = value90;
+    *(float *)(local.config + 0x20) = value90;
+    *(float *)(local.config + 0x24) = value90;
+    local.extra[0] = value90;
+    local.extra[1] = value90;
+    local.extra[2] = value90;
+    *(float *)(local.config + 0x30) = valueB8;
+    *(float *)(local.config + 0x34) = valueC0;
+    *(int *)(local.config + 0x44) = two;
+    *(float *)(local.config + 0x50) = value90;
+    *(float *)(local.config + 0x54) = value90;
+    *(float *)(local.config + 0x58) = valueB8;
+    *(float *)(local.config + 0x5C) = value90;
+    *(float *)(local.config + 0x60) = valueB8;
+    *(float *)(local.config + 0x64) = value90;
+    *(float *)(local.config + 0x68) = valueB8;
+    *(float *)(local.config + 0x6C) = value90;
+    *(float *)(local.config + 0x70) = valueB8;
+    *(float *)(local.config + 0x74) = value90;
+    *(float *)(local.config + 0x7C) = value6460C;
+    *(int *)(local.config + 0x80) = forty;
+    local.config[0x88] = (unsigned char)one;
+    local.config[0x89] = (unsigned char)one;
+
+    *(void **)((char *)arg0 + 0x160) =
+        ((void *(*)(void *, const char *, unsigned int, int, int, int,
+                    float, float, float, float, float))fn_8028E2F8)(
+            local.config, lbl_803494FC, lbl_8055CA8C, two, size, one,
+            valueC0, valueB8, value9C, value90, value98);
+    fn_801EEFDC((void *)fn_8029C054, 0xE);
+    fn_801EEFDC((void *)fn_8029C024, 0xD);
+    return arg0;
+}
+
 #pragma dont_inline reset
 extern "C" void* fn_8029A820(void *arg0, int arg1) {
     if (arg0 != 0) {
@@ -1015,6 +1087,40 @@ extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* arg0, int arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
+extern "C" int fn_8029AF24(int arg0) {
+    if (*(int *)((char *)arg0 + 0x1E0) >= 1) {
+        register void *obj = (void *)arg0;
+        register void *entry = obj;
+        register int total = 0;
+        register int i = 0;
+        while (i < fn_80287B14()) {
+            if (*(unsigned char *)((char *)entry + 0x35) != 0) {
+                void *info = fn_80288208(i);
+                total += *(int *)((char *)info + 0x24);
+            }
+            entry = (char *)entry + 0x38;
+            i += 1;
+        }
+        int value = *(int *)((char *)obj + 0x1EC);
+        float ratio = (float)(-value) / lbl_80564618;
+        float temp_f31 = ((float (*)(float))fn_802C9A4C)(ratio);
+        fn_802C8BD0(*(int *)((char *)obj + 0x1E8));
+        if (fn_802C8DBC(total * 4) != 0) {
+            fn_8029B6E4(obj);
+            fn_802C8E48();
+            fn_802C8D74();
+        }
+        fn_802C8BD0(*(int *)((char *)obj + 0x1E4));
+        if (fn_802C8DBC(total * 8) != 0) {
+            fn_8029B824(obj);
+            fn_802C8E48();
+            fn_802C8D74();
+        }
+        ((float (*)(float))fn_802C9A4C)(temp_f31);
+    }
+}
+#pragma scheduling on
 extern "C" int fn_80287B24(int);
 extern "C" void fn_801BFD34(void*, void*, int);
 extern "C" void fn_80015B20(void*, void*, int);
@@ -1354,6 +1460,7 @@ extern "C" void fn_80298DE0(void*, void*, int);
 extern "C" void fn_8029BBD4(void*, void*, int);
 extern "C" void fn_8029A208(void*, int, int);
 extern "C" void fn_8029A904(void*, void*, float, float);
+#pragma scheduling invalid_target
 extern "C" void fn_8029C084(void *arg0, int arg1) {
     float temp_f31 = fn_801E7E24();
     if (__fabsf(temp_f31) <= lbl_80558DC4) {
@@ -1392,8 +1499,7 @@ extern "C" void fn_8029C084(void *arg0, int arg1) {
         i += 1;
     }
 }
-
-#pragma dont_inline reset
+#pragma scheduling on
 int fn_8029C190(void* arg0) {
     fn_8029BE54(lbl_8055F7DC, arg0);
     return 0x14;
