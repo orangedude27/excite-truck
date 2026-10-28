@@ -471,19 +471,19 @@ check:
 #pragma scheduling on
 void fn_8001C9C4(void) {
     char *base = lbl_802FD6D8;
+    s32 var_r28;
     void **var_r27;
     s32 var_r26;
-    s32 var_r28;
     s32 var_r30 = 0x280;
     s32 var_r31 = 0;
     void *descriptor;
 
-    var_r27 = lbl_80358658;
-    var_r26 = 0;
-    var_r28 = 0;
     fn_802E30C8(base + 0x344, 0x3E7D0);
     lbl_8055D5CC = fn_801284F8(0x3E7D0, (const char *)&lbl_80558CD0);
     memset(lbl_8055D5CC, 0, 0x3E7D0);
+    var_r27 = lbl_80358658;
+    var_r26 = 0;
+    var_r28 = 0;
     do {
         descriptor = fn_801284F8(0xC, base + 0x374);
         if (descriptor != 0) {
