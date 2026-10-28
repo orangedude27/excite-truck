@@ -1,5 +1,14 @@
 #include <types.h>
 
+extern char lbl_802FD6D8[];
+extern const char lbl_80558CD0[];
+extern u8 lbl_8055D5D8;
+extern void fn_802E30C8(const char *, ...);
+extern void *fn_801284F8(s32, const char *);
+extern void fn_802E6BD8(u32, s32, void *, u32, void (*)(s32));
+extern void fn_8000DBC8(void *);
+extern s32 fn_80131808(const char *);
+
 extern void *lbl_8055D5D4;
 
 extern u32 fn_8001D220(u32, u32, u32);
@@ -289,8 +298,43 @@ void fn_8001C0E8(void) {
     ((void (*)(void))fn_8001BC28)();
 }
 
-#pragma scheduling invalid_target
-#pragma scheduling on
+extern const char lbl_802FD718[];
+#pragma dont_inline on
+s32 fn_8001C0EC(s32 arg0, s32 arg1) {
+    s32 var_r30;
+    s32 temp_r3;
+    s32 temp_r31;
+    if (fn_8001BCF0((void *)arg0) == 0) {
+        if (((s32 (*)(void *))fn_8001BD30)((void *)arg0) == 0)
+            goto return_one;
+    }
+    if (fn_8001BCF0((void *)arg0) != 0) {
+        var_r30 = ((s32 (*)(void *))fn_8001C0C4)((void *)arg0);
+    } else {
+        var_r30 = ((s32 (*)(void *))fn_8001C0A0)((void *)arg0);
+    }
+    temp_r3 = fn_8001BD28((void *)arg0) & 0x60000;
+    switch (temp_r3) {
+    case 0x40000:
+        goto compare_a;
+    case 0x20000:
+        goto compare_b;
+    default:
+        break;
+    }
+    temp_r31 = fn_8001BD28((void *)arg0) & 0x60000;
+    {
+        s32 logValue = fn_8001BD28((void *)arg0);
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, logValue, temp_r31);
+    }
+compare_a:
+    return var_r30 < arg1;
+compare_b:
+    return arg1 < var_r30;
+return_one:
+    return 1;
+}
+#pragma dont_inline reset
 s32 fn_8001C200(const char *arg0, const char *arg1) {
     s32 result = 0;
     if (stricmp(arg0, arg1) == 0 || stricmp(arg0, lbl_80558C90) == 0 || stricmp(arg1, lbl_80558C90) == 0) {
