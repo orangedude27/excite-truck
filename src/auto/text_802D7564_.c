@@ -118,14 +118,18 @@ int fn_802D76DC(int arg0) {
 }
 #pragma pop
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802D7780(void *arg0, void *arg1) {
     u8 *obj = (u8 *)arg0;
     u8 *cfg = (u8 *)arg1;
     u32 filter = *(u32 *)(cfg + 0x10);
     u32 opts = *(u32 *)(cfg + 0x18);
     int wrapS = filter & 1;
-    int wrapT = (filter >> 1) & 1;
-    u32 flags;
+    int wrapT = (filter & 2) != 0;
+    register u32 flags;
+    u32 bit0;
+    u32 id;
 
     if ((opts & 2) == 0) {
         GXInitTexObjFilter(obj + 0x24, 0, 0);
@@ -134,27 +138,22 @@ void fn_802D7780(void *arg0, void *arg1) {
     GXInitTexObjWrapMode(obj + 0x24, wrapS, wrapT);
     if (obj[0xCC] != 0) GXInitTexObjWrapMode(obj + 0x78, wrapS, wrapT);
 
+    bit0 = *(u32 *)(cfg + 0x14) & 1;
     *(u32 *)(obj + 0xDC) = *(u32 *)(cfg + 0x0C);
     obj[0xE4] = cfg[0x1C];
     flags = 0;
     *(u32 *)(obj + 0xE0) = flags;
-    if (*(u32 *)(cfg + 0x14) & 1) {
+    if (bit0) {
         flags |= 4;
         *(u32 *)(obj + 0xE0) = flags;
     }
-    if (*(u32 *)(cfg + 0x14) & 2) {
-        *(u32 *)(obj + 0xE0) |= 2;
-    }
-    if (*(u32 *)(cfg + 0x14) == 7) {
-        *(u32 *)(obj + 0xE0) |= 8;
-    }
-    if (*(u32 *)(cfg + 0x18) & 4) {
-        *(u32 *)(obj + 0xE0) |= 0x40;
-    }
-    if (fn_802D76DC(cfg[0]) != 0) {
-        *(u32 *)(obj + 0xE0) |= 0x100;
-    }
+    if (*(u32 *)(cfg + 0x14) & 2) *(u32 *)(obj + 0xE0) |= 2;
+    if (*(u32 *)(cfg + 0x14) == 7) *(u32 *)(obj + 0xE0) |= 8;
+    if (*(u32 *)(cfg + 0x18) & 4) *(u32 *)(obj + 0xE0) |= 0x40;
+    id = *(u32 *)cfg;
+    if (fn_802D76DC(id & 0xFF) != 0) *(u32 *)(obj + 0xE0) |= 0x100;
 }
+#pragma pop
 
 #pragma dont_inline on
 void fn_802D78D4(void *arg0, void *arg1, unsigned int arg2, unsigned int arg3) {
