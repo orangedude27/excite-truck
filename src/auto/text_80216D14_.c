@@ -324,29 +324,54 @@ void fn_80217854(void *arg0) {
 }
 
 void fn_80218E08(void *arg0, int arg1);
-void fn_80217874(void *arg0, int arg1) {
+#pragma cplusplus on
+extern "C" void fn_80217874(void *arg0, int arg1) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual int check(int);
+    };
     char *base = (char *)arg0;
     register char *cursor;
     register int i;
-    void *obj;
+    Obj *obj;
     int found;
     register float threshold;
     fn_80216D34();
     if (*(int *)(base + 0x44C) == 0) {
-        obj = *(void **)(base + 0x450);
-        if (obj != 0) {
-            void **vt = *(void ***)obj;
-            if (((int (*)(void *, int))vt[0x64 / 4])(obj, arg1)) {
-                fn_80218E08(arg0, arg1);
-                return;
-            }
+        obj = *(Obj **)(base + 0x450);
+        if (obj != 0 && obj->check(arg1)) {
+            fn_80218E08(arg0, arg1);
+            return;
         }
         threshold = lbl_80563490;
         cursor = base;
         i = 0;
         while (i < *(int *)(base + 0x430)) {
-            obj = *(void **)(cursor + 0x30);
-            if (obj != *(void **)(base + 0x450)) {
+            obj = *(Obj **)(cursor + 0x30);
+            if (obj != *(Obj **)(base + 0x450)) {
                 found = 0;
                 if (*(unsigned char *)((char *)obj + 0x1A) == 0) {
                     if (*(float *)((char *)obj + 0x20) >= threshold) {
@@ -356,8 +381,7 @@ void fn_80217874(void *arg0, int arg1) {
                     found = 1;
                 }
                 if (found != 0 && *(unsigned char *)((char *)obj + 0x1B) != 0) {
-                    void **vt = *(void ***)obj;
-                    if (((int (*)(void *, int))vt[0x64 / 4])(obj, arg1)) {
+                    if (obj->check(arg1)) {
                         fn_80218E08(arg0, arg1);
                         return;
                     }
@@ -368,6 +392,7 @@ void fn_80217874(void *arg0, int arg1) {
         }
     }
 }
+#pragma cplusplus off
 
 #pragma push
 #pragma processor 750
