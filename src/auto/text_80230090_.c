@@ -115,7 +115,7 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 }
 #pragma processor gekko
 #pragma use_lmw_stmw on
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma paired_single off
 #pragma paired off
 #pragma cplusplus on
