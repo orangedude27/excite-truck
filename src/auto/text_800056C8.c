@@ -857,7 +857,6 @@ extern "C" void fn_800070DC(void) {
     fn_80011A50();
     fn_80005464();
 }
-#pragma pop
 #pragma cplusplus reset
 void fn_80007210(void) {
     fn_800070DC();
