@@ -38,16 +38,6 @@ extern int fn_802656C8(void *);
 extern int fn_80264538(int, int);
 extern void *fn_80264968(void *, int);
 
-static inline void *call_get_item(void *list, int idx) {
-    register void **vtab asm("r12") = *(void ***)list;
-    return ((void *(*)(void *, int))vtab[3])(list, idx);
-}
-
-static inline const char *call_get_name(void *item) {
-    register void **vtab asm("r12") = *(void ***)item;
-    return ((const char *(*)(void *))vtab[2])(item);
-}
-
 #pragma use_lmw_stmw off
 #pragma dont_inline off
 void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
