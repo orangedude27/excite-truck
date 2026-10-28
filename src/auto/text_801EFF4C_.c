@@ -144,7 +144,7 @@ extern "C" int fn_8012C33C(char *);
 extern int fn_802C6FC0(char *, int, int);
 extern void fn_802C77F0(int, float *);
 extern double fabs(double);
-void fn_801F0488(void *arg0, void *arg1, int arg2) {
+extern "C" void fn_801F0488(void *arg0, void *arg1, int arg2) {
     int count, found = 0;
     char name[0x20];
     float bounds[2];
