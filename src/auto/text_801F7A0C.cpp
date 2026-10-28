@@ -429,6 +429,11 @@ done:
 }
 
 extern "C" void fn_801F7FA0(void *output, void *input, void *unused) {
+    struct Vector {
+        f32 x;
+        f32 y;
+        f32 z;
+    };
     struct Child {
         virtual const char *name();
         virtual void v0C();
@@ -436,6 +441,12 @@ extern "C" void fn_801F7FA0(void *output, void *input, void *unused) {
         virtual void v14();
         virtual void v18();
         virtual s32 value(const char *);
+        virtual void v20();
+        virtual void v24();
+        virtual void v28();
+        virtual void v2C();
+        virtual void v30();
+        virtual Vector vector(const char *);
     };
     struct Parent {
         virtual void v08();
@@ -483,12 +494,10 @@ extern "C" void fn_801F7FA0(void *output, void *input, void *unused) {
     while (parent->getChild(index) != 0) {
         child = parent->getChild(index);
         if (stricmp(child->name(), lbl_8055B2B0) == 0) {
-            f32 values[3];
-            ((void (*)(f32 *, Child *, const char *))(*(void ***)child)[13])(
-                values, child, lbl_8055B2B8);
-            *(f32 *)(record + 0x0C) = values[0];
-            *(f32 *)(record + 0x10) = values[1];
-            *(f32 *)(record + 0x14) = values[2];
+            const Vector& values = child->vector(lbl_8055B2B8);
+            *(f32 *)(record + 0x0C) = values.x;
+            *(f32 *)(record + 0x10) = values.y;
+            *(f32 *)(record + 0x14) = values.z;
             *(s32 *)(record + 0x18) = child->value(lbl_8055B2C0);
             record += 0x10;
             count++;
