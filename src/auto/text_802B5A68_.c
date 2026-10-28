@@ -15,6 +15,7 @@ typedef s32 (*UnkFunc)(s32);
 
 extern s32 lbl_8055FA38;
 extern float lbl_8055FA18;
+extern s32 lbl_8055FA2C;
 __declspec(section ".data") extern s32 lbl_804BE7D8;
 extern void **lbl_8055FA48;
 extern char lbl_8034A598[];
