@@ -343,6 +343,8 @@ extern void fn_80013CFC(f32 *);
 extern void fn_800148A0(void *);
 extern void fn_80014A98(void *);
 extern s32 fn_80014ADC(void);
+#pragma push
+#pragma dont_inline on
 void fn_80014B9C(void *arg0) {
     s32 state, reverse, result;
     f32 *value = (f32 *)((u8 *)arg0 + 0x2C);
@@ -576,25 +578,20 @@ extern s32 fn_801EA994();
 extern void *fn_801EA9A0(s32);
 extern f32 lbl_805603C0, lbl_805603C4, lbl_805603C8;
 extern f64 lbl_80560390;
+#pragma dont_inline on
+#pragma use_lmw_stmw off
 void fn_80015364(void *arg0) {
-    f32 temp_f31;
-    f32 temp_f30;
-    f32 var_f29;
-    f32 temp_f28;
-    f32 var_f27;
-    s32 temp_r31;
-    s32 var_r30;
-    s32 var_r29;
-    s32 var_r4;
-    void *temp_r28;
     f32 selected;
     f32 delta;
     f32 total;
     s32 frameCount;
-    s32 value;
     s32 index;
     s32 activeCount;
+    s32 value;
     s32 resultIndex;
+    void *entry;
+    void *record;
+    f32 amount;
     if (*(s32 *)((u8 *)lbl_8055D350 + 0x18) == 1) {
         selected = lbl_805603C0;
     } else {
@@ -606,15 +603,17 @@ void fn_80015364(void *arg0) {
     total = delta * (f32)frameCount;
     index = 0;
     activeCount = 0;
-    while (index < fn_801EA994()) {
-        void *record = fn_801EA9A0(index);
-        f32 amount = lbl_80560360;
-        temp_r28 = *(void **)((u8 *)record + 8);
+    do {
+        record = fn_801EA9A0(index);
+        entry = *(void **)((u8 *)record + 8);
+        amount = lbl_80560360;
+        record = fn_801EA9A0(index);
         value = *(s32 *)((u8 *)record + 0x1C);
         if (value > 0) {
-            amount = (*(f32 *)((u8 *)temp_r28 + 0x2C8) +
+            amount = (*(f32 *)((u8 *)entry + 0x2C8) +
                       (f32)(value - 1) * delta) / total;
         }
+        record = fn_801EA9A0(index);
         if (*(u8 *)record != 0) {
             resultIndex = activeCount;
             activeCount++;
@@ -624,9 +623,8 @@ void fn_80015364(void *arg0) {
         fn_8001529C(arg0, (u32)resultIndex, amount, lbl_805603C4,
                     selected, lbl_805603C8, lbl_805603B4);
         index++;
-    }
+    } while (index < fn_801EA994());
 }
-
 extern s32 fn_801EA994(void);
 extern s32 fn_801EA9B0(s32);
 extern void fn_8000FF88(s32, s32, void *, s32, s32, f32, f32, f32);
