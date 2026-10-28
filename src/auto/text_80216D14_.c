@@ -324,41 +324,25 @@ void fn_80217854(void *arg0) {
 }
 
 void fn_80218E08(void *arg0, int arg1);
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80217874(void *arg0, int arg1) {
     class Obj {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual void v18();
-        virtual void v19();
-        virtual void v20();
-        virtual void v21();
-        virtual void v22();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22();
         virtual int check(int);
     };
     char *base = (char *)arg0;
-    register char *cursor;
-    register int i;
+    char *cursor;
+    int i;
     Obj *obj;
     int found;
-    register float threshold;
+    float threshold;
     fn_80216D34();
     if (*(int *)(base + 0x44C) == 0) {
         obj = *(Obj **)(base + 0x450);
@@ -372,19 +356,12 @@ extern "C" void fn_80217874(void *arg0, int arg1) {
         while (i < *(int *)(base + 0x430)) {
             obj = *(Obj **)(cursor + 0x30);
             if (obj != *(Obj **)(base + 0x450)) {
-                found = 0;
-                if (*(unsigned char *)((char *)obj + 0x1A) == 0) {
-                    if (*(float *)((char *)obj + 0x20) >= threshold) {
-                        found = 1;
-                    }
-                } else {
-                    found = 1;
-                }
-                if (found != 0 && *(unsigned char *)((char *)obj + 0x1B) != 0) {
-                    if (obj->check(arg1)) {
-                        fn_80218E08(arg0, arg1);
-                        return;
-                    }
+                found = (*(unsigned char *)((char *)obj + 0x1A) != 0) ||
+                        (*(float *)((char *)obj + 0x20) >= threshold);
+                if (found && *(unsigned char *)((char *)obj + 0x1B) != 0 &&
+                    obj->check(arg1)) {
+                    fn_80218E08(arg0, arg1);
+                    return;
                 }
             }
             cursor += 4;
@@ -393,6 +370,7 @@ extern "C" void fn_80217874(void *arg0, int arg1) {
     }
 }
 #pragma cplusplus off
+#pragma scheduling on
 
 #pragma push
 #pragma processor 750
@@ -528,46 +506,55 @@ void *fn_80217BD8(void *arg0, int arg1, int arg2) {
 #pragma scheduling on
 void fn_80217C4C(void *arg0) {
     char *base = (char *)arg0;
-    int count = *(int *)(base + 0x494);
+    char *entry;
+    int count;
+    char *item;
+    int last;
+    int matches;
     int i;
-    int last = -1;
-    int matches = 0;
-    int found = -1;
-    int step;
+    float threshold;
+    count = *(int *)(base + 0x494);
     if (count < 1) return;
-    for (i = 0; i < count; i++) {
-        char *entry = base + i * 8;
-        char *item;
-        int ok;
-        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) {
-            last = i;
-        }
+    threshold = lbl_80563490;
+    entry = base;
+    last = -1;
+    matches = 0;
+    i = 0;
+    for (; i < count; i++, entry += 8) {
+        int eligible = 0;
+        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
         item = *(char **)(entry + 0x4A4);
-        ok = 0;
-        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) <= lbl_80563490) {
-            ok = 1;
-        }
-        if (ok && *(unsigned char *)(item + 0x1B) != 0) {
-            matches++;
-        }
+        if (*(unsigned char *)(item + 0x1A) != 0) goto first_yes;
+        if (threshold <= *(float *)(item + 0x20)) goto first_yes;
+        goto first_check;
+    first_yes:
+        eligible = 1;
+    first_check:
+        if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) matches++;
     }
-    for (step = 1; step < count; step++) {
-        int idx = (last + step) % count;
-        char *entry = base + idx * 8;
-        char *item;
-        int ok;
-        item = *(char **)(entry + 0x4A4);
-        ok = 0;
-        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) <= lbl_80563490) {
-            ok = 1;
+    {
+        int found = -1;
+        int step;
+        threshold = lbl_80563490;
+        for (step = 1; step < count; step++) {
+            int idx = (last + step) % count;
+            char *current = base + idx * 8;
+            int eligible = 0;
+            item = *(char **)(current + 0x4A4);
+            if (*(unsigned char *)(item + 0x1A) != 0) goto second_yes;
+            if (threshold <= *(float *)(item + 0x20)) goto second_yes;
+            goto second_check;
+        second_yes:
+            eligible = 1;
+        second_check:
+            if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) {
+                found = idx;
+                break;
+            }
         }
-        if (ok && *(unsigned char *)(item + 0x1B) != 0) {
-            found = idx;
-            break;
+        if (found >= 0 && (found > last || matches > 3)) {
+            *(int *)(base + 0x498) = *(int *)(base + found * 8 + 0x4A0);
         }
-    }
-    if (found >= 0 && (found > last || matches > 3)) {
-        *(int *)(base + 0x498) = *(int *)(base + found * 8 + 0x4A0);
     }
 }
 
