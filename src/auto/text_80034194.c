@@ -742,6 +742,42 @@ void DVDInit(void) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+void fn_8003588C(void) {
+    u32 discOffset;
+    u32 formattedSize;
+    s32 interrupts;
+    u8 *info;
+    u32 tick;
+
+    lbl_8055D8CC = (s32)fn_8003588C;
+    if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) < *(u32 *)(lbl_80376A80 + 8)) {
+        ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558E0C, 0x3F6, lbl_80302120);
+    }
+    fn_8003BCDC(0);
+
+    formattedSize = ((*(u32 *)(lbl_80376A80 + 8) << (~(*(volatile u32 *)&__DVDLayoutFormat) & 2)) + 0x1F) & ~0x1F;
+    discOffset = *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat;
+
+    interrupts = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 >= 5)
+        *(volatile u32 *)&lbl_8055D848 = 0;
+    info = (u8 *)__ErrorInfo;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 1;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = discOffset;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = formattedSize;
+    tick = OSGetTick();
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+    OSRestoreInterrupts(interrupts);
+
+    fn_8003B81C(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
+                ((*(u32 *)(lbl_80376A80 + 8) << (~(*(volatile u32 *)&__DVDLayoutFormat) & 2)) + 0x1F) & ~0x1F,
+                *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat,
+                (s32)fn_80035A04);
+}
+#pragma pop
 void fn_80035A04(u32 arg0) {
     s32 state;
     s32 *block;
@@ -1779,27 +1815,27 @@ void fn_80039838(void) {
 }
 
 s32 fn_80039840(void) {
-    s32 savedInterrupts;
-    s32 tempInterrupts;
-    s32 activeInterrupts;
     s32 result;
+    s32 tempInterrupts;
+    s32 savedInterrupts;
+    void *active;
 
     savedInterrupts = OSDisableInterrupts();
     lbl_8055D864 = 0;
     tempInterrupts = OSDisableInterrupts();
-    activeInterrupts = OSDisableInterrupts();
+    active = (void *)OSDisableInterrupts();
     lbl_8055D84C = 1;
-    if (executing_8055D8C8 == 0) {
-        PausingFlag_8055D850 = 1;
-        OSRestoreInterrupts(activeInterrupts);
-        goto queue_check;
-    }
-queue_call:
-    fn_80039424(0, 0);
-queue_check:
-    if (__DVDPopWaitingQueue() != 0)
+    if (executing_8055D8C8 != 0)
         goto queue_call;
-
+    PausingFlag_8055D850 = 1;
+    OSRestoreInterrupts((s32)active);
+    goto queue_check;
+queue_call:
+    fn_80039424(active, 0);
+queue_check:
+    active = __DVDPopWaitingQueue();
+    if (active != 0)
+        goto queue_call;
     if (executing_8055D8C8 != 0) {
         result = fn_80039424((void *)executing_8055D8C8,
                              (void (*)(s32, void *))cbForCancel);
@@ -1810,14 +1846,13 @@ queue_check:
             OSWakeupThread(__DVDThreadQueue);
         }
     }
-
-    activeInterrupts = OSDisableInterrupts();
+    active = (void *)OSDisableInterrupts();
     *(volatile s32 *)&lbl_8055D84C = 0;
     if (PausingFlag_8055D850 != 0) {
         PausingFlag_8055D850 = 0;
         fn_80038040();
     }
-    OSRestoreInterrupts(activeInterrupts);
+    OSRestoreInterrupts((s32)active);
     OSRestoreInterrupts(tempInterrupts);
     if (result == 0) {
         OSRestoreInterrupts(savedInterrupts);
