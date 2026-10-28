@@ -273,6 +273,14 @@ struct CurveData {
     float f6;
     float f7;
 };
+struct Arg2 {
+    char pad[0x28];
+    int val28;
+    int type2c;
+    u8 flag30;
+    char pad31[3];
+    struct CurveData curve;
+};
 extern void fn_802BC588(void *, void *, void *, void *, void *);
 extern int fn_802C1500(void *, int);
 extern void *fn_801FA8E0(void *, void *, int);
