@@ -790,10 +790,10 @@ extern "C" void fn_801FE7E8(void* arg0) {
     }
 }
 #pragma scheduling on
-extern const char lbl_8055B3C8[];
-extern const char lbl_8055B3D0[];
-extern const char lbl_8055B3D8[];
-void* fn_802AE414(int);
+extern const char lbl_8055B3C8[5];
+extern const char lbl_8055B3D0[6];
+extern const char lbl_8055B3D8[7];
+extern "C" void* fn_802AE414(int);
 extern "C" char* strncpy(char*, const char*, unsigned long);
 #pragma cplusplus on
 extern "C" int fn_801FE88C(void* unused, void* out) {
@@ -1072,33 +1072,36 @@ extern "C" void fn_801FF420(void* arg0) {
 }
 
 extern "C" void fn_801FF58C(void*, char*, const char*);
+#pragma use_lmw_stmw off
 extern "C" void fn_801FF484(void *arg0, void *arg1) {
-    char *entry = (char *)arg0;
+    const char *name = *(const char **)arg1;
     int i = 0;
-    do {
-        if (stricmp(*(const char **)arg1, entry) == 0) {
+    char *entry = (char *)arg0;
+    while (i < *(int *)((char *)arg0 + 0x2C0)) {
+        if (stricmp(name, entry) == 0) {
             entry = (char *)arg0 + i * 0x58;
-            break;
+            goto found;
         }
         entry += 0x58;
         i++;
-    } while (i < *(int *)((char *)arg0 + 0x2C0));
-    if (i >= *(int *)((char *)arg0 + 0x2C0)) entry = 0;
+    }
+    entry = 0;
+found:
     if (entry == 0) {
-        int count = *(int *)((char *)arg0 + 0x2C0);
-        if (count >= 8) fn_802E317C(lbl_8033B8EC, 8);
-        entry = (char *)arg0 + count * 0x58;
-        fn_801FF58C(arg0, entry, (const char *)*(int *)arg1);
-        *(int *)((char *)arg0 + 0x2C0) = count + 1;
+        if (*(int *)((char *)arg0 + 0x2C0) >= 8) {
+            fn_802E317C(lbl_8033B8EC, 8);
+        }
+        entry = (char *)arg0 + *(int *)((char *)arg0 + 0x2C0) * 0x58;
+        fn_801FF58C(arg0, entry, *(const char **)arg1);
+        *(int *)((char *)arg0 + 0x2C0) += 1;
     }
-    {
-        int count = *(int *)(entry + 0x50);
-        if (count + 1 > 8) fn_802E317C(lbl_8033B90C, 8);
-        *(void **)(entry + 0x10 + count * 4) = arg1;
-        *(int *)(entry + 0x50) = count + 1;
+    if (*(int *)(entry + 0x50) + 1 > 8) {
+        fn_802E317C(lbl_8033B90C, 8);
     }
+    int count = *(int *)(entry + 0x50);
+    *(void **)(entry + 0x10 + count * 4) = arg1;
+    *(int *)(entry + 0x50) = count + 1;
 }
-
 extern "C" void fn_801FF58C(void* unused, char* dst, const char* src) {
     strncpy(dst, src, 0x10);
     dst[0xF] = 0;
@@ -1170,33 +1173,42 @@ void fn_801FF770(void* arg0) {
 }
 
 extern "C" int stricmp(const char *, const char *);
+#pragma use_lmw_stmw off
 void fn_801FF7D4(void *arg0, void *arg1) {
- char *entry=(char *)arg0;
- int i=0;
- do {
-  if(stricmp(*(const char **)arg1,entry)==0){
-   entry=(char *)arg0+i*0x98;
-   break;
-  }
-  entry+=0x98;
-  i++;
- } while(i<*(int *)((char *)arg0+0x4c0));
- if(i>=*(int *)((char *)arg0+0x4c0)) entry=0;
- if(entry==0){
-  int count=*(int *)((char *)arg0+0x4c0);
-  if(count>=8) fn_802E317C(lbl_8033B8EC,8);
-  entry=(char *)arg0+count*0x98;
-  fn_801FF8DC(arg0,entry,*(int *)arg1);
-  *(int *)((char *)arg0+0x4c0)=count+1;
- }
- {
-  int count=*(int *)(entry+0x90);
-  if(count+1>0x10) fn_802E317C(lbl_8033B90C,0x10);
-  *(void **)(entry+0x10+count*4)=arg1;
-  *(int *)(entry+0x90)=count+1;
- }
+    const char *name;
+    int i;
+    char *entry;
+    int count;
+    name = *(const char **)arg1;
+    i = 0;
+    entry = (char *)arg0;
+    for (;;) {
+        if (stricmp(name, entry) == 0) {
+            entry = (char *)arg0 + i * 0x98;
+            break;
+        }
+        entry += 0x98;
+        i++;
+        if (i >= *(volatile int *)((char *)arg0 + 0x4C0)) {
+            entry = 0;
+            break;
+        }
+    }
+    if (entry == 0) {
+        if (*(int *)((char *)arg0 + 0x4C0) >= 8)
+            fn_802E317C(lbl_8033B8EC, 8);
+        entry = (char *)arg0 + *(int *)((char *)arg0 + 0x4C0) * 0x98;
+        fn_801FF8DC(arg0, entry, *(int *)arg1);
+        *(int *)((char *)arg0 + 0x4C0) =
+            *(int *)((char *)arg0 + 0x4C0) + 1;
+    }
+    count = *(int *)(entry + 0x90);
+    if (count + 1 > 0x10)
+        fn_802E317C(lbl_8033B90C, 0x10);
+    count = *(int *)(entry + 0x90);
+    *(void **)(entry + 0x10 + count * 4) = arg1;
+    *(int *)(entry + 0x90) = count + 1;
 }
-
 extern "C" void fn_801FF8DC(void *arg0, void *dest, int src) {
     strncpy((char *)dest, (const char *)src, 0x10);
     ((char *)dest)[0xF] = 0;
