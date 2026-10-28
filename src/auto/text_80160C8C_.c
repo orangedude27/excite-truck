@@ -1245,14 +1245,24 @@ extern "C" void fn_8016306C(void *arg0, s32 arg1, s32 arg2) {
         case 4: obj->dispatch(0x13, arg2, 5); break;
         }
     }
-    if (obj->check() == 0) {
-        if (arg1 == 0) {
-            if (*(u32 *)(lbl_804348E8[arg2] + 0x10) == 0x50434152) {
-                obj->finish(2);
-                *((u8 *)arg0 + 0x91) = 1;
-            }
-        }
+
+    if (obj->check() != 0)
+        goto done;
+    switch (arg1) {
+    case 0:
+        goto check_tag;
+    default:
+        goto done;
     }
+
+check_tag:
+    if (*(u32 *)(lbl_804348E8[arg2] + 0x10) == 0x50434152) {
+        obj->finish(2);
+        *((u8 *)arg0 + 0x91) = 1;
+    }
+
+done:
+    return;
 }
 #pragma cplusplus off
 
