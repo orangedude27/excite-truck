@@ -598,6 +598,7 @@ void fn_802CFD74(void) {
     fn_802CF850();
     VIConfigure(lbl_8055FD64);
 }
+#pragma pop
 
 extern void fn_802CFCA0(void*);
 void fn_802CFEEC(void* alarm) {
