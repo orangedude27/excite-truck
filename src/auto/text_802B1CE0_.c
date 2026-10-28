@@ -276,6 +276,48 @@ void fn_802B21D4(void **arg0) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802B224C(void *arg0) {
+    char name[16];
+    void *object;
+    void *child;
+    int index;
+    int count;
+    void **items;
+    int value;
+    void *(*get_value)(void *, const char *);
+
+    count = *(int *)((char *)&lbl_804BE1FC + 4);
+    if (count + 1 > *(int *)((char *)&lbl_804BE1FC + 8))
+        return;
+
+    object = fn_801284F8(0x28, lbl_8034A2C4);
+    if (object != 0) {
+        fn_802B2C7C(object);
+        index = 1;
+        do {
+            fn_801345D8(name, 0x10, lbl_8055CDC8, index);
+            if (((int (*)(void *, void *))fn_802B2C44)(arg0, name) == 0)
+                break;
+            child = fn_801284F8(0x454, lbl_8034A2D8);
+            if (child != 0) {
+                value = (*(int (**)(void *, void *))((char *)*(void **)arg0 + 0x5C))(arg0, name);
+                child = fn_802B23A8(child, (void *)value, (void *)(index - 1));
+            }
+            fn_802B2384(object, &child);
+            index++;
+        } while (1);
+        get_value = (void *(*)(void *, const char *))((char *)*(void **)arg0 + 0x14);
+        *(void **)((char *)object + 0x24) = get_value(arg0, lbl_8055CDD0);
+    }
+
+    items = *(void ***)&lbl_804BE1FC;
+    count = *(int *)((char *)&lbl_804BE1FC + 4);
+    *(int *)((char *)&lbl_804BE1FC + 4) = count + 1;
+    items[count] = object;
+}
+
 extern char lbl_8034A2E8[];
 extern char lbl_8055CDD8;
 extern void *fn_801284F8(int, const char *);
