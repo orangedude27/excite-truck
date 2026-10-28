@@ -248,7 +248,7 @@ copy_done:
 extern "C" void fn_802C6CF8(s32);
 extern "C" void fn_801F0000(s32);
 extern "C" void fn_80253C48(void *);
-extern "C" void fn_802532BC(void);
+extern "C" void fn_802532BC(void *);
 #pragma dont_inline on
 extern "C" void fn_80253824(void *arg0) {
     if (*(u8 *)arg0 != 0) {
@@ -258,7 +258,7 @@ extern "C" void fn_80253824(void *arg0) {
         fn_801F0000(*(s32 *)((u8 *)arg0 + 0x18));
         fn_801F0000(*(s32 *)((u8 *)arg0 + 0x1C));
         fn_80253C48(arg0);
-        ((void (*)(void *))fn_802532BC)(arg0);
+        fn_802532BC(arg0);
     }
 }
 #pragma dont_inline reset
@@ -537,10 +537,9 @@ void fn_802543FC(void *arg0) {
     union { s32 i; float f; } c, b, a;
     s32 index;
     u8 *point;
-    float sourceY;
-    float difference;
-    float zero;
     float scale;
+    float zero;
+    float difference;
 
     if (*(s32 *)(base + 0x28) != -1) {
         v = fn_802C86DC();
@@ -560,33 +559,29 @@ void fn_802543FC(void *arg0) {
         if (p != 0) {
             zero = lbl_80563A04;
             index = *(s32 *)((u8 *)p + 0xCC);
-            sourceY = *(float *)(base + 0x5C8);
-            difference = *(float *)(base + 0x424);
-            difference = sourceY - difference;
+            difference = *(float *)(base + 0x5C8);
+            difference -= *(float *)(base + 0x424);
             point = base + index * 12;
             *(float *)(point + 0x3C) = zero;
             *(float *)(point + 0x40) = difference;
             *(float *)(point + 0x44) = zero;
             index = *(s32 *)((u8 *)p + 0xD0);
-            sourceY = *(float *)(base + 0x5CC);
-            difference = *(float *)(base + 0x424);
-            difference = sourceY - difference;
+            difference = *(float *)(base + 0x5CC);
+            difference -= *(float *)(base + 0x424);
             point = base + index * 12;
             *(float *)(point + 0x3C) = zero;
             *(float *)(point + 0x40) = difference;
             *(float *)(point + 0x44) = zero;
             index = *(s32 *)((u8 *)p + 0xD4);
-            sourceY = *(float *)(base + 0x5D0);
-            difference = *(float *)(base + 0x424);
-            difference = sourceY - difference;
+            difference = *(float *)(base + 0x5D0);
+            difference -= *(float *)(base + 0x424);
             point = base + index * 12;
             *(float *)(point + 0x3C) = zero;
             *(float *)(point + 0x40) = difference;
             *(float *)(point + 0x44) = zero;
             index = *(s32 *)((u8 *)p + 0xD8);
-            sourceY = *(float *)(base + 0x5D4);
-            difference = *(float *)(base + 0x424);
-            difference = sourceY - difference;
+            difference = *(float *)(base + 0x5D4);
+            difference -= *(float *)(base + 0x424);
             point = base + index * 12;
             *(float *)(point + 0x3C) = zero;
             *(float *)(point + 0x40) = difference;
