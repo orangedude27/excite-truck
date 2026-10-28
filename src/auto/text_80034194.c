@@ -1814,8 +1814,6 @@ void fn_80039838(void) {
     OSWakeupThread(__DVDThreadQueue);
 }
 
-#pragma push
-#pragma scheduling invalid_target
 s32 fn_80039840(void) {
     s32 result;
     s32 tempInterrupts;
@@ -1869,7 +1867,6 @@ wait_done:
     OSRestoreInterrupts(savedInterrupts);
     return 0;
 }
-#pragma pop
 
 extern s32 lbl_8055D864;
 void cbForCancel(void) {
