@@ -1510,6 +1510,7 @@ void fn_8018A8A8(void *arg0) {
         fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), stack.sp38, stack.sp2C, stack.sp8, stack.sp20);
     }
 }
+#pragma scheduling on
 #pragma paired_single reset
 
 extern void fn_801C2BDC(void *, unsigned int *, unsigned int *, unsigned int *);
