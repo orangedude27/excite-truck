@@ -645,6 +645,7 @@ extern "C" int fn_802996B0(void *arg0, int *out) {
     if (found) *out = best;
     return found;
 }
+#pragma scheduling on
 
 extern "C" void *fn_802997F4(void *arg0, int arg1) {
     void *p = arg0;
