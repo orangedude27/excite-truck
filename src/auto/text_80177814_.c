@@ -46,9 +46,12 @@ extern void fn_8018A180(void);
 int fn_802E2C20(void);
 extern int lbl_8055E464;
 void fn_80177814(int *arg0) {
-    *arg0 = (fn_802E2C20() + lbl_8055E464) % 30000;
+    int t;
+    t = fn_802E2C20() + lbl_8055E464;
+    *arg0 = t % 30000;
     lbl_8055E464 += 0x9947;
-    arg0[1] = (fn_802E2C20() + lbl_8055E464) % 30000;
+    t = fn_802E2C20() + lbl_8055E464;
+    arg0[1] = t % 30000;
     lbl_8055E464 += 0x2F1CD;
 }
 
@@ -78,14 +81,11 @@ long fn_80177988(void) {
 }
 
 void fn_80177990(void) {
-    double temp_f31;
-    float *var_r31;
-    float *var_r30;
+    double temp_f31 = lbl_80561B48;
+    float *var_r31 = &lbl_80430700[0];
+    float *var_r30 = &lbl_804305D4[0];
     int var_r29;
 
-    temp_f31 = lbl_80561B48;
-    var_r31 = &lbl_80430700[0];
-    var_r30 = &lbl_804305D4[0];
     for (var_r29 = 0; var_r29 < 0x4b; var_r29++) {
         *var_r31 = (float)temp_f31;
         *var_r30 = (float)temp_f31;
@@ -250,6 +250,7 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
 }
 
 extern char lbl_80331950[];
+#pragma dont_inline on
 char *fn_80178374(long arg0) {
     char *var_r4 = lbl_80331950;
     int temp_r0;
@@ -262,11 +263,38 @@ char *fn_80178374(long arg0) {
     }
     return NULL;
 }
+#pragma dont_inline off
 
 void fn_801784AC(void) {
     fn_801E2640(&lbl_804340C0[0], &lbl_8055E468);
 }
 
+extern float lbl_80561B64;
+#pragma scheduling invalid_target
+s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
+    Vec start;
+    Vec hit;
+    Vec normal;
+    s32 value;
+    s32 other;
+    start.y = arg0->y - lbl_80561B64;
+    start.z = arg0->z;
+    start.x = arg0->x;
+    if (((s32 (*)(Vec *, Vec *, Vec *, Vec *, s32 *, s32 *, s32))fn_801784AC)(arg0, &start, &hit, &normal, &value, &other, arg4)) {
+        *arg1 = hit.y;
+        if (arg2 != 0) {
+            arg2->x = normal.x;
+            arg2->y = normal.y;
+            arg2->z = normal.z;
+        }
+        if (arg3 != 0) {
+            *arg3 = value;
+        }
+        return 1;
+    }
+    return 0;
+}
+#pragma scheduling on
 void fn_801785A4(void **arg0) {
     int index = lbl_8055E438;
     lbl_8055E434[index] = arg0;
