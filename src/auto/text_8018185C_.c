@@ -2,6 +2,8 @@ extern float lbl_80561CA0, lbl_80561CA4, lbl_80561CA8;
 extern float lbl_80561CB0, lbl_80561CB4, lbl_80561CB8, lbl_80561CBC;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void fn_801BEB30();
+extern int fn_801D1184(void *);
+extern void fn_801D14EC(int);
 // split_file divides it into the game's real files (file_status shows its range).
 extern signed char lbl_8055E4F8;
 extern unsigned char lbl_8055A3B5;
@@ -107,6 +109,55 @@ struct BA54CallObj {
     virtual void *method4(float, float);
 };
 #pragma cplusplus reset
+void fn_8018185C(void *out_, const float *in) {
+    float *out = (float *)out_;
+    float x = in[1];
+    float y;
+    float t;
+    float delta;
+    float denom;
+    float first;
+    float slope1;
+    float x2;
+    float y2;
+    float v;
+    float slope2;
+
+    out[7] = x;
+    out[10] = in[3];
+    out[6] = lbl_80561CA0 * in[5];
+
+    if (x <= lbl_80561CA4) {
+        x = lbl_80561CA4;
+    }
+
+    y = (lbl_80561CA8 * in[0]) / x;
+    out[9] = lbl_80561CAC;
+    delta = out[7] - in[3];
+    first = lbl_80561CA0 * in[2];
+    t = lbl_80561CA0 * y;
+    denom = delta * delta;
+    if (denom <= lbl_80561CA4) {
+        denom = lbl_80561CA4;
+    }
+    slope1 = (t - first) / denom;
+    out[8] = y / lbl_80561CB4;
+    out[0] = slope1;
+    out[1] = out[6] + lbl_80561CB0 * slope1 * in[3];
+    out[2] = first + slope1 * (in[3] * in[3]);
+
+    x2 = in[4] - out[10];
+    y2 = x2 * x2;
+    v = lbl_80561CA0 * (lbl_80561CB8 * in[2]) - first;
+    if (y2 <= lbl_80561CBC) {
+        y2 = lbl_80561CBC;
+    }
+    slope2 = v / y2;
+    out[3] = slope2;
+    out[5] = first + slope2 * (out[10] * out[10]);
+    out[4] = out[6] + lbl_80561CB0 * slope2 * out[10];
+}
+
 void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, float farg2) {
     float values[6];
     float a;
@@ -1412,35 +1463,26 @@ void fn_8018A750(void *arg0, int arg_sp0) {
 }
 
 void fn_8018A8A8(void *arg0) {
-    float sp40;
-    float sp3C;
-    float sp38;
-    float sp34;
-    float sp30;
-    float sp2C;
-    float sp28;
-    float sp24;
-    float sp20;
-    float sp1C;
-    float sp18;
-    float sp14;
-    float sp10;
-    float spC;
-    float sp8;
+    float sp38[3];
+    float sp2C[3];
+    float sp20[3];
+    float sp14[3];
+    float sp8[3];
     float angle;
     float value;
+    float calculated;
     register float temp_f31;
     register float temp_f30;
 
-    sp38 = lbl_80561CAC;
-    sp3C = lbl_80561DBC;
-    sp40 = lbl_80561CAC;
-    sp2C = lbl_80561CAC;
-    sp30 = lbl_80561CD0;
-    sp34 = lbl_80561CAC;
-    sp20 = lbl_80561CAC;
-    sp24 = lbl_80561CAC;
-    sp28 = lbl_80561CAC;
+    sp38[0] = lbl_80561CAC;
+    sp38[1] = lbl_80561DBC;
+    sp38[2] = lbl_80561CAC;
+    sp2C[0] = lbl_80561CAC;
+    sp2C[1] = lbl_80561CD0;
+    sp2C[2] = lbl_80561CAC;
+    sp20[0] = lbl_80561CAC;
+    sp20[1] = lbl_80561CAC;
+    sp20[2] = lbl_80561CAC;
     if (*(int *)((char *)arg0 + 0x26C4) != 0) {
         temp_f31 = lbl_8055E3C8;
         angle = (float)fn_8002EFB4(temp_f31, lbl_80561F20);
@@ -1448,19 +1490,19 @@ void fn_8018A8A8(void *arg0) {
         temp_f30 = lbl_80561F28 * value;
         angle = (float)fn_8002EFB4(temp_f31, lbl_80561F30);
         value = angle - lbl_80561F3C;
-        temp_f31 = lbl_80561F38 * value;
+        calculated = lbl_80561F38 * value;
         angle = (float)fn_8002EFB4(temp_f31, lbl_80561F40);
-        sp18 = temp_f31;
+        sp14[1] = calculated;
         value = angle - lbl_80561F4C;
-        sp1C = temp_f30;
-        sp14 = lbl_80561F48 * value;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), &sp38, &sp2C, &sp14, &sp20);
+        sp14[2] = temp_f30;
+        sp14[0] = lbl_80561F48 * value;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), sp38, sp2C, sp14, sp20);
     }
     if (*(int *)((char *)arg0 + 0x26C8) != 0) {
-        sp8 = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
-        spC = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
-        sp10 = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), &sp38, &sp2C, &sp8, &sp20);
+        sp8[0] = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
+        sp8[1] = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
+        sp8[2] = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), sp38, sp2C, sp8, sp20);
     }
 }
 
