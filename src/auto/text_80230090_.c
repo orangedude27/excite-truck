@@ -116,8 +116,8 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 #pragma processor gekko
 #pragma use_lmw_stmw on
 #pragma scheduling on
-#pragma paired_single on
-#pragma paired on
+#pragma paired_single off
+#pragma paired off
 #pragma cplusplus on
 extern "C" void fn_80230924(void *, f32, f32, f32, f32, f32);
 extern "C" void fn_802C8B98(s32, s32);
@@ -152,8 +152,7 @@ void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
         frame.indices[4] = *source++;
         frame.indices[5] = *source++;
     }
-    ((void (*)(void *, s32, u16 *, s32))fn_802C8DB8)(
-        frame.sp20, 4, frame.indices, 6);
+    fn_802C8DB8(frame.sp20, 4, frame.indices, 6);
     fn_802C8D74();
 }
 #pragma cplusplus reset
