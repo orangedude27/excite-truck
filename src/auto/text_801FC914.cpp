@@ -879,7 +879,7 @@ found:
     }
     int count = *(int*)(base + 0x90);
     if (count > 0) {
-        int index = fn_80129D18(0);
+        int index = fn_80129D18(0, count);
         int selected = *(int*)(base + 0x10 + index * 4);
         int j = index + 1;
         int* p = (int*)(base + j * 4);
@@ -888,9 +888,9 @@ found:
         }
         *(int*)(base + 0x90) -= 1;
         fn_801FCAE0((void*)selected, name);
-        int count = *(int*)(base + 0x94);
-        *(int*)(base + 0x50 + count * 4) = selected;
-        *(int*)(base + 0x94) = count + 1;
+        int c2 = *(int*)(base + 0x94);
+        *(int*)(base + 0x50 + c2 * 4) = selected;
+        *(int*)(base + 0x94) = c2 + 1;
     }
 }
 
