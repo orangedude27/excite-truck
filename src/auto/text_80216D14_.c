@@ -506,7 +506,7 @@ void *fn_80217BD8(void *arg0, int arg1, int arg2) {
 #pragma scheduling on
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80217C4C(void *arg0) {
     char *base = (char *)arg0;
     char *entry;
@@ -515,7 +515,8 @@ void fn_80217C4C(void *arg0) {
     int last;
     int matches;
     int i;
-    register float threshold;
+    float threshold;
+    float value;
     count = *(int *)(base + 0x494);
     if (count < 1) return;
     threshold = lbl_80563490;
@@ -529,7 +530,8 @@ void fn_80217C4C(void *arg0) {
         item = *(char **)(entry + 0x4A4);
         eligible = 0;
         if (*(unsigned char *)(item + 0x1A) != 0) goto first_yes;
-        if (*(float *)(item + 0x20) >= threshold) goto first_yes;
+        value = *(float *)(item + 0x20);
+        if (value >= threshold) goto first_yes;
         goto first_check;
     first_yes:
         eligible = 1;
@@ -547,7 +549,8 @@ void fn_80217C4C(void *arg0) {
             item = *(char **)(current + 0x4A4);
             eligible = 0;
             if (*(unsigned char *)(item + 0x1A) != 0) goto second_yes;
-            if (*(float *)(item + 0x20) >= threshold) goto second_yes;
+            value = *(float *)(item + 0x20);
+            if (value >= threshold) goto second_yes;
             goto second_check;
         second_yes:
             eligible = 1;
