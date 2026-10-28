@@ -621,7 +621,7 @@ found:
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma small_data off
 extern "C" void fn_80145E70(s32 arg0) {
     struct Config { virtual void *getObject(const char *); virtual void a1(); virtual s32 has(const char *); };
@@ -632,27 +632,23 @@ extern "C" void fn_80145E70(s32 arg0) {
     *(void **)object = &lbl_8032D1E8;
     fn_80146C08(object + 0x40, (s32)object);
     *(s32 *)(object + 0x2C) = 0;
-    {
-        u8 *dst = object + 5;
-        const s8 *src = (const s8 *)arg0;
-        *(s32 *)(object + 0x30) = 0;
-        *(s32 *)(object + 0x34) = 0;
-        *(s32 *)(object + 0x3C) = 0;
-        *(s32 *)(object + 0x48) = 0;
-        *(s32 *)(object + 0x4C) = 0;
-        object[4] = 0;
-        ((void (*)(u8 *, const s8 *, s32, s32))fn_80146BD4)(dst, src, 0x20, 0);
-    }
+    *(s32 *)(object + 0x30) = 0;
+    *(s32 *)(object + 0x34) = 0;
+    *(s32 *)(object + 0x3C) = 0;
+    *(s32 *)(object + 0x48) = 0;
+    *(s32 *)(object + 0x4C) = 0;
+    object[4] = 0;
+    ((void (*)(u8 *, const s8 *, s32, s32))fn_80146BD4)(object + 5, (const s8 *)arg0, 0x20, 0);
     *(void **)(object + 0x28) = fn_80131810(arg0);
     if (*(void **)(object + 0x28) != 0) {
         lbl_8055E208 = 1;
         if (((Config *)*(void **)(object + 0x28))->has(lbl_80559E20) != 0) {
             void *properties = ((Config *)*(void **)(object + 0x28))->getObject(lbl_80559E20);
-            register s32 transformed = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
-            register s32 shifted = transformed >> 1;
-            register s32 low = transformed & 1;
-            transformed = shifted - low;
-            lbl_8055E208 = (s8)((u32)transformed >> 31);
+            register s32 value = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
+            register s32 half = value >> 1;
+            value &= 1;
+            value = half - value;
+            lbl_8055E208 = (s8)((u32)value >> 31);
         }
         *(s32 *)(object + 0x2C) = (s32)((void *(*)(void *, const char *))fn_80145FEC)(*(void **)(object + 0x28), lbl_80559E30);
         *(s32 *)(object + 0x30) = (s32)((void *(*)(void *, const char *))fn_801460F8)(*(void **)(object + 0x28), lbl_80559E34);
@@ -1512,8 +1508,8 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern f32 fn_801452A0(s32, f32);
-    f32 tx;
     f32 angle;
+    f32 tx;
     if (arg0 != 0) {
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
@@ -2170,22 +2166,24 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
             }
         }
         {
-            register s32 i, offset;
+            u8 *entry;
+            s32 offset, i;
             i = 0;
             offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0x10) + 4)) {
-                register u8 *entry = *(u8 **)(*(u8 **)(self + 0x10)) + offset;
+                entry = *(u8 **)(*(u8 **)(self + 0x10)) + offset;
                 fn_8014784C(*(VTable **)(self + 8), *(u32 *)entry, *(u32 *)(entry + 4), *(u32 *)(entry + 8));
                 offset += 0xC;
                 i++;
             }
         }
         {
-            register s32 i, offset;
+            u8 *entry;
+            s32 offset, i;
             i = 0;
             offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0xC) + 4)) {
-                register u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
+                entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
                 const char *format = (const char *)&lbl_80559E1C;
                 fn_801473F8(*(VTable **)(self + 8), *(u32 *)entry, format, *(u32 *)(entry + 4));
                 offset += 8;
