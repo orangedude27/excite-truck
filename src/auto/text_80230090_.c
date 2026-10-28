@@ -108,16 +108,24 @@ void fn_80230B5C(void *arg0) {
     p[8]=b; p[9]=a; p[10]=a; p[11]=c;
 }
 
+#pragma scheduling invalid_target
 s32 fn_80230B9C(u32 arg0) {
-    extern void *fn_8022EDC4(void);
-    extern f64 lbl_80563650;
-    u8 a=0, b=0, c=0, d=0;
-    f32 scale;
-    fn_80230AB8(arg0, &a, &b, &c, &d);
-    scale = *(f32 *)((u8 *)fn_8022EDC4() + 0x30);
-    return d | (c << 8) | (b << 16) | ((s32)(((f64)a - lbl_80563650) * scale) << 24);
+    u8 spB, spA, sp9, sp8;
+    void *object;
+    f32 scaled;
+    u32 encoded;
+    spB = 0;
+    spA = 0;
+    sp9 = 0;
+    sp8 = 0;
+    fn_80230AB8(arg0, &spB, &spA, &sp9, &sp8);
+    object = fn_8022EDC4();
+    scaled = *(f32 *)((u8 *)object + 0x30) * (f32)spB;
+    encoded = (u32)(s32)scaled;
+    return (sp8 & ~0xFF00) | ((sp9 << 8) & 0xFF00) |
+           (((spA << 16) & ~0xFF000000) | (encoded << 24));
 }
-
+#pragma scheduling on
 void fn_80230C30(float *arg0, float *arg1, s32 arg2, s32 arg3) {
     s32 sign;
     s32 value;
@@ -252,26 +260,37 @@ void fn_80230F6C(s32 *arg0) { *arg0 = -0x35BC; }
 
 extern float fn_80230EF4(long);
 extern float lbl_80563610, lbl_80563614, lbl_80563658, lbl_80563664, lbl_80563668, lbl_8056366C;
+#pragma dont_inline on
 void fn_80230F78(signed char *arg0, float *arg1, long arg2, long arg3) {
-    float value, max, min;
-    long n, clipped;
-    value = fn_80230EF4(arg3);
-    max = lbl_80563610;
-    min = (value - lbl_80563614) / lbl_80563658;
-    if (max >= min) max = min;
-    if (max <= lbl_80563614) max = lbl_80563614;
-    n = (long)(lbl_80563664 + max * lbl_80563668);
-    clipped = n & ((-n & ~n) >> 31);
-    if (clipped >= 0xFF) clipped = 0xFF;
-    *arg0 = (signed char)clipped;
-    min = (value - lbl_80563614) / lbl_80563658;
-    max = lbl_80563610;
-    if (max >= min) max = min;
-    if (max <= lbl_80563614) max = lbl_80563614;
-    *arg1 = lbl_80563614 + max * lbl_8056366C;
-    fn_80230F6C((long *)arg2);
-}
+    float value;
+    float max;
+    float min;
+    long val;
+    long n;
+    int clipped;
 
+    value = fn_80230EF4(arg3);
+
+    max = lbl_80563610;
+    min = (value - lbl_80563614) / lbl_80563658;
+    max = (max < min) ? max : min;
+    max = (max > lbl_80563614) ? max : lbl_80563614;
+
+    n = (long)(lbl_80563664 + max * lbl_80563668);
+    val = n & ((-n & ~n) >> 31);
+    clipped = (val >= 0xFF) ? 0xFF : val;
+
+    max = lbl_80563610;
+    min = (value - lbl_80563614) / lbl_80563658;
+    *arg0 = clipped;
+
+    max = (max < min) ? max : min;
+    max = (max > lbl_80563614) ? max : lbl_80563614;
+
+    *arg1 = lbl_80563614 + max * lbl_8056366C;
+    fn_80230F6C((s32 *)arg2);
+}
+#pragma dont_inline reset
 void fn_8023108C(u8 arg0) {
     lbl_8055B998 = arg0;
 }
