@@ -521,7 +521,8 @@ extern "C" s32 fn_801F812C(const char *arg) {
 extern "C" const f32 lbl_80562FF0;
 extern "C" s32 fn_801F815C(const char *arg) { return stricmp(arg, lbl_8055B2C4) == 0; }
 
-extern const char lbl_8055B2A8[], lbl_8055B2E4[], lbl_8055B2EC[];
+__declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[];
+extern const char lbl_8055B2E4[], lbl_8055B2EC[];
 int sprintf(char *, const char *, ...);
 void *fn_801F83E4(void **arg0) {
     u8 *obj = (u8 *)fn_801284F8(0x168, (void *)lbl_8055B2E4);
