@@ -177,6 +177,7 @@ extern "C" s32 fn_800057D0(void) {
         }
     }
 }
+#pragma pop
 #pragma cplusplus off
 
 #pragma push
