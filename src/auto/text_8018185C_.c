@@ -1,10 +1,7 @@
 extern float lbl_80561CA0, lbl_80561CA4, lbl_80561CA8;
 extern float lbl_80561CB0, lbl_80561CB4, lbl_80561CB8, lbl_80561CBC;
-extern float fabsf(float);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void fn_801BEB30();
-extern int fn_801D1184(void *);
-extern void fn_801D14EC(int);
 // split_file divides it into the game's real files (file_status shows its range).
 extern signed char lbl_8055E4F8;
 extern unsigned char lbl_8055A3B5;
@@ -1476,8 +1473,8 @@ void fn_8018A8A8(void *arg0) {
     float angle;
     float value;
     float calculated;
-    register float temp_f31;
-    register float temp_f30;
+    float temp_f31;
+    float temp_f30;
 
     stack.sp38[0] = lbl_80561CAC;
     stack.sp38[1] = lbl_80561DBC;
