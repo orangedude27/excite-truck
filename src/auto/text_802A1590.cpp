@@ -911,18 +911,15 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma paired off
-#pragma paired_single off
-#pragma scheduling invalid_target
 extern "C" void fn_802A33D4(void* arg0, void* arg1, s32 arg2) {
     f32 value = *(f32*)((char*)arg1 + 8);
     s32 offset = arg2 * 0x3C;
     f32 limit = lbl_8056476C;
     unsigned char* base = *(unsigned char**)arg1;
     unsigned char* item = base + offset;
+    f32 angle;
     s32 a[3];
     f32 p[3];
-    f32 angle;
     if (value > limit) goto done;
     if (*(f32*)(item + 0x98) >= lbl_805647DC) goto calculate;
     goto done;
