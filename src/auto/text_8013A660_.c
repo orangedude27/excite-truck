@@ -30,6 +30,7 @@ extern char lbl_80559CBC[];
 extern int fn_8013A9C0(void *, void *, void *, void *);
 extern int fn_8027AA48(void);
 extern void fn_802E30C8(char *, ...);
+extern float fn_8013AA68(void *, void *, void *, void *);
 typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
 typedef struct { int pad[7]; int (*m_fn)(void); } unkVtable7;
 typedef struct { int pad[9]; float (*m_float)(char *); } unkVtableFloat;
