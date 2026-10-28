@@ -706,6 +706,7 @@ double ceil(double x) {
     return u.d;
 }
 
+#pragma dont_inline on
 double copysign(double x, double y) {
     union { double d; unsigned int i[2]; } b, a;
     a.d = x;
@@ -713,6 +714,7 @@ double copysign(double x, double y) {
     a.i[0] = (a.i[0] & 0x7fffffff) | (b.i[0] & 0x80000000);
     return a.d;
 }
+#pragma dont_inline reset
 
 extern double lbl_80560A80;
 extern double __kernel_cos(double, double);
@@ -816,40 +818,50 @@ double frexp(double x, int *eptr) {
 extern int __fpclassifyd(double);
 extern double copysign(double, double);
 extern double lbl_80560AA0, lbl_80560AA8, lbl_80560AB0, lbl_80560AB8, lbl_80560AC0;
-double ldexp(int arg0, double x) {
-    union { double d; unsigned int w[2]; } u;
-    int exp, newexp;
-    u.d = x;
+#pragma dont_inline copysign
+double ldexp(double x, int n) {
+    int exp;
+    int hx, lx;
+
     if (__fpclassifyd(x) <= 2 || lbl_80560AA0 == x)
         return x;
-    exp = (u.w[0] >> 20) & 0x7FF;
+
+    hx = *(int *)&x;
+    lx = ((int *)&x)[1];
+    exp = (hx >> 20) & 0x7FF;
+
     if (exp == 0) {
-        if ((u.w[1] | (u.w[0] & 0x7FFFFFFF)) == 0)
+        if ((lx | (hx & 0x7FFFFFFF)) == 0)
             return x;
         x *= lbl_80560AA8;
-        u.d = x;
-        exp = ((u.w[0] >> 20) & 0x7FF) - 0x36;
-        if (arg0 < -0xC350)
+        hx = *(int *)&x;
+        exp = ((hx >> 20) & 0x7FF) - 0x36;
+        if (n < -50000)
             return lbl_80560AB0 * x;
     }
+
     if (exp == 0x7FF)
         return x + x;
-    newexp = exp + arg0;
-    if (newexp > 0x7FE)
+
+    exp += n;
+    if (exp > 0x7FE)
         return lbl_80560AB8 * copysign(lbl_80560AB8, x);
-    if (newexp > 0) {
-        u.w[0] = (u.w[0] & 0x800FFFFF) | (newexp << 20);
-        return u.d;
+
+    if (exp > 0) {
+        *(int *)&x = (hx & 0x800FFFFF) | (exp << 20);
+        return x;
     }
-    if (newexp <= -0x36) {
-        if (arg0 > 0xC350)
+
+    if (exp <= -0x36) {
+        if (n > 50000)
             return lbl_80560AB8 * copysign(lbl_80560AB8, x);
         return lbl_80560AB0 * copysign(lbl_80560AB0, x);
     }
-    u.w[0] = (u.w[0] & 0x800FFFFF) | ((newexp + 0x36) << 20);
-    return lbl_80560AC0 * u.d;
-}
 
+    exp += 0x36;
+    *(int *)&x = (hx & 0x800FFFFF) | (exp << 20);
+    return lbl_80560AC0 * x;
+}
 __declspec(section ".sdata") extern double lbl_80560AC8;
 #pragma push
 #pragma dont_inline on
