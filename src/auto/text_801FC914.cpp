@@ -337,36 +337,44 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(float*)(dst + 0x30) = *(float*)((char*)src + 0x10);
     *(float*)(dst + 0x34) = *(float*)((char*)src + 0x14);
     *(float*)(dst + 0x38) = *(float*)((char*)src + 0x18);
-    register float x = *(float*)((char*)src + 0x1C);
-    register float y = *(float*)((char*)src + 0x20);
-    register float z = *(float*)((char*)src + 0x24);
-    register float twoX = x + x;
-    register float twoY = y + y;
-    register float w = *(float*)((char*)src + 0x28);
-    register float twoZ = z + z;
-    register float xx = x * twoX;
-    register float yy = y * twoY;
-    register float zz = z * twoZ;
-    register float xw = w * twoX;
-    register float yz = y * twoZ;
-    register float diag0 = yy + zz;
-    register float diag1 = xx + zz;
-    register float diag2 = xx + yy;
-    register float cross0 = yz - xw;
-    *(float*)(dst + 0xC) = one - diag0;
-    register float cross1 = yz + xw;
-    register float yw = w * twoY;
-    register float xz = x * twoZ;
-    register float zw = w * twoZ;
-    *(float*)(dst + 0x1C) = one - diag1;
-    register float xy = x * twoY;
-    *(float*)(dst + 0x28) = cross0;
-    *(float*)(dst + 0x24) = xz + yw;
-    *(float*)(dst + 0x18) = xy - zw;
-    *(float*)(dst + 0x10) = xx + zz;
-    *(float*)(dst + 0x14) = xz - yw;
-    *(float*)(dst + 0x20) = cross1;
-    *(float*)(dst + 0x2C) = one - diag2;
+    volatile float* q = (volatile float*)((char*)src + 0x1C);
+    float x = q[0];
+    float y = q[1];
+    float z = q[2];
+    float x2 = x + x;
+    float y2 = y + y;
+    float w = q[3];
+    float z2 = z + z;
+    float xx = x * x2;
+    float yy = y * y2;
+    float zz = z * z2;
+    float xw = w * x2;
+    float yz = y * z2;
+    float sum0 = yy + zz;
+    float sum1 = xx + zz;
+    float sum2 = xx + yy;
+    float m00 = one - sum0;
+    float m11 = one - sum1;
+    float m22 = one - sum2;
+    float m12 = yz - xw;
+    *(float*)(dst + 0xC) = m00;
+    float m21 = yz + xw;
+    float yw = w * y2;
+    float xz = x * z2;
+    float zw = w * z2;
+    *(float*)(dst + 0x1C) = m11;
+    float xy = x * y2;
+    float m24 = xz + yw;
+    float m14 = xz - yw;
+    float m18 = xy - zw;
+    float m10 = xx + zz;
+    *(float*)(dst + 0x28) = m12;
+    *(float*)(dst + 0x24) = m24;
+    *(float*)(dst + 0x18) = m18;
+    *(float*)(dst + 0x10) = m10;
+    *(float*)(dst + 0x14) = m14;
+    *(float*)(dst + 0x20) = m21;
+    *(float*)(dst + 0x2C) = m22;
 }
 
 extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, float farg0) {
@@ -864,6 +872,46 @@ extern "C" void* fn_801FE9E8(void* arg0, int arg1) {
     return arg0;
 }
 
+extern "C" void fn_801FEA28(void* arg) {
+    char* base = (char*)lbl_8055EC94;
+    char* name = *(char**)arg;
+    int i = 0;
+    char* item = base;
+    while (i < *(int*)(base + 0x4C0)) {
+        if (stricmp(name, item) == 0) {
+            base += i * 0x98;
+            goto found;
+        }
+        item += 0x98;
+        i++;
+    }
+    base = 0;
+found:
+    if (base == 0) {
+        fn_802E317C(lbl_8033B7F0, *(char**)arg);
+    }
+    int count = *(int*)(base + 0x94);
+    int index = 0;
+    void* p = base;
+    for (int k = count; k > 0; k--) {
+        if (*(void**)((char*)p + 0x50) == arg) break;
+        p = (char*)p + 4;
+        index++;
+    }
+    if (index >= count) {
+        fn_802E317C(lbl_8033B820, count, *(int*)(base + 0x90));
+    }
+    int* q = (int*)(base + (index + 1) * 4);
+    int j = index + 1;
+    for (; j < *(int*)(base + 0x94); j++, q++) {
+        q[19] = q[20];
+    }
+    *(int*)(base + 0x94) -= 1;
+    int count2 = *(int*)(base + 0x90);
+    *(void**)(base + 0x10 + count2 * 4) = arg;
+    *(int*)(base + 0x90) = count2 + 1;
+}
+
 extern const char lbl_8033B84C[];
 extern "C" int stricmp(const char*, const char*);
 extern "C" int fn_80129D18(int, int = 0);
@@ -924,13 +972,14 @@ extern "C" void fn_801FEC74(void* arg) {
     int index = 0;
     void* p = result;
     if (count > 0) {
+        int remaining = count;
         do {
             if (*(void**)((char*)p + 0x30) == arg) break;
             p = (char*)p + 4;
             index++;
-        } while (--count != 0);
+        } while (--remaining != 0);
     }
-    if (index >= *(int*)(result + 0x54)) fn_802E317C(lbl_8033B820, *(int*)(result + 0x50));
+    if (index >= count) fn_802E317C(lbl_8033B820, *(int*)(result + 0x50));
     int j = index + 1;
     int* q = (int*)(result + j * 4);
     for (; j < *(int*)(result + 0x54); ++j, ++q) q[11] = q[12];
