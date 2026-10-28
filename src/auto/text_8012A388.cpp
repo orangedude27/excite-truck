@@ -199,10 +199,10 @@ extern "C" s32 fn_8012A6C8(s32 arg0, s32 arg1, s32 arg2) {
     const char *messages = lbl_8032A630;
     u32 *data = (u32 *)arg0;
     volatile u8 buffer[5];
-    register u8 first;
-    register u8 fourth;
-    register u8 second;
-    register u8 third;
+    u32 first;
+    u8 fourth;
+    u32 second;
+    u8 third;
     u32 value;
 
     fn_80132E7C((void *)arg0, 0x30);
@@ -1992,28 +1992,43 @@ extern "C" const char lbl_8032AC08[];
 #pragma push
 #pragma scheduling invalid_target
 extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
+    struct Item {
+        u8 pad[0x20];
+        s32 key;
+        s32 value;
+    };
+    struct Manager {
+        u8 pad[0x60];
+        Item *items;
+    };
+    struct Allocation {
+        s32 magic;
+        Item *item;
+        Manager *manager;
+        s32 state;
+        s32 reserved10;
+        s32 reserved14;
+    };
+
     s32 index;
     s32 result = 0;
-    s32 *manager;
-    s32 *entry;
-
-    manager = ((s32 *(*)(s32, s32 *, s32))fn_8012B534)(arg0, &index, 1);
+    Manager *manager = (Manager *)((s32 *(*)(s32, s32 *, s32))fn_8012B534)(arg0, &index, 1);
     if (manager != 0) {
-        entry = (s32 *)((char *)*(void **)((char *)manager + 0x60) + index * 0x44);
-        if (*(u32 *)((char *)entry + 0x20) == (u32)arg1) {
-            *(s32 *)arg2 = *(s32 *)((char *)entry + 0x24);
+        Item *item = (Item *)((char *)manager->items + index * 0x44);
+        if ((u32)item->key == (u32)arg1) {
+            *(s32 *)arg2 = item->value;
             void *allocation = fn_8012A570(0x18, (void *)lbl_8032ABF8);
             if (allocation != 0) {
-                volatile s32 *fields = (volatile s32 *)allocation;
-                fields[3] = -1;
-                fields[4] = 0;
-                fields[1] = 0;
-                fields[2] = 0;
-                fields[5] = 0;
-                fields[0] = 0x19AFEE2A;
-                fields[1] = (s32)entry;
+                volatile Allocation *object = (volatile Allocation *)allocation;
+                object->state = -1;
+                object->reserved10 = 0;
+                object->item = 0;
+                object->manager = 0;
+                object->reserved14 = 0;
+                object->magic = 0x19AFEE2A;
+                object->item = item;
                 result = (s32)allocation;
-                fields[2] = (s32)manager;
+                object->manager = manager;
             }
         } else {
             u8 queryText[5];
@@ -2033,7 +2048,7 @@ extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
             queryText[1] = q2;
             queryText[2] = q1;
 
-            *(u32 *)entryText = *(u32 *)((char *)entry + 0x20);
+            *(u32 *)entryText = (u32)item->key;
             entryText[4] = zero;
             e0 = entryText[0];
             e3 = entryText[3];
