@@ -1,4 +1,12 @@
 #include <revolution/MTX/mtxtypes.h>
+extern char lbl_8055FC34;
+extern int lbl_8055D02C;
+extern float lbl_80564F04;
+extern float lbl_80564F08;
+extern void fn_802C5F48(float, int, float *, float, float);
+extern void fn_801332D0(int, void *, int *);
+extern int fn_8013365C(int, int);
+extern int fn_802C9C58(int);
 extern float lbl_8055FC6C;
 extern void fn_802D362C(int);
 extern void fn_802D3304(void);
@@ -277,6 +285,45 @@ void fn_802C88FC(float *arg0) {
     arg0[10] = (float)(unsigned int)lbl_8055FC60 + scale * (float)(unsigned int)lbl_8055FC68;
     arg0[9] = (float)(unsigned int)lbl_8055FC5C + scale * (float)(unsigned int)lbl_8055FC64;
 }
+
+void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3, unsigned int arg4, unsigned int arg5, unsigned int arg6, unsigned int arg7) {
+    float fill;
+    float var_f2;
+    float var_f4;
+    float scale;
+    int height;
+    int y;
+    int width;
+    int x;
+
+    var_f2 = (lbl_80564F18 * (float)(int)lbl_8055FC64) / lbl_8055FC44;
+    if ((unsigned char)lbl_8055FC74 == 0) {
+        var_f2 *= lbl_80564EF8 / lbl_8055D020;
+    }
+    var_f4 = (unsigned char)lbl_8055FC74 != 0 ? lbl_80564EF8 : lbl_80564EF8 / lbl_8055D020;
+
+    fill = lbl_80564F00;
+    var_f2 = -var_f2;
+    ((float *)arg0)[0] = var_f4;
+    ((float *)arg0)[1] = fill;
+    ((float *)arg0)[2] = fill;
+    ((float *)arg0)[3] = fill;
+    ((float *)arg0)[4] = lbl_80564F1C;
+    ((float *)arg0)[5] = fill;
+    ((float *)arg0)[6] = fill;
+    ((float *)arg0)[7] = fill;
+    ((float *)arg0)[8] = lbl_80564EF8;
+
+    height = (int)lbl_8055FC68;
+    y = (int)lbl_8055FC60;
+    width = (int)lbl_8055FC64;
+    x = (int)lbl_8055FC5C;
+    scale = lbl_80564F18;
+    ((float *)arg0)[10] = scale * (float)y + (float)height;
+    ((float *)arg0)[11] = var_f2;
+    ((float *)arg0)[9] = scale * (float)x + (float)width;
+}
+
 #pragma scheduling on
 void fn_802C8B08(unsigned int *arg0) {
     struct Pair { unsigned int first; unsigned int second; };
