@@ -81,7 +81,6 @@ void fn_8029C2D4(void) {
     float difference;
     float bestValue;
     int *entries;
-    void *object;
     void *best;
     int i;
 
@@ -93,6 +92,7 @@ void fn_8029C2D4(void) {
     best = 0;
     i = 0;
     while (i < *(volatile int *)&lbl_8055F7F0) {
+        void *object;
         object = (void *)*entries;
         if (fn_8029D4CC(object)) {
             fn_8029D550(object, spC, &sp8);
@@ -109,13 +109,16 @@ void fn_8029C2D4(void) {
     if (best != 0)
         fn_8029D644(best);
 
-    entries = lbl_804B5030;
-    i = 0;
-    while (i < *(volatile int *)&lbl_8055F7F4) {
-        if (fn_8029EAE8((void *)*entries))
-            ((void (*)(void *))fn_8029E8E0)((void *)*entries);
-        entries++;
-        i++;
+    {
+        int j;
+        entries = lbl_804B5030;
+        j = 0;
+        while (j < *(volatile int *)&lbl_8055F7F4) {
+            if (fn_8029EAE8((void *)*entries))
+                ((void (*)(void *))fn_8029E8E0)((void *)*entries);
+            entries++;
+            j++;
+        }
     }
 }
 #pragma pop
@@ -131,6 +134,52 @@ void *__dt__Q34nw4r2ef6EffectFv_8029C3F0(void *arg0, int arg1) {
     }
     return arg0;
 }
+
+#pragma push
+#pragma ppc_psq_save off
+#pragma use_lmw_stmw off
+void fn_8029C450(void *arg0, int arg1) {
+    extern float fn_801E7E24(void);
+    extern void fn_8029D7D0(int, void **);
+    extern void fn_8029EA34(void *, void **);
+    extern void fn_8029CD48(void *);
+    extern int fn_802BF4F0(void);
+    extern int lbl_8055F7F0, lbl_8055F7F4;
+    extern int lbl_804B5010[], lbl_804B5030[];
+    extern float lbl_80558DC4, lbl_80564638, lbl_8056463C;
+    float f31, f30;
+    void **p;
+    int n, i;
+
+    f30 = lbl_80564638;
+    if ((float)__fabs((double)fn_801E7E24()) > lbl_80558DC4) {
+        f31 = lbl_8056463C;
+        n = 0;
+        p = (void **)arg0;
+        while (n < arg1) {
+            if (((float *)p)[2] < f30 &&
+                ((float *)p[0])[0x50 / 4] > f31 &&
+                ((unsigned char *)p)[0xC] != 0) {
+                i = 0;
+                while (i < lbl_8055F7F0) {
+                    fn_8029D7D0(lbl_804B5010[i], p);
+                    i++;
+                }
+                i = 0;
+                while (i < lbl_8055F7F4) {
+                    fn_8029EA34((void *)lbl_804B5030[i], p);
+                    i++;
+                }
+                if (fn_802BF4F0() != 0) {
+                    fn_8029CD48(p[0]);
+                }
+            }
+            p = (void **)((char *)p + 0x10);
+            n++;
+        }
+    }
+}
+#pragma pop
 
 #pragma push
 #pragma processor 750
