@@ -202,83 +202,51 @@ void fn_801BFECC(void *arg0, void *arg1) {
 static inline void inline_transform_vec(float *out, const float *in, const float *m) {
     if (out == in) {
         float y = in[1];
-        float y0 = y * m[3];
-        float y1 = y * m[4];
-        float y2 = y * m[5];
+        float y0 = m[3] * y;
+        float y1 = m[4] * y;
+        float y2 = m[5] * y;
 
         float x = in[0];
-        float x0 = x * m[0];
-        float x1 = x * m[1];
-        float x2 = x * m[2];
+        float x0 = m[0] * x;
+        float x1 = m[1] * x;
+        float x2 = m[2] * x;
 
         float z = in[2];
-        float z0 = z * m[6];
-        float z1 = z * m[7];
-        float z2 = z * m[8];
+        float z0 = m[6] * z;
+        float z1 = m[7] * z;
+        float z2 = m[8] * z;
 
-        out[0] = (x0 + y0) + z0;
-        out[1] = (x1 + y1) + z1;
-        out[2] = (x2 + y2) + z2;
+        out[0] = z0 + (x0 + y0);
+        out[1] = z1 + (x1 + y1);
+        out[2] = z2 + (x2 + y2);
     } else {
         {
-            float y0 = in[1] * m[3];
-            float x0 = in[0] * m[0];
-            float z0 = in[2] * m[6];
-            out[0] = (x0 + y0) + z0;
+            float y0 = m[3] * in[1];
+            float x0 = m[0] * in[0];
+            float z0 = m[6] * in[2];
+            out[0] = z0 + (x0 + y0);
         }
         {
-            float y1 = in[1] * m[4];
-            float x1 = in[0] * m[1];
-            float z1 = in[2] * m[7];
-            out[1] = (x1 + y1) + z1;
+            float y1 = m[4] * in[1];
+            float x1 = m[1] * in[0];
+            float z1 = m[7] * in[2];
+            out[1] = z1 + (x1 + y1);
         }
         {
-            float y2 = in[1] * m[5];
-            float x2 = in[0] * m[2];
-            float z2 = in[2] * m[8];
-            out[2] = (x2 + y2) + z2;
+            float y2 = m[5] * in[1];
+            float x2 = m[2] * in[0];
+            float z2 = m[8] * in[2];
+            out[2] = z2 + (x2 + y2);
         }
     }
 }
 
-void fn_801BFF64(void *out, void *in, void *m) {
-    float x, y, z, a, b, c;
-    if (out == in) {
-        y = *(float *)((char *)in + 4);
-        x = *(float *)((char *)in + 0);
-        z = *(float *)((char *)in + 8);
-        a = x * *(float *)((char *)m + 0);
-        b = y * *(float *)((char *)m + 0xC);
-        c = z * *(float *)((char *)m + 0x18);
-        *(float *)out = (a + b) + c;
-        a = x * *(float *)((char *)m + 4);
-        b = y * *(float *)((char *)m + 0x10);
-        c = z * *(float *)((char *)m + 0x1C);
-        *(float *)((char *)out + 4) = (a + b) + c;
-        a = x * *(float *)((char *)m + 8);
-        b = y * *(float *)((char *)m + 0x14);
-        c = z * *(float *)((char *)m + 0x20);
-        *(float *)((char *)out + 8) = (a + b) + c;
-    } else {
-        x = *(float *)((char *)in + 0);
-        y = *(float *)((char *)in + 4);
-        z = *(float *)((char *)in + 8);
-        a = x * *(float *)((char *)m + 0);
-        b = y * *(float *)((char *)m + 0xC);
-        c = z * *(float *)((char *)m + 0x18);
-        *(float *)out = (a + b) + c;
-        a = x * *(float *)((char *)m + 4);
-        b = y * *(float *)((char *)m + 0x10);
-        c = z * *(float *)((char *)m + 0x1C);
-        *(float *)((char *)out + 4) = (a + b) + c;
-        a = x * *(float *)((char *)m + 8);
-        b = y * *(float *)((char *)m + 0x14);
-        c = z * *(float *)((char *)m + 0x20);
-        *(float *)((char *)out + 8) = (a + b) + c;
-    }
-    *(float *)out += *(float *)((char *)m + 0x24);
-    *(float *)((char *)out + 4) += *(float *)((char *)m + 0x28);
-    *(float *)((char *)out + 8) += *(float *)((char *)m + 0x2C);
+void fn_801BFF64(float *m, const float *in) {
+    float tmp[3];
+    inline_transform_vec(tmp, in, m);
+    m[9] += tmp[0];
+    m[10] += tmp[1];
+    m[11] += tmp[2];
 }
 
 extern void fn_8019EECC(void *, void *);
