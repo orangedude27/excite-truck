@@ -529,24 +529,59 @@ extern void fn_802C7A10(void *);
 extern const char lbl_8034B258[];
 extern const char lbl_8034B294[];
 extern int (*fn_802E30C8_varargs)(const char *, ...);
+
+struct SubList {
+    int count;
+    int capacity;
+    void *buf;
+};
+
+struct MasterList {
+    struct SubList list0;
+    char pad0[0x58 - 0xC];
+    struct SubList list58;
+    struct SubList list64;
+    struct SubList list70;
+    struct SubList list7C;
+    int unk88;
+};
+
+static inline void fn_802C6080_free1(struct SubList *list) {
+    fn_80128670(list->buf);
+    list->buf = 0;
+    list->capacity = 0;
+    list->count = 0;
+}
+
+static inline void fn_802C6080_free2(struct SubList *list) {
+    void *buf = list->buf;
+    if (buf != 0) {
+        fn_80128670((char *)buf - 0x10);
+    }
+    list->count = 0;
+    list->buf = 0;
+    list->capacity = 0;
+}
+#pragma scheduling on
 void fn_802C6080(void) {
     struct SubList {
         int count;
         int capacity;
         void *buf;
     };
-    int i;
-    int offset;
+    register struct SubList *e;
+    register struct SubList *e58;
+    register struct SubList *e7c;
+    register char *base;
+    register int offset;
+    register int i;
+    int zero;
     void *ptr;
-    char *base = (char *)lbl_804C1338;
-    struct SubList *e64 = (struct SubList *)(base + 0x64);
-    struct SubList *e7c;
-    struct SubList *e58;
-    struct SubList *e70;
-    struct SubList *e0;
 
+    base = (char *)lbl_804C1338;
+    e = (struct SubList *)(base + 0x64);
     for (i = 0, offset = 0; i < *(int *)(base + 0x64); i++, offset += 0x10) {
-        if (*(int *)((char *)e64->buf + offset) > 0) {
+        if (*(int *)((char *)e->buf + offset) > 0) {
             ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B258, i);
             ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B294, ((int (*)(int))fn_802C7A10)(i));
         }
@@ -563,32 +598,32 @@ void fn_802C6080(void) {
     }
 
     e58 = (struct SubList *)(base + 0x58);
-    e70 = (struct SubList *)(base + 0x70);
-    *(int *)(base + 0x70) = 0;
-    e70->buf = 0;
-    e70->capacity = 0;
-    fn_80128670(e58->buf);
+    zero = 0;
+    ptr = e58->buf;
+    *(int *)(base + 0x70) = zero;
+    *(void **)(base + 0x70 + 8) = (void *)zero;
+    *(int *)(base + 0x70 + 4) = zero;
+    fn_80128670(ptr);
 
-    e0 = (struct SubList *)base;
-    e58->buf = 0;
-    e58->capacity = 0;
-    *(int *)(base + 0x58) = 0;
-    fn_80128670(e0->buf);
+    e = (struct SubList *)base;
+    e58->buf = (void *)zero;
+    ptr = e->buf;
+    e58->capacity = zero;
+    *(int *)(base + 0x58) = zero;
+    fn_80128670(ptr);
 
+    e->buf = (void *)zero;
     ptr = *(void **)(base + 0x64 + 8);
-    e0->buf = 0;
-    e0->capacity = 0;
-    *(int *)base = 0;
+    e->capacity = zero;
+    *(int *)base = zero;
     if (ptr != 0) {
         fn_80128670((char *)ptr - 0x10);
     }
 
-    e64 = (struct SubList *)(base + 0x64);
     *(int *)(base + 0x64) = 0;
-    e64->buf = 0;
-    e64->capacity = 0;
+    *(void **)(base + 0x64 + 8) = 0;
+    *(int *)(base + 0x64 + 4) = 0;
 }
-
 void fn_802C6A84(s32 *arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
