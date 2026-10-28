@@ -27,6 +27,7 @@ void* fn_8015EBF8(void* arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma dont_inline fn_8015EC50
 void fn_8015EC50(unsigned short *arg0, void *arg1) {
     int value;
     fn_80136594(&value, arg1, (char *)arg0 + 4);
@@ -111,6 +112,83 @@ extern "C" int fn_8015ED90(void **arg0) {
     }
     return count;
 }
+
+__declspec(section ".sdata") extern char lbl_8055A080[];
+__declspec(section ".sdata") extern char lbl_8055A084[];
+__declspec(section ".sdata") extern char lbl_8055A08C[];
+__declspec(section ".sdata") extern char lbl_8055A090[];
+extern char lbl_8032F470[];
+extern char lbl_8032F47C[];
+extern int strcmp(const char *, const char *);
+#pragma dont_inline fn_8015EC50
+#pragma cplusplus on
+extern "C" void fn_8015EE14(void **collection, void *arg1) {
+    class Collection {
+    public:
+        virtual void unused01(); virtual void unused02(); virtual void unused03(); virtual void unused04();
+        virtual void unused05(); virtual void unused06(); virtual void unused07(); virtual void unused08();
+        virtual void unused09(); virtual void unused10(); virtual void unused11(); virtual void unused12();
+        virtual void unused13(); virtual void unused14(); virtual void unused15(); virtual void unused16();
+        virtual void unused17(); virtual void unused18(); virtual void unused19(); virtual void unused20();
+        virtual void unused21(); virtual void unused22(); virtual void *getAt(s32 index);
+    };
+    class Item {
+    public:
+        virtual void unused01(); virtual void unused02(); virtual void unused03(); virtual void unused04();
+        virtual void unused05(); virtual void unused06(); virtual void unused07(); virtual void unused08();
+        virtual void unused09(); virtual void unused10(); virtual void unused11(); virtual void unused12();
+        virtual void unused13(); virtual u64 getPacked(const char *key);
+    };
+    class NamedItem {
+    public:
+        virtual void unused01(); virtual void unused02(); virtual void unused03(); virtual void unused04();
+        virtual const char *getName(const char *key1, const char *key2);
+    };
+    class FloatItem {
+    public:
+        virtual void unused01(); virtual void unused02(); virtual void unused03(); virtual void unused04();
+        virtual void unused05(); virtual void unused06(); virtual void unused07();
+        virtual f32 getFloat(const char *key);
+    };
+    if (collection != 0) {
+        f32 threshold = lbl_805617D4;
+        s32 index = 0;
+        void *node;
+        while ((node = ((Collection *)collection)->getAt(index)) != 0) {
+            if (fn_8015ED18((void **)node) != 0) {
+                int *registry = (int *)lbl_8055E29C;
+                s32 count = registry[1];
+                void *array = (void *)registry[0];
+                void *entry = (char *)array + count * 0x10;
+                union {
+                    u64 bits;
+                    f32 floats[2];
+                } packed;
+                registry[1] = count + 1;
+                packed.bits = ((Item *)node)->getPacked((const char *)lbl_8055A080);
+                *(f32 *)((char *)entry + 4) = packed.floats[0];
+                *(f32 *)((char *)entry + 8) = packed.floats[1];
+                fn_8015EC50((unsigned short *)entry, arg1);
+                {
+                    const char *name = ((NamedItem *)node)->getName((const char *)lbl_8055A084, (const char *)lbl_8055A08C);
+                    if (strcmp(name, lbl_8032F470) == 0) {
+                        *(u16 *)((char *)entry + 2) = 1;
+                        *(f32 *)((char *)entry + 0xC) = threshold;
+                    } else if (strcmp(name, lbl_8032F47C) == 0) {
+                        *(u16 *)((char *)entry + 2) = 2;
+                        *(f32 *)((char *)entry + 0xC) = threshold;
+                    } else {
+                        *(u16 *)((char *)entry + 2) = 0;
+                        *(f32 *)((char *)entry + 0xC) = ((FloatItem *)node)->getFloat((const char *)lbl_8055A090);
+                    }
+                }
+            }
+            index++;
+        }
+    }
+}
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 #pragma pop
 
@@ -282,17 +360,15 @@ extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
 void fn_8015F3FC(void *arg0) {
     register int max;
     register int offset;
-    register int index;
     register int *src;
     register int i;
+    register int index;
     register int outIndex;
-    register unsigned int *node;
     int count;
-    int *dst, *array, *out;
+    int *dst, *array, *out, *items;
     if (*(volatile int *)(lbl_8055E29C + 4) <= 0) return;
     fn_80265DCC(*(void **)lbl_8055E29C, *(volatile int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
-    node = (unsigned int *)*(int *)((char *)arg0 + 0x2c);
-    count = (int)(node[6] >> 16);
+    count = (int)(*(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16);
     dst = (int *)fn_801284F8(0x10, lbl_8032F4A0);
     if (!dst) return;
     array = (int *)fn_8012850C(count * 4, (int)&lbl_8055A098);
@@ -315,15 +391,17 @@ void fn_8015F3FC(void *arg0) {
         if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
             src = (int *)*(int *)lbl_8055E29C;
             out = *(int **)&lbl_8055E2A0;
+            items = (int *)out[0];
             outIndex = out[1];
             out[1] = outIndex + 1;
-            *(int *)(out[0] + 4 * outIndex) = (int)src;
+            items[outIndex] = (int)src;
         } else {
             src = (int *)((char *)*(int *)lbl_8055E29C + offset);
             out = *(int **)&lbl_8055E2A0;
+            items = (int *)out[0];
             outIndex = out[1];
             out[1] = outIndex + 1;
-            *(int *)(out[0] + 4 * outIndex) = (int)src;
+            items[outIndex] = (int)src;
         }
     }
 }
