@@ -28,7 +28,7 @@ extern void fn_80136468(void **, void *, float);
 void fn_8027156C();
 #pragma push
 #pragma small_data off
-extern int lbl_8049A258;
+extern unsigned char lbl_8049A258[];
 #pragma pop
 #pragma push
 #pragma small_data off
@@ -494,7 +494,7 @@ int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
 }
 
 void fn_80273354(void) {
-    int *ptr = &lbl_8049A258;
+    int *ptr = (int *)lbl_8049A258;
     memset(ptr, 0, 0x64);
     *(int *)((char *)ptr + 0x1C) = 1;
     *(int *)((char *)ptr + 0x18) = 0;
@@ -604,7 +604,7 @@ void fn_80273604(void *arg0, s32 arg1) {
     extern void fn_80273BD0(void);
     extern void fn_80274268(void);
     extern void fn_802E30C8(const char *, ...);
-    extern int lbl_8049A258;
+    extern unsigned char lbl_8049A258[];
     extern u8 lbl_80346BA0[];
     extern char lbl_80347310[];
     extern float lbl_80563F48, lbl_80563F4C, lbl_80563F50, lbl_80563F9C;
@@ -708,7 +708,7 @@ int fn_80273978(int arg0, int arg1) {
 extern int lbl_8049F9D8;
 #pragma push
 #pragma small_data off
-extern int lbl_8049A258;
+extern unsigned char lbl_8049A258[];
 #pragma pop
 extern int lbl_8055F554;
 extern f32 lbl_80563E78;
