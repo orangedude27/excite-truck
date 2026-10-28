@@ -110,13 +110,13 @@ void fn_80246CB8(void *arg0) {
     s32 item[10];
     s32 menu[6];
     s32 *p = text;
-    p[5] = 0;
-    p[0] = (s32)lbl_803436C0;
-    p[8] = 2500;
-    p[9] = 1;
-    p[10] = 0;
-    p[7] = fn_802E2C20();
-    p[6] = 1;
+    text[5] = 0;
+    text[0] = (s32)lbl_803436C0;
+    text[8] = 2500;
+    text[9] = 1;
+    text[10] = 0;
+    text[7] = fn_802E2C20();
+    text[6] = 1;
     item[1] = 5;
     item[0] = 0;
     item[2] = (s32)p;
@@ -345,8 +345,17 @@ static void fn_80247A0C_init(s32 a, s32 b) {
 
 void fn_80247A0C(void) {
     s32 var_r31;
+    s32 a;
+    s32 b;
+    s32 flag;
 
-    fn_80247A0C_init(lbl_8055BEBC, lbl_8055BEA8);
+    a = lbl_8055BEBC;
+    b = lbl_8055BEA8;
+    if (a != b) {
+        flag = (b == 5) ? 1 : 0;
+        lbl_8055BEBC = b;
+        lbl_8055BEB4 = flag;
+    }
     fn_80214CB4(lbl_8055BEB4);
     if (lbl_8055BEBC == 4) {
         fn_80214B44(2);
@@ -503,6 +512,9 @@ s32 fn_802485FC(void) {
 extern s32 fn_8020A640(void);
 extern s32 lbl_802FA498[5];
 extern void fn_8020A600(void);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma optimization_level 3
 void fn_80248668(s32 arg0) {
     s32 work[0x1B];
     s32 *p = work;
@@ -537,6 +549,7 @@ void fn_80248668(s32 arg0) {
         p, -0x3E7, -0x3E7, 1,
         lbl_802FA498[4], lbl_802FA498[3], lbl_802FA498[2], lbl_802FA498[0]);
 }
+#pragma pop
 
 void fn_80248770(void *arg0) {
     *(unsigned char*)((char*)arg0 + 0x18) = 1;
