@@ -265,6 +265,48 @@ char *fn_80178374(long arg0) {
     }
     return NULL;
 }
+
+#pragma cplusplus on
+extern "C" void *lbl_8055E454;
+extern "C" void fn_80179D8C(void *, int);
+extern "C" long fn_802E317C(const char *, long, ...);
+#pragma cplusplus on
+extern "C" void **fn_801783A8(int *arg0, int arg1) {
+    struct Provider {
+        int id;
+        int reserved;
+        void **(*create)(void);
+    };
+    struct Handler {
+        virtual void run(int *);
+    };
+    struct Provider *provider;
+    char *table;
+    void **object;
+    object = 0;
+    table = jumptable_803318F8;
+    lbl_8055E454 = arg0;
+    provider = (struct Provider *)fn_80178374(*arg0);
+    if (provider != 0) {
+        if (provider->create != 0) {
+            object = provider->create();
+            if (object != 0) {
+                fn_80179D8C(object, arg1);
+                ((struct Handler *)object)->run(arg0);
+            } else {
+                fn_802E317C(table + 0xF4, (long)fn_801781F4(*arg0));
+            }
+        } else {
+            fn_802E317C(table + 0x110, (long)fn_801781F4(*arg0));
+        }
+    } else {
+        fn_802E317C(table + 0x134, (long)fn_801781F4(*arg0));
+    }
+    lbl_8055E454 = 0;
+    return object;
+}
+#pragma cplusplus off
+
 #pragma dont_inline off
 
 void fn_801784AC(void) {
