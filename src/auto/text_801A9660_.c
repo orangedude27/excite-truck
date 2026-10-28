@@ -1507,7 +1507,6 @@ void fn_801AD0E0(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, fl
     *(float *)((char *)arg0 + 0x20) = e;
 }
 #pragma scheduling on
-extern void fn_8017AB84(void *, Vec *, void *);
 extern void fn_801AD0E0(void *, void *, void *, void *, f32, f32);
 #pragma scheduling invalid_target
 void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 farg0) {
