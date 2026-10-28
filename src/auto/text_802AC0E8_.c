@@ -7,7 +7,7 @@ extern int lbl_8055F944;
 extern int lbl_8055F948;
 extern signed char lbl_8055F94C;
 extern const char lbl_8055CC88;
-extern const char lbl_8055CCB8[];
+extern const char lbl_8055CCB8;
 extern float lbl_80564AB0;
 extern double atof(const char *);
 extern int fn_802E2C20(void);
