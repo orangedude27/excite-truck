@@ -602,6 +602,66 @@ void fn_802A6234(void *arg0) {
         var_r31 += 0xC;
     } while (var_r30 < 8);
 }
+
+extern double fn_8002EF30(f32);
+extern f32 fn_801E8738(s32);
+extern f32 fn_801E8874(s32);
+extern f32 fn_801E8894(s32);
+extern void fn_801E88B4(f32 *, f32 *, s32 *, f32 *, s32);
+extern f32 lbl_80564860;
+extern f32 lbl_80564890;
+extern f32 lbl_80564894;
+extern f32 lbl_8056489C;
+extern f32 lbl_805648A0;
+extern double lbl_80564848;
+#pragma scheduling invalid_target
+void fn_802A62CC(void *arg0, s32 arg1) {
+    union IntToDouble {
+        double value;
+        struct { u32 high, low; } words;
+    } conversion;
+    f32 sp14;
+    f32 sp10;
+    s32 spC;
+    f32 sp8;
+    f32 temp_f10;
+    f32 temp_f29;
+    f32 temp_f29_2;
+    f32 temp_f2;
+    f32 temp_f30;
+    f32 temp_f30_2;
+    f32 temp_f31;
+    f32 temp_f3;
+    f32 temp_f4;
+    f32 temp_f6;
+    f32 temp_f7;
+    f32 temp_f8;
+    f32 temp_f9;
+
+    temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x1C));
+    temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x1C));
+    temp_f29 = fn_801E8894(*(s32 *)((u8 *)arg0 + 0x1C));
+    fn_801E88B4(&sp14, &sp10, &spC, &sp8, *(s32 *)((u8 *)arg0 + 0x1C));
+    temp_f10 = (f32)fn_8002EF30(temp_f30);
+    *(f32 *)((u8 *)arg0 + 0x20) = temp_f10;
+    temp_f7 = temp_f29 * lbl_8056489C;
+    temp_f30_2 = temp_f29 + temp_f31;
+    *(f32 *)((u8 *)arg0 + 0x24) = lbl_805648A0 + temp_f31;
+    temp_f9 = lbl_80564894 * temp_f30_2;
+    temp_f8 = lbl_80564860 * temp_f29 * temp_f31;
+    temp_f6 = temp_f31 * temp_f7;
+    temp_f29_2 = temp_f9 - temp_f8;
+    conversion.words.high = 0x43300000;
+    conversion.words.low = (u32)spC ^ 0x80000000;
+    temp_f3 = lbl_80564844 * ((f32)(conversion.value - lbl_80564848) * (lbl_80564890 * temp_f31));
+    temp_f4 = temp_f29_2 * temp_f29_2;
+    temp_f2 = temp_f3 * (temp_f29 - temp_f31);
+    *(f32 *)((u8 *)arg0 + 0x28) = (f32)((-temp_f29_2 +
+        (f32)fn_8002F234(temp_f4 -
+            (lbl_80564890 * temp_f30_2 * (temp_f6 - (temp_f2 / (lbl_80564860 * temp_f10)))))) /
+        (lbl_80564860 * temp_f30_2));
+}
+
 #pragma pop
 f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898;
@@ -667,8 +727,7 @@ void fn_802A6838(void *arg0) {
     float divisor;
     float dt;
     float speed;
-    float rx;
-    float scale;
+    register float scale;
     float one;
     float curve;
     float product;
@@ -676,6 +735,7 @@ void fn_802A6838(void *arg0) {
     double absY;
     float ax;
     float ay;
+    float rx;
     float ry;
     float end;
     float start;
@@ -796,6 +856,54 @@ void fn_802A6D68(void *arg0) {
     }
 }
 
+extern float lbl_80564850, lbl_8056485C, lbl_80564860, lbl_80564890, lbl_805648B4, lbl_805648B8, lbl_805648BC;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_802A6E34(void *arg0) {
+    f32 sp14;
+    f32 sp10;
+    s32 spC;
+    f32 sp8;
+    f32 temp_f10;
+    f32 temp_f29;
+    f32 temp_f29_2;
+    f32 temp_f2;
+    f32 temp_f30;
+    f32 temp_f30_2;
+    f32 temp_f31;
+    f32 temp_f3;
+    f32 temp_f4;
+    f32 temp_f6;
+    f32 temp_f7;
+    f32 temp_f8;
+    f32 temp_f9;
+
+    temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x10));
+    temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x10));
+    temp_f29 = fn_801E8894(*(s32 *)((u8 *)arg0 + 0x10));
+    fn_801E88B4(&sp14, &sp10, &spC, &sp8, *(s32 *)((u8 *)arg0 + 0x10));
+    temp_f10 = (f32)fn_8002EF30(temp_f30);
+    *(f32 *)((u8 *)arg0 + 0x14) = temp_f10;
+    temp_f7 = temp_f29 * lbl_805648BC;
+    temp_f30_2 = temp_f29 + temp_f31;
+    *(f32 *)((u8 *)arg0 + 0x18) = lbl_8056485C + temp_f31;
+    temp_f9 = lbl_805648B8 * temp_f30_2;
+    temp_f8 = lbl_80564860 * temp_f29 * temp_f31;
+    temp_f6 = temp_f31 * temp_f7;
+    temp_f29_2 = temp_f9 - temp_f8;
+    temp_f3 = lbl_805648B4 * ((f32)spC * (lbl_80564890 * temp_f31));
+    temp_f4 = temp_f29_2 * temp_f29_2;
+    temp_f2 = temp_f3 * (temp_f29 - temp_f31);
+    *(f32 *)((u8 *)arg0 + 0x1C) =
+        (f32)((-temp_f29_2 + (f32)fn_8002F234(
+            (double)(temp_f4 -
+                (lbl_80564890 * temp_f30_2 *
+                    (temp_f6 - (temp_f2 / (lbl_80564860 * temp_f10))))))) /
+            (lbl_80564860 * temp_f30_2));
+}
+#pragma scheduling on
+#pragma pop
 s32 fn_802A711C(void *arg0, f32 arg1, f32 arg2, f32 arg3) {
     f32 values[3];
     f32 first;
