@@ -729,7 +729,10 @@ check:
 #pragma scheduling on
 extern void fn_801F602C(void *, int, int, int, int);
 extern char lbl_8033ADF8[];
-extern char lbl_8055B19C[], lbl_8055B1A8[], lbl_8055B1B0[], lbl_8055B1B8[];
+__declspec(section ".sdata") extern char lbl_8055B19C[];
+__declspec(section ".sdata") extern char lbl_8055B1A8[];
+__declspec(section ".sdata") extern char lbl_8055B1B0[];
+__declspec(section ".sdata") extern char lbl_8055B1B8[];
 extern float lbl_80562FE8;
 typedef float (*Getter)(void *, const char *);
 typedef void (*Setter)(void *, const char *);
