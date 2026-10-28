@@ -648,33 +648,46 @@ void fn_802339A8(f32 a, s32 b, f32 c, s32 d, f32 e, f32 f, s32 g, f32 h, const c
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8DB8(void *, s32, u16 *, s32, s32, s32, s32, s32);
 extern u16 lbl_802F9FF0[];
+#pragma push
+#pragma scheduling invalid_target
 void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
+    struct Frame {
+        u16 indices[6];
+        u8 pad[4];
+        f32 output[4][6];
+    } frame;
     u8 *entry;
-    u16 values[6];
+    s32 offset;
+    s32 mode;
 
     if (arg1 != 0x20) {
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + arg1 * 0x1C;
-        fn_80231380(&values[0], lbl_8055F050, farg0, farg1, farg4,
+        offset = arg1 * 0x1C;
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        mode = lbl_8055F050;
+
+        fn_80231380(frame.output[0], mode, farg0, farg1, farg4,
                     *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + arg1 * 0x1C;
-        fn_80231380(&values[2], lbl_8055F050, farg2, farg3, farg4,
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        fn_80231380(frame.output[1], mode, farg2, farg1, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + arg1 * 0x1C;
-        fn_80231380(&values[4], lbl_8055F050, farg0, farg3, farg4,
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        fn_80231380(frame.output[2], mode, farg0, farg3, farg4,
                     *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + arg1 * 0x1C;
-        fn_80231380(&values[6], lbl_8055F050, farg2, farg3, farg4,
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        fn_80231380(frame.output[3], mode, farg2, farg3, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
-        values[0] = lbl_802F9FF0[0];
-        values[1] = lbl_802F9FF0[1];
-        values[2] = lbl_802F9FF0[2];
-        values[3] = lbl_802F9FF0[3];
-        values[4] = lbl_802F9FF0[4];
-        values[5] = lbl_802F9FF0[5];
-        fn_802C8DB8(&values[0], 4, &values[0], 6,
-                    lbl_802F9FF0[1], lbl_802F9FF0[2], lbl_802F9FF0[3], lbl_802F9FF0[4]);
+
+        frame.indices[0] = lbl_802F9FF0[0];
+        frame.indices[1] = lbl_802F9FF0[1];
+        frame.indices[2] = lbl_802F9FF0[2];
+        frame.indices[3] = lbl_802F9FF0[3];
+        frame.indices[4] = lbl_802F9FF0[4];
+        frame.indices[5] = lbl_802F9FF0[5];
+        fn_802C8DB8(frame.output[0], 4, frame.indices, 6,
+                    lbl_802F9FF0[4], lbl_802F9FF0[3], lbl_802F9FF0[2], lbl_802F9FF0[1]);
     }
 }
+#pragma pop
 
 extern f32 lbl_80563688;
 extern f64 lbl_80563698;
