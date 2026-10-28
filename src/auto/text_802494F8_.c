@@ -395,20 +395,43 @@ extern s32 fn_80215228(void);
 extern s32 fn_8024A6EC(s32 *, void *);
 extern s32 fn_8024ACB4(s32 *, s32, void *);
 extern u8 lbl_8055F298;
-u8 fn_8024B070(s32 *arg0, void *arg1) {
- s32 sp8; s32 i=0; s32 offset=0; s32 count=*(s32 *)((u8 *)arg1+4);
- s32 *items=*(s32 **)arg1;
- if(count>0) do { if(*(s32 *)((u8 *)items+offset)==*arg0) break; offset+=0x18; i++; } while(--count);
- else i=-1;
- if(count==0) i=-1;
- sp8=i>=0?*(s32 *)((u8 *)items+i*0x18+0xC):0;
- if(fn_80215228()!=0) lbl_8055F298=0;
- if(lbl_8055F298==0) {
-   if(fn_8024A6EC(&sp8,arg1)==0) {
-     do { lbl_8055F298=0; if(fn_8024ACB4(arg0,sp8,arg1)!=0){lbl_8055F298=1;break;} } while(lbl_8055F298==0);
-   }
- }
- return lbl_8055F298;
+u8 fn_8024B070(s32 *arg0, s32 **arg1) {
+    s32 sp8;
+    s32 i = 0;
+    s32 offset = 0;
+    s32 count = *(s32 *)((u8 *)arg1 + 4);
+
+    if (count > 0) {
+        for (; i < count; i++) {
+            s32 item = *(s32 *)((u8 *)*arg1 + offset);
+            s32 key = *arg0;
+            if (item != key) {
+                offset += 0x18;
+                continue;
+            }
+            goto found;
+        }
+    }
+    i = -1;
+found:
+    if (i >= 0) {
+        sp8 = *(s32 *)((u8 *)*arg1 + i * 0x18 + 0xC);
+    } else {
+        sp8 = 0;
+    }
+    if (fn_80215228() != 0) {
+        lbl_8055F298 = 0;
+    }
+    for (;;) {
+        if (fn_8024ACB4(arg0, sp8, arg1) != 0) {
+            lbl_8055F298 = 1;
+            break;
+        }
+        if (lbl_8055F298 == 0 && fn_8024A6EC(&sp8, arg1) == 0) {
+            break;
+        }
+    }
+    return lbl_8055F298;
 }
 
 extern void *fn_8001285C(void);
@@ -457,16 +480,70 @@ extern void fn_80265DCC(void *, int, int, void *);
 extern char lbl_80343BD0[];
 extern int stricmp(const char *, const char *);
 extern void *memset(void *, int, unsigned int);
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void *fn_8024B3E8(void *arg0, void *arg1, int arg2) {
- int i,j,n,found; unsigned char *e; void **items;
- arg2=arg2; *(void **)((char*)arg0+0x74)=arg1; *(int*)((char*)arg0+0x14)=0; *(char**)arg0=lbl_80343BD0;
- items=(void**)((char*)arg0+0x24); *(void***)((char*)arg0+0x18)=items; *(int*)((char*)arg0+0x20)=10; *(int*)((char*)arg0+0x1c)=0; *((unsigned char*)arg0+0x284)=0;
- for(i=0;i<((int*)arg1)[1];i++){e=(unsigned char*)*(void**)arg1+i*0x18; found=1; for(j=0;j<*(int*)((char*)arg0+0x1c);j++) if(e[0x14]&&stricmp((char*)items[j],*(char**)(e+0xc))==0) found=0;
- if(found){n=*(int*)((char*)arg0+0x1c); *(int*)((char*)arg0+0x1c)=n+1; items[n]=*(void**)(e+0xc); *((unsigned char*)&items[n]+4)=e[0x15];}
- if(e[0x14]&&e[0x15])*((unsigned char*)arg0+0x284)=1; }
- fn_80265DCC(items,*(int*)((char*)arg0+0x1c),8,fn_8024B214); memset((char*)arg0+0x78,0,0x208); *(int*)((char*)arg0+0x280)=-1; return arg0;
+    typedef struct ArchiveEntry {
+        char pad0[0xC];
+        char *name;
+        unsigned char pad10[8];
+    } ArchiveEntry;
+    register int active = 1;
+    register ArchiveEntry *entry;
+    register int itemOffset;
+    register int found;
+    register int innerIndex;
+    register int outerOffset;
+    register int outerIndex;
+    volatile int *itemCount = (volatile int *)((char *)arg0 + 0x1C);
+    (void)arg2;
+    *(void **)((char *)arg0 + 0x74) = arg1;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    *(char **)arg0 = lbl_80343BD0;
+    *(void **)((char *)arg0 + 0x18) = (char *)arg0 + 0x24;
+    *(int *)((char *)arg0 + 0x20) = 10;
+    *itemCount = 0;
+    *((unsigned char *)arg0 + 0x284) = 0;
+    outerIndex = 0;
+    outerOffset = 0;
+    while (outerIndex < *(int *)((char *)arg1 + 4)) {
+        entry = (ArchiveEntry *)((char *)*(void **)arg1 + outerOffset);
+        found = 1;
+        innerIndex = 0;
+        itemOffset = 0;
+        while (innerIndex < *itemCount) {
+            if (((unsigned char *)entry)[0x14] == 0 ||
+                stricmp(*(char **)(*(char **)((char *)arg0 + 0x18) + itemOffset),
+                        entry->name) == 0)
+                found = 0;
+            itemOffset += 8;
+            innerIndex++;
+        }
+        if (found) {
+            int n = *itemCount;
+            void * volatile *itemsField =
+                (void * volatile *)((char *)arg0 + 0x18);
+            void *items = *itemsField;
+            void *slot;
+            *itemCount = n + 1;
+            slot = (char *)items + n * 8;
+            *(char **)slot = entry->name;
+            *((unsigned char *)slot + 4) = ((unsigned char *)entry)[0x15];
+        }
+        if (((unsigned char *)entry)[0x14] != 0 &&
+            ((unsigned char *)entry)[0x15] != 0)
+            *((unsigned char *)arg0 + 0x284) = active;
+        outerOffset += 0x18;
+        outerIndex++;
+    }
+    fn_80265DCC(*(void **)((char *)arg0 + 0x18),
+                *itemCount, 8, fn_8024B214);
+    memset((char *)arg0 + 0x78, 0, 0x208);
+    *(int *)((char *)arg0 + 0x280) = -1;
+    return arg0;
 }
-
+#pragma scheduling reset
+#pragma use_lmw_stmw reset
 void fn_8024B544(void *arg0, char *arg1) {
     register s32 offset;
     register s32 index;
