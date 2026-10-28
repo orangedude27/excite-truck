@@ -474,6 +474,8 @@ inner_check:
     return -2;
 }
 
+#pragma push
+#pragma dont_inline on
 int fn_8028F0C0(int *arg0, int arg1, int arg2) {
     int i = arg1 + 1;
     int *p = (int *)((char *)arg0 + i * 0x104);
@@ -488,6 +490,7 @@ int fn_8028F0C0(int *arg0, int arg1, int arg2) {
     }
     return -2;
 }
+#pragma pop
 
 void fn_8028F114(int *arg0, int arg1, int arg2) {
     void *tmp[64];
