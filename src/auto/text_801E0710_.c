@@ -311,10 +311,13 @@ void fn_801E168C(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x5C) = x;
     *(f32 *)((u8 *)arg0 + 0x60) = y;
 }
+#pragma pop
 
-extern void *fn_8017960C(void);
+extern void *fn_8017960C(s32);
 extern s32 fn_801E85A4(void);
 extern f32 lbl_80562C78, lbl_80562C7C, lbl_80562C8C, lbl_80562CA0, lbl_80562CA4;
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801E1710(void *arg0, void *arg1) {
     f32 initialA = lbl_80562C78;
     f32 initialB = lbl_80562C7C;
@@ -336,7 +339,7 @@ void fn_801E1710(void *arg0, void *arg1) {
             *(s32 *)(row + 0x0C) = value;
         }
         if (*(s32 *)(row + 0x0C) != -1) {
-            void *obj = fn_8017960C();
+            void *obj = fn_8017960C(*(s32 *)(row + 0x0C));
             f32 current = *(f32 *)((u8 *)obj + 0x258C);
             int active = current > threshold && *(u8 *)((u8 *)obj + 0x259D) != 0;
             f32 amount;
@@ -363,8 +366,6 @@ void fn_801E1710(void *arg0, void *arg1) {
         i++;
     }
 }
-
-#pragma pop
 void fn_801E1868(void) {
 
 }
