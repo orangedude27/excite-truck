@@ -514,11 +514,10 @@ extern s32 lbl_802FA498[5];
 extern void fn_8020A600(void);
 #pragma push
 #pragma use_lmw_stmw off
-#pragma optimization_level 4
+#pragma optimization_level 3
 #pragma scheduling invalid_target
 void fn_80248668(s32 arg0) {
     s32 work[0x1B];
-    register s32 five = 5;
     if (fn_8020A640() != 0)
         return;
     fn_8020A600();
@@ -529,7 +528,7 @@ void fn_80248668(s32 arg0) {
     work[26] = 0;
     work[23] = fn_802E2C20();
     work[6] = 0;
-    work[7] = five;
+    work[7] = 5;
     work[8] = (s32)&work[16];
     work[9] = 0;
     work[10] = 0;
@@ -538,8 +537,8 @@ void fn_80248668(s32 arg0) {
     work[13] = lbl_804988F0[2];
     work[14] = lbl_804988F0[3];
     work[15] = lbl_804988F0[4];
-    work[1] = lbl_802FA498[1];
     work[0] = lbl_802FA498[0];
+    work[1] = lbl_802FA498[1];
     work[2] = lbl_802FA498[2];
     work[3] = lbl_802FA498[3];
     work[4] = lbl_802FA498[4];
