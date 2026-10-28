@@ -1089,6 +1089,7 @@ extern "C" s32 lbl_80490510[];
 extern "C" s32 lbl_802F9EA4[];
 extern "C" u8 lbl_8055B860;
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" s32 fn_8021481C(void *arg0) {
     u8 *base = lbl_8033CAE8;
     s32 *values;
@@ -1123,6 +1124,7 @@ extern "C" s32 fn_8021481C(void *arg0) {
         fn_802E30C8((const char *)(base + 0x760), arg0);
     }
 }
+#pragma scheduling on
 #pragma use_lmw_stmw reset
 
 #pragma push
