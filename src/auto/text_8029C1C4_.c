@@ -404,6 +404,7 @@ extern float lbl_8056464C, lbl_80564654, lbl_80564658, lbl_8056465C, lbl_8056466
 extern unsigned char lbl_8034968C[], lbl_80349698[];
 #pragma push
 #pragma processor 750
+#pragma scheduling on
 #pragma cplusplus on
 #pragma small_data off
 extern "C" void fn_8029CBA0(void) {
@@ -423,8 +424,8 @@ extern "C" void fn_8029CBA0(void) {
         float f;
         int i;
     };
+    register float var_f31 = *(volatile float *)&lbl_80564654;
     volatile ScratchValue scratch[40];
-    float var_f31 = lbl_80564654;
     int *var_r31 = (int *)&lbl_8034968C;
     Dummy *obj;
 
@@ -435,38 +436,48 @@ extern "C" void fn_8029CBA0(void) {
     }
 
     if (fn_802BF4F0() != 0 || lbl_8055F7F0 > 0 || lbl_8055F7F4 > 0) {
+        register float zero, high, scale, low, far;
+        register int two, five, size;
         fn_8028E61C((int *)&scratch[6]);
-        scratch[6].i = 2;
-        scratch[7].i = 0x200;
-        scratch[8].f = lbl_80564654;
-        scratch[9].f = lbl_80564654;
-        scratch[3].f = lbl_80564658;
-        scratch[4].f = lbl_80564658;
-        scratch[5].f = lbl_80564658;
-        scratch[10].f = lbl_80564658;
-        scratch[11].f = lbl_80564658;
-        scratch[12].f = lbl_80564658;
-        scratch[0].f = lbl_80564658;
-        scratch[1].f = lbl_80564658;
-        scratch[2].f = lbl_80564658;
-        scratch[13].f = lbl_80564658;
-        scratch[14].f = lbl_80564658;
-        scratch[15].f = lbl_80564658;
-        scratch[16].f = lbl_8056465C;
-        scratch[18].f = lbl_80564654;
-        scratch[19].f = lbl_8056465C;
-        scratch[23].i = 5;
+        zero = *(volatile float *)&lbl_80564658;
+        two = 2;
+        high = *(volatile float *)&lbl_80564654;
+        five = 5;
+        size = 0x200;
+        scale = *(volatile float *)&lbl_8056465C;
+        low = *(volatile float *)&lbl_8056464C;
+        far = *(volatile float *)&lbl_80564660;
+        scratch[6].i = two;
+        scratch[7].i = size;
+        scratch[8].f = high;
+        scratch[9].f = high;
+        scratch[3].f = zero;
+        scratch[4].f = zero;
+        scratch[5].f = zero;
+        scratch[10].f = zero;
+        scratch[11].f = zero;
+        scratch[12].f = zero;
+        scratch[0].f = zero;
+        scratch[1].f = zero;
+        scratch[2].f = zero;
+        scratch[13].f = zero;
+        scratch[14].f = zero;
+        scratch[15].f = zero;
+        scratch[16].f = scale;
+        scratch[18].f = high;
+        scratch[19].f = scale;
+        scratch[23].i = five;
         scratch[24].f = var_f31;
-        scratch[27].f = lbl_80564654;
-        scratch[26].f = lbl_8056464C;
-        scratch[29].f = lbl_80564658;
-        scratch[28].f = lbl_80564660;
-        scratch[35].f = lbl_80564658;
-        scratch[33].f = lbl_80564658;
-        scratch[31].f = lbl_80564658;
-        scratch[37].f = lbl_80564658;
+        scratch[27].f = high;
+        scratch[26].f = low;
+        scratch[29].f = zero;
+        scratch[28].f = far;
+        scratch[35].f = zero;
+        scratch[33].f = zero;
+        scratch[31].f = zero;
+        scratch[37].f = zero;
         lbl_8055F7F8 = fn_8028E2F8((void *)&scratch[6], &lbl_8055CAD8, var_r31,
-            lbl_8056464C, lbl_8056465C, lbl_80564658, lbl_80564654);
+            low, scale, zero, high);
         return;
     }
     lbl_8055F7F8 = 0;
