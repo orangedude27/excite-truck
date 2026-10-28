@@ -349,10 +349,11 @@ void fn_80274EA8(void *arg0) {
 }
 
 static inline void helper_80274F74(void *arg0, void *arg1) {
-    register float x;
-    register float sine;
-    float z;
-    float y;
+    typedef struct {
+        float x, y, z;
+    } Vec3;
+    Vec3 v;
+    float sine;
     float magnitude;
     float scale;
     float cosine;
@@ -360,31 +361,31 @@ static inline void helper_80274F74(void *arg0, void *arg1) {
     magnitude = PSVECMag(arg1);
     if (magnitude > lbl_80564020) {
         scale = lbl_80563FAC / magnitude;
-        x = scale * *(float *)arg1;
-        y = scale * *(float *)((char *)arg1 + 4);
-        z = scale * *(float *)((char *)arg1 + 8);
+        v.x = scale * ((Vec3 *)arg1)->x;
+        v.y = scale * ((Vec3 *)arg1)->y;
+        v.z = scale * ((Vec3 *)arg1)->z;
         sine = (float)sin(magnitude);
         cosine = (float)cos(magnitude);
         {
-            float xx = x * x;
-            float yy = y * y;
+            float xx = v.x * v.x;
+            float yy = v.y * v.y;
             float t = lbl_80563FAC - cosine;
-            float zz = z * z;
-            float sz = sine * z;
-            float tx = t * x;
+            float zz = v.z * v.z;
+            float sz = sine * v.z;
+            float tx = t * v.x;
             float txx = t * xx;
             float tyy = t * yy;
-            float ty = t * y;
-            float txy = y * tx;
+            float ty = t * v.y;
+            float txy = v.y * tx;
             float m00 = cosine + txx;
             float tzz = t * zz;
-            float txz = z * tx;
-            float sy = sine * y;
+            float txz = v.z * tx;
+            float sy = sine * v.y;
             *(float *)((char *)arg0 + 0x58) = m00;
             *(float *)((char *)arg0 + 0x5C) = txy + sz;
             {
-                float tyz = z * ty;
-                float sx = sine * x;
+                float tyz = v.z * ty;
+                float sx = sine * v.x;
                 *(float *)((char *)arg0 + 0x64) = txy - sz;
                 *(float *)((char *)arg0 + 0x60) = txz - sy;
                 *(float *)((char *)arg0 + 0x68) = cosine + tyy;
