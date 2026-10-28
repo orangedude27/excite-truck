@@ -313,7 +313,37 @@ extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
     fn_801F7A14(arg0);
 }
 
+extern "C" s32 fn_80204BB4(void);
+extern "C" s32 fn_80204CF0(void);
+extern "C" char lbl_8033AFB8[];
+extern "C" char lbl_8033AFC8[];
 #pragma scheduling invalid_target
+extern "C" void fn_801F7D10(void *arg0, void *arg1, void *arg2) {
+    struct VTable {
+        virtual void slot0();
+        virtual s32 check(const char *);
+        virtual void slot2();
+        virtual void finish(const char *);
+    };
+    if (((VTable *)arg2)->check(lbl_8033AFB8) != 0) {
+        fn_801F7B10(arg1, arg2, (s32)lbl_8033AFB8);
+        f32 scale = *(f32 *)((u8 *)arg0 + 0x28);
+        *(f32 *)((u8 *)arg1 + 0x24) =
+            *(f32 *)((u8 *)arg1 + 0x24) + *(f32 *)((u8 *)arg1 + 0x0C) * scale;
+        *(f32 *)((u8 *)arg1 + 0x28) =
+            *(f32 *)((u8 *)arg1 + 0x28) + *(f32 *)((u8 *)arg1 + 0x10) * scale;
+        *(f32 *)((u8 *)arg1 + 0x2C) =
+            *(f32 *)((u8 *)arg1 + 0x2C) + *(f32 *)((u8 *)arg1 + 0x14) * scale;
+    }
+    if (((VTable *)arg2)->check(lbl_8033AFC8) != 0) {
+        ((VTable *)arg2)->finish(lbl_8033AFC8);
+        *(s32 *)((u8 *)arg1 + 0x38) = fn_80204BB4();
+    } else {
+        *(s32 *)((u8 *)arg1 + 0x38) = fn_80204CF0();
+    }
+    *(void **)((u8 *)arg1 + 0x34) = arg2;
+}
+#pragma scheduling on
 extern "C" void fn_801F7E20(void *arg0, void *arg1) {
     u8 *obj = (u8 *)arg1;
     f32 temp;
@@ -396,6 +426,76 @@ set_result:
 done:
     return ret;
 }
+
+extern "C" void fn_801F7FA0(void *output, void *input, void *unused) {
+    struct Child {
+        virtual const char *name();
+        virtual void v0C();
+        virtual void v10();
+        virtual void v14();
+        virtual void v18();
+        virtual s32 value(const char *);
+    };
+    struct Parent {
+        virtual void v08();
+        virtual void v0C();
+        virtual void v10();
+        virtual void *first(const char *);
+        virtual void v18();
+        virtual void v1C();
+        virtual void v20();
+        virtual f32 getFloat(const char *);
+        virtual void v28();
+        virtual void v2C();
+        virtual void v30();
+        virtual void v34();
+        virtual void v38();
+        virtual void v3C();
+        virtual void v40();
+        virtual void v44();
+        virtual void v48();
+        virtual void v4C();
+        virtual void v50();
+        virtual void v54();
+        virtual void v58();
+        virtual void v5C();
+        virtual Child *getChild(s32);
+    };
+    extern const char lbl_8033AFF4[];
+    extern const char lbl_8033B000[];
+    extern const char lbl_8055B2A8[];
+    extern const char lbl_8055B2B0[];
+    extern const char lbl_8055B2B8[];
+    extern const char lbl_8055B2C0[];
+    extern int stricmp(const char *, const char *);
+
+    register u8 *out = (u8 *)output;
+    register Parent *parent = (Parent *)input;
+    *(void **)out = parent->first(lbl_8055B2A8);
+    *(f32 *)(out + 4) = parent->getFloat(lbl_8033AFF4);
+    *(f32 *)(out + 8) = parent->getFloat(lbl_8033B000);
+
+    register s32 index = 0;
+    register s32 count = 0;
+    register u8 *record = out;
+    while (parent->getChild(index) != 0) {
+        register Child *child = parent->getChild(index);
+        if (stricmp(child->name(), lbl_8055B2B0) == 0) {
+            f32 values[3];
+            ((void (*)(f32 *, Child *, const char *))(*(void ***)child)[11])(
+                values, child, lbl_8055B2B8);
+            *(f32 *)(record + 0x0C) = values[0];
+            *(f32 *)(record + 0x10) = values[1];
+            *(f32 *)(record + 0x14) = values[2];
+            *(s32 *)(record + 0x18) = child->value(lbl_8055B2C0);
+            record += 0x10;
+            count++;
+        }
+        index++;
+    }
+    *(s32 *)(out + 0x8C) = count;
+}
+
 #pragma scheduling on
 
 extern "C" int stricmp(const char *, const char *);
@@ -790,22 +890,19 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
     *(s32 *)(result + 0x30) = 0;
     ((Dispatch *)current)->run(result, object);
 
-    if (*(u8 *)((u8 *)current + 0x2C) == 0 || (flags & 4) != 0)
-        goto check_name;
-    fn_802E317C(base + 0x2A0, current);
-    if (*(s32 *)(result + 0x38) == fn_80204CF0())
-        goto check_name;
-    fn_802E30C8(base + 0x2E0, name);
-    goto call_tail;
-
-check_name:
-    if (lbl_8055EC42 == 0)
-        goto call_tail;
-    if (strcmp(name, (const char *)lbl_8055B37C) != 0)
-        goto call_tail;
-    fn_802E30C8(base + 0x318, name);
-    goto call_tail;
-
+    if (*(u8 *)((u8 *)current + 0x2C) != 0 && (flags & 4) == 0) {
+        fn_802E317C(base + 0x2A0, current);
+        if (*(s32 *)(result + 0x38) != fn_80204CF0()) {
+            fn_802E30C8(base + 0x2E0, name);
+            goto call_tail;
+        }
+    }
+    if (lbl_8055EC42 != 0) {
+        if (strcmp(name, (const char *)lbl_8055B37C) == 0) {
+            fn_802E30C8(base + 0x318, name);
+            goto call_tail;
+        }
+    }
 call_tail:
     return ((void *(*)(void *, void *, u32))fn_801F973C)(
         current, result, (u32)flags);
