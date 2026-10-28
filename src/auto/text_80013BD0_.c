@@ -345,6 +345,7 @@ extern void fn_80014A98(void *);
 extern s32 fn_80014ADC(void);
 #pragma push
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_80014B9C(void *arg0) {
     s32 state, reverse, result;
     f32 *value = (f32 *)((u8 *)arg0 + 0x2C);
@@ -353,12 +354,18 @@ void fn_80014B9C(void *arg0) {
     state = *(s32 *)((u8 *)arg0 + 0x24);
     if (state == 0) {
         if (reverse != 0 || result != 0) {
+            s32 newState;
             fn_80013CFC(value);
             if (reverse != 0) fn_80014A98(arg0);
             else fn_800148A0(arg0);
-            if (lbl_80560360 == *value)
-                *(s32 *)((u8 *)arg0 + 0x24) = reverse != 0 ? 2 : 1;
-        } else *value = lbl_80560368;
+            if (lbl_80560360 == *value) {
+                newState = 1;
+                if (reverse != 0) newState = 2;
+                *(s32 *)((u8 *)arg0 + 0x24) = newState;
+            }
+        } else {
+            *value = lbl_80560368;
+        }
     } else if (state == 2) {
         if (reverse != 0) {
             if (*value > lbl_80560360) fn_80013CFC(value);
