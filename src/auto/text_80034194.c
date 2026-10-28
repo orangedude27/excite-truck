@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern s32 lbl_8055D864;
 #include <revolution/OS/OSContext.h>
 extern s32 lbl_8055D810;
 extern void *lbl_8055D814;
@@ -1810,10 +1811,10 @@ void cbForPrepareReset(void) {
 }
 
 void __DVDPrepareReset(void) {
-    register s32 savedInterrupts;
-    register s32 tempInterrupts;
+    s32 savedInterrupts;
+    s32 tempInterrupts;
     void *active;
-    register s32 oldInterrupts;
+    s32 oldInterrupts;
     s32 one = 1;
 
     OSDisableInterrupts();
@@ -1853,9 +1854,11 @@ queue_check:
         OSRestoreInterrupts(tempInterrupts);
     }
     OSRestoreInterrupts(oldInterrupts);
-    do {
+    while (1) {
         OSEnableInterrupts();
-    } while (lbl_8055D890 != 1);
+        if (lbl_8055D890 == 1)
+            break;
+    }
 }
 
 #pragma small_data off
