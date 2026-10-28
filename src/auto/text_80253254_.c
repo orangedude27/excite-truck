@@ -844,60 +844,57 @@ void fn_80255928(void *arg0, char *arg1) {
     extern s32 lbl_8055F33C;
     extern void fn_8012D3D8(s32);
     extern int stricmp(const char *, const char *);
-    s32 i;
-    s32 count;
-    s32 *refCount;
+    register void **entries;
+    register s32 i;
     void *object;
     char *src;
     char *dst;
     char ch;
+    s32 count;
 
     if (*(s8 *)((u8 *)arg0 + 0x58) != 0) {
+        entries = lbl_80498E08;
         i = 0;
+        goto scan_test;
     scan:
-        if (i < lbl_8055F33C) {
-            if (stricmp((char *)lbl_80498E08[i], (char *)arg0 + 0x58) == 0) {
-                object = lbl_80498E08[i];
-                refCount = (s32 *)((u8 *)object + 0x24);
-                *refCount -= 1;
-                if (*refCount == 0) {
-                    fn_8012D3D8(*(s32 *)((u8 *)object + 0x20));
-                    src = lbl_8055C1C0;
-                    dst = (char *)object;
-                    count = 0x20;
-                copy_name:
-                    ch = *src++;
-                    *dst++ = ch;
-                    if ((s8)ch != 0) {
-                        count -= 1;
-                        if (count <= 0) {
-                            dst[-1] = 0;
-                        } else {
-                            goto copy_name;
-                        }
-                    }
-                }
-            } else {
-                i += 1;
-                goto scan;
+        if (stricmp((char *)*entries, (char *)arg0 + 0x58) == 0) {
+            object = lbl_80498E08[i];
+            if (--*(s32 *)((u8 *)object + 0x24) == 0) {
+                fn_8012D3D8(*(s32 *)((u8 *)object + 0x20));
+                src = lbl_8055C1C0;
+                dst = (char *)object;
+                count = 0x20;
+                goto name_test;
+            name_copy:
+                ch = *src++;
+                *dst++ = ch;
+                if ((s8)ch == 0) goto name_done;
+            name_test:
+                if (--count > 0) goto name_copy;
+                dst[-1] = 0;
+            name_done:
+                ;
             }
+        } else {
+            entries++;
+            i++;
+        scan_test:
+            if (i < lbl_8055F33C) goto scan;
         }
         *(u8 *)((u8 *)arg0 + 0x58) = 0;
     }
     src = arg1;
     dst = (char *)arg0 + 0x10;
     count = 0x20;
-    copy_arg:
+    goto arg_test;
+arg_copy:
     ch = *src++;
     *dst++ = ch;
-    if ((s8)ch != 0) {
-        count -= 1;
-        if (count <= 0) {
-            dst[-1] = 0;
-        } else {
-            goto copy_arg;
-        }
-    }
+    if ((s8)ch == 0) goto arg_done;
+arg_test:
+    if (--count > 0) goto arg_copy;
+    dst[-1] = 0;
+arg_done:
     *(u8 *)((u8 *)arg0 + 0x30) = 1;
     if (*(s8 *)((u8 *)arg0 + 0x78) != 0) {
         *(float *)((u8 *)arg0 + 0x34) = fn_8023659C();
@@ -946,6 +943,11 @@ void fn_80255A84(void *arg0) {
     *(float *)((char *)arg0 + 0xA4) = lbl_80563A70;
 }
 #pragma dont_inline reset
+struct Obj_80256548 {
+    char pad[0x24];
+    float pos[3];
+    char pad2[0x48];
+};
 void fn_80256548(void *arg0) {
     extern float lbl_80563A04;
     extern unsigned char lbl_8055F330, lbl_8055F344, lbl_8055F345, lbl_8055F346, lbl_8055F347;
