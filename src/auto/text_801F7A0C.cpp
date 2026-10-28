@@ -972,6 +972,44 @@ extern "C" s32 fn_801F9D70(void *arg0) {
     return ret;
 }
 
+extern "C" void fn_801EEFDC(void *, s32);
+extern "C" void fn_8020401C(void);
+__declspec(section ".sdata") extern const char lbl_8055B390[];
+extern "C" void fn_801F9E04(void *arg0) {
+    extern s32 lbl_8055EC64;
+    extern void *lbl_8055EC68;
+    extern void *lbl_8055EC50;
+    extern u8 lbl_8055EC42;
+    register u32 zero = 0;
+    s32 base = (s32)lbl_8033AF80;
+    void *memory;
+
+    lbl_8055EC38 = (void *)zero;
+    fn_801F94CC((const char *)(base + 0x3BC));
+    fn_801F94CC((const char *)(base + 0x3D4), arg0);
+    fn_801F94CC((const char *)(base + 0x39C));
+    fn_801F94CC((const char *)(base + 0x3E8));
+
+    lbl_8055EC4C = (void *)zero;
+    lbl_8055EC3C = 1;
+    lbl_8055EC50 = (void *)zero;
+    lbl_8055EC54 = (void **)zero;
+    lbl_8055EC58 = zero;
+    lbl_8055EC42 = (u8)fn_801F9D70(arg0);
+    lbl_8055B1C8 = -0x4E20;
+
+    memory = fn_801284F8(4, (void *)(base + 0x3F8));
+    if (memory != 0)
+        *(s32 *)memory = zero;
+    lbl_8055EC74 = (void **)memory;
+    lbl_8055EC78 = 0x2710;
+    lbl_8055EC64 = zero;
+    lbl_8055EC68 = ((void *(*)(void *))fn_801F96B8)((void *)lbl_8055B390);
+    lbl_8055EC70 = (s32)(u32)((void *(*)(void *))fn_801F96B8)((void *)lbl_8055B2C4);
+    ((void (*)(void *))fn_8020401C)(arg0);
+    fn_801EEFDC((void *)fn_801F9CF8, 0xC);
+}
+
 extern "C" void fn_802C6CF8(s32);
 void fn_801EF024(void *);
 void fn_80204020(void);
@@ -1523,11 +1561,12 @@ extern "C" void fn_8019EECC(void);
 #pragma push
 #pragma processor 750
 extern "C" void fn_8019EECC(void);
+#pragma scheduling invalid_target
 extern "C" void fn_801FC048(void *arg0) {
     volatile f32 sp10;
     volatile f32 spC;
     volatile f32 sp8;
-    f32 temp_f31 = lbl_80563010;
+    register f32 temp_f31 = lbl_80563010;
     void *heap = lbl_8033B54C;
     void *obj = fn_801284F8(0x54, heap);
     if (obj != 0) {
@@ -1564,7 +1603,6 @@ extern "C" void fn_801FC048(void *arg0) {
         fn_8019EECC();
     }
 }
-
 extern f32 lbl_80563014, lbl_80563018;
 extern u8 lbl_803338C0[], lbl_8033B55C[];
 extern "C" f64 fn_8002F234(void);
