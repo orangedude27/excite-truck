@@ -1232,6 +1232,7 @@ extern "C" int fn_801284F8(int, const char*);
 extern "C" int fn_8029ADCC(void*);
 extern "C" int fn_8029BA0C(void*);
 extern "C" void* fn_80288208(int);
+extern "C" void* fn_80288060(void*, int);
 extern "C" int fn_801EF024(void*);
 extern "C" int fn_8029C190(void*);
 extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void*, int);
