@@ -2379,21 +2379,21 @@ extern "C" s32 fn_801CA070(s32 *arg0) {
   virtual void v2();
   virtual s32 v3(char *);
  };
+ char *base=lbl_80336B00;
  s32 handle;
  s32 i, offset;
  s32 value;
  Dummy *obj;
- char *base=lbl_80336B00;
  handle=fn_802E367C();
  if(handle!=-1) {
   value=lbl_8055E814;
-  if(value==0) {
+  if(value!=0) goto common;
+  obj=(Dummy*)fn_801C3D5C();
+  if(obj->v1(base+0x130)!=0) {
    obj=(Dummy*)fn_801C3D5C();
-   if(obj->v1(base+0x130)!=0) {
-    obj=(Dummy*)fn_801C3D5C();
-    value=obj->v3(base+0x130);
-   } else value=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
-  }
+   value=obj->v3(base+0x130);
+  } else value=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
+common:
   fn_802E3AD0(handle,base+0xD04,value);
   fn_802E3AD0(handle,base+0xD10,lbl_8055A958);
   for(i=0,offset=0;i<lbl_8055E7F0;offset+=0x30C,i++)
