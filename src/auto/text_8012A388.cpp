@@ -565,6 +565,45 @@ extern "C" void fn_8012C4D8(void *);
 extern "C" s32 fn_80128668(void *);
 extern "C" u32 fn_8012BB18(void) { return 1; }
 
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
+    s32 i;
+    s32 offset;
+    u32 flags;
+    u8 *entry;
+    u8 *checkEntry;
+
+    if (((u32 (*)(void *))fn_8012BB18)(arg1) == 0) return;
+    fn_8012BA1C(arg1);
+    fn_8012BC24((void **)arg0, arg1);
+    if (arg1 == 0) return;
+    if (*(u8 *)((u8 *)arg1 + 0xAC) != 0) {
+        i = 0;
+        offset = 0;
+        while (i < *(s32 *)((u8 *)arg1 + 0x88)) {
+            checkEntry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
+            flags = *(u32 *)(checkEntry + 0x34);
+            if ((flags & 4) != 0) {
+                fn_802E317C(lbl_8032AE20);
+            }
+            i++;
+            entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
+            flags = *(u32 *)(entry + 0x34);
+            offset += 0x44;
+            *(u32 *)(entry + 0x34) = flags & 0xFFFFFFF0;
+        }
+        if (*(s32 *)((u8 *)arg1 + 0x64) != 0) {
+            fn_8012C4D8(*(void **)((u8 *)arg1 + 0x64));
+        }
+        if (*(s32 *)((u8 *)arg1 + 0xA0) != 0) {
+            fn_80128660(*(s32 *)((u8 *)arg1 + 0xA0));
+        }
+        *(u8 *)((u8 *)arg1 + 0xAC) = 0;
+    }
+    fn_80128668(arg1);
+}
+
 extern "C" void fn_8012BC24(void **arg0, void *arg1) {
     void **var = arg0;
     while (*var != 0) {
