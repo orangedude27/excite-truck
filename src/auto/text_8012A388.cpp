@@ -62,7 +62,7 @@ extern "C" u8 lbl_805599C8[];
 extern "C" u8 lbl_805599D0[];
 extern "C" u8 lbl_805599E0;
 
-extern void fn_8012E498(void);
+extern "C" void fn_8012E498(void *);
 extern void fn_8012CC24(void);
 extern "C" u32 fn_8012D3D0(void);
 /* fn_8012CC24: two args (object*, char* path list), returns s32. */
