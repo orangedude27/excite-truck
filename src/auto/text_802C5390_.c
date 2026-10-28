@@ -222,42 +222,63 @@ void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
         fn_802C5720(-1);
     }
 }
-#pragma pop
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802C595C(char *dst, int size, const char *name, int id) {
-    int i = 0;
-    int offset = 0;
-    const char *src;
-    if (i < lbl_804C13B4[0]) {
-        do {
-            char *entry = (char *)(unsigned long)lbl_804C13B4[2] + offset;
-            if (stricmp(name, *(char **)(entry + 8)) == 0 && id == *(int *)(entry + 0x10)) {
-                src = entry + 0x14;
-                while (size > 0) {
-                    char c = *src++;
-                    *dst++ = c;
-                    if (c == 0) return;
-                    if (--size <= 0) {
-                        dst[-1] = 0;
-                        return;
-                    }
-                }
-                return;
-            }
-            offset += 0x2C;
-            i++;
-        } while (i < lbl_804C13B4[0]);
-    }
-    while (size > 0) {
-        char c = *name++;
-        *dst++ = c;
-        if (c == 0) return;
-        if (--size <= 0) {
-            dst[-1] = 0;
-            return;
+    int offset;
+    int i;
+    char *entry;
+    register const unsigned char *src;
+    unsigned char c;
+
+    i = 0;
+    offset = 0;
+    goto table_check;
+
+table_loop:
+    entry = (char *)(unsigned long)lbl_804C13B4[2] + offset;
+    if (stricmp(name, entry) == 0) {
+        if (id == *(int *)(entry + 0x10)) {
+            src = (const unsigned char *)(entry + 0x14);
+            goto matched_copy;
         }
     }
-}
+    goto table_next;
 
+matched_copy:
+    do {
+        if (--size <= 0) {
+            dst[-1] = 0;
+            goto done;
+        }
+        c = *src++;
+        *dst++ = c;
+    } while ((signed char)c != 0);
+    goto done;
+
+table_next:
+    offset += 0x2C;
+    i++;
+
+table_check:
+    if (i < lbl_804C13B4[0]) {
+        goto table_loop;
+    }
+
+fallback_copy:
+    do {
+        if (--size <= 0) {
+            dst[-1] = 0;
+            goto done;
+        }
+        c = *name++;
+        *dst++ = c;
+    } while ((signed char)c != 0);
+
+done:
+    return;
+}
+#pragma pop
 u16 fn_802C5A50(int arg0, int arg1) {
     return (u16)((arg0 << 8) | arg1);
 }
@@ -300,12 +321,12 @@ void fn_802C5C40(int *arg0, int arg1, int arg2) {
 }
 #pragma pop
 extern int fn_8012C33C(char *);
-extern void fn_801345D8(char *, int, const char *, int, char *);
+extern void fn_801345D8(char *, int, const char *, ...);
 extern int fn_802CAC44(char *, int);
 extern int fn_802CAF8C(void);
 extern int fn_802CAFF0(void);
 extern void fn_802CAFC8(int);
-extern const char lbl_8055D010[];
+__declspec(section ".sdata") extern const char lbl_8055D010[];
 void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     char name[0x100];
     char temp[0x100];
@@ -396,6 +417,48 @@ void *fn_802C5EFC(int arg0) {
     }
     return 0;
 }
+
+extern void *fn_8012850C(int, void *);
+extern void *fn_8002F37C(void *, void *, void *, int, int);
+extern char jumptable_8034B1B8[];
+extern void fn_802C6068(void *);
+extern void fn_802C6074(s32 *);
+void fn_802C5F48(void) {
+    char *base = (char *)lbl_804C1338;
+    char *jumpTable = jumptable_8034B1B8;
+    char *entry;
+    void *memory;
+    int zero = 0;
+
+    entry = base + 0x64;
+    *(int *)(entry + 4) = 0x280;
+    memory = fn_8012850C(0x2810, jumpTable + 0x44);
+    *(void **)(entry + 8) = fn_8002F37C(memory, (void (*)(void *))fn_802C6074, 0, 0x10, 0x280);
+    *(int *)(entry + 0) = zero;
+
+    entry = base;
+    *(int *)(entry + 4) = 0x800;
+    *(void **)(entry + 8) = fn_8012850C(0xA000, jumpTable + 0x58);
+
+    entry = base + 0x70;
+    *(int *)(entry + 4) = 0x400;
+    memory = fn_8012850C(0x4010, jumpTable + 0x70);
+    *(void **)(entry + 8) = fn_8002F37C(memory, (void (*)(void *))fn_802C6068, 0, 0x10, 0x400);
+    *(int *)(entry + 0) = zero;
+
+    entry = base + 0x58;
+    *(int *)(entry + 4) = 0x400;
+    *(void **)(entry + 8) = fn_8012850C(0x1000, jumpTable + 0x80);
+    *(int *)(entry + 0) = zero;
+
+    entry = base + 0x7C;
+    *(int *)(entry + 4) = 0x80;
+    *(void **)(entry + 8) = fn_8012850C(0x1600, jumpTable + 0x90);
+    *(int *)(entry + 0) = zero;
+    *(int *)(base + 0x88) = -1;
+    lbl_8055D00C = 1;
+}
+
 #pragma scheduling on
 void fn_802C6068(void *arg0) {
     *(s16 *)((char *)arg0 + 4) = 0;
@@ -541,6 +604,31 @@ int fn_802C6C20(int arg0) {
 void fn_802C6C30(void) {}
 
 void fn_802C6C34(void) { fn_802C53A8(); }
+
+void fn_802C6C38(int arg0) {
+    void *manager = fn_802C5390(arg0);
+    int *count = *(int **)manager;
+    if (*count-- > 0) {
+        int *outer_info = *(int **)((char *)manager + 4);
+        int *outer_count = *(int **)((char *)outer_info + 8);
+        int *outer_table = *(int **)((char *)outer_info + 4);
+        int i;
+        for (i = 0; i < *outer_count; i++) {
+            int *inner_info = *(int **)((char *)outer_table + i * 4);
+            int *inner_count = *(int **)inner_info;
+            int *inner_table = *(int **)((char *)inner_info + 4);
+            int j;
+            for (j = 0; j < *inner_count; j++) {
+                int *item = *(int **)((char *)inner_table + j * 4);
+                int *node = *(int **)((char *)item + (*(int *)((char *)manager + 8) << 2) + 0x14);
+                *(int **)((char *)item + (*(int *)((char *)manager + 8) << 2) + 0x14) = 0;
+                fn_802C5BA0(node);
+            }
+        }
+        *(void **)((char *)manager + 4) = 0;
+        *(int **)((char *)manager + 0xC) = 0;
+    }
+}
 
 void fn_802C6CF8(int arg0) {
     int temp_r31;
