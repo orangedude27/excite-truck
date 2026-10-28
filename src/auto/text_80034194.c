@@ -1769,8 +1769,9 @@ void cbForPrepareReset(void) {
 }
 
 void __DVDPrepareReset(void) {
-    s32 tempInterrupts;
     s32 savedInterrupts;
+    s32 tempInterrupts;
+    void *active;
     s32 oldInterrupts;
     s32 one = 1;
 
@@ -1784,14 +1785,19 @@ void __DVDPrepareReset(void) {
         if (executing_8055D8C8 != 0)
             *(s32 *)(executing_8055D8C8 + 0x28) = 0;
         tempInterrupts = OSDisableInterrupts();
-        savedInterrupts = OSDisableInterrupts();
+        active = (void *)OSDisableInterrupts();
         *(volatile s32 *)&lbl_8055D84C = one;
-        if (executing_8055D8C8 == 0)
+        if (executing_8055D8C8 == 0) {
             PausingFlag_8055D850 = one;
-        OSRestoreInterrupts(savedInterrupts);
-        do {
-            fn_80039424(0, 0);
-        } while (__DVDPopWaitingQueue() != 0);
+            OSRestoreInterrupts((s32)active);
+            goto queue_check;
+        }
+queue_call:
+        fn_80039424(active, 0);
+queue_check:
+        active = (void *)__DVDPopWaitingQueue();
+        if (active != 0)
+            goto queue_call;
         if (executing_8055D8C8 != 0)
             fn_80039424((void *)executing_8055D8C8, (void (*)(s32, void *))cbForPrepareReset);
         else if ((void *)cbForPrepareReset != 0)
@@ -1825,5 +1831,3 @@ u32 fn_80039CD8(void) { return 1; }
 void fn_80039CE0(void) {
 
 }
-#pragma push
-#pragma use_lmw_stmw off
