@@ -463,26 +463,27 @@ extern float lbl_80563F50;
 extern float PSQUATMultiply(void *, void *);
 extern int fn_80272C24(float, float, float, float);
 #pragma cplusplus on
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
-    void *obj;
-    void *manager;
-    void **vtable;
-    void *(*getManager)(void *);
-    void *camera;
-    float height;
-    float value;
+    struct Manager {
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+        virtual void v3() = 0;
+        virtual void *getCamera() = 0;
+    };
+    register float height;
     int result;
 
     *arg2 = lbl_80563F48;
-    obj = *(void **)arg0;
-    if (*(int *)((char *)obj + 0x58) == 0) return 0;
-    if (arg3 != -1 && arg3 != *(int *)((char *)obj + 0x5C)) return 0;
+    if (*(int *)((char *)*(void **)arg0 + 0x58) == 0) return 0;
+    if (arg3 != -1 && arg3 != *(int *)((char *)*(void **)arg0 + 0x5C)) return 0;
     result = 1;
     if (lbl_8055F564 != 0) {
-        manager = *(void **)((char *)arg1 + 0x270);
-        vtable = *(void ***)manager;
-        getManager = (void *(*)(void *))vtable[6];
-        camera = *(void **)((char *)getManager(manager) + 0x2C);
+        void *manager = *(void **)((char *)arg1 + 0x270);
+        void *camera = ((Manager *)manager)->getCamera();
+        camera = *(void **)((char *)camera + 0x2C);
         height = *(float *)((char *)camera + 8);
         if (fn_80272C24(lbl_8055F568, *(float *)((char *)arg0 + 4), *(float *)((char *)arg0 + 8), height) != 0 ||
             (*(unsigned char *)((char *)arg0 + 0x14) != 0 &&
@@ -492,9 +493,12 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
         }
         result = 0;
     }
-    value = PSQUATMultiply((char *)arg1 + 0x60, obj) - *(float *)((char *)obj + 0xC);
-    if (value <= lbl_80563F48) *arg2 = lbl_80563F50;
-    else *arg2 = lbl_80563F50 / (lbl_80563F50 + value);
+    {
+        float value = PSQUATMultiply((char *)arg1 + 0x60, *(void **)arg0) -
+                      *(float *)((char *)*(void **)arg0 + 0xC);
+        if (value <= lbl_80563F48) *arg2 = lbl_80563F50;
+        else *arg2 = lbl_80563F50 / (lbl_80563F50 + value);
+    }
     return result;
 }
 #pragma cplusplus reset
