@@ -282,8 +282,35 @@ void fn_802B21D4(void **arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_802B224C(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void *v3(const char *);
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual int v21(const char *);
+    };
+
     char name[16];
     void *object;
     int index;
@@ -291,8 +318,7 @@ extern "C" void fn_802B224C(void *arg0) {
     void *item;
     int count;
     void **items;
-    int value;
-    void *(*get_value)(void *, const char *);
+    Obj *self = (Obj *)arg0;
 
     count = *(int *)((char *)&lbl_804BE1FC + 4);
     if (count + 1 > *(int *)((char *)&lbl_804BE1FC + 8))
@@ -304,19 +330,17 @@ extern "C" void fn_802B224C(void *arg0) {
         index = 1;
         do {
             fn_801345D8(name, 0x10, (const char *)&lbl_8055CDC8, index);
-            if (((int (*)(void *, void *))fn_802B2C44)(arg0, name) == 0)
+            if (((int (*)(void *, void *))fn_802B2C44)(self, name) == 0)
                 break;
             child = fn_801284F8(0x454, lbl_8034A2D8);
             if (child != 0) {
-                value = (*(int (**)(void *, void *))((char *)*(void **)arg0 + 0x5C))(arg0, name);
-                child = fn_802B23A8(child, (void *)value, (void *)(index - 1));
+                child = fn_802B23A8(child, (void *)self->v21(name), (void *)(index - 1));
             }
             item = child;
             fn_802B2384(object, &item);
             index++;
         } while (1);
-        get_value = *(void *(* *)(void *, const char *))((char *)*(void **)arg0 + 0x14);
-        *(void **)((char *)object + 0x24) = get_value(arg0, (const char *)&lbl_8055CDD0);
+        *(void **)((char *)object + 0x24) = self->v3((const char *)&lbl_8055CDD0);
     }
 
     items = *(void ***)&lbl_804BE1FC;
