@@ -1761,30 +1761,53 @@ extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
 extern "C" bool ParseNextTick__Q46nw4hbm3snd6detail8SeqTrackFb(void *, bool);
 extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+#pragma use_lmw_stmw off
 extern "C" bool ParseNextTick__Q46nw4hbm3snd6detail9SeqPlayerFb(void *self, bool arg) {
     extern u8 lbl_80323B28[], lbl_80323B3C[];
-    bool result = true;
-    for (int i = 0; i < 16; ++i) {
-        void *track = *(void **)((char *)self + 0x9C + i * 4);
+    struct Manager {
+        virtual void method0();
+        virtual void method1();
+        virtual void RemoveTrack(void *);
+    };
+    register void *player = self;
+    register void *track;
+    register char *entry = (char *)player;
+    register int failed = 0;
+    register int i = 0;
+    register int zero = 0;
+    int valid;
+
+    do {
+        if (i > 15)
+            track = (void *)zero;
+        else
+            track = *(void **)(entry + 0x9C);
         if (track != 0) {
             UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(track);
-            if (!ParseNextTick__Q46nw4hbm3snd6detail8SeqTrackFb(track, arg))
-                result = false;
-            else {
-                if (i < 0 || i >= 16)
+            if (!ParseNextTick__Q46nw4hbm3snd6detail8SeqTrackFb(track, arg)) {
+                failed = 1;
+            } else {
+                valid = 0;
+                if (i >= 0 && i < 16)
+                    valid = 1;
+                if (valid == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x2FD, (const char *)lbl_80323B3C, i, 0, 16);
-                track = *(void **)((char *)self + 0x9C + i * 4);
+                if (i > 15)
+                    track = (void *)zero;
+                else
+                    track = *(void **)(entry + 0x9C);
                 if (track != 0) {
                     Close__Q46nw4hbm3snd6detail8SeqTrackFv(track);
-                    void *manager = *(void **)((char *)self + 0x98);
-                    void **vtable = *(void ***)manager;
-                    ((void (*)(void *, void *))vtable[4])(manager, track);
-                    *(void **)((char *)self + 0x9C + i * 4) = 0;
+                    void *manager = *(void **)((char *)player + 0x98);
+                    ((Manager *)manager)->RemoveTrack(*(void **)(entry + 0x9C));
+                    *(void **)(entry + 0x9C) = (void *)zero;
                 }
             }
         }
-    }
-    return result;
+        ++i;
+        entry += 4;
+    } while (i < 16);
+    return failed == 0;
 }
 
 extern "C" u8 lbl_80323DDC[];
