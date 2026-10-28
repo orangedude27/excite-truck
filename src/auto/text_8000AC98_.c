@@ -175,10 +175,11 @@ extern void fn_8000AEC4(void);
    entry[0]=val; entry[1]=0x22; entry+=2; i++; } while(i<4);
  lbl_8055D3D5=0; lbl_8055D3D4=1; lbl_8055D3D0=0;
  if(active) { fn_8000ADE0(0xD); fn_80265D74(); fn_80128678(); fn_80206454(); fn_80127930(); fn_802D3E9C(0); }
-}
-#pragma pop
-
-extern void fn_80127954(void);
+ }
+#pragma dont_inline reset
+  #pragma pop
+  
+  extern void fn_80127954(void);
 extern void fn_80128684(void);
 extern void fn_80265D78(void);
 extern int fn_80133348(int, int, int);
