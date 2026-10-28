@@ -195,21 +195,21 @@ extern "C" s32 fn_8013CFF0(f32 *arg0, f32 *arg1, f32 *arg2) {
     vx = arg0[2] + lbl_80561498 * dx;
     vy = arg0[1] + lbl_80561498 * dy;
     vz = arg0[0] + lbl_80561498 * dz;
-    sp8 = vy - arg1[10];
-    spC = vz - arg1[9];
+    sp8 = vz - arg1[9];
+    spC = vy - arg1[10];
     sp10 = vx - arg1[11];
-    sp18 = vy;
     sp14 = vz;
+    sp18 = vy;
     sp1C = vx;
-    dot = PSVECDotProduct(&sp8, &sp18);
+    dot = PSVECDotProduct(&sp8, &sp8);
     if (dot < lbl_805614B4) {
-        if (PSVECDotProduct(&sp8, arg1 + 6) < lbl_805614B8) {
+        s32 outside = PSVECDotProduct(&sp8, arg1 + 6) > lbl_805614B8;
+        if (outside == 0) {
             sp8 = arg0[3] - arg1[9];
             spC = arg0[4] - arg1[10];
             sp10 = arg0[5] - arg1[11];
-            if (PSVECDotProduct(&sp8, arg1 + 6) > lbl_805614B8) {
-                if (arg2) *arg2 = dot;
-            }
+            s32 intersects = PSVECDotProduct(&sp8, arg1 + 6) > lbl_805614B8;
+            if (intersects != 0 && arg2 != 0) *arg2 = dot;
         }
     }
     return 0;
@@ -314,10 +314,8 @@ extern "C" s32 fn_8013DE7C(TObj60 *arg0, const char *arg1) {
     return count;
 }
 
-#pragma scheduling invalid_target
 extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
     f32 unit = lbl_805614A4;
-    f32 factor = lbl_805614AC;
     f32 *from = (f32 *)arg1;
     f32 *to = (f32 *)arg2;
     f32 *out = (f32 *)arg0;
@@ -350,7 +348,7 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
         i++;
         f32 sx = temp[8];
         f32 vx = temp[4];
-        f32 scale = factor / length;
+        f32 scale = lbl_805614AC / length;
         f32 vz = temp[5];
         f32 currentZ = out[2];
         f32 sz = temp[9];
@@ -374,7 +372,6 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
         temp[3] = resultZ;
     } while (i < 2);
 }
-#pragma scheduling on
 
 extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
     u8 *out = (u8 *)outPtr;
