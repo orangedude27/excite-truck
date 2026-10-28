@@ -415,7 +415,6 @@ int fn_8003B218(void *arg0) {
     unsigned int flag;
     unsigned char *p;
     unsigned char *entry;
-    unsigned char *request;
     int index;
     int result;
 
@@ -431,7 +430,7 @@ int fn_8003B218(void *arg0) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
-    ((void **)base)[slot * 8] = arg0;
+    ((unsigned int *)base)[slot * 8] = (unsigned int)arg0;
     index = slot + 1;
     *(unsigned int *)(p + 4) = 1;
     p[8] = 1;
@@ -446,9 +445,8 @@ int fn_8003B218(void *arg0) {
         index = 0;
         lbl_8055D8E4 = 0;
     }
-    request = lbl_8055D8FC + index * 0x20;
-    request[0] = 0xE0;
-    result = IOS_IoctlAsync(lbl_80558E18, 0xE0, request, 0x20, lbl_8037B8A0, 0x20, (void (*)(int, void *))doTransactionCallback, entry);
+    lbl_8055D8FC[index * 0x20] = 0xE0;
+    result = IOS_IoctlAsync(lbl_80558E18, 0xE0, lbl_8055D8FC + index * 0x20, 0x20, lbl_8037B8A0, 0x20, (void (*)(int, void *))doTransactionCallback, entry);
     if (result != 0) {
         OSReport(msg + 0x520, result);
         entry[8] = 0;
@@ -692,34 +690,33 @@ typedef struct DVDLowContext {
     unsigned char pad2[12];
 } DVDLowContext;
 
-static inline DVDLowContext *newContext(void *callback, unsigned int arg2) {
+static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const char *msg) {
     int id;
     int next;
     unsigned int flag;
-    DVDLowContext *ctxs = (DVDLowContext *)lbl_8037B820;
 
-    flag = ctxs[lbl_8055D8E8].inUse;
+    flag = ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].inUse;
     if (((flag | -flag) >> 31) == 1U) {
-        OSReport(lbl_80302848 + 0x218);
-        OSReport(lbl_80302848 + 0x250);
+        OSReport(msg + 0x218);
+        OSReport(msg + 0x250);
         for (;;) {}
     }
-    if (ctxs[lbl_8055D8E8].magic != 0xFEEBDAED) {
-        OSReport(lbl_80302848 + 0x280);
+    if (((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].magic != 0xFEEBDAED) {
+        OSReport(msg + 0x280);
         for (;;) {}
     }
 
-    ctxs[lbl_8055D8E8].callback = callback;
+    ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].callback = callback;
     next = lbl_8055D8E8 + 1;
-    ctxs[lbl_8055D8E8].WORD_0x4 = arg2;
-    ctxs[lbl_8055D8E8].inUse = 1;
+    ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].WORD_0x4 = arg2;
+    ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].inUse = 1;
     id = lbl_8055D8E8;
     lbl_8055D8E8 = next;
     if (next >= 4) {
         lbl_8055D8E8 = 0;
     }
 
-    return &ctxs[id];
+    return &((DVDLowContext *)lbl_8037B820)[id];
 }
 
 int fn_8003BCDC(void *arg0) {
