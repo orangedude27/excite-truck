@@ -40,6 +40,8 @@ extern f32 lbl_8056434C;
 extern s32 fn_80128668(void);
 #pragma cplusplus on
 #pragma cplusplus off
+#pragma push
+#pragma scheduling off
 void fn_8028A664(void) {
     extern char lbl_80348B98[];
     extern char lbl_8055C8A0;
@@ -83,6 +85,7 @@ void fn_8028A664(void) {
     fn_801EEFDC((s32)fn_8028BA9C, 7);
     fn_801EEFDC((s32)fn_8028BB14, 8);
 }
+#pragma pop
 #pragma cplusplus on
 
 extern "C" void fn_8028A784(void) {
