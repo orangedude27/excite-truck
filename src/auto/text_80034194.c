@@ -17,6 +17,7 @@ extern s32 DSPCheckMailToDSP(void);
 extern s32 DSPReadMailFromDSP(void);
 extern void DSPSendMailToDSP(u32);
 #include <ctype.h>
+extern void fn_80038368(void *);
 
 extern s32 __DVDPushWaitingQueue(s32, void *);
 
@@ -1722,6 +1723,61 @@ s32 DVDCancel(void *block) {
 
 void fn_80039838(void) {
     OSWakeupThread(__DVDThreadQueue);
+}
+
+s32 fn_80039840(void) {
+    s32 savedInterrupts;
+    s32 tempInterrupts;
+    s32 activeInterrupts;
+    s32 result;
+
+    savedInterrupts = OSDisableInterrupts();
+    lbl_8055D864 = 0;
+    tempInterrupts = OSDisableInterrupts();
+    activeInterrupts = OSDisableInterrupts();
+    lbl_8055D84C = 1;
+    if (executing_8055D8C8 == 0) {
+        PausingFlag_8055D850 = 1;
+        OSRestoreInterrupts(activeInterrupts);
+        goto queue_check;
+    }
+queue_call:
+    fn_80039424(0, 0);
+queue_check:
+    if (__DVDPopWaitingQueue() != 0)
+        goto queue_call;
+
+    if (executing_8055D8C8 != 0) {
+        result = fn_80039424((void *)executing_8055D8C8,
+                             (void (*)(s32, void *))cbForCancel);
+    } else {
+        result = 1;
+        if (&cbForCancel != 0) {
+            lbl_8055D864 = 1;
+            OSWakeupThread(__DVDThreadQueue);
+        }
+    }
+
+    activeInterrupts = OSDisableInterrupts();
+    *(volatile s32 *)&lbl_8055D84C = 0;
+    if (PausingFlag_8055D850 != 0) {
+        PausingFlag_8055D850 = 0;
+        fn_80038040();
+    }
+    OSRestoreInterrupts(activeInterrupts);
+    OSRestoreInterrupts(tempInterrupts);
+    if (result == 0) {
+        OSRestoreInterrupts(savedInterrupts);
+        return -1;
+    }
+wait_loop:
+    if (lbl_8055D864 != 0)
+        goto wait_done;
+    OSSleepThread(__DVDThreadQueue);
+    goto wait_loop;
+wait_done:
+    OSRestoreInterrupts(savedInterrupts);
+    return 0;
 }
 
 extern s32 lbl_8055D864;
