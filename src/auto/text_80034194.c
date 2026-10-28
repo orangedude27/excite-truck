@@ -1207,7 +1207,7 @@ void fn_800379A8(u32 arg0) {
     } else if (arg0 & 1) {
         time = __OSGetSystemTime();
         lbl_8055D8A4 = time;
-        alarm = &lbl_8037B580;
+        alarm = (void *)((u32)&lbl_8037B580 + 0x10000U - 0x10000U);
         lbl_8055D8A0 = time >> 32;
         lbl_8055D8AC = 0;
         lbl_8055D85C = 0;
@@ -1721,26 +1721,32 @@ u32 __DVDGetCoverStatus(void) {
 }
 
 void fn_80039A5C(void (*callback)(s32, void *)) {
-    s32 enabled;
-    s32 temp;
     s32 saved;
+    s32 temp;
+    void *active;
+    s32 enabled;
 
     enabled = OSDisableInterrupts();
     __DVDClearWaitingQueue();
-    if (lbl_8055D858 != 0) {
+    if (lbl_8055D858) {
         lbl_8055D8B8 = callback;
     } else {
-        if (executing_8055D8C8 != 0)
+        if (executing_8055D8C8)
             *(s32 *)((u8 *)executing_8055D8C8 + 0x28) = 0;
         temp = OSDisableInterrupts();
-        OSDisableInterrupts();
+        active = (void *)OSDisableInterrupts();
         lbl_8055D84C = 1;
-        if (executing_8055D8C8 == 0)
+        if (executing_8055D8C8 == 0) {
             PausingFlag_8055D850 = 1;
-        OSRestoreInterrupts(0);
-        do {
-            fn_80039424(0, 0);
-        } while (__DVDPopWaitingQueue() != 0);
+            OSRestoreInterrupts((s32)active);
+            goto queue_check;
+        }
+queue_call:
+        fn_80039424(active, 0);
+queue_check:
+        active = __DVDPopWaitingQueue();
+        if (active != 0)
+            goto queue_call;
         if (executing_8055D8C8 != 0) {
             fn_80039424((void *)executing_8055D8C8, callback);
         } else if (callback != 0) {
@@ -1819,4 +1825,5 @@ u32 fn_80039CD8(void) { return 1; }
 void fn_80039CE0(void) {
 
 }
-
+#pragma push
+#pragma use_lmw_stmw off
