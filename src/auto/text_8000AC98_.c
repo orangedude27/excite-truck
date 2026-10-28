@@ -160,7 +160,7 @@ extern void fn_8000AEC4(void);
 #pragma push
 #pragma small_data off
 #pragma use_lmw_stmw off
-#pragma dont_inline fn_8000AEC8
+#pragma dont_inline on
   void fn_8000AF1C(void *arg0) {
  int i, active, val; int *entry;
  lbl_8055D3D8=0; lbl_8055D3E8=0; active=fn_80204024(); lbl_8055D3DC=0;
