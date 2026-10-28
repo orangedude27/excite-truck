@@ -141,6 +141,7 @@ void fn_802B1FD4(void) {
     }
     *(int *)((char *)table + 4) = 0;
 }
+#pragma pop
 
 void fn_80128670(void *);
 void fn_802B218C(void *);
