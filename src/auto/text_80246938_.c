@@ -515,38 +515,38 @@ extern void fn_8020A600(void);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma optimization_level 3
+#pragma scheduling invalid_target
 void fn_80248668(s32 arg0) {
     s32 work[0x1B];
-    s32 *p = work;
-    s32 *config = lbl_804988F0;
-
+    register s32 five = 5;
     if (fn_8020A640() != 0)
         return;
     fn_8020A600();
     work[21] = 0;
     work[16] = (s32)lbl_803436C0;
-    work[14] = 0x7530;
-    work[15] = 1;
+    work[24] = 0x7530;
+    work[25] = 1;
     work[26] = 0;
-    work[23] = ((s32 (*)(void *))fn_802E2C20)(lbl_803436C0);
-    work[7] = 5;
-    work[8] = 0;
-    work[9] = (s32)&work[16];
+    work[23] = fn_802E2C20();
+    work[6] = 0;
+    work[7] = five;
+    work[8] = (s32)&work[16];
+    work[9] = 0;
     work[10] = 0;
-    work[11] = 0;
-    work[12] = config[0];
-    work[13] = config[1];
-    work[14] = config[2];
-    work[15] = config[3];
-    work[16] = config[4];
-    work[0] = lbl_802FA498[0];
+    work[11] = lbl_804988F0[0];
+    work[12] = lbl_804988F0[1];
+    work[13] = lbl_804988F0[2];
+    work[14] = lbl_804988F0[3];
+    work[15] = lbl_804988F0[4];
     work[1] = lbl_802FA498[1];
+    work[0] = lbl_802FA498[0];
     work[2] = lbl_802FA498[2];
     work[3] = lbl_802FA498[3];
     work[4] = lbl_802FA498[4];
+    work[1] = (s32)&work[6];
     work[22] = 1;
     ((void (*)(s32 *, s32, s32, s32, s32, s32, s32, s32))fn_802146BC)(
-        p, -0x3E7, -0x3E7, 1,
+        work, -0x3E7, -0x3E7, 1,
         lbl_802FA498[4], lbl_802FA498[3], lbl_802FA498[2], lbl_802FA498[0]);
 }
 #pragma pop
