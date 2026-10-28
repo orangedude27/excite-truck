@@ -497,24 +497,50 @@ extern void fn_8028C11C(void *, s32 *, s32 *);
 extern void fn_802C8BD0(s32);
 extern void fn_802C8D74(void);
 extern f32 fn_802C9A4C(f32);
+#pragma push
+#pragma scheduling on
 void fn_8028BD60(s32 arg0) {
-    s32 sp[12];
-    f32 temp_f31;
-    s32 temp_r30 = fn_801E85B4();
-    s32 *src = (s32 *)fn_801E8718();
-    int i;
-    for (i = 0; i < 12; i++) sp[i] = src[i];
+    struct Pair { s32 first, second; };
+    struct State {
+        struct Pair p0, p1, p2, p3;
+        s32 p4;
+        struct Pair p5;
+        s32 p6;
+    };
+    s32 index = fn_801E85B4();
+    struct State *src = (struct State *)fn_801E8718();
+    struct State copy;
+    struct Pair *dest;
+
+    copy.p0 = src->p0;
+    copy.p1 = src->p1;
+    copy.p2 = src->p2;
+    copy.p3 = src->p3;
+    copy.p4 = src->p4;
+    copy.p5 = src->p5;
+    copy.p6 = src->p6;
+
     if (*(s32 *)(arg0 + 4) > 0) {
-        temp_f31 = fn_802C9A4C(*(f32 *)(arg0 + 0x18));
+        f32 saved = fn_802C9A4C(*(f32 *)(arg0 + 0x18));
         fn_802C8BD0(*(s32 *)(arg0 + 0x14));
-        if (fn_801E8758(temp_r30) == 0)
-            fn_8028C11C((void *)arg0, sp, (s32 *)(arg0 + temp_r30 * 0x30 + 0x1C));
-        else fn_8028C11C((void *)arg0, sp, sp);
+        if (fn_801E8758(index) == 0)
+            fn_8028C11C((void *)arg0, (s32 *)&copy, (s32 *)(arg0 + index * 0x30 + 0x1C));
+        else
+            fn_8028C11C((void *)arg0, (s32 *)&copy, (s32 *)&copy);
         fn_802C8D74();
-        fn_802C9A4C(temp_f31);
+        fn_802C9A4C(saved);
     }
-    for (i = 0; i < 12; i++) *(s32 *)(arg0 + temp_r30 * 0x30 + 0x1C + i * 4) = sp[i];
+
+    dest = (struct Pair *)(arg0 + index * 0x30 + 0x1C);
+    dest[0] = copy.p0;
+    dest[1] = copy.p1;
+    dest[2] = copy.p2;
+    dest[3] = copy.p3;
+    ((s32 *)dest)[8] = copy.p4;
+    *(struct Pair *)((s32 *)dest + 9) = copy.p5;
+    ((s32 *)dest)[11] = copy.p6;
 }
+#pragma pop
 
 #pragma pop
 #pragma push
@@ -857,10 +883,10 @@ s32 fn_8028CD80(s32 arg0, s32 arg1, void *arg2, f32 *arg3, f32 farg0) {
     f32 temp_y;
     f32 temp_z;
     f32 temp_x;
-    f32 *dst;
     f32 rand0;
     f32 rand1;
     f32 rand2;
+    f32 *dst;
 
     now = fn_801E7E18();
     count = ring->tail - ring->head;
