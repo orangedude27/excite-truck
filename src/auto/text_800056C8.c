@@ -806,8 +806,6 @@ extern "C" void fn_80209190(s32, f32);
 extern "C" void fn_8001DEA8(void);
 extern "C" void fn_80011A50(void);
 extern "C" void fn_80005464(void);
-#pragma push
-#pragma scheduling invalid_target
 extern "C" void fn_800070DC(void) {
     class Item {
     public:
