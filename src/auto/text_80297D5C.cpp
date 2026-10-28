@@ -71,6 +71,7 @@ extern "C" int fn_8029C190(void*);
   extern "C" void fn_8029871C(void*, void*, float);
   extern "C" void fn_8029840C(void);
   extern "C" double fn_8002F234(float);
+  extern "C" float fn_80129DC4(int, float, float);
     extern "C" void fn_802994C0(void*, unsigned int);
     extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
     extern float lbl_80564590;
