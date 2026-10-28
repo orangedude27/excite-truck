@@ -116,8 +116,9 @@ void fn_801EC4A8(void *arg0, long arg1) {
 }
 
 #pragma cplusplus on
-struct Vec3 {
-    float x, y, z;
+union Vec3 {
+    struct { float x, y, z; } f;
+    unsigned int u[3];
 };
 struct Parent {
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
