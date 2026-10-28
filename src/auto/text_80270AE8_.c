@@ -140,6 +140,7 @@ extern "C" void fn_80270C04(void *arg0, unsigned int arg1) {
         lbl_8055F554 = 1;
     }
 }
+#pragma cplusplus reset
 #pragma pop
 int fn_80270D1C(int arg0) {
     switch (arg0) {
