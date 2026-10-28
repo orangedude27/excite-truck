@@ -118,6 +118,7 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 #pragma scheduling invalid_target
 #pragma paired_single off
 #pragma paired off
+#pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" void fn_80230924(void *, f32, f32, f32, f32, f32);
 extern "C" void fn_802C8B98(s32, s32);
