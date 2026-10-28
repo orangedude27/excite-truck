@@ -364,76 +364,111 @@ void fn_80217874(void *arg0, int arg1) {
     }
 }
 
+#pragma push
+#pragma paired_single off
 void fn_802179A0(void *arg0) {
     char *base = (char *)arg0;
-    int i;
     int scan;
+    int i;
+    float threshold;
     char *entry;
     void *obj;
-    void **vtable;
-    float threshold;
-    int count = *(int *)(base + 0x450);
-    if (count != 0) {
-        scan = fn_802182F0(arg0, 0);
+    if (*(void **)(base + 0x450) != 0) {
+        scan = fn_802182F0(arg0, *(void **)(base + 0x450));
     } else {
         scan = 0;
     }
-    if (scan < 0) {
+    if (scan >= 0) {
+        threshold = lbl_80563490;
+        i = 0;
+        goto check;
+    loop:
+        scan++;
+        entry = base + (scan % *(int *)(base + 0x430)) * 4;
+        obj = *(void **)(entry + 0x30);
+        {
+            int eligible = 0;
+            void **vtable;
+            if (*(unsigned char *)((char *)obj + 0x1A) != 0) goto eligible_yes;
+            if (*(float *)((char *)obj + 0x20) >= threshold) goto eligible_yes;
+            goto eligible_check;
+        eligible_yes:
+            eligible = 1;
+        eligible_check:
+            if (eligible != 0) {
+                vtable = *(void ***)obj;
+                if (((int (*)(void *))vtable[0x68 / 4])(obj) != 0 &&
+                    *(unsigned char *)((char *)obj + 0x1B) != 0) {
+                    fn_80218198(arg0, (void **)obj);
+                    return;
+                }
+            }
+        }
+        i++;
+    check:
+        if (i < *(int *)(base + 0x430) - 1) goto loop;
+    } else {
         extern void fn_802E30C8(const char *, ...);
         extern char lbl_8033D824[];
         fn_802E30C8(lbl_8033D824);
-        return;
-    }
-    threshold = lbl_80563490;
-    for (i = 0; i < *(int *)(base + 0x430) - 1; i++) {
-        scan++;
-        entry = base + ((scan + count) % count) * 4;
-        obj = *(void **)(entry + 0x30);
-        if (*(unsigned char *)((char *)obj + 0x1A) != 0 ||
-            *(float *)((char *)obj + 0x20) != threshold) {
-            vtable = *(void ***)obj;
-            if (((int (*)(void *))vtable[0x68 / 4])(obj) != 0) {
-                if (*(unsigned char *)((char *)obj + 0x1B) != 0) {
-                    fn_80218198(arg0, (void **)obj);
-                    return;
-                }
-            }
-        }
     }
 }
+#pragma paired_single reset
+#pragma pop
 
-void fn_80217AC0(void *arg0) {
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+#pragma scheduling on
+#pragma cplusplus on
+extern "C" void fn_80217AC0(void *arg0) {
+    class Dummy {
+    public:
+        virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3();
+        virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7();
+        virtual int f8(); virtual int f9(); virtual int f10(); virtual int f11();
+        virtual int f12(); virtual int f13(); virtual int f14(); virtual int f15();
+        virtual int f16(); virtual int f17(); virtual int f18(); virtual int f19();
+        virtual int f20(); virtual int f21(); virtual int f22(); virtual int f23();
+        virtual int f24();
+    };
     char *base = (char *)arg0;
-    int i;
     int scan;
-    char *entry;
-    void *obj;
-    void **vtable;
+    int i;
+    int initialCount;
     float threshold;
-    int count = *(int *)(base + 0x450);
-    if (count != 0) {
-        scan = fn_802182F0(arg0, 0);
-    } else {
-        scan = 0;
-    }
+    initialCount = *(int *)(base + 0x450);
+    if (initialCount != 0) scan = fn_802182F0(arg0, (void *)initialCount);
+    else scan = 0;
     threshold = lbl_80563490;
     for (i = 0; i < *(int *)(base + 0x430) - 1; i++) {
+        char *entry;
+        void *obj;
+        int eligible;
         scan--;
-        entry = base + ((scan + count) % count) * 4;
+        entry = base + ((scan + *(int *)(base + 0x450)) %
+                        *(int *)(base + 0x450)) * 4;
         obj = *(void **)(entry + 0x30);
-        if (*(unsigned char *)((char *)obj + 0x1A) != 0 ||
-            *(float *)((char *)obj + 0x20) != threshold) {
-            vtable = *(void ***)obj;
-            if (((int (*)(void *))vtable[0x68 / 4])(obj) != 0) {
-                if (*(unsigned char *)((char *)obj + 0x1B) != 0) {
-                    fn_80218198(arg0, (void **)obj);
-                    return;
-                }
+        eligible = 0;
+        if (*(unsigned char *)((char *)obj + 0x1A) != 0) goto eligible_yes;
+        if (*(float *)((char *)obj + 0x20) >= threshold) goto eligible_yes;
+        goto eligible_check;
+    eligible_yes:
+        eligible = 1;
+    eligible_check:
+        if (eligible != 0) {
+            if (((Dummy *)obj)->f24() != 0 &&
+                *(unsigned char *)((char *)obj + 0x1B) != 0) {
+                fn_80218198(arg0, (void **)obj);
+                return;
             }
         }
     }
 }
-
+#pragma cplusplus reset
+#pragma scheduling reset
+#pragma dont_inline reset
+#pragma pop
 int fn_80217BC8(int *arg0, int *arg1) {
     return *arg0 - *arg1;
 }
