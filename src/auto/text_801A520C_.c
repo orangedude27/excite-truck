@@ -31,7 +31,7 @@ void fn_80182074(void);
 void fn_8018B09C(void);
 int fn_80265D38(void *, int);
 extern char lbl_80333C48[];
-extern float PSVECDotProduct(float *, float *);
+extern double PSVECDotProduct(float *, float *);
 void *fn_801A520C(void *arg0, void *arg1) {
     fn_80182010();
     *(void **)((char *)arg0 + 0x270C) = arg1;
@@ -299,57 +299,51 @@ extern "C" float fn_801A5A7C(void *arg0, float *arg1, float *arg2) {
 }
 
 #pragma dont_inline on
-void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg3) {
+extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg3) {
     float sp8[3];
-    register char *a0 = (char *)arg0;
-    register unsigned int a1 = arg1;
-    register char *a2 = (char *)arg2;
     float *p4;
     float f2;
     float dot;
     float bound;
     float neg;
+    char *p2 = (char *)arg2;
 
-    if (*(void **)(a0 + 0x20) == 0) {
-        p4 = *(float **)((char *)a1 + 0xC);
+    if (*(void **)((char *)arg0 + 0x20) == 0) {
+        p4 = *(float **)((char *)arg1 + 0xC);
         f2 = lbl_805623F8;
-        *(float *)(a0 + 0) = p4[0];
-        *(float *)(a0 + 4) = p4[1];
-        *(float *)(a0 + 8) = p4[2];
+        *(float *)((char *)arg0 + 0) = p4[0];
+        *(float *)((char *)arg0 + 4) = p4[1];
+        *(float *)((char *)arg0 + 8) = p4[2];
 
-        sp8[0] = *(float *)(a2 + 0x60) + *(float *)(a2 + 0x118) * f2;
-        sp8[1] = *(float *)(a2 + 0x64) + *(float *)(a2 + 0x11C) * f2;
-        sp8[2] = *(float *)(a2 + 0x68) + *(float *)(a2 + 0x120) * f2;
+        sp8[0] = *(float *)(p2 + 0x60) + *(float *)(p2 + 0x118) * f2;
+        sp8[1] = *(float *)(p2 + 0x64) + *(float *)(p2 + 0x11C) * f2;
+        sp8[2] = *(float *)(p2 + 0x68) + *(float *)(p2 + 0x120) * f2;
 
-        if (arg3 != 0 && PSVECDotProduct((float *)arg3, (float *)a0) < lbl_805623C8) {
+        if (arg3 != 0 && PSVECDotProduct((float *)arg3, (float *)arg0) < lbl_805623C8) {
+            float v0 = *(float *)((char *)arg0 + 0);
             float scale = lbl_805623FC;
-            float v0 = *(float *)(a0 + 0);
-            float v1 = *(float *)(a0 + 4);
-            float v2 = *(float *)(a0 + 8);
-            *(float *)(a0 + 0) = v0 * scale;
-            *(float *)(a0 + 4) = v1 * scale;
-            *(float *)(a0 + 8) = v2 * scale;
+            float v1 = *(float *)((char *)arg0 + 4);
+            float v2 = *(float *)((char *)arg0 + 8);
+            *(float *)((char *)arg0 + 0) = v0 * scale;
+            *(float *)((char *)arg0 + 4) = v1 * scale;
+            *(float *)((char *)arg0 + 8) = v2 * scale;
         }
 
-        *(float *)(a0 + 0x14) = fn_801A5A7C(a0, sp8, (float *)((char *)*(void **)((char *)a1 + 0xC) + 0x24));
+        *(float *)((char *)arg0 + 0x14) = fn_801A5A7C(arg0, sp8, (float *)((char *)*(void **)((char *)arg1 + 0xC) + 0x24));
 
-        dot = PSVECDotProduct((float *)(a2 + 0x118), (float *)a0);
+        dot = PSVECDotProduct((float *)(p2 + 0x118), (float *)arg0);
         neg = -(float)dot;
         bound = lbl_805623EC;
-        *(float *)(a0 + 0xC) = dot;
-        if (bound >= neg) {
-            bound = neg;
-        }
-        if (bound <= lbl_80562400) {
-            bound = lbl_80562400;
-        }
+        *(float *)((char *)arg0 + 0xC) = dot;
+        bound = (bound < neg) ? bound : neg;
+        bound = (bound > lbl_80562400) ? bound : lbl_80562400;
 
-        *(float *)(a0 + 0x1C) = lbl_805623F4;
-        *(float *)(a0 + 0x18) = lbl_805623C8;
-        *(float *)(a0 + 0x10) = lbl_805623F4 * bound;
-        *(unsigned int *)(a0 + 0x20) = a1;
-    } else if (*(unsigned int *)(a0 + 0x20) == a1) {
-        *(float *)(a0 + 0x18) = lbl_805623C8;
+        *(float *)((char *)arg0 + 0x1C) = lbl_805623F4;
+        *(float *)((char *)arg0 + 0x18) = lbl_805623C8;
+        *(float *)((char *)arg0 + 0x10) = lbl_805623F4 * bound;
+        *(unsigned int *)((char *)arg0 + 0x20) = arg1;
+    } else if (*(unsigned int *)((char *)arg0 + 0x20) == arg1) {
+        *(float *)((char *)arg0 + 0x18) = lbl_805623C8;
     }
 }
 extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
