@@ -25,7 +25,7 @@ extern int lbl_8055CDC0;
 extern void fn_802B8AE0(void *, void *);
 extern void *fn_801284F8(int, const char *);
 extern void *fn_8012850C(int, const char *);
-extern void *fn_8002F37C(void *, void *, void *, int, int);
+extern void *fn_8002F37C(void *, void (*)(void *), void *(*)(void *, int), int, int);
 extern void fn_802B1FC0(void *);
 extern void fn_802B1F64(void);
 extern void *fn_802B1F68(void *, int);
@@ -105,7 +105,8 @@ extern "C" void fn_802B1E28(void) {
     fn_802B8AE0(lbl_8034A288 + 0x18, &lbl_8055F9B0);
     pool = (Pool *)fn_801284F8(0x14, lbl_8034A288 + 0x28);
     if (pool != 0) {
-        storage = fn_8012850C(0x610, (const char *)&lbl_8055CDC0);
+        const char *name = (const char *)&lbl_8055CDC0;
+        storage = fn_8012850C(0x610, name);
         nodes = ((AllocArray)fn_8002F37C)(storage, fn_802B1FC0, fn_802B1F68, 0x10, 0x60);
         pool->nodes = nodes;
         pool->capacity = 0x60;
@@ -121,8 +122,8 @@ extern "C" void fn_802B1E28(void) {
         do {
             index = pool->used;
             i++;
-            nodes = pool->nodes;
             data = pool->data;
+            nodes = pool->nodes;
             pool->used = index + 1;
             entry = (char *)nodes + index * 0x10;
             *(void **)entry = (char *)data + offset;
