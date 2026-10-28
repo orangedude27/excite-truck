@@ -48,6 +48,8 @@ int fn_802B1DA0(void *arg0) {
 extern void *lbl_8055F9BC;
 extern struct Unk802B2C98 lbl_804BE1FC;
 void fn_802B21D4(void **);
+void fn_802B2104(void **);
+void fn_80128668(void *);
 extern int lbl_8055CDB8;
 int stricmp(const char *, const char *);
 #pragma push
