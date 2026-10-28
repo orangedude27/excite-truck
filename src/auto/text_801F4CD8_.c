@@ -645,21 +645,65 @@ void fn_801F6778(float *out, int count, float *angles, float offset, float scale
     }
 }
 
-void fn_801F6880(void* a) {
- float f31; int w,h,y,x; char *p,*q;
- f31=fn_802C9A4C(*(float*)((char*)a+0x28)); fn_802C8BD0(*(void**)((char*)a+0x24));
- w=*(int*)((char*)a+0x2c); h=*(int*)((char*)a+0x30);
- if(fn_802C8DBC((h-1)*(w*2))!=0) {
-  for(y=1;y<h;y++) for(x=0;x<w;x++) {
-   p=(char*)*(void**)((char*)a+4)+((x+(y-1)*w)*12); q=(char*)*(void**)((char*)a+0xc)+((x+(y-1)*w)*12);
-   fn_802C8E00(*(int*)(q+8),x>0,*(float*)p,*(float*)(p+4),*(float*)(p+8),*(float*)q,*(float*)(q+4),*(float*)(q+8));
-   p=(char*)*(void**)((char*)a+4)+((x+y*w)*12); q=(char*)*(void**)((char*)a+0xc)+((x+y*w)*12);
-   fn_802C8E00(*(int*)(q+8),x>0,*(float*)p,*(float*)(p+4),*(float*)(p+8),*(float*)q,*(float*)(q+4),*(float*)(q+8));
-  }
-  fn_802C8E48();
- }
- fn_802C8D74(); fn_802C9A4C(f31);
+#pragma scheduling invalid_target
+void fn_801F6880(void *arg0) {
+    extern float fn_802C9A4C(float);
+    extern void fn_802C8BD0(void *);
+    extern int fn_802C8DBC(int);
+    extern void fn_802C8E00(int, int, void *, float, float, float, float, float);
+    extern void fn_802C8E48(void);
+    extern void fn_802C8D74(void);
+    float temp_f31;
+    int temp_r0, temp_r0_2, temp_r3, temp_r4, temp_r5_2;
+    int var_r30, var_r31, var_r28;
+    void *temp_r3_2, *temp_r3_3, *temp_r5, *temp_r5_3;
+
+    temp_f31 = fn_802C9A4C(*(float *)((char *)arg0 + 0x28));
+    fn_802C8BD0(*(void **)((char *)arg0 + 0x24));
+    if (fn_802C8DBC((*(int *)((char *)arg0 + 0x30) - 1) *
+                    (*(int *)((char *)arg0 + 0x2C) * 2)) != 0) {
+        var_r31 = 1;
+        goto row_setup;
+    inner_body:
+        temp_r0 = *(int *)((char *)arg0 + 0x2C);
+        temp_r4 = (var_r30 + var_r28 * temp_r0) * 0xC;
+        temp_r0_2 = *(int *)((char *)arg0 + 0xC);
+        temp_r3 = *(int *)((char *)arg0 + 4);
+        temp_r3_2 = (void *)(temp_r3 + temp_r4);
+        temp_r5 = (void *)(temp_r0_2 + temp_r4);
+        fn_802C8E00(*(int *)((char *)temp_r5 + 8), var_r30 > 0, temp_r5,
+                    *(float *)(temp_r3 + temp_r4),
+                    *(float *)((char *)temp_r3_2 + 4),
+                    *(float *)((char *)temp_r3_2 + 8),
+                    *(float *)(temp_r4 + temp_r0_2),
+                    *(float *)((char *)temp_r5 + 4));
+        temp_r5_2 = (var_r30 + var_r31 * *(int *)((char *)arg0 + 0x2C)) * 0xC;
+        temp_r3_3 = (void *)(*(int *)((char *)arg0 + 0xC) + temp_r5_2);
+        temp_r5_3 = (void *)(*(int *)((char *)arg0 + 4) + temp_r5_2);
+        fn_802C8E00(*(int *)((char *)temp_r3_3 + 8), var_r30 > 0, temp_r5_3,
+                    *(float *)temp_r5_3,
+                    *(float *)((char *)temp_r5_3 + 4),
+                    *(float *)((char *)temp_r5_3 + 8),
+                    *(float *)temp_r3_3,
+                    *(float *)((char *)temp_r3_3 + 4));
+        var_r30 += 1;
+    inner_check:
+        if (var_r30 < *(int *)((char *)arg0 + 0x2C)) goto inner_body;
+        var_r31 += 1;
+    outer_check:
+        if (var_r31 < *(int *)((char *)arg0 + 0x30)) goto row_setup;
+        goto done;
+    row_setup:
+        var_r28 = var_r31 - 1;
+        var_r30 = 0;
+        goto inner_check;
+    done:
+        fn_802C8E48();
+    }
+    fn_802C8D74();
+    fn_802C9A4C(temp_f31);
 }
+#pragma scheduling on
 
 void *fn_801F69C8(void *arg0) {
     memset(arg0,0,0x900);
