@@ -877,7 +877,21 @@ struct Obj_80161F10 {
     virtual void unused4();
     virtual s32 index(const char *);
 };
+extern "C" {
+static inline s32 fn_80161F10_has(void *obj, const char *label) {
+    return ((Obj_80161F10 *)obj)->has(label);
+}
+static inline void *fn_80161F10_set(void *obj, const char *label) {
+    return ((Obj_80161F10 *)obj)->set(label);
+}
+static inline s32 fn_80161F10_index(void *obj, const char *label) {
+    return ((Obj_80161F10 *)obj)->index(label);
+}
+}
 #pragma cplusplus off
+extern s32 fn_80161F10_has(void *, const char *);
+extern void *fn_80161F10_set(void *, const char *);
+extern s32 fn_80161F10_index(void *, const char *);
 extern char lbl_8032F744[];
 extern char lbl_8032F750[];
 extern s32 lbl_8055A0BC;
