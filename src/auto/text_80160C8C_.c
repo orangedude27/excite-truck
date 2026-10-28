@@ -348,6 +348,16 @@ s32 fn_801613E0(s32 arg0) {
 }
 #pragma dont_inline reset
 
+extern int lbl_8055A0DC;
+extern f32 lbl_80561844;
+extern void fn_80148070(void *, s32, s32);
+extern void fn_80148134(f32 *, f32 *, s32, f32, f32);
+extern void fn_800103B8(s32, s32, f32, f32, f32, f32, const char *, ...);
+extern void fn_801473F8(void *, const char *, ...);
+#pragma cplusplus on
+extern "C" void fn_80161438(void) {}
+#pragma cplusplus off
+
 s32 fn_801615B4(s32 arg0) {
     s32 total = 0;
     s32 i = 0;
@@ -1090,6 +1100,78 @@ void fn_80162268(void *arg0) {
         }
     }
 }
+
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801625E0(void *arg0) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void *f4(s32 *, s32 *);
+    };
+    extern float lbl_80561848;
+    extern float lbl_8056184C;
+    extern void fn_80161438(void);
+    extern void fn_801DF380(void *, s32, void (*)(void), s32);
+    extern void fn_801EA140(void *);
+    extern void fn_802A95A8(f32 *, f32 *, f32, f32);
+    extern void fn_802A95AC(s32);
+    s32 i;
+    u32 offset;
+    float resetValue;
+
+    /* Match note: mirror fn_80162178's virtual initializer and update records at 0x48-byte strides. */
+    resetValue = lbl_8056184C;
+    *(s32 *)((char *)arg0 + 8) = 0;
+    *(u8 *)((char *)arg0 + 0x10) = 0;
+    *(float *)((char *)arg0 + 0xC) = resetValue;
+    i = 0;
+    offset = 0;
+    while (i < *(s32 *)((char *)arg0 + 0x38)) {
+        void *obj = *(void **)((char *)arg0 + 4);
+        char *entries = *(char **)((char *)arg0 + 0x34);
+        s32 *entry = (s32 *)(entries + offset);
+        void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
+        fn_801DF380(result, entry[0], fn_80161438, entry[1]);
+        offset += 8;
+        i++;
+    }
+
+    resetValue = lbl_80561848;
+    *(s32 *)((char *)arg0 + 0x94) = 0;
+    *(float *)((char *)arg0 + 0x98) = resetValue;
+    *(u8 *)((char *)arg0 + 0x88) = 0;
+    *(float *)((char *)arg0 + 0x8C) = resetValue;
+    *(u8 *)((char *)arg0 + 0x90) = 0;
+    *(u8 *)((char *)arg0 + 0x91) = 0;
+    *(u8 *)((char *)arg0 + 0x9C) = 1;
+    {
+        s32 offset;
+        s32 i;
+        for (i = 0, offset = 0; i < *(s32 *)((char *)arg0 + 0xE4); i++, offset += 0x48) {
+            char *obj = (char *)*(void **)((char *)arg0 + 0xE0) + offset;
+            fn_801EA140(obj);
+            *(float *)(obj + 4) += *(float *)(obj + 0x38);
+            if (*(s32 *)(obj + 0x34) != 0) {
+                char *child;
+                u32 j;
+                for (j = 0, child = obj + 0xC; j < 2; j++, child += 0xC) {
+                    fn_801EA140(child);
+                }
+            }
+            *(u8 *)(obj + 0x3C) = 1;
+            if (*(s32 *)(obj + 0x34) != 0) {
+                ((void (*)(void *, void *))fn_802A95A8)(obj + 0x24, obj + 0x2C);
+                fn_802A95AC(1);
+            }
+        }
+    }
+}
+#pragma cplusplus reset
+#pragma scheduling on
+
 #pragma pop
 s32 fn_80162734(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) != 0; }
 
