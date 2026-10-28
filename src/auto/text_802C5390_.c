@@ -546,22 +546,22 @@ struct MasterList {
     int unk88;
 };
 
-static inline void fn_802C6080_free1(struct SubList *list) {
-    fn_80128670(list->buf);
-    list->buf = 0;
-    list->capacity = 0;
-    list->count = 0;
-}
+#define fn_802C6080_free1(list) do { \
+    fn_80128670((list)->buf); \
+    (list)->buf = 0; \
+    (list)->capacity = 0; \
+    (list)->count = 0; \
+} while (0)
 
-static inline void fn_802C6080_free2(struct SubList *list) {
-    void *buf = list->buf;
-    if (buf != 0) {
-        fn_80128670((char *)buf - 0x10);
-    }
-    list->count = 0;
-    list->buf = 0;
-    list->capacity = 0;
-}
+#define fn_802C6080_free2(list) do { \
+    void *buf = (list)->buf; \
+    if (buf != 0) { \
+        fn_80128670((char *)buf - 0x10); \
+    } \
+    (list)->count = 0; \
+    (list)->buf = 0; \
+    (list)->capacity = 0; \
+} while (0)
 #pragma scheduling on
 void fn_802C6080(void) {
     struct SubList {
