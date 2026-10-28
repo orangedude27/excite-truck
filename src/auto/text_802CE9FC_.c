@@ -1,5 +1,6 @@
 #pragma dont_inline fn_802CFF50
 #pragma dont_inline fn_802D2ED8
+#pragma dont_inline fn_802CFD74
 extern int lbl_804C9760[];
 #pragma small_data off
 extern unsigned int lbl_804C9940;
