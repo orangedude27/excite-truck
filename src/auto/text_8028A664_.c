@@ -39,7 +39,8 @@ extern f32 lbl_8056434C;
 
 extern s32 fn_80128668(void);
 #pragma cplusplus on
-extern "C" void fn_8028A664(void) {
+#pragma cplusplus off
+void fn_8028A664(void) {
     extern char lbl_80348B98[];
     extern char lbl_8055C8A0;
     extern s32 lbl_804B32B8[];
