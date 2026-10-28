@@ -966,7 +966,7 @@ extern "C" void fn_8029A318(float *a, float *b, float *c, int x, int y, int z, i
  ((float *)w)[0]=a[6]*lbl_805645E8;((float *)w)[1]=a[7]*lbl_805645E8;((float *)w)[2]=a[8]*lbl_805645E8;
 }
 
-extern "C" void fn_801EE0C8(int);
+extern "C" int fn_801EE0C8(int);
 extern "C" void fn_802C77F0(int, float *);
 extern "C" int lbl_80488648[];
 extern "C" float lbl_80564608;
