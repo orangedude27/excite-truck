@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+__declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[];
 extern s32 lbl_8055EC48;
 extern "C" s32 fn_802C6B44(void *);
 extern "C" s32 fn_802C6C20(f32);
