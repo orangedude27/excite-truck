@@ -855,9 +855,10 @@ extern "C" void fn_802A31DC(void *arg0, s32 arg1) {
     *(f32 *)(stack + 0x34) = lbl_8056479C;
     *(f32 *)(stack + 0x38) = lbl_8056479C;
     *(f32 *)(stack + 0x3c) = lbl_8056479C;
-    *(f32 *)(stack + 0x40) = lbl_805647BC;
-    *(f32 *)(stack + 0x44) = lbl_805647EC;
-    *(f32 *)(stack + 0x48) = lbl_805647AC;
+    *(f32 *)(stack + 0x40) = lbl_8056479C;
+    *(f32 *)(stack + 0x44) = lbl_805647BC;
+    *(f32 *)(stack + 0x48) = lbl_805647EC;
+    *(f32 *)(stack + 0x4c) = lbl_805647AC;
     *(s32 *)(stack + 0x5c) = 4;
     *(f32 *)(stack + 0x88) = lbl_80564750;
     *(f32 *)(stack + 0x80) = lbl_80564750;
@@ -873,7 +874,7 @@ extern "C" void fn_802A31DC(void *arg0, s32 arg1) {
     *(f32 *)(stack + 0x94) = lbl_80564730;
     *(s32 *)((char *)arg0 + 8) =
         ((s32 (*)(void *, void *, s32))fn_8028E2F8)(
-            &stack[0x18], &lbl_80349A54, arg1);
+            &stack[0x18], lbl_80349A54, arg1);
 }
 #pragma paired_single reset
 #pragma paired reset
@@ -900,6 +901,9 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma paired off
+#pragma paired_single off
+#pragma scheduling invalid_target
 extern "C" void fn_802A33D4(void* arg0, void* arg1, s32 arg2) {
     f32 value = *(f32*)((char*)arg1 + 8);
     s32 offset = arg2 * 0x3C;
@@ -929,6 +933,9 @@ calculate:
 done:
     ;
 }
+#pragma scheduling on
+#pragma paired_single reset
+#pragma paired reset
 
 extern "C" void fn_802A3500(void *arg0, s32 arg1) {
     char stack[0xA8];
