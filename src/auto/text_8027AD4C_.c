@@ -796,6 +796,68 @@ long fn_8027C850(void *arg0) {
 
 long fn_8027C8B0(void) { return 1; }
 
+extern void fn_801345D8(void *, int, const char *, ...);
+#pragma cplusplus on
+extern "C" void fn_8027C8B8(void *arg0, unsigned char *arg1, int arg2) {
+    char buffer[0x64];
+    Fn8027C8B8Formatter *formatter;
+    register char *base = lbl_80347A50;
+    register int count = arg2;
+    char *dest = (char *)arg1;
+    register void *object = arg0;
+    char *source;
+
+    if (fn_8027C788(object) != 0) {
+        source = fn_80131234(base + 0x128);
+        dest = (char *)arg1;
+        goto copy_first;
+count_first:
+        count--;
+        if (count > 0) goto copy_first;
+        dest[-1] = 0;
+        goto clear_first;
+copy_first:
+        if ((*dest++ = *source++) != 0) goto count_first;
+clear_first:
+        arg1[0] = 0;
+        goto done;
+    }
+
+    if (fn_8027C850(object) != 0) {
+        source = fn_80131234(base + 0x13C);
+        dest = (char *)arg1;
+        goto copy_second;
+count_second:
+        count--;
+        if (count > 0) goto copy_second;
+        dest[-1] = 0;
+        goto clear_second;
+copy_second:
+        if ((*dest++ = *source++) != 0) goto count_second;
+clear_second:
+        arg1[0] = 0;
+        goto done;
+    }
+
+    formatter = *(Fn8027C8B8Formatter **)((char *)object + 8);
+    fn_801345D8(buffer, 0x64, base + 0x160,
+                formatter->format(base + 0xF0));
+    source = fn_80131234(buffer);
+    dest = (char *)arg1;
+    goto copy_third;
+count_third:
+    count--;
+    if (count > 0) goto copy_third;
+    dest[-1] = 0;
+    goto done;
+copy_third:
+    if ((*dest++ = *source++) != 0) goto count_third;
+
+done:
+    return;
+}
+#pragma cplusplus reset
+
 long fn_8027CA1C(void *arg0) {
     long temp_r30;
     long var_r31;
