@@ -9,7 +9,7 @@ extern "C" void fn_80146824(void *);
 extern "C" void *fn_80145FEC(void *, const char *, s32);
 extern "C" void *fn_801460F8(void *, const char *, s32);
 extern "C" void *fn_80146204(void *, const char *, s32);
-extern "C" s32 fn_80146310(void *, const char *, s32);
+extern "C" void *fn_80146310(void *, const char *, s32);
 extern "C" u8 lbl_8055E208;
 
 extern "C" void *fn_801284F8(u32, void *);
@@ -21,7 +21,7 @@ extern "C" void fn_80146824(void *);
 extern "C" void *fn_80145FEC(void *, const char *, s32);
 extern "C" void *fn_801460F8(void *, const char *, s32);
 extern "C" void *fn_80146204(void *, const char *, s32);
-extern "C" s32 fn_80146310(void *, const char *, s32);
+extern "C" void *fn_80146310(void *, const char *, s32);
 extern "C" void *fn_80146490(void *);
 extern "C" void fn_80145D8C(void *);
 
