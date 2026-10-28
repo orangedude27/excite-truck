@@ -282,6 +282,52 @@ void fn_8001BF0C(s32 arg0, f32 arg1) {
     ((void (*)(s32, s32))fn_8001BC28)(arg0, *(s32 *)&temp);
 }
 
+#pragma push
+#pragma dont_inline on
+#pragma paired off
+#pragma paired_single off
+s32 fn_8001BF34(s32 arg0, f32 arg1) {
+    f32 var_f31;
+    s32 temp_r3;
+    s32 var_r31;
+
+    if (fn_8001BCF0((void *)arg0) != 0) {
+        goto return_one;
+    }
+    if (fn_8001BD30((void *)arg0) == 0) {
+        goto return_one;
+    }
+    if (fn_8001BCF0((void *)arg0) == 0) {
+        var_f31 = fn_8001BEC4(arg0);
+    } else {
+        var_f31 = fn_8001BEE8(arg0);
+    }
+    temp_r3 = fn_8001BD28((void *)arg0);
+    var_r31 = temp_r3 & 0x60000;
+    if ((u32)(temp_r3 - 0x20000) == 0x507 && ARCGetStartOffset((void *)arg0) >= 0) {
+        if (*(u32 *)((u8 *)fn_8001285C() + 8) == 0x180302) {
+            var_r31 = 0x20000;
+        } else {
+            var_r31 = 0x40000;
+        }
+    }
+    if (var_r31 == 0x40000) {
+        return arg1 > var_f31;
+    }
+    if (var_r31 == 0x20000) {
+        return arg1 < var_f31;
+    }
+    {
+        s32 logBits = fn_8001BD28((void *)arg0) & 0x60000;
+        s32 logValue = fn_8001BD28((void *)arg0);
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_802FD6D8, logValue, logBits);
+    }
+    return arg1 > var_f31;
+return_one:
+    return 1;
+}
+#pragma pop
+
 void *fn_8001C070(void *dest, int val, size_t count) {
     ((void *(*)())fn_8001BC38)(dest, val, count);
     return dest;
@@ -376,37 +422,68 @@ s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
 #pragma use_lmw_stmw reset
 #pragma dont_inline reset
 extern const char lbl_802FD750[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
- char *list=(char *)lbl_80358658[arg0];
- s32 count=*(s32 *)(list+4);
- char *base,*p,*out,*input=(char *)arg2;
- s32 room,i;
- char *entry;
- if(count+1>*(s32 *)(list+8))
-  ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD750,arg0,0x280);
- list=(char *)lbl_80358658[arg0];
- count=*(s32 *)(list+4);
- *(s32 *)(list+4)=count+1;
- entry=(char *)*(void **)list+count*0x2c;
- *(s32 *)entry=arg1;
- base=(char *)lbl_8055D5D0;
- base[8]=0;
- p=*(char **)base;
- while(*p && stricmp(p,input)!=0){while(*p)p++;p++;}
- if(*p==0){
-  out=p;
-  room=(s32)(*(char **)(base+0)-p)+*(s32 *)(base+4)-1;
-  while((*out++=*input++)!=0){if(--room<=0){out[-1]=0;break;}}
- }
- *(char **)(entry+4)=p;
- *(char *)(entry+0x10)=0;
- *(char *)(entry+0x1c)=0;
- *(char *)(entry+0x28)=0;
- i=arg0*0xdac4;
- *(s32 *)(lbl_8055D5CC+i+0x6e00)=*(s32 *)(list+4);
- return (s32)entry;
-}
+    struct List { void *data; s32 count; s32 capacity; };
+    struct TextBuffer { char *data; s32 size; };
+    struct List *list = (struct List *)lbl_80358658[arg0];
+    struct TextBuffer *descriptor = (struct TextBuffer *)lbl_8055D5D0;
+    s32 count = list->count;
+    char *input = (char *)arg2;
+    char *entry;
+    char *p;
+    char *out;
+    s32 room;
 
+    if (count + 1 > list->capacity) {
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD750, arg0, 0x280);
+    }
+
+    list = (struct List *)lbl_80358658[arg0];
+    count = list->count;
+    list->count = count + 1;
+    entry = (char *)list->data + count * 0x2C;
+    *(s32 *)entry = arg1;
+
+    descriptor = (struct TextBuffer *)lbl_8055D5D0;
+    ((u8 *)descriptor)[8] = 0;
+    p = descriptor->data;
+    for (;;) {
+        if (stricmp(p, input) == 0) {
+            break;
+        }
+        while (*p != 0) {
+            p++;
+        }
+        p++;
+        if (*p == 0) {
+            out = p;
+            room = descriptor->size - (p - descriptor->data) - 1;
+            while (room > 0) {
+                char c = *input++;
+                *out++ = c;
+                room--;
+                if (c == 0) {
+                    break;
+                }
+            }
+            if (room == 0) {
+                out[-1] = 0;
+            }
+            break;
+        }
+    }
+
+    *(char **)(entry + 4) = p;
+    *(u8 *)(entry + 0x10) = 0;
+    *(u8 *)(entry + 0x1C) = 0;
+    *(u8 *)(entry + 0x28) = 0;
+    *(s32 *)(lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E00) = list->count;
+    return (s32)entry;
+}
+#pragma pop
 void fn_8001C4D4(void) {
 
 }
