@@ -338,15 +338,7 @@ void fn_801C4B74(void) {
         lbl_8055E7F8 = 0;
     }
 }
-#define UNK_80437D88_DEFINED
-extern struct Unk_80437D88 {
-    char pad_0[0x4D4];
-    Vec f_4D4;
-    Vec f_4E0;
-    char pad_1[0x6F8 - 0x4EC];
-    Vec f_6F8;
-} lbl_80437D88;
-typedef struct Unk_80437D88 Unk_80437D88;
+
 
 #pragma scheduling on
 s32 fn_801C5B60(void) {
@@ -994,13 +986,13 @@ check:
     if (i < lbl_8055E7F0)
         goto loop;
     {
-        register u8 *base = (u8*)lbl_8055E7F8;
-        register u32 index = lbl_8055E828;
-        register u32 indexOffset = index * 0x30C;
-        if (*(s32*)(base + indexOffset + 8) == 1) {
-            *(f32*)(base + indexOffset + 0x58) =
-                value + (*(f32*)(base + indexOffset + 0x58) -
-                         *(f32*)(base + indexOffset));
+        volatile u8 *base = (volatile u8*)lbl_8055E7F8;
+        u32 index = lbl_8055E828;
+        u32 indexOffset = index * 0x30C;
+        if (*(volatile s32*)(base + indexOffset + 8) == 1) {
+            *(volatile f32*)(base + indexOffset + 0x58) =
+                value + (*(volatile f32*)(base + indexOffset + 0x58) -
+                         *(volatile f32*)(base + indexOffset));
         }
     }
     *(f32*)((u8*)lbl_8055E7F8 + lbl_8055E828 * 0x30C) = fn_801C3450(value);
