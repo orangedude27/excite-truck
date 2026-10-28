@@ -1653,6 +1653,47 @@ s32 fn_80039424(void *block, void (*callback)(s32, void *)) {
 extern s32 fn_80039424(void *, void (*)(s32, void *));
 extern void OSSleepThread(void *);
 extern void fn_80039838(void);
+
+#pragma push
+#pragma use_lmw_stmw off
+s32 DVDReadPrio(void *block, void *addr, s32 length, s32 offset, s32 prio) {
+    s32 end;
+    s32 enabled;
+    s32 state;
+    s32 result;
+
+    if (offset < 0 || (u32)offset > *(u32 *)((u8 *)block + 0x34))
+        ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558DF8, 0x36B, lbl_803020A4);
+    end = offset + length;
+    if (end < 0 || (u32)end >= *(u32 *)((u8 *)block + 0x34) + 0x20)
+        ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558DF8, 0x371, lbl_803020A4);
+    if (DVDReadAbsAsyncPrio(block, addr, length,
+                            *(s32 *)((u8 *)block + 0x30) + (offset >> 2),
+                            cbForCancelSync, prio) == 0)
+        return -1;
+
+    enabled = OSDisableInterrupts();
+    for (;;) {
+        state = *(s32 *)((u8 *)block + 0xC);
+        if (state == 0) {
+            result = *(s32 *)((u8 *)block + 0x20);
+            break;
+        }
+        if (state == -1) {
+            result = -1;
+            break;
+        }
+        if (state == 10) {
+            result = -3;
+            break;
+        }
+        OSSleepThread(__DVDThreadQueue);
+    }
+    OSRestoreInterrupts(enabled);
+    return result;
+}
+#pragma use_lmw_stmw reset
+#pragma pop
 s32 DVDCancel(void *block) {
     s32 enabled;
     s32 state;
@@ -1769,10 +1810,10 @@ void cbForPrepareReset(void) {
 }
 
 void __DVDPrepareReset(void) {
-    s32 savedInterrupts;
-    s32 tempInterrupts;
+    register s32 savedInterrupts;
+    register s32 tempInterrupts;
     void *active;
-    s32 oldInterrupts;
+    register s32 oldInterrupts;
     s32 one = 1;
 
     OSDisableInterrupts();
@@ -1812,9 +1853,9 @@ queue_check:
         OSRestoreInterrupts(tempInterrupts);
     }
     OSRestoreInterrupts(oldInterrupts);
-    OSEnableInterrupts();
-    while (lbl_8055D890 != 1) {
-    }
+    do {
+        OSEnableInterrupts();
+    } while (lbl_8055D890 != 1);
 }
 
 #pragma small_data off
