@@ -129,6 +129,49 @@ check:
     *(void **)((char *)this + 0x30) = 0;
 }
 
+#pragma use_lmw_stmw off
+#pragma scheduling on
+int nw4hbm::snd::detail::WsdTrack::ParseNextTick(
+    const nw4hbm::snd::detail::WsdTrack::WsdCallback *callback,
+    unsigned long arg1,
+    bool arg2
+) {
+    register int valid = *(int *)((char *)this + 0x2C);
+    void *channel;
+
+    if (valid == 0) {
+        const char *message = lbl_80327CCC;
+        const char *file = lbl_80327CB8;
+        int line = 0x6F;
+        Panic__Q26nw4hbm2dbFPCciPCce(file, line, message);
+    }
+    channel = *(void **)((char *)this + 0x30);
+    goto check;
+
+loop:
+    if (*(int *)((char *)channel + 0xD4) > 0) {
+        *(int *)((char *)channel + 0xD4) -= 1;
+        if (*(unsigned char *)((char *)channel + 0x3C) == 0) {
+            fn_800EA880(channel, 1);
+        }
+        if (*(int *)((char *)channel + 0xD4) == 0) {
+            Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
+        }
+    }
+    channel = *(void **)((char *)channel + 0xE4);
+check:
+    if (channel != 0) goto loop;
+
+    if (*(int *)((char *)this + 8) != 0 &&
+        *(void **)((char *)this + 0x30) == 0) {
+        return -1;
+    }
+    return Parse__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(
+        this, callback, arg1, arg2
+    );
+}
+#pragma scheduling reset
+#pragma use_lmw_stmw on
 extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *);
 extern "C" int OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(int);
@@ -138,20 +181,21 @@ extern "C" void fn_800E4064(void *);
 extern "C" void SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void Release__Q46nw4hbm3snd6detail7ChannelFv(void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+#pragma use_lmw_stmw off
+extern "C" const char lbl_80327D00[];
+#pragma push
+#pragma optimization_level 3
+#pragma use_lmw_stmw off
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void *arg0, int arg1) {
-    void *channel;
-    int interrupts;
     UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(arg0);
-    interrupts = OSDisableInterrupts();
+    int interrupts = OSDisableInterrupts();
     fn_800E402C(Instance__15EmissionManagerFv());
-    channel = *(void **)((char *)arg0 + 0x30);
+    void *channel = *(void **)((char *)arg0 + 0x30);
     while (channel != 0) {
         if (*(unsigned char *)((char *)channel + 0x3A) != 0) {
             if (arg1 >= 0) {
-                if (arg1 > 0x7F) {
-                    Panic__Q26nw4hbm2dbFPCciPCce("snd_WsdTrack.cpp", 0xA0, "release", arg1, 0, 0x7F);
-                }
-                SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, arg1);
+                ((0 <= arg1) && (arg1 <= 0x7F)) ? (void)0 : Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0xA0, lbl_80327D00, arg1, 0, 0x7F);
+                SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, (unsigned char)arg1);
             }
             Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
         }
@@ -160,7 +204,7 @@ extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void
     fn_800E4064(Instance__15EmissionManagerFv());
     OSRestoreInterrupts(interrupts);
 }
-
+#pragma pop
 void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char arg1) {
     void *channel = *(void **)((char *)arg0 + 0x30);
     do {
@@ -175,22 +219,29 @@ void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char 
 
 extern "C" const char lbl_80327CB8[];
 void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Channel *arg0, nw4hbm::snd::detail::Channel::ChannelCallbackStatus arg1, unsigned long arg2) {
- const char *base=lbl_80327CB8;
- void *track=(void *)arg2;
- void *channel;
- void *next;
- if(arg0==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x1cf,base+0x88);
- if(track==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x1d0,base+0xb8);
- if((int)arg1==2) fn_800EAD00(arg0);
- channel=*(void **)((char *)track+0x30);
- if(channel==arg0){*(void **)((char *)track+0x30)=*(void **)((char *)arg0+0xe4);return;}
- if(channel==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x1dd,base+0xe0);
- while(channel!=arg0){
-  next=*(void **)((char *)channel+0xe4);
-  if(next==arg0){*(void **)((char *)channel+0xe4)=*(void **)((char *)arg0+0xe4);return;}
-  channel=next;
-  if(channel==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x1e7,base+0x10c);
- }
+    const char *base = lbl_80327CB8;
+    void *track = (void *)arg2;
+    register void *channel;
+    register void *next;
+    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1cf, base + 0x88);
+    if (track == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1d0, base + 0xb8);
+    if ((int)arg1 == 2) fn_800EAD00(arg0);
+    channel = *(void **)((char *)track + 0x30);
+    if (channel == arg0) {
+        *(void **)((char *)track + 0x30) = *(void **)((char *)arg0 + 0xe4);
+        return;
+    }
+    if (channel == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1dd, base + 0xe0);
+    next = *(void **)((char *)channel + 0xe4);
+    while (next != 0) {
+        if (next == arg0) {
+            *(void **)((char *)channel + 0xe4) = *(void **)((char *)arg0 + 0xe4);
+            return;
+        }
+        channel = next;
+        next = *(void **)((char *)channel + 0xe4);
+    }
+    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1e7, base + 0x10c);
 }
 
 extern "C" int IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(const void *arg0, unsigned long arg1, unsigned short arg2, unsigned short arg3) {
@@ -764,25 +815,22 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color, nw4hbm::ut::C
     self[0x13]=product_13/255; self[0x17]=product_17/255;
 }
 
+#pragma scheduling invalid_target
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
-    unsigned int temp_r11;
-    int var_r10;
-    int var_r5;
-    int var_r6;
-    int var_r7;
-    int var_r8;
-    int var_r9;
-    temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    var_r5 = 1; var_r6 = 1; var_r7 = 1; var_r8 = 1; var_r9 = 1; var_r10 = 1;
-    if (((unsigned int)(temp_r11 + 0x80000000U) != 0U) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0U)) var_r10 = 0;
-    if ((var_r10 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0U)) var_r9 = 0;
-    if ((var_r9 == 0) && ((unsigned int)(temp_r11 + 0x40000000U) != 0U)) var_r8 = 0;
-    if ((var_r8 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0U)) var_r7 = 0;
-    if ((var_r7 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0U)) var_r6 = 0;
-    if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U)) var_r5 = 0;
-    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0x20A, "this", arg0);
+    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+    int var_r10 = 1, var_r9 = 1, var_r8 = 1, var_r7 = 1, var_r6 = 1, var_r5 = 1;
+    if ((char *)(temp_r11 + 0x80000000U) == 0 || (char *)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) == 0) goto first_ok;
+    var_r10 = 0;
+first_ok:
+    if (var_r10 == 0 && (char *)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0) var_r9 = 0;
+    if (var_r9 == 0 && (char *)(temp_r11 + 0x40000000U) != 0) var_r8 = 0;
+    if (var_r8 == 0 && (char *)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0) var_r7 = 0;
+    if (var_r7 == 0 && (char *)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0) var_r6 = 0;
+    if (var_r6 == 0 && (char *)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x20A, lbl_8032818C, arg0);
     return *(float *)((char *)arg0 + 0x24);
 }
+#pragma scheduling on
 
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(void *arg0) {
     unsigned int temp_r11;
