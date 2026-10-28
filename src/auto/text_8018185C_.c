@@ -1971,5 +1971,3 @@ extern void fn_80279C00(int, void *);
 extern void fn_8017B0B0(void);
 extern void fn_801BD808(void *);
 extern int lbl_8055E4D0;
-extern float lbl_80561CA0, lbl_80561CA4, lbl_80561CA8;
-extern float lbl_80561CB0, lbl_80561CB4, lbl_80561CB8, lbl_80561CBC;
