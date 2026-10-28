@@ -523,7 +523,7 @@ void fn_80254354(void *arg0) {
         p += 0x30;
     } while (i < 4);
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802543FC(void *arg0) {
     extern void *fn_802C86DC(void);
     extern s32 fn_802C7A34(s32, void *, s32);
@@ -534,7 +534,7 @@ void fn_802543FC(void *arg0) {
     u8 *vertices = base + 0x598;
     void *v;
     void *p;
-    union { s32 i; float f; } a, b, c;
+    union { s32 i; float f; } c, b, a;
     s32 index;
     u8 *point;
 
@@ -841,40 +841,55 @@ __declspec(section ".sdata") extern float lbl_80563A60;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80255928(void *arg0, char *arg1) {
+    typedef struct {
+        char name[0x20];
+        s32 id;
+        s32 refCount;
+    } StringEntry;
+    typedef struct {
+        char pad0[0x58];
+        char name[1];
+    } Obj;
     extern void *lbl_80498E08[];
     extern s32 lbl_8055F33C;
     extern void fn_8012D3D8(s32);
     extern int stricmp(const char *, const char *);
-    register void **entries;
+    Obj *obj;
     register s32 i;
-    void *object;
-    char *src;
-    char *dst;
-    char ch;
-    s32 count;
+    register StringEntry **entries;
 
-    if (*(volatile s8 *)((u8 *)arg0 + 0x58) != 0) {
-        entries = lbl_80498E08;
+    obj = (Obj *)arg0;
+    if (obj->name[0] != 0) {
+        entries = (StringEntry **)lbl_80498E08;
         i = 0;
         goto scan_test;
     scan:
-        if (stricmp((char *)*entries, (char *)arg0 + 0x58) == 0) {
-            object = lbl_80498E08[i];
-            if (--*(s32 *)((u8 *)object + 0x24) == 0) {
-                fn_8012D3D8(*(s32 *)((u8 *)object + 0x20));
-                src = lbl_8055C1C0;
-                dst = (char *)object;
-                count = 0x20;
-                goto name_test;
-            name_copy:
-                ch = *src++;
-                *dst++ = ch;
-                if ((s8)ch == 0) goto name_done;
-            name_test:
-                if (--count > 0) goto name_copy;
-                dst[-1] = 0;
-            name_done:
-                ;
+        if (stricmp((*entries)->name, obj->name) == 0) {
+            {
+                char ch;
+                char *src;
+                s32 count;
+                char *dst;
+                StringEntry *entry;
+                entry = ((StringEntry **)lbl_80498E08)[i];
+                dst = entry->name;
+                if (--entry->refCount == 0) {
+                    fn_8012D3D8(entry->id);
+                    src = lbl_8055C1C0;
+                    count = 0x20;
+                    goto name_copy;
+                name_check:
+                    if (--count > 0) goto name_copy;
+                    dst[-1] = 0;
+                    goto name_end;
+                name_copy:
+                    ch = *src++;
+                    *dst++ = ch;
+                    if ((s8)ch == 0) goto name_end;
+                    goto name_check;
+                name_end:
+                    ;
+                }
             }
         } else {
             entries++;
@@ -882,25 +897,33 @@ void fn_80255928(void *arg0, char *arg1) {
         scan_test:
             if (i < lbl_8055F33C) goto scan;
         }
-        *(u8 *)((u8 *)arg0 + 0x58) = 0;
+        obj->name[0] = 0;
     }
-    src = arg1;
-    dst = (char *)arg0 + 0x10;
-    count = 0x20;
-    goto arg_test;
-arg_copy:
-    ch = *src++;
-    *dst++ = ch;
-    if ((s8)ch == 0) goto arg_done;
-arg_test:
-    if (--count > 0) goto arg_copy;
-    dst[-1] = 0;
-arg_done:
-    *(u8 *)((u8 *)arg0 + 0x30) = 1;
-    if (*(s8 *)((u8 *)arg0 + 0x78) != 0) {
-        *(float *)((u8 *)arg0 + 0x34) = fn_8023659C();
+    {
+        char *src;
+        char ch;
+        s32 count;
+        char *dst;
+        dst = (char *)obj + 0x10;
+        src = arg1;
+        count = 0x20;
+        goto arg_copy;
+    arg_check:
+        if (--count > 0) goto arg_copy;
+        dst[-1] = 0;
+        goto arg_end;
+    arg_copy:
+        ch = *src++;
+        *dst++ = ch;
+        if (ch != 0) goto arg_check;
+    arg_end:
+        ;
+    }
+    *((u8 *)obj + 0x30) = 1;
+    if (*((s8 *)obj + 0x78) != 0) {
+        *(float *)((u8 *)obj + 0x34) = fn_8023659C();
     } else {
-        *(float *)((u8 *)arg0 + 0x34) = lbl_80563A60;
+        *(float *)((u8 *)obj + 0x34) = lbl_80563A60;
     }
 }
 #pragma scheduling on
@@ -962,20 +985,28 @@ void fn_80256548(void *arg0) {
     extern void fn_802C86E8(int);
     extern void fn_802C87B4(int, int, int, int);
     extern void fn_802C88BC(int);
+    struct {
+        float vec[3];
+        unsigned int pad;
+        struct Obj_80256548 out;
+    } frame;
     char *str_base = lbl_803447C0;
-    float vec[3];
-    struct Obj_80256548 out;
 
-    vec[0] = lbl_80563A04; vec[1] = lbl_80563A04; vec[2] = lbl_80563A04;
+    frame.vec[0] = lbl_80563A04;
+    frame.vec[1] = lbl_80563A04;
+    frame.vec[2] = lbl_80563A04;
+
     if (*(int *)((char *)arg0 + 0x120) == 0) {
         if (lbl_8055F330 != 0) {
-            fn_80253004(*(int *)((char *)arg0 + 4), &out);
+            fn_80253004(*(int *)((char *)arg0 + 4), &frame.out);
         } else {
-            fn_802545C4(&out, *(int *)((char *)arg0 + 0xE4), *(int *)((char *)arg0 + 8));
+            fn_802545C4(&frame.out, *(int *)((char *)arg0 + 0xE4), *(int *)((char *)arg0 + 8));
         }
-        vec[0] = out.pos[0]; vec[1] = out.pos[1]; vec[2] = out.pos[2];
+        frame.vec[0] = frame.out.pos[0];
+        frame.vec[1] = frame.out.pos[1];
+        frame.vec[2] = frame.out.pos[2];
     }
-    fn_80203E88((char *)arg0 + 0xA8, vec, 0);
+    fn_80203E88((char *)arg0 + 0xA8, frame.vec, 0);
     if (!lbl_8055F344) { lbl_8055F344 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x314); }
     if (!lbl_8055F345) { lbl_8055F345 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x338); }
     if (!lbl_8055F346) { lbl_8055F346 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x36C); }
