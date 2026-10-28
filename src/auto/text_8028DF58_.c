@@ -209,6 +209,61 @@ void fn_8028E398(int arg0) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" int lbl_804B36B8[];
+extern "C" int lbl_804B34B0;
+extern "C" char lbl_80348D04[];
+extern "C" int lbl_8055C8E0;
+extern "C" int lbl_8055C8E8;
+extern "C" int fn_8028EE34(void *, int, int *);
+extern "C" int fn_8028E61C(void *);
+extern "C" void *fn_802AE414(const char *);
+extern "C" void fn_8028E654(void *, void *);
+extern "C" int fn_802E317C(const char *, ...);
+extern "C" int fn_801284F8(int, void *);
+extern "C" int fn_8028F7AC(void *, void *, int);
+extern "C" void fn_8028EEB4(void *, int, const char *);
+extern "C" void fn_8028ED8C(void *, int);
+extern "C" void fn_8028F5A0(int, int);
+extern "C" int fn_8028E3F4(const char *arg0) {
+    class Object {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual int method(const char *);
+    };
+    int result;
+    Object *object;
+    volatile int index = -1;
+    if (fn_8028EE34(lbl_804B36B8, (int)arg0, (int *)&index) != 0) {
+        char *entry = (char *)&lbl_804B36B8[0] + index * 0x18;
+        *(int *)(entry + 0x14) += 1;
+        return *(int *)(entry + 0x10);
+    }
+    int state[35];
+    fn_8028E61C(state);
+    object = (Object *)fn_802AE414(arg0);
+    if (object == 0) {
+        fn_802E317C(lbl_80348D04, arg0);
+    }
+    fn_8028E654(state, object);
+    result = fn_801284F8(0xB0, &lbl_8055C8E0);
+    if (result != 0) {
+        int value = object->method((const char *)&lbl_8055C8E8);
+        result = fn_8028F7AC((void *)result, state, value);
+    }
+    fn_8028EEB4(lbl_804B36B8, result, arg0);
+    fn_8028ED8C(&lbl_804B34B0, result);
+    fn_8028F5A0((int)arg0, result);
+    return result;
+}
+#pragma cplusplus off
+#pragma pop
+
 extern int fn_8028EF44(void *, unsigned int);
 extern int lbl_804B36B8[];
 void fn_8028E528(int arg0) {
