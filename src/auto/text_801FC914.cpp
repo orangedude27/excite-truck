@@ -316,10 +316,12 @@ extern "C" void fn_801FCFC8(void* arg0) {
 extern float lbl_80563030;
 extern "C" void fn_801FD024(void* arg0, void* arg1) {
     char* dst = (char*)arg0;
-    void* src = *(void**)arg1;
+    float initial = lbl_80563034;
     *(void**)(dst + 4) = arg1;
+    void* src = *(void**)arg1;
     *(int*)(dst + 0x3C) = 0;
-    *(float*)(dst + 0x40) = lbl_80563034;
+    float one = lbl_80563030;
+    *(float*)(dst + 0x40) = initial;
     *(float*)(dst + 0x44) = *(float*)((char*)src + 0x1C);
     *(float*)(dst + 0x48) = *(float*)((char*)src + 0x20);
     *(float*)(dst + 0x4C) = *(float*)((char*)src + 0x24);
@@ -328,37 +330,43 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(float*)(dst + 0x58) = *(float*)((char*)src + 0x44);
     *(float*)(dst + 0x5C) = *(float*)((char*)src + 0x48);
     *(float*)(dst + 0x60) = *(float*)((char*)src + 0x4C);
-    float w = *(float*)((char*)src + 0x2C);
-    *(float*)(dst + 0x64) = w;
+    float w0 = *(float*)((char*)src + 0x2C);
+    *(float*)(dst + 0x64) = w0;
     *(float*)(dst + 0x68) = *(float*)((char*)src + 0x50);
-    *(float*)(dst + 0x6C) = w;
+    *(float*)(dst + 0x6C) = w0;
     *(float*)(dst + 0x30) = *(float*)((char*)src + 0x10);
     *(float*)(dst + 0x34) = *(float*)((char*)src + 0x14);
     *(float*)(dst + 0x38) = *(float*)((char*)src + 0x18);
-    float x = *(float*)((char*)src + 0x1C);
-    float y = *(float*)((char*)src + 0x20);
-    float z = *(float*)((char*)src + 0x24);
-    float q = x + x;
-    float r = y + y;
-    float t = z + z;
-    float a = x * q;
-    float b = y * r;
-    float c = z * t;
-    float d = *(float*)((char*)src + 0x28) * q;
-    float e = y * t;
-    *(float*)(dst + 0xC) = lbl_80563030 - (b + c);
-    float f = *(float*)((char*)src + 0x28) * r;
-    float g = x * t;
-    float h = *(float*)((char*)src + 0x28) * t;
-    *(float*)(dst + 0x1C) = lbl_80563030 - (a + c);
-    float i = x * r;
-    *(float*)(dst + 0x28) = e - d;
-    *(float*)(dst + 0x24) = g + f;
-    *(float*)(dst + 0x18) = i - h;
-    *(float*)(dst + 0x10) = a + c;
-    *(float*)(dst + 0x14) = g - f;
-    *(float*)(dst + 0x20) = e + d;
-    *(float*)(dst + 0x2C) = lbl_80563030 - (a + b);
+    register float x = *(float*)((char*)src + 0x1C);
+    register float y = *(float*)((char*)src + 0x20);
+    register float z = *(float*)((char*)src + 0x24);
+    register float twoX = x + x;
+    register float twoY = y + y;
+    register float w = *(float*)((char*)src + 0x28);
+    register float twoZ = z + z;
+    register float xx = x * twoX;
+    register float yy = y * twoY;
+    register float zz = z * twoZ;
+    register float xw = w * twoX;
+    register float yz = y * twoZ;
+    register float diag0 = yy + zz;
+    register float diag1 = xx + zz;
+    register float diag2 = xx + yy;
+    register float cross0 = yz - xw;
+    *(float*)(dst + 0xC) = one - diag0;
+    register float cross1 = yz + xw;
+    register float yw = w * twoY;
+    register float xz = x * twoZ;
+    register float zw = w * twoZ;
+    *(float*)(dst + 0x1C) = one - diag1;
+    register float xy = x * twoY;
+    *(float*)(dst + 0x28) = cross0;
+    *(float*)(dst + 0x24) = xz + yw;
+    *(float*)(dst + 0x18) = xy - zw;
+    *(float*)(dst + 0x10) = xx + zz;
+    *(float*)(dst + 0x14) = xz - yw;
+    *(float*)(dst + 0x20) = cross1;
+    *(float*)(dst + 0x2C) = one - diag2;
 }
 
 extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, float farg0) {
@@ -846,6 +854,8 @@ extern "C" void* fn_801FE9A8(void* arg0, int arg1) {
     }
     return arg0;
 }
+
+extern "C" int stricmp(const char*, const char*);
 
 extern "C" void* fn_801FE9E8(void* arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
