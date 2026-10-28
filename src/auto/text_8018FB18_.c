@@ -3,7 +3,7 @@
 #include <types.h>
 
 extern f32 PSVECDotProduct(const void *, const void *);
-extern f32 lbl_805620C4, lbl_805620C8, lbl_805620CC;
+extern f32 lbl_805620C0, lbl_805620C4, lbl_805620C8, lbl_805620CC;
 
 typedef s32 M2C_UNK;
 #ifndef M2C_FIELD
