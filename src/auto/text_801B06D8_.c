@@ -466,7 +466,7 @@ void fn_801B157C(void *arg0,s32 arg1) {
 }
 
 #pragma cplusplus on
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void fn_801B179C(void *arg0, s32 arg1, s32 arg2) {
     struct Manager {
         virtual void d0();
@@ -504,7 +504,7 @@ extern "C" void fn_801B179C(void *arg0, s32 arg1, s32 arg2) {
         lbl_8055E67C += 1;
     }
 }
-#pragma scheduling on
+#pragma use_lmw_stmw reset
 #pragma cplusplus reset
 extern void fn_80135F64(s32, f32 *, f32 *, s32, s32, void *, f32, f32, f32, f32, f32);
 extern void fn_801353C8(s32, f32 *, f32 *, s32);
