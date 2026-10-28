@@ -658,14 +658,14 @@ void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         f32 output[4][6];
     } frame;
     register void *object = arg0;
-    register s32 mode;
-    register s32 offset;
+    u32 offset;
+    s32 mode;
     u8 *entry;
 
     if (arg1 != 0x20) {
-        mode = lbl_8055F050;
-        offset = arg1 * 0x1C;
+        offset = (u32)arg1 * 0x1C;
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
+        mode = lbl_8055F050;
 
         fn_80231380(frame.output[0], mode, farg0, farg1, farg4,
                     *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
@@ -775,9 +775,10 @@ void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         entry = *(u8 **)((u8 *)object + 0x10) + stride;
         fn_80231380(frame.out3, font, farg3, farg4, farg5, *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
         frame.indices = *(struct IndexList *)(void *)lbl_802F9FFC;
-        fn_802C8DB8(frame.out0, 4, frame.indices.idx, 6, lbl_802F9FFC[4], lbl_802F9FFC[3], lbl_802F9FFC[2], lbl_802F9FFC[1]);
+        fn_802C8DB8(frame.out0, 4, frame.indices.idx, 6,           lbl_802F9FFC[4], lbl_802F9FFC[3], lbl_802F9FFC[2], lbl_802F9FFC[1]);
     }
 }
+#pragma pop
 
 void fn_8023441C(const char *arg0) {
     lbl_8055F06C = (s32)((void *(*)(s32, const char *))fn_8012850C)(0x2100, lbl_80340614);
