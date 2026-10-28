@@ -1048,4 +1048,3 @@ extern int lbl_8055F7FC;
 extern void fn_80287B38(void *);
 extern void fn_8029C450(void);
 extern float lbl_8056469C;
-extern float lbl_80564628;
