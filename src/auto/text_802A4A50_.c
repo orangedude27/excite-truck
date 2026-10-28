@@ -221,24 +221,24 @@ extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag(float *);
 extern void fn_802E317C(const char *);
 extern const char lbl_80349C48[];
-extern const char lbl_8055CBD0[], lbl_8055CBD4[], lbl_8055CBDC[], lbl_8055CBE0[];
+extern const char lbl_8055CBD0, lbl_8055CBD4, lbl_8055CBDC, lbl_8055CBE0;
 extern float lbl_80564860, lbl_80564864;
 s32 fn_802A4FA8(float *out, void *object) {
     float v0[3], v1[3], v2[3], v3[3], cross[3];
-    void (**vtable)(void *, void *, const char *);
-    if (object == 0) return 0;
-    vtable = *(void (***)(void *, void *, const char *))object;
-    vtable[13](v0, object, lbl_8055CBD0);
-    out[0] = v0[0]; out[1] = v0[1]; out[2] = v0[2];
-    vtable[13](v1, object, lbl_8055CBD4);
-    out[3] = v1[0]; out[4] = v1[1]; out[5] = v1[2];
-    vtable[13](v2, object, lbl_8055CBDC);
-    out[6] = v2[0]; out[7] = v2[1]; out[8] = v2[2];
-    vtable[13](v3, object, lbl_8055CBE0);
-    out[9] = v3[0]; out[10] = v3[1]; out[11] = v3[2];
-    PSVECCrossProduct(out + 6, out + 9, cross);
-    if (lbl_80564864 * PSVECMag(cross) < lbl_80564860) fn_802E317C(lbl_80349C48);
-    return 1;
+    if (object != 0) {
+        (*(void (***)(void *, void *, const char *))object)[13](v0, object, &lbl_8055CBD0);
+        out[0] = v0[0]; out[1] = v0[1]; out[2] = v0[2];
+        (*(void (***)(void *, void *, const char *))object)[13](v1, object, &lbl_8055CBD4);
+        out[3] = v1[0]; out[4] = v1[1]; out[5] = v1[2];
+        (*(void (***)(void *, void *, const char *))object)[13](v2, object, &lbl_8055CBDC);
+        out[6] = v2[0]; out[7] = v2[1]; out[8] = v2[2];
+        (*(void (***)(void *, void *, const char *))object)[13](v3, object, &lbl_8055CBE0);
+        out[9] = v3[0]; out[10] = v3[1]; out[11] = v3[2];
+        PSVECCrossProduct(out + 6, out + 9, cross);
+        if (lbl_80564864 * PSVECMag(cross) < lbl_80564860) fn_802E317C(lbl_80349C48);
+        return 1;
+    }
+    return 0;
 }
 
 extern f32 lbl_8056485C, lbl_80564868, lbl_8056486C, lbl_80564870, lbl_80564874;
@@ -627,19 +627,19 @@ void fn_802A62CC(void *arg0, s32 arg1) {
     f32 sp10;
     s32 spC;
     f32 sp8;
-    f32 temp_f30;
-    f32 temp_f31;
-    f32 temp_f29;
-    f32 temp_f10;
-    f32 temp_f30_2;
-    f32 temp_f7;
-    f32 temp_f9;
-    f32 temp_f8;
-    f32 temp_f6;
-    f32 temp_f29_2;
-    f32 temp_f3;
-    f32 temp_f4;
-    f32 temp_f2;
+    register f32 temp_f10;
+    register f32 temp_f29;
+    register f32 temp_f29_2;
+    register f32 temp_f2;
+    register f32 temp_f30;
+    register f32 temp_f30_2;
+    register f32 temp_f31;
+    register f32 temp_f3;
+    register f32 temp_f4;
+    register f32 temp_f6;
+    register f32 temp_f7;
+    register f32 temp_f8;
+    register f32 temp_f9;
 
     temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x1C));
     temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x1C));
@@ -869,7 +869,6 @@ void fn_802A6E34(void *arg0) {
     s32 spC;
     f32 sp8;
     u32 conv[2];
-    f32 asFloat;
     f32 temp_f10;
     f32 temp_f29;
     f32 temp_f29_2;
@@ -885,23 +884,23 @@ void fn_802A6E34(void *arg0) {
     f32 temp_f9;
     f32 disc;
 
-    temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x10));
+    temp_f30 = fn_801E8738(*(s32 *)((u8 *)arg0 + 0x10)) * lbl_80564850;
     temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x10));
     temp_f29 = fn_801E8894(*(s32 *)((u8 *)arg0 + 0x10));
     fn_801E88B4(&sp14, &sp10, &spC, &sp8, *(s32 *)((u8 *)arg0 + 0x10));
     temp_f10 = (f32)fn_8002EF30(temp_f30);
     *(f32 *)((u8 *)arg0 + 0x14) = temp_f10;
     temp_f7 = temp_f29 * lbl_805648BC;
-    temp_f30_2 = temp_f29 + temp_f31;
     *(f32 *)((u8 *)arg0 + 0x18) = lbl_8056485C + temp_f31;
+    temp_f30_2 = temp_f29 + temp_f31;
     temp_f9 = lbl_805648B8 * temp_f30_2;
     temp_f8 = lbl_80564860 * temp_f29 * temp_f31;
     temp_f6 = temp_f31 * temp_f7;
     temp_f29_2 = temp_f9 - temp_f8;
     conv[0] = 0x43300000;
     conv[1] = (u32)spC ^ 0x80000000;
-    asFloat = (f32)(*(double *)conv - lbl_80564848);
-    temp_f3 = lbl_805648B4 * (asFloat * (lbl_80564890 * temp_f31));
+    temp_f3 = lbl_805648B4 * ((f32)(*(double *)conv - lbl_80564848) *
+        (lbl_80564890 * temp_f31));
     temp_f4 = temp_f29_2 * temp_f29_2;
     temp_f2 = temp_f3 * (temp_f29 - temp_f31);
     disc = temp_f4 - (lbl_80564890 * temp_f30_2 *
