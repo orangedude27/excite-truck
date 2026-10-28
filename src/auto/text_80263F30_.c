@@ -37,7 +37,56 @@ extern int stricmp(const char *, const char *);
 extern int fn_802656C8(void *);
 extern int fn_80264538(int, int);
 extern void *fn_80264968(void *, int);
+#pragma use_lmw_stmw off
 #pragma dont_inline on
+void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
+    char sp8[0x28];
+    char sp30[0xE0];
+    int prev_state;
+    void *list;
+    int cont;
+    int i;
+    void *item;
+
+    lbl_8055F450 = arg1;
+    prev_state = fn_8020A69C();
+    fn_8020A648(1);
+    if (arg0 != 0) {
+        fn_80265A74();
+    }
+    list = fn_80131810(lbl_80346338 + 0x68);
+    if (list != 0) {
+        if (fn_802ECF00(lbl_8055C450) == 0) {
+            fn_802E317C(lbl_80346338 + 0x74, lbl_8055C450);
+        }
+        fn_80265940();
+        fn_802646D0(sp30);
+        fn_8026451C(sp8);
+        cont = 1;
+        for (i = 0; cont != 0; i++) {
+            item = ((void *(*)(void *, int))(*(void ***)list)[3])(list, i);
+            if (item == 0) {
+                break;
+            }
+            if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_80346338 + 0xAC) == 0) {
+                cont = fn_802656C8(item);
+            }
+        }
+        fn_8020A648(-1);
+        fn_80265A74();
+        if (fn_802ECF04() == 0) {
+            fn_802E317C(lbl_80346338 + 0xC0);
+        }
+        fn_80131818(list);
+        fn_80264538((int)sp8, -1);
+        fn_80264968(sp30, -1);
+    }
+    if (arg2 != 0) {
+        fn_80265940();
+    }
+    fn_8020A648(prev_state);
+}
+
 void fn_80264098(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 4) = arg1;
 }
