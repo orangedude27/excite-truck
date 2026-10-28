@@ -87,16 +87,17 @@ void fn_802B1FC0(void *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma dont_inline on
 #pragma opt_common_subs off
 void fn_802B1FD4(void) {
+    register int i;
+    register void *table;
     void *r27;
-    int off_i;
-    int i;
-    void *table;
     int j;
-    int k;
     void *r25;
+    int k;
     void *r23;
+    int off_i;
     int off_j;
     int off_k;
 
