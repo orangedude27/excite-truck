@@ -900,7 +900,7 @@ extern "C" void fn_801FEC74(void* arg) {
     *(int*)(result + 0x50) = n + 1;
 }
 
-extern int stricmp(const char *, const char *);
+extern "C" int stricmp(const char *, const char *);
 extern int fn_80129D18(int);
 void fn_801FEDA4(void *arg0) {
  char *base=(char *)lbl_8055EC98;
