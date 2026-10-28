@@ -295,26 +295,30 @@ extern void fn_8015F3FC(void *);
 extern void *fn_8002F37C(void *, void (*)(void *), void (*)(void *), int, int);
 extern void fn_8015F79C(void);
 extern char lbl_8032F4AC[], lbl_8032F4B8[];
-extern char lbl_8055A0A0[];
+__declspec(section ".sdata") extern char lbl_8055A0A0[];
 extern int lbl_8055A098, lbl_8055E29C;
 #pragma push
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_8015F670(void **arg0, s32 arg1) {
     struct Resource {
         virtual void **get(const char *);
     };
-    void *context = fn_80178C9C();
-    void **resource = fn_80131810(lbl_8032F4AC);
     void **object;
+    void *context;
+    void **resource;
     s32 count;
     void *record;
     void *array;
+    context = fn_80178C9C();
+    resource = fn_80131810(lbl_8032F4AC);
     if (resource != 0) {
-        object = ((Resource *)resource)->get((const char *)lbl_8055A0A0);
+        object = ((Resource *)resource)->get(lbl_8055A0A0);
     } else {
         object = 0;
     }
-    count = fn_8015F148(arg0, arg1) + fn_8015ED90(object);
+    count = fn_8015F148(arg0, arg1);
+    count += fn_8015ED90(object);
     if (count > 0) {
         record = fn_801284F8(0x10, lbl_8032F4B8);
         if (record != 0) {
