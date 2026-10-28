@@ -1211,9 +1211,10 @@ extern "C" void fn_802A4524(void *arg0) {
 }
 
 extern "C" f32 fn_80287BC8(f32, f32);
-extern "C" f32 fn_801E7E18(f32);
+extern "C" f32 fn_801E7E18(void);
 #pragma scheduling on
 extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
+    register f32 saved = farg0;
     s32 index = *(s32*)((char*)arg0 + 4);
     if (index >= *(s32*)((char*)arg0 + 8))
         return;
@@ -1236,7 +1237,7 @@ extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
     dst[5] = *(f32*)((char*)arg2 + 8) * *(f32*)((char*)arg0 + 0x24) +
         fn_80287BC8(-*(f32*)((char*)arg0 + 0x30), *(f32*)((char*)arg0 + 0x30));
     dst[6] = ((f32 (*)(void))fn_801E7E18)();
-    dst[7] = farg0;
+    dst[7] = saved;
     *(s32*)((char*)arg0 + 4) = *(s32*)((char*)arg0 + 4) + 1;
 }
 #pragma scheduling off
