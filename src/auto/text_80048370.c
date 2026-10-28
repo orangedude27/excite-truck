@@ -25,6 +25,55 @@ static inline void KPADNotifySampling(s32 chan) {
 
 #pragma push
 #pragma use_lmw_stmw off
+void KPADiControlDpdCallback(s32 chan, u32 type) {
+    extern s32 fn_800624A4(s32, s32, void*);
+    extern void WPADiSamplingCallback(s32, s32);
+    KPADInsideStatus* kp;
+    s32 format;
+    BOOL irq;
+    s32 result;
+
+    if (type == 253) {
+        return;
+    }
+    kp = &inside_kpads[chan];
+    WPADSetAutoSamplingBuf(chan, NULL, 0);
+    switch ((s32)type) {
+    case WPAD_DEV_CORE:
+    case 251:
+    case 252:
+    case 255:
+        format = 2;
+        type = 3;
+        break;
+    case WPAD_DEV_FREESTYLE:
+        format = 5;
+        type = 1;
+        break;
+    case WPAD_DEV_CLASSIC:
+        format = 8;
+        type = 1;
+        break;
+    default:
+        return;
+    }
+    result = WPADSetDataFormat(chan, format);
+    kp->data_format_failed = (result != 0);
+    irq = OSDisableInterrupts();
+    if (!kp->sampling_pending && WPADProbe(chan, NULL) != -1) {
+        kp->sampling_pending = TRUE;
+        if (kp->dpd_ctrl_callback != NULL) {
+            kp->dpd_ctrl_callback(chan, FALSE);
+        }
+    }
+    OSRestoreInterrupts(irq);
+    kp->sampling_restart = TRUE;
+    if (fn_800624A4(chan, type, (void*)WPADiSamplingCallback) != 0) {
+        kp->data_format_failed = TRUE;
+    }
+    WPADSetAutoSamplingBuf(chan, (u8*)kp + 0x118, 12);
+}
+
 void WPADiDisableRecalibration(s32 chan) {
     BOOL inner;
     BOOL interrupts;
@@ -129,8 +178,8 @@ void MEMiFinalizeHeap(MEMiHeapHead *heap) {
     MEMiHeapHead *block;
     MEMiHeapHead *result;
 
-    list = (MEMList *)lbl_8037D808;
     OSLockMutex((OSMutex *)lbl_8037D818);
+    list = (MEMList *)lbl_8037D808;
     result = 0;
     outer = 0;
     while ((outer = (MEMiHeapHead *)MEMGetNextListObject(list, outer)) != 0) {
@@ -538,6 +587,7 @@ u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead *heap, s32 align) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma opt_common_subs off
 MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 align, u16 opt) {
     u32 base = ((u32)start + 3) & ~3;
     u32 end = (size + (u32)start) & ~3;
@@ -545,11 +595,11 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
     u32 mask;
     u32 alignStart;
     u32 strideEnd;
-    u8 *head;
+    u32 head;
     u32 stride;
     u32 count;
     u32 remaining;
-    u8 *next;
+    u32 next;
 
     if ((s32)(base - end) <= 0) {
     } else {
@@ -559,25 +609,25 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
     mask = ~((align - 1) | (align - 1));
     alignStart = area + align;
     strideEnd = align + unitSize;
-    head = (u8 *)((alignStart + 7) & mask);
-    if ((s32)((u32)head - end) <= 0) {
+    head = (alignStart + 7) & mask;
+    if ((s32)(head - end) <= 0) {
     } else {
         return 0;
     }
     stride = (strideEnd - 1) & mask;
-    count = (end - (u32)head) / stride;
+    count = (end - head) / stride;
     if (count != 0) {
     } else {
         return 0;
     }
-    MEMiInitHeapHead((MEMiHeapHead *)base, 0x554E5448, head, head + count * stride, opt);
+    MEMiInitHeapHead((MEMiHeapHead *)base, 0x554E5448, (void *)head, (void *)(head + count * stride), opt);
     remaining = count - 1;
-    *(u32 *)(area + 0) = (u32)head;
+    *(u32 *)(area + 0) = head;
     *(u32 *)(area + 4) = stride;
     next = head;
     while (remaining != 0) {
-        u8 *following = next + stride;
-        *(u32 *)next = (u32)following;
+        u32 following = next + stride;
+        *(u32 *)next = following;
         next = following;
         remaining -= 1;
     }
