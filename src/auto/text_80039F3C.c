@@ -1,15 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-typedef struct DVDPrepareEntry {
-    void *arg;
-    unsigned int status;
-    unsigned char busy;
-    unsigned char _pad[3];
-    unsigned int magic;
-    unsigned char _tail[0x10];
-} DVDPrepareEntry;
-
 extern unsigned char lbl_8037B8A0[32];
 extern unsigned int lbl_8055D8F0;
 extern unsigned char lbl_8055D8E0;
@@ -409,9 +400,10 @@ int fn_8003B0B0(void *arg0, void *arg1) {
 }
 
 int fn_8003B218(void *arg0) {
-    unsigned char *base = lbl_8037B820;
     const char *msg = lbl_80302848;
+    unsigned char *base = lbl_8037B820;
     int slot = lbl_8055D8E8;
+    int offset = slot << 5;
     unsigned int flag;
     unsigned char *p;
     unsigned char *entry;
@@ -419,7 +411,7 @@ int fn_8003B218(void *arg0) {
     int result;
 
     lbl_8055D8E0 = 1;
-    p = base + slot * 0x20;
+    p = base + offset;
     flag = p[8];
     if (((flag | -flag) >> 31) == 1U) {
         OSReport(msg + 0x218);
@@ -430,7 +422,7 @@ int fn_8003B218(void *arg0) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
-    ((unsigned int *)base)[slot * 8] = (unsigned int)arg0;
+    ((void **)base)[slot * 8] = arg0;
     index = slot + 1;
     *(unsigned int *)(p + 4) = 1;
     p[8] = 1;
@@ -440,7 +432,7 @@ int fn_8003B218(void *arg0) {
     }
     index = lbl_8055D8E4 + 1;
     lbl_8055D8E4 = index;
-    entry = base + slot * 0x20;
+    entry = base + offset;
     if (index >= 4) {
         index = 0;
         lbl_8055D8E4 = 0;
@@ -627,7 +619,8 @@ int fn_8003BB58(void *arg0) {
     int slot;
     unsigned char *entry;
     unsigned char *callbackEntry;
-    unsigned int busy;
+    unsigned char busy;
+    unsigned int one = 1;
     int next;
     int result;
 
@@ -637,7 +630,7 @@ int fn_8003BB58(void *arg0) {
         lbl_8055D8E4 = 0;
     }
     lbl_8055D8FC[index * 0x20] = 0x7A;
-    lbl_8055D8E0 = 1;
+    lbl_8055D8E0 = one;
     base = lbl_8037B820;
     slot = lbl_8055D8E8;
     entry = base + slot * 0x20;
@@ -652,8 +645,8 @@ int fn_8003BB58(void *arg0) {
         for (;;) {}
     }
     ((unsigned int *)base)[slot * 8] = (unsigned int)arg0;
-    *(unsigned int *)(entry + 4) = 1;
-    entry[8] = 1;
+    *(unsigned int *)(entry + 4) = one;
+    entry[8] = one;
     next = slot + 1;
     lbl_8055D8E8 = next;
     if (next >= 4) {
@@ -720,21 +713,9 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
 }
 
 int fn_8003BCDC(void *arg0) {
-    typedef struct {
-        void *callback;
-        unsigned int WORD_0x4;
-        unsigned char inUse;
-        unsigned char pad[3];
-        unsigned int magic;
-        unsigned int id;
-        unsigned char pad2[12];
-    } Ctx;
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
-    int slot;
-    int next;
-    unsigned int flag;
-    Ctx *ctx;
+    DVDLowContext *ctx;
     int result;
 
     lbl_8055D8E4 = index;
@@ -745,28 +726,8 @@ int fn_8003BCDC(void *arg0) {
     lbl_8055D8FC[index * 0x20] = 0x86;
     lbl_8055D8E0 = 1;
 
-    slot = lbl_8055D8E8;
-    flag = ((Ctx *)lbl_8037B820)[slot].inUse;
-    if (((flag | -flag) >> 31) == 1U) {
-        OSReport(msg + 0x218);
-        OSReport(msg + 0x250);
-        for (;;) {}
-    }
-    if (((Ctx *)lbl_8037B820)[slot].magic != 0xFEEBDAED) {
-        OSReport(msg + 0x280);
-        for (;;) {}
-    }
+    ctx = newContext(arg0, 1, msg);
 
-    ((Ctx *)lbl_8037B820)[slot].callback = arg0;
-    next = slot + 1;
-    ((Ctx *)lbl_8037B820)[slot].WORD_0x4 = 1;
-    ((Ctx *)lbl_8037B820)[slot].inUse = 1;
-    lbl_8055D8E8 = next;
-    if (next >= 4) {
-        lbl_8055D8E8 = 0;
-    }
-
-    ctx = &((Ctx *)lbl_8037B820)[slot];
     result = IOS_IoctlAsync(lbl_80558E18, 0x86, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, ctx);
     if (result != 0) {
         OSReport(msg + 0xB74, result);
