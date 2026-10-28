@@ -275,16 +275,21 @@ extern "C" void fn_802A1B20(void* arg0, s32 count) {
         virtual void invoke(void*, s32);
     };
     f32 value;
+    void** table;
+    void* obj;
+    s32 off;
+    s32 i;
+    s32 j;
     value = __fabs(fn_801E7E24());
     if (!(value <= lbl_80558DC4)) {
-        void** table = lbl_804BCF88;
-        s32 i = 0;
+        table = lbl_804BCF88;
+        i = 0;
         while (i < count) {
             if (*(u8*)((char*)arg0 + 0xC) != 0) {
-                s32 j = 0;
-                s32 off = 0;
+                j = 0;
+                off = 0;
                 do {
-                    void* obj = (char*)*(void**)arg0 + off;
+                    obj = (char*)*(void**)arg0 + off;
                     if (*(u8*)((char*)obj + 0xA0) != 0) {
                         s32 item = *(s32*)((char*)obj + 0xA8);
                         if (item >= 0 && item < 8 && table[item] != 0 &&
@@ -1207,9 +1212,8 @@ extern "C" void fn_802A4524(void *arg0) {
 
 extern "C" f32 fn_80287BC8(f32, f32);
 extern "C" f32 fn_801E7E18(f32);
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
-    register f32 saved = farg0;
     s32 index = *(s32*)((char*)arg0 + 4);
     if (index >= *(s32*)((char*)arg0 + 8))
         return;
@@ -1217,7 +1221,6 @@ extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
         lbl_80564730 - lbl_80558DC4;
     if (valid == 0)
         return;
-
     f32 first = *(f32*)arg1;
     f32 second = *(f32*)((char*)arg1 + 4);
     f32* dst = (f32*)(*(s32*)arg0 + (index << 5));
@@ -1233,7 +1236,7 @@ extern "C" void fn_802A4538(void* arg0, void* arg1, void* arg2, f32 farg0) {
     dst[5] = *(f32*)((char*)arg2 + 8) * *(f32*)((char*)arg0 + 0x24) +
         fn_80287BC8(-*(f32*)((char*)arg0 + 0x30), *(f32*)((char*)arg0 + 0x30));
     dst[6] = ((f32 (*)(void))fn_801E7E18)();
-    dst[7] = saved;
+    dst[7] = farg0;
     *(s32*)((char*)arg0 + 4) = *(s32*)((char*)arg0 + 4) + 1;
 }
 #pragma scheduling off
