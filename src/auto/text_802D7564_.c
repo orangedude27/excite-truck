@@ -555,6 +555,7 @@ void *fn_802D8C00(void *arg0, void *arg1) {
     fn_802D7780(obj, arg0);
     return obj;
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
