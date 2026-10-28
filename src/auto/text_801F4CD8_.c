@@ -1004,6 +1004,53 @@ void fn_801F7400(void *out, void *base, void *obj) {
     if (((int(*)(void*,int,void*,int))fn_801F52BC)(obj,(int)lbl_8033AD88,(char*)out+0x64,4)==0) *(float*)((char*)out+0x64)=lbl_80562FB8;
 }
 
+#pragma scheduling invalid_target
+extern void *fn_802C9C24(void *);
+extern void fn_802CD320(void *, int);
+extern char lbl_8033AF20[];
+extern char lbl_8033AF08[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling on
+void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
+    char *data = lbl_8033AC68;
+    void *sp8[0x1A];
+    void *temp_r30;
+    void *temp_r29;
+    void *allocated;
+
+    temp_r30 = ((void *(*)(void *))fn_802AE414)(arg1);
+    if (temp_r30 == 0) {
+        fn_802E317C(data + 0x80, arg1);
+    }
+    temp_r29 = fn_802C9C24(*(void **)((char *)*(void **)((char *)arg0 + 8) + 4));
+    fn_801F7400(sp8, arg1, temp_r30);
+
+    if ((fn_801F4ECC(temp_r30) & 1) == 0) {
+        ((void (*)(void *, void *, void *, void *, int))fn_801F6C04)(
+            lbl_8055EC10, sp8, temp_r29, temp_r30, arg3);
+        if (arg2 != 0 && lbl_8055EC1C == 0) {
+            allocated = fn_801284F8(4, data + 0x240);
+            if (allocated != 0) {
+                *(void **)allocated = lbl_8033AF20;
+                lbl_8055EC1C = allocated;
+                fn_802CD320(arg2, (int)allocated);
+            }
+        }
+    } else {
+        fn_801F6F3C(lbl_8055EC14, (int)sp8, (int)temp_r29, temp_r30, arg3);
+        if (arg2 != 0 && lbl_8055EC20 == 0) {
+            allocated = fn_801284F8(4, data + 0x254);
+            if (allocated != 0) {
+                *(void **)allocated = lbl_8033AF08;
+                lbl_8055EC20 = allocated;
+                fn_802CD320(arg2, (int)allocated);
+            }
+        }
+    }
+}
+#pragma pop
+
 void fn_801F76F8(void *arg0, unsigned char *p) {
     unsigned char a,b,c,d,e,f,g,h;
     int i;
