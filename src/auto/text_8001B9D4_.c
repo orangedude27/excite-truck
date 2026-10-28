@@ -1,7 +1,7 @@
 #include <types.h>
 
 extern char lbl_802FD6D8[];
-extern const char lbl_80558CD0[];
+extern const char lbl_80558CD0;
 extern u8 lbl_8055D5D8;
 extern void fn_802E30C8(const char *, ...);
 extern void *fn_801284F8(s32, const char *);
@@ -469,27 +469,33 @@ check:
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8001C9C4(void) {
-    s32 i = 0;
-    s32 offset = 0;
-    void **entry = lbl_80358658;
+    char *base = lbl_802FD6D8;
+    void **var_r27;
+    s32 var_r26;
+    s32 var_r28;
+    s32 var_r30 = 0x280;
+    s32 var_r31 = 0;
     void *descriptor;
 
-    fn_802E30C8(lbl_802FD6D8 + 0x344, 0x3E7D0);
-    lbl_8055D5CC = fn_801284F8(0x3E7D0, lbl_80558CD0);
+    var_r27 = lbl_80358658;
+    var_r26 = 0;
+    var_r28 = 0;
+    fn_802E30C8(base + 0x344, 0x3E7D0);
+    lbl_8055D5CC = fn_801284F8(0x3E7D0, (const char *)&lbl_80558CD0);
     memset(lbl_8055D5CC, 0, 0x3E7D0);
     do {
-        descriptor = fn_801284F8(0xC, lbl_802FD6D8 + 0x374);
+        descriptor = fn_801284F8(0xC, base + 0x374);
         if (descriptor != 0) {
-            *(u8 **)descriptor = lbl_8055D5CC + offset;
-            *(s32 *)((u8 *)descriptor + 8) = 0x280;
-            *(s32 *)((u8 *)descriptor + 4) = 0;
+            *(u8 **)descriptor = lbl_8055D5CC + var_r28;
+            *(s32 *)((u8 *)descriptor + 8) = var_r30;
+            *(s32 *)((u8 *)descriptor + 4) = var_r31;
         }
-        *entry = descriptor;
-        entry++;
-        i++;
-        offset += 0xDAC4;
-    } while (i < 4);
-    descriptor = fn_801284F8(0x14, lbl_802FD6D8 + 0x380);
+        var_r26++;
+        *var_r27 = descriptor;
+        var_r28 += 0xDAC4;
+        var_r27++;
+    } while (var_r26 < 4);
+    descriptor = fn_801284F8(0x14, base + 0x380);
     if (descriptor != 0) {
         *(u8 **)descriptor = lbl_8055D5CC + 0x3D7D0;
         *(s32 *)((u8 *)descriptor + 4) = 0x1000;
@@ -497,7 +503,7 @@ void fn_8001C9C4(void) {
     lbl_8055D5D0 = descriptor;
     fn_802E6BD8(0x53746174, 7, lbl_8055D5CC, 0x3E7D0, fn_8001D5F0);
     fn_8000DBC8(fn_8001D728);
-    lbl_8055D5D4 = (void *)fn_80131808(lbl_802FD6D8 + 0x390);
+    lbl_8055D5D4 = (void *)fn_80131808(base + 0x390);
     lbl_8055D5D8 = 1;
 }
 #pragma pop
