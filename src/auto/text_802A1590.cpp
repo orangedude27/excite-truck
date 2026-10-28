@@ -579,41 +579,41 @@ extern "C" void fn_802A2A38(void* arg0, void* arg1) {
 }
 #pragma scheduling on
 extern "C" void fn_802A2AE8(void* arg0, s32 arg1) {
-    u8 space[0xB0];
-    u8* cfg = space + 0x18;
-    fn_8028E61C(cfg);
-    *(s32*)(cfg + 4) = 0x200;
-    *(f32*)(cfg + 8) = lbl_80564740;
-    *(f32*)(cfg + 0xC) = lbl_80564730;
-    *(s32*)cfg = 0;
-    *(f32*)(cfg + 0x48) = lbl_80564798;
-    *(s32*)(cfg + 0x44) = 4;
-    *(f32*)(cfg - 0xC) = lbl_8056479C;
-    *(f32*)(cfg - 8) = lbl_80564760;
-    *(f32*)(cfg - 4) = lbl_8056479C;
-    *(f32*)(cfg + 0x10) = lbl_8056479C;
-    *(f32*)(cfg + 0x14) = lbl_80564760;
-    *(f32*)(cfg + 0x18) = lbl_8056479C;
-    *(f32*)(cfg - 0x18) = lbl_80564798;
-    *(f32*)(cfg - 0x14) = lbl_80564734;
-    *(f32*)(cfg - 0x10) = lbl_80564798;
-    *(f32*)(cfg + 0x1C) = lbl_80564798;
-    *(f32*)(cfg + 0x20) = lbl_80564734;
-    *(f32*)(cfg + 0x24) = lbl_80564798;
-    *(f32*)(cfg + 0x28) = lbl_80564730;
-    *(f32*)(cfg + 0x2C) = lbl_805647A0;
-    *(f32*)(cfg + 0x30) = lbl_80564744;
-    *(f32*)(cfg + 0x34) = lbl_80564740;
+    u8 space[0xA8];
+    u8* cfg = space;
+    fn_8028E61C(cfg + 0x18);
+    *(s32*)(cfg + 0x1C) = 0x200;
+    *(f32*)(cfg + 0x20) = lbl_80564740;
+    *(f32*)(cfg + 0x24) = lbl_80564730;
+    *(s32*)(cfg + 0x18) = 0;
+    *(f32*)(cfg + 0x60) = lbl_80564798;
+    *(s32*)(cfg + 0x5C) = 4;
+    *(f32*)(cfg + 0x0C) = lbl_8056479C;
+    *(f32*)(cfg + 0x10) = lbl_80564760;
+    *(f32*)(cfg + 0x14) = lbl_8056479C;
+    *(f32*)(cfg + 0x28) = lbl_8056479C;
+    *(f32*)(cfg + 0x2C) = lbl_80564760;
+    *(f32*)(cfg + 0x30) = lbl_8056479C;
+    *(f32*)(cfg + 0x00) = lbl_80564798;
+    *(f32*)(cfg + 0x04) = lbl_80564734;
+    *(f32*)(cfg + 0x08) = lbl_80564798;
+    *(f32*)(cfg + 0x34) = lbl_80564798;
+    *(f32*)(cfg + 0x38) = lbl_80564734;
+    *(f32*)(cfg + 0x3C) = lbl_80564798;
+    *(f32*)(cfg + 0x40) = lbl_80564730;
+    *(f32*)(cfg + 0x44) = lbl_805647A0;
+    *(f32*)(cfg + 0x48) = lbl_80564744;
+    *(f32*)(cfg + 0x4C) = lbl_80564740;
+    *(f32*)(cfg + 0x8C) = lbl_80564730;
+    *(f32*)(cfg + 0x84) = lbl_80564730;
+    *(f32*)(cfg + 0x7C) = lbl_80564730;
+    *(f32*)(cfg + 0x70) = lbl_8056475C;
     *(f32*)(cfg + 0x74) = lbl_80564730;
-    *(f32*)(cfg + 0x6C) = lbl_80564730;
-    *(f32*)(cfg + 0x64) = lbl_80564730;
-    *(f32*)(cfg + 0x58) = lbl_8056475C;
-    *(f32*)(cfg + 0x5C) = lbl_80564730;
-    *(f32*)(cfg + 0x50) = lbl_805647A4;
-    *(f32*)(cfg + 0x54) = lbl_80564734;
-    *(f32*)(cfg + 0x78) = lbl_805647A8;
-    *(f32*)(cfg + 0x7C) = lbl_80564764;
-    *(s32*)((char*)arg0 + 4) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(cfg, lbl_80349A00, arg1);
+    *(f32*)(cfg + 0x68) = lbl_805647A4;
+    *(f32*)(cfg + 0x6C) = lbl_80564734;
+    *(f32*)(cfg + 0x90) = lbl_805647A8;
+    *(f32*)(cfg + 0x94) = lbl_80564764;
+    *(s32*)((char*)arg0 + 4) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(cfg + 0x18, lbl_80349A00, arg1);
 }
 
 extern "C" void fn_802A2BF4(void* arg0, s32 arg1) {
