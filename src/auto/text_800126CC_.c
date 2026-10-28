@@ -28,7 +28,7 @@ extern int fn_80007F90(int);
 extern int fn_801345D8(void *, int, const char *, ...);
 void fn_80012984();
 #pragma scheduling invalid_target
-void *fn_800126CC(int arg0) {
+void *fn_800126CC(int arg0) DECOMP_DONT_INLINE {
     volatile int *table = (volatile int *)lbl_802FC638;
     int i = 0;
     if (arg0 != table[0]) {
@@ -147,6 +147,52 @@ void fn_80012954(void) {
     char *p = fn_80012820(*(int *)((char *)fn_8001285C() + 4));
     fn_80012938(*(float *)(p + 0x78));
 }
+
+void fn_80012984(int arg0) {
+    char sp8[0x80];
+    char *base = lbl_802FC610;
+    void *temp_r3;
+    int val;
+
+    fn_8013C804();
+    temp_r3 = fn_800126CC(arg0);
+    lbl_8055D514 = 0;
+    lbl_80558AD8 = *(int *)temp_r3;
+    lbl_8055D508 = 0;
+    lbl_8055D51C = 0;
+    lbl_8055D504 = 0;
+    lbl_8055D518 = 0;
+
+    val = *(int *)((char *)temp_r3 + 8);
+    if (val != 0) {
+        fn_80013618(val);
+    }
+    if (fn_8019B3C() != 0) {
+        fn_80013618((int)(base + 0x128));
+    }
+    if (fn_8019B54() != 0) {
+        fn_80013618((int)(base + 0x138));
+    }
+    fn_80013724();
+    lbl_8055D50C = (int)lbl_8055D504;
+    lbl_8055D510 = lbl_8055D508;
+
+    if (*(unsigned char *)((char *)temp_r3 + 0x11) != 0) {
+        char *p = lbl_80352AD0;
+        char *table = lbl_803518C0;
+        int i;
+        for (i = 0; i < lbl_8055D510; i++, p += 0x28) {
+            fn_801345D8(sp8, 0x80, base + 0x144,
+                        *(int *)((char *)temp_r3 + 4),
+                        table + *(int *)(p + 4) * 0x84 + 8,
+                        fn_80007F90(*(int *)(p + 8)));
+        }
+    }
+    fn_80013A34();
+    fn_8013C8B8();
+    lbl_8055D500 = 1;
+}
+
 int fn_800132E4(void *arg0, int arg1, int arg2) {
     if (((int (*)(void))(*(void ***)arg0)[3])() != 0) {
         return ((int (*)(void *, int))(*(void ***)arg0)[7])(arg0, arg1);
