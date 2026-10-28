@@ -227,18 +227,18 @@ static inline void nextCommandBuf(void) {
     }
 }
 
-static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const char *msg) {
+static inline DVDLowContext *newContext(void *callback, unsigned int arg2, ...) {
     int id;
     unsigned int flag;
 
     flag = ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].inUse;
     if (((-flag | flag) >> 31) == 1U) {
-        OSReport(msg + 0x218, (int)lbl_8055D8E8);
-        OSReport(msg + 0x250);
+        OSReport(lbl_80302848 + 0x218, (int)lbl_8055D8E8);
+        OSReport(lbl_80302848 + 0x250);
         for (;;) {}
     }
     if (((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].magic != 0xFEEBDAED) {
-        OSReport(msg + 0x280);
+        OSReport(lbl_80302848 + 0x280);
         for (;;) {}
     }
 
@@ -509,32 +509,46 @@ int fn_8003B380(int value) {
 
 int fn_8003B38C(void *arg0) {
     const char *msg = lbl_80302848;
+    unsigned char *base = lbl_8037B820;
     int slot = lbl_8055D8E8;
-    unsigned char *entry = lbl_8037B820 + slot * 0x20;
+    unsigned char *entry = base + slot * 0x20;
+    unsigned int busy;
+    int next;
     int index;
     int result;
+
     lbl_8055D8E0 = 1;
-    if ((entry[8] & -entry[8]) == 1) {
+    busy = entry[8];
+    if (((busy | (0U - busy)) >> 31) == 1U) {
         OSReport(msg + 0x218);
         OSReport(msg + 0x250);
         for (;;) {}
     }
-    if (((unsigned int)*(unsigned int *)(entry + 0xC) + 0x01150000) != 0xFEEBDAED) {
+    if ((*(unsigned int *)(entry + 0xC) + 0x01150000U) != 0xDAEDU) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
-    *(void **)entry = arg0;
-    slot = slot + 1;
+    ((unsigned int *)base)[slot * 8] = (unsigned int)arg0;
+    next = slot + 1;
     *(unsigned int *)(entry + 4) = 1;
     entry[8] = 1;
-    lbl_8055D8E8 = slot;
-    if (slot >= 4) slot = 0;
+    lbl_8055D8E8 = next;
+    if (next >= 4) {
+        next = 0;
+        lbl_8055D8E8 = 0;
+    }
     index = lbl_8055D8E4 + 1;
     lbl_8055D8E4 = index;
-    if (index >= 4) index = 0;
-    entry = lbl_8037B820 + slot * 0x20;
+    if (index >= 4) {
+        index = 0;
+        lbl_8055D8E4 = 0;
+    }
+    entry = base + slot * 0x20;
     lbl_8055D8FC[index * 0x20] = 0x8A;
-    result = IOS_IoctlAsync(lbl_80558E18, 0x8A, lbl_8055D8FC + index * 0x20, 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, entry);
+    *(unsigned int *)(lbl_8055D8FC + index * 0x20 + 4) = lbl_8055D8F0;
+    result = IOS_IoctlAsync(lbl_80558E18, 0x8A,
+        lbl_8055D8FC + index * 0x20, 0x20, 0, 0,
+        (void (*)(int, void *))doTransactionCallback, entry);
     if (result != 0) {
         OSReport(msg + 0x5E0, result);
         entry[8] = 0;
