@@ -444,26 +444,50 @@ static inline void MatrixMul801FD5E8(float* dst, const float* left, const float*
 
 extern "C" void fn_8012F57C(float*, void*, void*, float);
 extern "C" float lbl_80563030;
+#pragma scheduling invalid_target
 extern "C" void fn_801FD320(void* arg0, float t) {
-    float q[4];
-    float x2, y2, z2, xx, yy, zz, xy, xz, yz, wx, wy, wz;
-    fn_8012F57C(q, (char*)arg0 + 0x44, (char*)arg0 + 0x54, t);
-    x2 = q[0] + q[0]; y2 = q[1] + q[1]; z2 = q[2] + q[2];
-    xx = q[0] * x2; yy = q[1] * y2; zz = q[2] * z2;
-    wx = q[3] * x2; wy = q[1] * z2;
-    *(float*)((char*)arg0 + 0xC) = lbl_80563030 - (yy + zz);
-    wz = q[3] * y2; xy = q[1] * z2; yz = q[3] * z2;
-    *(float*)((char*)arg0 + 0x1C) = lbl_80563030 - (xx + zz);
-    xz = q[0] * y2;
-    *(float*)((char*)arg0 + 0x28) = wy - wx;
-    *(float*)((char*)arg0 + 0x24) = xy + wz;
-    *(float*)((char*)arg0 + 0x18) = xz - yz;
-    *(float*)((char*)arg0 + 0x10) = xz + yz;
-    *(float*)((char*)arg0 + 0x14) = xy - wz;
-    *(float*)((char*)arg0 + 0x20) = wy + wx;
-    *(float*)((char*)arg0 + 0x2C) = lbl_80563030 - (xx + yy);
+    volatile float q[4];
+    fn_8012F57C((float*)q, (char*)arg0 + 0x44, (char*)arg0 + 0x54, t);
+    float x = q[0];
+    float y = q[1];
+    float z = q[2];
+    float x2 = x + x;
+    float y2 = y + y;
+    float w = q[3];
+    float z2 = z + z;
+    float xx = x * x2;
+    float yy = y * y2;
+    float zz = z * z2;
+    float one = lbl_80563030;
+    float wx = w * x2;
+    float yz = y * z2;
+    float sum0 = yy + zz;
+    float sum1 = xx + zz;
+    float sum2 = xx + yy;
+    float r0 = one - sum0;
+    float r1 = one - sum1;
+    float r2 = one - sum2;
+    float m28 = yz - wx;
+    *(float*)((char*)arg0 + 0xC) = r0;
+    float m20 = yz + wx;
+    float wy = w * y2;
+    float xz = x * z2;
+    float wz = w * z2;
+    *(float*)((char*)arg0 + 0x1C) = r1;
+    float xy = x * y2;
+    float m24 = xy + wz;
+    float m14 = xy - wz;
+    float m18 = xz - wy;
+    float m10 = xz + wy;
+    *(float*)((char*)arg0 + 0x28) = m28;
+    *(float*)((char*)arg0 + 0x24) = m24;
+    *(float*)((char*)arg0 + 0x18) = m18;
+    *(float*)((char*)arg0 + 0x10) = m10;
+    *(float*)((char*)arg0 + 0x14) = m14;
+    *(float*)((char*)arg0 + 0x20) = m20;
+    *(float*)((char*)arg0 + 0x2C) = r2;
 }
-
+#pragma scheduling on
 extern "C" void fn_801FD5E8(void* arg0, float farg0) {
     char* obj = (char*)arg0;
     char* track = *(char**)(obj + 4);
@@ -657,25 +681,28 @@ extern "C" double __fabs(double);
 #pragma push
 #pragma processor 750
 __declspec(section ".data") extern float lbl_80558DC4;
-extern "C" void fn_801FE448(void* arg0) {
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_801FE448(void *arg0) {
     float delta = fn_801E7E24();
-    if ((float)__fabs((double)delta) != lbl_80558DC4) {
+    if (!((float)__fabs((double)delta) <= lbl_80558DC4)) {
         float threshold = lbl_80563034;
-        char* item = (char*)arg0 + 4;
+        char *item = (char *)arg0 + 4;
         int i = 0;
-        while (i < *(int*)((char*)arg0 + 0x34)) {
-            float time = *(float*)(item + 4) - delta;
-            *(float*)(item + 4) = time;
+        while (i < *(int *)((char *)arg0 + 0x34)) {
+            float time = *(float *)(item + 4) - delta;
+            *(float *)(item + 4) = time;
             if (time <= threshold) {
-                fn_801FEB58(*(void**)item);
-                void* obj = *(void**)item;
-                *(float*)(item + 4) = fn_80129DC4(0, obj, *(float*)((char*)obj + 0x314), *(float*)((char*)obj + 0x318));
+                fn_801FEB58(*(void **)item);
+                void *obj = *(void **)item;
+                *(float *)(item + 4) = fn_80129DC4(0, obj, *(float *)((char *)obj + 0x314), *(float *)((char *)obj + 0x318));
             }
             item += 8;
             ++i;
         }
     }
 }
+#pragma scheduling on
 #pragma pop
 extern "C" void fn_802C7040(int);
 float fn_80129DC4(int, void *, float, float);
@@ -807,7 +834,7 @@ extern "C" void* fn_801FE9E8(void* arg0, int arg1) {
 }
 
 extern const char lbl_8033B84C[];
-int stricmp(const char*, const char*);
+extern "C" int stricmp(const char*, const char*);
 int fn_80129D18(int);
 void fn_801FCAE0(void*, void*);
 void fn_801FD024(void*, void*);
@@ -1041,6 +1068,34 @@ extern "C" void fn_801FF420(void* arg0) {
         fn_801FF644(arg0, entry);
         entry += 0x58;
         i++;
+    }
+}
+
+extern "C" void fn_801FF58C(void*, char*, const char*);
+extern "C" void fn_801FF484(void *arg0, void *arg1) {
+    char *entry = (char *)arg0;
+    int i = 0;
+    do {
+        if (stricmp(*(const char **)arg1, entry) == 0) {
+            entry = (char *)arg0 + i * 0x58;
+            break;
+        }
+        entry += 0x58;
+        i++;
+    } while (i < *(int *)((char *)arg0 + 0x2C0));
+    if (i >= *(int *)((char *)arg0 + 0x2C0)) entry = 0;
+    if (entry == 0) {
+        int count = *(int *)((char *)arg0 + 0x2C0);
+        if (count >= 8) fn_802E317C(lbl_8033B8EC, 8);
+        entry = (char *)arg0 + count * 0x58;
+        fn_801FF58C(arg0, entry, (const char *)*(int *)arg1);
+        *(int *)((char *)arg0 + 0x2C0) = count + 1;
+    }
+    {
+        int count = *(int *)(entry + 0x50);
+        if (count + 1 > 8) fn_802E317C(lbl_8033B90C, 8);
+        *(void **)(entry + 0x10 + count * 4) = arg1;
+        *(int *)(entry + 0x50) = count + 1;
     }
 }
 
