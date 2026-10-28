@@ -457,9 +457,8 @@ check:
     }
 }
 #pragma cplusplus reset
-extern float PSVECMag(void *);
+extern "C" float PSVECMag(const void *);
 extern float lbl_805646BC;
-extern "C" float PSVECMag(void *);
 extern "C" void fn_802A0098(void *out, void *arg0, void *arg1) {
     float span = *(float *)((char *)arg0 + 4) * PSVECMag((char *)arg1 + 0xC);
     float limit = lbl_805646BC;
@@ -488,6 +487,10 @@ extern int fn_8028E590(int, float *, float *, float);
 extern float lbl_805646C4;
 #pragma push
 #pragma cplusplus off
+extern float fn_80287BC8(float, float);
+#pragma push
+#pragma processor 750
+#pragma cplusplus off
 void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
     struct Result {
         int count;
@@ -495,18 +498,29 @@ void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
     } out;
     float a[3];
     float b[3];
+    float a0, a1, a2;
+    float b0, b1, b2;
+    unsigned char flag;
     int i;
 
     fn_802A0098(&out, arg0, params);
     for (i = 0; i < out.count; i++) {
-        a[2] = out.data[2] + fn_80287BC8(-out.data[6], out.data[6]);
-        a[1] = out.data[1] + fn_80287BC8(-out.data[7], out.data[7]);
-        a[0] = out.data[0] + fn_80287BC8(-out.data[6], out.data[6]);
-        b[2] = out.data[5] + fn_80287BC8(-out.data[8], out.data[8]);
-        b[1] = out.data[4] + fn_80287BC8(-out.data[9], out.data[9]);
-        b[0] = out.data[3] + fn_80287BC8(-out.data[8], out.data[8]);
+        a2 = out.data[2] + fn_80287BC8(-out.data[6], out.data[6]);
+        a1 = out.data[1] + fn_80287BC8(-out.data[7], out.data[7]);
+        a0 = out.data[0] + fn_80287BC8(-out.data[6], out.data[6]);
+        a[0] = a0;
+        a[1] = a1;
+        a[2] = a2;
 
-        if (*(unsigned char *)((char *)arg0 + 0x68) != 0) {
+        b2 = out.data[5] + fn_80287BC8(-out.data[8], out.data[8]);
+        b1 = out.data[4] + fn_80287BC8(-out.data[9], out.data[9]);
+        b0 = out.data[3] + fn_80287BC8(-out.data[8], out.data[8]);
+        b[1] = b1;
+        flag = *(unsigned char *)((char *)arg0 + 0x68);
+        b[2] = b2;
+        b[0] = b0;
+
+        if (flag != 0) {
             fn_8028E590(*(int *)((char *)arg0 + 0x64), a, b, lbl_805646C4);
         } else {
             fn_8028E584(*(int *)((char *)arg0 + 0x64), a, b);
@@ -514,6 +528,7 @@ void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
     }
 }
 #pragma pop
+#pragma cplusplus on
 extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
 extern void* fn_801E8718(int);
 extern float PSVECDotProduct(const float*, const float*);
