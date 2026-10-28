@@ -970,6 +970,7 @@ extern "C" void fn_801EE0C8(int);
 extern "C" void fn_802C77F0(int, float *);
 extern "C" int lbl_80488648[];
 extern "C" float lbl_80564608;
+#pragma dont_inline on
 extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     float a[3], b[3], c[3], screen[6];
     void *data;
