@@ -49,7 +49,7 @@ static inline const char *call_get_name(void *item) {
 }
 
 #pragma use_lmw_stmw off
-#pragma dont_inline on
+#pragma dont_inline off
 void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
     char sp8[0x28];
     char sp30[0xE0];
