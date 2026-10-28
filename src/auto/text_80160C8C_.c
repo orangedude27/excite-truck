@@ -352,7 +352,7 @@ extern int lbl_8055A0DC;
 extern f32 lbl_80561844;
 extern void fn_80148070(void *, s32, s32);
 extern void fn_80148134(f32 *, f32 *, s32, f32, f32);
-extern void fn_800103B8(s32, s32, f32, f32, f32, f32, const char *, ...);
+extern void fn_800103B8(s32, s32, s32 *, s32, f32, f32, f32, f32, ...);
 extern void fn_801473F8(void *, const char *, ...);
 #pragma cplusplus on
 extern "C" void fn_80161438(void) {}
@@ -889,15 +889,14 @@ extern s32 lbl_8055A0C0;
 #pragma cplusplus on
 extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     s32 pad[0x2e];
+    register const char *label1;
+    register const char *label2;
+    register s32 value;
+    void *obj;
     s32 *manager;
     s32 *item;
     s32 selection;
     s32 index;
-    s32 value;
-    void *obj;
-    void *subobj;
-    register const char *label1;
-    register const char *label2;
 
     fn_80161D14();
     value = fn_80161E40(arg0);
@@ -908,17 +907,13 @@ extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     ((void (*)(s32, s32))fn_80137C84)(fn_802E4A10(), 0);
     manager = *(s32 **)((char *)fn_80016464(0) + 4);
     item = *(s32 **)((char *)fn_800165DC((s32)manager) + 4);
-    subobj = *(void **)((char *)obj + 0x20);
-    if (((Obj_80161F10 *)subobj)->has(label1)) {
-        subobj = *(void **)((char *)obj + 0x20);
+    if (((Obj_80161F10 *)*(void **)((char *)obj + 0x20))->has(label1)) {
         item = *(s32 **)((char *)((void *(*)(void *, s32))fn_8001668C)(
-            ((Obj_80161F10 *)subobj)->set(label1), 0) + 4);
+            ((Obj_80161F10 *)*(void **)((char *)obj + 0x20))->set(label1), 0) + 4);
     }
     selection = *(s32 *)((char *)fn_80016464((s32)manager) + 0x50);
-    subobj = *(void **)((char *)obj + 0x20);
-    if (((Obj_80161F10 *)subobj)->has(label2)) {
-        subobj = *(void **)((char *)obj + 0x20);
-        index = ((Obj_80161F10 *)subobj)->index(label2);
+    if (((Obj_80161F10 *)*(void **)((char *)obj + 0x20))->has(label2)) {
+        index = ((Obj_80161F10 *)*(void **)((char *)obj + 0x20))->index(label2);
         selection = *(s32 *)((char *)fn_80016544((s32)item) + index * 4 + 0x64);
     }
     fn_8000DA10();
