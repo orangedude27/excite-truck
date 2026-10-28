@@ -42,6 +42,7 @@ extern int lbl_8055F6DC;
 extern int lbl_8055C880;
 extern float lbl_80564280, lbl_8056428C, lbl_8056429C, lbl_805642A4, lbl_805642BC, lbl_805642C0, lbl_805642C4, lbl_805642C8, lbl_805642D4, lbl_805642D8, lbl_805642DC, lbl_805642E0, lbl_805642E4, lbl_805642E8, lbl_805642EC;
 extern char lbl_80348B10[];
+extern char lbl_80348B6C[];
 extern void *lbl_8055F6E0;
 extern int lbl_8055F6E4;
 extern int fn_80289554(int);
@@ -318,23 +319,23 @@ int fn_80289154(int arg0) {
     register int five;
 
     fn_8028E61C((int *)&frame.sp20);
-    f9 = lbl_8056428C;
+    f9 = *(volatile float *)&lbl_8056428C;
     size = 0x60;
-    f10 = lbl_80564288;
+    f10 = *(volatile float *)&lbl_80564288;
     two = 2;
-    f5 = lbl_80564298;
-    f4 = lbl_8056429C;
+    f5 = *(volatile float *)&lbl_80564298;
+    f4 = *(volatile float *)&lbl_8056429C;
     five = 5;
-    f13 = lbl_8056427C;
-    f12 = lbl_80564280;
-    f11 = lbl_80564284;
-    f8 = lbl_80564274;
-    f7 = lbl_80564290;
-    f6 = lbl_80564294;
-    f3 = lbl_805642A0;
-    f2 = lbl_805642A4;
-    f1 = lbl_805642A8;
-    f0 = lbl_805642AC;
+    f13 = *(volatile float *)&lbl_8056427C;
+    f12 = *(volatile float *)&lbl_80564280;
+    f11 = *(volatile float *)&lbl_80564284;
+    f8 = *(volatile float *)&lbl_80564274;
+    f7 = *(volatile float *)&lbl_80564290;
+    f6 = *(volatile float *)&lbl_80564294;
+    f3 = *(volatile float *)&lbl_805642A0;
+    f2 = *(volatile float *)&lbl_805642A4;
+    f1 = *(volatile float *)&lbl_805642A8;
+    f0 = *(volatile float *)&lbl_805642AC;
 
     frame.sp24 = size;
     frame.sp28 = f13;
@@ -368,8 +369,8 @@ int fn_80289154(int arg0) {
     frame.sp7C = f2;
     frame.sp70 = f1;
     frame.sp74 = f5;
-    *(float *)frame.tail = f0;
-    *(float *)(frame.tail + 4) = f9;
+    frame.sp98 = f0;
+    frame.sp9C = f9;
 
     return *(int *)((char *)arg0 + 0x60) =
         fn_8028E2F8((int *)&frame.sp20, (int *)&lbl_80348AE8, lbl_8055C880, two,
