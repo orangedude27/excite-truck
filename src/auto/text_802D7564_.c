@@ -429,6 +429,7 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802D9628(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     int mip;
     int wrap;
