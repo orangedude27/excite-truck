@@ -282,7 +282,8 @@ void fn_802B21D4(void **arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802B224C(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_802B224C(void *arg0) {
     char name[16];
     void *object;
     int index;
