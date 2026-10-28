@@ -305,7 +305,7 @@ void fn_8017248C(int arg0) {
     temp_f29 = lbl_80561A78;
     sp[2] = *(float *)((char *)state + 0x68);
 
-    wave = (float)((double (*)(float, double))fn_8002EFB4)(
+    wave = (float)fn_8002EFB4(
         (lbl_80561A7C * (lbl_80561A80 * (float)arg0)) + lbl_8055E3C8,
         lbl_80561A88) - lbl_80561A40;
     offset = temp_f30 + (temp_f29 * (lbl_80561A40 - ((wave * wave) / lbl_80561A40)));
