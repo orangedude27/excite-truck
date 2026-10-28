@@ -273,18 +273,26 @@ check:
 extern int fn_801E4A6C(int *, const char *);
 extern int fn_801E4BA8(int *);
 void fn_8022B390(const char *arg0, const char *arg1, int arg2, int *arg3, int *arg4) {
-    void *p = fn_8022CA2C();
-    char sp8 = 0;
-    int i = 0;
-    int x = *(int *)((char *)p + 0x44);
-    int y = *(int *)((char *)p + 0x48);
+    union LocalChar {
+        short half;
+        char byte;
+    } sp8;
+    void *p;
+    int x;
+    int y;
+    int i;
+    p = fn_8022CA2C();
+    sp8.half = 0;
+    i = 0;
+    x = *(int *)((char *)p + 0x44);
+    y = *(int *)((char *)p + 0x48);
     while (*arg1 != 0 && i < arg2) {
         if (*arg1 != 10) {
-            sp8 = *arg1;
+            sp8.byte = *arg1;
             if (*(int *)((char *)p + 8) != 0) {
-                x += (int)((float (*)(void *, char *, float))fn_8023293C)(*(void **)((char *)p + 8), &sp8, lbl_80563588);
+                x += (int)((float (*)(void *, char *, float))fn_8023293C)(*(void **)((char *)p + 8), &sp8.byte, lbl_80563588);
             } else if (*(int *)((char *)p + 4) != 0) {
-                x += fn_801E4A6C(*(int **)((char *)p + 4), &sp8);
+                x += fn_801E4A6C(*(int **)((char *)p + 4), &sp8.byte);
             }
         } else {
             if (*(int *)((char *)p + 8) != 0) {
