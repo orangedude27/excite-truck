@@ -465,6 +465,42 @@ check:
     return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
+void fn_8001C9C4(void) {
+    s32 i = 0;
+    s32 offset = 0;
+    void **entry = lbl_80358658;
+    void *descriptor;
+
+    fn_802E30C8(lbl_802FD6D8 + 0x344, 0x3E7D0);
+    lbl_8055D5CC = fn_801284F8(0x3E7D0, lbl_80558CD0);
+    memset(lbl_8055D5CC, 0, 0x3E7D0);
+    do {
+        descriptor = fn_801284F8(0xC, lbl_802FD6D8 + 0x374);
+        if (descriptor != 0) {
+            *(u8 **)descriptor = lbl_8055D5CC + offset;
+            *(s32 *)((u8 *)descriptor + 8) = 0x280;
+            *(s32 *)((u8 *)descriptor + 4) = 0;
+        }
+        *entry = descriptor;
+        entry++;
+        i++;
+        offset += 0xDAC4;
+    } while (i < 4);
+    descriptor = fn_801284F8(0x14, lbl_802FD6D8 + 0x380);
+    if (descriptor != 0) {
+        *(u8 **)descriptor = lbl_8055D5CC + 0x3D7D0;
+        *(s32 *)((u8 *)descriptor + 4) = 0x1000;
+    }
+    lbl_8055D5D0 = descriptor;
+    fn_802E6BD8(0x53746174, 7, lbl_8055D5CC, 0x3E7D0, fn_8001D5F0);
+    fn_8000DBC8(fn_8001D728);
+    lbl_8055D5D4 = (void *)fn_80131808(lbl_802FD6D8 + 0x390);
+    lbl_8055D5D8 = 1;
+}
+
 extern void fn_80131818(void *);
 extern int fn_80128668();
 void fn_8001CAF8(void) {
