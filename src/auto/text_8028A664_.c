@@ -41,6 +41,7 @@ extern s32 fn_80128668(void);
 #pragma cplusplus on
 #pragma cplusplus off
 #pragma push
+#pragma optimize_for_size on
 #pragma scheduling invalid_target
 void fn_8028A664(void) {
     extern char lbl_80348B98[];
@@ -64,7 +65,7 @@ void fn_8028A664(void) {
     register char *data asm("r31") = lbl_80348B98;
     void *p;
 
-    p = fn_801284F8(0xDC, data + 0);
+    p = fn_801284F8(0xDC, lbl_80348B98 + 0);
     if (p != 0) p = fn_8028BB68(p, 0x80, lbl_80564328);
     lbl_8055F6F0 = (s32)p;
     p = fn_801284F8(0xDC, data + 0x10);
