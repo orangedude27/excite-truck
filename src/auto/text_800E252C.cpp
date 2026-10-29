@@ -40,6 +40,16 @@ extern "C" void AXSetVoiceState(void *, unsigned int);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void **, void *);
+extern "C" int AIGetDMAStatus(void);
+extern "C" void AXGetAuxACallback(void *, void *);
+extern "C" void AXGetAuxBCallback(void *, void *);
+extern "C" void AXGetAuxCCallback(void *, void *);
+extern "C" void DCFlushRange(void *, unsigned int);
+extern "C" void *memset(void *, int, unsigned int);
+extern "C" void fn_800E41EC(void);
+extern const char lbl_80321F94[];
+extern const char lbl_80322130[], lbl_80322154[];
+extern unsigned char lbl_80407E60[];
 extern const char lbl_80322094[];
 extern const char lbl_80322070[];
 extern const char lbl_80321F80[];
@@ -1068,13 +1078,16 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
     void *sentinel;
     void *node;
     void *list;
+    unsigned int base;
 
     interrupt = OSDisableInterrupts();
     valid = 0;
     if (arg1 >= 0 && arg1 < 3) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322198, 0xBD, lbl_80322160, arg1, 0, 3);
-    list = (char *)arg0 + arg1 * 0xC + 0x6CCC;
-    if (*(int *)list == 0) {
+    base = (unsigned int)arg0 + arg1 * 0xC;
+    int count = *(int *)(base + 0x6CCC);
+    list = (void *)(base + 0x6CCC);
+    if (count == 0) {
         OSRestoreInterrupts(interrupt);
         return;
     }
