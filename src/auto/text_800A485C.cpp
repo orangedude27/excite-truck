@@ -3480,6 +3480,48 @@ extern s32 fn_800B5618(void *, s32, s32, s32, u16);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma pop
+#pragma dont_inline fn_800AF144
+extern "C" s32 fn_800AF144(void *arg0) {
+    void *sp10;
+    s32 spC;
+    u32 sp8;
+    s32 result;
+    s32 var_r30 = 0;
+    u16 sectorCount = *(u16 *)((u8 *)arg0 + 0x14);
+    u16 sectorSize = *(u16 *)arg0;
+    if (*(u16 *)((u8 *)arg0 + 0x1FAC) & 4) {
+        result = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8D08)(arg0, -1, &sp10, &spC);
+        if (result != 0)
+            return result;
+        result = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))fn_800B5324)(
+            arg0, (u8 *)*(void **)((u8 *)sp10 + 8), sectorCount, 0,
+            sectorSize, &sp8, 0);
+        var_r30 = result;
+        if (result == 0 && sp8 != sectorSize)
+            var_r30 = 0x11;
+        if (var_r30 == 0) {
+            u8 *pageData = *(u8 **)((u8 *)sp10 + 8);
+            u32 value = *(u32 *)((u8 *)arg0 + 0x38);
+            if (((u32)(pageData + 0x1E8) & 3) != 0) {
+                pageData[0x1E8] = (u8)value;
+                pageData[0x1E9] = (u8)(value >> 8);
+                pageData[0x1EA] = (u8)(value >> 16);
+                pageData[0x1EB] = (u8)(value >> 24);
+            } else {
+                *(u32 *)(pageData + 0x1E8) =
+                    (value >> 24) | ((value >> 8) & 0x0000FF00) |
+                    ((value << 8) & 0x00FF0000) | (value << 24);
+            }
+            result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
+                (s32)arg0, pageData, sectorCount, 0, sectorCount, &sp8, 0);
+            var_r30 = result;
+            if (result == 0 && sp8 != sectorSize)
+                var_r30 = 0x11;
+        }
+        VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+    }
+    return var_r30;
+}
 extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4, s32 arg5, s32 arg6) {
     void *context = *(void **)((u8 *)arg0 + 0x34);
     u32 first;
@@ -4257,6 +4299,64 @@ extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4)
     if (result != 0)
         saved = result;
     return saved;
+}
+
+extern "C" s32 fn_800B00E8(void *arg0, u16 arg1, u32 *arg2, void *arg3) {
+    u16 flags = *(u16 *)((u8 *)arg0 + 0x18);
+    u32 scaled = (u32)arg1 * 2;
+    u32 sector = (u16)(*(u32 *)((u8 *)arg0 + 0x28) +
+                       (scaled >> *(u8 *)((u8 *)arg0 + 0x20)));
+    u32 retry = 1;
+    void *buffer = *(void **)((u8 *)arg3 + 8);
+    u32 maxRetry = *(u8 *)((u8 *)arg0 + 0x22);
+    u16 value;
+    s32 result;
+
+    if (flags & 0x80) {
+        retry = flags & 7;
+        if (*(u32 *)((u8 *)arg3 + 0x18) == sector)
+            goto read_value;
+        if (*(u16 *)((u8 *)arg3 + 2) == 1) {
+            u32 i = 0;
+            do {
+                fn_800B5618(arg0, buffer,
+                            *(u32 *)((u8 *)arg3 + 0x18) +
+                                i * *(u32 *)((u8 *)arg0 + 0xC),
+                            0, *(u16 *)arg0);
+                i++;
+            } while (i < maxRetry);
+        }
+    }
+
+fetch:
+    result = fn_800B5260(arg0, buffer, sector, 0, *(u16 *)arg0);
+    if (result == 0x1000) {
+        s32 (*callback)(void *) =
+            *(s32 (**)(void *))((u8 *)arg0 + 0x1FC0);
+        if (callback != 0) {
+            s32 callbackResult =
+                callback(*(void **)((u8 *)arg0 + 0x1F84));
+            if (callbackResult == 0) {
+                *(u32 *)((u8 *)arg3 + 0x18) = sector;
+                goto fetch;
+            }
+            if (callbackResult == 1 && maxRetry >= 2 && retry < maxRetry) {
+                retry++;
+                sector += *(u32 *)((u8 *)arg0 + 0xC);
+                *(u32 *)((u8 *)arg3 + 0x18) = sector;
+                goto fetch;
+            }
+        }
+        return result;
+    }
+    if (result != 0)
+        return result;
+    *(u32 *)((u8 *)arg3 + 0x18) = sector;
+
+read_value:
+    value = *(u16 *)((u8 *)buffer + (scaled & (*(u16 *)arg0 - 1)));
+    *arg2 = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
+    return 0;
 }
 
 extern "C" s32 fn_800B0258(void *arg0, s32 arg1, s32 *arg2) {
