@@ -13472,6 +13472,36 @@ void PORT_DlcEstablishInd(s32 arg0, s32 arg1, s32 arg2) {
     port[2] = 2;
 }
 
+extern char lbl_80319240[];
+extern void fn_800939A0(void *, u8);
+extern void RFCOMM_ControlReq(void *, u8, void *);
+void PORT_PortNegCnf(void *mcb, u8 dlci, void *p_pars, u16 result) {
+    register char *messages = lbl_80319240;
+    struct t_port_info *port;
+
+    port = (struct t_port_info *)port_find_mcb_dlci_port(mcb, dlci);
+    if (lbl_803C4828[0x414] >= 4)
+        fn_8007093C(0x90003, messages + 0x150);
+    if (port == 0) {
+        if (lbl_803C4828[0x414] >= 2)
+            fn_8007093C(0x90001, messages + 0x160);
+        return;
+    }
+    if (result != 0) {
+        ((u8 *)port)[0x0E] = 0x0E;
+        fn_800939A0(mcb, ((u8 *)port)[0x0D]);
+        port_rfc_closed(port, 0x0E);
+        return;
+    }
+    if ((((u8 *)port)[0x64] & 1) == 0) {
+        RFCOMM_ControlReq(*(void **)((u8 *)port + 0x6C), ((u8 *)port)[0x0D],
+                          (u8 *)port + 0x5A);
+        return;
+    }
+    if (lbl_803C4828[0x414] >= 2)
+        fn_8007093C(0x90001, messages + 0x178);
+}
+
 void PORT_ControlCnf(void *mcb, u8 dlci, void *pars) {
     extern char lbl_80319430[];
     extern u32 port_rfc_send_tx_data(void *);
