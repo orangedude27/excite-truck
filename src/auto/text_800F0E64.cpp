@@ -1363,16 +1363,16 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
 
 extern "C" int strcmp(const char *, const char *);
 extern "C" const char lbl_80324A8C[];
+#pragma push
+#pragma scheduling invalid_target
 s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw4hbm::snd::SoundArchive::StringTree *arg1, const char *arg2) const {
-    const StringTreeNodeLayout *node;
     const char *str = arg2;
     const StringTreeLayout *tree = (const StringTreeLayout *)arg1;
     const SoundArchiveFileReaderLayout *reader = (const SoundArchiveFileReaderLayout *)this;
-    if (tree == 0)
-        return -1;
+    const StringTreeNodeLayout *node;
+    if (tree == 0) return -1;
     u32 index = tree->nodeCount;
-    if (index >= tree->maxNodeCount)
-        return -1;
+    if (index >= tree->maxNodeCount) return -1;
     node = &tree->nodes[index];
     s32 length = strlen(str);
     while ((node->flags & 1) == 0) {
@@ -1380,8 +1380,7 @@ s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw
         s32 byteIndex = bits >> 3;
         s32 bitIndex = bits & 7;
         s32 child;
-        if (byteIndex < length &&
-            (((s8)str[byteIndex] & (1 << (7 - bitIndex))) != 0))
+        if (byteIndex < length && (((s8)str[byteIndex] & (1 << (7 - bitIndex))) != 0))
             child = node->oneChild;
         else
             child = node->zeroChild;
@@ -1391,7 +1390,7 @@ s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw
     const char *label;
     u32 sentinel = (u32)tree + 0x10000;
     if (sentinel == 0xFFFF) {
-        label = (const char *)sentinel;
+        label = 0;
     } else {
         SoundArchiveLabelTableLayout *table = reader->labelTable;
         if (table == 0) {
@@ -1402,16 +1401,19 @@ s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw
             table = *(SoundArchiveLabelTableLayout * volatile *)((u8 *)reader + 0x30);
             const char *base = reader->stringBase;
             u32 offset = table->labelOffsets[(u32)tree];
-            if (offset == 0)
+            if (offset == 0) {
                 label = 0;
-            else
-                label = base + offset;
+            } else {
+                base += offset;
+                label = base;
+            }
         }
     }
     if (strcmp(str, label) == 0)
         return node->soundId;
     return -1;
 }
+#pragma pop
 
 extern "C" void *GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(s32, u32, void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
