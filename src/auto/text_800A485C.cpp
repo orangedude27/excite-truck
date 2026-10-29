@@ -49,6 +49,7 @@ extern "C" s32 lbl_80559248;
 extern "C" s32 *lbl_8055DD70;
 extern "C" void *lbl_8055DD7C;
 extern "C" const char lbl_8031B838[];
+extern "C" s32 IOS_Open(const char *, s32);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 extern u32 lbl_8055DDE0;
 extern "C" s32 fn_800A58E0(void *, s32, s32, s32, s32);
@@ -2922,10 +2923,13 @@ extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1) {
     tmp = *(u32 *)(p_ent + 0x234);
     *(u16 *)(buf + 26) = (u16)((tmp << 8) | ((u32)tmp >> 8));
     tmp32 = *(u32 *)(p_ent + 0x228);
-    *(u32 *)(buf + 28) = ((tmp32 & 0x000000FF) << 24) |
-                         ((tmp32 & 0x0000FF00) << 8) |
-                         ((tmp32 & 0x00FF0000) >> 8) |
-                         ((tmp32 & 0xFF000000) >> 24);
+    {
+        u32 low = __rlwinm(tmp32, 8, 8, 15);
+        low = __rlwimi(low, tmp32, 24, 0, 7);
+        u32 high = __rlwinm(tmp32, 24, 16, 23);
+        high = __rlwimi(high, tmp32, 8, 24, 31);
+        *(u32 *)(buf + 28) = low | high;
+    }
     result = fn_800B5700(handle, buf, *(s32 *)(p_ent + 0x238), *(u16 *)(p_ent + 0x23C), 32, &count, 0);
     if (result != 0) return result;
     if (count != 32) return 17;
