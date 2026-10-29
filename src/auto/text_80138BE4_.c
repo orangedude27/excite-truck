@@ -25,6 +25,7 @@ extern float lbl_805613C8;
 extern float lbl_805613D0;
 extern float lbl_805613C4, lbl_805613CC;
 extern double fn_8002F234(float);
+extern double fabs(double);
 #pragma push
 #pragma scheduling invalid_target
 #pragma optimize_for_size on
