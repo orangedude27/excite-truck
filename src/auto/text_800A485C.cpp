@@ -3913,7 +3913,7 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4,
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
-extern "C" s32 fn_800B00E8(void *, u16, u32 *);
+extern "C" s32 fn_800B00E8(void *, u16, u32 *, void *);
 extern "C" s32 fn_800B05C8(void *, u16, u32 *);
 extern "C" s32 fn_800AEBA0(void *arg0, u16 arg1, u32 arg2, u32 *arg3, s32 arg_sp0) {
     void *page;
@@ -3936,7 +3936,7 @@ extern "C" s32 fn_800AEBA0(void *arg0, u16 arg1, u32 arg2, u32 *arg3, s32 arg_sp
         }
         type = *(s32 *)((u8 *)arg0 + 0x1C);
         if (type == 0) result = fn_800AFBA8(arg0, arg1, &value);
-        else if (type == 1) result = fn_800B00E8(arg0, arg1, &value);
+        else if (type == 1) result = fn_800B00E8(arg0, arg1, &value, page);
         else if (type == 2) result = fn_800B05C8(arg0, arg1, &value);
         else result = 0xF;
         if (result != 0) {
