@@ -806,8 +806,8 @@ extern "C" void fn_800F2EAC(void *self, void *arg) {
     const char *base = lbl_80324868;
     u8 *bytes = (u8 *)arg;
     u8 *table;
-    u8 *fieldBase;
     u32 offset;
+    u8 *fieldBase;
     u32 value;
     if (arg == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0x60, base + 0x104);
@@ -816,48 +816,43 @@ extern "C" void fn_800F2EAC(void *self, void *arg) {
     table = bytes + 8;
     *(u8 **)(object + 0x2c) = table;
     offset = *(u32 *)(bytes + 8);
-    if (offset != 0) goto add_30;
-    value = 0;
-    goto store_30;
-add_30:
-    value = (u32)(table + offset);
-store_30:
+    if (offset == 0) {
+        value = 0;
+    } else {
+        value = (u32)(table + offset);
+    }
     *(u32 *)(object + 0x30) = value;
     fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
     offset = *(volatile u32 *)(table + 4);
-    if (offset != 0) goto add_34;
-    value = 0;
-    goto store_34;
-add_34:
-    value = (u32)(fieldBase + offset);
-store_34:
+    if (offset == 0) {
+        value = 0;
+    } else {
+        value = (u32)(fieldBase + offset);
+    }
     *(u32 *)(object + 0x34) = value;
     fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
     offset = *(volatile u32 *)(table + 8);
-    if (offset != 0) goto add_38;
-    value = 0;
-    goto store_38;
-add_38:
-    value = (u32)(fieldBase + offset);
-store_38:
+    if (offset == 0) {
+        value = 0;
+    } else {
+        value = (u32)(fieldBase + offset);
+    }
     *(u32 *)(object + 0x38) = value;
     fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
     offset = *(volatile u32 *)(table + 0xc);
-    if (offset != 0) goto add_3c;
-    value = 0;
-    goto store_3c;
-add_3c:
-    value = (u32)(fieldBase + offset);
-store_3c:
+    if (offset == 0) {
+        value = 0;
+    } else {
+        value = (u32)(fieldBase + offset);
+    }
     *(u32 *)(object + 0x3c) = value;
     fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
     offset = *(volatile u32 *)(table + 0x10);
-    if (offset != 0) goto add_40;
-    value = 0;
-    goto store_40;
-add_40:
-    value = (u32)(fieldBase + offset);
-store_40:
+    if (offset == 0) {
+        value = 0;
+    } else {
+        value = (u32)(fieldBase + offset);
+    }
     *(u32 *)(object + 0x40) = value;
 }
 
@@ -1934,13 +1929,15 @@ extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hb
 extern "C" s32 ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(void *, void *, s32, s32);
 extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(void *, s32, void *, const void *);
 extern "C" const char lbl_80325110[];
+#pragma push
+#pragma use_lmw_stmw off
 s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(
     nw4hbm::snd::detail::WaveSoundInfo *info,
     nw4hbm::snd::detail::WaveSoundNoteInfo *noteInfo,
     nw4hbm::snd::detail::WaveData *waveData,
     const void *file,
-    s32 index,
-    s32 noteIndex,
+    int index,
+    int noteIndex,
     u32 waveIndex) const {
     u8 reader[0x38];
     u8 *archive = *(u8 **)((u8 *)this + 4);
@@ -1970,6 +1967,7 @@ s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(
         return 0;
     return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(reader, *(s32 *)noteInfo, waveData, (const void *)waveAddress);
 }
+#pragma pop
 
 extern "C" void fn_800F768C(void *self, unsigned long taskId) {
     unsigned long id = taskId;
