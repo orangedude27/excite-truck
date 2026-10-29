@@ -12239,19 +12239,34 @@ extern "C" void GXSetTevColor(u32, void *);
 extern "C" void GXBegin(u8, u8, u16);
 extern "C" void fn_800C6610(void) {
     u8 *base = (u8 *)lbl_8055DD98;
-    ((Fn800C6610Dispatch **) (base + 0x1E0))[0]->d10(base + 0x200);
+    struct Dispatch {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(void *);
+    };
+
+    ((Dispatch **)(base + 0x1E0))[0]->d8(base + 0x200);
     if (*(s32 *)(*(u8 **)(base + 4) + 0x20) == 0) {
-        s32 i;
-        for (i = 0; i < 4; i++)
-            ((Fn800C6610Dispatch **) (base + 0x1F0 - i * 4))[0]->d10(base + 0x200);
+        u8 *entry = base + 0xC;
+        s32 count = 3;
+        do {
+            ((Dispatch **)(entry + 0x1E4))[0]->d8(base + 0x200);
+            count--;
+            entry -= 4;
+        } while (count >= 0);
     }
+
     s32 value = *(s32 *)(base + 0x3FC);
     s32 numerator = (value << 8) - value;
     u8 alpha = (u8)(numerator / *(s32 *)(base + 0x400));
     fn_800CEDE8();
-    u32 color = *(u32 *)(base + 0x408);
-    ((u8 *)&color)[3] = alpha;
-    GXSetTevColor(1, &color);
+
+    u8 color[4];
+    color[0] = *(u8 *)(base + 0x408);
+    color[1] = *(u8 *)(base + 0x409);
+    color[2] = *(u8 *)(base + 0x40A);
+    color[3] = alpha;
+    GXSetTevColor(1, (u32 *)color);
     GXBegin(0x80, 0, 4);
     *(volatile f32 *)0xCC008000 = lbl_80560DC0;
     *(volatile f32 *)0xCC008000 = lbl_80560DC0;
@@ -17792,18 +17807,19 @@ extern "C" s32 fn_800A485C(s32 arg0) {
     return arg0;
 }
 
-#pragma optimization_level 2
+#pragma optimization_level reset
 void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
-    /* Fix note: keep the hand-unrolled copy loops at the file's lower optimization setting. */
+    /* Fix note: preserve the destination alias while testing the original arguments for alignment. */
     register u8 *out = (u8 *)dstArg;
     register const u8 *in = (const u8 *)srcArg;
     u32 blocks;
     u32 words;
     s32 byteAdjustment;
     u32 value;
-    u32 i;
 
-    if (((u32)out & 3) != 0 || ((u32)in & 3) != 0)
+    if (((u32)dstArg & 3) != 0)
+        goto copy_bytes;
+    if (((u32)srcArg & 3) != 0)
         goto copy_bytes;
 
     words = size >> 2;
@@ -17812,18 +17828,20 @@ void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
 
     blocks = words >> 3;
     byteAdjustment = -(s32)(words << 2);
-    for (i = 0; i < blocks; ++i) {
-        value = *(u32 *)(in + 0x00); *(u32 *)(out + 0x00) = value;
-        value = *(u32 *)(in + 0x04); *(u32 *)(out + 0x04) = value;
-        value = *(u32 *)(in + 0x08); *(u32 *)(out + 0x08) = value;
-        value = *(u32 *)(in + 0x0C); *(u32 *)(out + 0x0C) = value;
-        value = *(u32 *)(in + 0x10); *(u32 *)(out + 0x10) = value;
-        value = *(u32 *)(in + 0x14); *(u32 *)(out + 0x14) = value;
-        value = *(u32 *)(in + 0x18); *(u32 *)(out + 0x18) = value;
-        value = *(u32 *)(in + 0x1C);
-        in += 0x20;
-        *(u32 *)(out + 0x1C) = value;
-        out += 0x20;
+    if (blocks != 0) {
+        do {
+            value = *(u32 *)(in + 0x00); *(u32 *)(out + 0x00) = value;
+            value = *(u32 *)(in + 0x04); *(u32 *)(out + 0x04) = value;
+            value = *(u32 *)(in + 0x08); *(u32 *)(out + 0x08) = value;
+            value = *(u32 *)(in + 0x0C); *(u32 *)(out + 0x0C) = value;
+            value = *(u32 *)(in + 0x10); *(u32 *)(out + 0x10) = value;
+            value = *(u32 *)(in + 0x14); *(u32 *)(out + 0x14) = value;
+            value = *(u32 *)(in + 0x18); *(u32 *)(out + 0x18) = value;
+            value = *(u32 *)(in + 0x1C);
+            in += 0x20;
+            *(u32 *)(out + 0x1C) = value;
+            out += 0x20;
+        } while (--blocks);
     }
 
     words &= 7;
