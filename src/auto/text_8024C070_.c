@@ -9,8 +9,8 @@ extern int fn_80236914;
 extern int lbl_802FA520[];
 extern int lbl_804989D0[];
 extern int lbl_80563920, lbl_80563924, lbl_80563928, lbl_8056392C;
-extern const char lbl_8055C010[], lbl_8055BAB8[], lbl_8055B860[];
-extern char lbl_80343ECC;
+extern const char lbl_8055C010, lbl_8055BAB8, lbl_8055B860;
+extern char lbl_80343ECC[];
 typedef struct {
     unsigned char flag;
     unsigned char pad0[3];
@@ -34,67 +34,60 @@ typedef struct {
 } Fn8024C070Frame;
 
 void fn_8024C070(void) {
-    unsigned char frame[0xA0];
-    unsigned char *flagp;
-    int *settings;
-    int *config;
-    int *object;
-    int *params;
-    int value;
-    int i;
+    Fn8024C070Frame frame;
 
-    flagp = frame;
-    settings = (int *)(frame + 8);
-    config = (int *)(frame + 0x18);
-    object = (int *)(frame + 0x2C);
-    params = (int *)(frame + 0x50);
+    /* Fix note: model the stack data as one frame and pass its argument table through config. */
+    frame.flag = 0;
+    fn_801333E8(5, &lbl_8055C010, &frame.flag);
+    frame.value = frame.flag != 0;
+    frame.settings[0] = lbl_80563928;
+    frame.settings[1] = lbl_8056392C;
+    frame.settings[2] = lbl_80563920;
+    frame.settings[3] = lbl_80563924;
 
-    *flagp = 0;
-    fn_801333E8(5, lbl_8055C010, flagp);
-    value = *flagp != 0;
-    settings[0] = lbl_80563928;
-    settings[1] = lbl_8056392C;
-    settings[2] = lbl_80563920;
-    settings[3] = lbl_80563924;
+    frame.object.enabled = 0;
+    frame.object.sentinel = -1;
+    frame.object.secondary = 0;
+    frame.object.name = lbl_80343ECC;
+    frame.object.selected = 0;
+    if (frame.value == lbl_80563920)
+        frame.object.selected = 0;
+    if (frame.value == frame.settings[3])
+        frame.object.selected = 1;
+    frame.object.current = &frame.settings[2];
+    frame.object.options = &frame.settings[0];
+    frame.object.count = 2;
+    frame.object.value = &frame.value;
 
-    object[0] = 0;
-    object[1] = -1;
-    object[2] = 0;
-    object[3] = (int)&lbl_80343ECC;
-    object[4] = 0;
-    if (value == lbl_80563920) object[4] = 0;
-    if (value == settings[3]) object[4] = 1;
-    object[5] = (int)&settings[2];
-    object[6] = (int)&settings[0];
-    object[7] = 2;
-    object[8] = (int)&value;
+    frame.args[0] = (int)&lbl_8055C010;
+    frame.args[1] = 0x10;
+    frame.args[2] = 0;
+    frame.args[3] = (int)&frame.object;
+    frame.args[4] = 0;
+    frame.args[5] = (int)&lbl_8055BAB8;
+    frame.args[6] = 8;
+    frame.args[7] = (int)&fn_80236914;
+    frame.args[8] = 2;
+    frame.args[9] = 0;
+    frame.args[10] = (int)&lbl_8055B860;
+    frame.args[11] = 6;
+    frame.args[12] = 0;
+    frame.args[13] = -2;
+    frame.args[14] = 0x1B;
+    frame.args[15] = lbl_804989D0[0];
+    frame.args[16] = lbl_804989D0[1];
+    frame.args[17] = lbl_804989D0[2];
+    frame.args[18] = lbl_804989D0[3];
+    frame.args[19] = lbl_804989D0[4];
 
-    params[0] = (int)lbl_8055C010;
-    params[1] = 0x10;
-    params[2] = 0;
-    params[3] = (int)object;
-    params[4] = 0;
-    params[5] = (int)lbl_8055BAB8;
-    params[6] = 8;
-    params[7] = (int)&fn_80236914;
-    params[8] = 2;
-    params[9] = 0;
-    params[10] = (int)lbl_8055B860;
-    params[11] = 6;
-    params[12] = 0;
-    params[13] = -2;
-    params[14] = 0x1B;
-
-    for (i = 0; i < 5; i++) params[15 + i] = lbl_804989D0[i];
-
-    config[0] = lbl_802FA520[0];
-    config[1] = 0;
-    config[2] = lbl_802FA520[2];
-    config[3] = lbl_802FA520[3];
-    config[4] = lbl_802FA520[4];
-    ((int (*)(int *, int, int, int))fn_802146BC)(config, -999, -999, 1);
-    *flagp = *(int *)(frame + 4) == 1;
-    fn_80133460(5, lbl_8055C010, *flagp);
+    frame.config[0] = lbl_802FA520[0];
+    frame.config[1] = (int)frame.args;
+    frame.config[2] = lbl_802FA520[2];
+    frame.config[3] = lbl_802FA520[3];
+    frame.config[4] = lbl_802FA520[4];
+    ((int (*)(int *, int, int, int))fn_802146BC)(frame.config, -999, -999, 1);
+    frame.flag = frame.value == 1;
+    fn_80133460(5, &lbl_8055C010, frame.flag);
 }
 
 int fn_8024C24C(int arg0, int arg1) {
