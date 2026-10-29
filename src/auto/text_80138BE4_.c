@@ -23,6 +23,8 @@ int fn_80138BFC(float arg0) {
 extern float lbl_805613C0;
 extern float lbl_805613C8;
 extern float lbl_805613D0;
+extern float lbl_805613C4, lbl_805613CC;
+extern float fn_8002F234(float);
 extern int fn_80138C28(void *, float *, float *);
 #pragma dont_inline fn_80138BFC
 #pragma dont_inline fn_80138BE4
