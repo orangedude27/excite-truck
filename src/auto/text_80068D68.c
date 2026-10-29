@@ -2188,6 +2188,53 @@ void uusb_issue_bulk_read(void) {
         GKI_freebuf(buf);
     }
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+void uusb_issue_intr_read(void) {
+    extern char lbl_803142C8[];
+    extern void uusb_ReadIntrDataCB(void);
+    extern u16 fn_8006D8D0(u32);
+    uusb_cb_t *control = &lbl_803BD1E0;
+    char *report = lbl_803142C8;
+    u8 *buf;
+    register u8 *aligned;
+    u16 header;
+    s32 result;
+
+    for (;;) {
+        buf = GKI_getpoolbuf(control->pool_id);
+        if (buf != 0) {
+            break;
+        }
+        if (control->at_0x28 != 0) {
+            OSReport(report + 0x378);
+        }
+    }
+
+    *(u16 *)buf = 0x1000;
+    aligned = (u8 *)(((u32)(buf + 0x27)) & ~31);
+    *(u16 *)(buf + 2) = 0;
+    header = (u16)(aligned - (buf + 8));
+    *(u16 *)(buf + 4) = header;
+
+    result = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, control->endpoint,
+                                   fn_8006D8D0((u32)buf) - 0x28 - header,
+                                   aligned, uusb_ReadIntrDataCB, buf);
+    if (result != 0) {
+        if (control->at_0x28 != 0) {
+            OSReport(report + 0x3CC, result);
+        }
+        if (lbl_803BD1E0.at_0x28 != 0) {
+            OSReport(report + 0x404, result);
+        }
+        GKI_freebuf(buf);
+    }
+
+    ((u8 *)control)[0x2B] = 1;
+}
+#pragma pop
+
 #pragma pop
 extern s32 IUSB_OpenDeviceIds(const char *, u16, u16, s32 *);
 extern char lbl_80314898[];
@@ -4849,12 +4896,6 @@ found:
 }
 
 tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR arg0) {
-    u32 value;
-    u32 *stamp;
-    u8 *base;
-    u8 *dev;
-    u8 *inq;
-    s32 i;
     struct tBTM_SEC_DEV_SLOT_VIEW {
         u8 pad0[0x76];
         u8 in_use;
@@ -4864,6 +4905,10 @@ tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR arg0) {
         u8 pad0[0x1F30];
         struct tBTM_SEC_DEV_SLOT_VIEW dev[0x10];
     };
+    u8 *base;
+    u8 *dev;
+    u8 *inq;
+    s32 i;
 
     base = lbl_803C0F78;
     dev = 0;
@@ -4888,10 +4933,7 @@ tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR arg0) {
         memcpy(dev + 0x22, lbl_803C0F78 + 0x27BA, 3);
     memcpy(dev + 0x1C, arg0, 6);
     *(u16 *)(dev + 0x18) = BTM_GetHCIConnHandle(arg0);
-    stamp = (u32 *)(lbl_803C0F78 + 0x1974);
-    value = *stamp;
-    *(u32 *)(dev + 0xC) = value;
-    *stamp = value + 1;
+    *(u32 *)(dev + 0xC) = (*(u32 *)(lbl_803C0F78 + 0x1974))++;
     return (tBTM_SEC_DEV_REC *)dev;
 }
 
