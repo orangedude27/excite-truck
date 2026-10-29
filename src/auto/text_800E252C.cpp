@@ -1108,7 +1108,7 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_800E41EC(void) {
     if ((s8)lbl_8055DE18 == 0) {
         fn_800E279C(&lbl_80407F6C);
