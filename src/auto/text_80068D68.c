@@ -8668,16 +8668,17 @@ tBTM_STATUS btm_sec_disconnect(UINT16 handle, UINT8 reason) {
 
 void btm_sec_disconnected(UINT16 handle, UINT8 reason) {
     register UINT8 saved_reason = reason;
-    tBTM_SEC_DEV_REC *p_dev_rec = btm_find_dev_by_handle(handle);
+    tBTM_SEC_DEV_REC_DISCONNECT_VIEW *p_dev_rec =
+        (tBTM_SEC_DEV_REC_DISCONNECT_VIEW *)btm_find_dev_by_handle(handle);
     if (p_dev_rec == NULL)
         return;
-    if ((p_dev_rec->sm4 & BTM_SM4_CONN_PEND) &&
+    if ((p_dev_rec->sm4 & 0x40) &&
         *(void **)(lbl_803C0F78 + 0x191C) != NULL) {
         if (saved_reason == 0x17) {
-            ((void (*)(BD_ADDR, DEV_CLASS, tBTM_BD_NAME, u32))*(void **)(lbl_803C0F78 + 0x191C))
+            ((void (*)(u8 *, u8 *, u8 *, u32))*(void **)(lbl_803C0F78 + 0x191C))
                 (p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, 0x17);
         } else {
-            ((void (*)(BD_ADDR, DEV_CLASS, tBTM_BD_NAME, u32))*(void **)(lbl_803C0F78 + 0x191C))
+            ((void (*)(u8 *, u8 *, u8 *, u32))*(void **)(lbl_803C0F78 + 0x191C))
                 (p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, 5);
         }
     }
@@ -8687,14 +8688,14 @@ void btm_sec_disconnected(UINT16 handle, UINT8 reason) {
         *(u32 *)(lbl_803C0F78 + 0x194C) = 0;
         memset(lbl_803C0F78 + 0x1954, 0xFF, 6);
         if (*(void **)(lbl_803C0F78 + 0x191C) != NULL)
-            ((void (*)(BD_ADDR, DEV_CLASS, tBTM_BD_NAME, u32))*(void **)(lbl_803C0F78 + 0x191C))
+            ((void (*)(u8 *, u8 *, u8 *, u32))*(void **)(lbl_803C0F78 + 0x191C))
                 (p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, 0xE);
     }
     p_dev_rec->hci_handle = 0xFFFF;
     p_dev_rec->sec_state = 0;
     p_dev_rec->sec_flags &= 0xF8;
     p_dev_rec->sm4 &= 0x80;
-    p_dev_rec->security_required = 0;
+    p_dev_rec->unk_0x04 = 0;
 }
 
 /* Match note: initialize the callback table at its base, then walk two entries by four bytes. */
