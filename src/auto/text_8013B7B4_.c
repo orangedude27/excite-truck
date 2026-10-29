@@ -11,7 +11,7 @@ extern int lbl_8055E170;
 extern float lbl_80561478, lbl_8056147C;
 extern float lbl_8042F8B8[];
 extern int fn_801E87A8(void);
-extern void fn_8013B7B4(void*, int);
+extern void fn_8013B7B4(float*, int);
 extern void fn_8013B6C0(int*, float*, int);
 extern void *fn_80131808(void *);
 extern void fn_80131818(void *);
@@ -22,7 +22,7 @@ extern const char *lbl_802F9388[];
 extern char lbl_80559CD8;
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_8013B7B4(void *arg0, int value) {
+extern "C" void fn_8013B7B4(float *arg0, int value) {
     struct List {
         virtual void v0() = 0;
         virtual void *getAt(int) = 0;
@@ -40,18 +40,18 @@ extern "C" void fn_8013B7B4(void *arg0, int value) {
         virtual void v6() = 0;
         virtual float getFloat(const char *) = 0;
     };
-    register int scale = value;
-    register float *base = (float *)arg0;
-    register char *keys = lbl_8032C390;
-    register const char **table;
-    register float *out;
-    register void *list;
-    register void *item;
-    register const char *name;
+    int scale = value;
+    float *base = arg0;
+    char *keys = lbl_8032C390;
+    const char **table;
+    float *out;
+    void *list;
+    void *item;
+    const char *name;
     const char *names[3];
-    register const char **namep;
-    register int i;
-    register unsigned int j;
+    const char **namep;
+    int i;
+    unsigned int j;
 
     list = fn_80131808(keys);
     if (list == 0) goto error;
@@ -64,15 +64,13 @@ extern "C" void fn_8013B7B4(void *arg0, int value) {
         names[1] = table[1];
         names[2] = table[2];
         out = base;
-        namep = names;
-        for (j = 0; j < 3; j++, namep++) {
+        for (j = 0, namep = names; j < 3; j++, namep++, out += 4) {
             if (stricmp(*namep, name) == 0) {
                 out[0] = ((DataItem *)item)->getFloat((const char *)&lbl_80559CD8);
                 out[1] = ((DataItem *)item)->getFloat(keys + 0xC);
                 out[2] = ((DataItem *)item)->getFloat(keys + 0x18);
                 out[3] = (float)scale * ((DataItem *)item)->getFloat(keys + 0x28);
             }
-            out += 4;
         }
         i++;
     }
