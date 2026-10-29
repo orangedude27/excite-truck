@@ -3061,13 +3061,12 @@ extern "C" s32 OSJoinThread(void *, s32);
 extern "C" const char lbl_80326450[];
 extern "C" const char lbl_80326488[];
 extern "C" void Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
-    u32 count = 0;
-    u32 offset = 0;
-    u32 zero = 0;
     u8 *obj = (u8 *)self;
-    *(u32 *)(obj + 0x10) = zero;
-    *(u32 *)(obj + 0x14) = zero;
-    *(u32 *)(obj + 0x6C) = zero;
+    *(u32 *)(obj + 0x10) = 0;
+    *(u32 *)(obj + 0x14) = 0;
+    *(u32 *)(obj + 0x6C) = 0;
+    u32 offset = 0;
+    u32 count = 0;
     while (count < *(u32 *)(obj + 0x70)) {
         u8 *players = (u8 *)*(void **)(obj + 0x74);
         __dt__Q36nw4hbm3snd11SoundPlayerFv(players + offset, -1);
@@ -3077,24 +3076,24 @@ extern "C" void Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
     *(u32 *)(obj + 0x70) = 0;
     *(void **)(obj + 0x74) = 0;
     fn_800FA9E8(obj + 0xA8);
-    register void *pool = *(void **)(obj + 0xD0);
     register u32 poolSize = *(volatile u32 *)(obj + 0xD4);
+    register void *pool = *(void **)(obj + 0xD0);
     if (pool == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325B70, 0x4C, lbl_80325B44);
     DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(obj + 0x78, pool, poolSize);
-    pool = *(void **)(obj + 0xD0);
     poolSize = *(volatile u32 *)(obj + 0xD4);
+    pool = *(void **)(obj + 0xD0);
     if (pool == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325B2C, 0x4C, lbl_80325B00);
     DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(obj + 0x88, pool, poolSize);
-    pool = *(void **)(obj + 0xD0);
     poolSize = *(volatile u32 *)(obj + 0xD4);
+    pool = *(void **)(obj + 0xD0);
     if (pool == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325AE8, 0x4C, lbl_80325ABC);
     DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(obj + 0x98, pool, poolSize);
     fn_800EE434(obj + 0xC4, *(void **)(obj + 0xD0), *(u32 *)(obj + 0xD4));
-    *(u32 *)(obj + 0xD0) = zero;
-    *(u32 *)(obj + 0xD4) = zero;
+    *(u32 *)(obj + 0xD0) = 0;
+    *(u32 *)(obj + 0xD4) = 0;
 }
 
 extern "C" void fn_800FA6E8(void) {
@@ -3129,6 +3128,74 @@ extern "C" s32 fn_800FA77C(s32 arg0) {
     UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNode(
         manager, (void*)(arg0 + 0x2378));
     return 0;
+}
+
+extern "C" s32 OSReceiveMessage(void *, void *, s32);
+extern "C" u32 OSGetTick(void);
+extern "C" void fn_800E3228(void);
+extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void);
+extern "C" void fn_80101130(void);
+extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(void);
+extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(void);
+extern "C" void UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv(void);
+extern "C" u32 fn_800FEB9C(void);
+extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void);
+extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void);
+extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void);
+extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void);
+extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
+extern "C" const char lbl_803264AC[];
+extern "C" const char lbl_803264D0[];
+extern "C" void fn_800FA7E0(void *self) {
+    u32 message;
+    u8 *p = (u8 *)self;
+    for (;;) {
+        OSReceiveMessage(p + 0x2338, &message, 1);
+        if (message == 1) {
+            void *mutex = p + 0x2320;
+            OSLockMutex(mutex);
+            u32 tick = OSGetTick();
+            Instance__15EmissionManagerFv();
+            fn_800E3228();
+            UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv();
+            fn_80101130();
+            UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490();
+            UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824();
+            void *sentinel = p + 0x2388;
+            void *node = *(void **)sentinel;
+            do {
+                void *current = node;
+                void *next = *(void **)node;
+                if (current == 0)
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
+                ((DummyWorkerCallbackC *)current)->Call();
+                node = next;
+            } while (node != sentinel);
+            UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv();
+            fn_800FEB9C();
+            u32 state = OSDisableInterrupts();
+            Instance__15EmissionManagerFv();
+            UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv();
+            OSRestoreInterrupts(state);
+            *(u32 *)(p + 0x2390) = OSGetTick() - tick;
+            node = *(void **)sentinel;
+            do {
+                void *current = node;
+                void *next = *(void **)node;
+                if (current == 0)
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
+                ((DummyWorkerCallback10 *)current)->Call();
+                node = next;
+            } while (node != sentinel);
+            OSUnlockMutex(mutex);
+        } else if (message == 2) {
+            StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv();
+            StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300();
+            StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508();
+            detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv();
+            return;
+        }
+    }
 }
 
 #pragma use_lmw_stmw off
