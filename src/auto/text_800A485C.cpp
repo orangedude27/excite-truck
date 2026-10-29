@@ -17781,49 +17781,48 @@ extern "C" s32 fn_800A485C(s32 arg0) {
     return arg0;
 }
 
+#pragma unroll off
 void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
-    /* Fix note: operate on signed address locals, preserving the destination base for unrolled aligned copies. */
-    register s32 dstAddress = (s32)dstArg;
-    register s32 srcAddress = (s32)srcArg;
-    register u32 words;
-    register u32 blocks;
-    register s32 byteAdjustment;
-    register u32 loopCount;
-    register s32 value;
+    /* Fix note: keep one explicit eight-word copy per loop iteration with automatic unrolling disabled. */
+    register u8 *out = (u8 *)dstArg;
+    register const u8 *in = (const u8 *)srcArg;
+    u32 blocks;
+    u32 words;
+    s32 byteAdjustment;
+    u32 value;
+    u32 i;
 
-    if ((dstAddress & 3) != 0 || (srcAddress & 3) != 0)
-        goto copy_bytes;
-    if (size <= 3)
+    if (((u32)out & 3) != 0 || ((u32)in & 3) != 0)
         goto copy_bytes;
 
     words = size >> 2;
+    if (size <= 3)
+        goto copy_bytes;
+
     blocks = words >> 3;
     byteAdjustment = -(s32)(words << 2);
-    loopCount = blocks;
-    if (loopCount != 0) {
-        do {
-            value = *(s32 *)(srcAddress + 0x00); *(s32 *)(dstAddress + 0x00) = value;
-            value = *(s32 *)(srcAddress + 0x04); *(s32 *)(dstAddress + 0x04) = value;
-            value = *(s32 *)(srcAddress + 0x08); *(s32 *)(dstAddress + 0x08) = value;
-            value = *(s32 *)(srcAddress + 0x0C); *(s32 *)(dstAddress + 0x0C) = value;
-            value = *(s32 *)(srcAddress + 0x10); *(s32 *)(dstAddress + 0x10) = value;
-            value = *(s32 *)(srcAddress + 0x14); *(s32 *)(dstAddress + 0x14) = value;
-            value = *(s32 *)(srcAddress + 0x18); *(s32 *)(dstAddress + 0x18) = value;
-            value = *(s32 *)(srcAddress + 0x1C);
-            srcAddress += 0x20;
-            *(s32 *)(dstAddress + 0x1C) = value;
-            dstAddress += 0x20;
-        } while (--loopCount);
+    for (i = 0; i < blocks; ++i) {
+        value = *(u32 *)(in + 0x00); *(u32 *)(out + 0x00) = value;
+        value = *(u32 *)(in + 0x04); *(u32 *)(out + 0x04) = value;
+        value = *(u32 *)(in + 0x08); *(u32 *)(out + 0x08) = value;
+        value = *(u32 *)(in + 0x0C); *(u32 *)(out + 0x0C) = value;
+        value = *(u32 *)(in + 0x10); *(u32 *)(out + 0x10) = value;
+        value = *(u32 *)(in + 0x14); *(u32 *)(out + 0x14) = value;
+        value = *(u32 *)(in + 0x18); *(u32 *)(out + 0x18) = value;
+        value = *(u32 *)(in + 0x1C);
+        in += 0x20;
+        *(u32 *)(out + 0x1C) = value;
+        out += 0x20;
     }
 
-    loopCount = words & 7;
-    if (loopCount != 0) {
+    words &= 7;
+    if (words != 0) {
         do {
-            value = *(s32 *)srcAddress;
-            srcAddress += 4;
-            *(s32 *)dstAddress = value;
-            dstAddress += 4;
-        } while (--loopCount);
+            value = *(u32 *)in;
+            in += 4;
+            *(u32 *)out = value;
+            out += 4;
+        } while (--words);
     }
 
     size += byteAdjustment;
@@ -17831,30 +17830,25 @@ void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
         return;
 
 copy_bytes:
-    loopCount = size >> 3;
-    if (loopCount != 0) {
+    blocks = size >> 3;
+    if (blocks != 0) {
         do {
-            *(u8 *)(dstAddress + 0) = *(const u8 *)(srcAddress + 0);
-            *(u8 *)(dstAddress + 1) = *(const u8 *)(srcAddress + 1);
-            *(u8 *)(dstAddress + 2) = *(const u8 *)(srcAddress + 2);
-            *(u8 *)(dstAddress + 3) = *(const u8 *)(srcAddress + 3);
-            *(u8 *)(dstAddress + 4) = *(const u8 *)(srcAddress + 4);
-            *(u8 *)(dstAddress + 5) = *(const u8 *)(srcAddress + 5);
-            *(u8 *)(dstAddress + 6) = *(const u8 *)(srcAddress + 6);
-            *(u8 *)(dstAddress + 7) = *(const u8 *)(srcAddress + 7);
-            srcAddress += 8;
-            dstAddress += 8;
-        } while (--loopCount);
+            out[0] = in[0]; out[1] = in[1];
+            out[2] = in[2]; out[3] = in[3];
+            out[4] = in[4]; out[5] = in[5];
+            out[6] = in[6]; out[7] = in[7];
+            in += 8;
+            out += 8;
+        } while (--blocks);
     }
-    loopCount = size & 7;
-    if (loopCount == 0)
+    blocks = size & 7;
+    if (blocks == 0)
         return;
     do {
-        *(u8 *)dstAddress = *(const u8 *)srcAddress;
-        ++dstAddress;
-        ++srcAddress;
-    } while (--loopCount);
+        *out++ = *in++;
+    } while (--blocks);
 }
+#pragma unroll reset
 
 extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
     u8 *dst = (u8 *)dstArg;
