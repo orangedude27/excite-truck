@@ -3765,8 +3765,7 @@ sentinel:
     return 0;
 }
 
-s32 VFiPFFAT_GetClusterSpecified(s32 *);
-s32 fn_800AE3A8(s32, s32 *, u8, u32);
+extern "C" s32 VFiPFFAT_GetClusterSpecified(void *, u32, u32, u32 *);
 extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
     s32 sp8;
     s32 r;
@@ -3793,9 +3792,9 @@ extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) 
         rem = q % clusters;
         q /= clusters;
         q += rem != 0;
-        r = fn_800AE3A8(q, &sp8, clusters, q);
+        r = fn_800AE3A8(arg0, arg1, q, (u32 *)&sp8);
     } else {
-        r = VFiPFFAT_GetClusterSpecified(&sp8);
+        r = VFiPFFAT_GetClusterSpecified(arg0, arg1, arg2, (u32 *)&sp8);
     }
     if (r != 0) return r;
     if (sp8 == -1) {
@@ -5180,8 +5179,8 @@ extern "C" s32 VFiPFPATH_cmpName(void *arg0, s32 arg1, s32 arg2) {
     }
     if (fn_800A4AD0(temp_r30, &lbl_80559218) == 0) {
         do {
-            temp_r3 = var_r31[1];
-            var_r31++;
+            var_r31 = (u8 *)((u32)var_r31 + 1);
+            temp_r3 = *var_r31;
         } while ((s8)temp_r3 != 0 && (s8)temp_r3 != '.');
         if ((s8)temp_r3 != 0) goto compare;
         *var_r31 = '.';
@@ -5949,44 +5948,44 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u16 arg2, u16 arg3, s32 arg4)
 }
 
 extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
-    u8 *state = (u8 *)lbl_803D2140;
+    s32 enabled = arg0 & 0x10000;
     u8 *record;
     s32 i;
 
-    if (arg0 & 0x10000)
-        *(u32 *)(state + 0x38) |= 0x10000;
+    if (enabled != 0)
+        *(u32 *)((u8 *)lbl_803D2140 + 0x38) |= 0x10000;
     else
-        *(u32 *)(state + 0x38) &= 0xFFFEFFFF;
+        *(u32 *)((u8 *)lbl_803D2140 + 0x38) &= 0xFFFEFFFF;
 
-    *(void **)(state + 0x08) = state + 0xA0;
-    *(void **)(state + 0x14) = state + 0xA0;
-    *(void **)(state + 0x20) = state + 0xA0;
-    *(void **)(state + 0x2C) = state + 0xA0;
-    *(u32 *)(state + 0x00) |= 1;
-    *(u32 *)(state + 0x30) = 0;
-    *(u32 *)(state + 0x34) = 0;
+    *(void **)((u8 *)lbl_803D2140 + 0x08) = (u8 *)lbl_803D2140 + 0xA0;
+    *(void **)((u8 *)lbl_803D2140 + 0x14) = (u8 *)lbl_803D2140 + 0xA0;
+    *(void **)((u8 *)lbl_803D2140 + 0x20) = (u8 *)lbl_803D2140 + 0xA0;
+    *(void **)((u8 *)lbl_803D2140 + 0x2C) = (u8 *)lbl_803D2140 + 0xA0;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x00) |= 1;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x30) = 0;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x34) = 0;
 
-    if (arg0 & 0x10000)
-        *(u32 *)(state + 0x38) |= 0x10000;
+    if (enabled != 0)
+        *(u32 *)((u8 *)lbl_803D2140 + 0x38) |= 0x10000;
     else
-        *(u32 *)(state + 0x38) &= 0xFFFEFFFF;
+        *(u32 *)((u8 *)lbl_803D2140 + 0x38) &= 0xFFFEFFFF;
 
-    *(void **)(state + 0x3C) = arg1;
-    *(u32 *)(state + 0x40) = 0;
-    *(u32 *)(state + 0x44) = 0;
-    *(u32 *)(state + 0x60) = 1;
-    *(void **)(state + 0x48) = (void *)VFiPFCODE_CP932_OEM2Unicode;
-    *(void **)(state + 0x4C) = (void *)VFiPFCODE_CP932_Unicode2OEM;
-    *(void **)(state + 0x50) = (void *)fn_800B7200;
-    *(void **)(state + 0x54) = (void *)VFiPFCODE_CP932_isOEMMBchar;
-    *(void **)(state + 0x58) = (void *)fn_800B72B0;
-    *(void **)(state + 0x5C) = (void *)fn_800B72E4;
+    *(void **)((u8 *)lbl_803D2140 + 0x3C) = arg1;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x40) = 0;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x44) = 0;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x60) = 1;
+    *(void **)((u8 *)lbl_803D2140 + 0x48) = (void *)VFiPFCODE_CP932_OEM2Unicode;
+    *(void **)((u8 *)lbl_803D2140 + 0x4C) = (void *)VFiPFCODE_CP932_Unicode2OEM;
+    *(void **)((u8 *)lbl_803D2140 + 0x50) = (void *)fn_800B7200;
+    *(void **)((u8 *)lbl_803D2140 + 0x54) = (void *)VFiPFCODE_CP932_isOEMMBchar;
+    *(void **)((u8 *)lbl_803D2140 + 0x58) = (void *)fn_800B72B0;
+    *(void **)((u8 *)lbl_803D2140 + 0x5C) = (void *)fn_800B72E4;
 
-    record = state + 0xA0;
+    record = (u8 *)lbl_803D2140 + 0xA0;
     for (i = 0; i < 0x1A; i++, record += 0x1FC8)
         fn_800A499C((const char *)record, 0, 0x1FC8);
 
-    fn_800B7710(state + 0x64);
+    fn_800B7710((u8 *)lbl_803D2140 + 0x64);
     __AXDSPInitCallback_800B7860();
     return 0;
 }
