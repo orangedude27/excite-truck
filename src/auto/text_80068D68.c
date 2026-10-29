@@ -175,6 +175,13 @@ extern u8 lbl_80317298[];
 extern UINT8 lbl_802EED40[];
 extern void fn_80099F58(void *);
 #include "revolution/BTE/stack/sdp/sdpint.h"
+typedef struct {
+    UINT32 record_handle;
+    UINT32 free_pad_ptr;
+    UINT16 num_attributes;
+    tSDP_ATTRIBUTE attribute[0x36];
+    UINT8 attr_pad[4];
+} tSDP_RECORD_VIEW;
 typedef struct { UINT8 pad[0x476]; UINT16 cont_offset; } tSDP_CCB_CONT_VIEW;
 static void process_service_attr_rsp(tCONN_CB *, UINT8 *, UINT16);
 typedef struct { UINT8 pad[0x418]; UINT32 handles[0x15]; } tSDP_CCB_HANDLE_VIEW;
@@ -11750,6 +11757,21 @@ void fn_8008C464(u8 *bd_addr) {
         btu_start_timer((u8 *)lcb + 0x10, 2, 0x78);
 }
 
+void l2c_init(void) {
+    u8 *base = lbl_803C4040;
+    u32 i;
+
+    memset(base, 0, 0x7E8);
+    for (i = 1; i <= 9; i++) {
+        *(u8 **)(base + 0x180 + (i - 1) * 0x7C) = base + 0x178 + i * 0x7C;
+    }
+    *(u8 **)(base + 0x7B0) = base + 0x178;
+    *(u8 **)(base + 0x7B4) = base + 0x5D4;
+    base[1] = 0;
+    *(u16 *)(base + 0x7BA) = 2;
+    base[0] = 0;
+}
+
 void l2c_rcv_acl_data(register BT_HDR *arg0) {
     extern char lbl_80318E58[];
     extern void process_l2cap_cmd(void *, UINT8 *, UINT16);
@@ -15392,6 +15414,37 @@ u32 SDP_CreateRecord(void) {
         return *(u32 *)(base + ((*(u16 *)(base + 6) - 1) * 0x298) + 8);
     }
     return 0;
+}
+
+BOOLEAN SDP_DeleteRecord(UINT32 handle) {
+    UINT16 xx, yy, zz;
+    tSDP_RECORD *record = (tSDP_RECORD *)(lbl_803C4C40 + 0x1224);
+
+    if (handle == 0 || *(UINT16 *)(lbl_803C4C40 + 0x1222) == 0) {
+        *(UINT16 *)(lbl_803C4C40 + 0x1222) = 0;
+        *(UINT32 *)(lbl_803C4C40 + 0x121C) = 0;
+        lbl_803C4C40[0x1220] = 0;
+        return TRUE;
+    }
+
+    for (xx = 0; xx < *(UINT16 *)(lbl_803C4C40 + 0x1222); xx++, record++) {
+        if (record->record_handle == handle) {
+            for (yy = xx; yy < *(UINT16 *)(lbl_803C4C40 + 0x1222); yy++, record++) {
+                *record = *(record + 1);
+                for (zz = 0; zz < record->num_attributes; zz++) {
+                    record->attribute[zz].value_ptr -= sizeof(tSDP_RECORD);
+                }
+            }
+
+            *(UINT16 *)(lbl_803C4C40 + 0x1222) -= 1;
+            if (*(UINT32 *)(lbl_803C4C40 + 0x121C) == handle) {
+                *(UINT32 *)(lbl_803C4C40 + 0x121C) = 0;
+                lbl_803C4C40[0x1220] = 0;
+            }
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 extern char lbl_80319F90[];
