@@ -163,7 +163,7 @@ extern "C" const char lbl_8031F2E4[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F8[]; }
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597FC[]; }
 extern "C" u32 fn_80116BCC(void *);
-extern "C" void fn_800B5CB4(void);
+extern "C" s32 fn_800B5CB4(u32, void *);
 extern "C" void fn_800B0748(void);
 extern "C" void fn_800B78EC(void);
 extern "C" void fn_800B78F0(void);
