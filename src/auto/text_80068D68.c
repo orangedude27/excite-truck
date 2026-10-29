@@ -74,6 +74,11 @@ typedef struct {
 } tRFCOMM_TRACE_TEXT_VIEW;
 
 typedef struct {
+    u8 pad0[0x10];
+    u8 cb[0x10];
+} tBTA_HH_DEV_ENTRY_VIEW;
+
+typedef struct {
     u8 pad0[0x0C];
     u8 sync_state;
     u8 delete_state;
