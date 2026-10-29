@@ -1869,6 +1869,12 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
     return result + (finished ? 1 : 0);
 }
 
+namespace nw4hbm { namespace snd { namespace detail {
+class AxVoice {
+public:
+    void SetLoopStart(int, const void *, unsigned long);
+};
+}}}
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
@@ -1876,10 +1882,10 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
     unsigned int interrupt;
     unsigned int value;
     unsigned int temp;
+    unsigned int start;
     int offset;
     int i;
     unsigned int *voice;
-    unsigned int start;
     unsigned int end;
 
     interrupt = OSDisableInterrupts();
@@ -1894,10 +1900,10 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
         temp = offset + temp;
         start = (arg3 - ((temp >> 3) * 0xE)) + (value * 2) + ((temp * 2) & 0xFFFFFFF0) + 2;
         break;
-    case 25:
+    case 10:
         start = value + arg3;
         break;
-    case 10:
+    case 25:
         start = (value >> 1) + arg3;
         break;
     default:
@@ -1909,16 +1915,17 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
     end = start & 0xFFFF;
     voice = (unsigned int *)((char *)arg0 + offset);
     i = 0;
-    while (i < *(int *)((char *)arg0 + 0x108)) {
-        unsigned int *channel = (unsigned int *)((char *)voice[i] + 0xC);
-        OSDisableInterrupts();
+    do {
+        unsigned int *channel = (unsigned int *)*(unsigned int **)((char *)voice + 0xC);
+        unsigned int innerInterrupt = OSDisableInterrupts();
         *(unsigned short *)((char *)channel + 0x1B4) = value;
         *(unsigned short *)((char *)channel + 0x1B6) = end;
         temp = *(unsigned int *)((char *)channel + 0x1C);
         if (!(temp & 0x800)) *(unsigned int *)((char *)channel + 0x1C) = temp | 0x2000;
-        OSRestoreInterrupts(0);
+        OSRestoreInterrupts(innerInterrupt);
+        voice = (unsigned int *)((char *)voice + 4);
         i++;
-    }
+    } while (i < *(int *)((char *)arg0 + 0x108));
     OSRestoreInterrupts(interrupt);
 }
 #pragma pop
