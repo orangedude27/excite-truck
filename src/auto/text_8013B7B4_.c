@@ -21,7 +21,7 @@ extern char lbl_8032C390[];
 extern const char *lbl_802F9388[];
 extern char lbl_80559CD8;
 #pragma cplusplus on
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
 extern "C" void fn_8013B7B4(float *arg0, int value) {
