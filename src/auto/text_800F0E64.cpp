@@ -175,6 +175,8 @@ extern "C" const char lbl_803244FC[];
 extern "C" const char lbl_80324534[];
 extern "C" const char lbl_803245B8[];
 extern "C" const char lbl_80326A28[];
+extern "C" const char lbl_80326C7C[];
+extern "C" const char lbl_80326C58[];
 extern "C" void fn_800FB358(void *);
 extern "C" s32 fn_800FB374(s32, s32);
 extern "C" void fn_800F0E64(void **arg0) {
@@ -477,21 +479,28 @@ extern "C" const char lbl_803246D4[];
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void SetSilence__Q46nw4hbm3snd6detail8SeqTrackFbi(void *self, bool silence, int ticks) {
-    *(u8 *)((u8 *)self + 0x5d) = silence;
-    u32 state = OSDisableInterrupts();
-    int duration = (ticks + 2) / 3;
-    void *channel = *(void **)((u8 *)self + 0xb8);
-    while (channel) {
-        if (duration < 0 || duration > 0xffff)
+    *(volatile u8 *)((u8 *)self + 0x5d) = silence;
+    register u32 state = OSDisableInterrupts();
+    register int duration = (ticks + 2) / 3;
+    register void *channel = *(void **)((u8 *)self + 0xb8);
+    while (channel != 0) {
+        int valid = 0;
+        if (duration >= 0) {
+            if (duration <= 0xffff)
+                valid = 1;
+        }
+        if (valid == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803246D4, 0x7c, lbl_80324690, duration, 0, 0xffff);
+
         u16 total = *(u16 *)((u8 *)channel + 0xc6);
         u16 elapsed = *(u16 *)((u8 *)channel + 0xc8);
         u8 from;
-        if (elapsed >= total) from = *(u8 *)((u8 *)channel + 0xc5);
-        else {
+        if (elapsed >= total) {
+            from = *(u8 *)((u8 *)channel + 0xc5);
+        } else {
             u8 start = *(u8 *)((u8 *)channel + 0xc4);
             u8 end = *(u8 *)((u8 *)channel + 0xc5);
-            from = start + (elapsed * (end - start)) / total;
+            from = (u8)(start + (elapsed * (end - start)) / total);
         }
         *(u8 *)((u8 *)channel + 0xc4) = from;
         *(u8 *)((u8 *)channel + 0xc5) = silence ? 0 : 0xff;
