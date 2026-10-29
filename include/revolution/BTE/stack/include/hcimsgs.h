@@ -686,7 +686,7 @@ HCI_API extern BOOLEAN btsnd_hcic_delete_stored_key (BD_ADDR bd_addr, BOOLEAN de
                                                                 /* Delete Stored Key */
 
                                                                 /* Change Local Name */
-HCI_API extern BOOLEAN btsnd_hcic_change_name();
+HCI_API extern BOOLEAN btsnd_hcic_change_name(void *p_buf, BD_NAME name);
 
 #define HCIC_PARAM_SIZE_CHANGE_NAME     BD_NAME_LEN
 
