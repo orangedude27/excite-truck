@@ -823,6 +823,8 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
 }
 
 extern "C" void fn_80031C6C(int);
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(void *self, int mode) {
     if (*(int *)self == mode) return;
     *(int *)self = mode;
@@ -846,6 +848,7 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
     }
     OSRestoreInterrupts(interrupts);
 }
+#pragma pop
 
 extern "C" int fn_800E394C(int *arg0) { return *arg0; }
 
@@ -978,11 +981,17 @@ extern "C" void fn_800E402C(void *arg0) {
 extern "C" void TRKProcessInput(void *, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_800E4064(void *arg0) {
-    void *owner = arg0;
+extern "C" void fn_800E4064(void *arg0, void *arg1) {
+    struct Owner {
+        unsigned char pad0[0x18];
+        void *head;
+        unsigned char pad1[0x6c31 - 0x1c];
+        unsigned char active;
+    };
+    struct Owner *owner = (Owner *)arg0;
     unsigned int level = OSDisableInterrupts();
-    void *node = *(void **)((char *)owner + 0x18);
-    *(unsigned char *)((char *)owner + 0x6c31) = 1;
+    void *node = owner->head;
+    owner->active = 1;
     void *sentinel = (char *)owner + 0x18;
     while (node != sentinel) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
