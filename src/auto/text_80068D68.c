@@ -34,6 +34,7 @@ static void USB_LOG(const char *, ...);
 static void USB_ERR(const char *, ...);
 extern void bta_hh_add_device_to_list(void *, s8, s16, void *, s32, s32);
 extern char lbl_80313258[];
+extern char lbl_80316EE0[];
 extern void rfc_send_rpn();
 extern void rfc_send_msc();
 extern u8 HID_HostCloseDev(u8);
