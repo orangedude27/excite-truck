@@ -1604,49 +1604,7 @@ extern "C" const char lbl_80325B00[];
 extern "C" const char lbl_80325B2C[];
 extern "C" const char lbl_80325B44[];
 extern "C" const char lbl_80325B70[];
-extern "C" void Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
-    u32 count = 0;
-    u32 offset = 0;
-    u32 zero = 0;
-    u8 *obj = (u8 *)self;
 
-    *(u32 *)(obj + 0x10) = zero;
-    *(u32 *)(obj + 0x14) = zero;
-    *(u32 *)(obj + 0x6C) = zero;
-
-    while (count < *(u32 *)(obj + 0x70)) {
-        u8 *players = (u8 *)*(void **)(obj + 0x74);
-        __dt__Q36nw4hbm3snd11SoundPlayerFv(players + offset, -1);
-        offset += 0x48;
-        count++;
-    }
-
-    *(u32 *)(obj + 0x70) = 0;
-    *(void **)(obj + 0x74) = 0;
-    fn_800FA9E8(obj + 0xA8);
-
-    register void *pool = *(void **)(obj + 0xD0);
-    register u32 poolSize = *(volatile u32 *)(obj + 0xD4);
-    if (pool == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325B70, 0x4C, lbl_80325B44);
-    DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(obj + 0x78, pool, poolSize);
-
-    pool = *(void **)(obj + 0xD0);
-    poolSize = *(volatile u32 *)(obj + 0xD4);
-    if (pool == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325B2C, 0x4C, lbl_80325B00);
-    DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(obj + 0x88, pool, poolSize);
-
-    pool = *(void **)(obj + 0xD0);
-    poolSize = *(volatile u32 *)(obj + 0xD4);
-    if (pool == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325AE8, 0x4C, lbl_80325ABC);
-    DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(obj + 0x98, pool, poolSize);
-
-    fn_800EE434(obj + 0xC4, *(void **)(obj + 0xD0), *(u32 *)(obj + 0xD4));
-    *(u32 *)(obj + 0xD0) = zero;
-    *(u32 *)(obj + 0xD4) = zero;
-}
 
 extern "C" s32 GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(void *player, void *archive) {
     struct GroupInfo { s32 count; s32 size; };
