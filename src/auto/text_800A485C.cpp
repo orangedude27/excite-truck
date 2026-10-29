@@ -1016,27 +1016,34 @@ extern "C" void fn_800A68DC(s32 arg0) {
     fn_800A76B4((void *)arg0, 1);
 }
 
-s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
-    s32 sp18;
-    s32 sp8;
+extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
+    s32 sp18[4];
+    s32 sp8[4];
     s16 i;
-    s16 j;
     s32 *a;
     s32 *b;
     s32 temp;
     u8 *p;
+
     *arg2 = 0;
     p = (u8 *)arg0;
     if (p[0x1FE] != 0x55 || p[0x1FF] != 0xAA)
         return 2;
-    a = &sp18;
-    b = &sp8;
+
+    a = sp18;
+    b = sp8;
     i = 0;
     do {
-        temp = ((u32)p[0x1C9] << 24) + ((u32)p[0x1C8] << 16) + p[0x1C6] + ((u32)p[0x1C7] << 8);
+        temp = ((u32)p[0x1C9] << 24) +
+               ((u32)p[0x1C8] << 16) +
+               p[0x1C6] +
+               ((u32)p[0x1C7] << 8);
         *a = 0;
         *a = temp;
-        *b = ((u32)p[0x1CD] << 24) + ((u32)p[0x1CC] << 16) + ((u32)p[0x1CB] << 8) + p[0x1CA];
+        *b = ((u32)p[0x1CD] << 24) +
+             ((u32)p[0x1CC] << 16) +
+             p[0x1CA] +
+             ((u32)p[0x1CB] << 8);
         if (temp != 0 && *b != 0) {
             if (i == 0)
                 *arg2 = 1;
@@ -1048,14 +1055,16 @@ s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
         p += 0x10;
         a++;
     } while (i < 4);
-    a = &sp8;
-    b = &sp18;
+
+    a = sp8;
+    b = sp18;
     i = 0;
     do {
         if ((u32)(*b + *a) > arg1) {
-            if (i == 0)
+            if (i == 0) {
                 *arg2 = 0;
-            return 2;
+                return 2;
+            }
         }
         i++;
         b++;
@@ -2780,45 +2789,47 @@ extern "C" s32 fn_800AAF70(void *arg0) {
     void *sp10;
     u32 spC;
     s32 sp8;
-    s32 state;
     s32 result;
     u32 var_r30;
 
-    state = *(s32 *)((u8 *)arg0 + 0x1C);
-    if (state == 2) {
+    switch (*(s32 *)((u8 *)arg0 + 0x1C)) {
+    case 2:
         fn_800AEF6C(arg0);
         goto finish;
-    }
-    if (state >= 2 || state < 0)
-        return 7;
-
-    result = ((LookupPage)fn_800A8D08)(arg0, -1, &sp10, &sp8);
-    if (result != 0)
-        return result;
-
-    fn_800A499C((const char *)*(void **)((u8 *)sp10 + 8), 0, *(u16 *)arg0);
-    var_r30 = *(u32 *)((u8 *)arg0 + 0x2C);
-    while (var_r30 < *(u32 *)((u8 *)arg0 + 0x30)) {
-        result = ((ReadData)fn_800B5700)((s32)arg0,
-                                        *(s32 *)((u8 *)sp10 + 8),
-                                        (s32)var_r30, 0, *(u16 *)arg0,
-                                        &spC, 0);
-        if (result != 0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+    case 0:
+    case 1:
+        result = ((LookupPage)fn_800A8D08)(arg0, -1, &sp10, &sp8);
+        if (result != 0)
             return result;
+
+        fn_800A499C((const char *)*(void **)((u8 *)sp10 + 8), 0, *(u16 *)arg0);
+        var_r30 = *(u32 *)((u8 *)arg0 + 0x2C);
+        while (var_r30 < *(u32 *)((u8 *)arg0 + 0x30)) {
+            result = ((ReadData)fn_800B5700)((s32)arg0,
+                                            *(s32 *)((u8 *)sp10 + 8),
+                                            (s32)var_r30, 0, *(u16 *)arg0,
+                                            &spC, 0);
+            if (result != 0) {
+                VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+                return result;
+            }
+            if (spC != *(u16 *)arg0) {
+                VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+                return 0x11;
+            }
+            var_r30++;
         }
-        if (spC != *(u16 *)arg0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
-            return 0x11;
-        }
-        var_r30++;
+        VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+        goto finish;
+    default:
+        return 7;
     }
-    VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
 
 finish:
-    fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
+    result = (s32)lbl_803D2140;
+    fn_800B77C0((void *)(result + 0x64));
     fn_800A52A0(arg0, lbl_8031B168);
-    fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+    fn_800B783C((void *)(result + 0x64));
     return 0;
 }
 
@@ -15051,10 +15062,14 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     while (ARCReadDir(&dir, &entry)) {
         if (entry.isDir) {
             if (!ARCChangeDir(h, entry.name))
-                Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x39, panicFormat);
+                Panic__Q26nw4hbm2dbFPCciPCce(
+                    (const char *)((u8 *)panicFile + 0), 0x39,
+                    (const char *)((u8 *)panicFormat + 0));
             result = fn_800D50A8(h, n);
             if (!ARCChangeDir(h, lbl_805597FC))
-                Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x3C, panicFormat);
+                Panic__Q26nw4hbm2dbFPCciPCce(
+                    (const char *)((u8 *)panicFile + 0), 0x3C,
+                    (const char *)((u8 *)panicFormat + 0));
             if (result == -1) continue;
             break;
         } else if (stricmp(n, entry.name) == 0) {
