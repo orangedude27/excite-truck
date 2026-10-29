@@ -622,7 +622,6 @@ extern double lbl_80560F28;
 #pragma pop
 #pragma push
 extern "C" f32 fn_800E310C(void *arg0) {
-    float result;
     int a = *(int *)((char *)arg0 + 0x6C50);
     int b = *(int *)((char *)arg0 + 0x6C4C);
     float x;
@@ -638,7 +637,7 @@ extern "C" f32 fn_800E310C(void *arg0) {
     if (c >= d) y = *(float *)((char *)arg0 + 0x6C58);
     else y = *(float *)((char *)arg0 + 0x6C54) +
         (float)c * (*(float *)((char *)arg0 + 0x6C58) - *(float *)((char *)arg0 + 0x6C54)) / (float)d;
-    result = x * y;
+    float result = x * y;
 
     int e;
     int f;
@@ -1870,6 +1869,8 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
     return result + (finished ? 1 : 0);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
     int format;
     unsigned int interrupt;
@@ -1920,6 +1921,7 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
     }
     OSRestoreInterrupts(interrupt);
 }
+#pragma pop
 
 extern "C" void SetLoopEnd__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *self, int index, const void *address, unsigned long length) {
     extern unsigned int OSDisableInterrupts(void);
@@ -2285,6 +2287,8 @@ extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     short initialCoefs[2];
     unsigned short coefA;
     unsigned short coefB;
+    unsigned short altCoefA;
+    unsigned short altCoefB;
     unsigned short rate;
 
     channelIndex = 0;
@@ -2299,7 +2303,7 @@ extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
         if (rate >= 0x3e80) {
             zeroCoefs[0] = zero;
             zeroCoefs[1] = zero;
-            entry = (char *)self + channelOffset;
+            entry = (char *)((unsigned int)self + channelOffset);
             inner = 0;
             while (inner < *(int *)((char *)self + 0x104)) {
                 fn_80033B0C(*(void **)(entry + 0xc), zeroCoefs);
@@ -2309,7 +2313,7 @@ extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
         } else if (*(unsigned short *)(*(char **)((char *)self + 0xc) + 0x1fc) == 1) {
             ((void (*)(unsigned short, unsigned short *, unsigned short *))AXGetLpfCoefs)(
                 rate, &coefA, &coefB);
-            entry = (char *)self + channelOffset;
+            entry = (char *)((unsigned int)self + channelOffset);
             inner = 0;
             while (inner < *(int *)((char *)self + 0x104)) {
                 fn_80033B74(*(void **)(entry + 0xc), coefA, coefB);
@@ -2317,11 +2321,11 @@ extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
                 inner++;
             }
         } else {
-            initialCoefs[0] = zero;
-            initialCoefs[1] = one;
+            initialCoefs[0] = one;
+            initialCoefs[1] = zero;
             ((void (*)(unsigned short, unsigned short *, unsigned short *))AXGetLpfCoefs)(
-                rate, &coefA, &coefB);
-            entry = (char *)self + channelOffset;
+                rate, &altCoefA, &altCoefB);
+            entry = (char *)((unsigned int)self + channelOffset);
             inner = 0;
             while (inner < *(int *)((char *)self + 0x104)) {
                 fn_80033B0C(*(void **)(entry + 0xc), initialCoefs);
