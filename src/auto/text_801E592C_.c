@@ -99,6 +99,7 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     }
     fn_802C7A38(0, sp68, temp);
 }
+#pragma use_lmw_stmw on
 
 void fn_801E67B4(void *arg0, void *arg1, void *arg2) {
     float *out = (float *)arg0;
