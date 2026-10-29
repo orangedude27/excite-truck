@@ -66,6 +66,7 @@ extern u8 lbl_8055DC50;
 extern u8 lbl_8055DC51;
 extern void uusb_CloseDeviceCB(s8);
 extern void uusb_issue_intr_read(void);
+extern s32 IUSB_ReadIntrMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
 extern void rfc_port_sm_state_closed(void *, u16, void *);
 extern void rfc_port_sm_sabme_wait_ua(void *, u16, void *);
 extern void rfc_port_sm_orig_wait_sec_check(void *, u16, void *);
@@ -4848,19 +4849,27 @@ found:
 }
 
 tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR arg0) {
+    u32 value;
+    u32 *stamp;
     u8 *base;
     u8 *dev;
-    u8 *entry;
     u8 *inq;
     s32 i;
-    u32 value;
+    struct tBTM_SEC_DEV_SLOT_VIEW {
+        u8 pad0[0x76];
+        u8 in_use;
+        u8 pad77[0x11];
+    };
+    struct tBTM_SEC_CB_VIEW {
+        u8 pad0[0x1F30];
+        struct tBTM_SEC_DEV_SLOT_VIEW dev[0x10];
+    };
 
     base = lbl_803C0F78;
     dev = 0;
     for (i = 0; i < 0x10; i++) {
         if ((base[0x1FA6] & 0x80) == 0) {
-            entry = lbl_803C0F78 + i * 0x88;
-            dev = entry + 0x1F30;
+            dev = (u8 *)&((struct tBTM_SEC_CB_VIEW *)lbl_803C0F78)->dev[i];
             break;
         }
         base += 0x88;
@@ -4879,9 +4888,10 @@ tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR arg0) {
         memcpy(dev + 0x22, lbl_803C0F78 + 0x27BA, 3);
     memcpy(dev + 0x1C, arg0, 6);
     *(u16 *)(dev + 0x18) = BTM_GetHCIConnHandle(arg0);
-    value = *(u32 *)(lbl_803C0F78 + 0x1974);
+    stamp = (u32 *)(lbl_803C0F78 + 0x1974);
+    value = *stamp;
     *(u32 *)(dev + 0xC) = value;
-    *(u32 *)(lbl_803C0F78 + 0x1974) = value + 1;
+    *stamp = value + 1;
     return (tBTM_SEC_DEV_REC *)dev;
 }
 
