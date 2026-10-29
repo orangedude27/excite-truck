@@ -4011,7 +4011,7 @@ dispatch:
         result = fn_800B00E8(object, arg1, &value, pageForRead);
         break;
     case 2:
-        result = ((Fn800B05C8C *)fn_800B05C8)(object, arg1, &value);
+        result = ((s32 (*)(void *, s32, u32 *, void *))fn_800B05C8)(object, arg1, &value, pageForRead);
         break;
     default:
         result = 0xF;
