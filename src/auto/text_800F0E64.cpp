@@ -893,27 +893,49 @@ extern "C" const char lbl_80324E10[];
 extern "C" char lbl_805598C8;
 extern "C" char lbl_805598D0;
 extern "C" BOOL ReadSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9SoundInfo(void *self, u32 index, void *info) {
-    u8 *ref = *(u8 **)((u8 *)self + 0x28);
+    register u8 *reader = (u8 *)self;
+    register u32 soundIndex = index;
+    register u8 *outInfo = (u8 *)info;
+    register u8 *ref = *(u8 **)(reader + 0x28);
+    register u8 *base;
+    register u8 *entry;
+
     if (ref[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
-    void *base = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(u32 *)(ref + 4), ref);
-    void *entry = 0;
-    if (base != 0 && index < *(u32 *)base) {
-        if (*(u16 *)((u8 *)self + 6) >= 0x101) {
-            u8 *item = (u8 *)base + index * 8;
-            if (item[5] != 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
-            entry = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(item[4], *(u32 *)(item + 8), ref);
-        } else {
-            entry = (u8 *)base + index * 8 + *(u32 *)((u8 *)base + index * 8 + 8);
-        }
+
+    base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+        ref[0], *(u32 *)(ref + 4), ref);
+    if (base == 0) {
+        entry = 0;
+        goto done;
     }
+    if (soundIndex >= *(u32 *)base) {
+        entry = 0;
+        goto done;
+    }
+
+    if (*(u16 *)(reader + 6) >= 0x101) {
+        soundIndex <<= 3;
+        ref = *(u8 **)(reader + 0x28);
+        entry = base + soundIndex;
+        if (entry[5] != 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
+        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+            entry[4], *(u32 *)(entry + 8), ref);
+        goto done;
+    }
+
+    soundIndex <<= 3;
+    ref = *(u8 **)(reader + 0x28);
+    entry = ref + *(u32 *)(base + soundIndex + 8);
+
+done:
     if (entry == 0)
         return 0;
-    *(u32 *)info = *(u32 *)((u8 *)entry + 4);
-    *(u32 *)((u8 *)info + 4) = *(u32 *)((u8 *)entry + 8);
-    *(u32 *)((u8 *)info + 8) = *((u8 *)entry + 0x15);
-    *(u32 *)((u8 *)info + 0xC) = *((u8 *)entry + 0x14);
+    *(u32 *)outInfo = *(u32 *)(entry + 4);
+    *(u32 *)(outInfo + 4) = *(u32 *)(entry + 8);
+    *(u32 *)(outInfo + 8) = entry[0x15];
+    *(u32 *)(outInfo + 0xC) = entry[0x14];
     return 1;
 }
 
@@ -4099,22 +4121,21 @@ extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6det
 extern "C" const char lbl_8032692C[];
 extern "C" void *fn_800E3954(void *, s32, s32, s32, void (*)(void *, s32, void *), void *);
 extern "C" void VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *, s32, void *);
-s32 nw4hbm::snd::detail::StrmPlayer::AllocChannels(int channelCount, int columns) {
-    u8 *self = (u8 *)this;
-    if (*(void **)(self + 0x42C) == 0)
+extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *self, s32 channelCount, s32 columns) {
+    if (*(void **)((u8 *)self + 0x42C) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x45C, lbl_8032692C);
 
-    u8 *channel = self;
-    int allocated = 0;
+    u8 *channel = (u8 *)self;
+    s32 allocated = 0;
     goto allocate_check;
     do {
-        void *buffer = Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(*(void **)(self + 0x42C));
+        void *buffer = Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(*(void **)((u8 *)self + 0x42C));
         if (buffer == 0) {
-            channel = self;
-            int freed = 0;
+            channel = (u8 *)self;
+            s32 freed = 0;
             goto alloc_free_check;
             do {
-                Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)(self + 0x42C), *(void **)(channel + 0x4A8));
+                Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), *(void **)(channel + 0x4A8));
                 channel += 0x38;
                 ++freed;
             alloc_free_check:
@@ -4124,7 +4145,7 @@ s32 nw4hbm::snd::detail::StrmPlayer::AllocChannels(int channelCount, int columns
         }
         *(void **)(channel + 0x4A8) = buffer;
         ++allocated;
-        *(u32 *)(channel + 0x4AC) = *(u32 *)(*(u8 **)(self + 0x42C) + 8);
+        *(u32 *)(channel + 0x4AC) = *(u32 *)((u8 *)(*(void **)((u8 *)self + 0x42C)) + 8);
         channel += 0x38;
     allocate_check:
         ;
@@ -4135,11 +4156,11 @@ s32 nw4hbm::snd::detail::StrmPlayer::AllocChannels(int channelCount, int columns
                                VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv,
                                self);
     if (voice == 0) {
-        channel = self;
-        int freed = 0;
+        channel = (u8 *)self;
+        s32 freed = 0;
         goto voice_free_check;
         do {
-            Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)(self + 0x42C), *(void **)(channel + 0x4A8));
+            Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), *(void **)(channel + 0x4A8));
             channel += 0x38;
             ++freed;
         voice_free_check:
@@ -4147,7 +4168,7 @@ s32 nw4hbm::snd::detail::StrmPlayer::AllocChannels(int channelCount, int columns
         } while (freed < channelCount);
         return 0;
     }
-    *(void **)(self + 0x438) = voice;
+    *(void **)((u8 *)self + 0x438) = voice;
     return 1;
 }
 
