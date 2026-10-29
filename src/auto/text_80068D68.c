@@ -16407,35 +16407,39 @@ void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
 void rfc_port_closed(void *arg0) {
     extern unsigned char lbl_803C4828[];
     extern char lbl_80319EB0[];
-      unsigned char *port = arg0;
-    unsigned char *mcb = *(unsigned char **)(port + 0x6C);
-    u16 i;
-    if (lbl_803C4828[0x414] >= 5) fn_8007093C(0x90004, lbl_80319EB0 + 0x68);
-    if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0 + 0x54);
+    register char *messages = lbl_80319EB0;
+    register unsigned char *mcb;
+    register unsigned char *port = arg0;
+
+    mcb = *(unsigned char **)(port + 0x6C);
+    if (lbl_803C4828[0x414] >= 5) fn_8007093C(0x90004, messages + 0x68);
+    if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, messages + 0x54);
     fn_80070F90(port + 0x70);
     port[0x68] = 0;
     if (mcb != 0) {
-        mcb[port[0xD] + 0x24] = 0;
+        ((unsigned char *)mcb + port[0xD])[0x24] = 0;
         port[0xD] = 0;
-        for (i = 0; i < 0x3D; i++) {
-            if (mcb[i + 0x24] != 0) {
-                mcb[0x74] = 0;
-                break;
+        {
+            u16 i;
+            for (i = 0; i < 0x3D; i++) {
+                if (mcb[i + 0x24] != 0) {
+                    mcb[0x74] = 0;
+                    goto done;
+                }
             }
         }
-        if (i == 0x3D) {
-            if (mcb[0x74] != 0) {
-                mcb[0x74] = 0;
-                fn_800916F4(mcb, 8, 0);
-            } else {
-                if (lbl_803C4828[0x414] >= 4)
-                    fn_80070954(0x90003, lbl_80319EB0 + 0x10, 2);
-                *(void **)(mcb + 0x10) = mcb;
-                btu_start_timer(mcb, 0xB, 2);
-            }
+        if (mcb[0x74] != 0) {
+            mcb[0x74] = 0;
+            fn_800916F4(mcb, 8, 0);
+        } else {
+            if (lbl_803C4828[0x414] >= 4)
+                fn_80070954(0x90003, messages + 0x10, 2);
+            *(void **)(mcb + 0x10) = mcb;
+            btu_start_timer(mcb, 0xB, 2);
         }
     }
-    port_rfc_closed((struct t_port_info *)arg0, 0x13);
+done:
+    port_rfc_closed((struct t_port_info *)port, 0x13);
 }
 
 extern char lbl_80319F28[];
