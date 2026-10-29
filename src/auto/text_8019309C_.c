@@ -178,44 +178,82 @@ float fn_801931EC(float a, float b) {
 
 #pragma processor 750
 void fn_8019321C(void *arg0, void *arg1, void *arg2) {
+    float stack[10];
     float x = *(float *)((char *)arg2 + 0x18);
     float y = *(float *)((char *)arg2 + 0x20);
-    float length = (float)fn_8002F234(x * x + y * y);
+    float magnitude = x * x + y * y;
+    float length;
     float scale;
-    float dx, dy, neg;
-    float ox, oy;
-    float a = *(float *)((char *)arg2 + 0x24);
-    float b = *(float *)((char *)arg2 + 0x2C);
-    float c = *(float *)arg1;
-    float d = *(float *)((char *)arg1 + 4);
-    if (lbl_80562148 > length) length = lbl_80562148;
+    float dx;
+    float dy;
+    double neg;
+    float c;
+    float d;
+    float term0;
+    float term1;
+    float term2;
+    float term3;
+    float ox;
+    float oy;
+    stack[2] = x;
+    stack[3] = y;
+    length = (float)fn_8002F234(magnitude);
+    if (lbl_80562148 > length)
+        length = lbl_80562148;
     scale = lbl_80562140 / length;
-    dx = x * scale;
-    dy = y * scale;
-    neg = -dx;
-    ox = dy * c + dx * d + a;
-    oy = neg * c + dy * d + b;
+    dx = stack[2] * scale;
+    dy = stack[3] * scale;
+    stack[6] = *(float *)((char *)arg2 + 0x24);
+    c = *(float *)arg1;
+    d = *(float *)((char *)arg1 + 4);
+    stack[7] = *(float *)((char *)arg2 + 0x2C);
+    neg = -(double)dx;
+    stack[2] = dx;
+    stack[3] = dy;
+    stack[4] = dy;
+    stack[5] = (float)neg;
+    term0 = dy * c;
+    term1 = dx * d;
+    term2 = (float)neg * c;
+    term3 = dy * d;
+    ox = term0 + term1;
+    oy = term2 + term3;
+    ox += stack[6];
+    oy += stack[7];
     *(float *)arg0 = ox;
     *(float *)((char *)arg0 + 4) = oy;
 }
-#pragma processor gekko
+#pragma processor reset
 extern float lbl_80562140, lbl_80562148;
 #pragma dont_inline on
 void fn_8019330C(void *out, void *in, int arg2) {
-    volatile float x = *(float *)((char *)arg2 + 0x18);
-    volatile float y = *(float *)((char *)arg2 + 0x20);
-    float length = (float)fn_8002F234(x * x + y * y);
+    volatile float work[8];
+    float x = *(float *)((char *)arg2 + 0x18);
+    float y = *(float *)((char *)arg2 + 0x20);
+    float sq = y * y + x * x;
+    float length;
+    float denom;
     float scale;
     float sx, sy, dx, dy;
-    if (lbl_80562148 > length) {
-    } else {
-        length = lbl_80562148;
-    }
-    scale = lbl_80562140 / length;
-    sx = x * scale;
-    sy = y * scale;
-    dx = *(float *)in - *(float *)((char *)arg2 + 0x24);
-    dy = *(float *)((char *)in + 4) - *(float *)((char *)arg2 + 0x2C);
+    work[2] = x;
+    work[3] = y;
+    length = (float)fn_8002F234(sq);
+    denom = lbl_80562148;
+    if (denom <= length)
+        denom = length;
+    scale = lbl_80562140 / denom;
+    sy = work[3] * scale;
+    sx = work[2] * scale;
+    work[6] = *(float *)((char *)arg2 + 0x24);
+    work[7] = *(float *)((char *)arg2 + 0x2C);
+    dx = *(float *)in - work[6];
+    dy = *(float *)((char *)in + 4) - work[7];
+    work[0] = dx;
+    work[1] = dy;
+    work[2] = sx;
+    work[3] = sy;
+    work[4] = sy;
+    work[5] = -sx;
     *(float *)((char *)out + 4) = dx * sx + dy * sy;
     *(float *)out = dx * sy + dy * -sx;
 }
@@ -692,37 +730,54 @@ void fn_80194170(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x240) = value;
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801941A8(void *arg0, float arg1) {
-    float value;
-    float pos = *(float *)((char *)arg0 + 0x23C);
-    float vel = *(float *)((char *)arg0 + 0x248);
-    float limit;
-    int other;
+    union FloatWord {
+        float f;
+        u32 u;
+    } otherBits, newBits;
+    volatile float *posField = (volatile float *)((char *)arg0 + 0x23C);
+    volatile float *velField = (volatile float *)((char *)arg0 + 0x248);
+    float change = lbl_805621B0;
+    float delta = arg1 - posField[0];
+    float pos;
+    float velocity;
+    int adjust;
+    float product;
+    double finalPos;
+    float callPos;
 
-    value = arg1 - pos;
-    if (value < lbl_805621B0) value = lbl_805621B0;
-    if (value > lbl_805621B4) value = lbl_805621B4;
-    limit = pos + value;
-    if (vel < lbl_80562174) {
-        pos = limit;
-        other = *(int *)((char *)*(void **)((char *)arg0 + 0x294) + 0x25F0);
-        if (other < 0 != limit < 0)
-            vel += lbl_80562168;
+    change = change < delta ? delta : change;
+    change = change > lbl_805621B4 ? lbl_805621B4 : change;
+    pos = posField[0];
+    velocity = velField[0];
+    pos += change;
+    adjust = velocity < lbl_80562174;
+    posField[0] = pos;
+    if (adjust) {
+        void *obj = *(void **)((char *)arg0 + 0x294);
+        newBits.f = pos;
+        otherBits.f = *(float *)((char *)obj + 0x25F0);
+        if ((int)(newBits.u & 0x80000000) != (int)(otherBits.u & 0x80000000)) {
+            velocity += lbl_80562168;
+            velField[0] = velocity;
+        }
     }
-    *(float *)((char *)arg0 + 0x23C) = pos;
-    *(float *)((char *)arg0 + 0x248) = vel;
-    vel = *(float *)((char *)arg0 + 0x248);
-    if (vel < lbl_80562140) vel = lbl_80562140;
-    if (vel > lbl_80562144) vel = lbl_80562144;
-    pos = *(float *)((char *)arg0 + 0x23C);
-    pos *= lbl_80562140 - vel;
-    if (pos < lbl_80562140) pos = lbl_80562140;
-    if (pos > lbl_805621A4) pos = lbl_805621A4;
-    *(float *)((char *)arg0 + 0x23C) = pos;
-    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), pos);
+    velocity = velField[0];
+    {
+        float minimum = lbl_80562140;
+        minimum = minimum < velocity ? velocity : minimum;
+        minimum = minimum > lbl_80562144 ? lbl_80562144 : minimum;
+        product = posField[0] * (lbl_80562140 - minimum);
+    }
+    product = product < lbl_80562140 ? lbl_80562140 : product;
+    product = product > lbl_805621A4 ? lbl_805621A4 : product;
+    finalPos = product;
+    callPos = (float)finalPos;
+    posField[0] = finalPos;
+    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), callPos);
 }
-
+#pragma scheduling on
 void fn_801942B8(void *arg0, float arg1) {
     float value;
     if (arg1 > lbl_80562140) value = arg1;
@@ -1518,17 +1573,19 @@ void fn_801971AC(void *arg0, void *arg1) {
 }
 
 int fn_8019799C(void *arg0, void *arg1) {
-    int result = 0;
     int id;
+    int result = 0;
     int valid;
     int allow;
+    double absolute;
     float angle;
-    float bound;
     float distance;
+    float bound;
+    float limit;
     extern float lbl_80562160, lbl_80562170, lbl_80562184;
     extern float fn_80137850(void *);
+    extern double __fabs(double);
     extern void fn_80197AB8(void *, int, float, float, float);
-    extern float __fabsf(float);
 
     if (*(int *)((char *)arg0 + 0x2D0) & 2) return 0;
     allow = 1;
@@ -1542,10 +1599,12 @@ int fn_8019799C(void *arg0, void *arg1) {
     }
     if (allow && id != *(int *)((char *)arg0 + 0x2C4)) {
         angle = fn_80137850(arg1);
-        distance = __fabsf(angle);
+        absolute = __fabs((double)angle);
         bound = *(float *)((char *)arg0 + 0x278) + *(float *)((char *)arg1 + 4);
-        if (distance >= bound) distance = bound;
-        if (distance < lbl_80562184 + *(float *)((char *)arg0 + 0x274)) {
+        distance = (float)absolute;
+        limit = lbl_80562184 + *(float *)((char *)arg0 + 0x274);
+        distance = distance < bound ? distance : bound;
+        if (distance < limit) {
             fn_80197AB8(arg0, id, *(float *)((char *)(*(void **)arg1) + 4), angle,
                 *(float *)((char *)arg1 + 0x10));
             result = 1;
@@ -1558,9 +1617,28 @@ typedef struct Obj Obj;
 extern void *fn_8017960C(int);
 extern Obj *fn_801B2ED0(int);
 extern float lbl_80562194;
-void fn_80197AB8(void *arg0, int arg1, float farg0, float farg1, float farg2) {
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_80197AB8(void *arg0, int arg1, float farg0, float farg1, float farg2) {
+    class VObj {
+    public:
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void *call();
+    };
     unsigned char *p = (unsigned char *)arg0;
     float vals[2];
+    float rate;
+    float motion;
+    float field3C;
+    float field38;
+    float term1;
+    float term2;
+    float height;
+    float sum;
+    float output;
     int update;
     void *obj;
     void *result;
@@ -1574,18 +1652,28 @@ void fn_80197AB8(void *arg0, int arg1, float farg0, float farg1, float farg2) {
         vals[0] = *(float *)((char *)obj + 0x88);
         vals[1] = *(float *)((char *)obj + 0x90);
         obj = fn_801B2ED0(arg1);
-        result = (*(void *(*)(void *))(*(void ***)obj)[6])(obj);
+        result = ((VObj *)obj)->call();
         if (result) {
             p[0xFC] = 1;
+            rate = *(float *)(p + 0x27C);
+            motion = rate * farg0;
+            field3C = *(float *)((char *)result + 0x3C);
+            field38 = *(float *)((char *)result + 0x38);
+            term1 = field3C * vals[1];
+            term2 = field38 * vals[0];
+            height = *(float *)(p + 0x278) + motion;
+            sum = term2 + term1;
             *(float *)(p + 0xF8) = farg1;
             *(int *)(p + 0x114) = arg1;
-            *(float *)(p + 0x108) = *(float *)(p + 0x278) + *(float *)(p + 0x27C) * farg0;
+            output = lbl_80562194 * sum;
+            *(float *)(p + 0x108) = height;
             *(float *)(p + 0x110) = farg2;
-            *(float *)(p + 0x104) = lbl_80562194 * (*(float *)((char *)result + 0x38) * vals[0] + *(float *)((char *)result + 0x3C) * vals[1]);
+            *(float *)(p + 0x104) = output;
         }
     }
 }
-
+#pragma cplusplus reset
+#pragma scheduling on
 extern float lbl_8055A48C, lbl_80562194, lbl_8056227C, lbl_80562280, lbl_80562140, lbl_80562144, lbl_805621A4, lbl_8056215C, lbl_80562284, lbl_80562288, lbl_80562268, lbl_80562274, lbl_8056228C;
 extern void fn_8019315C(void *, int);
 extern int fn_8019309C(void *, int, signed char);
