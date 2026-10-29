@@ -542,6 +542,8 @@ void fn_80069C14(u32 r3, u32 r4) {
     OSSwitchFiberEx(r3, r4, 0, 0, fn_80069408, (u8*)&lbl_80393680 + 0x1000);
 }
 
+#pragma push
+#pragma dont_inline on
 s32 WUDiTerminateDevice(void) {
     s32 i;
     u8 *entry;
@@ -554,6 +556,7 @@ s32 WUDiTerminateDevice(void) {
     }
     return 3;
 }
+#pragma pop
 
 s32 WUDiDeleteDevice(void)
 {
