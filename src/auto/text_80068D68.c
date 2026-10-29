@@ -3749,32 +3749,47 @@ finish:
     callback(event, &sp10, lbl_803C0D48);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void bta_hh_get_acl_q_info(void) {
     u8 info[0x1E];
-    u8 count = 0;
-    u8 i;
-    u8 *entry;
+    register u8 count;
+    register u8 *config;
+    register u8 *entry_base;
+    register u8 *row;
+    register u8 i;
     u8 *ccb;
     u8 *p;
-    memset(info, 0, sizeof(info));
+
+    count = 0;
+    memset(info, 0, 0x1E);
+    config = lbl_803C3C38;
+    entry_base = lbl_803C0D48;
     for (i = 0; i < 0x10; i++) {
-        entry = lbl_803C0D48 + i * 0x20;
-        if (entry[0x28] != 0 && entry[0x2C] == 3) {
-            info[count * 6 + 6] = entry[0x26];
-            ccb = (u8 *)l2cu_find_ccb_by_cid(0, *(u16 *)(lbl_803C3C38 + entry[0x26] * 0x34 + 0x16));
-            if (ccb != 0 && (p = *(u8 **)(ccb + 0x10)) != 0 && p[0] != 0) {
-                *(u16 *)(info + count * 6 + 8) = *(u16 *)(p + 0x4C);
-                *(u16 *)(info + count * 6 + 10) = *(u16 *)(p + 0x38);
-                count++;
-            }
-        }
+        u8 *entry = entry_base + ((u32)i << 5);
+        if (entry[0x28] == 0) goto next;
+        if (entry[0x2C] != 3) goto next;
+        row = info + ((u32)count * 6);
+        row[6] = entry[0x26];
+        ccb = (u8 *)l2cu_find_ccb_by_cid(0,
+            *(u16 *)(config + entry[0x26] * 0x34 + 0x16));
+        if (ccb == 0) goto next;
+        p = *(u8 **)(ccb + 0x10);
+        if (p == 0) goto next;
+        if (p[0] == 0) goto next;
+        *(u16 *)(row + 8) = *(u16 *)(p + 0x4C);
+        *(u16 *)(row + 0xA) = *(u16 *)(p + 0x38);
+        count++;
+    next:
+        ;
     }
     *(u16 *)(info + 0) = *(u16 *)(lbl_803C4040 + 4);
     *(u16 *)(info + 2) = *(u16 *)(lbl_803C4040 + 2);
     *(u16 *)(info + 4) = count;
-    ((void (*)(u32, void *, u16, u16))*(void **)(lbl_803C0D48 + 0x224))(0xF, info,
-        *(u16 *)(lbl_803C4040 + 2), *(u16 *)(lbl_803C4040 + 4));
+    ((void (*)(u32, void *, u16, u16))*(void **)(lbl_803C0D48 + 0x224))(
+        0xF, info, *(u16 *)(lbl_803C4040 + 2), *(u16 *)(lbl_803C4040 + 4));
 }
+#pragma pop
 
 void BTA_HhEnable(u8 arg0, void *arg1) {
     u8 *buf;
@@ -14355,50 +14370,55 @@ void rfc_port_sm_opened(void *p_port, u16 event, void *p_data) {
 void rfc_port_sm_disc_wait_ua(void *p_port, s32 event, void *p_data) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319AC4[];
+    extern char lbl_80319D48[];
+    extern void fn_80070954(u32, void *, u16);
     extern void fn_8007096C(u32, void *, u16, u16);
     extern void rfc_port_closed(void *);
     extern void GKI_freebuf(void *);
-    extern void rfc_send_dm(void *, u8, u8);
+    extern void rfc_send_dm(void *, u8, BOOLEAN);
 
     u8 *port = (u8 *)p_port;
-    u8 dlci = port[0xD];
 
-    if (event < 0xF) {
-        switch (event) {
-        case 0:
-            break;
-        case 1:
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        case 4:
-            break;
-        case 5:
-            break;
-        case 6:
-            break;
-        case 7:
-            break;
-        case 8:
-            break;
-        case 9:
-            break;
-        case 10:
-            break;
-        case 11:
-            break;
-        case 12:
-            break;
-        case 13:
-            break;
-        case 14:
-            break;
-        }
+    switch (event) {
+    case 9:
+    case 11:
+    default:
+        if (lbl_803C4828[0x414] >= 1)
+            ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90000, lbl_80319AC4, port[0x68], event);
+        return;
+    case 13:
+        rfc_port_closed(p_port);
+        return;
+    case 14:
+        GKI_freebuf(p_data);
+        return;
+    case 1:
+        *(u8 *)(*(u8 **)(port + 0x6C) + 0x74) = 1;
+    case 2:
+        rfc_port_closed(p_port);
+        return;
+    case 0:
+        rfc_send_dm(*(void **)(port + 0x6C), port[0xD], TRUE);
+        return;
+    case 3:
+        rfc_send_dm(*(void **)(port + 0x6C), port[0xD], TRUE);
+        return;
+    case 4:
+        GKI_freebuf(p_data);
+        rfc_send_dm(*(void **)(port + 0x6C), port[0xD], FALSE);
+        return;
+    case 5:
+        rfc_port_closed(p_port);
+        return;
+    case 6:
+    case 7:
+    case 8:
+    case 10:
+    case 12:
+        if (lbl_803C4828[0x414] >= 2)
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90001, lbl_80319D48, event);
+        return;
     }
-    if (lbl_803C4828[0x414] > 1)
-        fn_8007096C(0x9, lbl_80319AC4, port[0x68], event);
 }
 
 void PORT_ParNegInd(void *, u8, u16, u8, u8);
@@ -14937,22 +14957,23 @@ void rfc_send_rpn(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars, s32 mask) {
         return;
     *(u16 *)(buf + 4) = 0xC;
     sign = -is_command | is_command;
-    p_data = (u8 *)((u32)buf + 0x15);
     buf[0x14] = (u8)(((sign >> 31) & 2) | 0x91);
+    p_data = buf + 0x14;
+    p_data++;
     if (p_pars == NULL) {
-        p_data[0] = 3;
-        p_data[1] = (u8)((((u8)dlci) << 2) | 3);
+        *p_data++ = 3;
+        *p_data = (u8)((((u8)dlci) << 2) | 3);
         *(u16 *)(buf + 2) = 3;
     } else {
-        p_data[0] = 0x11;
-        p_data[1] = (u8)((((u8)dlci) << 2) | 3);
-        p_data[2] = p_pars[0];
-        p_data[3] = (u8)(p_pars[1] | (p_pars[2] << 2) | (p_pars[3] << 3) | (p_pars[4] << 4));
-        p_data[4] = p_pars[5];
-        p_data[5] = p_pars[7];
-        p_data[6] = p_pars[8];
-        p_data[7] = (u8)mask;
-        p_data[8] = (u8)(((u16)mask) >> 8);
+        *p_data++ = 0x11;
+        *p_data++ = (u8)((((u8)dlci) << 2) | 3);
+        *p_data++ = p_pars[0];
+        *p_data++ = (u8)(p_pars[1] | (p_pars[2] << 2) | (p_pars[3] << 3) | (p_pars[4] << 4));
+        *p_data++ = p_pars[5];
+        *p_data++ = p_pars[7];
+        *p_data++ = p_pars[8];
+        *p_data++ = (u8)mask;
+        *p_data = (u8)(((u16)mask) >> 8);
         *(u16 *)(buf + 2) = 0xA;
     }
     rfc_send_buf_uih(p_mcb, 0, (BT_HDR *)buf);
