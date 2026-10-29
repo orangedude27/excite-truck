@@ -778,6 +778,18 @@ extern "C" s32 VFipdm_disk_convert_block_into_sector(void *arg0, u32 arg1, u32 a
 }
 
 extern "C" int fn_800A499C(const char *, int, int);
+
+static inline s32 fn_800ACDF8LookupPage(void *arg0, s32 arg1, void **arg2, s32 *arg3) {
+    typedef s32 (*LookupCall)(void *, s32, void **, s32 *);
+    typedef s32 (*LookupSymbol)(s32, void **, s32 *, s32, s32 *);
+    return ((LookupCall)(LookupSymbol)fn_800A8D08)(arg0, arg1, arg2, arg3);
+}
+
+static inline s32 fn_800ACDF8ClearPage(void *arg0, s32 arg1) {
+    typedef s32 (*ClearCall)(void *, s32);
+    typedef s32 (*ClearSymbol)(const char *, int, int);
+    return ((ClearCall)(ClearSymbol)fn_800A499C)(arg0, arg1);
+}
 extern "C" u8 lbl_803D1640[];
 extern "C" int fn_800A6048(void) {
     fn_800A499C((const char *)&lbl_803D1640, 0, 0xA2C);
@@ -3054,34 +3066,39 @@ extern s32 fn_800B5324(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
-extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
-    /* Fix note: obtain the FAT page using this context and scan its sectors with two reads. */
+extern "C" s32 fn_800ACDF8(register void *arg0, register s32 arg1) {
+    /* Fix note: keep the context and scan counter live in registers across both FAT-page reads. */
     void *sp10;
     s32 spC;
     u32 sp8;
-    s32 temp_r30;
-    s32 temp_r31;
+    register s32 temp_r30;
+    register s32 temp_r31;
     s32 temp_r3;
-    u32 var_r29;
+    register u32 var_r29;
 
     temp_r3 = fn_800A8D08(arg0, -1, &sp10, &spC);
     if (temp_r3 != 0)
         return temp_r3;
+
     var_r29 = 0;
-    temp_r30 = *(s32 *)((u8 *)arg0 + 0x30) + ((arg1 - 2) << *((u8 *)arg0 + 0x21));
-loop_8:
-    if (var_r29 < *((u8 *)arg0 + 6)) {
+    temp_r30 = *(s32 *)((u8 *)arg0 + 0x30) +
+               ((arg1 - 2) << *((u8 *)arg0 + 0x21));
+    do {
         temp_r31 = temp_r30 + var_r29;
-        if (fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31, 0, *(u16 *)arg0, &sp8, 1) == 0 &&
-            sp8 == *(u16 *)arg0) {
-            fn_800A499C(*(s32 *)((u8 *)sp10 + 8), 0);
-            if (fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31, 0, *(u16 *)arg0, &sp8, 1) == 0 &&
-                sp8 == *(u16 *)arg0) {
-                ++var_r29;
-                goto loop_8;
-            }
-        }
-    }
+        if (fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31,
+                        0, *(u16 *)arg0, &sp8, 1) != 0)
+            break;
+        if (sp8 != *(u16 *)arg0)
+            break;
+        fn_800A499C(*(s32 *)((u8 *)sp10 + 8), 0);
+        if (fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31,
+                        0, *(u16 *)arg0, &sp8, 1) != 0)
+            break;
+        if (sp8 != *(u16 *)arg0)
+            break;
+        ++var_r29;
+    } while (var_r29 < *((u8 *)arg0 + 6));
+
     VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
     return 0;
 }
@@ -17943,7 +17960,6 @@ extern "C" s32 fn_800A4BF4(s32 arg0, u16 *arg1, s16 *arg2) {
 extern "C" u32 fn_800A4C04(u8 *arg0) { return (arg0[1] << 8) | arg0[0]; }
 
 extern "C" void fn_800A4C14(void *arg0, s32 arg1) {
-    u8 *buffer = (u8 *)arg0;
     s32 var_r0;
     u32 temp_r6;
     u32 temp_r7;
@@ -17954,59 +17970,74 @@ extern "C" void fn_800A4C14(void *arg0, s32 arg1) {
     u8 temp_r7_3;
     u8 temp_r8;
     u8 *temp_r4;
-    u8 *temp_r7_2;
     u8 *var_r6;
+    u8 *temp_r7_2;
+    u8 *buffer = (u8 *)arg0;
 
-    var_r5 = 0U;
+    var_r5 = 0;
     if (arg1 != 0) {
         temp_r6 = arg1 + 1;
         temp_r7 = arg1 - 0x10;
-        if ((u32)(temp_r6 >> 1U) > 8U) {
+        if ((temp_r6 >> 1) > 8) {
             var_r0 = 0;
-            if ((temp_r6 >= 1U) && ((u32)arg1 <= temp_r6)) {
+            if (temp_r6 >= 1 && (u32)arg1 <= temp_r6)
                 var_r0 = 1;
-            }
             if (var_r0 != 0) {
                 var_r6 = buffer;
-                var_ctr = (u32)(temp_r7 + 0xF) >> 4U;
-                if (temp_r7 > 0U) {
-                    do {
+                var_ctr = (temp_r7 + 0xF) >> 4;
+                if (temp_r7 > 0) {
+                    for (; var_ctr != 0; --var_ctr) {
                         temp_r7_2 = buffer + var_r5;
-                        buffer[var_r5] = temp_r7_2[1];
+                        temp_r8 = var_r6[0];
+                        temp_r7_3 = temp_r7_2[1];
+                        buffer[var_r5] = temp_r7_3;
                         var_r5 += 0x10;
-                        temp_r7_2[1] = var_r6[0];
-                        temp_r7_2[2] = temp_r7_2[3];
-                        temp_r7_2[3] = var_r6[2];
-                        temp_r7_2[4] = temp_r7_2[5];
-                        temp_r7_2[5] = var_r6[4];
-                        temp_r7_2[6] = temp_r7_2[7];
-                        temp_r7_2[7] = var_r6[6];
-                        temp_r7_2[8] = temp_r7_2[9];
-                        temp_r7_2[9] = var_r6[8];
-                        temp_r7_2[0xA] = temp_r7_2[0xB];
-                        temp_r7_2[0xB] = var_r6[0xA];
-                        temp_r7_2[0xC] = temp_r7_2[0xD];
-                        temp_r7_2[0xD] = var_r6[0xC];
+                        temp_r7_2[1] = temp_r8;
+                        temp_r8 = var_r6[2];
+                        temp_r7_3 = temp_r7_2[3];
+                        temp_r7_2[2] = temp_r7_3;
+                        temp_r7_2[3] = temp_r8;
+                        temp_r8 = var_r6[4];
+                        temp_r7_3 = temp_r7_2[5];
+                        temp_r7_2[4] = temp_r7_3;
+                        temp_r7_2[5] = temp_r8;
+                        temp_r8 = var_r6[6];
+                        temp_r7_3 = temp_r7_2[7];
+                        temp_r7_2[6] = temp_r7_3;
+                        temp_r7_2[7] = temp_r8;
+                        temp_r8 = var_r6[8];
+                        temp_r7_3 = temp_r7_2[9];
+                        temp_r7_2[8] = temp_r7_3;
+                        temp_r7_2[9] = temp_r8;
+                        temp_r8 = var_r6[0xA];
+                        temp_r7_3 = temp_r7_2[0xB];
+                        temp_r7_2[0xA] = temp_r7_3;
+                        temp_r7_2[0xB] = temp_r8;
+                        temp_r8 = var_r6[0xC];
+                        temp_r7_3 = temp_r7_2[0xD];
+                        temp_r7_2[0xC] = temp_r7_3;
+                        temp_r7_2[0xD] = temp_r8;
                         temp_r8 = var_r6[0xE];
                         var_r6 += 0x10;
-                        temp_r7_2[0xE] = temp_r7_2[0xF];
+                        temp_r7_3 = temp_r7_2[0xF];
+                        temp_r7_2[0xE] = temp_r7_3;
                         temp_r7_2[0xF] = temp_r8;
-                        var_ctr -= 1;
-                    } while (var_ctr != 0);
+                    }
                 }
             }
         }
         var_r6_2 = buffer + var_r5;
-        var_ctr_2 = (u32)((arg1 + 1) - var_r5) >> 1U;
+        var_ctr_2 = ((u32)arg1 + 1 - var_r5) >> 1;
         if (var_r5 < (u32)arg1) {
             do {
                 temp_r4 = buffer + var_r5;
                 temp_r7_3 = *var_r6_2;
                 var_r6_2 += 2;
-                buffer[var_r5] = temp_r4[1];
+                temp_r8 = temp_r4[1];
+                buffer[var_r5] = temp_r8;
                 var_r5 += 2;
                 temp_r4[1] = temp_r7_3;
-                var_ctr_2 -= 1;
+                var_ctr_2--;
             } while (var_ctr_2 != 0);
         }
     }
