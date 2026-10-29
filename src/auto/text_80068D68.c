@@ -13220,8 +13220,8 @@ void l2cu_device_reset(void) {
 }
 
 extern char lbl_803191D4[];
-extern u8 lbl_80559080[];
-extern u8 lbl_80559088[];
+extern u8 lbl_80559080;
+extern u8 lbl_80559088;
 BOOLEAN l2cu_create_conn(void *arg0) {
     register u8 *p_lcb = (u8 *)arg0;
     register u8 *p_lcb_iter;
