@@ -2974,6 +2974,33 @@ void bta_dm_pinname_cback(u8 *arg0) {
     callback(2, local, lbl_803C0C14);
 }
 
+u8 bta_dm_pin_cback(u8 *bd_addr, u8 *pin_info, u8 *pin_name) {
+    u8 sec_event[0x110];
+    void (*callback)(int, void *);
+
+    callback = *(void (**)(int, void *))(lbl_803C0C14 + 0x50);
+    if (callback == 0)
+        return 0xB;
+    if (pin_name[0] == 0) {
+        fn_80070FA4(lbl_803C0C14 + 0xF8, bd_addr);
+        lbl_803C0C14[0xFE] = pin_info[0];
+        lbl_803C0C14[0xFF] = pin_info[1];
+        lbl_803C0C14[0x100] = pin_info[2];
+        if (BTM_ReadRemoteDeviceName(bd_addr, (tBTM_CMPL_CB *)bta_dm_pinname_cback) == 1)
+            return 1;
+        if (lbl_8055DC80 >= 2)
+            fn_8007093C(0x501, lbl_80315088);
+    }
+    fn_80070FA4(sec_event, bd_addr);
+    sec_event[0xFE] = pin_info[0];
+    sec_event[0xFF] = pin_info[1];
+    sec_event[0x100] = pin_info[2];
+    strncpy((char *)sec_event + 6, (const char *)pin_name, 0x20);
+    sec_event[0x26] = 0;
+    callback(2, sec_event);
+    return 1;
+}
+
 s32 fn_80072EF4(void) { return 0xB; }
 
 static UINT8 bta_dm_new_link_key_cback(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, UINT8 *link_key) {
@@ -8368,23 +8395,28 @@ void btm_sec_link_key_notification(u8 *bd_addr, u8 *link_key, u8 key_type) {
 extern char lbl_80316FC8[];
 void btm_sec_link_key_request(BD_ADDR bd_addr) {
     tBTM_SEC_DEV_REC *p_dev;
+    tBTM_SEC_DEV_REC_MATCH_VIEW *p_dev_view;
     u8 key[16];
     u8 (*p_callback)(BD_ADDR, u8 *);
 
     p_dev = btm_find_dev(bd_addr);
+    p_dev_view = (tBTM_SEC_DEV_REC_MATCH_VIEW *)p_dev;
     if (lbl_803C0F78[0x27C0] >= 4)
         fn_800709CC(0xD0003, lbl_80316FC8, bd_addr[0], bd_addr[1], bd_addr[2], bd_addr[3], bd_addr[4], bd_addr[5]);
-    if (p_dev != 0 && (p_dev->sec_flags & BTM_SEC_LINK_KEY_KNOWN)) {
-        btsnd_hcic_link_key_req_reply(bd_addr, p_dev->link_key);
+    if (p_dev != 0 && (p_dev_view->sec_flags_76 & 0x10)) {
+        btsnd_hcic_link_key_req_reply(bd_addr, p_dev_view->link_key);
         return;
     }
-    if (p_dev == 0) p_dev = btm_sec_alloc_dev(bd_addr);
-    if ((p_dev->sec_flags & BTM_SEC_LINK_KEY_AUTHED) == 0) {
+    if (p_dev == 0) {
+        p_dev = btm_sec_alloc_dev(bd_addr);
+        p_dev_view = (tBTM_SEC_DEV_REC_MATCH_VIEW *)p_dev;
+    }
+    if ((p_dev_view->sec_flags_81 & 0x40) == 0) {
         p_callback = *(u8 (**)(BD_ADDR, u8 *))(lbl_803C0F78 + 0x1918);
         if (p_callback != 0) {
             if (p_dev != 0) {
-                if (p_callback(bd_addr, p_dev->link_key) == 0) {
-                    btsnd_hcic_link_key_req_reply(bd_addr, p_dev->link_key);
+                if (p_callback(bd_addr, p_dev_view->link_key) == 0) {
+                    btsnd_hcic_link_key_req_reply(bd_addr, p_dev_view->link_key);
                     return;
                 }
             } else if (p_callback(bd_addr, key) == 0) {
