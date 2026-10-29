@@ -59,6 +59,18 @@ int fn_80258104(void) {
     return 0;
 }
 
+typedef struct {
+    int v[5];
+} MenuHeader;
+
+typedef struct {
+    void *label;
+    int type;
+    void *value;
+    int flags;
+    int id;
+} MenuEntry;
+
 extern int fn_8000DA10(void);
 extern int fn_80161F10(int);
 extern int fn_802146BC(void *, int, int, int);
@@ -74,24 +86,13 @@ extern void fn_80258040(void);
 #pragma scheduling invalid_target
 #pragma dont_inline fn_80257FB8
 void fn_8025812C(void) {
-    union Word {
-        int value;
-        void *pointer;
-        void (*function)(void);
-    };
-    struct Descriptors {
-        union Word word[40];
-    };
-    struct Param {
-        int first;
-        struct Descriptors *items;
-        int second;
-        int third;
-        int fourth;
-        int reserved;
-        struct Descriptors descriptors;
-    } data;
-    int zero = 0;
+    int data[46];
+    int a0, a1, a2, a3, a4;
+    int b0, b2, b3, b4;
+    int zero, eight, two, one, three, six, minus_one, twenty_seven;
+    int bac0, c238, c240, c248, c250, b860, bab8;
+    int callback, other_callback;
+    int *bp;
     int result, previous, current;
 
     lbl_8055F368 = fn_80257FB8();
@@ -102,54 +103,82 @@ void fn_8025812C(void) {
         *(volatile int *)&lbl_8055F370 = old;
     }
 
-    data.descriptors.word[35].value = lbl_80498E68[0];
-    data.first = lbl_802FA610[0];
-    data.descriptors.word[0].function = fn_80258040;
-    data.descriptors.word[1].pointer = &lbl_8055BAC0;
-    data.descriptors.word[2].value = 8;
-    data.descriptors.word[3].value = zero;
-    data.descriptors.word[4].value = zero;
-    data.descriptors.word[5].pointer = &lbl_8055C238;
-    data.descriptors.word[36].value = lbl_80498E68[1];
-    data.descriptors.word[6].value = zero;
-    data.descriptors.word[7].value = zero;
-    data.descriptors.word[8].value = zero;
-    data.descriptors.word[9].value = zero;
-    data.descriptors.word[10].pointer = &lbl_8055C240;
-    data.descriptors.word[37].value = lbl_80498E68[2];
-    data.descriptors.word[11].value = zero;
-    data.descriptors.word[12].value = zero;
-    data.descriptors.word[13].value = 1;
-    data.descriptors.word[14].value = zero;
-    data.descriptors.word[15].pointer = &lbl_8055C248;
-    data.descriptors.word[38].value = lbl_80498E68[3];
-    data.descriptors.word[16].value = zero;
-    data.descriptors.word[17].value = zero;
-    data.descriptors.word[18].value = 2;
-    data.descriptors.word[19].value = zero;
-    data.descriptors.word[20].pointer = &lbl_8055C250;
-    data.descriptors.word[39].value = lbl_80498E68[4];
-    data.descriptors.word[21].value = zero;
-    data.descriptors.word[22].value = zero;
-    data.descriptors.word[23].value = 3;
-    data.descriptors.word[24].value = zero;
-    data.descriptors.word[25].pointer = &lbl_8055B860;
-    data.descriptors.word[26].value = 6;
-    data.descriptors.word[27].value = zero;
-    data.descriptors.word[28].value = -1;
-    data.descriptors.word[29].value = 0x1b;
-    data.descriptors.word[30].pointer = &lbl_8055BAB8;
-    data.descriptors.word[31].value = 8;
-    data.descriptors.word[32].function = fn_80236914;
-    data.descriptors.word[33].value = 2;
-    data.descriptors.word[34].value = zero;
-    data.second = lbl_802FA610[2];
-    data.third = lbl_802FA610[3];
-    data.fourth = lbl_802FA610[4];
-    data.items = &data.descriptors;
+    a0 = lbl_80498E68[0];
+    bp = lbl_802FA610;
+    b0 = *bp++;
+    zero = 0;
+    a1 = lbl_80498E68[1];
+    eight = 8;
+    a2 = lbl_80498E68[2];
+    two = 2;
+    a3 = lbl_80498E68[3];
+    a4 = lbl_80498E68[4];
+    callback = (int)fn_80258040;
+    other_callback = (int)fn_80236914;
+    b2 = bp[1];
+    b3 = bp[2];
+    bac0 = (int)&lbl_8055BAC0;
+    c238 = (int)&lbl_8055C238;
+    c240 = (int)&lbl_8055C240;
+    c248 = (int)&lbl_8055C248;
+    c250 = (int)&lbl_8055C250;
+    one = 1;
+    three = 3;
+    six = 6;
+    b860 = (int)&lbl_8055B860;
+    minus_one = -1;
+    twenty_seven = 0x1b;
+    bab8 = (int)&lbl_8055BAB8;
+    b4 = bp[3];
+
+    data[8] = callback;
+    data[6] = bac0;
+    data[7] = eight;
+    data[9] = zero;
+    data[10] = zero;
+    data[11] = c238;
+    data[12] = zero;
+    data[13] = zero;
+    data[14] = zero;
+    data[15] = zero;
+    data[17] = zero;
+    data[16] = c240;
+    data[18] = zero;
+    data[19] = one;
+    data[20] = zero;
+    data[22] = zero;
+    data[21] = c248;
+    data[23] = zero;
+    data[24] = two;
+    data[25] = zero;
+    data[27] = zero;
+    data[26] = c250;
+    data[28] = zero;
+    data[29] = three;
+    data[30] = zero;
+    data[32] = six;
+    data[31] = b860;
+    data[33] = zero;
+    data[34] = minus_one;
+    data[35] = twenty_seven;
+    data[37] = eight;
+    data[36] = bab8;
+    data[38] = other_callback;
+    data[39] = two;
+    data[40] = zero;
+    data[41] = a0;
+    data[42] = a1;
+    data[43] = a2;
+    data[44] = a3;
+    data[45] = a4;
+    data[0] = b0;
+    data[2] = b2;
+    data[3] = b3;
+    data[4] = b4;
+    data[1] = (int)&data[6];
 
     do {
-        result = fn_802146BC(&data, -999, -999, 1);
+        result = fn_802146BC(data, -999, -999, 1);
         previous = fn_80257FB8();
         if (result != -1) {
             fn_80161F10(result);
