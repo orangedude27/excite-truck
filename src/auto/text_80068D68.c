@@ -28,6 +28,10 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
 extern s32 lbl_805590A0;
+extern void *iosAllocAligned(s32, u32, u32);
+extern s32 iosFree(s32, void *);
+static void USB_LOG(const char *, ...);
+static void USB_ERR(const char *, ...);
 extern void rfc_send_rpn();
 extern void rfc_send_msc();
 extern u8 HID_HostCloseDev(u8);
@@ -14346,7 +14350,7 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
     index = lcid - 0x40;
     if (index >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, &messages[0], lcid);
+            fn_80070954(0x90000, lbl_803196B8, lcid);
         p_mcb = 0;
     } else {
         p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
