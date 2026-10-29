@@ -365,7 +365,7 @@ extern "C" void *fn_8022D97C(s32);
 extern "C" void *lbl_8033F90C[];
 extern "C" int lbl_8033FA28[];
 extern "C" void fn_802CAC54(void);
-extern "C" void *lbl_8033DFB4;
+extern "C" char lbl_8033DFB4[];
 extern "C" s32 fn_80128668(void *);
 extern "C" void fn_80219440(void *, s32, void *, s32);
 extern "C" void fn_80128670(s32);
@@ -4351,7 +4351,7 @@ outer_test:
 }
 
 #pragma push
-#pragma ppc_psq_save off
+#pragma ppc_psq_save on
 #pragma scheduling invalid_target
 extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     register s32 data = arg4;
@@ -4363,24 +4363,31 @@ extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
     register u8 *obj = (u8 *)self;
     s32 scratch;
     u8 *row;
+    s32 count;
+    s32 texture;
+    f32 scale;
+    f32 baseValue;
     register f32 defaultValue;
 
     fn_80218F34(self, arg1, arg2, 0, 0, 0);
+    count = *(s32 *)(arg3 + 8);
     *(s32 *)(obj + 0x2CC) = data;
     *(void **)obj = lbl_8033E4DC;
-    *(s32 *)(obj + 0x2C8) = *(s32 *)(arg3 + 8);
-    *(s32 *)(obj + 0x3FC) =
-        ((s32 (*)(const char *, const char *))fn_80232578)(
-            (const char *)lbl_8033DA84, lbl_8033E4DC);
-    *(f32 *)(obj + 0x400) = lbl_8056352C;
-    *(f32 *)(obj + 0x404) = lbl_805634A4;
-    defaultValue = lbl_805634A8;
-
+    *(s32 *)(obj + 0x2C8) = count;
+    texture = ((s32 (*)(const char *, const char *))fn_80232578)(
+        (const char *)lbl_8033DA84, lbl_8033E4DC);
+    scale = lbl_8056352C;
     i = 0;
+    baseValue = lbl_805634A4;
     offset = 0;
+    *(s32 *)(obj + 0x3FC) = texture;
+    defaultValue = lbl_805634A8;
     zero = 0;
+    *(f32 *)(obj + 0x400) = scale;
     one = 1;
     minusOne = -1;
+    *(f32 *)(obj + 0x404) = baseValue;
+
     do {
         *(u8 *)(obj + offset + 0x2D0) = zero;
         if (i < *(s32 *)(obj + 0x2C8)) {
@@ -5737,6 +5744,42 @@ extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     ((void (*)(void *, f32 *, f32, f32))fn_80015A20)(&result[0], &scaled[0], temp_f1, temp_f2);
     fn_80015B20((void *)handle, &result[0], (void *)handle);
 }
+
+extern "C" void *fn_802270DC(void *arg0, void *arg1) {
+    register u8 *obj = (u8 *)arg0;
+    register u8 *context = (u8 *)arg1;
+
+    fn_80218F80();
+    *(void **)obj = &lbl_8033DFB4;
+
+    s32 width = *(s32 *)(obj + 4);
+    s32 height = *(s32 *)(obj + 8);
+    fn_80230C30((f32 *)(obj + 0x244), (f32 *)(obj + 0x248),
+                width, height);
+
+    *(f32 *)(obj + 0x250) =
+        (f32)(*(s32 *)(obj + 0x10) - height);
+    *(f32 *)(obj + 0x24c) = (f32)((VfObj *)obj)->vf28();
+
+    *(s32 *)(obj + 0x254) = -1;
+    if (context + 0x40 != 0)
+        *(s32 *)(obj + 0x254) = fn_802CAC28(context + 0x40, 0);
+
+    s32 handle = *(s32 *)(obj + 0x254);
+    if (handle != -2 && handle == -1)
+        fn_802E30C8(lbl_8033DC20);
+
+    *(f32 *)(obj + 0x258) =
+        (f32)*(u32 *)(context + 0x9c) / lbl_805634C8;
+    *(f32 *)(obj + 0x25c) = fn_8023659C();
+    *(void **)(obj + 0x260) = fn_8022EE9C();
+    *(u8 *)(obj + 0x264) = 1;
+    *(f32 *)(obj + 0x268) = lbl_805634A8;
+    *(f32 *)(obj + 0x26c) = lbl_805634A8;
+    *(u8 *)(obj + 0x270) = *(s32 *)(context + 0xb0) != 0;
+    return obj;
+}
+
 #pragma pop
 extern "C" void fn_80227244(void *arg0, s32 arg1) {
     register void *obj = arg0;
