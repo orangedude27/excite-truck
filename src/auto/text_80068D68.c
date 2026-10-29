@@ -1339,9 +1339,9 @@ void fn_8006AED4(s32 arg0) {
         fn_8006B330();
         return;
     }
-    count = lbl_8055DC44;
-    if (count >= 0xFB)
-        count = 0xFB;
+    count = 0xFB;
+    if (lbl_8055DC44 < 0xFB)
+        count = lbl_8055DC44;
     length = (u8)count;
     header = lbl_8055DC3C;
     packet[0] = (u8)header;
@@ -1800,6 +1800,70 @@ void *GKI_getpoolbuf(UINT8 pool_id) {
 
     fn_8006EB88();
     return GKI_getbuf(p_cb->freeq[pool_id].size);
+}
+
+void GKI_freebuf(void *p_buf)
+{
+    char *p_str = lbl_80314110;
+    BUFFER_HDR_T *p_hdr;
+    u16 size;
+    u8 pool_id;
+    u32 *magic;
+    u8 damaged;
+    FREE_QUEUE_T *Q;
+
+    if (p_buf == 0)
+        goto bad_buffer;
+
+    p_hdr = (BUFFER_HDR_T *)((u8 *)p_buf - 8);
+    if (((u32)p_hdr & 1) != 0) {
+        size = 0;
+    } else {
+        pool_id = p_hdr->q_id;
+        if (pool_id < 9)
+            size = *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (pool_id << 4));
+        else
+            size = 0;
+    }
+
+    magic = (u32 *)((u8 *)p_buf + size);
+    if (((u32)magic & 1) != 0) {
+        damaged = 1;
+    } else if (*magic == 0xDDBADDBA) {
+        damaged = 0;
+    } else {
+        damaged = 1;
+    }
+    if (damaged == 0)
+        goto valid_buffer;
+
+bad_buffer:
+    ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFF, p_str + 0x30);
+    return;
+
+valid_buffer:
+    if (p_hdr->status != BUF_STATUS_UNLINKED) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFC, p_str + 0x48);
+        return;
+    }
+    if (p_hdr->q_id >= 9) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFD, p_str + 0x5C);
+        return;
+    }
+
+    fn_8006EBAC();
+    Q = (FREE_QUEUE_T *)((u8 *)lbl_803946C0 + 0x289E0 + (p_hdr->q_id << 4));
+    if (Q->p_last != 0)
+        Q->p_last->p_next = p_hdr;
+    else
+        Q->p_first = p_hdr;
+    Q->p_last = p_hdr;
+    p_hdr->p_next = 0;
+    p_hdr->status = BUF_STATUS_FREE;
+    p_hdr->task_id = GKI_INVALID_TASK;
+    if (Q->cur_cnt != 0)
+        Q->cur_cnt--;
+    fn_8006EB88();
 }
 
 void *GKI_read_mbox(UINT8 mbox) {
