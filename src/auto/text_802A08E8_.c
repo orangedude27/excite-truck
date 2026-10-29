@@ -142,10 +142,20 @@ typedef struct {
     float f2C;
 } Fn802A0B54Vertex;
 
+typedef union {
+    double value;
+    struct {
+        u32 high;
+        u32 low;
+    } words;
+} Fn802A0B54FloatConv;
+
 typedef struct {
     short indices[0x20];
     Fn802A0B54Vertex vertices[6];
-} Fn802A0B54Buffers;
+    Fn802A0B54FloatConv firstConv;
+    Fn802A0B54FloatConv secondConv;
+} Fn802A0B54Work;
 void fn_802A0B54(void) {
     char sp48[0x120];
     short indices[0x80];
