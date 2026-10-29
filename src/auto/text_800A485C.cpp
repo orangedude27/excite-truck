@@ -4064,6 +4064,7 @@ extern s32 fn_800B0868(void *, s32, u32, u32 *);
 extern s32 fn_800B0A60(void *, s32, u32, u32 *);
 extern s32 fn_800B0C10(void *, s32, u32, u32 *);
 s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
+    /* Fix note: perform the first large read unconditionally; check the cluster threshold only after it. */
     u32 sp8;
     u16 *var_r27;
     u32 var_r30;
@@ -4075,23 +4076,32 @@ s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
     *arg3 = 0;
     result = fn_800B0868(arg0, arg1, arg2, &sp8);
     *arg3 += sp8;
-    if (result != 0) return result;
-    if (sp8 >= arg2) return 0;
+    if (result != 0)
+        return result;
+    if (sp8 >= arg2)
+        return 0;
+
     var_r30 = arg2 - sp8;
-    if (arg0 == 0) var_r27 = 0;
-    else var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+    if (arg0 == 0)
+        var_r27 = 0;
+    else
+        var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+
     for (;;) {
-        if (var_r30 < *var_r27) break;
         result = fn_800B0A60(arg0, arg1 + *arg3, var_r30, &sp8);
         *arg3 += sp8;
-        if (result != 0) return result;
-        if (sp8 == 0) break;
+        if (result != 0)
+            return result;
+        if (sp8 == 0)
+            break;
         var_r30 -= sp8;
+        if (var_r30 < *var_r27)
+            break;
     }
+
     result = fn_800B0C10(arg0, arg1 + *arg3, var_r30, &sp8);
     *arg3 += sp8;
-    if (result != 0) return result;
-    return 0;
+    return result;
 }
 
 extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
@@ -4396,7 +4406,7 @@ slot_found:
 
 #pragma pop
 
-extern "C" s32 fn_800B0DEC(void *, s32, u32 *);
+extern "C" s32 fn_800B0DEC(void *, s32, u32, s32 *, s32);
 extern "C" s32 VFiPFFILE_p_fread(void *, void *arg1, u32 arg2, u32 arg3, void *arg4, u32 *arg5) {
     u32 bytesRead = 0;
     *arg5 = 0;
