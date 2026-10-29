@@ -4604,7 +4604,7 @@ after_poll:
     return (void *)result;
 }
 
-s32 fn_800B1EB8(void *arg0, void *arg1, u32 arg2, u32 arg3, void *arg4, u32 *arg5) {
+extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     u32 bytesRead;
     s32 result;
     s32 temp;
@@ -4612,37 +4612,37 @@ s32 fn_800B1EB8(void *arg0, void *arg1, u32 arg2, u32 arg3, void *arg4, u32 *arg
     void *fs;
     s32 flags;
 
-    *arg5 = 0;
-    file = arg4 == 0 ? 0 : *(void **)((u8 *)*(void **)((u8 *)arg4 + 8) + 0x268);
+    *arg4 = 0;
+    file = arg3 == 0 ? 0 : *(void **)((u8 *)*(void **)((u8 *)arg3 + 8) + 0x268);
     fn_800B77C0((u8 *)file + 0x1F90);
     result = fn_800B5E14(file);
     if (result != 0) {
-        fn_800B783C((u8 *)file + 0x1F90);
+        fn_800B783C((void *)((volatile u8 *)file + 0x1F90));
         lbl_803D2140[16] = result;
         *(s32 *)((u8 *)file + 0x1F80) = result;
         return result;
     }
-    fs = *(void **)((u8 *)arg4 + 8);
+    fs = *(void **)((u8 *)arg3 + 8);
     flags = *(s32 *)fs;
-    if ((flags & 1) != 0 && (flags & 2) != 0) {
-        fn_800B783C((u8 *)file + 0x1F90);
+    if ((flags & 1) == 0 || (flags & 2) == 0) {
+        fn_800B783C((void *)((volatile u8 *)file + 0x1F90));
         lbl_803D2140[16] = 0x26;
         *(s32 *)((u8 *)file + 0x1F80) = 0x26;
         return 0x26;
     }
-    *(void **)((u8 *)file + 0x1644) = arg4;
-    result = VFiPFFILE_p_fread(file, arg0, arg2, arg3, arg4, &bytesRead);
+    *(void **)((u8 *)file + 0x1644) = (void *)arg3;
+    result = VFiPFFILE_p_fread(file, (void *)arg0, (u32)arg1, (u32)arg2, (void *)arg3, &bytesRead);
     temp = result;
-    *arg5 = bytesRead;
+    *arg4 = bytesRead;
     *(s32 *)((u8 *)file + 0x1644) = 0;
     if (result != 0) {
         lbl_803D2140[16] = result;
-        fs = *(void **)((u8 *)arg4 + 8);
+        fs = *(void **)((u8 *)arg3 + 8);
         fs = *(void **)((u8 *)fs + 0x38);
         *(s32 *)((u8 *)fs + 0x1F80) = result;
-        *(s32 *)((u8 *)arg4 + 0x18) = result;
+        *(s32 *)((u8 *)arg3 + 0x18) = result;
     }
-    fn_800B783C((u8 *)file + 0x1F90);
+    fn_800B783C((void *)((volatile u8 *)file + 0x1F90));
     return temp;
 }
 
