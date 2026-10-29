@@ -6261,7 +6261,7 @@ void bta_dm_enable(void *arg0) {
     fn_8007403C();
     memset(lbl_803C0B68, 0, 0x2D);
     fn_80071088((s32)bta_dm_compress_cback);
-    ((void (*)(void *))fn_80089E3C)(bta_dm_l2cap_server_compress_cback);
+    ((void (*)(void *, u32))fn_80089E3C)(bta_dm_l2cap_server_compress_cback, 0);
     WBT_ExtCreateRecord();
 }
 
