@@ -13219,29 +13219,40 @@ void l2cu_device_reset(void) {
     }
 }
 
+extern char lbl_803191D4[];
+extern u8 lbl_80559080[];
+extern u8 lbl_80559088[];
 BOOLEAN l2cu_create_conn(void *arg0) {
-    u8 *entry = lbl_803C4040 + 8;
-    u8 *addr = (u8 *)arg0 + 0x2A;
-    s32 i;
+    register u8 *p_lcb = (u8 *)arg0;
+    register u8 *p_lcb_iter;
+    register s32 i;
+    register BOOLEAN sco_active;
 
-    for (i = 0; i < 4; i++, entry += 0x5C) {
-        if (memcmp(entry + 0x2A, addr, 6) == 0 &&
-            *(s32 *)(entry + 0x30) == 1) {
-            if (btm_is_sco_active_by_bdaddr(entry + 0x2A) == 1)
-                return FALSE;
+    for (i = 0, p_lcb_iter = lbl_803C4040 + 8;
+         i < 4;
+         i++, p_lcb_iter += 0x5C) {
+        if (p_lcb_iter != p_lcb && p_lcb_iter[0] != 0 &&
+            p_lcb_iter[0x30] == 1) {
+            sco_active = btm_is_sco_active_by_bdaddr(p_lcb_iter + 0x2A);
+            if (lbl_803C4040[0] >= 3) {
+                fn_80070954(0x80002, lbl_803191D4,
+                            (u32)(sco_active == 1
+                                      ? lbl_80559080
+                                      : lbl_80559088));
+            }
 
-            if ((*(u32 *)(lbl_803C0F78 + 0x640) & 0x20) != 0) {
-                *(s32 *)((u8 *)arg0 + 4) = 2;
-                BTM_SwitchRole(entry + 0x2A, 0,
-                               (tBTM_CMPL_CB *)l2cu_create_conn_after_switch);
-                btu_start_timer((TIMER_LIST_ENT *)((u8 *)arg0 + 0x10),
-                                2, 0x3C);
+            if (sco_active != 1 &&
+                (*(u32 *)(lbl_803C0F78 + 0x640) & 0x20) != 0) {
+                *(u32 *)(p_lcb + 4) = 2;
+                BTM_SwitchRole(p_lcb_iter + 0x2A, 0, 0);
+                p_lcb[0x30] = 0;
+                btu_start_timer((TIMER_LIST_ENT *)(p_lcb + 0x10), 2, 0xA);
                 return TRUE;
             }
         }
     }
 
-    return ((BOOLEAN (*)(void *))l2cu_create_conn_after_switch)(arg0);
+    return ((BOOLEAN (*)(void *))l2cu_create_conn_after_switch)(p_lcb);
 }
 
 extern char lbl_80319218[];
@@ -13515,7 +13526,7 @@ void PORT_DlcReleaseInd(void *arg0, u8 arg1) {
     if (lbl_803C4828[0x414] >= 4)
         fn_8007093C(0x90003, lbl_80319454);
     if (port != 0)
-        port_rfc_closed(port, 0x13);
+        port_rfc_closed((struct t_port_info *)port, 0x13);
 }
 
 void PORT_CloseInd(void *arg0) {
