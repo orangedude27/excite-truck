@@ -403,7 +403,7 @@ extern "C" char lbl_8033EBA0[];
 extern "C" char lbl_8033F658[];
 extern "C" s32 lbl_8055FBC0;
 
-extern "C" void fn_80219044(void);
+extern "C" void fn_80219044(void *);
 extern "C" void fn_8021AC24(void *, s32, s32, s32, s32);
 #pragma push
 #pragma small_data off
