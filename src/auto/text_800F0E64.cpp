@@ -48,7 +48,7 @@ struct SoundArchiveFileReaderLayout {
     const char *stringBase;
     SoundArchiveLabelTableLayout *labelTable;
 };
-namespace nw4hbm { namespace snd { namespace detail { struct WaveSoundInfo; struct WaveSoundNoteInfo; struct WaveData; } class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); class WsdCallback { public: s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, s32, s32, u32) const; s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, int, int, u32) const; }; }; namespace detail { class StrmPlayer { public: struct StrmHeader; s32 Start(); void Pause(bool); void Setup(const StrmHeader *); }; class SoundThread { public: s32 Shutdown(); }; } } }
+namespace nw4hbm { namespace snd { namespace detail { struct WaveSoundInfo; struct WaveSoundNoteInfo; struct WaveData; struct SeqPlayer; struct NoteOnInfo; } class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); class SeqNoteOnCallback { public: void *NoteOn(detail::SeqPlayer *, int, const detail::NoteOnInfo &); }; class WsdCallback { public: s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, s32, s32, u32) const; s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, int, int, u32) const; }; }; namespace detail { class StrmPlayer { public: struct StrmHeader; s32 Start(); void Pause(bool); void Setup(const StrmHeader *); }; class SoundThread { public: s32 Shutdown(); }; } } }
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
 extern "C" void fn_800EAD00(void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
@@ -2324,6 +2324,69 @@ extern "C" void fn_800F7110(void *self, unsigned long taskId) {
     unsigned long id = taskId;
     void* manager = ((void* (*)(void))fn_800FDE60)();
     ((void (*)(void*, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(manager, id);
+}
+
+extern "C" void *NoteOn__Q46nw4hbm3snd18SoundArchivePlayer17SeqNoteOnCallbackFPQ46nw4hbm3snd6detail9SeqPlayeriRCQ46nw4hbm3snd6detail10NoteOnInfo(
+    void *self, void *player, s32 arg2, const void *noteInfo) {
+    struct Scratch {
+        u8 bankInfo[8];
+        u8 reader[16];
+        u8 seqInfo[16];
+    } scratch;
+
+    void *archive = *(void **)((u8 *)self + 4);
+    void *reader = *(void **)((u8 *)archive + 0x10);
+    if (reader == 0) {
+        return 0;
+    }
+    if (fn_800F273C(reader) == 0) {
+        return 0;
+    }
+
+    archive = *(void **)((u8 *)self + 4);
+    if (*(s32 *)((u8 *)archive + 0x10) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
+    }
+
+    void *bankFileReader = *(void **)((u8 *)archive + 0x10);
+    u32 bankIndex = *(u32 *)((u8 *)player + 4);
+    if (((s32 (*)(void *, u32, void *))fn_800F27F4)(
+            bankFileReader, bankIndex, scratch.seqInfo) == 0) {
+        return 0;
+    }
+
+    if (fn_800F281C(bankFileReader, *(u32 *)(scratch.seqInfo + 4),
+                    scratch.bankInfo) == 0) {
+        return 0;
+    }
+
+    u32 fileId = *(u32 *)scratch.bankInfo;
+    s32 fileAddress =
+        detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(archive, fileId);
+    if (fileAddress == 0) {
+        return 0;
+    }
+
+    ((void *(*)(void *, s32))fn_800E80B8)(scratch.reader, fileAddress);
+    s32 waveAddress =
+        detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(
+            archive, fileId);
+    s32 missingWave = waveAddress == 0;
+    if (missingWave != 0) {
+        ((int (*)(int, int))fn_800E80F0)((int)scratch.reader, -1);
+        return 0;
+    }
+    if (missingWave != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(
+            (const char *)&lbl_805598D8, 0x2F, lbl_80325B88);
+    }
+
+    *(s32 *)(scratch.reader + 0xC) = waveAddress;
+    void *result =
+        NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10NoteOnInfo(
+            scratch.reader, noteInfo);
+    ((int (*)(int, int))fn_800E80F0)((int)scratch.reader, -1);
+    return result;
 }
 
 extern "C" s32 detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(void *, u32);
