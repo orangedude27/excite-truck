@@ -773,7 +773,7 @@ extern "C" s32 VFipdm_disk_convert_block_into_sector(void *arg0, u32 arg1, u32 a
 }
 
 extern "C" int fn_800A499C(const char *, int, int);
-extern "C" const char lbl_803D1640[];
+extern "C" u8 lbl_803D1640[];
 extern "C" int fn_800A6048(void) {
     fn_800A499C((const char *)&lbl_803D1640, 0, 0xA2C);
     return 0;
@@ -1160,6 +1160,52 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
     else if (shift == 8)
         result >>= 3;
     return arg1 + result;
+}
+
+extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
+    u16 index;
+    u32 pair;
+    u32 offset;
+    u8 *base;
+    u8 *record;
+    u8 *flags;
+    s32 result;
+
+    *arg2 = 0;
+    if (*(u16 *)&lbl_803D1640 >= 0x1A)
+        return 10;
+
+    index = 0;
+    base = (u8 *)&lbl_803D1640;
+    for (pair = 0; pair < 13; pair++) {
+        u8 *entry = base + index * 0x28;
+        if ((*(u32 *)(entry + 0x61C) & 1) == 0)
+            goto found;
+        index++;
+
+        entry = base + index * 0x28;
+        if ((*(u32 *)(entry + 0x61C) & 1) == 0)
+            goto found;
+        index++;
+    }
+
+    if (index == 0x1A)
+        return 10;
+
+found:
+    offset = index * 0x28;
+    record = base + offset;
+    flags = record + 0x61C;
+    result = fn_800A625C(arg0, (s32)flags);
+    if (result != 0)
+        return result;
+
+    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
+    *(u32 *)flags |= 1;
+    *(s32 *)(record + 0x620) = (s32)arg0;
+    *(s32 *)(record + 0x624) = arg1;
+    *arg2 = (s32)flags;
+    return 0;
 }
 
 extern "C" s32 fn_800A71A0(s32 *arg0) {
@@ -2687,7 +2733,7 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     return var_r31;
 }
 
-extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(register void *arg0) {
+extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     u32 sp8;
     s32 index;
     u32 old;
@@ -2708,6 +2754,7 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(register void *arg0) {
         iter->index = index;
         goto return_one;
     }
+
     if (iter->sentinel == 0xFFFFFFFFu) {
         goto use_short_error;
     }
@@ -12920,6 +12967,41 @@ void wpadConnectCallback__Q210homebutton10ControllerFll(s32 chan, s32 status) {
  entry=lbl_80407780[chan];
  callback=*(void (**)(s32,s32))((u8*)entry+0x28);
  if(callback) callback(chan,status);
+}
+
+extern "C" u8 lbl_804076C0[];
+extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext(OSAlarm *, OSContext *);
+extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32 arg0, s32 arg1) {
+    void *entry;
+    void *sound;
+    OSAlarm *alarm;
+    void (*callback)(s32, s32);
+
+    if (arg1 == 0xFF) goto extension;
+    goto dispatch;
+
+extension:
+    entry = lbl_80407780[arg0];
+    sound = *(void **)entry;
+    if (fn_80060C7C(sound) != 0) {
+        fn_80060CC0(sound, 2, 0);
+        alarm = (OSAlarm *)((u8 *)lbl_804076C0 + (s32)sound * 0x30);
+        OSSetAlarmUserData(alarm, sound);
+        OSCancelAlarm(alarm);
+        {
+            u32 ticks = *(volatile u32 *)0x800000F8;
+            u32 delay = (((ticks >> 2) / 1000U) * 1000U);
+            ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
+                alarm, 0x10624DD3, 0, delay,
+                soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
+        }
+        *((u8 *)entry + 0x41) = 1;
+    }
+
+dispatch:
+    entry = lbl_80407780[arg0];
+    callback = *(void (**)(s32, s32))((u8 *)entry + 0x2C);
+    if (callback != 0) callback(arg0, arg1);
 }
 
 extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext(OSAlarm *alarm, OSContext *) {
