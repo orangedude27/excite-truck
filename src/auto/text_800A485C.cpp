@@ -3628,31 +3628,30 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
 
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
-extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u32 arg2, void *arg3, s32 arg4) {
+extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4) {
     u8 *obj = (u8 *)arg0;
     u8 *ctx = (u8 *)arg3;
     u32 scaled = (u32)arg1 << 1;
-    u32 block = (u32)(*(u32 *)(obj + 0x28) + (scaled >> obj[0x20])) & 0xFFFF;
-    u32 index = (scaled & (*(u16 *)obj - 1)) & 0xFFFF;
+    u16 block = (u16)(*(u32 *)(obj + 0x28) + (scaled >> obj[0x20]));
+    u16 index = (u16)(scaled & (*(u16 *)obj - 1));
     s32 result = 0;
+    u32 i;
     s32 saved = 0;
+    volatile s32 *bufferHandle = (volatile s32 *)(ctx + 8);
 
     if (*(u32 *)(ctx + 0x18) != block) {
-        u32 i = 0;
-        do {
-            s32 r = fn_800B5618(arg0, *(void **)(ctx + 8),
-                (u16)(*(u32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC)),
+        for (i = 0; i < obj[0x22]; i++) {
+            s32 r = fn_800B5618(arg0, (void *)*bufferHandle,
+                *(u32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC),
                 0, *(u16 *)obj);
             if (r != 0 && saved == 0)
                 saved = r;
-            i++;
-        } while (i < obj[0x22]);
-        result = fn_800B5260(arg0, *(void **)(ctx + 8), block, 0, *(u16 *)obj);
+        }
         *(u32 *)(ctx + 0x18) = block;
+        result = fn_800B5260(arg0, (void *)*bufferHandle, block, 0, *(u16 *)obj);
     }
-    u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
-    buffer[index] = (u8)arg2;
-    buffer[index + 1] = (u8)(arg2 >> 8);
+    *(u8 *)(*bufferHandle + index) = (u8)arg2;
+    *(u8 *)(*bufferHandle + index + 1) = (u8)(arg2 >> 8);
     if (result != 0)
         saved = result;
     return saved;
@@ -11892,6 +11891,42 @@ extern "C" u8 fn_800C6768(void) {
     return *(u8 *)((char *)lbl_8055DD98 + 0x88);
 }
 
+extern "C" s32 AIGetDMAStatus(void);
+extern "C" s32 TRKPostEvent(void *);
+extern "C" s32 TRKMessageSend(void *);
+extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32, s32);
+extern "C" void *fn_800ECAEC(void *);
+extern "C" s32 fn_800ECB90(void *, s32);
+extern "C" void fn_800CEF60(void *, void *, s32);
+extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
+    const char *file = (const char *)lbl_8031D840;
+    void *base;
+    void *block;
+
+    MEMInitAllocatorForFrmHeap((MEMAllocator *)lbl_804075F0,
+                               MEMCreateFrmHeapEx(arg1, arg2, 0), 0x20);
+    base = lbl_8055DD98;
+    if (AIGetDMAStatus() == 0) {
+        TRKPostEvent(0);
+        ((s32 (*)(void))TRKMessageSend)();
+    }
+    InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(4, 3);
+    block = MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0, 0x150);
+    if (block != NULL) {
+        if (block != NULL) {
+            block = fn_800ECAEC(block);
+        }
+        *(void **)((u8 *)base + 0x5C8) = block;
+    }
+    if (*(void * volatile *)((u8 *)base + 0x5C8) == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], (s32)0xEFC, file + 0x4C);
+    }
+    if (fn_800ECB90(*(void * volatile *)((u8 *)base + 0x5C8), arg0) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], (s32)0xF01, file + 0x80);
+    }
+    fn_800CEF60(base, *(void * volatile *)((u8 *)base + 0x5C8), 0);
+}
+
 extern "C" void fn_800C687C(void) {
     fn_800CF170(lbl_8055DD98);
     MEMDestroyFrmHeap(*(MEMiHeapHead **)(lbl_804075F0 + 1));
@@ -11941,9 +11976,9 @@ extern "C" void *fn_800C6914(void *arg0, void *arg1) {
     M2C_FIELD(self, u32 *, 0x74) = 0;
     M2C_FIELD(self, u8 *, 0x87) = 0;
     M2C_FIELD(self, u8 *, 0x88) = 0;
-    for (offset = 0, i = 0; i < 4; i++, offset += 0x30) {
+    for (i = 0, offset = 0; i < 4; i++, offset += 0x30) {
         OSCreateAlarm((OSAlarm *)(self + offset + 0x410));
-        OSCreateAlarm((OSAlarm *)(self + offset + 0x4D0));
+        OSCreateAlarm((OSAlarm *)(self + 0x4D0 + offset));
     }
     OSCreateAlarm((OSAlarm *)(self + 0x590));
     M2C_FIELD(self, u32 *, 0x5C0) = 0;
@@ -13648,7 +13683,7 @@ extern "C" u8 fn_800D3840(s32 arg0) {
     s32 temp_r28;
     s32 temp_r31;
     s32 var_r31;
-    s32 end;
+    u32 end;
     s32 temp_r4;
     u32 temp_r5;
 
@@ -13661,9 +13696,9 @@ extern "C" u8 fn_800D3840(s32 arg0) {
         lbl_805597E8 = temp_r4;
         var_r29 = temp_r5 - temp_r4;
         var_r31 = 0x200;
-        end = *(volatile s32 *)&lbl_8055DDD0;
-        if ((u32)(temp_r4 + 0x200) >= (u32)end)
-            var_r31 = ((u32)end - temp_r4 + 0x1F) & 0xFFFFFFE0;
+        end = lbl_8055DDD0;
+        if ((u32)(temp_r4 + 0x200) >= end)
+            var_r31 = (end - temp_r4 + 0x1F) & 0xFFFFFFE0;
         temp_r28 = OSEnableInterrupts();
         temp_r31 = DVDReadAsyncPrio((void *)lbl_80407E00, (void *)lbl_80407C00, var_r31,
                                     lbl_805597E8, 0, 2);
