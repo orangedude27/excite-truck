@@ -17,31 +17,64 @@ extern void fn_80131818(void *);
 extern void fn_802E317C(const char *);
 extern int stricmp(const char *, const char *);
 extern char lbl_8032C390[];
-extern char lbl_802F9388[];
+extern const char *lbl_802F9388[];
 extern char lbl_80559CD8[];
 #pragma cplusplus on
 extern "C" void fn_8013B7B4(void *arg0, int value) {
-    void *list, *obj;
-    const char **names;
-    float *out = (float *)arg0;
-    int i, j;
+    struct List {
+        virtual void v0() = 0;
+        virtual void *getAt(int) = 0;
+    };
+    struct Item {
+        virtual const char *getName() = 0;
+    };
+    struct DataItem {
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+        virtual void v3() = 0;
+        virtual void v4() = 0;
+        virtual void v5() = 0;
+        virtual void v6() = 0;
+        virtual float getFloat(const char *) = 0;
+    };
+    register float *base asm("r20") = (float *)arg0;
+    register int scale asm("r21") = value;
+    register void *list asm("r26");
+    register void *item asm("r25");
+    register const char *name asm("r23");
+    register const char **namep asm("r28");
+    register float *out asm("r27");
+    register int i asm("r24");
+    register unsigned int j asm("r22");
+    const char *names[3];
+
     list = fn_80131808(lbl_8032C390);
     if (list == 0) goto error;
+
     i = 0;
-    while ((obj = ((void ***)list)[1][i]) != 0) {
-        const char *name = ((const char *(*)(void *))((void **)*(void **)obj)[1])(obj);
-        names = (const char **)lbl_802F9388;
-        for (j = 0; j < 3; j++) {
-            if (stricmp(names[j], name) == 0) {
-                out[j*4] = ((float (*)(void *, const char *))((void **)*(void **)obj)[9])(obj, lbl_80559CD8 + j*12);
+    while ((item = ((List *)list)->getAt(i)) != 0) {
+        name = ((Item *)item)->getName();
+        names[0] = ((const char **)lbl_802F9388)[0];
+        names[1] = ((const char **)lbl_802F9388)[1];
+        names[2] = ((const char **)lbl_802F9388)[2];
+        out = base;
+        namep = names;
+        for (j = 0; j < 3; j++, namep++) {
+            if (stricmp(*namep, name) == 0) {
+                out[0] = ((DataItem *)item)->getFloat(&lbl_80559CD8[0]);
+                out[1] = ((DataItem *)item)->getFloat(lbl_8032C390 + 0xC);
+                out[2] = ((DataItem *)item)->getFloat(lbl_8032C390 + 0x18);
+                out[3] = (float)scale * ((DataItem *)item)->getFloat(lbl_8032C390 + 0x28);
             }
+            out += 4;
         }
         i++;
     }
     fn_80131818(list);
     return;
 error:
-    fn_802E317C(lbl_8032C390 + 0x38);
+    ((void (*)(const char *, ...))fn_802E317C)(lbl_8032C390 + 0x38);
 }
 #pragma cplusplus reset
 
