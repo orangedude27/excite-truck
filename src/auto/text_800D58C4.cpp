@@ -392,6 +392,7 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 #pragma use_lmw_stmw off
 extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *self, const void *resource, void *pane) {
     *(volatile u32 *)((u8 *)self + 0x10) = 0;
