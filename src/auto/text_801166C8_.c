@@ -1739,13 +1739,13 @@ set_flag:
 check_read:
     if (*(s32*)((u8*)arg0 + 0xC4) != 0)
         goto done;
-    switch (status) {
-        case 0:
-        case 10:
-            goto read_valid;
-        default:
-            goto done;
-    }
+    if (status == 0)
+        goto read_valid;
+    if (status == 10)
+        goto read_valid;
+    goto done;
+done:
+    return;
 read_valid:
     if (*(u32*)((u8*)arg0 + 0xA0) >= 0x8000 && remaining != 0) {
         *(s32*)((u8*)arg0 + 0xC8) = *(s32*)((u8*)arg0 + 0x2C);
@@ -1764,8 +1764,7 @@ read_valid:
         goto done;
     }
     *(s32*)((u8*)arg0 + 0x48) = *(s32*)((u8*)arg0 + 0x4C);
-done:
-    return;
+    goto done;
 }
 
 s32 fn_8011A7CC(DVDFileInfo *info) {
