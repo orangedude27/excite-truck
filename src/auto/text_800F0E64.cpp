@@ -803,56 +803,51 @@ extern "C" void fn_800F2D28(void *arg0) {
 extern "C" const char lbl_80324868[];
 extern "C" void fn_800F2EAC(void *self, void *arg) {
     u8 *object = (u8 *)self;
-    const char *base = lbl_80324868;
+    volatile const char *base = lbl_80324868;
     u8 *bytes = (u8 *)arg;
     u8 *table;
-    u32 offset;
-    u8 *fieldBase;
+    u32 baseAddress;
+    u8 *offsetPtr;
     u32 value;
     if (arg == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x60, base + 0x104);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)base, 0x60, (const char *)base + 0x104);
     if ((*(u32 *)bytes - 0x53590000U) != 0x4d42U)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x63, base + 0x138);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)base, 0x63, (const char *)base + 0x138);
     table = bytes + 8;
     *(u8 **)(object + 0x2c) = table;
-    offset = *(u32 *)(bytes + 8);
-    if (offset == 0) {
+    u32 offset = *(u32 *)(bytes + 8);
+    if (offset == 0)
         value = 0;
-    } else {
-        value = (u32)(table + offset);
-    }
+    else
+        value = offset + (u32)table;
     *(u32 *)(object + 0x30) = value;
-    fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
-    offset = *(volatile u32 *)(table + 4);
-    if (offset == 0) {
+    baseAddress = *(volatile u32 *)(object + 0x2c);
+    offsetPtr = (u8 *)*(volatile u32 *)(table + 4);
+    if (offsetPtr == 0)
         value = 0;
-    } else {
-        value = (u32)(fieldBase + offset);
-    }
+    else
+        value = (u32)offsetPtr + baseAddress;
     *(u32 *)(object + 0x34) = value;
-    fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
-    offset = *(volatile u32 *)(table + 8);
-    if (offset == 0) {
+    baseAddress = *(volatile u32 *)(object + 0x2c);
+    offsetPtr = (u8 *)*(volatile u32 *)(table + 8);
+    if (offsetPtr == 0)
         value = 0;
-    } else {
-        value = (u32)(fieldBase + offset);
-    }
+    else
+        value = (u32)offsetPtr + baseAddress;
     *(u32 *)(object + 0x38) = value;
-    fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
-    offset = *(volatile u32 *)(table + 0xc);
-    if (offset == 0) {
+    baseAddress = *(volatile u32 *)(object + 0x2c);
+    offsetPtr = (u8 *)*(volatile u32 *)(table + 0xc);
+    if (offsetPtr == 0)
         value = 0;
-    } else {
-        value = (u32)(fieldBase + offset);
-    }
+    else
+        value = (u32)offsetPtr + baseAddress;
     *(u32 *)(object + 0x3c) = value;
-    fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
-    offset = *(volatile u32 *)(table + 0x10);
-    if (offset == 0) {
+    baseAddress = *(volatile u32 *)(object + 0x2c);
+    offsetPtr = (u8 *)*(volatile u32 *)(table + 0x10);
+    if (offsetPtr == 0)
         value = 0;
-    } else {
-        value = (u32)(fieldBase + offset);
-    }
+    else
+        value = (u32)offsetPtr + baseAddress;
     *(u32 *)(object + 0x40) = value;
 }
 
@@ -1939,9 +1934,8 @@ s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(
     int index,
     int noteIndex,
     u32 waveIndex) const {
-    u8 reader[0x38];
-    u8 *archive = *(u8 **)((u8 *)this + 4);
-    void *fileInfo = *(void **)(archive + 0x10);
+    u32 reader[14];
+    void *fileInfo = *(void **)(*(u8 **)((u8 *)this + 4) + 0x10);
     s32 result;
     s32 waveAddress;
 
@@ -1952,12 +1946,10 @@ s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(
     if (result == 0)
         return 0;
 
-    archive = *(u8 **)((u8 *)this + 4);
-    if (*(u32 *)(archive + 0x10) == 0)
+    if (*(u32 *)(*(u8 **)((u8 *)this + 4) + 0x10) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
 
-    archive = *(u8 **)((u8 *)this + 4);
-    waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(archive, waveIndex);
+    waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(*(void **)((u8 *)this + 4), waveIndex);
     if (waveAddress == 0)
         return 0;
     __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(reader, file);
@@ -2719,7 +2711,7 @@ extern "C" u8 SCGetSoundMode(void);
 extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(s32);
 extern "C" void Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void);
 extern "C" s32 Create__Q46nw4hbm3snd6detail10TaskThreadFl(s32);
-extern "C" s32 fn_800FA4C4(s32);
+extern "C" s32 fn_800FA4C4(s32, ...);
 extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg1) {
     u32 status;
     u8 mode;
