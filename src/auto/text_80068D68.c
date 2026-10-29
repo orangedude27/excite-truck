@@ -42,6 +42,7 @@ typedef struct {
     u8 timer_entry[0x18];
 } tHID_HOST_DEV_VIEW;
 
+extern void *WUDiGetNewDevInfo(void);
 extern void rfc_port_sm_execute(void *, u16, void *);
 extern char lbl_80319AB0[];
 extern char lbl_803160C0[];
@@ -2279,24 +2280,20 @@ void uusb_issue_intr_read(void) {
         u8 pad1D[0x0B];
         u8 at_0x28;
     };
-    uusb_cb_t *control = &lbl_803BD1E0;
+    register struct uusb_intr_cb_view *control = (struct uusb_intr_cb_view *)&lbl_803BD1E0;
     extern char lbl_803142C8[];
     extern void uusb_ReadIntrDataCB(void);
     extern u16 fn_8006D8D0(u32);
-    char *report = lbl_803142C8;
-    u8 *buf;
+    register char *report = lbl_803142C8;
+    register u8 *buf;
     register u8 *aligned;
     u16 header;
     s32 result;
 
     for (;;) {
-        buf = GKI_getpoolbuf(((struct uusb_intr_cb_view *)control)->pool_id);
-        if (buf != 0) {
-            break;
-        }
-        if (control->at_0x28 != 0) {
-            OSReport(report + 0x378);
-        }
+        buf = GKI_getpoolbuf(control->pool_id);
+        if (buf != 0) break;
+        if (control->at_0x28 != 0) OSReport(report + 0x378);
     }
 
     *(u16 *)buf = 0x1000;
@@ -2304,21 +2301,14 @@ void uusb_issue_intr_read(void) {
     *(u16 *)(buf + 2) = 0;
     header = (u16)(aligned - (buf + 8));
     *(u16 *)(buf + 4) = header;
-
-    result = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd,
-                                   ((struct uusb_intr_cb_view *)control)->endpoint,
+    result = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, control->endpoint,
                                    fn_8006D8D0((u32)buf) - 0x28 - header,
                                    aligned, uusb_ReadIntrDataCB, buf);
     if (result != 0) {
-        if (control->at_0x28 != 0) {
-            OSReport(report + 0x3CC, result);
-        }
-        if (lbl_803BD1E0.at_0x28 != 0) {
-            OSReport(report + 0x404, result);
-        }
+        if (control->at_0x28 != 0) OSReport(report + 0x3CC, result);
+        if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x404, result);
         GKI_freebuf(buf);
     }
-
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
 #pragma pop
@@ -14122,23 +14112,30 @@ void fn_800911DC(void) {
 }
 
 void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
+    char *messages = lbl_803196B8;
     s32 temp_r0 = arg0 - 0x40;
     void *var_r30;
+
     if (temp_r0 >= 0xA) {
-        if (*(u8 *)((u8 *)&lbl_803C4828 + 0x414) >= 1) fn_80070954(0x90000, &lbl_803196B8, arg0);
+        if (lbl_803C4828[0x414] >= 1)
+            fn_80070954(0x90000, &messages[0], arg0);
         var_r30 = 0;
     } else {
         var_r30 = *(void **)((u8 *)&lbl_803C4828 + temp_r0 * 4 + 0x3C);
         if (var_r30 && *(u16 *)((u8 *)var_r30 + 0x68) != arg0) {
-            if (*(u8 *)((u8 *)&lbl_803C4828 + 0x414) >= 2)
-                fn_8007096C(0x90001, (u8 *)&lbl_803196B8 + 0x1C, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
+            if (lbl_803C4828[0x414] >= 2)
+                fn_8007096C(0x90001, &messages[0x1C], arg0, *(u16 *)((u8 *)var_r30 + 0x68));
             var_r30 = 0;
         }
     }
-    if (arg1) L2CA_DisconnectRsp(arg0);
+    if (arg1)
+        L2CA_DisconnectRsp(arg0);
     if (!var_r30) {
-        if (*(u8 *)((u8 *)&lbl_803C4828 + 0x414) >= 2) fn_80070954(0x90001, (u8 *)&lbl_803196B8 + 0xA8, arg0);
-    } else fn_800916F4(var_r30, 0xE, 0);
+        if (lbl_803C4828[0x414] >= 2)
+            fn_80070954(0x90001, &messages[0xA8], arg0);
+    } else {
+        fn_800916F4(var_r30, 0xE, 0);
+    }
 }
 
 extern s32 rfc_parse_data(void *, void *, u8 *);
@@ -17762,29 +17759,46 @@ void AXFXReverbHiExpShutdown(void* arg0) {
 
 void __BzeroDelayLines(void *arg0) {
     u8 *base = (u8 *)arg0;
-    u8 *entry = base, *entry2 = base, *entry3 = base;
+    u8 *entry = (u8 *)arg0;
+    u8 *entry2 = (u8 *)arg0;
+    u8 *entry3 = (u8 *)arg0;
     u32 i = 0;
+
     do {
-        if (*(void **)entry) memset(*(void **)entry, 0, *(u32 *)(base + 0x1C) * 4);
-        if (*(void **)(entry + 0x2C)) memset(*(void **)(entry + 0x2C), 0, *(u32 *)(base + 0x40) * 4);
+        if (*(void **)entry)
+            memset(*(void **)entry, 0, *(u32 *)((u8 *)arg0 + 0x1C) * 4);
+        if (*(void **)(entry + 0x2C))
+            memset(*(void **)(entry + 0x2C), 0, *(u32 *)((u8 *)arg0 + 0x40) * 4);
         {
-            u8 *p = entry2, *q = base;
+            u8 *p = entry2;
+            u8 *q = base;
             u32 j = 0;
             do {
-                if (*(void **)(p + 0x44)) memset(*(void **)(p + 0x44), 0, *(u32 *)(q + 0x80) * 4);
-                j++; q += 4; p += 4;
+                if (*(void **)(p + 0x44))
+                    memset(*(void **)(p + 0x44), 0, *(u32 *)(q + 0x80) * 4);
+                j++;
+                q += 4;
+                p += 4;
             } while (j < 3);
         }
         {
-            u8 *p = entry3, *q = base;
+            u8 *p = entry3;
+            u8 *q = base;
             u32 j = 0;
             do {
-                if (*(void **)(p + 0x98)) memset(*(void **)(p + 0x98), 0, *(u32 *)(q + 0xC0) * 4);
-                j++; q += 4; p += 4;
+                if (*(void **)(p + 0x98))
+                    memset(*(void **)(p + 0x98), 0, *(u32 *)(q + 0xC0) * 4);
+                j++;
+                q += 4;
+                p += 4;
             } while (j < 2);
         }
-        if (*(void **)(entry + 0xC8)) memset(*(void **)(entry + 0xC8), 0, *(u32 *)(entry + 0xEC) * 4);
-        i++; entry2 += 0xC; entry3 += 8; entry += 4;
+        if (*(void **)(entry + 0xC8))
+            memset(*(void **)(entry + 0xC8), 0, *(u32 *)(entry + 0xEC) * 4);
+        i++;
+        entry2 += 0xC;
+        entry3 += 8;
+        entry += 4;
     } while (i < 3);
 }
 
