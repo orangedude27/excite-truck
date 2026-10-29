@@ -686,7 +686,7 @@ extern void    l2cu_adjust_out_mps (tL2C_CCB *p_ccb);
 /* Functions provided by l2c_link.c
 ************************************
 */
-extern void     l2c_link_hci_conn_req (BD_ADDR bd_addr);
+extern BOOLEAN  l2c_link_hci_conn_req (BD_ADDR bd_addr);
 extern BOOLEAN  l2c_link_hci_conn_comp (UINT8 status, UINT16 handle, BD_ADDR p_bda);
 extern BOOLEAN  l2c_link_hci_disc_comp (UINT16 handle, UINT8 reason);
 extern BOOLEAN  l2c_link_hci_qos_violation (UINT16 handle);
