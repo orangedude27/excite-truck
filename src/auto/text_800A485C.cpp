@@ -218,6 +218,7 @@ extern "C" s32 fn_800B6004(void *);
 extern "C" void fn_800B783C(void *arg0);
 extern "C" s32 fn_800B77C0(void *arg0);
 extern "C" s32 fn_800B5E14(void *arg0);
+s32 fn_800AEF6C(void *);
 extern "C" s32 fn_800A98B8(void *arg0, s32 arg1, s32 arg2, void *arg3);
 extern "C" s32 fn_800A95B4(void *arg0);
 extern "C" s32 fn_800AF574(void *arg0);
@@ -15003,14 +15004,15 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
             result = fn_800D50A8(h, n);
             if (!ARCChangeDir(h, lbl_805597FC))
                 Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x3C, panicFormat);
-            if (result != -1) break;
+            if (result == -1) continue;
+            break;
         } else if (stricmp(n, entry.name) == 0) {
             result = entry.entryNum;
             break;
         }
     }
     if (!fn_80116BCC(&dir))
-        Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x4D, panicFormat);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x4D, lbl_8031F2E4);
     return result;
 }
 
