@@ -15231,8 +15231,7 @@ void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
 void rfc_port_closed(void *arg0) {
     extern unsigned char lbl_803C4828[];
     extern char lbl_80319EB0[];
-    extern void port_rfc_closed(void *, s32);
-    unsigned char *port = arg0;
+      unsigned char *port = arg0;
     unsigned char *mcb = *(unsigned char **)(port + 0x6C);
     u16 i;
     if (lbl_803C4828[0x414] >= 5) fn_8007093C(0x90004, lbl_80319EB0 + 0x68);
