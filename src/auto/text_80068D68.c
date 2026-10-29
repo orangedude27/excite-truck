@@ -1025,28 +1025,28 @@ static inline BOOL StartSyncDeviceBusy(void) {
 }
 
 s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
-    u8 *base = lbl_80392960;
+    WUDSyncControlView *control = (WUDSyncControlView *)lbl_80392960;
     s32 success = 0;
-    s32 libStatus;
+    u32 libStatus;
     BOOL enabled;
     OSTime now;
     u32 period;
 
     enabled = OSDisableInterrupts();
-    libStatus = (s8)base[0x688];
+    libStatus = control->lib_status;
     OSRestoreInterrupts(enabled);
 
-    if ((u32)libStatus == 3U && !StartSyncDeviceBusy()) {
+    if (libStatus == 3 && !StartSyncDeviceBusy()) {
         enabled = OSDisableInterrupts();
-        base[0xC] = 1;
-        base[0x668] = syncLoopNum;
-        base[0x669] = syncType;
-        base[0x667] = syncSkipChecks != 0;
-        base[0x666] = 0;
-        OSCreateAlarm((OSAlarm *)(base + 0x690));
+        control->sync_state = 1;
+        control->sync_loop_num = syncLoopNum;
+        control->sync_type = syncType;
+        control->sync_skip_checks = syncSkipChecks != 0;
+        control->synced_num = 0;
+        OSCreateAlarm(&control->sync_alarm);
         now = __OSGetSystemTime();
         period = (((*(volatile u32 *)0x800000F8) >> 2) / 1000) * 0x14;
-        OSSetPeriodicAlarm((OSAlarm *)(base + 0x690), now, (s64)period,
+        OSSetPeriodicAlarm(&control->sync_alarm, now, (s64)period,
                            (OSAlarmHandler)fn_80069C14);
         OSRestoreInterrupts(enabled);
         success = 1;
