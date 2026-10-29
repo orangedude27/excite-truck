@@ -1012,6 +1012,18 @@ void (*WUDSetSyncSimpleCallback(void (*pCallback)(s32, s32)))(s32, s32) {
 }
 
 #pragma use_lmw_stmw off
+static inline BOOL StartSyncDeviceBusy(void) {
+    u8 *base = lbl_80392960;
+    BOOL enabled = OSDisableInterrupts();
+    if (base[0xC] == 0 && base[0xD] == 0 &&
+        base[0xF] == 4 && base[0x10] == 4) {
+        OSRestoreInterrupts(enabled);
+        return 0;
+    }
+    OSRestoreInterrupts(enabled);
+    return 1;
+}
+
 s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
     u8 *base = lbl_80392960;
     s32 success = 0;
