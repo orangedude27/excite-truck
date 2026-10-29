@@ -38,6 +38,7 @@ typedef struct {
 extern unsigned int lbl_8055D974;
 extern f32 lbl_80560B40;
 extern f64 lbl_80560B48;
+extern f32 lbl_80560B88;
 extern u32 __cvt_fp2unsigned(f32);
   extern void GXGetVtxDesc(void);
   extern void __GXSaveFifo(void);
@@ -1555,47 +1556,65 @@ void __GXPEInit(void) {
 
 void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
     unsigned int *data = __GXData;
+    unsigned int *dim;
     unsigned int count;
+    unsigned int rounded;
     unsigned int remaining;
-    unsigned int written = 0;
+    unsigned int written;
     unsigned int blocks;
-    unsigned int i;
-    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
-    volatile unsigned short *fifo16 = (volatile unsigned short *)0xCC008000;
-    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
+    unsigned short height;
+    unsigned short width;
+    unsigned int zero;
 
     if (data[0x5FC / 4] != 0)
         __GXSetDirtyState();
     if (data[0] == 0) {
-        *fifo8 = 0x98;
-        count = (unsigned int)*(unsigned short *)((char *)data + 4) *
-                *(unsigned short *)((char *)data + 6);
-        *fifo16 = *(unsigned short *)((char *)data + 4);
+        dim = *(unsigned int * volatile *)&__GXData;
+        written = 0;
+        width = *(unsigned short *)((char *)dim + 4);
+        height = *(unsigned short *)((char *)dim + 6);
+        *(volatile unsigned char *)0xCC008000 = 0x98;
+        count = (unsigned int)width * height;
+        *(volatile unsigned short *)0xCC008000 = *(volatile unsigned short *)((char *)dim + 4);
         if (count != 0) {
+            rounded = count + 3;
             remaining = count - 0x20;
-            if (((count + 3) >> 2) > 8) {
-                if ((count + 3) >= 3 && count <= count + 3) {
+            if ((rounded >> 2) > 8) {
+                int valid = 0;
+                if (rounded >= 3) {
+                    if (count <= rounded)
+                        valid = 1;
+                }
+                if (valid) {
                     blocks = (remaining + 0x1F) >> 5;
                     if (remaining > 0) {
+                        zero = 0;
                         do {
-                            *fifo32 = 0; *fifo32 = 0; *fifo32 = 0; *fifo32 = 0;
-                            *fifo32 = 0; *fifo32 = 0; *fifo32 = 0; *fifo32 = 0;
+                            *(volatile unsigned int *)0xCC008000 = zero;
+                            *(volatile unsigned int *)0xCC008000 = zero;
+                            *(volatile unsigned int *)0xCC008000 = zero;
+                            *(volatile unsigned int *)0xCC008000 = zero;
+                            *(volatile unsigned int *)0xCC008000 = zero;
+                            *(volatile unsigned int *)0xCC008000 = zero;
+                            *(volatile unsigned int *)0xCC008000 = zero;
+                            *(volatile unsigned int *)0xCC008000 = zero;
                             written += 0x20;
                         } while (--blocks != 0);
                     }
                 }
             }
-            blocks = ((count + 3) - written) >> 2;
+            blocks = (count + 3 - written) >> 2;
             if (written < count) {
+                zero = 0;
                 do {
-                    *fifo32 = 0;
+                    *(volatile unsigned int *)0xCC008000 = zero;
                 } while (--blocks != 0);
             }
         }
         *(unsigned short *)((char *)data + 2) = 1;
     }
-    *fifo8 = prim | vtxfmt;
-    *fifo16 = nverts;
+    *(volatile unsigned char *)0xCC008000 = vtxfmt | prim;
+    *(volatile unsigned short *)0xCC008000 = nverts;
 }
 
 void __GXSendFlushPrim(void) {
@@ -2054,10 +2073,10 @@ void GXSetDispCopyGamma(s32 arg0) {
 }
 
 void GXCopyDisp(unsigned int source, int clear) {
-    unsigned int *gx;
+    volatile unsigned int *gx;
     volatile unsigned char *fifo8;
     volatile unsigned int *fifo32;
-    unsigned int *reg;
+    volatile unsigned int *reg;
     unsigned int value;
     unsigned int sourceValue;
     register int changed;
@@ -2076,17 +2095,17 @@ void GXCopyDisp(unsigned int source, int clear) {
 
     changed = 0;
     if (clear == 0) {
-        gx = __GXData;
-        reg = gx + 0x22C / 4;
-        value = *reg;
+        gx = (volatile unsigned int *)*(unsigned int * volatile *)(void *)&__GXData;
+        value = gx[0x22C / 4];
+        reg = (volatile unsigned int *)((volatile unsigned char *)gx + 0x22C);
         if ((value & 7) == 3) {
-            gx = __GXData;
-            reg = gx + 0x22C / 4;
-            value = *reg;
-            if ((value & 0x40) != 0) {
+            gx = (volatile unsigned int *)*(unsigned int * volatile *)(void *)&__GXData;
+            value = gx[0x22C / 4];
+            reg = (volatile unsigned int *)((volatile unsigned char *)gx + 0x22C);
+            if (((value >> 6) & 1) == 1) {
                 fifo8 = (volatile unsigned char *)0xCC010000;
                 fifo8[-0x8000] = 0x61;
-                value = *reg & ~0x40u;
+                value &= ~0x40u;
                 fifo32 = (volatile unsigned int *)0xCC010000;
                 fifo32[-0x8000 / 4] = value;
                 changed = 1;
@@ -2115,6 +2134,7 @@ void GXCopyDisp(unsigned int source, int clear) {
     value = __rlwimi(value, 0x52, 24, 0, 7);
     gx[0x23C / 4] = value;
     fifo8[-0x8000] = 0x61;
+    value = gx[0x23C / 4];
     fifo32[-0x8000 / 4] = value;
 
     if (clear != 0) {
@@ -2127,7 +2147,7 @@ void GXCopyDisp(unsigned int source, int clear) {
         fifo8[-0x8000] = 0x61;
         fifo32[-0x8000 / 4] = *reg;
     }
-    *(unsigned short *)((char *)gx + 2) = 0;
+    *(volatile unsigned short *)((volatile unsigned char *)gx + 2) = 0;
 }
 
 void GXCopyTex(u32 width, s32 clear) {
