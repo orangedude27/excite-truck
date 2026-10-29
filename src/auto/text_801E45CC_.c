@@ -30,6 +30,7 @@ void fn_801E45CC(void) {
     register char *textBase = lbl_80339930;
     int y;
     int i;
+    int color;
 
     fn_8023895C();
     fn_80238B44(10, 10, 230, 84, 0x80000000);
@@ -40,11 +41,10 @@ void fn_801E45CC(void) {
     fn_80238A74(10, 39, buf, -1);
     sprintf(buf, textBase + 0x80, lbl_8055AECC, lbl_8055AED8);
     fn_80238A74(10, 51, buf, -1);
-    if (lbl_8055EA90) {
-        fn_80238A74(10, 63, lbl_8055AEE0, 0xFF2DC82D);
-    }
+    color = lbl_8055EA90 ? 0xFF2DC82D : 0xFF202020;
+    fn_80238A74(10, 63, lbl_8055AEE0, color);
     if (fn_802CC744() == 0) {
-        fn_80238A74(50, 63, textBase + 0x90, 0xFF2DC82D);
+        fn_80238A74(50, 63, textBase + 0x90, 0xFF2D2DC8);
     } else if (fn_802CC74C() == 0) {
         fn_80238A74(50, 63, lbl_8055AEE8, 0xFF2DC82D);
     }
