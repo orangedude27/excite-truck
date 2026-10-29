@@ -1461,6 +1461,7 @@ extern "C" s32 GXGetTexObjWrap_Internal(void*);
 extern "C" void GXInitTexObjWrapMode(void*,s32,s32);
 #pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*,void*,u32);
+#pragma dont_inline on
 extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void* self,u8 index,void* palette) {
  extern const char lbl_8031F990[]; extern const char lbl_8031FDE8[];
  u32 count=*(u32*)((char*)self+0x50)>>28;
@@ -1471,6 +1472,7 @@ extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void* s
  InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(dst,palette,0);
  GXInitTexObjWrapMode(dst,lod,wrap);
 }
+#pragma dont_inline reset
 
 extern "C" void GXGetTexObjWidth(void*, int, ...);
 extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8 index, const void* tex) {
