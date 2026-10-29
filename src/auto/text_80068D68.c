@@ -2703,29 +2703,27 @@ s32 bta_dm_l2cap_server_compress_cback(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s
     return result;
 }
 
-extern u8 lbl_80559010[];
+extern u8 *lbl_80559010;
 void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused) {
-    u8 *entry;
     u8 i;
     u8 j;
+    u8 *entry;
+    u8 *config;
     u8 *peer;
-    u8 *count;
+
     if (status != 0) return;
-    entry = lbl_803C0C14;
-    for (i = 0; i < entry[0x4D]; i++, entry += 0xB) {
+
+    for (i = 0; i < lbl_803C0C14[0x4D]; i++) {
+        entry = lbl_803C0C14 + (u32)i * 0xB;
         if (bdcmp(entry, bd_addr) == 0) {
             entry[6] = 1;
-            j = 1;
-            count = lbl_80559010;
-            while (j <= count[1]) {
-                peer = count + ((j * 4) - j);
-                if (addr == peer[1] || peer[1] == 0xFF) {
-                    if (addr_type == peer[0]) {
-                        if (peer[2] > entry[7]) entry[7] = peer[2];
-                        break;
-                    }
+            config = lbl_80559010;
+            for (j = 1; j <= config[1]; j++) {
+                peer = config + ((u32)j * 4 - j);
+                if ((addr == peer[1] || peer[1] == 0xFF) && addr_type == peer[0]) {
+                    if (peer[2] > entry[7]) entry[7] = peer[2];
+                    break;
                 }
-                j++;
             }
             return;
         }
@@ -11360,6 +11358,10 @@ void l2c_link_timeout(void *arg0) {
 s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
     u16 len = *(u16 *)((u8 *)p_buf + 2);
     u16 max_len = *(u16 *)(lbl_803C0A50 + 0x7E);
+    u16 packets;
+    u16 mtu;
+    u16 available;
+    u16 credits;
 
     if (len <= max_len) {
         --*(u16 *)((u8 *)p_lcb + 0x36);
@@ -11367,12 +11369,9 @@ s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
         --*(u16 *)(lbl_803C4040 + 4);
         fn_8007079C(p_buf, 0x2100);
     } else {
-        u16 mtu = *(u16 *)(lbl_803C0A50 + 0x7C);
-        u16 *pool_available = (u16 *)(lbl_803C4040 + 4);
-        u16 total = len + mtu;
-        u16 packets = (total - 5) / mtu;
-        u16 available = *pool_available;
-        u16 credits;
+        mtu = *(u16 *)(lbl_803C0A50 + 0x7C);
+        packets = (len + mtu - 5) / mtu;
+        available = *(u16 *)(lbl_803C4040 + 4);
 
         if (packets > available) {
             *(u16 *)((u8 *)p_buf + 6) = available;
@@ -11385,7 +11384,7 @@ s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
             packets = credits;
             *((u8 *)p_lcb + 0x40) = 1;
         }
-        *pool_available -= packets;
+        *(u16 *)(lbl_803C4040 + 4) -= packets;
         *(u16 *)((u8 *)p_lcb + 0x36) -= packets;
         *(u16 *)((u8 *)p_lcb + 0x38) += packets;
         fn_8007079C(p_buf, 0x2100);
@@ -13464,20 +13463,22 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
 }
 
 void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
+    struct RFCOMM_CONFIG_PORT { u8 pad[0x68]; u16 id; };
     s32 index = arg0 - 0x40;
+    char *msg = lbl_803196B8;
     void *port;
     if (index >= 10) {
-        if (lbl_803C4828[0x414] >= 1) fn_80070954(0x90000, lbl_803196B8, arg0);
+        if (lbl_803C4828[0x414] >= 1) ((void (*)(u32, char *, u32))fn_80070954)(0x90000, msg, arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
-        if (port != NULL && *(u16 *)((u8 *)port + 0x68) != arg0) {
-            if (lbl_803C4828[0x414] >= 2) ((void (*)(u32, void *, u32))fn_8007096C)(0x90001, lbl_803196B8 + 0x1C, arg0);
+        if (port != NULL && ((struct RFCOMM_CONFIG_PORT *)port)->id != arg0) {
+            if (lbl_803C4828[0x414] >= 2) ((void (*)(u32, char *, u32))fn_8007096C)(0x90001, msg + 0x1C, arg0);
             port = NULL;
         }
     }
     if (port == NULL) {
-        if (lbl_803C4828[0x414] >= 1) fn_80070954(0x90000, lbl_803196B8 + 0x70, arg0);
+        if (lbl_803C4828[0x414] >= 1) ((void (*)(u32, char *, u32))fn_80070954)(0x90000, msg + 0x70, arg0);
     } else ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xC, arg1);
 }
 
@@ -13485,7 +13486,6 @@ void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
     s32 index = (s32)arg0 - 0x40;
     char *trace_msg = lbl_803196B8;
     void *port;
-    register u16 port_lcid;
 
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
@@ -13494,14 +13494,15 @@ void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
-        if (port != NULL) {
-            port_lcid = *(u16 *)((u8 *)port + 0x68);
-            if (port_lcid != arg0) {
-                if (lbl_803C4828[0x414] >= 2)
-                    ((void (*)(u32, void *, u32))fn_8007096C)(
-                        0x90001, trace_msg + 0x1C, arg0);
-                port = NULL;
+        if (port != NULL && *(u16 *)((u8 *)port + 0x68) != arg0) {
+            if (lbl_803C4828[0x414] >= 2) {
+                char *message = trace_msg + 0x1C;
+                u32 severity = 0x90000;
+                severity += 1;
+                ((void (*)(u32, void *, u32))fn_8007096C)(
+                    severity, message, arg0);
             }
+            port = NULL;
         }
     }
     if (port == NULL) {
