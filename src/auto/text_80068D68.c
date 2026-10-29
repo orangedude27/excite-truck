@@ -594,10 +594,10 @@ void fn_80069EB4(u32 r3, u32 r4) {
 extern void WUDStoredLinkKeyCallback(void *);
 extern void *WUDiGetDevInfo(u8 *);
 u8 WUDiClearUnregisteredDevice(void) {
-    register s32 index;
-    register s32 offset;
-    register u8 *base;
-    register u8 *entry;
+    s32 index;
+    s32 offset;
+    u8 *base;
+    u8 *entry;
 
     if (lbl_80392960[0xE] == 0) {
         base = lbl_80392960;
@@ -6488,6 +6488,47 @@ void bta_dm_search_cancel(void) {
         }
     } else if (*(s32 *)(lbl_803C0B98 + 8) == 0) {
         BTM_CancelRemoteDeviceName();
+    }
+}
+
+void bta_dm_discover(void *arg0) {
+    u8 *search = lbl_803C0B98;
+    u8 *input = (u8 *)arg0;
+    u16 timeout;
+    u32 value;
+    void *msg;
+    tBTM_RMT_NAME_CALLBACK *callback;
+
+    value = *(u32 *)(input + 0x14);
+    *(u32 *)lbl_803C0B98 = value;
+    callback = fn_80072AE4;
+    value = *(u32 *)(input + 0x10);
+    *(u32 *)(search + 8) = value;
+    *(u32 *)(search + 0xC) = value;
+    search[0x70] = 0;
+    *(u32 *)(search + 0x10) = 0;
+    search[0x20] = 0;
+    BTM_SecAddRmtNameNotifyCallback(callback);
+    fn_80070FA4(search + 0x1A, input + 8);
+
+    if (*(u32 *)(search + 8) != 0) {
+        bta_dm_find_services(search + 0x1A);
+        return;
+    }
+
+    timeout = *(u16 *)(lbl_803C0F78 + 0x64C);
+    if (timeout < 0x7530)
+        fn_8007146C((s32)(search + 0x58), 0x205, timeout + 0x64);
+
+    if (BTM_ReadRemoteDeviceName(lbl_803C0B98 + 0x1A, (tBTM_CMPL_CB *)bta_dm_disc_remname_cback) != 1) {
+        fn_8007148C((s32)(lbl_803C0B98 + 0x58));
+        msg = GKI_getbuf(0x110);
+        if (msg != 0) {
+            fn_80070FA4((u8 *)msg + 8, lbl_803C0B98 + 0x1A);
+            *((u8 *)msg + 0xE) = 0;
+            *(u16 *)msg = 0x204;
+            fn_80071450(msg);
+        }
     }
 }
 
