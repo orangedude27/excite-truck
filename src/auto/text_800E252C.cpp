@@ -1877,6 +1877,7 @@ public:
 }}}
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void nw4hbm::snd::detail::AxVoice::SetLoopStart(int arg1, const void *arg2, unsigned long arg3) {
     register char *self = (char *)this;
     register int index = arg1;
@@ -2287,8 +2288,8 @@ extern "C" unsigned short CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(float);
 extern "C" void fn_80033B0C(void *, short *);
 extern "C" void fn_80033B74(void *, unsigned short, unsigned short);
 extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
-    int channelIndex = 0;
     char *channel = (char *)self;
+    int channelIndex = 0;
     int channelOffset = 0;
     short zero = 0;
     short one = 1;
@@ -2311,8 +2312,7 @@ extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
                 inner++;
             }
         } else if (*(unsigned short *)(*(char **)((char *)self + 0xc) + 0x1fc) == 1) {
-            ((void (*)(unsigned short, unsigned short *, unsigned short *))AXGetLpfCoefs)(
-                rate, &localCoefs[1], &localCoefs[0]);
+            AXGetLpfCoefs(rate, &localCoefs[1], &localCoefs[0]);
             entry = (char *)((unsigned int)self + channelOffset);
             inner = 0;
             while (inner < *(int *)((char *)self + 0x104)) {
@@ -2323,8 +2323,7 @@ extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
         } else {
             localCoefs[4] = one;
             localCoefs[5] = zero;
-            ((void (*)(unsigned short, unsigned short *, unsigned short *))AXGetLpfCoefs)(
-                rate, &localCoefs[6], &localCoefs[7]);
+            AXGetLpfCoefs(rate, &localCoefs[6], &localCoefs[7]);
             entry = (char *)((unsigned int)self + channelOffset);
             inner = 0;
             while (inner < *(int *)((char *)self + 0x104)) {
