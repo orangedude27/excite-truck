@@ -1877,7 +1877,6 @@ public:
 }}}
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void nw4hbm::snd::detail::AxVoice::SetLoopStart(int arg1, const void *arg2, unsigned long arg3) {
     register char *self = (char *)this;
     register int index = arg1;
