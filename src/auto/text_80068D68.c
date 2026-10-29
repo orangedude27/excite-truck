@@ -1285,6 +1285,69 @@ void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
     fn_8006B330();
 }
 
+void fn_8006B330(void) {
+    extern u8 lbl_80560CF0;
+    extern u8 lbl_80560CF1;
+    extern u8 lbl_80560CF2;
+    extern u8 lbl_80560CF3;
+    extern u8 lbl_80560CF4;
+    extern u8 lbl_80560CF5;
+    extern u8 lbl_80560CF6;
+    extern char lbl_80313644[];
+    extern void BTA_DmSetDeviceName(char *);
+    extern s32 fn_8007A534(s32);
+    extern s32 fn_8007A3B4(s32);
+    extern void fn_800778C8(s16);
+    extern void fn_80077C94(s16);
+    extern void WUDDeviceStatusCallback(u32);
+    extern void WUDVendorSpecificCallback(u8, u8 *);
+    extern void WUDPowerManagerCallback(u8 *, s32, s32, s32);
+    extern void fn_8006B488(void);
+    u8 name[4];
+    DEV_CLASS dev_class;
+    register u8 *entry;
+    register u8 *current;
+    register u8 *base = lbl_80392960;
+    s32 i;
+    BOOL interrupts;
+
+    name[0] = lbl_80560CF0;
+    name[1] = lbl_80560CF1;
+    name[2] = lbl_80560CF2;
+    name[3] = lbl_80560CF3;
+    dev_class[0] = lbl_80560CF4;
+    dev_class[1] = lbl_80560CF5;
+    dev_class[2] = lbl_80560CF6;
+    DBPrintf_8006CFA8(lbl_80313644, lbl_80560CF5, lbl_80560CF4,
+                      lbl_80560CF3, lbl_80560CF2, lbl_80560CF1, lbl_80560CF0);
+    BTA_DmSetDeviceName((char *)name);
+    BTM_SetDeviceClass(dev_class);
+    fn_8007A534((s32)WUDVendorSpecificCallback);
+    fn_8007A3B4((s32)WUDDeviceStatusCallback);
+    BTM_PmRegister(3, base + 0x68A, (tBTM_PM_STATUS_CBACK *)WUDPowerManagerCallback);
+    BTM_WritePageTimeout(0x8000);
+    fn_800778C8(5);
+    fn_80077C94(0xC80);
+    current = base + 0xA4;
+    entry = base;
+    i = 0;
+    do {
+        if (entry[0xBD] == 1)
+            ((void (*)(void *))fn_8006B488)(current);
+        i++;
+        entry += 0x60;
+        current += 0x60;
+    } while (i < 10);
+    interrupts = OSDisableInterrupts();
+    base[0x688] = 3;
+    OSRestoreInterrupts(interrupts);
+    interrupts = OSDisableInterrupts();
+    lbl_80392960[0x66B] = 0;
+    lbl_80392960[0x66A] = 1;
+    OSRestoreInterrupts(interrupts);
+    BTA_DmSetVisibility(0, 1);
+}
+
 extern u8 BTA_DmAddDevice(u8 *, u8 *, u32, u8);
 extern void BTA_HhAddDev(const u8 *, u16, u8, u8, const void *);
 void fn_8006B488(void) {
