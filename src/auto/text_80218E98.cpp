@@ -5,6 +5,7 @@
 
 extern "C" s32 fn_802CAC28(void *, s32);
 extern "C" char lbl_8033DC20[];
+extern f32 lbl_805634C8;
 
 extern "C" void fn_8022375C(void);
 
