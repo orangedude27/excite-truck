@@ -1,6 +1,5 @@
   #include <types.h>
 #include <macros.h>
-struct Fn800D3A30ZeroOffset { char value; };
 struct VFiPFENTIterLayout {
     volatile u32 position;
     void *stream;
