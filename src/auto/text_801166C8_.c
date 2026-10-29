@@ -33,6 +33,7 @@ typedef struct {
 #include <revolution/DVD/dvd.h>
 void fn_8011C120();
 void fn_8011C274(s32, void *);
+void fn_8011C2EC(s32, void *);
 #define M2C_FIELD(base, type, offset) (*(type)((u8 *)(base) + (offset)))
 
 extern void* fn_802ECC74(void*);
