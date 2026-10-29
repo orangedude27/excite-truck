@@ -92,7 +92,7 @@ void *fn_802EC598(void) {
 }
 #pragma dont_inline off
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802EC614(void) {
     // Fix note: initialize the controller flags and configuration, then allocate and register the menu resources in target order.
     char *info;
@@ -105,7 +105,7 @@ void fn_802EC614(void) {
     lbl_805600EA = zero;
     OSInitFastCast();
 
-    config = lbl_80558898;
+    config = (s32 *)((char *)lbl_80558898 + (base - base));
     config[3] = zero;
     ((f32 *)config)[1] = lbl_805651E0;
     ((f32 *)config)[2] = lbl_805651E0;
@@ -146,7 +146,6 @@ void fn_802EC614(void) {
     fn_800C64F4(info);
     lbl_805600EC = 1;
 }
-#pragma scheduling on
 
 #pragma scheduling on
 extern void fn_800C657C(void);
@@ -190,7 +189,9 @@ void fn_802EC7AC(void) {
         fn_80128670(lbl_805600E4);
 }
 #pragma scheduling on
+#pragma small_data on
 extern char lbl_8055D2F8[];
+#pragma small_data off
 extern void WPADControlMotor(s32, s32);
 extern void fn_800C65C4(void);
 extern s32 fn_800C65CC(void *);
@@ -210,19 +211,26 @@ extern s32 fn_802E8668(s32);
 extern void fn_802E99AC(void);
 extern s32 lbl_80558898[];
 void fn_802EC884(void) {
-    // Fix note: reproduces the startup, controller, and menu state paths with the original loops and calls.
+    register char *base = lbl_8034E9E0;
+    register s32 *out;
     s32 i;
-    if (lbl_805600EC == 0) return;
-    if (lbl_805600EA != 0) {
+
+    if ((u8)lbl_805600EC == 0) {
+        return;
+    }
+    if ((u8)lbl_805600EA != 0) {
         lbl_805600EA = 0;
         if (fn_802D9BF0() == 0) {
-            lbl_805600EB = lbl_805600E9 == 0;
-            if (lbl_805600EB != 0)
-                fn_802E30C8(lbl_8034E9E0 + 0x16C, lbl_8034E9E0 + 0x198);
-            else
-                fn_802E30C8(lbl_8034E9E0 + 0x16C, (const char *)0x8055D2F8);
+            lbl_805600EB = (u8)(lbl_805600E9 == 0);
+            if (lbl_805600EB != 0) {
+                fn_802E30C8(base + 0x16C, base + 0x198);
+            } else {
+                fn_802E30C8(base + 0x16C, lbl_8055D2F8);
+            }
             lbl_805600E8 = 1;
-            for (i = 0; i < 4; i++) WPADControlMotor(i, 0);
+            for (i = 0; i < 4; i++) {
+                WPADControlMotor(i, 0);
+            }
             fn_800C6774(lbl_805600E4, lbl_805600E0, 0x19000);
             fn_800C65C4();
             fn_802EC4BC();
@@ -230,28 +238,38 @@ void fn_802EC884(void) {
         }
     }
     fn_802E2C20();
-    if (lbl_805600E8 == 0) return;
-    for (i = 0; i < 4; i++) lbl_80558898[i * 4] = fn_802E8668(i);
-    if (fn_800C65CC(lbl_80558898) < 0) return;
+    if ((u8)lbl_805600E8 == 0) {
+        return;
+    }
+    out = lbl_80558898;
+    for (i = 0; i < 4; i++) {
+        *out = fn_802E8668(i);
+        out += 4;
+    }
+    if (fn_800C65CC(lbl_80558898) < 0) {
+        return;
+    }
     fn_802E99AC();
     fn_802E7C40();
     fn_802E5438();
-    fn_802E30C8(lbl_8034E9E0 + 0x1A4);
-    fn_802E30C8(lbl_8034E9E0 + 0x1C0, fn_800C673C());
-    fn_802E30C8(lbl_8034E9E0 + 0x1D0, fn_800C6768());
+    fn_802E30C8(base + 0x1A4);
+    fn_802E30C8(base + 0x1C0, fn_800C673C());
+    fn_802E30C8(base + 0x1D0, fn_800C6768());
     switch (fn_800C673C()) {
     case 1:
-        fn_802E30C8(lbl_8034E9E0 + 0x1E0);
+        fn_802E30C8(base + 0x1E0);
         fn_802E2E38(1);
         break;
     case 2:
-        fn_802E30C8(lbl_8034E9E0 + 0x200);
+        fn_802E30C8(base + 0x200);
         fn_802E2E38(0);
         break;
     }
     fn_800C687C();
     lbl_805600E8 = 0;
-    if (lbl_805600E8 != 0) fn_800C68B0();
+    if ((u8)lbl_805600E8 != 0) {
+        fn_800C68B0();
+    }
 }
 
 extern void *fn_802D2D14(void);
