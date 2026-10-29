@@ -164,6 +164,14 @@ extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F8[]; }
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597FC[]; }
 extern "C" u32 fn_80116BCC(void *);
 extern "C" s32 fn_800B5CB4(u32, void *);
+extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32, u16 *);
+void VFiPFCODE_CP932_Unicode2OEM(unsigned short *, char *);
+extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8, s32);
+extern "C" s16 fn_800B7200(s32);
+extern "C" void fn_800B72B0(void);
+extern "C" s32 fn_800B72E4(void);
+extern "C" void fn_800B7710(void *);
+extern "C" void __AXDSPInitCallback_800B7860(void);
 extern "C" void fn_800B0748(void);
 extern "C" void fn_800B78EC(void);
 extern "C" void fn_800B78F0(void);
@@ -5157,23 +5165,23 @@ extern "C" u8 lbl_80559218;
 extern "C" s32 VFiPFPATH_cmpName(void *arg0, s32 arg1, s32 arg2) {
     s32 sp8 = 0;
     u8 spC[28];
-    register volatile u8 *var_r31 = spC;
+    register u8 *var_r31 = spC;
     register u8 *temp_r30;
     u8 temp_r3;
     temp_r30 = (u8 *)(u32)fn_800A4D74((void *)(u32)arg1, 3);
     fn_800A4AAC((char *)var_r31, (char *)arg0);
     if ((((u32)lbl_803D2140[0x60 / 4] & 2U) == 2U) &&
         ((u32)fn_800A4D44((void *)(u32)arg1) == 2U) &&
-        fn_800A4AD0((u8 *)var_r31, &lbl_80559210) != 0 &&
-        fn_800A4AD0((u8 *)var_r31, &lbl_80559214) != 0 &&
+        fn_800A4AD0(var_r31, &lbl_80559210) != 0 &&
+        fn_800A4AD0(var_r31, &lbl_80559214) != 0 &&
         ((s32 (*)(void *, u32, u32))fn_800B4D5C)((void *)(u32)arg1, 3, 1) == 0 &&
         arg2 == 0) {
         return 1;
     }
     if (fn_800A4AD0(temp_r30, &lbl_80559218) == 0) {
         do {
+            temp_r3 = var_r31[1];
             var_r31++;
-            temp_r3 = *var_r31;
         } while ((s8)temp_r3 != 0 && (s8)temp_r3 != '.');
         if ((s8)temp_r3 != 0) goto compare;
         *var_r31 = '.';
