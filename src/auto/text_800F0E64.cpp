@@ -763,11 +763,13 @@ extern "C" s32 fn_800F283C(void *arg0) {
     return ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(*(s32*)((u8*)arg0 + 4));
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *self, u32 group, void *arg2, s32 arg3) {
-    struct GroupInfo { u32 unk0, unk4; const char *path; u32 unkC, unk10, unk14, unk18, unk1C; } info;
+    struct GroupInfo { u32 unk0; const char *path; u32 unk8, unkC, unk10, unk14; } info;
     struct Archive { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual s32 f4(u32, void *, s32, s32, s32); virtual s32 f5(u32, void *, s32, const char *, s32, s32); };
     Archive *archive = (Archive *)self;
-    if (!((s32 (*)(void *, u32, void *))ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo)(*(void **)((u8 *)self + 4), group, &info))
+    if (!ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)self + 4), group, &info))
         return 0;
     const char *path = info.path;
     if (path != 0) {
@@ -788,6 +790,7 @@ extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *
     }
     return archive->f4(group, arg2, arg3, info.unk10, info.unk14);
 }
+#pragma pop
 
 extern "C" s32 ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(void *, u32, void *);
 extern "C" unsigned long strlen(const char *);
@@ -934,7 +937,6 @@ BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hb
 
     if (*((u8 *)archive + 1) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
-
     base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
         *((u8 *)archive), *(u32 *)((u8 *)archive + 4), archive);
     if (base == 0) {
@@ -945,7 +947,6 @@ BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hb
         entry = 0;
         goto finish;
     }
-
     if (*(u16 *)((u8 *)this + 6) >= 0x101) {
         soundIndex <<= 3;
         archive = *(void **)((u8 *)this + 0x28);
@@ -955,9 +956,7 @@ BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hb
             base[soundIndex + 4], *(u32 *)(base + soundIndex + 8), archive);
         goto finish;
     }
-
-    entry = (u8 *)*(void **)((u8 *)this + 0x28) + *(u32 *)(base + index * 8 + 8);
-
+    entry = (void *)((u32)*(u32 *)(base + index * 8 + 8) + (u32)*(void **)((u8 *)this + 0x28));
 finish:
     if (entry == 0)
         return 0;
