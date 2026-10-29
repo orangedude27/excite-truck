@@ -13126,9 +13126,9 @@ extern "C" s32 contain__Q310homebutton3gui13PaneComponentFff(void *this_, f32 x,
     fn_800DB76C(res, *(void **)(self + 0x2C), (f32 *)n);
 
     if (res[0] <= transformed[0] &&
-        transformed[1] <= res[1] &&
-        res[2] <= transformed[2] &&
-        transformed[3] <= res[3])
+        transformed[0] <= res[2] &&
+        res[3] <= transformed[1] &&
+        transformed[1] <= res[1])
         return 1;
     return 0;
 }
