@@ -3433,8 +3433,6 @@ done:
     }
 }
 
-#pragma push
-#pragma scheduling invalid_target
 void bta_dm_pm_btm_status(void *arg0) {
     register u8 *p = (u8 *)arg0;
     s32 offset;
@@ -3484,7 +3482,6 @@ fallback:
 done:
     ;
 }
-#pragma pop
 
 void fn_80074A4C(s32 arg0) {
     bta_dm_pm_set_mode((u8 *)arg0 + 8, 1);
@@ -14948,34 +14945,37 @@ void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
 void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
     u8 modem_signal = p_pars[0];
     u8 break_signal = p_pars[1];
-    u8 *buf;
-    u8 *payload;
+    BT_HDR *p_buf;
+    u8 *data;
+    s32 length;
     u32 signal;
 
-    buf = (u8 *)GKI_getpoolbuf(2);
-    if (buf == NULL) {
+    p_buf = (BT_HDR *)GKI_getpoolbuf(2);
+    if (p_buf == NULL) {
         return;
     }
 
-    *(u16 *)(buf + 4) = 0xC;
-    buf[0x14] = (u8)((((-is_command | is_command) >> 31) & 2) | 0xE1);
-    buf[0x15] = (u8)((((break_signal != 0) + 2) << 1) | 1);
-    buf[0x16] = (u8)((dlci << 2) | 3);
+    p_buf->offset = 0xC;
+    data = (u8 *)(p_buf + 1);
+    length = ((u32)(break_signal != 0)) + 2;
+    data[0xC] = (u8)((((-is_command | is_command) >> 31) & 2) | 0xE1);
+    data[0xD] = (u8)((length << 1) | 1);
+    data[0xE] = (u8)(((u8)dlci << 2) | 3);
 
-    signal = 1 | (((u32)(p_pars[4] != 0)) << 1) |
-             ((modem_signal & 1) << 2) |
-             ((modem_signal & 2) << 2) |
-             ((modem_signal & 4) << 4) |
-             ((modem_signal & 8) << 4);
-    buf[0x17] = (u8)signal;
+    signal = 1 |
+             (p_pars[4] != 0 ? 2U : 0U) |
+             (modem_signal & 1 ? 4U : 0U) |
+             (modem_signal & 2 ? 8U : 0U) |
+             (modem_signal & 4 ? 0x40U : 0U) |
+             (modem_signal & 8 ? 0x80U : 0U);
+    data[0xF] = (u8)signal;
 
-    payload = buf + 0x18;
     if (break_signal != 0) {
-        *payload = (u8)((break_signal << 4) | 3);
+        data[0x10] = (u8)((break_signal << 4) | 3);
     }
 
-    *(u16 *)(buf + 2) = (break_signal != 0) + 4;
-    rfc_send_buf_uih(p_mcb, 0, (BT_HDR *)buf);
+    p_buf->len = (u16)(length + 2);
+    rfc_send_buf_uih(p_mcb, 0, p_buf);
 }
 
 void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
