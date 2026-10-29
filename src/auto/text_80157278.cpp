@@ -824,42 +824,45 @@ extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2) {
 
 extern "C" void *fn_802076A0(void *, s32, s32, s32);
 extern "C" f32 lbl_80561778;
-void *fn_80158374(void *arg0, void *arg1, void *arg2, s32 arg3) {
-    s32 ok;
+extern "C" void *fn_80158374(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 should_allocate = (fn_80157278(arg3) == 0);
     void *first;
     void *second;
-    ok = fn_80157278(arg3);
+
     *(void **)((u8 *)arg0 + 4) = 0;
     *(void **)arg0 = 0;
-    if (ok == 0) {
-        first = fn_802076A0(arg1, 1, arg3, 0);
+    if (should_allocate) {
+        first = fn_802076A0((void *)(u32)arg1, 1, arg3, 0);
         *(void **)arg0 = first;
-        if (first == 0)
-            goto done;
-        if (lbl_80561778 != *(f32 *)((u8 *)first + 4)) {
-            *((u8 *)first + 0x4e) = 1;
-            *(f32 *)((u8 *)first + 4) = lbl_80561778;
+        if (first != 0) {
+            f32 value = lbl_80561778;
+            if (value != *(f32 *)((u8 *)first + 4)) {
+                *((u8 *)first + 0x4e) = 1;
+                *(f32 *)((u8 *)first + 4) = value;
+            }
+            first = *(void **)arg0;
+            value = lbl_80561750;
+            if (value != *(f32 *)((u8 *)first + 8)) {
+                *((u8 *)first + 0x4d) = 1;
+                *(f32 *)((u8 *)first + 8) = value;
+            }
         }
-        first = *(void **)arg0;
-        if (lbl_80561750 != *(f32 *)((u8 *)first + 8)) {
-            *((u8 *)first + 0x4d) = 1;
-            *(f32 *)((u8 *)first + 8) = lbl_80561750;
-        }
-        second = fn_802076A0(arg2, 1, arg3, 0);
+        second = fn_802076A0((void *)(u32)arg2, 1, arg3, 0);
         *(void **)((u8 *)arg0 + 4) = second;
-        if (second == 0)
-            goto done;
-        if (lbl_80561778 != *(f32 *)((u8 *)second + 4)) {
-            *((u8 *)second + 0x4e) = 1;
-            *(f32 *)((u8 *)second + 4) = lbl_80561778;
-        }
-        second = *(void **)((u8 *)arg0 + 4);
-        if (lbl_80561750 != *(f32 *)((u8 *)second + 8)) {
-            *((u8 *)second + 0x4d) = 1;
-            *(f32 *)((u8 *)second + 8) = lbl_80561750;
+        if (second != 0) {
+            f32 value = lbl_80561778;
+            if (value != *(f32 *)((u8 *)second + 4)) {
+                *((u8 *)second + 0x4e) = 1;
+                *(f32 *)((u8 *)second + 4) = value;
+            }
+            second = *(void **)((u8 *)arg0 + 4);
+            value = lbl_80561750;
+            if (value != *(f32 *)((u8 *)second + 8)) {
+                *((u8 *)second + 0x4d) = 1;
+                *(f32 *)((u8 *)second + 8) = value;
+            }
         }
     }
-done:
     *(s32 *)((u8 *)arg0 + 8) = 1;
     return arg0;
 }
@@ -1445,10 +1448,14 @@ extern "C" s32 fn_8015A404(void* arg0) {
     return *(s32*)((u8*)arg0 + 0x2620);
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8015A40C(void *arg0) {
  extern f32 lbl_80561750, lbl_80561754, lbl_805617AC, lbl_805617B0;
- struct V { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual f32 v18(s32); virtual f32 v19(s32); virtual void v20(); virtual s32 v21(); virtual void v22(); virtual s32 v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual s32 v29(); virtual void v30(); virtual s32 v31(); };
- int count=0, offset=0, zero=0; f32 z=lbl_80561754;
+ struct V { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual f32 v18(s32); virtual f32 v19(s32); virtual void v20(); virtual s32 v21(); virtual void v22(); virtual void v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual s32 v29(); virtual void v30(); virtual s32 v31(); };
+ register f32 z=lbl_80561754;
+ int count=0;
+ int offset=0;
+ register int zero=0;
  goto check;
 loop:
  count++;
@@ -1459,11 +1466,15 @@ loop:
  offset+=0x38;
 check:
  if(count<*(int *)((char *)arg0+0xc)) goto loop;
- f32 one=lbl_80561754, val=lbl_80561750;
+ f32 val, one;
+ one=lbl_80561754;
+ val=lbl_80561750;
  *(int *)((char *)arg0+0x264)=zero; *(int *)((char *)arg0+0x260)=zero;
  *(f32 *)((char *)arg0+0x254)=one; *(f32 *)((char *)arg0+0x25c)=val;
  ((V *)arg0)->v31();
- f32 init=lbl_805617AC, end=lbl_805617B0;
+ f32 end, init;
+ init=lbl_805617AC;
+ end=lbl_805617B0;
  *(int *)((char *)arg0+0x26c)=zero;
  *(f32 *)((char *)arg0+0x270)=init; *(char *)((char *)arg0+0x274)=1;
  *(int *)((char *)arg0+0x278)=zero; *(f32 *)((char *)arg0+0x27c)=init; *(char *)((char *)arg0+0x280)=1;
@@ -1475,7 +1486,7 @@ check:
  *(int *)((char *)arg0+0x2c0)=zero; *(f32 *)((char *)arg0+0x2c4)=init; *(char *)((char *)arg0+0x2c8)=1;
  *(int *)((char *)arg0+0x2cc)=zero; *(char *)((char *)arg0+0x2d1)=0; *(f32 *)((char *)arg0+0x2d4)=end;
 }
-
+#pragma scheduling on
 extern "C" void fn_8015A538(void* arg0, void* arg1) {
     void* sp8 = arg1;
     fn_80158F34(&sp8);
@@ -2429,6 +2440,7 @@ extern "C" void fn_8015D554(void *arg0) {
     obj->v19(value);
 }
 
+#pragma scheduling invalid_target
 extern "C" f32 fn_8015D5A4(void *arg0) {
     struct V {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -2438,26 +2450,25 @@ extern "C" f32 fn_8015D5A4(void *arg0) {
         virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
         virtual int cur(); virtual int index();
     };
-    register V *self = (V *)arg0;
-    int idx = self->index();
-    int count = *(int *)((char *)self + 0xC);
+    int idx = ((V *)arg0)->index();
+    int count = *(int *)((char *)arg0 + 0xC);
     register f32 fraction = lbl_80561754;
-    register int previous;
+    int previous;
     if (idx < count - 1) {
         if (idx > 0)
-            previous = *(int *)(*(char **)((char *)self + 8) + (idx - 1) * 0x38 + 0x14);
+            previous = *(int *)(*(char **)((char *)arg0 + 8) + (idx - 1) * 0x38 + 0x14);
         else
             previous = 0;
-        int now = self->cur();
-        int current = *(int *)(*(char **)((char *)self + 8) + idx * 0x38 + 0x14);
-        f32 den = (f32)(current - previous);
+        int now = ((V *)arg0)->cur();
+        int current = *(int *)(*(char **)((char *)arg0 + 8) + idx * 0x38 + 0x14);
         f32 num = (f32)(now - previous);
+        f32 den = (f32)(current - previous);
         if (den > lbl_80561754)
             fraction = num / den;
     }
     return (f32)idx + fraction;
 }
-
+#pragma scheduling on
 extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E668[arg0->GetType()]);
 }
