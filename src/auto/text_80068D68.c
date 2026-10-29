@@ -1126,7 +1126,7 @@ void *WUDiGetNewDevInfo(void) {
 }
 
 #pragma use_lmw_stmw off
-void WUDiMoveTopSmpDevInfoPtr(void *arg0, void *arg1) {
+void WUDiMoveTopSmpDevInfoPtr(u8 *arg0, void *arg1) {
     typedef struct WUDDevInfoView {
         u8 pad[0x40];
         u8 devAddr[6];
@@ -1145,26 +1145,20 @@ void WUDiMoveTopSmpDevInfoPtr(void *arg0, void *arg1) {
     } WUDCBView;
 
     register WUDCBView *p = (WUDCBView *)lbl_80392960;
-    WUDDevInfoView *pInfo = (WUDDevInfoView *)arg0;
     BOOL enabled;
     s32 i;
 
     enabled = OSDisableInterrupts();
     for (i = 0; i < 6; i++) {
-        WUDListEntry *entry = &p->smpList[i];
-
-        if (memcmp(entry->devInfo->devAddr, pInfo->devAddr, 6) != 0) {
-            continue;
-        }
-        if (memcmp(p->smpListHead->devInfo->devAddr, entry->devInfo->devAddr, 6) == 0) {
-            break;
-        }
-
-        entry->next->prev = entry->prev;
+        WUDListEntry *entry;
+        if (memcmp(p->smpList[i].devInfo->devAddr, arg0 + 0x40, 6) != 0) continue;
+        entry = (WUDListEntry *)((u8 *)p + i * 0xC + 0x1C);
+        if (memcmp(p->smpListHead->devInfo->devAddr, entry->devInfo->devAddr, 6) == 0) break;
+        entry->prev->next = entry->next;
         if (memcmp(p->smpListTail->devInfo->devAddr, entry->devInfo->devAddr, 6) == 0) {
             p->smpListTail = entry->prev;
         } else {
-            entry->prev->next = entry->next;
+            entry->next->prev = entry->prev;
         }
         entry->next = p->smpListHead;
         p->smpListHead->prev = entry;
@@ -4631,8 +4625,11 @@ void btm_read_link_quality_complete(u8 *arg0) {
     Callback callback = *(Callback *)(control + 0x5FC);
     u8 *connection = control + 0x34;
     u8 logLevel;
+    u8 high;
+    u8 low;
+    u8 status;
     u16 handle;
-    s32 i;
+    u8 i;
 
     fn_80070F90(control + 0x5C8);
     *(Callback *)(control + 0x5FC) = 0;
@@ -4640,22 +4637,24 @@ void btm_read_link_quality_complete(u8 *arg0) {
         return;
     }
 
-    result.status = arg0[0];
-    if (result.status == 0) {
+    status = arg0[0];
+    result.status = status;
+    if (status == 0) {
         result.result = 0;
         logLevel = control[0x27C0];
-        handle = (u16)(arg0[1] + (arg0[2] << 8));
+        high = arg0[2];
+        low = arg0[1];
         result.quality = arg0[3];
+        handle = (u16)(low + (high << 8));
         if (logLevel >= 4) {
             ((void (*)(u32, void *))fn_8007096C)(0xD0003, lbl_80315FEC);
         }
 
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < 4; i++, connection += 0x11C) {
             if (connection[0x119] != 0 && handle == *(u16 *)connection) {
                 memcpy(result.address, connection + 8, 6);
                 break;
             }
-            connection += 0x11C;
         }
     } else {
         result.result = 0xA;
@@ -13481,7 +13480,7 @@ void PORT_LineStatusInd(void *mcb, u8 dlci, u8 line_status) {
     }
 }
 
-extern void port_rfc_closed();
+extern void port_rfc_closed(void *, s32);
 extern char lbl_80319454[];
 void PORT_DlcReleaseInd(void *arg0, u8 arg1) {
     void *port;
