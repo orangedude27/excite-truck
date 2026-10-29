@@ -85,18 +85,18 @@ extern char lbl_805588D8[];
 extern s32 lbl_805600E0;
 extern s32 lbl_805600E4;
 extern u8 lbl_805600EC;
+extern s32 lbl_80558898[];
+#pragma scheduling invalid_target
 void fn_802EC7AC(void) {
-    s32 *p;
-    char *format;
+    register s32 *p;
     s32 i;
     lbl_805600EC = 0;
     fn_800C657C();
     p = (s32 *)lbl_805588D8;
     i = 0;
-    format = lbl_8034EB28;
     do {
         if (*p != 0)
-            fn_802E317C(format, (void *)*p);
+            ((void (*)(void *, ...))fn_802E317C)(lbl_8034EB28, (void *)*p);
         ++i;
         ++p;
     } while (i < 8);
@@ -113,7 +113,7 @@ void fn_802EC7AC(void) {
     if (lbl_805600E4 != 0)
         fn_80128670(lbl_805600E4);
 }
-
+#pragma scheduling on
 extern void WPADControlMotor(s32, s32);
 extern void fn_800C65C4(void);
 extern s32 fn_800C65CC(void *);
