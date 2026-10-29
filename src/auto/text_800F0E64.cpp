@@ -10,7 +10,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
-namespace nw4hbm { namespace snd { namespace detail { struct WaveSoundInfo; struct WaveSoundNoteInfo; struct WaveData; } class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); class WsdCallback { public: s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, s32, s32, u32) const; }; }; namespace detail { class StrmPlayer { public: struct StrmHeader; void Pause(bool); void Setup(const StrmHeader *); }; class SoundThread { public: s32 Shutdown(); }; } } }
+namespace nw4hbm { namespace snd { namespace detail { struct WaveSoundInfo; struct WaveSoundNoteInfo; struct WaveData; } class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); class WsdCallback { public: s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, s32, s32, u32) const; s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, int, int, u32) const; }; }; namespace detail { class StrmPlayer { public: struct StrmHeader; void Pause(bool); void Setup(const StrmHeader *); }; class SoundThread { public: s32 Shutdown(); }; } } }
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
 extern "C" void fn_800EAD00(void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
@@ -802,24 +802,63 @@ extern "C" void fn_800F2D28(void *arg0) {
 
 extern "C" const char lbl_80324868[];
 extern "C" void fn_800F2EAC(void *self, void *arg) {
+    u8 *object = (u8 *)self;
     const char *base = lbl_80324868;
-    unsigned char *bytes = (unsigned char *)arg;
-    unsigned char *table;
-    int offset;
-    if (arg == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x60, base + 0x104);
-    if (*(unsigned int *)bytes != 0x53594D42) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x63, base + 0x138);
+    u8 *bytes = (u8 *)arg;
+    u8 *table;
+    u8 *fieldBase;
+    u32 offset;
+    u32 value;
+    if (arg == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x60, base + 0x104);
+    if ((*(u32 *)bytes - 0x53590000U) != 0x4d42U)
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x63, base + 0x138);
     table = bytes + 8;
-    *(unsigned char **)((unsigned char *)self + 0x2C) = table;
-    offset = *(int *)(bytes + 8);
-    *(unsigned char **)((unsigned char *)self + 0x30) = offset ? table + offset : 0;
-    offset = *(int *)(table + 4);
-    *(unsigned char **)((unsigned char *)self + 0x34) = offset ? table + offset : 0;
-    offset = *(int *)(table + 8);
-    *(unsigned char **)((unsigned char *)self + 0x38) = offset ? table + offset : 0;
-    offset = *(int *)(table + 0xC);
-    *(unsigned char **)((unsigned char *)self + 0x3C) = offset ? table + offset : 0;
-    offset = *(int *)(table + 0x10);
-    *(unsigned char **)((unsigned char *)self + 0x40) = offset ? table + offset : 0;
+    *(u8 **)(object + 0x2c) = table;
+    offset = *(u32 *)(bytes + 8);
+    if (offset != 0) goto add_30;
+    value = 0;
+    goto store_30;
+add_30:
+    value = (u32)(table + offset);
+store_30:
+    *(u32 *)(object + 0x30) = value;
+    fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
+    offset = *(volatile u32 *)(table + 4);
+    if (offset != 0) goto add_34;
+    value = 0;
+    goto store_34;
+add_34:
+    value = (u32)(fieldBase + offset);
+store_34:
+    *(u32 *)(object + 0x34) = value;
+    fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
+    offset = *(volatile u32 *)(table + 8);
+    if (offset != 0) goto add_38;
+    value = 0;
+    goto store_38;
+add_38:
+    value = (u32)(fieldBase + offset);
+store_38:
+    *(u32 *)(object + 0x38) = value;
+    fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
+    offset = *(volatile u32 *)(table + 0xc);
+    if (offset != 0) goto add_3c;
+    value = 0;
+    goto store_3c;
+add_3c:
+    value = (u32)(fieldBase + offset);
+store_3c:
+    *(u32 *)(object + 0x3c) = value;
+    fieldBase = (u8 *)*(volatile u8 **)(object + 0x2c);
+    offset = *(volatile u32 *)(table + 0x10);
+    if (offset != 0) goto add_40;
+    value = 0;
+    goto store_40;
+add_40:
+    value = (u32)(fieldBase + offset);
+store_40:
+    *(u32 *)(object + 0x40) = value;
 }
 
 extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl(void *self, const void *chunk, u32 size) {
@@ -1895,9 +1934,16 @@ extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hb
 extern "C" s32 ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(void *, void *, s32, s32);
 extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(void *, s32, void *, const void *);
 extern "C" const char lbl_80325110[];
-extern "C" s32 GetWaveSoundData__Q46nw4hbm3snd18SoundArchivePlayer11WsdCallbackCFPQ46nw4hbm3snd6detail13WaveSoundInfoPQ46nw4hbm3snd6detail17WaveSoundNoteInfoPQ46nw4hbm3snd6detail8WaveDataPCviiUl(void *self, void *info, void *noteInfo, void *waveData, const void *file, s32 index, s32 noteIndex, u32 waveIndex) {
+s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(
+    nw4hbm::snd::detail::WaveSoundInfo *info,
+    nw4hbm::snd::detail::WaveSoundNoteInfo *noteInfo,
+    nw4hbm::snd::detail::WaveData *waveData,
+    const void *file,
+    s32 index,
+    s32 noteIndex,
+    u32 waveIndex) const {
     u8 reader[0x38];
-    u8 *archive = *(u8 **)((u8 *)self + 4);
+    u8 *archive = *(u8 **)((u8 *)this + 4);
     void *fileInfo = *(void **)(archive + 0x10);
     s32 result;
     s32 waveAddress;
@@ -1909,11 +1955,11 @@ extern "C" s32 GetWaveSoundData__Q46nw4hbm3snd18SoundArchivePlayer11WsdCallbackC
     if (result == 0)
         return 0;
 
-    archive = *(u8 **)((u8 *)self + 4);
+    archive = *(u8 **)((u8 *)this + 4);
     if (*(u32 *)(archive + 0x10) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
 
-    archive = *(u8 **)((u8 *)self + 4);
+    archive = *(u8 **)((u8 *)this + 4);
     waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(archive, waveIndex);
     if (waveAddress == 0)
         return 0;
