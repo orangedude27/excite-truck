@@ -999,16 +999,18 @@ void fn_8019D19C(void* arg0, void* arg1) {
 }
 
 extern "C" void fn_8019D378(void *arg0, void *arg1) {
-    struct Origin { u8 pad[0x24]; Vec point; };
     struct Target { u8 pad[0x34]; Vec point; };
-    Origin *origin = (Origin *)*(void **)((u8 *)arg1 + 0xC);
+    struct Origin { u8 pad[0x24]; Vec point; };
     Target *target = (Target *)arg0;
+    Origin *origin = (Origin *)*(void **)((u8 *)arg1 + 0xC);
+    Vec *point = &origin->point;
     f32 delta[3];
-    delta[0] = origin->point.x - target->point.x;
-    delta[1] = origin->point.y - target->point.y;
-    f32 bz = target->point.z;
-    delta[2] = origin->point.z - bz;
-    f32 distance = PSVECSquareDistance(&origin->point, &target->point);
+    delta[0] = point->x - target->point.x;
+    delta[1] = point->y - target->point.y;
+    f32 targetZ = target->point.z;
+    f32 originZ = point->z;
+    delta[2] = originZ - targetZ;
+    f32 distance = PSVECSquareDistance(point, &target->point);
     f32 result;
     if (distance > lbl_8056232C) {
         f32 scale = lbl_805622E0 / (f32)fn_8002F234(distance);
@@ -1345,7 +1347,7 @@ extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
     *(s32*)((u8*)arg0 + 0xC) = arg1;
 }
 
-void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
+extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
     fn_8019ECC4();
     *(void**)arg0 = &lbl_80333B48;
     if (arg2 != 0) {
