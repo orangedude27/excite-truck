@@ -4064,10 +4064,9 @@ extern "C" s32 fn_800B0868(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0A60(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0C10(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
-    /* Fix note: perform the first large read unconditionally; check the cluster threshold only after it. */
+    /* Fix note: keep the remaining size in arg2 and nest the repeated-read checks. */
     u32 sp8;
     u16 *var_r27;
-    u32 var_r30;
     s32 result;
     void *temp_r7;
 
@@ -4081,27 +4080,30 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
     if (sp8 >= arg2)
         return 0;
 
-    var_r30 = arg2 - sp8;
+    arg2 -= sp8;
     if (arg0 == 0)
         var_r27 = 0;
     else
         var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
 
     for (;;) {
-        result = fn_800B0A60(arg0, arg1 + *arg3, var_r30, &sp8);
+        result = fn_800B0A60(arg0, arg1 + *arg3, arg2, &sp8);
         *arg3 += sp8;
         if (result != 0)
             return result;
-        if (sp8 == 0)
-            break;
-        var_r30 -= sp8;
-        if (var_r30 < *var_r27)
-            break;
+        if (sp8 != 0) {
+            arg2 -= sp8;
+            if (arg2 >= *var_r27)
+                continue;
+        }
+        break;
     }
 
-    result = fn_800B0C10(arg0, arg1 + *arg3, var_r30, &sp8);
+    result = fn_800B0C10(arg0, arg1 + *arg3, arg2, &sp8);
     *arg3 += sp8;
-    return result;
+    if (result != 0)
+        return result;
+    return 0;
 }
 
 extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
@@ -18946,6 +18948,44 @@ done:
     if (arg10 != 0 && res != 0 && buf != 0) iosFree(lbl_80559248, buf);
     return res;
 }
+
+extern "C" s32 fn_800BB2C4(void *arg0) {
+    /* Fix note: preserve the device-read result while clearing the shared busy flag on every completed ioctl. */
+    const char *str = lbl_8031B838;
+    s32 result;
+
+    if (lbl_80559248 < 0) {
+        result = (s32)0xC1000000;
+    } else {
+        OSLockMutex(lbl_80407560);
+        if (lbl_8055DD6C != 0) {
+            OSUnlockMutex(lbl_80407560);
+            result = (s32)0xC1000000;
+        } else {
+            lbl_8055DD6C = 1;
+            OSUnlockMutex(lbl_80407560);
+            result = IOS_Ioctl(*(s32 *)arg0, 4, 0, 0, lbl_8055DD70, 4);
+            if (result != 0) {
+                if ((u32)(result + 0x3F000000) == 0x20)
+                    OSReport(str + 0x240);
+                else
+                    OSReport(str + 0x26C, result);
+                *(u32 *)((u8 *)arg0 + 0x10) = 0;
+                lbl_8055DD6C = 0;
+            } else {
+                *(u32 *)((u8 *)arg0 + 0x10) = *lbl_8055DD70;
+                lbl_8055DD68 = 0x10000;
+                *(u32 *)((u8 *)arg0 + 0x24) = 2;
+                lbl_8055DD6C = 0;
+            }
+        }
+    }
+
+    if (result != 0)
+        OSReport(str + 0x290, result);
+    return result;
+}
+
 extern "C" s32 fn_800B3304(void *, void *);
 #pragma push
 #pragma use_lmw_stmw off
