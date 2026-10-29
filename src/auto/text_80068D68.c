@@ -2199,6 +2199,40 @@ s32 uusb_get_devId(u32 arg0, u32 arg1) {
     return result;
 }
 
+void UUSB_Open(tUUSB *uusb, void *cback) {
+    extern char lbl_803142C8[];
+    extern s32 lbl_80558FF0;
+    register uusb_cb_t *control = &lbl_803BD1E0;
+    register char *report = lbl_803142C8;
+    u8 *bytes = (u8 *)control;
+
+    if (control->state == 4) goto validate;
+    if (control->at_0x28 != 0) OSReport(report + 0x7F0);
+    goto done;
+
+validate:
+    if (bytes[0x1C] == 0xFF) goto bad_ids;
+    if (bytes[0x1D] != 0xFF) goto open_device;
+
+bad_ids:
+    if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x838);
+    if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x870, ((u8 *)&lbl_803BD1E0)[0x1C]);
+    if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x8A0, ((u8 *)&lbl_803BD1E0)[0x1D]);
+    goto done;
+
+open_device:
+    fn_8006EBAC();
+    *(void **)(bytes + 0x20) = cback;
+    bytes[0x29] = 2;
+    fn_8006EB88();
+    uusb_issue_intr_read();
+    uusb_issue_bulk_read();
+    lbl_80558FF0 = 0;
+
+done:
+    return;
+}
+
 s32 fn_8007011C(void) { return 0; }
 
 void UUSB_Close(void *arg0) {
@@ -4562,6 +4596,53 @@ void btm_read_rssi_complete(u8 *arg0) {
         }
         callback(&sp8);
     }
+}
+
+extern char lbl_80315FEC[];
+void btm_read_link_quality_complete(u8 *arg0) {
+    typedef void (*Callback)(s8 *);
+    struct Result {
+        s8 result;
+        u8 status;
+        u8 quality;
+        u8 address[6];
+    } result;
+
+    u8 *control = lbl_803C0F78;
+    Callback callback = *(Callback *)(control + 0x5FC);
+    u8 *connection;
+    u8 logLevel;
+    u16 handle;
+    s32 i;
+
+    fn_80070F90(control + 0x5C8);
+    *(Callback *)(control + 0x5FC) = 0;
+    if (callback == 0) {
+        return;
+    }
+
+    result.status = arg0[0];
+    if (result.status == 0) {
+        result.result = 0;
+        logLevel = control[0x27C0];
+        handle = (u16)(arg0[1] + (arg0[2] << 8));
+        result.quality = arg0[3];
+        if (logLevel >= 4) {
+            ((void (*)(u32, void *))fn_8007096C)(0xD0003, lbl_80315FEC);
+        }
+
+        for (i = 0; i < 4; i++) {
+            connection = control + 0x34 + i * 0x11C;
+            if (connection[0x119] != 0 && *(u16 *)connection == handle) {
+                memcpy(result.address, connection + 8, 6);
+                break;
+            }
+        }
+    } else {
+        result.result = 0xA;
+    }
+
+    callback(&result.result);
 }
 
 tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
