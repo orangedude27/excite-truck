@@ -4579,7 +4579,7 @@ extern "C" s32 fn_802237F0(s32 arg0, s32 arg1) {
 extern "C" void fn_802230A4(void);
 extern "C" void *lbl_8033E458;
 extern "C" void *fn_80223800(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
-    fn_802230A4();
+    ((void (*)(void))fn_802230A4)();
     *(void **)((u8 *)arg0 + 0x420) = arg4;
     *(void **)arg0 = &lbl_8033E458;
     if (arg4 != 0) {
