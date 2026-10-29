@@ -1877,7 +1877,11 @@ public:
 }}}
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
+void nw4hbm::snd::detail::AxVoice::SetLoopStart(int arg1, const void *arg2, unsigned long arg3) {
+    register char *self = (char *)this;
+    register int index = arg1;
+    register unsigned int address = (unsigned int)arg2;
+    register unsigned long length = arg3;
     int format;
     unsigned int interrupt;
     unsigned int value;
@@ -1889,31 +1893,31 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
     unsigned int end;
 
     interrupt = OSDisableInterrupts();
-    format = *(int *)((char *)arg0 + 0x118);
-    value = (unsigned int)arg2;
+    format = *(int *)(self + 0x118);
+    value = address;
     if (arg2 != 0) value += 0x80000000;
     start = 0;
     switch (format) {
     case 0:
-        temp = arg3 / 7;
-        offset = (arg3 - temp) >> 1;
+        temp = length / 7;
+        offset = (length - temp) >> 1;
         temp = offset + temp;
-        start = (arg3 - ((temp >> 3) * 0xE)) + (value * 2) + ((temp * 2) & 0xFFFFFFF0) + 2;
+        start = (length - ((temp >> 3) * 0xE)) + (value * 2) + ((temp * 2) & 0xFFFFFFF0) + 2;
         break;
     case 10:
-        start = value + arg3;
+        start = value + length;
         break;
     case 25:
-        start = (value >> 1) + arg3;
+        start = (value >> 1) + length;
         break;
     default:
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
         break;
     }
-    offset = arg1 * 0x10;
+    offset = index * 0x10;
     value = start >> 16;
     end = start & 0xFFFF;
-    voice = (unsigned int *)((char *)arg0 + offset);
+    voice = (unsigned int *)(self + offset);
     i = 0;
     do {
         unsigned int *channel = (unsigned int *)*(unsigned int **)((char *)voice + 0xC);
@@ -1925,7 +1929,7 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
         OSRestoreInterrupts(innerInterrupt);
         voice = (unsigned int *)((char *)voice + 4);
         i++;
-    } while (i < *(int *)((char *)arg0 + 0x108));
+    } while (i < *(int *)(self + 0x108));
     OSRestoreInterrupts(interrupt);
 }
 #pragma pop
@@ -2278,64 +2282,53 @@ extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     }
 }
 
-extern "C" void AXGetLpfCoefs(unsigned short *, unsigned short *);
+extern "C" void AXGetLpfCoefs(unsigned short, unsigned short *, unsigned short *);
 extern "C" unsigned short CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(float);
 extern "C" void fn_80033B0C(void *, short *);
 extern "C" void fn_80033B74(void *, unsigned short, unsigned short);
 extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
-    int channelIndex;
-    char *channel;
-    int channelOffset;
-    short zero;
-    short one;
+    int channelIndex = 0;
+    char *channel = (char *)self;
+    int channelOffset = 0;
+    short zero = 0;
+    short one = 1;
     int inner;
     char *entry;
-    short zeroCoefs[2];
-    short initialCoefs[2];
-    unsigned short coefA;
-    unsigned short coefB;
-    unsigned short altCoefA;
-    unsigned short altCoefB;
+    unsigned short localCoefs[10];
     unsigned short rate;
-
-    channelIndex = 0;
-    channel = (char *)self;
-    channelOffset = 0;
-    zero = 0;
-    one = 1;
 
     while (channelIndex < *(int *)((char *)self + 0x108)) {
         rate = CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(
             *(float *)((char *)self + 0x138) + *(float *)(channel + 0xa8));
         if (rate >= 0x3e80) {
-            zeroCoefs[0] = zero;
-            zeroCoefs[1] = zero;
+            localCoefs[8] = zero;
+            localCoefs[9] = zero;
             entry = (char *)((unsigned int)self + channelOffset);
             inner = 0;
             while (inner < *(int *)((char *)self + 0x104)) {
-                fn_80033B0C(*(void **)(entry + 0xc), zeroCoefs);
+                fn_80033B0C(*(void **)(entry + 0xc), (short *)&localCoefs[8]);
                 entry += 0x10;
                 inner++;
             }
         } else if (*(unsigned short *)(*(char **)((char *)self + 0xc) + 0x1fc) == 1) {
             ((void (*)(unsigned short, unsigned short *, unsigned short *))AXGetLpfCoefs)(
-                rate, &coefA, &coefB);
+                rate, &localCoefs[1], &localCoefs[0]);
             entry = (char *)((unsigned int)self + channelOffset);
             inner = 0;
             while (inner < *(int *)((char *)self + 0x104)) {
-                fn_80033B74(*(void **)(entry + 0xc), coefA, coefB);
+                fn_80033B74(*(void **)(entry + 0xc), localCoefs[1], localCoefs[0]);
                 entry += 0x10;
                 inner++;
             }
         } else {
-            initialCoefs[0] = one;
-            initialCoefs[1] = zero;
+            localCoefs[4] = one;
+            localCoefs[5] = zero;
             ((void (*)(unsigned short, unsigned short *, unsigned short *))AXGetLpfCoefs)(
-                rate, &altCoefA, &altCoefB);
+                rate, &localCoefs[6], &localCoefs[7]);
             entry = (char *)((unsigned int)self + channelOffset);
             inner = 0;
             while (inner < *(int *)((char *)self + 0x104)) {
-                fn_80033B0C(*(void **)(entry + 0xc), initialCoefs);
+                fn_80033B0C(*(void **)(entry + 0xc), (short *)&localCoefs[4]);
                 entry += 0x10;
                 inner++;
             }
