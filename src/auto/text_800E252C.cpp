@@ -593,6 +593,43 @@ extern "C" void *fn_800E2D74(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void fn_800E2E24(void *self) {
+    if (*(unsigned char *)((char *)self + 0x6C30) == 0) {
+        if (AIGetDMAStatus() == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x6E, lbl_80321F94);
+
+        void *iterator = (char *)self + 0x24;
+        int i = 0;
+        int offset = 0;
+        do {
+            if ((char *)self + offset + 0x2C == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+            iterator = (char *)self + 0x24;
+            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
+                (char *)self + 0x20, &iterator, (char *)self + offset + 0x1D4);
+            i++;
+            offset += 0x1B0;
+        } while (i < 0x40);
+
+        memset(lbl_80407E60, 0, 0x100);
+        DCFlushRange(lbl_80407E60, 0x100);
+        *(void **)((char *)self + 4) = lbl_80407E60;
+        unsigned int irq = OSDisableInterrupts();
+        AXGetAuxACallback((char *)self + 0x6CF0, (char *)self + 0x6CFC);
+        AXGetAuxBCallback((char *)self + 0x6CF4, (char *)self + 0x6D00);
+        AXGetAuxCCallback((char *)self + 0x6CF8, (char *)self + 0x6D04);
+        AXRegisterAuxACallback(0, 0);
+        AXRegisterAuxBCallback(0, 0);
+        AXRegisterAuxCCallback(0, 0);
+        *(void **)((char *)self + 0x6C2C) = AIRegisterDMACallback(fn_800E41EC);
+        *(unsigned char *)((char *)self + 0x6C30) = 1;
+        OSRestoreInterrupts(irq);
+    }
+}
+#pragma pop
+
 extern const char lbl_80322124[];
 extern const char lbl_80322100[];
 extern const char lbl_803220F4[];
