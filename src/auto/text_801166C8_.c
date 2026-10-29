@@ -34,6 +34,7 @@ typedef struct {
 void fn_8011C120();
 void fn_8011C274(s32, void *);
 void fn_8011C2EC(s32, void *);
+void fn_801195D8(void *);
 #define M2C_FIELD(base, type, offset) (*(type)((u8 *)(base) + (offset)))
 
 extern void* fn_802ECC74(void*);
@@ -1129,6 +1130,76 @@ void fn_80118C1C(void *arg0, s32 arg1) {
     }
 }
 
+extern s32 fn_80118F78(void*, s32);
+extern s32 fn_8011BFFC(s32, s32, s32, s32, s32);
+extern void fn_8011BC48();
+void fn_80118DC0(void* arg0) {
+    s32 offset;
+    s32 i;
+    s32 status;
+    register s32 zero = 0;
+    s32 fileInfo;
+
+    if (arg0 == 0) return;
+    fn_80118F78(arg0, 1);
+    fileInfo = (s32)((u8*)arg0 + 0x1F4);
+    status = fn_8011BFFC(
+        zero,
+        fileInfo,
+        *(s32*)((u8*)arg0 + 0x2E8) != 0
+            ? *(volatile s32*)&lbl_8055DED4
+            : 0,
+        (s32)((u8*)arg0 + 0x340),
+        1
+    );
+    switch (status) {
+    case 3:
+        goto status3;
+    case 2:
+        goto status2;
+    default:
+        break;
+    }
+    goto status_done;
+status3:
+    lbl_8055DED4 = 0;
+    goto status_done;
+status2:
+    lbl_8055DED4 = 0;
+status_done:
+    i = 0;
+    offset = 0;
+    while ((u32)i < *(u32*)((u8*)arg0 + 0x2E8)) {
+        void* item = *(void**)((u8*)arg0 + 0x2F0);
+        item = (u8*)item + offset;
+        ((void (*)(void*))(*(void**)((u8*)item + 0x1C)))(item);
+        fn_8011BC48(*(s32*)((u8*)*(void**)((u8*)arg0 + 0x2F0) + offset + 0x3C));
+        {
+            void* handle = *(void**)((u8*)*(void**)((u8*)arg0 + 0x2F0) + offset + 0x2C);
+            if (handle != 0) fn_80120084(handle);
+        }
+        offset += 0x17C;
+        i += 1;
+    }
+
+    {
+        void* field = *(void**)((u8*)arg0 + 0xE8);
+        if (field != 0) {
+            if ((*(u32*)((u8*)arg0 + 0x20) & 0x04000000) == 0)
+                fn_80120084(field);
+        } else {
+            ((void (*)(void*))(*(void**)((u8*)arg0 + 0x104)))((u8*)arg0 + 0xF0);
+            fn_80120084(*(void**)((u8*)arg0 + 0x234));
+        }
+    }
+    {
+        void* field = *(void**)((u8*)arg0 + 0x384);
+        if (field != 0) fn_80120084(field);
+    }
+    memset(arg0, zero, 0x388);
+    fn_80120084(arg0);
+}
+
 void fn_80118F1C(void *arg0, s32 arg1) {
     s32 temp_r0 = *(s32*)((u8*)arg0 + 0x274);
     if (temp_r0 != 0) {
@@ -1145,6 +1216,129 @@ void fn_80118F1C(void *arg0, s32 arg1) {
             *(s32*)((u8*)arg0 + 0x284) = *(s32*)((u8*)arg0 + 0xC);
         }
     }
+}
+
+s32 fn_80118F78(void *arg0, s32 arg1) {
+    s32 result;
+    s32 elapsed;
+    s32 reset;
+    s32 offset;
+    u32 index;
+
+    reset = 0;
+    if (arg0 == 0) {
+        return 0;
+    }
+
+    elapsed = fn_80116D30();
+    fn_80118C1C(arg0, elapsed);
+    fn_80118F1C(arg0, elapsed);
+
+    if (arg1 == 0) {
+        if (*(s32 *)((u8 *)arg0 + 0xDC) != 0) {
+            reset = 1;
+        }
+    } else if (*(s32 *)((u8 *)arg0 + 0xDC) == 0) {
+        result = *(s32 *)((u8 *)arg0 + 0x268);
+        if (result != 0) {
+            *(s32 *)((u8 *)arg0 + 0x330) = elapsed - result;
+        } else {
+            *(s32 *)((u8 *)arg0 + 0x330) = 0;
+        }
+    }
+
+    *(s32 *)((u8 *)arg0 + 0xDC) = arg1;
+    fn_8011C274(lbl_8055DED4, (u8 *)arg0 + 0x340);
+
+    index = 0;
+    offset = 0;
+    while (index < *(u32 *)((u8 *)arg0 + 0x2E8)) {
+        void *object = *(u8 **)((u8 *)arg0 + 0x2F0) + offset;
+        (*(void (**)(void *, s32))((u8 *)object + 0x14))(object, arg1);
+        offset += 0x17C;
+        index++;
+    }
+
+    fn_8011C2EC(lbl_8055DED4, (u8 *)arg0 + 0x340);
+    if (*(s32 *)((u8 *)arg0 + 0x258) != 0 &&
+        *(s32 *)((u8 *)arg0 + 0x2E8) != 0) {
+        fn_80117074(arg0);
+    }
+
+    if (reset != 0) {
+        result = fn_80116D30();
+        *(s32 *)((u8 *)arg0 + 0x268) =
+            result - *(s32 *)((u8 *)arg0 + 0x330);
+    }
+
+    return *(s32 *)((u8 *)arg0 + 0xDC);
+}
+
+s32 fn_801190B0(void *arg0, s32 arg1) {
+    s32 var_r29;
+    s32 var_r30;
+    s32 var_r31;
+    s32 temp_r3_2;
+    u32 temp_r3_5;
+    u32 var_r28;
+    s32 zero;
+    s32 one;
+
+    var_r30 = 0;
+    if (arg0 != 0) {
+        var_r29 = 0;
+        var_r28 = 0;
+        var_r31 = 0;
+        zero = 0;
+        one = 1;
+        goto loop_check;
+    loop_body:
+        if (*(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x18) != 0) {
+            if (var_r29 == 0) {
+                var_r29 = 1;
+                fn_8011C274(lbl_8055DED4,
+                    (void *)((s32)arg0 + 0x340));
+            }
+            temp_r3_2 = (*(s32 (**)(void *, s32))(
+                *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x18))(
+                    *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31,
+                    arg1 != 0);
+            if (temp_r3_2 != 0) {
+                var_r30 = 1;
+            }
+            if (temp_r3_2 == 0 && *(s32 *)((u8 *)arg0 + 0x288) != 0) {
+                *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x34) =
+                    *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x2C);
+                *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x38) =
+                    *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x2C);
+                *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x40) =
+                    zero;
+                temp_r3_5 = *(u32 *)((u8 *)arg0 + 0xC);
+                if (temp_r3_5 == 1 &&
+                    *(u32 *)((u8 *)arg0 + 0x2D4) != temp_r3_5) {
+                } else {
+                    fn_80116F8C(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31);
+                }
+                *(s32 *)((u8 *)arg0 + 0x288) = zero;
+            } else if (temp_r3_2 != 0 &&
+                       *(s32 *)((u8 *)arg0 + 0x288) == 0) {
+                *(s32 *)((u8 *)arg0 + 0x288) = one;
+                *(s32 *)((u8 *)arg0 + 0x268) = zero;
+                *(s32 *)((u8 *)arg0 + 0x328) = zero;
+                *(s32 *)((u8 *)arg0 + 0x330) = zero;
+            }
+        }
+        var_r31 += 0x17C;
+        var_r28++;
+    loop_check:
+        if (var_r28 < *(u32 *)((u8 *)arg0 + 0x2E8)) {
+            goto loop_body;
+        }
+        if (var_r29 != 0) {
+            fn_8011C2EC(lbl_8055DED4, (u8 *)arg0 + 0x340);
+        }
+    }
+    return var_r30;
 }
 
 void fn_80119214(void) {
@@ -2008,21 +2202,21 @@ extern s32 fn_8011A870(void*, s32);
 s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
     memset(arg0, 0, 0x144);
     if (arg2 & 0x800000) {
-        u32 v14 = *(u32*)((u8*)arg1 + 0x38);
-        u32 v13 = *(u32*)((u8*)arg1 + 0x34);
-        u32 v12 = *(u32*)((u8*)arg1 + 0x30);
-        u32 size = *(u32*)((u8*)arg1 + 0x2C);
-        u32 v10 = *(u32*)((u8*)arg1 + 0x28);
-        u32 v9 = *(u32*)((u8*)arg1 + 0x24);
-        u32 v8 = *(u32*)((u8*)arg1 + 0x20);
-        u32 v7 = *(u32*)((u8*)arg1 + 0x1C);
-        u32 v6 = *(u32*)((u8*)arg1 + 0x18);
-        u32 v5 = *(u32*)((u8*)arg1 + 0x14);
-        u32 v4 = *(u32*)((u8*)arg1 + 0x10);
-        u32 v3 = *(u32*)((u8*)arg1 + 0x0C);
-        u32 v2 = *(u32*)((u8*)arg1 + 0x08);
-        u32 v1 = *(u32*)((u8*)arg1 + 0x04);
         u32 v0 = *(u32*)((u8*)arg1 + 0x00);
+        u32 v1 = *(u32*)((u8*)arg1 + 0x04);
+        u32 v2 = *(u32*)((u8*)arg1 + 0x08);
+        u32 v3 = *(u32*)((u8*)arg1 + 0x0C);
+        u32 v4 = *(u32*)((u8*)arg1 + 0x10);
+        u32 v5 = *(u32*)((u8*)arg1 + 0x14);
+        u32 v6 = *(u32*)((u8*)arg1 + 0x18);
+        u32 v7 = *(u32*)((u8*)arg1 + 0x1C);
+        u32 v8 = *(u32*)((u8*)arg1 + 0x20);
+        u32 v9 = *(u32*)((u8*)arg1 + 0x24);
+        u32 v10 = *(u32*)((u8*)arg1 + 0x28);
+        u32 size = *(u32*)((u8*)arg1 + 0x2C);
+        u32 v12 = *(u32*)((u8*)arg1 + 0x30);
+        u32 v13 = *(u32*)((u8*)arg1 + 0x34);
+        u32 v14 = *(u32*)((u8*)arg1 + 0x38);
         *(u32*)((u8*)arg0 + 0x54) = v0;
         *(u32*)((u8*)arg0 + 0x58) = v1;
         *(u32*)((u8*)arg0 + 0x5C) = v2;
@@ -2041,9 +2235,8 @@ s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
         *(u32*)((u8*)arg0 + 0xB0) = 1;
         *(u32*)((u8*)arg0 + 0xB4) = size;
     } else {
-        s32 entrynum = DVDConvertPathToEntrynum(arg1);
-        if (entrynum == -1) return 0;
-        if (DVDFastOpen(entrynum, (DVDFileInfo*)((u8*)arg0 + 0x54)) == 0) return 0;
+        if (DVDConvertPathToEntrynum(arg1) == -1) return 0;
+        if (DVDFastOpen((u8*)arg0 + 0x54) == 0) return 0;
     }
     ((void**)arg0)[0] = fn_8011A388;
     ((void**)arg0)[1] = fn_8011A8FC;
