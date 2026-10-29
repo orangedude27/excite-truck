@@ -440,52 +440,41 @@ extern "C" s32 fn_80157278(s32);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void* fn_8015783C(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
-    struct Tail {
-        u8 pad[0x244];
-        s32 field244;
-        s32 field248;
-        f32 field24C;
-        f32 field250;
-        f32 field254;
-        s32 field258;
-        s32 field25C;
-        s32 field260;
-        s32 field264;
-        s32 field268;
+    Fn80157CF0Obj* obj = (Fn80157CF0Obj*)arg0;
+    struct Derived : Fn80157CF0Obj {
         s32 field26C;
         s32 field270;
         s32 field274;
         void* field278;
     };
+    Derived* d = (Derived*)arg0;
     extern f32 lbl_80561758;
     u8* ptr = (u8*)arg0 + 0x14;
-    *(void**)((u8*)arg0 + 8) = ptr;
-    *(void**)arg0 = &lbl_8032F2BC;
-    *(s32*)((u8*)arg0 + 0x10) = 10;
-    *(s32*)((u8*)arg0 + 0xC) = 0;
+    obj->entries = ptr;
+    obj->vtable = &lbl_8032F2BC;
+    obj->count = 10;
+    obj->unkC = 0;
     do {
         memset(ptr, 0, 4);
         ptr += 0x38;
     } while (ptr < (u8*)arg0 + 0x244);
 
     f32 val = lbl_80561758;
-    char* vtable = lbl_8032EB58;
-    s32 zero = 0;
-    *(s32*)((u8*)arg0 + 4) = arg2;
-    *(s32*)((u8*)arg0 + 0xC) = zero;
-    ((Tail*)arg0)->field244 = arg1;
-    ((Tail*)arg0)->field258 = zero;
-    ((Tail*)arg0)->field250 = val;
-    ((Tail*)arg0)->field268 = zero;
-    ((Tail*)arg0)->field248 = zero;
-    *(void**)arg0 = vtable;
-    ((Tail*)arg0)->field274 = arg2;
+    obj->unk4 = arg2;
+    obj->unkC = 0;
+    obj->unk244 = arg1;
+    obj->unk258 = 0;
+    obj->value250 = val;
+    obj->unk268 = 0;
+    obj->unk248 = 0;
+    obj->vtable = &lbl_8032EB58;
+    d->field274 = arg2;
 
     bool ok = !fn_80157278(arg2);
     if (ok) {
-        ((Tail*)arg0)->field278 = fn_802076A0(lbl_8032EAF0, 1, arg2, 2);
+        d->field278 = fn_802076A0(lbl_8032EAF0, 1, arg2, 2);
     } else {
-        ((Tail*)arg0)->field278 = (void*)zero;
+        d->field278 = 0;
     }
     return arg0;
 }
@@ -2615,31 +2604,39 @@ virtual s32 v29();
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma processor 750
 extern "C" void fn_8015DC98(Unk801577F0* arg0) {
-    void (*vt)(void*) = (void (*)(void*))(*(void***)arg0)[0x19];
-    vt(arg0);
-    fn_802E30C8((const char*)lbl_8055A064);
-    fn_802E30C8((const char*)lbl_8032E4E0 + 0xEC8);
-    fn_802E30C8((const char*)lbl_8032E4E0 + 0xEFC);
-    f32 sumF = lbl_80561754;
-    s32 sum0 = 0;
-    s32 sum4 = 0;
-    s32 count = 0;
-    s32 off = 0;
-    while (count < arg0->mCount) {
-        s32* items = (s32*)arg0->mData;
-        s32* item = items + off / 4;
-        s32 a = item[0];
-        fn_802E30C8((const char*)lbl_8032E4E0 + 0xF30, count, item + 6, a, a - item[1], item[2], *(f32*)(item + 3));
-        off += 0x38;
-        count += 1;
-        sumF += *(f32*)(item + 3);
-        sum0 += item[0];
-        sum4 += item[1];
-    }
-    fn_802E30C8((const char*)lbl_8032E4E0 + 0xF60, sum0, sum4 - sum0, sumF);
-}
+    struct Dispatch { virtual const char *v0(); virtual const char *v1(); virtual const char *v2(); virtual const char *v3(); virtual const char *v4(); virtual const char *v5(); virtual const char *v6(); virtual const char *v7(); virtual const char *v8(); virtual const char *v9(); virtual const char *v10(); virtual const char *v11(); virtual const char *v12(); virtual const char *v13(); virtual const char *v14(); virtual const char *v15(); virtual const char *v16(); virtual const char *v17(); virtual const char *v18(); virtual const char *v19(); virtual const char *v20(); virtual const char *v21(); virtual const char *v22(); virtual const char *v23(); };
+    struct Item { s32 a; s32 b; s32 c; f32 value; u8 pad[0x28]; };
+    const char *base = lbl_8032E4E0;
 
+    fn_802E30C8((const char *)&lbl_8055A064, ((Dispatch *)arg0)->v23());
+    fn_802E30C8(base + 0xEC8);
+    fn_802E30C8(base + 0xEFC);
+
+    f32 total = lbl_80561754;
+    s32 count;
+    s32 sumB;
+    s32 sumA;
+    Item *item;
+    s32 offset;
+    sumA = 0;
+    sumB = 0;
+    count = 0;
+    offset = 0;
+    while (count < arg0->mCount) {
+        item = (Item *)((u8 *)arg0->mData + offset);
+        fn_802E30C8(base + 0xF30, count, ((s32 *)item) + 6, item->a,
+                    item->a - item->b, item->c, item->value);
+        offset += 0x38;
+        count += 1;
+        total += item->value;
+        sumA += item->a;
+        sumB += item->b;
+    }
+    fn_802E30C8(base + 0xF60, sumA, sumA - sumB, total);
+}
+#pragma pop
 extern "C" s32 lbl_8055A06C[];
 #pragma push
 #pragma use_lmw_stmw off
@@ -2878,7 +2875,7 @@ extern "C" void fn_8015E5F4(Unk801577F0V* arg0, s32 arg1) {
 }
 extern "C" void fn_8015E674(void *arg0, int arg1) {
  struct A { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void call(int); };
- int i=0, offset=0; void **array; void *obj,*state;
+ int offset=0, i=0; void **array; void *obj,*state;
  goto check;
 loop:
  array=*(void ***)((char *)arg0+4);
@@ -2886,8 +2883,8 @@ loop:
  offset+=4; i++;
 check:
  if(i<*(int *)((char *)arg0+8)) goto loop;
- state=*(void **)((char *)arg0+0x50); obj=*(void **)state;
- if(!obj) goto done;
+ state=*(void **)((char *)arg0+0x50);
+ if((obj=*(void **)state)==0) return;
  if(*(int *)((char *)state+8)==0) {
   *(char *)((char *)obj+0x4a)=0; *(char *)((char *)obj+0x4b)=1; *(char *)((char *)obj+0x49)=1;
  } else {
@@ -2899,7 +2896,6 @@ check:
  }
  *(int *)((char *)state+0xc)=*(int *)((char *)state+8);
  *(int *)((char *)state+8)=1;
-done:;
 }
 
 #pragma use_lmw_stmw off
