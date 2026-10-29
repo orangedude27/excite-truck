@@ -3570,7 +3570,7 @@ extern "C" s32 VFiPFFAT_TraceClustersChain(void *arg0, s32 arg1, s32 *arg2) {
         result = ((s32 (*)(void *, u16))fn_800AF5A0)(arg0, (u16)arg1);
         break;
     case 1:
-        result = fn_800AFE14();
+        result = ((s32 (*)(void *, s32, s32 *))fn_800AFE14)(arg0, arg1, arg2);
         break;
     case 2:
         result = fn_800B0258();
@@ -13882,14 +13882,14 @@ extern "C" char *fn_800D3944(char *str, s32 count, u32 delim) {
 }
 
 extern "C" u32 fn_800D3A30(const char *arg0) {
-    const char *base = lbl_8031EC50;
+    register char *base = (char *)lbl_8031EC50;
     u32 value = 0;
     const char *p = arg0;
     u8 c;
     u32 digit;
 
-    if (p == 0) Panic__Q26nw4hbm2dbFPCciPCce(&((const Fn800D3A30ZeroOffset *)base)->value, 0x1E6, base + 0x164);
-    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&((const Fn800D3A30ZeroOffset *)base)->value, 0x1E7, base + 0x134);
+    if (p == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E6, base + 0x164);
+    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E7, base + 0x134);
     for (;;) {
         c = lbl_8055DDD8(p);
         if (c >= '0' && c <= '9') digit = c - '0';
