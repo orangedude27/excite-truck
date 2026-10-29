@@ -3241,38 +3241,26 @@ void fn_80074A4C(s32 arg0) {
 
 void bta_hh_api_disable(void) {
     UINT8 xx;
-    int status;
+    UINT8 status;
+    void (*callback)(int, void *);
 
-    /* service is not enabled */
-    if (bta_hh_cb.p_cback == NULL)
+    if (*(void **)(lbl_803C0D48 + 0x224) == NULL)
         return;
-
-    /* no live connection, signal DISC_CMPL_EVT directly */
-    if (!bta_hh_cb.cnt_num) {
-        status = BTA_HH_OK;
-
-        /* Deregister with lower layer */
+    if (lbl_803C0D48[0x22D] == 0) {
+        status = 0;
         if (HID_HostDeregister() != HID_SUCCESS)
-            status = BTA_HH_ERR;
-
-        /* free buffer in CB holding report descriptors */
-        for (xx = 0; xx < BTA_HH_MAX_KNOWN; xx++) {
-            utl_freebuf((void **)&bta_hh_cb.kdev[xx].dscp_info.descriptor.dsc_list);
-        }
-        utl_freebuf((void **)&bta_hh_cb.p_disc_db);
-
-        (*bta_hh_cb.p_cback)(BTA_HH_DISABLE_EVT, (void *)&status);
-        /* all connections are down, no waiting for diconnect */
-        memset(&bta_hh_cb, 0, 0x230);
-    } else /* otherwise, disconnect all live connections */ {
-        bta_hh_cb.w4_disable = 1;
-
-        for (xx = 0; xx < BTA_HH_MAX_KNOWN; xx++) {
-            /* send API_CLOSE event to every connected device */
-            if (bta_hh_cb.kdev[xx].state == 3) {
-                /* disconnect all connected devices */
-                bta_hh_sm_execute(&bta_hh_cb.kdev[xx], BTA_HH_API_CLOSE_EVT, NULL);
-            }
+            status = 6;
+        for (xx = 0; xx < 0x10; xx++)
+            fn_800716F0(lbl_803C0D48 + xx * 0x20 + 0x14);
+        fn_800716F0(lbl_803C0D48 + 0x228);
+        callback = *(void (**)(int, void *))(lbl_803C0D48 + 0x224);
+        (*callback)(1, &status);
+        memset(lbl_803C0D48, 0, 0x230);
+    } else {
+        lbl_803C0D48[0x22E] = 1;
+        for (xx = 0; xx < 0x10; xx++) {
+            if (lbl_803C0D48[xx * 0x20 + 0x2C] == 3)
+                bta_hh_sm_execute((tBTA_HH_DEV_CB *)(lbl_803C0D48 + xx * 0x20 + 0x10), 0x1701, NULL);
         }
     }
 }
@@ -5700,11 +5688,12 @@ static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_fil
 }
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
-    void (*callback)(void *);
     u8 result;
+    void *zero;
+    void (*callback)(void *);
     u8 *base;
     void *buffer;
-    u32 zero;
+    u8 *cleanup_base;
 
     base = lbl_803C0F78;
     callback = *(void (**)(void *))(base + 0x16B0);
@@ -5715,21 +5704,22 @@ void btm_process_inq_complete(UINT8 status, UINT8 unused) {
             result = 0;
         base[0x183E] = result;
         if ((base[0x1848] & 4) == 0) {
-            u8 *cleanup_base = lbl_803C0F78;
-            zero = 0;
+            cleanup_base = lbl_803C0F78;
+            zero = NULL;
             buffer = *(void **)(cleanup_base + 0x16DC);
-            *(u32 *)(base + 0x16B4) = zero;
-            base[0x1848] = zero;
-            base[0x1847] = zero;
+            *(u32 *)(base + 0x16B4) = (u32)zero;
+            base[0x1848] = (u8)zero;
+            base[0x1847] = (u8)zero;
             *(void (**)(void *))(base + 0x16B0) = NULL;
             if (buffer != NULL) {
                 GKI_freebuf(buffer);
-                *(void **)(cleanup_base + 0x16DC) = NULL;
+                *(void **)(cleanup_base + 0x16DC) = zero;
             }
-            *(u16 *)(cleanup_base + 0x16E0) = zero;
-            *(u16 *)(cleanup_base + 0x16E2) = zero;
-            if (cleanup_base[0x27C0] >= 5)
-                fn_8007096C(0xD0004, lbl_803164F4, base[0x183E], base[0x183F]);
+            *(u16 *)(cleanup_base + 0x16E0) = (u16)zero;
+            *(u16 *)(cleanup_base + 0x16E2) = (u16)zero;
+            if (lbl_803C0F78[0x27C0] >= 5)
+                fn_8007096C(0xD0004, lbl_803164F4,
+                            base[0x183E], base[0x183F]);
             if (callback != NULL)
                 callback(base + 0x183E);
         }
@@ -13442,31 +13432,33 @@ void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
 }
 
 void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
+    const char *trace_msg = lbl_803196B8;
+    u16 lcid = arg0;
     s32 index = (s32)arg0 - 0x40;
     void *port;
-    s16 status;
+    u16 port_lcid;
+    s16 status = arg1;
 
-    status = arg1;
     if (index >= 10) {
-        if (lbl_803C4828[0x414] >= 1) {
-            fn_80070954(0x90000, lbl_803196B8, arg0);
-        }
+        if (lbl_803C4828[0x414] >= 1)
+            fn_80070954(0x90000, (char *)trace_msg, lcid);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
-        if (port != NULL && *(u16 *)((u8 *)port + 0x68) != arg0) {
-            if (lbl_803C4828[0x414] >= 2) {
-                fn_8007096C(0x90001, lbl_803196B8 + 0x1C, arg0, 0);
+        if (port != NULL) {
+            port_lcid = *(u16 *)((u8 *)port + 0x68);
+            if (port_lcid != lcid) {
+                if (lbl_803C4828[0x414] >= 2)
+                    fn_8007096C(0x90001, (void *)(trace_msg + 0x1C), lcid, port_lcid);
+                port = NULL;
             }
-            port = NULL;
         }
     }
     if (port == NULL) {
-        if (lbl_803C4828[0x414] >= 1) {
-            fn_80070954(0x90000, lbl_803196B8 + 0x54, arg0);
-        }
+        if (lbl_803C4828[0x414] >= 1)
+            fn_80070954(0x90000, (void *)(trace_msg + 0x54), lcid);
     } else {
-        *(u16 *)((u8 *)port + 0x68) = arg0;
+        *(u16 *)((u8 *)port + 0x68) = lcid;
         fn_800916F4(port, 9, &status);
     }
 }
@@ -13490,21 +13482,35 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
 }
 
 void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
-    s32 index = arg0 - 0x40;
+    s32 index = (s32)arg0 - 0x40;
+    char *trace_msg = lbl_803196B8;
     void *port;
+    register u16 port_lcid;
+
     if (index >= 10) {
-        if (lbl_803C4828[0x414] >= 1) fn_80070954(0x90000, lbl_803196B8, arg0);
+        if (lbl_803C4828[0x414] >= 1)
+            ((void (*)(u32, void *, u32))fn_80070954)(
+                0x90000, trace_msg, arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
-        if (port != NULL && *(u16 *)((u8 *)port + 0x68) != arg0) {
-            if (lbl_803C4828[0x414] >= 2) ((void (*)(u32, void *, u32))fn_8007096C)(0x90001, lbl_803196B8 + 0x1C, arg0);
-            port = NULL;
+        if (port != NULL) {
+            port_lcid = *(u16 *)((u8 *)port + 0x68);
+            if (port_lcid != arg0) {
+                if (lbl_803C4828[0x414] >= 2)
+                    ((void (*)(u32, void *, u32))fn_8007096C)(
+                        0x90001, trace_msg + 0x1C, arg0);
+                port = NULL;
+            }
         }
     }
     if (port == NULL) {
-        if (lbl_803C4828[0x414] >= 1) fn_80070954(0x90000, lbl_803196B8 + 0x8C, arg0);
-    } else ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xB, arg1);
+        if (lbl_803C4828[0x414] >= 1)
+            ((void (*)(u32, void *, u32))fn_80070954)(
+                0x90000, trace_msg + 0x8C, arg0);
+    } else {
+        ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xB, arg1);
+    }
 }
 
 void fn_800911DC(void) {
