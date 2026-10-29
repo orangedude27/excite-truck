@@ -14,6 +14,7 @@ public:
 };
 }}
 extern "C" f32 lbl_80560EA8;
+#pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 extern "C" char lbl_8032012C[];
 extern "C" void GXGetTexObjWidth(void*, int, ...);
 extern "C" char *strncpy(char *, const char *, unsigned int);
