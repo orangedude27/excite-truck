@@ -2760,8 +2760,8 @@ int GXGetTexObjAll(void *obj) {
     return (*(unsigned char *)((char *)obj + 0x1F)) & 1;
 }
 
-extern unsigned char lbl_80558E48[], lbl_80558E50[], lbl_80558E58[];
-extern unsigned char lbl_80558E60[], lbl_80558E68[], lbl_80558E70[], lbl_80558E78[];
+extern unsigned char lbl_80558E48, lbl_80558E50, lbl_80558E58;
+extern unsigned char lbl_80558E60, lbl_80558E68, lbl_80558E70, lbl_80558E78;
 void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
     unsigned int v0, v1, v2, v3, v4, v5;
     unsigned int *a = (unsigned int *)obj;
@@ -2770,12 +2770,12 @@ void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
     unsigned int *dst;
     unsigned char opcode = 0x61;
 
-    v0 = (a[0] & 0x00FFFFFF) | ((unsigned int)lbl_80558E48[map] << 24);
-    v1 = (a[1] & 0x00FFFFFF) | ((unsigned int)lbl_80558E50[map] << 24);
-    v2 = (a[2] & 0x00FFFFFF) | ((unsigned int)lbl_80558E58[map] << 24);
-    v3 = (b[0] & 0x00FFFFFF) | ((unsigned int)lbl_80558E60[map] << 24);
-    v4 = (b[1] & 0x00FFFFFF) | ((unsigned int)lbl_80558E68[map] << 24);
-    v5 = (a[3] & 0x00FFFFFF) | ((unsigned int)lbl_80558E70[map] << 24);
+    v0 = (a[0] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E48)[map] << 24);
+    v1 = (a[1] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E50)[map] << 24);
+    v2 = (a[2] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E58)[map] << 24);
+    v3 = (b[0] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E60)[map] << 24);
+    v4 = (b[1] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E68)[map] << 24);
+    v5 = (a[3] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E70)[map] << 24);
     *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v0;
     *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v1;
     *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v2;
@@ -2786,7 +2786,7 @@ void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
     if ((*(unsigned char *)((char *)obj + 0x1F) & 2) == 0) {
         data = __GXData;
         dst = ((unsigned int *(*)(unsigned int))data[0x51C / 4])(*(unsigned int *)((char *)obj + 0x18));
-        dst[1] = (dst[1] & 0x00FFFFFF) | ((unsigned int)lbl_80558E78[map] << 24);
+        dst[1] = (dst[1] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E78)[map] << 24);
         *(volatile unsigned char *)0xCC008000 = opcode;
         *(volatile unsigned int *)0xCC008000 = dst[1];
     }
