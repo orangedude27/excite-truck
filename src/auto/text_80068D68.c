@@ -8318,15 +8318,18 @@ u8 btm_sec_start_authorization(u8 *p) {
     u8 *peer;
     u8 *remote = 0;
     u8 status;
-    u8 flag = 0;
+    u8 flag;
     u8 result;
-    if ((p[0x76] & 8) == 0 && *(u16 *)(p + 0x18) == 0xFFFF) {
+
+    if ((p[0x76] & 8) != 0 || *(u16 *)(p + 0x18) == 0xFFFF) {
         if (*(u32 *)(lbl_803C0F78 + 0x190C) == 0)
             return 4;
         peer = *(u8 **)p;
         if (peer != 0) {
             remote = p[0x80] ? peer + 0x10 : peer + 0x26;
             flag = peer[0xF];
+        } else {
+            flag = 0;
         }
         p[0x7F] = 4;
         result = (*(u8 (**)(void *, void *, void *, void *, u8, u8))(lbl_803C0F78 + 0x190C))(p + 0x1C, p + 0x22, p + 0x35, remote, flag, p[0x80]);
