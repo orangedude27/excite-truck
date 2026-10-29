@@ -928,17 +928,18 @@ extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
+namespace nw4hbm { namespace snd { class SoundArchive { public: class SoundInfo; }; namespace detail { class SoundArchiveFileReader { public: s32 GetSoundType(u32) const; BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; }; } } }
+extern "C" const char lbl_80324DE4[];
+extern "C" const char lbl_80324E10[];
+extern "C" char lbl_805598C8;
+extern "C" char lbl_805598D0;
 #pragma push
 #pragma scheduling on
-extern "C" s32 GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(void *arg0, u32 arg1) {
-    register u8 *ref = *(u8 **)((u8 *)arg0 + 0x28);
+s32 nw4hbm::snd::detail::SoundArchiveFileReader::GetSoundType(u32 arg1) const {
+    register u8 *ref = *(u8 **)((u8 *)this + 0x28);
     u8 type;
     u8 *info;
     u32 offset;
-    extern const char lbl_80324DE4[];
-    extern const char lbl_80324E10[];
-    extern char lbl_805598C8;
-    extern char lbl_805598D0;
     if (ref[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
     info = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(u32 *)(ref + 4), ref);
@@ -946,9 +947,9 @@ extern "C" s32 GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(vo
         return 0;
     if (arg1 >= *(u32 *)info)
         return 0;
-    if (*(u16 *)((u8 *)arg0 + 6) >= 0x101) {
+    if (*(u16 *)((u8 *)this + 6) >= 0x101) {
         offset = arg1 * 8;
-        ref = *(u8 **)((u8 *)arg0 + 0x28);
+        ref = *(u8 **)((u8 *)this + 0x28);
         if (info[offset + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
         type = info[offset + 5];
@@ -968,12 +969,6 @@ extern "C" s32 GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(vo
     }
 }
 #pragma pop
-
-namespace nw4hbm { namespace snd { class SoundArchive { public: class SoundInfo; }; namespace detail { class SoundArchiveFileReader { public: BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; }; } } }
-extern "C" const char lbl_80324DE4[];
-extern "C" const char lbl_80324E10[];
-extern "C" char lbl_805598C8;
-extern "C" char lbl_805598D0;
 #pragma push
 #pragma use_lmw_stmw off
 BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hbm::snd::SoundArchive::SoundInfo *info) const {
@@ -2780,6 +2775,44 @@ extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
     }
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)self + 0xC, (u8 *)pSound + 0xC8);
+}
+
+extern "C" void SetPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 count) {
+    struct SoundNode {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void Remove();
+    };
+    u8 *p = (u8 *)self;
+    u8 flag = p[0x2D];
+    if (count < 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x20F, (const char *)(lbl_80325C50 + 0x84));
+    *(u16 *)(p + 0x24) = (u16)count;
+    if (flag != 0) {
+        if ((u16)count > *(u16 *)(p + 0x26))
+            Warning__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x217, (const char *)(lbl_80325C50 + 0xA8));
+        if (*(u16 *)(p + 0x24) > *(u16 *)(p + 0x26))
+            *(u16 *)(p + 0x24) = *(u16 *)(p + 0x26);
+    }
+    while (*(s32 *)p > *(u16 *)(p + 0x24)) {
+        if (*(void **)(p + 0x0C) == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
+        void *node = *(void **)(p + 0x10);
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
+        node = (u8 *)node - 0xC8;
+        if (node == 0)
+            ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80326378, 0x193, lbl_80326354);
+        if (node == 0)
+            ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_80325C50, 0x220, (const char *)(lbl_80325C50 + 0xCC));
+        ((SoundNode *)node)->Remove();
+    }
 }
 
 extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
