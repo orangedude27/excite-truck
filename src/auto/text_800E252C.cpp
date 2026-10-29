@@ -2562,7 +2562,6 @@ extern "C" void ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3
 extern "C" const char lbl_803224F0[], lbl_803226B0[], lbl_803226DC[];
 extern "C" char lbl_80559818;
 #pragma push
-#pragma scheduling invalid_target
 extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(void *self, void *wave, int index, const void *src) {
     unsigned int count;
     void *bank;
@@ -2633,53 +2632,60 @@ extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
 extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     extern float lbl_80560FB4;
     float base = lbl_80560FB0;
-    float target = lbl_80560FB4;
+    float initialTarget = lbl_80560FB4;
     int zero = 0;
-    *((unsigned char *)self + 0x67) = 0;
-    *((unsigned char *)self + 0x68) = 0;
-    *((unsigned char *)self + 0x64) = 0;
-    *((unsigned char *)self + 0x65) = 0;
-    *((unsigned char *)self + 0x66) = 0;
-    *((unsigned char *)self + 0x69) = 0;
+    *((unsigned char *)self + 0x67) = zero;
+    *((unsigned char *)self + 0x68) = zero;
+    *((unsigned char *)self + 0x64) = zero;
+    *((unsigned char *)self + 0x65) = zero;
+    *((unsigned char *)self + 0x66) = zero;
+    *((unsigned char *)self + 0x69) = zero;
     *(int *)((char *)self + 0x6c) = zero;
     *(int *)((char *)self + 0x70) = zero;
     *(float *)((char *)self + 0x44) = base;
     *(float *)((char *)self + 0x48) = base;
     *(int *)((char *)self + 0x4c) = zero;
     *(int *)((char *)self + 0x50) = zero;
-    *(float *)((char *)self + 0x54) = target;
-    *(float *)((char *)self + 0x58) = target;
+    *(float *)((char *)self + 0x54) = initialTarget;
+    *(float *)((char *)self + 0x58) = initialTarget;
     *(int *)((char *)self + 0x5c) = zero;
     *(int *)((char *)self + 0x60) = zero;
     int current = *(int *)((char *)self + 0x50);
     int total = *(int *)((char *)self + 0x4c);
     if (current < total)
-        base += (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total;
+        goto interpolate;
+    goto after_interpolate;
+interpolate:
+    base += (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total;
+after_interpolate:
+    float finalTarget = lbl_80560FB4;
+    float baseAgain = lbl_80560FB0;
+    int one = 1;
     *(float *)((char *)self + 0x44) = base;
-    *(float *)((char *)self + 0x48) = target;
-    *(int *)((char *)self + 0x4c) = 1;
+    *(float *)((char *)self + 0x48) = finalTarget;
+    *(int *)((char *)self + 0x4c) = one;
     *(int *)((char *)self + 0x50) = zero;
-    *(float *)((char *)self + 0x8c) = target;
-    *(float *)((char *)self + 0x98) = target;
-    *(float *)((char *)self + 0x90) = lbl_80560FB0;
-    *(float *)((char *)self + 0x94) = lbl_80560FB0;
-    *(float *)((char *)self + 0x7c) = target;
-    *(float *)((char *)self + 0x80) = target;
+    *(float *)((char *)self + 0x8c) = finalTarget;
+    *(float *)((char *)self + 0x98) = finalTarget;
+    *(float *)((char *)self + 0x90) = baseAgain;
+    *(float *)((char *)self + 0x94) = baseAgain;
+    *(float *)((char *)self + 0x7c) = finalTarget;
+    *(float *)((char *)self + 0x80) = finalTarget;
     *(int *)((char *)self + 0x84) = zero;
     *(int *)((char *)self + 0x88) = zero;
-    *(int *)((char *)self + 0xa0) = 1;
-    *((unsigned char *)self + 0x9c) = 0;
-    *(float *)((char *)self + 0xa4) = target;
-    *(float *)((char *)self + 0xa8) = target;
-    *(float *)((char *)self + 0xac) = target;
-    *(float *)((char *)self + 0xb0) = target;
-    *(float *)((char *)self + 0xb4) = target;
-    *(float *)((char *)self + 0x28) = target;
-    *(float *)((char *)self + 0x2c) = target;
-    *(float *)((char *)self + 0x30) = lbl_80560FB0;
-    *(float *)((char *)self + 0x34) = lbl_80560FB0;
-    *(float *)((char *)self + 0x38) = lbl_80560FB0;
-    *(float *)((char *)self + 0x3c) = lbl_80560FB0;
+    *(int *)((char *)self + 0xa0) = one;
+    *((unsigned char *)self + 0x9c) = zero;
+    *(float *)((char *)self + 0xa4) = finalTarget;
+    *(float *)((char *)self + 0xa8) = finalTarget;
+    *(float *)((char *)self + 0xac) = finalTarget;
+    *(float *)((char *)self + 0xb0) = finalTarget;
+    *(float *)((char *)self + 0xb4) = finalTarget;
+    *(float *)((char *)self + 0x28) = finalTarget;
+    *(float *)((char *)self + 0x2c) = finalTarget;
+    *(float *)((char *)self + 0x30) = baseAgain;
+    *(float *)((char *)self + 0x34) = baseAgain;
+    *(float *)((char *)self + 0x38) = baseAgain;
+    *(float *)((char *)self + 0x3c) = baseAgain;
     *(int *)((char *)self + 0x40) = zero;
 }
 
