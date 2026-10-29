@@ -2060,36 +2060,53 @@ UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_p
 extern void fn_8006EBF0();
 extern void fn_8006EC20();
 extern char lbl_80314240[];
-void GKI_delete_pool(u8 pool_id) {
-    u8 *global = (u8 *)lbl_803946C0;
-    u8 *pools = global + 0x30000;
-    u8 *pool;
-    s32 index;
-    if (pool_id >= 9) return;
-    if (*(u32 *)(pools + pool_id * 4 - 0x75E4) == 0) return;
-    fn_8006EBAC();
-    pool = pools + pool_id * 0x10 - 0x7668;
-    if (*(u16 *)pool != 0) {
-        ((void (*)(s32, const char *))fn_8006EBF0)(-8, lbl_80314240);
-        fn_8006EB88();
-        return;
+void GKI_delete_pool(UINT8 pool_id) {
+    FREE_QUEUE_T *Q;
+    tGKI_COM_CB *p_cb = &gki_cb.com;
+    UINT8 i;
+
+    if (pool_id >= GKI_NUM_TOTAL_BUF_POOLS) {
+        goto bad_pool;
     }
-    *(u16 *)(pool - 4) = 0;
-    *(u16 *)(pool - 2) = 0;
-    *(u16 *)pool = 0;
-    *(u16 *)(pool + 2) = 0;
-    *(u32 *)(pool - 12) = 0;
-    *(u32 *)(pool - 8) = 0;
-    ((void (*)(s32))fn_8006EC20)(*(s32 *)(pools + pool_id * 4 - 0x75E4));
-    *(u32 *)(pools + pool_id * 4 - 0x75E4) = 0;
-    *(u32 *)(pools + pool_id * 4 - 0x75C0) = 0;
-    *(u16 *)(pools + pool_id * 2 - 0x759C) = 0;
-    index = 0;
-    while (index < global[0x28A87] && global[0x28A7E + index] != pool_id) index++;
-    for (; index < global[0x28A87] - 1; index++)
-        global[0x28A7E + index] = global[0x28A7F + index];
-    global[0x28A87]--;
-    fn_8006EB88();
+    if (!p_cb->pool_start[pool_id]) {
+        goto bad_pool;
+    }
+
+    GKI_disable();
+    Q = &p_cb->freeq[pool_id];
+    if (!Q->cur_cnt) {
+        Q->size = 0;
+        Q->total = 0;
+        Q->cur_cnt = 0;
+        Q->max_cnt = 0;
+        Q->p_first = NULL;
+        Q->p_last = NULL;
+
+        GKI_os_free(p_cb->pool_start[pool_id]);
+        p_cb->pool_start[pool_id] = NULL;
+        p_cb->pool_end[pool_id] = NULL;
+        p_cb->pool_size[pool_id] = 0;
+
+        for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
+            if (pool_id == p_cb->pool_list[i]) {
+                break;
+            }
+        }
+        while (i < (p_cb->curr_total_no_of_pools - 1)) {
+            p_cb->pool_list[i] = p_cb->pool_list[i + 1];
+            i++;
+        }
+        p_cb->curr_total_no_of_pools--;
+    } else {
+        goto bad_pool;
+    }
+
+    GKI_enable();
+    return;
+
+bad_pool:
+    GKI_exception(GKI_ERROR_DELETE_POOL_BAD_QID, "Deleting bad pool");
+    GKI_enable();
 }
 
 void gki_timers_init(void) {
@@ -4373,47 +4390,55 @@ void bta_hh_maint_dev_act(void *arg0, void *arg1) {
     extern unsigned char lbl_803C0D48[];
     extern char lbl_80315530[];
     extern u8 lbl_8055DC80;
-    extern void bta_hh_add_device_to_list(void *, s8, s16, void *, s32, s32);
     extern u8 HID_HostRemoveDev(u32);
-    u8 sp17 = 0xFF;
-    s8 sp16 = 6;
-    u32 sp10;
+    struct {
+        u32 data;
+        u16 pad;
+        u8 status;
+        u8 dev;
+    } cb;
     u8 sp8;
-    u16 event = *(u16 *)((u8 *)arg1 + 0x10);
-    u8 result;
-    void (*callback)(u16, void *, void *);
-    if (event == 12) goto remove;
-    if (event < 12) {
-        if (event == 11) goto add;
+    s32 event;
+    cb.status = 6;
+    cb.dev = 0xFF;
+    event = *(u16 *)((u8 *)arg1 + 0x10);
+    switch (event) {
+    case 12:
+        goto remove;
+    case 11:
+        goto add;
+    default:
         goto default_case;
     }
-    goto default_case;
 add:
-    fn_80070FA4(&sp10, (u8 *)arg1 + 8);
-    result = *(u8 *)((u8 *)arg0 + 0x16);
-    if (result == 0xFF) {
+    fn_80070FA4(&cb, &((u32 *)arg1)[2]);
+    if (*(u8 *)((u8 *)arg0 + 0x16) == 0xFF) {
         if (HID_HostAddDev((u8 *)arg1 + 8, *(u16 *)((u8 *)arg1 + 0xE), &sp8) == 0) {
-            sp16 = 0;
-            sp17 = sp8;
-            bta_hh_add_device_to_list(arg0, (s8)sp8, *(s16 *)((u8 *)arg1 + 0xE), 0, *(u8 *)((u8 *)arg1 + 0x12), *(u8 *)((u8 *)arg1 + 0x13));
-            lbl_803C0D48[sp8 + 0x214] = *(u8 *)((u8 *)arg0 + 0x12);
+            cb.status = 0;
+            cb.dev = sp8;
+            ((void (*)(void *, u8, u16, u32, u8, u8))bta_hh_add_device_to_list)(arg0, sp8, *(u16 *)((u8 *)arg1 + 0xE), 0, *(u8 *)((u8 *)arg1 + 0x12), *(u8 *)((u8 *)arg1 + 0x13));
+            *((u8 *)(lbl_803C0D48 + sp8) + 0x214) = *(u8 *)((u8 *)arg0 + 0x12);
         }
-    } else { sp17 = result; sp16 = 0; }
+    } else {
+        cb.dev = *(u8 *)((u8 *)arg0 + 0x16);
+        cb.status = 0;
+    }
+    goto trace;
+trace:
     bta_hh_trace_dev_db();
     goto finish;
 remove:
-    sp17 = *(u8 *)((u8 *)arg1 + 6);
-    fn_80070FA4(&sp10, (u8 *)arg0 + 8);
-    if (*(u8 *)((u8 *)arg0 + 0x1C) != 3 && HID_HostRemoveDev(sp17) == 0) {
-        sp16 = 0;
+    cb.dev = (u8)*(u16 *)((u8 *)arg1 + 6);
+    fn_80070FA4(&cb, (u8 *)arg0 + 8);
+    if (*(u8 *)((u8 *)arg0 + 0x1C) != 3 && HID_HostRemoveDev(cb.dev) == 0) {
+        cb.status = 0;
         bta_hh_clean_up_kdev(arg0);
     }
     goto finish;
 default_case:
     if (lbl_8055DC80 >= 5) fn_8007093C(0x504, lbl_80315530);
 finish:
-    callback = *(void (**)(u16, void *, void *))(lbl_803C0D48 + 0x224);
-    callback(event, &sp10, lbl_803C0D48);
+    (*(void (**)(u16, void *, void *))(lbl_803C0D48 + 0x224))(*(u16 *)((u8 *)arg1 + 0x10), &cb, lbl_803C0D48);
 }
 
 void bta_hh_get_acl_q_info(void) {
