@@ -2020,7 +2020,7 @@ extern s32 IUSB_OpenDeviceIds(const char *, u16, u16, s32 *);
 extern char lbl_80314898[];
 extern char lbl_803148F8[];
 extern char lbl_80559004[4];
-extern char lbl_80559008[];
+extern char lbl_80559008[4];
 extern s32 lbl_80558FF4;
 extern u32 lbl_8055DC54;
 extern u32 lbl_8055DC58;
