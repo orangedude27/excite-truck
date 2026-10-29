@@ -71,6 +71,13 @@ typedef struct {
     int id;
 } MenuEntry;
 
+typedef struct {
+    MenuHeader header;
+    int pad;
+    MenuEntry entries[7];
+    MenuHeader footer;
+} MenuArgs;
+
 extern int fn_8000DA10(void);
 extern int fn_80161F10(int);
 extern int fn_802146BC(void *, int, int, int);
