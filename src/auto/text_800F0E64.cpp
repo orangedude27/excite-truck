@@ -662,7 +662,7 @@ extern "C" s32 fn_800F26FC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" s32 fn_800F273C(void *arg0) {
+extern "C" s32 fn_800F273C(void *arg0) __attribute__((noinline)) {
     s32 val = *(s32 *)((u8 *)arg0 + 4);
     s32 neg = -val;
     return (neg | val) >> 31 & 1;
@@ -801,7 +801,7 @@ extern "C" void fn_800F2D28(void *arg0) {
 }
 
 extern "C" const char lbl_80324868[];
-void fn_800F2EAC(void *self, void *arg) {
+extern "C" void fn_800F2EAC(void *self, void *arg) {
     const char *base = lbl_80324868;
     unsigned char *bytes = (unsigned char *)arg;
     unsigned char *table;
