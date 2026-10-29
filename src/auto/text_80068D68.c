@@ -16083,6 +16083,36 @@ void sdp_data_ind(u16 l2cap_cid, void *p_msg) {
     GKI_freebuf(p_msg);
 }
 
+tCONN_CB *sdp_conn_originate(UINT8 *p_bd_addr) {
+    char *log = lbl_8031A188;
+    tCONN_CB *p_ccb;
+    UINT16 cid;
+
+    p_ccb = sdpu_allocate_ccb();
+    if (p_ccb == NULL) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_8007093C(0xA0001, log + 0x28C);
+        return NULL;
+    }
+
+    if (lbl_803C4C40[0x4630] >= 4)
+        fn_8007093C(0xA0003, log + 0x2A8);
+
+    ((UINT8 *)p_ccb)[1] |= 1;
+    memcpy((UINT8 *)p_ccb + 2, p_bd_addr, 6);
+    ((UINT8 *)p_ccb)[0] = 1;
+    cid = L2CA_ConnectReq(1, p_bd_addr);
+    if (cid != 0) {
+        *(UINT16 *)((UINT8 *)p_ccb + 0x22) = cid;
+        return p_ccb;
+    }
+
+    if (lbl_803C4C40[0x4630] >= 2)
+        fn_8007093C(0xA0001, log + 0x2C0);
+    fn_80099F58(p_ccb);
+    return NULL;
+}
+
 void sdp_disconnect_cfm(u16 cid, u16 result) {
     extern char lbl_8031A460[];
     extern char lbl_8031A490[];
