@@ -3433,20 +3433,20 @@ done:
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void bta_dm_pm_btm_status(void *arg0) {
     register u8 *p = (u8 *)arg0;
-    u8 *base1 = lbl_803C0C14;
     s32 offset;
     s32 mask;
     u32 i;
     u8 j;
     void *entry;
     void *record;
-    u8 *base2;
 
     i = 0;
 loop_first:
-    entry = base1 + ((i << 5) & 0x1FE0);
+    entry = (u8 *)&lbl_803C0C14 + ((i << 5) & 0x1FE0);
     if (*(u8 *)((u8 *)entry + 0xB6) != 0 &&
         bdcmp((u8 *)entry + 0xB0, p + 8) == 0) {
         fn_8007148C((s32)((u8 *)entry + 0x98));
@@ -3458,34 +3458,33 @@ loop_first:
     }
 
     if (p[0xE] != 0)
-        return;
-    if (p[0x12] == 0) {
-        bta_dm_pm_set_mode(p + 8, 0);
-        return;
-    }
-    goto loop_init;
+        goto done;
+    if (p[0x12] == 0)
+        goto fallback;
 
-loop_body:
+    j = 0;
+loop_second:
     offset = j * 0xB;
-    if (bdcmp(base2 + offset, p + 8) == 0) {
-        record = base2 + offset;
+    if (bdcmp((u8 *)&lbl_803C0C14 + offset, p + 8) == 0) {
+        record = (u8 *)&lbl_803C0C14 + offset;
         mask = *(u8 *)((u8 *)record + 9) & 3;
         if (mask != 0) {
             *(u8 *)((u8 *)record + 0xA) |= mask;
             bta_dm_pm_set_mode(p + 8, 0);
         }
-        return;
+        goto done;
     }
     j++;
-    if (j < base2[0x4D])
-        goto loop_body;
-    return;
+    if (j < lbl_803C0C14[0x4D])
+        goto loop_second;
+    goto done;
 
-loop_init:
-    base2 = lbl_803C0C14;
-    j = 0;
-    goto loop_body;
+fallback:
+    bta_dm_pm_set_mode(p + 8, 0);
+done:
+    ;
 }
+#pragma pop
 
 void fn_80074A4C(s32 arg0) {
     bta_dm_pm_set_mode((u8 *)arg0 + 8, 1);
@@ -14944,6 +14943,39 @@ void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
         buf[0x15] = 1;
         rfc_send_buf_uih(arg0, 0, buf, 2);
     }
+}
+
+void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
+    u8 modem_signal = p_pars[0];
+    u8 break_signal = p_pars[1];
+    u8 *buf;
+    u8 *payload;
+    u32 signal;
+
+    buf = (u8 *)GKI_getpoolbuf(2);
+    if (buf == NULL) {
+        return;
+    }
+
+    *(u16 *)(buf + 4) = 0xC;
+    buf[0x14] = (u8)((((-is_command | is_command) >> 31) & 2) | 0xE1);
+    buf[0x15] = (u8)((((break_signal != 0) + 2) << 1) | 1);
+    buf[0x16] = (u8)((dlci << 2) | 3);
+
+    signal = 1 | (((u32)(p_pars[4] != 0)) << 1) |
+             ((modem_signal & 1) << 2) |
+             ((modem_signal & 2) << 2) |
+             ((modem_signal & 4) << 4) |
+             ((modem_signal & 8) << 4);
+    buf[0x17] = (u8)signal;
+
+    payload = buf + 0x18;
+    if (break_signal != 0) {
+        *payload = (u8)((break_signal << 4) | 3);
+    }
+
+    *(u16 *)(buf + 2) = (break_signal != 0) + 4;
+    rfc_send_buf_uih(p_mcb, 0, (BT_HDR *)buf);
 }
 
 void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
