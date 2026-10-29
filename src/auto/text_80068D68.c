@@ -32,6 +32,7 @@ extern void *iosAllocAligned(s32, u32, u32);
 extern s32 iosFree(s32, void *);
 static void USB_LOG(const char *, ...);
 static void USB_ERR(const char *, ...);
+extern void bta_hh_add_device_to_list(void *, s8, s16, void *, s32, s32);
 extern void rfc_send_rpn();
 extern void rfc_send_msc();
 extern u8 HID_HostCloseDev(u8);
@@ -990,6 +991,50 @@ void (*WUDSetSyncSimpleCallback(void (*pCallback)(s32, s32)))(s32, s32) {
     *(void (**)(s32, s32))(lbl_80392960 + 4) = pCallback;
     OSRestoreInterrupts(enabled);
     return pOldCallback;
+}
+
+s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
+    u8 *base = lbl_80392960;
+    s32 success = 0;
+    BOOL enabled;
+    BOOL busy;
+    s8 libStatus;
+    OSTime now;
+    u32 period;
+
+    enabled = OSDisableInterrupts();
+    libStatus = (s8)base[0x688];
+    OSRestoreInterrupts(enabled);
+
+    if (libStatus == 3) {
+        enabled = OSDisableInterrupts();
+        if (base[0xC] == 0 && base[0xD] == 0 &&
+            base[0xF] == 4 && base[0x10] == 4) {
+            OSRestoreInterrupts(enabled);
+            busy = 0;
+        } else {
+            OSRestoreInterrupts(enabled);
+            busy = 1;
+        }
+
+        if (busy == 0) {
+            enabled = OSDisableInterrupts();
+            base[0xC] = 1;
+            base[0x668] = syncLoopNum;
+            base[0x669] = syncType;
+            base[0x667] = syncSkipChecks != 0;
+            base[0x666] = 0;
+
+            OSCreateAlarm((OSAlarm *)(base + 0x690));
+            now = __OSGetSystemTime();
+            period = (((*(volatile u32 *)0x800000F8) >> 2) / 1000) * 0x14;
+            OSSetPeriodicAlarm((OSAlarm *)(base + 0x690), now, (s64)period,
+                               (OSAlarmHandler)fn_80069C14);
+            OSRestoreInterrupts(enabled);
+            success = 1;
+        }
+    }
+    return success;
 }
 
 extern char lbl_803134F0[];
