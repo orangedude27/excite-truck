@@ -183,6 +183,7 @@ advance:
     ch = (signed char)*text;
     if (ch != 0) goto text_loop;
 }
+#pragma pop
 #pragma scheduling on
 
 extern void *fn_802D2F78(int *, int *);
