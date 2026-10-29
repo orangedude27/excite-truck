@@ -803,6 +803,7 @@ static inline s32 fn_800ACDF8ClearPage(void *arg0, s32 arg1) {
     return ((ClearCall)(ClearSymbol)fn_800A499C)(arg0, arg1);
 }
 extern "C" u8 lbl_803D1640[];
+extern "C" u8 lbl_803D2070[];
 extern "C" int fn_800A6048(void) {
     fn_800A499C((const char *)&lbl_803D1640, 0, 0xA2C);
     return 0;
