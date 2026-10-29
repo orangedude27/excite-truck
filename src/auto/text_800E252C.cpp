@@ -825,7 +825,6 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
 extern "C" void fn_80031C6C(int);
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(void *self, int mode) {
     if (*(int *)self == mode) return;
     *(int *)self = mode;
