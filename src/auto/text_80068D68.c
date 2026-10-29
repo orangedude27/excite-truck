@@ -1799,6 +1799,43 @@ void GKI_add_to_timer_list(TIMER_LIST_Q *p_timer_list, TIMER_LIST_ENT *p_tle) {
     p_tle->in_use = 1;
 }
 
+void GKI_remove_from_timer_list(TIMER_LIST_Q *p_timer_listq, TIMER_LIST_ENT *p_tle) {
+    if (p_tle == NULL || p_tle->in_use == FALSE || p_timer_listq->p_first == NULL)
+        return;
+
+    if (p_tle->p_next != NULL)
+        p_tle->p_next->ticks += p_tle->ticks;
+    else
+        p_timer_listq->last_ticks -= p_tle->ticks;
+
+    if (p_timer_listq->p_first == p_tle) {
+        p_timer_listq->p_first = p_tle->p_next;
+        if (p_timer_listq->p_first != NULL)
+            p_timer_listq->p_first->p_prev = NULL;
+        if (p_timer_listq->p_last == p_tle)
+            p_timer_listq->p_last = NULL;
+    } else {
+        if (p_timer_listq->p_last == p_tle) {
+            p_timer_listq->p_last = p_tle->p_prev;
+            if (p_timer_listq->p_last != NULL)
+                p_timer_listq->p_last->p_next = NULL;
+        } else {
+            if (p_tle->p_next != NULL && p_tle->p_next->p_prev == p_tle)
+                p_tle->p_next->p_prev = p_tle->p_prev;
+            else
+                return;
+            if (p_tle->p_prev != NULL && p_tle->p_prev->p_next == p_tle)
+                p_tle->p_prev->p_next = p_tle->p_next;
+            else
+                return;
+        }
+    }
+
+    p_tle->p_next = p_tle->p_prev = NULL;
+    p_tle->ticks = 0x80000000L;
+    p_tle->in_use = FALSE;
+}
+
 void GKI_init(void) {
     memset(&gki_cb, 0, sizeof(gki_cb));
 
