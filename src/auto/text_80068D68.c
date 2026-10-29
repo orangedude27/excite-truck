@@ -12693,6 +12693,35 @@ void l2c_process_timeout(void *arg) {
     }
 }
 
+void l2c_process_held_packets(u8 timed_out) {
+    BT_HDR *buf;
+    BT_HDR *next;
+    BUFFER_Q *queue = (BUFFER_Q *)(lbl_803C4040 + 0x7C0);
+
+    if (*(u16 *)(lbl_803C4040 + 0x7C8) == 0)
+        return;
+    if (timed_out == 0) {
+        fn_80070F90(lbl_803C4040 + 0x7CC);
+        if (lbl_803C4040[0] >= 2)
+            fn_8007093C(0x80001, lbl_8031912C);
+    } else if (lbl_803C4040[0] >= 2) {
+        fn_8007093C(0x80001, lbl_80319140);
+    }
+
+    buf = (BT_HDR *)fn_8006DF60((s32 *)queue);
+    while (buf != 0) {
+        next = (BT_HDR *)fn_8006DF68((s32 *)buf);
+        if (timed_out == 0 || buf->layer_specific == 0 || --buf->layer_specific == 0) {
+            GKI_remove_from_queue(queue, buf);
+            buf->layer_specific = 0xFFFF;
+            l2c_rcv_acl_data(buf);
+        }
+        buf = next;
+    }
+    if (*(u16 *)((u8 *)queue + 8) != 0)
+        btu_start_timer((TIMER_LIST_ENT *)(lbl_803C4040 + 0x7CC), 4, 1);
+}
+
 void *l2cu_allocate_lcb(u8 *addr) {
     u8 *lcb;
     u16 id;
@@ -16218,6 +16247,51 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
     }
     *start = (u8)(p - start - 1);
     return start + (p - start);
+}
+
+void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
+    u8 *p_msg;
+    u8 *p_start;
+    u8 *p_param_len;
+    u8 *p;
+    u8 *p_next;
+    u8 *p_db;
+    u16 param_len;
+
+    p_msg = (u8 *)GKI_getpoolbuf(2);
+    if (p_msg == NULL) {
+        sdp_disconnect(p_ccb, 6);
+        return;
+    }
+
+    *(u16 *)(p_msg + 4) = 9;
+    p_start = p_msg + 0x11;
+    p_start[0] = 2;
+    p_param_len = p_start + 3;
+    p_start[1] = *(u16 *)((u8 *)p_ccb + 0x470) >> 8;
+    p_start[2] = *(u16 *)((u8 *)p_ccb + 0x470);
+    p_db = *(u8 **)((u8 *)p_ccb + 0x410);
+    *(u16 *)((u8 *)p_ccb + 0x470) += 1;
+
+    p = sdpu_build_uuid_seq(p_param_len + 2, *(u16 *)(p_db + 0xC), p_db + 0x10);
+    p_next = p + 3;
+    p[0] = *(u16 *)(lbl_803C4C40 + 0x462E) >> 8;
+    p[1] = *(u16 *)(lbl_803C4C40 + 0x462E);
+    p[2] = num_uuid;
+
+    if (num_uuid != 0 && p_uuid_list != NULL) {
+        memcpy(p_next, p_uuid_list, num_uuid);
+        p_next += num_uuid;
+    }
+
+    param_len = p_next - p_param_len - 2;
+    p_param_len[0] = param_len >> 8;
+    p_param_len[1] = param_len;
+    *(u8 *)((u8 *)p_ccb + 0x474) = 1;
+    *(u16 *)(p_msg + 2) = p_next - p_start;
+
+    L2CA_DataWrite(*(u16 *)((u8 *)p_ccb + 0x22), (BT_HDR *)p_msg);
+    btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 8), 5, 0x1E);
 }
 
 extern void process_service_search_attr_rsp(tCONN_CB *, u8 *, u16);
