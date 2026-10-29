@@ -90,36 +90,37 @@ s32 fn_802E47F8(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802E4800(u16 arg0) {
-    u16 *p;
+    u16 *history;
+    volatile u16 *p;
     s32 i;
+    u16 a, b, c;
 
     if (fn_802ECC10() != 0) {
         return;
     }
     lbl_8055FF5C = fn_802E2C20();
-    for (i = 0; i < 31; i++) {
-        lbl_804FC418[i] = lbl_804FC418[i + 1];
-    }
-    lbl_804FC418[31] = arg0 & 0xFFF;
-
+    history = lbl_804FC418;
     p = &lbl_8055FF50;
+    for (i = 0; i < 31; i++) {
+        history[i] = history[i + 1];
+    }
+    history[31] = arg0 & 0xFFF;
+
     for (i = 0; i < 4; i++) {
         if (*p == 0) {
-            ((u16 *)&lbl_8055FF50)[i] = arg0;
+            ((volatile u16 *)&lbl_8055FF50)[i] = arg0;
             return;
         }
         p++;
     }
     p = &lbl_8055FF50;
-    {
-        u16 a = p[1];
-        u16 b = p[2];
-        u16 c = p[3];
-        p[0] = a;
-        p[1] = b;
-        p[2] = c;
-        p[3] = arg0;
-    }
+    a = p[1];
+    b = p[2];
+    c = p[3];
+    p[0] = a;
+    p[1] = b;
+    p[2] = c;
+    p[3] = arg0;
 }
 #pragma pop
 
@@ -167,29 +168,52 @@ extern unsigned char lbl_8055FF58;
 extern unsigned char lbl_804FC3B0[];
 int fn_802E4A60(void *arg0) {
     unsigned char *dst = (unsigned char *)arg0;
-    unsigned char *src = lbl_804FC3B0;
     if (lbl_8055FF58 != 0) {
-        *(float *)(dst+0)=*(float *)(src+0); *(float *)(dst+4)=*(float *)(src+4);
-        *(float *)(dst+8)=*(float *)(src+8); *(float *)(dst+12)=*(float *)(src+12);
-        *(float *)(dst+16)=*(float *)(src+16); *(float *)(dst+20)=*(float *)(src+20);
-        *(float *)(dst+24)=*(float *)(src+24); *(float *)(dst+28)=*(float *)(src+28);
-        dst[32]=src[32]; dst[33]=src[33]; dst[34]=src[34]; dst[35]=src[35];
-        dst[36]=src[36]; dst[37]=src[37]; dst[38]=src[38]; dst[39]=src[39];
-        dst[40]=src[40]; dst[41]=src[41]; dst[42]=src[42]; dst[43]=src[43];
-        dst[44]=src[44]; dst[45]=src[45]; dst[46]=src[46]; dst[47]=src[47];
-        dst[48]=src[48]; dst[49]=src[49]; dst[50]=src[50]; dst[51]=src[51];
-        dst[52]=src[52]; dst[53]=src[53]; dst[54]=src[54]; dst[55]=src[55];
-        dst[56]=src[56]; dst[57]=src[57]; dst[58]=src[58]; dst[59]=src[59];
-        dst[60]=src[60]; dst[61]=src[61]; dst[62]=src[62]; dst[63]=src[63];
-        *(unsigned int *)(dst+64)=*(unsigned int *)(src+64);
-        *(unsigned int *)(dst+68)=*(unsigned int *)(src+68);
-        *(unsigned int *)(dst+72)=*(unsigned int *)(src+72);
-        *(unsigned int *)(dst+76)=*(unsigned int *)(src+76);
-        *(unsigned int *)(dst+80)=*(unsigned int *)(src+80);
-        *(unsigned int *)(dst+84)=*(unsigned int *)(src+84);
-        *(unsigned int *)(dst+88)=*(unsigned int *)(src+88);
-        *(unsigned int *)(dst+92)=*(unsigned int *)(src+92);
-        dst[96]=src[96];
+        volatile unsigned char *src = lbl_804FC3B0;
+        unsigned char a, b;
+        unsigned int wordA, wordB;
+
+        *(float *)(dst + 0x00) = *(float *)(src + 0x00);
+        *(float *)(dst + 0x04) = *(float *)(src + 0x04);
+        *(float *)(dst + 0x08) = *(float *)(src + 0x08);
+        *(float *)(dst + 0x0C) = *(float *)(src + 0x0C);
+        *(float *)(dst + 0x10) = *(float *)(src + 0x10);
+        *(float *)(dst + 0x14) = *(float *)(src + 0x14);
+        *(float *)(dst + 0x18) = *(float *)(src + 0x18);
+        *(float *)(dst + 0x1C) = *(float *)(src + 0x1C);
+#define COPY_PAIR(o) b = src[(o)]; a = src[(o) + 1]; dst[(o)] = b; dst[(o) + 1] = a
+        COPY_PAIR(0x20);
+        COPY_PAIR(0x22);
+        COPY_PAIR(0x24);
+        COPY_PAIR(0x26);
+        COPY_PAIR(0x28);
+        COPY_PAIR(0x2A);
+        COPY_PAIR(0x2C);
+        COPY_PAIR(0x2E);
+        COPY_PAIR(0x30);
+        COPY_PAIR(0x32);
+        COPY_PAIR(0x34);
+        COPY_PAIR(0x36);
+        COPY_PAIR(0x38);
+        COPY_PAIR(0x3A);
+        COPY_PAIR(0x3C);
+        COPY_PAIR(0x3E);
+#undef COPY_PAIR
+        *(unsigned int *)(dst + 0x40) = *(unsigned int *)(src + 0x40);
+        wordB = *(volatile unsigned int *)(src + 0x44);
+        wordA = *(volatile unsigned int *)(src + 0x48);
+        *(unsigned int *)(dst + 0x44) = wordB;
+        *(unsigned int *)(dst + 0x48) = wordA;
+        wordA = *(volatile unsigned int *)(src + 0x4C);
+        wordB = *(volatile unsigned int *)(src + 0x50);
+        *(unsigned int *)(dst + 0x4C) = wordA;
+        *(unsigned int *)(dst + 0x50) = wordB;
+        wordA = *(volatile unsigned int *)(src + 0x54);
+        wordB = *(volatile unsigned int *)(src + 0x58);
+        *(unsigned int *)(dst + 0x54) = wordA;
+        *(unsigned int *)(dst + 0x58) = wordB;
+        *(unsigned int *)(dst + 0x5C) = *(unsigned int *)(src + 0x5C);
+        dst[0x60] = src[0x60];
         return 1;
     }
     return 0;
