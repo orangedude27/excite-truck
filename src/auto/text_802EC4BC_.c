@@ -74,6 +74,7 @@ extern s32 fn_8012850C(s32, void *);
 extern void fn_802E3804(s32, s32, s32);
 extern void fn_802E3734(s32 *);
 #pragma scheduling invalid_target
+#pragma dont_inline on
 void *fn_802EC598(void) {
     s32 index = *(s32 *)(lbl_80558860 + 0x1c);
     char *base = lbl_8034E9E0;
@@ -89,6 +90,7 @@ void *fn_802EC598(void) {
     case 6: return base + 0x90;
     }
 }
+#pragma dont_inline off
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
