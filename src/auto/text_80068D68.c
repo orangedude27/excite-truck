@@ -13552,7 +13552,7 @@ void Port_TimeOutCloseMux(void *arg0) {
 
     if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319478);
     for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4)
-        if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed(entry, 0x12);
+        if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed((struct t_port_info *)entry, 0x12);
 }
 
 extern char lbl_803194E8[];
