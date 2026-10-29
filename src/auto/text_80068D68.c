@@ -17598,6 +17598,7 @@ void sdp_disconnect_cfm(u16 cid, u16 result) {
     fn_80099F58(p_ccb);
 }
 
+#undef sdp_server_handle_client_req
 void sdp_conn_timeout(tCONN_CB *p_ccb) {
     extern char lbl_8031A4B8[];
     extern u8 lbl_803C4C40[];
