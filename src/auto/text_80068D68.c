@@ -14299,32 +14299,43 @@ void RFCOMM_Init(void) {
 }
 
 void PORT_StartCnf(void *mux_id, u16 status) {
+    u8 *p_port;
     s32 i;
-    s32 found = 1;
-    u8 *mcb = lbl_803C4828;
-    u8 *port = mcb + 0x68;
-    void (*callback)(s32, u8);
+    u8 no_ports_up = 1;
 
-    if (mcb[0x414] >= 4) fn_80070954(0x90003, lbl_80319278, status);
-    for (i = 0; i < 5; i++, port += 0xA4) {
-        if (*(void **)(port + 0x6C) != mux_id) continue;
-        found = 0;
-        if (status == 0) {
-            RFCOMM_ParNegReq(mux_id, port[0xD], *(u16 *)(port + 0x12));
-            continue;
+    if (lbl_803C4828[0x414] >= 4)
+        fn_80070954(0x90003, lbl_80319278, status);
+
+    p_port = lbl_803C4828 + 0x68;
+    for (i = 0; i < 5; i++, p_port += 0xA4) {
+        if (*(void **)(p_port + 0x6C) == mux_id) {
+            no_ports_up = 0;
+            if (status == 0) {
+                RFCOMM_ParNegReq(mux_id, p_port[0xD], *(u16 *)(p_port + 0x12));
+                continue;
+            }
+
+            if (lbl_803C4828[0x414] >= 2)
+                fn_80070954(0x90001, lbl_80319290, status);
+            if (status == 4)
+                p_port[0xE] = 0x18;
+            else
+                p_port[0xE] = 0xC;
+
+            rfc_release_multiplexer_channel(mux_id);
+            *(u32 *)(p_port + 0x6C) = 0;
+            if (*(void **)(p_port + 0x8C) != 0 &&
+                (*(u32 *)(p_port + 0x88) & 0x8000) != 0) {
+                ((void (*)(s32, u8))*(void **)(p_port + 0x8C))(0x8000, p_port[0]);
+            }
+            if (*(void **)(p_port + 0x90) != 0) {
+                ((void (*)(s32, u8))*(void **)(p_port + 0x90))(0xC, p_port[0]);
+            }
+            port_release_port(p_port);
         }
-        if (mcb[0x414] >= 2) fn_80070954(0x90001, lbl_80319290, status);
-        port[0xE] = status == 4 ? 0x18 : 0xC;
-        rfc_release_multiplexer_channel(mux_id);
-        *(u32 *)(port + 0x6C) = 0;
-        callback = *(void (**)(s32, u8))(port + 0x8C);
-        if (callback != 0 && (*(u32 *)(port + 0x88) & 0x8000))
-            callback(0x8000, port[0]);
-        callback = *(void (**)(s32, u8))(port + 0x90);
-        if (callback != 0) callback(0xC, port[0]);
-        port_release_port(port);
     }
-    if (found) rfc_check_mcb_active(mux_id);
+    if (no_ports_up)
+        rfc_check_mcb_active(mux_id);
 }
 
 void PORT_StartInd(void *arg0) {
