@@ -29,6 +29,10 @@ extern unsigned char lbl_8037C0E4[];
 extern unsigned int *__piReg;
 extern unsigned int *__memReg;
 extern signed long long OSGetTime(void);
+extern unsigned int GXSetBreakPtCallback(unsigned int);
+extern unsigned int GXGetLightDir(unsigned int);
+extern unsigned int GXLoadLightObjIndx(unsigned int);
+extern void GXGetVtxAttrFmt(void);
 
 typedef struct {
     void *base;
