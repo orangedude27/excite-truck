@@ -110,6 +110,7 @@ extern "C" void fn_8019D06C(void*, void*, s32, s32);
 extern "C" void fn_8019B068(void*, void*, s32, s32);
 extern "C" void fn_8019CE3C(void*, s32);
 extern "C" void fn_802E317C(const char*, ...);
+__declspec(section ".sdata") extern char lbl_8055A4C4[];
 extern "C" const char lbl_803335EC[];
 extern void fn_801EA1E0(s32, s32, f32, f32);
 extern "C" void fn_8019EBC0(void*);
@@ -911,7 +912,6 @@ extern "C" s32 fn_8019C854(void* arg0, void* arg1) {
 
 extern "C" s32 fn_8019CCCC(s32 arg0, s32 arg1, void* arg2, f32 farg0) {
     typedef s32 (*Check)(void);
-    typedef s32 (*Call)(s32, s32, void*, f32*, s32, s32, f32, f32);
     if (((Check)fn_8019B08C)() != 0) {
         return 1;
     }
@@ -940,9 +940,8 @@ extern "C" s32 fn_8019CCCC(s32 arg0, s32 arg1, void* arg2, f32 farg0) {
     neg.x = transX + axisX * negDim;
     neg.y = transY + axisY * negDim;
     neg.z = transZ + axisZ * negDim;
-    Call call = (Call)fn_8019AA34;
-    s32 firstHit = call(arg0, arg1, arg2, &pos.x, 0, 0, farg0, radius);
-    s32 secondHit = call(arg0, arg1, arg2, &neg.x, 0, 0, farg0, radius);
+    s32 firstHit = fn_8019AA34((void*)arg0, (void*)arg1, arg2, &pos.x, 0, 0, farg0, radius);
+    s32 secondHit = fn_8019AA34((void*)arg0, (void*)arg1, arg2, &neg.x, 0, 0, farg0, radius);
     return (firstHit | secondHit) != 0;
 }
 
@@ -2797,44 +2796,46 @@ extern "C" void* fn_801A2CC0(void* arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
-extern "C" void fn_801A2D50(s32 arg0, void* arg1) {
+extern "C" void fn_801A2D50(s32 arg0, void *arg1) {
     extern u8 lbl_8055E5A4;
     extern u8 lbl_8055E5A5;
     extern char lbl_80333448[];
-    extern const char* lbl_8055A4C4;
-    s32 kind = *(s32*)((u8*)arg1 + 0x18);
+    extern char lbl_8055A4C4[];
+    char *messages = lbl_80333448;
+    s32 kind = *(s32 *)((u8 *)arg1 + 0x18);
     switch (kind) {
     case 0x504F4C59:
+        break;
     case 0x53504852:
-        fn_8019C854(arg1, (void*)arg0);
+        fn_8019C854(arg1, (void *)arg0);
         break;
     case 0x47525550: {
-        u8* entry = (u8*)arg1;
+        u8 *entry = (u8 *)arg1;
         s32 i = 0;
-        do {
-            fn_8019C854(*(void**)(entry + 0x24), (void*)arg0);
+        while (i < *(s32 *)((u8 *)arg1 + 0x174)) {
+            fn_8019C854(*(void **)(entry + 0x24), (void *)arg0);
             entry += 4;
             i++;
-        } while (i < *(s32*)((u8*)arg1 + 0x174));
+        }
         break;
     }
     case 0x424F5820:
         if (!lbl_8055E5A4) {
             lbl_8055E5A4 = 1;
-            fn_802E30C8(lbl_8055A4C4, lbl_80333448 + 0x22C);
+            fn_802E30C8(lbl_8055A4C4, messages + 0x22C);
         }
         break;
     case 0x52414744:
         if (!lbl_8055E5A5) {
             lbl_8055E5A5 = 1;
-            fn_802E30C8(lbl_8055A4C4, lbl_80333448 + 0x254);
+            fn_802E30C8(lbl_8055A4C4, messages + 0x254);
         }
         break;
     case 0x464C5352:
-        fn_8019D378(arg1, (void*)arg0);
+        fn_8019D378(arg1, (void *)arg0);
         break;
     default:
-        fn_802E317C(lbl_80333448 + 0x280, kind);
+        fn_802E317C(messages + 0x280, kind);
         break;
     }
 }
