@@ -364,7 +364,49 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
     const void* out = (const void*)((u32)adjusted & mask);
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(pos, size, count, texCoords, out);
 }
-#pragma use_lmw_stmw reset
+
+#pragma use_lmw_stmw off
+#pragma scheduling on
+#pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
+extern "C" void TPLBind(void*);
+extern "C" void *TPLGet(void*, u32);
+extern "C" void GXInitTexObj(void*, void*, u16, u16, u32, u32, u32, u32);
+extern "C" void GXInitTexObjCI(void*, void*, u16, u16, u32, u32, u32, u32, u32);
+extern "C" void GXInitTexObjLOD(void*, u32, u32, f32, f32, f32, u32, u32, u32);
+#pragma use_lmw_stmw off
+#pragma scheduling on
+#pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
+extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void *texObj, void *palette, u32 id) {
+    u8 *tpl;
+    u8 height;
+    u8 width;
+    u32 difference;
+    u32 mipmap;
+    if (*(u32 *)((u8 *)palette + 8) < 0x80000000) {
+        TPLBind(palette);
+    }
+    tpl = (u8 *)TPLGet(palette, id);
+    width = (*(u8 **)tpl)[0x21];
+    height = (*(u8 **)tpl)[0x22];
+    difference = ((u32)height - (u32)width) | ((u32)width - (u32)height);
+    mipmap = difference >> 31;
+    if (*(u32 *)(tpl + 4) != 0) {
+        u8 *tex = *(u8 **)tpl;
+        GXInitTexObjCI(texObj, *(void **)(tex + 8), *(u16 *)(tex + 2), *(u16 *)tex,
+                       *(u32 *)(tex + 4), *(u32 *)(tex + 0xC), *(u32 *)(tex + 0x10),
+                       mipmap, 0);
+        ((void (*)(void *, u32))GXGetTexObjWidth)(texObj, *(u32 *)(tpl + 4));
+    } else {
+        u8 *tex = *(u8 **)tpl;
+        GXInitTexObj(texObj, *(void **)(tex + 8), *(u16 *)(tex + 2), *(u16 *)tex,
+                     *(u32 *)(tex + 4), *(u32 *)(tex + 0xC), *(u32 *)(tex + 0x10),
+                     mipmap);
+    }
+    u8 *lodTex = *(u8 **)tpl;
+    GXInitTexObjLOD(texObj, *(u32 *)(lodTex + 0x14), *(u32 *)(lodTex + 0x18),
+                    (f32)lodTex[0x21], (f32)lodTex[0x22], *(f32 *)(lodTex + 0x1C),
+                    0, lodTex[0x20], 0);
+}
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
     extern f32 lbl_80560E78;
     extern f32 lbl_80560E7C;
@@ -396,37 +438,40 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *self, const void *resource, void *pane) {
+    GroupLayout *group = (GroupLayout *)self;
     register void *head = (u8 *)self + 0x10;
-    *(volatile u32 *)((u8 *)self + 0x10) = 0;
-    *(volatile u32 *)((u8 *)self + 0x14) = 0;
-    *(void **)self = lbl_8031F628;
-    *(u32 *)((u8 *)self + 4) = 0;
-    *(u32 *)((u8 *)self + 8) = 0;
-    *(u32 *)((u8 *)self + 0xC) = 0;
-    *(void **)((u8 *)self + 0x10) = head;
-    *(void **)((u8 *)self + 0x14) = head;
-    *(u8 *)((u8 *)self + 0x28) = 0;
+    *(volatile u32 *)&group->children.first = 0;
+    *(volatile u32 *)&group->children.last = 0;
+    group->vtable = lbl_8031F628;
+    group->unk4 = 0;
+    group->unk8 = 0;
+    group->children.count = 0;
+    *(volatile void **)&group->children.first = head;
+    *(volatile void **)&group->children.last = head;
+    *(volatile u8 *)((u8 *)self + 0x28) = 0;
     memcpy((u8 *)self + 0x18, (const u8 *)resource + 8, 0x10);
 
-    const u8 *items = (const u8 *)resource + 0x1C;
-    s32 offset = 0;
-    s32 index = 0;
+    register void *node;
+    register s32 offset = 0;
+    register const u8 *items = (const u8 *)resource + 0x1C;
+    register s32 index = 0;
     while (index < (s32)*(const u16 *)((const u8 *)resource + 0x18)) {
         void *result = ((GroupPaneDispatch_800D58C4 *)pane)->GetResource(items + offset, 1);
         if (result != 0) {
-            void *node = (void *)MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
-            if (node != 0) {
-                if (node != 0) {
+            s32 allocation = MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
+            if (allocation != 0) {
+                node = (void *)allocation;
+                if (allocation != 0) {
                     *(u32 *)node = 0;
                     *(u32 *)((u8 *)node + 4) = 0;
                 }
                 *(void **)((u8 *)node + 8) = result;
-                register void *iterator = (void *)((u32 *)self + 4);
+                register void *iterator = &group->children.first;
                 void *slot;
-                if (node == 0)
+                if (allocation == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6E8, 0x233, lbl_8031F6C4);
                 slot = iterator;
-                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&((GroupLayout *)self)->children, &slot, node);
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&group->children, &slot, node);
             }
         }
         offset += 0x10;
