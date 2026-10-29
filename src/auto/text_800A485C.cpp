@@ -1,23 +1,6 @@
   #include <types.h>
 #include <macros.h>
 
-struct CacheEntryForFree {
-    volatile u16 flags;
-    u8 pad2[0xA];
-    volatile u32 fieldC;
-    volatile u32 field10;
-    u8 pad14[4];
-    volatile s32 field18;
-    volatile u32 field1C;
-    CacheEntryForFree *volatile next;
-    CacheEntryForFree *volatile prev;
-};
-struct CacheContextForFree {
-    u8 pad0[0x1630];
-    CacheEntryForFree *volatile first;
-    CacheEntryForFree *volatile second;
-};
-
 struct VFiPFENTIterLayout {
     volatile u32 position;
     void *stream;
@@ -2025,19 +2008,21 @@ extern "C" s32 VFiPFCACHE_FlushAllCaches(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
-extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0, void *unused1, register void *head, register s32 minusOne, register u32 zero, register void *node) {
+extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0, void *unused1, void *unused2, void *unused3, void *unused4, void *node) {
+    s32 minusOne = -1;
+    s32 zero = 0;
+    void *head;
     u16 flags;
-    zero = 0;
-    minusOne = -1;
+
     goto first_test;
 first_body:
     if (node == 0) goto first_test;
     flags = *(volatile u16 *)node;
     *(volatile u16 *)node = flags & 0xFFFC;
-    *(volatile u32 *)((u8 *)node + 0xC) = zero;
-    *(volatile u32 *)((u8 *)node + 0x10) = zero;
+    *(volatile u32 *)((u8 *)node + 0xC) = (u32)zero;
+    *(volatile u32 *)((u8 *)node + 0x10) = (u32)zero;
     *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
-    *(volatile u32 *)((u8 *)node + 0x1C) = zero;
+    *(volatile u32 *)((u8 *)node + 0x1C) = (u32)zero;
     head = *(void * volatile *)((u8 *)arg0 + 0x1630);
     if (node == head) {
         *(void * volatile *)((u8 *)arg0 + 0x1630) = *(void * volatile *)((u8 *)node + 0x20);
@@ -2063,10 +2048,10 @@ second_body:
     if (node == 0) goto second_test;
     flags = *(volatile u16 *)node;
     *(volatile u16 *)node = flags & 0xFFFC;
-    *(volatile u32 *)((u8 *)node + 0xC) = zero;
-    *(volatile u32 *)((u8 *)node + 0x10) = zero;
+    *(volatile u32 *)((u8 *)node + 0xC) = (u32)zero;
+    *(volatile u32 *)((u8 *)node + 0x10) = (u32)zero;
     *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
-    *(volatile u32 *)((u8 *)node + 0x1C) = zero;
+    *(volatile u32 *)((u8 *)node + 0x1C) = (u32)zero;
     head = *(void * volatile *)((u8 *)arg0 + 0x1634);
     if (node == head) {
         *(void * volatile *)((u8 *)arg0 + 0x1634) = *(void * volatile *)((u8 *)node + 0x20);
@@ -6768,15 +6753,17 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     u8 countA = 0;
     u8 countB;
     u32 shift = 0x200;
+    u32 word;
     s32 value;
-    u32 size;
+    u16 size;
     u16 temp;
+    u16 low;
+    u16 high;
     u16 swapped;
     u16 shortStart;
     u32 start;
     s32 shortEnd;
     u32 end;
-    u32 word;
 
     while ((shift = (shift >> 1) & 0x7FFF) != 0) countA++;
     countB = 0;
@@ -6787,22 +6774,27 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
         value = p[0x11] | (p[0x12] << 8);
     } else {
         temp = *(u16 *)(p + 0x12);
-        swapped = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
+        low = (temp & 0xFF) << 8;
+        high = (temp & 0xFF00) >> 8;
+        swapped = low | high;
         value = (s32)swapped << 5;
     }
-    size = ((value + 0x1FF) >> countA) & 0xFFFF;
+    size = (u16)((value + 0x1FF) >> countA);
 
     if (((u32)(p + 0x16) & 1) != 0) {
         shortStart = p[0x16] | (p[0x17] << 8);
     } else {
         temp = *(u16 *)(p + 0x16);
-        swapped = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
+        low = (temp & 0xFF) << 8;
+        high = (temp & 0xFF00) >> 8;
+        swapped = low | high;
         shortStart = swapped;
     }
     if (shortStart == 0) {
         word = *(u32 *)(p + 0x24);
-        start = ((word << 8) & 0xFF0000 & ~0xFF000000) | (word << 0x18) |
-                (((word >> 8U) & 0xFF00 & ~0xFF) | (word >> 0x18U));
+        u32 lowWord = ((word << 8) & 0xFF0000) | (word << 0x18);
+        u32 highWord = ((word >> 8U) & 0xFF00) | (word >> 0x18U);
+        start = lowWord | highWord;
     } else {
         start = shortStart;
     }
@@ -6812,13 +6804,16 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
         shortEnd = p[0x13] | (p[0x14] << 8);
     } else {
         temp = *(u16 *)(p + 0x14);
-        swapped = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
+        low = (temp & 0xFF) << 8;
+        high = (temp & 0xFF00) >> 8;
+        swapped = low | high;
         shortEnd = swapped;
     }
     if (shortEnd == 0) {
         word = *(u32 *)(p + 0x20);
-        end = ((word << 8) & 0xFF0000 & ~0xFF000000) | (word << 0x18) |
-              (((word >> 8U) & 0xFF00 & ~0xFF) | (word >> 0x18U));
+        u32 lowWord = ((word << 8) & 0xFF0000) | (word << 0x18);
+        u32 highWord = ((word >> 8U) & 0xFF00) | (word >> 0x18U);
+        end = lowWord | highWord;
     } else {
         end = shortEnd;
     }
