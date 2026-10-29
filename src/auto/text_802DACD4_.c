@@ -158,6 +158,7 @@ advance:
     text++;
     goto text_loop;
 }
+#pragma scheduling on
 
 extern void *fn_802D2F78(int *, int *);
 extern void fn_802C3034(void *, int, int, int);
