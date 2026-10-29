@@ -160,7 +160,6 @@ extern s32 lbl_805600E0;
 extern s32 lbl_805600E4;
 extern u8 lbl_805600EC;
 extern s32 lbl_80558898[];
-extern char lbl_8055D2F0[];
 extern f32 lbl_805651E0, lbl_805651E4, lbl_805651E8, lbl_805651EC;
 extern u8 SCGetLanguage(void);
 extern void fn_801282F4(void);
