@@ -13641,7 +13641,7 @@ extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
 extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
-    /* Fix note: form the initial report address through the first field of the diagnostic string table. */
+    /* Fix note: test the sentinel through its pointer value; the remaining mismatch is immediate selection. */
     u8 scratch[0x104];
     const Fn800D1F7CStringTable *messages =
         (const Fn800D1F7CStringTable *)lbl_8031E9D0;
@@ -13655,7 +13655,7 @@ extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
 loop_1:
     if (arg0 == 0)
         goto done;
-    if ((u32)arg0 == 0xFFFEFFFF)
+    if (arg0 == (s32 *)0xFFFEFFFF)
         goto done;
     if (((u32)arg0 & 0x80000000) == 0)
         goto done;
@@ -13892,7 +13892,6 @@ extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg
     } while((s8)*var_r28!=0);
     return var_r28;
 }
-#pragma cplusplus reset
 
 extern "C" u16 lbl_80407BE8[];
 extern "C" u32 lbl_8031EC40[];
