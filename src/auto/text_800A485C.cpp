@@ -7300,6 +7300,7 @@ extern "C" s32 fn_800BA404(void) {
     return 0;
 }
 
+#pragma dont_inline on
 extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     u8 count = 0;
     u8 *record;
@@ -7336,6 +7337,7 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     }
     return count;
 }
+#pragma dont_inline reset
 
 extern "C" s32 fn_800BB4B0(s32,s32,s32,s32);
 extern "C" s32 fn_800BB4C8(s32,s32,s32,s32);
