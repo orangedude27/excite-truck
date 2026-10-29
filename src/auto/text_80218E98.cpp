@@ -526,6 +526,43 @@ extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     *(s32 *)((u8 *)arg0 + 0x2C) = zero;
 }
 
+extern "C" void fn_80219044(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    f32 value;
+
+    if (*(u8 *)(p + 0x1A) != 0) {
+        if (*(f32 *)(p + 0x1C) >= lbl_805634A8) {
+            value = *(f32 *)(p + 0x1C) - *(f32 *)(p + 0x24) * fn_80214D48();
+            *(f32 *)(p + 0x1C) = value;
+            if (value <= lbl_805634AC) {
+                if (*(u8 *)(p + 0x1A) != 0) {
+                    *(u8 *)(p + 0x234) = 1;
+                    *(u8 *)(p + 0x1A) = 0;
+                }
+                *(f32 *)(p + 0x1C) = lbl_805634A0;
+            }
+        }
+    } else {
+        *(f32 *)(p + 0x1C) = lbl_805634A0;
+    }
+
+    if (*(u8 *)(p + 0x1A) == 0) {
+        if (*(f32 *)(p + 0x20) >= lbl_805634A8) {
+            value = *(f32 *)(p + 0x20) - *(f32 *)(p + 0x28) * fn_80214D48();
+            *(f32 *)(p + 0x20) = value;
+            if (value <= lbl_805634AC) {
+                if (*(u8 *)(p + 0x1A) == 0) {
+                    *(u8 *)(p + 0x1A) = 1;
+                    *(u8 *)(p + 0x234) = 1;
+                }
+                *(f32 *)(p + 0x20) = lbl_805634A0;
+            }
+        }
+    } else {
+        *(f32 *)(p + 0x20) = lbl_805634A0;
+    }
+}
+
 #pragma dont_inline on
 #pragma push
 #pragma scheduling invalid_target
@@ -2053,13 +2090,10 @@ extern "C" void *fn_8021D044(void *arg0, s32 arg1, s32 arg2, s32 arg3, const cha
     *(s32 *)((u8 *)arg0 + 0x2B8) =
         fn_8012850C((void *)(fn_8022D1B4(arg4) * 4), lbl_8033D940);
 
-    char *text = (char *)arg4;
-    while (*text != 0) {
-        char **table = *(char ***)((u8 *)arg0 + 0x2B8);
-        s32 count = *(s32 *)((u8 *)arg0 + 0x258);
-        table[count] = text;
-        *(s32 *)((u8 *)arg0 + 0x258) = count + 1;
-        text += strlen(text) + 1;
+    char *text;
+    for (text = (char *)arg4; *text != 0; text += strlen(text) + 1) {
+        void **table = *(void ***)((u8 *)arg0 + 0x2B8);
+        table[(*(u32 *)((u8 *)arg0 + 0x258))++] = text;
     }
 
     fn_80219440(arg0, 0, (void *)arg3, 4);
