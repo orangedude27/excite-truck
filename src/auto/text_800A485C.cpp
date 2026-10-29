@@ -220,7 +220,7 @@ extern "C" s32 fn_800A95B4(void *arg0);
 extern "C" s32 fn_800AF574(void *arg0);
 extern "C" s32 fn_800AAC08(void *arg0, u32 arg1, void *arg2, void *arg3, s32 arg4, s32 *arg5);
 extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 *arg6, s32 *arg7);
-extern "C" s32 fn_800A7090(void);
+extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2);
 extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
 extern "C" void *lbl_8055DD94;
@@ -490,7 +490,7 @@ extern "C" s32 fn_800A5990(s32 arg0) {
 extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
     s32 result;
     *arg2 = 0;
-    result = fn_800A7090();
+    result = fn_800A7090(arg0, p1, arg2);
     return result & ((-result | result) >> 31);
 }
 
