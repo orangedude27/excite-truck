@@ -804,26 +804,27 @@ extern "C" const char lbl_80324828[];
 #pragma cplusplus on
 extern "C" s32 detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi_800F2BEC(void *self, u32 group, void *arg2, s32 arg3) {
     struct GroupInfo { u32 unk0; const char *path; u32 unk8, unkC, unk10, unk14; } info;
-    struct Archive { virtual void f0(); virtual void f1(); virtual void f2(); virtual s32 f3(); virtual s32 f4(void *, s32, s32, s32); virtual s32 f5(void *, s32, const char *, s32, s32); };
+    struct Archive { virtual void f0(); virtual void f1(); virtual void f2(); virtual s32 f3(); virtual s32 f4(void *, s32, u32, u32); virtual s32 f5(void *, s32, const char *, u32, u32); };
     Archive *archive = (Archive *)self;
     if (!ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)self + 4), group, &info))
         return 0;
     const char *path = info.path;
     if (path != 0) {
-        s32 meta14 = info.unk14;
-        s32 meta10 = info.unk10;
-        if (*path != '/') {
-            unsigned long pathLen = strlen(path);
-            unsigned long prefixLen = strlen((const char *)self + 8);
-            if (pathLen + prefixLen >= 0x100) {
-                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
-                return 0;
-            }
-            char buf[0x100];
-            strncpy(buf, (const char *)self + 8, prefixLen + 1);
-            fn_80028E2C(buf, path, pathLen + 1);
-            path = buf;
+        u32 meta14 = info.unk14;
+        u32 meta10 = info.unk10;
+        if (*path == '/')
+            goto open_stream;
+        unsigned long pathLen = strlen(path);
+        unsigned long prefixLen = strlen((const char *)self + 8);
+        if (pathLen + prefixLen >= 0x100) {
+            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
+            return 0;
         }
+        char buf[0x100];
+        strncpy(buf, (const char *)self + 8, prefixLen + 1);
+        fn_80028E2C(buf, path, pathLen + 1);
+        path = buf;
+    open_stream:
         return archive->f5(arg2, arg3, path, meta10, meta14);
     }
     return archive->f4(arg2, arg3, info.unk10, info.unk14);
@@ -1950,7 +1951,7 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(
 extern "C" void *fn_800FDE60(void);
 extern "C" void *Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(void *manager);
 extern "C" void AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(void *manager, void *task, s32 priority);
-extern "C" s32 fn_800FE0DC(void *manager);
+extern "C" u32 fn_800FE0DC(void *manager);
 extern "C" void *fn_800FE648(void);
 extern "C" void fn_800FE804(void *arg0);
 extern "C" char lbl_80325684[];
@@ -2025,6 +2026,41 @@ s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(
         return 0;
     return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(reader, *(s32 *)noteInfo, waveData, (const void *)waveAddress);
 }
+
+extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    void *reader = *(void **)((u8 *)self + 4);
+    void *fileInfo = *(void **)((u8 *)reader + 0x10);
+    void *task;
+    if (fileInfo == 0)
+        return 0;
+    if (fn_800F273C(fileInfo) == 0)
+        return 1;
+    task = Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(fn_800FDE60());
+    if (task == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x64C, lbl_80324E88 + 0x590);
+    reader = *(void **)((u8 *)self + 4);
+    if (*(void **)((u8 *)reader + 0x10) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80324E88 + 0x288);
+    fileInfo = *(void **)((u8 *)reader + 0x10);
+    if (fn_800FE0DC(fn_800FDE60()) < 0x28)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x650, lbl_80324E88 + 0x5B8);
+    if (task != 0) {
+        *(s32 *)((u8 *)task + 4) = 0;
+        *(s32 *)((u8 *)task + 8) = 0;
+        *(s32 *)((u8 *)task + 0xC) = arg3;
+        *(void **)((u8 *)task + 0) = lbl_80325684;
+        *(s32 *)((u8 *)task + 0x10) = 0;
+        *(void **)((u8 *)task + 0x14) = fileInfo;
+        *(s32 *)((u8 *)task + 0x18) = arg4;
+        *(s32 *)((u8 *)task + 0x1C) = arg1;
+        *(s32 *)((u8 *)task + 0x20) = arg2;
+        *(void **)((u8 *)task + 0x24) = (u8 *)self + 8;
+    }
+    AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(fn_800FDE60(), task, 1);
+    fn_800FE804(fn_800FE648());
+    return 3;
+}
+
 #pragma pop
 
 extern "C" void fn_800F768C(void *self, unsigned long taskId) {
