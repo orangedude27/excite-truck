@@ -1040,11 +1040,11 @@ extern "C" void fn_80158824(Unk801577F0* arg0) {
 extern "C" f32 lbl_8056177C;
 extern "C" s32 fn_80141F7C(f32);
 extern "C" void fn_8015889C(void* arg0) {
-    f32 zero = lbl_80561754;
     f32 field = *(f32*)((u8*)arg0 + 0x25c);
+    f32 zero = lbl_80561754;
     Fn8015889C* self = (Fn8015889C*)arg0;
     f32 sp8;
-    if (field > zero) {
+    if (zero < field) {
         sp8 = zero;
         if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c)) {
             if (self->v23() > 0) {
@@ -1210,17 +1210,22 @@ extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
     extern f32 lbl_80561754;
     extern f64 lbl_80561780;
     Dummy *obj = (Dummy *)arg0;
-    f32 current, end, start, ratio;
-    if (*(u8 *)((u8 *)arg0 + 0x273) == 0) return 0;
-    if (arg1 == 0) return 1;
-    end = *(f32 *)((u8 *)arg0 + 0x274);
-    current = (f32)obj->getB();
-    start = (f32)obj->getA();
-    ratio = (end - start) / (current - start);
-    if (ratio < lbl_80561750) ratio = lbl_80561750;
-    if (ratio > lbl_80561754) ratio = lbl_80561754;
-    *arg1 = lbl_80561754 + ratio * lbl_80561750;
-    return 1;
+    if (*(u8 *)((u8 *)arg0 + 0x273) != 0) {
+        if (arg1 != 0) {
+            f32 value0 = (f32)obj->getB();
+            f32 value1 = (f32)obj->getA();
+            f32 ratio = (*(f32 *)((u8 *)arg0 + 0x274) - value1) / (value0 - value1);
+            if (ratio < lbl_80561750) {
+                ratio = lbl_80561750;
+            }
+            if (ratio > lbl_80561754) {
+                ratio = lbl_80561754;
+            }
+            *arg1 = lbl_80561754 + ratio * lbl_80561750;
+        }
+        return 1;
+    }
+    return 0;
 }
 
 extern "C" void fn_801590A8(void* arg0) {
@@ -2425,19 +2430,32 @@ extern "C" void fn_8015D554(void *arg0) {
 }
 
 extern "C" f32 fn_8015D5A4(void *arg0) {
- struct V { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual int cur(); virtual int index(); };
- V *self=(V *)arg0;
- register f32 fraction=lbl_80561754;
- int idx=self->index(), previous=0;
- if(idx<*(int *)((char *)self+0xc)-1) {
-  if(idx>0) previous=*(int *)(*(char **)((char *)self+8)+(idx-1)*0x38+0x14);
-  int now=self->cur();
-  int current=*(int *)(*(char **)((char *)self+8)+idx*0x38+0x14);
-  f32 den=(f32)(current-previous);
-  f32 num=(f32)(now-previous);
-  if(den>lbl_80561754) fraction=num/den;
- }
- return (f32)idx+fraction;
+    struct V {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual int cur(); virtual int index();
+    };
+    register V *self = (V *)arg0;
+    int idx = self->index();
+    int count = *(int *)((char *)self + 0xC);
+    register f32 fraction = lbl_80561754;
+    register int previous;
+    if (idx < count - 1) {
+        if (idx > 0)
+            previous = *(int *)(*(char **)((char *)self + 8) + (idx - 1) * 0x38 + 0x14);
+        else
+            previous = 0;
+        int now = self->cur();
+        int current = *(int *)(*(char **)((char *)self + 8) + idx * 0x38 + 0x14);
+        f32 den = (f32)(current - previous);
+        f32 num = (f32)(now - previous);
+        if (den > lbl_80561754)
+            fraction = num / den;
+    }
+    return (f32)idx + fraction;
 }
 
 extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
@@ -2698,30 +2716,32 @@ extern "C" void *fn_8015E110(void *arg0, s32 arg1) {
     struct Item { virtual void destroy(s32); };
     extern char lbl_8032EB0C[];
     void *obj = arg0;
-    int offset, count;
+    Item *offset;
+    s32 count;
     if (obj != 0) {
         *(void **)obj = lbl_8032EB0C;
-        count = 0; offset = 0;
+        count = 0;
+        offset = (Item *)0;
         goto loop_test;
 loop_body:
         {
             Item **list = *(Item ***)((char *)obj + 4);
-            Item *item = *(Item **)((char *)list + offset);
+            Item *item = *(Item **)((char *)list + (u32)offset);
             if (item != 0) item->destroy(1);
         }
-        offset += 4; count += 1;
+        offset = (Item *)((u8 *)offset + 4);
+        count += 1;
 loop_test:
-        if (count < *(int *)((char *)obj + 8)) goto loop_body;
-        offset = *(int *)((char *)obj + 0x50);
+        if (count < *(s32 *)((char *)obj + 8)) goto loop_body;
+        offset = *(Item **)((char *)obj + 0x50);
         if (offset != 0) {
-            Item *owner = (Item *)offset;
-            Item *second = *(Item **)((char *)owner + 4);
+            Item *second = *(Item **)((char *)offset + 4);
             if (second != 0) { if (second != 0) second->destroy(1); }
             {
-                Item *first = *(Item **)owner;
+                Item *first = *(Item **)offset;
                 if (first != 0) { if (first != 0) first->destroy(1); }
             }
-            fn_80128668(owner);
+            fn_80128668(offset);
         }
         if ((u32)obj + 4 != 0) {
             if ((u32)obj + 4 != 0) {
