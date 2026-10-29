@@ -1873,6 +1873,7 @@ namespace nw4hbm { namespace snd { namespace detail {
 class AxVoice {
 public:
     void SetLoopStart(int, const void *, unsigned long);
+    void SetLoopEnd(int, const void *, unsigned long);
 };
 }}}
 #pragma push
@@ -2113,8 +2114,8 @@ extern "C" void fn_80033918(void *, void *);
 extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4) {
     unsigned char sp8[0x28];
     const char *message = lbl_803221A8;
-    int i;
     void **entry;
+    int i;
     if (arg1 >= 2)
         Panic__Q26nw4hbm2dbFPCciPCce(message, 0x434, message + 0x258);
     switch (arg2) {
