@@ -13633,6 +13633,7 @@ extern "C" void fn_800D1EC4(const char *msg, ...) {
     va_end(vlist);
 }
 
+struct Fn800D1F7CStringTable { const char header[0x28]; const char summary[0x20]; const char node[1]; };
 extern "C" const char lbl_8031E9D0[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597D8[]; }
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597DC[]; }
@@ -13640,43 +13641,48 @@ extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
 extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
-    /* Fix note: keep the target's sentinel arithmetic in signed 32-bit integer form. */
+    /* Fix note: keep the direct sentinel comparison and form the base message through a character lvalue. */
     u8 scratch[0x104];
     const char *var_r29 = lbl_8031E9D0;
     u32 temp_r28;
     u32 var_r27;
     s32 var_r0;
 
-    fn_800D1EC4(var_r29);
+    fn_800D1EC4((const char *)&*(volatile char *)var_r29);
     fn_800D1EC4(var_r29 + 0x28);
     var_r27 = 0;
 loop_1:
-    if (arg0 != 0 &&
-        ((s32)arg0 + 0x10000) != 0xFFFFFFFFU &&
-        ((u32)arg0 & 0x80000000) != 0) {
-        fn_800D1EC4(var_r29 + 0x48, arg0,
-                    *(s32 *)arg0, *((s32 *)arg0 + 1));
-        temp_r28 = (u32)*((s32 *)arg0 + 1);
-        if (fn_800D3824() == 0) {
-            var_r0 = 0;
-        } else if (temp_r28 < 0x80000000 || temp_r28 > 0x82FFFFFF) {
-            var_r0 = 0;
+    if (arg0 == 0)
+        goto done;
+    if ((u32)arg0 == 0xFFFEFFFF)
+        goto done;
+    if (((u32)arg0 & 0x80000000) == 0)
+        goto done;
+
+    fn_800D1EC4(var_r29 + 0x48, arg0,
+                *(s32 *)arg0, *((s32 *)arg0 + 1));
+    temp_r28 = (u32)*((s32 *)arg0 + 1);
+    if (fn_800D3824() == 0) {
+        var_r0 = 0;
+    } else if (temp_r28 < 0x80000000 || temp_r28 > 0x82FFFFFF) {
+        var_r0 = 0;
+    } else {
+        typedef s32 (*CheckFn)(s32, s32, s32);
+        if (((CheckFn)fn_800D40B4)(temp_r28, (s32)scratch, 0x104) != 0) {
+            fn_800D1EC4(lbl_805597D8, scratch);
+            var_r0 = 1;
         } else {
-            typedef s32 (*CheckFn)(s32, s32, s32);
-            if (((CheckFn)fn_800D40B4)(temp_r28, (s32)scratch, 0x104) != 0) {
-                fn_800D1EC4(lbl_805597D8, scratch);
-                var_r0 = 1;
-            } else {
-                var_r0 = 0;
-            }
+            var_r0 = 0;
         }
-        if (var_r0 == 0)
-            fn_800D1EC4(lbl_805597DC);
-        var_r27 += 1;
-        arg0 = (s32 *)*(s32 *)arg0;
-        if (var_r27 < 0x10)
-            goto loop_1;
     }
+    if (var_r0 == 0)
+        fn_800D1EC4(lbl_805597DC);
+    var_r27 += 1;
+    arg0 = (s32 *)*(s32 *)arg0;
+    if (var_r27 < 0x10)
+        goto loop_1;
+done:
+    return;
 }
 
 extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
