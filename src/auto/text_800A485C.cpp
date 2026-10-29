@@ -52,7 +52,7 @@ extern "C" void fn_800B78F4(void *, void *);
 extern "C" s32 WPADSetSamplingCallback(s32, void *);
 extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
 extern "C" void fn_800A71D0(void *, s32);
-namespace homebutton { namespace gui { class PaneManager { public: void setAllBoundingBoxComponentTriggerTarget(bool); }; } }
+namespace homebutton { namespace gui { class PaneManager { public: ~PaneManager(); void setAllBoundingBoxComponentTriggerTarget(bool); }; } }
 namespace homebutton {
 class GroupAnmController {
 public:
@@ -1019,11 +1019,11 @@ extern "C" void fn_800A68DC(s32 arg0) {
 extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
     s32 sp18[4];
     s32 sp8[4];
-    s16 i;
-    s32 *a;
-    s32 *b;
-    s32 temp;
-    u8 *p;
+    register s16 i;
+    register s32 *a;
+    register s32 *b;
+    register s32 temp;
+    register u8 *p;
 
     *arg2 = 0;
     p = (u8 *)arg0;
@@ -1060,11 +1060,9 @@ extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
     b = sp18;
     i = 0;
     do {
-        if ((u32)(*b + *a) > arg1) {
-            if (i == 0) {
-                *arg2 = 0;
-                return 2;
-            }
+        if ((u32)(*b + *a) > arg1 && i == 0) {
+            *arg2 = 0;
+            return 2;
         }
         i++;
         b++;
