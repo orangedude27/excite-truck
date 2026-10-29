@@ -2100,8 +2100,8 @@ extern "C" s32 fn_800AF2CC(void *, u32, s32, s32 *, u32 *, s32);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
-    s32 *out = (s32 *)arg1;
-    u8 *context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
+    volatile s32 *out = (volatile s32 *)arg1;
+    u8 *context;
     void *entry;
     u32 count;
     u32 size;
@@ -2110,12 +2110,12 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
     s32 steps;
     u32 range;
     s32 error;
-    s32 chainEnd;
-    s32 current;
+    u32 chainEnd;
     s32 i;
-    struct Local { s32 sp8; s32 spC; s32 sp10; } local;
+    struct Local { u32 sp8; u32 spC; u32 sp10; } local;
 
     *out = 0;
+    context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
     if ((*(u32 *)context & 1) == 0 || (*(u32 *)context & 2) == 0)
         return 0x26;
 
@@ -2134,28 +2134,28 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
                            (s32)(size - remainder));
 
         if (steps != 0) {
-            range = (steps + 1) * size;
+            range = (u32)aligned + (u32)(steps + 1) * size;
             goto finish;
         }
 
         if (first != 0) {
             error = fn_800AF2CC(context + 4, count, first,
-                                &local.sp10, (u32 *)&local.spC, (s32)context);
+                                (s32 *)&local.sp10, &local.spC, (s32)context);
             if (error != 0)
                 return error;
         }
-        local.spC = (s32)count;
-        chainEnd = fn_800AF584(entry);
-        current = local.spC;
+        local.spC = count;
+        chainEnd = (u32)fn_800AF584(entry);
         i = 0;
-        while (current != chainEnd) {
+        while (local.spC != chainEnd) {
             i++;
-            error = VFiPFFAT_TraceClustersChain(entry, current, &local.sp8);
+            error = VFiPFFAT_TraceClustersChain(entry, (s32)local.spC,
+                                                (s32 *)&local.sp8);
             if (error != 0)
                 return error;
-            current = local.sp8;
+            local.spC = local.sp8;
         }
-        range = (u32)i * size;
+        range = (u32)aligned + (u32)i * size;
 finish:
         *out = (s32)(range - (u32)aligned);
     }
@@ -4935,7 +4935,7 @@ block_53:
 }
 
 extern "C" s32 fn_800B6928(s8);
-extern "C" s32 fn_800AE4C0(s32, s32, s32);
+s32 fn_800AE4C0(s32, s32, s32);
 extern "C" s32 fn_800B3754(s32, s32 *, s32);
 extern "C" s32 fn_800AF574(void *);
 extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
