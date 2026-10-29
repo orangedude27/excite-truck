@@ -17,7 +17,8 @@ int fn_80012794(void);
 int fn_802146BC(int *, int, int, int);
 int fn_80247624(void);
 extern char lbl_802FA5E0[], lbl_80498E38[];
-extern int lbl_80344CD4, lbl_80344CF0;
+extern char lbl_80344CD4[];
+extern int lbl_80344CF0;
 extern int lbl_80563AA8, lbl_80563AB0;
 extern int lbl_8055B860, lbl_8055BAB8, lbl_8055C1D8, lbl_8055C1E0, lbl_8055C1E8, lbl_8055C1F0;
 extern void fn_80236914(void);
@@ -40,112 +41,77 @@ public:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80257284(void) {
-    // Fix note: reserve the full 0x2c0 target frame while keeping the global table addresses explicit.
-    volatile int local[0xA6];
-    register int zero = 0;
-    register int other_zero = 0;
-    register int table0;
-    register int table1;
-    register int table2;
-    register int table3;
-    register int list0;
-    register int list1;
-    register int list2;
-    register int list3;
-    register int ptr0;
-    register int ptr1;
-    register int ptr2;
-    register int handler;
-    register int count0;
-    register int count1;
-    register int count2;
-    register int count3;
-    register int minus_one;
-    register int mask;
+    // Fix note: use the project's MenuEntry field order and the full object workspace in the stack frame.
+    typedef struct { int v[5]; } Header;
+    typedef struct { int label; int type; int value; int flags; int id; } Entry;
+    typedef struct { Header header; Entry entries[9]; int object[0x74]; } Frame;
+    Frame frame;
     int result;
 
     if (fn_80247624()) { fn_80012794(); fn_80012780(); }
-    fn_80257470((int *)&local[50]);
+    fn_80257470(frame.object);
 
-    local[5] = other_zero;
-    local[6] = 5;
-    local[7] = (int)&local[50];
-    local[8] = other_zero;
-    local[9] = other_zero;
-    local[10] = 13;
-    local[11] = (int)&lbl_8055C1D8;
-    local[12] = (int)&local[50];
-    local[13] = other_zero;
-    local[14] = other_zero;
-    local[15] = 13;
-    local[16] = (int)&lbl_8055C1E0;
-    local[17] = (int)&local[57];
-    local[18] = other_zero;
-    local[19] = other_zero;
-    local[20] = 13;
-    local[21] = (int)&lbl_8055C1E8;
-    local[22] = (int)&local[71];
-    local[23] = other_zero;
-    local[24] = other_zero;
-    local[25] = 13;
-    local[26] = (int)&lbl_8055C1F0;
-    local[27] = (int)&local[149];
-    local[28] = 1;
-    local[29] = other_zero;
+    frame.entries[0].label = 0;
+    frame.entries[0].type = 5;
+    frame.entries[0].value = (int)&frame.object[0];
+    frame.entries[0].flags = 0;
+    frame.entries[0].id = 0;
+    frame.entries[1].label = (int)&lbl_8055C1D8;
+    frame.entries[1].type = 13;
+    frame.entries[1].value = (int)&frame.object[0];
+    frame.entries[1].flags = 0;
+    frame.entries[1].id = 0;
+    frame.entries[2].label = (int)&lbl_8055C1E0;
+    frame.entries[2].type = 13;
+    frame.entries[2].value = (int)&frame.object[7];
+    frame.entries[2].flags = 0;
+    frame.entries[2].id = 0;
+    frame.entries[3].label = (int)&lbl_8055C1E8;
+    frame.entries[3].type = 13;
+    frame.entries[3].value = (int)&frame.object[21];
+    frame.entries[3].flags = 0;
+    frame.entries[3].id = 0;
+    frame.entries[4].label = (int)&lbl_8055C1F0;
+    frame.entries[4].type = 13;
+    frame.entries[4].value = (int)&frame.object[99];
+    frame.entries[4].flags = 1;
+    frame.entries[4].id = 0;
 
-    fn_8000DA10((int)&local[149], (int)&local[71], (int)&local[57], 13,
+    fn_8000DA10((int)&frame.object[99], (int)&frame.object[21],
+                (int)&frame.object[7], 13,
                 &lbl_8055C1D8, &lbl_8055C1E0, &lbl_8055C1E8, &lbl_8055C1F0);
     result = fn_8000DB34();
+    frame.entries[5].value = result;
 
-    table0 = *(int *)&lbl_802FA5E0;
-    table1 = *(int *)((char *)&lbl_802FA5E0 + 8);
-    table2 = *(int *)((char *)&lbl_802FA5E0 + 12);
-    table3 = *(int *)((char *)&lbl_802FA5E0 + 16);
-    list0 = *(int *)&lbl_80498E38;
-    list1 = *(int *)((char *)&lbl_80498E38 + 4);
-    list2 = *(int *)((char *)&lbl_80498E38 + 8);
-    list3 = *(int *)((char *)&lbl_80498E38 + 12);
-    ptr0 = (int)&lbl_80344CD4;
-    ptr1 = (int)&lbl_8055B860;
-    ptr2 = (int)&lbl_8055BAB8;
-    handler = (int)&fn_80236914;
-    count0 = 3;
-    count1 = 6;
-    count2 = 8;
-    count3 = 2;
-    minus_one = -1;
-    mask = 0x1b;
-    zero = 0;
+    frame.header.v[0] = *(int *)&lbl_802FA5E0;
+    frame.header.v[1] = (int)frame.entries;
+    frame.header.v[2] = *(int *)((char *)&lbl_802FA5E0 + 8);
+    frame.header.v[3] = *(int *)((char *)&lbl_802FA5E0 + 12);
+    frame.header.v[4] = *(int *)((char *)&lbl_802FA5E0 + 16);
+    frame.entries[5].label = (int)&lbl_80344CD4;
+    frame.entries[5].type = 3;
+    frame.entries[5].flags = 0;
+    frame.entries[5].id = 0;
+    frame.entries[6].label = (int)&lbl_8055B860;
+    frame.entries[6].type = 6;
+    frame.entries[6].value = 0;
+    frame.entries[6].flags = -1;
+    frame.entries[6].id = 0x1B;
+    frame.entries[7].label = (int)&lbl_8055BAB8;
+    frame.entries[7].type = 8;
+    frame.entries[7].value = (int)fn_80236914;
+    frame.entries[7].flags = 2;
+    frame.entries[7].id = 0;
+    frame.entries[8].label = *(int *)&lbl_80498E38;
+    frame.entries[8].type = *(int *)((char *)&lbl_80498E38 + 4);
+    frame.entries[8].value = *(int *)((char *)&lbl_80498E38 + 8);
+    frame.entries[8].flags = *(int *)((char *)&lbl_80498E38 + 12);
+    frame.entries[8].id = *(int *)((char *)&lbl_80498E38 + 16);
 
-    local[0] = table0;
-    local[1] = (int)&local[5];
-    local[2] = table1;
-    local[3] = table2;
-    local[4] = table3;
-    local[30] = ptr0;
-    local[31] = count0;
-    local[32] = result;
-    local[33] = zero;
-    local[34] = other_zero;
-    local[35] = ptr1;
-    local[36] = count1;
-    local[37] = other_zero;
-    local[38] = minus_one;
-    local[39] = mask;
-    local[40] = ptr2;
-    local[41] = count2;
-    local[42] = handler;
-    local[43] = count3;
-    local[44] = other_zero;
-    local[45] = list0;
-    local[46] = list1;
-    local[47] = list2;
-    local[48] = list3;
-    local[49] = *(int *)((char *)&lbl_80498E38 + 16);
-
-    fn_802146BC((int *)&local[0], -999, -999, 1);
-    if (fn_80247624()) { fn_80012794(); fn_80012778(); }
-    fn_802574E0((int *)&local[50], minus_one);
+    if (fn_802146BC((int *)&frame.header, -999, -999, 1) == -1) {
+        if (fn_80247624()) { fn_80012794(); fn_80012778(); }
+    }
+    fn_802574E0((int)frame.object, -1);
 }
 #pragma pop
 
