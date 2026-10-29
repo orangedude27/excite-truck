@@ -2686,11 +2686,12 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *arg0, 
     return arg0;
 }
 
+#pragma scheduling invalid_target
 extern "C" void *fn_8021EA64(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *arg5, s32 arg6, s32 arg7, s32 arg8, u8 arg9) {
     extern char lbl_8033E988[];
     extern char lbl_8033D96C[];
     extern char lbl_8033D978[];
-    s32 handle;
+    s32 *words = (s32 *)arg0;
 
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4 + 3, 0);
     *(void **)arg0 = lbl_8033E988;
@@ -2698,24 +2699,23 @@ extern "C" void *fn_8021EA64(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         *arg5 = 0;
     *(char **)((u8 *)arg0 + 0xA54) = arg5;
     *(s32 *)((u8 *)arg0 + 0xA58) = arg8;
-    *(s32 *)((u8 *)arg0 + 0x248) = ((arg6 >> 31) ^ arg6) - (arg6 >> 31);
-    *(s32 *)((u8 *)arg0 + 0x24C) = arg7;
+    words[0x248 / 4] = ((arg6 >> 31) ^ arg6) - (arg6 >> 31);
+    words[0x24C / 4] = arg7;
     if (arg7 == 1 && arg6 > 0)
-        *(s32 *)((u8 *)arg0 + 0xA60) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D96C);
+        words[0xA60 / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D96C);
     else
-        *(s32 *)((u8 *)arg0 + 0xA60) = 0;
-    *(s32 *)((u8 *)arg0 + 0x244) = 0;
-    *(s32 *)((u8 *)arg0 + 0xA5C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D978);
-    *(s32 *)((u8 *)arg0 + 0x250) = strlen(arg5);
-    fn_80219440(arg0, 0, arg5, *(s32 *)((u8 *)arg0 + 0x248) * *(s32 *)((u8 *)arg0 + 0x24C));
-    handle = *(s32 *)((u8 *)arg0 + 0xA60);
-    if (handle != 0) {
-        s32 count = fn_802C5220(handle);
+        words[0xA60 / 4] = 0;
+    words[0x244 / 4] = 0;
+    words[0xA5C / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D978);
+    words[0x250 / 4] = strlen(arg5);
+    fn_80219440(arg0, 0, arg5, words[0x248 / 4] * words[0x24C / 4]);
+    if (words[0xA60 / 4] != 0) {
+        s32 count = fn_802C5220(words[0xA60 / 4]);
         fn_80219284(arg0, ((Vf78 *)arg0)->get(), count);
     }
     return arg0;
 }
-
+#pragma scheduling on
 extern "C" void fn_8022B2D4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" char lbl_8033E988[];
 extern "C" void *fn_8021EB9C(void *arg0, s32 arg1) {
