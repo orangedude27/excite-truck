@@ -13639,25 +13639,24 @@ extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597DC[]; }
 extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
-extern "C" void fn_800D1F7C(s32 arg0, s32 arg1) {
-    /* Fix note: follow the original node, count, address, and result variable lifetimes from the machine draft. */
+extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
+    /* Fix note: keep the target's sentinel arithmetic in signed 32-bit integer form. */
     u8 scratch[0x104];
     const char *var_r29 = lbl_8031E9D0;
-    s32 var_r26 = arg0;
-    s32 var_r27;
-    s32 var_r0;
     u32 temp_r28;
+    u32 var_r27;
+    s32 var_r0;
 
     fn_800D1EC4(var_r29);
     fn_800D1EC4(var_r29 + 0x28);
     var_r27 = 0;
 loop_1:
-    if (var_r26 != 0 &&
-        (u32)(var_r26 + 0x10000) != 0xFFFFFFFF &&
-        (var_r26 & (s32)0x80000000) != 0) {
-        fn_800D1EC4(var_r29 + 0x48, var_r26,
-                    *(s32 *)(var_r26 + 0), *(s32 *)(var_r26 + 4));
-        temp_r28 = *(u32 *)(var_r26 + 4);
+    if (arg0 != 0 &&
+        ((s32)arg0 + 0x10000) != 0xFFFFFFFFU &&
+        ((u32)arg0 & 0x80000000) != 0) {
+        fn_800D1EC4(var_r29 + 0x48, arg0,
+                    *(s32 *)arg0, *((s32 *)arg0 + 1));
+        temp_r28 = (u32)*((s32 *)arg0 + 1);
         if (fn_800D3824() == 0) {
             var_r0 = 0;
         } else if (temp_r28 < 0x80000000 || temp_r28 > 0x82FFFFFF) {
@@ -13674,7 +13673,7 @@ loop_1:
         if (var_r0 == 0)
             fn_800D1EC4(lbl_805597DC);
         var_r27 += 1;
-        var_r26 = *(s32 *)(var_r26 + 0);
+        arg0 = (s32 *)*(s32 *)arg0;
         if (var_r27 < 0x10)
             goto loop_1;
     }
@@ -13865,23 +13864,29 @@ extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 arg3, s32 arg4) {
 
 extern "C" u8 lbl_802F47D8[];
 extern "C" void fn_800D337C(s32,s32,s32);
+#pragma cplusplus on
 extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
-    s32 var_r26=arg0, var_r27=arg1, var_r29=arg3, var_r30=0, temp;
+    s32 var_r26=arg0;
+    s32 var_r27=arg1;
     const char *var_r28=arg2;
-    u8 ch, cls;
-    if (!var_r28) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0,0x2E9,lbl_8031EBA0+0x54);
-    if (var_r29<=0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0,0x2EA,lbl_8031EBA0+0x7C);
+    s32 var_r29=arg3;
+    s32 var_r30=0;
+    s32 temp;
+    const void *base=lbl_8031EBA0;
+    if (!var_r28) Panic__Q26nw4hbm2dbFPCciPCce((const char *)base,0x2E9,(const char *)base+0x54);
+    if (var_r29<=0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)base,0x2EA,(const char *)base+0x7C);
+    base=lbl_802F47D8;
     do {
-        ch=*var_r28;
-        if(ch==10 || ch==0) return var_r28;
-        cls=lbl_802F47D8[ch&0x7F];
+        if (*var_r28==10 || *var_r28==0) return var_r28;
+        s32 cls=((const u8 *)base)[(u8)*var_r28&0x7F];
         if(cls==0xFD) { temp=4-(var_r30&3); var_r30+=temp; var_r26+=temp*6; }
-        else { if(cls!=0xFF) fn_800D337C(var_r26,var_r27,0); var_r26+=6; var_r30++; }
-        if(var_r30>=var_r29) { if((u8)var_r28[1]==10) var_r28++; return var_r28; }
+        else { if(cls!=0xFF) fn_800D337C(var_r26,var_r27,cls); var_r26+=6; var_r30++; }
+        if(var_r30>=var_r29) { if(var_r28[1]==10) var_r28++; return var_r28; }
         var_r28++;
     } while((s8)*var_r28!=0);
     return var_r28;
 }
+#pragma cplusplus reset
 
 extern "C" u16 lbl_80407BE8[];
 extern "C" u32 lbl_8031EC40[];
