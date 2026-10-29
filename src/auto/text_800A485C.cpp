@@ -2687,7 +2687,7 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     return var_r31;
 }
 
-extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
+extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(register void *arg0) {
     u32 sp8;
     s32 index;
     u32 old;
@@ -2708,7 +2708,6 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
         iter->index = index;
         goto return_one;
     }
-
     if (iter->sentinel == 0xFFFFFFFFu) {
         goto use_short_error;
     }
@@ -17901,7 +17900,6 @@ extern "C" s32 fn_800A5800(void *arg0, s32 arg1) {
     return 0;
 }
 
-extern "C" s32 fn_800A7090(void);
 extern "C" s32 fn_800A71A0(s32 *);
 extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
