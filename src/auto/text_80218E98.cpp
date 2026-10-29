@@ -5,6 +5,9 @@
 
 extern "C" void *lbl_8033DD20[];
 extern "C" void *memset(void *, int, unsigned long);
+extern "C" char lbl_8033DCE8[];
+extern "C" s32 fn_8012C33C(void *);
+extern "C" s32 fn_802C6FC0(void *, s32, s32);
 
 extern "C" void fn_8021C6D0(void *);
 extern "C" s32 fn_8021165C(s32, s32);
