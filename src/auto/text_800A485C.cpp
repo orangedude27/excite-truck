@@ -235,6 +235,7 @@ extern "C" void fn_800C3960(void *, s32, s32, s32);
 extern "C" void fn_800C3574(void *, void *, s32, s32, s32);
 extern "C" u32 lbl_802F4088[];
 extern "C" u32 lbl_802F4108[];
+extern "C" { DECL_SECTION(".sdata") extern s32 lbl_8055DD28; }
 extern "C" s32 lbl_8055DD30;
 extern "C" s32 fn_800B8004(s32);
 extern "C" s32 fn_800B8048(s32);
