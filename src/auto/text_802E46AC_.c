@@ -28,6 +28,49 @@ void fn_802E46E4(void) {
     lbl_8055D1C0 = (void*)-1;
 }
 
+extern int sprintf(char *, const char *, ...);
+extern void fn_802D07E4(char *, s32);
+extern u16 lbl_8055FF60;
+extern u32 lbl_8055FF64;
+extern const char lbl_8034D1C0[];
+#pragma scheduling invalid_target
+s32 fn_802E46F0(void) {
+    u16 raw;
+    u32 mask;
+    u32 mode;
+    char buffer[0x20];
+    volatile u16 *p;
+    u16 a, b, c;
+
+    fn_802E4A2C();
+    raw = lbl_8055FF50;
+    mask = (u32)raw & 0xFFFF0FFF;
+    lbl_8055FF5A = raw;
+    if (mask != 0) {
+        p = &lbl_8055FF50;
+        a = p[1];
+        b = p[2];
+        c = p[3];
+        p[0] = a;
+        p[1] = b;
+        p[2] = c;
+        p[3] = 0;
+    }
+    mode = (u16)mask;
+    if (mode == 0x17A)
+        goto special;
+    if (mode != 0x17B || lbl_8055FF60 != 0x112)
+        goto done;
+special:
+    sprintf(buffer, lbl_8034D1C0, lbl_8055FF64);
+    fn_802D07E4(buffer, mode == 0x17B);
+    mode = 0;
+    lbl_8055FF64++;
+done:
+    if (mode != 0)
+        lbl_8055FF60 = mode;
+    return mode;
+}
 void* memset(void*, int, unsigned long);
 extern u16 lbl_8055FF50;
 void fn_802E4A2C(void); /* extern */
@@ -44,17 +87,41 @@ s32 fn_802E47F8(void) {
     return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802E4800(u16 arg0) {
- s32 i;
- u16 *p;
- if (fn_802ECC10() != 0) return;
- lbl_8055FF5C=fn_802E2C20();
- for(i=0;i<31;i++) lbl_804FC418[i]=lbl_804FC418[i+1];
- lbl_804FC418[31]=arg0 & 0xFFF;
- p=&lbl_8055FF50;
- for(i=0;i<4;i++) { if(*p==0) { p[i]=arg0; return; } p++; }
- lbl_8055FF50=lbl_8055FF50; 
+    u16 *p;
+    s32 i;
+
+    if (fn_802ECC10() != 0) {
+        return;
+    }
+    lbl_8055FF5C = fn_802E2C20();
+    for (i = 0; i < 31; i++) {
+        lbl_804FC418[i] = lbl_804FC418[i + 1];
+    }
+    lbl_804FC418[31] = arg0 & 0xFFF;
+
+    p = &lbl_8055FF50;
+    for (i = 0; i < 4; i++) {
+        if (*p == 0) {
+            ((u16 *)&lbl_8055FF50)[i] = arg0;
+            return;
+        }
+        p++;
+    }
+    p = &lbl_8055FF50;
+    {
+        u16 a = p[1];
+        u16 b = p[2];
+        u16 c = p[3];
+        p[0] = a;
+        p[1] = b;
+        p[2] = c;
+        p[3] = arg0;
+    }
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
