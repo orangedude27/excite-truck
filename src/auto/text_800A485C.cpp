@@ -3768,53 +3768,65 @@ sentinel:
 extern "C" s32 VFiPFFAT_GetClusterSpecified(void *, u32, u32, u32 *);
 extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
     s32 sp8;
-    s32 r;
-    u16 bytes;
-    u8 clusters, shift;
-    u32 q, rem, rounded;
-    void *fat;
-    u32 *state;
-    u32 count;
-    fat = *(void **)((u8 *)arg0 + 0x34);
-    state = *(u32 **)((u8 *)arg0 + 8);
-    count = *(u32 *)((u8 *)fat + 0x1C);
-    if (*state == 1 && count <= 1) {
-        if (arg1 >= *(u16 *)((u8 *)fat + 0x24))
+    s32 status;
+    s32 remA;
+    s32 remB;
+    u16 unitSize;
+    u8 unitCount, shiftAmount;
+    u32 units;
+    u32 clustersNeeded;
+    u32 roundedUnits;
+    void *fatInfo;
+    u32 *fileState;
+    u32 fileCount;
+    fatInfo = *(void **)((u8 *)arg0 + 0x34);
+    fileState = *(u32 **)((u8 *)arg0 + 8);
+    fileCount = *(u32 *)((u8 *)fatInfo + 0x1C);
+    if (*fileState == 1 && fileCount <= 1) {
+        s32 result = 0;
+        if (arg1 >= *(u16 *)((u8 *)fatInfo + 0x24)) {
+            result = 0;
             *arg4 = -1;
-        else
-            *arg4 = *(s32 *)((u8 *)fat + 0x2C) + arg1;
-        return 0;
+        } else {
+            result = 0;
+            *arg4 = *(s32 *)((u8 *)fatInfo + 0x2C) + arg1;
+        }
+        return result;
     }
-    shift = *(u8 *)((u8 *)fat + 0x21);
-    u32 shiftedOffset = arg1 >> shift;
+    shiftAmount = *(u8 *)((u8 *)fatInfo + 0x21);
+    u32 shiftedOffset = arg1 >> shiftAmount;
     if (arg2 == 2) {
-        bytes = *(u16 *)fat;
-        clusters = *(u8 *)((u8 *)fat + 6);
-        q = arg3 / bytes;
-        rem = arg3 - q * bytes;
-        q += rem != 0;
-        rounded = q;
-        q = rounded / clusters;
-        rem = rounded - q * clusters;
-        q += rem != 0;
-        r = fn_800AE3A8(arg0, (s32)shiftedOffset, (s32)q, (u32 *)&sp8);
+        unitSize = *(u16 *)fatInfo;
+        unitCount = *(u8 *)((u8 *)fatInfo + 6);
+        units = arg3 / unitSize;
+        remA = arg3 - units * unitSize;
+        roundedUnits = units + (remA != 0);
+        clustersNeeded = roundedUnits / unitCount;
+        remB = roundedUnits - clustersNeeded * unitCount;
+        u32 sectorCount = clustersNeeded + (remB != 0);
+        status = fn_800AE3A8(arg0, (s32)shiftedOffset, (s32)sectorCount, (u32 *)&sp8);
+        if (status == 0)
+            goto cluster_result;
+        return status;
     } else {
-        r = VFiPFFAT_GetClusterSpecified(arg0, shiftedOffset, arg2, (u32 *)&sp8);
+        status = VFiPFFAT_GetClusterSpecified(arg0, shiftedOffset, arg2, (u32 *)&sp8);
+        if (status == 0)
+            goto cluster_result;
+        return status;
     }
-    if (r != 0)
-        return r;
+cluster_result:
     if ((u32)(sp8 + 0x10000) == 0xFFFFU) {
         *arg4 = -1;
         return 0;
     }
-    u32 clusterCount = *(u8 *)((u8 *)fat + 6);
+    u32 clusterCount = *(u8 *)((u8 *)fatInfo + 6);
     u32 clusterIndex = sp8 - 2;
-    shift = *(u8 *)((u8 *)fat + 0x21);
+    shiftAmount = *(u8 *)((u8 *)fatInfo + 0x21);
+    u32 base = *(u32 *)((u8 *)fatInfo + 0x30);
+    u32 shiftedCluster = clusterIndex << shiftAmount;
     u32 mask = clusterCount - 1;
-    u32 base = *(u32 *)((u8 *)fat + 0x30);
-    u32 sectorOffset = clusterIndex << shift;
     u32 withinCluster = arg1 & mask;
-    *arg4 = withinCluster + (base + sectorOffset);
+    *arg4 = (base + shiftedCluster) + withinCluster;
     return 0;
 }
 
@@ -5961,8 +5973,8 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u16 arg2, u16 arg3, s32 arg4)
 
 extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     u32 first;
-    u8 *state;
-    u8 *entries;
+    volatile u8 *state;
+    volatile u8 *entries;
     u32 zero;
     u8 *record;
     s32 i;
@@ -5972,15 +5984,15 @@ extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     else
         *(u32 *)((u8 *)lbl_803D2140 + 0x38) &= 0xFFFEFFFF;
 
-    state = (u8 *)lbl_803D2140;
+    state = (volatile u8 *)lbl_803D2140;
     first = *(u32 *)lbl_803D2140;
     entries = state + 0xA0;
     zero = 0;
     first |= 1;
-    *(void **)(state + 0x08) = entries;
-    *(void **)(state + 0x14) = entries;
-    *(void **)(state + 0x20) = entries;
-    *(void **)(state + 0x2C) = entries;
+    *(void **)(state + 0x08) = (void *)entries;
+    *(void **)(state + 0x14) = (void *)entries;
+    *(void **)(state + 0x20) = (void *)entries;
+    *(void **)(state + 0x2C) = (void *)entries;
     *(u32 *)lbl_803D2140 = first;
     *(u32 *)(state + 0x30) = zero;
     *(u32 *)(state + 0x34) = zero;
@@ -6273,47 +6285,69 @@ block_30:
 }
 #pragma pop
 s32 fn_800B6928(s8 arg0) {
+    struct Entry {
+        u8 pad0[0x1F80];
+        s32 result;
+        u8 pad1F84[8];
+        u16 flags;
+    };
+    u8 *base;
+    u8 *successBase;
+    u8 *record;
     s16 index = fn_800A485C(arg0) - 0x41;
-    u8 *base = (u8 *)lbl_803D2140;
-    void *entry;
+    Entry *entry;
     u16 flags;
     s32 result;
+    s32 value;
+    u8 *tail;
 
+    base = (u8 *)lbl_803D2140;
     fn_800B77C0(base + 0x64);
     if (index < 0 || index >= 0x1A) {
-        fn_800B783C(base + 0x64);
-        entry = 0;
+        fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+        index = 0;
     } else {
         fn_800B783C(base + 0x64);
-        entry = base + index * 0x1FC8 + 0xA0;
     }
-    flags = *(u16 *)((u8 *)entry + 0x1F8C);
+    record = base + index * 0x1FC8;
+    entry = (Entry *)(record + 0xA0);
+    flags = entry->flags;
     if (flags & 8) {
-        *(s32 *)(base + 0x40) = 10;
-        *(s32 *)((u8 *)entry + 0x1F80) = 10;
+        *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
+        entry->result = 10;
         return 10;
     }
     if (!(flags & 1)) {
-        *(s32 *)(base + 0x40) = 10;
-        *(s32 *)((u8 *)entry + 0x1F80) = 10;
+        *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
+        entry->result = 10;
         return 10;
     }
-    fn_800B77C0(base + 0x64);
+    fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
     result = fn_800A54AC(entry);
-    if (!result) {
-        fn_800B777C((u8 *)entry + 0x1F90);
-        result = 0;
+    if (result == 0) {
+        goto no_result;
     }
-    if (result) {
-        fn_800B783C(base + 0x64);
-        *(s32 *)(base + 0x40) = result;
-        *(s32 *)((u8 *)entry + 0x1F80) = result;
-        return result;
+    value = result;
+    goto check_result;
+no_result:
+    fn_800B777C((u8 *)entry + 0x1F90);
+    value = 0;
+check_result:
+    if (value == 0) {
+        goto clear_flags;
     }
-    *(u16 *)((u8 *)entry + 0x1F8C) &= 0xFFFE;
-    result = *(s32 *)(base + 0x30);
-    *(s32 *)(base + 0x30) = result - 1;
-    fn_800B783C(base + 0x64);
+    successBase = (u8 *)lbl_803D2140;
+    fn_800B783C(successBase + 0x64);
+    *(s32 *)(successBase + 0x40) = value;
+    result = value;
+    entry->result = value;
+    return result;
+clear_flags:
+    entry->flags &= 0xFFFE;
+    tail = (u8 *)lbl_803D2140;
+    result = *(s32 *)(tail + 0x30);
+    *(s32 *)(tail + 0x30) = result - 1;
+    fn_800B783C(tail + 0x64);
     return 0;
 }
 
@@ -11658,8 +11692,8 @@ extern "C" void fn_800C4BD8(s32 *p, s32 value, u32 size) {
     }
 }
 
-s32 fn_800C34B4(s32, s32, s16, s32);
-s32 fn_800C4E5C(s32, s32);
+extern "C" void fn_800C34B4(s32, s32, s32, s32);
+extern "C" s32 fn_800C4E5C(s32, void *);
 void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
  s32 span = 0x480, i=0, x=0, y=0, z=0, w=0;
  s32 row;
@@ -11671,7 +11705,7 @@ void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
    row=arg1;
    s32 dst=arg2;
    for(s8 j=0;j<arg4;j++,row+=0x1000,dst+=0x80)
-     fn_800C4E5C(dst,row+(*(s16 *)((char *)arg0+0x27c)*4));
+     fn_800C4E5C(dst,(void *)(row+(*(s16 *)((char *)arg0+0x27c)*4)));
    if(arg4==2) {
      if(arg5==0) {
        fn_800C34B4(arg1,arg3+y,*(s16 *)((char *)arg0+0x27c),arg5);
