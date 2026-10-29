@@ -1,9 +1,26 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <types.h>
+#include <macros.h>
+
 extern unsigned int lbl_802ED860[];
 extern void Block_link(void*, void*);
 extern void __sys_free(void*);
+void deallocate_from_fixed_pools(void ***, unsigned char *, unsigned int);
+
+typedef struct {
+    void (*function)(void ***, unsigned char *, unsigned int);
+    unsigned int size;
+    const unsigned long long *extab;
+} ET_ExtabIndex;
+
+#pragma section ".extab"
+DECL_SECTION(".extab") const unsigned long long etb_80004540 = 0x1008000000000000ULL;
+#pragma section ".extabindex"
+DECL_SECTION(".extabindex") const ET_ExtabIndex eti_80004730 = {
+    deallocate_from_fixed_pools, 0x1EC, &etb_80004540
+};
 
 typedef struct ET_FixBlock ET_FixBlock;
 typedef struct ET_FixSubBlock {
