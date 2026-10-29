@@ -13531,13 +13531,13 @@ extern "C" void fn_800D2FDC(void *arg0, void *arg1, s32 arg2, const char *fmt, .
     char buffer[0x100];
     u32 enabled = lbl_80407BD8[0];
 
+    if (enabled == 0) {
+        goto done;
+    }
+
+    va_start(vlist, fmt);
     if (enabled != 0) {
-        va_start(vlist, fmt);
-        if (enabled != 0) {
-            goto format;
-        }
-    } else {
-        goto output;
+        goto format;
     }
     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x287, lbl_8031EBB4);
 
@@ -13546,7 +13546,6 @@ format:
         goto done;
     }
 
-output:
     fn_800D30E8((s32)arg0, (s32)arg1, buffer, (s32)arg2, 0);
 
 done:
