@@ -16775,36 +16775,40 @@ extern char lbl_8031A028[];
 void sdp_disc_server_rsp(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     UINT8 *p;
     UINT8 rsp_pdu;
-    UINT16 len;
+    UINT32 len;
     BOOLEAN invalid_pdu = TRUE;
+
     fn_80070F90((UINT8 *)p_ccb + 8);
-    p = (UINT8 *)(p_msg + 1) + p_msg->offset;
-    rsp_pdu = *p++;
-    p_msg->len--;
-    len = p_msg->len;
+    p = (UINT8 *)p_msg + p_msg->offset;
+    rsp_pdu = p[8];
+    len = p_msg->len - 1;
+    p_msg->len = len;
+
     switch (rsp_pdu) {
     case 3:
         if (*(UINT8 *)((UINT8 *)p_ccb + 0x474) == 1) {
-            process_service_search_rsp(p_ccb, p, len);
+            process_service_search_rsp(p_ccb, p + 9, len);
             invalid_pdu = FALSE;
         }
         break;
     case 5:
         if (*(UINT8 *)((UINT8 *)p_ccb + 0x474) == 2) {
-            process_service_attr_rsp(p_ccb, p, len);
+            process_service_attr_rsp(p_ccb, p + 9, len);
             invalid_pdu = FALSE;
         }
         break;
     case 7:
         if (*(UINT8 *)((UINT8 *)p_ccb + 0x474) == 3) {
-            process_service_search_attr_rsp(p_ccb, p, len);
+            process_service_search_attr_rsp(p_ccb, p + 9, len);
             invalid_pdu = FALSE;
         }
         break;
     }
+
     if (invalid_pdu) {
         if (lbl_803C4C40[0x4630] >= 2)
-            fn_8007096C(0xA0001, lbl_8031A028, rsp_pdu, *(UINT8 *)((UINT8 *)p_ccb + 0x474));
+            fn_8007096C(0xA0001, lbl_8031A028, rsp_pdu,
+                        *(UINT8 *)((UINT8 *)p_ccb + 0x474));
         sdp_disconnect(p_ccb, 0xFFF3);
     }
 }
