@@ -2707,22 +2707,21 @@ extern u8 *lbl_80559010;
 void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused) {
     u8 i;
     u8 j;
-    u8 *entry;
     u8 *config;
-    u8 *peer;
 
     if (status != 0) return;
 
     for (i = 0; i < lbl_803C0C14[0x4D]; i++) {
-        entry = lbl_803C0C14 + (u32)i * 0xB;
-        if (bdcmp(entry, bd_addr) == 0) {
-            entry[6] = 1;
+        if (bdcmp(lbl_803C0C14 + (u32)i * 0xB, bd_addr) == 0) {
+            lbl_803C0C14[(u32)i * 0xB + 6] = 1;
             config = lbl_80559010;
             for (j = 1; j <= config[1]; j++) {
-                peer = config + ((u32)j * 4 - j);
-                if ((addr == peer[1] || peer[1] == 0xFF) && addr_type == peer[0]) {
-                    if (peer[2] > entry[7]) entry[7] = peer[2];
-                    break;
+                u32 peer_offset = (u32)j * 4 - j;
+                if ((addr == config[peer_offset + 1] || config[peer_offset + 1] == 0xFF) &&
+                    addr_type == config[peer_offset]) {
+                    if (config[peer_offset + 2] > lbl_803C0C14[(u32)i * 0xB + 7])
+                        lbl_803C0C14[(u32)i * 0xB + 7] = config[peer_offset + 2];
+                    return;
                 }
             }
             return;
@@ -5369,6 +5368,7 @@ extern u8 lbl_803163D0[];
 tBTM_STATUS BTM_CancelInquiry(void) {
     tBTM_STATUS result = 0;
     u8 *cb = lbl_803C0F78;
+    u8 *cb2;
     if (cb[0x27C0] >= 3) fn_8007093C(0xD0002, lbl_803163D0);
     if (fn_80079514() == 0) return 6;
     if (cb[0x1848] != 0 && !(cb[0x1848] & 4)) {
@@ -5380,13 +5380,14 @@ tBTM_STATUS BTM_CancelInquiry(void) {
             cb[0x1844] = 0;
             cb[0x1845]++;
         } else if (btsnd_hcic_inq_cancel() == 0) result = 3;
+        cb2 = lbl_803C0F78;
         *(u32 *)(cb + 0x16C0) += 1;
-        if (*(void **)(cb + 0x16DC) != NULL) {
-            GKI_freebuf(*(void **)(cb + 0x16DC));
-            *(u32 *)(cb + 0x16DC) = 0;
+        if (*(void **)(cb2 + 0x16DC) != NULL) {
+            GKI_freebuf(*(void **)(cb2 + 0x16DC));
+            *(u32 *)(cb2 + 0x16DC) = 0;
         }
-        *(u16 *)(cb + 0x16E0) = 0;
-        *(u16 *)(cb + 0x16E2) = 0;
+        *(u16 *)(cb2 + 0x16E0) = 0;
+        *(u16 *)(cb2 + 0x16E2) = 0;
     }
     return result;
 }
@@ -12628,16 +12629,18 @@ void l2cu_send_peer_info_rsp(void *arg0, s32 arg1, u16 arg2) {
 
 void *l2cu_allocate_ccb(void *arg0, u16 arg1) {
     u8 *ccb = *(u8 **)(lbl_803C4040 + 0x7B0);
-    u32 index;
-    u32 magic;
+    s32 offset;
+    u16 index;
     u8 *next;
+
     if (ccb == NULL) return NULL;
+
     next = *(u8 **)(ccb + 8);
     *(u8 **)(lbl_803C4040 + 0x7B0) = next;
     ccb[0] = 1;
-    index = (u32)(ccb - (lbl_803C4040 + 0x178));
-    magic = (u32)(((s32)0x84210843 * (s32)index + (s32)index) >> 6);
-    *(u16 *)(ccb + 0x14) = (u16)(magic + ((u32)magic >> 31) + 0x40);
+    offset = (s32)(ccb - (lbl_803C4040 + 0x178));
+    index = (u16)(offset / 0x7C);
+    *(u16 *)(ccb + 0x14) = index + 0x40;
     *(void **)(ccb + 0x10) = arg0;
     if (*(void **)((u8 *)arg0 + 8) == NULL) {
         *(u8 **)((u8 *)arg0 + 0xC) = ccb;
@@ -13463,7 +13466,6 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
 }
 
 void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
-    struct RFCOMM_CONFIG_PORT { u8 pad[0x68]; u16 id; };
     s32 index = arg0 - 0x40;
     char *msg = lbl_803196B8;
     void *port;
@@ -13472,7 +13474,7 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
-        if (port != NULL && ((struct RFCOMM_CONFIG_PORT *)port)->id != arg0) {
+        if (port != NULL && *(u16 *)((u8 *)port + 0x68) != arg0) {
             if (lbl_803C4828[0x414] >= 2) ((void (*)(u32, char *, u32))fn_8007096C)(0x90001, msg + 0x1C, arg0);
             port = NULL;
         }
