@@ -1933,7 +1933,7 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling off
+#pragma scheduling reset
 void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int arg1, const void *arg2, unsigned long arg3) {
     int format;
     unsigned int interrupt;
