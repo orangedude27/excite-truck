@@ -2274,12 +2274,16 @@ extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
     return 0;
 }
 
+#pragma push
+#pragma small_data on
 extern "C" void *fn_8021E0C0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5, void *arg6, void *arg7, s32 arg8) {
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
+    f32 alpha = lbl_805634A8;
+    void *vtable = lbl_8033EA90;
     *(u8 *)((u8 *)arg0 + 0x268) = 0;
-    *(void **)arg0 = lbl_8033EA90;
+    *(void **)arg0 = vtable;
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
-    *(f32 *)((u8 *)arg0 + 0x264) = lbl_805634A8;
+    *(f32 *)((u8 *)arg0 + 0x264) = alpha;
     s32 stride = fn_8022B620(7, lbl_8055B880) + 2;
     *(void **)((u8 *)arg0 + 0x244) = arg5;
     *(s32 *)((u8 *)arg0 + 0x258) = stride;
@@ -2297,6 +2301,7 @@ extern "C" void *fn_8021E0C0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     fn_80219440(arg0, 0, (u8 *)arg5 + 0xC, 4);
     return arg0;
 }
+#pragma pop
 
 extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r4;
@@ -2830,6 +2835,35 @@ void fn_8021FD68(void *arg0, s32 arg1) {
     z = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
     fn_802C5320(*(s32 *)((u8 *)arg0 + 0x25C), active, x, y, lbl_805634A8, (f32)obj->vf30(), z);
     fn_802C5334(*(s32 *)((u8 *)arg0 + 0x260), active, x, y, lbl_805634A8, progress, z, lbl_805634A8, lbl_805634A8, progress / (f32)obj->vf30());
+}
+
+extern "C" void *fn_8021FF34(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
+    f32 temp_f0;
+    f32 temp_f2;
+    s32 temp_r4;
+    s32 temp_r8;
+
+    temp_r8 = *(s32 *)((u8 *)arg1 + 0xC);
+    temp_r4 = *(s32 *)((u8 *)arg1 + 8);
+    fn_80218F34(arg0, temp_r4, temp_r8,
+                temp_r4 + *(s32 *)((u8 *)arg1 + 0x14),
+                temp_r8 + *(s32 *)((u8 *)arg1 + 0x18), 0);
+    temp_f2 = farg1 - farg0;
+    *(void **)arg0 = lbl_8033E7F4;
+    *(s32 *)((u8 *)arg0 + 0x244) = arg2;
+    *(f32 *)((u8 *)arg0 + 0x248) = farg0;
+    *(f32 *)((u8 *)arg0 + 0x24C) = farg1;
+    *(f32 *)((u8 *)arg0 + 0x250) = temp_f2 / (f32)arg3;
+    *(s32 *)((u8 *)arg0 + 0x254) =
+        ((s32 (*)(void *, void *))fn_802C5130)(lbl_8033D9BC, lbl_8033E7F4);
+    *(s32 *)((u8 *)arg0 + 0x258) = 0;
+    *(s32 *)((u8 *)arg0 + 0x25C) =
+        fn_80228F40(*(s32 *)((u8 *)arg1 + 8),
+                    *(s32 *)((u8 *)arg1 + 0xC));
+    temp_f0 = fn_8023659C() - lbl_805634E8;
+    *(f32 *)((u8 *)arg0 + 0x264) = temp_f0;
+    *(f32 *)((u8 *)arg0 + 0x260) = temp_f0;
+    return arg0;
 }
 
 extern "C" u8 lbl_8033E7F4[];
