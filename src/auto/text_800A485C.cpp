@@ -4317,7 +4317,7 @@ void fn_800B5CB4(void);
 extern "C" void fn_800B5CB4(void);
 extern "C" void fn_800B0748(void);
 void fn_800B0748(void) {
-    fn_800B5CB4();
+    ((void (*)(void))fn_800B5CB4)();
 }
 
 extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
@@ -5152,6 +5152,40 @@ extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
 extern "C" s32 fn_800B317C(s32 arg0, s32 arg1) {
 extern s32 fn_800B3754(s32, s32 *, s32);
 return fn_800B3754(arg0, (s32 *)arg1, 1) == 0;
+}
+
+extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *, u8 *, s32 *);
+extern "C" u8 lbl_80559218;
+extern "C" s32 VFiPFPATH_cmpName(void *arg0, s32 arg1, s32 arg2) {
+    s32 sp8 = 0;
+    u8 spC[28];
+    register u8 *var_r31 = spC;
+    register u8 *temp_r30;
+    u8 temp_r3;
+    temp_r30 = (u8 *)(u32)fn_800A4D74((void *)(u32)arg1, 3);
+    fn_800A4AAC((char *)var_r31, (char *)arg0);
+    if ((((u32)lbl_803D2140[0x60 / 4] & 2U) == 2U) &&
+        ((u32)fn_800A4D44((void *)(u32)arg1) == 2U) &&
+        fn_800A4AD0(var_r31, &lbl_80559210) != 0 &&
+        fn_800A4AD0(var_r31, &lbl_80559214) != 0 &&
+        ((s32 (*)(void *, u32, u32))fn_800B4D5C)((void *)(u32)arg1, 3, 1) == 0 &&
+        arg2 == 0) {
+        return 1;
+    }
+    if (fn_800A4AD0(temp_r30, &lbl_80559218) == 0) {
+        do {
+            var_r31 = (u8 *)((u32)var_r31 + 1);
+            temp_r3 = *var_r31;
+        } while ((s8)temp_r3 != 0 && (s8)temp_r3 != '.');
+        if ((s8)temp_r3 != 0) goto compare;
+        *var_r31 = '.';
+        var_r31[1] = 0;
+    } else {
+        if ((s8)*temp_r30 == 0) return 1;
+        if ((s8)*spC == 0) return 1;
+    }
+compare:
+    return VFiPFPATH_cmpNameImpl(spC, temp_r30, &sp8);
 }
 
 extern "C" s32 fn_800B3304(void *arg0, void *arg1) {
@@ -8167,6 +8201,56 @@ if(arg4==0)lbl_8055DD6C=0;
 }
 done:
 return var_r20;
+}
+
+extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
+    const char *messages = lbl_8031B838;
+    s32 returnValue = 0;
+    s32 handle;
+    void *context;
+
+    if (lbl_80559248 < 0) {
+        returnValue = (s32)0xC1000000;
+    } else {
+        if ((u32)arg0 >= 4) {
+            OSReport(messages + 0x498);
+            return -4;
+        }
+
+        context = *arg1;
+        if (context == 0) {
+            OSReport(messages + 0x4BC);
+            return -4;
+        }
+
+        {
+            const char *pathTable = (const char *)lbl_80407580;
+            handle = IOS_Open(pathTable + ((u32)arg0 << 5), 0);
+            if (handle < 0) {
+                if (handle == -2) {
+                    OSReport(messages + 0x2DC,
+                             pathTable + (arg0 * 0x20));
+                } else if (handle == -6) {
+                    OSReport(messages + 0x2F0,
+                             pathTable + (arg0 * 0x20));
+                } else {
+                    OSReport(messages + 0x304,
+                             pathTable + (arg0 * 0x20), handle);
+                }
+            }
+        }
+
+        *(s32 *)*arg1 = handle;
+        if (*(s32 *)*arg1 < 0) {
+            returnValue = -1;
+            OSReport(messages + 0x4E0);
+        }
+
+        *(s32 *)((u8 *)*arg1 + 0x24) = 0;
+        *(s32 *)((u8 *)*arg1 + 0x18) = 0x4000;
+        *(s32 *)((u8 *)*arg1 + 0x20) = 0;
+    }
+    return returnValue;
 }
 
 struct IosDevice {
