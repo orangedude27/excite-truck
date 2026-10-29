@@ -1107,6 +1107,8 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     OSRestoreInterrupts(level);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_800E41EC(void) {
     if ((s8)lbl_8055DE18 == 0) {
         fn_800E279C(&lbl_80407F6C);
@@ -1145,6 +1147,7 @@ extern "C" void fn_800E41EC(void) {
         (*(void (**)(void *))(*(void **)((char *)&lbl_80407F6C + 0x6C2C)))(&lbl_80407F6C);
     }
 }
+#pragma pop
 
 #pragma use_lmw_stmw reset
 extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *);
@@ -2534,7 +2537,7 @@ extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *se
     if (*((u8 *)self + 0x11C) != 0) {
         char *voice = (char *)self;
         int count = *(int *)((char *)self + 0x104);
-        register int found = 0;
+        int found = 0;
         int i;
         for (i = count; i > 0; --i) {
             void *address = *(void **)(voice + 0x2C);
@@ -2547,7 +2550,7 @@ extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *se
             if (*((u8 *)self + 0x11E) != 0) {
                 unsigned int nested = OSDisableInterrupts();
                 void *manager = *(void **)((char *)self + 0xC);
-                int active;
+                register int active;
                 if (manager == 0) {
                     OSRestoreInterrupts(nested);
                     active = 0;
