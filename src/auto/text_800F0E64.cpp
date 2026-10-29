@@ -101,6 +101,10 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ..
 extern "C" s32 fn_800E9B88(void *);
 extern "C" s32 fn_800E9B9C(void *);
 extern "C" const char lbl_80325C00[];
+extern "C" const char lbl_803263A8[];
+extern "C" const char lbl_80326384[];
+extern "C" const char lbl_80326378[];
+extern "C" const char lbl_80326354[];
 extern "C" const char lbl_80325C18[];
 extern "C" const char lbl_80325C64[];
 extern "C" const char lbl_80325C8C[];
