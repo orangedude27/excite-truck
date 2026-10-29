@@ -993,6 +993,7 @@ void (*WUDSetSyncSimpleCallback(void (*pCallback)(s32, s32)))(s32, s32) {
     return pOldCallback;
 }
 
+#pragma use_lmw_stmw off
 s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
     u8 *base = lbl_80392960;
     s32 success = 0;
@@ -1036,6 +1037,7 @@ s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
     }
     return success;
 }
+#pragma use_lmw_stmw reset
 
 extern char lbl_803134F0[];
 extern s32 StartSyncDevice(u8, s8, BOOL);
@@ -3791,6 +3793,41 @@ void bta_hh_disc_cmpl(void) {
     fn_800716F0(base + 0x228);
     (*(void (**)(u32, void *))(base + 0x224))(1, &status);
     memset(base, 0, 0x230);
+}
+
+extern u8 bta_hh_tod_spt(void *, u8);
+void bta_hh_sdp_cback(s32 arg0, register u16 arg1, void *arg2) {
+    u8 sp9;
+    u8 sp8 = 0x10;
+    register void *temp_r31 = *(void **)(lbl_803C0D48 + 0x210);
+    u16 var_r29 = arg1;
+
+    if (arg0 == 0) {
+        if (*(u8 *)((u8 *)temp_r31 + 0x14) != 0) {
+            var_r29 |= 0x8000;
+        }
+        if (lbl_8055DC80 >= 4) {
+            ((void (*)(u32, void *, void *, s32, u16))fn_80070984)(
+                0x503, lbl_803151D8, temp_r31, arg0, var_r29);
+        }
+        if (bta_hh_tod_spt(temp_r31, *(u8 *)((u8 *)arg2 + 0x64)) != 0) {
+            if (*(u8 *)((u8 *)temp_r31 + 0x16) == 0xFF) {
+                sp8 = HID_HostAddDev((u8 *)temp_r31 + 8, var_r29, &sp9);
+                if (sp8 == 0) {
+                    lbl_803C0D48[sp9 + 0x214] = *(u8 *)((u8 *)temp_r31 + 0x12);
+                    ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(
+                        temp_r31, sp9, var_r29, (u8 *)arg2 + 0x68,
+                        *(u8 *)((u8 *)arg2 + 0x64), *(u8 *)((u8 *)temp_r31 + 0x15));
+                } else {
+                    *(u8 *)((u8 *)temp_r31 + 0x15) = 0;
+                }
+            }
+        } else {
+            sp8 = 0xFF;
+        }
+    }
+    fn_800716F0(lbl_803C0D48 + 0x228);
+    bta_hh_sm_execute((tBTA_HH_DEV_CB *)temp_r31, 0x1707, &sp8);
 }
 
 void bta_hh_sdp_cmpl(void *arg0, u8 *status) {
