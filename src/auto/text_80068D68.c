@@ -35,6 +35,7 @@ static void USB_ERR(const char *, ...);
 extern void bta_hh_add_device_to_list(void *, s8, s16, void *, s32, s32);
 extern char lbl_80313258[];
 extern char lbl_80316EE0[];
+extern void btm_sec_collision_timeout(void);
 extern void rfc_send_rpn();
 extern void rfc_send_msc();
 extern u8 HID_HostCloseDev(u8);
@@ -5019,6 +5020,39 @@ void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
         BTM_TRACE_DEBUG1("BTM: p_flow->delay_variation: 0x%02x", qossu.flow.delay_variation);
         (*p_cb)(&qossu);
     }
+}
+
+tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
+    extern char lbl_80315F4C[];
+    u8 *entry;
+    u32 i;
+
+    if (lbl_803C0F78[0x27C0] >= 3) {
+        fn_800709CC(0xD0002, lbl_80315F4C,
+                    remote_bda[0], remote_bda[1], remote_bda[2],
+                    remote_bda[3], remote_bda[4], remote_bda[5]);
+    }
+
+    if (*(void **)(lbl_803C0F78 + 0x5E0) != NULL) return 2;
+
+    entry = lbl_803C0F78 + 0x34;
+    for (i = 0; i < 4; i++, entry += 0x11C) {
+        if (entry[0x119] == 0) continue;
+        if (memcmp(entry + 8, remote_bda, 6) != 0) continue;
+        goto found;
+    }
+    entry = NULL;
+found:
+    if (entry == NULL) return 7;
+
+    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x5C8), 9, 3);
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = p_cb;
+    if (btsnd_hcic_read_rssi(*(u16 *)entry) == 0) {
+        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = NULL;
+        fn_80070F90(lbl_803C0F78 + 0x5C8);
+        return 3;
+    }
+    return 1;
 }
 
 void btm_read_rssi_complete(u8 *p) {
