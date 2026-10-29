@@ -415,6 +415,7 @@ extern "C" void *lbl_8033EDC8[];
 extern "C" void *lbl_8033ED44[];
 
 extern f32 lbl_805634A0;
+extern f32 lbl_805634AC;
 extern f32 lbl_805634A4;
 extern f32 lbl_805634B0;
 extern f32 lbl_805634B4;
@@ -2039,6 +2040,34 @@ void fn_8021CF9C(void);
 void fn_8021AC24(void *, int, int, int);
 extern "C" void fn_8021CF9C(void);
 extern "C" void fn_8021D040(void) { fn_8021CF9C(); }
+
+extern "C" void *fn_8021D044(void *arg0, s32 arg1, s32 arg2, s32 arg3, const char *arg4,
+                            s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
+    fn_80219568(arg0, arg1, arg2, 0, arg5, 0, 0, arg7);
+    *(s32 *)((u8 *)arg0 + 0x25C) = arg6;
+    *(void **)arg0 = lbl_8033EBA0;
+    *(s32 *)((u8 *)arg0 + 0x260) = arg7;
+    *(s32 *)((u8 *)arg0 + 0x264) = arg8;
+    *(s32 *)((u8 *)arg0 + 0x254) = arg3;
+    *(s32 *)((u8 *)arg0 + 0x258) = 0;
+    *(s32 *)((u8 *)arg0 + 0x2B8) =
+        fn_8012850C((void *)(fn_8022D1B4(arg4) * 4), lbl_8033D940);
+
+    char *text = (char *)arg4;
+    while (*text != 0) {
+        char **table = *(char ***)((u8 *)arg0 + 0x2B8);
+        s32 count = *(s32 *)((u8 *)arg0 + 0x258);
+        table[count] = text;
+        *(s32 *)((u8 *)arg0 + 0x258) = count + 1;
+        text += strlen(text) + 1;
+    }
+
+    fn_80219440(arg0, 0, (void *)arg3, 4);
+    fn_8021D61C(arg0);
+    *(s32 *)((u8 *)arg0 + 0x2BC) = 0;
+    *(s32 *)((u8 *)arg0 + 0x2C0) = fn_80228F40(arg1, arg2);
+    return arg0;
+}
 
 extern "C" void fn_8021D154(void *arg0) {
     void *value;
