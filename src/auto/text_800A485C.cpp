@@ -2569,7 +2569,7 @@ candidateCheck:
 }
 #pragma pop
 
-extern "C" void fn_800B3A70(u8 *buf, u8 *short_name, u32 flags);
+extern "C" s32 fn_800B3A70(void *buf, void *short_name, s32 flags);
 extern "C" void fn_800B3BEC(u8 *buf, u8 *src, u8 flags);
 extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
     u8 buf[13];
@@ -3967,44 +3967,61 @@ extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
 extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
 extern "C" s32 fn_800B05C8(void *, u16, u32 *);
-extern "C" s32 fn_800AEBA0(void *arg0, u16 arg1, u32 arg2, u32 *arg3, s32 arg_sp0) {
-    void *page;
+extern "C" s32 fn_800AEBA0(void *arg0, s32 arg1, u32 arg2, u32 *arg3, s32 arg_sp0) {
     s32 pageIndex;
+    void *page;
     s32 type;
+    u32 maxValue;
     s32 result;
     u32 value;
-    u32 maxValue;
+    u32 index = (u32)arg1;
+    u32 expected = arg2;
+    u32 *output = arg3;
+    void *object = arg0;
 
-    type = *(s32 *)((u8 *)arg0 + 0x1C);
+    type = *(s32 *)((u8 *)object + 0x1C);
     maxValue = *(u32 *)((u8 *)lbl_802EEF40 + type * 0x14 + 4);
-    *arg3 = -1;
-    result = fn_800A8D08(-1, &page, &pageIndex, type, (s32 *)lbl_802EEF40);
-    if (result != 0) return result;
+    *output = -1;
+    result = ((s32 (*)(void *, s32, void **, s32 *))(&::fn_800A8D08))(
+        object, -1, &page, &pageIndex);
+    if (result != 0)
+        return result;
     *(u16 *)((u8 *)page + 2) = 0;
+
     for (;;) {
-        if (arg1 >= maxValue) {
-            VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
-            return 0xD;
+        type = *(s32 *)((u8 *)object + 0x1C);
+        switch (type) {
+        case 0:
+            result = fn_800AFBA8(object, (u16)index, &value);
+            break;
+        case 1:
+            result = fn_800B00E8(object, index, &value, page);
+            break;
+        case 2:
+            result = fn_800B05C8(object, (u16)index, &value);
+            break;
+        default:
+            result = 0xF;
+            break;
         }
-        type = *(s32 *)((u8 *)arg0 + 0x1C);
-        if (type == 0) result = fn_800AFBA8(arg0, arg1, &value);
-        else if (type == 1) result = fn_800B00E8(arg0, arg1, &value, page);
-        else if (type == 2) result = fn_800B05C8(arg0, arg1, &value);
-        else result = 0xF;
         if (result != 0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
+            VFiPFCACHE_FreeFATPage_800A8E10(object, page);
             return result;
         }
-        if (arg2 == value) {
-            *arg3 = arg1;
+        if (expected == value) {
+            *output = index;
             return 0;
         }
-        arg1--;
-        if (arg1 >= 2 && arg1 < *(u32 *)((u8 *)arg0 + 0x34) + 2) continue;
-        if (arg1 < maxValue) {
-            *arg3 = arg2;
+        index--;
+        if (index >= 2 &&
+            index < *(u32 *)((u8 *)object + 0x34) + 2)
+            continue;
+        if (index < maxValue) {
+            *output = expected;
             return 0;
         }
+        VFiPFCACHE_FreeFATPage_800A8E10(object, page);
+        return 0xD;
     }
 }
 
@@ -4359,8 +4376,9 @@ fetch:
             }
         }
     }
-    if (result != 0)
-        return result;
+    if (result == 0)
+        goto store_sector;
+    return result;
 
 store_sector:
     *(u32 *)((u8 *)descriptor + 0x18) = sector;
@@ -4368,11 +4386,8 @@ store_sector:
         goto fetch;
 
 read_value:
-    {
-        u32 offset = scaled & (*(u16 *)object - 1);
-        void *buffer = *(void **)((u8 *)descriptor + 8);
-        value = *(u16 *)((u8 *)buffer + offset);
-    }
+    value = *(u16 *)((u8 *)*(void **)((u8 *)descriptor + 8) +
+                     (scaled & (*(u16 *)object - 1)));
     *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
     return 0;
 }
@@ -5629,40 +5644,128 @@ var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, (u
 return var_r31;
 }
 
-s32 fn_800B3A70(char *dst, const char *src, s32 flags) {
-    s32 len = 0;
-    while (len < 8) {
-        char c = *src++;
-        *dst++ = c;
-        len++;
-        if (len >= 8 || c == 0 || c == '.') break;
-    }
-    if (len == 0) {
-        len = 0;
-        do {
-            char c = *src++;
-            *dst++ = c;
-            len++;
-            if (len >= 2 || c == 0) break;
-        } while (1);
-    }
-    if (!(flags & 8)) {
-        if (len < 8) {
-            s32 n = 8 - len;
-            do { *dst++ = ' '; } while (--n);
-            len += 8 - len;
+s32 fn_800B3A70(char *arg0, const char *arg1, s32 arg2) {
+    s32 temp_r8;
+    s32 var_r9;
+    u32 temp_r0_4;
+    u32 temp_r0_6;
+    u32 temp_r5;
+    u32 var_ctr;
+    u32 var_ctr_2;
+    u32 var_ctr_3;
+    u32 var_ctr_4;
+    u32 var_r4_2;
+    u32 var_r6;
+    char *var_r3;
+    const char *var_r4;
+    u8 temp_r0;
+    u8 temp_r0_2;
+    u8 temp_r0_3;
+    u8 temp_r0_5;
+
+    var_r3 = arg0;
+    var_r4 = arg1;
+    var_r9 = 0;
+loop_2:
+    if (var_r9 < 8) {
+        temp_r0 = *var_r4;
+        if (((s8)temp_r0 != 0) && ((s8)temp_r0 != 0x2E)) {
+            temp_r0_2 = *var_r4;
+            var_r9 += 1;
+            var_r4 += 1;
+            *var_r3 = temp_r0_2;
+            var_r3 += 1;
+            goto loop_2;
         }
     }
-    if (*src != 0) {
-        if (!(flags & 8)) src++;
-        while (*src != 0) {
-            *dst++ = *src++;
-            len++;
+    if (var_r9 == 0) {
+        var_r9 = 0;
+loop_8:
+        if ((var_r9 < 2) && ((s8)*var_r4 != 0)) {
+            temp_r0_3 = *var_r4;
+            var_r9 += 1;
+            var_r4 += 1;
+            *var_r3 = temp_r0_3;
+            var_r3 += 1;
+            goto loop_8;
         }
     }
-    if (len < 11) {
-        s32 n = 11 - len;
-        do { *dst++ = ' '; } while (--n);
+    temp_r8 = arg2 & 8;
+    if (temp_r8 == 0) {
+        var_r6 = 8 - var_r9;
+        if (var_r9 < 8) {
+            temp_r5 = var_r6 >> 3;
+            temp_r0_4 = var_r6;
+            var_ctr = temp_r5;
+            if (temp_r5 != 0) {
+                do {
+                    var_r3[0] = 0x20;
+                    var_r3[1] = 0x20;
+                    var_r3[2] = 0x20;
+                    var_r3[3] = 0x20;
+                    var_r3[4] = 0x20;
+                    var_r3[5] = 0x20;
+                    var_r3[6] = 0x20;
+                    var_r3[7] = 0x20;
+                    var_r3 += 8;
+                    var_ctr -= 1;
+                } while (var_ctr != 0);
+                var_r6 &= 7;
+                if (var_r6 != 0) goto block_15;
+            } else {
+block_15:
+                var_ctr_2 = var_r6;
+                do {
+                    *var_r3 = 0x20;
+                    var_r3 += 1;
+                    var_ctr_2 -= 1;
+                } while (var_ctr_2 != 0);
+            }
+            var_r9 += temp_r0_4;
+        }
+    }
+    if ((s8)*var_r4 != 0) {
+        if (temp_r8 == 0) {
+            var_r4 += 1;
+        }
+loop_22:
+        if ((s8)*var_r4 != 0) {
+            temp_r0_5 = *var_r4;
+            var_r9 += 1;
+            var_r4 += 1;
+            *var_r3 = temp_r0_5;
+            var_r3 += 1;
+            goto loop_22;
+        }
+    }
+    var_r4_2 = 0xB - var_r9;
+    if (var_r9 < 0xB) {
+        temp_r0_6 = var_r4_2 >> 3;
+        var_ctr_3 = temp_r0_6;
+        if (temp_r0_6 != 0) {
+            do {
+                var_r3[0] = 0x20;
+                var_r3[1] = 0x20;
+                var_r3[2] = 0x20;
+                var_r3[3] = 0x20;
+                var_r3[4] = 0x20;
+                var_r3[5] = 0x20;
+                var_r3[6] = 0x20;
+                var_r3[7] = 0x20;
+                var_r3 += 8;
+                var_ctr_3 -= 1;
+            } while (var_ctr_3 != 0);
+            var_r4_2 &= 7;
+            if (var_r4_2 != 0) goto block_27;
+        } else {
+block_27:
+            var_ctr_4 = var_r4_2;
+            do {
+                *var_r3 = 0x20;
+                var_r3 += 1;
+                var_ctr_4 -= 1;
+            } while (var_ctr_4 != 0);
+        }
     }
     return 0;
 }
@@ -14710,35 +14813,26 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
 extern "C" void PPCHalt(void);
 extern "C" void fn_800D2098(const char *file, s32 line, const char *msg, va_list vlist) {
     const char *strings = lbl_8031E9D0;
+    void *head = (u8 *)vlist - 0x68;
     OSDisableInterrupts();
     fn_800591AC(0);
     AIRegisterDMACallback_800591F0(0);
-    if (lbl_8055DDBC != 0) {
-        fn_800D3634(0);
-    }
-    ((void (*)(s32 *))fn_800D1F7C)((s32 *)((u8 *)vlist - 0x68));
+    if (lbl_8055DDBC != 0) fn_800D3634(0);
+    ((void (*)(s32 *))fn_800D1F7C)((s32 *)head);
     if (lbl_8055DDBC != 0) {
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, strings + 0x60, file, line);
         Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void *)3, lbl_8055DDBC, msg, vlist);
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, lbl_805597DC);
-        void *head = lbl_8055DDBC;
-        if (head == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1B2, strings + 0x7C);
-        }
+        head = lbl_8055DDBC;
+        if (head == 0) Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1B2, strings + 0x7C);
         s32 viewLines = *(u16 *)((u8 *)head + 0x20);
         s32 lines = nw4hbm::db::Console_GetTotalLines((nw4hbm::db::detail::ConsoleHead *)head) - viewLines;
-        if (lines < 0) {
-            lines = 0;
-        }
+        if (lines < 0) lines = 0;
         head = lbl_8055DDBC;
-        if (head == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x22D, strings + 0x7C);
-        }
+        if (head == 0) Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x22D, strings + 0x7C);
         *(s32 *)((u8 *)head + 0x18) = lines;
         head = lbl_8055DDBC;
-        if (head == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1F1, strings + 0x7C);
-        }
+        if (head == 0) Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1F1, strings + 0x7C);
         ((u8 *)head)[0x22] = 1;
         Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(lbl_8055DDBC);
     } else {
