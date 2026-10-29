@@ -1162,12 +1162,13 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
     return arg1 + result;
 }
 
+#pragma use_lmw_stmw off
 extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
     u8 *base;
     u16 index;
     u32 pair;
     u32 table;
-    register u32 offset;
+    u32 offset;
     u32 record;
     s32 result;
 
@@ -1188,24 +1189,26 @@ extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
             goto found;
         index++;
     }
+
+found:
     if (index == 0x1A)
         return 10;
 
-found:
     table = (u32)&lbl_803D1640;
     offset = (u32)index * 0x28;
-    result = fn_800A625C(arg0, (s32)(table + offset + 0x61C));
+    result = fn_800A625C(arg0, (s32)(base + index * 0x28 + 0x61C));
     if (result != 0)
         return result;
 
     record = table + offset;
-    *(u16 *)table = *(u16 *)table + 1;
+    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
     *(u32 *)(record + 0x61C) |= 1;
     *(s32 *)(record + 0x620) = (s32)arg0;
     *(s32 *)(record + 0x624) = arg1;
     *arg2 = (s32)(record + 0x61C);
     return 0;
 }
+#pragma use_lmw_stmw reset
 
 extern "C" s32 fn_800A71A0(s32 *arg0) {
     *(volatile u32 *)arg0 &= 0xFFFFFFFE;
@@ -14349,22 +14352,28 @@ extern "C" const char lbl_8031F1D8[];
 extern "C" const char lbl_8031F1CC[];
 extern "C" const char lbl_8031F1A8[];
 extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
-    void *node;
-    void *end;
-    void *head = arg0;
-    const char *file = lbl_8031EE58;
-    if (head == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x22f, file + 0x2b0);
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x230, file + 0x2dc);
-    node = M2C_FIELD(head, void **, 4);
-    end = (u8 *)head + 4;
-    while (node != end) {
-        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23d, lbl_8031F1D8);
-        if (arg1 == M2C_FIELD(node, u32 *, 8)) {
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23d, lbl_8031F1D8);
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1CC, 0x193, lbl_8031F1A8);
-            return node;
+    register u32 node;
+    register u32 sentinel;
+    register const char *file = lbl_8031EE58;
+
+    if (arg0 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x22F, file + 0x2B0);
+    if (arg1 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x230, file + 0x2DC);
+
+    node = *(u32 *)((u8 *)arg0 + 4);
+    sentinel = (u32)arg0 + 4;
+    while (node != sentinel) {
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+        if (arg1 == *(u32 *)(node + 8)) {
+            if (node == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            if (node == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1CC, 0x193, lbl_8031F1A8);
+            return (void *)node;
         }
-        node = M2C_FIELD(node, void **, 0);
+        node = *(u32 *)node;
     }
     return 0;
 }
