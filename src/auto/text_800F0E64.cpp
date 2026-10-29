@@ -1855,15 +1855,11 @@ extern "C" s32 detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerC
                 if (waveTable == 0)
                     Warning__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x366, lbl_803251B0);
                 groupBase = 0;
-                goto check_group;
+            } else if (groupIndex >= waveTable[0]) {
+                groupBase = 0;
+            } else {
+                groupBase = *(u32 *)((u8 *)waveTable + groupIndex * 8 + 8);
             }
-            if (groupIndex < waveTable[0])
-                goto get_group_base;
-            groupBase = 0;
-            goto check_group;
-        get_group_base:
-            groupBase = *(u32 *)((u8 *)waveTable + groupIndex * 8 + 8);
-        check_group:
             if (groupBase != 0 &&
                 ((ReadGroupItemInfoFn)fn_800F282C)(*(void **)(obj + 0x10), filePos[0], filePos[1], wavePos) != 0)
                 return groupBase + wavePos[3];
