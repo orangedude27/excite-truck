@@ -1827,8 +1827,9 @@ extern "C" void fn_8015B864(void *arg0) {
         virtual s32 type();
     };
     struct Adaptor {
-        virtual void a0(); virtual void a1();
-        virtual void format(const char *, ...);
+        virtual void a0();
+        virtual void a1();
+        virtual void format(int, ...);
         virtual void a3();
         virtual void clear();
         virtual void a5();
@@ -1837,25 +1838,21 @@ extern "C" void fn_8015B864(void *arg0) {
         virtual void setState(s32);
     };
     Obj *obj = (Obj *)arg0;
-    Adaptor *adaptor;
-    s32 value, current;
-    adaptor = *(Adaptor **)((char *)arg0 + 0x248);
-    if (adaptor != 0) {
-        adaptor->format((const char *)lbl_8055A058, obj->progress());
-        adaptor = *(Adaptor **)((char *)arg0 + 0x248);
-        adaptor->setProgress(obj->type());
+    s32 limit, current;
+    if (*(void **)((char *)arg0 + 0x248) != 0) {
+        (*(Adaptor **)((char *)arg0 + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
+        (*(Adaptor **)((char *)arg0 + 0x248))->setProgress(obj->type());
         obj->noop();
-        adaptor = *(Adaptor **)((char *)arg0 + 0x248);
-        adaptor->clear();
-        value = obj->lower();
+        (*(Adaptor **)((char *)arg0 + 0x248))->clear();
+        limit = obj->lower();
         current = obj->upper();
-        if (current >= value) {
-            adaptor = *(Adaptor **)((char *)arg0 + 0x248);
-            adaptor->setState(1);
+        if (current >= limit) {
+            (*(Adaptor **)((char *)arg0 + 0x248))->setState(1);
         }
     }
-    adaptor = *(Adaptor **)((char *)arg0 + 0x248);
-    if (adaptor != 0) adaptor->format((const char *)lbl_8055A058, obj->progress());
+    if (*(void **)((char *)arg0 + 0x248) != 0) {
+        (*(Adaptor **)((char *)arg0 + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
+    }
 }
 
 extern "C" s32 fn_8015BCEC(void) { return 7; }
@@ -2452,7 +2449,7 @@ extern "C" f32 fn_8015D5A4(void *arg0) {
     };
     int idx = ((V *)arg0)->index();
     int count = *(int *)((char *)arg0 + 0xC);
-    register f32 fraction = lbl_80561754;
+    f32 fraction = lbl_80561754;
     int previous;
     if (idx < count - 1) {
         if (idx > 0)
@@ -2466,7 +2463,9 @@ extern "C" f32 fn_8015D5A4(void *arg0) {
         if (den > lbl_80561754)
             fraction = num / den;
     }
-    return (f32)idx + fraction;
+    f32 result = (f32)idx;
+    result = result + fraction;
+    return result;
 }
 #pragma scheduling on
 extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
