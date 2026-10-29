@@ -7612,6 +7612,50 @@ extern "C" s32 fn_800BA238(s32 arg0) {
     return 0;
 }
 
+extern "C" s32 fn_800BA874(u32 *, u16 *);
+extern "C" s32 fn_800BA290(s32 arg0, u32 *arg1) {
+    u32 flags;
+    s32 result;
+    const char *str = lbl_8031B2B0;
+
+    if (arg0 == 0 || arg1 == 0)
+        return 1;
+    if ((*(u32 *)lbl_80407300 & 2) == 0)
+        return 0xF;
+
+    result = fn_800BAD9C(*(void **)(lbl_80407300 + 8), &flags);
+    if (result != 0) {
+        OSReport(str + 0x278, result);
+        return 0x15;
+    }
+    if ((flags & 1) == 0) {
+        OSReport(str + 0x2A8);
+        return 6;
+    }
+    if (flags & 2) {
+        OSReport(str + 0x2E0);
+        return 6;
+    }
+    if ((flags & 0x10000) == 0) {
+        OSReport(str + 0x314);
+        return 0x15;
+    }
+
+    arg1[3] = 4;
+    if (flags & 4)
+        arg1[3] |= 1;
+    result = fn_800BA874(arg1, (u16 *)((u8 *)arg1 + 8));
+    if (result != 0) {
+        OSReport(str + 0x354);
+        return 0x15;
+    }
+    *(u16 *)((u8 *)arg1 + 4) = 0;
+    *((u8 *)arg1 + 6) = 0;
+    *((u8 *)arg1 + 7) = 0;
+    arg1[4] = 0;
+    return 0;
+}
+
 extern "C" u8 lbl_802F3218[];
 extern "C" s32 fn_800BA3DC(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 4) = arg1;
@@ -14942,15 +14986,20 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     register ARCHandle *h = handle;
     register const char *n = name;
     s32 result = -1;
+
     if (!ARCOpenDir(h, lbl_805597F8, &dir))
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x30, lbl_8031F2E4);
+
+    const char *panicFile = lbl_8031F2C8;
+    const char *panicFormat = lbl_8031F2E4;
+
     while (ARCReadDir(&dir, &entry)) {
         if (entry.isDir) {
             if (!ARCChangeDir(h, entry.name))
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x39, lbl_8031F2E4);
+                Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x39, panicFormat);
             result = fn_800D50A8(h, n);
             if (!ARCChangeDir(h, lbl_805597FC))
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x3C, lbl_8031F2E4);
+                Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x3C, panicFormat);
             if (result != -1) break;
         } else if (stricmp(n, entry.name) == 0) {
             result = entry.entryNum;
@@ -14958,7 +15007,7 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
         }
     }
     if (!fn_80116BCC(&dir))
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x4D, lbl_8031F2E4);
+        Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x4D, panicFormat);
     return result;
 }
 
