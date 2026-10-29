@@ -796,7 +796,8 @@ extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
 extern "C" void fn_8019AA34(void*, void*, void*, void*, s32, s32, void*, f32, f32);
 void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
     f32 scale = *(f32*)((u8*)arg1 + 0x24);
-    fn_8019AA34(arg0, (u8*)arg0 + 0x34, arg1, (u8*)arg1 + 0x34, arg2, arg3, arg1, *(f32*)((u8*)arg0 + 0x24), scale);
+    typedef s32 (*Call9)(void*, void*, void*, void*, s32, s32, void*, f32, f32);
+    ((Call9)fn_8019AA34)(arg0, (u8*)arg0 + 0x34, arg1, (u8*)arg1 + 0x34, arg2, arg3, arg1, *(f32*)((u8*)arg0 + 0x24), scale);
 }
 
 extern "C" s32 fn_8019B08C(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
@@ -1664,8 +1665,6 @@ extern u8 lbl_80562378;
 extern "C" void fn_8019F26C(s32 arg0, void *arg1) {
     u32 value = *(u32 *)((u8 *)arg1 + 0x18);
     switch (value) {
-    case 'RAGD':
-        return;
     case 'FLSR':
         fn_8019D19C((void *)arg0, arg1);
         return;
@@ -1685,6 +1684,8 @@ extern "C" void fn_8019F26C(s32 arg0, void *arg1) {
     case 'RING':
         fn_8019D378((void *)arg0, arg1);
         return;
+    case 'RAGD':
+        return;
     default: {
         u8 buffer[5] = {
             lbl_80562374,
@@ -1693,7 +1694,7 @@ extern "C" void fn_8019F26C(s32 arg0, void *arg1) {
             lbl_80562377,
             lbl_80562378
         };
-        *(u32 *)buffer = value;
+        *(u32 *)buffer = *(u32 *)((u8 *)arg1 + 0x18);
         fn_802E30C8(lbl_80333614, buffer);
         return;
     }
