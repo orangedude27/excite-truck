@@ -36,9 +36,12 @@ public:
     virtual int matches(const char *);
 };
 #pragma cplusplus reset
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80257284(void) {
-    // Fix note: lay out the large frame and preload table words into locals before filling the stack records.
-    volatile int local[0xA7];
+    // Fix note: reserve the full 0x2c0 target frame while keeping the global table addresses explicit.
+    volatile int local[0xA6];
     register int zero = 0;
     register int other_zero = 0;
     register int table0;
@@ -49,7 +52,6 @@ void fn_80257284(void) {
     register int list1;
     register int list2;
     register int list3;
-    register int list4;
     register int ptr0;
     register int ptr1;
     register int ptr2;
@@ -62,11 +64,7 @@ void fn_80257284(void) {
     register int mask;
     int result;
 
-    if (fn_80247624()) {
-        fn_80012794();
-        fn_80012780();
-    }
-
+    if (fn_80247624()) { fn_80012794(); fn_80012780(); }
     fn_80257470((int *)&local[50]);
 
     local[5] = other_zero;
@@ -107,7 +105,6 @@ void fn_80257284(void) {
     list1 = *(int *)((char *)&lbl_80498E38 + 4);
     list2 = *(int *)((char *)&lbl_80498E38 + 8);
     list3 = *(int *)((char *)&lbl_80498E38 + 12);
-    list4 = *(int *)((char *)&lbl_80498E38 + 16);
     ptr0 = (int)&lbl_80344CD4;
     ptr1 = (int)&lbl_8055B860;
     ptr2 = (int)&lbl_8055BAB8;
@@ -118,6 +115,7 @@ void fn_80257284(void) {
     count3 = 2;
     minus_one = -1;
     mask = 0x1b;
+    zero = 0;
 
     local[0] = table0;
     local[1] = (int)&local[5];
@@ -143,15 +141,10 @@ void fn_80257284(void) {
     local[46] = list1;
     local[47] = list2;
     local[48] = list3;
-    local[49] = list4;
+    local[49] = *(int *)((char *)&lbl_80498E38 + 16);
 
     fn_802146BC((int *)&local[0], -999, -999, 1);
-
-    if (fn_80247624()) {
-        fn_80012794();
-        fn_80012778();
-    }
-
+    if (fn_80247624()) { fn_80012794(); fn_80012778(); }
     fn_802574E0((int *)&local[50], minus_one);
 }
 
