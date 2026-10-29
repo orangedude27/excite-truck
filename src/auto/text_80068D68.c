@@ -44,6 +44,11 @@ extern u8 HID_HostCloseDev(u8);
 static tBTM_STATUS btm_set_inq_event_filter(UINT8, UINT8 *);
 
 typedef struct {
+    u8 pad[0x558];
+    tBTM_PM_RCB pm_reg_db[BTM_MAX_PM_RECORDS + 1];
+} tBTM_PM_REG_DB_MATCH_VIEW;
+
+typedef struct {
     u8 pad0[0x25];
     u8 link_key[16];
     u8 pad35[0x41];
