@@ -491,11 +491,11 @@ extern "C" s32 fn_800A71D8(void *);
 extern "C" s32 fn_800A73A0(void *, s32, u32, s32, s32, s32);
 extern "C" s32 fn_800A7338(void *, s32 = 0);
 extern "C" s32 fn_800A7568(void *, s32);
-extern "C" s32 fn_800A607C(void);
+extern "C" s32 fn_800A607C(void *, s32 *);
 extern "C" s32 fn_800A5958(void *arg0, s32 *arg1) {
     s32 result;
     *arg1 = 0;
-    result = fn_800A607C();
+    result = fn_800A607C(arg0, arg1);
     return result & ((-result | result) >> 31);
 }
 
