@@ -2800,6 +2800,35 @@ extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
     return this_;
 }
 
+extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
+    s32 result;
+    u8 *thread = (u8 *)arg0;
+    if (thread[0x2394] != 0) return 1;
+    thread[0x2394] = 1;
+    if (((u8 *)Instance__15EmissionManagerFv())[0x6c30] == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326450, 0x44, lbl_80326464);
+    OSInitThreadQueue(thread + 0x2318);
+    OSInitMutex(thread + 0x2320);
+    if ((s8)lbl_8055DE68 == 0) {
+        volatile u32 *base = (volatile u32 *)lbl_80412CC8;
+        register void *dtor = (void *)__dt__10TitleSceneFv;
+        register void *object = (void *)((u8 *)base + 0x2388);
+        base[0x2388 / 4] = 0;
+        base[0x238c / 4] = 0;
+        base[0x2378 / 4] = 0;
+        base[0x237c / 4] = 0;
+        base[0x2384 / 4] = 0;
+        base[0x2388 / 4] = (u32)object;
+        base[0x238c / 4] = (u32)object;
+        ((volatile u8 *)base)[0x2394] = 0;
+        __register_global_object((void *)base, dtor, (void *)&lbl_80412CB8, object);
+        lbl_8055DE68 = 1;
+    }
+    result = OSCreateThread(arg0, (void *)fn_800FA77C, (void *)lbl_80412CC8, thread + 0x2318, 0x2000, arg1, 0);
+    if (result != 0) OSResumeThread(arg0);
+    return result != 0;
+}
+
 extern "C" s32 OSJoinThread(void *, s32);
 extern "C" const char lbl_80326450[];
 extern "C" const char lbl_80326488[];
@@ -2937,7 +2966,7 @@ extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
     return 0;
 }
 
-extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *self, void *ptr) {
+extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *self, void *ptr) __attribute__((noinline)) {
     u32 state = OSDisableInterrupts();
     u32 idx = ((u8 *)ptr - (u8 *)*(void **)self) / *(u32 *)((u8 *)self + 8);
     u8 *block = (u8 *)self + (idx >> 3);
@@ -4062,6 +4091,61 @@ extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6det
     Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(*(void **)((u8 *)arg0 + 0x438), &wave);
     SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7AxVoice9VoiceType(*(void **)((u8 *)arg0 + 0x438), 1);
     OSRestoreInterrupts(irq);
+    return 1;
+}
+
+extern "C" const char lbl_8032692C[];
+extern "C" void *fn_800E3954(void *, s32, s32, s32, void (*)(void *, s32, void *), void *);
+extern "C" void VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *, s32, void *);
+s32 nw4hbm::snd::detail::StrmPlayer::AllocChannels(int channelCount, int columns) {
+    u8 *self = (u8 *)this;
+    if (*(void **)(self + 0x42C) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x45C, lbl_8032692C);
+
+    u8 *channel = self;
+    int allocated = 0;
+    goto allocate_check;
+    do {
+        void *buffer = Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(*(void **)(self + 0x42C));
+        if (buffer == 0) {
+            channel = self;
+            int freed = 0;
+            goto alloc_free_check;
+            do {
+                Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)(self + 0x42C), *(void **)(channel + 0x4A8));
+                channel += 0x38;
+                ++freed;
+            alloc_free_check:
+                ;
+            } while (freed < allocated);
+            return 0;
+        }
+        *(void **)(channel + 0x4A8) = buffer;
+        ++allocated;
+        *(u32 *)(channel + 0x4AC) = *(u32 *)(*(u8 **)(self + 0x42C) + 8);
+        channel += 0x38;
+    allocate_check:
+        ;
+    } while (allocated < channelCount);
+
+    void *manager = Instance__15EmissionManagerFv();
+    void *voice = ::fn_800E3954(manager, channelCount, columns, 0xFF,
+                               VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv,
+                               self);
+    if (voice == 0) {
+        channel = self;
+        int freed = 0;
+        goto voice_free_check;
+        do {
+            Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)(self + 0x42C), *(void **)(channel + 0x4A8));
+            channel += 0x38;
+            ++freed;
+        voice_free_check:
+            ;
+        } while (freed < channelCount);
+        return 0;
+    }
+    *(void **)(self + 0x438) = voice;
     return 1;
 }
 
