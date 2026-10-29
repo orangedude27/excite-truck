@@ -174,6 +174,7 @@ extern "C" const char lbl_80324390[];
 extern "C" const char lbl_803244FC[];
 extern "C" const char lbl_80324534[];
 extern "C" const char lbl_803245B8[];
+extern "C" const char lbl_80326A28[];
 extern "C" void fn_800F0E64(void **arg0) {
     void *p = *arg0;
     if (p && *(void **)((char *)p + 0x1E0) == arg0)
@@ -950,37 +951,34 @@ extern "C" s32 ReadPlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlP
     extern const char lbl_80324CDC[];
     extern char lbl_80559850;
     extern const char lbl_80324AF8[];
+    register void *archive = *(void **)((u8 *)self + 0x28);
     register void *reader = self;
-    register u8 *archive = *(u8 **)((u8 *)reader + 0x28);
     register u32 playerIndex = index;
-    register void *playerInfo = out;
-    u8 *players;
-    u8 *info;
-    s32 result = 1;
+    register void *outInfo = out;
+    register u8 *players;
+    s32 failure = 0;
 
-    if (archive[0x11] != 0)
+    if (*((u8 *)archive + 0x11) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A8, 0x6f, lbl_80324CDC);
-
-    players = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(archive[0x10], *(u32 *)(archive + 0x14), archive);
+    players = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+        *((u8 *)archive + 0x10), *(u32 *)((u8 *)archive + 0x14), archive);
     if (players == 0)
-        return 0;
+        return failure;
     if (playerIndex >= *(u32 *)players)
-        return 0;
+        return failure;
 
-    archive = *(u8 **)((u8 *)reader + 0x28);
-    if (*(players + playerIndex * 8 + 5) != 0)
+    playerIndex <<= 3;
+    archive = *(void **)((u8 *)reader + 0x28);
+    if (players[playerIndex + 5] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559850, 0x6f, lbl_80324AF8);
 
-    info = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-        *(players + playerIndex * 8 + 4),
-        *(u32 *)(players + playerIndex * 8 + 8),
-        archive);
-    if (info == 0)
-        return 0;
-
-    *(u32 *)playerInfo = info[4];
-    *(u32 *)((u8 *)playerInfo + 4) = *(u32 *)(info + 8);
-    return result;
+    void *player = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+        players[playerIndex + 4], *(u32 *)(players + playerIndex + 8), archive);
+    if (player == 0)
+        return failure;
+    *(u32 *)outInfo = *(u8 *)((u8 *)player + 4);
+    *(u32 *)((u8 *)outInfo + 4) = *(u32 *)((u8 *)player + 8);
+    return 1;
 }
 
 #pragma pop
@@ -4023,25 +4021,29 @@ extern "C" const char lbl_80326C58[];
 #pragma use_lmw_stmw off
 #pragma scheduling on
 extern "C" void NotifyAsyncEnd__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFb(void *self, bool success) {
+    register u32 successFlag = success;
     u32 token;
-    void *list;
+    void *list1;
     void *node;
+    void *list2;
     void *iterator;
     token = OSDisableInterrupts();
-    list = (u8 *)*(void **)((u8 *)self + 4) + 0xA0;
+    list1 = (u8 *)*(void **)((u8 *)self + 4) + 0xA0;
     if (self == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
     node = (u8 *)self + 0x14;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(list, node);
-    if (success) {
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(list1, node);
+    if (successFlag != 0) {
         if (*(u32 *)((u8 *)self + 8) == 0) {
             if (--*(u32 *)((u8 *)*(void **)((u8 *)self + 4) + 0x58) == 0)
                 *(u8 *)((u8 *)*(void **)((u8 *)self + 4) + 0x4A) = 1;
         }
-    } else ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(*(void **)((u8 *)self + 4));
-    list = (u8 *)*(void **)((u8 *)self + 4) + 0x94;
-    iterator = (u8 *)list + 4;
+    } else {
+        ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(*(void **)((u8 *)self + 4));
+    }
+    list2 = (u8 *)*(void **)((u8 *)self + 4) + 0x94;
+    iterator = (u8 *)list2 + 4;
     if (self == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &iterator, node);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list2, &iterator, node);
     OSRestoreInterrupts(token);
 }
 #pragma pop
