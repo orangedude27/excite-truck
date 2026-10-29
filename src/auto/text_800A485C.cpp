@@ -3599,7 +3599,7 @@ extern "C" s32 VFiPFFAT_TraceClustersChain(void *arg0, s32 arg1, s32 *arg2) {
         result = ((s32 (*)(void *, s32, s32 *))fn_800AFE14)(arg0, arg1, arg2);
         break;
     case 2:
-        result = fn_800B0258();
+        result = ((s32 (*)(void *, s32, s32 *))fn_800B0258)(arg0, arg1, arg2);
         break;
     default:
         *arg2 = -1;
@@ -14309,10 +14309,10 @@ extern "C" s32 fn_800D3F94(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     register const char *base = lbl_8031EC50;
     s32 result;
     if (arg0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x2D3, base + 0x6C);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u8 *)base + 0), 0x2D3, base + 0x6C);
     }
     if (arg2 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x2D4, base + 0x1B4);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u8 *)base + 0), 0x2D4, base + 0x1B4);
     }
     if (*(s32 *)arg0 != 0) {
         lbl_8055DDD8 = (u8 (*)(const char *))fn_800D3838;
