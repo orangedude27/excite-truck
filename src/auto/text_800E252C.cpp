@@ -23,7 +23,7 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
 extern "C" void fn_800E6A44(void *, int, int, void *);
 extern "C" void fn_80033AAC(void *, void *);
 extern "C" void fn_80033538(unsigned short);
-extern "C" void AIRegisterDMACallback(void *);
+extern "C" void *AIRegisterDMACallback(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
 extern "C" void AXRegisterAuxBCallback(int, int);
 extern "C" void AXRegisterAuxCCallback(int, int);
@@ -1054,6 +1054,11 @@ extern "C" void AXRegisterAuxCCallback(int, int);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void fn_800E4364(void *arg0, int arg1) {
+    struct Dummy {
+        virtual void first();
+        virtual void second();
+        virtual void third();
+    };
     extern const char lbl_80322198[];
     extern const char lbl_80322160[];
     extern const char lbl_80322064[];
@@ -1063,23 +1068,21 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
     void *sentinel;
     void *node;
     void *list;
-    void *base;
 
     interrupt = OSDisableInterrupts();
     valid = 0;
     if (arg1 >= 0 && arg1 < 3) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322198, 0xBD, lbl_80322160, arg1, 0, 3);
-    base = (char *)arg0 + arg1 * 0xC;
-    if (*(int *)((char *)base + 0x6CCC) == 0) {
+    list = (char *)arg0 + arg1 * 0xC + 0x6CCC;
+    if (*(int *)list == 0) {
         OSRestoreInterrupts(interrupt);
         return;
     }
-    list = (char *)base + 0x6CCC;
     node = *(void **)((char *)list + 4);
     sentinel = (char *)list + 4;
     while (node != sentinel) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322064, 0x23D, lbl_80322040);
-        (*(void (**)(void *))((char *)(*(void **)((char *)node - 4)) + 0x10))((char *)node - 4);
+        ((Dummy *)((char *)node - 4))->third();
         node = *(void **)node;
     }
     Clear__Q46nw4hbm2ut6detail12LinkListImplFv(list);
