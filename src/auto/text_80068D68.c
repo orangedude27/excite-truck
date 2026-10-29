@@ -33,6 +33,15 @@ extern u8 HID_HostCloseDev(u8);
 static tBTM_STATUS btm_set_inq_event_filter(UINT8, UINT8 *);
 
 typedef struct {
+    u8 pad0[0x25];
+    u8 link_key[16];
+    u8 pad35[0x41];
+    u8 sec_flags_76;
+    u8 pad77[0x0A];
+    u8 sec_flags_81;
+} tBTM_SEC_DEV_REC_MATCH_VIEW;
+
+typedef struct {
     u8 in_use;
     u8 pad_0x01[9];
     u8 state;
