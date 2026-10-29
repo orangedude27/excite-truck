@@ -2931,6 +2931,46 @@ void uusb_issue_intr_read(void) {
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
 
+void uusb_WriteCtrlDataCB(s32 arg0, s32 arg1) {
+    extern char lbl_803142C8[];
+    extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
+    register char *report = lbl_803142C8;
+    u16 offset;
+
+    if (lbl_803BD1E0.at_0x28 != 0)
+        OSReport(report + 0x460, arg0);
+
+    if (arg0 < 0 && lbl_803BD1E0.at_0x28 != 0)
+        OSReport(report + 0x498, arg0);
+
+    if (arg1 != 0) {
+        GKI_freebuf((void *)arg1);
+        fn_8006EBAC();
+        ((u8 *)&lbl_803BD1E0)[0x48] = ((u8 *)&lbl_803BD1E0)[0x48] - 1;
+        fn_8006EB88();
+    }
+
+    {
+        register u8 *control = (u8 *)&lbl_803BD1E0;
+        if (control[0x48] < 5 && *(u16 *)(control + 0x44) != 0) {
+            arg1 = (s32)GKI_dequeue((BUFFER_Q *)(control + 0x3C));
+            offset = *(u16 *)((u8 *)arg1 + 4);
+            if (IUSB_WriteCtrlMsgAsync(lbl_803BD1E0.fd, 0x20, 0, 0, 0,
+                                       *(u16 *)((u8 *)arg1 + 2),
+                                       (u8 *)arg1 + offset + 8,
+                                       (void *)uusb_WriteCtrlDataCB, (void *)arg1) < 0) {
+                if (control[0x28] != 0)
+                    OSReport(report + 0x4D0);
+                GKI_enqueue_head((BUFFER_Q *)(control + 0x3C), (void *)arg1);
+                return;
+            }
+            fn_8006EBAC();
+            control[0x48] = control[0x48] + 1;
+            fn_8006EB88();
+        }
+    }
+}
+
 void uusb_WriteBulkDataCB(s32 arg0, void *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
@@ -14842,6 +14882,55 @@ void PORT_PortNegCnf(void *mcb, u8 dlci, void *p_pars, u16 result) {
     }
     if (lbl_803C4828[0x414] >= 2)
         fn_8007093C(0x90001, messages + 0x178);
+}
+
+extern int port_get_signal_changes();
+extern char lbl_803193E0[];
+extern char lbl_803193F0[];
+void PORT_ControlInd(void *p_mcb, u8 dlci, u8 *p_pars) {
+    void *port;
+    u32 event;
+    u8 signals;
+    void (*callback)(u32, u8);
+
+    port = port_find_mcb_dlci_port(p_mcb, dlci);
+    if (lbl_803C4828[0x414] >= 4)
+        fn_8007093C(0x90003, lbl_803193E0);
+    if (port != 0) {
+        event = port_get_signal_changes(port, *((u8 *)port + 0x5F), p_pars[0]);
+        *((u8 *)port + 0x5F) = p_pars[0];
+        *((u8 *)port + 0x60) = p_pars[1];
+        *((u8 *)port + 0x61) = p_pars[2];
+        *((u8 *)port + 0x62) = p_pars[3];
+        *((u8 *)port + 0x63) = p_pars[4];
+        signals = *((u8 *)port + 0x64);
+        if ((signals & 1) == 0) {
+            RFCOMM_ControlReq(*(void **)((u8 *)port + 0x6C),
+                              *((u8 *)port + 0xD), (u8 *)port + 0x5A);
+        } else {
+            if ((signals & 4) == 0)
+                event |= *(u32 *)((u8 *)port + 0x88) & 0x200;
+            if (signals & 2)
+                event |= port_rfc_send_tx_data(port);
+        }
+        *((u8 *)port + 0x64) |= 0xC;
+        if (p_pars[1] != 0)
+            event |= *(u32 *)((u8 *)port + 0x88) & 0x40;
+        if (event != 0) {
+            callback = *(void (**)(u32, u8))((u8 *)port + 0x8C);
+            if (callback != 0)
+                callback(event, *((u8 *)port));
+        }
+        if (lbl_803C4828[0x414] >= 4) {
+            signals = *((u8 *)port + 0x5F);
+            ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(
+                0x90003, lbl_803193F0,
+                (signals & 1) ? 1 : 0,
+                (signals & 2) ? 1 : 0,
+                (signals & 4) ? 1 : 0,
+                (signals & 8) ? 1 : 0);
+        }
+    }
 }
 
 void PORT_ControlCnf(void *mcb, u8 dlci, void *pars) {
