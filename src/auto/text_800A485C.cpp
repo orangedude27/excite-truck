@@ -4311,8 +4311,6 @@ extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4)
     return saved;
 }
 
-#pragma push
-#pragma cplusplus on
 extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     u16 flags = *(u16 *)((u8 *)arg0 + 0x18);
     u32 scaled = (u32)arg1 * 2;
