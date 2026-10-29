@@ -1820,6 +1820,7 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
     }
     fn_801A0378(arg0, (void *)object);
 }
+#pragma scheduling on
 
 extern "C" void fn_801A0378(void* arg0, void* arg1) {
     extern f32 PSVECMag(const Vec*);
