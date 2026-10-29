@@ -825,6 +825,7 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
 extern "C" void fn_80031C6C(int);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(void *self, int mode) {
     if (*(int *)self == mode) return;
     *(int *)self = mode;
@@ -835,16 +836,16 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
     case 3: fn_80031C6C(0); break;
     }
     unsigned int interrupts = OSDisableInterrupts();
-    void *end = (char *)self + 0x18;
     void *node = *(void **)((char *)self + 0x18);
+    void *end = (char *)self + 0x18;
     while (node != end) {
-        void *next = *(void **)node;
-        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
-        if (*((unsigned char *)node - 0x8c) != 0) {
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
-            *((unsigned char *)node - 0x85) |= 0x20;
+        void *current = node;
+        node = *(void **)node;
+        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+        if (*((unsigned char *)current - 0x8c) != 0) {
+            if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+            *((unsigned char *)current - 0x85) |= 0x20;
         }
-        node = next;
     }
     OSRestoreInterrupts(interrupts);
 }
@@ -989,10 +990,13 @@ extern "C" void fn_800E4064(void *arg0, void *arg1) {
         unsigned char active;
     };
     struct Owner *owner = (Owner *)arg0;
-    unsigned int level = OSDisableInterrupts();
-    void *node = owner->head;
+    void *sentinel;
+    unsigned int level;
+    void *node;
+    level = OSDisableInterrupts();
+    node = owner->head;
     owner->active = 1;
-    void *sentinel = (char *)owner + 0x18;
+    sentinel = &owner->head;
     while (node != sentinel) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
         if (*(int *)((char *)node - 0x84) != 0xff) {
