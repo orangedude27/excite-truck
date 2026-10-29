@@ -1673,21 +1673,45 @@ void GKI_enqueue(BUFFER_Q *p_q, void *p_buf) {
 }
 
 void GKI_enqueue_head(BUFFER_Q *p_q, void *p_buf) {
-    BUFFER_HDR_T *p_hdr;
-#if (GKI_ENABLE_BUF_CORRUPTION_CHECK == TRUE)
-    if (gki_chk_buf_damage(p_buf)) {
-        GKI_exception(GKI_ERROR_BUF_CORRUPTED, "Enqueue - Buffer corrupted");
+    extern u32 lbl_803946C0[];
+    extern char lbl_803141C0[];
+    extern char lbl_803141FC[];
+    extern void fn_8006EBF0(void);
+    BUFFER_HDR_T *p_hdr = (BUFFER_HDR_T *)((u8 *)p_buf - 8);
+    u8 pool_id;
+    u16 size;
+    u32 *magic;
+    u8 damaged;
+
+    if (((u32)p_hdr & 1) != 0) {
+        size = 0;
+    } else {
+        pool_id = p_hdr->q_id;
+        if (pool_id < 9)
+            size = *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (pool_id << 4));
+        else
+            size = 0;
+    }
+    magic = (u32 *)((u8 *)p_buf + size);
+    if (((u32)magic & 1) != 0) {
+        damaged = 1;
+    } else if (*magic == 0xDDBADDBA) {
+        damaged = 0;
+    } else {
+        damaged = 1;
+    }
+    if (damaged != 0) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFF, lbl_803141C0);
         return;
     }
-#endif
-    p_hdr = (BUFFER_HDR_T *)((UINT8 *)p_buf - BUFFER_HDR_SIZE);
     if (p_hdr->status != BUF_STATUS_UNLINKED) {
-        GKI_exception(GKI_ERROR_ENQUEUE_BUF_LINKED, "Eneueue head - buf already linked");
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFF9, lbl_803141FC);
         return;
     }
-    GKI_disable();
-    if (p_q->p_first) {
-        p_hdr->p_next = (BUFFER_HDR_T *)((UINT8 *)p_q->p_first - BUFFER_HDR_SIZE);
+
+    fn_8006EBAC();
+    if (p_q->p_first != NULL) {
+        p_hdr->p_next = (BUFFER_HDR_T *)((u8 *)p_q->p_first - 8);
         p_q->p_first = p_buf;
     } else {
         p_q->p_first = p_buf;
@@ -1696,8 +1720,7 @@ void GKI_enqueue_head(BUFFER_Q *p_q, void *p_buf) {
     }
     p_q->count++;
     p_hdr->status = BUF_STATUS_QUEUED;
-    GKI_enable();
-    return;
+    fn_8006EB88();
 }
 
 void *GKI_dequeue(BUFFER_Q *p_q) {
