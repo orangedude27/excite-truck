@@ -4311,6 +4311,8 @@ extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4)
     return saved;
 }
 
+#pragma push
+#pragma cplusplus on
 extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     u16 flags = *(u16 *)((u8 *)arg0 + 0x18);
     u32 scaled = (u32)arg1 * 2;
@@ -4369,13 +4371,14 @@ store_sector:
 
 read_value:
     {
+        u32 offset = scaled & (*(u16 *)object - 1);
         void *buffer = *(void **)((u8 *)descriptor + 8);
-        u32 mask = (u32)*(u16 *)object - 1;
-        value = *(u16 *)((u8 *)buffer + (scaled & mask));
+        value = *(u16 *)((u8 *)buffer + offset);
     }
     *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
     return 0;
 }
+#pragma pop
 
 extern "C" s32 fn_800B0258(void *arg0, s32 arg1, s32 *arg2) {
     u32 value;
