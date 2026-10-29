@@ -37,6 +37,7 @@ extern void fn_801C0E60(void *, void *, void *);
 extern void fn_801C7254(void *, s32, s32, s32, s32, s32, s32, s32);
 extern void fn_801E67B4(void *, void *, void *);
 extern void fn_802C7A38(s32, void *, s32);
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     s32 sp68[0x180];
