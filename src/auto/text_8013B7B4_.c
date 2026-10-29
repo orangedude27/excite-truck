@@ -21,7 +21,7 @@ extern char lbl_8032C390[];
 extern const char *lbl_802F9388[];
 extern char lbl_80559CD8;
 #pragma cplusplus on
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma paired off
 #pragma paired_single off
 extern "C" void fn_8013B7B4(float *arg0, int value) {
@@ -53,7 +53,7 @@ extern "C" void fn_8013B7B4(float *arg0, int value) {
     const char *names[3];
     unsigned int j;
 
-    list = fn_80131808(keys);
+    list = fn_80131808(&keys[0]);
     if (list == 0) goto error;
 
     table = lbl_802F9388;
