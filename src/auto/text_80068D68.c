@@ -11175,27 +11175,28 @@ u8 hidh_conn_reg(void) {
     extern char lbl_80317838[];
     extern char lbl_80317858[];
     unsigned char *cb = lbl_803C3C38;
-    UINT16 (*reg)(UINT16, void *, ...) = (UINT16 (*)(UINT16, void *, ...))L2CA_Register;
 
     cb[0x346] = 1;
     *(UINT16 *)(cb + 0x348) = 0x280;
     cb[0x364] = 1;
     *(UINT16 *)(cb + 0x366) = 0xFFFF;
-    if (reg(0x11, lbl_802EEC18, 0x280, 1) == 0) {
+    if ((u8)L2CA_Register(0x11, (tL2CAP_APPL_INFO *)lbl_802EEC18) == 0) {
         if (cb[0x401] >= 1) fn_8007093C(0x1E0000, lbl_80317838);
         return 0xE;
     }
-    if (reg(0x13, lbl_802EEC18) == 0) {
+    if ((u8)L2CA_Register(0x13, (tL2CAP_APPL_INFO *)lbl_802EEC18) == 0) {
         L2CA_Deregister(0x11);
         if (cb[0x401] >= 1) fn_8007093C(0x1E0000, lbl_80317858);
         return 0xE;
     }
-    cb[0] = cb[0x10] = cb[0x34] = cb[0x44] = cb[0x68] = cb[0x78] = 0;
-    cb[0x9C] = cb[0xAC] = cb[0xD0] = cb[0xE0] = cb[0x104] = cb[0x114] = 0;
-    cb[0x138] = cb[0x148] = cb[0x16C] = cb[0x17C] = cb[0x1A0] = cb[0x1B0] = 0;
-    cb[0x1D4] = cb[0x1E4] = cb[0x208] = cb[0x218] = cb[0x23C] = cb[0x24C] = 0;
-    cb[0x270] = cb[0x280] = cb[0x2A4] = cb[0x2B4] = cb[0x2D8] = cb[0x2E8] = 0;
-    cb[0x30C] = cb[0x31C] = 0;
+    cb[0] = 0; cb[0x10] = 0; cb[0x34] = 0; cb[0x44] = 0;
+    cb[0x68] = 0; cb[0x78] = 0; cb[0x9C] = 0; cb[0xAC] = 0;
+    cb[0xD0] = 0; cb[0xE0] = 0; cb[0x104] = 0; cb[0x114] = 0;
+    cb[0x138] = 0; cb[0x148] = 0; cb[0x16C] = 0; cb[0x17C] = 0;
+    cb[0x1A0] = 0; cb[0x1B0] = 0; cb[0x1D4] = 0; cb[0x1E4] = 0;
+    cb[0x208] = 0; cb[0x218] = 0; cb[0x23C] = 0; cb[0x24C] = 0;
+    cb[0x270] = 0; cb[0x280] = 0; cb[0x2A4] = 0; cb[0x2B4] = 0;
+    cb[0x2D8] = 0; cb[0x2E8] = 0; cb[0x30C] = 0; cb[0x31C] = 0;
     return 0;
 }
 
@@ -17610,6 +17611,49 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
     if (*(void (**)(UINT16))((u8 *)p_ccb + 0x414) != NULL)
         (*(void (**)(UINT16))((u8 *)p_ccb + 0x414))(0xFFF1);
     fn_80099F58(p_ccb);
+}
+
+extern void process_service_search(tCONN_CB *, UINT16, UINT16, UINT8 *);
+static void process_service_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
+static void process_service_search_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
+void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
+    extern char lbl_8031A4E8[];
+    UINT8 *p;
+    UINT8 *p_end;
+    UINT8 opcode;
+    UINT16 trans_num;
+    UINT16 param_len;
+
+    p = (UINT8 *)p_msg + p_msg->offset + 8;
+    p_end = p + p_msg->len;
+    btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)p_ccb + 8), 5, 0x1E);
+
+    opcode = p[0];
+    trans_num = ((UINT16)p[1] << 8) + p[2];
+    param_len = ((UINT16)p[3] << 8) + p[4];
+    p++;
+    if (p + param_len + 4 > p_end) {
+        sdpu_build_n_send_error(p_ccb, trans_num, 4, NULL);
+        return;
+    }
+
+    switch (opcode) {
+    case 2:
+        ((void (*)(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *))process_service_search)(
+            p_ccb, trans_num, param_len, p + 4, p_end);
+        break;
+    case 4:
+        process_service_attr_req(p_ccb, trans_num, param_len, p + 4, p_end);
+        break;
+    case 6:
+        process_service_search_attr_req(p_ccb, trans_num, param_len, p + 4, p_end);
+        break;
+    default:
+        sdpu_build_n_send_error(p_ccb, trans_num, 3, NULL);
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_80070954(0xA0001, lbl_8031A4E8, opcode);
+        break;
+    }
 }
 
 void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p) {
