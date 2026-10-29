@@ -1962,8 +1962,9 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(
 extern "C" const char lbl_80325670[];
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void *__ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUlliUllbRQ56nw4hbm3snd6detail10StrmPlayer11LoadCommandRCQ36nw4hbm3snd12SoundArchiveUlUlR7OSMutex(void *self, void *arg1, unsigned long arg2, long arg3, int arg4, unsigned long arg5, long arg6, bool arg7, void *arg8, const void *arg9, unsigned long arg10, unsigned long arg11, void *arg12) {
-    register const char *base = lbl_80324E88;
+    const char *base = lbl_80324E88;
 
     *(u32 *)((u8 *)self + 0x04) = 0;
     *(u32 *)((u8 *)self + 0x08) = 0;
@@ -1983,11 +1984,11 @@ extern "C" void *__ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUll
     *(void **)((u8 *)self + 0x3c) = arg12;
 
     if (((u32)arg1 & 31) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x762, base + 0x6c0, arg1);
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x762, base + 0x6c0, arg1);
     if (((u32)arg2 & 31) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x763, base + 0x708, arg2);
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x763, base + 0x708, arg2);
     if (((u32)arg3 & 3) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x764, base + 0x750, arg3);
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x764, base + 0x750, arg3);
     return self;
 }
 #pragma pop
