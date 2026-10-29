@@ -4311,8 +4311,6 @@ extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4)
     return saved;
 }
 
-#pragma push
-#pragma scheduling invalid_target
 extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     u16 flags = *(u16 *)((u8 *)arg0 + 0x18);
     u32 scaled = (u32)arg1 * 2;
@@ -4378,7 +4376,6 @@ read_value:
     *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
     return 0;
 }
-#pragma pop
 
 extern "C" s32 fn_800B0258(void *arg0, s32 arg1, s32 *arg2) {
     u32 value;
@@ -14712,18 +14709,13 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
 extern "C" void PPCHalt(void);
 extern "C" void fn_800D2098(const char *file, s32 line, const char *msg, va_list vlist) {
     const char *strings = lbl_8031E9D0;
-    s32 lines;
+    OSDisableInterrupts();
+    fn_800591AC(0);
+    AIRegisterDMACallback_800591F0(0);
     if (lbl_8055DDBC != 0) {
-        OSDisableInterrupts();
-        fn_800591AC(0);
-        AIRegisterDMACallback_800591F0(0);
         fn_800D3634(0);
-    } else {
-        OSDisableInterrupts();
-        fn_800591AC(0);
-        AIRegisterDMACallback_800591F0(0);
     }
-    ((void (*)(s32 *))fn_800D1F7C)((s32 *)vlist);
+    ((void (*)(s32 *))fn_800D1F7C)((s32 *)((u8 *)vlist - 0x68));
     if (lbl_8055DDBC != 0) {
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, strings + 0x60, file, line);
         Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void *)3, lbl_8055DDBC, msg, vlist);
@@ -14733,7 +14725,7 @@ extern "C" void fn_800D2098(const char *file, s32 line, const char *msg, va_list
             Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1B2, strings + 0x7C);
         }
         s32 viewLines = *(u16 *)((u8 *)head + 0x20);
-        lines = nw4hbm::db::Console_GetTotalLines((nw4hbm::db::detail::ConsoleHead *)head) - viewLines;
+        s32 lines = nw4hbm::db::Console_GetTotalLines((nw4hbm::db::detail::ConsoleHead *)head) - viewLines;
         if (lines < 0) {
             lines = 0;
         }
