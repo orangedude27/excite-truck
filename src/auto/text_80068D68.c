@@ -1223,7 +1223,7 @@ void WUDiMoveBottomSmpDevInfoPtr_8006B98C(void *arg0) {
     OSRestoreInterrupts(enabled);
 }
 #pragma use_lmw_stmw reset
-extern void *lbl_80319994;
+extern char lbl_80319994[];
 extern u16 lbl_80394680[];
 extern u32 lbl_80393628[];
 s32 _WUDGetDevAddr(u32 arg0) {
@@ -3455,8 +3455,11 @@ loop_first:
             goto loop_first;
     }
 
-    if (p[0xE] != 0)
-        goto done;
+    if (p[0xE] == 0)
+        goto check_links;
+    goto done;
+
+check_links:
     if (p[0x12] == 0)
         goto fallback;
 
@@ -14110,6 +14113,39 @@ void fn_800916F4(void *arg0, s32 arg1, s16 *arg2) {
         return;
     case 6:
         rfc_mx_sm_state_disc_wait_ua(arg0, arg1, arg2);
+        return;
+    }
+}
+
+void rfc_mx_sm_state_wait_sabme(void *arg0, s32 arg1, void *arg2) {
+    extern char lbl_80319868[];
+    extern void PORT_CloseInd(void *);
+    extern void PORT_StartInd(void *);
+    extern void rfc_send_ua(void *, s32, void *);
+
+    if (lbl_803C4828[0x414] >= 4)
+        ((void (*)(u32, void *, s32))fn_80070954)(0x90003, &lbl_80319994, arg1);
+
+    switch (arg1) {
+    case 14:
+        *(u8 *)((u8 *)arg0 + 0x6C) = 0;
+        PORT_CloseInd(arg0);
+        return;
+    case 0:
+        PORT_StartInd(arg0);
+        return;
+    case 7:
+        if (*(u16 *)arg2 != 0) {
+            rfc_send_dm(arg0, 0, 1);
+            return;
+        }
+        ((void (*)(void *, s32))rfc_send_ua)(arg0, 0);
+        *(u8 *)((u8 *)arg0 + 0x6C) = 5;
+        *(u8 *)((u8 *)arg0 + 0x71) = 1;
+        return;
+    default:
+        if (lbl_803C4828[0x414] >= 4)
+            ((void (*)(u32, void *, s32, u16))fn_8007096C)(0x90003, lbl_80319868, arg1, *(u8 *)((u8 *)arg0 + 0x6C));
         return;
     }
 }
