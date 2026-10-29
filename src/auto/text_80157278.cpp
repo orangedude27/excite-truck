@@ -1039,11 +1039,13 @@ extern "C" void fn_80158824(Unk801577F0* arg0) {
 
 extern "C" f32 lbl_8056177C;
 extern "C" s32 fn_80141F7C(f32);
-void fn_8015889C(void* arg0) {
+extern "C" void fn_8015889C(void* arg0) {
+    f32 zero = lbl_80561754;
+    f32 field = *(f32*)((u8*)arg0 + 0x25c);
     Fn8015889C* self = (Fn8015889C*)arg0;
     f32 sp8;
-    if (*(f32*)((u8*)arg0 + 0x25c) > lbl_80561754) {
-        sp8 = lbl_80561754;
+    if (field > zero) {
+        sp8 = zero;
         if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c)) {
             if (self->v23() > 0) {
                 sp8 = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
@@ -1053,9 +1055,11 @@ void fn_8015889C(void* arg0) {
         }
         if (fn_80141F7C(sp8) == 0)
             self->v38(*(f32*)((u8*)arg0 + 0x25c));
-        *(f32*)((u8*)arg0 + 0x25c) = lbl_80561754;
-        *(f32*)((u8*)arg0 + 0x264) = lbl_80561754;
-        *(f32*)((u8*)arg0 + 0x258) += lbl_8056177C;
+        f32 sum = *(f32*)((u8*)arg0 + 0x258) + lbl_8056177C;
+        f32 finalZero = lbl_80561754;
+        *(f32*)((u8*)arg0 + 0x25c) = finalZero;
+        *(f32*)((u8*)arg0 + 0x264) = finalZero;
+        *(f32*)((u8*)arg0 + 0x258) = sum;
     }
 }
 
@@ -2498,35 +2502,39 @@ void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
 }
 
 extern "C" s32 lbl_8055A058[1];
-void fn_8015D8B0(void* arg0) {
- struct Obj {
-  virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
-  virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
-  virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
-  virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
-  virtual s32 v16(); virtual s32 v17(); virtual s32 v18(); virtual s32 v19();
-  virtual s32 v20(); virtual s32 v21(); virtual s32 v22(); virtual s32 v23();
-  virtual s32 v24(); virtual s32 v25(); virtual s32 v26(); virtual s32 v27();
-  virtual s32 v28(); virtual s32 v29(); virtual s32 v30(); virtual s32 v31();
-  u8 pad[0x244]; void* adaptor;
- };
- struct Adaptor {
-  virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
-  virtual s32 v4(s32,s32); virtual s32 v5(); virtual s32 v6();
-  virtual s32 v7(); virtual s32 v8(s32); virtual s32 v9();
-  virtual s32 v10(s32);
- };
- Obj* obj=(Obj*)arg0; Adaptor* adaptor=(Adaptor*)obj->adaptor;
- if(obj->adaptor) {
-  s32 x=obj->v25();
-  adaptor->v4((s32)&lbl_8055A058[0],x);
-  adaptor->v8(obj->v31());
-  obj->v24();
-  adaptor->v6();
-  x=obj->v19();
-  obj->v23();
-  if(obj->v23()>=x) adaptor->v10(1);
- }
+extern "C" void fn_8015D8B0(void* arg0) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual int v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual int v21(); virtual void v22(); virtual int v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28(); virtual int v29();
+    };
+    struct Adaptor {
+        virtual void v0();
+        virtual void v1(int, ...);
+        virtual void v2(int, ...);
+        virtual void v3(int, ...);
+        virtual void v4();
+        virtual void v5(int);
+        virtual void v6(int);
+        virtual void v7();
+        virtual void v8(int);
+    };
+    Obj* obj = (Obj*)arg0;
+    if (*(void**)((char*)arg0 + 0x248) != 0) {
+        (*(Adaptor**)((char*)arg0 + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
+        (*(Adaptor**)((char*)arg0 + 0x248))->v6(obj->v29());
+        obj->v22();
+        (*(Adaptor**)((char*)arg0 + 0x248))->v4();
+        int limit = obj->v17();
+        int current = obj->v21();
+        if (current >= limit)
+            (*(Adaptor**)((char*)arg0 + 0x248))->v8(1);
+    }
 }
 
 extern "C" f32 fn_80204CFC(const char*);
