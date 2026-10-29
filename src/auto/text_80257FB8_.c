@@ -5,6 +5,7 @@ extern int fn_80161D14(void);
 extern int fn_80161ECC(void);
 extern void fn_80161E40(int);
 extern int fn_8016208C(void);
+#pragma dont_inline on
 int fn_80257FB8(void) {
     int total = fn_80161D14();
     int count = fn_80161ECC();
