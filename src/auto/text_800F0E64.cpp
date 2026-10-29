@@ -944,6 +944,45 @@ extern "C" s32 ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     *(u32 *)outInfo = *(u32 *)((u8 *)bank + 4);
     return 1;
 }
+
+extern "C" s32 ReadPlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive10PlayerInfo(void *self, u32 index, void *out) {
+    extern char lbl_805598A8;
+    extern const char lbl_80324CDC[];
+    extern char lbl_80559850;
+    extern const char lbl_80324AF8[];
+    register void *reader = self;
+    register u8 *archive = *(u8 **)((u8 *)reader + 0x28);
+    register u32 playerIndex = index;
+    register void *playerInfo = out;
+    u8 *players;
+    u8 *info;
+    s32 result = 1;
+
+    if (archive[0x11] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A8, 0x6f, lbl_80324CDC);
+
+    players = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(archive[0x10], *(u32 *)(archive + 0x14), archive);
+    if (players == 0)
+        return 0;
+    if (playerIndex >= *(u32 *)players)
+        return 0;
+
+    archive = *(u8 **)((u8 *)reader + 0x28);
+    if (*(players + playerIndex * 8 + 5) != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559850, 0x6f, lbl_80324AF8);
+
+    info = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+        *(players + playerIndex * 8 + 4),
+        *(u32 *)(players + playerIndex * 8 + 8),
+        archive);
+    if (info == 0)
+        return 0;
+
+    *(u32 *)playerInfo = info[4];
+    *(u32 *)((u8 *)playerInfo + 4) = *(u32 *)(info + 8);
+    return result;
+}
+
 #pragma pop
 extern "C" const char lbl_80324ACC[];
 extern "C" const char lbl_80324D34[];
@@ -3980,6 +4019,9 @@ done:
 
 extern "C" const char lbl_80326C7C[];
 extern "C" const char lbl_80326C58[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling on
 extern "C" void NotifyAsyncEnd__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFb(void *self, bool success) {
     u32 token;
     void *list;
@@ -4002,6 +4044,7 @@ extern "C" void NotifyAsyncEnd__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFb(
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &iterator, node);
     OSRestoreInterrupts(token);
 }
+#pragma pop
 
 extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(void* self, int n, u16* p) {
     void* stream = *(void**)((u8*)self + 4);
