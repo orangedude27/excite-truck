@@ -16,6 +16,8 @@ extern "C" char lbl_8055B880;
 extern "C" void *lbl_8033E3D4[];
 extern "C" void *lbl_8033DF30[];
 extern "C" void fn_802E30C8(const char *, ...);
+extern "C" s32 fn_8022D1B4(const char *);
+extern "C" const char lbl_8033D940[];
 
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" s32 fn_801E4A6C(s32, s32);
