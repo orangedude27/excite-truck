@@ -2905,11 +2905,14 @@ extern "C" const char lbl_80326518[];
 extern "C" const char lbl_80326688[];
 extern "C" const char lbl_80326738[];
 extern "C" char lbl_805598F8;
+#pragma push
+#pragma scheduling invalid_target
 extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
+    register s32 valid = *(s32 *)arg0;
     void *base = arg0;
     void *ref;
     void *data;
-    if (*(s32 *)base == 0)
+    if (valid == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326518, 0x89, lbl_80326688);
     ref = *(void **)((u8 *)base + 4);
     ref = (u8 *)ref + 8;
@@ -2934,6 +2937,8 @@ extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
     *(u32 *)((u8 *)arg1 + 0x34) = *(u32 *)((u8 *)data + 0x30);
     return 1;
 }
+#pragma scheduling on
+#pragma pop
 
 extern "C" const char lbl_803266B4[];
 extern "C" const char lbl_803266E0[];
@@ -3097,33 +3102,39 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
 extern "C" void fn_8002F53C(void *, void *, void *, int, int);
 extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     u8 *p = (u8 *)arg0;
-    void *head = p + 0x98;
+    volatile u32 *vp = (volatile u32 *)p;
+    u32 zero = 0;
+    void *head0 = p + 0x98;
     void *tail = p + 0xa4;
-    *(void **)(p + 0x98) = 0;
-    *(void **)(p + 0x9c) = 0;
-    *(void **)(p + 0xa4) = 0;
-    *(void **)(p + 0xa8) = 0;
-    *(s32 *)(p + 0x4) = -1;
-    *(void **)p = (void *)lbl_80326A28;
-    *(s32 *)(p + 0x8) = 0;
-    *(s32 *)(p + 0xc) = 0;
-    p[0x48] = 0;
-    *(s32 *)(p + 0x94) = 0;
-    *(void **)(p + 0x98) = head;
-    *(void **)(p + 0x9c) = head;
-    *(s32 *)(p + 0xa0) = 0;
+    vp[0x98 / 4] = zero;
+    vp[0x9c / 4] = zero;
+    vp[0xa4 / 4] = zero;
+    vp[0xa8 / 4] = zero;
+    vp[1] = -1;
+    vp[0] = (u32)lbl_80326A28;
+    vp[2] = zero;
+    vp[3] = zero;
+    *(volatile u8 *)(p + 0x48) = 0;
+    vp[0x94 / 4] = zero;
+    *(void **)(p + 0x98) = head0;
+    *(void **)(p + 0x9c) = head0;
+    vp[0xa0 / 4] = zero;
     *(void **)(p + 0xa4) = tail;
     *(void **)(p + 0xa8) = tail;
     fn_8002F53C(p + 0xac, (void *)fn_800FB358, (void *)fn_800FB374, 0x1c, 0x20);
-    *(s32 *)(p + 0x438) = 0;
-    void *it = head;
-    for (s32 i = 0, offset = 0; i < 0x20; ++i, offset += 0x1c) {
+    vp[0x438 / 4] = zero;
+    u32 offset = 0;
+    u32 i = 0;
+    do {
         u8 *node = p + 0xac + offset;
         *(void **)(node + 4) = arg0;
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
+        void *it = p + 0x98;
         Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(p + 0x94, (void **)&it, node + 0x14);
-    }
+        ++i;
+        offset += 0x1c;
+    } while (i < 0x20);
     return arg0;
 }
 
