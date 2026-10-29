@@ -7200,7 +7200,7 @@ extern "C" s32 fn_800B9CC4(s32 arg0) {
     }
     if (*(volatile s32 *)(lbl_80407300 + 0xC) != 0) {
         if (*(volatile s8 *)(lbl_80407300 + 0x14) == 0 &&
-            fn_800BA974(*(volatile s32 *)(lbl_80407300 + 0xC), &value, 1) == 1)
+            (*fn_800BA974)(*(volatile s32 *)(lbl_80407300 + 0xC), &value, 1) == 1)
             *(volatile u8 *)(lbl_80407300 + 0x14) = value;
         fn_800A68C8((void *)*(volatile s32 *)(lbl_80407300 + 0xC));
         if (*(volatile s8 *)(lbl_80407300 + 0x14) != 0 && lbl_8055DD44 != 0)
