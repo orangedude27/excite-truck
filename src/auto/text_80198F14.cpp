@@ -1135,29 +1135,35 @@ s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
     return 1;
 }
 
-s32 fn_8019DAB0(void *arg0, void *arg1) {
+#pragma processor 750
+extern "C" s32 fn_8019DAB0(void *arg0, void *arg1) {
+    struct Scratch {
+        Vec center;
+        Vec axis;
+        Vec minus;
+        Vec plus;
+    };
+    if (fn_8019D618(arg0, arg1, 0, 0)) return 1;
     void *shape = *(void **)((u8 *)arg0 + 0xC);
     f32 radius = *(f32 *)((u8 *)arg0 + 0x28);
-    f32 half = -radius;
     f32 width = *(f32 *)((u8 *)arg0 + 0x24);
-    Vec center, a, b;
-    f32 x = *(f32 *)((u8 *)shape + 0x18);
-    f32 y = *(f32 *)((u8 *)shape + 0x1C);
-    f32 z = *(f32 *)((u8 *)shape + 0x20);
-    f32 ax = *(f32 *)((u8 *)shape + 0x24);
-    f32 ay = *(f32 *)((u8 *)shape + 0x28);
-    f32 az = *(f32 *)((u8 *)shape + 0x2C);
-    if (fn_8019D618(arg0, 0, 0, 0))
-        return 1;
-    center.x = ax + x * radius;
-    center.y = ay + y * radius;
-    center.z = az + z * radius;
-    a.x = ax + x * half;
-    a.y = ay + y * half;
-    a.z = az + z * half;
-    if (fn_8019B08C(arg0, &center, arg1, width))
-        return 1;
-    return fn_8019B08C(arg0, &a, arg1, width) != 0;
+    Scratch scratch;
+    scratch.axis.x = *(f32 *)((u8 *)shape + 0x18);
+    scratch.axis.y = *(f32 *)((u8 *)shape + 0x1C);
+    scratch.axis.z = *(f32 *)((u8 *)shape + 0x20);
+    scratch.center.x = *(f32 *)((u8 *)shape + 0x24);
+    scratch.center.y = *(f32 *)((u8 *)shape + 0x28);
+    scratch.center.z = *(f32 *)((u8 *)shape + 0x2C);
+    f32 negativeRadius = -radius;
+    scratch.plus.x = scratch.center.x + scratch.axis.x * radius;
+    scratch.plus.y = scratch.center.y + scratch.axis.y * radius;
+    scratch.plus.z = scratch.center.z + scratch.axis.z * radius;
+    scratch.minus.x = scratch.center.x + scratch.axis.x * negativeRadius;
+    scratch.minus.y = scratch.center.y + scratch.axis.y * negativeRadius;
+    scratch.minus.z = scratch.center.z + scratch.axis.z * negativeRadius;
+    s32 result = fn_8019B08C(arg0, &scratch.plus, arg1, width);
+    result |= fn_8019B08C(arg0, &scratch.minus, arg1, width);
+    return result != 0;
 }
 
 extern "C" f32 fn_8019DDEC(void *arg0) {
@@ -1461,25 +1467,24 @@ extern "C" void fn_8019EECC(void* arg0, Vec* arg1) {
 }
 
 extern "C" void fn_8019EF00(void* arg0) {
-    void* mat = *(void**)((u8*)arg0 + 0xC);
-    f32* m = (f32*)mat;
-    volatile f32 (&dst)[3] = *(volatile f32 (*)[3])((u8*)arg0 + 0x34);
-    volatile f32 (&src)[3] = *(volatile f32 (*)[3])((u8*)arg0 + 0x28);
-    f32 x = src[0];
-    f32 y = src[1];
-    f32 z = src[2];
-    if (&dst == &src) {
-        dst[0] = x * m[0] + y * m[3] + z * m[6];
-        dst[1] = x * m[1] + y * m[4] + z * m[7];
-        dst[2] = x * m[2] + y * m[5] + z * m[8];
+    volatile f32* out = (volatile f32*)((u8*)arg0 + 0x34);
+    f32* m = (f32*)*(void**)((u8*)arg0 + 0xC);
+    volatile f32* in = (volatile f32*)((u8*)arg0 + 0x28);
+    if (out == in) {
+        f32 x = in[0];
+        f32 y = in[1];
+        f32 z = in[2];
+        out[0] = x * m[0] + y * m[3] + z * m[6];
+        out[1] = x * m[1] + y * m[4] + z * m[7];
+        out[2] = x * m[2] + y * m[5] + z * m[8];
     } else {
-        dst[0] = x * m[0] + y * m[3] + z * m[6];
-        dst[1] = x * m[1] + y * m[4] + z * m[7];
-        dst[2] = x * m[2] + y * m[5] + z * m[8];
+        out[0] = in[0] * m[0] + in[1] * m[3] + in[2] * m[6];
+        out[1] = in[0] * m[1] + in[1] * m[4] + in[2] * m[7];
+        out[2] = in[0] * m[2] + in[1] * m[5] + in[2] * m[8];
     }
-    dst[0] += m[9];
-    dst[1] += m[10];
-    dst[2] += m[11];
+    out[0] += m[9];
+    out[1] += m[10];
+    out[2] += m[11];
 }
 
 extern "C" void fn_8019F03C(void* arg0) {
