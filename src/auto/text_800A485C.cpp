@@ -2651,24 +2651,27 @@ extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 in
     }
 
     u8 *dst = (u8 *)out;
-    u8 *entry = entries + (index - 1) * 0x1A;
-
+    u32 zero = 0;
     dst[0xB] = 0xF;
     dst[0xD] = (u8)type;
-    dst[0xC] = 0;
-    *(u16 *)(dst + 0x1A) = 0;
+    u8 *entry = &entries[(index - 1) * 0x1A];
+    dst[0xC] = (u8)zero;
+    *(u16 *)(dst + 0x1A) = (u16)zero;
 
     if (flag) {
         u16 *p = (u16 *)entry;
-        u16 *end = p + 0xD;
-        while (p < end && *p != 0) {
+        u16 *end = (u16 *)(entry + 0x1A);
+        for (; p < end;) {
+            if (*p != 0) {
+                goto nonzero;
+            }
+            ++p;
+            break;
+        nonzero:
             ++p;
         }
-        if (p < end) {
-            ++p;
-        }
-        while (p < end) {
-            *p++ = 0xFFFF;
+        for (; p < end; ++p) {
+            *p = 0xFFFF;
         }
     }
 
@@ -11724,32 +11727,61 @@ extern "C" void fn_800C4BD8(s32 *p, s32 value, u32 size) {
 
 extern "C" void fn_800C34B4(s32, s32, s32, s32);
 extern "C" s32 fn_800C4E5C(s32, void *);
+#pragma push
+#pragma use_lmw_stmw on
 #pragma dont_inline fn_800C34B4
 void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
- s32 span = 0x480, i=0, x=0, y=0, z=0, w=0;
- s32 row;
- if (*(s32 *)((char *)arg0+4)==1) span=0x240;
- for (;;) {
-   s16 v=*(s16 *)((char *)arg0+0x27c)-0x40;
-   *(s16 *)((char *)arg0+0x27c)=v;
-   if(v<0) *(s16 *)((char *)arg0+0x27c)=0x3c0;
-   row=arg1;
-   s32 dst=arg2;
-   for(s8 j=0;j<arg4;j++,row+=0x1000,dst+=0x80)
-     fn_800C4E5C(dst,(void *)(row+(*(s16 *)((char *)arg0+0x27c)*4)));
-   if(arg4==2) {
-     if(arg5==0) {
-       fn_800C34B4(arg1,arg3+y,*(s16 *)((char *)arg0+0x27c),arg5);
-       fn_800C34B4(arg1+0x1000,arg3+((x+1)*2),*(s16 *)((char *)arg0+0x27c),arg5);
-     } else {
-       fn_800C34B4(arg1,arg3+z,*(s16 *)((char *)arg0+0x27c),arg5);
-       fn_800C34B4(arg1+0x1000,arg3+((w+span)*2),*(s16 *)((char *)arg0+0x27c),arg5);
-     }
-   } else fn_800C34B4(arg1,arg3+z,*(s16 *)((char *)arg0+0x27c),1);
-   ++i; x+=0x40; y+=0x80; w+=0x20; z+=0x40; arg2+=0x100;
-   if(i>=0x12) break;
- }
+    register s8 inner;
+    register s32 var_r29;
+    register s32 var_r28;
+    register s32 var_r27;
+    register s32 var_r26;
+    register s32 var_r25;
+    register s32 var_r24;
+    register s32 var_r22;
+    register s32 var_r17;
+    register s32 var_r16;
+    var_r29 = 0x480;
+    if (*(s32 *)((u8 *)arg0 + 4) == 1) var_r29 = 0x240;
+    var_r28 = arg2;
+    var_r22 = 0;
+    var_r27 = 0;
+    var_r17 = 0;
+    var_r26 = 0;
+    var_r16 = 0;
+    do {
+        *(s16 *)((u8 *)arg0 + 0x27C) = *(s16 *)((u8 *)arg0 + 0x27C) - 0x40;
+        if (*(s16 *)((u8 *)arg0 + 0x27C) < 0)
+            *(s16 *)((u8 *)arg0 + 0x27C) = 0x3C0;
+        var_r25 = arg1;
+        var_r24 = var_r28;
+        inner = 0;
+        do {
+            fn_800C4E5C(var_r24, (void *)(var_r25 + (*(s16 *)((u8 *)arg0 + 0x27C) * 4)));
+            var_r25 += 0x1000;
+            var_r24 += 0x80;
+            ++inner;
+        } while (inner < arg4);
+        if (arg4 == 2) {
+            if (arg5 == 0) {
+                ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1, arg3 + var_r17, *(s16 *)((u8 *)arg0 + 0x27C), arg5);
+                ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1 + 0x1000, arg3 + ((var_r27 + 1) * 2), *(s16 *)((u8 *)arg0 + 0x27C), arg5);
+            } else {
+                ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1, arg3 + var_r16, *(s16 *)((u8 *)arg0 + 0x27C), arg5);
+                ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1 + 0x1000, arg3 + ((var_r26 + var_r29) * 2), *(s16 *)((u8 *)arg0 + 0x27C), arg5);
+            }
+        } else {
+            ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1, arg3 + var_r16, *(s16 *)((u8 *)arg0 + 0x27C), 1);
+        }
+        ++var_r22;
+        var_r27 += 0x40;
+        var_r17 += 0x80;
+        var_r26 += 0x20;
+        var_r16 += 0x40;
+        var_r28 += 0x100;
+    } while (var_r22 < 0x12);
 }
+#pragma pop
 
 #pragma push
 #pragma opt_common_subs off
