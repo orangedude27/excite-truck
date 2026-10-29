@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern "C" u8 lbl_8033E7F4[];
+extern "C" char lbl_8033D9BC[];
 extern "C" void fn_8021C12C(void *);
 extern "C" void fn_8021E7D4(void *);
 extern "C" s32 fn_8022B620(s32, const char *);
@@ -2270,6 +2272,30 @@ extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
         }
     }
     return 0;
+}
+
+extern "C" void *fn_8021E0C0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5, void *arg6, void *arg7, s32 arg8) {
+    fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
+    *(u8 *)((u8 *)arg0 + 0x268) = 0;
+    *(void **)arg0 = lbl_8033EA90;
+    *(s32 *)((u8 *)arg0 + 0x260) = 0;
+    *(f32 *)((u8 *)arg0 + 0x264) = lbl_805634A8;
+    s32 stride = fn_8022B620(7, lbl_8055B880) + 2;
+    *(void **)((u8 *)arg0 + 0x244) = arg5;
+    *(s32 *)((u8 *)arg0 + 0x258) = stride;
+    *(void **)((u8 *)arg0 + 0x25C) = arg6;
+    *(void **)((u8 *)arg0 + 0x248) = arg7;
+    *(s32 *)((u8 *)arg0 + 0x254) = arg4 / stride;
+    *(s32 *)((u8 *)arg0 + 0x250) = arg3 / 8;
+    if (arg7 != 0) {
+        *(u32 *)arg7 = *(u32 *)((u8 *)arg5 + 8);
+        *(s32 *)((u8 *)arg7 + 4) = *(s32 *)((u8 *)arg0 + 0x254);
+        fn_80219440(arg0, 0, arg7, 0xC);
+        fn_8021E7D4(arg0);
+    }
+    fn_80219440(arg0, 0, (u8 *)arg6, 4);
+    fn_80219440(arg0, 0, (u8 *)arg5 + 0xC, 4);
+    return arg0;
 }
 
 extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
