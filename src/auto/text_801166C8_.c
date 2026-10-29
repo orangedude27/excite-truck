@@ -54,6 +54,10 @@ extern void* lbl_8041D728[];
 extern u8 lbl_802F6A40[];
 extern u8 lbl_8041D508[];
 extern u32 lbl_80559950;
+extern void *lbl_8055DEF0;
+extern u32 lbl_8055DEF4;
+extern void **lbl_80559948;
+extern u32 *lbl_8055994C;
 extern u32 lbl_80329DA8[];
 extern u8 lbl_802F6990[];
 
@@ -222,6 +226,70 @@ BOOL ARCReadDir(ARCDir *dir, ARCDirEntry *entry) {
 
 u32 fn_80116BCC(void) {
     return 1;
+}
+
+u32 fn_80116BD4(s32 arg0, s32 arg1, s32 arg2) {
+    s32 temp_r3;
+    s32 temp_r4;
+    s32 temp_r4_2;
+    s32 temp_r8;
+    u32 temp_r10;
+    u32 temp_r9_2;
+    u32 temp_r0;
+    u32 temp_r0_2;
+    u32 temp_r5;
+    u32 temp_r5_2;
+    u32 temp_r6;
+    u32 temp_r7;
+    u32 temp_r8_2;
+    u32 temp_r8_3;
+    u32 temp_r9;
+    u32 var_r3;
+    u32 var_r4;
+    u32 var_r7;
+
+    temp_r8 = (s32)(((u64)(u32)arg0 * (u32)arg1) >> 32);
+    temp_r9 = (u32)arg0 * (u32)arg1;
+    if ((((u32)arg2 & ((u32)arg2 - 1)) == 0)) {
+        temp_r4 = __cntlzw((u32)arg2);
+        return ((u32)temp_r8 << (temp_r4 + 1)) | (temp_r9 >> (0x1F - temp_r4));
+    }
+    if (temp_r8 == 0) {
+        return temp_r9 / (u32)arg2;
+    }
+    temp_r4_2 = __cntlzw((u32)arg2);
+    temp_r10 = (u32)arg2 << temp_r4_2;
+    temp_r3 = temp_r8 << temp_r4_2;
+    temp_r0 = temp_r9 >> (0x20 - temp_r4_2);
+    temp_r9_2 = temp_r9 << temp_r4_2;
+    temp_r8 = temp_r3 + temp_r0;
+    temp_r5 = temp_r10 >> 16;
+    temp_r6 = temp_r10 & 0xFFFF;
+    var_r4 = (u32)temp_r8 / temp_r5;
+    temp_r0_2 = var_r4 * temp_r5;
+    var_r7 = ((temp_r9_2 >> 16) & 0xFFFF) | ((((u32)temp_r8 - temp_r0_2) & 0xFFFF) << 16);
+    temp_r0 = var_r4 * temp_r6;
+    if (var_r7 < temp_r0) {
+        var_r7 += temp_r10;
+        var_r4 -= 1;
+        if ((var_r7 >= temp_r10) && (var_r7 < temp_r0)) {
+            var_r7 += temp_r10;
+            var_r4 -= 1;
+        }
+    }
+    temp_r7 = var_r7 - temp_r0;
+    var_r3 = temp_r7 / temp_r5;
+    temp_r8_2 = temp_r7 - var_r3 * temp_r5;
+    temp_r5_2 = var_r3 * temp_r6;
+    temp_r8_3 = (temp_r9_2 & 0xFFFF) | ((temp_r8_2 & 0xFFFF) << 16);
+    if (temp_r8_3 < temp_r5_2) {
+        temp_r8_3 += temp_r10;
+        var_r3 -= 1;
+        if ((temp_r8_3 >= temp_r10) && (temp_r8_3 < temp_r5_2)) {
+            var_r3 -= 1;
+        }
+    }
+    return (var_r4 << 16) | var_r3;
 }
 
 void fn_80116CC4(s32* arg0, u16 arg1, u32 arg2) {
@@ -466,24 +534,33 @@ void fn_80117380(void *arg0, s32 arg1) {
 
 u32 fn_80116BD4(s32, s32, s32);
 u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag) {
+    s32 byteOffset;
+    u32 *base;
     s32 i;
+    u32 *value;
+    u32 diff;
     u32 maxDiff;
-    s32 maxIndex;
+    s32 index;
     s32 allOdd;
 
     maxDiff = 0;
-    maxIndex = 0;
+    index = 0;
+    allOdd = 1;
+    value = values;
+    base = values + offset;
+    byteOffset = 0;
     for (i = 0; i < count - offset; i++) {
-        u32 diff = values[offset + i] - values[i];
+        diff = base[byteOffset / 4] - *value;
         if (diff > maxDiff) {
             maxDiff = diff;
-            maxIndex = i;
+            index = i;
         }
+        value++;
+        byteOffset += 4;
     }
     if (maxDiff == 0) {
         maxDiff = fn_80116BD4(values[count] - values[0], offset, count);
     }
-    allOdd = 1;
     for (i = 0; i < count; i++) {
         if ((values[i] & 1) == 0) {
             allOdd = 0;
@@ -491,7 +568,7 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
         }
     }
     *outFlag = allOdd;
-    *outIndex = maxIndex;
+    *outIndex = index;
     return maxDiff;
 }
 
@@ -1469,6 +1546,47 @@ void fn_8011A1A0(u32 *data, u32 size) {
     }
 }
 
+u32 fn_8011A240(void *arg0, u32 arg1, s32 arg2, u32 arg3) {
+    u8 buffer[0x41F];
+    register void *block = arg0;
+    register u32 bufferAddr;
+    register u32 available;
+    register s32 total = 0;
+    register u32 amount;
+    register s32 remaining = (s32)arg3;
+    register s32 dst = arg2;
+    register s32 offset = (s32)arg1;
+    s32 status;
+
+    bufferAddr = (u32)(buffer + 0x1F) & 0xFFFFFFE0;
+    available = ((u32)(buffer + 0x41F) - bufferAddr) & 0xFFFFFFE0;
+    while (remaining != 0) {
+        amount = ((u32)remaining + 0x1F) & 0xFFFFFFE0;
+        if ((u32)remaining >= available) amount = available;
+        DVDReadAsyncPrio(block, (void *)bufferAddr, amount, offset, 0, 0);
+poll_drive:
+        status = DVDGetDriveStatus();
+        if (status == 0) goto read_done;
+        if (status >= 0) goto status_nonnegative;
+        if (status < -1) goto poll_drive;
+        goto read_failed;
+status_nonnegative:
+        if (status >= 0xC) goto poll_drive;
+        if (status >= 3) goto read_failed;
+        goto poll_drive;
+read_failed:
+        return 0;
+read_done:
+        if (amount > (u32)remaining) amount = (u32)remaining;
+        memcpy((void *)dst, (void *)bufferAddr, amount);
+        dst += amount;
+        total += amount;
+        remaining -= amount;
+        offset += amount;
+    }
+    return total;
+}
+
 #pragma push
 #pragma scheduling on
 #pragma dont_inline on
@@ -1485,27 +1603,44 @@ void fn_8011A330(void* arg0) {
 #pragma dont_inline reset
 #pragma pop
 
-u32 fn_8011A388(void* arg0, s32 arg1, s32 arg2, u32 arg3) {
-    extern u32 fn_8011A240(void*, u32, s32, u32);
-    extern void fn_8011A330(void*);
-    u32 result, current, remaining;
-    if (arg1 == -1 || *(u32*)((u8*)arg0 + 0x90) == (u32)arg1) return arg3;
-    *(u32*)((u8*)arg0 + 0x90) = (u32)arg1;
-    result = fn_8011A240((u8*)arg0 + 0x54,
-                         *(u32*)((u8*)arg0 + 0x90) + *(u32*)((u8*)arg0 + 0xB4),
-                         arg2, arg3);
+u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
+    extern u32 fn_8011A240(void *, u32, s32, u32);
+    extern void fn_8011A330(void *);
+    volatile u32 *offset = (volatile u32 *)((u8 *)arg0 + 0x90);
+    volatile u32 *base = (volatile u32 *)((u8 *)arg0 + 0xB4);
+    volatile u32 *capacityPtr = (volatile u32 *)((u8 *)arg0 + 0x40);
+    u32 result;
+    u32 current;
+    u32 end;
+    u32 newPosition;
+    u32 capacity;
+    u32 remaining;
+
+    if (arg1 == -1) goto return_arg3;
+    if (*offset == (u32)arg1) goto return_arg3;
+    *offset = (u32)arg1;
+    current = *offset;
+    result = fn_8011A240((u8 *)arg0 + 0x54,
+                         current + *base, arg2, arg3);
     if (result != arg3) {
-        *(s32*)((u8*)arg0 + 0x20) = 1;
+        *(s32 *)((u8 *)arg0 + 0x20) = 1;
         fn_8011A330(arg0);
     }
-    *(u32*)((u8*)arg0 + 0x90) += result;
-    current = *(u32*)((u8*)arg0 + 0x90);
-    *(u32*)((u8*)arg0 + 0x98) = current;
-    remaining = *(u32*)((u8*)arg0 + 0xB8) - current;
-    if (remaining >= *(u32*)((u8*)arg0 + 0x40))
-        *(u32*)((u8*)arg0 + 0x48) = *(u32*)((u8*)arg0 + 0x40);
-    fn_8011A1A0((u32*)arg2, result);
+    current = *offset;
+    end = *(u32 *)((u8 *)arg0 + 0xB8);
+    newPosition = current + result;
+    *offset = newPosition;
+    current = *offset;
+    capacity = *capacityPtr;
+    remaining = end - current;
+    *(u32 *)((u8 *)arg0 + 0x98) = current;
+    if (remaining >= capacity) {
+        *(u32 *)((u8 *)arg0 + 0x48) = *capacityPtr;
+    }
+    fn_8011A1A0((u32 *)arg2, result);
     return result;
+return_arg3:
+    return arg3;
 }
 
 #pragma unroll reset
@@ -4859,6 +4994,31 @@ void fn_801233F8(s32 arg0, volatile f32 *arg1, f32 *arg2) {
     *(f32 *)((u8 *)arg1 + temp_r6_2) = temp_f2_4 * (temp_f5_8 + temp_f6_8);
     *(f32 *)((u8 *)arg1 + temp_r3) = temp_f2_4 * (temp_f6_8 - temp_f5_8);
 }
+
+void fn_80123CEC(s32 count, void *dst, s32 srcIndex, void *src) {
+    void *srcBase = src;
+    void *temp_r31;
+    if (count == 0x80) {
+        temp_r31 = (u8 *)srcBase + ((srcIndex - 8) * 4);
+        fn_80123E98(dst, temp_r31);
+        {
+            void *dst80 = (u8 *)dst + 0x80;
+            fn_8012440C(dst80, (u8 *)srcBase + ((srcIndex - 0x20) * 4));
+        }
+        fn_80123E98((u8 *)dst + 0x100, temp_r31);
+        fn_80123E98((u8 *)dst + 0x180, temp_r31);
+        return;
+    } else {
+        void *tempElse;
+        void *dst0 = dst;
+        tempElse = (u8 *)srcBase + ((srcIndex - 0x10) * 4);
+        fn_80124AD8(dst0, tempElse);
+        fn_80124CE8((u8 *)dst + 0x40, tempElse);
+        fn_80124AD8((u8 *)dst + 0x80, tempElse);
+        fn_80124AD8((u8 *)dst + 0xC0, tempElse);
+    }
+}
+
 #pragma scheduling reset
 extern void fn_8012440C(void *, void *);
 extern void fn_80124CE8(void *, void *);
