@@ -42,6 +42,7 @@ public:
     virtual void *bindMaterial(void *, bool);
 };
 extern "C" u8 lbl_80407560[0x18];
+extern "C" u8 lbl_80407580[];
 extern "C" const char lbl_8031E9A0[];
 extern "C" s32 lbl_8055DD6C;
 extern "C" s32 lbl_80559248;
@@ -806,6 +807,61 @@ extern "C" u8 lbl_803D1640[];
 extern "C" u8 lbl_803D2070[];
 extern "C" int fn_800A6048(void) {
     fn_800A499C((const char *)&lbl_803D1640, 0, 0xA2C);
+    return 0;
+}
+
+extern "C" s32 fn_800A607C(void *arg0, s32 *arg1) {
+    u16 index;
+    u32 pair;
+    u8 *resource;
+    u8 *entryBase;
+    u8 *record;
+    u32 params[3];
+    s32 result;
+
+    *arg1 = 0;
+    if (*(u16 *)(lbl_803D1640 + 2) >= 0x1A) {
+        return 8;
+    }
+
+    index = 0;
+    for (pair = 0; pair < 13; pair++) {
+        if ((*(u32 *)(lbl_803D1640 + (u32)index * 0x3C + 4) & 1) == 0) {
+            break;
+        }
+        index++;
+        if ((*(u32 *)(lbl_803D1640 + (u32)index * 0x3C + 4) & 1) == 0) {
+            break;
+        }
+        index++;
+    }
+
+    if (index >= 0x1A) {
+        return 8;
+    }
+
+    resource = lbl_803D2070 + (u32)index * 8;
+    ((s32 (*)(void *, s32))(*(u32 *)arg0))(
+        resource, *(s32 *)((u8 *)arg0 + 4));
+
+    entryBase = lbl_803D1640 + (u32)index * 0x3C;
+    record = entryBase + 4;
+    params[0] = 1;
+    params[1] = 1;
+    params[2] = (u32)(record + 0x30);
+    *(u32 *)(entryBase + 8) = *(u32 *)resource;
+    *(u32 *)(entryBase + 0xC) = *(u32 *)(resource + 4);
+
+    result = ((s32 (*)(void *, s32, s32, void *))fn_800B7F28)(
+        params, params[0], *(s32 *)(resource + 4), entryBase);
+    if (result == 0) {
+        return 0x13;
+    }
+
+    *(u32 *)(record + 0x14) = result;
+    *(u32 *)record |= 1;
+    *(u16 *)(lbl_803D1640 + 2) += 1;
+    *arg1 = (s32)record;
     return 0;
 }
 
@@ -2856,20 +2912,24 @@ extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1) {
     buf[11] = p_ent[0x21C];
     buf[12] = p_ent[0x21B];
     buf[13] = p_ent[0x21D];
-tmp = *(u16 *)(p_ent + 542); *(u16 *)(buf + 14) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-tmp = *(u16 *)(p_ent + 544); *(u16 *)(buf + 16) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-tmp = *(u16 *)(p_ent + 546); *(u16 *)(buf + 18) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-tmp = *(u16 *)(p_ent + 548); *(u16 *)(buf + 22) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-tmp = *(u16 *)(p_ent + 550); *(u16 *)(buf + 24) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-tmp = *(u32 *)(p_ent + 0x234) >> 16;
-*(u16 *)(buf + 20) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-tmp = *(u32 *)(p_ent + 0x234);
-*(u16 *)(buf + 26) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-tmp32 = *(u32 *)(p_ent + 0x228);
-*(u32 *)(buf + 28) = ((tmp32 << 8) & 0xFF0000) | (tmp32 << 24) | ((tmp32 >> 8) & 0xFF00) | (tmp32 >> 24);
-result = fn_800B5700(handle, buf, *(s32 *)(p_ent+0x238), *(u16 *)(p_ent+0x23C), 32, &count, 0);
-if (result) return result;
-return count == 32 ? 0 : 17;
+    tmp = *(u16 *)(p_ent + 542); *(u16 *)(buf + 14) = (u16)((tmp << 8) | ((u32)tmp >> 8));
+    tmp = *(u16 *)(p_ent + 544); *(u16 *)(buf + 16) = (u16)((tmp << 8) | ((u32)tmp >> 8));
+    tmp = *(u16 *)(p_ent + 546); *(u16 *)(buf + 18) = (u16)((tmp << 8) | ((u32)tmp >> 8));
+    tmp = *(u16 *)(p_ent + 548); *(u16 *)(buf + 22) = (u16)((tmp << 8) | ((u32)tmp >> 8));
+    tmp = *(u16 *)(p_ent + 550); *(u16 *)(buf + 24) = (u16)((tmp << 8) | ((u32)tmp >> 8));
+    tmp = *(u32 *)(p_ent + 0x234) >> 16;
+    *(u16 *)(buf + 20) = (u16)((tmp << 8) | ((u32)tmp >> 8));
+    tmp = *(u32 *)(p_ent + 0x234);
+    *(u16 *)(buf + 26) = (u16)((tmp << 8) | ((u32)tmp >> 8));
+    tmp32 = *(u32 *)(p_ent + 0x228);
+    *(u32 *)(buf + 28) = ((tmp32 & 0x000000FF) << 24) |
+                         ((tmp32 & 0x0000FF00) << 8) |
+                         ((tmp32 & 0x00FF0000) >> 8) |
+                         ((tmp32 & 0xFF000000) >> 24);
+    result = fn_800B5700(handle, buf, *(s32 *)(p_ent + 0x238), *(u16 *)(p_ent + 0x23C), 32, &count, 0);
+    if (result != 0) return result;
+    if (count != 32) return 17;
+    return 0;
 }
 
 extern "C" s32 VFiPFENT_findEmptyTailSFN(void *, void *, u32 *);
