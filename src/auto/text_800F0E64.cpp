@@ -1,4 +1,9 @@
 extern "C" const char lbl_80324868[];
+extern "C" void *fn_800E80B8(void *);
+extern "C" int fn_800E80F0(int, int);
+extern "C" void *NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10NoteOnInfo(void *, const void *);
+extern "C" const char lbl_80325B88[];
+extern "C" int lbl_805598D8;
 struct __StrmLoadCommandRef;
 struct __StrmSoundArchiveRef;
 struct __StrmMutexRef;
@@ -1348,11 +1353,12 @@ extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileRea
     node = tree + index * 0x14 + 8;
     s32 length = strlen(str);
     while ((*(u16 *)node & 1) == 0) {
-        u16 bitIndex = *(u16 *)(node + 2);
-        s32 byteIndex = bitIndex >> 3;
+        s32 bits = *(u16 *)(node + 2);
+        s32 byteIndex = bits >> 3;
+        s32 bitIndex = bits & 7;
         s32 child;
         if (byteIndex < length &&
-            (((s8)str[byteIndex] & (1 << (7 - (bitIndex & 7)))) != 0))
+            (((s8)str[byteIndex] & (1 << (7 - bitIndex))) != 0))
             child = *(u32 *)(node + 8);
         else
             child = *(u32 *)(node + 4);
@@ -1360,20 +1366,24 @@ extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileRea
     }
     u32 labelId = *(u32 *)(node + 0xC);
     const char *label;
-    if ((u32)(labelId + 0x10000) <= 0xFFFF) {
-        label = (const char *)(labelId + 0x10000);
+    u32 sentinel = labelId + 0x10000;
+    if (sentinel == 0xFFFF) {
+        label = (const char *)sentinel;
     } else {
-        u32 *table = *(u32 **)(self + 0x30);
+        volatile u32 **tableField = (volatile u32 **)(self + 0x30);
+        volatile u32 *table = *tableField;
         if (table == 0) {
             label = 0;
         } else {
             if (labelId >= table[0])
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324868, 0x1BA, lbl_80324A8C);
+            table = *tableField;
+            const char *base = *(const char **)(self + 0x2C);
             u32 offset = table[labelId + 1];
             if (offset == 0)
                 label = 0;
             else
-                label = *(const char **)(self + 0x2C) + offset;
+                label = base + offset;
         }
     }
     if (strcmp(str, label) == 0)
@@ -3851,7 +3861,7 @@ s32 nw4hbm::snd::detail::StrmPlayer::Start() {
         fn_800E519C(*(void **)(self + 0x438));
 
         u32 innerIrq = OSDisableInterrupts();
-        u8 paused = 0;
+        register u8 paused = 0;
         if (self[0x4B] != 0) {
             paused = 1;
         }
