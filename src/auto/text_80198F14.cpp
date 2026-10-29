@@ -1361,44 +1361,46 @@ extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
     *(s32*)((u8*)arg0 + 0xC) = arg1;
 }
 
-extern "C" void* fn_8019EDB8(register void* arg0, void* arg1, register s32 arg2) {
+extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
+    register s32 copyFlag = arg2;
+    register void *self = arg0;
     u8 a, b, c, d;
     fn_8019ECC4();
-    *(void **)arg0 = &lbl_80333B48;
-    if (arg2 != 0) {
-        a = *(volatile u8 *)((u8 *)arg0 + 0x24);
-        b = *(volatile u8 *)((u8 *)arg0 + 0x27);
-        c = *(volatile u8 *)((u8 *)arg0 + 0x25);
-        d = *(volatile u8 *)((u8 *)arg0 + 0x26);
-        *(volatile u8 *)((u8 *)arg0 + 0x24) = b;
-        *(volatile u8 *)((u8 *)arg0 + 0x27) = a;
-        *(volatile u8 *)((u8 *)arg0 + 0x25) = d;
-        *(volatile u8 *)((u8 *)arg0 + 0x26) = c;
-        a = *(volatile u8 *)((u8 *)arg0 + 0x28); b = *(volatile u8 *)((u8 *)arg0 + 0x2b);
-        *(volatile u8 *)((u8 *)arg0 + 0x28) = b; *(volatile u8 *)((u8 *)arg0 + 0x2b) = a;
-        a = *(volatile u8 *)((u8 *)arg0 + 0x29); b = *(volatile u8 *)((u8 *)arg0 + 0x2a);
-        *(volatile u8 *)((u8 *)arg0 + 0x29) = b; *(volatile u8 *)((u8 *)arg0 + 0x2a) = a;
-        a = *(volatile u8 *)((u8 *)arg0 + 0x2c); b = *(volatile u8 *)((u8 *)arg0 + 0x2f);
-        *(volatile u8 *)((u8 *)arg0 + 0x2c) = b; *(volatile u8 *)((u8 *)arg0 + 0x2f) = a;
-        a = *(volatile u8 *)((u8 *)arg0 + 0x2d); b = *(volatile u8 *)((u8 *)arg0 + 0x2e);
-        *(volatile u8 *)((u8 *)arg0 + 0x2d) = b; *(volatile u8 *)((u8 *)arg0 + 0x2e) = a;
-        a = *(volatile u8 *)((u8 *)arg0 + 0x30); b = *(volatile u8 *)((u8 *)arg0 + 0x33);
-        *(volatile u8 *)((u8 *)arg0 + 0x30) = b; *(volatile u8 *)((u8 *)arg0 + 0x33) = a;
-        a = *(volatile u8 *)((u8 *)arg0 + 0x31); b = *(volatile u8 *)((u8 *)arg0 + 0x32);
-        *(volatile u8 *)((u8 *)arg0 + 0x31) = b; *(volatile u8 *)((u8 *)arg0 + 0x32) = a;
-        if (*(volatile s32 *)((u8 *)arg0 + 0x20) == 0x3eb)
-            *(f32 *)((u8 *)arg0 + 0x24) += lbl_80562370;
+    *(void **)self = &lbl_80333B48;
+    if (copyFlag != 0) {
+        a = *(volatile u8 *)((u8 *)self + 0x24);
+        b = *(volatile u8 *)((u8 *)self + 0x27);
+        c = *(volatile u8 *)((u8 *)self + 0x25);
+        d = *(volatile u8 *)((u8 *)self + 0x26);
+        *(volatile u8 *)((u8 *)self + 0x24) = b;
+        *(volatile u8 *)((u8 *)self + 0x27) = a;
+        *(volatile u8 *)((u8 *)self + 0x25) = d;
+        *(volatile u8 *)((u8 *)self + 0x26) = c;
+        a = *(volatile u8 *)((u8 *)self + 0x28); b = *(volatile u8 *)((u8 *)self + 0x2b);
+        *(volatile u8 *)((u8 *)self + 0x28) = b; *(volatile u8 *)((u8 *)self + 0x2b) = a;
+        a = *(volatile u8 *)((u8 *)self + 0x29); b = *(volatile u8 *)((u8 *)self + 0x2a);
+        *(volatile u8 *)((u8 *)self + 0x29) = b; *(volatile u8 *)((u8 *)self + 0x2a) = a;
+        a = *(volatile u8 *)((u8 *)self + 0x2c); b = *(volatile u8 *)((u8 *)self + 0x2f);
+        *(volatile u8 *)((u8 *)self + 0x2c) = b; *(volatile u8 *)((u8 *)self + 0x2f) = a;
+        a = *(volatile u8 *)((u8 *)self + 0x2d); b = *(volatile u8 *)((u8 *)self + 0x2e);
+        *(volatile u8 *)((u8 *)self + 0x2d) = b; *(volatile u8 *)((u8 *)self + 0x2e) = a;
+        a = *(volatile u8 *)((u8 *)self + 0x30); b = *(volatile u8 *)((u8 *)self + 0x33);
+        *(volatile u8 *)((u8 *)self + 0x30) = b; *(volatile u8 *)((u8 *)self + 0x33) = a;
+        a = *(volatile u8 *)((u8 *)self + 0x31); b = *(volatile u8 *)((u8 *)self + 0x32);
+        *(volatile u8 *)((u8 *)self + 0x31) = b; *(volatile u8 *)((u8 *)self + 0x32) = a;
+        if (*(volatile s32 *)((u8 *)self + 0x20) == 0x3eb)
+            *(f32 *)((u8 *)self + 0x24) += lbl_80562370;
     }
-    *(volatile u8 *)((u8 *)arg0 + 0x4c) = 0;
+    *(volatile u8 *)((u8 *)self + 0x4c) = 0;
     f32 zero = lbl_805622D0;
-    *(f32 *)((u8 *)arg0 + 0x34) = zero;
-    *(f32 *)((u8 *)arg0 + 0x38) = zero;
-    *(f32 *)((u8 *)arg0 + 0x3c) = zero;
-    *(f32 *)((u8 *)arg0 + 0x40) = zero;
-    *(f32 *)((u8 *)arg0 + 0x44) = zero;
-    *(f32 *)((u8 *)arg0 + 0x48) = zero;
-    *(f32 *)((u8 *)arg0 + 0x50) = zero;
-    return arg0;
+    *(f32 *)((u8 *)self + 0x34) = zero;
+    *(f32 *)((u8 *)self + 0x38) = zero;
+    *(f32 *)((u8 *)self + 0x3c) = zero;
+    *(f32 *)((u8 *)self + 0x40) = zero;
+    *(f32 *)((u8 *)self + 0x44) = zero;
+    *(f32 *)((u8 *)self + 0x48) = zero;
+    *(f32 *)((u8 *)self + 0x50) = zero;
+    return self;
 }
 
 extern "C" void fn_8019EECC(void* arg0, Vec* arg1) {
@@ -1780,6 +1782,7 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     second[2] = z1;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 farg2) {
     struct Object {
         void *vtable; s32 field4; s32 field8; s32 fieldC; f32 field10; f32 field14;
@@ -1787,28 +1790,35 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
         f32 field30; f32 field34; f32 field38; f32 field3C; f32 field40; f32 field44;
         f32 field48; u8 field4C; u8 pad4D[3]; f32 field50;
     };
-    Object *object = (Object *)fn_801284F8(0x54, lbl_80333640);
+    volatile Object *object = (volatile Object *)fn_801284F8(0x54, lbl_80333640);
     s32 type;
     f32 zero = lbl_805622D0;
     if (object != 0) {
         type = *(s32 *)((u8 *)arg0 + 4);
         object->fieldC = *(s32 *)((u8 *)arg0 + 0xC);
-        object->field4 = type; object->field8 = 0;
+        object->field4 = type;
+        object->field8 = 0;
         object->field18 = 0x53504852;
-        object->field10 = farg1; object->field14 = farg2;
-        object->field20 = 100; object->field1C = 0;
-        object->vtable = &lbl_80333B48;
+        object->field10 = farg1;
+        object->field14 = farg2;
+        object->field20 = 100;
+        object->field1C = 0;
+        object->vtable = lbl_80333B48;
         object->field24 = farg0;
-        object->field34 = zero; object->field38 = zero;
-        object->field3C = zero; object->field40 = zero;
-        object->field44 = zero; object->field48 = zero;
-        object->field4C = 0; object->field50 = zero;
+        object->field34 = zero;
+        object->field38 = zero;
+        object->field3C = zero;
+        object->field40 = zero;
+        object->field44 = zero;
+        object->field48 = zero;
+        object->field4C = 0;
+        object->field50 = zero;
         object->field28 = *(f32 *)arg1;
         object->field2C = *(f32 *)((u8 *)arg1 + 4);
         object->field30 = *(f32 *)((u8 *)arg1 + 8);
         if (type != 0) fn_8019EECC((void *)type, (Vec *)((u8 *)object + 0x28));
     }
-    fn_801A0378(arg0, object);
+    fn_801A0378(arg0, (void *)object);
 }
 
 extern "C" void fn_801A0378(void* arg0, void* arg1) {
