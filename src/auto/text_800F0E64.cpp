@@ -10,6 +10,7 @@ typedef signed short s16;
 typedef unsigned short u16;
 typedef signed long s32;
 typedef unsigned long u32;
+struct SoundArchiveInitWordPair { u32 first; u32 second; };
 typedef signed long long s64;
 typedef unsigned long long u64;
 typedef float f32;
@@ -2314,6 +2315,37 @@ extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         *(void **)((u8 *)task + 0x24) = (u8 *)self + 8;
     }
     AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(fn_800FDE60(), task, 1);
+    fn_800FE804(fn_800FE648());
+    return 3;
+}
+
+extern "C" s32 fn_800F7528(void *self, void *arg1, unsigned long arg2, long arg3, int arg4, unsigned long arg5, long arg6, bool arg7, __StrmLoadCommandRef &arg8, unsigned long arg9, unsigned long arg10, unsigned long arg11) {
+    register const char *base = lbl_80324E88;
+    void *reader = *(void **)((u8 *)self + 4);
+    void *fileInfo = *(void **)((u8 *)reader + 0x10);
+    s32 result;
+    if (fileInfo == 0)
+        result = 0;
+    else
+        result = fn_800F273C(fileInfo);
+    if (result == 0)
+        return 1;
+    reader = *(void **)((u8 *)self + 4);
+    if (*(void **)((u8 *)reader + 0x10) == 0)
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x2AC, base + 0x288);
+    fileInfo = *(void **)((u8 *)reader + 0x10);
+    void *task = Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(fn_800FDE60());
+    if (task == 0)
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x67B, base + 0x590);
+    if (fn_800FE0DC(fn_800FDE60()) < 0x40)
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x67D, base + 0x628);
+    if (task != 0) {
+        task = __ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUlliUllbRQ56nw4hbm3snd6detail10StrmPlayer11LoadCommandRCQ36nw4hbm3snd12SoundArchiveUlUlR7OSMutex(
+            task, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+            arg8, *(const __StrmSoundArchiveRef *)fileInfo,
+            arg10, arg9, *(__StrmMutexRef *)((u8 *)self + 8));
+    }
+    AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(fn_800FDE60(), task, 2);
     fn_800FE804(fn_800FE648());
     return 3;
 }
