@@ -165,7 +165,7 @@ extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597FC[]; }
 extern "C" u32 fn_80116BCC(void *);
 extern "C" s32 fn_800B5CB4(u32, void *);
 extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32, u16 *);
-void VFiPFCODE_CP932_Unicode2OEM(unsigned short *, char *);
+extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32 *);
 extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8, s32);
 extern "C" s16 fn_800B7200(s32);
 extern "C" void fn_800B72B0(void);
@@ -5946,6 +5946,49 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u16 arg2, u16 arg3, s32 arg4)
     VFipf_memcpy((u8 *)*(void **)((u8 *)page + 8) + arg3, arg1, arg4);
     result = fn_800A8FD0(arg0, (s32)page);
     return result & ((-result | result) >> 31);
+}
+
+extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
+    u8 *state = (u8 *)lbl_803D2140;
+    u8 *record;
+    s32 i;
+
+    if (arg0 & 0x10000)
+        *(u32 *)(state + 0x38) |= 0x10000;
+    else
+        *(u32 *)(state + 0x38) &= 0xFFFEFFFF;
+
+    *(void **)(state + 0x08) = state + 0xA0;
+    *(void **)(state + 0x14) = state + 0xA0;
+    *(void **)(state + 0x20) = state + 0xA0;
+    *(void **)(state + 0x2C) = state + 0xA0;
+    *(u32 *)(state + 0x00) |= 1;
+    *(u32 *)(state + 0x30) = 0;
+    *(u32 *)(state + 0x34) = 0;
+
+    if (arg0 & 0x10000)
+        *(u32 *)(state + 0x38) |= 0x10000;
+    else
+        *(u32 *)(state + 0x38) &= 0xFFFEFFFF;
+
+    *(void **)(state + 0x3C) = arg1;
+    *(u32 *)(state + 0x40) = 0;
+    *(u32 *)(state + 0x44) = 0;
+    *(u32 *)(state + 0x60) = 1;
+    *(void **)(state + 0x48) = (void *)VFiPFCODE_CP932_OEM2Unicode;
+    *(void **)(state + 0x4C) = (void *)VFiPFCODE_CP932_Unicode2OEM;
+    *(void **)(state + 0x50) = (void *)fn_800B7200;
+    *(void **)(state + 0x54) = (void *)VFiPFCODE_CP932_isOEMMBchar;
+    *(void **)(state + 0x58) = (void *)fn_800B72B0;
+    *(void **)(state + 0x5C) = (void *)fn_800B72E4;
+
+    record = state + 0xA0;
+    for (i = 0; i < 0x1A; i++, record += 0x1FC8)
+        fn_800A499C((const char *)record, 0, 0x1FC8);
+
+    fn_800B7710(state + 0x64);
+    __AXDSPInitCallback_800B7860();
+    return 0;
 }
 
 #pragma pop
