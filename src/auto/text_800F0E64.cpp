@@ -4039,7 +4039,7 @@ extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6det
     if (requestedChannels <= 2)
         allocatedChannels = requestedChannels;
     *(s32 *)(((u8 *)arg0) + 0x4A0) = allocatedChannels;
-    if (AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(arg0, *(s32 *)(((u8 *)arg0) + 0x4A4)) == 0) {
+    if (AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(arg0, *(s32 *)(((u8 *)arg0) + 0x4A0), *(s32 *)(((u8 *)arg0) + 0x4A4)) == 0) {
         OSRestoreInterrupts(token);
         return 0;
     }
