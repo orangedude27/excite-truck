@@ -44,6 +44,15 @@ extern u8 HID_HostCloseDev(u8);
 static tBTM_STATUS btm_set_inq_event_filter(UINT8, UINT8 *);
 
 typedef struct {
+    u8 bytes[0x78];
+} tRFC_MCB_ALLOC_VIEW;
+
+typedef struct {
+    u8 prefix[0x39C];
+    tRFC_MCB_ALLOC_VIEW mcb[1];
+} tRFC_CB_ALLOC_VIEW;
+
+typedef struct {
     u8 pad0[0x25];
     u8 link_key[16];
     u8 pad35[0x41];
@@ -574,6 +583,58 @@ void fn_80068F80(void) {
     lbl_80392960[0xC] = 1;
 }
 
+#pragma use_lmw_stmw off
+s32 fn_80069178(void) {
+    s32 status;
+    BOOL interrupts;
+    register u8 count;
+    register s32 index;
+    register const u8 *record;
+    register u8 *device_info;
+
+    status = SCCheckStatus();
+    if (((u32)((1 - status) | (status - 1)) >> 31) == 0) {
+        return 0x16;
+    }
+
+    memset(lbl_80393058 + 1, 0, 0x2BC);
+
+    interrupts = OSDisableInterrupts();
+    device_info = lbl_80392960;
+    index = device_info[0x12];
+    OSRestoreInterrupts(interrupts);
+    lbl_80393058[0] = (u8)index;
+
+    index = 0;
+    count = 0;
+    do {
+        interrupts = OSDisableInterrupts();
+        if (index < 0) goto high_record;
+        if (index >= 0xA) goto high_record;
+        record = device_info + (u8)index * 0x60 + 0x64;
+        goto selected_record;
+    high_record:
+        record = device_info + ((u8)index - 0xA) * 0x60 + 0x424;
+    selected_record:
+        OSRestoreInterrupts(interrupts);
+
+        if (record[0x59] != 0) {
+            if (record[0x5B] == 0 || record[0x5B] == 2 || record[0x5B] == 4) {
+                memcpy(lbl_80393058 + (u8)count * 0x46 + 1, record + 0x40, 6);
+                memcpy(lbl_80393058 + (u8)count * 0x46 + 7, record, 0x40);
+                count++;
+            }
+        }
+        index++;
+    } while ((u32)index < 0xA);
+
+    DBPrintf_8006CFA8(lbl_80313238, count);
+    if (SCSetBtDeviceInfoArray(lbl_80393058) != 0) {
+        return 0x19;
+    }
+    return 0x16;
+}
+#pragma use_lmw_stmw reset
 s32 fn_800692D0(void) {
     const u8 *record;
     u8 *offset;
