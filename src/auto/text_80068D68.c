@@ -17574,7 +17574,7 @@ BOOLEAN SDP_AddUuidSequence(UINT32 handle, UINT16 attr_id, UINT16 num_uuids, UIN
 
 BOOLEAN SDP_AddServiceClassIdList(UINT32 handle, UINT16 num_services, UINT16 *p_service_uuids) {
     UINT16 xx;
-    UINT8 buff[SDP_MAX_ATTR_LEN * 2];
+    UINT8 buff[0xA8];
     UINT8 *p = buff;
 
     for (xx = 0; xx < num_services; xx++, p_service_uuids++) {
