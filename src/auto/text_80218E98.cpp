@@ -3,6 +3,11 @@
 
 #include <types.h>
 
+extern "C" u8 lbl_8033DA84[];
+extern "C" char lbl_8033E4DC[];
+extern "C" f32 lbl_8056352C;
+extern "C" f32 lbl_80563530;
+
 extern "C" void *lbl_8033DD20[];
 extern "C" void *memset(void *, int, unsigned long);
 extern "C" char lbl_8033DCE8[];
@@ -2144,24 +2149,36 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     converted.words.high = 0x43300000;
     converted.words.low = (result - start) ^ 0x80000000;
 }
-#pragma scheduling on
-#pragma pop
+#pragma push
+#pragma ppc_psq_save off
+#pragma scheduling invalid_target
 extern "C" void fn_8021CBBC(void *arg0) {
-    f32 a, b;
-    f32 f;
-    f32 c;
-    s32 x, y;
-    a = (f32)(*(s32 *)((u8 *)arg0 + 4) - (s32)(((s32)lbl_8055FB9C + (s32)lbl_8055FB9C) / 2));
-    b = (f32)((s32)(((s32)lbl_8055FBA0 + (s32)lbl_8055FBA0) / 2) - *(s32 *)((u8 *)arg0 + 8));
-    x = *(s32 *)((u8 *)arg0 + 0x24C);
-    y = *(s32 *)((u8 *)arg0 + 8);
-    fn_802C5310(x, 0, a, b - lbl_80563500, lbl_805634A8);
-    f = (f32)((*(VfObj **)((u8 *)arg0 + 0x248))->vf28());
-    c = f * (f32)(*(s32 *)((u8 *)arg0 + 0x254) - (s32)f);
-    fn_80230C30(&a, &b, *(s32 *)((u8 *)arg0 + 4) + (s32)c, *(s32 *)((u8 *)arg0 + 8) + 3);
+    register s32 y;
+    register s32 x;
+    f32 a;
+    f32 b;
+    register f32 rate;
+
+    x = *(s32 *)((u8 *)arg0 + 4) -
+        ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1);
+    a = (f32)x;
+    y = ((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1) -
+        *(s32 *)((u8 *)arg0 + 8);
+    b = (f32)y;
+    fn_802C5310(*(s32 *)((u8 *)arg0 + 0x24C), 0,
+                a, b - lbl_80563500, lbl_805634A8);
+
+    rate = (*(V24x **)((u8 *)arg0 + 0x248))->get();
+    x = ((VfObj *)arg0)->vf28();
+    y = *(s32 *)((u8 *)arg0 + 0x254);
+    x = (s32)(rate * (f32)(x - y));
+    fn_80230C30(&a, &b,
+                *(s32 *)((u8 *)arg0 + 4) + x,
+                *(s32 *)((u8 *)arg0 + 8) + 3);
     fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), 0, a, b, lbl_805634A8);
 }
-
+#pragma scheduling on
+#pragma pop
 extern "C" void fn_8021CE8C(void *arg0) {
     struct Local {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
@@ -2613,6 +2630,67 @@ done:
     ;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_8021E3BC(void *arg0, s32 arg1) {
+    s32 scratch;
+    register s32 color;
+    register s32 item;
+    register s32 base;
+    register s32 index;
+    register s32 selected;
+    register s32 xBase;
+    register s32 yBase;
+    register s32 result;
+    register s32 status;
+
+    void *entries = *(void **)((u8 *)arg0 + 0x248);
+    base = 0;
+    if (entries != 0)
+        base = *(s32 *)((u8 *)entries + 8);
+    ((void (*)(void *, s32))fn_802192A0)(arg0, arg1);
+    fn_802C3034(arg1);
+
+    color = lbl_8055FBDC;
+    scratch = 0;
+    index = 0;
+    goto check;
+
+body:
+    selected = **(s32 **)((u8 *)arg0 + 0x25C) == item;
+    if (selected) {
+        xBase = *(s32 *)((u8 *)arg0 + 4);
+        yBase = *(s32 *)((u8 *)arg0 + 8);
+        result = xBase + ((VfObj *)arg0)->vf28();
+        s32 rowHeight = *(s32 *)((u8 *)arg0 + 0x258);
+        fn_802C3424(xBase + 2,
+                    yBase + index * rowHeight + 2,
+                    result - 2,
+                    yBase + (index + 1) * rowHeight + 2,
+                    color);
+    }
+
+    selected = (u32)(-selected | selected) >> 31;
+    status = ((-scratch | scratch) >> 31) & 2;
+    yBase = *(s32 *)((u8 *)arg0 + 8);
+    xBase = *(s32 *)((u8 *)arg0 + 4);
+    result = ((s32 (*)(s32, s32, s32 *))fn_8022D3F8)(
+        *(s32 *)((u8 *)arg0 + 0x244), item, 0);
+    fn_8022B91C(7, xBase + 2,
+                yBase + index * *(s32 *)((u8 *)arg0 + 0x258) + 2,
+                result, selected | status);
+    ++index;
+
+check:
+    if (index < *(s32 *)((u8 *)arg0 + 0x254)) {
+        item = index + base;
+        if (((s32 (*)(s32, s32, s32 *))fn_8022D3F8)(
+                *(s32 *)((u8 *)arg0 + 0x244), item, &scratch) != 0)
+            goto body;
+    }
+}
+#pragma scheduling on
+#pragma pop
 extern "C" s32 fn_8022D3F8(s32, s32, s32 *, s32, s32);
 extern "C" void fn_8021E51C(void *self, s32 arg1) {
     struct Local { s32 sp8; s32 pad; s32 sp10; } local;
@@ -5449,26 +5527,68 @@ extern "C" f32 lbl_805634A4;
 extern "C" extern f64 lbl_805634B8;
 extern "C" void fn_80226B6C(void *arg0) {
     u8 *p = (u8 *)arg0;
-    f32 sp[4];
-    f32 mat[12];
-    f32 scale = fn_8023659C() / lbl_805634E4;
-    void *obj = *(void **)(p + 0x248);
-    mat[0]=lbl_805634A4; mat[1]=lbl_805634A8; mat[2]=lbl_805634A8; mat[3]=lbl_805634A8;
-    mat[4]=lbl_805634A4; mat[5]=lbl_805634A8; mat[6]=lbl_805634A8; mat[7]=lbl_805634A8;
-    mat[8]=lbl_805634A4; mat[9]=lbl_805634A8; mat[10]=lbl_805634A8; mat[11]=lbl_805634A8;
-    s32 n=*(s32 *)(p+0x25c);
-    sp[0]=lbl_805634A8; sp[1]=lbl_805634A8;
-    sp[2]=scale*(f32)n;
-    fn_80015A20(mat, sp, n, scale, lbl_805634A8, lbl_805634A4);
-    fn_80015B20(obj, mat, obj);
-    *(f32 *)((u8 *)*(void **)(p+0x248)+0x24)=*(f32 *)(p+0x24c)+*(f32 *)(p+0x258)*lbl_805634C4;
-    *(f32 *)((u8 *)*(void **)(p+0x248)+0x28)=*(f32 *)(p+0x250)-*(f32 *)(p+0x254)*lbl_805634C4;
-    if (*(s32 *)(p+0x244)) {
-        u8 tmp[0x20];
-        fn_8022EEF8(tmp, (s32)*(void **)(p+0x248), fn_8022EDC4());
-        fn_8022ED00(tmp);
-        f32 a=*(f32 *)(p+0x258), b=*(f32 *)(p+0x254);
-        fn_802C5320(*(s32 *)(p+0x244),0,-a*lbl_805634C4,b*lbl_805634C4,lbl_805634A8,a,b);
+    u8 scratch[0x78];
+    f32 now = fn_8023659C();
+    f32 scale;
+    volatile f32 *matrix = (volatile f32 *)*(void **)(p + 0x248);
+    f32 zero = lbl_805634A8;
+    f32 one = lbl_805634A4;
+    f32 x;
+    f32 delta;
+    f32 factor;
+    f32 y;
+    f32 delta2;
+
+    matrix[0] = one;
+    scale = now / lbl_805634E4;
+    matrix[1] = zero;
+    matrix[2] = zero;
+    matrix[3] = zero;
+    matrix[4] = one;
+    matrix[5] = zero;
+    matrix[6] = zero;
+    matrix[7] = zero;
+    matrix[8] = one;
+    matrix[9] = zero;
+    matrix[10] = zero;
+    matrix[11] = zero;
+
+    *(u32 *)(scratch + 0x74) =
+        *(u32 *)(p + 0x25c) ^ 0x80000000;
+    *(u32 *)(scratch + 0x70) = 0x43300000;
+    *(f32 *)(scratch + 0x00) = zero;
+    *(f32 *)(scratch + 0x04) = zero;
+    *(f32 *)(scratch + 0x08) =
+        scale * (f32)(*(f64 *)(scratch + 0x70) - lbl_805634B8);
+
+    {
+        void *obj = *(void **)(p + 0x248);
+        ((void (*)(void *, void *))fn_80015A20)(scratch + 0x0c, scratch);
+        fn_80015B20(obj, scratch + 0x0c, obj);
+    }
+
+    delta = *(f32 *)(p + 0x258);
+    factor = lbl_805634C4;
+    x = *(f32 *)(p + 0x24c);
+    delta *= factor;
+    x += delta;
+    *(f32 *)((u8 *)*(void **)(p + 0x248) + 0x24) = x;
+
+    delta2 = *(f32 *)(p + 0x254);
+    y = *(f32 *)(p + 0x250);
+    delta2 *= factor;
+    y -= delta2;
+    *(f32 *)((u8 *)*(void **)(p + 0x248) + 0x28) = y;
+
+    if (*(s32 *)(p + 0x244) != 0) {
+        s32 value = fn_8022EDC4();
+        fn_8022EEF8(scratch + 0x30,
+                    (s32)*(void **)(p + 0x248), value);
+        fn_8022ED00(scratch + 0x30);
+        f32 a = *(f32 *)(p + 0x258);
+        f32 b = *(f32 *)(p + 0x254);
+        fn_802C5320(*(s32 *)(p + 0x244), 0, -a * lbl_805634C4,
+                    b * lbl_805634C4, lbl_805634A8, a, b);
         fn_8022EDB8();
     }
 }
@@ -5908,6 +6028,60 @@ extern "C" void fn_802285B8(void *arg0) {
                 lbl_805634A8);
 }
 
+#pragma push
+#pragma fp_contract on
+extern "C" void *fn_802286E4(void *arg0, void *arg1, s32 arg2) {
+    union Conv { f64 d; u32 word[2]; } cvt;
+    void *obj;
+    s32 count;
+
+    fn_80218F80();
+    *(s32 *)((u8 *)arg0 + 0x244) = arg2;
+    *(void **)((u8 *)arg0 + 0x268) = 0;
+    *(void **)arg0 = lbl_8033DD20;
+    *(u8 *)((u8 *)arg0 + 0x26C) = 0;
+    memset((u8 *)arg0 + 0x248, 0, 0x20);
+
+    obj = (void *)fn_801284F8(0x40, lbl_8033DCE8);
+    if (obj != 0) {
+        f32 defaultValue = lbl_805634A8;
+        *(void **)obj = lbl_8033DCF8;
+        *(s32 *)((u8 *)obj + 4) = -1;
+        *(f32 *)((u8 *)obj + 0x38) = defaultValue;
+        *(f32 *)((u8 *)obj + 0x3C) = defaultValue;
+        if (fn_8012C33C((u8 *)arg1 + 0x40) != 0)
+            *(s32 *)((u8 *)obj + 4) = fn_802C6FC0((void *)((s32)arg1 + 0x40), 0, 0);
+
+        count = *(s32 *)((u8 *)arg1 + 0x9C);
+        if (count != 0) {
+            cvt.word[1] = (u32)count;
+            cvt.word[0] = 0x43300000;
+            f32 denominator = (f32)(cvt.d - lbl_80563520);
+            f32 ratio = lbl_805634D8 / denominator;
+            *(f32 *)((u8 *)obj + 0x3C) = ratio;
+        }
+
+        f32 a8 = lbl_805634A8;
+        f32 a4 = lbl_805634A4;
+        *(f32 *)((u8 *)obj + 8) = a4;
+        *(f32 *)((u8 *)obj + 0xC) = a8;
+        *(f32 *)((u8 *)obj + 0x10) = a8;
+        *(f32 *)((u8 *)obj + 0x14) = a8;
+        *(f32 *)((u8 *)obj + 0x18) = a4;
+        *(f32 *)((u8 *)obj + 0x1C) = a8;
+        *(f32 *)((u8 *)obj + 0x20) = a8;
+        *(f32 *)((u8 *)obj + 0x24) = a8;
+        *(f32 *)((u8 *)obj + 0x28) = a4;
+        *(f32 *)((u8 *)obj + 0x2C) = a8;
+        *(f32 *)((u8 *)obj + 0x30) = a8;
+        *(f32 *)((u8 *)obj + 0x34) = a8;
+    }
+
+    *(void **)((u8 *)arg0 + 0x268) = obj;
+    *(u8 *)((u8 *)arg0 + 0x26C) = 1;
+    return arg0;
+}
+#pragma pop
 extern "C" void *memset(void *, int, unsigned long);
 extern "C" void *lbl_8033DD20[];
 extern "C" s32 fn_8022882C(s32 arg0, s32 arg1) {
