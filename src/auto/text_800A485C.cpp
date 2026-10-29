@@ -2119,15 +2119,14 @@ extern "C" s32 fn_800A98B8(void *arg0, s32 arg1, s32 arg2, void *arg3) {
     if ((((u8 *)frame)[0x2AC] & 0x10) == 0)
         return 0x14;
 
-    s32 valueC = *(s32 *)((u8 *)frame + 0x2C4);
-    s32 zero = 0;
+    register s32 zero = 0;
     *(s32 *)((u8 *)arg3 + 0xC) = *(s32 *)((u8 *)frame + 0x2C4);
     *(s32 *)((u8 *)arg3 + 0x10) = zero;
     *(s32 *)((u8 *)arg3 + 8) = *(s32 *)((u8 *)frame + 0x2BC);
     *((s8 *)arg3 + 0x1B) = (s8)arg2;
     *(s32 *)((u8 *)arg3 + 0x14) = zero;
 
-    if (((u32 (*)(void *, u32))fn_800A4D44)(frame, 0) == 1U) {
+    if ((u32)fn_800A4D44(frame) == 1U) {
         ((void (*)(void *, void *, void *))fn_800B4BD8)(
             (u8 *)arg3 + 0x1C, (void *)zero, frame);
         *(s32 *)((u8 *)arg3 + 0x14) |= 1;
