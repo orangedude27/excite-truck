@@ -3247,10 +3247,10 @@ extern "C" void fn_800ACA50(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern "C" s32 fn_800ACA5C(void *arg0, void *arg1, u32 arg2) {
     u32 mode = *(u32 *)((u8 *)arg0 + 0x1C);
     u32 scaled;
+    s32 result;
     u32 retries;
     u16 flags;
     u8 shift;
-    s32 result;
 
     switch (mode) {
     case 0:
@@ -3283,26 +3283,36 @@ extern "C" s32 fn_800ACA5C(void *arg0, void *arg1, u32 arg2) {
                              0,
                              *(u16 *)arg0);
         if (result == 0x1000) {
-            s32 callbackResult;
             if (*(s32 (**)(void *))((u8 *)arg0 + 0x1FC0) != 0) {
-                callbackResult =
+                s32 callbackResult =
                     (*(s32 (**)(void *))((u8 *)arg0 + 0x1FC0))(
                         *(void **)((u8 *)arg0 + 0x1F84));
                 if (callbackResult == 0) {
-                    continue;
+                    goto block_21;
                 }
-                if (callbackResult == 1) {
+                if (callbackResult != 1) {
+                    goto block_19;
+                }
+                {
                     u8 maxRetries = *((u8 *)arg0 + 0x22);
-                    if (maxRetries >= 2 && retries < maxRetries) {
-                        retries++;
-                        *(u32 *)((u8 *)arg1 + 0x18) +=
-                            *(u32 *)((u8 *)arg0 + 0xC);
-                        continue;
+                    if (maxRetries < 2 || retries >= maxRetries) {
+                        goto block_19;
                     }
                 }
+                retries++;
+                *(u32 *)((u8 *)arg1 + 0x18) +=
+                    *(u32 *)((u8 *)arg0 + 0xC);
+                goto block_21;
             }
         }
-        return result;
+block_19:
+        if (result != 0) {
+            return result;
+        }
+block_21:
+        if (result == 0) {
+            return result;
+        }
     }
 }
 
