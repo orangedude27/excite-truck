@@ -4314,60 +4314,64 @@ extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4)
 extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     u16 flags = *(u16 *)((u8 *)arg0 + 0x18);
     u32 scaled = (u32)arg1 * 2;
+    u8 shift = *(u8 *)((u8 *)arg0 + 0x20);
+    void *object = arg0;
+    u32 sector = (u16)(*(u32 *)((u8 *)object + 0x28) +
+                       (scaled >> shift));
+    u32 *output = arg2;
+    void *descriptor = arg3;
     u32 retry = 1;
-    u32 sector = (u16)(*(u32 *)((u8 *)arg0 + 0x28) +
-                       (scaled >> *(u8 *)((u8 *)arg0 + 0x20)));
-    u16 value;
     s32 result;
+    u16 value;
 
     if (flags & 0x80) {
         retry = flags & 7;
-        if (*(u32 *)((u8 *)arg3 + 0x18) == sector)
+        if (*(u32 *)((u8 *)descriptor + 0x18) == sector)
             goto read_value;
-        if (*(u16 *)((u8 *)arg3 + 2) == 1) {
+        if (*(u16 *)((u8 *)descriptor + 2) == 1) {
             u16 i = 0;
             do {
-                fn_800B5618(arg0, *(void **)((u8 *)arg3 + 8),
-                            *(u32 *)((u8 *)arg3 + 0x18) +
-                                i * *(u32 *)((u8 *)arg0 + 0xC),
-                            0, *(u16 *)arg0);
+                fn_800B5618(object, *(void **)((u8 *)descriptor + 8),
+                            *(u32 *)((u8 *)descriptor + 0x18) +
+                                i * *(u32 *)((u8 *)object + 0xC),
+                            0, *(u16 *)object);
                 i++;
-            } while (i < *(u8 *)((u8 *)arg0 + 0x22));
+            } while (i < *(u8 *)((u8 *)object + 0x22));
         }
     }
 
 fetch:
-    result = fn_800B5260(arg0, *(void **)((u8 *)arg3 + 8),
-                         sector, 0, *(u16 *)arg0);
+    result = fn_800B5260(object, *(void **)((u8 *)descriptor + 8),
+                         sector, 0, *(u16 *)object);
     if (result == 0x1000) {
         s32 (*callback)(void *) =
-            *(s32 (**)(void *))((u8 *)arg0 + 0x1FC0);
+            *(s32 (**)(void *))((u8 *)object + 0x1FC0);
         if (callback != 0) {
             s32 callbackResult =
-                callback(*(void **)((u8 *)arg0 + 0x1F84));
-            if (callbackResult == 0) {
-                *(u32 *)((u8 *)arg3 + 0x18) = sector;
-                goto fetch;
-            }
+                callback(*(void **)((u8 *)object + 0x1F84));
+            if (callbackResult == 0)
+                goto store_sector;
             if (callbackResult == 1 &&
-                *(u8 *)((u8 *)arg0 + 0x22) >= 2 &&
-                retry < *(u8 *)((u8 *)arg0 + 0x22)) {
+                *(u8 *)((u8 *)object + 0x22) >= 2 &&
+                retry < *(u8 *)((u8 *)object + 0x22)) {
                 retry++;
-                sector += *(u32 *)((u8 *)arg0 + 0xC);
-                *(u32 *)((u8 *)arg3 + 0x18) = sector;
-                goto fetch;
+                sector += *(u32 *)((u8 *)object + 0xC);
+                goto store_sector;
             }
         }
-        return result;
     }
     if (result != 0)
         return result;
-    *(u32 *)((u8 *)arg3 + 0x18) = sector;
+
+store_sector:
+    *(u32 *)((u8 *)descriptor + 0x18) = sector;
+    if (result != 0)
+        goto fetch;
 
 read_value:
-    value = *(u16 *)((u8 *)*(void **)((u8 *)arg3 + 8) +
-                     (scaled & (*(u16 *)arg0 - 1)));
-    *arg2 = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
+    value = *(u16 *)((u8 *)*(void **)((u8 *)descriptor + 8) +
+                     (scaled & (*(u16 *)object - 1)));
+    *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
     return 0;
 }
 
@@ -14721,7 +14725,7 @@ extern "C" const char lbl_8031EA4C[];
 extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern "C" void fn_800D24D4(void*, s32);
 extern void* lbl_8055DDBC;
-extern "C" void fn_800D2098(void*);
+extern "C" void fn_800D2098(const char *, s32, const char *, ...);
 extern "C" void __VprintfThunk(const char*, va_list);
 extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void*, void*, const char*, void*);
 extern "C" s32 fn_80116A30(void*);
