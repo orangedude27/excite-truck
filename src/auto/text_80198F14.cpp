@@ -2032,6 +2032,7 @@ extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg
     return 1;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801A17B8(void* arg0) {
     extern f32 lbl_8056234C;
     extern void fn_801E41D8(f32*, f32*, s32, f32, f32, void*, void*, f32, f32, f32, f32, f32, f32, f32, f32, f32);
@@ -2074,9 +2075,11 @@ extern "C" void fn_801A17B8(void* arg0) {
     sp8 = temp_f3;
     spC = temp_f2;
     sp10 = sp34 + (sp28 * temp_f0_2);
-    fn_801E41D8(&sp14, &sp8, 0x40FFFF00, temp_r6, temp_r7, temp_r8, arg0, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24), temp_f2, temp_f3, sp34, sp28, sp30, sp24, sp2C, sp20);
+    fn_801E41D8(&sp14, &sp8, 0x40FFFF00, temp_r6, temp_r7, temp_r8, arg0,
+                lbl_8056234C * *(f32*)((u8*)arg0 + 0x24),
+                temp_f2, temp_f3, sp34, sp28, sp30, sp24, sp2C, sp20);
 }
-
+#pragma scheduling on
 extern int lbl_80333918[64];
 extern "C" void* fn_801A1520(void*, void*, s32);
 #pragma scheduling off
@@ -2141,28 +2144,41 @@ extern "C" void fn_801A1ABC(void* arg0, void* arg1) {
         break;
     }
 }
-void fn_801A1B9C(void* arg0) {
+extern "C" void fn_801A1B9C(void* arg0) {
+    volatile u32 local[15];
     void* mat = *(void**)((u8*)arg0 + 0xC);
     f32 w = *(f32*)((u8*)arg0 + 0x28);
     f32 neg_w = -w;
-    f32 sp8 = *(f32*)((u8*)mat + 0x24);
-    f32 spC = *(f32*)((u8*)mat + 0x28);
-    f32 sp10 = *(f32*)((u8*)mat + 0x2C);
-    f32 sp14 = *(f32*)((u8*)mat + 0x18);
-    f32 sp18 = *(f32*)((u8*)mat + 0x1C);
-    f32 sp1C = *(f32*)((u8*)mat + 0x20);
-    f32 sp20 = lbl_805622D0;
-    f32 sp24 = lbl_805622D0;
-    f32 sp28 = lbl_805622D0;
-    f32 sp2C = sp8 + sp14 * neg_w;
-    f32 sp30 = spC + sp18 * neg_w;
-    f32 sp34 = sp10 + sp1C * neg_w;
-    f32 sp38 = sp8 + sp14 * w;
-    f32 sp3C = spC + sp18 * w;
-    f32 sp40 = sp10 + sp1C * w;
+    volatile u32* words = (volatile u32*)mat;
+    u32 v14 = words[6];
+    u32 v18 = words[7];
+    local[3] = v14;
+    u32 v8 = words[9];
+    local[4] = v18;
+    u32 v1C = words[8];
+    f32 f14 = *(volatile f32*)&local[3];
+    local[5] = v1C;
+    u32 vC = words[10];
+    f32 f18 = *(volatile f32*)&local[4];
+    local[0] = v8;
+    u32 v10 = words[11];
+    f32 f8 = *(volatile f32*)&local[0];
+    local[1] = vC;
+    f32 fC = *(volatile f32*)&local[1];
+    local[2] = v10;
+    f32 f10 = *(volatile f32*)&local[2];
+    *(volatile f32*)&local[6] = lbl_805622D0;
+    *(volatile f32*)&local[7] = lbl_805622D0;
+    *(volatile f32*)&local[8] = lbl_805622D0;
+    *(volatile f32*)&local[9] = f8 + f14 * neg_w;
+    *(volatile f32*)&local[10] = fC + f18 * neg_w;
+    *(volatile f32*)&local[11] = f10 + f14 * neg_w;
+    *(volatile f32*)&local[12] = f8 + f14 * w;
+    *(volatile f32*)&local[13] = fC + f18 * w;
+    *(volatile f32*)&local[14] = f10 + f14 * w;
     f32 f = *(f32*)((u8*)arg0 + 0x24);
-    fn_8019AC44_3(&sp38, &sp20, f);
-    fn_8019AC44_3(&sp2C, &sp20, f);
+    fn_8019AC44(arg0, (void*)&local[12], (void*)&local[6], f);
+    fn_8019AC44(arg0, (void*)&local[9], (void*)&local[6], f);
 }
 
 extern "C" void fn_801E44F4(void*, u32, f32, f32, f32);
@@ -2379,11 +2395,11 @@ extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 far
     *(s32*)((u8*)arg0 + 0x34) = 0;
     f32 dist = diffX * diffX + diffY * diffY + diffZ * diffZ;
     f64 distance = fn_8002F234(dist);
-    f32 base = lbl_80562300;
-    f32 x = *(f32*)arg2;
-    f32 y = *(f32*)((u8*)arg2 + 4);
-    f32 radius = base + (f32)distance;
-    f32 z = *(f32*)((u8*)arg2 + 8);
+    volatile f32* input = (volatile f32*)arg2;
+    f32 x = input[0];
+    f32 y = input[1];
+    f32 radius = lbl_80562300 + (f32)distance;
+    f32 z = input[2];
     *(f32*)((u8*)arg0 + 0x38) = x;
     *(f32*)((u8*)arg0 + 0x30) = radius;
     *(void**)arg0 = lbl_80333868;
@@ -3129,24 +3145,26 @@ extern "C" void fn_801A48C8(void* arg0) {
     ptr->Call(&lbl_8055A508, &lbl_8055A510);
 }
 
-extern void fn_801EA1E0(void*, s32, f32, f32);
+extern "C" void fn_801EA1E0(void*, s32, f32, f32);
 void fn_801A48E4(void* arg0) {
+    struct Matrix { virtual void v0(); virtual void update(); };
     u8* obj = (u8*)arg0;
     void* mat;
     f32 scale;
     f32 sp8, spC, sp10;
     *(u8*)(obj + 0x40) = 1;
+    ((Matrix*)*(void**)(obj + 0x3C))->update();
     mat = *(void**)(obj + 0x3C);
-    ((void (*)(void*))(*(u32*)*(u32*)mat + 0xC))(mat);
     if (*(s32*)((u8*)mat + 0x18) == 0x53504852) {
         fn_801EA1E0((u8*)mat + 0x38, 0, *(f32*)((u8*)mat + 0x34), *(f32*)((u8*)mat + 0x3C));
         fn_801EA1E0(obj + 0x2C, 0, *(f32*)(obj + 0x28), *(f32*)(obj + 0x30));
     }
     if (*(s32*)((u8*)mat + 0x18) == 0x54554245) {
         scale = *(f32*)(obj + 0x20) > lbl_805622D0 ? lbl_805622DC : lbl_805622E0;
-        sp8 = *(f32*)(obj + 0x28) + *(f32*)(obj + 0x1C) * scale * *(f32*)((u8*)mat + 0x28);
-        spC = *(f32*)(obj + 0x2C) + *(f32*)(obj + 0x20) * scale * *(f32*)((u8*)mat + 0x28);
-        sp10 = *(f32*)(obj + 0x30) + *(f32*)(obj + 0x24) * scale * *(f32*)((u8*)mat + 0x28);
+        f32 mul = scale * *(f32*)((u8*)mat + 0x28);
+        sp8 = *(f32*)(obj + 0x28) + *(f32*)(obj + 0x1C) * mul;
+        sp10 = *(f32*)(obj + 0x30) + *(f32*)(obj + 0x24) * mul;
+        spC = *(f32*)(obj + 0x2C) + *(f32*)(obj + 0x20) * mul;
         fn_801EA1E0(obj + 0x2C, 0, sp8, sp10);
     }
 }
