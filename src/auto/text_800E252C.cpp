@@ -50,14 +50,17 @@ extern "C" void fn_800E41EC(void);
 extern const char lbl_80321F94[];
 extern const char lbl_80322130[], lbl_80322154[];
 extern unsigned char lbl_80407E60[];
-namespace nw4hbm { namespace ut { namespace detail {
+namespace nw4hbm { namespace ut {
 class LinkListNode;
+namespace detail {
+typedef nw4hbm::ut::LinkListNode LinkListNode;
 class LinkListImpl {
 public:
     struct Iterator { LinkListNode *node; };
     void Insert(Iterator, LinkListNode *);
 };
-}}}
+}
+}}
 extern const char lbl_80322094[];
 extern const char lbl_80322070[];
 extern const char lbl_80321F80[];
@@ -610,13 +613,13 @@ extern "C" void fn_800E2E24(void *self) {
 
         int i = 0;
         int offset = 0;
-        void *iterator;
+        nw4hbm::ut::detail::LinkListImpl::Iterator iterator;
         do {
             if ((char *)self + offset + 0x2C == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
-            iterator = (char *)self + 0x24;
-            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
-                (char *)self + 0x20, &iterator, (char *)self + offset + 0x1D4);
+            iterator.node = (nw4hbm::ut::detail::LinkListNode *)((char *)self + 0x24);
+            ((nw4hbm::ut::detail::LinkListImpl *)((char *)self + 0x20))->Insert(
+                iterator, (nw4hbm::ut::detail::LinkListNode *)((char *)self + offset + 0x1D4));
             i++;
             offset += 0x1B0;
         } while (i < 0x40);
