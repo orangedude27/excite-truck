@@ -69,36 +69,43 @@ extern int lbl_8055B860, lbl_8055BAB8, lbl_8055BAC0;
 extern int lbl_8055C238, lbl_8055C240, lbl_8055C248, lbl_8055C250;
 extern void fn_80236914(void);
 extern void fn_80258040(void);
+#pragma push
+#pragma use_lmw_stmw off
 #pragma dont_inline fn_80257FB8
 void fn_8025812C(void) {
-    int data[44];
-    int *p = data + 4;
-    int result, current, previous;
-    int *a = lbl_80498E68;
-    int *b = lbl_802FA610;
+    int data[46];
+    int result, previous, current;
+
     lbl_8055F368 = fn_80257FB8();
     current = fn_8000DA10();
-    if (lbl_8055F370 != current) {
-        lbl_8055F370 = current;
-        lbl_8055F368 = lbl_8055F368;
+    if (((int *)&lbl_8055F370)[1] != current) {
+        int old = *(volatile int *)&lbl_8055F368;
+        ((volatile int *)&lbl_8055F370)[1] = current;
+        *(volatile int *)&lbl_8055F370 = old;
     }
-    p[0] = lbl_8055BAC0; p[1] = 8; p[2] = 0; p[3] = 0;
-    p[4] = 0; p[5] = lbl_8055C238; p[6] = 0; p[7] = 0;
-    p[8] = 0; p[9] = 0; p[10] = lbl_8055C240; p[11] = 0;
-    p[12] = 1; p[13] = 0; p[14] = 0; p[15] = lbl_8055C248;
-    p[16] = 0; p[17] = 2; p[18] = 0; p[19] = 0;
-    p[20] = lbl_8055C250; p[21] = 0; p[22] = 3; p[23] = 0;
-    p[24] = lbl_8055B860; p[25] = 0; p[26] = -1; p[27] = 0x1b;
-    p[28] = 8; p[29] = lbl_8055BAB8; p[30] = (int)fn_80236914;
-    p[31] = 2; p[32] = 0;
-    p[-6] = b[0]; p[-4] = b[2]; p[-3] = b[3]; p[-2] = b[4];
-    p[35] = a[0]; p[36] = a[1]; p[37] = a[2]; p[38] = a[3]; p[39] = a[4];
+
+    data[6] = (int)&lbl_8055BAC0; data[7] = 8; data[8] = (int)fn_80258040; data[9] = 0;
+    data[10] = 0; data[11] = (int)&lbl_8055C238; data[12] = 0; data[13] = 0;
+    data[14] = 0; data[15] = 0; data[16] = (int)&lbl_8055C240; data[17] = 0;
+    data[18] = 0; data[19] = 1; data[20] = 0; data[21] = (int)&lbl_8055C248;
+    data[22] = 0; data[23] = 0; data[24] = 2; data[25] = 0;
+    data[26] = (int)&lbl_8055C250; data[27] = 0; data[28] = 0; data[29] = 3;
+    data[30] = 0; data[31] = (int)&lbl_8055B860; data[32] = 6; data[33] = 0;
+    data[34] = -1; data[35] = 0x1b; data[36] = (int)&lbl_8055BAB8; data[37] = 8;
+    data[38] = (int)fn_80236914; data[39] = 2; data[40] = 0;
+    data[41] = lbl_80498E68[0]; data[42] = lbl_80498E68[1]; data[43] = lbl_80498E68[2];
+    data[44] = lbl_80498E68[3]; data[45] = lbl_80498E68[4];
+    data[0] = lbl_802FA610[0]; data[1] = (int)&data[6]; data[2] = lbl_802FA610[2];
+    data[3] = lbl_802FA610[3]; data[4] = lbl_802FA610[4];
+
     do {
-        result = fn_802146BC(p - 6, -999, -999, 1);
+        result = fn_802146BC(data, -999, -999, 1);
         previous = fn_80257FB8();
-        if (result != -1) fn_80161F10(result);
-        current = fn_80257FB8();
-        if (current != previous) lbl_8055F370 = current;
+        if (result != -1) {
+            fn_80161F10(result);
+            current = fn_80257FB8();
+            if (current != previous) lbl_8055F370 = current;
+        }
     } while (result != -1);
 }
 
