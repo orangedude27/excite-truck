@@ -2912,6 +2912,7 @@ void fn_80072C38(void) {
     BTM_CancelRemoteDeviceName();
 }
 
+extern char lbl_80315088[];
 extern int strncpy(char *, const char *, unsigned int);
 extern u32 lbl_802EE9C0[];
 u8 bta_dm_authorize_cback(const void *bd_addr, const void *dev_class, const char *bd_name,
