@@ -224,6 +224,8 @@ extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(void *
 
 extern "C" f32 lbl_80561078;
 extern "C" void fn_800EC890(void *, int, int, int, int, f32);
+#pragma push
+#pragma scheduling on
 extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     u8 *p = (u8 *)arg0;
     f32 zero = lbl_8056107C;
@@ -279,24 +281,24 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     fn_800EC890(p + 0x68, 2, 0xFF, 0x7F, 0x40, one);
     p[0x78] = 0;
     *(u32 *)(p + 0xB8) = 0;
-    *(u16 *)(p + 0x94) = -1;
-    *(u16 *)(p + 0x96) = -1;
-    *(u16 *)(p + 0x98) = -1;
-    *(u16 *)(p + 0x9A) = -1;
-    *(u16 *)(p + 0x9C) = -1;
-    *(u16 *)(p + 0x9E) = -1;
-    *(u16 *)(p + 0xA0) = -1;
-    *(u16 *)(p + 0xA2) = -1;
-    *(u16 *)(p + 0xA4) = -1;
-    *(u16 *)(p + 0xA6) = -1;
-    *(u16 *)(p + 0xA8) = -1;
-    *(u16 *)(p + 0xAA) = -1;
-    *(u16 *)(p + 0xAC) = -1;
-    *(u16 *)(p + 0xAE) = -1;
-    *(u16 *)(p + 0xB0) = -1;
-    *(u16 *)(p + 0xB2) = -1;
+    *(u16 *)(p + 0x94) = 0xFFFF;
+    *(u16 *)(p + 0x96) = 0xFFFF;
+    *(u16 *)(p + 0x98) = 0xFFFF;
+    *(u16 *)(p + 0x9A) = 0xFFFF;
+    *(u16 *)(p + 0x9C) = 0xFFFF;
+    *(u16 *)(p + 0x9E) = 0xFFFF;
+    *(u16 *)(p + 0xA0) = 0xFFFF;
+    *(u16 *)(p + 0xA2) = 0xFFFF;
+    *(u16 *)(p + 0xA4) = 0xFFFF;
+    *(u16 *)(p + 0xA6) = 0xFFFF;
+    *(u16 *)(p + 0xA8) = 0xFFFF;
+    *(u16 *)(p + 0xAA) = 0xFFFF;
+    *(u16 *)(p + 0xAC) = 0xFFFF;
+    *(u16 *)(p + 0xAE) = 0xFFFF;
+    *(u16 *)(p + 0xB0) = 0xFFFF;
+    *(u16 *)(p + 0xB2) = 0xFFFF;
 }
-
+#pragma pop
 extern "C" void fn_800F1080(void *arg0, int arg1, int arg2) {
     *(int *)((char *)arg0 + 0x50) = arg1;
     *(int *)((char *)arg0 + 0x54) = arg1 + arg2;
@@ -3756,7 +3758,7 @@ extern "C" s32 Prepare__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail14
     class Callback {
     public:
         virtual void f0() {}
-        virtual s32 Start(void *, void *, void *, u32) { return 0; }
+virtual s32 Start(void *, void *, void *, u32) { return 0; }
     };
     if (pool == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x5A, lbl_8032677C);
