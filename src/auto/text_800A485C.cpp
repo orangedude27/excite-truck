@@ -3701,11 +3701,12 @@ extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2) {
     u32 retry = 1;
     s32 *output = arg2;
     void *object = arg0;
+    u32 scaled = (u32)arg1 * 2;
     u16 flags = *(u16 *)((u8 *)object + 0x18);
 
     index = (u16)(*(u32 *)((u8 *)object + 0x28) +
-                  (((u32)arg1 * 2) >> *(u8 *)((u8 *)object + 0x20)));
-    offset = (u16)((*(u16 *)object - 1) & ((u32)arg1 * 2));
+                  (scaled >> *(u8 *)((u8 *)object + 0x20)));
+    offset = (u16)(scaled & (*(u16 *)object - 1));
     if (flags & 0x80)
         retry = flags & 7;
 loop:
