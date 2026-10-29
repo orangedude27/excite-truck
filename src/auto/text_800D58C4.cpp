@@ -391,6 +391,42 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *self, const void *resource, void *pane) {
+    u32 zero = 0;
+    void *listHead = (u8 *)self + 0x10;
+    *(void **)self = lbl_8031F628;
+    *(u32 *)((u8 *)self + 4) = zero;
+    *(u32 *)((u8 *)self + 8) = zero;
+    *(u32 *)((u8 *)self + 0xC) = zero;
+    *(void **)((u8 *)self + 0x10) = listHead;
+    *(void **)((u8 *)self + 0x14) = listHead;
+    *(u8 *)((u8 *)self + 0x28) = 0;
+    memcpy((u8 *)self + 0x18, (const u8 *)resource + 8, 0x10);
+
+    const u8 *items = (const u8 *)resource + 0x1C;
+    u32 offset = 0;
+    u32 index = 0;
+    u16 count = *(const u16 *)((const u8 *)resource + 0x18);
+    do {
+        void *result = ((GroupPaneDispatch_800D58C4 *)pane)->GetResource(items + offset, 1);
+        if (result != 0) {
+            void *node = (void *)MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
+            if (node != 0) {
+                *(u32 *)node = zero;
+                *(u32 *)((u8 *)node + 4) = zero;
+                *(void **)((u8 *)node + 8) = result;
+                if (node == 0)
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6E8, 0x233, lbl_8031F6C4);
+                void *iterator = (u8 *)self + 0x10;
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)self + 0xC, &iterator, node);
+            }
+        }
+        offset += 0x10;
+        index += 1;
+    } while (index < count);
+    return self;
+}
+
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     extern const char lbl_8031E764[];
@@ -1424,7 +1460,7 @@ extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void* s
  GXInitTexObjWrapMode(dst,lod,wrap);
 }
 
-extern "C" void GXGetTexObjWidth(void*, int, int);
+extern "C" void GXGetTexObjWidth(void*, int, ...);
 extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8 index, const void* tex) {
     extern const char lbl_8031F990[];
     extern const char lbl_8031FDE8[];
@@ -2205,7 +2241,6 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *(volatile u32 *)((u8 *)dst + 0x18) = zero;
     *(volatile u32 *)((u8 *)dst + 0x20) = zero;
     *(volatile u32 *)((u8 *)dst + 0x24) = zero;
-    u8 type = *((const u8 *)src + 9);
     *(volatile u32 *)((u8 *)dst + 4) = zero;
     *(volatile u32 *)((u8 *)dst + 8) = zero;
     *(void **)dst = vtable;
@@ -2220,7 +2255,7 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *(u32 *)((u8 *)dst + 0xC) = zero;
     *(u32 *)((u8 *)dst + 0x28) = zero;
     *((u8 *)dst + 0xD0) = (u8)zero;
-    *((u8 *)dst + 0xCC) = type;
+    *((u8 *)dst + 0xCC) = *((const u8 *)src + 9);
     strncpy((char *)dst + 0xB4, (const char *)src + 0xC, 0x10);
     strncpy((char *)dst + 0xC4, (const char *)src + 0x1C, 8);
     *(f32 *)((u8 *)dst + 0x2C) = *(const f32 *)((const u8 *)src + 0x24);
