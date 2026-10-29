@@ -71,6 +71,8 @@ struct DummyStrmLoadTaskCallback {
     virtual void f0();
     virtual void f1();
 };
+struct DummyWorkerCallbackC { virtual void f0(); virtual void Call(); };
+struct DummyWorkerCallback10 { virtual void f0(); virtual void f1(); virtual void Call(); };
 #pragma cplusplus reset
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
@@ -3058,35 +3060,41 @@ extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
 extern "C" s32 OSJoinThread(void *, s32);
 extern "C" const char lbl_80326450[];
 extern "C" const char lbl_80326488[];
-s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
-    u8 *thread = (u8 *)this;
-
-    if (*(u8 *)(thread + 0x2394) == 0)
-        return 0;
-
-    if ((s8)lbl_8055DE68 == 0) {
-        volatile u32 *base = (volatile u32 *)lbl_80412CC8;
-        register void *dtor = (void *)__dt__10TitleSceneFv;
-        base[0x2388 / 4] = 0;
-        register void *object = (void *)((u8 *)base + 0x2388);
-        base[0x238C / 4] = 0;
-        base[0x2378 / 4] = 0;
-        base[0x237C / 4] = 0;
-        base[0x2384 / 4] = 0;
-        base[0x2388 / 4] = (u32)object;
-        base[0x238C / 4] = (u32)object;
-        ((volatile u8 *)base)[0x2394] = 0;
-        __register_global_object((void *)base, dtor,
-                                 (void *)&lbl_80412CB8, object);
-        lbl_8055DE68 = 1;
+extern "C" void Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
+    u32 count = 0;
+    u32 offset = 0;
+    u32 zero = 0;
+    u8 *obj = (u8 *)self;
+    *(u32 *)(obj + 0x10) = zero;
+    *(u32 *)(obj + 0x14) = zero;
+    *(u32 *)(obj + 0x6C) = zero;
+    while (count < *(u32 *)(obj + 0x70)) {
+        u8 *players = (u8 *)*(void **)(obj + 0x74);
+        __dt__Q36nw4hbm3snd11SoundPlayerFv(players + offset, -1);
+        offset += 0x48;
+        count++;
     }
-
-    if (OSSendMessage((u8 *)lbl_80412CC8 + 0x2338, (void *)2, 0) == 0)
-        return 0;
-    if (OSJoinThread((void *)thread, 0) == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326450, 0x70, lbl_80326488);
-    *(u8 *)(thread + 0x2394) = 0;
-    return 1;
+    *(u32 *)(obj + 0x70) = 0;
+    *(void **)(obj + 0x74) = 0;
+    fn_800FA9E8(obj + 0xA8);
+    register void *pool = *(void **)(obj + 0xD0);
+    register u32 poolSize = *(volatile u32 *)(obj + 0xD4);
+    if (pool == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325B70, 0x4C, lbl_80325B44);
+    DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(obj + 0x78, pool, poolSize);
+    pool = *(void **)(obj + 0xD0);
+    poolSize = *(volatile u32 *)(obj + 0xD4);
+    if (pool == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325B2C, 0x4C, lbl_80325B00);
+    DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(obj + 0x88, pool, poolSize);
+    pool = *(void **)(obj + 0xD0);
+    poolSize = *(volatile u32 *)(obj + 0xD4);
+    if (pool == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325AE8, 0x4C, lbl_80325ABC);
+    DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(obj + 0x98, pool, poolSize);
+    fn_800EE434(obj + 0xC4, *(void **)(obj + 0xD0), *(u32 *)(obj + 0xD4));
+    *(u32 *)(obj + 0xD0) = zero;
+    *(u32 *)(obj + 0xD4) = zero;
 }
 
 extern "C" void fn_800FA6E8(void) {
