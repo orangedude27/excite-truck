@@ -11,7 +11,7 @@ extern void fn_802E6B38(int, char *);
 extern int lbl_8055EE24, lbl_8055EE28;
 extern char lbl_8033C5CC[];
 extern char lbl_8055B5C8;
-extern int sprintf(char *, ...);
+extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
 void fn_8020BF58(void) {
     struct { char sp8[64]; char sp48[64]; char padding[0xD0]; } scratch;
