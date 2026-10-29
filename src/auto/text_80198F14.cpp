@@ -1795,7 +1795,7 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
 }
 
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling off
 extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 farg2) {
     struct Object {
         void *vtable; s32 field4; s32 field8; s32 fieldC; f32 field10; f32 field14;
