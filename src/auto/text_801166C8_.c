@@ -32,6 +32,7 @@ typedef struct {
 #include <revolution/OS/OSContext.h>
 #include <revolution/DVD/dvd.h>
 void fn_8011C120();
+void fn_8011C274(s32, void *);
 #define M2C_FIELD(base, type, offset) (*(type)((u8 *)(base) + (offset)))
 
 extern void* fn_802ECC74(void*);
@@ -2004,29 +2005,44 @@ extern s32 fn_8011A7CC(DVDFileInfo*);
 extern void fn_8011AC84(void*);
 extern s32 fn_8011A870(void*, s32);
 s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
-    s32 size = *(s32*)((u8*)arg1 + 0x2C);
     memset(arg0, 0, 0x144);
     if (arg2 & 0x800000) {
-        *(u32*)((u8*)arg0 + 0x54) = *(u32*)((u8*)arg1 + 0x00);
-        *(u32*)((u8*)arg0 + 0x58) = *(u32*)((u8*)arg1 + 0x04);
-        *(u32*)((u8*)arg0 + 0x5C) = *(u32*)((u8*)arg1 + 0x08);
-        *(u32*)((u8*)arg0 + 0x60) = *(u32*)((u8*)arg1 + 0x0C);
-        *(u32*)((u8*)arg0 + 0x64) = *(u32*)((u8*)arg1 + 0x10);
-        *(u32*)((u8*)arg0 + 0x68) = *(u32*)((u8*)arg1 + 0x14);
-        *(u32*)((u8*)arg0 + 0x6C) = *(u32*)((u8*)arg1 + 0x18);
-        *(u32*)((u8*)arg0 + 0x70) = *(u32*)((u8*)arg1 + 0x1C);
-        *(u32*)((u8*)arg0 + 0x74) = *(u32*)((u8*)arg1 + 0x20);
-        *(u32*)((u8*)arg0 + 0x78) = *(u32*)((u8*)arg1 + 0x24);
-        *(u32*)((u8*)arg0 + 0x7C) = *(u32*)((u8*)arg1 + 0x28);
+        u32 v14 = *(u32*)((u8*)arg1 + 0x38);
+        u32 v13 = *(u32*)((u8*)arg1 + 0x34);
+        u32 v12 = *(u32*)((u8*)arg1 + 0x30);
+        u32 size = *(u32*)((u8*)arg1 + 0x2C);
+        u32 v10 = *(u32*)((u8*)arg1 + 0x28);
+        u32 v9 = *(u32*)((u8*)arg1 + 0x24);
+        u32 v8 = *(u32*)((u8*)arg1 + 0x20);
+        u32 v7 = *(u32*)((u8*)arg1 + 0x1C);
+        u32 v6 = *(u32*)((u8*)arg1 + 0x18);
+        u32 v5 = *(u32*)((u8*)arg1 + 0x14);
+        u32 v4 = *(u32*)((u8*)arg1 + 0x10);
+        u32 v3 = *(u32*)((u8*)arg1 + 0x0C);
+        u32 v2 = *(u32*)((u8*)arg1 + 0x08);
+        u32 v1 = *(u32*)((u8*)arg1 + 0x04);
+        u32 v0 = *(u32*)((u8*)arg1 + 0x00);
+        *(u32*)((u8*)arg0 + 0x54) = v0;
+        *(u32*)((u8*)arg0 + 0x58) = v1;
+        *(u32*)((u8*)arg0 + 0x5C) = v2;
+        *(u32*)((u8*)arg0 + 0x60) = v3;
+        *(u32*)((u8*)arg0 + 0x64) = v4;
+        *(u32*)((u8*)arg0 + 0x68) = v5;
+        *(u32*)((u8*)arg0 + 0x6C) = v6;
+        *(u32*)((u8*)arg0 + 0x70) = v7;
+        *(u32*)((u8*)arg0 + 0x74) = v8;
+        *(u32*)((u8*)arg0 + 0x78) = v9;
+        *(u32*)((u8*)arg0 + 0x7C) = v10;
         *(u32*)((u8*)arg0 + 0x80) = size;
-        *(u32*)((u8*)arg0 + 0x84) = *(u32*)((u8*)arg1 + 0x30);
-        *(u32*)((u8*)arg0 + 0x88) = *(u32*)((u8*)arg1 + 0x34);
-        *(u32*)((u8*)arg0 + 0x8C) = *(u32*)((u8*)arg1 + 0x38);
+        *(u32*)((u8*)arg0 + 0x84) = v12;
+        *(u32*)((u8*)arg0 + 0x88) = v13;
+        *(u32*)((u8*)arg0 + 0x8C) = v14;
         *(u32*)((u8*)arg0 + 0xB0) = 1;
         *(u32*)((u8*)arg0 + 0xB4) = size;
     } else {
-        if (DVDConvertPathToEntrynum(arg1) == -1) return 0;
-        if (DVDFastOpen((u8*)arg0 + 0x54) == 0) return 0;
+        s32 entrynum = DVDConvertPathToEntrynum(arg1);
+        if (entrynum == -1) return 0;
+        if (DVDFastOpen(entrynum, (DVDFileInfo*)((u8*)arg0 + 0x54)) == 0) return 0;
     }
     ((void**)arg0)[0] = fn_8011A388;
     ((void**)arg0)[1] = fn_8011A8FC;
