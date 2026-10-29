@@ -212,6 +212,7 @@ typedef struct {
 extern u8 lbl_803C0F78[];
 extern void fn_80072AE4(u8 *, u8 *, u8 *);
 extern void bta_dm_disc_remname_cback(u8 *);
+extern void bta_dm_find_services(u8 *);
 extern char lbl_80316870[];
 extern char lbl_80315D00[];
 extern char lbl_8031669C[];
