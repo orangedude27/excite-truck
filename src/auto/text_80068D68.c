@@ -17611,7 +17611,6 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
     fn_80099F58(p_ccb);
 }
 
-#undef sdp_server_handle_client_req
 void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p) {
     tSDP_UUID_SEQ seq;
     tSDP_RECORD *p_rec;
