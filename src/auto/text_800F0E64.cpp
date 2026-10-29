@@ -1,4 +1,7 @@
 extern "C" const char lbl_80324868[];
+struct __StrmLoadCommandRef;
+struct __StrmSoundArchiveRef;
+struct __StrmMutexRef;
 extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, unsigned char);
 typedef signed char s8;
 typedef unsigned char u8;
@@ -873,6 +876,70 @@ extern "C" void fn_800F2D28(void *arg0) {
     *(s32*)((u8*)arg0 + 0x3C) = 0;
     *(s32*)((u8*)arg0 + 0x40) = 0;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv(void *self, const void *arg) {
+    typedef void (*PanicCall)(const char *, s32, const char *, ...);
+    const u8 *src = (const u8 *)arg;
+    u8 *dst = (u8 *)self;
+    register const char *base = lbl_80324868;
+    u16 version;
+    u32 valid;
+
+    if (src == 0)
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x32, base + 0x1C);
+
+    if (*(const u32 *)src - 0x52530000U != 0x4152U)
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x48, base + 0x50);
+
+    if (*(const u32 *)src - 0x52530000U == 0x4152U)
+        goto valid_magic;
+    valid = 0;
+    goto copy_if_valid;
+
+valid_magic:
+    version = *(const u16 *)(src + 6);
+    if (version < 0x100)
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x50, base + 0xA4);
+
+    version = *(const u16 *)(src + 6);
+    if (version >= 0x100)
+        goto valid_version_min;
+    valid = 0;
+    goto copy_if_valid;
+
+valid_version_min:
+    if (version > 0x101)
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x56, base + 0xA4);
+
+    version = *(const u16 *)(src + 6);
+    register u32 limit = 0x101;
+    u32 diff = limit - version;
+    u32 mask = limit | ~(u32)version;
+    valid = (mask - (diff >> 1)) >> 31;
+
+copy_if_valid:
+    if (valid != 0) {
+        u32 *out = (u32 *)dst;
+        const u32 *in = (const u32 *)src;
+        u32 b = in[1];
+        u32 a = in[0];
+        out[0] = a;
+        out[1] = b;
+        b = in[3];
+        a = in[2];
+        out[2] = a;
+        out[3] = b;
+        out[4] = in[4];
+        out[5] = in[5];
+        out[6] = in[6];
+        out[7] = in[7];
+        out[8] = in[8];
+        out[9] = in[9];
+    }
+}
+#pragma pop
 
 extern "C" const char lbl_80324868[];
 extern "C" void fn_800F2EAC(void *self, void *arg) {
@@ -3257,14 +3324,14 @@ extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
 extern "C" const char lbl_803264AC[];
 extern "C" const char lbl_803264D0[];
 extern "C" void fn_800FA7E0(void *self) {
-    u32 message;
+    unsigned long message;
     u8 *p = (u8 *)self;
     for (;;) {
         OSReceiveMessage(p + 0x2338, &message, 1);
         if (message == 1) {
             void *mutex = p + 0x2320;
             OSLockMutex(mutex);
-            u32 tick = OSGetTick();
+            unsigned long tick = OSGetTick();
             Instance__15EmissionManagerFv();
             fn_800E3228();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv();
@@ -3285,7 +3352,7 @@ extern "C" void fn_800FA7E0(void *self) {
             UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv();
             fn_800FEB9C();
             {
-                u32 state = OSDisableInterrupts();
+                unsigned long state = OSDisableInterrupts();
                 Instance__15EmissionManagerFv();
                 UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv();
                 OSRestoreInterrupts(state);
@@ -3293,7 +3360,7 @@ extern "C" void fn_800FA7E0(void *self) {
             *(u32 *)(p + 0x2390) = OSGetTick() - tick;
             {
                 DummyWorkerLink *end = (DummyWorkerLink *)(p + 0x2388);
-                DummyWorkerLink *link = *(DummyWorkerLink **)(p + 0x2388);
+                DummyWorkerLink *link = (DummyWorkerLink *)end->next;
                 do {
                     DummyWorkerLink *current = link;
                     link = (DummyWorkerLink *)link->next;
