@@ -1,5 +1,16 @@
   #include <types.h>
 #include <macros.h>
+struct VFiPFENTIterLayout {
+    u32 position;
+    void *stream;
+    u8 pad8[0x38];
+    u32 index;
+    u32 sentinel;
+    u16 length;
+    u8 pad4A[2];
+    u8 data[0x20];
+    u8 shift;
+};
 extern "C" u8 lbl_80407C00[];
 extern "C" u8 lbl_80407E00[];
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_805597E8; }
@@ -2676,24 +2687,37 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     return var_r31;
 }
 
-extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void* arg0) {
+extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     u32 sp8;
-    s32 temp, index;
+    u32 index;
     u32 old;
-    if ((*(u32*)((u8*)arg0 + 0x44) != 0xFFFF0000) && (*(u8*)((u8*)arg0 + 0x4C) != 0)) {
-        if (*(u32*)arg0 < 0xF423F) return 0;
-    } else return 0;
-    index = *(s32*)((u8*)arg0 + 0x40);
-    old = *(u32*)arg0;
-    *(u32*)arg0 = (index + 1) << *(u8*)((u8*)arg0 + 0x6C);
-    if (fn_800AB378(arg0, 0, index + 1, 0) != 0) {
-        *(u32*)arg0 = old; *(s32*)((u8*)arg0 + 0x40) = index; return 1;
+    s32 result;
+
+    if (*(u32 *)((u8 *)arg0 + 0x44) != 0xFFFFFFFFu &&
+        *(volatile u8 *)((u8 *)arg0 + 0x4C) != 0 &&
+        *(volatile u32 *)arg0 >= 0xF423Fu) {
+        index = *(u32 *)((u8 *)arg0 + 0x40);
+        old = *(volatile u32 *)arg0;
+        *(volatile u32 *)arg0 = (index + 1) << *(u8 *)((u8 *)arg0 + 0x6C);
+        if (((s32 (*)(void *, s32, s32))fn_800AB378)(arg0, 0, index + 1) != 0) {
+            *(volatile u32 *)arg0 = old;
+            *(u32 *)((u8 *)arg0 + 0x40) = index;
+            return 1;
+        }
+        if (*(u32 *)((u8 *)arg0 + 0x44) == 0xFFFFFFFFu) {
+            return 1;
+        }
+        result = fn_800B5324(*(void **)((u8 *)arg0 + 4),
+                             (u8 *)arg0 + 0x4C,
+                             *(u32 *)((u8 *)arg0 + 0x44),
+                             *(u16 *)((u8 *)arg0 + 0x48),
+                             0x20, &sp8, 0);
+        if (sp8 != 0x20) {
+            return 1;
+        }
+        return result != 0;
     }
-    if (*(u32*)((u8*)arg0 + 0x44) == 0xFFFF0000) return 1;
-    temp = fn_800B5324((void*)*(u32*)((u8*)arg0 + 4), (void*)((u8*)arg0 + 0x4C),
-                       (u32)*(u16*)((u8*)arg0 + 0x48), 0x20, &sp8, 0);
-    if (sp8 != 0x20) return 1;
-    return temp != 0;
+    return 0;
 }
 
 extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
@@ -3654,6 +3678,35 @@ extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4)
     *(u8 *)(*bufferHandle + index + 1) = (u8)(arg2 >> 8);
     if (result != 0)
         saved = result;
+    return saved;
+}
+
+extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    u8 *obj = (u8 *)arg0;
+    u32 sp8;
+    u32 scaled = (u32)arg1 << 2;
+    u32 block = (u16)(*(u32 *)(obj + 0x28) + (scaled >> obj[0x20]));
+    u16 index = (u16)(scaled & (*(u16 *)obj - 1));
+    u16 i;
+    s32 saved;
+    s32 result = fn_800B5260(arg0, &sp8, block, index, 4);
+    if (result != 0)
+        return result;
+
+    saved = 0;
+    sp8 = ((sp8 << 8) & 0x00FF0000) | (sp8 << 24) |
+        ((sp8 >> 8) & 0x0000FF00) | (sp8 >> 24);
+    sp8 &= 0xF0000000;
+    sp8 |= (u32)arg2;
+    sp8 = ((sp8 << 8) & 0x00FF0000) | (sp8 << 24) |
+        ((sp8 >> 8) & 0x0000FF00) | (sp8 >> 24);
+
+    for (i = 0; i < obj[0x22]; i++) {
+        result = fn_800B5618(arg0, &sp8, block, index, 4);
+        if (result != 0 && saved == 0)
+            saved = result;
+        block += *(u32 *)(obj + 0xC);
+    }
     return saved;
 }
 
@@ -11919,10 +11972,10 @@ extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
         *(void **)((u8 *)base + 0x5C8) = block;
     }
     if (*(void * volatile *)((u8 *)base + 0x5C8) == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], (s32)0xEFC, file + 0x4C);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, (s32)0xEFC, file + 0x4C);
     }
     if (fn_800ECB90(*(void * volatile *)((u8 *)base + 0x5C8), arg0) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], (s32)0xF01, file + 0x80);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, (s32)0xF01, file + 0x80);
     }
     fn_800CEF60(base, *(void * volatile *)((u8 *)base + 0x5C8), 0);
 }
