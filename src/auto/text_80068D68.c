@@ -536,6 +536,55 @@ void fn_80068F80(void) {
     lbl_80392960[0xC] = 1;
 }
 
+s32 fn_800692D0(void) {
+    const u8 *record;
+    u8 *offset;
+    u8 *base = lbl_80392960;
+    s32 i;
+    s32 interruptState;
+    tBTM_PM_PWR_MD mode;
+    s32 callback;
+
+    if (base[0x667] != 0) {
+        i = 0;
+        offset = (u8 *)0;
+        while (i < 0x10) {
+            interruptState = OSDisableInterrupts();
+            if (i < 0) goto high_record;
+            if (i >= 0xA) goto high_record;
+            record = (const u8 *)((u32)base + (u32)offset + 0x64);
+            goto selected_record;
+        high_record:
+            record = (const u8 *)((u32)base + ((u32)(i - 0xA) * 0x60u) + 0x424);
+        selected_record:
+            OSRestoreInterrupts(interruptState);
+            if (record[0x59] == 8) {
+                mode.mode = 2;
+                mode.max = 8;
+                mode.min = 8;
+                mode.attempt = 1;
+                mode.timeout = 0;
+                BTM_SetPowerMode(lbl_80392960[0x68A], (void *)(record + 0x40), &mode);
+                return 0xE;
+            }
+            i++;
+            offset += 0x60;
+        }
+    }
+
+    OSCancelAlarm((OSAlarm *)(base + 0x690));
+    if (base[0x669] == 0) {
+        callback = *(s32 *)(base + 0);
+    } else {
+        callback = *(s32 *)(base + 4);
+    }
+    if (callback != 0) {
+        ((void (*)(u8, u8))callback)(1, base[0x666]);
+    }
+    DBPrintf_8006CFA8(lbl_80313258);
+    return 0;
+}
+
 extern u8 lbl_80393680[];
 extern void fn_80069408(void);
 extern void fn_80069D80(void);
@@ -1548,6 +1597,58 @@ void *GKI_read_mbox(UINT8 mbox) {
     GKI_enable();
 
     return p_buf;
+}
+
+void GKI_enqueue(BUFFER_Q *p_q, void *p_buf) {
+    extern u32 lbl_803946C0[];
+    extern char lbl_803141C0[];
+    extern char lbl_803141DC[];
+    extern void fn_8006EBF0(void);
+    BUFFER_HDR_T *p_hdr = (BUFFER_HDR_T *)((u8 *)p_buf - 8);
+    u8 pool_id;
+    u16 size;
+    u32 *magic;
+    u8 damaged;
+    BUFFER_HDR_T *p_last_hdr;
+
+    if (((u32)p_hdr & 1) != 0) {
+        size = 0;
+    } else {
+        pool_id = p_hdr->q_id;
+        if (pool_id < 9)
+            size = *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (pool_id << 4));
+        else
+            size = 0;
+    }
+    magic = (u32 *)((u8 *)p_buf + size);
+    if (((u32)magic & 1) != 0) {
+        damaged = 1;
+    } else if (*magic == 0xDDBADDBA) {
+        damaged = 0;
+    } else {
+        damaged = 1;
+    }
+    if (damaged != 0) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFF, lbl_803141C0);
+        return;
+    }
+    if (p_hdr->status != BUF_STATUS_UNLINKED) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFF9, lbl_803141DC);
+        return;
+    }
+
+    fn_8006EBAC();
+    if (p_q->p_first != NULL) {
+        p_last_hdr = (BUFFER_HDR_T *)((u8 *)p_q->p_last - 8);
+        p_last_hdr->p_next = p_hdr;
+    } else {
+        p_q->p_first = p_buf;
+    }
+    p_q->p_last = p_buf;
+    p_q->count++;
+    p_hdr->p_next = NULL;
+    p_hdr->status = BUF_STATUS_QUEUED;
+    fn_8006EB88();
 }
 
 void GKI_enqueue_head(BUFFER_Q *p_q, void *p_buf) {
@@ -6133,31 +6234,26 @@ tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
     u8 *entry;
     u16 index;
     s32 count;
+    s32 i;
 
-    base = lbl_803C0F78 + 0x16E4;
     if (p_cur != 0) {
-        index = (((u8 *)p_cur - 8 - base) / 28) + 1;
-        entry = base + index * 0x1C;
+        base = lbl_803C0F78;
+        index = (((u8 *)p_cur - 8 - (base + 0x16E4)) / 28) + 1;
+        entry = base + index * 0x1C + 0x16E4;
         count = 0xC - index;
         if (index < 0xC) {
-            do {
+            for (; count != 0; count--) {
                 if (entry[0x1A] != 0) return (tBTM_INQ_INFO *)(entry + 8);
                 entry += 0x1C;
-            } while (--count != 0);
+            }
         }
         return 0;
     }
-    entry = base;
-    count = 2;
-    do {
+    base = lbl_803C0F78;
+    entry = base + 0x16E4;
+    for (i = 0; i < 12; i++, entry += 0x1C) {
         if (entry[0x1A] != 0) return (tBTM_INQ_INFO *)(entry + 8);
-        if (entry[0x36] != 0) return (tBTM_INQ_INFO *)(entry + 0x24);
-        if (entry[0x52] != 0) return (tBTM_INQ_INFO *)(entry + 0x40);
-        if (entry[0x6E] != 0) return (tBTM_INQ_INFO *)(entry + 0x5C);
-        if (entry[0x8A] != 0) return (tBTM_INQ_INFO *)(entry + 0x78);
-        if (entry[0xA6] != 0) return (tBTM_INQ_INFO *)(entry + 0x94);
-        entry += 0xA8;
-    } while (--count != 0);
+    }
     return 0;
 }
 
