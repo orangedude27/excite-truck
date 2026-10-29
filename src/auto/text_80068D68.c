@@ -48,8 +48,11 @@ typedef struct {
 } tRFC_MCB_ALLOC_VIEW;
 
 typedef struct {
-    u8 prefix[0x39C];
+    u8 before_last_mux[0x65];
+    u8 last_mux;
+    u8 pad66[0x39C - 0x66];
     tRFC_MCB_ALLOC_VIEW mcb[1];
+    u8 trace_level;
 } tRFC_CB_ALLOC_VIEW;
 
 typedef struct {
