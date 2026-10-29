@@ -4,6 +4,13 @@
 #include <types.h>
 
 extern "C" void fn_8021C12C(void *);
+extern "C" void fn_8021E7D4(void *);
+extern "C" s32 fn_8022B620(s32, const char *);
+extern "C" void *lbl_8033EA90[];
+#pragma push
+#pragma small_data on
+extern "C" char lbl_8055B880[];
+#pragma pop
 extern "C" void *lbl_8033E3D4[];
 extern "C" void *lbl_8033DF30[];
 extern "C" void fn_802E30C8(const char *, ...);
@@ -2355,42 +2362,36 @@ extern "C" void fn_8021E2A0(void *arg0) {
 }
 
 extern "C" s32 fn_8022D3F8(s32, s32, s32 *, s32, s32);
-extern "C" void fn_8021E51C(void *arg0, s32 arg1) {
-    s32 sp10 = 0;
-    s32 sp8 = 0;
-    s32 offset = 0;
-    s32 i = 0;
-    s32 base = 0;
-    s32 result;
-    s32 flags;
-    s32 equal;
-    s32 item;
-    s32 count = *(s32 *)((u8 *)arg0 + 0x254);
-    void *ptr = *(void **)((u8 *)arg0 + 0x248);
-    if (ptr != 0)
-        base = *(s32 *)((u8 *)ptr + 8);
-    while (i < count) {
-        item = i + base;
-        sp10 = 0;
-        result = fn_8022D3F8(*(s32 *)((u8 *)arg0 + 0x244), item, &sp10, 0, 0);
-        if (result != 0) {
-            s32 value = **(s32 **)((u8 *)arg0 + 0x25C);
-            equal = (value == item);
-            flags = (sp10 != 0);
-            result = fn_8022D3F8(*(s32 *)((u8 *)arg0 + 0x244), item, 0, flags, equal);
-            fn_8022BAD0(*(s32 *)((u8 *)arg0 + 0x244),
-                        *(s32 *)((u8 *)arg0 + 4) + 2,
-                        *(s32 *)((u8 *)arg0 + 8) + i * *(s32 *)((u8 *)arg0 + 0x258) + 2,
-                        0, 0, 0, result, flags | equal, lbl_805634A4);
-        }
-        i++;
-        if (i >= count)
-            break;
-        offset = i + base;
-        sp10 = 0;
-        if (fn_8022D3F8(*(s32 *)((u8 *)arg0 + 0x244), offset, &sp10, 0, 0) == 0)
-            break;
-    }
+extern "C" void fn_8021E51C(void *self, s32 arg1) {
+    struct Local { s32 sp8; s32 pad; s32 sp10; } local;
+    s32 base = 0, i, item, selected, difference, flagMask, equal, combined;
+    s32 result, yBase, xBase;
+    void *entries = *(void **)((u8 *)self + 0x248);
+    if (entries != 0) base = *(s32 *)((u8 *)entries + 8);
+    local.sp10 = 0;
+    i = 0;
+    goto probe;
+body:
+    selected = **(s32 **)((u8 *)self + 0x25C);
+    yBase = *(s32 *)((u8 *)self + 8);
+    xBase = *(s32 *)((u8 *)self + 4);
+    difference = item - selected;
+    equal = difference == 0;
+    flagMask = (-local.sp10 | local.sp10) >> 31;
+    result = fn_8022D3F8(*(s32 *)((u8 *)self + 0x244), item, 0,
+                         flagMask, equal);
+    local.sp8 = 0;
+    combined = equal | ((flagMask & 2) >> 1);
+    fn_8022BAD0(7, xBase + 2,
+                yBase + i * *(s32 *)((u8 *)self + 0x258) + 2,
+                0, 0, 0, result, combined, lbl_805634A4);
+    ++i;
+    if (i < *(s32 *)((u8 *)self + 0x254)) goto probe;
+    return;
+probe:
+    item = i + base;
+    if (((s32 (*)(s32, s32, s32 *))fn_8022D3F8)(
+            *(s32 *)((u8 *)self + 0x244), item, &local.sp10) != 0) goto body;
 }
 
 extern "C" void fn_8021E7D4(void *);
