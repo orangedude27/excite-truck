@@ -53,6 +53,23 @@ typedef struct {
 } tBTM_SEC_DEV_REC_MATCH_VIEW;
 
 typedef struct {
+    u8 pad0[4];
+    u32 unk_0x04;
+    u8 pad08[0x10];
+    u16 hci_handle;
+    u8 pad1A[2];
+    u8 bd_addr[6];
+    u8 dev_class[3];
+    u8 pad25[0x10];
+    u8 sec_bd_name[0x41];
+    u8 sec_flags;
+    u8 pad77[8];
+    u8 sec_state;
+    u8 pad80;
+    u8 sm4;
+} tBTM_SEC_DEV_REC_DISCONNECT_VIEW;
+
+typedef struct {
     char first;
 } tRFCOMM_TRACE_TEXT_VIEW;
 
@@ -5037,9 +5054,12 @@ tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     if (*(void **)(lbl_803C0F78 + 0x5E0) != NULL) return 2;
 
     entry = lbl_803C0F78 + 0x34;
-    for (i = 0; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] != 0 && memcmp(entry + 8, remote_bda, 6) == 0)
+    i = 0;
+    while (i < 4) {
+        if (entry[0x119] != 0 && !memcmp(entry + 8, remote_bda, 6))
             goto found;
+        i++;
+        entry += 0x11C;
     }
     entry = NULL;
 found:
@@ -5054,6 +5074,46 @@ found:
         return 1;
     }
     return 7;
+}
+
+tBTM_STATUS BTM_ReadLinkQuality(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
+    u8 *p_dev_rec;
+    u32 i;
+
+    if (lbl_803C0F78[0x27C0] >= 3) {
+        fn_800709CC(0xD0002, lbl_80315F80,
+                    remote_bda[0], remote_bda[1], remote_bda[2],
+                    remote_bda[3], remote_bda[4], remote_bda[5]);
+    }
+    if (*(u32 *)(lbl_803C0F78 + 0x5FC) != 0) {
+        return (tBTM_STATUS)2;
+    }
+    p_dev_rec = lbl_803C0F78 + 0x34;
+    i = 0;
+search:
+    if (p_dev_rec[0x119] && !memcmp(p_dev_rec + 8, remote_bda, 6)) {
+        goto found;
+    }
+    i++;
+    p_dev_rec += 0x11C;
+    if (i < 4) {
+        goto search;
+    }
+    p_dev_rec = NULL;
+found:
+    if (p_dev_rec == NULL) {
+        goto not_found;
+    }
+    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x5E4), 9, 3);
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5FC) = p_cb;
+    if (((u8 (*)(u16))btsnd_hcic_auth_request_800858B0)(*(u16 *)p_dev_rec) == 0) {
+        fn_80070F90(lbl_803C0F78 + 0x5E4);
+        *(u32 *)(lbl_803C0F78 + 0x5FC) = 0;
+        return (tBTM_STATUS)3;
+    }
+    return (tBTM_STATUS)1;
+not_found:
+    return (tBTM_STATUS)7;
 }
 
 void btm_read_rssi_complete(u8 *p) {
@@ -8611,30 +8671,30 @@ void btm_sec_disconnected(UINT16 handle, UINT8 reason) {
     tBTM_SEC_DEV_REC *p_dev_rec = btm_find_dev_by_handle(handle);
     if (p_dev_rec == NULL)
         return;
-    if ((*(u8 *)((u8 *)p_dev_rec + 0x81) & 0x40) &&
+    if ((p_dev_rec->sm4 & BTM_SM4_CONN_PEND) &&
         *(void **)(lbl_803C0F78 + 0x191C) != NULL) {
         if (saved_reason == 0x17) {
-            ((void (*)(u8 *, u8 *, u8 *, u32))*(void **)(lbl_803C0F78 + 0x191C))
-                ((u8 *)p_dev_rec + 0x1C, (u8 *)p_dev_rec + 0x22, (u8 *)p_dev_rec + 0x35, 0x17);
+            ((void (*)(BD_ADDR, DEV_CLASS, tBTM_BD_NAME, u32))*(void **)(lbl_803C0F78 + 0x191C))
+                (p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, 0x17);
         } else {
-            ((void (*)(u8 *, u8 *, u8 *, u32))*(void **)(lbl_803C0F78 + 0x191C))
-                ((u8 *)p_dev_rec + 0x1C, (u8 *)p_dev_rec + 0x22, (u8 *)p_dev_rec + 0x35, 5);
+            ((void (*)(BD_ADDR, DEV_CLASS, tBTM_BD_NAME, u32))*(void **)(lbl_803C0F78 + 0x191C))
+                (p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, 5);
         }
     }
     if (*(u32 *)(lbl_803C0F78 + 0x194C) != 0 &&
-        memcmp(lbl_803C0F78 + 0x1954, (u8 *)p_dev_rec + 0x1C, 6) == 0) {
+        memcmp(lbl_803C0F78 + 0x1954, p_dev_rec->bd_addr, 6) == 0) {
         fn_80070F90(lbl_803C0F78 + 0x193C);
         *(u32 *)(lbl_803C0F78 + 0x194C) = 0;
         memset(lbl_803C0F78 + 0x1954, 0xFF, 6);
         if (*(void **)(lbl_803C0F78 + 0x191C) != NULL)
-            ((void (*)(u8 *, u8 *, u8 *, u32))*(void **)(lbl_803C0F78 + 0x191C))
-                ((u8 *)p_dev_rec + 0x1C, (u8 *)p_dev_rec + 0x22, (u8 *)p_dev_rec + 0x35, 0xE);
+            ((void (*)(BD_ADDR, DEV_CLASS, tBTM_BD_NAME, u32))*(void **)(lbl_803C0F78 + 0x191C))
+                (p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, 0xE);
     }
-    *(UINT16 *)((u8 *)p_dev_rec + 0x18) = 0xFFFF;
-    *(u8 *)((u8 *)p_dev_rec + 0x7F) = 0;
-    *(u8 *)((u8 *)p_dev_rec + 0x76) &= 0xF8;
-    *(u8 *)((u8 *)p_dev_rec + 0x81) &= 0x80;
-    *(u32 *)((u8 *)p_dev_rec + 4) = 0;
+    p_dev_rec->hci_handle = 0xFFFF;
+    p_dev_rec->sec_state = 0;
+    p_dev_rec->sec_flags &= 0xF8;
+    p_dev_rec->sm4 &= 0x80;
+    p_dev_rec->security_required = 0;
 }
 
 /* Match note: initialize the callback table at its base, then walk two entries by four bytes. */
@@ -16337,7 +16397,7 @@ u8 fn_80096670(u8 value) {
 }
 
 extern BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 uuid_len, int nest_level);
-tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
+tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, register tSDP_UUID_SEQ *p_seq) {
     UINT16 xx, yy;
     UINT8 *p_attr;
     UINT8 *p_end = lbl_803C4C40 + 0x1224 +
