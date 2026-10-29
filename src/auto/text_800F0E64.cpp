@@ -408,38 +408,51 @@ extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3sn
         virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(); virtual void f34(); virtual void f35(); virtual void f36(); virtual void f37(); virtual void f38(); virtual void f39();
         virtual void f40(); virtual void f41(); virtual void f42(); virtual void f43(void *);
     };
+    const char *file = lbl_80324390;
     if (channel == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x209, lbl_80324390 + 0xA0);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x209, file + 0xA0);
     if (track == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x20A, lbl_80324390 + 0xD0);
-    if (status != 1 && status >= 0 && status < 3)
-        fn_800EAD00(channel);
-    void *callback = *(void **)((u8 *)track + 0xB4);
-    if (callback != 0)
-        ((Callback *)callback)->f43(channel);
-    u32 token = OSDisableInterrupts();
-    void *head = *(void **)((u8 *)track + 0xB8);
-    if (head == channel) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x20A, file + 0xD0);
+    if (status == 1)
+        goto callback;
+    if (status >= 1)
+        goto check_three;
+    if (status >= 0)
+        goto invoke;
+    goto callback;
+check_three:
+    if (status >= 3)
+        goto callback;
+invoke:
+    fn_800EAD00(channel);
+callback:
+    {
+        void *cb = *(void **)((u8 *)track + 0xB4);
+        if (cb != 0)
+            ((Callback *)cb)->f43(channel);
+    }
+    register u32 token = OSDisableInterrupts();
+    void *node = *(void **)((u8 *)track + 0xB8);
+    if (node == channel) {
         *(void **)((u8 *)track + 0xB8) = *(void **)((u8 *)channel + 0xE4);
         OSRestoreInterrupts(token);
         return;
     }
-    if (head == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x220, lbl_80324390 + 0xF8);
-    void *node = head;
+    if (node == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x220, file + 0xF8);
     for (;;) {
         void *next = *(void **)((u8 *)node + 0xE4);
-        if (next == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x229, lbl_80324390 + 0x124);
-            OSRestoreInterrupts(token);
-            return;
-        }
         if (next == channel) {
             *(void **)((u8 *)node + 0xE4) = *(void **)((u8 *)channel + 0xE4);
             OSRestoreInterrupts(token);
             return;
         }
         node = next;
+        if (*(void **)((u8 *)node + 0xE4) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x229, file + 0x124);
+            OSRestoreInterrupts(token);
+            return;
+        }
     }
 }
 #pragma pop
@@ -1361,7 +1374,6 @@ extern "C" void *__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
     *(void **)((u8 *)self + 0x18) = (void *)lbl_803256E8;
     *(void **)((u8 *)self + 0x1C) = self;
     OSInitMutex((u8 *)self + 0x20);
-
     *(void **)((u8 *)self + 0x3C) = self;
     *(void **)((u8 *)self + 0x38) = (void *)lbl_803256D8;
     *(void **)((u8 *)self + 0x40) = (void *)lbl_803256B0;
@@ -1369,27 +1381,36 @@ extern "C" void *__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
     *(void **)((u8 *)self + 0x48) = (void *)lbl_803256C0;
     *(void **)((u8 *)self + 0x4C) = self;
     OSInitMutex((u8 *)self + 0x50);
-
-    *(void **)((u8 *)self + 0x68) = (u8 *)self + 0xC4;
+    u32 tempC4 = (u32)self + 0xC4;
+    u32 tempC0 = (u32)self + 0xC0;
+    *(s32 *)((u8 *)self + 0x80) = 0;
+    u32 temp80 = (u32)self + 0x80;
+    u32 temp90 = (u32)self + 0x90;
+    u32 tempA0 = (u32)self + 0xA0;
+    *(s32 *)((u8 *)self + 0x84) = 0;
+    *(s32 *)((u8 *)self + 0x90) = 0;
+    *(s32 *)((u8 *)self + 0x94) = 0;
+    *(s32 *)((u8 *)self + 0xA0) = 0;
+    *(s32 *)((u8 *)self + 0xA4) = 0;
+    *(void **)((u8 *)self + 0x68) = (void *)tempC4;
     *(s32 *)((u8 *)self + 0x6C) = 0;
     *(s32 *)((u8 *)self + 0x70) = 0;
     *(s32 *)((u8 *)self + 0x74) = 0;
     *(s32 *)((u8 *)self + 0x78) = 0;
     *(s32 *)((u8 *)self + 0x7C) = 0;
-    *(void **)((u8 *)self + 0x80) = (u8 *)self + 0x80;
-    *(void **)((u8 *)self + 0x84) = (u8 *)self + 0x80;
+    *(void **)((u8 *)self + 0x80) = (void *)temp80;
+    *(void **)((u8 *)self + 0x84) = (void *)temp80;
     *(s32 *)((u8 *)self + 0x88) = 0;
     *(s32 *)((u8 *)self + 0x8C) = 0;
-    *(void **)((u8 *)self + 0x90) = (u8 *)self + 0x90;
-    *(void **)((u8 *)self + 0x94) = (u8 *)self + 0x90;
+    *(void **)((u8 *)self + 0x90) = (void *)temp90;
+    *(void **)((u8 *)self + 0x94) = (void *)temp90;
     *(s32 *)((u8 *)self + 0x98) = 0;
     *(s32 *)((u8 *)self + 0x9C) = 0;
-    *(void **)((u8 *)self + 0xA0) = (u8 *)self + 0xA0;
-    *(void **)((u8 *)self + 0xA4) = (u8 *)self + 0xA0;
-
+    *(void **)((u8 *)self + 0xA0) = (void *)tempA0;
+    *(void **)((u8 *)self + 0xA4) = (void *)tempA0;
     *(void **)((u8 *)self + 0xC0) = (void *)lbl_80323750;
     *(void **)((u8 *)self + 0xC4) = (void *)lbl_803237B8;
-    *(void **)((u8 *)self + 0xC8) = (u8 *)self + 0xC0;
+    *(void **)((u8 *)self + 0xC8) = (void *)tempC0;
     *(s32 *)((u8 *)self + 0xCC) = 0;
     *(s32 *)((u8 *)self + 0xD0) = 0;
     *(s32 *)((u8 *)self + 0xD4) = 0;
