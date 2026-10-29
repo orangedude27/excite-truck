@@ -2905,8 +2905,6 @@ extern "C" const char lbl_80326518[];
 extern "C" const char lbl_80326688[];
 extern "C" const char lbl_80326738[];
 extern "C" char lbl_805598F8;
-#pragma push
-#pragma scheduling invalid_target
 extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
     register s32 valid = *(s32 *)arg0;
     void *base = arg0;
@@ -2937,8 +2935,6 @@ extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
     *(u32 *)((u8 *)arg1 + 0x34) = *(u32 *)((u8 *)data + 0x30);
     return 1;
 }
-#pragma scheduling on
-#pragma pop
 
 extern "C" const char lbl_803266B4[];
 extern "C" const char lbl_803266E0[];
@@ -3100,6 +3096,8 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
 }
 
 extern "C" void fn_8002F53C(void *, void *, void *, int, int);
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     u8 *p = (u8 *)arg0;
     volatile u32 *vp = (volatile u32 *)p;
@@ -3137,7 +3135,7 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     } while (i < 0x20);
     return arg0;
 }
-
+#pragma pop
 extern "C" void fn_800FB358(void *arg0) {
     extern char lbl_80326AC0[];
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
