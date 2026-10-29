@@ -655,6 +655,45 @@ void fn_8006A1BC(u32 r3, u32 r4)
     OSSwitchFiberEx(r3, r4, 0, 0, fn_80069FE8, (u8*)&lbl_80393680 + 0x1000);
 }
 
+#pragma use_lmw_stmw off
+u8 fn_8006A1DC(void) {
+    char *strings = (char *)lbl_803130C8;
+    u8 *entry;
+    u8 *addr;
+    s32 i;
+    u8 *dev;
+    u8 one = 1;
+    u8 zero = 0;
+    u8 two = 2;
+    u32 value = 0x10000;
+    u8 three = 3;
+
+    memset(lbl_80393058, 0, 0x461);
+    SCGetBtDeviceInfoArray(lbl_80393058);
+    entry = lbl_80393058 + 1;
+    addr = lbl_80393058 + 7;
+    i = 0;
+    while (i < lbl_80393058[0]) {
+        dev = WUDiGetNewDevInfo();
+        memcpy(dev + 0x40, entry, 6);
+        memcpy(dev, addr, 0x40);
+        dev[0x59] = one;
+        dev[0x5B] = zero;
+        dev[0x5C] = two;
+        if (memcmp(dev, strings + 0x37C, 0x13) == 0) {
+            dev[0x57] = two;
+            *(u16 *)(dev + 0x5E) = value - 0x7F8C;
+            dev[0x58] = three;
+            DBPrintf_8006CFA8(&strings[0x1CC], dev[0x40], dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45]);
+            DBPrintf_8006CFA8(&strings[0x390], dev);
+        }
+        entry += 0x46;
+        addr += 0x46;
+        i++;
+    }
+    return 3;
+}
+#pragma use_lmw_stmw reset
 void fn_8006A300(void)
 {
     u8 state = lbl_80392960[0x10];
@@ -11356,7 +11395,9 @@ UINT8 L2CA_DataWrite(UINT16 lcid, BT_HDR *p_buf) {
     }
     if (p_buf->len <= *(u16 *)((u8 *)ccb + 0x3A)) {
         fn_80089E40(ccb, 0x1D, p_buf);
-        return (u8)(1 + !!(*(u8 *)(*(u8 **)((u8 *)ccb + 0x10) + 0x41)));
+        if (*(u8 *)(*(u8 **)((u8 *)ccb + 0x10) + 0x41))
+            return 2;
+        return 1;
     }
     if (lbl_803C4040[0] >= 2)
         fn_8007093C(0x80001, trace + 0x4F0);
@@ -14112,19 +14153,19 @@ void fn_800911DC(void) {
 }
 
 void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
-    char *messages = lbl_803196B8;
+    register char *messages = lbl_803196B8;
     s32 temp_r0 = arg0 - 0x40;
     void *var_r30;
 
     if (temp_r0 >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, &messages[0], arg0);
+            fn_80070954(0x90000, messages, arg0);
         var_r30 = 0;
     } else {
         var_r30 = *(void **)((u8 *)&lbl_803C4828 + temp_r0 * 4 + 0x3C);
         if (var_r30 && *(u16 *)((u8 *)var_r30 + 0x68) != arg0) {
             if (lbl_803C4828[0x414] >= 2)
-                fn_8007096C(0x90001, &messages[0x1C], arg0, *(u16 *)((u8 *)var_r30 + 0x68));
+                fn_8007096C(0x90001, messages + 0x1C, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
             var_r30 = 0;
         }
     }
@@ -14132,7 +14173,7 @@ void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
         L2CA_DisconnectRsp(arg0);
     if (!var_r30) {
         if (lbl_803C4828[0x414] >= 2)
-            fn_80070954(0x90001, &messages[0xA8], arg0);
+            fn_80070954(0x90001, messages + 0xA8, arg0);
     } else {
         fn_800916F4(var_r30, 0xE, 0);
     }
