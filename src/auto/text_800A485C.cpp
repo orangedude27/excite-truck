@@ -1062,38 +1062,45 @@ s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
 }
 
 extern "C" s32 fn_800A6A40(void *arg0) {
+    /* Fix note: put the high-byte term first so the compiler builds the low-byte shift as the merge base. */
+    u8 *data = (u8 *)arg0;
+    u8 temp_r4;
     s32 var_r5;
     u16 temp_r0;
     u16 var_r4;
     u8 temp_r0_2;
     u8 temp_r0_3;
-    u8 temp_r4;
 
-    temp_r4 = *(u8 *)((u8 *)arg0);
     var_r5 = 1;
-    if (((temp_r4 != 0xEB) || ((u8)*((u8 *)arg0 + 2) != 0x90)) && (temp_r4 != 0xE9)) {
+    temp_r4 = data[0];
+    if (((temp_r4 != 0xEB) || (data[2] != 0x90)) && (temp_r4 != 0xE9))
         var_r5 = 0;
-    }
-    if (((u8)*((u8 *)arg0 + 0x1FE) != 0x55) || ((u8)*((u8 *)arg0 + 0x1FF) != 0xAA)) {
+    if (data[0x1FE] != 0x55 || data[0x1FF] != 0xAA)
         var_r5 = 0;
-    }
-    if ((s32)(((u8 *)arg0 + 0xB)) & 1) {
-        var_r4 = (*((u8 *)arg0 + 0xB) & ~0xFF00) | ((*((u8 *)arg0 + 0xC) << 8) & 0xFF00);
+
+    if ((((u32)arg0 + 0xB) & 1) != 0) {
+        var_r4 = (data[0xB] & ~0xFF00) |
+                 ((data[0xC] << 8) & 0xFF00);
     } else {
-        temp_r0 = (u16)*((u8 *)arg0 + 0xC);
-        var_r4 = ((temp_r0 << 8) & 0xFF00 & ~0xFF) | ((temp_r0 >> 8U) & 0xFF);
+        temp_r0 = *(u16 *)(data + 0xC);
+        var_r4 = ((temp_r0 >> 8) & 0xFF) |
+                 ((temp_r0 << 8) & 0xFF00);
     }
-    if ((var_r4 != 0x200) && (var_r4 != 0x400) && (var_r4 != 0x800) && (var_r4 != 0x1000)) {
+
+    if (var_r4 != 0x200 && var_r4 != 0x400 && var_r4 != 0x800 && var_r4 != 0x1000)
         var_r5 = 0;
-    }
-    temp_r0_2 = *((u8 *)arg0 + 0xD);
-    if ((temp_r0_2 != 1) && (temp_r0_2 != 2) && (temp_r0_2 != 4) && (temp_r0_2 != 8) && (temp_r0_2 != 0x10) && (temp_r0_2 != 0x20) && (temp_r0_2 != 0x40) && (temp_r0_2 != 0x80)) {
+
+    temp_r0_2 = data[0xD];
+    if (temp_r0_2 != 1 && temp_r0_2 != 2 && temp_r0_2 != 4 &&
+        temp_r0_2 != 8 && temp_r0_2 != 0x10 && temp_r0_2 != 0x20 &&
+        temp_r0_2 != 0x40 && temp_r0_2 != 0x80)
         var_r5 = 0;
-    }
-    temp_r0_3 = *((u8 *)arg0 + 0x15);
-    if ((temp_r0_3 != 0xF0) && (temp_r0_3 != 0xF8) && (temp_r0_3 != 0xF9) && (temp_r0_3 != 0xFA) && (temp_r0_3 != 0xFB) && (temp_r0_3 != 0xFC) && (temp_r0_3 != 0xFD) && (temp_r0_3 != 0xFE) && (temp_r0_3 != 0xFF)) {
+
+    temp_r0_3 = data[0x15];
+    if (temp_r0_3 != 0xF0 && temp_r0_3 != 0xF8 && temp_r0_3 != 0xF9 &&
+        temp_r0_3 != 0xFA && temp_r0_3 != 0xFB && temp_r0_3 != 0xFC &&
+        temp_r0_3 != 0xFD && temp_r0_3 != 0xFE && temp_r0_3 != 0xFF)
         var_r5 = 0;
-    }
     return var_r5;
 }
 
@@ -5222,7 +5229,7 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
         u16 zeroDot;
     } local;
 
-    u8 *out = (u8 *)arg0;
+    s8 *out = (s8 *)arg0;
     u16 *src = arg1;
     u16 *scan = arg1;
     u8 *table = (u8 *)lbl_803D2140;
@@ -5248,7 +5255,7 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
     } else {
         s32 offset = 0;
         do {
-            s32 result = ((s32 (*)(u8 *, u8 *))(*(u32 **)(table + 0x4C)))((u8 *)src + (offset << 1), out);
+            s32 result = ((s32 (*)(u8 *, s8 *))(*(u32 **)(table + 0x4C)))((u8 *)src + (offset << 1), out);
             fn_800A4BF4(result, (u16 *)&local.outputLength, &local.inputLength);
             out += local.outputLength;
             offset += local.inputLength >> 1;
