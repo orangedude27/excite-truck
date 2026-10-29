@@ -3049,12 +3049,13 @@ extern "C" void fn_800ACA50(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(arg0, arg1, arg2, arg3, 1, 1);
 }
 
-extern s32 fn_800A8D08(s32, void **, s32 *);
+extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 extern s32 fn_800B5324(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
 s32 fn_800ACDF8(void *arg0, s32 arg1) {
+    /* Fix note: obtain the FAT page using this context and scan its sectors with two reads. */
     void *sp10;
     s32 spC;
     u32 sp8;
@@ -3063,19 +3064,20 @@ s32 fn_800ACDF8(void *arg0, s32 arg1) {
     s32 temp_r3;
     u32 var_r29;
 
-    temp_r3 = fn_800A8D08(-1, &sp10, &spC);
-    if (temp_r3 != 0) {
+    temp_r3 = fn_800A8D08(arg0, -1, &sp10, &spC);
+    if (temp_r3 != 0)
         return temp_r3;
-    }
-    var_r29 = 0U;
+    var_r29 = 0;
     temp_r30 = *(s32 *)((u8 *)arg0 + 0x30) + ((arg1 - 2) << *((u8 *)arg0 + 0x21));
 loop_8:
     if (var_r29 < *((u8 *)arg0 + 6)) {
         temp_r31 = temp_r30 + var_r29;
-        if ((fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31, 0, *(u16 *)arg0, &sp8, 1) == 0) && (sp8 == *(u16 *)arg0)) {
+        if (fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31, 0, *(u16 *)arg0, &sp8, 1) == 0 &&
+            sp8 == *(u16 *)arg0) {
             fn_800A499C(*(s32 *)((u8 *)sp10 + 8), 0);
-            if ((fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31, 0, *(u16 *)arg0, &sp8, 1) == 0) && (sp8 == *(u16 *)arg0)) {
-                var_r29 += 1;
+            if (fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31, 0, *(u16 *)arg0, &sp8, 1) == 0 &&
+                sp8 == *(u16 *)arg0) {
+                ++var_r29;
                 goto loop_8;
             }
         }
