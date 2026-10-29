@@ -800,7 +800,7 @@ extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBloc
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_800D7C54(int *arg0, s32 arg1) {
     volatile f32 *in = (volatile f32 *)arg1;
     f32 angle = in[2];
