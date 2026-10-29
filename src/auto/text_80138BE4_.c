@@ -28,43 +28,40 @@ extern double fn_8002F234(float);
 extern double fabs(double);
 #pragma push
 #pragma scheduling invalid_target
-#pragma optimize_for_size on
-#pragma opt_propagation off
-#pragma paired off
-#pragma paired_single off
-#pragma use_lmw_stmw off
 int fn_80138C28(void *rect, float *out_t, float *out_distance) {
-    // Fix note: use the rectangle's vertical and horizontal deltas in target order, then select roots or compute the no-root distance.
+    // Fix note: use the project's float absolute-value helper and keep the clamped offset temporary short-lived.
     register float a;
     register float b;
     register float c;
     register float disc;
-    float root1;
-    float root2;
+    volatile float root2;
+    volatile float root1;
     float term;
-    float offset;
-    if (out_distance != 0) *out_distance = lbl_805613B8;
-    a = *(float *)((char *)rect + 0x14) - *(float *)((char *)rect + 0x08);
+
+    if (out_distance != 0)
+        *out_distance = lbl_805613B8;
+    a = (*(float *)((char *)rect + 0x14) - *(float *)((char *)rect + 0x08)) * lbl_805613C0;
     b = *(float *)((char *)rect + 0x10) - *(float *)((char *)rect + 0x04);
-    c = *(float *)((char *)rect + 0x0C) - *(float *)rect;
-    a *= lbl_805613C0;
-    if (fn_80138BFC(a) != 0) return 0;
-    disc = b * b - lbl_805613C4 * a * c;
-    if (disc >= lbl_805613B8) {
-        root1 = (-b + fn_8002F234(disc)) / (lbl_805613C8 * a);
-        root2 = (-b - fn_8002F234(disc)) / (lbl_805613C8 * a);
-        if (fn_80138BE4(root1, root2) != 0)
-            *out_t = root1 > root2 ? root1 : root2;
-        else if (root1 >= lbl_805613B8)
-            *out_t = root1 < root2 ? root1 : root2;
-        else
-            *out_t = lbl_805613CC;
-        if (*out_t >= lbl_805613B8) return 1;
-    } else if (out_distance != 0) {
-        offset = -b;
-        if (offset <= lbl_805613B8) offset = lbl_805613B8;
-        term = (offset + b) * (lbl_805613C8 * __fabsf(a));
-        *out_distance = (term * term - disc) / (lbl_805613C8 * c);
+    c = *(float *)((char *)rect + 0x0C) - *(float *)((char *)rect + 0x00);
+
+    if (fn_80138BFC(a) == 0) {
+        disc = b * b - lbl_805613C4 * a * c;
+        if (disc >= lbl_805613B8) {
+            root1 = (-b + (float)fn_8002F234(disc)) / (lbl_805613C8 * a);
+            root2 = (-b - (float)fn_8002F234(disc)) / (lbl_805613C8 * a);
+            if (fn_80138BE4(root1, root2) != 0)
+                *out_t = root1 > root2 ? root1 : root2;
+            else if (root1 >= lbl_805613B8)
+                *out_t = root1 < root2 ? root1 : root2;
+            else
+                *out_t = lbl_805613CC;
+            if (*out_t >= lbl_805613B8)
+                return 1;
+        } else if (out_distance != 0) {
+            term = ((-b <= lbl_805613B8 ? lbl_805613B8 : -b) + b) *
+                (lbl_805613C8 * __fabsf(a));
+            *out_distance = (term * term - disc) / (lbl_805613C8 * c);
+        }
     }
     return 0;
 }
