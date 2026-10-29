@@ -385,6 +385,7 @@ extern "C" u32 *fn_80216708(void);
 extern "C" s32 fn_80218F34(void *, s32, s32, s32, s32, s32);
 extern "C" void fn_8022B91C(s32, s32, s32, s32, s32);
 extern "C" s32 fn_802C51AC(s32);
+extern "C" s32 fn_802C5310(s32, s32, f32, f32, f32);
 extern "C" void fn_80230C30(f32 *, f32 *, s32, s32);
 extern "C" void fn_802353F4(s32, s32, f32, f32, f32);
 extern "C" f32 fn_80235EF0(s32, s32);
@@ -2278,7 +2279,6 @@ extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
 #pragma scheduling invalid_target
 #pragma small_data on
 extern "C" void *fn_8021E0C0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5, void *arg6, void *arg7, s32 arg8) {
-    s32 stride;
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
     f32 alpha = lbl_805634A8;
     void *vtable = lbl_8033EA90;
@@ -2286,12 +2286,13 @@ extern "C" void *fn_8021E0C0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     *(void **)arg0 = vtable;
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
     *(f32 *)((u8 *)arg0 + 0x264) = alpha;
-    stride = fn_8022B620(7, (const char *)&lbl_8055B880) + 2;
+    s32 stride;
+    s32 count = arg4 / (stride = fn_8022B620(7, (const char *)&lbl_8055B880) + 2);
     *(void **)((u8 *)arg0 + 0x244) = arg5;
     *(s32 *)((u8 *)arg0 + 0x258) = stride;
     *(void **)((u8 *)arg0 + 0x25C) = arg6;
     *(void **)((u8 *)arg0 + 0x248) = arg7;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg4 / stride;
+    *(s32 *)((u8 *)arg0 + 0x254) = count;
     *(s32 *)((u8 *)arg0 + 0x250) = arg3 / 8;
     if (arg7 != 0) {
         *(u32 *)arg7 = *(u32 *)((u8 *)arg5 + 8);
