@@ -225,7 +225,7 @@ extern void UUSB_Write(u8, u8 *, u16, BT_HDR *);
 extern void sdp_connect_ind(u8 *, u16, u16, u8);
 extern void sdp_connect_cfm(u16, u16);
 extern void sdp_config_ind(u16, void *);
-extern void sdp_config_cfm(u16);
+extern void sdp_config_cfm(u16, u16 *);
 extern void sdp_disconnect_ind(u16, u8);
 extern void sdp_disconnect_cfm(u16, u16);
 extern void sdp_data_ind(u16, void *);
