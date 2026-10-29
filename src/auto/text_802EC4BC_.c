@@ -92,7 +92,7 @@ void *fn_802EC598(void) {
 }
 #pragma dont_inline off
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802EC614(void) {
     // Fix note: initialize the controller flags and configuration, then allocate and register the menu resources in target order.
     char *info;
@@ -118,7 +118,7 @@ void fn_802EC614(void) {
     ((f32 *)config)[13] = lbl_805651E0;
     ((f32 *)config)[14] = lbl_805651E0;
     config[15] = zero;
-    fn_801282EC(0x20);
+    fn_801282EC((s32)((base + 0x20) - base));
 
     info = lbl_80558860;
     buffer = (void *)fn_8012850C(0x80000, (void *)&lbl_8055D2F0);
@@ -146,7 +146,6 @@ void fn_802EC614(void) {
     fn_800C64F4(info);
     lbl_805600EC = 1;
 }
-
 #pragma scheduling on
 extern void fn_800C657C(void);
 extern void fn_80128670(s32);
@@ -212,8 +211,8 @@ extern void fn_802E99AC(void);
 extern s32 lbl_80558898[];
 void fn_802EC884(void) {
     register char *base = lbl_8034E9E0;
-    register s32 *out;
-    s32 i;
+    s32 motor;
+    s32 index;
 
     if ((u8)lbl_805600EC == 0) {
         return;
@@ -222,14 +221,11 @@ void fn_802EC884(void) {
         lbl_805600EA = 0;
         if (fn_802D9BF0() == 0) {
             lbl_805600EB = (u8)(lbl_805600E9 == 0);
-            if (lbl_805600EB != 0) {
-                fn_802E30C8(base + 0x16C, base + 0x198);
-            } else {
-                fn_802E30C8(base + 0x16C, lbl_8055D2F8);
-            }
+            fn_802E30C8(base + 0x16C,
+                lbl_805600EB != 0 ? base + 0x198 : lbl_8055D2F8);
             lbl_805600E8 = 1;
-            for (i = 0; i < 4; i++) {
-                WPADControlMotor(i, 0);
+            for (motor = 0; motor < 4; motor++) {
+                WPADControlMotor(motor, 0);
             }
             fn_800C6774(lbl_805600E4, lbl_805600E0, 0x19000);
             fn_800C65C4();
@@ -241,10 +237,8 @@ void fn_802EC884(void) {
     if ((u8)lbl_805600E8 == 0) {
         return;
     }
-    out = lbl_80558898;
-    for (i = 0; i < 4; i++) {
-        *out = fn_802E8668(i);
-        out += 4;
+    for (index = 0; index < 4; index++) {
+        lbl_80558898[index * 4] = fn_802E8668(index);
     }
     if (fn_800C65CC(lbl_80558898) < 0) {
         return;
@@ -371,4 +365,3 @@ void fn_802ECC74(void) {
 }
 
 #pragma dont_inline off
-extern char lbl_8055D2F8[];
