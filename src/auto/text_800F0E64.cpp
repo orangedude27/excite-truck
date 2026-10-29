@@ -442,6 +442,7 @@ extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3sn
         node = next;
     }
 }
+#pragma pop
 
 extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *);
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
