@@ -1125,37 +1125,56 @@ void *WUDiGetNewDevInfo(void) {
     return result;
 }
 
+#pragma use_lmw_stmw off
 void WUDiMoveTopSmpDevInfoPtr(void *arg0, void *arg1) {
-    u8 *base = lbl_80392960;
-    u8 *node;
-    u8 *entry;
-    s32 i;
-    BOOL enabled = OSDisableInterrupts();
+    typedef struct WUDDevInfoView {
+        u8 pad[0x40];
+        u8 devAddr[6];
+    } WUDDevInfoView;
+    typedef struct WUDListEntry WUDListEntry;
+    struct WUDListEntry {
+        WUDDevInfoView *devInfo;
+        WUDListEntry *prev;
+        WUDListEntry *next;
+    };
+    typedef struct {
+        u8 pad[0x14];
+        WUDListEntry *smpListHead;
+        WUDListEntry *smpListTail;
+        WUDListEntry smpList[6];
+    } WUDCBView;
 
-    for (i = 0, node = base; i < 6; i++, node += 0xC) {
-        if (memcmp(*(u8 **)(node + 0x1C) + 0x40, (u8 *)arg0 + 0x40, 6) == 0) {
-            entry = base + i * 0xC;
-            if (memcmp(*(u8 **)(*(void **)(base + 0x14)) + 0x40,
-                       *(u8 **)(entry + 0x1C) + 0x40, 6) != 0) {
-                u8 *next = *(u8 **)(entry + 0x24);
-                u8 *prev = *(u8 **)(entry + 0x20);
-                *(u8 **)(prev + 8) = next;
-                if (memcmp(*(u8 **)(*(void **)(base + 0x18)) + 0x40,
-                           *(u8 **)(entry + 0x1C) + 0x40, 6) == 0) {
-                    *(u8 **)(base + 0x18) = prev;
-                } else {
-                    *(u8 **)(next + 4) = prev;
-                }
-                *(u8 **)(entry + 0x24) = *(u8 **)(base + 0x14);
-                *(u8 **)(*(u8 **)(base + 0x14) + 4) = entry + 0x1C;
-                *(u8 **)(base + 0x14) = entry + 0x1C;
-                *(u8 **)(entry + 0x20) = 0;
-            }
+    register WUDCBView *p = (WUDCBView *)lbl_80392960;
+    WUDDevInfoView *pInfo = (WUDDevInfoView *)arg0;
+    BOOL enabled;
+    s32 i;
+
+    enabled = OSDisableInterrupts();
+    for (i = 0; i < 6; i++) {
+        WUDListEntry *entry = &p->smpList[i];
+
+        if (memcmp(entry->devInfo->devAddr, pInfo->devAddr, 6) != 0) {
+            continue;
+        }
+        if (memcmp(p->smpListHead->devInfo->devAddr, entry->devInfo->devAddr, 6) == 0) {
             break;
         }
+
+        entry->next->prev = entry->prev;
+        if (memcmp(p->smpListTail->devInfo->devAddr, entry->devInfo->devAddr, 6) == 0) {
+            p->smpListTail = entry->prev;
+        } else {
+            entry->prev->next = entry->next;
+        }
+        entry->next = p->smpListHead;
+        p->smpListHead->prev = entry;
+        p->smpListHead = entry;
+        entry->prev = 0;
+        break;
     }
     OSRestoreInterrupts(enabled);
 }
+#pragma use_lmw_stmw reset
 
 #pragma use_lmw_stmw off
 void WUDiMoveBottomSmpDevInfoPtr_8006B98C(void *arg0) {
@@ -4610,7 +4629,7 @@ void btm_read_link_quality_complete(u8 *arg0) {
 
     u8 *control = lbl_803C0F78;
     Callback callback = *(Callback *)(control + 0x5FC);
-    u8 *connection;
+    u8 *connection = control + 0x34;
     u8 logLevel;
     u16 handle;
     s32 i;
@@ -4632,11 +4651,11 @@ void btm_read_link_quality_complete(u8 *arg0) {
         }
 
         for (i = 0; i < 4; i++) {
-            connection = control + 0x34 + i * 0x11C;
-            if (connection[0x119] != 0 && *(u16 *)connection == handle) {
+            if (connection[0x119] != 0 && handle == *(u16 *)connection) {
                 memcpy(result.address, connection + 8, 6);
                 break;
             }
+            connection += 0x11C;
         }
     } else {
         result.result = 0xA;
