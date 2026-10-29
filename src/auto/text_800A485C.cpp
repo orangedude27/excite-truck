@@ -13097,27 +13097,38 @@ extern "C" f32 lbl_80560E28;
 extern "C" s32 contain__Q310homebutton3gui13PaneComponentFff(void *this_, f32 x, f32 y) {
     u8 *self = (u8 *)this_;
     void *pane = *(void **)(self + 0x28);
-    if (!pane) return 0;
+    if (pane == 0)
+        return 0;
+
     struct Pane {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual s32 v17();
+        virtual void v12(); virtual void v13(); virtual void v14();
+        virtual s32 v15();
     };
-    s32 n = ((Pane *)pane)->v17();
-    if (n == 0) return 0;
+
+    s32 n = ((Pane *)pane)->v15();
+    if (n == 0)
+        return 0;
+
     f32 mtx[12];
+    f32 transformed[4];
     f32 res[4];
     f32 vec[3];
-    s32 pad;
-    PSMTXConcatArray((f32 *)(self + 0x2C), (f32 *)(self + 0x2C), mtx, 0);
+
+    ((void (*)(const f32 *, f32 *))PSMTXConcatArray)(
+        (const f32 *)((u8 *)*(void **)(self + 0x2C) + 0x84), mtx);
     vec[0] = x;
     vec[1] = y;
     vec[2] = lbl_80560E28;
-    PSMTXMultVec(mtx, vec, vec);
-    fn_800DB76C(res, *(void **)(self + 0x2C), vec);
-    if (res[0] == vec[0] && vec[1] == res[1] && res[2] == vec[2] && vec[3] == res[3])
+    PSMTXMultVec(mtx, vec, transformed);
+    fn_800DB76C(res, *(void **)(self + 0x2C), (f32 *)n);
+
+    if (res[0] <= transformed[0] &&
+        transformed[1] <= res[1] &&
+        res[2] <= transformed[2] &&
+        transformed[3] <= res[3])
         return 1;
     return 0;
 }
@@ -17781,9 +17792,9 @@ extern "C" s32 fn_800A485C(s32 arg0) {
     return arg0;
 }
 
-#pragma unroll off
+#pragma optimization_level 2
 void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
-    /* Fix note: keep one explicit eight-word copy per loop iteration with automatic unrolling disabled. */
+    /* Fix note: keep the hand-unrolled copy loops at the file's lower optimization setting. */
     register u8 *out = (u8 *)dstArg;
     register const u8 *in = (const u8 *)srcArg;
     u32 blocks;
@@ -17848,7 +17859,7 @@ copy_bytes:
         *out++ = *in++;
     } while (--blocks);
 }
-#pragma unroll reset
+#pragma optimization_level reset
 
 extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
     u8 *dst = (u8 *)dstArg;
