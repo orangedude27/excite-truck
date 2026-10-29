@@ -128,8 +128,23 @@ extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
 extern void fn_802C8DB8(void *, int, short *, int);
 typedef struct {
+    float f0;
+    float f4;
+    float f8;
+    int unk0C;
+    float f10;
+    float f14;
+    float f18;
+    float f1C;
+    float f20;
+    int unk24;
+    float f28;
+    float f2C;
+} Fn802A0B54Vertex;
+
+typedef struct {
     short indices[0x20];
-    char vertices[0x120];
+    Fn802A0B54Vertex vertices[6];
 } Fn802A0B54Buffers;
 void fn_802A0B54(void) {
     char sp48[0x120];
