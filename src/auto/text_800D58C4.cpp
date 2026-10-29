@@ -47,7 +47,7 @@ extern "C" int GXSetTevOrder(u8, u8, u8, u8);              /* extern */
 extern "C" int GXSetTevSwapMode(u8, s32, s32);             /* extern */
 extern "C" int GXSetTevSwapModeTable(s32, s32, s32, s32, s32); /* extern */
 extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32);                   /* extern */
-extern "C" int fn_800D7C54(int *, s32);                /* extern */
+
 extern "C" void fn_800D4F98(void *);
 extern "C" f32 lbl_80560E8C;
 extern "C" f32 lbl_80560E88;
@@ -2561,17 +2561,17 @@ extern "C" void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void* self, unsigned long fla
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4();
         virtual void call();
     };
-    register u8* link = *(u8**)((u8*)self + 0x20);
-    register u8* head = (u8*)self + 0x20;
+    PaneAnimLink* head = (PaneAnimLink*)((u8*)self + 0x20);
+    PaneAnimLink* link = *(PaneAnimLink**)((u8*)self + 0x20);
     while (link != head) {
         if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-        if (!*(u8*)(link + 0xE)) {
+        if (!link->disabled) {
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            AnimCallback* anim = (AnimCallback*)*(void**)(link + 8);
+            AnimCallback* anim = (AnimCallback*)link->animation;
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            anim->call(*(u16*)(link + 0xC), self);
+            anim->call(link->index, self);
         }
-        link = *(u8**)link;
+        link = link->next;
     }
     if ((*(u8*)((u8*)self + 0xCF) & 1) == 0 && (flags & 1)) return;
     UpdateCallback* obj = (UpdateCallback*)*(void**)((u8*)self + 0x28);
