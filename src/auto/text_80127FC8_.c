@@ -4,10 +4,11 @@
 extern void fn_8000D838(void *);
 extern unsigned char lbl_8041E098[];
 extern unsigned char lbl_8055DF68;
+#pragma scheduling invalid_target
+#pragma scheduling invalid_target
 void fn_80127FC8(void) {
     unsigned char *p;
     unsigned char *end;
-    int i;
     fn_8000D838(&lbl_8055DF68);
     *(int *)(lbl_8041E098 + 0x10) = 0;
     *(int *)(lbl_8041E098 + 8) = 0;
