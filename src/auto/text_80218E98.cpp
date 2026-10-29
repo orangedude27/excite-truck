@@ -4,6 +4,7 @@
 #include <types.h>
 
 extern "C" void *lbl_8033DD20[];
+extern "C" void *memset(void *, int, unsigned long);
 
 extern "C" void fn_8021C6D0(void *);
 extern "C" s32 fn_8021165C(s32, s32);
