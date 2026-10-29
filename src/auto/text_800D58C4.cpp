@@ -799,6 +799,8 @@ extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBloc
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_800D7C54(int *arg0, s32 arg1) {
     volatile f32 *out = (volatile f32 *)arg0;
     volatile f32 *in = (volatile f32 *)arg1;
@@ -839,6 +841,7 @@ extern "C" void fn_800D7C54(int *arg0, s32 arg1) {
     out[10] = lbl_80560E94;
     out[11] = zero;
 }
+#pragma pop
 
 extern "C" void GXSetIndTexMtx(f32*, s8);
 extern "C" f32 lbl_80560E88;
@@ -2187,6 +2190,7 @@ extern "C" s32 fn_800DB398(s32 arg0, s32 arg1) {
 void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *src) {
     u8 *d = (u8 *)dst;
     const u8 *s = (const u8 *)src;
+    f32 defaultValue = lbl_80560EA8;
     *(u32 *)(d + 0x14) = 0;
     *(u32 *)(d + 0x18) = 0;
     *(u32 *)(d + 0x20) = 0;
@@ -2200,16 +2204,14 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *(u32 *)(d + 0x1C) = 0;
     *(void **)(d + 0x20) = d + 0x20;
     *(void **)(d + 0x24) = d + 0x20;
-    *(f32 *)(d + 0x4C) = lbl_80560EA8;
-    *(f32 *)(d + 0x50) = lbl_80560EA8;
+    *(f32 *)(d + 0x4C) = defaultValue;
+    *(f32 *)(d + 0x50) = defaultValue;
     *(u32 *)(d + 0xC) = 0;
     *(u32 *)(d + 0x28) = 0;
     d[0xD0] = 0;
     d[0xCC] = s[9];
     strncpy((char *)d + 0xB4, (const char *)s + 0xC, 0x10);
     strncpy((char *)d + 0xC4, (const char *)s + 0x1C, 8);
-    d[0xCD] = s[0xA];
-    d[0xCE] = s[0xA];
     *(f32 *)(d + 0x2C) = *(const f32 *)(s + 0x24);
     *(f32 *)(d + 0x30) = *(const f32 *)(s + 0x28);
     *(f32 *)(d + 0x34) = *(const f32 *)(s + 0x2C);
@@ -2220,6 +2222,8 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *(f32 *)(d + 0x48) = *(const f32 *)(s + 0x40);
     *(f32 *)(d + 0x4C) = *(const f32 *)(s + 0x44);
     *(f32 *)(d + 0x50) = *(const f32 *)(s + 0x48);
+    d[0xCD] = s[0xA];
+    d[0xCE] = s[0xA];
     d[0xCF] = s[8];
     return dst;
 }
