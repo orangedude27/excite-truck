@@ -4345,7 +4345,71 @@ outer_test:
     if (var_r30 < temp_r31) goto outer_body;
     fn_8022EE98(temp_r28);
 }
-#pragma scheduling on
+
+#pragma push
+#pragma ppc_psq_save off
+#pragma scheduling invalid_target
+extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
+    register s32 data = arg4;
+    register s32 i;
+    register u8 *row;
+    register s32 offset;
+    register s32 zero;
+    register s32 one;
+    register s32 minusOne;
+    register u8 *obj = (u8 *)self;
+    register u8 *input = (u8 *)arg3;
+    s32 scratch;
+    register f32 defaultValue;
+
+    fn_80218F34(obj, arg1, arg2, 0, 0, 0);
+    *(s32 *)(obj + 0x2CC) = data;
+    *(void **)obj = lbl_8033E4DC;
+    *(s32 *)(obj + 0x2C8) = *(s32 *)(input + 8);
+    *(s32 *)(obj + 0x3FC) =
+        ((s32 (*)(const char *, const char *))fn_80232578)(
+            (const char *)lbl_8033DA84, lbl_8033E4DC);
+    *(f32 *)(obj + 0x400) = lbl_8056352C;
+    *(f32 *)(obj + 0x404) = lbl_805634A4;
+    defaultValue = lbl_805634A8;
+
+    i = 0;
+    offset = 0;
+    zero = 0;
+    one = 1;
+    minusOne = -1;
+    do {
+        *(u8 *)(obj + offset + 0x2D0) = zero;
+        if (i < *(s32 *)(obj + 0x2C8)) {
+            scratch = 0;
+            data = ((s32 (*)(void *, s32, s32 *))fn_8022D3F8)(input, i, &scratch);
+            if ((scratch & 3) != 1)
+                *(u8 *)(obj + offset + 0x2D0) = one;
+            row = obj + offset;
+            *(s32 *)(row + 0x378) = (scratch >> 2) & 0x3F;
+            {
+                f32 width = fn_8023293C(*(s32 *)(obj + 0x3FC), data, lbl_805634A4);
+                *(f32 *)(row + 0x2F4) = *(f32 *)(obj + 0x404) * width;
+            }
+            *(s32 *)(row + 0x244) = data;
+        } else {
+            row = obj + offset;
+            *(s32 *)(row + 0x244) = zero;
+            *(f32 *)(row + 0x2F4) = defaultValue;
+            *(s32 *)(row + 0x378) = minusOne;
+        }
+        ++i;
+        offset += 4;
+    } while (i < 0x21);
+
+    *(f32 *)(obj + 0x414) = lbl_805634A8;
+    *(f32 *)(obj + 0x410) = lbl_805634A8;
+    *(f32 *)(obj + 0x40C) = lbl_805634A8;
+    *(f32 *)(obj + 0x408) = lbl_80563530;
+    *(u8 *)(obj + 0x41C) = zero;
+    ((void (*)(void *))fn_8022375C)(obj);
+    return obj;
+}
 #pragma pop
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
 
@@ -5527,21 +5591,26 @@ extern "C" void fn_80015B20(void *, void *, void *);
 extern "C" f32 lbl_805634E4;
 extern "C" f32 lbl_805634A4;
 extern "C" extern f64 lbl_805634B8;
+#pragma scheduling invalid_target
 extern "C" void fn_80226B6C(void *arg0) {
     u8 *p = (u8 *)arg0;
     u8 scratch[0x78];
     f32 now = fn_8023659C();
     f32 scale;
     volatile f32 *matrix = (volatile f32 *)*(void **)(p + 0x248);
-    f32 zero = lbl_805634A8;
-    f32 one = lbl_805634A4;
+    f32 zero;
+    f32 one;
     f32 x;
     f32 delta;
     f32 factor;
     f32 y;
     f32 delta2;
+    void *vec;
 
+    one = lbl_805634A4;
+    zero = lbl_805634A8;
     matrix[0] = one;
+    vec = scratch;
     scale = now / lbl_805634E4;
     matrix[1] = zero;
     matrix[2] = zero;
@@ -5565,7 +5634,7 @@ extern "C" void fn_80226B6C(void *arg0) {
 
     {
         void *obj = *(void **)(p + 0x248);
-        ((void (*)(void *, void *))fn_80015A20)(scratch + 0x0c, scratch);
+        ((void (*)(void *, void *))fn_80015A20)(scratch + 0x0c, vec);
         fn_80015B20(obj, scratch + 0x0c, obj);
     }
 
@@ -5594,6 +5663,7 @@ extern "C" void fn_80226B6C(void *arg0) {
         fn_8022EDB8();
     }
 }
+#pragma scheduling on
 
 extern "C" { __declspec(section ".data") extern char lbl_8033E038; }
 extern "C" void fn_80235380(void *);
