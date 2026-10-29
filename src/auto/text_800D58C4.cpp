@@ -800,7 +800,7 @@ extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBloc
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" void fn_800D7C54(int *arg0, s32 arg1) {
     volatile f32 *in = (volatile f32 *)arg1;
     f32 angle = in[2];
@@ -808,7 +808,8 @@ extern "C" void fn_800D7C54(int *arg0, s32 arg1) {
     offsets[0] = lbl_80560E88;
     offsets[1] = lbl_80560E88;
     f32 c = CosFIdx__Q24nw4r4mathFf(lbl_80560E8C * angle);
-    f32 s = SinFIdx__Q24nw4r4mathFf(in[2] * lbl_80560E8C);
+    f32 angle2 = in[2];
+    f32 s = SinFIdx__Q24nw4r4mathFf(lbl_80560E8C * angle2);
     f32 x = in[3];
     f32 negS = -s;
     f32 sinX = s * x;
@@ -2188,47 +2189,45 @@ extern "C" s32 fn_800DB398(s32 arg0, s32 arg1) {
 }
 
 void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *src) {
-    u8 *d = (u8 *)dst;
-    const u8 *s = (const u8 *)src;
-    void *vtable = lbl_8032012C;
-    u32 zero = 0;
-    void *list14 = d + 0x14;
-    f32 defaultValue = lbl_80560EA8;
-    void *list20 = d + 0x20;
-    *(volatile u32 *)(d + 0x14) = zero;
-    *(volatile u32 *)(d + 0x18) = zero;
-    *(volatile u32 *)(d + 0x20) = zero;
-    *(volatile u32 *)(d + 0x24) = zero;
-    *(volatile u32 *)(d + 4) = zero;
-    *(volatile u32 *)(d + 8) = zero;
-    *(void **)d = vtable;
-    *(u32 *)(d + 0x10) = zero;
-    *(void **)(d + 0x14) = list14;
-    *(void **)(d + 0x18) = list14;
-    *(u32 *)(d + 0x1C) = zero;
-    *(void **)(d + 0x20) = list20;
-    *(void **)(d + 0x24) = list20;
-    *(f32 *)(d + 0x4C) = defaultValue;
-    *(f32 *)(d + 0x50) = defaultValue;
-    *(u32 *)(d + 0xC) = zero;
-    *(u32 *)(d + 0x28) = zero;
-    d[0xD0] = (u8)zero;
-    d[0xCC] = s[9];
-    strncpy((char *)d + 0xB4, (const char *)s + 0xC, 0x10);
-    strncpy((char *)d + 0xC4, (const char *)s + 0x1C, 8);
-    *(f32 *)(d + 0x2C) = *(const f32 *)(s + 0x24);
-    *(f32 *)(d + 0x30) = *(const f32 *)(s + 0x28);
-    *(f32 *)(d + 0x34) = *(const f32 *)(s + 0x2C);
-    *(f32 *)(d + 0x38) = *(const f32 *)(s + 0x30);
-    *(f32 *)(d + 0x3C) = *(const f32 *)(s + 0x34);
-    *(f32 *)(d + 0x40) = *(const f32 *)(s + 0x38);
-    *(f32 *)(d + 0x44) = *(const f32 *)(s + 0x3C);
-    *(f32 *)(d + 0x48) = *(const f32 *)(s + 0x40);
-    *(f32 *)(d + 0x4C) = *(const f32 *)(s + 0x44);
-    *(f32 *)(d + 0x50) = *(const f32 *)(s + 0x48);
-    d[0xCD] = s[0xA];
-    d[0xCE] = s[0xA];
-    d[0xCF] = s[8];
+    register u32 zero = 0;
+    register void *vtable = lbl_8032012C;
+    register void *list14 = (u8 *)dst + 0x14;
+    register f32 defaultValue = lbl_80560EA8;
+    register void *list20 = (u8 *)dst + 0x20;
+    *(volatile u32 *)((u8 *)dst + 0x14) = zero;
+    *(volatile u32 *)((u8 *)dst + 0x18) = zero;
+    *(volatile u32 *)((u8 *)dst + 0x20) = zero;
+    *(volatile u32 *)((u8 *)dst + 0x24) = zero;
+    *(volatile u32 *)((u8 *)dst + 4) = zero;
+    *(volatile u32 *)((u8 *)dst + 8) = zero;
+    *(void **)dst = vtable;
+    *(u32 *)((u8 *)dst + 0x10) = zero;
+    *(void **)((u8 *)dst + 0x14) = list14;
+    *(void **)((u8 *)dst + 0x18) = list14;
+    *(u32 *)((u8 *)dst + 0x1C) = zero;
+    *(void **)((u8 *)dst + 0x20) = list20;
+    *(void **)((u8 *)dst + 0x24) = list20;
+    *(f32 *)((u8 *)dst + 0x4C) = defaultValue;
+    *(f32 *)((u8 *)dst + 0x50) = defaultValue;
+    *(u32 *)((u8 *)dst + 0xC) = zero;
+    *(u32 *)((u8 *)dst + 0x28) = zero;
+    *((u8 *)dst + 0xD0) = (u8)zero;
+    *((u8 *)dst + 0xCC) = *((const u8 *)src + 9);
+    strncpy((char *)dst + 0xB4, (const char *)src + 0xC, 0x10);
+    strncpy((char *)dst + 0xC4, (const char *)src + 0x1C, 8);
+    *(f32 *)((u8 *)dst + 0x2C) = *(const f32 *)((const u8 *)src + 0x24);
+    *(f32 *)((u8 *)dst + 0x30) = *(const f32 *)((const u8 *)src + 0x28);
+    *(f32 *)((u8 *)dst + 0x34) = *(const f32 *)((const u8 *)src + 0x2C);
+    *(f32 *)((u8 *)dst + 0x38) = *(const f32 *)((const u8 *)src + 0x30);
+    *(f32 *)((u8 *)dst + 0x3C) = *(const f32 *)((const u8 *)src + 0x34);
+    *(f32 *)((u8 *)dst + 0x40) = *(const f32 *)((const u8 *)src + 0x38);
+    *(f32 *)((u8 *)dst + 0x44) = *(const f32 *)((const u8 *)src + 0x3C);
+    *(f32 *)((u8 *)dst + 0x48) = *(const f32 *)((const u8 *)src + 0x40);
+    *(f32 *)((u8 *)dst + 0x4C) = *(const f32 *)((const u8 *)src + 0x44);
+    *(f32 *)((u8 *)dst + 0x50) = *(const f32 *)((const u8 *)src + 0x48);
+    *((u8 *)dst + 0xCD) = *((const u8 *)src + 0xA);
+    *((u8 *)dst + 0xCE) = *((const u8 *)src + 0xA);
+    *((u8 *)dst + 0xCF) = *((const u8 *)src + 8);
     return dst;
 }
 
