@@ -38,16 +38,16 @@ extern "C" void fn_8013B7B4(void *arg0, int value) {
         virtual void v6() = 0;
         virtual float getFloat(const char *) = 0;
     };
-    register float *base asm("r20") = (float *)arg0;
-    register int scale asm("r21") = value;
-    register void *list asm("r26");
-    register void *item asm("r25");
-    register const char *name asm("r23");
-    register const char **namep asm("r28");
-    register float *out asm("r27");
-    register int i asm("r24");
-    register unsigned int j asm("r22");
+    int scale = value;
+    float *base = (float *)arg0;
+    float *out;
+    void *list;
+    void *item;
+    const char *name;
     const char *names[3];
+    const char **namep;
+    int i;
+    unsigned int j;
 
     list = fn_80131808(lbl_8032C390);
     if (list == 0) goto error;
@@ -55,14 +55,14 @@ extern "C" void fn_8013B7B4(void *arg0, int value) {
     i = 0;
     while ((item = ((List *)list)->getAt(i)) != 0) {
         name = ((Item *)item)->getName();
-        names[0] = ((const char **)lbl_802F9388)[0];
-        names[1] = ((const char **)lbl_802F9388)[1];
-        names[2] = ((const char **)lbl_802F9388)[2];
+        names[0] = lbl_802F9388[0];
+        names[1] = lbl_802F9388[1];
+        names[2] = lbl_802F9388[2];
         out = base;
         namep = names;
         for (j = 0; j < 3; j++, namep++) {
             if (stricmp(*namep, name) == 0) {
-                out[0] = ((DataItem *)item)->getFloat(&lbl_80559CD8[0]);
+                out[0] = ((DataItem *)item)->getFloat((const char *)&lbl_80559CD8);
                 out[1] = ((DataItem *)item)->getFloat(lbl_8032C390 + 0xC);
                 out[2] = ((DataItem *)item)->getFloat(lbl_8032C390 + 0x18);
                 out[3] = (float)scale * ((DataItem *)item)->getFloat(lbl_8032C390 + 0x28);
