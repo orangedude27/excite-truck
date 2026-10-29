@@ -2482,11 +2482,13 @@ void GXInitTexObjCI(void *obj, void *image, unsigned short width, unsigned short
     *(unsigned char *)((char *)obj + 0x1F) &= ~2;
 }
 
-void GXInitTexObjLOD(void *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias, s32 bias_clamp, s32 do_edge_lod, s32 max_aniso) {
-    s32 *t = (s32 *)obj;
-    s32 lbias;
-    s32 lmin;
-    s32 lmax;
+void GXInitTexObjLOD(void *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias, u8 bias_clamp, u8 do_edge_lod, s32 max_aniso) {
+    u32 *t = (u32 *)obj;
+    u32 mode0;
+    u32 mode1;
+    u8 lbias;
+    u8 lmin;
+    u8 lmax;
 
     if (lod_bias < -4.0f) {
         lod_bias = -4.0f;
@@ -2494,12 +2496,17 @@ void GXInitTexObjLOD(void *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max
         lod_bias = 3.99f;
     }
     lbias = 32.0f * lod_bias;
-    t[0] = (t[0] & ~0x1FE00) | ((lbias << 9) & 0x1FE00);
-    t[0] = (t[0] & ~0x10) | (((unsigned int)__cntlzw(mag_filt - 1) >> 1) & 0x10);
-    t[0] = (t[0] & ~0xE0) | ((GX2HWFiltConv[min_filt] << 5) & 0xE0);
-    t[0] = (t[0] & ~0x100) | ((__cntlzw(max_aniso) << 3) & 0x100);
-    t[0] = (t[0] & 0xFFF9FFFF) | ((max_aniso << 0x13) & 0x180000);
-    t[0] = (t[0] & ~0x200000) | ((bias_clamp << 0x15) & 0x200000);
+    mode0 = t[0];
+    mode0 = __rlwimi(mode0, lbias, 9, 15, 22);
+    mode0 = __rlwimi(mode0, __cntlzw(mag_filt - 1), 31, 27, 27);
+    t[0] = mode0;
+    mode0 = __rlwimi(mode0, GX2HWFiltConv[min_filt], 5, 24, 26);
+    mode0 = __rlwimi(mode0, __cntlzw(do_edge_lod), 3, 23, 23);
+    mode1 = mode0 & 0xFFF9FFFF;
+    mode1 = __rlwimi(mode1, max_aniso, 19, 11, 12);
+    mode1 = __rlwimi(mode1, bias_clamp, 21, 10, 10);
+    t[0] = mode1;
+
     if (min_lod < 0.0f) {
         min_lod = 0.0f;
     } else if (min_lod > 10.0f) {
@@ -2512,8 +2519,10 @@ void GXInitTexObjLOD(void *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max
         max_lod = 10.0f;
     }
     lmax = 16.0f * max_lod;
-    t[1] = (t[1] & ~0xFF) | (lmin & 0xFF);
-    t[1] = (t[1] & ~0xFF00) | ((lmax << 8) & 0xFF00);
+    mode1 = t[1];
+    mode1 = __rlwimi(mode1, lmin, 0, 24, 31);
+    mode1 = __rlwimi(mode1, lmax, 8, 16, 23);
+    t[1] = mode1;
 }
 
 void GXInitTexObjWrapMode(int *obj, int wrap_s, int wrap_t) {
