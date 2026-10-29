@@ -122,7 +122,7 @@ void fn_802EC614(void) {
     fn_801282EC(0x20);
 
     info = lbl_80558860;
-    buffer = (void *)fn_8012850C(0x80000, lbl_8055D2F0);
+    buffer = (void *)fn_8012850C(0x80000, (void *)&lbl_8055D2F0);
     *(void **)(info + 0x10) = buffer;
     memset(buffer, 0, 0x80000);
     *(s32 *)(info + 0x24) = 0x80000;
