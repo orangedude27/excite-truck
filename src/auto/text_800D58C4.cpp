@@ -6,6 +6,7 @@
 #include "revolution/MTX/mtxtypes.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
+struct GetTextureSizeStringBase_800D58C4 { char text[0x500]; };
 namespace nw4hbm { namespace lyt {
 class ResourceAccessor;
 class Layout {
@@ -522,19 +523,18 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     extern const char lbl_8031F694[];
     extern const char lbl_8031F688[];
     extern const char lbl_8031F664[];
-    struct GroupContainerObject : GroupListNode {
-        virtual void Destroy(s32);
-    };
+    struct GroupContainerDispatch { virtual void Destroy(s32); };
+    struct GroupContainerObject : GroupContainerDispatch, GroupListNode {};
     void* slot;
-    register GroupListNode* current;
-    register GroupListNode* node;
+    register void* current;
+    register void* node;
     register void* end;
     if (arg0 != 0) {
-        node = *(GroupListNode**)((char*)arg0 + 4);
+        node = *(void**)((char*)arg0 + 4);
         end = (char*)arg0 + 4;
         while (node != end) {
             current = node;
-            node = node->next;
+            node = *(void**)node;
             slot = current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(arg0, &slot);
             if (current == 0)
@@ -542,10 +542,10 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
             if (*(u8*)((char*)current + 0x24) == 0) {
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-                static_cast<GroupContainerObject*>(current)->Destroy(-1);
+                static_cast<GroupContainerObject&>(*(GroupListNode*)current).Destroy(-1);
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-                if ((current = (GroupListNode*)((char*)current - 4)) == 0)
+                if ((current = (char*)current - 4) == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F688, 0x193, lbl_8031F664);
                 MEMFreeToAllocator(lbl_8055DDF0, current);
             }
@@ -2331,12 +2331,14 @@ extern "C" u16 GXGetTexObjWrapS(void *);
 extern "C" u16 GXGetTexObjWrapT(void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index) {
+    typedef const char FileBytes[0x500];
     u32 texObj[8];
     u32 count;
+    u32 word7, word6, word5, word4, word3, word2, word1, word0;
     f32 defaultValue;
     f32 wrapT;
     u16 wrapS;
-    const char *file = (const char *)&lbl_8031F990;
+    FileBytes *file = (FileBytes *)&lbl_8031F990;
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
@@ -2347,30 +2349,30 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     }
 
     if ((void *)texObj == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x3DC, file + 0x42C);
+        Panic__Q26nw4hbm2dbFPCciPCce((*file), 0x3DC, (*file) + 0x42C);
     }
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x3DD, file + 0x458);
+        Panic__Q26nw4hbm2dbFPCciPCce((*file), 0x3DD, (*file) + 0x458);
     }
 
     u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
     u32 *src = base + (((u32)index << 5) / 4);
-    u32 word0 = ((volatile u32 *)src)[0];
-    u32 word1 = ((volatile u32 *)src)[1];
+    word0 = ((volatile u32 *)src)[0];
+    word1 = ((volatile u32 *)src)[1];
     texObj[0] = word0;
     texObj[1] = word1;
-    u32 word2 = ((volatile u32 *)src)[2];
-    u32 word3 = ((volatile u32 *)src)[3];
+    word2 = ((volatile u32 *)src)[2];
+    word3 = ((volatile u32 *)src)[3];
     texObj[2] = word2;
     texObj[3] = word3;
-    u32 word4 = ((volatile u32 *)src)[4];
-    u32 word5 = ((volatile u32 *)src)[5];
+    word4 = ((volatile u32 *)src)[4];
+    word5 = ((volatile u32 *)src)[5];
     texObj[4] = word4;
     texObj[5] = word5;
-    u32 word6 = ((volatile u32 *)src)[6];
-    u32 word7 = ((volatile u32 *)src)[7];
+    word6 = ((volatile u32 *)src)[6];
+    word7 = ((volatile u32 *)src)[7];
     texObj[6] = word6;
     texObj[7] = word7;
 
