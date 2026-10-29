@@ -135,19 +135,65 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
 extern "C" u8 lbl_8032036C[], lbl_80320504[], lbl_80320538[];
 extern f32 lbl_80560EC8;
 extern "C" void Append__Q36nw4hbm3lyt7PictureFRC9_GXTexObj(void* this_, const void* texObj) {
-    u8* self=(u8*)this_; void* mat=*(void**)(self+0x28); u32 n, count; u8 coords[4]; f32 size[2]; int init=0;
-    count=*(u32*)((u8*)mat+0x4C); n=*(u32*)((u8*)mat+0x50)>>28;
-    if(n >= (count>>28)) return;
-    if(n >= ((count>>20)&15)) { Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80320320,0xC0,(const char*)lbl_8032036C,n,(count>>20)&15); return; }
-    SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(mat,n+1);
-    SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(mat,n,texObj);
-    SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(mat,*(u32*)((u8*)mat+0x50)>>28);
-    coords[0]=1; coords[1]=4; coords[2]=0x3c; coords[3]=0;
-    if(n >= ((*(u32*)((u8*)mat+0x50)>>20)&15)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80320538,0xb4,(const char*)lbl_80320504);
-    *(u32*)((u8*)fn_800D9344(mat)+n*4)=*(u32*)coords;
-    SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(self+0xe4,*(u32*)((u8*)mat+0x50)>>28);
-    if(*(f32*)(self+0x4c)==lbl_80560EC8 && *(f32*)(self+0x50)==lbl_80560EC8) init=1;
-    if(init && (*(u32*)((u8*)mat+0x50)>>28)==1) { GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(size,mat,0); *(f32*)(self+0x4c)=size[0]; *(f32*)(self+0x50)=size[1]; }
+    u8* self = (u8*)this_;
+    u32 n;
+    void* mat = *(void**)(self + 0x28);
+    u32 count = *(volatile u32*)((u8*)mat + 0x4C);
+    n = *(volatile u32*)((u8*)mat + 0x50) >> 28;
+    u32 packed;
+    u8 coords[4];
+    volatile f32 defaults[2];
+    f32 size[2];
+
+    if (n >= (count >> 28) || n >= ((count >> 20) & 15)) {
+        Warning__Q26nw4hbm2dbFPCciPCce(
+            (const char*)lbl_80320320, 0xC0, (const char*)lbl_8032036C,
+            n, count >> 28, (*(volatile u32*)((u8*)mat + 0x4C) >> 20) & 15);
+        return;
+    }
+
+    SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(mat, (u8)(n + 1));
+    SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(
+        *(void**)(self + 0x28), (u8)n, texObj);
+    SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(
+        *(void**)(self + 0x28),
+        (u8)(*(u32*)((u8*)*(void**)(self + 0x28) + 0x50) >> 28));
+
+    mat = *(void**)(self + 0x28);
+    coords[3] = 0;
+    coords[0] = 1;
+    coords[1] = 4;
+    coords[2] = 0x3C;
+    packed = *(u32*)coords;
+    if (n >= ((*(u32*)((u8*)mat + 0x50) >> 20) & 15)) {
+        Panic__Q26nw4hbm2dbFPCciPCce(
+            (const char*)lbl_80320538, 0xB4, (const char*)lbl_80320504);
+    }
+    {
+        u8* tc = (u8*)fn_800D9344(mat) + (u8)n * 4;
+        tc[0] = ((u8*)&packed)[0];
+        tc[1] = ((u8*)&packed)[1];
+        tc[2] = ((u8*)&packed)[2];
+        tc[3] = ((u8*)&packed)[3];
+    }
+    SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(
+        self + 0xE4,
+        (u8)(*(u32*)((u8*)*(void**)(self + 0x28) + 0x50) >> 28));
+
+    defaults[0] = lbl_80560EC8;
+    defaults[1] = lbl_80560EC8;
+    int init = 0;
+    if (*(f32*)(self + 0x4C) == lbl_80560EC8 &&
+        *(f32*)(self + 0x50) == lbl_80560EC8) {
+        init = 1;
+    }
+    if (init != 0 &&
+        ((*(u32*)((u8*)*(void**)(self + 0x28) + 0x50) >> 28) == 1)) {
+        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(
+            size, *(void**)(self + 0x28), 0);
+        *(f32*)(self + 0x4C) = size[0];
+        *(f32*)(self + 0x50) = size[1];
+    }
 }
 
 extern "C" void GetVtxColor__Q36nw4hbm3lyt7PictureCFUl(Color* out, const void* this_, u32 idx) {
