@@ -4,6 +4,7 @@
 typedef unsigned char u8;
 extern float lbl_8042F8A8[];
 extern int lbl_8055E174;
+extern double lbl_80561468;
 extern float lbl_80561474;
 void fn_8013B950(void);
 extern int lbl_8055E170;
@@ -39,18 +40,18 @@ extern "C" void fn_8013B7B4(void *arg0, int value) {
         virtual void v6() = 0;
         virtual float getFloat(const char *) = 0;
     };
-    int scale = value;
-    float *base = (float *)arg0;
-    char *keys = lbl_8032C390;
-    const char **table;
-    float *out;
-    void *list;
-    void *item;
-    const char *name;
+    register int scale = value;
+    register float *base = (float *)arg0;
+    register char *keys = lbl_8032C390;
+    register const char **table;
+    register float *out;
+    register void *list;
+    register void *item;
+    register const char *name;
     const char *names[3];
-    const char **namep;
-    int i;
-    unsigned int j;
+    register const char **namep;
+    register int i;
+    register unsigned int j;
 
     list = fn_80131808(keys);
     if (list == 0) goto error;
