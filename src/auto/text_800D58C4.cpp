@@ -392,17 +392,19 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
 #pragma use_lmw_stmw off
 extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *self, const void *resource, void *pane) {
+    register void *head = (u8 *)self + 0x10;
     *(volatile u32 *)((u8 *)self + 0x10) = 0;
     *(volatile u32 *)((u8 *)self + 0x14) = 0;
-    *(volatile void **)self = lbl_8031F628;
-    *(volatile u32 *)((u8 *)self + 4) = 0;
-    *(volatile u32 *)((u8 *)self + 8) = 0;
-    *(volatile u32 *)((u8 *)self + 0xC) = 0;
-    *(volatile void **)((u8 *)self + 0x10) = (u8 *)self + 0x10;
-    *(volatile void **)((u8 *)self + 0x14) = (u8 *)self + 0x10;
-    *(volatile u8 *)((u8 *)self + 0x28) = 0;
+    *(void **)self = lbl_8031F628;
+    *(u32 *)((u8 *)self + 4) = 0;
+    *(u32 *)((u8 *)self + 8) = 0;
+    *(u32 *)((u8 *)self + 0xC) = 0;
+    *(void **)((u8 *)self + 0x10) = head;
+    *(void **)((u8 *)self + 0x14) = head;
+    *(u8 *)((u8 *)self + 0x28) = 0;
     memcpy((u8 *)self + 0x18, (const u8 *)resource + 8, 0x10);
 
     const u8 *items = (const u8 *)resource + 0x1C;
@@ -418,19 +420,19 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
             *(u32 *)node = 0;
             *(u32 *)((u8 *)node + 4) = 0;
             *(void **)((u8 *)node + 8) = result;
-            register void *iterator = (u8 *)self + 0x10;
+            register void *iterator = (void *)((u32 *)self + 4);
             void *slot;
             if (node == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6E8, 0x233, lbl_8031F6C4);
             slot = iterator;
-            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)self + 0xC, &slot, node);
+            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&((GroupLayout *)self)->children, &slot, node);
         }
         offset += 0x10;
         index += 1;
     }
     return self;
 }
-#pragma use_lmw_stmw reset
+#pragma pop
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     extern const char lbl_8031E764[];
@@ -1440,6 +1442,7 @@ extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
     }
 }
 
+#pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*, void*, u32);
 extern "C" void fn_800D9CBC(void* arg0, u32 arg1, void* arg2) {
     extern const char lbl_8031F990[];
