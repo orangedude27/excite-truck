@@ -3239,7 +3239,6 @@ extern "C" s32 fn_800FA77C(s32 arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 extern "C" s32 OSReceiveMessage(void *, void *, s32);
 extern "C" u32 OSGetTick(void);
 extern "C" void fn_800E3228(void);
