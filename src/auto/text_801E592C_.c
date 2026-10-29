@@ -37,12 +37,12 @@ extern void fn_801C0E60(void *, void *, void *);
 extern void fn_801C7254(void *, s32, s32, s32, s32, s32, s32, s32);
 extern void fn_801E67B4(void *, void *, void *);
 extern void fn_802C7A38(s32, void *, s32);
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma use_lmw_stmw off
 void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     s32 sp68[0x180];
     s32 sp38[12];
-    s32 sp14[9];
+    struct Sp14 { s32 pad; s32 v[9]; } sp14box;
     s32 sp8[2];
     register s32 *b;
     register s32 *a;
@@ -50,8 +50,8 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     register s32 i;
     register s32 idx;
     register s32 count;
-    s32 *dst;
-    s32 *tail;
+    register s32 *dst;
+    register s32 *tail;
     s32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11;
     s32 b0, b1, b2, b3, b4, b5, b6, b7, b8;
 
@@ -85,12 +85,12 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
             sp38[0]=a0; sp38[1]=a1; sp38[2]=a2; sp38[3]=a3;
             sp38[4]=a4; sp38[5]=a5; sp38[6]=a6; sp38[7]=a7;
             sp38[8]=a8; sp38[9]=a9; sp38[10]=a10; sp38[11]=a11;
-            sp14[0]=b0; sp14[1]=b1; sp14[2]=b2; sp14[3]=b3;
-            sp14[4]=b4; sp14[5]=b5; sp14[6]=b6; sp14[7]=b7;
-            sp14[8]=b8;
-            fn_801C7254(sp14, b7, b6, b5, b4, b3, b2, b1);
+            sp14box.v[0]=b0; sp14box.v[1]=b1; sp14box.v[2]=b2;
+            sp14box.v[3]=b3; sp14box.v[4]=b4; sp14box.v[5]=b5;
+            sp14box.v[6]=b6; sp14box.v[7]=b7; sp14box.v[8]=b8;
+            fn_801C7254(sp14box.v, b7, b6, b5, b4, b3, b2, b1);
             dst = &sp68[idx * 12];
-            fn_80015B20(dst, sp38, sp14);
+            fn_80015B20(dst, sp38, sp14box.v);
             fn_8001BA68(sp8);
             fn_801E67B4(sp8, b + 9, dst);
             tail = dst + 9;
@@ -99,8 +99,8 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
             fn_801BFE7C(tail, dst, &sp38[9]);
             fn_801C0E60(tail, dst, b + 9);
         }
-        a += 12;
         b += 14;
+        a += 12;
         i++;
     }
     fn_802C7A38(0, sp68, temp);
