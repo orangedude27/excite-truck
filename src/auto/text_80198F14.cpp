@@ -1784,7 +1784,7 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
 }
 
 #pragma processor 750
-#pragma optimization_level 3
+#pragma optimization_level 2
 #pragma scheduling reset
 extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 farg2) {
     struct Object {
