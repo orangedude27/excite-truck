@@ -3626,33 +3626,38 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
     return result;
 }
 
-s32 fn_800B5260(void *, s32, u16, s32, u16);
-s32 fn_800B5618(void *, s32, s32, s32, u16);
-s32 fn_800AFFE0(void *arg0, s32 arg1, u8 arg2, void *arg3, s32 arg4) {
-    u32 shift = (u32)arg1 * 2;
-    u32 size = *(u16 *)arg0;
-    u32 index = shift & (size - 1);
-    u32 value = *(u32 *)((char *)arg0 + 0x28) + (shift >> *(u8 *)((char *)arg0 + 0x20));
+extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
+extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
+extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u32 arg2, void *arg3, s32 arg4) {
+    u8 *obj = (u8 *)arg0;
+    u8 *ctx = (u8 *)arg3;
+    u32 scaled = (u32)arg1 << 1;
+    u32 block = (u32)(*(u32 *)(obj + 0x28) + (scaled >> obj[0x20])) & 0xFFFF;
+    u32 index = (scaled & (*(u16 *)obj - 1)) & 0xFFFF;
     s32 result = 0;
-    s32 oldResult = 0;
-    u32 i;
-    if (*(u32 *)((char *)arg3 + 0x18) != value) {
-        for (i = 0; i < *(u8 *)((char *)arg0 + 0x22); i++) {
-            s32 r = fn_800B5618(arg0, *(s32 *)((char *)arg3 + 8),
-                *(u32 *)((char *)arg3 + 0x18) + i * *(u32 *)((char *)arg0 + 0xC),
-                0, *(u16 *)arg0);
-            if (r != 0 && oldResult == 0) oldResult = r;
-        }
-        *(u32 *)((char *)arg3 + 0x18) = value;
-        result = fn_800B5260(arg0, *(s32 *)((char *)arg3 + 8), value, 0, *(u16 *)arg0);
+    s32 saved = 0;
+
+    if (*(u32 *)(ctx + 0x18) != block) {
+        u32 i = 0;
+        do {
+            s32 r = fn_800B5618(arg0, *(void **)(ctx + 8),
+                (u16)(*(u32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC)),
+                0, *(u16 *)obj);
+            if (r != 0 && saved == 0)
+                saved = r;
+            i++;
+        } while (i < obj[0x22]);
+        result = fn_800B5260(arg0, *(void **)(ctx + 8), block, 0, *(u16 *)obj);
+        *(u32 *)(ctx + 0x18) = block;
     }
-    *(u8 *)(*(char **)((char *)arg3 + 8) + index) = arg2;
-    *(u8 *)(*(char **)((char *)arg3 + 8) + index + 1) = (u8)(arg2 >> 8);
-    if (result != 0) oldResult = result;
-    return oldResult;
+    u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
+    buffer[index] = (u8)arg2;
+    buffer[index + 1] = (u8)(arg2 >> 8);
+    if (result != 0)
+        saved = result;
+    return saved;
 }
 
-extern "C" s32 fn_800B5260(void *, s32, u16, s32, u16);
 extern "C" s32 fn_800B0488(void *arg0, s32 arg1, u32 arg2, void *arg3, s32 arg4) {
     u8 *obj = (u8 *)arg0, *ctx = (u8 *)arg3;
     u32 bytes = (u32)arg1 << 2;
@@ -3663,12 +3668,12 @@ extern "C" s32 fn_800B0488(void *arg0, s32 arg1, u32 arg2, void *arg3, s32 arg4)
     if (*(u32 *)(ctx + 0x18) != block) {
         u16 i;
         for (i = 0; i < obj[0x22]; i++) {
-            s32 r = fn_800B5618(arg0, *(s32 *)(ctx + 8),
-                *(s32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC),
+            s32 r = fn_800B5618(arg0, *(void **)(ctx + 8),
+                (u16)(*(s32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC)),
                 0, *(u16 *)obj);
             if (r && !saved) saved = r;
         }
-        result = fn_800B5260(arg0, *(s32 *)(ctx + 8), block, 0, *(u16 *)obj);
+        result = fn_800B5260(arg0, *(void **)(ctx + 8), block, 0, *(u16 *)obj);
         if (result) return result;
         *(u32 *)(ctx + 0x18) = block;
     }
@@ -13639,13 +13644,13 @@ extern "C" u8 fn_800D3838(u8 *arg0) {
 extern "C" s32 OSEnableInterrupts(void);
 extern "C" s32 DVDReadAsyncPrio(void *, void *, s32, s32, s32, s32);
 extern "C" u8 fn_800D3840(s32 arg0) {
-    register u32 temp_r5;
     s32 var_r29;
     s32 temp_r28;
     s32 temp_r31;
-    s32 temp_r4;
     s32 var_r31;
     u32 end;
+    s32 temp_r4;
+    u32 temp_r5;
 
     temp_r5 = (u32)arg0 & 0x7FFFFFFF;
     var_r29 = temp_r5 - lbl_805597E8;
@@ -13655,10 +13660,10 @@ extern "C" u8 fn_800D3840(s32 arg0) {
         temp_r4 = temp_r5 & 0xFFFFFFE0;
         lbl_805597E8 = temp_r4;
         var_r29 = temp_r5 - temp_r4;
-        var_r31 = 0x200;
         end = *(volatile u32 *)&lbl_8055DDD0;
-        if ((u32)(temp_r4 + 0x200) >= end)
-            var_r31 = (end - temp_r4 + 0x1F) & 0xFFFFFFE0;
+        var_r31 = (u32)(temp_r4 + 0x200) < end
+                      ? 0x200
+                      : (end - temp_r4 + 0x1F) & 0xFFFFFFE0;
         temp_r28 = OSEnableInterrupts();
         temp_r31 = DVDReadAsyncPrio((void *)lbl_80407E00, (void *)lbl_80407C00, var_r31,
                                     lbl_805597E8, 0, 2);
