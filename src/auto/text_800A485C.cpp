@@ -5665,8 +5665,8 @@ s32 fn_800B3A70(char *arg0, const char *arg1, s32 arg2) {
     u8 temp_r0_3;
     u8 temp_r0_5;
 
-    var_r3 = arg0;
-    var_r4 = arg1;
+    var_r3 = (char *)arg0;
+    var_r4 = (const char *)arg1;
     var_r9 = 0;
 loop_2:
     if (var_r9 < 8) {
