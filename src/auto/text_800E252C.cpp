@@ -1935,15 +1935,15 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
 #pragma use_lmw_stmw off
 #pragma scheduling reset
 void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int arg1, const void *arg2, unsigned long arg3) {
-    register int format;
-    register unsigned int interrupt;
-    register unsigned int value;
-    register unsigned int temp;
-    register unsigned int start;
-    register int offset;
-    register int i;
-    register unsigned int *voice;
-    register unsigned int end;
+    int format;
+    unsigned int interrupt;
+    unsigned int value;
+    unsigned int temp;
+    unsigned int start;
+    int offset;
+    int i;
+    unsigned int *voice;
+    unsigned int end;
 
     interrupt = OSDisableInterrupts();
     format = *(int *)((char *)this + 0x118);
@@ -1972,8 +1972,8 @@ void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int arg1, const void *arg2, unsign
     voice = (unsigned int *)((char *)this + offset);
     i = 0;
     do {
-        register unsigned int *channel = (unsigned int *)*(unsigned int **)((char *)voice + 0xC);
-        register unsigned int innerInterrupt = OSDisableInterrupts();
+        unsigned int *channel = (unsigned int *)*(unsigned int **)((char *)voice + 0xC);
+        unsigned int innerInterrupt = OSDisableInterrupts();
         *(unsigned short *)((char *)channel + 0x1B8) = value;
         *(unsigned short *)((char *)channel + 0x1BA) = end;
         temp = *(unsigned int *)((char *)channel + 0x1C);
@@ -1984,7 +1984,7 @@ void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int arg1, const void *arg2, unsign
     } while (i < *(volatile int *)((char *)this + 0x108));
     OSRestoreInterrupts(interrupt);
 }
-#pragma scheduling invalid_target
+#pragma scheduling reset
 #pragma pop
 
 #pragma push
