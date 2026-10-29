@@ -800,46 +800,46 @@ extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBloc
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_800D7C54(int *arg0, s32 arg1) {
-    volatile f32 *out = (volatile f32 *)arg0;
     volatile f32 *in = (volatile f32 *)arg1;
     f32 angle = in[2];
-    volatile f32 offsetX = lbl_80560E88;
-    volatile f32 offsetY = lbl_80560E88;
+    volatile f32 offsets[2];
+    offsets[0] = lbl_80560E88;
+    offsets[1] = lbl_80560E88;
     f32 c = CosFIdx__Q24nw4r4mathFf(lbl_80560E8C * angle);
-    f32 s = SinFIdx__Q24nw4r4mathFf(lbl_80560E8C * in[2]);
+    f32 s = SinFIdx__Q24nw4r4mathFf(in[2] * lbl_80560E8C);
     f32 x = in[3];
     f32 negS = -s;
-    f32 sx = s * x;
+    f32 sinX = s * x;
     f32 zero = lbl_80560E90;
-    f32 cx = c * x;
+    f32 cosX = c * x;
     f32 z = in[4];
-    f32 negOffsetX = -offsetX;
-    f32 negOffsetY = -offsetY;
-    f32 negSz = negS * z;
+    f32 negOffsetX = -offsets[0];
+    f32 negOffsetY = -offsets[1];
+    f32 sinZ = negS * z;
     f32 tx = in[0];
-    f32 cz = c * z;
+    f32 cosZ = c * z;
     f32 ty = in[1];
-    f32 tx0 = tx + offsetX;
-    f32 ty0 = ty + offsetY;
-    f32 tx1 = tx0 + cx * negOffsetX;
-    f32 ty1 = ty0 + sx * negOffsetX;
-    f32 tx2 = tx1 + negSz * negOffsetY;
-    f32 ty2 = ty1 + cz * negOffsetY;
+    f32 tx0 = tx + offsets[0];
+    f32 ty0 = ty + offsets[1];
+    f32 tx1 = tx0 + cosX * negOffsetX;
+    f32 ty1 = ty0 + sinX * negOffsetX;
+    f32 tx2 = tx1 + sinZ * negOffsetY;
+    f32 ty2 = ty1 + cosZ * negOffsetY;
 
-    out[0] = cx;
-    out[1] = negSz;
-    out[2] = zero;
-    out[4] = sx;
-    out[5] = cz;
-    out[6] = zero;
-    out[3] = tx2;
-    out[7] = ty2;
-    out[8] = zero;
-    out[9] = zero;
-    out[10] = lbl_80560E94;
-    out[11] = zero;
+    ((f32 *)arg0)[0] = cosX;
+    ((f32 *)arg0)[1] = sinZ;
+    ((f32 *)arg0)[2] = zero;
+    ((f32 *)arg0)[4] = sinX;
+    ((f32 *)arg0)[5] = cosZ;
+    ((f32 *)arg0)[6] = zero;
+    ((f32 *)arg0)[3] = tx2;
+    ((f32 *)arg0)[7] = ty2;
+    ((f32 *)arg0)[8] = zero;
+    ((f32 *)arg0)[9] = zero;
+    ((f32 *)arg0)[10] = lbl_80560E94;
+    ((f32 *)arg0)[11] = zero;
 }
 #pragma pop
 
@@ -2190,25 +2190,29 @@ extern "C" s32 fn_800DB398(s32 arg0, s32 arg1) {
 void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *src) {
     u8 *d = (u8 *)dst;
     const u8 *s = (const u8 *)src;
+    void *vtable = lbl_8032012C;
+    u32 zero = 0;
+    void *list14 = d + 0x14;
     f32 defaultValue = lbl_80560EA8;
-    *(u32 *)(d + 0x14) = 0;
-    *(u32 *)(d + 0x18) = 0;
-    *(u32 *)(d + 0x20) = 0;
-    *(u32 *)(d + 0x24) = 0;
-    *(u32 *)(d + 4) = 0;
-    *(u32 *)(d + 8) = 0;
-    *(void **)d = lbl_8032012C;
-    *(u32 *)(d + 0x10) = 0;
-    *(void **)(d + 0x14) = d + 0x14;
-    *(void **)(d + 0x18) = d + 0x14;
-    *(u32 *)(d + 0x1C) = 0;
-    *(void **)(d + 0x20) = d + 0x20;
-    *(void **)(d + 0x24) = d + 0x20;
+    void *list20 = d + 0x20;
+    *(volatile u32 *)(d + 0x14) = zero;
+    *(volatile u32 *)(d + 0x18) = zero;
+    *(volatile u32 *)(d + 0x20) = zero;
+    *(volatile u32 *)(d + 0x24) = zero;
+    *(volatile u32 *)(d + 4) = zero;
+    *(volatile u32 *)(d + 8) = zero;
+    *(void **)d = vtable;
+    *(u32 *)(d + 0x10) = zero;
+    *(void **)(d + 0x14) = list14;
+    *(void **)(d + 0x18) = list14;
+    *(u32 *)(d + 0x1C) = zero;
+    *(void **)(d + 0x20) = list20;
+    *(void **)(d + 0x24) = list20;
     *(f32 *)(d + 0x4C) = defaultValue;
     *(f32 *)(d + 0x50) = defaultValue;
-    *(u32 *)(d + 0xC) = 0;
-    *(u32 *)(d + 0x28) = 0;
-    d[0xD0] = 0;
+    *(u32 *)(d + 0xC) = zero;
+    *(u32 *)(d + 0x28) = zero;
+    d[0xD0] = (u8)zero;
     d[0xCC] = s[9];
     strncpy((char *)d + 0xB4, (const char *)s + 0xC, 0x10);
     strncpy((char *)d + 0xC4, (const char *)s + 0x1C, 8);
