@@ -10193,43 +10193,17 @@ s32 btsnd_hcic_switch_role_8008515C(BD_ADDR bd_addr, UINT8 role) {
     return 1;
 }
 
-BOOLEAN btsnd_hcic_change_name(BD_NAME name) {
-    u8 *p = (u8 *)GKI_getpoolbuf(2);
-    u32 len = strlen((char *)name) + 1;
-    u8 *dst = p + 0xB;
-    u8 *src = (u8 *)name;
-    u32 i = 0;
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 0xFB;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0x13; p[9] = 0xC; p[10] = 0xF8;
-    if (len > 0) {
-        if (len >= 8) {
-            u32 r = len - 8;
-            if (r > 0) {
-                u32 k = (r + 7) >> 3;
-                if (k > 0) {
-                    do {
-                        dst[0] = src[i];
-                        dst[1] = src[i + 1];
-                        dst[2] = src[i + 2];
-                        dst[3] = src[i + 3];
-                        dst[4] = src[i + 4];
-                        dst[5] = src[i + 5];
-                        dst[6] = src[i + 6];
-                        dst[7] = src[i + 7];
-                        dst += 8;
-                        i += 8;
-                    } while (--k > 0);
-                }
-            }
-        }
-        while (i < len) {
-            *dst++ = src[i++];
-        }
-    }
+BOOLEAN btsnd_hcic_change_name(void *p_buf, BD_NAME name) {
+    BT_HDR *p = (BT_HDR *)p_buf;
+    UINT8 *pp;
+    UINT16 len = strlen((char *)name) + 1;
+    pp = (UINT8 *)(p + 1);
+    p->len = 0xFB;
+    p->offset = 0;
+    UINT16_TO_STREAM(pp, HCI_CHANGE_LOCAL_NAME);
+    UINT8_TO_STREAM(pp, HCIC_PARAM_SIZE_CHANGE_NAME);
+    ARRAY_TO_STREAM(pp, name, len);
     btu_hcif_send_cmd(p);
-    return TRUE;
 }
 
 void fn_8008534C(void *arg0, u16 arg1) {
@@ -16791,6 +16765,47 @@ void fn_8009757C(u8 *p_ccb) {
     } else {
         *(u16 *)(p_ccb + 0x46c) = 0;
         sdp_snd_service_search_req((tCONN_CB *)p_ccb, 0, NULL);
+    }
+}
+
+extern void process_service_search_rsp(void *, UINT8 *, UINT16);
+extern char lbl_8031A028[];
+extern void process_service_search_rsp(void *, UINT8 *, UINT16);
+extern char lbl_8031A028[];
+void sdp_disc_server_rsp(tCONN_CB *p_ccb, BT_HDR *p_msg) {
+    UINT8 *p;
+    UINT8 rsp_pdu;
+    UINT16 len;
+    BOOLEAN invalid_pdu = TRUE;
+    fn_80070F90((UINT8 *)p_ccb + 8);
+    p = (UINT8 *)(p_msg + 1) + p_msg->offset;
+    rsp_pdu = *p++;
+    p_msg->len--;
+    len = p_msg->len;
+    switch (rsp_pdu) {
+    case 3:
+        if (*(UINT8 *)((UINT8 *)p_ccb + 0x474) == 1) {
+            process_service_search_rsp(p_ccb, p, len);
+            invalid_pdu = FALSE;
+        }
+        break;
+    case 5:
+        if (*(UINT8 *)((UINT8 *)p_ccb + 0x474) == 2) {
+            process_service_attr_rsp(p_ccb, p, len);
+            invalid_pdu = FALSE;
+        }
+        break;
+    case 7:
+        if (*(UINT8 *)((UINT8 *)p_ccb + 0x474) == 3) {
+            process_service_search_attr_rsp(p_ccb, p, len);
+            invalid_pdu = FALSE;
+        }
+        break;
+    }
+    if (invalid_pdu) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_8007096C(0xA0001, lbl_8031A028, rsp_pdu, *(UINT8 *)((UINT8 *)p_ccb + 0x474));
+        sdp_disconnect(p_ccb, 0xFFF3);
     }
 }
 
