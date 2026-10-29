@@ -12238,6 +12238,8 @@ extern "C" void fn_800CEDE8(void);
 extern "C" void GXSetTevColor(u32, void *);
 extern "C" void GXBegin(u8, u8, u16);
 extern "C" void fn_800C6610(void) {
+    s32 count;
+    u8 *entry;
     u8 *base = (u8 *)lbl_8055DD98;
     struct Dispatch {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
@@ -12247,8 +12249,8 @@ extern "C" void fn_800C6610(void) {
 
     ((Dispatch **)(base + 0x1E0))[0]->d8(base + 0x200);
     if (*(s32 *)(*(u8 **)(base + 4) + 0x20) == 0) {
-        u8 *entry = base + 0xC;
-        s32 count = 3;
+        entry = base + 0xC;
+        count = 3;
         do {
             ((Dispatch **)(entry + 0x1E4))[0]->d8(base + 0x200);
             count--;
@@ -12258,15 +12260,17 @@ extern "C" void fn_800C6610(void) {
 
     s32 value = *(s32 *)(base + 0x3FC);
     s32 numerator = (value << 8) - value;
-    u8 alpha = (u8)(numerator / *(s32 *)(base + 0x400));
+    count = (numerator / *(s32 *)(base + 0x400)) & 0xFF;
     fn_800CEDE8();
 
     u8 color[4];
+    u32 packed;
     color[0] = *(u8 *)(base + 0x408);
     color[1] = *(u8 *)(base + 0x409);
     color[2] = *(u8 *)(base + 0x40A);
-    color[3] = alpha;
-    GXSetTevColor(1, (u32 *)color);
+    color[3] = (u8)count;
+    packed = *(u32 *)color;
+    GXSetTevColor(1, &packed);
     GXBegin(0x80, 0, 4);
     *(volatile f32 *)0xCC008000 = lbl_80560DC0;
     *(volatile f32 *)0xCC008000 = lbl_80560DC0;
