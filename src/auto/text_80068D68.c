@@ -197,6 +197,18 @@ extern f32 lbl_80560D50;
 extern f32 lbl_80560D54;
 extern u32 lbl_80560D28;
 
+typedef struct {
+    void *earlyLine[3];
+    u8 pad0C[0x20];
+    void *preDelayLine[3];
+    u8 pad38[0x0C];
+    void *combLine[3][3];
+    u8 pad68[0x30];
+    void *allpassLine[3][2];
+    u8 padB0[0x18];
+    void *lastAllpassLine[3];
+} AXFX_REVERBHI_EXP_FREE_VIEW;
+
 extern u8 lbl_803C0F78[];
 extern char lbl_80316870[];
 extern char lbl_80315D00[];
@@ -581,29 +593,31 @@ extern void *WUDiGetDevInfo(u8 *);
 u8 WUDiClearUnregisteredDevice(void) {
     s32 index;
     s32 offset;
+    u8 *base;
     u8 *entry;
 
     if (lbl_80392960[0xE] != 0)
         return 2;
+    base = lbl_80392960;
     index = 0;
     offset = 0;
     while (index < 0x10) {
         s32 interrupt = OSDisableInterrupts();
-        if (index < 10)
-            entry = lbl_80392960 + offset + 0x64;
+        if (index < 0 || index >= 10)
+            entry = base + (index - 10) * 0x60 + 0x424;
         else
-            entry = lbl_80392960 + (index - 10) * 0x60 + 0x424;
+            entry = base + offset + 0x64;
         OSRestoreInterrupts(interrupt);
         if (entry[0x59] != 0) {
             if (entry[0x5C] == 1) {
-                lbl_80392960[0xE] = 3;
+                base[0xE] = 3;
                 BTM_DeleteStoredLinkKey(entry + 0x40, WUDStoredLinkKeyCallback);
                 entry[0x5C] = 0;
                 return 2;
             }
             if (entry[0x5C] != 3) {
                 void *info = WUDiGetDevInfo(entry + 0x40);
-                if (info != NULL) {
+                if (info != 0) {
                     interrupt = OSDisableInterrupts();
                     memset(info, 0, 0x60);
                     OSRestoreInterrupts(interrupt);
@@ -17193,6 +17207,50 @@ void __BzeroDelayLines(void *arg0) {
         }
         if (*(void **)(entry + 0xC8)) memset(*(void **)(entry + 0xC8), 0, *(u32 *)(entry + 0xEC) * 4);
         i++; entry2 += 0xC; entry3 += 8; entry += 4;
+    } while (i < 3);
+}
+
+void __FreeDelayLine(void *arg0) {
+    extern void *lbl_805590B4;
+    u8 *base = (u8 *)arg0;
+    u8 *p0 = base;
+    u8 *p44 = base;
+    u8 *p98 = base;
+    u32 i = 0;
+    u32 j;
+
+    do {
+        if (*(void **)p0 != 0) {
+            ((void (*)(void))lbl_805590B4)();
+            *(void **)p0 = 0;
+        }
+        if (*(void **)(p0 + 0x2C) != 0) {
+            ((void (*)(void))lbl_805590B4)();
+            *(void **)(p0 + 0x2C) = 0;
+        }
+
+        for (j = 0; j < 3; j++) {
+            if (*(void **)(p44 + 0x44) != 0) {
+                ((void (*)(void))lbl_805590B4)();
+                *(void **)(p44 + 0x44) = 0;
+            }
+            p44 += 4;
+        }
+
+        for (j = 0; j < 2; j++) {
+            if (*(void **)(p98 + 0x98) != 0) {
+                ((void (*)(void))lbl_805590B4)();
+                *(void **)(p98 + 0x98) = 0;
+            }
+            p98 += 4;
+        }
+
+        if (*(void **)(p0 + 0xC8) != 0) {
+            ((void (*)(void))lbl_805590B4)();
+            *(void **)(p0 + 0xC8) = 0;
+        }
+        i++;
+        p0 += 4;
     } while (i < 3);
 }
 
