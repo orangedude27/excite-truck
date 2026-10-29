@@ -1934,8 +1934,9 @@ s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(
     int index,
     int noteIndex,
     u32 waveIndex) const {
-    u32 reader[14];
-    void *fileInfo = *(void **)(*(u8 **)((u8 *)this + 4) + 0x10);
+    u8 reader[0x38];
+    u8 *archive = *(u8 **)((u8 *)this + 4);
+    void *fileInfo = *(void **)(archive + 0x10);
     s32 result;
     s32 waveAddress;
 
@@ -1946,10 +1947,12 @@ s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(
     if (result == 0)
         return 0;
 
-    if (*(u32 *)(*(u8 **)((u8 *)this + 4) + 0x10) == 0)
+    archive = *(u8 **)((u8 *)this + 4);
+    if (*(u32 *)(archive + 0x10) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
 
-    waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(*(void **)((u8 *)this + 4), waveIndex);
+    archive = *(u8 **)((u8 *)this + 4);
+    waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(archive, waveIndex);
     if (waveAddress == 0)
         return 0;
     __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(reader, file);
@@ -2712,6 +2715,12 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
 extern "C" void Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void);
 extern "C" s32 Create__Q46nw4hbm3snd6detail10TaskThreadFl(s32);
 extern "C" s32 fn_800FA4C4(void *, s32);
+extern "C" s32 OSCreateThread(void *, void *, void *, void *, u32, s32, u32);
+extern "C" void OSInitThreadQueue(void *);
+extern "C" void OSResumeThread(void *);
+extern "C" s32 fn_800FA77C(s32);
+extern "C" const char lbl_80326450[];
+extern "C" const char lbl_80326464[];
 extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg1) {
     u32 status;
     u8 mode;
