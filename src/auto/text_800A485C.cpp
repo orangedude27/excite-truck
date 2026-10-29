@@ -1170,6 +1170,8 @@ extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
     u32 table;
     u32 offset;
     u32 record;
+    u16 count;
+    u16 nextCount;
     s32 result;
 
     *arg2 = 0;
@@ -1201,7 +1203,9 @@ found:
         return result;
 
     record = table + offset;
-    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
+    count = *(u16 *)&lbl_803D1640;
+    nextCount = count + 1;
+    *(u16 *)&lbl_803D1640 = nextCount;
     *(u32 *)(record + 0x61C) |= 1;
     *(s32 *)(record + 0x620) = (s32)arg0;
     *(s32 *)(record + 0x624) = arg1;
@@ -7106,23 +7110,30 @@ extern "C" s32 lbl_8055DD60;
 extern "C" const char lbl_8031B2B0[];
 extern "C" s32 fn_800B9BB4(s32 arg0) {
     u8 value;
-    s32 flag = arg0 & 1;
-    if (flag != 1)
+    if ((arg0 & 1) != 1)
         return 0;
-    if (*(s32 *)(lbl_80407300 + 8) != 0) {
+
+    if (*(volatile s32 *)((u8 *)lbl_80407300 + 8) != 0) {
         lbl_8055DD60 = 2;
-        if (fn_800BC474((s32 *)(lbl_80407300 + 8), (s32)fn_800B9CC4, &lbl_8055DD60) != 0)
+        if (fn_800BC474((s32 *)*(volatile s32 *)((u8 *)lbl_80407300 + 8),
+                        (s32)fn_800B9CC4, &lbl_8055DD60) != 0)
             OSReport(lbl_8031B2B0);
     }
-    if (*(s32 *)(lbl_80407300 + 0xC) != 0) {
-        if ((s8)lbl_80407300[0x14] == 0 &&
-            fn_800BA974(*(s32 *)(lbl_80407300 + 0xC), &value, 1) == 1)
-            lbl_80407300[0x14] = value;
-        fn_800A68DC(*(s32 *)(lbl_80407300 + 0xC));
-        if ((s8)lbl_80407300[0x14] != 0 && lbl_8055DD40 != 0)
-            lbl_8055DD40((u8)lbl_80407300[0x14]);
+
+    if (*(volatile s32 *)((u8 *)lbl_80407300 + 0xC) != 0) {
+        if (*(volatile s8 *)((u8 *)lbl_80407300 + 0x14) == 0 &&
+            fn_800BA974(*(volatile s32 *)((u8 *)lbl_80407300 + 0xC), &value, 1) == 1)
+            *(volatile u8 *)((u8 *)lbl_80407300 + 0x14) = value;
+
+        {
+            u8 *after = lbl_80407300;
+            fn_800A68DC(*(volatile s32 *)(after + 0xC));
+            if (*(volatile s8 *)(after + 0x14) != 0 && lbl_8055DD40 != 0)
+                ((void (*)(s8))lbl_8055DD40)(*(volatile s8 *)(after + 0x14));
+        }
     }
-    *(s32 *)(lbl_80407300 + 0x10) = 1;
+
+    *(volatile s32 *)((u8 *)lbl_80407300 + 0x10) = 1;
     return 0;
 }
 
@@ -14352,17 +14363,18 @@ extern "C" const char lbl_8031F1D8[];
 extern "C" const char lbl_8031F1CC[];
 extern "C" const char lbl_8031F1A8[];
 extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
-    register u32 node;
-    register u32 sentinel;
-    register const char *file = lbl_8031EE58;
+    u32 head = (u32)arg0;
+    u32 node;
+    u32 sentinel;
+    const char *file = lbl_8031EE58;
 
-    if (arg0 == 0)
+    if (head == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x22F, file + 0x2B0);
     if (arg1 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x230, file + 0x2DC);
 
-    node = *(u32 *)((u8 *)arg0 + 4);
-    sentinel = (u32)arg0 + 4;
+    node = *(u32 *)(head + 4);
+    sentinel = head + 4;
     while (node != sentinel) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
