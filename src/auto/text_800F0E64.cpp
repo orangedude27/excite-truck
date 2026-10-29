@@ -1962,7 +1962,7 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(
 extern "C" const char lbl_80325670[];
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void *__ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUlliUllbRQ56nw4hbm3snd6detail10StrmPlayer11LoadCommandRCQ36nw4hbm3snd12SoundArchiveUlUlR7OSMutex(void *self, void *arg1, unsigned long arg2, long arg3, int arg4, unsigned long arg5, long arg6, bool arg7, void *arg8, const void *arg9, unsigned long arg10, unsigned long arg11, void *arg12) {
     const char *base = lbl_80324E88;
 
