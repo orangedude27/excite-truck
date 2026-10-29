@@ -480,9 +480,12 @@ extern "C" const char lbl_803246D4[];
 #pragma use_lmw_stmw off
 extern "C" void SetSilence__Q46nw4hbm3snd6detail8SeqTrackFbi(void *self, bool silence, int ticks) {
     *(volatile u8 *)((u8 *)self + 0x5d) = silence;
-    register u32 state = OSDisableInterrupts();
-    register int duration = (ticks + 2) / 3;
-    register void *channel = *(void **)((u8 *)self + 0xb8);
+    register int duration;
+    register void *channel;
+    register u32 state;
+    state = OSDisableInterrupts();
+    duration = (ticks + 2) / 3;
+    channel = *(void **)((u8 *)self + 0xb8);
     while (channel != 0) {
         int valid = 0;
         if (duration >= 0) {
@@ -492,8 +495,10 @@ extern "C" void SetSilence__Q46nw4hbm3snd6detail8SeqTrackFbi(void *self, bool si
         if (valid == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803246D4, 0x7c, lbl_80324690, duration, 0, 0xffff);
 
-        u16 total = *(u16 *)((u8 *)channel + 0xc6);
-        u16 elapsed = *(u16 *)((u8 *)channel + 0xc8);
+        register u16 elapsed;
+        register u16 total;
+        total = *(u16 *)((u8 *)channel + 0xc6);
+        elapsed = *(u16 *)((u8 *)channel + 0xc8);
         u8 from;
         if (elapsed >= total) {
             from = *(u8 *)((u8 *)channel + 0xc5);
@@ -503,7 +508,7 @@ extern "C" void SetSilence__Q46nw4hbm3snd6detail8SeqTrackFbi(void *self, bool si
             from = (u8)(start + (elapsed * (end - start)) / total);
         }
         *(u8 *)((u8 *)channel + 0xc4) = from;
-        *(u8 *)((u8 *)channel + 0xc5) = silence ? 0 : 0xff;
+        ((u8 *)channel)[0xc5] = silence ? 0 : 0xff;
         *(u16 *)((u8 *)channel + 0xc6) = duration;
         *(u16 *)((u8 *)channel + 0xc8) = 0;
         channel = *(void **)((u8 *)channel + 0xe4);
@@ -3087,6 +3092,39 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
     }
     Panic__Q26nw4hbm2dbFPCciPCce(file, 0x6C, file + 0x13C);
     return 1;
+}
+
+extern "C" void fn_8002F53C(void *, void *, void *, int, int);
+extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    void *head = p + 0x98;
+    void *tail = p + 0xa4;
+    *(void **)(p + 0x98) = 0;
+    *(void **)(p + 0x9c) = 0;
+    *(void **)(p + 0xa4) = 0;
+    *(void **)(p + 0xa8) = 0;
+    *(s32 *)(p + 0x4) = -1;
+    *(void **)p = (void *)lbl_80326A28;
+    *(s32 *)(p + 0x8) = 0;
+    *(s32 *)(p + 0xc) = 0;
+    p[0x48] = 0;
+    *(s32 *)(p + 0x94) = 0;
+    *(void **)(p + 0x98) = head;
+    *(void **)(p + 0x9c) = head;
+    *(s32 *)(p + 0xa0) = 0;
+    *(void **)(p + 0xa4) = tail;
+    *(void **)(p + 0xa8) = tail;
+    fn_8002F53C(p + 0xac, (void *)fn_800FB358, (void *)fn_800FB374, 0x1c, 0x20);
+    *(s32 *)(p + 0x438) = 0;
+    void *it = head;
+    for (s32 i = 0, offset = 0; i < 0x20; ++i, offset += 0x1c) {
+        u8 *node = p + 0xac + offset;
+        *(void **)(node + 4) = arg0;
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(p + 0x94, (void **)&it, node + 0x14);
+    }
+    return arg0;
 }
 
 extern "C" void fn_800FB358(void *arg0) {
