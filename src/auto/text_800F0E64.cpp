@@ -2711,7 +2711,7 @@ extern "C" u8 SCGetSoundMode(void);
 extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(s32);
 extern "C" void Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void);
 extern "C" s32 Create__Q46nw4hbm3snd6detail10TaskThreadFl(s32);
-extern "C" s32 fn_800FA4C4(s32, ...);
+extern "C" s32 fn_800FA4C4(void *, s32);
 extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg1) {
     u32 status;
     u8 mode;
@@ -2733,8 +2733,7 @@ extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg
     Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
     fn_800FE648();
     if (Create__Q46nw4hbm3snd6detail10TaskThreadFl(arg1) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803263B8, 0x7e, (const char *)(lbl_803263B8 + 0x48));
-    GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv();
-    if (fn_800FA4C4(arg0) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803263B8, 0x82, (const char *)(lbl_803263B8 + 0x48));
+    if (fn_800FA4C4(GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(), arg0) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803263B8, 0x82, (const char *)(lbl_803263B8 + 0x48));
 }
 
 extern "C" void fn_800FA350(void) {
