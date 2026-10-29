@@ -27,6 +27,8 @@ extern unsigned short *__peReg;
 extern unsigned char lbl_8037C0C0[];
 extern unsigned char lbl_8037C0E4[];
 extern unsigned int *__piReg;
+extern unsigned int *__memReg;
+extern signed long long OSGetTime(void);
 
 typedef struct {
     void *base;
@@ -2774,41 +2776,67 @@ int GXGetTexObjAll(void *obj) {
 extern unsigned char lbl_80558E48, lbl_80558E50, lbl_80558E58;
 extern unsigned char lbl_80558E60, lbl_80558E68, lbl_80558E70, lbl_80558E78;
 void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
-    unsigned int *a = (unsigned int *)obj;
-    unsigned int *b = (unsigned int *)region;
+    struct TexObj {
+        unsigned int mode0;
+        unsigned int mode1;
+        unsigned int image0;
+        unsigned int image3;
+        void *userData;
+        unsigned int format;
+        unsigned int tlutName;
+        unsigned short loadCount;
+        unsigned char loadFormat;
+        unsigned char flags;
+    };
+    struct TexRegion {
+        unsigned int image1;
+        unsigned int image2;
+        unsigned short sizeEven;
+        unsigned short sizeOdd;
+        unsigned char isMipmap;
+        unsigned char isCached;
+    };
+    struct TlutRegion {
+        unsigned int loadTlut1;
+        unsigned int tlut;
+    };
+    struct TexObj *t = (struct TexObj *)obj;
+    struct TexRegion *r = (struct TexRegion *)region;
+    struct TlutRegion *tlr;
     unsigned int *data;
-    unsigned int *dst;
-    unsigned char opcode = 0x61;
+    unsigned int *out;
 
-    a[0] = __rlwimi(a[0], (&lbl_80558E48)[map], 24, 0, 7);
-    a[1] = __rlwimi(a[1], (&lbl_80558E50)[map], 24, 0, 7);
-    a[2] = __rlwimi(a[2], (&lbl_80558E58)[map], 24, 0, 7);
-    b[0] = __rlwimi(b[0], (&lbl_80558E60)[map], 24, 0, 7);
-    b[1] = __rlwimi(b[1], (&lbl_80558E68)[map], 24, 0, 7);
-    a[3] = __rlwimi(a[3], (&lbl_80558E70)[map], 24, 0, 7);
-    *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = a[0];
-    *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = a[1];
-    *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = a[2];
-    *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = b[0];
-    *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = b[1];
-    *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = a[3];
-    if ((*(unsigned char *)((char *)obj + 0x1F) & 2) == 0) {
+    t->mode0 = __rlwimi(t->mode0, (&lbl_80558E48)[map], 24, 0, 7);
+    t->mode1 = __rlwimi(t->mode1, (&lbl_80558E50)[map], 24, 0, 7);
+    t->image0 = __rlwimi(t->image0, (&lbl_80558E58)[map], 24, 0, 7);
+    r->image1 = __rlwimi(r->image1, (&lbl_80558E60)[map], 24, 0, 7);
+    r->image2 = __rlwimi(r->image2, (&lbl_80558E68)[map], 24, 0, 7);
+    t->image3 = __rlwimi(t->image3, (&lbl_80558E70)[map], 24, 0, 7);
+
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = t->mode0;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = t->mode1;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = t->image0;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = r->image1;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = r->image2;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = t->image3;
+
+    if ((t->flags & 2) == 0) {
         data = __GXData;
-        dst = ((unsigned int *(*)(unsigned int))data[0x51C / 4])(*(unsigned int *)((char *)obj + 0x18));
-        dst[1] = __rlwimi(dst[1], (&lbl_80558E78)[map], 24, 0, 7);
-        *(volatile unsigned char *)0xCC008000 = opcode;
-        *(volatile unsigned int *)0xCC008000 = dst[1];
+        tlr = (struct TlutRegion *)((unsigned int *(*)(unsigned int))data[0x51C / 4])(t->tlutName);
+        tlr->tlut = __rlwimi(tlr->tlut, (&lbl_80558E78)[map], 24, 0, 7);
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = tlr->tlut;
     }
     data = __GXData;
-    dst = data + map;
-    dst[0x564 / 4] = a[2];
-    dst[0x584 / 4] = a[0];
+    data[map * (0x564 / 4) / 0x159] = data[map * (0x564 / 4) / 0x159];
+    *(unsigned int *)((char *)data + map * 4 + 0x564) = t->image0;
+    *(unsigned int *)((char *)data + map * 4 + 0x584) = t->mode0;
     data[0x5FC / 4] |= 1;
     *(unsigned short *)((char *)data + 2) = 0;
 }
