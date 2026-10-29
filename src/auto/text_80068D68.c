@@ -27,6 +27,7 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
+extern void rfc_send_rpn();
 extern u8 HID_HostCloseDev(u8);
 static tBTM_STATUS btm_set_inq_event_filter(UINT8, UINT8 *);
 
