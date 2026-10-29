@@ -5036,23 +5036,32 @@ tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     if (*(void **)(lbl_803C0F78 + 0x5E0) != NULL) return 2;
 
     entry = lbl_803C0F78 + 0x34;
-    for (i = 0; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] == 0) continue;
-        if (memcmp(entry + 8, remote_bda, 6) != 0) continue;
-        goto found;
-    }
+    i = 0;
+    do {
+        if (entry[0x119] == 0) goto next_entry;
+        switch (memcmp(entry + 8, remote_bda, 6)) {
+        case 0:
+            goto found;
+        default:
+            goto next_entry;
+        }
+next_entry:
+        i++;
+        entry += 0x11C;
+    } while (i < 4);
     entry = NULL;
 found:
-    if (entry == NULL) return 7;
-
-    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x5C8), 9, 3);
-    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = p_cb;
-    if (btsnd_hcic_read_rssi(*(u16 *)entry) == 0) {
-        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = NULL;
-        fn_80070F90(lbl_803C0F78 + 0x5C8);
-        return 3;
+    if (entry != NULL) {
+        btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x5C8), 9, 3);
+        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = p_cb;
+        if (btsnd_hcic_read_rssi(*(u16 *)entry) == 0) {
+            *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = NULL;
+            fn_80070F90(lbl_803C0F78 + 0x5C8);
+            return 3;
+        }
+        return 1;
     }
-    return 1;
+    return 7;
 }
 
 void btm_read_rssi_complete(u8 *p) {
@@ -8400,6 +8409,49 @@ void btm_sec_mkey_comp_event(u16 handle, u8 status, u8 event) {
             callback(bd_addr, status, event);
         } else {
             callback((u8 *)dev + 0x1C, status, event);
+        }
+    }
+}
+
+void btm_sec_encrypt_change(UINT16 handle, UINT8 status, UINT8 encr_enable) {
+    tBTM_SEC_DEV_REC *p_dev_rec;
+    void (*callback)(u8 *, u32, u8);
+    u8 result;
+
+    p_dev_rec = btm_find_dev_by_handle(handle);
+    if (lbl_803C0F78[0x27C0] >= 4) {
+        fn_8007096C(0xD0003, lbl_80316EE0, status,
+                    p_dev_rec != NULL ? ((u8 *)p_dev_rec)[0x7F] : 0);
+    }
+    if (p_dev_rec == NULL) {
+        return;
+    }
+    if (status == 0x23) {
+        *(void **)(lbl_803C0F78 + 0x1938) = p_dev_rec;
+        *(void (**)(void))(lbl_803C0F78 + 0x196C) = btm_sec_collision_timeout;
+        btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x195C), 0x16, 1);
+        return;
+    }
+    if (status != 0) {
+        callback = *(void (**)(u8 *, u32, u8))((u8 *)p_dev_rec + 4);
+        if (callback != NULL) {
+            callback((u8 *)p_dev_rec + 0x1C,
+                     *(u32 *)((u8 *)p_dev_rec + 8), 0xA);
+            *(void **)((u8 *)p_dev_rec + 4) = NULL;
+        }
+        return;
+    }
+    ((u8 *)p_dev_rec)[0x76] |= 6;
+    if (((u8 *)p_dev_rec)[0x7F] == 2) {
+        ((u8 *)p_dev_rec)[0x7F] = 0;
+        result = btm_sec_execute_procedure(p_dev_rec);
+        if (result != 1) {
+            callback = *(void (**)(u8 *, u32, u8))((u8 *)p_dev_rec + 4);
+            if (callback != NULL) {
+                callback((u8 *)p_dev_rec + 0x1C,
+                         *(u32 *)((u8 *)p_dev_rec + 8), result);
+                *(u32 *)((u8 *)p_dev_rec + 4) = 0;
+            }
         }
     }
 }
