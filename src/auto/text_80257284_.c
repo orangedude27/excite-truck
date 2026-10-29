@@ -36,25 +36,122 @@ public:
 };
 #pragma cplusplus reset
 void fn_80257284(void) {
-    int obj[4][5]; int desc[4][5]; int state[4][5]; int data[5]; int tail[20];
-    int *args; int result;
-    if (fn_80247624()) { fn_80012794(); fn_80012780(); }
-    fn_80257470(&obj[0][0]);
-    desc[0][0]=(int)&obj[0][0]; desc[0][1]=5; desc[0][2]=0; desc[0][3]=0; desc[0][4]=0;
-    desc[1][0]=13; desc[1][1]=(int)&lbl_8055C1D8; desc[1][2]=(int)&obj[0][0]; desc[1][3]=0; desc[1][4]=0;
-    desc[2][0]=13; desc[2][1]=(int)&lbl_8055C1E0; desc[2][2]=(int)&obj[1][0]; desc[2][3]=0; desc[2][4]=0;
-    desc[3][0]=13; desc[3][1]=(int)&lbl_8055C1E8; desc[3][2]=(int)&obj[2][0]; desc[3][3]=0; desc[3][4]=0;
-    state[0][0]=13; state[0][1]=(int)&lbl_8055C1F0; state[0][2]=(int)&obj[2][0]; state[0][3]=1; state[0][4]=0;
-    fn_8000DA10(&obj[2][0], &obj[1][0], &obj[0][0], 13, &lbl_8055C1D8, &lbl_8055C1E0, &lbl_8055C1E8, &lbl_8055C1F0);
-    result=fn_8000DB34();
-    data[0]=3; data[1]=(int)&lbl_80344CD4; data[2]=0; data[3]=0; data[4]=0;
-    args=(int*)(&tail[0]); args[0]=6; args[1]=(int)&lbl_8055B860; args[2]=0; args[3]=-1; args[4]=0x1b;
-    args[5]=8; args[6]=(int)&lbl_8055BAB8; args[7]=(int)&fn_80236914; args[8]=2; args[9]=0;
-    args[10]=lbl_80498E38; args[11]=*(int*)((char*)&lbl_80498E38+4); args[12]=*(int*)((char*)&lbl_80498E38+8); args[13]=*(int*)((char*)&lbl_80498E38+12); args[14]=*(int*)((char*)&lbl_80498E38+16);
-    args[15]=lbl_802FA5E0; args[16]=*(int*)((char*)&lbl_802FA5E0+8); args[17]=*(int*)((char*)&lbl_802FA5E0+12); args[18]=*(int*)((char*)&lbl_802FA5E0+16);
-    while (fn_802146BC(&args[15],-999,-999,1) != -1) {}
-    if (fn_80247624()) { fn_80012794(); fn_80012778(); }
-    fn_802574E0((int)&obj[0][0],-1);
+    // Fix note: lay out the large frame and preload table words into locals before filling the stack records.
+    volatile int local[0xA7];
+    register int zero = 0;
+    register int other_zero = 0;
+    register int table0;
+    register int table1;
+    register int table2;
+    register int table3;
+    register int list0;
+    register int list1;
+    register int list2;
+    register int list3;
+    register int list4;
+    register int ptr0;
+    register int ptr1;
+    register int ptr2;
+    register int handler;
+    register int count0;
+    register int count1;
+    register int count2;
+    register int count3;
+    register int minus_one;
+    register int mask;
+    int result;
+
+    if (fn_80247624()) {
+        fn_80012794();
+        fn_80012780();
+    }
+
+    fn_80257470((int *)&local[50]);
+
+    local[5] = other_zero;
+    local[6] = 5;
+    local[7] = (int)&local[50];
+    local[8] = other_zero;
+    local[9] = other_zero;
+    local[10] = 13;
+    local[11] = (int)&lbl_8055C1D8;
+    local[12] = (int)&local[50];
+    local[13] = other_zero;
+    local[14] = other_zero;
+    local[15] = 13;
+    local[16] = (int)&lbl_8055C1E0;
+    local[17] = (int)&local[57];
+    local[18] = other_zero;
+    local[19] = other_zero;
+    local[20] = 13;
+    local[21] = (int)&lbl_8055C1E8;
+    local[22] = (int)&local[71];
+    local[23] = other_zero;
+    local[24] = other_zero;
+    local[25] = 13;
+    local[26] = (int)&lbl_8055C1F0;
+    local[27] = (int)&local[149];
+    local[28] = 1;
+    local[29] = other_zero;
+
+    fn_8000DA10((int)&local[149], (int)&local[71], (int)&local[57], 13,
+                &lbl_8055C1D8, &lbl_8055C1E0, &lbl_8055C1E8, &lbl_8055C1F0);
+    result = fn_8000DB34();
+
+    table0 = *(int *)&lbl_802FA5E0;
+    table1 = *(int *)((char *)&lbl_802FA5E0 + 8);
+    table2 = *(int *)((char *)&lbl_802FA5E0 + 12);
+    table3 = *(int *)((char *)&lbl_802FA5E0 + 16);
+    list0 = *(int *)&lbl_80498E38;
+    list1 = *(int *)((char *)&lbl_80498E38 + 4);
+    list2 = *(int *)((char *)&lbl_80498E38 + 8);
+    list3 = *(int *)((char *)&lbl_80498E38 + 12);
+    list4 = *(int *)((char *)&lbl_80498E38 + 16);
+    ptr0 = (int)&lbl_80344CD4;
+    ptr1 = (int)&lbl_8055B860;
+    ptr2 = (int)&lbl_8055BAB8;
+    handler = (int)&fn_80236914;
+    count0 = 3;
+    count1 = 6;
+    count2 = 8;
+    count3 = 2;
+    minus_one = -1;
+    mask = 0x1b;
+
+    local[0] = table0;
+    local[1] = (int)&local[5];
+    local[2] = table1;
+    local[3] = table2;
+    local[4] = table3;
+    local[30] = ptr0;
+    local[31] = count0;
+    local[32] = result;
+    local[33] = zero;
+    local[34] = other_zero;
+    local[35] = ptr1;
+    local[36] = count1;
+    local[37] = other_zero;
+    local[38] = minus_one;
+    local[39] = mask;
+    local[40] = ptr2;
+    local[41] = count2;
+    local[42] = handler;
+    local[43] = count3;
+    local[44] = other_zero;
+    local[45] = list0;
+    local[46] = list1;
+    local[47] = list2;
+    local[48] = list3;
+    local[49] = list4;
+
+    fn_802146BC((int *)&local[0], -999, -999, 1);
+
+    if (fn_80247624()) {
+        fn_80012794();
+        fn_80012778();
+    }
+
+    fn_802574E0((int *)&local[50], minus_one);
 }
 
 #pragma scheduling invalid_target
@@ -69,6 +166,55 @@ void *fn_80257470(void *arg0) {
 #pragma scheduling on
 
 int fn_802574E0(int arg0, int arg1) { int temp_r3; if (arg0 != 0) { temp_r3 = arg0 + 0x18C; if (temp_r3 != 0) fn_8022D7C4(temp_r3, 0); fn_8022D7C4(arg0 + 0x54, -1); fn_8022D7C4(arg0 + 0x1C, -1); if (arg1 > 0) fn_80128668(arg0); } return arg0; }
+
+#pragma cplusplus on
+extern "C" void fn_80257558(void *arg0, void *arg1) {
+    int outer;
+    int inner;
+    int found;
+    int index;
+    int name;
+    int count;
+    void *entry;
+    char *candidate;
+
+    *(int *)((char *)arg0 + 0x18) = 0;
+    outer = 0;
+    while (outer < fn_80012818()) {
+        entry = fn_80012820(outer);
+        found = 0;
+        inner = 0;
+        do {
+            if (((MatchDispatch *)*(void **)((char *)fn_80012870(outer, inner) + 0x20))->matches(lbl_8055C1F8) != 0) {
+                found = 1;
+            }
+            inner++;
+        } while (found == 0 && inner < *(int *)((char *)entry + 0x70));
+        if (found != 0) {
+            name = (int)fn_800081BC((char *)entry + 8);
+            found = 0;
+            index = 0;
+            do {
+                candidate = (char *)fn_8022D850((char *)arg0 + 0x1C, index, 1, 0);
+                if (stricmp((char *)name, candidate) == 0) {
+                    found = 1;
+                }
+                index++;
+            } while (found == 0 && index < *(int *)((char *)arg0 + 0x24));
+            if (found == 0) {
+                count = *(int *)((char *)arg0 + 0x24);
+                fn_8022D894((char *)arg0 + 0x1C, count, 1, (void *)name, 0);
+                fn_8022D894((char *)arg0 + 0x1C, count, 0, fn_80008188((char *)entry + 8), 0);
+            }
+        }
+        outer++;
+    }
+    *(int *)((char *)arg0 + 0x4C) = 0;
+    fn_8022D894((char *)arg0 + 0x1C, *(int *)((char *)arg0 + 0x4C), 0,
+                fn_8022D850((char *)arg0 + 0x1C, 0, 0, 0), 1);
+    *(char *)((char *)arg0 + 0x50) = 1;
+}
+#pragma cplusplus reset
 
 int fn_80257904(void *arg0, int arg1) {
     char *self = (char *)arg0;
