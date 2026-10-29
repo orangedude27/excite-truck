@@ -20,6 +20,7 @@ extern char lbl_8032C390[];
 extern const char *lbl_802F9388[];
 extern char lbl_80559CD8;
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_8013B7B4(void *arg0, int value) {
     struct List {
         virtual void v0() = 0;
@@ -40,6 +41,8 @@ extern "C" void fn_8013B7B4(void *arg0, int value) {
     };
     int scale = value;
     float *base = (float *)arg0;
+    char *keys = lbl_8032C390;
+    const char **table;
     float *out;
     void *list;
     void *item;
@@ -49,23 +52,24 @@ extern "C" void fn_8013B7B4(void *arg0, int value) {
     int i;
     unsigned int j;
 
-    list = fn_80131808(lbl_8032C390);
+    list = fn_80131808(keys);
     if (list == 0) goto error;
 
+    table = lbl_802F9388;
     i = 0;
     while ((item = ((List *)list)->getAt(i)) != 0) {
         name = ((Item *)item)->getName();
-        names[0] = lbl_802F9388[0];
-        names[1] = lbl_802F9388[1];
-        names[2] = lbl_802F9388[2];
+        names[0] = table[0];
+        names[1] = table[1];
+        names[2] = table[2];
         out = base;
         namep = names;
         for (j = 0; j < 3; j++, namep++) {
             if (stricmp(*namep, name) == 0) {
                 out[0] = ((DataItem *)item)->getFloat((const char *)&lbl_80559CD8);
-                out[1] = ((DataItem *)item)->getFloat(lbl_8032C390 + 0xC);
-                out[2] = ((DataItem *)item)->getFloat(lbl_8032C390 + 0x18);
-                out[3] = (float)scale * ((DataItem *)item)->getFloat(lbl_8032C390 + 0x28);
+                out[1] = ((DataItem *)item)->getFloat(keys + 0xC);
+                out[2] = ((DataItem *)item)->getFloat(keys + 0x18);
+                out[3] = (float)scale * ((DataItem *)item)->getFloat(keys + 0x28);
             }
             out += 4;
         }
@@ -74,8 +78,9 @@ extern "C" void fn_8013B7B4(void *arg0, int value) {
     fn_80131818(list);
     return;
 error:
-    ((void (*)(const char *, ...))fn_802E317C)(lbl_8032C390 + 0x38);
+    ((void (*)(const char *, ...))fn_802E317C)(keys + 0x38);
 }
+#pragma scheduling on
 #pragma cplusplus reset
 
 #pragma cplusplus on
