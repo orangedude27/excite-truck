@@ -1202,20 +1202,51 @@ void GXGetVtxDescv(void) {
 
 extern unsigned int *__memReg;
 extern char __GXIsGPFifoReady(void);
-extern unsigned long long OSGetTime(void);
+extern signed long long OSGetTime(void);
+#pragma dont_inline on
+#pragma use_lmw_stmw off
 void GXGetVtxAttrFmt(void) {
-    unsigned int old, value;
+    unsigned int old;
+    unsigned int value;
     unsigned long long start;
-    if (*(unsigned char *)((char *)__GXData + 0x5FA) && __GXIsGPFifoReady()) {
+
+    if (*(unsigned char *)((char *)__GXData + 0x5FA) &&
+        (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
+        unsigned int high;
+        unsigned int firstHigh;
+        unsigned int low;
+        unsigned int shiftedHigh;
+
         do {
-            old = ((unsigned int)*(unsigned short *)((char *)__memReg + 0x4E) << 16) |
-                   *(unsigned short *)((char *)__memReg + 0x50);
+            high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
+            firstHigh = high;
+            low = *(volatile unsigned short *)((char *)__memReg + 0x50);
+            high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
+        } while (high != firstHigh);
+        shiftedHigh = high << 16;
+        old = shiftedHigh | low;
+
+        for (;;) {
             start = OSGetTime();
             while (OSGetTime() - start < 8) {}
-            value = ((unsigned int)*(unsigned short *)((char *)__memReg + 0x4E) << 16) |
-                    *(unsigned short *)((char *)__memReg + 0x50);
-        } while (value != old);
+            do {
+                high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
+                firstHigh = high;
+                low = *(volatile unsigned short *)((char *)__memReg + 0x50);
+                high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
+            } while (high != firstHigh);
+            shiftedHigh = high << 16;
+            value = shiftedHigh | low;
+            {
+                unsigned int previous = old;
+                old = value;
+                if (value != previous)
+                    continue;
+            }
+            break;
+        }
     }
+
     *(volatile unsigned int *)0xCC003018 = 1;
     start = OSGetTime();
     while (OSGetTime() - start < 50) {}
@@ -1223,7 +1254,8 @@ void GXGetVtxAttrFmt(void) {
     start = OSGetTime();
     while (OSGetTime() - start < 5) {}
 }
-
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
 void GXGetVtxAttrFmtv(void) {
     unsigned int old;
     unsigned int value;
@@ -1562,8 +1594,8 @@ void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
     unsigned int remaining;
     unsigned int written;
     unsigned int blocks;
-    unsigned short height;
     unsigned short width;
+    unsigned short height;
     unsigned int zero;
 
     if (data[0x5FC / 4] != 0)
@@ -1587,22 +1619,23 @@ void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
                 }
                 if (valid) {
                     blocks = (remaining + 0x1F) >> 5;
-                    if (remaining > 0) {
-                        zero = 0;
-                        do {
-                            *(volatile unsigned int *)0xCC008000 = zero;
-                            *(volatile unsigned int *)0xCC008000 = zero;
-                            *(volatile unsigned int *)0xCC008000 = zero;
-                            *(volatile unsigned int *)0xCC008000 = zero;
-                            *(volatile unsigned int *)0xCC008000 = zero;
-                            *(volatile unsigned int *)0xCC008000 = zero;
-                            *(volatile unsigned int *)0xCC008000 = zero;
-                            *(volatile unsigned int *)0xCC008000 = zero;
-                            written += 0x20;
-                        } while (--blocks != 0);
-                    }
+                    zero = 0;
+                    if (remaining <= 0)
+                        goto end_large_clear;
+                    do {
+                        *(volatile unsigned int *)0xCC008000 = zero;
+                        *(volatile unsigned int *)0xCC008000 = zero;
+                        *(volatile unsigned int *)0xCC008000 = zero;
+                        *(volatile unsigned int *)0xCC008000 = zero;
+                        *(volatile unsigned int *)0xCC008000 = zero;
+                        *(volatile unsigned int *)0xCC008000 = zero;
+                        *(volatile unsigned int *)0xCC008000 = zero;
+                        *(volatile unsigned int *)0xCC008000 = zero;
+                        written += 0x20;
+                    } while (--blocks != 0);
                 }
             }
+        end_large_clear:
             blocks = (count + 3 - written) >> 2;
             if (written < count) {
                 zero = 0;
@@ -2154,18 +2187,19 @@ void GXCopyTex(u32 width, s32 clear) {
     s32 changed;
     u32 value;
     if (clear != 0) {
+        u32 marker = 0x61;
         value = __GXData[0x228 / 4];
-        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned char *)0xCC008000 = marker;
         *(volatile unsigned int *)0xCC008000 = value | 0xF;
         value = __GXData[0x220 / 4];
-        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned char *)0xCC008000 = marker;
         *(volatile unsigned int *)0xCC008000 = value & 0xFFFFFFFC;
     }
     changed = 0;
     value = __GXData[0x22C / 4];
     if (*((unsigned char *)__GXData + 0x250) != 0 && (value & 7) != 3) {
         changed = 1;
-        value = (value & ~7) | 3;
+        value = __rlwimi(value, 3, 0, 29, 31);
     }
     if (clear == 0 && (value & 7) == 3 && ((value >> 6) & 1) == 1) {
         changed = 1;
@@ -2181,14 +2215,17 @@ void GXCopyTex(u32 width, s32 clear) {
     *(volatile unsigned int *)0xCC008000 = __GXData[0x244 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = __GXData[0x248 / 4];
+    value = __rlwimi(0, width, 27, 8, 31);
+    value = __rlwimi(value, 0x4B, 24, 0, 7);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = (width << 27) | 0x4B000000;
+    *(volatile unsigned int *)0xCC008000 = value;
     value = __GXData[0x24C / 4];
-    value |= (clear << 11) & 0x800;
+    value = __rlwimi(value, clear, 11, 20, 20);
     value &= 0xFFFFBFFF;
-    value |= 0x52000000;
+    value = __rlwimi(value, 0x52, 24, 0, 7);
     __GXData[0x24C / 4] = value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
+    value = *(volatile unsigned int *)((char *)__GXData + 0x24C);
     *(volatile unsigned int *)0xCC008000 = value;
     if (clear != 0) {
         *(volatile unsigned char *)0xCC008000 = 0x61;
@@ -3071,6 +3108,55 @@ void GXSetTevIndirect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
     *(volatile unsigned int *)0xCC008000 = reg.value;
     *(unsigned short *)((char *)data + 2) = 0;
 }
+
+void GXSetIndTexMtx(s32 type, f32 *matrix, s32 scale) {
+    s32 scaleField;
+    s32 index3;
+    u32 first;
+    u32 second;
+    u32 third;
+    volatile u8 *fifo8 = (volatile u8 *)0xCC010000;
+    volatile u32 *fifo32 = (volatile u32 *)0xCC010000;
+    unsigned int *data;
+
+    switch (type) {
+    case 1: case 2: case 3:
+        type -= 1;
+        break;
+    case 5: case 6: case 7:
+        type -= 5;
+        break;
+    case 9: case 10: case 11:
+        type -= 9;
+        break;
+    default:
+        type = 0;
+        break;
+    }
+    index3 = (type << 2) - type;
+    scaleField = scale + 0x11;
+    first = __rlwimi(0, (s32)(lbl_80560B88 * matrix[0]), 0, 21, 31);
+    first = __rlwimi(first, (s32)(lbl_80560B88 * matrix[3]), 11, 10, 20);
+    first = __rlwimi(first, scaleField, 22, 8, 9);
+    first = __rlwimi(first, index3 + 6, 24, 0, 7);
+    second = __rlwimi(0, (s32)(lbl_80560B88 * matrix[1]), 0, 21, 31);
+    second = __rlwimi(second, (s32)(lbl_80560B88 * matrix[4]), 11, 10, 20);
+    second = __rlwimi(second, scaleField, 20, 8, 9);
+    second = __rlwimi(second, index3 + 7, 24, 0, 7);
+    data = __GXData;
+    third = __rlwimi(0, (s32)(lbl_80560B88 * matrix[2]), 0, 21, 31);
+    third = __rlwimi(third, (s32)(lbl_80560B88 * matrix[5]), 11, 10, 20);
+    third = __rlwimi(third, scaleField, 18, 8, 9);
+    third = __rlwimi(third, index3 + 8, 24, 0, 7);
+    fifo8[-0x8000] = 0x61;
+    fifo32[-0x8000 / 4] = first;
+    fifo8[-0x8000] = 0x61;
+    fifo32[-0x8000 / 4] = second;
+    fifo8[-0x8000] = 0x61;
+    fifo32[-0x8000 / 4] = third;
+    *(volatile u16 *)((u8 *)data + 2) = 0;
+}
+
 void GXSetIndTexCoordScale(s32 stage, s32 scaleS, s32 scaleT) {
     u32 reg;
 
@@ -3569,43 +3655,79 @@ void GXSetZTexture(s32 op, s32 format, s32 bias) {
 }
 
 extern unsigned int lbl_80303C80[];
-void GXSetTevOrder(unsigned int stage, int texCoord, int texMap, int color) {
+void GXSetTevOrder(int stage, int texCoord, int texMap, int color) {
+    unsigned int map = (unsigned int)texMap & ~0x100u;
+    unsigned int mapSel;
     unsigned int *data = __GXData;
-    unsigned int *bp = (unsigned int *)((char *)data + 0x150 + ((stage + (stage >> 31)) & ~1) * 4);
-    unsigned int tev;
-    int coord = texCoord;
-    unsigned int map = texMap;
-    unsigned int colorSel = color;
-    data[0x5a4 / 4 + stage] = texMap;
-    if (coord >= 8) {
-        coord = 0;
+    unsigned int *stageData = data + stage;
+    int stageAdj = stage + ((unsigned int)stage >> 31);
+    unsigned int *bp = (unsigned int *)((char *)data + 0x150 + ((stageAdj << 1) & ~3));
+    int colorSel;
+    int texEnable;
+    union {
+        unsigned int value;
+        struct {
+            unsigned int unused2 : 10;
+            unsigned int color1 : 3;
+            unsigned int enable1 : 1;
+            unsigned int coord1 : 3;
+            unsigned int map1 : 3;
+            unsigned int unused0 : 2;
+            unsigned int color0 : 3;
+            unsigned int enable0 : 1;
+            unsigned int coord0 : 3;
+            unsigned int map0 : 3;
+        } fields;
+    } tev;
+    mapSel = map & ~(0u - (unsigned int)(map >= 8u));
+    stageData[0x5a4 / 4] = texMap;
+    if (texCoord >= 8) {
+        texCoord = 0;
         data[0x5e8 / 4] &= ~(1 << stage);
     } else {
         data[0x5e8 / 4] |= 1 << stage;
     }
     if (stage & 1) {
-        tev = bp[0] & ~0x7000;
-        tev |= (map & 0xFF) << 12;
-        tev = (tev & ~0x38000) | (coord << 15);
-        bp[0] = tev;
-        tev = (tev & ~0x380000) | ((colorSel == 0xFF ? 7 : lbl_80303C80[colorSel]) << 19);
-        bp[0] = tev;
-        tev = (tev & ~0x40000) | ((map != 0xFF && !(map & 0x100)) << 18);
-        bp[0] = tev;
+        tev.value = bp[0];
+        tev.fields.map1 = mapSel;
+        tev.fields.coord1 = texCoord;
+        bp[0] = tev.value;
+        if (color == 0xFF) {
+            colorSel = 7;
+        } else {
+            colorSel = lbl_80303C80[color];
+        }
+        tev.fields.color1 = colorSel;
+        bp[0] = tev.value;
+        texEnable = 0;
+        if (texMap != 0xFF && !(texMap & 0x100)) {
+            texEnable = 1;
+        }
+        tev.fields.enable1 = texEnable;
+        bp[0] = tev.value;
     } else {
-        tev = bp[0] & ~7;
-        tev |= (map & 0xFF);
-        tev = (tev & ~0x38) | (coord << 3);
-        bp[0] = tev;
-        tev = (tev & ~0x380) | ((colorSel == 0xFF ? 7 : lbl_80303C80[colorSel]) << 7);
-        bp[0] = tev;
-        tev = (tev & ~0x40) | ((map != 0xFF && !(map & 0x100)) << 6);
-        bp[0] = tev;
+        tev.value = bp[0];
+        tev.fields.map0 = mapSel;
+        tev.fields.coord0 = texCoord;
+        bp[0] = tev.value;
+        if (color == 0xFF) {
+            colorSel = 7;
+        } else {
+            colorSel = lbl_80303C80[color];
+        }
+        tev.fields.color0 = colorSel;
+        bp[0] = tev.value;
+        texEnable = 0;
+        if (texMap != 0xFF && !(texMap & 0x100)) {
+            texEnable = 1;
+        }
+        tev.fields.enable0 = texEnable;
+        bp[0] = tev.value;
     }
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = bp[0];
-    *(volatile unsigned short *)((char *)data + 2) = 0;
-    data[0x5fc / 4] |= 1;
+    *(volatile unsigned short *)((char *)__GXData + 2) = 0;
+    __GXData[0x5fc / 4] |= 1;
 }
 
 void GXSetNumTevStages(s32 count) {
