@@ -3692,6 +3692,51 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
     if (result != 0) oldResult = result;
     return oldResult;
 }
+
+extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2) {
+    u16 value;
+    u16 flags;
+    u16 offset;
+    u32 index;
+    u32 retry;
+    s32 result;
+    s32 callbackResult;
+    s32 (*callback)(void *);
+
+    flags = *(u16 *)((u8 *)arg0 + 0x18);
+    offset = (u16)((u32)arg1 * 2);
+    retry = 1;
+    index = (u16)(*(u32 *)((u8 *)arg0 + 0x28) +
+                  (((u32)arg1 * 2) >> *(u8 *)((u8 *)arg0 + 0x20)));
+    offset &= *(u16 *)arg0 - 1;
+    if (flags & 0x80)
+        retry = flags & 7;
+    for (;;) {
+        result = fn_800B5260(arg0, &value, index, offset, 2);
+        if (result == 0x1000) {
+            callback = *(s32 (**)(void *))((u8 *)arg0 + 0x1FC0);
+            if (callback != 0) {
+                callbackResult = callback(*(void **)((u8 *)arg0 + 0x1F84));
+                if (callbackResult == 0)
+                    continue;
+                if (callbackResult == 1 &&
+                    *(u8 *)((u8 *)arg0 + 0x22) >= 2 &&
+                    retry < *(u8 *)((u8 *)arg0 + 0x22)) {
+                    retry++;
+                    index += *(u32 *)((u8 *)arg0 + 0xC);
+                    continue;
+                }
+            }
+        }
+        if (result != 0) {
+            *arg2 = -1;
+            return result;
+        }
+        *arg2 = ((value & 0xFF) << 8) | (value >> 8);
+        return 0;
+    }
+}
+
 #pragma use_lmw_stmw reset
 extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
     extern s32 fn_800B5618(void *, void *, u16, u16, s32);
@@ -7251,6 +7296,43 @@ extern "C" s32 fn_800BA404(void) {
         return 0;
     }
     return 0;
+}
+
+extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
+    u8 count = 0;
+    u8 *record;
+    u8 *groupBase = (u8 *)lbl_803D2140 + 0xA0;
+    s32 i;
+    s32 j;
+
+    if (arg1 == 0)
+        return 0;
+    if (arg2 == 0)
+        return 0;
+
+    record = (u8 *)lbl_803D1640 + 0x61C;
+    for (i = 0; i < 0x1A; i++) {
+        if (fn_800A71C4((u32 *)record) != 0 &&
+            *(u32 *)(record + 4) == (u32)arg0) {
+            for (j = 0; j < 13; j++) {
+                u8 *group = groupBase + j * 0x3F90;
+                if (*(u32 *)(group + 0x1FBC) == (u32)record) {
+                    count++;
+                    *arg1++ = *(u8 *)(group + 0x1F8E);
+                    if (count == arg2)
+                        return count;
+                }
+                if (*(u32 *)(group + 0x3F84) == (u32)record) {
+                    count++;
+                    *arg1++ = *(u8 *)(group + 0x3F56);
+                    if (count == arg2)
+                        return count;
+                }
+            }
+        }
+        record += 0x28;
+    }
+    return count;
 }
 
 extern "C" s32 fn_800BB4B0(s32,s32,s32,s32);
@@ -13887,14 +13969,8 @@ extern "C" u32 fn_800D3A30(const char *arg0) {
     u8 c;
     u32 digit;
 
-    if (p == 0) {
-        const volatile char *volatileBase = base;
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(volatileBase + 0), 0x1E6, base + 0x164);
-    }
-    if (lbl_8055DDD8 == 0) {
-        const volatile char *volatileBase = base;
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(volatileBase + 0), 0x1E7, base + 0x134);
-    }
+    if (p == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E6, base + 0x164);
+    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E7, base + 0x134);
     for (;;) {
         c = lbl_8055DDD8(p);
         if (c >= '0' && c <= '9') digit = c - '0';
