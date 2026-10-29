@@ -620,7 +620,10 @@ extern "C" void fn_800E2F84(void *self) {
 #pragma small_data off
 extern double lbl_80560F28;
 #pragma pop
+#pragma push
+#pragma scheduling invalid_target
 extern "C" f32 fn_800E310C(void *arg0) {
+    float result;
     int a = *(int *)((char *)arg0 + 0x6C50);
     int b = *(int *)((char *)arg0 + 0x6C4C);
     float x;
@@ -628,21 +631,27 @@ extern "C" f32 fn_800E310C(void *arg0) {
     else x = *(float *)((char *)arg0 + 0x6C44) +
         (float)a * (*(float *)((char *)arg0 + 0x6C48) - *(float *)((char *)arg0 + 0x6C44)) / (float)b;
 
-    int c = *(int *)((char *)arg0 + 0x6C60);
-    int d = *(int *)((char *)arg0 + 0x6C5C);
+    int c;
+    int d;
+    d = *(int *)((char *)arg0 + 0x6C5C);
+    c = *(int *)((char *)arg0 + 0x6C60);
     float y;
     if (c >= d) y = *(float *)((char *)arg0 + 0x6C58);
     else y = *(float *)((char *)arg0 + 0x6C54) +
         (float)c * (*(float *)((char *)arg0 + 0x6C58) - *(float *)((char *)arg0 + 0x6C54)) / (float)d;
+    result = x * y;
 
-    int e = *(int *)((char *)arg0 + 0x6C40);
-    int f = *(int *)((char *)arg0 + 0x6C3C);
+    int e;
+    int f;
+    f = *(int *)((char *)arg0 + 0x6C3C);
+    e = *(int *)((char *)arg0 + 0x6C40);
     float z;
     if (e >= f) z = *(float *)((char *)arg0 + 0x6C38);
     else z = *(float *)((char *)arg0 + 0x6C34) +
         (float)e * (*(float *)((char *)arg0 + 0x6C38) - *(float *)((char *)arg0 + 0x6C34)) / (float)f;
-    return x * y * z;
+    return result * z;
 }
+#pragma pop
 
 extern "C" int DVDGetDriveStatus(void);
 extern "C" void fn_80031C8C(unsigned short);
@@ -2258,6 +2267,72 @@ extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
         }
         row += 0x10;
         outer++;
+    }
+}
+
+extern "C" void AXGetLpfCoefs(unsigned short *, unsigned short *);
+extern "C" unsigned short CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(float);
+extern "C" void fn_80033B0C(void *, short *);
+extern "C" void fn_80033B74(void *, unsigned short, unsigned short);
+extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
+    int channelIndex;
+    char *channel;
+    int channelOffset;
+    short zero;
+    short one;
+    int inner;
+    char *entry;
+    short zeroCoefs[2];
+    short initialCoefs[2];
+    unsigned short coefA;
+    unsigned short coefB;
+    unsigned short rate;
+
+    channelIndex = 0;
+    channel = (char *)self;
+    channelOffset = 0;
+    zero = 0;
+    one = 1;
+
+    while (channelIndex < *(int *)((char *)self + 0x108)) {
+        rate = CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(
+            *(float *)((char *)self + 0x138) + *(float *)(channel + 0xa8));
+        if (rate >= 0x3e80) {
+            zeroCoefs[0] = zero;
+            zeroCoefs[1] = zero;
+            entry = (char *)self + channelOffset;
+            inner = 0;
+            while (inner < *(int *)((char *)self + 0x104)) {
+                fn_80033B0C(*(void **)(entry + 0xc), zeroCoefs);
+                entry += 0x10;
+                inner++;
+            }
+        } else if (*(unsigned short *)(*(char **)((char *)self + 0xc) + 0x1fc) == 1) {
+            ((void (*)(unsigned short, unsigned short *, unsigned short *))AXGetLpfCoefs)(
+                rate, &coefA, &coefB);
+            entry = (char *)self + channelOffset;
+            inner = 0;
+            while (inner < *(int *)((char *)self + 0x104)) {
+                fn_80033B74(*(void **)(entry + 0xc), coefA, coefB);
+                entry += 0x10;
+                inner++;
+            }
+        } else {
+            initialCoefs[0] = zero;
+            initialCoefs[1] = one;
+            ((void (*)(unsigned short, unsigned short *, unsigned short *))AXGetLpfCoefs)(
+                rate, &coefA, &coefB);
+            entry = (char *)self + channelOffset;
+            inner = 0;
+            while (inner < *(int *)((char *)self + 0x104)) {
+                fn_80033B0C(*(void **)(entry + 0xc), initialCoefs);
+                entry += 0x10;
+                inner++;
+            }
+        }
+        channel += 0x1c;
+        channelOffset += 4;
+        channelIndex++;
     }
 }
 
