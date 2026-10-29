@@ -2905,8 +2905,6 @@ extern "C" const char lbl_80326518[];
 extern "C" const char lbl_80326688[];
 extern "C" const char lbl_80326738[];
 extern "C" char lbl_805598F8;
-#pragma push
-#pragma scheduling reset
 extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
     register s32 valid = *(s32 *)arg0;
     void *base = arg0;
@@ -2937,7 +2935,6 @@ extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
     *(u32 *)((u8 *)arg1 + 0x34) = *(u32 *)((u8 *)data + 0x30);
     return 1;
 }
-#pragma pop
 
 extern "C" const char lbl_803266B4[];
 extern "C" const char lbl_803266E0[];
