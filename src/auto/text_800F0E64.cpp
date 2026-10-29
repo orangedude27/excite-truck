@@ -778,13 +778,13 @@ extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *
         if (*path == '/')
             goto open_stream;
         unsigned long pathLen = strlen(path);
-        unsigned long prefixLen = strlen((const char *)((volatile u8 *)self + 8));
+        unsigned long prefixLen = strlen((const char *)self + 8);
         if (pathLen + prefixLen >= 0x100) {
-            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)((volatile u8 *)self + 8), path);
+            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
             return 0;
         }
         char buf[0x100];
-        strncpy(buf, (const char *)((volatile u8 *)self + 8), prefixLen + 1);
+        strncpy(buf, (const char *)self + 8, prefixLen + 1);
         fn_80028E2C(buf, path, pathLen + 1);
         path = buf;
     open_stream:
@@ -801,32 +801,32 @@ extern "C" void fn_80028E2C(char *, const char *, s32);
 extern "C" const char lbl_80324828[];
 #pragma push
 #pragma use_lmw_stmw off
+#pragma cplusplus on
 extern "C" s32 detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi_800F2BEC(void *self, u32 group, void *arg2, s32 arg3) {
     struct GroupInfo { u32 unk0; const char *path; u32 unk8, unkC, unk10, unk14; } info;
-    struct Archive { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual s32 f4(void *, s32, s32, s32); virtual s32 f5(void *, s32, const char *, s32, s32); };
+    struct Archive { virtual void f0(); virtual void f1(); virtual void f2(); virtual s32 f3(); virtual s32 f4(void *, s32, s32, s32); virtual s32 f5(void *, s32, const char *, s32, s32); };
     Archive *archive = (Archive *)self;
     if (!ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)self + 4), group, &info))
         return 0;
-    s32 meta14 = info.unk14;
-    s32 meta10 = info.unk10;
     const char *path = info.path;
     if (path != 0) {
-        if (*path == '/')
-            goto open_stream;
-        unsigned long pathLen = strlen(path);
-        unsigned long prefixLen = strlen((const char *)self + 8);
-        if (pathLen + prefixLen >= 0x100) {
-            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
-            return 0;
+        s32 meta14 = info.unk14;
+        s32 meta10 = info.unk10;
+        if (*path != '/') {
+            unsigned long pathLen = strlen(path);
+            unsigned long prefixLen = strlen((const char *)self + 8);
+            if (pathLen + prefixLen >= 0x100) {
+                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
+                return 0;
+            }
+            char buf[0x100];
+            strncpy(buf, (const char *)self + 8, prefixLen + 1);
+            fn_80028E2C(buf, path, pathLen + 1);
+            path = buf;
         }
-        char buf[0x100];
-        strncpy(buf, (const char *)self + 8, prefixLen + 1);
-        fn_80028E2C(buf, path, pathLen + 1);
-        path = buf;
-    open_stream:
         return archive->f5(arg2, arg3, path, meta10, meta14);
     }
-    return archive->f4(arg2, arg3, meta10, meta14);
+    return archive->f4(arg2, arg3, info.unk10, info.unk14);
 }
 #pragma pop
 
