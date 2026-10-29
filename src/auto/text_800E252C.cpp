@@ -611,9 +611,9 @@ extern "C" void fn_800E2E24(void *self) {
         if (AIGetDMAStatus() == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x6E, lbl_80321F94);
 
-        int i = 0;
-        int offset = 0;
         nw4hbm::ut::detail::LinkListImpl::Iterator iterator;
+        int offset = 0;
+        int i = 0;
         do {
             if ((char *)self + offset + 0x2C == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
@@ -1216,8 +1216,13 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
 }
 #pragma use_lmw_stmw reset
 extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *self, int count, int arg2, void (*callback)(void *, int, void *), void *arg4) {
-    int i;
-    for (i = 0; i < count; i++) *(int *)((char *)self + 0x2C + i * 0x34) = 0;
+    struct VoiceSlot { char pad[0x2C]; int value; char tail[4]; };
+    VoiceSlot *voices = (VoiceSlot *)self;
+    for (int i = 0; i < count; i++) voices[i].value = 0;
+    float zero;
+    float one;
+    one = lbl_80560F38;
+    zero = lbl_80560F3C;
     *(int *)((char *)self + 0x104) = count;
     *(int *)((char *)self + 0x108) = arg2;
     *(void (**)(void *, int, void *))((char *)self + 0x10C) = callback;
@@ -1228,38 +1233,38 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detai
     *((char *)self + 0x11E) = 0;
     *((char *)self + 0x121) = 1;
     *((char *)self + 0x122) = 0;
-    *(float *)((char *)self + 0x188) = lbl_80560F38;
-    *(float *)((char *)self + 0x18C) = lbl_80560F38;
-    *(float *)((char *)self + 0x190) = lbl_80560F38;
-    *(float *)((char *)self + 0x194) = lbl_80560F38;
-    *(float *)((char *)self + 0x198) = lbl_80560F38;
-    *(float *)((char *)self + 0x19C) = lbl_80560F3C;
-    *(float *)((char *)self + 0x1A0) = lbl_80560F38;
+    *(float *)((char *)self + 0x188) = one;
+    *(float *)((char *)self + 0x18C) = one;
+    *(float *)((char *)self + 0x190) = one;
+    *(float *)((char *)self + 0x194) = one;
+    *(float *)((char *)self + 0x198) = one;
+    *(float *)((char *)self + 0x19C) = zero;
+    *(float *)((char *)self + 0x1A0) = one;
     *(short *)((char *)self + 0x1A4) = 0;
-    *(float *)((char *)self + 0x138) = lbl_80560F38;
-    *(float *)((char *)self + 0x128) = lbl_80560F3C;
-    *(float *)((char *)self + 0x12C) = lbl_80560F3C;
-    *(float *)((char *)self + 0x130) = lbl_80560F3C;
-    *(float *)((char *)self + 0x134) = lbl_80560F3C;
+    *(float *)((char *)self + 0x138) = one;
+    *(float *)((char *)self + 0x128) = zero;
+    *(float *)((char *)self + 0x12C) = zero;
+    *(float *)((char *)self + 0x130) = zero;
+    *(float *)((char *)self + 0x134) = zero;
     *(int *)((char *)self + 0x13C) = 1;
-    *(float *)((char *)self + 0x140) = lbl_80560F38;
-    *(float *)((char *)self + 0x144) = lbl_80560F38;
-    *(float *)((char *)self + 0x148) = lbl_80560F3C;
-    *(float *)((char *)self + 0x14C) = lbl_80560F3C;
-    *(float *)((char *)self + 0x150) = lbl_80560F3C;
-    *(float *)((char *)self + 0x154) = lbl_80560F38;
-    *(float *)((char *)self + 0x164) = lbl_80560F38;
-    *(float *)((char *)self + 0x174) = lbl_80560F3C;
-    *(float *)((char *)self + 0x158) = lbl_80560F38;
-    *(float *)((char *)self + 0x168) = lbl_80560F38;
-    *(float *)((char *)self + 0x178) = lbl_80560F3C;
-    *(float *)((char *)self + 0x15C) = lbl_80560F38;
-    *(float *)((char *)self + 0x16C) = lbl_80560F38;
-    *(float *)((char *)self + 0x17C) = lbl_80560F3C;
-    *(float *)((char *)self + 0x160) = lbl_80560F38;
-    *(float *)((char *)self + 0x170) = lbl_80560F38;
-    *(float *)((char *)self + 0x180) = lbl_80560F3C;
-    *(float *)((char *)self + 0x184) = lbl_80560F38;
+    *(float *)((char *)self + 0x140) = one;
+    *(float *)((char *)self + 0x144) = one;
+    *(float *)((char *)self + 0x148) = zero;
+    *(float *)((char *)self + 0x14C) = zero;
+    *(float *)((char *)self + 0x150) = zero;
+    *(float *)((char *)self + 0x154) = one;
+    *(float *)((char *)self + 0x164) = one;
+    *(float *)((char *)self + 0x174) = zero;
+    *(float *)((char *)self + 0x158) = one;
+    *(float *)((char *)self + 0x168) = one;
+    *(float *)((char *)self + 0x178) = zero;
+    *(float *)((char *)self + 0x15C) = one;
+    *(float *)((char *)self + 0x16C) = one;
+    *(float *)((char *)self + 0x17C) = zero;
+    *(float *)((char *)self + 0x160) = one;
+    *(float *)((char *)self + 0x170) = one;
+    *(float *)((char *)self + 0x180) = zero;
+    *(float *)((char *)self + 0x184) = one;
 }
 
 extern "C" int TRKInitializeMessageBuffers(unsigned int, void (*)(void *), void *);
