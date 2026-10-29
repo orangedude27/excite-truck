@@ -14,7 +14,7 @@ public:
 };
 }}
 extern "C" f32 lbl_80560EA8;
-extern "C" void *lbl_8032012C;
+extern "C" char lbl_8032012C[];
 extern "C" char *strncpy(char *, const char *, unsigned int);
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32);                   /* extern */
 extern "C" void *GXGetTexObjHeight(s32 *);                     /* extern */
@@ -799,7 +799,7 @@ extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBloc
     }
 }
 
-extern "C" int fn_800D7C54(int *arg0, s32 arg1) {
+extern "C" void fn_800D7C54(int *arg0, s32 arg1) {
     volatile f32 *out = (volatile f32 *)arg0;
     volatile f32 *in = (volatile f32 *)arg1;
     f32 angle = in[2];
