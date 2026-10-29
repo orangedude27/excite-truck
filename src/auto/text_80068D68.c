@@ -210,6 +210,8 @@ typedef struct {
 } AXFX_REVERBHI_EXP_FREE_VIEW;
 
 extern u8 lbl_803C0F78[];
+extern void fn_80072AE4(u8 *, u8 *, u8 *);
+extern void bta_dm_disc_remname_cback(u8 *);
 extern char lbl_80316870[];
 extern char lbl_80315D00[];
 extern char lbl_8031669C[];
@@ -591,43 +593,44 @@ void fn_80069EB4(u32 r3, u32 r4) {
 extern void WUDStoredLinkKeyCallback(void *);
 extern void *WUDiGetDevInfo(u8 *);
 u8 WUDiClearUnregisteredDevice(void) {
-    s32 index;
-    s32 offset;
-    u8 *base;
-    u8 *entry;
+    register s32 index;
+    register s32 offset;
+    register u8 *base;
+    register u8 *entry;
 
-    if (lbl_80392960[0xE] != 0)
-        return 2;
-    base = lbl_80392960;
-    index = 0;
-    offset = 0;
-    while (index < 0x10) {
-        s32 interrupt = OSDisableInterrupts();
-        if (index < 0 || index >= 10)
-            entry = base + (index - 10) * 0x60 + 0x424;
-        else
-            entry = base + offset + 0x64;
-        OSRestoreInterrupts(interrupt);
-        if (entry[0x59] != 0) {
-            if (entry[0x5C] == 1) {
-                base[0xE] = 3;
-                BTM_DeleteStoredLinkKey(entry + 0x40, WUDStoredLinkKeyCallback);
-                entry[0x5C] = 0;
-                return 2;
-            }
-            if (entry[0x5C] != 3) {
-                void *info = WUDiGetDevInfo(entry + 0x40);
-                if (info != 0) {
-                    interrupt = OSDisableInterrupts();
-                    memset(info, 0, 0x60);
-                    OSRestoreInterrupts(interrupt);
+    if (lbl_80392960[0xE] == 0) {
+        base = lbl_80392960;
+        index = 0;
+        offset = 0;
+        while (index < 0x10) {
+            s32 interrupt = OSDisableInterrupts();
+            if (index >= 0 && index < 10)
+                entry = base + offset + 0x64;
+            else
+                entry = base + (index - 10) * 0x60 + 0x424;
+            OSRestoreInterrupts(interrupt);
+            if (entry[0x59] != 0) {
+                if (entry[0x5C] == 1) {
+                    base[0xE] = 3;
+                    BTM_DeleteStoredLinkKey(entry + 0x40, WUDStoredLinkKeyCallback);
+                    entry[0x5C] = 0;
+                    return 2;
+                }
+                if (entry[0x5C] != 3) {
+                    void *info = WUDiGetDevInfo(entry + 0x40);
+                    if (info != 0) {
+                        interrupt = OSDisableInterrupts();
+                        memset(info, 0, 0x60);
+                        OSRestoreInterrupts(interrupt);
+                    }
                 }
             }
+            index++;
+            offset += 0x60;
         }
-        index++;
-        offset += 0x60;
+        return 3;
     }
-    return 3;
+    return 2;
 }
 
 extern u8 lbl_80392960[];
