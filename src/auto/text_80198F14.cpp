@@ -1795,7 +1795,7 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
 }
 
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling reset
 extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 farg2) {
     struct Object {
         void *vtable; s32 field4; s32 field8; s32 fieldC; f32 field10; f32 field14;
@@ -1803,7 +1803,7 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
         f32 field30; f32 field34; f32 field38; f32 field3C; f32 field40; f32 field44;
         f32 field48; u8 field4C; u8 pad4D[3]; f32 field50;
     };
-    Object *object = (Object *)fn_801284F8(0x54, lbl_80333640);
+    volatile Object *object = (volatile Object *)fn_801284F8(0x54, lbl_80333640);
     if (object != 0) {
         s32 type = *(s32 *)((u8 *)arg0 + 4);
         object->fieldC = *(s32 *)((u8 *)arg0 + 0xC);
@@ -1830,7 +1830,7 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
         object->field28 = x; object->field2C = y; object->field30 = z;
         if (type != 0) fn_8019EECC((void *)type, (Vec *)((u8 *)object + 0x28));
     }
-    fn_801A0378(arg0, object);
+    fn_801A0378(arg0, (void *)object);
 }
 #pragma scheduling on
 #pragma processor reset
