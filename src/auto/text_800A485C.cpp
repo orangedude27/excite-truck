@@ -4026,7 +4026,7 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
     return var_r31;
 }
 
-extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
+extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     extern s32 fn_800AE620(void *, u32, s32, void *);
     extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
@@ -5211,34 +5211,48 @@ extern "C" s32 VFiPFPATH_GetLengthFromUnicode(const u16 *text) {
 
 #define fn_800A4B9C_CALL fn_800A4B9C
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
+    struct Locals {
+        s16 inputLength;
+        s16 outputLength;
+        u16 space;
+        u16 zeroSpace;
+        u16 dot;
+        u16 zeroDot;
+    } local;
+
     u8 *out = (u8 *)arg0;
     u16 *src = arg1;
-    s16 dot = 0x2E;
-    s16 space = 0x20;
-    s16 underscore = 0x5F;
-    if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
-        while (*src != 0) {
-            if (fn_800A4B9C_CALL(src, (u16 *)&dot, 1) == 0) {
+    u16 *scan = arg1;
+    u8 *table = (u8 *)lbl_803D2140;
+
+    if ((*(u32 *)(table + 0x60) & 2) == 2) {
+        local.dot = 0x2E;
+        local.zeroDot = 0;
+        local.space = 0x20;
+        local.zeroSpace = 0;
+        scan = src;
+        do {
+            if (fn_800A4B9C_CALL(src, &local.dot, 1) == 0) {
                 *out = 0x2E;
-            } else if (fn_800A4B9C_CALL(src, (u16 *)&space, 1) == 0) {
+            } else if (fn_800A4B9C_CALL(src, &local.space, 1) == 0) {
                 *out = 0x20;
             } else {
                 *out = 0x5F;
             }
             out++;
-            src += 2;
-        }
+            src = (u16 *)((u8 *)src + 2);
+            scan = (u16 *)((u8 *)scan + 2);
+        } while (*scan != 0);
     } else {
         s32 offset = 0;
-        while (src[offset] != 0) {
-            ((void (*)(u16 *, u16 *))(*(u32 *)((u8 *)lbl_803D2140 + 0x4C)))(src + offset, arg1);
-            s16 inLen;
-            s16 outLen;
-            fn_800A4BF4(0, (u16 *)&inLen, &outLen);
-            out += outLen & ~1;
-            offset += inLen;
-        }
+        do {
+            s32 result = ((s32 (*)(u8 *, u8 *))(*(u32 **)(table + 0x4C)))((u8 *)src + (offset << 1), out);
+            fn_800A4BF4(result, (u16 *)&local.outputLength, &local.inputLength);
+            out += local.outputLength;
+            offset += local.inputLength >> 1;
+        } while (src[offset] != 0);
     }
+
     *out = 0;
 }
 
