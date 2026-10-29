@@ -2097,6 +2097,8 @@ extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *arg0, s32 arg1) {
 extern "C" s32 VFiPFFAT_TraceClustersChain(void *, s32, s32 *);
 extern "C" s32 fn_800AF584(void *);
 extern "C" s32 fn_800AF2CC(void *, u32, s32, s32 *, u32 *, s32);
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
     u8 *context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
     s32 flags = *(s32 *)context;
@@ -2164,6 +2166,7 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
     *out = (s32)(total - (u32)aligned);
     return 0;
 }
+#pragma pop
 
 #pragma push
 #pragma opt_common_subs off
@@ -7167,8 +7170,7 @@ extern "C" u8 lbl_80405D58[];
 extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
     u16 index;
     u8 *entry;
-    u8 *found = 0;
-    u8 *out = (u8 *)arg1;
+    void *found = 0;
     u32 size;
     u32 sectors;
     u32 groups;
@@ -7198,17 +7200,17 @@ extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    size = *(u32 *)(found + 0x54);
+    size = *(u32 *)((u8 *)found + 0x54);
     sectors = size >> 9;
     groups = sectors / 255;
-    *(volatile u8 *)(out + 7) = 0x3F;
-    *(volatile u8 *)(out + 6) = 0xFF;
-    *(volatile u32 *)(out + 0xC) = 0;
-    *(volatile u32 *)(out + 0x10) = 0;
-    *(volatile u32 *)out = sectors;
-    *(volatile u16 *)(out + 8) = 0x200;
-    temp = (groups / 63) >> 9;
-    *(volatile u16 *)(out + 4) = temp;
+    *(volatile u8 *)((u8 *)arg1 + 7) = 0x3F;
+    *(volatile u8 *)((u8 *)arg1 + 6) = 0xFF;
+    *(volatile u32 *)((u8 *)arg1 + 0xC) = 0;
+    *(volatile u32 *)((u8 *)arg1 + 0x10) = 0;
+    *(volatile u32 *)arg1 = sectors;
+    *(volatile u16 *)((u8 *)arg1 + 8) = 0x200;
+    temp = groups / 0x7E00;
+    *(volatile u16 *)((u8 *)arg1 + 4) = temp;
     fn_800B8048(lbl_8055DD30);
     return 0;
 }
