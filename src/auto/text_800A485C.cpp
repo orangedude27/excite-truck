@@ -1,5 +1,9 @@
   #include <types.h>
 #include <macros.h>
+extern "C" u8 lbl_80407C00[];
+extern "C" u8 lbl_80407E00[];
+extern "C" { DECL_SECTION(".sdata") extern s32 lbl_805597E8; }
+extern "C" { DECL_SECTION(".sdata") extern u32 lbl_8055DDD0; }
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *a, void *b);
 class PaneAnimTransformDispatch {
@@ -2094,6 +2098,48 @@ process:
     }
     return 0;
 }
+
+extern "C" void fn_800B36CC(s32, s32, s32, s32);
+extern "C" void fn_800ACA50(s32, s32, s32, s32);
+extern "C" void fn_800B4BD8(char *, u16 *, void *);
+extern "C" s32 fn_800A98B8(void *arg0, s32 arg1, s32 arg2, void *arg3) {
+    u32 frame[0xB4];
+
+    s32 result = ((s32 (*)(s32, void *, void *))fn_800B36CC)(
+        arg1, (u8 *)frame + 0x10, frame);
+    if (result != 0)
+        return result;
+
+    result = ((s32 (*)(void *, void *, s32, void *))fn_800ACA50)(
+        (u8 *)frame + 0x20, (u8 *)frame + 0x90, (s32)arg0,
+        (u8 *)frame + 0x10);
+    if (result != 0)
+        return result;
+
+    if ((((u8 *)frame)[0x2AC] & 0x10) == 0)
+        return 0x14;
+
+    s32 valueC = *(s32 *)((u8 *)frame + 0x2C4);
+    s32 zero = 0;
+    *(s32 *)((u8 *)arg3 + 0xC) = *(s32 *)((u8 *)frame + 0x2C4);
+    *(s32 *)((u8 *)arg3 + 0x10) = zero;
+    *(s32 *)((u8 *)arg3 + 8) = *(s32 *)((u8 *)frame + 0x2BC);
+    *((s8 *)arg3 + 0x1B) = (s8)arg2;
+    *(s32 *)((u8 *)arg3 + 0x14) = zero;
+
+    if (((u32 (*)(void *, u32))fn_800A4D44)(frame, 0) == 1U) {
+        ((void (*)(void *, void *, void *))fn_800B4BD8)(
+            (u8 *)arg3 + 0x1C, (void *)zero, frame);
+        *(s32 *)((u8 *)arg3 + 0x14) |= 1;
+    } else {
+        ((void (*)(void *, void *, void *))fn_800B4BD8)(
+            (u8 *)arg3 + 0x1C, (u16 *)((u8 *)arg3 + 0x444), frame);
+        *(s32 *)((u8 *)arg3 + 0x14) |= 2;
+    }
+
+    return fn_800A95B4(arg3);
+}
+
 #pragma pop
 extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
     u16 i;
@@ -13920,6 +13966,37 @@ extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 delet
         }
     }
     return self;
+}
+
+void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
+    register u8 *self = (u8 *)this;
+    register u8 *target = (u8 *)pane;
+    register u16 i;
+    register u8 *offsets = (u8 *)*(void **)(self + 0xC);
+    offsets += *(s32 *)(offsets + 0x10);
+    for (i = 0; i < *(u16 *)(*(u8 **)(self + 0xC) + 0xE); i++) {
+        u8 *entry = target + *(s32 *)(offsets + i * 4);
+        void *boundObject;
+        if (entry[0x15] == 0) {
+            boundObject = ((PaneAnimTransformDispatch *)target)->bindPane(entry, bind);
+            if (boundObject != 0) {
+                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
+                *(void **)(link + 8) = self;
+                *(u16 *)(link + 0xC) = i;
+                AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(
+                    boundObject, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+            }
+        } else {
+            boundObject = ((PaneAnimTransformDispatch *)target)->bindMaterial(entry, bind);
+            if (boundObject != 0) {
+                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
+                *(void **)(link + 8) = self;
+                *(u16 *)(link + 0xC) = i;
+                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
+                    boundObject, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+            }
+        }
+    }
 }
 
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
