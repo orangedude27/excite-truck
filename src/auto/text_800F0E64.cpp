@@ -84,6 +84,7 @@ struct DummyWorkerCallback10 : DummyWorkerLink { virtual void f0(); virtual void
 extern "C" s32 fn_80128668(void);
 extern "C" const char lbl_80324E88[];
 extern "C" const char lbl_803251B0[];
+extern "C" const char lbl_80325158[];
 extern "C" const char lbl_803250C8[];
 extern "C" const char lbl_80324EA4[];
 extern "C" const char lbl_80325640[];
