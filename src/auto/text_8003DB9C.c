@@ -183,22 +183,52 @@ s32 __GXDefaultTlutRegionCallback(unsigned int region) {
 }
 
 void __GXInitRevisionBits(void) {
-    unsigned int *p = __GXData;
-    volatile unsigned char *b = (volatile unsigned char *)0xCC008000;
-    volatile unsigned int *w = (volatile unsigned int *)0xCC008000;
-    unsigned int v;
-    *p = *p;
-    v = p[7] | 0x40000000; p[7] = v;
-    v = p[15] | 0x80000000; p[15] = v; *b = 8; *b = 0x80; *w = v;
-    v = p[8] | 0x40000000; p[8] = v;
-    v = p[16] | 0x80000000; p[16] = v; *b = 8; *b = 0x81; *w = v;
-    v = p[9] | 0x40000000; p[9] = v;
-    v = p[17] | 0x80000000; p[17] = v; *b = 8; *b = 0x82; *w = v;
-    v = p[10] | 0x40000000; p[10] = v;
-    v = p[18] | 0x80000000; p[18] = v; *b = 8; *b = 0x83;
-    *w = v;
-    *b = 0x10; *w = 0x1000; *w = 0x3F;
-    *b = 0x10; *w = 0x1012; *w = 1; *b = 0x61; *w = 0x5800000F;
+    unsigned char eight = 8;
+    volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *p = __GXData;
+    unsigned int n = 0;
+    unsigned int i;
+    unsigned int code;
+
+    for (i = 0; i < 2; i++) {
+        code = 0x80 | n++;
+        p[7] |= 0x40000000;
+        p[15] |= 0x80000000;
+        *fifo = eight;
+        *fifo = (unsigned char)code;
+
+        code = 0x80 | n++;
+        *(volatile unsigned int *)fifo = p[15];
+        p[8] |= 0x40000000;
+        p[16] |= 0x80000000;
+        *fifo = eight;
+        *fifo = (unsigned char)code;
+
+        code = 0x80 | n++;
+        *(volatile unsigned int *)fifo = p[16];
+        p[9] |= 0x40000000;
+        p[17] |= 0x80000000;
+        *fifo = eight;
+        *fifo = (unsigned char)code;
+
+        code = 0x80 | n++;
+        *(volatile unsigned int *)fifo = p[17];
+        p[10] |= 0x40000000;
+        p[18] |= 0x80000000;
+        *fifo = eight;
+        *fifo = (unsigned char)code;
+        *(volatile unsigned int *)fifo = p[18];
+        p += 4;
+    }
+
+    *fifo = 0x10;
+    *(volatile unsigned int *)fifo = 0x1000;
+    *(volatile unsigned int *)fifo = 0x3F;
+    *fifo = 0x10;
+    *(volatile unsigned int *)fifo = 0x1012;
+    *(volatile unsigned int *)fifo = 1;
+    *fifo = 0x61;
+    *(volatile unsigned int *)fifo = 0x5800000F;
 }
 
 void GXInitFifoBase(void *arg0, void *arg1, u32 arg2) {
@@ -665,39 +695,45 @@ extern unsigned char lbl_80558E38;
 extern unsigned char lbl_80558E3C;
 extern unsigned char lbl_80558E40;
 void __GXCalculateVLim(void) {
-    unsigned int *gx = __GXData;
-    unsigned int flags;
-    unsigned int vtx;
-    unsigned char *table;
-    int sum;
+    register unsigned int *gx = __GXData;
+    register unsigned int flags;
+    register int extra;
+    register unsigned int vtx;
+    register unsigned char *table;
+    register int sum;
     int term;
+    unsigned char tableValue;
+    int mode;
 
     if (*(unsigned short *)((char *)gx + 4) == 0) return;
 
     flags = gx[0x14 / 4];
+    table = &lbl_80558E40;
+    extra = gx[0x1C / 4];
+
     sum = flags & 1;
     sum += (flags >> 1) & 1;
     sum += (flags >> 2) & 1;
     sum += (flags >> 3) & 1;
     sum += (flags >> 4) & 1;
+    vtx = gx[0x18 / 4];
     sum += (flags >> 5) & 1;
     sum += (flags >> 6) & 1;
     sum += (flags >> 7) & 1;
 
+    tableValue = table[(flags >> 11) & 3];
     term = (flags >> 8) & 1;
-    if (((gx[0x1C / 4] >> 9) & 1) == 1) {
-        table = &lbl_80558E40;
-        term = table[(flags >> 11) & 3] * 3;
+    mode = (extra >> 9) & 1;
+    if (mode == 1) {
+        term = tableValue * (mode + 2);
     }
     sum += term;
-
-    table = &lbl_80558E40;
     sum += table[(flags >> 9) & 3];
+
     table = &lbl_80558E38;
     sum += table[(flags >> 13) & 3];
     sum += table[(flags >> 15) & 3];
 
-    vtx = gx[0x18 / 4];
     table = &lbl_80558E3C;
     sum += table[(vtx >> 0) & 3];
     sum += table[(vtx >> 2) & 3];
@@ -1705,29 +1741,32 @@ void GXDrawCylinder(void *src, void *dst, int x, int y) {
     if (src != dst) {
         b = *(unsigned int *)((char *)src + 0x00); a = *(unsigned int *)((char *)src + 0x04);
         *(unsigned int *)((char *)dst + 0x00) = b; *(unsigned int *)((char *)dst + 0x04) = a;
-        b = *(unsigned int *)((char *)src + 0x08); a = *(unsigned int *)((char *)src + 0x0C);
-        *(unsigned int *)((char *)dst + 0x08) = b; *(unsigned int *)((char *)dst + 0x0C) = a;
-        b = *(unsigned int *)((char *)src + 0x10); a = *(unsigned int *)((char *)src + 0x14);
-        *(unsigned int *)((char *)dst + 0x10) = b; *(unsigned int *)((char *)dst + 0x14) = a;
-        b = *(unsigned int *)((char *)src + 0x18); a = *(unsigned int *)((char *)src + 0x1C);
-        *(unsigned int *)((char *)dst + 0x18) = b; *(unsigned int *)((char *)dst + 0x1C) = a;
-        b = *(unsigned int *)((char *)src + 0x20); a = *(unsigned int *)((char *)src + 0x24);
-        *(unsigned int *)((char *)dst + 0x20) = b; *(unsigned int *)((char *)dst + 0x24) = a;
-        b = *(unsigned int *)((char *)src + 0x28); a = *(unsigned int *)((char *)src + 0x2C);
-        *(unsigned int *)((char *)dst + 0x28) = b; *(unsigned int *)((char *)dst + 0x2C) = a;
-        b = *(unsigned int *)((char *)src + 0x30); a = *(unsigned int *)((char *)src + 0x34);
-        *(unsigned int *)((char *)dst + 0x30) = b; *(unsigned int *)((char *)dst + 0x34) = a;
+        a = *(unsigned int *)((char *)src + 0x08); b = *(unsigned int *)((char *)src + 0x0C);
+        *(unsigned int *)((char *)dst + 0x08) = a; *(unsigned int *)((char *)dst + 0x0C) = b;
+        a = *(unsigned int *)((char *)src + 0x10); b = *(unsigned int *)((char *)src + 0x14);
+        *(unsigned int *)((char *)dst + 0x10) = a; *(unsigned int *)((char *)dst + 0x14) = b;
+        a = *(unsigned int *)((char *)src + 0x18); b = *(unsigned int *)((char *)src + 0x1C);
+        *(unsigned int *)((char *)dst + 0x18) = a; *(unsigned int *)((char *)dst + 0x1C) = b;
+        a = *(unsigned int *)((char *)src + 0x20); b = *(unsigned int *)((char *)src + 0x24);
+        *(unsigned int *)((char *)dst + 0x20) = a; *(unsigned int *)((char *)dst + 0x24) = b;
+        a = *(volatile unsigned int *)((char *)src + 0x28);
+        b = *(volatile unsigned int *)((char *)src + 0x2C);
+        *(unsigned int *)((char *)dst + 0x28) = a; *(unsigned int *)((char *)dst + 0x2C) = b;
+        a = *(volatile unsigned int *)((char *)src + 0x30);
+        b = *(volatile unsigned int *)((char *)src + 0x34);
+        *(unsigned int *)((char *)dst + 0x30) = a; *(unsigned int *)((char *)dst + 0x34) = b;
         a = *(unsigned int *)((char *)src + 0x38);
         *(unsigned int *)((char *)dst + 0x38) = a;
     }
-    *(unsigned short *)((char *)dst + 4) = *(unsigned short *)((char *)src + 4) - dx;
+    radius = *(volatile unsigned short *)((char *)src + 4);
     mode = *(volatile unsigned int *)src & 3;
-    radius = *(unsigned short *)((char *)src + 6);
-    *(unsigned short *)((char *)dst + 6) = radius - ((dy * radius) / *(unsigned short *)((char *)src + 8));
+    *(unsigned short *)((char *)dst + 4) = radius - dx;
+    radius = *(volatile unsigned short *)((char *)src + 6);
+    *(unsigned short *)((char *)dst + 6) = radius - ((dy * radius) / *(volatile unsigned short *)((char *)src + 8));
     if (*(int *)((char *)src + 0x14) == 0 && mode == 0)
-        *(unsigned short *)((char *)dst + 8) = *(unsigned short *)((char *)src + 8) - ((dy >> 1) & 0x7FFF);
+        *(unsigned short *)((char *)dst + 8) = *(volatile unsigned short *)((char *)src + 8) - ((dy >> 1) & 0x7FFF);
     else
-        *(unsigned short *)((char *)dst + 8) = *(unsigned short *)((char *)src + 8) - dy;
+        *(unsigned short *)((char *)dst + 8) = *(volatile unsigned short *)((char *)src + 8) - dy;
     *(unsigned short *)((char *)dst + 0xE) = *(unsigned short *)((char *)src + 0xE) - dx;
     if (mode == 1)
         *(unsigned short *)((char *)dst + 0x10) = *(unsigned short *)((char *)src + 0x10) - ((dy << 1) & 0x1FFFE);
@@ -2015,37 +2054,78 @@ void GXSetDispCopyGamma(s32 arg0) {
 }
 
 void GXCopyDisp(unsigned int source, int clear) {
-    unsigned int *gx = __GXData;
-    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC010000;
-    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC010000;
-    unsigned int *reg = gx + 0x22C / 4;
-    unsigned int val;
-    int changed = 0;
+    unsigned int *gx;
+    volatile unsigned char *fifo8;
+    volatile unsigned int *fifo32;
+    unsigned int *reg;
+    unsigned int value;
+    unsigned int sourceValue;
+    register int changed;
 
     if (clear != 0) {
-        *fifo8 = 0x61; *fifo32 = gx[0x228 / 4] | 0xF;
-        *fifo8 = 0x61; *fifo32 = gx[0x220 / 4] & ~3u;
+        gx = __GXData;
+        value = gx[0x228 / 4];
+        fifo8 = (volatile unsigned char *)0xCC010000;
+        fifo32 = (volatile unsigned int *)0xCC010000;
+        fifo8[-0x8000] = 0x61;
+        fifo32[-0x8000 / 4] = value | 0xF;
+        value = gx[0x220 / 4];
+        fifo8[-0x8000] = 0x61;
+        fifo32[-0x8000 / 4] = value & ~3u;
     }
-    if (clear == 0 && ((*reg & 7) == 3) && ((*reg & 0x40) != 0)) {
-        *fifo8 = 0x61;
-        val = *reg & ~0x40u;
-        *fifo32 = val;
-        changed = 1;
+
+    changed = 0;
+    if (clear == 0) {
+        gx = __GXData;
+        reg = gx + 0x22C / 4;
+        value = *reg;
+        if ((value & 7) == 3) {
+            gx = __GXData;
+            reg = gx + 0x22C / 4;
+            value = *reg;
+            if ((value & 0x40) != 0) {
+                fifo8 = (volatile unsigned char *)0xCC010000;
+                fifo8[-0x8000] = 0x61;
+                value = *reg & ~0x40u;
+                fifo32 = (volatile unsigned int *)0xCC010000;
+                fifo32[-0x8000 / 4] = value;
+                changed = 1;
+            }
+        }
     }
-    *fifo8 = 0x61; *fifo32 = gx[0x230 / 4];
-    *fifo8 = 0x61; *fifo32 = gx[0x234 / 4];
-    *fifo8 = 0x61; *fifo32 = gx[0x238 / 4];
-    *fifo8 = 0x61; *fifo32 = ((source << 3) & 0xFFFFFF00) | 0x4B;
-    val = gx[0x23C / 4];
-    val = (val & ~0x800u) | ((clear << 11) & 0x800) | 0x4000 | 0x52000000;
-    gx[0x23C / 4] = val;
-    *fifo8 = 0x61; *fifo32 = val;
+
+    gx = __GXData;
+    fifo8 = (volatile unsigned char *)0xCC010000;
+    fifo32 = (volatile unsigned int *)0xCC010000;
+    fifo8[-0x8000] = 0x61;
+    fifo32[-0x8000 / 4] = gx[0x230 / 4];
+    fifo8[-0x8000] = 0x61;
+    fifo32[-0x8000 / 4] = gx[0x234 / 4];
+    fifo8[-0x8000] = 0x61;
+    fifo32[-0x8000 / 4] = gx[0x238 / 4];
+
+    sourceValue = __rlwimi(0, source, 27, 8, 31);
+    sourceValue = __rlwimi(sourceValue, 0x4B, 24, 0, 7);
+    fifo8[-0x8000] = 0x61;
+    fifo32[-0x8000 / 4] = sourceValue;
+
+    value = gx[0x23C / 4];
+    value = __rlwimi(value, clear, 11, 20, 20);
+    value |= 0x4000;
+    value = __rlwimi(value, 0x52, 24, 0, 7);
+    gx[0x23C / 4] = value;
+    fifo8[-0x8000] = 0x61;
+    fifo32[-0x8000 / 4] = value;
+
     if (clear != 0) {
-        *fifo8 = 0x61; *fifo32 = gx[0x228 / 4];
-        *fifo8 = 0x61; *fifo32 = gx[0x220 / 4];
+        fifo8[-0x8000] = 0x61;
+        fifo32[-0x8000 / 4] = gx[0x228 / 4];
+        fifo8[-0x8000] = 0x61;
+        fifo32[-0x8000 / 4] = gx[0x220 / 4];
     }
-    if (changed) {
-        *fifo8 = 0x61; *fifo32 = *reg;
+    if (changed != 0) {
+        fifo8[-0x8000] = 0x61;
+        fifo32[-0x8000 / 4] = *reg;
     }
     *(unsigned short *)((char *)gx + 2) = 0;
 }
