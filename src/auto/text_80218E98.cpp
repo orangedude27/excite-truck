@@ -3433,19 +3433,28 @@ extern "C" void fn_80220E08(void *arg0, s32 arg1) {
 }
 
 extern "C" void *fn_80220E48(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    struct Dispatch {
+        virtual void method0();
+        virtual void method1();
+        virtual void method2();
+        virtual void method3();
+        virtual void method4();
+        virtual void set(s32, s32);
+    };
     u8 *p = (u8 *)arg0;
+    char *base = lbl_8033D878;
     s32 value = arg5;
     s32 mode = arg6;
-    fn_80218F34(arg0, arg1 + arg3, arg2 + arg4, arg3, arg4, 0);
+    fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
     *(void **)p = lbl_8033E770;
     if (mode == 0) {
-        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D878 + 0x150);
-        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D878 + 0x15C);
+        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(base + 0x150);
+        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(base + 0x15C);
     } else {
-        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D878 + 0x168);
-        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D878 + 0x174);
+        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(base + 0x168);
+        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(base + 0x174);
     }
-    ((Dispatch19718 *)arg0)->set(*(s32 *)(p + 4), *(s32 *)(p + 8));
+    ((Dispatch *)arg0)->set(*(s32 *)(p + 4), *(s32 *)(p + 8));
     if (mode == 0) {
         fn_80219284(arg0, fn_802C51C0(*(s32 *)(p + 0x248)),
                     *(s32 *)(p + 0x10) - *(s32 *)(p + 8));
@@ -4909,7 +4918,11 @@ after_conditions:
     *(f32 *)((u8 *)arg0 + 0x26C) = *(f32 *)((u8 *)arg0 + 0x268);
 }
 
+#pragma push
+#pragma ppc_psq_save off
+#pragma scheduling invalid_target
 extern "C" void fn_802248FC(void *arg0) {
+    union Cvt { f64 d; u32 word[2]; } cvt2, cvt1;
     u8 *p = (u8 *)arg0;
     if (*(s32 *)(p + 0x280) == 0) return;
     if (p[0x1B] == 0)
@@ -4918,18 +4931,30 @@ extern "C" void fn_802248FC(void *arg0) {
         *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = *(f32 *)(p + 0x268);
     else
         *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = (*(s32 *)(p + 0x248) == 1) ? lbl_805634A4 : lbl_805634A8;
+
     fn_8022EEF8(*(void **)(p + 0x288), fn_8022EDC4(), (s32)*(u32 *)(p + 0x284));
     fn_8022ED00(*(void **)(p + 0x288));
-    s32 rem = *(s32 *)(p + 0x10) - *(s32 *)(p + 8);
+
+    s32 delta;
+    s32 rem;
+    rem = *(s32 *)(p + 0x10) - *(s32 *)(p + 8);
     s32 divisor = fn_802C51AC(*(s32 *)(p + 0x280));
     s32 value = *(s32 *)(p + 0x244);
-    s32 delta = value % divisor;
+    delta = value % divisor;
     s32 got = ((Vf78x *)arg0)->get();
+
+    cvt1.word[1] = (u32)got ^ 0x80000000;
+    cvt1.word[0] = 0x43300000;
+    cvt2.word[1] = (u32)rem ^ 0x80000000;
+    cvt2.word[0] = 0x43300000;
+    register f32 gotFloat = (f32)(cvt1.d - lbl_805634B8);
+    register f32 remFloat = (f32)(cvt2.d - lbl_805634B8);
     fn_802C5320(*(s32 *)(p + 0x280), delta, *(f32 *)(p + 0x270),
-        *(f32 *)(p + 0x274), lbl_805634A8, (f32)got, (f32)rem);
+        *(f32 *)(p + 0x274), lbl_805634A8, gotFloat, remFloat);
     fn_8022EDB8();
 }
-
+#pragma scheduling on
+#pragma pop
 extern "C" s32 fn_80224A38(void *arg0, s32 arg1) {
     s32 *temp_r6 = *(s32 **)((u8 *)arg0 + 0x258);
     s32 (*temp_r12)(s32);
