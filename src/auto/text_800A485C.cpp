@@ -57,7 +57,7 @@ extern "C" void fn_800B78F4(void *, void *);
 extern "C" s32 WPADSetSamplingCallback(s32, void *);
 extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
 extern "C" void fn_800A71D0(void *, s32);
-namespace homebutton { namespace gui { class PaneManager { public: ~PaneManager(); void setAllBoundingBoxComponentTriggerTarget(bool); }; } }
+namespace homebutton { namespace gui { class PaneManager { public: ~PaneManager(); static void operator delete(void *); void setAllBoundingBoxComponentTriggerTarget(bool); }; } }
 namespace homebutton {
 class GroupAnmController {
 public:
@@ -3239,6 +3239,68 @@ extern "C" void fn_800ACA44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 
 extern "C" void fn_800ACA50(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(arg0, arg1, arg2, arg3, 1, 1);
+}
+
+extern "C" s32 fn_800ACA5C(void *arg0, void *arg1, u32 arg2) {
+    u32 mode = *(u32 *)((u8 *)arg0 + 0x1C);
+    u32 scaled;
+    u32 retries;
+    u16 flags;
+    u8 shift;
+    s32 result;
+
+    switch (mode) {
+    case 0:
+        scaled = (arg2 + (arg2 >> 1)) & 0xFFFF;
+        break;
+    case 1:
+        scaled = arg2 << 1;
+        break;
+    case 2:
+        scaled = arg2 << 2;
+        break;
+    default:
+        return 0xF;
+    }
+
+    shift = *(u8 *)((u8 *)arg0 + 0x20);
+    retries = 1;
+    *(u32 *)((u8 *)arg1 + 0x18) =
+        (*(u32 *)((u8 *)arg0 + 0x28) + (scaled >> shift)) & 0xFFFF;
+
+    flags = *(u16 *)((u8 *)arg0 + 0x18);
+    if (flags & 0x80) {
+        retries = flags & 7;
+    }
+
+    for (;;) {
+        result = fn_800B5260(arg0,
+                             *(void **)((u8 *)arg1 + 8),
+                             *(u32 *)((u8 *)arg1 + 0x18),
+                             0,
+                             *(u16 *)arg0);
+        if (result == 0x1000) {
+            s32 callbackResult;
+            if (*(s32 (**)(void *))((u8 *)arg0 + 0x1FC0) != 0) {
+                callbackResult =
+                    (*(s32 (**)(void *))((u8 *)arg0 + 0x1FC0))(
+                        *(void **)((u8 *)arg0 + 0x1F84));
+                if (callbackResult == 0) {
+                    continue;
+                }
+                if (callbackResult == 1) {
+                    u8 maxRetries = *((u8 *)arg0 + 0x22);
+                    if (maxRetries >= 2 && retries < maxRetries) {
+                        retries++;
+                        *(u32 *)((u8 *)arg1 + 0x18) +=
+                            *(u32 *)((u8 *)arg0 + 0xC);
+                        continue;
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }
 
 extern s32 fn_800A8D08(void *, s32, void **, s32 *);
