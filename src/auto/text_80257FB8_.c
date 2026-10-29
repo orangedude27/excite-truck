@@ -19,6 +19,7 @@ int fn_80257FB8(void) {
     }
     return 0;
 }
+#pragma dont_inline reset
 
 __declspec(section ".sdata") extern int lbl_8055F370;
 extern void fn_80214CB4(int);
