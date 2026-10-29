@@ -13219,6 +13219,31 @@ void l2cu_device_reset(void) {
     }
 }
 
+BOOLEAN l2cu_create_conn(void *arg0) {
+    u8 *entry = lbl_803C4040 + 8;
+    u8 *addr = (u8 *)arg0 + 0x2A;
+    s32 i;
+
+    for (i = 0; i < 4; i++, entry += 0x5C) {
+        if (memcmp(entry + 0x2A, addr, 6) == 0 &&
+            *(s32 *)(entry + 0x30) == 1) {
+            if (btm_is_sco_active_by_bdaddr(entry + 0x2A) == 1)
+                return FALSE;
+
+            if ((*(u32 *)(lbl_803C0F78 + 0x640) & 0x20) != 0) {
+                *(s32 *)((u8 *)arg0 + 4) = 2;
+                BTM_SwitchRole(entry + 0x2A, 0,
+                               (tBTM_CMPL_CB *)l2cu_create_conn_after_switch);
+                btu_start_timer((TIMER_LIST_ENT *)((u8 *)arg0 + 0x10),
+                                2, 0x3C);
+                return TRUE;
+            }
+        }
+    }
+
+    return ((BOOLEAN (*)(void *))l2cu_create_conn_after_switch)(arg0);
+}
+
 extern char lbl_80319218[];
 void l2cu_create_conn_after_switch(void *arg0) {
     UINT8 temp_r4;
@@ -13497,8 +13522,7 @@ void PORT_CloseInd(void *arg0) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319468[];
     extern void fn_8007093C(u32, void *);
-    extern void port_rfc_closed(void *, s32);
-    extern void rfc_release_multiplexer_channel(void *);
+      extern void rfc_release_multiplexer_channel(void *);
     u8 *entry;
     s32 i;
 
