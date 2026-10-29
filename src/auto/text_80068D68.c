@@ -4305,7 +4305,6 @@ void fn_80074A4C(s32 arg0) {
 extern u8 HID_HostRegister(void *);
 extern void bta_hh_cback(u8, u8, u32, BT_HDR *);
 void bta_hh_api_enable(void *arg0) {
-    tBTA_HH_CB_MATCH *cb;
     s8 status = 6;
     u8 xx;
 
@@ -4313,14 +4312,14 @@ void bta_hh_api_enable(void *arg0) {
     memset(lbl_803C0D48, 0, sizeof(tBTA_HH_CB_MATCH));
     HID_HostSetSecurityLevel(&lbl_80559058, *((u8 *)arg0 + 8));
     if (HID_HostRegister(bta_hh_cback) == 0) {
-        cb = (tBTA_HH_CB_MATCH *)lbl_803C0D48;
-        cb->p_cback = *(void **)((u8 *)arg0 + 0x30);
+        ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->p_cback =
+            *(void **)((u8 *)arg0 + 0x30);
         status = 0;
         for (xx = 0; xx < 0x10; xx++) {
-            cb->kdev[xx].state = 1;
-            cb->kdev[xx].hid_handle = 0xFF;
-            cb->kdev[xx].index = xx;
-            cb->cb_index[xx] = 0x10;
+            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->kdev[xx].state = 1;
+            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->kdev[xx].hid_handle = 0xFF;
+            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->kdev[xx].index = xx;
+            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->cb_index[xx] = 0x10;
         }
     }
     (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(0, &status, lbl_803C0D48);
