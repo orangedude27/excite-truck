@@ -12673,6 +12673,7 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
     }
 }
 
+extern char lbl_80315088[];
 extern char lbl_8031912C[];
 extern char lbl_80319140[];
 extern void l2c_process_held_packets(u8 timed_out);
@@ -16250,22 +16251,22 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
 }
 
 void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
-    u8 *p_msg;
+    register BT_HDR *p_msg;
     u8 *p_start;
-    u8 *p_param_len;
+    register u8 *p_param_len;
     u8 *p;
     u8 *p_next;
     u8 *p_db;
     u16 param_len;
 
-    p_msg = (u8 *)GKI_getpoolbuf(2);
+    p_msg = (BT_HDR *)GKI_getpoolbuf(2);
     if (p_msg == NULL) {
         sdp_disconnect(p_ccb, 6);
         return;
     }
 
-    *(u16 *)(p_msg + 4) = 9;
-    p_start = p_msg + 0x11;
+    p_msg->offset = 9;
+    p_start = (u8 *)p_msg + 0x11;
     p_start[0] = 2;
     p_param_len = p_start + 3;
     p_start[1] = *(u16 *)((u8 *)p_ccb + 0x470) >> 8;
@@ -16288,9 +16289,9 @@ void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
     p_param_len[0] = param_len >> 8;
     p_param_len[1] = param_len;
     *(u8 *)((u8 *)p_ccb + 0x474) = 1;
-    *(u16 *)(p_msg + 2) = p_next - p_start;
+    p_msg->len = p_next - p_start;
 
-    L2CA_DataWrite(*(u16 *)((u8 *)p_ccb + 0x22), (BT_HDR *)p_msg);
+    L2CA_DataWrite(*(u16 *)((u8 *)p_ccb + 0x22), p_msg);
     btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 8), 5, 0x1E);
 }
 
