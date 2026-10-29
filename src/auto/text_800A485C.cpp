@@ -287,6 +287,7 @@ extern "C" u8 lbl_80407300[];
 extern "C" s32 lbl_8055DD2C;
 extern "C" s32 NANDInit(void);
 extern "C" s32 NANDGetCurrentDir(char *);
+struct Fn800B94ECInitArgs { s32 initialized; s32 mode; void *callback; };
 extern "C" char lbl_80405D18[];
 extern "C" s32 fn_800BA49C(s32, s32, s32, s32, s32 *);
 extern "C" const char lbl_8031B190[];
@@ -4312,9 +4313,9 @@ extern "C" s32 VFiPFFILE_p_fread(void *, void *arg1, u32 arg2, u32 arg3, void *a
 
 extern "C" s32 fn_800A9470(void *,void *);
 extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
-    s32 temp_r3, temp_r5;
-    u32 size;
-    void *file;
+    register s32 temp_r3, temp_r5;
+    register u32 size;
+    register void *file;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x34) = (u8 *)arg0 + 0xC;
     if (arg0 == 0) file = 0;
     else file = *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
@@ -6991,6 +6992,47 @@ extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 4) = arg1;
     *(u8 **)arg0 = lbl_802F31F8;
     return 0;
+}
+
+extern "C" s32 fn_800B94EC(register s32 arg0, register s32 arg1) {
+    /* Fix note: carry the two incoming values in registers and return immediately after the first free slot. */
+    register u8 *base = (u8 *)lbl_80405D18;
+    u32 initCount;
+    register u32 i;
+
+    if ((u32)fn_800A4A8C(arg0) >= 0x4C)
+        return -0x14;
+    if (lbl_8055DD28 == 0) {
+        fn_800A499C((const char *)(base + 0x40), 0, 0x1590);
+        volatile u32 *control = (volatile u32 *)(base + 0x15D0);
+        initCount = lbl_8055DD28 + 1;
+        *(s32 *)(base + 0x15D0) = 1;
+        lbl_8055DD28 = initCount;
+        control[1] = 1;
+        control[2] = (u32)(base + 0x15DC);
+        typedef s32 (*InitFn)(void *, s32, s32);
+        s32 result = ((InitFn)fn_800B7F28)((void *)control, 1, initCount);
+        lbl_8055DD30 = result;
+        if (result == 0)
+            return -0x15;
+    }
+
+    base += 0x40;
+    i = 0;
+loop_6:
+    u8 *entry = base + (u32)(u16)i * 0xF0;
+    if (fn_800A4AD0(entry + 4, (u8 *)arg0) == 0)
+        return 0;
+    if (*(s32 *)entry == 0) {
+        fn_800A4AAC((char *)(entry + 4), (char *)arg0);
+        *(s32 *)(entry + 0x54) = arg1;
+        goto block_11;
+    }
+    ++i;
+    if (i < 0x17)
+        goto loop_6;
+block_11:
+    return -0x16 & ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31);
 }
 
 extern "C" s32 fn_800B960C(s32 a0, s32 a1, s32 a2, s32 a3, s32 *out, s32 key) {
@@ -14259,6 +14301,32 @@ block_58:
         goto loop_6;
     }
     goto loop_6;
+}
+
+extern "C" BOOL DVDFastOpen(s32 entrynum, void *info);
+extern "C" BOOL DVDClose(void *info);
+extern "C" s32 fn_800D3F94(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    register const char *base = lbl_8031EC50;
+    s32 result;
+    if (arg0 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x2D3, base + 0x6C);
+    }
+    if (arg2 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x2D4, base + 0x1B4);
+    }
+    if (*(s32 *)arg0 != 0) {
+        lbl_8055DDD8 = (u8 (*)(const char *))fn_800D3838;
+        return fn_800D3C44(*(char **)arg0, *(void **)((u8 *)arg0 + 4), (u32)arg1, (char *)arg2, arg3);
+    }
+    if (*(s32 *)((u8 *)arg0 + 8) >= 0 && DVDFastOpen(*(s32 *)((u8 *)arg0 + 8), lbl_80407E00) != 0) {
+        lbl_8055DDD8 = (u8 (*)(const char *))fn_800D3840;
+        lbl_8055DDD0 = *(u32 *)(lbl_80407E00 + 0x34);
+        result = fn_800D3C44((char *)0x80000000, *(void **)((u8 *)arg0 + 4), (u32)arg1, (char *)arg2, arg3);
+        DVDClose(lbl_80407E00);
+        return result;
+    }
+    *(u8 *)arg2 = 0;
+    return 0;
 }
 
 #pragma opt_tail_call on
