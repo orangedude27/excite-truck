@@ -835,8 +835,8 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
     case 3: fn_80031C6C(0); break;
     }
     unsigned int interrupts = OSDisableInterrupts();
-    void *node = *(void **)((char *)self + 0x18);
     void *end = (char *)self + 0x18;
+    void *node = *(void **)((char *)self + 0x18);
     while (node != end) {
         void *current = node;
         node = *(void **)node;
@@ -2561,6 +2561,8 @@ extern "C" void fn_800FEC1C(void *, void *);
 extern "C" void ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void *, void *, const void *);
 extern "C" const char lbl_803224F0[], lbl_803226B0[], lbl_803226DC[];
 extern "C" char lbl_80559818;
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(void *self, void *wave, int index, const void *src) {
     unsigned int count;
     void *bank;
@@ -2568,8 +2570,9 @@ extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm
     void *base;
     unsigned int data;
     unsigned char type;
-    unsigned char pad[0x18];
-    if (*(void **)self == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224F0, 0x107, lbl_803226B0);
+    char pad[8];
+    unsigned int firstWord = *(unsigned int *)self;
+    if (firstWord == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224F0, 0x107, lbl_803226B0);
     if (*(void **)self == 0) return 0;
     bank = *(void **)((char *)self + 8);
     if (bank == 0) return 0;
@@ -2583,9 +2586,9 @@ extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm
     bank = (void *)(unsigned int)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(type, data, base);
     if (bank == 0) return 0;
     fn_800FEC1C(pad, bank);
-    ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(pad, wave, src);
-    return 0;
+    return ((void *(*)(void *, void *, const void *))ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv)(pad, wave, src);
 }
+#pragma pop
 
 extern void __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *);
 extern char lbl_80322880[];
@@ -2627,20 +2630,57 @@ extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
     *(int *)((char *)arg0 + 0xD4) = zero;
 }
 
-extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void* self) {
+extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     extern float lbl_80560FB4;
-    int current = 0, total = 0;
-    float base = lbl_80560FB0, target = lbl_80560FB4;
-    *((unsigned char*)self+0x67)=0; *((unsigned char*)self+0x68)=0; *((unsigned char*)self+0x64)=0; *((unsigned char*)self+0x65)=0; *((unsigned char*)self+0x66)=0; *((unsigned char*)self+0x69)=0;
-    *(int*)((char*)self+0x6c)=0; *(int*)((char*)self+0x70)=0;
-    *(float*)((char*)self+0x44)=base; *(float*)((char*)self+0x48)=base; *(int*)((char*)self+0x4c)=0; *(int*)((char*)self+0x50)=0;
-    *(float*)((char*)self+0x54)=target; *(float*)((char*)self+0x58)=target; *(int*)((char*)self+0x5c)=0; *(int*)((char*)self+0x60)=0;
-    if (current < total) base += (float)current * (base-base)/(float)total;
-    *(float*)((char*)self+0x44)=base; *(float*)((char*)self+0x48)=target; *(int*)((char*)self+0x4c)=1; *(int*)((char*)self+0x50)=0;
-    *(float*)((char*)self+0x8c)=target; *(float*)((char*)self+0x98)=target; *(float*)((char*)self+0x90)=lbl_80560FB0; *(float*)((char*)self+0x94)=lbl_80560FB0;
-    *(float*)((char*)self+0x7c)=target; *(float*)((char*)self+0x80)=target; *(int*)((char*)self+0x84)=0; *(int*)((char*)self+0x88)=0; *(int*)((char*)self+0xa0)=1; *((unsigned char*)self+0x9c)=0;
-    *(float*)((char*)self+0xa4)=target; *(float*)((char*)self+0xa8)=target; *(float*)((char*)self+0xac)=target; *(float*)((char*)self+0xb0)=target; *(float*)((char*)self+0xb4)=target;
-    *(float*)((char*)self+0x28)=target; *(float*)((char*)self+0x2c)=target; *(float*)((char*)self+0x30)=lbl_80560FB0; *(float*)((char*)self+0x34)=lbl_80560FB0; *(float*)((char*)self+0x38)=lbl_80560FB0; *(float*)((char*)self+0x3c)=lbl_80560FB0; *(int*)((char*)self+0x40)=0;
+    float base = lbl_80560FB0;
+    float target = lbl_80560FB4;
+    int zero = 0;
+    *((unsigned char *)self + 0x67) = 0;
+    *((unsigned char *)self + 0x68) = 0;
+    *((unsigned char *)self + 0x64) = 0;
+    *((unsigned char *)self + 0x65) = 0;
+    *((unsigned char *)self + 0x66) = 0;
+    *((unsigned char *)self + 0x69) = 0;
+    *(int *)((char *)self + 0x6c) = zero;
+    *(int *)((char *)self + 0x70) = zero;
+    *(float *)((char *)self + 0x44) = base;
+    *(float *)((char *)self + 0x48) = base;
+    *(int *)((char *)self + 0x4c) = zero;
+    *(int *)((char *)self + 0x50) = zero;
+    *(float *)((char *)self + 0x54) = target;
+    *(float *)((char *)self + 0x58) = target;
+    *(int *)((char *)self + 0x5c) = zero;
+    *(int *)((char *)self + 0x60) = zero;
+    int current = *(int *)((char *)self + 0x50);
+    int total = *(int *)((char *)self + 0x4c);
+    if (current < total)
+        base += (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total;
+    *(float *)((char *)self + 0x44) = base;
+    *(float *)((char *)self + 0x48) = target;
+    *(int *)((char *)self + 0x4c) = 1;
+    *(int *)((char *)self + 0x50) = zero;
+    *(float *)((char *)self + 0x8c) = target;
+    *(float *)((char *)self + 0x98) = target;
+    *(float *)((char *)self + 0x90) = lbl_80560FB0;
+    *(float *)((char *)self + 0x94) = lbl_80560FB0;
+    *(float *)((char *)self + 0x7c) = target;
+    *(float *)((char *)self + 0x80) = target;
+    *(int *)((char *)self + 0x84) = zero;
+    *(int *)((char *)self + 0x88) = zero;
+    *(int *)((char *)self + 0xa0) = 1;
+    *((unsigned char *)self + 0x9c) = 0;
+    *(float *)((char *)self + 0xa4) = target;
+    *(float *)((char *)self + 0xa8) = target;
+    *(float *)((char *)self + 0xac) = target;
+    *(float *)((char *)self + 0xb0) = target;
+    *(float *)((char *)self + 0xb4) = target;
+    *(float *)((char *)self + 0x28) = target;
+    *(float *)((char *)self + 0x2c) = target;
+    *(float *)((char *)self + 0x30) = lbl_80560FB0;
+    *(float *)((char *)self + 0x34) = lbl_80560FB0;
+    *(float *)((char *)self + 0x38) = lbl_80560FB0;
+    *(float *)((char *)self + 0x3c) = lbl_80560FB0;
+    *(int *)((char *)self + 0x40) = zero;
 }
 
 extern "C" void fn_800E8ADC(void *arg0) {
