@@ -579,10 +579,9 @@ s32 fn_80069178(void) {
     s32 status;
     BOOL interrupts;
     register u8 *device_info;
-    register s32 index;
     register const u8 *record;
     register u8 count;
-    register u32 offset;
+    register s32 index;
 
     status = SCCheckStatus();
     if (((u32)((1 - status) | (status - 1)) >> 31) == 0) {
@@ -612,9 +611,8 @@ s32 fn_80069178(void) {
 
         if (record[0x59] != 0) {
             if (record[0x5B] == 0 || record[0x5B] == 2 || record[0x5B] == 4) {
-                offset = (u8)count * 0x46;
-                memcpy(lbl_80393058 + offset + 1, record + 0x40, 6);
-                memcpy(lbl_80393058 + offset + 7, record, 0x40);
+                memcpy(lbl_80393058 + (u8)count * 0x46 + 1, record + 0x40, 6);
+                memcpy(lbl_80393058 + (u8)count * 0x46 + 7, record, 0x40);
                 count++;
             }
         }
@@ -7003,38 +7001,43 @@ tBTM_PM_PWR_MD *btm_pm_compare_modes(tBTM_PM_PWR_MD *p_md1, tBTM_PM_PWR_MD *p_md
     }
 }
 
-u8 btm_pm_get_set_mode(u32 arg0, void *arg1, void *arg2, void *arg3) {
-    extern unsigned char lbl_803C0F78[];
-    void *previous = 0;
-    void *entry = arg1;
-    s32 i = 0;
-    u16 t0, t1;
-    if (arg2 != 0 && (*(u8 *)((u8 *)arg2 + 8) & 0x10)) {
-        t1 = *(u16 *)((u8 *)arg2 + 0); t0 = *(u16 *)((u8 *)arg2 + 2);
-        *(u16 *)((u8 *)arg3 + 0) = t1; *(u16 *)((u8 *)arg3 + 2) = t0;
-        t1 = *(u16 *)((u8 *)arg2 + 4); t0 = *(u16 *)((u8 *)arg2 + 6);
-        *(u16 *)((u8 *)arg3 + 4) = t1; *(u16 *)((u8 *)arg3 + 6) = t0;
-        *(u16 *)((u8 *)arg3 + 8) = *(u16 *)((u8 *)arg2 + 8);
-        *(u8 *)((u8 *)arg3 + 8) &= ~0x10;
-        return *(u8 *)((u8 *)arg3 + 8);
+tBTM_PM_MODE btm_pm_get_set_mode(UINT8 pm_id, tBTM_PM_MCB *p_cb, tBTM_PM_PWR_MD *p_mode, tBTM_PM_PWR_MD *p_res) {
+    int xx;
+    tBTM_PM_PWR_MD *p_md = NULL;
+
+    if (p_mode != NULL && p_mode->mode & BTM_PM_MD_FORCE) {
+        *p_res = *p_mode;
+        p_res->mode &= ~BTM_PM_MD_FORCE;
+        return p_res->mode;
     }
-    while (i < 2) {
-        if (lbl_803C0F78[0x558 + i * 8] & 1) {
-            if (*(u8 *)((u8 *)entry + 8) == 0) return 0;
-            if (btm_pm_compare_modes(previous, entry, arg3) == 0) return 0;
-            previous = arg3;
+
+    for (xx = 0; xx < BTM_MAX_PM_RECORDS; xx++) {
+        if (btm_cb.pm_reg_db[xx].mask & BTM_PM_REG_SET) {
+            if (p_cb->req_mode[xx].mode == BTM_PM_MD_ACTIVE) {
+                return BTM_PM_MD_ACTIVE;
+            } else {
+                if (btm_pm_compare_modes(p_md, &p_cb->req_mode[xx], p_res) == NULL) {
+                    return BTM_PM_MD_ACTIVE;
+                }
+                p_md = p_res;
+            }
         }
-        i++; entry = (u8 *)entry + 0xA;
     }
-    if (previous == 0) {
-        if (arg2 == 0) return 0;
-        t1 = *(u16 *)((u8 *)arg2 + 0); t0 = *(u16 *)((u8 *)arg2 + 2);
-        *(u16 *)((u8 *)arg3 + 0) = t1; *(u16 *)((u8 *)arg3 + 2) = t0;
-        t1 = *(u16 *)((u8 *)arg2 + 4); t0 = *(u16 *)((u8 *)arg2 + 6);
-        *(u16 *)((u8 *)arg3 + 4) = t1; *(u16 *)((u8 *)arg3 + 6) = t0;
-        *(u16 *)((u8 *)arg3 + 8) = *(u16 *)((u8 *)arg2 + 8);
-    } else if (arg0 == 0x80 && btm_pm_compare_modes(arg2, previous, arg3) == 0) return 0;
-    return *(u8 *)((u8 *)arg3 + 8);
+
+    if (p_md == NULL) {
+        if (p_mode != NULL) {
+            *p_res = *p_mode;
+        } else {
+            return BTM_PM_MD_ACTIVE;
+        }
+    } else {
+        if (pm_id == BTM_PM_SET_ONLY_ID &&
+            btm_pm_compare_modes(p_mode, p_md, p_res) == NULL) {
+            return BTM_PM_MD_ACTIVE;
+        }
+    }
+
+    return p_res->mode;
 }
 
 void btm_pm_proc_cmd_status(UINT8 status) {
@@ -12385,40 +12388,36 @@ extern char lbl_80318B28[];
 extern char lbl_803183F0[];
 void l2c_csm_w4_l2ca_disconnect_rsp(void *p_ccb, u16 event, void *p_data)
 {
-    void *r31;
+    void *disconnect_ind;
     u16 local_cid;
-    u16 offset;
-    r31 = *(void **)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 0x18);
+    disconnect_ind = *(void **)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 0x18);
     local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
     if (lbl_803C4040[0] >= 4)
         fn_80070954(0x80003, lbl_80318B28, event);
-    offset = event - 3;
-    if (offset > 0x1A)
-        return;
     switch (event)
     {
     case 3:
         if (lbl_803C4040[0] >= 3)
-            fn_80070954(0x80002, lbl_803183F0, local_cid);
+            fn_80070954(0x80002, lbl_803183F0, *(u16 *)((u8 *)p_ccb + 0x14));
         l2cu_release_ccb(p_ccb);
-        ((void (*)(u16, u8))r31)(local_cid, 0);
+        ((void (*)(u16, u8))disconnect_ind)(local_cid, 0);
         break;
     case 7:
         l2cu_send_peer_disc_rsp(*(void **)((u8 *)p_ccb + 0x10),
-            *((u8 *)p_ccb + 0x36), local_cid, *(u16 *)((u8 *)p_ccb + 0x16));
+            *((u8 *)p_ccb + 0x36), *(u16 *)((u8 *)p_ccb + 0x14), *(u16 *)((u8 *)p_ccb + 0x16));
         if (lbl_803C4040[0] >= 3)
-            fn_80070954(0x80002, lbl_803183F0, local_cid);
+            fn_80070954(0x80002, lbl_803183F0, *(u16 *)((u8 *)p_ccb + 0x14));
         l2cu_release_ccb(p_ccb);
-        ((void (*)(u16, u8))r31)(local_cid, 0);
+        ((void (*)(u16, u8))disconnect_ind)(local_cid, 0);
         break;
     case 8:
     case 9:
         l2cu_send_peer_disc_rsp(*(void **)((u8 *)p_ccb + 0x10),
-            *((u8 *)p_ccb + 0x36), local_cid, *(u16 *)((u8 *)p_ccb + 0x16));
+            *((u8 *)p_ccb + 0x36), *(u16 *)((u8 *)p_ccb + 0x14), *(u16 *)((u8 *)p_ccb + 0x16));
         l2cu_release_ccb(p_ccb);
         break;
-    case 17:
-    case 19:
+    case 20:
+    case 30:
         GKI_freebuf(p_data);
         break;
     }
@@ -16369,7 +16368,6 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
     u8 *existing;
     int i;
     int j;
-    u8 *existing_base;
     u8 *mcb_base;
     u8 *channel;
     u8 *peer_addr;
@@ -16379,8 +16377,7 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
         if (lbl_803C4828[i * 0x78 + 0x408] != 0 &&
             memcmp(peer_addr, addr, 6) == 0) {
             if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0);
-            existing_base = lbl_803C4828 + i * 0x78;
-            existing = existing_base + 0x39C;
+            existing = lbl_803C4828 + i * 0x78 + 0x39C;
             fn_80070F90(existing);
             return existing;
         }
