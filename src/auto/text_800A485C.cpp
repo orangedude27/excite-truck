@@ -6749,61 +6749,63 @@ copy: *dst++=*src++;part++;total++;goto loop;
 }
 
 s32 fn_800B8520(void *arg0, u32 *arg1) {
+    u8 *p = (u8 *)arg0;
     u32 countA = 0;
     u32 countB = 0;
-    u32 temp = 0x200;
-    u32 temp2 = 1;
+    u32 shift = 0x200;
     u32 value;
-    u32 total;
-    u32 result;
-    u16 a;
-    u16 b;
-    u32 word;
     u32 start;
     u32 end;
+    u32 word;
 
-    do {
-        temp = (temp >> 1) & 0x7FFF;
-        if (temp != 0) countA++;
-    } while (temp != 0);
-    do {
-        temp2 = (temp2 >> 1) & 0x7FFF;
-        if (temp2 != 0) countB++;
-    } while (temp2 != 0);
+    while (shift != 0) {
+        countA++;
+        shift = (shift >> 1) & 0x7FFF;
+    }
+    shift = 1;
+    while (shift != 0) {
+        countB++;
+        shift = (shift >> 1) & 0x7FFF;
+    }
 
-    if (((u32)((u8 *)arg0 + 0x11) & 1) != 0) {
-        value = *((u8 *)arg0 + 0x11) | (*((u8 *)arg0 + 0x12) << 8);
+    if (((u32)(p + 0x11) & 1) != 0) {
+        value = p[0x11] | (p[0x12] << 8);
     } else {
-        a = *(u16 *)((u8 *)arg0 + 0x12);
-        value = ((a >> 8) | (a << 8)) << 5;
+        u32 half = *(u16 *)(p + 0x12);
+        value = (((half & 0xFF) << 8) | (half >> 8)) << 5;
     }
-    total = value;
-    if (((u32)((u8 *)arg0 + 0x16) & 1) != 0) {
-        b = *((u8 *)arg0 + 0x16) | (*((u8 *)arg0 + 0x17) << 8);
+    value = (value + 0x1FF) >> countA;
+
+    if (((u32)(p + 0x16) & 1) != 0) {
+        start = p[0x16] | (p[0x17] << 8);
     } else {
-        b = *(u16 *)((u8 *)arg0 + 0x16);
-        b = (b >> 8) | (b << 8);
+        u32 half = *(u16 *)(p + 0x16);
+        start = ((half & 0xFF) << 8) | (half >> 8);
     }
-    start = b;
     if (start == 0) {
-        word = *(u32 *)((u8 *)arg0 + 0x24);
-        start = ((word >> 24) | ((word >> 8) & 0xFF00) | ((word << 8) & 0xFF0000) | (word << 24));
+        word = *(u32 *)(p + 0x24);
+        start = ((word & 0xFF) << 24) | ((word & 0xFF00) << 8) |
+                ((word >> 8) & 0xFF00) | (word >> 24);
     }
-    if (((u32)((u8 *)arg0 + 0x13) & 1) != 0) {
-        b = *((u8 *)arg0 + 0x13) | (*((u8 *)arg0 + 0x14) << 8);
+    start <<= 1;
+
+    if (((u32)(p + 0x13) & 1) != 0) {
+        end = p[0x13] | (p[0x14] << 8);
     } else {
-        b = *(u16 *)((u8 *)arg0 + 0x14);
-        b = (b >> 8) | (b << 8);
+        u32 half = *(u16 *)(p + 0x14);
+        end = ((half & 0xFF) << 8) | (half >> 8);
     }
-    end = b;
     if (end == 0) {
-        word = *(u32 *)((u8 *)arg0 + 0x20);
-        end = ((word >> 24) | ((word >> 8) & 0xFF00) | ((word << 8) & 0xFF0000) | (word << 24));
+        word = *(u32 *)(p + 0x20);
+        end = ((word & 0xFF) << 24) | ((word & 0xFF00) << 8) |
+              ((word >> 8) & 0xFF00) | (word >> 24);
     }
-    result = end - (start * 2 + ((value + 0x1FF) >> countA) + 1);
-    *arg1 = result;
-    if ((result >> countB) < 0xFF5) return 0;
-    if ((result >> countB) < 0xFFF5) return 1;
+
+    end -= start + value + 1;
+    *arg1 = end;
+    end >>= countB;
+    if (end < 0xFF5) return 0;
+    if (end < 0xFFF5) return 1;
     return 2;
 }
 
@@ -17687,16 +17689,17 @@ extern "C" void GXSetCullMode(s32);
 extern "C" void fn_800CEBE0(void *arg0, s32 arg1) {
     s32 bits = -arg1; bits |= arg1;
     u32 active = (u32)bits >> 31;
-    u8 state = *(u8 *)((u8 *)arg0 + 0x250);
-    state = (state & 0xDF) | ((bits << 6) & 0x20);
+    struct State { unsigned char pad0 : 2; unsigned char flag : 1; unsigned char pad1 : 5; };
+    ((State *)((u8 *)arg0 + 0x250))->flag = (unsigned char)active;
     *(u8 *)((u8 *)arg0 + 0x87) = (u8)active;
-    *(u8 *)((u8 *)arg0 + 0x250) = state;
     volatile f32 sp[6];
     void *obj;
     if (active) {
         void *src = *(void **)((u8 *)arg0 + 4);
-        f32 y = *(f32 *)((u8 *)src + 0x2C);
-        f32 x = *(f32 *)((u8 *)src + 0x30);
+        f32 y;
+        f32 x;
+        x = *(volatile f32 *)((u8 *)src + 0x30);
+        y = *(volatile f32 *)((u8 *)src + 0x2C);
         obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E0) + 0x10);
         sp[2] = y; sp[3] = x; sp[4] = y; sp[5] = x;
         *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
