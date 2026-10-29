@@ -10949,23 +10949,23 @@ u8 HID_HostOpenDev(u32 arg0) {
 
 u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
                          u16 data, u8 report_id, BT_HDR *pbuf) {
-    char (*messages)[0x18] = (char (*)[0x18])lbl_80317720;
+    char *messages = lbl_80317720;
     u8 status = 0;
 
     if (lbl_803C3C38[0x400] == 0) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages[0]);
+            fn_8007093C(0x1E0000, messages + 0);
         status = 1;
     }
     if ((dev_handle > 0x10) ||
         (*((u8 *)lbl_803C3C38 + dev_handle * 0x34) == 0)) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, (char *)messages[1]);
+            fn_8007093C(0x1E0000, messages + 0x18);
         status = 5;
     }
     if (*((u8 *)lbl_803C3C38 + dev_handle * 0x34 + 0xA) != 1) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_80070954(0x1E0000, (char *)messages[2], dev_handle);
+            fn_80070954(0x1E0000, messages + 0x30, dev_handle);
         status = 4;
     }
     if (status != 0) {
@@ -14197,6 +14197,44 @@ void PORT_DlcEstablishInd(s32 arg0, s32 arg1, s32 arg2) {
         (*(void (**)(s32,u8))(port + 0x8c))(0x200, port[0]);
     if (*(void (**)(s32,u8))(port + 0x90) != 0) (*(void (**)(s32,u8))(port + 0x90))(0, port[0]);
     port[2] = 2;
+}
+
+extern char lbl_80319350[];
+void PORT_DlcEstablishCnf(void *p_mcb, u8 dlci, u16 mtu, u16 result) {
+    extern void RFCOMM_PortNegReq(void *, u8, void *);
+    extern void RFCOMM_ControlReq(void *, u8, void *);
+    void *port = port_find_mcb_dlci_port(p_mcb, dlci);
+
+    if (lbl_803C4828[0x414] >= 4) {
+        ((void (*)(u32, void *, u8, u16, u16))fn_80070984)(
+            0x90003, lbl_80319350, dlci, mtu, result);
+    }
+    if (port == 0) return;
+    if (result != 0) {
+        *(u8 *)((u8 *)port + 0x0E) = 0x0C;
+        port_rfc_closed((struct t_port_info *)port, 0x0C);
+        return;
+    }
+    if (mtu != 0 && mtu < *(u16 *)((u8 *)port + 0x14))
+        *(u16 *)((u8 *)port + 0x14) = mtu;
+    rfc_timer_stop(p_mcb);
+    if (*(void **)((u8 *)port + 0x8C) != 0 &&
+        (*(u32 *)((u8 *)port + 0x88) & 0x200) != 0) {
+        ((void (*)(u32, u8))*(void **)((u8 *)port + 0x8C))(0x200, *(u8 *)port);
+    }
+    if (*(void **)((u8 *)port + 0x90) != 0) {
+        ((void (*)(u32, u8))*(void **)((u8 *)port + 0x90))(0, *(u8 *)port);
+    }
+    *(u8 *)((u8 *)port + 2) = 2;
+    if (*(u16 *)((u8 *)port + 4) == 0x1103 ||
+        *(u16 *)((u8 *)port + 4) == 0x1111) {
+        RFCOMM_PortNegReq(*(void **)((u8 *)port + 0x6C),
+                          *(u8 *)((u8 *)port + 0x0D), 0);
+    } else {
+        RFCOMM_ControlReq(*(void **)((u8 *)port + 0x6C),
+                          *(u8 *)((u8 *)port + 0x0D),
+                          (u8 *)port + 0x5A);
+    }
 }
 
 extern char lbl_80319240[];
