@@ -251,6 +251,13 @@ typedef struct {
 typedef struct { UINT8 pad[0x476]; UINT16 cont_offset; } tSDP_CCB_CONT_VIEW;
 static void process_service_attr_rsp(tCONN_CB *, UINT8 *, UINT16);
 typedef struct { UINT8 pad[0x418]; UINT32 handles[0x15]; } tSDP_CCB_HANDLE_VIEW;
+typedef struct {
+    UINT8 pad_0x000[0x418];
+    UINT32 handles[0x15];
+    UINT16 num_handles;
+    UINT8 pad_0x46E[6];
+    UINT8 disc_state;
+} tCONN_CB_SEARCH_VIEW;
 typedef struct { UINT8 pad[0x24]; UINT16 list_len; UINT8 list_data[1]; } tSDP_CCB_RAW_LIST_VIEW;
 extern char lbl_80317A54[];
 extern char lbl_80317A80[];
@@ -16918,36 +16925,39 @@ void sdp_disc_server_rsp(tCONN_CB *p_ccb, BT_HDR *p_msg) {
 
 extern char lbl_8031A050[];
 void process_service_search_rsp(void *p_ccb, UINT8 *p_reply, UINT16 len) {
-    UINT8 *p = p_reply + 8;
-    UINT16 orig = *(UINT16 *)((UINT8 *)p_ccb + 0x46C);
-    UINT16 cur = (p_reply[6] << 8) + p_reply[7];
-    UINT16 total;
+    tCONN_CB *ccb = (tCONN_CB *)p_ccb;
+    UINT16 xx;
+    UINT16 total, cur_handles, orig;
     UINT8 cont_len;
-    UINT16 i;
-    *(UINT16 *)((UINT8 *)p_ccb + 0x46C) = orig + cur;
-    if (*(UINT16 *)((UINT8 *)p_ccb + 0x46C) == 0) {
+
+    p_reply += 4;
+    BE_STREAM_TO_UINT16(total, p_reply);
+    BE_STREAM_TO_UINT16(cur_handles, p_reply);
+
+    orig = ccb->num_handles;
+    ccb->num_handles += cur_handles;
+    if (ccb->num_handles == 0) {
         if (lbl_803C4C40[0x4630] >= 2)
             fn_8007093C(0xA0001, lbl_8031A050);
         sdp_disconnect(p_ccb, 0xFFF0);
         return;
     }
-    total = *(UINT16 *)((UINT8 *)p_ccb + 0x46C);
-    if (total > *(UINT16 *)(lbl_803C4C40 + 0x462E))
-        *(UINT16 *)((UINT8 *)p_ccb + 0x46C) = *(UINT16 *)(lbl_803C4C40 + 0x462E);
-    for (i = orig; i < *(UINT16 *)((UINT8 *)p_ccb + 0x46C); i++) {
-        *(UINT32 *)((UINT8 *)p_ccb + 0x418 + i * 4) =
-            ((UINT32)p[0] << 24) | ((UINT32)p[1] << 16) | ((UINT32)p[2] << 8) | p[3];
-        p += 4;
-    }
-    cont_len = *p;
+
+    if (ccb->num_handles > *(UINT16 *)(lbl_803C4C40 + 0x462E))
+        ccb->num_handles = *(UINT16 *)(lbl_803C4C40 + 0x462E);
+
+    for (xx = orig; xx < ccb->num_handles; xx++)
+        BE_STREAM_TO_UINT32(ccb->handles[xx], p_reply);
+
+    BE_STREAM_TO_UINT8(cont_len, p_reply);
     if (cont_len != 0) {
         if (cont_len > 0x10) {
             sdp_disconnect(p_ccb, 5);
             return;
         }
-        sdp_snd_service_search_req(p_ccb, cont_len, p + 1);
+        sdp_snd_service_search_req((tCONN_CB *)p_ccb, cont_len, p_reply);
     } else {
-        *(UINT8 *)((UINT8 *)p_ccb + 0x474) = 2;
+        ccb->disc_state = 2;
         process_service_attr_rsp(p_ccb, 0, 0);
     }
 }
