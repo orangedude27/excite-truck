@@ -112,6 +112,7 @@ extern "C" f32 lbl_80560E64;
 class Freeable800C6A1C { public: virtual void free(s32); };
 class Freeable28_800C6A1C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void free(s32); };
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
+extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800ACA5C(void *, void *, u32);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
 extern "C" s32 fn_800B00E8(void *, u16, u32 *);
@@ -13136,6 +13137,59 @@ extern "C" void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void 
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     }
 }
+
+homebutton::gui::PaneManager::~PaneManager() {
+    class Dispatch {
+    public:
+        virtual void method0();
+        virtual void method1();
+        virtual void method2();
+        virtual void method3();
+        virtual void method4();
+        virtual void freeEntry(s32);
+    };
+
+    u8 *self = (u8 *)this;
+    void *node;
+    MEMAllocator *allocator;
+    void *resource;
+
+    if (self == 0)
+        return;
+
+    *(const char **)self = lbl_8031E7E8;
+    node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 0x18, 0);
+    while (node != 0) {
+        List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(self + 0x18, node);
+        allocator = *(MEMAllocator **)(self + 0x14);
+        if (allocator != 0) {
+            MEMFreeToAllocator(allocator, *(void **)((u8 *)node + 4));
+            MEMFreeToAllocator(allocator, node);
+        } else {
+            resource = *(void **)((u8 *)node + 4);
+            if (resource != 0)
+                ((Dispatch *)resource)->freeEntry(1);
+            ((void (*)(void *))fn_80128668)(node);
+        }
+        node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 0x18, 0);
+    }
+
+    if (self != 0) {
+        *(const char **)self = lbl_8031E83C;
+        node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 8, 0);
+        while (node != 0) {
+            List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(self + 8, node);
+            allocator = *(MEMAllocator **)(self + 0x14);
+            if (allocator != 0) {
+                MEMFreeToAllocator(allocator, node);
+            } else {
+                ((void (*)(void *))fn_80128668)(node);
+            }
+            node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 8, 0);
+        }
+    }
+}
+
 #pragma pop
 extern "C" s32 fn_800D010C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
