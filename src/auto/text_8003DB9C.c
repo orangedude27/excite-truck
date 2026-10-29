@@ -661,35 +661,53 @@ void __GXSetVCD(void) {
     *(unsigned short *)((char *)data + 2) = 1;
 }
 
-extern unsigned char lbl_80558E38[];
-extern unsigned char lbl_80558E3C[];
-extern unsigned char lbl_80558E40[];
+extern unsigned char lbl_80558E38;
+extern unsigned char lbl_80558E3C;
+extern unsigned char lbl_80558E40;
 void __GXCalculateVLim(void) {
     unsigned int *gx = __GXData;
     unsigned int flags;
     unsigned int vtx;
+    unsigned char *table;
     int sum;
-    int weight;
+    int term;
 
     if (*(unsigned short *)((char *)gx + 4) == 0) return;
+
     flags = gx[0x14 / 4];
+    sum = flags & 1;
+    sum += (flags >> 1) & 1;
+    sum += (flags >> 2) & 1;
+    sum += (flags >> 3) & 1;
+    sum += (flags >> 4) & 1;
+    sum += (flags >> 5) & 1;
+    sum += (flags >> 6) & 1;
+    sum += (flags >> 7) & 1;
+
+    term = (flags >> 8) & 1;
+    if (((gx[0x1C / 4] >> 9) & 1) == 1) {
+        table = &lbl_80558E40;
+        term = table[(flags >> 11) & 3] * 3;
+    }
+    sum += term;
+
+    table = &lbl_80558E40;
+    sum += table[(flags >> 9) & 3];
+    table = &lbl_80558E38;
+    sum += table[(flags >> 13) & 3];
+    sum += table[(flags >> 15) & 3];
+
     vtx = gx[0x18 / 4];
-    sum = (flags & 1) + ((flags >> 1) & 1) + ((flags >> 2) & 1) +
-          ((flags >> 3) & 1) + ((flags >> 4) & 1) + ((flags >> 5) & 1) +
-          ((flags >> 6) & 1) + ((flags >> 7) & 1) + ((flags >> 8) & 1);
-    sum += lbl_80558E40[(flags >> 9) & 3];
-    weight = (((gx[0x1C / 4] >> 9) & 1) == 1) ? 3 : 1;
-    sum += lbl_80558E40[(flags >> 11) & 3] * weight;
-    sum += lbl_80558E38[(flags >> 13) & 3];
-    sum += lbl_80558E38[(flags >> 15) & 3];
-    sum += lbl_80558E3C[(vtx >> 0) & 3];
-    sum += lbl_80558E3C[(vtx >> 2) & 3];
-    sum += lbl_80558E3C[(vtx >> 4) & 3];
-    sum += lbl_80558E3C[(vtx >> 6) & 3];
-    sum += lbl_80558E3C[(vtx >> 8) & 3];
-    sum += lbl_80558E3C[(vtx >> 10) & 3];
-    sum += lbl_80558E3C[(vtx >> 12) & 3];
-    sum += lbl_80558E3C[(vtx >> 14) & 3];
+    table = &lbl_80558E3C;
+    sum += table[(vtx >> 0) & 3];
+    sum += table[(vtx >> 2) & 3];
+    sum += table[(vtx >> 4) & 3];
+    sum += table[(vtx >> 6) & 3];
+    sum += table[(vtx >> 8) & 3];
+    sum += table[(vtx >> 10) & 3];
+    sum += table[(vtx >> 12) & 3];
+    sum += table[(vtx >> 14) & 3];
+
     *(unsigned short *)((char *)gx + 6) = sum;
 }
 
