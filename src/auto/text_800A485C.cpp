@@ -4738,10 +4738,10 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
         *(u8 **)arg0 = 0;
         return 0;
     }
-    if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
-        VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
-        ((void (*)(void *, s16))VFiPFSTR_MoveStrPos)(arg0, 1);
-    }
+          if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
+          VFiPFSTR_StrNCmpCall((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
+          ((void (*)(void *, s16))VFiPFSTR_MoveStrPos)(arg0, 1);
+      }
     if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
         VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
         return 2;
@@ -13640,34 +13640,37 @@ extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
 extern "C" void fn_800D1F7C(s32 arg0, s32 arg1) {
-    /* Fix note: walk at most 16 valid high-address nodes and report invalid entries. */
+    /* Fix note: report failing checks directly so the linked-node walk stays in the target's control flow. */
     u32 node = (u32)arg0;
-    u8 buffer[0x104];
-    s32 count = 0;
+    u32 buffer[0x41];
+    s32 count;
 
     fn_800D1EC4(lbl_8031E9D0);
     fn_800D1EC4(lbl_8031E9D0 + 0x28);
-    while (node != 0 && node + 0x10000 != 0xFFFFFFFF && (node & 0x80000000) != 0) {
-        u32 address = *(u32 *)(node + 4);
-        fn_800D1EC4(lbl_8031E9D0 + 0x48, node, *(u32 *)node, address);
+    count = 0;
+loop_1:
+    if (node == 0 || node + 0x10000 == 0xFFFFFFFF || (node & 0x80000000) == 0)
+        return;
 
-        s32 valid = 0;
-        if (fn_800D3824() != 0 && address >= 0x80000000 && address <= 0x82FFFFFF) {
-            typedef s32 (*CheckFn)(s32, s32, s32);
-            CheckFn check = (CheckFn)fn_800D40B4;
-            if (check(address, (s32)buffer, 0x104) != 0) {
-                fn_800D1EC4(lbl_805597D8, buffer);
-                valid = 1;
-            }
-        }
-        if (valid == 0)
-            fn_800D1EC4(lbl_805597DC);
-
-        node = *(u32 *)node;
-        ++count;
-        if (count >= 0x10)
-            break;
+    fn_800D1EC4(lbl_8031E9D0 + 0x48, node, *(u32 *)node, *(u32 *)(node + 4));
+    if (fn_800D3824() == 0)
+        goto invalid;
+    if (*(u32 *)(node + 4) < 0x80000000 || *(u32 *)(node + 4) > 0x82FFFFFF)
+        goto invalid;
+    {
+        typedef s32 (*CheckFn)(s32, s32, s32);
+        if (((CheckFn)fn_800D40B4)(*(u32 *)(node + 4), (s32)buffer, 0x104) == 0)
+            goto invalid;
     }
+    fn_800D1EC4(lbl_805597D8, buffer);
+    goto done;
+invalid:
+    fn_800D1EC4(lbl_805597DC);
+done:
+    ++count;
+    node = *(u32 *)node;
+    if (count < 0x10)
+        goto loop_1;
 }
 
 extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
