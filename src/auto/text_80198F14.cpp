@@ -977,6 +977,43 @@ extern "C" void fn_8019CF60(void *arg0, void *arg1) {
     fn_8019CE3C(arg1, (s32)arg0);
 }
 
+extern "C" void fn_8019D06C(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+    struct Target { u8 pad[0x34]; Vec point; };
+    Target *target = (Target *)arg0;
+    Vec position;
+    Vec delta;
+    fn_801A1F44(&position, arg1);
+    delta.x = position.x - target->point.x;
+    delta.y = position.y - target->point.y;
+    delta.z = position.z - target->point.z;
+    f32 distance = PSVECSquareDistance(&position, &target->point);
+    f32 result;
+    if (distance > lbl_8056232C) {
+        f32 root = (f32)fn_8002F234(distance);
+        f32 scale = lbl_805622E0 / root;
+        delta.x *= scale;
+        delta.y *= scale;
+        delta.z *= scale;
+        Vec *axis = (Vec *)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0xC);
+        f32 dot = PSVECDotProduct(&delta, axis);
+        register f32 high;
+        register f32 low;
+        register f32 magnitude;
+        high = *(f32 *)((u8 *)arg0 + 0x58);
+        low = *(f32 *)((u8 *)arg0 + 0x54);
+        magnitude = (f32)__fabs((f64)dot);
+        f32 difference = high - low;
+        result = low + magnitude * difference;
+    } else {
+        f32 high = *(f32 *)((u8 *)arg0 + 0x58);
+        f32 low = *(f32 *)((u8 *)arg0 + 0x54);
+        if (low > high) result = low;
+        else result = high;
+    }
+    *(f32 *)((u8 *)arg0 + 0x24) = result;
+    fn_8019BD54(arg0, arg1, arg2, arg3);
+}
+
 extern "C" f32 PSVECSquareDistance(const Vec*, const Vec*);
 extern "C" f32 PSVECDotProduct(const Vec*, const Vec*);
 extern f32 lbl_8056232C;
@@ -1425,12 +1462,13 @@ extern "C" void fn_8019EECC(void* arg0, Vec* arg1) {
 
 extern "C" void fn_8019EF00(void* arg0) {
     void* mat = *(void**)((u8*)arg0 + 0xC);
-    f32 x = *(f32*)((u8*)arg0 + 0x28);
-    f32 y = *(f32*)((u8*)arg0 + 0x2C);
-    f32 z = *(f32*)((u8*)arg0 + 0x30);
-    f32* out = (f32*)((u8*)arg0 + 0x34);
+    f32* volatile out = (f32*)((u8*)arg0 + 0x34);
+    f32* volatile in = (f32*)((u8*)arg0 + 0x28);
     f32* m = (f32*)mat;
-    if (out == (f32*)((u8*)arg0 + 0x28)) {
+    f32 x = in[0];
+    f32 y = in[1];
+    f32 z = in[2];
+    if (out == in) {
         out[0] = x * m[0] + y * m[3] + z * m[6];
         out[1] = x * m[1] + y * m[4] + z * m[7];
         out[2] = x * m[2] + y * m[5] + z * m[8];
