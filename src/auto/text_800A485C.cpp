@@ -11729,6 +11729,7 @@ extern "C" void fn_800C34B4(s32, s32, s32, s32);
 extern "C" s32 fn_800C4E5C(s32, void *);
 #pragma push
 #pragma use_lmw_stmw on
+#pragma scheduling invalid_target
 #pragma dont_inline fn_800C34B4
 void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
     register s8 inner;
