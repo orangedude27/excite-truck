@@ -18,7 +18,7 @@ extern void fn_802E317C(const char *);
 extern int stricmp(const char *, const char *);
 extern char lbl_8032C390[];
 extern const char *lbl_802F9388[];
-extern char lbl_80559CD8[];
+extern char lbl_80559CD8;
 #pragma cplusplus on
 extern "C" void fn_8013B7B4(void *arg0, int value) {
     struct List {
