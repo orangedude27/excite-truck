@@ -1782,6 +1782,7 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     second[2] = z1;
 }
 
+#pragma processor 750
 #pragma scheduling invalid_target
 extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 farg2) {
     struct Object {
@@ -1790,35 +1791,28 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
         f32 field30; f32 field34; f32 field38; f32 field3C; f32 field40; f32 field44;
         f32 field48; u8 field4C; u8 pad4D[3]; f32 field50;
     };
-    volatile Object *object = (volatile Object *)fn_801284F8(0x54, lbl_80333640);
+    Object *object = (Object *)fn_801284F8(0x54, lbl_80333640);
     s32 type;
     f32 zero = lbl_805622D0;
     if (object != 0) {
         type = *(s32 *)((u8 *)arg0 + 4);
         object->fieldC = *(s32 *)((u8 *)arg0 + 0xC);
-        object->field4 = type;
-        object->field8 = 0;
+        object->field4 = type; object->field8 = 0;
         object->field18 = 0x53504852;
-        object->field10 = farg1;
-        object->field14 = farg2;
-        object->field20 = 100;
-        object->field1C = 0;
+        object->field10 = farg1; object->field14 = farg2;
+        object->field20 = 100; object->field1C = 0;
         object->vtable = lbl_80333B48;
         object->field24 = farg0;
-        object->field34 = zero;
-        object->field38 = zero;
-        object->field3C = zero;
-        object->field40 = zero;
-        object->field44 = zero;
-        object->field48 = zero;
-        object->field4C = 0;
-        object->field50 = zero;
+        object->field34 = zero; object->field38 = zero;
+        object->field3C = zero; object->field40 = zero;
+        object->field44 = zero; object->field48 = zero;
+        object->field4C = 0; object->field50 = zero;
         object->field28 = *(f32 *)arg1;
         object->field2C = *(f32 *)((u8 *)arg1 + 4);
         object->field30 = *(f32 *)((u8 *)arg1 + 8);
         if (type != 0) fn_8019EECC((void *)type, (Vec *)((u8 *)object + 0x28));
     }
-    fn_801A0378(arg0, (void *)object);
+    fn_801A0378(arg0, object);
 }
 #pragma scheduling on
 
