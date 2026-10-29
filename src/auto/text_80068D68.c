@@ -15771,6 +15771,7 @@ void rfc_process_msc(void *mcb, s32 is_command, void *message) {
     if (is_command != 0) {
         rfc_send_msc(mcb, *(u8 *)message, 0, data);
         if (*((u8 *)*(void **)(port + 0x6C) + 0x72) != 2) {
+            flow = data[4];
             port[0x63] = flow;
             if (flow != port[0x24])
                 PORT_FlowInd(mcb, *(u8 *)message, (u8)(flow == 0));
