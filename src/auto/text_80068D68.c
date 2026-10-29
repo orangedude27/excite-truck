@@ -37,6 +37,7 @@ static void USB_LOG(const char *, ...);
 static void USB_ERR(const char *, ...);
 extern void bta_hh_add_device_to_list(void *, s8, s16, void *, s32, s32);
 extern char lbl_80313258[];
+extern char lbl_803191B4[];
 extern char lbl_80316EE0[];
 extern char lbl_80315F80[];
 extern s32 btsnd_hcic_auth_request_800858B0(u16);
@@ -1318,6 +1319,52 @@ void WUDSetVisibility(u8 arg0, u8 arg1)
     lbl_80392960[0x66A] = arg1;
     OSRestoreInterrupts(enabled);
     BTA_DmSetVisibility(arg0, arg1);
+}
+
+extern u32 lbl_8055DC3C;
+extern u32 lbl_8055DC40;
+extern u32 lbl_8055DC44;
+extern u8 lbl_803135C0[];
+extern void fn_8006B044(tBTM_VSC_CMPL *);
+void fn_8006AED4(s32 arg0) {
+    u8 packet[0x100];
+    s32 count;
+    s32 i;
+    u32 header;
+    if (arg0 == 0) {
+        fn_8006B330();
+        return;
+    }
+    count = lbl_8055DC44;
+    if (count >= 0xFB)
+        count = 0xFB;
+    header = lbl_8055DC3C;
+    packet[0] = (u8)header;
+    packet[1] = (u8)(header >> 8);
+    packet[2] = (u8)(header >> 16);
+    packet[3] = (u8)(header >> 24);
+    i = 0;
+    if (count > 0) {
+        if (count > 8) {
+            while (i < count - 8) {
+                packet[i + 4] = lbl_803135C0[i + 8];
+                packet[i + 5] = lbl_803135C0[i + 9];
+                packet[i + 6] = lbl_803135C0[i + 10];
+                packet[i + 7] = lbl_803135C0[i + 11];
+                packet[i + 8] = lbl_803135C0[i + 12];
+                packet[i + 9] = lbl_803135C0[i + 13];
+                packet[i + 10] = lbl_803135C0[i + 14];
+                packet[i + 11] = lbl_803135C0[i + 15];
+                i += 8;
+            }
+        }
+        while (i < count) {
+            packet[i + 4] = lbl_803135C0[i + 8];
+            i++;
+        }
+    }
+    lbl_8055DC40 = count;
+    BTM_VendorSpecificCommand(0xFC4C, (u8)(count + 4), packet, fn_8006B044);
 }
 
 void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
