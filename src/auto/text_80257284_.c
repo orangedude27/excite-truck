@@ -20,6 +20,21 @@ extern int lbl_802FA5E0, lbl_80344CD4, lbl_80344CF0, lbl_80498E38;
 extern int lbl_80563AA8, lbl_80563AB0;
 extern int lbl_8055B860, lbl_8055BAB8, lbl_8055C1D8, lbl_8055C1E0, lbl_8055C1E8, lbl_8055C1F0;
 extern void fn_80236914(void);
+int fn_80012818(void);
+void *fn_80012820(int);
+void *fn_80012870(int, int);
+char *fn_800081BC(void *);
+char *fn_80008188(void *);
+extern int stricmp(const char *, const char *);
+extern char lbl_8055C1F8[];
+
+#pragma cplusplus on
+class MatchDispatch {
+public:
+    virtual void unused();
+    virtual int matches(const char *);
+};
+#pragma cplusplus reset
 void fn_80257284(void) {
     int obj[4][5]; int desc[4][5]; int state[4][5]; int data[5]; int tail[20];
     int *args; int result;
