@@ -3550,7 +3550,7 @@ sentinel:
 
 s32 VFiPFFAT_GetClusterSpecified(s32 *);
 s32 fn_800AE3A8(s32, s32 *, u8, u32);
-s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
+extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
     s32 sp8;
     s32 r;
     u32 q, rem;
