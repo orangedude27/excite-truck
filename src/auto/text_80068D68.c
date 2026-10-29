@@ -16326,9 +16326,9 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
 }
 
 void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
-    register BT_HDR *p_msg;
+    u8 *p_param_len;
     u8 *p_start;
-    register u8 *p_param_len;
+    BT_HDR *p_msg;
     u8 *p;
     u8 *p_next;
     u8 *p_db;
@@ -16340,7 +16340,7 @@ void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
         return;
     }
 
-    p_msg->offset = 9;
+    *(u16 *)((u8 *)p_msg + 4) = 9;
     p_start = (u8 *)p_msg + 0x11;
     p_start[0] = 2;
     p_param_len = p_start + 3;
@@ -16364,7 +16364,7 @@ void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
     p_param_len[0] = param_len >> 8;
     p_param_len[1] = param_len;
     *(u8 *)((u8 *)p_ccb + 0x474) = 1;
-    p_msg->len = p_next - p_start;
+    *(u16 *)((u8 *)p_msg + 2) = p_next - p_start;
 
     L2CA_DataWrite(*(u16 *)((u8 *)p_ccb + 0x22), p_msg);
     btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 8), 5, 0x1E);
