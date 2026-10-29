@@ -1685,7 +1685,7 @@ extern "C" void fn_8019F26C(s32 arg0, void *arg1) {
         fn_8019D378((void *)arg0, arg1);
         return;
     case 'RAGD':
-        return;
+        break;
     default: {
         u8 buffer[5] = {
             lbl_80562374,
