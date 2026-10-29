@@ -1,6 +1,10 @@
   #include <types.h>
 #include <macros.h>
 #include <revolution/MEM/mem_allocator.h>
+extern "C" void *List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(const void *, const void *);
+extern "C" void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
+extern "C" const char lbl_8031E7E8[];
+extern "C" const char lbl_8031E83C[];
 
 struct VFiPFENTIterLayout {
     volatile u32 position;
