@@ -1,8 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
     // split_file divides it into the game's real files (file_status shows its range).
 
-          extern void fn_801958D8(void);
-      extern void fn_801945F8(void *);
+                      extern void fn_801958D8(void);
+        extern void fn_8018A174(void *);
+        extern void fn_801961F8(void);
+        extern void fn_80195B28(void *, float);
+        extern void fn_8019416C(void);
+        extern void fn_801945F8(void *);
       extern void fn_80196DC4(void *);
     extern void fn_80195F6C(void *, void *);
     extern void fn_80194624(void *);
@@ -1488,49 +1492,89 @@ done:
 }
 
 extern float lbl_80562144, lbl_80562170, lbl_80562194, lbl_8055A488;
+#pragma scheduling invalid_target
 int fn_8019703C(void *arg0, void *arg1) {
-    float x = *(float *)((char *)arg0 + 0x270);
-    float y = *(float *)((char *)arg1 + 4);
-    float z = *(float *)((char *)arg1 + 8);
-    float threshold = lbl_8055A488 + lbl_80562194 * x;
-    int chosen = 0;
-    int update = 0;
-    if ((*(unsigned int *)((char *)arg0 + 0x2D0) & 1) == 0 &&
-        x > lbl_80562170 && __fabsf(y) < threshold) {
+    float xLimit;
+    float x;
+    float z;
+    float y;
+    float coefficient;
+    float base;
+    float absoluteY;
+    float threshold;
+    float score;
+    unsigned int word6;
+    unsigned int byte5;
+    unsigned int word4, word3, word2, word1, word0;
+    unsigned int positionWord;
+    int update;
+    int xValid;
+    int yValid;
+    int flags;
+
+    x = *(float *)((char *)arg0 + 0x270);
+    update = 0;
+    xLimit = lbl_80562170;
+    z = *(float *)((char *)arg1 + 8);
+    xValid = x > xLimit;
+    y = *(float *)((char *)arg1 + 4);
+    coefficient = lbl_80562194;
+    base = lbl_8055A488;
+    absoluteY = (float)__fabs((double)y);
+    threshold = base + coefficient * base;
+    yValid = absoluteY < threshold;
+    flags = *(unsigned int *)((char *)arg0 + 0x2D0);
+
+    if ((flags & 1) == 0 && xValid != 0 && yValid != 0) {
         if (y > lbl_80562144) {
-            float score = *(float *)((char *)arg0 + 0x278) + y;
+            score = *(float *)((char *)arg0 + 0x278) + y;
             if (score < *(float *)((char *)arg0 + 0xBC)) {
+                word0 = *(unsigned int *)((char *)arg1 + 0);
+                word1 = *(unsigned int *)((char *)arg1 + 4);
+                word2 = *(unsigned int *)((char *)arg1 + 8);
+                word3 = *(unsigned int *)((char *)arg1 + 0xC);
+                word4 = *(unsigned int *)((char *)arg1 + 0x10);
+                byte5 = *(unsigned char *)((char *)arg1 + 0x14);
+                word6 = *(unsigned int *)((char *)arg1 + 0x18);
                 *(float *)((char *)arg0 + 0xBC) = score;
-                *(unsigned int *)((char *)arg0 + 0xA0) = *(unsigned int *)((char *)arg1 + 0);
-                *(unsigned int *)((char *)arg0 + 0xA4) = *(unsigned int *)((char *)arg1 + 4);
-                *(unsigned int *)((char *)arg0 + 0xA8) = *(unsigned int *)((char *)arg1 + 8);
-                *(unsigned int *)((char *)arg0 + 0xAC) = *(unsigned int *)((char *)arg1 + 0xC);
-                *(unsigned int *)((char *)arg0 + 0xB0) = *(unsigned int *)((char *)arg1 + 0x10);
-                *(unsigned char *)((char *)arg0 + 0xB4) = *(unsigned char *)((char *)arg1 + 0x14);
-                *(unsigned int *)((char *)arg0 + 0xB8) = *(unsigned int *)((char *)arg1 + 0x18);
+                *(unsigned int *)((char *)arg0 + 0xA0) = word0;
+                *(unsigned int *)((char *)arg0 + 0xA4) = word1;
+                *(unsigned int *)((char *)arg0 + 0xA8) = word2;
+                *(unsigned int *)((char *)arg0 + 0xAC) = word3;
+                *(unsigned int *)((char *)arg0 + 0xB0) = word4;
+                *(unsigned char *)((char *)arg0 + 0xB4) = byte5;
+                *(unsigned int *)((char *)arg0 + 0xB8) = word6;
                 *(unsigned char *)((char *)arg0 + 0x9C) = 1;
                 update = 1;
             }
         } else {
-            float score = *(float *)((char *)arg0 + 0x278) + y;
+            score = *(float *)((char *)arg0 + 0x278) + y;
             if (score > *(float *)((char *)arg0 + 0x94)) {
+                word6 = *(unsigned int *)((char *)arg1 + 0);
+                byte5 = *(unsigned int *)((char *)arg1 + 4);
+                word4 = *(unsigned int *)((char *)arg1 + 8);
+                word3 = *(unsigned int *)((char *)arg1 + 0xC);
+                word2 = *(unsigned int *)((char *)arg1 + 0x10);
+                word1 = *(unsigned char *)((char *)arg1 + 0x14);
+                word0 = *(unsigned int *)((char *)arg1 + 0x18);
                 *(float *)((char *)arg0 + 0x94) = score;
-                *(unsigned int *)((char *)arg0 + 0x78) = *(unsigned int *)((char *)arg1 + 0);
-                *(unsigned int *)((char *)arg0 + 0x7C) = *(unsigned int *)((char *)arg1 + 4);
-                *(unsigned int *)((char *)arg0 + 0x80) = *(unsigned int *)((char *)arg1 + 8);
-                *(unsigned int *)((char *)arg0 + 0x84) = *(unsigned int *)((char *)arg1 + 0xC);
-                *(unsigned int *)((char *)arg0 + 0x88) = *(unsigned int *)((char *)arg1 + 0x10);
-                *(unsigned char *)((char *)arg0 + 0x8C) = *(unsigned char *)((char *)arg1 + 0x14);
-                *(unsigned int *)((char *)arg0 + 0x90) = *(unsigned int *)((char *)arg1 + 0x18);
+                *(unsigned int *)((char *)arg0 + 0x78) = word6;
+                *(unsigned int *)((char *)arg0 + 0x7C) = byte5;
+                *(unsigned int *)((char *)arg0 + 0x80) = word4;
+                *(unsigned int *)((char *)arg0 + 0x84) = word3;
+                *(unsigned int *)((char *)arg0 + 0x88) = word2;
+                *(unsigned char *)((char *)arg0 + 0x8C) = word1;
+                *(unsigned int *)((char *)arg0 + 0x90) = word0;
                 *(unsigned char *)((char *)arg0 + 0x74) = 1;
                 update = 1;
             }
         }
     }
     if (update) {
+        positionWord = *(unsigned int *)((char *)arg1 + 0x18);
         *(float *)((char *)arg0 + 0xCC) = y;
         *(float *)((char *)arg0 + 0xD8) = z;
-        *(unsigned int *)((char *)arg0 + 0xDC) = *(unsigned int *)((char *)arg1 + 0x18);
+        *(unsigned int *)((char *)arg0 + 0xDC) = positionWord;
     }
     if (y > lbl_80562144)
         ++*(int *)((char *)arg0 + 0xC0);
@@ -1538,7 +1582,7 @@ int fn_8019703C(void *arg0, void *arg1) {
         ++*(int *)((char *)arg0 + 0x98);
     return 0;
 }
-
+#pragma scheduling on
 void fn_801971AC(void *arg0, void *arg1) {
     extern float lbl_80562264;
     float sp18[2];
@@ -1711,50 +1755,69 @@ void fn_80197BD0(void *arg0, void *arg1) {
 extern float lbl_80562184, lbl_80562290, lbl_80562294;
 extern float lbl_8055A48C;
 extern void fn_8019813C(void *, void *, float, float);
+#pragma scheduling invalid_target
 int fn_80197FE4(void *arg0, void *arg1) {
-    int result = 0;
-    float speed;
-    float x;
-    float y;
-    float z;
-    float limit;
-    float bound;
-    void *entry;
-    int allowed;
+    int special;
+    int mode;
+    int between;
+    int x_ok;
     int in_range;
     int angle_ok;
+    int allowed;
+    int result = 0;
+    float z_limit;
+    float upper;
+    float speed;
+    float projected_x;
+    float projected_z;
+    float lower;
+    void *entry;
+    extern float lbl_8055A48C, lbl_8055A488;
+    extern float lbl_80562184, lbl_8056215C, lbl_80562140;
+    extern float lbl_80562290, lbl_80562294;
+    extern void *lbl_804349C0[];
 
-    if (*((int *)((char *)arg0 + 0x2D0)) & 4)
-        return 0;
+    if (!(*(int *)((char *)arg0 + 0x2D0) & 4)) {
+        special = 1;
+        z_limit = lbl_80562290 * lbl_8055A488;
+        upper = lbl_8055A48C + lbl_80562184 * lbl_8055A48C;
+        mode = *(int *)((char *)arg0 + 0x268);
+        if (mode != 0 && mode != 3)
+            special = 0;
+        if (special)
+            speed = lbl_8056215C;
+        else
+            speed = lbl_80562140;
+        *(float *)((char *)arg0 + 0x134) = speed;
 
-    speed = (*((int *)((char *)arg0 + 0x268)) == 0 ||
-             *((int *)((char *)arg0 + 0x268)) == 3)
-                ? lbl_8056215C : lbl_80562140;
-    *(float *)((char *)arg0 + 0x134) = speed;
+        projected_x = speed * *(float *)((char *)arg1 + 0x10);
+        projected_x += *(float *)((char *)arg1 + 8);
+        projected_z = speed * *(float *)((char *)arg1 + 0x0C);
+        projected_z += *(float *)((char *)arg1 + 4);
+        x_ok = *(float *)((char *)arg1 + 8) < lbl_8056215C * lbl_8055A48C;
+        in_range = 0;
+        between = 0;
+        if (projected_x < upper) {
+            lower = lbl_80562294 * lbl_8055A48C;
+            if (projected_x > lower)
+                between = 1;
+        }
+        if (between && x_ok)
+            in_range = 1;
+        angle_ok = (float)__fabs((double)projected_z) < z_limit;
 
-    x = *(float *)((char *)arg1 + 8);
-    y = *(float *)((char *)arg1 + 0x10);
-    z = *(float *)((char *)arg1 + 0x0C);
-    limit = lbl_8055A48C + lbl_80562184 * lbl_8055A48C;
-    bound = lbl_80562294 * lbl_8055A48C;
-    in_range = (x < lbl_8056215C * lbl_8055A48C) &&
-               (x + speed * y < limit) &&
-               (x + speed * y > bound);
-    angle_ok = __fabs(*(float *)((char *)arg1 + 4) + speed * z) <
-               lbl_80562290 * lbl_8055A488;
-
-    entry = lbl_804349C0[*(int *)((char *)arg1 + 0x18)];
-    allowed = 1;
-    if (entry != 0 && *((u8 *)entry + 0x2A5) != 0)
-        allowed = 0;
-    if (allowed && in_range && angle_ok) {
-        fn_8019813C(arg0, arg1, x, x + speed * y);
-        result = 1;
+        entry = lbl_804349C0[*(int *)((char *)arg1 + 0x18)];
+        allowed = 1;
+        if (entry && *((unsigned char *)entry + 0x2A5))
+            allowed = 0;
+        if (allowed && in_range && angle_ok) {
+            fn_8019813C(arg0, arg1, *(float *)((char *)arg1 + 8), projected_x);
+            result = 1;
+        }
     }
     return result;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8019813C(void *arg0, void *arg1, float arg2, float arg3) {
     int should_update = 1;
     float event_time;
