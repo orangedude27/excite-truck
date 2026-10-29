@@ -621,7 +621,6 @@ extern "C" void fn_800E2F84(void *self) {
 extern double lbl_80560F28;
 #pragma pop
 #pragma push
-#pragma scheduling invalid_target
 extern "C" f32 fn_800E310C(void *arg0) {
     float result;
     int a = *(int *)((char *)arg0 + 0x6C50);
