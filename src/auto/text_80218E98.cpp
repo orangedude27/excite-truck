@@ -1194,6 +1194,37 @@ extern "C" void fn_8021ACC0(void *arg0, s32 arg1) {
         fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
 }
 
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_8021AD10(void *arg0) {
+    s32 value;
+    s32 screenX;
+    s32 screenY;
+
+    if (*(u8 *)((u8 *)arg0 + 0x18) != 0) {
+        value = (*(u8 *)((u8 *)arg0 + 0x244) != 0) + 2;
+    } else {
+        value = 0;
+    }
+
+    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250)) == 3 && value == 3) {
+        value = 1;
+    }
+
+    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250)) > 0) {
+        value %= fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
+    }
+
+    screenX = *(s32 *)((u8 *)arg0 + 4) -
+        ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1);
+    screenY = ((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1) -
+        *(s32 *)((u8 *)arg0 + 8);
+
+    fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), value,
+        (f32)screenX, (f32)screenY, lbl_805634A8);
+}
+#pragma scheduling on
+#pragma pop
 extern "C" f32 lbl_805634EC;
 #pragma ppc_psq_save on
 #pragma scheduling invalid_target
@@ -2286,15 +2317,14 @@ extern "C" void *fn_8021E0C0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     *(void **)arg0 = vtable;
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
     *(f32 *)((u8 *)arg0 + 0x264) = alpha;
-    s32 stride;
-    s32 count = arg4 / (stride = fn_8022B620(7, (const char *)&lbl_8055B880) + 2);
+    s32 stride = fn_8022B620(7, (const char *)&lbl_8055B880) + 2;
     *(void **)((u8 *)arg0 + 0x244) = arg5;
     *(s32 *)((u8 *)arg0 + 0x258) = stride;
     *(void **)((u8 *)arg0 + 0x25C) = arg6;
     *(void **)((u8 *)arg0 + 0x248) = arg7;
-    *(s32 *)((u8 *)arg0 + 0x254) = count;
     *(s32 *)((u8 *)arg0 + 0x250) = arg3 / 8;
-    if (arg7 != 0) {
+    *(s32 *)((u8 *)arg0 + 0x254) = arg4 / stride;
+    if (arg7) {
         *(u32 *)arg7 = *(u32 *)((u8 *)arg5 + 8);
         *(s32 *)((u8 *)arg7 + 4) = *(s32 *)((u8 *)arg0 + 0x254);
         fn_80219440(arg0, 0, arg7, 0xC);
@@ -3428,10 +3458,11 @@ done:
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
-extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
+extern "C" void fn_80222234(void *obj, register s32 x, register s32 y) {
     s32 left, current, top, count, row, col;
     s32 *state = (s32 *)obj;
     s32 *items;
+    s32 *entry;
     if (*((u8 *)obj + 0x248) == 0) return;
     items = *(s32 **)((u8 *)obj + 0x244);
     current = state[0x24C / 4];
@@ -3453,10 +3484,12 @@ extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
     left = state[1];
     if (x < current * 50 + left) goto fail_x;
     if (x > (current + 1) * 50 + left) goto fail_x;
-    items = (s32 *)((u8 *)*(void **)((u8 *)obj + 0x244) + current * 0x24);
-    row = (y - top - 10) / 10;
+    y -= top;
+    items = *(s32 **)((u8 *)obj + 0x244);
+    row = (y - 10) / 10;
+    entry = *(s32 **)((u8 *)items + current * 0x24);
     if (row < 0) goto fail_row;
-    if (row >= items[2]) goto fail_row;
+    if (row >= entry[2]) goto fail_row;
     state[0x250 / 4] = row;
     return;
 fail_x:
