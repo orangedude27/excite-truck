@@ -1947,7 +1947,13 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(
     } while (index < entries[0]);
 }
 
-extern "C" void fn_800FDE60(void);
+extern "C" void *fn_800FDE60(void);
+extern "C" void *Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(void *manager);
+extern "C" void AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(void *manager, void *task, s32 priority);
+extern "C" s32 fn_800FE0DC(void *manager);
+extern "C" void *fn_800FE648(void);
+extern "C" void fn_800FE804(void *arg0);
+extern "C" char lbl_80325684[];
 extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(unsigned long);
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
 extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *);
