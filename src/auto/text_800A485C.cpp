@@ -3490,8 +3490,12 @@ extern "C" s32 fn_800AF144(void *arg0) {
     u8 *temp_r4;
     u8 *entry;
     u32 temp_r5;
+    typedef s32 (*A8D08Full)(s32, void **, s32 *, s32, s32 *);
+    typedef s32 (*A8D08Call)(void *, s32, void **, s32 *);
+    A8D08Full fnRead;
     if (*(u16 *)((u8 *)arg0 + 0x1FAC) & 4) {
-        temp_r3 = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8D08)(arg0, -1, &sp10, &spC);
+        fnRead = fn_800A8D08;
+        temp_r3 = ((A8D08Call)fnRead)(arg0, -1, &sp10, &spC);
         if (temp_r3 != 0)
             return temp_r3;
         temp_r3 = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))fn_800B5324)(
