@@ -4573,43 +4573,37 @@ void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
     }
 }
 
-void btm_read_rssi_complete(u8 *arg0) {
-    u8 spB[6];
-    u8 spA;
-    u8 sp9;
-    s8 sp8;
-    void (*callback)(s8 *);
-    s32 i;
+void btm_read_rssi_complete(u8 *p) {
+    tBTM_CMPL_CB *p_cb;
+    tBTM_RSSI_RESULTS results;
     u16 handle;
-    u8 value;
-    u8 status;
-    u8 *entry;
+    u8 *p_acl_cb;
+    u16 index;
 
-    entry = lbl_803C0F78 + 0x34;
-    callback = *(void (**)(s8 *))(lbl_803C0F78 + 0x5E0);
+    p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0);
+    p_acl_cb = lbl_803C0F78 + 0x34;
     fn_80070F90(lbl_803C0F78 + 0x5C8);
-    *(void (**)(s8 *))(lbl_803C0F78 + 0x5E0) = 0;
-    if (callback != 0) {
-        status = arg0[0];
-        sp9 = status;
-        if (status == 0) {
-            sp8 = 0;
-            value = arg0[3];
-            spA = value;
-            handle = (u16)(arg0[1] + (arg0[2] << 8));
-            if (lbl_803C0F78[0x27C0] >= 4) {
-                fn_8007096C(0xD0003, lbl_80315FBC, (u16)(s8)value, 0);
-            }
-            for (i = 0; i < 4; i++, entry += 0x11C) {
-                if (entry[0x119] != 0 && handle == *(u16 *)entry) {
-                    memcpy(&spB, entry + 8, 6);
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = 0;
+
+    if (p_cb != 0) {
+        results.hci_status = p[0];
+        if (results.hci_status == 0) {
+            results.status = 0;
+            handle = (u16)(p[1] + (p[2] << 8));
+            results.rssi = (s8)p[3];
+            if (lbl_803C0F78[0x27C0] >= 4)
+                ((void (*)(u32, void *, s32, u32))fn_8007096C)(
+                    0xD0003, lbl_80315FBC, results.rssi, results.hci_status);
+            for (index = 0; index < 4; index++, p_acl_cb += 0x11C) {
+                if (p_acl_cb[0x119] != 0 && handle == *(u16 *)p_acl_cb) {
+                    memcpy(results.rem_bda, p_acl_cb + 8, 6);
                     break;
                 }
             }
         } else {
-            sp8 = 0xA;
+            results.status = 0xA;
         }
-        callback(&sp8);
+        (*p_cb)(&results);
     }
 }
 
@@ -14931,6 +14925,37 @@ void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
         *(u16 *)(buf + 2) = 4;
         rfc_send_buf_uih(arg0, 0, buf, buf[0x17], buf[0x16]);
     }
+}
+
+void rfc_send_rpn(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars, s32 mask) {
+    u8 *buf;
+    u8 *p_data;
+    s32 sign;
+
+    buf = (u8 *)GKI_getpoolbuf(2);
+    if (buf == NULL)
+        return;
+    *(u16 *)(buf + 4) = 0xC;
+    sign = -is_command | is_command;
+    p_data = (u8 *)((u32)buf + 0x15);
+    buf[0x14] = (u8)(((sign >> 31) & 2) | 0x91);
+    if (p_pars == NULL) {
+        p_data[0] = 3;
+        p_data[1] = (u8)((((u8)dlci) << 2) | 3);
+        *(u16 *)(buf + 2) = 3;
+    } else {
+        p_data[0] = 0x11;
+        p_data[1] = (u8)((((u8)dlci) << 2) | 3);
+        p_data[2] = p_pars[0];
+        p_data[3] = (u8)(p_pars[1] | (p_pars[2] << 2) | (p_pars[3] << 3) | (p_pars[4] << 4));
+        p_data[4] = p_pars[5];
+        p_data[5] = p_pars[7];
+        p_data[6] = p_pars[8];
+        p_data[7] = (u8)mask;
+        p_data[8] = (u8)(((u16)mask) >> 8);
+        *(u16 *)(buf + 2) = 0xA;
+    }
+    rfc_send_buf_uih(p_mcb, 0, (BT_HDR *)buf);
 }
 
 void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
