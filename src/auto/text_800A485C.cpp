@@ -4281,7 +4281,7 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
 }
 
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
-extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
+extern "C" s32 fn_800B5618(void *, void *, u32, u16, s32);
 extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4) {
     u8 *obj = (u8 *)arg0;
     u8 *ctx = (u8 *)arg3;
@@ -5323,7 +5323,7 @@ extern "C" s32 fn_800B6928(s8);
 s32 fn_800AE4C0(s32, s32, s32);
 extern "C" s32 fn_800B3754(s32, s32 *, s32);
 extern "C" s32 fn_800AF574(void *);
-extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
+extern "C" s32 fn_800B5618(void *, void *, u32, u16, s32);
 extern "C" s32 fn_800B317C(s32 arg0, s32 arg1) {
 extern s32 fn_800B3754(s32, s32 *, s32);
 return fn_800B3754(arg0, (s32 *)arg1, 1) == 0;
@@ -6091,7 +6091,7 @@ extern "C" s32 fn_800B5324(void *arg0, u8 *arg1, u32 arg2, u32 arg3, u32 arg4, u
     return 0;
 }
 
-extern "C" s32 fn_800B5618(void *arg0, void *arg1, u16 arg2, u16 arg3, s32 arg4) {
+extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4) {
     void *page;
     u16 limit;
 
