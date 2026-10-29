@@ -13227,7 +13227,9 @@ BOOLEAN l2cu_create_conn(void *arg0) {
     register u8 *p_lcb_iter;
     register s32 i;
     register BOOLEAN sco_active;
+    u16 log_param;
 
+    *(u32 *)(p_lcb + 4) = 3;
     for (i = 0, p_lcb_iter = lbl_803C4040 + 8;
          i < 4;
          i++, p_lcb_iter += 0x5C) {
@@ -13235,17 +13237,18 @@ BOOLEAN l2cu_create_conn(void *arg0) {
             p_lcb_iter[0x30] == 1) {
             sco_active = btm_is_sco_active_by_bdaddr(p_lcb_iter + 0x2A);
             if (lbl_803C4040[0] >= 3) {
-                fn_80070954(0x80002, lbl_803191D4,
-                            (u32)(sco_active == 1
-                                      ? lbl_80559080
-                                      : lbl_80559088));
+                if (sco_active == 1)
+                    log_param = (u16)&lbl_80559080;
+                else
+                    log_param = (u16)&lbl_80559088;
+                fn_80070954(0x80002, lbl_803191D4, log_param);
             }
 
             if (sco_active != 1 &&
-                (*(u32 *)(lbl_803C0F78 + 0x640) & 0x20) != 0) {
+                (lbl_803C0F78[0x640] & 0x20) != 0) {
                 *(u32 *)(p_lcb + 4) = 2;
-                BTM_SwitchRole(p_lcb_iter + 0x2A, 0, 0);
                 p_lcb[0x30] = 0;
+                BTM_SwitchRole(p_lcb_iter + 0x2A, 0, 0);
                 btu_start_timer((TIMER_LIST_ENT *)(p_lcb + 0x10), 2, 0xA);
                 return TRUE;
             }
@@ -15257,7 +15260,7 @@ void rfc_port_closed(void *arg0) {
             }
         }
     }
-    port_rfc_closed(arg0, 0x13);
+    port_rfc_closed((struct t_port_info *)arg0, 0x13);
 }
 
 extern char lbl_80319F28[];
