@@ -1364,7 +1364,7 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
 extern "C" int strcmp(const char *, const char *);
 extern "C" const char lbl_80324A8C[];
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw4hbm::snd::SoundArchive::StringTree *arg1, const char *arg2) const {
     const char *str = arg2;
     const StringTreeLayout *tree = (const StringTreeLayout *)arg1;
