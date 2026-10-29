@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include "types.h"
+#include "revolution/OS/OSFastCast.h"
 
 extern char lbl_805600E8;
 extern u8 lbl_805600E9;
@@ -32,6 +33,7 @@ void fn_80127464(void);
   }
   
 #pragma scheduling invalid_target
+#pragma dont_inline on
 s32 fn_802EC4E8(s32 arg0) {
     char sp10[0x40];
     char *base = lbl_8034E9E0;
@@ -49,6 +51,7 @@ s32 fn_802EC4E8(s32 arg0) {
     fn_802E3734(&sp8);
     return temp_r31;
 }
+#pragma dont_inline off
 extern s32 lbl_80558898[];
 extern s32 lbl_805600E0, lbl_805600E4;
 extern u8 lbl_805600EC;
@@ -86,6 +89,66 @@ void *fn_802EC598(void) {
     case 6: return base + 0x90;
     }
 }
+
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_802EC614(void) {
+    // Fix note: set controller flags before GQR setup, then initialize resource and controller buffers in target order.
+    char *base = lbl_8034E9E0;
+    register s32 zero = 0;
+    s32 *config;
+    char *info;
+    void *buffer;
+
+    lbl_805600E9 = zero;
+    lbl_805600EA = zero;
+    OSInitFastCast();
+
+    config = lbl_80558898;
+    config[3] = zero;
+    ((f32 *)config)[1] = lbl_805651E0;
+    ((f32 *)config)[2] = lbl_805651E0;
+    ((f32 *)config)[5] = lbl_805651E0;
+    ((f32 *)config)[6] = lbl_805651E0;
+    config[7] = zero;
+    ((f32 *)config)[9] = lbl_805651E0;
+    ((f32 *)config)[10] = lbl_805651E0;
+    config[11] = zero;
+    ((f32 *)config)[13] = lbl_805651E0;
+    ((f32 *)config)[14] = lbl_805651E0;
+    config[15] = zero;
+    fn_801282EC(0x20);
+
+    info = lbl_80558860;
+    buffer = (void *)fn_8012850C(0x80000, lbl_8055D2F0);
+    *(void **)(info + 0x10) = buffer;
+    memset(buffer, 0, 0x80000);
+    *(s32 *)(info + 0x24) = 0x80000;
+    *(s32 *)(info + 0x1C) = SCGetLanguage();
+    fn_802EC598();
+    *(s32 *)(info + 0x00) = fn_802EC4E8(0);
+    *(s32 *)(info + 0x04) = fn_802EC4E8(0x100);
+    *(s32 *)(info + 0x08) = fn_802EC4E8(0x110);
+    *(s32 *)(info + 0x0C) = fn_802EC4E8(0x11C);
+    *(s32 *)(info + 0x14) = zero;
+    *(s32 *)(info + 0x18) = zero;
+    *(s32 *)(info + 0x20) = zero;
+    ((f32 *)info)[0x2C / 4] = lbl_805651E4;
+    ((f32 *)info)[0x30 / 4] = lbl_805651E8;
+    ((f32 *)info)[0x28 / 4] = lbl_805651EC;
+    fn_801282EC(0x20);
+    fn_801282F4();
+
+    buffer = (void *)fn_8012850C(0x19000, base + 0x128);
+    lbl_805600E0 = (s32)buffer;
+    memset(buffer, zero, 0x19000);
+    lbl_805600E4 = fn_802EC4E8(0x134);
+    fn_800C64F4(info);
+    lbl_805600EC = 1;
+}
+#pragma dont_inline off
+#pragma scheduling on
+
 #pragma scheduling on
 extern void fn_800C657C(void);
 extern void fn_80128670(s32);
