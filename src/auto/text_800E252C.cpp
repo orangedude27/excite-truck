@@ -50,6 +50,14 @@ extern "C" void fn_800E41EC(void);
 extern const char lbl_80321F94[];
 extern const char lbl_80322130[], lbl_80322154[];
 extern unsigned char lbl_80407E60[];
+namespace nw4hbm { namespace ut { namespace detail {
+class LinkListNode;
+class LinkListImpl {
+public:
+    struct Iterator { LinkListNode *node; };
+    void Insert(Iterator, LinkListNode *);
+};
+}}}
 extern const char lbl_80322094[];
 extern const char lbl_80322070[];
 extern const char lbl_80321F80[];
@@ -600,9 +608,9 @@ extern "C" void fn_800E2E24(void *self) {
         if (AIGetDMAStatus() == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x6E, lbl_80321F94);
 
-        void *iterator = (char *)self + 0x24;
         int i = 0;
         int offset = 0;
+        void *iterator;
         do {
             if ((char *)self + offset + 0x2C == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
@@ -1112,8 +1120,8 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
     extern const char lbl_80322040[];
     unsigned int interrupt;
     int valid;
-    void *sentinel;
-    void *node;
+    unsigned int sentinel;
+    unsigned int node;
     void *list;
     unsigned int base;
 
@@ -1128,12 +1136,12 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
         OSRestoreInterrupts(interrupt);
         return;
     }
-    node = *(void **)((char *)list + 4);
-    sentinel = (char *)list + 4;
+    node = *(unsigned int *)((char *)list + 4);
+    sentinel = (unsigned int)((char *)list + 4);
     while (node != sentinel) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322064, 0x23D, lbl_80322040);
-        ((Dummy *)((char *)node - 4))->third();
-        node = *(void **)node;
+        ((Dummy *)(node - 4))->third();
+        node = *(unsigned int *)node;
     }
     Clear__Q46nw4hbm2ut6detail12LinkListImplFv(list);
     switch (arg1) {
