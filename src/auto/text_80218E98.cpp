@@ -2284,7 +2284,7 @@ extern "C" void *fn_8021E0C0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     *(void **)arg0 = vtable;
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
     *(f32 *)((u8 *)arg0 + 0x264) = alpha;
-    s32 stride = fn_8022B620(7, lbl_8055B880) + 2;
+    s32 stride = fn_8022B620(7, (const char *)&lbl_8055B880) + 2;
     *(void **)((u8 *)arg0 + 0x244) = arg5;
     *(s32 *)((u8 *)arg0 + 0x258) = stride;
     *(void **)((u8 *)arg0 + 0x25C) = arg6;
@@ -2840,6 +2840,8 @@ void fn_8021FD68(void *arg0, s32 arg1) {
 extern "C" void *fn_8021FF34(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
     f32 temp_f0;
     f32 temp_f2;
+    register f32 start = farg0;
+    register f32 end = farg1;
     s32 temp_r4;
     s32 temp_r8;
 
@@ -2848,11 +2850,11 @@ extern "C" void *fn_8021FF34(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 far
     fn_80218F34(arg0, temp_r4, temp_r8,
                 temp_r4 + *(s32 *)((u8 *)arg1 + 0x14),
                 temp_r8 + *(s32 *)((u8 *)arg1 + 0x18), 0);
-    temp_f2 = farg1 - farg0;
+    temp_f2 = end - start;
     *(void **)arg0 = lbl_8033E7F4;
     *(s32 *)((u8 *)arg0 + 0x244) = arg2;
-    *(f32 *)((u8 *)arg0 + 0x248) = farg0;
-    *(f32 *)((u8 *)arg0 + 0x24C) = farg1;
+    *(f32 *)((u8 *)arg0 + 0x248) = start;
+    *(f32 *)((u8 *)arg0 + 0x24C) = end;
     *(f32 *)((u8 *)arg0 + 0x250) = temp_f2 / (f32)arg3;
     *(s32 *)((u8 *)arg0 + 0x254) =
         ((s32 (*)(void *, void *))fn_802C5130)(lbl_8033D9BC, lbl_8033E7F4);
