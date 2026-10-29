@@ -158,5 +158,6 @@ void fn_8025812C(void) {
         }
     } while (result != -1);
 }
+#pragma scheduling on
 #pragma pop
 
