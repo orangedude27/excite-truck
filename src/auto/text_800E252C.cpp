@@ -1933,44 +1933,58 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void SetLoopEnd__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *self, int index, const void *address, unsigned long length) {
-    extern unsigned int OSDisableInterrupts(void);
-    extern void OSRestoreInterrupts(unsigned int);
-    extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
-    extern const char lbl_803221A8[], lbl_80322438[];
-    unsigned int irq = OSDisableInterrupts();
-    unsigned int start = (unsigned int)address;
-    unsigned int end = (unsigned int)length;
-    unsigned int mode = *(unsigned int *)((char *)self + 0x118);
-    unsigned int i;
-    void *voice;
-    if (start != 0) start += 0x80000000;
-    unsigned int loopEnd = 0;
-    switch (mode) {
-    case 0: {
-        unsigned int n = end - 1;
-        unsigned int q = n / 14;
-        loopEnd = n % 14 + (start << 1) + (q << 4) + 2;
+#pragma scheduling off
+void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int arg1, const void *arg2, unsigned long arg3) {
+    int format;
+    unsigned int interrupt;
+    unsigned int value;
+    unsigned int temp;
+    unsigned int start;
+    int offset;
+    int i;
+    unsigned int *voice;
+    unsigned int end;
+
+    interrupt = OSDisableInterrupts();
+    format = *(int *)((char *)this + 0x118);
+    value = (unsigned int)arg2;
+    if (arg2 != 0) value += 0x80000000;
+    start = 0;
+    switch (format) {
+    case 0:
+        end = (unsigned int)arg3 - 1;
+        temp = end / 14;
+        start = end % 14 + (value * 2) + (temp << 4) + 2;
+        break;
+    case 25:
+        start = value + (unsigned int)arg3 - 1;
+        break;
+    case 10:
+        start = (unsigned int)arg3 + (value >> 1) - 1;
+        break;
+    default:
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
         break;
     }
-    case 25: loopEnd = start + end - 1; break;
-    case 10: loopEnd = end + (start >> 1) - 1; break;
-    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); break;
-    }
-    voice = (char *)self + index * 0x10;
-    unsigned int count = *(unsigned int *)((char *)self + 0x108);
-    for (i = 0; i < count; i++) {
-        void *obj = *(void **)((char *)voice + 0xC);
-        OSDisableInterrupts();
-        *(unsigned short *)((char *)obj + 0x1B8) = (unsigned short)(loopEnd >> 16);
-        *(unsigned short *)((char *)obj + 0x1BA) = (unsigned short)loopEnd;
-        if ((*(unsigned int *)((char *)obj + 0x1C) & 0x800) == 0)
-            *(unsigned int *)((char *)obj + 0x1C) |= 0x4000;
-        OSRestoreInterrupts(0);
-        voice = (char *)voice + 4;
-    }
-    OSRestoreInterrupts(irq);
+    offset = arg1 * 0x10;
+    value = start >> 16;
+    end = start & 0xFFFF;
+    voice = (unsigned int *)((char *)this + offset);
+    i = 0;
+    do {
+        unsigned int *channel = (unsigned int *)*(unsigned int **)((char *)voice + 0xC);
+        unsigned int innerInterrupt = OSDisableInterrupts();
+        *(unsigned short *)((char *)channel + 0x1B8) = value;
+        *(unsigned short *)((char *)channel + 0x1BA) = end;
+        temp = *(unsigned int *)((char *)channel + 0x1C);
+        if (!(temp & 0x800)) *(unsigned int *)((char *)channel + 0x1C) = temp | 0x4000;
+        OSRestoreInterrupts(innerInterrupt);
+        voice = (unsigned int *)((char *)voice + 4);
+        i++;
+    } while (i < *(volatile int *)((char *)this + 0x108));
+    OSRestoreInterrupts(interrupt);
 }
+#pragma scheduling reset
 #pragma pop
 
 #pragma push
@@ -2112,16 +2126,17 @@ extern "C" void *memcpy(void *, const void *, unsigned int);
 extern "C" void *memset(void *, int, unsigned int);
 extern "C" void fn_80033918(void *, void *);
 extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4) {
+    struct Message { const char bytes[1]; };
     unsigned char sp8[0x28];
-    const char *message = lbl_803221A8;
+    const Message *message = (const Message *)lbl_803221A8;
     void **entry;
     int i;
     if (arg1 >= 2)
-        Panic__Q26nw4hbm2dbFPCciPCce(message, 0x434, message + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce(message->bytes, 0x434, message->bytes + 0x258);
     switch (arg2) {
     case 0:
         if (arg3 == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(message, 0x439, message + 0x2A0);
+            Panic__Q26nw4hbm2dbFPCciPCce(message->bytes, 0x439, message->bytes + 0x2A0);
         memcpy(sp8, arg3, 0x20);
         *(u16 *)(sp8 + 0x20) = *(u16 *)((char *)arg3 + 0x20);
         *(u16 *)(sp8 + 0x22) = *(u16 *)((char *)arg3 + 0x22);
