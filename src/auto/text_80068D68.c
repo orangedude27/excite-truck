@@ -5636,6 +5636,37 @@ BOOLEAN btm_inq_find_bdaddr(BD_ADDR addr) {
     return FALSE;
 }
 
+tINQ_DB_ENT *btm_inq_db_new(BD_ADDR p_bda) {
+    UINT16 xx;
+    u8 *p_ent;
+    u8 *p_old;
+    UINT32 ot;
+    tBTM_INQ_DB_CHANGE_CB *callback;
+
+    p_ent = lbl_803C0F78 + 0x16E4;
+    p_old = p_ent;
+    ot = 0xFFFFFFFF;
+    for (xx = 0; xx < 0xC; xx++, p_ent += 0x1C) {
+        if (!p_ent[0x1A]) {
+            memset(p_ent, 0, 0x1C);
+            memcpy(p_ent + 0xA, p_bda, BD_ADDR_LEN);
+            p_ent[0x1A] = TRUE;
+            return (tINQ_DB_ENT *)p_ent;
+        }
+        if (*(UINT32 *)p_ent < ot) {
+            p_old = p_ent;
+            ot = *(UINT32 *)p_ent;
+        }
+    }
+    callback = *(tBTM_INQ_DB_CHANGE_CB **)(lbl_803C0F78 + 0x16BC);
+    if (callback)
+        (*callback)(p_old + 8, FALSE);
+    memset(p_old, 0, 0x1C);
+    memcpy(p_old + 0xA, p_bda, BD_ADDR_LEN);
+    p_old[0x1A] = TRUE;
+    return (tINQ_DB_ENT *)p_old;
+}
+
 static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_filt_cond) {
     void *p_buf;
     UINT8 condition_length = 6;
