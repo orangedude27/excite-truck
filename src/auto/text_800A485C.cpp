@@ -3688,6 +3688,7 @@ extern "C" s32 fn_800AEBA0(void *arg0, u16 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     }
 }
 
+s32 fn_800AEF6C(void *);
 s32 fn_800AEF6C(void *arg0) { return 0; }
 
 extern "C" void fn_800AF2B8(void *);
@@ -14983,15 +14984,17 @@ extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
 extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     ARCDir dir;
     ARCDirEntry entry;
-    register ARCHandle *h = handle;
-    register const char *n = name;
+    const char *panicFormat;
+    const char *panicFile;
     s32 result = -1;
+    register const char *n = name;
+    register ARCHandle *h = handle;
 
     if (!ARCOpenDir(h, lbl_805597F8, &dir))
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x30, lbl_8031F2E4);
 
-    const char *panicFile = lbl_8031F2C8;
-    const char *panicFormat = lbl_8031F2E4;
+    panicFile = lbl_8031F2C8;
+    panicFormat = lbl_8031F2E4;
 
     while (ARCReadDir(&dir, &entry)) {
         if (entry.isDir) {
