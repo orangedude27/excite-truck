@@ -22,6 +22,8 @@ extern const char *lbl_802F9388[];
 extern char lbl_80559CD8;
 #pragma cplusplus on
 #pragma scheduling invalid_target
+#pragma paired off
+#pragma paired_single off
 extern "C" void fn_8013B7B4(float *arg0, int value) {
     struct List {
         virtual void v0() = 0;
@@ -40,17 +42,15 @@ extern "C" void fn_8013B7B4(float *arg0, int value) {
         virtual void v6() = 0;
         virtual float getFloat(const char *) = 0;
     };
-    int scale = value;
-    float *base = arg0;
-    char *keys = lbl_8032C390;
     const char **table;
+    char *keys = lbl_8032C390;
+    const char **namep;
     float *out;
     void *list;
     void *item;
+    int i;
     const char *name;
     const char *names[3];
-    const char **namep;
-    int i;
     unsigned int j;
 
     list = fn_80131808(keys);
@@ -63,13 +63,13 @@ extern "C" void fn_8013B7B4(float *arg0, int value) {
         names[0] = table[0];
         names[1] = table[1];
         names[2] = table[2];
-        out = base;
+        out = arg0;
         for (j = 0, namep = names; j < 3; j++, namep++, out += 4) {
             if (stricmp(*namep, name) == 0) {
                 out[0] = ((DataItem *)item)->getFloat((const char *)&lbl_80559CD8);
                 out[1] = ((DataItem *)item)->getFloat(keys + 0xC);
                 out[2] = ((DataItem *)item)->getFloat(keys + 0x18);
-                out[3] = (float)scale * ((DataItem *)item)->getFloat(keys + 0x28);
+                out[3] = (float)value * ((DataItem *)item)->getFloat(keys + 0x28);
             }
         }
         i++;
@@ -79,6 +79,8 @@ extern "C" void fn_8013B7B4(float *arg0, int value) {
 error:
     ((void (*)(const char *, ...))fn_802E317C)(keys + 0x38);
 }
+#pragma paired_single reset
+#pragma paired reset
 #pragma scheduling on
 #pragma cplusplus reset
 
