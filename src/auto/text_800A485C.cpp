@@ -118,7 +118,7 @@ extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800ACA5C(void *, void *, u32);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
-/* fn_800B05C8 declaration moved below. */
+extern "C" s32 fn_800B05C8(void *, u16, u32 *, void *);
 class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
 class PaneDrawDispatch { public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
