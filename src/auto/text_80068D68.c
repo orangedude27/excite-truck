@@ -310,14 +310,27 @@ extern u32 lbl_80560D28;
 
 typedef struct {
     void *earlyLine[3];
-    u8 pad0C[0x20];
+    u32 earlyPos[3];
+    u32 earlyLength;
+    u32 earlyMaxLength;
+    f32 earlyCoef[3];
     void *preDelayLine[3];
-    u8 pad38[0x0C];
+    u32 preDelayPos;
+    u32 preDelayLength;
+    u32 preDelayMaxLength;
     void *combLine[3][3];
-    u8 pad68[0x30];
+    u32 combPos[3];
+    u32 combLength[3];
+    u32 combMaxLength[3];
+    f32 combCoef[3];
     void *allpassLine[3][2];
-    u8 padB0[0x18];
+    u32 allpassPos[2];
+    u32 allpassLength[2];
+    u32 allpassMaxLength[2];
     void *lastAllpassLine[3];
+    u32 lastAllpassPos[3];
+    u32 lastAllpassLength[3];
+    u32 lastAllpassMaxLength[3];
 } AXFX_REVERBHI_EXP_FREE_VIEW;
 
 extern u8 lbl_803C0F78[];
