@@ -1820,6 +1820,61 @@ extern "C" s32 GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *arg0, 
     return (s32)((u8 *)self->players + arg1 * 0x48);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" s32 detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(void *self, u32 fileId) {
+    u32 filePos[2];
+    u32 wavePos[4];
+    u32 fileInfo[4];
+    u8 *obj = (u8 *)self;
+    s32 result = ((DummySoundArchiveLookup *)*(void **)(obj + 0x10))->f2();
+    if (result != 0)
+        return result;
+
+    void *source = *(void **)(obj + 0x6C);
+    if (source != 0) {
+        result = ((DummySoundArchiveLookup *)source)->f1(fileId);
+        if (result != 0)
+            return result;
+    }
+
+    typedef s32 (*ReadFileInfoFn)(void *, u32, void *);
+    typedef s32 (*ReadFilePosFn)(void *, u32, u32, void *);
+    typedef s32 (*ReadGroupItemInfoFn)(void *, u32, u32, void *);
+    if (((ReadFileInfoFn)fn_800F2834)(*(void **)(obj + 0x10), fileId, fileInfo) == 0)
+        return 0;
+
+    u32 groupBase;
+    u32 index = 0;
+    while (index < fileInfo[3]) {
+        if (((ReadFilePosFn)fn_800F283C)(*(void **)(obj + 0x10), fileId, index, filePos) != 0) {
+            u32 groupIndex = filePos[0];
+            u32 *waveTable = *(u32 **)(obj + 0x14);
+            if (waveTable == 0) {
+                if (waveTable == 0)
+                    Warning__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x366, lbl_803251B0);
+                groupBase = 0;
+                goto check_group;
+            }
+            if (groupIndex < waveTable[0])
+                goto get_group_base;
+            groupBase = 0;
+            goto check_group;
+        get_group_base:
+            groupBase = *(u32 *)((u8 *)waveTable + groupIndex * 8 + 8);
+        check_group:
+            if (groupBase != 0 &&
+                ((ReadGroupItemInfoFn)fn_800F282C)(*(void **)(obj + 0x10), filePos[0], filePos[1], wavePos) != 0)
+                return groupBase + wavePos[3];
+        }
+        index++;
+    }
+    return 0;
+}
+#pragma cplusplus reset
+#pragma pop
+
 extern "C" void DetachSound__Q34nw4hbm3snd11SoundHandleFv(void **);
 extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **, void *);
 extern "C" void fn_800E9BA4(void *, s32);
@@ -3133,6 +3188,8 @@ extern "C" s32 fn_800FA77C(s32 arg0) {
     return 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" s32 OSReceiveMessage(void *, void *, s32);
 extern "C" u32 OSGetTick(void);
 extern "C" void fn_800E3228(void);
@@ -3151,23 +3208,23 @@ extern "C" const char lbl_803264AC[];
 extern "C" const char lbl_803264D0[];
 extern "C" void fn_800FA7E0(void *self) {
     u32 message;
-    u8 *p = (u8 *)self;
+    register u8 *p = (u8 *)self;
     for (;;) {
         OSReceiveMessage(p + 0x2338, &message, 1);
         if (message == 1) {
-            void *mutex = p + 0x2320;
+            register void *mutex = p + 0x2320;
             OSLockMutex(mutex);
-            u32 tick = OSGetTick();
+            register u32 tick = OSGetTick();
             Instance__15EmissionManagerFv();
             fn_800E3228();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv();
             fn_80101130();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824();
-            void *sentinel = p + 0x2388;
-            void *node = *(void **)sentinel;
+            register void *sentinel = p + 0x2388;
+            register void *node = *(void **)sentinel;
             do {
-                void *current = node;
+                register void *current = node;
                 node = *(void * volatile *)node;
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
@@ -3175,14 +3232,14 @@ extern "C" void fn_800FA7E0(void *self) {
             } while (node != sentinel);
             UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv();
             fn_800FEB9C();
-            u32 state = OSDisableInterrupts();
+            register u32 state = OSDisableInterrupts();
             Instance__15EmissionManagerFv();
             UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv();
             OSRestoreInterrupts(state);
             *(u32 *)(p + 0x2390) = OSGetTick() - tick;
             node = *(void **)sentinel;
             do {
-                void *current = node;
+                register void *current = node;
                 node = *(void * volatile *)node;
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
@@ -3198,6 +3255,7 @@ extern "C" void fn_800FA7E0(void *self) {
         }
     }
 }
+#pragma pop
 
 #pragma use_lmw_stmw off
 extern "C" void Setup__Q46nw4hbm3snd6detail14StrmBufferPoolFPvUli(void *this_, void *buffer, u32 size, s32 count) {
