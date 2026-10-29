@@ -4352,71 +4352,72 @@ outer_test:
 
 #pragma push
 #pragma ppc_psq_save on
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    register s32 data = arg4;
-    register s32 i;
-    register s32 offset;
-    register s32 zero;
-    register s32 one;
-    register s32 minusOne;
-    register u8 *obj = (u8 *)self;
+    s32 i;
+    s32 offset;
     s32 scratch;
-    u8 *row;
-    s32 count;
+    s32 zero;
+    s32 one;
+    s32 minusOne;
     s32 texture;
+    register f32 defaultValue;
     f32 scale;
     f32 baseValue;
-    register f32 defaultValue;
+    f32 resetValue;
+    f32 lastValue;
 
     fn_80218F34(self, arg1, arg2, 0, 0, 0);
-    count = *(s32 *)(arg3 + 8);
-    *(s32 *)(obj + 0x2CC) = data;
-    *(void **)obj = lbl_8033E4DC;
-    *(s32 *)(obj + 0x2C8) = count;
+    *(s32 *)((u8 *)self + 0x2CC) = arg4;
+    *(void **)self = lbl_8033E4DC;
+    *(s32 *)((u8 *)self + 0x2C8) = *(s32 *)(arg3 + 8);
     texture = ((s32 (*)(const char *, const char *))fn_80232578)(
         (const char *)lbl_8033DA84, lbl_8033E4DC);
     scale = lbl_8056352C;
     i = 0;
     baseValue = lbl_805634A4;
     offset = 0;
-    *(s32 *)(obj + 0x3FC) = texture;
+    *(s32 *)((u8 *)self + 0x3FC) = texture;
     defaultValue = lbl_805634A8;
     zero = 0;
-    *(f32 *)(obj + 0x400) = scale;
+    *(f32 *)((u8 *)self + 0x400) = scale;
     one = 1;
     minusOne = -1;
-    *(f32 *)(obj + 0x404) = baseValue;
+    *(f32 *)((u8 *)self + 0x404) = baseValue;
 
-    do {
-        *(u8 *)(obj + offset + 0x2D0) = zero;
-        if (i < *(s32 *)(obj + 0x2C8)) {
-            scratch = 0;
-            data = ((s32 (*)(void *, s32, s32 *))fn_8022D3F8)((void *)arg3, i, &scratch);
-            if ((scratch & 3) != 1)
-                *(u8 *)(obj + offset + 0x2D0) = one;
-            row = obj + offset;
-            *(s32 *)(row + 0x378) = (scratch >> 2) & 0x3F;
-            {
-                f32 width = fn_8023293C(*(s32 *)(obj + 0x3FC), data, lbl_805634A4);
-                *(f32 *)(row + 0x2F4) = *(f32 *)(obj + 0x404) * width;
-            }
-            *(s32 *)(row + 0x244) = data;
-        } else {
-            row = obj + offset;
-            *(s32 *)(row + 0x244) = zero;
-            *(f32 *)(row + 0x2F4) = defaultValue;
-            *(s32 *)(row + 0x378) = minusOne;
-        }
-        ++i;
-        offset += 4;
-    } while (i < 0x21);
+loop:
+    *(u8 *)((u8 *)self + offset + 0x2D0) = zero;
+    if (i >= *(s32 *)((u8 *)self + 0x2C8)) goto empty;
+    scratch = 0;
+    arg4 = ((s32 (*)(void *, s32, s32 *))fn_8022D3F8)(
+        (void *)arg3, i, &scratch);
+    if ((scratch & 3) != 1)
+        *(u8 *)((u8 *)self + offset + 0x2D0) = one;
+    *(s32 *)((u8 *)self + offset + 0x378) = (scratch >> 2) & 0x3F;
+    {
+        f32 width = fn_8023293C(
+            *(s32 *)((u8 *)self + 0x3FC), arg4, lbl_805634A4);
+        *(f32 *)((u8 *)self + offset + 0x2F4) =
+            *(f32 *)((u8 *)self + 0x404) * width;
+    }
+    *(s32 *)((u8 *)self + offset + 0x244) = arg4;
+    goto next;
+empty:
+    *(s32 *)((u8 *)self + offset + 0x244) = zero;
+    *(f32 *)((u8 *)self + offset + 0x2F4) = defaultValue;
+    *(s32 *)((u8 *)self + offset + 0x378) = minusOne;
+next:
+    ++i;
+    offset += 4;
+    if (i < 0x21) goto loop;
 
-    *(f32 *)(obj + 0x414) = lbl_805634A8;
-    *(f32 *)(obj + 0x410) = lbl_805634A8;
-    *(f32 *)(obj + 0x40C) = lbl_805634A8;
-    *(f32 *)(obj + 0x408) = lbl_80563530;
-    *(u8 *)(obj + 0x41C) = zero;
+    resetValue = lbl_805634A8;
+    lastValue = lbl_80563530;
+    *(f32 *)((u8 *)self + 0x414) = resetValue;
+    *(f32 *)((u8 *)self + 0x410) = resetValue;
+    *(f32 *)((u8 *)self + 0x40C) = resetValue;
+    *(f32 *)((u8 *)self + 0x408) = lastValue;
+    *(u8 *)((u8 *)self + 0x41C) = zero;
     ((void (*)(void *))fn_8022375C)(self);
     return self;
 }
@@ -5745,40 +5746,53 @@ extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     fn_80015B20((void *)handle, &result[0], (void *)handle);
 }
 
+#pragma scheduling invalid_target
 extern "C" void *fn_802270DC(void *arg0, void *arg1) {
-    register u8 *obj = (u8 *)arg0;
-    register u8 *context = (u8 *)arg1;
+    struct Object {
+        void *vtable;
+        s32 width;
+        s32 height;
+        s32 padC;
+        s32 bottom;
+        u8 pad14[0x230];
+        f32 first;
+        f32 second;
+        f32 virtualValue;
+        f32 heightDifference;
+        s32 handle;
+        f32 rate;
+        f32 time;
+        void *resource;
+        u8 active;
+        f32 x;
+        f32 y;
+        u8 flag;
+    };
 
+    Object *self = (Object *)arg0;
+    u8 *context = (u8 *)arg1;
     fn_80218F80();
-    *(void **)obj = &lbl_8033DFB4;
+    self->vtable = lbl_8033DFB4;
+    fn_80230C30(&self->first, &self->second, self->width, self->height);
+    self->heightDifference = (f32)(self->bottom - self->height);
+    self->virtualValue = (f32)((VfObj *)self)->vf28();
 
-    s32 width = *(s32 *)(obj + 4);
-    s32 height = *(s32 *)(obj + 8);
-    fn_80230C30((f32 *)(obj + 0x244), (f32 *)(obj + 0x248),
-                width, height);
-
-    *(f32 *)(obj + 0x250) =
-        (f32)(*(s32 *)(obj + 0x10) - height);
-    *(f32 *)(obj + 0x24c) = (f32)((VfObj *)obj)->vf28();
-
-    *(s32 *)(obj + 0x254) = -1;
+    self->handle = -1;
     if (context + 0x40 != 0)
-        *(s32 *)(obj + 0x254) = fn_802CAC28(context + 0x40, 0);
-
-    s32 handle = *(s32 *)(obj + 0x254);
-    if (handle != -2 && handle == -1)
+        self->handle = fn_802CAC28(context + 0x40, 0);
+    if (self->handle != -2 && self->handle == -1)
         fn_802E30C8(lbl_8033DC20);
 
-    *(f32 *)(obj + 0x258) =
-        (f32)*(u32 *)(context + 0x9c) / lbl_805634C8;
-    *(f32 *)(obj + 0x25c) = fn_8023659C();
-    *(void **)(obj + 0x260) = fn_8022EE9C();
-    *(u8 *)(obj + 0x264) = 1;
-    *(f32 *)(obj + 0x268) = lbl_805634A8;
-    *(f32 *)(obj + 0x26c) = lbl_805634A8;
-    *(u8 *)(obj + 0x270) = *(s32 *)(context + 0xb0) != 0;
-    return obj;
+    self->rate = (f32)*(u32 *)(context + 0x9c) / lbl_805634C8;
+    self->time = fn_8023659C();
+    self->resource = fn_8022EE9C();
+    self->active = 1;
+    self->x = lbl_805634A8;
+    self->y = lbl_805634A8;
+    self->flag = *(s32 *)(context + 0xb0) != 0;
+    return self;
 }
+#pragma scheduling on
 
 #pragma pop
 extern "C" void fn_80227244(void *arg0, s32 arg1) {
