@@ -10,7 +10,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
-namespace nw4hbm { namespace snd { namespace detail { struct WaveSoundInfo; struct WaveSoundNoteInfo; struct WaveData; } class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); class WsdCallback { public: s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, s32, s32, u32) const; s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, int, int, u32) const; }; }; namespace detail { class StrmPlayer { public: struct StrmHeader; void Pause(bool); void Setup(const StrmHeader *); s32 AllocChannels(int, int); }; class SoundThread { public: s32 Shutdown(); }; } } }
+namespace nw4hbm { namespace snd { namespace detail { struct WaveSoundInfo; struct WaveSoundNoteInfo; struct WaveData; } class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); class WsdCallback { public: s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, s32, s32, u32) const; s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, int, int, u32) const; }; }; namespace detail { class StrmPlayer { public: struct StrmHeader; void Pause(bool); void Setup(const StrmHeader *); }; class SoundThread { public: s32 Shutdown(); }; } } }
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
 extern "C" void fn_800EAD00(void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
