@@ -2111,7 +2111,7 @@ void fn_801A18D4(void* arg0, f32* arg1, f32* arg2) {
     arg2[0]=maxz; arg2[1]=maxy; arg2[2]=maxx;
 }
 
-extern "C" void fn_8019CF60(void*);
+extern "C" void fn_8019CF60(void*, void*);
 extern "C" void fn_8019DC04(void*, void*);
 extern "C" void fn_8019CE3C(void*, s32);
 extern "C" void fn_802E30C8(const char*, ...);
@@ -2125,7 +2125,7 @@ extern "C" void fn_801A1ABC(void* arg0, void* arg1) {
     case 'RING':
         break;
     case 'FLSR':
-        fn_8019CF60(arg0);
+        fn_8019CF60(arg0, arg1);
         break;
     case 'SPHR':
         fn_8019CE3C(arg1, (s32)arg0);
@@ -3149,23 +3149,28 @@ extern "C" void fn_801EA1E0(void*, s32, f32, f32);
 void fn_801A48E4(void* arg0) {
     struct Matrix { virtual void v0(); virtual void update(); };
     u8* obj = (u8*)arg0;
+    s32 type;
     void* mat;
     f32 scale;
-    f32 sp8, spC, sp10;
+    volatile f32 out[3];
     *(u8*)(obj + 0x40) = 1;
     ((Matrix*)*(void**)(obj + 0x3C))->update();
-    mat = *(void**)(obj + 0x3C);
-    if (*(s32*)((u8*)mat + 0x18) == 0x53504852) {
+    type = *(s32*)((u8*)*(void**)(obj + 0x3C) + 0x18);
+    if (type == 0x53504852) {
+        mat = *(void**)(obj + 0x3C);
         fn_801EA1E0((u8*)mat + 0x38, 0, *(f32*)((u8*)mat + 0x34), *(f32*)((u8*)mat + 0x3C));
         fn_801EA1E0(obj + 0x2C, 0, *(f32*)(obj + 0x28), *(f32*)(obj + 0x30));
     }
-    if (*(s32*)((u8*)mat + 0x18) == 0x54554245) {
+    if (type == 0x54554245) {
         scale = *(f32*)(obj + 0x20) > lbl_805622D0 ? lbl_805622DC : lbl_805622E0;
-        f32 mul = scale * *(f32*)((u8*)mat + 0x28);
-        sp8 = *(f32*)(obj + 0x28) + *(f32*)(obj + 0x1C) * mul;
-        sp10 = *(f32*)(obj + 0x30) + *(f32*)(obj + 0x24) * mul;
-        spC = *(f32*)(obj + 0x2C) + *(f32*)(obj + 0x20) * mul;
-        fn_801EA1E0(obj + 0x2C, 0, sp8, sp10);
+        f32 mul = *(f32*)((u8*)*(void**)(obj + 0x3C) + 0x28) * scale;
+        f32 x = *(f32*)(obj + 0x28) + *(f32*)(obj + 0x1C) * mul;
+        f32 z = *(f32*)(obj + 0x30) + *(f32*)(obj + 0x24) * mul;
+        f32 y = *(f32*)(obj + 0x2C) + *(f32*)(obj + 0x20) * mul;
+        out[0] = x;
+        out[1] = y;
+        out[2] = z;
+        fn_801EA1E0(obj + 0x2C, 0, x, z);
     }
 }
 
