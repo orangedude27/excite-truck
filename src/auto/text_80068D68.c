@@ -44,7 +44,7 @@ extern u8 HID_HostCloseDev(u8);
 static tBTM_STATUS btm_set_inq_event_filter(UINT8, UINT8 *);
 
 typedef struct {
-    u8 pad[0x558];
+    u8 pad[0x554];
     tBTM_PM_RCB pm_reg_db[BTM_MAX_PM_RECORDS + 1];
 } tBTM_PM_REG_DB_MATCH_VIEW;
 
@@ -7008,6 +7008,7 @@ tBTM_PM_PWR_MD *btm_pm_compare_modes(tBTM_PM_PWR_MD *p_md1, tBTM_PM_PWR_MD *p_md
 
 tBTM_PM_MODE btm_pm_get_set_mode(UINT8 pm_id, tBTM_PM_MCB *p_cb, tBTM_PM_PWR_MD *p_mode, tBTM_PM_PWR_MD *p_res) {
     int xx;
+    register tBTM_PM_REG_DB_MATCH_VIEW *reg_db;
     tBTM_PM_PWR_MD *p_md = NULL;
 
     if (p_mode != NULL && p_mode->mode & BTM_PM_MD_FORCE) {
@@ -7016,8 +7017,9 @@ tBTM_PM_MODE btm_pm_get_set_mode(UINT8 pm_id, tBTM_PM_MCB *p_cb, tBTM_PM_PWR_MD 
         return p_res->mode;
     }
 
+    reg_db = (tBTM_PM_REG_DB_MATCH_VIEW *)lbl_803C0F78;
     for (xx = 0; xx < BTM_MAX_PM_RECORDS; xx++) {
-        if (btm_cb.pm_reg_db[xx].mask & BTM_PM_REG_SET) {
+        if (reg_db->pm_reg_db[xx].mask & BTM_PM_REG_SET) {
             if (p_cb->req_mode[xx].mode == BTM_PM_MD_ACTIVE) {
                 return BTM_PM_MD_ACTIVE;
             } else {
