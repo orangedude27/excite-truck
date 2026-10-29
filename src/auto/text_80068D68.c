@@ -47,6 +47,10 @@ typedef struct {
 } tBTM_SEC_DEV_REC_MATCH_VIEW;
 
 typedef struct {
+    char first;
+} tRFCOMM_TRACE_TEXT_VIEW;
+
+typedef struct {
     u8 in_use;
     u8 pad_0x01[9];
     u8 state;
@@ -14342,7 +14346,7 @@ void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
 }
 
 void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
-    register char *messages = lbl_803196B8;
+    register const char *messages = lbl_803196B8;
     void *p_mcb;
     s32 index;
     u16 mcb_lcid;
@@ -14350,7 +14354,7 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
     index = lcid - 0x40;
     if (index >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, lbl_803196B8, lcid);
+            fn_80070954(0x90000, (void *)messages, lcid);
         p_mcb = 0;
     } else {
         p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -14358,7 +14362,7 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
             mcb_lcid = *(u16 *)((u8 *)p_mcb + 0x68);
             if (mcb_lcid != lcid) {
                 if (lbl_803C4828[0x414] >= 2)
-                    fn_8007096C(0x90001, messages + 0x1C, lcid, mcb_lcid);
+                    fn_8007096C(0x90001, (void *)(messages + 0x1C), lcid, mcb_lcid);
                 p_mcb = 0;
             }
         }
@@ -14366,10 +14370,10 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
 
     if (p_mcb == 0) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, messages + 0xE4, lcid);
+            fn_80070954(0x90000, (void *)(messages + 0xE4), lcid);
     } else {
         if (lbl_803C4828[0x414] >= 4)
-            fn_80070954(0x90003, messages + 0x114, lcid);
+            fn_80070954(0x90003, (void *)(messages + 0x114), lcid);
         rfc_process_l2cap_congestion(p_mcb, is_congested);
     }
 }
@@ -17807,6 +17811,35 @@ s32 _intBlkCtrlCb(s32 arg0, void *arg1) {
         if (result < 0) USB_ERR(base + 0x108, lbl_805590A0, arg1, result);
     }
     return arg0;
+}
+
+extern s32 IOS_Open(const char *, s32);
+s32 IUSB_OpenDeviceIds(const char *name, u16 vendorId, u16 productId, s32 *fd) {
+    register char *base = lbl_8031A620;
+    void *block = 0;
+    s32 result;
+
+    if (fd == 0) {
+        result = -4;
+    } else {
+        block = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
+        if (block == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, block);
+        if (block == 0) {
+            USB_ERR(base + 0x160);
+            result = -0x16;
+        } else {
+            snprintf((char *)block + 0x40, 0x40, base + 0x184, name, vendorId, productId);
+            USB_LOG(base + 0x198, (char *)block + 0x40);
+            result = IOS_Open((char *)block + 0x40, 0);
+            USB_LOG(base + 0x1AC, result);
+            *fd = result;
+        }
+    }
+    if (block != 0) {
+        s32 freeResult = iosFree(lbl_805590A0, block);
+        if (freeResult < 0) USB_ERR(base + 0x108, lbl_805590A0, block, freeResult);
+    }
+    return result;
 }
 
 extern s32 lbl_805590A0;
