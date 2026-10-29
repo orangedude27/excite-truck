@@ -528,15 +528,29 @@ extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
 
 extern "C" void fn_80219044(void *arg0) {
     u8 *p = (u8 *)arg0;
+    u8 flag;
+    f32 rate;
+    f32 factor;
+    f32 current;
+    f32 product;
+    f32 threshold;
     f32 value;
 
     if (*(u8 *)(p + 0x1A) != 0) {
         if (*(f32 *)(p + 0x1C) >= lbl_805634A8) {
-            value = *(f32 *)(p + 0x1C) - *(f32 *)(p + 0x24) * fn_80214D48();
+            rate = fn_80214D48();
+            factor = *(f32 *)(p + 0x24);
+            current = *(f32 *)(p + 0x1C);
+            product = factor * rate;
+            threshold = lbl_805634AC;
+            value = current - product;
             *(f32 *)(p + 0x1C) = value;
-            if (value <= lbl_805634AC) {
-                if (*(u8 *)(p + 0x1A) != 0) {
-                    *(u8 *)(p + 0x234) = 1;
+            if (threshold >= value) {
+                flag = *(u8 *)(p + 0x1A);
+                if (flag != 0) {
+                    if (flag != 0) {
+                        *(u8 *)(p + 0x234) = 1;
+                    }
                     *(u8 *)(p + 0x1A) = 0;
                 }
                 *(f32 *)(p + 0x1C) = lbl_805634A0;
@@ -548,10 +562,16 @@ extern "C" void fn_80219044(void *arg0) {
 
     if (*(u8 *)(p + 0x1A) == 0) {
         if (*(f32 *)(p + 0x20) >= lbl_805634A8) {
-            value = *(f32 *)(p + 0x20) - *(f32 *)(p + 0x28) * fn_80214D48();
+            rate = fn_80214D48();
+            factor = *(f32 *)(p + 0x28);
+            current = *(f32 *)(p + 0x20);
+            product = factor * rate;
+            threshold = lbl_805634AC;
+            value = current - product;
             *(f32 *)(p + 0x20) = value;
-            if (value <= lbl_805634AC) {
-                if (*(u8 *)(p + 0x1A) == 0) {
+            if (threshold >= value) {
+                flag = *(u8 *)(p + 0x1A);
+                if (flag == 0) {
                     *(u8 *)(p + 0x1A) = 1;
                     *(u8 *)(p + 0x234) = 1;
                 }
@@ -2443,51 +2463,46 @@ extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_8021E2A0(void *arg0) {
-    void *obj;
-    s32 *dst;
-    f32 v;
-    f32 v2;
+    f32 low, oldValue, delta, value, upper, current, minimum, difference;
     fn_802192AC(arg0);
-    if (*(void **)((u8 *)arg0 + 0x248) == 0 || *(s32 *)((u8 *)arg0 + 0x260) == 0) {
-        *(f32 *)((u8 *)arg0 + 0x264) = lbl_805634A8;
-        return;
-    }
-    v = *(f32 *)((u8 *)arg0 + 0x264) + fn_80214D48();
-    *(f32 *)((u8 *)arg0 + 0x264) = v;
-    if (v < lbl_805634A8) {
-        v = lbl_805634A8;
-        *(f32 *)((u8 *)arg0 + 0x264) = v;
-    } else {
-        v2 = v - lbl_80563504;
-        if (v <= lbl_80563504) {
-            if (lbl_80563510 > v2)
-                v = lbl_80563510;
-            else
-                v = v2;
-            *(f32 *)((u8 *)arg0 + 0x264) = v;
-        } else {
-            obj = *(void **)((u8 *)arg0 + 0x248);
-            dst = *(s32 **)((u8 *)arg0 + 0x25C);
-            s32 add = *(s32 *)((u8 *)obj + 8) + *(s32 *)((u8 *)arg0 + 0x260);
-            *(s32 *)((u8 *)obj + 8) = add;
-            s32 max = *(s32 *)((u8 *)obj + 4) - *(s32 *)((u8 *)obj + 0);
-            if (add > max)
-                *(s32 *)((u8 *)obj + 8) = max;
-            if (*(s32 *)((u8 *)obj + 8) < 0)
-                *(s32 *)((u8 *)obj + 8) = 0;
-            if (*(s32 *)((u8 *)arg0 + 0x260) < 0) {
-                *dst = *(s32 *)((u8 *)obj + 8);
-                return;
-            }
-            *dst = *(s32 *)((u8 *)obj + 8) + *(s32 *)((u8 *)obj + 4) - 1;
-            return;
-        }
-    }
+    if (*(void **)((u8 *)arg0 + 0x248) == 0) goto reset;
+    if (*(s32 *)((u8 *)arg0 + 0x260) == 0) goto reset;
+    delta = fn_80214D48();
+    oldValue = *(f32 *)((u8 *)arg0 + 0x264);
+    low = lbl_805634A8;
+    value = oldValue + delta;
+    *(f32 *)((u8 *)arg0 + 0x264) = value;
+    if (value < low) goto adjust;
+    if (value >= lbl_80563504) goto adjust;
+    goto done;
+adjust:
+    current = *(f32 *)((u8 *)arg0 + 0x264);
+    upper = lbl_80563504;
+    minimum = lbl_80563510;
+    difference = current - upper;
+    minimum = (minimum > difference) ? minimum : difference;
+    *(f32 *)((u8 *)arg0 + 0x264) = minimum;
+    s32 add;
+    s32 max;
+    s32 *obj;
+    obj = *(s32 **)((u8 *)arg0 + 0x248);
+    add = obj[2] + *(s32 *)((u8 *)arg0 + 0x260);
+    obj[2] = add;
+    max = obj[0] - obj[1];
+    if (add > max) obj[2] = max;
+    if (obj[2] < 0) obj[2] = 0;
     if (*(s32 *)((u8 *)arg0 + 0x260) < 0) {
-        *dst = *(s32 *)((u8 *)obj + 8);
-        return;
+        obj = *(s32 **)((u8 *)arg0 + 0x248);
+        *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = obj[2];
+        goto done;
     }
-    *dst = *(s32 *)((u8 *)obj + 8) + *(s32 *)((u8 *)obj + 4) - 1;
+    obj = *(s32 **)((u8 *)arg0 + 0x248);
+    *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = obj[2] + obj[1] - 1;
+    goto done;
+reset:
+    *(f32 *)((u8 *)arg0 + 0x264) = lbl_805634A8;
+done:
+    ;
 }
 
 extern "C" s32 fn_8022D3F8(s32, s32, s32 *, s32, s32);
@@ -2911,6 +2926,37 @@ third:
 second:
 done:
     return r7;
+}
+
+extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
+    s32 *temp_r5;
+    s32 temp_r31;
+    s32 temp_r30;
+    s32 temp_r29;
+    s32 var_r28;
+
+    fn_802C3034(arg1);
+    ((void (*)(void *, s32))fn_802192A0)(arg0, arg1);
+
+    temp_r29 = (s32)(((f32)(((VfObj *)arg0)->vf28() - 11) *
+        (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
+        (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
+
+    var_r28 = 0;
+    temp_r5 = *(s32 **)((u8 *)arg0 + 0x274);
+    if (temp_r5 != 0) {
+        if (*temp_r5 == *(s32 *)((u8 *)arg0 + 0x278)) {
+            var_r28 = 1;
+            temp_r31 = *(s32 *)((u8 *)arg0 + 8);
+            temp_r30 = *(s32 *)((u8 *)arg0 + 4);
+            fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C),
+                temp_r30, temp_r31, ((VfObj *)arg0)->vf28(), var_r28);
+        }
+    }
+
+    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x260),
+        *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5,
+        temp_r29, var_r28);
 }
 
 extern "C" s32 fn_802C5334(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
