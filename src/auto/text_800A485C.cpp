@@ -3821,6 +3821,56 @@ extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4)
     return saved;
 }
 
+extern "C" s32 fn_800B0258(void *arg0, s32 arg1, s32 *arg2) {
+    u32 value;
+    u32 index;
+    u16 offset;
+    s32 result;
+    u32 retry = 1;
+    s32 *output = arg2;
+    void *object = arg0;
+    u16 flags = *(u16 *)((u8 *)object + 0x18);
+    u32 scaled = (u32)arg1 * 4;
+
+    index = (u16)(*(u32 *)((u8 *)object + 0x28) +
+                  (scaled >> *(u8 *)((u8 *)object + 0x20)));
+    offset = (u16)(scaled & (*(u16 *)object - 1));
+    if (flags & 0x80)
+        retry = flags & 7;
+loop:
+    result = fn_800B5260(object, &value, index, offset, 4);
+    if (result == 0x1000) {
+        s32 (*callback)(void *) =
+            *(s32 (**)(void *))((u8 *)object + 0x1FC0);
+        if (callback != 0) {
+            s32 callbackResult = callback(*(void **)((u8 *)object + 0x1F84));
+            if (callbackResult == 0)
+                goto retryCheck;
+            if (callbackResult == 1 &&
+                *(u8 *)((u8 *)object + 0x22) >= 2 &&
+                retry < *(u8 *)((u8 *)object + 0x22)) {
+                retry++;
+                index += *(u32 *)((u8 *)object + 0xC);
+                goto retryCheck;
+            }
+        }
+    }
+    if (result != 0) {
+        *output = -1;
+        return result;
+    }
+retryCheck:
+    if (result == 0) {
+        u32 upper = __rlwinm(value, 8, 8, 15);
+        u32 lower = __rlwinm(value, 24, 16, 23);
+        upper = __rlwimi(upper, value, 24, 0, 7);
+        lower = __rlwimi(lower, value, 8, 24, 31);
+        *output = (upper | lower) & 0x0FFFFFFF;
+        return 0;
+    }
+    goto loop;
+}
+
 extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2) {
     u8 *obj = (u8 *)arg0;
     u32 sp8;
@@ -6994,11 +7044,11 @@ extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
     return 0;
 }
 
-extern "C" s32 fn_800B94EC(register s32 arg0, register s32 arg1) {
-    /* Fix note: carry the two incoming values in registers and return immediately after the first free slot. */
-    register u8 *base = (u8 *)lbl_80405D18;
+extern "C" s32 fn_800B94EC(s32 arg0, s32 arg1) {
+    /* Fix note: keep the slot counter full-width between scans and truncate only its table index. */
+    u8 *base = (u8 *)lbl_80405D18;
     u32 initCount;
-    register u32 i;
+    u32 i;
 
     if ((u32)fn_800A4A8C(arg0) >= 0x4C)
         return -0x14;
