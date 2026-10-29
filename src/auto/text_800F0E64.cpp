@@ -1039,7 +1039,7 @@ extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
-namespace nw4hbm { namespace snd { class SoundArchive { public: class SoundInfo; class StringTree; }; namespace detail { class SoundArchiveFileReader { public: s32 GetSoundType(u32) const; BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; s32 ConvertLabelStringToId(const SoundArchive::StringTree *, const char *) const; }; } } }
+namespace nw4hbm { namespace snd { namespace detail { class SoundArchiveFile { public: class StringTree; }; } class SoundArchive { public: class SoundInfo; typedef detail::SoundArchiveFile::StringTree StringTree; }; namespace detail { class SoundArchiveFileReader { public: s32 GetSoundType(u32) const; BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; s32 ConvertLabelStringToId(const SoundArchive::StringTree *, const char *) const; }; } } }
 extern "C" const char lbl_80324DE4[];
 extern "C" const char lbl_80324E10[];
 extern "C" char lbl_805598C8;
@@ -1363,11 +1363,11 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
 
 extern "C" int strcmp(const char *, const char *);
 extern "C" const char lbl_80324A8C[];
-extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(void *arg0, void *arg1, s32 arg2) {
+s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw4hbm::snd::SoundArchive::StringTree *arg1, const char *arg2) const {
     const StringTreeNodeLayout *node;
-    const char *str = (const char *)arg2;
+    const char *str = arg2;
     const StringTreeLayout *tree = (const StringTreeLayout *)arg1;
-    const SoundArchiveFileReaderLayout *reader = (const SoundArchiveFileReaderLayout *)arg0;
+    const SoundArchiveFileReaderLayout *reader = (const SoundArchiveFileReaderLayout *)this;
     if (tree == 0)
         return -1;
     u32 index = tree->nodeCount;
