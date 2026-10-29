@@ -2094,27 +2094,28 @@ extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *arg0, s32 arg1) {
     }
 }
 
-extern s32 fn_800AF2CC(void *, u32, s32, s32 *, u32 *, s32);
 extern "C" s32 VFiPFFAT_TraceClustersChain(void *, s32, s32 *);
 extern "C" s32 fn_800AF584(void *);
-extern "C" s32 fn_800A9470(void *arg0, void *output) {
+extern "C" s32 fn_800AF2CC(void *, u32, s32, s32 *, u32 *, s32);
+extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
     u8 *context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
     s32 flags = *(s32 *)context;
-    s32 error;
+    s32 *out = (s32 *)arg1;
     void *entry;
-    u32 count = *(u32 *)(context + 0x270);
+    u32 count;
     u32 size;
     u32 first;
     u32 steps;
-    u32 last;
+    u32 remainder;
     s32 aligned;
+    u32 total;
     s32 current;
-    s32 i;
     s32 next;
     s32 chainEnd;
+    s32 i;
+    s32 error;
     s32 sp10;
     u32 spC;
-    s32 *out = (s32 *)output;
 
     *out = 0;
     if ((flags & 1) != 0 && (flags & 2) == 0)
@@ -2125,40 +2126,42 @@ extern "C" s32 fn_800A9470(void *arg0, void *output) {
     else
         entry = *(void **)(context + 0x268);
 
+    count = *(u32 *)(context + 0x270);
     size = (u32)*(u16 *)entry << *((u8 *)entry + 0x21);
     if (count == 0)
         return 0;
 
     first = *(u32 *)(context + 0x264);
     steps = *(u32 *)(context + 0x14);
-    last = first % size;
-    aligned = first + ((s32)(-((s32)last) | (s32)last) >> 31 & (s32)(size - last));
+    remainder = first % size;
+    aligned = first + ((s32)(-((s32)remainder) | (s32)remainder) >> 31 &
+                       (s32)(size - remainder));
 
     if (steps != 0) {
-        *out = (steps + 1) * size - aligned;
-        return 0;
-    }
-
-    if (first != 0) {
-        error = fn_800AF2CC(context + 4, count, first, &sp10, &spC, (s32)context);
-        if (error != 0)
-            return error;
-        current = spC;
+        total = (steps + 1) * size;
     } else {
-        current = count;
-    }
+        if (first != 0) {
+            error = fn_800AF2CC(context + 4, count, first, &sp10, &spC, (s32)context);
+            if (error != 0)
+                return error;
+            current = (s32)spC;
+        } else {
+            current = (s32)count;
+        }
 
-    chainEnd = fn_800AF584(entry);
-    i = 0;
-    while (current != chainEnd) {
-        error = VFiPFFAT_TraceClustersChain(entry, current, &next);
-        if (error != 0)
-            return error;
-        current = next;
-        spC = (u32)current;
-        i++;
+        chainEnd = fn_800AF584(entry);
+        i = 0;
+        while (current != chainEnd) {
+            i++;
+            error = VFiPFFAT_TraceClustersChain(entry, current, &next);
+            if (error != 0)
+                return error;
+            current = next;
+            spC = (u32)current;
+        }
+        total = (u32)i * size;
     }
-    *out = i * size;
+    *out = (s32)(total - (u32)aligned);
     return 0;
 }
 
@@ -7164,8 +7167,11 @@ extern "C" u8 lbl_80405D58[];
 extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
     u16 index;
     u8 *entry;
-    void *found = 0;
+    u8 *found = 0;
+    u8 *out = (u8 *)arg1;
+    u32 size;
     u32 sectors;
+    u32 groups;
     u32 temp;
     s32 deltaA;
     s32 deltaB;
@@ -7192,15 +7198,17 @@ extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    sectors = (*(u32 *)((u8 *)found + 0x54)) >> 9;
-    *(volatile u8 *)((u8 *)arg1 + 7) = 0x3F;
-    *(volatile u8 *)((u8 *)arg1 + 6) = 0xFF;
-    *(volatile u32 *)((u8 *)arg1 + 0xC) = 0;
-    *(volatile u32 *)((u8 *)arg1 + 0x10) = 0;
-    *(volatile u32 *)arg1 = sectors;
-    *(volatile u16 *)((u8 *)arg1 + 8) = 0x200;
-    temp = ((sectors / 255) / 63) >> 9;
-    *(volatile u16 *)((u8 *)arg1 + 4) = temp;
+    size = *(u32 *)(found + 0x54);
+    sectors = size >> 9;
+    groups = sectors / 255;
+    *(volatile u8 *)(out + 7) = 0x3F;
+    *(volatile u8 *)(out + 6) = 0xFF;
+    *(volatile u32 *)(out + 0xC) = 0;
+    *(volatile u32 *)(out + 0x10) = 0;
+    *(volatile u32 *)out = sectors;
+    *(volatile u16 *)(out + 8) = 0x200;
+    temp = (groups / 63) >> 9;
+    *(volatile u16 *)(out + 4) = temp;
     fn_800B8048(lbl_8055DD30);
     return 0;
 }
