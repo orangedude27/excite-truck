@@ -2773,6 +2773,55 @@ extern "C" s32 fn_800AAEFC(s32 arg0, void *arg1) {
     return 0;
 }
 
+extern "C" const char lbl_8031B168[];
+extern "C" s32 fn_800AAF70(void *arg0) {
+    typedef s32 (*LookupPage)(void *, s32, void **, s32 *);
+    typedef s32 (*ReadData)(s32, s32, s32, s32, u16, u32 *, s32);
+    void *sp10;
+    u32 spC;
+    s32 sp8;
+    s32 state;
+    s32 result;
+    u32 var_r30;
+
+    state = *(s32 *)((u8 *)arg0 + 0x1C);
+    if (state == 2) {
+        fn_800AEF6C(arg0);
+        goto finish;
+    }
+    if (state >= 2 || state < 0)
+        return 7;
+
+    result = ((LookupPage)fn_800A8D08)(arg0, -1, &sp10, &sp8);
+    if (result != 0)
+        return result;
+
+    fn_800A499C((const char *)*(void **)((u8 *)sp10 + 8), 0, *(u16 *)arg0);
+    var_r30 = *(u32 *)((u8 *)arg0 + 0x2C);
+    while (var_r30 < *(u32 *)((u8 *)arg0 + 0x30)) {
+        result = ((ReadData)fn_800B5700)((s32)arg0,
+                                        *(s32 *)((u8 *)sp10 + 8),
+                                        (s32)var_r30, 0, *(u16 *)arg0,
+                                        &spC, 0);
+        if (result != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+            return result;
+        }
+        if (spC != *(u16 *)arg0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+            return 0x11;
+        }
+        var_r30++;
+    }
+    VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+
+finish:
+    fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
+    fn_800A52A0(arg0, lbl_8031B168);
+    fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+    return 0;
+}
+
 extern "C" s32 fn_800B5700(s32, void *, s32, u16, u32, u32 *, u32);
 extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1) {
     u8 buf[32];
@@ -3692,7 +3741,7 @@ extern "C" s32 fn_800AEBA0(void *arg0, u16 arg1, u32 arg2, u32 *arg3, s32 arg_sp
 }
 
 s32 fn_800AEF6C(void *);
-s32 fn_800AEF6C(void *arg0) { return 0; }
+extern "C" s32 fn_800AEF6C(void *arg0) { return 0; }
 
 extern "C" void fn_800AF2B8(void *);
 extern "C" void fn_800AF2B8(void *arg0) {
