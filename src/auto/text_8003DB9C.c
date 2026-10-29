@@ -1774,24 +1774,41 @@ void GXSetDispCopyDst(s32 value) {
 }
 
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
-void GXSetTexCopyDst(int width, int height, unsigned int format, int depth) {
-    int tilesX, tilesY, compressed;
-    unsigned int *reg;
-    unsigned int fmt = format & 0xF;
-    __GXData[0x250 / 4] = 0;
-    if (format == 0x13) fmt = 0xB;
+void GXSetTexCopyDst(int width, int height, int format, int depth) {
+    typedef struct {
+        u32 unusedTop : 15;
+        u32 copyMode : 2;
+        u32 unusedMiddle : 5;
+        u32 depthBit : 1;
+        u32 unusedLowMiddle : 2;
+        u32 formatLow : 3;
+        u32 formatHigh : 1;
+        u32 unusedLow : 3;
+    } CopyControlReg;
+    int tilesX;
+    int tilesY;
+    int compressed;
+    register int fmt;
+    register unsigned int *gx;
+    CopyControlReg *reg;
+
+    gx = __GXData;
+    fmt = format & 0xF;
+    if (format == 0x13)
+        fmt = 0xB;
+    *((u8 *)gx + 0x250) = 0;
     if (format == 0x26 || (format < 4 && format >= 0))
-        __GXData[0x24C / 4] = (__GXData[0x24C / 4] & ~0x18000) | 0x18000;
+        ((CopyControlReg *)((u8 *)gx + 0x24C))->copyMode = 3;
     else
-        __GXData[0x24C / 4] = (__GXData[0x24C / 4] & ~0x18000) | 0x10000;
-    reg = &__GXData[0x24C / 4];
-    __GXData[0x250 / 4] = (format >> 4) & 1;
-    *reg = (*reg & ~8) | (fmt & 8);
+        ((CopyControlReg *)((u8 *)gx + 0x24C))->copyMode = 2;
+    reg = (CopyControlReg *)((u8 *)gx + 0x24C);
+    *((u8 *)gx + 0x250) = (format >> 4) & 1;
+    reg->formatHigh = (fmt >> 3) & 1;
     __GetImageTileCount(format, width, height, &tilesX, &tilesY, &compressed);
     __GXData[0x248 / 4] = 0;
-    __GXData[0x248 / 4] = (tilesX * tilesY & 0x3FF) | 0x4D000000;
-    *reg = ((*reg & ~0x200) | ((depth << 9) & 0x200));
-    *reg = (*reg & ~0x70) | ((fmt << 4) & 0x70);
+    __GXData[0x248 / 4] = (tilesX * compressed & 0x3FF) | 0x4D000000;
+    reg->depthBit = depth;
+    reg->formatLow = fmt;
 }
 
 void GXSetDispCopyFrame2Field(s32 value) {
@@ -3484,25 +3501,28 @@ void GXSetNumTevStages(s32 count) {
     __GXData[0x5FC / 4] |= 4;
 }
 
-void GXSetFogRangeAdj(int enable, int center, unsigned short *table) {
-    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
-    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
-    unsigned int a, b, c;
-    if (enable != 0) {
-        *fifo8 = 0x61;
-        a = 0; a |= table[0] & 0xFFF; b = a; b |= table[1] << 12; c = b; c |= 0xE9 << 24; *fifo32 = c;
-        *fifo8 = 0x61;
-        a = 0; a |= table[2] & 0xFFF; b = a; b |= table[3] << 12; c = b; c |= 0xEA << 24; *fifo32 = c;
-        *fifo8 = 0x61;
-        a = 0; a |= table[4] & 0xFFF; b = a; b |= table[5] << 12; c = b; c |= 0xEB << 24; *fifo32 = c;
-        *fifo8 = 0x61;
-        a = 0; a |= table[6] & 0xFFF; b = a; b |= table[7] << 12; c = b; c |= 0xEC << 24; *fifo32 = c;
-        *fifo8 = 0x61;
-        a = 0; a |= table[8] & 0xFFF; b = a; b |= table[9] << 12; c = b; c |= 0xED << 24; *fifo32 = c;
+void GXSetFogRangeAdj(int enable, u16 center, const u16 *table) {
+    u32 fogRangeReg;
+    u32 fogRangeRegK;
+    s32 i;
+
+    if (enable) {
+        for (i = 0; i < 10; i += 2) {
+            fogRangeRegK = 0;
+            fogRangeRegK = __rlwimi(fogRangeRegK, table[i], 0, 20, 31);
+            fogRangeRegK = __rlwimi(fogRangeRegK, table[i + 1], 12, 8, 19);
+            fogRangeRegK = __rlwimi(fogRangeRegK, 0xE9 + (i / 2), 24, 0, 7);
+            *(volatile u8 *)0xCC008000 = 0x61;
+            *(volatile u32 *)0xCC008000 = fogRangeRegK;
+        }
     }
-    *fifo8 = 0x61;
-    a = 0; a |= (center + 0x156) & 0x3FF; b = a; b |= (enable << 10) & 0x400; c = b; c |= 0xE8 << 24; *fifo32 = c;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    fogRangeReg = 0;
+    fogRangeReg = __rlwimi(fogRangeReg, center + 342, 0, 22, 31);
+    fogRangeReg = __rlwimi(fogRangeReg, enable, 10, 21, 21);
+    fogRangeReg = __rlwimi(fogRangeReg, 0xE8, 24, 0, 7);
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile u32 *)0xCC008000 = fogRangeReg;
+    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
 void GXSetBlendMode(s32 type, s32 src, s32 dst, s32 op) {
