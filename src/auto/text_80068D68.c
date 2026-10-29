@@ -4463,32 +4463,37 @@ char *bta_hh_evt_code(u32 event) {
     }
 }
 
-u8 bta_hh_find_cb(u8 *bd_addr) {
-    u8 i;
-    s32 j;
+u8 bta_hh_find_cb(BD_ADDR bda) {
     extern u8 lbl_803159E0[];
     extern u8 lbl_80565228;
+    u8 *messages = lbl_803159E0;
+    UINT8 xx;
 
-    i = 0;
-    do {
-        if (bdcmp(bd_addr, lbl_803C0D48 + (i << 5) + 0x18) == 0 && bdcmp(bd_addr, &lbl_80565228) != 0) {
+    for (xx = 0; xx < 0x10; xx++) {
+        if (bdcmp(bda, lbl_803C0D48 + ((xx & 0xFF) << 5) + 0x18) == 0 &&
+            bdcmp(bda, &lbl_80565228) != 0) {
             if (lbl_8055DC80 >= 5)
-                fn_8007096C(0x504, lbl_803159E0, i, lbl_803C0D48[(i << 5) + 0x26]);
-            return i;
+                fn_8007096C(0x504, messages, xx,
+                            lbl_803C0D48[((xx & 0xFF) << 5) + 0x26]);
+            return xx;
+        } else if (lbl_8055DC80 >= 5) {
+            ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)
+                (0x504, messages + 0x24,
+                 lbl_803C0D48[((xx & 0xFF) << 5) + 0x28],
+                 xx, lbl_803C0D48[((xx & 0xFF) << 5) + 0x26],
+                 lbl_803C0D48[((xx & 0xFF) << 5) + 0x2C]);
         }
-        if (lbl_8055DC80 >= 5)
-            ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0x504, lbl_803159E0 + 0x24, lbl_803C0D48[(i << 5) + 0x28], i, lbl_803C0D48[(i << 5) + 0x26], lbl_803C0D48[(i << 5) + 0x2C]);
-        i++;
-    } while (i < 0x10);
-    for (j = 0; j < 0x10; j++) {
-        if (lbl_803C0D48[(j << 5) + 0x28] == 0) {
-            fn_80070FA4(lbl_803C0D48 + (j << 5) + 0x18, bd_addr);
+    }
+
+    for (xx = 0; xx < 0x10; xx++) {
+        if (lbl_803C0D48[((u32)xx << 5) + 0x28] == 0) {
+            fn_80070FA4(lbl_803C0D48 + ((u32)xx << 5) + 0x18, bda);
             break;
         }
     }
     if (lbl_8055DC80 >= 5)
-        fn_8007096C(0x504, lbl_803159E0 + 0x58, j, 0x10);
-    return j;
+        fn_8007096C(0x504, messages + 0x58, xx, 0x10);
+    return xx;
 }
 
 void bta_hh_clean_up_kdev(void *arg0) {
@@ -9329,18 +9334,44 @@ void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
 
 void gap_config_ind(u16 cid, void *p_cfg) {
     u8 *conn = lbl_803C3740 + 0xAC;
-    s32 i;
-    for (i = 0; i < 4; i++) {
-        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid) goto found;
+    register u32 outer = 2;
+
+    do {
+        if (conn[0] == 0) goto next1;
+        if (*(u16 *)(conn + 6) != cid) goto next1;
+        goto found;
+next1:
         conn += 0x60;
-    }
-    conn = 0;
+
+        if (conn[0] == 0) goto next2;
+        if (*(u16 *)(conn + 6) != cid) goto next2;
+        goto found;
+next2:
+        conn += 0x60;
+
+        if (conn[0] == 0) goto next3;
+        if (*(u16 *)(conn + 6) != cid) goto next3;
+        goto found;
+next3:
+        conn += 0x60;
+
+        if (conn[0] == 0) goto next4;
+        if (*(u16 *)(conn + 6) != cid) goto next4;
+        goto found;
+next4:
+        conn += 0x60;
+    } while (--outer != 0);
+    conn = NULL;
 found:
-    if (conn == 0) return;
+    if (conn == NULL)
+        return;
     if (((u8 *)p_cfg)[2] != 0) {
         u16 value = *(u16 *)((u8 *)p_cfg + 4);
-        if (value > 0x69B) value = 0x69B;
+        if (value > 0x69B)
+            value = 0x69B;
         *(u16 *)(conn + 0x12) = value;
+    } else {
+        *(u16 *)(conn + 0x12) = 0;
     }
     ((u8 *)p_cfg)[0x20] = 0;
     ((u8 *)p_cfg)[2] = 0;
@@ -16398,7 +16429,7 @@ u8 fn_80096670(u8 value) {
 }
 
 extern BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 uuid_len, int nest_level);
-tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, register tSDP_UUID_SEQ *p_seq) {
+tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
     UINT16 xx, yy;
     UINT8 *p_attr;
     UINT8 *p_end = lbl_803C4C40 + 0x1224 +
@@ -16418,13 +16449,18 @@ tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, register tSDP_UUID_SEQ *p
                 if (type == 3) {
                     if (sdpu_compare_uuid_arrays(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len))
-                        break;
-                } else if (type == 6) {
+                        goto attr_found;
+                    goto attr_next;
+                }
+                if (type == 6) {
                     if (find_uuid_in_seq(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len, 0))
-                        break;
+                        goto attr_found;
                 }
+attr_next:
+                ;
             }
+attr_found:
             if (xx == *(UINT16 *)(base + 8))
                 break;
         }
@@ -17778,17 +17814,20 @@ extern char lbl_8031A5A4[];
 void sdpu_build_n_send_error(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 error_code, char *p_error_text) {
     UINT8 *p_rsp, *p_rsp_start, *p_rsp_param_len;
     UINT16 rsp_param_len;
-    BT_HDR *p_buf;
+    UINT8 *p_buf;
+
     if (lbl_803C4C40[0x4630] >= 2)
-        fn_8007096C(0xA0001, lbl_8031A56C, 0, p_ccb->connection_id);
-    p_buf = (BT_HDR *)GKI_getpoolbuf(SDP_POOL_ID);
+        fn_8007096C(0xA0001, lbl_8031A56C, error_code, p_ccb->connection_id);
+
+    p_buf = (UINT8 *)GKI_getpoolbuf(2);
     if (p_buf == NULL) {
         if (lbl_803C4C40[0x4630] >= 1)
             fn_8007093C(0xA0000, lbl_8031A5A4);
         return;
     }
-    p_buf->offset = L2CAP_MIN_OFFSET;
-    p_rsp = p_rsp_start = (UINT8 *)(p_buf + 1) + L2CAP_MIN_OFFSET;
+
+    *(UINT16 *)(p_buf + 4) = 9;
+    p_rsp = p_rsp_start = p_buf + 0x11;
     UINT8_TO_BE_STREAM(p_rsp, SDP_PDU_ERROR_RESPONSE);
     UINT16_TO_BE_STREAM(p_rsp, trans_num);
     p_rsp_param_len = p_rsp;
@@ -17798,8 +17837,8 @@ void sdpu_build_n_send_error(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 error_cod
         ARRAY_TO_BE_STREAM(p_rsp, p_error_text, (int)strlen(p_error_text));
     rsp_param_len = p_rsp - p_rsp_param_len - 2;
     UINT16_TO_BE_STREAM(p_rsp_param_len, rsp_param_len);
-    p_buf->len = p_rsp - p_rsp_start;
-    L2CA_DataWrite(p_ccb->connection_id, p_buf);
+    *(UINT16 *)(p_buf + 2) = p_rsp - p_rsp_start;
+    L2CA_DataWrite(p_ccb->connection_id, (BT_HDR *)p_buf);
 }
 
 UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
