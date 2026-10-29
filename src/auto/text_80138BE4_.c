@@ -25,7 +25,7 @@ extern float lbl_805613C8;
 extern float lbl_805613D0;
 extern float lbl_805613C4, lbl_805613CC;
 extern float fn_8002F234(float);
-extern int fn_80138C28(void *, float *, float *);
+int fn_80138C28(void *rect, float *out_t, float *out_distance) { return 0; }
 #pragma dont_inline fn_80138BFC
 #pragma dont_inline fn_80138BE4
 #pragma push
