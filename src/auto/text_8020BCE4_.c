@@ -54,7 +54,7 @@ void fn_8020BF58(void) {
                     var_r6 += 1;
                 } while ((signed char)temp_r4_2 != 0);
             } else {
-                sprintf(scratch.sp8, (int *)&lbl_8055B5C8, *(float *)(var_r3_2 + 0x20));
+                sprintf(scratch.sp8, (const char *)&lbl_8055B5C8, *(float *)(var_r3_2 + 0x20));
             }
             var_r6_2 = -0x100;
             if (temp_r27 == lbl_8055EE28)
