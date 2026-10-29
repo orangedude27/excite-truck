@@ -2800,6 +2800,8 @@ extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
     return this_;
 }
 
+#pragma push
+#pragma scheduling on
 extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
     s32 result;
     u8 *thread = (u8 *)arg0;
@@ -2812,8 +2814,8 @@ extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
     if ((s8)lbl_8055DE68 == 0) {
         volatile u32 *base = (volatile u32 *)lbl_80412CC8;
         register void *dtor = (void *)__dt__10TitleSceneFv;
-        register void *object = (void *)((u8 *)base + 0x2388);
         base[0x2388 / 4] = 0;
+        register void *object = (void *)((u8 *)base + 0x2388);
         base[0x238c / 4] = 0;
         base[0x2378 / 4] = 0;
         base[0x237c / 4] = 0;
@@ -2828,7 +2830,7 @@ extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
     if (result != 0) OSResumeThread(arg0);
     return result != 0;
 }
-
+#pragma pop
 extern "C" s32 OSJoinThread(void *, s32);
 extern "C" const char lbl_80326450[];
 extern "C" const char lbl_80326488[];
@@ -3882,7 +3884,7 @@ extern "C" void Setup__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10
 }
 #pragma scheduling on
 #pragma pop
-extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *, s32);
+extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *, s32, s32 = 0);
 extern "C" u32 GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(u32, u32);
 extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *, const void *);
 extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeader(void *arg0, const void *arg1) {
