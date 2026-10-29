@@ -888,6 +888,7 @@ extern "C" s32 GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(vo
     switch (type) { case 1: return 1; case 2: return 2; case 3: return 3; default: return 0; }
 }
 
+namespace nw4hbm { namespace snd { class SoundArchive { public: class SoundInfo; }; namespace detail { class SoundArchiveFileReader { public: BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; }; } } }
 extern "C" const char lbl_80324DE4[];
 extern "C" const char lbl_80324E10[];
 extern "C" char lbl_805598C8;
@@ -896,15 +897,15 @@ extern "C" BOOL ReadSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlP
     register u8 *reader = (u8 *)self;
     register u32 soundIndex = index;
     register u8 *outInfo = (u8 *)info;
-    register u8 *ref = *(u8 **)(reader + 0x28);
+    register u8 *archiveRef = *(u8 **)(reader + 0x28);
     register u8 *base;
     register u8 *entry;
 
-    if (ref[1] != 0)
+    if (archiveRef[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
 
     base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-        ref[0], *(u32 *)(ref + 4), ref);
+        archiveRef[0], *(u32 *)(archiveRef + 4), archiveRef);
     if (base == 0) {
         entry = 0;
         goto done;
@@ -915,19 +916,22 @@ extern "C" BOOL ReadSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlP
     }
 
     if (*(u16 *)(reader + 6) >= 0x101) {
+        register u8 *item;
+        register u8 *itemRef = *(u8 **)(reader + 0x28);
         soundIndex <<= 3;
-        ref = *(u8 **)(reader + 0x28);
-        entry = base + soundIndex;
-        if (entry[5] != 0)
+        item = base + soundIndex;
+        if (item[5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
         entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-            entry[4], *(u32 *)(entry + 8), ref);
+            item[4], *(u32 *)(item + 8), itemRef);
         goto done;
     }
 
-    soundIndex <<= 3;
-    ref = *(u8 **)(reader + 0x28);
-    entry = ref + *(u32 *)(base + soundIndex + 8);
+    {
+        register u8 *itemRef = *(u8 **)(reader + 0x28);
+        soundIndex <<= 3;
+        entry = itemRef + *(u32 *)(base + soundIndex + 8);
+    }
 
 done:
     if (entry == 0)
