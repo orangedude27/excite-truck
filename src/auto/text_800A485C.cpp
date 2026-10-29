@@ -13226,22 +13226,17 @@ homebutton::gui::PaneManager::~PaneManager() {
 
     u8 *self = (u8 *)this;
     void *node;
-    MEMAllocator *allocator;
-    void *resource;
-
-    if (self == 0)
-        return;
 
     *(const char **)self = lbl_8031E7E8;
     node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 0x18, 0);
     while (node != 0) {
         List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(self + 0x18, node);
-        allocator = *(MEMAllocator **)(self + 0x14);
-        if (allocator != 0) {
-            MEMFreeToAllocator(allocator, *(void **)((u8 *)node + 4));
-            MEMFreeToAllocator(allocator, node);
+        if (*(MEMAllocator **)(self + 0x14) != 0) {
+            MEMFreeToAllocator(*(MEMAllocator **)(self + 0x14),
+                               *(void **)((u8 *)node + 4));
+            MEMFreeToAllocator(*(MEMAllocator **)(self + 0x14), node);
         } else {
-            resource = *(void **)((u8 *)node + 4);
+            void *resource = *(void **)((u8 *)node + 4);
             if (resource != 0)
                 ((Dispatch *)resource)->freeEntry(1);
             ((void (*)(void *))fn_80128668)(node);
@@ -13249,17 +13244,15 @@ homebutton::gui::PaneManager::~PaneManager() {
         node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 0x18, 0);
     }
 
-    if (self != 0) {
+    if (this != 0) {
         *(const char **)self = lbl_8031E83C;
         node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 8, 0);
         while (node != 0) {
             List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(self + 8, node);
-            allocator = *(MEMAllocator **)(self + 0x14);
-            if (allocator != 0) {
-                MEMFreeToAllocator(allocator, node);
-            } else {
+            if (*(MEMAllocator **)(self + 0x14) != 0)
+                MEMFreeToAllocator(*(MEMAllocator **)(self + 0x14), node);
+            else
                 ((void (*)(void *))fn_80128668)(node);
-            }
             node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 8, 0);
         }
     }
