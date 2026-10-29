@@ -34,6 +34,10 @@ typedef s32 M2C_UNK;
 typedef s8 M2C_UNK8;
 typedef s16 M2C_UNK16;
 typedef s32 M2C_UNK32;
+extern "C" unsigned long strlen(const char *);
+extern "C" char *strncpy(char *, const char *, unsigned long);
+extern "C" void fn_80028E2C(char *, const char *, s32);
+extern "C" const char lbl_80324828[];
 #pragma cplusplus on
 struct DummyStrmUpdate { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23(); virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27(); virtual void f28(); virtual void f29(); virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(s32); virtual void f34(); virtual void f35(s32); };
 struct DummyStrmLoadStream {
@@ -893,53 +897,49 @@ extern "C" const char lbl_80324DE4[];
 extern "C" const char lbl_80324E10[];
 extern "C" char lbl_805598C8;
 extern "C" char lbl_805598D0;
-extern "C" BOOL ReadSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9SoundInfo(void *self, u32 index, void *info) {
-    register u8 *reader = (u8 *)self;
+BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hbm::snd::SoundArchive::SoundInfo *info) const {
+    register void *archive = *(void **)((u8 *)this + 0x28);
+    register void *reader = (void *)this;
     register u32 soundIndex = index;
-    register u8 *outInfo = (u8 *)info;
-    register u8 *archiveRef = *(u8 **)(reader + 0x28);
+    register void *outInfo = info;
     register u8 *base;
-    register u8 *entry;
+    register void *entry;
 
-    if (archiveRef[1] != 0)
+    if (*((u8 *)archive + 1) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
 
     base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-        archiveRef[0], *(u32 *)(archiveRef + 4), archiveRef);
+        *((u8 *)archive), *(u32 *)((u8 *)archive + 4), archive);
     if (base == 0) {
         entry = 0;
-        goto done;
+        goto finish;
     }
     if (soundIndex >= *(u32 *)base) {
         entry = 0;
-        goto done;
+        goto finish;
     }
 
-    if (*(u16 *)(reader + 6) >= 0x101) {
-        register u8 *item;
-        register u8 *itemRef = *(u8 **)(reader + 0x28);
+    if (*(u16 *)((u8 *)reader + 6) >= 0x101) {
         soundIndex <<= 3;
-        item = base + soundIndex;
-        if (item[5] != 0)
+        archive = *(void **)((u8 *)reader + 0x28);
+        if (base[soundIndex + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
-        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-            item[4], *(u32 *)(item + 8), itemRef);
-        goto done;
+        entry = (void *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+            base[soundIndex + 4], *(u32 *)(base + soundIndex + 8), archive);
+        goto finish;
     }
 
-    {
-        register u8 *itemRef = *(u8 **)(reader + 0x28);
-        soundIndex <<= 3;
-        entry = itemRef + *(u32 *)(base + soundIndex + 8);
-    }
+    soundIndex <<= 3;
+    archive = *(void **)((u8 *)reader + 0x28);
+    entry = (u8 *)archive + *(u32 *)(base + soundIndex + 8);
 
-done:
+finish:
     if (entry == 0)
         return 0;
-    *(u32 *)outInfo = *(u32 *)(entry + 4);
-    *(u32 *)(outInfo + 4) = *(u32 *)(entry + 8);
-    *(u32 *)(outInfo + 8) = entry[0x15];
-    *(u32 *)(outInfo + 0xC) = entry[0x14];
+    *(u32 *)outInfo = *(u32 *)((u8 *)entry + 4);
+    *(u32 *)((u8 *)outInfo + 4) = *(u32 *)((u8 *)entry + 8);
+    *(u32 *)((u8 *)outInfo + 8) = *((u8 *)entry + 0x15);
+    *(u32 *)((u8 *)outInfo + 0xC) = *((u8 *)entry + 0x14);
     return 1;
 }
 
