@@ -27,6 +27,7 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
+extern s32 lbl_805590A0;
 extern void rfc_send_rpn();
 extern void rfc_send_msc();
 extern u8 HID_HostCloseDev(u8);
@@ -14333,6 +14334,39 @@ void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
     } else {
         rfc_port_sm_execute(p_port, (u8)result, NULL);
         GKI_freebuf(p_buf);
+    }
+}
+
+void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
+    register char *messages = lbl_803196B8;
+    void *p_mcb;
+    s32 index;
+    u16 mcb_lcid;
+
+    index = lcid - 0x40;
+    if (index >= 0xA) {
+        if (lbl_803C4828[0x414] >= 1)
+            fn_80070954(0x90000, &messages[0], lcid);
+        p_mcb = 0;
+    } else {
+        p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
+        if (p_mcb != 0) {
+            mcb_lcid = *(u16 *)((u8 *)p_mcb + 0x68);
+            if (mcb_lcid != lcid) {
+                if (lbl_803C4828[0x414] >= 2)
+                    fn_8007096C(0x90001, messages + 0x1C, lcid, mcb_lcid);
+                p_mcb = 0;
+            }
+        }
+    }
+
+    if (p_mcb == 0) {
+        if (lbl_803C4828[0x414] >= 1)
+            fn_80070954(0x90000, messages + 0xE4, lcid);
+    } else {
+        if (lbl_803C4828[0x414] >= 4)
+            fn_80070954(0x90003, messages + 0x114, lcid);
+        rfc_process_l2cap_congestion(p_mcb, is_congested);
     }
 }
 
