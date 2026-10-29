@@ -153,6 +153,7 @@ typedef struct {
     u8 p_cur[4];
     u8 cb_index[0x10];
     void *p_cback;
+    u8 pad228[8];
 } tBTA_HH_CB_MATCH;
 
 #define UUSB_CB_DEFINED_EARLY 1
@@ -4291,64 +4292,25 @@ void fn_80074A4C(s32 arg0) {
 extern u8 HID_HostRegister(void *);
 extern void bta_hh_cback(u8, u8, u32, BT_HDR *);
 void bta_hh_api_enable(void *arg0) {
-    s8 status;
-    u8 index;
-    register void *entry;
-    register void *map;
-    s8 next0, next3, next4, next5, next6, next7, next8;
+    tBTA_HH_CB_MATCH *cb;
+    s8 status = 6;
+    u8 xx;
 
-    status = 6;
+    cb = (tBTA_HH_CB_MATCH *)lbl_803C0D48;
     fn_800869CC();
-    memset(lbl_803C0D48, 0, 0x230);
+    memset(cb, 0, sizeof(tBTA_HH_CB_MATCH));
     HID_HostSetSecurityLevel(&lbl_80559058, *((u8 *)arg0 + 8));
     if (HID_HostRegister(bta_hh_cback) == 0) {
-        *(void **)(lbl_803C0D48 + 0x224) = *(void **)((u8 *)arg0 + 0x30);
+        cb->p_cback = *(void **)((u8 *)arg0 + 0x30);
         status = 0;
-        for (index = 0; index < 16; index += 8) {
-            entry = lbl_803C0D48 + ((index << 5) & 0x1FE0);
-            next8 = index + 1;
-            *(u8 *)((u8 *)entry + 0x2C) = 1;
-            map = lbl_803C0D48 + index;
-            next7 = index + 2;
-            next6 = index + 3;
-            *(u8 *)((u8 *)entry + 0x26) = 0xFF;
-            next5 = index + 4;
-            next4 = index + 5;
-            next3 = index + 6;
-            *(u8 *)((u8 *)entry + 0x22) = index;
-            next0 = index + 7;
-            *(u8 *)((u8 *)map + 0x214) = 0x10;
-            *(u8 *)((u8 *)entry + 0x4C) = 1;
-            *(u8 *)((u8 *)entry + 0x46) = 0xFF;
-            *(u8 *)((u8 *)entry + 0x42) = next8;
-            *(u8 *)((u8 *)map + 0x215) = 0x10;
-            *(u8 *)((u8 *)entry + 0x6C) = 1;
-            *(u8 *)((u8 *)entry + 0x66) = 0xFF;
-            *(u8 *)((u8 *)entry + 0x62) = next7;
-            *(u8 *)((u8 *)map + 0x216) = 0x10;
-            *(u8 *)((u8 *)entry + 0x8C) = 1;
-            *(u8 *)((u8 *)entry + 0x86) = 0xFF;
-            *(u8 *)((u8 *)entry + 0x82) = next6;
-            *(u8 *)((u8 *)map + 0x217) = 0x10;
-            *(u8 *)((u8 *)entry + 0xAC) = 1;
-            *(u8 *)((u8 *)entry + 0xA6) = 0xFF;
-            *(u8 *)((u8 *)entry + 0xA2) = next5;
-            *(u8 *)((u8 *)map + 0x218) = 0x10;
-            *(u8 *)((u8 *)entry + 0xCC) = 1;
-            *(u8 *)((u8 *)entry + 0xC6) = 0xFF;
-            *(u8 *)((u8 *)entry + 0xC2) = next4;
-            *(u8 *)((u8 *)map + 0x219) = 0x10;
-            *(u8 *)((u8 *)entry + 0xEC) = 1;
-            *(u8 *)((u8 *)entry + 0xE6) = 0xFF;
-            *(u8 *)((u8 *)entry + 0xE2) = next3;
-            *(u8 *)((u8 *)map + 0x21A) = 0x10;
-            *(u8 *)((u8 *)entry + 0x10C) = 1;
-            *(u8 *)((u8 *)entry + 0x106) = 0xFF;
-            *(u8 *)((u8 *)entry + 0x102) = next0;
-            *(u8 *)((u8 *)map + 0x21B) = 0x10;
+        for (xx = 0; xx < 0x10; xx++) {
+            cb->kdev[xx].state = 1;
+            cb->kdev[xx].hid_handle = 0xFF;
+            cb->kdev[xx].index = xx;
+            cb->cb_index[xx] = 0x10;
         }
     }
-    (*(void (**)(u32, s8 *, void *))(lbl_803C0D48 + 0x224))(0, &status, lbl_803C0D48);
+    (*(void (**)(u32, void *, void *))&cb->p_cback)(0, &status, cb);
 }
 
 void bta_hh_api_disable(void) {
