@@ -71,8 +71,9 @@ struct DummyStrmLoadTaskCallback {
     virtual void f0();
     virtual void f1();
 };
-struct DummyWorkerCallbackC { virtual void f0(); virtual void Call(); };
-struct DummyWorkerCallback10 { virtual void f0(); virtual void f1(); virtual void Call(); };
+struct DummyWorkerLink { void *next; void *prev; };
+struct DummyWorkerCallbackC : DummyWorkerLink { virtual void f0(); virtual void Call(); };
+struct DummyWorkerCallback10 : DummyWorkerLink { virtual void f0(); virtual void f1(); virtual void Call(); };
 #pragma cplusplus reset
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
@@ -3165,11 +3166,10 @@ extern "C" void fn_800FA7E0(void *self) {
             void *node = *(void **)sentinel;
             do {
                 void *current = node;
-                void *next = *(void **)node;
+                node = *(void * volatile *)node;
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
                 ((DummyWorkerCallbackC *)current)->Call();
-                node = next;
             } while (node != sentinel);
             UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv();
             fn_800FEB9C();
@@ -3181,11 +3181,10 @@ extern "C" void fn_800FA7E0(void *self) {
             node = *(void **)sentinel;
             do {
                 void *current = node;
-                void *next = *(void **)node;
+                node = *(void * volatile *)node;
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
                 ((DummyWorkerCallback10 *)current)->Call();
-                node = next;
             } while (node != sentinel);
             OSUnlockMutex(mutex);
         } else if (message == 2) {
