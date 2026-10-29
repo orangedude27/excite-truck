@@ -2107,10 +2107,10 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
     u32 size;
     s32 aligned;
     u32 first;
-    s32 steps;
     u32 range;
     s32 error;
     u32 chainEnd;
+    u32 current;
     s32 i;
     struct Local { u32 sp8; u32 spC; u32 sp10; } local;
 
@@ -2128,10 +2128,10 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
     size = (u32)*(u16 *)entry << *((u8 *)entry + 0x21);
     if (count != 0) {
         first = *(u32 *)(context + 0x264);
-        steps = *(s32 *)(context + 0x14);
         u32 remainder = first % size;
-        aligned = first + ((s32)(size - remainder) &
-                           ((s32)(-((s32)remainder) | (s32)remainder) >> 31));
+        s32 steps = *(s32 *)(context + 0x14);
+        s32 sign = -((s32)remainder) | (s32)remainder;
+        aligned = first + (u32)((size - remainder) & (sign >> 31));
 
         if (steps != 0) {
             range = (u32)(steps + 1) * size;
@@ -2147,14 +2147,16 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
             local.spC = count;
         }
         chainEnd = (u32)fn_800AF584(entry);
+        current = local.spC;
         i = 0;
-        while (local.spC != chainEnd) {
+        while (current != chainEnd) {
             i++;
-            error = VFiPFFAT_TraceClustersChain(entry, (s32)local.spC,
+            error = VFiPFFAT_TraceClustersChain(entry, (s32)current,
                                                 (s32 *)&local.sp8);
             if (error != 0)
                 return error;
-            local.spC = local.sp8;
+            current = local.sp8;
+            local.spC = current;
         }
         range = (u32)aligned + (u32)i * size;
 finish:
@@ -12743,49 +12745,53 @@ void homebutton::FrameController::calc() {
     if (m_state != 1) return;
     switch (m_dir) {
     case 0: {
-        f32 v = m_value + m_speed;
-        m_value = v;
-        if (v >= m_min - lbl_80560E20) {
-            m_value = m_min - lbl_80560E20;
+        f32 limit = m_min - lbl_80560E20;
+        f32 next = m_value + m_speed;
+        m_value = next;
+        if (next >= limit) {
+            m_value = limit;
             m_state = 0;
         }
-        break;
+        return;
     }
     case 1: {
-        f32 v = m_value - m_speed;
-        m_value = v;
-        if (v <= m_max) {
+        f32 next = m_value - m_speed;
+        m_value = next;
+        if (next <= m_max) {
             m_value = m_max;
             m_state = 0;
         }
-        break;
+        return;
     }
     case 2: {
-        f32 v = m_value + m_speed;
-        m_value = v;
-        if (v >= m_min) {
-            m_value = m_min - (m_min - m_max);
+        f32 next = m_value + m_speed;
+        m_value = next;
+        if (next >= m_min) {
+            m_value = next - (m_min - m_max);
         }
-        break;
+        return;
     }
     case 3: {
         if (m_flag == 0) {
-            f32 v = m_value + m_speed;
-            m_value = v;
-            if (v >= m_min - lbl_80560E20) {
-                m_value = m_min - lbl_80560E20;
+            f32 limit = m_min - lbl_80560E20;
+            f32 next = m_value + m_speed;
+            m_value = next;
+            if (next >= limit) {
+                m_value = limit;
                 m_flag = 1;
             }
-        } else {
-            f32 v = m_value - m_speed;
-            m_value = v;
-            if (v <= m_max) {
-                m_value = m_max;
-                m_flag = 0;
-            }
+            return;
         }
-        break;
+        f32 next = m_value - m_speed;
+        m_value = next;
+        if (next <= m_max) {
+            m_value = m_max;
+            m_flag = 0;
+        }
+        return;
     }
+    default:
+        return;
     }
 }
 
