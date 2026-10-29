@@ -1462,24 +1462,24 @@ extern "C" void fn_8019EECC(void* arg0, Vec* arg1) {
 
 extern "C" void fn_8019EF00(void* arg0) {
     void* mat = *(void**)((u8*)arg0 + 0xC);
-    f32* volatile out = (f32*)((u8*)arg0 + 0x34);
-    f32* volatile in = (f32*)((u8*)arg0 + 0x28);
     f32* m = (f32*)mat;
-    f32 x = in[0];
-    f32 y = in[1];
-    f32 z = in[2];
-    if (out == in) {
-        out[0] = x * m[0] + y * m[3] + z * m[6];
-        out[1] = x * m[1] + y * m[4] + z * m[7];
-        out[2] = x * m[2] + y * m[5] + z * m[8];
+    volatile f32 (&dst)[3] = *(volatile f32 (*)[3])((u8*)arg0 + 0x34);
+    volatile f32 (&src)[3] = *(volatile f32 (*)[3])((u8*)arg0 + 0x28);
+    f32 x = src[0];
+    f32 y = src[1];
+    f32 z = src[2];
+    if (&dst == &src) {
+        dst[0] = x * m[0] + y * m[3] + z * m[6];
+        dst[1] = x * m[1] + y * m[4] + z * m[7];
+        dst[2] = x * m[2] + y * m[5] + z * m[8];
     } else {
-        out[0] = x * m[0] + y * m[3] + z * m[6];
-        out[1] = x * m[1] + y * m[4] + z * m[7];
-        out[2] = x * m[2] + y * m[5] + z * m[8];
+        dst[0] = x * m[0] + y * m[3] + z * m[6];
+        dst[1] = x * m[1] + y * m[4] + z * m[7];
+        dst[2] = x * m[2] + y * m[5] + z * m[8];
     }
-    out[0] += m[9];
-    out[1] += m[10];
-    out[2] += m[11];
+    dst[0] += m[9];
+    dst[1] += m[10];
+    dst[2] += m[11];
 }
 
 extern "C" void fn_8019F03C(void* arg0) {
@@ -1493,42 +1493,42 @@ extern "C" void fn_8019F03C(void* arg0) {
     *(f32*)((u8*)arg0 + 0x3C) = value;
 }
 
-extern "C" void fn_8019F064(void* arg0, void* arg1) {
-    u32 value = *(u32*)((u8*)arg1 + 0x18);
-    if (value == 0x52414744) {
+extern "C" void fn_8019F064(void *arg0, void *arg1) {
+    struct DispatchA { virtual void v0(); virtual void v1(); virtual void Call(void *); };
+    struct DispatchB { virtual void u0(); virtual void u1(); virtual void Call(void *); };
+    struct DispatchC { virtual void w0(); virtual void w1(); virtual void Call(void *); };
+    s32 type = *(s32 *)((u8 *)arg1 + 0x18);
+    switch (type) {
+    case 'FLSR':
+        fn_8019CE4C(arg0, arg1);
         return;
-    } else if (value < 0x52414744) {
-        if (value == 0x504F4C59) {
-            ((void (*)(void*, void*))(*(u32*)*(u32*)arg1 + 0x10))(arg1, arg0);
-            return;
-        } else if (value < 0x47525550) {
-            if (value == 0x424F5820) {
-                fn_8019BD54(arg1, arg0, 0, 0);
-                return;
-            }
-        } else if (value == 0x47525550) {
-            ((void (*)(void*, void*))(*(u32*)*(u32*)arg1 + 0x10))(arg1, arg0);
-            return;
-        } else if (value < 0x464C5352) {
-        } else if (value == 0x464C5352) {
-            fn_8019CE4C(arg1, arg0);
-            return;
-        }
-    } else {
-        if (value == 0x53504852) {
-            fn_8019B068(arg1, arg0, 0, 0);
-            return;
-        } else if (value < 0x53504852) {
-            if (value == 0x52494E47) {
-                ((void (*)(void*, void*))(*(u32*)*(u32*)arg1 + 0x10))(arg1, arg0);
-                return;
-            }
-        } else if (value == 0x54554245) {
-            fn_8019CE3C(arg1, (s32)arg0);
-            return;
-        }
+    case 'SPHR':
+        fn_8019B068(arg0, arg1, 0, 0);
+        return;
+    case 'TUBE':
+        fn_8019CE3C(arg0, (s32)arg1);
+        return;
+    case 'BOX ':
+        fn_8019BD54(arg0, arg1, 0, 0);
+        return;
+    case 'GRUP':
+        ((DispatchB *)arg1)->Call(arg0);
+        return;
+    case 'RING':
+        fn_8019C854(arg0, arg1);
+        return;
+    case 'POLY':
+        ((DispatchA *)arg1)->Call(arg0);
+        return;
+    case 'PMSH':
+        ((DispatchC *)arg1)->Call(arg0);
+        return;
+    case 'RAGD':
+        break;
+    default:
+        fn_802E317C(lbl_803335EC, type);
+        break;
     }
-    fn_802E317C(lbl_803335EC, value);
 }
 
 extern "C" void fn_8019F1A4(void* arg0) {
