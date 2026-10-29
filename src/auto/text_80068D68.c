@@ -13535,9 +13535,8 @@ void PORT_CloseInd(void *arg0) {
 void Port_TimeOutCloseMux(void *arg0) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319478[];
-    extern void fn_8007093C(u32, void *);
-    extern void port_rfc_closed(void *, s32);
-    u8 *entry;
+      extern void fn_8007093C(u32, void *);
+      u8 *entry;
     s32 i;
 
     if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319478);
