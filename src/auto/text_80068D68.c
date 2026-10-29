@@ -2013,6 +2013,22 @@ static void gki_add_to_pool_list(UINT8 pool_id)
     p_cb->pool_list[i] = pool_id;
 }
 
+static void gki_remove_pool_from_list_local(UINT8 pool_id)
+{
+    UINT8 i;
+    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
+
+    for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
+        if (pool_id == p_cb->pool_list[i])
+            break;
+    }
+
+    while (i < (p_cb->curr_total_no_of_pools - 1)) {
+        p_cb->pool_list[i] = p_cb->pool_list[i + 1];
+        i++;
+    }
+}
+
 extern s32 fn_8006EBF4(void);
 #pragma use_lmw_stmw off
 UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_pool)
@@ -2785,6 +2801,46 @@ void uusb_issue_intr_read(void) {
     }
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
+
+void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
+    extern char lbl_803142C8[];
+    extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
+    char *report = lbl_803142C8;
+    u16 offset;
+    if (lbl_803BD1E0.at_0x28 != 0) {
+        OSReport(report + 0x518, arg0);
+    }
+    if (arg0 < 0 && lbl_803BD1E0.at_0x28 != 0) {
+        OSReport(report + 0x550, arg0);
+    }
+    if (arg1 != 0) {
+        GKI_freebuf((void *)arg1);
+        fn_8006EBAC();
+        ((u8 *)&lbl_803BD1E0)[0x38] = ((u8 *)&lbl_803BD1E0)[0x38] - 1;
+        fn_8006EB88();
+    }
+    {
+        register u8 *control = (u8 *)&lbl_803BD1E0;
+        if (control[0x38] < 5 && *(u16 *)(control + 0x34) != 0) {
+            arg1 = (s32)GKI_dequeue((BUFFER_Q *)(control + 0x2C));
+            offset = *(u16 *)((u8 *)arg1 + 4);
+            if (IUSB_WriteBlkMsgAsync(lbl_803BD1E0.fd, control[0x10],
+                                      *(u16 *)((u8 *)arg1 + 2),
+                                      (u8 *)arg1 + offset + 8,
+                                      (void (*)(void))uusb_WriteBulkDataCB, (void *)arg1) < 0) {
+                if (control[0x28] != 0) {
+                    OSReport(report + 0x588);
+                }
+                GKI_enqueue_head((BUFFER_Q *)(control + 0x2C), (void *)arg1);
+                return;
+            }
+            fn_8006EBAC();
+            control[0x38] = control[0x38] + 1;
+            fn_8006EB88();
+        }
+    }
+}
+
 #pragma pop
 
 #pragma pop
