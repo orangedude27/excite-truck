@@ -2100,27 +2100,23 @@ extern "C" s32 fn_800AF2CC(void *, u32, s32, s32 *, u32 *, s32);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
-    u8 *context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
-    s32 flags = *(s32 *)context;
     s32 *out = (s32 *)arg1;
+    u8 *context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
     void *entry;
     u32 count;
     u32 size;
-    u32 first;
-    u32 steps;
-    u32 remainder;
     s32 aligned;
-    u32 total;
-    s32 current;
-    s32 next;
-    s32 chainEnd;
-    s32 i;
+    u32 first;
+    s32 steps;
+    u32 range;
     s32 error;
-    s32 sp10;
-    u32 spC;
+    s32 chainEnd;
+    s32 current;
+    s32 i;
+    struct Local { s32 sp8; s32 spC; s32 sp10; } local;
 
     *out = 0;
-    if ((flags & 1) != 0 && (flags & 2) == 0)
+    if ((*(u32 *)context & 1) == 0 || (*(u32 *)context & 2) == 0)
         return 0x26;
 
     if (arg0 == 0)
@@ -2130,40 +2126,39 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
 
     count = *(u32 *)(context + 0x270);
     size = (u32)*(u16 *)entry << *((u8 *)entry + 0x21);
-    if (count == 0)
-        return 0;
+    if (count != 0) {
+        first = *(u32 *)(context + 0x264);
+        steps = *(s32 *)(context + 0x14);
+        u32 remainder = first % size;
+        aligned = first + ((s32)(-((s32)remainder) | (s32)remainder) >> 31 &
+                           (s32)(size - remainder));
 
-    first = *(u32 *)(context + 0x264);
-    steps = *(u32 *)(context + 0x14);
-    remainder = first % size;
-    aligned = first + ((s32)(-((s32)remainder) | (s32)remainder) >> 31 &
-                       (s32)(size - remainder));
-
-    if (steps != 0) {
-        total = (steps + 1) * size;
-    } else {
-        if (first != 0) {
-            error = fn_800AF2CC(context + 4, count, first, &sp10, &spC, (s32)context);
-            if (error != 0)
-                return error;
-            current = (s32)spC;
-        } else {
-            current = (s32)count;
+        if (steps != 0) {
+            range = (steps + 1) * size;
+            goto finish;
         }
 
+        if (first != 0) {
+            error = fn_800AF2CC(context + 4, count, first,
+                                &local.sp10, (u32 *)&local.spC, (s32)context);
+            if (error != 0)
+                return error;
+        }
+        local.spC = (s32)count;
         chainEnd = fn_800AF584(entry);
+        current = local.spC;
         i = 0;
         while (current != chainEnd) {
             i++;
-            error = VFiPFFAT_TraceClustersChain(entry, current, &next);
+            error = VFiPFFAT_TraceClustersChain(entry, current, &local.sp8);
             if (error != 0)
                 return error;
-            current = next;
-            spC = (u32)current;
+            current = local.sp8;
         }
-        total = (u32)i * size;
+        range = (u32)i * size;
+finish:
+        *out = (s32)(range - (u32)aligned);
     }
-    *out = (s32)(total - (u32)aligned);
     return 0;
 }
 #pragma pop
@@ -3603,6 +3598,45 @@ extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 sign = (-arg2 | arg2) >> 31;
     s32 result = fn_800AE4C0(arg2 & sign, 0, arg3);
     return (result != 0) ? result : 0;
+}
+
+extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4, s32 arg5) {
+    void *context = *(void **)((u8 *)arg0 + 0x34);
+    s32 offset = *arg3;
+    s32 index = -1;
+
+    if ((u32)(offset + 0x10000) != 0xFFFFU) {
+        index = ((u32)(offset - *(s32 *)((u8 *)context + 0x30)) >>
+                 *(u8 *)((u8 *)context + 0x21)) + 2;
+    } else {
+        s32 result = fn_800AE4C0(arg0, arg1, 0, 0, arg3);
+        result &= (-result | result) >> 31;
+        if (result != 0)
+            return result;
+        offset = *arg3;
+        if ((u32)(offset + 0x10000) != 0xFFFFU) {
+            index = ((u32)(offset - *(s32 *)((u8 *)context + 0x30)) >>
+                     *(u8 *)((u8 *)context + 0x21)) + 2;
+        }
+    }
+
+    if ((u32)(offset + 0x10000) != 0xFFFFU) {
+        *arg4 = (*(s32 *)((u8 *)context + 0x30) +
+                 ((index - 1) << *(u8 *)((u8 *)context + 0x21))) - offset;
+    } else {
+        *arg4 = 0;
+    }
+
+    if ((u32)(*arg3 + 0x10000) != 0xFFFFU &&
+        ((u32)*arg4 << *(u8 *)((u8 *)context + 0x20)) < arg2) {
+        s32 result = ((s32 (*)(void *, s32, s32, u32, s32 *))fn_800AE108)(
+            arg0, index,
+            (arg1 >> *(u8 *)((u8 *)context + 0x21)) + 1,
+            arg2, arg4);
+        if (result != 0)
+            return result;
+    }
+    return 0;
 }
 
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
