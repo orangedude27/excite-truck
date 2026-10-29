@@ -12673,6 +12673,8 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
     }
 }
 
+extern char lbl_8031912C[];
+extern char lbl_80319140[];
 extern void l2c_process_held_packets(u8 timed_out);
 void l2c_process_timeout(void *arg) {
     s32 event = *(u16 *)((u8 *)arg + 0x14);
