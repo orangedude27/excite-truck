@@ -2276,7 +2276,7 @@ extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma small_data on
 extern "C" void *fn_8021E0C0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5, void *arg6, void *arg7, s32 arg8) {
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
