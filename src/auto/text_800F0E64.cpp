@@ -11,6 +11,7 @@ typedef unsigned short u16;
 typedef signed long s32;
 typedef unsigned long u32;
 struct SoundArchiveInitWordPair { u32 first; u32 second; };
+struct SoundArchiveInitCopy { u32 words[10]; };
 extern "C" void *memcpy(void *, const void *, u32);
 typedef signed long long s64;
 typedef unsigned long long u64;
@@ -2321,9 +2322,9 @@ extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 
 extern "C" s32 fn_800F7528(void *self, void *arg1, unsigned long arg2, long arg3, int arg4, unsigned long arg5, long arg6, bool arg7, __StrmLoadCommandRef &arg8, unsigned long arg9, unsigned long arg10, unsigned long arg11) {
-    register void *reader = *(void **)((u8 *)self + 4);
-    void *fileInfo = *(void **)((u8 *)reader + 0x10);
     register const char *base = lbl_80324E88;
+    void *reader = *(void **)((u8 *)self + 4);
+    void *fileInfo = *(void **)((u8 *)reader + 0x10);
     s32 result;
     if (fileInfo == 0)
         result = 0;
