@@ -17572,6 +17572,20 @@ BOOLEAN SDP_AddUuidSequence(UINT32 handle, UINT16 attr_id, UINT16 num_uuids, UIN
     return SDP_AddAttribute(handle, attr_id, 6, (UINT32)(p - buff), buff);
 }
 
+BOOLEAN SDP_AddServiceClassIdList(UINT32 handle, UINT16 num_services, UINT16 *p_service_uuids) {
+    UINT16 xx;
+    UINT8 buff[SDP_MAX_ATTR_LEN * 2];
+    UINT8 *p = buff;
+
+    for (xx = 0; xx < num_services; xx++, p_service_uuids++) {
+        *p++ = 0x19;
+        *p++ = (UINT8)(*p_service_uuids >> 8);
+        *p++ = (UINT8)*p_service_uuids;
+    }
+
+    return SDP_AddAttribute(handle, 1, 6, (UINT32)(p - buff), buff);
+}
+
 u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
     u8 *start = out + 1;
     u8 *p;
@@ -18080,6 +18094,44 @@ stored:
         ((u8 *)lcb)[0] = 3;
         if (((u8 *)lcb)[1] & 1) fn_8009757C((u8 *)lcb);
         else btu_start_timer((u8 *)lcb + 8, 5, 0x1E);
+    }
+}
+
+void sdp_config_cfm(u16 cid, u16 *p_cfg_result) {
+    register char *messages = lbl_8031A188;
+    tCONN_CB *ccb;
+    u8 flags;
+    void (*callback)(u16);
+
+    if (lbl_803C4C40[0x4630] >= 4) {
+        fn_8007096C(0xA0003, messages + 0x190, cid, *p_cfg_result);
+    }
+    ccb = l2cu_find_lcb_by_handle_80099E54(cid);
+    if (ccb == 0) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_80070954(0xA0001, messages + 0x138, cid);
+    } else if (*p_cfg_result == 0) {
+        flags = *((u8 *)ccb + 1) | 4;
+        *((u8 *)ccb + 1) = flags;
+        if (flags & 2) {
+            *((u8 *)ccb) = 3;
+            if (*((u8 *)ccb + 1) & 1)
+                fn_8009757C((u8 *)ccb);
+            else
+                btu_start_timer((u8 *)ccb + 8, 5, 0x1E);
+        }
+    } else {
+        if (lbl_803C4C40[0x4630] >= 4)
+            fn_80070954(0xA0003, messages + 0x1BC, *((u16 *)((u8 *)ccb + 0x22)));
+        if (*((u8 *)ccb) != 1) {
+            L2CA_DisconnectReq(*((u16 *)((u8 *)ccb + 0x22)));
+            *((u16 *)((u8 *)ccb + 0x472)) = 0xFFF2;
+        } else {
+            callback = *(void (**)(u16))((u8 *)ccb + 0x414);
+            if (callback != 0)
+                callback(0xFFF2);
+            fn_80099F58(ccb);
+        }
     }
 }
 
