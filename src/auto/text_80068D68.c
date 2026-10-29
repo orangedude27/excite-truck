@@ -1301,6 +1301,38 @@ void fn_8006B488(void) {
     OSRestoreInterrupts(interrupt);
 }
 
+extern void BTA_HhRemoveDev(u8);
+extern u8 fn_80073E5C(u8 *);
+int fn_8006B598(void *arg0) {
+    register u8 *strings = lbl_803130C8;
+    register u8 *state = lbl_80392960;
+    u8 *dev;
+    u32 interrupt_state;
+    u8 status;
+    interrupt_state = OSDisableInterrupts();
+    DBPrintf_8006CFA8((const char *)(strings + 0x600));
+    dev = WUDiGetDevInfo((u8 *)arg0);
+    if (dev != 0) {
+        DBPrintf_8006CFA8((const char *)(strings + 0x618),
+                          dev[0x56], dev[0x40], dev[0x41], dev[0x42],
+                          dev[0x43], dev[0x44], dev[0x45]);
+        DBPrintf_8006CFA8((const char *)(strings + 0x650));
+        if (memcmp(dev, strings + 0x1A0, 0x10) == 0) {
+            DBPrintf_8006CFA8((const char *)(strings + 0x674));
+            DBPrintf_8006CFA8((const char *)(strings + 0x688), dev[0x56]);
+            BTA_HhRemoveDev(dev[0x56]);
+        }
+        status = fn_80073E5C(dev + 0x40);
+        DBPrintf_8006CFA8((const char *)(strings + 0x698), status);
+        if (dev[0x5B] == 0)
+            state[0x12]--;
+        else
+            state[0x13]--;
+        memset(dev, 0, 0x60);
+    }
+    OSRestoreInterrupts(interrupt_state);
+}
+
 #pragma use_lmw_stmw off
 void *WUDiGetDevInfo(u8 *addr) {
     struct WUDDevInfoView {
