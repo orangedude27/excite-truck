@@ -1240,12 +1240,18 @@ s32 fn_8011999C(void) { return 0; }
 s32 fn_801199A4(void* arg0, s32 arg1) {
     extern void fn_8003381C(void*, s16*);
     s16 rect[8];
-    u32 width = *(u32*)((u8*)arg0 + 0x10);
-    u32 x0 = width >> 1;
-    u32 x1 = ((width + *(u32*)((u8*)arg0 + 0x1C)) >> 1) - 1;
     u32 limit;
+    u32 x0;
+    u32 x1;
+    u32 width;
+    u32 height;
+    u32 y0;
+    u32 y1;
     rect[0] = 1;
     rect[1] = 10;
+    width = *(u32*)((u8*)arg0 + 0x10);
+    x0 = width >> 1;
+    x1 = ((width + *(u32*)((u8*)arg0 + 0x1C)) >> 1) - 1;
     if (arg1 != 0)
         limit = x0;
     else
@@ -1258,9 +1264,9 @@ s32 fn_801199A4(void* arg0, s32 arg1) {
     rect[7] = limit;
     fn_8003381C(*(void**)arg0, rect);
     if (*(void**)((u8*)arg0 + 4) != 0) {
-        u32 height = *(u32*)((u8*)arg0 + 0x14);
-        u32 y0 = height >> 1;
-        u32 y1 = ((height + *(u32*)((u8*)arg0 + 0x1C)) >> 1) - 1;
+        height = *(u32*)((u8*)arg0 + 0x14);
+        y0 = height >> 1;
+        y1 = ((height + *(u32*)((u8*)arg0 + 0x1C)) >> 1) - 1;
         if (arg1 != 0)
             limit = y0;
         else
@@ -1273,7 +1279,6 @@ s32 fn_801199A4(void* arg0, s32 arg1) {
         rect[7] = limit;
         fn_8003381C(*(void**)((u8*)arg0 + 4), rect);
     }
-    return 0;
 }
 
 void fn_80119AB0(void *arg0, s32 arg1) {
@@ -3773,6 +3778,35 @@ u32 fn_8011FC2C(void* arg0, s32 arg1, s32 arg2, s32* arg3, s32 arg4, s32 arg5, s
             ret, arg4, arg1);
     }
     return result;
+}
+
+void fn_8011FE20(u32 **arg0, u32 arg1) {
+    void *newBuffer;
+    void *newSizes;
+    u32 base;
+    u32 rounded;
+    u32 extra;
+    u32 total;
+    if (lbl_80559950 == lbl_8055DEF4) {
+        newBuffer = fn_8011FFC4(lbl_80559950 << 4);
+        newSizes = (u8 *)newBuffer + (lbl_80559950 << 3);
+        memcpy(newBuffer, lbl_80559948, lbl_80559950 << 2);
+        memcpy(newSizes, lbl_8055994C, lbl_80559950 << 2);
+        lbl_80559950 <<= 1;
+        if (lbl_80559950 != 0x40) {
+            fn_80120084(lbl_80559948);
+        }
+        lbl_80559948 = (void **)newBuffer;
+        lbl_8055994C = (u32 *)newSizes;
+    }
+    base = (u32)lbl_8055DEF0;
+    rounded = arg1 + 0x1F;
+    extra = (((base >> 5) & 0x1F) + 0x21 - ((rounded >> 5) & 0x1F)) & 0x1F;
+    total = (rounded & ~0x1F) + (extra << 5);
+    lbl_8055DEF0 = (void *)(base + total);
+    lbl_8055994C[lbl_8055DEF4] = total;
+    lbl_80559948[lbl_8055DEF4] = arg0;
+    lbl_8055DEF4++;
 }
 
 extern void *lbl_8055DEF0;
