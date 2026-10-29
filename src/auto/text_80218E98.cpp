@@ -11,7 +11,7 @@ extern "C" s32 fn_8022B620(s32, const char *);
 extern "C" void *lbl_8033EA90[];
 #pragma push
 #pragma small_data on
-extern "C" char lbl_8055B880[];
+extern "C" char lbl_8055B880;
 #pragma pop
 extern "C" void *lbl_8033E3D4[];
 extern "C" void *lbl_8033DF30[];
