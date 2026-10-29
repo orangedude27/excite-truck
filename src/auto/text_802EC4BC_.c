@@ -93,10 +93,9 @@ void *fn_802EC598(void) {
 #pragma dont_inline off
 
 #pragma scheduling invalid_target
-#pragma dont_inline on
 void fn_802EC614(void) {
-    // Fix note: set controller flags before GQR setup, then initialize resource and controller buffers in target order.
-    char *base = lbl_8034E9E0;
+    // Fix note: initialize the controller flags and configuration, then allocate and register the menu resources in target order.
+    register char *base = lbl_8034E9E0;
     register s32 zero = 0;
     s32 *config;
     char *info;
@@ -127,11 +126,10 @@ void fn_802EC614(void) {
     memset(buffer, 0, 0x80000);
     *(s32 *)(info + 0x24) = 0x80000;
     *(s32 *)(info + 0x1C) = SCGetLanguage();
-    fn_802EC598();
-    *(s32 *)(info + 0x00) = fn_802EC4E8(0);
-    *(s32 *)(info + 0x04) = fn_802EC4E8(0x100);
-    *(s32 *)(info + 0x08) = fn_802EC4E8(0x110);
-    *(s32 *)(info + 0x0C) = fn_802EC4E8(0x11C);
+    *(s32 *)(info + 0x00) = fn_802EC4E8((s32)fn_802EC598());
+    *(s32 *)(info + 0x04) = fn_802EC4E8((s32)(base + 0x100));
+    *(s32 *)(info + 0x08) = fn_802EC4E8((s32)(base + 0x110));
+    *(s32 *)(info + 0x0C) = fn_802EC4E8((s32)(base + 0x11C));
     *(s32 *)(info + 0x14) = zero;
     *(s32 *)(info + 0x18) = zero;
     *(s32 *)(info + 0x20) = zero;
@@ -144,11 +142,10 @@ void fn_802EC614(void) {
     buffer = (void *)fn_8012850C(0x19000, base + 0x128);
     lbl_805600E0 = (s32)buffer;
     memset(buffer, zero, 0x19000);
-    lbl_805600E4 = fn_802EC4E8(0x134);
+    lbl_805600E4 = fn_802EC4E8((s32)(base + 0x134));
     fn_800C64F4(info);
     lbl_805600EC = 1;
 }
-#pragma dont_inline off
 #pragma scheduling on
 
 #pragma scheduling on
@@ -355,4 +352,4 @@ void fn_802ECC74(void) {
 }
 
 #pragma dont_inline off
-
+extern char lbl_8055D2F8[];
