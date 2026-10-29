@@ -6,6 +6,7 @@ extern "C" s32 fn_8019D618(void*, void*, s32, void*);
 extern "C" char lbl_80333640[];
 extern "C" void* fn_801284F8(s32, const char*);
 extern "C" void fn_801A0378(void*, void*);
+extern "C" void fn_801A1F44(void*, void*);
 extern "C" s32 fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
 
@@ -1364,44 +1365,56 @@ extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
 #pragma scheduling invalid_target
 extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
     s32 copyFlag = arg2;
-    register u8 *self = (u8 *)arg0;
-    u8 first, second, third, fourth;
+    void *self = arg0;
+    u8 second, first, opposite, other;
     fn_8019ECC4();
     *(void **)self = &lbl_80333B48;
     if (copyFlag != 0) {
-        first = *(volatile u8 *)(self + 0x24);
-        second = *(volatile u8 *)(self + 0x27);
-        third = *(volatile u8 *)(self + 0x25);
-        fourth = *(volatile u8 *)(self + 0x26);
-        *(volatile u8 *)(self + 0x24) = second;
-        *(volatile u8 *)(self + 0x27) = first;
-        *(volatile u8 *)(self + 0x25) = fourth;
-        *(volatile u8 *)(self + 0x26) = third;
-        second = *(volatile u8 *)(self + 0x28); fourth = *(volatile u8 *)(self + 0x2b);
-        *(volatile u8 *)(self + 0x28) = fourth; *(volatile u8 *)(self + 0x2b) = second;
-        second = *(volatile u8 *)(self + 0x29); fourth = *(volatile u8 *)(self + 0x2a);
-        *(volatile u8 *)(self + 0x29) = fourth; *(volatile u8 *)(self + 0x2a) = second;
-        second = *(volatile u8 *)(self + 0x2c); fourth = *(volatile u8 *)(self + 0x2f);
-        *(volatile u8 *)(self + 0x2c) = fourth; *(volatile u8 *)(self + 0x2f) = second;
-        second = *(volatile u8 *)(self + 0x2d); fourth = *(volatile u8 *)(self + 0x2e);
-        *(volatile u8 *)(self + 0x2d) = fourth; *(volatile u8 *)(self + 0x2e) = second;
-        second = *(volatile u8 *)(self + 0x30); fourth = *(volatile u8 *)(self + 0x33);
-        *(volatile u8 *)(self + 0x30) = fourth; *(volatile u8 *)(self + 0x33) = second;
-        second = *(volatile u8 *)(self + 0x31); fourth = *(volatile u8 *)(self + 0x32);
-        *(volatile u8 *)(self + 0x31) = fourth; *(volatile u8 *)(self + 0x32) = second;
-        if (*(volatile s32 *)(self + 0x20) == 0x3eb)
-            *(f32 *)(self + 0x24) += lbl_80562370;
+        first = *(volatile u8 *)((u8 *)self + 0x24);
+        opposite = *(volatile u8 *)((u8 *)self + 0x27);
+        second = *(volatile u8 *)((u8 *)self + 0x25);
+        other = *(volatile u8 *)((u8 *)self + 0x26);
+        *(volatile u8 *)((u8 *)self + 0x24) = opposite;
+        *(volatile u8 *)((u8 *)self + 0x27) = first;
+        *(volatile u8 *)((u8 *)self + 0x25) = other;
+        *(volatile u8 *)((u8 *)self + 0x26) = second;
+        opposite = *(volatile u8 *)((u8 *)self + 0x28);
+        other = *(volatile u8 *)((u8 *)self + 0x2b);
+        *(volatile u8 *)((u8 *)self + 0x28) = other;
+        *(volatile u8 *)((u8 *)self + 0x2b) = opposite;
+        opposite = *(volatile u8 *)((u8 *)self + 0x29);
+        other = *(volatile u8 *)((u8 *)self + 0x2a);
+        *(volatile u8 *)((u8 *)self + 0x29) = other;
+        *(volatile u8 *)((u8 *)self + 0x2a) = opposite;
+        opposite = *(volatile u8 *)((u8 *)self + 0x2c);
+        other = *(volatile u8 *)((u8 *)self + 0x2f);
+        *(volatile u8 *)((u8 *)self + 0x2c) = other;
+        *(volatile u8 *)((u8 *)self + 0x2f) = opposite;
+        opposite = *(volatile u8 *)((u8 *)self + 0x2d);
+        other = *(volatile u8 *)((u8 *)self + 0x2e);
+        *(volatile u8 *)((u8 *)self + 0x2d) = other;
+        *(volatile u8 *)((u8 *)self + 0x2e) = opposite;
+        opposite = *(volatile u8 *)((u8 *)self + 0x30);
+        other = *(volatile u8 *)((u8 *)self + 0x33);
+        *(volatile u8 *)((u8 *)self + 0x30) = other;
+        *(volatile u8 *)((u8 *)self + 0x33) = opposite;
+        opposite = *(volatile u8 *)((u8 *)self + 0x31);
+        other = *(volatile u8 *)((u8 *)self + 0x32);
+        *(volatile u8 *)((u8 *)self + 0x31) = other;
+        *(volatile u8 *)((u8 *)self + 0x32) = opposite;
+        if (*(volatile s32 *)((u8 *)self + 0x20) == 0x3eb)
+            *(f32 *)((u8 *)self + 0x24) += lbl_80562370;
     }
     f32 zero = lbl_805622D0;
-    *(volatile u8 *)(self + 0x4c) = 0;
-    *(f32 *)(self + 0x34) = zero;
-    *(f32 *)(self + 0x38) = zero;
-    *(f32 *)(self + 0x3c) = zero;
-    *(f32 *)(self + 0x40) = zero;
-    *(f32 *)(self + 0x44) = zero;
-    *(f32 *)(self + 0x48) = zero;
-    *(f32 *)(self + 0x50) = zero;
-    return arg0;
+    *(volatile u8 *)((u8 *)self + 0x4c) = 0;
+    *(f32 *)((u8 *)self + 0x34) = zero;
+    *(f32 *)((u8 *)self + 0x38) = zero;
+    *(f32 *)((u8 *)self + 0x3c) = zero;
+    *(f32 *)((u8 *)self + 0x40) = zero;
+    *(f32 *)((u8 *)self + 0x44) = zero;
+    *(f32 *)((u8 *)self + 0x48) = zero;
+    *(f32 *)((u8 *)self + 0x50) = zero;
+    return self;
 }
 #pragma scheduling on
 extern "C" void fn_8019EECC(void* arg0, Vec* arg1) {
