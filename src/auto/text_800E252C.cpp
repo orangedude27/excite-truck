@@ -85,6 +85,8 @@ extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
 extern const char lbl_803221A8[];
 extern const char lbl_803222F0[];
 extern const char lbl_80322438[];
+extern const char lbl_80322010[];
+extern const char lbl_80322034[];
 // Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
 class VfObj {
 public:
@@ -611,9 +613,9 @@ extern "C" void fn_800E2E24(void *self) {
         if (AIGetDMAStatus() == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x6E, lbl_80321F94);
 
-        nw4hbm::ut::detail::LinkListImpl::Iterator iterator;
-        int offset = 0;
         int i = 0;
+        int offset = 0;
+        nw4hbm::ut::detail::LinkListImpl::Iterator iterator;
         do {
             if ((char *)self + offset + 0x2C == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
