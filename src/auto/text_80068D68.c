@@ -28,6 +28,7 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
 extern void rfc_send_rpn();
+extern void rfc_send_msc();
 extern u8 HID_HostCloseDev(u8);
 static tBTM_STATUS btm_set_inq_event_filter(UINT8, UINT8 *);
 
@@ -3433,35 +3434,57 @@ done:
 }
 
 void bta_dm_pm_btm_status(void *arg0) {
-    u8 *p = (u8 *)arg0;
-    u8 *base = lbl_803C0C14;
-    s32 i;
-    u8 *entry;
-    u8 mask;
-    for (i = 0; i < 3; i++) {
-        entry = base + i * 0x20;
-        if (entry[0xB6] != 0 && bdcmp(entry + 0xB0, p + 8) == 0) {
-            fn_8007148C((s32)(entry + 0x98));
-            entry[0xB6] = 0;
-            break;
-        }
+    register u8 *p = (u8 *)arg0;
+    u8 *base1 = lbl_803C0C14;
+    s32 offset;
+    s32 mask;
+    u32 i;
+    u8 j;
+    void *entry;
+    void *record;
+    u8 *base2;
+
+    i = 0;
+loop_first:
+    entry = base1 + ((i << 5) & 0x1FE0);
+    if (*(u8 *)((u8 *)entry + 0xB6) != 0 &&
+        bdcmp((u8 *)entry + 0xB0, p + 8) == 0) {
+        fn_8007148C((s32)((u8 *)entry + 0x98));
+        *(u8 *)((u8 *)entry + 0xB6) = 0;
+    } else {
+        i++;
+        if (i < 3)
+            goto loop_first;
     }
+
     if (p[0xE] != 0)
         return;
     if (p[0x12] == 0) {
         bta_dm_pm_set_mode(p + 8, 0);
         return;
     }
-    for (i = 0, entry = base; i < base[0x4D]; i++, entry += 0xB) {
-        if (bdcmp(entry, p + 8) == 0) {
-            mask = entry[9] & 3;
-            if (mask != 0) {
-                entry[0xA] |= mask;
-                bta_dm_pm_set_mode(p + 8, 0);
-            }
-            break;
+    goto loop_init;
+
+loop_body:
+    offset = j * 0xB;
+    if (bdcmp(base2 + offset, p + 8) == 0) {
+        record = base2 + offset;
+        mask = *(u8 *)((u8 *)record + 9) & 3;
+        if (mask != 0) {
+            *(u8 *)((u8 *)record + 0xA) |= mask;
+            bta_dm_pm_set_mode(p + 8, 0);
         }
+        return;
     }
+    j++;
+    if (j < base2[0x4D])
+        goto loop_body;
+    return;
+
+loop_init:
+    base2 = lbl_803C0C14;
+    j = 0;
+    goto loop_body;
 }
 
 void fn_80074A4C(s32 arg0) {
@@ -3765,21 +3788,17 @@ void bta_hh_get_acl_q_info(void) {
     entry_base = lbl_803C0D48;
     for (i = 0; i < 0x10; i++) {
         u8 *entry = entry_base + ((u32)i << 5);
-        if (entry[0x28] == 0) goto next;
-        if (entry[0x2C] != 3) goto next;
-        row = info + ((u32)count * 6);
-        row[6] = entry[0x26];
-        ccb = (u8 *)l2cu_find_ccb_by_cid(0,
-            *(u16 *)(config + entry[0x26] * 0x34 + 0x16));
-        if (ccb == 0) goto next;
-        p = *(u8 **)(ccb + 0x10);
-        if (p == 0) goto next;
-        if (p[0] == 0) goto next;
-        *(u16 *)(row + 8) = *(u16 *)(p + 0x4C);
-        *(u16 *)(row + 0xA) = *(u16 *)(p + 0x38);
-        count++;
-    next:
-        ;
+        if (entry[0x28] != 0 && entry[0x2C] == 3) {
+            row = info + ((u32)count * 6);
+            row[6] = entry[0x26];
+            ccb = (u8 *)l2cu_find_ccb_by_cid(0,
+                *(u16 *)(config + entry[0x26] * 0x34 + 0x16));
+            if (ccb != 0 && (p = *(u8 **)(ccb + 0x10)) != 0 && p[0] != 0) {
+                *(u16 *)(row + 8) = *(u16 *)(p + 0x4C);
+                *(u16 *)(row + 0xA) = *(u16 *)(p + 0x38);
+                ++count;
+            }
+        }
     }
     *(u16 *)(info + 0) = *(u16 *)(lbl_803C4040 + 4);
     *(u16 *)(info + 2) = *(u16 *)(lbl_803C4040 + 2);
