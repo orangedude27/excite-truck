@@ -352,6 +352,7 @@ extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
 extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
 extern u8 lbl_803C4828[];
 struct t_port_info;
+extern void port_rfc_closed(struct t_port_info *, u8);
 extern void rfc_inc_credit(struct t_port_info *, u8);
 extern void rfc_send_fcon(void *, s32, void *);
 extern void rfc_send_fcon_80093FDC(void *, s32);
