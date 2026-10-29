@@ -924,8 +924,6 @@ extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
-#pragma push
-#pragma scheduling invalid_target
 extern "C" s32 GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(void *arg0, u32 arg1) {
     register u8 *ref = *(u8 **)((u8 *)arg0 + 0x28);
     u8 type;
@@ -963,8 +961,6 @@ extern "C" s32 GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(vo
     default: return 0;
     }
 }
-#pragma scheduling on
-#pragma pop
 
 namespace nw4hbm { namespace snd { class SoundArchive { public: class SoundInfo; }; namespace detail { class SoundArchiveFileReader { public: BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; }; } } }
 extern "C" const char lbl_80324DE4[];
