@@ -2024,18 +2024,16 @@ extern char lbl_80559008[4];
 extern s32 lbl_80558FF4;
 extern u32 lbl_8055DC54;
 extern u32 lbl_8055DC58;
-s32 uusb_get_devId(u16 arg0, u16 arg1) {
+s32 uusb_get_devId(u32 arg0, u32 arg1) {
     s32 result;
     if (lbl_8055DC58 == 1) {
         if (lbl_8055DC54 == 0) {
-            result = IUSB_OpenDeviceIds(lbl_80559004, arg0, arg1, (s32 *)&lbl_803BD1E0);
+            result = IUSB_OpenDeviceIds(lbl_80559004, (u16)arg0, (u16)arg1, (s32 *)&lbl_803BD1E0);
         } else if (lbl_8055DC54 == 1) {
-            result = IUSB_OpenDeviceIds(lbl_80559008, arg0, arg1, (s32 *)&lbl_803BD1E0);
-        } else {
-            result = IUSB_OpenDeviceIds(lbl_80559008, arg0, arg1, (s32 *)&lbl_803BD1E0);
+            result = IUSB_OpenDeviceIds(lbl_80559008, (u16)arg0, (u16)arg1, (s32 *)&lbl_803BD1E0);
         }
     } else {
-        result = IUSB_OpenDeviceIds(lbl_80559008, arg0, arg1, (s32 *)&lbl_803BD1E0);
+        result = IUSB_OpenDeviceIds(lbl_80559008, (u16)arg0, (u16)arg1, (s32 *)&lbl_803BD1E0);
     }
     if (result < 0) {
         if (lbl_803BD1E0.at_0x28 != 0) OSReport(lbl_80314898, result, 0x57E, 0x305);
@@ -6239,6 +6237,32 @@ void fn_800716F0(void *arg0) {
         GKI_freebuf(buf);
         *(void **)arg0 = NULL;
     }
+}
+
+extern tBTM_APPL_INFO lbl_802EEA20;
+extern void bta_dm_compress_cback(s32, u8, u8, s32);
+extern void fn_80089E3C(void);
+void bta_dm_enable(void *arg0) {
+    u8 dev_class[3];
+
+    memset(lbl_803C0B98, 0, 0x7C);
+    memset(lbl_803C0D18, 0, 0x2E);
+    memcpy(dev_class, lbl_802EE8F0, 3);
+    BTM_SetDeviceClass(dev_class);
+    *(u32 *)(lbl_803C0C14 + 0x50) = *(u32 *)((u8 *)arg0 + 8);
+    BTM_SecRegister((tBTM_APPL_INFO *)&lbl_802EEA20);
+    ((void (*)(u16))fn_80077C94)(*(u16 *)(lbl_802EE8F0 + 8));
+    BTM_WritePageTimeout(*(u16 *)(lbl_802EE8F0 + 6));
+    ((void (*)(u16))fn_800778C8)(*(u16 *)(lbl_802EE8F0 + 4));
+    fn_80078310((s32)bta_dm_acl_change_cback);
+    fn_8007A240((void (*)(void *, void *))fn_8007301C);
+    fn_80071078((s32)bta_dm_rm_cback);
+    fn_80071088((s32)bta_dm_compress_cback);
+    fn_8007403C();
+    memset(lbl_803C0B68, 0, 0x2D);
+    fn_80071088((s32)bta_dm_compress_cback);
+    ((void (*)(void *))fn_80089E3C)(bta_dm_l2cap_server_compress_cback);
+    WBT_ExtCreateRecord();
 }
 
 extern const BD_ADDR BT_BD_ANY;
