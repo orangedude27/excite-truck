@@ -4315,9 +4315,9 @@ extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     u16 flags = *(u16 *)((u8 *)arg0 + 0x18);
     u32 scaled = (u32)arg1 * 2;
     u8 shift = *(u8 *)((u8 *)arg0 + 0x20);
-    void *object = arg0;
-    u32 sector = (u16)(*(u32 *)((u8 *)object + 0x28) +
+    u32 sector = (u16)(*(u32 *)((u8 *)arg0 + 0x28) +
                        (scaled >> shift));
+    void *object = arg0;
     u32 *output = arg2;
     void *descriptor = arg3;
     u32 retry = 1;
@@ -4329,14 +4329,13 @@ extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
         if (*(u32 *)((u8 *)descriptor + 0x18) == sector)
             goto read_value;
         if (*(u16 *)((u8 *)descriptor + 2) == 1) {
-            u16 i = 0;
-            do {
+            u16 i;
+            for (i = 0; i < *(u8 *)((u8 *)object + 0x22); i++) {
                 fn_800B5618(object, *(void **)((u8 *)descriptor + 8),
                             *(u32 *)((u8 *)descriptor + 0x18) +
                                 i * *(u32 *)((u8 *)object + 0xC),
                             0, *(u16 *)object);
-                i++;
-            } while (i < *(u8 *)((u8 *)object + 0x22));
+            }
         }
     }
 
@@ -14725,7 +14724,7 @@ extern "C" const char lbl_8031EA4C[];
 extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern "C" void fn_800D24D4(void*, s32);
 extern void* lbl_8055DDBC;
-extern "C" void fn_800D2098(const char *, s32, const char *, ...);
+extern "C" void fn_800D2098(const char *, s32, const char *, va_list);
 extern "C" void __VprintfThunk(const char*, va_list);
 extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void*, void*, const char*, void*);
 extern "C" s32 fn_80116A30(void*);
