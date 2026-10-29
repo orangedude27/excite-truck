@@ -2094,6 +2094,74 @@ extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *arg0, s32 arg1) {
     }
 }
 
+extern s32 fn_800AF2CC(void *, u32, s32, s32 *, u32 *, s32);
+extern "C" s32 VFiPFFAT_TraceClustersChain(void *, s32, s32 *);
+extern "C" s32 fn_800AF584(void *);
+extern "C" s32 fn_800A9470(void *arg0, void *output) {
+    u8 *context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
+    s32 flags = *(s32 *)context;
+    s32 error;
+    void *entry;
+    u32 count = *(u32 *)(context + 0x270);
+    u32 size;
+    u32 first;
+    u32 steps;
+    u32 last;
+    s32 aligned;
+    s32 current;
+    s32 i;
+    s32 next;
+    s32 chainEnd;
+    s32 sp10;
+    u32 spC;
+    s32 *out = (s32 *)output;
+
+    *out = 0;
+    if ((flags & 1) != 0 && (flags & 2) == 0)
+        return 0x26;
+
+    if (arg0 == 0)
+        entry = 0;
+    else
+        entry = *(void **)(context + 0x268);
+
+    size = (u32)*(u16 *)entry << *((u8 *)entry + 0x21);
+    if (count == 0)
+        return 0;
+
+    first = *(u32 *)(context + 0x264);
+    steps = *(u32 *)(context + 0x14);
+    last = first % size;
+    aligned = first + ((s32)(-((s32)last) | (s32)last) >> 31 & (s32)(size - last));
+
+    if (steps != 0) {
+        *out = (steps + 1) * size - aligned;
+        return 0;
+    }
+
+    if (first != 0) {
+        error = fn_800AF2CC(context + 4, count, first, &sp10, &spC, (s32)context);
+        if (error != 0)
+            return error;
+        current = spC;
+    } else {
+        current = count;
+    }
+
+    chainEnd = fn_800AF584(entry);
+    i = 0;
+    while (current != chainEnd) {
+        error = VFiPFFAT_TraceClustersChain(entry, current, &next);
+        if (error != 0)
+            return error;
+        current = next;
+        spC = (u32)current;
+        i++;
+    }
+    *out = i * size;
+    return 0;
+}
+
 #pragma push
 #pragma opt_common_subs off
 extern "C" s32 fn_800A95B4(void *arg0) {
@@ -3586,7 +3654,7 @@ extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
-s32 fn_800AF2CC(void *arg0, u32 arg1, s32 arg2, s32 *arg3, u32 *arg4, s32 arg5) {
+extern "C" s32 fn_800AF2CC(void *arg0, u32 arg1, s32 arg2, s32 *arg3, u32 *arg4, s32 arg5) {
     s32 end;
     s32 one = 1;
     s32 result;
@@ -3958,31 +4026,40 @@ extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2) {
     return saved;
 }
 
-extern "C" s32 fn_800B0488(void *arg0, s32 arg1, u32 arg2, void *arg3, s32 arg4) {
+extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4) {
     u8 *obj = (u8 *)arg0, *ctx = (u8 *)arg3;
-    u32 bytes = (u32)arg1 << 2;
+    u32 bytes = arg1 << 2;
     u32 value = *(u32 *)(obj + 0x28) + (bytes >> obj[0x20]);
     u16 block = (u16)value;
-    u32 offset = bytes & (*(u16 *)obj - 1);
+    u16 offset = (u16)(bytes & (*(u16 *)obj - 1));
     s32 result = 0, saved = 0;
     if (*(u32 *)(ctx + 0x18) != block) {
         u16 i;
         for (i = 0; i < obj[0x22]; i++) {
             s32 r = fn_800B5618(arg0, *(void **)(ctx + 8),
-                (u16)(*(s32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC)),
+                *(u32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC),
                 0, *(u16 *)obj);
-            if (r && !saved) saved = r;
+            if (r != 0 && saved == 0) saved = r;
         }
         result = fn_800B5260(arg0, *(void **)(ctx + 8), block, 0, *(u16 *)obj);
-        if (result) return result;
+        if (result != 0) return result;
         *(u32 *)(ctx + 0x18) = block;
     }
     u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
-    u32 data = *(u32 *)(buffer + offset);
-    u32 swapped = (data << 8 & 0x00FF0000) | (data << 24) | (data >> 8 & 0x0000FF00) | (data >> 24);
-    swapped = (swapped & 0xF0000000) | (arg2 & 0x0FFFFFFF);
-    *(u32 *)(buffer + offset) = (swapped << 8 & 0x00FF0000) | (swapped << 24) | (swapped >> 8 & 0x0000FF00) | (swapped >> 24);
-    if (result) saved = result;
+    s32 data = *(s32 *)(buffer + offset);
+    u32 upper = __rlwinm((u32)data, 8, 8, 15);
+    u32 lower = __rlwinm((u32)data, 24, 16, 23);
+    upper = __rlwimi(upper, (u32)data, 24, 0, 7);
+    lower = __rlwimi(lower, (u32)data, 8, 24, 31);
+    u32 merged = upper | lower;
+    merged &= 0xF0000000;
+    merged = __rlwimi(merged, arg2, 0, 4, 31);
+    upper = __rlwinm(merged, 8, 8, 15);
+    lower = __rlwinm(merged, 24, 16, 23);
+    upper = __rlwimi(upper, merged, 24, 0, 7);
+    lower = __rlwimi(lower, merged, 8, 24, 31);
+    *(u32 *)(buffer + offset) = upper | lower;
+    if (result != 0) saved = result;
     return saved;
 }
 
@@ -7084,43 +7161,46 @@ extern "C" s32 fn_800B92A8(s32 arg0) {
 }
 
 extern "C" u8 lbl_80405D58[];
-s32 fn_800B9394(s32 arg0, void *arg1) {
-    s32 i;
-    u32 size;
-    u32 q;
-    u32 q2;
+extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
+    u16 index;
+    u8 *entry;
+    void *found = 0;
+    u32 sectors;
     u32 temp;
-    u32 divisor;
-    u32 remainder;
-    void *entry = 0;
+    s32 deltaA;
+    s32 deltaB;
+    s32 equalMask;
+    s32 check;
 
     fn_800B8004(lbl_8055DD30);
     if (arg0 == 0 || arg1 == 0) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    for (i = 0; i < 0x17; i++) {
-        entry = lbl_80405D58 + i * 0xF0;
-        if (*(s32 *)entry == arg0) break;
-        entry = 0;
+    for (index = 0; index < 0x17; index++) {
+        entry = (u8 *)lbl_80405D58 + index * 0xF0;
+        if (*(u32 *)entry == (u32)arg0) {
+            found = entry;
+            break;
+        }
     }
-    if (entry == 0) {
+    deltaA = (s32)(u32)index - 0x17;
+    deltaB = 0x17 - (s32)(u32)index;
+    equalMask = ~(deltaA | deltaB) >> 31;
+    check = equalMask & -0x16;
+    if (check != 0) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    size = *(u32 *)((u8 *)entry + 0x54);
-    q = size >> 9;
-    *(u8 *)((u8 *)arg1 + 7) = 0x3F;
-    *(u8 *)((u8 *)arg1 + 6) = 0xFF;
-    *(u32 *)((u8 *)arg1 + 0xC) = 0;
-    divisor = (u32)(((u64)size * 0x80808081ULL) >> 39);
-    *(u32 *)((u8 *)arg1 + 0x10) = 0;
-    q2 = (u32)(((u64)divisor * 0x4104105ULL) >> 32);
-    *(u32 *)arg1 = q;
-    *(u16 *)((u8 *)arg1 + 8) = 0x200;
-    temp = (q2 - q) >> 1;
-    remainder = (temp + q2) >> 14;
-    *(u16 *)((u8 *)arg1 + 4) = remainder;
+    sectors = (*(u32 *)((u8 *)found + 0x54)) >> 9;
+    *(volatile u8 *)((u8 *)arg1 + 7) = 0x3F;
+    *(volatile u8 *)((u8 *)arg1 + 6) = 0xFF;
+    *(volatile u32 *)((u8 *)arg1 + 0xC) = 0;
+    *(volatile u32 *)((u8 *)arg1 + 0x10) = 0;
+    *(volatile u32 *)arg1 = sectors;
+    *(volatile u16 *)((u8 *)arg1 + 8) = 0x200;
+    temp = ((sectors / 255) / 63) >> 9;
+    *(volatile u16 *)((u8 *)arg1 + 4) = temp;
     fn_800B8048(lbl_8055DD30);
     return 0;
 }
