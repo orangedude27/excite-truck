@@ -1,6 +1,6 @@
   #include <types.h>
 #include <macros.h>
-extern "C" { typedef s32 Fn800A8D08C4(void *, s32, void **, s32 *); }
+extern "C" { typedef s32 Fn800A8D08C4(void *, s32, void **, s32 *); typedef s32 Fn800B05C8C(void *, s32, u32 *); }
 #include <revolution/MEM/mem_allocator.h>
 extern "C" void *List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(const void *, const void *);
 extern "C" void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
@@ -3969,60 +3969,56 @@ extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
 extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
 extern "C" s32 fn_800B05C8(void *, u16, u32 *);
-extern "C" s32 fn_800AEBA0(void *arg0, s32 arg1, u32 arg2, u32 *arg3, s32 arg_sp0) {
-    s32 pageIndex;
+extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp0) {
+    u32 value;
     void *page;
+    s32 pageIndex;
     s32 type;
     u32 maxValue;
     s32 result;
-    u32 value;
-    u32 index = (u32)arg1;
-    u32 expected = arg2;
-    u32 *output = arg3;
-    void *object = arg0;
 
-    type = *(s32 *)((u8 *)object + 0x1C);
+    type = *(s32 *)((u8 *)arg0 + 0x1C);
     maxValue = *(u32 *)((u8 *)lbl_802EEF40 + type * 0x14 + 4);
-    *output = -1;
-    result = ((s32 (*)(void *, s32, void **, s32 *))(&::fn_800A8D08))(
-        object, -1, &page, &pageIndex);
+    *arg3 = -1;
+    result = ((Fn800A8D08C4 *)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(
+        arg0, -1, &page, &pageIndex);
     if (result != 0)
         return result;
     *(u16 *)((u8 *)page + 2) = 0;
 
     for (;;) {
-        type = *(s32 *)((u8 *)object + 0x1C);
+        type = *(s32 *)((u8 *)arg0 + 0x1C);
         switch (type) {
         case 0:
-            result = fn_800AFBA8(object, (u16)index, &value);
+            result = fn_800AFBA8(arg0, (u16)arg1, &value);
             break;
         case 1:
-            result = fn_800B00E8(object, index, &value, page);
+            result = fn_800B00E8(arg0, arg1, &value, page);
             break;
         case 2:
-            result = fn_800B05C8(object, (u16)index, &value);
+            result = fn_800B05C8(arg0, (u16)arg1, &value);
             break;
         default:
             result = 0xF;
             break;
         }
         if (result != 0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(object, page);
+            VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
             return result;
         }
-        if (expected == value) {
-            *output = index;
+        if (arg2 == value) {
+            *arg3 = arg1;
             return 0;
         }
-        index--;
-        if (index >= 2 &&
-            index < *(u32 *)((u8 *)object + 0x34) + 2)
+        arg1--;
+        if (arg1 >= 2 &&
+            arg1 < *(u32 *)((u8 *)arg0 + 0x34) + 2)
             continue;
-        if (index < maxValue) {
-            *output = expected;
+        if (arg1 < maxValue) {
+            *arg3 = arg2;
             return 0;
         }
-        VFiPFCACHE_FreeFATPage_800A8E10(object, page);
+        VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
         return 0xD;
     }
 }
@@ -5649,66 +5645,53 @@ return var_r31;
 extern "C" s32 fn_800B3A70(void *arg0, void *arg1, s32 arg2) {
     s32 temp_r8;
     s32 var_r9;
-    u32 temp_r0_4;
-    u32 temp_r0_6;
-    u32 temp_r5;
-    u32 var_ctr;
-    u32 var_ctr_2;
-    u32 var_ctr_3;
-    u32 var_ctr_4;
-    u32 var_r4_2;
-    u32 var_r6;
-    char *var_r3;
-    const char *var_r4;
-    u8 temp_r0;
-    u8 temp_r0_2;
-    u8 temp_r0_3;
-    u8 temp_r0_5;
-
-    var_r3 = (char *)arg0;
-    var_r4 = (const char *)arg1;
+    u32 temp_r0_4, temp_r0_6, temp_r5;
+    u32 var_ctr, var_ctr_2, var_ctr_3, var_ctr_4;
+    u32 var_r4_2, var_r6;
+    char *var_r3 = (char *)arg0;
+    const char *var_r4 = (const char *)arg1;
+    u8 temp_r0, temp_r0_2, temp_r0_3, temp_r0_5;
     var_r9 = 0;
-loop_2:
-    if (var_r9 < 8) {
-        temp_r0 = *var_r4;
-        if (((s8)temp_r0 != 0) && ((s8)temp_r0 != 0x2E)) {
-            temp_r0_2 = *var_r4;
-            var_r9 += 1;
-            var_r4 += 1;
-            *var_r3 = temp_r0_2;
-            var_r3 += 1;
-            goto loop_2;
-        }
-    }
-    if (var_r9 == 0) {
+    goto loop_check;
+loop_copy:
+    temp_r0 = *var_r4;
+    var_r9 += 1;
+    var_r4 += 1;
+    *var_r3 = temp_r0;
+    var_r3 += 1;
+    if (var_r9 >= 8) goto after_first;
+loop_check:
+    temp_r0 = *var_r4;
+    if ((s8)temp_r0 == 0) goto after_first;
+    if ((s8)temp_r0 == 0x2E) {
+        if (var_r9 != 0) goto after_first;
         var_r9 = 0;
-loop_8:
-        if ((var_r9 < 2) && ((s8)*var_r4 != 0)) {
-            temp_r0_3 = *var_r4;
-            var_r9 += 1;
-            var_r4 += 1;
-            *var_r3 = temp_r0_3;
-            var_r3 += 1;
-            goto loop_8;
-        }
+        goto loop_8_check;
     }
+    goto loop_copy;
+loop_8_check:
+    temp_r0_3 = *var_r4;
+    if ((s8)temp_r0_3 == 0) goto after_first;
+loop_8_copy:
+    temp_r0_3 = *var_r4;
+    var_r9 += 1;
+    var_r4 += 1;
+    *var_r3 = temp_r0_3;
+    var_r3 += 1;
+    if (var_r9 >= 2) goto after_first;
+    goto loop_8_check;
+after_first:
     temp_r8 = arg2 & 8;
     if (temp_r8 == 0) {
         var_r6 = 8 - var_r9;
         if (var_r9 < 8) {
-            temp_r5 = var_r6 >> 3;
+            temp_r5 = var_r6 >> 3U;
             temp_r0_4 = var_r6;
             var_ctr = temp_r5;
             if (temp_r5 != 0) {
                 do {
-                    var_r3[0] = 0x20;
-                    var_r3[1] = 0x20;
-                    var_r3[2] = 0x20;
-                    var_r3[3] = 0x20;
-                    var_r3[4] = 0x20;
-                    var_r3[5] = 0x20;
-                    var_r3[6] = 0x20;
-                    var_r3[7] = 0x20;
+                    var_r3[0] = 0x20; var_r3[1] = 0x20; var_r3[2] = 0x20; var_r3[3] = 0x20;
+                    var_r3[4] = 0x20; var_r3[5] = 0x20; var_r3[6] = 0x20; var_r3[7] = 0x20;
                     var_r3 += 8;
                     var_ctr -= 1;
                 } while (var_ctr != 0);
@@ -5742,18 +5725,12 @@ loop_22:
     }
     var_r4_2 = 0xB - var_r9;
     if (var_r9 < 0xB) {
-        temp_r0_6 = var_r4_2 >> 3;
+        temp_r0_6 = var_r4_2 >> 3U;
         var_ctr_3 = temp_r0_6;
         if (temp_r0_6 != 0) {
             do {
-                var_r3[0] = 0x20;
-                var_r3[1] = 0x20;
-                var_r3[2] = 0x20;
-                var_r3[3] = 0x20;
-                var_r3[4] = 0x20;
-                var_r3[5] = 0x20;
-                var_r3[6] = 0x20;
-                var_r3[7] = 0x20;
+                var_r3[0] = 0x20; var_r3[1] = 0x20; var_r3[2] = 0x20; var_r3[3] = 0x20;
+                var_r3[4] = 0x20; var_r3[5] = 0x20; var_r3[6] = 0x20; var_r3[7] = 0x20;
                 var_r3 += 8;
                 var_ctr_3 -= 1;
             } while (var_ctr_3 != 0);
