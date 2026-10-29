@@ -1333,6 +1333,54 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     return 1;
 }
 
+extern "C" int strcmp(const char *, const char *);
+extern "C" const char lbl_80324A8C[];
+extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(void *arg0, void *arg1, s32 arg2) {
+    u8 *node;
+    const char *str = (const char *)arg2;
+    u8 *tree = (u8 *)arg1;
+    u8 *self = (u8 *)arg0;
+    if (tree == 0)
+        return -1;
+    u32 index = *(u32 *)tree;
+    if (index >= *(u32 *)(tree + 4))
+        return -1;
+    node = tree + index * 0x14 + 8;
+    s32 length = strlen(str);
+    while ((*(u16 *)node & 1) == 0) {
+        u16 bitIndex = *(u16 *)(node + 2);
+        s32 byteIndex = bitIndex >> 3;
+        s32 child;
+        if (byteIndex < length &&
+            (((s8)str[byteIndex] & (1 << (7 - (bitIndex & 7)))) != 0))
+            child = *(u32 *)(node + 8);
+        else
+            child = *(u32 *)(node + 4);
+        node = tree + child * 0x14 + 8;
+    }
+    u32 labelId = *(u32 *)(node + 0xC);
+    const char *label;
+    if ((u32)(labelId + 0x10000) <= 0xFFFF) {
+        label = (const char *)(labelId + 0x10000);
+    } else {
+        u32 *table = *(u32 **)(self + 0x30);
+        if (table == 0) {
+            label = 0;
+        } else {
+            if (labelId >= table[0])
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324868, 0x1BA, lbl_80324A8C);
+            u32 offset = table[labelId + 1];
+            if (offset == 0)
+                label = 0;
+            else
+                label = *(const char **)(self + 0x2C) + offset;
+        }
+    }
+    if (strcmp(str, label) == 0)
+        return *(s32 *)(node + 0x10);
+    return -1;
+}
+
 extern "C" void *GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(s32, u32, void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
 extern "C" u64 lbl_8055DE50;
@@ -3784,8 +3832,56 @@ virtual s32 Start(void *, void *, void *, u32) { return 0; }
 }
 #pragma pop
 #pragma push
+#pragma cplusplus on
 #pragma use_lmw_stmw off
-s32 nw4hbm::snd::detail::StrmPlayer::Start() { return 0; }
+s32 nw4hbm::snd::detail::StrmPlayer::Start() {
+    u8 *self = (u8 *)this;
+    u32 outerIrq = OSDisableInterrupts();
+
+    if (self[0x4A] == 0) {
+        OSRestoreInterrupts(outerIrq);
+        return 0;
+    }
+
+    if (self[0x49] == 0) {
+        if (*(s32 *)(self + 0x438) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x97, lbl_803267AC);
+        }
+
+        fn_800E519C(*(void **)(self + 0x438));
+
+        u32 innerIrq = OSDisableInterrupts();
+        u8 paused = 0;
+        if (self[0x4B] != 0) {
+            paused = 1;
+        }
+        if (self[0x4E] != 0) {
+            paused = 1;
+        }
+
+        if (paused != self[0x4D]) {
+            if (*(s32 *)(self + 0x438) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0xD1, lbl_803267AC);
+            }
+            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)(self + 0x438), paused);
+            self[0x4D] = paused;
+        }
+        OSRestoreInterrupts(innerIrq);
+
+        register u32 iteratorValue = (u32)&lbl_8041506C[4];
+        if (this == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C4C, 0x233, lbl_80326C28);
+        }
+
+        void *iterator = (void *)iteratorValue;
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
+            lbl_8041506C, &iterator, self + 8);
+        self[0x49] = 1;
+    }
+
+    OSRestoreInterrupts(outerIrq);
+    return 1;
+}
 #pragma pop
 extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" void fn_800FB620(void *self) {
