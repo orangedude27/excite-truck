@@ -3465,7 +3465,7 @@ s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
 extern "C" s32 fn_800AF5A0(u16);
 extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
-extern "C" s32 fn_800B0258(void);
+extern "C" s32 fn_800B0258(void *, s32, s32 *);
 extern "C" s32 fn_800AE4C0(s32, s32, s32);
 extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 sign = (-arg2 | arg2) >> 31;
