@@ -15,6 +15,7 @@ public:
 }}
 extern "C" f32 lbl_80560EA8;
 extern "C" char lbl_8032012C[];
+extern "C" void GXGetTexObjWidth(void*, int, ...);
 extern "C" char *strncpy(char *, const char *, unsigned int);
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32);                   /* extern */
 extern "C" void *GXGetTexObjHeight(s32 *);                     /* extern */
@@ -391,42 +392,45 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma use_lmw_stmw off
 extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *self, const void *resource, void *pane) {
-    u32 zero = 0;
-    void *listHead = (u8 *)self + 0x10;
-    *(void **)self = lbl_8031F628;
-    *(u32 *)((u8 *)self + 4) = zero;
-    *(u32 *)((u8 *)self + 8) = zero;
-    *(u32 *)((u8 *)self + 0xC) = zero;
-    *(void **)((u8 *)self + 0x10) = listHead;
-    *(void **)((u8 *)self + 0x14) = listHead;
-    *(u8 *)((u8 *)self + 0x28) = 0;
+    *(volatile u32 *)((u8 *)self + 0x10) = 0;
+    *(volatile u32 *)((u8 *)self + 0x14) = 0;
+    *(volatile void **)self = lbl_8031F628;
+    *(volatile u32 *)((u8 *)self + 4) = 0;
+    *(volatile u32 *)((u8 *)self + 8) = 0;
+    *(volatile u32 *)((u8 *)self + 0xC) = 0;
+    *(volatile void **)((u8 *)self + 0x10) = (u8 *)self + 0x10;
+    *(volatile void **)((u8 *)self + 0x14) = (u8 *)self + 0x10;
+    *(volatile u8 *)((u8 *)self + 0x28) = 0;
     memcpy((u8 *)self + 0x18, (const u8 *)resource + 8, 0x10);
 
     const u8 *items = (const u8 *)resource + 0x1C;
-    u32 offset = 0;
-    u32 index = 0;
-    u16 count = *(const u16 *)((const u8 *)resource + 0x18);
-    do {
+    s32 offset = 0;
+    s32 index = 0;
+    while (index < (s32)*(const u16 *)((const u8 *)resource + 0x18)) {
         void *result = ((GroupPaneDispatch_800D58C4 *)pane)->GetResource(items + offset, 1);
         if (result != 0) {
-            void *node = (void *)MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
-            if (node != 0) {
-                *(u32 *)node = zero;
-                *(u32 *)((u8 *)node + 4) = zero;
-                *(void **)((u8 *)node + 8) = result;
-                if (node == 0)
-                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6E8, 0x233, lbl_8031F6C4);
-                void *iterator = (u8 *)self + 0x10;
-                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)self + 0xC, &iterator, node);
-            }
+            s32 allocResult = MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
+            if (allocResult == 0)
+                continue;
+            void *node = (void *)allocResult;
+            *(u32 *)node = 0;
+            *(u32 *)((u8 *)node + 4) = 0;
+            *(void **)((u8 *)node + 8) = result;
+            register void *iterator = (u8 *)self + 0x10;
+            void *slot;
+            if (node == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6E8, 0x233, lbl_8031F6C4);
+            slot = iterator;
+            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)self + 0xC, &slot, node);
         }
         offset += 0x10;
         index += 1;
-    } while (index < count);
+    }
     return self;
 }
-
+#pragma use_lmw_stmw reset
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     extern const char lbl_8031E764[];
