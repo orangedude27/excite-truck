@@ -17,6 +17,10 @@ extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
 extern unsigned int * const __GXData;
 extern unsigned int lbl_8055D968;
+extern unsigned int lbl_8055D930;
+extern unsigned int lbl_8055D938;
+extern unsigned int lbl_8055D93C;
+extern unsigned int lbl_8055D940;
 extern unsigned char lbl_8055D970;
 extern unsigned short *__cpReg;
 extern unsigned short *__peReg;
@@ -1209,6 +1213,7 @@ void GXGetVtxAttrFmt(void) {
     unsigned int old;
     unsigned int value;
     unsigned long long start;
+    unsigned long long now;
 
     if (*(unsigned char *)((char *)__GXData + 0x5FA) &&
         (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
@@ -1228,7 +1233,9 @@ void GXGetVtxAttrFmt(void) {
 
         for (;;) {
             start = OSGetTime();
-            while (OSGetTime() - start < 8) {}
+            do {
+                now = OSGetTime();
+            } while (now - start < 8);
             do {
                 high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
                 firstHigh = high;
@@ -1249,10 +1256,14 @@ void GXGetVtxAttrFmt(void) {
 
     *(volatile unsigned int *)0xCC003018 = 1;
     start = OSGetTime();
-    while (OSGetTime() - start < 50) {}
+    do {
+        now = OSGetTime();
+    } while (now - start < 50);
     *(volatile unsigned int *)0xCC003018 = 0;
     start = OSGetTime();
-    while (OSGetTime() - start < 5) {}
+    do {
+        now = OSGetTime();
+    } while (now - start < 5);
 }
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
@@ -2763,35 +2774,39 @@ int GXGetTexObjAll(void *obj) {
 extern unsigned char lbl_80558E48, lbl_80558E50, lbl_80558E58;
 extern unsigned char lbl_80558E60, lbl_80558E68, lbl_80558E70, lbl_80558E78;
 void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
-    unsigned int v0, v1, v2, v3, v4, v5;
     unsigned int *a = (unsigned int *)obj;
     unsigned int *b = (unsigned int *)region;
     unsigned int *data;
     unsigned int *dst;
     unsigned char opcode = 0x61;
 
-    v0 = (a[0] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E48)[map] << 24);
-    v1 = (a[1] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E50)[map] << 24);
-    v2 = (a[2] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E58)[map] << 24);
-    v3 = (b[0] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E60)[map] << 24);
-    v4 = (b[1] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E68)[map] << 24);
-    v5 = (a[3] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E70)[map] << 24);
-    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v0;
-    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v1;
-    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v2;
-    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v3;
-    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v4;
-    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v5;
-    a[0]=v0; a[1]=v1; a[2]=v2; b[0]=v3; b[1]=v4; a[3]=v5;
+    a[0] = __rlwimi(a[0], (&lbl_80558E48)[map], 24, 0, 7);
+    a[1] = __rlwimi(a[1], (&lbl_80558E50)[map], 24, 0, 7);
+    a[2] = __rlwimi(a[2], (&lbl_80558E58)[map], 24, 0, 7);
+    b[0] = __rlwimi(b[0], (&lbl_80558E60)[map], 24, 0, 7);
+    b[1] = __rlwimi(b[1], (&lbl_80558E68)[map], 24, 0, 7);
+    a[3] = __rlwimi(a[3], (&lbl_80558E70)[map], 24, 0, 7);
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = a[0];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = a[1];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = a[2];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = b[0];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = b[1];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = a[3];
     if ((*(unsigned char *)((char *)obj + 0x1F) & 2) == 0) {
         data = __GXData;
         dst = ((unsigned int *(*)(unsigned int))data[0x51C / 4])(*(unsigned int *)((char *)obj + 0x18));
-        dst[1] = (dst[1] & 0x00FFFFFF) | ((unsigned int)(&lbl_80558E78)[map] << 24);
+        dst[1] = __rlwimi(dst[1], (&lbl_80558E78)[map], 24, 0, 7);
         *(volatile unsigned char *)0xCC008000 = opcode;
         *(volatile unsigned int *)0xCC008000 = dst[1];
     }
     data = __GXData;
-    dst = (unsigned int *)((char *)data + map * 4);
+    dst = data + map;
     dst[0x564 / 4] = a[2];
     dst[0x584 / 4] = a[0];
     data[0x5FC / 4] |= 1;
@@ -2932,30 +2947,35 @@ void __SetSURegs(s32 arg0, s32 arg1) {
 }
 
 void __GXSetSUTexRegs(void) {
-    u32 *gx = (u32 *)(void *)__GXData;
+    volatile u32 *gx = (volatile u32 *)(void *)__GXData;
     u32 mode = gx[0x5E4 / 4];
     u32 cfg, count, limit, i, word, texmap, coord;
     if (mode == 0xFF) return;
     cfg = gx[0x254 / 4];
-    count = (cfg >> 16) & 7;
     limit = ((cfg >> 10) & 0xF) + 1;
+    count = (cfg >> 16) & 7;
     for (i = 0; i < count; i++) {
-        word = gx[0x170 / 4];
         switch (i) {
-        case 0: texmap = word & 7; coord = (word >> 3) & 7; break;
-        case 1: texmap = (word >> 6) & 7; coord = (word >> 9) & 7; break;
-        case 2: texmap = (word >> 12) & 7; coord = (word >> 15) & 7; break;
-        default: texmap = (word >> 18) & 7; coord = (word >> 21) & 7; break;
+        case 0:
+            word = gx[0x170 / 4]; texmap = word & 7; coord = (word >> 3) & 7; break;
+        case 1:
+            word = gx[0x170 / 4]; texmap = (word >> 6) & 7; coord = (word >> 9) & 7; break;
+        case 2:
+            word = gx[0x170 / 4]; texmap = (word >> 12) & 7; coord = (word >> 15) & 7; break;
+        default:
+            word = gx[0x170 / 4]; texmap = (word >> 18) & 7; coord = (word >> 21) & 7; break;
         }
-        if ((mode & (1 << coord)) == 0) __SetSURegs(texmap, coord);
+        if ((gx[0x5E4 / 4] & (1 << coord)) == 0) __SetSURegs(texmap, coord);
     }
     for (i = 0; i < limit; i++) {
         u32 mapreg = gx[(0x5A4 / 4) + i];
-        u32 field = (mapreg & 0xFF000000) >> 24;
+        u32 field = (mapreg >> 24) & 0xFF;
         u32 tex;
         if (i & 1) tex = (gx[(0x150 / 4) + i] >> 15) & 7;
         else tex = (gx[(0x150 / 4) + i] >> 3) & 7;
-        if (field != 0xFF && (mode & (1 << tex)) == 0 && (gx[0x5E8 / 4] & (1 << i)) != 0)
+        if (field != 0xFF &&
+            (gx[0x5E4 / 4] & (1 << tex)) == 0 &&
+            (gx[0x5E8 / 4] & (1 << i)) != 0)
             __SetSURegs(field, tex);
     }
 }
