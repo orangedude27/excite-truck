@@ -147,6 +147,7 @@ void fn_80257284(void) {
     if (fn_80247624()) { fn_80012794(); fn_80012778(); }
     fn_802574E0((int *)&local[50], minus_one);
 }
+#pragma pop
 
 #pragma scheduling invalid_target
 void *fn_80257470(void *arg0) {
