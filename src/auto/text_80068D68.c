@@ -162,6 +162,8 @@ extern int btu_hcif_send_cmd();
 extern void fn_80085524(void *, void *);
 extern void fn_800869CC(void);
 extern void DBPrintf_8006CFA8(const char *, ...);
+extern s32 SCCheckStatus(void);
+extern s32 SCSetBtDeviceInfoArray(void *);
 extern char lbl_80313464[];
 extern char lbl_8031347C[];
 extern u32 lbl_8055DC30;
@@ -16310,9 +16312,11 @@ u8 fn_80095084(s32 arg0, void *arg1) {
 #pragma pop
 extern char lbl_80319EB0[];
 void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
+    u8 *existing;
     int i;
     int j;
-    u8 *existing;
+    u8 *existing_base;
+    u8 *mcb_base;
     u8 *channel;
     u8 *peer_addr;
 
@@ -16321,7 +16325,8 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
         if (lbl_803C4828[i * 0x78 + 0x408] != 0 &&
             memcmp(peer_addr, addr, 6) == 0) {
             if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0);
-            existing = lbl_803C4828 + i * 0x78 + 0x39C;
+            existing_base = lbl_803C4828 + i * 0x78;
+            existing = existing_base + 0x39C;
             fn_80070F90(existing);
             return existing;
         }
@@ -16329,8 +16334,9 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
 
     for (i = 0, j = lbl_803C4828[0x65] + 1; i < 1; i++, j++) {
         if (j >= 1) j = 0;
-        channel = lbl_803C4828 + j * 0x78 + 0x39C;
-        if (channel[0x6C] == 0) {
+        mcb_base = lbl_803C4828 + j * 0x78;
+        channel = mcb_base + 0x39C;
+        if (mcb_base[0x408] == 0) {
             memset(channel, 0, 0x78);
             memcpy(channel + 0x62, addr, 6);
             fn_8006D4C4(channel + 0x18);
