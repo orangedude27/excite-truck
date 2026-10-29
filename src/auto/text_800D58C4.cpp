@@ -517,8 +517,6 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma push
-#pragma scheduling invalid_target
 extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     extern const char lbl_8031F6B8[];
     extern const char lbl_8031F694[];
@@ -559,7 +557,6 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     }
     return arg0;
 }
-#pragma pop
 
 extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(void* arg0, void* arg1) {
     extern const char lbl_8031F658[];
@@ -2336,37 +2333,52 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ..
 extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index) {
     u32 texObj[8];
     u32 count;
+    f32 defaultValue;
+    f32 wrapT;
+    u16 wrapS;
     const char *file = (const char *)&lbl_8031F990;
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
-        out[0] = lbl_80560E90;
-        out[1] = lbl_80560E90;
+        defaultValue = lbl_80560E90;
+        out[0] = defaultValue;
+        out[1] = defaultValue;
         return;
     }
 
     if ((void *)texObj == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DC, file + 0x42C);
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x3DC, file + 0x42C);
     }
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DD, file + 0x458);
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x3DD, file + 0x458);
     }
 
-    u32 *src = (u32 *)(*(void **)((u8 *)material + 0x58)) + (((u32)index << 5) / 4);
-    texObj[0] = src[0];
-    texObj[1] = src[1];
-    texObj[2] = src[2];
-    texObj[3] = src[3];
-    texObj[4] = src[4];
-    texObj[5] = src[5];
-    texObj[6] = src[6];
-    texObj[7] = src[7];
+    u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
+    u32 *src = base + (((u32)index << 5) / 4);
+    u32 word0 = ((volatile u32 *)src)[0];
+    u32 word1 = ((volatile u32 *)src)[1];
+    texObj[0] = word0;
+    texObj[1] = word1;
+    u32 word2 = ((volatile u32 *)src)[2];
+    u32 word3 = ((volatile u32 *)src)[3];
+    texObj[2] = word2;
+    texObj[3] = word3;
+    u32 word4 = ((volatile u32 *)src)[4];
+    u32 word5 = ((volatile u32 *)src)[5];
+    texObj[4] = word4;
+    texObj[5] = word5;
+    u32 word6 = ((volatile u32 *)src)[6];
+    u32 word7 = ((volatile u32 *)src)[7];
+    texObj[6] = word6;
+    texObj[7] = word7;
 
-    GXGetTexObjWidth(texObj, 0, texObj[6], src);
-    out[1] = (f32)GXGetTexObjWrapT(texObj);
-    out[0] = (f32)GXGetTexObjWrapS(texObj);
+    ((void (*)(void *, int, u32, void *))GXGetTexObjWidth)(texObj, 0, word6, src);
+    wrapT = (f32)GXGetTexObjWrapT(texObj);
+    wrapS = GXGetTexObjWrapS(texObj);
+    out[1] = wrapT;
+    out[0] = (f32)wrapS;
 }
 
 extern "C" s32 fn_80128668();
