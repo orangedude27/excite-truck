@@ -657,11 +657,11 @@ void fn_8006A1BC(u32 r3, u32 r4)
 
 #pragma use_lmw_stmw off
 u8 fn_8006A1DC(void) {
-    char *strings = (char *)lbl_803130C8;
-    u8 *entry;
-    u8 *addr;
-    s32 i;
-    u8 *dev;
+    register char *strings = (char *)lbl_803130C8;
+    register u8 *entry;
+    register u8 *addr;
+    register s32 i;
+    register u8 *dev;
     u8 one = 1;
     u8 zero = 0;
     u8 two = 2;
@@ -684,8 +684,8 @@ u8 fn_8006A1DC(void) {
             dev[0x57] = two;
             *(u16 *)(dev + 0x5E) = value - 0x7F8C;
             dev[0x58] = three;
-            DBPrintf_8006CFA8(&strings[0x1CC], dev[0x40], dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45]);
-            DBPrintf_8006CFA8(&strings[0x390], dev);
+            DBPrintf_8006CFA8(strings + 0x1CC, dev[0x40], dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45]);
+            DBPrintf_8006CFA8(strings + 0x390, dev);
         }
         entry += 0x46;
         addr += 0x46;
@@ -8770,7 +8770,7 @@ block_6:
 void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
     UINT8 status;
     UINT16 opcode;
-    UINT16 queued_opcode;
+    u32 queued_opcode;
     void *buf;
     UINT8 *cmd;
     status = p[0];
@@ -8781,11 +8781,12 @@ void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
     if (opcode != 0xC03 && opcode != 0xC35 && opcode != 0) {
         buf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
         if (buf != 0) {
-            cmd = (UINT8 *)buf + *(UINT16 *)((UINT8 *)buf + 4);
-            queued_opcode = (UINT16)(cmd[8] + (cmd[9] << 8));
+            UINT8 *cmd_base = (UINT8 *)buf + *(UINT16 *)((UINT8 *)buf + 4);
+            queued_opcode = (UINT16)(cmd_base[8] + (cmd_base[9] << 8));
+            cmd = cmd_base + 0xA;
             if (queued_opcode != opcode) {
-                fn_8007096C(0x70001, &lbl_80317298, opcode, 0);
                 cmd = 0;
+                ((void (*)(u32, void *, u16))fn_8007096C)(0x70001, &lbl_80317298, opcode);
             }
         }
         if (fn_8006DF84(lbl_803C0A50 + 0x70) == 0)
@@ -12672,6 +12673,7 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
     }
 }
 
+extern void l2c_process_held_packets(u8 timed_out);
 void l2c_process_timeout(void *arg) {
     s32 event = *(u16 *)((u8 *)arg + 0x14);
     switch (event) {
@@ -14298,6 +14300,42 @@ void fn_800916F4(void *arg0, s32 arg1, s16 *arg2) {
     case 6:
         rfc_mx_sm_state_disc_wait_ua(arg0, arg1, arg2);
         return;
+    }
+}
+
+void rfc_mx_sm_state_configure(void *p_mcb, s32 event, void *p_data) {
+    extern u8 lbl_803C4828[];
+    extern char jumptable_803197F8[];
+    extern void fn_80070954(u32, void *, u16);
+    extern void fn_8007096C(u32, void *, u16, u16);
+    extern void rfc_mx_conf_ind(void *, void *);
+    extern void rfc_mx_conf_cnf(void *, u16 *);
+    extern void PORT_CloseInd(void *);
+    char *trace = jumptable_803197F8;
+
+    if (lbl_803C4828[0x414] >= 4)
+        ((void (*)(u32, void *, s32))fn_80070954)(0x90003, trace + 0xF4, event);
+
+    switch (event) {
+    case 6:
+    case 9:
+        if (lbl_803C4828[0x414] >= 1)
+            ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x90003, trace + 0x3C, *(u8 *)((u8 *)p_mcb + 0x6C), event);
+        break;
+    case 12:
+        rfc_mx_conf_ind(p_mcb, p_data);
+        break;
+    case 11:
+        rfc_mx_conf_cnf(p_mcb, (u16 *)p_data);
+        break;
+    case 14:
+        *(u8 *)((u8 *)p_mcb + 0x6C) = 0;
+        PORT_CloseInd(p_mcb);
+        break;
+    default:
+        if (lbl_803C4828[0x414] >= 4)
+            ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x90003, trace + 0x70, event, *(u8 *)((u8 *)p_mcb + 0x6C));
+        break;
     }
 }
 
