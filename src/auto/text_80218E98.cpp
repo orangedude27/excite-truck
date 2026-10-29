@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern "C" void fn_8022375C(void);
+
 extern "C" u8 lbl_8033DA84[];
 extern "C" char lbl_8033E4DC[];
 extern "C" f32 lbl_8056352C;
