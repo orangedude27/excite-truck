@@ -3054,7 +3054,7 @@ extern s32 fn_800B5324(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
-s32 fn_800ACDF8(void *arg0, s32 arg1) {
+extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     /* Fix note: obtain the FAT page using this context and scan its sectors with two reads. */
     void *sp10;
     s32 spC;
@@ -3093,11 +3093,11 @@ extern "C" s32 fn_800AF144(void *);
 extern s32 fn_800B5618(void *, s32, s32, s32, u16);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800ACDF8(void *);
+extern "C" s32 fn_800ACDF8(void *, s32);
 extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800ACDF8(void *);
+extern "C" s32 fn_800ACDF8(void *, s32);
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
 extern "C" s32 fn_800ACBB0(void *, s32, s32, s32, u32 *, u32 *);
 extern "C" s32 VFiPFFAT_WriteClusterPage(void *, u32, u32, u32, s32, void *);
@@ -3128,7 +3128,7 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     if (result != 0) return result;
     if (first == -1) return 0;
     if (arg5 != 0) {
-        result = fn_800ACDF8(context);
+        result = fn_800ACDF8(context, arg1);
         if (result != 0) return result;
     }
     result = fn_800A8D08(context, -1, &page, &pageIndex);
@@ -17942,7 +17942,8 @@ extern "C" s32 fn_800A4BF4(s32 arg0, u16 *arg1, s16 *arg2) {
 
 extern "C" u32 fn_800A4C04(u8 *arg0) { return (arg0[1] << 8) | arg0[0]; }
 
-void fn_800A4C14(u8 *arg0, s32 arg1) {
+extern "C" void fn_800A4C14(void *arg0, s32 arg1) {
+    u8 *buffer = (u8 *)arg0;
     s32 var_r0;
     u32 temp_r6;
     u32 temp_r7;
@@ -17960,18 +17961,18 @@ void fn_800A4C14(u8 *arg0, s32 arg1) {
     if (arg1 != 0) {
         temp_r6 = arg1 + 1;
         temp_r7 = arg1 - 0x10;
-        if ((u32) (temp_r6 >> 1U) > 8U) {
+        if ((u32)(temp_r6 >> 1U) > 8U) {
             var_r0 = 0;
-            if ((temp_r6 >= 1U) && ((u32) arg1 <= temp_r6)) {
+            if ((temp_r6 >= 1U) && ((u32)arg1 <= temp_r6)) {
                 var_r0 = 1;
             }
             if (var_r0 != 0) {
-                var_r6 = arg0;
-                var_ctr = (u32) (temp_r7 + 0xF) >> 4U;
+                var_r6 = buffer;
+                var_ctr = (u32)(temp_r7 + 0xF) >> 4U;
                 if (temp_r7 > 0U) {
                     do {
-                        temp_r7_2 = arg0 + var_r5;
-                        arg0[var_r5] = temp_r7_2[1];
+                        temp_r7_2 = buffer + var_r5;
+                        buffer[var_r5] = temp_r7_2[1];
                         var_r5 += 0x10;
                         temp_r7_2[1] = var_r6[0];
                         temp_r7_2[2] = temp_r7_2[3];
@@ -17995,14 +17996,14 @@ void fn_800A4C14(u8 *arg0, s32 arg1) {
                 }
             }
         }
-        var_r6_2 = arg0 + var_r5;
-        var_ctr_2 = (u32) ((arg1 + 1) - var_r5) >> 1U;
-        if (var_r5 < (u32) arg1) {
+        var_r6_2 = buffer + var_r5;
+        var_ctr_2 = (u32)((arg1 + 1) - var_r5) >> 1U;
+        if (var_r5 < (u32)arg1) {
             do {
-                temp_r4 = arg0 + var_r5;
+                temp_r4 = buffer + var_r5;
                 temp_r7_3 = *var_r6_2;
                 var_r6_2 += 2;
-                arg0[var_r5] = temp_r4[1];
+                buffer[var_r5] = temp_r4[1];
                 var_r5 += 2;
                 temp_r4[1] = temp_r7_3;
                 var_ctr_2 -= 1;
