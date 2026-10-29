@@ -32,6 +32,7 @@ typedef struct {
 #include <revolution/OS/OSContext.h>
 #include <revolution/DVD/dvd.h>
 void fn_8011C120();
+extern s32 fn_80119300(void *, s32, s32);
 void fn_8011C274(s32, void *);
 void fn_8011C2EC(s32, void *);
 void fn_801195D8(void *);
@@ -1137,14 +1138,13 @@ void fn_80118DC0(void* arg0) {
     s32 offset;
     s32 i;
     s32 status;
-    register s32 zero = 0;
     s32 fileInfo;
 
     if (arg0 == 0) return;
     fn_80118F78(arg0, 1);
     fileInfo = (s32)((u8*)arg0 + 0x1F4);
     status = fn_8011BFFC(
-        zero,
+        0,
         fileInfo,
         *(s32*)((u8*)arg0 + 0x2E8) != 0
             ? *(volatile s32*)&lbl_8055DED4
@@ -1181,7 +1181,6 @@ status_done:
         offset += 0x17C;
         i += 1;
     }
-
     {
         void* field = *(void**)((u8*)arg0 + 0xE8);
         if (field != 0) {
@@ -1196,7 +1195,7 @@ status_done:
         void* field = *(void**)((u8*)arg0 + 0x384);
         if (field != 0) fn_80120084(field);
     }
-    memset(arg0, zero, 0x388);
+    memset(arg0, 0, 0x388);
     fn_80120084(arg0);
 }
 
