@@ -13223,10 +13223,10 @@ extern char lbl_803191D4[];
 extern u8 lbl_80559080;
 extern u8 lbl_80559088;
 BOOLEAN l2cu_create_conn(void *arg0) {
-    register u8 *p_lcb = (u8 *)arg0;
     register s32 i;
     register u8 *p_lcb_iter;
     register BOOLEAN sco_active;
+    register u8 *p_lcb = (u8 *)arg0;
     u16 log_param;
 
     *(u32 *)(p_lcb + 4) = 3;
