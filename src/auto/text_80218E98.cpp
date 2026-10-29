@@ -1074,7 +1074,7 @@ extern "C" void *fn_8021A808(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 }
 
 #pragma dont_inline reset
-extern "C" void fn_8021D044(s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" void *fn_8021D044(void *, s32, s32, s32, const char *, s32, s32, s32, s32);
 extern "C" s32 fn_8022A86C(void *);
 extern "C" void fn_8021818C(s32);
 extern "C" void fn_80218198(s32, void *);
@@ -1198,8 +1198,8 @@ extern "C" void fn_8021ACC0(void *arg0, s32 arg1) {
 #pragma scheduling invalid_target
 extern "C" void fn_8021AD10(void *arg0) {
     s32 value;
-    s32 screenX;
-    s32 screenY;
+    f32 screenX;
+    f32 screenY;
 
     if (*(u8 *)((u8 *)arg0 + 0x18) != 0) {
         value = (*(u8 *)((u8 *)arg0 + 0x244) != 0) + 2;
@@ -1215,13 +1215,13 @@ extern "C" void fn_8021AD10(void *arg0) {
         value %= fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
     }
 
-    screenX = *(s32 *)((u8 *)arg0 + 4) -
-        ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1);
-    screenY = ((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1) -
-        *(s32 *)((u8 *)arg0 + 8);
+    screenX = (f32)(*(s32 *)((u8 *)arg0 + 4) -
+        ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1));
+    screenY = (f32)(((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1) -
+        *(s32 *)((u8 *)arg0 + 8));
 
     fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), value,
-        (f32)screenX, (f32)screenY, lbl_805634A8);
+        screenX, screenY, lbl_805634A8);
 }
 #pragma scheduling on
 #pragma pop
@@ -3458,7 +3458,7 @@ done:
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
-extern "C" void fn_80222234(void *obj, register s32 x, register s32 y) {
+extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
     s32 left, current, top, count, row, col;
     s32 *state = (s32 *)obj;
     s32 *items;
@@ -3482,11 +3482,11 @@ extern "C" void fn_80222234(void *obj, register s32 x, register s32 y) {
     current = state[0x24C / 4];
     if (current < 0) return;
     left = state[1];
-    if (x < current * 50 + left) goto fail_x;
-    if (x > (current + 1) * 50 + left) goto fail_x;
-    y -= top;
+    if (x < left + current * 50) goto fail_x;
+    if (x > left + (current + 1) * 50) goto fail_x;
+    s32 delta = y - top;
     items = *(s32 **)((u8 *)obj + 0x244);
-    row = (y - 10) / 10;
+    row = (delta - 10) / 10;
     entry = *(s32 **)((u8 *)items + current * 0x24);
     if (row < 0) goto fail_row;
     if (row >= entry[2]) goto fail_row;
