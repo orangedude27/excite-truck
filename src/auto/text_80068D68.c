@@ -1157,6 +1157,56 @@ void WUDiMoveTopSmpDevInfoPtr(void *arg0, void *arg1) {
     OSRestoreInterrupts(enabled);
 }
 
+#pragma use_lmw_stmw off
+void WUDiMoveBottomSmpDevInfoPtr_8006B98C(void *arg0) {
+    typedef struct WUDDevInfoView {
+        u8 pad[0x40];
+        u8 devAddr[6];
+    } WUDDevInfoView;
+    typedef struct WUDListEntry WUDListEntry;
+    struct WUDListEntry {
+        WUDDevInfoView *devInfo;
+        WUDListEntry *prev;
+        WUDListEntry *next;
+    };
+    typedef struct {
+        u8 pad[0x14];
+        WUDListEntry *smpListHead;
+        WUDListEntry *smpListTail;
+        WUDListEntry smpList[6];
+    } WUDCBView;
+
+    WUDCBView *p = (WUDCBView *)lbl_80392960;
+    WUDDevInfoView *pInfo = (WUDDevInfoView *)arg0;
+    BOOL enabled;
+    s32 i;
+
+    enabled = OSDisableInterrupts();
+    for (i = 0; i < 6; i++) {
+        if (memcmp(p->smpList[i].devInfo->devAddr, pInfo->devAddr, 6) != 0) {
+            continue;
+        }
+
+        if (memcmp(p->smpListTail->devInfo->devAddr, p->smpList[i].devInfo->devAddr, 6) == 0) {
+            break;
+        }
+
+        p->smpList[i].next->prev = p->smpList[i].prev;
+        if (memcmp(p->smpListHead->devInfo->devAddr, p->smpList[i].devInfo->devAddr, 6) == 0) {
+            p->smpListHead = p->smpList[i].next;
+        } else {
+            p->smpList[i].prev->next = p->smpList[i].next;
+        }
+
+        p->smpList[i].prev = p->smpListTail;
+        p->smpListTail->next = &p->smpList[i];
+        p->smpListTail = &p->smpList[i];
+        p->smpList[i].next = 0;
+        break;
+    }
+    OSRestoreInterrupts(enabled);
+}
+#pragma use_lmw_stmw reset
 extern void *lbl_80319994;
 extern u16 lbl_80394680[];
 extern u32 lbl_80393628[];
@@ -6238,31 +6288,23 @@ void btm_remove_sco_links(BD_ADDR addr) {
 }
 
 void btm_sco_removed(u16 handle, u8 packet_types) {
-    s32 count = 0;
+    u32 count = 0;
     u8 *p;
     s32 i;
     s32 state;
-    {
-        u8 *base = lbl_803C0F78;
-        *(u16 *)(base + 0x18F6) = packet_types;
-        state = *(volatile u16 *)(base + 0x185C);
-        if (state < 7) {
-            if (state >= 2) count = 1;
-        }
-        state = *(volatile u16 *)(base + 0x1890);
-        if (state < 7) {
-            if (state >= 2) count++;
-        }
-        state = *(volatile u16 *)(base + 0x18C4);
-        if (state < 7) {
-            if (state >= 2) count++;
-        }
-    }
-    if ((u8)count <= 1) btm_chg_all_acl_pkt_types(FALSE);
+    u8 *base = lbl_803C0F78;
+    *(volatile u16 *)(base + 0x18F6) = packet_types;
+    state = *(volatile u16 *)(base + 0x185C);
+    if (state >= 2 && state < 7) count = 1;
+    state = *(volatile u16 *)(base + 0x1890);
+    if (state >= 2 && state < 7) count++;
+    state = *(volatile u16 *)(base + 0x18C4);
+    if (state >= 2 && state < 7) count++;
+    if (!((u8)count > 1U)) btm_chg_all_acl_pkt_types(FALSE);
     p = lbl_803C0F78 + 0x1854;
     for (i = 0; i < 3; i++, p += 0x34) {
         state = *(u16 *)(p + 8);
-        if (state && state != 1 && (u16)*(u16 *)(p + 0xA) == handle) {
+        if (state && (u32)state != 1U && *(u16 *)(p + 0xA) == handle) {
             *(u16 *)(p + 8) = 0;
             *(u16 *)(p + 0xA) = 0xFFFF;
             p[0xD] = 0;
