@@ -2569,7 +2569,7 @@ public:
 };
 }}}
 #pragma push
-extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(void *self, void *wave, int index, const void *src) {
+void *nw4hbm::snd::detail::BankFileReader::ReadWaveParam(WaveData *wave, int index, const void *src) const {
     unsigned int count;
     void *bank;
     void *entry;
@@ -2577,9 +2577,9 @@ extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm
     unsigned int data;
     unsigned char type;
     char pad[8];
-    if (*(volatile unsigned int *)self == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224F0, 0x107, lbl_803226B0);
-    if (*(void **)self == 0) return 0;
-    bank = *(void **)((char *)self + 8);
+    if (*(void **)this == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224F0, 0x107, lbl_803226B0);
+    if (*(void **)this == 0) return 0;
+    bank = *(void **)((char *)this + 8);
     if (bank == 0) return 0;
     count = *(unsigned int *)((char *)bank + 8);
     base = (char *)bank + 8;
