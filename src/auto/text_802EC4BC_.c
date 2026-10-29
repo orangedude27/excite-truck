@@ -49,6 +49,15 @@ s32 fn_802EC4E8(s32 arg0) {
     fn_802E3734(&sp8);
     return temp_r31;
 }
+extern s32 lbl_80558898[];
+extern s32 lbl_805600E0, lbl_805600E4;
+extern u8 lbl_805600EC;
+extern char lbl_8055D2F0[];
+extern f32 lbl_805651E0, lbl_805651E4, lbl_805651E8, lbl_805651EC;
+extern u8 SCGetLanguage(void);
+extern void fn_801282F4(void);
+extern void fn_800C64F4(void *);
+extern void *memset(void *, int, unsigned int);
 #pragma scheduling on
   extern char lbl_80558860[];
   extern char lbl_8034E9E0[];
