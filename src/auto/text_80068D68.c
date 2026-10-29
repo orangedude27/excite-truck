@@ -12283,7 +12283,6 @@ extern char lbl_80318580[];
 extern char lbl_803185A8[];
 extern void l2cu_release_ccb(void *);
 extern void l2cu_send_peer_connect_req(void *);
-extern void l2cu_release_ccb(void *);
 extern void l2cu_send_peer_connect_rsp(void *, u16, u16);
 extern void l2c_csm_closed(void *, u16, void *);
 extern void l2c_csm_orig_w4_sec_comp(void *, u16, void *);
