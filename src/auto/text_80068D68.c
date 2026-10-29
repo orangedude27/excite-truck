@@ -28,6 +28,8 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
 extern s32 lbl_805590A0;
+extern void l2cu_release_ccb(void *);
+extern void l2cu_send_peer_connect_req(void *);
 extern void *iosAllocAligned(s32, u32, u32);
 extern s32 iosFree(s32, void *);
 static void USB_LOG(const char *, ...);
