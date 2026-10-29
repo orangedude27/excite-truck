@@ -907,6 +907,44 @@ extern "C" s32 fn_8019C854(void* arg0, void* arg1) {
     ((Call)fn_8019A788)(saved0, saved1, &worldPoint, &worldNormal, 0, 0, depth, lbl_805622D0, lbl_805622D0);
     return 1;
 }
+
+extern "C" s32 fn_8019CCCC(s32 arg0, s32 arg1, void* arg2, f32 farg0) {
+    typedef s32 (*Check)(void);
+    typedef s32 (*Call)(s32, s32, void*, f32*, s32, s32, f32, f32);
+    if (((Check)fn_8019B08C)() != 0) {
+        return 1;
+    }
+    u32 transXBits, transYBits, transZBits;
+    u32 axisXBits, axisYBits, axisZBits;
+    Vec neg, pos;
+    f32 radius = *(f32*)((u8*)arg2 + 0x24);
+    f32 dim = *(f32*)((u8*)arg2 + 0x28);
+    register u32* m = (u32*)*(void**)((u8*)arg2 + 0xC);
+    axisXBits = m[6];
+    axisYBits = m[7];
+    axisZBits = m[8];
+    transXBits = m[9];
+    transYBits = m[10];
+    transZBits = m[11];
+    f32 negDim = -dim;
+    f32 transX = *(f32*)&transXBits;
+    f32 transY = *(f32*)&transYBits;
+    f32 transZ = *(f32*)&transZBits;
+    f32 axisX = *(f32*)&axisXBits;
+    f32 axisY = *(f32*)&axisYBits;
+    f32 axisZ = *(f32*)&axisZBits;
+    pos.x = transX + axisX * dim;
+    pos.y = transY + axisY * dim;
+    pos.z = transZ + axisZ * dim;
+    neg.x = transX + axisX * negDim;
+    neg.y = transY + axisY * negDim;
+    neg.z = transZ + axisZ * negDim;
+    Call call = (Call)fn_8019AA34;
+    s32 firstHit = call(arg0, arg1, arg2, &pos.x, 0, 0, farg0, radius);
+    s32 secondHit = call(arg0, arg1, arg2, &neg.x, 0, 0, farg0, radius);
+    return (firstHit | secondHit) != 0;
+}
+
 #pragma scheduling on
 extern void fn_8019CCCC(void*, f32, s32);
 extern void fn_8019CCCC(void*, void*, s32, f32);
@@ -1017,7 +1055,7 @@ extern "C" void fn_8019D06C(void *arg0, void *arg1, s32 arg2, s32 arg3) {
 extern "C" f32 PSVECSquareDistance(const Vec*, const Vec*);
 extern "C" f32 PSVECDotProduct(const Vec*, const Vec*);
 extern f32 lbl_8056232C;
-void fn_8019D19C(void* arg0, void* arg1) {
+extern "C" void fn_8019D19C(void* arg0, void* arg1) {
     f32 sp14, sp18, sp1C;
     f32 sp8, spC, sp10;
     f32 scale, dot, value;
@@ -1138,32 +1176,38 @@ s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
 #pragma processor 750
 extern "C" s32 fn_8019DAB0(void *arg0, void *arg1) {
     struct Scratch {
-        Vec center;
-        Vec axis;
+        u32 center[3];
+        u32 axis[3];
         Vec minus;
         Vec plus;
     };
-    if (fn_8019D618(arg0, arg1, 0, 0)) return 1;
+    s32 check = fn_8019D618(arg0, arg1, 0, 0);
+    u32 checkFlag = ((u32)check | (u32)-check) >> 31;
+    if (checkFlag) return 1;
     void *shape = *(void **)((u8 *)arg0 + 0xC);
     f32 radius = *(f32 *)((u8 *)arg0 + 0x28);
-    f32 width = *(f32 *)((u8 *)arg0 + 0x24);
     Scratch scratch;
-    scratch.axis.x = *(f32 *)((u8 *)shape + 0x18);
-    scratch.axis.y = *(f32 *)((u8 *)shape + 0x1C);
-    scratch.axis.z = *(f32 *)((u8 *)shape + 0x20);
-    scratch.center.x = *(f32 *)((u8 *)shape + 0x24);
-    scratch.center.y = *(f32 *)((u8 *)shape + 0x28);
-    scratch.center.z = *(f32 *)((u8 *)shape + 0x2C);
+    u32 *words = (u32 *)shape;
+    scratch.axis[0] = words[6];
+    scratch.axis[1] = words[7];
+    scratch.axis[2] = words[8];
+    scratch.center[0] = words[9];
+    scratch.center[1] = words[10];
+    scratch.center[2] = words[11];
+    f32 width = *(f32 *)((u8 *)arg0 + 0x24);
+    f32 *axis = (f32 *)scratch.axis;
+    f32 *center = (f32 *)scratch.center;
     f32 negativeRadius = -radius;
-    scratch.plus.x = scratch.center.x + scratch.axis.x * radius;
-    scratch.plus.y = scratch.center.y + scratch.axis.y * radius;
-    scratch.plus.z = scratch.center.z + scratch.axis.z * radius;
-    scratch.minus.x = scratch.center.x + scratch.axis.x * negativeRadius;
-    scratch.minus.y = scratch.center.y + scratch.axis.y * negativeRadius;
-    scratch.minus.z = scratch.center.z + scratch.axis.z * negativeRadius;
-    s32 result = fn_8019B08C(arg0, &scratch.plus, arg1, width);
+    scratch.plus.x = center[0] + axis[0] * radius;
+    scratch.plus.y = center[1] + axis[1] * radius;
+    scratch.plus.z = center[2] + axis[2] * radius;
+    scratch.minus.x = center[0] + axis[0] * negativeRadius;
+    scratch.minus.y = center[1] + axis[1] * negativeRadius;
+    scratch.minus.z = center[2] + axis[2] * negativeRadius;
+    s32 result = fn_8019B08C(arg0, &scratch.plus, arg1, width) | checkFlag;
+    result = (result | -result) >> 31;
     result |= fn_8019B08C(arg0, &scratch.minus, arg1, width);
-    return result != 0;
+    return (result | -result) >> 31;
 }
 #pragma processor reset
 
@@ -1468,24 +1512,48 @@ extern "C" void fn_8019EECC(void* arg0, Vec* arg1) {
 }
 
 extern "C" void fn_8019EF00(void* arg0) {
-    volatile f32* out = (volatile f32*)((u8*)arg0 + 0x34);
-    f32* m = (f32*)*(void**)((u8*)arg0 + 0xC);
-    volatile f32* in = (volatile f32*)((u8*)arg0 + 0x28);
-    if (out == in) {
-        f32 x = in[0];
-        f32 y = in[1];
-        f32 z = in[2];
-        out[0] = x * m[0] + y * m[3] + z * m[6];
-        out[1] = x * m[1] + y * m[4] + z * m[7];
-        out[2] = x * m[2] + y * m[5] + z * m[8];
+    struct Object {
+        char pad0[0xC];
+        f32* matrix;
+        char pad10[0x18];
+        Vec input;
+        volatile Vec output;
+    };
+    Object* self = (Object*)arg0;
+    f32* m = self->matrix;
+    if (&self->output == (volatile Vec*)&self->input) {
+        register f32 y = self->input.y;
+        register f32 p03 = y * m[3];
+        register f32 p14 = y * m[4];
+        register f32 p25 = y * m[5];
+        register f32 x = self->input.x;
+        register f32 p00 = x * m[0];
+        register f32 p11 = x * m[1];
+        register f32 p22 = x * m[2];
+        register f32 z = self->input.z;
+        register f32 p06 = z * m[6];
+        register f32 p17 = z * m[7];
+        register f32 p28 = z * m[8];
+        self->output.x = p00 + p03 + p06;
+        self->output.y = p11 + p14 + p17;
+        self->output.z = p22 + p25 + p28;
     } else {
-        out[0] = in[0] * m[0] + in[1] * m[3] + in[2] * m[6];
-        out[1] = in[0] * m[1] + in[1] * m[4] + in[2] * m[7];
-        out[2] = in[0] * m[2] + in[1] * m[5] + in[2] * m[8];
+        register f32 p03 = self->input.y * m[3];
+        register f32 p00 = self->input.x * m[0];
+        register f32 p06 = self->input.z * m[6];
+        self->output.x = p00 + p03 + p06;
+        register f32 p14 = self->input.y * m[4];
+        register f32 p11 = self->input.x * m[1];
+        register f32 p17 = self->input.z * m[7];
+        self->output.y = p11 + p14 + p17;
+        register f32 p25 = self->input.y * m[5];
+        register f32 p22 = self->input.x * m[2];
+        register f32 p28 = self->input.z * m[8];
+        self->output.z = p22 + p25 + p28;
     }
-    out[0] += m[9];
-    out[1] += m[10];
-    out[2] += m[11];
+    self->output.x += m[9];
+    self->output.y += m[10];
+    self->output.z += m[11];
 }
 
 extern "C" void fn_8019F03C(void* arg0) {
@@ -1584,6 +1652,52 @@ extern "C" void fn_8019F248(void *arg0) {
         var_f1 = lbl_80562300;
     }
     fn_801E3FC8((u8*)arg0 + 0x34, lbl_8055E598, var_f1);
+}
+
+extern "C" void fn_802E30C8(const char *, ...);
+extern const char lbl_80333614[];
+extern u8 lbl_80562374;
+extern u8 lbl_80562375;
+extern u8 lbl_80562376;
+extern u8 lbl_80562377;
+extern u8 lbl_80562378;
+extern "C" void fn_8019F26C(s32 arg0, void *arg1) {
+    u32 value = *(u32 *)((u8 *)arg1 + 0x18);
+    switch (value) {
+    case 'RAGD':
+        return;
+    case 'FLSR':
+        fn_8019D19C((void *)arg0, arg1);
+        return;
+    case 'SPHR':
+        fn_8019CE4C(arg1, (void *)arg0);
+        return;
+    case 'TUBE':
+        fn_8019CF60(arg1, (void *)arg0);
+        return;
+    case 'BOX ':
+        fn_8019D06C((void *)arg0, arg1, 0, 0);
+        return;
+    case 'GRUP':
+    case 'POLY':
+        ((Fn801A401CDispatch *)arg1)->Call((void *)arg0);
+        return;
+    case 'RING':
+        fn_8019D378((void *)arg0, arg1);
+        return;
+    default: {
+        u8 buffer[5] = {
+            lbl_80562374,
+            lbl_80562375,
+            lbl_80562376,
+            lbl_80562377,
+            lbl_80562378
+        };
+        *(u32 *)buffer = value;
+        fn_802E30C8(lbl_80333614, buffer);
+        return;
+    }
+    }
 }
 
 extern "C" void fn_8019F3D0(void) {
