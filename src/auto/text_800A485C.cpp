@@ -3695,46 +3695,47 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
 
 extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2) {
     u16 value;
-    u16 flags;
-    u16 offset;
     u32 index;
-    u32 retry;
+    u16 offset;
     s32 result;
-    s32 callbackResult;
-    s32 (*callback)(void *);
+    u32 retry = 1;
+    s32 *output = arg2;
+    void *object = arg0;
+    u16 flags = *(u16 *)((u8 *)object + 0x18);
 
-    flags = *(u16 *)((u8 *)arg0 + 0x18);
-    offset = (u16)((u32)arg1 * 2);
-    retry = 1;
-    index = (u16)(*(u32 *)((u8 *)arg0 + 0x28) +
-                  (((u32)arg1 * 2) >> *(u8 *)((u8 *)arg0 + 0x20)));
-    offset &= *(u16 *)arg0 - 1;
+    index = (u16)(*(u32 *)((u8 *)object + 0x28) +
+                  (((u32)arg1 * 2) >> *(u8 *)((u8 *)object + 0x20)));
+    offset = (u16)((*(u16 *)object - 1) & ((u32)arg1 * 2));
     if (flags & 0x80)
         retry = flags & 7;
-    for (;;) {
-        result = fn_800B5260(arg0, &value, index, offset, 2);
-        if (result == 0x1000) {
-            callback = *(s32 (**)(void *))((u8 *)arg0 + 0x1FC0);
-            if (callback != 0) {
-                callbackResult = callback(*(void **)((u8 *)arg0 + 0x1F84));
-                if (callbackResult == 0)
-                    continue;
-                if (callbackResult == 1 &&
-                    *(u8 *)((u8 *)arg0 + 0x22) >= 2 &&
-                    retry < *(u8 *)((u8 *)arg0 + 0x22)) {
-                    retry++;
-                    index += *(u32 *)((u8 *)arg0 + 0xC);
-                    continue;
-                }
+loop:
+    result = fn_800B5260(object, &value, index, offset, 2);
+    if (result == 0x1000) {
+        s32 (*callback)(void *) =
+            *(s32 (**)(void *))((u8 *)object + 0x1FC0);
+        if (callback != 0) {
+            s32 callbackResult = callback(*(void **)((u8 *)object + 0x1F84));
+            if (callbackResult == 0)
+                goto retryCheck;
+            if (callbackResult == 1 &&
+                *(u8 *)((u8 *)object + 0x22) >= 2 &&
+                retry < *(u8 *)((u8 *)object + 0x22)) {
+                retry++;
+                index += *(u32 *)((u8 *)object + 0xC);
+                goto retryCheck;
             }
         }
-        if (result != 0) {
-            *arg2 = -1;
-            return result;
-        }
-        *arg2 = ((value & 0xFF) << 8) | (value >> 8);
+    }
+    if (result != 0) {
+        *output = -1;
+        return result;
+    }
+retryCheck:
+    if (result == 0) {
+        *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
         return 0;
     }
+    goto loop;
 }
 
 #pragma use_lmw_stmw reset
@@ -7168,7 +7169,7 @@ extern "C" s32 fn_800B9BB4(s32 arg0) {
 
     if (*(volatile s32 *)((u8 *)lbl_80407300 + 0xC) != 0) {
         if (*(volatile s8 *)((u8 *)lbl_80407300 + 0x14) == 0 &&
-            fn_800BA974(*(volatile s32 *)((u8 *)lbl_80407300 + 0xC), &value, 1) == 1)
+            (*fn_800BA974)(*(volatile s32 *)((u8 *)lbl_80407300 + 0xC), &value, 1) == 1)
             *(volatile u8 *)((u8 *)lbl_80407300 + 0x14) = value;
 
         {
