@@ -414,19 +414,20 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
     while (index < (s32)*(const u16 *)((const u8 *)resource + 0x18)) {
         void *result = ((GroupPaneDispatch_800D58C4 *)pane)->GetResource(items + offset, 1);
         if (result != 0) {
-            s32 allocResult = MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
-            if (allocResult == 0)
-                continue;
-            void *node = (void *)allocResult;
-            *(u32 *)node = 0;
-            *(u32 *)((u8 *)node + 4) = 0;
-            *(void **)((u8 *)node + 8) = result;
-            register void *iterator = (void *)((u32 *)self + 4);
-            void *slot;
-            if (node == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6E8, 0x233, lbl_8031F6C4);
-            slot = iterator;
-            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&((GroupLayout *)self)->children, &slot, node);
+            void *node = (void *)MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
+            if (node != 0) {
+                if (node != 0) {
+                    *(u32 *)node = 0;
+                    *(u32 *)((u8 *)node + 4) = 0;
+                }
+                *(void **)((u8 *)node + 8) = result;
+                register void *iterator = (void *)((u32 *)self + 4);
+                void *slot;
+                if (node == 0)
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6E8, 0x233, lbl_8031F6C4);
+                slot = iterator;
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&((GroupLayout *)self)->children, &slot, node);
+            }
         }
         offset += 0x10;
         index += 1;
@@ -1445,6 +1446,7 @@ extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
 
 #pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*, void*, u32);
+#pragma dont_inline on
 extern "C" void fn_800D9CBC(void* arg0, u32 arg1, void* arg2) {
     extern const char lbl_8031F990[];
     extern const char lbl_8031FDE8[];
@@ -1452,6 +1454,7 @@ extern "C" void fn_800D9CBC(void* arg0, u32 arg1, void* arg2) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3f2, lbl_8031FDE8);
     InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl((u8*)*(void**)((u8*)arg0 + 0x58) + ((arg1 & 0xff) << 5), arg2, 0);
 }
+#pragma dont_inline reset
 
 extern "C" s32 GXGetTexObjLODAll(void*);
 extern "C" s32 GXGetTexObjWrap_Internal(void*);
