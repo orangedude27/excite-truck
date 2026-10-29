@@ -4901,10 +4901,10 @@ frame.sp10[0] += 2;
 }
 }
 } else if (((M2C_FIELD(lbl_803D2140, u32 *, 0x60) & 2) == 2) &&
-(arg2 == 0) &&
-(VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559210, 1, 0, 1) != 0) &&
-(VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559214, 1, 0, 2) != 0) &&
-(((s32 (*)(void *, u32, u32))fn_800B4D5C)(var_r29, 1, 0) == 0)) {
+  (arg2 == 0) &&
+  (VFiPFSTR_StrNCmpCall((s32)var_r29, &lbl_80559210, 1, 0, 1) != 0) &&
+  (VFiPFSTR_StrNCmpCall((s32)var_r29, &lbl_80559214, 1, 0, 2) != 0) &&
+  (((s32 (*)(void *, u32, u32))fn_800B4D5C)(var_r29, 1, 0) == 0)) {
 var_r31 = 0;
 }
 if (var_r31 == 1) {
@@ -13640,10 +13640,12 @@ extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
 extern "C" void fn_800D1F7C(s32 arg0, s32 arg1) {
-    /* Fix note: preserve the diagnostic format base, node address, and positive validation path across calls. */
-    u32 node = (u32)arg0;
+    /* Fix note: keep status in a short-lived result and branch through the shared report path. */
     const char *fmtBase = lbl_8031E9D0;
+    u32 node = (u32)arg0;
     u32 buffer[0x41];
+    u32 lower = 0x80000000;
+    u32 upper = 0x83000000;
     s32 count;
 
     fn_800D1EC4(fmtBase);
@@ -13659,17 +13661,31 @@ loop_1:
 
     fn_800D1EC4(fmtBase + 0x48, node, *(u32 *)node, *(u32 *)(node + 4));
     u32 address = *(u32 *)(node + 4);
-    s32 valid = 0;
-    if (fn_800D3824() != 0) {
-        if (address >= 0x80000000 && address <= 0x82FFFFFF) {
-            typedef s32 (*CheckFn)(s32, s32, s32);
-            if (((CheckFn)fn_800D40B4)(address, (s32)buffer, 0x104) != 0) {
-                fn_800D1EC4(lbl_805597D8, buffer);
-                valid = 1;
-            }
+    s32 result;
+    if (fn_800D3824() != 0)
+        goto check_address;
+    result = 0;
+    goto report;
+check_address:
+    if (address < lower) {
+        result = 0;
+        goto report;
+    }
+    if (address > upper - 1) {
+        result = 0;
+        goto report;
+    }
+    {
+        typedef s32 (*CheckFn)(s32, s32, s32);
+        if (((CheckFn)fn_800D40B4)(address, (s32)buffer, 0x104) == 0) {
+            result = 0;
+            goto report;
         }
     }
-    if (valid == 0)
+    fn_800D1EC4(lbl_805597D8, buffer);
+    result = 1;
+report:
+    if (result == 0)
         fn_800D1EC4(lbl_805597DC);
 
     ++count;
