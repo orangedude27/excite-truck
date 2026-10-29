@@ -4502,6 +4502,57 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
     }
 }
 
+extern void bta_hh_api_enable(void *);
+extern void bta_hh_api_disable(void);
+extern void bta_hh_disc_cmpl(void);
+extern void bta_hh_get_acl_q_info(void);
+extern UINT8 bta_hh_find_cb(BD_ADDR);
+BOOLEAN bta_hh_hdl_event(BT_HDR *p_msg) {
+    UINT16 event = p_msg->event;
+    UINT8 index = 0x10;
+    register void *p_cb = NULL;
+    u8 *entry;
+
+    switch (event) {
+    case 0x170C:
+        bta_hh_api_enable(p_msg);
+        goto done;
+    case 0x170D:
+        bta_hh_api_disable();
+        goto done;
+    case 0x170F:
+        bta_hh_disc_cmpl();
+        goto done;
+    case 0x170E:
+        bta_hh_get_acl_q_info();
+        goto done;
+    }
+
+    if (event == 0x1700) {
+        index = bta_hh_find_cb((u8 *)p_msg + 8);
+    } else if (event == 0x170A) {
+        if (*(UINT16 *)((u8 *)p_msg + 0x10) == 0x0B) {
+            index = bta_hh_find_cb((u8 *)p_msg + 8);
+        } else {
+            index = *(lbl_803C0D48 + p_msg->layer_specific + 0x214);
+        }
+    } else if (p_msg->layer_specific < 0x10) {
+        index = *(lbl_803C0D48 + p_msg->layer_specific + 0x214);
+    }
+
+    if (index != 0x10) {
+        entry = lbl_803C0D48 + ((u32)index << 5);
+        p_cb = entry + 0x10;
+    }
+    if (lbl_8055DC80 >= 5) {
+        fn_8007096C(0x504, lbl_803157DC, p_msg->layer_specific, index);
+    }
+    bta_hh_sm_execute(p_cb, p_msg->event, p_msg);
+
+done:
+    return TRUE;
+}
+
 extern char lbl_80315700[];
 extern void *jumptable_803159A0[];
 char *bta_hh_evt_code(u32 event) {
@@ -11124,31 +11175,38 @@ extern char lbl_8031799C[];
 void hidh_proc_repage_timeout(TIMER_LIST_ENT *p_tle) {
     UINT32 handle = p_tle->param;
     UINT8 index = (UINT8)handle;
-    UINT8 *dev = lbl_803C3C38 + index * 0x34;
+    UINT8 one = 1;
+    UINT8 *base = lbl_803C3C38;
+    UINT8 *dev = base + index * 0x34;
     UINT16 cid;
     UINT32 dhandle;
-    void (**callback)(UINT8, UINT32, UINT8, void *) =
-        (void (**)(UINT8, UINT32, UINT8, void *))(lbl_803C3C38 + 0x340);
+    void (**callback)(UINT8, UINT32, UINT8, void *);
+
     if (dev[0x10] == 0) {
         *(UINT16 *)(dev + 0x14) = 0;
         *(UINT16 *)(dev + 0x16) = 0;
         *(UINT16 *)(dev + 0x1A) = 0x100;
-        dev[0x11] = 1;
+        dev[0x11] = one;
         cid = L2CA_ConnectReq(0x11, dev + 1);
         *(UINT16 *)(dev + 0x14) = cid;
         if (cid == 0) {
             if (lbl_803C3C38[0x401] >= 2)
                 fn_8007093C(0x1E0001, lbl_8031799C);
-            dhandle = (dev - lbl_803C3C38) / 0x34;
-            (*callback)(dhandle, 1, 0xE, 0);
+            base = lbl_803C3C38;
+            dhandle = (dev - base) / 0x34;
+            dhandle = dhandle / 0x34;
+            (*((void (**)(UINT8, UINT32, UINT8, void *))(base + 0x340)))(
+                (UINT8)dhandle, 1, 0xE, 0);
         } else {
-            dev[0x10] = 1;
+            dev[0x10] = one;
         }
     }
-    handle = p_tle->param;
-    dev = lbl_803C3C38 + handle * 0x34;
-    dev[0xC]++;
-    (*callback)(handle, 2, dev[0xC], 0);
+
+    base = lbl_803C3C38;
+    *(UINT8 *)(base + p_tle->param * 0x34 + 0xC) += 1;
+    callback = (void (**)(UINT8, UINT32, UINT8, void *))(base + 0x340);
+    (*callback)((UINT8)p_tle->param, 2,
+                *(UINT8 *)(base + p_tle->param * 0x34 + 0xC), 0);
 }
 
 void hidh_sec_check_complete_orig(BD_ADDR bd_addr, void *p_ref_data, UINT8 res) {
