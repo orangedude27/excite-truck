@@ -503,7 +503,13 @@ void fn_80117330(void* arg0) {
 void fn_80117380(void *arg0, s32 arg1) {
     s32 var_r31;
     s32 temp_r3;
+    s32 *p;
     s32 temp_r5;
+    u32 offset0;
+    u32 offset1;
+    s32 a;
+    s32 b;
+    s32 (*fn)(void *, s32, s32, s32, s32);
     var_r31 = arg1;
     if (arg1 != 0) var_r31 = arg1 - 1;
     *(s32 *)((u8 *)arg0 + 0x2F8) = 0;
@@ -519,13 +525,15 @@ void fn_80117380(void *arg0, s32 arg1) {
     }
     temp_r5 = *(s32 *)((u8 *)arg0 + 0xE8);
     if (temp_r5 != 0) {
-        s32 *p = *(s32 **)((u8 *)arg0 + 0xEC);
+        p = *(s32 **)((u8 *)arg0 + 0xEC);
         *(s32 *)((u8 *)arg0 + 0xE4) = temp_r5 + ((p[var_r31] & ~1) - (p[0] & ~1));
     } else {
-        s32 *p = *(s32 **)((u8 *)arg0 + 0xEC);
-        s32 a = p[var_r31] & ~1;
-        s32 b = p[var_r31 + 1] & ~1;
-        s32 (*fn)(void *, s32, s32, s32, s32) = *(s32 (**)(void *, s32, s32, s32, s32))((u8 *)arg0 + 0xF4);
+        p = *(s32 **)((u8 *)arg0 + 0xEC);
+        offset0 = var_r31 << 2;
+        offset1 = (var_r31 + 1) << 2;
+        a = *(s32 *)((u8 *)p + offset0) & ~1;
+        b = *(s32 *)((u8 *)p + offset1) & ~1;
+        fn = *(s32 (**)(void *, s32, s32, s32, s32))((u8 *)arg0 + 0xF4);
         fn((u8 *)arg0 + 0xF0, var_r31, a, *(s32 *)((u8 *)arg0 + 0xE4), b - a);
     }
     if (*(s32 *)((u8 *)arg0 + 0x2E8) != 0) fn_80117074(arg0);
@@ -1711,21 +1719,34 @@ void fn_8011A4F8(u32 arg0, void *arg1) {
 void fn_8011A6A0(void* arg0) {
     s32 status = DVDGetDriveStatus();
     s32 remaining = *(s32*)((u8*)arg0 + 0xB8) - *(s32*)((u8*)arg0 + 0x90);
-    if (status != 10) {
-        if (status < 10) {
-            if (status == -1 || status >= 3)
-                goto set_flag;
-            goto check_read;
-        }
-        if (status < 12)
-            goto set_flag;
-        goto done;
-    }
+    if (status == 10)
+        goto check_read;
+    if (status >= 10)
+        goto status_high;
+    if (status == -1)
+        goto set_flag;
+    if (status < -1)
+        goto check_read;
+    if (status < 3)
+        goto check_read;
+    goto set_flag;
+status_high:
+    if (status >= 12)
+        goto check_read;
+set_flag:
+    *(s32*)((u8*)arg0 + 0x20) = 1;
+    goto done;
 check_read:
     if (*(s32*)((u8*)arg0 + 0xC4) != 0)
         goto done;
-    if (status != 0 && status != 10)
-        goto done;
+    switch (status) {
+        case 0:
+        case 10:
+            goto read_valid;
+        default:
+            goto done;
+    }
+read_valid:
     if (*(u32*)((u8*)arg0 + 0xA0) >= 0x8000 && remaining != 0) {
         *(s32*)((u8*)arg0 + 0xC8) = *(s32*)((u8*)arg0 + 0x2C);
         *(s32*)((u8*)arg0 + 0xCC) = fn_80116D30();
@@ -1743,9 +1764,6 @@ check_read:
         goto done;
     }
     *(s32*)((u8*)arg0 + 0x48) = *(s32*)((u8*)arg0 + 0x4C);
-    goto done;
-set_flag:
-    *(s32*)((u8*)arg0 + 0x20) = 1;
 done:
     return;
 }
@@ -3781,6 +3799,8 @@ u32 fn_8011FC2C(void* arg0, s32 arg1, s32 arg2, s32* arg3, s32 arg4, s32 arg5, s
 }
 
 void fn_8011FE20(u32 **arg0, u32 arg1) {
+    register u32 size = arg1;
+    register u32 **slot = arg0;
     void *newBuffer;
     void *newSizes;
     u32 base;
@@ -3800,12 +3820,12 @@ void fn_8011FE20(u32 **arg0, u32 arg1) {
         lbl_8055994C = (u32 *)newSizes;
     }
     base = (u32)lbl_8055DEF0;
-    rounded = arg1 + 0x1F;
+    rounded = size + 0x1F;
     extra = (((base >> 5) & 0x1F) + 0x21 - ((rounded >> 5) & 0x1F)) & 0x1F;
     total = (rounded & ~0x1F) + (extra << 5);
     lbl_8055DEF0 = (void *)(base + total);
     lbl_8055994C[lbl_8055DEF4] = total;
-    lbl_80559948[lbl_8055DEF4] = arg0;
+    lbl_80559948[lbl_8055DEF4] = slot;
     lbl_8055DEF4++;
 }
 
