@@ -3771,11 +3771,14 @@ extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) 
     s32 r;
     u16 bytes;
     u8 clusters, shift;
-    u32 q, rem;
+    u32 q, rem, rounded;
     void *fat;
+    u32 *state;
+    u32 count;
     fat = *(void **)((u8 *)arg0 + 0x34);
-    if (**(u32 **)((u8 *)arg0 + 8) == 1 &&
-        *(u32 *)((u8 *)fat + 0x1C) <= 1) {
+    state = *(u32 **)((u8 *)arg0 + 8);
+    count = *(u32 *)((u8 *)fat + 0x1C);
+    if (*state == 1 && count <= 1) {
         if (arg1 >= *(u16 *)((u8 *)fat + 0x24))
             *arg4 = -1;
         else
@@ -3788,10 +3791,11 @@ extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) 
         bytes = *(u16 *)fat;
         clusters = *(u8 *)((u8 *)fat + 6);
         q = arg3 / bytes;
-        rem = (arg3 % bytes) != 0;
-        q += rem;
-        rem = q % clusters;
-        q /= clusters;
+        rem = arg3 - q * bytes;
+        q += rem != 0;
+        rounded = q;
+        q = rounded / clusters;
+        rem = rounded - q * clusters;
         q += rem != 0;
         r = fn_800AE3A8(arg0, (s32)shiftedOffset, (s32)q, (u32 *)&sp8);
     } else {
@@ -3803,9 +3807,14 @@ extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) 
         *arg4 = -1;
         return 0;
     }
-    *arg4 = (arg1 & (*(u8 *)((u8 *)fat + 6) - 1)) +
-        (*(u32 *)((u8 *)fat + 0x30) +
-         ((sp8 - 2) << *(u8 *)((u8 *)fat + 0x21)));
+    u32 clusterCount = *(u8 *)((u8 *)fat + 6);
+    u32 clusterIndex = sp8 - 2;
+    shift = *(u8 *)((u8 *)fat + 0x21);
+    u32 mask = clusterCount - 1;
+    u32 base = *(u32 *)((u8 *)fat + 0x30);
+    u32 sectorOffset = clusterIndex << shift;
+    u32 withinCluster = arg1 & mask;
+    *arg4 = withinCluster + (base + sectorOffset);
     return 0;
 }
 
@@ -5950,8 +5959,6 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u16 arg2, u16 arg3, s32 arg4)
     return result & ((-result | result) >> 31);
 }
 
-#pragma push
-#pragma scheduling invalid_target
 extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     u32 first;
     u8 *state;
@@ -6002,7 +6009,6 @@ extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     __AXDSPInitCallback_800B7860();
     return 0;
 }
-#pragma pop
 
 #pragma pop
 extern "C" s32 fn_800A53B4(void *);
