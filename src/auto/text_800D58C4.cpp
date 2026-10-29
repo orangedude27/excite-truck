@@ -2189,15 +2189,16 @@ extern "C" s32 fn_800DB398(s32 arg0, s32 arg1) {
 }
 
 void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *src) {
-    register u32 zero = 0;
-    register void *vtable = lbl_8032012C;
-    register void *list14 = (u8 *)dst + 0x14;
-    register f32 defaultValue = lbl_80560EA8;
-    register void *list20 = (u8 *)dst + 0x20;
+    u32 zero = 0;
+    void *vtable = lbl_8032012C;
+    void *list14 = (u8 *)dst + 0x14;
+    f32 defaultValue = lbl_80560EA8;
+    void *list20 = (u8 *)dst + 0x20;
     *(volatile u32 *)((u8 *)dst + 0x14) = zero;
     *(volatile u32 *)((u8 *)dst + 0x18) = zero;
     *(volatile u32 *)((u8 *)dst + 0x20) = zero;
     *(volatile u32 *)((u8 *)dst + 0x24) = zero;
+    u8 type = *((const u8 *)src + 9);
     *(volatile u32 *)((u8 *)dst + 4) = zero;
     *(volatile u32 *)((u8 *)dst + 8) = zero;
     *(void **)dst = vtable;
@@ -2212,7 +2213,7 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *(u32 *)((u8 *)dst + 0xC) = zero;
     *(u32 *)((u8 *)dst + 0x28) = zero;
     *((u8 *)dst + 0xD0) = (u8)zero;
-    *((u8 *)dst + 0xCC) = *((const u8 *)src + 9);
+    *((u8 *)dst + 0xCC) = type;
     strncpy((char *)dst + 0xB4, (const char *)src + 0xC, 0x10);
     strncpy((char *)dst + 0xC4, (const char *)src + 0x1C, 8);
     *(f32 *)((u8 *)dst + 0x2C) = *(const f32 *)((const u8 *)src + 0x24);
@@ -2833,3 +2834,10 @@ extern "C" s32 fn_800DC6DC(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
 }
 struct GetTextureSizeMaterial { u8 pad[0x50]; u32 textureCount; u8 pad54[4]; void* textureObjects; };
+struct GroupPaneDispatch_800D58C4 {
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12();
+    virtual void *GetResource(const void *, u32);
+};
