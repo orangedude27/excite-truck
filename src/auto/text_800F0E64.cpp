@@ -472,6 +472,8 @@ extern "C" void SetMute__Q46nw4hbm3snd6detail8SeqTrackFQ36nw4hbm3snd7SeqMute(voi
 
 extern "C" const char lbl_80324690[];
 extern "C" const char lbl_803246D4[];
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void SetSilence__Q46nw4hbm3snd6detail8SeqTrackFbi(void *self, bool silence, int ticks) {
     *(u8 *)((u8 *)self + 0x5d) = silence;
     u32 state = OSDisableInterrupts();
@@ -497,6 +499,7 @@ extern "C" void SetSilence__Q46nw4hbm3snd6detail8SeqTrackFbi(void *self, bool si
     }
     OSRestoreInterrupts(state);
 }
+#pragma pop
 
 extern "C" void fn_800F1E50(void *arg0, f32 value) {
     u32 token = OSDisableInterrupts();
