@@ -4060,9 +4060,9 @@ extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     return 0;
 }
 
-extern s32 fn_800B0868(void *, s32, u32, u32 *);
-extern s32 fn_800B0A60(void *, s32, u32, u32 *);
-extern s32 fn_800B0C10(void *, s32, u32, u32 *);
+extern "C" s32 fn_800B0868(void *, s32, u32, u32 *);
+extern "C" s32 fn_800B0A60(void *, s32, u32, u32 *);
+extern "C" s32 fn_800B0C10(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
     /* Fix note: perform the first large read unconditionally; check the cluster threshold only after it. */
     u32 sp8;
