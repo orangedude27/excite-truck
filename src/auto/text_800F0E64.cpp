@@ -1039,7 +1039,7 @@ extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
-namespace nw4hbm { namespace snd { class SoundArchive { public: class SoundInfo; }; namespace detail { class SoundArchiveFileReader { public: s32 GetSoundType(u32) const; BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; }; } } }
+namespace nw4hbm { namespace snd { class SoundArchive { public: class SoundInfo; class StringTree; }; namespace detail { class SoundArchiveFileReader { public: s32 GetSoundType(u32) const; BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; s32 ConvertLabelStringToId(const SoundArchive::StringTree *, const char *) const; }; } } }
 extern "C" const char lbl_80324DE4[];
 extern "C" const char lbl_80324E10[];
 extern "C" char lbl_805598C8;
@@ -1364,45 +1364,44 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
 extern "C" int strcmp(const char *, const char *);
 extern "C" const char lbl_80324A8C[];
 extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(void *arg0, void *arg1, s32 arg2) {
-    register StringTreeNodeLayout *node;
-    register const char *str = (const char *)arg2;
-    register u32 treeBase = (u32)arg1;
-    register u8 *self = (u8 *)arg0;
-    if (treeBase == 0)
+    const StringTreeNodeLayout *node;
+    const char *str = (const char *)arg2;
+    const StringTreeLayout *tree = (const StringTreeLayout *)arg1;
+    const SoundArchiveFileReaderLayout *reader = (const SoundArchiveFileReaderLayout *)arg0;
+    if (tree == 0)
         return -1;
-    register u32 index = *(u32 *)treeBase;
-    if (index >= *(u32 *)(treeBase + 4))
+    u32 index = tree->nodeCount;
+    if (index >= tree->maxNodeCount)
         return -1;
-    node = (StringTreeNodeLayout *)(treeBase + index * 0x14 + 8);
-    register s32 length = strlen(str);
+    node = &tree->nodes[index];
+    s32 length = strlen(str);
     while ((node->flags & 1) == 0) {
-        register s32 bits = node->bitIndex;
-        register s32 byteIndex = bits >> 3;
-        register s32 bitIndex = bits & 7;
-        register s32 child;
+        s32 bits = node->bitIndex;
+        s32 byteIndex = bits >> 3;
+        s32 bitIndex = bits & 7;
+        s32 child;
         if (byteIndex < length &&
             (((s8)str[byteIndex] & (1 << (7 - bitIndex))) != 0))
             child = node->oneChild;
         else
             child = node->zeroChild;
-        node = (StringTreeNodeLayout *)(treeBase + child * 0x14 + 8);
+        node = &tree->nodes[child];
     }
-    treeBase = node->labelId;
+    tree = (const StringTreeLayout *)node->labelId;
     const char *label;
-    u32 sentinel = treeBase + 0x10000;
+    u32 sentinel = (u32)tree + 0x10000;
     if (sentinel == 0xFFFF) {
         label = (const char *)sentinel;
     } else {
-        volatile u32 **tableField = (volatile u32 **)(self + 0x30);
-        volatile u32 *table = *tableField;
+        SoundArchiveLabelTableLayout *table = reader->labelTable;
         if (table == 0) {
             label = 0;
         } else {
-            if (treeBase >= table[0])
+            if ((u32)tree >= table->count)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324868, 0x1BA, lbl_80324A8C);
-            table = *tableField;
-            const char *base = *(const char **)(self + 0x2C);
-            u32 offset = table[treeBase + 1];
+            table = *(SoundArchiveLabelTableLayout * volatile *)((u8 *)reader + 0x30);
+            const char *base = reader->stringBase;
+            u32 offset = table->labelOffsets[(u32)tree];
             if (offset == 0)
                 label = 0;
             else
