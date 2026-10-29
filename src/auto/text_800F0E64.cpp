@@ -4715,5 +4715,3 @@ extern "C" f32 lbl_805610C0;
 extern "C" f32 lbl_805610C4;
 extern "C" const char lbl_80326768[];
 extern "C" const char lbl_803269A0[];
-#pragma push
-#pragma use_lmw_stmw off
