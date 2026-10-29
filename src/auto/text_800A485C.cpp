@@ -433,6 +433,9 @@ extern "C" s32 fn_800A61D0(void *);
 s32 fn_800B75C4(void);
 void fn_800C4BD0(void) __attribute__((noreturn));
 extern "C" void fn_80128668(void);
+inline void homebutton::gui::PaneManager::operator delete(void *p) {
+    ((void (*)(void *))fn_80128668)(p);
+}
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 extern "C" void fn_800DCE10(void*, s32);
 extern "C" u32 fn_80060CC0(void*, u32, u32);
