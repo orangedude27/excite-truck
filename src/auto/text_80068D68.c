@@ -17134,18 +17134,21 @@ extern tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16);
 void sdp_config_ind(u16 cid, void *p_cfg) {
     tCONN_CB *lcb = l2cu_find_lcb_by_handle_80099E54(cid);
     u16 value;
-    volatile u16 *out;
     if (lcb == NULL) {
         if (lbl_803C4C40[0x4630] >= 2) fn_80070954(0xA0001, lbl_8031A2C0, cid);
         return;
     }
-    out = (volatile u16 *)((u8 *)lcb + 0x20);
     if (((u8 *)p_cfg)[2] == 0) {
-        *out = 0x100;
+        *(u16 *)((u8 *)lcb + 0x20) = 0x100;
     } else {
         value = *(u16 *)((u8 *)p_cfg + 4);
-        if (value > 0x100) value = 0x100;
-        *out = value;
+        if (value <= 0x100) goto store_value;
+        *(u16 *)((u8 *)lcb + 0x20) = 0x100;
+        goto stored;
+store_value:
+        *(u16 *)((u8 *)lcb + 0x20) = value;
+stored:
+        ;
     }
     ((u8 *)p_cfg)[0x20] = 0;
     ((u8 *)p_cfg)[2] = 0;
