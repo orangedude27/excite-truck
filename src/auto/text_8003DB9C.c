@@ -239,9 +239,9 @@ extern void OSReport(void *, ...);
 extern char lbl_803036E0[];
 extern char lbl_803036F8[];
 int CPGPLinkCheck(void) {
-    register int error = 0;
-    register unsigned int first;
-    register unsigned int second;
+    int error = 0;
+    unsigned int first;
+    unsigned int second;
     int diff1;
     int diff2;
 
@@ -362,6 +362,39 @@ void GXSetGPFifo(unsigned int *fifo) {
     gd[2] = tmp;
     __cpReg[1] = (unsigned short)tmp;
     ((void (*)(int))OSRestoreInterrupts)(intStatus);
+}
+
+void __GXSaveFifo(void) {
+    s32 level;
+    unsigned char hasCPUFifo;
+
+    level = OSDisableInterrupts();
+    hasCPUFifo = lbl_8055D948;
+    if (hasCPUFifo) {
+        GXFifoObjInternal *fifo = (GXFifoObjInternal *)lbl_8037C0E4;
+        u32 reg = __piReg[5];
+        fifo->wrPtr = (void *)((reg & 0x1FFFFFE0) + 0x80000000);
+        fifo->wrap = (reg >> 29) & 1;
+    }
+    if (*(unsigned char *)&lbl_8055D949 != 0) {
+        GXFifoObjInternal *fifo = (GXFifoObjInternal *)lbl_8037C0C0;
+        unsigned short *cp = __cpReg;
+        fifo->rdPtr = (void *)((((unsigned int)cp[0x3A / 2] << 16) | cp[0x38 / 2]) + 0x80000000);
+        fifo->count = ((unsigned int)cp[0x32 / 2] << 16) | cp[0x30 / 2];
+    }
+    if (*(unsigned char *)&lbl_8055D960 != 0) {
+        (*(GXFifoObjInternal *)lbl_8037C0E4).rdPtr = (*(GXFifoObjInternal *)lbl_8037C0C0).rdPtr;
+        (*(GXFifoObjInternal *)lbl_8037C0E4).count = (*(GXFifoObjInternal *)lbl_8037C0C0).count;
+        (*(GXFifoObjInternal *)lbl_8037C0C0).wrPtr = (*(GXFifoObjInternal *)lbl_8037C0E4).wrPtr;
+        (*(GXFifoObjInternal *)lbl_8037C0C0).wrap = (*(GXFifoObjInternal *)lbl_8037C0E4).wrap;
+    } else if (hasCPUFifo) {
+        int count = (char *)(*(GXFifoObjInternal *)lbl_8037C0E4).wrPtr - (char *)(*(GXFifoObjInternal *)lbl_8037C0E4).rdPtr;
+        (*(GXFifoObjInternal *)lbl_8037C0E4).count = count;
+        if (count < 0) {
+            (*(GXFifoObjInternal *)lbl_8037C0E4).count = count + (*(GXFifoObjInternal *)lbl_8037C0E4).size;
+        }
+    }
+    ((void (*)(s32))OSRestoreInterrupts)(level);
 }
 
 char __GXIsGPFifoReady(void) {
@@ -2894,44 +2927,48 @@ void GXSetTevIndirect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
     *(volatile unsigned int *)0xCC008000 = reg.value;
     *(unsigned short *)((char *)data + 2) = 0;
 }
-void GXSetIndTexCoordScale(unsigned int stage, unsigned int scaleS, unsigned int scaleT) {
-    unsigned int *data = __GXData;
-    unsigned int *reg = data + (0x178 / 4);
-    unsigned int opcode = 0x25 + (stage >> 1);
-    unsigned int word;
-    if (stage == 2) goto stage2;
-    if (stage >= 4) goto done;
-    if (stage == 0) goto stage0;
-    if (stage >= 2) goto stage1;
-    goto done;
-stage0:
-    word = *reg;
-    word = (word & 0xFFF0FFF0) | (scaleS & 0xF) | ((scaleT << 4) & 0xF0);
-    *reg = word | (opcode << 24);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *reg;
-    goto done;
-stage1:
-    word = *reg;
-    word = (word & 0xFFF0FFF0) | ((scaleS << 8) & 0xF00) | ((scaleT << 12) & 0xF000);
-    *reg = word | (opcode << 24);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *reg;
-    goto done;
-stage2:
-    word = reg[1];
-    word = (word & 0xFFF0FFF0) | (scaleS & 0xF) | ((scaleT << 4) & 0xF0);
-    reg[1] = word | (opcode << 24);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = reg[1];
-    goto done;
-    word = reg[1];
-    word = (word & 0xFFF0FFF0) | ((scaleS << 8) & 0xF00) | ((scaleT << 12) & 0xF000);
-    reg[1] = word | (opcode << 24);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = reg[1];
-done:
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+void GXSetIndTexCoordScale(s32 stage, s32 scaleS, s32 scaleT) {
+    u32 reg;
+
+    switch (stage) {
+    case 0:
+        reg = __GXData[0x178 / 4];
+        reg = __rlwimi(reg, scaleS, 0, 28, 31);
+        reg = __rlwimi(reg, scaleT, 4, 24, 27);
+        reg = __rlwimi(reg, 0x25, 24, 0, 7);
+        __GXData[0x178 / 4] = reg;
+        *(volatile u8 *)0xCC008000 = 0x61;
+        *(volatile u32 *)0xCC008000 = __GXData[0x178 / 4];
+        break;
+    case 1:
+        reg = __GXData[0x178 / 4];
+        reg = __rlwimi(reg, scaleS, 8, 20, 23);
+        reg = __rlwimi(reg, scaleT, 12, 16, 19);
+        reg = __rlwimi(reg, 0x25, 24, 0, 7);
+        __GXData[0x178 / 4] = reg;
+        *(volatile u8 *)0xCC008000 = 0x61;
+        *(volatile u32 *)0xCC008000 = __GXData[0x178 / 4];
+        break;
+    case 2:
+        reg = __GXData[0x17C / 4];
+        reg = __rlwimi(reg, scaleS, 0, 28, 31);
+        reg = __rlwimi(reg, scaleT, 4, 24, 27);
+        reg = __rlwimi(reg, 0x26, 24, 0, 7);
+        __GXData[0x17C / 4] = reg;
+        *(volatile u8 *)0xCC008000 = 0x61;
+        *(volatile u32 *)0xCC008000 = __GXData[0x17C / 4];
+        break;
+    case 3:
+        reg = __GXData[0x17C / 4];
+        reg = __rlwimi(reg, scaleS, 8, 20, 23);
+        reg = __rlwimi(reg, scaleT, 12, 16, 19);
+        reg = __rlwimi(reg, 0x26, 24, 0, 7);
+        __GXData[0x17C / 4] = reg;
+        *(volatile u8 *)0xCC008000 = 0x61;
+        *(volatile u32 *)0xCC008000 = __GXData[0x17C / 4];
+        break;
+    }
+    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
 void GXSetIndTexOrder(s32 arg0, s32 arg1, s32 arg2) {
