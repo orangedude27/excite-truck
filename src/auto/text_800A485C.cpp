@@ -5646,7 +5646,7 @@ var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, (u
 return var_r31;
 }
 
-s32 fn_800B3A70(char *arg0, const char *arg1, s32 arg2) {
+extern "C" s32 fn_800B3A70(void *arg0, void *arg1, s32 arg2) {
     s32 temp_r8;
     s32 var_r9;
     u32 temp_r0_4;
