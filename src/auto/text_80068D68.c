@@ -592,8 +592,10 @@ void fn_80069D80(void) {
     extern void SCFlushAsync(void *);
     extern void OSCancelAlarm(OSAlarm *);
     extern u8 lbl_80393058[];
+    u8 connectable;
     u8 *base = lbl_80392960;
     u8 state = base[0xD];
+    void (*callback)(u32);
     base[0xC] = 0;
     switch (state) {
     case 1:
@@ -616,7 +618,7 @@ void fn_80069D80(void) {
         break;
     case 8: {
         BOOL enabled = OSDisableInterrupts();
-        u8 connectable = base[0x66A];
+        connectable = base[0x66A];
         OSRestoreInterrupts(enabled);
         enabled = OSDisableInterrupts();
         base[0x66B] = 0;
@@ -624,9 +626,10 @@ void fn_80069D80(void) {
         OSRestoreInterrupts(enabled);
         BTA_DmSetVisibility(0, connectable);
         OSCancelAlarm((OSAlarm *)(base + 0x690));
+        callback = *(void (**)(u32))(base + 8);
         base[0xD] = 0;
-        if (base[8] != 0) {
-            ((void (*)(u32))base[8])(1);
+        if (callback != 0) {
+            callback(1);
         }
         base[0xD] = 0;
         break;
