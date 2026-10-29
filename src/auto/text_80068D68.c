@@ -46,7 +46,11 @@ extern char lbl_803160C0[];
 extern char lbl_80319174[];
 typedef struct uusb_cb_t {
     s32 fd;
-    u8 pad4[0x24];
+    u8 pad4[0x0D];
+    u8 endpoint;
+    u8 pad12[0x0B];
+    u8 pool_id;
+    u8 pad1E[0x0A];
     u8 at_0x28;
     u8 state;
     u8 pad2A[2];
@@ -993,6 +997,37 @@ void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
         return;
     }
     fn_8006B330();
+}
+
+extern u8 BTA_DmAddDevice(u8 *, u8 *, u32, u8);
+extern void BTA_HhAddDev(const u8 *, u16, u8, u8, const void *);
+void fn_8006B488(void) {
+    u8 *base = lbl_803130C8;
+    u8 *control = lbl_80392960;
+    u8 *info = (u8 *)((void *(*)(void))WUDiGetDevInfo)();
+    u8 status;
+    BOOL interrupt;
+    u8 state;
+    u16 sp10;
+    u32 sp14;
+    f64 argData;
+    status = BTA_DmAddDevice(info + 0x40, info + 0x46, 0, 0);
+    DBPrintf_8006CFA8((const char *)(base + 0x5D8), status);
+    if (memcmp(info, base + 0x1A0, 0x10) == 0) {
+        sp14 = (u32)base;
+        sp10 = 0xD9;
+        DBPrintf_8006CFA8((const char *)(base + 0x5F0));
+        argData = *(f64 *)&sp10;
+        BTA_HhAddDev(info + 0x40, *(u16 *)(info + 0x5E), info[0x57], info[0x58], &argData);
+    }
+    interrupt = OSDisableInterrupts();
+    state = info[0x5B];
+    if (state == 0 || state == 4 || state == 2 || state == 5) {
+        control[0x12]++;
+    } else {
+        control[0x13]++;
+    }
+    OSRestoreInterrupts(interrupt);
 }
 
 #pragma use_lmw_stmw off
@@ -2014,6 +2049,47 @@ void uusb_CloseDeviceCB(s8 arg0) {
     fn_8006EB88();
     if (*(void (**)(s32, s8))(control + 0x20) != 0)
         (*(void (**)(s32, s8))(control + 0x20))(4, arg0);
+}
+
+extern s32 IUSB_ReadBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
+void uusb_issue_bulk_read(void) {
+    extern char lbl_803142C8[];
+    extern void uusb_ReadBulkDataCB(void);
+    extern u16 fn_8006D8D0(u32);
+    u8 *control = (u8 *)&lbl_803BD1E0;
+    u8 *buf;
+    u8 *aligned;
+    u16 header;
+    register s32 result;
+
+    for (;;) {
+        buf = GKI_getpoolbuf(control[0x1D]);
+        if (buf != 0) {
+            break;
+        }
+        if (control[0x28] != 0) {
+            OSReport(lbl_803142C8 + 0x280);
+        }
+    }
+
+    *(u16 *)buf = 0x1100;
+    aligned = (u8 *)(((u32)(buf + 0x27)) & ~31);
+    *(u16 *)(buf + 2) = 0;
+    header = (u16)(aligned - (buf + 8));
+    *(u16 *)(buf + 4) = header;
+
+    result = IUSB_ReadBlkMsgAsync(lbl_803BD1E0.fd, control[0x11],
+                                  fn_8006D8D0((u32)buf) - 0x28 - header,
+                                  aligned, uusb_ReadBulkDataCB, buf);
+    if (result != 0) {
+        if (control[0x28] != 0) {
+            OSReport(lbl_803142C8 + 0x2D4, result);
+        }
+        if (lbl_803BD1E0.at_0x28 != 0) {
+            OSReport(lbl_803142C8 + 0x320, result);
+        }
+        GKI_freebuf(buf);
+    }
 }
 
 extern s32 IUSB_OpenDeviceIds(const char *, u16, u16, s32 *);
@@ -8493,14 +8569,12 @@ void gap_config_cfm(u32 cid, u16 *p_cfg) {
 
 void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
-    s32 i;
+    u8 i = 0;
 
-    for (i = 0; i < 2; i++) {
+    while (i < 8) {
         if (conn[0] != 0 && *(u16 *)(conn + 6) == cid)
             goto found;
-        conn += 0x60;
-        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid)
-            goto found;
+        i++;
         conn += 0x60;
     }
     conn = NULL;
@@ -12849,7 +12923,6 @@ void fn_8008EE40(void *arg0, void *arg1) {
 void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
     u8 *ccb = p_ccb;
     u8 *cfg = p_cfg;
-    u16 mtu;
     u16 size;
     void *buf;
 
@@ -12862,8 +12935,10 @@ void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
         }
     }
     if (cfg[6] != 0) {
-        u32 first = *(u32 *)(cfg + 8);
-        u32 second = *(u32 *)(cfg + 0xC);
+        u32 second;
+        u32 first;
+        first = *(u32 *)(cfg + 8);
+        second = *(u32 *)(cfg + 0xC);
         *(u32 *)(ccb + 0x58) = first;
         *(u32 *)(ccb + 0x5C) = second;
         first = *(u32 *)(cfg + 0x10);
@@ -12875,19 +12950,15 @@ void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
         *(u32 *)(ccb + 0x68) = first;
         *(u32 *)(ccb + 0x6C) = second;
     }
-    if (cfg[0x20] != 0) {
-        mtu = *(u16 *)(cfg + 0x22);
-        if (mtu != 0) {
-            *(u16 *)(ccb + 0x3C) = mtu;
-            ccb = *(u8 **)(ccb + 0x10);
-            if (mtu < *(u16 *)(ccb + 0x32)) {
-                *(u16 *)(ccb + 0x32) = mtu;
-                if (mtu <= 0x4FF) {
-                    size = (mtu * 8 + 3) / 5;
-                    buf = GKI_getpoolbuf(2);
-                    if (buf != NULL)
-                        fn_80085568(buf, *(u16 *)(ccb + 0x28), size);
-                }
+    if (cfg[0x20] != 0 && *(u16 *)(cfg + 0x22) != 0) {
+        *(u16 *)(ccb + 0x3C) = *(u16 *)(cfg + 0x22);
+        ccb = *(u8 **)(ccb + 0x10);
+        if (*(u16 *)(cfg + 0x22) < *(u16 *)(ccb + 0x32)) {
+            *(u16 *)(ccb + 0x32) = *(u16 *)(cfg + 0x22);
+            if (*(u16 *)(cfg + 0x22) <= 0x4FF) {
+                size = (*(u16 *)(cfg + 0x22) * 8 + 3) / 5;
+                buf = GKI_getpoolbuf(2);
+                if (buf != NULL) fn_80085568(buf, *(u16 *)(ccb + 0x28), size);
             }
         }
     }
