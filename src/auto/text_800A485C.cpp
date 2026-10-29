@@ -2130,11 +2130,11 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
         first = *(u32 *)(context + 0x264);
         steps = *(s32 *)(context + 0x14);
         u32 remainder = first % size;
-        aligned = first + ((s32)(-((s32)remainder) | (s32)remainder) >> 31 &
-                           (s32)(size - remainder));
+        aligned = first + ((s32)(size - remainder) &
+                           ((s32)(-((s32)remainder) | (s32)remainder) >> 31));
 
         if (steps != 0) {
-            range = (u32)aligned + (u32)(steps + 1) * size;
+            range = (u32)(steps + 1) * size;
             goto finish;
         }
 
@@ -2143,8 +2143,9 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
                                 (s32 *)&local.sp10, &local.spC, (s32)context);
             if (error != 0)
                 return error;
+        } else {
+            local.spC = count;
         }
-        local.spC = count;
         chainEnd = (u32)fn_800AF584(entry);
         i = 0;
         while (local.spC != chainEnd) {
@@ -3593,7 +3594,7 @@ extern "C" s32 fn_800AF5A0(u16);
 extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800B0258(void *, s32, s32 *);
-extern "C" s32 fn_800AE4C0(s32, s32, s32);
+s32 fn_800AE4C0(s32, s32, s32);
 extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 sign = (-arg2 | arg2) >> 31;
     s32 result = fn_800AE4C0(arg2 & sign, 0, arg3);
