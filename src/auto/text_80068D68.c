@@ -13224,8 +13224,8 @@ extern u8 lbl_80559080;
 extern u8 lbl_80559088;
 BOOLEAN l2cu_create_conn(void *arg0) {
     register u8 *p_lcb = (u8 *)arg0;
-    register u8 *p_lcb_iter;
     register s32 i;
+    register u8 *p_lcb_iter;
     register BOOLEAN sco_active;
     u16 log_param;
 
@@ -13519,7 +13519,7 @@ void PORT_LineStatusInd(void *mcb, u8 dlci, u8 line_status) {
     }
 }
 
-extern void port_rfc_closed(void *, s32);
+extern void port_rfc_closed(struct t_port_info *, u8);
 extern char lbl_80319454[];
 void PORT_DlcReleaseInd(void *arg0, u8 arg1) {
     void *port;
@@ -13628,7 +13628,7 @@ flow:
 }
 
 extern u8 lbl_80319514[],lbl_80319540[];
-void port_rfc_closed(void *arg0,s32 arg1) {
+void port_rfc_closed(struct t_port_info *arg0,u8 arg1) {
  void *mcb=*(void **)((u8 *)arg0+0x6C); s32 signals=0;
  if(*((u8 *)arg0+2)==1&&*((u8 *)arg0+0xC)){
   if(lbl_803C4828[0x414]>=4)fn_8007093C(0x90003,lbl_80319514);
