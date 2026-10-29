@@ -189,7 +189,7 @@ void fn_802EC7AC(void) {
 }
 #pragma scheduling on
 #pragma small_data on
-extern char lbl_8055D2F8[];
+extern char lbl_8055D2F8;
 #pragma small_data off
 extern void WPADControlMotor(s32, s32);
 extern void fn_800C65C4(void);
@@ -222,7 +222,7 @@ void fn_802EC884(void) {
         if (fn_802D9BF0() == 0) {
             lbl_805600EB = (u8)(lbl_805600E9 == 0);
             fn_802E30C8(base + 0x16C,
-                lbl_805600EB != 0 ? base + 0x198 : lbl_8055D2F8);
+                lbl_805600EB != 0 ? base + 0x198 : &lbl_8055D2F8);
             lbl_805600E8 = 1;
             for (motor = 0; motor < 4; motor++) {
                 WPADControlMotor(motor, 0);
