@@ -2562,7 +2562,6 @@ extern "C" void ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3
 extern "C" const char lbl_803224F0[], lbl_803226B0[], lbl_803226DC[];
 extern "C" char lbl_80559818;
 #pragma push
-#pragma scheduling invalid_target
 extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(void *self, void *wave, int index, const void *src) {
     unsigned int count;
     void *bank;
@@ -2652,9 +2651,11 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     *(int *)((char *)self + 0x60) = zero;
     int current = *(int *)((char *)self + 0x50);
     int total = *(int *)((char *)self + 0x4c);
-    base = current < total
-        ? base + (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total
-        : base;
+    if (current >= total) {
+        base = *(float *)((char *)self + 0x44);
+    } else {
+        base += (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total;
+    }
     float baseAgain;
     float finalTarget;
     int one;
