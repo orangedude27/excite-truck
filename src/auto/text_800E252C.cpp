@@ -2562,6 +2562,7 @@ extern "C" void ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3
 extern "C" const char lbl_803224F0[], lbl_803226B0[], lbl_803226DC[];
 extern "C" char lbl_80559818;
 #pragma push
+#pragma scheduling off
 extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(void *self, void *wave, int index, const void *src) {
     unsigned int count;
     void *bank;
@@ -2570,8 +2571,7 @@ extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm
     unsigned int data;
     unsigned char type;
     char pad[8];
-    unsigned int firstWord = *(unsigned int *)self;
-    if (firstWord == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224F0, 0x107, lbl_803226B0);
+    if (*(volatile unsigned int *)self == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224F0, 0x107, lbl_803226B0);
     if (*(void **)self == 0) return 0;
     bank = *(void **)((char *)self + 8);
     if (bank == 0) return 0;
