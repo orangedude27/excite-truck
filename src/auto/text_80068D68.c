@@ -146,6 +146,7 @@ extern char lbl_80317700[];
 extern void hidd_pm_set_now(void *);
 extern void fn_80086468(void *);
 extern u8 lbl_803C4040[];
+extern void l2c_init(void);
 extern char lbl_803181F0[];
 extern void fn_80089E40(void *, u8, void *);
 extern u8 lbl_803151D8[];
@@ -1008,9 +1009,9 @@ void fn_8006B488(void) {
     u8 status;
     BOOL interrupt;
     u8 state;
+    f64 argData;
     u16 sp10;
     u32 sp14;
-    f64 argData;
     status = BTA_DmAddDevice(info + 0x40, info + 0x46, 0, 0);
     DBPrintf_8006CFA8((const char *)(base + 0x5D8), status);
     if (memcmp(info, base + 0x1A0, 0x10) == 0) {
@@ -2052,23 +2053,26 @@ void uusb_CloseDeviceCB(s8 arg0) {
 }
 
 extern s32 IUSB_ReadBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
+#pragma push
+#pragma use_lmw_stmw off
 void uusb_issue_bulk_read(void) {
     extern char lbl_803142C8[];
     extern void uusb_ReadBulkDataCB(void);
     extern u16 fn_8006D8D0(u32);
-    u8 *control = (u8 *)&lbl_803BD1E0;
+    uusb_cb_t *control = &lbl_803BD1E0;
+    char *report = lbl_803142C8;
     u8 *buf;
-    u8 *aligned;
+    register u8 *aligned;
     u16 header;
-    register s32 result;
+    s32 result;
 
     for (;;) {
-        buf = GKI_getpoolbuf(control[0x1D]);
+        buf = GKI_getpoolbuf(control->pool_id);
         if (buf != 0) {
             break;
         }
-        if (control[0x28] != 0) {
-            OSReport(lbl_803142C8 + 0x280);
+        if (control->at_0x28 != 0) {
+            OSReport(report + 0x280);
         }
     }
 
@@ -2078,20 +2082,20 @@ void uusb_issue_bulk_read(void) {
     header = (u16)(aligned - (buf + 8));
     *(u16 *)(buf + 4) = header;
 
-    result = IUSB_ReadBlkMsgAsync(lbl_803BD1E0.fd, control[0x11],
+    result = IUSB_ReadBlkMsgAsync(lbl_803BD1E0.fd, control->endpoint,
                                   fn_8006D8D0((u32)buf) - 0x28 - header,
                                   aligned, uusb_ReadBulkDataCB, buf);
     if (result != 0) {
-        if (control[0x28] != 0) {
-            OSReport(lbl_803142C8 + 0x2D4, result);
+        if (control->at_0x28 != 0) {
+            OSReport(report + 0x2D4, result);
         }
         if (lbl_803BD1E0.at_0x28 != 0) {
-            OSReport(lbl_803142C8 + 0x320, result);
+            OSReport(report + 0x320, result);
         }
         GKI_freebuf(buf);
     }
 }
-
+#pragma pop
 extern s32 IUSB_OpenDeviceIds(const char *, u16, u16, s32 *);
 extern char lbl_80314898[];
 extern char lbl_803148F8[];
