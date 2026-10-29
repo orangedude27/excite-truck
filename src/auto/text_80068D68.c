@@ -64,7 +64,7 @@ typedef struct {
     s8 sync_loop_num;
     u8 sync_type;
     u8 pad66A[0x1E];
-    s8 lib_status;
+    volatile s8 lib_status;
     u8 pad689[7];
     OSAlarm sync_alarm;
 } WUDSyncControlView;
@@ -1029,7 +1029,6 @@ s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
     s32 success = 0;
     s32 libStatus;
     BOOL enabled;
-    BOOL busy;
     OSTime now;
     u32 period;
 
@@ -1037,31 +1036,20 @@ s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
     libStatus = (s8)base[0x688];
     OSRestoreInterrupts(enabled);
 
-    if ((u32)libStatus == 3U) {
+    if ((u32)libStatus == 3U && !StartSyncDeviceBusy()) {
         enabled = OSDisableInterrupts();
-        if (base[0xC] == 0 && base[0xD] == 0 &&
-            base[0xF] == 4 && base[0x10] == 4) {
-            OSRestoreInterrupts(enabled);
-            busy = 0;
-        } else {
-            OSRestoreInterrupts(enabled);
-            busy = 1;
-        }
-        if (busy == 0) {
-            enabled = OSDisableInterrupts();
-            base[0xC] = 1;
-            base[0x668] = syncLoopNum;
-            base[0x669] = syncType;
-            base[0x667] = syncSkipChecks != 0;
-            base[0x666] = 0;
-            OSCreateAlarm((OSAlarm *)(base + 0x690));
-            now = __OSGetSystemTime();
-            period = (((*(volatile u32 *)0x800000F8) >> 2) / 1000) * 0x14;
-            OSSetPeriodicAlarm((OSAlarm *)(base + 0x690), now, (s64)period,
-                               (OSAlarmHandler)fn_80069C14);
-            OSRestoreInterrupts(enabled);
-            success = 1;
-        }
+        base[0xC] = 1;
+        base[0x668] = syncLoopNum;
+        base[0x669] = syncType;
+        base[0x667] = syncSkipChecks != 0;
+        base[0x666] = 0;
+        OSCreateAlarm((OSAlarm *)(base + 0x690));
+        now = __OSGetSystemTime();
+        period = (((*(volatile u32 *)0x800000F8) >> 2) / 1000) * 0x14;
+        OSSetPeriodicAlarm((OSAlarm *)(base + 0x690), now, (s64)period,
+                           (OSAlarmHandler)fn_80069C14);
+        OSRestoreInterrupts(enabled);
+        success = 1;
     }
     return success;
 }
