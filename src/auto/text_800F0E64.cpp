@@ -6,6 +6,7 @@ extern "C" void *__ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUll
 extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, unsigned char);
 extern "C" void fn_800E519C(void *);
 extern "C" const char lbl_80326C28[];
+extern "C" const char lbl_803267AC[];
 extern "C" const char lbl_80326C4C[];
 extern "C" unsigned char lbl_8041506C[];
 typedef signed char s8;
