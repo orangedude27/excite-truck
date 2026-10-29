@@ -1165,6 +1165,7 @@ extern "C" s32 fn_8019DAB0(void *arg0, void *arg1) {
     result |= fn_8019B08C(arg0, &scratch.minus, arg1, width);
     return result != 0;
 }
+#pragma processor reset
 
 extern "C" f32 fn_8019DDEC(void *arg0) {
     return *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28);
