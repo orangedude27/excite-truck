@@ -931,6 +931,37 @@ extern "C" void fn_8019CE4C(void* arg0, void* arg1) {
     fn_8019B068(arg0, arg1, 0, 0);
 }
 
+extern "C" void fn_8019CF60(void *arg0, void *arg1) {
+    struct Origin { u8 pad[0x24]; Vec point; };
+    struct Target { u8 pad[0x34]; Vec point; };
+    Origin *origin = (Origin *)*(void **)((u8 *)arg0 + 0xC);
+    Target *target = (Target *)arg1;
+    f32 delta[3];
+    delta[0] = origin->point.x - target->point.x;
+    delta[1] = origin->point.y - target->point.y;
+    delta[2] = origin->point.z - target->point.z;
+    f32 distance = PSVECSquareDistance(&origin->point, &target->point);
+    f32 result;
+    if (distance > lbl_8056232C) {
+        f32 scale = lbl_805622E0 / (f32)fn_8002F234(distance);
+        delta[0] *= scale;
+        delta[1] *= scale;
+        delta[2] *= scale;
+        Vec *axis = (Vec *)((u8 *)*(void **)((u8 *)arg1 + 0xC) + 0xC);
+        f32 dot = PSVECDotProduct((Vec *)delta, axis);
+        f32 high = *(f32 *)((u8 *)arg1 + 0x58);
+        f32 low = *(f32 *)((u8 *)arg1 + 0x54);
+        f32 magnitude = (f32)__fabs((f64)dot);
+        result = low + magnitude * (high - low);
+    } else {
+        f32 high = *(f32 *)((u8 *)arg1 + 0x58);
+        f32 low = *(f32 *)((u8 *)arg1 + 0x54);
+        result = (low > high) ? low : high;
+    }
+    *(f32 *)((u8 *)arg1 + 0x24) = result;
+    fn_8019CE3C(arg1, (s32)arg0);
+}
+
 extern "C" f32 PSVECSquareDistance(const Vec*, const Vec*);
 extern "C" f32 PSVECDotProduct(const Vec*, const Vec*);
 extern f32 lbl_8056232C;
@@ -968,23 +999,34 @@ void fn_8019D19C(void* arg0, void* arg1) {
 }
 
 extern "C" void fn_8019D378(void *arg0, void *arg1) {
-    f32 dx, dy, dz, scale, dot, value, distance;
-    f32 *p = (f32 *)*(void **)((u8 *)arg1 + 0xC);
-    Vec *a = (Vec *)((u8 *)arg0 + 0x34);
-    dx = p[9] - a->x;
-    dy = p[10] - a->y;
-    dz = p[11] - a->z;
-    distance = PSVECSquareDistance((Vec *)(p + 9), a);
+    struct Origin { u8 pad[0x24]; Vec point; };
+    struct Target { u8 pad[0x34]; Vec point; };
+    Origin *origin = (Origin *)*(void **)((u8 *)arg1 + 0xC);
+    Target *target = (Target *)arg0;
+    f32 delta[3];
+    delta[0] = origin->point.x - target->point.x;
+    delta[1] = origin->point.y - target->point.y;
+    f32 bz = target->point.z;
+    delta[2] = origin->point.z - bz;
+    f32 distance = PSVECSquareDistance(&origin->point, &target->point);
+    f32 result;
     if (distance > lbl_8056232C) {
-        scale = lbl_805622E0 / (f32)fn_8002F234(distance);
-        dx *= scale; dy *= scale; dz *= scale;
-        dot = PSVECDotProduct((Vec *)&dx, (Vec *)((u8 *)arg0 + 0x18));
-        value = *(f32 *)((u8 *)arg0 + 0x54) + __fabsf(dot) * (*(f32 *)((u8 *)arg0 + 0x58) - *(f32 *)((u8 *)arg0 + 0x54));
+        f32 scale = lbl_805622E0 / (f32)fn_8002F234(distance);
+        delta[0] *= scale;
+        delta[1] *= scale;
+        delta[2] *= scale;
+        Vec *axis = (Vec *)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0xC);
+        f32 dot = PSVECDotProduct((Vec *)delta, axis);
+        f32 high = *(f32 *)((u8 *)arg0 + 0x58);
+        f32 low = *(f32 *)((u8 *)arg0 + 0x54);
+        f32 magnitude = (f32)__fabs((f64)dot);
+        result = low + magnitude * (high - low);
     } else {
-        value = *(f32 *)((u8 *)arg0 + 0x54);
-        if (value <= *(f32 *)((u8 *)arg0 + 0x58)) value = *(f32 *)((u8 *)arg0 + 0x58);
+        f32 high = *(f32 *)((u8 *)arg0 + 0x58);
+        f32 low = *(f32 *)((u8 *)arg0 + 0x54);
+        result = (low > high) ? low : high;
     }
-    *(f32 *)((u8 *)arg0 + 0x24) = value;
+    *(f32 *)((u8 *)arg0 + 0x24) = result;
     fn_8019C854(arg0, arg1);
 }
 
@@ -1805,29 +1847,36 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
 }
 
 extern "C" void fn_801A0160(void*);
-extern "C" s32 fn_801A1148(void* arg0, const f32* vec, s32 arg2, f32* arg3, s32 arg4, s32 arg5) {
+#pragma scheduling invalid_target
+extern "C" s32 fn_801A1148(void *arg0, const f32 *vec, s32 arg2, f32 *arg3, s32 arg4) {
     f32 sp[3];
-    sp[0] = *(f32*)((u8*)arg0 + 0x24) - vec[0];
-    sp[1] = *(f32*)((u8*)arg0 + 0x28) - vec[1];
-    sp[2] = *(f32*)((u8*)arg0 + 0x2C) - vec[2];
-    f32 dot = PSVECDotProduct((const Vec*)sp, (const Vec*)vec);
-    f32 f178 = *(f32*)((u8*)arg0 + 0x178);
-    if (dot > -f178 && dot < *arg3 + f178) {
+    void *base = *(void **)((u8 *)arg0 + 0xC);
+    sp[0] = *(f32 *)((u8 *)base + 0x24) - vec[0];
+    sp[1] = *(f32 *)((u8 *)base + 0x28) - vec[1];
+    sp[2] = *(f32 *)((u8 *)base + 0x2C) - vec[2];
+    f32 dot = PSVECDotProduct((const Vec *)sp, (const Vec *)(u32)arg2);
+    f32 radius = *(f32 *)((u8 *)arg0 + 0x178);
+    if (dot >= -radius && dot < *arg3 + radius) {
         fn_801A0160(arg0);
-        void* entries = arg0;
+        void *entry = arg0;
         s32 found = 0;
         s32 i = 0;
-        while (i < *(s32*)((u8*)arg0 + 0x174)) {
-            if (fn_8019DDFC(arg2, arg4, arg5, 0, (u8*)entries + 0x34, entries, *(f32*)((u8*)entries + 0x24)) != 0)
+        while (i < *(s32 *)((u8 *)arg0 + 0x174)) {
+            void *item = *(void **)((u8 *)entry + 0x24);
+            if (fn_8019DDFC((s32)vec, arg2, (s32)arg3, arg4,
+                            (u8 *)item + 0x34,
+                            *(void **)((u8 *)arg0 + 0xC),
+                            *(f32 *)((u8 *)item + 0x24)) != 0) {
                 found = 1;
-            entries = (u8*)entries + 4;
+            }
+            entry = (u8 *)entry + 4;
             i++;
         }
         return found;
     }
     return 0;
 }
-
+#pragma scheduling on
 extern "C" void fn_801A1250(void* arg0) {
     VTab1250** entries = (VTab1250**)arg0;
     s32 i = 0;
