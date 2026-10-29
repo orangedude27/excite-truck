@@ -2644,11 +2644,40 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
 
 extern "C" void fn_800A4C14(void *, s32);
 extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 index, s32 type, s32 flag) {
- u8 *dst=(u8*)out; u8 *entry=entries+(index-1)*0x1A;
- dst[0]=flag?(index|0x40):index; dst[0xB]=0xF; dst[0xD]=type; dst[0xC]=0; *(u16*)(dst+0x1A)=0;
- if(flag){u16 *end=(u16*)(entry+0x1A), *p=(u16*)entry; while(p<end&&*p==0)++p; while(p<end)*p++=0xFFFF;}
- VFipf_memcpy(dst+1,entry,0xA); VFipf_memcpy(dst+0xE,entry+0xA,0xC); VFipf_memcpy(dst+0x1C,entry+0x16,4);
- fn_800A4C14(dst+1,0xA); fn_800A4C14(dst+0xE,0xC); fn_800A4C14(dst+0x1C,4);
+    if (flag) {
+        *(u8 *)out = (u8)(index | 0x40);
+    } else {
+        *(u8 *)out = (u8)index;
+    }
+
+    u8 *dst = (u8 *)out;
+    u8 *entry = entries + (index - 1) * 0x1A;
+
+    dst[0xB] = 0xF;
+    dst[0xD] = (u8)type;
+    dst[0xC] = 0;
+    *(u16 *)(dst + 0x1A) = 0;
+
+    if (flag) {
+        u16 *p = (u16 *)entry;
+        u16 *end = p + 0xD;
+        while (p < end && *p != 0) {
+            ++p;
+        }
+        if (p < end) {
+            ++p;
+        }
+        while (p < end) {
+            *p++ = 0xFFFF;
+        }
+    }
+
+    VFipf_memcpy(dst + 1, entry, 0xA);
+    VFipf_memcpy(dst + 0xE, entry + 0xA, 0xC);
+    VFipf_memcpy(dst + 0x1C, entry + 0x16, 4);
+    fn_800A4C14(dst + 1, 0xA);
+    fn_800A4C14(dst + 0xE, 0xC);
+    fn_800A4C14(dst + 0x1C, 4);
 }
 
 extern "C" s32 fn_800AC1B4(void *, s32);
@@ -11694,6 +11723,7 @@ extern "C" void fn_800C4BD8(s32 *p, s32 value, u32 size) {
 
 extern "C" void fn_800C34B4(s32, s32, s32, s32);
 extern "C" s32 fn_800C4E5C(s32, void *);
+#pragma dont_inline fn_800C34B4
 void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
  s32 span = 0x480, i=0, x=0, y=0, z=0, w=0;
  s32 row;
