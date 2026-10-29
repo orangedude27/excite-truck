@@ -3769,40 +3769,43 @@ extern "C" s32 VFiPFFAT_GetClusterSpecified(void *, u32, u32, u32 *);
 extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
     s32 sp8;
     s32 r;
-    u32 q, rem;
     u16 bytes;
     u8 clusters, shift;
+    u32 q, rem;
     void *fat;
-    fat = *(void **)((char *)arg0 + 0x34);
-    if (**(u32 **)((char *)arg0 + 8) == 1 && *(u32 *)((char *)fat + 0x1C) <= 1) {
-        if (arg1 >= *(u16 *)((char *)fat + 0x24))
+    fat = *(void **)((u8 *)arg0 + 0x34);
+    if (**(u32 **)((u8 *)arg0 + 8) == 1 &&
+        *(u32 *)((u8 *)fat + 0x1C) <= 1) {
+        if (arg1 >= *(u16 *)((u8 *)fat + 0x24))
             *arg4 = -1;
         else
-            *arg4 = *(s32 *)((char *)fat + 0x2C) + arg1;
+            *arg4 = *(s32 *)((u8 *)fat + 0x2C) + arg1;
         return 0;
     }
-    shift = *(u8 *)((char *)fat + 0x21);
-    arg1 >>= shift;
+    shift = *(u8 *)((u8 *)fat + 0x21);
+    u32 shiftedOffset = arg1 >> shift;
     if (arg2 == 2) {
         bytes = *(u16 *)fat;
-        clusters = *(u8 *)((char *)fat + 6);
+        clusters = *(u8 *)((u8 *)fat + 6);
         q = arg3 / bytes;
-        rem = arg3 % bytes;
-        q += rem != 0;
+        rem = (arg3 % bytes) != 0;
+        q += rem;
         rem = q % clusters;
         q /= clusters;
         q += rem != 0;
-        r = fn_800AE3A8(arg0, arg1, q, (u32 *)&sp8);
+        r = fn_800AE3A8(arg0, (s32)shiftedOffset, (s32)q, (u32 *)&sp8);
     } else {
-        r = VFiPFFAT_GetClusterSpecified(arg0, arg1, arg2, (u32 *)&sp8);
+        r = VFiPFFAT_GetClusterSpecified(arg0, shiftedOffset, arg2, (u32 *)&sp8);
     }
-    if (r != 0) return r;
-    if (sp8 == -1) {
+    if (r != 0)
+        return r;
+    if ((u32)(sp8 + 0x10000) == 0xFFFFU) {
         *arg4 = -1;
         return 0;
     }
-    *arg4 = (*(u8 *)((char *)fat + 6) - 1 & arg1) +
-        (*(s32 *)((char *)fat + 0x30) + ((sp8 - 2) << *(u8 *)((char *)fat + 0x21)));
+    *arg4 = (arg1 & (*(u8 *)((u8 *)fat + 6) - 1)) +
+        (*(u32 *)((u8 *)fat + 0x30) +
+         ((sp8 - 2) << *(u8 *)((u8 *)fat + 0x21)));
     return 0;
 }
 
@@ -5947,32 +5950,42 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u16 arg2, u16 arg3, s32 arg4)
     return result & ((-result | result) >> 31);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
-    s32 enabled = arg0 & 0x10000;
+    u32 first;
+    u8 *state;
+    u8 *entries;
+    u32 zero;
     u8 *record;
     s32 i;
 
-    if (enabled != 0)
+    if (arg0 & 0x10000)
         *(u32 *)((u8 *)lbl_803D2140 + 0x38) |= 0x10000;
     else
         *(u32 *)((u8 *)lbl_803D2140 + 0x38) &= 0xFFFEFFFF;
 
-    *(void **)((u8 *)lbl_803D2140 + 0x08) = (u8 *)lbl_803D2140 + 0xA0;
-    *(void **)((u8 *)lbl_803D2140 + 0x14) = (u8 *)lbl_803D2140 + 0xA0;
-    *(void **)((u8 *)lbl_803D2140 + 0x20) = (u8 *)lbl_803D2140 + 0xA0;
-    *(void **)((u8 *)lbl_803D2140 + 0x2C) = (u8 *)lbl_803D2140 + 0xA0;
-    *(u32 *)((u8 *)lbl_803D2140 + 0x00) |= 1;
-    *(u32 *)((u8 *)lbl_803D2140 + 0x30) = 0;
-    *(u32 *)((u8 *)lbl_803D2140 + 0x34) = 0;
+    state = (u8 *)lbl_803D2140;
+    first = *(u32 *)lbl_803D2140;
+    entries = state + 0xA0;
+    zero = 0;
+    first |= 1;
+    *(void **)(state + 0x08) = entries;
+    *(void **)(state + 0x14) = entries;
+    *(void **)(state + 0x20) = entries;
+    *(void **)(state + 0x2C) = entries;
+    *(u32 *)lbl_803D2140 = first;
+    *(u32 *)(state + 0x30) = zero;
+    *(u32 *)(state + 0x34) = zero;
 
-    if (enabled != 0)
-        *(u32 *)((u8 *)lbl_803D2140 + 0x38) |= 0x10000;
+    if (arg0 & 0x10000)
+        *(u32 *)(state + 0x38) |= 0x10000;
     else
-        *(u32 *)((u8 *)lbl_803D2140 + 0x38) &= 0xFFFEFFFF;
+        *(u32 *)(state + 0x38) &= 0xFFFEFFFF;
 
     *(void **)((u8 *)lbl_803D2140 + 0x3C) = arg1;
-    *(u32 *)((u8 *)lbl_803D2140 + 0x40) = 0;
-    *(u32 *)((u8 *)lbl_803D2140 + 0x44) = 0;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x40) = zero;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x44) = zero;
     *(u32 *)((u8 *)lbl_803D2140 + 0x60) = 1;
     *(void **)((u8 *)lbl_803D2140 + 0x48) = (void *)VFiPFCODE_CP932_OEM2Unicode;
     *(void **)((u8 *)lbl_803D2140 + 0x4C) = (void *)VFiPFCODE_CP932_Unicode2OEM;
@@ -5989,6 +6002,7 @@ extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     __AXDSPInitCallback_800B7860();
     return 0;
 }
+#pragma pop
 
 #pragma pop
 extern "C" s32 fn_800A53B4(void *);
