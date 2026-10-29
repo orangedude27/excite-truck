@@ -6242,13 +6242,29 @@ void btm_sco_removed(u16 handle, u8 packet_types) {
     u8 *p;
     s32 i;
     u16 state;
+
     *(u16 *)(lbl_803C0F78 + 0x18F6) = packet_types;
     state = *(u16 *)(lbl_803C0F78 + 0x185C);
-    if ((s16)state < 7) { if ((s16)state >= 2) count = 1; }
+    if ((s16)state >= 7) goto state_1;
+    if ((s16)state >= 2) {
+        count = 1;
+        goto state_1;
+    }
+state_1:
     state = *(u16 *)(lbl_803C0F78 + 0x1890);
-    if ((s16)state < 7) { if ((s16)state >= 2) count++; }
+    if ((s16)state >= 7) goto state_2;
+    if ((s16)state >= 2) {
+        count++;
+        goto state_2;
+    }
+state_2:
     state = *(u16 *)(lbl_803C0F78 + 0x18C4);
-    if ((s16)state < 7) { if ((s16)state >= 2) count++; }
+    if ((s16)state >= 7) goto state_3;
+    if ((s16)state >= 2) {
+        count++;
+        goto state_3;
+    }
+state_3:
     if (count <= 1) btm_chg_all_acl_pkt_types(FALSE);
     p = lbl_803C0F78 + 0x1854;
     for (i = 0; i < 3; i++, p += 0x34) {
@@ -17438,6 +17454,48 @@ void AXFXSetHooks_8009CDB0(void *arg0, void *arg1) {
 void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
     *arg0 = lbl_805590B0;
     *arg1 = lbl_805590B4;
+}
+
+extern char lbl_8031AD78[];
+extern char lbl_805590B8;
+void TPLBind(void *arg0) {
+    u8 *base = (u8 *)arg0;
+    u8 *descriptors;
+    u8 *texture;
+    u8 *palette;
+    u16 i;
+
+    if (*(u32 *)base != 0x0020AF30) {
+        OSPanic(&lbl_805590B8, 0x19, (const char *)lbl_8031AD78);
+    }
+
+    *(u32 *)(base + 8) += (u32)base;
+    descriptors = (u8 *)*(u32 *)(base + 8);
+    i = 0;
+    while (i < *(u32 *)(base + 4)) {
+        u32 index = ((u32)i & 0xFFFF) << 3;
+
+        texture = (u8 *)*(u32 *)(descriptors + index);
+        if (texture != 0) {
+            texture += (u32)base;
+            *(u32 *)(descriptors + index) = (u32)texture;
+            if (texture[0x23] == 0) {
+                *(u32 *)(texture + 8) += (u32)base;
+                texture[0x23] = 1;
+            }
+        }
+
+        palette = (u8 *)*(u32 *)(descriptors + index + 4);
+        if (palette != 0) {
+            palette += (u32)base;
+            *(u32 *)(descriptors + index + 4) = (u32)palette;
+            if (palette[2] == 0) {
+                *(u32 *)(palette + 8) += (u32)base;
+                palette[2] = 1;
+            }
+        }
+        i++;
+    }
 }
 
 void* TPLGet(void* tpl, u32 index) {
