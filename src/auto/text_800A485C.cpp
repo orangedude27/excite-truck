@@ -1,6 +1,6 @@
   #include <types.h>
 #include <macros.h>
-#define VFiPFSTR_StrNCmpCall VFiPFSTR_StrNCmp
+
 struct VFiPFENTIterLayout {
     volatile u32 position;
     void *stream;
