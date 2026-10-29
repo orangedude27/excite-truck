@@ -1131,6 +1131,75 @@ void fn_80118C1C(void *arg0, s32 arg1) {
     }
 }
 
+extern s32 fn_801190B0(void*, s32);
+void fn_80118C44(void* arg0) {
+    s32 temp_r5;
+    s32 var_r4;
+    s32 var_r6;
+    u32 temp_r5_2;
+    u32 temp_r7;
+    s32 var_r8;
+    u32 var_r9;
+    void* temp_r4;
+    volatile s32 *flag;
+    volatile u32 *iterations;
+
+    flag = (volatile s32 *)((u8*)arg0 + 0x11C);
+    iterations = (volatile u32 *)((u8*)arg0 + 0x2E8);
+    var_r8 = 0;
+    if (arg0 != 0) {
+        temp_r5 = 0;
+        *flag = 1;
+        var_r9 = 0;
+        var_r6 = 0;
+        *(s32*)((u8*)arg0 + 0x2F8) = temp_r5;
+        *flag = temp_r5;
+        while (var_r9 < *iterations) {
+            temp_r4 = (u8*)*(void**)((u8*)arg0 + 0x2F0) + var_r6;
+            if (*(s32*)((u8*)temp_r4 + 0x5C) != 0) {
+                *(s32*)((u8*)temp_r4 + 0x5C) = 0;
+                temp_r7 = *(u32*)((u8*)arg0 + 0x0C);
+                if (temp_r7 > 1) {
+                    temp_r4 = (u8*)*(void**)((u8*)arg0 + 0x2F0) + var_r6;
+                    if ((s32)temp_r7 <= *(s32*)((u8*)temp_r4 + 0x48))
+                        var_r8 = 1;
+                }
+            }
+            var_r6 += 0x17C;
+            var_r9 += 1;
+        }
+        if (var_r8 != 0) {
+            temp_r5 = *(s32*)((u8*)arg0 + 0x2EC);
+            *(s32*)((u8*)arg0 + 0x2EC) = temp_r5 + 1;
+            fn_8011C274(lbl_8055DED4, (u8*)arg0 + 0x340);
+            fn_801190B0(arg0, 0);
+            for (;;) {
+                temp_r7 = *(u32*)((u8*)arg0 + 0x138);
+                temp_r5_2 = *(u32*)((u8*)arg0 + 0x13C);
+                temp_r7 = (temp_r7 * 0x1D) >> 5;
+                if (temp_r5_2 >= temp_r7) break;
+                if (((s32 (*)(void*))(*(void**)((u8*)arg0 + 0x100)))((u8*)arg0 + 0xF0) == 0) {
+                    *(s32*)((u8*)arg0 + 0x268) = 0;
+                    *(s32*)((u8*)arg0 + 0x328) = 0;
+                    *(s32*)((u8*)arg0 + 0x330) = 0;
+                    fn_801190B0(arg0, 1);
+                    fn_8011C2EC(lbl_8055DED4, (u8*)arg0 + 0x340);
+                }
+            }
+        }
+        *flag = 1;
+        if (*(s32*)((u8*)arg0 + 0x2E8) != 0)
+            fn_80117074(arg0);
+        fn_80118C1C(arg0, fn_80116D30());
+        temp_r5 = *(s32*)((u8*)arg0 + 0x0C);
+        var_r4 = 1;
+        if ((u32)temp_r5 < *(u32*)((u8*)arg0 + 0x08))
+            var_r4 = temp_r5 + 1;
+        fn_80117380(arg0, var_r4);
+        *flag = 0;
+    }
+}
+
 extern s32 fn_80118F78(void*, s32);
 extern s32 fn_8011BFFC(s32, s32, s32, s32, s32);
 extern void fn_8011BC48();
@@ -1432,24 +1501,24 @@ void fn_801195A0(void *arg0) {
 s32 fn_80119824(void *arg0) {
     s32 temp_r3;
     s32 temp_r4;
-    s32 temp_r4_2;
-    s32 var_r4;
+    u32 var_r4;
     u32 temp_r0;
     u32 temp_r3_2;
     u32 temp_r3_3;
     u32 temp_r4_3;
     u32 var_r30;
 
-    if (*(s32 *)((u8 *)arg0 + 0xB4) == 0 &&
-        *(s32 *)((u8 *)arg0 + 0x64) == 0) {
-        return 0;
+    if (*(s32 *)((u8 *)arg0 + 0xB4) == 0) {
+        if (*(s32 *)((u8 *)arg0 + 0x64) != 0) {
+        } else {
+            return 0;
+        }
+    } else {
     }
-
     if (*(s32 *)((u8 *)arg0 + 0xB0) == 0) {
-        fn_801195D8(arg0);
+        fn_801195D8();
         return 0;
     }
-
     var_r30 = *(u32 *)((u8 *)arg0 + 0xC4);
     if ((u32)(fn_80116D30() - *(s32 *)((u8 *)arg0 + 0xCC)) > 0xC) {
     block_6:
@@ -1458,38 +1527,27 @@ s32 fn_80119824(void *arg0) {
         temp_r4 = temp_r3 - *(s32 *)((u8 *)arg0 + 0xCC);
         *(u32 *)((u8 *)arg0 + 0xC4) = var_r30;
         if ((u32)temp_r4 < *(u32 *)((u8 *)arg0 + 0xD0)) {
-            *(s32 *)((u8 *)arg0 + 0xCC) = temp_r3;
-        } else {
-            *(s32 *)((u8 *)arg0 + 0xCC) = temp_r3;
-            goto block_16;
+            goto block_8;
         }
+        *(s32 *)((u8 *)arg0 + 0xCC) = temp_r3;
+        goto block_16;
+    block_8:
+        *(s32 *)((u8 *)arg0 + 0xCC) = temp_r3;
     }
-
     temp_r3_2 = *(u32 *)((u8 *)arg0 + 0xB8);
     if (var_r30 < temp_r3_2) {
         var_r4 = var_r30 + *(u32 *)((u8 *)arg0 + 0x94) - temp_r3_2;
     } else {
         var_r4 = var_r30 - temp_r3_2;
     }
-    temp_r4_2 = var_r4 - 0x400;
-    if ((u32)var_r4 >= 0x400) {
-        temp_r3_3 = temp_r4_2 & 0xFFFFFFFC;
-    } else {
-        temp_r3_3 = 0;
-    }
-
-    if (temp_r3_3 >= *(u32 *)((u8 *)arg0 + 0x9C)) {
-        goto block_15;
-    }
-    if (*(s32 *)((u8 *)arg0 + 0xBC) == 0 || temp_r3_3 == 0) {
-        return 0;
-    }
+    temp_r3_3 = (var_r4 < 0x400)
+        ? 0
+        : ((var_r4 - 0x400) & 0xFFFFFFFC);
+    if (temp_r3_3 >= *(u32 *)((u8 *)arg0 + 0x9C)) goto block_15;
+    if (*(s32 *)((u8 *)arg0 + 0xBC) == 0) goto return_zero;
+    if (temp_r3_3 == 0) goto return_zero;
 block_15:
-    if (temp_r3_3 < *(u32 *)((u8 *)arg0 + 0xC8)) {
-        *(u32 *)((u8 *)arg0 + 0xBC) = temp_r3_3;
-        fn_801195D8(arg0);
-        return 0;
-    }
+    if (temp_r3_3 < *(u32 *)((u8 *)arg0 + 0xC8)) goto block_18;
 block_16:
     *(s32 *)((u8 *)arg0 + 0x5C) = 1;
     fn_80119300((u8 *)arg0 + 0x7C,
@@ -1503,6 +1561,11 @@ block_16:
         *(u32 *)((u8 *)arg0 + 0xB8) = temp_r0 - temp_r4_3;
     }
     goto block_6;
+block_18:
+    *(u32 *)((u8 *)arg0 + 0xBC) = temp_r3_3;
+    fn_801195D8(arg0);
+return_zero:
+    return 0;
 }
 
 extern f64 lbl_80561198;
@@ -4186,6 +4249,59 @@ void fn_80120084(void *arg0) {
     }
 }
 
+void fn_80120834(s32, s32 *, f32 *);
+void fn_80120B6C(s32, s32 *, f32 *);
+void fn_80120CA4(s32, void *, s32, s32, void *);
+void fn_80120E14(s32, void *, s32, s32, void *);
+void fn_801250CC(s32, s32, s32, s32);
+void fn_801252D8(s32, f32 *, s32, f32 *);
+void fn_801200BC(s32 arg0, s32 arg1, f32 *arg2, s32 arg3, s32 arg4) {
+    s32 var_r31;
+    s32 var_r30;
+    f32 temp_f1;
+    f32 temp_f2;
+
+    var_r31 = *(s32 *)arg3;
+    if (arg0 > var_r31 * 4) {
+        var_r31 = arg0 >> 2;
+        fn_80120834(var_r31, (s32 *)arg3, (f32 *)arg4);
+    }
+    var_r30 = *(s32 *)(arg3 + 4);
+    if (arg0 > var_r30 * 4) {
+        var_r30 = arg0 >> 2;
+        fn_80120B6C(var_r30, (s32 *)arg3, (f32 *)((u8 *)arg4 + var_r31 * 4));
+    }
+    if (arg1 >= 0) {
+        if (arg0 > 4) {
+            fn_80120CA4(arg0, arg2, arg3 + 8, var_r31, (void *)arg4);
+            fn_801250CC(arg0, (s32)arg2, var_r30, (s32)((u8 *)arg4 + var_r31 * 4));
+        } else if (arg0 == 4) {
+            fn_80120CA4(arg0, arg2, arg3 + 8, var_r31, (void *)arg4);
+        }
+        {
+            f32 second;
+            f32 first;
+            f32 difference;
+            first = arg2[0];
+            second = arg2[1];
+            difference = first - second;
+            arg2[1] = difference;
+            arg2[0] = first + second;
+        }
+        return;
+    }
+    temp_f2 = arg2[0];
+    temp_f1 = lbl_80561210 * (temp_f2 - arg2[1]);
+    arg2[1] = temp_f1;
+    arg2[0] = temp_f2 - temp_f1;
+    if (arg0 > 4) {
+        fn_801252D8(arg0, arg2, var_r30, (f32 *)((u8 *)arg4 + var_r31 * 4));
+        fn_80120E14(arg0, arg2, arg3 + 8, var_r31, (void *)arg4);
+    } else if (arg0 == 4) {
+        fn_80120E14(arg0, arg2, arg3 + 8, var_r31, (void *)arg4);
+    }
+}
+
 void fn_80120834(s32 n, s32 *info, f32 *table) {
     register s32 i;
     register s32 stage;
@@ -5897,14 +6013,20 @@ void fn_801252D8(s32 n, f32 *a, s32 m, f32 *w) {
 }
 
 void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
+    f32 *tw;
+    f32 *out;
     s32 i;
     s32 j;
     s32 step;
     s32 half;
-    s32 k;
-    f32 *tw;
-    f32 *out;
-    f32 a, b, c, d, e, f;
+    u32 count;
+    u32 pairs;
+    f32 a;
+    f32 b;
+    f32 c;
+    f32 d;
+    f32 e;
+    f32 f;
 
     tw = arg3;
     out = arg1 + 1;
@@ -5912,54 +6034,48 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
     j = 0;
     step = arg2 / arg0;
     half = arg0 >> 1;
-    k = half - 1;
-    if (half > 1) {
-        k = (u32)k >> 1;
-        if (k != 0) {
-            do {
-                j += step;
-                a = *(tw += step);
-                b = arg3[arg2 - j];
-                j += step;
-                c = out[0];
-                d = arg1[arg0 - i];
-                i++;
-                e = a - b;
-                f = a + b;
-                out[0] = e * c + f * d;
-                arg1[arg0 - i + 1] = f * c - e * d;
-                i++;
-                a = *(tw += step);
-                b = arg3[arg2 - j];
-                c = out[1];
-                d = arg1[arg0 - i];
-                e = a - b;
-                f = a + b;
-                out[1] = e * c + f * d;
-                arg1[arg0 - i] = f * c - e * d;
-                out += 2;
-                k--;
-            } while (k != 0);
-            k = (half - 1) & 1;
-            if (k == 0) goto done;
-        } else {
-            k = half - 1;
-        }
-        do {
-            j += step;
-            a = *(tw += step);
-            b = arg3[arg2 - j];
-            c = *out;
-            d = arg1[arg0 - i];
-            i++;
-            e = a - b;
-            f = a + b;
-            *out++ = e * c + f * d;
-            arg1[arg0 - i + 1] = f * c - e * d;
-            k--;
-        } while (k != 0);
+    count = (u32)(half - 1);
+    if (half <= 1) goto finish;
+    pairs = count >> 1;
+    while (pairs != 0) {
+        j += step;
+        a = arg3[arg2 - j];
+        b = *(tw += step);
+        e = b - a;
+        f = b + a;
+        c = out[0];
+        d = arg1[arg0 - i];
+        out[0] = e * c + f * d;
+        arg1[arg0 - i] = f * c - e * d;
+        i++;
+
+        j += step;
+        a = arg3[arg2 - j];
+        b = *(tw += step);
+        e = b - a;
+        f = b + a;
+        c = out[1];
+        d = arg1[arg0 - i];
+        out[1] = e * c + f * d;
+        arg1[arg0 - i] = f * c - e * d;
+        i++;
+        out += 2;
+        pairs--;
     }
-done:
+    if (count & 1) {
+        j += step;
+        a = arg3[arg2 - j];
+        b = *(tw += step);
+        e = b - a;
+        f = b + a;
+        c = *out;
+        d = arg1[arg0 - i];
+        *out = e * c + f * d;
+        arg1[arg0 - i] = f * c - e * d;
+        out++;
+        i++;
+    }
+finish:
     arg1[half] *= *arg3;
 }
 
