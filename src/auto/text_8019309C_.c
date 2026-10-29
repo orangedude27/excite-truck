@@ -1060,6 +1060,61 @@ extern float lbl_80562148;
 extern float lbl_80562204;
 void fn_801958C4(void *arg0) { *(float *)((unsigned char *)arg0+0x248) *= lbl_80562204; }
 
+void fn_801959AC(void *arg0) {
+    extern double __fabs(double);
+    extern char lbl_80558DC4[];
+    extern float lbl_80562140, lbl_80562144, lbl_805621DC, lbl_80562208;
+    extern char lbl_803332F8[];
+    extern char lbl_8055A4B0;
+    unsigned char *p = (unsigned char *)arg0;
+    void *obj;
+    float value;
+    float stateDifference;
+    int state;
+    int idle;
+
+    if (p[0x2A7]) {
+        obj = *(void **)(p + 0x294);
+        if (*(int *)((char *)obj + 0x2620) > 0) {
+            p[0x2A7] = 0;
+            fn_8018A174(obj);
+        }
+    }
+
+    obj = *(void **)(p + 0x294);
+    if (!((float)__fabs((double)*(float *)((char *)obj + 0x2690)) <= *(float *)lbl_80558DC4))
+        ((void (*)(void *, const char *))fn_801961F8)(arg0, lbl_803332F8);
+
+    fn_80195B28(arg0, lbl_80562144);
+    value = *(float *)(p + 0x26C) - *(float *)(p + 0x1F4);
+    fn_801942F0(arg0, value > lbl_80562140);
+
+    state = *(int *)(p + 0x260);
+    switch (state) {
+    case 1:
+        stateDifference = *(float *)(p + 0x264);
+        stateDifference = *(float *)(p + 0x278) - stateDifference;
+        if ((float)__fabs((double)stateDifference) < lbl_805621DC)
+            *(int *)(p + 0x260) = 2;
+        break;
+    case 2:
+        if (*(float *)(p + 0x270) < lbl_80562208)
+            fn_80193CD4(arg0);
+        break;
+    }
+
+    if ((float)__fabs((double)*(float *)(p + 0x278)) >
+            lbl_80562140 + *(float *)(p + 0x284) &&
+        !(*(int *)(p + 0x2D0) & 8))
+        ((void (*)(void *, const char *))fn_8019416C)(arg0, &lbl_8055A4B0);
+
+    obj = *(void **)(p + 0x294);
+    idle = *(int *)((char *)obj + 0x2620) == 0;
+    if (idle && !p[0x208])
+        *(float *)(p + 0x204) = *(float *)(p + 0x26C);
+    p[0x208] = idle;
+}
+
 void fn_80195B28(void *arg0, float arg1) {
  float *p=(float*)arg0, *table; float value, scale; int index;
  if (p[0x234/4]>=p[0x26C/4] && lbl_80562144==arg1) {
