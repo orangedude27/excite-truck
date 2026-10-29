@@ -3,6 +3,7 @@
 #include <types.h>
 #include "revolution/GX/GXTypes.h"
 #include "revolution/GX/GXAttr.h"
+#include "revolution/MTX/mtxtypes.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
 namespace nw4hbm { namespace lyt {
@@ -129,7 +130,6 @@ struct PaneAnimLink {
     void* unk4;
     PaneAnimObject* animation;
     u16 index;
-    u8 pad[2];
     u8 disabled;
 };
 extern "C" const char lbl_8031E8FC[];
@@ -261,24 +261,28 @@ extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const 
     if (p[1] < count)
         p[1] = count;
     s32 offset = 0;
-    if ((s32)count > 0) {
+    s32 n = count;
+    if (n > 0) {
         do {
-            f32* dst = (f32*)(*(u8**)(p + 4) + offset);
-            const f32* in = (const f32*)((const u8*)src + offset);
-            dst[0] = in[0];
-            dst[1] = in[1];
-            f32 f3 = in[4];
-            f32 f2 = in[5];
-            dst[2] = in[2];
-            f32 f1 = in[6];
-            dst[3] = in[3];
-            f32 f0 = in[7];
-            dst[4] = f3;
-            dst[5] = f2;
+            void* base0 = *(void**)(p + 4);
+            f32* dst0 = (f32*)((u8*)base0 + offset);
+            dst0[0] = ((const f32*)src)[0];
+            dst0[1] = ((const f32*)src)[1];
+            void* base1 = *(void**)(p + 4);
+            f32* dst1 = (f32*)((u8*)base1 + offset);
+            dst1[2] = ((const f32*)src)[2];
+            dst1[3] = ((const f32*)src)[3];
+            src = (const u8*)src + 0x20;
+            void* base2 = *(void**)(p + 4);
+            f32* dst2 = (f32*)((u8*)base2 + offset);
+            dst2[4] = ((const f32*)src)[-4];
+            dst2[5] = ((const f32*)src)[-3];
+            void* base3 = *(void**)(p + 4);
+            f32* dst3 = (f32*)((u8*)base3 + offset);
             offset += 0x20;
-            dst[6] = f1;
-            dst[7] = f0;
-        } while (--count != 0);
+            dst3[6] = ((const f32*)src)[-2];
+            dst3[7] = ((const f32*)src)[-1];
+        } while (--n != 0);
     }
 }
 
@@ -796,22 +800,44 @@ extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBloc
 }
 
 extern "C" int fn_800D7C54(int *arg0, s32 arg1) {
-    f32 *out = (f32 *)arg0;
-    f32 *in = (f32 *)arg1;
-    f32 zero = lbl_80560E88;
-    f32 angle = in[2] * lbl_80560E8C;
-    f32 c = CosFIdx__Q24nw4r4mathFf(angle);
-    angle = in[2] * lbl_80560E8C;
-    f32 s = SinFIdx__Q24nw4r4mathFf(angle);
-    f32 x = in[3], z = in[4];
-    f32 a = c * x, b = s * x, neg = -zero;
-    out[0] = c * x; out[1] = -s * z; out[2] = lbl_80560E90;
-    out[4] = s * x; out[5] = c * z; out[6] = lbl_80560E90;
-    out[3] = in[0] + zero + (a * neg + b * neg);
-    out[7] = in[1] + zero + (b * neg + (c * z) * neg);
-    out[8] = lbl_80560E90; out[9] = lbl_80560E90;
-    out[10] = lbl_80560E94; out[11] = lbl_80560E90;
-    return 0;
+    volatile f32 *out = (volatile f32 *)arg0;
+    volatile f32 *in = (volatile f32 *)arg1;
+    f32 angle = in[2];
+    volatile f32 offsetX = lbl_80560E88;
+    volatile f32 offsetY = lbl_80560E88;
+    f32 c = CosFIdx__Q24nw4r4mathFf(lbl_80560E8C * angle);
+    f32 s = SinFIdx__Q24nw4r4mathFf(lbl_80560E8C * in[2]);
+    f32 x = in[3];
+    f32 negS = -s;
+    f32 sx = s * x;
+    f32 zero = lbl_80560E90;
+    f32 cx = c * x;
+    f32 z = in[4];
+    f32 negOffsetX = -offsetX;
+    f32 negOffsetY = -offsetY;
+    f32 negSz = negS * z;
+    f32 tx = in[0];
+    f32 cz = c * z;
+    f32 ty = in[1];
+    f32 tx0 = tx + offsetX;
+    f32 ty0 = ty + offsetY;
+    f32 tx1 = tx0 + cx * negOffsetX;
+    f32 ty1 = ty0 + sx * negOffsetX;
+    f32 tx2 = tx1 + negSz * negOffsetY;
+    f32 ty2 = ty1 + cz * negOffsetY;
+
+    out[0] = cx;
+    out[1] = negSz;
+    out[2] = zero;
+    out[4] = sx;
+    out[5] = cz;
+    out[6] = zero;
+    out[3] = tx2;
+    out[7] = ty2;
+    out[8] = zero;
+    out[9] = zero;
+    out[10] = lbl_80560E94;
+    out[11] = zero;
 }
 
 extern "C" void GXSetIndTexMtx(f32*, s8);
@@ -2527,21 +2553,29 @@ extern "C" void Animate__Q36nw4hbm3lyt4PaneFUl(void *self, u32 flags) {
 }
 
 extern "C" void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void* self, unsigned long flags) {
-    PaneAnimLink* head = (PaneAnimLink*)((char*)self + 0x20);
-    PaneAnimLink* link = *(PaneAnimLink**)((char*)self + 0x20);
+    struct AnimCallback {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void call(u16, void*);
+    };
+    struct UpdateCallback {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4();
+        virtual void call();
+    };
+    register u8* link = *(u8**)((u8*)self + 0x20);
+    register u8* head = (u8*)self + 0x20;
     while (link != head) {
         if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-        if (!link->disabled) {
+        if (!*(u8*)(link + 0xE)) {
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            PaneAnimObject* anim = link->animation;
+            AnimCallback* anim = (AnimCallback*)*(void**)(link + 8);
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            anim->v3();
+            anim->call(*(u16*)(link + 0xC), self);
         }
-        link = link->next;
+        link = *(u8**)link;
     }
-    if ((*(u8*)((char*)self + 0xCF) & 1) == 0 && (flags & 1)) return;
-    PaneAnimObject* obj = *(PaneAnimObject**)((char*)self + 0x28);
-    if (obj) obj->v3();
+    if ((*(u8*)((u8*)self + 0xCF) & 1) == 0 && (flags & 1)) return;
+    UpdateCallback* obj = (UpdateCallback*)*(void**)((u8*)self + 0x28);
+    if (obj) obj->call();
 }
 
 extern "C" void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* transform, bool flag) {
@@ -2727,28 +2761,30 @@ extern "C" void GXLoadPosMtxImm(const f32*, u32);
 extern "C" void GXSetCurrentMtx(u32);
 extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self, void* info) {
     extern f32 lbl_80560EA8;
-    f32 mtx[12];
-    u8* ip = (u8*)info;
-    u8* sp = (u8*)self;
-    if ((ip[0x50] >> 7) & 1) {
-        PSMTXConcat((f32*)(ip + 4), (f32*)(sp + 0x84), mtx);
-        if (fcmpgt((*(f32*)(ip + 0x40) - *(f32*)(ip + 0x38)), lbl_80560EA8)) {
-            mtx[3] = -mtx[3];
-            mtx[7] = -mtx[7];
-            mtx[11] = -mtx[11];
+    Mtx mtx;
+    f32* result;
+    if ((((u8*)info)[0x50] >> 7) & 1) {
+        PSMTXConcat((f32*)((u8*)info + 4), (f32*)((u8*)self + 0x84), &mtx[0][0]);
+        BOOL flip = (*(f32*)((u8*)info + 0x40) - *(f32*)((u8*)info + 0x38)) < lbl_80560EA8;
+        if (flip) {
+            mtx[0][3] = -mtx[0][3];
+            mtx[1][3] = -mtx[1][3];
+            mtx[2][3] = -mtx[2][3];
         }
-        GXLoadPosMtxImm(mtx, 0);
+        result = &mtx[0][0];
     } else {
-        if (fcmpgt((*(f32*)(ip + 0x40) - *(f32*)(ip + 0x38)), lbl_80560EA8)) {
-            PSMTXCopy((f32*)(sp + 0x84), mtx);
-            mtx[3] = -mtx[3];
-            mtx[7] = -mtx[7];
-            mtx[11] = -mtx[11];
-            GXLoadPosMtxImm(mtx, 0);
+        BOOL flip = (*(f32*)((u8*)info + 0x40) - *(f32*)((u8*)info + 0x38)) < lbl_80560EA8;
+        if (flip) {
+            PSMTXCopy((f32*)((u8*)self + 0x84), &mtx[0][0]);
+            mtx[0][3] = -mtx[0][3];
+            mtx[1][3] = -mtx[1][3];
+            mtx[2][3] = -mtx[2][3];
+            result = &mtx[0][0];
         } else {
-            GXLoadPosMtxImm((f32*)(sp + 0x84), 0);
+            result = (f32*)((u8*)self + 0x84);
         }
     }
+    GXLoadPosMtxImm(result, 0);
     GXSetCurrentMtx(0);
 }
 
