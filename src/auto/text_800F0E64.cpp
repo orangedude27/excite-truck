@@ -1,3 +1,4 @@
+extern "C" const char lbl_80324868[];
 extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, unsigned char);
 typedef signed char s8;
 typedef unsigned char u8;
