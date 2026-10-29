@@ -13640,48 +13640,49 @@ extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
 extern "C" void fn_800D1F7C(s32 arg0, s32 arg1) {
-    /* Fix note: keep status in a short-lived result and branch through the shared report path. */
-    const char *fmtBase = lbl_8031E9D0;
-    u32 node = (u32)arg0;
+    /* Fix note: use explicit target-shaped failure branches for node, address, and checker validation. */
     u32 buffer[0x41];
-    u32 lower = 0x80000000;
+    const char *fmtBase = lbl_8031E9D0;
+    register s32 *var_r26 = (s32 *)arg0;
+    s32 lower = (s32)0x80000000;
     u32 upper = 0x83000000;
-    s32 count;
+    u32 count;
 
     fn_800D1EC4(fmtBase);
     fn_800D1EC4(fmtBase + 0x28);
     count = 0;
 loop_1:
-    if (node == 0)
+    if (var_r26 == 0)
         goto done;
-    if (node + 0x10000 == 0xFFFFFFFF)
+    if ((u32)var_r26 + 0x10000 == 0xFFFFFFFF)
         goto done;
-    if ((node & 0x80000000) == 0)
+    if (((u32)var_r26 & 0x80000000) == 0)
         goto done;
 
-    fn_800D1EC4(fmtBase + 0x48, node, *(u32 *)node, *(u32 *)(node + 4));
-    u32 address = *(u32 *)(node + 4);
+    fn_800D1EC4(fmtBase + 0x48, var_r26, var_r26[0], var_r26[1]);
+    u32 address = (u32)var_r26[1];
     s32 result;
     if (fn_800D3824() != 0)
-        goto check_address;
+        goto check_low;
     result = 0;
     goto report;
-check_address:
-    if (address < lower) {
-        result = 0;
-        goto report;
-    }
-    if (address > upper - 1) {
-        result = 0;
-        goto report;
-    }
+check_low:
+    if (address < (u32)lower)
+        goto invalid_range;
+    if (address <= upper - 1)
+        goto check_range;
+invalid_range:
+    result = 0;
+    goto report;
+check_range:
     {
         typedef s32 (*CheckFn)(s32, s32, s32);
-        if (((CheckFn)fn_800D40B4)(address, (s32)buffer, 0x104) == 0) {
-            result = 0;
-            goto report;
-        }
+        if (((CheckFn)fn_800D40B4)(address, (s32)buffer, 0x104) != 0)
+            goto valid;
     }
+    result = 0;
+    goto report;
+valid:
     fn_800D1EC4(lbl_805597D8, buffer);
     result = 1;
 report:
@@ -13689,7 +13690,7 @@ report:
         fn_800D1EC4(lbl_805597DC);
 
     ++count;
-    node = *(u32 *)node;
+    var_r26 = (s32 *)var_r26[0];
     if (count < 0x10)
         goto loop_1;
 done:
@@ -18020,13 +18021,13 @@ loop:
 
 extern "C" s32 VFiPFSTR_StrNCmp(s32 arg0_, const void *arg1_, s32 arg2_, s32 arg3, s32 arg4_) {
     void *arg0 = (void *)arg0_;
-    u8 *arg1 = (u8 *)arg1_;
     u32 arg2 = (u32)arg2_;
-    u16 count = (u16)arg4_;
-    u16 sp8;
     u16 *p;
+    u32 count = (u32)arg4_;
+    u8 *arg1 = (u8 *)arg1_;
+    u16 sp8;
     u8 *base;
-    s32 result;
+    u32 result;
     if (*(u32 *)((u8 *)arg0 + 0xC) == 1 || arg2 == 3) {
         if (arg2 == 1) base = *(u8 **)arg0 + arg3;
         else if (arg2 == 2) base = *(u8 **)((u8 *)arg0 + 4) + arg3;
@@ -18038,8 +18039,10 @@ extern "C" s32 VFiPFSTR_StrNCmp(s32 arg0_, const void *arg1_, s32 arg2_, s32 arg
     do {
         ((void (*)(u8 *, u16 *))(*(u32 *)((u8 *)lbl_803D2140 + 0x48)))(arg1, &sp8);
         result = *p;
-        arg1++; count--; p++;
-    } while (result == sp8 && (u16)count != 0 && p[-1] != 0 && sp8 != 0);
+        arg1++;
+        count--;
+        p++;
+    } while ((u16)result == sp8 && (u16)count != 0 && p[-1] != 0 && sp8 != 0);
     return (s32)p[-1] - (s32)sp8;
 }
 
