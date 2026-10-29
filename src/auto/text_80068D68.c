@@ -210,7 +210,7 @@ extern u8 HID_HostAddDev(u8 *, u16, u8 *);
 extern s32 HID_HostSetSecurityLevel(void *, u8);
 extern char lbl_803152B0[];
 extern char lbl_803152D0[];
-extern u8 lbl_80559058[];
+extern u8 lbl_80559058;
 extern char lbl_80319278[];
 extern char lbl_80319290[];
 extern void RFCOMM_ParNegReq(void *, s32, s32);
@@ -2802,10 +2802,10 @@ void uusb_issue_intr_read(void) {
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
 
-void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
+void uusb_WriteBulkDataCB(s32 arg0, void *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
-    char *report = lbl_803142C8;
+    register char *report = lbl_803142C8;
     u16 offset;
     if (lbl_803BD1E0.at_0x28 != 0) {
         OSReport(report + 0x518, arg0);
@@ -2814,7 +2814,7 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
         OSReport(report + 0x550, arg0);
     }
     if (arg1 != 0) {
-        GKI_freebuf((void *)arg1);
+        GKI_freebuf(arg1);
         fn_8006EBAC();
         ((u8 *)&lbl_803BD1E0)[0x38] = ((u8 *)&lbl_803BD1E0)[0x38] - 1;
         fn_8006EB88();
@@ -2822,16 +2822,16 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     {
         register u8 *control = (u8 *)&lbl_803BD1E0;
         if (control[0x38] < 5 && *(u16 *)(control + 0x34) != 0) {
-            arg1 = (s32)GKI_dequeue((BUFFER_Q *)(control + 0x2C));
+            arg1 = GKI_dequeue((BUFFER_Q *)(control + 0x2C));
             offset = *(u16 *)((u8 *)arg1 + 4);
             if (IUSB_WriteBlkMsgAsync(lbl_803BD1E0.fd, control[0x10],
                                       *(u16 *)((u8 *)arg1 + 2),
                                       (u8 *)arg1 + offset + 8,
-                                      (void (*)(void))uusb_WriteBulkDataCB, (void *)arg1) < 0) {
+                                      (void (*)(void))uusb_WriteBulkDataCB, arg1) < 0) {
                 if (control[0x28] != 0) {
                     OSReport(report + 0x588);
                 }
-                GKI_enqueue_head((BUFFER_Q *)(control + 0x2C), (void *)arg1);
+                GKI_enqueue_head((BUFFER_Q *)(control + 0x2C), arg1);
                 return;
             }
             fn_8006EBAC();
@@ -4258,7 +4258,6 @@ void bta_hh_sdp_cback(s32 arg0, u16 arg1, register void *arg2) {
 void bta_hh_sdp_cmpl(void *arg0, u8 *status) {
     u8 info[8];
     u8 result;
-    u8 *manager = lbl_803C0D48;
     if (lbl_8055DC80 >= 5)
         fn_80070954(0x504, lbl_803152B0, status[0]);
     memset(info, 0, 8);
@@ -4279,7 +4278,7 @@ void bta_hh_sdp_cmpl(void *arg0, u8 *status) {
     if (result == 0) return;
     if (status[0] == 0xFF) info[6] = 0xA;
     else info[6] = 7;
-    ((void (*)(u32, void *))(*(void **)(manager + 0x224)))(2, info);
+    ((void (*)(u32, void *))(*(void **)(lbl_803C0D48 + 0x224)))(2, info);
     bta_hh_sm_execute(arg0, 0x1701, 0);
     if (*((u8 *)arg0 + 0x15) == 0 && *((u8 *)arg0 + 0x19) == 0)
         bta_hh_clean_up_kdev(arg0);
