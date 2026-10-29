@@ -24,7 +24,7 @@ extern float lbl_805613C0;
 extern float lbl_805613C8;
 extern float lbl_805613D0;
 extern float lbl_805613C4, lbl_805613CC;
-extern float fn_8002F234(float);
+extern double fn_8002F234(float);
 #pragma push
 #pragma scheduling invalid_target
 #pragma optimize_for_size on
@@ -45,7 +45,7 @@ int fn_80138C28(void *rect, float *out_t, float *out_distance) {
     if (out_distance != 0) *out_distance = lbl_805613B8;
     a = *(float *)((char *)rect + 0x14) - *(float *)((char *)rect + 0x08);
     b = *(float *)((char *)rect + 0x10) - *(float *)((char *)rect + 0x04);
-    c = *(float *)((char *)rect + 0x0C) - *(float *)((char *)rect + 0x00);
+    c = *(float *)((char *)rect + 0x0C) - *(float *)rect;
     a *= lbl_805613C0;
     if (fn_80138BFC(a) != 0) return 0;
     disc = b * b - lbl_805613C4 * a * c;
