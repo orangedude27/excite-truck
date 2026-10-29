@@ -2016,6 +2016,36 @@ void uusb_CloseDeviceCB(s8 arg0) {
         (*(void (**)(s32, s8))(control + 0x20))(4, arg0);
 }
 
+extern s32 IUSB_OpenDeviceIds(const char *, u16, u16, s32 *);
+extern char lbl_80314898[];
+extern char lbl_803148F8[];
+extern char lbl_80559004[];
+extern char lbl_80559008[];
+extern s32 lbl_80558FF4;
+extern u32 lbl_8055DC54;
+extern u32 lbl_8055DC58;
+s32 uusb_get_devId(u16 arg0, u16 arg1) {
+    s32 result;
+    if (lbl_8055DC58 == 1) {
+        if (lbl_8055DC54 == 0) {
+            result = IUSB_OpenDeviceIds(lbl_80559004, arg0, arg1, (s32 *)&lbl_803BD1E0);
+        } else if (lbl_8055DC54 == 1) {
+            result = IUSB_OpenDeviceIds(lbl_80559008, arg0, arg1, (s32 *)&lbl_803BD1E0);
+        } else {
+            result = IUSB_OpenDeviceIds(lbl_80559008, arg0, arg1, (s32 *)&lbl_803BD1E0);
+        }
+    } else {
+        result = IUSB_OpenDeviceIds(lbl_80559008, arg0, arg1, (s32 *)&lbl_803BD1E0);
+    }
+    if (result < 0) {
+        if (lbl_803BD1E0.at_0x28 != 0) OSReport(lbl_80314898, result, 0x57E, 0x305);
+        if (lbl_803BD1E0.at_0x28 != 0) OSReport(lbl_803148F8);
+    } else {
+        lbl_80558FF4 = result;
+    }
+    return result;
+}
+
 s32 fn_8007011C(void) { return 0; }
 
 void UUSB_Close(void *arg0) {
