@@ -1328,8 +1328,9 @@ extern u8 lbl_803135C0[];
 extern void fn_8006B044(tBTM_VSC_CMPL *);
 void fn_8006AED4(s32 arg0) {
     u8 packet[0x100];
-    s32 count;
     s32 i;
+    u32 count;
+    u8 length;
     u32 header;
     if (arg0 == 0) {
         fn_8006B330();
@@ -1338,33 +1339,19 @@ void fn_8006AED4(s32 arg0) {
     count = lbl_8055DC44;
     if (count >= 0xFB)
         count = 0xFB;
+    length = (u8)count;
     header = lbl_8055DC3C;
     packet[0] = (u8)header;
     packet[1] = (u8)(header >> 8);
     packet[2] = (u8)(header >> 16);
     packet[3] = (u8)(header >> 24);
     i = 0;
-    if (count > 0) {
-        if (count > 8) {
-            while (i < count - 8) {
-                packet[i + 4] = lbl_803135C0[i + 8];
-                packet[i + 5] = lbl_803135C0[i + 9];
-                packet[i + 6] = lbl_803135C0[i + 10];
-                packet[i + 7] = lbl_803135C0[i + 11];
-                packet[i + 8] = lbl_803135C0[i + 12];
-                packet[i + 9] = lbl_803135C0[i + 13];
-                packet[i + 10] = lbl_803135C0[i + 14];
-                packet[i + 11] = lbl_803135C0[i + 15];
-                i += 8;
-            }
-        }
-        while (i < count) {
+    if (length > 0) {
+        for (; i < length; i++)
             packet[i + 4] = lbl_803135C0[i + 8];
-            i++;
-        }
     }
-    lbl_8055DC40 = count;
-    BTM_VendorSpecificCommand(0xFC4C, (u8)(count + 4), packet, fn_8006B044);
+    lbl_8055DC40 = length;
+    BTM_VendorSpecificCommand(0xFC4C, (u8)(length + 4), packet, fn_8006B044);
 }
 
 void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
@@ -14063,6 +14050,25 @@ int l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remot
 
 done:
     ;
+}
+
+void l2cu_send_peer_echo_req(void *p_lcb, u8 *p_data, s32 data_len)
+{
+    BT_HDR *p_buf;
+    u8 *p;
+
+    if ((p_buf = (BT_HDR *)((BT_HDR *(*)(u16, s32, u8, u8))l2cu_build_header)(
+             *(u16 *)((u8 *)p_lcb + 0x28), data_len, 8,
+             ++*(((u8 *)p_lcb) + 0x31))) == 0) {
+        if (lbl_803C4040[0] >= 2)
+            fn_8007093C(0x80001, lbl_803191B4);
+        return;
+    }
+
+    p = (u8 *)(p_buf + 1) + 0xC;
+    if (data_len)
+        ARRAY_TO_STREAM(p, p_data, data_len);
+    ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, p_buf);
 }
 
 void l2cu_send_peer_echo_rsp(void *arg0, s32 arg1, u8 *arg2, u32 arg3) {
