@@ -4902,8 +4902,8 @@ frame.sp10[0] += 2;
 }
 } else if (((M2C_FIELD(lbl_803D2140, u32 *, 0x60) & 2) == 2) &&
   (arg2 == 0) &&
-  (VFiPFSTR_StrNCmpCall((s32)var_r29, &lbl_80559210, 1, 0, 1) != 0) &&
-  (VFiPFSTR_StrNCmpCall((s32)var_r29, &lbl_80559214, 1, 0, 2) != 0) &&
+  (VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559210, 1, 0, 1) != 0) &&
+  (VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559214, 1, 0, 2) != 0) &&
   (((s32 (*)(void *, u32, u32))fn_800B4D5C)(var_r29, 1, 0) == 0)) {
 var_r31 = 0;
 }
