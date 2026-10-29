@@ -857,6 +857,40 @@ extern "C" s32 fn_800A62A8(void *arg0) {
     return 0;
 }
 
+extern "C" s32 fn_800A6358(void *arg0) {
+    s16 state = *(s16 *)((u8 *)arg0 + 0xE);
+    s32 result;
+
+    if (state == 0) {
+        if (fn_800B8004(*(s32 *)((u8 *)arg0 + 0x14)) != 0)
+            return 0x14;
+
+        result = ((s32 (*)(void *, void *))(*(u32 **)((u8 *)*(void **)((u8 *)arg0 + 4) + 8)))(arg0, *(void **)((u8 *)arg0 + 4));
+        if (result != 0) {
+            if (fn_800B8048(*(s32 *)((u8 *)arg0 + 0x14)) != 0)
+                return 0x14;
+            fn_800A71D0(*(void **)((u8 *)arg0 + 0x2C), result);
+            return 0x15;
+        }
+
+        result = ((s32 (*)(void *, void *))(*(u32 **)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x1C)))(arg0, (u8 *)arg0 + 0x18);
+        if (fn_800B8048(*(s32 *)((u8 *)arg0 + 0x14)) != 0)
+            return 0x14;
+        if (result != 0) {
+            fn_800A71D0(*(void **)((u8 *)arg0 + 0x2C), result);
+            return 0x15;
+        }
+
+        if (*(u32 *)((u8 *)arg0 + 0x24) & 1)
+            *(u32 *)arg0 |= 2;
+        else
+            *(u32 *)arg0 &= 0xFFFFFFFD;
+    }
+
+    *(s16 *)((u8 *)arg0 + 0xE) += 1;
+    return 0;
+}
+
 extern "C" void fn_800A71D0(void *, s32);
 #pragma dont_inline on
 extern "C" s32 fn_800A6480(void *arg0, s32 arg1) {
@@ -3066,15 +3100,15 @@ extern s32 fn_800B5324(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
-extern "C" s32 fn_800ACDF8(register void *arg0, register s32 arg1) {
-    /* Fix note: keep the context and scan counter live in registers across both FAT-page reads. */
+extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
+    /* Fix note: execute the two reads before checking whether another page sector remains. */
     void *sp10;
     s32 spC;
     u32 sp8;
-    register s32 temp_r30;
-    register s32 temp_r31;
+    s32 temp_r30;
+    s32 temp_r31;
     s32 temp_r3;
-    register u32 var_r29;
+    u32 var_r29;
 
     temp_r3 = fn_800A8D08(arg0, -1, &sp10, &spC);
     if (temp_r3 != 0)
@@ -3086,15 +3120,13 @@ extern "C" s32 fn_800ACDF8(register void *arg0, register s32 arg1) {
     do {
         temp_r31 = temp_r30 + var_r29;
         if (fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31,
-                        0, *(u16 *)arg0, &sp8, 1) != 0)
-            break;
-        if (sp8 != *(u16 *)arg0)
+                        0, *(u16 *)arg0, &sp8, 1) != 0 ||
+            sp8 != *(u16 *)arg0)
             break;
         fn_800A499C(*(s32 *)((u8 *)sp10 + 8), 0);
         if (fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31,
-                        0, *(u16 *)arg0, &sp8, 1) != 0)
-            break;
-        if (sp8 != *(u16 *)arg0)
+                        0, *(u16 *)arg0, &sp8, 1) != 0 ||
+            sp8 != *(u16 *)arg0)
             break;
         ++var_r29;
     } while (var_r29 < *((u8 *)arg0 + 6));
@@ -17749,38 +17781,79 @@ extern "C" s32 fn_800A485C(s32 arg0) {
     return arg0;
 }
 
-void VFipf_memcpy(void* dst, const void* src, u32 size) {
-    u32 words, blocks, left;
-    u32* d32;
-    const u32* s32;
-    u8* d = (u8*)dst;
-    const u8* s = (const u8*)src;
-    if ((((u32)d & 3) == 0) && (((u32)s & 3) == 0)) {
-        words = size >> 2;
-        if (size > 3) {
-            blocks = words >> 3;
-            if (blocks != 0) {
-                d32 = (u32*)d; s32 = (const u32*)s;
-                do {
-                    d32[0]=s32[0]; d32[1]=s32[1]; d32[2]=s32[2]; d32[3]=s32[3];
-                    d32[4]=s32[4]; d32[5]=s32[5]; d32[6]=s32[6]; d32[7]=s32[7];
-                    d32+=8; s32+=8;
-                } while (--blocks);
-                d=(u8*)d32; s=(const u8*)s32;
-                words &= 7;
-            }
-            while (words--) { *(u32*)d=*(const u32*)s; d+=4; s+=4; }
-            size -= (size >> 2) << 2;
-        }
+void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
+    /* Fix note: operate on signed address locals, preserving the destination base for unrolled aligned copies. */
+    register s32 dstAddress = (s32)dstArg;
+    register s32 srcAddress = (s32)srcArg;
+    register u32 words;
+    register u32 blocks;
+    register s32 byteAdjustment;
+    register u32 loopCount;
+    register s32 value;
+
+    if ((dstAddress & 3) != 0 || (srcAddress & 3) != 0)
+        goto copy_bytes;
+    if (size <= 3)
+        goto copy_bytes;
+
+    words = size >> 2;
+    blocks = words >> 3;
+    byteAdjustment = -(s32)(words << 2);
+    loopCount = blocks;
+    if (loopCount != 0) {
+        do {
+            value = *(s32 *)(srcAddress + 0x00); *(s32 *)(dstAddress + 0x00) = value;
+            value = *(s32 *)(srcAddress + 0x04); *(s32 *)(dstAddress + 0x04) = value;
+            value = *(s32 *)(srcAddress + 0x08); *(s32 *)(dstAddress + 0x08) = value;
+            value = *(s32 *)(srcAddress + 0x0C); *(s32 *)(dstAddress + 0x0C) = value;
+            value = *(s32 *)(srcAddress + 0x10); *(s32 *)(dstAddress + 0x10) = value;
+            value = *(s32 *)(srcAddress + 0x14); *(s32 *)(dstAddress + 0x14) = value;
+            value = *(s32 *)(srcAddress + 0x18); *(s32 *)(dstAddress + 0x18) = value;
+            value = *(s32 *)(srcAddress + 0x1C);
+            srcAddress += 0x20;
+            *(s32 *)(dstAddress + 0x1C) = value;
+            dstAddress += 0x20;
+        } while (--loopCount);
     }
-    left = size >> 3;
-    while (left--) {
-        d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3];
-        d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7];
-        d+=8; s+=8;
+
+    loopCount = words & 7;
+    if (loopCount != 0) {
+        do {
+            value = *(s32 *)srcAddress;
+            srcAddress += 4;
+            *(s32 *)dstAddress = value;
+            dstAddress += 4;
+        } while (--loopCount);
     }
-    left = size & 7;
-    while (left--) *d++=*s++;
+
+    size += byteAdjustment;
+    if (size == 0)
+        return;
+
+copy_bytes:
+    loopCount = size >> 3;
+    if (loopCount != 0) {
+        do {
+            *(u8 *)(dstAddress + 0) = *(const u8 *)(srcAddress + 0);
+            *(u8 *)(dstAddress + 1) = *(const u8 *)(srcAddress + 1);
+            *(u8 *)(dstAddress + 2) = *(const u8 *)(srcAddress + 2);
+            *(u8 *)(dstAddress + 3) = *(const u8 *)(srcAddress + 3);
+            *(u8 *)(dstAddress + 4) = *(const u8 *)(srcAddress + 4);
+            *(u8 *)(dstAddress + 5) = *(const u8 *)(srcAddress + 5);
+            *(u8 *)(dstAddress + 6) = *(const u8 *)(srcAddress + 6);
+            *(u8 *)(dstAddress + 7) = *(const u8 *)(srcAddress + 7);
+            srcAddress += 8;
+            dstAddress += 8;
+        } while (--loopCount);
+    }
+    loopCount = size & 7;
+    if (loopCount == 0)
+        return;
+    do {
+        *(u8 *)dstAddress = *(const u8 *)srcAddress;
+        ++dstAddress;
+        ++srcAddress;
+    } while (--loopCount);
 }
 
 extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
@@ -17965,7 +18038,7 @@ extern "C" void fn_800A4C14(void *arg0, s32 arg1) {
     u32 temp_r7;
     u32 var_ctr;
     u32 var_ctr_2;
-    u32 var_r5;
+    register u32 var_r5;
     u8 *var_r6_2;
     u8 temp_r7_3;
     u8 temp_r8;
