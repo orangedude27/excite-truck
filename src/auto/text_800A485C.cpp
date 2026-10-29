@@ -4743,7 +4743,7 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
           ((void (*)(void *, s16))VFiPFSTR_MoveStrPos)(arg0, 1);
       }
           if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
-          VFiPFSTR_StrNCmpCall((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
+          VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
           return 2;
       }
 
