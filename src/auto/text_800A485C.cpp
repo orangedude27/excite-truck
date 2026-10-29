@@ -13641,15 +13641,16 @@ extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
 extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
-    /* Fix note: keep the direct sentinel comparison and form the base message through a character lvalue. */
+    /* Fix note: form the initial report address through the first field of the diagnostic string table. */
     u8 scratch[0x104];
-    const char *var_r29 = lbl_8031E9D0;
+    const Fn800D1F7CStringTable *messages =
+        (const Fn800D1F7CStringTable *)lbl_8031E9D0;
     u32 temp_r28;
     u32 var_r27;
     s32 var_r0;
 
-    fn_800D1EC4((const char *)&*(volatile char *)var_r29);
-    fn_800D1EC4(var_r29 + 0x28);
+    fn_800D1EC4(messages->header);
+    fn_800D1EC4(messages->summary);
     var_r27 = 0;
 loop_1:
     if (arg0 == 0)
@@ -13659,7 +13660,7 @@ loop_1:
     if (((u32)arg0 & 0x80000000) == 0)
         goto done;
 
-    fn_800D1EC4(var_r29 + 0x48, arg0,
+    fn_800D1EC4(messages->node, arg0,
                 *(s32 *)arg0, *((s32 *)arg0 + 1));
     temp_r28 = (u32)*((s32 *)arg0 + 1);
     if (fn_800D3824() == 0) {
@@ -13870,7 +13871,6 @@ extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 arg3, s32 arg4) {
 
 extern "C" u8 lbl_802F47D8[];
 extern "C" void fn_800D337C(s32,s32,s32);
-#pragma cplusplus on
 extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
     s32 var_r26=arg0;
     s32 var_r27=arg1;
