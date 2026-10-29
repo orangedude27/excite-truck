@@ -39,6 +39,7 @@ extern "C" char *strncpy(char *, const char *, unsigned long);
 extern "C" void fn_80028E2C(char *, const char *, s32);
 extern "C" const char lbl_80324828[];
 #pragma cplusplus on
+struct DummySoundArchiveLookup2 { virtual s32 f0(u32); virtual s32 f1(); };
 struct DummySoundArchiveLookup { virtual void f0(); virtual s32 f1(u32); virtual s32 f2(); };
 struct DummyStrmUpdate { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23(); virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27(); virtual void f28(); virtual void f29(); virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(s32); virtual void f34(); virtual void f35(s32); };
 struct DummyStrmLoadStream {
@@ -3204,43 +3205,48 @@ extern "C" const char lbl_803264AC[];
 extern "C" const char lbl_803264D0[];
 extern "C" void fn_800FA7E0(void *self) {
     u32 message;
-    register u8 *p = (u8 *)self;
+    u8 *p = (u8 *)self;
     for (;;) {
         OSReceiveMessage(p + 0x2338, &message, 1);
         if (message == 1) {
-            register void *mutex = p + 0x2320;
+            void *mutex = p + 0x2320;
             OSLockMutex(mutex);
-            register u32 tick = OSGetTick();
+            u32 tick = OSGetTick();
             Instance__15EmissionManagerFv();
             fn_800E3228();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv();
             fn_80101130();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824();
-            register void *sentinel = p + 0x2388;
-            register void *node = *(void **)sentinel;
-            do {
-                register void *current = node;
-                node = *(void * volatile *)node;
-                if (current == 0)
-                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
-                ((DummyWorkerCallbackC *)current)->Call();
-            } while (node != sentinel);
+            {
+                DummyWorkerLink *end = (DummyWorkerLink *)(p + 0x2388);
+                DummyWorkerLink *link = (DummyWorkerLink *)end->next;
+                do {
+                    DummyWorkerLink *current = link;
+                    link = (DummyWorkerLink *)link->next;
+                    if (current == 0)
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
+                    ((DummyWorkerCallbackC *)current)->Call();
+                } while (link != end);
+            }
             UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv();
             fn_800FEB9C();
-            register u32 state = OSDisableInterrupts();
+            u32 state = OSDisableInterrupts();
             Instance__15EmissionManagerFv();
             UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv();
             OSRestoreInterrupts(state);
             *(u32 *)(p + 0x2390) = OSGetTick() - tick;
-            node = *(void **)sentinel;
-            do {
-                register void *current = node;
-                node = *(void * volatile *)node;
-                if (current == 0)
-                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
-                ((DummyWorkerCallback10 *)current)->Call();
-            } while (node != sentinel);
+            {
+                DummyWorkerLink *end = (DummyWorkerLink *)(p + 0x2388);
+                DummyWorkerLink *link = *(DummyWorkerLink **)(p + 0x2388);
+                do {
+                    DummyWorkerLink *current = link;
+                    link = (DummyWorkerLink *)link->next;
+                    if (current == 0)
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
+                    ((DummyWorkerCallback10 *)current)->Call();
+                } while (link != end);
+            }
             OSUnlockMutex(mutex);
         } else if (message == 2) {
             StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv();
