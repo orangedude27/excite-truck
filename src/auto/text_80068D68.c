@@ -4309,11 +4309,11 @@ void bta_hh_api_enable(void *arg0) {
     s8 status = 6;
     u8 xx;
 
-    cb = (tBTA_HH_CB_MATCH *)lbl_803C0D48;
     fn_800869CC();
-    memset(cb, 0, sizeof(tBTA_HH_CB_MATCH));
+    memset(lbl_803C0D48, 0, sizeof(tBTA_HH_CB_MATCH));
     HID_HostSetSecurityLevel(&lbl_80559058, *((u8 *)arg0 + 8));
     if (HID_HostRegister(bta_hh_cback) == 0) {
+        cb = (tBTA_HH_CB_MATCH *)lbl_803C0D48;
         cb->p_cback = *(void **)((u8 *)arg0 + 0x30);
         status = 0;
         for (xx = 0; xx < 0x10; xx++) {
@@ -4323,7 +4323,7 @@ void bta_hh_api_enable(void *arg0) {
             cb->cb_index[xx] = 0x10;
         }
     }
-    (*(void (**)(u32, void *, void *))&cb->p_cback)(0, &status, cb);
+    (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(0, &status, lbl_803C0D48);
 }
 
 void bta_hh_api_disable(void) {
@@ -19250,42 +19250,40 @@ void AXFXReverbHiExpShutdown(void* arg0) {
     OSRestoreInterrupts(enabled);
 }
 
-s32 __AllocDelayLine(void *arg0) {
+BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *fx) {
     extern void *lbl_805590B0;
-    AXFX_REVERBHI_EXP_FREE_VIEW *fx = (AXFX_REVERBHI_EXP_FREE_VIEW *)arg0;
-    u32 ch;
-    u32 i;
+    u32 ch, i;
 
     for (ch = 0; ch < 3; ch++) {
-        fx->earlyLine[ch] = ((void *(*)(s32))lbl_805590B0)(*(u32 *)((u8 *)fx + 0x1C) * 4);
+        fx->earlyLine[ch] = ((void *(*)(s32))lbl_805590B0)(fx->earlyMaxLength * 4);
         if (fx->earlyLine[ch] == 0)
-            return 0;
+            return FALSE;
 
-        if (*(u32 *)((u8 *)fx + 0x40) != 0) {
-            fx->preDelayLine[ch] = ((void *(*)(s32))lbl_805590B0)(*(u32 *)((u8 *)fx + 0x40) * 4);
+        if (fx->preDelayMaxLength != 0) {
+            fx->preDelayLine[ch] = ((void *(*)(s32))lbl_805590B0)(fx->preDelayMaxLength * 4);
             if (fx->preDelayLine[ch] == 0)
-                return 0;
+                return FALSE;
         } else {
             fx->preDelayLine[ch] = 0;
         }
 
         for (i = 0; i < 3; i++) {
-            fx->combLine[ch][i] = ((void *(*)(s32))lbl_805590B0)(*(u32 *)((u8 *)fx + 0x80 + i * 4) * 4);
+            fx->combLine[ch][i] = ((void *(*)(s32))lbl_805590B0)(fx->combMaxLength[i] * 4);
             if (fx->combLine[ch][i] == 0)
-                return 0;
+                return FALSE;
         }
 
         for (i = 0; i < 2; i++) {
-            fx->allpassLine[ch][i] = ((void *(*)(s32))lbl_805590B0)(*(u32 *)((u8 *)fx + 0xC0 + i * 4) * 4);
+            fx->allpassLine[ch][i] = ((void *(*)(s32))lbl_805590B0)(fx->allpassMaxLength[i] * 4);
             if (fx->allpassLine[ch][i] == 0)
-                return 0;
+                return FALSE;
         }
 
-        fx->lastAllpassLine[ch] = ((void *(*)(s32))lbl_805590B0)(*(u32 *)((u8 *)fx + 0xEC + ch * 4) * 4);
+        fx->lastAllpassLine[ch] = ((void *(*)(s32))lbl_805590B0)(fx->lastAllpassMaxLength[ch] * 4);
         if (fx->lastAllpassLine[ch] == 0)
-            return 0;
+            return FALSE;
     }
-    return 1;
+    return TRUE;
 }
 
 void __BzeroDelayLines(void *arg0) {
