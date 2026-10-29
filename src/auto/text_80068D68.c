@@ -2976,10 +2976,8 @@ void bta_dm_pinname_cback(u8 *arg0) {
 
 u8 bta_dm_pin_cback(u8 *bd_addr, u8 *pin_info, u8 *pin_name) {
     u8 sec_event[0x110];
-    void (*callback)(int, void *);
 
-    callback = *(void (**)(int, void *))(lbl_803C0C14 + 0x50);
-    if (callback == 0)
+    if (*(void **)(lbl_803C0C14 + 0x50) == 0)
         return 0xB;
     if (pin_name[0] == 0) {
         fn_80070FA4(lbl_803C0C14 + 0xF8, bd_addr);
@@ -2997,7 +2995,7 @@ u8 bta_dm_pin_cback(u8 *bd_addr, u8 *pin_info, u8 *pin_name) {
     sec_event[0x100] = pin_info[2];
     strncpy((char *)sec_event + 6, (const char *)pin_name, 0x20);
     sec_event[0x26] = 0;
-    callback(2, sec_event);
+    (*(void (**)(int, void *))(lbl_803C0C14 + 0x50))(2, sec_event);
     return 1;
 }
 
