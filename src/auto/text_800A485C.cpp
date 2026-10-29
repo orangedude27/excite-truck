@@ -1,6 +1,23 @@
   #include <types.h>
 #include <macros.h>
 
+struct CacheEntryForFree {
+    volatile u16 flags;
+    u8 pad2[0xA];
+    volatile u32 fieldC;
+    volatile u32 field10;
+    u8 pad14[4];
+    volatile s32 field18;
+    volatile u32 field1C;
+    CacheEntryForFree *volatile next;
+    CacheEntryForFree *volatile prev;
+};
+struct CacheContextForFree {
+    u8 pad0[0x1630];
+    CacheEntryForFree *volatile first;
+    CacheEntryForFree *volatile second;
+};
+
 struct VFiPFENTIterLayout {
     volatile u32 position;
     void *stream;
@@ -2008,67 +2025,65 @@ extern "C" s32 VFiPFCACHE_FlushAllCaches(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
-void VFiPFCACHE_FreeAllCaches(void *arg0) {
-    void *node;
-    void *head;
-    void *next;
-    void *prev;
+extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0, void *unused1, register void *head, register s32 minusOne, register u32 zero, register void *node) {
     u16 flags;
-
-loopA:
-    node = *(void **)((u8 *)arg0 + 0x1630);
-    if (node == 0) goto loopB;
-    flags = *(u16 *)node;
-    if ((flags & 1) == 0) goto loopB;
-    *(u16 *)node = flags & 0xFFFC;
-    *(s32 *)((u8 *)node + 0xC) = 0;
-    *(s32 *)((u8 *)node + 0x10) = 0;
-    *(s32 *)((u8 *)node + 0x18) = -1;
-    *(s32 *)((u8 *)node + 0x1C) = 0;
-    head = *(void **)((u8 *)arg0 + 0x1630);
+    zero = 0;
+    minusOne = -1;
+    goto first_test;
+first_body:
+    if (node == 0) goto first_test;
+    flags = *(volatile u16 *)node;
+    *(volatile u16 *)node = flags & 0xFFFC;
+    *(volatile u32 *)((u8 *)node + 0xC) = zero;
+    *(volatile u32 *)((u8 *)node + 0x10) = zero;
+    *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
+    *(volatile u32 *)((u8 *)node + 0x1C) = zero;
+    head = *(void * volatile *)((u8 *)arg0 + 0x1630);
     if (node == head) {
-        *(void **)((u8 *)arg0 + 0x1630) = *(void **)((u8 *)node + 0x20);
-        goto loopA;
+        *(void * volatile *)((u8 *)arg0 + 0x1630) = *(void * volatile *)((u8 *)node + 0x20);
+        goto first_test;
     }
-    if (node == *(void **)((u8 *)head + 0x24)) goto loopA;
-    next = *(void **)((u8 *)node + 0x20);
-    prev = *(void **)((u8 *)node + 0x24);
-    *(void **)((u8 *)prev + 0x20) = next;
-    *(void **)((u8 *)next + 0x24) = prev;
-    head = *(void **)((u8 *)arg0 + 0x1630);
-    *(void **)((u8 *)node + 0x20) = head;
-    *(void **)((u8 *)node + 0x24) = *(void **)((u8 *)head + 0x24);
-    *(void **)((u8 *)head + 0x24) = node;
-    *(void **)((u8 *)*(void **)((u8 *)node + 0x24) + 0x20) = node;
-    goto loopA;
+    if (node == *(void * volatile *)((u8 *)head + 0x24)) goto first_test;
+    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = *(void * volatile *)((u8 *)node + 0x20);
+    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x20) + 0x24) = *(void * volatile *)((u8 *)node + 0x24);
+    head = *(void * volatile *)((u8 *)arg0 + 0x1630);
+    *(void * volatile *)((u8 *)node + 0x20) = head;
+    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)arg0 + 0x1630) + 0x24);
+    *(void * volatile *)((u8 *)head + 0x24) = node;
+    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = node;
+first_test:
+    node = *(void * volatile *)((u8 *)arg0 + 0x1630);
+    flags = *(volatile u16 *)node;
+    if (flags & 1) goto first_body;
 
-loopB:
-    for (;;) {
-        node = *(void **)((u8 *)arg0 + 0x1634);
-        if (node == 0) return;
-        flags = *(u16 *)node;
-        if ((flags & 1) == 0) return;
-        *(u16 *)node = flags & 0xFFFC;
-        *(s32 *)((u8 *)node + 0xC) = 0;
-        *(s32 *)((u8 *)node + 0x10) = 0;
-        *(s32 *)((u8 *)node + 0x18) = -1;
-        *(s32 *)((u8 *)node + 0x1C) = 0;
-        head = *(void **)((u8 *)arg0 + 0x1634);
-        if (node == head) {
-            *(void **)((u8 *)arg0 + 0x1634) = *(void **)((u8 *)node + 0x20);
-            continue;
-        }
-        if (node == *(void **)((u8 *)head + 0x24)) continue;
-        next = *(void **)((u8 *)node + 0x20);
-        prev = *(void **)((u8 *)node + 0x24);
-        *(void **)((u8 *)prev + 0x20) = next;
-        *(void **)((u8 *)next + 0x24) = prev;
-        head = *(void **)((u8 *)arg0 + 0x1634);
-        *(void **)((u8 *)node + 0x20) = head;
-        *(void **)((u8 *)node + 0x24) = *(void **)((u8 *)head + 0x24);
-        *(void **)((u8 *)head + 0x24) = node;
-        *(void **)((u8 *)*(void **)((u8 *)node + 0x24) + 0x20) = node;
+    zero = 0;
+    minusOne = -1;
+    goto second_test;
+second_body:
+    if (node == 0) goto second_test;
+    flags = *(volatile u16 *)node;
+    *(volatile u16 *)node = flags & 0xFFFC;
+    *(volatile u32 *)((u8 *)node + 0xC) = zero;
+    *(volatile u32 *)((u8 *)node + 0x10) = zero;
+    *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
+    *(volatile u32 *)((u8 *)node + 0x1C) = zero;
+    head = *(void * volatile *)((u8 *)arg0 + 0x1634);
+    if (node == head) {
+        *(void * volatile *)((u8 *)arg0 + 0x1634) = *(void * volatile *)((u8 *)node + 0x20);
+        goto second_test;
     }
+    if (node == *(void * volatile *)((u8 *)head + 0x24)) goto second_test;
+    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = *(void * volatile *)((u8 *)node + 0x20);
+    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x20) + 0x24) = *(void * volatile *)((u8 *)node + 0x24);
+    head = *(void * volatile *)((u8 *)arg0 + 0x1634);
+    *(void * volatile *)((u8 *)node + 0x20) = head;
+    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)arg0 + 0x1634) + 0x24);
+    *(void * volatile *)((u8 *)head + 0x24) = node;
+    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = node;
+second_test:
+    node = *(void * volatile *)((u8 *)arg0 + 0x1634);
+    flags = *(volatile u16 *)node;
+    if (flags & 1) goto second_body;
 }
 
 extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *arg0, s32 arg1) {
@@ -6750,62 +6765,68 @@ copy: *dst++=*src++;part++;total++;goto loop;
 
 s32 fn_800B8520(void *arg0, u32 *arg1) {
     u8 *p = (u8 *)arg0;
-    u32 countA = 0;
-    u32 countB = 0;
+    u8 countA = 0;
+    u8 countB;
     u32 shift = 0x200;
-    u32 value;
+    s32 value;
+    u32 size;
+    u16 temp;
+    u16 swapped;
+    u16 shortStart;
     u32 start;
+    s32 shortEnd;
     u32 end;
     u32 word;
 
-    while (shift != 0) {
-        countA++;
-        shift = (shift >> 1) & 0x7FFF;
-    }
+    while ((shift = (shift >> 1) & 0x7FFF) != 0) countA++;
+    countB = 0;
     shift = 1;
-    while (shift != 0) {
-        countB++;
-        shift = (shift >> 1) & 0x7FFF;
-    }
+    while ((shift = (shift >> 1) & 0x7FFF) != 0) countB++;
 
     if (((u32)(p + 0x11) & 1) != 0) {
         value = p[0x11] | (p[0x12] << 8);
     } else {
-        u32 half = *(u16 *)(p + 0x12);
-        value = (((half & 0xFF) << 8) | (half >> 8)) << 5;
+        temp = *(u16 *)(p + 0x12);
+        swapped = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
+        value = (s32)swapped << 5;
     }
-    value = (value + 0x1FF) >> countA;
+    size = ((value + 0x1FF) >> countA) & 0xFFFF;
 
     if (((u32)(p + 0x16) & 1) != 0) {
-        start = p[0x16] | (p[0x17] << 8);
+        shortStart = p[0x16] | (p[0x17] << 8);
     } else {
-        u32 half = *(u16 *)(p + 0x16);
-        start = ((half & 0xFF) << 8) | (half >> 8);
+        temp = *(u16 *)(p + 0x16);
+        swapped = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
+        shortStart = swapped;
     }
-    if (start == 0) {
+    if (shortStart == 0) {
         word = *(u32 *)(p + 0x24);
-        start = ((word & 0xFF) << 24) | ((word & 0xFF00) << 8) |
-                ((word >> 8) & 0xFF00) | (word >> 24);
+        start = ((word << 8) & 0xFF0000 & ~0xFF000000) | (word << 0x18) |
+                (((word >> 8U) & 0xFF00 & ~0xFF) | (word >> 0x18U));
+    } else {
+        start = shortStart;
     }
-    start <<= 1;
+    start = (start << 1) + size + 1;
 
     if (((u32)(p + 0x13) & 1) != 0) {
-        end = p[0x13] | (p[0x14] << 8);
+        shortEnd = p[0x13] | (p[0x14] << 8);
     } else {
-        u32 half = *(u16 *)(p + 0x14);
-        end = ((half & 0xFF) << 8) | (half >> 8);
+        temp = *(u16 *)(p + 0x14);
+        swapped = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
+        shortEnd = swapped;
     }
-    if (end == 0) {
+    if (shortEnd == 0) {
         word = *(u32 *)(p + 0x20);
-        end = ((word & 0xFF) << 24) | ((word & 0xFF00) << 8) |
-              ((word >> 8) & 0xFF00) | (word >> 24);
+        end = ((word << 8) & 0xFF0000 & ~0xFF000000) | (word << 0x18) |
+              (((word >> 8U) & 0xFF00 & ~0xFF) | (word >> 0x18U));
+    } else {
+        end = shortEnd;
     }
 
-    end -= start + value + 1;
-    *arg1 = end;
-    end >>= countB;
-    if (end < 0xFF5) return 0;
-    if (end < 0xFFF5) return 1;
+    u32 result = end - start;
+    *arg1 = result;
+    if ((result >> countB) < 0xFF5) return 0;
+    if ((result >> countB) < 0xFFF5) return 1;
     return 2;
 }
 
