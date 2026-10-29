@@ -93,6 +93,8 @@ extern "C" s32 fn_800A4E80(void *, s32, u32);
 extern "C" void fn_800A4D4C(void *, void *);
 extern "C" s32 fn_800AF530(void *, void *, s32, s32);
 extern "C" char *fn_800A4AAC(char *, char *);
+extern "C" s32 fn_800A4A8C(s32);
+extern "C" s32 fn_800B7F28(void *);
 extern "C" void fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
@@ -4323,7 +4325,7 @@ extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
         temp_r3 = fn_800A9470(arg0, (u8 *)arg1 + 0xC);
         if (temp_r3 != 0) return temp_r3;
         temp_r5 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x264) % size;
-        *(s32 *)((u8 *)arg1 + 8) = *(s32 *)((u8 *)arg1 + 0xC) + ((size - temp_r5) & ((-temp_r5 | temp_r5) >> 31));
+        *(s32 *)((u8 *)arg1 + 8) = ((volatile u32 *)arg1)[3] + ((size - temp_r5) & ((-temp_r5 | temp_r5) >> 31));
     } else {
         *(s32 *)((u8 *)arg1 + 0xC) = 0;
         *(s32 *)((u8 *)arg1 + 8) = 0;
