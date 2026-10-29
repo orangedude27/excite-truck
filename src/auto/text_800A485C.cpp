@@ -2294,44 +2294,66 @@ extern "C" s32 fn_800A9BB4(void *arg0, void *arg1, s32 arg2, s32 arg3, u32 arg4,
 
 extern "C" s32 fn_800AF530(void *, void *, s32, s32);
 extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *, u32, void *, s32 *);
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" s32 VFiPFENT_findEmptyTailSFN(void *arg0, void *name, u32 *out) {
-    u32 sp18[1];
-    u32 sp8[1];
+    u8 sp18[0x38];
+    u8 sp8[0x10];
     u8 *volume = *(u8 **)((u8 *)arg0 + 0x22C);
-    u32 candidate = 1;
-    *out = 1;
-    fn_800AF530(sp18, sp8, (s32)volume, (s32)((u8 *)arg0 + 0x234));
-    for (;;) {
-        u32 i;
-        u32 *entries;
-        u32 blocks;
-        if (candidate > 0xF423F) return 0;
-        if (VFiPFENT_searchEmptyTailSFN(sp18, candidate, name, (s32 *)(volume + 0x1F7C))) return 1;
-        entries = *(u32 **)(volume + 0x1F7C);
-        blocks = *(u32 *)(volume + 0x1F74);
-        i = 0;
-        while (i < blocks) {
-            u32 value = entries[i];
-            if (value + 0x10000 != 0xFFFFFFFF) {
-                u32 j = i;
-                do {
-                    value = entries[j];
-                    if (!(value & 1)) break;
-                    entries[j] = value >> 1;
-                    *out += 1;
-                    j++;
-                } while (1);
-                candidate = 0xF4240;
-                break;
-            }
-            i++;
-            *out += 0x20;
-        }
-        candidate += blocks << 5;
-    }
-}
+    u32 *count = out;
+    u32 candidate;
+    u32 base;
+    u32 limit;
+    u32 blockIndex;
+    u32 byteOffset;
+    volatile u32 *entries;
+    u32 value;
+    u32 blocks;
+    s32 result;
 
-#pragma dont_inline reset
+    *count = 1;
+    fn_800AF530(sp18, sp8, *(s32 *)((u8 *)arg0 + 0x22C),
+                (s32)((u8 *)arg0 + 0x234));
+    base = 0xF0000;
+    candidate = 1;
+    limit = base + 0x423F;
+    goto candidateCheck;
+search:
+    result = VFiPFENT_searchEmptyTailSFN(sp18, candidate, name,
+                                          *(s32 **)(volume + 0x1F7C));
+    if (result != 0)
+        return result;
+    blockIndex = 0;
+    byteOffset = 0;
+    goto scan;
+scan:
+    entries = *(volatile u32 **)(volume + 0x1F7C);
+    value = entries[blockIndex];
+    if (value != 0xFFFEFFFF)
+        goto shift;
+    goto advanceWord;
+shift:
+    entries = *(volatile u32 **)(volume + 0x1F7C);
+    value = entries[blockIndex] >> 1;
+    entries[blockIndex] = value;
+    *count += 1;
+    if (entries[blockIndex] & 1)
+        goto shift;
+    candidate = base + 0x4240;
+advanceWord:
+    *count += 0x20;
+    byteOffset += 4;
+    blockIndex++;
+    blocks = *(u32 *)(volume + 0x1F74);
+    if (blockIndex < blocks)
+        goto scan;
+    candidate += blocks << 5;
+candidateCheck:
+    if (candidate <= limit)
+        goto search;
+    return 0;
+}
+#pragma pop
 
 extern "C" void fn_800B3A70(u8 *buf, u8 *short_name, u32 flags);
 extern "C" void fn_800B3BEC(u8 *buf, u8 *src, u8 flags);
@@ -7302,36 +7324,42 @@ extern "C" s32 fn_800BA404(void) {
 
 #pragma dont_inline on
 extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
-    u8 count = 0;
-    u8 *record;
-    u8 *groupBase = (u8 *)lbl_803D2140 + 0xA0;
-    s32 i;
-    s32 j;
+    register u8 count;
+    register u8 *out;
+    register u8 *record;
+    register u32 i;
+    register u8 *groupBase;
+    register u32 j;
 
-    if (arg1 == 0)
-        return 0;
-    if (arg2 == 0)
-        return 0;
+    if (arg1 != 0) {
+        if (arg2 == 0)
+            return 0;
+    }
 
     record = (u8 *)lbl_803D1640 + 0x61C;
+    groupBase = (u8 *)lbl_803D2140;
+    out = arg1;
+    count = 0;
     for (i = 0; i < 0x1A; i++) {
         if (fn_800A71C4((u32 *)record) != 0 &&
             *(u32 *)(record + 4) == (u32)arg0) {
-            for (j = 0; j < 13; j++) {
-                u8 *group = groupBase + j * 0x3F90;
+            register u8 *group = groupBase + 0xA0;
+            for (j = 0; j < 13; j++, group += 0x3F90) {
                 if (*(u32 *)(group + 0x1FBC) == (u32)record) {
                     count++;
-                    *arg1++ = *(u8 *)(group + 0x1F8E);
-                    if (count == arg2)
-                        return count;
+                    *out++ = *(u8 *)(group + 0x1F8E);
+                    if ((u32)count == (u32)arg2)
+                        break;
                 }
                 if (*(u32 *)(group + 0x3F84) == (u32)record) {
                     count++;
-                    *arg1++ = *(u8 *)(group + 0x3F56);
-                    if (count == arg2)
-                        return count;
+                    *out++ = *(u8 *)(group + 0x3F56);
+                    if ((u32)count == (u32)arg2)
+                        break;
                 }
             }
+            if ((u32)count == (u32)arg2)
+                break;
         }
         record += 0x28;
     }
@@ -13602,6 +13630,43 @@ extern "C" void fn_800D1EC4(const char *msg, ...) {
         __VprintfThunk(msg, vlist);
     }
     va_end(vlist);
+}
+
+extern "C" const char lbl_8031E9D0[];
+extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597D8[]; }
+extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597DC[]; }
+extern "C" void fn_800D1EC4(const char *, ...);
+extern "C" s32 fn_800D3824(void);
+extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
+extern "C" void fn_800D1F7C(s32 arg0, s32 arg1) {
+    /* Fix note: walk at most 16 valid high-address nodes and report invalid entries. */
+    u32 node = (u32)arg0;
+    u8 buffer[0x104];
+    s32 count = 0;
+
+    fn_800D1EC4(lbl_8031E9D0);
+    fn_800D1EC4(lbl_8031E9D0 + 0x28);
+    while (node != 0 && node + 0x10000 != 0xFFFFFFFF && (node & 0x80000000) != 0) {
+        u32 address = *(u32 *)(node + 4);
+        fn_800D1EC4(lbl_8031E9D0 + 0x48, node, *(u32 *)node, address);
+
+        s32 valid = 0;
+        if (fn_800D3824() != 0 && address >= 0x80000000 && address <= 0x82FFFFFF) {
+            typedef s32 (*CheckFn)(s32, s32, s32);
+            CheckFn check = (CheckFn)fn_800D40B4;
+            if (check(address, (s32)buffer, 0x104) != 0) {
+                fn_800D1EC4(lbl_805597D8, buffer);
+                valid = 1;
+            }
+        }
+        if (valid == 0)
+            fn_800D1EC4(lbl_805597DC);
+
+        node = *(u32 *)node;
+        ++count;
+        if (count >= 0x10)
+            break;
+    }
 }
 
 extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
