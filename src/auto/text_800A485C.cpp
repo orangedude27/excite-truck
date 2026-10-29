@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+#include <revolution/MEM/mem_allocator.h>
 
 struct VFiPFENTIterLayout {
     volatile u32 position;
