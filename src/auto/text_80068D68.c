@@ -843,6 +843,47 @@ void fn_8006A7D0(s32 arg0, s32 arg1) {
     OSRestoreInterrupts(saved);
 }
 
+void fn_8006A81C(void) {
+    extern char lbl_80313490[];
+    u8 *base = lbl_80392960;
+    BOOL interrupt;
+    BOOL saved;
+    BOOL cancel;
+    OSTime now;
+    u32 period;
+
+    DBPrintf_8006CFA8(lbl_80313490);
+
+    interrupt = OSDisableInterrupts();
+    base[0x66B] = 0;
+    base[0x66A] = 0;
+    OSRestoreInterrupts(interrupt);
+
+    BTA_DmSetVisibility(0, 0);
+
+    saved = OSDisableInterrupts();
+    interrupt = OSDisableInterrupts();
+    if (base[0xC] == 0 && base[0xD] == 0 &&
+        base[0xF] == 4 && base[0x10] == 4) {
+        OSRestoreInterrupts(interrupt);
+        cancel = 0;
+    } else {
+        OSRestoreInterrupts(interrupt);
+        cancel = 1;
+    }
+    if (cancel != 0)
+        OSCancelAlarm((OSAlarm *)(base + 0x690));
+
+    base[0x11] = 1;
+    OSCreateAlarm((OSAlarm *)(base + 0x690));
+    now = __OSGetSystemTime();
+    period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 10;
+    OSSetPeriodicAlarm((OSAlarm *)(base + 0x690), now, (s64)period,
+                       (OSAlarmHandler)fn_8006A440);
+    base[0x688] = 4;
+    OSRestoreInterrupts(saved);
+}
+
 s8 fn_8006A940(void)
 {
     u32 enabled;
@@ -2229,10 +2270,19 @@ void uusb_issue_bulk_read(void) {
 #pragma push
 #pragma use_lmw_stmw off
 void uusb_issue_intr_read(void) {
+    struct uusb_intr_cb_view {
+        s32 fd;
+        u8 pad04[0x0E];
+        u8 endpoint;
+        u8 pad13[0x09];
+        u8 pool_id;
+        u8 pad1D[0x0B];
+        u8 at_0x28;
+    };
+    uusb_cb_t *control = &lbl_803BD1E0;
     extern char lbl_803142C8[];
     extern void uusb_ReadIntrDataCB(void);
     extern u16 fn_8006D8D0(u32);
-    uusb_cb_t *control = &lbl_803BD1E0;
     char *report = lbl_803142C8;
     u8 *buf;
     register u8 *aligned;
@@ -2240,7 +2290,7 @@ void uusb_issue_intr_read(void) {
     s32 result;
 
     for (;;) {
-        buf = GKI_getpoolbuf(control->pool_id);
+        buf = GKI_getpoolbuf(((struct uusb_intr_cb_view *)control)->pool_id);
         if (buf != 0) {
             break;
         }
@@ -2255,7 +2305,8 @@ void uusb_issue_intr_read(void) {
     header = (u16)(aligned - (buf + 8));
     *(u16 *)(buf + 4) = header;
 
-    result = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, control->endpoint,
+    result = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd,
+                                   ((struct uusb_intr_cb_view *)control)->endpoint,
                                    fn_8006D8D0((u32)buf) - 0x28 - header,
                                    aligned, uusb_ReadIntrDataCB, buf);
     if (result != 0) {
@@ -2268,7 +2319,7 @@ void uusb_issue_intr_read(void) {
         GKI_freebuf(buf);
     }
 
-    ((u8 *)control)[0x2B] = 1;
+    ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
 #pragma pop
 
