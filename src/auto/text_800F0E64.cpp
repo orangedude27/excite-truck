@@ -3,6 +3,7 @@ extern "C" void *fn_800E80B8(void *);
 extern "C" int fn_800E80F0(int, int);
 extern "C" void *NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10NoteOnInfo(void *, const void *);
 extern "C" const char lbl_80325B88[];
+extern "C" const char lbl_80325110[];
 extern "C" int lbl_805598D8;
 struct __StrmLoadCommandRef;
 struct __StrmSoundArchiveRef;
