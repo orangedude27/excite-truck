@@ -13519,7 +13519,7 @@ void PORT_LineStatusInd(void *mcb, u8 dlci, u8 line_status) {
     }
 }
 
-extern void port_rfc_closed(void *, s32);
+extern void port_rfc_closed();
 extern char lbl_80319454[];
 void PORT_DlcReleaseInd(void *arg0, u8 arg1) {
     void *port;
