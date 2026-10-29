@@ -439,22 +439,25 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
 #pragma use_lmw_stmw off
 extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *self, const void *resource, void *pane) {
     GroupLayout *group = (GroupLayout *)self;
-    register void *head = (u8 *)self + 0x10;
+    register GroupListNode *head = (GroupListNode *)((u8 *)self + 0x10);
+    register void *node;
+    register s32 offset;
+    register const u8 *items;
+    register s32 index;
     *(volatile u32 *)&group->children.first = 0;
     *(volatile u32 *)&group->children.last = 0;
     group->vtable = lbl_8031F628;
     group->unk4 = 0;
     group->unk8 = 0;
     group->children.count = 0;
-    *(volatile void **)&group->children.first = head;
-    *(volatile void **)&group->children.last = head;
+    *(volatile GroupListNode **)&group->children.first = head;
+    *(volatile GroupListNode **)&group->children.last = head;
     *(volatile u8 *)((u8 *)self + 0x28) = 0;
     memcpy((u8 *)self + 0x18, (const u8 *)resource + 8, 0x10);
 
-    register void *node;
-    register s32 offset = 0;
-    register const u8 *items = (const u8 *)resource + 0x1C;
-    register s32 index = 0;
+    items = (const u8 *)resource + 0x1C;
+    index = 0;
+    offset = 0;
     while (index < (s32)*(const u16 *)((const u8 *)resource + 0x18)) {
         void *result = ((GroupPaneDispatch_800D58C4 *)pane)->GetResource(items + offset, 1);
         if (result != 0) {
@@ -513,6 +516,50 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     }
     return arg0;
 }
+
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
+    extern const char lbl_8031F6B8[];
+    extern const char lbl_8031F694[];
+    extern const char lbl_8031F688[];
+    extern const char lbl_8031F664[];
+    struct GroupContainerObject : GroupListNode {
+        virtual void Destroy(s32);
+    };
+    void* slot;
+    register GroupListNode* current;
+    register GroupListNode* node;
+    register void* end;
+    if (arg0 != 0) {
+        node = *(GroupListNode**)((char*)arg0 + 4);
+        end = (char*)arg0 + 4;
+        while (node != end) {
+            current = node;
+            node = node->next;
+            slot = current;
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(arg0, &slot);
+            if (current == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
+            if (*(u8*)((char*)current + 0x24) == 0) {
+                if (current == 0)
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
+                static_cast<GroupContainerObject*>(current)->Destroy(-1);
+                if (current == 0)
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
+                if ((current = (GroupListNode*)((char*)current - 4)) == 0)
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F688, 0x193, lbl_8031F664);
+                MEMFreeToAllocator(lbl_8055DDF0, current);
+            }
+        }
+        if (arg0 != 0)
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+        if (arg1 > 0)
+            ((s32 (*)(void*))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+#pragma pop
 
 extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(void* arg0, void* arg1) {
     extern const char lbl_8031F658[];
@@ -2281,6 +2328,45 @@ extern "C" void fn_800DB1E8(void* arg0, void* unused, s32 arg2) {
         s32 result = count / 0x20;
         *(s8*)((u8*)temp + 0xE) = (s8)result;
     }
+}
+
+extern "C" u16 GXGetTexObjWrapS(void *);
+extern "C" u16 GXGetTexObjWrapT(void *);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index) {
+    u32 texObj[8];
+    u32 count;
+    const char *file = (const char *)&lbl_8031F990;
+
+    count = *(u32 *)((u8 *)material + 0x50) >> 28;
+    if (index >= count) {
+        out[0] = lbl_80560E90;
+        out[1] = lbl_80560E90;
+        return;
+    }
+
+    if ((void *)texObj == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DC, file + 0x42C);
+    }
+
+    count = *(u32 *)((u8 *)material + 0x50) >> 28;
+    if (index >= count) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DD, file + 0x458);
+    }
+
+    u32 *src = (u32 *)(*(void **)((u8 *)material + 0x58)) + (((u32)index << 5) / 4);
+    texObj[0] = src[0];
+    texObj[1] = src[1];
+    texObj[2] = src[2];
+    texObj[3] = src[3];
+    texObj[4] = src[4];
+    texObj[5] = src[5];
+    texObj[6] = src[6];
+    texObj[7] = src[7];
+
+    GXGetTexObjWidth(texObj, 0, texObj[6], src);
+    out[1] = (f32)GXGetTexObjWrapT(texObj);
+    out[0] = (f32)GXGetTexObjWrapS(texObj);
 }
 
 extern "C" s32 fn_80128668();
