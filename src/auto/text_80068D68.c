@@ -2023,63 +2023,55 @@ s32 fn_8006E4F8(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma push
+#pragma scheduling invalid_target
 void GKI_start_timer(UINT8 tnum, INT32 ticks, BOOLEAN is_continuous) {
-    UINT8 task_id;
-    INT32 repeat;
+    INT32 reload;
     INT32 total;
-    INT32 timer_id;
-    INT32 start;
-    INT32 end;
+    register INT32 start;
+    register INT32 end;
+    UINT8 task_id;
+    BOOLEAN bad_timer;
 
     task_id = fn_8006EB80();
-    timer_id = 0;
+    bad_timer = FALSE;
     if (ticks <= 0)
         ticks = 1;
-    repeat = ticks & ((-(INT32)is_continuous | (INT32)is_continuous) >> 31);
+    reload = ticks & ((-(INT32)is_continuous | (INT32)is_continuous) >> 31);
     fn_8006EBAC();
 
-    start = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C8);
-    end = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C4);
+    start = *(volatile INT32 *)&gki_cb.com.OSTicksTilExp;
+    end = *(volatile INT32 *)&gki_cb.com.OSNumOrigTicks;
     total = end - start;
     if ((INT32)(0x7FFFFFFF - total) > ticks)
-        total += ticks;
+        total = ticks + total;
     else
         total = 0x7FFFFFFF;
 
     switch (tnum) {
-    case 0: {
-        u8 *slot = (u8 *)&lbl_803946C0 + 0x30000 + ((task_id & 0xFF) << 2);
-        *(INT32 *)(slot - 0x7780) = repeat;
-        *(INT32 *)(slot - 0x77A0) = total;
+    case 0:
+        gki_cb.com.OSTaskTmr0R[task_id] = reload;
+        gki_cb.com.OSTaskTmr0[task_id] = total;
         break;
-    }
-    case 1: {
-        u8 *slot = (u8 *)&lbl_803946C0 + 0x30000 + ((task_id & 0xFF) << 2);
-        *(INT32 *)(slot - 0x7740) = repeat;
-        *(INT32 *)(slot - 0x7760) = total;
+    case 1:
+        gki_cb.com.OSTaskTmr1R[task_id] = reload;
+        gki_cb.com.OSTaskTmr1[task_id] = total;
         break;
-    }
     default:
-        timer_id = 1;
+        bad_timer = TRUE;
         break;
     }
 
-    if (timer_id == 0 && ticks > 0) {
-        end = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C4);
-        if (end == 0) {
-            start = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C8);
-        } else {
-            start = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C8);
-            if (ticks >= start || start <= 0)
-                goto done;
-        }
-        *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C4) = ticks + (end - start);
-        *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C8) = ticks;
+    if (!bad_timer && ticks > 0 &&
+        (gki_cb.com.OSNumOrigTicks == 0 ||
+         (ticks < gki_cb.com.OSTicksTilExp && gki_cb.com.OSTicksTilExp > 0))) {
+        gki_cb.com.OSNumOrigTicks =
+            ticks + (gki_cb.com.OSNumOrigTicks - gki_cb.com.OSTicksTilExp);
+        gki_cb.com.OSTicksTilExp = ticks;
     }
-
-done:
     fn_8006EB88();
 }
+#pragma pop
 #pragma pop
 
 void GKI_stop_timer(UINT8 tnum) {
@@ -14352,7 +14344,7 @@ void PORT_PortNegInd(void *arg0, u8 arg1, u8 *arg2, u16 arg3) {
             first = src[4]; second = src[5];
             dst[0x55] = first; dst[0x56] = second;
             first = src[6]; second = src[7];
-            dst[0x58] = second; dst[0x57] = first;
+            dst[0x57] = first; dst[0x58] = second;
             dst[0x59] = src[8];
             ((void (*)(void *, u16, void *, u16))fn_800937A0)(arg0, arg1, src, 0);
             return;
@@ -14368,7 +14360,7 @@ void PORT_PortNegInd(void *arg0, u8 arg1, u8 *arg2, u16 arg3) {
     first = src[4]; second = src[5];
     dst[0x55] = first; dst[0x56] = second;
     first = src[6]; second = src[7];
-    dst[0x58] = second; dst[0x57] = first;
+    dst[0x57] = first; dst[0x58] = second;
     dst[0x59] = src[8];
     ((void (*)(void *, u16, void *, u16))fn_800937A0)(arg0, arg1, src, arg3);
 }
