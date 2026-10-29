@@ -6787,46 +6787,38 @@ tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT
 }
 
 void btm_process_remote_name(u8 *arg0, u8 *arg1, u16 arg2, u8 arg3) {
-    extern unsigned char lbl_803C0F78[];
-    u8 buffer[0xF8];
-    u16 spA;
-    s16 sp8;
-    s32 (*callback)(s16 *);
-    u16 len;
-    u8 *src;
-    u8 *dst;
-    u32 blocks;
+    tBTM_REMOTE_DEV_NAME rem_name;
+    u8 *base = lbl_803C0F78;
+    tBTM_CMPL_CB *callback;
     u8 saved;
-    src = arg1;
-    callback = *(s32 (**)(s16 *))(lbl_803C0F78 + 0x167C);
-    saved = lbl_803C0F78[0x16AE];
-    fn_80070F90(lbl_803C0F78 + 0x1680);
-    lbl_803C0F78[0x16AE] = 0;
+    u8 *p_n1;
+    u16 temp_evt_len;
+
+    callback = *(tBTM_CMPL_CB **)(base + 0x167C);
+    saved = base[0x16AE];
+    fn_80070F90(base + 0x1680);
+    base[0x16AE] = 0;
+
     if (arg3 == 0) {
-        dst = buffer;
-        len = arg2;
-        if (len >= 0xF8) len = 0xF8;
-        spA = len;
-        sp8 = 0;
-        if (len != 0) {
-            blocks = len >> 3;
-            if (blocks != 0) do {
-                dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = src[3];
-                dst[4] = src[4]; dst[5] = src[5]; dst[6] = src[6]; dst[7] = src[7];
-                src += 8; dst += 8;
-            } while (--blocks != 0);
-            len &= 7;
-            if (len != 0) do { *dst++ = *src++; } while (--len != 0);
+        p_n1 = (u8 *)rem_name.remote_bd_name;
+        rem_name.length = arg2 < 0xF8 ? arg2 : 0xF8;
+        rem_name.status = 0;
+        temp_evt_len = rem_name.length;
+        while (temp_evt_len > 0) {
+            *p_n1++ = *arg1++;
+            temp_evt_len--;
         }
     } else {
-        spA = 0;
-        sp8 = 9;
-        buffer[0] = arg3;
+        rem_name.status = 9;
+        rem_name.length = 0;
+        rem_name.remote_bd_name[0] = 0;
     }
-    memset(lbl_803C0F78 + 0x16A8, 0, 6);
+
+    memset(base + 0x16A8, 0, 6);
     if (saved & 1) {
-        *(void **)(lbl_803C0F78 + 0x167C) = 0;
-        if (callback != 0) callback(&sp8);
+        *(void **)(base + 0x167C) = 0;
+        if (callback)
+            callback(&rem_name);
     }
 }
 
@@ -16291,31 +16283,37 @@ u8 fn_80095084(s32 arg0, void *arg1) {
 }
 #pragma pop
 extern char lbl_80319EB0[];
-void *rfc_alloc_multiplexer_channel(u8 *addr, s8 arg1) {
-    s32 index = 0;
+void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
     u8 *base = lbl_803C4828;
     u8 *channel;
+    int i;
+    int j;
 
-    if (base[0x408] != 0 && memcmp(base + 0x3FE, addr, 6) == 0) {
-        if (base[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0);
-        channel = base + index * 0x78 + 0x39C;
-        fn_80070F90(channel);
-        return channel;
+    for (i = 0; i < 1; i++) {
+        if (base[i * 0x78 + 0x408] != 0 &&
+            memcmp(base + i * 0x78 + 0x3FE, addr, 6) == 0) {
+            if (base[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0);
+            channel = lbl_803C4828 + i * 0x78 + 0x39C;
+            fn_80070F90(channel);
+            return channel;
+        }
     }
 
-    index = base[0x65] + 1;
-    if (index >= 1) index = 0;
-    channel = base + index * 0x78 + 0x39C;
-    if (channel[0x6C] == 0) {
-        memset(channel, 0, 0x78);
-        memcpy(channel + 0x62, addr, 6);
-        fn_8006D4C4(channel + 0x18);
-        channel[0x6D] = arg1;
-        if (base[0x414] >= 4) fn_80070954(0x90003, lbl_80319EC0, 0x3C);
-        *(void **)(channel + 0x10) = channel;
-        btu_start_timer(channel, 0xB, 0x3C);
-        base[0x65] = index;
-        return channel;
+    base = lbl_803C4828;
+    for (i = 0, j = base[0x65] + 1; i < 1; i++, j++) {
+        if (j >= 1) j = 0;
+        channel = base + j * 0x78 + 0x39C;
+        if (channel[0x6C] == 0) {
+            memset(channel, 0, 0x78);
+            memcpy(channel + 0x62, addr, 6);
+            fn_8006D4C4(channel + 0x18);
+            channel[0x6D] = is_initiator;
+            if (base[0x414] >= 4) fn_80070954(0x90003, lbl_80319EC0, 0x3C);
+            *(void **)(channel + 0x10) = channel;
+            btu_start_timer(channel, 0xB, 0x3C);
+            base[0x65] = j;
+            return channel;
+        }
     }
     return 0;
 }
