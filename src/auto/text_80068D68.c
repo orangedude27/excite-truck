@@ -52,6 +52,24 @@ typedef struct {
 } tRFCOMM_TRACE_TEXT_VIEW;
 
 typedef struct {
+    u8 pad0[0x0C];
+    u8 sync_state;
+    u8 delete_state;
+    u8 pad0E;
+    u8 stack_state;
+    u8 init_state;
+    u8 pad11[0x655];
+    u8 synced_num;
+    u8 sync_skip_checks;
+    s8 sync_loop_num;
+    u8 sync_type;
+    u8 pad66A[0x1E];
+    s8 lib_status;
+    u8 pad689[7];
+    OSAlarm sync_alarm;
+} WUDSyncControlView;
+
+typedef struct {
     u8 in_use;
     u8 pad_0x01[9];
     u8 state;
@@ -997,9 +1015,9 @@ void (*WUDSetSyncSimpleCallback(void (*pCallback)(s32, s32)))(s32, s32) {
 s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
     u8 *base = lbl_80392960;
     s32 success = 0;
+    s32 libStatus;
     BOOL enabled;
     BOOL busy;
-    s8 libStatus;
     OSTime now;
     u32 period;
 
@@ -1007,7 +1025,7 @@ s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
     libStatus = (s8)base[0x688];
     OSRestoreInterrupts(enabled);
 
-    if (libStatus == 3) {
+    if ((u32)libStatus == 3U) {
         enabled = OSDisableInterrupts();
         if (base[0xC] == 0 && base[0xD] == 0 &&
             base[0xF] == 4 && base[0x10] == 4) {
@@ -1017,7 +1035,6 @@ s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
             OSRestoreInterrupts(enabled);
             busy = 1;
         }
-
         if (busy == 0) {
             enabled = OSDisableInterrupts();
             base[0xC] = 1;
@@ -1025,7 +1042,6 @@ s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
             base[0x669] = syncType;
             base[0x667] = syncSkipChecks != 0;
             base[0x666] = 0;
-
             OSCreateAlarm((OSAlarm *)(base + 0x690));
             now = __OSGetSystemTime();
             period = (((*(volatile u32 *)0x800000F8) >> 2) / 1000) * 0x14;
@@ -3796,7 +3812,7 @@ void bta_hh_disc_cmpl(void) {
 }
 
 extern u8 bta_hh_tod_spt(void *, u8);
-void bta_hh_sdp_cback(s32 arg0, register u16 arg1, void *arg2) {
+void bta_hh_sdp_cback(s32 arg0, u16 arg1, register void *arg2) {
     u8 sp9;
     u8 sp8 = 0x10;
     register void *temp_r31 = *(void **)(lbl_803C0D48 + 0x210);
@@ -9148,23 +9164,27 @@ found:
 
 extern char lbl_803173A8[];
 void gap_congestion_ind(u16 cid, u16 congest) {
-    u8 *base = lbl_803C3740 + 0xAC;
     u8 *p;
     u32 i;
-    u16 value;
-    void (*callback)(u16, u16);
-    if (lbl_803C3740[0x28] >= 4)
+
+    if (lbl_803C3740[0x28] >= 4) {
         fn_8007096C(0xE0003, lbl_803173A8, congest, cid);
-    for (i = 0; i < 4; i++) {
-        p = base + i * 0x60;
-        if (p[0] && *(u16 *)(p + 6) == cid)
-            break;
     }
-    if (i < 4) {
-        value = (u16)(0x104 + (congest != 0));
-        callback = *(void (**)(u16, u16))(p + 0x20);
-        callback(*(u16 *)(p + 4), value);
-    }
+    p = lbl_803C3740 + 0xAC;
+    i = 0;
+    do {
+        if (p[0] != 0 && *(u16 *)(p + 6) == cid) goto found;
+        if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) goto found;
+        if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) goto found;
+        if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) goto found;
+        p += 0x60;
+        i++;
+    } while (i < 2);
+    return;
+
+found:
+    ((void (*)(u16, u16))*(void **)(p + 0x20))(
+        *(u16 *)(p + 4), (u16)(0x104 + ((-(s32)congest | (s32)congest) >> 31)));
 }
 
 extern u8 lbl_803173E0[];
