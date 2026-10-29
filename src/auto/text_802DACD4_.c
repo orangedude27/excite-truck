@@ -76,6 +76,7 @@ void fn_802DAE18(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+#pragma use_lmw_stmw off
 void OSGetFontWidth(char *, int *);
 void fn_802C32B8(int, int, unsigned int);
 
@@ -83,105 +84,99 @@ int fn_802DAE64(int arg0, int arg1, char *arg2) {
     int sp18;
     int sp14;
     int sp10;
-    void *spC;
+    int spC;
     int sp8;
-    register int zero;
-    register int screenY;
-    register char *text;
-    register void *bitmap;
-    register int cursor;
-    register int value;
-    register int baseY;
-    register int startX;
-    int ch;
-    int pixel;
-    int address;
-    int color;
-    int x;
-    int y;
-    int temp;
-    unsigned int colorData;
-    unsigned int packed;
+    int temp_r4;
+    int temp_r4_2;
+    int temp_r6;
+    int var_r24;
+    int var_r25;
+    int var_r26;
+    int var_r26_2;
+    int var_r27_2;
+    unsigned short temp_r0_2;
+    unsigned int temp_r3_2;
+    unsigned int temp_r3_3;
+    unsigned int temp_r3_4;
+    unsigned int temp_r4_3;
+    unsigned int temp_r4_4;
+    char *var_r27;
+    char *var_r29;
+    unsigned char temp_r0;
+    unsigned char temp_r3;
+    unsigned char temp_r3_5;
+    unsigned char var_r0;
 
-    zero = 0;
-    sp18 = zero;
-    baseY = arg1;
-    sp14 = zero;
-    sp10 = zero;
+    sp18 = 0;
+    var_r25 = arg1;
+    sp14 = 0;
+    sp10 = 0;
     spC = 0;
-    if (arg0 < 0) {
-        temp = arg0 >> 31;
-        startX = (temp ^ arg0) - temp;
+    if (arg0 >= 0) {
+        var_r24 = 0x46;
     } else {
-        startX = 0x46;
+        temp_r4 = arg0 >> 0x1F;
+        var_r24 = (temp_r4 ^ arg0) - temp_r4;
     }
-    text = arg2;
-    zero = 0;
-    goto advance;
-
-text_loop:
-    if (ch == 0x20) {
-        value = startX;
-        cursor = (int)(text + 1);
-measure:
-        sp8 = zero;
-        OSGetFontWidth((char *)cursor, &sp8);
-        cursor++;
-        value += sp8;
-        ch = (signed char)*(char *)cursor;
-        if (ch != 0) {
-            if (ch != 0x20) goto measure;
-        }
-        if (value > 0x23A) {
-            startX = 0x46;
-            baseY += 0x20;
-            goto advance;
-        }
-    }
-
-    OSGetFontTexture(text, (int *)&spC, &sp18, &sp14, &sp10);
-    bitmap = spC;
-    cursor = 0;
-    screenY = cursor + baseY;
-    value = 0;
-    for (;;) {
-        if (value < sp10) {
-            x = value + sp18;
-            y = cursor + sp14;
-            address = ((x / 8 + ((y / 8) << 9) / 8) << 6) + ((x % 8) * 8) + (y % 8);
-            address = (address + ((unsigned int)address >> 31)) >> 1;
-            pixel = ((unsigned char *)bitmap)[address];
-            if (value & 1) {
-                color = pixel & 0xF;
+    var_r29 = arg2;
+loop_22:
+    temp_r3 = *var_r29;
+    if ((signed char)temp_r3 != 0) {
+        if ((signed char)temp_r3 == 0x20) {
+            var_r26 = var_r24;
+            var_r27 = var_r29 + 1;
+loop_7:
+            temp_r0 = *var_r27;
+            if (((signed char)temp_r0 != 0) && ((signed char)temp_r0 != 0x20)) {
+                sp8 = 0;
+                OSGetFontWidth(var_r27, &sp8);
+                var_r27 += 1;
+                var_r26 += sp8;
+                goto loop_7;
+            }
+            if (var_r26 > 0x23A) {
+                var_r24 = 0x46;
+                var_r25 += 0x20;
             } else {
-                color = (pixel >> 4) & 0xF;
+                goto block_11;
             }
-            if (color != 0) {
-                colorData = ((color * 0xC + 0x10) << 8 & 0xFFFF00) | 0x80;
-                packed = (colorData & ~0xFF800000) | ((colorData << 0x10) & 0xFF800000);
-                fn_802C32B8(value + startX, screenY, packed);
-            }
-            value++;
-            goto pixel_test;
+        } else {
+block_11:
+            OSGetFontTexture(var_r29, (int *)&spC, &sp18, &sp14, &sp10);
+            var_r27_2 = 0;
+            do {
+                var_r26_2 = 0;
+loop_18:
+                if (var_r26_2 < sp10) {
+                    temp_r6 = var_r26_2 + sp18;
+                    temp_r4_2 = var_r27_2 + sp14;
+                    temp_r4_3 = (unsigned int)temp_r4_2 >> 0x1F;
+                    temp_r3_2 = (temp_r4_2 << 0x1D) - temp_r4_3;
+                    temp_r4_4 = (unsigned int)temp_r6 >> 0x1F;
+                    temp_r3_3 = (temp_r6 << 0x1D) - temp_r4_4;
+                    temp_r3_4 = (((temp_r6 / 8) + ((int)((temp_r4_2 / 8) << 9) / 8)) << 6)
+                        + (((((temp_r3_2 << 3) | (temp_r3_2 >> 0x1D)) + temp_r4_3) * 8)
+                        + (((temp_r3_3 << 3) | (temp_r3_3 >> 0x1D)) + temp_r4_4));
+                    temp_r3_5 = *((unsigned char *)spC + (int)(((temp_r3_4 >> 0x1F) + temp_r3_4) >> 1));
+                    var_r0 = temp_r3_5 & 0xF;
+                    if (!(var_r26_2 & 1)) {
+                        var_r0 = (temp_r3_5 >> 4) & 0xF;
+                    }
+                    if (var_r0 != 0) {
+                        temp_r0_2 = ((((var_r0 * 0xC) + 0x10) << 8) & 0xFFFF00) | 0x80;
+                        fn_802C32B8(var_r26_2 + var_r24, var_r27_2 + var_r25,
+                            (temp_r0_2 & ~0xFF800000) | ((temp_r0_2 << 0x10) & 0xFF800000));
+                    }
+                    var_r26_2 += 1;
+                    goto loop_18;
+                }
+                var_r27_2 += 1;
+            } while (var_r27_2 < 0x18);
+            var_r24 += sp10;
         }
-        cursor++;
-        if (cursor < 0x18) {
-            screenY = cursor + baseY;
-            value = 0;
-            goto pixel_test;
-        }
-        goto advance;
-pixel_test:
-        if (value < sp10) goto pixel_loop;
-        continue;
-pixel_loop:
-        ;
+        var_r29 += 1;
+        goto loop_22;
     }
-advance:
-    startX += sp10;
-    text++;
-    ch = (signed char)*text;
-    if (ch != 0) goto text_loop;
 }
 #pragma pop
 #pragma scheduling on
