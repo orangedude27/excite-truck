@@ -9252,35 +9252,59 @@ void btu_hcif_esco_connection_comp_evt(u8 *p) {
     btm_sco_connected(status, bda, handle, &data);
 }
 
-void btu_hcif_hdl_command_complete(UINT16 opcode, UINT8 *param2, UINT16 param3) {
-    if (opcode == 0xC14) { btm_read_local_name_complete(param2, param3); return; }
-    if (opcode < 0xC14) {
-        if (opcode == 0xC05) { btm_event_filter_complete(param2); return; }
-        if (opcode < 0xC05) {
-            if (opcode == 0x80C) { btm_read_link_policy_complete(param2); return; }
-            if (opcode < 0x80C) {
-                if (opcode == 0x402) { btm_process_inq_complete(0, (UINT8)param2); return; }
-            } else if (opcode == 0xC03) { btm_reset_complete(); return; }
-        } else {
-            if (opcode == 0xC11) { btm_write_stored_link_key_complete(param2); return; }
-            if (opcode < 0xC11) {
-                if (opcode == 0xC0D) { btm_read_stored_link_key_complete(param2); return; }
-            } else if (opcode < 0xC13) { btm_delete_stored_link_key_complete(param2); return; }
+void btu_hcif_hdl_command_complete(s32 opcode, UINT8 *param2, UINT16 param3) {
+    register s32 saved_opcode = opcode;
+
+    switch (opcode) {
+    case 0x0C03:
+        btm_reset_complete();
+        return;
+    case 0x0402:
+        ((void (*)(UINT8, u32))btm_process_inq_complete)(0, (u32)param2);
+        return;
+    case 0x0C05:
+        btm_event_filter_complete(param2);
+        return;
+    case 0x0C0D:
+        btm_read_stored_link_key_complete(param2);
+        return;
+    case 0x0C11:
+        btm_write_stored_link_key_complete(param2);
+        return;
+    case 0x0C12:
+        btm_delete_stored_link_key_complete(param2);
+        return;
+    case 0x1001:
+        btm_read_local_version_complete(param2, param3);
+        return;
+    case 0x080C:
+        btm_read_link_policy_complete(param2);
+        return;
+    case 0x1005:
+        btm_read_hci_buf_size_complete(param2, param3);
+        return;
+    case 0x1003:
+        btm_read_local_features_complete(param2, param3);
+        return;
+    case 0x0C14:
+        btm_read_local_name_complete(param2, param3);
+        return;
+    case 0x1009:
+        ((void (*)(UINT8 *, UINT16))fn_8007A280)(param2, param3);
+        return;
+    case 0x1403:
+        btm_read_link_quality_complete(param2);
+        return;
+    case 0x1405:
+        btm_read_rssi_complete(param2);
+        return;
+    default:
+        if ((saved_opcode & 0xFC00) == 0xFC00) {
+            ((void (*)(UINT8 *, u32, UINT16, tBTM_CMPL_CB *))btm_vsc_complete)(
+                param2, (u32)saved_opcode, param3, (tBTM_CMPL_CB *)saved_opcode);
         }
-    } else {
-        if (opcode == 0x1009) { fn_8007A280(param2); return; }
-        if (opcode < 0x1009) {
-            if (opcode == 0x1003) { btm_read_local_features_complete(param2, param3); return; }
-            if (opcode < 0x1003) {
-                if (opcode == 0x1001) { btm_read_local_version_complete(param2, param3); return; }
-            } else if (opcode == 0x1005) { btm_read_hci_buf_size_complete(param2, param3); return; }
-        } else if (opcode != 0x1404) {
-            if (opcode < 0x1404) {
-                if (opcode > 0x1402) { btm_read_link_quality_complete(param2); return; }
-            } else if (opcode < 0x1406) { btm_read_rssi_complete(param2); return; }
-        }
+        return;
     }
-    if ((opcode & 0xFC00) == 0xFC00) btm_vsc_complete(param2, opcode, param3, (tBTM_CMPL_CB *)opcode);
 }
 
 void btu_hcif_command_complete_evt(UINT8 *p, UINT16 len) {
@@ -16284,34 +16308,35 @@ u8 fn_80095084(s32 arg0, void *arg1) {
 #pragma pop
 extern char lbl_80319EB0[];
 void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
-    u8 *base = lbl_803C4828;
-    u8 *channel;
     int i;
     int j;
+    u8 *existing;
+    u8 *channel;
+    u8 *peer_addr;
 
     for (i = 0; i < 1; i++) {
-        if (base[i * 0x78 + 0x408] != 0 &&
-            memcmp(base + i * 0x78 + 0x3FE, addr, 6) == 0) {
-            if (base[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0);
-            channel = lbl_803C4828 + i * 0x78 + 0x39C;
-            fn_80070F90(channel);
-            return channel;
+        peer_addr = lbl_803C4828 + i * 0x78 + 0x3FE;
+        if (lbl_803C4828[i * 0x78 + 0x408] != 0 &&
+            memcmp(peer_addr, addr, 6) == 0) {
+            if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0);
+            existing = lbl_803C4828 + i * 0x78 + 0x39C;
+            fn_80070F90(existing);
+            return existing;
         }
     }
 
-    base = lbl_803C4828;
-    for (i = 0, j = base[0x65] + 1; i < 1; i++, j++) {
+    for (i = 0, j = lbl_803C4828[0x65] + 1; i < 1; i++, j++) {
         if (j >= 1) j = 0;
-        channel = base + j * 0x78 + 0x39C;
+        channel = lbl_803C4828 + j * 0x78 + 0x39C;
         if (channel[0x6C] == 0) {
             memset(channel, 0, 0x78);
             memcpy(channel + 0x62, addr, 6);
             fn_8006D4C4(channel + 0x18);
             channel[0x6D] = is_initiator;
-            if (base[0x414] >= 4) fn_80070954(0x90003, lbl_80319EC0, 0x3C);
+            if (lbl_803C4828[0x414] >= 4) fn_80070954(0x90003, lbl_80319EC0, 0x3C);
             *(void **)(channel + 0x10) = channel;
             btu_start_timer(channel, 0xB, 0x3C);
-            base[0x65] = j;
+            lbl_803C4828[0x65] = j;
             return channel;
         }
     }
