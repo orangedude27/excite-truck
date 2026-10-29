@@ -3,6 +3,9 @@
 
 #include <types.h>
 
+extern "C" s32 fn_802CAC28(void *, s32);
+extern "C" char lbl_8033DC20[];
+
 extern "C" void fn_8022375C(void);
 
 extern "C" u8 lbl_8033DA84[];
@@ -4349,23 +4352,22 @@ outer_test:
 #pragma push
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
-extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
+extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     register s32 data = arg4;
     register s32 i;
-    register u8 *row;
     register s32 offset;
     register s32 zero;
     register s32 one;
     register s32 minusOne;
     register u8 *obj = (u8 *)self;
-    register u8 *input = (u8 *)arg3;
     s32 scratch;
+    u8 *row;
     register f32 defaultValue;
 
-    fn_80218F34(obj, arg1, arg2, 0, 0, 0);
+    fn_80218F34(self, arg1, arg2, 0, 0, 0);
     *(s32 *)(obj + 0x2CC) = data;
     *(void **)obj = lbl_8033E4DC;
-    *(s32 *)(obj + 0x2C8) = *(s32 *)(input + 8);
+    *(s32 *)(obj + 0x2C8) = *(s32 *)(arg3 + 8);
     *(s32 *)(obj + 0x3FC) =
         ((s32 (*)(const char *, const char *))fn_80232578)(
             (const char *)lbl_8033DA84, lbl_8033E4DC);
@@ -4382,7 +4384,7 @@ extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, void *arg3, s32 arg
         *(u8 *)(obj + offset + 0x2D0) = zero;
         if (i < *(s32 *)(obj + 0x2C8)) {
             scratch = 0;
-            data = ((s32 (*)(void *, s32, s32 *))fn_8022D3F8)(input, i, &scratch);
+            data = ((s32 (*)(void *, s32, s32 *))fn_8022D3F8)((void *)arg3, i, &scratch);
             if ((scratch & 3) != 1)
                 *(u8 *)(obj + offset + 0x2D0) = one;
             row = obj + offset;
@@ -4407,8 +4409,8 @@ extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, void *arg3, s32 arg
     *(f32 *)(obj + 0x40C) = lbl_805634A8;
     *(f32 *)(obj + 0x408) = lbl_80563530;
     *(u8 *)(obj + 0x41C) = zero;
-    ((void (*)(void *))fn_8022375C)(obj);
-    return obj;
+    ((void (*)(void *))fn_8022375C)(self);
+    return self;
 }
 #pragma pop
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
