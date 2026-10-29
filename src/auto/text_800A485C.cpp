@@ -12977,28 +12977,29 @@ extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32 arg0, s
     OSAlarm *alarm;
     void (*callback)(s32, s32);
 
-    if (arg1 == 0xFF) goto extension;
-    goto dispatch;
-
-extension:
-    entry = lbl_80407780[arg0];
-    sound = *(void **)entry;
-    if (fn_80060C7C(sound) != 0) {
-        fn_80060CC0(sound, 2, 0);
-        alarm = (OSAlarm *)((u8 *)lbl_804076C0 + (s32)sound * 0x30);
-        OSSetAlarmUserData(alarm, sound);
-        OSCancelAlarm(alarm);
-        {
-            u32 ticks = *(volatile u32 *)0x800000F8;
-            u32 delay = (((ticks >> 2) / 1000U) * 1000U);
-            ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
-                alarm, 0x10624DD3, 0, delay,
-                soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
+    switch (arg1) {
+    case 0xFF:
+        entry = lbl_80407780[arg0];
+        sound = *(void **)entry;
+        if (fn_80060C7C(sound) != 0) {
+            fn_80060CC0(sound, 2, 0);
+            alarm = (OSAlarm *)((u8 *)lbl_804076C0 + (s32)sound * 0x30);
+            OSSetAlarmUserData(alarm, sound);
+            OSCancelAlarm(alarm);
+            {
+                u32 ticks = *(volatile u32 *)0x800000F8;
+                u32 delay = (((ticks >> 2) / 1000U) * 1000U);
+                ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
+                    alarm, 0x10624DD3, 0, delay,
+                    soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
+            }
+            *((u8 *)entry + 0x41) = 1;
         }
-        *((u8 *)entry + 0x41) = 1;
+        break;
+    default:
+        break;
     }
 
-dispatch:
     entry = lbl_80407780[arg0];
     callback = *(void (**)(s32, s32))((u8 *)entry + 0x2C);
     if (callback != 0) callback(arg0, arg1);
