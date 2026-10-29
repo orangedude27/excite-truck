@@ -2561,6 +2561,13 @@ extern "C" void fn_800FEC1C(void *, void *);
 extern "C" void ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void *, void *, const void *);
 extern "C" const char lbl_803224F0[], lbl_803226B0[], lbl_803226DC[];
 extern "C" char lbl_80559818;
+namespace nw4hbm { namespace snd { namespace detail {
+class WaveData;
+class BankFileReader {
+public:
+    void *ReadWaveParam(WaveData *, int, const void *) const;
+};
+}}}
 #pragma push
 extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(void *self, void *wave, int index, const void *src) {
     unsigned int count;
