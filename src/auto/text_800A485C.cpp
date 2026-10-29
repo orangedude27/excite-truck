@@ -1,7 +1,7 @@
   #include <types.h>
 #include <macros.h>
 struct VFiPFENTIterLayout {
-    u32 position;
+    volatile u32 position;
     void *stream;
     u8 pad8[0x38];
     u32 index;
