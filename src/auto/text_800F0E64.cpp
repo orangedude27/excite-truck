@@ -10,7 +10,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
-namespace nw4hbm { namespace snd { class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); }; namespace detail { class StrmPlayer { public: struct StrmHeader; void Pause(bool); void Setup(const StrmHeader *); }; class SoundThread { public: s32 Shutdown(); }; } } }
+namespace nw4hbm { namespace snd { namespace detail { struct WaveSoundInfo; struct WaveSoundNoteInfo; struct WaveData; } class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); class WsdCallback { public: s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, s32, s32, u32) const; }; }; namespace detail { class StrmPlayer { public: struct StrmHeader; void Pause(bool); void Setup(const StrmHeader *); }; class SoundThread { public: s32 Shutdown(); }; } } }
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
 extern "C" void fn_800EAD00(void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
@@ -1898,16 +1898,22 @@ extern "C" const char lbl_80325110[];
 extern "C" s32 GetWaveSoundData__Q46nw4hbm3snd18SoundArchivePlayer11WsdCallbackCFPQ46nw4hbm3snd6detail13WaveSoundInfoPQ46nw4hbm3snd6detail17WaveSoundNoteInfoPQ46nw4hbm3snd6detail8WaveDataPCviiUl(void *self, void *info, void *noteInfo, void *waveData, const void *file, s32 index, s32 noteIndex, u32 waveIndex) {
     u8 reader[0x38];
     u8 *archive = *(u8 **)((u8 *)self + 4);
+    void *fileInfo = *(void **)(archive + 0x10);
     s32 result;
     s32 waveAddress;
-    if (*(u32 *)(archive + 0x10) == 0)
+
+    if (fileInfo == 0)
         result = 0;
     else
-        result = fn_800F273C(self);
+        result = fn_800F273C(fileInfo);
     if (result == 0)
         return 0;
+
+    archive = *(u8 **)((u8 *)self + 4);
     if (*(u32 *)(archive + 0x10) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
+
+    archive = *(u8 **)((u8 *)self + 4);
     waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(archive, waveIndex);
     if (waveAddress == 0)
         return 0;
