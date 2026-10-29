@@ -71,9 +71,27 @@ extern void fn_80236914(void);
 extern void fn_80258040(void);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma dont_inline fn_80257FB8
 void fn_8025812C(void) {
-    int data[46];
+    union Word {
+        int value;
+        void *pointer;
+        void (*function)(void);
+    };
+    struct Descriptors {
+        union Word word[40];
+    };
+    struct Param {
+        int first;
+        struct Descriptors *items;
+        int second;
+        int third;
+        int fourth;
+        int reserved;
+        struct Descriptors descriptors;
+    } data;
+    int zero = 0;
     int result, previous, current;
 
     lbl_8055F368 = fn_80257FB8();
@@ -84,22 +102,54 @@ void fn_8025812C(void) {
         *(volatile int *)&lbl_8055F370 = old;
     }
 
-    data[6] = (int)&lbl_8055BAC0; data[7] = 8; data[8] = (int)fn_80258040; data[9] = 0;
-    data[10] = 0; data[11] = (int)&lbl_8055C238; data[12] = 0; data[13] = 0;
-    data[14] = 0; data[15] = 0; data[16] = (int)&lbl_8055C240; data[17] = 0;
-    data[18] = 0; data[19] = 1; data[20] = 0; data[21] = (int)&lbl_8055C248;
-    data[22] = 0; data[23] = 0; data[24] = 2; data[25] = 0;
-    data[26] = (int)&lbl_8055C250; data[27] = 0; data[28] = 0; data[29] = 3;
-    data[30] = 0; data[31] = (int)&lbl_8055B860; data[32] = 6; data[33] = 0;
-    data[34] = -1; data[35] = 0x1b; data[36] = (int)&lbl_8055BAB8; data[37] = 8;
-    data[38] = (int)fn_80236914; data[39] = 2; data[40] = 0;
-    data[41] = lbl_80498E68[0]; data[42] = lbl_80498E68[1]; data[43] = lbl_80498E68[2];
-    data[44] = lbl_80498E68[3]; data[45] = lbl_80498E68[4];
-    data[0] = lbl_802FA610[0]; data[1] = (int)&data[6]; data[2] = lbl_802FA610[2];
-    data[3] = lbl_802FA610[3]; data[4] = lbl_802FA610[4];
+    data.descriptors.word[35].value = lbl_80498E68[0];
+    data.first = lbl_802FA610[0];
+    data.descriptors.word[0].function = fn_80258040;
+    data.descriptors.word[1].pointer = &lbl_8055BAC0;
+    data.descriptors.word[2].value = 8;
+    data.descriptors.word[3].value = zero;
+    data.descriptors.word[4].value = zero;
+    data.descriptors.word[5].pointer = &lbl_8055C238;
+    data.descriptors.word[36].value = lbl_80498E68[1];
+    data.descriptors.word[6].value = zero;
+    data.descriptors.word[7].value = zero;
+    data.descriptors.word[8].value = zero;
+    data.descriptors.word[9].value = zero;
+    data.descriptors.word[10].pointer = &lbl_8055C240;
+    data.descriptors.word[37].value = lbl_80498E68[2];
+    data.descriptors.word[11].value = zero;
+    data.descriptors.word[12].value = zero;
+    data.descriptors.word[13].value = 1;
+    data.descriptors.word[14].value = zero;
+    data.descriptors.word[15].pointer = &lbl_8055C248;
+    data.descriptors.word[38].value = lbl_80498E68[3];
+    data.descriptors.word[16].value = zero;
+    data.descriptors.word[17].value = zero;
+    data.descriptors.word[18].value = 2;
+    data.descriptors.word[19].value = zero;
+    data.descriptors.word[20].pointer = &lbl_8055C250;
+    data.descriptors.word[39].value = lbl_80498E68[4];
+    data.descriptors.word[21].value = zero;
+    data.descriptors.word[22].value = zero;
+    data.descriptors.word[23].value = 3;
+    data.descriptors.word[24].value = zero;
+    data.descriptors.word[25].pointer = &lbl_8055B860;
+    data.descriptors.word[26].value = 6;
+    data.descriptors.word[27].value = zero;
+    data.descriptors.word[28].value = -1;
+    data.descriptors.word[29].value = 0x1b;
+    data.descriptors.word[30].pointer = &lbl_8055BAB8;
+    data.descriptors.word[31].value = 8;
+    data.descriptors.word[32].function = fn_80236914;
+    data.descriptors.word[33].value = 2;
+    data.descriptors.word[34].value = zero;
+    data.second = lbl_802FA610[2];
+    data.third = lbl_802FA610[3];
+    data.fourth = lbl_802FA610[4];
+    data.items = &data.descriptors;
 
     do {
-        result = fn_802146BC(data, -999, -999, 1);
+        result = fn_802146BC(&data, -999, -999, 1);
         previous = fn_80257FB8();
         if (result != -1) {
             fn_80161F10(result);
