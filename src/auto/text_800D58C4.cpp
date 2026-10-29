@@ -1455,6 +1455,7 @@ extern "C" void fn_800D9CBC(void* arg0, u32 arg1, void* arg2) {
 extern "C" s32 GXGetTexObjLODAll(void*);
 extern "C" s32 GXGetTexObjWrap_Internal(void*);
 extern "C" void GXInitTexObjWrapMode(void*,s32,s32);
+#pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*,void*,u32);
 extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void* self,u8 index,void* palette) {
  extern const char lbl_8031F990[]; extern const char lbl_8031FDE8[];
