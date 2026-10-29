@@ -95,10 +95,10 @@ void *fn_802EC598(void) {
 #pragma scheduling invalid_target
 void fn_802EC614(void) {
     // Fix note: initialize the controller flags and configuration, then allocate and register the menu resources in target order.
-    register char *base = lbl_8034E9E0;
-    register s32 zero = 0;
-    s32 *config;
     char *info;
+    register s32 zero = 0;
+    register char *base = lbl_8034E9E0;
+    s32 *config;
     void *buffer;
 
     lbl_805600E9 = zero;
@@ -190,6 +190,7 @@ void fn_802EC7AC(void) {
         fn_80128670(lbl_805600E4);
 }
 #pragma scheduling on
+extern char lbl_8055D2F8[];
 extern void WPADControlMotor(s32, s32);
 extern void fn_800C65C4(void);
 extern s32 fn_800C65CC(void *);
