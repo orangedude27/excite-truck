@@ -118,7 +118,7 @@ extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800ACA5C(void *, void *, u32);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
-extern "C" s32 fn_800B05C8(void *, u16, u32 *);
+/* fn_800B05C8 declaration moved below. */
 class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
 class PaneDrawDispatch { public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
@@ -3975,18 +3975,26 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     void *pageForRead;
     s32 pageIndex;
     u32 tableType;
+    u32 tableOffset;
+    u8 *typeTable;
+    void *object;
+    u32 *output;
+    u32 expected;
     s32 type;
     u32 maxValue;
-    u32 expected;
     u32 bound;
     s32 result;
 
+    typeTable = (u8 *)lbl_802EEF40;
     tableType = *(u32 *)((u8 *)arg0 + 0x1C);
-    maxValue = *(u32 *)((u8 *)lbl_802EEF40 + tableType * 0x14 + 4);
+    tableOffset = tableType * 0x14;
     expected = arg2;
     *arg3 = -1;
+    output = arg3;
+    maxValue = *(u32 *)(typeTable + tableOffset + 4);
+    object = arg0;
     result = ((Fn800A8D08C4 *)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(
-        arg0, -1, &page, &pageIndex);
+        object, -1, &page, &pageIndex);
     if (result != 0)
         return result;
     *(u16 *)((u8 *)page + 2) = 0;
@@ -3994,44 +4002,44 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
 
 dispatch:
     pageForRead = page;
-    type = *(s32 *)((u8 *)arg0 + 0x1C);
+    type = *(s32 *)((u8 *)object + 0x1C);
     switch (type) {
     case 0:
-        result = fn_800AFBA8(arg0, (u16)arg1, &value);
+        result = fn_800AFBA8(object, (u16)arg1, &value);
         break;
     case 1:
-        result = fn_800B00E8(arg0, arg1, &value, pageForRead);
+        result = fn_800B00E8(object, arg1, &value, pageForRead);
         break;
     case 2:
-        result = ((s32 (*)(void *, s32, u32 *, void *))fn_800B05C8)(arg0, arg1, &value, pageForRead);
+        result = ((Fn800B05C8C *)fn_800B05C8)(object, arg1, &value);
         break;
     default:
         result = 0xF;
         break;
     }
     if (result != 0) {
-        VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
+        VFiPFCACHE_FreeFATPage_800A8E10(object, page);
         return result;
     }
     if (expected == value) {
-        *arg3 = arg1;
+        *output = arg1;
         return 0;
     }
     arg1--;
     if (arg1 >= 2) {
-        bound = *(u32 *)((u8 *)arg0 + 0x34) + 2;
+        bound = *(u32 *)((u8 *)object + 0x34) + 2;
         if (arg1 < bound)
             goto checkMax;
         if (arg1 >= maxValue)
             goto checkMax;
-        *arg3 = expected;
+        *output = expected;
         return 0;
     }
 
 checkMax:
     if (arg1 < maxValue)
         goto dispatch;
-    VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
+    VFiPFCACHE_FreeFATPage_800A8E10(object, page);
     return 0xD;
 }
 
