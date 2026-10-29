@@ -913,21 +913,35 @@ void fn_8019CE3C(void* arg0, s32 arg1) {
     fn_8019CCCC(arg0, (u8*)arg0 + 0x34, arg1, *(f32*)((u8*)arg0 + 0x24));
 }
 
-extern "C" void fn_8019CE4C(void* arg0, void* arg1) {
-    f32 sp8, spC, sp10;
-    Vec* a = (Vec*)((u8*)arg0 + 0x34);
-    Vec* b = (Vec*)((u8*)arg1 + 0x34);
-    sp8 = a->x - b->x; spC = a->y - b->y; sp10 = a->z - b->z;
-    if (PSVECSquareDistance(a, b) > lbl_8056232C) {
-        f32 scale = lbl_805622E0 / (f32)fn_8002F234(PSVECSquareDistance(a, b));
-        sp8 *= scale; spC *= scale; sp10 *= scale;
-        f32 dot = PSVECDotProduct((Vec*)&sp8, (Vec*)((u8*)*(void**)((u8*)arg1 + 0xC) + 0xC));
-        *(f32*)((u8*)arg1 + 0x24) = *(f32*)((u8*)arg1 + 0x54) + __fabsf(dot) * (*(f32*)((u8*)arg1 + 0x58) - *(f32*)((u8*)arg1 + 0x54));
+extern "C" void fn_8019CE4C(void *arg0, void *arg1) {
+    struct Target { u8 pad[0x34]; Vec point; };
+    Target *target = (Target *)arg1;
+    Vec *a = (Vec *)((u8 *)arg0 + 0x34);
+    f32 delta[3];
+    delta[0] = a->x - target->point.x;
+    delta[1] = a->y - target->point.y;
+    f32 targetZ = target->point.z;
+    f32 sourceZ = a->z;
+    delta[2] = sourceZ - targetZ;
+    f32 distance = PSVECSquareDistance(a, &target->point);
+    f32 result;
+    if (distance > lbl_8056232C) {
+        f32 scale = lbl_805622E0 / (f32)fn_8002F234(distance);
+        delta[0] *= scale;
+        delta[1] *= scale;
+        delta[2] *= scale;
+        Vec *axis = (Vec *)((u8 *)*(void **)((u8 *)arg1 + 0xC) + 0xC);
+        f32 dot = PSVECDotProduct((Vec *)delta, axis);
+        f32 high = *(f32 *)((u8 *)arg1 + 0x58);
+        f32 low = *(f32 *)((u8 *)arg1 + 0x54);
+        f32 magnitude = (f32)__fabs((f64)dot);
+        result = low + magnitude * (high - low);
     } else {
-        f32 value = *(f32*)((u8*)arg1 + 0x54);
-        if (value <= *(f32*)((u8*)arg1 + 0x58)) value = *(f32*)((u8*)arg1 + 0x58);
-        *(f32*)((u8*)arg1 + 0x24) = value;
+        f32 high = *(f32 *)((u8 *)arg1 + 0x58);
+        f32 low = *(f32 *)((u8 *)arg1 + 0x54);
+        result = (low > high) ? low : high;
     }
+    *(f32 *)((u8 *)arg1 + 0x24) = result;
     fn_8019B068(arg0, arg1, 0, 0);
 }
 
@@ -1348,52 +1362,42 @@ extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
 }
 
 extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
+    u8 a, b, c, d;
     fn_8019ECC4();
-    *(void**)arg0 = &lbl_80333B48;
+    *(void **)arg0 = &lbl_80333B48;
     if (arg2 != 0) {
-        u8 a = *((u8*)arg0 + 0x24);
-        u8 b = *((u8*)arg0 + 0x25);
-        u8 c = *((u8*)arg0 + 0x26);
-        u8 d = *((u8*)arg0 + 0x27);
-        u8 e = *((u8*)arg0 + 0x28);
-        u8 f = *((u8*)arg0 + 0x29);
-        u8 g = *((u8*)arg0 + 0x2A);
-        u8 h = *((u8*)arg0 + 0x2B);
-        u8 i = *((u8*)arg0 + 0x2C);
-        u8 j = *((u8*)arg0 + 0x2D);
-        u8 k = *((u8*)arg0 + 0x2E);
-        u8 l = *((u8*)arg0 + 0x2F);
-        u8 m = *((u8*)arg0 + 0x30);
-        u8 n = *((u8*)arg0 + 0x31);
-        u8 o = *((u8*)arg0 + 0x32);
-        u8 p = *((u8*)arg0 + 0x33);
-        *((u8*)arg0 + 0x24) = d;
-        *((u8*)arg0 + 0x27) = a;
-        *((u8*)arg0 + 0x25) = c;
-        *((u8*)arg0 + 0x26) = b;
-        *((u8*)arg0 + 0x28) = h;
-        *((u8*)arg0 + 0x2B) = e;
-        *((u8*)arg0 + 0x29) = g;
-        *((u8*)arg0 + 0x2A) = f;
-        *((u8*)arg0 + 0x2C) = l;
-        *((u8*)arg0 + 0x2F) = i;
-        *((u8*)arg0 + 0x2D) = k;
-        *((u8*)arg0 + 0x2E) = j;
-        *((u8*)arg0 + 0x30) = p;
-        *((u8*)arg0 + 0x33) = m;
-        *((u8*)arg0 + 0x31) = o;
-        *((u8*)arg0 + 0x32) = n;
-        if (*(s32*)((u8*)arg0 + 0x20) == 0x3eb)
-            *(f32*)((u8*)arg0 + 0x24) += lbl_80562370;
+        a = *(volatile u8 *)((u8 *)arg0 + 0x24);
+        b = *(volatile u8 *)((u8 *)arg0 + 0x27);
+        c = *(volatile u8 *)((u8 *)arg0 + 0x25);
+        d = *(volatile u8 *)((u8 *)arg0 + 0x26);
+        *(volatile u8 *)((u8 *)arg0 + 0x24) = b;
+        *(volatile u8 *)((u8 *)arg0 + 0x27) = a;
+        *(volatile u8 *)((u8 *)arg0 + 0x25) = d;
+        *(volatile u8 *)((u8 *)arg0 + 0x26) = c;
+        a = *(volatile u8 *)((u8 *)arg0 + 0x28); b = *(volatile u8 *)((u8 *)arg0 + 0x2b);
+        *(volatile u8 *)((u8 *)arg0 + 0x28) = b; *(volatile u8 *)((u8 *)arg0 + 0x2b) = a;
+        a = *(volatile u8 *)((u8 *)arg0 + 0x29); b = *(volatile u8 *)((u8 *)arg0 + 0x2a);
+        *(volatile u8 *)((u8 *)arg0 + 0x29) = b; *(volatile u8 *)((u8 *)arg0 + 0x2a) = a;
+        a = *(volatile u8 *)((u8 *)arg0 + 0x2c); b = *(volatile u8 *)((u8 *)arg0 + 0x2f);
+        *(volatile u8 *)((u8 *)arg0 + 0x2c) = b; *(volatile u8 *)((u8 *)arg0 + 0x2f) = a;
+        a = *(volatile u8 *)((u8 *)arg0 + 0x2d); b = *(volatile u8 *)((u8 *)arg0 + 0x2e);
+        *(volatile u8 *)((u8 *)arg0 + 0x2d) = b; *(volatile u8 *)((u8 *)arg0 + 0x2e) = a;
+        a = *(volatile u8 *)((u8 *)arg0 + 0x30); b = *(volatile u8 *)((u8 *)arg0 + 0x33);
+        *(volatile u8 *)((u8 *)arg0 + 0x30) = b; *(volatile u8 *)((u8 *)arg0 + 0x33) = a;
+        a = *(volatile u8 *)((u8 *)arg0 + 0x31); b = *(volatile u8 *)((u8 *)arg0 + 0x32);
+        *(volatile u8 *)((u8 *)arg0 + 0x31) = b; *(volatile u8 *)((u8 *)arg0 + 0x32) = a;
+        if (*(volatile s32 *)((u8 *)arg0 + 0x20) == 0x3eb)
+            *(f32 *)((u8 *)arg0 + 0x24) += lbl_80562370;
     }
-    *(s8*)((u8*)arg0 + 0x4C) = 0;
-    *(f32*)((u8*)arg0 + 0x34) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x38) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x3C) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x40) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x44) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x48) = lbl_805622D0;
-    *(f32*)((u8*)arg0 + 0x50) = lbl_805622D0;
+    *(volatile u8 *)((u8 *)arg0 + 0x4c) = 0;
+    f32 zero = lbl_805622D0;
+    *(f32 *)((u8 *)arg0 + 0x34) = zero;
+    *(f32 *)((u8 *)arg0 + 0x38) = zero;
+    *(f32 *)((u8 *)arg0 + 0x3c) = zero;
+    *(f32 *)((u8 *)arg0 + 0x40) = zero;
+    *(f32 *)((u8 *)arg0 + 0x44) = zero;
+    *(f32 *)((u8 *)arg0 + 0x48) = zero;
+    *(f32 *)((u8 *)arg0 + 0x50) = zero;
     return arg0;
 }
 
