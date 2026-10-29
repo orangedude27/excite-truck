@@ -1163,48 +1163,47 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
 }
 
 extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
+    u8 *base;
     u16 index;
     u32 pair;
-    u32 offset;
-    u8 *base;
-    u8 *record;
-    u8 *flags;
+    u32 table;
+    register u32 offset;
+    u32 record;
     s32 result;
 
     *arg2 = 0;
     if (*(u16 *)&lbl_803D1640 >= 0x1A)
         return 10;
 
-    index = 0;
+    pair = 0;
     base = (u8 *)&lbl_803D1640;
-    for (pair = 0; pair < 13; pair++) {
+    index = 0;
+    for (; pair < 13; pair++) {
         u8 *entry = base + index * 0x28;
         if ((*(u32 *)(entry + 0x61C) & 1) == 0)
             goto found;
         index++;
-
         entry = base + index * 0x28;
         if ((*(u32 *)(entry + 0x61C) & 1) == 0)
             goto found;
         index++;
     }
-
     if (index == 0x1A)
         return 10;
 
 found:
-    offset = index * 0x28;
-    record = base + offset;
-    flags = record + 0x61C;
-    result = fn_800A625C(arg0, (s32)flags);
+    table = (u32)&lbl_803D1640;
+    offset = (u32)index * 0x28;
+    result = fn_800A625C(arg0, (s32)(table + offset + 0x61C));
     if (result != 0)
         return result;
 
-    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
-    *(u32 *)flags |= 1;
+    record = table + offset;
+    *(u16 *)table = *(u16 *)table + 1;
+    *(u32 *)(record + 0x61C) |= 1;
     *(s32 *)(record + 0x620) = (s32)arg0;
     *(s32 *)(record + 0x624) = arg1;
-    *arg2 = (s32)flags;
+    *arg2 = (s32)(record + 0x61C);
     return 0;
 }
 
@@ -3324,33 +3323,31 @@ block_52:
 
 extern "C" s32 fn_800AD24C(void *, s32, s32, s32 *, s32 *);
 extern "C" s32 fn_800AE108(void *arg0, s32 arg1, s32 arg2, u32 arg3, s32 *arg4, s32 arg5) {
+    void *context = *(void **)((u8 *)arg0 + 0x34);
     s32 end = -1;
     s32 one = 1;
-    s32 pos = arg1;
-    s32 count = arg2;
-    void *context = *(void **)((u8 *)arg0 + 0x34);
-    for (;;) {
-        if (end == 0)
-            break;
-        if (fn_800AD24C(arg0, pos, count, &end, &one) != 0)
-            return 1;
-        if ((u32)(pos + 1) != (u32)end) {
-            if ((u32)end == *(u32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)context + 0x1C) * 0x14 + 8)) {
-                *(s32 *)((u8 *)arg0 + 0xC) = pos;
-                *(s32 *)((u8 *)arg0 + 0x10) = count - 1;
+    void *object = arg0;
+    s32 position = arg1;
+
+    while (end != 0) {
+        s32 result = fn_800AD24C(object, position, arg2, &end, &one);
+        if (result != 0) return result;
+        if ((u32)(position + 1) != (u32)end) {
+            u32 index = *(u32 *)((u8 *)context + 0x1C);
+            u32 expected = *(u32 *)((u8 *)lbl_802EEF40 + index * 0x14 + 8);
+            if ((u32)end == expected) {
+                *(s32 *)((u8 *)object + 0xC) = position;
+                *(s32 *)((u8 *)object + 0x10) = arg2 - 1;
             }
             break;
         }
-        {
-            void *queue = *(void **)((u8 *)arg0 + 0x30);
-            ++*(s32 *)queue;
-            *(s32 *)((u8 *)queue + 4) = end;
-        }
+        ++*(s32 *)*(void **)((u8 *)object + 0x30);
+        *(s32 *)((u8 *)*(void **)((u8 *)object + 0x30) + 4) = end;
         *arg4 += *(u8 *)((u8 *)context + 6);
-        if ((u32)(*arg4 << *(u8 *)((u8 *)context + 0x20)) >= arg3)
+        if (((u32)*arg4 << *(u8 *)((u8 *)context + 0x20)) >= arg3)
             break;
-        pos = end;
-        ++count;
+        position = end;
+        ++arg2;
     }
     return 0;
 }
