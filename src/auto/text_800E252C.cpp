@@ -2562,7 +2562,7 @@ extern "C" void ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3
 extern "C" const char lbl_803224F0[], lbl_803226B0[], lbl_803226DC[];
 extern "C" char lbl_80559818;
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(void *self, void *wave, int index, const void *src) {
     unsigned int count;
     void *bank;
@@ -2652,15 +2652,16 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     *(int *)((char *)self + 0x60) = zero;
     int current = *(int *)((char *)self + 0x50);
     int total = *(int *)((char *)self + 0x4c);
-    if (current < total)
-        goto interpolate;
-    goto after_interpolate;
-interpolate:
-    base += (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total;
-after_interpolate:
-    float finalTarget = lbl_80560FB4;
-    float baseAgain = lbl_80560FB0;
-    int one = 1;
+    base = current < total
+        ? base + (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total
+        : base;
+    float baseAgain;
+    float finalTarget;
+    int one;
+    finalTarget = lbl_80560FB4;
+    zero = 0;
+    baseAgain = lbl_80560FB0;
+    one = 1;
     *(float *)((char *)self + 0x44) = base;
     *(float *)((char *)self + 0x48) = finalTarget;
     *(int *)((char *)self + 0x4c) = one;
