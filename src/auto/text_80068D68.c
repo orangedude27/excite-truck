@@ -16925,7 +16925,7 @@ void sdp_disc_server_rsp(tCONN_CB *p_ccb, BT_HDR *p_msg) {
 
 extern char lbl_8031A050[];
 void process_service_search_rsp(void *p_ccb, UINT8 *p_reply, UINT16 len) {
-    tCONN_CB *ccb = (tCONN_CB *)p_ccb;
+    tCONN_CB_SEARCH_VIEW *ccb = (tCONN_CB_SEARCH_VIEW *)p_ccb;
     UINT16 xx;
     UINT16 total, cur_handles, orig;
     UINT8 cont_len;
@@ -16939,7 +16939,7 @@ void process_service_search_rsp(void *p_ccb, UINT8 *p_reply, UINT16 len) {
     if (ccb->num_handles == 0) {
         if (lbl_803C4C40[0x4630] >= 2)
             fn_8007093C(0xA0001, lbl_8031A050);
-        sdp_disconnect(p_ccb, 0xFFF0);
+        sdp_disconnect((tCONN_CB *)p_ccb, 0xFFF0);
         return;
     }
 
@@ -16952,13 +16952,13 @@ void process_service_search_rsp(void *p_ccb, UINT8 *p_reply, UINT16 len) {
     BE_STREAM_TO_UINT8(cont_len, p_reply);
     if (cont_len != 0) {
         if (cont_len > 0x10) {
-            sdp_disconnect(p_ccb, 5);
+            sdp_disconnect((tCONN_CB *)p_ccb, 5);
             return;
         }
         sdp_snd_service_search_req((tCONN_CB *)p_ccb, cont_len, p_reply);
     } else {
         ccb->disc_state = 2;
-        process_service_attr_rsp(p_ccb, 0, 0);
+        process_service_attr_rsp((tCONN_CB *)p_ccb, 0, 0);
     }
 }
 
