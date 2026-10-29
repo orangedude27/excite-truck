@@ -1364,32 +1364,32 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
 extern "C" int strcmp(const char *, const char *);
 extern "C" const char lbl_80324A8C[];
 extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(void *arg0, void *arg1, s32 arg2) {
-    u8 *node;
-    const char *str = (const char *)arg2;
-    u8 *tree = (u8 *)arg1;
-    u8 *self = (u8 *)arg0;
-    if (tree == 0)
+    register StringTreeNodeLayout *node;
+    register const char *str = (const char *)arg2;
+    register u32 treeBase = (u32)arg1;
+    register u8 *self = (u8 *)arg0;
+    if (treeBase == 0)
         return -1;
-    u32 index = *(u32 *)tree;
-    if (index >= *(u32 *)(tree + 4))
+    register u32 index = *(u32 *)treeBase;
+    if (index >= *(u32 *)(treeBase + 4))
         return -1;
-    node = tree + index * 0x14 + 8;
-    s32 length = strlen(str);
-    while ((*(u16 *)node & 1) == 0) {
-        s32 bits = *(u16 *)(node + 2);
-        s32 byteIndex = bits >> 3;
-        s32 bitIndex = bits & 7;
-        s32 child;
+    node = (StringTreeNodeLayout *)(treeBase + index * 0x14 + 8);
+    register s32 length = strlen(str);
+    while ((node->flags & 1) == 0) {
+        register s32 bits = node->bitIndex;
+        register s32 byteIndex = bits >> 3;
+        register s32 bitIndex = bits & 7;
+        register s32 child;
         if (byteIndex < length &&
             (((s8)str[byteIndex] & (1 << (7 - bitIndex))) != 0))
-            child = *(u32 *)(node + 8);
+            child = node->oneChild;
         else
-            child = *(u32 *)(node + 4);
-        node = tree + child * 0x14 + 8;
+            child = node->zeroChild;
+        node = (StringTreeNodeLayout *)(treeBase + child * 0x14 + 8);
     }
-    u32 labelId = *(u32 *)(node + 0xC);
+    treeBase = node->labelId;
     const char *label;
-    u32 sentinel = labelId + 0x10000;
+    u32 sentinel = treeBase + 0x10000;
     if (sentinel == 0xFFFF) {
         label = (const char *)sentinel;
     } else {
@@ -1398,11 +1398,11 @@ extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileRea
         if (table == 0) {
             label = 0;
         } else {
-            if (labelId >= table[0])
+            if (treeBase >= table[0])
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324868, 0x1BA, lbl_80324A8C);
             table = *tableField;
             const char *base = *(const char **)(self + 0x2C);
-            u32 offset = table[labelId + 1];
+            u32 offset = table[treeBase + 1];
             if (offset == 0)
                 label = 0;
             else
@@ -1410,7 +1410,7 @@ extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileRea
         }
     }
     if (strcmp(str, label) == 0)
-        return *(s32 *)(node + 0x10);
+        return node->soundId;
     return -1;
 }
 
@@ -2326,24 +2326,28 @@ extern "C" void fn_800F7110(void *self, unsigned long taskId) {
     ((void (*)(void*, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(manager, id);
 }
 
-extern "C" void *NoteOn__Q46nw4hbm3snd18SoundArchivePlayer17SeqNoteOnCallbackFPQ46nw4hbm3snd6detail9SeqPlayeriRCQ46nw4hbm3snd6detail10NoteOnInfo(
-    void *self, void *player, s32 arg2, const void *noteInfo) {
+void *nw4hbm::snd::SoundArchivePlayer::SeqNoteOnCallback::NoteOn(
+    nw4hbm::snd::detail::SeqPlayer *player, int arg2,
+    const nw4hbm::snd::detail::NoteOnInfo &noteInfo) {
     struct Scratch {
         u8 bankInfo[8];
         u8 reader[16];
         u8 seqInfo[16];
     } scratch;
 
-    void *archive = *(void **)((u8 *)self + 4);
-    void *reader = *(void **)((u8 *)archive + 0x10);
-    if (reader == 0) {
-        return 0;
+    void *fileInfo =
+        *(void **)(*(u8 **)((u8 *)this + 4) + 0x10);
+    s32 result;
+    if (fileInfo == 0) {
+        result = 0;
+    } else {
+        result = fn_800F273C(fileInfo);
     }
-    if (fn_800F273C(reader) == 0) {
+    if (result == 0) {
         return 0;
     }
 
-    archive = *(void **)((u8 *)self + 4);
+    void *archive = *(void **)((u8 *)this + 4);
     if (*(s32 *)((u8 *)archive + 0x10) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
     }
@@ -2355,14 +2359,14 @@ extern "C" void *NoteOn__Q46nw4hbm3snd18SoundArchivePlayer17SeqNoteOnCallbackFPQ
         return 0;
     }
 
-    if (fn_800F281C(bankFileReader, *(u32 *)(scratch.seqInfo + 4),
-                    scratch.bankInfo) == 0) {
+    if (((s32 (*)(void *, u32, void *))fn_800F281C)(
+            bankFileReader, *(u32 *)(scratch.seqInfo + 4), scratch.bankInfo) == 0) {
         return 0;
     }
 
-    u32 fileId = *(u32 *)scratch.bankInfo;
     s32 fileAddress =
-        detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(archive, fileId);
+        detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(
+            *(void **)((u8 *)this + 4), *(u32 *)scratch.bankInfo);
     if (fileAddress == 0) {
         return 0;
     }
@@ -2370,23 +2374,22 @@ extern "C" void *NoteOn__Q46nw4hbm3snd18SoundArchivePlayer17SeqNoteOnCallbackFPQ
     ((void *(*)(void *, s32))fn_800E80B8)(scratch.reader, fileAddress);
     s32 waveAddress =
         detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(
-            archive, fileId);
-    s32 missingWave = waveAddress == 0;
-    if (missingWave != 0) {
+            *(void **)((u8 *)this + 4), *(u32 *)scratch.bankInfo);
+    if (waveAddress == 0) {
         ((int (*)(int, int))fn_800E80F0)((int)scratch.reader, -1);
         return 0;
     }
-    if (missingWave != 0) {
+    if (waveAddress == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(
             (const char *)&lbl_805598D8, 0x2F, lbl_80325B88);
     }
 
     *(s32 *)(scratch.reader + 0xC) = waveAddress;
-    void *result =
+    void *sound =
         NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10NoteOnInfo(
-            scratch.reader, noteInfo);
+            scratch.reader, (const void *)&noteInfo);
     ((int (*)(int, int))fn_800E80F0)((int)scratch.reader, -1);
-    return result;
+    return sound;
 }
 
 extern "C" s32 detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(void *, u32);
