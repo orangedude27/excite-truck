@@ -65,6 +65,7 @@ extern uusb_cb_t lbl_803BD1E0;
 extern u8 lbl_8055DC50;
 extern u8 lbl_8055DC51;
 extern void uusb_CloseDeviceCB(s8);
+extern void uusb_issue_intr_read(void);
 extern void rfc_port_sm_state_closed(void *, u16, void *);
 extern void rfc_port_sm_sabme_wait_ua(void *, u16, void *);
 extern void rfc_port_sm_orig_wait_sec_check(void *, u16, void *);
@@ -4849,33 +4850,38 @@ found:
 tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR arg0) {
     u8 *base;
     u8 *dev;
+    u8 *entry;
     u8 *inq;
     s32 i;
-    s32 count;
+    u32 value;
+
     base = lbl_803C0F78;
     dev = 0;
-    i = 0;
-    count = 0x10;
-loop:
-    if ((base[0x1FA6] & 0x80) == 0) {
-        dev = base + i * 0x88 + 0x1F30;
-    } else {
+    for (i = 0; i < 0x10; i++) {
+        if ((base[0x1FA6] & 0x80) == 0) {
+            entry = lbl_803C0F78 + i * 0x88;
+            dev = entry + 0x1F30;
+            break;
+        }
         base += 0x88;
-        i++;
-        count--;
-        if (count != 0) goto loop;
     }
-    if (dev == 0) dev = (u8 *)btm_find_oldest_dev();
+
+    if (dev == 0)
+        dev = (u8 *)btm_find_oldest_dev();
+
     memset(dev, 0, 0x88);
     dev[0x76] = 0x80;
     dev[0x85] = 0;
     inq = (u8 *)BTM_InqDbRead(arg0);
-    if (inq != 0) memcpy(dev + 0x22, inq + 8, 3);
-    else memcpy(dev + 0x22, lbl_803C0F78 + 0x27BA, 3);
+    if (inq != 0)
+        memcpy(dev + 0x22, inq + 8, 3);
+    else
+        memcpy(dev + 0x22, lbl_803C0F78 + 0x27BA, 3);
     memcpy(dev + 0x1C, arg0, 6);
     *(u16 *)(dev + 0x18) = BTM_GetHCIConnHandle(arg0);
-    *(u32 *)(dev + 0xC) = *(u32 *)(lbl_803C0F78 + 0x1974);
-    ++*(u32 *)(lbl_803C0F78 + 0x1974);
+    value = *(u32 *)(lbl_803C0F78 + 0x1974);
+    *(u32 *)(dev + 0xC) = value;
+    *(u32 *)(lbl_803C0F78 + 0x1974) = value + 1;
     return (tBTM_SEC_DEV_REC *)dev;
 }
 
@@ -14979,39 +14985,46 @@ void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
 }
 
 void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
-    u8 modem_signal = p_pars[0];
-    u8 break_signal = p_pars[1];
-    BT_HDR *p_buf;
-    u8 *data;
-    s32 length;
+    struct PORT_CTRL_VIEW {
+        u8 modem_signal;
+        u8 break_signal;
+        u8 discard_buffers;
+        u8 break_signal_seq;
+        u8 fc;
+    } *pars = (struct PORT_CTRL_VIEW *)p_pars;
+    u8 modem_signal = pars->modem_signal;
+    u8 break_signal = pars->break_signal;
+    u8 *buf;
+    u32 n;
+    u32 length;
     u32 signal;
 
-    p_buf = (BT_HDR *)GKI_getpoolbuf(2);
-    if (p_buf == NULL) {
+    buf = (u8 *)GKI_getpoolbuf(2);
+    if (buf == NULL) {
         return;
     }
 
-    p_buf->offset = 0xC;
-    data = (u8 *)(p_buf + 1);
-    length = ((u32)(break_signal != 0)) + 2;
-    data[0xC] = (u8)((((-is_command | is_command) >> 31) & 2) | 0xE1);
-    data[0xD] = (u8)((length << 1) | 1);
-    data[0xE] = (u8)(((u8)dlci << 2) | 3);
+    *(u16 *)(buf + 4) = 0xC;
+    n = (u32)(break_signal != 0);
+    length = n + 2;
+    buf[0x14] = (u8)((((-is_command | is_command) >> 31) & 2) | 0xE1);
+    buf[0x15] = (u8)((length << 1) | 1);
+    buf[0x16] = (u8)(((u8)dlci << 2) | 3);
 
     signal = 1 |
-             (p_pars[4] != 0 ? 2U : 0U) |
-             (modem_signal & 1 ? 4U : 0U) |
-             (modem_signal & 2 ? 8U : 0U) |
-             (modem_signal & 4 ? 0x40U : 0U) |
-             (modem_signal & 8 ? 0x80U : 0U);
-    data[0xF] = (u8)signal;
+             ((pars->fc != 0 ? 2U : 0U)) |
+             ((modem_signal & 1 ? 4U : 0U)) |
+             ((modem_signal & 2 ? 8U : 0U)) |
+             ((modem_signal & 4 ? 0x40U : 0U)) |
+             ((modem_signal & 8 ? 0x80U : 0U));
+    buf[0x17] = (u8)signal;
 
     if (break_signal != 0) {
-        data[0x10] = (u8)((break_signal << 4) | 3);
+        *(buf + 0x18) = (u8)((break_signal << 4) | 3);
     }
 
-    p_buf->len = (u16)(length + 2);
-    rfc_send_buf_uih(p_mcb, 0, p_buf);
+    *(u16 *)(buf + 2) = (u16)(length + 2);
+    rfc_send_buf_uih(p_mcb, 0, (BT_HDR *)buf);
 }
 
 void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
