@@ -4640,7 +4640,7 @@ extern "C" s32 fn_802237F0(s32 arg0, s32 arg1) {
     return *(s32 *)(arg0 + (arg1 << 2) + 0x378);
 }
 
-extern "C" void *fn_802230A4(void *, s32, s32, void *, s32);
+
 extern "C" void *lbl_8033E458;
 extern "C" void *fn_80223800(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
     ((void (*)(void))fn_802230A4)();
