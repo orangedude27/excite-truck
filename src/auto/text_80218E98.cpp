@@ -1649,6 +1649,52 @@ extern "C" void *fn_8021B9AC(void *arg0, void *arg1, s32 arg2, s32 arg3) {
         *(s32 *)((u8 *)arg1 + 0x84));
     return arg0;
 }
+
+extern "C" char lbl_8055B878;
+extern "C" void fn_8022D924(void *, s32);
+extern "C" void fn_8021BA64(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5,
+                              s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 arg11, s32 arg12) {
+    s32 half1 = 0;
+    s32 half2 = 0;
+    s32 stride;
+
+    *(s32 *)((u8 *)arg0 + 0x25C) = arg4;
+    *(s32 *)((u8 *)arg0 + 0x254) = arg3;
+    *(s32 *)((u8 *)arg0 + 0x250) = arg11;
+    *(s32 *)((u8 *)arg0 + 0x258) = 0;
+
+    if (arg6 & 4)
+        half1 = arg1 / 2;
+    else if (arg6 & 2)
+        half1 = arg1;
+
+    if (arg6 & 0x60)
+        half2 = arg11;
+    else if (arg6 & 0x10)
+        half2 = arg11 / 2;
+
+    s32 params[22] = {0};
+    params[0] = (s32)arg5;
+    params[2] = arg6;
+    params[3] = arg7;
+    params[4] = arg10;
+    params[5] = arg12;
+    params[6] = half1;
+    params[7] = half2;
+    params[10] = arg9;
+    params[11] = arg10;
+    params[12] = arg12;
+    params[13] = half1;
+    params[14] = half2;
+
+    stride = fn_8022A86C(params);
+    *(s32 *)((u8 *)arg0 + 0x244) = stride;
+    stride = fn_8022B620(stride, &lbl_8055B878) - 0x17;
+    *(s32 *)((u8 *)arg0 + 0x260) = stride / 2;
+    fn_80219440(arg0, 0, (u8 *)arg3 + 0x24, 4);
+    fn_8022D924((void *)arg3, arg2 / arg11);
+}
+
 #pragma pop
 extern "C" void fn_8022A8E4(s32);
 extern "C" void fn_8021BA64(void *, s32, s32, s32, s32, void *, s32, s32, s32, s32, s32, s32, s32);
@@ -4682,6 +4728,62 @@ extern "C" void* fn_80223FAC(void* arg0, s32 arg1) {
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" const char lbl_8033DA90[];
+extern "C" void fn_80224028(void *arg0) {
+    s32 state;
+    s32 (*callback)(void *);
+
+    fn_802192AC(arg0);
+    if (*(s32 *)((u8 *)arg0 + 0x254) != 0) {
+        goto active;
+    }
+    if (*(s32 *)((u8 *)arg0 + 0x258) == 0) {
+        goto done;
+    }
+    state = fn_802ECF08(*(s32 *)((u8 *)arg0 + 0x258),
+        *(u8 *)((u8 *)arg0 + 0x25C) == 0);
+    *(s32 *)((u8 *)arg0 + 0x254) = state;
+    if (state != 0) {
+        goto done;
+    }
+    if (*(u8 *)((u8 *)arg0 + 0x25C) == 0) {
+        goto done;
+    }
+    callback = *(s32 (**)(void *))((u8 *)arg0 + 0x260);
+    if (callback == 0) {
+        goto active;
+    }
+    if (callback(*(void **)((u8 *)arg0 + 0x264)) == 0) {
+        goto done;
+    }
+    fn_802168BC(*(void **)((u8 *)arg0 + 0x264));
+    goto done;
+
+active:
+    if (*(u8 *)((u8 *)arg0 + 0x25C) != 0) {
+        if (fn_802ED040() != 0) {
+            callback = *(s32 (**)(void *))((u8 *)arg0 + 0x260);
+            if (callback != 0 &&
+                callback(*(void **)((u8 *)arg0 + 0x264)) != 0) {
+                fn_802168BC(*(void **)((u8 *)arg0 + 0x264));
+            }
+        }
+    }
+    if (*(s32 *)((u8 *)arg0 + 0x258) != 0 &&
+        fn_802ECF90(*(s32 *)((u8 *)arg0 + 0x254)) == 0) {
+        fn_802ECFF4(*(s32 *)((u8 *)arg0 + 0x254));
+        fn_802E30C8(lbl_8033DA90, *(s32 *)((u8 *)arg0 + 0x258));
+        *(s32 *)((u8 *)arg0 + 0x254) = fn_802ECF08(
+            *(s32 *)((u8 *)arg0 + 0x258),
+            *(u8 *)((u8 *)arg0 + 0x25C) == 0);
+    }
+
+done:
+    if (*(s32 *)((u8 *)arg0 + 0x254) != 0) {
+        fn_802ECFEC();
+    }
 }
 
 extern "C" void fn_802ED038(s32, f32, f32, f32, f32);
