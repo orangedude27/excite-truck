@@ -15418,7 +15418,7 @@ u32 SDP_CreateRecord(void) {
 
 BOOLEAN SDP_DeleteRecord(UINT32 handle) {
     UINT16 xx, yy, zz;
-    tSDP_RECORD *record = (tSDP_RECORD *)(lbl_803C4C40 + 0x1224);
+    tSDP_RECORD_VIEW *record = (tSDP_RECORD_VIEW *)(lbl_803C4C40 + 0x1224);
 
     if (handle == 0 || *(UINT16 *)(lbl_803C4C40 + 0x1222) == 0) {
         *(UINT16 *)(lbl_803C4C40 + 0x1222) = 0;
@@ -15432,7 +15432,7 @@ BOOLEAN SDP_DeleteRecord(UINT32 handle) {
             for (yy = xx; yy < *(UINT16 *)(lbl_803C4C40 + 0x1222); yy++, record++) {
                 *record = *(record + 1);
                 for (zz = 0; zz < record->num_attributes; zz++) {
-                    record->attribute[zz].value_ptr -= sizeof(tSDP_RECORD);
+                    record->attribute[zz].value_ptr -= sizeof(tSDP_RECORD_VIEW);
                 }
             }
 
