@@ -21,7 +21,7 @@ extern int lbl_8055FE78, lbl_8055FE7C, lbl_8055FE80;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_802DACD4(void) {
- struct StringStart { char first; };
+ struct StringStart { volatile char first; };
  register const char *message=lbl_8034C918;
  volatile int b,c,d;
  int font;
@@ -31,7 +31,7 @@ void fn_802DACD4(void) {
  } else {
   font=0x120F00;
  }
- lbl_8055FE78=fn_801284E8(&((struct StringStart *)message)->first,font);
+ lbl_8055FE78=fn_801284E8((void *)&((volatile struct StringStart *)message)->first,font);
  font=OSInitFont();
  if (OSGetFontEncode()==0x120F00) fn_802E30C8(message+0xC);
  if (font==0) {
@@ -71,6 +71,92 @@ void fn_802DAE18(void) {
         fn_80128658(lbl_8055FE78);
         lbl_8055FE78 = 0;
     }
+}
+
+#pragma scheduling invalid_target
+void OSGetFontWidth(char *, int *);
+void fn_802C32B8(int, int, unsigned int);
+
+int fn_802DAE64(int arg0, int arg1, char *arg2) {
+    int sp18;
+    int sp14;
+    int sp10;
+    void *spC;
+    int sp8;
+    register int startX;
+    register int baseY;
+    register int value;
+    register char *cursor;
+    register char *text;
+    register void *bitmap;
+    register int screenY;
+    register int zero;
+    int color;
+    int address;
+    int pixel;
+    int ch;
+
+    zero = 0;
+    sp18 = zero;
+    baseY = arg1;
+    sp14 = zero;
+    sp10 = zero;
+    spC = 0;
+    if (arg0 < 0) {
+        startX = (zero ^ arg0) - (arg0 >> 31);
+    } else {
+        startX = 0x46;
+    }
+    text = arg2;
+    zero = 0;
+
+text_loop:
+    ch = (signed char)*text;
+    if (ch == 0) return 0;
+    if (ch == 0x20) {
+        value = startX;
+        cursor = text + 1;
+word_loop:
+        sp8 = 0;
+        OSGetFontWidth(cursor, &sp8);
+        cursor++;
+        value += sp8;
+        ch = (signed char)*cursor;
+        if (ch != 0 && ch != 0x20) goto word_loop;
+        if (value > 0x23A) {
+            startX = 0x46;
+            baseY += 0x20;
+            goto advance;
+        }
+    }
+
+    OSGetFontTexture(text, (int *)&spC, &sp18, &sp14, &sp10);
+    bitmap = spC;
+    screenY = baseY;
+    for (value = 0; value < 0x18; value++) {
+        screenY = value + baseY;
+        for (pixel = 0; pixel < sp10; pixel++) {
+            int px = pixel + sp18;
+            int py = value + sp14;
+            address = ((px / 8 + ((py / 8) << 9) / 8) << 6) + ((px % 8) * 8) + (py % 8);
+            address = (address + ((unsigned int)address >> 31)) >> 1;
+            ch = ((unsigned char *)bitmap)[address];
+            if (pixel & 1) {
+                color = ch & 0xF;
+            } else {
+                color = (ch >> 4) & 0xF;
+            }
+            if (color != 0) {
+                unsigned int c = ((color * 0xC + 0x10) << 8 & 0xFFFF00) | 0x80;
+                unsigned int packed = (c & ~0xFF800000) | ((c << 0x10) & 0xFF800000);
+                fn_802C32B8(pixel + startX, screenY, packed);
+            }
+        }
+    }
+advance:
+    startX += sp10;
+    text++;
+    goto text_loop;
 }
 
 extern void *fn_802D2F78(int *, int *);
