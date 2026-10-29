@@ -7008,8 +7008,31 @@ extern "C" s32 fn_800B9BB4(s32 arg0) {
     return 0;
 }
 
-#pragma push
-#pragma small_data off
+extern "C" const char lbl_8031B2EC[];
+#pragma dont_inline on
+extern "C" s32 fn_800B9CC4(s32 arg0) {
+    u8 value;
+
+    if ((arg0 & 2) != 2)
+        return 0;
+
+    *(volatile s32 *)(lbl_80407300 + 0x10) = 0;
+    if (*(volatile s32 *)(lbl_80407300 + 8) != 0) {
+        lbl_8055DD60 = 1;
+        if (fn_800BC474((s32 *)*(volatile s32 *)(lbl_80407300 + 8), (s32)fn_800B9BB4, &lbl_8055DD60) != 0)
+            OSReport(lbl_8031B2EC);
+    }
+    if (*(volatile s32 *)(lbl_80407300 + 0xC) != 0) {
+        if (*(volatile s8 *)(lbl_80407300 + 0x14) == 0 &&
+            fn_800BA974(*(volatile s32 *)(lbl_80407300 + 0xC), &value, 1) == 1)
+            *(volatile u8 *)(lbl_80407300 + 0x14) = value;
+        fn_800A68C8((void *)*(volatile s32 *)(lbl_80407300 + 0xC));
+        if (*(volatile s8 *)(lbl_80407300 + 0x14) != 0 && lbl_8055DD44 != 0)
+            ((void (*)(s8))lbl_8055DD44)(*(volatile s8 *)(lbl_80407300 + 0x14));
+    }
+    return 0;
+}
+#pragma dont_inline reset
 extern "C" s32 fn_800BA160(s32 arg0) {
     register s32 result;
     register s32 value;
@@ -13613,6 +13636,41 @@ extern "C" u8 fn_800D3838(u8 *arg0) {
     return *arg0;
 }
 
+extern "C" s32 OSEnableInterrupts(void);
+extern "C" s32 DVDReadAsyncPrio(void *, void *, s32, s32, s32, s32);
+extern "C" u8 fn_800D3840(s32 arg0) {
+    register u32 temp_r5;
+    s32 var_r29;
+    s32 temp_r28;
+    s32 temp_r31;
+    s32 temp_r4;
+    s32 var_r31;
+    u32 end;
+
+    temp_r5 = (u32)arg0 & 0x7FFFFFFF;
+    var_r29 = temp_r5 - lbl_805597E8;
+    if (temp_r5 >= lbl_8055DDD0)
+        return 0;
+    if (lbl_805597E8 < 0 || var_r29 < 0 || var_r29 >= 0x200) {
+        temp_r4 = temp_r5 & 0xFFFFFFE0;
+        lbl_805597E8 = temp_r4;
+        var_r29 = temp_r5 - temp_r4;
+        var_r31 = 0x200;
+        end = *(volatile u32 *)&lbl_8055DDD0;
+        if ((u32)(temp_r4 + 0x200) >= end)
+            var_r31 = (end - temp_r4 + 0x1F) & 0xFFFFFFE0;
+        temp_r28 = OSEnableInterrupts();
+        temp_r31 = DVDReadAsyncPrio((void *)lbl_80407E00, (void *)lbl_80407C00, var_r31,
+                                    lbl_805597E8, 0, 2);
+        do {
+        } while (DVDGetCommandBlockStatus((DVDCommandBlock *)lbl_80407E00) != 0);
+        OSRestoreInterrupts(temp_r28);
+        if (temp_r31 <= 0)
+            return 0;
+    }
+    return lbl_80407C00[var_r29];
+}
+
 extern "C" u8 (*lbl_8055DDD8)(const char *);
 extern "C" const char lbl_8031EC50[];
 extern "C" const char lbl_8031ED84[];
@@ -13674,15 +13732,20 @@ extern "C" u32 fn_800D3A30(const char *arg0) {
 
 extern "C" u32 fn_800D3B40(const char *str, char *buffer, s32 count, u32 delim) {
     s32 copied = 0;
-    const char *base = lbl_8031EC50;
-    if (str == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x220, base + 0x18C);
-    if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x221, base + 0x164);
-    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x222, base + 0x134);
+    register char *base = (char *)lbl_8031EC50;
+
+    if (str == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x220, base + 0x18C);
+    if (buffer == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x221, base + 0x164);
+    if (lbl_8055DDD8 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x222, base + 0x134);
+
     count--;
     for (;;) {
         const char *p = str;
-        str++;
         u8 c = lbl_8055DDD8(p);
+        str++;
         if ((u32)c == delim || c == 0 || (s32)c == 10) {
             *buffer = 0;
             return copied;
