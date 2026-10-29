@@ -17212,46 +17212,35 @@ void __BzeroDelayLines(void *arg0) {
 
 void __FreeDelayLine(void *arg0) {
     extern void *lbl_805590B4;
-    u8 *base = (u8 *)arg0;
-    u8 *p0 = base;
-    u8 *p44 = base;
-    u8 *p98 = base;
-    u32 i = 0;
-    u32 j;
+    AXFX_REVERBHI_EXP_FREE_VIEW *fx = (AXFX_REVERBHI_EXP_FREE_VIEW *)arg0;
+    u32 ch, i;
 
-    do {
-        if (*(void **)p0 != 0) {
-            ((void (*)(void))lbl_805590B4)();
-            *(void **)p0 = 0;
+    for (ch = 0; ch < 3; ch++) {
+        if (fx->earlyLine[ch] != 0) {
+            ((void (*)(void *))lbl_805590B4)(fx->earlyLine[ch]);
+            fx->earlyLine[ch] = 0;
         }
-        if (*(void **)(p0 + 0x2C) != 0) {
-            ((void (*)(void))lbl_805590B4)();
-            *(void **)(p0 + 0x2C) = 0;
+        if (fx->preDelayLine[ch] != 0) {
+            ((void (*)(void *))lbl_805590B4)(fx->preDelayLine[ch]);
+            fx->preDelayLine[ch] = 0;
         }
-
-        for (j = 0; j < 3; j++) {
-            if (*(void **)(p44 + 0x44) != 0) {
-                ((void (*)(void))lbl_805590B4)();
-                *(void **)(p44 + 0x44) = 0;
+        for (i = 0; i < 3; i++) {
+            if (fx->combLine[ch][i] != 0) {
+                ((void (*)(void *))lbl_805590B4)(fx->combLine[ch][i]);
+                fx->combLine[ch][i] = 0;
             }
-            p44 += 4;
         }
-
-        for (j = 0; j < 2; j++) {
-            if (*(void **)(p98 + 0x98) != 0) {
-                ((void (*)(void))lbl_805590B4)();
-                *(void **)(p98 + 0x98) = 0;
+        for (i = 0; i < 2; i++) {
+            if (fx->allpassLine[ch][i] != 0) {
+                ((void (*)(void *))lbl_805590B4)(fx->allpassLine[ch][i]);
+                fx->allpassLine[ch][i] = 0;
             }
-            p98 += 4;
         }
-
-        if (*(void **)(p0 + 0xC8) != 0) {
-            ((void (*)(void))lbl_805590B4)();
-            *(void **)(p0 + 0xC8) = 0;
+        if (fx->lastAllpassLine[ch] != 0) {
+            ((void (*)(void *))lbl_805590B4)(fx->lastAllpassLine[ch]);
+            fx->lastAllpassLine[ch] = 0;
         }
-        i++;
-        p0 += 4;
-    } while (i < 3);
+    }
 }
 
 f64 fn_8002EFBC(f64, f32);
