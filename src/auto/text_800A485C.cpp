@@ -4,7 +4,7 @@ struct VFiPFENTIterLayout {
     volatile u32 position;
     void *stream;
     u8 pad8[0x38];
-    u32 index;
+    volatile u32 index;
     u32 sentinel;
     u16 length;
     u8 pad4A[2];
@@ -2689,34 +2689,49 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
 
 extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     u32 sp8;
-    u32 index;
+    s32 index;
     u32 old;
     s32 result;
+    s32 status;
+    VFiPFENTIterLayout *iter = (VFiPFENTIterLayout *)arg0;
 
-    if (*(u32 *)((u8 *)arg0 + 0x44) != 0xFFFFFFFFu &&
-        *(volatile u8 *)((u8 *)arg0 + 0x4C) != 0 &&
-        *(volatile u32 *)arg0 >= 0xF423Fu) {
-        index = *(u32 *)((u8 *)arg0 + 0x40);
-        old = *(volatile u32 *)arg0;
-        *(volatile u32 *)arg0 = (index + 1) << *(u8 *)((u8 *)arg0 + 0x6C);
-        if (((s32 (*)(void *, s32, s32))fn_800AB378)(arg0, 0, index + 1) != 0) {
-            *(volatile u32 *)arg0 = old;
-            *(u32 *)((u8 *)arg0 + 0x40) = index;
-            return 1;
-        }
-        if (*(u32 *)((u8 *)arg0 + 0x44) == 0xFFFFFFFFu) {
-            return 1;
-        }
-        result = fn_800B5324(*(void **)((u8 *)arg0 + 4),
-                             (u8 *)arg0 + 0x4C,
-                             *(u32 *)((u8 *)arg0 + 0x44),
-                             *(u16 *)((u8 *)arg0 + 0x48),
-                             0x20, &sp8, 0);
-        if (sp8 != 0x20) {
-            return 1;
-        }
-        return result != 0;
+    if (iter->sentinel == 0xFFFFFFFFu ||
+        iter->data[0] == 0 ||
+        iter->position < 0xF423Fu) {
+        goto return_zero;
     }
+    index = iter->index;
+    old = iter->position;
+    iter->position = (index + 1) << iter->shift;
+    if (((s32 (*)(void *, s32, s32))fn_800AB378)(arg0, 0, index + 1) != 0) {
+        iter->position = old;
+        iter->index = index;
+        goto return_one;
+    }
+
+    if (iter->sentinel == 0xFFFFFFFFu) {
+        goto use_short_error;
+    }
+    if (iter->sentinel != 0xFFFFFFFFu) {
+        goto read_entry;
+    }
+use_short_error:
+    status = 0x10;
+    goto finish_status;
+
+read_entry:
+    result = fn_800B5324(iter->stream, iter->data, iter->sentinel,
+                         iter->length, 0x20, &sp8, 0);
+    status = 0x11;
+    if (sp8 == 0x20) {
+        status = result;
+    }
+finish_status:
+    return status != 0;
+
+return_one:
+    return 1;
+return_zero:
     return 0;
 }
 
@@ -3681,7 +3696,7 @@ extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4)
     return saved;
 }
 
-extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2) {
     u8 *obj = (u8 *)arg0;
     u32 sp8;
     u32 scaled = (u32)arg1 << 2;
@@ -13511,56 +13526,31 @@ extern "C" void fn_800D2FC8(void) {
 extern "C" const char lbl_8031EBA0[];
 extern "C" const char lbl_8031EBB4[];
 extern "C" void fn_800D30E8(s32, s32, const char *, s32, s32);
-extern "C" void fn_800D2FDC(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6, void *arg7, f64 a, f64 b, f64 c, f64 d, f64 e, f64 f, f64 g, f64 h) {
-    f64 sp_28;
-    f64 sp_30;
-    f64 sp_38;
-    f64 sp_40;
-    f64 sp_48;
-    f64 sp_50;
-    f64 sp_58;
-    f64 sp_60;
-    s32 sp_8;
-    s32 sp_C;
-    s32 sp_10;
-    s32 sp_14;
-    s32 sp_18;
-    s32 sp_1C;
-    s32 sp_20;
-    s32 sp_24;
-    s32 sp_68;
-    s32 sp_6C;
-    s32 sp_70;
-    char sp_78[0x100];
+extern "C" void fn_800D2FDC(void *arg0, void *arg1, s32 arg2, const char *fmt, ...) {
+    va_list vlist;
+    char buffer[0x100];
+    u32 enabled = lbl_80407BD8[0];
 
-    if (lbl_80407BD8[0] != 0) {
-        sp_28 = h;
-        sp_30 = g;
-        sp_38 = f;
-        sp_40 = e;
-        sp_48 = d;
-        sp_50 = c;
-        sp_58 = b;
-        sp_60 = a;
-    }
-    sp_8 = (s32)arg0;
-    sp_C = (s32)arg1;
-    sp_10 = (s32)arg2;
-    sp_14 = (s32)arg3;
-    sp_18 = (s32)arg4;
-    sp_1C = (s32)arg5;
-    sp_20 = (s32)arg6;
-    sp_24 = (s32)arg7;
-    if (lbl_80407BD8[0] != 0) {
-        sp_6C = (s32)&sp_8;
-        sp_68 = 0x04000000;
-        sp_70 = (s32)&sp_78;
-        if (vsnprintf(sp_78, 0x100, (const char *)arg3, (VaList1 *)&sp_68) > 0) {
-            fn_800D30E8((s32)arg0, (s32)arg1, sp_78, (s32)arg2, 0);
+    if (enabled != 0) {
+        va_start(vlist, fmt);
+        if (enabled != 0) {
+            goto format;
         }
     } else {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x287, lbl_8031EBB4);
+        goto output;
     }
+    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x287, lbl_8031EBB4);
+
+format:
+    if (vsnprintf(buffer, sizeof(buffer), fmt, vlist) <= 0) {
+        goto done;
+    }
+
+output:
+    fn_800D30E8((s32)arg0, (s32)arg1, buffer, (s32)arg2, 0);
+
+done:
+    va_end(vlist);
 }
 
 extern "C" const char lbl_8031EBF4[];
