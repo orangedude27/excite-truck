@@ -10773,26 +10773,28 @@ void hidd_pm_set_now(void *arg0) {
 }
 
 typedef void (*hidd_pm_callback)(u32, u8, void *);
-void hidd_pm_proc_mode_change(u8 arg0, u8 arg1, u16 arg2) {
+void hidd_pm_proc_mode_change(s32 arg0, u8 arg1, s32 arg2) {
     u8 sp8;
     u16 spA;
+    u32 arg2cmp;
     hidd_pm_callback callback;
-    sp8 = arg0;
-    spA = arg2;
+    sp8 = (u8)arg0;
+    spA = (u16)arg2;
     if (lbl_803C3AF0[0x140] == 0) return;
     lbl_803C3AF0[0x6E] = 0;
-    if (arg0 != 0) {
+    if ((u8)arg0 != 0) {
         callback = *(hidd_pm_callback *)(lbl_803C3AF0 + 0xC4);
         if (callback != 0) callback(4, lbl_803C3AF0[0x6F], &sp8);
         return;
     }
+    arg2cmp = (u16)arg2;
     lbl_803C3AF0[0x6A] = arg1;
-    *(u16 *)(lbl_803C3AF0 + 0x6C) = arg2;
+    *(u16 *)(lbl_803C3AF0 + 0x6C) = (u16)arg2;
     if (lbl_803C3AF0[0x78] != 0xFF) {
         if (lbl_803C3AF0[0x78] != arg1 ||
             (lbl_803C3AF0[0x78] != 0 &&
-             (arg2 < *(u16 *)(lbl_803C3AF0 + 0x72) ||
-              arg2 > *(u16 *)(lbl_803C3AF0 + 0x70)))) {
+             (arg2cmp < *(u16 *)(lbl_803C3AF0 + 0x72) ||
+              arg2cmp > *(u16 *)(lbl_803C3AF0 + 0x70)))) {
             hidd_pm_set_now(lbl_803C3AF0 + 0x70);
         } else {
             lbl_803C3AF0[0x78] = 0xFF;
