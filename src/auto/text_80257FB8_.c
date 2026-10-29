@@ -93,13 +93,7 @@ extern void fn_80258040(void);
 #pragma scheduling invalid_target
 #pragma dont_inline fn_80257FB8
 void fn_8025812C(void) {
-    int data[46];
-    int a0, a1, a2, a3, a4;
-    int b0, b2, b3, b4;
-    int zero, eight, two, one, three, six, minus_one, twenty_seven;
-    int bac0, c238, c240, c248, c250, b860, bab8;
-    int callback, other_callback;
-    int *bp;
+    MenuArgs args;
     int result, previous, current;
 
     lbl_8055F368 = fn_80257FB8();
@@ -110,82 +104,54 @@ void fn_8025812C(void) {
         *(volatile int *)&lbl_8055F370 = old;
     }
 
-    a0 = lbl_80498E68[0];
-    bp = lbl_802FA610;
-    b0 = *bp++;
-    zero = 0;
-    a1 = lbl_80498E68[1];
-    eight = 8;
-    a2 = lbl_80498E68[2];
-    two = 2;
-    a3 = lbl_80498E68[3];
-    a4 = lbl_80498E68[4];
-    callback = (int)fn_80258040;
-    other_callback = (int)fn_80236914;
-    b2 = bp[1];
-    b3 = bp[2];
-    bac0 = (int)&lbl_8055BAC0;
-    c238 = (int)&lbl_8055C238;
-    c240 = (int)&lbl_8055C240;
-    c248 = (int)&lbl_8055C248;
-    c250 = (int)&lbl_8055C250;
-    one = 1;
-    three = 3;
-    six = 6;
-    b860 = (int)&lbl_8055B860;
-    minus_one = -1;
-    twenty_seven = 0x1b;
-    bab8 = (int)&lbl_8055BAB8;
-    b4 = bp[3];
+    args.entries[0].label = &lbl_8055BAC0;
+    args.entries[0].type = 8;
+    args.entries[0].value = (void *)fn_80258040;
+    args.entries[0].flags = 0;
+    args.entries[0].id = 0;
 
-    data[8] = callback;
-    data[6] = bac0;
-    data[7] = eight;
-    data[9] = zero;
-    data[10] = zero;
-    data[11] = c238;
-    data[12] = zero;
-    data[13] = zero;
-    data[14] = zero;
-    data[15] = zero;
-    data[17] = zero;
-    data[16] = c240;
-    data[18] = zero;
-    data[19] = one;
-    data[20] = zero;
-    data[22] = zero;
-    data[21] = c248;
-    data[23] = zero;
-    data[24] = two;
-    data[25] = zero;
-    data[27] = zero;
-    data[26] = c250;
-    data[28] = zero;
-    data[29] = three;
-    data[30] = zero;
-    data[32] = six;
-    data[31] = b860;
-    data[33] = zero;
-    data[34] = minus_one;
-    data[35] = twenty_seven;
-    data[37] = eight;
-    data[36] = bab8;
-    data[38] = other_callback;
-    data[39] = two;
-    data[40] = zero;
-    data[41] = a0;
-    data[42] = a1;
-    data[43] = a2;
-    data[44] = a3;
-    data[45] = a4;
-    data[0] = b0;
-    data[2] = b2;
-    data[3] = b3;
-    data[4] = b4;
-    data[1] = (int)&data[6];
+    args.entries[1].label = &lbl_8055C238;
+    args.entries[1].type = 0;
+    args.entries[1].value = 0;
+    args.entries[1].flags = 0;
+    args.entries[1].id = 0;
+
+    args.entries[2].label = &lbl_8055C240;
+    args.entries[2].type = 0;
+    args.entries[2].value = 0;
+    args.entries[2].flags = 1;
+    args.entries[2].id = 0;
+
+    args.entries[3].label = &lbl_8055C248;
+    args.entries[3].type = 0;
+    args.entries[3].value = 0;
+    args.entries[3].flags = 2;
+    args.entries[3].id = 0;
+
+    args.entries[4].label = &lbl_8055C250;
+    args.entries[4].type = 0;
+    args.entries[4].value = 0;
+    args.entries[4].flags = 3;
+    args.entries[4].id = 0;
+
+    args.entries[5].label = &lbl_8055B860;
+    args.entries[5].type = 6;
+    args.entries[5].value = 0;
+    args.entries[5].flags = -1;
+    args.entries[5].id = 0x1b;
+
+    args.entries[6].label = &lbl_8055BAB8;
+    args.entries[6].type = 8;
+    args.entries[6].value = (void *)fn_80236914;
+    args.entries[6].flags = 2;
+    args.entries[6].id = 0;
+
+    args.footer = *(MenuHeader *)(void *)&lbl_80498E68;
+    args.header = *(MenuHeader *)(void *)&lbl_802FA610;
+    args.header.v[1] = (int)args.entries;
 
     do {
-        result = fn_802146BC(data, -999, -999, 1);
+        result = fn_802146BC(&args.header, -999, -999, 1);
         previous = fn_80257FB8();
         if (result != -1) {
             fn_80161F10(result);
