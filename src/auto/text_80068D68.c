@@ -428,6 +428,7 @@ extern u32 port_rfc_send_tx_data(void *);
 extern void rfc_process_l2cap_congestion(void *, s32);
 extern void *port_find_mcb_dlci_port(void *mcb, u8 dlci);
 extern void rfc_port_timer_stop(void *);
+extern void rfc_timer_stop(void *);
 extern void rfc_send_rls(void *, u8, s32, u8);
 extern void rfc_check_send_cmd(void *, void *);
 extern void rfc_send_pn(void *, s32, s32, s32, s32, s32);
@@ -10944,6 +10945,36 @@ u8 HID_HostOpenDev(u32 arg0) {
         return 10;
     entry[0xC] = 1;
     return hidh_conn_initiate();
+}
+
+u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
+                         u16 data, u8 report_id, BT_HDR *pbuf) {
+    char (*messages)[0x18] = (char (*)[0x18])lbl_80317720;
+    u8 status = 0;
+
+    if (lbl_803C3C38[0x400] == 0) {
+        if (lbl_803C3C38[0x401] >= 1)
+            fn_8007093C(0x1E0000, messages[0]);
+        status = 1;
+    }
+    if ((dev_handle > 0x10) ||
+        (*((u8 *)lbl_803C3C38 + dev_handle * 0x34) == 0)) {
+        if (lbl_803C3C38[0x401] >= 1)
+            fn_8007093C(0x1E0000, (char *)messages[1]);
+        status = 5;
+    }
+    if (*((u8 *)lbl_803C3C38 + dev_handle * 0x34 + 0xA) != 1) {
+        if (lbl_803C3C38[0x401] >= 1)
+            fn_80070954(0x1E0000, (char *)messages[2], dev_handle);
+        status = 4;
+    }
+    if (status != 0) {
+        if (pbuf != NULL)
+            GKI_freebuf(pbuf);
+    } else {
+        status = hidh_conn_snd_data(dev_handle, t_type, param, data, report_id, pbuf);
+    }
+    return status;
 }
 
 u8 HID_HostCloseDev(u8 dev_handle) {
