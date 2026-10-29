@@ -3749,6 +3749,8 @@ finish:
     callback(event, &sp10, lbl_803C0D48);
 }
 
+#pragma push
+#pragma scheduling off
 void bta_hh_get_acl_q_info(void) {
     u8 info[0x1E];
     register u8 count;
@@ -3787,6 +3789,7 @@ void bta_hh_get_acl_q_info(void) {
     ((void (*)(u32, void *, u16, u16))*(void **)(lbl_803C0D48 + 0x224))(
         0xF, info, *(u16 *)(lbl_803C4040 + 2), *(u16 *)(lbl_803C4040 + 4));
 }
+#pragma pop
 
 void BTA_HhEnable(u8 arg0, void *arg1) {
     u8 *buf;
