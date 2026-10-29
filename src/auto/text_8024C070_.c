@@ -24,7 +24,7 @@ typedef struct {
         unsigned char secondary;
         unsigned char pad1[3];
         const char *name;
-        int selected;
+        volatile int selected;
         int *current;
         int *options;
         int count;
@@ -33,6 +33,8 @@ typedef struct {
     int args[20];
 } Fn8024C070Frame;
 
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8024C070(void) {
     Fn8024C070Frame frame;
 
@@ -89,7 +91,8 @@ void fn_8024C070(void) {
     frame.flag = frame.value == 1;
     fn_80133460(5, &lbl_8055C010, frame.flag);
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw on
 int fn_8024C24C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
