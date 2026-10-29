@@ -3783,6 +3783,10 @@ virtual s32 Start(void *, void *, void *, u32) { return 0; }
     return 1;
 }
 #pragma pop
+#pragma push
+#pragma use_lmw_stmw off
+s32 nw4hbm::snd::detail::StrmPlayer::Start() { return 0; }
+#pragma pop
 extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" void fn_800FB620(void *self) {
     if (*(u8 *)((u8 *)self + 0x48) != 0) {
