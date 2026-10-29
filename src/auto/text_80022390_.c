@@ -20,14 +20,11 @@ struct ET_FixBlock {
 void deallocate_from_fixed_pools(void ***arg0, unsigned char *arg1, unsigned int arg2) {
     register unsigned int *sizes = lbl_802ED860;
     register unsigned int i = 0;
-    register unsigned char *pool;
-    register unsigned char *node;
-    register unsigned char *list;
-    unsigned int n;
-    register unsigned char *p;
-    unsigned char *q;
-    unsigned char *block;
+    ET_FixSubBlock *sb;
+    ET_FixBlock *b;
+    unsigned char *list;
     unsigned int flags;
+    unsigned char *block;
     unsigned int *var;
     unsigned char *next;
 
@@ -35,47 +32,44 @@ void deallocate_from_fixed_pools(void ***arg0, unsigned char *arg1, unsigned int
         sizes++;
         i++;
     }
-    pool = arg1 - 4;
-    node = *(unsigned char **)(arg1 - 4);
+    sb = (ET_FixSubBlock *)(arg1 - 4);
+    b = sb->block_;
     list = (unsigned char *)arg0 + i * 8;
-    if (*(void **)(node + 0xC) == 0) {
-        p = *(unsigned char **)(list + 8);
-        if (p != node) {
-            if (*(unsigned char **)(list + 4) == node) {
-                *(unsigned char **)(list + 8) = *(unsigned char **)p;
-                p = *(unsigned char **)(list + 4);
-                *(unsigned char **)(list + 4) = *(unsigned char **)p;
+    if (b->start_ == 0) {
+        ET_FixBlock *head = *(ET_FixBlock **)(list + 8);
+        if (head != b) {
+            if (*(ET_FixBlock **)(list + 4) == b) {
+                *(ET_FixBlock **)(list + 8) = head->prev_;
+                head = *(ET_FixBlock **)(list + 4);
+                *(ET_FixBlock **)(list + 4) = head->prev_;
             } else {
-                *(unsigned char **)(*(unsigned char **)node + 4) = *(unsigned char **)(node + 4);
-                *(unsigned char **)(*(unsigned char **)(node + 4)) = *(unsigned char **)node;
-                p = *(unsigned char **)(list + 8);
-                *(unsigned char **)(node + 4) = p;
-                q = *(unsigned char **)p;
-                *(unsigned char **)node = q;
-                *(unsigned char **)(q + 4) = node;
-                *(unsigned char **)(*(unsigned char **)(node + 4)) = node;
-                *(unsigned char **)(list + 8) = node;
+                b->prev_->next_ = b->next_;
+                b->next_->prev_ = b->prev_;
+                head = *(ET_FixBlock **)(list + 8);
+                b->next_ = head;
+                b->prev_ = head->prev_;
+                b->prev_->next_ = b;
+                b->next_->prev_ = b;
+                *(ET_FixBlock **)(list + 8) = b;
             }
         }
     }
-    *(unsigned char **)(pool + 4) = *(unsigned char **)(node + 0xC);
-    *(unsigned char **)(node + 0xC) = pool;
-    n = *(unsigned int *)(node + 0x10) - 1;
-    *(unsigned int *)(node + 0x10) = n;
-    if (n == 0) {
-        if (*(unsigned char **)(list + 8) == node)
-            *(unsigned char **)(list + 8) = *(unsigned char **)(node + 4);
-        if (*(unsigned char **)(list + 4) == node)
-            *(unsigned char **)(list + 4) = *(unsigned char **)node;
-        *(unsigned char **)(*(unsigned char **)node + 4) = *(unsigned char **)(node + 4);
-        *(unsigned char **)(*(unsigned char **)(node + 4)) = *(unsigned char **)node;
-        if (*(unsigned char **)(list + 8) == node)
-            *(unsigned char **)(list + 8) = 0;
-        if (*(unsigned char **)(list + 4) == node)
-            *(unsigned char **)(list + 4) = 0;
-        block = node - 8;
+    sb->next_ = b->start_;
+    b->start_ = sb;
+    if (--b->n_allocated_ == 0) {
+        if (*(ET_FixBlock **)(list + 8) == b)
+            *(ET_FixBlock **)(list + 8) = b->next_;
+        if (*(ET_FixBlock **)(list + 4) == b)
+            *(ET_FixBlock **)(list + 4) = b->prev_;
+        b->prev_->next_ = b->next_;
+        b->next_->prev_ = b->prev_;
+        if (*(ET_FixBlock **)(list + 8) == b)
+            *(ET_FixBlock **)(list + 8) = 0;
+        if (*(ET_FixBlock **)(list + 4) == b)
+            *(ET_FixBlock **)(list + 4) = 0;
+        block = (unsigned char *)b - 8;
         block = (unsigned char *)(*(unsigned int *)(block + 4) & ~1u);
-        Block_link(block, node - 8);
+        Block_link(block, (unsigned char *)b - 8);
         flags = *(unsigned int *)(block + 0x10);
         var = (unsigned int *)0;
         if (!(flags & 2) &&
@@ -83,7 +77,7 @@ void deallocate_from_fixed_pools(void ***arg0, unsigned char *arg1, unsigned int
             var = (unsigned int *)1;
         if (var != 0) {
             unsigned char *prev = *(unsigned char **)(block + 4);
-            if (prev == block)
+            if (prev == (unsigned char *)block)
                 prev = 0;
             if ((unsigned char *)*arg0 == block)
                 *arg0 = (void **)prev;
