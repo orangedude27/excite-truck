@@ -924,9 +924,10 @@ extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" s32 GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(void *arg0, u32 arg1) {
-    u8 *reader = (u8 *)arg0;
-    register u8 *ref = *(u8 **)(reader + 0x28);
+    register u8 *ref = *(u8 **)((u8 *)arg0 + 0x28);
     u8 type;
     u8 *info;
     u32 offset;
@@ -934,21 +935,36 @@ extern "C" s32 GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(vo
     extern const char lbl_80324E10[];
     extern char lbl_805598C8;
     extern char lbl_805598D0;
-    if (ref[1] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
+    if (ref[1] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
     info = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(u32 *)(ref + 4), ref);
-    if (!info) return 0;
-    if (arg1 >= *(u32 *)info) return 0;
-    if (*(u16 *)(reader + 6) >= 0x101) {
+    if (!info)
+        return 0;
+    if (arg1 >= *(u32 *)info)
+        return 0;
+    if (*(u16 *)((u8 *)arg0 + 6) >= 0x101) {
         offset = arg1 * 8;
-        ref = *(u8 **)(reader + 0x28);
-        if (info[offset + 5] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
+        ref = *(u8 **)((u8 *)arg0 + 0x28);
+        if (info[offset + 5] != 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
         type = info[offset + 5];
         info = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(info[offset + 4], *(u32 *)(info + offset + 8), ref);
-        if (!info) return 0;
+        if (!info)
+            return 0;
         type = info[0x16];
-    } else { offset = arg1 * 8; type = info[offset + 5]; }
-    switch (type) { case 1: return 1; case 2: return 2; case 3: return 3; default: return 0; }
+    } else {
+        offset = arg1 * 8;
+        type = info[offset + 5];
+    }
+    switch (type) {
+    case 1: return 1;
+    case 2: return 2;
+    case 3: return 3;
+    default: return 0;
+    }
 }
+#pragma scheduling on
+#pragma pop
 
 namespace nw4hbm { namespace snd { class SoundArchive { public: class SoundInfo; }; namespace detail { class SoundArchiveFileReader { public: BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; }; } } }
 extern "C" const char lbl_80324DE4[];
