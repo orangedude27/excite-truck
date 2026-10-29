@@ -1135,6 +1135,7 @@ extern s32 fn_80118F78(void*, s32);
 extern s32 fn_8011BFFC(s32, s32, s32, s32, s32);
 extern void fn_8011BC48();
 void fn_80118DC0(void* arg0) {
+#pragma scheduling invalid_target
     s32 offset;
     s32 i;
     s32 status;
@@ -1197,6 +1198,7 @@ status_done:
     }
     memset(arg0, 0, 0x388);
     fn_80120084(arg0);
+#pragma scheduling reset
 }
 
 void fn_80118F1C(void *arg0, s32 arg1) {
@@ -1608,7 +1610,7 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
     extern s32 lbl_8055DEE0;
     extern s32 lbl_8055DEE8;
     extern void TRKGetFreeBuffer(void *);
-    extern void fn_80119824();
+    extern s32 fn_80119824(void *);
     extern void fn_80119D40();
      u8 *ctx = (u8 *)arg0;
     u32 sampleRate = arg1;
