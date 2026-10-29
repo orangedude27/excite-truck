@@ -93,3 +93,5 @@ void fn_8025CC78(void* p, int arg1) {
         outC, out8, f25, f24, f26, f27, f28, f29);
 }
 #pragma scheduling on
+#pragma push
+#pragma use_lmw_stmw off
