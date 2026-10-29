@@ -3,7 +3,7 @@
 extern "C" u8 lbl_80407C00[];
 extern "C" u8 lbl_80407E00[];
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_805597E8; }
-extern "C" { DECL_SECTION(".sdata") extern u32 lbl_8055DDD0; }
+extern "C" { DECL_SECTION(".sdata") extern volatile u32 lbl_8055DDD0; }
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *a, void *b);
 class PaneAnimTransformDispatch {
@@ -13648,7 +13648,7 @@ extern "C" u8 fn_800D3840(s32 arg0) {
     s32 temp_r28;
     s32 temp_r31;
     s32 var_r31;
-    u32 end;
+    s32 end;
     s32 temp_r4;
     u32 temp_r5;
 
@@ -13660,10 +13660,10 @@ extern "C" u8 fn_800D3840(s32 arg0) {
         temp_r4 = temp_r5 & 0xFFFFFFE0;
         lbl_805597E8 = temp_r4;
         var_r29 = temp_r5 - temp_r4;
-        end = *(volatile u32 *)&lbl_8055DDD0;
-        var_r31 = (u32)(temp_r4 + 0x200) < end
-                      ? 0x200
-                      : (end - temp_r4 + 0x1F) & 0xFFFFFFE0;
+        var_r31 = 0x200;
+        end = *(volatile s32 *)&lbl_8055DDD0;
+        if ((u32)(temp_r4 + 0x200) >= (u32)end)
+            var_r31 = ((u32)end - temp_r4 + 0x1F) & 0xFFFFFFE0;
         temp_r28 = OSEnableInterrupts();
         temp_r31 = DVDReadAsyncPrio((void *)lbl_80407E00, (void *)lbl_80407C00, var_r31,
                                     lbl_805597E8, 0, 2);
