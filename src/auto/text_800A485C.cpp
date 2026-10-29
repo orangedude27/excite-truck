@@ -6308,7 +6308,7 @@ extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC((s32)fn_800B224C(alarm));
 }
 
-extern "C" void fn_800B1EB8(s32, s32, s32, s32, s32 *);
+extern "C" s32 fn_800B1EB8(s32, s32, s32, s32, s32 *);
 extern "C" s32 fn_800B75C4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 result;
     fn_800B1EB8(arg0, arg1, arg2, arg3, &result);
@@ -6754,11 +6754,11 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     u8 countB;
     u32 shift = 0x200;
     u32 word;
+    u32 first;
+    u32 second;
     s32 value;
     u16 size;
     u16 temp;
-    u16 low;
-    u16 high;
     u16 swapped;
     u16 shortStart;
     u32 start;
@@ -6774,9 +6774,7 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
         value = p[0x11] | (p[0x12] << 8);
     } else {
         temp = *(u16 *)(p + 0x12);
-        low = (temp & 0xFF) << 8;
-        high = (temp & 0xFF00) >> 8;
-        swapped = low | high;
+        swapped = ((temp & 0xFF00) >> 8) | ((temp & 0xFF) << 8);
         value = (s32)swapped << 5;
     }
     size = (u16)((value + 0x1FF) >> countA);
@@ -6785,16 +6783,14 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
         shortStart = p[0x16] | (p[0x17] << 8);
     } else {
         temp = *(u16 *)(p + 0x16);
-        low = (temp & 0xFF) << 8;
-        high = (temp & 0xFF00) >> 8;
-        swapped = low | high;
+        swapped = ((temp & 0xFF00) >> 8) | ((temp & 0xFF) << 8);
         shortStart = swapped;
     }
     if (shortStart == 0) {
         word = *(u32 *)(p + 0x24);
-        u32 lowWord = ((word << 8) & 0xFF0000) | (word << 0x18);
-        u32 highWord = ((word >> 8U) & 0xFF00) | (word >> 0x18U);
-        start = lowWord | highWord;
+        first = ((word >> 8U) & 0xFF00) | (word << 0x18);
+        second = ((word << 8) & 0xFF0000) | (word >> 0x18U);
+        start = first | second;
     } else {
         start = shortStart;
     }
@@ -6804,16 +6800,14 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
         shortEnd = p[0x13] | (p[0x14] << 8);
     } else {
         temp = *(u16 *)(p + 0x14);
-        low = (temp & 0xFF) << 8;
-        high = (temp & 0xFF00) >> 8;
-        swapped = low | high;
+        swapped = ((temp & 0xFF00) >> 8) | ((temp & 0xFF) << 8);
         shortEnd = swapped;
     }
     if (shortEnd == 0) {
         word = *(u32 *)(p + 0x20);
-        u32 lowWord = ((word << 8) & 0xFF0000) | (word << 0x18);
-        u32 highWord = ((word >> 8U) & 0xFF00) | (word >> 0x18U);
-        end = lowWord | highWord;
+        first = ((word >> 8U) & 0xFF00) | (word << 0x18);
+        second = ((word << 8) & 0xFF0000) | (word >> 0x18U);
+        end = first | second;
     } else {
         end = shortEnd;
     }
