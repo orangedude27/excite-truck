@@ -1332,17 +1332,13 @@ extern void fn_8006B044(tBTM_VSC_CMPL *);
 void fn_8006AED4(s32 arg0) {
     u8 packet[0x100];
     s32 i;
-    u32 count;
     s32 length;
     u32 header;
     if (arg0 == 0) {
         fn_8006B330();
         return;
     }
-    count = 0xFB;
-    if (lbl_8055DC44 < 0xFB)
-        count = lbl_8055DC44;
-    length = (u8)count;
+    length = (u8)(lbl_8055DC44 >= 0xFB ? 0xFB : lbl_8055DC44);
     header = lbl_8055DC3C;
     packet[0] = (u8)header;
     packet[1] = (u8)(header >> 8);
@@ -5228,27 +5224,34 @@ found:
     return 1;
 }
 
-void btm_acl_encrypt_change(u16 handle, u8 status, u8 enable) {
+void btm_acl_encrypt_change(u16 handle, u8 status, u8 enable)
+{
     u8 *base = lbl_803C0F78;
-    u8 *dev;
     u32 index = 0;
+    u8 *dev;
 
     if (base[0x14D] != 0 && *(u16 *)(base + 0x34) == handle)
-        goto selected;
+        goto found;
     index = 1;
     if (base[0x269] != 0 && *(u16 *)(base + 0x150) == handle)
-        goto selected;
+        goto found;
     index = 2;
     if (base[0x385] != 0 && *(u16 *)(base + 0x26C) == handle)
-        goto selected;
+        goto found;
     index = 3;
     if (base[0x4A1] != 0 && *(u16 *)(base + 0x388) == handle)
-        goto selected;
+        goto found;
     index = 4;
-selected:
+
+found:
     if (index >= 4)
-        return;
-    dev = base + index * 0x11C;
+        goto done;
+
+    dev = (u8 *)lbl_803C0F78 + index * 0x11C;
+    goto process;
+done:
+    return;
+process:
     if (dev[0x14F] == 2) {
         if (enable != 0)
             dev[0x14F] = 0;
@@ -5256,16 +5259,16 @@ selected:
             dev[0x14F] = 3;
         if (btsnd_hcic_switch_role(dev + 0x3C, (u8)(dev[0x14E] == 0)) == 0) {
             dev[0x14F] = 0;
-            if (*(void (**)(void *))(base + 0x62C) != 0) {
-                (*(void (**)(void *))(base + 0x62C))(base + 0x624);
-                *(void (**)(void *))(base + 0x62C) = 0;
+            if (*(void (**)(void *))((u8 *)lbl_803C0F78 + 0x62C) != 0) {
+                (*(void (**)(void *))((u8 *)lbl_803C0F78 + 0x62C))((u8 *)lbl_803C0F78 + 0x624);
+                *(void (**)(void *))((u8 *)lbl_803C0F78 + 0x62C) = 0;
             }
         }
     } else if (dev[0x14F] == 4) {
         dev[0x14F] = 0;
-        if (*(void (**)(void *))(base + 0x62C) != 0) {
-            (*(void (**)(void *))(base + 0x62C))(base + 0x624);
-            *(void (**)(void *))(base + 0x62C) = 0;
+        if (*(void (**)(void *))((u8 *)lbl_803C0F78 + 0x62C) != 0) {
+            (*(void (**)(void *))((u8 *)lbl_803C0F78 + 0x62C))((u8 *)lbl_803C0F78 + 0x624);
+            *(void (**)(void *))((u8 *)lbl_803C0F78 + 0x62C) = 0;
         }
     }
 }
