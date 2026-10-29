@@ -2021,43 +2021,66 @@ s32 fn_8006E4F8(void) {
     return *(s32 *)(base - 0x77D8);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void GKI_start_timer(UINT8 tnum, INT32 ticks, BOOLEAN is_continuous) {
     UINT8 task_id;
     INT32 repeat;
     INT32 total;
+    INT32 timer_id;
     INT32 start;
     INT32 end;
-    u8 *base;
 
-    task_id = GKI_get_taskid();
+    task_id = fn_8006EB80();
+    timer_id = 0;
     if (ticks <= 0)
         ticks = 1;
     repeat = ticks & ((-(INT32)is_continuous | (INT32)is_continuous) >> 31);
-    GKI_disable();
+    fn_8006EBAC();
 
-    base = (u8 *)&lbl_803946C0 + 0x30000;
-    start = *(INT32 *)(base - 0x77C8);
-    end = *(INT32 *)(base - 0x77C4);
+    start = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C8);
+    end = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C4);
     total = end - start;
-    if ((INT32)(0x7fffffff - total) > ticks)
+    if ((INT32)(0x7FFFFFFF - total) > ticks)
         total += ticks;
     else
-        total = 0x7fffffff;
+        total = 0x7FFFFFFF;
 
-    if (tnum == 0) {
-        *(INT32 *)(base - 0x7780 + ((task_id & 0xff) << 2)) = repeat;
-        *(INT32 *)(base - 0x77A0 + ((task_id & 0xff) << 2)) = total;
-    } else if (tnum == 1) {
-        *(INT32 *)(base - 0x7740 + ((task_id & 0xff) << 2)) = repeat;
-        *(INT32 *)(base - 0x7760 + ((task_id & 0xff) << 2)) = total;
+    switch (tnum) {
+    case 0: {
+        u8 *slot = (u8 *)&lbl_803946C0 + 0x30000 + ((task_id & 0xFF) << 2);
+        *(INT32 *)(slot - 0x7780) = repeat;
+        *(INT32 *)(slot - 0x77A0) = total;
+        break;
+    }
+    case 1: {
+        u8 *slot = (u8 *)&lbl_803946C0 + 0x30000 + ((task_id & 0xFF) << 2);
+        *(INT32 *)(slot - 0x7740) = repeat;
+        *(INT32 *)(slot - 0x7760) = total;
+        break;
+    }
+    default:
+        timer_id = 1;
+        break;
     }
 
-    if (tnum > 1 && ticks > 0 && (end == 0 || (ticks < start && start > 0))) {
-        *(INT32 *)(base - 0x77C4) = ticks + (end - start);
-        *(INT32 *)(base - 0x77C8) = ticks;
+    if (timer_id == 0 && ticks > 0) {
+        end = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C4);
+        if (end == 0) {
+            start = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C8);
+        } else {
+            start = *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C8);
+            if (ticks >= start || start <= 0)
+                goto done;
+        }
+        *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C4) = ticks + (end - start);
+        *(INT32 *)((u8 *)&lbl_803946C0 + 0x30000 - 0x77C8) = ticks;
     }
-    GKI_enable();
+
+done:
+    fn_8006EB88();
 }
+#pragma pop
 
 void GKI_stop_timer(UINT8 tnum) {
     UINT8 task_id = GKI_get_taskid();
@@ -4515,8 +4538,7 @@ extern UINT8 bta_hh_find_cb(BD_ADDR);
 BOOLEAN bta_hh_hdl_event(BT_HDR *p_msg) {
     UINT16 event = p_msg->event;
     UINT8 index = 0x10;
-    register void *p_cb = NULL;
-    u8 *entry;
+    tBTA_HH_DEV_CB *p_cb = NULL;
 
     switch (event) {
     case 0x170C:
@@ -4546,8 +4568,7 @@ BOOLEAN bta_hh_hdl_event(BT_HDR *p_msg) {
     }
 
     if (index != 0x10) {
-        entry = lbl_803C0D48 + ((u32)index << 5);
-        p_cb = entry + 0x10;
+        p_cb = (tBTA_HH_DEV_CB *)&((tBTA_HH_DEV_ENTRY_VIEW *)lbl_803C0D48)[index].cb[0];
     }
     if (lbl_8055DC80 >= 5) {
         fn_8007096C(0x504, lbl_803157DC, p_msg->layer_specific, index);
@@ -14305,6 +14326,51 @@ void PORT_DlcEstablishCnf(void *p_mcb, u8 dlci, u16 mtu, u16 result) {
                           *(u8 *)((u8 *)port + 0x0D),
                           (u8 *)port + 0x5A);
     }
+}
+
+void PORT_PortNegInd(void *arg0, u8 arg1, u8 *arg2, u16 arg3) {
+    extern char lbl_80319380[];
+    extern void fn_800937A0(void *, u16, u16, u16);
+    void *port;
+    u8 *dst;
+    u8 *src;
+    u8 first;
+    u8 second;
+
+    port = port_find_mcb_dlci_port(arg0, arg1);
+    if (lbl_803C4828[0x414] >= 4)
+        fn_8007093C(0x90003, lbl_80319380);
+    if (port == NULL) {
+        port = port_find_dlci_port(arg1);
+        if (port == NULL) {
+            dst = (u8 *)port;
+            src = arg2;
+            second = src[0]; first = src[1];
+            dst[0x51] = second; dst[0x52] = first;
+            first = src[2]; second = src[3];
+            dst[0x53] = first; dst[0x54] = second;
+            first = src[4]; second = src[5];
+            dst[0x55] = first; dst[0x56] = second;
+            first = src[6]; second = src[7];
+            dst[0x58] = second; dst[0x57] = first;
+            dst[0x59] = src[8];
+            ((void (*)(void *, u16, void *, u16))fn_800937A0)(arg0, arg1, src, 0);
+            return;
+        }
+        *((u8 *)arg0 + arg1 + 0x24) = *(u8 *)port;
+    }
+    dst = (u8 *)port;
+    src = arg2;
+    first = src[0]; second = src[1];
+    dst[0x51] = first; dst[0x52] = second;
+    first = src[2]; second = src[3];
+    dst[0x53] = first; dst[0x54] = second;
+    first = src[4]; second = src[5];
+    dst[0x55] = first; dst[0x56] = second;
+    first = src[6]; second = src[7];
+    dst[0x58] = second; dst[0x57] = first;
+    dst[0x59] = src[8];
+    ((void (*)(void *, u16, void *, u16))fn_800937A0)(arg0, arg1, src, arg3);
 }
 
 extern char lbl_80319240[];
