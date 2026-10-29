@@ -14124,7 +14124,7 @@ void rfc_mx_sm_state_wait_sabme(void *arg0, s32 arg1, void *arg2) {
     extern void rfc_send_ua(void *, s32, void *);
 
     if (lbl_803C4828[0x414] >= 4)
-        ((void (*)(u32, void *, s32))fn_80070954)(0x90003, &lbl_80319994, arg1);
+        ((void (*)(u32, void *, s32))fn_80070954)(0x90003, lbl_80319994, arg1);
 
     switch (arg1) {
     case 14:
