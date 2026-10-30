@@ -59,9 +59,11 @@ typedef struct Vt_80207960 {
     void (*f2)(void*);
 } Vt_80207960;
 
+#pragma dont_inline on
 void fn_80207960(void) {
 	return;
 }
+#pragma dont_inline reset
 
 signed long fn_80207964(signed long arg0) {
     switch (arg0) {
@@ -76,6 +78,73 @@ void fn_80207980(void* arg0) {
     *(signed long*)arg0 = 0;
     *((signed long*)arg0 + 1) = 0;
 }
+
+#pragma cplusplus on
+extern "C" void *fn_80207990(void *arg0, void *arg1) {
+    struct Callback {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual int f4();
+    };
+    signed long i;
+    signed long values[3];
+    char *p;
+
+    *(char **)arg0 = lbl_8033BEE8;
+    fn_80207980((char *)arg0 + 0xC);
+    p = (char *)arg0 + 0x14;
+    do {
+        fn_80207980(p);
+        p += 8;
+    } while (p < (char *)arg0 + 0x5C);
+    fn_80207960();
+    *(void **)((char *)arg0 + 0xC) = fn_8012850C(0x3C0, lbl_8033BDD8);
+    *(signed long *)((char *)arg0 + 0x10) = 0;
+    *(void **)((char *)arg0 + 0x90) = arg1;
+    memset((char *)arg0 + 0x5C, 0, 0x30);
+    *(char *)((char *)arg0 + 5) = 0;
+    lbl_804891F8[1] = lbl_8056322C;
+    lbl_804891F8[0] = lbl_80563228;
+    lbl_804891F8[2] = lbl_8056322C;
+    lbl_804891F8[3] = lbl_8056322C;
+    lbl_804891F8[4] = lbl_80563228;
+    lbl_804891F8[5] = lbl_8056322C;
+    lbl_804891F8[6] = lbl_8056322C;
+    lbl_804891F8[7] = lbl_8056322C;
+    lbl_804891F8[8] = lbl_80563228;
+    lbl_804891F8[9] = lbl_8056322C;
+    lbl_804891F8[10] = lbl_8056322C;
+    lbl_804891F8[11] = lbl_8056322C;
+    lbl_80489228[0] = lbl_8056322C;
+    lbl_80489228[1] = lbl_8056322C;
+    lbl_80489228[2] = lbl_8056322C;
+    *(signed long *)((char *)arg0 + 0x8C) = 1;
+    values[0] = lbl_802F9E4C[0];
+    values[1] = lbl_802F9E4C[1];
+    values[2] = lbl_802F9E4C[2];
+    i = 0;
+    do {
+        fn_80207C50(arg0, values, i);
+        i += 1;
+    } while (i < 4);
+    memset((char *)arg0 + 0x94, 0, 0x84);
+    *(void **)((char *)arg0 + 0x14) = *(void **)((char *)arg0 + 0xC);
+    *(void **)((char *)arg0 + 0x1C) = *(void **)((char *)arg0 + 0xC);
+    *(void **)((char *)arg0 + 0x24) = *(void **)((char *)arg0 + 0xC);
+    *(void **)((char *)arg0 + 0x2C) = *(void **)((char *)arg0 + 0xC);
+    *(void **)((char *)arg0 + 0x34) = *(void **)((char *)arg0 + 0xC);
+    *(void **)((char *)arg0 + 0x3C) = *(void **)((char *)arg0 + 0xC);
+    *(void **)((char *)arg0 + 0x44) = *(void **)((char *)arg0 + 0xC);
+    *(void **)((char *)arg0 + 0x4C) = *(void **)((char *)arg0 + 0xC);
+    *(void **)((char *)arg0 + 0x54) = *(void **)((char *)arg0 + 0xC);
+    *(signed long *)((char *)arg0 + 8) = 0;
+    fn_80127CF4(arg0, lbl_8033BDF0, 0);
+    *(char *)((char *)arg0 + 4) = ((struct Callback *)arg1)->f4();
+    return arg0;
+}
+#pragma cplusplus reset
 
 extern void fn_80207DE0(void*);
 extern void fn_802E30C8(const char*, ...);
