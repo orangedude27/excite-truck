@@ -436,18 +436,53 @@ int fn_8003AD88(void *arg0, int arg1, int arg2, unsigned int arg3) {
 }
 
 int fn_8003AF1C(int arg0, int arg1, int arg2) {
- const char *msg=lbl_80302848; unsigned int slot=lbl_8055D8E8; unsigned int offset=slot<<5; unsigned int flag; unsigned char *entry=lbl_8037B820+offset; unsigned int index; unsigned char *request; int result;
- lbl_8055D8E0=1; flag=entry[8];
- if (((flag | -flag)>>31)==1) { OSReport(msg+0x218,slot); OSReport(msg+0x250); for(;;){} }
- if (((unsigned int)*(unsigned int *)(entry+0xC)+0x01150000)!=0xFEEBDAED) { OSReport(msg+0x280); for(;;){} }
- *(unsigned int *)(lbl_8037B820+offset)=arg2;
- index=slot+1; *(unsigned int *)(entry+4)=1; entry[8]=1; lbl_8055D8E8=index;
- if(index>=4)lbl_8055D8E8=0;
- index=lbl_8055D8E4+1; lbl_8055D8E4=index; entry=lbl_8037B820+offset;
- if(index>=4){index=0;lbl_8055D8E4=0;}
- request=lbl_8055D8FC+index*0x20;request[0]=0xE3;*(int *)(request+4)=arg0;*(int *)(request+8)=arg1;
- result=IOS_IoctlAsync(lbl_80558E18,0xE3,request,0x20,lbl_8037B8A0,0x20,(void (*)(int,void *))doTransactionCallback,entry);
- if(result!=0){OSReport(msg+0x468,result);entry[8]=0;return 0;} return 1;
+    const char *msg = lbl_80302848;
+    unsigned int one = 1;
+    unsigned char *base = lbl_8037B820;
+    int slot = lbl_8055D8E8;
+    int offset = slot * 0x20;
+    DVDLowContext *entry = (DVDLowContext *)(base + offset);
+    unsigned char flag = entry->inUse;
+    int index;
+    int result;
+
+    /* Fix note: keep the in-use byte narrow and widen only for the unsigned sign test. */
+    lbl_8055D8E0 = one;
+    if (((-(unsigned int)flag | (unsigned int)flag) >> 31) == 1U) {
+        OSReport(msg + 0x218, slot);
+        OSReport(msg + 0x250);
+        for (;;) {}
+    }
+    if (entry->magic != 0xFEEBDAED) {
+        OSReport(msg + 0x280);
+        for (;;) {}
+    }
+    ((unsigned int *)base)[slot * 8] = arg2;
+    index = slot + 1;
+    entry->WORD_0x4 = one;
+    entry->inUse = one;
+    lbl_8055D8E8 = index;
+    if (index >= 4) lbl_8055D8E8 = 0;
+    index = lbl_8055D8E4 + 1;
+    lbl_8055D8E4 = index;
+    entry = (DVDLowContext *)(base + offset);
+    if (index >= 4) {
+        index = 0;
+        lbl_8055D8E4 = 0;
+    }
+    lbl_8055D8FC[index * 0x20] = 0xE3;
+    *(int *)(lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20 + 4) = arg0;
+    *(int *)(lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20 + 8) = arg1;
+    result = IOS_IoctlAsync(lbl_80558E18, 0xE3,
+                            lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20, 0x20,
+                            lbl_8037B8A0, 0x20,
+                            (void (*)(int, void *))doTransactionCallback, entry);
+    if (result != 0) {
+        OSReport(msg + 0x468, result);
+        entry->inUse = 0;
+        return 0;
+    }
+    return 1;
 }
 
 int fn_8003B0B0(void *arg0, void *arg1) {
@@ -613,53 +648,47 @@ int fn_8003B508(int arg0, int arg1, int arg2) {
     unsigned char *base = lbl_8037B820;
     int slot = lbl_8055D8E8;
     int offset = slot * 0x20;
-    unsigned char *entry = base + offset;
-    int flag;
-    int magic;
+    DVDLowContext *entry = (DVDLowContext *)(base + offset);
+    unsigned int flag = entry->inUse;
     int index;
     int result;
 
-    /* Fix note: use signed ring indices and indexed context writes to preserve the target addressing. */
+    /* Fix note: use the wrapped index for the command byte, then reload the volatile cursor for call fields. */
     lbl_8055D8E0 = one;
-    flag = entry[8];
-    if (((flag | -flag) >> 31) == 1) {
+    if (((flag | -flag) >> 31) == 1U) {
         OSReport(msg + 0x218, slot);
         OSReport(msg + 0x250);
         for (;;) {}
     }
-    magic = *(int *)(entry + 0xC);
-    if (magic + 0x01150000 != (int)0xFEEBDAED) {
+    if (entry->magic != 0xFEEBDAED) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
-
     ((unsigned int *)base)[slot * 8] = arg2;
     index = slot + 1;
-    *(unsigned int *)(entry + 4) = one;
-    entry[8] = one;
+    entry->WORD_0x4 = one;
+    entry->inUse = one;
     lbl_8055D8E8 = index;
     if (index >= 4) {
         lbl_8055D8E8 = 0;
     }
-
     index = lbl_8055D8E4 + 1;
     lbl_8055D8E4 = index;
-    entry = base + offset;
+    entry = (DVDLowContext *)(base + offset);
     if (index >= 4) {
         index = 0;
         lbl_8055D8E4 = 0;
     }
-    lbl_8055D8FC[lbl_8055D8E4 * 0x20] = 0xE4;
-    *(int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = arg0;
-    *(int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 8) = arg1;
-
+    lbl_8055D8FC[index * 0x20] = 0xE4;
+    *(int *)(lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20 + 4) = arg0;
+    *(int *)(lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20 + 8) = arg1;
     result = IOS_IoctlAsync(lbl_80558E18, 0xE4,
-                            lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20,
+                            lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20, 0x20,
                             lbl_8037B8A0, 0x20,
                             (void (*)(int, void *))doTransactionCallback, entry);
     if (result != 0) {
         OSReport(msg + 0x618, result);
-        entry[8] = 0;
+        entry->inUse = 0;
         return 0;
     }
     return 1;
@@ -710,6 +739,7 @@ int fn_8003B69C(int arg0, void *arg1) {
     return 1;
 }
 
+#pragma scheduling invalid_target
 int fn_8003B81C(void *arg0, int arg1, int arg2, int arg3) {
  const char *msg=lbl_80302848; unsigned int slot; unsigned int offset; unsigned int flag; unsigned char *entry; unsigned int index; unsigned char *request; int result;
  if((unsigned int)arg0&0x1F){OSReport(msg+0xA0C);return 0;}
@@ -722,6 +752,7 @@ int fn_8003B81C(void *arg0, int arg1, int arg2, int arg3) {
  result=IOS_IoctlAsync(lbl_80558E18,0x71,request,0x20,arg0,arg1,(void (*)(int,void *))doTransactionCallback,entry);
  if(result!=0){OSReport(msg+0xA4C,result);entry[8]=0;return 0;}return 1;
 }
+#pragma scheduling reset
 
 #pragma scheduling invalid_target
 int fn_8003B9CC(unsigned int arg0, void *arg1) {
