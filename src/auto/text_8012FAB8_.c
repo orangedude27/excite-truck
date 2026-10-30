@@ -82,73 +82,41 @@ extern void fn_8013111C();
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_801303A8(void) {
-    int *s = (int *)&lbl_8042F4B8;
-    int *d = (int *)&lbl_80423054;
-    int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27;
-    int c;
+    register unsigned int *s;
+    register unsigned int *d;
+    register unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
+    register unsigned int v12, v13, v14, v15, v16, v17, v18, v19, v20, v21;
+    register unsigned int v22, v23, v24, v25, v26, v27;
+    register unsigned char c;
 
     lbl_8055E048 = 1;
     lbl_804230D0 = -1;
     fn_8013111C(lbl_8055E04C);
-    c = *(unsigned char *)((char *)s + 0x70);
-    v0 = s[0];
-    v1 = s[1];
-    v2 = s[2];
-    v3 = s[3];
-    v4 = s[4];
-    v5 = s[5];
-    v6 = s[6];
-    v7 = s[7];
-    v8 = s[8];
-    v9 = s[9];
-    v10 = s[10];
-    v11 = s[11];
-    v12 = s[12];
-    v13 = s[13];
-    v14 = s[14];
-    v15 = s[15];
-    v16 = s[16];
-    v17 = s[17];
-    v18 = s[18];
-    v19 = s[19];
-    v20 = s[20];
-    v21 = s[21];
-    v22 = s[22];
-    v23 = s[23];
-    v24 = s[24];
-    v25 = s[25];
-    v26 = s[26];
-    v27 = s[27];
-    d[2] = v0;
-    d[3] = v1;
-    d[4] = v2;
-    d[5] = v3;
-    d[6] = v4;
-    d[7] = v5;
-    d[8] = v6;
-    d[9] = v7;
-    d[10] = v8;
-    d[11] = v9;
-    d[12] = v10;
-    d[13] = v11;
-    d[14] = v12;
-    d[15] = v13;
-    d[16] = v14;
-    d[17] = v15;
-    d[18] = v16;
-    d[19] = v17;
-    d[20] = v18;
-    d[21] = v19;
-    d[22] = v20;
-    d[23] = v21;
-    d[24] = v22;
-    d[25] = v23;
-    d[26] = v24;
-    d[27] = v25;
-    d[28] = v26;
-    d[29] = v27;
-    *(char *)d = c == 0 ? 0x2C : 0x2E;
-    *(char *)(d + 0x78 / 4) = c;
+    s = (unsigned int *)lbl_8042F4B8;
+    d = (unsigned int *)lbl_80423054;
+
+    v22 = s[22]; d[24] = v22;
+    v24 = s[24]; d[26] = v24;
+    v25 = s[25]; d[27] = v25;
+    v26 = s[26]; d[28] = v26;
+    v27 = s[27]; d[29] = v27;
+    c = *((unsigned char *)s + 0x70);
+
+    v0 = s[0]; v1 = s[1]; v2 = s[2]; v3 = s[3];
+    v4 = s[4]; v5 = s[5]; v6 = s[6]; v7 = s[7];
+    v8 = s[8]; v9 = s[9]; v10 = s[10]; v11 = s[11];
+    v12 = s[12]; v13 = s[13]; v14 = s[14]; v15 = s[15];
+    v16 = s[16]; v17 = s[17]; v18 = s[18]; v19 = s[19];
+    v20 = s[20]; v21 = s[21]; v23 = s[23];
+    d[2] = v0; d[3] = v1; d[4] = v2; d[5] = v3;
+    d[6] = v4; d[7] = v5; d[8] = v6; d[9] = v7;
+    d[10] = v8; d[11] = v9; d[12] = v10; d[13] = v11;
+    d[14] = v12; d[15] = v13; d[16] = v14; d[17] = v15;
+    d[18] = v16; d[19] = v17; d[20] = v18; d[21] = v19;
+    d[22] = v20; d[23] = v21; d[25] = v23;
+
+    lbl_80423054[0] = c ? 0x2E : 0x2C;
+    *((char *)d + 0x78) = c;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
@@ -174,8 +142,8 @@ void fn_801308E4(void *arg0, void *arg1, int arg2, int arg3) {
     fn_801305C4(arg0, arg1, (char *)lbl_8055E050 + 8, arg2);
 }
 
-void fn_801308F4(void) {
-    fn_8013072C();
+void fn_801308F4(char *dst, int count, int value) {
+    fn_8013072C(dst, count, value);
 }
 
 void fn_801308F8(char *dst, int count, int limit) {
