@@ -431,6 +431,52 @@ int fn_80277960(void *arg0, void *arg1, float *arg2) {
     }
     return 0;
 }
+
+#pragma cplusplus on
+extern "C" void fn_80277F84(void *arg0, void *arg1, int arg2) {
+    class FloatDummy {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual float get(const char *);
+    };
+    class NameDummy {
+    public:
+        virtual void n0();
+        virtual void n1();
+        virtual void n2();
+        virtual void n3();
+        virtual char *getName(const char *, const char *);
+    };
+    extern unsigned char lbl_80347378[];
+    extern unsigned char lbl_8055C658;
+    extern char lbl_8055C65C;
+    FloatDummy *obj = (FloatDummy *)arg1;
+    char *name;
+    *(float *)((char *)arg0 + 0x28) = obj->get((char *)lbl_80347378 + 0x178);
+    *(float *)((char *)arg0 + 0x2C) = obj->get((char *)lbl_80347378 + 0x184);
+    *(float *)((char *)arg0 + 0x30) = obj->get((char *)lbl_80347378 + 0x190);
+    *(float *)((char *)arg0 + 0x04) = obj->get((char *)lbl_80347378 + 0x19C);
+    *(float *)((char *)arg0 + 0x08) = obj->get((char *)lbl_80347378 + 0x1A8);
+    *(float *)((char *)arg0 + 0x0C) = obj->get((char *)lbl_80347378 + 0x1B4);
+    *(float *)((char *)arg0 + 0x10) = obj->get((char *)lbl_80347378 + 0x1C0);
+    *(float *)((char *)arg0 + 0x14) = obj->get((char *)lbl_80347378 + 0x1CC);
+    *(float *)((char *)arg0 + 0x18) = obj->get((char *)lbl_80347378 + 0x1D8);
+    *(float *)((char *)arg0 + 0x1C) = obj->get((char *)lbl_80347378 + 0x1E4);
+    *(float *)((char *)arg0 + 0x20) = obj->get((char *)lbl_80347378 + 0x1F0);
+    *(float *)((char *)arg0 + 0x24) = obj->get((char *)lbl_80347378 + 0x1FC);
+    *(float *)((char *)arg0 + 0x34) = obj->get((char *)&lbl_8055C658);
+    name = ((NameDummy *)arg1)->getName(&lbl_8055C63C, &lbl_8055C65C);
+    strncpy((char *)arg0 + 0x38, name, 0x10);
+    *(unsigned char *)arg0 = 1;
+}
+#pragma cplusplus reset
+
 #pragma cplusplus on
 struct Fn80277F84Dummy {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
