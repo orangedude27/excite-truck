@@ -8,6 +8,10 @@ struct DummyBase_801CCDAC { int pad; };
 struct Dummy_801CCDAC : DummyBase_801CCDAC { virtual int v0(); virtual int v1(int); virtual int v2(f32); };
 static inline int fn_801CD130_dispatch(void *obj, f32 value) { return ((Dummy_801CCDAC *)obj)->v2(value); }
 #pragma cplusplus reset
+extern f32 lbl_805629E4;
+extern f32 lbl_805629FC;
+extern f32 lbl_80562A08;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -441,6 +445,104 @@ void fn_801CC8FC(void *arg0) {
     *(int *)arg0 = (int)((char *)arg0 + 12);
     *(int *)((char *)arg0 + 8) = 7;
     *(int *)((char *)arg0 + 4) = 0;
+}
+
+void fn_801CC918(void) {
+    extern void fn_8001BE70(void *);
+    extern void fn_802AE0E0(void);
+    extern float lbl_805629E4;
+    extern float lbl_805629FC;
+    extern float lbl_80562A08;
+    register unsigned char *base;
+    register int i;
+    register int offset;
+    void *entry;
+    void *object;
+    float floatA08;
+    float floatFC;
+    float floatE4;
+
+    base = (unsigned char *)lbl_8055E884;
+    if (base[0x10] != 0) return;
+    i = 0;
+    offset = 0;
+    for (; i < *(int *)(base + 0x1C); offset += 4, ++i) {
+        entry = *(void **)((char *)*(void **)(base + 0x18) + offset);
+        if (entry != 0) fn_8001BE70(*(void **)entry);
+    }
+
+    i = 0;
+    *(int *)(base + 0x29C) = i;
+    *(void **)(base + 0x2A0) = base + 0x29C;
+    memset(base + 0x44, i, 0x258);
+    *(int *)(base + 0x2A8) = i;
+    floatA08 = lbl_80562A08;
+    *(int *)(base + 0x2AC) = i;
+    floatFC = lbl_805629FC;
+    *(int *)(base + 0x2B0) = -1;
+    floatE4 = lbl_805629E4;
+    *(int *)(base + 0x2B4) = -1;
+    *(float *)(base + 0x2B8) = floatA08;
+    *(unsigned char *)(base + 0x2BC) = i;
+    *(int *)(base + 0x2C0) = i;
+    *(float *)(base + 0x2C4) = floatFC;
+    *(int *)(base + 0x2D8) = i;
+    *(float *)(base + 1400) = floatE4;
+    *(float *)(base + 1404) = floatFC;
+    *(float *)(base + 1408) = floatFC;
+    *(float *)(base + 1412) = floatFC;
+    *(float *)(base + 1416) = floatE4;
+    *(float *)(base + 1420) = floatFC;
+    *(float *)(base + 1424) = floatFC;
+    *(float *)(base + 1428) = floatFC;
+    *(float *)(base + 1432) = floatE4;
+    *(float *)(base + 1436) = floatFC;
+    *(float *)(base + 1440) = floatFC;
+    *(float *)(base + 1444) = floatFC;
+    *(float *)(base + 1448) = floatE4;
+    *(float *)(base + 1452) = floatFC;
+    *(float *)(base + 1456) = floatFC;
+    *(float *)(base + 1460) = floatFC;
+    *(float *)(base + 1464) = floatE4;
+    *(float *)(base + 1468) = floatFC;
+    *(float *)(base + 1472) = floatFC;
+    *(float *)(base + 1476) = floatFC;
+    *(float *)(base + 1480) = floatE4;
+    *(float *)(base + 1484) = floatFC;
+    *(float *)(base + 1488) = floatFC;
+    *(float *)(base + 1492) = floatFC;
+    *(float *)(base + 1496) = floatE4;
+    *(float *)(base + 1500) = floatFC;
+    *(float *)(base + 1504) = floatFC;
+    *(float *)(base + 1508) = floatFC;
+    *(float *)(base + 1512) = floatE4;
+    *(float *)(base + 1516) = floatFC;
+    *(float *)(base + 1520) = floatFC;
+    *(float *)(base + 1524) = floatFC;
+    *(float *)(base + 1528) = floatE4;
+    *(float *)(base + 1532) = floatFC;
+    *(float *)(base + 1536) = floatFC;
+    *(float *)(base + 1540) = floatFC;
+    *(float *)(base + 1544) = floatE4;
+    *(float *)(base + 1548) = floatFC;
+    *(float *)(base + 1552) = floatFC;
+    *(float *)(base + 1556) = floatFC;
+    if (*(int *)(base + 0x2C8) != 0) fn_802AE0E0();
+    object = *(void **)(base + 0x2CC);
+    if (object != 0) {
+        *(unsigned char *)((char *)object + 0x4A) = 1;
+        *(unsigned char *)((char *)object + 0x4C) = 0;
+    }
+    object = *(void **)(base + 0x2D0);
+    if (object != 0) {
+        *(unsigned char *)((char *)object + 0x4A) = 1;
+        *(unsigned char *)((char *)object + 0x4C) = 0;
+    }
+    object = *(void **)(base + 0x2D4);
+    if (object != 0) {
+        *(unsigned char *)((char *)object + 0x4A) = 1;
+        *(unsigned char *)((char *)object + 0x4C) = 0;
+    }
 }
 
 void fn_801CCAEC(int arg0) {
@@ -1082,24 +1184,23 @@ extern f32 lbl_805629FC;
 #pragma paired_single off
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_801CD7BC(int arg0, int arg1, f32 farg0) {
-    u8 *base;
-    u8 *object;
+#pragma cplusplus on
+extern "C" void fn_801CD7BC(int arg0, register int arg1, f32 farg0) {
     s32 statusIndex;
+    register s32 offset;
+    register s32 index;
+    u8 *object;
     s32 status;
-    s32 index;
-    s32 offset;
-    s32 mapIndex;
+    u8 *base;
+    register s32 mapIndex;
     s32 current;
-    s32 id;
-    void *selected;
+    register s32 id;
 
     if (fn_801CE898() != 0)
         goto done;
     base = (u8 *)lbl_8055E884;
     if (base[0x10] != 0)
         goto done;
-
     object = ((u8 *(*)(s32))fn_801EA9A0)(arg0);
     if (object[0] != 0)
         statusIndex = object[0xB4] & 3;
@@ -1111,7 +1212,6 @@ void fn_801CD7BC(int arg0, int arg1, f32 farg0) {
         status = 1;
     if (status != 0)
         goto done;
-
     object = ((u8 *(*)(s32))fn_801EA9A0)(arg0);
     if (object[0] == 0 || arg1 == 0)
         goto done;
@@ -1121,17 +1221,19 @@ void fn_801CD7BC(int arg0, int arg1, f32 farg0) {
         index = 0;
         offset = 0;
 loop:
-        if (fn_801CB900(*(int **)((u8 *)*(s32 **)(base + 0x18) + offset), id) == 0) {
-            offset += 4;
-            index++;
-            if (index < *(s32 *)(base + 0x1C))
-                goto loop;
-            index = -1;
-        }
+        if (fn_801CB900(*(int **)((u8 *)*(s32 **)(base + 0x18) + offset), id) == 0)
+            goto increment;
+        goto found;
+increment:
+        offset += 4;
+        index++;
+        if (index < *(s32 *)(base + 0x1C))
+            goto loop;
+        index = -1;
+found:
         if (index < 0)
             ((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, id);
-        selected = *(void **)((u8 *)*(s32 **)(base + 0x18) + index * 4);
-        ((s32 (*)(void *, f32))(*(void **)((u8 *)*(void **)((u8 *)selected + 4) + 0x10)))(selected, farg0);
+        ((Dummy_801CCDAC *)*(void **)((u8 *)*(s32 **)(base + 0x18) + index * 4))->v2(farg0);
         *(f32 *)(base + 0x2B8) = farg0;
         *(u8 *)(base + 0x2BC) = 1;
         if (*(s32 *)(base + 0x2B4) < 0 && *(u8 *)(base + 0x2BC) != 0) {
@@ -1143,11 +1245,13 @@ loop:
             }
         }
     } else {
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80337D90, farg0);
+        ((void (*)(const char *, f32, ...))fn_802E317C)(
+            lbl_80337D90, *(f32 *)(base + 0x2B8), (double)farg0);
     }
 done:
     return;
 }
+#pragma cplusplus reset
 #pragma paired_single reset
 #pragma pop
 
