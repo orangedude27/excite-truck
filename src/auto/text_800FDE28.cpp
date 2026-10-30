@@ -26,6 +26,7 @@ extern u8 lbl_80327490[];
 extern u8 lbl_803274C0[];
 extern u8 lbl_8032749C[];
 extern u8 lbl_80327460[];
+extern u8 lbl_8032743C[];
 extern u8 lbl_8041D4AC[];
 #pragma pop
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
@@ -560,6 +561,54 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 arg1, u32 ar
         }
     }
     return this_;
+}
+
+extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
+    u32 level = OSDisableInterrupts();
+    if (*((u8 *)arg0 + 0x1C) != 0) {
+        if (arg0 == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803274C0, 0x233,
+                                         (const char *)lbl_8032749C);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
+            lbl_8041D4AC, (u8 *)arg0 + 0x94);
+        *((u8 *)arg0 + 0x1C) = 0;
+    }
+    u32 voiceLevel = OSDisableInterrupts();
+    void *voice = *(void **)((u8 *)arg0 + 0x18);
+    if (voice != 0)
+        Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
+    *((u8 *)arg0 + 0x1D) = 0;
+    OSRestoreInterrupts(voiceLevel);
+    void *sentinel = (u8 *)arg0 + 8;
+    void *node = *(void **)((u8 *)arg0 + 8);
+    while (node != sentinel) {
+        void *entry = node;
+        node = *(void **)node;
+        if (entry == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
+                                         (const char *)lbl_8032746C);
+        *((u8 *)entry - 4) = 0;
+        void *iterator = entry;
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(
+            (u8 *)arg0 + 4, &iterator);
+        void (*callback)(s32, void *, void *, u32) =
+            *(void (**)(s32, void *, void *, u32))((u8 *)arg0 + 0x8C);
+        if (callback != 0) {
+            if (entry == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
+                                             (const char *)lbl_8032746C);
+            void *userData = (u8 *)entry - 0x18;
+            if (userData == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
+                                             (const char *)lbl_8032733C);
+            callback(1, arg0, userData, *(u32 *)((u8 *)arg0 + 0x90));
+        }
+    }
+    if (*(u32 *)((u8 *)arg0 + 4) != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327040, 0x162,
+                                     (const char *)lbl_803271B8);
+    *((u8 *)arg0 + 0x1F) = 0;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" u32 GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
