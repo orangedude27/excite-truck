@@ -1,4 +1,8 @@
 #include <math.h>
+extern void *fn_802C86DC(void);
+extern void fn_802C8DB8(void *, int, void *, int);
+extern void fn_802C9904(void);
+extern unsigned short lbl_80562D20, lbl_80562D22, lbl_80562D24;
 extern float PSVECMag(float *);
 extern float lbl_80558DC4[];
 
@@ -262,8 +266,50 @@ void fn_801E3FC8(void *arg0, float farg0) {
     sp[11] = *(float *)((char *)arg0 + 8);
     fn_802C744C(handle, sp);
 }
-#pragma scheduling on
-#pragma pop
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
+    float *a = (float *)arg0;
+    float *b = (float *)arg1;
+    float delta[3];
+    float matrix[4][3];
+    float mag;
+    float scale;
+    float tx;
+    float ty;
+    float tz;
+
+    delta[0] = b[0] - a[0];
+    delta[1] = b[1] - a[1];
+    delta[2] = b[2] - a[2];
+    fn_801E3640(delta, &matrix[0][0]);
+    matrix[2][0] = delta[0] * lbl_80562D08;
+    matrix[2][1] = delta[1] * lbl_80562D08;
+    matrix[2][2] = delta[2] * lbl_80562D08;
+    mag = PSVECMag(&matrix[0][0]);
+    if (!((float)__fabs((double)mag) <= lbl_80558DC4[0])) {
+        scale = (farg0 * lbl_80562D08) / mag;
+        matrix[0][0] *= scale;
+        matrix[0][1] *= scale;
+        matrix[0][2] *= scale;
+    }
+    mag = PSVECMag(&matrix[1][0]);
+    if (!((float)__fabs((double)mag) <= lbl_80558DC4[0])) {
+        scale = (farg0 * lbl_80562D08) / mag;
+        matrix[1][0] *= scale;
+        matrix[1][1] *= scale;
+        matrix[1][2] *= scale;
+    }
+    tx = a[0] + matrix[2][0];
+    ty = a[1] + matrix[2][1];
+    tz = a[2] + matrix[2][2];
+    matrix[3][0] = tx;
+    matrix[3][1] = ty;
+    matrix[3][2] = tz;
+    fn_801E370C(&matrix[0][0], arg2, arg3);
+}
 extern float lbl_8055EA68, lbl_80562CF4;
 extern int fn_802C744C(int, float *);
 extern int fn_801E4040(void *, void *, int, int, float);
