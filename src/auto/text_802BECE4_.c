@@ -24,7 +24,7 @@ extern int lbl_8055FAE4, lbl_8055FAE8, lbl_8055FAEC, lbl_8055FAF0;
 extern float lbl_80564D84;
 extern char lbl_8034ACA0[];
 #pragma small_data on
-extern char lbl_8055CF80[];
+extern char lbl_8055CF80;
 #pragma small_data off
 extern void *fn_80131808(void *, int, int);
 extern int fn_80131818(void *);
