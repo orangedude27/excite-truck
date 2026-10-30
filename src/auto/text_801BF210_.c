@@ -5,7 +5,6 @@ extern void PSVECCrossProduct(void *, void *, void *);
 extern void fn_8019EECC(void *, void *);
 extern void fn_8017A580(int, int, int, int, int, int);
 extern void fn_8017A57C(float, float);
-typedef struct UnkMatrix12Copy { unsigned int words[12]; } UnkMatrix12Copy;
 
 void fn_801BF210(void) {
 
