@@ -279,6 +279,7 @@ extern float fn_802E78A4(float);
 extern float lbl_80565160, lbl_8056517C, lbl_80565180, lbl_80565184, lbl_80565188;
 extern float lbl_8056518C, lbl_80565190, lbl_80565194, lbl_80565198;
 #pragma push
+#pragma processor 750
 #pragma dont_inline on
 #pragma paired off
 #pragma paired_single off
@@ -321,7 +322,7 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     float var_f4;
     double temp_f1;
     int var_r5;
-    unsigned int temp_r31;
+    register unsigned int temp_r31;
 
     temp_r31 = in->hold;
     out->config0 = 0x800F;
@@ -329,37 +330,26 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     out->config1 = 0xFF;
     var_r5 = 0;
     out->flags |= 0x10;
-    if (temp_r31 & 2) var_r5 = 1;
+    if (temp_r31 & 2) var_r5 |= 1;
     if (temp_r31 & 1) var_r5 |= 4;
     if (temp_r31 & 8) var_r5 |= 8;
     if (temp_r31 & 4) var_r5 |= 2;
     out->buttonMask = var_r5;
-    temp_f1 = -(float)fn_8002EFB0(in->acc[0], -in->acc[1]);
-    var_f31 = (float)temp_f1;
-    out->heading = (float)temp_f1;
+    var_f31 = (float)fn_8002EFB0(in->acc[0], -in->acc[1]);
+    var_f31 = -var_f31;
+    out->heading = var_f31;
     if (var_f31 > lbl_80565180) var_f31 -= lbl_80565184;
     else if (var_f31 < lbl_80565188) var_f31 += lbl_80565184;
     var_f1 = lbl_80565160;
     temp_f0 = lbl_8056518C * in->acc[2];
-    if (var_f1 < temp_f0) {
-    } else {
-        var_f1 = temp_f0;
-    }
-    if (var_f1 > lbl_8056517C) {
-    } else {
-        var_f1 = lbl_8056517C;
-    }
+    if (var_f1 >= temp_f0) var_f1 = temp_f0;
+    if (var_f1 <= lbl_8056517C) var_f1 = lbl_8056517C;
     out->angle = fn_802E78A4(var_f1);
     var_f4 = lbl_80565160;
-    temp_f0_2 = lbl_80565190 * ((lbl_80565194 * var_f31) / lbl_80565180);
-    if (var_f4 < temp_f0_2) {
-    } else {
-        var_f4 = temp_f0_2;
-    }
-    if (var_f4 > lbl_8056517C) {
-    } else {
-        var_f4 = lbl_8056517C;
-    }
+    temp_f0_2 = lbl_80565194 * var_f31;
+    temp_f0_2 = lbl_80565190 * (temp_f0_2 / lbl_80565180);
+    if (var_f4 >= temp_f0_2) var_f4 = temp_f0_2;
+    if (var_f4 <= lbl_8056517C) var_f4 = lbl_8056517C;
     out->tilt = var_f4;
     out->buttons[1] = (temp_r31 >> 9) & 1;
     out->buttons[0] = (temp_r31 >> 8) & 1;
