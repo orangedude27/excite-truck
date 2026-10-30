@@ -689,6 +689,99 @@ int fn_8000BD9C(int arg0, int arg1, int arg2) {
 
 void fn_8000BF10(int arg0, int arg1) { fn_8000BD9C(0, arg0, arg1); }
 
+extern char lbl_802FC02C[];
+extern float lbl_8055D0B4;
+extern int fn_80019B3C(void);
+extern int fn_80019B78(void);
+extern int fn_800074C4(void);
+extern int fn_8000749C(void);
+extern int fn_80009C80(void);
+extern int fn_80009CB8(void);
+extern int fn_80009C8C(void);
+extern void fn_801CB4DC(void);
+extern void fn_8001EFB4(void);
+#pragma push
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" void fn_8000BF20(void *arg0, int arg1) {
+    struct Interface {
+        virtual void begin(void);
+        virtual void submit(void *);
+        virtual void finish(void);
+    };
+    unsigned char result[0xA8];
+    int active;
+    int limit;
+    int count;
+    int value;
+
+    active = fn_80204024();
+    fn_8000AF1C(arg0);
+    fn_80176780(0x1200, 0);
+    if (arg1 != 0) {
+        ((Interface *)arg1)->begin();
+    }
+
+restart:
+    fn_80206454();
+    lbl_8055D3D4 = 1;
+    if (active == 0) {
+        fn_80019B3C();
+        fn_80176780(0x10002, 0);
+    }
+
+    value = fn_80019B78();
+    limit = ((-value | value) >> 31) & 0x1F4;
+    count = 0;
+    fn_8000BD64();
+
+    do {
+        fn_8000BC44();
+        if (*(volatile unsigned char *)&lbl_8055D3D4 != 0) {
+            fn_8000B2AC();
+        }
+        count++;
+        if (limit != 0 && count >= limit) {
+            *(volatile unsigned char *)&lbl_8055D3D4 = 0;
+        }
+    } while (*(volatile unsigned char *)&lbl_8055D3D4 != 0);
+
+    ((void (*)(int))fn_8000BD98)(count);
+    ((void (*)(char *, ...))fn_802E30C8)(lbl_802FC02C, lbl_8055D0B4);
+    fn_8000B150(result);
+    if (arg1 != 0) {
+        ((Interface *)arg1)->submit(result);
+    }
+
+    if (result[0xD] != 0 && result[0xE] == 0) {
+        fn_801CB4DC();
+        fn_8001EFB4();
+    } else {
+        fn_8001EFB8();
+    }
+
+    if (fn_800074C4() != 0) {
+        goto restart;
+    }
+    if (fn_8000749C() != 0) {
+        fn_80128684();
+        do {
+            fn_80009C80();
+        } while (fn_80009CB8() != 0);
+        fn_80128678();
+    }
+    fn_80176780(0x1200, 0);
+    if (fn_80009C8C() != 0) {
+        goto restart;
+    }
+
+    if (arg1 != 0) {
+        ((Interface *)arg1)->finish();
+    }
+    fn_8000B09C((int)arg0);
+}
+#pragma cplusplus reset
+#pragma pop
 extern void *memcpy(void *, const void *, unsigned int);
 extern void fn_8000BF20(void *, int);
 #pragma scheduling invalid_target
