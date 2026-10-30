@@ -866,7 +866,7 @@ double arg4;
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, f32 arg6) {
     struct SavedValues {
         char *name;
@@ -879,7 +879,8 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     register const char *savedArg3 = arg3;
     register s32 savedArg4 = arg4;
     register s32 savedArg5 = arg5;
-    s32 swap;
+    register s32 savedArg0 = arg0;
+    register s32 savedArg1 = arg1;
     void *record;
     s32 count;
     s32 temp;
@@ -896,13 +897,10 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     void *layout;
     volatile struct SavedValues saved;
     /* Fix note: scan the pool, then shift and fill the selected record slot. */
-    swap = arg0;
-    arg0 = arg1;
-    arg1 = swap;
-    temp = fn_8001D25C(arg0);
+    temp = fn_8001D25C(savedArg1);
     if (temp != 0) {
-        record = fn_8001C540(arg1, temp, savedArg2, 1);
-        count = fn_8001CED4(record, arg0, savedArg4, arg6);
+        record = fn_8001C540(savedArg0, temp, savedArg2, 1);
+        count = fn_8001CED4(record, savedArg1, savedArg4, arg6);
         if (count < 5) {
             pool = lbl_8055D5D0;
             *(u8 *)((u8 *)pool + 8) = 0;
