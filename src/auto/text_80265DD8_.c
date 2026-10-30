@@ -77,6 +77,7 @@ void fn_80265E2C(void) {
         record++;
     } while (count < 0x64);
 }
+#pragma dont_inline reset
 
 #pragma scheduling invalid_target
 void fn_80265EC4(void *arg0, int arg1, int arg2) {
@@ -444,8 +445,8 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     float xx;
     float yy;
     float rotation;
-    float cs;
-    float sn;
+    float cosine;
+    float sine;
 
     x = inp[2] + t * (b[2] - inp[2]);
     sp[0] = x;
@@ -465,22 +466,20 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
 
     *(float *)((char *)out + 0x28) = lbl_80563C20;
     rotation = lbl_80563C8C * inp[10] - lbl_80563C90;
-    cs = yy * rotation;
-    sn = -xx * rotation;
-    *(float *)((char *)out + 0x24) = sp[2] + cs;
-    *(float *)((char *)out + 0x2C) = sp[3] + sn;
-    fn_801EA140((char *)out + 0x24, sp[3], sp[2] + cs, cs,
-                rotation, sn, yy, xx);
+    *(float *)((char *)out + 0x24) = sp[2] + yy * rotation;
+    *(float *)((char *)out + 0x2C) = sp[3] + (-xx * rotation);
+    fn_801EA140((char *)out + 0x24, sp[3], sp[2] + yy * rotation,
+                yy * rotation, rotation, -xx * rotation, yy, xx);
     *(float *)((char *)out + 0x28) += lbl_80563C94;
 
-    cs = (float)cos(angle);
-    sn = (float)sin(angle);
+    cosine = (float)cos(angle);
+    sine = (float)sin(angle);
     *(float *)((char *)out + 0xC) = lbl_80563C20;
     *(float *)((char *)out + 0x10) = lbl_80563C2C;
     *(float *)((char *)out + 0x14) = lbl_80563C20;
-    *(float *)((char *)out + 0x18) = xx * cs - yy * sn;
+    *(float *)((char *)out + 0x18) = xx * cosine - yy * sine;
     *(float *)((char *)out + 0x1C) = lbl_80563C20;
-    *(float *)((char *)out + 0x20) = xx * sn + yy * cs;
+    *(float *)((char *)out + 0x20) = xx * sine + yy * cosine;
     PSVECCrossProduct((char *)out + 0xC, (char *)out + 0x18, out);
 }
 #pragma pop
