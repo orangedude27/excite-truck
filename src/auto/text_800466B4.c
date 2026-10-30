@@ -226,7 +226,7 @@ s32 select_1obj_first(void *arg0) {
     } while (entry < end);
     return 0;
 }
-#pragma scheduling on
+#pragma pop
 
 int select_1obj_continue(void *obj) {
     unsigned char *candidate;
