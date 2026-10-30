@@ -885,18 +885,18 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     s32 count;
     s32 temp;
     s32 maxCount;
-    s32 offset;
+    register s32 offset;
     s32 remaining;
     s32 oldCount;
     s32 sourceByte;
     s32 *pool;
     char *cursor;
-    char *base;
-    char *dest;
+    register char *base;
+    register char *dest;
     void *entry;
     void *layout;
     volatile struct SavedValues saved;
-    /* Fix note: scan the pool, then shift and fill the selected record slot. */
+    /* Fix note: register argument aliases and a separate record base/slot pointer improved the match to 78.8%; loop scheduling and saved-register allocation still differ. */
     temp = fn_8001D25C(savedArg1);
     if (temp != 0) {
         record = fn_8001C540(savedArg0, temp, savedArg2, 1);
