@@ -280,6 +280,7 @@ extern float lbl_80565160, lbl_8056517C, lbl_80565180, lbl_80565184, lbl_8056518
 extern float lbl_8056518C, lbl_80565190, lbl_80565194, lbl_80565198;
 #pragma push
 #pragma dont_inline on
+#pragma paired off
 #pragma paired_single off
 #pragma scheduling invalid_target
 void fn_802E7DDC(void *arg0, void *arg1) {
