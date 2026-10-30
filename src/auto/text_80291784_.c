@@ -105,7 +105,8 @@ float fn_80291784(float a, float b, float c, float d) {
 }
 
 #pragma scheduling invalid_target
-int fn_802917C0(void *arg0, void *arg1, void *arg2) {
+#pragma cplusplus on
+extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
     typedef struct {
         float x;
         float y;
@@ -119,9 +120,9 @@ int fn_802917C0(void *arg0, void *arg1, void *arg2) {
         float value2;
     } Entry;
     register Entry *entry;
-    register char *base = (char *)arg0;
-    register char *manager = (char *)arg1;
-    register char *query_object;
+    register void *base = arg0;
+    register Manager_802917C0 *manager = (Manager_802917C0 *)arg1;
+    register QueryObject_802917C0 *query_object;
     register int zero = 0;
     register float best = lbl_80564484;
     register float initial = best;
@@ -130,36 +131,37 @@ int fn_802917C0(void *arg0, void *arg1, void *arg2) {
     register float result2;
     register float result3;
 
-    *(int *)(base + 0x120) = zero;
+    *(int *)((char *)base + 0x120) = zero;
     goto check_count;
 
 loop:
-    query_object = (char *)((void *(*)(void *))(*(void **)((char *)*(void **)manager + 0x60)))(manager);
+    query_object = manager->getQuery();
     if (query_object == 0) goto finish;
     result1 = fn_80129DC4(0, lbl_80564488, lbl_8056448C);
     result2 = fn_80129DC4(0, lbl_80564490, lbl_80564494);
     result3 = fn_80129DC4(0, lbl_80564498, lbl_80564494);
-    result2 = ((float (*)(void *, char *, float))(*(void **)((char *)*(void **)query_object + 0x28)))(query_object, (char *)&lbl_8055C924, result2);
-    entry = (Entry *)(base + *(int *)(base + 0x120) * 0x24);
+    result2 = query_object->getFloat((char *)&lbl_8055C924, result2);
+    entry = (Entry *)((char *)base + *(int *)((char *)base + 0x120) * 0x24);
     entry->x = initial;
     entry->y = initial;
     entry->z = initial;
-    entry->id = fn_802CAC28(((int *(*)(void *, char *))(*(void **)((char *)*(void **)query_object + 0x14)))(query_object, (char *)&lbl_8055C930), 0);
+    entry->id = fn_802CAC28(query_object->getSetting((char *)&lbl_8055C930), 0);
     entry->unk10 = zero;
     entry->flags = zero;
     entry->color = ((int)(scale * result2) << 24) | 0x00FFFFFF;
-    entry->value1 = ((float (*)(void *, char *, float))(*(void **)((char *)*(void **)query_object + 0x28)))(query_object, (char *)&lbl_8055C938, result1);
-    entry->value2 = ((float (*)(void *, char *, float))(*(void **)((char *)*(void **)query_object + 0x28)))(query_object, (char *)&lbl_8055C940, result3);
-    if (best > entry->value1) best = entry->value1;
-    *(int *)(base + 0x120) = *(int *)(base + 0x120) + 1;
+    entry->value1 = query_object->getFloat((char *)&lbl_8055C938, result1);
+    entry->value2 = query_object->getFloat((char *)&lbl_8055C940, result3);
+    if (best <= entry->value1) best = entry->value1;
+    *(int *)((char *)base + 0x120) = *(int *)((char *)base + 0x120) + 1;
 
 check_count:
-    if (*(int *)(base + 0x120) < 8) goto loop;
+    if (*(int *)((char *)base + 0x120) < 8) goto loop;
 finish:
-    *(float *)(base + 0x124) = ((float (*)(void *, char *))(*(void **)((char *)*(void **)manager + 0x24)))(manager, lbl_80349140);
-    *(float *)(base + 0x128) = ((float (*)(void *, char *))(*(void **)((char *)*(void **)manager + 0x24)))(manager, lbl_8034914C);
-    *(float *)(base + 0x12C) = best;
+    *(float *)((char *)base + 0x124) = manager->getFinal(lbl_80349140);
+    *(float *)((char *)base + 0x128) = manager->getFinal(lbl_8034914C);
+    *(float *)((char *)base + 0x12C) = best;
 }
+#pragma cplusplus reset
 
 #pragma scheduling invalid_target
 void fn_802919AC(void *arg0) {
