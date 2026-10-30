@@ -636,6 +636,47 @@ void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) 
 
 void fn_802ABE50(void) { fn_8028E240(0); }
 
+#pragma push
+#pragma processor 750
+void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+    unsigned int color;
+    float angle;
+    float magnitude;
+    float wave;
+    int active;
+
+    red = fn_80129D90(0, 0x8C, 0xFF);
+    green = fn_80129D90(0, 0xFA, 0xFF);
+    blue = fn_80129D90(0, 0xF0, 0xFF);
+    color = ((unsigned int)blue << 16) | 0xFF000000;
+    color |= ((unsigned int)green << 8) | red;
+    *arg2 = color;
+
+    angle = lbl_80564A98;
+    (void)*(volatile unsigned char *)&lbl_8055F92C;
+    if (*arg0 > lbl_805649F4)
+        *arg0 = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
+    else
+        *arg0 = *arg0 + lbl_80564A34 * delta;
+
+    magnitude = (float)fabs(delta);
+    wave = lbl_805649F0;
+    if (magnitude > lbl_80558DC4)
+        wave = lbl_80564A9C * (float)(int)fn_80287BC8(lbl_805649F0, lbl_805649FC);
+
+    active = 1;
+    if (angle < lbl_80564A00 &&
+        (float)fn_8002EFB4(angle, lbl_80564AA0) >= lbl_80564A34)
+        active = 0;
+
+    *arg1 = lbl_805649F0;
+    if (active != 0)
+        *arg1 = lbl_80564AA8 * *arg0 - wave;
+}
+
 void fn_802ABFF8(int arg0, float farg0) {
     lbl_8055F92D = fn_802C2C00(1);
     lbl_804BD7B0[0] = fn_802C990C(arg0);
