@@ -1115,6 +1115,92 @@ void fn_802CBD7C(register void **link, void *target, void *current) {
         fn_802E317C(lbl_8034BA04);
 }
 
+extern int fn_802D9068(void);
+extern void fn_802CBFCC(void *, void *);
+extern void fn_802CBFA0(void *, unsigned int);
+extern void fn_802CC03C(int **, int *, int);
+extern int fn_802CC10C(void *, int, int, int);
+extern int fn_802CC404(void *);
+extern void *fn_802CC2C8(void *, int);
+void fn_802CBDD0(void *arg0) {
+    char *context;
+    int index;
+    char *root;
+    char *table;
+    char *input;
+    int changed;
+    int zero = 0;
+    char *selected;
+    char *scan;
+    char **link;
+    int less;
+
+    selected = *(char **)((char *)arg0 + 0x2844);
+    context = (char *)arg0;
+    if (selected == 0)
+        return;
+    if (*(void **)((char *)arg0 + 4) == 0)
+        return;
+
+    link = (char **)(context + 0x283C);
+    goto load_scan;
+compare_scan:
+    less = *(float *)(scan + 8) < *(float *)(selected + 8);
+    if (less != 0) {
+        *(char **)(context + 0x2840) = scan;
+        *link = 0;
+        goto scan_done;
+    }
+    link = (char **)(scan + 0x10);
+load_scan:
+    scan = *link;
+    if (scan != 0)
+        goto compare_scan;
+scan_done:
+    input = *(char **)(context + 4);
+    changed = zero;
+    selected = *(char **)(context + 0x2844);
+    root = *(char **)(context + 0x283C);
+    index = *(int *)selected;
+    if (input != 0) {
+        if (fn_802D9068() != 0) {
+            table = (char *)lbl_8055FCB0 + index * 0x4C;
+            *(int *)(input + 0x10) = zero;
+        alloc_loop:
+            *(void **)(input + 8) =
+                fn_802CC2C8((void *)fn_802CC404(context),
+                            *(int *)(table + 0x3C));
+            if (*(void **)(input + 8) == 0 && root != 0 &&
+                fn_802CC10C(context, *(int *)root,
+                            *(int *)(root + 0xC) + 2, (int)input) != 0) {
+                *(int *)(root + 4) = zero;
+                root = *(char **)(root + 0x10);
+                (*(int *)(input + 0x10))++;
+                goto alloc_loop;
+            }
+            if (*(void **)(input + 8) != 0) {
+                fn_802CC03C((int **)context, (int *)input, index);
+                if (*(int *)(input + 0x10) == zero)
+                    fn_802CBFCC(context, input);
+                changed = 1;
+            } else {
+                fn_802CBFA0(context, (unsigned int)input);
+                *(int *)(input + 0x10) = zero;
+            }
+        } else if (root != 0 &&
+                   *(int *)((char *)lbl_8055FCB0 +
+                            *(int *)root * 0x4C + 0x44) != zero &&
+                   fn_802CC10C(context, *(int *)root,
+                               *(int *)(root + 0xC) + 2, zero) != 0) {
+            *(int *)(root + 4) = zero;
+        }
+    }
+    if (changed != zero) {
+        selected = *(char **)(context + 0x2844);
+        *(int *)(selected + 4) = 1;
+    }
+}
+
 void fn_802CBFA0(void *arg0, unsigned int arg1) {
     void *node;
     node = *(void **)((char *)arg0 + 0xC);
