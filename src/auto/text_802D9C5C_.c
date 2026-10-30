@@ -274,35 +274,97 @@ void fn_802DA52C(void) {
 #pragma scheduling on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int arg5) {
-    unsigned char *ctx = (unsigned char *)lbl_8055FE5C;
-    int len1 = arg5 * 4;
-    int size1 = (len1 + 8 + 3) & ~3;
-    unsigned char *rec1;
-    int len2 = arg2 * 12;
-    int size2 = (len2 + 0x18 + 3) & ~3;
-    unsigned char *rec2;
-    unsigned char old = ctx[0x25];
-    if (*(int *)(ctx + 0x10) + size1 + 8 > *(int *)(ctx + 0xC))
-        fn_802E317C(lbl_80346798, *(int *)(ctx + 8), len1 + 8, *(int *)(ctx + 0xC) >> 10);
-    rec1 = *(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10) + 4;
-    *(int *)rec1 = (int)arg3;
-    *(int *)(rec1 + 4) = arg5;
-    memcpy(rec1 + 8, arg4, len1);
-    *(int *)(ctx + 0x10) += size1 + 8;
-    ctx[0x25] = 0;
-    if (*(int *)(ctx + 0x10) + size2 + 8 > *(int *)(ctx + 0xC))
-        fn_802E317C(lbl_80346798, *(int *)(ctx + 8), size2, *(int *)(ctx + 0xC) >> 10);
-    rec2 = *(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10) + 4;
-    *(int *)rec2 = 7;
-    *(int *)(rec2 + 4) = (int)arg0;
-    *(int *)(rec2 + 8) = arg2;
-    *(int *)(rec2 + 0xC) = 0;
-    *(int *)(rec2 + 0x14) = (int)rec1;
-    rec2[0x10] = old;
-    memcpy(rec2 + 0x18, arg1, len2);
-    *(int *)(ctx + 0x10) += size2 + 8;
-    return rec2;
+    struct DaaContext {
+        int unk_0;
+        unsigned char *buffer;
+        void *name;
+        int capacity;
+        int used;
+        void *callback0;
+        void *callback1;
+        void *callback2;
+        void *current;
+        unsigned char status;
+        unsigned char initialized;
+    };
+    volatile struct DaaContext *ctx;
+    register int count1 = arg5;
+    register int count2 = arg2;
+    int bytes1;
+    int size1;
+    int aligned1;
+    int used;
+    int limit;
+    int position;
+    unsigned char *base;
+    unsigned char *record1;
+    int bytes2;
+    int size2;
+    int aligned2;
+    unsigned char saved;
+    unsigned char *record2;
+
+    ctx = (volatile struct DaaContext *)lbl_8055FE5C;
+    bytes1 = count1 * 4;
+    size1 = bytes1 + 8;
+    aligned1 = (size1 + 3) & ~3;
+    used = ctx->used;
+    if (aligned1 + used + 8 > ctx->capacity) {
+        limit = ctx->capacity;
+        fn_802E317C(lbl_80346798, ctx->name, size1, limit / 1024);
+        record1 = 0;
+    } else {
+        base = (unsigned char *)used;
+        base += (unsigned int)ctx->buffer;
+        *(int *)base = 1;
+        record1 = base + 4;
+        position = (unsigned int)ctx->buffer;
+        position += ctx->used;
+        position += aligned1;
+        *(int *)(position + 4) = aligned1;
+        used = ctx->used;
+        used += aligned1;
+        used += 8;
+        ctx->used = used;
+    }
+    *(int *)record1 = (int)arg3;
+    *(int *)(record1 + 4) = count1;
+    memcpy(record1 + 8, arg4, bytes1);
+
+    bytes2 = count2 * 12;
+    saved = ctx->initialized;
+    ctx->initialized = 0;
+    size2 = bytes2 + 0x18;
+    aligned2 = (size2 + 3) & ~3;
+    used = ctx->used;
+    if (aligned2 + used + 8 > ctx->capacity) {
+        limit = ctx->capacity;
+        fn_802E317C(lbl_80346798, ctx->name, size2, limit / 1024);
+        record2 = 0;
+    } else {
+        base = (unsigned char *)used;
+        base += (unsigned int)ctx->buffer;
+        *(int *)base = 1;
+        record2 = base + 4;
+        position = (unsigned int)ctx->buffer;
+        position += ctx->used;
+        position += aligned2;
+        *(int *)(position + 4) = aligned2;
+        used = ctx->used;
+        used += aligned2;
+        used += 8;
+        ctx->used = used;
+    }
+    *(int *)record2 = 7;
+    *(int *)(record2 + 4) = (int)arg0;
+    *(int *)(record2 + 8) = count2;
+    *(int *)(record2 + 0x0C) = 0;
+    *(int *)(record2 + 0x14) = (int)record1;
+    record2[0x10] = saved;
+    memcpy(record2 + 0x18, arg1, bytes2);
+    return record2;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
