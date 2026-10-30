@@ -58,6 +58,7 @@ void fn_80265E08(void* arg0) {
 }
 #pragma dont_inline reset
 
+#pragma dont_inline on
 void fn_80265E2C(void) {
     #pragma scheduling invalid_target
     struct Record { float x; float y; int value; };
@@ -429,6 +430,8 @@ extern void fn_801EA140(void*, float, float, float, float, float, float, float);
 extern void PSVECCrossProduct(void*, void*, void*);
 extern double cos(float);
 extern double sin(float);
+#pragma push
+#pragma processor 750
 void fn_80268BD4(void *out, int arg1, float t, float angle) {
     float *inp = (float *)arg1;
     float *b = *(float **)((char *)inp + 0x14);
@@ -480,7 +483,7 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     *(float *)((char *)out + 0x20) = xx * sn + yy * cs;
     PSVECCrossProduct((char *)out + 0xC, (char *)out + 0x18, out);
 }
-
+#pragma pop
 void fn_80268D94(void) {
     struct {
         int a;
