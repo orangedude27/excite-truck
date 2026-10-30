@@ -981,12 +981,8 @@ extern f32 fn_802A4AD4(void);
 extern f32 fn_802C9A50(void);
 extern f32 lbl_805648B0;
 extern f32 lbl_805648C0;
+#pragma scheduling invalid_target
 void fn_802A6F70(void *arg0, void *arg1) {
-    struct Vec3 {
-        f32 x;
-        f32 y;
-        f32 z;
-    };
     volatile f32 sp1C;
     volatile f32 sp18;
     volatile f32 sp14;
@@ -996,7 +992,7 @@ void fn_802A6F70(void *arg0, void *arg1) {
     f32 divisor;
     f32 dt;
     f32 speed;
-    f32 scale;
+    register f32 scale;
     f32 xVelocity;
     f32 yVelocity;
     f32 zVelocity;
@@ -1009,10 +1005,10 @@ void fn_802A6F70(void *arg0, void *arg1) {
     f32 pointX;
     f32 pointY;
     f32 pointZ;
-    f32 radiusBase;
-    s32 offset;
-    s32 count;
-    struct Vec3 *out;
+    register f32 radiusBase;
+    register s32 offset;
+    register s32 count;
+    register u8 *out;
 
     divisor = fn_802C9A50();
     dt = *(f32 *)((u8 *)arg0 + 0x14);
@@ -1028,7 +1024,7 @@ void fn_802A6F70(void *arg0, void *arg1) {
     xOffset = xBase + xVelocity;
     zBase = *(f32 *)((u8 *)arg1 + 8);
     yOffset = yBase + yVelocity;
-    out = *(struct Vec3 **)arg0;
+    out = *(u8 **)arg0;
     zOffset = zBase + zVelocity;
     sp14 = xOffset;
     sp18 = yOffset;
@@ -1054,20 +1050,19 @@ loop:
             (radiusBase + pointZ * speed) &&
         pointY * pointY < (radiusBase + pointZ * dt) *
             (radiusBase + pointZ * dt)) {
-        out->x = pointX;
-        out->y = pointY;
-        out->z = pointZ;
-        out++;
+        *(f32 *)(out + 0) = pointX;
+        *(f32 *)(out + 4) = pointY;
+        *(f32 *)(out + 8) = pointZ;
+        out += 0xC;
     }
     offset += 0xC;
     count++;
 check:
     if (count < *(s32 *)((u8 *)arg0 + 4)) goto loop;
     *(s32 *)((u8 *)arg0 + 4) =
-        ((u8 *)out - *(u8 **)arg0) / 12;
+        ((s32)(out - *(u8 **)arg0)) / 12;
 }
-
-#pragma pop
+#pragma scheduling on
 s32 fn_802A711C(void *arg0, f32 arg1, f32 arg2, f32 arg3) {
     f32 values[3];
     f32 first;
@@ -1291,3 +1286,8 @@ struct Obj802A5878 {
     virtual Obj802A5878 *child(s32);
 };
 #pragma cplusplus reset
+extern s32 fn_801E85B4(void);
+extern void fn_802C744C(s32, f32 *);
+extern void fn_802C9900(f32);
+extern void fn_802C9904(void);
+extern double cos(double), sin(double);
