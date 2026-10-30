@@ -27,6 +27,13 @@ extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
 extern signed char lbl_8055EEF5;
 extern signed char lbl_8055EEF6;
+extern long lbl_804904D0;
+extern char lbl_8033C95C[];
+extern long *lbl_8055B650;
+extern long *lbl_8055B654;
+extern int fn_8012E938(int);
+extern void fn_8012E81C(void);
+extern long fn_802EC294(long, long);
 extern char lbl_80489CA0[16];
 extern long fn_8020F608(long, long);
 extern struct Unk_804902C4 {
@@ -315,17 +322,13 @@ extern "C" void fn_8020FCC4(void) {
             index = ((long (*)(long))fn_8020F3B4)(2);
         }
     }
+#pragma scheduling off
     current = lbl_8055B658;
-    if (current == -1) {
-        goto done;
+    if (current != -1 && current != index) {
+        fn_802EC1D8();
+        lbl_8055B658 = index;
     }
-    if (current == index) {
-        goto done;
-    }
-    fn_802EC1D8();
-    lbl_8055B658 = index;
-done:
-    ;
+#pragma scheduling on
 }
 #pragma cplusplus off
 #pragma scheduling on
