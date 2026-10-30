@@ -2192,7 +2192,7 @@ void fn_80164D60(void) {
 
 #pragma scheduling invalid_target
 void fn_80164F50(void *arg0) {
-    extern void fn_801796BC(s32);
+    extern void fn_801796BC(unsigned char);
     extern s32 fn_80131234(void *);
     extern void fn_802A95A8(f32 *, f32 *, f32, f32);
     extern void fn_80276CB0(void *, s32);
