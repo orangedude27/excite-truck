@@ -614,72 +614,61 @@ void fn_801C0E60(float *arg0, float *arg1, float *arg2) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma opt_propagation on
-void fn_801C0E94(void *arg0, void *arg1) {
+void fn_801C0E94(void *arg0, int arg1) {
     extern float lbl_805628BC, lbl_8055E460;
     extern char lbl_80558DC4[];
-    float baseValue = lbl_805628BC;
-    register float alpha = lbl_8055E460;
-    float diff = alpha - baseValue;
-    unsigned int offset = *(unsigned int *)((char *)arg0 + 8);
-    unsigned int *dst = (unsigned int *)((char *)arg1 + offset);
-    int i;
-    if ((float)fabs(diff) <= *(float *)lbl_80558DC4) {
-        unsigned int v0 = *(unsigned int *)((char *)arg0 + 0x70);
-        unsigned int v1 = *(unsigned int *)((char *)arg0 + 0x74);
-        dst[0] = v0; dst[1] = v1;
-        v0 = *(unsigned int *)((char *)arg0 + 0x78);
-        v1 = *(unsigned int *)((char *)arg0 + 0x7C);
-        dst[2] = v0; dst[3] = v1;
-        v0 = *(unsigned int *)((char *)arg0 + 0x80);
-        v1 = *(unsigned int *)((char *)arg0 + 0x84);
-        dst[4] = v0; dst[5] = v1;
-        v0 = *(unsigned int *)((char *)arg0 + 0x88);
-        v1 = *(unsigned int *)((char *)arg0 + 0x8C);
-        dst[6] = v0; dst[7] = v1;
-        v0 = *(unsigned int *)((char *)arg0 + 0x90);
-        dst[8] = v0;
-        v0 = *(unsigned int *)((char *)arg0 + 0x94);
-        v1 = *(unsigned int *)((char *)arg0 + 0x98);
-        dst[9] = v0; dst[10] = v1;
-        v0 = *(unsigned int *)((char *)arg0 + 0x9C);
-        dst[11] = v0;
+    unsigned char *src = (unsigned char *)arg0;
+    unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
+    float delta = lbl_8055E460 - lbl_805628BC;
+    if ((float)fabs(delta) <= *(float *)lbl_80558DC4) {
+        *(unsigned int *)(dst + 0x00) = *(unsigned int *)(src + 0x70);
+        *(unsigned int *)(dst + 0x04) = *(unsigned int *)(src + 0x74);
+        *(unsigned int *)(dst + 0x08) = *(unsigned int *)(src + 0x78);
+        *(unsigned int *)(dst + 0x0C) = *(unsigned int *)(src + 0x7C);
+        *(unsigned int *)(dst + 0x10) = *(unsigned int *)(src + 0x80);
+        *(unsigned int *)(dst + 0x14) = *(unsigned int *)(src + 0x84);
+        *(unsigned int *)(dst + 0x18) = *(unsigned int *)(src + 0x88);
+        *(unsigned int *)(dst + 0x1C) = *(unsigned int *)(src + 0x8C);
+        *(unsigned int *)(dst + 0x20) = *(unsigned int *)(src + 0x90);
+        *(unsigned int *)(dst + 0x24) = *(unsigned int *)(src + 0x94);
+        *(unsigned int *)(dst + 0x28) = *(unsigned int *)(src + 0x98);
+        *(unsigned int *)(dst + 0x2C) = *(unsigned int *)(src + 0x9C);
     } else {
         float temp[12];
-        float *a = (float *)((char *)arg0 + 0x70);
-        float *b = (float *)((char *)arg0 + 0xA0);
-        float *out = temp;
-        for (i = 0; i < 2; ++i) {
-            float r0 = b[0] + alpha * (a[0] - b[0]);
-            float r1 = b[1] + alpha * (a[1] - b[1]);
-            float r2 = b[2] + alpha * (a[2] - b[2]);
-            float r3 = b[3] + alpha * (a[3] - b[3]);
-            float r4 = b[4] + alpha * (a[4] - b[4]);
-            float r5 = b[5] + alpha * (a[5] - b[5]);
-            out[0] = r0; out[1] = r1; out[2] = r2;
-            out[3] = r3; out[4] = r4; out[5] = r5;
-            a += 6; b += 6; out += 6;
+        float *a = (float *)(src + 0x70);
+        float *b = (float *)(src + 0xA0);
+        int i;
+        for (i = 0; i < 2; i++) {
+            float a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
+            float b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5];
+            temp[i * 6 + 0] = b0 + lbl_8055E460 * (a0 - b0);
+            temp[i * 6 + 1] = b1 + lbl_8055E460 * (a1 - b1);
+            temp[i * 6 + 2] = b2 + lbl_8055E460 * (a2 - b2);
+            temp[i * 6 + 3] = b3 + lbl_8055E460 * (a3 - b3);
+            temp[i * 6 + 4] = b4 + lbl_8055E460 * (a4 - b4);
+            temp[i * 6 + 5] = b5 + lbl_8055E460 * (a5 - b5);
+            a += 6;
+            b += 6;
         }
-        {
-            unsigned int *tempWords = (unsigned int *)temp;
-            unsigned int v0 = tempWords[0], v1 = tempWords[1];
-            dst[0] = v0; dst[1] = v1;
-            v0 = tempWords[2]; v1 = tempWords[3];
-            dst[2] = v0; dst[3] = v1;
-            v0 = tempWords[4]; v1 = tempWords[5];
-            dst[4] = v0; dst[5] = v1;
-            v0 = tempWords[6]; v1 = tempWords[7];
-            dst[6] = v0; dst[7] = v1;
-            v0 = tempWords[8]; v1 = tempWords[9];
-            dst[8] = v0; dst[9] = v1;
-            v0 = tempWords[10]; v1 = tempWords[11];
-            dst[10] = v0; dst[11] = v1;
-        }
+        *(unsigned int *)(dst + 0x00) = *(unsigned int *)&temp[0];
+        *(unsigned int *)(dst + 0x04) = *(unsigned int *)&temp[1];
+        *(unsigned int *)(dst + 0x08) = *(unsigned int *)&temp[2];
+        *(unsigned int *)(dst + 0x0C) = *(unsigned int *)&temp[3];
+        *(unsigned int *)(dst + 0x10) = *(unsigned int *)&temp[4];
+        *(unsigned int *)(dst + 0x14) = *(unsigned int *)&temp[5];
+        *(unsigned int *)(dst + 0x18) = *(unsigned int *)&temp[6];
+        *(unsigned int *)(dst + 0x1C) = *(unsigned int *)&temp[7];
+        *(unsigned int *)(dst + 0x20) = *(unsigned int *)&temp[8];
+        *(unsigned int *)(dst + 0x24) = *(unsigned int *)&temp[9];
+        *(unsigned int *)(dst + 0x28) = *(unsigned int *)&temp[10];
+        *(unsigned int *)(dst + 0x2C) = *(unsigned int *)&temp[11];
     }
-    *(short *)((char *)arg1 + offset + 0x30) = *(short *)((char *)arg0 + 0x6C);
-    *(unsigned int *)((char *)arg1 + *(unsigned int *)((char *)arg0 + 8) + 0x34) = *(unsigned int *)((char *)arg0 + 0x1F0);
-    *(unsigned int *)((char *)arg1 + *(unsigned int *)((char *)arg0 + 8) + 0x38) = *(unsigned int *)((char *)arg0 + 0x1F4);
-    *(unsigned int *)((char *)arg1 + *(unsigned int *)((char *)arg0 + 8) + 0x3C) = *(unsigned int *)((char *)arg0 + 0x1F8);
+    *(short *)(dst + 0x30) = *(short *)(src + 0x6C);
+    dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
+    *(unsigned int *)(dst + 0x34) = *(unsigned int *)(src + 0x1F0);
+    *(unsigned int *)(dst + 0x38) = *(unsigned int *)(src + 0x1F4);
+    *(unsigned int *)(dst + 0x3C) = *(unsigned int *)(src + 0x1F8);
 }
 #pragma pop
