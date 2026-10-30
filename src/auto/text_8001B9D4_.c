@@ -531,6 +531,86 @@ s32 *fn_8001C4E0(s32 arg0) {
         }
     }
 }
+
+extern const char lbl_802FD894[];
+extern const char lbl_802FD8C4[];
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
+#pragma use_lmw_stmw off
+void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 var_r27;
+    s32 var_r4;
+    char *var_r28;
+    char *var_r31_2;
+    char *var_r5;
+    u8 temp_r3;
+    void *temp_r27;
+    void *var_r30;
+    void *var_r31;
+
+    var_r28 = (char *)arg1;
+    if (arg0 < 0) {
+        var_r31 = lbl_8055D5CC + 0x36B10;
+    } else {
+        var_r31 = lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E04;
+    }
+    var_r30 = 0;
+    var_r27 = 0;
+    do {
+        if (*((u8 *)var_r31 + 0x70) == 0) {
+            var_r30 = var_r31;
+        } else if (*(s32 *)((u8 *)var_r31 + 4) == arg2 &&
+                   *(s32 *)var_r31 != 0 &&
+                   stricmp(var_r28, *(const char **)var_r31) == 0) {
+            return var_r31;
+        }
+        var_r27++;
+        var_r31 = (u8 *)var_r31 + 0x74;
+    } while (var_r27 < 0xF0);
+
+    if (arg3 == 0) {
+        return 0;
+    }
+    fn_802E30C8(lbl_802FD894, var_r28);
+    if (var_r30 == 0) {
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD8C4, var_r28);
+    }
+    memset(var_r30, 0, 0x74);
+
+    temp_r27 = lbl_8055D5D0;
+    *((u8 *)temp_r27 + 8) = 0;
+    var_r31_2 = *(char **)temp_r27;
+    for (;;) {
+        if (stricmp(var_r31_2, var_r28) == 0) {
+            break;
+        }
+        while (*var_r31_2 != 0) {
+            var_r31_2++;
+        }
+        var_r31_2++;
+        if (*var_r31_2 != 0) {
+            continue;
+        }
+        if (var_r31_2 - *(char **)temp_r27 >= *(s32 *)((u8 *)temp_r27 + 4)) {
+            var_r31_2[-1] = 0;
+        } else {
+            var_r5 = var_r31_2;
+            do {
+                temp_r3 = *var_r28;
+                *var_r5 = temp_r3;
+                var_r5++;
+            } while (*var_r28++ != 0);
+        }
+        break;
+    }
+    *(char **)var_r30 = var_r31_2;
+    *(s32 *)((u8 *)var_r30 + 4) = arg2;
+    *((u8 *)var_r30 + 0x70) = 1;
+    return var_r30;
+}
+#pragma pop
+
 #pragma scheduling reset
 void fn_8001C714(void) {
     fn_80131234(*(s32 *)((u8 *)((s32 *(*)(void))fn_8001C4E0)() + 8));
@@ -639,37 +719,52 @@ extern void *lbl_8055E050;
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
-s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
+extern "C" s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
+    struct Node {
+        virtual const char *GetName();
+        virtual s32 IsValid(s32);
+        virtual void Unused2();
+        virtual void Unused3();
+        virtual const char *GetParam(const char *, void *);
+        virtual s32 GetInt(s32);
+        virtual void Unused6();
+        virtual f32 GetFloat(s32);
+    };
+    struct Manager {
+        virtual Node *GetFallback(const char *);
+        virtual Node *GetAt(s32);
+    };
     s32 *archive;
-    void *node;
-    s32 index;
     char *strings;
+    Node *node;
+    s32 index;
     f32 value;
-    /* Fix note: load the string base before the null guard and copy the float result through its integer bits. */
+    /* Fix note: preserve virtual slots and use a switch for the unit conversion flag. */
     strings = lbl_802FD6D8;
     if (name == 0) return 0;
     archive = fn_8001C4E0(flags);
     if (archive[1] == 0) return 0;
     index = 0;
-    node = ((void *(*)(void *, s32))((void **)*(void **)lbl_8055D5D4)[3])(lbl_8055D5D4, index);
-    while (node != 0) {
-        if (stricmp(((const char *(*)(void *))((void **)*(void **)node)[2])(node), strings + 0x39C) == 0 &&
-            stricmp(((const char *(*)(void *, const char *, void *))((void **)*(void **)node)[6])(node, strings + 0x3AC, &lbl_80558CD8), name) == 0 &&
-            ((s32 (*)(void *, s32))((void **)*(void **)node)[3])(node, archive[1]) != 0) break;
+    while ((node = ((Manager *)lbl_8055D5D4)->GetAt(index)) != 0) {
+        if (stricmp(node->GetName(), strings + 0x39C) == 0 &&
+            stricmp(node->GetParam(strings + 0x3AC, &lbl_80558CD8), name) == 0 &&
+            node->IsValid(archive[1]) != 0) break;
         index++;
-        node = ((void *(*)(void *, s32))((void **)*(void **)lbl_8055D5D4)[3])(lbl_8055D5D4, index);
     }
     if (node == 0)
-        node = ((void *(*)(void *, const char *))((void **)*(void **)lbl_8055D5D4)[2])(lbl_8055D5D4, strings + 0x3BC);
+        node = ((Manager *)lbl_8055D5D4)->GetFallback(strings + 0x3BC);
     if (out != 0) {
         switch (flags & 0x300) {
         case 0x200:
-            *(s32 *)out = ((s32 (*)(void *, s32))((void **)*(void **)node)[7])(node, archive[1]);
+            *(s32 *)out = node->GetInt(archive[1]);
             break;
         case 0x100:
-            value = ((f32 (*)(void *, s32))((void **)*(void **)node)[9])(node, archive[1]);
-            if ((flags & 0x1FC00) == 0x800)
+            value = node->GetFloat(archive[1]);
+            switch (flags & 0x1FC00) {
+            case 0x800:
                 value /= *(f32 *)((char *)lbl_8055E050 + 0x10);
+                break;
+            }
             *(s32 *)out = *(s32 *)&value;
             break;
         }
