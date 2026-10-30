@@ -1,6 +1,7 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 extern void *memset(void *, int, unsigned long);
 extern void fn_8001BE70(void *);
+extern void fn_802AE0E0(void);
 extern unsigned int fn_801CE898(void);
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/stack/include/hcimsgs.h"
