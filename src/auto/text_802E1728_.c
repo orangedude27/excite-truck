@@ -230,6 +230,28 @@ void fn_802E27B8(void *arg0) {
         *(int *)((char *)arg0 + 0x1D0 + index * 4) = 0;
 }
 
+#pragma scheduling invalid_target
+void fn_802E27F0(void) {
+    extern char lbl_8034CD00[];
+    int local[2];
+    int **heap = (int **)lbl_804DB780;
+    int size;
+    register int count;
+    register int i;
+
+    lbl_804DB780[0] = 0x7400;
+    heap[1] = local;
+    size = lbl_804DB780[0];
+    fn_802E30C8(lbl_8034CD00, size / 1024, local);
+    count = lbl_804DB780[0] / 4;
+    for (i = 0; i < count; i++) {
+        (*(int **)((char *)lbl_804DB780 + 4))[-i] = 0x53FFEEDD;
+    }
+    *(int **)((char *)lbl_804DB780 + 8) =
+        (int *)((char *)(*(int **)((char *)lbl_804DB780 + 4)) +
+                (-(count - 1) * 4));
+}
+#pragma scheduling on
 void fn_802E29AC(void) {
     int count = *(int *)lbl_804DB780;
     int *array = *(int **)((char *)lbl_804DB780 + 4);
@@ -409,23 +431,56 @@ void fn_802E2E0C(int arg0, int arg1) {
     lbl_804DB790[index] = arg0;
     lbl_804DB7D0[index] = arg1;
 }
-#pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
 void fn_802E2E38(int arg0) {
-extern char lbl_8034CCE0[]; extern int lbl_804DB790[],lbl_804DB7D0[],lbl_8055FF00;
-extern int fn_80039840(void),fn_802D9BF0(void),fn_802D9C04(void),fn_8005EE7C(void);
-extern void fn_800527CC(int),fn_8005ED8C(void),OSReturnToMenu(void),OSShutdownSystem(void);
-char *text=lbl_8034CCE0; int i,(*callback)(int,int);
-fn_802E30C8(text+0xB8);
-for(i=0;i<lbl_8055FF00;i++){callback=(int(*)(int,int))lbl_804DB790[i];if(callback(0,arg0)==1){fn_802E30C8(text+0xCC,lbl_804DB7D0[i]);return;}}
-fn_802E30C8(text+0xE4);
-for(i=lbl_8055FF00-1;i>=0;i--){callback=(int(*)(int,int))lbl_804DB790[i];callback(1,arg0);}
-fn_802E30C8(text+0xFC);
-if(fn_80039840())fn_802E30C8(text+0x118);
-fn_802E30C8(text+0x12C,arg0);
-if(arg0==0){if(fn_802D9BF0()==0||fn_802D9C04()!=0){fn_802E30C8(text+0x13C);fn_800527CC(0);}else{fn_802E30C8(text+0x154);OSReturnToMenu();}return;}
-if(arg0==2){fn_802E30C8(text+0x184);fn_8005ED8C();fn_802E30C8(text+0x1A0);while(fn_8005EE7C()==4){}fn_802E30C8(text+0x1C8);OSShutdownSystem();return;}
-fn_802E30C8(text+0x1E4);OSReturnToMenu();
+    extern char lbl_8034CCE0[];
+    extern int lbl_804DB790[], lbl_804DB7D0[], lbl_8055FF00;
+    extern int fn_80039840(void), fn_802D9BF0(void), fn_802D9C04(void), fn_8005EE7C(void);
+    extern void fn_800527CC(int), fn_8005ED8C(void), OSReturnToMenu(void), OSShutdownSystem(void);
+    int (*callback)(int, int);
+    register int i;
+    register char *text = lbl_8034CCE0;
+
+    fn_802E30C8(text + 0xB8);
+    for (i = 0; i < lbl_8055FF00; i++) {
+        callback = (int (*)(int, int))lbl_804DB790[i];
+        if (callback(0, arg0) == 1) {
+            fn_802E30C8(text + 0xCC, lbl_804DB7D0[i]);
+            return;
+        }
+    }
+    fn_802E30C8(text + 0xE4);
+    for (i = lbl_8055FF00 - 1; i >= 0; i--) {
+        callback = (int (*)(int, int))lbl_804DB790[i];
+        callback(1, arg0);
+    }
+    fn_802E30C8(text + 0xFC);
+    if (fn_80039840()) fn_802E30C8(text + 0x118);
+    fn_802E30C8(text + 0x12C, arg0);
+    if (arg0 == 0) {
+        if (fn_802D9BF0() == 0 || fn_802D9C04() != 0) {
+            fn_802E30C8(text + 0x13C);
+            fn_800527CC(0);
+        } else {
+            fn_802E30C8(text + 0x154);
+            OSReturnToMenu();
+        }
+        return;
+    }
+    if (arg0 == 2) {
+        fn_802E30C8(text + 0x184);
+        fn_8005ED8C();
+        fn_802E30C8(text + 0x1A0);
+        while (fn_8005EE7C() == 4) {}
+        fn_802E30C8(text + 0x1C8);
+        OSShutdownSystem();
+        return;
+    }
+    fn_802E30C8(text + 0x1E4);
+    OSReturnToMenu();
 }
+#pragma pop
 
 void fn_802E300C(int arg0) {
     ((void (*)(const char *, int))fn_802E317C)(lbl_8034CEE4, arg0);
