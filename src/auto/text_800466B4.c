@@ -68,35 +68,58 @@ s32 select_2obj_first(void *arg0) {
     u8 *obj = (u8 *)arg0;
     u8 *a;
     u8 *b;
-    u8 *bestA = 0;
-    u8 *bestB = 0;
+    u8 *bestA;
+    u8 *bestB;
+    u8 *aEnd = obj + 0xEC;
+    u8 *bEnd;
     f32 best = lbl_80558EC0;
     f32 threshold = lbl_80560BD8;
     f32 length = lbl_80560BE4;
-    u8 *aEnd = obj + 0xEC;
-    u8 *bEnd = obj + 0xEC;
 
-    for (a = obj + 0xC8; a < aEnd; a += 0xC) {
-        if (*(s8 *)(a + 8) != 0) continue;
-        for (b = a + 0xC; b <= bEnd; b += 0xC) {
-            f32 dx, dy, mag, nx, ny, v, score;
-            if (*(s8 *)(b + 8) != 0) continue;
-            dx = *(f32 *)(b + 0) - *(f32 *)(a + 0);
-            dy = *(f32 *)(b + 4) - *(f32 *)(a + 4);
-            mag = (f32)fn_8002F234((f64)(dx * dx + dy * dy));
-            nx = dx * (length / mag);
-            ny = dy * (length / mag);
-            v = lbl_8055D990 * (length / mag);
-            score = *(f32 *)(obj + 0x3C8) * (*(f32 *)(obj + 0xB4) * nx + *(f32 *)(obj + 0xB8) * ny)
-                 + *(f32 *)(obj + 0x3CC) * (*(f32 *)(obj + 0xB8) * nx - *(f32 *)(obj + 0xB4) * ny);
-            if (v <= lbl_8055D9B0 || v >= lbl_80558EB8) continue;
-            if (score < threshold) {
-                score = -score;
-                if (score > best) { best = score; bestA = b; bestB = a; }
-            } else if (score > best) { best = score; bestA = a; bestB = b; }
+    a = obj + 0xC8;
+    do {
+        if (*(s8 *)(a + 8) == 0) {
+            b = a + 0xC;
+            bEnd = obj + 0xEC;
+            do {
+                if (*(s8 *)(b + 8) == 0) {
+                    f32 dy, dx, mag, scale, ny, nx, v;
+                    f32 p, q, score;
+                    volatile f32 c0, c1;
+                    dx = *(f32 *)(b + 0) - *(f32 *)(a + 0);
+                    dy = *(f32 *)(b + 4) - *(f32 *)(a + 4);
+                    mag = (f32)fn_8002F234((f64)(dx * dx + dy * dy));
+                    p = *(f32 *)(obj + 0xB4);
+                    q = *(f32 *)(obj + 0xB8);
+                    scale = length / mag;
+                    nx = dx * scale;
+                    ny = dy * scale;
+                    v = lbl_8055D990 * scale;
+                    c0 = p * nx + q * ny;
+                    c1 = q * nx - p * ny;
+                    if (v <= lbl_8055D9B0 || v >= lbl_80558EB8)
+                        continue;
+                    score = *(f32 *)(obj + 0x3C8) * c0 + *(f32 *)(obj + 0x3CC) * c1;
+                    if (score < threshold) {
+                        score = -score;
+                        if (score > best) {
+                            best = score;
+                            bestA = b;
+                            bestB = a;
+                        }
+                    } else if (score > best) {
+                        best = score;
+                        bestA = a;
+                        bestB = b;
+                    }
+                }
+                b += 0xC;
+            } while (b <= bEnd);
         }
-    }
-    if (best == lbl_80558EC0) return 0;
+        a += 0xC;
+    } while (a < aEnd);
+    if (best == lbl_80558EC0)
+        return 0;
     *(u32 *)(obj + 0xF8) = *(u32 *)(bestA + 0);
     *(u32 *)(obj + 0xFC) = *(u32 *)(bestA + 4);
     *(u32 *)(obj + 0x100) = *(u32 *)(bestA + 8);
@@ -356,10 +379,9 @@ static void clamp_stick_circle(Vec2*, s32, s32, s32, s32);
 void clamp_stick_cross(void *arg0, void *arg1) {
     u8 *obj = (u8 *)arg0;
     u8 *input = (u8 *)arg1;
-    s16 chan = *(s16 *)(obj + 0x114);
+    register s16 chan = *(s16 *)(obj + 0x114);
     s32 devType;
     s32 ret;
-    s32 low, high, value;
     double bias = lbl_80560C10;
     if (chan < 0) return;
     ret = WPADProbe(chan, &devType);
@@ -369,7 +391,10 @@ void clamp_stick_cross(void *arg0, void *arg1) {
             reset_kpad(obj);
             return;
         }
-        clamp_stick_circle((Vec2 *)(obj + 0x60), (s8)input[0x30], (s8)input[0x31], lbl_80558ED4, lbl_80558ED8);
+        {
+            volatile s8 *stick = (volatile s8 *)(input + 0x30);
+            clamp_stick_circle((Vec2 *)(obj + 0x60), stick[0], stick[1], lbl_80558ED4, lbl_80558ED8);
+        }
         return;
     }
     if (*(u32 *)(obj + 0x5C) != 2) return;
@@ -380,16 +405,28 @@ void clamp_stick_cross(void *arg0, void *arg1) {
     }
     clamp_stick_circle((Vec2 *)(obj + 0x6C), *(s16 *)(input + 0x2C), *(s16 *)(input + 0x2E), lbl_80558EDC, lbl_80558EE0);
     clamp_stick_circle((Vec2 *)(obj + 0x74), *(s16 *)(input + 0x30), *(s16 *)(input + 0x32), lbl_80558EDC, lbl_80558EE0);
-    low = lbl_80558EE4;
-    high = lbl_80558EE8;
-    value = input[0x34];
-    if (value <= low) *(f32 *)(obj + 0x7C) = lbl_80560BD8;
-    else if (value >= high) *(f32 *)(obj + 0x7C) = lbl_80560BE4;
-    else *(f32 *)(obj + 0x7C) = (f32)(value - low) / (f32)(high - low);
-    value = input[0x35];
-    if (value <= low) *(f32 *)(obj + 0x80) = lbl_80560BD8;
-    else if (value >= high) *(f32 *)(obj + 0x80) = lbl_80560BE4;
-    else *(f32 *)(obj + 0x80) = (f32)(value - low) / (f32)(high - low);
+    {
+        register s32 value;
+        register s32 high;
+        register s32 low;
+        low = *(volatile s32 *)&lbl_80558EE4;
+        value = input[0x34];
+        high = *(volatile s32 *)&lbl_80558EE8;
+        if (value <= low) *(f32 *)(obj + 0x7C) = lbl_80560BD8;
+        else if (value >= high) *(f32 *)(obj + 0x7C) = lbl_80560BE4;
+        else *(f32 *)(obj + 0x7C) = (f32)(value - low) / (f32)(high - low);
+    }
+    {
+        register s32 value;
+        register s32 high;
+        register s32 low;
+        low = *(volatile s32 *)&lbl_80558EE4;
+        value = input[0x35];
+        high = *(volatile s32 *)&lbl_80558EE8;
+        if (value <= low) *(f32 *)(obj + 0x80) = lbl_80560BD8;
+        else if (value >= high) *(f32 *)(obj + 0x80) = lbl_80560BE4;
+        else *(f32 *)(obj + 0x80) = (f32)(value - low) / (f32)(high - low);
+    }
 }
 
 void read_kpad_stick(s32 chan, void *arg1) {
