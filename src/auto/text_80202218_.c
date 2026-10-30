@@ -106,16 +106,17 @@ int fn_80202378(int arg0, int arg1, int arg2, int arg3) {
 void *fn_802023C8(void) { return lbl_80488964; }
 
 #pragma push
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802023D4(void) {
     register char *config;
     register char *state;
+    register s32 count;
     register void *manager;
     register void *interface;
-    register s32 count;
     register s32 i;
-    register s32 offset;
-    register s32 *entry;
+    s32 offset;
+    s32 *entry;
     char name1[32];
     char name2[32];
     f32 position[3];
