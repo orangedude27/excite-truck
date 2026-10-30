@@ -30,6 +30,13 @@ extern s32 fn_801CF050(void);
 extern void fn_801B6658(void);
 extern f32 lbl_805620BC;
 extern char lbl_804349B0[];
+extern s32 lbl_80332F40;
+extern s32 lbl_8055A478;
+extern u8 lbl_8055E528;
+extern void *fn_801284F8(s32, const void *);
+extern void *fn_8018108C(s32);
+extern void *fn_801B2EC0(s32);
+extern s32 fn_80019B78(void);
 #pragma scheduling invalid_target
 extern s32 fn_8012850C(s32, void *);
 extern s32 fn_80137C74(void);
@@ -791,6 +798,72 @@ void *arg0;
     row->value[30] = lbl_80562090;
     row->value[31] = lbl_80562090;
 }
+
+#pragma ppc_psq_save off
+#pragma cplusplus on
+extern "C" void fn_80191928(void *arg0) {
+    class Interface {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual f32 speed();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual s32 result();
+    };
+    /* Match note: local virtual interface emits the calls at vtable offsets 0x14 and 0x2C. */
+    s32 state;
+    bool hit;
+    s32 result;
+    s32 combined;
+    s32 nextState;
+    f32 speed;
+    f32 dot;
+    if (*(s32 *)((u8 *)arg0 + 0x30) == 0)
+        return;
+    if (*(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x2618) > lbl_80562090) {
+        *(s32 *)((u8 *)arg0 + 0x30) = 4;
+        return;
+    }
+    speed = ((Interface *)*(void **)((u8 *)arg0 + 0x38))->speed();
+    result = ((Interface *)*(void **)((u8 *)arg0 + 0x38))->result();
+    hit = speed > lbl_805620C0;
+    dot = PSVECDotProduct((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x54,
+                          (u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x118);
+    state = *(s32 *)((u8 *)arg0 + 0x30);
+    if (state == 4) {
+        combined = 0;
+        if (hit && dot < lbl_805620C4)
+            combined = 1;
+    } else {
+        combined = 0;
+        if (hit && dot < lbl_805620C8)
+            combined = 1;
+    }
+    if ((combined == 0) || (result != 0)) {
+        *(s32 *)((u8 *)arg0 + 0x30) = 4;
+        return;
+    }
+    if (state == 4) {
+        *(s32 *)((u8 *)arg0 + 0x30) = 5;
+        return;
+    }
+    if (state >= 5) {
+        nextState = *(volatile s32 *)((u8 *)arg0 + 0x30) + 1;
+        *(s32 *)((u8 *)arg0 + 0x30) = nextState;
+        if (nextState - 5 == 0x1D)
+            *(s32 *)((u8 *)arg0 + 0x30) = 3;
+        if (dot < lbl_805620CC)
+            *(s32 *)((u8 *)arg0 + 0x30) = 3;
+    }
+}
+#pragma cplusplus off
+#pragma ppc_psq_save reset
+
 #pragma scheduling on
 int fn_80191A98(void *arg0) {
     int bit = (*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 1) & 1;
