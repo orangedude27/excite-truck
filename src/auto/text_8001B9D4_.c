@@ -863,71 +863,87 @@ double arg4;
 }
 
 s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, f32 arg6) {
+    struct SavedValues {
+        char *name;
+        s32 value0;
+        s32 value1;
+        f32 scale;
+        s32 encoded;
+    };
     void *record;
     s32 count;
     s32 temp;
     s32 maxCount;
     s32 offset;
     s32 remaining;
-    s32 encoded;
     s32 oldCount;
+    s32 encoded;
+    s32 sourceByte;
     s32 *pool;
     char *cursor;
     char *base;
-    char *dst;
-    s32 sourceByte;
+    char *dest;
     void *entry;
     void *layout;
-    /* Fix note: find or append the name in the bounded string pool, then shift and fill its 0x14-byte record. */
+    volatile struct SavedValues saved;
+    /* Fix note: intern the bounded name, then shift and populate its selected record after metadata lookup. */
     temp = fn_8001D25C(arg1);
-    if (temp == 0) return 0;
-    record = fn_8001C540(arg0, temp, arg2, 1);
-    count = fn_8001CED4(record, arg1, arg4, arg6);
-    if (count >= 5) return 0;
-
-    pool = lbl_8055D5D0;
-    *(u8 *)((u8 *)pool + 8) = 0;
-    base = *(char **)pool;
-    cursor = base;
-    for (;;) {
-        if (stricmp(cursor, arg3) == 0) break;
-        if (*cursor == 0 || cursor - base >= *(s32 *)((u8 *)pool + 4)) {
-            dst = cursor;
-            remaining = *(s32 *)((u8 *)pool + 4) - (cursor - base) - 1;
-            for (;;) {
-                sourceByte = (u8)*arg3;
-                arg3++;
-                *dst = (u8)sourceByte;
-                dst++;
-                if ((s8)sourceByte == 0) break;
-                remaining--;
-                if (remaining <= 0) {
-                    dst[-1] = 0;
+    if (temp != 0) {
+        record = fn_8001C540(arg0, temp, arg2, 1);
+        count = fn_8001CED4(record, arg1, arg4, arg6);
+        if (count < 5) {
+            pool = lbl_8055D5D0;
+            *(u8 *)((u8 *)pool + 8) = 0;
+            base = *(char **)pool;
+            cursor = base;
+            while (stricmp(cursor, arg3) != 0) {
+                if (*cursor == 0 || cursor - base >= *(s32 *)((u8 *)pool + 4)) {
+                    dest = cursor;
+                    remaining = *(s32 *)((u8 *)pool + 4) - (cursor - base) - 1;
+                    for (;;) {
+                        sourceByte = (u8)*arg3;
+                        arg3++;
+                        *dest = (u8)sourceByte;
+                        dest++;
+                        if ((s8)sourceByte == 0) break;
+                        remaining--;
+                        if (remaining <= 0) {
+                            dest[-1] = 0;
+                            break;
+                        }
+                    }
                     break;
                 }
+                while (*cursor != 0) cursor++;
+                cursor++;
             }
-            break;
+            saved.name = cursor;
+            saved.value0 = arg4;
+            saved.value1 = arg5;
+            saved.scale = arg6;
+            entry = fn_800167CC(0);
+            layout = fn_80016BC8(entry, 0);
+            encoded = fn_8001D220(*(u32 *)entry,
+                                  *(u32 *)((u8 *)layout + 4),
+                                  *(u8 *)((u8 *)layout + 8));
+            saved.encoded = encoded;
+            oldCount = *(s32 *)((u8 *)record + 0x6C);
+            maxCount = oldCount <= 4 ? oldCount : 4;
+            *(s32 *)((u8 *)record + 0x6C) = maxCount;
+            offset = count * 0x14;
+            memmove((u8 *)record + offset + 0x1C, (u8 *)record + offset + 8,
+                    (maxCount - count) * 0x14);
+            *(char **)((u8 *)record + offset + 8) = saved.name;
+            *(s32 *)((u8 *)record + offset + 0xC) = saved.value0;
+            *(s32 *)((u8 *)record + offset + 0x10) = saved.value1;
+            *(f32 *)((u8 *)record + offset + 0x14) = saved.scale;
+            *(s32 *)((u8 *)record + offset + 0x18) = saved.encoded;
+            oldCount = *(s32 *)((u8 *)record + 0x6C);
+            *(s32 *)((u8 *)record + 0x6C) = oldCount + 1;
+            return 1;
         }
-        while (*cursor != 0) cursor++;
-        cursor++;
     }
-
-    *(char **)((u8 *)record + 8) = cursor;
-    *(s32 *)((u8 *)record + 0xC) = arg4;
-    *(s32 *)((u8 *)record + 0x10) = arg5;
-    *(f32 *)((u8 *)record + 0x14) = arg6;
-    entry = fn_800167CC(0);
-    layout = fn_80016BC8(entry, 0);
-    encoded = fn_8001D220(*(u32 *)entry, *(u32 *)((u8 *)layout + 4), *(u8 *)((u8 *)layout + 8));
-    *(s32 *)((u8 *)record + 0x18) = encoded;
-
-    oldCount = *(s32 *)((u8 *)record + 0x6C);
-    maxCount = oldCount <= 4 ? oldCount : 4;
-    *(s32 *)((u8 *)record + 0x6C) = maxCount;
-    offset = count * 0x14;
-    memmove((u8 *)record + offset + 0x1C, (u8 *)record + offset + 8,
-            (maxCount - count) * 0x14);
-    return 1;
+    return 0;
 }
 
 #pragma scheduling reset
@@ -1131,6 +1147,8 @@ void fn_8001D728(s32 arg0, s32 arg1) {
 void fn_8001D7A4(void) {
 
 }
+#pragma paired off
+#pragma paired_single off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 
