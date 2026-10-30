@@ -110,12 +110,12 @@ extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46n
     register unsigned char* base = (unsigned char*)*(void**)(reader + 4);
     register unsigned char* data = base + 8;
     register unsigned char* entry = base + arg2 * 8;
-    unsigned char* ref;
-    unsigned char* note;
-    unsigned char* voice;
     unsigned char* wave;
-    unsigned int index = arg3;
-    unsigned int waveWord;
+    unsigned char* note;
+    unsigned char* ref;
+    unsigned char* voice;
+    long index = arg3;
+    unsigned waveWord;
     unsigned char* header;
     unsigned short version;
     if (entry[0xD] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559918, 0x6F, lbl_803278D8);
