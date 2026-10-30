@@ -101,6 +101,8 @@ void fn_801E7C1C(void) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
+#pragma push
+#pragma opt_propagation off
 extern "C" void fn_801E7C28(void *arg0) {
     class Dummy_801E7C28 {
     public:
@@ -149,7 +151,7 @@ extern "C" void fn_801E7C28(void *arg0) {
     extern float lbl_80562DAC;
     extern float lbl_80562DB0;
     extern float *lbl_8055EB04;
-    extern char lbl_8055EB10;
+    extern volatile char lbl_8055EB10;
     extern char lbl_8055EB12;
     extern char lbl_8055EB20;
     extern void *lbl_8055EB30;
@@ -202,7 +204,8 @@ extern "C" void fn_801E7C28(void *arg0) {
     fn_802C7A00();
     fn_801FC900();
     fn_802877D0();
-    if ((unsigned char)lbl_8055EB11 == 0) {
+    if ((unsigned char)lbl_8055EB11 != 0)
+        return;
         fn_8000D7F4(arg0);
         fn_80136768();
         fn_8001255C(strings + 0xB0, lbl_80562DB0);
@@ -217,8 +220,8 @@ extern "C" void fn_801E7C28(void *arg0) {
         fn_8020449C();
         fn_802E3D00();
         fn_8000D878();
-    }
 }
+#pragma pop
 #pragma scheduling on
 #pragma cplusplus off
 
@@ -684,59 +687,57 @@ void fn_801E89FC(void) {
     lbl_804881D8[3] = fn_80129DC4(0, lbl_80562DBC, lbl_80562DE0);
 }
 
+#pragma scheduling invalid_target
 void fn_801E8A84(void) {
     extern float lbl_80562DE4, lbl_80562DE8;
     extern float lbl_80562DEC, lbl_80562DF0;
     float amount;
     float scale;
-    float factor;
-    float clamp;
-    float noise;
+    float value;
 
-    lbl_804881D8[0] = lbl_804881D8[0] +
-        fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
-    lbl_804881D8[1] = lbl_804881D8[1] +
-        fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
-    lbl_804881D8[2] = lbl_804881D8[2] +
-        fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
+    lbl_804881D8[0] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
+    lbl_804881D8[1] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
+    lbl_804881D8[2] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
 
     if (lbl_804881D8[1] > lbl_80562DDC) {
         amount = lbl_804881D8[1] - lbl_80562DDC;
         scale = amount * lbl_80562DB4;
-        factor = lbl_804881D8[0] > lbl_80562DBC ?
-            lbl_80562DD4 : lbl_80562DC0;
-        lbl_804881D8[0] = lbl_804881D8[0] + scale * factor;
+        if (lbl_804881D8[0] > lbl_80562DBC)
+            value = lbl_80562DD4;
+        else
+            value = lbl_80562DC0;
+        lbl_804881D8[0] = lbl_804881D8[0] + scale * value;
         lbl_804881D8[1] = lbl_80562DDC;
-        factor = lbl_804881D8[2] > lbl_80562DBC ?
-            lbl_80562DD4 : lbl_80562DC0;
-        lbl_804881D8[2] = lbl_804881D8[2] + scale * factor;
+        if (lbl_804881D8[2] > lbl_80562DBC)
+            value = lbl_80562DD4;
+        else
+            value = lbl_80562DC0;
+        lbl_804881D8[2] = lbl_804881D8[2] + scale * value;
     } else if (lbl_804881D8[1] < lbl_80562DD8) {
         amount = lbl_80562DD8 - lbl_804881D8[1];
         scale = amount * lbl_80562DB4;
-        factor = lbl_804881D8[0] > lbl_80562DBC ?
-            lbl_80562DD4 : lbl_80562DC0;
-        lbl_804881D8[0] = lbl_804881D8[0] + scale * factor;
+        if (lbl_804881D8[0] > lbl_80562DBC)
+            value = lbl_80562DD4;
+        else
+            value = lbl_80562DC0;
+        lbl_804881D8[0] = lbl_804881D8[0] + scale * value;
         lbl_804881D8[1] = lbl_80562DD8;
-        factor = lbl_804881D8[2] > lbl_80562DBC ?
-            lbl_80562DD4 : lbl_80562DC0;
-        lbl_804881D8[2] = lbl_804881D8[2] + scale * factor;
+        if (lbl_804881D8[2] > lbl_80562DBC)
+            value = lbl_80562DD4;
+        else
+            value = lbl_80562DC0;
+        lbl_804881D8[2] = lbl_804881D8[2] + scale * value;
     }
 
     PSVECNormalize(lbl_804881D8, lbl_804881D8);
-    clamp = lbl_80562DE0;
-    noise = lbl_804881D8[3] +
-        fn_80129DC4(0, lbl_80562DEC, lbl_80562DF0);
-    if (clamp < noise) {
-    } else {
-        clamp = noise;
-    }
-    if (clamp > lbl_80562DBC) {
-    } else {
-        clamp = lbl_80562DBC;
-    }
-    lbl_804881D8[3] = clamp;
+    value = lbl_804881D8[3] + fn_80129DC4(0, lbl_80562DEC, lbl_80562DF0);
+    if (value < lbl_80562DE0)
+        value = lbl_80562DE0;
+    if (value > lbl_80562DBC)
+        value = lbl_80562DBC;
+    lbl_804881D8[3] = value;
 }
-
+#pragma scheduling on
 void fn_801E8C84(float *arg0) {
     float scale = lbl_804881D8[3];
     arg0[0] = lbl_804881D8[0] * scale;
