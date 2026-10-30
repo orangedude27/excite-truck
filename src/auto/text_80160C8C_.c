@@ -1352,25 +1352,20 @@ void *fn_80162938(void *arg0, s32 arg1) {
 }
 
 #pragma cplusplus on
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_80162A14(void *arg0) {
-    struct Dummy {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void *f4(s32 *, s32 *);
-    };
+    struct Dummy { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void *f4(s32 *, s32 *); };
     extern float lbl_80561848;
     extern float lbl_8056184C;
     extern void fn_801DF380(void *, s32, void (*)(void), s32);
     extern void fn_801EA140(void *);
     extern void fn_802A95A8(f32 *, f32 *, f32, f32);
     extern void fn_802A95AC(s32);
-    s32 i;
-    s32 firstOffset;
-    s32 secondOffset;
+    register s32 i;
+    register s32 firstOffset;
+    register s32 secondOffset;
     s32 clearOffset;
+    s32 clearIndex;
     float resetValue;
     char *self;
 
@@ -1389,7 +1384,6 @@ extern "C" void fn_80162A14(void *arg0) {
         firstOffset += 8;
         i++;
     }
-
     resetValue = lbl_80561848;
     *(s32 *)(self + 0x94) = 0;
     i = 0;
@@ -1418,11 +1412,10 @@ extern "C" void fn_80162A14(void *arg0) {
         secondOffset += 0x48;
         i++;
     }
-
-    i = 0;
+    clearIndex = 0;
     clearOffset = 0;
-    while (i < *(s32 *)(self + 0x574)) {
-        i++;
+    while (clearIndex < *(s32 *)(self + 0x574)) {
+        clearIndex++;
         *((u8 *)*(void **)(self + 0x570) + clearOffset + 8) = 0;
         clearOffset += 0xC;
     }
@@ -2080,38 +2073,40 @@ struct Entry_8016464C {
 };
 #pragma cplusplus on
 extern "C" void fn_8016464C(void *arg0) {
+    State_8016464C *self = (State_8016464C *)arg0;
     char name[0x10];
     s32 i;
     s32 count;
     void *iterator;
+    Entry_8016464C *entry;
 
-    *(s32 *)((u8 *)arg0 + 0x38) = 0;
+    self->entryCount = 0;
     iterator = fn_80131810(lbl_8032FB90);
     count = 0;
     do {
         count++;
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, count);
-    } while (((NameList_8016464C *)*(void **)((u8 *)arg0 + 4))->hasName(name) != 0);
+    } while (((NameList_8016464C *)self->list)->hasName(name) != 0);
 
-    for (i = 0; i < count - 1; i++) {
-        s32 n = *(s32 *)((u8 *)arg0 + 0x38);
+    i = 0;
+    while (i < count - 1) {
+        s32 n = self->entryCount;
         s32 index = i + 1;
-        void *entry;
-
-        *(s32 *)((u8 *)arg0 + 0x38) = n + 1;
-        entry = (u8 *)*(void **)((u8 *)arg0 + 0x34) + n * 8;
+        self->entryCount = n + 1;
+        entry = (Entry_8016464C *)self->entries + n;
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, index);
-        *(void **)entry = ((NameList_8016464C *)*(void **)((u8 *)arg0 + 4))->getValue(name);
+        entry->object = ((NameList_8016464C *)self->list)->getValue(name);
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A118, index);
-        *(s32 *)((u8 *)entry + 4) = 0;
-        if (((NameList_8016464C *)*(void **)((u8 *)arg0 + 4))->hasName(name) != 0) {
-            void *value = ((NameList_8016464C *)*(void **)((u8 *)arg0 + 4))->getValue(name);
+        entry->value = 0;
+        if (((NameList_8016464C *)self->list)->hasName(name) != 0) {
+            void *value = ((NameList_8016464C *)self->list)->getValue(name);
             if (iterator != 0) {
                 s32 result = ((Iterator_8016464C *)iterator)->next(value);
                 if (result != 0)
-                    *(s32 *)((u8 *)entry + 4) = fn_80146C2C(lbl_8055E2E4, result);
+                    entry->value = fn_80146C2C(lbl_8055E2E4, result);
             }
         }
+        i++;
     }
     if (iterator != 0)
         fn_80131818(iterator);
@@ -2269,9 +2264,15 @@ s32 fn_80165058(void *arg0, s32 arg1) {
             case 0x126:
                 temp_r30 = *(s32 *)((u8 *)arg0 + 8) - 1;
                 *(s32 *)((u8 *)arg0 + 8) = temp_r30;
-                if (temp_r30 < 1) *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4);
-                else if (temp_r30 > *(s32 *)((u8 *)&lbl_8042FDEC + 4)) *(s32 *)((u8 *)arg0 + 8) = 1;
-                else if ((temp_r30 > fn_80160CE4()) && (temp_r30 < *(s32 *)((u8 *)&lbl_8042FDEC + 4))) *(s32 *)((u8 *)arg0 + 8) = fn_80160CE4();
+                if (temp_r30 < 1) {
+                    *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4);
+                } else {
+                    register u8 *limits = (u8 *)&lbl_8042FDEC;
+                    if (temp_r30 > *(s32 *)(limits + 4))
+                        *(s32 *)((u8 *)arg0 + 8) = 1;
+                    else if ((temp_r30 > fn_80160CE4()) && (temp_r30 < *(s32 *)(limits + 4)))
+                        *(s32 *)((u8 *)arg0 + 8) = fn_80160CE4();
+                }
                 fn_80230E90(1);
                 return 1;
             case 0x128:
