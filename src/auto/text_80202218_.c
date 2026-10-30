@@ -107,14 +107,15 @@ void *fn_802023C8(void) { return lbl_80488964; }
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma cplusplus on
 #pragma dont_inline on
-void fn_802023D4(void) {
+extern "C" void fn_802023D4(void) {
     register char *config;
     register char *state;
+    register s32 offset;
     register void *manager;
     register void *interface;
     register s32 count;
-    s32 offset;
     register s32 i;
     s32 *entry;
     char name1[32];
@@ -131,7 +132,7 @@ void fn_802023D4(void) {
     lbl_8055ECC0 = count;
     if (count > 0) {
         buffer = fn_8012850C((count << 4) + 0x10, config + 0x1C);
-        lbl_8055ECC4 = (s32)fn_8002F37C(buffer, fn_802025D4, NULL, 0x10, lbl_8055ECC0);
+        lbl_8055ECC4 = (s32)fn_8002F37C(buffer, fn_802025D4, NULL, 0x10, count);
         lbl_8055ECC8 = (s32)fn_802CE3A4(lbl_8055ECC0, 0x20, 0x20000);
         offset = 0;
         i = 0;
@@ -160,17 +161,22 @@ void fn_802023D4(void) {
     if (lbl_8055ECD0 != -1) {
         fn_802E30C8(config + 0x6C);
     }
-    lbl_8055B414 = -1;
-    *(f32 *)(state + 0xAC) = lbl_805630A4;
-    *(f32 *)(state + 0xB0) = lbl_805630A4;
-    *(f32 *)(state + 0xB4) = lbl_805630A4;
-    lbl_8055ECE0 = 0;
-    lbl_8055ECDC = -1;
-    *(s32 *)(state + 0x18) = -1;
-    *(s32 *)(state + 0x1C) = -1;
-    *(s32 *)(state + 0x20) = -1;
-    *(s32 *)(state + 0x24) = -1;
-    *(s32 *)(state + 0xA8) = 0;
+    {
+        f32 *position_defaults = (f32 *)(state + 0xAC);
+        s32 *flags = (s32 *)(state + 0x18);
+        s32 *last_flag = (s32 *)(state + 0x28);
+        lbl_8055B414 = -1;
+        position_defaults[0] = lbl_805630A4;
+        position_defaults[1] = lbl_805630A4;
+        position_defaults[2] = lbl_805630A4;
+        lbl_8055ECE0 = 0;
+        lbl_8055ECDC = -1;
+        flags[0] = -1;
+        flags[1] = -1;
+        flags[2] = -1;
+        flags[3] = -1;
+        last_flag[0x20] = 0;
+    }
 }
 #pragma pop
 
