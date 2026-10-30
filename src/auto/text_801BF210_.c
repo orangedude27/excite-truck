@@ -614,26 +614,38 @@ void fn_801C0E60(float *arg0, float *arg1, float *arg2) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma opt_propagation on
 void fn_801C0E94(void *arg0, int arg1) {
     extern float lbl_805628BC, lbl_8055E460;
     extern char lbl_80558DC4[];
     unsigned char *src = (unsigned char *)arg0;
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
-    float delta = lbl_8055E460 - lbl_805628BC;
+    register float base = lbl_805628BC;
+    register float top = lbl_8055E460;
+    float delta = top - base;
     if ((float)fabs(delta) <= *(float *)lbl_80558DC4) {
-        *(unsigned int *)(dst + 0x00) = *(unsigned int *)(src + 0x70);
-        *(unsigned int *)(dst + 0x04) = *(unsigned int *)(src + 0x74);
-        *(unsigned int *)(dst + 0x08) = *(unsigned int *)(src + 0x78);
-        *(unsigned int *)(dst + 0x0C) = *(unsigned int *)(src + 0x7C);
-        *(unsigned int *)(dst + 0x10) = *(unsigned int *)(src + 0x80);
-        *(unsigned int *)(dst + 0x14) = *(unsigned int *)(src + 0x84);
-        *(unsigned int *)(dst + 0x18) = *(unsigned int *)(src + 0x88);
-        *(unsigned int *)(dst + 0x1C) = *(unsigned int *)(src + 0x8C);
+        register unsigned int v0 = *(unsigned int *)(src + 0x70);
+        register unsigned int v1 = *(unsigned int *)(src + 0x74);
+        *(unsigned int *)(dst + 0x00) = v0;
+        *(unsigned int *)(dst + 0x04) = v1;
+        v0 = *(unsigned int *)(src + 0x78);
+        v1 = *(unsigned int *)(src + 0x7C);
+        *(unsigned int *)(dst + 0x08) = v0;
+        *(unsigned int *)(dst + 0x0C) = v1;
+        v0 = *(unsigned int *)(src + 0x80);
+        v1 = *(unsigned int *)(src + 0x84);
+        *(unsigned int *)(dst + 0x10) = v0;
+        *(unsigned int *)(dst + 0x14) = v1;
+        v0 = *(unsigned int *)(src + 0x88);
+        v1 = *(unsigned int *)(src + 0x8C);
+        *(unsigned int *)(dst + 0x18) = v0;
+        *(unsigned int *)(dst + 0x1C) = v1;
         *(unsigned int *)(dst + 0x20) = *(unsigned int *)(src + 0x90);
-        *(unsigned int *)(dst + 0x24) = *(unsigned int *)(src + 0x94);
-        *(unsigned int *)(dst + 0x28) = *(unsigned int *)(src + 0x98);
+        v0 = *(unsigned int *)(src + 0x94);
+        v1 = *(unsigned int *)(src + 0x98);
+        *(unsigned int *)(dst + 0x24) = v0;
+        *(unsigned int *)(dst + 0x28) = v1;
         *(unsigned int *)(dst + 0x2C) = *(unsigned int *)(src + 0x9C);
     } else {
         float temp[12];
@@ -643,12 +655,12 @@ void fn_801C0E94(void *arg0, int arg1) {
         for (i = 0; i < 2; i++) {
             float a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
             float b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5];
-            temp[i * 6 + 0] = b0 + lbl_8055E460 * (a0 - b0);
-            temp[i * 6 + 1] = b1 + lbl_8055E460 * (a1 - b1);
-            temp[i * 6 + 2] = b2 + lbl_8055E460 * (a2 - b2);
-            temp[i * 6 + 3] = b3 + lbl_8055E460 * (a3 - b3);
-            temp[i * 6 + 4] = b4 + lbl_8055E460 * (a4 - b4);
-            temp[i * 6 + 5] = b5 + lbl_8055E460 * (a5 - b5);
+            temp[i * 6 + 0] = b0 + top * (a0 - b0);
+            temp[i * 6 + 1] = b1 + top * (a1 - b1);
+            temp[i * 6 + 2] = b2 + top * (a2 - b2);
+            temp[i * 6 + 3] = b3 + top * (a3 - b3);
+            temp[i * 6 + 4] = b4 + top * (a4 - b4);
+            temp[i * 6 + 5] = b5 + top * (a5 - b5);
             a += 6;
             b += 6;
         }
