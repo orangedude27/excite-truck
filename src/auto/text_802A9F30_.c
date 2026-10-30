@@ -532,7 +532,7 @@ void fn_802AB770(int arg0) {
     float angle;
     float wave;
     int color;
-    if (delta < -lbl_80558DC4 || delta > lbl_80558DC4) {
+    if (delta < -*(float *)(void *)&lbl_80558DC4 || delta > *(float *)(void *)&lbl_80558DC4) {
         int r = fn_80129D90(0, 0x8C, 0xFF);
         int g = fn_80129D90(0, 0xFA, 0xFF);
         int b = fn_80129D90(0, 0xF0, 0xFF);
