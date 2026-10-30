@@ -493,14 +493,16 @@ extern void fn_80176780(int, int);
 extern void fn_8000B64C(unsigned short, int);
 extern void __AXDSPInitCallback_801769E0(void);
 extern unsigned char lbl_8055D3ED;
+#pragma push
+#pragma dont_inline on
 void fn_8000B950(void) {
-    unsigned char state;
+    int state;
     int result;
     int key;
-    unsigned short code;
+    int code;
 
     state = fn_802ECC10();
-    if (state != lbl_8055D3ED) {
+    if ((unsigned int)state != (unsigned int)lbl_8055D3ED) {
         lbl_8055D3ED = state;
         if (fn_8000D75C() == 0 &&
             fn_801DF060() == 0 &&
@@ -535,26 +537,28 @@ void fn_8000B950(void) {
         fn_8000B838();
     }
 
-    if (fn_802E47B8() != 0) {
-        key = fn_802E46F0();
-        result = fn_802ECC10();
-        if (result == 0) {
-            code = (unsigned short)key;
-            if (code != 0) {
-                if ((fn_801769A8() & 0x4000) != 0 &&
-                    (code == 0x58 || code == 0xD) &&
-                    fn_8000D75C() == 0 &&
-                    fn_8020DE1C() == 0 &&
-                    fn_801E8838() == 0) {
-                    fn_80176780(2, 0);
-                    return;
-                }
-                fn_8000B64C(code, fn_802E4A10());
-            }
-        }
+    if (fn_802E47B8() == 0)
+        return;
+    key = fn_802E46F0();
+    result = fn_802ECC10();
+    key &= ~((-result | result) >> 31);
+    if ((unsigned short)key == 0)
+        return;
+    if ((fn_801769A8() & 0x4000) != 0) {
+        code = key & 0xFFFF;
+        if (code != 0x58 && code != 0xD)
+            goto call_key;
+        if (fn_8000D75C() != 0 ||
+            fn_8020DE1C() != 0 ||
+            fn_801E8838() != 0)
+            goto call_key;
+        fn_80176780(2, 0);
+        return;
     }
+call_key:
+    fn_8000B64C((unsigned short)key, fn_802E4A10());
 }
-
+#pragma pop
 extern int fn_80019BA8(void);
 extern int fn_801298E8(void *, int);
 extern int fn_802E2C20(void);
