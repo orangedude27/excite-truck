@@ -183,37 +183,67 @@ void fn_80017B40(void *arg0, s32 arg1) {
 extern void *fn_80016510(s32);
 extern void *fn_80016474(s32);
 extern void fn_80017D5C(void *);
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_80017C18(void *arg0, s32 *arg1) {
-    s32 i, j, n, found;
-    s32 *items = *(s32 **)arg0;
-    void *obj = fn_80016510(0);
+    register s32 i;
+    register s32 n;
+    register void *object;
+    register void *cursor;
+    register s32 *items;
+    s32 j;
+    s32 found;
+    s32 offset;
+    register s32 *entry;
+
+    object = fn_80016510(0);
+    cursor = object;
     i = 0;
-    while (i < *(s32 *)((char *)obj + 0x98)) {
+    do {
         n = *(s32 *)((char *)arg0 + 4);
-        *(s32 *)((char *)arg0 + 4) = n + 1;
-        items[n] = *(s32 *)((char *)obj + 0x64);
-        obj = (char *)obj + 4;
         i++;
-    }
-    for (i = 0; i < arg1[0]; i++) {
-        obj = fn_80016474(arg1[i + 1]);
+        items = *(s32 **)arg0;
+        *(s32 *)((char *)arg0 + 4) = n + 1;
+        items[n] = *(s32 *)((char *)cursor + 0x64);
+        cursor = (char *)cursor + 4;
+    } while (i < *(s32 *)((char *)object + 0x98));
+
+    entry = arg1;
+    i = 0;
+    while (i < arg1[0]) {
+        object = fn_80016474(entry[1]);
         n = *(s32 *)((char *)arg0 + 4);
+        j = 0;
+        offset = 0;
         found = -1;
-        for (j = 0; j < n; j++) {
-            if (*(s32 *)((char *)obj + 0x50) == items[j]) {
+        while (j < n) {
+            if (*(void **)((char *)object + 0x50) == *(void **)(*(s32 **)arg0 + offset / 4)) {
                 found = j;
                 break;
             }
+            offset += 4;
+            j++;
         }
-        if (found >= 0 && found < n) {
-            if (found != n - 1)
+        if (found == -1) {
+            found = -1;
+        }
+        if (found < 0) {
+        } else if (found < n) {
+            if (found != n - 1) {
+                items = *(s32 **)arg0;
                 items[found] = items[n - 1];
+            }
             *(s32 *)((char *)arg0 + 4) = n - 1;
         }
+        entry++;
+        i++;
     }
     fn_80017D5C(arg0);
 }
-
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
+#pragma scheduling on
 extern void fn_80017A2C(void *, s32);
 extern void fn_800178BC(void *, s32, s32);
 extern void fn_80016928(s32, s32);
@@ -303,6 +333,69 @@ extern "C" void fn_80018030(void *arg0, s32 arg1) {
         }
     }
 }
+
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_800180FC(void *arg0, s32 arg1) {
+    struct V1 {
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
+        virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
+        virtual void m20();
+        virtual void *get(const char *);
+    };
+    struct V2 {
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual char *get(const char *, void *);
+    };
+    struct H { char pad[0x80]; V1 *iface; };
+    extern char lbl_80558C18;
+    extern char lbl_80558C1C;
+    extern void fn_801345D8(void *, s32, const char *, ...);
+    extern int stricmp(const char *, const char *);
+    register const char *strings;
+    register s32 *out;
+    register V2 *names;
+    register char *typeName;
+    register char *mapped;
+    register s32 i;
+    register s32 found;
+    register s32 j;
+    strings = lbl_802FD088;
+    names = (V2 *)((H *)fn_80012820(arg1))->iface->get(strings + 0x74);
+    if (names == 0) return;
+    fn_802E30C8(strings + 0x80);
+    typeName = names->get(strings + 0xB0, 0);
+    mapped = names->get(strings + 0xC0, 0);
+    out = (s32 *)arg0;
+    for (i = 0; i < *(s32 *)((char *)arg0 + 0x24); out++, i++) {
+        found = 0;
+        for (j = 0; j < fn_800167F4(); j++) {
+            if (*(s32 *)((char *)fn_800167B8(j) + 4) == out[1]) {
+                found = 1;
+                break;
+            }
+        }
+        if (mapped != 0 && found != 0) {
+            if (stricmp(mapped, &lbl_80558C18) != 0) {
+                out[10] = *(s32 *)((char *)fn_8001668C(mapped, 0) + 4);
+            }
+        } else {
+            char buffer[0x20];
+            char *result;
+            fn_801345D8(buffer, 0x20, &lbl_80558C1C, i + 1);
+            result = names->get(buffer, typeName);
+            if (stricmp(result, &lbl_80558C18) != 0) {
+                out[10] = *(s32 *)((char *)fn_8001668C(result, 0) + 4);
+            }
+        }
+    }
+}
+#pragma scheduling on
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 void fn_800182A0(void* arg0, void* arg1) {
     s32 index;
