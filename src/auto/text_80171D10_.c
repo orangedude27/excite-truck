@@ -1,3 +1,4 @@
+#include <stdarg.h>
 extern float PSQUATMultiply(void *, void *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
