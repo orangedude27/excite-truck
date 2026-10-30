@@ -386,82 +386,94 @@ void fn_801CC470(void) {
     lbl_8055E884 = (s32 *)object;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801CC594(void *arg0) {
     u8 *base = (u8 *)arg0;
-    s32 index;
-    s32 offset;
+    register s32 offset;
+    register s32 index;
+    register s32 minusOne;
+    register void *updates;
     void *entry;
     void *object;
+    f32 floatE4;
+    f32 floatFC;
+    f32 floatA08;
 
     if (base[0x10] != 0)
         return;
 
     index = 0;
     offset = 0;
-    do {
-        entry = *(void **)((u8 *)*(void **)(base + 0x18) + offset);
-        if (entry != 0)
-            fn_8001BE70(*(void **)entry);
-        offset += 4;
-        index++;
-    } while (index < *(s32 *)(base + 0x1C));
+loop:
+    entry = *(void **)((u8 *)*(void **)(base + 0x18) + offset);
+    if (entry != 0)
+        fn_8001BE70(*(void **)entry);
+    index++;
+    offset += 4;
+    if (index < *(volatile s32 *)(base + 0x1C))
+        goto loop;
 
     *(void **)(base + 0x2A0) = base + 0x29C;
-    *(s32 *)(base + 0x29C) = 0;
-    memset(base + 0x44, 0, 0x258);
-    *(s32 *)(base + 0x2A8) = 0;
-    *(s32 *)(base + 0x2AC) = 0;
-    *(s32 *)(base + 0x2B0) = -1;
-    *(s32 *)(base + 0x2B4) = -1;
-    *(f32 *)(base + 0x2B8) = lbl_80562A08;
-    base[0x2BC] = 0;
-    *(s32 *)(base + 0x2C0) = 0;
-    *(f32 *)(base + 0x2C4) = lbl_805629FC;
-    *(s32 *)(base + 0x2D8) = 0;
+    offset = 0;
+    *(s32 *)(base + 0x29C) = offset;
+    memset(base + 0x44, offset, 0x258);
+    floatE4 = lbl_805629E4;
+    floatFC = lbl_805629FC;
+    minusOne = -1;
+    floatA08 = lbl_80562A08;
+    *(s32 *)(base + 0x2A8) = offset;
+    *(s32 *)(base + 0x2AC) = offset;
+    *(s32 *)(base + 0x2B0) = minusOne;
+    *(s32 *)(base + 0x2B4) = minusOne;
+    *(f32 *)(base + 0x2B8) = floatA08;
+    base[0x2BC] = offset;
+    *(s32 *)(base + 0x2C0) = offset;
+    *(f32 *)(base + 0x2C4) = floatFC;
+    *(s32 *)(base + 0x2D8) = offset;
 
-    *(f32 *)(base + 0x578) = lbl_805629E4;
-    *(f32 *)(base + 0x57C) = lbl_805629FC;
-    *(f32 *)(base + 0x580) = lbl_805629FC;
-    *(f32 *)(base + 0x584) = lbl_805629FC;
-    *(f32 *)(base + 0x588) = lbl_805629E4;
-    *(f32 *)(base + 0x58C) = lbl_805629FC;
-    *(f32 *)(base + 0x590) = lbl_805629FC;
-    *(f32 *)(base + 0x594) = lbl_805629FC;
-    *(f32 *)(base + 0x598) = lbl_805629E4;
-    *(f32 *)(base + 0x59C) = lbl_805629FC;
-    *(f32 *)(base + 0x5A0) = lbl_805629FC;
-    *(f32 *)(base + 0x5A4) = lbl_805629FC;
-    *(f32 *)(base + 0x5A8) = lbl_805629E4;
-    *(f32 *)(base + 0x5AC) = lbl_805629FC;
-    *(f32 *)(base + 0x5B0) = lbl_805629FC;
-    *(f32 *)(base + 0x5B4) = lbl_805629FC;
-    *(f32 *)(base + 0x5B8) = lbl_805629E4;
-    *(f32 *)(base + 0x5BC) = lbl_805629FC;
-    *(f32 *)(base + 0x5C0) = lbl_805629FC;
-    *(f32 *)(base + 0x5C4) = lbl_805629FC;
-    *(f32 *)(base + 0x5C8) = lbl_805629E4;
-    *(f32 *)(base + 0x5CC) = lbl_805629FC;
-    *(f32 *)(base + 0x5D0) = lbl_805629FC;
-    *(f32 *)(base + 0x5D4) = lbl_805629FC;
-    *(f32 *)(base + 0x5D8) = lbl_805629E4;
-    *(f32 *)(base + 0x5DC) = lbl_805629FC;
-    *(f32 *)(base + 0x5E0) = lbl_805629FC;
-    *(f32 *)(base + 0x5E4) = lbl_805629FC;
-    *(f32 *)(base + 0x5E8) = lbl_805629E4;
-    *(f32 *)(base + 0x5EC) = lbl_805629FC;
-    *(f32 *)(base + 0x5F0) = lbl_805629FC;
-    *(f32 *)(base + 0x5F4) = lbl_805629FC;
-    *(f32 *)(base + 0x5F8) = lbl_805629E4;
-    *(f32 *)(base + 0x5FC) = lbl_805629FC;
-    *(f32 *)(base + 0x600) = lbl_805629FC;
-    *(f32 *)(base + 0x604) = lbl_805629FC;
-    *(f32 *)(base + 0x608) = lbl_805629E4;
-    *(f32 *)(base + 0x60C) = lbl_805629FC;
-    *(f32 *)(base + 0x610) = lbl_805629FC;
-    *(f32 *)(base + 0x614) = lbl_805629FC;
+    *(f32 *)(base + 0x578) = floatE4;
+    *(f32 *)(base + 0x57C) = floatFC;
+    *(f32 *)(base + 0x580) = floatFC;
+    *(f32 *)(base + 0x584) = floatFC;
+    *(f32 *)(base + 0x588) = floatE4;
+    *(f32 *)(base + 0x58C) = floatFC;
+    *(f32 *)(base + 0x590) = floatFC;
+    *(f32 *)(base + 0x594) = floatFC;
+    *(f32 *)(base + 0x598) = floatE4;
+    *(f32 *)(base + 0x59C) = floatFC;
+    *(f32 *)(base + 0x5A0) = floatFC;
+    *(f32 *)(base + 0x5A4) = floatFC;
+    *(f32 *)(base + 0x5A8) = floatE4;
+    *(f32 *)(base + 0x5AC) = floatFC;
+    *(f32 *)(base + 0x5B0) = floatFC;
+    *(f32 *)(base + 0x5B4) = floatFC;
+    *(f32 *)(base + 0x5B8) = floatE4;
+    *(f32 *)(base + 0x5BC) = floatFC;
+    *(f32 *)(base + 0x5C0) = floatFC;
+    *(f32 *)(base + 0x5C4) = floatFC;
+    *(f32 *)(base + 0x5C8) = floatE4;
+    *(f32 *)(base + 0x5CC) = floatFC;
+    *(f32 *)(base + 0x5D0) = floatFC;
+    *(f32 *)(base + 0x5D4) = floatFC;
+    *(f32 *)(base + 0x5D8) = floatE4;
+    *(f32 *)(base + 0x5DC) = floatFC;
+    *(f32 *)(base + 0x5E0) = floatFC;
+    *(f32 *)(base + 0x5E4) = floatFC;
+    *(f32 *)(base + 0x5E8) = floatE4;
+    *(f32 *)(base + 0x5EC) = floatFC;
+    *(f32 *)(base + 0x5F0) = floatFC;
+    *(f32 *)(base + 0x5F4) = floatFC;
+    *(f32 *)(base + 0x5F8) = floatE4;
+    *(f32 *)(base + 0x5FC) = floatFC;
+    *(f32 *)(base + 0x600) = floatFC;
+    *(f32 *)(base + 0x604) = floatFC;
+    *(f32 *)(base + 0x608) = floatE4;
+    *(f32 *)(base + 0x60C) = floatFC;
+    *(f32 *)(base + 0x610) = floatFC;
+    *(f32 *)(base + 0x614) = floatFC;
 
-    if (*(void **)(base + 0x2C8) != 0)
+    updates = *(void **)(base + 0x2C8);
+    if (updates != 0)
         fn_802AE0E0();
     object = *(void **)(base + 0x2CC);
     if (object != 0) {
@@ -556,7 +568,7 @@ void fn_801CC918(void) {
     void *object;
     register unsigned char *base;
     register int i;
-    register int offset;
+    register unsigned int offset;
     float floatE4;
     float floatFC;
     float floatA08;
