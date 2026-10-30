@@ -320,7 +320,6 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(void**)(dst + 4) = arg1;
     void* src = *(void**)arg1;
     *(int*)(dst + 0x3C) = 0;
-    float one = lbl_80563030;
     *(float*)(dst + 0x40) = initial;
     *(float*)(dst + 0x44) = *(float*)((char*)src + 0x1C);
     *(float*)(dst + 0x48) = *(float*)((char*)src + 0x20);
@@ -337,19 +336,23 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(float*)(dst + 0x30) = *(float*)((char*)src + 0x10);
     *(float*)(dst + 0x34) = *(float*)((char*)src + 0x14);
     *(float*)(dst + 0x38) = *(float*)((char*)src + 0x18);
-    volatile float* q = (volatile float*)((char*)src + 0x1C);
-    float x = q[0];
-    float y = q[1];
-    float z = q[2];
-    float x2 = x + x;
-    float y2 = y + y;
-    float w = q[3];
-    float z2 = z + z;
-    float xx = x * x2;
-    float yy = y * y2;
-    float zz = z * z2;
+    volatile float* quat = (volatile float*)((char*)src + 0x1C);
+    float z, y, x;
+    x = quat[0];
+    y = quat[1];
+    z = quat[2];
+    float z2, y2, x2;
+    x2 = x + x;
+    y2 = y + y;
+    float w = quat[3];
+    z2 = z + z;
+    float zz, yy, xx;
+    xx = x * x2;
+    yy = y * y2;
+    zz = z * z2;
     float xw = w * x2;
     float yz = y * z2;
+    float one = lbl_80563030;
     float sum0 = yy + zz;
     float sum1 = xx + zz;
     float sum2 = xx + yy;
@@ -367,7 +370,7 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     float m24 = xz + yw;
     float m14 = xz - yw;
     float m18 = xy - zw;
-    float m10 = xx + zz;
+    float m10 = xy + zw;
     *(float*)(dst + 0x28) = m12;
     *(float*)(dst + 0x24) = m24;
     *(float*)(dst + 0x18) = m18;
@@ -377,33 +380,55 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(float*)(dst + 0x2C) = m22;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, float farg0) {
-    volatile float sp28, sp24, sp20, sp1C, sp18, sp14;
-    if (arg1) {
-        sp20 = *(float *)((char *)arg3); sp24 = *(float *)((char *)arg3+4); sp28 = *(float *)((char *)arg3+8);
-        sp20 -= *(float *)arg1; sp24 -= *(float *)((char *)arg1+4); sp28 -= *(float *)((char *)arg1+8);
+    struct Vec3 { float x; float y; float z; };
+    Vec3 dA;
+    Vec3 dB;
+    Vec3 *a = (Vec3 *)arg3;
+    Vec3 *b = (Vec3 *)arg2;
+    if (arg1 != 0) {
+        Vec3 *prev = (Vec3 *)arg1;
+        dA.x = a->x - prev->x;
+        dA.y = a->y - prev->y;
+        dA.z = a->z - prev->z;
     } else {
-        sp20 = *(float *)((char *)arg3); sp24 = *(float *)((char *)arg3+4); sp28 = *(float *)((char *)arg3+8);
-        sp20 -= *(float *)arg2; sp24 -= *(float *)((char *)arg2+4); sp28 -= *(float *)((char *)arg2+8);
+        dA.x = a->x - b->x;
+        dA.y = a->y - b->y;
+        dA.z = a->z - b->z;
     }
-    if (arg4) {
-        sp14 = *(float *)arg4; sp18 = *(float *)((char *)arg4+4); sp1C = *(float *)((char *)arg4+8);
-        sp14 -= *(float *)arg2; sp18 -= *(float *)((char *)arg2+4); sp1C -= *(float *)((char *)arg2+8);
+    if (arg4 != 0) {
+        Vec3 *next = (Vec3 *)arg4;
+        dB.x = next->x - b->x;
+        dB.y = next->y - b->y;
+        dB.z = next->z - b->z;
     } else {
-        sp14 = *(float *)((char *)arg3); sp18 = *(float *)((char *)arg3+4); sp1C = *(float *)((char *)arg3+8);
-        sp14 -= *(float *)arg2; sp18 -= *(float *)((char *)arg2+4); sp1C -= *(float *)((char *)arg2+8);
+        dB.x = a->x - b->x;
+        dB.y = a->y - b->y;
+        dB.z = a->z - b->z;
     }
-    float f6=farg0*farg0, f10=farg0*f6, f30=lbl_8056303C*f6;
-    float f31=lbl_80563030+(lbl_80563038*f10-f30);
-    float f8=lbl_80563040*(farg0+(f10-lbl_80563038*f6));
-    float f7=lbl_80563040*(f10-f6), f3=lbl_80563044*f10+f30;
-    float x=(*(float*)arg2*f31)+sp20*f8+sp14*f7;
-    float y=(*(float*)((char*)arg2+4)*f31)+sp24*f8+sp18*f7;
-    float z=(*(float*)((char*)arg2+8)*f31)+sp28*f8+sp1C*f7;
-    *(float*)((char*)arg0+0x30)=x+(*(float*)arg3*f3);
-    *(float*)((char*)arg0+0x34)=y+(*(float*)((char*)arg3+4)*f3);
-    *(float*)((char*)arg0+0x38)=z+(*(float*)((char*)arg3+8)*f3);
+    float f6 = farg0 * farg0;
+    float f10 = farg0 * f6;
+    float c38 = lbl_80563038;
+    float c3c = lbl_8056303C;
+    float c30 = lbl_80563030;
+    float c44 = lbl_80563044;
+    float c40 = lbl_80563040;
+    register float f30 = c3c * f6;
+    float t = f10 - c38 * f6;
+    float f8 = c40 * (farg0 + t);
+    register float f31 = c30 + (c38 * f10 - f30);
+    float f7 = c40 * (f10 - f6);
+    float f4 = c44 * f10 + f30;
+    float px = b->x * f31 + dA.x * f8 + dB.x * f7;
+    float py = b->y * f31 + dA.y * f8 + dB.y * f7;
+    float pz = b->z * f31 + dA.z * f8 + dB.z * f7;
+    ((float *)arg0)[12] = px + a->x * f4;
+    ((float *)arg0)[13] = py + a->y * f4;
+    ((float *)arg0)[14] = pz + a->z * f4;
 }
+#pragma pop
 
 #pragma pop
 extern "C" double cos(double);
@@ -739,30 +764,44 @@ extern "C" void fn_801FE550(void *arg0) {
     *(char **)arg0 = lbl_8033B760;
     *(int *)((char *)arg0 + 0x94) = 0;
 }
+#pragma push
+#pragma use_lmw_stmw off
 #pragma scheduling on
-void fn_801FE568(void* arg0, unsigned char* p) {
- unsigned char t; int i;
- t=p[0x2c]; p[0x2c]=p[0x3b]; p[0x3b]=t;
- t=p[0x2d]; p[0x2d]=p[0x3a]; p[0x3a]=t;
- t=p[0x2e]; p[0x2e]=p[0x39]; p[0x39]=t;
- t=p[0x2f]; p[0x2f]=p[0x38]; p[0x38]=t;
- t=p[0x30]; p[0x30]=p[0x37]; p[0x37]=t;
- t=p[0x31]; p[0x31]=p[0x36]; p[0x36]=t;
- t=p[0x32]; p[0x32]=p[0x35]; p[0x35]=t;
- t=p[0x33]; p[0x33]=p[0x34]; p[0x34]=t;
- p += 0x3c;
- for(i=0;i<0x48;i++,p+=0x18) {
-  t=p[0]; p[0]=p[3]; p[3]=t; t=p[1]; p[1]=p[2]; p[2]=t;
-  t=p[4]; p[4]=p[7]; p[7]=t; t=p[5]; p[5]=p[6]; p[6]=t;
-  t=p[8]; p[8]=p[0xb]; p[0xb]=t; t=p[9]; p[9]=p[0xa]; p[0xa]=t;
-  t=p[0xc]; p[0xc]=p[0xf]; p[0xf]=t; t=p[0xd]; p[0xd]=p[0xe]; p[0xe]=t;
-  t=p[0x10]; p[0x10]=p[0x13]; p[0x13]=t; t=p[0x11]; p[0x11]=p[0x12]; p[0x12]=t;
-  t=p[0x14]; p[0x14]=p[0x17]; p[0x17]=t; t=p[0x15]; p[0x15]=p[0x16]; p[0x16]=t;
- }
- t=p[0x6fc-0x6fc]; p[0x6fc-0x6fc]=p[0x6ff-0x6fc]; p[0x6ff-0x6fc]=t;
- t=p[1]; p[1]=p[2]; p[2]=t;
-}
+extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
+    unsigned char t;
+    unsigned char *ptr;
+    int i;
 
+    t = p[0x2c]; p[0x2c] = p[0x3b]; p[0x3b] = t;
+    t = p[0x2d]; p[0x2d] = p[0x3a]; p[0x3a] = t;
+    t = p[0x2e]; p[0x2e] = p[0x39]; p[0x39] = t;
+    t = p[0x2f]; p[0x2f] = p[0x38]; p[0x38] = t;
+    t = p[0x30]; p[0x30] = p[0x37]; p[0x37] = t;
+    t = p[0x31]; p[0x31] = p[0x36]; p[0x36] = t;
+    t = p[0x32]; p[0x32] = p[0x35]; p[0x35] = t;
+    t = p[0x33]; p[0x33] = p[0x34]; p[0x34] = t;
+
+    ptr = p + 0x3c;
+    for (i = 1; i <= 0x48; i++) {
+        t = ptr[0]; ptr[0] = ptr[3]; ptr[3] = t;
+        t = ptr[1]; ptr[1] = ptr[2]; ptr[2] = t;
+        t = ptr[4]; ptr[4] = ptr[7]; ptr[7] = t;
+        t = ptr[5]; ptr[5] = ptr[6]; ptr[6] = t;
+        t = ptr[8]; ptr[8] = ptr[0xb]; ptr[0xb] = t;
+        t = ptr[9]; ptr[9] = ptr[0xa]; ptr[0xa] = t;
+        t = ptr[0xc]; ptr[0xc] = ptr[0xf]; ptr[0xf] = t;
+        t = ptr[0xd]; ptr[0xd] = ptr[0xe]; ptr[0xe] = t;
+        t = ptr[0x10]; ptr[0x10] = ptr[0x13]; ptr[0x13] = t;
+        t = ptr[0x11]; ptr[0x11] = ptr[0x12]; ptr[0x12] = t;
+        t = ptr[0x14]; ptr[0x14] = ptr[0x17]; ptr[0x17] = t;
+        t = ptr[0x15]; ptr[0x15] = ptr[0x16]; ptr[0x16] = t;
+        ptr += 0x18;
+    }
+
+    t = p[0x6fc]; p[0x6fc] = p[0x6ff]; p[0x6ff] = t;
+    t = p[0x6fd]; p[0x6fd] = p[0x6fe]; p[0x6fe] = t;
+}
+#pragma pop
 extern "C" void fn_801FE708(void *arg0, void *arg1) {
     char *p = (char *)arg1 + 0x2C;
     int count = *(int *)((char *)arg0 + 0x94);
@@ -953,33 +992,27 @@ found:
 }
 
 extern "C" void fn_801FEC74(void* arg) {
+    char* result = (char*)lbl_8055EC98;
     char* name = *(char**)arg;
-    char* table = (char*)lbl_8055EC98;
-    char* item = table;
     int i = 0;
-    char* result;
+    char* item = result;
     for (;;) {
         if (stricmp(name, item) == 0) {
-            result = table + i * 0x58;
+            result += i * 0x58;
             break;
         }
         item += 0x58;
         i++;
-        if (i >= *(int*)(table + 0x2C0)) { result = 0; break; }
+        if (i >= *(int*)(result + 0x2C0)) { result = 0; break; }
     }
     if (result == 0) fn_802E317C(lbl_8033B7F0, *(char**)arg);
-    int count = *(int*)(result + 0x54);
     int index = 0;
     void* p = result;
-    if (count > 0) {
-        int remaining = count;
-        do {
-            if (*(void**)((char*)p + 0x30) == arg) break;
-            p = (char*)p + 4;
-            index++;
-        } while (--remaining != 0);
+    int count = *(int*)(result + 0x54);
+    for (; index < count; p = (char*)p + 4, ++index) {
+        if (*(void**)((char*)p + 0x30) == arg) break;
     }
-    if (index >= count) fn_802E317C(lbl_8033B820, *(int*)(result + 0x50));
+    if (index >= count) fn_802E317C(lbl_8033B820, count, *(int*)(result + 0x50));
     int j = index + 1;
     int* q = (int*)(result + j * 4);
     for (; j < *(int*)(result + 0x54); ++j, ++q) q[11] = q[12];
