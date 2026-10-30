@@ -272,6 +272,8 @@ void fn_802DA52C(void) {
     p[0x25] = 0;
 }
 #pragma scheduling on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int arg5) {
     unsigned char *ctx = (unsigned char *)lbl_8055FE5C;
     int len1 = arg5 * 4;
@@ -470,67 +472,70 @@ struct DaaRecord {
     unsigned char data[0x3C0];
 };
 
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802DAA18(void *arg0) {
     extern void *lbl_8055FE60;
-    extern void *lbl_8055FE5C;
     extern char lbl_80346798[];
     extern void fn_802E317C(char *, ...);
     extern int memcpy(void *, const void *, unsigned int);
     unsigned char sp8[0x3C0];
     void *var_r31 = arg0;
-    register unsigned char *ctx = (unsigned char *)lbl_8055FE5C;
-    unsigned char *entry;
-    unsigned char *var_r29;
+    struct DaaContext *ctx = (struct DaaContext *)lbl_8055FE5C;
+    struct DaaRecord *entry;
+    struct DaaRecord *var_r29;
     char *format;
     void *name;
     int size;
 
     lbl_8055FE60 = var_r31;
     if (var_r31 == 0) {
-        entry = *(unsigned char **)(ctx + 0x20);
+        entry = (struct DaaRecord *)ctx->current;
         if ((unsigned int)entry + 0x10000 == 0xFFFF) {
             memset(sp8, 0, 0x3C0);
-            ctx[0x25] = 0;
+            ctx->initialized = 0;
             var_r31 = (void *)1;
-            if (*(int *)(ctx + 0x10) + 0x3E0 > *(int *)(ctx + 0xC)) {
-                size = *(volatile int *)(ctx + 0xC);
+            if (ctx->used + 0x3E0 > ctx->capacity) {
+                size = *(volatile int *)&ctx->capacity;
                 format = lbl_80346798;
-                name = *(void **)(ctx + 8);
+                name = ctx->name;
                 fn_802E317C(format, name, 0x3D8, size / 0x400);
                 var_r29 = 0;
             } else {
-                *(int *)(*(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10)) = (int)var_r31;
-                var_r29 = *(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10) + 4;
-                *(int *)(*(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10) + 0x3DC) = 0x3D8;
-                *(int *)(ctx + 0x10) = *(int *)(ctx + 0x10) + 0x3E0;
+                var_r29 = (struct DaaRecord *)(ctx->buffer + ctx->used);
+                *(int *)var_r29 = (int)var_r31;
+                var_r29 = (struct DaaRecord *)((unsigned char *)var_r29 + 4);
+                *(int *)(ctx->buffer + ctx->used + 0x3DC) = 0x3D8;
+                ctx->used += 0x3E0;
             }
-            *(int *)(var_r29 + 0) = 7;
-            *(int *)(var_r29 + 4) = 0;
-            *(int *)(var_r29 + 8) = 0x50;
-            *(int *)(var_r29 + 0xC) = 0;
-            *(int *)(var_r29 + 0x14) = 0;
-            var_r29[0x10] = (unsigned char)var_r31;
-            memcpy(var_r29 + 0x18, sp8, 0x3C0);
-            *(unsigned char **)(ctx + 0x20) = var_r29;
+            var_r29->kind = 7;
+            var_r29->unk_4 = 0;
+            var_r29->capacity = 0x50;
+            var_r29->kind2 = 0;
+            var_r29->next = 0;
+            var_r29->status = (unsigned char)var_r31;
+            memcpy(var_r29->data, sp8, 0x3C0);
+            ctx->current = var_r29;
         }
     }
-    var_r31 = *(void **)(ctx + 0x20);
-    entry = (unsigned char *)var_r31;
-    if (*(int *)(entry + 0xC) == 0) {
-        ((void (*)(void *, void *, int))(*(void **)(ctx + 0x14)))(
-            *(void **)(entry + 4), entry + 0x18, *(int *)(entry + 8));
+    var_r31 = ctx->current;
+    entry = (struct DaaRecord *)var_r31;
+    if (entry->kind2 == 0) {
+        ((void (*)(void *, void *, int))ctx->callback0)(
+            *(void **)((unsigned char *)entry + 4), entry->data, entry->capacity);
     } else {
-        ((void (*)(void *, void *, int))(*(void **)(ctx + 0x18)))(
-            *(void **)(entry + 4), entry + 0x18, *(int *)(entry + 8));
+        ((void (*)(void *, void *, int))ctx->callback1)(
+            *(void **)((unsigned char *)entry + 4), entry->data, entry->capacity);
     }
-    var_r29 = *(unsigned char **)(entry + 0x14);
+    var_r29 = (struct DaaRecord *)entry->next;
     if (var_r29 != 0) {
-        ((void (*)(void *, void *, int))(*(void **)(ctx + 0x1C)))(
-            *(void **)var_r29, var_r29 + 8, *(int *)(var_r29 + 4));
+        ((void (*)(void *, void *, int))ctx->callback2)(
+            *(void **)var_r29, (unsigned char *)var_r29 + 8, *(int *)((unsigned char *)var_r29 + 4));
     }
-    ctx[0x24] = entry[0x10];
+    ctx->status = entry->status;
 }
 #pragma opt_propagation reset
+#pragma scheduling on
 void fn_802DABA4(float *arg0) {
     float sp8, spC, sp10, sp14, sp18, sp1C, sp20, sp24, sp28, sp2C, sp30, sp34;
     float f6 = arg0[0];
