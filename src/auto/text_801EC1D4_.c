@@ -193,57 +193,58 @@ extern void fn_8020095C(long);
 extern void fn_802792EC(long);
 extern long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long, long);
 #pragma dont_inline on
-void fn_801EC9CC(void *arg0, int arg1) {
+void *fn_801EC9CC(void *arg0, int arg1) {
     int i;
     char *entry;
     long value;
 
-    if (arg0 == 0) return;
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_8033A300;
+        fn_801EEC68(arg0);
 
-    *(void **)arg0 = lbl_8033A300;
-    fn_801EEC68(arg0);
+        entry = arg0;
+        for (i = 0; i < *(int *)((char *)arg0 + 0x148); i++) {
+            *(int *)(entry + 0x84) = -1;
+            fn_802C6CF8(*(long *)(entry + 0x44));
+            entry += 4;
+        }
 
-    entry = arg0;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x148); i++) {
-        *(int *)(entry + 0x84) = -1;
-        fn_802C6CF8(*(long *)(entry + 0x44));
-        entry += 4;
+        entry = arg0;
+        for (i = 0; i < *(int *)((char *)arg0 + 0x480); i++) {
+            fn_802C6CF8(*(long *)(entry + 0x400));
+            entry += 8;
+        }
+
+        fn_802C6CF8(*(long *)((char *)arg0 + 0x178));
+        ((void (*)(long))fn_801E323C)(*(long *)((char *)arg0 + 0x17C));
+        ((void (*)(long))fn_801E323C)(*(long *)((char *)arg0 + 0x180));
+        fn_8020095C(*(long *)((char *)arg0 + 0x184));
+
+        entry = arg0;
+        for (i = 0; i < 4; i++) {
+            value = *(long *)(entry + 0x4D4);
+            fn_801EFFF8(value);
+            *(long *)(entry + 0x4D4) = 0;
+            entry += 4;
+        }
+
+        lbl_80488648[*(long *)((char *)arg0 + 0x40)] = 0;
+        fn_801EF428(*(long *)((char *)arg0 + 0x3F0), 1);
+        fn_802792EC(*(long *)((char *)arg0 + 0x188));
+        *(long *)((char *)arg0 + 0x188) = 0;
+        if (lbl_8055EBC8 == (unsigned int)arg0) lbl_8055EBC8 = 0;
+
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x384), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x330), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x2DC), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x288), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x234), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x1E0), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x18C), -1);
+
+        if (arg1 > 0) fn_80128668(arg0);
     }
-
-    entry = arg0;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x480); i++) {
-        fn_802C6CF8(*(long *)(entry + 0x400));
-        entry += 8;
-    }
-
-    fn_802C6CF8(*(long *)((char *)arg0 + 0x178));
-    ((void (*)(long))fn_801E323C)(*(long *)((char *)arg0 + 0x17C));
-    ((void (*)(long))fn_801E323C)(*(long *)((char *)arg0 + 0x180));
-    fn_8020095C(*(long *)((char *)arg0 + 0x184));
-
-    entry = arg0;
-    for (i = 0; i < 4; i++) {
-        value = *(long *)(entry + 0x4D4);
-        fn_801EFFF8(value);
-        *(long *)(entry + 0x4D4) = 0;
-        entry += 4;
-    }
-
-    lbl_80488648[*(long *)((char *)arg0 + 0x40)] = 0;
-    fn_801EF428(*(long *)((char *)arg0 + 0x3F0), 1);
-    fn_802792EC(*(long *)((char *)arg0 + 0x188));
-    *(long *)((char *)arg0 + 0x188) = 0;
-    if (lbl_8055EBC8 == (unsigned int)arg0) lbl_8055EBC8 = 0;
-
-    __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x384), -1);
-    __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x330), -1);
-    __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x2DC), -1);
-    __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x288), -1);
-    __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x234), -1);
-    __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x1E0), -1);
-    __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x18C), -1);
-
-    if (arg1 > 0) fn_80128668(arg0);
+    return arg0;
 }
 #pragma pop
 float fn_802C88D4(void *);
