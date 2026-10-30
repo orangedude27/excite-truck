@@ -6,7 +6,7 @@
 
 extern void *lbl_8055DDF0;
 extern void *MEMAllocFromAllocator(void *, u32);
-extern void MEMFreeToAllocator(void *, void *);
+extern "C" void MEMFreeToAllocator(void *, void *);
 extern "C" u16 fn_8002AEE8(const u16 *);
 
 extern "C" void lbl_80320548(void);
@@ -204,29 +204,59 @@ extern void fn_8002F634(void *, void *, s32, s32);
 extern f32 lbl_80560ED0;
 extern char lbl_803208D4[];
 extern void fn_800D2DD4(void);
-extern void *__dt__Q36nw4hbm3lyt7TextBoxFv(void *arg0, s32 arg1) {
-    if (arg0) {
-        *(void **)arg0 = lbl_803208D4;
-        if (*(u8 *)((char *)arg0 + 0xFD) & 0x80) {
-            void *p = *(void **)((char *)arg0 + 0xE0);
-            if (!p) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x307, lbl_80320580);
-            ((void (*)(void *, s32))(*(void ***)p)[1])(p, -1);
-            MEMFreeToAllocator(lbl_8055DDF0, p);
-            *(u8 *)((char *)arg0 + 0xFD) &= 0x7F;
+extern "C" void *__dt__Q36nw4hbm3lyt7TextBoxFv(void *arg0, s32 arg1) {
+    struct Font {
+        virtual u32 method0(s32);
+        virtual u32 method1();
+    };
+    struct PaneObj {
+        virtual void destroy(s32);
+    };
+    struct TextBox {
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
+        virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
+        virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23();
+        virtual void m24();
+    };
+    u8 *self = (u8 *)arg0;
+
+    if (arg0 != 0) {
+        *(void **)self = lbl_803208D4;
+        if (self[0xFD] & 0x80) {
+            Font *font = *(Font **)(self + 0xE0);
+            if (font == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x307, lbl_80320580);
+            font->method0(-1);
+            MEMFreeToAllocator(lbl_8055DDF0, font);
+            self[0xFD] &= 0x7F;
+            *(void **)(self + 0xE0) = 0;
+            *(f32 *)(self + 0xE4) = lbl_80560ED0;
+            *(f32 *)(self + 0xE8) = lbl_80560ED0;
+        } else {
+            Font *font = *(Font **)(self + 0xE0);
+            u32 first = font->method0(0);
+            u32 second = font->method1();
+            *(f32 *)(self + 0xE4) = (f32)second;
+            *(f32 *)(self + 0xE8) = (f32)first;
         }
-        *(void **)((char *)arg0 + 0xE0) = 0;
-        *(f32 *)((char *)arg0 + 0xE4) = lbl_80560ED0;
-        *(f32 *)((char *)arg0 + 0xE8) = lbl_80560ED0;
-        void *p = *(void **)((char *)arg0 + 0x28);
-        if (p && *(u8 *)((char *)p + 0x54) == 0) {
-            ((void (*)(void *, s32))(*(void ***)p)[1])(p, -1);
-            MEMFreeToAllocator(lbl_8055DDF0, p);
-            *(void **)((char *)arg0 + 0x28) = 0;
+
+        {
+            PaneObj *p = *(PaneObj **)(self + 0x28);
+            if (p != 0 && *((u8 *)p + 0x54) == 0) {
+                p->destroy(-1);
+                MEMFreeToAllocator(lbl_8055DDF0, p);
+                *(void **)(self + 0x28) = 0;
+            }
         }
-        ((void (*)(void *))(*(void ***)arg0)[13])(arg0);
-        fn_8002F634((char *)arg0 + 0xD8, fn_800D2DD4, 4, 2);
+
+        ((TextBox *)arg0)->m24();
+        fn_8002F634(self + 0xD8, fn_800D2DD4, 4, 2);
         __dt__Q36nw4hbm3lyt4PaneFv(arg0, 0);
-        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+        if (arg1 > 0)
+            ((s32 (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
@@ -835,28 +865,28 @@ nw4hbm::ut::CharStrmReader nw4hbm::ut::Font::GetCharStrmReader() const {
     var_r8 = 1;
     var_r9 = 1;
     var_r10 = 1;
-    if (((u32)(temp_r11 + 0x80000000) != 0U) &&
-        ((u32)((font & 0xFF800000) + 0x7F000000) != 0U)) {
+    if (((u32)(temp_r11 + 0x80000000) > 0U) &&
+        ((u32)((font & 0xFF800000) + 0x7F000000) > 0U)) {
         var_r10 = 0;
     }
     if ((var_r10 == 0) &&
-        ((u32)((font & 0xF8000000) + 0x70000000) != 0U)) {
+        ((u32)((font & 0xF8000000) + 0x70000000) > 0U)) {
         var_r9 = 0;
     }
     if ((var_r9 == 0) &&
-        ((u32)(temp_r11 + 0x40000000) != 0U)) {
+        ((u32)(temp_r11 + 0x40000000) > 0U)) {
         var_r8 = 0;
     }
     if ((var_r8 == 0) &&
-        ((u32)((font & 0xFF800000) + 0x3F000000) != 0U)) {
+        ((u32)((font & 0xFF800000) + 0x3F000000) > 0U)) {
         var_r7 = 0;
     }
     if ((var_r7 == 0) &&
-        ((u32)((font & 0xF8000000) + 0x30000000) != 0U)) {
+        ((u32)((font & 0xF8000000) + 0x30000000) > 0U)) {
         var_r6 = 0;
     }
     if ((var_r6 == 0) &&
-        ((u32)((font & 0xFFFFC000) + 0x20000000) != 0U)) {
+        ((u32)((font & 0xFFFFC000) + 0x20000000) > 0U)) {
         var_r5 = 0;
     }
     if (var_r5 == 0) {
