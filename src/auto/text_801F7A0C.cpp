@@ -550,10 +550,8 @@ extern "C" void *fn_801F83E4(void *arg0) {
         virtual u8 flag(const char *, s32);
     };
     register const char *base = lbl_8033AF80;
-    register Manager *manager = (Manager *)arg0;
-    register u8 *obj = (u8 *)fn_801284F8(0x168, (void *)lbl_8055B2E4);
+    u8 *obj = (u8 *)fn_801284F8(0x168, (void *)lbl_8055B2E4);
     char name[0x20];
-    s32 i;
     if (obj != 0) {
         *(void **)(obj + 0x108) = lbl_8033B468;
         *(s32 *)(obj + 0x78) = 0;
@@ -568,24 +566,20 @@ extern "C" void *fn_801F83E4(void *arg0) {
         memset(obj + 0x61, 0x61, 0x10);
         *(s32 *)(obj + 0x74) = -1;
         *(void **)(obj + 0x108) = lbl_8033B418;
-        *(void **)(obj + 0x13C) = manager->get(lbl_8055B2A8);
-        *(void **)(obj + 0x13C) = manager->combine(base + 0xC0, *(void **)(obj + 0x13C));
-        *(void **)(obj + 0x140) = manager->get(base + 0xCC);
+        *(void **)(obj + 0x13C) = ((Manager *)arg0)->combine(base + 0xC0, ((Manager *)arg0)->get(lbl_8055B2A8));
+        *(void **)(obj + 0x140) = ((Manager *)arg0)->get(base + 0xCC);
         *(s32 *)(obj + 0x160) = 1;
-        i = 1;
-        while (i < 8) {
-            sprintf(name, base + 0xD8, i + 1);
-            if (manager->has(name) != 0) {
-                *(void **)(obj + 0x140 + i * 4) = manager->get(name);
-                i++;
-                *(s32 *)(obj + 0x160) = i;
-            } else {
+        while (*(s32 *)(obj + 0x160) < 8) {
+            sprintf(name, base + 0xD8, *(s32 *)(obj + 0x160) + 1);
+            if (((Manager *)arg0)->has(name) == 0) {
                 break;
             }
+            *(void **)(obj + 0x140 + (*(s32 *)(obj + 0x160) * 4)) = ((Manager *)arg0)->get(name);
+            *(s32 *)(obj + 0x160) = *(s32 *)(obj + 0x160) + 1;
         }
-        obj[0x164] = manager->flag(lbl_8055B2EC, 1);
-        obj[0x165] = manager->flag(base + 0xE8, 1);
-        manager->get((const char *)lbl_8055B2DC);
+        obj[0x164] = ((Manager *)arg0)->flag(lbl_8055B2EC, 1);
+        obj[0x165] = ((Manager *)arg0)->flag(base + 0xE8, 1);
+        ((Manager *)arg0)->get((const char *)lbl_8055B2DC);
     }
     return obj;
 }
