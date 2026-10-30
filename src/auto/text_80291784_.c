@@ -49,6 +49,17 @@ extern int lbl_8055C948;
 extern void *fn_802AE414(int *);
 extern int fn_802CAC28(int *, int);
 extern int fn_802D39A4(float);
+extern float fn_80129DC4(int, float, float);
+extern char lbl_8055C924[];
+extern char lbl_8055C930[];
+extern char lbl_8055C940[];
+extern char lbl_80349140[];
+extern char lbl_8034914C[];
+extern float lbl_80564488;
+extern float lbl_8056448C;
+extern float lbl_80564494;
+extern float lbl_80564498;
+extern float lbl_8056449C;
 float fn_80291784(float a, float b, float c, float d) {
     int x, y;
     float value;
@@ -164,35 +175,55 @@ extern float lbl_805644B8, lbl_805644BC;
 #pragma scheduling invalid_target
 void fn_80291C7C(void *arg0, int arg1) {
     float *p = (float *)arg0;
-    float ratio;
-    float alpha;
-    unsigned int color;
+    float pos[3];
     float a[3], b[3];
+    float ratio;
+    float angle, s, c;
+    unsigned int color;
     int amount;
-    double angle;
-    double s, c;
     double d;
-    d = (double)p[0] - (double)(lbl_80564494 * (float)lbl_8055CFF0);
-    if (d < 0.0) d = -d;
+
+    pos[0] = p[0];
+    pos[1] = p[1];
+    pos[2] = p[2];
+    pos[2] = lbl_80564484;
+
+    d = (double)(p[0] - lbl_80564494 * (float)lbl_8055CFF0);
+    d = fabs(d);
     ratio = ((float)d - lbl_805644A4 * (float)lbl_8055CFF0) /
         (lbl_80564494 * (float)lbl_8055CFF0 - lbl_805644A4 * (float)lbl_8055CFF0);
-    if (ratio < 0.0f) ratio = 0.0f;
-    if (ratio > 1.0f) ratio = 1.0f;
+    if (ratio < 0.0f) {
+        ratio = 0.0f;
+    }
+    if (ratio > 1.0f) {
+        ratio = 1.0f;
+    }
+
     color = *(unsigned int *)((char *)arg0 + 0x18);
-    amount = (int)((1.0f + ratio * lbl_805644A8) * (float)(color >> 24));
-    if (amount <= 0) return;
+    amount = (int)((lbl_80564480 + ratio * lbl_805644A8) * (float)(color >> 24));
+    if (amount <= 0) {
+        return;
+    }
     color = (color & 0xFFFFFF) | (amount << 24);
     if (arg1 == 0) {
-        angle = fn_8002EFB4((p[0] - p[1]) / lbl_805644AC, lbl_805644B0);
-        s = sin(angle);
-        c = cos(angle);
-        a[0] = (float)c; a[1] = (float)s; a[2] = 1.0f;
-        b[0] = (float)s; b[1] = (float)-c; b[2] = 1.0f;
+        angle = (float)fn_8002EFB4((p[0] - p[1]) / lbl_805644AC, lbl_805644B0);
+        s = (float)sin(angle);
+        c = (float)cos(angle);
+        a[0] = c;
+        a[1] = s;
+        a[2] = 1.0f;
+        b[0] = s;
+        b[1] = -c;
+        b[2] = 1.0f;
     } else {
-        a[0] = lbl_805644B8; a[1] = lbl_805644BC; a[2] = 1.0f;
-        b[0] = lbl_805644BC; b[1] = lbl_805644BC; b[2] = 1.0f;
+        a[0] = lbl_805644B8;
+        a[1] = lbl_805644BC;
+        a[2] = 1.0f;
+        b[0] = lbl_805644BC;
+        b[1] = lbl_805644BC;
+        b[2] = 1.0f;
     }
-    fn_802D3BB4(*(int *)((char *)&lbl_804B4010 + 0x10), p, a, b, color, p[7]);
+    fn_802D3BB4(*(int *)((char *)&lbl_804B4010 + 0x10), pos, a, b, color, p[7]);
 }
 #pragma scheduling on
 
