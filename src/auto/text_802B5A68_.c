@@ -391,7 +391,7 @@ extern s32 fn_80145E70(char *);
 extern s32 fn_8026E214(void *, void *);
 extern void deleteThreads__6SystemFv(void *);
 extern s32 fn_802C6CF8(void);
-extern s32 lbl_804BFA70;
+extern char lbl_804BFA70[];
 #pragma push
 #pragma processor 750
 #pragma scheduling 750
@@ -477,20 +477,17 @@ extern f32 fn_8001090C(f32);
 extern float lbl_80564C74;
 extern float lbl_80564C78;
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 s32 fn_802B640C(void *arg0, s32 arg1) {
-    struct Arg { u8 pad0[4]; f32 top; f32 y; u8 padC[4]; f32 input; s32 flags; };
-    register f32 firstValue;
     f32 temp_f1, temp_f31, var_f4, temp_f5, temp_f6;
     s32 temp_r3, var_r3, var_r4, var_r5;
-    struct Arg *p = (struct Arg *)arg0;
 
-    /* Match note: use typed field accesses for the target's early input load and float bounds. */
-    firstValue = p->input;
-    temp_f31 = fn_800108C8(arg1, firstValue);
-    temp_f1 = fn_8001090C(p->input);
-    temp_r3 = p->flags;
-    temp_f5 = p->top;
+    /* Match note: volatile first-member read tests the target's pre-prologue load ordering. */
+    temp_f31 = fn_800108C8(arg1, *(volatile f32 *)((u8 *)arg0 + 0x10));
+    temp_f1 = fn_8001090C(*(f32 *)((u8 *)arg0 + 0x10));
+    temp_r3 = *(s32 *)((u8 *)arg0 + 0x14);
+    temp_f5 = *(f32 *)((u8 *)arg0 + 4);
     temp_f6 = temp_f5 + temp_f31;
     if (temp_r3 & 1)
         var_f4 = lbl_80564C74;
@@ -504,9 +501,10 @@ s32 fn_802B640C(void *arg0, s32 arg1) {
     if ((f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) >= temp_f5 + var_f4 &&
         (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) < temp_f6 + var_f4)
         var_r4 = 1;
-    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= p->y)
+    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= *(f32 *)((u8 *)arg0 + 8))
         var_r5 = 1;
-    if (var_r5 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) < p->y + temp_f1)
+    if (var_r5 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) <
+        *(f32 *)((u8 *)arg0 + 8) + temp_f1)
         var_r3 = 1;
     return var_r3;
 }
@@ -983,18 +981,22 @@ void fn_802B7434(void) {
         }
     }
 }
-#pragma use_lmw_stmw reset
+#pragma push
+#pragma scheduling invalid_target
 void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
     s16 x;
     s16 y;
     s16 value;
 
+    /* Match note: send the original x/y/global/limit/ratio argument sequence to the validator. */
     x = arg0;
     y = arg1;
     switch (lbl_8055FA38) {
     case 2:
         if (arg2 != 0) {
-            if (fn_802BC09C(lbl_8055FA28, 0xFF, (float)(u32)arg2 / lbl_80564C90)) {
+            if (((s32 (*)(s32, s32, s32, s32, f32))fn_802BC09C)(
+                    arg0, arg1, lbl_8055FA28, 0xFF,
+                    (f32)(u32)arg2 / lbl_80564C90)) {
                 value = lbl_8055FA50[0];
                 if (value < x)
                     value = x;
@@ -1020,11 +1022,11 @@ void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
         fn_802C21DC();
         break;
     case 5:
-        fn_80204044(arg2, (float)arg0 * lbl_80564C58, (float)arg1 * lbl_80564C58);
+        fn_80204044(arg2, (f32)arg0 * lbl_80564C58, (f32)arg1 * lbl_80564C58);
         break;
     }
 }
-
+#pragma pop
 extern float lbl_8055FA20[];
 #pragma small_data on
 __declspec(section ".sdata") extern float lbl_8055FA20[];
@@ -1050,7 +1052,7 @@ s32 fn_802B7694(void) {
 void fn_802B773C(void) {
     f32 sp8[3];
     s32 *state = lbl_804BFF80;
-    u8 previous = lbl_8055FA58;
+    s32 previous = lbl_8055FA58;
 
     lbl_8055FA58 = 0;
     if (*(s8 *)((u8 *)state + 0x34) != 0)
