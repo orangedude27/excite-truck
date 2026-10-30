@@ -68,6 +68,60 @@ float fn_80291784(float a, float b, float c, float d) {
     return value - lbl_80564480;
 }
 
+int fn_802917C0(void *arg0, void *arg1, void *arg2) {
+    typedef struct {
+        float x;
+        float y;
+        float z;
+        int id;
+        int unk10;
+        unsigned char flags;
+        unsigned char pad[3];
+        unsigned int color;
+        float value1;
+        float value2;
+    } Entry;
+    volatile int *count = (volatile int *)((unsigned char *)arg0 + 0x120);
+    float best = lbl_80564484;
+    float initial = best;
+    float scale = lbl_8056449C;
+    void *query_object;
+
+    *count = 0;
+    goto check_count;
+
+loop:
+    query_object = ((void *(*)(void *))(*(void **)((char *)*(void **)arg1 + 0x60)))(arg1);
+    if (query_object != 0) {
+        float result1 = fn_80129DC4(0, lbl_80564488, lbl_8056448C);
+        float result2 = fn_80129DC4(0, lbl_80564490, lbl_80564494);
+        float result3 = fn_80129DC4(0, lbl_80564498, lbl_80564494);
+        float value = ((float (*)(void *, char *, float))(*(void **)((char *)*(void **)query_object + 0x28)))(query_object, lbl_8055C924, result2);
+        int index = *count;
+        Entry *entry = (Entry *)arg0 + index;
+        entry->x = initial;
+        entry->y = initial;
+        entry->z = initial;
+        {
+            int *setting = ((int *(*)(void *, char *))(*(void **)((char *)*(void **)query_object + 0x14)))(query_object, lbl_8055C930);
+            entry->id = fn_802CAC28(setting, 0);
+        }
+        entry->unk10 = 0;
+        entry->flags = 0;
+        entry->color = ((int)(scale * value) << 24) | 0x00FFFFFF;
+        entry->value1 = ((float (*)(void *, char *, float))(*(void **)((char *)*(void **)query_object + 0x28)))(query_object, (char *)&lbl_8055C938, result1);
+        entry->value2 = ((float (*)(void *, char *, float))(*(void **)((char *)*(void **)query_object + 0x28)))(query_object, lbl_8055C940, result3);
+        if (best > entry->value1) best = entry->value1;
+        *count = *count + 1;
+    }
+
+check_count:
+    if (*count < 8) goto loop;
+    *(float *)((unsigned char *)arg0 + 0x124) = ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_80349140);
+    *(float *)((unsigned char *)arg0 + 0x128) = ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_8034914C);
+    *(float *)((unsigned char *)arg0 + 0x12C) = best;
+}
+
 #pragma scheduling invalid_target
 void fn_802919AC(void *arg0) {
     void *saved = arg0;
@@ -172,7 +226,6 @@ extern int lbl_8055CFF0;
 extern float lbl_80564494, lbl_805644A4, lbl_805644A8, lbl_805644AC;
 extern double lbl_805644B0;
 extern float lbl_805644B8, lbl_805644BC;
-#pragma scheduling invalid_target
 void fn_80291C7C(void *arg0, int arg1) {
     float *p = (float *)arg0;
     float pos[3];
