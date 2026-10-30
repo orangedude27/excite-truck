@@ -344,6 +344,8 @@ int fn_8023F0E8(void) {
 
 extern int lbl_802FA2D0[5];
 extern unsigned char lbl_8055BD20;
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 int fn_8023F2C4(void) {
     register int zero = 0;
     register int three = 3;
