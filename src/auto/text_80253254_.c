@@ -55,7 +55,117 @@ void fn_80253258(void) {
     PSVECNormalize(&v[3], &v[3]);
     fn_802C9A1C(&v[3]);
 }
+
 #pragma scheduling on
+void fn_802532BC(void *arg0) {
+    struct Struct_802532BC_Offset28 {
+        char pad[0x28];
+        int val;
+    };
+    extern void *memset(void *, int, unsigned long);
+    extern float lbl_80563A04;
+    extern float lbl_80563A14;
+    int len;
+
+    *(unsigned char *)((char *)arg0 + 0x0) = 0;
+    *(int *)((char *)arg0 + 0x14) = -1;
+    *(int *)((char *)arg0 + 0x10) = -1;
+    *(int *)((char *)arg0 + 0x1C) = 0;
+    *(int *)((char *)arg0 + 0x18) = 0;
+    *(unsigned char *)((char *)arg0 + 0x400) = 0;
+    memset((char *)arg0 + 0x28, 0, 0x3D8);
+
+    {
+        float zero = lbl_80563A04;
+        float one = lbl_80563A14;
+
+        ((struct Struct_802532BC_Offset28 *)arg0)->val = -1;
+        len = 0x138;
+
+        *(float *)((char *)arg0 + 0x598) = one;
+        *(float *)((char *)arg0 + 0x59C) = zero;
+        *(float *)((char *)arg0 + 0x5A0) = zero;
+        *(float *)((char *)arg0 + 0x5A4) = zero;
+
+        *(float *)((char *)arg0 + 0x5A8) = one;
+        *(float *)((char *)arg0 + 0x5AC) = zero;
+        *(float *)((char *)arg0 + 0x5B0) = zero;
+        *(float *)((char *)arg0 + 0x5B4) = zero;
+
+        *(float *)((char *)arg0 + 0x5B8) = one;
+        *(float *)((char *)arg0 + 0x5BC) = zero;
+        *(float *)((char *)arg0 + 0x5C0) = zero;
+        *(float *)((char *)arg0 + 0x5C4) = zero;
+
+        *(float *)((char *)arg0 + 0x5D8) = one;
+        *(float *)((char *)arg0 + 0x5DC) = zero;
+        *(float *)((char *)arg0 + 0x5E0) = zero;
+        *(float *)((char *)arg0 + 0x5E4) = zero;
+
+        *(float *)((char *)arg0 + 0x5E8) = one;
+        *(float *)((char *)arg0 + 0x5EC) = zero;
+        *(float *)((char *)arg0 + 0x5F0) = zero;
+        *(float *)((char *)arg0 + 0x5F4) = zero;
+
+        *(float *)((char *)arg0 + 0x5F8) = one;
+        *(float *)((char *)arg0 + 0x5FC) = zero;
+        *(float *)((char *)arg0 + 0x600) = zero;
+        *(float *)((char *)arg0 + 0x604) = zero;
+
+        *(float *)((char *)arg0 + 0x608) = one;
+        *(float *)((char *)arg0 + 0x60C) = zero;
+        *(float *)((char *)arg0 + 0x610) = zero;
+        *(float *)((char *)arg0 + 0x614) = zero;
+
+        *(float *)((char *)arg0 + 0x618) = one;
+        *(float *)((char *)arg0 + 0x61C) = zero;
+        *(float *)((char *)arg0 + 0x620) = zero;
+        *(float *)((char *)arg0 + 0x624) = zero;
+
+        *(float *)((char *)arg0 + 0x628) = one;
+        *(float *)((char *)arg0 + 0x62C) = zero;
+        *(float *)((char *)arg0 + 0x630) = zero;
+        *(float *)((char *)arg0 + 0x634) = zero;
+
+        *(float *)((char *)arg0 + 0x638) = one;
+        *(float *)((char *)arg0 + 0x63C) = zero;
+        *(float *)((char *)arg0 + 0x640) = zero;
+        *(float *)((char *)arg0 + 0x644) = zero;
+
+        *(float *)((char *)arg0 + 0x648) = one;
+        *(float *)((char *)arg0 + 0x64C) = zero;
+        *(float *)((char *)arg0 + 0x650) = zero;
+        *(float *)((char *)arg0 + 0x654) = zero;
+
+        *(float *)((char *)arg0 + 0x658) = one;
+        *(float *)((char *)arg0 + 0x65C) = zero;
+        *(float *)((char *)arg0 + 0x660) = zero;
+        *(float *)((char *)arg0 + 0x664) = zero;
+
+        *(float *)((char *)arg0 + 0x668) = one;
+        *(float *)((char *)arg0 + 0x66C) = zero;
+        *(float *)((char *)arg0 + 0x670) = zero;
+        *(float *)((char *)arg0 + 0x674) = zero;
+
+        *(float *)((char *)arg0 + 0x678) = one;
+        *(float *)((char *)arg0 + 0x67C) = zero;
+        *(float *)((char *)arg0 + 0x680) = zero;
+        *(float *)((char *)arg0 + 0x684) = zero;
+
+        *(float *)((char *)arg0 + 0x688) = one;
+        *(float *)((char *)arg0 + 0x68C) = zero;
+        *(float *)((char *)arg0 + 0x690) = zero;
+        *(float *)((char *)arg0 + 0x694) = zero;
+
+        *(float *)((char *)arg0 + 0x420) = zero;
+        *(float *)((char *)arg0 + 0x424) = zero;
+        *(float *)((char *)arg0 + 0x428) = zero;
+    }
+
+    memset((char *)arg0 + 0x45C, 0, len);
+
+    *(float *)((char *)arg0 + 0x594) = lbl_80563A04;
+}
 
 void *fn_8025343C(void *arg0) {
     extern void fn_802532BC(void *);
@@ -720,40 +830,70 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
         *(float *)((char *)arg0 + 0x2C) = lbl_80563A04;
     }
 }
-#pragma dont_inline reset
+#pragma push
+#pragma scheduling invalid_target
 void fn_80255200(void *arg0, s32 arg1) {
-    extern float lbl_80563A04,lbl_80563A14,lbl_80563A58,lbl_80563A5C;
-    extern char lbl_803447C0[]; extern void *lbl_80498E08[];
-    extern long lbl_8055C190; extern s32 lbl_8055F33C;
-    extern void fn_8025539C(void); extern void *fn_802CAC28(void *,s32);
-    extern void *fn_801284F8(s32,void *); extern void *fn_8012CAA0(s32,void *);
+    extern float lbl_80563A04, lbl_80563A14, lbl_80563A58, lbl_80563A5C;
+    extern char lbl_803447C0[];
+    extern void *lbl_80498E08[];
+    extern long lbl_8055C190;
+    extern s32 lbl_8055F33C;
+    extern void fn_8025539C(void);
+    extern void *fn_802CAC28(void *, s32);
+    extern void *fn_801284F8(s32, void *);
+    extern void *fn_8012CAA0(s32, void *);
     extern void fn_80255A84(void *);
-    float zero=lbl_80563A04, one=lbl_80563A14, two=lbl_80563A58, three=lbl_80563A5C;
-    u8 *p=(u8 *)arg0; void *obj; s32 n;
-    *(u8 *)(p+0x118)=0; *(float *)(p+0x11C)=zero;
-    *(u8 *)(p+0xDD)=0; *(u8 *)(p+0xDC)=0; *(u8 *)(p+0x30)=0;
-    *(float *)(p+0x98)=two; *(float *)(p+0xA8)=one;
-    *(float *)(p+0xAC)=zero; *(float *)(p+0xB0)=zero; *(float *)(p+0xB4)=zero;
-    *(float *)(p+0xB8)=one; *(float *)(p+0xBC)=zero; *(float *)(p+0xC0)=zero;
-    *(float *)(p+0xC4)=zero; *(float *)(p+0xC8)=one; *(float *)(p+0xCC)=zero;
-    *(float *)(p+0xD0)=zero; *(float *)(p+0xD4)=zero; *(s32 *)(p+0xD8)=-1;
-    *(float *)(p+0xEC)=three; *(float *)(p+0xF0)=zero; *(float *)(p+0xF4)=zero; *(float *)(p+0xF8)=zero;
-    *(u8 *)(p+0x10)=0; *(u8 *)(p+0x38)=0; *(u8 *)(p+0x58)=0; *(u8 *)(p+0x78)=0;
-    *(unsigned int *)(p+0xC)=0xFF000000;
-    if(arg1) fn_8025539C();
-    *(void **)(p+0xE8)=fn_802CAC28(lbl_803447C0+0x100,0);
-    obj=fn_801284F8(0x28,lbl_803447C0+0x110);
-    if(obj) *(void **)((u8 *)obj+0x20)=fn_8012CAA0(0x16E360,lbl_803447C0+0x11C);
-    n=lbl_8055F33C; lbl_80498E08[n]=obj; lbl_8055F33C=n+1;
-    obj=fn_801284F8(0x28,lbl_803447C0+0x110);
-    if(obj) *(void **)((u8 *)obj+0x20)=fn_8012CAA0(0x16E360,lbl_803447C0+0x11C);
-    n=lbl_8055F33C; lbl_80498E08[n]=obj; lbl_8055F33C=n+1;
-    obj=fn_801284F8(0x698,&lbl_8055C190);
-    if(obj) *(void **)(p+8)=((void *(*)(void))fn_8025343C)();
-    fn_80255A84(arg0);
-}
+    float three, one, two, zero;
+    s32 minusOne, zeroInt;
+    u8 *p;
+    char *strings = lbl_803447C0;
+    void *obj;
+    s32 n;
 
-#pragma dont_inline fn_80255604
+    zero = lbl_80563A04; one = lbl_80563A14; two = lbl_80563A58; three = lbl_80563A5C;
+    minusOne = -1; zeroInt = 0;
+    *(u8 *)((u8 *)arg0 + 0x118) = zeroInt;
+    *(float *)((u8 *)arg0 + 0x11C) = zero;
+    *(u8 *)((u8 *)arg0 + 0xDD) = zeroInt;
+    *(u8 *)((u8 *)arg0 + 0xDC) = zeroInt;
+    *(u8 *)((u8 *)arg0 + 0x30) = zeroInt;
+    *(float *)((u8 *)arg0 + 0x98) = two;
+    *(float *)((u8 *)arg0 + 0xA8) = one;
+    *(float *)((u8 *)arg0 + 0xAC) = zero;
+    *(float *)((u8 *)arg0 + 0xB0) = zero;
+    *(float *)((u8 *)arg0 + 0xB4) = zero;
+    *(float *)((u8 *)arg0 + 0xB8) = one;
+    *(float *)((u8 *)arg0 + 0xBC) = zero;
+    *(float *)((u8 *)arg0 + 0xC0) = zero;
+    *(float *)((u8 *)arg0 + 0xC4) = zero;
+    *(float *)((u8 *)arg0 + 0xC8) = one;
+    *(float *)((u8 *)arg0 + 0xCC) = zero;
+    *(float *)((u8 *)arg0 + 0xD0) = zero;
+    *(float *)((u8 *)arg0 + 0xD4) = zero;
+    *(s32 *)((u8 *)arg0 + 0xD8) = minusOne;
+    *(float *)((u8 *)arg0 + 0xEC) = three;
+    *(float *)((u8 *)arg0 + 0xF0) = zero;
+    *(float *)((u8 *)arg0 + 0xF4) = zero;
+    *(float *)((u8 *)arg0 + 0xF8) = zero;
+    *(u8 *)((u8 *)arg0 + 0x10) = zeroInt;
+    *(u8 *)((u8 *)arg0 + 0x38) = zeroInt;
+    *(u8 *)((u8 *)arg0 + 0x58) = zeroInt;
+    *(u8 *)((u8 *)arg0 + 0x78) = zeroInt;
+    *(unsigned int *)((u8 *)arg0 + 0xC) = 0xFF000000;
+    if (arg1) fn_8025539C();
+    p = (u8 *)arg0;
+    *(void **)(p + 0xE8) = fn_802CAC28(strings + 0x100, 0);
+    obj = fn_801284F8(0x28, strings + 0x110);
+    if (obj) *(void **)((u8 *)obj + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
+    n = lbl_8055F33C; lbl_80498E08[n] = obj; lbl_8055F33C = n + 1;
+    obj = fn_801284F8(0x28, strings + 0x110);
+    if (obj) *(void **)((u8 *)obj + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
+    n = lbl_8055F33C; lbl_80498E08[n] = obj; lbl_8055F33C = n + 1;
+    obj = fn_801284F8(0x698, &lbl_8055C190);
+    if (obj) *(void **)(p + 8) = ((void *(*)(void))fn_8025343C)();
+    fn_80255A84(p);
+}
+#pragma pop
 void fn_80255604(s32 arg0) {
     extern char lbl_803447C0[];
     extern u8 lbl_8055F330;
@@ -795,6 +935,7 @@ s32 fn_80255718(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma use_lmw_stmw off
 void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
     extern char lbl_80344B98[]; extern char lbl_803449D4[];
     extern void *lbl_80498E08[]; extern s32 lbl_8055F33C;
@@ -832,6 +973,7 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
     }
     return arg0;
 }
+#pragma use_lmw_stmw reset
 
 void fn_80255904(void *arg0) {
     extern void fn_80253824(void *);
