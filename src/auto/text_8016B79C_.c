@@ -1,5 +1,12 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
+#pragma cplusplus on
+extern "C" char lbl_80330A90[];
+extern "C" void fn_80128670(s32);
+extern "C" void fn_80131818(s32);
+extern "C" void fn_80235380(void *, char *);
+extern "C" void fn_802C2930(void *, s32);
+#pragma cplusplus reset
 extern s32 fn_801284F8(s32, const char *);
 extern char lbl_80330A90[];
 extern void fn_80144504(void **);
