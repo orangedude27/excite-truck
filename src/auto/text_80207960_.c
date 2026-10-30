@@ -74,10 +74,12 @@ signed long fn_80207964(signed long arg0) {
     }
 }
 
+#pragma dont_inline on
 void fn_80207980(void* arg0) {
     *(signed long*)arg0 = 0;
     *((signed long*)arg0 + 1) = 0;
 }
+#pragma dont_inline reset
 
 #pragma cplusplus on
 extern "C" void *fn_80207990(void *arg0, void *arg1) {
