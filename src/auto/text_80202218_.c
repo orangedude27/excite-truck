@@ -13,8 +13,8 @@ extern void fn_802025D4(void);
 extern int sprintf(char *, const char *, ...);
 extern char lbl_8033B9F8[];
 extern char lbl_804888B8[];
-extern char lbl_8055B418[];
-extern char lbl_8055B420[];
+extern char lbl_8055B418;
+extern char lbl_8055B420;
 extern float lbl_805630A4;
 extern int lbl_8055B414, lbl_8055ECDC;
 extern int lbl_8055ECC0;
@@ -108,39 +108,40 @@ void *fn_802023C8(void) { return lbl_80488964; }
 #pragma push
 #pragma dont_inline on
 void fn_802023D4(void) {
-    void *manager;
-    void *interface;
-    void **vtable;
-    s32 count;
-    s32 i;
-    s32 offset;
-    s32 *entry;
+    register char *config;
+    register char *state;
+    register void *manager;
+    register void *interface;
+    register s32 count;
+    register s32 i;
+    register s32 offset;
+    register s32 *entry;
     char name1[32];
     char name2[32];
     f32 position[3];
+    void *buffer;
 
+    config = lbl_8033B9F8;
     lbl_8055ECD4 = 7;
-    manager = fn_80131808(lbl_8033B9F8);
-    vtable = *(void ***)manager;
-    interface = ((void *(*)(void *, void *))vtable[2])(manager, lbl_8033B9F8 + 0x10);
-    vtable = *(void ***)interface;
-    count = ((s32 (*)(void *, void *))vtable[7])(interface, lbl_8055B418);
+    state = lbl_804888B8;
+    manager = fn_80131808(config);
+    interface = ((void *(*)(void *, void *))(*(void ***)manager)[2])(manager, config + 0x10);
+    count = ((s32 (*)(void *, void *))(*(void ***)interface)[7])(interface, &lbl_8055B418);
     lbl_8055ECC0 = count;
     if (count > 0) {
-        fn_8012850C((count << 4) + 0x10, lbl_8033B9F8 + 0x1C);
-        lbl_8055ECC4 = (s32)fn_8002F37C(fn_802025D4, NULL, 0x10, count);
+        buffer = fn_8012850C((count << 4) + 0x10, config + 0x1C);
+        lbl_8055ECC4 = (s32)fn_8002F37C(buffer, fn_802025D4, NULL, 0x10, count);
         lbl_8055ECC8 = (s32)fn_802CE3A4(lbl_8055ECC0, 0x20, 0x20000);
         i = 0;
         offset = 0;
         while (i < lbl_8055ECC0) {
             entry = (s32 *)((char *)lbl_8055ECC4 + offset);
-            sprintf(name1, lbl_8055B420, i);
-            vtable = *(void ***)interface;
-            ((void (*)(void *, void *, void *))vtable[13])(position, interface, name1);
+            sprintf(name1, (const char *)&lbl_8055B420, i);
+            ((void (*)(void *, void *, void *))(*(void ***)interface)[13])(position, interface, name1);
             ((f32 *)entry)[0] = position[0];
             ((f32 *)entry)[1] = position[1];
             ((f32 *)entry)[2] = position[2];
-            sprintf(name2, lbl_8033B9F8 + 0x28, i);
+            sprintf(name2, config + 0x28, i);
             entry[3] = fn_802CE630((void *)lbl_8055ECC8, name2, 0);
             offset += 0x10;
             i++;
@@ -150,25 +151,25 @@ void fn_802023D4(void) {
         lbl_8055ECC8 = 0;
     }
     fn_80131818(manager);
-    lbl_8055ECCC = fn_80202248((int)(lbl_8033B9F8 + 0x34));
+    lbl_8055ECCC = fn_80202248((int)(config + 0x34));
     if (lbl_8055ECCC != -1) {
-        fn_802E30C8(lbl_8033B9F8 + 0x44);
+        fn_802E30C8(config + 0x44);
     }
-    lbl_8055ECD0 = fn_80202248((int)(lbl_8033B9F8 + 0x5C));
+    lbl_8055ECD0 = fn_80202248((int)(config + 0x5C));
     if (lbl_8055ECD0 != -1) {
-        fn_802E30C8(lbl_8033B9F8 + 0x6C);
+        fn_802E30C8(config + 0x6C);
     }
     lbl_8055B414 = -1;
-    *(f32 *)(lbl_804888B8 + 0xAC) = lbl_805630A4;
-    *(f32 *)(lbl_804888B8 + 0xB0) = lbl_805630A4;
-    *(f32 *)(lbl_804888B8 + 0xB4) = lbl_805630A4;
+    *(f32 *)(state + 0xAC) = lbl_805630A4;
+    *(f32 *)(state + 0xB0) = lbl_805630A4;
+    *(f32 *)(state + 0xB4) = lbl_805630A4;
     lbl_8055ECE0 = 0;
     lbl_8055ECDC = -1;
-    *(s32 *)(lbl_804888B8 + 0x18) = -1;
-    *(s32 *)(lbl_804888B8 + 0x1C) = -1;
-    *(s32 *)(lbl_804888B8 + 0x20) = -1;
-    *(s32 *)(lbl_804888B8 + 0x24) = -1;
-          *(s32 *)(lbl_804888B8 + 0xA8) = 0;
+    *(s32 *)(state + 0x18) = -1;
+    *(s32 *)(state + 0x1C) = -1;
+    *(s32 *)(state + 0x20) = -1;
+    *(s32 *)(state + 0x24) = -1;
+    *(s32 *)(state + 0xA8) = 0;
 }
 #pragma pop
 
