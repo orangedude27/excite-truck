@@ -36,7 +36,7 @@ extern int fn_802E2C20(void);
 extern void fn_802E30C8(const char *);
 extern int fn_802146BC(void *, int, int, int, ...);
 extern void fn_8023EC94(void);
-extern int fn_80236914;
+extern void fn_80236914(void);
 void fn_8023E7A8(unsigned int mode) {
     char name[28] = {0};
     char a[128] = {0}, b[128] = {0}, c[128] = {0};
@@ -339,6 +339,82 @@ int fn_8023F0E8(void) {
     return (((int (*)(void *, int, int, int, int, int, int, int))fn_802146BC)(
                 (void *)&data, -0x3E7, -0x3E7, 1,
                 *(int *)(lbl_804987E0 + 0), 3, 4, 0) + 2) == 0;
+}
+
+extern int lbl_802FA2D0[5];
+extern unsigned char lbl_8055BD20;
+int fn_8023F2C4(void) {
+    register int zero = 0;
+    register int three = 3;
+    register int four = 4;
+    register int bcb8a = (int)&lbl_8055BCB8;
+    register int bcb8b = (int)&lbl_8055BCB8;
+    volatile int args[5];
+    volatile int values[55];
+    values[0] = (int)&lbl_8055B860;
+    values[1] = 6;
+    values[2] = zero;
+    values[3] = -2;
+    values[4] = 0xD;
+    values[5] = (int)&lbl_8055B860;
+    values[6] = 6;
+    values[7] = (int)fn_8023F9E8;
+    values[8] = -1;
+    values[9] = 0x1B;
+    values[10] = (int)&lbl_8055BCA0;
+    values[11] = three;
+    values[12] = (int)(lbl_80341CC8+0x3F4);
+    values[13] = four;
+    values[14] = zero;
+    values[15] = (int)&lbl_8055BCD8;
+    values[16] = three;
+    values[17] = (int)(lbl_80341CC8+0x40C);
+    values[18] = four;
+    values[19] = zero;
+    values[20] = (int)&lbl_8055BCE0;
+    values[21] = three;
+    values[22] = (int)(lbl_80341CC8+0x428);
+    values[23] = four;
+    values[24] = zero;
+    values[25] = (int)&lbl_8055BCE8;
+    values[26] = three;
+    values[27] = (int)(lbl_80341CC8+0x238);
+    values[28] = four;
+    values[29] = zero;
+    values[30] = (int)&lbl_8055BCF0;
+    values[31] = three;
+    values[32] = bcb8a;
+    values[33] = four;
+    values[34] = zero;
+    values[35] = (int)&lbl_8055BCF8;
+    values[36] = three;
+    values[37] = bcb8b;
+    values[38] = four;
+    values[39] = zero;
+    values[40] = (int)&lbl_8055BD08;
+    values[41] = three;
+    values[42] = (int)&lbl_8055BD20;
+    values[43] = four;
+    values[44] = zero;
+    values[45] = (int)&lbl_8055BD00;
+    values[46] = three;
+    values[47] = (int)(lbl_80341CC8+0x3E8);
+    values[48] = four;
+    values[49] = zero;
+    values[50] = lbl_804987E0[0];
+    values[51] = lbl_804987E0[1];
+    values[52] = lbl_804987E0[2];
+    values[53] = lbl_804987E0[3];
+    values[54] = lbl_804987E0[4];
+    lbl_8055F1C4 = 0;
+    args[0] = lbl_802FA2D0[0];
+    args[1] = lbl_802FA2D0[1];
+    args[2] = lbl_802FA2D0[2];
+    args[3] = lbl_802FA2D0[3];
+    args[4] = lbl_802FA2D0[4];
+    args[0] = (int)fn_8023E5A8();
+    args[1] = (int)values;
+    return (((int (*)(void *, int, int, int))fn_802146BC)((void *)args, -999, -999, 1) + 2) == 0;
 }
 
 extern unsigned char lbl_8055BD28;
