@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #pragma use_lmw_stmw off
+#include <revolution/MTX/mtxtypes.h>
 
 extern float lbl_80562B54;
 void fn_801DA198(int, float);
@@ -354,24 +355,31 @@ extern float fn_801EA0E8(float, float);
 extern int fn_801DA648(int);
 extern int fn_801DA688(int);
 #pragma push
+#pragma paired off
+#pragma paired_single off
 #pragma scheduling invalid_target
 void fn_801DAF68(void *arg0) {
-    register unsigned char *entry = (unsigned char *)arg0 + 8;
-    register int index = 0;
-    register float scale = lbl_80562B5C;
-    register float rate = lbl_80562B58;
-    register float threshold = lbl_80562B54;
+    register void *base;
+    register unsigned char *entry;
+    register int index;
+    register float rate;
+    register float threshold;
+    register float scale;
     float transform[12];
     float first[3];
     float second[3];
 
-    for (; index < *(int *)((char *)arg0 + 0x5808); index++, entry += 0x2C) {
+    scale = lbl_80562B5C;
+    base = arg0;
+    rate = lbl_80562B58;
+    entry = (unsigned char *)base + 8;
+    threshold = lbl_80562B54;
+    index = 0;
+    for (; index < *(int *)((char *)base + 0x5808); entry += 0x2C, index++) {
         if (entry[0x18] == 0 && entry[0x10] == 0)
             continue;
-
         if (entry[0x18] != 0)
             fn_801DA0EC(*(int *)(entry + 0x28), rate * *(float *)(entry + 0x1C));
-
         if (fn_801DA294(*(int *)(entry + 0x28), transform, first, second) != 0) {
             first[0] *= scale;
             first[1] *= scale;
@@ -379,20 +387,17 @@ void fn_801DAF68(void *arg0) {
             second[0] *= scale;
             second[1] *= scale;
             second[2] *= scale;
-
             if (entry[0x10] != 0)
                 transform[10] = *(float *)(entry + 0x14) + fn_801EA0E8(transform[9], transform[11]);
-
             fn_8017CFFC(*(int *)(entry + 0x20), transform, first, second);
         } else if (lbl_8055E980 == 0) {
             lbl_8055E980 = 1;
             ((void (*)(char *, ...))fn_802E30C8)(&lbl_8055ADB4, lbl_80339318);
         }
-
         if (*(float *)(entry + 0x1C) >= threshold) {
             if (fn_801DA648(*(int *)(entry + 0x28)) != 0) {
                 if (entry[0x19] != 0)
-                    fn_801DA198(*(int *)(entry + 0x28), threshold);
+                    fn_801DA198(*(int *)(entry + 0x28), lbl_80562B54);
                 else
                     entry[0x18] = 0;
             }
