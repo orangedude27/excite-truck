@@ -823,6 +823,97 @@ void fn_802C7040(int arg0) {
     }
 }
 
+extern unsigned char lbl_804C13C0[];
+extern float lbl_80564EF0;
+extern float PSVECSquareDistance(const float *, const float *);
+void fn_802C729C(int arg0, float arg1) {
+    char *outerEntry;
+    int globalValue;
+    int innerIndex;
+    int *innerInfo;
+    int outerOffset;
+    void *vectorDistance;
+    void *vectorHeight;
+    int innerOffset;
+    int *outerInfo;
+    void *vectors;
+    int outerIndex;
+    float distance;
+    float radius;
+
+    if ((unsigned int)(*(unsigned int *)lbl_804C13C0 + 0x10000U) == 0xFFFFU)
+        return;
+    if (arg0 == -1)
+        return;
+
+    outerInfo = (int *)fn_802C53A8(arg0);
+    if (*outerInfo <= 0)
+        return;
+
+    radius = lbl_80564EF0;
+    vectors = (void *)fn_802C5E7C(outerInfo);
+    vectorDistance = vectors;
+    vectorHeight = vectors;
+
+    for (outerIndex = 0, outerOffset = 0;
+         outerIndex < *outerInfo;
+         outerOffset += 0x10,
+         vectorDistance = (char *)vectorDistance + 0x10,
+         vectorHeight = (char *)vectorHeight + 0x10,
+         outerIndex++) {
+        if (*(int *)((char *)*(int **)((char *)outerInfo + 4) + outerOffset) != 2)
+            continue;
+        if (vectors != 0) {
+            distance = PSVECSquareDistance((float *)(lbl_804C13C0 + 4),
+                                           (float *)vectorDistance);
+            if (!(distance < (arg1 + *(float *)((char *)vectorHeight + 0xC)) *
+                             (arg1 + *(float *)((char *)vectorHeight + 0xC))))
+                continue;
+        }
+
+        innerIndex = 0;
+        globalValue = *(int *)lbl_804C13C0;
+        innerOffset = 0;
+        outerEntry = (char *)*(int **)((char *)outerInfo + 4) + outerOffset;
+        innerInfo = *(int **)(outerEntry + 8);
+
+        for (; innerIndex < *innerInfo;
+             innerOffset += 4, innerIndex++) {
+            int valid = 0;
+            void **innerEntries = *(void ***)((char *)innerInfo + 4);
+            void *element = *(void **)((char *)innerEntries + innerOffset);
+            unsigned int type = *(unsigned int *)element;
+
+            if (type < 13) {
+                int skip;
+                valid = 1;
+                switch (type) {
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    skip = 1;
+                    break;
+                default:
+                    skip = 0;
+                    break;
+                }
+                if (skip)
+                    valid = 0;
+            }
+            if (valid) {
+                void *node = *(void **)((char *)element + 0x14);
+                void *r4;
+                fn_802C53C4(outerEntry, node, globalValue, -1, 0);
+                r4 = ((void *(*)(void *))fn_802C57B0)(
+                    *(void **)(outerEntry + 0xC));
+                fn_802CC550(*(int *)node, r4, radius,
+                            *(float *)((char *)r4 + 0x18));
+            }
+        }
+    }
+}
+
 void fn_802C744C(int arg0, void *arg1) { fn_802C70AC(arg0, arg1, -1, -1); }
 
 void fn_802C7458(int arg0, int arg1) {
