@@ -104,7 +104,8 @@ float fn_80291784(float a, float b, float c, float d) {
     return value - lbl_80564480;
 }
 
-int fn_802917C0(void *arg0, void *arg1, void *arg2) {
+#pragma cplusplus on
+extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
     typedef struct {
         float x;
         float y;
@@ -157,6 +158,7 @@ check_count:
     *(float *)((unsigned char *)arg0 + 0x128) = ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_8034914C);
     *(float *)((unsigned char *)arg0 + 0x12C) = best;
 }
+#pragma cplusplus reset
 
 #pragma scheduling invalid_target
 void fn_802919AC(void *arg0) {
