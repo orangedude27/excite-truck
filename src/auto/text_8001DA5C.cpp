@@ -56,7 +56,7 @@ extern "C" s32 fn_801E85A4(void);
 extern "C" void fn_80232928(s32);
 extern "C" void fn_80232930(void);
 
-extern char lbl_802FDB68[];
+extern char lbl_802FDB68[], lbl_802FDC70[];
 extern char lbl_802FDC84[], lbl_802FDC5C[], lbl_802FDC48[], lbl_802FDC34[];
 extern "C" int lbl_802FDC98[];
 extern "C" void* fn_80145E70(void*);
