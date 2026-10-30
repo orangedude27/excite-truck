@@ -1376,3 +1376,4 @@ int fn_80176038(void) { return 0; }
 
 void fn_80176400(void) {
 }
+#include <stdarg.h>
