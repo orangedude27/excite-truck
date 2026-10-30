@@ -536,6 +536,9 @@ float PSVECDotProduct(float*, void*);
 void* fn_802C9A40(void);
 void fn_802C7AE0(long, void*, long, float);
 void fn_801F13F4(long, float, float);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_801EDF18(void* arg0) {
     float temp_f31, sp20, sp10, sp14, sp18, var_f29, var_f30, temp_f3, var_f2;
     long var_r31, sp1C, sp24, spC;
@@ -559,6 +562,7 @@ void fn_801EDF18(void* arg0) {
     var_r31 = 0;
     do { fn_801F13F4(*(long*)((char*)arg0 + 0x4D4), temp_f31, var_f29 * var_f30); var_r31++; arg0 = (char*)arg0 + 4; } while (var_r31 < 4);
 }
+#pragma pop
 
 long fn_801EE0C8(void *arg0) {
     return *(long *)((char *)arg0 + 0x48);
