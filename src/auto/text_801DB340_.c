@@ -602,7 +602,8 @@ void fn_801DD88C(void) {
 extern int lbl_8055E99C;
 extern int lbl_8055E9A0;
 extern unsigned short lbl_80442708[];
-extern float lbl_80562B64, lbl_80562B84, lbl_80562B78;
+extern float lbl_80562B64, lbl_80562B84;
+extern double lbl_80562B78;
 int fn_801DDA84(int *arg0, int arg1, float farg0, float farg1, float farg2) {
     int *state = (int *)lbl_8055E990;
     int ix, iz, tileX, tileZ, remX, remZ;
@@ -660,6 +661,8 @@ float fn_801DDC8C(float farg0, float farg1) {
     int *state = (int *)lbl_8055E990;
     int cellX;
     int cellZ;
+    int tileWorldX;
+    int tileWorldZ;
     int tileX;
     int tileZ;
     int remX;
@@ -667,17 +670,17 @@ float fn_801DDC8C(float farg0, float farg1) {
     int tile;
     int node;
     int layerIndex;
-    int sample;
+    unsigned short sample;
     int weightIndex;
     int next;
-    int i;
     float x;
     float z;
     float roundX;
     float roundZ;
     float value;
-    float weight;
     float result;
+    char *layerBase;
+    char *layer;
 
     if (state[4] == 0)
         return lbl_80562B84;
@@ -688,25 +691,27 @@ float fn_801DDC8C(float farg0, float farg1) {
     z *= *(float *)((char *)state + 12);
 
     roundX = x < lbl_80562B84 ? x - lbl_80562B64 : lbl_80562B64 + x;
-    roundZ = z < lbl_80562B84 ? z - lbl_80562B64 : lbl_80562B64 + z;
     cellX = (int)roundX;
+    roundZ = z < lbl_80562B84 ? z - lbl_80562B64 : lbl_80562B64 + z;
     cellZ = (int)roundZ;
     if (cellX < 0 || cellZ < 0)
         return lbl_80562B84;
 
-    tileX = (cellX >> 5) - lbl_8055E99C;
-    tileZ = (cellZ >> 5) - lbl_8055E9A0;
-    remX = cellX - ((cellX >> 5) << 5);
-    remZ = cellZ - ((cellZ >> 5) << 5);
+    tileWorldX = cellX >> 5;
+    tileWorldZ = cellZ >> 5;
+    tileX = tileWorldX - lbl_8055E99C;
+    tileZ = tileWorldZ - lbl_8055E9A0;
+    remX = cellX - (tileWorldX << 5);
+    remZ = cellZ - (tileWorldZ << 5);
     if (tileX < 0 || tileZ < 0)
         return lbl_80562B84;
     if (tileX >= 0x60 || tileZ >= 0x60)
         return lbl_80562B84;
 
-    tile = lbl_80442708[tileX * 0x60 + tileZ];
+    tile = *(unsigned short *)((char *)lbl_80442708 + tileX * 0xC0 + tileZ * 2);
     if (tile == 0xFFFF)
         return lbl_80562B84;
-    node = *(int *)(*(int *)((char *)state + 0x18) + tile * 0x894);
+    node = *(int *)((char *)*(int *)((char *)state + 0x18) + tile * 0x894);
     if (node == 0)
         return lbl_80562B84;
 
@@ -714,19 +719,17 @@ float fn_801DDC8C(float farg0, float farg1) {
     result = lbl_80562B84;
     if (layerIndex < 0)
         return result;
-
+    layerBase = (char *)*(int *)((char *)state + 0x20);
+    layer = layerBase + layerIndex * 0x810;
     do {
-        char *layer = (char *)(*(int *)((char *)state + 0x20) + layerIndex * 0x810);
-        weightIndex = *(int *)(layer + 0x808);
-        sample = *(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8);
-        value = *(float *)(layer + 0) +
-                *(float *)(layer + 4) * (float)sample;
-        weight = lbl_804425DC[weightIndex];
-        result += value * weight;
+        int weightedOffset = *(int *)(layer + 0x808) * 4;
         next = *(int *)(layer + 0x80C);
+        sample = *(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8);
+        value = *(float *)(layer + 0) + *(float *)(layer + 4) * (float)sample;
+        result += value * *(float *)((char *)lbl_804425DC + weightedOffset);
         if (next < 0)
             break;
-        layerIndex = next;
+        layer = layerBase + next * 0x810;
     } while (1);
     return result;
 }
