@@ -116,7 +116,59 @@ extern "C" f32 fn_8001DAF0(void *arg0) {
         result = lbl_80560474;
     return result;
 }
-#pragma dont_inline reset
+
+#pragma scheduling invalid_target
+extern "C" void fn_8001DB54(void) {
+    char* base = lbl_802FDB68;
+
+    lbl_8055D5F4 = (void**)fn_80145E70(base + 0);
+    lbl_8055D5F8 = (void**)fn_80145E70(base + 0xC);
+    lbl_8055D5FC = (void**)fn_80145E70(base + 0x1C);
+    lbl_8055D600 = (void**)fn_80145E70(base + 0x28);
+    lbl_8055D604 = (void**)fn_80145E70(base + 0x38);
+
+    void* object0 = fn_801284F8(0xC, base + 0x48);
+    if (object0 != 0) {
+        *(void**)object0 = lbl_802FDC98;
+        *(void**)((u8*)object0 + 4) = fn_802CAC28(base + 0x58, 0);
+    }
+    lbl_80358680[0] = object0;
+
+    void* object1 = fn_801284F8(0x64, base + 0x68);
+    if (object1 != 0) *(void**)object1 = lbl_802FDC84;
+    lbl_80358680[1] = object1;
+
+    void* object2 = fn_801284F8(0x38, base + 0x78);
+    if (object2 != 0) {
+        f32 initial_value = lbl_80560478;
+        *(void**)object2 = lbl_802FDC70;
+        fn_8001DAE0((f32*)((u8*)object2 + 0x28), initial_value);
+        fn_8001DAE0((f32*)((u8*)object2 + 0x30), lbl_80560464);
+        *(void**)((u8*)object2 + 0x24) = fn_80207848(base + 0x88, 1);
+        *(s32*)((u8*)object2 + 4) = -1;
+        *(s32*)((u8*)object2 + 8) = -1;
+        *(s32*)((u8*)object2 + 0xC) = -1;
+        *(s32*)((u8*)object2 + 0x10) = -1;
+        *(s32*)((u8*)object2 + 0x14) = -1;
+        *(s32*)((u8*)object2 + 0x18) = -1;
+        *(s32*)((u8*)object2 + 0x1C) = -1;
+        *(s32*)((u8*)object2 + 0x20) = -1;
+    }
+    lbl_80358680[2] = object2;
+
+    void* object3 = fn_801284F8(0x44, base + 0x98);
+    if (object3 != 0) *(void**)object3 = lbl_802FDC5C;
+    lbl_80358680[3] = object3;
+
+    void* object4 = fn_801284F8(4, base + 0xA8);
+    if (object4 != 0) *(void**)object4 = lbl_802FDC48;
+    lbl_80358680[4] = object4;
+
+    void* object5 = fn_801284F8(4, base + 0xB8);
+    if (object5 != 0) *(void**)object5 = lbl_802FDC34;
+    lbl_80358680[5] = object5;
+}
+#pragma scheduling on
 
 extern "C" s32 fn_8001DD2C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
@@ -202,6 +254,97 @@ extern "C" void* __dt__14CollisionSpaceFv(void* arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" void fn_801308F4(void *, s32, s32);
+extern "C" void fn_801308F8(char *, s32, s32);
+extern "C" void fn_801473F8(void *, const char *, ...);
+extern "C" void fn_801476D8(void *, s32, s32);
+extern "C" void fn_8014784C(void *, const char *, const char *, s32);
+extern "C" s32 fn_801609C4(s32);
+extern "C" s32 fn_80160A90(void);
+extern "C" s32 fn_800167F4(s32);
+extern "C" s32 fn_80204CF0(void);
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" u32 lbl_80558D00;
+extern "C" void fn_8001E078(void *arg0, s32 arg1, s32 arg2) {
+    class PaneContainer3 {
+    public:
+        virtual void dummy0();
+        virtual void dummy1();
+        virtual void *select(const char *);
+    };
+    register void **container;
+    register char *strings = lbl_802FDB68;
+    register s32 entryValue;
+    register s32 rowValue;
+    s32 selection;
+    s32 mode;
+    s32 status;
+    s32 test;
+    s32 half;
+    s32 masked;
+    PaneData *pane;
+    PaneData data;
+    char buffer1[0x14];
+    char buffer2[0x14];
+
+    if (fn_801E85A4() == 2)
+        container = lbl_8055D5F8;
+    else
+        container = lbl_8055D5F4;
+
+    if (container != 0) {
+        mode = fn_80204CF0();
+        switch (mode) {
+        case 0:
+            selection = 0;
+            break;
+        case 1:
+            selection = 2;
+            break;
+        case 2:
+            selection = 4;
+            break;
+        default:
+            fn_802E30C8(strings + 0x158, mode);
+            selection = 0;
+            break;
+        }
+        fn_8014784C(container, strings + 0x1A0, strings + 0x1AC, selection);
+        entryValue = *(s32 *)((u8 *)arg0 + 4);
+        pane = (PaneData *)((PaneContainer *)container)->getPane(strings + 0x1BC);
+        rowValue = *(volatile s32 *)((u8 *)pane + 0x18);
+        fn_801476D8(((PaneContainer3 *)container)->select(strings + 0x1CC), rowValue, entryValue);
+        fn_801609C4(arg2);
+        pane = (PaneData *)((PaneContainer *)container)->getPane((const char *)&lbl_80558D00);
+        if (pane != 0) {
+            s32 tempW4;
+            s32 tempW8;
+            data.w0 = pane->w0;
+            tempW4 = pane->w4;
+            tempW8 = pane->w8;
+            data.w4 = tempW4;
+            data.w8 = tempW8;
+            data.wc = pane->wc;
+            data.f10 = pane->f10;
+            data.w14 = pane->w14;
+            data.w18 = pane->w18;
+            data.w1c = pane->w1c;
+            status = ((s32 (*)(void))fn_800167F4)();
+            test = status ^ 1;
+            half = test >> 1;
+            masked = test & status;
+            if (((u32)(half - masked) >> 31) == 0) {
+                ((PaneContainer *)container)->getPane(strings + 0x1DC);
+                fn_801476C4();
+                fn_801308F4(buffer1, 0x14, fn_80160A90());
+                fn_801473F8(container, strings + 0x1E8, lbl_80558D08, buffer1);
+            }
+            fn_801308F8(buffer2, 0x14, arg2);
+            fn_80147230(&data, lbl_80558D08, buffer2);
+        }
+    }
 }
 
 extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
