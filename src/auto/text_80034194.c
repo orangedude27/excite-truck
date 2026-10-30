@@ -1084,7 +1084,7 @@ extern char lbl_80376B20[];
 extern char lbl_80376B40[];
 extern u32 *lbl_8055D89C;
 extern void fn_80036D24(u32);
-extern void fn_800373E0(void);
+extern void fn_800373E0(u32);
 extern int memcmp(const void *, const void *, u32);
 void fn_8003684C(void) {
     register s32 zero = 0;
