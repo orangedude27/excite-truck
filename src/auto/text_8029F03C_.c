@@ -106,50 +106,49 @@ void fn_8029F124(void) {
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8029F188(void) {
-    int i;
-    int offset;
-    int *baseptr;
     unsigned char *entry;
-    unsigned char *object;
-    float dx, dy, dz;
     float scale;
+    void *table;
+    int offset;
+    int i;
+
     if (lbl_8055F73C != 1) {
-        if (lbl_8055F824 == 0) fn_802E30C8(lbl_8034981C);
+        if (lbl_8055F824 == 0) {
+            fn_802E30C8(lbl_8034981C);
+        }
         lbl_8055F824 = (lbl_8055F824 + 1) % 5;
     }
     scale = lbl_805646B0;
+    table = lbl_804B9B7C;
     i = 0;
     offset = 0;
-    baseptr = lbl_804B9B7C;
-    goto check;
-loop:
-    entry = (unsigned char *)baseptr[0] + offset;
-    object = *(unsigned char **)(entry + 0x30);
-    if (object != 0) {
-        dx = *(float *)(object + 0x60) - *(float *)(entry + 4);
-        *(float *)(entry + 0x10) = dx;
-        dx *= scale;
-        dy = *(float *)(object + 0x64) - *(float *)(entry + 8);
-        *(float *)(entry + 0x14) = dy;
-        dy *= scale;
-        *(float *)(entry + 0x10) = dx + *(float *)(entry + 0x1C);
-        dz = *(float *)(object + 0x68) - *(float *)(entry + 0xC);
-        *(float *)(entry + 0x14) = dy + *(float *)(entry + 0x20);
-        dz *= scale;
-        *(float *)(entry + 0x18) = dz + *(float *)(entry + 0x24);
-        *(float *)(entry + 4) = *(float *)(object + 0x60);
-        *(float *)(entry + 8) = *(float *)(object + 0x64);
-        *(float *)(entry + 0xC) = *(float *)(object + 0x68);
-    } else {
-        *(float *)(entry + 0x10) = *(float *)(entry + 0x1C);
-        *(float *)(entry + 0x14) = *(float *)(entry + 0x20);
-        *(float *)(entry + 0x18) = *(float *)(entry + 0x24);
+    for (; i < *(int *)((char *)table + 4); offset += 0x34, i++) {
+        unsigned char *object;
+        entry = *(unsigned char **)lbl_804B9B7C + offset;
+        object = *(unsigned char **)(entry + 0x30);
+        if (object != 0) {
+            float dx = *(float *)(object + 0x60) - *(float *)(entry + 4);
+            float dy;
+            float dz;
+            *(float *)(entry + 0x10) = dx;
+            dy = *(float *)(object + 0x64) - *(float *)(entry + 8);
+            *(float *)(entry + 0x14) = dy;
+            dz = *(float *)(object + 0x68) - *(float *)(entry + 0xc);
+            *(float *)(entry + 0x10) = dx * scale + *(float *)(entry + 0x1c);
+            *(float *)(entry + 0x14) = dy * scale + *(float *)(entry + 0x20);
+            *(float *)(entry + 0x18) = dz * scale + *(float *)(entry + 0x24);
+            *(float *)(entry + 4) = *(float *)(object + 0x60);
+            *(float *)(entry + 8) = *(float *)(object + 0x64);
+            *(float *)(entry + 0xc) = *(float *)(object + 0x68);
+        } else {
+            *(float *)(entry + 0x10) = *(float *)(entry + 0x1c);
+            *(float *)(entry + 0x14) = *(float *)(entry + 0x20);
+            *(float *)(entry + 0x18) = *(float *)(entry + 0x24);
+        }
+        if (entry[0x2E] != 0 && fn_801769F8() == 0) {
+            fn_802A0794(entry);
+        }
     }
-    if (entry[0x2E] != 0 && fn_801769F8() == 0) fn_802A0794(entry);
-    offset += 0x34;
-    i++;
-check:
-    if (i < baseptr[1]) goto loop;
 }
 #pragma pop
 
@@ -580,35 +579,103 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
 #pragma pop
 #pragma cplusplus on
 extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
-extern void* fn_801E8718(int);
-extern float PSVECDotProduct(const float*, const float*);
-void fn_802A042C(void* obj, float* pos) {
-    float a=lbl_805646BC, b=lbl_805646B4, c=lbl_805646C0, d=lbl_805646C8;
-    int i=0, off=0;
-    for (;;) {
-        if (i >= fn_801E85A4()) break;
-        unsigned char* ent=(unsigned char*)fn_801E8718(i);
-        float dx=pos[0]+*(float*)((char*)obj+0x30)-*(float*)(ent+0x24);
-        float dy=pos[1]+*(float*)((char*)obj+0x34)-*(float*)(ent+0x28);
-        float dz=pos[2]+*(float*)((char*)obj+0x38)-*(float*)(ent+0x2C);
-        float radius=*(float*)((char*)obj+0x44);
-        float v[3]={dx,dy,dz};
-        float dot=PSVECDotProduct(v,v);
-        if (dot < radius*radius) {
-            float amount=dot/(radius*radius);
-            if (amount<a) amount=a;
-            if (amount>b) amount=b;
-            float base=c**(float*)((char*)obj+0x48);
-            float next=base+amount*(b-base);
-            if(next<b) next-=d; else next+=d;
-            unsigned int* colors=(unsigned int*)&lbl_8055F820;
-            int n=(int)next+(colors[off/4]>>24);
-            if(n<0)n=0;
-            if(n>255)n=255;
-            colors[off/4]=(colors[off/4]&0x00FFFF)|((unsigned)n<<24)|(*(unsigned int*)((char*)obj+0x4C)&0x00FF0000);
+extern "C" void *fn_801E8718(int);
+extern "C" float PSVECDotProduct(const float *, const float *);
+extern "C" int fn_801E85A4(void);
+extern "C" void fn_802A042C(void *obj, Unk802A0794Params *pos) {
+    struct Entry {
+        unsigned int words[12];
+    };
+    struct Frame {
+        float values[6];
+        volatile unsigned int words[12];
+    };
+    struct Frame frame;
+    float lower = lbl_805646BC;
+    float upper = lbl_805646B4;
+    float scale = lbl_805646C0;
+    float bias = lbl_805646C8;
+    float radius = *(float *)((char *)obj + 0x44);
+    float radius2 = radius * radius;
+    int i = 0;
+    int offset = 0;
+
+    do {
+        struct Entry *entry = (struct Entry *)fn_801E8718(i);
+        float pointX;
+        float pointY;
+        float pointZ;
+        float dx;
+        float dy;
+        float dz;
+        float dot;
+
+        frame.words[9] = entry->words[9];
+        pointX = pos->values[0] + *(float *)((char *)obj + 0x30);
+        dx = pointX - *(volatile float *)&frame.words[9];
+
+        frame.words[10] = entry->words[10];
+        pointY = pos->values[1] + *(float *)((char *)obj + 0x34);
+        dy = pointY - *(volatile float *)&frame.words[10];
+
+        frame.words[11] = entry->words[11];
+        pointZ = pos->values[2] + *(float *)((char *)obj + 0x38);
+        dz = pointZ - *(volatile float *)&frame.words[11];
+
+        frame.words[0] = entry->words[0];
+        frame.words[1] = entry->words[1];
+        frame.words[2] = entry->words[2];
+        frame.words[3] = entry->words[3];
+        frame.words[4] = entry->words[4];
+        frame.words[5] = entry->words[5];
+        frame.words[6] = entry->words[6];
+        frame.words[7] = entry->words[7];
+        frame.words[8] = entry->words[8];
+
+        frame.values[0] = dx;
+        frame.values[1] = dy;
+        frame.values[2] = dz;
+        frame.values[3] = pointX;
+        frame.values[4] = pointY;
+        frame.values[5] = pointZ;
+
+        dot = PSVECDotProduct(frame.values, frame.values);
+        if (dot < radius2) {
+            float amount = dot / radius2;
+            float base;
+            float next;
+            int alpha;
+            unsigned int *colors;
+            unsigned int old;
+            unsigned int objectColor;
+            unsigned int output;
+
+            if (amount < lower)
+                amount = lower;
+            if (amount > upper)
+                amount = upper;
+
+            base = scale * *(float *)((char *)obj + 0x48);
+            next = base + amount * (upper - base);
+            if (next < upper)
+                next -= bias;
+            else
+                next += bias;
+
+            colors = (unsigned int *)lbl_8055F820;
+            old = colors[offset / 4];
+            alpha = (int)next + (int)(old >> 24);
+            alpha &= ~(alpha >> 31);
+            if (alpha >= 255)
+                alpha = 255;
+            objectColor = *(unsigned int *)((char *)obj + 0x4C);
+            output = (old & 0x00FF0000) | ((unsigned int)alpha << 24) | (objectColor & 0x0000FFFF);
+            colors[offset / 4] = output;
         }
-        off+=4; i++;
-    }
+
+        offset += 4;
+        i++;
+    } while (i < fn_801E85A4());
 }
 
 #pragma push
