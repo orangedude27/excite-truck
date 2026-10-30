@@ -14,6 +14,7 @@ extern char lbl_80335B28[], lbl_80335B3C[];
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern u8 lbl_8055E674;
+extern s32 lbl_8055E69C;
 extern s32 lbl_8055E67C;
 extern s32 lbl_8055E6A8;
 extern u8 lbl_8055E691;
@@ -337,6 +338,8 @@ u32 fn_801B0F48(u32 arg0, u32 arg1) {
 }
 #pragma dont_inline reset
 
+#pragma push
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
     struct Item {
@@ -358,20 +361,17 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
         s16 marker;
     };
     Item *item = (Item *)((u8 *)lbl_8055E684 + (arg0 << 7));
-    void *payload = item->getPayload((void *)arg1);
-    void *result = payload;
-    State state;
+    void *result = item->getPayload((void *)arg1);
     u32 scratch[3];
-    s32 savedArg = arg1;
-    s32 isResource;
-    s32 failed = 0;
+    State state;
+    Request request;
+    s32 isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
     s32 found = 0;
 
-    isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
     state.head = 0;
     state.weight = lbl_805625BC;
     state.limit = 0x2710;
-    if (isResource) {
+    if (isResource != 0) {
         fn_801B30D0(arg0);
         fn_801B30E0(arg0);
         fn_801B0BB0(scratch, item->getState());
@@ -383,15 +383,13 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
         state.weight = *(f32 *)((u8 *)item + 0x50);
         state.limit = *(s32 *)((u8 *)item + 0x54);
     }
-
-    if (!isResource) {
-        if (fn_801B0E40(arg0, &savedArg) != 0) {
+    if (isResource == 0) {
+        if (fn_801B0E40(arg0, &arg1) != 0) {
             void *thresholdObject = (void *)((s32 (*)(s32))fn_801B0F18)(0);
             s32 threshold = *(s32 *)((u8 *)thresholdObject + 0x10);
             void *node = state.head;
-
             while (1) {
-                if (fn_801B0F48(*(u32 *)((u8 *)node + 0x10), threshold) != 0) {
+                if (fn_801B0F48(*(u32 *)((u8 *)node + 0x10), (u32)threshold) != 0) {
                     found = 1;
                     break;
                 }
@@ -402,26 +400,24 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
             state.head = node;
             if (found != 0) {
                 fn_802E30C8(lbl_80335A94, arg0, lbl_8055E3C4);
-                failed = 1;
+                isResource = 1;
             }
         } else {
-            failed = 1;
+            isResource = 1;
         }
+    } else {
+        isResource = 0;
     }
-
-    if (failed != 0) {
+    if (isResource != 0) {
         fn_8018AF04(result);
         return;
     }
-
-    {
-        Request request;
-        request.marker = -1;
-        fn_801B07B4(&request, &state);
-        fn_801B08FC(item, &request);
-    }
+    request.marker = -1;
+    fn_801B07B4(&request, &state);
+    fn_801B08FC(item, &request);
 }
 #pragma cplusplus reset
+#pragma pop
 
 extern f32 lbl_805625F0;
 extern void *lbl_8055E68C;
