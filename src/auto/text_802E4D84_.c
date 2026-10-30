@@ -66,16 +66,14 @@ void *fn_802E4DC8(char *arg0) {
     unsigned char *buf;
     unsigned char *data;
     unsigned char tmp;
-    unsigned int i;
+    int i;
+    register int adjusted;
+    register int length;
 
     buf = ((unsigned char *(*)(char *, unsigned int, unsigned int *, int, unsigned char *, unsigned char *))fn_8012C370)(
         arg0, 0x53465830, &size, 0, &sp9, &sp8);
-    if (buf == 0) {
-        goto return_null;
-    }
-    if (size != 3) {
-        fn_802E317C(lbl_8034D280, arg0, size, 3);
-    }
+    if (buf == 0) goto return_null;
+    if (size != 3) fn_802E317C(lbl_8034D280, arg0, size, 3);
     if (sp8 != 0) {
         tmp=buf[0]; buf[0]=buf[3]; buf[3]=tmp;
         tmp=buf[1]; buf[1]=buf[2]; buf[2]=tmp;
@@ -90,11 +88,11 @@ void *fn_802E4DC8(char *arg0) {
         tmp=buf[24]; buf[24]=buf[25]; buf[25]=tmp;
         tmp=buf[26]; buf[26]=buf[27]; buf[27]=tmp;
         tmp=buf[28]; buf[28]=buf[29]; buf[29]=tmp;
-
-        *(unsigned int *)(buf+4) = (unsigned int)buf + *(unsigned int *)(buf+4);
+        *(unsigned int *)(buf+4) = (unsigned int)(buf + *(unsigned int *)(buf+4));
         if (*(unsigned short *)(buf+26) == 16 && buf[9] != 1) {
             data = *(unsigned char **)(buf+4);
-            for (i=0; i<(unsigned int)((*(int *)buf + (*(int *)buf >> 31)) >> 1); i++) {
+            for (i=0; (length=*(int *)buf, adjusted=((unsigned int)length >> 31),
+                       adjusted+=length, i<(adjusted >> 1)); i++) {
                 tmp=data[0];
                 data[0]=data[1];
                 data[1]=tmp;
