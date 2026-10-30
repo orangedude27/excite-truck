@@ -21,6 +21,11 @@ extern f32 lbl_80562588;
 extern void fn_8017B164(void);
 extern void fn_8017A580(void *, f32);
 extern s32 fn_8017D274(u8 *);
+extern f32 lbl_8056257C, lbl_80562580, lbl_80562584;
+extern char lbl_803359F0[], lbl_80333B48[];
+extern void *fn_801284F8(s32, char *);
+extern void fn_8019EECC(void *, void *);
+extern void fn_80179F94(void *, void *);
 
 void fn_801AFC28(void) {
     lbl_8055E650 = 0;
@@ -270,14 +275,14 @@ extern "C" void fn_801B05E4(void *arg0, u8 *arg1, u8 *arg2, s32 *arg3, s32 *arg4
     public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-        virtual void f8(); virtual void f9(); virtual void f10();
+        virtual void f8();
         virtual s32 get();
     };
     class Callback1 {
     public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-        virtual void f8(); virtual void f9(); virtual void f10();
+        virtual void f8();
         virtual s32 get(u8 *);
     };
     s32 spC;
