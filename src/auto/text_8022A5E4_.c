@@ -383,7 +383,7 @@ int fn_8022B498(int unused, const char *arg1) {
     }
     return max;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) {
     extern int fn_802C4F14(int);
     extern int fn_802C4C90(int, int, int, int, int);
