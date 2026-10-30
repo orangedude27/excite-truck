@@ -186,6 +186,74 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801E2FAC(long arg0, long arg1) {
     return arg0;
 }
 
+extern void *fn_8012A2D8(void *);
+extern s32 fn_8012C33C(char *);
+extern s32 fn_802C6FC0(char *, s32, s32);
+extern void fn_802E30C8(const char *, ...);
+extern char lbl_803398E4[];
+void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2) {
+    char path;
+    s32 *result;
+    s32 *source;
+
+    result = (s32 *)fn_8012A2D8(lbl_8055EA50);
+    result[1] = 0;
+    result[0] = -1;
+    ((f32 *)result)[2] = lbl_80562CE8;
+    ((f32 *)result)[3] = lbl_80562CEC;
+    ((f32 *)result)[4] = lbl_80562CEC;
+    ((f32 *)result)[5] = lbl_80562CEC;
+    ((f32 *)result)[6] = lbl_80562CE8;
+    ((f32 *)result)[7] = lbl_80562CEC;
+    ((f32 *)result)[8] = lbl_80562CEC;
+    ((f32 *)result)[9] = lbl_80562CEC;
+    ((f32 *)result)[10] = lbl_80562CE8;
+    ((f32 *)result)[11] = lbl_80562CEC;
+    ((f32 *)result)[12] = lbl_80562CEC;
+    ((f32 *)result)[13] = lbl_80562CEC;
+    ((f32 *)result)[14] = lbl_80562CE8;
+    ((f32 *)result)[15] = lbl_80562CEC;
+    ((f32 *)result)[16] = lbl_80562CEC;
+    ((f32 *)result)[17] = lbl_80562CEC;
+    ((f32 *)result)[18] = lbl_80562CE8;
+    ((f32 *)result)[19] = lbl_80562CEC;
+    ((f32 *)result)[20] = lbl_80562CEC;
+    ((f32 *)result)[21] = lbl_80562CEC;
+    ((f32 *)result)[22] = lbl_80562CE8;
+    ((f32 *)result)[23] = lbl_80562CEC;
+    ((f32 *)result)[24] = lbl_80562CEC;
+    ((f32 *)result)[25] = lbl_80562CEC;
+
+    if (arg0 != -1) {
+        source = (s32 *)fn_801E2DEC(arg0, arg1, (s32)&path);
+        if (source != 0) {
+            result[14] = source[8];
+            result[15] = source[9];
+            result[16] = source[10];
+            result[17] = source[11];
+            result[18] = source[12];
+            result[19] = source[13];
+            result[20] = source[14];
+            result[21] = source[15];
+            result[22] = source[16];
+            result[23] = source[17];
+            result[24] = source[18];
+            result[25] = source[19];
+            if (path != 0 && strchr(&path, '.') != 0) {
+                if (fn_8012C33C(&path) != 0) {
+                    if (arg2 >= 0)
+                        result[0] = fn_802C6FC0(&path, arg2, 0);
+                    else
+                        result[0] = fn_802C6FC0(&path, 0, 0);
+                } else {
+                    fn_802E30C8(lbl_803398E4, arg1, &path);
+                }
+            }
+        }
+    }
+    return result;
+}
+
 #pragma push
 #pragma small_data off
 void fn_801E31D8(s32 *arg0) {
