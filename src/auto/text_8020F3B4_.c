@@ -853,3 +853,4 @@ extern void fn_8020F730(void);
 extern long fn_8020F9F4(void);
 extern int stricmp(const char *, const char *);
 extern int fn_8002B1D8(const char *, const char *, int);
+#pragma dont_inline on
