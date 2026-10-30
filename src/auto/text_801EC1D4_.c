@@ -485,12 +485,14 @@ extern float __fabsf(float);
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_801EDD7C(void *arg0, long arg1) {
-    float scale;
     unsigned int *a, *b, *c, *d, *e, *f, *g, *h, *j, *k, *m, *n;
     long i, offset;
     char *entry;
+    float v0, v1, v2, v3;
+    float scale;
+    float v4, v5, v6, v7, v8, v9, v10, v11;
 
-    /* Fix note: keep all scaled values live before storing to reproduce the target's delayed store schedule. */
+    /* Fix note: place scale between the two float groups to preserve f9 through the products. */
     fn_801EABA8(arg0, *(void **)((char *)arg0 + 0x3C));
     scale = *(float *)((char *)arg1 + 0x2D0);
     *(float *)((char *)arg0 + 0x4D0) = scale;
@@ -511,18 +513,18 @@ void fn_801EDD7C(void *arg0, long arg1) {
         *(unsigned int *)((char *)arg0 + 0x4C8) = *m;
         *(unsigned int *)((char *)arg0 + 0x4CC) = *n;
     } else {
-        float v0 = *(float *)((char *)arg0 + 4) * scale;
-        float v1 = *(float *)((char *)arg0 + 8) * scale;
-        float v2 = *(float *)((char *)arg0 + 0xC) * scale;
-        float v3 = *(float *)((char *)arg0 + 0x10) * scale;
-        float v4 = *(float *)((char *)arg0 + 0x14) * scale;
-        float v5 = *(float *)((char *)arg0 + 0x18) * scale;
-        float v6 = *(float *)((char *)arg0 + 0x1C) * scale;
-        float v7 = *(float *)((char *)arg0 + 0x20) * scale;
-        float v8 = *(float *)((char *)arg0 + 0x24) * scale;
-        float v9 = *(float *)((char *)arg0 + 0x28);
-        float v10 = *(float *)((char *)arg0 + 0x2C);
-        float v11 = *(float *)((char *)arg0 + 0x30);
+        v0 = *(float *)((char *)arg0 + 4) * scale;
+        v1 = *(float *)((char *)arg0 + 8) * scale;
+        v2 = *(float *)((char *)arg0 + 0xC) * scale;
+        v3 = *(float *)((char *)arg0 + 0x10) * scale;
+        v4 = *(float *)((char *)arg0 + 0x14) * scale;
+        v5 = *(float *)((char *)arg0 + 0x18) * scale;
+        v6 = *(float *)((char *)arg0 + 0x1C) * scale;
+        v7 = *(float *)((char *)arg0 + 0x20) * scale;
+        v8 = *(float *)((char *)arg0 + 0x24) * scale;
+        v9 = *(float *)((char *)arg0 + 0x28);
+        v10 = *(float *)((char *)arg0 + 0x2C);
+        v11 = *(float *)((char *)arg0 + 0x30);
         *(float *)((char *)arg0 + 0x4C4) = v9;
         *(float *)((char *)arg0 + 0x4C8) = v10;
         *(float *)((char *)arg0 + 0x4CC) = v11;
@@ -562,9 +564,13 @@ void fn_802C7AE0(long, void*, long, float);
 void fn_801F13F4(long, float, float);
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling 7400
 void fn_801EDF18(void* arg0) {
-    struct Settings { long first; float second; long third; } settings;
+    struct Settings {
+        long first;
+        union { long bits; float value; } second;
+        long third;
+    } settings;
     float temp_f31, var_f30, var_f29, limit, dot;
     float vector[3];
     long index, result;
@@ -573,7 +579,7 @@ void fn_801EDF18(void* arg0) {
 
     temp_f31 = fn_801E88F0(-1);
     temp_f31 *= temp_f31;
-    temp_f31 *= fn_802C88E8((void*)((long)arg0 + 0x28));
+    temp_f31 = fn_802C88E8((void*)((long)arg0 + 0x28)) * temp_f31;
 
     index = *(long*)((char*)arg0 + 0x480) - 1;
     while (index >= 0 &&
@@ -583,13 +589,12 @@ void fn_801EDF18(void* arg0) {
     }
     if (index < 0) goto done;
 
-    if (*(long*)((char*)arg0 + 0x40) != fn_801E866C(-1)) goto process;
-    if (fn_801E89A4(-1) != 0) goto process;
-    goto done;
+    if (*(long*)((char*)arg0 + 0x40) == fn_801E866C(-1)) {
+        if (fn_801E89A4(-1) == 0) goto done;
+    }
 
-process:
     settings.first = *(volatile long*)((char*)arg0 + 0x28);
-    settings.second = *(volatile float*)((char*)arg0 + 0x2C);
+    settings.second.bits = *(volatile long*)((char*)arg0 + 0x2C);
     settings.third = *(volatile long*)((char*)arg0 + 0x30);
     entry = fn_801EAC3C(arg0, settings.first);
     vector[0] = lbl_80562E88;
@@ -599,7 +604,7 @@ process:
     if (fn_801E9E78(&entry, &settings, vector, &result, lbl_80562E88) != 0) {
         dot = -PSVECDotProduct(vector, fn_802C9A40());
         limit = lbl_80562E9C;
-        var_f29 = *(float*)((char*)arg0 + 0x2C) - settings.second;
+        var_f29 = *(float*)((char*)arg0 + 0x2C) - settings.second.value;
         if (limit > dot) limit = dot;
         var_f30 = lbl_80562E90 / limit;
     } else {
@@ -609,10 +614,13 @@ process:
     fn_802C7AE0(*(long*)((char*)arg0 + index * 8 + 0x400),
                 (char*)arg0 + 0x4A0, -1,
                 var_f30 * (var_f29 + *(float*)((char*)arg0 + 0x484)));
-    for (i = 0; i < 4; i++) {
-        fn_801F13F4(*(long*)((char*)arg0 + 0x4D4 + i * 4),
+    i = 0;
+    do {
+        fn_801F13F4(*(long*)((char*)arg0 + 0x4D4),
                     temp_f31, var_f29 * var_f30);
-    }
+        i++;
+        arg0 = (char*)arg0 + 4;
+    } while (i < 4);
 done:
     return;
 }
