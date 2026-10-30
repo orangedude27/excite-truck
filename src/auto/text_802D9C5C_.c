@@ -445,6 +445,31 @@ void *fn_802DA918(float arg0, float arg1, float arg2) {
 
 extern void *memset(void *, int, unsigned int);
 #pragma opt_propagation off
+struct DaaContext {
+    int unk_0;
+    unsigned char *buffer;
+    void *name;
+    int capacity;
+    int used;
+    void *callback0;
+    void *callback1;
+    void *callback2;
+    void *current;
+    unsigned char status;
+    unsigned char initialized;
+};
+
+struct DaaRecord {
+    int kind;
+    int unk_4;
+    int capacity;
+    int kind2;
+    unsigned char status;
+    unsigned char pad_11[3];
+    void *next;
+    unsigned char data[0x3C0];
+};
+
 void fn_802DAA18(void *arg0) {
     extern void *lbl_8055FE60;
     extern void *lbl_8055FE5C;
