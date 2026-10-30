@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void *fn_8012850C(signed long, const char *);
+extern void fn_80207C50(void *, void *, signed long);
 extern void fn_80127CF4(void *, const char *, signed long);
 extern void *memset(void *, int, unsigned long);
 extern char lbl_8033BDD8[];
