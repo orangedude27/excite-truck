@@ -224,7 +224,7 @@ void fn_802EA7E0(void) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma cplusplus on
@@ -246,7 +246,7 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
     register char *globalBase;
     long selector = arg0;
     long index;
-    long indexOffset;
+    long tableIndex;
     long *table;
     char *base;
     register char *copy;
@@ -258,11 +258,10 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
     if (selector <= -2) {
         index = -2 - selector;
         if ((index >= 0) && (index < 3)) {
-            indexOffset = index << 3;
+            tableIndex = index * 2;
             table = (long *)(globalBase + 0xA0);
-            if (*(long *)((char *)table + indexOffset) != 0) {
-                table = (long *)((char *)table + indexOffset);
-                result = fn_802E9A3C(table[0], table[1]);
+            if (table[tableIndex] != 0) {
+                result = fn_802E9A3C(table[tableIndex], table[tableIndex + 1]);
             }
         }
         if (result != 0) {
