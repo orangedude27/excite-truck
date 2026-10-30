@@ -877,7 +877,6 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     s32 offset;
     s32 remaining;
     s32 oldCount;
-    s32 encoded;
     s32 sourceByte;
     s32 *pool;
     char *cursor;
@@ -886,7 +885,7 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     void *entry;
     void *layout;
     volatile struct SavedValues saved;
-    /* Fix note: intern the bounded name, then shift and populate its selected record after metadata lookup. */
+    /* Fix note: scan the double-NUL pool and append the name within its capacity before shifting the record list. */
     temp = fn_8001D25C(arg1);
     if (temp != 0) {
         record = fn_8001C540(arg0, temp, arg2, 1);
@@ -896,37 +895,47 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
             *(u8 *)((u8 *)pool + 8) = 0;
             base = *(char **)pool;
             cursor = base;
-            while (stricmp(cursor, arg3) != 0) {
-                if (*cursor == 0 || cursor - base >= *(s32 *)((u8 *)pool + 4)) {
-                    dest = cursor;
-                    remaining = *(s32 *)((u8 *)pool + 4) - (cursor - base) - 1;
-                    for (;;) {
-                        sourceByte = (u8)*arg3;
-                        arg3++;
-                        *dest = (u8)sourceByte;
-                        dest++;
-                        if ((s8)sourceByte == 0) break;
-                        remaining--;
-                        if (remaining <= 0) {
-                            dest[-1] = 0;
-                            break;
-                        }
-                    }
-                    break;
-                }
-                while (*cursor != 0) cursor++;
+            goto find_name;
+        skip_name:
+            if ((s8)*cursor != 0) {
                 cursor++;
+                goto skip_name;
             }
+            cursor++;
+            goto find_name;
+        find_name:
+            if ((s8)*cursor == 0 || cursor - base >= *(s32 *)((u8 *)pool + 4)) {
+                dest = cursor;
+                remaining = *(s32 *)((u8 *)pool + 4) - (cursor - base) - 1;
+            copy_name:
+                sourceByte = (u8)*arg3;
+                arg3++;
+                *dest = (u8)sourceByte;
+                dest++;
+                if ((s8)sourceByte != 0) {
+                    remaining--;
+                    if (remaining <= 0) {
+                        dest[-1] = 0;
+                    } else {
+                        goto copy_name;
+                    }
+                }
+                goto name_ready;
+            } else if (stricmp(cursor, arg3) == 0) {
+                goto name_ready;
+            } else {
+                goto skip_name;
+            }
+        name_ready:
             saved.name = cursor;
             saved.value0 = arg4;
             saved.value1 = arg5;
             saved.scale = arg6;
             entry = fn_800167CC(0);
             layout = fn_80016BC8(entry, 0);
-            encoded = fn_8001D220(*(u32 *)entry,
-                                  *(u32 *)((u8 *)layout + 4),
-                                  *(u8 *)((u8 *)layout + 8));
-            saved.encoded = encoded;
+            saved.encoded = fn_8001D220(*(u32 *)entry,
+                                        *(u32 *)((u8 *)layout + 4),
+                                        *(u8 *)((u8 *)layout + 8));
             oldCount = *(s32 *)((u8 *)record + 0x6C);
             maxCount = oldCount <= 4 ? oldCount : 4;
             *(s32 *)((u8 *)record + 0x6C) = maxCount;
@@ -1150,5 +1159,5 @@ void fn_8001D7A4(void) {
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 
