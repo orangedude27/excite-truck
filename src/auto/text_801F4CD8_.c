@@ -245,6 +245,37 @@ int fn_801F52BC(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     return result;
 }
 
+#pragma cplusplus on
+#pragma scheduling on
+extern "C" void fn_801F5344(void *out, void *arg1, void *arg2) {
+    char *data = lbl_8033AC68;
+    Getter_801F5344 *object = (Getter_801F5344 *)arg1;
+    volatile float *outF = (volatile float *)out;
+
+    if (object->get(lbl_8055B18C) == 0 ||
+        object->get(lbl_8055B190) == 0 ||
+        object->get(lbl_8055B194) == 0 ||
+        object->get(lbl_8055B198) == 0) {
+        fn_802E317C(data + 0xE8);
+    }
+
+    fn_801F4F9C(out, object->get(lbl_8055B18C), arg2);
+    fn_801F4F9C((char *)out + 0x18, object->get(lbl_8055B190), arg2);
+    fn_801F4F9C((char *)out + 0x30, object->get(lbl_8055B194), arg2);
+    fn_801F4F9C((char *)out + 0x48, object->get(lbl_8055B198), arg2);
+
+    if (((int (*)(void *, int, void *, int))fn_801F52BC)(
+            arg1, (int)(data + 0x114), (char *)out + 0x60, 4) == 0) {
+        outF[24] = lbl_80562FB8;
+    }
+    if (((int (*)(void *, int, void *, int))fn_801F52BC)(
+            arg1, (int)(data + 0x120), (char *)out + 0x64, 4) == 0) {
+        outF[25] = lbl_80562FB8;
+    }
+}
+#pragma scheduling invalid_target
+#pragma cplusplus off
+
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801F5508(void *arg0) {
