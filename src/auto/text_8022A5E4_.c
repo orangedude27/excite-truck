@@ -1,4 +1,5 @@
 __declspec(section ".sdata") extern char lbl_8055B8B8[];
+__declspec(section ".sdata") extern char lbl_8055B918[], lbl_8055B920[];
 
 typedef struct { unsigned int w[22]; } Cfg58;
 extern Cfg58 lbl_802F9F58;
