@@ -104,6 +104,7 @@ float fn_80291784(float a, float b, float c, float d) {
     return value - lbl_80564480;
 }
 
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
     typedef struct {
@@ -118,43 +119,47 @@ extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
         float value1;
         float value2;
     } Entry;
-    Manager_802917C0 *manager = (Manager_802917C0 *)arg1;
-    QueryObject_802917C0 *query_object;
-    volatile int *count = (volatile int *)((unsigned char *)arg0 + 0x120);
-    float best = lbl_80564484;
-    float initial = best;
-    float scale = lbl_8056449C;
+    register Entry *entry;
+    register void *base = arg0;
+    register Manager_802917C0 *manager = (Manager_802917C0 *)arg1;
+    register QueryObject_802917C0 *query_object;
+    register int zero = 0;
+    register float best = lbl_80564484;
+    register float initial = best;
+    register float scale = lbl_8056449C;
+    register float result1;
+    register float result2;
+    register float result3;
 
-    *count = 0;
+    *(int *)((char *)base + 0x120) = zero;
     goto check_count;
 
 loop:
     query_object = manager->getQuery();
-    if (query_object != 0) {
-        float result1 = fn_80129DC4(0, lbl_80564488, lbl_8056448C);
-        float result2 = fn_80129DC4(0, lbl_80564490, lbl_80564494);
-        float result3 = fn_80129DC4(0, lbl_80564498, lbl_80564494);
-        float value = query_object->getFloat((char *)&lbl_8055C924, result2);
-        int index = *count;
-        Entry *entry = (Entry *)arg0 + index;
-        entry->x = initial;
-        entry->y = initial;
-        entry->z = initial;
-        entry->id = fn_802CAC28(query_object->getSetting((char *)&lbl_8055C930), 0);
-        entry->unk10 = 0;
-        entry->flags = 0;
-        entry->color = ((int)(scale * value) << 24) | 0x00FFFFFF;
-        entry->value1 = query_object->getFloat((char *)&lbl_8055C938, result1);
-        entry->value2 = query_object->getFloat((char *)&lbl_8055C940, result3);
-        if (best > entry->value1) best = entry->value1;
-        *count = *count + 1;
-    }
+    if (query_object == 0) goto finish;
+    result1 = fn_80129DC4(0, lbl_80564488, lbl_8056448C);
+    result2 = fn_80129DC4(0, lbl_80564490, lbl_80564494);
+    result3 = fn_80129DC4(0, lbl_80564498, lbl_80564494);
+    result2 = query_object->getFloat((char *)&lbl_8055C924, result2);
+    entry = (Entry *)((char *)base + *(int *)((char *)base + 0x120) * 0x24);
+    entry->x = initial;
+    entry->y = initial;
+    entry->z = initial;
+    entry->id = fn_802CAC28(query_object->getSetting((char *)&lbl_8055C930), 0);
+    entry->unk10 = zero;
+    entry->flags = zero;
+    entry->color = ((int)(scale * result2) << 24) | 0x00FFFFFF;
+    entry->value1 = query_object->getFloat((char *)&lbl_8055C938, result1);
+    entry->value2 = query_object->getFloat((char *)&lbl_8055C940, result3);
+    if (best > entry->value1) best = entry->value1;
+    *(int *)((char *)base + 0x120) = *(int *)((char *)base + 0x120) + 1;
 
 check_count:
-    if (*count < 8) goto loop;
-    *(float *)((unsigned char *)arg0 + 0x124) = manager->getFinal(lbl_80349140);
-    *(float *)((unsigned char *)arg0 + 0x128) = manager->getFinal(lbl_8034914C);
-    *(float *)((unsigned char *)arg0 + 0x12C) = best;
+    if (*(int *)((char *)base + 0x120) < 8) goto loop;
+finish:
+    *(float *)((char *)base + 0x124) = manager->getFinal(lbl_80349140);
+    *(float *)((char *)base + 0x128) = manager->getFinal(lbl_8034914C);
+    *(float *)((char *)base + 0x12C) = best;
 }
 #pragma cplusplus reset
 
