@@ -822,6 +822,7 @@ void fn_802A2D04(void *arg0, s32 arg1) {
     *(s32 *)((char *)arg0+0xc)=((s32 (*)(void *, void *, s32))fn_8028E2F8)(&stack[0x18],(void *)lbl_80349A28,arg1);
 }
 
+extern "C" void fn_802A44B4(void);
 extern "C" void *fn_801284F8(u32, void *);
 extern "C" void *fn_802A42C8(void *, void *, s32);
 extern "C" int lbl_80349A34[];
