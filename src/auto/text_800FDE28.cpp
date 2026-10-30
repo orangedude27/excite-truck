@@ -565,8 +565,9 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 arg1, u32 ar
 
 #pragma push
 #pragma scheduling on
+#pragma use_lmw_stmw off
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
-    u32 level = OSDisableInterrupts();
+    register u32 level = OSDisableInterrupts();
     if (*((u8 *)arg0 + 0x1C) != 0) {
         if (arg0 == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803274C0, 0x233,
@@ -575,15 +576,14 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
             lbl_8041D4AC, (u8 *)arg0 + 0x94);
         *((u8 *)arg0 + 0x1C) = 0;
     }
-    u32 voiceLevel = OSDisableInterrupts();
+    register u32 voiceLevel = OSDisableInterrupts();
     void *voice = *(void **)((u8 *)arg0 + 0x18);
     if (voice != 0)
         Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
     *((u8 *)arg0 + 0x1D) = 0;
     OSRestoreInterrupts(voiceLevel);
-
-    void *sentinel = (u8 *)arg0 + 8;
-    void *node = *(void **)((u8 *)arg0 + 8);
+    register void *sentinel = (u8 *)arg0 + 8;
+    register void *node = *(void **)((u8 *)arg0 + 8);
     while (node != sentinel) {
         void *entry = node;
         node = *(void **)node;
