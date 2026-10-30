@@ -376,5 +376,3 @@ void fn_802C1A0C(void **arg0, int arg1) {
 }
 
 typedef struct { int a, b; } Pair802C;
-#pragma dont_inline fn_802C110C
-#pragma scheduling invalid_target
