@@ -1316,7 +1316,7 @@ void fn_800379A8(u32 arg0) {
 #pragma pop
 extern s32 fn_8003BCDC(s32);
 extern void fn_8003B69C(u32, void*);
-extern void fn_80037B54(void);
+extern void fn_80037B54(u32);
 void fn_80037A8C(void) {
     s32 enabled;
     u8 *base;
