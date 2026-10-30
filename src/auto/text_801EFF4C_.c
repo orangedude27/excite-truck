@@ -142,7 +142,7 @@ extern int lbl_8055B0E8;
 extern int lbl_80562F20;
 extern int lbl_80562F24;
 extern float lbl_80558DC4;
-extern int lbl_8033A3F0;
+extern char lbl_8033A3F0[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int fn_8012C33C(char *);
 extern int fn_802C6FC0(char *, int, int);
@@ -183,6 +183,60 @@ extern "C" void fn_801F0488(void *arg0, void *arg1, int arg2) {
         *(float *)((char *)arg0 + 0x24) = *(float *)((char *)arg0 + 0x20) / (bounds[1] - bounds[0]);
     }
 }
+
+extern void fn_801345D8(void *, int, const char *, ...);
+#pragma push
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" void fn_801F06DC(void *arg0, void *arg1) {
+    class Fn801F06DCResource {
+    public:
+        virtual void pad0();
+        virtual int test(const char *);
+        virtual void *pad2();
+        virtual int find(const char *);
+        virtual void *pad4();
+        virtual void pad5();
+        virtual void pad6();
+        virtual float getValue(const char *);
+        virtual float getValueWithDefault(const char *, float);
+    };
+
+    Fn801F06DCResource *resource = (Fn801F06DCResource *)arg1;
+    char name[0x40];
+    char valueName[0x20];
+    int count;
+    int id;
+    float value;
+
+    if (resource->test((char *)&lbl_8033A3F0 + 0x90) != 0) {
+        id = resource->find((char *)&lbl_8033A3F0 + 0x90);
+        count = 0;
+        *(int *)((char *)arg0 + 0x40) = 0;
+        while (count < 8) {
+            fn_801345D8(name, 0x40, (char *)&lbl_8033A3F0 + 0x60, id, count + 1);
+            fn_801345D8(valueName, 0x20, (char *)&lbl_8055B0C8, count);
+            if (fn_8012C33C(name) == 0) {
+                break;
+            }
+            *(void **)((char *)arg0 + count * 8) = (void *)fn_802C6FC0(name, 0, 0);
+            value = resource->getValue(valueName);
+            *(float *)((char *)arg0 + count * 8 + 4) = value * value;
+            count++;
+            *(int *)((char *)arg0 + 0x40) = count;
+        }
+        *(float *)((char *)arg0 + 0x44) = resource->getValue((char *)&lbl_8033A3F0 + 0x9C);
+        value = resource->getValueWithDefault((char *)&lbl_8033A3F0 + 0xA8, lbl_80562F28);
+        *(float *)((char *)arg0 + 0x48) = value * value;
+    } else {
+        resource->find((char *)&lbl_8055B0F0);
+        *(int *)arg0 = fn_802C6FC0(0, 0, 0);
+        *(float *)((char *)arg0 + 4) = lbl_80562F1C;
+        *(int *)((char *)arg0 + 0x40) = 1;
+        *(float *)((char *)arg0 + 0x44) = resource->getValue((char *)&lbl_8055B0F8);
+    }
+}
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
