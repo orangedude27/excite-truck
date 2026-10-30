@@ -410,42 +410,33 @@ extern unsigned char lbl_8034968C[], lbl_80349698[];
 extern "C" void fn_8029CBA0(void) {
     extern void **fn_802AE414(void *);
     struct Dummy {
-        virtual void pad0();
-        virtual void pad1();
-        virtual void pad2();
-        virtual void pad3();
+        virtual void pad0(); virtual void pad1(); virtual void pad2(); virtual void pad3();
         virtual int *get(void *, int *);
-        virtual void pad5();
-        virtual void pad6();
-        virtual void pad7();
+        virtual void pad5(); virtual void pad6(); virtual void pad7();
         virtual float get2(void *, float);
     };
-    union ScratchValue {
-        float f;
-        int i;
-    };
-    register float var_f31 = *(volatile float *)&lbl_80564654;
+    union ScratchValue { float f; int i; };
     volatile ScratchValue scratch[40];
+    register float var_f31 = *(volatile float *)&lbl_80564654;
     int *var_r31 = (int *)&lbl_8034968C;
     Dummy *obj;
-
     obj = (Dummy *)fn_802AE414(&lbl_8055CAC8);
     if (obj != 0) {
         var_r31 = obj->get((void *)&lbl_80349698, var_r31);
         var_f31 = obj->get2(&lbl_8055CAD0, var_f31);
     }
-
     if (fn_802BF4F0() != 0 || lbl_8055F7F0 > 0 || lbl_8055F7F4 > 0) {
         register float zero, high, scale, low, far;
-        register int two, five, size;
+        register int two, five;
+        register unsigned int size;
         fn_8028E61C((int *)&scratch[6]);
         zero = *(volatile float *)&lbl_80564658;
         two = 2;
         high = *(volatile float *)&lbl_80564654;
-        five = 5;
         size = 0x200;
         scale = *(volatile float *)&lbl_8056465C;
         low = *(volatile float *)&lbl_8056464C;
+        five = 5;
         far = *(volatile float *)&lbl_80564660;
         scratch[6].i = two;
         scratch[7].i = size;
@@ -1052,7 +1043,7 @@ void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *a
     return arg0;
 }
 
-extern void *fn_802C86DC(void);
+extern void *fn_802C86DC();
 extern void fn_802C8BD0(int);
 extern int fn_802C8DBC(int);
 extern void fn_802C8E48(void);
