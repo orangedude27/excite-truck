@@ -3,6 +3,7 @@ extern void *fn_8012850C(signed long, const char *);
 extern void fn_80207C50(void *, void *, signed long);
 extern void fn_80127CF4(void *, const char *, signed long);
 extern void *memset(void *, int, unsigned long);
+extern char lbl_8033BEE8[];
 extern char lbl_8033BDD8[];
 extern char lbl_8033BDF0[];
 extern float lbl_804891F8[];
