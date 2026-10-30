@@ -90,6 +90,7 @@ void fn_801E78D8(long arg0) {
     }
 }
 
+#pragma dont_inline fn_801E797C
 void fn_801E797C(void) { fn_80206464(0); }
 
 void fn_801E7C1C(void) {
@@ -282,6 +283,73 @@ extern "C" void fn_801E8148(void) {
     fn_80287AF0(0);
     fn_801FA550();
 }
+
+void fn_801E81B8(int arg0, void (*callback)(void)) {
+    extern void *lbl_8055AF0C;
+    extern float *lbl_8055EB04;
+    unsigned long index;
+    void *entry;
+    long count;
+    long i;
+    long values[4];
+    float value;
+
+    (void)arg0;
+    fn_802E2C9C();
+    lbl_8055EB1C = lbl_8055EB1C + 1;
+    fn_802A4CA8();
+    fn_802C276C();
+    index = (unsigned long)fn_801E866C(0);
+    entry = 0;
+    if (index < 8)
+        entry = lbl_80488648[index];
+    count = (long)lbl_8055EB2C;
+    fn_80203E88(lbl_80487D00, (long)((unsigned char *)entry + 0x28),
+                (count - 1) == 0);
+    fn_8001A1F0();
+    fn_801EA394();
+    fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+    fn_802CC73C((char)(count <= 2));
+    i = 0;
+    goto first_check;
+first_loop:
+    lbl_8055AF0C = (void *)i;
+    fn_801E83D4();
+    i++;
+first_check:
+    if (i < (long)lbl_8055EB2C) goto first_loop;
+    i = 0;
+    goto second_check;
+second_loop:
+    lbl_8055AF0C = (void *)i;
+    fn_801E8410();
+    i++;
+second_check:
+    if (i < (long)lbl_8055EB2C) goto second_loop;
+    fn_802CC73C(1);
+    lbl_8055AF0C = (void *)-1;
+    if (fn_801B89F8() == 0 && (long)lbl_8055EB2C > 1) {
+        fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+        fn_801E88B4(&values[3], &values[2], &values[1], &values[0], 1);
+        fn_8020625C();
+    }
+    if ((long)lbl_8055EB2C == 1) {
+        fn_8029227C();
+        fn_802A4D08();
+        if (fn_80019B54() != 0)
+            value = lbl_80562DB4;
+        else
+            value = *(float *)((char *)lbl_8055EB04 + 0x58);
+        if (value > lbl_80562DD0)
+            fn_802DB2A4();
+        fn_802DD754();
+    }
+    fn_802A4D00();
+    fn_80287978();
+    if (callback != 0)
+        callback();
+}
+
 #pragma cplusplus off
 void fn_801E837C(void) {
     extern void fn_802D6C54(long, void *, float);
