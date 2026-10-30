@@ -283,48 +283,23 @@ extern float lbl_8056518C, lbl_80565190, lbl_80565194, lbl_80565198;
 #pragma dont_inline on
 #pragma paired off
 #pragma paired_single off
-#pragma scheduling invalid_target
 void fn_802E7DDC(void *arg0, void *arg1) {
     typedef struct {
-        unsigned char pad0[4];
-        float angle;
-        float tilt;
-        unsigned char pad0C[0x18];
-        signed char buttons[8];
-        unsigned char pad2C[0x18];
-        int buttonMask;
-        int config0;
-        int config1;
-        unsigned char pad50[4];
-        int flags;
-        float x;
-        float y;
-        float z;
-        signed char valid;
-        unsigned char pad65[7];
-        float heading;
-        unsigned char pad70[0x5B4];
-        int sound;
+        unsigned char pad0[4]; float angle; float tilt; unsigned char pad0C[0x18];
+        signed char buttons[8]; unsigned char pad2C[0x18];
+        int buttonMask; int config0; int config1; unsigned char pad50[4];
+        int flags; float x; float y; float z; signed char valid; unsigned char pad65[7];
+        float heading; unsigned char pad70[0x5B4]; int sound;
     } Record;
-    typedef struct {
-        unsigned int hold;
-        unsigned int trig;
-        unsigned int release;
-        float acc[3];
-        float accValue;
-    } Input;
+    typedef struct { unsigned int hold, trig, release; float acc[3]; float accValue; } Input;
     Record *out = (Record *)arg0;
     Input *in = (Input *)arg1;
-    float temp_f0;
-    float temp_f0_2;
-    float var_f1;
-    float var_f31;
-    float var_f4;
+    float temp_f0, temp_f0_2, var_f1, var_f31, var_f4;
+    float ax, ay, vectorX, vectorY, vectorZ;
     double temp_f1;
     int var_r5;
-    register unsigned int temp_r31;
+    register unsigned int temp_r31 = *(volatile unsigned int *)arg1;
 
-    temp_r31 = in->hold;
     out->config0 = 0x800F;
     out->valid = out->sound != 0;
     out->config1 = 0xFF;
@@ -334,23 +309,26 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     if (temp_r31 & 1) var_r5 |= 4;
     if (temp_r31 & 8) var_r5 |= 8;
     if (temp_r31 & 4) var_r5 |= 2;
+    ay = *(volatile float *)((char *)arg1 + 0x10);
+    ax = *(volatile float *)((char *)arg1 + 0xC);
     out->buttonMask = var_r5;
-    var_f31 = (float)fn_8002EFB0(in->acc[0], -in->acc[1]);
-    var_f31 = -var_f31;
-    out->heading = var_f31;
+    temp_f1 = -(float)fn_8002EFB0(ax, -ay);
+    var_f31 = (float)temp_f1;
+    out->heading = (float)temp_f1;
     if (var_f31 > lbl_80565180) var_f31 -= lbl_80565184;
     else if (var_f31 < lbl_80565188) var_f31 += lbl_80565184;
     var_f1 = lbl_80565160;
     temp_f0 = lbl_8056518C * in->acc[2];
     if (var_f1 >= temp_f0) var_f1 = temp_f0;
     if (var_f1 <= lbl_8056517C) var_f1 = lbl_8056517C;
-    out->angle = fn_802E78A4(var_f1);
+    var_f1 = fn_802E78A4(var_f1);
     var_f4 = lbl_80565160;
-    temp_f0_2 = lbl_80565194 * var_f31;
-    temp_f0_2 = lbl_80565190 * (temp_f0_2 / lbl_80565180);
+    temp_f0_2 = lbl_80565190 * ((lbl_80565194 * var_f31) / lbl_80565180);
     if (var_f4 >= temp_f0_2) var_f4 = temp_f0_2;
     if (var_f4 <= lbl_8056517C) var_f4 = lbl_8056517C;
-    out->tilt = var_f4;
+    vectorX = lbl_80565198 * -in->acc[2];
+    vectorY = lbl_80565198 * in->acc[1];
+    vectorZ = lbl_80565198 * -in->acc[0];
     out->buttons[1] = (temp_r31 >> 9) & 1;
     out->buttons[0] = (temp_r31 >> 8) & 1;
     out->buttons[4] = (temp_r31 >> 11) & 1;
@@ -359,9 +337,11 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     out->buttons[3] = (temp_r31 >> 12) & 1;
     out->buttons[5] = (temp_r31 >> 15) & 1;
     out->flags |= 0x20;
-    out->x = lbl_80565198 * -in->acc[2];
-    out->y = lbl_80565198 * in->acc[1];
-    out->z = lbl_80565198 * -in->acc[0];
+    out->angle = var_f1;
+    out->tilt = var_f4;
+    out->x = vectorX;
+    out->y = vectorY;
+    out->z = vectorZ;
 }
 #pragma pop
 
