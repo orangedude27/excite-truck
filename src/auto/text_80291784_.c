@@ -86,9 +86,9 @@ extern void *fn_802AE414(int *);
 extern int fn_802CAC28(int *, int);
 extern int fn_802D39A4(float);
 extern float fn_80129DC4(int, float, float);
-extern char lbl_8055C924[];
-extern char lbl_8055C930[];
-extern char lbl_8055C940[];
+extern int lbl_8055C924;
+extern int lbl_8055C930;
+extern int lbl_8055C940;
 extern char lbl_80349140[];
 extern char lbl_8034914C[];
 extern float lbl_80564488;
@@ -118,44 +118,42 @@ extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
         float value1;
         float value2;
     } Entry;
+    Manager_802917C0 *manager = (Manager_802917C0 *)arg1;
+    QueryObject_802917C0 *query_object;
     volatile int *count = (volatile int *)((unsigned char *)arg0 + 0x120);
     float best = lbl_80564484;
     float initial = best;
     float scale = lbl_8056449C;
-    void *query_object;
 
     *count = 0;
     goto check_count;
 
 loop:
-    query_object = ((void *(*)(void *))(*(void **)((char *)*(void **)arg1 + 0x60)))(arg1);
+    query_object = manager->getQuery();
     if (query_object != 0) {
         float result1 = fn_80129DC4(0, lbl_80564488, lbl_8056448C);
         float result2 = fn_80129DC4(0, lbl_80564490, lbl_80564494);
         float result3 = fn_80129DC4(0, lbl_80564498, lbl_80564494);
-        float value = ((float (*)(void *, char *, float))(*(void **)((char *)*(void **)query_object + 0x28)))(query_object, lbl_8055C924, result2);
+        float value = query_object->getFloat((char *)&lbl_8055C924, result2);
         int index = *count;
         Entry *entry = (Entry *)arg0 + index;
         entry->x = initial;
         entry->y = initial;
         entry->z = initial;
-        {
-            int *setting = ((int *(*)(void *, char *))(*(void **)((char *)*(void **)query_object + 0x14)))(query_object, lbl_8055C930);
-            entry->id = fn_802CAC28(setting, 0);
-        }
+        entry->id = fn_802CAC28(query_object->getSetting((char *)&lbl_8055C930), 0);
         entry->unk10 = 0;
         entry->flags = 0;
         entry->color = ((int)(scale * value) << 24) | 0x00FFFFFF;
-        entry->value1 = ((float (*)(void *, char *, float))(*(void **)((char *)*(void **)query_object + 0x28)))(query_object, (char *)&lbl_8055C938, result1);
-        entry->value2 = ((float (*)(void *, char *, float))(*(void **)((char *)*(void **)query_object + 0x28)))(query_object, lbl_8055C940, result3);
+        entry->value1 = query_object->getFloat((char *)&lbl_8055C938, result1);
+        entry->value2 = query_object->getFloat((char *)&lbl_8055C940, result3);
         if (best > entry->value1) best = entry->value1;
         *count = *count + 1;
     }
 
 check_count:
     if (*count < 8) goto loop;
-    *(float *)((unsigned char *)arg0 + 0x124) = ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_80349140);
-    *(float *)((unsigned char *)arg0 + 0x128) = ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_8034914C);
+    *(float *)((unsigned char *)arg0 + 0x124) = manager->getFinal(lbl_80349140);
+    *(float *)((unsigned char *)arg0 + 0x128) = manager->getFinal(lbl_8034914C);
     *(float *)((unsigned char *)arg0 + 0x12C) = best;
 }
 #pragma cplusplus reset
