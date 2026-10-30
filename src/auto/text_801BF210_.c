@@ -614,7 +614,7 @@ void fn_801C0E60(float *arg0, float *arg1, float *arg2) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma opt_propagation off
 void fn_801C0E94(void *arg0, void *arg1) {
     extern float lbl_805628BC, lbl_8055E460;
@@ -647,9 +647,9 @@ void fn_801C0E94(void *arg0, void *arg1) {
         dst[11] = v0;
     } else {
         float temp[12];
-        float *out = temp;
-        float *b = (float *)((char *)arg0 + 0xA0);
         float *a = (float *)((char *)arg0 + 0x70);
+        float *b = (float *)((char *)arg0 + 0xA0);
+        float *out = temp;
         for (i = 0; i < 2; ++i) {
             float r0 = b[0] + alpha * (a[0] - b[0]);
             float r1 = b[1] + alpha * (a[1] - b[1]);
