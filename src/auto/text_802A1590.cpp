@@ -823,7 +823,7 @@ void fn_802A2D04(void *arg0, s32 arg1) {
 }
 
 extern "C" void *fn_801284F8(u32, void *);
-extern "C" s32 fn_802A42C8(void *, s32);
+extern "C" void *fn_802A42C8(void *, void *, s32);
 extern "C" int lbl_80349A34[];
 extern "C" f32 lbl_80564730, lbl_80564734, lbl_80564740, lbl_80564744, lbl_80564780, lbl_805647AC, lbl_805647C0, lbl_805647C4, lbl_805647C8, lbl_805647CC, lbl_805647D0, lbl_805647D4, lbl_805647D8;
 extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
