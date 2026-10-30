@@ -251,7 +251,9 @@ void fn_802AE7C0(void) {
       #pragma cplusplus on
     #pragma push
         #pragma processor 750
-  extern "C" void fn_802AE7F4(void) {
+    #pragma cplusplus off
+  void fn_802AE7F4(void) {
+  #pragma cplusplus on
     struct ETConfigName {
         char text[0xC];
     };
