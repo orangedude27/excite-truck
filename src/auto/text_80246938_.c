@@ -105,6 +105,8 @@ extern void *fn_80012820(s32);
 extern void fn_8020C91C(s32);
 extern void fn_8023BFBC(s32, s32);
 extern void fn_802483E0(void);
+extern void fn_80248668(s32);
+extern void fn_802E317C(const char *, ...);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma optimization_level 4
