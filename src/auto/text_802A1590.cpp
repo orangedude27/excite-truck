@@ -271,6 +271,85 @@ extern "C" s32 fn_802A1864(const char *name) {
     ((void (*)(const char *, ...))fn_802E317C)(lbl_80349934, name);
     return 0;
 }
+
+extern "C" void *fn_802A194C(void *arg0) {
+    class Receiver {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual s32 findType(const char *);
+    };
+    class Item {
+    public:
+        virtual void v0();
+        virtual u32 getType();
+    };
+    struct Entry {
+        void *vtable;
+        void *item;
+    };
+    Receiver *receiver = (Receiver *)arg0;
+    char *strings = lbl_80349928;
+    s32 type, i = 0;
+    void **entry = lbl_804BCF88;
+    void *result;
+
+    receiver->findType((const char *)&lbl_8055CBA4);
+    type = ((s32 (*)())fn_802A1864)();
+
+    while (i < 8) {
+        void *item = *entry;
+        if (item != 0 && ((Item *)item)->getType() == (u32)type) {
+            result = fn_801284F8(8, strings + 0x2C);
+            if (result != 0) {
+                void *matched = ((void **)lbl_804BCF88)[i];
+                ((Entry *)result)->vtable = lbl_80349BA0;
+                ((Entry *)result)->item = matched;
+            }
+            return result;
+        }
+        i++;
+        entry++;
+    }
+
+    switch (type) {
+    case 1:
+        result = fn_801284F8(0x94, strings + 0x40);
+        if (result != 0)
+            return fn_802A1DF4(result, (DummyReceiver_802A3314 *)arg0);
+        return result;
+    case 2:
+        result = fn_801284F8(0x0C, strings + 0x50);
+        if (result != 0)
+            return fn_802A2EEC(result, (DummyReceiver_802A3314 *)arg0);
+        return result;
+    case 3:
+        result = fn_801284F8(8, strings + 0x68);
+        if (result != 0)
+            return fn_802A3314(result, (DummyReceiver_802A3314 *)arg0);
+        return result;
+    case 4:
+        result = fn_801284F8(8, strings + 0x78);
+        if (result != 0)
+            return fn_802A3610(result, (DummyReceiver_802A3314 *)arg0);
+        return result;
+    case 5:
+        result = fn_801284F8(8, strings + 0x88);
+        if (result != 0)
+            return fn_802A38D0(result, (DummyReceiver_802A3314 *)arg0);
+        return result;
+    case 6:
+        result = fn_801284F8(0x28, strings + 0x98);
+        if (result != 0)
+            return fn_802A3D3C(result, (DummyReceiver_802A3314 *)arg0);
+        return result;
+    default:
+        ((void (*)(const char *, ...))fn_802E317C)(strings + 0xA8, type);
+        return 0;
+    }
+}
+
 #pragma use_lmw_stmw on
 extern "C" void fn_802A1B20(void* arg0, s32 count) {
     struct Dummy {
