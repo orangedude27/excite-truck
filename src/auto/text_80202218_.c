@@ -8,7 +8,7 @@ extern void *fn_8012850C(s32, const char *);
 extern void *fn_8002F37C(void *, void (*)(void), void *, s32, s32);
 extern void *fn_802CE3A4(s32, s32, s32);
 extern s32 fn_802CE630(void *, const char *, s32);
-extern void fn_802E30C8(const char *);
+extern void fn_802E30C8(const char *, ...);
 extern void fn_802025D4(void);
 extern int sprintf(char *, const char *, ...);
 extern char lbl_8033B9F8[];
@@ -110,6 +110,17 @@ void *fn_802023C8(void) { return lbl_80488964; }
 #pragma cplusplus on
 #pragma dont_inline on
 extern "C" void fn_802023D4(void) {
+    struct Manager {
+        virtual void *get(void *);
+    };
+    struct Interface {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual s32 getCount(void *);
+    };
     register char *config;
     register char *state;
     register s32 offset;
@@ -127,8 +138,8 @@ extern "C" void fn_802023D4(void) {
     lbl_8055ECD4 = 7;
     state = lbl_804888B8;
     manager = fn_80131808(config);
-    interface = ((void *(*)(void *, void *))(*(void ***)manager)[2])(manager, config + 0x10);
-    count = ((s32 (*)(void *, void *))(*(void ***)interface)[7])(interface, &lbl_8055B418);
+    interface = ((Manager *)manager)->get(config + 0x10);
+    count = ((Interface *)interface)->getCount(&lbl_8055B418);
     lbl_8055ECC0 = count;
     if (count > 0) {
         buffer = fn_8012850C((count << 4) + 0x10, config + 0x1C);
@@ -176,8 +187,8 @@ extern "C" void fn_802023D4(void) {
         flags[2] = -1;
         flags[3] = -1;
         last_flag[0x20] = 0;
-          }
-  }
+    }
+}
 #pragma cplusplus reset
 #pragma pop
 
