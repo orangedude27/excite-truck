@@ -23,6 +23,42 @@ struct QueryObject_80291A1C {
     virtual void f9_unused();
     virtual float f10(int *, float);
 };
+struct QueryObject_802917C0 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual int *getSetting(char *);
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual float getFloat(char *, float);
+};
+struct Manager_802917C0 {
+    virtual float getFinal(char *);
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
+    virtual void f10();
+    virtual void f11();
+    virtual void f12();
+    virtual void f13();
+    virtual void f14();
+    virtual void f15();
+    virtual void f16();
+    virtual void f17();
+    virtual void f18();
+    virtual void f19();
+    virtual void f20();
+    virtual void f21();
+    virtual QueryObject_802917C0 *getQuery();
+};
 #pragma cplusplus reset
 
 extern char lbl_804B4010[];
@@ -226,25 +262,22 @@ extern int lbl_8055CFF0;
 extern float lbl_80564494, lbl_805644A4, lbl_805644A8, lbl_805644AC;
 extern double lbl_805644B0;
 extern float lbl_805644B8, lbl_805644BC;
+extern double __fabs(double);
 void fn_80291C7C(void *arg0, int arg1) {
+    struct Vec3 { float x, y, z; };
+    struct Vec3 pos = *(struct Vec3 *)arg0;
     float *p = (float *)arg0;
-    float pos[3];
     float a[3], b[3];
     float ratio;
-    float angle, s, c;
+    double angle, s, c;
     unsigned int color;
     int amount;
     double d;
 
-    pos[0] = p[0];
-    pos[1] = p[1];
-    pos[2] = p[2];
-    pos[2] = lbl_80564484;
-
-    d = (double)(p[0] - lbl_80564494 * (float)lbl_8055CFF0);
-    d = fabs(d);
+    d = __fabs((double)(pos.x - lbl_80564494 * (float)lbl_8055CFF0));
     ratio = ((float)d - lbl_805644A4 * (float)lbl_8055CFF0) /
         (lbl_80564494 * (float)lbl_8055CFF0 - lbl_805644A4 * (float)lbl_8055CFF0);
+    pos.z = 1.0f;
     if (ratio < 0.0f) {
         ratio = 0.0f;
     }
@@ -259,14 +292,15 @@ void fn_80291C7C(void *arg0, int arg1) {
     }
     color = (color & 0xFFFFFF) | (amount << 24);
     if (arg1 == 0) {
-        angle = (float)fn_8002EFB4((p[0] - p[1]) / lbl_805644AC, lbl_805644B0);
-        s = (float)sin(angle);
-        c = (float)cos(angle);
-        a[0] = c;
-        a[1] = s;
+        angle = fn_8002EFB4((p[0] - p[1]) / lbl_805644AC, lbl_805644B0);
+        angle = (float)angle;
+        s = (float)sin((float)angle);
+        c = (float)cos((float)angle);
+        a[0] = (float)c;
+        a[1] = (float)s;
         a[2] = 1.0f;
-        b[0] = s;
-        b[1] = -c;
+        b[0] = (float)s;
+        b[1] = (float)-c;
         b[2] = 1.0f;
     } else {
         a[0] = lbl_805644B8;
@@ -276,7 +310,7 @@ void fn_80291C7C(void *arg0, int arg1) {
         b[1] = lbl_805644BC;
         b[2] = 1.0f;
     }
-    fn_802D3BB4(*(int *)((char *)&lbl_804B4010 + 0x10), pos, a, b, color, p[7]);
+    fn_802D3BB4(*(int *)((char *)&lbl_804B4010 + 0x10), (float *)&pos, a, b, color, p[7]);
 }
 
 #pragma dont_inline off
