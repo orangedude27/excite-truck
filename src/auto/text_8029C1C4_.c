@@ -811,9 +811,10 @@ void fn_8029D574(int arg0) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling 7400
 #pragma use_lmw_stmw off
 void fn_8029D644(void *arg0) {
+    char *base = (char *)arg0;
     int i;
     int offset;
     int mode;
@@ -821,25 +822,25 @@ void fn_8029D644(void *arg0) {
     char *source;
     char *other;
 
-    i = (*(int *)((char *)arg0 + 0x10) - 1) * (*(int *)((char *)arg0 + 0xC) * 2);
+    i = (*(int *)(base + 0x10) - 1) * (*(int *)(base + 0xC) * 2);
     {
         char *result = (char *)((void *(*)(int, int))fn_802C86DC)(
-            *(int *)((char *)arg0 + 0x10) - 1, *(int *)((char *)arg0 + 0x10));
-        *(float *)((char *)arg0 + 0x64) = *(float *)(result + 0x24);
-        *(float *)((char *)arg0 + 0x68) = *(float *)(result + 0x28);
-        *(float *)((char *)arg0 + 0x6C) = *(float *)(result + 0x2C);
+            *(int *)(base + 0x10) - 1, *(int *)(base + 0x10));
+        *(float *)(base + 0x64) = *(float *)(result + 0x24);
+        *(float *)(base + 0x68) = *(float *)(result + 0x28);
+        *(float *)(base + 0x6C) = *(float *)(result + 0x2C);
     }
-    fn_802C8BD0(*(int *)((char *)arg0 + 0x74));
+    fn_802C8BD0(*(int *)(base + 0x74));
     if (fn_802C8DBC(i) != 0) {
-        buffers[0] = *(char **)((char *)arg0 + 0x70);
-        buffers[1] = buffers[0] + *(int *)((char *)arg0 + 0xC) * 0x18;
-        for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++)
+        buffers[0] = *(char **)(base + 0x70);
+        buffers[1] = buffers[0] + *(int *)(base + 0xC) * 0x18;
+        for (i = 0, offset = 0; i < *(int *)(base + 0xC); offset += 0x18, i++)
             fn_8029DB78(arg0, buffers[0] + offset, i, 0);
 
-        for (mode = 1; mode < *(int *)((char *)arg0 + 0x10); mode++) {
+        for (mode = 1; mode < *(int *)(base + 0x10); mode++) {
             source = buffers[mode & 1];
             other = buffers[1 - (mode & 1)];
-            for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++) {
+            for (i = 0, offset = 0; i < *(int *)(base + 0xC); offset += 0x18, i++) {
                 fn_8029DB78(arg0, source + offset, i, mode);
                 fn_802C8E00(*(int *)(other + offset + 0xC), (unsigned int)(i > 0),
                             *(float *)(other + offset + 0x0), *(float *)(other + offset + 0x4),
