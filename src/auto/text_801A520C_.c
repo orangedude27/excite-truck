@@ -298,16 +298,16 @@ extern "C" float fn_801A5A7C(void *arg0, float *arg1, float *arg2) {
     return PSVECDotProduct(diff, arg2);
 }
 
+#pragma push
 #pragma dont_inline on
 extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg3) {
     float sp8[3];
     float *p4;
+    float f3;
     float f2;
-    double dot;
-    float bound;
-    float neg;
-    float f0;
     float f1;
+    float f0;
+    float dot;
     char *p2 = (char *)arg2;
 
     if (*(volatile unsigned int *)((char *)arg0 + 0x20) == 0) {
@@ -321,31 +321,34 @@ extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg
         sp8[1] = *(float *)(p2 + 0x64) + *(float *)(p2 + 0x11C) * f2;
         sp8[2] = *(float *)(p2 + 0x68) + *(float *)(p2 + 0x120) * f2;
 
-        if (arg3 != 0 && PSVECDotProduct((float *)arg3, (float *)arg0) < lbl_805623C8) {
-            float v0 = *(float *)((char *)arg0 + 0);
-            float scale = lbl_805623FC;
-            float v1 = *(float *)((char *)arg0 + 4);
-            float v2 = *(float *)((char *)arg0 + 8);
-            v0 = v0 * scale;
-            v1 = v1 * scale;
-            v2 = v2 * scale;
-            *(float *)((char *)arg0 + 0) = v0;
-            *(float *)((char *)arg0 + 4) = v1;
-            *(float *)((char *)arg0 + 8) = v2;
+        if (arg3 != 0) {
+            dot = PSVECDotProduct((float *)arg3, (float *)arg0);
+            if (dot < lbl_805623C8) {
+                f2 = *(float *)((char *)arg0 + 0);
+                f3 = lbl_805623FC;
+                f1 = *(float *)((char *)arg0 + 4);
+                f0 = *(float *)((char *)arg0 + 8);
+                f2 *= f3;
+                f1 *= f3;
+                f0 *= f3;
+                *(float *)((char *)arg0 + 0) = f2;
+                *(float *)((char *)arg0 + 4) = f1;
+                *(float *)((char *)arg0 + 8) = f0;
+            }
         }
 
         *(float *)((char *)arg0 + 0x14) = fn_801A5A7C(arg0, sp8, (float *)((char *)*(void **)((char *)arg1 + 0xC) + 0x24));
 
         dot = PSVECDotProduct((float *)(p2 + 0x118), (float *)arg0);
-        neg = -(float)dot;
-        bound = lbl_805623EC;
+        f3 = lbl_805623EC;
         *(float *)((char *)arg0 + 0xC) = dot;
-        bound = (bound < neg) ? bound : neg;
-        bound = (bound > lbl_80562400) ? bound : lbl_80562400;
+        f0 = -(float)(double)dot;
+        f3 = (f3 < f0) ? f3 : f0;
+        f3 = (f3 > lbl_80562400) ? f3 : lbl_80562400;
 
         f2 = lbl_805623F4;
         f0 = lbl_805623C8;
-        f1 = f2 * bound;
+        f1 = f2 * f3;
         *(float *)((char *)arg0 + 0x1C) = f2;
         *(float *)((char *)arg0 + 0x18) = f0;
         *(float *)((char *)arg0 + 0x10) = f1;
@@ -354,6 +357,7 @@ extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg
         *(float *)((char *)arg0 + 0x18) = lbl_805623C8;
     }
 }
+#pragma pop
 extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
     float values[3];
     void *record;
@@ -614,43 +618,57 @@ void fn_801A60E0(void *arg0, void *arg1) {
 #pragma scheduling on
 extern void fn_801A60E0(void *, void *);
 extern float lbl_8055E3C8, lbl_805623C8, lbl_805623CC, lbl_805623D4, lbl_80562410, lbl_80562414;
+#pragma cplusplus off
 void fn_801A61B0(void *arg0, void *arg1, float arg2) {
     int active;
     int counter;
     float value, ratio, limit, bound;
-    if (*(int*)arg0) {
-        active=1;
-        if (!*(unsigned char*)((char*)arg1+0x23CC) && !*(unsigned char*)((char*)arg1+0x2440) &&
-            *(unsigned char*)((char*)arg1+0x24B4) && *(unsigned char*)((char*)arg1+0x2528)) {
-            value=*(float*)((char*)arg1+0x25D4); ratio=value/arg2;
-            if(ratio>lbl_80562410) {
-                limit=*(float*)((char*)arg1+0x11C);
-                if(limit>lbl_805623C8 && limit<lbl_805623D4*value) {
-                    counter=*(int*)((char*)arg0+0xC)+1; *(int*)((char*)arg0+0xC)=counter;
-                    if(counter>4) {
-                        bound=lbl_805623CC;
-                        value=bound-ratio;
-                        *(float*)((char*)arg0+8)=lbl_8055E3C8;
-                        if(bound<value) bound=value;
-                        if(bound>lbl_805623C8) bound=lbl_805623C8;
-                        *(int*)arg0=0;
-                        *(float*)((char*)arg0+4)=lbl_80562414*(bound**(float*)((char*)arg1+0xD4));
+    if (*(int *)arg0) {
+        active = 1;
+        if (!*(unsigned char *)((char *)arg1 + 0x23CC) &&
+            !*(unsigned char *)((char *)arg1 + 0x2440) &&
+            *(unsigned char *)((char *)arg1 + 0x24B4) &&
+            *(unsigned char *)((char *)arg1 + 0x2528)) {
+            value = *(float *)((char *)arg1 + 0x25D4);
+            ratio = value / arg2;
+            if (ratio > lbl_80562410) {
+                limit = *(float *)((char *)arg1 + 0x11C);
+                if (limit > lbl_805623C8 && limit < lbl_805623D4 * value) {
+                    counter = *(int *)((char *)arg0 + 0xC) + 1;
+                    *(int *)((char *)arg0 + 0xC) = counter;
+                    if (counter > 4) {
+                        bound = lbl_805623CC;
+                        value = bound - ratio;
+                        *(float *)((char *)arg0 + 8) = lbl_8055E3C8;
+                        if (bound < value)
+                            bound = value;
+                        if (bound > lbl_805623C8)
+                            bound = lbl_805623C8;
+                        *(int *)arg0 = 0;
+                        *(float *)((char *)arg0 + 4) =
+                            lbl_80562414 * (bound * *(float *)((char *)arg1 + 0xD4));
                         do {
-                            fn_801A60E0(arg0,arg1);
-                            counter=*(int*)((char*)arg0+0xC)-1;
-                            *(int*)((char*)arg0+0xC)=counter;
-                        } while(counter!=0);
-                    } else active=0;
+                            fn_801A60E0(arg0, arg1);
+                            counter = *(int *)((char *)arg0 + 0xC) - 1;
+                            *(int *)((char *)arg0 + 0xC) = counter;
+                        } while (counter != 0);
+                    } else {
+                        active = 0;
+                    }
                 }
             }
         }
-        if(active) *(int*)((char*)arg0+0xC)=0;
+        if (active)
+            *(int *)((char *)arg0 + 0xC) = 0;
     } else {
-        fn_801A60E0(arg0,arg1);
-        if(*(int*)((char*)arg1+0x2620)>0 && lbl_8055E3C8-*(float*)((char*)arg0+8)>lbl_805623CC) {
-            *(int*)arg0=1; *(int*)((char*)arg0+0xC)=0;
-            *(float*)((char*)arg0+8)=lbl_805623C8; *(float*)((char*)arg0+4)=lbl_805623C8;
+        fn_801A60E0(arg0, arg1);
+        if (*(int *)((char *)arg1 + 0x2620) > 0 &&
+            lbl_8055E3C8 - *(float *)((char *)arg0 + 8) > lbl_805623CC) {
+            *(int *)arg0 = 1;
+            *(int *)((char *)arg0 + 0xC) = 0;
+            *(float *)((char *)arg0 + 8) = lbl_805623C8;
+            *(float *)((char *)arg0 + 4) = lbl_805623C8;
         }
     }
 }
-
+#pragma cplusplus off
