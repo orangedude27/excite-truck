@@ -19,6 +19,10 @@ extern u32 lbl_80559900;
 #pragma push
 #pragma small_data off
 extern u8 lbl_803271B8[];
+extern u8 lbl_80327040[];
+extern u8 lbl_8032733C[];
+extern u8 lbl_8032746C[];
+extern u8 lbl_80327490[];
 extern u8 lbl_803274C0[];
 extern u8 lbl_8032749C[];
 extern u8 lbl_80327460[];
