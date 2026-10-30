@@ -143,6 +143,7 @@ __declspec(section ".sdata") extern void *lbl_8055BE78;
 extern int lbl_80498890[5];
 extern int lbl_802FA350[5];
 #pragma cplusplus on
+#pragma small_data off
 extern "C" void fn_802462A0(void *arg0, void *arg1) {
     struct Frame {
         int args[5];
@@ -213,6 +214,7 @@ extern "C" void fn_802462A0(void *arg0, void *arg1) {
     if (frame.state.result != 0)
         fn_80235380(frame.state.result);
 }
+#pragma small_data on
 #pragma cplusplus reset
 
 void *fn_80246428(void *arg0, int arg1) {
