@@ -1368,14 +1368,3 @@ struct Obj802A5878 {
     virtual Obj802A5878 *child(s32);
 };
 #pragma cplusplus reset
-extern s32 fn_801E85B4(void);
-extern void fn_802C744C(s32, f32 *);
-extern void fn_802C9900(f32);
-extern void fn_802C9904(void);
-extern double cos(double), sin(double);
-extern f32 PSQUATMultiply(void *, void *);
-extern void fn_802C8BD0(s32);
-extern s32 fn_802CE860(s32);
-extern void fn_802CE868(void);
-extern void fn_802CE86C(void *, s32, f32, double, double, double);
-extern f32 lbl_805648D8;
