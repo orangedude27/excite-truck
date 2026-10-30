@@ -93,6 +93,87 @@ void *fn_802E4DC8(char *arg0) {
     return buf;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_802E4F98(void) {
+    extern char lbl_8055FFA4;
+    extern char lbl_8055FFA5;
+    extern char lbl_8055FFA6;
+    extern char lbl_8055FFB4;
+    extern int OSEnableInterrupts(int);
+    extern int fn_802D9BF0(void);
+    extern void fn_80033AAC(void *, void *);
+    register int offset;
+    register int interruptState;
+    register int count;
+    int motor;
+    unsigned char *entry;
+    unsigned char *object;
+    unsigned int span;
+    unsigned int sampleCount;
+    unsigned int end;
+    short samples[3];
+
+    if ((unsigned char)lbl_8055FFA5 != 0 &&
+        (unsigned char)lbl_8055FFA6 == 0) {
+        interruptState = ((int (*)(void))OSEnableInterrupts)();
+        motor = fn_802D9BF0();
+        lbl_8055FFB4 = 1;
+        count = 0;
+        offset = 0;
+        do {
+            entry = lbl_8055FF94 + offset;
+            object = *(unsigned char **)(entry + 0x1C);
+            if (entry[0x20] != 0 && object != 0 &&
+                *(int *)(object + 0x20) == 1 && entry[0x21] == 0) {
+                span = *(unsigned int *)(*(unsigned char **)(entry + 4) + 0x1BC);
+                if (object[0x24] != 0) {
+                    span >>= 1;
+                } else {
+                    span <<= 1;
+                }
+                sampleCount = *(unsigned int *)(object + 0xA0) >> 1;
+                end = *(unsigned int *)(object + 0x9C) + sampleCount;
+                if (span < *(unsigned int *)(entry + 0x28)) {
+                    if (motor == 0) {
+                        ((void (*)(void *, unsigned int, void *))*(void **)(object + 0x88))(
+                            (unsigned char *)*(void **)(object + 0x90) + sampleCount,
+                            sampleCount, *(void **)(object + 0x8C));
+                    } else {
+                        memset((unsigned char *)*(void **)(object + 0x90) + sampleCount, 0, sampleCount);
+                    }
+                    DCFlushRange((unsigned char *)*(void **)(object + 0x90) + sampleCount, sampleCount);
+                }
+                if (span >= end && *(unsigned int *)(entry + 0x28) < end) {
+                    if (motor == 0) {
+                        ((void (*)(void *, unsigned int, void *))*(void **)(object + 0x88))(
+                            *(void **)(object + 0x90),
+                            sampleCount, *(void **)(object + 0x8C));
+                    } else {
+                        memset(*(void **)(object + 0x90), 0, sampleCount);
+                    }
+                    if (object[0x24] != 0) {
+                        samples[0] = (short)*((unsigned char *)*(void **)(object + 0x90));
+                        samples[1] = 0;
+                        samples[2] = 0;
+                        fn_80033AAC(*(void **)(entry + 4), samples);
+                    }
+                    DCFlushRange(*(void **)(object + 0x90), sampleCount);
+                }
+                *(unsigned int *)(entry + 0x28) = span;
+            }
+            ++count;
+            offset += 0x2C;
+        } while (count < 0x20);
+        *(volatile unsigned char *)&lbl_8055FFA4 = 1;
+        *(volatile unsigned char *)&lbl_8055FFB4 = 0;
+        OSRestoreInterrupts(interruptState);
+    }
+}
+#pragma scheduling on
+#pragma pop
+
 extern float lbl_80565130;
 extern float lbl_80565134;
 unsigned short fn_802E5168(float arg0) {
@@ -184,6 +265,64 @@ void fn_802E52EC(void) {
 int fn_802E540C(int arg0) {
     if (arg0 == 1) TRKReadBuffer_ui32();
     return 0;
+}
+
+void fn_802E56F0(void) {
+    extern void OSCancelAlarm(void *);
+    extern void fn_802E6B34(void);
+    extern void TRKGetFreeBuffer(int);
+    extern void TRKConstructEvent(void);
+    extern void fn_80128658(void *);
+    extern char lbl_8034D450[];
+    extern char lbl_8034D470[];
+    extern unsigned char lbl_804FC690[];
+    extern char lbl_8055FFA5;
+    extern int lbl_8055FF84;
+    extern void *lbl_8055FFB0;
+    int offset;
+    int i;
+    int offset2;
+
+    OSCancelAlarm(lbl_804FC690);
+    lbl_8055FFA5 = 0;
+    fn_802E6B34();
+    i = 0;
+    offset = 0;
+    do {
+        unsigned char *entry = lbl_8055FF94 + offset;
+        if (entry[0x20] != 0) {
+            fn_802E317C(lbl_8034D450, *(int *)(entry + 0x1C));
+        }
+        TRKGetFreeBuffer(*(int *)(lbl_8055FF94 + offset + 4));
+        i++;
+        *(int *)(lbl_8055FF94 + offset + 4) = 0;
+        offset += 0x2C;
+    } while (i < 0x20);
+
+    offset2 = 0;
+    i = 0;
+    do {
+        unsigned char *sample = (unsigned char *)lbl_8055FF90 + offset2;
+        if (*(int *)(sample + 0x94) > 0) {
+            fn_802E317C(lbl_8034D470, sample);
+        }
+        i++;
+        offset2 += 0xB0;
+    } while (i < 0x100);
+
+    fn_80128670((int)lbl_8055FF94);
+    lbl_8055FF94 = 0;
+    fn_80128670((int)lbl_8055FF90);
+    lbl_8055FF90 = 0;
+    fn_80128670((int)lbl_8055FF9C);
+    lbl_8055FF9C = 0;
+    TRKReadBuffer_ui32();
+    TRKConstructEvent();
+    lbl_8055FF84 = 0;
+    if (lbl_8055FFB0 != 0) {
+        fn_80128658(lbl_8055FFB0);
+        lbl_8055FFB0 = 0;
+    }
 }
 
 void fn_802E5824(void) {
