@@ -104,6 +104,10 @@ extern void fn_80038040(void);
 extern s32 OSGetTick(void);
 extern s32 fn_8003BCDC(s32);
 extern void DCInvalidateRange(void *, u32);
+extern char lbl_80376B00[];
+extern void fn_80037CEC(void);
+extern void fn_80037DBC(u32);
+extern void fn_8003A834(void *, void *);
 
 extern s32 DVDInitialized_8055D888;
 extern s32 FirstTimeInBootrom_8055D868;
@@ -1233,6 +1237,49 @@ void fn_8003727C(u32 arg0) {
             *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 1;
             fn_80038368((void *)executing_8055D8C8);
         }
+    } else {
+        fn_800356F4(0x27, 0, 0);
+        fn_8003B218(fn_80035E6C);
+    }
+}
+
+void fn_800375A8(u32 arg0) {
+    register u32 value = arg0;
+    s32 interrupts;
+
+    interrupts = OSDisableInterrupts();
+    if (lbl_8055D848 == 0) {
+        *(u32 *)(__ErrorInfo + 0x78) = value;
+    } else {
+        *(u32 *)(__ErrorInfo + ((lbl_8055D848 - 1) * 0x14) + 0x28) = value;
+    }
+    OSRestoreInterrupts(interrupts);
+
+    if (value == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+    } else if (value == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+    } else if (value & 1) {
+        lbl_8055D860 = 0;
+        lbl_8055D8CC = (s32)fn_8003588C;
+        if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) <
+            *(u32 *)(lbl_80376A80 + 8)) {
+            ((void (*)(const char *, s32, const char *, ...))OSPanic)(
+                lbl_80558E0C, 0x3F6, lbl_80302120);
+        }
+        fn_8003BCDC(0);
+        ((void (*)(s32, s32, s32, u32, u32))fn_800356F4)(
+            1,
+            *(u32 *)(lbl_80376A80 + 4) >> __DVDLayoutFormat,
+            ((*(u32 *)(lbl_80376A80 + 8) << (~__DVDLayoutFormat & 2)) +
+             0x1F) & ~0x1F,
+            __DVDLayoutFormat,
+            *(u32 *)(lbl_80376A80 + 4));
+        fn_8003B81C(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
+                    ((*(u32 *)(lbl_80376A80 + 8) <<
+                      (~__DVDLayoutFormat & 2)) + 0x1F) & ~0x1F,
+                    *(u32 *)(lbl_80376A80 + 4) >> __DVDLayoutFormat,
+                    (s32)fn_80035A04);
     } else {
         fn_800356F4(0x27, 0, 0);
         fn_8003B218(fn_80035E6C);
