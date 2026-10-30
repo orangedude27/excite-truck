@@ -31,19 +31,18 @@ s32 fn_801DDEAC(void) {
 }
 #pragma dont_inline off
 void fn_801DDED0(s32 arg0, f32* arg1, s32 arg2, f32 farg0, f32 farg1, f32 farg2) {
-    s32 idx;
     u32* entry;
+    s32 idx = lbl_8055E9C4;
 
-    idx = lbl_8055E9C4;
     entry = &lbl_80486F30[idx * 7];
     entry[0] = (u32)arg0;
-    lbl_8055E9C4 = idx + 1;
     entry[1] = (u32)arg2;
     entry[2] = (u32)arg1;
     *(f32*)&entry[3] = *arg1;
     *(f32*)&entry[4] = farg0;
     *(f32*)&entry[5] = farg1;
     *(f32*)&entry[6] = farg2;
+    lbl_8055E9C4 = idx + 1;
 }
 
 extern s32 fn_8018A2C0(void **);
@@ -85,12 +84,13 @@ void fn_801DDF0C(void) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801DDFE8(void* arg0) {
     f32 temp_e8, temp_e4, temp_e0, temp_dc;
     f32 temp_d8, temp_d4, temp_d0, temp_cc, temp_c8;
     f32 temp_a0, temp_9c, temp_98, temp_94, temp_90;
     f32 temp_8c, temp_88, temp_84, temp_80;
-
     temp_80 = *(f32*)((u8*)arg0 + 0x80);
     temp_84 = *(f32*)((u8*)arg0 + 0x84);
     temp_88 = *(f32*)((u8*)arg0 + 0x88);
@@ -109,7 +109,6 @@ void fn_801DDFE8(void* arg0) {
     temp_e0 = *(f32*)((u8*)arg0 + 0xe0);
     temp_e4 = *(f32*)((u8*)arg0 + 0xe4);
     temp_e8 = *(f32*)((u8*)arg0 + 0xe8);
-
     *(f32*)((u8*)arg0 + 0xa4) = temp_80;
     *(f32*)((u8*)arg0 + 0xa8) = temp_84;
     *(f32*)((u8*)arg0 + 0xac) = temp_88;
@@ -129,7 +128,7 @@ void fn_801DDFE8(void* arg0) {
     *(f32*)((u8*)arg0 + 0x108) = temp_e4;
     *(f32*)((u8*)arg0 + 0x10c) = temp_e8;
 }
-
+#pragma pop
 void fn_801DE0A4(void) {
     lbl_8055E9BC = 0;
     lbl_8055E9C8 = 0;
@@ -159,6 +158,90 @@ void fn_801DE12C(void) {
 void fn_801DE150(void) {
 
 }
+
+#pragma push
+#pragma scheduling invalid_target
+s32 fn_801DE5C4(s32 arg0) {
+    f32 *value;
+    u8 *entry;
+    s32 changed;
+    s32 index;
+    s32 i;
+    s32 result;
+    f32 x;
+    f32 limit;
+
+    fn_801DDF0C();
+    changed = 0;
+    if (arg0 == 0x126) goto decrement;
+    if (arg0 >= 0x126) goto high;
+    if (arg0 == 0x58) goto reset;
+    if (arg0 < 0x58) goto done;
+    if (arg0 >= 0x125) goto update;
+    goto done;
+
+high:
+    if (arg0 == 0x128) goto increment;
+    if (arg0 >= 0x128) goto done;
+    goto update;
+
+decrement:
+    changed = 1;
+    lbl_8055E9BC = (void *)(((s32)lbl_8055E9BC - 1 > -1) ? ((s32)lbl_8055E9BC - 1) : -1);
+    goto done;
+
+increment:
+    changed = 1;
+    index = (s32)lbl_8055E9BC;
+    index++;
+    i = lbl_8055E9C4 - 1;
+    if (index < i) i = index;
+    lbl_8055E9BC = (void *)i;
+    goto done;
+
+update:
+    changed = 1;
+    index = (s32)lbl_8055E9BC;
+    if (index >= 0 && index < lbl_8055E9C4) {
+        result = fn_801DDE78();
+        entry = (u8 *)lbl_80486F30 + ((s32)lbl_8055E9BC * 0x1C);
+        if ((u32)arg0 == 0x127U) {
+            value = *(f32 **)(entry + 8);
+            x = *value + *(f32 *)(entry + 0x18);
+            limit = *(f32 *)(entry + 0x14);
+            *value = (limit < x) ? limit : x;
+        } else {
+            value = *(f32 **)(entry + 8);
+            x = *value - *(f32 *)(entry + 0x18);
+            limit = *(f32 *)(entry + 0x10);
+            *value = (limit > x) ? limit : x;
+        }
+        fn_801DDFE8((void *)fn_801DDEAC());
+        fn_8018A180(result);
+    }
+    goto done;
+
+reset:
+    if ((s32)lbl_8055E9BC == -1) {
+        changed = 1;
+        result = fn_801DDE78();
+        entry = (u8 *)lbl_80486F30;
+        i = 0;
+        while (i < lbl_8055E9C4) {
+            x = *(f32 *)(entry + 0xC);
+            i++;
+            value = *(f32 **)(entry + 8);
+            entry += 0x1C;
+            *value = x;
+        }
+        fn_8018A180(result);
+        lbl_8055E9BC = (void *)0;
+    }
+done:
+    if (changed) lbl_8055E9CC = (void *)fn_802E2C20();
+    return 0;
+}
+#pragma pop
 
 typedef void (*ThunkFn)(s32, s32, s32);
 void fn_801DE788(s32 arg_unused, s32 arg_a, s32 arg_b, s32 arg_c) {
