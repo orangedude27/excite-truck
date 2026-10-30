@@ -300,6 +300,7 @@ extern s32 fn_802A7BDC(s32, s32);
 extern void fn_802BBEE4(void);
 extern void fn_802C21C0(void);
 #pragma push
+#pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_802B5F24(s32 arg0) {
     class V {
@@ -325,8 +326,8 @@ extern "C" void fn_802B5F24(s32 arg0) {
 #pragma cplusplus reset
 #pragma pop
 void fn_802B5F98(void) {
+    s32 index, i, j;
     s32 handle;
-    s32 i, j, index;
     float height, x, z;
     float points[3];
     handle = fn_802E3D68(lbl_8034A598 + 0x2c);
@@ -334,12 +335,13 @@ void fn_802B5F98(void) {
     fn_802E3AD0(handle, lbl_8055CE58);
     fn_802E3AD0(handle, lbl_8034A598 + 0x3c);
     fn_802E3AD0(handle, lbl_8034A598 + 0x50);
-    for (i = -0x200, index = 0; i <= 0x200; i += 8) {
+    index = 0;
+    for (i = -0x200; i <= 0x200; i += 8) {
         for (j = -0x200; j <= 0x200; j += 8, index++) {
             x = (float)i * lbl_80564C58;
             z = (float)j * lbl_80564C58;
             height = fn_801DCF48(points, x, z);
-            fn_802E3AD0(handle, lbl_8034A598 + 0x60, x, height, z, (float)(i + 0x200));
+            fn_802E3AD0(handle, lbl_8034A598 + 0x60, x, height, z);
             fn_802E3AD0(handle, lbl_8034A598 + 0x78,
                         (float)(i + 0x200) * lbl_80564C60,
                         (float)(j + 0x200) * lbl_80564C60);
