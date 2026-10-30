@@ -245,6 +245,7 @@ extern s32 fn_801E9E30(void *, void *);
 extern f32 lbl_80562578, lbl_80562588, lbl_80562598, lbl_8056259C;
 extern f32 lbl_805625A0, lbl_805625A4, lbl_805625A8, lbl_805625AC;
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_801B02E0(void *arg0) {
     u8 *self = (u8 *)arg0;
@@ -253,6 +254,7 @@ void fn_801B02E0(void *arg0) {
     f32 scale;
     f32 vec[3];
     s32 result[3];
+    f32 crossAxis[3];
     f32 axis[3];
     f32 in124;
     f32 in128;
@@ -300,10 +302,10 @@ void fn_801B02E0(void *arg0) {
         active = 1;
         if (velocityMag > lbl_805625A4) {
             speed = *(f32 *)(self + 0x40);
-            axis[0] = lbl_80562578;
-            axis[1] = lbl_80562588;
-            axis[2] = lbl_80562578;
-            PSVECCrossProduct(self + 0x3C, axis, vec);
+            crossAxis[0] = lbl_80562578;
+            crossAxis[1] = lbl_80562588;
+            crossAxis[2] = lbl_80562578;
+            PSVECCrossProduct(self + 0x3C, crossAxis, vec);
             scale = lbl_805625A8 * speed;
             speed = PSVECMag(vec);
             if (lbl_80562588 > speed)
