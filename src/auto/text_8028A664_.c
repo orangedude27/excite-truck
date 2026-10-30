@@ -218,6 +218,82 @@ void fn_8028AB14(void) {
         }
     }
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_8028ABE8(void *arg0) {
+    class Obj {
+    public:
+        virtual void dummy0();
+        virtual void dummy1();
+        virtual void dummy2();
+        virtual void dummy3();
+        virtual s32 v4(void *, void *);
+        virtual void dummy5();
+        virtual s32 v6(void *, s32);
+        virtual void dummy7();
+        virtual f32 v8(void *, f32);
+        virtual void dummy9();
+        virtual void dummy10();
+        virtual void dummy11();
+        virtual void dummy12();
+        virtual void dummy13();
+        virtual void dummy14();
+        virtual void dummy15();
+        virtual void dummy16();
+        virtual void dummy17();
+        virtual void dummy18();
+        virtual void dummy19();
+        virtual void dummy20();
+        virtual Obj *v21(void *);
+    };
+    extern char lbl_80348B98[];
+    extern char lbl_8055C8A8, lbl_8055C8B0, lbl_8055C8B8;
+    extern f32 lbl_80564330;
+    extern void fn_801345D8(void *, s32, void *, ...);
+    extern void *fn_802AE414(void *);
+    extern void *fn_802929D8(s32, void *, s32, s32);
+    extern void fn_80287B38(void (*)(void));
+    extern void fn_8028ADF4(void);
+    u8 sp8[0x20];
+    char *data = lbl_80348B98;
+    s32 *entry = (s32 *)lbl_804B3238;
+    s32 validCount = 0;
+    s32 i = 0;
+    do {
+        void *object;
+        fn_801345D8(sp8, 0x20, data + 0x38, i);
+        object = fn_802AE414(sp8);
+        if (object != 0) {
+            object = ((Obj *)object)->v21(&lbl_8055C8A8);
+        }
+        if (object != 0) {
+            entry[0] = (s32)fn_802929D8(2, data + 0x44, validCount,
+                                        ((Obj *)object)->v4(&lbl_8055C8B0, &lbl_8055C8B8));
+            *(f32 *)&entry[1] = ((Obj *)object)->v8(data + 0x50, lbl_80564330);
+            {
+                s32 value = ((Obj *)object)->v6(data + 0x5C, 0x14);
+                value = value & ((-value & ~value) >> 31);
+                entry[2] = value < 0x64 ? value : 0x64;
+            }
+            {
+                s32 value = ((Obj *)object)->v6(data + 0x68, 2);
+                value = value & ((-value & ~value) >> 31);
+                entry[3] = value < 0x64 ? value : 0x64;
+            }
+            validCount++;
+        } else {
+            entry[0] = 0;
+        }
+        i++;
+        entry += 4;
+    } while (i < 8);
+    fn_80287B38(fn_8028ADF4);
+}
+#pragma cplusplus off
+#pragma pop
+
 #pragma scheduling on
 #pragma pop
 
