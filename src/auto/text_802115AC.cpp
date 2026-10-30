@@ -100,6 +100,14 @@ extern "C" int stricmp(const char *, const char *);
 extern "C" void *memcpy(void *, const void *, unsigned long);
 extern u8 lbl_8033CAE8[];
 extern "C" s32 fn_80214E10(s32, s32, s32);
+extern "C" s32 fn_802152CC(void);
+#pragma small_data on
+extern "C" s32 lbl_802F9EB8[];
+extern "C" s32 lbl_80490510[];
+extern "C" char lbl_8033D3F8[], lbl_8033D404[];
+extern "C" char lbl_8055B820, lbl_8055B824, lbl_8055B830;
+extern "C" u8 lbl_8055B860;
+#pragma small_data off
 #pragma small_data on
 extern "C" s32 lbl_802F9EB8[];
 extern "C" char lbl_8033D3F8[];
