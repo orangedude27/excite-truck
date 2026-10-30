@@ -10,6 +10,9 @@
 
 extern f32 lbl_80560C48;
 extern f32 lbl_80560C4C;
+extern int lbl_8055D9B8;
+extern char lbl_8037D808[];
+extern char lbl_8037D818[];
 
 static inline void KPADNotifySampling(s32 chan) {
     KPADInsideStatus *status = &inside_kpads[chan];
