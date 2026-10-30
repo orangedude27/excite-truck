@@ -322,20 +322,31 @@ extern void *fn_8017960C(int);
 extern void fn_801796EC(int, void *, int);
 #pragma dont_inline on
 #pragma scheduling invalid_target
+#pragma paired off
+#pragma paired_single off
 void fn_802C1A0C(void **arg0, int arg1) {
+    struct Params {
+        f32 pos[3];
+        f32 extra[3];
+        s16 id;
+        u8 pad[2];
+        int item;
+    };
+    struct Params params;
     int i;
-    char *entry = lbl_804C0E10;
     int current;
     int index;
     int *record;
-    f32 *object;
-    f32 vec[3];
-    int id;
+    void *target;
+    register f32 delta;
 
-    for (i = 0; i < 8; i++, entry += 0x48) {
-        current = ((int (*)(void *))(*(void ***)arg0)[9])(arg0) - lbl_8055CFA0;
-        if (*(int *)(entry + 4) != 0 && *(int *)entry == current)
-            fn_802C1180(entry);
+    {
+        char *entry = lbl_804C0E10;
+        for (i = 0; i < 8; i++, entry += 0x48) {
+            current = ((int (*)(void *))(*(void ***)arg0)[9])(arg0) - lbl_8055CFA0;
+            if (*(int *)(entry + 4) != 0 && *(int *)entry == current)
+                fn_802C1180(entry);
+        }
     }
 
     index = ((int (*)(void *))(*(void ***)arg0)[9])(arg0) - lbl_8055CFA0;
@@ -343,36 +354,33 @@ void fn_802C1A0C(void **arg0, int arg1) {
         return;
 
     record = (int *)fn_802C110C(index);
-    if (*(f32 *)((char *)((int *)lbl_8055FB30)[index] + 0x28) <= lbl_80564E70)
+    target = ((void **)lbl_8055FB30)[index];
+    if (*(f32 *)((char *)target + 0x28) <= lbl_80564E70)
         return;
 
-    object = fn_8017960C(arg1);
-    vec[0] = *(f32 *)((char *)object + 0x118);
-    vec[1] = *(f32 *)((char *)object + 0x11C);
-    vec[2] = *(f32 *)((char *)object + 0x120);
-    id = *(s16 *)((char *)object + 0x6C);
+    target = fn_8017960C(arg1);
+    params.extra[0] = *(f32 *)((char *)target + 0x118);
+    params.extra[1] = *(f32 *)((char *)target + 0x11C);
+    params.extra[2] = *(f32 *)((char *)target + 0x120);
+    params.id = *(s16 *)((char *)target + 0x6C);
+    delta = lbl_80564E54;
 
     for (i = 0; i < 8; i++, record++) {
         if (record[0x40 / 4] >= 0) {
-            f32 position[3];
-            int thingId;
-
-            position[0] = *(f32 *)((char *)((int *)lbl_8055FB30)[index] + 0x24);
-            position[1] = *(f32 *)((char *)((int *)lbl_8055FB30)[index] + 0x28);
-            position[2] = *(f32 *)((char *)((int *)lbl_8055FB30)[index] + 0x2C);
-            position[1] = position[1] + *(f32 *)&lbl_80564E54;
-            thingId = record[0x40 / 4];
-            fn_801796EC(10, position, 0x20);
+            target = ((void **)lbl_8055FB30)[index];
+            params.pos[0] = *(f32 *)((char *)target + 0x24);
+            params.pos[1] = *(f32 *)((char *)target + 0x28);
+            params.pos[1] += delta;
+            params.pos[2] = *(f32 *)((char *)target + 0x2C);
+            params.item = record[0x40 / 4];
+            fn_801796EC(10, &params, 0x20);
         }
     }
 
-    {
-        void *target = ((void **)lbl_8055FB30)[index];
-        *(f32 *)((char *)target + 0x28) =
-            *(f32 *)((char *)target + 0x28) + lbl_80564E74;
-    }
+    target = ((void **)lbl_8055FB30)[index];
+    *(f32 *)((char *)target + 0x28) += lbl_80564E74;
     ((void (*)(void *))(*(void ***)arg0)[6])(arg0);
-    fn_802BDFF4((int *)((void **)lbl_8055FB30)[index]);
+    ((void (*)(int *, int))fn_802BDFF4)((int *)((void **)lbl_8055FB30)[index], 0);
 }
 
 typedef struct { int a, b; } Pair802C;
