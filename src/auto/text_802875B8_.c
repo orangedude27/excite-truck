@@ -311,9 +311,11 @@ s32 fn_80287B14(void) {
     return ((s32*)lbl_804B3150)[1];
 }
 
+#pragma dont_inline on
 s32 fn_80287B24(s32 arg0) {
     return ((s32*)lbl_804B3150)[0] + arg0 * 0x160;
 }
+#pragma dont_inline reset
 
 void fn_80287B38(s32 arg0) {
     s32 index = lbl_8055F6C0;
@@ -641,6 +643,83 @@ void fn_802885C0(void) {}
 s32 fn_802885C4(void *arg0, void *arg1) {
     return (s32)(lbl_80564268 * (*(f32 *)((u8 *)arg0 + 8) - *(f32 *)((u8 *)arg1 + 8)));
 }
+
+extern s32 fn_801E85A4(void);
+extern void *fn_801E8718(s32);
+extern s32 fn_801E866C(s32);
+extern f32 fn_801E88F0(s32);
+extern s32 fn_801E8954(s32);
+extern f32 PSVECSquareDistance(void *, void *);
+extern u8 lbl_804B3160[];
+extern s32 fn_802885C4(void *, void *);
+extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
+void fn_802885F0(void) {
+    struct Entry { s32 words[12]; } local[4];
+    struct Entry *entry;
+    s32 ids[4];
+    s32 *id;
+    s32 count;
+    s32 i;
+    s32 limit;
+    s32 current;
+    s32 j;
+    s32 flag;
+    f32 scale;
+    f32 scaleSquared;
+    f32 best;
+    f32 distance;
+    u8 *result;
+
+    count = fn_801E85A4();
+    entry = local;
+    id = ids;
+    i = 0;
+    goto copy_check;
+copy_loop:
+    *entry = *(struct Entry *)fn_801E8718(i);
+    *id = fn_801E866C(i);
+    entry++;
+    id++;
+    i++;
+copy_check:
+    if (i < count) goto copy_loop;
+
+    result = lbl_804B3160;
+    limit = *(s32 *)(lbl_804B3150 + 4);
+    i = 0;
+    goto outer_check;
+outer_loop:
+    current = fn_80287B24(i);
+    scale = fn_801E88F0(0);
+    scaleSquared = scale * scale;
+    best = PSVECSquareDistance((u8 *)current + 0x24, &local[0].words[9]) * scaleSquared;
+    flag = 0;
+    if (i == ids[0] && fn_801E8954(0) != 0) flag = 1;
+    j = 1;
+    if (flag != 0) {
+inner_loop:
+        scale = fn_801E88F0(j);
+        scaleSquared = scale * scale;
+        distance = PSVECSquareDistance((u8 *)current + 0x24, &local[j].words[9]) * scaleSquared;
+        if (best >= distance) best = distance;
+        flag = 0;
+        if (i == ids[j] && fn_801E8954(j) != 0) flag = 1;
+        j++;
+        if (flag != 0 && j < count) goto inner_loop;
+    }
+    if (flag != 0) {
+        *(s32 *)result = current;
+        *(s32 *)(result + 4) = i;
+        *(f32 *)(result + 8) = best;
+        result[0xC] = flag;
+        result += 0x10;
+    }
+    i++;
+outer_check:
+    if (i < limit) goto outer_loop;
+    qsort(lbl_804B3160, limit, 0x10, (int (*)(const void *, const void *))fn_802885C4);
+}
+
 #pragma scheduling invalid_target
 void fn_802887EC(void) {
     u8 *base = lbl_804B3150;
