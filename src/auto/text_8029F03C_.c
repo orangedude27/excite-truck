@@ -681,6 +681,7 @@ extern "C" void fn_802A042C(void *obj, Unk802A0794Params *pos) {
         i++;
     } while (i < fn_801E85A4());
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
