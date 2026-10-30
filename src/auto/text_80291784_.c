@@ -104,6 +104,7 @@ float fn_80291784(float a, float b, float c, float d) {
     return value - lbl_80564480;
 }
 
+#pragma scheduling invalid_target
 int fn_802917C0(void *arg0, void *arg1, void *arg2) {
     typedef struct {
         float x;
