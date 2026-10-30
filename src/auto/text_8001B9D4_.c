@@ -1,5 +1,7 @@
 #include <types.h>
 
+extern s32 fn_8001D020();
+
 extern char lbl_802FD6D8[];
 extern const char lbl_80558CD0;
 extern u8 lbl_8055D5D8;
@@ -539,75 +541,73 @@ extern const char lbl_802FD8C4[];
 #pragma scheduling on
 #pragma use_lmw_stmw off
 void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 var_r27;
-    s32 var_r4;
-    char *var_r28;
-    char *var_r31_2;
-    char *var_r5;
-    u8 temp_r3;
-    void *temp_r27;
-    void *var_r30;
-    void *var_r31;
+    char *name = (char *)arg1;
+    char *record;
+    char *freeEntry;
+    char *p;
+    char *out;
+    s32 i;
+    s32 room;
+    char c;
+    s32 *descriptor;
 
-    var_r28 = (char *)arg1;
     if (arg0 < 0) {
-        var_r31 = lbl_8055D5CC + 0x36B10;
+        record = (char *)(lbl_8055D5CC + 0x36B10);
     } else {
-        var_r31 = lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E04;
+        record = (char *)(lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E04);
     }
-    var_r30 = 0;
-    var_r27 = 0;
+    freeEntry = 0;
+    i = 0;
     do {
-        if (*((u8 *)var_r31 + 0x70) == 0) {
-            var_r30 = var_r31;
-        } else if (*(s32 *)((u8 *)var_r31 + 4) == arg2 &&
-                   *(s32 *)var_r31 != 0 &&
-                   stricmp(var_r28, *(const char **)var_r31) == 0) {
-            return var_r31;
+        if (*(u8 *)(record + 0x70) == 0) {
+            freeEntry = record;
+        } else if (*(s32 *)(record + 4) == arg2 &&
+                   *(s32 *)record != 0 &&
+                   stricmp(name, *(const char **)record) == 0) {
+            return record;
         }
-        var_r27++;
-        var_r31 = (u8 *)var_r31 + 0x74;
-    } while (var_r27 < 0xF0);
+        i++;
+        record += 0x74;
+    } while (i < 0xF0);
 
     if (arg3 == 0) {
         return 0;
     }
-    fn_802E30C8(lbl_802FD894, var_r28);
-    if (var_r30 == 0) {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD8C4, var_r28);
+    fn_802E30C8(lbl_802FD894, name);
+    if (freeEntry == 0) {
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD8C4, name);
     }
-    memset(var_r30, 0, 0x74);
+    memset(freeEntry, 0, 0x74);
 
-    temp_r27 = lbl_8055D5D0;
-    *((u8 *)temp_r27 + 8) = 0;
-    var_r31_2 = *(char **)temp_r27;
+    descriptor = lbl_8055D5D0;
+    *((u8 *)descriptor + 8) = 0;
+    p = *(char **)descriptor;
     for (;;) {
-        if (stricmp(var_r31_2, var_r28) == 0) {
+        if (stricmp(p, name) == 0) {
             break;
         }
-        while (*var_r31_2 != 0) {
-            var_r31_2++;
+        while (*p != 0) {
+            p++;
         }
-        var_r31_2++;
-        if (*var_r31_2 != 0) {
-            continue;
+        p++;
+        if (*p == 0) {
+            room = descriptor[1] - (p - *(char **)descriptor) - 1;
+            if (room <= 0) {
+                p[-1] = 0;
+            } else {
+                out = p;
+                do {
+                    c = *name++;
+                    *out++ = c;
+                } while (c != 0);
+            }
+            break;
         }
-        if (var_r31_2 - *(char **)temp_r27 >= *(s32 *)((u8 *)temp_r27 + 4)) {
-            var_r31_2[-1] = 0;
-        } else {
-            var_r5 = var_r31_2;
-            do {
-                temp_r3 = *var_r28;
-                *var_r5 = temp_r3;
-                var_r5++;
-            } while (*var_r28++ != 0);
-        }
-        break;
     }
-    *(char **)var_r30 = var_r31_2;
-    *(s32 *)((u8 *)var_r30 + 4) = arg2;
-    *((u8 *)var_r30 + 0x70) = 1;
-    return var_r30;
+    *(char **)freeEntry = p;
+    *(s32 *)(freeEntry + 4) = arg2;
+    *(u8 *)(freeEntry + 0x70) = 1;
+    return freeEntry;
 }
 #pragma pop
 
