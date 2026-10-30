@@ -48,8 +48,9 @@ extern void *fn_801792F8(void);
       *((u8 *)arg0 + 4) = 1;
   }
   
+#pragma dont_inline fn_8013472C
 #pragma push
-#pragma cplusplus on
+  #pragma cplusplus on
 extern "C" void fn_8013472C(void) {
     struct Dummy {
         virtual void f0();
@@ -85,6 +86,86 @@ extern "C" void fn_8013472C(void) {
 void __AXDSPInitCallback_80134770(void) {
       lbl_8055E0AC = 0;
   }
+
+extern char lbl_8032BBE8[];
+extern f32 lbl_805612E8, lbl_805612EC, lbl_805612F0, lbl_805612F8, lbl_805612FC, lbl_80561300;
+extern f32 lbl_8055E0A0, lbl_8055E0A4;
+extern f32 fn_80134B58(s32, f32);
+extern void fn_8013B4E0(void*, void*);
+extern f32 fn_8013672C(void);
+extern void fn_80137884(s32);
+extern void fn_80139044(void);
+extern void fn_8013BAE4(s32);
+extern void fn_801663C8(s32, void*, void*);
+extern void fn_8013A1E8(void);
+extern void fn_8015F554(void);
+extern void fn_80160850(void);
+void fn_8013477C(void *arg0) {
+    register unsigned char *obj = (unsigned char *)arg0 + 0x20;
+    register s32 count;
+    register unsigned char *end;
+    register unsigned char *entry;
+    register s32 i;
+    register void **out;
+    void *slot;
+    f32 value;
+    f32 temp;
+    f32 f0;
+    f32 f1;
+    f32 f2;
+
+    fn_8013472C();
+    count = *(s32 *)(obj + 0x3C0);
+    *(s32 *)&lbl_8055E0B0 = count;
+    end = obj + count * 0x78;
+    for (;;) {
+        count--;
+        *(s32 *)&lbl_8055E0B0 = count;
+        end -= 0x78;
+        if (count <= 0)
+            break;
+        if (*(s32 *)(end - 0x78) != 0x53)
+            break;
+    }
+    fn_8013B4E0(obj, arg0);
+    value = fn_80134B58((s32)(lbl_8032BBE8 + 0x0C), lbl_805612F0);
+    lbl_8055E0A0 = value;
+    if (value < lbl_805612F4) {
+        temp = lbl_805612E8 * fn_80134B58((s32)lbl_8032BBE8, lbl_805612EC);
+        lbl_8055E0A0 = fn_8013672C() - temp;
+    }
+    f1 = fn_80134B58((s32)(lbl_8032BBE8 + 0x1C), lbl_805612FC);
+    f2 = lbl_805612F8;
+    f0 = f2 * f1;
+    lbl_8055E0A8 = f0;
+    ((void (*)(const char *, float, float))fn_802E30C8)(lbl_8032BBE8 + 0x28, f0 / f2, f2);
+    f1 = fn_8013672C();
+    f0 = f1 * lbl_80561300;
+    lbl_8055E0A4 = fn_80134B58((s32)(lbl_8032BBE8 + 0x44), f0);
+    fn_80137884(*(s32 *)&lbl_8055E0B0);
+    fn_801E87A8();
+    fn_80139044();
+    fn_8013BAE4(*(s32 *)&lbl_8055E0B0);
+    fn_801663C8(*(s32 *)&lbl_8055E0B0, obj, (unsigned char *)arg0 + 0x3E4);
+    entry = obj;
+    out = lbl_8042F758;
+    i = 0;
+    do {
+        if (*(s32 *)entry != 0x53) {
+            slot = fn_801284F8(8, lbl_8032BBE8 + 0x58);
+            if (slot != 0) {
+                fn_8013471C(slot, i);
+                *out = slot;
+            }
+        }
+        entry += 0x78;
+        out++;
+        i++;
+    } while (i < *(s32 *)(obj + 0x3C0));
+    fn_8013A1E8();
+    fn_8015F554();
+    fn_80160850();
+}
 
 extern void fn_80160AE4(void);
 extern void fn_8015F558(void);
