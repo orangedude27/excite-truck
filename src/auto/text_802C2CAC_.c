@@ -62,28 +62,58 @@ void fn_802C2D94(void *arg0) {
 extern void *fn_8012C370(s32,u32 *,s32 *,s32,u8 *);
 extern void fn_802E317C(const char *,...);
 extern const char lbl_8034B020[],lbl_8034B048[];
+#pragma scheduling invalid_target
 void *fn_802C2DD4(s32 arg0) {
-    u32 sp10; s32 spC; u8 sp8; s32 y,x; u32 *p; u32 value; u8 t; void *obj;
-    obj=((void *(*)(s32,s32,u32 *,s32 *,s32,u8 *))fn_8012C370)(arg0,0x43414E56,&sp10,&spC,0,&sp8);
-    if(obj) {
-      if(sp10==1) { if(sp8) {
-        t=((u8 *)obj)[4];((u8 *)obj)[4]=((u8 *)obj)[7];((u8 *)obj)[7]=t;
-        t=((u8 *)obj)[5];((u8 *)obj)[5]=((u8 *)obj)[6];((u8 *)obj)[6]=t;
-        t=((u8 *)obj)[8];((u8 *)obj)[8]=((u8 *)obj)[11];((u8 *)obj)[11]=t;
-        t=((u8 *)obj)[9];((u8 *)obj)[9]=((u8 *)obj)[10];((u8 *)obj)[10]=t;
-        for(x=0;x<4;x++){t=((u8 *)obj)[12+x];((u8 *)obj)[12+x]=((u8 *)obj)[15-x];((u8 *)obj)[15-x]=t;
-        t=((u8 *)obj)[16+x];((u8 *)obj)[16+x]=((u8 *)obj)[19-x];((u8 *)obj)[19-x]=t;
-        t=((u8 *)obj)[20+x];((u8 *)obj)[20+x]=((u8 *)obj)[23-x];((u8 *)obj)[23-x]=t;
-        t=((u8 *)obj)[24+x];((u8 *)obj)[24+x]=((u8 *)obj)[27-x];((u8 *)obj)[27-x]=t;
-        t=((u8 *)obj)[28+x];((u8 *)obj)[28+x]=((u8 *)obj)[31-x];((u8 *)obj)[31-x]=t;
-        t=((u8 *)obj)[32+x];((u8 *)obj)[32+x]=((u8 *)obj)[35-x];((u8 *)obj)[35-x]=t;}
-        p=(u32 *)((u8 *)obj+0x24);*(void **)((u8 *)obj+4)=p;
-        for(y=0;y<*(s32 *)((u8 *)obj+0xC);y++)for(x=0;x<*(s32 *)((u8 *)obj+8);x++){value=*p;*p=(value<<24)|(value>>8);p++;}
-      }} else fn_802E317C(lbl_8034B020,arg0,1);
-    } else fn_802E317C(lbl_8034B048,arg0);
+    /* Fix note: explicit volatile byte swaps and bottom-tested pixel loops reproduce the image conversion. */
+    u32 sp10;
+    s32 spC;
+    u8 sp8;
+    u32 *pixels;
+    s32 row;
+    s32 col;
+    u32 value;
+    u8 temp;
+    void *obj;
+    obj = ((void *(*)(s32, s32, u32 *, s32 *, s32, u8 *))fn_8012C370)(arg0, 0x43414E56, &sp10, &spC, 0, &sp8);
+    if (obj != 0) {
+        if (sp10 == 1) {
+            if (sp8 != 0) {
+                volatile u8 *bytes = (volatile u8 *)obj;
+                pixels = (u32 *)(bytes + 0x24);
+                temp = bytes[4]; bytes[4] = bytes[7]; bytes[7] = temp;
+                temp = bytes[5]; bytes[5] = bytes[6]; bytes[6] = temp;
+                temp = bytes[8]; bytes[8] = bytes[11]; bytes[11] = temp;
+                temp = bytes[9]; bytes[9] = bytes[10]; bytes[10] = temp;
+                temp = bytes[12]; bytes[12] = bytes[15]; bytes[15] = temp;
+                temp = bytes[13]; bytes[13] = bytes[14]; bytes[14] = temp;
+                temp = bytes[16]; bytes[16] = bytes[19]; bytes[19] = temp;
+                temp = bytes[17]; bytes[17] = bytes[18]; bytes[18] = temp;
+                temp = bytes[20]; bytes[20] = bytes[23]; bytes[23] = temp;
+                temp = bytes[21]; bytes[21] = bytes[22]; bytes[22] = temp;
+                temp = bytes[24]; bytes[24] = bytes[27]; bytes[27] = temp;
+                temp = bytes[25]; bytes[25] = bytes[26]; bytes[26] = temp;
+                temp = bytes[28]; bytes[28] = bytes[31]; bytes[31] = temp;
+                temp = bytes[29]; bytes[29] = bytes[30]; bytes[30] = temp;
+                temp = bytes[32]; bytes[32] = bytes[35]; bytes[35] = temp;
+                temp = bytes[33]; bytes[33] = bytes[34]; bytes[34] = temp;
+                *(void **)(bytes + 4) = pixels;
+                for (row = 0; row < *(volatile s32 *)(bytes + 0xC); row++) {
+                    for (col = 0; col < *(volatile s32 *)(bytes + 8); col++) {
+                        value = *pixels;
+                        *pixels = (value << 24) | (value >> 8);
+                        pixels++;
+                    }
+                }
+            }
+        } else {
+            fn_802E317C(lbl_8034B020, arg0, sp10, 1);
+        }
+    } else {
+        fn_802E317C(lbl_8034B048, arg0);
+    }
     return obj;
 }
-
+#pragma scheduling on
 void fn_802C2FC4(void) {
     ((void (*)(void))fn_8012C4D8)();
 }
@@ -573,38 +603,143 @@ loop_3:
     }
 }
 
-extern const char lbl_8034B100[];
-void fn_802C3F00(s32 arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 arg5,s32 arg6,s32 arg7) {
-    s32 sp1C,sp18,sp14,sp10,spC,sp8;
-    s16 *dst;
-    u32 *src;
-    s32 pitch,skipSrc,skipDst,i,row;
-    u32 pixel;
-    sp8=arg1; spC=arg2; sp10=arg6; sp14=arg7; sp1C=arg3-arg1; sp18=arg4-arg2;
-    if(fn_802C3170((void *)arg5,&sp10,&sp14,&sp8,&spC,&sp1C,&sp18)!=0) {
-        src=(u32 *)fn_802C3060((void *)arg0,sp8,spC);
-        dst=(s16 *)fn_802C3044((void *)arg5,sp10,sp14);
-        pitch=*(s32 *)((u8 *)arg5+0x10)-sp1C*2;
-        skipSrc=(*(s32 *)((u8 *)arg0+0x10)-sp1C*4)/4;
-        skipDst=(pitch+((u32)pitch>>31))/2;
-        if(*(s8 *)arg5==3) {
-            row=sp18;
+#pragma push
+#pragma dont_inline on
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+#pragma processor 750
+void fn_802C3D74(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
+                  s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    s32 sp1C, sp18, sp14, sp10, spC, sp8;
+    u16 *src;
+    s32 *dst;
+    s32 srcRemain, dstRemain, srcSkip, dstSkip, i;
+    u8 format;
+    register s32 width;
+
+    sp8 = arg1;
+    spC = arg2;
+    sp10 = arg6;
+    sp14 = arg7;
+    sp1C = arg3 - arg1;
+    sp18 = arg4 - arg2;
+    if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
+        src = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
+        dst = (s32 *)fn_802C3060((void *)arg5, sp10, sp14);
+        width = sp1C;
+        srcRemain = *(s32 *)((u8 *)arg0 + 0x10) - width * 2;
+        format = *(u8 *)arg0;
+        dstRemain = *(s32 *)((u8 *)arg5 + 0x10) - width * 4;
+        srcSkip = (srcRemain + (s32)((u32)srcRemain >> 31)) >> 1;
+        dstSkip = dstRemain / 4;
+        if ((s8)format == 4) {
+            srcSkip *= 2;
+            dstSkip *= 4;
             do {
-                i=sp1C;
-                do { pixel=*src++; *dst++=((pixel&255)>>3)|(((pixel>>6)&0x3E0)&~0x7C00)|((((pixel>>16)&255)>>3)<<10); } while(--i>0);
-                src+=skipSrc; dst+=skipDst;
-            } while(--row>0);
-        } else if(*(s8 *)arg5==4) {
-            row=sp18;
+                i = sp1C;
+                do {
+                    u16 pixel = *src;
+                    s32 converted;
+                    src++;
+                    converted = fn_802C2CC4(pixel);
+                    i--;
+                    *dst = converted;
+                    dst++;
+                } while (i > 0);
+                src = (u16 *)((u8 *)src + srcSkip);
+                dst = (s32 *)((u8 *)dst + dstSkip);
+                sp18--;
+            } while (sp18 > 0);
+        } else if ((s8)format == 3) {
+            srcSkip *= 2;
+            dstSkip *= 4;
             do {
-                i=sp1C;
-                do { pixel=*src++; *dst++=(((pixel>>8)&0xF800)&~0x7E0)|((pixel>>5)&0x7E0)|((pixel>>3)&0x1F); } while(--i>0);
-                src+=skipSrc; dst+=skipDst;
-            } while(--row>0);
-        } else fn_802E317C((char *)lbl_8034B100,*(s8 *)arg0);
+                i = sp1C;
+                do {
+                    u16 pixel = *src;
+                    s32 converted;
+                    src++;
+                    converted = fn_802C2CAC(pixel);
+                    i--;
+                    *dst = converted;
+                    dst++;
+                } while (i > 0);
+                src = (u16 *)((u8 *)src + srcSkip);
+                dst = (s32 *)((u8 *)dst + dstSkip);
+                sp18--;
+            } while (sp18 > 0);
+        } else {
+            fn_802E317C(lbl_8034B0E4, (s32)(s8)format, *(s8 *)arg5);
+        }
     }
 }
+#pragma pop
 
+extern const char lbl_8034B100[];
+#pragma push
+#pragma scheduling invalid_target
+void fn_802C3F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    s32 sp1C, sp18, sp14, sp10, spC, sp8;
+    u8 *sourceObj, *targetObj;
+    u32 *src;
+    s16 *dst;
+    s32 format, skipSrc, skipDst, i;
+    u8 formatByte;
+    u32 pixel;
+
+    sourceObj = (u8 *)arg0;
+    targetObj = (u8 *)arg5;
+    sp8 = arg1;
+    spC = arg2;
+    sp10 = arg6;
+    sp14 = arg7;
+    sp1C = arg3 - arg1;
+    sp18 = arg4 - arg2;
+    if (fn_802C3170(targetObj, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
+        src = (u32 *)fn_802C3060(sourceObj, sp8, spC);
+        dst = (s16 *)fn_802C3044(targetObj, sp10, sp14);
+        formatByte = *(u8 *)targetObj;
+        format = (s8)formatByte;
+        skipSrc = (*(s32 *)(sourceObj + 0x10) - sp1C * 4) / 4;
+        skipDst = (*(s32 *)(targetObj + 0x10) - sp1C * 2) / 2;
+        if (format == 3) {
+            do {
+                i = sp1C;
+                do {
+                    pixel = *src++;
+                    i--;
+                    {
+                        s32 part = ((pixel >> 6) & 0x3E0) |
+                                   ((((s32)(u8)(pixel >> 8) >> 3) << 10) & 0x7C00);
+                        *dst = (s16)(((s32)(u8)pixel >> 3) | part);
+                    }
+                    dst++;
+                } while (i > 0);
+                src += skipSrc;
+                dst += skipDst;
+                sp18--;
+            } while (sp18 > 0);
+        } else if (format == 4) {
+            do {
+                i = sp1C;
+                do {
+                    pixel = *src++;
+                    i--;
+                    *dst++ = (s16)((((pixel >> 8) & 0xF800 & ~0x7E0) |
+                        ((pixel >> 5) & 0x7E0) & ~0x1F) |
+                        ((pixel >> 3) & 0x1F));
+                } while (i > 0);
+                src += skipSrc;
+                dst += skipDst;
+                sp18--;
+            } while (sp18 > 0);
+        } else {
+            fn_802E317C((char *)lbl_8034B100, *(s8 *)sourceObj);
+        }
+    }
+}
+#pragma scheduling on
+#pragma pop
 void fn_802C40B8(void *arg0, s32 arg1, s32 arg2) {
     if ((*(u8 *)((u8 *)lbl_8055FC00 + 1) & 4) != 0) {
         fn_802DB2C8();
@@ -619,6 +754,64 @@ void fn_802C40E8(void *arg0, s32 arg1, s32 arg2) {
     fn_802C3850((s32)arg0, 0, 0,
         *(s32 *)((u8 *)arg0 + 8), *(s32 *)((u8 *)arg0 + 0xC),
         lbl_8055FC00, arg1, arg2);
+}
+
+void fn_802C4610(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    s32 sp1C, sp18, sp14, sp10, spC, sp8;
+    s32 i, widthBytes, skipSrc, skipDst, var_r6;
+    u32 *var_r31, *var_r3;
+    u32 temp_r8, temp_r30, var_r0, var_r7;
+    s32 temp_r29, temp_r10, temp_r11, temp_r12;
+    u8 red, green, blue;
+
+    sp8 = arg1;
+    spC = arg2;
+    sp10 = arg6;
+    sp14 = arg7;
+    sp1C = arg3 - arg1;
+    sp18 = arg4 - arg2;
+    if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
+        var_r31 = (u32 *)fn_802C3060((void *)arg0, sp8, spC);
+        var_r3 = (u32 *)fn_802C3060((void *)arg5, sp10, sp14);
+        widthBytes = sp1C * 4;
+        skipSrc = (*(s32 *)((u8 *)arg0 + 0x10) - widthBytes) / 4;
+        skipDst = (*(s32 *)((u8 *)arg5 + 0x10) - widthBytes) / 4;
+        do {
+            var_r6 = sp1C;
+loop_3:
+            temp_r8 = *var_r31;
+            var_r31++;
+            var_r0 = *var_r3;
+            temp_r30 = temp_r8 >> 24;
+            if (temp_r30 == 0) {
+            } else if (temp_r30 == 0xFF) {
+                var_r0 = (var_r0 & 0xFF000000) | (temp_r8 & 0x00FFFFFF);
+            } else {
+                temp_r29 = 0xFF - temp_r30;
+                temp_r10 = (u8)(((temp_r29 * (u8)(var_r0 >> 16)) + (temp_r30 * (u8)(temp_r8 >> 16))) >> 8);
+                red = (u8)temp_r10;
+                temp_r10 = red + ((s32)red >> 7);
+                temp_r11 = (u8)(((temp_r29 * (u8)(var_r0 >> 8)) + (temp_r30 * (u8)(temp_r8 >> 8))) >> 8);
+                green = (u8)temp_r11;
+                temp_r11 = green + ((s32)green >> 7);
+                temp_r12 = (u8)(((temp_r29 * (u8)var_r0) + (temp_r30 * (u8)temp_r8)) >> 8);
+                blue = (u8)temp_r12;
+                temp_r12 = blue + ((s32)blue >> 7);
+                var_r7 = ((u32)temp_r10 << 16);
+                var_r7 |= (u32)temp_r11 << 8;
+                var_r0 = (var_r0 & 0xFF000000) | (temp_r12 & 0xFF);
+                var_r0 |= var_r7;
+            }
+            var_r6--;
+            *var_r3 = var_r0;
+            var_r3++;
+            if (var_r6 > 0) goto loop_3;
+            var_r31 += skipSrc;
+            var_r3 += skipDst;
+            i = sp18 - 1;
+            sp18 = i;
+        } while (i > 0);
+    }
 }
 
 extern void *fn_8012C370(s32, u32 *, s32 *, s32, u8 *);
