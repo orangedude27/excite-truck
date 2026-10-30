@@ -578,7 +578,7 @@ check:
 }
 
 void fn_802A5A90(void);
-s32 fn_802A79CC();
+s32 fn_802A79CC(s32);
 void fn_802A5A90(void) {
     s32 *ptr = lbl_804BCFA8;
     s32 i = 0;
@@ -1400,10 +1400,7 @@ void fn_802A775C(void *arg0) {
 
 #pragma scheduling invalid_target
 s32 fn_802A79CC(s32 arg0) {
-    register u8 *object = (u8 *)arg0;
-    register s32 alpha;
-    register s32 offset;
-    register s32 i;
+    s32 object = arg0;
     f32 pointScaleFactor;
     double intBias;
     f32 rate;
@@ -1416,11 +1413,14 @@ s32 fn_802A79CC(s32 arg0) {
     f32 radiusSquared;
     s32 raw;
     s32 magnitude;
+    s32 alpha;
+    s32 offset;
+    s32 i;
 
-    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 0x24, object + 0xC);
+    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 0x24, (u8 *)object + 0xC);
     radiusScale = lbl_80564850;
     alpha = 0xFF;
-    radius = *(f32 *)(object + 0x18);
+    radius = *(f32 *)((u8 *)object + 0x18);
     delta = distance - (radiusScale * radius);
     scaled = lbl_805648D8 * (lbl_80564854 * delta);
     raw = (s32)scaled;
@@ -1429,11 +1429,11 @@ s32 fn_802A79CC(s32 arg0) {
         alpha = magnitude;
 
     if (alpha > 0) {
-        rate = fn_802C9A4C(*(f32 *)(object + 0x30));
-        fn_802C8BD0(*(s32 *)(object + 0x2C));
+        rate = fn_802C9A4C(*(f32 *)((u8 *)object + 0x30));
+        fn_802C8BD0(*(s32 *)((u8 *)object + 0x2C));
 
-        if (fn_802CE860(*(s32 *)(object + 4)) != 0) {
-            register u32 alphaWord = (u32)alpha ^ 0x80000000;
+        if (fn_802CE860(*(s32 *)((u8 *)object + 4)) != 0) {
+            u32 alphaWord = (u32)alpha ^ 0x80000000;
             u32 highWord = 0x43300000;
             volatile union {
                 double value;
@@ -1444,7 +1444,7 @@ s32 fn_802A79CC(s32 arg0) {
             } conversion;
 
             intBias = lbl_80564848;
-            radius = *(f32 *)(object + 0x18);
+            radius = *(f32 *)((u8 *)object + 0x18);
             radiusSquared = radius * radius;
             conversion.words.low = alphaWord;
             conversion.words.high = highWord;
@@ -1456,9 +1456,9 @@ s32 fn_802A79CC(s32 arg0) {
 
         loop:
             {
-                register u8 *point = *(u8 **)object + offset;
-                f32 distSq = PSVECSquareDistance(point, object + 0xC);
-                f32 pointScale = pointScaleFactor * *(f32 *)(object + 8);
+                u8 *point = *(u8 **)(void *)object + offset;
+                f32 distSq = PSVECSquareDistance(point, (u8 *)object + 0xC);
+                f32 pointScale = pointScaleFactor * *(f32 *)((u8 *)object + 8);
                 f32 pointX = *(f32 *)(point + 0);
                 f32 pointY = *(f32 *)(point + 4);
                 f32 pointZ = *(f32 *)(point + 8);
@@ -1476,7 +1476,7 @@ s32 fn_802A79CC(s32 arg0) {
                 i++;
             }
         check:
-            if (i < *(s32 *)(object + 4))
+            if (i < *(s32 *)((u8 *)object + 4))
                 goto loop;
             fn_802CE868();
         }
