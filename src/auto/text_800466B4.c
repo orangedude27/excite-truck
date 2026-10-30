@@ -65,38 +65,49 @@ extern f32 lbl_8055D9B0;
 extern f32 lbl_80560BD8;
 extern f32 lbl_80560BE4;
 s32 select_2obj_first(void *arg0) {
+    struct Pair { u32 x, y; };
     u8 *obj = (u8 *)arg0;
+    u8 *aEnd;
+    u8 *bEnd;
     u8 *a;
     u8 *b;
     u8 *bestA;
     u8 *bestB;
-    u8 *aEnd = obj + 0xEC;
-    u8 *bEnd;
-    f32 best = lbl_80558EC0;
-    f32 threshold = lbl_80560BD8;
-    f32 length = lbl_80560BE4;
+    f32 length;
+    f32 best;
+    f32 threshold;
+    volatile f32 temp[2];
 
+    best = lbl_80558EC0;
+    threshold = lbl_80560BD8;
     a = obj + 0xC8;
+    length = lbl_80560BE4;
+    aEnd = obj + 0xEC;
     do {
         if (*(s8 *)(a + 8) == 0) {
             b = a + 0xC;
             bEnd = obj + 0xEC;
             do {
                 if (*(s8 *)(b + 8) == 0) {
-                    f32 dy, dx, mag, scale, ny, nx, v;
-                    f32 p, q, score;
-                    volatile f32 c0, c1;
+                    register f32 dy, dx;
+                    f32 q, p;
+                    f32 mag;
+                    f32 v;
+                    f32 scale;
+                    f32 c0, c1, score;
                     dx = *(f32 *)(b + 0) - *(f32 *)(a + 0);
                     dy = *(f32 *)(b + 4) - *(f32 *)(a + 4);
                     mag = (f32)fn_8002F234((f64)(dx * dx + dy * dy));
                     p = *(f32 *)(obj + 0xB4);
                     q = *(f32 *)(obj + 0xB8);
                     scale = length / mag;
-                    nx = dx * scale;
-                    ny = dy * scale;
+                    dx *= scale;
+                    dy *= scale;
                     v = lbl_8055D990 * scale;
-                    c0 = p * nx + q * ny;
-                    c1 = q * nx - p * ny;
+                    c0 = p * dx + q * dy;
+                    c1 = q * dx - p * dy;
+                    temp[0] = c0;
+                    temp[1] = c1;
                     if (v <= lbl_8055D9B0 || v >= lbl_80558EB8)
                         continue;
                     score = *(f32 *)(obj + 0x3C8) * c0 + *(f32 *)(obj + 0x3CC) * c1;
@@ -120,11 +131,9 @@ s32 select_2obj_first(void *arg0) {
     } while (a < aEnd);
     if (best == lbl_80558EC0)
         return 0;
-    *(u32 *)(obj + 0xF8) = *(u32 *)(bestA + 0);
-    *(u32 *)(obj + 0xFC) = *(u32 *)(bestA + 4);
+    *(struct Pair *)(obj + 0xF8) = *(struct Pair *)bestA;
     *(u32 *)(obj + 0x100) = *(u32 *)(bestA + 8);
-    *(u32 *)(obj + 0x104) = *(u32 *)(bestB + 0);
-    *(u32 *)(obj + 0x108) = *(u32 *)(bestB + 4);
+    *(struct Pair *)(obj + 0x104) = *(struct Pair *)bestB;
     *(u32 *)(obj + 0x10C) = *(u32 *)(bestB + 8);
     return 2;
 }
@@ -589,6 +598,8 @@ init_samples:
     return var_r23;
 }
 #pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
 extern void fn_8005EB44(void);
 extern s32 fn_8005EE7C(void);
 extern void read_kpad_stick(s32, void *);
@@ -605,13 +616,18 @@ extern const char *lbl_80558E88;
 extern f64 lbl_80560C28;
 extern u8 lbl_8037C808[];
 void KPADInit(void) {
-    f32 f29 = lbl_80560BD8;
-    f32 f30 = lbl_80560BE4;
-    s32 i;
+    f32 f29, f30;
+    f64 bias;
+    union { u32 word[2]; f64 value; } conversion;
     u8 *p;
+    s32 i;
     fn_8005EB44();
-    while (fn_8005EE7C() != 3) {}
-    for (i = 0, p = lbl_8037C808; i < 4; i++, p += 0x400) {
+    if (fn_8005EE7C() != 3) return;
+    p = lbl_8037C808;
+    f29 = lbl_80560BD8;
+    f30 = lbl_80560BE4;
+    bias = lbl_80560C28;
+    for (i = 0; i < 4; i++, p += 0x400) {
         *(s32 *)(p + 0x3EC) = 1;
         *(s32 *)(p + 0x3FC) = 0;
         *(s32 *)(p + 0x3F0) = 0;
@@ -636,11 +652,16 @@ void KPADInit(void) {
         *(f32 *)(p + 0x9C) = f30;
         *(f32 *)(p + 0x94) = f30;
         *(f32 *)(p + 0x8C) = f30;
+        conversion.word[1] = fn_80062458();
+        conversion.word[0] = 0x43300000;
         *(s16 *)(p + 0x3E0) = -0x63C0;
         *(s16 *)(p + 0x3E2) = 0;
         *(s16 *)(p + 0x3E8) = -0x63C0;
         *(s16 *)(p + 0x3EA) = 0;
-        lbl_80558EB8 = f30 + (f32)fn_80062458();
+        {
+            f32 delta = (f32)(conversion.value - bias);
+            lbl_80558EB8 = f30 + delta;
+        }
     }
     lbl_8055D99C = f30 / lbl_80558EBC;
     lbl_8055D9B0 = lbl_80558EA0 / lbl_80560BE0;
@@ -651,7 +672,7 @@ void KPADInit(void) {
     lbl_8055D9A8[1] = lbl_80560C30 + lbl_80558EB4;
     lbl_8055D9A0[1] = lbl_80560BE8 - lbl_80558EB4;
     lbl_8055D994 = lbl_80558EA8 * lbl_80558EA8;
-    for (i = 3; i >= 0; i--) reset_kpad(lbl_8037C808 + i * 0x400);
+    for (p = lbl_8037C808 + 0xC00; p >= lbl_8037C808; p -= 0x400) reset_kpad(p);
     OSRegisterVersion(lbl_80558E88);
 }
 
