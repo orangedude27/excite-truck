@@ -562,6 +562,7 @@ void fn_802C7AE0(long, void*, long, float);
 void fn_801F13F4(long, float, float);
 #pragma push
 #pragma processor 750
+#pragma optimization_level 2
 #pragma scheduling invalid_target
 void fn_801EDF18(void* arg0) {
     struct Settings {
@@ -588,10 +589,15 @@ void fn_801EDF18(void* arg0) {
     }
     if (index < 0) goto done;
 
-    if (*(long*)((char*)arg0 + 0x40) == fn_801E866C(-1)) {
-        if (fn_801E89A4(-1) == 0) goto done;
+    if (*(long*)((char*)arg0 + 0x40) != fn_801E866C(-1)) goto process;
+    switch (fn_801E89A4(-1)) {
+    case 0:
+        goto done;
+    default:
+        goto process;
     }
 
+process:
     firstValue = *(volatile long*)((char*)arg0 + 0x28);
     secondValue = *(volatile long*)((char*)arg0 + 0x2C);
     settings.first = firstValue;
