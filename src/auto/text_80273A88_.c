@@ -124,7 +124,7 @@ void fn_80274268(void *arg0) {
 #pragma scheduling on
 void fn_8027445C(void) {
     extern void fn_80274268();
-extern void fn_80274460(void);
+  extern void fn_80274460();
     fn_80274268();
 }
 
