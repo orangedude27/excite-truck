@@ -1043,7 +1043,7 @@ void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *a
     return arg0;
 }
 
-extern void *fn_802C86DC();
+extern void *fn_802C86DC(void);
 extern void fn_802C8BD0(int);
 extern int fn_802C8DBC(int);
 extern void fn_802C8E48(void);
