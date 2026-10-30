@@ -163,7 +163,7 @@ extern long fn_800B7DB0(long, void (*)(long), void (*)(int));
 extern long fn_800B7968(long, long, long, void *);
 extern void fn_802E317C(const char *, ...);
 #pragma push
-#pragma optimization_level 2
+#pragma scheduling invalid_target
 void fn_802E9CF0(void) {
     char *strings = (char *)&lbl_8034E260;
     char *base = (char *)lbl_80507600;
@@ -223,6 +223,70 @@ void fn_802EA7E0(void) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma dont_inline on
+long *fn_802EA834(long arg0, long *arg1) {
+    extern char lbl_8055D294;
+    extern char lbl_8055D2A4;
+    extern void fn_801345D8(char *, long, const char *, ...);
+    extern void OSSleepTicks(unsigned long long);
+    extern char *strncpy(char *, const char *, unsigned long);
+    typedef long (*Callback)(void *);
+    char buffer[0x410];
+    long *result;
+    long *table;
+    long index;
+    long *base;
+    long *copy;
+    char *destination;
+    unsigned long tick;
+
+    result = 0;
+    destination = (char *)lbl_80507600 + 0x40;
+    if (arg0 <= -2) {
+        index = -2 - arg0;
+        if ((index >= 0) && (index < 3)) {
+            table = (long *)((char *)lbl_80507600 + 0xA0);
+            if (table[index * 2] != 0) {
+                result = fn_802E9A3C(table[index * 2], table[index * 2 + 1]);
+            }
+        }
+        if (result != 0) {
+            strncpy(destination, &lbl_8055D2A4, 0x1F);
+            destination[0x1F] = 0;
+        }
+    } else {
+        base = (long *)((char *)lbl_80507600 + 0x1218 + arg0 * 0x610);
+        copy = (long *)((char *)base + 0x200);
+        fn_801345D8(buffer, 0x40A, &lbl_8055D294, base, copy);
+        ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x280, buffer);
+        result = fn_802E9A6C((long)buffer);
+        ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x290, buffer, result);
+        if (result != 0) {
+            ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x2A0, buffer,
+                ((Callback)(*(long *)((char *)*(long **)result + 0x10)))(result));
+            strncpy(destination, (char *)copy, 0x1F);
+            destination[0x1F] = 0;
+        } else {
+            ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x2BC, buffer);
+        }
+    }
+    if (result != 0) {
+        *arg1 = ((Callback)(*(long *)((char *)*(long **)result + 0x10)))(result);
+    } else {
+        ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x2D8, arg0);
+        if (lbl_80560062 != 0) {
+            tick = *(volatile unsigned long *)0x800000F8;
+            ((void (*)(int, int))OSSleepTicks)(0, (tick / 4000) * 1000);
+        }
+    }
+    return result;
+}
+#pragma dont_inline reset
+#pragma scheduling on
+#pragma pop
+
 void fn_802EAA08(void) {
     int offset = lbl_805600A4;
     int end = lbl_805600B8;
@@ -273,7 +337,6 @@ int fn_802EBD40(void) {
     extern void OSSleepTicks(unsigned long long);
     char *base = (char *)&lbl_8034E260;
     int zero = 0;
-    register unsigned int *systemBase = (unsigned int *)0x80000000;
     register unsigned int multiplier = 0x10624DD3;
     register int elapsed;
     unsigned int clock;
@@ -281,18 +344,13 @@ int fn_802EBD40(void) {
     lbl_80560062 = zero;
     ((void (*)(char *, ...))fn_802E30C8)(base + 0x65C);
     elapsed = 0;
-    goto sleep_loop;
-sleep_loop:
-    clock = systemBase[0x3E] >> 2;
-    ((void (*)(int, int))OSSleepTicks)(
-        0, ((clock / 250) & 0x0FFFFFFC) + (clock / 1000));
-    elapsed += 5;
-    if (elapsed <= 0x3E8) {
-        goto sleep_loop;
-    }
+    do {
+        clock = *(volatile unsigned int *)0x800000F8 >> 2;
+        ((void (*)(int, int))OSSleepTicks)(
+            0, (clock / 1000) + ((clock / 250) & 0x0FFFFFFC));
+        elapsed += 5;
+    } while (elapsed <= 0x3E8);
     ((void (*)(char *, ...))fn_802E30C8)(base + 0x67C);
-    goto check_done;
-check_done:
     if ((unsigned char)lbl_80560063 != 0) {
         ((void (*)(char *, ...))fn_802E30C8)(base + 0x6A8);
     }
