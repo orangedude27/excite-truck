@@ -88,13 +88,29 @@ extern unsigned char lbl_803432EC[];
 extern void fn_80246CB8(void *);
 extern char lbl_80343780[];
 extern float lbl_8055F264;
+extern unsigned char lbl_8055F268;
+extern char lbl_8034333C[];
+extern char lbl_80343348[];
+extern char lbl_8034397C[];
+extern char lbl_8055BE98;
+extern float fn_8020A5F0(void);
+extern void fn_8023D704(s32);
+extern void fn_80129AFC(void);
+extern void fn_802E47E8(void);
+extern void fn_8023D7CC(void);
+extern s32 fn_80246E4C(void);
+extern s32 fn_80278A1C(const char *);
+extern s32 fn_80012818(void);
+extern void *fn_80012820(s32);
+extern void fn_8020C91C(s32);
+extern void fn_8023BFBC(s32, s32);
+extern void fn_802483E0(void);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma optimization_level 4
 #pragma scheduling invalid_target
 s32 fn_80246938(void) {
-    register s32 zero;
-    s32 index;
+    register s32 index;
     struct {
         volatile s32 args[5];
         s32 text;
@@ -108,26 +124,25 @@ s32 fn_80246938(void) {
     index = fn_802E4A10();
     if (index >= 0 && index < 4) {
         fn_80214A9C(0x1F);
-        zero = 0;
         while (((s32 (*)(s32))fn_802E8690)(index) != 0) {
-            frame.zero = zero;
+            frame.zero = 0;
             frame.text = (s32)lbl_80343720;
             frame.itemIndex = index;
-            frame.values[0] = zero;
+            frame.values[0] = 0;
             frame.values[1] = 5;
             frame.values[2] = (s32)&frame.text;
-            frame.values[3] = zero;
-            frame.values[4] = zero;
-            frame.values[5] = (s32)&lbl_8055BE80;
-            frame.values[6] = 3;
+            frame.values[3] = 0;
+            frame.values[4] = 0;
             frame.values[7] = fn_80131234((s32 *)lbl_80343280);
-            frame.values[8] = zero;
-            frame.values[9] = zero;
-            frame.values[10] = (s32)&lbl_8055BE88;
-            frame.values[11] = 3;
+            frame.values[6] = 3;
+            frame.values[5] = (s32)&lbl_8055BE80;
+            frame.values[8] = 0;
+            frame.values[9] = 0;
             frame.values[12] = fn_80131234((s32 *)lbl_80343294);
-            frame.values[13] = zero;
-            frame.values[14] = zero;
+            frame.values[11] = 3;
+            frame.values[10] = (s32)&lbl_8055BE88;
+            frame.values[13] = 0;
+            frame.values[14] = 0;
             frame.values[15] = lbl_804988F0[0];
             frame.values[16] = lbl_804988F0[1];
             frame.values[17] = lbl_804988F0[2];
@@ -468,15 +483,23 @@ void fn_802478A4(void) {
     s32 data[40];
     volatile s32 *q = (volatile s32 *)lbl_804988F0;
     volatile s32 *p = (volatile s32 *)lbl_802FA3F0;
+    register s32 zero, eight, one, three, four, five, six;
     s32 b0 = lbl_804988F0[0];
     s32 b1, b2, b3, b4;
     s32 a0, a2, a3, a4;
     s32 stringBase;
 
+    zero = 0;
+    eight = 8;
+    one = 1;
+    three = 3;
+    four = 4;
+    five = 5;
+    six = 6;
     b1 = q[1];
-    data[6] = 8;
+    data[6] = eight;
     b2 = q[2];
-    data[11] = 8;
+    data[11] = eight;
     a0 = *p++;
     stringBase = (s32)lbl_80343270;
     b3 = q[3];
@@ -489,29 +512,30 @@ void fn_802478A4(void) {
     data[12] = (s32)fn_80247880;
     data[5] = (s32)&lbl_8055BAC0;
     data[10] = (s32)&lbl_8055BABC;
-    data[13] = 1;
-    data[8] = 0;
-    data[9] = 0;
-    data[14] = 0;
+    data[13] = one;
+    data[8] = zero;
+    data[9] = zero;
+    data[14] = zero;
     data[15] = stringBase + 0x2A0;
-    data[16] = 0;
-    data[17] = 0;
-    data[18] = 3;
-    data[19] = 0;
+    data[16] = zero;
+    data[17] = zero;
+    data[18] = three;
+    data[19] = zero;
     data[20] = stringBase + 0x2AC;
-    data[21] = 0;
-    data[22] = 0;
-    data[23] = 4;
-    data[24] = 0;
+    data[21] = zero;
+    data[22] = zero;
+    data[23] = four;
+    data[24] = zero;
     data[25] = stringBase + 0x2B8;
-    data[26] = 0;
-    data[27] = 0;
-    data[28] = 5;
-    data[29] = 0;
+    data[26] = zero;
+    data[27] = zero;
+    data[28] = five;
+    data[29] = zero;
     data[30] = (s32)&lbl_8055B860;
-    data[31] = 6;
-    data[32] = 0;
-    data[33] = -1;
+    data[31] = six;
+    data[32] = zero;
+    eight = -1;
+    data[33] = eight;
     data[34] = 0x1B;
     data[35] = b0;
     data[36] = b1;
@@ -927,6 +951,56 @@ after_second:
     if (converted < 0xFF)
         alpha = converted;
     fn_802C942C((alpha << 24) | 0xFFFFFF);
+}
+
+void fn_80248E30(void *arg0) {
+    extern float lbl_805638DC;
+    extern char lbl_803438A0[];
+    extern void fn_8020A634(void);
+    extern s32 fn_8020A640(void);
+    extern void fn_80221F94(void *, s32);
+    register s32 now;
+    register s32 state;
+    s32 duration;
+    register s32 elapsed;
+    float value;
+    float factor;
+
+    if (*(s32 *)((char *)arg0 + 0x20) == 0 &&
+        *(s32 *)((char *)arg0 + 0x18) == 1)
+        return;
+
+    now = fn_802E2C20();
+    if ((*(s32 *)((char *)arg0 + 0x28) &
+         *(s32 *)((char *)arg0 + 0x18)) != 0 &&
+        fn_8020A640() != 0) {
+        elapsed = now - *(s32 *)((char *)arg0 + 0x1C);
+        duration = *(s32 *)((char *)arg0 + 0x20);
+        if (elapsed > duration - 0x190) {
+            factor = lbl_80563898;
+            value = (float)(duration - elapsed) / lbl_805638DC;
+            factor = factor < value ? value : factor;
+            factor = factor > lbl_805638B0 ? lbl_805638B0 : factor;
+            fn_80246CAC(factor);
+        }
+    }
+
+    if (now > *(s32 *)((char *)arg0 + 0x1C) +
+              *(s32 *)((char *)arg0 + 0x20)) {
+        state = *(s32 *)((char *)arg0 + 0x18);
+        switch (state) {
+        case 1: fn_80221F94(arg0, -0xEA); break;
+        case 4: fn_80221F94(arg0, -1); break;
+        case 2: fn_80221F94(arg0, -2); break;
+        default: fn_802E317C(lbl_803438A0); break;
+        }
+        if ((*(s32 *)((char *)arg0 + 0x28) &
+             *(s32 *)((char *)arg0 + 0x18)) != 0 &&
+            fn_8020A640() != 0) {
+            fn_8020A634();
+            fn_80246CAC(lbl_80563898);
+        }
+    }
 }
 
 #pragma scheduling off
