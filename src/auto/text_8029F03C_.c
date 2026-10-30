@@ -577,7 +577,11 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
 #pragma pop
 
 #pragma pop
+#pragma push
 #pragma cplusplus on
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
 extern "C" void *fn_801E8718(int);
 extern "C" float PSVECDotProduct(const float *, const float *);
