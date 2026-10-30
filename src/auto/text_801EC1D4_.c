@@ -11,7 +11,6 @@ void fn_802C6CF8(long);
 #pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-void fn_801EC9CC(void*, int);
 void fn_80128668(void*);
 void fn_801E323C(void);
 void fn_801ECCE0(long, long);
