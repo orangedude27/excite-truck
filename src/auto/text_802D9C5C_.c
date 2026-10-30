@@ -443,7 +443,69 @@ void *fn_802DA918(float arg0, float arg1, float arg2) {
     return result;
 }
 
-#pragma scheduling on
+extern void *memset(void *, int, unsigned int);
+#pragma opt_propagation off
+void fn_802DAA18(void *arg0) {
+    extern void *lbl_8055FE60;
+    extern void *lbl_8055FE5C;
+    extern char lbl_80346798[];
+    extern void fn_802E317C(char *, ...);
+    extern int memcpy(void *, const void *, unsigned int);
+    unsigned char sp8[0x3C0];
+    void *var_r31 = arg0;
+    register unsigned char *ctx = (unsigned char *)lbl_8055FE5C;
+    unsigned char *entry;
+    unsigned char *var_r29;
+    char *format;
+    void *name;
+    int size;
+
+    lbl_8055FE60 = var_r31;
+    if (var_r31 == 0) {
+        entry = *(unsigned char **)(ctx + 0x20);
+        if ((unsigned int)entry + 0x10000 == 0xFFFF) {
+            memset(sp8, 0, 0x3C0);
+            ctx[0x25] = 0;
+            var_r31 = (void *)1;
+            if (*(int *)(ctx + 0x10) + 0x3E0 > *(int *)(ctx + 0xC)) {
+                size = *(volatile int *)(ctx + 0xC);
+                format = lbl_80346798;
+                name = *(void **)(ctx + 8);
+                fn_802E317C(format, name, 0x3D8, size / 0x400);
+                var_r29 = 0;
+            } else {
+                *(int *)(*(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10)) = (int)var_r31;
+                var_r29 = *(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10) + 4;
+                *(int *)(*(unsigned char **)(ctx + 4) + *(int *)(ctx + 0x10) + 0x3DC) = 0x3D8;
+                *(int *)(ctx + 0x10) = *(int *)(ctx + 0x10) + 0x3E0;
+            }
+            *(int *)(var_r29 + 0) = 7;
+            *(int *)(var_r29 + 4) = 0;
+            *(int *)(var_r29 + 8) = 0x50;
+            *(int *)(var_r29 + 0xC) = 0;
+            *(int *)(var_r29 + 0x14) = 0;
+            var_r29[0x10] = (unsigned char)var_r31;
+            memcpy(var_r29 + 0x18, sp8, 0x3C0);
+            *(unsigned char **)(ctx + 0x20) = var_r29;
+        }
+    }
+    var_r31 = *(void **)(ctx + 0x20);
+    entry = (unsigned char *)var_r31;
+    if (*(int *)(entry + 0xC) == 0) {
+        ((void (*)(void *, void *, int))(*(void **)(ctx + 0x14)))(
+            *(void **)(entry + 4), entry + 0x18, *(int *)(entry + 8));
+    } else {
+        ((void (*)(void *, void *, int))(*(void **)(ctx + 0x18)))(
+            *(void **)(entry + 4), entry + 0x18, *(int *)(entry + 8));
+    }
+    var_r29 = *(unsigned char **)(entry + 0x14);
+    if (var_r29 != 0) {
+        ((void (*)(void *, void *, int))(*(void **)(ctx + 0x1C)))(
+            *(void **)var_r29, var_r29 + 8, *(int *)(var_r29 + 4));
+    }
+    ctx[0x24] = entry[0x10];
+}
+#pragma opt_propagation reset
 void fn_802DABA4(float *arg0) {
     float sp8, spC, sp10, sp14, sp18, sp1C, sp20, sp24, sp28, sp2C, sp30, sp34;
     float f6 = arg0[0];
@@ -476,3 +538,27 @@ void fn_802DAC54(void) {
 unsigned char fn_802DAC64(void) {
     return *((unsigned char *)lbl_8055FE5C + 0x24);
 }
+struct DaaContext {
+    int unk_0;
+    unsigned char *buffer;
+    void *name;
+    int capacity;
+    int used;
+    void *callback0;
+    void *callback1;
+    void *callback2;
+    void *current;
+    unsigned char status;
+    unsigned char initialized;
+};
+
+struct DaaRecord {
+    int kind;
+    int unk_4;
+    int capacity;
+    int kind2;
+    unsigned char status;
+    unsigned char pad_11[3];
+    void *next;
+    unsigned char data[0x3C0];
+};
