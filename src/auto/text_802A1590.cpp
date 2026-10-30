@@ -109,7 +109,7 @@ class Item802A194C { public: virtual void v0(); virtual void v1(); virtual void 
 extern "C" char lbl_8055CB70;
 extern "C" void *fn_802AE414(void *);
 extern "C" void fn_801345D8(void *, s32, const char *, s32);
-extern "C" s32 fn_802A194C(void);
+extern "C" void *fn_802A194C(void *);
 extern "C" void fn_80287B38(void *);
 extern "C" f32 fn_801E7E24(void);
 extern "C" int fn_802BF4F0(void);
@@ -144,7 +144,7 @@ loop:
         if (obj != 0)
             obj = (void *)((Item *)obj)->v21(&lbl_8055CB70);
         if (obj != 0)
-            *entry = (void *)fn_802A194C();
+            *entry = fn_802A194C(obj);
     }
     index++;
     entry++;
@@ -431,52 +431,85 @@ extern "C" void fn_802A1F00(void *arg0) {
 extern "C" void* fn_80287B24(s32);
 extern "C" void fn_802A4658(s32);
 extern "C" f32 lbl_80564730, lbl_80564748, lbl_8056474C, lbl_80564750;
+#pragma cplusplus on
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling off
-extern "C" void fn_802A1F88(void* arg0) {
-    f32 step = lbl_80564748 * fn_801E7E24();
-    f32 scale = lbl_8056474C;
-    f32 max = lbl_80564750;
-    f32 bound = lbl_80564730;
-    s32 i = 0;
-    void* p = arg0;
-    do {
-        void* obj = fn_80287B24(i);
+extern "C" void fn_802A1F88(void *arg0) {
+    register f32 step;
+    f32 bound;
+    register f32 max;
+    register f32 scale;
+    register void *p;
+    register char *wheel;
+    register s32 i;
+    f32 rawStep;
+    f32 stepScale;
+
+    rawStep = fn_801E7E24();
+    stepScale = lbl_80564748;
+    p = arg0;
+    scale = lbl_8056474C;
+    i = 0;
+    step = stepScale * rawStep;
+    max = lbl_80564750;
+    bound = lbl_80564730;
+
+    goto loop_test;
+loop_body:
+    {
+        void *obj = fn_80287B24(i);
         if (fn_802BF4F0() != 0) {
-            char* wheel = (char*)obj + 0x70;
-            s32 active = 4;
-            s32 j = 0;
-            f32 threshold = fn_802BF590();
+            register s32 active;
+            register s32 j;
+            f32 threshold;
+            wheel = (char *)obj + 0x70;
+            active = 4;
+            j = 0;
+            threshold = fn_802BF590();
             do {
-                if (*(f32*)(wheel + 0x10) >= threshold && *(u8*)(wheel + 0x30) == 0)
-                    --active;
+                if (*(f32 *)(wheel + 0x10) < threshold) goto wheel_next;
+                if (*(u8 *)(wheel + 0x30) != 0) goto wheel_next;
+                --active;
+wheel_next:
                 ++j;
                 wheel += 0x3C;
             } while (j < 4);
             if (active == 0) goto skip;
         }
         {
-            f32 a = *(f32*)((char*)obj + 0x110);
-            f32 b = *(f32*)((char*)obj + 0x14C);
-            if (a > b) b = a;
+            f32 b = *(f32 *)((char *)obj + 0x14C);
+            f32 a = *(f32 *)((char *)obj + 0x110);
+            b = (b > a) ? a : b;
+            f32 speed = *(f32 *)((char *)obj + 0x50);
             f32 amount = scale * b;
-            f32 speed = *(f32*)((char*)obj + 0x50) * step;
-            if (speed > amount) amount = speed;
-            if (amount > max) amount = max;
-            if (*(f32*)((char*)p + 0x14) > bound - lbl_80558DC4)
-                *(f32*)((char*)p + 0x14) -= bound;
-            *(f32*)((char*)p + 0x14) += amount;
-            if (*(f32*)((char*)p + 0x18) > bound - lbl_80558DC4)
-                *(f32*)((char*)p + 0x18) -= bound;
-            *(f32*)((char*)p + 0x18) += amount;
+            speed = speed * step;
+            speed = (speed > amount) ? amount : speed;
+            if (max < speed) speed = max;
+            if (*(f32 *)((char *)p + 0x14) > bound - lbl_80558DC4)
+                *(f32 *)((char *)p + 0x14) -= bound;
+            *(f32 *)((char *)p + 0x14) += speed;
+            if (*(f32 *)((char *)p + 0x18) > bound - lbl_80558DC4)
+                *(f32 *)((char *)p + 0x18) -= bound;
+            *(f32 *)((char *)p + 0x18) += speed;
         }
 skip:
-        p = (char*)p + 0x10;
+        p = (char *)p + 0x10;
         ++i;
-    } while (i < fn_80287B14(arg0));
-    if (__fabsf(fn_801E7E24()) != lbl_80558DC4)
-        fn_802A4658(*(s32*)((char*)arg0 + 0x10));
+loop_test:
+        if (i < ((s32 (*)(void))fn_80287B14)()) goto loop_body;
+    }
+
+    {
+        f64 rawRate = fn_801E7E24();
+        f64 finalRate = __fabs(rawRate);
+        f32 finalLimit = lbl_80558DC4;
+        if (finalLimit >= (f32)finalRate) return;
+    }
+    fn_802A4658(*(s32 *)((char *)arg0 + 0x10));
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void fn_802A2118(void *arg0) {
     fn_802A47A8((void*)*(void**)((char*)arg0 + 0x10));
 }
@@ -1384,32 +1417,50 @@ extern "C" void fn_802A4658(s32 arg0) {
 }
 
 extern "C" s32 fn_802A47A8(void *arg0) {
-    char *obj=(char*)arg0;
-    s32 i, alphaInt, alpha;
-    f32 saved, now, limit, v, t, low, high;
-    if (*(s32*)(obj+4)>=1) {
-        saved=fn_802C9A4C(*(f32*)(obj+0x64));
-        fn_802C8BD0((void*)*(s32*)(obj+0x60));
-        if (fn_802CE860((void*)*(s32*)(obj+4))) {
-            now=((f32 (*)())fn_801E7E18)();
-            limit=lbl_80564744; v=lbl_8056483C;
-            i=0;
-            do {
-                char *p=*(char**)obj+i*0x20;
-                t=*(f32*)(obj+0x10)*(now-*(f32*)(p+0x18));
-                high=t-*(f32*)(obj+0x5C); if(limit>high) high=limit;
-                low=*(f32*)(obj+0x5C); if(low>=t) low=t;
-                alphaInt=(s32)(v*(*(f32*)(p+0x1C)*(*(f32*)(obj+0x50)+*(f32*)(obj+0x54)*low+*(f32*)(obj+0x58)*high)));
-                alpha=alphaInt & ((-alphaInt & ~alphaInt)>>31);
-                if(alpha<0xFF) alphaInt=alpha; else alphaInt=0xFF;
-                high=t-*(f32*)(obj+0x4C); if(limit>high) high=limit;
-                low=*(f32*)(obj+0x4C); if(low>=t) low=t;
-                fn_802CE86C((alphaInt<<24)|0xFFFFFF,0,*(f32*)(obj+0x40)+*(f32*)(obj+0x44)*low+*(f32*)(obj+0x48)*high,*(f32*)p,*(f32*)(p+4),*(f32*)(p+8));
-                i++;
-            } while(i<*(s32*)(obj+4));
+    char *obj = (char *)arg0;
+    s32 offset, i, alphaInt, alpha;
+    register f32 now;
+    register f32 limit;
+    f32 saved, v, high, t, low;
+
+    if (*(s32 *)(obj + 4) >= 1) {
+        saved = fn_802C9A4C(*(f32 *)(obj + 0x64));
+        fn_802C8BD0((void *)*(s32 *)(obj + 0x60));
+        if (fn_802CE860((void *)*(s32 *)(obj + 4))) {
+            now = ((f32 (*)())fn_801E7E18)();
+            limit = lbl_80564744;
+            v = lbl_8056483C;
+            for (i = 0, offset = 0; i < *(s32 *)(obj + 4); offset += 0x20, i++) {
+                char *p = *(char **)obj + offset;
+                t = *(f32 *)(obj + 0x10) * (now - *(f32 *)(p + 0x18));
+                high = t - *(f32 *)(obj + 0x5C);
+                if (limit > high)
+                    high = limit;
+                low = *(f32 *)(obj + 0x5C);
+                low = low < t ? low : t;
+                alphaInt = (s32)(v * (*(f32 *)(p + 0x1C) *
+                    (*(f32 *)(obj + 0x50) + *(f32 *)(obj + 0x54) * low +
+                     *(f32 *)(obj + 0x58) * high)));
+                alpha = alphaInt & ((-alphaInt & ~alphaInt) >> 31);
+                if (alpha < 0xFF)
+                    alphaInt = alpha;
+                else
+                    alphaInt = 0xFF;
+                unsigned int color = (alphaInt << 24) | 0xFFFFFF;
+                high = t - *(f32 *)(obj + 0x4C);
+                if (limit > high)
+                    high = limit;
+                low = *(f32 *)(obj + 0x4C);
+                low = low < t ? low : t;
+                fn_802CE86C(color, 0,
+                    *(f32 *)(obj + 0x40) + *(f32 *)(obj + 0x44) * low +
+                    *(f32 *)(obj + 0x48) * high,
+                    *(f32 *)p, *(f32 *)(p + 4), *(f32 *)(p + 8));
+            }
             fn_802CE868();
         }
-        fn_802C8D74(); fn_802C9A4C(saved);
+        fn_802C8D74();
+        fn_802C9A4C(saved);
     }
 }
 
