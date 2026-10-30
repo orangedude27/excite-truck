@@ -224,7 +224,7 @@ void fn_802EA7E0(void) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma cplusplus on
