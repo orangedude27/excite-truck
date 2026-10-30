@@ -394,7 +394,7 @@ void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) 
     extern unsigned long strlen(const char *);
     extern const char lbl_8033FC08[];
     void *ctx;
-    int width, mode, lines, row, lineLen, xoff, yoff;
+    int width, mode, lines, row, lineLen, xoff, yoff, state;
     char *nl;
 
     ctx = fn_8022CA2C();
@@ -402,8 +402,8 @@ void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) 
     if (*(int *)((char *)ctx + 0x64) != 0) {
         fn_802C4C90(*(int *)((char *)ctx + 0x64), x, y,
                     flagsArg % fn_802C4F14(*(int *)((char *)ctx + 0x64)), 0);
-    } else if (*(int *)((char *)ctx + 0x68) != 0) {
-        fn_802C51AC();
+    } else if ((state = *(int *)((char *)ctx + 0x68)) != 0) {
+        ((int (*)(int))fn_802C51AC)(state);
     }
     if (text == 0) return;
     if (*(int *)((char *)ctx + 8) != 0) return;
@@ -411,8 +411,8 @@ void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) 
     width = fn_801E4BA8(*(int **)((char *)ctx + 4));
     lines = fn_8022AB94(text, 10) + 1;
     if (*(int *)((char *)ctx + 0x38) & 0x10) {
-        y -= (int)(((lines - 1) * width) +
-                   ((unsigned int)((lines - 1) * width) >> 31)) >> 1;
+        y -= (int)((((unsigned int)(((int)lines - 1) * width) >> 31) +
+                    ((lines - 1) * width))) >> 1;
     } else if (*(int *)((char *)ctx + 0x38) & 0x40) {
         y -= (lines - 1) * width;
     }
