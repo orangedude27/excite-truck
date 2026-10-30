@@ -476,7 +476,7 @@ void fn_801EDD68(void *arg0) {
                 *(long *)((char *)arg0 + 0x3C), (char *)arg0 + 0x4D4);
 }
 
-extern void fn_801EABA8(long);
+extern void fn_801EABA8(void *, void *);
 extern void fn_801F0F78(long, long, void *, float);
 extern float lbl_80558DC4;
 extern float lbl_80562E90;
@@ -486,7 +486,7 @@ void fn_801EDD7C(void *arg0, long arg1) {
     unsigned int *a, *b, *c, *d, *e, *f, *g, *h, *j, *k, *m, *n;
     long i, offset;
     char *entry;
-    fn_801EABA8(*(long *)((char *)arg0 + 0x3C));
+    fn_801EABA8(arg0, *(void **)((char *)arg0 + 0x3C));
     scale = *(float *)((char *)arg1 + 0x2D0);
     *(float *)((char *)arg0 + 0x4D0) = scale;
     if (__fabsf(scale - lbl_80562E90) <= lbl_80558DC4) {
