@@ -331,10 +331,7 @@ extern "C" s32 fn_800FE814(s32 arg0) {
 
 extern f32 lbl_802F4DE0[];
 extern f32 lbl_802F4E10[];
-namespace nw4hbm { namespace snd { namespace detail {
-class Util { public: static f32 CalcPitchRatio(s32); };
-}}}
-f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
+extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
     u32 count = (u32)(0xBFF - pitch) / 0xC00;
     f32 ratio = lbl_805610C8;
     s32 octave = 0;
