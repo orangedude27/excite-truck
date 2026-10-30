@@ -332,25 +332,71 @@ extern void fn_802E30C8(const char *);
 extern f32 fn_8002F234(void *, int, int, f32, f32, f32, f32, f32, f32, f32);
 extern f32 lbl_80561BA0, lbl_80561BA4;
 extern const char lbl_80331BF8[], lbl_80331C04[], lbl_80333B98[], lbl_803338C0[];
+#pragma dont_inline fn_80179F94
 void fn_8017AD08(void *dst, void *src) {
-    void *obj; f32 x,y,z;
-    fn_80179D94(dst,0);
-    *(s32*)((u8*)dst+0x3C)=*(s32*)((u8*)src+8); *(s32*)((u8*)dst+0x40)=*(s32*)((u8*)src+0xC);
-    *(s32*)((u8*)dst+0x44)=*(s32*)((u8*)src+0x10); *(s32*)((u8*)dst+0x48)=*(s32*)((u8*)src+0x14);
-    *(s32*)((u8*)dst+0x4C)=*(s32*)((u8*)src+0x18); *(s32*)((u8*)dst+0x50)=*(s32*)((u8*)src+0x1C);
-    *(s32*)((u8*)dst+0x54)=*(s32*)((u8*)src+0x20); *(s32*)((u8*)dst+0x58)=*(s32*)((u8*)src+0x24);
-    *(s32*)((u8*)dst+0x5C)=*(s32*)((u8*)src+0x28); *(s32*)((u8*)dst+0x60)=*(s32*)((u8*)src+0x2C);
-    *(s32*)((u8*)dst+0x64)=*(s32*)((u8*)src+0x30); *(s32*)((u8*)dst+0x68)=*(s32*)((u8*)src+0x34);
+    unsigned char *srcBytes = (unsigned char *)src;
+    unsigned char *dstBytes = (unsigned char *)dst;
+    void *obj;
+    int first, second;
+    int zero = 0;
+    int box = 0x424F5820;
+    float x, y, z;
+    const char *vtable;
+
+    ((void (*)(void *))fn_80179D94)(dst);
+
+    first = *(int *)(srcBytes + 8);
+    second = *(int *)(srcBytes + 0xC);
+    *(int *)(dstBytes + 0x3C) = first;
+    *(int *)(dstBytes + 0x40) = second;
+    first = *(int *)(srcBytes + 0x10);
+    second = *(int *)(srcBytes + 0x14);
+    *(int *)(dstBytes + 0x44) = first;
+    *(int *)(dstBytes + 0x48) = second;
+    first = *(int *)(srcBytes + 0x18);
+    second = *(int *)(srcBytes + 0x1C);
+    *(int *)(dstBytes + 0x4C) = first;
+    *(int *)(dstBytes + 0x50) = second;
+    first = *(int *)(srcBytes + 0x20);
+    second = *(int *)(srcBytes + 0x24);
+    *(int *)(dstBytes + 0x54) = first;
+    *(int *)(dstBytes + 0x58) = second;
+    *(int *)(dstBytes + 0x5C) = *(int *)(srcBytes + 0x28);
+    first = *(int *)(srcBytes + 0x2C);
+    second = *(int *)(srcBytes + 0x30);
+    *(int *)(dstBytes + 0x60) = first;
+    *(int *)(dstBytes + 0x64) = second;
+    *(int *)(dstBytes + 0x68) = *(int *)(srcBytes + 0x34);
+
     fn_8017A580(dst);
-    if (*(s32*)((u8*)src+0x38)) { fn_802E30C8(lbl_80331C04); return; }
-    obj=fn_801284F8(0x38,(void*)lbl_80331BF8);
-    if(obj) { x=*(f32*)((u8*)src+0x3C); y=*(f32*)((u8*)src+0x40); z=*(f32*)((u8*)src+0x44);
-      *(void**)obj=(void*)lbl_80333B98; *(s32*)((u8*)obj+4)=0; *(s32*)((u8*)obj+8)=0; *(void**)((u8*)obj+0xC)=(u8*)dst+0x3C;
-      *(f32*)((u8*)obj+0x10)=lbl_80561BA0; *(f32*)((u8*)obj+0x14)=lbl_80561BA4; *(s32*)((u8*)obj+0x18)=0x424F5820; *(s32*)((u8*)obj+0x1C)=0; *(s32*)((u8*)obj+0x20)=100;
-      *(void**)obj=(void*)lbl_803338C0; *(f32*)((u8*)obj+0x24)=x; *(f32*)((u8*)obj+0x28)=y; *(f32*)((u8*)obj+0x2C)=z; *(s32*)((u8*)obj+0x34)=0;
-      *(f32*)((u8*)obj+0x30)=lbl_80561BA4+fn_8002F234((void*)lbl_803338C0,0x424F5820,0,x*x+y*y+z*z,z*z,lbl_80561BA4,lbl_80561BA0,x,y,z);
+    if (*(int *)(srcBytes + 0x38) == 0) {
+        obj = fn_801284F8(0x38, (void *)lbl_80331BF8);
+        if (obj != 0) {
+            z = *(float *)(srcBytes + 0x44);
+            vtable = lbl_80333B98;
+            y = *(float *)(srcBytes + 0x40);
+            x = *(float *)(srcBytes + 0x3C);
+            *(void **)obj = (void *)vtable;
+            *(void **)((unsigned char *)obj + 0xC) = dstBytes + 0x3C;
+            *(float *)((unsigned char *)obj + 0x10) = lbl_80561BA0;
+            *(float *)((unsigned char *)obj + 0x14) = lbl_80561BA4;
+            *(int *)((unsigned char *)obj + 0x18) = box;
+            *(int *)((unsigned char *)obj + 0x20) = 100;
+            *(int *)((unsigned char *)obj + 4) = zero;
+            *(int *)((unsigned char *)obj + 8) = zero;
+            *(int *)((unsigned char *)obj + 0x1C) = zero;
+            *(void **)obj = (void *)lbl_803338C0;
+            *(float *)((unsigned char *)obj + 0x24) = x;
+            *(float *)((unsigned char *)obj + 0x28) = y;
+            *(float *)((unsigned char *)obj + 0x2C) = z;
+            *(int *)((unsigned char *)obj + 0x34) = zero;
+            *(float *)((unsigned char *)obj + 0x30) = lbl_80561BA4 +
+                (float)((double (*)(float))fn_8002F234)(x * x + y * y + z * z);
+            fn_80179F94(dst, obj);
+            return;
+        }
     }
-    fn_80179F94(dst,obj);
+    fn_802E30C8(lbl_80331C04);
 }
 
 extern void PSVECCrossProduct(float *, float *, float *);
