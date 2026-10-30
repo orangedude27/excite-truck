@@ -26,7 +26,7 @@ struct LoopItem_80207E70 {
 };
 #pragma cplusplus reset
 
-extern void fn_80208408(void);
+extern void fn_80208408();
 extern void fn_80208858(void *, signed long, signed long);
 extern signed long fn_80128668(void);
 extern void* fn_802090B4(void);
@@ -81,8 +81,28 @@ void fn_80207980(void* arg0) {
 }
 #pragma dont_inline reset
 
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void *fn_80207990(void *arg0, void *arg1) {
+    struct Slot {
+        void * volatile ptr;
+        signed long value;
+    };
+    struct SoundObject {
+        void *vtable;
+        char field4;
+        volatile char field5;
+        char pad6[2];
+        volatile signed long field8;
+        void * volatile fieldC;
+        signed long count;
+        struct Slot slots[9];
+        char cleared5C[0x30];
+        signed long flag8C;
+        void *callback;
+        char tail94[0x84];
+    };
     struct Callback {
         virtual void f0();
         virtual void f1();
@@ -90,63 +110,78 @@ extern "C" void *fn_80207990(void *arg0, void *arg1) {
         virtual void f3();
         virtual int f4();
     };
+    struct SoundObject *object;
+    struct Slot *end;
+    struct Slot *slot;
     signed long i;
     signed long values[3];
-    char *p;
+    volatile float *vector1;
+    volatile float *vector2;
+    unsigned long *source;
+    float zero;
+    float one;
 
-    *(char **)arg0 = lbl_8033BEE8;
-    fn_80207980((char *)arg0 + 0xC);
-    p = (char *)arg0 + 0x14;
+    object = (struct SoundObject *)arg0;
+    object->vtable = lbl_8033BEE8;
+    fn_80207980((void *)&object->fieldC);
+    slot = &object->slots[0];
+    end = &object->slots[9];
     do {
-        fn_80207980(p);
-        p += 8;
-    } while (p < (char *)arg0 + 0x5C);
+        fn_80207980(slot);
+        slot++;
+    } while (slot < end);
     fn_80207960();
-    *(void **)((char *)arg0 + 0xC) = fn_8012850C(0x3C0, lbl_8033BDD8);
-    *(signed long *)((char *)arg0 + 0x10) = 0;
-    *(void **)((char *)arg0 + 0x90) = arg1;
-    memset((char *)arg0 + 0x5C, 0, 0x30);
-    *(char *)((char *)arg0 + 5) = 0;
-    lbl_804891F8[1] = lbl_8056322C;
-    lbl_804891F8[0] = lbl_80563228;
-    lbl_804891F8[2] = lbl_8056322C;
-    lbl_804891F8[3] = lbl_8056322C;
-    lbl_804891F8[4] = lbl_80563228;
-    lbl_804891F8[5] = lbl_8056322C;
-    lbl_804891F8[6] = lbl_8056322C;
-    lbl_804891F8[7] = lbl_8056322C;
-    lbl_804891F8[8] = lbl_80563228;
-    lbl_804891F8[9] = lbl_8056322C;
-    lbl_804891F8[10] = lbl_8056322C;
-    lbl_804891F8[11] = lbl_8056322C;
-    lbl_80489228[0] = lbl_8056322C;
-    lbl_80489228[1] = lbl_8056322C;
-    lbl_80489228[2] = lbl_8056322C;
-    *(signed long *)((char *)arg0 + 0x8C) = 1;
-    values[0] = lbl_802F9E4C[0];
-    values[1] = lbl_802F9E4C[1];
-    values[2] = lbl_802F9E4C[2];
+    object->fieldC = fn_8012850C(0x3C0, lbl_8033BDD8);
+    object->count = 0;
+    object->callback = arg1;
+    memset(object->cleared5C, 0, 0x30);
+    vector1 = lbl_804891F8;
+    object->field5 = 0;
+    vector2 = lbl_80489228;
+    zero = lbl_8056322C;
+    one = lbl_80563228;
+    vector1[1] = zero;
+    vector1[0] = one;
+    vector1[2] = zero;
+    vector1[3] = zero;
+    vector1[4] = one;
+    vector1[5] = zero;
+    vector1[6] = zero;
+    vector1[7] = zero;
+    vector1[8] = one;
+    vector1[9] = zero;
+    vector1[10] = zero;
+    vector1[11] = zero;
+    vector2[0] = zero;
+    vector2[1] = zero;
+    vector2[2] = zero;
+    object->flag8C = 1;
+    source = lbl_802F9E4C;
+    values[0] = *source++;
+    values[1] = *source++;
+    values[2] = *source++;
     i = 0;
     do {
-        fn_80207C50(arg0, values, i);
+        fn_80207C50(object, values, i);
         i += 1;
     } while (i < 4);
-    memset((char *)arg0 + 0x94, 0, 0x84);
-    *(void **)((char *)arg0 + 0x14) = *(void **)((char *)arg0 + 0xC);
-    *(void **)((char *)arg0 + 0x1C) = *(void **)((char *)arg0 + 0xC);
-    *(void **)((char *)arg0 + 0x24) = *(void **)((char *)arg0 + 0xC);
-    *(void **)((char *)arg0 + 0x2C) = *(void **)((char *)arg0 + 0xC);
-    *(void **)((char *)arg0 + 0x34) = *(void **)((char *)arg0 + 0xC);
-    *(void **)((char *)arg0 + 0x3C) = *(void **)((char *)arg0 + 0xC);
-    *(void **)((char *)arg0 + 0x44) = *(void **)((char *)arg0 + 0xC);
-    *(void **)((char *)arg0 + 0x4C) = *(void **)((char *)arg0 + 0xC);
-    *(void **)((char *)arg0 + 0x54) = *(void **)((char *)arg0 + 0xC);
-    *(signed long *)((char *)arg0 + 8) = 0;
-    fn_80127CF4(arg0, lbl_8033BDF0, 0);
-    *(char *)((char *)arg0 + 4) = ((struct Callback *)arg1)->f4();
+    memset(object->tail94, 0, 0x84);
+    object->slots[0].ptr = object->fieldC;
+    object->slots[1].ptr = object->fieldC;
+    object->slots[2].ptr = object->fieldC;
+    object->slots[3].ptr = object->fieldC;
+    object->slots[4].ptr = object->fieldC;
+    object->slots[5].ptr = object->fieldC;
+    object->slots[6].ptr = object->fieldC;
+    object->slots[7].ptr = object->fieldC;
+    object->slots[8].ptr = object->fieldC;
+    object->field8 = 0;
+    fn_80127CF4(object, lbl_8033BDF0, 0);
+    object->field4 = ((struct Callback *)arg1)->f4();
     return arg0;
 }
 #pragma cplusplus reset
+#pragma pop
 
 extern void fn_80207DE0(void*);
 extern void fn_802E30C8(const char*, ...);
