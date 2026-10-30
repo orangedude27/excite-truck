@@ -103,7 +103,7 @@ extern "C" u8 fn_802A4A20(void);
 extern "C" void *memset(void *, int, unsigned long);
 extern "C" char lbl_80349928[];
 extern "C" char lbl_80349BA0[];
-extern "C" char lbl_8055CBA4[];
+extern "C" char lbl_8055CBA4;
 class Receiver802A194C { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(void*); };
 class Item802A194C { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual unsigned int getType(); };
 extern "C" char lbl_8055CB70;
