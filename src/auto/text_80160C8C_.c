@@ -2245,6 +2245,7 @@ void fn_80164F50(void *arg0) {
     fn_801DF380((void *)second, first, (void (*)())fn_80161438, 0);
 }
 #pragma scheduling on
+extern void fn_801796BC(unsigned char);
 typedef struct Work_80164D64 {
     f32 vectorA[3];
     f32 vectorB[3];
