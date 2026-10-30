@@ -1100,7 +1100,10 @@ extern void *fn_8002F37C(int, void (*)(void), int, int, int);
 extern void fn_8028A32C(void);
 extern char lbl_80348B7C[], lbl_80348B8C[];
 extern int lbl_8055C88C, lbl_8055C890, lbl_8055C898;
-int fn_8028A1A4(int out) {
+#pragma cplusplus on
+#pragma push
+#pragma scheduling invalid_target
+extern "C" int fn_8028A1A4(int out) {
     int count = fn_80287B14();
     int i;
     int j;
@@ -1142,6 +1145,9 @@ int fn_8028A1A4(int out) {
         }
     }
 }
+#pragma scheduling on
+#pragma pop
+#pragma cplusplus off
 
 void fn_8028A32C(void) {}
 
