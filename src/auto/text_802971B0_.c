@@ -105,7 +105,7 @@ s32 fn_80297354(void *arg0, void *arg1) {
 __declspec(section ".sdata") extern char lbl_8055CA58[];
 #pragma push
 #pragma cplusplus on
-#pragma dont_inline fn_80297450
+#pragma dont_inline
 extern "C" s32 fn_80297450(void *node) {
     class NameNode {
     public:
