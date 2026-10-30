@@ -22,7 +22,7 @@ extern int memcpy(void *, const void *, unsigned int);
 extern float lbl_80565038;
 extern float lbl_8056503C;
 extern void *fn_802DA704(int, void *, int);
-extern void fn_802DAA18();
+extern void fn_802DAA18(void *);
 #pragma scheduling off
 extern void fn_80128668(void *);
 extern void fn_80128670(int);
