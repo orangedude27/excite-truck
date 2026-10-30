@@ -1,4 +1,11 @@
 __declspec(section ".data") extern float lbl_80558DC4;
+extern void *fn_802C86DC(void);
+extern void fn_802C8BD0(int);
+extern int fn_802C8DBC(int);
+extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
+extern void fn_802C8E48(void);
+extern void fn_802C8D74(void);
+extern void fn_8029DB78(void *, void *, int, int);
 extern float PSQUATMultiply(float *, float *);
 extern void *fn_802CAC28(int, int);
 extern float lbl_8056465C;
