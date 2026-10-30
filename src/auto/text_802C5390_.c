@@ -101,6 +101,93 @@ void *fn_802C54B4(int i) { return (void *)(lbl_804C1348 + (i - 1) * 8); }
 
 unsigned char fn_802C54CC(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
 
+#pragma scheduling invalid_target
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+void fn_802C54D4(void) {
+    extern int lbl_804C1390[];
+    extern int lbl_804C13A8[];
+    extern s8 lbl_8055FC21;
+    extern void qsort(void *, unsigned int, unsigned int, int (*)(void *, void *));
+    register int level;
+    register int sourceIndex;
+    register int sourceOffset;
+    register int itemOffset;
+    register int itemIndex;
+    register int count;
+    register int oldCount;
+    register void *table;
+    register void *start;
+    register void **items;
+    int zero;
+
+    if (*(volatile unsigned char *)&lbl_8055FC21 == 0)
+        return;
+    {
+        register int *listData = lbl_804C1390;
+        register int *sourceData = lbl_804C13A8;
+        register void **slot;
+        listData[0] = 0;
+        for (sourceIndex = 0, sourceOffset = 0;
+             sourceIndex < *(volatile int *)sourceData;
+             sourceIndex++, sourceOffset += 0x10) {
+            register void *base = (void *)(unsigned long)*(volatile u32 *)((char *)sourceData + 8);
+            register void *entry = (char *)base + sourceOffset;
+            if (*(unsigned short *)((char *)entry + 4) != 0) {
+                oldCount = *(volatile int *)listData;
+                if (oldCount < *(volatile int *)((char *)listData + 4)) {
+                    count = oldCount + 1;
+                    *(volatile int *)listData = count;
+                    slot = (void **)((char *)(void *)listData[2] + (oldCount << 2));
+                } else {
+                    slot = 0;
+                }
+                if (slot != 0)
+                    *slot = entry;
+            }
+        }
+    }
+
+    count = lbl_804C1390[0];
+    items = (void **)*(void **)((char *)lbl_804C1390 + 8);
+    qsort(items, count, 4, (int (*)(void *, void *))fn_802C544C);
+    level = 1;
+    table = fn_802C54B4(level);
+    *(void **)table = *(void **)((char *)lbl_804C1390 + 8);
+    for (itemIndex = 0, itemOffset = 0;
+         itemIndex < lbl_804C1390[0];
+         itemIndex++, itemOffset += 4) {
+        register void *entry = *(void **)((char *)*(void ***)((char *)lbl_804C1390 + 8) + itemOffset);
+        goto inner_check;
+inner_loop:
+        level++;
+        count = (int)((char *)*(void ***)((char *)lbl_804C1390 + 8) + itemOffset -
+                      (char *)*(void **)table) / 4;
+        *(int *)((char *)table + 4) = count;
+        table = fn_802C54B4(level);
+        *(void **)table = (char *)*(void ***)((char *)lbl_804C1390 + 8) + itemOffset;
+inner_check:
+        if (level < ((int (*)(unsigned int))fn_802C54CC)(
+                        *(short *)((char *)entry + 6))) {
+            if (level <= 9)
+                goto inner_loop;
+        }
+    }
+    start = *(void **)table;
+    count = (int)((char *)*(void ***)((char *)lbl_804C1390 + 8) +
+                  lbl_804C1390[0] * 4 - (char *)start) / 4;
+    *(int *)((char *)table + 4) = count;
+    zero = 0;
+    while (++level <= 9) {
+        table = fn_802C54B4(level);
+        *(int *)((char *)table + 4) = zero;
+    }
+    *(volatile unsigned char *)&lbl_8055FC21 = 0;
+}
+#pragma use_lmw_stmw on
+#pragma dont_inline reset
+#pragma scheduling on
+
 extern void fn_802C8B70(int);
 extern void fn_802C8D74(void);
 extern void fn_802D0610(int);
@@ -807,7 +894,6 @@ extern const char lbl_8034B34C[];
 int fn_802C53A8();
 int fn_802C6C20(int);
 int fn_802C6B44(int);
-void fn_802C6DC4(int, int, int, int);
 extern const char lbl_8034B3DC[];
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
