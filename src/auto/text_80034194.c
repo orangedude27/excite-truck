@@ -973,7 +973,11 @@ extern s32 lbl_8055D87C, lbl_8055D8BC;
 extern s32 IDShouldBe_8055D8C4, executing_8055D8C8, lbl_8055D860;
 extern BOOL DVDCompareDiskID(void *, void *);
 extern s32 fn_8003AD88(void *, s32, s32, u32);
-extern void fn_80036B84(void);
+extern void fn_80036B84(u32);
+extern char lbl_80376B20[];
+extern char lbl_80376B40[];
+extern u32 *lbl_8055D89C;
+extern void fn_80036D24(u32);
 extern void fn_800373E0(void);
 extern int memcmp(const void *, const void *, u32);
 void fn_8003684C(void) {
