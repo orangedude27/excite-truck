@@ -730,6 +730,7 @@ float fn_801DDC8C(float farg0, float farg1) {
     } while (1);
     return result;
 }
+#pragma pop
 
 extern float lbl_80562B70;
 extern float lbl_80562BB8;
