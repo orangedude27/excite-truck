@@ -117,18 +117,21 @@ void fn_8000DA1C(const char *arg0) {
 void fn_8000DA80(void) {
     int *entry;
     int i;
+
     entry = (int *)((char *)lbl_8055D46C + *lbl_8055D46C * 0x18);
-    entry[1] = 0;
+    *(volatile int *)&entry[1] = 0;
     fn_8000DF2C(0);
     entry = (int *)lbl_8034F650;
-    i = 0;
-    do {
-        memset(*(void **)((char *)entry + 8), 0, *(unsigned int *)((char *)entry + 12));
-        if (*(void (**)(void))((char *)entry + 16) != 0)
-            (*(void (**)(void))((char *)entry + 16))();
-        entry = (int *)((char *)entry + 0x18);
-        i++;
-    } while (i < lbl_8055D464);
+    i = (int)(entry - (int *)lbl_8034F650);
+    goto check;
+loop:
+    memset(**(void ***)(&entry[2]), 0, entry[3]);
+    if (entry[4] != 0)
+        ((void (*)(void))entry[4])();
+    entry += 6;
+    i++;
+check:
+    if (i < lbl_8055D464) goto loop;
 }
 
 void fn_8000DB18(void) {
@@ -195,15 +198,22 @@ int fn_8000DC70(int arg0) {
     return (int)((char *)lbl_8055D46C + arg0 * 0x12 + 0x64);
 }
 
+#pragma push
+#pragma optimization_level 2
+#pragma dont_inline on
 void fn_8000DC84(int arg0) {
     int *p;
     int value;
-    if (arg0 == 1) {
+    switch (arg0) {
+    case 1:
         fn_8000D984(*lbl_8055D46C);
-    } else if (arg0 == 2) {
+        break;
+    case 2:
         fn_8000DD98();
-    } else if (arg0 == 3) {
+        break;
+    case 3:
         fn_8000DF2C(1);
+    case 4:
         value = 1;
         p = lbl_8055D46C;
         if (p[1] != 0) p[1] = value;
@@ -213,7 +223,8 @@ void fn_8000DC84(int arg0) {
         if (p[13] != 0) p[13] = value;
         p = lbl_8055D46C;
         if (p[19] != 0) p[19] = value;
-    } else if (arg0 == 5) {
+        break;
+    case 5:
         value = 2;
         p = lbl_8055D46C;
         if (p[1] != 0) p[1] = value;
@@ -223,9 +234,100 @@ void fn_8000DC84(int arg0) {
         if (p[13] != 0) p[13] = value;
         p = lbl_8055D46C;
         if (p[19] != 0) p[19] = value;
+        break;
     }
 }
 
+extern char lbl_80558A8C;
+extern char lbl_802FC298[];
+extern void fn_801345D8(char *, int, const char *, ...);
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_8000DD98(void) {
+    register int zero = 0;
+    register int minusOne = -1;
+    register const char *format = lbl_802FC298;
+    register int index;
+    register int stringOffset;
+    register int fieldOffset;
+    register int outer;
+    register int offset;
+    int remaining;
+    char *src;
+    char *dst;
+    char c;
+
+    *lbl_8055D46C = zero;
+    offset = 0;
+    outer = 2;
+    do {
+        *((int *)((char *)lbl_8055D46C + offset + 4)) = zero;
+        src = (char *)&lbl_80558A8C;
+        dst = (char *)lbl_8055D46C + offset + 8;
+        remaining = 0x12;
+        goto copy0;
+limit0:
+        remaining--;
+        if (remaining > 0)
+            goto copy0;
+        dst[-1] = zero;
+        goto done0;
+copy0:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c != 0)
+            goto limit0;
+done0:
+        offset += 0x18;
+        *((int *)((char *)lbl_8055D46C + offset + 4)) = zero;
+        src = (char *)&lbl_80558A8C;
+        dst = (char *)lbl_8055D46C + offset + 8;
+        remaining = 0x12;
+        goto copy1;
+limit1:
+        remaining--;
+        if (remaining > 0)
+            goto copy1;
+        dst[-1] = zero;
+        goto done1;
+copy1:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c != 0)
+            goto limit1;
+done1:
+        offset += 0x18;
+    } while (--outer != 0);
+
+    index = 0;
+    stringOffset = 0;
+    fieldOffset = 0;
+    do {
+        dst = (char *)lbl_8055D46C + stringOffset + 0x64;
+        fn_801345D8(dst, 0x12, format, index + 1);
+        src = fn_80131234(dst);
+        remaining = 0x12;
+        goto copy2;
+limit2:
+        remaining--;
+        if (remaining > 0)
+            goto copy2;
+        dst[-1] = zero;
+        goto done2;
+copy2:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c != 0)
+            goto limit2;
+done2:
+        *((int *)((char *)lbl_8055D46C + fieldOffset + 0xAC)) = minusOne;
+        index++;
+        stringOffset += 0x12;
+        fieldOffset += 4;
+    } while (index < 4);
+}
+#pragma scheduling on
+#pragma use_lmw_stmw on
 extern int lbl_8055D460;
 extern unsigned int lbl_8034F628[];
 extern char lbl_802FC264[];
