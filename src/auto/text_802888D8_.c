@@ -1094,7 +1094,7 @@ int fn_8028A084(int arg0) {
 extern int fn_80288208(int);
 extern int fn_80287E20(void *, void *);
 extern void *fn_80287E80(int, void *);
-extern void fn_8012850C(int, void *, int);
+extern void *fn_8012850C(int, void *, int);
 extern void *fn_8002F37C(int, void (*)(void), int, int, int);
 extern void fn_8028A32C(void);
 extern char lbl_80348B7C[], lbl_80348B8C[];
