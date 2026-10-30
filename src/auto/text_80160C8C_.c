@@ -1973,7 +1973,7 @@ extern void fn_80131818(void *);
 extern void fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_80146C2C(s32);
 extern char lbl_8032FB90[];
-extern const char lbl_8055A110[], lbl_8055A118[];
+extern const char lbl_8055A110, lbl_8055A118;
 
 #pragma cplusplus on
 struct NameList_8016464C {
@@ -1985,8 +1985,8 @@ struct NameList_8016464C {
 struct Iterator_8016464C {
     virtual s32 next();
 };
-#pragma cplusplus off
-void fn_8016464C(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_8016464C(void *arg0) {
     char name[0x10];
     void *iterator;
     s32 count = 0;
@@ -1995,11 +1995,10 @@ void fn_8016464C(void *arg0) {
 
     *(s32 *)((u8 *)arg0 + 0x38) = 0;
     iterator = fn_80131810(lbl_8032FB90);
-
     do {
         count++;
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, lbl_8055A110, count);
-    } while (((s32 (**)(void *, const char *))*(void ***)*(void **)((u8 *)arg0 + 4))[3](*(void **)((u8 *)arg0 + 4), name) != 0);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, count);
+    } while (((NameList_8016464C *)*(void **)((u8 *)arg0 + 4))->hasName(name) != 0);
 
     max = count - 1;
     for (i = 0; i < max; i++) {
@@ -2009,21 +2008,19 @@ void fn_8016464C(void *arg0) {
 
         *(s32 *)((u8 *)arg0 + 0x38) = n + 1;
         entry = (u8 *)*(void **)((u8 *)arg0 + 0x34) + n * 8;
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, lbl_8055A110, index);
-        *(void **)entry = ((void *(*)(void *, const char *))(*(void ***)*(void **)((u8 *)arg0 + 4))[5])(*(void **)((u8 *)arg0 + 4), name);
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, lbl_8055A118, index);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, index);
+        *(void **)entry = ((NameList_8016464C *)*(void **)((u8 *)arg0 + 4))->getValue(name);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A118, index);
         *(s32 *)((u8 *)entry + 4) = 0;
-        if (((s32 (*)(void *, const char *))(*(void ***)*(void **)((u8 *)arg0 + 4))[3])(*(void **)((u8 *)arg0 + 4), name) != 0) {
-            ((void (*)(void *, const char *))(*(void ***)*(void **)((u8 *)arg0 + 4))[5])(*(void **)((u8 *)arg0 + 4), name);
-            if (iterator != 0 && ((s32 (*)(void *))(*(void ***)iterator)[1])(iterator) != 0)
+        if (((NameList_8016464C *)*(void **)((u8 *)arg0 + 4))->hasName(name) != 0) {
+            ((NameList_8016464C *)*(void **)((u8 *)arg0 + 4))->getValue(name);
+            if (iterator != 0 && ((Iterator_8016464C *)iterator)->next() != 0)
                 *(s32 *)((u8 *)entry + 4) = fn_80146C2C(lbl_8055E2E4);
         }
     }
     if (iterator != 0)
         fn_80131818(iterator);
 }
-
-#pragma cplusplus on
 extern "C" void fn_801647DC(void *arg0) {
     struct Object {
         virtual void method(s32);
