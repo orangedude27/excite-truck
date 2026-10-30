@@ -27,6 +27,8 @@ extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
 extern "C" unsigned long strlen(const char *);
 #pragma small_data on
 extern "C" const char lbl_8055B808[];
+extern "C" const char lbl_8055B724[], lbl_8055B728[], lbl_8055B720[], lbl_8055B730[];
+extern "C" const char lbl_8055B738[], lbl_8055B73C[], lbl_8055B744[], lbl_8055B748[];
 #pragma small_data off
 extern "C" s32 fn_802C4F14(s32);
 extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
