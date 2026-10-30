@@ -925,6 +925,63 @@ s32 fn_8016DE10(s32 *arg0, s32 arg1) {
     return *arg0 + (arg1 * 0x10);
 }
 
+void fn_8016DE20(void *arg0) {
+    char sp20[0x20];
+    register char *format = lbl_803306D0;
+    register void *object = arg0;
+    s32 value;
+    s32 mode;
+
+    value = *(s32 *)((u8 *)object + 0x24);
+    if (value != -1) {
+        if (value != -1) {
+            fn_8001B450(value);
+            *(s32 *)((u8 *)object + 0x24) = -1;
+        }
+    }
+
+    mode = *(s32 *)((u8 *)object + 0x44);
+    switch (mode) {
+    case 0:
+        fn_801345D8(sp20, 0x1E, format + 0x264, *(s32 *)((u8 *)object + 0x2C));
+        break;
+    case 1:
+        fn_801345D8(sp20, 0x1E, format + 0x270, *(s32 *)((u8 *)object + 0x2C));
+        break;
+    case 2:
+        fn_801345D8(sp20, 0x1E, format + 0x27C, *(s32 *)((u8 *)object + 0x2C));
+        break;
+    default:
+        fn_802E317C(format + 0x288);
+        break;
+    }
+
+    mode = *(s32 *)((u8 *)object + 0x44);
+    switch (mode) {
+    case 0: {
+        FloatPair8016A6B0 result = fn_8016A6B0(sp20, 0xC);
+        *(s32 *)((u8 *)object + 0x24) =
+            fn_8001B308(&result, *(s32 *)((u8 *)object + 0x20), 2);
+        break;
+    }
+    case 1: {
+        FloatPair8016A6B0 result = fn_8016A6B0(sp20, 9);
+        *(s32 *)((u8 *)object + 0x24) =
+            fn_8001B308(&result, *(s32 *)((u8 *)object + 0x20), 2);
+        break;
+    }
+    case 2: {
+        FloatPair8016A6B0 result = fn_8016A6B0(sp20, 6);
+        *(s32 *)((u8 *)object + 0x24) =
+            fn_8001B308(&result, *(s32 *)((u8 *)object + 0x20), 2);
+        break;
+    }
+    default:
+        fn_802E317C(format + 0x288);
+        break;
+    }
+}
+
 extern f32 lbl_8055E3C8;
 extern f32 lbl_80561998;
 extern void fn_8001B450(s32);
