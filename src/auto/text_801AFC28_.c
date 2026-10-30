@@ -62,7 +62,7 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_,
 
 #pragma push
 #pragma processor 750
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_801AFDCC(void *arg0, void *arg1) {
     // Fix note: reverse stack-local declarations so each temporary lands at its target frame offset.
     struct Object {
