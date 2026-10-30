@@ -586,64 +586,44 @@ extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
 extern "C" void *fn_801E8718(int);
 extern "C" float PSVECDotProduct(const float *, const float *);
 extern "C" int fn_801E85A4(void);
-extern "C" void fn_802A042C(void *obj, Unk802A0794Params *pos) {
-    struct Entry {
-        unsigned int words[12];
-    };
-    struct Frame {
-        float values[6];
-        volatile unsigned int words[12];
-    };
-    struct Frame frame;
+#pragma cplusplus reset
+void fn_802A042C(void *obj, Unk802A0794Params *pos) {
+    struct Entry { unsigned int words[12]; };
+    struct Entry copy;
+    float vec[6];
     float lower = lbl_805646BC;
     float upper = lbl_805646B4;
     float scale = lbl_805646C0;
     float bias = lbl_805646C8;
-    float radius = *(float *)((char *)obj + 0x44);
-    float radius2 = radius * radius;
     int i = 0;
     int offset = 0;
 
-    do {
+    goto test;
+body:
+    {
         struct Entry *entry = (struct Entry *)fn_801E8718(i);
-        float pointX;
-        float pointY;
-        float pointZ;
-        float dx;
-        float dy;
-        float dz;
-        float dot;
+        float pointX, pointY, pointZ, dx, dy, dz, dot;
+        float radius;
+        float radius2;
 
-        frame.words[9] = entry->words[9];
+        copy = *entry;
         pointX = pos->values[0] + *(float *)((char *)obj + 0x30);
-        dx = pointX - *(volatile float *)&frame.words[9];
-
-        frame.words[10] = entry->words[10];
+        radius = *(volatile float *)((char *)obj + 0x44);
+        radius2 = radius * radius;
+        dx = pointX - *(float *)&copy.words[9];
         pointY = pos->values[1] + *(float *)((char *)obj + 0x34);
-        dy = pointY - *(volatile float *)&frame.words[10];
-
-        frame.words[11] = entry->words[11];
+        dy = pointY - *(float *)&copy.words[10];
         pointZ = pos->values[2] + *(float *)((char *)obj + 0x38);
-        dz = pointZ - *(volatile float *)&frame.words[11];
+        dz = pointZ - *(float *)&copy.words[11];
 
-        frame.words[0] = entry->words[0];
-        frame.words[1] = entry->words[1];
-        frame.words[2] = entry->words[2];
-        frame.words[3] = entry->words[3];
-        frame.words[4] = entry->words[4];
-        frame.words[5] = entry->words[5];
-        frame.words[6] = entry->words[6];
-        frame.words[7] = entry->words[7];
-        frame.words[8] = entry->words[8];
+        vec[0] = dx;
+        vec[1] = dy;
+        vec[2] = dz;
+        vec[3] = pointX;
+        vec[4] = pointY;
+        vec[5] = pointZ;
 
-        frame.values[0] = dx;
-        frame.values[1] = dy;
-        frame.values[2] = dz;
-        frame.values[3] = pointX;
-        frame.values[4] = pointY;
-        frame.values[5] = pointZ;
-
-        dot = PSVECDotProduct(frame.values, frame.values);
+        dot = PSVECDotProduct(vec, vec);
         if (dot < radius2) {
             float amount = dot / radius2;
             float base;
@@ -654,32 +634,27 @@ extern "C" void fn_802A042C(void *obj, Unk802A0794Params *pos) {
             unsigned int objectColor;
             unsigned int output;
 
-            if (amount < lower)
-                amount = lower;
-            if (amount > upper)
-                amount = upper;
-
+            if (amount < lower) amount = lower;
+            if (amount > upper) amount = upper;
             base = scale * *(float *)((char *)obj + 0x48);
             next = base + amount * (upper - base);
-            if (next < upper)
-                next -= bias;
-            else
-                next += bias;
-
+            if (next < upper) next -= bias;
+            else next += bias;
             colors = (unsigned int *)lbl_8055F820;
             old = colors[offset / 4];
             alpha = (int)next + (int)(old >> 24);
             alpha &= ~(alpha >> 31);
-            if (alpha >= 255)
-                alpha = 255;
+            if (alpha >= 255) alpha = 255;
             objectColor = *(unsigned int *)((char *)obj + 0x4C);
             output = (old & 0x00FF0000) | ((unsigned int)alpha << 24) | (objectColor & 0x0000FFFF);
             colors[offset / 4] = output;
         }
-
         offset += 4;
         i++;
-    } while (i < fn_801E85A4());
+    }
+test:
+    if (i < fn_801E85A4())
+        goto body;
 }
 #pragma pop
 
