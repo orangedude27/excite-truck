@@ -163,18 +163,16 @@ extern int fn_802E30C8();
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling invalid_target
-  void fn_8000AF1C(void *arg0) {
+void fn_8000AF1C(void *arg0) {
     int zero = 0;
     char *config = lbl_802FBC90;
     int active;
     int *entry;
     register int i;
-    int outValue;
-    register int val;
+    int val;
     int limit = 0x22;
     void (*callback)(void);
     void *startupMessage;
-
     lbl_8055D3D8 = zero;
     lbl_8055D3E8 = zero;
     active = fn_80204024();
@@ -196,38 +194,35 @@ extern int fn_802E30C8();
     fn_802B8744();
     fn_801769EC();
     ((void (*)(int))fn_8000AF04)(*(int *)((char *)arg0 + 0x3E8));
-
     entry = lbl_8034F5B8;
     i = 0;
     do {
         memset(entry, 0, 8);
-        outValue = *(int *)&lbl_8034F5D8;
-        fn_801332D0(i + 0xC, config + 0x238, &outValue);
-        val = outValue;
+        val = *(int *)&lbl_8034F5D8;
+        fn_801332D0(i + 0xC, config + 0x238, &val);
         if (val >= limit) goto invalid;
         if (val < 0) {
         invalid:
             ((int (*)(const char *, ...))fn_802E30C8)(config + 0x248, i);
-            outValue = *(int *)&lbl_8034F5D8;
+            val = *(int *)&lbl_8034F5D8;
         } else if (fn_8000AEC8(val) == 0) {
-            outValue = *(int *)&lbl_8034F5D8;
+            val = *(int *)&lbl_8034F5D8;
         }
         i++;
-        entry[0] = outValue;
+        entry[0] = val;
         entry[1] = limit;
         entry += 2;
     } while (i < 4);
     lbl_8055D3D5 = 0;
     lbl_8055D3D4 = 1;
     lbl_8055D3D0 = 0;
-    if (active != 0) {
-        fn_8000ADE0(0xD);
-        fn_80265D74();
-        fn_80128678();
-        fn_80206454();
-        fn_80127930();
-        fn_802D3E9C(0);
-    }
+    if (active == 0) return;
+    fn_8000ADE0(0xD);
+    fn_80265D74();
+    fn_80128678();
+    fn_80206454();
+    fn_80127930();
+    fn_802D3E9C(0);
 }
 #pragma scheduling on
 #pragma dont_inline reset
@@ -480,6 +475,84 @@ loop:
 check:
     if (i < fn_801E85A4())
         goto loop;
+}
+
+extern int fn_802ECC10(void);
+extern int fn_8000D75C(void);
+extern int fn_8000D764(void);
+extern int fn_800216D0(void);
+extern int fn_80161C70(void);
+extern void fn_8000D048(void *, void *, int);
+extern void fn_80129AEC(int);
+extern void fn_80129B60(void);
+extern int fn_801769A8(void);
+extern int fn_802E47B8(void);
+extern int fn_802E46F0(void);
+extern int fn_8020DE1C(void);
+extern void fn_80176780(int, int);
+extern void fn_8000B64C(unsigned short, int);
+extern void __AXDSPInitCallback_801769E0(void);
+extern unsigned char lbl_8055D3ED;
+void fn_8000B950(void) {
+    unsigned char state;
+    int result;
+    int key;
+    unsigned short code;
+
+    state = fn_802ECC10();
+    if (state != lbl_8055D3ED) {
+        lbl_8055D3ED = state;
+        if (fn_8000D75C() == 0 &&
+            fn_801DF060() == 0 &&
+            lbl_8055D3D0 == (void *)lbl_802FBC90) {
+            if (state == 0) {
+                fn_801769EC();
+                fn_80206454();
+            } else {
+                __AXDSPInitCallback_801769E0();
+                fn_80206444();
+            }
+        }
+    }
+
+    if (fn_802ECC10() == 0 &&
+        fn_801DF060() == 0 &&
+        fn_800216D0() == 0 &&
+        fn_80161C70() != 0 &&
+        fn_801E8838() == 0 &&
+        lbl_8055D3D0 == (void *)lbl_802FBC90) {
+        result = fn_8000D764();
+        if (result != -1) {
+            fn_8000D048((void *)fn_8000B42C, (void *)fn_8000B3B4, 0);
+            fn_8000ADE0(1);
+            lbl_8055D3E4 = result;
+        }
+    }
+
+    fn_80129AEC(-1);
+    fn_80129B60();
+    if ((fn_801769A8() & 0x4000) == 0) {
+        fn_8000B838();
+    }
+
+    if (fn_802E47B8() != 0) {
+        key = fn_802E46F0();
+        result = fn_802ECC10();
+        if (result == 0) {
+            code = (unsigned short)key;
+            if (code != 0) {
+                if ((fn_801769A8() & 0x4000) != 0 &&
+                    (code == 0x58 || code == 0xD) &&
+                    fn_8000D75C() == 0 &&
+                    fn_8020DE1C() == 0 &&
+                    fn_801E8838() == 0) {
+                    fn_80176780(2, 0);
+                    return;
+                }
+                fn_8000B64C(code, fn_802E4A10());
+            }
+        }
+    }
 }
 
 extern int fn_80019BA8(void);
