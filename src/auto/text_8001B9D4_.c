@@ -677,6 +677,7 @@ s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
     }
     return 1;
 }
+#pragma scheduling on
 #pragma dont_inline reset
 void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
     fn_8001C4D8();
