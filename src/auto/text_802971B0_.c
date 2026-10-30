@@ -129,6 +129,83 @@ float fn_8029748C(void *arg0) {
     return max;
 }
 
+extern s32 fn_8012C33C(void);
+extern void *fn_80131808(void *);
+extern void fn_80131818(void *);
+extern void *fn_8012850C(s32, const char *, s32);
+extern void *fn_8002F37C(void *, void *, void *, s32, s32);
+extern void fn_802976D0(void *);
+extern char lbl_803493A8[];
+extern char lbl_803493B4[];
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" void *fn_802974CC(void *arg0) {
+    class Iterator {
+    public:
+        virtual void v0();
+        virtual void *get(s32);
+    };
+    s32 count;
+    void *result;
+    void *iterator;
+    void *item;
+    void *storage;
+    s32 firstIndex;
+    s32 total;
+    result = 0;
+    if (fn_8012C33C() != 0) {
+        iterator = fn_80131808(arg0);
+        count = 0;
+        firstIndex = 0;
+        for (;;) {
+            item = ((Iterator *)iterator)->get(firstIndex);
+            if (item == 0)
+                break;
+            firstIndex++;
+            if (fn_80297450(item) != 0)
+                count++;
+        }
+        if (count != 0) {
+            result = fn_801284F8(0xC, lbl_803493A8);
+            *(s32 *)((u8 *)result + 4) = count;
+            total = count * 0x18;
+            storage = fn_8012850C(total + 0x10, lbl_803493B4, total);
+            *(void **)result = fn_8002F37C(storage, (void *)fn_802976D0, (void *)fn_80297654, 0x18, count);
+            {
+                s32 offset = 0;
+                s32 valid = 1;
+                s32 secondIndex = 0;
+                while (secondIndex < firstIndex) {
+                    arg0 = ((Iterator *)iterator)->get(secondIndex);
+                    if (fn_80297450(arg0) != 0) {
+                        void *entry = (u8 *)*(void **)result + offset;
+                        offset += 0x18;
+                        if (fn_80297354(entry, arg0) == 0) {
+                            valid = 0;
+                            break;
+                        }
+                    }
+                    secondIndex++;
+                }
+                if (valid != 0)
+                    *(float *)((u8 *)result + 8) = fn_8029748C(result);
+                else {
+                    fn_8002F6AC(*(s32 *)result, (void *)fn_80297654);
+                    fn_80128668(result);
+                    result = 0;
+                }
+            }
+        }
+        fn_80131818(iterator);
+    }
+    return result;
+}
+#pragma cplusplus reset
+#pragma dont_inline reset
+#pragma scheduling on
+
 void *fn_80297654(void *arg0, s32 arg1) {
     struct Obj { void (**vtable)(void *, s32); };
     void *object;
