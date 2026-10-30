@@ -572,7 +572,7 @@ signed long fn_802089D0(signed long arg0, signed long arg1) {
 }
 
 void fn_802085EC(void) {
-	fn_80208408();
+	((void (*)(void))fn_80208408)();
 }
 
 signed long fn_802085F0(void* arg0, signed long x) {
