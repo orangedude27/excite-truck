@@ -128,6 +128,7 @@ extern int fn_802C6CF8(int);
 extern int fn_801D985C(int *);
 extern int fn_801D9948(int *);
 extern void fn_801D9120(float *, float *, int, float);
+#pragma dont_inline on
 void *fn_801D9260(int count) {
     extern void *lbl_8055E96C;
     void *node = lbl_8055E96C;
@@ -139,6 +140,7 @@ void *fn_801D9260(int count) {
     } while (count >= 0);
     return node;
 }
+#pragma dont_inline off
 
 #pragma cplusplus on
 extern "C" void fn_801D9394(void **head, DtbManager801D9394 *manager, const char *name, int arg3) {
@@ -260,6 +262,92 @@ extern "C" int fn_801D94DC(void *head, void *list, const char *name, int object)
         index++;
     }
 }
+
+#pragma cplusplus on
+extern void fn_801345D8(char *, int, const char *, ...);
+extern int fn_802C6FC0(int, int, int);
+extern "C" void fn_801D9654(void **head, DtbManager801D9394 *manager, const char *name) {
+    struct DtbItem {
+        virtual const char *getName();
+        virtual void f1();
+        virtual void f2();
+        virtual const char *getString(const char *);
+        virtual void f4();
+        virtual void f5();
+        virtual int parse(const char *, int);
+    };
+    struct Node {
+        void **children;
+        int childCount;
+        int childLimit;
+        char pad0C[8];
+        void **values;
+        int valueCount;
+        int valueCapacity;
+        char pad20[0x10];
+        unsigned char active;
+        char pad31[3];
+        void *next;
+    };
+    DtbItem *item;
+    Node *node;
+    int index = 0;
+    int i, slot, result, capacity, limit;
+    void *value;
+    char key[0x20];
+    char valueName[0x20];
+    extern const char lbl_8055AD80[];
+    extern const char lbl_8055AD88[];
+
+    item = 0;
+    goto next_item;
+    do {
+        if (strcmp(item->getName(), name) == 0) {
+            node = (Node *)fn_801284F8(0x38, name);
+            if (node != 0) {
+                node->children = (void **)((char *)node + 0xC);
+                node->childLimit = 2;
+                node->childCount = 0;
+                node->values = (void **)((char *)node + 0x20);
+                node->valueCapacity = 4;
+                node->valueCount = 0;
+                i = 0;
+                while (i < node->childLimit) {
+                    fn_801345D8(key, 0x20, lbl_8055AD80, i);
+                    result = item->parse(key, -1);
+                    if (result < 0)
+                        break;
+                    value = fn_801D9260(result);
+                    slot = node->childCount;
+                    ++i;
+                    node->childCount = slot + 1;
+                    node->children[slot] = value;
+                }
+                capacity = 1 << node->childCount;
+                limit = node->valueCapacity;
+                if (capacity < limit)
+                    limit = capacity;
+                i = 0;
+                while (i < limit) {
+                    fn_801345D8(valueName, 0x20, lbl_8055AD88, i);
+                    result = (int)item->getString(valueName);
+                    value = (void *)fn_802C6FC0(result, 0, 0);
+                    slot = node->valueCount;
+                    ++i;
+                    node->valueCount = slot + 1;
+                    node->values[slot] = value;
+                }
+                node->active = 0;
+            }
+            node->next = *head;
+            *head = node;
+        }
+    next_item:
+        item = (DtbItem *)manager->getAt(++index);
+    } while (item != 0);
+}
+#pragma cplusplus reset
+
 #pragma use_lmw_stmw on
 #pragma cplusplus reset
 
@@ -398,45 +486,74 @@ int fn_801D9B28(void *arg0, int arg1) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 void fn_801D9B58(void) {
     float workspace[4];
-    register void *node;
-    register void *markNode;
-    register int markOffset;
-    register int count;
-    register float *sampleDest;
+    int markOffset;
+    struct MarkNode {
+        char pad00[0x20];
+        float value;
+        char pad24[4];
+        void **children;
+        int childCount;
+        char pad30[0x24];
+        struct MarkNode *next;
+    };
+    struct ProcessNode {
+        void **samples;
+        int sampleCount;
+        char pad08[0x0C];
+        int *effects;
+        int playCount;
+        char pad1C[0x14];
+        unsigned char active;
+        char pad31[3];
+        struct ProcessNode *next;
+    };
+    struct MarkNode *markNode;
+    float markThreshold;
     float threshold;
+    int count;
+    float *sampleDest;
     void *child;
+    float *playWeight;
+    int playOffset;
+    struct ProcessNode *node;
+    int playIndex;
 
     fn_802C7040(lbl_8055E960);
     markNode = lbl_8055E96C;
+    markThreshold = lbl_80562B2C;
     while (markNode != 0) {
-        if (*(float *)((char *)markNode + 0x20) > lbl_80562B2C) {
+        if (markThreshold < markNode->value) {
             int markIndex = 0;
             markOffset = 0;
             do {
                 ++markIndex;
-                child = *(void **)((char *)*(void **)((char *)markNode + 0x28) + markOffset);
+                child = *(void **)((char *)markNode->children + markOffset);
                 *(unsigned char *)((char *)child + 0x30) = 1;
                 markOffset += 4;
-            } while (markIndex < *(int *)((char *)markNode + 0x2C));
+            } while (markIndex < markNode->childCount);
         }
-        markNode = *(void **)((char *)markNode + 0x54);
+        markNode = markNode->next;
     }
 
     node = lbl_8055E964;
     threshold = lbl_80562B30;
     while (node != 0) {
-        if (*(unsigned char *)((char *)node + 0x30) != 0) {
-            int sampleIndex = 0;
-            int sampleOffset = 0;
+        if (node->active != 0) {
+            int sampleOffset;
+            float *sampleDest;
+            int sampleIndex;
             sampleDest = workspace;
+            sampleIndex = 0;
+            sampleOffset = 0;
             do {
                 ++sampleIndex;
-                child = *(void **)((char *)*(void **)node + sampleOffset);
+                child = *(void **)((char *)node->samples + sampleOffset);
                 sampleOffset += 4;
                 *sampleDest++ = *(float *)((char *)child + 0x20);
-            } while (sampleIndex < (count = *(int *)((char *)node + 4)));
+            } while (sampleIndex < (count = node->sampleCount));
 
             fn_801D9120(workspace + 2, workspace, count, lbl_80562B28);
             {
@@ -445,22 +562,21 @@ void fn_801D9B58(void) {
                     maximum = threshold;
                 fn_802C9900(maximum);
             }
-            fn_802C7040(*(int *)*(void **)((char *)node + 0x14));
-            {
-                int playIndex = 1;
-                int playOffset = 4;
-                float *playWeight = workspace + 3;
-                while (playIndex < (count = *(int *)((char *)node + 0x18))) {
-                    fn_802C9900(*playWeight++);
-                    fn_802C7040(*(int *)((char *)*(void **)((char *)node + 0x14) + playOffset));
-                    playOffset += 4;
-                    ++playIndex;
-                }
+            fn_802C7040(*node->effects);
+            playWeight = workspace + 3;
+            playIndex = 1;
+            playOffset = 4;
+            while (playIndex < (count = node->playCount)) {
+                fn_802C9900(*playWeight);
+                fn_802C7040(*(int *)((char *)node->effects + playOffset));
+                ++playWeight;
+                playOffset += 4;
+                ++playIndex;
             }
-            *(unsigned char *)((char *)node + 0x30) = 0;
+            node->active = 0;
         }
-        node = *(void **)((char *)node + 0x34);
+        node = node->next;
     }
     fn_802C9904();
 }
-
+#pragma scheduling on
