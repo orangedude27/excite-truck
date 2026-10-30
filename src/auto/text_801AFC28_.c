@@ -62,9 +62,9 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_,
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801AFDCC(void *arg0, void *arg1) {
-    // Fix note: reverse stack-local declarations so each temporary lands at its target frame offset.
+    // Fix note: use the global counter directly so its table index and increment share the target registers.
     struct Object {
         void *vtable; void *owner; s32 field8; void *fieldC;
         f32 field10; f32 field14; s32 field18; s32 field1C; s32 field20;
@@ -89,7 +89,6 @@ void fn_801AFDCC(void *arg0, void *arg1) {
     f32 zero;
     f32 special;
     struct Object *allocated;
-    s32 index;
 
     fn_8017B0F8();
     temp_f2 = *(volatile f32 *)&lbl_80562580;
@@ -151,9 +150,8 @@ void fn_801AFDCC(void *arg0, void *arg1) {
             special = *(volatile f32 *)&lbl_80562578;
             *(u8 *)((u8 *)arg0 + 0x1E8) = 1;
             *(f32 *)((u8 *)arg0 + 0x1EC) = special;
-            index = *(s32 *)(void *)&lbl_8055E650;
-            ((void **)lbl_80435BA8)[index] = arg0;
-            *(s32 *)(void *)&lbl_8055E650 = index + 1;
+            ((void **)lbl_80435BA8)[*(s32 *)(void *)&lbl_8055E650] = arg0;
+            ++*(s32 *)(void *)&lbl_8055E650;
         }
     }
 }
