@@ -90,8 +90,9 @@ void fn_801E78D8(long arg0) {
     }
 }
 
-#pragma dont_inline fn_801E797C
+#pragma dont_inline on
 void fn_801E797C(void) { fn_80206464(0); }
+#pragma dont_inline off
 
 void fn_801E7C1C(void) {
     lbl_8055EB11 = 0;
