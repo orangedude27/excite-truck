@@ -32,6 +32,12 @@ extern void GXSetArray(u32, void *, u32);
 extern void GXLoadPosMtxImm(void *, u32);
 extern void PSMTXRotTrig(void *, void *, f32, f32, f32);
 extern f32 lbl_80565008;
+extern long fn_802CFF64(long);
+extern u8 lbl_804D6C44[];
+extern f32 lbl_804C56F0[];
+extern f32 lbl_804CA308[];
+extern f32 lbl_80564FF0;
+extern f64 lbl_80565000;
 extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
 extern u32 lbl_8055FDE8;
@@ -154,23 +160,20 @@ void fn_802D42E4(void *arg0) {
         return;
     }
     {
-        f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
-        f32 factor = lbl_80564FF0;
+        register f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
         register volatile f32 *out = base;
+        f32 factor = lbl_80564FF0;
         for (i = 0; i < count; i++) {
             u8 a, b, c, d;
-            s32 offset1, offset2;
             f32 weight1, weight2;
             f32 *direction;
             f32 x, y, z;
             a = src[0xE];
             b = src[0xC];
-            offset1 = b * 12;
-            direction = (f32 *)((u8 *)directions + offset1);
+            direction = (f32 *)((u8 *)directions + b * 12);
             weight1 = factor * (f32)a;
             c = src[0xD];
             d = src[0xF];
-            offset2 = c * 12;
             weight2 = factor * (f32)d;
             x = *(f32 *)((u8 *)src + 0x0) + direction[0] * weight1;
             out[0] = x;
@@ -178,7 +181,7 @@ void fn_802D42E4(void *arg0) {
             out[1] = y;
             z = *(f32 *)((u8 *)src + 0x8) + direction[2] * weight1;
             out[2] = z;
-            direction = (f32 *)((u8 *)directions + offset2);
+            direction = (f32 *)((u8 *)directions + c * 12);
             src += 0x10;
             out[0] = x + direction[0] * weight2;
             out[1] = y + direction[1] * weight2;
@@ -456,6 +459,41 @@ void fn_802D5F88(s32 arg0) {
     }
 }
 
+#pragma push
+#pragma dont_inline on
+void fn_802D5FE4(void *arg0) {
+    register void *object = arg0;
+    u8 code;
+
+    fn_802D5F88((s32)object);
+    code = ((u8 *)object)[8];
+    switch (code - 10) {
+    case 0: fn_802D41C8(object); break;
+    case 4: if (fn_802DAC64()) fn_802D4280(object); else fn_802D42E4(object); break;
+    case 9: fn_802D4458(object); break;
+    case 16: fn_802D45C0(object); break;
+    case 17: fn_802D50B4(object); break;
+    case 5: fn_802D5270(object); break;
+    case 1: fn_802D3F34(object); break;
+    case 18: fn_802D3F98(object); break;
+    case 2: fn_802D3FFC(object); break;
+    case 3: fn_802D4060(object); break;
+    case 6:
+    case 8: if (fn_802DAC64()) fn_802D5680(object); else fn_802D56D4(object); break;
+    case 7: fn_802D5838(object); break;
+    case 14: fn_802D4988(object); break;
+    case 10: fn_802D5ACC(object); break;
+    case 11: fn_802D479C(object); break;
+    case 12: fn_802D4C44(object); break;
+    case 15: fn_802D4ECC(object); break;
+    case 13: fn_802D5B8C(object); break;
+    case 19: fn_802E317C(lbl_8034C2F8); break;
+    case 20: fn_802D422C(object); break;
+    default: fn_802E317C(lbl_8034C334); break;
+    }
+}
+#pragma pop
+
 void fn_802D61BC(void *arg0) {
     extern u8 lbl_804C5700[];
     extern s32 lbl_8055FD20;
@@ -547,7 +585,88 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     *arg1 = write->start;
     *arg2 = write->size;
 }
-#pragma scheduling on
+
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_802D63FC(void *arg0, s32 arg1) {
+    extern void fn_802D62FC(void *, s32 *, s32 *);
+    extern void fn_802D657C(s32 *, s32);
+    u8 *p = (u8 *)arg0;
+    register u8 *p20;
+    s32 sp1C, sp18, sp14, sp10, spC;
+    u32 sp8;
+    u32 temp_r0_6;
+    u8 temp_r0, temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5;
+    u8 temp_r10, temp_r15, temp_r16, temp_r17, temp_r18, temp_r19;
+    u8 temp_r20, temp_r21, temp_r22, temp_r23, temp_r24, temp_r25;
+    u8 temp_r26, temp_r27, temp_r28, temp_r5, temp_r6, temp_r7, temp_r8, temp_r9;
+    temp_r0 = p[0x1A];
+    p20 = p + 0x20;
+    temp_r17 = p[0x19];
+    sp1C = (s32)temp_r0;
+    temp_r0_2 = p[0x0F];
+    temp_r23 = p[0x0C];
+    spC = (s32)temp_r0_2;
+    temp_r0_3 = p[0x0E];
+    temp_r16 = p[0x0D];
+    sp10 = (s32)temp_r0_3;
+    temp_r0_4 = p[0x13];
+    temp_r22 = p[0x10];
+    sp14 = (s32)temp_r0_4;
+    temp_r0_5 = p[0x12];
+    temp_r15 = p[0x11];
+    sp18 = (s32)temp_r0_5;
+    temp_r28 = p[0x1C];
+    p[0x19] = (u8)sp1C;
+    temp_r21 = p[0x1D];
+    p[0x0C] = (u8)spC;
+    temp_r27 = p20[0];
+    temp_r10 = p20[3];
+    p[0x0D] = (u8)sp10;
+    temp_r20 = p20[1];
+    temp_r9 = p20[2];
+    p[0x10] = (u8)sp14;
+    temp_r26 = p[0x24];
+    temp_r8 = p[0x27];
+    temp_r19 = p[0x25];
+    temp_r7 = p[0x26];
+    temp_r25 = p[0x28];
+    temp_r6 = p[0x2B];
+    temp_r18 = p[0x29];
+    temp_r5 = p[0x2A];
+    temp_r24 = p[0x18];
+    p[0x1C] = (u8)p[0x1F];
+    p[0x1F] = temp_r28;
+    p[0x1D] = (u8)p[0x1E];
+    p[0x1E] = temp_r21;
+    p20[0] = temp_r10;
+    p20[3] = temp_r27;
+    p20[1] = temp_r9;
+    p20[2] = temp_r20;
+    p[0x24] = temp_r8;
+    p[0x27] = temp_r26;
+    p[0x25] = temp_r7;
+    p[0x26] = temp_r19;
+    p[0x28] = temp_r6;
+    p[0x2B] = temp_r25;
+    p[0x29] = temp_r5;
+    p[0x2A] = temp_r18;
+    p[0x18] = (u8)p[0x1B];
+    p[0x1B] = temp_r24;
+    p[0x1A] = temp_r17;
+    p[0x0F] = temp_r23;
+    p[0x0E] = temp_r16;
+    p[0x13] = temp_r22;
+    p[0x11] = (u8)sp18;
+    p[0x12] = temp_r15;
+    fn_802D657C((s32 *)p20, arg1);
+    fn_802D657C((s32 *)(p20 + 4), arg1);
+    fn_802D657C((s32 *)(p20 + 8), arg1);
+    fn_802D62FC(arg0, (s32 *)(p + 0x10), (s32 *)&sp8);
+    temp_r0_6 = sp8 >> 5U;
+    sp8 = temp_r0_6;
+    p[0x0B] = (u8)temp_r0_6;
+}
 void fn_802D657C(s32 *arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
