@@ -172,49 +172,56 @@ void fn_802E1A9C(void *arg0, int *arg1, int *arg2, int *arg3, int *arg4, int *ar
 }
 #pragma use_lmw_stmw reset
 #pragma optimization_level reset
-int fn_802E1BB4(void *arg0, int arg1) {
+#pragma push
+#pragma scheduling invalid_target
+int fn_802E1BB4(register void *arg0, int arg1) {
+    typedef void (*Calc)(void *, int *, int *, int *, int *, int *, int *, int *);
     int sp20, sp1C, sp18, sp14, sp10, spC, sp8;
-    int temp, i;
-    unsigned char *p;
-    fn_802E1A9C((char *)arg0 + 0x100, &sp20, &sp1C, &sp18, &sp14, &sp10, &spC, &sp8, arg1);
+    register int temp;
+    register int i;
+    register char *slot;
+    register char *dest;
+    register unsigned char *p;
+    (void)arg1;
+    ((Calc)fn_802E1A9C)((char *)arg0 + 0x100, &sp20, &sp1C, &sp18, &sp14, &sp10, &spC, &sp8);
     temp = fn_8011FFC4(sp10 + sp14 * *(int *)((char *)arg0 + 0x100) + 0x7F, sp14);
-    if (temp != 0) {
-        *(int *)((char *)arg0 + 0x178) = temp;
-        p = (unsigned char *)(((unsigned int)temp + 0x7F) & ~0x7F);
-        i = 0;
-        while (i < *(int *)((char *)arg0 + 0x100)) {
-            char *slot = (char *)arg0 + i * 0x30;
-            if (*(int *)(slot + 0x118) != 0) {
-                *(int *)(slot + 0x11C) = (int)p;
-                *(int *)(slot + 0x120) = spC;
-                if (!fn_802E18D4(spC, *(int *)((char *)arg0 + 0x108), 1, 0, (char *)arg0 + i * 0x80, (int)p)) goto fail;
-            }
-            if (*(int *)(slot + 0x124) != 0) {
-                *(int *)(slot + 0x128) = (int)p + sp20;
-                *(int *)(slot + 0x12C) = sp8;
-                if (!fn_802E18D4(sp8, *(int *)((char *)arg0 + 0x110), 1, 0, (char *)arg0 + i * 0x80 + 0x20, (int)p + sp20)) goto fail;
-            }
-            if (*(int *)(slot + 0x130) != 0) {
-                *(int *)(slot + 0x134) = (int)p + sp1C;
-                *(int *)(slot + 0x138) = sp8;
-                if (!fn_802E18D4(sp8, *(int *)((char *)arg0 + 0x110), 1, 0, (char *)arg0 + i * 0x80 + 0x40, (int)p + sp1C)) goto fail;
-            }
-            if (*(int *)(slot + 0x13C) != 0) {
-                *(int *)(slot + 0x140) = (int)p + sp18;
-                *(int *)(slot + 0x144) = spC;
-                if (!fn_802E18D4(spC, *(int *)((char *)arg0 + 0x108), 1, 0, (char *)arg0 + i * 0x80 + 0x60, (int)p + sp18)) goto fail;
-            }
-            i++;
-            p += sp14;
+    if (temp == 0) goto fail;
+
+    *(int *)((char *)arg0 + 0x178) = temp;
+    p = (unsigned char *)(((unsigned int)temp + 0x7F) & ~0x7F);
+    slot = (char *)arg0;
+    dest = (char *)arg0;
+    for (i = 0; i < *(int *)((char *)arg0 + 0x100); i++, slot += 0x30, dest += 0x80, p += sp14) {
+        if (*(int *)(slot + 0x118) != 0) {
+            *(int *)(slot + 0x11C) = (int)p;
+            *(int *)(slot + 0x120) = spC;
+            if (!fn_802E18D4(spC, *(int *)((char *)arg0 + 0x108), 1, 0, dest, (int)p)) goto fail;
         }
-        *(int *)((char *)arg0 + 0x17C) = sp14;
-        fn_802E1A38(arg0, (int)p);
-        return 1;
+        if (*(int *)(slot + 0x124) != 0) {
+            *(int *)(slot + 0x128) = (int)p + sp20;
+            *(int *)(slot + 0x12C) = sp8;
+            if (!fn_802E18D4(sp8, *(int *)((char *)arg0 + 0x110), 1, 0, dest + 0x20, (int)p + sp20)) goto fail;
+        }
+        if (*(int *)(slot + 0x130) != 0) {
+            *(int *)(slot + 0x134) = (int)p + sp1C;
+            *(int *)(slot + 0x138) = sp8;
+            if (!fn_802E18D4(sp8, *(int *)((char *)arg0 + 0x110), 1, 0, dest + 0x40, (int)p + sp1C)) goto fail;
+        }
+        if (*(int *)(slot + 0x13C) != 0) {
+            *(int *)(slot + 0x140) = (int)p + sp18;
+            *(int *)(slot + 0x144) = spC;
+            if (!fn_802E18D4(spC, *(int *)((char *)arg0 + 0x108), 1, 0, dest + 0x60, (int)p + sp18)) goto fail;
+        }
     }
+    *(int *)((char *)arg0 + 0x17C) = sp14;
+    fn_802E1A38(arg0, (int)p);
+    return 1;
+
 fail:
     fn_802E1728(arg0);
     return 0;
 }
+#pragma pop
 
 void fn_802E27A0(void *arg0) {
     DCStoreRange(*(void **)((char *)arg0 + *(int *)((char *)arg0 + 0x114) * 0x30 + 0x11C),
@@ -439,8 +446,8 @@ void fn_802E2E38(int arg0) {
     extern int lbl_804DB790[], lbl_804DB7D0[], lbl_8055FF00;
     extern int fn_80039840(void), fn_802D9BF0(void), fn_802D9C04(void), fn_8005EE7C(void);
     extern void fn_800527CC(int), fn_8005ED8C(void), OSReturnToMenu(void), OSShutdownSystem(void);
-    char *text = lbl_8034CCE0;
     Callback *cursor;
+    char *text = lbl_8034CCE0;
     int i;
     int j;
 
