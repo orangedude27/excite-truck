@@ -226,7 +226,7 @@ void fn_80235CBC(void *arg0, int arg1, float x, float y, float z, float dx, floa
     fn_80230A68(&v1, index, x + dx, y, z, *((float *)node + 2), *((float *)node + 1));
     fn_80230A68(&v2, index, x, y - dy, z, *(float *)node + 0, *((float *)node + 3));
     fn_80230A68(&v3, index, x + dx, y - dy, z, *((float *)node + 2), *((float *)node + 3));
-    ((void (*)(void *, int, unsigned short *, int, unsigned short, unsigned short, unsigned short, unsigned short, float, double))fn_802C8DB8)(&v0, 4, ids, 6, *(unsigned short *)(lbl_802FA020 + 8), *(unsigned short *)(lbl_802FA020 + 6), *(unsigned short *)(lbl_802FA020 + 4), *(unsigned short *)(lbl_802FA020 + 2), *(float *)((char *)&v3 + 0x10), v3.a);
+    fn_802C8DB8(&v0, 4, ids, 6, *(unsigned short *)(lbl_802FA020 + 8), *(unsigned short *)(lbl_802FA020 + 6), *(unsigned short *)(lbl_802FA020 + 4), *(unsigned short *)(lbl_802FA020 + 2), *(float *)((char *)&v3 + 0x10), v3.a);
     fn_802C8D74();
 }
 
