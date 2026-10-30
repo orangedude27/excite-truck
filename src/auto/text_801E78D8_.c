@@ -219,6 +219,7 @@ extern "C" void fn_801E7C28(void *arg0) {
         fn_8000D878();
     }
 }
+#pragma scheduling on
 #pragma cplusplus off
 
 extern void fn_801E7C28(void *);
