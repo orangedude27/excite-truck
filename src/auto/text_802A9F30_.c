@@ -638,6 +638,7 @@ void fn_802ABE50(void) { fn_8028E240(0); }
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
     unsigned char red;
     unsigned char green;
