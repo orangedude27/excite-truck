@@ -8,7 +8,7 @@ long fn_80179CB0(void);
 void fn_801EECAC(long, long);
 void fn_802C6CF8(long);
 
-void fn_801EC9CC(void*, unsigned int);
+void fn_801EC9CC(void*, int);
 void fn_80128668(void*);
 void fn_801E323C(void);
 void fn_801ECCE0(long, long);
@@ -148,10 +148,9 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
     extern char lbl_8055AFDC, lbl_8055AFE4;
     extern float lbl_80562E88, lbl_80562E8C;
     typedef union { struct { float x, y, z; } f; unsigned int u[3]; } Vec3;
-    void *result;
+    register void *result;
     Vec3 first, second;
-    float x0, y0, x1, y1;
-    float dx, dy, slopeX, slopeY;
+    float dx, dy, slopeX, slopeY, x0, x1, y0, y1;
 
     *(volatile int *)out = value;
     result = fn_801EC59C_parent_get(parent, index);
@@ -592,6 +591,63 @@ void fn_801EEC68(void *arg0) {
         *(long *)((char *)arg0 + 0x488) = -1;
     }
 }
+
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801EECAC(long arg0, long arg1) {
+    extern void fn_801EAB10(int, int);
+    extern char lbl_8055B088;
+    extern char lbl_8055B090;
+    extern float lbl_80562E90;
+    extern float lbl_80562E88;
+    extern float lbl_80562ECC;
+    extern float lbl_80562ED0;
+    extern float lbl_80562ED4;
+    struct Property {
+        virtual void *get(int);
+    };
+    char *stringBase = lbl_8033A060;
+    void *value;
+    void *object;
+    long next;
+    int count;
+
+    next = arg1 + *(long *)((char *)arg0 + 0x34);
+    *(long *)((char *)arg0 + 0x3C) = next;
+    fn_801EAB10(*(int *)((char *)arg0 + 0x40), next);
+
+    object = *(void **)((char *)*(void **)((char *)arg0 + 0x188) + 0x2134);
+    value = ((Property *)object)->get((int)&lbl_8055B090);
+    count = *(int *)((char *)arg0 + 0x178);
+
+    fn_801EC214((void *)(arg0 + 0x384), value,
+                count, stringBase + 0x1E4,
+                (int)&lbl_8055B088, lbl_80562E90, lbl_80562E88);
+    fn_801EC214((void *)(arg0 + 0x18C), value,
+                *(int *)((char *)arg0 + 0x178), stringBase + 0x1F0,
+                *(int *)((char *)arg0 + 0x3C) + 0x4C, lbl_80562ECC, lbl_80562E88);
+    fn_801EC59C((void *)(arg0 + 0x3D8), value,
+                (int)(stringBase + 0x1FC),
+                *(int *)((char *)arg0 + 0x3C) + 0x4C,
+                lbl_80562ECC, lbl_80562E88);
+    fn_801EC214((void *)(arg0 + 0x1E0), value,
+                *(int *)((char *)arg0 + 0x178), stringBase + 0x20C,
+                *(int *)((char *)arg0 + 0x3C) + 0x34, lbl_80562E90, lbl_80562E88);
+    fn_801EC214((void *)(arg0 + 0x234), value,
+                *(int *)((char *)arg0 + 0x178), stringBase + 0x218,
+                *(int *)((char *)arg0 + 0x3C) + 0x2B0, lbl_80562E90, lbl_80562E88);
+    fn_801EC214((void *)(arg0 + 0x288), value,
+                *(int *)((char *)arg0 + 0x178), stringBase + 0x22C,
+                *(int *)((char *)arg0 + 0x3C) + 0x2AC, lbl_80562ED0, lbl_80562ED4);
+    fn_801EC214((void *)(arg0 + 0x2DC), value,
+                *(int *)((char *)arg0 + 0x178), stringBase + 0x23C,
+                *(int *)((char *)arg0 + 0x3C) + 0x2A0, lbl_80562ED0, lbl_80562ED4);
+    fn_801EC214((void *)(arg0 + 0x330), value,
+                *(int *)((char *)arg0 + 0x178), stringBase + 0x250,
+                *(int *)((char *)arg0 + 0x3C) + 0x2B8, lbl_80562E90, lbl_80562E88);
+}
+#pragma cplusplus reset
+#pragma pop
 
 #pragma scheduling invalid_target
 long fn_801EEE38(void) {
