@@ -40,6 +40,7 @@ extern void *lbl_804C07F0[];
 extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
+#pragma dont_inline fn_802BECE4
 int fn_802BECE4(const char *arg0, int arg1) {
     int d, c, b, a;
     int result = arg1;
@@ -78,33 +79,49 @@ float fn_802BEFB4(void) {
 
 extern u32 lbl_802FABA0[];
 float fn_802BF02C(float arg0, int arg1) {
-    u32 values[14];
-    float *p = (float *)values + 2;
-    int i;
+    struct Pair { float x, y; } points[7];
+    register u32 *src = lbl_802FABA0;
+    register u32 *dst = (u32 *)points;
+    register struct Pair *p;
+    register struct Pair *q;
+    register int i;
+    register float min, t;
+    float highX, lowX, highY, numerator, lowY, denominator;
 
-    values[0] = *(u32 *)((char *)&lbl_802FABA0 + 0x00);
-    values[1] = *(u32 *)((char *)&lbl_802FABA0 + 0x04);
-    values[2] = *(u32 *)((char *)&lbl_802FABA0 + 0x08);
-    values[3] = *(u32 *)((char *)&lbl_802FABA0 + 0x0C);
-    values[4] = *(u32 *)((char *)&lbl_802FABA0 + 0x10);
-    values[5] = *(u32 *)((char *)&lbl_802FABA0 + 0x14);
-    values[6] = *(u32 *)((char *)&lbl_802FABA0 + 0x18);
-    values[7] = *(u32 *)((char *)&lbl_802FABA0 + 0x1C);
-    values[8] = *(u32 *)((char *)&lbl_802FABA0 + 0x20);
-    values[9] = *(u32 *)((char *)&lbl_802FABA0 + 0x24);
-    values[10] = *(u32 *)((char *)&lbl_802FABA0 + 0x28);
-    values[11] = *(u32 *)((char *)&lbl_802FABA0 + 0x2C);
-    values[12] = *(u32 *)((char *)&lbl_802FABA0 + 0x30);
-    values[13] = *(u32 *)((char *)&lbl_802FABA0 + 0x34);
-    for (i = 0; i < 6; i++, p += 2) {
-        if (*p > arg0) {
-            float t = (arg0 - p[-2]) / (p[0] - p[-2]);
-            if (t < lbl_80564D80) t = lbl_80564D80;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst = *src;
+    p = points + 1;
+    i = 1;
+
+    for (; i <= 6; ++p, ++i) {
+        if (p->x > arg0) {
+            q = points;
+            min = lbl_80564D80;
+            highX = q[i].x;
+            lowX = q[i - 1].x;
+            highY = q[i].y;
+            numerator = arg0 - lowX;
+            lowY = q[i - 1].y;
+            denominator = highX - lowX;
+            t = numerator / denominator;
+            if (t < min) t = min;
             if (t > lbl_80564D90) t = lbl_80564D90;
-            return p[-1] + t * (p[1] - p[-1]);
+            return lowY + t * (highY - lowY);
         }
     }
-    return *(float *)&values[13];
+    return points[6].y;
 }
 
 void fn_802BF350(void) {
