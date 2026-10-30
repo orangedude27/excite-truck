@@ -670,16 +670,17 @@ s32 DVDClose(void) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
-    u32 *fst;
-    u32 *record;
+    u8 *fst;
+    u8 *parentTable;
+    u8 *strings;
+    u32 offset;
     u32 parentIndex;
-    u32 grandparentIndex;
+    u32 nextParent;
+    u32 n;
     u32 pos;
     u32 start;
     u32 left;
     u32 initialLeft;
-    u32 value;
-    u8 *strings;
     char *name;
     char *parentName;
     char *grandparentName;
@@ -688,66 +689,72 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     char ch;
 
     if (entry == 0) return 0;
-    fst = (u32 *)FstStart_8055D840;
-    record = fst + entry * 3;
+    fst = (u8 *)FstStart_8055D840;
+    offset = entry * 12;
     strings = (u8 *)FstStringStart_8055D83C;
-    parentIndex = record[1];
-    name = (char *)(strings + (record[0] & 0xFFFFFF));
-    pos = 0;
-
-    if (parentIndex != 0) {
-        record = fst + parentIndex * 3;
-        grandparentIndex = record[1];
-        parentName = (char *)(strings + (record[0] & 0xFFFFFF));
-
-        if (grandparentIndex != 0) {
-            record = fst + grandparentIndex * 3;
-            value = record[1];
-            grandparentName = (char *)(strings + (record[0] & 0xFFFFFF));
-            pos = DVDConvertEntrynumToPath(value, path, max);
-            if (pos != max) {
-                start = pos + 1;
-                path[pos] = '/';
-                initialLeft = max - start;
-                left = initialLeft;
-                dst = path + start;
-                src = grandparentName;
-                do {
-                    ch = *src;
-                    --left;
-                    ++src;
-                    *dst = ch;
-                    ++dst;
-                    if (left == 0) break;
-                } while (*src != 0);
-                pos = start + (initialLeft - left);
-            }
-        }
-
-        if (pos != max) {
-            start = pos + 1;
-            path[pos] = '/';
-            initialLeft = max - start;
-            left = initialLeft;
-            dst = path + start;
-            src = parentName;
-            do {
-                ch = *src;
-                --left;
-                ++src;
-                *dst = ch;
-                ++dst;
-                if (left == 0) break;
-            } while (*src != 0);
-            pos = start + (initialLeft - left);
-        }
+    parentTable = fst + 4;
+    parentIndex = *(u32 *)(parentTable + offset);
+    name = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+    if (parentIndex == 0) {
+        pos = 0;
+        goto append_name;
     }
 
+    offset = parentIndex * 12;
+    nextParent = *(u32 *)(parentTable + offset);
+    parentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+    if (nextParent == 0) {
+        pos = 0;
+        goto append_parent;
+    }
+
+    offset = nextParent * 12;
+    n = *(u32 *)(parentTable + offset);
+    grandparentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+    pos = DVDConvertEntrynumToPath(n, path, max);
     if (pos != max) {
         start = pos + 1;
         path[pos] = '/';
-        initialLeft = max - start;
-        left = initialLeft;
+        left = max - start;
+        initialLeft = left;
+        dst = path + start;
+        src = grandparentName;
+        do {
+            ch = *src;
+            --left;
+            ++src;
+            *dst = ch;
+            ++dst;
+            if (left == 0) break;
+        } while (*src != 0);
+        pos = start + (initialLeft - left);
+    }
+
+append_parent:
+    if (pos != max) {
+        start = pos + 1;
+        path[pos] = '/';
+        left = max - start;
+        initialLeft = left;
+        dst = path + start;
+        src = parentName;
+        do {
+            ch = *src;
+            --left;
+            ++src;
+            *dst = ch;
+            ++dst;
+            if (left == 0) break;
+        } while (*src != 0);
+        pos = start + (initialLeft - left);
+    }
+
+append_name:
+    if (pos != max) {
+        start = pos + 1;
+        path[pos] = '/';
+        left = max - start;
+        initialLeft = left;
         dst = path + start;
         src = name;
         do {
@@ -1056,6 +1063,59 @@ void fn_80035DA8(s32 arg0) {
     #pragma unused(arg0)
 }
 
+extern void fn_80036550(u32);
+void fn_80036370(u32 arg0) {
+    register u32 value = arg0;
+    s32 interrupts;
+    u32 tick;
+    u8 *info;
+
+    interrupts = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 == 0)
+        *(u32 *)(__ErrorInfo + 0x78) = value;
+    else
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+    OSRestoreInterrupts(interrupts);
+
+    if (value == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+        return;
+    }
+    if (value == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+        return;
+    }
+
+    if (value & 1) {
+        interrupts = OSDisableInterrupts();
+        if (*(volatile u32 *)&lbl_8055D848 >= 5)
+            *(volatile u32 *)&lbl_8055D848 = 0;
+        info = (u8 *)__ErrorInfo;
+        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
+        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+        tick = OSGetTick();
+        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
+        *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+        OSRestoreInterrupts(interrupts);
+        fn_8003AF1C(0, 0, fn_80036624);
+        return;
+    }
+
+    interrupts = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 >= 5)
+        *(volatile u32 *)&lbl_8055D848 = 0;
+    info = (u8 *)__ErrorInfo;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x27;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+    tick = OSGetTick();
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+    OSRestoreInterrupts(interrupts);
+    fn_8003B218((void (*)(void))fn_80036550);
+}
+
 extern void fn_8003A1A0(u32, void (*)(void));
 extern void fn_8003BCC0(void);
 extern void fn_80035C64(void);
@@ -1362,12 +1422,14 @@ void fn_800370F4(u32 arg0) {
     s32 interrupts;
     u8 *info;
     u32 tick;
+    u32 count;
 
     interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = value;
     } else {
-        *(u32 *)(__ErrorInfo + (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14 + 0x28) = value;
+        count = *(volatile u32 *)&lbl_8055D848;
+        *(u32 *)(__ErrorInfo + (count - 1) * 0x14 + 0x28) = value;
     }
     OSRestoreInterrupts(interrupts);
 
