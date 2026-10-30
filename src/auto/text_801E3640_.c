@@ -266,7 +266,7 @@ void fn_801E3FC8(void *arg0, float farg0) {
 #pragma pop
 extern float lbl_8055EA68, lbl_80562CF4;
 extern int fn_802C744C(int, float *);
-extern int fn_801E4040();
+extern int fn_801E4040(void *, void *, int, int, float);
 #pragma dont_inline fn_801E41D8
 void fn_801E41D8(void *arg0, void *arg1, int arg2, float farg0);
 #pragma dont_inline fn_801E41D8
