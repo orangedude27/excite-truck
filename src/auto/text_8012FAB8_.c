@@ -165,7 +165,7 @@ copy:
         goto count_check;
     goto done;
 fallback:
-    fn_8013072C();
+    fn_8013072C(dst, count, limit);
 done:
     ;
 }
