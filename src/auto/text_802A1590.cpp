@@ -1392,7 +1392,7 @@ extern "C" void fn_802A41D8(void *arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
     struct Params {
         s32 count;
