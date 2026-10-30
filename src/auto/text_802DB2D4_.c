@@ -30,6 +30,7 @@ extern void *fn_802D94DC(void);
 extern void *lbl_8055FEA8;
 extern void *lbl_8055FEAC;
 extern void GXLoadTexMtxImm(float *, unsigned int, unsigned char);
+extern void GXLoadTexObj(void *, int);
 extern float lbl_8055D148;
 extern unsigned char lbl_804DB068[];
 extern unsigned char lbl_802FACF8[];
@@ -412,6 +413,60 @@ extern unsigned int lbl_8055FEBC;
   
 void fn_802DC440(void) { ((void (*)(void))fn_802DBDD8)(); fn_802DFCC0(); }
 
+extern float lbl_80565040, lbl_80565044, lbl_80565048;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_802DC464(int arg0, int arg1, unsigned short *list, int size) {
+    float field;
+    float value;
+    float rounded;
+    int raw;
+    int mask;
+    int clipped;
+    int alpha;
+    GXColor color;
+    int n;
+    int i;
+    unsigned short val;
+    volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
+
+    fn_802DBBE4(arg0, arg1);
+    field = ((float *)lbl_804DB068)[5];
+    value = field * lbl_80565040;
+    if (value < lbl_80565048)
+        rounded = value - lbl_80565044;
+    else
+        rounded = lbl_80565044 + value;
+    raw = (int)rounded;
+    mask = -raw & ~raw;
+    mask >>= 31;
+    clipped = raw & mask;
+    alpha = 0xFF;
+    if (clipped < 0xFF)
+        alpha = clipped;
+    if (alpha != lbl_8055FEA0) {
+        color.b = 0xFF;
+        color.g = 0xFF;
+        color.r = 0xFF;
+        color.a = alpha;
+        lbl_8055FEA0 = alpha;
+        GXSetTevColor(1, color);
+    }
+    while (size > 0) {
+        n = *list++;
+        GXBegin(0xA0, 0, n);
+        size -= n + 1;
+        #pragma unroll 8
+        for (i = 0; i < n; ++i) {
+            val = *list;
+            list++;
+            *fifo = val;
+        }
+    }
+}
+#pragma pop
+
 void fn_802DC628(void) {}
 
 #pragma push
@@ -445,6 +500,64 @@ int fn_802DC6AC(int a, unsigned int b) {
            ((unsigned int)*(unsigned short *)tile << 16);
 }
 
+extern void fn_802CADD0(int, int);
+extern void fn_802D2D1C(void);
+extern void fn_802E0218(void);
+extern void fn_802E009C(void);
+extern void fn_802E050C(void);
+extern void fn_802E0420(void);
+extern void fn_802DFE88(void);
+extern void fn_802DFD00(void);
+extern int __cntlzw(unsigned int);
+#pragma scheduling invalid_target
+void fn_802DC71C(int arg0, int arg1) {
+    extern void GXLoadTexObj(void *, int);
+    int useAlt;
+    void *tex1;
+    unsigned char texFlag;
+    void *info;
+    unsigned short wrapS;
+
+    fn_802DBD88();
+    lbl_8055FEB4 = 0;
+    fn_802CADD0(arg1, 1);
+    fn_802D2D1C();
+
+    tex1 = lbl_804DB468[1];
+    useAlt = *((unsigned char *)tex1 + 0xCC);
+    info = ((void *(*)(int))fn_802DC628)(arg0);
+    texFlag = *((unsigned char *)info + 8);
+    lbl_8055FEBB = (texFlag == 0x1D);
+
+    wrapS = GXGetTexObjWrapS((unsigned char *)lbl_804DB468[0] + 0x24);
+    lbl_8055FEB9 = (wrapS == 0x200);
+
+    GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, 0);
+    GXLoadTexObj((unsigned char *)tex1 + 0x24, 1);
+    if (useAlt != 0) GXLoadTexObj((unsigned char *)tex1 + 0x78, 2);
+
+    if (lbl_8055FEBB != 0) {
+        if (useAlt != 0) fn_802E0218();
+        else fn_802E009C();
+        lbl_8055FEB0 = 0;
+    } else {
+        if (lbl_8055FEB9 != 0) {
+            if (useAlt != 0) fn_802E050C();
+            else fn_802E0420();
+            fn_802DC62C();
+        } else if (useAlt != 0) fn_802DFE88();
+        else fn_802DFD00();
+        lbl_8055FEB0 = (*(unsigned int *)((unsigned char *)tex1 + 0xE0) >> 3) & 1;
+    }
+
+    GXSetAlphaCompare(4, *((unsigned char *)tex1 + 0xE4), 1, 0, 0);
+    lbl_8055FD24 = *((unsigned char *)tex1 + 0xE4);
+    *(unsigned int *)(lbl_804DB480 + 4) = 0;
+    *(unsigned int *)(lbl_804DB480 + 0x214) = 0;
+    *(unsigned char *)(lbl_804DB480 + 0x218) = 1;
+    GXSetBlendMode(1, 4, 5, 5);
+}
+#pragma scheduling on
 extern void GXLoadPosMtxImm(float (*)[4], unsigned int);
 extern void GXCallDisplayList(void *, unsigned int);
 extern void PSMTXScale(float (*)[4], float, float, float);
@@ -631,5 +744,25 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
 #pragma pop
 void fn_802DD228(void) { if (lbl_8055FEC0 != 0) { fn_802D3E88(); lbl_8055FEC0 = 0; } fn_802DBDD8(); fn_802CADD0(-1, 1); GXSetNumIndStages(0); GXSetTevDirect(0); }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_802DD27C(void *vertices, int count, unsigned short *list, int size) {
+    int i;
+    unsigned short x;
+    volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
+    GXSetArray(9, vertices, 0x18);
+    GXSetArray(0xB, (char *)vertices + 0xC, 0x18);
+    GXSetArray(0xD, (char *)vertices + 0x10, 0x18);
+    DCFlushRange(vertices, count * 0x18);
+    GXBegin(0x90, 0, size);
+    for (i = 0; i < size; ++i) {
+        x = list[i];
+        *fifo = x;
+        *fifo = x;
+        *fifo = x;
+    }
+}
+#pragma pop
 void fn_802DD42C(void) { fn_802CFF64(); }
 
