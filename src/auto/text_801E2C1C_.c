@@ -26,6 +26,7 @@ extern char lbl_80339904[];
 extern void *lbl_8055EA50;
 extern void *fn_801284F8(s32, void *);
 extern void fn_8012A13C(void *, s32, s32);
+void *fn_801E3004();
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -102,6 +103,7 @@ int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
 s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
     struct Group {
         int magic;
+        int pad;
         int itemCount;
     };
     struct Archive {
@@ -112,32 +114,30 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
     struct Group *group;
     char *item;
     char name[32];
-    char valueBuf[32];
+    int valueBuf[8];
     int groupIndex;
     int groupOffset;
     int index;
     register int zero;
+    register int off;
 
+    off = 0;
     zero = 0;
     archive = (struct Archive *)fn_802C6C34();
     groupIndex = zero;
-    groupOffset = zero;
+    groupOffset = off;
     while (groupIndex < archive->groupCount) {
         group = (struct Group *)(*(int *)(archive->groups + groupOffset));
         if (group->magic == 0x4D524A54) {
             item = (char *)group + 0xC;
             index = zero;
             while (index < group->itemCount) {
-                ((int *)valueBuf)[0] = zero; ((int *)valueBuf)[1] = zero; ((int *)valueBuf)[2] = zero;
-                ((int *)valueBuf)[3] = zero; ((int *)valueBuf)[4] = zero; ((int *)valueBuf)[5] = zero;
-                ((int *)valueBuf)[6] = zero;
-                ((int *)name)[0] = zero; ((int *)name)[1] = zero; ((int *)name)[2] = zero;
-                ((int *)name)[3] = zero; ((int *)name)[4] = zero; ((int *)name)[5] = zero;
-                ((int *)name)[6] = zero;
-                if (sscanf(item, (const char *)&lbl_8055AEB4, name, valueBuf) >= 1 &&
+                valueBuf[0] = zero; valueBuf[1] = zero; valueBuf[2] = zero; valueBuf[3] = zero;
+                valueBuf[4] = zero; valueBuf[5] = zero; valueBuf[6] = zero; valueBuf[7] = zero;
+                if (sscanf(item, (const char *)&lbl_8055AEB4, name, (char *)(void *)valueBuf) >= 1 &&
                     stricmp(name, (const char *)arg0) == 0) {
                     if (arg1 != 0) {
-                        strcpy((char *)arg1, valueBuf);
+                        strcpy((char *)arg1, (char *)(void *)valueBuf);
                     }
                     return (s32)group + index * 0x50 + 0xC;
                 }
