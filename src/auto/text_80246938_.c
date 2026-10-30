@@ -286,6 +286,7 @@ void fn_80247174(void) {
 #pragma dont_inline fn_80246E00
 #pragma dont_inline fn_80247174
 s32 fn_8024739C(void) { return 0; }
+#pragma pop
 
 extern char lbl_8055F260, lbl_8055F269, lbl_8055F26A;
 extern unsigned int lbl_8055D430, lbl_8055E044;
