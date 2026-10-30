@@ -240,17 +240,18 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
         virtual long callback();
     };
     char buffer[0x410];
-    register char *globalBase = (char *)lbl_80507600;
-    register char *messageBase = (char *)&lbl_8034E260;
     register long *result = 0;
+    register char *messageBase = (char *)&lbl_8034E260;
+    register char *globalBase = (char *)lbl_80507600;
+    long selector = arg0;
     long index;
     long *table;
     char *base;
     register char *copy;
     unsigned int tick;
 
-    if (arg0 <= -2) {
-        index = -2 - arg0;
+    if (selector <= -2) {
+        index = -2 - selector;
         if ((index >= 0) && (index < 3)) {
             table = (long *)(globalBase + 0xA0);
             if (table[index * 2] != 0) {
@@ -259,10 +260,13 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
         }
         if (result != 0) {
             strncpy(globalBase + 0x40, &lbl_8055D2A4, 0x1F);
-            globalBase[0x5F] = 0;
+            base = globalBase + 0x40;
+            base[0x1F] = 0;
         }
     } else {
-        base = globalBase + 0x1218 + arg0 * 0x610;
+        arg0 *= 0x610;
+        base = globalBase + 0x1218;
+        base += arg0;
         copy = base + 0x200;
         fn_801345D8(buffer, 0x40A, &lbl_8055D294, base, copy);
         ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x280, buffer);
@@ -271,7 +275,8 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
         if (result != 0) {
             ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2A0, buffer, ((Obj *)result)->callback());
             strncpy(globalBase + 0x40, copy, 0x1F);
-            globalBase[0x5F] = 0;
+            base = globalBase + 0x40;
+            base[0x1F] = 0;
         } else {
             ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2BC, buffer);
         }
@@ -279,7 +284,7 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
     if (result != 0) {
         *arg1 = ((Obj *)result)->callback();
     } else {
-        ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2D8, arg0);
+        ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2D8, selector);
         if ((unsigned char)lbl_80560062 != 0) {
             tick = *(volatile unsigned int *)0x800000F8 >> 2;
             ((void (*)(int, int))OSSleepTicks)(0, (tick / 1000) * 1000);
