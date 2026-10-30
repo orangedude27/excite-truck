@@ -2,6 +2,10 @@
 struct VObj_8017D93C { virtual void d0(int); };
 #pragma cplusplus reset
 
+#pragma small_data off
+extern float lbl_80558DC4;
+#pragma small_data on
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -364,6 +368,60 @@ void fn_8017E388(void *arg0) {
  extern float lbl_80561BE0; extern float lbl_80561BF4;
  float a=lbl_80561BE0, b=lbl_80561BF4; float *p=(float*)arg0;
  p[1]=a; p[0]=b; p[2]=a; p[3]=a; p[4]=b; p[5]=a; p[6]=a; p[7]=a; p[8]=b; p[9]=a; p[10]=a; p[11]=a;
+}
+
+void fn_8017E764(void *arg0, int arg1) {
+    extern float lbl_80558DC4;
+    extern float lbl_8055E460;
+    extern float lbl_80561BF4;
+    unsigned char *src = (unsigned char *)arg0;
+    unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
+    float delta = lbl_8055E460 - lbl_80561BF4;
+    if (__fabsf(delta) <= lbl_80558DC4) {
+        *(unsigned int *)(dst + 0x00) = *(unsigned int *)(src + 0x70);
+        *(unsigned int *)(dst + 0x04) = *(unsigned int *)(src + 0x74);
+        *(unsigned int *)(dst + 0x08) = *(unsigned int *)(src + 0x78);
+        *(unsigned int *)(dst + 0x0C) = *(unsigned int *)(src + 0x7C);
+        *(unsigned int *)(dst + 0x10) = *(unsigned int *)(src + 0x80);
+        *(unsigned int *)(dst + 0x14) = *(unsigned int *)(src + 0x84);
+        *(unsigned int *)(dst + 0x18) = *(unsigned int *)(src + 0x88);
+        *(unsigned int *)(dst + 0x1C) = *(unsigned int *)(src + 0x8C);
+        *(unsigned int *)(dst + 0x20) = *(unsigned int *)(src + 0x90);
+        *(unsigned int *)(dst + 0x24) = *(unsigned int *)(src + 0x94);
+        *(unsigned int *)(dst + 0x28) = *(unsigned int *)(src + 0x98);
+        *(unsigned int *)(dst + 0x2C) = *(unsigned int *)(src + 0x9C);
+    } else {
+        float tmp[12];
+        float *a = (float *)(src + 0x70);
+        float *b = (float *)(src + 0xA0);
+        int i;
+        for (i = 0; i < 2; i++) {
+            float a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
+            float b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5];
+            tmp[i * 6 + 0] = b0 + lbl_8055E460 * (a0 - b0);
+            tmp[i * 6 + 1] = b1 + lbl_8055E460 * (a1 - b1);
+            tmp[i * 6 + 2] = b2 + lbl_8055E460 * (a2 - b2);
+            tmp[i * 6 + 3] = b3 + lbl_8055E460 * (a3 - b3);
+            tmp[i * 6 + 4] = b4 + lbl_8055E460 * (a4 - b4);
+            tmp[i * 6 + 5] = b5 + lbl_8055E460 * (a5 - b5);
+            a += 6;
+            b += 6;
+        }
+        *(unsigned int *)(dst + 0x00) = *(unsigned int *)&tmp[0];
+        *(unsigned int *)(dst + 0x04) = *(unsigned int *)&tmp[1];
+        *(unsigned int *)(dst + 0x08) = *(unsigned int *)&tmp[2];
+        *(unsigned int *)(dst + 0x0C) = *(unsigned int *)&tmp[3];
+        *(unsigned int *)(dst + 0x10) = *(unsigned int *)&tmp[4];
+        *(unsigned int *)(dst + 0x14) = *(unsigned int *)&tmp[5];
+        *(unsigned int *)(dst + 0x18) = *(unsigned int *)&tmp[6];
+        *(unsigned int *)(dst + 0x1C) = *(unsigned int *)&tmp[7];
+        *(unsigned int *)(dst + 0x20) = *(unsigned int *)&tmp[8];
+        *(unsigned int *)(dst + 0x24) = *(unsigned int *)&tmp[9];
+        *(unsigned int *)(dst + 0x28) = *(unsigned int *)&tmp[10];
+        *(unsigned int *)(dst + 0x2C) = *(unsigned int *)&tmp[11];
+    }
+    *(short *)(dst + 0x30) = *(short *)(src + 0x6C);
+    *((unsigned char *)((unsigned char *)arg1 + *(unsigned int *)(src + 8) + 0x32)) = src[0x1FE];
 }
 
 int fn_8017E930(void *arg0, void *arg1, void *arg2) {
