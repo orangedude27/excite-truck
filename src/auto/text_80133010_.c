@@ -49,7 +49,7 @@ void fn_80133024(void) {
     lbl_8042F718[15] = 0;
     if (fn_80133BA0(lbl_80559B58, 0, 0x12) == 0)
         fn_802E317C(lbl_8032B88C, lbl_80559B58);
-    fn_802E6BD8(0x4F505473, 6, lbl_8055E07C, 0x6D68, fn_80133FCC);
+    fn_802E6BD8(0x4F505473, 6, lbl_8055E07C, 0x6D68, (void (*)(void))fn_80133FCC);
     fn_8000DBC8(fn_801341B4);
 }
 #pragma scheduling on
@@ -358,34 +358,53 @@ int fn_80133AD8(int arg0) {
 }
 #pragma pop
 int fn_80133E10(void **arg0, int arg1, int arg2) {
-    int count = 0;
-    int offset = 0;
-    int base = lbl_8055E07C;
-    while (count < *(int *)(base + 4)) {
-        void *entry = (char *)base + offset;
-        if (*(int *)((char *)entry + 0xC) == arg1 &&
-            fn_8002B1D8((void *)arg2, (char *)entry + 0x2C, 0x13) == 0) {
-            *arg0 = (char *)base + count * 0x38 + 8;
-            return 1;
-        }
-        offset += 0x38;
-        count++;
+    register int count;
+    register int offset;
+    register int *table;
+    register char *entry;
+    register char *slot;
+    register int old_count;
+
+    offset = 0;
+    count = 0;
+    goto check;
+
+loop:
+    entry = (char *)table + count;
+    if (arg1 == *(int *)(entry + 0xC) &&
+        fn_8002B1D8((void *)arg2, entry + 0x2C, 0x13) == 0) {
+        *arg0 = (void *)((char *)lbl_8055E07C + offset * 0x38 + 8);
+        return 1;
     }
-    if (count < 0x1F4) {
-        void *entry = (char *)base + count * 0x38;
-        *(int *)(base + 4) = count + 1;
-        *(int *)((char *)entry + 0xC) = arg1;
-        strncpy((char *)entry + 0x2C, (char *)arg2, 0x14);
-        *((char *)entry + 0x37) = 0;
+    count += 0x38;
+    offset++;
+
+check:
+    table = (int *)lbl_8055E07C;
+    if (offset < table[1])
+        goto loop;
+
+    old_count = table[1];
+    if (old_count < 0x1F4) {
+        entry = (char *)table + old_count * 0x38;
+        table[1] = old_count + 1;
+        slot = entry + 8;
+        *(int *)(entry + 0xC) = arg1;
+        strncpy(slot + 0x24, (char *)arg2, 0x14);
+        slot[0x37] = 0;
         if (strlen((char *)arg2) >= 0x14)
-            fn_802E30C8(lbl_8032B8F8, (char *)arg2, (char *)entry + 0x2C);
-        *((char *)entry + 0x1C) = 0;
-        *((char *)entry + 0x10) = 0;
-        *(int *)((char *)entry + 0x14) = 0;
-        *(float *)((char *)entry + 0x18) = lbl_805612D0;
-        *arg0 = (char *)entry + 8;
+            fn_802E30C8(lbl_8032BA90, (char *)arg2, slot + 0x24);
+        {
+            register int zero = 0x10 - 0x10;
+            register float initial = lbl_805612D0;
+            slot[0x14] = zero;
+            slot[8] = zero;
+            *(int *)(slot + 0xC) = zero;
+            *(float *)(slot + 0x10) = initial;
+        }
+        *arg0 = slot;
     } else {
-        *arg0 = (char *)base + 8;
+        *arg0 = (char *)table + 8;
     }
     return 0;
 }
@@ -416,25 +435,60 @@ check:
 #pragma dont_inline reset
 
 extern char lbl_8042F558[], lbl_8032BAC8[];
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+#pragma dont_inline on
 void fn_80133FCC(long arg0, long arg_sp0) {
-    long i,j,off,k; char* src; char* dst; void (*callback)(void);
-    if(arg0==1) {
-        src=lbl_8042F558;
-        for(i=0;i<lbl_8055E080;i++,src+=0x38) {
-            for(j=0,off=0;j<*(long*)((char*)lbl_8055E07C+4);j++,off+=0x38) {
-                dst=(char*)*(long*)lbl_8055E07C+off;
-                if(*(long*)(src+4)==*(long*)(dst+0xC)&&stricmp(src+0x24,dst+0x2C)==0) {
-                    for(k=0;k<9;k++) *(long*)(dst+8+k*4)=*(long*)(src+k*4);
-                    for(k=0;k<20;k++) dst[0x2C+k]=src[0x24+k];
+    char *dst;
+    char *src;
+    long off;
+    long i, j;
+    long w2, w3, w4, w5, w6, w7;
+    unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
+    unsigned char b8, b9, b10, b11, b12, b13, b14, b15;
+    void (*callback)(void);
+    if (arg0 == 1) {
+        src = lbl_8042F558;
+        for (i = 0; i < lbl_8055E080; src += 0x38, i++) {
+            for (j = 0, off = 0; j < *(long *)((char *)lbl_8055E07C + 4); off += 0x38, j++) {
+                dst = (char *)lbl_8055E07C + off;
+                if (*(long *)(src + 4) == *(long *)(dst + 0xC) &&
+                    stricmp(src + 0x24, dst + 0x2C) == 0) {
+                    *(long *)(dst + 0x08) = *(long *)(src + 0x00);
+                    *(long *)(dst + 0x0C) = *(long *)(src + 0x04);
+                    w2 = *(long *)(src + 0x08); w3 = *(long *)(src + 0x0C);
+                    *(long *)(dst + 0x10) = w2; *(long *)(dst + 0x14) = w3;
+                    w4 = *(long *)(src + 0x10); w5 = *(long *)(src + 0x14);
+                    *(long *)(dst + 0x18) = w4; *(long *)(dst + 0x1C) = w5;
+                    w6 = *(long *)(src + 0x18); w7 = *(long *)(src + 0x1C);
+                    *(long *)(dst + 0x20) = w6; *(long *)(dst + 0x24) = w7;
+                    *(long *)(dst + 0x28) = *(long *)(src + 0x20);
+                    b0 = src[0x24]; b1 = src[0x25]; dst[0x2C] = b0; dst[0x2D] = b1;
+                    b2 = src[0x26]; b3 = src[0x27]; dst[0x2E] = b2; dst[0x2F] = b3;
+                    b4 = src[0x28]; b5 = src[0x29]; dst[0x30] = b4; dst[0x31] = b5;
+                    b6 = src[0x2A]; b7 = src[0x2B]; dst[0x32] = b6; dst[0x33] = b7;
+                    b8 = src[0x2C]; b9 = src[0x2D]; dst[0x34] = b8; dst[0x35] = b9;
+                    b10 = src[0x2E]; b11 = src[0x2F]; dst[0x36] = b10; dst[0x37] = b11;
+                    b12 = src[0x30]; b13 = src[0x31]; dst[0x38] = b12; dst[0x39] = b13;
+                    b14 = src[0x32]; b15 = src[0x33]; dst[0x3A] = b14; dst[0x3B] = b15;
+                    dst[0x3C] = src[0x34]; dst[0x3D] = src[0x35];
+                    dst[0x3E] = src[0x36]; dst[0x3F] = src[0x37];
                 }
             }
         }
-        src=(char*)lbl_8042F718;
-        for(i=0;i<8;i++,src+=8) { callback=*(void(**)(void))(src+4); if(callback) callback(); }
-    } else if(arg0==2) fn_802E30C8(lbl_8032BAC8);
-    if(arg0==3) fn_801337C8();
+        src = (char *)lbl_8042F718;
+        for (i = 0; i < 8; i++, src += 8) {
+            callback = *(void (**)(void))(src + 4);
+            if (callback) callback();
+        }
+    } else if (arg0 == 2) {
+        fn_802E30C8(lbl_8032BAC8);
+    }
+    if (arg0 == 3) fn_801337C8();
 }
-
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
+#pragma scheduling on
 extern const char lbl_8032BAE8[];
 extern const char lbl_8032B940[];
 extern const char lbl_8032B968[];
