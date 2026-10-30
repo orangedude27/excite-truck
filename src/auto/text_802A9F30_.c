@@ -146,7 +146,7 @@ void fn_802AA1D0(unsigned int arg0) {
 #pragma push
 #pragma processor 750
 void fn_802AA9D4(void *arg0, void *arg1, float delta) {
- extern float lbl_805649F4, lbl_80564A08, lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_80564A50, lbl_80558DC4;
+ extern float lbl_805649F4, lbl_80564A08, lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_80564A50;
  extern float fn_80287BC8(float, float);
  extern void fn_8028E590(int, Vec *, Vec *, float);
  Vec pos, dir, callpos, calldir, side, forward;
