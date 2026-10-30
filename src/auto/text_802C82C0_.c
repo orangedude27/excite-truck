@@ -105,23 +105,21 @@ void* fn_802C83C4(void) {
 }
 
 void fn_802C83CC(void) {
-    register int ten = 10;
+    int ten = 10;
     float temp_f1 = (float)ten;
-    register float color0 = lbl_80564EF8;
-    register float color1 = lbl_80564F00;
 
-    ((float *)lbl_804C1410)[0] = color0;
-    ((float *)lbl_804C1410)[1] = color1;
-    ((float *)lbl_804C1410)[2] = color1;
-    ((float *)lbl_804C1410)[3] = color1;
-    ((float *)lbl_804C1410)[4] = color0;
-    ((float *)lbl_804C1410)[5] = color1;
-    ((float *)lbl_804C1410)[6] = color1;
-    ((float *)lbl_804C1410)[7] = color1;
-    ((float *)lbl_804C1410)[8] = color0;
-    ((float *)lbl_804C1410)[9] = color1;
-    ((float *)lbl_804C1410)[10] = color1;
-    ((float *)lbl_804C1410)[11] = color1;
+    ((float *)lbl_804C1410)[0] = lbl_80564EF8;
+    ((float *)lbl_804C1410)[1] = lbl_80564F00;
+    ((float *)lbl_804C1410)[2] = lbl_80564F00;
+    ((float *)lbl_804C1410)[3] = lbl_80564F00;
+    ((float *)lbl_804C1410)[4] = lbl_80564EF8;
+    ((float *)lbl_804C1410)[5] = lbl_80564F00;
+    ((float *)lbl_804C1410)[6] = lbl_80564F00;
+    ((float *)lbl_804C1410)[7] = lbl_80564F00;
+    ((float *)lbl_804C1410)[8] = lbl_80564EF8;
+    ((float *)lbl_804C1410)[9] = lbl_80564F00;
+    ((float *)lbl_804C1410)[10] = lbl_80564F00;
+    ((float *)lbl_804C1410)[11] = lbl_80564F00;
 
     lbl_8055FC5C = 0;
     lbl_8055FC60 = 0;
@@ -460,23 +458,45 @@ void fn_802C8E48(void) {
     lbl_8055FC70 = 2;
 }
 
+#pragma scheduling on
 void fn_802C8E70(float *arg0, float *arg1) {
     float *m = (float *)lbl_804C1410;
-    float x, y, z, rx, ry, rz, limit, scale;
-    x = arg0[0] - m[9]; arg1[0] = x;
-    y = arg0[1] - m[10]; arg1[1] = y;
-    z = arg0[2] - m[11]; arg1[2] = z;
-    rx = x * m[0]; ry = y * m[1]; rx = rx + ry; rz = z * m[2]; rx = rx + rz;
-    ry = x * m[3]; rz = y * m[4]; ry = ry + rz; rz = z * m[5]; ry = ry + rz;
-    rz = x * m[6]; scale = y * m[7]; rz = rz + scale; scale = z * m[8]; rz = rz + scale;
-    arg1[0] = rx; arg1[1] = ry; arg1[2] = rz;
-    limit = lbl_8055FC38;
-    if (!(limit > rz)) limit = rz;
-    scale = lbl_80564EF8 / (lbl_8055FC44 * limit);
-    arg1[0] = (float)(int)lbl_8055FC5C + lbl_80564F18 * (float)(int)lbl_8055FC64 * (lbl_80564EF8 + scale * arg1[0]);
-    arg1[1] = (float)(int)lbl_8055FC60 + lbl_80564F18 * (float)(int)lbl_8055FC68 * (lbl_80564EF8 + lbl_8055FC6C * (scale * -arg1[1]));
-}
+    float z, y, x;
+    float rx, ry, rz;
+    float dx, dy, dz;
+    float limit, scale;
+    float sx, sy;
 
+    x = arg0[0];
+    y = arg0[1];
+    z = arg0[2];
+    dx = x - m[9];
+    arg1[0] = dx;
+    dy = y - m[10];
+    arg1[1] = dy;
+    dz = z - m[11];
+    arg1[2] = dz;
+
+    rx = dy * m[1] + dx * m[0];
+    ry = dx * m[3] + dy * m[4];
+    rz = dx * m[6] + dy * m[7];
+    rx = dz * m[2] + rx;
+    ry = dz * m[5] + ry;
+    rz = dz * m[8] + rz;
+
+    arg1[0] = rx;
+    arg1[1] = ry;
+    arg1[2] = rz;
+
+    limit = (lbl_8055FC38 > rz) ? lbl_8055FC38 : rz;
+
+    scale = lbl_80564EF8 / (lbl_8055FC44 * limit);
+    sx = lbl_80564EF8 + scale * arg1[0];
+    sy = lbl_80564EF8 + lbl_8055FC6C * (scale * -arg1[1]);
+
+    arg1[0] = (float)(int)lbl_8055FC5C + (lbl_80564F18 * (float)(int)lbl_8055FC64) * sx;
+    arg1[1] = (float)(int)lbl_8055FC60 + (lbl_80564F18 * (float)(int)lbl_8055FC68) * sy;
+}
 float fn_802C8FEC(void) { return lbl_8055FC6C; }
 
 extern char lbl_80558DC4[];
@@ -585,18 +605,77 @@ void fn_802C9474(void) {
     lbl_8055FC94 = 1;
     ((void (*)(int, ...))fn_802E30C8)((int)lbl_8055D030, lbl_8034B4E0);
 }
+
+extern float PSVECDotProduct(const Vec *, const Vec *);
+extern float __fabsf(float);
+extern float lbl_80564F20, lbl_8055FC50, lbl_8055FC54, lbl_8055FC58;
+int fn_802C94A0(float *arg0, unsigned char *arg1, float *arg2, float tolerance) {
+    float *matrix = (float *)lbl_804C1410;
+    float delta[3];
+    float depth;
+    float projection;
+    float extent;
+    float limit;
+
+    if (arg1 != 0) {
+        *arg1 = 1;
+    }
+
+    delta[0] = arg0[0] - matrix[9];
+    delta[1] = arg0[1] - matrix[10];
+    delta[2] = arg0[2] - matrix[11];
+    depth = PSVECDotProduct((Vec *)delta, (Vec *)(matrix + 6));
+
+    if (depth < lbl_8055FC38 - tolerance) {
+        goto fail;
+    }
+    if (depth > lbl_8055FC3C + tolerance) {
+        goto fail;
+    }
+    if (depth - tolerance > lbl_8055FC3C - lbl_80564F20 * lbl_8055FC3C) {
+        goto fail;
+    }
+
+    projection = PSVECDotProduct((Vec *)delta, (Vec *)matrix);
+    extent = depth * lbl_8055FC44;
+    limit = lbl_80564F00;
+    if (limit <= extent) {
+        limit = extent;
+    }
+    if (__fabsf(projection) > limit + tolerance * lbl_8055FC54) {
+        goto fail;
+    }
+
+    projection = PSVECDotProduct((Vec *)delta, (Vec *)(matrix + 3));
+    extent = depth * lbl_8055FC50;
+    limit = lbl_80564F00;
+    if (limit <= extent) {
+        limit = extent;
+    }
+    if (__fabsf(projection) > limit + tolerance * lbl_8055FC58) {
+        goto fail;
+    }
+
+    if (arg2 != 0) {
+        *arg2 = depth - tolerance;
+    }
+    return 1;
+
+fail:
+    return 0;
+}
+
 #pragma scheduling on
-int fn_802C94A0();
-void fn_802C9638(int arg0, int arg1) {
-    fn_802C94A0(arg0, arg1, 0);
+int fn_802C9638(void *arg0, unsigned char *arg1, float tolerance) {
+    return fn_802C94A0(arg0, arg1, 0, tolerance);
 }
 
 #pragma dont_inline on
-void fn_802C9640(int arg0) {
-    fn_802C9638(arg0, 0);
+int fn_802C9640(void *arg0, float tolerance) {
+    return fn_802C9638(arg0, 0, tolerance);
 }
 #pragma dont_inline off
-extern void fn_802C9638(int, int);
+extern int fn_802C9638(void *, unsigned char *, float);
 extern void fn_802C974C(float, float, float);
 extern float lbl_8055FC38;
 extern float lbl_8055FC3C;
@@ -935,45 +1014,58 @@ int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(int *arg
 }
 
 extern void fn_801E7890(void);
+#pragma scheduling invalid_target
 int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float farg2, float farg3, float farg4) {
+    struct State {
+        void *callback;
+        float x;
+        float y;
+        float z;
+        float w;
+        int count;
+    };
+    struct State *state = (struct State *)arg0;
     float q[3];
     float diff[3];
     float result;
-    float current;
     float step;
+    float new_w;
     int old_count;
 
-    if (*(int *)((char *)arg0 + 0x14) == 0) {
-        *(float *)((char *)arg0 + 4) = farg0;
-        *(float *)((char *)arg0 + 8) = farg1;
-        *(float *)((char *)arg0 + 0xC) = farg2;
-        *(float *)((char *)arg0 + 0x10) = lbl_80564F00;
+    if (state->count == 0) {
+        float zero = lbl_80564F00;
+        state->x = farg0;
+        state->y = farg1;
+        state->z = farg2;
+        state->w = zero;
     } else {
         q[0] = farg0;
         q[1] = farg1;
         q[2] = farg2;
-        result = ((float (*)(void *, float *))PSQUATMultiply)((char *)arg0 + 4, q);
-        if (result > *(float *)((char *)arg0 + 0x10)) {
-            diff[0] = q[0] - *(float *)((char *)arg0 + 4);
-            diff[1] = q[1] - *(float *)((char *)arg0 + 8);
-            diff[2] = q[2] - *(float *)((char *)arg0 + 0xC);
+        result = ((float (*)(void *, float *))PSQUATMultiply)(&state->x, q);
+        if (result > state->w) {
+            diff[0] = q[0] - state->x;
+            diff[1] = q[1] - state->y;
+            diff[2] = q[2] - state->z;
             PSVECNormalize(diff, diff);
-            current = *(float *)((char *)arg0 + 0x10);
-            step = lbl_80564F18 * (result - current);
-            *(float *)((char *)arg0 + 4) = *(float *)((char *)arg0 + 4) + diff[0] * step;
-            *(float *)((char *)arg0 + 8) = *(float *)((char *)arg0 + 8) + diff[1] * step;
-            *(float *)((char *)arg0 + 0x10) = lbl_80564F18 * (current + result);
-            *(float *)((char *)arg0 + 0xC) = *(float *)((char *)arg0 + 0xC) + diff[2] * step;
+            step = lbl_80564F18 * (result - state->w);
+            new_w = lbl_80564F18 * (state->w + result);
+            state->x = state->x + diff[0] * step;
+            state->y = state->y + diff[1] * step;
+            {
+                float z_step = diff[2] * step;
+                state->w = new_w;
+                state->z = state->z + z_step;
+            }
         }
     }
 
     ((void (*)(void *, int, int, float, float, float, float, float))fn_801E7890)(
-        *(void **)arg0, arg1, arg2, farg0, farg1, farg2, farg3, farg4);
-    old_count = *(int *)((char *)arg0 + 0x14);
-    *(int *)((char *)arg0 + 0x14) = old_count + 1;
+        state->callback, arg1, arg2, farg0, farg1, farg2, farg3, farg4);
+    old_count = state->count;
+    state->count = old_count + 1;
     return old_count;
 }
-
 void fn_802CA008(void *arg0) {
     if (((int (*)(int, float))fn_802C9640)((int)((char *)arg0 + 4), *(float *)((char *)arg0 + 0x10)) != 0) {
         fn_801E7894(*(int *)arg0);
