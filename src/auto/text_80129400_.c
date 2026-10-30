@@ -72,6 +72,55 @@ void fn_801294FC(s32 arg0, s32 arg1) {
     fn_802E4800(arg0 | ((arg1 << 12) & 0xF000));
 }
 
+void fn_80129508(void *arg0, s32 arg1, void *arg2) {
+    u8* p = (u8*)arg0;
+    u8* q = (u8*)arg2;
+    s32 flags;
+    s32 action = 0;
+    s32 changed;
+    f32 value;
+
+    if (q[0] != 0) {
+        flags = *(s32*)(p + 0x5C);
+        if (flags == 0 && q[1] != 0 && lbl_8055DFD0 != 0) {
+            value = *(f32*)(p + 0x1C);
+            if (value < lbl_80561248) {
+                flags |= 8;
+            } else if (value > lbl_8056124C) {
+                flags |= 2;
+            }
+            value = *(f32*)(p + 0x20);
+            if (value < lbl_80561248) {
+                flags |= 1;
+            } else if (value > lbl_8056124C) {
+                flags |= 4;
+            }
+        }
+        changed = (flags ^ *(s32*)(p + 0x18)) & flags;
+        switch (changed) {
+        case 1:
+            action = 0x126;
+            break;
+        case 4:
+            action = 0x128;
+            break;
+        case 8:
+            action = 0x125;
+            break;
+        case 2:
+            action = 0x127;
+            break;
+        }
+        *(s32*)(p + 0x18) = flags;
+        if (flags != 0) {
+            p[8] = 1;
+        }
+    }
+    if (action != 0) {
+        fn_801294FC(action, 0);
+    }
+}
+
 void fn_8012960C(void *arg0) {
     u8 *p = (u8 *)arg0;
     s32 now = fn_802E2C20();
@@ -97,6 +146,8 @@ void fn_8012960C(void *arg0) {
 }
 
 extern void fn_80129508(void *, s32, void *);
+#pragma push
+#pragma inline_depth 0
 void fn_80129690(void *arg0, s32 arg1, void *arg2) {
     u8 *dst = (u8 *)arg0;
     u8 *params = (u8 *)arg2;
@@ -135,7 +186,7 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2) {
     } while (i < 0xE);
     fn_8012960C(arg0);
 }
-
+#pragma pop
 void fn_80129790(void) {
     fn_802E7C64();
     fn_80127C90(fn_80129400, lbl_8032A5B0);
@@ -175,36 +226,57 @@ s32 fn_80129890(void) {
 }
 
 void *fn_801298E8(void *dst, int index) {
-    s32 found; u8 *src; u8 *out; u8 a, b;
+    s32 found;
+    volatile u8 *src;
+    u8 *out;
+    u8 a, b;
+    u32 wordA, wordB;
     found = fn_802E8504(index);
     if (found) {
-        src = lbl_80422180 + (index << 7); out = dst;
-        *(f32 *)(out+0x00)=*(f32 *)(src+0x1C); *(f32 *)(out+0x04)=*(f32 *)(src+0x20);
-        *(f32 *)(out+0x08)=*(f32 *)(src+0x24); *(f32 *)(out+0x0C)=*(f32 *)(src+0x28);
-        *(f32 *)(out+0x10)=*(f32 *)(src+0x2C); *(f32 *)(out+0x14)=*(f32 *)(src+0x30);
-        *(f32 *)(out+0x18)=*(f32 *)(src+0x34); *(f32 *)(out+0x1C)=*(f32 *)(src+0x38);
-        b=src[0x3C]; a=src[0x3D]; out[0x20]=b; out[0x21]=a;
-        b=src[0x3E]; a=src[0x3F]; out[0x22]=b; out[0x23]=a;
-        b=src[0x40]; a=src[0x41]; out[0x24]=b; out[0x25]=a;
-        b=src[0x42]; a=src[0x43]; out[0x26]=b; out[0x27]=a;
-        b=src[0x44]; a=src[0x45]; out[0x28]=b; out[0x29]=a;
-        b=src[0x46]; a=src[0x47]; out[0x2A]=b; out[0x2B]=a;
-        b=src[0x48]; a=src[0x49]; out[0x2C]=b; out[0x2D]=a;
-        b=src[0x4A]; a=src[0x4B]; out[0x2E]=b; out[0x2F]=a;
-        b=src[0x4C]; a=src[0x4D]; out[0x30]=b; out[0x31]=a;
-        b=src[0x4E]; a=src[0x4F]; out[0x32]=b; out[0x33]=a;
-        b=src[0x50]; a=src[0x51]; out[0x34]=b; out[0x35]=a;
-        b=src[0x52]; a=src[0x53]; out[0x36]=b; out[0x37]=a;
-        b=src[0x54]; a=src[0x55]; out[0x38]=b; out[0x39]=a;
-        b=src[0x56]; a=src[0x57]; out[0x3A]=b; out[0x3B]=a;
-        b=src[0x58]; a=src[0x59]; out[0x3C]=b; out[0x3D]=a;
-        b=src[0x5A]; a=src[0x5B]; out[0x3E]=b; out[0x3F]=a;
-        *(u32 *)(out+0x40)=*(u32 *)(src+0x5C); *(u32 *)(out+0x44)=*(u32 *)(src+0x60);
-        *(u32 *)(out+0x48)=*(u32 *)(src+0x64); *(u32 *)(out+0x4C)=*(u32 *)(src+0x68);
-        *(u32 *)(out+0x50)=*(u32 *)(src+0x6C); *(u32 *)(out+0x54)=*(u32 *)(src+0x70);
-        *(u32 *)(out+0x58)=*(u32 *)(src+0x74); *(u32 *)(out+0x5C)=*(u32 *)(src+0x78);
-        out[0x60]=src[0x7C];
-    } else memset(dst, 0, 0x64);
+        src = lbl_80422180 + (index << 7);
+        out = dst;
+        *(f32 *)(out + 0x00) = *(f32 *)(src + 0x1C);
+        *(f32 *)(out + 0x04) = *(f32 *)(src + 0x20);
+        *(f32 *)(out + 0x08) = *(f32 *)(src + 0x24);
+        *(f32 *)(out + 0x0C) = *(f32 *)(src + 0x28);
+        *(f32 *)(out + 0x10) = *(f32 *)(src + 0x2C);
+        *(f32 *)(out + 0x14) = *(f32 *)(src + 0x30);
+        *(f32 *)(out + 0x18) = *(f32 *)(src + 0x34);
+        *(f32 *)(out + 0x1C) = *(f32 *)(src + 0x38);
+        b = src[0x3C]; a = src[0x3D]; out[0x20] = b; out[0x21] = a;
+        b = src[0x3E]; a = src[0x3F]; out[0x22] = b; out[0x23] = a;
+        b = src[0x40]; a = src[0x41]; out[0x24] = b; out[0x25] = a;
+        b = src[0x42]; a = src[0x43]; out[0x26] = b; out[0x27] = a;
+        b = src[0x44]; a = src[0x45]; out[0x28] = b; out[0x29] = a;
+        b = src[0x46]; a = src[0x47]; out[0x2A] = b; out[0x2B] = a;
+        b = src[0x48]; a = src[0x49]; out[0x2C] = b; out[0x2D] = a;
+        b = src[0x4A]; a = src[0x4B]; out[0x2E] = b; out[0x2F] = a;
+        b = src[0x4C]; a = src[0x4D]; out[0x30] = b; out[0x31] = a;
+        b = src[0x4E]; a = src[0x4F]; out[0x32] = b; out[0x33] = a;
+        b = src[0x50]; a = src[0x51]; out[0x34] = b; out[0x35] = a;
+        b = src[0x52]; a = src[0x53]; out[0x36] = b; out[0x37] = a;
+        b = src[0x54]; a = src[0x55]; out[0x38] = b; out[0x39] = a;
+        b = src[0x56]; a = src[0x57]; out[0x3A] = b; out[0x3B] = a;
+        b = src[0x58]; a = src[0x59]; out[0x3C] = b; out[0x3D] = a;
+        b = src[0x5A]; a = src[0x5B]; out[0x3E] = b; out[0x3F] = a;
+        *(u32 *)(out + 0x40) = *(u32 *)(src + 0x5C);
+        wordB = *(volatile u32 *)(src + 0x60);
+        wordA = *(volatile u32 *)(src + 0x64);
+        *(u32 *)(out + 0x44) = wordB;
+        *(u32 *)(out + 0x48) = wordA;
+        wordA = *(volatile u32 *)(src + 0x68);
+        wordB = *(volatile u32 *)(src + 0x6C);
+        *(u32 *)(out + 0x4C) = wordA;
+        *(u32 *)(out + 0x50) = wordB;
+        wordA = *(volatile u32 *)(src + 0x70);
+        wordB = *(volatile u32 *)(src + 0x74);
+        *(u32 *)(out + 0x54) = wordA;
+        *(u32 *)(out + 0x58) = wordB;
+        *(u32 *)(out + 0x5C) = *(u32 *)(src + 0x78);
+        out[0x60] = src[0x7C];
+    } else {
+        memset(dst, 0, 0x64);
+    }
     return (void *)found;
 }
 
