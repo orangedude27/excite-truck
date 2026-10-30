@@ -176,8 +176,9 @@ extern "C" void fn_802023D4(void) {
         flags[2] = -1;
         flags[3] = -1;
         last_flag[0x20] = 0;
-    }
-}
+          }
+  }
+#pragma cplusplus reset
 #pragma pop
 
 void fn_802025D4(void) {
