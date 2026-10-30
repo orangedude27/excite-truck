@@ -591,13 +591,162 @@ extern float lbl_80561A54;
         fn_802AE168((*(void **)((char *)(arg0) + (0xC))));
     }
 }
+
+#pragma push
+#pragma scheduling invalid_target
+void *fn_80172C28(void) {
+    extern void *fn_801284F8(unsigned int, void *);
+    extern void fn_8001DAE0(void *, float);
+    extern int fn_80139D4C(void *);
+    extern int fn_80207848(void *, int);
+    extern int fn_802CAC28(void *, int);
+    extern void fn_802E30C8(void *, ...);
+    extern void *memset(void *, int, unsigned long);
+    extern char lbl_80330F48[];
+    extern char lbl_80331018[];
+    extern float lbl_80561A44, lbl_80561A90, lbl_8055E3A8;
+    extern int lbl_8055E3A4;
+    char *base = lbl_80330F48;
+    unsigned int zero = 0;
+    void *object = fn_801284F8(0x2BC, base + 0x2C);
+    if (object != 0) {
+        unsigned char *p = (unsigned char *)object;
+        void *data = p + 0x10;
+        void *vtable = lbl_80331018;
+        float firstValue = lbl_80561A44;
+        *(void **)p = vtable;
+        *(void **)(p + 4) = data;
+        *(int *)(p + 0xC) = 0x10;
+        *(int *)(p + 8) = zero;
+        fn_8001DAE0(p + 0x174, firstValue);
+        fn_8001DAE0(p + 0x17C, lbl_80561A80);
+        fn_8001DAE0(p + 0x184, lbl_80561A90);
+        fn_8001DAE0(p + 0x18C, lbl_80561A90);
+        *(int *)(p + 0x1B8) = zero;
+        *(int *)(p + 0x1C0) = zero;
+        *(int *)(p + 0x1C4) = zero;
+        *(int *)(p + 0x1C8) = zero;
+        *(int *)(p + 0x1D0) = zero;
+        *(int *)(p + 0x1D4) = zero;
+        *(int *)(p + 0x1D8) = zero;
+        memset(p + 0x1DC, 0x30, 3);
+        p[0x1DF] = (unsigned char)zero;
+        memset(p + 0x1F0, 0x30, 3);
+        p[0x1F3] = (unsigned char)zero;
+        memset(p + 0x204, 0x30, 3);
+        p[0x207] = (unsigned char)zero;
+        memset(p + 0x218, 0x30, 3);
+        p[0x21B] = (unsigned char)zero;
+        memset(p + 0x22C, 0x30, 3);
+        p[0x22F] = (unsigned char)zero;
+        memset(p + 0x236, 0x30, 3);
+        p[0x239] = (unsigned char)zero;
+        memset(p + 0x24A, 0x30, 3);
+        p[0x24D] = (unsigned char)zero;
+        memset(p + 0x25E, 0x30, 3);
+        p[0x261] = (unsigned char)zero;
+        memset(p + 0x272, 0x30, 3);
+        p[0x275] = (unsigned char)zero;
+        memset(p + 0x286, 0x30, 3);
+        {
+            void *name = base + 0x38;
+            p[0x289] = (unsigned char)zero;
+            lbl_8055E3A4 = fn_80139D4C(name);
+            *(int *)&lbl_8055E3A8 = fn_802CAC28(base + 0x48, 0);
+            *(int *)(p + 0x198) = fn_802CAC28(base + 0x58, 0);
+            if (lbl_8055E3A4 != 0)
+                fn_802E30C8(base + 0x64, name);
+            *(int *)(p + 0x2B4) = fn_80207848(base + 0x8C, 1);
+            p[0x2B8] = (unsigned char)zero;
+        }
+    }
+    return object;
+}
 #pragma scheduling on
+#pragma pop
 int fn_80172E24(int arg0, int arg1) {
     extern int fn_80128668(void);
     if (arg0 != 0 && arg1 > 0)
         fn_80128668();
     return arg0;
 }
+
+#pragma cplusplus on
+extern "C" void *fn_80172E64(void *arg0, int arg1) {
+    class VObj { public: virtual void destroy(int); };
+    extern char lbl_80331018[];
+    extern int lbl_8055E3A4;
+    extern float lbl_8055E3A8;
+    extern void fn_80139E18(void *);
+    extern void fn_802CAC54(int);
+    extern void fn_802ADE60(int, int);
+    extern int fn_80128668(void);
+    VObj *first;
+    register VObj *p;
+    register int value;
+    if (arg0 != 0) {
+        first = *(VObj **)((char *)arg0 + 0x2B4);
+        *(void **)arg0 = lbl_80331018;
+        if (first != 0) {
+            if (first != 0) first->destroy(1);
+        }
+        if (lbl_8055E3A4 != 0) {
+            fn_80139E18((void *)lbl_8055E3A4);
+            lbl_8055E3A4 = 0;
+        }
+        fn_802CAC54(*(int *)&lbl_8055E3A8);
+        fn_802CAC54(*(int *)((char *)arg0 + 0x198));
+        if ((char *)arg0 + 0x1AC != 0) {
+            value = *(int *)((char *)arg0 + 0x1B8);
+            if (value != 0) {
+                fn_802ADE60(value, 1);
+                *(int *)((char *)arg0 + 0x1B8) = 0;
+            }
+            p = *(VObj **)((char *)arg0 + 0x1C0);
+            if (p != 0) {
+                if (p != 0) p->destroy(1);
+                *(VObj **)((char *)arg0 + 0x1C0) = 0;
+            }
+            p = *(VObj **)((char *)arg0 + 0x1C4);
+            if (p != 0) {
+                if (p != 0) p->destroy(1);
+                *(VObj **)((char *)arg0 + 0x1C4) = 0;
+            }
+            p = *(VObj **)((char *)arg0 + 0x1C8);
+            if (p != 0) {
+                if (p != 0) p->destroy(1);
+                *(VObj **)((char *)arg0 + 0x1C8) = 0;
+            }
+            p = *(VObj **)((char *)arg0 + 0x1D0);
+            if (p != 0) {
+                if (p != 0) p->destroy(1);
+                *(VObj **)((char *)arg0 + 0x1D0) = 0;
+            }
+            p = *(VObj **)((char *)arg0 + 0x1D4);
+            if (p != 0) {
+                if (p != 0) p->destroy(1);
+                *(VObj **)((char *)arg0 + 0x1D4) = 0;
+            }
+            p = *(VObj **)((char *)arg0 + 0x1D8);
+            if (p != 0) {
+                if (p != 0) p->destroy(1);
+                *(VObj **)((char *)arg0 + 0x1D8) = 0;
+            }
+        }
+        if ((int *)arg0 + 1 != 0) {
+            if ((int *)arg0 + 1 != 0) {
+                ((volatile int *)arg0)[1] = 0;
+                ((volatile int *)arg0)[2] = 0;
+                ((volatile int *)arg0)[3] = 0;
+            }
+        }
+        if (arg1 > 0) {
+            ((void *(*)(void *))fn_80128668)(arg0);
+            return arg0;
+        }
+    }
+}
+#pragma cplusplus reset
 
 extern void fn_80130980(void *, int, int, float);    /* extern */
 extern int fn_80204CF0(void);                                  /* extern */
@@ -993,40 +1142,96 @@ int fn_80173A84(void *arg0) {
 extern float lbl_80561A50, lbl_80561AC0;
 extern void *memset(void *, int, unsigned long);
 extern void fn_802AE0E0(void);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_801740D4(void *arg0) {
-    unsigned char *p=(unsigned char*)arg0;
-    float zero=lbl_80561A50, one=lbl_80561AC0;
-    int i=0;
-    *(unsigned char*)(p+0x194)=0;
-    *(float*)(p+0x19C)=*(float*)(p+0x1A4);
-    *(float*)(p+0x1A0)=zero;
-    while (i < *(int*)(p+0x170)) {
-        unsigned char *q=p+0x90+i*0x1c;
-        q[0]=1;
-        *(float*)(q+0x18)=zero;
-        *(int*)(q+0xc)=0;
-        *(int*)(q+8)=0;
-        *(int*)(q+4)=0;
-        memset(q+0x10,0,8);
+    unsigned char *self = (unsigned char *)arg0;
+    float copied = *(volatile float *)(self + 0x1A4);
+    int zero = 0;
+    float one = lbl_80561A50;
+    unsigned char *cursor = self;
+    unsigned char *entry = self + 0x90;
+    int i = 0;
+    int enabled = 1;
+    *(unsigned char *)(self + 0x194) = zero;
+    *(float *)(self + 0x19C) = copied;
+    *(float *)(self + 0x1A0) = one;
+    while (i < *(int *)(self + 0x170)) {
+        *(unsigned char *)(cursor + 0x90) = enabled;
+        *(float *)(cursor + 0xA8) = one;
+        *(int *)(cursor + 0x9C) = zero;
+        *(int *)(cursor + 0x98) = zero;
+        *(int *)(cursor + 0x94) = zero;
+        memset(entry + 0x10, zero, 8);
+        cursor += 0x1C;
+        entry += 0x1C;
         i++;
     }
-    *(float*)(p+0x180)=one; *(float*)(p+0x188)=one; *(float*)(p+0x190)=one; *(float*)(p+0x178)=one;
-    *(int*)(p+0x1ac)=0; *(float*)(p+0x1b0)=zero;
-    p[0x1b4]=1; p[0x1b5]=0; p[0x1bc]=0;
-    *(int*)(p+0x2a4)=0; *(int*)(p+0x2a8)=0; *(int*)(p+0x2ac)=0; *(int*)(p+0x2b0)=0;
-    if (*(int*)(p+0x1b8)) fn_802AE0E0();
-    { int *a=(int*)(p+0x1c0); int *b=(int*)(p+0x1c4); int *c=(int*)(p+0x1c8); int *d=(int*)(p+0x1d0); int *e=(int*)(p+0x1d4); int *f=(int*)(p+0x1d8); int *g=(int*)(p+0x2b4);
-      if(*a){((unsigned char*)*a)[0x4a]=1;((unsigned char*)*a)[0x4c]=0;}
-      if(*b){((unsigned char*)*b)[0x4a]=1;((unsigned char*)*b)[0x4c]=0;}
-      if(*c){((unsigned char*)*c)[0x4a]=1;((unsigned char*)*c)[0x4c]=0;}
-      if(*d){((unsigned char*)*d)[0x4a]=1;((unsigned char*)*d)[0x4c]=0;}
-      if(*e){((unsigned char*)*e)[0x4a]=1;((unsigned char*)*e)[0x4c]=0;}
-      if(*f){((unsigned char*)*f)[0x4a]=1;((unsigned char*)*f)[0x4c]=0;}
-      if(*g){((unsigned char*)*g)[0x4a]=1;((unsigned char*)*g)[0x4c]=0;}
+    {
+        int handle;
+        int reset;
+        float high;
+        int enabled2;
+        float low;
+        handle = *(int *)(self + 0x1B8);
+        reset = 0;
+        low = lbl_80561AC0;
+        enabled2 = 1;
+        high = lbl_80561A50;
+        *(float *)(self + 0x180) = low;
+        *(float *)(self + 0x188) = low;
+        *(float *)(self + 0x190) = low;
+        *(float *)(self + 0x178) = low;
+        *(int *)(self + 0x1AC) = reset;
+        *(float *)(self + 0x1B0) = high;
+        *(unsigned char *)(self + 0x1B4) = enabled2;
+        *(unsigned char *)(self + 0x1B5) = reset;
+        *(unsigned char *)(self + 0x1BC) = reset;
+        *(int *)(self + 0x2A4) = reset;
+        *(int *)(self + 0x2A8) = reset;
+        *(int *)(self + 0x2AC) = reset;
+        *(int *)(self + 0x2B0) = reset;
+        if (handle != 0)
+            fn_802AE0E0();
     }
-    p[0x1cc]=0; p[0x2b8]=0;
+    {
+        void *obj = *(void **)(self + 0x1C0);
+        if (obj) { ((unsigned char *)obj)[0x4A] = 1; ((unsigned char *)obj)[0x4C] = 0; }
+    }
+    {
+        void *obj = *(void **)(self + 0x1C4);
+        if (obj) { ((unsigned char *)obj)[0x4A] = 1; ((unsigned char *)obj)[0x4C] = 0; }
+    }
+    {
+        void *obj = *(void **)(self + 0x1C8);
+        if (obj) { ((unsigned char *)obj)[0x4A] = 1; ((unsigned char *)obj)[0x4C] = 0; }
+    }
+    zero = 0;
+    *(unsigned char *)(self + 0x1CC) = zero;
+    {
+        void *obj = *(void **)(self + 0x1D0);
+        if (obj) { ((unsigned char *)obj)[0x4A] = 1; ((unsigned char *)obj)[0x4C] = zero; }
+    }
+    {
+        void *obj = *(void **)(self + 0x1D4);
+        if (obj) { ((unsigned char *)obj)[0x4A] = 1; ((unsigned char *)obj)[0x4C] = 0; }
+    }
+    {
+        void *obj = *(void **)(self + 0x1D8);
+        if (obj) { ((unsigned char *)obj)[0x4A] = 1; ((unsigned char *)obj)[0x4C] = 0; }
+    }
+    {
+        void *obj = *(void **)(self + 0x2B4);
+        if (obj) { ((unsigned char *)obj)[0x4A] = 1; ((unsigned char *)obj)[0x4C] = 0; }
+    }
+    *(unsigned char *)(self + 0x2B8) = 0;
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw reset
+#pragma processor reset
+#pragma pop
 int fn_80174298(void *arg0, int arg1) {
     extern float lbl_80558DC4[];
     extern float lbl_8055E3C8;
@@ -1128,45 +1333,65 @@ int fn_8017483C(void *arg0, void *arg1, int arg2) {
     }
     return 0;
 }
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+#pragma push
+#pragma small_data on
+extern "C" const char lbl_8055A2EC[];
 #pragma pop
-void fn_80175080(void **arg0, int arg1, int arg2, char *arg3, int arg4, int arg5, int arg6, int arg7, double farg0, double farg1, double farg2, double farg3, double farg4, double farg5, double farg6, double farg7, void *arg_sp8) {
+extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double farg0, ...) {
+    struct Dummy {
+        virtual void *unused();
+        virtual void *get(int);
+    };
     extern void *fn_80147CEC(void *, void *, void *, double);
-    extern void fn_80147230(void *, const char *, const char *);
+    extern void fn_80147230(void *, const char *, ...);
     extern void fn_801476C4(void *);
-    extern void fn_802E317C(const char *, unsigned int, const char *);
+    extern void fn_802E317C(const char *, ...);
     extern int vsprintf(char *, const char *, void *);
     extern unsigned int strlen(const char *);
     extern const char lbl_803314F8[];
-    extern const char lbl_8055A2EC[];
     char result[0x20];
     char text[0x80];
     void *v;
     void *p;
-    v = ((void *(*)(void *))((char *)*arg0 + 0xC))(arg0);
-    p = ((void *(*)(void *, int))((char *)*arg0 + 0xC))(arg0, arg2);
+    va_list args;
+    v = ((Dummy *)arg0)->get(arg1);
+    p = ((Dummy *)arg0)->get(arg2);
     if (v != 0) {
         fn_80147CEC(result, v, p, farg0);
     } else {
-        *(int *)(result + 0) = *(int *)p;
-        *(int *)(result + 4) = *(int *)((char *)p + 4);
-        *(int *)(result + 8) = *(int *)((char *)p + 8);
-        *(int *)(result + 0xC) = *(int *)((char *)p + 0xC);
+        int *dst = (int *)result;
+        int *src = (int *)p;
+        int w4, w8;
+        dst[0] = src[0];
+        w4 = src[1];
+        w8 = src[2];
+        dst[1] = w4;
+        dst[2] = w8;
+        dst[3] = src[3];
         *(float *)(result + 0x10) = *(float *)((char *)p + 0x10);
-        *(int *)(result + 0x14) = *(int *)((char *)p + 0x14);
-        *(int *)(result + 0x18) = *(int *)((char *)p + 0x18);
-        *(int *)(result + 0x1C) = *(int *)((char *)p + 0x1C);
+        dst[5] = src[5];
+        dst[6] = src[6];
+        dst[7] = src[7];
     }
-    if (arg3 != 0) {
-        vsprintf(text, arg3, &arg_sp8);
+    if (fmt != 0) {
+        va_start(args, farg0);
+        vsprintf(text, fmt, args);
         if (strlen(text) >= 0x80) {
-            fn_802E317C(lbl_803314F8, strlen(text), arg3);
+            fn_802E317C(lbl_803314F8, strlen(text), fmt);
         }
         fn_80147230(result, lbl_8055A2EC, text);
     } else {
         fn_801476C4(result);
     }
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw reset
+#pragma processor reset
+#pragma cplusplus reset
 typedef void (*Fn_80175228)(void *);
 #pragma cplusplus on
 extern "C" void fn_80175228(void *arg0) {
