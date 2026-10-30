@@ -1351,6 +1351,88 @@ void *fn_80162938(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma cplusplus on
+#pragma scheduling on
+extern "C" void fn_80162A14(void *arg0) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void *f4(s32 *, s32 *);
+    };
+    extern float lbl_80561848;
+    extern float lbl_8056184C;
+    extern void fn_801DF380(void *, s32, void (*)(void), s32);
+    extern void fn_801EA140(void *);
+    extern void fn_802A95A8(f32 *, f32 *, f32, f32);
+    extern void fn_802A95AC(s32);
+    s32 i;
+    s32 firstOffset;
+    s32 secondOffset;
+    s32 clearOffset;
+    float resetValue;
+    char *self;
+
+    resetValue = lbl_8056184C;
+    *(s32 *)((char *)arg0 + 8) = 0;
+    self = (char *)arg0;
+    i = 0;
+    *(u8 *)((char *)arg0 + 0x10) = 0;
+    firstOffset = 0;
+    *(float *)((char *)arg0 + 0xC) = resetValue;
+    while (i < *(s32 *)(self + 0x38)) {
+        void *obj = *(void **)(self + 4);
+        s32 *entry = (s32 *)(*(char **)(self + 0x34) + firstOffset);
+        void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
+        fn_801DF380(result, entry[0], (void (*)())fn_80161438, entry[1]);
+        firstOffset += 8;
+        i++;
+    }
+
+    resetValue = lbl_80561848;
+    *(s32 *)(self + 0x94) = 0;
+    i = 0;
+    *(float *)(self + 0x98) = resetValue;
+    secondOffset = 0;
+    *(u8 *)(self + 0x88) = 0;
+    *(float *)(self + 0x8C) = resetValue;
+    *(u8 *)(self + 0x90) = 0;
+    *(u8 *)(self + 0x91) = 0;
+    *(u8 *)(self + 0x9C) = 1;
+    while (i < *(s32 *)(self + 0xE4)) {
+        char *obj = (char *)*(void **)(self + 0xE0) + secondOffset;
+        fn_801EA140(obj);
+        *(float *)(obj + 4) += *(float *)(obj + 0x38);
+        if (*(s32 *)(obj + 0x34) != 0) {
+            u32 j;
+            char *child;
+            for (j = 0, child = obj + 0xC; j < 2; j++, child += 0xC)
+                fn_801EA140(child);
+        }
+        *(u8 *)(obj + 0x3C) = 1;
+        if (*(s32 *)(obj + 0x34) != 0) {
+            ((void (*)(void *, void *))fn_802A95A8)(obj + 0x24, obj + 0x2C);
+            fn_802A95AC(1);
+        }
+        secondOffset += 0x48;
+        i++;
+    }
+
+    i = 0;
+    clearOffset = 0;
+    while (i < *(s32 *)(self + 0x574)) {
+        i++;
+        *((u8 *)*(void **)(self + 0x570) + clearOffset + 8) = 0;
+        clearOffset += 0xC;
+    }
+    resetValue = lbl_80561848;
+    *(s32 *)(self + 0x5AC) = 0;
+    *(float *)(self + 0x5B4) = resetValue;
+}
+#pragma cplusplus reset
+#pragma scheduling on
+
 s32 fn_80162FE8(void *arg0) {
     f32 temp_f31;
     temp_f31 = *((f32 *)((char *)arg0 + 0x5B8));
@@ -1985,23 +2067,33 @@ struct NameList_8016464C {
 struct Iterator_8016464C {
     virtual s32 next(void *);
 };
+struct State_8016464C {
+    u8 pad0[4];
+    void *list;
+    u8 pad8[0x2C];
+    void *entries;
+    s32 entryCount;
+};
+struct Entry_8016464C {
+    void *object;
+    s32 value;
+};
 #pragma cplusplus on
 extern "C" void fn_8016464C(void *arg0) {
     char name[0x10];
-    void *iterator;
-    s32 count = 0;
     s32 i;
-    s32 max;
+    s32 count;
+    void *iterator;
 
     *(s32 *)((u8 *)arg0 + 0x38) = 0;
     iterator = fn_80131810(lbl_8032FB90);
+    count = 0;
     do {
         count++;
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, count);
     } while (((NameList_8016464C *)*(void **)((u8 *)arg0 + 4))->hasName(name) != 0);
 
-    max = count - 1;
-    for (i = 0; i < max; i++) {
+    for (i = 0; i < count - 1; i++) {
         s32 n = *(s32 *)((u8 *)arg0 + 0x38);
         s32 index = i + 1;
         void *entry;
