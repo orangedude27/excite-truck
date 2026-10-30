@@ -135,7 +135,6 @@ void fn_802D7780(void *arg0, void *arg1) {
     int wrapT = (filter & 2) != 0;
     u32 firstMode;
     u32 transfer;
-    u8 modeByte;
     u32 id;
 
     if ((opts & 2) == 0) {
@@ -149,9 +148,8 @@ void fn_802D7780(void *arg0, void *arg1) {
 
     firstMode = *(u32 *)((u8 *)arg1 + 0x14);
     transfer = *(u32 *)((u8 *)arg1 + 0x0C);
-    modeByte = *(u8 *)((u8 *)arg1 + 0x1C);
     *(u32 *)((u8 *)arg0 + 0xDC) = transfer;
-    *(u8 *)((u8 *)arg0 + 0xE4) = modeByte;
+    *(u8 *)((u8 *)arg0 + 0xE4) = *(u8 *)((u8 *)arg1 + 0x1C);
     *(u32 *)((u8 *)arg0 + 0xE0) = 0;
     if (firstMode & 1) *(u32 *)((u8 *)arg0 + 0xE0) |= 4;
     if (*(u32 *)((u8 *)arg1 + 0x14) & 2)
@@ -226,6 +224,69 @@ void fn_802D81C4(void *arg0, int arg1) {
     }
     fn_80128670(tmp);
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void *fn_802D8A84(void *arg0, void *arg1) {
+    void *texture;
+    void *obj = arg0;
+    char *work = (char *)arg1;
+    int count;
+    char *dst;
+    unsigned char ch;
+    int height;
+    int width;
+    int bytes;
+    int format;
+
+    texture = *(void **)((char *)obj + 0x30);
+    texture = texture != 0 ? texture : fn_802D7600(work);
+
+    dst = (char *)texture;
+    count = 0x20;
+    goto copy_char;
+count_down:
+    count--;
+    if (count > 0) {
+        goto copy_char;
+    }
+    dst[-1] = 0;
+    goto copied_name;
+copy_char:
+    ch = (unsigned char)*work;
+    work++;
+    *dst = (char)ch;
+    dst++;
+    if ((signed char)ch != 0) {
+        goto count_down;
+    }
+copied_name:
+    width = *(int *)((char *)obj + 0x24);
+    *(int *)((char *)texture + 0x70) = 0;
+    height = *(int *)((char *)obj + 0x28);
+    *(int *)((char *)texture + 0xC4) = 0;
+    GXGetTexBufferSize((unsigned short)width, (unsigned short)height, 0xE, 0, 1);
+    bytes = width * height;
+    work = *(char **)(*(char **)((char *)obj + 0x2C) + 4);
+    *(char **)((char *)texture + 0xD0) = work;
+    bytes = (int)((u32)bytes + ((u32)bytes >> 31)) >> 1;
+    *(int *)((char *)texture + 0xD4) = bytes;
+    DCFlushRange(work, bytes);
+
+    format = *(int *)((char *)obj + 0x20);
+    GXInitTexObj((char *)texture + 0x24, work, (unsigned short)width,
+                 (unsigned short)height, 0xE, 1, 1,
+                 (u32)((((format ^ 2) >> 1) - ((format ^ 2) & format))) >> 31);
+    if ((u32)((((format ^ 2) >> 1) - ((format ^ 2) & format))) >> 31) {
+        GXInitTexObjLOD((char *)texture + 0x24, 5, 1, lbl_80565018,
+                        (float)(*(int *)((char *)obj + 0x20) - 1), lbl_8056501C, 1, 1, 0);
+    }
+    GXInvalidateTexAll();
+    fn_802D7780(texture, obj);
+    return texture;
+}
+#pragma pop
 
 #pragma dont_inline reset
 
@@ -570,45 +631,52 @@ void fn_802D9628(register void *arg0, register s32 arg1, register s32 arg2, regi
 
 #pragma push
 #pragma use_lmw_stmw off
-int fn_802D972C(void *arg0, int arg1, int arg2) {
+#pragma scheduling invalid_target
+int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
     int mip;
-    int base;
     int wrap;
-    unsigned int ysign, yoff, xsign, xoff, ysign2, yoff2, xsign2, xoff2;
+    int base;
     int tile;
+    unsigned int ysign;
+    unsigned int yoff;
+    unsigned int xsign;
+    unsigned int xoff;
     int pixel;
     unsigned int value;
     int doubled;
+
     mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
-    wrap = GXGetTexObjWrapS((char *)arg0 + 0x24);
+    wrap = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFFFF;
     GXGetTexObjWrapT((char *)arg0 + 0x24);
     base = (int)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000;
     if (mip == 0) {
+        tile = arg1 / 8 + (arg2 / 8) * (wrap / 8);
+        base += tile << 5;
         ysign = (unsigned int)arg2 >> 31;
         yoff = (arg2 << 29) - ysign;
         xsign = (unsigned int)arg1 >> 31;
         xoff = (arg1 << 29) - xsign;
         pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign +
-                       ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
-        tile = (arg1 / 8) + ((arg2 / 8) * (wrap / 8));
-        base += tile << 5;
-        if (!(arg1 & 1)) {
-            value = (*(unsigned char *)(base + pixel) >> 4) & 0xF;
-        } else {
+                      ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
+        if (arg1 & 1) {
             value = *(unsigned char *)(base + pixel) & 0xF;
+        } else {
+            value = (*(unsigned char *)(base + pixel) >> 4) & 0xF;
         }
         doubled = value | (value * 0x10);
-        return (doubled << 24) | ((doubled << 16) | doubled | (doubled << 8));
+        value = (doubled << 16) | doubled;
+        value |= doubled << 8;
+        return (doubled << 24) | value;
     }
     if (mip == 6) {
-        ysign2 = (unsigned int)arg2 >> 31;
-        yoff2 = (arg2 << 30) - ysign2;
-        xsign2 = (unsigned int)arg1 >> 31;
-        xoff2 = (arg1 << 30) - xsign2;
-        pixel = (int)((((xoff2 << 2) | (xoff2 >> 30)) + xsign2 +
-                       ((((yoff2 << 2) | (yoff2 >> 30)) + ysign2) * 4)) * 0x10) / 8;
-        tile = (arg1 / 4) + ((arg2 / 4) * (wrap / 4));
+        tile = arg1 / 4 + (arg2 / 4) * (wrap / 4);
         base += tile << 6;
+        ysign = (unsigned int)arg2 >> 31;
+        yoff = (arg2 << 30) - ysign;
+        xsign = (unsigned int)arg1 >> 31;
+        xoff = (arg1 << 30) - xsign;
+        pixel = (int)((((xoff << 2) | (xoff >> 30)) + xsign +
+                      ((((yoff << 2) | (yoff >> 30)) + ysign) * 4)) * 0x10) / 8;
         value = *(unsigned short *)(base + pixel);
         return (*(unsigned short *)(base + pixel + 0x20) & ~0xFFFF0000) | (value << 16);
     }
