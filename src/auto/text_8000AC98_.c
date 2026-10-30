@@ -727,24 +727,29 @@ restart:
     lbl_8055D3D4 = 1;
     if (active == 0) {
         fn_80019B3C();
-        fn_80176780(0x10002, 0);
     }
+    fn_80176780(0x10002, 0);
 
     value = fn_80019B78();
     limit = ((-value | value) >> 31) & 0x1F4;
     count = 0;
     fn_8000BD64();
+    goto state_check;
 
-    do {
-        fn_8000BC44();
-        if (*(volatile unsigned char *)&lbl_8055D3D4 != 0) {
-            fn_8000B2AC();
-        }
-        count++;
-        if (limit != 0 && count >= limit) {
-            *(volatile unsigned char *)&lbl_8055D3D4 = 0;
-        }
-    } while (*(volatile unsigned char *)&lbl_8055D3D4 != 0);
+poll:
+    fn_8000BC44();
+    if (*(volatile unsigned char *)&lbl_8055D3D4 != 0) {
+        fn_8000B2AC();
+    }
+    count++;
+    if (limit == 0 || count < limit) {
+        goto state_check;
+    }
+    *(volatile unsigned char *)&lbl_8055D3D4 = 0;
+state_check:
+    if (*(volatile unsigned char *)&lbl_8055D3D4 != 0) {
+        goto poll;
+    }
 
     ((void (*)(int))fn_8000BD98)(count);
     ((void (*)(char *, ...))fn_802E30C8)(lbl_802FC02C, lbl_8055D0B4);
