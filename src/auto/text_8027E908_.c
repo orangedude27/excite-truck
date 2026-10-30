@@ -2546,7 +2546,7 @@ extern "C" int fn_8024FBD8(void *, int);
 extern "C" int stricmp(const char *, ...);
 extern "C" int lbl_8055C860;
 #pragma push
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_80284580(int arg0, int arg1, void *arg2, int arg3) {
     class Source {
