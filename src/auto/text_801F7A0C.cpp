@@ -282,34 +282,44 @@ extern "C" void fn_801F7A14(void *arg0) {
     }
 }
 
-void fn_801F7A14(void *);
-s32 fn_801F7A88(void *, s32, void *, s32);
+extern "C" void fn_801F7A14(void *);
+extern "C" s32 fn_801F7A88(void *, s32, void *, s32);
 extern const char lbl_8055B280[];
 extern const char lbl_8055B288[];
 extern const char lbl_8055B290[];
 extern const char lbl_8055B298[];
+extern "C" s32 fn_801F7A88(void *, s32, void *, s32);
+extern "C" void fn_801F7A14(void *);
 extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
-    u8 *dst=(u8 *)arg0; s32 i;
-    if (fn_801F7A88(arg1,arg2,arg0,0x30)) {
-        for(i=0;i<2;i++) {
-            u8 *p=dst+i*0x18; u8 t;
-            t=p[0];p[0]=p[3];p[3]=t;t=p[1];p[1]=p[2];p[2]=t;
-            t=p[4];p[4]=p[7];p[7]=t;t=p[5];p[5]=p[6];p[6]=t;
-            t=p[8];p[8]=p[0xB];p[0xB]=t;t=p[9];p[9]=p[0xA];p[0xA]=t;
-            t=p[0xC];p[0xC]=p[0xF];p[0xF]=t;t=p[0xD];p[0xD]=p[0xE];p[0xE]=t;
-            t=p[0x10];p[0x10]=p[0x13];p[0x13]=t;t=p[0x11];p[0x11]=p[0x12];p[0x12]=t;
-            t=p[0x14];p[0x14]=p[0x17];p[0x17]=t;t=p[0x15];p[0x15]=p[0x16];p[0x16]=t;
+    u8 *dst = (u8 *)arg0;
+    s32 i;
+    if (fn_801F7A88(arg1, arg2, arg0, 0x30) != 0) {
+        for (i = 0; i < 2; i++) {
+            u8 *p = dst + i * 0x18;
+            u8 t;
+            t = p[0]; p[0] = p[3]; p[3] = t;
+            t = p[1]; p[1] = p[2]; p[2] = t;
+            t = p[4]; p[4] = p[7]; p[7] = t;
+            t = p[5]; p[5] = p[6]; p[6] = t;
+            t = p[8]; p[8] = p[0xB]; p[0xB] = t;
+            t = p[9]; p[9] = p[0xA]; p[0xA] = t;
+            t = p[0xC]; p[0xC] = p[0xF]; p[0xF] = t;
+            t = p[0xD]; p[0xD] = p[0xE]; p[0xE] = t;
+            t = p[0x10]; p[0x10] = p[0x13]; p[0x13] = t;
+            t = p[0x11]; p[0x11] = p[0x12]; p[0x12] = t;
+            t = p[0x14]; p[0x14] = p[0x17]; p[0x17] = t;
+            t = p[0x15]; p[0x15] = p[0x16]; p[0x16] = t;
         }
     } else {
-        f32 a[3],b[3],c[3],d[3]; void **v=*(void ***)arg1;
-        ((void (*)(void *,void *,const char *))v[13])(a,arg1,lbl_8055B280);
-        ((void (*)(void *,void *,const char *))v[13])(b,arg1,lbl_8055B288);
-        ((void (*)(void *,void *,const char *))v[13])(c,arg1,lbl_8055B290);
-        ((void (*)(void *,void *,const char *))v[13])(d,arg1,lbl_8055B298);
-        ((f32 *)arg0)[0]=a[0];((f32 *)arg0)[1]=a[1];((f32 *)arg0)[2]=a[2];
-        ((f32 *)arg0)[3]=b[0];((f32 *)arg0)[4]=b[1];((f32 *)arg0)[5]=b[2];
-        ((f32 *)arg0)[6]=c[0];((f32 *)arg0)[7]=c[1];((f32 *)arg0)[8]=c[2];
-        ((f32 *)arg0)[9]=d[0];((f32 *)arg0)[10]=d[1];((f32 *)arg0)[11]=d[2];
+        f32 a[3], b[3], c[3], d[3];
+        ((void (*)(void *, void *, const char *))(*(void ***)arg1)[13])(a, arg1, lbl_8055B280);
+        ((f32 *)arg0)[0]=a[0]; ((f32 *)arg0)[1]=a[1]; ((f32 *)arg0)[2]=a[2];
+        ((void (*)(void *, void *, const char *))(*(void ***)arg1)[13])(b, arg1, lbl_8055B288);
+        ((f32 *)arg0)[3]=b[0]; ((f32 *)arg0)[4]=b[1]; ((f32 *)arg0)[5]=b[2];
+        ((void (*)(void *, void *, const char *))(*(void ***)arg1)[13])(c, arg1, lbl_8055B290);
+        ((f32 *)arg0)[6]=c[0]; ((f32 *)arg0)[7]=c[1]; ((f32 *)arg0)[8]=c[2];
+        ((void (*)(void *, void *, const char *))(*(void ***)arg1)[13])(d, arg1, lbl_8055B298);
+        ((f32 *)arg0)[9]=d[0]; ((f32 *)arg0)[10]=d[1]; ((f32 *)arg0)[11]=d[2];
     }
     fn_801F7A14(arg0);
 }
