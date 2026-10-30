@@ -551,6 +551,56 @@ extern "C" void fn_800EBB88(void *arg0) {
     p[3] = (s32)q;
 }
 
+extern "C" void MEMFreeToFrmHeap(void *, u32);
+extern "C" void MEMDestroyFrmHeap(void *);
+extern u8 lbl_80322F38[], lbl_80322F5C[], lbl_80322F68[], lbl_80322F8C[];
+extern u8 lbl_80322F98[], lbl_80322FBC[], lbl_80322FC8[], lbl_80322FEC[];
+extern u8 lbl_80322FF8[], lbl_8032301C[];
+#pragma push
+#pragma use_lmw_stmw off
+void nw4hbm::snd::detail::FrameHeap::Destroy() {
+    if (*(void **)this == 0) return;
+    if (*(u32 *)((u8 *)this + 4) == 0) goto free_heap;
+
+    register u8 *head = (u8 *)this + 8;
+    do {
+        if (*(u32 *)((u8 *)this + 4) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
+        }
+        void *list = *(void **)(head + 4);
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
+        if (list != 0) {
+            register void *node = (u8 *)list + 0xC;
+            while (1) {
+                void (*callback)(void *, void *, void *);
+                node = *(void **)((u8 *)node + 4);
+                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
+                if (node != 0) {
+                    callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
+                    if (callback != 0) {
+                        callback((u8 *)node + 0x20,
+                                 *(void **)((u8 *)node + 8),
+                                 *(void **)((u8 *)node + 0x10));
+                    }
+                }
+                if (node == *(void **)((u8 *)list + 0xC)) break;
+            }
+            if ((u8 *)list + 8 != 0) {
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
+            }
+        }
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)this + 4, list);
+    } while (*(u32 *)((u8 *)this + 4) != 0);
+
+free_heap:
+    MEMFreeToFrmHeap(*(void **)this, 3);
+    MEMDestroyFrmHeap(*(void **)this);
+    *(void **)this = 0;
+}
+#pragma pop
+
 #pragma push
 #pragma small_data off
 extern u8 lbl_80322D60[], lbl_80322DA4[], lbl_8032301C[], lbl_80322FF8[], lbl_80322FBC[], lbl_80322F98[], lbl_80322FEC[], lbl_80322FC8[], lbl_8032304C[], lbl_80323028[];
