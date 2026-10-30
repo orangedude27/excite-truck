@@ -432,17 +432,17 @@ void fn_802C00A0(void) {
 }
 
 extern void *fn_801284F8(int, const char *);
-extern void *fn_802C0138(void);
+extern void *fn_802C0138(void *);
 extern char lbl_8034ADC8[];
 int fn_802C00A4(void) {
     extern void *fn_801284F8(int, const char *);
-    extern void *fn_802C0138(void);
+    extern void *fn_802C0138(void *);
     extern char lbl_8034ADC8[];
     void *obj;
     obj = fn_801284F8(0x2c60, lbl_8034ADC8);
     if (obj == 0)
         return 0;
-    obj = fn_802C0138();
+    obj = fn_802C0138(obj);
     if (obj != 0) {
         if (((int (*)(void *))(*(void ***)obj)[5])(obj) == 0) {
             if (obj != 0)
