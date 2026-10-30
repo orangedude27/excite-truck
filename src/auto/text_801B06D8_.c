@@ -14,6 +14,7 @@ extern char lbl_80335B28[], lbl_80335B3C[];
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern u8 lbl_8055E674;
+extern u8 lbl_8055E698;
 extern s32 lbl_8055E69C;
 extern s32 lbl_8055E67C;
 extern s32 lbl_8055E6A8;
@@ -596,6 +597,75 @@ void fn_801B157C(void *arg0,s32 arg1) {
     *(u8*)((u8*)arg0+0x2C)=1;*(f32*)((u8*)arg0+0x30)=lbl_8055E3C8;
     if(lbl_8055E690)fn_801CB6B4(*(s32*)((u8*)arg0+0x60),arg1,2);
 }
+
+extern void fn_8000D7F8(s32, f32);
+extern void fn_8018B0D0(s32, s32);
+extern void fn_801CB55C(s32, s32);
+extern void fn_801CB360(s32);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_801B15A8(s32 arg0, f32 farg0) {
+    u8 *state = (u8 *)arg0;
+    s32 count;
+
+    if (*(state + 0x78) == 0 && *(state + 0x79) == 0) {
+        count = *(s32 *)(state + 0x14);
+        if (count == *(s32 *)(state + 0x68) && count > 0) {
+            void *object = *(void **)(state + 0x5C);
+            f32 oldTime = *(f32 *)(state + 0x70);
+            f32 current = *(f32 *)(state + 0x1C);
+            f32 delta = farg0 - oldTime;
+            void **vtable;
+
+            *(f32 *)(state + 0x20) = delta;
+            if (current > lbl_80562600 && current < delta)
+                delta = current;
+            *(f32 *)(state + 0x1C) = delta;
+            *(f32 *)(state + 0x70) = farg0;
+
+            vtable = *(void ***)object;
+            ((void (*)(void *))vtable[22])(object);
+            fn_8000D7F8(*(s32 *)(state + 0x60), delta);
+        }
+
+        count += 1;
+        *(s32 *)(state + 0x14) = count;
+        if (count == (s32)lbl_8055E680 + 1) {
+            void *object;
+            void **vtable;
+            s32 resource;
+
+            fn_802E30C8(lbl_80335AD8, *(s32 *)(state + 0x60), farg0);
+            *(state + 0x79) = 1;
+            *(s32 *)(state + 0x28) = 3;
+            fn_8018B0D0(*(s32 *)(state + 0x5C), 3);
+
+            object = fn_801B83A0();
+            vtable = *(void ***)object;
+            ((void (*)(void *, s32, s32))vtable[37])(
+                object, *(s32 *)(state + 0x5C), *(s32 *)(state + 8));
+
+            fn_801CB55C(*(s32 *)(state + 0x60), *(s32 *)(state + 8));
+            fn_801CB360(*(s32 *)(state + 0x60));
+
+            resource = *(s32 *)((u8 *)*(void **)(state + 0x5C) + 0x10);
+            if (resource == 0x50434152) {
+                lbl_8055E69C += 1;
+                if (lbl_8055E69C == lbl_8055E67C) {
+                    s32 i = 0;
+                    fn_802E30C8(lbl_80335B04);
+                    while (i < (s32)lbl_8055E678) {
+                        *((u8 *)lbl_8055E684 + (i << 7) + 0x78) = 1;
+                        i += 1;
+                    }
+                }
+            }
+        }
+    }
+}
+#pragma scheduling on
+#pragma pop
 
 #pragma cplusplus on
 #pragma use_lmw_stmw off
