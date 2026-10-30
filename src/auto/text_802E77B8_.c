@@ -73,11 +73,11 @@ void fn_802E7920(int arg0) {
     extern int fn_802E2C20(void);
     extern unsigned char lbl_80505978[];
     extern unsigned char lbl_80560008;
-    int player = arg0;
     int time;
-    unsigned char *p;
     int motor;
     int value;
+    unsigned char *p;
+    int player = arg0;
 
     p = lbl_80505978 + player * 0x638;
     time = fn_802E2C20();
@@ -496,36 +496,58 @@ void fn_802E830C(int *p) {
     p[6] = 6;
 }
 #pragma scheduling on
-unsigned char fn_802E8364(void *arg0,int arg1){extern unsigned char lbl_80505978[]; unsigned char *src=lbl_80505978+arg1*0x638; unsigned char *dst=(unsigned char*)arg0; unsigned char a,b; unsigned int x,y;
-*(float*)(dst+0)=*(float*)(src+4);
-*(float*)(dst+4)=*(float*)(src+8);
-*(float*)(dst+8)=*(float*)(src+12);
-*(float*)(dst+12)=*(float*)(src+16);
-*(float*)(dst+16)=*(float*)(src+20);
-*(float*)(dst+20)=*(float*)(src+24);
-*(float*)(dst+24)=*(float*)(src+28);
-*(float*)(dst+28)=*(float*)(src+32);
-b=src[36]; a=src[37]; dst[32]=b; dst[33]=a;
-a=src[38]; b=src[39]; dst[34]=a; dst[35]=b;
-a=src[40]; b=src[41]; dst[36]=a; dst[37]=b;
-a=src[42]; b=src[43]; dst[38]=a; dst[39]=b;
-a=src[44]; b=src[45]; dst[40]=a; dst[41]=b;
-a=src[46]; b=src[47]; dst[42]=a; dst[43]=b;
-a=src[48]; b=src[49]; dst[44]=a; dst[45]=b;
-a=src[50]; b=src[51]; dst[46]=a; dst[47]=b;
-a=src[52]; b=src[53]; dst[48]=a; dst[49]=b;
-a=src[54]; b=src[55]; dst[50]=a; dst[51]=b;
-a=src[56]; b=src[57]; dst[52]=a; dst[53]=b;
-a=src[58]; b=src[59]; dst[54]=a; dst[55]=b;
-a=src[60]; b=src[61]; dst[56]=a; dst[57]=b;
-a=src[62]; b=src[63]; dst[58]=a; dst[59]=b;
-a=src[64]; b=src[65]; dst[60]=a; dst[61]=b;
-a=src[66]; b=src[67]; dst[62]=a; dst[63]=b;
-*(unsigned int*)(dst+0x40)=*(unsigned int*)(src+0x44);
-y=*(unsigned int*)(src+0x4c); x=*(unsigned int*)(src+0x48); *(unsigned int*)(dst+0x44)=x; *(unsigned int*)(dst+0x48)=y;
-y=*(unsigned int*)(src+0x54); x=*(unsigned int*)(src+0x50); *(unsigned int*)(dst+0x4c)=x; *(unsigned int*)(dst+0x50)=y;
-y=*(unsigned int*)(src+0x5c); x=*(unsigned int*)(src+0x58); *(unsigned int*)(dst+0x54)=x; *(unsigned int*)(dst+0x58)=y;
-*(unsigned int*)(dst+0x5c)=*(unsigned int*)(src+0x60); dst[0x60]=src[0x64]; return src[0];}
+unsigned char fn_802E8364(void *arg0, int arg1) {
+    extern unsigned char lbl_80505978[];
+    unsigned char *src = lbl_80505978 + arg1 * 0x638;
+    unsigned char *dst = (unsigned char *)arg0;
+    unsigned char a, b;
+    unsigned int x, y;
+
+    *(float *)(dst + 0) = *(float *)(src + 4);
+    *(float *)(dst + 4) = *(float *)(src + 8);
+    *(float *)(dst + 8) = *(float *)(src + 12);
+    *(float *)(dst + 12) = *(float *)(src + 16);
+    *(float *)(dst + 16) = *(float *)(src + 20);
+    *(float *)(dst + 20) = *(float *)(src + 24);
+    *(float *)(dst + 24) = *(float *)(src + 28);
+    *(float *)(dst + 28) = *(float *)(src + 32);
+    b = src[36]; a = src[37]; dst[32] = b; dst[33] = a;
+    a = src[38]; b = src[39]; dst[34] = a; dst[35] = b;
+    a = src[40]; b = src[41]; dst[36] = a; dst[37] = b;
+    a = src[42]; b = src[43]; dst[38] = a; dst[39] = b;
+    a = src[44]; b = src[45]; dst[40] = a; dst[41] = b;
+    a = src[46]; b = src[47]; dst[42] = a; dst[43] = b;
+    a = src[48]; b = src[49]; dst[44] = a; dst[45] = b;
+    a = src[50]; b = src[51]; dst[46] = a; dst[47] = b;
+    a = src[52]; b = src[53]; dst[48] = a; dst[49] = b;
+    a = src[54]; b = src[55]; dst[50] = a; dst[51] = b;
+    a = src[56]; b = src[57]; dst[52] = a; dst[53] = b;
+    a = src[58]; b = src[59]; dst[54] = a; dst[55] = b;
+    a = src[60]; b = src[61]; dst[56] = a; dst[57] = b;
+    a = src[62]; b = src[63]; dst[58] = a; dst[59] = b;
+    b = *(volatile unsigned char *)(src + 64);
+    a = *(volatile unsigned char *)(src + 65);
+    dst[60] = b; dst[61] = a;
+    b = *(volatile unsigned char *)(src + 66);
+    a = *(volatile unsigned char *)(src + 67);
+    dst[62] = b; dst[63] = a;
+    *(unsigned int *)(dst + 0x40) = *(unsigned int *)(src + 0x44);
+    y = *(unsigned int *)(src + 0x48);
+    x = *(unsigned int *)(src + 0x4c);
+    *(unsigned int *)(dst + 0x44) = y;
+    *(unsigned int *)(dst + 0x48) = x;
+    x = *(volatile unsigned int *)(src + 0x50);
+    y = *(volatile unsigned int *)(src + 0x54);
+    *(unsigned int *)(dst + 0x4c) = x;
+    *(unsigned int *)(dst + 0x50) = y;
+    x = *(volatile unsigned int *)(src + 0x58);
+    y = *(volatile unsigned int *)(src + 0x5c);
+    *(unsigned int *)(dst + 0x54) = x;
+    *(unsigned int *)(dst + 0x58) = y;
+    *(unsigned int *)(dst + 0x5c) = *(unsigned int *)(src + 0x60);
+    dst[0x60] = src[0x64];
+    return src[0];
+}
 
 unsigned char fn_802E8504(int index) {
     extern unsigned char lbl_80505978[];
