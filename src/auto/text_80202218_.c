@@ -105,6 +105,72 @@ int fn_80202378(int arg0, int arg1, int arg2, int arg3) {
 
 void *fn_802023C8(void) { return lbl_80488964; }
 
+#pragma push
+#pragma dont_inline on
+void fn_802023D4(void) {
+    void *manager;
+    void *interface;
+    void **vtable;
+    s32 count;
+    s32 i;
+    s32 offset;
+    s32 *entry;
+    char name1[32];
+    char name2[32];
+    f32 position[3];
+
+    lbl_8055ECD4 = 7;
+    manager = fn_80131808(lbl_8033B9F8);
+    vtable = *(void ***)manager;
+    interface = ((void *(*)(void *, void *))vtable[2])(manager, lbl_8033B9F8 + 0x10);
+    vtable = *(void ***)interface;
+    count = ((s32 (*)(void *, void *))vtable[7])(interface, lbl_8055B418);
+    lbl_8055ECC0 = count;
+    if (count > 0) {
+        fn_8012850C((count << 4) + 0x10, lbl_8033B9F8 + 0x1C);
+        lbl_8055ECC4 = (s32)fn_8002F37C(fn_802025D4, NULL, 0x10, count);
+        lbl_8055ECC8 = (s32)fn_802CE3A4(lbl_8055ECC0, 0x20, 0x20000);
+        i = 0;
+        offset = 0;
+        while (i < lbl_8055ECC0) {
+            entry = (s32 *)((char *)lbl_8055ECC4 + offset);
+            sprintf(name1, lbl_8055B420, i);
+            vtable = *(void ***)interface;
+            ((void (*)(void *, void *, void *))vtable[13])(position, interface, name1);
+            ((f32 *)entry)[0] = position[0];
+            ((f32 *)entry)[1] = position[1];
+            ((f32 *)entry)[2] = position[2];
+            sprintf(name2, lbl_8033B9F8 + 0x28, i);
+            entry[3] = fn_802CE630((void *)lbl_8055ECC8, name2, 0);
+            offset += 0x10;
+            i++;
+        }
+    } else {
+        lbl_8055ECC4 = 0;
+        lbl_8055ECC8 = 0;
+    }
+    fn_80131818(manager);
+    lbl_8055ECCC = fn_80202248((int)(lbl_8033B9F8 + 0x34));
+    if (lbl_8055ECCC != -1) {
+        fn_802E30C8(lbl_8033B9F8 + 0x44);
+    }
+    lbl_8055ECD0 = fn_80202248((int)(lbl_8033B9F8 + 0x5C));
+    if (lbl_8055ECD0 != -1) {
+        fn_802E30C8(lbl_8033B9F8 + 0x6C);
+    }
+    lbl_8055B414 = -1;
+    *(f32 *)(lbl_804888B8 + 0xAC) = lbl_805630A4;
+    *(f32 *)(lbl_804888B8 + 0xB0) = lbl_805630A4;
+    *(f32 *)(lbl_804888B8 + 0xB4) = lbl_805630A4;
+    lbl_8055ECE0 = 0;
+    lbl_8055ECDC = -1;
+    *(s32 *)(lbl_804888B8 + 0x18) = -1;
+    *(s32 *)(lbl_804888B8 + 0x1C) = -1;
+    *(s32 *)(lbl_804888B8 + 0x20) = -1;
+    *(s32 *)(lbl_804888B8 + 0x24) = -1;
+    *(s32 *)(lbl_804888B8 + 0xA8) = 0;
+}
+
 void fn_802025D4(void) {
 
 }
