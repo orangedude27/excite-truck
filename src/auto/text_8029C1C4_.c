@@ -266,6 +266,7 @@ void fn_8029C664(void) {
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma cplusplus on
 void fn_8029C73C(void) {
     typedef struct { float x, y, z; } Vec;
     typedef struct { float x, y; } Vec2;
