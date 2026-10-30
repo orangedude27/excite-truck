@@ -99,7 +99,13 @@ extern "C" int sprintf(char *, const char *, ...);
 extern "C" int stricmp(const char *, const char *);
 extern "C" void *memcpy(void *, const void *, unsigned long);
 extern u8 lbl_8033CAE8[];
-extern "C" s32 fn_80214E10(s32);
+extern "C" s32 fn_80214E10(s32, s32, s32);
+#pragma small_data on
+extern "C" s32 lbl_802F9EB8[];
+extern "C" char lbl_8033D3F8[];
+extern "C" char lbl_8033D404[];
+extern "C" char lbl_8055B820;
+#pragma small_data off
 extern "C" s32 fn_80214FE0(s32, s32, s32, s32);
 extern "C" s32 fn_80206430(void);
 extern "C" s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
@@ -1410,6 +1416,112 @@ extern "C" void fn_80214D50(s32 arg0) {
 extern "C" void fn_80214FD8(s32 arg0, s32 arg1) {
     ((s32 (*)(s32, s32, s32))fn_80214E10)(arg0, arg1, 0);
 }
+
+#pragma push
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma small_data on
+extern "C" s32 lbl_802F9ECC[];
+extern "C" char lbl_8033D420[];
+extern "C" char lbl_8055B6A8;
+extern "C" char lbl_8055B824;
+extern "C" char lbl_8055B830;
+extern "C" char lbl_8055B838;
+extern "C" char lbl_8055B83C;
+#pragma push
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma small_data on
+extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 stack[47];
+    s32 *ctx, *values;
+    s32 state, result, zero;
+    s32 ctx0, ctx2, ctx3, ctx4;
+    s32 value0, value1, value2, value3, value4;
+    s32 label0, labelA, labelB, labelC, labelD, labelE;
+
+    state = fn_802168E4();
+    if (state != 0) {
+        fn_80214A9C(0x1F);
+    }
+    *(u8 *)((u8 *)stack + 0x2C) = (u8)arg3;
+    ctx = lbl_802F9ECC;
+    ctx2 = ctx[2];
+    stack[2] = ctx2;
+    values = lbl_80490510;
+    value0 = values[0];
+    value1 = values[1];
+    value2 = values[2];
+    value3 = values[3];
+    value4 = values[4];
+    label0 = (s32)lbl_8033D420;
+    labelA = (s32)&lbl_8055B6A8;
+    labelB = (s32)&lbl_8055B824;
+    labelC = (s32)&lbl_8055B830;
+    labelD = (s32)&lbl_8055B838;
+    labelE = (s32)&lbl_8055B83C;
+    zero = 0;
+
+    stack[5] = label0;
+    stack[13] = 5;
+    stack[12] = labelA;
+    stack[14] = (s32)&stack[5];
+    stack[10] = zero;
+    stack[15] = zero;
+    stack[16] = zero;
+    stack[18] = 3;
+    stack[17] = labelB;
+    stack[19] = arg0;
+    stack[20] = 4;
+    stack[21] = zero;
+    stack[23] = 3;
+    stack[22] = labelC;
+    stack[24] = arg1;
+    stack[25] = 4;
+    stack[26] = zero;
+    stack[28] = zero;
+    stack[27] = labelD;
+    stack[29] = zero;
+    stack[30] = -2;
+    stack[31] = zero;
+    stack[33] = zero;
+    stack[32] = labelE;
+    stack[34] = zero;
+    stack[35] = -3;
+    stack[36] = zero;
+    stack[38] = 6;
+    stack[37] = (s32)&lbl_8055B860;
+    stack[39] = zero;
+    stack[40] = -3;
+    stack[41] = 0x1B;
+    stack[42] = value0;
+    stack[43] = value1;
+    stack[44] = value2;
+    stack[45] = value3;
+    stack[46] = value4;
+    ctx0 = ctx[0];
+    ctx3 = ctx[3];
+    ctx4 = ctx[4];
+    stack[0] = ctx0;
+    stack[3] = ctx3;
+    stack[4] = ctx4;
+    stack[1] = (s32)&stack[12];
+    stack[2] = arg2;
+
+    result = (fn_802146BC((void *)stack, -0x3E7, -0x3E7, 1,
+                          ctx3, ctx0, value4, value3) + 2) == 0;
+    if (state != 0) {
+        fn_80214AF0(0x1F);
+    }
+    return result;
+}
+#pragma small_data off
+#pragma scheduling on
+#pragma use_lmw_stmw reset
+#pragma dont_inline reset
+#pragma pop
 
 extern "C" s32 fn_80215194(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
