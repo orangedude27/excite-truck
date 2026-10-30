@@ -109,6 +109,7 @@ void fn_802BBBC8(void) {
     extern signed char fn_802B05E4(void);
     char sp10[0x20];
     int args[2];
+    register signed char *colors;
     int *var_r26;
     int *var_r27;
     int temp_r3;
@@ -120,8 +121,9 @@ void fn_802BBBC8(void) {
     var_r26 = lbl_804C00B0;
     args[1] = lbl_80564CFC;
     var_r25 = 0;
+    colors = &lbl_8055CF30;
     do {
-        fn_801345D8(sp10, 0x20, lbl_8034AAB8, args[var_r25 / 3], (&lbl_8055CF30)[var_r25 % 3]);
+        fn_801345D8(sp10, 0x20, lbl_8034AAB8, args[var_r25 / 3], colors[var_r25 % 3]);
         temp_r3 = fn_802BB87C((int)sp10);
         *var_r27 = temp_r3;
         if (temp_r3 == -2) {
@@ -162,7 +164,7 @@ void fn_802BBCC4(void) {
 #pragma use_lmw_stmw off
 unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
     extern signed char lbl_8055FA90;
-    extern unsigned int fn_802D972C(int, int);
+    extern int fn_802D972C(void *, int, int);
     int *slot;
     int value;
     int x;
@@ -200,7 +202,7 @@ unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
 #pragma pop
   extern int lbl_804C0098[];
 extern void fn_802BB8E4(int*);
-extern unsigned int fn_802D972C(int, int);
+extern int fn_802D972C(void *, int, int);
 extern int fn_802E30C8(const char*, ...);
 extern char lbl_8034AAF0[];
 #pragma scheduling invalid_target
