@@ -482,12 +482,15 @@ extern float lbl_80558DC4;
 extern float lbl_80562E90;
 extern float __fabsf(float);
 #pragma push
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_801EDD7C(void *arg0, long arg1) {
     float scale;
     unsigned int *a, *b, *c, *d, *e, *f, *g, *h, *j, *k, *m, *n;
     long i, offset;
     char *entry;
+
+    /* Fix note: keep all scaled values live before storing to reproduce the target's delayed store schedule. */
     fn_801EABA8(arg0, *(void **)((char *)arg0 + 0x3C));
     scale = *(float *)((char *)arg1 + 0x2D0);
     *(float *)((char *)arg0 + 0x4D0) = scale;
@@ -508,24 +511,42 @@ void fn_801EDD7C(void *arg0, long arg1) {
         *(unsigned int *)((char *)arg0 + 0x4C8) = *m;
         *(unsigned int *)((char *)arg0 + 0x4CC) = *n;
     } else {
-        *(float *)((char *)arg0 + 0x4A0) = *(float *)((char *)arg0 + 4) * scale;
-        *(float *)((char *)arg0 + 0x4A4) = *(float *)((char *)arg0 + 8) * scale;
-        *(float *)((char *)arg0 + 0x4A8) = *(float *)((char *)arg0 + 0xC) * scale;
-        *(float *)((char *)arg0 + 0x4AC) = *(float *)((char *)arg0 + 0x10) * scale;
-        *(float *)((char *)arg0 + 0x4B0) = *(float *)((char *)arg0 + 0x14) * scale;
-        *(float *)((char *)arg0 + 0x4B4) = *(float *)((char *)arg0 + 0x18) * scale;
-        *(float *)((char *)arg0 + 0x4B8) = *(float *)((char *)arg0 + 0x1C) * scale;
-        *(float *)((char *)arg0 + 0x4BC) = *(float *)((char *)arg0 + 0x20) * scale;
-        *(float *)((char *)arg0 + 0x4C0) = *(float *)((char *)arg0 + 0x24) * scale;
-        *(float *)((char *)arg0 + 0x4C4) = *(float *)((char *)arg0 + 0x28);
-        *(float *)((char *)arg0 + 0x4C8) = *(float *)((char *)arg0 + 0x2C);
-        *(float *)((char *)arg0 + 0x4CC) = *(float *)((char *)arg0 + 0x30);
+        float v0 = *(float *)((char *)arg0 + 4) * scale;
+        float v1 = *(float *)((char *)arg0 + 8) * scale;
+        float v2 = *(float *)((char *)arg0 + 0xC) * scale;
+        float v3 = *(float *)((char *)arg0 + 0x10) * scale;
+        float v4 = *(float *)((char *)arg0 + 0x14) * scale;
+        float v5 = *(float *)((char *)arg0 + 0x18) * scale;
+        float v6 = *(float *)((char *)arg0 + 0x1C) * scale;
+        float v7 = *(float *)((char *)arg0 + 0x20) * scale;
+        float v8 = *(float *)((char *)arg0 + 0x24) * scale;
+        float v9 = *(float *)((char *)arg0 + 0x28);
+        float v10 = *(float *)((char *)arg0 + 0x2C);
+        float v11 = *(float *)((char *)arg0 + 0x30);
+        *(float *)((char *)arg0 + 0x4C4) = v9;
+        *(float *)((char *)arg0 + 0x4C8) = v10;
+        *(float *)((char *)arg0 + 0x4CC) = v11;
+        *(float *)((char *)arg0 + 0x4A0) = v0;
+        *(float *)((char *)arg0 + 0x4A4) = v1;
+        *(float *)((char *)arg0 + 0x4A8) = v2;
+        *(float *)((char *)arg0 + 0x4AC) = v3;
+        *(float *)((char *)arg0 + 0x4B0) = v4;
+        *(float *)((char *)arg0 + 0x4B4) = v5;
+        *(float *)((char *)arg0 + 0x4B8) = v6;
+        *(float *)((char *)arg0 + 0x4BC) = v7;
+        *(float *)((char *)arg0 + 0x4C0) = v8;
     }
-    entry = arg0; i = 0; offset = 0;
+    entry = arg0;
+    i = 0;
+    offset = 0;
     do {
-        fn_801F0F78(*(long *)(entry + 0x4D4), *(long *)((char *)arg0 + 0x3C) + offset + 0x7C,
-                    (char *)arg0 + 4, *(float *)((char *)arg0 + 0x4D0));
-        i++; offset += 0x6C; entry += 4;
+        fn_801F0F78(*(long *)(entry + 0x4D4),
+                    *(long *)((char *)arg0 + 0x3C) + offset + 0x7C,
+                    (char *)arg0 + 4,
+                    *(float *)((char *)arg0 + 0x4D0));
+        i++;
+        offset += 0x6C;
+        entry += 4;
     } while (i < 4);
 }
 #pragma pop
@@ -543,27 +564,57 @@ void fn_801F13F4(long, float, float);
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_801EDF18(void* arg0) {
-    float temp_f31, sp20, sp10, sp14, sp18, var_f29, var_f30, temp_f3, var_f2;
-    long var_r31, sp1C, sp24, spC;
-    long* var_r3;
-    short sp8;
+    struct Settings { long first; float second; long third; } settings;
+    float temp_f31, var_f30, var_f29, limit, dot;
+    float vector[3];
+    long index, result;
+    short entry;
+    int i;
+
     temp_f31 = fn_801E88F0(-1);
     temp_f31 *= temp_f31;
-    temp_f31 *= fn_802C88E8((char*)arg0 + 0x28);
-    var_r31 = *(long*)((char*)arg0 + 0x480) - 1;
-    var_r3 = (long*)((char*)arg0 + var_r31 * 8);
-    while (var_r31 >= 0 && temp_f31 < (*(float*)((char*)var_r3 + 0x404) * *(float*)((char*)var_r3 + 0x404))) { var_r3 = (long*)((char*)var_r3 - 8); var_r31--; }
-    if (var_r31 < 0) return;
-    if (*(long*)((char*)arg0 + 0x40) == fn_801E866C(-1) && fn_801E89A4(-1) == 0) return;
-    sp1C = *(long*)((char*)arg0 + 0x28); sp20 = *(float*)((char*)arg0 + 0x2C); sp24 = *(long*)((char*)arg0 + 0x30);
-    sp8 = fn_801EAC3C(arg0, sp1C); sp10 = lbl_80562E88; sp14 = lbl_80562E90; sp18 = lbl_80562E88; spC = 0;
-    if (fn_801E9E78(&sp8, &sp1C, &sp10, &spC, lbl_80562E88) != 0) {
-        temp_f3 = -PSVECDotProduct(&sp10, fn_802C9A40()); var_f2 = lbl_80562E9C; var_f29 = *(float*)((char*)arg0 + 0x2C) - sp20;
-        if (var_f2 <= temp_f3) var_f2 = temp_f3; var_f30 = lbl_80562E90 / var_f2;
-    } else { var_f29 = lbl_80562E88; var_f30 = lbl_80562EC8; }
-    fn_802C7AE0(*(long*)((char*)arg0 + var_r31 * 8 + 0x400), (char*)arg0 + 0x4A0, -1, var_f30 * (var_f29 + *(float*)((char*)arg0 + 0x484)));
-    var_r31 = 0;
-    do { fn_801F13F4(*(long*)((char*)arg0 + 0x4D4), temp_f31, var_f29 * var_f30); var_r31++; arg0 = (char*)arg0 + 4; } while (var_r31 < 4);
+    temp_f31 *= fn_802C88E8((void*)((long)arg0 + 0x28));
+
+    index = *(long*)((char*)arg0 + 0x480) - 1;
+    while (index >= 0 &&
+           temp_f31 < (*(float*)((char*)arg0 + index * 8 + 0x404) *
+                       *(float*)((char*)arg0 + index * 8 + 0x404))) {
+        index--;
+    }
+    if (index < 0) goto done;
+
+    if (*(long*)((char*)arg0 + 0x40) != fn_801E866C(-1)) goto process;
+    if (fn_801E89A4(-1) != 0) goto process;
+    goto done;
+
+process:
+    settings.first = *(volatile long*)((char*)arg0 + 0x28);
+    settings.second = *(volatile float*)((char*)arg0 + 0x2C);
+    settings.third = *(volatile long*)((char*)arg0 + 0x30);
+    entry = fn_801EAC3C(arg0, settings.first);
+    vector[0] = lbl_80562E88;
+    vector[1] = lbl_80562E90;
+    vector[2] = lbl_80562E88;
+    result = 0;
+    if (fn_801E9E78(&entry, &settings, vector, &result, lbl_80562E88) != 0) {
+        dot = -PSVECDotProduct(vector, fn_802C9A40());
+        limit = lbl_80562E9C;
+        var_f29 = *(float*)((char*)arg0 + 0x2C) - settings.second;
+        if (limit > dot) limit = dot;
+        var_f30 = lbl_80562E90 / limit;
+    } else {
+        var_f29 = lbl_80562E88;
+        var_f30 = lbl_80562EC8;
+    }
+    fn_802C7AE0(*(long*)((char*)arg0 + index * 8 + 0x400),
+                (char*)arg0 + 0x4A0, -1,
+                var_f30 * (var_f29 + *(float*)((char*)arg0 + 0x484)));
+    for (i = 0; i < 4; i++) {
+        fn_801F13F4(*(long*)((char*)arg0 + 0x4D4 + i * 4),
+                    temp_f31, var_f29 * var_f30);
+    }
+done:
+    return;
 }
 #pragma pop
 
