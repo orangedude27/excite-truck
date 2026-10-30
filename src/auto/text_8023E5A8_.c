@@ -183,7 +183,8 @@ extern int lbl_802FA2BC[5];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-int fn_8023EEF8(void) {
+#pragma cplusplus on
+extern "C" int fn_8023EEF8(void) {
     struct Data { void *first; void *second; int zero[3]; int values[55]; };
     volatile struct Data data;
     data.values[0]=(int)&lbl_8055B860;
