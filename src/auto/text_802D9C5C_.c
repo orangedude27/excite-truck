@@ -22,13 +22,93 @@ extern int memcpy(void *, const void *, unsigned int);
 extern float lbl_80565038;
 extern float lbl_8056503C;
 extern void *fn_802DA704(int, void *, int);
-extern void fn_802DAA18(void);
+extern void fn_802DAA18();
 #pragma scheduling off
 extern void fn_80128668(void *);
 extern void fn_80128670(int);
 extern char lbl_8034C8E8[];
 #pragma scheduling on
 #pragma opt_propagation off
+void fn_802D9C5C(int arg0, void *arg1, int arg2) {
+    extern float lbl_804DB068[];
+    float *var_r3;
+    float *var_r4;
+    float temp_r0_2;
+    float temp_r1;
+    float temp_r0;
+    int temp_r7;
+    int temp_r7_2;
+    int var_ctr_2;
+    int var_r8;
+    int var_r9 = 0;
+    unsigned int var_ctr;
+    float *var_r7;
+    float *var_r6;
+
+    if (arg2 > 0) {
+        temp_r7 = arg2 - 8;
+        if (arg2 > 8) {
+            var_r8 = 0;
+            if (arg2 >= 0 && arg2 <= 0x7FFFFFFE)
+                var_r8 = 1;
+            if (var_r8 != 0) {
+                var_ctr = (unsigned int)(temp_r7 + 7) >> 3;
+                var_r7 = (float *)arg1;
+                var_r6 = &lbl_804DB068[arg0 * 3];
+                if (temp_r7 > 0) {
+                    do {
+                        var_r9 += 8;
+                        var_r6[0] = var_r7[0];
+                        var_r6[1] = var_r7[1];
+                        var_r6[2] = var_r7[2];
+                        var_r6[3] = var_r7[3];
+                        var_r6[4] = var_r7[4];
+                        var_r6[5] = var_r7[5];
+                        var_r6[6] = var_r7[6];
+                        var_r6[7] = var_r7[7];
+                        var_r6[8] = var_r7[8];
+                        var_r6[9] = var_r7[9];
+                        var_r6[10] = var_r7[10];
+                        var_r6[11] = var_r7[11];
+                        var_r6[12] = var_r7[12];
+                        var_r6[13] = var_r7[13];
+                        var_r6[14] = var_r7[14];
+                        var_r6[15] = var_r7[15];
+                        var_r6[16] = var_r7[16];
+                        var_r6[17] = var_r7[17];
+                        var_r6[18] = var_r7[18];
+                        var_r6[19] = var_r7[19];
+                        var_r6[20] = var_r7[20];
+                        var_r6[21] = var_r7[21];
+                        var_r6[22] = var_r7[22];
+                        var_r6[23] = var_r7[23];
+                        var_r7 += 24;
+                        var_r6 += 24;
+                        var_ctr -= 1;
+                    } while (var_ctr != 0);
+                }
+            }
+        }
+        temp_r7_2 = var_r9 * 12;
+        var_ctr_2 = arg2 - var_r9;
+        var_r4 = (float *)((char *)arg1 + temp_r7_2);
+        var_r3 = (float *)((char *)lbl_804DB068 + temp_r7_2 + (arg0 * 12));
+        if (var_r9 < arg2) {
+            do {
+                temp_r0_2 = var_r4[0];
+                temp_r1 = var_r4[1];
+                var_r3[0] = temp_r0_2;
+                temp_r0 = var_r4[2];
+                var_r4 += 3;
+                var_r3[1] = temp_r1;
+                var_r3[2] = temp_r0;
+                var_r3 += 3;
+                var_ctr_2 -= 1;
+            } while (var_ctr_2 != 0);
+        }
+    }
+}
+
 void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     extern int lbl_804DB458[];
     extern signed char lbl_8055FE58;
