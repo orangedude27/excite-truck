@@ -1,4 +1,7 @@
 #include <types.h>
+extern void fn_8018AF04(void *);
+extern char lbl_80335A94[];
+extern s32 lbl_8055E3C4;
 typedef s32 M2C_UNK;
 extern void *fn_801B83A0(void);
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
@@ -1444,6 +1447,90 @@ s32 fn_801B2C70(void *arg0) {
     }
     return 1;
 }
+
+extern int fn_801E89EC();
+#pragma cplusplus on
+extern "C" s32 fn_801B2F40(s32);
+extern "C" f32 fn_801B306C(void);
+extern "C" void *fn_801B307C(void);
+extern "C" void fn_801B2D28(void *arg0) {
+    struct Item {
+        virtual void d0();
+        virtual void d1();
+        virtual void *get();
+    };
+    struct Header {
+        u8 padding[0x560];
+        void *resource;
+    };
+    struct Tail {
+        u32 first;
+        u32 second;
+    };
+    s32 offset;
+    u8 *dst;
+    s32 index;
+    s32 value;
+
+    memset((u8 *)arg0 + 0x560, 0, 0x1C);
+    ((Header *)arg0)->resource = fn_801B307C();
+    *(s32 *)((u8 *)arg0 + 0x564) = fn_801B2F40(0);
+    value = lbl_8055E6A8;
+    if (lbl_8055E691 != 0)
+        value = 0;
+    *(s32 *)((u8 *)arg0 + 0x574) = value;
+    *(s32 *)((u8 *)arg0 + 0x578) = value;
+    *(f32 *)((u8 *)arg0 + 0x56C) = lbl_8055E6A4;
+    *(f32 *)((u8 *)arg0 + 0x570) = fn_801B306C();
+
+    dst = (u8 *)arg0;
+    index = 0;
+    *(void **)((u8 *)arg0 + 0x568) = lbl_8055E680;
+    offset = 0;
+    while (index < (s32)lbl_8055E678) {
+        Item *obj = (Item *)((u8 *)lbl_8055E684 + offset);
+        void *result = obj->get();
+
+        *(u32 *)(dst + 0x3A0) = *(u32 *)((u8 *)result + 0x00);
+        *(u32 *)(dst + 0x3A4) = *(u32 *)((u8 *)result + 0x04);
+        *(u32 *)(dst + 0x3A8) = *(u32 *)((u8 *)result + 0x08);
+        *(f32 *)(dst + 0x3AC) = *(f32 *)((u8 *)result + 0x0C);
+        *(u32 *)(dst + 0x3B0) = *(u32 *)((u8 *)result + 0x10);
+        *(f32 *)(dst + 0x3B4) = *(f32 *)((u8 *)result + 0x14);
+        *(f32 *)(dst + 0x3B8) = *(f32 *)((u8 *)result + 0x18);
+        *(f32 *)(dst + 0x3BC) = *(f32 *)((u8 *)result + 0x1C);
+        *(f32 *)(dst + 0x3C0) = *(f32 *)((u8 *)result + 0x20);
+        *(u32 *)(dst + 0x3C4) = *(u32 *)((u8 *)result + 0x24);
+        *(u8 *)(dst + 0x3C8) = *(u8 *)((u8 *)result + 0x28);
+        *(f32 *)(dst + 0x3CC) = *(f32 *)((u8 *)result + 0x2C);
+        {
+            volatile Tail *source = (volatile Tail *)((u8 *)result + 0x30);
+            Tail values;
+            values.first = source->first;
+            values.second = source->second;
+            *(Tail *)(dst + 0x3D0) = values;
+        }
+        dst += 0x38;
+        offset += 0x80;
+        index++;
+    }
+
+    if (fn_801E89EC() == 0) {
+        if (lbl_8055E6A0 != 0) {
+            f32 end;
+            f32 start;
+            start = lbl_8055E3C8;
+            end = lbl_8055E6A4;
+            *(s32 *)((u8 *)arg0 + 0x39C) = (s32)(end - start) + 1;
+        } else {
+            *(s32 *)((u8 *)arg0 + 0x39C) = -1;
+        }
+    } else {
+        *(s32 *)((u8 *)arg0 + 0x39C) = 0;
+    }
+}
+#pragma cplusplus reset
+
 #pragma scheduling on
 void *fn_801B2EC0(s32 arg0) {
     return (void *)((u8 *)lbl_8055E684 + (arg0 << 7));
