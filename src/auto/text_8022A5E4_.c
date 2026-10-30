@@ -99,6 +99,8 @@ void fn_8022A7D0(void) {
     fn_8022C9D0();
 }
 
+#pragma push
+#pragma dont_inline on
 int fn_8022A7D4(const char *arg0) {
     return strstr(arg0, lbl_8055B8B0) != 0;
 }
@@ -106,6 +108,7 @@ int fn_8022A7D4(const char *arg0) {
 int fn_8022A804(const char *arg0) {
     return strstr(arg0, lbl_8055B8B8) != 0;
 }
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
@@ -634,20 +637,17 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     extern int fn_8023512C(const char *);
     extern int fn_802C49E8(const char *);
     extern char *strstr(const char *, const char *);
-    extern char lbl_8055B918[];
-    extern char lbl_8055B920[];
     extern char lbl_8033FC40[];
     unsigned char *dest;
     unsigned char *src;
     char *name;
     int resource;
-    int a, b, c, d, e, f, g, h, i, j;
     float f0, f1;
 
     dest = (unsigned char *)arg0;
     src = (unsigned char *)arg1;
-    *(int *)(dest + 4) = 0;
     dest[0] = 1;
+    *(int *)(dest + 4) = 0;
     *(int *)(dest + 8) = 0;
     name = *(char **)src;
     if (strstr(name, lbl_8055B918) != 0) {
