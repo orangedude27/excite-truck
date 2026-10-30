@@ -639,6 +639,7 @@ void fn_802ABE50(void) { fn_8028E240(0); }
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
     unsigned char red;
     unsigned char green;
@@ -647,6 +648,11 @@ void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
     float angle;
     float magnitude;
     float wave;
+    float angleValue;
+    float result;
+    int withinTolerance;
+    int angleBelowLimit;
+    int angleWithinLimit;
     int active;
 
     red = fn_80129D90(0, 0x8C, 0xFF);
@@ -664,18 +670,24 @@ void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
         *arg0 = *arg0 + lbl_80564A34 * delta;
 
     magnitude = (float)fabs(delta);
+    withinTolerance = magnitude <= lbl_80558DC4;
     wave = lbl_805649F0;
-    if (magnitude > lbl_80558DC4)
+    if (withinTolerance == 0)
         wave = lbl_80564A9C * (float)(int)fn_80287BC8(lbl_805649F0, lbl_805649FC);
 
+    angleBelowLimit = angle < lbl_80564A00;
     active = 1;
-    if (angle < lbl_80564A00 &&
-        (float)fn_8002EFB4(angle, lbl_80564AA0) >= lbl_80564A34)
-        active = 0;
+    if (angleBelowLimit != 0) {
+        angleValue = (float)fn_8002EFB4(angle, lbl_80564AA0);
+        angleWithinLimit = angleValue < lbl_80564A34;
+        if (angleWithinLimit == 0)
+            active = 0;
+    }
 
-    *arg1 = lbl_805649F0;
+    result = lbl_805649F0;
     if (active != 0)
-        *arg1 = lbl_80564AA8 * *arg0 - wave;
+        result = lbl_80564AA8 * *arg0 - wave;
+    *arg1 = result;
 }
 
 void fn_802ABFF8(int arg0, float farg0) {
