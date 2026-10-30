@@ -769,10 +769,11 @@ extern "C" void fn_80219508(void* arg0) {
 #pragma dont_inline reset
 
 extern "C" void fn_80219510(void *arg0, s32 arg1, s32 arg2) {
-    arg2 = -arg1;
-    *(s32 *)((u8 *)arg0 + 0x244) = arg2;
+    s32 first = -arg1;
+    s32 second = -arg2;
+    *(s32 *)((u8 *)arg0 + 0x244) = first;
     *(u8 *)((u8 *)arg0 + 0x24C) = 1;
-    *(s32 *)((u8 *)arg0 + 0x248) = -arg2;
+    *(s32 *)((u8 *)arg0 + 0x248) = second;
 }
 
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
@@ -3056,20 +3057,16 @@ extern "C" char lbl_8033D9BC[];
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void *fn_8021F678(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, f32 farg0, f32 farg1) {
-    register s32 sign;
-    register void **vtable;
     s32 size;
     s32 end;
     s32 count;
     s32 len;
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
-    sign = arg6 >> 31;
     *(s32 *)((u8 *)arg0 + 0x250) = arg5;
-    vtable = lbl_8033E878;
+    size = ((arg6 >> 31) ^ arg6) - (arg6 >> 31);
     *(f32 *)((u8 *)arg0 + 0x248) = farg0;
-    size = (sign ^ arg6) - sign;
-    *(void **)arg0 = vtable;
     *(f32 *)((u8 *)arg0 + 0x24C) = farg1;
+    *(void **)arg0 = lbl_8033E878;
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
     *(s32 *)((u8 *)arg0 + 0x254) = size;
     *(u8 *)((u8 *)arg0 + 0x258) = (u32)arg6 >> 31;
@@ -5026,7 +5023,7 @@ extern "C" void fn_80224328(void *arg0) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma fp_contract on
 extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
                                     s32 arg3, s32 *arg4, void *unused) {
     register u8 *resource = (u8 *)arg2;
@@ -5034,26 +5031,17 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
     register u8 *self = (u8 *)arg0;
     register s32 length = arg3;
     register s32 *link = arg4;
-    register s32 zero = 0;
     char name[0x100];
-    union Cvt {
-        f64 d;
-        u32 word[2];
-    } cvt1, cvt2;
 
     ((void *(*)(void *, void *))fn_80218F80)(self, resource);
     *(void **)self = lbl_8033E248;
     fn_80230C30((f32 *)(self + 0x270), (f32 *)(self + 0x274),
                 *(s32 *)(resource + 8), *(s32 *)(resource + 0xc));
 
-    cvt1.word[0] = 0x43300000;
-    cvt1.word[1] = (u32)*(s32 *)(resource + 0x14) ^ 0x80000000;
-    *(f32 *)(self + 0x278) = (f32)(cvt1.d - lbl_805634B8);
-    *(u8 *)(self + 0x260) = zero;
-    cvt2.word[0] = 0x43300000;
-    cvt2.word[1] = (u32)*(s32 *)(resource + 0x18) ^ 0x80000000;
-    *(f32 *)(self + 0x27c) = (f32)(cvt2.d - lbl_805634B8);
-    *(u8 *)(self + 0x261) = zero;
+    *(f32 *)(self + 0x278) = (f32)*(s32 *)(resource + 0x14);
+    *(volatile u8 *)(self + 0x260) = 0;
+    *(f32 *)(self + 0x27c) = (f32)*(s32 *)(resource + 0x18);
+    *(volatile u8 *)(self + 0x261) = 0;
 
     u32 top = *(u32 *)(resource + 0x9c) >> 31;
     *(u32 *)(self + 0x248) = top;
@@ -5068,7 +5056,7 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
 
     *(s32 *)(self + 0x254) =
         fn_80228F40(*(s32 *)(self + 4), *(s32 *)(self + 8));
-    *(s32 *)(self + 0x258) = zero;
+    *(s32 *)(self + 0x258) = 0;
     *(s32 *)(self + 0x25c) = length;
     *(s32 *)(self + 0x250) = initial;
     s32 flags = *(s32 *)(resource + 0x9c);
@@ -5089,7 +5077,6 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
     }
     return self;
 }
-#pragma scheduling on
 #pragma pop
 extern "C" void *fn_802244C8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
