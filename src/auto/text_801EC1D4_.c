@@ -481,6 +481,8 @@ extern void fn_801F0F78(long, long, void *, float);
 extern float lbl_80558DC4;
 extern float lbl_80562E90;
 extern float __fabsf(float);
+#pragma push
+#pragma use_lmw_stmw off
 void fn_801EDD7C(void *arg0, long arg1) {
     float scale;
     unsigned int *a, *b, *c, *d, *e, *f, *g, *h, *j, *k, *m, *n;
@@ -526,6 +528,7 @@ void fn_801EDD7C(void *arg0, long arg1) {
         i++; offset += 0x6C; entry += 4;
     } while (i < 4);
 }
+#pragma pop
 
 extern float lbl_80562E88, lbl_80562E90, lbl_80562E9C, lbl_80562EC8;
 float fn_802C88E8(void*);
