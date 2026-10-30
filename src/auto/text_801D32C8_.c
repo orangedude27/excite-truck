@@ -219,6 +219,108 @@ void fn_801D3910(void *arg0) {
     lbl_804421D8[i] = arg0;
     *(int *)&lbl_8055E940 = i + 1;
 }
+
+void fn_801D3A1C(void *arg0) {
+    char *self = (char *)arg0;
+    char *sound = *(char **)(self + 0x244);
+    int zeroInt = 0;
+    int minusOne = -1;
+    float zero = lbl_80562AB8;
+    volatile float sp8, spC, sp10, sp14, sp18, sp1C;
+    int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
+
+    *(int *)(self + 0x1EC) = minusOne;
+    *(int *)(self + 0x1F0) = minusOne;
+    *(float *)(self + 0x224) = zero;
+    *(int *)(self + 0x228) = zeroInt;
+    *(int *)(self + 0x22C) = zeroInt;
+    *(int *)(self + 0x23C) = zeroInt;
+    *(int *)(self + 0x24) = *(int *)(self + 0x28);
+    if (sound != 0) {
+        float one = lbl_80562AAC;
+        *(void **)(sound + 0xC) = self + 0x3C;
+        *(void **)(sound + 4) = arg0;
+        *(int *)(sound + 8) = zeroInt;
+        *(int *)(sound + 0x18) = 0x53504852;
+        *(float *)(sound + 0x10) = one;
+        *(float *)(sound + 0x14) = one;
+        *(int *)(sound + 0x20) = 100;
+        *(int *)(sound + 0x1C) = zeroInt;
+        *(void **)sound = lbl_80333B48;
+        *(float *)(sound + 0x24) = one;
+        *(float *)(sound + 0x34) = zero;
+        *(float *)(sound + 0x38) = zero;
+        *(float *)(sound + 0x3C) = zero;
+        *(float *)(sound + 0x40) = zero;
+        *(float *)(sound + 0x44) = zero;
+        *(float *)(sound + 0x48) = zero;
+        *(char *)(sound + 0x4C) = 0;
+        *(float *)(sound + 0x50) = zero;
+        *(float *)(sound + 0x28) = zero;
+        *(float *)(sound + 0x2C) = zero;
+        sp10 = zero;
+        spC = zero;
+        sp8 = zero;
+        *(float *)(sound + 0x30) = zero;
+        if (arg0 != 0)
+            fn_8019EECC(arg0, sound + 0x28);
+    }
+
+    {
+        float zero2 = lbl_80562AB8;
+        float one2 = lbl_80562AAC;
+        float special = lbl_80562ABC;
+        *(float *)(self + 0x220) = zero2;
+        *(int *)(self + 0x24) = zeroInt;
+        *(float *)(self + 0x1F4) = one2;
+        *(float *)(self + 0x1F8) = zero2;
+        *(float *)(self + 0x1FC) = zero2;
+        *(float *)(self + 0x200) = zero2;
+        *(float *)(self + 0x204) = one2;
+        *(float *)(self + 0x208) = zero2;
+        *(float *)(self + 0x20C) = zero2;
+        *(float *)(self + 0x210) = zero2;
+        *(float *)(self + 0x214) = one2;
+        *(float *)(self + 0x218) = zero2;
+        *(float *)(self + 0x21C) = special;
+        *(float *)(self + 0x220) = zero2;
+        sp1C = zero2;
+        sp18 = zero2;
+        sp14 = zero2;
+        *(float *)(self + 0x30) = zero2;
+        *(float *)(self + 0x34) = zero2;
+        *(float *)(self + 0x38) = zero2;
+    }
+    fn_8017A57C(arg0);
+    v0 = *(int *)(self + 0x1F4);
+    v1 = *(int *)(self + 0x1F8);
+    v2 = *(int *)(self + 0x1FC);
+    v3 = *(int *)(self + 0x200);
+    v4 = *(int *)(self + 0x204);
+    v5 = *(int *)(self + 0x208);
+    v6 = *(int *)(self + 0x20C);
+    v7 = *(int *)(self + 0x210);
+    v8 = *(int *)(self + 0x214);
+    v9 = *(int *)(self + 0x218);
+    v10 = *(int *)(self + 0x21C);
+    v11 = *(int *)(self + 0x220);
+    *(int *)(self + 0x3C) = v0;
+    *(int *)(self + 0x40) = v1;
+    *(int *)(self + 0x44) = v2;
+    *(int *)(self + 0x48) = v3;
+    *(int *)(self + 0x4C) = v4;
+    *(int *)(self + 0x50) = v5;
+    *(int *)(self + 0x54) = v6;
+    *(int *)(self + 0x58) = v7;
+    *(int *)(self + 0x5C) = v8;
+    *(int *)(self + 0x60) = v9;
+    *(int *)(self + 0x64) = v10;
+    *(int *)(self + 0x68) = v11;
+    fn_8017A580(arg0);
+    fn_8017B164(arg0);
+}
+
+#pragma scheduling invalid_target
 #pragma scheduling on
 extern void fn_8017A57C(void *);
 extern void fn_8017A580();
