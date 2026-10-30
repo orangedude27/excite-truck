@@ -213,11 +213,13 @@ extern "C" s32 fn_802C49E8(s32);
 extern "C" s32 fn_802C2DD4(s32);
 extern "C" void *fn_802228B0(void *, s32, s32, s32);
 extern "C" void *fn_802226D4(s32);
+#pragma push
+#pragma small_data on
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void *fn_8021203C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     extern int lbl_8033D528[];
     extern char lbl_8033D504[];
-    extern const char lbl_8055B724[], lbl_8055B728[], lbl_8055B720[], lbl_8055B730[];
-    extern const char lbl_8055B738[], lbl_8055B73C[], lbl_8055B744[], lbl_8055B748[];
     extern const char lbl_8033CDA4[];
     struct ObjA { void *vtable; void *value; };
     struct ObjB { void *vtable; void *value; s32 count; s32 divisor; };
@@ -227,7 +229,10 @@ extern "C" void *fn_8021203C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
     void *c;
     if (stricmp(name + 1, lbl_8055B724) == 0) {
         a = (ObjA *)fn_801284F8(8, lbl_8055B728);
-        if (a) { a->vtable = lbl_8033D528; a->value = (void *)fn_802C49E8((s32)arg0); }
+        if (a) {
+            a->vtable = lbl_8033D528;
+            a->value = (void *)fn_802C49E8((s32)arg0);
+        }
         return a;
     }
     if (stricmp(name + 1, lbl_8055B720) == 0) {
@@ -235,26 +240,36 @@ extern "C" void *fn_8021203C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
         if (b) {
             b->vtable = lbl_8033D504;
             if (fn_8012C33C((s32)arg0)) {
-                c = (void *)fn_802C2DD4((s32)arg0); b->value = c;
+                c = (void *)fn_802C2DD4((s32)arg0);
+                b->value = c;
                 b->count = *(s32 *)((char *)c + 12) / arg1;
-            } else { b->value = 0; b->count = 0; }
+            } else {
+                b->value = 0;
+                b->count = 0;
+            }
             b->divisor = arg1;
         }
         return b;
     }
     if (stricmp(name + 1, lbl_8055B738) == 0) {
         c = fn_801284F8(16, lbl_8055B73C);
-        if (c) return fn_802228B0(arg0, arg2, arg3, arg4);
+        if (c)
+            return fn_802228B0(c, (s32)arg0, arg2, arg3);
         return c;
     }
     if (stricmp(name + 1, lbl_8055B744) == 0) {
         c = fn_801284F8(8, lbl_8055B748);
-        if (c) return fn_802226D4((s32)arg0);
+        if (c)
+            return ((void *(*)(void *, s32))fn_802226D4)(c, (s32)arg0);
         return c;
     }
-    ((s32 (*)(const char *, const char *))fn_802E317C)(lbl_8033CDA4, name + 1);
+    ((s32 (*)(const char *, const char *, ...))fn_802E317C)(lbl_8033CDA4, name + 1);
     return 0;
 }
+#pragma use_lmw_stmw on
+#pragma scheduling on
+#pragma small_data off
+#pragma pop
 
 extern "C" s32 fn_80128668(void);
 extern "C" s32 fn_802121D4(s32 arg0, s32 arg1) {
