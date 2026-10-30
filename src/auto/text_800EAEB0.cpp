@@ -555,13 +555,15 @@ extern u8 lbl_80322D60[], lbl_80322DA4[], lbl_8032301C[], lbl_80322FF8[], lbl_80
 #pragma pop
 extern "C" void *MEMAllocFromFrmHeapEx(void *, u32, s32);
 extern "C" u32 MEMGetAllocatableSizeForFrmHeapEx(void *, s32);
+#pragma push
+#pragma use_lmw_stmw off
 void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)(void *, unsigned long, void *), void *user) {
-    void *block;
-    void *list;
-    void *iter;
-    void *link;
+    register void *block;
+    register void *list;
+    register void *link;
+    register const char *file = (const char *)lbl_80322D60;
     if (*(void **)this == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0xA2, (const char *)(lbl_80322D60 + 0x44));
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0xA2, file + 0x44);
     block = MEMAllocFromFrmHeapEx(*(void **)this, ((size + 0x1f) & ~31UL) + 0x20, 0x20);
     if (block == 0)
         return 0;
@@ -577,16 +579,15 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23d, (const char *)lbl_80322F98);
     if (list == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
+    link = (u8 *)list + 0xC;
     if (block == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032304C, 0x233, (const char *)lbl_80323028);
-    link = (u8 *)list + 0xC;
-    iter = (u8 *)list + 8;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(iter, &link, block);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)list + 8, &link, block);
     if (((u32)((u8 *)block + 0x20) & 0x1f) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0xae, (const char *)(lbl_80322D60 + 0x94));
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0xae, file + 0x94);
     return (u8 *)block + 0x20;
 }
-
+#pragma pop
 extern "C" u32 fn_800EC56C(void **arg0) {
     u32 size;
     if (*arg0 == 0) {
@@ -707,20 +708,47 @@ extern const s8 lbl_802F4D90[];
 extern const char lbl_803230A0[], lbl_803230AC[];
 extern const f32 lbl_80561030, lbl_80561034, lbl_80561038;
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
+#pragma push
+#pragma scheduling invalid_target
 extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
-    s32 index; s32 valid=0; s8 value; f32 angle;
-    if(lbl_80561018==*(f32 *)arg0) return lbl_80561018;
-    if(*(u32 *)((u8 *)arg0+0x10)<*(u32 *)((u8 *)arg0+8)) return lbl_80561018;
-    angle=lbl_80561030*(lbl_80561034**(f32 *)((u8 *)arg0+0x14));
-    index=(s32)angle;
-    if(index>=0 && index<0x80) valid=1;
-    if(valid==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803230A0,0x7b,lbl_803230AC,index,0,0x80);
-    if(index<0x20) value=lbl_802F4D90[index];
-    else if(index<0x40) { s32 off=index-0x20; value=lbl_802F4D90[0x20-off]; }
-    else if(index<0x60) value=-lbl_802F4D90[index-0x40];
-    else { s32 off=index-0x60; value=-lbl_802F4D90[0x20-off]; }
-    return ((f32)value/lbl_80561038)**(f32 *)arg0*(f32)*(u8 *)((u8 *)arg0+0xc);
+    f32 zero = lbl_80561018;
+    f32 current = *(f32 *)arg0;
+    s32 index;
+    s32 valid;
+    s8 tableValue;
+    f32 angle;
+    f32 value;
+    f32 currentLevel;
+    u8 level;
+
+    if (zero == current) return zero;
+    if (*(u32 *)((u8 *)arg0 + 0x10) < *(u32 *)((u8 *)arg0 + 8)) return zero;
+
+    valid = 0;
+    angle = lbl_80561030 * (lbl_80561034 * *(f32 *)((u8 *)arg0 + 0x14));
+    index = (s32)angle;
+    if (index >= 0 && index < 0x80) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803230A0, 0x7b, lbl_803230AC, index, 0, 0x80);
+
+    if (index < 0x20) tableValue = lbl_802F4D90[index];
+    else if (index < 0x40) {
+        s32 off = index - 0x20;
+        tableValue = lbl_802F4D90[0x20 - off];
+    } else if (index < 0x60) tableValue = -lbl_802F4D90[index - 0x40];
+    else {
+        s32 off = index - 0x60;
+        tableValue = -lbl_802F4D90[0x20 - off];
+    }
+
+    value = (f32)tableValue / lbl_80561038;
+    level = *(u8 *)((u8 *)arg0 + 0xC);
+    currentLevel = *(f32 *)arg0;
+    value *= currentLevel;
+    value *= (f32)level;
+    return value;
 }
+#pragma scheduling on
+#pragma pop
 
 extern "C" void *fn_800ECAEC(void *arg0) {
     extern void fn_800F26D8(void *);
@@ -1395,13 +1423,13 @@ extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const
     }
     sizeField = (volatile const u16*)(bytes + 6);
     size = *sizeField;
-    if (size < 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)*file, 0x2E, (const char*)(*file + 0x5C));
+    if (size < 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x2E, (const char*)(*file + 0x5C));
     size = *sizeField;
     if (size < 0x100) {
         valid = 0;
         goto check_valid;
     }
-    if (size > 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)*file, 0x34, (const char*)(*file + 0x5C));
+    if (size > 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x34, (const char*)(*file + 0x5C));
     size = *sizeField;
     valid = (~(size & ~0x100u) - ((0x100u - size) >> 1)) >> 31;
 check_valid:
@@ -1512,12 +1540,8 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
         virtual void RemoveTrack(void*);
     };
     register void* player = self;
-    register s32 zero;
     register s32 state;
     register u32 level;
-    register u8* entry;
-    s32 valid;
-    void* seq;
     if (*(u8*)((u8*)player + 0x15) == 0) return;
     level = OSDisableInterrupts();
     if (*(u8*)((u8*)player + 0x17) != 0) {
@@ -1532,9 +1556,11 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
         UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void*)state);
     }
     OSRestoreInterrupts(level);
-    zero = 0;
     state = 0;
-    entry = (u8*)player;
+    register u8* entry = (u8*)player;
+    register s32 zero = 0;
+    s32 valid;
+    void* seq;
     do {
         valid = 0;
         if (state >= 0 && state < 16) valid = 1;
