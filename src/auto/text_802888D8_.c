@@ -1102,7 +1102,7 @@ extern char lbl_80348B7C[], lbl_80348B8C[];
 extern int lbl_8055C88C, lbl_8055C890, lbl_8055C898;
 #pragma cplusplus on
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 int fn_8028A1A4(int out) {
     struct Vec3 { float x; float y; float z; };
     struct Item {
