@@ -250,7 +250,7 @@ void fn_802AE7C0(void) {
 #pragma dont_inline on
       #pragma cplusplus on
     #pragma push
-    #pragma processor 750
+        #pragma processor 750
   extern "C" void fn_802AE7F4(void) {
     struct ETConfigName {
         char text[0xC];
@@ -265,7 +265,7 @@ void fn_802AE7C0(void) {
     register ETConfigPaths *base = (ETConfigPaths *)lbl_8034A020;
     int i;
 
-    lbl_8055F980 = fn_8012C33C((void *)(&base->name));
+    lbl_8055F980 = fn_8012C33C((void *)(base + 0));
     fn_802AE5E0(0x400);
     fn_802BE7F8();
     fn_802B40F8();
