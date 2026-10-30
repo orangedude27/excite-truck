@@ -1,3 +1,4 @@
+#include "math.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void PSVECCrossProduct(void *, void *, void *);
@@ -609,5 +610,72 @@ void fn_801C0E60(float *arg0, float *arg1, float *arg2) {
     arg0[0] = x;
     arg0[1] = y;
     arg0[2] = z;
+}
+
+#pragma push
+#pragma scheduling invalid_target
+void fn_801C0E94(void *arg0, void *arg1) {
+    extern float lbl_805628BC, lbl_8055E460;
+    extern char lbl_80558DC4[];
+    float baseValue = lbl_805628BC;
+    float alpha = lbl_8055E460;
+    float diff = alpha - baseValue;
+    unsigned int offset = *(unsigned int *)((char *)arg0 + 8);
+    unsigned int *dst = (unsigned int *)((char *)arg1 + offset);
+    int i;
+    if ((float)fabs(diff) <= *(float *)lbl_80558DC4) {
+        unsigned int v0 = *(unsigned int *)((char *)arg0 + 0x70);
+        unsigned int v1 = *(unsigned int *)((char *)arg0 + 0x74);
+        dst[0] = v0; dst[1] = v1;
+        v0 = *(unsigned int *)((char *)arg0 + 0x78);
+        v1 = *(unsigned int *)((char *)arg0 + 0x7C);
+        dst[2] = v0; dst[3] = v1;
+        v0 = *(unsigned int *)((char *)arg0 + 0x80);
+        v1 = *(unsigned int *)((char *)arg0 + 0x84);
+        dst[4] = v0; dst[5] = v1;
+        v0 = *(unsigned int *)((char *)arg0 + 0x88);
+        v1 = *(unsigned int *)((char *)arg0 + 0x8C);
+        dst[6] = v0; dst[7] = v1;
+        v0 = *(unsigned int *)((char *)arg0 + 0x90);
+        dst[8] = v0;
+        v0 = *(unsigned int *)((char *)arg0 + 0x94);
+        v1 = *(unsigned int *)((char *)arg0 + 0x98);
+        dst[9] = v0; dst[10] = v1;
+        v0 = *(unsigned int *)((char *)arg0 + 0x9C);
+        dst[11] = v0;
+    } else {
+        float *a = (float *)((char *)arg0 + 0x70);
+        float *b = (float *)((char *)arg0 + 0xA0);
+        float temp[12];
+        float *out = temp;
+        for (i = 0; i < 2; ++i) {
+            out[0] = b[0] + alpha * (a[0] - b[0]);
+            out[1] = b[1] + alpha * (a[1] - b[1]);
+            out[2] = b[2] + alpha * (a[2] - b[2]);
+            out[3] = b[3] + alpha * (a[3] - b[3]);
+            out[4] = b[4] + alpha * (a[4] - b[4]);
+            out[5] = b[5] + alpha * (a[5] - b[5]);
+            a += 6; b += 6; out += 6;
+        }
+        {
+            unsigned int *tempWords = (unsigned int *)temp;
+            unsigned int v0 = tempWords[0], v1 = tempWords[1];
+            dst[0] = v0; dst[1] = v1;
+            v0 = tempWords[2]; v1 = tempWords[3];
+            dst[2] = v0; dst[3] = v1;
+            v0 = tempWords[4]; v1 = tempWords[5];
+            dst[4] = v0; dst[5] = v1;
+            v0 = tempWords[6]; v1 = tempWords[7];
+            dst[6] = v0; dst[7] = v1;
+            v0 = tempWords[8]; v1 = tempWords[9];
+            dst[8] = v0; dst[9] = v1;
+            v0 = tempWords[10]; v1 = tempWords[11];
+            dst[10] = v0; dst[11] = v1;
+        }
+    }
+    *(short *)((char *)arg1 + offset + 0x30) = *(short *)((char *)arg0 + 0x6C);
+    *(unsigned int *)((char *)arg1 + *(unsigned int *)((char *)arg0 + 8) + 0x34) = *(unsigned int *)((char *)arg0 + 0x1F0);
+    *(unsigned int *)((char *)arg1 + *(unsigned int *)((char *)arg0 + 8) + 0x38) = *(unsigned int *)((char *)arg0 + 0x1F4);
+    *(unsigned int *)((char *)arg1 + *(unsigned int *)((char *)arg0 + 8) + 0x3C) = *(unsigned int *)((char *)arg0 + 0x1F8);
 }
 
