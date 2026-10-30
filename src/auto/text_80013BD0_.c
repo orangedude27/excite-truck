@@ -642,7 +642,7 @@ void fn_80015364(void *arg0) {
 }
 extern s32 fn_801EA994(void);
 extern s32 fn_801EA9B0(s32);
-extern void fn_8000FF88(s32, s32, void *, s32, s32, f32, f32, f32);
+extern void fn_8000FF88(s32, s32, void *, s32, s32, f32, f32, f32, ...);
 extern f32 lbl_80560368, lbl_80560384, lbl_805603CC, lbl_805603D0;
 extern u8 lbl_80558BC4[];
 void fn_800154B8(void) {
