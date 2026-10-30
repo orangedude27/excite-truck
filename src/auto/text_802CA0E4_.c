@@ -1146,19 +1146,24 @@ void fn_802CC03C(int **arg0, int *arg1, int arg2) {
     ((void (*)(int **, int, int *))fn_802CBB9C)(arg0, (int)arg0 + 4, arg1);
 }
 
+#pragma scheduling invalid_target
 #pragma optimization_level 2
 int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
+    register int result = 0;
     char *table;
     char *node;
     char *pool;
     char **link;
     char **mergeLink;
+    char **scanLink;
     char *other;
-    int result = 0;
+    char *joined;
+    int pageSize;
+    int mergeCandidate;
 
     node = *(char **)((char *)arg0 + 0x10);
     if (node != 0) {
-        table = (char *)&lbl_8055FCB0 + arg1 * 0x4C;
+        table = (char *)(lbl_8055FCB0 + arg1 * 0x4C);
         *(int *)(node + 4) = *(int *)(table + 0x40);
         *(int *)(node + 8) = arg2;
         *(int *)(node + 0xC) = arg3;
@@ -1182,12 +1187,49 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
                 other = *link;
             } while (other != 0);
         }
+
         mergeLink = (char **)(pool + 8);
         *(char **)(node + 8) = *mergeLink;
         *mergeLink = node;
+        do {
+            scanLink = (char **)(pool + 8);
+            result = 0;
+            other = *scanLink;
+            while (other != 0) {
+                char *joined;
+                int pageSize;
+                joined = *mergeLink;
+                pageSize = *(int *)(pool + 4);
+                mergeCandidate = 1;
+                if (((char *)((unsigned int)joined + pageSize +
+                               *(int *)(joined + 4) + 1) != other) &&
+                    ((char *)((unsigned int)other + pageSize +
+                               *(int *)(other + 4) + 1) != joined))
+                    mergeCandidate = 0;
+                if (mergeCandidate != 0) {
+                    link = mergeLink;
+                    if ((char *)((unsigned int)other + pageSize +
+                                 *(int *)(other + 4) + 1) == joined) {
+                        link = scanLink;
+                        scanLink = mergeLink;
+                    }
+                    joined = *link;
+                    mergeLink = link;
+                    result = 1;
+                    *(int *)(joined + 4) =
+                        (((pageSize + 0x10) & ~pageSize) +
+                         (*(int *)(joined + 4) + *(int *)(*scanLink + 4)));
+                    *scanLink = *(char **)(*scanLink + 8);
+                    scanLink = (char **)(joined + 8);
+                } else {
+                    scanLink = (char **)(other + 8);
+                }
+                other = *scanLink;
+            }
+        } while (result != 0);
         *(int *)(table + 0x44) = 0;
-        ((void (*)(void *, void *))fn_802CB3F8)(table + 4, &lbl_8034BA98);
         result = 1;
+        ((void (*)(void *, void *))fn_802CB3F8)(table + 4, &lbl_8034BA98);
     }
     return result;
 }
