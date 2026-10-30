@@ -175,82 +175,38 @@ s32 fn_80131920(s32 arg0, s32 arg1) {
 extern char lbl_8032B5E0[];
 extern s32 fn_80131234(char *);
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80131960(void *arg0, void *arg1) {
-    volatile u8 *obj;
-    u8 *base;
-    u8 b10, b13, b11, b12, b4, b7, b5, b6, bC, bF, bD, bE, b8, bB, b9, bA;
-    u32 table, word4, word8;
+    u8 *obj = (u8 *)arg0;
+    u32 *words = (u32 *)arg0;
+    u8 *base = (u8 *)arg1;
+    u8 t;
     s32 i, count;
 
-    obj = (volatile u8 *)arg0;
-    base = (u8 *)arg1;
-    b10 = obj[0x10];
-    b13 = obj[0x13];
-    b11 = obj[0x11];
-    b12 = obj[0x12];
-    obj[0x10] = b13;
-    b4 = obj[4];
-    b7 = obj[7];
-    obj[0x13] = b10;
-    b5 = obj[5];
-    b6 = obj[6];
-    obj[0x11] = b12;
-    bC = obj[0xC];
-    bF = obj[0xF];
-    obj[0x12] = b11;
-    bD = obj[0xD];
-    bE = obj[0xE];
-    obj[4] = b7;
-    table = *(u32 *)((u8 *)arg0 + 0x10);
-    obj[7] = b4;
-    b8 = obj[8];
-    bB = obj[0xB];
-    obj[5] = b6;
-    b9 = obj[9];
-    bA = obj[0xA];
-    obj[6] = b5;
-    word4 = *(u32 *)((u8 *)arg0 + 4);
-    *(u32 *)((u8 *)arg0 + 0x14) = 0;
-    *(void **)arg0 = lbl_8032B5E0;
-    *(u32 *)((u8 *)arg0 + 0x10) = table + (u32)base;
-    obj[0xC] = bF;
-    obj[0xF] = bC;
-    obj[0xD] = bE;
-    obj[0xE] = bD;
-    obj[8] = bB;
-    obj[0xB] = b8;
-    obj[9] = bA;
-    obj[0xA] = b9;
+    t = obj[0x10]; obj[0x10] = obj[0x13]; obj[0x13] = t;
+    t = obj[0x11]; obj[0x11] = obj[0x12]; obj[0x12] = t;
+    t = obj[4]; obj[4] = obj[7]; obj[7] = t;
+    t = obj[5]; obj[5] = obj[6]; obj[6] = t;
+    t = obj[0xC]; obj[0xC] = obj[0xF]; obj[0xF] = t;
+    t = obj[0xD]; obj[0xD] = obj[0xE]; obj[0xE] = t;
+    t = obj[8]; obj[8] = obj[0xB]; obj[0xB] = t;
+    t = obj[9]; obj[9] = obj[0xA]; obj[0xA] = t;
 
-    if (word4 != 0)
-        *(u32 *)((u8 *)arg0 + 4) = word4 + (u32)base;
-    word8 = *(u32 *)((u8 *)arg0 + 8);
-    if (word8 != 0)
-        *(u32 *)((u8 *)arg0 + 8) = word8 + (u32)base;
+    words[5] = 0;
+    words[0] = (u32)lbl_8032B5E0;
+    words[4] += (u32)base;
+    if (words[1] != 0)
+        words[1] += (u32)base;
+    if (words[2] != 0)
+        words[2] += (u32)base;
 
-    count = *(s32 *)((u8 *)arg0 + 0xC);
+    count = (s32)words[3];
     for (i = 0; i < count; i++) {
-        volatile u8 *entry;
-        u8 e0, e3, e1, e2, e4, e7, e5, e6;
-
-        entry = (volatile u8 *)(*(u32 *)((u8 *)arg0 + 0x10) + i * 8);
-        e0 = entry[0];
-        e3 = entry[3];
-        entry[0] = e3;
-        entry[3] = e0;
-        e1 = entry[1];
-        e2 = entry[2];
-        entry[1] = e2;
-        entry[2] = e1;
-        e4 = entry[4];
-        e7 = entry[7];
-        entry[4] = e7;
-        entry[7] = e4;
-        e5 = entry[5];
-        e6 = entry[6];
-        entry[5] = e6;
-        entry[6] = e5;
-
+        u8 *entry = (u8 *)(words[4] + i * 8);
+        t = entry[0]; entry[0] = entry[3]; entry[3] = t;
+        t = entry[1]; entry[1] = entry[2]; entry[2] = t;
+        t = entry[4]; entry[4] = entry[7]; entry[7] = t;
+        t = entry[5]; entry[5] = entry[6]; entry[6] = t;
         *(u32 *)entry += (u32)base;
         *(u32 *)(entry + 4) += (u32)base;
         if ((s8)*(u8 *)(base + *(u32 *)(entry + 4)) == 0x7C)
