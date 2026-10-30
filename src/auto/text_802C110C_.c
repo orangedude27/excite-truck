@@ -216,52 +216,95 @@ int fn_802C1500(int arg0, int arg1) {
 extern char lbl_8034AED0[];
 extern f32 lbl_80564E54, lbl_80564E50, lbl_80564E58;
 extern char lbl_8055CFA4[], lbl_8055CFAC[], lbl_8055CFB8[], lbl_8055CFC0[];
+__declspec(section ".sdata") extern char lbl_8055CFA4[];
+__declspec(section ".sdata") extern char lbl_8055CFAC[];
+__declspec(section ".sdata") extern char lbl_8055CFB8[];
+__declspec(section ".sdata") extern char lbl_8055CFC0[];
 extern void fn_801FA7F4(int, f32 *, void *);
-void fn_802C1550(void) {
-    char *entry;
-    int i, j;
+#pragma cplusplus on
+extern "C" void fn_802C1550(void) {
+    struct Dispatch {
+        virtual void u0();
+        virtual void u1();
+        virtual void u2();
+        virtual int getIndex(const char *);
+        virtual void u4();
+        virtual int getCount(const char *);
+        virtual void u6();
+        virtual float getValue(const char *);
+        virtual void u8();
+        virtual void u9();
+        virtual int hasFlag(const char *, int);
+        virtual void u11();
+        virtual void u12();
+        virtual void u13();
+        virtual void u14();
+        virtual void u15();
+        virtual void u16();
+        virtual void u17();
+        virtual void u18();
+        virtual void u19();
+        virtual void u20();
+        virtual Dispatch *find(const char *);
+        virtual char *getName(const char *);
+    };
+    register char *entry = lbl_804C0810;
+    register char *strings = lbl_8034AED0;
+    register int outer = 0;
+    register int zero = 0;
+    register f32 diagonal = lbl_80564E54;
+    register f32 blank = lbl_80564E50;
+    register f32 depth = lbl_80564E58;
     f32 pos[12];
-    entry = (char *)&lbl_804C0810;
-    for (i = 0; i < lbl_8055FB28; i++, entry += 0x60) {
-        void *obj = *(void **)(entry + 0x30);
+
+    while (outer < lbl_8055FB28) {
+        Dispatch *obj = *(Dispatch **)(entry + 0x30);
         int count;
         int index;
         char *name;
-        *(u8 *)(entry + 0x28) = (((int (*)(void *, char *, int))(*(void ***)obj)[0x30 / 4])(obj, lbl_8034AED0 + 0x54, 0) == 0);
-        obj = ((void *(*)(void *, char *))(*(void ***)obj)[0x5c / 4])(obj, lbl_8034AED0 + 0x60);
-        if (obj == 0)
-            continue;
-        *(f32 *)(entry + 0x2c) = ((f32 (*)(void *, char *))(*(void ***)obj)[0x24 / 4])(obj, lbl_8034AED0 + 0x6c);
-        index = ((int (*)(void *, char *))(*(void ***)obj)[0x14 / 4])(obj, lbl_8055CFA4);
-        count = ((int (*)(void *, char *))(*(void ***)obj)[0x1c / 4])(obj, lbl_8055CFAC);
-        *(int *)(entry + 0x38) = count;
-        *(int *)(entry + 0x3c) = 0;
-        *(void **)(entry + 0x34) = (void *)fn_8012850C(count * 4, lbl_8055CFB8);
-        memset(0, 0, count * 4);
-        name = ((char *(*)(void *, char *))(*(void ***)obj)[0x14 / 4])(obj, lbl_8055CFC0);
-        for (j = 0; j < 0x20; j++) {
-            char c = name[j];
-            entry[8 + j] = c;
-            if (c == 0)
-                break;
+        entry[0x28] = obj->hasFlag(strings + 0x54, 0) == 0;
+        obj = obj->find(strings + 0x60);
+        if (obj != 0) {
+            *(f32 *)(entry + 0x2c) = obj->getValue(strings + 0x6c);
+            index = obj->getIndex(lbl_8055CFA4);
+            count = obj->getCount(lbl_8055CFAC);
+            *(int *)(entry + 0x38) = count;
+            *(int *)(entry + 0x3c) = zero;
+            *(void **)(entry + 0x34) = (void *)fn_8012850C(count * 4, lbl_8055CFB8);
+            memset(*(void **)(entry + 0x34), zero, count * 4);
+            name = obj->getName(lbl_8055CFC0);
+            {
+                char *source = name;
+                char *destination = entry + 8;
+                int remaining = 0x20;
+                while (remaining > 0) {
+                    char c = *source++;
+                    *destination++ = c;
+                    remaining--;
+                    if ((signed char)c == 0)
+                        break;
+                }
+                if (remaining == 0)
+                    destination[-1] = zero;
+            }
+            if (count > 0) {
+                int item;
+                for (item = 0; item < count; item++) {
+                    pos[0] = diagonal;
+                    pos[1] = blank; pos[2] = blank;
+                    pos[3] = blank; pos[4] = diagonal;
+                    pos[5] = blank; pos[6] = blank;
+                    pos[7] = blank; pos[8] = diagonal;
+                    pos[9] = blank; pos[10] = depth; pos[11] = blank;
+                    fn_801FA7F4(index, pos, *(void **)(entry + 0x30));
+                }
+            }
         }
-        if (j == 0x20)
-            entry[0x27] = 0;
-        if (count <= 0)
-            continue;
-        for (j = 0; j < count; j++) {
-            pos[0] = lbl_80564E54;
-            pos[1] = lbl_80564E50; pos[2] = lbl_80564E50;
-            pos[3] = lbl_80564E50; pos[4] = lbl_80564E54;
-            pos[5] = lbl_80564E50; pos[6] = lbl_80564E50;
-            pos[7] = lbl_80564E50; pos[8] = lbl_80564E54;
-            pos[9] = lbl_80564E50; pos[11] = lbl_80564E50;
-            pos[10] = lbl_80564E58;
-            fn_801FA7F4(index, pos, *(void **)(entry + 0x30));
-        }
+        entry += 0x60;
+        outer++;
     }
 }
-
+#pragma cplusplus reset
 extern f32 lbl_804C1050[16];
 extern f32 lbl_80564E58;
 extern f32 lbl_80564E70;
@@ -320,12 +363,22 @@ void fn_802C1A08(void) {}
 
 extern void *fn_8017960C(int);
 extern void fn_801796EC(int, void *, int);
+#pragma cplusplus on
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma paired off
-#pragma paired_single off
-#pragma cplusplus on
+#pragma paired_single on
 extern "C" void fn_802C1A0C(void **arg0, int arg1) {
+    struct Dispatch {
+        virtual void unk0();
+        virtual void unk1();
+        virtual void unk2();
+        virtual void unk3();
+        virtual void call18(int);
+        virtual void unk5();
+        virtual void unk6();
+        virtual int call24();
+    };
     struct Params {
         f32 pos[3];
         f32 extra[3];
@@ -335,30 +388,30 @@ extern "C" void fn_802C1A0C(void **arg0, int arg1) {
     };
     struct Params params;
     int current;
+    register char *entry;
     register int index;
-    int *items;
     int *record;
     void *target;
     register f32 delta;
+    f32 value;
+    f32 z;
 
-    {
-        char *entry = lbl_804C0E10;
-        for (index = 0; index < 8; index++, entry += 0x48) {
-            current = ((int (*)(void *))(*(void ***)arg0)[9])(arg0) - lbl_8055CFA0;
-            if (*(int *)(entry + 4) != 0 && *(int *)entry == current)
-                fn_802C1180(entry);
-        }
+    entry = lbl_804C0E10;
+    for (index = 0; index < 8; index++, entry += 0x48) {
+        current = ((Dispatch *)arg0)->call24() - lbl_8055CFA0;
+        if (*(int *)(entry + 4) != 0 && *(int *)entry == current)
+            fn_802C1180(entry);
     }
 
-    index = ((int (*)(void *))(*(void ***)arg0)[9])(arg0) - lbl_8055CFA0;
+    index = ((Dispatch *)arg0)->call24() - lbl_8055CFA0;
     if (index < 0)
         goto done;
     if (index >= lbl_8055FB2C)
         goto done;
 
     record = (int *)fn_802C110C(index);
-    items = (int *)lbl_8055FB30;
-    target = (void *)items[index];
+    entry = (char *)lbl_8055FB30;
+    target = *(void **)(entry + index * 4);
     if (*(f32 *)((char *)target + 0x28) > lbl_80564E70) {
         target = fn_8017960C(arg1);
         params.extra[0] = *(f32 *)((char *)target + 0x118);
@@ -366,33 +419,30 @@ extern "C" void fn_802C1A0C(void **arg0, int arg1) {
         params.extra[2] = *(f32 *)((char *)target + 0x120);
         params.id = *(s16 *)((char *)target + 0x6C);
         delta = lbl_80564E54;
-
         {
             u32 i;
             for (i = 0; i < 8; i++, record++) {
                 if (record[0x40 / 4] >= 0) {
                     volatile f32 *pos = params.pos;
-                    target = (void *)items[index];
-                    pos[0] = *(f32 *)((char *)target + 0x24);
-                    {
-                        f32 y = *(f32 *)((char *)target + 0x28);
-                        pos[1] = y;
-                        y += delta;
-                        pos[2] = *(f32 *)((char *)target + 0x2C);
-                        pos[1] = y;
-                    }
+                    target = *(void **)(entry + index * 4);
+                    value = *(f32 *)((char *)target + 0x24);
+                    pos[0] = value;
+                    value = *(f32 *)((char *)target + 0x28);
+                    pos[1] = value;
+                    value += delta;
+                    z = *(f32 *)((char *)target + 0x2C);
+                    pos[2] = z;
+                    pos[1] = value;
                     params.item = record[0x40 / 4];
                     fn_801796EC(10, &params, 0x20);
                 }
             }
         }
-
-        target = (void *)items[index];
+        target = *(void **)(entry + index * 4);
         *(f32 *)((char *)target + 0x28) += lbl_80564E74;
-        ((void (*)(void *))(*(void ***)arg0)[6])(arg0);
-        ((void (*)(int *, int))fn_802BDFF4)((int *)items[index], 0);
+        ((Dispatch *)arg0)->call18(0);
+        ((void (*)(int *, int))fn_802BDFF4)((int *)*(void **)(entry + index * 4), 0);
     }
-
 done:
     ;
 }
