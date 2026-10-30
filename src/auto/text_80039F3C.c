@@ -740,7 +740,7 @@ int fn_8003B69C(int arg0, void *arg1) {
 }
 
 #pragma scheduling invalid_target
-int fn_8003B81C(void *arg0, int arg1, int arg2, void (*arg3)(int, void *)) {
+int fn_8003B81C(void *arg0, int arg1, int arg2, int arg3) {
     DVDLowContext *base;
     int slot;
     DVDLowContext *p;
