@@ -42,38 +42,47 @@ extern int fn_8029F458(unsigned char *, int);
 extern char lbl_8055ADA0;
 extern char lbl_8055ADA8;
 extern float lbl_80562B50;
+#pragma push
+#pragma scheduling invalid_target
 void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
-    // Fix note: initializes the indexed CollisionSpace record and derives its flag from a returned name string.
-    int index;
+    register unsigned char *name = arg1;
+    register int value = arg0;
+    register int category = arg2;
+    register char *record;
+    register unsigned char *dst;
+    register unsigned char *src;
+    char *space;
+    unsigned int zero[3];
     int count;
-    char *record;
-    unsigned char *src;
-    unsigned char *dst;
-    int handle;
     int i;
+    int entryAddress;
     char *text;
-    int zero = 0;
-    index = *(int *)((char *)lbl_8055E984 + 0x5808);
-    *(int *)((char *)lbl_8055E984 + 0x5808) = index + 1;
-    record = (char *)lbl_8055E984 + index * 0x2C + 8;
-    src = arg1;
-    dst = (unsigned char *)record;
+    unsigned char c;
+    float result;
+
+    space = (char *)lbl_8055E984;
+    i = *(int *)(space + 0x5808);
+    entryAddress = (int)space + i * 0x2C;
+    *(int *)(space + 0x5808) = i + 1;
+    record = (char *)(entryAddress + 8);
+
     count = 0x10;
-    while (--count > 0) {}
-    *(dst - 1) = 0;
+    dst = (unsigned char *)record;
+    src = name;
+    while (--count > 0) {
+    }
+    dst[-1] = 0;
     do {
-        unsigned char c = *src++;
+        c = *src++;
         *dst++ = c;
-        if ((signed char)c == 0)
-            break;
-    } while (1);
-    *(int *)(record + 0x20) = arg0;
-    handle = 0;
+    } while ((signed char)c != 0);
+
+    *(int *)(record + 0x20) = value;
     if (fn_801284F8(0x10, &lbl_8055ADA0) != 0)
-        handle = (int)fn_801D9F28();
-    *(int *)(record + 0x28) = handle;
-    *(int *)(record + 0x24) = fn_801D9CC4(arg2);
+        *(int *)(record + 0x28) = (int)fn_801D9F28();
+    *(int *)(record + 0x24) = fn_801D9CC4(category);
     fn_801D9F84(*(int *)(record + 0x28), *(int *)(record + 0x24));
+
     record[0x19] = 0;
     i = 0;
     for (;;) {
@@ -86,18 +95,22 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
         }
     }
     record[0x18] = record[0x19];
-    if (record[0x19] != 0) {
+    if ((unsigned char)record[0x19] != 0) {
         *(float *)(record + 0x1C) = lbl_80562B50;
         record[0x10] = 0;
     } else {
-        *(int *)(record + 8) = 0;
-        *(int *)(record + 0x10) = 0;
-        *(int *)(record + 0xC) = 0;
-        *(float *)(record + 0x14) = fn_801DD88C(zero, zero, zero) - 0.0f;
+        zero[0] = 0;
+        zero[2] = 0;
+        zero[1] = 0;
+        result = ((float (*)(void))fn_801DD88C)();
+        *(float *)(record + 0x14) = (*(float *)&zero[1]) - result;
+        goto finished;
     }
-    fn_8029F458(arg1, arg0);
+    *(float *)(record + 0x14) = lbl_80562B54;
+finished:
+    fn_8029F458(name, value);
 }
-
+#pragma pop
 extern int fn_801D9FC4(char **, const char *);
 extern void *fn_8012850C(int, void *);
 extern int strcmp(const char *, const char *);
@@ -332,35 +345,60 @@ void fn_801DAEFC(void *arg0) {
 
 extern float lbl_80562B58, lbl_80562B5C;
 extern unsigned char lbl_8055E980;
-extern char lbl_8055ADB4[], lbl_80339318[];
+extern char lbl_8055ADB4;
+extern char lbl_80339318[];
 extern void fn_801DA0EC(int, float);
 extern int fn_801DA294(int, void *, float *, float *);
 extern void fn_8017CFFC(int, void *, float *, float *);
 extern float fn_801EA0E8(float, float);
 extern int fn_801DA648(int);
 extern int fn_801DA688(int);
+#pragma push
+#pragma scheduling invalid_target
 void fn_801DAF68(void *arg0) {
-    unsigned char *entry = (unsigned char *)arg0 + 8;
-    int i;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x5808); i++, entry += 0x2C) {
-        if (entry[0x18] == 0 && entry[0x10] == 0) continue;
-        if (entry[0x18]) fn_801DA0EC(*(int *)(entry+0x28), lbl_80562B58 * *(float *)(entry+0x1C));
-        {
-            float a,b,c,d,e,f; unsigned char scratch[0x30];
-            if (fn_801DA294(*(int *)(entry+0x28), scratch, &a, &d)) {
-                a*=lbl_80562B5C; b*=lbl_80562B5C; c*=lbl_80562B5C;
-                d*=lbl_80562B5C; e*=lbl_80562B5C; f*=lbl_80562B5C;
-                if(entry[0x10]) *(float *)(scratch+0x28)=*(float *)(entry+0x14)+fn_801EA0E8(*(float *)(scratch+0x24),*(float *)(scratch+0x2C));
-                fn_8017CFFC(*(int *)(entry+0x20),scratch,&a,&d);
-            } else if(!lbl_8055E980) {
-                lbl_8055E980=1; fn_802E30C8(lbl_8055ADB4,0,lbl_80339318);
-            }
+    register unsigned char *entry = (unsigned char *)arg0 + 8;
+    register int index = 0;
+    register float scale = lbl_80562B5C;
+    register float rate = lbl_80562B58;
+    register float threshold = lbl_80562B54;
+    float transform[12];
+    float first[3];
+    float second[3];
+
+    for (; index < *(int *)((char *)arg0 + 0x5808); index++, entry += 0x2C) {
+        if (entry[0x18] == 0 && entry[0x10] == 0)
+            continue;
+
+        if (entry[0x18] != 0)
+            fn_801DA0EC(*(int *)(entry + 0x28), rate * *(float *)(entry + 0x1C));
+
+        if (fn_801DA294(*(int *)(entry + 0x28), transform, first, second) != 0) {
+            first[0] *= scale;
+            first[1] *= scale;
+            first[2] *= scale;
+            second[0] *= scale;
+            second[1] *= scale;
+            second[2] *= scale;
+
+            if (entry[0x10] != 0)
+                transform[10] = *(float *)(entry + 0x14) + fn_801EA0E8(transform[9], transform[11]);
+
+            fn_8017CFFC(*(int *)(entry + 0x20), transform, first, second);
+        } else if (lbl_8055E980 == 0) {
+            lbl_8055E980 = 1;
+            ((void (*)(char *, ...))fn_802E30C8)(&lbl_8055ADB4, lbl_80339318);
         }
-        if (*(float *)(entry+0x1C) > lbl_80562B54) {
-            if(fn_801DA688(*(int *)(entry+0x28)) && !entry[0x19]) entry[0x18]=0;
-        } else if(fn_801DA648(*(int *)(entry+0x28))) {
-            if(entry[0x19]) fn_801DA198(*(int *)(entry+0x28),lbl_80562B54); else entry[0x18]=0;
+
+        if (*(float *)(entry + 0x1C) >= threshold) {
+            if (fn_801DA648(*(int *)(entry + 0x28)) != 0) {
+                if (entry[0x19] != 0)
+                    fn_801DA198(*(int *)(entry + 0x28), threshold);
+                else
+                    entry[0x18] = 0;
+            }
+        } else if (fn_801DA688(*(int *)(entry + 0x28)) != 0 && entry[0x19] == 0) {
+            entry[0x18] = 0;
         }
     }
 }
-
+#pragma pop
