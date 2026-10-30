@@ -176,6 +176,47 @@ void fn_802DB9DC(int arg0) {
     }
 }
 
+void fn_802DBA1C(unsigned char arg0) {
+    extern unsigned char lbl_802FAD18[];
+    extern unsigned char lbl_802FAD38[];
+    extern void *lbl_804DB468[];
+    extern void fn_802DEAC4(void);
+    extern void fn_802E0684(void);
+    int first[8];
+    int second[8];
+    int *matrix;
+    int i;
+
+    matrix = (int *)lbl_802FAD18;
+    for (i = 0; i < 8; i++)
+        first[i] = matrix[i];
+    GXLoadTexMtxImm((float *)first, 0x24, 1);
+
+    matrix = (int *)lbl_802FAD38;
+    for (i = 0; i < 8; i++)
+        second[i] = matrix[i];
+    GXLoadTexMtxImm((float *)second, 0x27, 1);
+
+    GXSetAlphaCompare(7, 0, 1, 7, 0);
+    fn_802DB4E4();
+    if (arg0 == 0) {
+        GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, 0);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, 1);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, 2);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, 3);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[3] + 0x24, 4);
+        fn_802DEAC4();
+    } else {
+        GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, 0);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, 1);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x78, 2);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, 3);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, 4);
+        fn_802E0684();
+        GXSetZMode(0, 7, 0);
+    }
+}
+
 #pragma dont_inline reset
 #pragma use_lmw_stmw on
 
