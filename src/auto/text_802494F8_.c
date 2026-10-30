@@ -1,3 +1,4 @@
+extern void *memset(void *, int, unsigned int);
 extern void *lbl_8055F28C;
 static inline int find_sound_entry_inline(int *key) {
     void *table = lbl_8055F28C;
