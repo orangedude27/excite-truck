@@ -320,6 +320,8 @@ void fn_802C1A08(void) {}
 
 extern void *fn_8017960C(int);
 extern void fn_801796EC(int, void *, int);
+#pragma dont_inline fn_802C110C
+#pragma scheduling invalid_target
 void fn_802C1A0C(void **arg0, int arg1) {
     int i;
     char *entry = lbl_804C0E10;
