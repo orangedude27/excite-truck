@@ -25,6 +25,7 @@ extern float lbl_80564D84;
 extern char lbl_8034ACA0[], lbl_8055CF80[];
 extern void *fn_80131808(void *, int, int);
 extern int fn_80131818(void *);
+#pragma dont_inline fn_802BECE4
 extern int fn_802BECE4(const char *, int);
 extern float lbl_80564D7C;
 extern float lbl_80564D80;
