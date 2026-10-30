@@ -580,24 +580,32 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
 #pragma push
 #pragma cplusplus on
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
 extern "C" void *fn_801E8718(int);
 extern "C" float PSVECDotProduct(const float *, const float *);
 extern "C" int fn_801E85A4(void);
 #pragma cplusplus off
-void fn_802A042C(void *obj, Unk802A0794Params *pos) {
+void fn_802A042C(void *arg0, Unk802A0794Params *arg1) {
     struct Entry { unsigned int words[12]; };
     struct Entry copy;
     float vec[6];
-    float bias = lbl_805646C8;
-    float scale = lbl_805646C0;
-    float upper = lbl_805646B4;
-    float lower = lbl_805646BC;
+    float bias, scale, upper, lower;
     float radius2;
-    int i = 0;
-    int offset = 0;
+    void *obj;
+    Unk802A0794Params *pos;
+    int i;
+    int offset;
+
+    lower = lbl_805646BC;
+    obj = arg0;
+    upper = lbl_805646B4;
+    pos = arg1;
+    scale = lbl_805646C0;
+    bias = lbl_805646C8;
+    i = 0;
+    offset = 0;
 
     goto test;
 body:
@@ -642,7 +650,7 @@ body:
             alpha &= ~(alpha >> 31);
             if (alpha >= 255) alpha = 255;
             objectColor = *(unsigned int *)((char *)obj + 0x4C);
-            output = (old & 0x00FF0000) | ((unsigned int)alpha << 24) | (objectColor & 0x0000FFFF);
+            output = (objectColor & 0x00FF0000) | ((unsigned int)alpha << 24) | (objectColor & 0x0000FFFF);
             colors[offset / 4] = output;
         }
         offset += 4;
