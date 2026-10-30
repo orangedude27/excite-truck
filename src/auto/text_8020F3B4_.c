@@ -76,10 +76,10 @@ long fn_8020F400(long arg0, long arg1, long arg2) {
 void fn_8020F444(void) {
     char temp[0x40];
     if ((unsigned char)lbl_8055EEF4 == 0) {
-        if (fn_8012E938(fn_8020F400((long)&lbl_804904D0, (long)temp, 0x40)) != 0) {
-            fn_8020F400((long)&lbl_804904D0, (long)temp, 0x40);
+        if (fn_8012E938(fn_8020F400((long)lbl_804904D0, (long)temp, 0x40)) != 0) {
+            fn_8020F400((long)lbl_804904D0, (long)temp, 0x40);
             fn_8012E81C();
-            fn_802EC294(0, fn_8020F3BC((int)&lbl_804904D0, (int)temp, 0x40));
+            fn_802EC294(0, fn_8020F3BC((int)lbl_804904D0, (int)temp, 0x40));
             fn_802E30C8(lbl_8033C95C, temp);
             lbl_8055EEF4 = 1;
         }
