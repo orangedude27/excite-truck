@@ -100,7 +100,7 @@ extern "C" void fn_802BEDFC(void) {
             lbl_8055FAE0 = style->setScale(strings + 0x44, lbl_8055FAE0);
             lbl_8055FAE4 = fn_802BECE4(style->setProperty(strings + 0x54, (const char *)&lbl_8055CF80), lbl_8055FAE4);
             lbl_8055FAE8 = fn_802BECE4(style->setProperty(strings + 0x68, (const char *)&lbl_8055CF80), lbl_8055FAE8);
-            lbl_8055FAEC = fn_802BECE4(style->setProperty(strings + 0x78, lbl_8055CF80), lbl_8055FAEC);
+            lbl_8055FAEC = fn_802BECE4(style->setProperty(strings + 0x78, (const char *)&lbl_8055CF80), lbl_8055FAEC);
             lbl_8055FAF0 = fn_802BECE4(style->setProperty(strings + 0x90, lbl_8055CF80), lbl_8055FAF0);
             fn_802E30C8(strings + 0xA4, lbl_8055FAE4, lbl_8055FAE8, lbl_8055FAEC, lbl_8055FAF0);
         }
