@@ -665,6 +665,8 @@ extern "C" void* fn_801FE188(void* arg0) {
     return arg0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     register unsigned char a=p[0x2C], b=p[0x2D], c=p[0x2E], d=p[0x2F];
     register unsigned char e=p[0x30], f=p[0x31], g=p[0x32], h=p[0x33];
@@ -688,6 +690,7 @@ extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     p[0x340]=p[0x343];p[0x343]=i2; p[0x341]=p[0x342];p[0x342]=i3;
     p[0x344]=p[0x347];p[0x347]=i4; p[0x345]=p[0x346];p[0x346]=i5;
 }
+#pragma pop
 
 extern "C" void fn_801FE3B8(void *arg0, void *arg1) {
     char *source = (char *)arg1 + 0x2C;
