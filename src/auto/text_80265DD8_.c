@@ -46,6 +46,7 @@ void* fn_80265DD8(void* arg0) {
     return arg0;
 }
 
+#pragma dont_inline on
 void fn_80265E08(void* arg0) {
     float zero = lbl_80563C20;
     *(int*)((char*)arg0 + 0) = 0;
@@ -55,6 +56,7 @@ void fn_80265E08(void* arg0) {
     *(int*)((char*)arg0 + 4) = 0;
     *(int*)((char*)arg0 + 8) = 0;
 }
+#pragma dont_inline reset
 
 void fn_80265E2C(void) {
     #pragma scheduling invalid_target
@@ -426,23 +428,55 @@ extern void PSVECCrossProduct(void*, void*, void*);
 extern double cos(float);
 extern double sin(float);
 void fn_80268BD4(void *out, int arg1, float t, float angle) {
-    float *inp=(float*)arg1;
+    float *inp = (float *)arg1;
     float *b = *(float **)((char *)inp + 0x14);
-    float x,y,z,w,mag,scale,xx,yy,rot,cs,sn;
-    x=inp[2]; y=inp[3]; z=inp[0]; w=inp[1];
-    x += t*(b[2]-x); y += t*(b[3]-y); z += t*(b[0]-z); w += t*(b[1]-w);
-    mag=fn_8002F234(b,x*x+y*y,x*x,y*t,w,z,inp[0],y,x);
-    scale=lbl_80563C2C/mag; xx=x*scale; yy=y*scale;
-    *(float*)((char*)out+0x28)=lbl_80563C20;
-    rot=lbl_80563C8C*inp[10]-lbl_80563C90;
-    cs=yy*rot; sn=-xx*rot;
-    *(float*)((char*)out+0x24)=w+cs; *(float*)((char*)out+0x2c)=inp[1]+sn;
-    fn_801EA140((char*)out+0x24,inp[1],w+cs,cs,rot,-xx,yy,xx);
-    *(float*)((char*)out+0x28)+=lbl_80563C94;
-    cs=cos(angle); sn=sin(angle);
-    *(float*)((char*)out+0xc)=lbl_80563C20; *(float*)((char*)out+0x10)=lbl_80563C2C; *(float*)((char*)out+0x14)=lbl_80563C20;
-    *(float*)((char*)out+0x18)=xx*cs-yy*sn; *(float*)((char*)out+0x1c)=lbl_80563C20; *(float*)((char*)out+0x20)=xx*sn+yy*cs;
-    PSVECCrossProduct((char*)out+0xc,(char*)out+0x18,out);
+    volatile float sp[4];
+    float x;
+    float y;
+    float z;
+    float w;
+    float scale;
+    float xx;
+    float yy;
+    float rotation;
+    float cs;
+    float sn;
+
+    x = inp[2] + t * (b[2] - inp[2]);
+    sp[0] = x;
+    y = inp[3] + t * (b[3] - inp[3]);
+    sp[1] = y;
+    z = inp[0] + t * (b[0] - inp[0]);
+    w = inp[1] + t * (b[1] - inp[1]);
+    sp[2] = z;
+    sp[3] = w;
+
+    scale = lbl_80563C2C /
+        (float)((double (*)(void *, float, float, float, float, float, float, float, float))fn_8002F234)(
+            out, x * x + y * y, x * x, t * (b[1] - inp[1]),
+            z, inp[0], inp[1], y, x);
+    xx = sp[0] * scale;
+    yy = sp[1] * scale;
+
+    *(float *)((char *)out + 0x28) = lbl_80563C20;
+    rotation = lbl_80563C8C * inp[10] - lbl_80563C90;
+    cs = yy * rotation;
+    sn = -xx * rotation;
+    *(float *)((char *)out + 0x24) = sp[2] + cs;
+    *(float *)((char *)out + 0x2C) = sp[3] + sn;
+    fn_801EA140((char *)out + 0x24, sp[3], sp[2] + cs, cs,
+                rotation, sn, yy, xx);
+    *(float *)((char *)out + 0x28) += lbl_80563C94;
+
+    cs = (float)cos(angle);
+    sn = (float)sin(angle);
+    *(float *)((char *)out + 0xC) = lbl_80563C20;
+    *(float *)((char *)out + 0x10) = lbl_80563C2C;
+    *(float *)((char *)out + 0x14) = lbl_80563C20;
+    *(float *)((char *)out + 0x18) = xx * cs - yy * sn;
+    *(float *)((char *)out + 0x1C) = lbl_80563C20;
+    *(float *)((char *)out + 0x20) = xx * sn + yy * cs;
+    PSVECCrossProduct((char *)out + 0xC, (char *)out + 0x18, out);
 }
 
 void fn_80268D94(void) {
