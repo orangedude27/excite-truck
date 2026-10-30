@@ -432,19 +432,21 @@ void fn_802E2E0C(int arg0, int arg1) {
     lbl_804DB7D0[index] = arg1;
 }
 #pragma push
-#pragma scheduling invalid_target
+#pragma optimization_level 2
 void fn_802E2E38(int arg0) {
     extern char lbl_8034CCE0[];
     extern int lbl_804DB790[], lbl_804DB7D0[], lbl_8055FF00;
     extern int fn_80039840(void), fn_802D9BF0(void), fn_802D9C04(void), fn_8005EE7C(void);
     extern void fn_800527CC(int), fn_8005ED8C(void), OSReturnToMenu(void), OSShutdownSystem(void);
-    int (*callback)(int, int);
-    register int i;
     register char *text = lbl_8034CCE0;
+    int (*callback)(int, int);
+    int *cursor;
+    register int i;
 
     fn_802E30C8(text + 0xB8);
-    for (i = 0; i < lbl_8055FF00; i++) {
-        callback = (int (*)(int, int))lbl_804DB790[i];
+    cursor = lbl_804DB790;
+    for (i = 0; i < lbl_8055FF00; i++, cursor++) {
+        callback = (int (*)(int, int))*cursor;
         if (callback(0, arg0) == 1) {
             fn_802E30C8(text + 0xCC, lbl_804DB7D0[i]);
             return;
