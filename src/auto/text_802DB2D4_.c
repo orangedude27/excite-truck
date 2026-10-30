@@ -1,5 +1,7 @@
 #include "revolution/GX/GXHardware.h"
 extern void *lbl_8055FEB4;
+extern unsigned char lbl_8055FEB0, lbl_8055FEB9, lbl_8055FEBB, lbl_8055FD24;
+extern unsigned char lbl_804DB480[];
 extern void fn_802D0610(int);
 extern void fn_802D68C4(int, int, int, int);
 extern void GXSetZMode(int, int, int);
