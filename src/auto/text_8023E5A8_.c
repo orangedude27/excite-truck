@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void fn_80236914(void);
+extern int fn_802146BC(void *, int, int, int);
 extern int lbl_804987E0[5];
 extern unsigned char lbl_8055BAC0, lbl_8055BABC, lbl_8055BAB8, lbl_8055BC98, lbl_8055BCA0;
 extern unsigned char lbl_802FA280[];
@@ -427,7 +428,7 @@ int fn_8023F2C4(void) {
     volatile int values[55];
     register int pC = (int)(lbl_80341CC8 + 0x3E8);
     volatile int *config = (volatile int *)lbl_804987E0;
-    volatile int *source = (volatile int *)lbl_802FA2D0;
+    volatile int *input = (volatile int *)lbl_802FA2D0;
     int config0, config1, config2, config3, config4;
     int arg0, arg1, arg2, arg3, arg4;
     values[0] = (int)&lbl_8055B860;
@@ -471,16 +472,16 @@ int fn_8023F2C4(void) {
     values[38] = 4;
     values[39] = 0;
     values[41] = 3;
-    config0 = *config++;
-    config1 = *config++;
-    config2 = *config++;
-    config3 = *config++;
-    config4 = *config;
-    arg0 = *source++;
-    arg1 = *source++;
-    arg2 = *source++;
-    arg3 = *source++;
-    arg4 = *source;
+    config0 = config[0];
+    config1 = config[1];
+    config2 = config[2];
+    config3 = config[3];
+    config4 = config[4];
+    arg0 = input[0];
+    arg1 = input[1];
+    arg2 = input[2];
+    arg3 = input[3];
+    arg4 = input[4];
     values[40] = (int)&lbl_8055BD08;
     values[42] = (int)&lbl_8055BD20;
     values[43] = 4;
