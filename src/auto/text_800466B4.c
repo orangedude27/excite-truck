@@ -109,7 +109,7 @@ s32 select_2obj_first(void *arg0) {
                     temp[0] = c0;
                     temp[1] = c1;
                     if (v <= lbl_8055D9B0 || v >= lbl_80558EB8)
-                        continue;
+                        goto skip_score;
                     score = *(f32 *)(obj + 0x3C8) * c0 + *(f32 *)(obj + 0x3CC) * c1;
                     if (score < threshold) {
                         score = -score;
@@ -124,6 +124,7 @@ s32 select_2obj_first(void *arg0) {
                         bestB = b;
                     }
                 }
+            skip_score:
                 b += 0xC;
             } while (b <= bEnd);
         }
