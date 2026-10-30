@@ -5,7 +5,7 @@
 extern void *fn_80131808(void *);
 extern void fn_80131818(void *);
 extern void *fn_8012850C(s32, const char *);
-extern void *fn_8002F37C(void *, ...);
+extern void *fn_8002F37C(void *, void (*)(void), void *, s32, s32);
 extern void *fn_802CE3A4(s32, s32, s32);
 extern s32 fn_802CE630(void *, const char *, s32);
 extern void fn_802E30C8(const char *);
@@ -111,11 +111,11 @@ void *fn_802023C8(void) { return lbl_80488964; }
 void fn_802023D4(void) {
     register char *config;
     register char *state;
-    register s32 count;
     register void *manager;
     register void *interface;
-    register s32 i;
+    register s32 count;
     s32 offset;
+    register s32 i;
     s32 *entry;
     char name1[32];
     char name2[32];
@@ -131,10 +131,10 @@ void fn_802023D4(void) {
     lbl_8055ECC0 = count;
     if (count > 0) {
         buffer = fn_8012850C((count << 4) + 0x10, config + 0x1C);
-        lbl_8055ECC4 = (s32)fn_8002F37C(buffer, fn_802025D4, NULL, 0x10, count);
+        lbl_8055ECC4 = (s32)fn_8002F37C(buffer, fn_802025D4, NULL, 0x10, lbl_8055ECC0);
         lbl_8055ECC8 = (s32)fn_802CE3A4(lbl_8055ECC0, 0x20, 0x20000);
-        i = 0;
         offset = 0;
+        i = 0;
         while (i < lbl_8055ECC0) {
             entry = (s32 *)((char *)lbl_8055ECC4 + offset);
             sprintf(name1, (const char *)&lbl_8055B420, i);
