@@ -62,9 +62,9 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_,
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_801AFDCC(void *arg0, void *arg1) {
-    // Fix note: keep each stack float as a separate local before copying the vector into the effect.
+    // Fix note: reverse stack-local declarations so each temporary lands at its target frame offset.
     struct Object {
         void *vtable; void *owner; s32 field8; void *fieldC;
         f32 field10; f32 field14; s32 field18; s32 field1C; s32 field20;
@@ -72,49 +72,57 @@ void fn_801AFDCC(void *arg0, void *arg1) {
         f32 field34; f32 field38; f32 field3C; f32 field40;
         f32 field44; f32 field48; u8 field4C; u8 pad4D[3]; f32 field50;
     };
-    volatile f32 stack8;
-    volatile f32 stackC;
-    volatile f32 stack10;
-    volatile f32 stack14;
-    volatile f32 stack18;
     volatile f32 stack1C;
-    f32 temp_f29;
-    f32 temp_f30;
+    volatile f32 stack18;
+    volatile f32 stack14;
+    volatile f32 stack10;
+    volatile f32 stackC;
+    volatile f32 stack8;
     f32 temp_f31;
+    f32 temp_f30;
+    f32 temp_f29;
+    f32 temp_f0;
     f32 temp_f2;
+    f32 temp_f3;
     f32 temp_f4;
     f32 temp_f5;
-    f32 square;
     f32 zero;
+    f32 special;
     struct Object *allocated;
     s32 index;
 
     fn_8017B0F8();
-    temp_f4 = *(f32 *)((u8 *)arg1 + 0x20);
-    temp_f2 = *(f32 *)((u8 *)arg1 + 0x18);
-    temp_f5 = (lbl_80562580 * *(f32 *)((u8 *)arg1 + 0x1C)) / lbl_8056257C;
-    temp_f29 = *(f32 *)((u8 *)arg1 + 0x24);
-    square = temp_f4 * temp_f4;
-    temp_f31 = lbl_8056257C * temp_f2;
-    temp_f30 = temp_f5 * square;
+    temp_f2 = *(volatile f32 *)&lbl_80562580;
+    temp_f0 = *(volatile f32 *)((u8 *)arg1 + 0x1C);
+    zero = *(volatile f32 *)&lbl_80562578;
+    temp_f0 = temp_f2 * temp_f0;
+    temp_f3 = *(volatile f32 *)&lbl_8056257C;
+    temp_f4 = *(volatile f32 *)((u8 *)arg1 + 0x20);
+    temp_f2 = *(volatile f32 *)((u8 *)arg1 + 0x18);
+    temp_f5 = temp_f0 / temp_f3;
+    temp_f29 = *(volatile f32 *)((u8 *)arg1 + 0x24);
+    special = *(volatile f32 *)&lbl_80562584;
 
-    zero = lbl_80562578;
     stack14 = zero;
     stack18 = zero;
     stack1C = zero;
     stack8 = zero;
-    stackC = lbl_80562584;
+    stackC = special;
     stack10 = zero;
 
+    temp_f4 = temp_f4 * temp_f4;
+    temp_f31 = temp_f3 * temp_f2;
+    temp_f30 = temp_f5 * temp_f4;
+
     *(f32 *)((u8 *)arg0 + 0x60) = zero;
-    *(f32 *)((u8 *)arg0 + 0x64) = lbl_80562584;
+    *(f32 *)((u8 *)arg0 + 0x64) = special;
     *(f32 *)((u8 *)arg0 + 0x68) = zero;
     ((void (*)(void *, f32, f32, f32, f32, f32))fn_8017A580)(
-        arg0, zero, temp_f2, lbl_8056257C, square, temp_f5);
+        arg0, zero, temp_f2, temp_f3, temp_f4, temp_f5);
 
     allocated = (struct Object *)fn_801284F8(0x54, lbl_803359F0);
     if (allocated != NULL) {
-        zero = lbl_80562578;
+        special = *(volatile f32 *)&lbl_80562578;
         allocated->fieldC = (u8 *)arg0 + 0x3C;
         allocated->owner = arg0;
         allocated->field8 = 0;
@@ -125,14 +133,14 @@ void fn_801AFDCC(void *arg0, void *arg1) {
         allocated->field1C = 0;
         allocated->vtable = lbl_80333B48;
         allocated->field24 = temp_f31;
-        allocated->field34 = zero;
-        allocated->field38 = zero;
-        allocated->field3C = zero;
-        allocated->field40 = zero;
-        allocated->field44 = zero;
-        allocated->field48 = zero;
+        allocated->field34 = special;
+        allocated->field38 = special;
+        allocated->field3C = special;
+        allocated->field40 = special;
+        allocated->field44 = special;
+        allocated->field48 = special;
         allocated->field4C = 0;
-        allocated->field50 = zero;
+        allocated->field50 = special;
         allocated->field28 = stack14;
         allocated->field2C = stack18;
         allocated->field30 = stack1C;
@@ -140,9 +148,9 @@ void fn_801AFDCC(void *arg0, void *arg1) {
         if (arg0 != NULL) {
             fn_8019EECC(arg0, &allocated->field28);
             fn_80179F94(arg0, allocated);
-            zero = lbl_80562578;
+            special = *(volatile f32 *)&lbl_80562578;
             *(u8 *)((u8 *)arg0 + 0x1E8) = 1;
-            *(f32 *)((u8 *)arg0 + 0x1EC) = zero;
+            *(f32 *)((u8 *)arg0 + 0x1EC) = special;
             index = *(s32 *)(void *)&lbl_8055E650;
             ((void **)lbl_80435BA8)[index] = arg0;
             *(s32 *)(void *)&lbl_8055E650 = index + 1;
