@@ -1,4 +1,5 @@
 #include <math.h>
+extern float PSVECMag(float *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -272,23 +273,58 @@ void fn_801E41D8(void *arg0, void *arg1, int arg2, float farg0) {
     fn_801E4040(arg0, arg1, arg2, arg2, farg0);
 }
 
-#pragma dont_inline fn_801E41D8
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_801E43BC(void *arg0, float scale, float alpha) {
+    typedef void (*LineCall)(void *, void *, int, float);
     float p[3];
-    float *v = (float *)arg0;
-    p[0] = v[9] + v[0] * scale;
-    p[1] = v[10] + v[1] * scale;
-    p[2] = v[11] + v[2] * scale;
-    fn_801E41D8((char *)arg0 + 0x24, p, 0xFFFF0000, alpha);
-    p[0] = v[9] + v[3] * scale;
-    p[1] = v[10] + v[4] * scale;
-    p[2] = v[11] + v[5] * scale;
-    fn_801E41D8((char *)arg0 + 0x24, p, 0xFF00FF00, alpha);
-    p[0] = v[9] + v[6] * scale;
-    p[1] = v[10] + v[7] * scale;
-    p[2] = v[11] + v[8] * scale;
-    fn_801E41D8((char *)arg0 + 0x24, p, 0xFF0000FF, alpha);
+    register float *base = (float *)arg0;
+    register float x, y, z, vx, vy, vz;
+
+    vx = base[0];
+    vz = base[2];
+    x = vx * scale;
+    vy = base[1];
+    y = vy * scale;
+    vx = base[9];
+    vy = base[10];
+    z = vz * scale;
+    vz = base[11];
+    p[0] = vx + x;
+    p[1] = vy + y;
+    p[2] = vz + z;
+    ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFFFF0000, alpha);
+
+    vx = base[3];
+    vz = base[5];
+    x = vx * scale;
+    vy = base[4];
+    y = vy * scale;
+    vx = base[9];
+    vy = base[10];
+    z = vz * scale;
+    vz = base[11];
+    p[0] = vx + x;
+    p[1] = vy + y;
+    p[2] = vz + z;
+    ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFF00FF00, alpha);
+
+    vx = base[6];
+    vz = base[8];
+    x = vx * scale;
+    vy = base[7];
+    y = vy * scale;
+    vx = base[9];
+    vy = base[10];
+    z = vz * scale;
+    vz = base[11];
+    p[0] = vx + x;
+    p[1] = vy + y;
+    p[2] = vz + z;
+    ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFF0000FF, alpha);
 }
+#pragma pop
 extern void fn_801E370C();
 #pragma push
 #pragma processor 750
