@@ -528,6 +528,48 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     *(float*)((char*)arg0 + 0x20) = m20;
     *(float*)((char*)arg0 + 0x2C) = r2;
 }
+
+extern "C" void fn_801FD3F0(void* arg0, float farg0) {
+    char* obj = (char*)arg0;
+    char** track_ref = *(char***)(obj + 4);
+    char* track = *track_ref;
+    float one = lbl_80563030;
+    float old_pos = *(float*)(obj + 0x40);
+    float pos = old_pos + farg0;
+    int index = *(int*)(obj + 0x3C);
+    int count = *(int*)(track + 0x6D0);
+    char* node = track + 0x10 + ((count + index) % count) * 0x24;
+    float length = *(float*)(node + 0x20);
+    float step = length * pos;
+    if (step < one) {
+        *(float*)(obj + 0x40) = pos;
+    } else {
+        step -= one;
+        *(float*)(obj + 0x40) = old_pos + (farg0 - one / length);
+        index = (index + 1) % count;
+        *(int*)(obj + 0x3C) = index;
+        *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
+        *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
+        *(float*)(obj + 0x4C) = *(float*)(obj + 0x5C);
+        *(float*)(obj + 0x50) = *(float*)(obj + 0x60);
+        *(float*)(obj + 0x64) = *(float*)(obj + 0x68);
+        char* end_node = track + 0x10 + ((count + index + 1) % count) * 0x24;
+        *(float*)(obj + 0x54) = *(float*)(end_node + 0x1C);
+        *(float*)(obj + 0x58) = *(float*)(end_node + 0x20);
+        *(float*)(obj + 0x5C) = *(float*)(end_node + 0x24);
+        *(float*)(obj + 0x60) = *(float*)(end_node + 0x28);
+        *(float*)(obj + 0x68) = *(float*)(end_node + 0x2C);
+    }
+    char* prev = track + 0x10 + ((count + index - 1) % count) * 0x24;
+    char* cur = track + 0x10 + ((count + index) % count) * 0x24;
+    char* next = track + 0x10 + ((count + index + 1) % count) * 0x24;
+    char* next2 = track + 0x10 + ((count + index + 2) % count) * 0x24;
+    fn_801FD144(arg0, prev, cur, next, next2, step);
+    fn_801FD320(arg0, step);
+    float a = *(float*)(obj + 0x64);
+    *(float*)(obj + 0x6C) = a + step * (*(float*)(obj + 0x68) - a);
+}
+
 #pragma scheduling on
 extern "C" void fn_801FD5E8(void* arg0, float farg0) {
     char* obj = (char*)arg0;
@@ -1485,4 +1527,4 @@ struct Obj_801FEF90 {
     virtual void v4();
     virtual void v5(int);
 };
-
+#pragma paired off
