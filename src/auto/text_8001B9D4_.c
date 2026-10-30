@@ -428,17 +428,26 @@ extern const char lbl_802FD750[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma scheduling on
 s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     struct List { void *data; s32 count; s32 capacity; };
     struct TextBuffer { char *data; s32 size; };
+    struct Record {
+        s32 key;
+        char *name;
+        u8 pad08[8];
+        u8 state10;
+        u8 pad11[11];
+        u8 state1c;
+        u8 pad1d[11];
+        u8 state28;
+    };
     struct List *list = (struct List *)lbl_80358658[arg0];
     struct TextBuffer *descriptor;
     s32 count = list->count;
     char *input = (char *)arg2;
     char *records;
     s32 offset;
-    char *entry;
+    struct Record *entry;
     char *p;
     char *out;
     s32 room;
@@ -453,8 +462,8 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     records = (char *)list->data;
     offset = count * 0x2C;
     list->count = count + 1;
-    entry = records + offset;
-    *(s32 *)entry = arg1;
+    entry = (struct Record *)(records + offset);
+    entry->key = arg1;
 
     descriptor = (struct TextBuffer *)lbl_8055D5D0;
     ((u8 *)descriptor)[8] = 0;
@@ -482,10 +491,10 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
         }
     }
 
-    *(char **)(entry + 4) = p;
-    *(u8 *)(entry + 0x10) = 0;
-    *(u8 *)(entry + 0x1C) = 0;
-    *(u8 *)(entry + 0x28) = 0;
+    entry->name = p;
+    entry->state10 = 0;
+    entry->state1c = 0;
+    entry->state28 = 0;
     *(s32 *)(lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E00) = list->count;
     return (s32)entry;
 }
@@ -624,45 +633,50 @@ void fn_8001CAF8(void) {
 extern s32 *fn_8001C4E0(s32);
 extern int stricmp(const char *, const char *);
 extern char lbl_802FD6D8[];
-extern char lbl_80558CD8[];
+extern char lbl_80558CD8;
 extern void *lbl_8055D5D4;
 extern void *lbl_8055E050;
+#pragma dont_inline on
 s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
     s32 *archive;
     void *node;
     s32 index;
+    char *strings;
     void **vtable;
-    s32 type;
     f32 value;
+    /* Fix note: keep the string base live from entry and reload the manager for each node lookup. */
     if (name == 0) return 0;
+    strings = lbl_802FD6D8;
     archive = fn_8001C4E0(flags);
     if (archive[1] == 0) return 0;
     index = 0;
-    do {
-        node = ((void *(*)(void *, s32))((void **)*(void **)lbl_8055D5D4)[3])(lbl_8055D5D4, index);
-        if (node == 0) break;
+    node = ((void *(*)(void *, s32))((void **)*(void **)lbl_8055D5D4)[3])(lbl_8055D5D4, index);
+    while (node != 0) {
         vtable = *(void ***)node;
-        if (stricmp(((const char *(*)(void *))vtable[2])(node), lbl_802FD6D8 + 0x39C) == 0 &&
-            stricmp(((const char *(*)(void *, const char *, void *))vtable[6])(node, lbl_802FD6D8 + 0x3AC, lbl_80558CD8), name) == 0 &&
+        if (stricmp(((const char *(*)(void *))vtable[2])(node), strings + 0x39C) == 0 &&
+            stricmp(((const char *(*)(void *, const char *, void *))vtable[6])(node, strings + 0x3AC, &lbl_80558CD8), name) == 0 &&
             ((s32 (*)(void *, s32))vtable[3])(node, archive[1]) != 0) break;
         index++;
-    } while (1);
+        node = ((void *(*)(void *, s32))((void **)*(void **)lbl_8055D5D4)[3])(lbl_8055D5D4, index);
+    }
     if (node == 0)
-        node = ((void *(*)(void *, const char *))((void **)*(void **)lbl_8055D5D4)[2])(lbl_8055D5D4, lbl_802FD6D8 + 0x3BC);
+        node = ((void *(*)(void *, const char *))((void **)*(void **)lbl_8055D5D4)[2])(lbl_8055D5D4, strings + 0x3BC);
     if (out != 0) {
-        type = flags & 0x300;
-        if (type == 0x200) *(s32 *)out = ((s32 (*)(void *, s32))((void **)*(void **)node)[7])(node, archive[1]);
-        else if (type == 0x100) {
+        switch (flags & 0x300) {
+        case 0x200:
+            *(s32 *)out = ((s32 (*)(void *, s32))((void **)*(void **)node)[7])(node, archive[1]);
+            break;
+        case 0x100:
             value = ((f32 (*)(void *, s32))((void **)*(void **)node)[9])(node, archive[1]);
-            if ((flags & 0x3F800) == 0x800) value /= *(f32 *)((char *)lbl_8055E050 + 0x10);
+            if ((flags & 0x3F800) == 0x800)
+                value /= *(f32 *)((char *)lbl_8055E050 + 0x10);
             *(f32 *)out = value;
+            break;
         }
     }
     return 1;
 }
-
-#pragma scheduling invalid_target
-#pragma dont_inline fn_8001C4D8
+#pragma dont_inline reset
 void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
     fn_8001C4D8();
     if (((s32 (*)(s32, s32, s32))fn_8001C2CC)(arg0, arg1, arg2) == 0) {
