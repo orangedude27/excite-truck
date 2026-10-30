@@ -263,7 +263,6 @@ extern float lbl_80564494, lbl_805644A4, lbl_805644A8, lbl_805644AC;
 extern double lbl_805644B0;
 extern float lbl_805644B8, lbl_805644BC;
 extern double __fabs(double);
-#pragma scheduling invalid_target
 void fn_80291C7C(void *arg0, int arg1) {
     struct Vec3 { float x, y, z; };
     struct Vec3 pos = *(struct Vec3 *)arg0;
