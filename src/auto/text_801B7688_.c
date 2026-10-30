@@ -1,8 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-#pragma dont_inline fn_801B79AC
-float fn_801B79AC(void);
 extern float lbl_80562708;
 extern float lbl_80562704;
 extern float lbl_80562738;
