@@ -1,6 +1,6 @@
 #include "revolution/MTX/mtxtypes.h"
 #include "math.h"
-extern float lbl_80558DC4;
+extern char lbl_80558DC4[];
 extern float lbl_805649F4, lbl_80564A00, lbl_80564A34, lbl_80564A68, lbl_80564A8C, lbl_80564A98, lbl_80564A9C, lbl_80564AA8;
 extern const double lbl_80564A40;
 extern double lbl_80564AA0;
