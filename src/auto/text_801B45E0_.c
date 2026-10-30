@@ -29,6 +29,23 @@ struct F801B4AC4 {
     virtual void f4() = 0;
     virtual void f5(int) = 0;
 };
+struct F801B50B4 {
+    virtual void f0() = 0;
+    virtual void f1() = 0;
+    virtual void f2() = 0;
+    virtual void f3() = 0;
+    virtual void f4() = 0;
+    virtual void f5() = 0;
+    virtual void f6() = 0;
+    virtual void f7() = 0;
+    virtual void f8() = 0;
+    virtual void f9() = 0;
+    virtual void f10(unsigned char *, int, int *, int *, float) = 0;
+    virtual void f11() = 0;
+    virtual void f12() = 0;
+    virtual void f13() = 0;
+    virtual int f14() = 0;
+};
 }
 #pragma cplusplus off
 #pragma push
@@ -345,6 +362,72 @@ void fn_801B5060(int arg0, int arg1, float arg2) {
  void *studio = __AXGetStudio_80178C90();
  fn_801B4D80(studio, arg0, arg1, arg2);
 }
+
+#pragma push
+#pragma dont_inline on
+void fn_801B50B4(void **arg0, int arg1) {
+    void *state;
+    unsigned char *buffer;
+    unsigned char *initialBuffer;
+    int offset;
+    float rate;
+    int i;
+
+    state = lbl_8055E6D8;
+    if (state == 0)
+        return;
+    if (fn_801B4B44((char *)state) == 0)
+        return;
+
+    if (fn_801B49D4(state, (void **)&buffer, (void **)&offset, &rate, lbl_8055E3C4) != 0) {
+        int length;
+        int extra;
+
+        initialBuffer = buffer;
+        fn_801B5060((int)buffer, offset, rate);
+        buffer += 0xC;
+        offset += 0xC;
+
+        for (i = 0; i < arg1; i++) {
+            void *object = *arg0;
+            if (object != 0) {
+                void **vtable = *(void ***)object;
+                if (((int (*)(void *))vtable[16])(object) != 0) {
+                    length = -1;
+                    extra = -1;
+                    vtable = *(void ***)object;
+                    ((void (*)(void *, unsigned char *, int, int *, int *, float))vtable[12])(
+                        object, buffer, offset, &length, &extra, rate);
+                    buffer += length;
+                    offset += extra;
+                }
+            }
+            arg0++;
+        }
+
+        if (lbl_8055E6DC != (char *)initialBuffer) {
+            for (;;) {
+                unsigned int code = *buffer;
+                int (*callback)(unsigned char *, int);
+                void *tableEntry;
+
+                if (code >= 0x10)
+                    break;
+                tableEntry = (char *)lbl_80435C70 + ((code * 4) & 0x3FC);
+                callback = *(int (**)(unsigned char *, int))((char *)tableEntry + 0x208);
+                if (callback == 0)
+                    break;
+                buffer += callback(buffer + 1, lbl_8055E6D4) + 1;
+            }
+        }
+        lbl_8055E6DC = (char *)initialBuffer;
+        fn_801B4AC4((int)state, lbl_8055E3C4);
+    }
+
+    if (fn_801B4C1C((int)state, lbl_8055E3C4) != 0)
+        __AXDSPInitCallback_801769E0();
+}
+#pragma pop
 
 char fn_801B526C(void) {
     return lbl_8055E6D0;
