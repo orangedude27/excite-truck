@@ -175,19 +175,28 @@ void ClearArena(void) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void ClearMEM2Arena(void) {
     unsigned int reset = OSGetResetCode();
-    unsigned int start;
-    unsigned int size;
+    register unsigned int base;
+    register unsigned int flush;
+    register unsigned int size;
 
     if ((reset >> 31) == 0) {
         size = (unsigned int)OSGetMEM2ArenaHi();
         size -= (unsigned int)OSGetMEM2ArenaLo();
-        start = (unsigned int)OSGetMEM2ArenaLo();
-        if (size > 0x40000)
-            start += size - 0x40000;
-        DCZeroRange((void *)start, size);
-        DCFlushRange(start, 0x40000);
+        base = (unsigned int)OSGetMEM2ArenaLo();
+        if (size <= 0x40000)
+            goto clear0_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear0_join;
+    clear0_small:
+        flush = base;
+    clear0_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
         return;
     }
 
@@ -195,49 +204,70 @@ void ClearMEM2Arena(void) {
         (__OSRebootParams[3] & 0x30000000) != 0x10000000) {
         size = (unsigned int)OSGetMEM2ArenaHi();
         size -= (unsigned int)OSGetMEM2ArenaLo();
-        start = (unsigned int)OSGetMEM2ArenaLo();
-        if (size > 0x40000)
-            start += size - 0x40000;
-        DCZeroRange((void *)start, size);
-        DCFlushRange(start, 0x40000);
+        base = (unsigned int)OSGetMEM2ArenaLo();
+        if (size <= 0x40000)
+            goto clear1_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear1_join;
+    clear1_small:
+        flush = base;
+    clear1_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
         return;
     }
 
-    start = (unsigned int)OSGetMEM2ArenaLo();
-    if (start >= __OSRebootParams[3])
+    if ((unsigned int)OSGetMEM2ArenaLo() >= __OSRebootParams[3])
         return;
 
     if ((unsigned int)OSGetMEM2ArenaHi() <= __OSRebootParams[3]) {
         size = (unsigned int)OSGetMEM2ArenaHi();
         size -= (unsigned int)OSGetMEM2ArenaLo();
-        start = (unsigned int)OSGetMEM2ArenaLo();
-        if (size > 0x40000)
-            start += size - 0x40000;
-        DCZeroRange((void *)start, size);
-        DCFlushRange(start, 0x40000);
+        base = (unsigned int)OSGetMEM2ArenaLo();
+        if (size <= 0x40000)
+            goto clear2_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear2_join;
+    clear2_small:
+        flush = base;
+    clear2_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
         return;
     }
 
-    start = (unsigned int)OSGetMEM2ArenaLo();
-    size = __OSRebootParams[3] - start;
-    start = (unsigned int)OSGetMEM2ArenaLo();
-    if (size > 0x40000)
-        start += size - 0x40000;
-    DCZeroRange((void *)start, size);
-    DCFlushRange(start, 0x40000);
+    size = __OSRebootParams[3] - (unsigned int)OSGetMEM2ArenaLo();
+    base = (unsigned int)OSGetMEM2ArenaLo();
+    if (size <= 0x40000)
+        goto clear3_small;
+    flush = size - 0x40000;
+    flush = base + flush;
+    goto clear3_join;
+clear3_small:
+    flush = base;
+clear3_join:
+    DCZeroRange((void *)base, size);
+    DCFlushRange(flush, 0x40000);
 
-    start = __OSRebootParams[4];
-    if ((unsigned int)OSGetMEM2ArenaHi() > start) {
+    base = __OSRebootParams[4];
+    if ((unsigned int)OSGetMEM2ArenaHi() > base) {
         size = (unsigned int)OSGetMEM2ArenaHi();
-        size -= start;
-        if (size > 0x40000)
-            start += size - 0x40000;
-        DCZeroRange((void *)start, size);
-        DCFlushRange(start, 0x40000);
+        size -= base;
+        if (size <= 0x40000)
+            goto clear4_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear4_join;
+    clear4_small:
+        flush = base;
+    clear4_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
     }
 }
-
-#pragma small_data off
+#pragma pop
 void InquiryCallback(s32 result, struct DVDCommandBlock* arg1) {
     if (*(u32*)((u8*)arg1 + 0xC) == 0) goto read_drive;
     goto set_one;
@@ -615,4 +645,6 @@ u8 OSGetAppType(void) {
     if (__OSInIPL) return 0x40;
     return *(u8 *)0x80003184;
 }
-
+static inline unsigned int AddBaseOffset(unsigned int base, unsigned int offset) {
+    return base + offset;
+}
