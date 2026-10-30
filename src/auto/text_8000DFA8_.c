@@ -682,6 +682,7 @@ f32 fn_800109A0(s32 arg0) {
     return (f32)arg0 / (f32)lbl_80558A90;
 }
 
+#pragma dont_inline fn_800109E4
 void fn_800109E4(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
     f32 sp8;
     f32 spC;
@@ -1728,11 +1729,13 @@ void fn_8000DFD8(void *arg0, s32 arg1, f32 farg0, f32 farg1) {
 }
 
 extern f32 lbl_80560250, lbl_80560254, lbl_80560258, lbl_8056025C, lbl_80560260, lbl_80560264, lbl_80560270;
+#pragma push
+#pragma scheduling on
 void fn_8000E15C(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
     s32 count = *(s32 *)((char *)arg0 + 0x34);
     if (count > 0 && *(s32 *)((char *)arg0 + 0x38) == 9) {
         ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
-            (u32)(((s32)((f32)count * lbl_80560258) << 24) | 0x00FDB300),
+            (u32)(((s32)(lbl_80560258 * (f32)count) << 24) | 0x00FDB300),
             arg2, arg3 + lbl_80560254 * lbl_8056025C,
             lbl_80560250, lbl_80560254);
     }
@@ -1744,11 +1747,11 @@ void fn_8000E15C(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
         (u32)arg1, arg2, arg3 + lbl_80560254 * lbl_8056025C,
         ((f32)*(s32 *)((char *)arg0 + 0x2C) * lbl_80560250) / lbl_80560260,
         lbl_80560254);
-    ((void (*)(s32, s32, const char *, void *, f32, f32, f32))fn_80010074)(
+    ((void (*)(s32, s32, const char *, void *, f32, ...))fn_80010074)(
         -1, 0x11, (const char *)&lbl_80558AA4, arg0,
         lbl_80560264, lbl_80560270 + arg2, arg3);
 }
-
+#pragma pop
 s32 fn_8000E2D8(s32 arg0) {
     switch (arg0) {
     default:
