@@ -238,20 +238,27 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern void fn_802C8D74(void);
     extern int lbl_8055CC60, lbl_8055CC70, lbl_8055CC74, lbl_8055CC78;
     extern float lbl_8055CC6C, lbl_805649F0, lbl_805649F4, lbl_805649FC, lbl_80564A24, lbl_80564A30, lbl_80564A54;
-    float *arg = (float *)arg1;
-    float sp8, spC, sp10, temp_f2, temp_f0, temp_f4, temp_f31;
+    float *arg;
+    volatile float sp8, spC, sp10;
+    float temp_f2, temp_f0, temp_f4, temp_f31;
     int i, n, color0, color1, color2, alpha;
     fn_802C8BD0(lbl_8055CC60);
     fn_801E866C(-1);
-    if (*(float *)((char *)arg + 0xCC) > lbl_80564A24) {
+    if (*(float *)((char *)arg1 + 0xCC) > lbl_80564A24) {
         fn_802C8DBC(0x10);
-        temp_f31 = *(float *)((char *)arg + 0xC0);
+        temp_f31 = *(float *)((char *)arg1 + 0xC0);
+        arg = (float *)arg1;
         for (i = 0; i < 0x10; i++, arg += 3) {
-            sp8 = arg[0]; spC = arg[1]; sp10 = arg[2];
+            sp8 = arg[0];
+            spC = arg[1];
+            sp10 = arg[2];
             n = 0;
             if (i > 1) n = (0x10 - (i + 1)) / 2;
             temp_f2 = (float)n * lbl_80564A30;
-            temp_f0 = lbl_8055CC6C * (temp_f2 * (lbl_80564A54 * (*(float *)((char *)arg1 + 0xCC) * *(float *)((char *)arg1 + 0xD0))));
+            temp_f0 = lbl_8055CC6C *
+                (temp_f2 * (lbl_80564A54 *
+                    (*(float *)((char *)arg1 + 0xCC) *
+                     *(float *)((char *)arg1 + 0xD0))));
             if (temp_f0 < lbl_805649F0) temp_f0 -= lbl_805649F4;
             else temp_f0 += lbl_805649F4;
             alpha = (int)temp_f0;
@@ -259,7 +266,8 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
             color1 = (unsigned char)lbl_8055CC78;
             color2 = (unsigned char)lbl_8055CC74;
             temp_f4 = (i & 1) ? lbl_805649F0 : lbl_805649FC;
-            fn_802C8E00((color1 << 8) | color2 | (color0 << 16) | (alpha << 24), 1, sp8, spC, sp10, temp_f4, temp_f31 - temp_f2);
+            fn_802C8E00((color1 << 8) | color2 | (color0 << 16) | (alpha << 24),
+                1, sp8, spC, sp10, temp_f4, temp_f31 - temp_f2);
         }
         fn_802C8E48();
     }
@@ -505,7 +513,7 @@ void fn_802AB6D4(void) {
 void fn_802AB770(int arg0) {
     extern int lbl_8055F928;
     extern unsigned char lbl_8055F92C, lbl_8055F92D;
-    extern float lbl_80558DC4, lbl_805649F0, lbl_805649F4, lbl_805649FC;
+    extern float lbl_805649F0, lbl_805649F4, lbl_805649FC;
     extern float lbl_80564A00, lbl_80564A34, lbl_80564A68, lbl_80564A8C, lbl_80564A98, lbl_80564A9C;
     extern float lbl_80564AA8, lbl_80564AAC;
     extern double lbl_80564AA0;
@@ -645,6 +653,7 @@ void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
     unsigned char green;
     unsigned char blue;
     unsigned int color;
+    unsigned int low;
     float angle;
     float magnitude;
     float wave;
@@ -655,14 +664,16 @@ void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
     int angleWithinLimit;
     int active;
 
-    red = fn_80129D90(0, 0x8C, 0xFF);
-    green = fn_80129D90(0, 0xFA, 0xFF);
-    blue = fn_80129D90(0, 0xF0, 0xFF);
-    color = ((unsigned int)blue << 16) | 0xFF000000;
-    color |= ((unsigned int)green << 8) | red;
-    *arg2 = color;
-
+    red = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0x8C, 0xFF);
+    green = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xFA, 0xFF);
+    blue = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xF0, 0xFF);
+    color = (unsigned int)blue << 16;
     angle = lbl_80564A98;
+    low = (unsigned int)green << 8;
+    low |= red;
+    color |= 0xFF000000;
+    *arg2 = color | low;
+
     (void)*(volatile unsigned char *)&lbl_8055F92C;
     if (*arg0 > lbl_805649F4)
         *arg0 = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
