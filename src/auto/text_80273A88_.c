@@ -69,6 +69,58 @@ void fn_80273B4C(void *arg0) {
         fn_80015B20(temp_r3, out, temp_r3);
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_80274268(void *arg0) {
+    extern void fn_80274460(void);
+    extern void fn_80273B4C(void *);
+    extern float lbl_80563FB0, lbl_80563FE4, lbl_80563FE8, lbl_80563FEC;
+    char *state = *(char **)((char *)arg0 + 0x140);
+    float sp1C, sp18, sp14, sp10, spC, sp8;
+    float *result = &sp8;
+    float *vector = &sp14;
+
+    if (*(unsigned char *)(state + 0x260C) != 0) {
+        fn_80274460();
+        return;
+    }
+
+    *(int *)((char *)arg0 + 0x58) = *(int *)((char *)arg0 + 0xC0);
+    *(int *)((char *)arg0 + 0x5C) = *(int *)((char *)arg0 + 0xC4);
+    *(int *)((char *)arg0 + 0x60) = *(int *)((char *)arg0 + 0xC8);
+    *(int *)((char *)arg0 + 0x64) = *(int *)((char *)arg0 + 0xCC);
+    *(int *)((char *)arg0 + 0x68) = *(int *)((char *)arg0 + 0xD0);
+    *(int *)((char *)arg0 + 0x6C) = *(int *)((char *)arg0 + 0xD4);
+    *(int *)((char *)arg0 + 0x70) = *(int *)((char *)arg0 + 0xD8);
+    *(int *)((char *)arg0 + 0x74) = *(int *)((char *)arg0 + 0xDC);
+    *(int *)((char *)arg0 + 0x78) = *(int *)((char *)arg0 + 0xE0);
+    *(int *)((char *)arg0 + 0x7C) = *(int *)((char *)arg0 + 0xE4);
+    *(int *)((char *)arg0 + 0x80) = *(int *)((char *)arg0 + 0xE8);
+    *(int *)((char *)arg0 + 0x84) = *(int *)((char *)arg0 + 0xEC);
+
+    sp14 = lbl_80563FB0;
+    sp18 = lbl_80563FE8;
+    sp1C = lbl_80563FEC + (*(float *)(state + 0x2458) - lbl_80563FE4);
+
+    if (result == vector) {
+        sp8 = sp14 * *(float *)((char *)arg0 + 0x58) + sp18 * *(float *)((char *)arg0 + 0x64) + sp1C * *(float *)((char *)arg0 + 0x70);
+        spC = sp14 * *(float *)((char *)arg0 + 0x5C) + sp18 * *(float *)((char *)arg0 + 0x68) + sp1C * *(float *)((char *)arg0 + 0x74);
+        sp10 = sp14 * *(float *)((char *)arg0 + 0x60) + sp18 * *(float *)((char *)arg0 + 0x6C) + sp1C * *(float *)((char *)arg0 + 0x78);
+    } else {
+        result[0] = vector[0] * *(float *)((char *)arg0 + 0x58) + vector[1] * *(float *)((char *)arg0 + 0x64) + vector[2] * *(float *)((char *)arg0 + 0x70);
+        result[1] = vector[0] * *(float *)((char *)arg0 + 0x5C) + vector[1] * *(float *)((char *)arg0 + 0x68) + vector[2] * *(float *)((char *)arg0 + 0x74);
+        result[2] = vector[0] * *(float *)((char *)arg0 + 0x60) + vector[1] * *(float *)((char *)arg0 + 0x6C) + vector[2] * *(float *)((char *)arg0 + 0x78);
+    }
+
+    *(float *)((char *)arg0 + 0x7C) += sp8;
+    *(float *)((char *)arg0 + 0x80) += spC;
+    *(float *)((char *)arg0 + 0x84) += sp10;
+    fn_80273B4C(arg0);
+}
+#pragma pop
+
 #pragma scheduling on
 void fn_8027445C(void) {
     extern void fn_80274268();
@@ -511,23 +563,57 @@ extern float lbl_8055E3C8, lbl_8055F588, lbl_80563FC4, lbl_80563FD8, lbl_8056404
 extern double lbl_80564038;
 extern double fn_8002EFB4(float, double);
 extern int fn_801E9E30(void *, float *);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
- char *p=(char*)arg0; float v[14], angle, sine, cosine, a,b,c;
- angle=(float)fn_8002EFB4(farg2*lbl_8055E3C8,lbl_80564038); *(float*)(p+0x15C)=angle;
- sine=farg0*(float)sin(angle); cosine=(float)cos(*(float*)(p+0x15C));
- v[9]=lbl_80563FB0; v[10]=sine; v[8]=farg0*cosine;
- v[11]=*(float*)(p+0xE4)+v[8]; v[12]=*(float*)(p+0xE8)+lbl_80563FB0; v[13]=*(float*)(p+0xEC)+sine;
- if(fn_801E9E30(p+0x1EC,&v[11])==0) {
- a=v[13]; b=lbl_80563FD8+lbl_8055F588; c=v[11]; v[12]=b;
- v[5]=a+lbl_80563FC4*(*(float*)(p+0xEC)-a);
- v[3]=c+lbl_80563FC4*(*(float*)(p+0xE4)-c);
- v[4]=b+lbl_80563FC4*(*(float*)(p+0xE8)-b);
- v[11]=v[3]; v[12]=v[4]; v[13]=v[5];
- } else lbl_8055F588=v[12];
- angle=v[12]+farg1; v[2]=lbl_80563FB0; v[12]=angle; v[3]=lbl_80563FAC; v[4]=lbl_80563FB0;
- fn_8026E850(&v[11],(float*)(p+0xE4),arg0,&v[2]); *(float*)(p+0xBC)=lbl_80564040;
-}
+    struct Vec3 {
+        float x, y, z;
+    };
+    struct Vec3 pos;
+    struct Vec3 offset;
+    struct Vec3 temp;
+    struct Vec3 up;
+    char *p = (char *)arg0;
+    float angle;
+    float s;
+    float c;
 
+    angle = (float)fn_8002EFB4(farg2 * lbl_8055E3C8, lbl_80564038);
+    *(float *)(p + 0x15C) = angle;
+    s = farg0 * (float)sin(angle);
+    c = farg0 * (float)cos(*(float *)(p + 0x15C));
+
+    offset.y = lbl_80563FB0;
+    offset.z = s;
+    offset.x = c;
+
+    pos.x = *(float *)(p + 0xE4) + offset.x;
+    pos.y = *(float *)(p + 0xE8) + offset.y;
+    pos.z = *(float *)(p + 0xEC) + offset.z;
+
+    if (fn_801E9E30(p + 0x1EC, (float *)&pos) == 0) {
+        float py = lbl_80563FD8 + lbl_8055F588;
+        pos.y = py;
+        temp.z = pos.z + lbl_80563FC4 * (*(float *)(p + 0xEC) - pos.z);
+        temp.x = pos.x + lbl_80563FC4 * (*(float *)(p + 0xE4) - pos.x);
+        temp.y = pos.y + lbl_80563FC4 * (*(float *)(p + 0xE8) - pos.y);
+        pos.x = temp.x;
+        pos.y = temp.y;
+        pos.z = temp.z;
+    } else {
+        lbl_8055F588 = pos.y;
+    }
+
+    pos.y += farg1;
+    up.x = lbl_80563FB0;
+    up.y = lbl_80563FAC;
+    up.z = lbl_80563FB0;
+
+    fn_8026E850((float *)&pos, (float *)(p + 0xE4), arg0, (float *)&up);
+    *(float *)(p + 0xBC) = lbl_80564040;
+}
+#pragma pop
 void fn_80275D0C(void *arg0, void *arg1) {
     float v[3], u[3], w[3], axis[3], matrix[9], temp[3];
     float mag, scale, s, c, t, x, y, z;
@@ -584,4 +670,6 @@ int fn_80274730(void *, float, float, float, float);
 void fn_80276054(int arg0) {
     fn_802704D4(4, arg0);
 }
-
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
