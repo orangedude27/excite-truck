@@ -1,5 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern unsigned char lbl_8055BAC0, lbl_8055BABC, lbl_8055BAB8, lbl_8055BC98, lbl_8055BCA0;
+extern unsigned char lbl_802FA280[];
+extern unsigned char lbl_80341CE4[];
 typedef unsigned char u8;
 typedef signed int s32;
 extern s32 lbl_8055F1B4;
@@ -184,7 +187,7 @@ extern int lbl_802FA2BC[5];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int fn_8023EEF8(void) {
+int fn_8023EEF8(void) {
     struct Data { void *first; void *second; int zero[3]; int values[55]; };
     volatile struct Data data;
     data.values[0]=(int)&lbl_8055B860;
