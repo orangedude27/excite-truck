@@ -7,6 +7,7 @@ namespace nw4hbm { namespace snd { namespace detail {
 class FrameHeap {
 public:
     void *Alloc(unsigned long, void (*)(void *, unsigned long, void *), void *);
+    void Destroy();
 };
 class EnvGenerator { public: void SetRelease(int); void SetDecay(int); void SetSustain(int); };
 class PoolImpl { public: void DestroyImpl(void *, unsigned long); };
@@ -1473,15 +1474,18 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
         virtual void RemoveTrack(void *);
     };
     register void *player = self;
+    register int index;
+    register u32 temp;
 
     if (player != 0) {
-        register u8 initialized = *((u8 *)player + 0x15);
+        u8 initialized = *((u8 *)player + 0x15);
         register void *vtable = lbl_80323E98;
+        register void *vtable2 = (u8 *)vtable + 0x98;
         *(void **)player = vtable;
-        *(void **)((u8 *)player + 0x10) = (u8 *)vtable + 0x98;
+        *(void **)((u8 *)player + 0x10) = vtable2;
 
         if (initialized != 0) {
-            register u32 level = OSDisableInterrupts();
+            temp = OSDisableInterrupts();
             if (*((u8 *)player + 0x17) != 0) {
                 if (player == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233,
@@ -1490,18 +1494,18 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
                     (void *)lbl_80412A6C, (u8 *)player + 0x100);
             }
             if (*((u8 *)player + 0x15) != 0) {
-                register void *callback = player;
-                if (callback != 0)
-                    callback = (u8 *)callback + 8;
+                index = (s32)player;
+                if (index != 0)
+                    index += 8;
                 void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
                 UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
-                    manager, callback);
+                    manager, (void *)index);
             }
-            OSRestoreInterrupts(level);
+            OSRestoreInterrupts(temp);
 
-            register int index = 0;
             register void *entry = player;
-            register int zero = 0;
+            index = 0;
+            temp = 0;
             do {
                 int valid = 0;
                 if (index >= 0 && index < 16)
@@ -1511,14 +1515,14 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
                                                   (const char *)lbl_80323B3C, index, 0, 16);
                 void *track;
                 if (index > 15)
-                    track = (void *)zero;
+                    track = (void *)temp;
                 else
                     track = *(void **)((u8 *)entry + 0x9C);
                 if (track != 0) {
                     Close__Q46nw4hbm3snd6detail8SeqTrackFv(track);
                     void *manager = *(void **)((u8 *)player + 0x98);
                     ((Manager *)manager)->RemoveTrack(*(void **)((u8 *)entry + 0x9C));
-                    *(void **)((u8 *)entry + 0x9C) = (void *)zero;
+                    *(void **)((u8 *)entry + 0x9C) = (void *)temp;
                 }
                 ++index;
                 entry = (u8 *)entry + 4;
