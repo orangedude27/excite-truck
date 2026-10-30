@@ -7,7 +7,7 @@ extern float lbl_80562738;
 void fn_801B7760(int, int, float, float);
 #pragma dont_inline fn_801B78EC
 void fn_801B78EC(int, int, int, float, float, float);
-float fn_8002F234(float, float, float, float, float);
+double fn_8002F234(float);
 void fn_801B7C8C(int, float *, float *);
 extern void *__AXFXGetLfoSinTable_801769CC(void);
 extern int fn_801769A8(void);
@@ -52,33 +52,43 @@ done:
 float cos(float);
 float sin(float);
 void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
-    void *p = *(void **)arg1;
-    void *q = *(void **)((char *)p + 0x14);
-    float t = *(float *)((char *)arg1 + 4);
-    float x = *(float *)p + t * (*(float *)q - *(float *)p);
-    float y = *((float *)p + 1) + t * (*((float *)q + 1) - *((float *)p + 1));
-    float z = *((float *)p + 2) + t * (*((float *)q + 2) - *((float *)p + 2));
-    float w0 = *((float *)p + 3);
-    float w = w0 + t * (*((float *)q + 3) - w0);
-    float norm = fn_8002F234(z * z + w * w, 0, 0, 0, 0);
-    float inv = lbl_80562704 / norm;
-    float a = z * inv;
-    float b = w * inv;
-    float c = -b;
-    float dx = c * farg0;
-    x += w * farg0;
-    y += c * farg0;
+    struct Vector {
+        float x;
+        float y;
+        float z;
+        float w;
+        int pad;
+        struct Vector * volatile next;
+    };
+    struct Args {
+        struct Vector *value;
+        float t;
+    };
+    struct Vector *p = ((struct Args *)arg1)->value;
+    float t = ((struct Args *)arg1)->t;
+    float value[4];
+
+    value[2] = p->x + t * (p->next->x - p->x);
+    value[3] = p->y + t * (p->next->y - p->y);
+    value[0] = p->z + t * (p->next->z - p->z);
+    value[1] = p->w + t * (p->next->w - p->w);
     {
-        float pos[2];
-        float dir[2];
-        float co = cos(farg1);
-        float si = sin(farg1);
-        dir[0] = a * co - b * si;
-        dir[1] = a * si + b * co;
-        pos[0] = x;
-        pos[1] = y;
-        fn_801B7C8C(arg0, pos, dir);
+        float length = (float)((double (*)(float))fn_8002F234)(value[0] * value[0] + value[1] * value[1]);
+        float scale = lbl_80562704 / length;
+        value[0] *= scale;
+        value[1] *= scale;
     }
+    value[2] += value[1] * farg0;
+    value[3] += -value[0] * farg0;
+    {
+        float cosine = cos(farg1);
+        float sine = sin(farg1);
+        float z = value[0];
+        float w = value[1];
+        value[0] = z * cosine - w * sine;
+        value[1] = z * sine + w * cosine;
+    }
+    fn_801B7C8C(arg0, &value[2], value);
     *(int *)((char *)arg0 + 0x3C) = 0;
 }
 
