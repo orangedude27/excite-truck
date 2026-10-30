@@ -1125,3 +1125,9 @@ void fn_802493E8(void *arg0) {
     }
 }
 #pragma pop
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma dont_inline fn_80246DE8
+#pragma dont_inline fn_80246DF4
+#pragma dont_inline fn_80246E00
+#pragma dont_inline fn_80247174
