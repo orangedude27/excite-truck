@@ -681,7 +681,7 @@ void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
         *arg0 = *arg0 + lbl_80564A34 * delta;
 
     magnitude = (float)fabs(delta);
-    withinTolerance = magnitude <= lbl_80558DC4;
+    withinTolerance = magnitude <= *(float *)(void *)&lbl_80558DC4;
     wave = lbl_805649F0;
     if (withinTolerance == 0)
         wave = lbl_80564A9C * (float)(int)fn_80287BC8(lbl_805649F0, lbl_805649FC);
