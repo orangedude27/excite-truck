@@ -491,7 +491,7 @@ extern int fn_802E47B8(void);
 extern int fn_802E46F0(void);
 extern int fn_8020DE1C(void);
 extern void fn_80176780(int, int);
-extern void fn_8000B64C(unsigned short, int);
+extern void fn_8000B64C(int, int);
 extern unsigned char lbl_8055D3ED;
 #pragma push
 #pragma dont_inline on
