@@ -578,7 +578,7 @@ check:
 }
 
 void fn_802A5A90(void);
-s32 fn_802A79CC(s32);
+s32 fn_802A79CC();
 void fn_802A5A90(void) {
     s32 *ptr = lbl_804BCFA8;
     s32 i = 0;
@@ -1168,44 +1168,90 @@ s32 fn_802A711C(void *arg0, f32 arg1, f32 arg2, f32 arg3) {
 extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_805648C4;
 f32 fn_802C9A50(void);
 void fn_802A70E4(void *, f32 *);
+#pragma scheduling invalid_target
 void fn_802A71C4(void *arg0) {
-    u8 *p = (u8 *)arg0;
-    f32 dt = *(f32 *)(p + 0x14);
-    f32 speed = dt / fn_802C9A50();
-    if (*(f32 *)(p + 0x34) <= lbl_805648C4) {
-        f32 scale = lbl_80564850;
-        f32 one = lbl_8056485C;
+    volatile u8 *p = (volatile u8 *)arg0;
+    f32 divisor;
+    f32 dt;
+    f32 threshold;
+    f32 speed;
+    register f32 scale;
+    f32 one;
+    f32 curve;
+    f32 a;
+    f32 factor;
+    f32 x;
+    f32 y;
+    f32 ax;
+    f32 ay;
+    volatile f32 yStack;
+    volatile f32 xStack;
+    f32 rx;
+    f32 ry;
+    f32 start;
+    f32 end;
+    f32 newx;
+    divisor = fn_802C9A50();
+    dt = *(volatile f32 *)(p + 0x14);
+    threshold = *(volatile f32 *)(p + 0x34);
+    speed = dt / divisor;
+    if (threshold >= lbl_805648C4) {
+        scale = lbl_80564850;
+        one = lbl_8056485C;
         do {
-            f32 curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
-            f32 a = scale * curve;
-            f32 x = *(f32 *)(p + 0x38) * (scale - a);
-            f32 y = *(f32 *)(p + 0x3C) * (scale - a);
-            f32 ax = one - __fabsf(x);
-            f32 ay = one - __fabsf(y);
-            f32 rx = fn_80287BC8(-ax, ax);
-            f32 ry = fn_80287BC8(-ay, ay);
-            f32 oldx = *(f32 *)(p + 0x18);
-            f32 newx = oldx + curve * (*(f32 *)(p + 0x1C) - oldx);
-            f32 v[3];
-            v[0] = speed * newx * (x + rx);
-            v[1] = dt * newx * (y + ry);
-            v[2] = newx;
-            fn_802A70E4(arg0, v);
-        } while (*(s32 *)(p + 4) < *(s32 *)(p + 8));
+            curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
+            a = scale * curve;
+            factor = scale - a;
+            x = *(volatile f32 *)(p + 0x38) * factor;
+            y = *(volatile f32 *)(p + 0x3C) * factor;
+            ax = __fabsf(x);
+            xStack = x;
+            ay = __fabsf(y);
+            yStack = y;
+            ax = one - ax;
+            ay = one - ay;
+            rx = fn_80287BC8(-ax, ax);
+            ry = fn_80287BC8(-ay, ay);
+            end = *(volatile f32 *)(p + 0x1C);
+            start = *(volatile f32 *)(p + 0x18);
+            newx = start + curve * (end - start);
+            {
+                f32 v[3];
+                v[2] = newx;
+                v[1] = dt * newx * (yStack + ry);
+                v[0] = speed * newx * (xStack + rx);
+                fn_802A70E4(arg0, v);
+            }
+        } while (*(volatile s32 *)(p + 4) < *(volatile s32 *)(p + 8));
     } else {
         do {
-            f32 curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
-            f32 angle = *(f32 *)(p + 0x18) + (curve + -*(f32 *)(p + 0x34) * (curve * curve - curve)) * (*(f32 *)(p + 0x1C) - *(f32 *)(p + 0x18));
-            f32 v[3];
-            v[0] = speed * fn_80287BC8(-angle, angle);
-            v[1] = dt * fn_80287BC8(-angle, angle);
-            v[2] = angle;
-            fn_802A70E4(arg0, v);
-        } while (*(s32 *)(p + 4) < *(s32 *)(p + 8));
+            curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
+            {
+                f32 squared = curve * curve;
+                f32 localThreshold = *(volatile f32 *)(p + 0x34);
+                f32 localEnd = *(volatile f32 *)(p + 0x1C);
+                f32 negativeThreshold = -localThreshold;
+                f32 localStart = *(volatile f32 *)(p + 0x18);
+                f32 curveDelta = squared - curve;
+                f32 endDelta = localEnd - localStart;
+                f32 bend = negativeThreshold * curveDelta;
+                f32 factor2 = curve + bend;
+                f32 distance = factor2 * endDelta;
+                newx = localStart + distance;
+            }
+            rx = fn_80287BC8(-newx, newx);
+            ry = fn_80287BC8(-newx, newx);
+            {
+                f32 v[3];
+                v[2] = newx;
+                v[0] = speed * rx;
+                v[1] = dt * ry;
+                fn_802A70E4(arg0, v);
+            }
+        } while (*(volatile s32 *)(p + 4) < *(volatile s32 *)(p + 8));
     }
 }
-
-#pragma pop
+#pragma scheduling on
 extern float fn_80287BC8(float, float);
 extern void fn_802A70E4(void *, float *);
 extern s32 fn_802CAC54(s32);
@@ -1351,7 +1397,97 @@ void fn_802A775C(void *arg0) {
     fn_802C2B78(lbl_80564850, lbl_805648D4, f29);
     *(f32 *)((u8 *)arg0 + 0x3C) = f29;
 }
-#pragma pop
+
+#pragma scheduling invalid_target
+s32 fn_802A79CC(s32 arg0) {
+    register u8 *object = (u8 *)arg0;
+    register s32 alpha;
+    register s32 offset;
+    register s32 i;
+    f32 pointScaleFactor;
+    double intBias;
+    f32 rate;
+    f32 alphaScale;
+    f32 distance;
+    f32 radius;
+    f32 radiusScale;
+    f32 delta;
+    f32 scaled;
+    f32 radiusSquared;
+    s32 raw;
+    s32 magnitude;
+
+    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 0x24, object + 0xC);
+    radiusScale = lbl_80564850;
+    alpha = 0xFF;
+    radius = *(f32 *)(object + 0x18);
+    delta = distance - (radiusScale * radius);
+    scaled = lbl_805648D8 * (lbl_80564854 * delta);
+    raw = (s32)scaled;
+    magnitude = raw & ((-raw & ~raw) >> 31);
+    if (magnitude < 0xFF)
+        alpha = magnitude;
+
+    if (alpha > 0) {
+        rate = fn_802C9A4C(*(f32 *)(object + 0x30));
+        fn_802C8BD0(*(s32 *)(object + 0x2C));
+
+        if (fn_802CE860(*(s32 *)(object + 4)) != 0) {
+            register u32 alphaWord = (u32)alpha ^ 0x80000000;
+            u32 highWord = 0x43300000;
+            volatile union {
+                double value;
+                struct {
+                    u32 high;
+                    u32 low;
+                } words;
+            } conversion;
+
+            intBias = lbl_80564848;
+            radius = *(f32 *)(object + 0x18);
+            radiusSquared = radius * radius;
+            conversion.words.low = alphaWord;
+            conversion.words.high = highWord;
+            alphaScale = (f32)(conversion.value - intBias) / radiusSquared;
+            pointScaleFactor = lbl_80564850;
+            i = 0;
+            offset = 0;
+            goto check;
+
+        loop:
+            {
+                register u8 *point = *(u8 **)object + offset;
+                f32 distSq = PSVECSquareDistance(point, object + 0xC);
+                f32 pointScale = pointScaleFactor * *(f32 *)(object + 8);
+                f32 pointX = *(f32 *)(point + 0);
+                f32 pointY = *(f32 *)(point + 4);
+                f32 pointZ = *(f32 *)(point + 8);
+                conversion.words.low = alphaWord;
+                conversion.words.high = highWord;
+                raw = (s32)((f32)(conversion.value - intBias) - alphaScale * distSq);
+                magnitude = raw & ((-raw & ~raw) >> 31);
+                if (magnitude < alpha)
+                    raw = magnitude;
+                else
+                    raw = alpha;
+                fn_802CE86C((void *)((raw << 24) | 0x00FFFFFF), i,
+                            pointScale, pointX, pointY, pointZ);
+                offset += 0xC;
+                i++;
+            }
+        check:
+            if (i < *(s32 *)(object + 4))
+                goto loop;
+            fn_802CE868();
+        }
+
+        fn_802C8D74();
+        fn_802C9A4C(rate);
+    }
+
+    fn_802D3D50();
+}
+#pragma scheduling on
 extern f32 lbl_80564850, lbl_80564854, lbl_80564858, lbl_8056485C;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern s32 fn_802C90F0(s32);
