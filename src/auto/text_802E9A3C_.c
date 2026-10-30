@@ -226,63 +226,68 @@ void fn_802EA7E0(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
-long *fn_802EA834(long arg0, long *arg1) {
+#pragma cplusplus on
+extern "C" long *fn_802EA834(long arg0, long *arg1) {
     extern char lbl_8055D294;
     extern char lbl_8055D2A4;
     extern void fn_801345D8(char *, long, const char *, ...);
     extern void OSSleepTicks(unsigned long long);
     extern char *strncpy(char *, const char *, unsigned long);
-    typedef long (*Callback)(void *);
+    class Obj {
+    public:
+        virtual void d0();
+        virtual void d1();
+        virtual long callback();
+    };
     char buffer[0x410];
-    long *result;
-    long *table;
+    register char *globalBase = (char *)lbl_80507600;
+    register char *messageBase = (char *)&lbl_8034E260;
+    register long *result = 0;
     long index;
-    long *base;
-    long *copy;
-    char *destination;
-    unsigned long tick;
+    long *table;
+    char *base;
+    register char *copy;
+    unsigned int tick;
 
-    result = 0;
-    destination = (char *)lbl_80507600 + 0x40;
     if (arg0 <= -2) {
         index = -2 - arg0;
         if ((index >= 0) && (index < 3)) {
-            table = (long *)((char *)lbl_80507600 + 0xA0);
+            table = (long *)(globalBase + 0xA0);
             if (table[index * 2] != 0) {
                 result = fn_802E9A3C(table[index * 2], table[index * 2 + 1]);
             }
         }
         if (result != 0) {
-            strncpy(destination, &lbl_8055D2A4, 0x1F);
-            destination[0x1F] = 0;
+            strncpy(globalBase + 0x40, &lbl_8055D2A4, 0x1F);
+            globalBase[0x5F] = 0;
         }
     } else {
-        base = (long *)((char *)lbl_80507600 + 0x1218 + arg0 * 0x610);
-        copy = (long *)((char *)base + 0x200);
+        base = globalBase + 0x1218 + arg0 * 0x610;
+        copy = base + 0x200;
         fn_801345D8(buffer, 0x40A, &lbl_8055D294, base, copy);
-        ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x280, buffer);
+        ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x280, buffer);
         result = fn_802E9A6C((long)buffer);
-        ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x290, buffer, result);
+        ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x290, buffer, result);
         if (result != 0) {
-            ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x2A0, buffer,
-                ((Callback)(*(long *)((char *)*(long **)result + 0x10)))(result));
-            strncpy(destination, (char *)copy, 0x1F);
-            destination[0x1F] = 0;
+            ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2A0, buffer, ((Obj *)result)->callback());
+            strncpy(globalBase + 0x40, copy, 0x1F);
+            globalBase[0x5F] = 0;
         } else {
-            ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x2BC, buffer);
+            ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2BC, buffer);
         }
     }
     if (result != 0) {
-        *arg1 = ((Callback)(*(long *)((char *)*(long **)result + 0x10)))(result);
+        *arg1 = ((Obj *)result)->callback();
     } else {
-        ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x2D8, arg0);
-        if (lbl_80560062 != 0) {
-            tick = *(volatile unsigned long *)0x800000F8;
-            ((void (*)(int, int))OSSleepTicks)(0, (tick / 4000) * 1000);
+        ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2D8, arg0);
+        if ((unsigned char)lbl_80560062 != 0) {
+            tick = *(volatile unsigned int *)0x800000F8 >> 2;
+            ((void (*)(int, int))OSSleepTicks)(0, (tick / 1000) * 1000);
         }
     }
     return result;
 }
+#pragma cplusplus reset
 #pragma dont_inline reset
 #pragma scheduling on
 #pragma pop
