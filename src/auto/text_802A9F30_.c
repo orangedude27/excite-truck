@@ -177,7 +177,7 @@ void fn_802AA9D4(void *arg0, void *arg1, float delta) {
  pos.y+=*(float *)((char *)arg1+0x10)*scale;
  pos.z+=*(float *)((char *)arg1+0x14)*scale;
  dir=*(Vec *)((char *)arg1+0x34);
- if (*(float *)((char *)arg1+0x4C)>=lbl_80564A50-lbl_80558DC4) {
+ if (*(float *)((char *)arg1+0x4C)>=lbl_80564A50-*(float *)(void *)&lbl_80558DC4) {
  callpos=pos; calldir=dir;
  fn_8028E590(*(int *)lbl_8055F924,&callpos,&calldir,lbl_805649FC);
  }
@@ -242,6 +242,10 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
     volatile float sp8, spC, sp10;
     float temp_f2, temp_f0, temp_f4, temp_f31;
     int i, n, color0, color1, color2, alpha;
+    union {
+        unsigned int word;
+        struct { unsigned char a, r, g, b; } bytes;
+    } color;
     fn_802C8BD0(lbl_8055CC60);
     fn_801E866C(-1);
     if (*(float *)((char *)arg1 + 0xCC) > lbl_80564A24) {
@@ -265,9 +269,12 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
             color0 = (unsigned char)lbl_8055CC70;
             color1 = (unsigned char)lbl_8055CC78;
             color2 = (unsigned char)lbl_8055CC74;
+            color.bytes.a = (unsigned char)alpha;
+            color.bytes.r = (unsigned char)color0;
+            color.bytes.g = (unsigned char)color1;
+            color.bytes.b = (unsigned char)color2;
             temp_f4 = (i & 1) ? lbl_805649F0 : lbl_805649FC;
-            fn_802C8E00((color1 << 8) | color2 | (color0 << 16) | (alpha << 24),
-                1, sp8, spC, sp10, temp_f4, temp_f31 - temp_f2);
+            fn_802C8E00(color.word, 1, sp8, spC, sp10, temp_f4, temp_f31 - temp_f2);
         }
         fn_802C8E48();
     }
