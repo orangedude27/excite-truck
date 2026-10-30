@@ -1,3 +1,4 @@
+extern char lbl_80499080[];
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern int lbl_80499E50[];
@@ -74,6 +75,70 @@ void fn_80265E2C(void) {
     } while (count < 0x64);
 }
 
+#pragma scheduling invalid_target
+void fn_80265EC4(void *arg0, int arg1, int arg2) {
+    struct Record { float first; float second; int duration; };
+    int *state = (int *)arg0;
+    int index;
+    int elapsed;
+    int duration;
+    int nextIndex;
+    int updatedElapsed;
+    float ratio;
+    float weight;
+    struct Record *current;
+    struct Record *next;
+
+    if (arg2 != 0) {
+        state[2] = arg1;
+        return;
+    }
+    state[1] = state[1] + (arg1 - state[2]);
+    state[2] = arg1;
+    goto check;
+
+advance:
+    index = *(volatile int *)arg0;
+    elapsed = *(volatile int *)((char *)arg0 + 4);
+    nextIndex = (index + 1) % 100;
+    updatedElapsed = elapsed - duration;
+    *(volatile int *)((char *)arg0 + 4) = updatedElapsed;
+    *(volatile int *)arg0 = nextIndex;
+
+check:
+    index = *(volatile int *)arg0;
+    elapsed = *(volatile int *)((char *)arg0 + 4);
+    duration = ((struct Record *)lbl_804999A0)[index].duration;
+    if (elapsed > duration) {
+        goto advance;
+    }
+
+    ratio = (float)elapsed / (float)duration;
+    if (ratio < lbl_80563C28) {
+        weight = lbl_80563C28;
+        goto weight_done;
+    }
+    if (ratio > lbl_80563C2C) {
+        weight = lbl_80563C2C;
+    } else if (ratio > lbl_80563C20) {
+        weight = (((lbl_80563C30 * ratio) * ratio) * ratio) +
+                 ((lbl_80563C34 * ratio) * ratio);
+    } else {
+        weight = (((lbl_80563C30 * ratio) * ratio) * ratio) -
+                 ((lbl_80563C34 * ratio) * ratio);
+    }
+weight_done:
+    *(float *)((char *)arg0 + 0xC) = weight;
+    index = *(volatile int *)arg0;
+    nextIndex = (index + 1) % 100;
+    current = &((struct Record *)lbl_804999A0)[index];
+    next = &((struct Record *)lbl_804999A0)[nextIndex];
+    *(float *)((char *)arg0 + 0x10) =
+        current->first + (float)(double)weight * (next->first - current->first);
+    *(float *)((char *)arg0 + 0x14) =
+        current->second + (float)(double)weight * (next->second - current->second);
+}
+#pragma scheduling on
 void fn_80266070(void *arg0, void *arg1, void *arg2, void *arg3) {
     volatile float scaled[3];
     float mag;
@@ -120,47 +185,52 @@ void fn_80266150(void *arg0) {
 }
 
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
-    float var_f0;
     float temp_f0;
     float temp_f0_2;
-    float temp_f4;
     float var_f3;
-    float var_f4;
-    int temp_r0;
+    float temp_f4;
+    float var_f0;
+    register float var_f4;
     int temp_r0_2;
+    int temp_r0;
 
     if (arg3 != 0) {
+        register float reset_scale;
+        register float reset_limit;
         *(int *)((char *)arg0 + 0) = arg1;
         *(int *)((char *)arg0 + 4) = 0;
-        var_f0 = lbl_8055C4BC * farg0;
-        if (var_f0 >= lbl_8055C4C0) var_f0 = lbl_8055C4C0;
+        reset_scale = lbl_8055C4BC;
+        reset_limit = lbl_8055C4C0;
+        var_f0 = reset_scale * farg0;
+        var_f0 = (var_f0 < reset_limit) ? var_f0 : reset_limit;
         *(float *)((char *)arg0 + 8) = var_f0;
     }
     if (arg2 != 0) {
         *(int *)((char *)arg0 + 0) = arg1;
         return;
     }
-    temp_r0 = arg1 - *(int *)((char *)arg0 + 0);
+    temp_r0 = *(int *)((char *)arg0 + 0);
+    temp_r0_2 = *(int *)((char *)arg0 + 4);
+    temp_r0 = arg1 - temp_r0;
     *(int *)((char *)arg0 + 0) = arg1;
-    temp_r0_2 = *(int *)((char *)arg0 + 4) + temp_r0;
-    *(int *)((char *)arg0 + 4) = temp_r0_2;
+    temp_r0 = temp_r0_2 + temp_r0;
+    *(int *)((char *)arg0 + 4) = temp_r0;
     var_f4 = lbl_80563C2C;
     temp_f0 = (float)lbl_8055C4B4;
-    temp_f0_2 = ((float)temp_r0_2 - temp_f0) / ((float)lbl_8055C4B8 - temp_f0);
-    if (var_f4 >= temp_f0_2) var_f4 = temp_f0_2;
-    if (var_f4 <= lbl_80563C20) var_f4 = lbl_80563C20;
+    temp_f0_2 = ((float)temp_r0 - temp_f0) / ((float)lbl_8055C4B8 - temp_f0);
+    var_f4 = (var_f4 < temp_f0_2) ? var_f4 : temp_f0_2;
+    var_f4 = (var_f4 > lbl_80563C20) ? var_f4 : lbl_80563C20;
     var_f3 = lbl_80563C28;
     temp_f4 = lbl_80563C20 + (var_f4 * lbl_80563C2C);
-    if (temp_f4 >= var_f3) {
-        if (temp_f4 > lbl_80563C2C) {
-            var_f3 = lbl_80563C2C;
-        } else if (temp_f4 > lbl_80563C20) {
-            var_f3 = (temp_f4 * (lbl_80563C30 * temp_f4 * temp_f4)) +
-                     (lbl_80563C34 * temp_f4 * temp_f4);
-        } else {
-            var_f3 = (temp_f4 * (lbl_80563C30 * temp_f4 * temp_f4)) -
-                     (lbl_80563C34 * temp_f4 * temp_f4);
-        }
+    if (temp_f4 < var_f3) {
+    } else if (temp_f4 > lbl_80563C2C) {
+        var_f3 = lbl_80563C2C;
+    } else if (temp_f4 > lbl_80563C20) {
+        var_f3 = (temp_f4 * (lbl_80563C30 * temp_f4 * temp_f4)) +
+                 (lbl_80563C34 * temp_f4 * temp_f4);
+    } else {
+        var_f3 = (temp_f4 * (lbl_80563C30 * temp_f4 * temp_f4)) -
+                 (lbl_80563C34 * temp_f4 * temp_f4);
     }
     *(float *)((char *)arg0 + 0xC) = var_f3;
 }
@@ -511,6 +581,7 @@ char fn_8026A38C(void) {
 }
 
 extern float lbl_80563CBC, lbl_80563C2C, lbl_80563C20, lbl_8055E3C8;
+#pragma scheduling invalid_target
 void fn_8026A394(void *arg0) {
  int i = 0;
  while (i < 4) {
@@ -521,6 +592,7 @@ void fn_8026A394(void *arg0) {
    volatile unsigned int *dst;
    unsigned int one;
    float factor;
+   float scale;
    float threshold;
    float zero;
    float copy;
@@ -542,8 +614,9 @@ void fn_8026A394(void *arg0) {
    threshold = lbl_80563C2C;
    *(volatile unsigned char *)(p + 0x138) = one;
    q = *(char * volatile *)(p + 0x140);
-   factor = *(float *)(q + 0x25d4) * factor;
-   *(float *)(p + 0x13c) = threshold < factor ? factor : threshold;
+   scale = *(float *)(q + 0x25d4);
+   factor = factor * scale;
+   *(volatile float *)(p + 0x13c) = threshold < factor ? factor : threshold;
    zero = lbl_80563C20;
    *(float *)(p + 0x154) = zero;
    *(float *)(p + 0x158) = zero;
@@ -594,7 +667,7 @@ void fn_8026A394(void *arg0) {
   i++;
  }
 }
-
+#pragma scheduling on
   extern void fn_80269BB0(void);
   void fn_8026A49C(void) {
     fn_80269BB0();
