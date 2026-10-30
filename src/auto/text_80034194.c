@@ -777,18 +777,19 @@ void fn_8003588C(void) {
                 *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat,
                 (s32)fn_80035A04);
 }
-#pragma pop
+#pragma dont_inline on
 void fn_80035A04(u32 arg0) {
-    s32 state;
+    register s32 state;
+    s32 firstInterrupts;
     s32 *block;
     void (*callback)(s32);
 
-    OSDisableInterrupts();
-    if (lbl_8055D848 == 0)
+    firstInterrupts = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 == 0)
         *(u32 *)(__ErrorInfo + 0x78) = arg0;
     else
-        *(u32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x14) = arg0;
-    ((void (*)(void))OSRestoreInterrupts)();
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = arg0;
+    OSRestoreInterrupts(firstInterrupts);
 
     if (arg0 == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
@@ -812,17 +813,17 @@ void fn_80035A04(u32 arg0) {
     }
 
     state = OSDisableInterrupts();
-    if ((u32)lbl_8055D848 >= 5)
-        lbl_8055D848 = 0;
-    *(s32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x1C) = 0x27;
-    *(s32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x20) = 0;
-    *(s32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x24) = 0;
-    *(s32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-    lbl_8055D848++;
+    if (*(volatile u32 *)&lbl_8055D848 >= 5)
+        *(volatile u32 *)&lbl_8055D848 = 0;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x27;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(state);
     fn_8003B218(fn_80035E6C);
 }
-
+#pragma dont_inline off
 extern void __DVDPrintFatalMessage(void);
 extern s32 lbl_8055D858;
 void fn_80035B88(u32 arg0) {
@@ -1825,11 +1826,11 @@ s32 fn_80039840(void) {
     tempInterrupts = OSDisableInterrupts();
     active = (void *)OSDisableInterrupts();
     lbl_8055D84C = 1;
-    if (executing_8055D8C8 != 0)
-        goto queue_call;
-    PausingFlag_8055D850 = 1;
-    OSRestoreInterrupts((s32)active);
-    goto queue_check;
+    if (executing_8055D8C8 == 0) {
+        PausingFlag_8055D850 = 1;
+        OSRestoreInterrupts((s32)active);
+        goto queue_check;
+    }
 queue_call:
     fn_80039424(active, 0);
 queue_check:
