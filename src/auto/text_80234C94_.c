@@ -205,7 +205,7 @@ void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
 extern void fn_80230A68(void *, int, float, float, float, float, float);
 extern int fn_80230B9C(void *);
 extern void fn_802C8C04(int);
-extern void fn_802C8DB8(void *, int, unsigned short *, int, unsigned short, unsigned short, unsigned short, unsigned short, float, double);
+extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
 extern const char lbl_802FA020[];
 void fn_80235CBC(void *arg0, int arg1, float x, float y, float z, float dx, float dy) {
