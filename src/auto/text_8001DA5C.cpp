@@ -57,6 +57,12 @@ extern "C" void fn_80232928(s32);
 extern "C" void fn_80232930(void);
 
 extern char lbl_802FDB68[];
+extern char lbl_802FDC84[], lbl_802FDC5C[], lbl_802FDC48[], lbl_802FDC34[];
+extern "C" int lbl_802FDC98[];
+extern "C" void* fn_80145E70(void*);
+extern "C" void* fn_801284F8(u32, void*);
+extern "C" void* fn_802CAC28(void*, s32);
+extern "C" void* fn_80207848(void*, s32);
 extern char lbl_80558D08[4];
 __declspec(section ".data") extern f32 lbl_80558DC4;
 extern f32 lbl_8056047C;
