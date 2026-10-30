@@ -218,26 +218,25 @@ extern "C" void *__dt__Q36nw4hbm3lyt7TextBoxFv(void *arg0, s32 arg1) {
         virtual void m24();
     };
     if (arg0 != 0) {
-        *(void **)arg0 = lbl_803208D4;
-        if ((((u32)((u8 *)arg0)[0xFD] & 0x80) >> 7) != 0) {
-            if (*(void **)((u8 *)arg0 + 0xE0) == 0)
+        u8 *self = (u8 *)arg0;
+        *(void **)self = lbl_803208D4;
+        if ((((u32)self[0xFD] & 0x80) >> 7) != 0) {
+            if (*(void **)(self + 0xE0) == 0)
                 ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320570, 0x307, lbl_80320580);
-            ((OwnedFont *)*(void **)((u8 *)arg0 + 0xE0))->destroy(-1);
-            MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)arg0 + 0xE0));
-            u32 flags = ((u8 *)arg0)[0xFD];
-            flags &= 0xFFFFFF7F;
-            ((u8 *)arg0)[0xFD] = (u8)flags;
-            *(void **)((u8 *)arg0 + 0xE0) = 0;
+            ((OwnedFont *)*(void **)(self + 0xE0))->destroy(-1);
+            MEMFreeToAllocator(lbl_8055DDF0, *(void **)(self + 0xE0));
+            *(volatile u8 *)(self + 0xFD) = *(volatile u8 *)(self + 0xFD) & 0x7F;
+            *(volatile void **)(self + 0xE0) = 0;
             goto set_default_font;
         }
         {
-            s32 first = ((FontMetrics *)*(void **)((u8 *)arg0 + 0xE0))->method0();
+            s32 first = ((FontMetrics *)*(void **)(self + 0xE0))->method0();
             f32 firstFloat;
-            volatile f32 *firstPtr = &firstFloat;
+            f32 *firstPtr = &firstFloat;
             *firstPtr = (f32)first;
-            s32 second = ((FontMetrics *)*(void **)((u8 *)arg0 + 0xE0))->method1();
-            *(f32 *)((u8 *)arg0 + 0xE8) = *firstPtr;
-            *(f32 *)((u8 *)arg0 + 0xE4) = (f32)second;
+            s32 second = ((FontMetrics *)*(void **)(self + 0xE0))->method1();
+            *(f32 *)(self + 0xE8) = *firstPtr;
+            *(f32 *)(self + 0xE4) = (f32)second;
         }
         goto font_ready;
       set_default_font:
@@ -246,25 +245,25 @@ extern "C" void *__dt__Q36nw4hbm3lyt7TextBoxFv(void *arg0, s32 arg1) {
             f32 zero = lbl_80560ED0;
             zeroStack[0] = zero;
             zeroStack[1] = zero;
-            *(f32 *)((u8 *)arg0 + 0xE4) = zero;
-            *(f32 *)((u8 *)arg0 + 0xE8) = zero;
+            *(f32 *)(self + 0xE4) = zero;
+            *(f32 *)(self + 0xE8) = zero;
         }
       font_ready:
-        if (*(void **)((u8 *)arg0 + 0x28) != 0 &&
-            *((u8 *)*(void **)((u8 *)arg0 + 0x28) + 0x54) == 0) {
-            ((PaneObj *)*(void **)((u8 *)arg0 + 0x28))->destroy(-1);
-            MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)arg0 + 0x28));
-            *(void **)((u8 *)arg0 + 0x28) = 0;
+        if (*(void **)(self + 0x28) != 0 &&
+            *((u8 *)*(void **)(self + 0x28) + 0x54) == 0) {
+            ((PaneObj *)*(void **)(self + 0x28))->destroy(-1);
+            MEMFreeToAllocator(lbl_8055DDF0, *(void **)(self + 0x28));
+            *(void **)(self + 0x28) = 0;
         }
         ((TextBox *)arg0)->m24();
-        fn_8002F634((u8 *)arg0 + 0xD8, fn_800D2DD4, 4, 2);
+        fn_8002F634(self + 0xD8, fn_800D2DD4, 4, 2);
         __dt__Q36nw4hbm3lyt4PaneFv(arg0, 0);
         if (arg1 > 0)
             ((s32 (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
-#pragma scheduling on
+#pragma scheduling reset
 
 extern "C" void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 index);
 extern "C" void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u32 index);
