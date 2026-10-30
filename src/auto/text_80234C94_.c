@@ -186,6 +186,7 @@ void fn_80235380(void *arg0) {
     }
 }
 
+extern void fn_802C8DB8(void *, int, unsigned short *, int);
 #pragma paired off
 #pragma paired_single off
 void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
@@ -200,7 +201,6 @@ void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
                 *(float *)((char *)node + 0x14),
                 *(float *)((char *)node + 0x10));
 }
-extern void fn_802C8DB8(void *, int, unsigned short *, int);
 #pragma paired_single on
 #pragma paired on
 extern void fn_80230A68(void *, int, float, float, float, float, float);
