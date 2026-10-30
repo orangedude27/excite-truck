@@ -709,9 +709,9 @@ extern const s8 lbl_802F4D90[];
 extern const char lbl_803230A0[], lbl_803230AC[];
 extern const f32 lbl_80561030, lbl_80561034, lbl_80561038;
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
+#pragma push
+#pragma opt_common_subs off
 extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
-    f32 zero = lbl_80561018;
-    f32 current = *(f32 *)arg0;
     s32 index;
     s32 valid;
     s8 tableValue;
@@ -719,16 +719,13 @@ extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
     f32 value;
     f32 currentLevel;
     u8 level;
-
-    if (zero == current) return zero;
-    if (*(u32 *)((u8 *)arg0 + 0x10) < *(u32 *)((u8 *)arg0 + 8)) return zero;
-
+    if (lbl_80561018 == *(f32 *)arg0) return lbl_80561018;
+    if (*(u32 *)((u8 *)arg0 + 0x10) < *(u32 *)((u8 *)arg0 + 8)) return lbl_80561018;
     valid = 0;
     angle = lbl_80561030 * (lbl_80561034 * *(f32 *)((u8 *)arg0 + 0x14));
     index = (s32)angle;
     if (index >= 0 && index < 0x80) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803230A0, 0x7b, lbl_803230AC, index, 0, 0x80);
-
     if (index < 0x20) tableValue = lbl_802F4D90[index];
     else if (index < 0x40) {
         s32 off = index - 0x20;
@@ -738,7 +735,6 @@ extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
         s32 off = index - 0x60;
         tableValue = -lbl_802F4D90[0x20 - off];
     }
-
     value = (f32)tableValue / lbl_80561038;
     level = *(u8 *)((u8 *)arg0 + 0xC);
     currentLevel = *(f32 *)arg0;
@@ -746,6 +742,7 @@ extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
     value *= (f32)level;
     return value;
 }
+#pragma pop
 
 extern "C" void *fn_800ECAEC(void *arg0) {
     extern void fn_800F26D8(void *);
@@ -1481,12 +1478,13 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
     register void *player = self;
 
     if (player != 0) {
-        u8 initialized = *((u8 *)player + 0x15);
-        *(void **)player = lbl_80323E98;
-        *(void **)((u8 *)player + 0x10) = lbl_80323E98 + 0x98;
+        register u8 initialized = *((u8 *)player + 0x15);
+        register void *vtable = lbl_80323E98;
+        *(void **)player = vtable;
+        *(void **)((u8 *)player + 0x10) = (u8 *)vtable + 0x98;
 
         if (initialized != 0) {
-            u32 level = OSDisableInterrupts();
+            register u32 level = OSDisableInterrupts();
             if (*((u8 *)player + 0x17) != 0) {
                 if (player == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233,
@@ -1495,7 +1493,7 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
                     (void *)lbl_80412A6C, (u8 *)player + 0x100);
             }
             if (*((u8 *)player + 0x15) != 0) {
-                void *callback = player;
+                register void *callback = player;
                 if (callback != 0)
                     callback = (u8 *)callback + 8;
                 void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
@@ -1504,8 +1502,8 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
             }
             OSRestoreInterrupts(level);
 
-            register void *entry = player;
             register int index = 0;
+            register void *entry = player;
             register int zero = 0;
             do {
                 int valid = 0;
