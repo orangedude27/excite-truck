@@ -4,6 +4,11 @@
 #include <types.h>
 #include <revolution/OS/OSMessage.h>
 
+extern "C" u32 GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(u32, u32);
+extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *, const void *);
+extern "C" void fn_800E519C(void *);
+extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, u8);
+
 /* forward decls for helpers defined further down in this file */
 extern "C" s32 fn_80128668(void *);
 extern "C" void *fn_800FDE60(void);
@@ -567,49 +572,72 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 arg1, u32 ar
 #pragma scheduling on
 #pragma use_lmw_stmw off
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
-    u32 level = OSDisableInterrupts();
-    if (*((u8 *)arg0 + 0x1C) != 0) {
+    typedef void (*Callback)(s32, void *, void *, void *);
+    struct LinkList { void *next; void *prev; };
+    struct WavePlayer {
+        u8 pad_0[4];
+        u32 count;
+        LinkList waves;
+        u8 pad_10[8];
+        void *voice;
+        u8 inList;
+        u8 stopped;
+        u8 pad_1e[0x6E];
+        Callback callback;
+        void *callbackArg;
+    };
+    u32 level;
+    u32 voiceLevel;
+    u8 zero;
+    void *sentinel;
+    void *node;
+    void *entry;
+    void *iterator;
+    void *userData;
+
+    level = OSDisableInterrupts();
+    if (((WavePlayer *)arg0)->inList != 0) {
         if (arg0 == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803274C0, 0x233,
                                          (const char *)lbl_8032749C);
         Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
             lbl_8041D4AC, (u8 *)arg0 + 0x94);
-        *((u8 *)arg0 + 0x1C) = 0;
+        ((WavePlayer *)arg0)->inList = 0;
     }
-    u32 voiceLevel = OSDisableInterrupts();
-    void *voice = *(void **)((u8 *)arg0 + 0x18);
-    if (voice != 0)
-        Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
-    *((u8 *)arg0 + 0x1D) = 0;
+    voiceLevel = OSDisableInterrupts();
+    if (((WavePlayer *)arg0)->voice != 0)
+        Stop__Q46nw4hbm3snd6detail7AxVoiceFv(((WavePlayer *)arg0)->voice);
+    zero = 0;
+    ((WavePlayer *)arg0)->stopped = zero;
     OSRestoreInterrupts(voiceLevel);
-    void *sentinel = (u8 *)arg0 + 8;
-    void *node = *(void **)((u8 *)arg0 + 8);
+    sentinel = (u8 *)arg0 + 8;
+    node = ((WavePlayer *)arg0)->waves.next;
     while (node != sentinel) {
-        void *entry = node;
+        entry = node;
         node = *(void **)node;
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
                                          (const char *)lbl_8032746C);
-        *((u8 *)entry - 4) = 0;
-        void *iterator = entry;
+        *((u8 *)entry - 4) = zero;
+        iterator = entry;
         Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(
-            (u8 *)arg0 + 4, &iterator);
-        if (*(u32 *)((u8 *)arg0 + 0x8C) != 0) {
+            (u8 *)arg0 + 8, &iterator);
+        if (((WavePlayer *)arg0)->callback != 0) {
             if (entry == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
                                              (const char *)lbl_8032746C);
-            void *userData = (u8 *)entry - 0x18;
+            userData = (u8 *)entry - 0x18;
             if (userData == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
                                              (const char *)lbl_8032743C);
-            ((void (*)(s32, void *, void *, u32))*(u32 *)((u8 *)arg0 + 0x8C))(
-                1, arg0, userData, *(u32 *)((u8 *)arg0 + 0x90));
+            ((WavePlayer *)arg0)->callback(1, arg0, userData,
+                                             ((WavePlayer *)arg0)->callbackArg);
         }
     }
     if (*(volatile u32 *)((volatile u8 *)arg0 + 4) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327040, 0x162,
                                      (const char *)lbl_803271B8);
-    *((u8 *)arg0 + 0x1F) = 0;
+    *((u8 *)arg0 + 0x1F) = zero;
     OSRestoreInterrupts(level);
 }
 #pragma pop
