@@ -479,6 +479,7 @@ void fn_801CC594(void *arg0) {
         *((u8 *)object + 0x4C) = 0;
     }
 }
+#pragma scheduling on
 
   void fn_801CC768(void *arg0, float arg1) {
     if (arg1 != *(float *)((char *)arg0 + 8)) {
