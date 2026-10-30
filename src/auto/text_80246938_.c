@@ -281,11 +281,9 @@ void fn_80247174(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma dont_inline fn_80246DE8
-#pragma dont_inline fn_80246DF4
-#pragma dont_inline fn_80246E00
-#pragma dont_inline fn_80247174
+#pragma dont_inline on
 s32 fn_8024739C(void) { return 0; }
+#pragma dont_inline reset
 #pragma pop
 
 extern char lbl_8055F260, lbl_8055F269, lbl_8055F26A;
@@ -1072,24 +1070,73 @@ extern float fn_80235EF0(s32, s32);
 extern void fn_802353F4(s32, s32, float, float, float);
 extern void fn_802354A0(s32, s32, s32, float, float, float, float, float);
 extern void fn_80234AFC(s32, char *, float, float);
+extern int __cntlzw(unsigned int);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802491A8(void *arg0) {
-    s32 i;
-    float f;
-    s32 obj, color;
-    for (i = 0; i < *(s32 *)((char *)arg0 + 0x24); i++) {
-        f = lbl_805638E0 * ((float)i - *(float *)((char *)arg0 + 0x2C)) - lbl_805638E4;
-        obj = *(s32 *)((char *)arg0 + (i == *(s32 *)((char *)arg0 + 0x28) ? 0x18 : 0x1C));
-        fn_802353F4(obj, 0, lbl_805638E8 + f - fn_80235EF0(obj, 0), lbl_805638E4, lbl_805638B0);
-        color = i == *(s32 *)((char *)arg0 + 0x28) ? -0x100 : 0xC0202020;
-        fn_802354A0(*(s32 *)((char *)arg0 + 0x20), i, color, lbl_805638EC + f, lbl_805638F0, lbl_805638B0, lbl_805638F4, lbl_805638F4);
-        *(s32 *)(*(s32 *)((char *)arg0 + 0x30) + 4) = color;
-        fn_80234AFC(*(s32 *)((char *)arg0 + 0x30), i == 0 ? lbl_8055BF08 : lbl_8055BF00, lbl_805638E4 + f - lbl_805638F8, lbl_805638FC);
-    }
-    f = *(s32 *)((char *)arg0 + 0x28);
-    f = *(float *)((char *)arg0 + 0x2C) + lbl_80563900 * (f - *(float *)((char *)arg0 + 0x2C));
-    *(float *)((char *)arg0 + 0x2C) = f;
-}
+    union Convert {
+        struct {
+            unsigned int high;
+            unsigned int low;
+        } words;
+        double value;
+    } convertInt;
+    register double doubleBase = lbl_805638A0;
+    register char *base = (char *)arg0;
+    register float scale = lbl_805638E0;
+    register int i = 0;
+    register float subtract = lbl_805638E4;
+    register float origin = lbl_805638E8;
+    register float xOrigin = lbl_805638EC;
+    register float yOrigin = lbl_805638F8;
+    register unsigned int highWord = 0x43300000;
+    register int colorBase = (int)0xC0200000;
+    register int selected;
+    register int obj;
+    float offset;
+    float y;
+    int color;
+    int count;
 
+    count = *(int *)(base + 0x24);
+    do {
+        convertInt.words.low = (unsigned int)i ^ 0x80000000;
+        convertInt.words.high = highWord;
+        offset = (float)(convertInt.value - doubleBase);
+        selected = (unsigned int)__cntlzw(
+            *(int *)(base + 0x28) - i) >> 5;
+        offset = scale * (offset - *(float *)(base + 0x2C)) - subtract;
+        if (selected != 0) {
+            obj = *(int *)(base + 0x18);
+        } else {
+            obj = *(int *)(base + 0x1C);
+        }
+        y = origin + offset - fn_80235EF0(obj, 0);
+        fn_802353F4(obj, 0, y, subtract, lbl_805638B0);
+
+        color = selected != 0 ? -0x100 : colorBase + 0x2020;
+        fn_802354A0(*(int *)(base + 0x20), i, color,
+                    xOrigin + offset, lbl_805638F0, lbl_805638B0,
+                    lbl_805638F4, lbl_805638F4);
+        *(int *)(*(int *)(base + 0x30) + 4) = color;
+
+        fn_80234AFC(*(int *)(base + 0x30),
+                    i == 0 ? lbl_8055BF08 : lbl_8055BF00,
+                    subtract + offset - yOrigin, lbl_805638FC);
+        i++;
+    } while (i < count);
+
+    convertInt.words.low =
+        (unsigned int)*(int *)(base + 0x28) ^ 0x80000000;
+    convertInt.words.high = highWord;
+    offset = (float)(convertInt.value - doubleBase);
+    y = *(float *)(base + 0x2C);
+    y += lbl_80563900 * (offset - y);
+    *(float *)(base + 0x2C) = y;
+}
+#pragma pop
 s32 fn_80249334(void *arg0, s32 arg1) {
     s32 *val = (s32 *)((char *)arg0 + 0x28);
 
