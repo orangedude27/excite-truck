@@ -26,6 +26,7 @@ extern char lbl_803359F0[], lbl_80333B48[];
 extern void *fn_801284F8(s32, char *);
 extern void fn_8019EECC(void *, void *);
 extern void fn_80179F94(void *, void *);
+extern void *lbl_80435BA8[];
 
 void fn_801AFC28(void) {
     lbl_8055E650 = 0;
