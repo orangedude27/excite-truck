@@ -64,7 +64,7 @@ extern void fn_8022A8E4(int);
 extern double lbl_80563590;
 extern char lbl_8033FF98[];
 extern int stricmp(const char *, const char *);
-extern void fn_8022CAA8(void *);
+extern void fn_8022CAA8();
 extern float lbl_80563588;
 extern char *strncpy(char *, const char *, unsigned int);
 extern void fn_8023293C(void *, char *, float);
