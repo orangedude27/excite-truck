@@ -74,7 +74,7 @@ void fn_80273B4C(void *arg0) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80274268(void *arg0) {
-    extern void fn_80274460(void);
+    extern void fn_80274460();
     extern void fn_80273B4C(void *);
     extern float lbl_80563FB0, lbl_80563FE4, lbl_80563FE8, lbl_80563FEC;
     char *state = *(char **)((char *)arg0 + 0x140);
