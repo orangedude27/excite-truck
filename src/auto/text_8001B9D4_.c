@@ -1,6 +1,6 @@
 #include <types.h>
 
-extern s32 fn_8001D020();
+extern s32 fn_8001D020(s32, s32, s32, const char *, s32, s32, f32);
 
 extern char lbl_802FD6D8[];
 extern const char lbl_80558CD0;
