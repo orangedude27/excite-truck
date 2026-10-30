@@ -327,7 +327,6 @@ extern "C" void fn_802B5F24(s32 arg0) {
 #pragma pop
 #pragma push
 #pragma use_lmw_stmw off
-#pragma fp_contract on
 #pragma processor 750
 void fn_802B5F98(void) {
     register char *base = lbl_8034A598;
