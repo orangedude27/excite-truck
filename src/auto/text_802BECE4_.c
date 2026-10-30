@@ -41,7 +41,7 @@ extern void *lbl_804C07F0[];
 extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
-#pragma dont_inline fn_802BECE4
+#pragma dont_inline on
 int fn_802BECE4(const char *arg0, int arg1) {
     int d, c, b, a;
     int result = arg1;
