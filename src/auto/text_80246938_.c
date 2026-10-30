@@ -282,11 +282,19 @@ void fn_80247174(void) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_80247210(void) {
-    typedef s32 (*FindMethod)(void *, const char *, s32);
+#pragma cplusplus on
+extern "C" void fn_80247210(void) {
+    struct Dummy {
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+        virtual void v3() = 0;
+        virtual void v4() = 0;
+        virtual void v5() = 0;
+        virtual s32 find(const char *, s32) = 0;
+    };
     s32 retry, code, foundIndex, resource, i, candidate;
     void *root, *subobject;
-    void **vtable;
     if (lbl_8055F268 == 0) {
         lbl_8055F264 = fn_8020A5F0();
         lbl_8055F268 = 1;
@@ -321,21 +329,22 @@ void fn_80247210(void) {
     foundIndex = -1;
     resource = -1;
     i = 0;
+    goto loop_check;
 loop_items:
     root = fn_80012820(i);
     subobject = *(void **)((char *)root + 0x80);
-    vtable = *(void ***)subobject;
-    candidate = ((FindMethod)vtable[8])(subobject, lbl_80343348, -1);
+    candidate = ((Dummy *)subobject)->find(lbl_80343348, -1);
     if (retry == candidate) {
         foundIndex = i;
         root = fn_80012820(i);
         subobject = *(void **)((char *)root + 0x80);
-        vtable = *(void ***)subobject;
-        resource = ((FindMethod)vtable[8])(subobject, &lbl_8055BE98, -1);
-    } else {
-        i++;
-        if (i < fn_80012818()) goto loop_items;
+        resource = ((Dummy *)subobject)->find(&lbl_8055BE98, -1);
+        goto loop_done;
     }
+    i++;
+loop_check:
+    if (i < fn_80012818()) goto loop_items;
+loop_done:
     fn_8020C91C(resource);
     fn_8020A634();
     fn_8023BFBC(foundIndex, 0);
@@ -343,6 +352,7 @@ loop_items:
     fn_8020C91C(-1);
     lbl_8055F260 = 0;
 }
+#pragma cplusplus reset
 #pragma pop
 
 #pragma dont_inline fn_80246DE8
@@ -1148,61 +1158,52 @@ extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 void fn_802491A8(void *arg0) {
     union Convert {
-        struct {
-            unsigned int high;
-            unsigned int low;
-        } words;
+        struct { unsigned int high, low; } words;
         double value;
     } convertInt;
-    register double doubleBase = lbl_805638A0;
     register char *base = (char *)arg0;
-    register float scale = lbl_805638E0;
     register int i = 0;
-    register float subtract = lbl_805638E4;
-    register float origin = lbl_805638E8;
-    register float xOrigin = lbl_805638EC;
-    register float yOrigin = lbl_805638F8;
-    register unsigned int highWord = 0x43300000;
-    register int colorBase = (int)0xC0200000;
     register int selected;
     register int obj;
-    float offset;
+    register unsigned int highWord = 0x43300000;
+    register float yOrigin = lbl_805638F8;
+    register float xOrigin = lbl_805638EC;
+    register float origin = lbl_805638E8;
+    register float subtract = lbl_805638E4;
+    register float scale = lbl_805638E0;
+    register double doubleBase = lbl_805638A0;
+    register float offset;
     float y;
     int color;
-    int count;
 
-    count = *(int *)(base + 0x24);
     do {
         convertInt.words.low = (unsigned int)i ^ 0x80000000;
         convertInt.words.high = highWord;
-        offset = (float)(convertInt.value - doubleBase);
-        selected = (unsigned int)__cntlzw(
-            *(int *)(base + 0x28) - i) >> 5;
+        selected = (unsigned int)__cntlzw(*(int *)(base + 0x28) - i) >> 5;
+        offset = (float)convertInt.value - (float)doubleBase;
         offset = scale * (offset - *(float *)(base + 0x2C)) - subtract;
-        if (selected != 0) {
+        if (selected != 0)
             obj = *(int *)(base + 0x18);
-        } else {
+        else
             obj = *(int *)(base + 0x1C);
-        }
+
         y = origin + offset - fn_80235EF0(obj, 0);
         fn_802353F4(obj, 0, y, subtract, lbl_805638B0);
-
-        color = selected != 0 ? -0x100 : colorBase + 0x2020;
+        color = selected != 0 ? -0x100 : (int)0xC0202020;
         fn_802354A0(*(int *)(base + 0x20), i, color,
                     xOrigin + offset, lbl_805638F0, lbl_805638B0,
                     lbl_805638F4, lbl_805638F4);
         *(int *)(*(int *)(base + 0x30) + 4) = color;
-
         fn_80234AFC(*(int *)(base + 0x30),
-                    i == 0 ? lbl_8055BF08 : lbl_8055BF00,
+                    i == 0 ? (char *)&lbl_8055BF08 : (char *)&lbl_8055BF00,
                     subtract + offset - yOrigin, lbl_805638FC);
         i++;
-    } while (i < count);
+    } while (i < *(int *)(base + 0x24));
 
     convertInt.words.low =
         (unsigned int)*(int *)(base + 0x28) ^ 0x80000000;
     convertInt.words.high = highWord;
-    offset = (float)(convertInt.value - doubleBase);
+    offset = (float)convertInt.value - (float)doubleBase;
     y = *(float *)(base + 0x2C);
     y += lbl_80563900 * (offset - y);
     *(float *)(base + 0x2C) = y;
