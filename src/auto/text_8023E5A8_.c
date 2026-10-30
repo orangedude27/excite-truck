@@ -35,6 +35,7 @@ extern void fn_8023F874(void);
 extern int lbl_8055F1B4, lbl_8055F1B8;
 extern unsigned char lbl_8055F1BC;
 extern unsigned char lbl_80341CE4[], lbl_80341CF0[];
+#pragma use_lmw_stmw off
 void fn_8023E5B4(void **arg0, int arg1) {
     int values[36];
     int now;
@@ -42,7 +43,6 @@ void fn_8023E5B4(void **arg0, int arg1) {
     int i;
     int length;
     void *second;
-    char *(*method)(void *);
 
     now = fn_802E2C20();
     lbl_8055F1B0 = arg0;
@@ -51,7 +51,7 @@ void fn_8023E5B4(void **arg0, int arg1) {
     lbl_8055F1B8 = now + 0x3e8;
     handle = (int)fn_801284F8(0x14, (const char *)lbl_80341CE4);
     if (handle != 0)
-        handle = fn_8022D228(14, 0x20);
+        handle = ((int (*)(int, int, int))fn_8022D228)(handle, 14, 0x20);
     for (i = 0; i < 14; i++)
         fn_8022D350(handle, &lbl_8055BC98, 0);
 
@@ -66,9 +66,8 @@ void fn_8023E5B4(void **arg0, int arg1) {
     values[14] = 1;
     values[15] = 0;
 
-    method = (char *(*)(void *))(*(void ***)arg0)[3];
-    length = strlen(method(arg0));
-    second = method(arg0);
+    length = strlen(((char *(*)(void *))(*(void ***)arg0)[3])(arg0));
+    second = ((char *(*)(void *))(*(void ***)arg0)[3])(arg0);
 
     values[0] = *(int *)&lbl_802FA280[0];
     values[2] = *(int *)&lbl_802FA280[8];
@@ -98,6 +97,7 @@ void fn_8023E5B4(void **arg0, int arg1) {
     fn_802146BC(values, -999, -999, 1);
     fn_8022D2BC(handle, 1);
 }
+#pragma use_lmw_stmw on
 
 extern unsigned char lbl_80341CC8[];
 extern unsigned char lbl_8055BCA8, lbl_8055BCB0, lbl_8055BCB8;
@@ -423,85 +423,88 @@ extern unsigned char lbl_8055BD20;
 #pragma use_lmw_stmw off
 #pragma dont_inline fn_8023E5A8
 int fn_8023F2C4(void) {
-    struct Desc {
-        void *p0; int n1; int n2; int n3; int n4;
-        void *p5; int n6; void (*callback)(void); int n8; int n9;
-        void *p10; int n11; void *p12; int n13; int n14;
-        void *p15; int n16; void *p17; int n18; int n19;
-        void *p20; int n21; void *p22; int n23; int n24;
-        void *p25; int n26; void *p27; int n28; int n29;
-        void *p30; int n31; void *p32; int n33; int n34;
-        void *p35; int n36; void *p37; int n38; int n39;
-        void *p40; int n41; void *p42; int n43; int n44;
-        void *p45; int n46; void *p47; int n48; int n49;
-        int n50; int n51; int n52; int n53; int n54;
-    };
-    struct Data { int args[5]; volatile struct Desc values; };
-    volatile struct Data data;
-    data.values.p0 = (void *)&lbl_8055B860;
-    data.values.p5 = (void *)&lbl_8055B860;
-    data.values.n1 = 6;
-    data.values.n6 = 6;
-    data.values.callback = fn_8023F9E8;
-    data.values.n3 = -2;
-    data.values.n4 = 0xD;
-    data.values.n2 = 0;
-    data.values.n11 = 3;
-    data.values.n8 = -1;
-    data.values.n9 = 0x1B;
-    data.values.p10 = (void *)&lbl_8055BCA0;
-    data.values.p12 = (void *)(lbl_80341CC8+0x3F4);
-    data.values.n13 = 4;
-    data.values.n14 = 0;
-    data.values.n16 = 3;
-    data.values.p15 = (void *)&lbl_8055BCD8;
-    data.values.p17 = (void *)(lbl_80341CC8+0x40C);
-    data.values.n18 = 4;
-    data.values.n19 = 0;
-    data.values.n21 = 3;
-    data.values.p20 = (void *)&lbl_8055BCE0;
-    data.values.p22 = (void *)(lbl_80341CC8+0x428);
-    data.values.n23 = 4;
-    data.values.n24 = 0;
-    data.values.n26 = 3;
-    data.values.p25 = (void *)&lbl_8055BCE8;
-    data.values.p27 = (void *)(lbl_80341CC8+0x238);
-    data.values.n28 = 4;
-    data.values.n29 = 0;
-    data.values.n31 = 3;
-    data.values.p30 = (void *)&lbl_8055BCF0;
-    data.values.p32 = (void *)&lbl_8055BCB8;
-    data.values.n33 = 4;
-    data.values.n34 = 0;
-    data.values.n36 = 3;
-    data.values.p35 = (void *)&lbl_8055BCF8;
-    data.values.p37 = (void *)&lbl_8055BCB8;
-    data.values.n38 = 4;
-    data.values.n39 = 0;
-    data.values.n41 = 3;
-    data.values.p40 = (void *)&lbl_8055BD08;
-    data.values.p42 = (void *)&lbl_8055BD20;
-    data.values.n43 = 4;
-    data.values.n44 = 0;
-    data.values.n46 = 3;
-    data.values.p45 = (void *)&lbl_8055BD00;
-    data.values.p47 = (void *)(lbl_80341CC8+0x3E8);
-    data.values.n48 = 4;
-    data.values.n49 = 0;
-    data.values.n50 = lbl_804987E0[0];
-    data.values.n51 = lbl_804987E0[1];
-    data.values.n52 = lbl_804987E0[2];
-    data.values.n53 = lbl_804987E0[3];
-    data.values.n54 = lbl_804987E0[4];
+    volatile int args[5];
+    volatile int values[55];
+    register int pC = (int)(lbl_80341CC8 + 0x3E8);
+    volatile int *config = (volatile int *)lbl_804987E0;
+    volatile int *source = (volatile int *)lbl_802FA2D0;
+    int config0, config1, config2, config3, config4;
+    int arg0, arg1, arg2, arg3, arg4;
+    values[0] = (int)&lbl_8055B860;
+    values[5] = (int)&lbl_8055B860;
+    values[1] = 6;
+    values[6] = 6;
+    values[7] = (int)fn_8023F9E8;
+    values[3] = -2;
+    values[4] = 0xD;
+    values[2] = 0;
+    values[11] = 3;
+    values[8] = -1;
+    values[9] = 0x1B;
+    values[10] = (int)&lbl_8055BCA0;
+    values[12] = (int)(lbl_80341CC8+0x3F4);
+    values[13] = 4;
+    values[14] = 0;
+    values[16] = 3;
+    values[15] = (int)&lbl_8055BCD8;
+    values[17] = (int)(lbl_80341CC8+0x40C);
+    values[18] = 4;
+    values[19] = 0;
+    values[21] = 3;
+    values[20] = (int)&lbl_8055BCE0;
+    values[22] = (int)(lbl_80341CC8+0x428);
+    values[23] = 4;
+    values[24] = 0;
+    values[26] = 3;
+    values[25] = (int)&lbl_8055BCE8;
+    values[27] = (int)(lbl_80341CC8+0x238);
+    values[28] = 4;
+    values[29] = 0;
+    values[31] = 3;
+    values[30] = (int)&lbl_8055BCF0;
+    values[32] = (int)&lbl_8055BCB8;
+    values[33] = 4;
+    values[34] = 0;
+    values[36] = 3;
+    values[35] = (int)&lbl_8055BCF8;
+    values[37] = (int)&lbl_8055BCB8;
+    values[38] = 4;
+    values[39] = 0;
+    values[41] = 3;
+    config0 = *config++;
+    config1 = *config++;
+    config2 = *config++;
+    config3 = *config++;
+    config4 = *config;
+    arg0 = *source++;
+    arg1 = *source++;
+    arg2 = *source++;
+    arg3 = *source++;
+    arg4 = *source;
+    values[40] = (int)&lbl_8055BD08;
+    values[42] = (int)&lbl_8055BD20;
+    values[43] = 4;
+    values[44] = 0;
+    values[46] = 3;
+    values[45] = (int)&lbl_8055BD00;
+    values[47] = (int)(lbl_80341CC8+0x3E8);
+    values[48] = 4;
+    values[49] = 0;
+    values[50] = config0;
+    values[51] = config1;
+    values[52] = config2;
+    values[53] = config3;
+    values[54] = config4;
     lbl_8055F1C4 = 0;
-    data.args[0] = lbl_802FA2D0[0];
-    data.args[1] = lbl_802FA2D0[1];
-    data.args[2] = lbl_802FA2D0[2];
-    data.args[3] = lbl_802FA2D0[3];
-    data.args[4] = lbl_802FA2D0[4];
-    data.args[0] = (int)fn_8023E5A8();
-    data.args[1] = (int)&data.values;
-    return (((int (*)(void *, int, int, int))fn_802146BC)((void *)data.args, -999, -999, 1) + 2) == 0;
+    args[0] = arg0;
+    args[1] = arg1;
+    args[2] = arg2;
+    args[3] = arg3;
+    args[4] = arg4;
+    args[0] = (int)((void *(*)(void *, int, int, int, int, int, int, int))fn_8023E5A8)(
+        (void *)pC, arg4, arg3, arg2, arg1, arg0, config4, config3);
+    args[1] = (int)values;
+    return (((int (*)(void *, int, int, int))fn_802146BC)((void *)args, -999, -999, 1) + 2) == 0;
 }
 
 extern unsigned char lbl_8055BD28;
