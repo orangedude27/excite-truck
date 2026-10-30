@@ -655,7 +655,7 @@ int fn_801DDA84(int *arg0, int arg1, float farg0, float farg1, float farg2) {
 
 #pragma push
 #pragma paired_single off
-#pragma opt_common_subs off
+#pragma opt_common_subs on
 #pragma scheduling invalid_target
 float fn_801DDC8C(float farg0, float farg1) {
     int *state = (int *)lbl_8055E990;
@@ -672,12 +672,12 @@ float fn_801DDC8C(float farg0, float farg1) {
     int layerIndex;
     unsigned short sample;
     int next;
+    float offsetX;
+    float scaleX;
+    float offsetZ;
+    float scaleZ;
     float x;
     float z;
-    float offsetX;
-    float offsetZ;
-    float scaleX;
-    float scaleZ;
     float roundX;
     float roundZ;
     float value;
