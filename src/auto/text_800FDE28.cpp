@@ -52,6 +52,7 @@ extern "C" u32 OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(u32 level);
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *);
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
+extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, u32);
 
 #pragma push
