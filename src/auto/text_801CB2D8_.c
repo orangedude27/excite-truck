@@ -1,5 +1,6 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 extern void *memset(void *, int, unsigned long);
+extern void fn_8001BE70(void *);
 extern unsigned int fn_801CE898(void);
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/stack/include/hcimsgs.h"
@@ -448,17 +449,18 @@ void fn_801CC8FC(void *arg0) {
     *(int *)((char *)arg0 + 4) = 0;
 }
 
+#pragma scheduling invalid_target
 void fn_801CC918(void) {
     extern void fn_8001BE70(void *);
     extern void fn_802AE0E0(void);
     extern float lbl_805629E4;
     extern float lbl_805629FC;
     extern float lbl_80562A08;
-    register unsigned char *base;
-    register int offset;
-    register int i;
     void *entry;
     void *object;
+    register unsigned char *base;
+    register int i;
+    register int offset;
     float floatE4;
     float floatFC;
     float floatA08;
@@ -471,7 +473,6 @@ void fn_801CC918(void) {
         entry = *(void **)((char *)*(void **)(base + 0x18) + offset);
         if (entry != 0) fn_8001BE70(*(void **)entry);
     }
-
     i = 0;
     *(int *)(base + 0x29C) = i;
     *(void **)(base + 0x2A0) = base + 0x29C;
@@ -545,7 +546,7 @@ void fn_801CC918(void) {
         *(unsigned char *)((char *)object + 0x4C) = 0;
     }
 }
-
+#pragma scheduling on
 void fn_801CCAEC(int arg0) {
     int index;
     unsigned char *manager;
