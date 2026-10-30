@@ -355,19 +355,17 @@ extern float fn_801EA0E8(float, float);
 extern int fn_801DA648(int);
 extern int fn_801DA688(int);
 #pragma push
-#pragma paired off
-#pragma paired_single off
 #pragma scheduling invalid_target
 void fn_801DAF68(void *arg0) {
     register void *base;
     register unsigned char *entry;
     register int index;
-    register float rate;
-    register float threshold;
-    register float scale;
-    float transform[12];
-    float first[3];
-    float second[3];
+    register f32 rate;
+    register f32 threshold;
+    register f32 scale;
+    Mtx transform;
+    Vec first;
+    Vec second;
 
     scale = lbl_80562B5C;
     base = arg0;
@@ -380,16 +378,16 @@ void fn_801DAF68(void *arg0) {
             continue;
         if (entry[0x18] != 0)
             fn_801DA0EC(*(int *)(entry + 0x28), rate * *(float *)(entry + 0x1C));
-        if (fn_801DA294(*(int *)(entry + 0x28), transform, first, second) != 0) {
-            first[0] *= scale;
-            first[1] *= scale;
-            first[2] *= scale;
-            second[0] *= scale;
-            second[1] *= scale;
-            second[2] *= scale;
+        if (fn_801DA294(*(int *)(entry + 0x28), transform, &first.x, &second.x) != 0) {
+            first.x *= scale;
+            first.y *= scale;
+            first.z *= scale;
+            second.x *= scale;
+            second.y *= scale;
+            second.z *= scale;
             if (entry[0x10] != 0)
-                transform[10] = *(float *)(entry + 0x14) + fn_801EA0E8(transform[9], transform[11]);
-            fn_8017CFFC(*(int *)(entry + 0x20), transform, first, second);
+                transform[2][2] = *(float *)(entry + 0x14) + fn_801EA0E8(transform[2][1], transform[2][3]);
+            fn_8017CFFC(*(int *)(entry + 0x20), transform, &first.x, &second.x);
         } else if (lbl_8055E980 == 0) {
             lbl_8055E980 = 1;
             ((void (*)(char *, ...))fn_802E30C8)(&lbl_8055ADB4, lbl_80339318);
@@ -406,4 +404,66 @@ void fn_801DAF68(void *arg0) {
         }
     }
 }
+
+extern int sscanf(const char *, const char *, ...);
+extern void DBPrintf_8013B490(const char *, ...);
+extern char lbl_8055ADB8;
+int fn_801DB13C(void *arg0, const char *arg1) {
+    char key[64];
+    char text[64];
+    char *entry;
+    int matchAll;
+    int found;
+    int i;
+    int one;
+    float value;
+
+    if (sscanf(arg1, &lbl_8055ADB8, key, text) == 2) {
+        matchAll = strcmp(key, lbl_8055ADB0) == 0;
+        value = lbl_80562B50;
+        entry = (char *)arg0 + 8;
+        found = 0;
+        i = 0;
+        one = 1;
+        do {
+            if ((matchAll != 0 || strcmp(entry, key) == 0) &&
+                ((int (*)(int, void *))fn_801DA064)(*(int *)(entry + 0x28), text) != 0) {
+                fn_801DA198(*(int *)(entry + 0x28), lbl_80562B54);
+                *(unsigned char *)(entry + 0x18) = (unsigned char)one;
+                found = 1;
+                *(float *)(entry + 0x1C) = value;
+            }
+            entry += 0x2C;
+            i++;
+        } while (i < *(int *)((char *)arg0 + 0x5808));
+        if (found != 0)
+            DBPrintf_8013B490(lbl_80339240 + 0x110, key, text);
+        else
+            DBPrintf_8013B490(lbl_80339240 + 0x12C, key, text);
+    } else if (sscanf(arg1, &lbl_8055ADB4, text) == 1) {
+        matchAll = strcmp(lbl_8055ADB0, lbl_8055ADB0) == 0;
+        value = lbl_80562B50;
+        entry = (char *)arg0 + 8;
+        found = 0;
+        i = 0;
+        one = 1;
+        do {
+            if ((matchAll != 0 || strcmp(entry, lbl_8055ADB0) == 0) &&
+                ((int (*)(int, void *))fn_801DA064)(*(int *)(entry + 0x28), text) != 0) {
+                fn_801DA198(*(int *)(entry + 0x28), lbl_80562B54);
+                *(unsigned char *)(entry + 0x18) = (unsigned char)one;
+                found = 1;
+                *(float *)(entry + 0x1C) = value;
+            }
+            entry += 0x2C;
+            i++;
+        } while (i < *(int *)((char *)arg0 + 0x5808));
+        if (found != 0)
+            DBPrintf_8013B490(lbl_80339240 + 0x148, text);
+        else
+            DBPrintf_8013B490(lbl_80339240 + 0x160, text);
+    }
+    return 1;
+}
+
 #pragma pop
