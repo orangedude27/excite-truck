@@ -250,6 +250,7 @@ void fn_801CB8FC(void) {
     fn_801CE8CC();
 }
 
+#pragma dont_inline on
 int fn_801CB900(int *arg0, int arg1) {
     int result = 0;
     if (arg0 != 0 && arg1 == fn_8001BD28(*arg0)) {
@@ -257,6 +258,7 @@ int fn_801CB900(int *arg0, int arg1) {
     }
     return result;
 }
+#pragma dont_inline reset
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -1072,6 +1074,82 @@ void fn_801CD730(s32 *arg0, s32 *arg1) {
         if (arg1 != 0) *arg1 = *(s32 *)((u8 *)lbl_8055E884 + 0x2B0);
     }
 }
+
+extern char lbl_80337D90[];
+extern f32 lbl_805629FC;
+#pragma push
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_801CD7BC(int arg0, int arg1, f32 farg0) {
+    u8 *base;
+    u8 *object;
+    s32 statusIndex;
+    s32 status;
+    s32 index;
+    s32 offset;
+    s32 count;
+    s32 current;
+    int *items;
+
+    if (fn_801CE898() != 0)
+        goto done;
+    base = (u8 *)lbl_8055E884;
+    if (base[0x10] != 0)
+        goto done;
+
+    object = ((u8 *(*)(s32))fn_801EA9A0)(arg0);
+    if (object[0] != 0)
+        statusIndex = object[0xB4] & 3;
+    else
+        statusIndex = -1;
+    if (statusIndex >= 0)
+        status = base[statusIndex + 0x11];
+    else
+        status = 1;
+    if (status != 0)
+        goto done;
+
+    object = ((u8 *(*)(s32))fn_801EA9A0)(arg0);
+    if (object[0] == 0 || arg1 == 0)
+        goto done;
+
+    if (*(f32 *)(base + 0x2B8) >= lbl_805629FC) {
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80337D90, farg0);
+        goto done;
+    }
+
+    items = *(int **)(base + 0x18);
+    index = 0;
+    offset = 0;
+loop:
+    if (fn_801CB900(*(int **)((u8 *)items + offset), 0x20507) != 0)
+        goto found;
+    offset += 4;
+    index++;
+    count = *(s32 *)(base + 0x1C);
+    if (index < count)
+        goto loop;
+    index = -1;
+found:
+    if (index < 0)
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, 0x20507);
+    fn_801CD130_dispatch(*(void **)((u8 *)items + index * 4), farg0);
+    *(f32 *)(base + 0x2B8) = farg0;
+    *(u8 *)(base + 0x2BC) = 1;
+    if (*(s32 *)(base + 0x2B4) >= 0)
+        goto done;
+    if (*(u8 *)(base + 0x2BC) == 0)
+        goto done;
+    current = *(s32 *)(base + 0x2AC);
+    if (current < 0)
+        goto done;
+    current = fn_8000DA10();
+    *(s32 *)(base + 0x2B4) = ((s32 (*)(s32, s32, s32, s32, f32))fn_8001BBB8)(
+        current, *(s32 *)base, *(s32 *)(base + 4), *(s32 *)(base + 0x2AC), *(f32 *)(base + 0x2B8));
+done:
+    return;
+}
+#pragma pop
 
 extern f32 lbl_805629E4, lbl_805629F0, lbl_805629FC, lbl_80562A10, lbl_80562A14, lbl_80562A18;
 extern s32 lbl_802F9930[3];
