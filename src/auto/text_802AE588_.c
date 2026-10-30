@@ -255,9 +255,9 @@ extern "C" void fn_802AE7F4(void) {
     float values[8];
     float total;
     register ETConfigPaths *base = (ETConfigPaths *)lbl_8034A020;
-    int i = 0;
+    int i;
 
-    lbl_8055F980 = fn_8012C33C(&((char*)base)[i]);
+    lbl_8055F980 = fn_8012C33C(base);
     fn_802AE5E0(0x400);
     fn_802BE7F8();
     fn_802B40F8();
