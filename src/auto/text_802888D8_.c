@@ -964,6 +964,7 @@ int fn_80289D94(void *arg0) {
             f1, f2, f3, f4, f5, f6, f7);
 }
 
+extern int fn_8028A1A4(int);
 int fn_80289EA0(int arg0) {
     fn_8028A084();
     fn_8028A1A4(arg0);
@@ -1100,29 +1101,46 @@ extern void fn_8028A32C(void);
 extern char lbl_80348B7C[], lbl_80348B8C[];
 extern int lbl_8055C88C, lbl_8055C890, lbl_8055C898;
 int fn_8028A1A4(int out) {
- int n=fn_80287B14(), i, j;
- char *base, *entry;
- void *obj, *item;
- float a[3], b[3];
- fn_8012850C(n*0x68+0x10,&lbl_80348B7C,n*0x68);
- base=(char *)fn_8002F37C(n*0x68+0x10,fn_8028A32C,0,0x68,n);
- *(char **)out=base;
- for(i=0,entry=base;i<fn_80287B14();i++,entry+=0x68) {
-  obj=(void *)fn_80288208(i);
-  if(fn_80287E20(obj, &lbl_80348B8C)) {
-   obj=fn_80287E80((int)obj,&lbl_80348B8C);
-   *(int *)(entry+0x60)=((int (*)(void *,int))(*(void ***)obj)[7])(obj,lbl_8055C890);
-   for(j=0;j<*(int *)(entry+0x60);j++) {
-    item=((void *(*)(void *,int))(*(void ***)obj)[24])(obj,j);
-    ((void (*)(void *,float *,int))(*(void ***)item)[13])(item,a,lbl_8055C88C);
-    *(float *)(entry+0)=a[0]; *(float *)(entry+4)=a[1]; *(float *)(entry+8)=a[2];
-    ((void (*)(void *,float *,int))(*(void ***)item)[13])(item,b,lbl_8055C898);
-    *(float *)(entry+0xc)=b[0]; *(float *)(entry+0x10)=b[1]; *(float *)(entry+0x14)=b[2];
-    entry+=0x18;
-   }
-  } else *(int *)(entry+0x60)=0;
- }
- return out;
+    int count = fn_80287B14();
+    int i;
+    int j;
+    int offset;
+    char *entry;
+    char *cursor;
+    void *obj;
+    void *item;
+    float a[3];
+    float b[3];
+
+    *(void **)out = fn_8002F37C(
+        (int)fn_8012850C(count * 0x68 + 0x10, lbl_80348B7C, count * 0x68),
+        fn_8028A32C, 0, 0x68, count);
+
+    for (i = 0, offset = 0; i < fn_80287B14(); i++, offset += 0x68) {
+        obj = (void *)fn_80288208(i);
+        entry = (char *)*(void **)out + offset;
+        if (fn_80287E20(obj, lbl_80348B8C)) {
+            obj = fn_80287E80((int)obj, lbl_80348B8C);
+            *(int *)(entry + 0x60) =
+                ((int (*)(void *, int))(*(void ***)obj)[7])(obj, lbl_8055C890);
+            for (j = 0, cursor = entry; j < *(int *)(entry + 0x60);
+                 j++, cursor += 0x18) {
+                item = ((void *(*)(void *, int))(*(void ***)obj)[24])(obj, j);
+                ((void (*)(float *, void *, int))(*(void ***)item)[13])(
+                    a, item, lbl_8055C88C);
+                *(float *)(cursor + 0x0) = a[0];
+                *(float *)(cursor + 0x4) = a[1];
+                *(float *)(cursor + 0x8) = a[2];
+                ((void (*)(float *, void *, int))(*(void ***)item)[13])(
+                    b, item, lbl_8055C898);
+                *(float *)(cursor + 0xC) = b[0];
+                *(float *)(cursor + 0x10) = b[1];
+                *(float *)(cursor + 0x14) = b[2];
+            }
+        } else {
+            *(int *)(entry + 0x60) = 0;
+        }
+    }
 }
 
 void fn_8028A32C(void) {}
