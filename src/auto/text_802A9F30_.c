@@ -545,7 +545,7 @@ void fn_802AB770(int arg0) {
     else
         *(float *)(state + 0xE4) += lbl_80564A34 * delta;
     wave = lbl_805649F0;
-    if (delta < -lbl_80558DC4 || delta > lbl_80558DC4)
+    if (delta < -*(float *)(void *)&lbl_80558DC4 || delta > *(float *)(void *)&lbl_80558DC4)
         wave = lbl_80564A9C * (float)(int)fn_80287BC8(lbl_805649F0, lbl_805649FC);
     color = 1;
     if (angle > lbl_80564A00 && (float)fn_8002EFB4(angle, lbl_80564AA0) <= lbl_80564A34) color = 0;
