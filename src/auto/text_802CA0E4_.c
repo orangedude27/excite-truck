@@ -1146,7 +1146,6 @@ void fn_802CC03C(int **arg0, int *arg1, int arg2) {
     ((void (*)(int **, int, int *))fn_802CBB9C)(arg0, (int)arg0 + 4, arg1);
 }
 
-#pragma scheduling invalid_target
 #pragma optimization_level 2
 int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
     register int result = 0;
