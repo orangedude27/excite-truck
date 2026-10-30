@@ -1,6 +1,22 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include "revolution/MTX/vec.h"
+
+extern void *fn_80131808(void *);
+extern void fn_80131818(void *);
+extern void fn_8012850C(s32, const char *);
+extern void *fn_8002F37C(void (*)(void), void *, s32, s32);
+extern void *fn_802CE3A4(s32, s32, s32);
+extern s32 fn_802CE630(void *, const char *, s32);
+extern void fn_802E30C8(const char *);
+extern void fn_802025D4(void);
+extern int sprintf(char *, const char *, ...);
+extern char lbl_8033B9F8[];
+extern char lbl_804888B8[];
+extern char lbl_8055B418[];
+extern char lbl_8055B420[];
+extern float lbl_805630A4;
+extern int lbl_8055B414, lbl_8055ECDC;
 extern int lbl_8055ECC0;
 extern int lbl_8055ECC4;
 extern int lbl_8055ECC8;
