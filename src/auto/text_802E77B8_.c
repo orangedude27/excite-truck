@@ -280,50 +280,97 @@ extern float lbl_80565160, lbl_8056517C, lbl_80565180, lbl_80565184, lbl_8056518
 extern float lbl_8056518C, lbl_80565190, lbl_80565194, lbl_80565198;
 #pragma push
 #pragma dont_inline on
+#pragma paired_single off
+#pragma scheduling invalid_target
 void fn_802E7DDC(void *arg0, void *arg1) {
-    float f0, f02, f1, f31, f4;
-    double df1;
-    int r5;
-    unsigned int r31 = *(unsigned int *)arg1;
-    *(int *)((char *)arg0 + 0x48) = 0x800F;
-    *((signed char *)arg0 + 0x64) = *(int *)((char *)arg0 + 0x624) != 0;
-    *(int *)((char *)arg0 + 0x4C) = 0xFF;
-    r5 = 0;
-    *(int *)((char *)arg0 + 0x54) |= 0x10;
-    if (r31 & 2) r5 = 1;
-    if (r31 & 1) r5 |= 4;
-    if (r31 & 8) r5 |= 8;
-    if (r31 & 4) r5 |= 2;
-    *(int *)((char *)arg0 + 0x44) = r5;
-    df1 = -(float)fn_8002EFB0(*(float *)((char *)arg1 + 0xC), -*(float *)((char *)arg1 + 0x10));
-    f31 = (float)df1;
-    *(float *)((char *)arg0 + 0x6C) = (float)df1;
-    if (f31 > lbl_80565180) f31 -= lbl_80565184;
-    else if (f31 < lbl_80565188) f31 += lbl_80565184;
-    f1 = lbl_80565160;
-    f0 = lbl_8056518C * *(float *)((char *)arg1 + 0x14);
-    if (f1 >= f0) f1 = f0;
-    f0 = lbl_8056517C;
-    if (f1 <= f0) f1 = f0;
-    *(float *)((char *)arg0 + 4) = fn_802E78A4(f1);
-    f02 = lbl_80565194 * f31;
-    f1 = (lbl_80565190 * (f02 / lbl_80565180));
-    f4 = lbl_80565160;
-    if (f4 >= f1) f4 = f1;
-    f0 = lbl_8056517C;
-    if (f4 <= f0) f4 = f0;
-    *(float *)((char *)arg0 + 8) = f4;
-    *((signed char *)arg0 + 0x25) = (r31 >> 9) & 1;
-    *((signed char *)arg0 + 0x24) = (r31 >> 8) & 1;
-    *((signed char *)arg0 + 0x28) = (r31 >> 11) & 1;
-    *((signed char *)arg0 + 0x26) = (r31 >> 10) & 1;
-    *((signed char *)arg0 + 0x2B) = (r31 >> 4) & 1;
-    *((signed char *)arg0 + 0x27) = (r31 >> 12) & 1;
-    *((signed char *)arg0 + 0x29) = (r31 >> 15) & 1;
-    *(int *)((char *)arg0 + 0x54) |= 0x20;
-    *(float *)((char *)arg0 + 0x58) = lbl_80565198 * -*(float *)((char *)arg1 + 0x14);
-    *(float *)((char *)arg0 + 0x5C) = lbl_80565198 * *(float *)((char *)arg1 + 0x10);
-    *(float *)((char *)arg0 + 0x60) = lbl_80565198 * -*(float *)((char *)arg1 + 0xC);
+    typedef struct {
+        unsigned char pad0[4];
+        float angle;
+        float tilt;
+        unsigned char pad0C[0x18];
+        signed char buttons[8];
+        unsigned char pad2C[0x18];
+        int buttonMask;
+        int config0;
+        int config1;
+        unsigned char pad50[4];
+        int flags;
+        float x;
+        float y;
+        float z;
+        signed char valid;
+        unsigned char pad65[7];
+        float heading;
+        unsigned char pad70[0x5B4];
+        int sound;
+    } Record;
+    typedef struct {
+        unsigned int hold;
+        unsigned int trig;
+        unsigned int release;
+        float acc[3];
+        float accValue;
+    } Input;
+    Record *out = (Record *)arg0;
+    Input *in = (Input *)arg1;
+    float temp_f0;
+    float temp_f0_2;
+    float var_f1;
+    float var_f31;
+    float var_f4;
+    double temp_f1;
+    int var_r5;
+    unsigned int temp_r31;
+
+    temp_r31 = in->hold;
+    out->config0 = 0x800F;
+    out->valid = out->sound != 0;
+    out->config1 = 0xFF;
+    var_r5 = 0;
+    out->flags |= 0x10;
+    if (temp_r31 & 2) var_r5 = 1;
+    if (temp_r31 & 1) var_r5 |= 4;
+    if (temp_r31 & 8) var_r5 |= 8;
+    if (temp_r31 & 4) var_r5 |= 2;
+    out->buttonMask = var_r5;
+    temp_f1 = -(float)fn_8002EFB0(in->acc[0], -in->acc[1]);
+    var_f31 = (float)temp_f1;
+    out->heading = (float)temp_f1;
+    if (var_f31 > lbl_80565180) var_f31 -= lbl_80565184;
+    else if (var_f31 < lbl_80565188) var_f31 += lbl_80565184;
+    var_f1 = lbl_80565160;
+    temp_f0 = lbl_8056518C * in->acc[2];
+    if (var_f1 < temp_f0) {
+    } else {
+        var_f1 = temp_f0;
+    }
+    if (var_f1 > lbl_8056517C) {
+    } else {
+        var_f1 = lbl_8056517C;
+    }
+    out->angle = fn_802E78A4(var_f1);
+    var_f4 = lbl_80565160;
+    temp_f0_2 = lbl_80565190 * ((lbl_80565194 * var_f31) / lbl_80565180);
+    if (var_f4 < temp_f0_2) {
+    } else {
+        var_f4 = temp_f0_2;
+    }
+    if (var_f4 > lbl_8056517C) {
+    } else {
+        var_f4 = lbl_8056517C;
+    }
+    out->tilt = var_f4;
+    out->buttons[1] = (temp_r31 >> 9) & 1;
+    out->buttons[0] = (temp_r31 >> 8) & 1;
+    out->buttons[4] = (temp_r31 >> 11) & 1;
+    out->buttons[2] = (temp_r31 >> 10) & 1;
+    out->buttons[7] = (temp_r31 >> 4) & 1;
+    out->buttons[3] = (temp_r31 >> 12) & 1;
+    out->buttons[5] = (temp_r31 >> 15) & 1;
+    out->flags |= 0x20;
+    out->x = lbl_80565198 * -in->acc[2];
+    out->y = lbl_80565198 * in->acc[1];
+    out->z = lbl_80565198 * -in->acc[0];
 }
 #pragma pop
 
