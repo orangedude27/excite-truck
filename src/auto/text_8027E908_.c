@@ -1246,6 +1246,7 @@ found_item_2:
 #pragma cplusplus reset
 #pragma scheduling on
 
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_80280A38(void) {
     class Object {
@@ -1266,7 +1267,7 @@ extern "C" int fn_80280A38(void) {
     register void **items;
     void *selected;
     char *src;
-    volatile char *dst;
+    char *dst;
     int n;
 
     if (lbl_8055F688 == 0)
@@ -1343,6 +1344,7 @@ clear:
 done:
     return 0;
 }
+#pragma scheduling on
 extern "C" int fn_80280C00(void) {
     class Object {
     public:
@@ -2536,7 +2538,67 @@ extern "C" int fn_802840FC(int *arg0, void *arg1, int *arg2, void *arg3) {
 exit_loop:
     return var_r31;
 }
-#pragma cplusplus reset
+
+#pragma cplusplus on
+extern "C" int fn_80019088(void);
+extern "C" void *fn_80019054(int);
+extern "C" int fn_8024FBD8(void *, int);
+extern "C" int stricmp(const char *, ...);
+extern "C" int lbl_8055C860;
+#pragma push
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_80284580(int arg0, int arg1, void *arg2, int arg3) {
+    class Source {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2();
+        virtual int getCount();
+        virtual void *getAt(int);
+        virtual void f5(); virtual void f6(); virtual void f7();
+        virtual int getType(int);
+    };
+    class Buffer {
+    public:
+        virtual void destroy(int);
+        virtual void set(void *, int, int);
+        virtual void insert(int, int);
+        virtual int getCount();
+    };
+    int offset;
+    if (arg2 != 0)
+        offset = ((Source *)arg2)->getCount();
+    else
+        offset = 0;
+    int base = fn_80019088();
+    base += offset;
+    Buffer *buffer = (Buffer *)fn_8025007C(base);
+    if (arg2 != 0) {
+        int type;
+        int i = 0;
+        while (i < ((Source *)arg2)->getCount()) {
+            buffer->set(((Source *)arg2)->getAt(i), 1, 0);
+            type = ((Source *)arg2)->getType(i);
+            buffer->insert(buffer->getCount() - 1, type);
+            ++i;
+        }
+    }
+    int i = 0;
+    while (i < fn_80019088()) {
+        char **entry = (char **)fn_80019054(i);
+        if (((int (*)(const char *, const char *))stricmp)(entry[0], (const char *)&lbl_8055C860) == 0) {
+            int boundary = *(int *)((char *)entry + 8);
+            if (arg0 < boundary && arg1 >= boundary)
+                buffer->set(*(void **)((char *)entry + 4), 1, 0);
+        }
+        ++i;
+    }
+    if (buffer->getCount() > 0)
+        fn_8024FBD8(buffer, arg3);
+    if (buffer != 0)
+        buffer->destroy(1);
+}
+#pragma scheduling reset
+#pragma pop
 
 #pragma push
 #pragma processor 750
