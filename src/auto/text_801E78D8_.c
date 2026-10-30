@@ -69,8 +69,9 @@ void fn_801E7C1C(void) {
     fn_801E7984();
 }
 
-void fn_801E7DEC(void) {
-    fn_801E7C28();
+extern void fn_801E7C28(void *);
+void fn_801E7DEC(void *arg0) {
+    fn_801E7C28(arg0);
 }
 
 long fn_801E7DF0(long arg0) {
@@ -143,37 +144,86 @@ void fn_801E837C(void) {
 
 void fn_801E83D4(void) { extern int fn_801B89F8(void); extern void *lbl_8055AF0C; extern void fn_801EBD18(void *); if (fn_801B89F8() == 0 || lbl_8055AF0C == 0) fn_801EBD18(lbl_8055AF0C); }
 
-void fn_801E8410(void) {
-    extern int fn_801B89F8(void); extern float fn_801E8854(long);
-    extern void fn_801E88B4(long *,long *,long *,long *,long);
-    extern void fn_801E8148(void); extern void fn_801E95DC(void);
-    extern void fn_801EA404(void *,long); extern void fn_802C87B4(long,long,long,long);
-    extern void fn_802C8638(void *); extern void fn_802C2C64(long);
-    extern void fn_80203EC0(void); extern void fn_802C7A44(void);
-    extern void fn_802C7A50(void); extern void fn_802C7AD4(void);
-    extern void fn_801FA618(void); extern void fn_802BF508(void);
-    extern void fn_802C2488(void); extern void fn_802B0254(void);
-    extern void fn_802B0218(void); extern void fn_80203EF4(void);
-    extern void fn_80203EC4(void); extern void fn_80287A6C(long);
-    extern void *lbl_8055AF0C; extern long lbl_8055CFF0,lbl_8055CFF4,lbl_8055EB34;
-    extern long *lbl_8055EB3C; extern unsigned char lbl_80487D00[];
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801E8410(void) {
+    extern int fn_801B89F8(void);
+    extern float fn_801E8854(long);
+    extern void fn_801E88B4(long *, long *, long *, long *, long);
+    extern void fn_801E8148(void);
+    extern void fn_801E95DC(void);
+    extern void fn_801EA404(void *, long);
+    extern void fn_802C87B4(long, long, long, long);
+    extern void fn_802C8638(void *);
+    extern void fn_802C2C64(long);
+    extern void fn_80203EC0(void);
+    extern void fn_802C7A44(void);
+    extern void fn_802C7A50(void);
+    extern void fn_802C7AD4(void);
+    extern void fn_801FA618(void);
+    extern void fn_802BF508(void);
+    extern void fn_802C2488(void);
+    extern void fn_802B0254(void);
+    extern void fn_802B0218(void);
+    extern void fn_80203EF4(void);
+    extern void fn_80203EC4(void);
+    extern void fn_80287A6C(long);
+    extern void *lbl_8055AF0C;
+    extern long lbl_8055CFF0, lbl_8055CFF4, lbl_8055EB34;
+    extern long *lbl_8055EB3C;
+    extern unsigned char lbl_80487D00[];
     extern void *lbl_80488648[];
-    long a,b,c,d,i,index; unsigned char *base; void *obj; void (**vt)(void *);
+    struct Dispatch24 {
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+    };
+    struct Dispatch14 {
+        virtual void n0(); virtual void n1(); virtual void n2(); virtual void n3();
+    };
+    long a, b, c, d;
+    register long zero;
+    register long count;
+    unsigned char *base;
     ((void (*)(void))fn_801E837C)();
-    if(fn_801B89F8()!=0 && lbl_8055AF0C!=0) return;
-    a=0;b=0;c=lbl_8055CFF0;d=lbl_8055CFF4;
-    base=lbl_80487D00+(long)lbl_8055AF0C*0x38;
-    if(((int (*)(long,long,void *,long))fn_801B89F8)(lbl_8055CFF0,0,lbl_80487D00,(long)lbl_8055AF0C*0x38)==0)
-        fn_801E88B4(&a,&b,&c,&d,(long)lbl_8055AF0C);
-    fn_802C87B4(a,b,c,d);fn_802C8638(base);fn_801E8854(-1);
-    fn_802C2C64((long)lbl_8055AF0C);fn_801EA404(base,0);
-    fn_80203EC0();fn_802C7A44();fn_801E8148();fn_802C7A50();fn_802C7AD4();fn_801FA618();
-    for(i=0;i<8;i++){obj=lbl_80488648[i];if(obj){vt=*(void (***)(void *))obj;vt[9](obj);}}
-    fn_802BF508();fn_802C2488();fn_802B0254();fn_802B0218();fn_80203EF4();fn_80203EC4();
-    fn_80287A6C(0);fn_801E95DC();
-    for(i=0,index=0;i<lbl_8055EB34;i++,index+=4){obj=(void *)*(long *)((char *)lbl_8055EB3C+index);vt=*(void (***)(void *))obj;vt[5](obj);}
+    if (fn_801B89F8() != 0) {
+        if (*(void * volatile *)&lbl_8055AF0C != 0) return;
+        zero = 0; a = zero; b = zero; c = lbl_8055CFF0; d = lbl_8055CFF4;
+        count = (long)(*(void * volatile *)&lbl_8055AF0C);
+        count *= 0x38;
+        base = lbl_80487D00 + count;
+        if (((int (*)(long, void *, void *, long))fn_801B89F8)(
+                c, (void *)0, lbl_80487D00, count) == 0) {
+            fn_801E88B4(&a, &b, &c, &d,
+                        (long)(*(void * volatile *)&lbl_8055AF0C));
+        }
+        fn_802C87B4(a, b, c, d); fn_802C8638(base); fn_801E8854(-1);
+        fn_802C2C64((long)(*(void * volatile *)&lbl_8055AF0C));
+        fn_801EA404(base, 0);
+    }
+    fn_80203EC0(); fn_802C7A44(); ((void (*)(void))fn_801E8148)();
+    fn_802C7A50(); fn_802C7AD4(); fn_801FA618();
+    {
+        long index; long i; Dispatch24 *obj;
+        index = (long)lbl_80488648; i = 0;
+        do {
+            obj = (unsigned long)i < 8 ? *(Dispatch24 **)index : 0;
+            if (obj != 0) obj->m7();
+            i++; index += 4;
+        } while (i < 8);
+    }
+    fn_802BF508(); fn_802C2488(); fn_802B0254(); fn_802B0218();
+    fn_80203EF4(); fn_80203EC4(); fn_80287A6C(0); fn_801E95DC();
+    {
+        long i; long index; Dispatch14 *obj2;
+        i = 0; index = 0;
+        while (i < lbl_8055EB34) {
+            obj2 = (Dispatch14 *)*(long *)((char *)lbl_8055EB3C + index);
+            obj2->n3(); index += 4; i++;
+        }
+    }
 }
-
+#pragma cplusplus off
+#pragma scheduling on
 void fn_801E85A0(void) {
 
 }
@@ -440,17 +490,23 @@ void fn_801E8CE4(void) {
 #pragma scheduling on
 void fn_801E8D48(void) {
     struct Init { void *name; int size; float a,b,c,d,e,f,g,h; } init;
+    int status;
+
+    init.c = lbl_80562DFC;
+    init.d = lbl_80562DFC;
     init.name = (void *)0x57484C50;
+    init.a = lbl_80562DF4;
+    init.b = lbl_80562DF8;
     init.size = 0x28;
-    init.a = lbl_80562DF4; init.b = lbl_80562DF8;
-    init.c = lbl_80562DFC; init.d = lbl_80562DFC;
-    init.e = lbl_80562E00; init.f = lbl_80562DA0;
-    init.g = lbl_80562E04; init.h = lbl_80562E08;
-    if (fn_801284F8(0x84, &lbl_8055AF24, &init, lbl_80562E04,
-                    lbl_80562DA0, lbl_80562E00, lbl_80562DFC,
-                    lbl_80562DF8, lbl_80562DF4))
-        fn_801F19FC(&init);
-    fn_801E87D4(0);
+    init.e = lbl_80562E00;
+    init.f = lbl_80562DA0;
+    init.g = lbl_80562E04;
+    init.h = lbl_80562E08;
+    status = ((int (*)(int, void *))fn_801284F8)(0x84, &lbl_8055AF24);
+    if (status != 0) {
+        ((void (*)(int, void *))fn_801F19FC)(status, &init);
+    }
+    ((void (*)(void))fn_801E87D4)();
 }
 
 #pragma scheduling invalid_target
