@@ -629,13 +629,14 @@ void fn_802ABC2C(void) {
 
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
     extern float lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_805649F0, lbl_805649FC;
     extern void *lbl_8055F924;
     extern double cos(double), sin(double);
-    Vec pos, dir, callpos, calldir, side, forward;
+    Vec pos, callpos, dir, side, forward;
     float angle, scale;
     angle=fn_80287BC8(lbl_80564A48,lbl_80564A4C);
     forward=*(Vec*)arg0; side=*(Vec*)((char*)arg0+0x18); pos=*(Vec*)((char*)arg0+0x24);
@@ -648,8 +649,8 @@ void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) 
     pos.y+=((float*)((char*)arg0+0xC))[1]*scale;
     pos.z+=((float*)((char*)arg0+0xC))[2]*scale;
     dir=*(Vec*)arg1;
-    callpos=pos; calldir=dir;
-    fn_8028E590(*(int*)lbl_8055F924,&callpos,&calldir,lbl_805649FC);
+    callpos=pos;
+    fn_8028E590(*(int*)lbl_8055F924,&callpos,&dir,lbl_805649FC);
 }
 #pragma pop
 
@@ -659,7 +660,7 @@ void fn_802ABE50(void) { fn_8028E240(0); }
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float delta) {
+void fn_802ABE58(volatile float *arg0, volatile float *arg1, volatile int *arg2, float delta) {
     unsigned char red;
     unsigned char green;
     unsigned char blue;
