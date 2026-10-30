@@ -13,6 +13,15 @@ class EnvGenerator { public: void SetRelease(int); void SetDecay(int); void SetS
 class PoolImpl { public: void DestroyImpl(void *, unsigned long); };
 class RemoteSpeakerManager { public: void Setup(); };
    }}}
+struct FrameHeapDestroyListView {
+    u32 unknown;
+    void *tail;
+};
+struct FrameHeapDestroyView {
+    void *heap;
+    u32 count;
+    FrameHeapDestroyListView list;
+};
 namespace nw4r { namespace snd { namespace detail {
 class PoolImpl { public: void *AllocImpl(); };
 }}}
@@ -561,7 +570,6 @@ extern u8 lbl_80322FF8[], lbl_8032301C[];
 void nw4hbm::snd::detail::FrameHeap::Destroy() {
     if (*(void **)this == 0) return;
     if (*(u32 *)((u8 *)this + 4) == 0) goto free_heap;
-
     register u8 *head = (u8 *)this + 8;
     do {
         if (*(u32 *)((u8 *)this + 4) == 0) {
@@ -593,7 +601,6 @@ void nw4hbm::snd::detail::FrameHeap::Destroy() {
         if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
         Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)this + 4, list);
     } while (*(u32 *)((u8 *)this + 4) != 0);
-
 free_heap:
     MEMFreeToFrmHeap(*(void **)this, 3);
     MEMDestroyFrmHeap(*(void **)this);
