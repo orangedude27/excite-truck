@@ -115,7 +115,7 @@ extern "C" s32 fn_80297450(void *node) {
 }
 #pragma cplusplus reset
 #pragma pop
-#pragma dont_inline fn_8029748C
+#pragma dont_inline
 float fn_8029748C(void *arg0) {
     s32 count = *(s32 *)((u8 *)arg0 + 4);
     float max = lbl_80564578;
