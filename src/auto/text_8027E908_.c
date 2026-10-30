@@ -384,6 +384,122 @@ extern "C" int fn_8027EE88(void) {
     return 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+extern "C" void fn_8027EEE4(register int arg0) {
+    extern void fn_801345D8(char *, int, const char *, ...);
+    extern int fn_80131234(int);
+    extern int lbl_802FA85C[];
+    extern int lbl_802FA898[];
+    extern char lbl_803481D0[];
+    extern char lbl_803481F8[];
+    extern char lbl_804B3018[];
+    extern int lbl_8055C7D0;
+    extern int lbl_8055C7D8;
+    extern int lbl_8055BAB8;
+    struct Frame {
+        int prefix[8];
+        int objects[6][5];
+        char buffer[100];
+    } frame;
+    register int zero = 0;
+    register int zero1 = 0;
+    register int zero2 = 0;
+    register int three;
+    register int two;
+    register int q1;
+    register int q2;
+    register int q3;
+    register int q4;
+    register int b0;
+    register int b1;
+    register int b2;
+    register int b3;
+    register int b4;
+    register void *func;
+    register int six;
+    register int minusTwo;
+    register int thirteen;
+    register int eight;
+    register int index;
+    int hash1;
+    int hash2;
+    volatile int *p;
+
+    fn_801345D8(frame.buffer, 0x64, lbl_803481D0, arg0);
+    frame.objects[0][0] = zero;
+    frame.objects[0][1] = 5;
+    frame.objects[0][2] = (int)lbl_804B3018;
+    index = arg0 - 1;
+    frame.objects[0][3] = zero;
+    frame.objects[0][4] = zero;
+
+    hash1 = ((int (*)(int, int))fn_80131234)(
+        (int)lbl_803481F8, (int)lbl_804B3018);
+    frame.objects[1][2] = hash1;
+    three = 3;
+    frame.objects[1][1] = three;
+    frame.objects[1][0] = (int)&lbl_8055C7D0;
+    frame.objects[1][3] = zero1;
+    frame.objects[1][4] = zero;
+
+    hash2 = fn_80131234((int)frame.buffer);
+    p = (volatile int *)lbl_802FA85C;
+    frame.prefix[0] = *p++;
+    frame.prefix[1] = *p++;
+    frame.prefix[2] = *p;
+    q1 = lbl_802FA898[1];
+    q2 = lbl_802FA898[2];
+    q3 = lbl_802FA898[3];
+    q4 = lbl_802FA898[4];
+    b0 = ((int *)&lbl_804B2FF8)[0];
+    b1 = ((int *)&lbl_804B2FF8)[1];
+    b2 = ((int *)&lbl_804B2FF8)[2];
+    b3 = ((int *)&lbl_804B2FF8)[3];
+    b4 = ((int *)&lbl_804B2FF8)[4];
+
+    frame.objects[2][2] = hash2;
+    func = (void *)fn_8027EE74;
+    six = 6;
+    minusTwo = -2;
+    frame.objects[2][1] = three;
+    thirteen = 13;
+    eight = 8;
+    frame.objects[2][0] = (int)&lbl_8055C7D8;
+    two = 2;
+    frame.objects[2][3] = zero2;
+    frame.objects[2][4] = zero;
+    frame.objects[3][1] = six;
+    frame.objects[3][0] = (int)&lbl_8055B860;
+    frame.objects[3][2] = zero;
+    frame.objects[3][3] = minusTwo;
+    frame.objects[3][4] = thirteen;
+    frame.objects[4][1] = eight;
+    frame.objects[4][0] = (int)&lbl_8055BAB8;
+    frame.objects[4][2] = (int)func;
+    frame.objects[4][3] = two;
+    frame.objects[4][4] = zero;
+    frame.objects[5][0] = b0;
+    frame.objects[5][1] = b1;
+    frame.objects[5][2] = b2;
+    frame.objects[5][3] = b3;
+    frame.objects[5][4] = b4;
+
+    frame.prefix[4] = q1;
+    frame.prefix[5] = q2;
+    frame.prefix[6] = q3;
+    frame.prefix[7] = q4;
+    frame.prefix[3] = frame.prefix[index];
+    frame.prefix[4] = (int)frame.objects;
+    lbl_8055F684 = 0;
+    lbl_8055F685 = 0;
+    fn_802146BC(&frame.prefix[3], -0x3E7, -0x3E7, 1,
+                q3, q2, b4, b3);
+}
+#pragma scheduling reset
+#pragma pop
+
 extern "C" void fn_8027F09C(int arg0) {
     extern int fn_801345D8(char *, int, const char *, const char *, int);
     extern int fn_80131234(int);
@@ -1130,125 +1246,351 @@ found_item_2:
 #pragma cplusplus reset
 #pragma scheduling on
 
-int fn_80280A38(void) { return 0; }
+#pragma cplusplus on
+extern "C" int fn_80280A38(void) {
+    class Object {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual int getKey(); virtual char *getText();
+    };
+    extern int lbl_8055F68C;
+    extern int lbl_8055F690;
+    extern unsigned char lbl_804B3068[];
+    register Object *object;
+    register void *candidate;
+    register int offset;
+    register int i;
+    register int count;
+    register void **p;
+    register void **items;
+    void *selected;
+    char *src;
+    volatile char *dst;
+    int n;
 
+    if (lbl_8055F688 == 0)
+        goto done;
+    if (*(Object * volatile *)((char *)lbl_8055F688 + 0x60) == 0)
+        goto done;
+    object = *(Object **)((char *)lbl_8055F688 + 0x60);
+    if (object->getKey() == 0)
+        goto done;
+
+    lbl_8055F690 = lbl_8055F688;
+    if (lbl_8055F68C == 0) {
+        offset = 0;
+        i = 0;
+        goto first_scan;
+first_scan:
+        candidate = *(void **)((char *)lbl_804B3048.items + offset);
+        object = *(Object **)((char *)candidate + 0x60);
+        if (object != 0 && object->getKey() == 0) {
+            lbl_8055F68C = (int)candidate;
+        } else {
+            offset += 4;
+            i++;
+            count = *(volatile int *)((char *)&lbl_804B3048 + 4);
+            if (i < count)
+                goto first_scan;
+        }
+    }
+    if (lbl_8055F68C == 0)
+        goto done;
+
+    selected = (void *)*(volatile int *)&lbl_8055F68C;
+    items = lbl_804B3048.items;
+    count = lbl_804B3048.count;
+    i = 0;
+    p = items;
+    while (i < count) {
+        if (*p != selected)
+            goto search_next;
+        goto found;
+search_next:
+        p++;
+        i++;
+    }
+    i = -1;
+found:
+    lbl_804B3068[0] = 0;
+    if (i < 0)
+        goto clear;
+    if (i >= lbl_804B3048.count)
+        goto clear;
+    selected = items[i];
+    lbl_8055F688 = (unsigned int)selected;
+    if (selected != 0) {
+        object = *(Object **)((char *)selected + 0x60);
+        if (object != 0) {
+            src = object->getText();
+            dst = (char *)lbl_804B3068;
+            n = 100;
+            do {
+                char c = *src++;
+                *dst++ = c;
+                if ((signed char)c == 0)
+                    break;
+                n--;
+            } while (n > 0);
+            if (n == 0)
+                dst[-1] = 0;
+        }
+    }
+    goto done;
+clear:
+    lbl_8055F688 = 0;
+done:
+    return 0;
+}
+extern "C" int fn_80280C00(void) {
+    class Object {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual int getKey(); virtual const char *getText();
+    };
+    extern int lbl_8055F68C;
+    extern int lbl_8055F690;
+    extern unsigned char lbl_804B3068[];
+    register Object *object;
+    register void *selected;
+    register void *candidate;
+    register int offset;
+    register int i;
+    register int count;
+    register void **p;
+    register void **items;
+    const char *src;
+    char *dst;
+    int n;
+
+    if (lbl_8055F688 == 0)
+        goto done;
+    if (*(Object * volatile *)((char *)lbl_8055F688 + 0x60) == 0)
+        goto done;
+    object = *(Object **)((char *)lbl_8055F688 + 0x60);
+    if (object->getKey() != 0)
+        goto done;
+
+    lbl_8055F68C = lbl_8055F688;
+    if (lbl_8055F690 == 0) {
+        offset = 0;
+        i = 0;
+        goto first_scan;
+first_scan:
+        candidate = *(void **)((char *)lbl_804B3048.items + offset);
+        object = *(Object **)((char *)candidate + 0x60);
+        if (object != 0 && object->getKey() != 0) {
+            lbl_8055F690 = (int)candidate;
+        } else {
+            offset += 4;
+            i++;
+            count = *(volatile int *)((char *)&lbl_804B3048 + 4);
+            if (i < count)
+                goto first_scan;
+        }
+    }
+    if (lbl_8055F690 == 0)
+        goto done;
+
+    items = lbl_804B3048.items;
+    count = lbl_804B3048.count;
+    selected = (void *)*(volatile int *)&lbl_8055F690;
+    i = 0;
+    p = items;
+    while (i < count) {
+        if (*p != selected)
+            goto search_next;
+        goto found;
+search_next:
+        p++;
+        i++;
+    }
+    i = -1;
+found:
+    lbl_804B3068[0] = 0;
+    if (i < 0)
+        goto clear;
+    if (i >= lbl_804B3048.count)
+        goto clear;
+    selected = items[i];
+    lbl_8055F688 = (unsigned int)selected;
+    if (selected != 0) {
+        object = *(Object **)((char *)selected + 0x60);
+        if (object != 0) {
+            src = object->getText();
+            dst = (char *)lbl_804B3068;
+            n = 100;
+            do {
+                char c = *src++;
+                *dst++ = c;
+                if ((signed char)c == 0)
+                    break;
+                n--;
+            } while (n > 0);
+            if (n == 0)
+                dst[-1] = 0;
+        }
+    }
+    goto done;
+clear:
+    lbl_8055F688 = 0;
+done:
+    return 0;
+}
+#pragma cplusplus reset
 extern unsigned char lbl_804B3068[];
 typedef unsigned int (*GetKeyFn)(void *);
 typedef char *(*GetTextFn)(void *);
 int fn_80280DC8(void) {
-    int index = 0;
-    int count;
-    unsigned int *items;
-    unsigned int key;
-    unsigned int result;
-    unsigned int *entry;
-    void *obj;
-    void **vt;
-    char *text;
+    register int index;
+    register int count;
+    register unsigned int key;
+    register void *obj;
+    register void *item;
+    register void **p;
+    register void **items;
+    char *src;
     char *dst;
     int n;
-    if (lbl_8055F688 == 0) {
-        fn_80216D28();
-        return 0;
-    }
-    key = lbl_8055F688;
-    items = (unsigned int *)lbl_804B3048.items;
+
+    if (*(volatile unsigned int *)&lbl_8055F688 == 0)
+        goto reset;
+    items = lbl_804B3048.items;
     count = lbl_804B3048.count;
-    while (index < count && items[index] != key)
+    key = *(volatile unsigned int *)&lbl_8055F688;
+    index = 0;
+    p = items;
+    while (index < count) {
+        if (*p != (void *)key)
+            goto search_next;
+        goto first_found;
+search_next:
+        p++;
         index++;
-    if (index >= count)
-        index = -1;
-    entry = (unsigned int *)lbl_804B3048.items;
-    obj = *(void **)((char *)entry[index] + 0x60);
-    if (obj == 0)
-        return 0;
-    vt = *(void ***)obj;
-    result = ((GetKeyFn)vt[11])(obj);
+    }
+    index = -1;
+first_found:
+    item = items[index];
+    if (*(void * volatile *)((char *)item + 0x60) == 0)
+        goto finish;
+    obj = *(void **)((char *)item + 0x60);
+    key = ((GetKeyFn)(*(void ***)obj)[11])(obj);
     index++;
     while (index < lbl_804B3048.count) {
-        entry = (unsigned int *)lbl_804B3048.items;
-        obj = *(void **)((char *)entry[index] + 0x60);
-        if (obj != 0) {
-            vt = *(void ***)obj;
-            if (result == ((GetKeyFn)vt[11])(obj))
-                break;
-        }
+        item = lbl_804B3048.items[index];
+        obj = *(void **)((char *)item + 0x60);
+        if (obj != 0 && ((GetKeyFn)(*(void ***)obj)[11])(obj) == key)
+            break;
         index++;
     }
     count = lbl_804B3048.count;
-    if (index < count && index >= 0) {
-        lbl_804B3068[0] = 0;
-        if (index >= 0 && index < count) {
-            entry = (unsigned int *)lbl_804B3048.items;
-            lbl_8055F688 = entry[index];
-            if (lbl_8055F688 == 0) return 0;
-            obj = *(void **)((char *)lbl_8055F688 + 0x60);
-            if (obj == 0) return 0;
-            vt = *(void ***)obj;
-            text = ((GetTextFn)vt[12])(obj);
-            dst = (char *)&lbl_804B3068;
-            for (n = 100; n > 0; n--) {
-                char c = *text++;
-                *dst++ = c;
-                if (c == 0) break;
-            }
-            if (n == 0) dst[-1] = 0;
-        } else {
-            lbl_8055F688 = 0;
-        }
+    if (index >= count)
+        goto finish;
+    lbl_804B3068[0] = 0;
+    if (index < 0) {
+        *(volatile unsigned int *)&lbl_8055F688 = 0;
+        goto finish;
     }
+    item = items[index];
+    lbl_8055F688 = (unsigned int)item;
+    if (item == 0)
+        goto finish;
+    obj = *(void **)((char *)item + 0x60);
+    if (obj == 0)
+        goto finish;
+    src = ((GetTextFn)(*(void ***)obj)[12])(obj);
+    dst = (char *)lbl_804B3068;
+    n = 100;
+    do {
+        char c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0)
+            break;
+        n--;
+    } while (n > 0);
+    if (n == 0)
+        dst[-1] = 0;
+    goto finish;
+
+reset:
+    *(volatile unsigned int *)&lbl_8055F688 = 0;
+finish:
+    fn_80216D28();
     return 0;
 }
 
 #pragma push
 #pragma cplusplus on
 extern "C" int fn_80216D28(void);
+#pragma push
+#pragma scheduling invalid_target
 extern "C" int fn_80280F7C(void) {
     class Obj { public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-        virtual void f8(); virtual void f9(); virtual void f10();
-        virtual void* f11(); virtual const char* f12();
+        virtual void f8(); virtual void *f11(); virtual const char *f12();
     };
-    if (lbl_8055F688 != 0) {
-        int i = 0;
-        while (i < lbl_804B3048.count && lbl_804B3048.items[i] != (void*)lbl_8055F688) i++;
-        if (i == lbl_804B3048.count) i = -1;
-        Obj* obj = *(Obj**)((char*)lbl_804B3048.items[i] + 0x60);
-        if (obj != 0) {
-            int j = i - 1;
-            void* identity = obj->f11();
-            while (j >= 0) {
-                Obj* prev = *(Obj**)((char*)lbl_804B3048.items[j] + 0x60);
-                if (prev != 0 && prev->f11() == identity) break;
-                j--;
-            }
-            if (j >= 0) {
-                ((char*)lbl_804B3068)[0] = 0;
-                if (j < lbl_804B3048.count) {
-                    void* item = lbl_804B3048.items[j];
-                    lbl_8055F688 = (unsigned int)item;
-                    Obj* selected = *(Obj**)((char*)item + 0x60);
-                    if (item != 0 && selected != 0) {
-                        const char* src = selected->f12();
-                        char* dst = (char*)lbl_804B3068;
-                        int n = 100;
-                        do {
-                            char c = *src++;
-                            *dst++ = c;
-                            if ((signed char)c == 0) break;
-                            n--;
-                        } while (n > 0);
-                        if (n == 0) dst[-1] = 0;
+    if (*(volatile unsigned int *)&lbl_8055F688 == 0)
+        goto reset;
+    void *key = (void *)*(volatile unsigned int *)&lbl_8055F688;
+    int count = lbl_804B3048.count;
+    long i;
+    for (i = 0; i < count; ++i) {
+        if (lbl_804B3048.items[i] != key)
+            continue;
+        goto found;
+    }
+    i = -1;
+found:
+    void *firstItem = lbl_804B3048.items[i];
+    if (*(Obj * volatile *)((char *)firstItem + 0x60) != 0) {
+        Obj *obj = *(Obj **)((char *)firstItem + 0x60);
+        void *identity = obj->f11();
+        long j = i - 1;
+        while (j >= 0) {
+            Obj *prev = *(Obj **)((char *)lbl_804B3048.items[j] + 0x60);
+            if (prev != 0 && identity == prev->f11())
+                break;
+            j--;
+        }
+        if (j < 0)
+            goto finish;
+        *(volatile unsigned char *)lbl_804B3068 = 0;
+        if (j >= 0) {
+            int selectedCount = *(volatile int *)((char *)&lbl_804B3048 + 4);
+            if (j >= selectedCount)
+                goto reset;
+            void *item = lbl_804B3048.items[j];
+            lbl_8055F688 = (unsigned int)item;
+            if (item != 0 && *(Obj * volatile *)((char *)item + 0x60) != 0) {
+                Obj *selected = *(Obj **)((char *)item + 0x60);
+                const char *src = selected->f12();
+                int n = 100;
+                char *dst = (char *)lbl_804B3068;
+                goto copy_test;
+                for (;;) {
+                    if (--n <= 0) {
+                        dst[-1] = 0;
+                        break;
                     }
-                } else lbl_8055F688 = 0;
+copy_test:
+                    if ((*dst++ = *src++) == 0)
+                        break;
+                }
             }
         }
-    } else fn_80216D28();
+    }
+    goto finish;
+reset:
+    *(volatile unsigned int *)&lbl_8055F688 = 0;
+finish:
+    fn_80216D28();
     return 0;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling reset
+#pragma pop
 extern "C" int fn_80281138(void) {
     extern int fn_801345D8(char *, int, const char *, const char *, int);
     extern int fn_802368EC(void);
@@ -1256,8 +1598,8 @@ extern "C" int fn_80281138(void) {
     extern void *lbl_8055F694;
     extern char lbl_8034848C[];
     extern char lbl_8034849C[];
-    void **items;
-    void *key;
+    unsigned int *items;
+    unsigned int key;
     void *selected;
     int count;
     int index;
@@ -1266,16 +1608,14 @@ extern "C" int fn_80281138(void) {
 
     count = lbl_804B3048.count;
     index = 0;
-    key = (void *)lbl_8055F688;
-    items = lbl_804B3048.items;
-    for (; count > 0; --count) {
-        if (*items != key) {
-            ++items;
-            ++index;
-            continue;
-        } else {
-            goto found_first;
-        }
+    key = lbl_8055F688;
+    items = (unsigned int *)lbl_804B3048.items;
+    for (; count > 0; --count, ++items, ++index) {
+        if (*items != key)
+            goto update_first;
+        goto found_first;
+update_first:
+        ;
     }
     index = -1;
 found_first:
@@ -1285,16 +1625,14 @@ found_first:
         } else {
             count = lbl_804B3048.count;
             index = 0;
-            key = (void *)lbl_8055F688;
-            items = lbl_804B3048.items;
-            for (; count > 0; --count) {
-                if (*items != key) {
-                    ++items;
-                    ++index;
-                    continue;
-                } else {
-                    goto found_second;
-                }
+            key = lbl_8055F688;
+            items = (unsigned int *)lbl_804B3048.items;
+            for (; count > 0; --count, ++items, ++index) {
+                if (*items != key)
+                    goto update_second;
+                goto found_second;
+update_second:
+                ;
             }
             index = -1;
 found_second:
@@ -1312,15 +1650,13 @@ found_second:
         } else {
             count = lbl_804B3048.count;
             index = 0;
-            items = lbl_804B3048.items;
-            for (; count > 0; --count) {
-                if (*items != selected) {
-                    ++items;
-                    ++index;
-                    continue;
-                } else {
-                    goto found_third;
-                }
+            items = (unsigned int *)lbl_804B3048.items;
+            for (; count > 0; --count, ++items, ++index) {
+                if (*items != (unsigned int)selected)
+                    goto update_third;
+                goto found_third;
+update_third:
+                ;
             }
             index = -1;
 found_third:
@@ -2263,7 +2599,7 @@ extern "C" void fn_802854E0(void *arg0) {
 #pragma pop
 
 void fn_802857A8(void *arg0) {
-    extern int fn_80221EA8(void); extern void fn_801308F4(char *, int, const char *); extern void *fn_8027ED70(void); extern void *__AXGetStackHead(void); extern int stricmp(const char *);
+    extern int fn_80221EA8(void); extern void fn_801308F4(char *, int, const char *); extern void *fn_8027ED70(void); extern void *__AXGetStackHead(void); extern int stricmp(const char *, ...);
     extern int fn_801345D8(char *, int, const char *, const char *, int); extern void fn_80236954(char *); extern void fn_8027F204(char *);
     extern unsigned int lbl_804B30D8[]; extern char lbl_80347E50[]; extern char lbl_8055C818[]; extern char lbl_8055C86C[]; extern void *lbl_8055F698; extern float lbl_80564200;
     unsigned char *p=(unsigned char*)arg0; void *obj; void **vt; int mode,i,count; char tmp[0x64],other[0x14],*stack;
