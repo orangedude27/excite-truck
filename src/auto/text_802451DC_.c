@@ -142,48 +142,78 @@ extern void *lbl_8055BE70;
 extern void *lbl_8055BE78;
 extern int lbl_80498890[5];
 extern int lbl_802FA350[5];
-void fn_802462A0(void *arg0, void *arg1) {
-    float f;
-    void *sp20;
-    int sp34, sp3C, sp4C, sp44, sp48, sp50, sp60, sp58, sp5C, sp64, sp6C, sp74, sp78;
-    void *sp40, *sp54, *sp68, *sp70;
-    int sp7C, sp80, sp84, sp88, sp8C, sp8, spC, sp10, sp14, sp18;
-    char *a, *b;
+#pragma cplusplus on
+extern "C" void fn_802462A0(void *arg0, void *arg1) {
+    struct Frame {
+        int args[5];
+        int pad;
+        struct {
+            void *object;
+            int unused[4];
+            int zero;
+            float value;
+            int result;
+        } state;
+        int config[20];
+    };
+    struct Frame frame;
+    char *a;
+    char *b;
     void **obj;
+
     if (*(unsigned char *)((char *)arg0 + 0x1D) == 0) {
         obj = (void **)((char *)arg0 + 4);
         ((void (*)(void *))(*(void **)((char *)*obj + 0x14)))((char *)arg0 + 4);
         return;
     }
-    f = *(float *)((char *)arg1 + 8);
-    sp20 = lbl_803430E8;
-    sp34 = 0;
-    sp3C = fn_8023512C(&lbl_803430CC);
+
+    frame.state.value = *(float *)((char *)arg1 + 8);
+    frame.state.object = &lbl_803430E8;
+    frame.state.zero = 0;
+    frame.state.result = fn_8023512C(&lbl_803430CC);
+
     a = *(char **)arg1;
-    sp4C = strlen(a);
+    frame.config[3] = strlen(a);
+    frame.config[2] = (int)a;
+    frame.config[0] = (int)&lbl_8055BE70;
+    frame.config[1] = 3;
+    frame.config[4] = 0;
+
     b = *(char **)((char *)arg1 + 4);
-    sp60 = strlen(b);
-    sp44 = 3;
-    sp40 = lbl_8055BE70;
-    sp48 = (int)a;
-    sp50 = 0;
-    sp54 = lbl_8055BE78;
-    sp58 = 3;
-    sp5C = (int)b;
-    sp64 = 0;
-    sp6C = 5;
-    sp68 = lbl_803430D8;
-    sp70 = &sp20;
-    sp74=0; sp78=0;
-    sp7C=lbl_80498890[0]; sp80=lbl_80498890[1]; sp84=lbl_80498890[2]; sp88=lbl_80498890[3]; sp8C=lbl_80498890[4];
+    frame.config[8] = strlen(b);
+    frame.config[7] = (int)b;
+    frame.config[5] = (int)&lbl_8055BE78;
+    frame.config[6] = 3;
+    frame.config[9] = 0;
+
+    frame.config[10] = (int)&lbl_803430D8;
+    frame.config[11] = 5;
+    frame.config[12] = (int)&frame.state;
+    frame.config[13] = 0;
+    frame.config[14] = 0;
+    frame.config[15] = lbl_80498890[0];
+    frame.config[16] = lbl_80498890[1];
+    frame.config[17] = lbl_80498890[2];
+    frame.config[18] = lbl_80498890[3];
+    frame.config[19] = lbl_80498890[4];
+
+    frame.args[0] = lbl_802FA350[0];
+    frame.args[1] = lbl_802FA350[1];
+    frame.args[2] = lbl_802FA350[2];
+    frame.args[3] = lbl_802FA350[3];
+    frame.args[4] = lbl_802FA350[4];
+    frame.args[1] = (int)&frame.config[0];
+
     *(int *)((char *)arg0 + 0x24) = 0;
-    sp8=lbl_802FA350[0]; spC=lbl_802FA350[1]; sp10=lbl_802FA350[2]; sp14=lbl_802FA350[3]; sp18=lbl_802FA350[4];
-    *(float *)((char *)&sp20 + 0x18) = f;
-    fn_80216CA8(sp18, sp14, sp10, sp8, lbl_802FA350, lbl_80498890[1], lbl_80498890[0], 5);
-    fn_802146BC(&sp8, -999, -999, 1);
-    sp20 = lbl_803430E8;
-    if (sp3C != 0) fn_80235380(0);
+    fn_80216CA8(lbl_802FA350[4], lbl_802FA350[3], lbl_802FA350[2],
+                lbl_802FA350[0], lbl_802FA350, lbl_80498890[1],
+                lbl_80498890[0], 5);
+    fn_802146BC(frame.args, -999, -999, 1);
+    frame.state.object = &lbl_803430E8;
+    if (frame.state.result != 0)
+        fn_80235380(frame.state.result);
 }
+#pragma cplusplus reset
 
 void *fn_80246428(void *arg0, int arg1) {
     int temp_r0;
