@@ -103,7 +103,7 @@ s32 fn_80128314(s32 arg0) {
 
 extern char lbl_8032A034[];
 s32 fn_80127964(void);
-void *fn_801288AC();
+void *fn_801288AC(void *, s32, char *, s32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_8012834C(void *arg0, void *arg1, s32 arg2) {
@@ -404,8 +404,10 @@ s32 fn_801288A4(void) {
 
 extern char lbl_8032A1F8[];
 extern char lbl_8032A204[];
-void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3, s32 arg4) {
-    s32 size = fn_801281F4(arg1, 0x40);
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3) {
+    s32 size = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x40);
     void *found = ((void *(*)(void *, s32))fn_801288A4)(arg0, size);
     void *record;
     u8 *start;
@@ -427,7 +429,7 @@ void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3, s32 arg4) {
     memset(record, 0, 0x40);
     strcpy((char *)record + 4, arg2);
     *((u8 *)record + 0x24) = 1;
-    *(s32 *)((u8 *)record + 0x30) = arg4;
+    *(s32 *)((u8 *)record + 0x30) = arg3;
     *(s32 *)((u8 *)record + 0x28) = size;
     *(s32 *)((u8 *)record + 0x2C) = arg1;
     *(u32 *)record = 0x53544B41;
@@ -436,18 +438,24 @@ void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3, s32 arg4) {
     *(void **)((u8 *)arg0 + 0x10) = record;
     start = (u8 *)record + 0x40;
     memset(start, 0xE3, size);
-    p = start + arg1;
-    rounded = fn_801281F4(arg1, 4);
-    while (p < start + rounded) *p++ = 0xE3;
+    p = start + *(s32 *)((u8 *)record + 0x2C);
+    do {
+        *p++ = 0xE3;
+        rounded = ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)((u8 *)record + 0x2C), 4);
+    } while (p < start + rounded);
     limit = size + *(s32 *)((u8 *)arg0 + 4) + 0x40;
     *(s32 *)((u8 *)arg0 + 4) = limit;
-    if (limit < *(s32 *)((u8 *)arg0 + 8)) *(u32 *)(start + rounded) = 0x53544B41;
+    if (limit < *(s32 *)((u8 *)arg0 + 8)) {
+        rounded = ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)((u8 *)record + 0x2C), 4);
+        *(u32 *)(start + rounded) = 0x53544B41;
+    }
     if (*(s32 *)((u8 *)arg0 + 0x14) < limit) *(s32 *)((u8 *)arg0 + 0x14) = limit;
     if (start + size >= *(u8 **)((u8 *)arg0 + 0x1C)) *(u8 **)((u8 *)arg0 + 0x1C) = start + size;
     if (start < *(u8 **)((u8 *)arg0 + 0x18)) *(u8 **)((u8 *)arg0 + 0x18) = start;
     return start;
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw on
 u32 fn_801281A0(s32);
 void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
     u32 magic = *(u32 *)(arg1 - 0x40);
