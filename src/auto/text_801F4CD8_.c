@@ -214,23 +214,24 @@ int fn_801F52BC(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     return result;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma use_lmw_stmw off
 void fn_801F5508(void *arg0) {
-    int temp_r5 = *(int *)((char *)arg0 + 0x2C);
-    int temp_r6 = *(int *)((char *)arg0 + 0x30);
-    int temp_r30 = ((temp_r6 - 1) * temp_r5) + (temp_r6 * (temp_r5 - 1));
-    char *temp_r31 = (char *)((void *(*)(int, void *))fn_8012850C)(
+    register int temp_r5 = *(int *)((char *)arg0 + 0x2C);
+    register int temp_r6 = *(int *)((char *)arg0 + 0x30);
+    register int temp_r30 = ((temp_r6 - 1) * temp_r5) + (temp_r6 * (temp_r5 - 1));
+    register char *temp_r31 = (char *)((void *(*)(int, void *))fn_8012850C)(
         temp_r30 * 8, lbl_8033AD94);
-    int var_r29 = 0;
-    int var_r24 = 0;
-    int var_r25;
-    int var_r23;
-    int temp_r28;
+    register int var_r29 = 0;
+    register int var_r24 = 0;
+    register int var_r25;
+    register int var_r23;
+    register int temp_r28;
     int temp_r5_2;
     int temp_r0;
     char *temp_r27;
     void *temp_r4;
-    int var_r27;
+    register int var_r27;
     char *temp_r24;
     int temp_r5_3;
     void *temp_r4_2;
@@ -294,7 +295,7 @@ loop_11:
     *(void **)((char *)arg0 + 0x14) = temp_r31;
     *(int *)((char *)arg0 + 0x18) = temp_r30;
 }
-#pragma scheduling on
+#pragma pop
 extern void *fn_8002F37C();
 extern void *fn_8012850C();
 extern char lbl_8033ADA4[];
@@ -1111,28 +1112,131 @@ void fn_801F73F8(void) { fn_801F6EC0(lbl_8055EC14); }
 
 extern char lbl_8033AD7C[], lbl_8033AD88[];
 extern float lbl_80562FB8;
-void fn_801F7400(void *out, void *base, void *obj) {
-    int a=*(int*)((char*)base+0x60), b=*(int*)((char*)base+0x5c), c=*(int*)((char*)base+0x58);
-    char *p=(char*)base+c*0x18, *q=(char*)base+b*0x18, *r=(char*)base+a*0x18;
-    *(int*)((char*)out+0x34)=*(int*)(r+0x14); *(int*)((char*)out+0x38)=*(int*)(r+0x18); *(int*)((char*)out+0x30)=*(int*)(r+0x10);
-    *(int*)((char*)out+0x18)=*(int*)(q+0x10); *(int*)((char*)out+0x1c)=*(int*)(q+0x14); *(int*)((char*)out+0x20)=*(int*)(q+0x18);
-    *(int*)((char*)out+0x28)=*(int*)(q+0x20); *(int*)((char*)out+0x2c)=*(int*)(q+0x24); *(int*)((char*)out+0x24)=*(int*)(q+0x1c);
-    *(int*)out=*(int*)(p+0x10); *(int*)((char*)out+4)=*(int*)(p+0x14); *(int*)((char*)out+8)=*(int*)(p+0x18); *(int*)((char*)out+0xc)=*(int*)(p+0x1c);
-    *(int*)((char*)out+0x10)=*(int*)(p+0x20); *(int*)((char*)out+0x14)=*(int*)(p+0x24);
-    *(int*)((char*)out+0x3c)=*(int*)(r+0x1c); *(int*)((char*)out+0x54)=*(int*)(q+0x1c);
-    *(float*)((char*)out+0x40)=*(float*)(r+0x20); *(float*)((char*)out+0x44)=*(float*)(r+0x24);
-    *(float*)((char*)out+0x28)=*(float*)(q+0x20); *(float*)((char*)out+0x2c)=*(float*)(q+0x24);
-    *(float*)((char*)out+0x10)=*(float*)(p+0x20); *(float*)((char*)out+0x14)=*(float*)(p+0x24);
-    *(float*)((char*)out+0x48)=(*(float*)((char*)out+0x30)+*(float*)((char*)out+0x18))-*(float*)out;
-    *(float*)((char*)out+0x4c)=(*(float*)((char*)out+0x34)+*(float*)((char*)out+0x1c))-*(float*)((char*)out+4);
-    *(float*)((char*)out+0x50)=(*(float*)((char*)out+0x38)+*(float*)((char*)out+0x20))-*(float*)((char*)out+8);
-    *(float*)((char*)out+0x58)=(*(float*)(q+0x20)+*(float*)(r+0x20))-*(float*)(p+0x20);
-    *(float*)((char*)out+0x5c)=(*(float*)(q+0x24)+*(float*)(r+0x24))-*(float*)(p+0x24);
-    if (((int(*)(void*,int,void*,int))fn_801F52BC)(obj,(int)lbl_8033AD7C,(char*)out+0x60,4)==0) *(float*)((char*)out+0x60)=lbl_80562FB8;
-    if (((int(*)(void*,int,void*,int))fn_801F52BC)(obj,(int)lbl_8033AD88,(char*)out+0x64,4)==0) *(float*)((char*)out+0x64)=lbl_80562FB8;
-}
-
+typedef struct InputRecord_801F7400 {
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int value10;
+    int value14;
+    int value18;
+    int value1C;
+    float value20;
+    float value24;
+} InputRecord_801F7400;
+typedef struct OutputRecord_801F7400 {
+    int c10;
+    int c14;
+    int c18;
+    int c1C;
+    float c20;
+    float c24;
+    int b10;
+    int b14;
+    int b18;
+    int b1C;
+    float b20;
+    float b24;
+    int a10;
+    int a14;
+    int a18;
+    int a1C;
+    float a20;
+    float a24;
+    float deltaX;
+    float deltaY;
+    float deltaZ;
+    int duplicate;
+    float sumX;
+    float sumY;
+    float value60;
+    float value64;
+} OutputRecord_801F7400;
+#pragma push
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+void fn_801F7400(void *out, void *base, void *obj) {
+    char *dst = (char *)out;
+    char *recordA;
+    char *recordB;
+    register char *recordC;
+    int indexA;
+    int indexB;
+    int indexC;
+    int a10;
+    int a14;
+    int a18;
+    int a1C;
+    int b10;
+    int b14;
+    int b18;
+    int b1C;
+    register int c10;
+    register int c14;
+    int c18;
+    int c1C;
+    float a20;
+    float a24;
+    float b20;
+    float b24;
+    register float c20;
+    float c24;
+    void *object = obj;
+
+    indexA = *(volatile int *)((char *)base + 0x60);
+    indexB = *(volatile int *)((char *)base + 0x5C);
+    indexC = *(volatile int *)((char *)base + 0x58);
+    recordA = (char *)base + indexA * 0x18;
+    recordC = (char *)base + indexC * 0x18;
+    a10 = *(volatile int *)(recordA + 0x10);
+    a14 = *(volatile int *)(recordA + 0x14);
+    a18 = *(volatile int *)(recordA + 0x18);
+    *(int *)(dst + 0x34) = a14;
+    recordB = (char *)base + indexB * 0x18;
+    c10 = *(volatile int *)(recordC + 0x10);
+    *(int *)(dst + 0x38) = a18;
+    c14 = *(volatile int *)(recordC + 0x14);
+    b10 = *(volatile int *)(recordB + 0x10);
+    b14 = *(volatile int *)(recordB + 0x14);
+    *(int *)(dst + 0x18) = b10;
+    b18 = *(volatile int *)(recordB + 0x18);
+    *(int *)(dst + 0x1C) = b14;
+    b1C = *(volatile int *)(recordB + 0x1C);
+    *(int *)(dst + 0x30) = a10;
+    b20 = *(volatile float *)(recordB + 0x20);
+    a20 = *(volatile float *)(recordA + 0x20);
+    *(int *)(dst + 0x20) = b18;
+    c18 = *(volatile int *)(recordC + 0x18);
+    c20 = *(volatile float *)(recordC + 0x20);
+    b24 = *(volatile float *)(recordB + 0x24);
+    a24 = *(volatile float *)(recordA + 0x24);
+    c24 = *(volatile float *)(recordC + 0x24);
+    c1C = *(volatile int *)(recordC + 0x1C);
+    a1C = *(volatile int *)(recordA + 0x1C);
+    *(int *)(dst + 0x24) = b1C;
+    *(int *)(dst + 0x3C) = a1C;
+    *(float *)(dst + 0x28) = b20;
+    *(float *)(dst + 0x2C) = b24;
+    *(float *)(dst + 0x40) = a20;
+    *(float *)(dst + 0x44) = a24;
+    *(float *)(dst + 0x10) = c20;
+    *(float *)(dst + 0x14) = c24;
+    *(int *)(dst + 0x54) = b1C;
+    *(int *)dst = c10;
+    *(int *)(dst + 4) = c14;
+    *(int *)(dst + 8) = c18;
+    *(int *)(dst + 0xC) = c1C;
+    *(float *)(dst + 0x48) = (*(float *)(dst + 0x30) + *(float *)(dst + 0x18)) - *(float *)dst;
+    *(float *)(dst + 0x4C) = (*(float *)(dst + 0x34) + *(float *)(dst + 0x1C)) - *(float *)(dst + 4);
+    *(float *)(dst + 0x50) = (*(float *)(dst + 0x38) + *(float *)(dst + 0x20)) - *(float *)(dst + 8);
+    *(float *)(dst + 0x58) = (b20 + a20) - c20;
+    *(float *)(dst + 0x5C) = (b24 + a24) - c24;
+    if (((int (*)(void *, int, void *, int))fn_801F52BC)(object, (int)lbl_8033AD7C, dst + 0x60, 4) == 0)
+        *(float *)(dst + 0x60) = lbl_80562FB8;
+    if (((int (*)(void *, int, void *, int))fn_801F52BC)(object, (int)lbl_8033AD88, dst + 0x64, 4) == 0)
+        *(float *)(dst + 0x64) = lbl_80562FB8;
+}
+#pragma pop
 extern void *fn_802C9C24(void *);
 extern void fn_802CD320(void *, int);
 extern char lbl_8033AF20[];
