@@ -740,17 +740,69 @@ int fn_8003B69C(int arg0, void *arg1) {
 }
 
 #pragma scheduling invalid_target
-int fn_8003B81C(void *arg0, int arg1, int arg2, int arg3) {
- const char *msg=lbl_80302848; unsigned int slot; unsigned int offset; unsigned int flag; unsigned char *entry; unsigned int index; unsigned char *request; int result;
- if((unsigned int)arg0&0x1F){OSReport(msg+0xA0C);return 0;}
- slot=lbl_8055D8E8;offset=slot<<5;entry=lbl_8037B820+offset;lbl_8055D8E0=1;flag=entry[8];
- if(((flag|-flag)>>31)==1){OSReport(msg+0x218,slot);OSReport(msg+0x250);for(;;){}}
- if(((unsigned int)*(unsigned int *)(entry+0xC)+0x01150000)!=0xFEEBDAED){OSReport(msg+0x280);for(;;){}}
- *(unsigned int *)(lbl_8037B820+offset)=arg3;index=slot+1;*(unsigned int *)(entry+4)=1;entry[8]=1;lbl_8055D8E8=index;if(index>=4)lbl_8055D8E8=0;
- lbl_8055D8F4=arg1;index=lbl_8055D8E4+1;lbl_8055D8E4=index;entry=lbl_8037B820+offset;if(index>=4){index=0;lbl_8055D8E4=0;}
- request=lbl_8055D8FC+index*0x20;request[0]=0x71;*(int *)(request+4)=arg1;*(int *)(request+8)=arg2;
- result=IOS_IoctlAsync(lbl_80558E18,0x71,request,0x20,arg0,arg1,(void (*)(int,void *))doTransactionCallback,entry);
- if(result!=0){OSReport(msg+0xA4C,result);entry[8]=0;return 0;}return 1;
+int fn_8003B81C(void *arg0, int arg1, int arg2, void (*arg3)(int, void *)) {
+    DVDLowContext *base;
+    int slot;
+    DVDLowContext *p;
+    unsigned int flag;
+    unsigned int one;
+    DVDLowContext *entry;
+    int next;
+    int index;
+    int result;
+    const char *msg = lbl_80302848;
+
+    if (((unsigned int)arg0 & 0x1F) != 0) {
+        OSReport(msg + 0xA0C);
+        return 0;
+    }
+
+    slot = (int)lbl_8055D8E8;
+    base = (DVDLowContext *)lbl_8037B820;
+    one = 1;
+    p = base + slot;
+    *(volatile unsigned char *)&lbl_8055D8E0 = one;
+    flag = p->inUse;
+    if (((flag | -flag) >> 31) == 1U) {
+        OSReport(msg + 0x218, slot);
+        OSReport(msg + 0x250);
+        for (;;) {}
+    }
+    if (p->magic + 0x01150000U != 0xDAEDU) {
+        OSReport(msg + 0x280);
+        for (;;) {}
+    }
+
+    base[slot].callback = (void *)arg3;
+    next = slot + 1;
+    p->WORD_0x4 = one;
+    p->inUse = one;
+    lbl_8055D8E8 = next;
+    if (next >= 4) {
+        lbl_8055D8E8 = 0;
+    }
+
+    index = (int)lbl_8055D8E4 + 1;
+    lbl_8055D8F4 = arg1;
+    lbl_8055D8E4 = index;
+    entry = ((DVDLowContext *)lbl_8037B820) + slot;
+    if (index >= 4) {
+        index = 0;
+        lbl_8055D8E4 = 0;
+    }
+
+    lbl_8055D8FC[index * 0x20] = 0x71;
+    *(int *)(lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20 + 4) = arg1;
+    *(int *)(lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20 + 8) = arg2;
+    result = IOS_IoctlAsync(lbl_80558E18, 0x71,
+        lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20,
+        0x20, arg0, arg1, (void (*)(int, void *))doTransactionCallback, entry);
+    if (result != 0) {
+        OSReport(msg + 0xA4C, result);
+        entry->inUse = 0;
+        return 0;
+    }
+    return 1;
 }
 #pragma scheduling reset
 
