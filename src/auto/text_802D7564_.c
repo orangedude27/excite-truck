@@ -632,15 +632,13 @@ void fn_802D9628(register void *arg0, register s32 arg1, register s32 arg2, regi
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma opt_common_subs off
 int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
-    int mip;
-    int wrap;
-    int base;
+    register int mip;
+    register int wrap;
+    register int base;
     int tile;
-    unsigned int ysign;
-    unsigned int yoff;
-    unsigned int xsign;
-    unsigned int xoff;
+    unsigned int ysign, yoff, xsign, xoff;
     int pixel;
     unsigned int value;
     int doubled;
