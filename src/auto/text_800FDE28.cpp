@@ -230,29 +230,33 @@ extern "C" void *MEMAdjustFrmHeap(void *, void *);
 extern "C" void OSRestoreInterrupts(u32);
 extern u8 lbl_80326F38[], lbl_80326F14[], lbl_80326F68[], lbl_80326F44[], lbl_80326E08[], lbl_80326E70[];
 extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0, u32 taskId) {
+    struct Iterator { void *node; };
     u32 level = OSDisableInterrupts();
-    s32 listOffset, count;
-    void *list, *node, *next, *it;
-    for (listOffset = 0; listOffset < 0x24; listOffset += 0xC) {
-        list = (u8 *)arg0 + 0x20 + listOffset;
-        node = *(void **)((u8 *)list + 4);
-        while (node != (u8 *)list + 8) {
-            it = node;
-            next = *(void **)node;
-            if (!it) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F38, 0x23d, (char *)lbl_80326F14);
-            node = next;
-            if (*(u32 *)((u8 *)it + 8) == taskId) {
-                Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, &it);
-                if (!it) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F38, 0x23d, (char *)lbl_80326F14);
-                if (!((u8 *)it - 4)) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F68, 0x193, (char *)lbl_80326F44);
+    s32 count;
+    u8 *list = (u8 *)arg0 + 0x20;
+    void *node;
+    for (count = 0; count < 3; count++, list += 0xC) {
+        void *current;
+        void *sentinel = list + 4;
+        node = *(void **)(list + 4);
+        while (node != sentinel) {
+            current = node;
+            node = *(void **)node;
+            if (!current) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F38, 0x23d, (char *)lbl_80326F14);
+            if (*(u32 *)((u8 *)current + 8) == taskId) {
+                struct Iterator it;
+                it.node = current;
+                ((void (*)(void *, struct Iterator))Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(list, it);
+                if (!current) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F38, 0x23d, (char *)lbl_80326F14);
+                if (!((u8 *)current - 4)) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F68, 0x193, (char *)lbl_80326F44);
                 if (!*(void **)((u8 *)arg0 + 0x18)) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326E08, 0x5d, (char *)lbl_80326E70);
                 level = OSDisableInterrupts();
-                MEMAdjustFrmHeap(*(void **)((u8 *)arg0 + 0x18), (u8 *)it - 4);
+                MEMAdjustFrmHeap(*(void **)((u8 *)arg0 + 0x18), (u8 *)current - 4);
                 OSRestoreInterrupts(level);
             }
         }
     }
-    node = *(void **)((u8 *)arg0 + 0x1c);
+    node = *(void **)((u8 *)arg0 + 0x1C);
     if (node && *(u32 *)((u8 *)node + 0xC) == taskId)
         ((void (*)(void *))(*(void ***)node)[4])(node);
     OSRestoreInterrupts(level);
@@ -327,27 +331,100 @@ extern "C" s32 fn_800FE814(s32 arg0) {
 
 extern f32 lbl_802F4DE0[];
 extern f32 lbl_802F4E10[];
+namespace nw4hbm { namespace snd { namespace detail {
+class Util { public: static f32 CalcPitchRatio(s32); };
+}}}
 f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
-    s32 octave = 0;
-    s32 note = pitch;
+    u32 count = (u32)(0xBFF - pitch) / 0xC00;
     f32 ratio = lbl_805610C8;
-    if (note < 0) {
-        s32 count = (0xBFF - note) / 0xC00;
-        note += count * 0xC00;
-        octave -= count;
+    s32 octave = 0;
+
+    if (pitch < 0) {
+        u32 chunks = count >> 3;
+        s32 adjustment = count * 0xC00;
+        if (chunks != 0) {
+            do {
+                octave -= 8;
+            } while (--chunks != 0);
+        }
+        count &= 7;
+        if (count != 0) {
+            do {
+                octave -= 1;
+            } while (--count != 0);
+        }
+        pitch += adjustment;
     }
-    if (note >= 0xC00) {
-        s32 count = note / 0xC00;
-        note -= count * 0xC00;
-        octave += count;
+
+    if (pitch >= 0xC00) {
+        count = (u32)pitch / 0xC00;
+        u32 chunks = count >> 3;
+        s32 adjustment = count * -0xC00;
+        if (chunks != 0) {
+            do {
+                octave += 8;
+            } while (--chunks != 0);
+        }
+        count &= 7;
+        if (count != 0) {
+            do {
+                octave += 1;
+            } while (--count != 0);
+        }
+        pitch += adjustment;
     }
+
+    f32 factor = lbl_805610CC;
     if (octave > 0) {
-        do { ratio *= lbl_805610CC; --octave; } while (octave > 0);
-    } else if (octave < 0) {
-        do { ratio *= lbl_805610D0; ++octave; } while (octave < 0);
+        u32 chunks = (u32)octave >> 3;
+        s32 negate = -octave;
+        if (chunks != 0) {
+            do {
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+            } while (--chunks != 0);
+        }
+        count = (u32)octave & 7;
+        if (count != 0) {
+            do {
+                ratio *= factor;
+            } while (--count != 0);
+        }
+        octave += negate;
     }
-    s32 semitone = note >> 8;
-    s32 fraction = note & 0xFF;
+
+    factor = lbl_805610D0;
+    if (octave < 0) {
+        count = (u32)(-octave);
+        u32 chunks = count >> 3;
+        if (chunks != 0) {
+            do {
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+                ratio *= factor;
+            } while (--chunks != 0);
+        }
+        count &= 7;
+        if (count != 0) {
+            do {
+                ratio *= factor;
+            } while (--count != 0);
+        }
+    }
+
+    s32 semitone = (pitch >> 8) + 1;
+    s32 fraction = pitch & 0xFF;
     if (semitone != 0) ratio *= lbl_802F4DE0[semitone];
     if (fraction != 0) ratio *= lbl_802F4E10[fraction];
     return ratio;
@@ -513,38 +590,42 @@ extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *, BOOL);
 extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *, s32, const void *, u32);
 extern "C" void fn_800FF090(void *);
 extern u8 lbl_8032734C[], lbl_80327370[], lbl_8032746C[], lbl_80327490[];
+#pragma use_lmw_stmw off
 extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
     extern u8 lbl_8041D4AC[];
-    void **node = (void **)*(void **)(lbl_8041D4AC + 4);
     void **end = (void **)(lbl_8041D4AC + 4);
+    void **node = (void **)*end;
     void *entry, *player, *wave;
-    s32 i, count, offset;
-    while (node != end) {
-        entry = node;
-        node = (void **)*node;
-        if (!entry) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23d, (char *)lbl_8032734C);
-        player = (u8 *)entry - 0x94;
-        if (*((u8 *)entry - 0x77)) {
-            if (IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(player)) UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(player);
-            if (!*((u8 *)player + 0x1e) && *(u32 *)((u8 *)player + 4) >= 2) {
-                count = *(s32 *)((u8 *)player + 0x10);
-                wave = *(void **)((u8 *)player + 8);
-                if (count > 0) {
-                    void *list = *(void **)wave;
-                    offset = 0;
-                    for (i = 0; i < count; i++) {
-                        if (!list) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327490, 0x23d, (char *)lbl_8032746C);
-                        SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)((u8 *)player + 0x18), i, *(void **)((u8 *)list + offset + 8), 0);
-                        offset += 4;
-                    }
+    s32 i, offset;
+    goto check_player;
+player_loop:
+    entry = node;
+    node = (void **)*node;
+    if (!entry) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23d, (char *)lbl_8032734C);
+    player = (u8 *)entry - 0x94;
+    if (*((u8 *)entry - 0x77)) {
+        if (IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(player)) UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(player);
+        if (!*((u8 *)player + 0x1e) && *(u32 *)((u8 *)player + 4) >= 2) {
+            i = 0;
+            wave = *(void **)((u8 *)player + 8);
+            void *list = *(void **)wave;
+            if (*(s32 *)((u8 *)player + 0x10) > 0) {
+                void *base = (u8 *)list - 0x18;
+                offset = 0;
+                for (i = 0; i < *(s32 *)((u8 *)player + 0x10); i++) {
+                    if (!list) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327490, 0x23d, (char *)lbl_8032746C);
+                    SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)((u8 *)player + 0x18), i, *(void **)((u8 *)base + offset + 8), 0);
+                    offset += 4;
                 }
-                SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)((u8 *)player + 0x18), 1);
-                *((u8 *)player + 0x1e) = 1;
             }
-        } else if (*(s32 *)((u8 *)player + 4)) fn_800FF090(player);
-    }
+            SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)((u8 *)player + 0x18), 1);
+            *((u8 *)player + 0x1e) = 1;
+        }
+    } else if (*(s32 *)((u8 *)player + 4)) fn_800FF090(player);
+check_player:
+    if (node != end) goto player_loop;
 }
-
+#pragma use_lmw_stmw reset
 extern "C" void fn_800E5338(s32, f32);
 extern "C" void fn_800E5444(s32, f32);
 extern "C" void fn_800E5464(s32, f32);
