@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <macros.h>
+extern void fn_802CBD30(void **, void **, void *);
+extern char lbl_8034BA98[];
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B538[];
 extern void *jumptable_8034B794[];
@@ -821,11 +823,11 @@ extern char lbl_8034BBA8[];
 extern char lbl_8055D098;
 #pragma use_lmw_stmw off
 void fn_802CB6B4(void) {
-    void *root = *(void **)lbl_8055FCBC;
-    void *record;
-    void *manager;
-    unsigned int total;
-    unsigned int secondTotal;
+    register void *manager;
+    register unsigned int total;
+    register void *record;
+    register void *root = *(void **)lbl_8055FCBC;
+    register unsigned int secondTotal;
 
     if (root != 0) {
         if (root != 0) {
@@ -834,25 +836,25 @@ void fn_802CB6B4(void) {
             *(int *)((char *)root + 0x38) = 0;
             manager = *(void **)((char *)root + 0x24);
             if (manager != 0) {
-                record = *(void **)((char *)manager + 0xC);
-                if (record != 0) {
+                if (*(int *)((char *)manager + 0xC) != 0) {
                     fn_802E30C8(lbl_8034BBA8, lbl_8034BB1C);
                     fn_802E30C8(lbl_8034BB9C);
                     total = 0;
-                    do {
+                    record = *(void **)((char *)manager + 0xC);
+                    while (record != 0) {
                         fn_802E30C8(lbl_8034BB88, (char *)record + 0x10, *(int *)((char *)record + 4));
                         total += *(unsigned int *)((char *)record + 4);
                         record = *(void **)((char *)record + 8);
-                    } while (record != 0);
+                    }
                     fn_802E30C8(lbl_8034BB7C, total >> 10);
                     secondTotal = 0;
                     fn_802E30C8(&lbl_8055D098);
                     record = *(void **)((char *)manager + 8);
-                    do {
+                    while (record != 0) {
                         fn_802E30C8(lbl_8034BB68, (char *)record + 0x10, *(int *)((char *)record + 4));
                         secondTotal += *(unsigned int *)((char *)record + 4);
                         record = *(void **)((char *)record + 8);
-                    } while (record != 0);
+                    }
                     fn_802E30C8(lbl_8034BB5C, secondTotal >> 10);
                     fn_802E317C(lbl_8034BAEC);
                 }
@@ -1144,22 +1146,24 @@ void fn_802CC03C(int **arg0, int *arg1, int arg2) {
 
 extern char lbl_8034BB28[];
 void *fn_802CC2C8(void *arg0, int arg1) {
-    int size = *(int *)((char *)arg0 + 4);
+    volatile int *manager = (volatile int *)arg0;
+    int size = manager[1];
     int mask = ~size;
     int aligned = (arg1 + size) & mask;
+    char *node = (char *)0x80000000;
     char **link = (char **)((char *)arg0 + 8);
-    int best = 0x7FFFFFFF;
+    int best = (int)node - 1;
     char **choice = 0;
-    char *node;
     void *result = 0;
-    while ((node = *link) != 0) {
+    do {
         int start = *(int *)(node + 4);
         if (start >= aligned && best > start) {
             choice = link;
             best = start;
         }
         link = (char **)(node + 8);
-    }
+        node = *link;
+    } while (node != 0);
     if (choice != 0) {
         char *block = *choice;
         char *next = *(char **)(block + 8);
@@ -1170,17 +1174,19 @@ void *fn_802CC2C8(void *arg0, int arg1) {
             *(int *)(p + 1) = 0xABCFEED0;
             split = p + 1;
             *(int *)(p + 9) = 0;
-            *(int *)(p + 5) = remaining - ((size + 0x10) & ~size);
+            *(int *)(p + 5) = remaining - ((manager[1] + 0x10) & ~manager[1]);
             *(void **)(p + 0xD) = arg0;
             *(int *)(block + 4) = aligned;
         }
         if (split != 0) {
             *(char **)(split + 8) = next;
             *choice = split;
-        } else *choice = next;
+        } else {
+            *choice = next;
+        }
         *(char **)(block + 8) = *(char **)((char *)arg0 + 0xC);
         *(char **)((char *)arg0 + 0xC) = block;
-        result = block + *(int *)((char *)arg0 + 4) + 1;
+        result = block + manager[1] + 1;
     }
     if (result == 0 && *(unsigned char *)arg0 != 0)
         fn_802E317C(lbl_8034BB28);
