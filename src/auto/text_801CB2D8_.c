@@ -1,4 +1,5 @@
 #include "revolution/BTE/stack/include/btm_api.h"
+extern void *memset(void *, int, unsigned long);
 extern unsigned int fn_801CE898(void);
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/stack/include/hcimsgs.h"
@@ -454,13 +455,13 @@ void fn_801CC918(void) {
     extern float lbl_805629FC;
     extern float lbl_80562A08;
     register unsigned char *base;
-    register int i;
     register int offset;
+    register int i;
     void *entry;
     void *object;
-    float floatA08;
-    float floatFC;
     float floatE4;
+    float floatFC;
+    float floatA08;
 
     base = (unsigned char *)lbl_8055E884;
     if (base[0x10] != 0) return;
