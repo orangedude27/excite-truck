@@ -433,7 +433,6 @@ void fn_802E2E0C(int arg0, int arg1) {
 }
 #pragma push
 #pragma scheduling invalid_target
-#pragma use_lmw_stmw off
 void fn_802E2E38(int arg0) {
     typedef int (*Callback)(int, int);
     extern char lbl_8034CCE0[];
