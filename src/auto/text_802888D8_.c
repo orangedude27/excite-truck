@@ -1102,43 +1102,59 @@ extern char lbl_80348B7C[], lbl_80348B8C[];
 extern int lbl_8055C88C, lbl_8055C890, lbl_8055C898;
 #pragma cplusplus on
 #pragma push
-#pragma scheduling invalid_target
-extern "C" int fn_8028A1A4(int out) {
+#pragma scheduling on
+int fn_8028A1A4(int out) {
+    struct Vec3 { float x; float y; float z; };
+    struct Item {
+        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
+        virtual void v3() = 0; virtual void v4() = 0; virtual void v5() = 0;
+        virtual void v6() = 0; virtual void v7() = 0; virtual void v8() = 0;
+        virtual void v9() = 0; virtual void v10() = 0;
+        virtual Vec3 value(void *) = 0;
+    };
+    struct Object {
+        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
+        virtual void v3() = 0; virtual void v4() = 0;
+        virtual int count(void *) = 0;
+        virtual void v6() = 0; virtual void v7() = 0; virtual void v8() = 0;
+        virtual void v9() = 0; virtual void v10() = 0; virtual void v11() = 0;
+        virtual void v12() = 0; virtual void v13() = 0; virtual void v14() = 0;
+        virtual void v15() = 0; virtual void v16() = 0; virtual void v17() = 0;
+        virtual void v18() = 0; virtual void v19() = 0; virtual void v20() = 0;
+        virtual void v21() = 0;
+        virtual Item *item(int) = 0;
+    };
+
     int count = fn_80287B14();
+    char *offset;
+    char *obj;
     int i;
-    int j;
-    int offset;
     char *entry;
-    char *cursor;
-    void *obj;
-    void *item;
-    float a[3];
-    float b[3];
+    Object *castObj;
+    int j;
+    Item *item;
 
     *(void **)out = fn_8002F37C(
         (int)fn_8012850C(count * 0x68 + 0x10, lbl_80348B7C, count * 0x68),
         fn_8028A32C, 0, 0x68, count);
 
-    for (i = 0, offset = 0; i < fn_80287B14(); i++, offset += 0x68) {
-        obj = (void *)fn_80288208(i);
-        entry = (char *)*(void **)out + offset;
-        if (fn_80287E20(obj, lbl_80348B8C)) {
-            obj = fn_80287E80((int)obj, lbl_80348B8C);
-            *(int *)(entry + 0x60) =
-                ((int (*)(void *, int))(*(void ***)obj)[7])(obj, lbl_8055C890);
-            for (j = 0, cursor = entry; j < *(int *)(entry + 0x60);
-                 j++, cursor += 0x18) {
-                item = ((void *(*)(void *, int))(*(void ***)obj)[24])(obj, j);
-                ((void (*)(float *, void *, int))(*(void ***)item)[13])(
-                    a, item, lbl_8055C88C);
-                *(float *)(cursor + 0x0) = a[0];
-                *(float *)(cursor + 0x4) = a[1];
-                *(float *)(cursor + 0x8) = a[2];
-                ((void (*)(float *, void *, int))(*(void ***)item)[13])(
-                    b, item, lbl_8055C898);
-                *(float *)(cursor + 0xC) = b[0];
-                *(float *)(cursor + 0x10) = b[1];
-                *(float *)(cursor + 0x14) = b[2];
+    for (i = 0, offset = 0; i < fn_80287B14(); offset += 0x68, i++) {
+        obj = (char *)fn_80288208(i);
+        entry = (char *)*(void **)out + (int)offset;
+        if (fn_80287E20((Object *)obj, lbl_80348B8C)) {
+            castObj = (Object *)fn_80287E80((int)obj, lbl_80348B8C);
+            *(int *)(entry + 0x60) = castObj->count(&lbl_8055C890);
+            obj = entry;
+            for (j = 0; j < *(int *)(entry + 0x60); j++, obj += 0x18) {
+                item = castObj->item(j);
+                const Vec3 &a = item->value(&lbl_8055C88C);
+                *(float *)(obj + 0x0) = a.x;
+                *(float *)(obj + 0x4) = a.y;
+                *(float *)(obj + 0x8) = a.z;
+                const Vec3 &b = item->value(&lbl_8055C898);
+                *(float *)(obj + 0xC) = b.x;
+                *(float *)(obj + 0x10) = b.y;
+                *(float *)(obj + 0x14) = b.z;
             }
         } else {
             *(int *)(entry + 0x60) = 0;
