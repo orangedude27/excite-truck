@@ -16,6 +16,15 @@ extern u8 lbl_8041B138[];
 #pragma pop
 
 extern u32 lbl_80559900;
+#pragma push
+#pragma small_data off
+extern u8 lbl_803271B8[];
+extern u8 lbl_803274C0[];
+extern u8 lbl_8032749C[];
+extern u8 lbl_80327460[];
+extern u8 lbl_8041D4AC[];
+#pragma pop
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
 
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
 extern double __ieee754_pow(double, double);
