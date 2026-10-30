@@ -564,7 +564,7 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 arg1, u32 ar
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
     u32 level = OSDisableInterrupts();
     if (*((u8 *)arg0 + 0x1C) != 0) {
@@ -581,6 +581,7 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
         Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
     *((u8 *)arg0 + 0x1D) = 0;
     OSRestoreInterrupts(voiceLevel);
+
     void *sentinel = (u8 *)arg0 + 8;
     void *node = *(void **)((u8 *)arg0 + 8);
     while (node != sentinel) {
@@ -593,7 +594,7 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
         void *iterator = entry;
         Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(
             (u8 *)arg0 + 4, &iterator);
-        if (*(void **)((u8 *)arg0 + 0x8C) != 0) {
+        if (*(u32 *)((u8 *)arg0 + 0x8C) != 0) {
             if (entry == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
                                              (const char *)lbl_8032746C);
@@ -601,11 +602,11 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
             if (userData == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
                                              (const char *)lbl_8032743C);
-            ((void (*)(s32, void *, void *, u32))*(void **)((u8 *)arg0 + 0x8C))(
+            ((void (*)(s32, void *, void *, u32))*(u32 *)((u8 *)arg0 + 0x8C))(
                 1, arg0, userData, *(u32 *)((u8 *)arg0 + 0x90));
         }
     }
-    if (*(u32 *)((u8 *)arg0 + 4) != 0)
+    if (*(volatile u32 *)((volatile u8 *)arg0 + 4) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327040, 0x162,
                                      (const char *)lbl_803271B8);
     *((u8 *)arg0 + 0x1F) = 0;
