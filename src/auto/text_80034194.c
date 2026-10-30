@@ -105,6 +105,7 @@ extern s32 OSGetTick(void);
 extern s32 fn_8003BCDC(s32);
 extern void DCInvalidateRange(void *, u32);
 extern char lbl_80376B00[];
+extern u8 lbl_80376AD0[0x30];
 extern void fn_80037CEC(void);
 extern void fn_80037DBC(u32);
 extern void fn_8003A834(void *, void *);
