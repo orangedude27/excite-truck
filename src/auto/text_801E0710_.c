@@ -7,6 +7,9 @@ extern void *fn_801284E8(void *, s32);
 extern unsigned int lbl_8032C108;
 extern f32 lbl_80562C78;
 extern f32 lbl_80562C7C;
+extern s32 fn_802C8DBC(s32);
+extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
+extern void fn_802C8E48(void);
 
 extern void *lbl_8055EA10;
 
@@ -318,17 +321,27 @@ extern s32 fn_801E85A4(void);
 extern f32 lbl_80562C78, lbl_80562C7C, lbl_80562C8C, lbl_80562CA0, lbl_80562CA4;
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_801E1710(void *arg0, void *arg1) {
-    f32 initialA = lbl_80562C78;
-    f32 initialB = lbl_80562C7C;
-    f32 threshold = lbl_80562CA0;
-    f32 decrement = lbl_80562CA4;
-    f32 reset = lbl_80562C8C;
-    s32 i = 0;
-    u8 *base = (u8 *)arg0;
-    u8 *row = (u8 *)arg0;
+void fn_801E1710(void *arg0) {
+    register f32 decrement;
+    register f32 reset;
+    register f32 threshold;
+    register f32 initialB;
+    register f32 initialA;
 
-    while (i < fn_801E85A4()) {
+    register u8 *base;
+    register u8 *row;
+    register s32 i;
+
+    initialA = lbl_80562C78;
+    base = (u8 *)arg0;
+    initialB = lbl_80562C7C;
+    row = (u8 *)arg0;
+    threshold = lbl_80562CA0;
+    decrement = lbl_80562CA4;
+    i = 0;
+    reset = lbl_80562C8C;
+
+    for (; i < fn_801E85A4(); base += 4, row += 0x18, i++) {
         s32 value = *(s32 *)(base + 0x6C);
         if (value != *(s32 *)(row + 0x0C)) {
             *(u8 *)(row + 0x10) = 0;
@@ -339,21 +352,27 @@ void fn_801E1710(void *arg0, void *arg1) {
             *(s32 *)(row + 0x0C) = value;
         }
         if (*(s32 *)(row + 0x0C) != -1) {
+            f32 current2;
+            int cond;
+            int gt;
             void *obj = fn_8017960C(*(s32 *)(row + 0x0C));
             f32 current = *(f32 *)((u8 *)obj + 0x258C);
-            int active = current > threshold && *(u8 *)((u8 *)obj + 0x259D) != 0;
-            f32 amount;
-            if (active && current > *(f32 *)(row + 0x14))
-                *(f32 *)(row + 0x18) = reset;
-            else {
-                amount = *(f32 *)(row + 0x18) - decrement;
-                *(f32 *)(row + 0x18) = amount;
+            cond = 0;
+            gt = current > threshold;
+            if (gt && *(u8 *)((u8 *)obj + 0x259D) != 0) {
+                cond = 1;
             }
-            *(f32 *)(row + 0x14) = current;
+            current2 = *(f32 *)((u8 *)obj + 0x258C);
+            if (cond && current2 > *(f32 *)(row + 0x14)) {
+                *(f32 *)(row + 0x18) = reset;
+            } else {
+                *(f32 *)(row + 0x18) -= decrement;
+            }
+            *(f32 *)(row + 0x14) = current2;
             if (*(f32 *)(row + 0x18) > initialB) {
                 *(s32 *)(row + 0x20) = -1;
                 *(s32 *)(row + 0x1C) = -0x100;
-            } else if (*(u8 *)(row + 0x10)) {
+            } else if (*(u8 *)(row + 0x10) != 0) {
                 *(s32 *)(row + 0x20) = -1;
                 *(s32 *)(row + 0x1C) = 0xFFFF0000;
             } else {
@@ -361,9 +380,6 @@ void fn_801E1710(void *arg0, void *arg1) {
                 *(s32 *)(row + 0x1C) = 0;
             }
         }
-        base += 4;
-        row += 0x18;
-        i++;
     }
 }
 void fn_801E1868(void) {
