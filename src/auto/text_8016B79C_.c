@@ -1,6 +1,7 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 extern s32 fn_801284F8(s32, const char *);
+extern char lbl_80330A90[];
 extern void fn_80144504(void **);
 extern void *fn_8016CEC0(void *, s32);
 extern void fn_8016CEFC(void *);
