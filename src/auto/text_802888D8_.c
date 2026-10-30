@@ -1097,7 +1097,8 @@ extern void *fn_80287E80(int, void *);
 extern void fn_8012850C(int, void *, int);
 extern void *fn_8002F37C(int, void (*)(void), int, int, int);
 extern void fn_8028A32C(void);
-extern int lbl_80348B7C, lbl_80348B8C, lbl_8055C88C, lbl_8055C890, lbl_8055C898;
+extern char lbl_80348B7C[], lbl_80348B8C[];
+extern int lbl_8055C88C, lbl_8055C890, lbl_8055C898;
 int fn_8028A1A4(int out) {
  int n=fn_80287B14(), i, j;
  char *base, *entry;
