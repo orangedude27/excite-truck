@@ -1,4 +1,14 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern void *fn_8012850C(signed long, const char *);
+extern void fn_80127CF4(void *, const char *, signed long);
+extern void *memset(void *, int, unsigned long);
+extern char lbl_8033BDD8[];
+extern char lbl_8033BDF0[];
+extern float lbl_804891F8[];
+extern float lbl_80489228[];
+extern float lbl_80563228;
+extern float lbl_8056322C;
+extern unsigned long lbl_802F9E4C[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma cplusplus on
