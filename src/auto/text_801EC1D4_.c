@@ -71,6 +71,7 @@ void fn_801EC214(void *out, void *obj, int arg2, const char *name, int arg4, flo
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma dont_inline __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448
 long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long arg0, long arg1) {
     if (arg0 != 0) {
         long vptr = *(long *)arg0;
