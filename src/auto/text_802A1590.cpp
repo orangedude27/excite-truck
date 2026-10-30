@@ -1392,57 +1392,78 @@ extern "C" void fn_802A41D8(void *arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
 extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
     struct Params {
         s32 count;
-        f32 value[19];
+        f32 p4, p8, pC, p10, p14, p18, p1C, p20, p24, p28;
+        f32 p2C, p30, p34, p38, p3C, p40, p44, p48, p4C;
     };
-    Params *params = (Params *)arg1;
-    char *object = (char *)arg0;
-    s32 count = params->count;
+    register s32 count = ((struct Params *)arg1)->count;
+    register struct Params *params = (struct Params *)arg1;
+    register char *object = (char *)arg0;
+    register s32 extra = arg2;
     void *entries = fn_8012850C((count << 5) + 0x10, lbl_80349A98);
     entries = fn_8002F37C(entries, fn_802A44B4, 0, 0x20, count);
 
-    f32 value30 = params->value[11];
-    f32 value34 = params->value[12];
-    f32 value3c = params->value[14];
-    f32 value38 = params->value[13];
-    f32 value40 = params->value[15];
-    f32 value44 = params->value[16];
-    f32 value4c = params->value[18];
-    f32 value48 = params->value[17];
-    f32 slope44 = (value34 - value30) / value3c;
-    f32 slope48 = (value38 - value34) / (lbl_80564730 - value3c);
-    f32 slope54 = (value44 - value40) / value4c;
-    f32 slope58 = (value48 - value44) / (lbl_80564730 - value4c);
+    register f32 p30 = params->p30;
+    s32 copyCount = count;
+    register f32 p34 = params->p34;
+    s32 zero = 0;
+    register f32 p3C = params->p3C;
+    register f32 limit = lbl_80564730;
+    register f32 slope44 = p34 - p30;
+    register f32 p38 = params->p38;
+    register f32 p40 = params->p40;
+    register f32 remaining = limit - p3C;
+    p34 = p38 - p34;
+    register f32 p44 = params->p44;
+    register f32 p4 = params->p4;
+    register f32 p4C = params->p4C;
+    register f32 p48 = params->p48;
+    register f32 scale = lbl_80564838;
+    slope44 /= p3C;
+    register f32 p8 = params->p8;
+    register f32 pC = params->pC;
+    register f32 p10 = params->p10;
+    register f32 p14 = params->p14;
+    p34 /= remaining;
+    register f32 slope54 = p44 - p40;
+    register f32 p18 = params->p18;
+    register f32 ratio = limit / p4;
+    register f32 p1C = params->p1C;
+    register f32 p20 = params->p20;
+    register f32 p24 = params->p24;
+    register f32 p28 = params->p28;
+    slope54 /= p4C;
+    register f32 p2C = params->p2C;
+    scale *= p2C;
+    register f32 difference = p48 - p44;
+    register f32 slope58 = difference / (limit - p4C);
 
     *(void **)(object + 0x00) = entries;
-    *(s32 *)(object + 0x08) = count;
-    *(f32 *)(object + 0x0c) = params->value[0];
-    *(f32 *)(object + 0x10) = lbl_80564730 / params->value[0];
-    *(f32 *)(object + 0x14) = params->value[1];
-    *(f32 *)(object + 0x1c) = params->value[2];
-    *(f32 *)(object + 0x20) = params->value[3];
-    *(f32 *)(object + 0x24) = params->value[4];
-    *(f32 *)(object + 0x28) = params->value[5];
-    *(f32 *)(object + 0x2c) = params->value[6];
-    *(f32 *)(object + 0x30) = params->value[7];
-    *(f32 *)(object + 0x34) = params->value[8];
-    f32 value2c = params->value[10] * lbl_80564838;
-    *(f32 *)(object + 0x38) = value2c;
-    *(f32 *)(object + 0x3c) = params->value[9];
-    *(f32 *)(object + 0x40) = value30;
+    *(s32 *)(object + 0x08) = copyCount;
+    *(f32 *)(object + 0x0c) = p4;
+    *(f32 *)(object + 0x10) = ratio;
+    *(f32 *)(object + 0x14) = p8;
+    *(f32 *)(object + 0x1c) = pC;
+    *(f32 *)(object + 0x20) = p10;
+    *(f32 *)(object + 0x24) = p14;
+    *(f32 *)(object + 0x28) = p18;
+    *(f32 *)(object + 0x2c) = p1C;
+    *(f32 *)(object + 0x30) = p20;
+    *(f32 *)(object + 0x34) = p24;
+    *(f32 *)(object + 0x38) = scale;
+    *(f32 *)(object + 0x3c) = p28;
+    *(f32 *)(object + 0x40) = p30;
     *(f32 *)(object + 0x44) = slope44;
-    *(f32 *)(object + 0x48) = slope48;
-    *(f32 *)(object + 0x4c) = value3c;
-    *(f32 *)(object + 0x50) = value40;
+    *(f32 *)(object + 0x48) = p34;
+    *(f32 *)(object + 0x4c) = p3C;
+    *(f32 *)(object + 0x50) = p40;
     *(f32 *)(object + 0x54) = slope54;
     *(f32 *)(object + 0x58) = slope58;
-    *(f32 *)(object + 0x5c) = value4c;
-    *(void **)(object + 0x60) = fn_802CAC28(arg2, 0, slope58, slope54, value4c,
-        value44, value40, slope48, slope44, value3c, value30, value2c,
-        params->value[8], params->value[7], params->value[6]);
+    *(f32 *)(object + 0x5c) = p4C;
+    *(void **)(object + 0x60) =
+        ((void *(*)(void *, s32))fn_802CAC28)((void *)extra, zero);
 
     f32 upper = lbl_80564734 - *(f32 *)(object + 0x4c);
     f32 clampUpper = lbl_80564744;
@@ -1459,8 +1480,8 @@ extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
         lbl_805647AC / (base + *(f32 *)(object + 0x48) * clampUpper),
         base, product);
     fn_802A4524(object);
-          return object;
-  }
+    return object;
+}
 #pragma pop
   
   extern "C" void fn_802A44B4(void) {
