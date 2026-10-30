@@ -71,15 +71,16 @@ void fn_802919AC(void *arg0) {
 }
 #pragma scheduling on
 void fn_80291A1C(void) {
-    /* Fix note: initialize settings and preserve the optional virtual-call result. */
+    /* Fix note: initialize settings using either the virtual query result or the default value. */
     struct QueryObject_80291A1C *obj;
     float value;
     int *settings;
 
-    value = lbl_805644A0;
     obj = (struct QueryObject_80291A1C *)fn_802AE414(&lbl_8055C948);
     if (obj != 0) {
         value = obj->f8(&lbl_8055C938, lbl_805644A0);
+    } else {
+        value = lbl_805644A0;
     }
     *(float *)&lbl_804B4010 = lbl_80564484;
     settings = (int *)&lbl_804B4010;
@@ -160,6 +161,7 @@ extern int lbl_8055CFF0;
 extern float lbl_80564494, lbl_805644A4, lbl_805644A8, lbl_805644AC;
 extern double lbl_805644B0;
 extern float lbl_805644B8, lbl_805644BC;
+#pragma scheduling invalid_target
 void fn_80291C7C(void *arg0, int arg1) {
     float *p = (float *)arg0;
     float ratio;
@@ -323,25 +325,36 @@ extern float lbl_8056449C;
 extern double lbl_805644C8;
 __declspec(section ".data") extern int lbl_804B3EC0;
 void fn_802923EC(float arg0) {
-    float value;
-    int i;
-    int *base;
-    int *entry;
-    unsigned int packed;
+    register float value;
+    register int *settings;
+    register int *table;
+    register int *entry;
+    register int i;
+    register unsigned int packed;
+    register int amount;
+
     if (lbl_8055F75C != 0) {
         value = lbl_80564480;
         if (value < arg0) value = arg0;
         if (value > lbl_80564484) value = lbl_80564484;
-        base = (int *)lbl_804B4010;
-        base[6] = (base[6] & 0xFFFFFF) | ((int)(lbl_8056449C * value) << 24);
-        entry = &lbl_804B3EC0;
+        settings = (int *)&lbl_804B4010;
+        packed = settings[6];
+        packed <<= 8;
+        packed >>= 8;
+        amount = (int)(lbl_8056449C * value);
+        settings[6] = packed | (((unsigned int)amount & 0xFF) << 24);
+        entry = (int *)&lbl_804B3EC0;
+        table = entry;
         i = 0;
-        do {
-            packed = entry[6];
-            entry[6] = ((unsigned int)(int)(value * (float)(packed >> 24)) << 24) | (packed & 0xFFFFFF);
-            entry = (int *)((char *)entry + 0x24);
-            i++;
-        } while (i < base[0x48]);
+        goto check;
+    loop:
+        packed = entry[6];
+        i++;
+        entry[6] = ((unsigned int)(int)(value * (float)(packed >> 24)) << 24) |
+                   (packed & 0xFFFFFF);
+        entry = (int *)((char *)entry + 0x24);
+    check:
+        if (i < table[0x48]) goto loop;
     }
 }
 
