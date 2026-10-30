@@ -14,7 +14,7 @@ extern "C" char lbl_8032796C[];
 extern "C" char lbl_80327944[];
 extern "C" int OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(int);
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...) __attribute__((noreturn));
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" int fn_800FEC1C(void*, const void*);
 extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void*, void*, const void*);
 extern "C" char lbl_80327AF4[];
@@ -33,7 +33,6 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ..
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *arg0, const void *arg1) {
     register char *strings = lbl_803276F0;
     register const unsigned char *file = (const unsigned char *)arg1;
-    register unsigned short version;
     *(unsigned int *)arg0 = 0;
     *(unsigned int *)((char *)arg0 + 4) = 0;
     *(unsigned int *)((char *)arg0 + 8) = 0;
@@ -43,15 +42,13 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
         Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x37, strings + 0x10);
     if (*(const unsigned int *)file != 0x52575344)
         return arg0;
-    version = *(const unsigned short *)(file + 6);
-    if (version < 0x100)
+    if (*(const unsigned short *)(file + 6) < 0x100)
         Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x3F, strings + 0x5C);
-    version = *(const unsigned short *)(file + 6);
-    if (version < 0x100)
+    if (*(const unsigned short *)(file + 6) < 0x100)
         return arg0;
-    if (version > 0x102)
+    if (*(const unsigned short *)(file + 6) > 0x102)
         Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x45, strings + 0x5C);
-    if (version > 0x102)
+    if (*(const unsigned short *)(file + 6) > 0x102)
         return arg0;
     *(const void **)arg0 = arg1;
     *(void **)((char *)arg0 + 4) = (void *)(file + *(const unsigned int *)(file + 0x10));
