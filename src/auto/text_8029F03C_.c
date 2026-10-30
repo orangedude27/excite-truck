@@ -580,7 +580,7 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
 #pragma push
 #pragma cplusplus on
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma use_lmw_stmw off
 extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
 extern "C" void *fn_801E8718(int);
@@ -591,10 +591,11 @@ void fn_802A042C(void *obj, Unk802A0794Params *pos) {
     struct Entry { unsigned int words[12]; };
     struct Entry copy;
     float vec[6];
-    float lower = lbl_805646BC;
-    float upper = lbl_805646B4;
-    float scale = lbl_805646C0;
     float bias = lbl_805646C8;
+    float scale = lbl_805646C0;
+    float upper = lbl_805646B4;
+    float lower = lbl_805646BC;
+    float radius2;
     int i = 0;
     int offset = 0;
 
@@ -604,8 +605,6 @@ body:
         struct Entry *entry = (struct Entry *)fn_801E8718(i);
         float pointX, pointY, pointZ, dx, dy, dz, dot;
         float radius;
-        float radius2;
-
         copy = *entry;
         pointX = pos->values[0] + *(float *)((char *)obj + 0x30);
         radius = *(volatile float *)((char *)obj + 0x44);
@@ -615,14 +614,12 @@ body:
         dy = pointY - *(float *)&copy.words[10];
         pointZ = pos->values[2] + *(float *)((char *)obj + 0x38);
         dz = pointZ - *(float *)&copy.words[11];
-
-        vec[0] = dx;
-        vec[1] = dy;
-        vec[2] = dz;
         vec[3] = pointX;
         vec[4] = pointY;
         vec[5] = pointZ;
-
+        vec[0] = dx;
+        vec[1] = dy;
+        vec[2] = dz;
         dot = PSVECDotProduct(vec, vec);
         if (dot < radius2) {
             float amount = dot / radius2;
@@ -633,7 +630,6 @@ body:
             unsigned int old;
             unsigned int objectColor;
             unsigned int output;
-
             if (amount < lower) amount = lower;
             if (amount > upper) amount = upper;
             base = scale * *(float *)((char *)obj + 0x48);
