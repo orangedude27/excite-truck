@@ -1106,6 +1106,80 @@ extern "C" void fn_802B7884(void *arg0) {
     result = obj->call(base + 0x150);
     fn_802B6568(result, selection);
 }
+
+extern void fn_801345D8(void *, s32, const char *, ...);
+extern "C" s32 fn_802B1C14(s32);
+extern "C" s32 fn_802B1C1C(s32, s32);
+__declspec(section ".sdata") extern const char lbl_8055CEB0[];
+s32 fn_802B7B08(void) {
+    typedef struct {
+        void *name;
+        s32 value;
+        s32 unk8;
+        s32 unkC;
+        f32 time;
+        s32 unk14;
+        s32 unk18;
+        s32 unk1C;
+    } Record;
+    char *base = lbl_8034A598;
+    void *result;
+    const u8 *source;
+    f32 step;
+    f32 elapsed;
+    s32 early;
+    s32 index;
+    s32 count;
+    s32 i;
+    Record record;
+    char buf[0x20];
+
+    result = ((void *(*)(void *, void *))(*(void ***)lbl_8055FA48)[5])(
+        lbl_8055FA48, base + 0x2A0);
+    step = *(f32 *)((u8 *)result + 0x14);
+    result = ((void *(*)(void *, void *))(*(void ***)lbl_8055FA48)[3])(
+        lbl_8055FA48, base + 0xB8);
+    fn_802B6568(result, lbl_8055CEB0);
+    result = ((void *(*)(void *, void *))(*(void ***)lbl_8055FA48)[3])(
+        lbl_8055FA48, base + 0x2DC);
+    source = (const u8 *)result;
+    record.name = *(void **)(source + 0);
+    record.value = *(s32 *)(source + 4);
+    record.unk8 = *(s32 *)(source + 8);
+    record.unkC = *(s32 *)(source + 0xC);
+    record.time = *(f32 *)(source + 0x10);
+    record.unk14 = *(s32 *)(source + 0x14);
+    record.unk18 = *(s32 *)(source + 0x18);
+    record.unk1C = *(s32 *)(source + 0x1C);
+
+    elapsed = (f32)fn_802E2C20() / lbl_80564C70 -
+              ((f32 *)&lbl_8055FA08)[1];
+    early = elapsed < lbl_8055FA08;
+    if (early != 0) {
+        void *task = ((void *(*)(void))fn_802B5B6C)();
+        index = *(s32 *)((u8 *)task + 4);
+        count = fn_802B1C14(index);
+        if (count > 0) {
+            i = 0;
+            do {
+                fn_801345D8(buf, 0x20, base + 0x2E8, i);
+                record.name = buf;
+                fn_802B6568(&record, lbl_8055CE70,
+                            fn_802B1C1C(index, i));
+                record.time += step;
+                i++;
+                count = fn_802B1C14(index);
+            } while (i < count);
+        } else {
+            fn_80147230(&record, base + 0x2F4);
+        }
+    } else {
+        void *task = ((void *(*)(void))fn_802B5B6C)();
+        fn_80147230(&record, lbl_8055CE70,
+                    fn_802B1C1C(*(s32 *)((u8 *)task + 4), lbl_8055FA28));
+    }
+}
+
 #pragma cplusplus reset
 
 extern void lbl_8034A898(void);
@@ -1521,52 +1595,70 @@ extern "C" s32 fn_802B8998(s32 arg0) {
 #pragma pop
 void fn_802B8AE0(const char *arg0, s32 arg1) {
     struct Local { char name[32]; volatile s32 savedArg; volatile s32 zero; } local;
-    s32 i, count;
-    char *base,*dst;
-    if(fn_802B05E4()!=0) return;
-    local.name[31]=0;
-    dst=local.name;
-    do { char c=*arg0++; *dst++=c; } while((signed char)dst[-1]!=0);
-    count=*(s32*)((u8*)&lbl_804BFA70+4);
-    base=*(char**)&lbl_804BFA70;
-    *(s32*)((u8*)&lbl_804BFA70+4)=count+1;
-    dst=base+count*0x28;
-    dst[0]=local.name[0];
-    dst[1]=local.name[1];
-    dst[2]=local.name[2];
-    dst[3]=local.name[3];
-    dst[4]=local.name[4];
-    dst[5]=local.name[5];
-    dst[6]=local.name[6];
-    dst[7]=local.name[7];
-    dst[8]=local.name[8];
-    dst[9]=local.name[9];
-    dst[10]=local.name[10];
-    dst[11]=local.name[11];
-    dst[12]=local.name[12];
-    dst[13]=local.name[13];
-    dst[14]=local.name[14];
-    dst[15]=local.name[15];
-    dst[16]=local.name[16];
-    dst[17]=local.name[17];
-    dst[18]=local.name[18];
-    dst[19]=local.name[19];
-    dst[20]=local.name[20];
-    dst[21]=local.name[21];
-    dst[22]=local.name[22];
-    dst[23]=local.name[23];
-    dst[24]=local.name[24];
-    dst[25]=local.name[25];
-    dst[26]=local.name[26];
-    dst[27]=local.name[27];
-    dst[28]=local.name[28];
-    dst[29]=local.name[29];
-    dst[30]=local.name[30];
-    dst[31]=local.name[31];
-    *(s32*)(dst+0x20)=arg1;
-    local.savedArg=arg1;
-    local.zero=0;
-    *(s32*)(dst+0x24)=0;
+    register volatile u8 *src;
+    register char * volatile *basep;
+    register volatile s32 *countp;
+    char *dst, *base;
+    register s32 count;
+    u8 b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11;
+    u8 b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23;
+    u8 b24, b25, b26, b27, b28, b29, b30, b31;
+    if (fn_802B05E4() != 0) return;
+    dst = local.name;
+    dst[-1] = 0;
+    do {
+        char c = *arg0++;
+        *dst++ = c;
+    } while ((signed char)dst[-1] != 0);
+
+    src = (volatile u8 *)local.name;
+    b0 = src[0];
+
+    basep = (char * volatile *)(void *)&lbl_804BFA70;
+    countp = (volatile s32 *)((u8 *)&lbl_804BFA70 + 4);
+    base = *basep;
+    count = *countp;
+    b1 = src[1];
+    b2 = src[2];
+    b3 = src[3];
+    b4 = src[4];
+    *countp = count + 1;
+    b5 = src[5];
+    dst = base + count * 0x28;
+
+    dst[0] = b0;
+    b6 = src[6]; dst[1] = b1;
+    b7 = src[7]; dst[2] = b2;
+    b8 = src[8]; dst[3] = b3;
+    b9 = src[9]; dst[4] = b4;
+    b10 = src[10]; dst[5] = b5;
+    b11 = src[11]; dst[6] = b6;
+    b12 = src[12]; dst[7] = b7;
+    b13 = src[13]; dst[8] = b8;
+    b14 = src[14]; dst[9] = b9;
+    b15 = src[15]; dst[10] = b10;
+    b16 = src[16]; dst[11] = b11;
+    b17 = src[17]; dst[12] = b12;
+    b18 = src[18]; dst[13] = b13;
+    b19 = src[19]; dst[14] = b14;
+    b20 = src[20]; dst[15] = b15;
+    b21 = src[21]; dst[16] = b16;
+    b22 = src[22]; dst[17] = b17;
+    b23 = src[23]; dst[18] = b18;
+    b24 = src[24]; dst[19] = b19;
+    b25 = src[25]; dst[20] = b20;
+    b26 = src[26]; dst[21] = b21;
+    b27 = src[27]; dst[22] = b22;
+    b28 = src[28]; dst[23] = b23;
+    b29 = src[29]; dst[24] = b24;
+    b30 = src[30]; dst[25] = b25;
+    b31 = src[31]; dst[26] = b26;
+    dst[27] = b27; dst[28] = b28; dst[29] = b29;
+    dst[30] = b30; dst[31] = b31;
+    *(s32 *)(dst + 0x20) = arg1;
+    local.savedArg = arg1;
+    local.zero = 0;
+    *(s32 *)(dst + 0x24) = 0;
 }
 #pragma small_data on
 extern s32 lbl_8055CEA0;
