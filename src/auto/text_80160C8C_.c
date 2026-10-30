@@ -28,6 +28,7 @@ struct Dummy_801616FC_B {
 #pragma cplusplus off
 
 extern s32 *__AXFXGetLfoSinTable_801769CC(void);
+extern void fn_801796BC(unsigned char);
 extern void *fn_8001285C();
 extern void *fn_801284F8(s32, void *);
 extern char lbl_8032F5DC[];
