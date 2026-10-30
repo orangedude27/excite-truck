@@ -1131,4 +1131,6 @@ void fn_8001D728(s32 arg0, s32 arg1) {
 void fn_8001D7A4(void) {
 
 }
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 
