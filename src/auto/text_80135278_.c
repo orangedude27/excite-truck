@@ -116,22 +116,37 @@ void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
     fn_801357A4(arg0, arg1);
 }
+#pragma scheduling invalid_target
 void *fn_80135420(float *point, void *unused, void *list) {
     extern double __fabs(double);
     extern void fn_802E30C8(const char *, ...);
     extern const char lbl_8032BDB8[], lbl_8032BDE4[];
     extern float lbl_80561328, lbl_8056132C;
+    float threshold;
     float bestDistance = lbl_80561328;
-    void *best = 0;
+    void *best;
     void *node = *(void **)((char *)list + 0x1C);
+    threshold = lbl_80561320;
+    best = 0;
     do {
-        if (fn_80135278((float *)((char *)node + 8), point, node) > lbl_80561320) {
+        if (fn_80135278((float *)((char *)node + 8), point, node) > threshold) {
             void *next = *(void **)((char *)node + 0x14);
-            if (fn_80135278((float *)((char *)next + 8), point, next) < lbl_80561320) {
-                float dx = point[0] - *(float *)node;
-                float dy = point[1] - *(float *)((char *)node + 4);
-                float dist = (float)__fabs((double)(*(float *)((char *)node + 0xC) * dx +
-                                                     -*(float *)((char *)node + 8) * dy));
+            if (fn_80135278((float *)((char *)next + 8), point, next) < threshold) {
+                float dx;
+                float dy;
+                float normalY;
+                float normalX;
+                float negativeNormalY;
+                float dist;
+                volatile float savedDiff[2];
+                dx = point[0] - ((float *)node)[0];
+                dy = point[1] - ((float *)node)[1];
+                savedDiff[0] = dx;
+                savedDiff[1] = dy;
+                normalY = ((float *)node)[2];
+                normalX = ((float *)node)[3];
+                negativeNormalY = -normalY;
+                dist = (float)__fabs((double)(normalX * dx + negativeNormalY * dy));
                 if (dist < bestDistance) {
                     best = node;
                     bestDistance = dist;
@@ -141,19 +156,31 @@ void *fn_80135420(float *point, void *unused, void *list) {
         node = *(void **)((char *)node + 0x14);
     } while (node != *(void **)((char *)list + 0x1C));
     if (best == 0) {
+        float fallbackDistance = lbl_8056132C;
         node = *(void **)((char *)list + 0x1C);
-        bestDistance = lbl_8056132C;
         do {
-            float dx = point[0] - *(float *)node;
-            float dy = point[1] - *(float *)((char *)node + 4);
-            float nx = *(float *)((char *)node + 0xC);
-            float ny = -*(float *)((char *)node + 8);
-            float dot = nx * dx + ny * dy;
-            float along = fn_80135278((float *)((char *)node + 8), point, node);
-            float dist = along * along + dot * dot;
-            if (dist < bestDistance) {
+            float dx;
+            float dy;
+            float nx;
+            float ny;
+            float dot;
+            float dotSquared;
+            float along;
+            float dist;
+            volatile float savedDiff[2];
+            dx = point[0] - ((float *)node)[0];
+            dy = point[1] - ((float *)node)[1];
+            savedDiff[0] = dx;
+            savedDiff[1] = dy;
+            nx = ((float *)node)[3];
+            ny = -((float *)node)[2];
+            dot = nx * dx + ny * dy;
+            dotSquared = dot * dot;
+            along = fn_80135278((float *)((char *)node + 8), point, node);
+            dist = dotSquared + along * along;
+            if (dist < fallbackDistance) {
                 best = node;
-                bestDistance = dist;
+                fallbackDistance = dist;
             }
             node = *(void **)((char *)node + 0x14);
         } while (node != *(void **)((char *)list + 0x1C));
@@ -164,7 +191,7 @@ void *fn_80135420(float *point, void *unused, void *list) {
     }
     return best;
 }
-
+#pragma scheduling on
 s32 fn_801353C4(void) {
     return fn_801357A4();
 }
@@ -173,7 +200,75 @@ s32 fn_801355B8(void *arg0, void *arg1) {
     return 0;
 }
 
+#pragma push
 #pragma scheduling invalid_target
+void fn_801355C0(void *arg0, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
+    extern double fn_8002F234(float);
+    extern double __fabs(double);
+    extern float lbl_80561330;
+    s32 id = *(s32 *)((char *)arg0 + 0xC);
+    void **nodeState = (void **)arg3;
+    float *fractionState = (float *)((char *)arg3 + 4);
+    void *node;
+    void *next;
+    float scratch[6];
+    float zero;
+    float epsilon;
+    float one;
+    float fraction;
+    float length;
+    float dot;
+
+    *(s32 *)((char *)arg3 + 8) = id;
+    if (((s32 (*)(void *, void *, void *, void *))fn_801355B8)(arg0, (void *)arg1, arg3, (char *)arg3 + 4) != 0) return;
+    if (*nodeState == 0) {
+        *nodeState = fn_80135420((float *)arg1, (void *)arg2, *(void **)((char *)arg0 + 0x2C));
+        *fractionState = lbl_80561320;
+    }
+    if (*nodeState == 0) return;
+    one = lbl_80561324;
+    arg2 = 0;
+    epsilon = lbl_80561330;
+    zero = lbl_80561320;
+
+loop_start:
+    node = *nodeState;
+    fraction = *fractionState;
+    next = *(void **)((char *)node + 0x14);
+    scratch[2] = *(float *)((char *)node + 8) +
+                 fraction * (*(float *)((char *)next + 8) - *(float *)((char *)node + 8));
+    scratch[3] = *(float *)((char *)node + 0xC) +
+                 fraction * (*(float *)((char *)next + 0xC) - *(float *)((char *)node + 0xC));
+    scratch[4] = *(float *)node + fraction * (*(float *)next - *(float *)node);
+    scratch[5] = *(float *)((char *)node + 4) +
+                 fraction * (*(float *)((char *)next + 4) - *(float *)((char *)node + 4));
+    length = (float)fn_8002F234(scratch[2] * scratch[2] + scratch[3] * scratch[3]);
+    length = one / length;
+    scratch[0] = ((float *)arg1)[0] - scratch[4];
+    scratch[1] = ((float *)arg1)[1] - scratch[5];
+    scratch[2] *= length;
+    scratch[3] *= length;
+    dot = scratch[2] * scratch[0] + scratch[3] * scratch[1];
+    if ((float)__fabs((double)dot) < epsilon) goto done;
+    if (dot < zero) {
+        *fractionState = zero;
+        goto done;
+    }
+advance:
+    length = *(float *)((char *)node + 0x18);
+    if (dot > length) {
+        dot -= length;
+        node = *(void **)((char *)node + 0x14);
+        *nodeState = node;
+        goto advance;
+    }
+    *fractionState = dot / length;
+    ++arg2;
+    if (arg2 < 10) goto loop_start;
+done:
+    return;
+}
+#pragma pop
 void fn_80135B24(void *arg0, void *arg1, float farg0) {
     void *entry;
     void *node;
@@ -202,11 +297,11 @@ void fn_80135B24(void *arg0, void *arg1, float farg0) {
         *(s32 *)((char *)arg0 + 8) = 0;
     }
 }
-#pragma scheduling reset
+#pragma scheduling invalid_target
 void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, float amount) {
     extern double fn_8002F234(float);
     float step;
-    float fraction;
+    register float fraction;
     float remaining;
     float length;
     float dx;
@@ -219,12 +314,17 @@ void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, fl
     node = *(char **)((char *)arg0 + 4);
     if (node == 0) {
         if (arg2 != 0) {
-            *(float *)arg2 = lbl_80561320;
-            *((float *)arg2 + 1) = lbl_80561324;
+            float second;
+            float first;
+            first = lbl_80561320;
+            second = lbl_80561324;
+            *(float *)arg2 = first;
+            *((float *)arg2 + 1) = second;
         }
         if (arg1 != 0) {
-            *(float *)arg1 = lbl_80561320;
-            *((float *)arg1 + 1) = lbl_80561320;
+            float zero = lbl_80561320;
+            *(float *)arg1 = zero;
+            *((float *)arg1 + 1) = zero;
         }
         return;
     }
@@ -268,13 +368,14 @@ void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, fl
         *(int *)((char *)arg4 + 8) = id;
     }
     if (arg3 != 0) {
-        *(float *)arg3 = *(float *)(node + 0x20) +
-                         fraction * (*(float *)(*(volatile char **)(node + 0x14) + 0x20) - *(float *)(node + 0x20));
+        float endValue;
+        float startValue;
+        endValue = *(float *)(*(volatile char **)(node + 0x14) + 0x20);
+        startValue = *(float *)(node + 0x20);
+        *(float *)arg3 = startValue + fraction * (endValue - startValue);
     }
 }
-
-#pragma opt_propagation off
-#pragma opt_dead_assignments off
+#pragma scheduling reset
 s32 fn_80135D60(Unk_80135278 *arg0, s32 arg1) {
     if ((unsigned long)arg1 != (unsigned long)arg0->unk_2c) {
         fn_80135354(arg0);
@@ -561,12 +662,12 @@ extern const char lbl_8032BE30[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
+void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
     char *p = (char *)*(void **)((char *)self + 0x2c);
     char *latestP;
     char *sentinel;
-    register char *cursor;
-    register char *q;
+    char *cursor;
+    char *q;
     register float *period;
     float d;
     s32 mode;
