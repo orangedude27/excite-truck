@@ -22,6 +22,7 @@ extern f32 lbl_80563680;
 extern f32 lbl_80563684;
 extern f32 lbl_80563688;
 extern f32 lbl_8056368C;
+extern f32 fn_8023400C(s32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern s32 fn_802C8DBC(s32);
 extern void fn_802C8D74(void);
@@ -282,6 +283,68 @@ void fn_80232024(u8 **arg0) {
     u8 *p = *arg0;
     if (*p == 1) *arg0 = p + 1;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma dont_inline on
+extern u8 lbl_8055F074;
+extern void fn_80233BF0(u8 *, u8 *, f32 *, f32 *, s32, f32, f32);
+extern void fn_80233DD8(s32 *, s32);
+extern void fn_80233E34(s32 *, s32, s32);
+extern void fn_80233EBC(void);
+void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
+                 f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
+    s32 sp8;
+    f32 spC;
+    f32 sp10;
+    s32 sp14;
+    f32 temp_f31;
+    f32 rate;
+    s32 temp_r30;
+    s32 var_r31;
+    s32 var_r5;
+    u8 *var_r29;
+
+    sp8 = (s32)arg0;
+    spC = farg0;
+    sp10 = farg1;
+    sp14 = arg2;
+    lbl_8055F074 = ((u32)arg2 == 0xFF000000);
+    ((void (*)(u8 **, u8 **))fn_80232024)((u8 **)&sp8, (u8 **)&sp14);
+    var_r31 = 1;
+    if (*(u32 *)((u8 *)arg1 + 8) != 0)
+        var_r31 = 2;
+    rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
+    temp_f31 = (f32)((u8 *)arg1)[4] * farg2 * rate;
+    fn_80233BF0((u8 *)sp8, (u8 *)arg1, &spC, &sp10, arg3, farg2, farg4);
+    while (var_r31 > 0) {
+        var_r5 = sp14;
+        temp_r30 = (var_r31 == 2);
+        var_r29 = (u8 *)arg1;
+        if (temp_r30 != 0) {
+            var_r29 = *(u8 **)((u8 *)arg1 + 8);
+            var_r5 = fn_80231718(var_r5);
+        }
+        if (arg4 != 0) {
+            ((void (*)(s32 *, s32))fn_80233E34)((s32 *)var_r29, arg4);
+        } else {
+            fn_80233DD8((s32 *)var_r29, var_r5);
+        }
+        rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
+        ((void (*)(u8 *, u8 *, f32, f32, f32, f32, f32, f32, f32))lbl_8055B9A8)(
+            (u8 *)sp8, var_r29, spC, sp10, farg3, temp_f31, farg2 * rate, farg4, farg5);
+        fn_80233EBC();
+        if (temp_r30 != 0)
+            fn_80231ADC();
+        else
+            fn_80231780((void *)arg4);
+        var_r31 -= 1;
+    }
+}
+#pragma dont_inline off
+#pragma pop
 
 void fn_802321D8(void) {
     if (lbl_8055F068 != 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_80340488);
