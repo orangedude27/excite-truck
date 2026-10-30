@@ -278,6 +278,10 @@ void fn_80247174(void) {
     fn_80246CAC(lbl_80563898);
 }
 
+#pragma dont_inline fn_80246DE8
+#pragma dont_inline fn_80246DF4
+#pragma dont_inline fn_80246E00
+#pragma dont_inline fn_80247174
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
