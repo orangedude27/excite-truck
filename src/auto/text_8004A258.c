@@ -109,12 +109,10 @@ extern void DCFlushRange(unsigned int, unsigned int);
 extern unsigned int __OSRebootParams[];
 static inline unsigned int AddBaseOffset(unsigned int base, unsigned int offset);
 
-static inline void ClearMEM2Range(unsigned int base, unsigned int size) {
-    unsigned int flush = base;
-    if (size > 0x40000)
-        flush += size - 0x40000;
-    DCZeroRange((void *)base, size);
-    DCFlushRange(flush, 0x40000);
+static inline void ClearMEM2Range(void *mem, u32 size) {
+    void *flush = (0x40000 < size) ? (u8 *)((u32)mem + (size - 0x40000)) : mem;
+    DCZeroRange(mem, size);
+    DCFlushRange((u32)flush, 0x40000);
 }
 void ClearArena(void) {
     unsigned int reset = OSGetResetCode();
@@ -180,24 +178,20 @@ void ClearArena(void) {
 #pragma scheduling invalid_target
 void ClearMEM2Arena(void) {
     unsigned int reset = OSGetResetCode();
-    register unsigned int base;
-    register unsigned int flush;
-    register unsigned int size;
+    char *base;
+    char *flush;
+    unsigned int size;
 
     if ((reset >> 31) == 0) {
         size = (unsigned int)OSGetMEM2ArenaHi();
         size -= (unsigned int)OSGetMEM2ArenaLo();
-        base = (unsigned int)OSGetMEM2ArenaLo();
-        if (size <= 0x40000)
-            goto clear0_small;
-        flush = size - 0x40000;
-        flush = base + flush;
-        goto clear0_join;
-    clear0_small:
-        flush = base;
-    clear0_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+        base = (char *)OSGetMEM2ArenaLo();
+        if (size > 0x40000)
+            flush = base + (size - 0x40000);
+        else
+            flush = base;
+        DCZeroRange(base, size);
+        DCFlushRange((unsigned int)flush, 0x40000);
         return;
     }
 
@@ -205,17 +199,13 @@ void ClearMEM2Arena(void) {
         (__OSRebootParams[3] & 0x30000000) != 0x10000000) {
         size = (unsigned int)OSGetMEM2ArenaHi();
         size -= (unsigned int)OSGetMEM2ArenaLo();
-        base = (unsigned int)OSGetMEM2ArenaLo();
-        if (size <= 0x40000)
-            goto clear1_small;
-        flush = size - 0x40000;
-        flush = base + flush;
-        goto clear1_join;
-    clear1_small:
-        flush = base;
-    clear1_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+        base = (char *)OSGetMEM2ArenaLo();
+        if (size > 0x40000)
+            flush = base + (size - 0x40000);
+        else
+            flush = base;
+        DCZeroRange(base, size);
+        DCFlushRange((unsigned int)flush, 0x40000);
         return;
     }
 
@@ -225,47 +215,34 @@ void ClearMEM2Arena(void) {
     if ((unsigned int)OSGetMEM2ArenaHi() <= __OSRebootParams[3]) {
         size = (unsigned int)OSGetMEM2ArenaHi();
         size -= (unsigned int)OSGetMEM2ArenaLo();
-        base = (unsigned int)OSGetMEM2ArenaLo();
-        if (size <= 0x40000)
-            goto clear2_small;
-        flush = size - 0x40000;
-        flush = base + flush;
-        goto clear2_join;
-    clear2_small:
-        flush = base;
-    clear2_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+        base = (char *)OSGetMEM2ArenaLo();
+        if (size > 0x40000)
+            flush = base + (size - 0x40000);
+        else
+            flush = base;
+        DCZeroRange(base, size);
+        DCFlushRange((unsigned int)flush, 0x40000);
         return;
     }
 
     size = __OSRebootParams[3] - (unsigned int)OSGetMEM2ArenaLo();
-    base = (unsigned int)OSGetMEM2ArenaLo();
-    if (size <= 0x40000)
-        goto clear3_small;
-    flush = size - 0x40000;
-    flush = base + flush;
-    goto clear3_join;
-clear3_small:
-    flush = base;
-clear3_join:
-    DCZeroRange((void *)base, size);
-    DCFlushRange(flush, 0x40000);
-
-    base = __OSRebootParams[4];
-    if ((unsigned int)OSGetMEM2ArenaHi() > base) {
-        size = (unsigned int)OSGetMEM2ArenaHi();
-        size -= base;
-        if (size <= 0x40000)
-            goto clear4_small;
-        flush = size - 0x40000;
-        flush = base + flush;
-        goto clear4_join;
-    clear4_small:
+    base = (char *)OSGetMEM2ArenaLo();
+    if (size > 0x40000)
+        flush = base + (size - 0x40000);
+    else
         flush = base;
-    clear4_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+    DCZeroRange(base, size);
+    DCFlushRange((unsigned int)flush, 0x40000);
+
+    base = (char *)__OSRebootParams[4];
+    if ((unsigned int)OSGetMEM2ArenaHi() > (unsigned int)base) {
+        size = (unsigned int)OSGetMEM2ArenaHi() - (unsigned int)base;
+        if (size > 0x40000)
+            flush = base + (size - 0x40000);
+        else
+            flush = base;
+        DCZeroRange(base, size);
+        DCFlushRange((unsigned int)flush, 0x40000);
     }
 }
 #pragma pop
