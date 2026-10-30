@@ -104,62 +104,66 @@ u32 OSGetConsoleType(void) {
 extern unsigned int OSGetResetCode(void);
 extern unsigned int OSGetArenaHi(void);
 extern unsigned int OSGetArenaLo(void);
-extern void DCZeroRange(unsigned int);
+extern void DCZeroRange(const void *, unsigned int);
 extern void DCFlushRange(unsigned int, unsigned int);
 extern unsigned int __OSRebootParams[];
 void ClearArena(void) {
     unsigned int reset = OSGetResetCode();
-    unsigned int start, size, end;
+    unsigned int size;
+    unsigned int start;
+
     if ((reset >> 31) == 0) {
+        size = OSGetArenaHi();
+        size -= OSGetArenaLo();
         start = OSGetArenaLo();
-        size = OSGetArenaHi() - start;
-        end = start + size;
         if (size > 0x40000)
-            end -= 0x40000;
-        DCZeroRange(size);
-        DCFlushRange(end, 0x40000);
+            start += size - 0x40000;
+        DCZeroRange((void *)start, size);
+        DCFlushRange(start, 0x40000);
         return;
     }
-    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) != 0) {
+
+    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) == 0) {
+        size = OSGetArenaHi();
+        size -= OSGetArenaLo();
         start = OSGetArenaLo();
-        size = OSGetArenaHi() - start;
-        end = start + size;
         if (size > 0x40000)
-            end -= 0x40000;
-        DCZeroRange(size);
-        DCFlushRange(end, 0x40000);
+            start += size - 0x40000;
+        DCZeroRange((void *)start, size);
+        DCFlushRange(start, 0x40000);
         return;
     }
+
     start = OSGetArenaLo();
-    if (start < __OSRebootParams[3]) {
-        end = OSGetArenaHi();
-        if (end <= __OSRebootParams[3]) {
-            start = OSGetArenaLo();
-            size = OSGetArenaHi() - start;
-            end = start + size;
-            if (size > 0x40000)
-                end -= 0x40000;
-            DCZeroRange(size);
-            DCFlushRange(end, 0x40000);
-            return;
-        }
-        size = __OSRebootParams[3] - OSGetArenaLo();
+    if (start >= __OSRebootParams[3])
+        return;
+
+    if (OSGetArenaHi() <= __OSRebootParams[3]) {
+        size = OSGetArenaHi();
+        size -= OSGetArenaLo();
         start = OSGetArenaLo();
-        end = start + size;
         if (size > 0x40000)
-            end -= 0x40000;
-        DCZeroRange(size);
-        DCFlushRange(end, 0x40000);
-        start = __OSRebootParams[4];
-        end = OSGetArenaHi();
-        if (end > start) {
-            size = end - start;
-            end = start + size;
-            if (size > 0x40000)
-                end -= 0x40000;
-            DCZeroRange(size);
-            DCFlushRange(end, 0x40000);
-        }
+            start += size - 0x40000;
+        DCZeroRange((void *)start, size);
+        DCFlushRange(start, 0x40000);
+        return;
+    }
+
+    start = OSGetArenaLo();
+    size = __OSRebootParams[3] - start;
+    start = OSGetArenaLo();
+    if (size > 0x40000)
+        start += size - 0x40000;
+    DCZeroRange((void *)start, size);
+    DCFlushRange(start, 0x40000);
+
+    start = __OSRebootParams[4];
+    if (OSGetArenaHi() > start) {
+        size = OSGetArenaHi() - start;
+        if (size > 0x40000)
+            start += size - 0x40000;
+        DCZeroRange((void *)start, size);
+        DCFlushRange(start, 0x40000);
     }
 }
 
@@ -478,8 +482,8 @@ void __OSDBIntegrator(void) {
 }
 
 extern void __OSDBJump(void) {
-    OSExceptionVector();
-    (void)0;
+    (void)(OSExceptionVector(), 0);
+    return;
 }
 
 #pragma small_data on
@@ -493,6 +497,11 @@ extern void **OSExceptionTable_8055D9D0;
 #pragma small_data on
 void *__OSGetExceptionHandler(s32 arg0) {
     return OSExceptionTable_8055D9D0[(u8)arg0];
+}
+
+extern void __OSUnhandledException(u8, void *, u32, u32);
+void OSDefaultExceptionHandler(u8 exception, void *context) {
+    __OSUnhandledException(exception, context, 0, 0);
 }
 
 void __OSPSInit(void) {
