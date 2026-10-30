@@ -325,6 +325,7 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + 0x5C) = lbl_80565198 * *(float *)((char *)arg1 + 0x10);
     *(float *)((char *)arg0 + 0x60) = lbl_80565198 * -*(float *)((char *)arg1 + 0xC);
 }
+#pragma pop
 
 extern int KPADRead(int, void *, int);
 extern int WPADProbe(int, int *);
