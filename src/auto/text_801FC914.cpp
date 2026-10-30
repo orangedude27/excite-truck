@@ -668,8 +668,7 @@ extern "C" void* fn_801FE188(void* arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling on
-#pragma cplusplus reset
-void fn_801FE1D8(void* arg0, unsigned char* p) {
+extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     register unsigned char* q = p + 0x3C;
     register unsigned char a=p[0x2C];
     register unsigned char x0=p[0x3B];
@@ -691,7 +690,8 @@ void fn_801FE1D8(void* arg0, unsigned char* p) {
     p[0x2E]=x2; p[0x39]=c; p[0x2F]=x3; p[0x38]=d;
     p[0x30]=x4; p[0x37]=e; p[0x31]=x5; p[0x36]=f;
     p[0x32]=x6; p[0x35]=g; p[0x33]=x7; p[0x34]=h;
-    for (int i=0; i<32; i++, q+=0x18) {
+    int i = 32;
+    do {
       unsigned char x;
       x=q[0];q[0]=q[3];q[3]=x; x=q[1];q[1]=q[2];q[2]=x;
       x=q[4];q[4]=q[7];q[7]=x; x=q[5];q[5]=q[6];q[6]=x;
@@ -699,7 +699,8 @@ void fn_801FE1D8(void* arg0, unsigned char* p) {
       x=q[12];q[12]=q[15];q[15]=x; x=q[13];q[13]=q[14];q[14]=x;
       x=q[16];q[16]=q[19];q[19]=x; x=q[17];q[17]=q[18];q[18]=x;
       x=q[20];q[20]=q[23];q[23]=x; x=q[21];q[21]=q[22];q[22]=x;
-    }
+      q += 0x18;
+    } while (--i);
     volatile unsigned char *v = p;
     unsigned char i0=v[0x33C], i1=v[0x33F];
     unsigned char i2=v[0x33D], i3=v[0x33E];
