@@ -4,6 +4,7 @@
 
 extern f32 PSVECDotProduct(const void *, const void *);
 extern f32 lbl_805620C0, lbl_805620C4, lbl_805620C8, lbl_805620CC;
+extern int __cntlzw(unsigned int);
 
 typedef s32 M2C_UNK;
 #ifndef M2C_FIELD
@@ -152,64 +153,108 @@ int fn_8018FF84(int arg0, int arg1) {
     return arg0;
 }
 
-void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
+    class ResultMethods {
+    public:
+        virtual u8 f0();
+        virtual u8 f1();
+        virtual u8 f2();
+        virtual u8 f3();
+        virtual u8 f4();
+        virtual u8 f5();
+        virtual u8 f6();
+        virtual u8 f7();
+        virtual u8 f8();
+        virtual u8 f9();
+        virtual u8 f10();
+        virtual u8 f11();
+        virtual u8 f12();
+        virtual u8 f13();
+        virtual u8 f14();
+        virtual u8 f15();
+        virtual u8 f16();
+        virtual u8 f17();
+        virtual u8 f18();
+        virtual u8 f19();
+        virtual u8 f20();
+        virtual u8 get5c();
+        virtual u8 get60();
+        virtual u8 get64();
+        virtual u8 get68();
+    };
+    class Method18 {
+    public:
+        virtual s32 f0();
+        virtual s32 f1();
+        virtual s32 f2();
+        virtual s32 f3();
+        virtual s32 get18();
+    };
+    class Method0C1 {
+    public:
+        virtual void f0();
+        virtual void call(void *, void *);
+    };
+    class Method0C2 {
+    public:
+        virtual void f0();
+        virtual void call(void *, void *);
+    };
     s32 temp_r0;
     s32 temp_r27;
     s32 temp_r3_6;
-    void **temp_r3_2;
-    void **temp_r3_3;
-    void **temp_r3_4;
-    void **temp_r3_5;
-    void **temp_r3_7;
-    void **temp_r3_8;
     void *temp_r3;
-    void *temp_r3_9;
+    ResultMethods *resultObj;
+    Method18 *method18Obj;
+    Method0C1 *method0C1Obj;
+    Method0C2 *method0C2Obj;
 
-    M2C_FIELD(arg0, s32 *, 0x28) = (s32)(M2C_FIELD(arg1, u8 *, 0x260) & 3);
+    *(s32 *)((u8 *)arg0 + 0x28) = *(u8 *)((u8 *)arg1 + 0x260) & 3;
     temp_r3 = fn_801284F8(0x24, &lbl_8055A478);
-    if (temp_r3 != NULL) {
-        temp_r27 = M2C_FIELD(arg0, s32 *, 0x28);
-        M2C_FIELD(temp_r3, void **, 0) = &lbl_80332F40;
-        M2C_FIELD(temp_r3, s32 *, 0x20) = temp_r27;
+    if (temp_r3 != 0) {
+        temp_r27 = *(s32 *)((u8 *)arg0 + 0x28);
+        *(void **)temp_r3 = lbl_80332F40;
+        *(s32 *)((u8 *)temp_r3 + 0x20) = temp_r27;
         fn_80137C74();
-        M2C_FIELD(temp_r3, s32 *, 0x1C) = 0x8CA0;
+        *(s32 *)((u8 *)temp_r3 + 0x1C) = 0x8CA0;
         temp_r0 = ((s32 *)lbl_804349B0)[temp_r27];
-        M2C_FIELD(temp_r3, s32 *, 0x18) = temp_r0;
-        M2C_FIELD(temp_r3, s32 *, 8) = temp_r0;
-        M2C_FIELD(temp_r3, void ***, 4) = fn_8018108C(temp_r27);
-        M2C_FIELD(temp_r3, s32 *, 0xC) = 0;
+        *(s32 *)((u8 *)temp_r3 + 0x18) = temp_r0;
+        *(s32 *)((u8 *)temp_r3 + 8) = temp_r0;
+        *(void **)((u8 *)temp_r3 + 4) = fn_8018108C(temp_r27);
+        *(s32 *)((u8 *)temp_r3 + 0xC) = 0;
         lbl_8055E524 = 0;
         if (fn_801CF050() != 0) {
-            temp_r3_2 = M2C_FIELD(temp_r3, void ***, 4);
-            M2C_FIELD(temp_r3, u8 *, 0x11) = M2C_FIELD(*temp_r3_2, u8 (**)(void **), 0x5C)(temp_r3_2);
-            temp_r3_3 = M2C_FIELD(temp_r3, void ***, 4);
-            M2C_FIELD(temp_r3, u8 *, 0x12) = M2C_FIELD(*temp_r3_3, u8 (**)(void **), 0x64)(temp_r3_3);
-            temp_r3_4 = M2C_FIELD(temp_r3, void ***, 4);
-            M2C_FIELD(temp_r3, u8 *, 0x13) = M2C_FIELD(*temp_r3_4, u8 (**)(void **), 0x60)(temp_r3_4);
-            temp_r3_5 = M2C_FIELD(temp_r3, void ***, 4);
-            M2C_FIELD(temp_r3, u8 *, 0x14) = M2C_FIELD(*temp_r3_5, u8 (**)(void **), 0x68)(temp_r3_5);
+            resultObj = *(ResultMethods **)((u8 *)temp_r3 + 4);
+            *(u8 *)((u8 *)temp_r3 + 0x11) = resultObj->get5c();
+            resultObj = *(ResultMethods **)((u8 *)temp_r3 + 4);
+            *(u8 *)((u8 *)temp_r3 + 0x12) = resultObj->get64();
+            resultObj = *(ResultMethods **)((u8 *)temp_r3 + 4);
+            *(u8 *)((u8 *)temp_r3 + 0x13) = resultObj->get60();
+            resultObj = *(ResultMethods **)((u8 *)temp_r3 + 4);
+            *(u8 *)((u8 *)temp_r3 + 0x14) = resultObj->get68();
         }
     }
-    M2C_FIELD(arg0, void **, 4) = temp_r3;
-    M2C_FIELD(M2C_FIELD(arg0, void **, 0xC), void **, 0x38) = temp_r3;
-    M2C_FIELD(arg0, u8 *, 0x25) = (u8)(M2C_FIELD(arg2, s32 *, 0x5C) == 0);
-    M2C_FIELD(arg0, void **, 0x20) = arg1;
-    M2C_FIELD(arg0, u8 *, 0x26) = (u8)(M2C_FIELD(arg2, s32 *, 0x5C) != 0);
-    temp_r3_6 = M2C_FIELD(arg1, s32 *, 0x1EC);
-    M2C_FIELD(arg0, s32 *, 0x1C) = temp_r3_6;
-    temp_r3_7 = fn_801B2EC0(temp_r3_6);
-    M2C_FIELD(arg0, void ***, 0x14) = temp_r3_7;
-    M2C_FIELD(arg0, s32 *, 0x18) = M2C_FIELD(*temp_r3_7, s32 (**)(), 0x18)();
-    temp_r3_8 = M2C_FIELD(arg0, void ***, 8);
-    M2C_FIELD(*temp_r3_8, s32 (**)(void **, void *, void *), 0xC)(temp_r3_8, arg1, arg2);
-    temp_r3_9 = M2C_FIELD(arg0, void **, 0xC);
-    temp_r3_8 = M2C_FIELD(temp_r3_9, void ***, 0);
-    M2C_FIELD(*temp_r3_8, s32 (**)(void *, void *, void *), 0xC)(temp_r3_8, arg1, arg2);
+    *(void **)((u8 *)arg0 + 4) = temp_r3;
+    *(void **)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0x38) = temp_r3;
+    *(u8 *)((u8 *)arg0 + 0x25) = *(s32 *)((u8 *)arg2 + 0x5C) == 0;
+    *(void **)((u8 *)arg0 + 0x20) = arg1;
+    *(u8 *)((u8 *)arg0 + 0x26) = *(s32 *)((u8 *)arg2 + 0x5C) != 0;
+    temp_r3_6 = *(s32 *)((u8 *)arg1 + 0x1EC);
+    *(s32 *)((u8 *)arg0 + 0x1C) = temp_r3_6;
+    method18Obj = (Method18 *)fn_801B2EC0(temp_r3_6);
+    *(void **)((u8 *)arg0 + 0x14) = method18Obj;
+    *(s32 *)((u8 *)arg0 + 0x18) = method18Obj->get18();
+    method0C1Obj = *(Method0C1 **)((u8 *)arg0 + 8);
+    method0C1Obj->call(arg1, arg2);
+    method0C2Obj = *(Method0C2 **)((u8 *)arg0 + 0xC);
+    method0C2Obj->call(arg1, arg2);
     if (fn_80019B78() != 0) {
         lbl_8055E528 = 1;
     }
 }
-
+#pragma use_lmw_stmw reset
 #pragma cplusplus on
 extern "C" void fn_80190184(void *arg0, void *arg1) {
     struct Dummy0 {
