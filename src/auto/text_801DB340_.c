@@ -430,6 +430,7 @@ void fn_801DCF00(void) {
 }
 
 #pragma scheduling invalid_target
+#pragma dont_inline on
 float fn_801DCF0C(void) {
     float sp8;
     float *p = &sp8;
@@ -437,6 +438,7 @@ float fn_801DCF0C(void) {
     ((int (*)(float *, int, int, int))fn_801DC258)(p, 0, 0, 0);
     return sp8;
 }
+#pragma dont_inline reset
 #pragma scheduling on
 extern double fabs(double);
 float fn_801DCF48(void *arg0, float farg0, float farg1) {
@@ -587,18 +589,68 @@ void fn_801DD808(void) {
 
 extern float lbl_80562B84;
 extern float fn_801DCF0C(void);
+#pragma dont_inline fn_801DCF0C
 void fn_801DD88C(void) {
     float temp[75];
-    int i,j;
-    for(i=0;i<9;i++) for(j=0;j<8;j++) { temp[i*8+j]=lbl_804424B0[i*8+j]; lbl_804424B0[i*8+j]=lbl_80562B84; }
-    temp[72]=lbl_804424B0[72]; lbl_804424B0[72]=lbl_80562B84;
-    temp[73]=lbl_804424B0[73]; lbl_804424B0[73]=lbl_80562B84;
-    temp[74]=lbl_804424B0[74]; lbl_804424B0[74]=lbl_80562B84;
-    fn_801DCF0C();
-    for(i=0;i<3;i++) for(j=0;j<24;j++) lbl_804424B0[i*24+j]=temp[i*24+j];
-    lbl_804424B0[72]=temp[72]; lbl_804424B0[73]=temp[73]; lbl_804424B0[74]=temp[74];
-}
+    int i;
 
+    for (i = 0; i < 72; i += 8) {
+        temp[i + 0] = lbl_804424B0[i + 0];
+        lbl_804424B0[i + 0] = lbl_80562B84;
+        temp[i + 1] = lbl_804424B0[i + 1];
+        lbl_804424B0[i + 1] = lbl_80562B84;
+        temp[i + 2] = lbl_804424B0[i + 2];
+        lbl_804424B0[i + 2] = lbl_80562B84;
+        temp[i + 3] = lbl_804424B0[i + 3];
+        lbl_804424B0[i + 3] = lbl_80562B84;
+        temp[i + 4] = lbl_804424B0[i + 4];
+        lbl_804424B0[i + 4] = lbl_80562B84;
+        temp[i + 5] = lbl_804424B0[i + 5];
+        lbl_804424B0[i + 5] = lbl_80562B84;
+        temp[i + 6] = lbl_804424B0[i + 6];
+        lbl_804424B0[i + 6] = lbl_80562B84;
+        temp[i + 7] = lbl_804424B0[i + 7];
+        lbl_804424B0[i + 7] = lbl_80562B84;
+    }
+    temp[72] = lbl_804424B0[72];
+    lbl_804424B0[72] = lbl_80562B84;
+    temp[73] = lbl_804424B0[73];
+    lbl_804424B0[73] = lbl_80562B84;
+    temp[74] = lbl_804424B0[74];
+    lbl_804424B0[74] = lbl_80562B84;
+
+    fn_801DCF0C();
+
+    for (i = 0; i < 72; i += 24) {
+        lbl_804424B0[i + 0] = temp[i + 0];
+        lbl_804424B0[i + 1] = temp[i + 1];
+        lbl_804424B0[i + 2] = temp[i + 2];
+        lbl_804424B0[i + 3] = temp[i + 3];
+        lbl_804424B0[i + 4] = temp[i + 4];
+        lbl_804424B0[i + 5] = temp[i + 5];
+        lbl_804424B0[i + 6] = temp[i + 6];
+        lbl_804424B0[i + 7] = temp[i + 7];
+        lbl_804424B0[i + 8] = temp[i + 8];
+        lbl_804424B0[i + 9] = temp[i + 9];
+        lbl_804424B0[i + 10] = temp[i + 10];
+        lbl_804424B0[i + 11] = temp[i + 11];
+        lbl_804424B0[i + 12] = temp[i + 12];
+        lbl_804424B0[i + 13] = temp[i + 13];
+        lbl_804424B0[i + 14] = temp[i + 14];
+        lbl_804424B0[i + 15] = temp[i + 15];
+        lbl_804424B0[i + 16] = temp[i + 16];
+        lbl_804424B0[i + 17] = temp[i + 17];
+        lbl_804424B0[i + 18] = temp[i + 18];
+        lbl_804424B0[i + 19] = temp[i + 19];
+        lbl_804424B0[i + 20] = temp[i + 20];
+        lbl_804424B0[i + 21] = temp[i + 21];
+        lbl_804424B0[i + 22] = temp[i + 22];
+        lbl_804424B0[i + 23] = temp[i + 23];
+    }
+    lbl_804424B0[72] = temp[72];
+    lbl_804424B0[73] = temp[73];
+    lbl_804424B0[74] = temp[74];
+}
 extern int lbl_8055E99C;
 extern int lbl_8055E9A0;
 extern unsigned short lbl_80442708[];
