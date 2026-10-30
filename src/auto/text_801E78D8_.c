@@ -6,7 +6,7 @@ extern void fn_80203E88(void *, long, long);
 extern void fn_8001A1F0(void);
 extern void fn_801EA394(void);
 extern void fn_802C87B4(long, long, long, long);
-extern void fn_802CC73C(char);
+extern void fn_802CC73C(int);
 extern void fn_801E83D4(void);
 extern void fn_801E8410(void);
 extern int fn_801B89F8(void);
@@ -152,8 +152,8 @@ extern "C" void fn_801E7C28(void *arg0) {
     extern char lbl_8055EB20;
     extern void *lbl_8055EB30;
     char *strings = lbl_80339BA0;
-    long count;
     long offset;
+    long count;
     Dummy_801E7C28 *obj;
 
     fn_802ECC18(0);
@@ -173,7 +173,7 @@ extern "C" void fn_801E7C28(void *arg0) {
     fn_801E9BE4();
     fn_801F9F08();
     fn_801B832C();
-    for (count = 0, offset = 0; count < lbl_8055EB34; offset += 4, count++) {
+    for (offset = 0, count = 0; count < lbl_8055EB34; count++, offset += 4) {
         obj = (Dummy_801E7C28 *)*(long *)((char *)lbl_8055EB3C + offset);
         if (obj != 0)
             obj->invoke(1);
@@ -185,12 +185,12 @@ extern "C" void fn_801E7C28(void *arg0) {
     lbl_8055EB40 = 0;
     fn_801DCE10();
     lbl_8055EB38 = 0;
-    fn_8001255C(strings + 0xA4, lbl_80562DB0);
     lbl_8055EB34 = 0;
     lbl_8055EB20 = 0;
     lbl_8055EB04 = 0;
     lbl_8055EB12 = 0;
     lbl_8055EB30 = 0;
+    fn_8001255C(strings + 0xA4, lbl_80562DB0);
     fn_801AF598();
     fn_801EA56C();
     fn_801EA3B8();
@@ -200,7 +200,7 @@ extern "C" void fn_801E7C28(void *arg0) {
     fn_802C7A00();
     fn_801FC900();
     fn_802877D0();
-    if (lbl_8055EB11 == 0) {
+    if ((unsigned char)lbl_8055EB11 == 0) {
         fn_8000D7F4(arg0);
         fn_80136768();
         fn_8001255C(strings + 0xB0, lbl_80562DB0);
@@ -284,7 +284,7 @@ extern "C" void fn_801E8148(void) {
     fn_801FA550();
 }
 
-void fn_801E81B8(int arg0, void (*callback)(void)) {
+extern "C" void fn_801E81B8(int arg0, void (*callback)(void)) {
     extern void *lbl_8055AF0C;
     extern float *lbl_8055EB04;
     unsigned long index;
