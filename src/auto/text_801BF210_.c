@@ -614,19 +614,19 @@ void fn_801C0E60(float *arg0, float *arg1, float *arg2) {
 }
 
 #pragma push
-#pragma scheduling on
-#pragma opt_propagation on
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801C0E94(void *arg0, int arg1) {
     extern float lbl_805628BC, lbl_8055E460;
     extern char lbl_80558DC4[];
     unsigned char *src = (unsigned char *)arg0;
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
-    register float base = lbl_805628BC;
-    register float top = lbl_8055E460;
+    float base = lbl_805628BC;
+    float top = lbl_8055E460;
     float delta = top - base;
     if ((float)fabs(delta) <= *(float *)lbl_80558DC4) {
-        register unsigned int v0 = *(unsigned int *)(src + 0x70);
-        register unsigned int v1 = *(unsigned int *)(src + 0x74);
+        unsigned int v0 = *(unsigned int *)(src + 0x70);
+        unsigned int v1 = *(unsigned int *)(src + 0x74);
         *(unsigned int *)(dst + 0x00) = v0;
         *(unsigned int *)(dst + 0x04) = v1;
         v0 = *(unsigned int *)(src + 0x78);
