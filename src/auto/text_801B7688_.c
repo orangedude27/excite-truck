@@ -49,8 +49,8 @@ done:
     return result;
 }
 
-float cos(float);
-float sin(float);
+double cos(double);
+double sin(double);
 void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
     struct Vector {
         float x;
