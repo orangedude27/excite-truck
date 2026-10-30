@@ -1442,6 +1442,69 @@ void fn_8003727C(u32 arg0) {
     }
 }
 
+void fn_800373E0(u32 arg0) {
+    register u32 value = arg0;
+    s32 interrupts;
+    s32 resetDone;
+    void *block;
+    void (*callback)(s32, void *);
+    u32 tick;
+    u32 period;
+
+    interrupts = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+        *(u32 *)(__ErrorInfo + 0x78) = value;
+    } else {
+        *(u32 *)(__ErrorInfo +
+                 *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+    }
+    OSRestoreInterrupts(interrupts);
+
+    if (value == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+        return;
+    }
+    if (value == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+        return;
+    }
+    if (value & 2) {
+        fn_8003A1A0(0x1234567, fn_80035C64);
+        return;
+    }
+
+    *(volatile s32 *)&lbl_8055D860 = 0;
+    if (*(volatile s32 *)&lbl_8055D858 != 0) {
+        block = (void *)executing_8055D8C8;
+        lbl_8055D85C = 1;
+        lbl_8055D858 = 0;
+        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        *(s32 *)((u8 *)block + 0xC) = 0xA;
+        callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
+        if (callback != 0)
+            callback(-3, block);
+        if (lbl_8055D8B8 != 0)
+            lbl_8055D8B8(0, block);
+        fn_80038040();
+        resetDone = 1;
+    } else {
+        resetDone = 0;
+    }
+    if (resetDone != 0)
+        return;
+
+    *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 6;
+    MotorState_8055D8A8 = 1;
+    if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+        lbl_8055D870 = 1;
+        OSCreateAlarm(&lbl_80376AD0);
+        tick = OSGetTick();
+        period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
+        OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
+                           fn_8003801C);
+    }
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 void fn_800375A8(u32 arg0) {
