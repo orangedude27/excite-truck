@@ -569,6 +569,7 @@ extern "C" void fn_801FD3F0(void* arg0, float farg0) {
     float a = *(float*)(obj + 0x64);
     *(float*)(obj + 0x6C) = a + step * (*(float*)(obj + 0x68) - a);
 }
+#pragma paired on
 
 #pragma scheduling on
 extern "C" void fn_801FD5E8(void* arg0, float farg0) {
