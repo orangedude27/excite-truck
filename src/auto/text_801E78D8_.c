@@ -1,3 +1,31 @@
+extern void fn_802E2C9C(void);
+extern void fn_802A4CA8(void);
+extern void fn_802C276C(void);
+extern long fn_801E866C(long);
+extern void fn_80203E88(void *, long, long);
+extern void fn_8001A1F0(void);
+extern void fn_801EA394(void);
+extern void fn_802C87B4(long, long, long, long);
+extern void fn_802CC73C(char);
+extern void fn_801E83D4(void);
+extern void fn_801E8410(void);
+extern int fn_801B89F8(void);
+extern void fn_801E88B4(long *, long *, long *, long *, long);
+extern void fn_8020625C(void);
+extern void fn_8029227C(void);
+extern void fn_802A4D08(void);
+extern int fn_80019B54(void);
+extern void fn_802DB2A4(void);
+extern void fn_802DD754(void);
+extern void fn_802A4D00(void);
+extern void fn_80287978(void);
+extern long lbl_8055EB1C;
+extern void *lbl_8055EB2C;
+extern long lbl_8055CFF0, lbl_8055CFF4;
+extern unsigned char lbl_80487D00[];
+extern void *lbl_80488648[];
+extern float lbl_80562DB4, lbl_80562DD0;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -68,6 +96,127 @@ void fn_801E7C1C(void) {
     lbl_8055EB11 = 0;
     fn_801E7984();
 }
+
+#pragma cplusplus on
+extern "C" void fn_801E7C28(void *arg0) {
+    class Dummy_801E7C28 {
+    public:
+        virtual void invoke(long);
+    };
+    extern void fn_802ECC18(long);
+    extern void fn_80203FE8(void);
+    extern void fn_802025D8(void);
+    extern void fn_802C2C6C(void);
+    extern void fn_800124DC(const char *, long, long, float);
+    extern void fn_801EA390(void);
+    extern void fn_8001255C(const char *, float);
+    extern void fn_801766C4(void);
+    extern void fn_802878A8(void);
+    extern void fn_8013490C(void);
+    extern void fn_80265D90(void);
+    extern void fn_801F4D64(void);
+    extern void fn_801E9BE4(void);
+    extern void fn_801F9F08(void);
+    extern void fn_801B832C(void);
+    extern void fn_80128670(void *);
+    extern void fn_801DCE10(void);
+    extern void fn_801AF598(void);
+    extern void fn_801EA56C(void);
+    extern void fn_801EA3B8(void);
+    extern void fn_801FFB70(void);
+    extern void fn_801EFF70(void);
+    extern void fn_80203DC8(void);
+    extern void fn_802C7A00(void);
+    extern void fn_801FC900(void);
+    extern void fn_802877D0(void);
+    extern void fn_8000D7F4(void *);
+    extern void fn_80136768(void);
+    extern void fn_801765B8(void);
+    extern void fn_80205208(void);
+    extern void fn_801EF184(void);
+    extern void fn_801EA318(void);
+    extern void fn_801EA1DC(void);
+    extern void fn_8013A074(void);
+    extern void fn_8020449C(void);
+    extern void fn_802E3D00(void);
+    extern void fn_8000D878(void);
+    extern char lbl_80339BA0[];
+    extern char lbl_8055AF1C;
+    extern float lbl_80562DA0;
+    extern float lbl_80562DAC;
+    extern float lbl_80562DB0;
+    extern float *lbl_8055EB04;
+    extern char lbl_8055EB10;
+    extern char lbl_8055EB12;
+    extern char lbl_8055EB20;
+    extern void *lbl_8055EB30;
+    char *strings = lbl_80339BA0;
+    long count;
+    long offset;
+    Dummy_801E7C28 *obj;
+
+    fn_802ECC18(0);
+    fn_801E797C();
+    fn_80203FE8();
+    fn_802025D8();
+    fn_802C2C6C();
+    fn_800124DC(strings + 0x7C, 1, 1, lbl_80562DAC);
+    fn_801EA390();
+    fn_8001255C(strings + 0x8C, lbl_80562DB0);
+    fn_801766C4();
+    fn_8001255C(&lbl_8055AF1C, lbl_80562DB0);
+    fn_802878A8();
+    fn_8013490C();
+    fn_80265D90();
+    fn_801F4D64();
+    fn_801E9BE4();
+    fn_801F9F08();
+    fn_801B832C();
+    for (count = 0, offset = 0; count < lbl_8055EB34; offset += 4, count++) {
+        obj = (Dummy_801E7C28 *)*(long *)((char *)lbl_8055EB3C + offset);
+        if (obj != 0)
+            obj->invoke(1);
+    }
+    fn_80128670(lbl_8055EB3C);
+    lbl_8055EB3C = 0;
+    fn_8001255C(strings + 0x98, lbl_80562DB0);
+    fn_80128670(lbl_8055EB40);
+    lbl_8055EB40 = 0;
+    fn_801DCE10();
+    lbl_8055EB38 = 0;
+    fn_8001255C(strings + 0xA4, lbl_80562DB0);
+    lbl_8055EB34 = 0;
+    lbl_8055EB20 = 0;
+    lbl_8055EB04 = 0;
+    lbl_8055EB12 = 0;
+    lbl_8055EB30 = 0;
+    fn_801AF598();
+    fn_801EA56C();
+    fn_801EA3B8();
+    fn_801FFB70();
+    fn_801EFF70();
+    fn_80203DC8();
+    fn_802C7A00();
+    fn_801FC900();
+    fn_802877D0();
+    if (lbl_8055EB11 == 0) {
+        fn_8000D7F4(arg0);
+        fn_80136768();
+        fn_8001255C(strings + 0xB0, lbl_80562DB0);
+        fn_801765B8();
+        fn_80205208();
+        fn_8001255C(strings + 0xC0, lbl_80562DA0);
+        fn_801EF184();
+        fn_801EA318();
+        fn_801EA1DC();
+        lbl_8055EB10 = 0;
+        fn_8013A074();
+        fn_8020449C();
+        fn_802E3D00();
+        fn_8000D878();
+    }
+}
+#pragma cplusplus off
 
 extern void fn_801E7C28(void *);
 void fn_801E7DEC(void *arg0) {
