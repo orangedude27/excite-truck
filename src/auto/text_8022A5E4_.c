@@ -138,52 +138,69 @@ int fn_8022A86C(int arg0) {
     fn_802E317C(lbl_8033FBE8, arg0);
     return -1;
 }
-#pragma scheduling reset
-#pragma dont_inline off
+#pragma scheduling invalid_target
 void fn_8022A8E4(int arg0) {
     extern unsigned char lbl_80497D68[];
-    register int offset = arg0 * 0x74;
-    unsigned char *entry = (unsigned char *)lbl_80490968 + offset;
-
-    if (*(int *)(entry + 4) != 0) fn_801E4A2C();
-    if (*(int *)(entry + 8) != 0) fn_802328D4();
-    if (*(int *)(entry + 0x64) != 0) fn_802C4C80();
-    if (*(int *)(entry + 0x68) != 0) fn_802C519C();
-    if (*(int *)(entry + 0x6C) != 0) fn_80235380();
-    if (*(int *)(entry + 0x70) != 0) fn_80235380();
-
-    entry[0] = lbl_80497D68[0];
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x04) = *(unsigned int *)(lbl_80497D68 + 0x04);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x08) = *(unsigned int *)(lbl_80497D68 + 0x08);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x0C) = *(unsigned int *)(lbl_80497D68 + 0x0C);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x10) = *(unsigned int *)(lbl_80497D68 + 0x10);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x14) = *(unsigned int *)(lbl_80497D68 + 0x14);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x18) = *(unsigned int *)(lbl_80497D68 + 0x18);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x1C) = *(unsigned int *)(lbl_80497D68 + 0x1C);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x20) = *(unsigned int *)(lbl_80497D68 + 0x20);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x24) = *(unsigned int *)(lbl_80497D68 + 0x24);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x28) = *(unsigned int *)(lbl_80497D68 + 0x28);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x2C) = *(unsigned int *)(lbl_80497D68 + 0x2C);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x30) = *(unsigned int *)(lbl_80497D68 + 0x30);
-    *(float *)((unsigned char *)lbl_80490968 + offset + 0x34) = *(float *)(lbl_80497D68 + 0x34);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x38) = *(unsigned int *)(lbl_80497D68 + 0x38);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x3C) = *(unsigned int *)(lbl_80497D68 + 0x3C);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x40) = *(unsigned int *)(lbl_80497D68 + 0x40);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x44) = *(unsigned int *)(lbl_80497D68 + 0x44);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x48) = *(unsigned int *)(lbl_80497D68 + 0x48);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x4C) = *(unsigned int *)(lbl_80497D68 + 0x4C);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x50) = *(unsigned int *)(lbl_80497D68 + 0x50);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x54) = *(unsigned int *)(lbl_80497D68 + 0x54);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x58) = *(unsigned int *)(lbl_80497D68 + 0x58);
-    *(float *)((unsigned char *)lbl_80490968 + offset + 0x5C) = *(float *)(lbl_80497D68 + 0x5C);
-    *(float *)((unsigned char *)lbl_80490968 + offset + 0x60) = *(float *)(lbl_80497D68 + 0x60);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x64) = *(unsigned int *)(lbl_80497D68 + 0x64);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x68) = *(unsigned int *)(lbl_80497D68 + 0x68);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x6C) = *(unsigned int *)(lbl_80497D68 + 0x6C);
-    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x70) = *(unsigned int *)(lbl_80497D68 + 0x70);
+    extern void fn_801E4A2C(void *);
+    extern void fn_802328D4(void *);
+    extern void fn_802C4C80(void *);
+    extern void fn_802C519C(void *);
+    extern void fn_80235380(void *);
+    register unsigned int offset;
+    unsigned char *entry;
+    register const unsigned char *source;
+    register unsigned char *destination;
+    register unsigned int b, a;
+    float f0, f1;
+    offset = arg0 * 0x74;
+    entry = (unsigned char *)lbl_80490968 + offset;
+    if (*(void **)(entry + 4) != 0) fn_801E4A2C(*(void **)(entry + 4));
+    if (*(void **)(entry + 8) != 0) fn_802328D4(*(void **)(entry + 8));
+    if (*(void **)(entry + 0x64) != 0) fn_802C4C80(*(void **)(entry + 0x64));
+    if (*(void **)(entry + 0x68) != 0) fn_802C519C(*(void **)(entry + 0x68));
+    if (*(void **)(entry + 0x6c) != 0) fn_80235380(*(void **)(entry + 0x6c));
+    if (*(void **)(entry + 0x70) != 0) fn_80235380(*(void **)(entry + 0x70));
+    entry[0] = *(const unsigned char *)lbl_80497D68;
+    source = (const unsigned char *)lbl_80497D68;
+    destination = (unsigned char *)lbl_80490968 + arg0 * 0x74;
+    a = *(const unsigned int *)(source + 4); b = *(const unsigned int *)(source + 8);
+    *(unsigned int *)(destination + 4) = a; a = *(const unsigned int *)(source + 0xc);
+    *(unsigned int *)(destination + 8) = b; b = *(const unsigned int *)(source + 0x10);
+    *(unsigned int *)(destination + 0xc) = a; a = *(const unsigned int *)(source + 0x14);
+    *(unsigned int *)(destination + 0x10) = b; b = *(const unsigned int *)(source + 0x18);
+    *(unsigned int *)(destination + 0x14) = a; a = *(const unsigned int *)(source + 0x1c);
+    *(unsigned int *)(destination + 0x18) = b; b = *(const unsigned int *)(source + 0x20);
+    *(unsigned int *)(destination + 0x1c) = a; a = *(const unsigned int *)(source + 0x24);
+    *(unsigned int *)(destination + 0x20) = b; b = *(const unsigned int *)(source + 0x28);
+    *(unsigned int *)(destination + 0x24) = a; a = *(const unsigned int *)(source + 0x2c);
+    *(unsigned int *)(destination + 0x28) = b; b = *(const unsigned int *)(source + 0x30);
+    *(unsigned int *)(destination + 0x2c) = a;
+    f0 = *(const float *)(source + 0x34);
+    *(unsigned int *)(destination + 0x30) = b;
+    *(float *)(destination + 0x34) = f0;
+    a = *(const unsigned int *)(source + 0x38); b = *(const unsigned int *)(source + 0x3c);
+    *(unsigned int *)(destination + 0x38) = a; a = *(const unsigned int *)(source + 0x40);
+    *(unsigned int *)(destination + 0x3c) = b; b = *(const unsigned int *)(source + 0x44);
+    *(unsigned int *)(destination + 0x40) = a; a = *(const unsigned int *)(source + 0x48);
+    *(unsigned int *)(destination + 0x44) = b; b = *(const unsigned int *)(source + 0x4c);
+    *(unsigned int *)(destination + 0x48) = a; a = *(const unsigned int *)(source + 0x50);
+    *(unsigned int *)(destination + 0x4c) = b; b = *(const unsigned int *)(source + 0x54);
+    *(unsigned int *)(destination + 0x50) = a; a = *(const unsigned int *)(source + 0x58);
+    *(unsigned int *)(destination + 0x54) = b;
+    f1 = *(const float *)(source + 0x5c);
+    *(unsigned int *)(destination + 0x58) = a;
+    f0 = *(const float *)(source + 0x60);
+    *(float *)(destination + 0x5c) = f1;
+    a = *(const unsigned int *)(source + 0x64);
+    *(float *)(destination + 0x60) = f0;
+    b = *(const unsigned int *)(source + 0x68);
+    *(unsigned int *)(destination + 0x64) = a; a = *(const unsigned int *)(source + 0x6c);
+    *(unsigned int *)(destination + 0x68) = b;
+    *(unsigned int *)(destination + 0x6c) = a;
+    *(unsigned int *)(destination + 0x70) = *(const unsigned int *)(source + 0x70);
     entry[0] = 0;
 }
-
+#pragma scheduling reset
 extern void *fn_8022CA2C();
 int fn_8022AA84(void) {
     return *(int *)((char *)fn_8022CA2C() + 0x38);
@@ -213,6 +230,8 @@ int fn_8022AB18(int unused, int arg1, int arg2) {
     return 0;
 }
 
+#pragma push
+#pragma dont_inline on
 int fn_8022AB94(const char *arg0, char arg1) {
     int count = 0;
     while (*arg0 != 0) {
@@ -221,6 +240,7 @@ int fn_8022AB94(const char *arg0, char arg1) {
     }
     return count;
 }
+#pragma pop
 
 #pragma scheduling invalid_target
 void fn_8022ABC8(void *arg0, const char *arg1, int arg2) {
@@ -309,58 +329,61 @@ void fn_8022B390(const char *arg0, const char *arg1, int arg2, int *arg3, int *a
     *arg4 = y;
 }
 
+#pragma scheduling invalid_target
 int fn_8022B498(int unused, const char *arg1) {
-    void *p = fn_8022CA2C();
-    int value = *(int *)((char *)p + 0x64);
     int max;
-    int width = 0;
-    int height = 0;
-    int result = 0;
-    int flags;
-    float scale;
+    void *ctx;
+    int value;
 
+    ctx = fn_8022CA2C();
+    value = *(int *)((char *)ctx + 0x64);
+    max = 0;
     if (value != 0) {
         max = fn_802C4EE4(value);
-    } else if (*(int *)((char *)p + 0x68) != 0) {
+    } else if (*(int *)((char *)ctx + 0x68) != 0) {
         max = fn_802C51C0();
-    } else {
-        max = 0;
     }
     if (arg1 != 0) {
-        if (*(int *)((char *)p + 4) != 0) {
-            result = fn_801E4A6C(*(int **)((char *)p + 4), arg1);
+        int width = 0;
+        int height = 0;
+        int result = 0;
+        int *font = *(int **)((char *)ctx + 4);
+        int flags;
+
+        if (font != 0) {
+            result = fn_801E4A6C(font, arg1);
         }
-        if (*(int *)((char *)p + 8) != 0) {
-            scale = lbl_80563588;
-            if (*(float *)((char *)p + 0x34) >= scale) {
-                scale = *(float *)((char *)p + 0x34) / (float)fn_80232B70(*(int *)((char *)p + 8));
+        if (*(void **)((char *)ctx + 8) != 0) {
+            float scale = lbl_80563588;
+            if (*(float *)((char *)ctx + 0x34) >= scale) {
+                scale = *(float *)((char *)ctx + 0x34) /
+                    (float)fn_80232B70(*(int *)((char *)ctx + 8));
             }
             result = (int)(scale * ((float (*)(void *, char *, float))fn_8023293C)(
-                                  *(void **)((char *)p + 8), (char *)arg1, lbl_80563588));
+                                      *(void **)((char *)ctx + 8), (char *)arg1, lbl_80563588));
         }
-        flags = *(int *)((char *)p + 0x38);
+        flags = *(int *)((char *)ctx + 0x38);
         if (flags & 2) {
             width = -result;
         } else if (flags & 4) {
-            width = (-result + ((unsigned int)-result >> 31)) >> 1;
+            width = (int)((-result) + (int)((unsigned int)-result >> 31)) >> 1;
         }
         if (flags & 1) {
             height = result;
         } else if (flags & 4) {
-            height = (result + ((unsigned int)result >> 31)) >> 1;
+            height = (int)(result + (int)((unsigned int)result >> 31)) >> 1;
         }
-        value = *(int *)((char *)p + 0x4C);
-        if (*(int *)((char *)p + 0x44) > value) value = *(int *)((char *)p + 0x44);
-        value = height + value - width;
+        value = *(int *)((char *)ctx + 0x4C);
+        if (*(int *)((char *)ctx + 0x44) > value) {
+            value = *(int *)((char *)ctx + 0x44);
+        }
+        value = (height + value) - width;
         if (max > value) return max;
-    } else {
-        value = max;
+        return value;
     }
-    return value;
+    return max;
 }
-
-#pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) {
     extern int fn_802C4F14(int);
     extern int fn_802C4C90(int, int, int, int, int);
@@ -433,19 +456,20 @@ void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
 #pragma pop
 extern double lbl_805635A0;
 unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
-    double a = (double)(unsigned char)(arg0 >> 24);
-    double b = (double)(unsigned char)(arg0 >> 16);
-    double c = (double)(unsigned char)(arg0 >> 8);
-    double d = (double)(unsigned char)arg0;
-    double e = (double)(unsigned char)(arg1 >> 24);
-    double f = (double)(unsigned char)(arg1 >> 16);
-    double g = (double)(unsigned char)(arg1 >> 8);
-    double h = (double)(unsigned char)arg1;
-    unsigned int r0 = (unsigned int)(a + farg0 * (e - a));
-    unsigned int r1 = (unsigned int)(b + farg0 * (f - b));
-    unsigned int r2 = (unsigned int)(c + farg0 * (g - c));
-    unsigned int r3 = (unsigned int)(d + farg0 * (h - d));
-    return (r0 << 24) | (r1 << 16) | (r2 << 8) | r3;
+    float e = (float)(unsigned char)arg1;
+    float a = (float)(unsigned char)arg0;
+    float g = (float)(unsigned char)(arg1 >> 8);
+    float f = (float)(unsigned char)(arg1 >> 16);
+    float b = (float)(unsigned char)(arg0 >> 8);
+    float c = (float)(unsigned char)(arg0 >> 16);
+    float h = (float)(unsigned char)(arg1 >> 24);
+    float d = (float)(unsigned char)(arg0 >> 24);
+    int r0 = (int)(a + farg0 * (e - a));
+    int r1 = (int)(b + farg0 * (f - b));
+    int r2 = (int)(c + farg0 * (g - c));
+    int r3 = (int)(d + farg0 * (h - d));
+    return ((r3 & 0xFF) << 24) | ((r2 & 0xFF) << 16) |
+           ((r1 & 0xFF) << 8) | (r0 & 0xFF);
 }
 
 void fn_8022C520(void) {
