@@ -179,12 +179,14 @@ void *fn_80266120(void *arg0) {
     return arg0;
 }
 
+#pragma dont_inline on
 void fn_80266150(void *arg0) {
     *(float *)((char *)arg0 + 0xC) = lbl_80563C2C;
     *(int *)((char *)arg0 + 4) = 0;
     *(int *)((char *)arg0 + 0) = 0;
     *(float *)((char *)arg0 + 8) = lbl_8055C4C0;
 }
+#pragma dont_inline reset
 
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     float temp_f0;
