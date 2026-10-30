@@ -1,3 +1,4 @@
+extern void __AXDSPInitCallback_801769E0(void);
 extern float lbl_805601FC, lbl_80560204;
 extern unsigned char lbl_8055D3EC;
 extern void fn_8000B5A8(void);
