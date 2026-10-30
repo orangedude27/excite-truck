@@ -106,6 +106,8 @@ int fn_8022A804(const char *arg0) {
     return strstr(arg0, lbl_8055B8B8) != 0;
 }
 
+#pragma push
+#pragma dont_inline on
 unsigned int fn_8022A834(unsigned int arg0) {
     unsigned int byte = arg0 >> 24;
     if (byte >= 0x20 || byte == 0) {
@@ -114,6 +116,7 @@ unsigned int fn_8022A834(unsigned int arg0) {
     }
     return arg0;
 }
+#pragma pop
 
 void fn_8022A858(int arg0) {
     fn_8022CAA8(lbl_80490968 + arg0 * 0x74);
@@ -621,6 +624,80 @@ float fn_8022CA40(void *arg0) {
         bias = lbl_80563590;
         return *(float *)((char *)arg0 + 0x34) / (float)(raw - bias);
     }
+}
+
+void fn_8022CAA8(void *arg0, void *arg1) {
+    extern int fn_80232578(const char *);
+    extern unsigned int fn_8022A834(unsigned int);
+    extern int fn_802C5130(const char *);
+    extern int fn_8023512C(const char *);
+    extern int fn_802C49E8(const char *);
+    extern char *strstr(const char *, const char *);
+    extern char lbl_8055B918[];
+    extern char lbl_8055B920[];
+    extern char lbl_8033FC40[];
+    unsigned char *dest;
+    unsigned char *src;
+    char *name;
+    int resource;
+    int a, b, c, d, e, f, g, h, i, j;
+    float f0, f1;
+
+    dest = (unsigned char *)arg0;
+    src = (unsigned char *)arg1;
+    *(int *)(dest + 4) = 0;
+    dest[0] = 1;
+    *(int *)(dest + 8) = 0;
+    name = *(char **)src;
+    if (strstr(name, lbl_8055B918) != 0) {
+        *(int *)(dest + 8) = fn_80232578(lbl_8033FC40);
+    }
+    name = *(char **)src;
+    if (strstr(name, lbl_8055B920) != 0) {
+        *(int *)(dest + 8) = fn_80232578(name);
+    }
+    f0 = *(float *)(src + 4);
+    *(float *)(dest + 0x34) = f0;
+    *(int *)(dest + 0x0C) = fn_8022A834(*(int *)(src + 0x0C));
+    *(int *)(dest + 0x10) = fn_8022A834(*(int *)(src + 0x28));
+    *(int *)(dest + 0x14) = fn_8022A834(*(int *)(src + 0x10));
+    *(int *)(dest + 0x18) = fn_8022A834(*(int *)(src + 0x2C));
+    *(int *)(dest + 0x1C) = fn_8022A834(*(int *)(src + 0x1C));
+    *(int *)(dest + 0x20) = fn_8022A834(*(int *)(src + 0x14));
+    *(int *)(dest + 0x24) = fn_8022A834(*(int *)(src + 0x30));
+    *(int *)(dest + 0x28) = fn_8022A834(*(int *)(src + 0x18));
+    *(int *)(dest + 0x2C) = fn_8022A834(*(int *)(src + 0x34));
+    *(int *)(dest + 0x30) = fn_8022A834(*(int *)(src + 0x14));
+
+    resource = *(int *)(src + 0x44);
+    *(int *)(dest + 0x38) = *(int *)(src + 8);
+    *(int *)(dest + 0x3C) = *(int *)(src + 0x1C);
+    *(int *)(dest + 0x40) = *(int *)(src + 0x38);
+    *(int *)(dest + 0x44) = *(int *)(src + 0x20);
+    *(int *)(dest + 0x48) = *(int *)(src + 0x24);
+    *(int *)(dest + 0x4C) = *(int *)(src + 0x3C);
+    *(int *)(dest + 0x50) = *(int *)(src + 0x40);
+    *(int *)(dest + 0x54) = *(int *)(src + 0x54);
+    *(int *)(dest + 0x58) = *(int *)(src + 0x48);
+    f1 = *(float *)(src + 0x4C);
+    *(float *)(dest + 0x5C) = f1;
+    f0 = *(float *)(src + 0x50);
+    *(float *)(dest + 0x60) = f0;
+    *(int *)(dest + 0x64) = 0;
+    *(int *)(dest + 0x68) = 0;
+    *(int *)(dest + 0x6C) = 0;
+    *(int *)(dest + 0x70) = 0;
+
+    if (resource != 0) {
+        if (fn_8022A7D4((const char *)resource) != 0) {
+            *(int *)(dest + 0x68) = fn_802C5130((const char *)resource);
+        } else if (fn_8022A804((const char *)resource) != 0) {
+            *(int *)(dest + 0x6C) = fn_8023512C((const char *)resource);
+        } else {
+            *(int *)(dest + 0x64) = fn_802C49E8((const char *)resource);
+        }
+    }
+    *(int *)(dest + 0x58) = -1;
 }
 
 extern double lbl_80563590;
