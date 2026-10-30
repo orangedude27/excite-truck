@@ -811,7 +811,7 @@ void fn_8029D574(int arg0) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling 7400
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8029D644(void *arg0) {
     char *base = (char *)arg0;
