@@ -709,8 +709,6 @@ extern const s8 lbl_802F4D90[];
 extern const char lbl_803230A0[], lbl_803230AC[];
 extern const f32 lbl_80561030, lbl_80561034, lbl_80561038;
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
-#pragma push
-#pragma opt_common_subs off
 extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
     s32 index;
     s32 valid;
@@ -742,7 +740,6 @@ extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
     value *= (f32)level;
     return value;
 }
-#pragma pop
 
 extern "C" void *fn_800ECAEC(void *arg0) {
     extern void fn_800F26D8(void *);
