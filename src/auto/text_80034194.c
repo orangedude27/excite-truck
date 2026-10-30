@@ -668,11 +668,12 @@ s32 DVDClose(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma dont_inline on
 u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
-    u8 *fst;
     u8 *parentTable;
     u8 *strings;
+    u8 *fst;
     u32 offset;
     u32 parentIndex;
     u32 nextParent;
@@ -681,12 +682,11 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     u32 start;
     u32 left;
     u32 initialLeft;
-    char *name;
     char *parentName;
+    char *name;
     char *grandparentName;
-    char *src;
     char *dst;
-    char ch;
+    char *src;
 
     if (entry == 0) return 0;
     fst = (u8 *)FstStart_8055D840;
@@ -711,64 +711,51 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     offset = nextParent * 12;
     n = *(u32 *)(parentTable + offset);
     grandparentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
-    pos = DVDConvertEntrynumToPath(n, path, max);
+    n = DVDConvertEntrynumToPath(n, path, max);
+    pos = n;
     if (pos != max) {
         start = pos + 1;
+        initialLeft = max - start;
         path[pos] = '/';
-        left = max - start;
-        initialLeft = left;
         dst = path + start;
+        left = initialLeft;
         src = grandparentName;
         do {
-            ch = *src;
-            --left;
-            ++src;
-            *dst = ch;
-            ++dst;
-            if (left == 0) break;
-        } while (*src != 0);
+            *dst++ = *src++;
+        } while (--left != 0 && *src != 0);
         pos = start + (initialLeft - left);
     }
 
 append_parent:
     if (pos != max) {
         start = pos + 1;
+        initialLeft = max - start;
         path[pos] = '/';
-        left = max - start;
-        initialLeft = left;
         dst = path + start;
+        left = initialLeft;
         src = parentName;
         do {
-            ch = *src;
-            --left;
-            ++src;
-            *dst = ch;
-            ++dst;
-            if (left == 0) break;
-        } while (*src != 0);
+            *dst++ = *src++;
+        } while (--left != 0 && *src != 0);
         pos = start + (initialLeft - left);
     }
 
 append_name:
     if (pos != max) {
         start = pos + 1;
+        initialLeft = max - start;
         path[pos] = '/';
-        left = max - start;
-        initialLeft = left;
         dst = path + start;
+        left = initialLeft;
         src = name;
         do {
-            ch = *src;
-            --left;
-            ++src;
-            *dst = ch;
-            ++dst;
-            if (left == 0) break;
-        } while (*src != 0);
+            *dst++ = *src++;
+        } while (--left != 0 && *src != 0);
         pos = start + (initialLeft - left);
     }
     return pos;
 }
+#pragma scheduling on
 #pragma pop
 extern void OSPanic(const char *, s32, const char *);
 extern s32 DVDReadAbsAsyncPrio(void *, void *, s32, s32, void *, s32);
@@ -1422,14 +1409,13 @@ void fn_800370F4(u32 arg0) {
     s32 interrupts;
     u8 *info;
     u32 tick;
-    u32 count;
 
     interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = value;
     } else {
-        count = *(volatile u32 *)&lbl_8055D848;
-        *(u32 *)(__ErrorInfo + (count - 1) * 0x14 + 0x28) = value;
+        *(u32 *)(__ErrorInfo + 0x28 +
+                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = value;
     }
     OSRestoreInterrupts(interrupts);
 
