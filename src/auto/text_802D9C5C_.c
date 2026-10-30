@@ -466,8 +466,7 @@ void fn_802DABA4(float *arg0) {
     sp2C = f2 * f9;
     sp30 = f1 * f9;
     sp34 = f0 * f9;
-    fn_802DA704(0x4C, &sp8, 4);
-    fn_802DAA18();
+    fn_802DAA18(fn_802DA704(0x4C, &sp8, 4));
 }
 
 void fn_802DAC54(void) {
