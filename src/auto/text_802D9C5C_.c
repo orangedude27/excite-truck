@@ -538,27 +538,3 @@ void fn_802DAC54(void) {
 unsigned char fn_802DAC64(void) {
     return *((unsigned char *)lbl_8055FE5C + 0x24);
 }
-struct DaaContext {
-    int unk_0;
-    unsigned char *buffer;
-    void *name;
-    int capacity;
-    int used;
-    void *callback0;
-    void *callback1;
-    void *callback2;
-    void *current;
-    unsigned char status;
-    unsigned char initialized;
-};
-
-struct DaaRecord {
-    int kind;
-    int unk_4;
-    int capacity;
-    int kind2;
-    unsigned char status;
-    unsigned char pad_11[3];
-    void *next;
-    unsigned char data[0x3C0];
-};
