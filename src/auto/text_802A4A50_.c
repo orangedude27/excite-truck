@@ -1360,12 +1360,6 @@ extern void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
 extern void fn_802D3D50(void);
 extern void fn_802A5FE4(void);
 extern void *fn_801E7E34(void);
-extern f32 PSQUATMultiply(void *, void *);
-extern void fn_802C8BD0(s32);
-extern s32 fn_802CE860(s32);
-extern void fn_802CE868(void);
-extern void fn_802CE86C(void *, s32, f32, double, double, double);
-extern f32 lbl_805648D8;
 #pragma cplusplus on
 struct Obj802A5878 {
     virtual void *v0();
