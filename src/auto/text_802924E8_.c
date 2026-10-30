@@ -9,6 +9,9 @@ extern char lbl_8055C988;
 extern float lbl_805644D4;
 extern int fn_80293374(void *, void *);
 extern void *fn_802935A0(void *);
+extern int fn_8012C33C(void *);
+extern void fn_801345D8(void *, int, const char *, int, int);
+extern int fn_802C6FC0(void *, int, int);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -965,42 +968,71 @@ extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D
 extern unsigned char lbl_804B4030[];
 #pragma scheduling invalid_target
 void fn_80294780(void *arg0) {
-    unsigned char *base = (unsigned char *)arg0, *cur = base + 0x2c, *out = cur, *src;
-    int i = 0;
-    float dt = fn_801E7E24(arg0), scale = lbl_805644D4 - lbl_80564510 * dt;
+    struct Particle {
+        unsigned int copy[9];
+        float x, y, z;
+        float vx, vy, vz;
+        float age;
+        unsigned char flag;
+        unsigned char type;
+        unsigned char pad[2];
+    };
+    struct ParticleTemplate {
+        unsigned int pad[4];
+        unsigned int copy[9];
+    };
+    register struct ParticleTemplate *src;
+    register struct Particle *out;
+    register struct Particle *cur;
+    register int i;
+    float dt = fn_801E7E24(arg0);
+    float scale = lbl_805644D4 - lbl_80564510 * dt;
+    float minAge = lbl_805644D8;
+    float maxAge = lbl_805644FC;
+    float gravity = lbl_80564500;
     float x, y, z, vy;
-    goto check;
-body:
-    if (*(float *)(cur + 0x3c) >= lbl_805644D8 && !(*(float *)(cur + 0x3c) > lbl_805644FC)) {
-        x = *(float *)(cur + 0x30) * scale;
-        y = *(float *)(cur + 0x34) * scale;
-        z = *(float *)(cur + 0x38) * scale;
-        vy = y - (lbl_80564500 * dt) * *(float *)(base + 4);
-        *(float *)(out + 0x24) = *(float *)(cur + 0x24) + x * dt;
-        *(float *)(out + 0x28) = *(float *)(cur + 0x28) + vy * dt;
-        *(float *)(out + 0x2c) = *(float *)(cur + 0x2c) + z * dt;
-        src = lbl_804B4030 + *(cur + 0x41) * 0x34;
-        *(unsigned int *)(out + 0x00) = *(unsigned int *)(src + 0x10);
-        *(unsigned int *)(out + 0x04) = *(unsigned int *)(src + 0x14);
-        *(unsigned int *)(out + 0x08) = *(unsigned int *)(src + 0x18);
-        *(unsigned int *)(out + 0x0c) = *(unsigned int *)(src + 0x1c);
-        *(unsigned int *)(out + 0x10) = *(unsigned int *)(src + 0x20);
-        *(unsigned int *)(out + 0x14) = *(unsigned int *)(src + 0x24);
-        *(unsigned int *)(out + 0x18) = *(unsigned int *)(src + 0x28);
-        *(unsigned int *)(out + 0x1c) = *(unsigned int *)(src + 0x2c);
-        *(unsigned int *)(out + 0x20) = *(unsigned int *)(src + 0x30);
-        *(float *)(out + 0x30) = x;
-        *(float *)(out + 0x34) = vy;
-        *(float *)(out + 0x38) = z;
-        *(float *)(out + 0x3c) = *(float *)(cur + 0x3c) + dt;
-        out[0x40] = cur[0x40];
-        out[0x41] = cur[0x41];
-        out += 0x44;
+    cur = (struct Particle *)((unsigned char *)arg0 + 0x2C);
+    out = cur;
+    for (i = 0; i < *(int *)((unsigned char *)arg0 + 0x222C); ++i, ++cur) {
+        unsigned int a, b;
+        if (cur->age < minAge) continue;
+        if (cur->age >= maxAge) continue;
+        x = cur->vx * scale;
+        y = cur->vy * scale;
+        z = cur->vz * scale;
+        vy = y - (gravity * dt) * *(float *)((unsigned char *)arg0 + 4);
+        out->x = cur->x + x * dt;
+        out->y = cur->y + vy * dt;
+        out->z = cur->z + z * dt;
+        src = (struct ParticleTemplate *)(lbl_804B4030 + cur->type * 0x34);
+        a = src->copy[0];
+        b = src->copy[1];
+        out->copy[0] = a;
+        out->copy[1] = b;
+        a = src->copy[2];
+        out->copy[2] = a;
+        a = src->copy[3];
+        b = src->copy[4];
+        out->copy[3] = a;
+        out->copy[4] = b;
+        a = src->copy[5];
+        out->copy[5] = a;
+        a = src->copy[6];
+        b = src->copy[7];
+        out->copy[6] = a;
+        out->copy[7] = b;
+        a = src->copy[8];
+        out->copy[8] = a;
+        out->vx = x;
+        out->vy = vy;
+        out->vz = z;
+        out->age = cur->age + dt;
+        out->flag = cur->flag;
+        out->type = cur->type;
+        ++out;
     }
-    i++; cur += 0x44;
-check:
-          if (i < *(int *)(base + 0x222c)) goto body;
-      *(int *)(base + 0x222c) = (out - (base + 0x2c)) / 0x44;
-  }
+    *(int *)((unsigned char *)arg0 + 0x222C) =
+        out - (struct Particle *)((unsigned char *)arg0 + 0x2C);
+}
 
   #pragma scheduling on
