@@ -528,7 +528,7 @@ void fn_80208404(void) {
 }
 
 void fn_802085E8(void) {
-	fn_80208408();
+	((void (*)(void))fn_80208408)();
 }
 
 void fn_80208994(void) {
