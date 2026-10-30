@@ -273,7 +273,7 @@ void fn_802DA52C(void) {
 }
 #pragma scheduling on
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling off
 void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int arg5) {
     struct DaaContext {
         int unk_0;
