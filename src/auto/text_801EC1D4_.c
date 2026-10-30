@@ -485,67 +485,65 @@ extern float __fabsf(float);
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_801EDD7C(void *arg0, long arg1) {
-    unsigned int *a, *b, *c, *d, *e, *f, *g, *h, *j, *k, *m, *n;
-    long i, offset;
+    register void *object = arg0;
+    register long data = arg1;
+    long offset, i;
     char *entry;
-    float v0, v1, v2, v3;
+    float v3, v2, v1, v0;
     float scale;
-    float v4, v5, v6, v7, v8, v9, v10, v11;
+    float v4, v5, v6, v7, v8, v10, v9, v11;
 
-    /* Fix note: place scale between the two float groups to preserve f9 through the products. */
-    fn_801EABA8(arg0, *(void **)((char *)arg0 + 0x3C));
-    scale = *(float *)((char *)arg1 + 0x2D0);
-    *(float *)((char *)arg0 + 0x4D0) = scale;
+    /* Fix note: use direct byte offsets for the copy path and keep loop state declared in target order. */
+    fn_801EABA8(object, *(void **)((char *)object + 0x3C));
+    scale = *(float *)((char *)data + 0x2D0);
+    *(float *)((char *)object + 0x4D0) = scale;
     if (__fabsf(scale - lbl_80562E90) <= lbl_80558DC4) {
-        a = (unsigned int *)((char *)arg0 + 4); b = a + 1; c = a + 2; d = a + 3;
-        e = a + 4; f = a + 5; g = a + 6; h = a + 7;
-        j = a + 8; k = a + 9; m = a + 10; n = a + 11;
-        *(unsigned int *)((char *)arg0 + 0x4A0) = *a;
-        *(unsigned int *)((char *)arg0 + 0x4A4) = *b;
-        *(unsigned int *)((char *)arg0 + 0x4A8) = *c;
-        *(unsigned int *)((char *)arg0 + 0x4AC) = *d;
-        *(unsigned int *)((char *)arg0 + 0x4B0) = *e;
-        *(unsigned int *)((char *)arg0 + 0x4B4) = *f;
-        *(unsigned int *)((char *)arg0 + 0x4B8) = *g;
-        *(unsigned int *)((char *)arg0 + 0x4BC) = *h;
-        *(unsigned int *)((char *)arg0 + 0x4C0) = *j;
-        *(unsigned int *)((char *)arg0 + 0x4C4) = *k;
-        *(unsigned int *)((char *)arg0 + 0x4C8) = *m;
-        *(unsigned int *)((char *)arg0 + 0x4CC) = *n;
+        *(unsigned int *)((char *)object + 0x4A0) = *(unsigned int *)((char *)object + 4);
+        *(unsigned int *)((char *)object + 0x4A4) = *(unsigned int *)((char *)object + 8);
+        *(unsigned int *)((char *)object + 0x4A8) = *(unsigned int *)((char *)object + 0xC);
+        *(unsigned int *)((char *)object + 0x4AC) = *(unsigned int *)((char *)object + 0x10);
+        *(unsigned int *)((char *)object + 0x4B0) = *(unsigned int *)((char *)object + 0x14);
+        *(unsigned int *)((char *)object + 0x4B4) = *(unsigned int *)((char *)object + 0x18);
+        *(unsigned int *)((char *)object + 0x4B8) = *(unsigned int *)((char *)object + 0x1C);
+        *(unsigned int *)((char *)object + 0x4BC) = *(unsigned int *)((char *)object + 0x20);
+        *(unsigned int *)((char *)object + 0x4C0) = *(unsigned int *)((char *)object + 0x24);
+        *(unsigned int *)((char *)object + 0x4C4) = *(unsigned int *)((char *)object + 0x28);
+        *(unsigned int *)((char *)object + 0x4C8) = *(unsigned int *)((char *)object + 0x2C);
+        *(unsigned int *)((char *)object + 0x4CC) = *(unsigned int *)((char *)object + 0x30);
     } else {
-        v0 = *(float *)((char *)arg0 + 4) * scale;
-        v1 = *(float *)((char *)arg0 + 8) * scale;
-        v2 = *(float *)((char *)arg0 + 0xC) * scale;
-        v3 = *(float *)((char *)arg0 + 0x10) * scale;
-        v4 = *(float *)((char *)arg0 + 0x14) * scale;
-        v5 = *(float *)((char *)arg0 + 0x18) * scale;
-        v6 = *(float *)((char *)arg0 + 0x1C) * scale;
-        v7 = *(float *)((char *)arg0 + 0x20) * scale;
-        v8 = *(float *)((char *)arg0 + 0x24) * scale;
-        v9 = *(float *)((char *)arg0 + 0x28);
-        v10 = *(float *)((char *)arg0 + 0x2C);
-        v11 = *(float *)((char *)arg0 + 0x30);
-        *(float *)((char *)arg0 + 0x4C4) = v9;
-        *(float *)((char *)arg0 + 0x4C8) = v10;
-        *(float *)((char *)arg0 + 0x4CC) = v11;
-        *(float *)((char *)arg0 + 0x4A0) = v0;
-        *(float *)((char *)arg0 + 0x4A4) = v1;
-        *(float *)((char *)arg0 + 0x4A8) = v2;
-        *(float *)((char *)arg0 + 0x4AC) = v3;
-        *(float *)((char *)arg0 + 0x4B0) = v4;
-        *(float *)((char *)arg0 + 0x4B4) = v5;
-        *(float *)((char *)arg0 + 0x4B8) = v6;
-        *(float *)((char *)arg0 + 0x4BC) = v7;
-        *(float *)((char *)arg0 + 0x4C0) = v8;
+        v0 = *(float *)((char *)object + 4) * scale;
+        v1 = *(float *)((char *)object + 8) * scale;
+        v2 = *(float *)((char *)object + 0xC) * scale;
+        v3 = *(float *)((char *)object + 0x10) * scale;
+        v4 = *(float *)((char *)object + 0x14) * scale;
+        v5 = *(float *)((char *)object + 0x18) * scale;
+        v6 = *(float *)((char *)object + 0x1C) * scale;
+        v7 = *(float *)((char *)object + 0x20) * scale;
+        v8 = *(float *)((char *)object + 0x24) * scale;
+        v9 = *(float *)((char *)object + 0x28);
+        v10 = *(float *)((char *)object + 0x2C);
+        v11 = *(float *)((char *)object + 0x30);
+        *(float *)((char *)object + 0x4C4) = v9;
+        *(float *)((char *)object + 0x4C8) = v10;
+        *(float *)((char *)object + 0x4CC) = v11;
+        *(float *)((char *)object + 0x4A0) = v0;
+        *(float *)((char *)object + 0x4A4) = v1;
+        *(float *)((char *)object + 0x4A8) = v2;
+        *(float *)((char *)object + 0x4AC) = v3;
+        *(float *)((char *)object + 0x4B0) = v4;
+        *(float *)((char *)object + 0x4B4) = v5;
+        *(float *)((char *)object + 0x4B8) = v6;
+        *(float *)((char *)object + 0x4BC) = v7;
+        *(float *)((char *)object + 0x4C0) = v8;
     }
-    entry = arg0;
+    entry = object;
     i = 0;
     offset = 0;
     do {
         fn_801F0F78(*(long *)(entry + 0x4D4),
-                    *(long *)((char *)arg0 + 0x3C) + offset + 0x7C,
-                    (char *)arg0 + 4,
-                    *(float *)((char *)arg0 + 0x4D0));
+                    *(long *)((char *)object + 0x3C) + offset + 0x7C,
+                    (char *)object + 4,
+                    *(float *)((char *)object + 0x4D0));
         i++;
         offset += 0x6C;
         entry += 4;
@@ -564,22 +562,23 @@ void fn_802C7AE0(long, void*, long, float);
 void fn_801F13F4(long, float, float);
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_801EDF18(void* arg0) {
     struct Settings {
         long first;
         union { long bits; float value; } second;
         long third;
     } settings;
-    float temp_f31, var_f30, var_f29, limit, dot;
+    float temp_f31, var_f30, var_f29, limit, dot, factor;
     float vector[3];
-    long index, result;
+    long index, result, firstValue, secondValue;
     short entry;
     int i;
 
     temp_f31 = fn_801E88F0(-1);
     temp_f31 *= temp_f31;
-    temp_f31 = fn_802C88E8((void*)((long)arg0 + 0x28)) * temp_f31;
+    factor = fn_802C88E8((void*)((long)arg0 + 0x28));
+    temp_f31 = factor * temp_f31;
 
     index = *(long*)((char*)arg0 + 0x480) - 1;
     while (index >= 0 &&
@@ -593,8 +592,10 @@ void fn_801EDF18(void* arg0) {
         if (fn_801E89A4(-1) == 0) goto done;
     }
 
-    settings.first = *(volatile long*)((char*)arg0 + 0x28);
-    settings.second.bits = *(volatile long*)((char*)arg0 + 0x2C);
+    firstValue = *(volatile long*)((char*)arg0 + 0x28);
+    secondValue = *(volatile long*)((char*)arg0 + 0x2C);
+    settings.first = firstValue;
+    settings.second.bits = secondValue;
     settings.third = *(volatile long*)((char*)arg0 + 0x30);
     entry = fn_801EAC3C(arg0, settings.first);
     vector[0] = lbl_80562E88;
