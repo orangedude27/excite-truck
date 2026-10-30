@@ -364,12 +364,21 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
         virtual void *lookup(const char *);
         virtual s32 create(const char *);
     };
+    struct Settings {
+        s32 unk0;
+        f32 value4;
+        f32 value8;
+        s32 valueC;
+        f32 value10;
+        s32 value14;
+        s32 value18;
+    };
     u8 *text = lbl_8032F588;
     f32 spC;
     f32 sp8;
     void *temp_r3;
     void *temp_r3_2;
-    void *temp_r3_3;
+    Settings *temp_r3_3;
 
     if (lbl_8055E2E0 != 0) {
         temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
@@ -382,20 +391,16 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
             fn_80148070(temp_r3_2, -1,
                 (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
         }
-        temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
-        {
-            f32 value4;
-            f32 value8;
-            s32 valueC;
-            value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
-            value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
-            valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
-            fn_80148134(&spC, &sp8, valueC, value4, value8);
-        }
-        fn_800103B8(*(s32 *)((u8 *)temp_r3_3 + 0x18),
-            *(s32 *)((u8 *)temp_r3_3 + 0x14), (s32 *)&lbl_8055A0DC, arg1,
-            *(f32 *)((u8 *)temp_r3_3 + 0x10), spC, sp8,
-            *(f32 *)((u8 *)temp_r3 + 0x10) - lbl_80561844);
+        temp_r3_3 = (Settings *)((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
+        f32 value4 = temp_r3_3->value4;
+        f32 value8 = *(volatile f32 *)((u8 *)temp_r3_3 + 8);
+        s32 valueC = temp_r3_3->valueC;
+        fn_80148134(&spC, &sp8, valueC, value4, value8);
+        f32 firstValue = *(f32 *)((u8 *)temp_r3 + 0x10);
+        f32 settingValue = temp_r3_3->value10;
+        f32 delta = firstValue - lbl_80561844;
+        fn_800103B8(temp_r3_3->value18, temp_r3_3->value14, (s32 *)&lbl_8055A0DC, arg1,
+            settingValue, spC, sp8, delta);
         fn_801473F8(lbl_8055E2E0, (const char *)text + 0xFC,
             &lbl_8055A0DC, arg0);
         ((Service *)lbl_8055E2E0)->find((const char *)text + 0x110);
@@ -1505,6 +1510,84 @@ void *fn_80163658(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma cplusplus on
+#pragma scheduling on
+extern "C" void fn_801636E0(void *arg0) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void *f4(s32 *, s32 *);
+    };
+    extern float lbl_80561848;
+    extern float lbl_8056184C;
+    extern void fn_801DF380(void *, s32, void (*)(void), s32);
+    extern void fn_801EA140(void *);
+    extern void fn_802A95A8(f32 *, f32 *, f32, f32);
+    extern void fn_802A95AC(s32);
+    extern s32 fn_8016D294(s32, s32, s32);
+    s32 i;
+    s32 firstOffset;
+    s32 secondOffset;
+    float resetValue;
+    char *self;
+
+    resetValue = lbl_8056184C;
+    *(s32 *)((char *)arg0 + 8) = 0;
+    self = (char *)arg0;
+    i = 0;
+    *(u8 *)((char *)arg0 + 0x10) = 0;
+    firstOffset = 0;
+    *(float *)((char *)arg0 + 0xC) = resetValue;
+    while (i < *(s32 *)(self + 0x38)) {
+        void *obj = *(void **)(self + 4);
+        s32 *entry = (s32 *)(*(char **)(self + 0x34) + firstOffset);
+        void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
+        fn_801DF380(result, entry[0], (void (*)())fn_80161438, entry[1]);
+        firstOffset += 8;
+        i++;
+    }
+
+    resetValue = lbl_80561848;
+    *(s32 *)(self + 0x94) = 0;
+    i = 0;
+    *(float *)(self + 0x98) = resetValue;
+    secondOffset = 0;
+    *(u8 *)(self + 0x88) = 0;
+    *(float *)(self + 0x8C) = resetValue;
+    *(u8 *)(self + 0x90) = 0;
+    *(u8 *)(self + 0x91) = 0;
+    *(u8 *)(self + 0x9C) = 1;
+    while (i < *(s32 *)(self + 0xE4)) {
+        char *obj = (char *)*(void **)(self + 0xE0) + secondOffset;
+        fn_801EA140(obj);
+        *(float *)(obj + 4) += *(float *)(obj + 0x38);
+        if (*(s32 *)(obj + 0x34) != 0) {
+            u32 j;
+            char *child;
+            for (j = 0, child = obj + 0xC; j < 2; j++, child += 0xC)
+                fn_801EA140(child);
+        }
+        *(u8 *)(obj + 0x3C) = 1;
+        if (*(s32 *)(obj + 0x34) != 0) {
+            ((void (*)(void *, void *))fn_802A95A8)(obj + 0x24, obj + 0x2C);
+            fn_802A95AC(1);
+        }
+        secondOffset += 0x48;
+        i++;
+    }
+
+    resetValue = lbl_80561848;
+    *(u8 *)(self + 0x56C) = 0;
+    *(u8 *)(self + 0x56D) = 0;
+    *(float *)(self + 0x574) = resetValue;
+    if (lbl_8055E304 > 0)
+        fn_8016D294(0, 0, lbl_8055E304 - 1);
+}
+#pragma cplusplus reset
+#pragma scheduling on
+
 u8 fn_80163864(void *arg0) {
     return *((u8 *)arg0 + 0x56C);
 }
@@ -1891,33 +1974,53 @@ extern void fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_80146C2C(s32);
 extern char lbl_8032FB90[];
 extern const char lbl_8055A110[], lbl_8055A118[];
+
+#pragma cplusplus on
+struct NameList_8016464C {
+    virtual void slot0();
+    virtual s32 hasName(const char *);
+    virtual void slot2();
+    virtual void *getValue(const char *);
+};
+struct Iterator_8016464C {
+    virtual s32 next();
+};
+#pragma cplusplus off
 void fn_8016464C(void *arg0) {
-    char name[0x10]; void *iterator; void **vt;
-    s32 count=1, i, max; void *item;
-    *(s32 *)((u8 *)arg0+0x38)=0;
-    iterator=fn_80131810(lbl_8032FB90);
-    fn_801345D8(name,0x10,lbl_8055A110,count);
-    item=*(void **)((u8 *)arg0+4); vt=*(void ***)item;
-    while(((s32(*)(void *,const char *))vt[3])(item,name)!=0) {
-        count++; fn_801345D8(name,0x10,lbl_8055A110,count);
-    }
-    max=count-1;
-    for(i=0;i<max;i++) {
-        s32 n=*(s32 *)((u8 *)arg0+0x38), index=i+1;
-        *(s32 *)((u8 *)arg0+0x38)=n+1;
-        item=(u8 *)*(void **)((u8 *)arg0+0x34)+n*8;
-        fn_801345D8(name,0x10,lbl_8055A110,index);
-        vt=*(void ***)*(void **)((u8 *)arg0+4);
-        *(void **)item=((void *(*)(void *,const char *))vt[5])(*(void **)((u8 *)arg0+4),name);
-        fn_801345D8(name,0x10,lbl_8055A118,index);
-        *(s32 *)((u8 *)item+4)=0;
-        if(((s32(*)(void *,const char *))vt[3])(*(void **)((u8 *)arg0+4),name)!=0) {
-            void *value=((void *(*)(void *,const char *))vt[5])(*(void **)((u8 *)arg0+4),name);
-            if(iterator && ((void *(*)(void *))*((void ***)iterator)[1])(iterator))
-                *(s32 *)((u8 *)item+4)=fn_80146C2C(lbl_8055E2E4);
+    char name[0x10];
+    void *iterator;
+    s32 count = 0;
+    s32 i;
+    s32 max;
+
+    *(s32 *)((u8 *)arg0 + 0x38) = 0;
+    iterator = fn_80131810(lbl_8032FB90);
+
+    do {
+        count++;
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, lbl_8055A110, count);
+    } while (((s32 (**)(void *, const char *))*(void ***)*(void **)((u8 *)arg0 + 4))[3](*(void **)((u8 *)arg0 + 4), name) != 0);
+
+    max = count - 1;
+    for (i = 0; i < max; i++) {
+        s32 n = *(s32 *)((u8 *)arg0 + 0x38);
+        s32 index = i + 1;
+        void *entry;
+
+        *(s32 *)((u8 *)arg0 + 0x38) = n + 1;
+        entry = (u8 *)*(void **)((u8 *)arg0 + 0x34) + n * 8;
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, lbl_8055A110, index);
+        *(void **)entry = ((void *(*)(void *, const char *))(*(void ***)*(void **)((u8 *)arg0 + 4))[5])(*(void **)((u8 *)arg0 + 4), name);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, lbl_8055A118, index);
+        *(s32 *)((u8 *)entry + 4) = 0;
+        if (((s32 (*)(void *, const char *))(*(void ***)*(void **)((u8 *)arg0 + 4))[3])(*(void **)((u8 *)arg0 + 4), name) != 0) {
+            ((void (*)(void *, const char *))(*(void ***)*(void **)((u8 *)arg0 + 4))[5])(*(void **)((u8 *)arg0 + 4), name);
+            if (iterator != 0 && ((s32 (*)(void *))(*(void ***)iterator)[1])(iterator) != 0)
+                *(s32 *)((u8 *)entry + 4) = fn_80146C2C(lbl_8055E2E4);
         }
     }
-    if(iterator) fn_80131818(iterator);
+    if (iterator != 0)
+        fn_80131818(iterator);
 }
 
 #pragma cplusplus on
