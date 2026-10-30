@@ -189,7 +189,7 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801E2FAC(long arg0, long arg1) {
 #pragma push
 #pragma small_data off
 void fn_801E31D8(s32 *arg0) {
-    *(s32 **)((u8 *)fn_801E3004(*arg0) + 4) = arg0;
+    *(s32 **)((u8 *)((void *(*)(s32))fn_801E3004)(*arg0) + 4) = arg0;
 }
 
 s32 fn_801E320C(s32 arg0, s32 arg1) {
