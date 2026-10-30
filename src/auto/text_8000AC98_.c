@@ -430,6 +430,103 @@ int fn_8000B53C(int arg0) {
         return 1;
     }
 }
+
+extern int fn_80137C98(int);
+extern int fn_801DF238(int);
+extern int fn_800075A0(int);
+extern int fn_80265D64(void);
+extern int fn_801769F8(void);
+extern int fn_801E86E8(int, int);
+extern void fn_8000D000(void *, void *, int);
+extern void fn_801769EC(void);
+extern void fn_80206454(void);
+extern void fn_80206444(void);
+extern void fn_8000BF10(int, int);
+extern char lbl_802FBFB0[];
+#pragma push
+#pragma dont_inline on
+void fn_8000B64C(int arg0, int arg1) {
+    int state;
+    int (*callback)(int);
+    int result;
+
+    state = fn_80137C98(arg1);
+    if (state < 0) goto done;
+    if (fn_801DF238(arg0) != 0) goto done;
+    if (fn_8000AD84() != 0 && arg1 != lbl_8055D3E4) goto done;
+
+    callback = *(int (**)(int))((char *)lbl_8055D3D0 + 4);
+    if (callback != 0 && callback(arg0) != 0) goto done;
+    if (arg0 == 0x60) goto done;
+
+    if (arg0 >= 0x60) goto high_event;
+    if (arg0 == 0x50) goto event_50;
+    if (arg0 >= 0x50) goto check_5c;
+    if (arg0 == 0x1B) goto event_1b;
+    if (arg0 >= 0x1B) goto default_event;
+    if (arg0 != 0x0A) goto default_event;
+    goto done;
+
+check_5c:
+    if (arg0 != 0x5C) goto default_event;
+    goto event_5c;
+
+high_event:
+    if (arg0 >= 0x121) goto check_124;
+    if (arg0 == 0x7E) goto done;
+    if (arg0 >= 0x7E) goto default_event;
+    if (arg0 != 0x70) goto default_event;
+    goto event_50;
+
+check_124:
+    if (arg0 == 0x124) goto event_124;
+    if (arg0 >= 0x124) goto default_event;
+    if (arg0 < 0x123) goto done;
+    goto default_event;
+
+event_1b:
+    if (fn_8000D75C() == 0 &&
+        fn_801E8838() == 0 &&
+        fn_800075A0(state) != 0) {
+        fn_8000D000((void *)fn_8000B42C, (void *)fn_8000B3B4, 0);
+        fn_8000ADE0(1);
+    }
+    goto done;
+
+event_50:
+    if (fn_80265D64() == 0 && fn_8000D75C() == 0) {
+        if (fn_801769F8() != 0) {
+            fn_801769EC();
+            fn_80206454();
+        } else {
+            __AXDSPInitCallback_801769E0();
+            fn_80206444();
+        }
+    }
+    goto done;
+
+event_124:
+    result = fn_801E86F8(state);
+    if (result != -1) {
+        result = fn_801E86F8(state);
+        fn_801E86E8(result, state);
+    }
+    goto done;
+
+event_5c:
+    if (fn_801769F8() == 0) {
+        ((int (*)(char *, ...))fn_802E30C8)(lbl_802FBFB0);
+    }
+    goto done;
+
+default_event:
+    fn_8000BF10(arg0, (int)lbl_8034F5B8);
+
+done:
+    return;
+}
+#pragma pop
+
 #pragma scheduling on
 extern int fn_80007554(int, int);
 extern int fn_8000BD9C(int, int, int);
