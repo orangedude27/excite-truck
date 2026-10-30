@@ -1092,7 +1092,7 @@ int fn_8028A084(int arg0) {
 #pragma scheduling on
 #pragma pop
 extern int fn_80288208(int);
-extern int fn_80287E20(void *);
+extern int fn_80287E20(void *, void *);
 extern void *fn_80287E80(int, void *);
 extern void fn_8012850C(int, void *, int);
 extern void *fn_8002F37C(int, void (*)(void), int, int, int);
@@ -1108,7 +1108,7 @@ int fn_8028A1A4(int out) {
  *(char **)out=base;
  for(i=0,entry=base;i<fn_80287B14();i++,entry+=0x68) {
   obj=(void *)fn_80288208(i);
-  if(fn_80287E20(&lbl_80348B8C)) {
+  if(fn_80287E20(obj, &lbl_80348B8C)) {
    obj=fn_80287E80((int)obj,&lbl_80348B8C);
    *(int *)(entry+0x60)=((int (*)(void *,int))(*(void ***)obj)[7])(obj,lbl_8055C890);
    for(j=0;j<*(int *)(entry+0x60);j++) {
