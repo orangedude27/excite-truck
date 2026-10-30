@@ -6,6 +6,14 @@ extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
 extern void fn_802C8E48(void);
 extern void fn_802C8D74(void);
 extern void fn_8029DB78(void *, void *, int, int);
+typedef struct GridRecord_8029D644 {
+    float f0;
+    float f4;
+    float f8;
+    int fieldC;
+    float f10;
+    float f14;
+} GridRecord_8029D644;
 extern float PSQUATMultiply(float *, float *);
 extern void *fn_802CAC28(int, int);
 extern float lbl_8056465C;
