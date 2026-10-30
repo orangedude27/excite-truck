@@ -1391,6 +1391,77 @@ extern "C" void fn_802A41D8(void *arg0, s32 arg1) {
             lbl_80564738, lbl_80564730, lbl_80564830, lbl_80564734);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
+    struct Params {
+        s32 count;
+        f32 value[19];
+    };
+    Params *params = (Params *)arg1;
+    char *object = (char *)arg0;
+    s32 count = params->count;
+    void *entries = fn_8012850C((count << 5) + 0x10, lbl_80349A98);
+    entries = fn_8002F37C(entries, fn_802A44B4, 0, 0x20, count);
+
+    f32 value30 = params->value[11];
+    f32 value34 = params->value[12];
+    f32 value3c = params->value[14];
+    f32 value38 = params->value[13];
+    f32 value40 = params->value[15];
+    f32 value44 = params->value[16];
+    f32 value4c = params->value[18];
+    f32 value48 = params->value[17];
+    f32 slope44 = (value34 - value30) / value3c;
+    f32 slope48 = (value38 - value34) / (lbl_80564730 - value3c);
+    f32 slope54 = (value44 - value40) / value4c;
+    f32 slope58 = (value48 - value44) / (lbl_80564730 - value4c);
+
+    *(void **)(object + 0x00) = entries;
+    *(s32 *)(object + 0x08) = count;
+    *(f32 *)(object + 0x0c) = params->value[0];
+    *(f32 *)(object + 0x10) = lbl_80564730 / params->value[0];
+    *(f32 *)(object + 0x14) = params->value[1];
+    *(f32 *)(object + 0x1c) = params->value[2];
+    *(f32 *)(object + 0x20) = params->value[3];
+    *(f32 *)(object + 0x24) = params->value[4];
+    *(f32 *)(object + 0x28) = params->value[5];
+    *(f32 *)(object + 0x2c) = params->value[6];
+    *(f32 *)(object + 0x30) = params->value[7];
+    *(f32 *)(object + 0x34) = params->value[8];
+    f32 value2c = params->value[10] * lbl_80564838;
+    *(f32 *)(object + 0x38) = value2c;
+    *(f32 *)(object + 0x3c) = params->value[9];
+    *(f32 *)(object + 0x40) = value30;
+    *(f32 *)(object + 0x44) = slope44;
+    *(f32 *)(object + 0x48) = slope48;
+    *(f32 *)(object + 0x4c) = value3c;
+    *(f32 *)(object + 0x50) = value40;
+    *(f32 *)(object + 0x54) = slope54;
+    *(f32 *)(object + 0x58) = slope58;
+    *(f32 *)(object + 0x5c) = value4c;
+    *(void **)(object + 0x60) = fn_802CAC28(arg2, 0, slope58, slope54, value4c,
+        value44, value40, slope48, slope44, value3c, value30, value2c,
+        params->value[8], params->value[7], params->value[6]);
+
+    f32 upper = lbl_80564734 - *(f32 *)(object + 0x4c);
+    f32 clampUpper = lbl_80564744;
+    if (clampUpper <= upper)
+        clampUpper = upper;
+    f32 clampLower = *(f32 *)(object + 0x4c);
+    if (clampLower >= lbl_80564734)
+        ;
+    else
+        clampLower = lbl_80564734;
+    f32 product = *(f32 *)(object + 0x44) * clampLower;
+    f32 base = *(f32 *)(object + 0x40) + product;
+    *(f32 *)(object + 0x64) = (f32)fn_8002F208(
+        lbl_805647AC / (base + *(f32 *)(object + 0x48) * clampUpper),
+        base, product);
+    fn_802A4524(object);
+    return object;
+}
+
 extern "C" void fn_802A44B4(void) {
 }
 
