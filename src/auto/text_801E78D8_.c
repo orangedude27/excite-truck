@@ -174,7 +174,7 @@ extern "C" void fn_801E7C28(void *arg0) {
     fn_801E9BE4();
     fn_801F9F08();
     fn_801B832C();
-    for (offset = 0, count = 0; count < lbl_8055EB34; count++, offset += 4) {
+    for (count = 0, offset = 0; count < lbl_8055EB34; offset += 4, count++) {
         obj = (Dummy_801E7C28 *)*(long *)((char *)lbl_8055EB3C + offset);
         if (obj != 0)
             obj->invoke(1);
@@ -285,12 +285,13 @@ extern "C" void fn_801E8148(void) {
     fn_801FA550();
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_801E81B8(int arg0, void (*callback)(void)) {
     extern void *lbl_8055AF0C;
     extern float *lbl_8055EB04;
     unsigned long index;
     void *entry;
-    long count;
     long i;
     long values[4];
     float value;
@@ -301,16 +302,16 @@ extern "C" void fn_801E81B8(int arg0, void (*callback)(void)) {
     fn_802A4CA8();
     fn_802C276C();
     index = (unsigned long)fn_801E866C(0);
-    entry = 0;
     if (index < 8)
         entry = lbl_80488648[index];
-    count = (long)lbl_8055EB2C;
+    else
+        entry = 0;
     fn_80203E88(lbl_80487D00, (long)((unsigned char *)entry + 0x28),
-                (count - 1) == 0);
+                ((long)lbl_8055EB2C - 1) == 0);
     fn_8001A1F0();
     fn_801EA394();
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
-    fn_802CC73C((char)(count <= 2));
+    fn_802CC73C((int)((long)lbl_8055EB2C <= 2));
     i = 0;
     goto first_check;
 first_loop:
@@ -350,8 +351,7 @@ second_check:
     if (callback != 0)
         callback();
 }
-
-#pragma cplusplus off
+#pragma pop
 void fn_801E837C(void) {
     extern void fn_802D6C54(long, void *, float);
     long i;
