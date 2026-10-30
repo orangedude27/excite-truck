@@ -36,6 +36,9 @@ struct F801B4AC4 {
 extern char lbl_80435C70[];
 #pragma pop
 extern char lbl_80335E48[];
+extern int lbl_8055E3C4;
+extern char *lbl_8055E6DC;
+extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_802E317C(const char *, ...);
 extern int __dt__15shdStateMachineFv_801B496C();
 extern void *lbl_8055E6D8;
@@ -113,27 +116,27 @@ extern "C" void fn_801B4720(int arg0) {
     int minusOne;
     int value;
     int zero;
-    int clear;
 
     i = 0;
     offset = 0;
     minusOne = -1;
     zero = 0;
-    for (; i < *(unsigned int *)(arg0 + 0x1C); offset += 12) {
+    while (i < *(unsigned int *)(arg0 + 0x1C)) {
         int *entries = *(int **)(arg0 + 0x18);
         i++;
         *(int *)((char *)entries + offset) = minusOne;
         *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 4) = zero;
         *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 8) = zero;
+        offset += 12;
     }
     value = *(int *)(arg0 + 4);
-    clear = 0;
-    *(int *)(arg0 + 8) = clear;
+    zero = 0;
+    *(int *)(arg0 + 8) = zero;
     *(int *)(arg0 + 0xC) = value;
     *(int *)(arg0 + 0x10) = value;
-    *(int *)(arg0 + 0x14) = clear;
-    *(int *)(arg0 + 0x20) = clear;
-    *(int *)(arg0 + 0x24) = clear;
+    *(int *)(arg0 + 0x14) = zero;
+    *(int *)(arg0 + 0x20) = zero;
+    *(int *)(arg0 + 0x24) = zero;
     ((F801B4720 *)*(void **)arg0)->f4();
 }
 #pragma cplusplus off
@@ -187,7 +190,7 @@ int fn_801B47F0(int arg0) {
 
 int fn_801B4818(void) { return 0x100000; }
 
-void fn_801B4820(int *arg0, int *arg1, unsigned int arg2) {
+void fn_801B4820(int unused, int *arg0, int *arg1, unsigned int arg2) {
     unsigned int value;
     unsigned int limit;
 
@@ -239,17 +242,22 @@ extern void fn_801B4C60();
 extern float fn_801B4D10(int, int);
 int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
     int index;
+    int value;
     void *obj;
-    int (*call)(void *, int, int);
-    if (fn_801B4B44(arg0) == 0) return 0;
+    if (fn_801B4B44(arg0) == 0)
+        return 0;
     index = ((int (*)(void *, int))fn_801B4C9C)(arg0, arg4);
     obj = ((void *(*)(void *, int))fn_801B4C58)(arg0, index);
-    call = (int (*)(void *, int, int))(*(void ***)*(void **)((char *)arg0 + 4) + 3);
-    *arg1 = (void *)call(*(void **)((char *)arg0 + 4), *(int *)((char *)obj + 8), 0x2200);
-    if (fn_801B4C1C((int)arg0, arg4)) *arg2 = *arg1;
-    else {
+    value = *(int *)((char *)obj + 8);
+    *arg1 = (void *)((int (*)(void *, int, int))(*(void ***)*(void **)((char *)arg0 + 4))[3])(
+        *(void **)((char *)arg0 + 4), value, 0x2200);
+    if (fn_801B4C1C((int)arg0, arg4) != 0) {
+        *arg2 = *arg1;
+    } else {
         obj = ((void *(*)(void *, int))fn_801B4C60)(arg0, index);
-        *arg2 = (void *)call(*(void **)((char *)arg0 + 4), *(int *)((char *)obj + 8), 0x2200);
+        value = *(int *)((char *)obj + 8);
+        *arg2 = (void *)((int (*)(void *, int, int))(*(void ***)*(void **)((char *)arg0 + 4))[3])(
+            *(void **)((char *)arg0 + 4), value, 0x2200);
     }
     *arg3 = fn_801B4D10((int)arg0, arg4);
     return 1;
