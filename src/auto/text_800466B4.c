@@ -174,28 +174,33 @@ extern f32 lbl_8055D9A0[2];
 extern f32 lbl_8055D9A8[2];
 s32 select_1obj_first(void *arg0) {
     u8 *obj = (u8 *)arg0;
-    u8 *entry = obj + 0xC8;
-    u8 *end = obj + 0xF8;
+    register u8 *entry = obj + 0xC8;
+    register u8 *end = obj + 0xF8;
+    register f32 *min = lbl_8055D9A8;
+    register f32 *max = lbl_8055D9A0;
     f32 sx = *(f32 *)(obj + 0xB4);
     f32 cx = *(f32 *)(obj + 0x3C8);
     f32 sy = *(f32 *)(obj + 0xB8);
     f32 cy = *(f32 *)(obj + 0x3CC);
+    f32 xCos = sx * cx;
+    f32 yCos = sy * cx;
     f32 scale = *(f32 *)(obj + 0x3B0);
-    f32 dx = (sx * cx + sy * cy) * scale;
-    f32 dy = (sy * cx - sx * cy) * scale;
+    f32 ySin = sy * cy;
+    f32 xSin = sx * cy;
+    f32 dx = (xCos + ySin) * scale;
+    f32 dy = (yCos - xSin) * scale;
 
     do {
         if (*(s8 *)(entry + 8) == 0) {
             f32 x = *(f32 *)(entry + 0);
             f32 y = *(f32 *)(entry + 4);
-            f32 left = x - dx;
-            f32 bottom = y - dy;
-            f32 right = x + dx;
-            f32 top = y + dy;
-            if (left >= lbl_8055D9A8[0] && left <= lbl_8055D9A0[0] &&
-                bottom >= lbl_8055D9A8[1] && bottom <= lbl_8055D9A0[1]) {
-                if (right > lbl_8055D9A8[0] && right < lbl_8055D9A0[0] &&
-                    top > lbl_8055D9A8[1] && top < lbl_8055D9A0[1]) {
+            volatile f32 left = x - dx;
+            volatile f32 bottom = y - dy;
+            volatile f32 right = x + dx;
+            volatile f32 top = y + dy;
+
+            if (left <= min[0] || left >= max[0] || bottom <= min[1] || bottom >= max[1]) {
+                if (right > min[0] && right < max[0] && top > min[1] && top < max[1]) {
                     *(u32 *)(obj + 0x104) = *(u32 *)(entry + 0);
                     *(u32 *)(obj + 0x108) = *(u32 *)(entry + 4);
                     *(u32 *)(obj + 0x10C) = *(u32 *)(entry + 8);
@@ -205,81 +210,112 @@ s32 select_1obj_first(void *arg0) {
                     *(u8 *)(obj + 0x101) = 0xFF;
                     return -1;
                 }
-                if (right >= lbl_8055D9A8[0] && right <= lbl_8055D9A0[0] &&
-                    top >= lbl_8055D9A8[1] && top <= lbl_8055D9A0[1]) {
-                    *(u32 *)(obj + 0xF8) = *(u32 *)(entry + 0);
-                    *(u32 *)(obj + 0xFC) = *(u32 *)(entry + 4);
-                    *(u32 *)(obj + 0x100) = *(u32 *)(entry + 8);
-                    *(f32 *)(obj + 0x104) = right;
-                    *(f32 *)(obj + 0x108) = top;
-                    *(u8 *)(obj + 0x10C) = 0;
-                    *(u8 *)(obj + 0x10D) = 0xFF;
-                    return -1;
-                }
+            } else if (right <= min[0] || right >= max[0] || top <= min[1] || top >= max[1]) {
+                *(u32 *)(obj + 0xF8) = *(u32 *)(entry + 0);
+                *(u32 *)(obj + 0xFC) = *(u32 *)(entry + 4);
+                *(u32 *)(obj + 0x100) = *(u32 *)(entry + 8);
+                *(f32 *)(obj + 0x104) = right;
+                *(f32 *)(obj + 0x108) = top;
+                *(u8 *)(obj + 0x10C) = 0;
+                *(u8 *)(obj + 0x10D) = 0xFF;
+                return -1;
             }
         }
         entry += 0xC;
     } while (entry < end);
     return 0;
 }
+#pragma scheduling on
 
 int select_1obj_continue(void *obj) {
     unsigned char *candidate;
     unsigned char *other;
-    unsigned char *bestCandidate = 0;
-    unsigned char *bestOther = 0;
+    unsigned char *bestCandidate;
+    unsigned char *bestOther;
     unsigned char *outerEnd = (unsigned char *)obj + 0x110;
-    unsigned char *innerEnd = (unsigned char *)obj + 0xF8;
+    unsigned char *innerEnd;
     float limit = lbl_80558ED0 * lbl_80558ED0;
     float distance;
     float dx;
     float dy;
     float qx;
     float qy;
-    float rx;
-    float ry;
+    float cosine;
+    float sine;
     float scale;
-    for (candidate = (unsigned char *)obj + 0xF8; candidate < outerEnd; candidate += 0xC) {
-        if ((signed char)candidate[8] == 0 && (signed char)candidate[9] == 0) {
-            for (other = (unsigned char *)obj + 0xC8; other < innerEnd; other += 0xC) {
-                if ((signed char)other[8] == 0) {
-                    dx = *(float *)(candidate + 0) - *(float *)(other + 0);
-                    dy = *(float *)(candidate + 4) - *(float *)(other + 4);
-                    distance = dx * dx + dy * dy;
-                    if (distance < limit) {
-                        limit = distance;
-                        bestCandidate = candidate;
-                        bestOther = other;
-                    }
-                }
-            }
+    float xCos;
+    float yCos;
+    float ySin;
+    float xSin;
+    float scaledX;
+    float scaledY;
+    volatile float *rotated;
+    volatile u32 *copyFrom;
+    u32 firstWord;
+    u32 secondWord;
+    u32 thirdWord;
+    unsigned char *firstCandidate;
+
+    candidate = (unsigned char *)obj + 0xF8;
+outer_loop:
+    if ((signed char)candidate[8] != 0) goto next_outer;
+    if ((signed char)candidate[9] != 0) goto next_outer;
+    other = (unsigned char *)obj + 0xC8;
+    innerEnd = outerEnd - 0x18;
+inner_loop:
+    if ((signed char)other[8] == 0) {
+        dx = *(float *)(candidate + 0) - *(float *)(other + 0);
+        dy = *(float *)(candidate + 4) - *(float *)(other + 4);
+        distance = dx * dx + dy * dy;
+        if (distance < limit) {
+            limit = distance;
+            bestCandidate = candidate;
+            bestOther = other;
         }
     }
+    other += 0xC;
+    if (other < innerEnd) goto inner_loop;
+next_outer:
+    candidate += 0xC;
+    if (candidate < outerEnd) goto outer_loop;
+
     if (limit == lbl_80558ED0 * lbl_80558ED0) return 0;
-    *(u32 *)(bestCandidate + 0) = *(u32 *)(bestOther + 0);
-    *(u32 *)(bestCandidate + 4) = *(u32 *)(bestOther + 4);
-    *(u32 *)(bestCandidate + 8) = *(u32 *)(bestOther + 8);
-    qx = *(float *)((char *)obj + 0xB4);
-    qy = *(float *)((char *)obj + 0xB8);
-    rx = *(float *)((char *)obj + 0x3C8);
-    ry = *(float *)((char *)obj + 0x3CC);
-    scale = *(float *)((char *)obj + 0x3A0);
-    dx = qx * rx + qy * ry;
-    dy = qy * rx - qx * ry;
-    *(float *)((char *)obj + 0x3A4) = dx;
-    *(float *)((char *)obj + 0x3A8) = dy;
-    rx = scale * dx;
-    ry = scale * dy;
-    if (bestCandidate == (unsigned char *)obj + 0xF8) {
-        *(float *)((char *)obj + 0x104) = *(float *)bestCandidate + rx;
-        *(float *)((char *)obj + 0x108) = *(float *)(bestCandidate + 4) + ry;
+    copyFrom = (volatile u32 *)bestOther;
+    firstWord = copyFrom[0];
+    firstCandidate = (unsigned char *)obj + 0xF8;
+    secondWord = copyFrom[1];
+    *(u32 *)(bestCandidate + 0) = firstWord;
+    *(u32 *)(bestCandidate + 4) = secondWord;
+    thirdWord = copyFrom[2];
+    *(u32 *)(bestCandidate + 8) = thirdWord;
+
+    qx = *(volatile float *)((char *)obj + 0xB4);
+    cosine = *(volatile float *)((char *)obj + 0x3C8);
+    qy = *(volatile float *)((char *)obj + 0xB8);
+    sine = *(volatile float *)((char *)obj + 0x3CC);
+    xCos = qx * cosine;
+    yCos = qy * cosine;
+    scale = *(volatile float *)((char *)obj + 0x3A0);
+    ySin = qy * sine;
+    xSin = qx * sine;
+    dx = xCos + ySin;
+    dy = yCos - xSin;
+    rotated = (volatile float *)((char *)obj + 0x3A4);
+    scaledX = scale * dx;
+    rotated[0] = dx;
+    scaledY = scale * dy;
+    rotated[1] = dy;
+
+    if (bestCandidate == firstCandidate) {
+        *(float *)((char *)obj + 0x104) = *(float *)bestCandidate + scaledX;
+        *(float *)((char *)obj + 0x108) = *(float *)(bestCandidate + 4) + scaledY;
         *((unsigned char *)obj + 0x10C) = 0;
-        *((unsigned char *)obj + 0x10D) = -1;
+        *((signed char *)obj + 0x10D) = -1;
     } else {
-        *(float *)((char *)obj + 0xF8) = *(float *)bestCandidate - rx;
-        *(float *)((char *)obj + 0xFC) = *(float *)(bestCandidate + 4) - ry;
+        *(float *)((char *)obj + 0xF8) = *(float *)bestCandidate - scaledX;
+        *(float *)((char *)obj + 0xFC) = *(float *)(bestCandidate + 4) - scaledY;
         *((unsigned char *)obj + 0x100) = 0;
-        *((unsigned char *)obj + 0x101) = -1;
+        *((signed char *)obj + 0x101) = -1;
     }
     if ((signed char)*((unsigned char *)obj + 0x84) < 0) return -1;
     return 1;
@@ -409,7 +445,6 @@ void read_kpad_stick(s32 chan, void *arg1) {
 
 #pragma scheduling invalid_target
 s32 KPADRead(s32 arg0, KPADStatus *arg1, s32 arg2) {
-    extern u8 lbl_8037C808[];
     extern f32 lbl_80558EB8;
     extern f32 lbl_80560BE4;
     extern f64 lbl_80560C28;
@@ -419,103 +454,97 @@ s32 KPADRead(s32 arg0, KPADStatus *arg1, s32 arg2) {
     extern void calc_acc_horizon(void *, void *, s32);
     extern s32 fn_800609E0(s32);
     union { u32 word[2]; f64 value; } conversion;
-    register s32 var_r22=arg0;
-    register u8 *var_r26=(u8 *)arg1;
-    register u32 var_r23=arg2;
-    register u8 *temp_r29=lbl_8037C808+(arg0<<10);
-    register s32 var_r24;
-    register s32 var_r25;
-    register u8 *var_r27;
-    register u8 *var_r28;
-    register u8 *var_r30;
-    register s32 var_r31;
     register s32 var_r21;
-    s32 channel,normalized;
-    u16 produced;
+    register s32 var_r22=arg0;
+    register KPADReadPrivate *temp_r29=(KPADReadPrivate *)(lbl_8037C808+(arg0<<10));
+    register u8 *var_r28;
+    register u8 *var_r27;
+    register KPADReadStatus *var_r26=(KPADReadStatus *)arg1;
+    register s32 var_r25;
+    register s32 var_r24;
+    register u32 var_r23=arg2;
+    register s32 var_r31;
+    register KPADReadStatus *var_r30;
+    s32 normalized;
     u32 devType;
-    u32 idx;
     u8 *temp_r4;
-    u32 *copySrc,*copyDst;
 
     conversion.word[1]=fn_80062458(); conversion.word[0]=0x43300000;
     {
         f32 delta=(f32)conversion.value-(f32)lbl_80560C28;
         lbl_80558EB8=lbl_80560BE4+delta;
     }
-    temp_r4=var_r26+((var_r23-1)*0x88);
+    var_r30=var_r26+(var_r23-1);
 init_samples:
-    *(u32 *)(temp_r4+0x5C)=*(u32 *)(temp_r29+0x5C); temp_r4-=0x88;
-    if(temp_r4>=var_r26) goto init_samples;
+    *(u32 *)&var_r30->status.dev_type=*(u32 *)&temp_r29->status.status.dev_type;
+    var_r30--;
+    if(var_r30>=var_r26) goto init_samples;
     if (((s32 (*)(s32,void *))read_kpad_stick)(var_r22,temp_r29)!=0) return 0;
-    if(*(u32 *)(temp_r29+0x5C)==0xFD) return 0;
-    channel=*(s16 *)(temp_r29+0x114);
-    if(channel>=0) normalized=fn_800609E0(channel); else normalized=fn_800609E0(channel+4);
-    var_r25=*(s16 *)(temp_r29+0x116);
+    if(*(u32 *)&temp_r29->status.status.dev_type==0xFD) return 0;
+    if(temp_r29->active_chan>=0) normalized=fn_800609E0(temp_r29->active_chan);
+    else normalized=fn_800609E0(temp_r29->active_chan+4);
+    var_r25=temp_r29->last_index;
     if(var_r25<0) { var_r25=normalized-1; if(var_r25<0) var_r25=0xB; }
-    var_r24=normalized-var_r25; *(s16 *)(temp_r29+0x116)=normalized;
+    var_r24=normalized-var_r25;
+    temp_r29->last_index=normalized;
     if(var_r24==0) return 0;
     if(var_r24<0) var_r24+=0xC;
     if(var_r24<var_r23) var_r23=var_r24;
-    *(u16 *)(temp_r29+0x112)=0; devType=*(u32 *)(temp_r29+0x5C);
-    var_r30=var_r26+var_r23*0x88;
+    temp_r29->repeat_count=0;
+    devType=*(u32 *)&temp_r29->status.status.dev_type;
+    var_r30=var_r26+var_r23;
     if(devType==0 || devType==0xFB || devType==0xFF || devType==0xFC) {
-        var_r31=var_r24-var_r23; var_r25++; if(var_r25==0xC) var_r25=0;
+        var_r31=var_r24-var_r23;
         do {
-            temp_r4=temp_r29+var_r25*0x2A; var_r28=temp_r4+0x118;
-            *(u8 *)(temp_r29+0x85)=temp_r4[0x141];
+            var_r25++; if(var_r25==0xC) var_r25=0;
+            temp_r4=(u8 *)temp_r29+var_r25*0x2A; var_r28=temp_r4+0x118;
+            *((u8 *)temp_r29+0x85)=temp_r4[0x141];
             read_kpad_acc(temp_r29,var_r28,0,var_r22); read_kpad_dpd(temp_r29,var_r28,0);
-            if((s32)*(u16 *)(temp_r29+0x112)>=var_r31) {
-                copyDst=(u32 *)(var_r30-0x8C); copySrc=(u32 *)(temp_r29-4); var_r30-=0x88;
-                var_r21=0x11; goto copy0_check;
-copy0_body:
-                *++copyDst=*++copySrc; *++copyDst=*++copySrc; var_r21--;
-copy0_check:
-                if(var_r21!=0) goto copy0_body;
+            if(temp_r29->repeat_count>=var_r31) {
+                var_r30--;
+                *var_r30=temp_r29->status;
             }
-            produced=*(u16 *)(temp_r29+0x112)+1; *(u16 *)(temp_r29+0x112)=produced;
-        } while((s32)produced<var_r24);
+        } while(++temp_r29->repeat_count<var_r24);
     } else if(devType==1) {
-        var_r31=var_r24-var_r23; var_r25++; if(var_r25==0xC) var_r25=0;
+        var_r31=var_r24-var_r23;
         do {
-            temp_r4=temp_r29+var_r25*0x32; var_r27=temp_r4+0x118;
-            *(u8 *)(temp_r29+0x85)=temp_r4[0x141];
+            var_r25++; if(var_r25==0xC) var_r25=0;
+            temp_r4=(u8 *)temp_r29+var_r25*0x32; var_r27=temp_r4+0x118;
+            *((u8 *)temp_r29+0x85)=temp_r4[0x141];
             read_kpad_acc(temp_r29,var_r27,1,var_r22); read_kpad_dpd(temp_r29,var_r27,1); clamp_stick_cross(temp_r29,var_r27);
-            if((s32)*(u16 *)(temp_r29+0x112)>=var_r31) {
-                copyDst=(u32 *)(var_r30-0x8C); copySrc=(u32 *)(temp_r29-4); var_r30-=0x88;
-                var_r21=0x11; goto copy1_check;
-copy1_body:
-                *++copyDst=*++copySrc; *++copyDst=*++copySrc; var_r21--;
-copy1_check:
-                if(var_r21!=0) goto copy1_body;
+            if(temp_r29->repeat_count>=var_r31) {
+                var_r30--;
+                *var_r30=temp_r29->status;
             }
-            produced=*(u16 *)(temp_r29+0x112)+1; *(u16 *)(temp_r29+0x112)=produced;
-        } while((s32)produced<var_r24);
+        } while(++temp_r29->repeat_count<var_r24);
     } else if(devType==2) {
-        var_r31=var_r24-var_r23; var_r25++; if(var_r25==0xC) var_r25=0;
+        var_r31=var_r24-var_r23;
         do {
-            temp_r4=temp_r29+var_r25*0x36; var_r26=temp_r4+0x118;
-            *(u8 *)(temp_r29+0x85)=temp_r4[0x141];
+            var_r25++; if(var_r25==0xC) var_r25=0;
+            temp_r4=(u8 *)temp_r29+var_r25*0x36; var_r26=(KPADReadStatus *)(temp_r4+0x118);
+            *((u8 *)temp_r29+0x85)=temp_r4[0x141];
             read_kpad_acc(temp_r29,var_r26,2,var_r22); read_kpad_dpd(temp_r29,var_r26,2); clamp_stick_cross(temp_r29,var_r26);
-            if((s32)*(u16 *)(temp_r29+0x112)>=var_r31) {
-                copyDst=(u32 *)(var_r30-0x8C); copySrc=(u32 *)(temp_r29-4); var_r30-=0x88;
-                var_r21=0x11; goto copy2_check;
-copy2_body:
-                *++copyDst=*++copySrc; *++copyDst=*++copySrc; var_r21--;
-copy2_check:
-                if(var_r21!=0) goto copy2_body;
+            if(temp_r29->repeat_count>=var_r31) {
+                var_r30--;
+                *var_r30=temp_r29->status;
             }
-            produced=*(u16 *)(temp_r29+0x112)+1; *(u16 *)(temp_r29+0x112)=produced;
-        } while((s32)produced<var_r24);
+        } while(++temp_r29->repeat_count<var_r24);
     }
-    devType=*(u32 *)(temp_r29+0x5C);
+    devType=*(u32 *)&temp_r29->status.status.dev_type;
     if(devType==0 || devType==0xFB || devType==0xFC || devType==0xFF) calc_acc_horizon(temp_r29,var_r28,0);
     else if(devType==1) calc_acc_horizon(temp_r29,var_r27,1);
     else if(devType==2) calc_acc_horizon(temp_r29,var_r26,2);
     var_r31=var_r23;
     do {
-        *(u32 *)(var_r30+0)=*(u32 *)(temp_r29+0); *(u32 *)(var_r30+4)=*(u32 *)(temp_r29+4); *(u32 *)(var_r30+8)=*(u32 *)(temp_r29+8);
-        var_r30+=0x88;
-        if(*(u32 *)(temp_r29+0x5C)==2) { *(u32 *)(var_r30+0x60)=*(u32 *)(temp_r29+0x60); *(u32 *)(var_r30+0x64)=*(u32 *)(temp_r29+0x64); *(u32 *)(var_r30+0x68)=*(u32 *)(temp_r29+0x68); }
+        var_r30->status.hold=temp_r29->status.status.hold;
+        var_r30->status.trig=temp_r29->status.status.trig;
+        var_r30->status.release=temp_r29->status.status.release;
+        var_r30++;
+        if(*(u32 *)&temp_r29->status.status.dev_type==2) {
+            var_r30->status.ex_status.cl.hold=temp_r29->status.status.ex_status.cl.hold;
+            var_r30->status.ex_status.cl.trig=temp_r29->status.status.ex_status.cl.trig;
+            var_r30->status.ex_status.cl.release=temp_r29->status.status.ex_status.cl.release;
+        }
         var_r31--;
     } while(var_r31!=0);
     return var_r23;
