@@ -919,3 +919,4 @@ s32 fn_8028CD80(s32 arg0, s32 arg1, void *arg2, f32 *arg3, f32 farg0) {
     ring->head += count;
 }
 #pragma pop
+#pragma cplusplus on
