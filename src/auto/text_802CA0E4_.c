@@ -1146,6 +1146,52 @@ void fn_802CC03C(int **arg0, int *arg1, int arg2) {
     ((void (*)(int **, int, int *))fn_802CBB9C)(arg0, (int)arg0 + 4, arg1);
 }
 
+#pragma optimization_level 2
+int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
+    char *table;
+    char *node;
+    char *pool;
+    char **link;
+    char **mergeLink;
+    char *other;
+    int result = 0;
+
+    node = *(char **)((char *)arg0 + 0x10);
+    if (node != 0) {
+        table = (char *)&lbl_8055FCB0 + arg1 * 0x4C;
+        *(int *)(node + 4) = *(int *)(table + 0x40);
+        *(int *)(node + 8) = arg2;
+        *(int *)(node + 0xC) = arg3;
+        *(char **)node = table + 4;
+        ((void (*)(void **, void **, void *))fn_802CBD30)(
+            (void **)((char *)arg0 + 0xC),
+            (void **)((char *)arg0 + 0x10), node);
+        *(int *)(table + 0x40) = 0;
+
+        pool = *(char **)(*(char **)((char *)arg0 + 0x38) + 4);
+        link = (char **)(pool + 0xC);
+        node = (char *)(*(int *)(table + 0x44) - (*(int *)(pool + 4) + 1));
+        other = *link;
+        if (other != 0) {
+            do {
+                if (other == node) {
+                    *link = *(char **)(node + 8);
+                    break;
+                }
+                link = (char **)(other + 8);
+                other = *link;
+            } while (other != 0);
+        }
+        mergeLink = (char **)(pool + 8);
+        *(char **)(node + 8) = *mergeLink;
+        *mergeLink = node;
+        *(int *)(table + 0x44) = 0;
+        ((void (*)(void *, void *))fn_802CB3F8)(table + 4, &lbl_8034BA98);
+        result = 1;
+    }
+    return result;
+}
+
 extern char lbl_8034BB28[];
 void *fn_802CC2C8(void *arg0, int arg1) {
     volatile int *manager = (volatile int *)arg0;
