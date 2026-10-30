@@ -564,7 +564,7 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 arg1, u32 ar
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
     u32 level = OSDisableInterrupts();
     if (*((u8 *)arg0 + 0x1C) != 0) {
