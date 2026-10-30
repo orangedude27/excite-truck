@@ -862,6 +862,7 @@ test_loop:
     }
     return total;
 }
+#pragma dont_inline reset
 #pragma use_lmw_stmw reset
 
 extern s32 fn_80012854();
