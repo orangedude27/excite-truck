@@ -53,6 +53,7 @@ typedef unsigned char u8;
 typedef struct { void **vtable; } Fn80287A34Obj;
 typedef float f32;
 extern void fn_802885C0(void);
+extern void fn_802885F0(void);
 extern void fn_802887EC(void);
 extern f32 lbl_80564268;
 extern f32 lbl_80564248;
@@ -431,8 +432,7 @@ void fn_80287E80(void **arg0, s32 arg1) {
 #pragma scheduling invalid_target
 void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
     Obj *obj = *arg1;
-    if (obj != 0 && (s32)((s32 (*)(Obj *, s32))obj->vtable[2])(obj, arg2)) {
-    } else {
+    if (obj == 0 || ((s32 (*)(Obj *, s32))obj->vtable[2])(obj, arg2) == 0) {
         fn_802E317C(lbl_80348A4C, arg2);
     }
     obj = *arg1;
