@@ -131,8 +131,8 @@ void fn_8001BB58(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_8001CE74(arg0, fn_8001D25C(arg1), b, a);
 }
 #pragma scheduling reset
-void fn_8001BBB4(void) {
-    fn_8001D020();
+s32 fn_8001BBB4(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, f32 arg6) {
+    return fn_8001D020(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
 void fn_8001BBB8(void) {
