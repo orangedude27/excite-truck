@@ -332,4 +332,4 @@ void fn_801B8100(void *arg0, int arg1, int arg2) {
             fn_802E317C(lbl_80336718, result);
     }
 }
-
+#pragma cplusplus on
