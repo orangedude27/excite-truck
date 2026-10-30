@@ -23,6 +23,7 @@ extern f32 lbl_80563684;
 extern f32 lbl_80563688;
 extern f32 lbl_8056368C;
 extern f32 fn_8023400C(s32);
+typedef union FloatInt64 { f64 d; u32 words[2]; } FloatInt64;
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern s32 fn_802C8DBC(s32);
 extern void fn_802C8D74(void);
@@ -301,7 +302,7 @@ extern void fn_80233EBC(void);
 #pragma dont_inline on
 void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
                  f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
-    volatile s32 sp14;
+    s32 sp14;
     f32 sp10;
     f32 spC;
     s32 sp8;
@@ -309,7 +310,7 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     f32 rate;
     s32 var_r31;
     s32 temp_r30;
-    s32 var_r5;
+    register s32 var_r5;
     u8 *var_r29;
 
     sp8 = (s32)arg0;
@@ -322,7 +323,8 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     if (*(u32 *)((u8 *)arg1 + 8) != 0)
         var_r31 = 2;
     rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
-    temp_f31 = (f32)((u8 *)arg1)[4] * farg2 * rate;
+    temp_f31 = (f32)((u8 *)arg1)[4] * farg2;
+    temp_f31 *= rate;
     fn_80233BF0((u8 *)sp8, (u8 *)arg1, &spC, &sp10, arg3, farg2, farg4);
     while (var_r31 > 0) {
         var_r5 = sp14;
@@ -770,7 +772,7 @@ void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, 
         if ((first & 0xF0) == 0xE0) {
             code = ((first & 0x0F) << 12) | ((arg0[1] & 0x3F) << 6) | (arg0[2] & 0x3F);
         } else if ((first & 0xE0) == 0xC0) {
-            code = ((first & 0x1F) << 6) | (arg0[1] & 0x3F);
+            code = ((first & 0x1F) << 6) | (arg0[1] & ~0xC0);
         } else {
             code = first & 0x7F;
         }
@@ -778,7 +780,7 @@ void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, 
     } else if (arg4 & 2) {
         *arg2 -= farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1);
     } else if (arg4 & 4) {
-        *arg2 -= farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1) * lbl_80563688;
+        *arg2 -= lbl_80563688 * (farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1));
     }
     value = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
     if (arg4 & 8) {
@@ -786,7 +788,7 @@ void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, 
     } else if (arg4 & 0x20) {
         *arg3 -= value * ((f32)arg1[6] * farg0);
     } else if (arg4 & 0x10) {
-        *arg3 -= value * ((f32)arg1[4] * farg0) * lbl_80563688;
+        *arg3 -= lbl_80563688 * (value * ((f32)arg1[4] * farg0));
     }
 }
 #pragma scheduling on
@@ -861,14 +863,14 @@ void fn_8023423C(s32 arg0, s32 arg1) {
     u8 *table;
     u8 *metrics;
     f32 speed = *(f32 *)(record + 0x50);
-    register f32 scale = *(f32 *)(record + 0x54);
+    f32 scale = *(f32 *)(record + 0x54);
 
     if (arg1 & 1) {
         first = record[0];
         if ((first & 0xF0) == 0xE0) {
             codepoint = ((first & 0x0F) << 12) | ((record[1] & 0x3F) << 6) | (record[2] & 0x3F);
         } else if ((first & 0xE0) == 0xC0) {
-            codepoint = ((first & 0x1F) << 6) | (record[1] & 0x3F);
+            codepoint = ((first & 0x1F) << 6) | __rlwinm(record[1], 0, 26, 23);
         } else {
             codepoint = first & 0x7F;
         }
@@ -889,7 +891,10 @@ void fn_8023423C(s32 arg0, s32 arg1) {
     } else if (arg1 & 0x20) {
         *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= (f32)font[6] * speed;
     } else if (arg1 & 0x10) {
-        *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= (f32)font[4] * speed * lbl_80563688;
+        {
+            f32 delta = (f32)font[4] * speed;
+            *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= lbl_80563688 * delta;
+        }
     }
 }
 #pragma pop
