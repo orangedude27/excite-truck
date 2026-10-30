@@ -143,14 +143,14 @@ extern "C" s32 fn_8021165C(s32 arg0, s32 arg1) {
 
 extern s32 lbl_8055EF1C;
 extern s32 lbl_8055EF20;
+#pragma optimization_level 0
 extern "C" s32 fn_80211660(s32 arg0) {
-    if (arg0 == 0) {
-        return lbl_8055EF1C;
-    } else {
-        return lbl_8055EF20;
-    }
+    if (arg0 != 0) goto nonzero;
+    return lbl_8055EF1C;
+nonzero:
+    return lbl_8055EF20;
 }
-
+#pragma optimization_level reset
 extern "C" s32 fn_80211678(u8 *arg0) {
     return ((s8) *arg0 - 0x24) == 0;
 }
