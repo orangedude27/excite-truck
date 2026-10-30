@@ -172,6 +172,7 @@ s32 select_2obj_continue(void *arg0) {
 
 extern f32 lbl_8055D9A0[2];
 extern f32 lbl_8055D9A8[2];
+#pragma push
 s32 select_1obj_first(void *arg0) {
     u8 *obj = (u8 *)arg0;
     register u8 *entry = obj + 0xC8;
