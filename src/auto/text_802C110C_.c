@@ -69,38 +69,52 @@ void *fn_802C120C(void) {
 }
 #pragma scheduling on
 void fn_802C126C(void) {
+    register char *var_r30;
     int *var_r29;
-    char *var_r30;
-    int var_r28, var_r28_2, var_r5;
-    unsigned char *var_r4, *var_r6;
-    unsigned char temp_r3;
+    unsigned char *var_r4;
+    int var_r5;
+    unsigned char *var_r6;
+    int var_r28, var_r28_2;
+    char *call_base;
+    int check_value;
+
     lbl_8055FB2C = 0;
     lbl_8055FB28 = 0;
     lbl_8055CFA0 = fn_801FB1F4(0x1F40);
     lbl_8055FB38 = lbl_80564E50;
     lbl_8055FB30 = fn_8012850C(0x7D00, lbl_8034AEF8);
     fn_801D0590(&lbl_8055FB40);
-    if (&lbl_8055FB40 != 0)
-        fn_801D0800((char *)&lbl_8055FB40 + 4);
-    var_r29 = (int *)((char *)&lbl_804C0810);
+    call_base = (char *)&lbl_8055FB40;
+    check_value = (int)&lbl_8055FB40;
+    if (check_value != 0) {
+        fn_801D0800(call_base + 4);
+    } else {
+        goto address_done;
+    }
+address_done:
+
+    var_r29 = (int *)&lbl_804C0810;
     var_r28 = 0;
     do {
         memset(var_r29, 0, 0x60);
         var_r4 = (unsigned char *)lbl_8034AF04;
         var_r6 = (unsigned char *)((char *)var_r29 + 8);
         var_r5 = 0x20;
-        do {
-            temp_r3 = *var_r4++;
-            *var_r6++ = temp_r3;
-            if ((signed char)temp_r3 == 0)
-                break;
-        } while (--var_r5 > 0);
-        if (var_r5 == 0)
-            var_r6[-1] = 0;
+        goto copy_string;
+decrement_count:
+        if (--var_r5 > 0)
+            goto copy_string;
+        var_r6[-1] = 0;
+        goto copied_string;
+copy_string:
+        if ((signed char)(*var_r6++ = *var_r4++) != 0)
+            goto decrement_count;
+copied_string:
         var_r28++;
         var_r29 = (int *)((char *)var_r29 + 0x60);
     } while (var_r28 < 0x10);
-    var_r30 = (char *)((char *)&lbl_804C0E10);
+
+    var_r30 = (char *)&lbl_804C0E10;
     var_r28_2 = 0;
     do {
         memset(var_r30, 0, 0x48);
@@ -149,29 +163,35 @@ extern int fn_801345D8(char *, int, const char *, ...);
 extern char lbl_8034AF14[];
 
 extern int lbl_8055FB28;
+#pragma use_lmw_stmw off
 int fn_802C143C(void *arg0) {
     char buf[0x20];
-    int index = lbl_8055FB28;
-    int *entry = (int *)((char *)&lbl_804C0810 + index * 0x60);
-    int i;
+    int index;
+    int *entry;
+    u32 i;
 
+    index = lbl_8055FB28;
+    entry = (int *)((char *)&lbl_804C0810 + index * 0x60);
     entry[0] = -1;
-    *((char *)entry + 0x28) = 1;
+    *((u8 *)entry + 0x28) = 1;
     lbl_8055FB28 = index + 1;
     entry[0x30 / 4] = (int)arg0;
-    for (i = 0; i < 8; i++) {
-        if (arg0 != 0) {
+
+    i = 0;
+    do {
+        if (arg0 != NULL) {
             fn_801345D8(buf, 0x20, lbl_8034AF14, i + 1);
-            entry[0x40 / 4 + i] = ((int (**)(void *, char *, int))(*(int *)arg0))[4](arg0, buf, -1);
+            entry[0x40 / 4] =
+                ((int (**)(void *, char *, int))(*(void **)arg0))[8](arg0, buf, -1);
         } else {
-            entry[0x40 / 4 + i] = -1;
+            entry[0x40 / 4] = -1;
         }
-    }
+        i++;
+        entry++;
+    } while (i < 8);
     return index;
 }
-
-#pragma optimization_level 2
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw reset
 int fn_802C1500(int arg0, int arg1) {
     struct Entry {
         int first;
@@ -247,31 +267,112 @@ extern f32 lbl_80564E58;
 extern f32 lbl_80564E70;
 extern f32 lbl_80564E74;
 extern void fn_802BDFF4(int *);
+#pragma use_lmw_stmw off
+#pragma paired off
+#pragma paired_single off
 void fn_802C1928(void) {
-    int *entry = (int *)&lbl_804C0E10;
     int i;
-    f32 zero = lbl_80564E58;
-    f32 *z = (f32 *)((char *)&lbl_804C1050 + 4);
-    for (i = 0; i < 8; i++) {
-        z[i * 2] = zero;
-        entry = (int *)((char *)entry + 0x48);
-    }
-    for (i = 0; i < 8; i++)
-        fn_802C1180(entry - (int)(0x48 / 4));
+
     {
-        int *list = (int *)lbl_8055FB30;
-        int j;
-        f32 min = lbl_80564E70;
-        f32 delta = lbl_80564E74;
-        for (j = 0; j < lbl_8055FB2C; j++) {
-            int *obj = (int *)list[j];
+        f32 zero = lbl_80564E58;
+        f32 *values = (f32 *)((char *)&lbl_804C1050 + 4);
+        for (i = 0; i < 8; i++)
+            values[i * 2] = zero;
+    }
+
+    {
+        char *entry = (char *)&lbl_804C0E10;
+        i = 0;
+        do {
+            fn_802C1180(entry);
+            i++;
+            entry += 0x48;
+        } while (i < 8);
+    }
+
+    {
+        register f32 delta = lbl_80564E74;
+        register int count = 0;
+        register f32 min = lbl_80564E70;
+        register int offset = 0;
+
+        goto check;
+    loop:
+        {
+            int *obj = (int *)*(int *)((char *)(int *)lbl_8055FB30 + offset);
             if (*(f32 *)((char *)obj + 0x28) < min) {
                 *(f32 *)((char *)obj + 0x28) -= delta;
-                ((void (*)(int *, int))fn_802BDFF4)(obj, 1);
+                ((void (*)(int *, int))fn_802BDFF4)(
+                    (int *)*(int *)((char *)(int *)lbl_8055FB30 + offset), 1);
             }
         }
+        offset += 4;
+        count++;
+    check:
+        if (count < lbl_8055FB2C)
+            goto loop;
     }
 }
-
+#pragma paired_single reset
+#pragma paired reset
+#pragma use_lmw_stmw reset
 void fn_802C1A08(void) {}
+
+extern void *fn_8017960C(int);
+extern void fn_801796EC(int, void *, int);
+void fn_802C1A0C(void **arg0, int arg1) {
+    int i;
+    char *entry = lbl_804C0E10;
+    int current;
+    int index;
+    int *record;
+    f32 *object;
+    f32 vec[3];
+    int id;
+
+    for (i = 0; i < 8; i++, entry += 0x48) {
+        current = ((int (*)(void *))(*(void ***)arg0)[9])(arg0) - lbl_8055CFA0;
+        if (*(int *)(entry + 4) != 0 && *(int *)entry == current)
+            fn_802C1180(entry);
+    }
+
+    index = ((int (*)(void *))(*(void ***)arg0)[9])(arg0) - lbl_8055CFA0;
+    if (index < 0 || index >= lbl_8055FB2C)
+        return;
+
+    record = (int *)fn_802C110C(index);
+    if (*(f32 *)((char *)((int *)lbl_8055FB30)[index] + 0x28) <= lbl_80564E70)
+        return;
+
+    object = fn_8017960C(arg1);
+    vec[0] = *(f32 *)((char *)object + 0x118);
+    vec[1] = *(f32 *)((char *)object + 0x11C);
+    vec[2] = *(f32 *)((char *)object + 0x120);
+    id = *(s16 *)((char *)object + 0x6C);
+
+    for (i = 0; i < 8; i++, record++) {
+        if (record[0x40 / 4] >= 0) {
+            f32 position[3];
+            int thingId;
+
+            position[0] = *(f32 *)((char *)((int *)lbl_8055FB30)[index] + 0x24);
+            position[1] = *(f32 *)((char *)((int *)lbl_8055FB30)[index] + 0x28);
+            position[2] = *(f32 *)((char *)((int *)lbl_8055FB30)[index] + 0x2C);
+            position[1] = position[1] + *(f32 *)&lbl_80564E54;
+            thingId = record[0x40 / 4];
+            fn_801796EC(10, position, 0x20);
+        }
+    }
+
+    {
+        void *target = ((void **)lbl_8055FB30)[index];
+        *(f32 *)((char *)target + 0x28) =
+            *(f32 *)((char *)target + 0x28) + lbl_80564E74;
+    }
+    ((void (*)(void *))(*(void ***)arg0)[6])(arg0);
+    fn_802BDFF4((int *)((void **)lbl_8055FB30)[index]);
+}
+
 typedef struct { int a, b; } Pair802C;
+#pragma dont_inline fn_802C110C
+#pragma scheduling invalid_target
