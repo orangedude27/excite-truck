@@ -82,32 +82,26 @@ extern "C" void fn_802BEDFC(void) {
         virtual void unused7();
         virtual float setScale(const char *, float);
     };
-    char *strings = lbl_8034ACA0;
     Resource *resource;
+    char *strings = lbl_8034ACA0;
     Resource *style;
-    const char *value;
+    lbl_8055FAE8 = 0xE0FFFFFF;
     lbl_8055FAE4 = 0xE0005030;
     lbl_8055FAEC = 0x202040;
     lbl_8055FAE0 = lbl_80564D84;
-    lbl_8055FAE8 = 0xE0FFFFFF;
     lbl_8055FAF0 = 0xE0001040;
     resource = (Resource *)fn_80131808(strings + 0x2C, 0xE0FFFFFF, 0xE0000000);
     if (resource != 0) {
-        if (resource->hasStyle(strings + 0x38) != 0) {
+        if (resource->hasStyle(strings + 0x38) != 0)
             style = (Resource *)resource->getStyle(strings + 0x38);
-        } else {
+        else
             style = 0;
-        }
         if (style != 0) {
             lbl_8055FAE0 = style->setScale(strings + 0x44, lbl_8055FAE0);
-            value = style->setProperty(strings + 0x54, lbl_8055CF80);
-            lbl_8055FAE4 = fn_802BECE4(value, lbl_8055FAE4);
-            value = style->setProperty(strings + 0x68, lbl_8055CF80);
-            lbl_8055FAE8 = fn_802BECE4(value, lbl_8055FAE8);
-            value = style->setProperty(strings + 0x78, lbl_8055CF80);
-            lbl_8055FAEC = fn_802BECE4(value, lbl_8055FAEC);
-            value = style->setProperty(strings + 0x90, lbl_8055CF80);
-            lbl_8055FAF0 = fn_802BECE4(value, lbl_8055FAF0);
+            lbl_8055FAE4 = fn_802BECE4(style->setProperty(strings + 0x54, (const char *)&lbl_8055CF80), lbl_8055FAE4);
+            lbl_8055FAE8 = fn_802BECE4(style->setProperty(strings + 0x68, lbl_8055CF80), lbl_8055FAE8);
+            lbl_8055FAEC = fn_802BECE4(style->setProperty(strings + 0x78, lbl_8055CF80), lbl_8055FAEC);
+            lbl_8055FAF0 = fn_802BECE4(style->setProperty(strings + 0x90, lbl_8055CF80), lbl_8055FAF0);
             fn_802E30C8(strings + 0xA4, lbl_8055FAE4, lbl_8055FAE8, lbl_8055FAEC, lbl_8055FAF0);
         }
         fn_80131818(resource);
