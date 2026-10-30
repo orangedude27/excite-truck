@@ -60,6 +60,97 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_,
     return this_;
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_801AFDCC(void *arg0, void *arg1) {
+    // Fix note: keep each stack float as a separate local before copying the vector into the effect.
+    struct Object {
+        void *vtable; void *owner; s32 field8; void *fieldC;
+        f32 field10; f32 field14; s32 field18; s32 field1C; s32 field20;
+        f32 field24; f32 field28; f32 field2C; f32 field30;
+        f32 field34; f32 field38; f32 field3C; f32 field40;
+        f32 field44; f32 field48; u8 field4C; u8 pad4D[3]; f32 field50;
+    };
+    volatile f32 stack8;
+    volatile f32 stackC;
+    volatile f32 stack10;
+    volatile f32 stack14;
+    volatile f32 stack18;
+    volatile f32 stack1C;
+    f32 temp_f29;
+    f32 temp_f30;
+    f32 temp_f31;
+    f32 temp_f2;
+    f32 temp_f4;
+    f32 temp_f5;
+    f32 square;
+    f32 zero;
+    struct Object *allocated;
+    s32 index;
+
+    fn_8017B0F8();
+    temp_f4 = *(f32 *)((u8 *)arg1 + 0x20);
+    temp_f2 = *(f32 *)((u8 *)arg1 + 0x18);
+    temp_f5 = (lbl_80562580 * *(f32 *)((u8 *)arg1 + 0x1C)) / lbl_8056257C;
+    temp_f29 = *(f32 *)((u8 *)arg1 + 0x24);
+    square = temp_f4 * temp_f4;
+    temp_f31 = lbl_8056257C * temp_f2;
+    temp_f30 = temp_f5 * square;
+
+    zero = lbl_80562578;
+    stack14 = zero;
+    stack18 = zero;
+    stack1C = zero;
+    stack8 = zero;
+    stackC = lbl_80562584;
+    stack10 = zero;
+
+    *(f32 *)((u8 *)arg0 + 0x60) = zero;
+    *(f32 *)((u8 *)arg0 + 0x64) = lbl_80562584;
+    *(f32 *)((u8 *)arg0 + 0x68) = zero;
+    ((void (*)(void *, f32, f32, f32, f32, f32))fn_8017A580)(
+        arg0, zero, temp_f2, lbl_8056257C, square, temp_f5);
+
+    allocated = (struct Object *)fn_801284F8(0x54, lbl_803359F0);
+    if (allocated != NULL) {
+        zero = lbl_80562578;
+        allocated->fieldC = (u8 *)arg0 + 0x3C;
+        allocated->owner = arg0;
+        allocated->field8 = 0;
+        allocated->field18 = 0x53504852;
+        allocated->field10 = temp_f30;
+        allocated->field14 = temp_f29;
+        allocated->field20 = 0x64;
+        allocated->field1C = 0;
+        allocated->vtable = lbl_80333B48;
+        allocated->field24 = temp_f31;
+        allocated->field34 = zero;
+        allocated->field38 = zero;
+        allocated->field3C = zero;
+        allocated->field40 = zero;
+        allocated->field44 = zero;
+        allocated->field48 = zero;
+        allocated->field4C = 0;
+        allocated->field50 = zero;
+        allocated->field28 = stack14;
+        allocated->field2C = stack18;
+        allocated->field30 = stack1C;
+
+        if (arg0 != NULL) {
+            fn_8019EECC(arg0, &allocated->field28);
+            fn_80179F94(arg0, allocated);
+            zero = lbl_80562578;
+            *(u8 *)((u8 *)arg0 + 0x1E8) = 1;
+            *(f32 *)((u8 *)arg0 + 0x1EC) = zero;
+            index = *(s32 *)(void *)&lbl_8055E650;
+            ((void **)lbl_80435BA8)[index] = arg0;
+            *(s32 *)(void *)&lbl_8055E650 = index + 1;
+        }
+    }
+}
+#pragma pop
+
 void fn_801B0174(void *this_) {
     u8 var0;
     f32 temp;
