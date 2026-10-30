@@ -132,6 +132,80 @@ extern "C" void fn_80292628(void) {
         obj->m1();
     }
 }
+
+extern "C" float fn_801E7E18(void);
+extern "C" float PSVECMag(float *);
+extern "C" double sin(float);
+extern "C" double cos(float);
+extern float lbl_805644E4;
+extern "C" void fn_80292698(void) {
+    class Dummy_80292698 {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+    };
+    register int i;
+    register unsigned char *p;
+    register float one;
+    register float threshold;
+    register float angle;
+    register float zero;
+
+    angle = fn_801E7E18();
+    one = lbl_805644D4;
+    p = lbl_804B4030;
+    threshold = lbl_805644E4;
+    zero = lbl_805644D8;
+    i = 0;
+    for (; i < 6; ++i, p += 0x34) {
+        float axis[3];
+        float magnitude;
+        float x, y, z, s, c, t;
+        float scale = angle * *(float *)(p + 0xC);
+        axis[0] = *(float *)(p + 0x0) * scale;
+        axis[1] = *(float *)(p + 0x4) * scale;
+        axis[2] = *(float *)(p + 0x8) * scale;
+        magnitude = PSVECMag(axis);
+        if (magnitude > threshold) {
+            float inverse = one / magnitude;
+            x = inverse * axis[0];
+            y = inverse * axis[1];
+            z = inverse * axis[2];
+            s = (float)sin(magnitude);
+            c = (float)cos(magnitude);
+            t = one - c;
+            *(float *)(p + 0x10) = c + t * (x * x);
+            *(float *)(p + 0x14) = (y * (t * x)) + (s * z);
+            *(float *)(p + 0x18) = (z * (t * x)) - (s * y);
+            *(float *)(p + 0x1C) = (y * (t * x)) - (s * z);
+            *(float *)(p + 0x20) = c + t * (y * y);
+            *(float *)(p + 0x24) = (z * (t * y)) + (s * x);
+            *(float *)(p + 0x28) = (z * (t * x)) + (s * y);
+            *(float *)(p + 0x2C) = (z * (t * y)) - (s * x);
+            *(float *)(p + 0x30) = c + t * (z * z);
+        } else {
+            *(float *)(p + 0x10) = one;
+            *(float *)(p + 0x14) = zero;
+            *(float *)(p + 0x18) = zero;
+            *(float *)(p + 0x1C) = zero;
+            *(float *)(p + 0x20) = one;
+            *(float *)(p + 0x24) = zero;
+            *(float *)(p + 0x28) = zero;
+            *(float *)(p + 0x2C) = zero;
+            *(float *)(p + 0x30) = one;
+        }
+    }
+    {
+        register unsigned char *entry = lbl_804B4168;
+        register int j = 0;
+        for (; j < *(s32 *)(lbl_804B4168 + 0x180); entry += 0x18, ++j) {
+            Dummy_80292698 *obj = *(Dummy_80292698 **)(entry + 0x10);
+            obj->v2();
+        }
+    }
+}
+
 extern "C" void fn_80292864(void) {
     class Dummy_80292864 {
     public:
@@ -592,7 +666,32 @@ void fn_80293230(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
     *(int *)(object + 0x2FAC) = count + 1;
 }
 
-#pragma use_lmw_stmw reset
+#pragma push
+#pragma scheduling invalid_target
+int fn_80293374(void *arg0, void *arg1) {
+    char name[0x20];
+    int count;
+
+    *(s32 *)((u8 *)arg0 + 0x28) = 0;
+    goto check;
+loop:
+    ((void (*)(void *, int, const char *, ...))fn_801345D8)(
+        name, 0x20, lbl_80349250, (int)arg1,
+        *(s32 *)((u8 *)arg0 + 0x28) + 1);
+    if (fn_8012C33C(name) == 0) goto padding;
+    *(s32 *)((u8 *)arg0 + *(s32 *)((u8 *)arg0 + 0x28) * 4 + 8) =
+        fn_802C6FC0(name, 0, 0);
+    count = *(s32 *)((u8 *)arg0 + 0x28);
+    count++;
+    *(s32 *)((u8 *)arg0 + 0x28) = count;
+check:
+    if (*(s32 *)((u8 *)arg0 + 0x28) < 8) goto loop;
+padding:
+    count = *(s32 *)((u8 *)arg0 + 0x28);
+    for (; count < 8; count++)
+        *(s32 *)((u8 *)arg0 + count * 4 + 8) = -1;
+}
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
