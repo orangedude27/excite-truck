@@ -21,6 +21,9 @@ extern char lbl_80338400[16];
 extern float lbl_80562AAC;
 extern float lbl_80562AB8;
 extern float lbl_80562ABC;
+extern void fn_8017A57C(void *);
+extern void fn_8017A580(void *);
+extern void fn_8017B164(void *);
 
 void fn_801D32C8(void) {
 
