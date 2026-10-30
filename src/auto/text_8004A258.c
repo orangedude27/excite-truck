@@ -107,6 +107,7 @@ extern unsigned int OSGetArenaLo(void);
 extern void DCZeroRange(const void *, unsigned int);
 extern void DCFlushRange(unsigned int, unsigned int);
 extern unsigned int __OSRebootParams[];
+static inline unsigned int AddBaseOffset(unsigned int base, unsigned int offset);
 
 static inline void ClearMEM2Range(unsigned int base, unsigned int size) {
     unsigned int flush = base;
