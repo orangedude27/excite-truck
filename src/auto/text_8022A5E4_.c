@@ -76,21 +76,82 @@ void fn_8022A5E4(void) {
     extern unsigned char lbl_80497D68[];
     extern void *memset(void *, int, unsigned int);
     extern void fn_8022C520(void);
+    struct Record {
+        unsigned char b0;
+        unsigned int w4, w8, wC, w10, w14, w18, w1C, w20, w24, w28, w2C, w30;
+        float f34;
+        unsigned int w38, w3C, w40, w44, w48, w4C, w50, w54, w58;
+        float f5C, f60;
+        unsigned int w64, w68, w6C, w70;
+    };
+    struct Record *src;
+    struct Record *out;
     unsigned int i;
-    unsigned char *src = lbl_80497D68;
-    unsigned char *dst = (unsigned char *)lbl_80490968;
-    /* Fix note: initialize the default record, then repeat its fields in the slot table. */
-    memset(src, 0, 0x74);
-    *(unsigned int *)(src + 0x38) = 9;
-    for (i = 0; i < 0x80; i++) {
-        unsigned char *out = dst + i * 0xE8;
-        unsigned int j;
-        for (j = 0; j < 0x74; j++) {
-            out[j] = src[j];
-            out[j + 0x74] = src[j];
-        }
-        *(unsigned int *)(out + 0x38) = 9;
-        *(unsigned int *)(out + 0xAC) = 9;
+
+    memset(lbl_80497D68, 0, 0x74);
+    src = (struct Record *)lbl_80497D68;
+    src->w38 = 9;
+    out = (struct Record *)lbl_80490968;
+    for (i = 0; i < 0x80; ++i) {
+        out[0].b0 = src->b0;
+        out[1].b0 = src->b0;
+        out[0].w4 = src->w4;
+        out[1].w4 = src->w4;
+        out[0].w8 = src->w8;
+        out[1].w8 = src->w8;
+        out[0].wC = src->wC;
+        out[1].wC = src->wC;
+        out[0].w10 = src->w10;
+        out[1].w10 = src->w10;
+        out[0].w14 = src->w14;
+        out[1].w14 = src->w14;
+        out[0].w18 = src->w18;
+        out[1].w18 = src->w18;
+        out[0].w1C = src->w1C;
+        out[1].w1C = src->w1C;
+        out[0].w20 = src->w20;
+        out[1].w20 = src->w20;
+        out[0].w24 = src->w24;
+        out[1].w24 = src->w24;
+        out[0].w28 = src->w28;
+        out[1].w28 = src->w28;
+        out[0].w2C = src->w2C;
+        out[1].w2C = src->w2C;
+        out[0].w30 = src->w30;
+        out[1].w30 = src->w30;
+        out[0].f34 = src->f34;
+        out[1].f34 = src->f34;
+        out[0].w3C = src->w3C;
+        out[1].w3C = src->w3C;
+        out[0].w40 = src->w40;
+        out[1].w40 = src->w40;
+        out[0].w44 = src->w44;
+        out[1].w44 = src->w44;
+        out[0].w48 = src->w48;
+        out[1].w48 = src->w48;
+        out[0].w4C = src->w4C;
+        out[1].w4C = src->w4C;
+        out[0].w50 = src->w50;
+        out[1].w50 = src->w50;
+        out[0].w54 = src->w54;
+        out[1].w54 = src->w54;
+        out[0].w58 = src->w58;
+        out[1].w58 = src->w58;
+        out[0].f5C = src->f5C;
+        out[1].f5C = src->f5C;
+        out[0].f60 = src->f60;
+        out[1].f60 = src->f60;
+        out[0].w64 = src->w64;
+        out[1].w64 = src->w64;
+        out[0].w68 = src->w68;
+        out[1].w68 = src->w68;
+        out[0].w6C = src->w6C;
+        out[1].w6C = src->w6C;
+        out[0].w70 = src->w70;
+        out[1].w70 = src->w70;
+        out[0].w38 = 9;
+        out[1].w38 = 9;
+        out += 2;
     }
     fn_8022C520();
 }
@@ -638,14 +699,16 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     extern int fn_802C49E8(const char *);
     extern char *strstr(const char *, const char *);
     extern char lbl_8033FC40[];
-    unsigned char *dest;
     unsigned char *src;
+    unsigned char *dest;
     char *name;
-    int resource;
-    float f0, f1;
+    char *resource;
+    int converted;
+    int value48, value54, value40, value3C, value24, value20, value38, value1C, value8;
+    float value4, value50, value4C;
 
-    dest = (unsigned char *)arg0;
     src = (unsigned char *)arg1;
+    dest = (unsigned char *)arg0;
     dest[0] = 1;
     *(int *)(dest + 4) = 0;
     *(int *)(dest + 8) = 0;
@@ -657,9 +720,10 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     if (strstr(name, lbl_8055B920) != 0) {
         *(int *)(dest + 8) = fn_80232578(name);
     }
-    f0 = *(float *)(src + 4);
-    *(float *)(dest + 0x34) = f0;
-    *(int *)(dest + 0x0C) = fn_8022A834(*(int *)(src + 0x0C));
+    value4 = *(float *)(src + 4);
+    converted = *(int *)(src + 0x0C);
+    *(float *)(dest + 0x34) = value4;
+    *(int *)(dest + 0x0C) = fn_8022A834(converted);
     *(int *)(dest + 0x10) = fn_8022A834(*(int *)(src + 0x28));
     *(int *)(dest + 0x14) = fn_8022A834(*(int *)(src + 0x10));
     *(int *)(dest + 0x18) = fn_8022A834(*(int *)(src + 0x2C));
@@ -668,34 +732,44 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     *(int *)(dest + 0x24) = fn_8022A834(*(int *)(src + 0x30));
     *(int *)(dest + 0x28) = fn_8022A834(*(int *)(src + 0x18));
     *(int *)(dest + 0x2C) = fn_8022A834(*(int *)(src + 0x34));
-    *(int *)(dest + 0x30) = fn_8022A834(*(int *)(src + 0x14));
+    converted = fn_8022A834(*(int *)(src + 0x14));
 
-    resource = *(int *)(src + 0x44);
-    *(int *)(dest + 0x38) = *(int *)(src + 8);
-    *(int *)(dest + 0x3C) = *(int *)(src + 0x1C);
-    *(int *)(dest + 0x40) = *(int *)(src + 0x38);
-    *(int *)(dest + 0x44) = *(int *)(src + 0x20);
-    *(int *)(dest + 0x48) = *(int *)(src + 0x24);
-    *(int *)(dest + 0x4C) = *(int *)(src + 0x3C);
-    *(int *)(dest + 0x50) = *(int *)(src + 0x40);
-    *(int *)(dest + 0x54) = *(int *)(src + 0x54);
-    *(int *)(dest + 0x58) = *(int *)(src + 0x48);
-    f1 = *(float *)(src + 0x4C);
-    *(float *)(dest + 0x5C) = f1;
-    f0 = *(float *)(src + 0x50);
-    *(float *)(dest + 0x60) = f0;
+    resource = *(char **)(src + 0x44);
+    value8 = *(int *)(src + 8);
+    value1C = *(int *)(src + 0x1C);
+    value38 = *(int *)(src + 0x38);
+    value20 = *(int *)(src + 0x20);
+    value24 = *(int *)(src + 0x24);
+    value3C = *(int *)(src + 0x3C);
+    value40 = *(int *)(src + 0x40);
+    value54 = *(int *)(src + 0x54);
+    value48 = *(int *)(src + 0x48);
+    value4C = *(float *)(src + 0x4C);
+    value50 = *(float *)(src + 0x50);
+    *(int *)(dest + 0x30) = converted;
+    *(int *)(dest + 0x38) = value8;
+    *(int *)(dest + 0x3C) = value1C;
+    *(int *)(dest + 0x40) = value38;
+    *(int *)(dest + 0x44) = value20;
+    *(int *)(dest + 0x48) = value24;
+    *(int *)(dest + 0x4C) = value3C;
+    *(int *)(dest + 0x50) = value40;
+    *(int *)(dest + 0x54) = value54;
+    *(int *)(dest + 0x58) = value48;
+    *(float *)(dest + 0x5C) = value4C;
+    *(float *)(dest + 0x60) = value50;
     *(int *)(dest + 0x64) = 0;
     *(int *)(dest + 0x68) = 0;
     *(int *)(dest + 0x6C) = 0;
     *(int *)(dest + 0x70) = 0;
 
     if (resource != 0) {
-        if (fn_8022A7D4((const char *)resource) != 0) {
-            *(int *)(dest + 0x68) = fn_802C5130((const char *)resource);
-        } else if (fn_8022A804((const char *)resource) != 0) {
-            *(int *)(dest + 0x6C) = fn_8023512C((const char *)resource);
+        if (fn_8022A7D4(resource) != 0) {
+            *(int *)(dest + 0x68) = fn_802C5130(resource);
+        } else if (fn_8022A804(resource) != 0) {
+            *(int *)(dest + 0x6C) = fn_8023512C(resource);
         } else {
-            *(int *)(dest + 0x64) = fn_802C49E8((const char *)resource);
+            *(int *)(dest + 0x64) = fn_802C49E8(resource);
         }
     }
     *(int *)(dest + 0x58) = -1;
