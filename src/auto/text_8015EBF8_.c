@@ -196,7 +196,7 @@ extern "C" void fn_8015EE14(void **collection, void *arg1) {
 #pragma pop
 
 extern int fn_8015ED54(void **);
-extern void fn_802E30C8(const char *, int, const char *);
+extern void fn_802E30C8(const char *, int, const char *, ...);
 extern char lbl_8032F488[];
 extern char lbl_8055A080[], lbl_8055A090[], lbl_8055A08C[], lbl_8055A094[];
 #pragma push
@@ -224,53 +224,57 @@ extern "C" void fn_8015EF84(void **arg0) {
     if (arg0 == 0)
         goto report;
     index = 0;
-    obj = ((Root *)arg0)->getAt(index);
-    while (obj != 0) {
-        if (fn_8015ED54((void **)obj)) {
-            union { u64 bits; f32 f[2]; } packed;
-            f32 radius;
-            f32 radius2;
-            int i;
-            int offset;
-            found++;
-            packed.bits = ((Object *)obj)->getPacked(lbl_8055A080);
-            radius = ((Object *)obj)->getRadius(lbl_8055A090);
-            radius2 = radius * radius;
-            i = 0;
-            offset = 0;
-        inner:
-            {
-                int **table = (int **)lbl_8055E29C;
-                if (i < table[1][0]) {
-                    char *array = (char *)table[0];
-                    char *entry = array + offset;
-                    f32 dy = packed.f[1] - *(f32 *)(entry + 8);
-                    f32 dx = packed.f[0] - *(f32 *)(entry + 4);
-                    if (dx * dx + dy * dy < radius2) {
-                        if (i >= 0 && i < table[1][0]) {
-                            int count = table[1][0];
-                            int last = count - 1;
-                            if (i != last) {
-                                char *from = array + last * 16;
-                                *(u16 *)(entry + 0) = *(u16 *)(from + 0);
-                                *(u16 *)(entry + 2) = *(u16 *)(from + 2);
-                                *(int *)(entry + 4) = *(int *)(from + 4);
-                                *(int *)(entry + 8) = *(int *)(from + 8);
-                                *(f32 *)(entry + 12) = *(f32 *)(from + 12);
-                            }
-                            table[1][0] = count - 1;
-                        }
-                        goto inner;
+    goto fetch;
+process:
+    if (fn_8015ED54((void **)obj)) {
+        union { u64 bits; double d; } raw;
+        union { double d; f32 f[2]; } coords;
+        f32 radius;
+        f32 radius2;
+        int i;
+        int offset;
+        found++;
+        raw.bits = ((Object *)obj)->getPacked(lbl_8055A080);
+        coords.d = raw.d;
+        radius = ((Object *)obj)->getRadius(lbl_8055A090);
+        radius2 = radius * radius;
+        i = 0;
+        offset = 0;
+    inner:
+        {
+            volatile int *table = (volatile int *)lbl_8055E29C;
+            char *array = (char *)table[0];
+            char *entry = array + offset;
+            f32 dy = coords.f[1] - *(f32 *)(entry + 8);
+            f32 dx = coords.f[0] - *(f32 *)(entry + 4);
+            if (dx * dx + dy * dy < radius2) {
+                if (i >= 0 && i < table[1]) {
+                    int count = table[1];
+                    int last = count - 1;
+                    if (i != last) {
+                        char *from = array + last * 16;
+                        *(u16 *)(entry + 0) = *(u16 *)(from + 0);
+                        *(s16 *)(entry + 2) = *(s16 *)(from + 2);
+                        *(int *)(entry + 4) = *(int *)(from + 4);
+                        *(int *)(entry + 8) = *(int *)(from + 8);
+                        *(f32 *)(entry + 12) = *(f32 *)(from + 12);
                     }
-                    offset += 16;
-                    i++;
-                    goto inner;
+                    table[1] = count - 1;
                 }
+                goto inner;
             }
+            offset += 16;
+            i++;
+            table = (volatile int *)lbl_8055E29C;
+            if (i < table[1])
+                goto inner;
         }
-        index++;
-        obj = ((Root *)arg0)->getAt(index);
     }
+    index++;
+fetch:
+    obj = ((Root *)arg0)->getAt(index);
+    if (obj != 0)
+        goto process;
 report:
     if (found > 0) {
         fn_802E30C8(lbl_8032F488, found, found == 1 ? lbl_8055A08C : lbl_8055A094);
