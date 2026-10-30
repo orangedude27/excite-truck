@@ -615,7 +615,7 @@ void fn_801C0E60(float *arg0, float *arg1, float *arg2) {
 
 #pragma push
 #pragma scheduling on
-#pragma opt_propagation off
+#pragma opt_propagation on
 void fn_801C0E94(void *arg0, void *arg1) {
     extern float lbl_805628BC, lbl_8055E460;
     extern char lbl_80558DC4[];
