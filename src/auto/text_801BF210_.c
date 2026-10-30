@@ -678,4 +678,4 @@ void fn_801C0E94(void *arg0, void *arg1) {
     *(unsigned int *)((char *)arg1 + *(unsigned int *)((char *)arg0 + 8) + 0x38) = *(unsigned int *)((char *)arg0 + 0x1F4);
     *(unsigned int *)((char *)arg1 + *(unsigned int *)((char *)arg0 + 8) + 0x3C) = *(unsigned int *)((char *)arg0 + 0x1F8);
 }
-
+#pragma pop
