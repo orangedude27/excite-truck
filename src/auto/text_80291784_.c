@@ -278,7 +278,6 @@ void fn_80291C7C(void *arg0, int arg1) {
     }
     fn_802D3BB4(*(int *)((char *)&lbl_804B4010 + 0x10), pos, a, b, color, p[7]);
 }
-#pragma scheduling on
 
 #pragma dont_inline off
 void fn_802920D0(void) {
