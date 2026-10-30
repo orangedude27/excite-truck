@@ -963,6 +963,7 @@ void fn_80294710(void* arg0) {
 #pragma pop
 extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D8;
 extern unsigned char lbl_804B4030[];
+#pragma scheduling invalid_target
 void fn_80294780(void *arg0) {
     unsigned char *base = (unsigned char *)arg0, *cur = base + 0x2c, *out = cur, *src;
     int i = 0;
