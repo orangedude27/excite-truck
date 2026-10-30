@@ -196,7 +196,7 @@ s32 fn_801353C4(void) {
     return fn_801357A4();
 }
 
-s32 fn_801355B8(void *arg0, void *arg1) {
+s32 fn_801355B8(void *arg0, void *arg1, void *arg2, void *arg3) {
     return 0;
 }
 
