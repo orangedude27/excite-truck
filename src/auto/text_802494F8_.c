@@ -198,6 +198,98 @@ void fn_8024A2BC(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
+extern char lbl_80343E7C[];
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_8024A304(void *arg0, void **arg1, int arg2, int arg3) {
+    extern unsigned char lbl_8055F290;
+    int zero = 0;
+    register void *object;
+    register void **list;
+    register int index;
+    (void)arg3;
+    *(int *)((char *)arg0 + 0x1C) = arg2;
+    object = arg0;
+    *(int *)((char *)object + 0x10) = zero;
+    list = arg1;
+    index = zero;
+    *(int *)((char *)object + 0x14) = zero;
+    {
+        register void *record;
+        register int offset;
+        register int archiveIndex;
+        register int archiveCount;
+        offset = zero;
+        goto outer_check;
+outer_body:
+        if (stricmp((char *)fn_800081BC(
+                        *(void **)((char *)*(void **)*list + offset)),
+                    *(char **)((char *)object + 0x1C)) == 0) {
+            void *header = *list;
+            int itemCount = *(int *)((char *)object + 0x14);
+            char *array = *(char **)header;
+            char *entry = array + offset;
+            record = *(void **)(entry + 4);
+            {
+                char *item = (char *)object + itemCount * 0xC;
+                *(int *)(item + 0x20) = *(int *)((char *)record + 4);
+            }
+            archiveCount = *(int *)((char *)fn_80012820(
+                             *(int *)((char *)record + 4)) + 0x70);
+            for (archiveIndex = 0; archiveIndex < archiveCount;
+                 archiveIndex++) {
+                if (record != (void *)fn_80012870(
+                        *(int *)((char *)record + 4), archiveIndex))
+                    continue;
+                break;
+            }
+            if (archiveIndex >= archiveCount)
+                archiveIndex = -1;
+            *(int *)((char *)object +
+                     *(int *)((char *)object + 0x14) * 0xC + 0x24) =
+                archiveIndex;
+            {
+                int tableIndex = 0;
+                int tableOffset = 0;
+                void *table = lbl_8055F28C;
+                int tableCount = *(int *)((char *)table + 4);
+                for (; tableIndex < tableCount;
+                     tableIndex++, tableOffset += 0x18) {
+                    if (*(int *)(*(char **)table + tableOffset) !=
+                        *(int *)record)
+                        continue;
+                    goto table_found;
+                }
+                tableIndex = -1;
+table_found:
+                if (lbl_8055F290 != 0 && tableIndex >= 0) {
+                    *(int *)((char *)object +
+                             *(int *)((char *)object + 0x14) * 0xC + 0x28) =
+                        *(int *)(*(char **)table + tableIndex * 0x18 + 4);
+                } else {
+                    int key = fn_80012910(*(int *)record);
+                    void *dispatchObject =
+                        *(void **)((char *)record + 0x20);
+                    int (*method)(void *, char *, int) =
+                        (int (*)(void *, char *, int))
+                        (*(void ***)dispatchObject)[6];
+                    *(int *)((char *)object +
+                             *(int *)((char *)object + 0x14) * 0xC + 0x28) =
+                        method(dispatchObject, lbl_80343E7C, key);
+                }
+            }
+            *(int *)((char *)object + 0x14) =
+                *(int *)((char *)object + 0x14) + 1;
+        }
+        offset += 8;
+        index += 1;
+outer_check:
+        if (index < *(int *)((char *)*list + 4))
+            goto outer_body;
+    }
+}
+#pragma scheduling reset
+#pragma use_lmw_stmw on
 int stricmp(const char*, const char*);
 void fn_8024A4B8(const char** arg0, const char** arg1) {
     stricmp(*arg0, *arg1);
@@ -435,7 +527,7 @@ found:
     return lbl_8055F298;
 }
 
-extern void *fn_8001285C(void);
+extern void *fn_8001285C(s32);
 extern int strlen(const char *);
 extern int strncmp(const char *, const char *, unsigned int);
 extern s32 lbl_8055BFC0;
@@ -477,6 +569,91 @@ int fn_8024B214(char *arg0, char *arg1) {
     return stricmp(*(char **)arg0, *(char **)arg1);
 }
 
+extern void *fn_80131234(void *);
+extern char lbl_80343B54[];
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+void fn_8024B260(arg0)
+void *arg0;
+{
+    s32 selected;
+    char *search;
+    s32 i;
+    s32 offset;
+    s32 one;
+    s32 zero;
+    void *list;
+    u8 *entry;
+    u8 *record;
+    u8 **strings;
+
+    selected = fn_80214D04();
+    *(s32 *)((u8 *)arg0 + 0x280) = selected;
+    strings = *(u8 ***)((u8 *)arg0 + 0x18);
+    search = (char *)strings[selected * 2];
+    memset((u8 *)arg0 + 0x78, 0, 0x208);
+
+    one = 1;
+    *(s32 *)((u8 *)arg0 + 0xDC) = one;
+    i = 0;
+    offset = 0;
+    *(s32 *)((u8 *)arg0 + 0x144) = one;
+    zero = 0;
+    *(s32 *)((u8 *)arg0 + 0x1AC) = one;
+    *(s32 *)((u8 *)arg0 + 0x214) = one;
+    *(s32 *)((u8 *)arg0 + 0x27C) = one;
+
+    goto check_loop;
+loop_body:
+    entry = *(u8 **)list + offset;
+    if (stricmp(search, *(char **)(entry + 0xC)) == 0) {
+        record = (u8 *)arg0 + *(s32 *)(entry + 8) * 0x68 + 0x78;
+        {
+            char *src = *(char **)(entry + 4);
+            char *dst = (char *)record;
+            s32 remaining = 0x32;
+            while ((s8)(*dst++ = *src++) != 0) {
+                if (--remaining <= 0) {
+                    dst[-1] = zero;
+                    break;
+                }
+            }
+        }
+        if (entry[0x14] != 0) {
+            char *src = *(char **)(entry + 0x10);
+            char *dst = (char *)(record + 0x32);
+            s32 remaining = 0x32;
+            while ((s8)(*dst++ = *src++) != 0) {
+                if (--remaining <= 0) {
+                    dst[-1] = zero;
+                    break;
+                }
+            }
+            *(s32 *)(record + 0x64) = one;
+        } else {
+            char *src = (char *)fn_80131234(lbl_80343B54);
+            char *dst = (char *)(record + 0x32);
+            s32 remaining = 0x32;
+            while ((s8)(*dst++ = *src++) != 0) {
+                if (--remaining <= 0) {
+                    dst[-1] = zero;
+                    break;
+                }
+            }
+            *(s32 *)(record + 0x64) = zero;
+        }
+    }
+    offset += 0x18;
+    i += 1;
+check_loop:
+    list = *(void **)((u8 *)arg0 + 0x74);
+    if (i < *(s32 *)((u8 *)list + 4)) {
+        goto loop_body;
+    }
+}
+#pragma pop
 extern void fn_80265DCC(void *, int, int, void *);
 extern char lbl_80343BD0[];
 extern int stricmp(const char *, const char *);
