@@ -161,6 +161,62 @@ void fn_8028D25C(void) {
     }
 }
 
+extern void *fn_8012850C(int, void *);
+extern int fn_80287B14(void);
+extern void *fn_8002F37C(void *, void (*)(void), int, int, int);
+extern void fn_8028D49C(void);
+#pragma push
+#pragma scheduling invalid_target
+void fn_8028D2B4(void) {
+    typedef struct {
+        int value0;
+        int value1;
+        int value2;
+        int value3;
+        int size;
+        int value5;
+        int value6;
+    } Entry;
+    register char *names = lbl_80348C50;
+    register int sum = 0;
+    int i = 0;
+    int slots;
+    int records;
+    void *buffer;
+    int *current;
+    int *entry;
+    int *ptr;
+    int outer;
+    int inner;
+
+    for (; i < lbl_8055F728; i++)
+        sum += ((Entry *)&lbl_804B3400)[i].size;
+
+    slots = fn_80287B14() * 4;
+    sum *= slots;
+    lbl_8055F724 = slots;
+    records = lbl_8055F728 * slots;
+    buffer = fn_8012850C(sum * 0x28 + 0x10, names + 0x5C);
+    lbl_8055F718 = (int)fn_8002F37C(buffer, fn_8028D49C, 0, 0x28, sum);
+    lbl_8055F71C = (int)fn_8012850C(records * 0xC, names + 0x6C);
+    lbl_8055F720 = (int)fn_8012850C(*(volatile int *)&lbl_8055F724 * 8, names + 0x80);
+
+    entry = &lbl_804B3400;
+    current = (int *)lbl_8055F718;
+    ptr = (int *)lbl_8055F71C;
+    for (outer = 0; outer < lbl_8055F728; outer++) {
+        *(int **)((char *)entry + 0x14) = ptr;
+        for (inner = 0; inner < *(volatile int *)&lbl_8055F724; inner++) {
+            *ptr = (int)current;
+            ptr[2] = entry[4];
+            ptr += 3;
+            current = (int *)((char *)current + entry[4] * 0x28);
+        }
+        entry += 7;
+    }
+}
+#pragma pop
+
 void fn_8028D49C(void) {
 }
 
