@@ -252,6 +252,7 @@ extern "C" int fn_8023EEF8(void) {
     data.second=(void *)(int *)&data.values[0];
     return (((int (*)(void *,int,int,int))fn_802146BC)((void *)&data,-999,-999,1)+2)==0;
 }
+#pragma cplusplus reset
 #pragma pop
 
 #pragma use_lmw_stmw on
