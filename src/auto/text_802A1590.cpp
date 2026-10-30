@@ -291,15 +291,18 @@ extern "C" void *fn_802A194C(void *arg0) {
     };
     Receiver *receiver = (Receiver *)arg0;
     char *strings = lbl_80349928;
-    s32 type, i = 0;
-    void **entry = lbl_804BCF88;
+    void **entries;
+    s32 type;
+    s32 i;
     void *result;
 
     receiver->findType((const char *)&lbl_8055CBA4);
     type = ((s32 (*)())fn_802A1864)();
+    entries = lbl_804BCF88;
+    i = 0;
 
     while (i < 8) {
-        void *item = *entry;
+        void *item = *entries;
         if (item != 0 && ((Item *)item)->getType() == (u32)type) {
             result = fn_801284F8(8, strings + 0x2C);
             if (result != 0) {
@@ -310,7 +313,7 @@ extern "C" void *fn_802A194C(void *arg0) {
             return result;
         }
         i++;
-        entry++;
+        entries++;
     }
 
     switch (type) {
