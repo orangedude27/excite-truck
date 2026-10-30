@@ -1146,7 +1146,7 @@ s32 fn_80249154(void *arg0) {
 }
 
 extern float lbl_805638E0, lbl_805638E4, lbl_805638E8, lbl_805638EC, lbl_805638F0, lbl_805638F4, lbl_805638F8, lbl_805638FC, lbl_80563900;
-extern char lbl_8055BF00[], lbl_8055BF08[];
+extern char lbl_8055BF00, lbl_8055BF08;
 extern float fn_80235EF0(s32, s32);
 extern void fn_802353F4(s32, s32, float, float, float);
 extern void fn_802354A0(s32, s32, s32, float, float, float, float, float);
