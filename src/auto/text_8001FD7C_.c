@@ -445,7 +445,7 @@ loop_body:
 extern int fn_80020184(void);
 extern int fn_801E8838(void);
 extern int fn_8020DE1C(void);
-extern int lbl_8035BAFC, lbl_8035BB08, lbl_802FE374, lbl_802FE398;
+extern char lbl_8035BAFC[], lbl_8035BB08[], lbl_802FE374[], lbl_802FE398[];
 extern unsigned char lbl_8055D672, lbl_8055D673;
 extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
 #pragma dont_inline on
