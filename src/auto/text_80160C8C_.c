@@ -834,7 +834,7 @@ s32 fn_80161D14(void) {
 
 extern char lbl_8032F72C[];
 #pragma use_lmw_stmw off
-#pragma dont_inline fn_80161D50
+#pragma dont_inline on
 s32 fn_80161D50(void) {
     register s32 count;
     register s32 total;
