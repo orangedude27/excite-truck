@@ -439,6 +439,57 @@ void fn_8000FC8C(s32 arg0, s32 arg1) {
                 lbl_80560280, temp_f30, 0xC, lbl_80560264,
                 (const char *)&lbl_80558AA4, arg0);
 }
+
+extern void fn_800109E4(s32, f32, f32, f32, f32);
+extern f32 lbl_80560308, lbl_8056030C, lbl_80560310, lbl_80560314;
+extern f32 lbl_805602B0, lbl_805602E8;
+#pragma push
+#pragma processor 750
+#pragma paired_single off
+#pragma scheduling on
+void fn_8000FDF0(s32 arg0, s32 arg1) {
+    extern f32 fn_80011E60(void);
+    extern f32 fn_80011E70(void);
+    extern f32 fn_8023293C(s32, f32);
+    extern f32 fn_80235F64(s32, s32);
+    extern f32 fn_80235EF0(s32, s32);
+    extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
+    register f32 temp_f31;
+    register f32 temp_f30;
+    register f32 temp_f29;
+    f32 temp_f28, temp_f27, temp_f26;
+    f32 temp_f1;
+
+    temp_f1 = (f32)fn_80232B70(lbl_8055D4C8);
+    temp_f31 = lbl_80560308 / temp_f1;
+    temp_f30 = fn_80011E70();
+    temp_f29 = lbl_805602E8 + fn_80011E60();
+    temp_f28 = temp_f31 * ((f32 (*)(s32, s32, f32))fn_8023293C)(
+        lbl_8055D4C8, arg0, lbl_80560264);
+    temp_f27 = temp_f30 - (lbl_8056025C * temp_f28);
+    fn_800109E4(0x66000000, temp_f27 - lbl_8056030C,
+                lbl_805602E8 + temp_f29, lbl_80560310 + temp_f28,
+                lbl_80560314);
+    if (lbl_8055D4C0 != 0) {
+        temp_f26 = temp_f29 + (lbl_8056025C * fn_80235F64(lbl_8055D4C0, 2));
+        ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(
+            lbl_8055D4C0, 2,
+            (temp_f27 - fn_80235EF0(lbl_8055D4C0, 2)) - lbl_8056030C,
+            temp_f26, lbl_80560280, lbl_80560280);
+        ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(
+            lbl_8055D4C0, 2,
+            lbl_8056030C + (temp_f27 + temp_f28),
+            temp_f26, lbl_80560280, lbl_80560280);
+    }
+    temp_f26 = lbl_805602B0 + temp_f29;
+    fn_802337A0(lbl_80560264 + temp_f30, lbl_8055D4C8,
+                temp_f26 - lbl_80560264, 0xFF000000,
+                lbl_80560280, temp_f31, 0x14, lbl_80560264,
+                (const char *)&lbl_80558AA4, arg0);
+    fn_802337A0(temp_f30, lbl_8055D4C8, temp_f26, -1,
+                lbl_80560280, temp_f31, 0x14, lbl_80560264,
+                (const char *)&lbl_80558AA4, arg0);
+}
 #pragma pop
 
 #pragma push
@@ -583,7 +634,7 @@ void fn_800105A0(s32 arg0, s32 arg1, s32 unused) {
 #pragma scheduling on
 #pragma use_lmw_stmw reset
 #pragma pop
-extern void fn_80010FDC(s32);
+extern void fn_80010FDC(char *, s32);
 extern f32 lbl_80560280;
 extern f32 fn_8023293C(s32, f32);
 extern f32 fn_80235F64(s32, s32);
@@ -1707,27 +1758,30 @@ s32 fn_8000DFC0(s32 arg0) {
     return lbl_802FC2A8[arg0 * 3 + 2];
 }
 
-void fn_8000DFD8(void *arg0, s32 arg1, f32 farg0, f32 farg1) {
-    s32 count, mode, value;
-    f32 x, y;
-    void (*draw)(s32,f32,f32,f32,f32)=(void (*)(s32,f32,f32,f32,f32))fn_800109E4;
-    count=*(s32*)((u8*)arg0+0x34);
-    if(count>0 && *(s32*)((u8*)arg0+0x38)==9) {
-        value=((s32)((f32)count*lbl_80560258)<<24)|0x00FDB300;
-        y=farg1+lbl_80560254*lbl_8056025C;
-        draw(value,farg0,y,lbl_80560250,lbl_80560254);
+#pragma push
+#pragma processor 750
+#pragma scheduling on
+void fn_8000DFD8(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
+    s32 count = *(s32 *)((char *)arg0 + 0x34);
+    if (count > 0 && *(s32 *)((char *)arg0 + 0x38) == 9) {
+        ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
+            (u32)(((s32)(lbl_80560258 * (f32)count) << 24) | 0x00FDB300),
+            arg2, arg3 + lbl_80560254 * lbl_8056025C,
+            lbl_80560250, lbl_80560254);
     }
-    mode=*(s32*)((u8*)arg0+0x30);
-    x=((f32)mode*lbl_80560250)/lbl_80560260;
-    y=farg1+lbl_80560254*lbl_8056025C;
-    draw(-1,farg0,y,x,lbl_80560254);
-    mode=*(s32*)((u8*)arg0+0x2C);
-    x=((f32)mode*lbl_80560250)/lbl_80560260;
-    y=farg1+lbl_80560254*lbl_8056025C;
-    draw(arg1,farg0,y,x,lbl_80560254);
-    ((void (*)(s32,s32,const char*,void*,f32,f32,f32))fn_80010074)(-1,0x14,(const char*)&lbl_80558AA4,arg0,lbl_80560264,farg0+lbl_80560250*lbl_8056025C,farg1);
+    ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
+        (u32)-1, arg2, arg3 + lbl_80560254 * lbl_8056025C,
+        ((f32)*(s32 *)((char *)arg0 + 0x30) * lbl_80560250) / lbl_80560260,
+        lbl_80560254);
+    ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
+        (u32)arg1, arg2, arg3 + lbl_80560254 * lbl_8056025C,
+        ((f32)*(s32 *)((char *)arg0 + 0x2C) * lbl_80560250) / lbl_80560260,
+        lbl_80560254);
+    ((void (*)(s32, s32, const char *, void *, f32, ...))fn_80010074)(
+        -1, 0x14, (const char *)&lbl_80558AA4, arg0,
+        lbl_80560264, arg2 + lbl_80560250 * lbl_8056025C, arg3);
 }
-
+#pragma pop
 extern f32 lbl_80560250, lbl_80560254, lbl_80560258, lbl_8056025C, lbl_80560260, lbl_80560264, lbl_80560270;
 #pragma push
 #pragma scheduling on
