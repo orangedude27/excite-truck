@@ -367,6 +367,66 @@ OSClearContext(&context);
 OSSetCurrentContext(oldContext);
 }
 
+void __DSP_exec_task(void *arg0, void *arg1) {
+    if (arg0 != NULL) {
+        DSPSendMailToDSP(*(u32 *)((u8 *)arg0 + 0x18));
+        while (DSPCheckMailToDSP() != 0) {
+        }
+        DSPSendMailToDSP(*(u32 *)((u8 *)arg0 + 0x1C));
+        while (DSPCheckMailToDSP() != 0) {
+        }
+        DSPSendMailToDSP(*(u32 *)((u8 *)arg0 + 0x20));
+        while (DSPCheckMailToDSP() != 0) {
+        }
+    } else {
+        DSPSendMailToDSP(0);
+        while (DSPCheckMailToDSP() != 0) {
+        }
+        DSPSendMailToDSP(0);
+        while (DSPCheckMailToDSP() != 0) {
+        }
+        DSPSendMailToDSP(0);
+        while (DSPCheckMailToDSP() != 0) {
+        }
+    }
+    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0xC));
+    while (DSPCheckMailToDSP() != 0) {
+    }
+    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x10));
+    while (DSPCheckMailToDSP() != 0) {
+    }
+    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x14));
+    while (DSPCheckMailToDSP() != 0) {
+    }
+    if (*(s32 *)arg1 == 0) {
+        DSPSendMailToDSP(*(u16 *)((u8 *)arg1 + 0x24));
+        while (DSPCheckMailToDSP() != 0) {
+        }
+        DSPSendMailToDSP(0);
+        while (DSPCheckMailToDSP() != 0) {
+        }
+        DSPSendMailToDSP(0);
+        while (DSPCheckMailToDSP() != 0) {
+        }
+        DSPSendMailToDSP(0);
+        while (DSPCheckMailToDSP() != 0) {
+        }
+        return;
+    }
+    DSPSendMailToDSP(*(u16 *)((u8 *)arg1 + 0x26));
+    while (DSPCheckMailToDSP() != 0) {
+    }
+    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x18));
+    while (DSPCheckMailToDSP() != 0) {
+    }
+    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x1C));
+    while (DSPCheckMailToDSP() != 0) {
+    }
+    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x20));
+    while (DSPCheckMailToDSP() != 0) {
+    }
+}
+
 extern s32 DSPCheckMailFromDSP(void);
 extern s32 DSPCheckMailToDSP(void);
 extern s32 DSPReadMailFromDSP(void);
@@ -1067,6 +1127,51 @@ void fn_8003684C(void) {
     }
 }
 
+#pragma push
+#pragma dont_inline on
+void fn_80036B84(u32 arg0) {
+    register s32 state;
+
+    state = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+        *(u32 *)(__ErrorInfo + 0x78) = arg0;
+    } else {
+        *(u32 *)(__ErrorInfo + 0x28 +
+                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = arg0;
+    }
+    OSRestoreInterrupts(state);
+
+    if (arg0 == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+        return;
+    }
+    if (arg0 == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+        return;
+    }
+    if (arg0 & 1) {
+        lbl_8055D860 = 0;
+        lbl_8055D89C = (u32 *)lbl_80376B20;
+        fn_8003BCDC(0);
+
+        state = OSDisableInterrupts();
+        if (*(volatile u32 *)&lbl_8055D848 >= 5)
+            *(volatile u32 *)&lbl_8055D848 = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x21;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x10008;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+        *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+        OSRestoreInterrupts(state);
+        fn_8003AD88(lbl_80376B40, 0x20, 0x10008, (u32)fn_80036D24);
+        return;
+    }
+
+    fn_800356F4(0x27, 0, 0);
+    fn_8003B218(fn_80035E6C);
+}
+#pragma pop
+
 extern s32 lbl_8055D858, lbl_8055D870, lbl_8055D874;
 extern u32 *lbl_8055D894;
 extern u8 *lbl_8055D898;
@@ -1247,6 +1352,8 @@ void fn_8003727C(u32 arg0) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_800375A8(u32 arg0) {
     register u32 value = arg0;
     s32 interrupts;
@@ -1256,9 +1363,9 @@ void fn_800375A8(u32 arg0) {
         *(u32 *)(__ErrorInfo + 0x78) = value;
     } else {
         register s32 count = *(volatile s32 *)&lbl_8055D848;
-        register u32 *info = (u32 *)__ErrorInfo;
-        info += (count - 1) * 5;
-        info[10] = value;
+        register u8 *info = (u8 *)__ErrorInfo;
+        info += (count - 1) * 0x14;
+        *(u32 *)(info + 0x28) = value;
     }
     OSRestoreInterrupts(interrupts);
 
@@ -1299,8 +1406,7 @@ void fn_800375A8(u32 arg0) {
         fn_8003B218(fn_80035E6C);
     }
 }
-
-#pragma dont_inline reset
+#pragma pop
 extern s32 MotorState_8055D8A8;
 extern s32 lbl_8055D8BC;
 extern void __DVDClearWaitingQueue(void);
