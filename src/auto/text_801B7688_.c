@@ -138,7 +138,6 @@ void fn_801B78EC(int arg0, int arg1, int arg2, float farg0, float farg1, float f
     fn_801B7760(arg0, (int)&slots[2], farg0, farg2);
 }
 
-#pragma dont_inline fn_801B79AC
 float fn_801B79AC(void) {
     return *(float *)((char *)fn_80137C54(-1) + 4);
 }
