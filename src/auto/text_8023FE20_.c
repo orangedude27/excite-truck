@@ -146,22 +146,88 @@ void fn_802409AC(void *arg0, s32 arg1) {
     }
 }
 
-void *fn_80240A1C(void *arg0, int *arg1, void *arg2) {
-extern unsigned char *fn_802E85B8(int); extern char lbl_80342650[]; extern char lbl_8055BD60;
-char *base=(char*)arg0; char *dst; char *src; int i,n,v; unsigned char c; 
-*(void**)(base+0x28)=arg2; *(void**)base=lbl_80342650; *(int*)(base+0x14)=0; *(int*)(base+0x2c)=0; *(int*)(base+0x30)=0; *(int**)(base+0x34)=arg1; base[0x38]=1;
-dst=base+0x39;src=&lbl_8055BD60;for(n=0;n<32;n++){c=*src++;*dst++=c;if((signed char)c==0)break;}if(n==31)*dst=0;
-*(int*)(*(char**)(base+0x28)+0xd8)=*arg1;
-v=*arg1;
-if(v<0){dst=base+0x39;src=&lbl_8055BD60;for(n=0;n<32;n++){c=*src++;*dst++=c;if((signed char)c==0)break;}if(n==31)*dst=0;}
-else{src=(char*)fn_802E85B8(v);dst=base+0x39;for(n=0;n<32;n++){c=*src++;*dst++=c;if((signed char)c==0)break;}if(n==31)*dst=0;}
-for(i=0;i<*(int*)(base+0x2c);i++){char *out=*(char**)(base+i*4+0x18);out[0]=base[0x38]&&i==*(int*)(base+0x30);*(int*)(out+4)=*arg1;}
-return arg0;
-}
-
-#pragma optimize_for_size off
-#pragma cplusplus on
 #pragma scheduling invalid_target
+void *fn_80240A1C(void *arg0, int *arg1, void *arg2) {
+    extern unsigned char *fn_802E85B8(int);
+    extern char lbl_80342650[];
+    extern char lbl_8055BD60;
+    struct Constructor {
+        void *vtable;
+        u8 pad4[0x10];
+        int unk14;
+        void *entries[4];
+        void *object;
+        int count;
+        int selected;
+        int *payload;
+        u8 active;
+        char name[0x20];
+    };
+    struct Constructor *self = (struct Constructor *)arg0;
+    int i;
+
+    self->vtable = lbl_80342650;
+    {
+        char *source;
+        int count;
+        char *dest = self->name;
+        self->object = arg2;
+        self->unk14 = 0;
+        self->count = 0;
+        self->selected = 0;
+        self->payload = arg1;
+        self->active = 1;
+        count = 0x20;
+        source = &lbl_8055BD60;
+        while ((signed char)(*dest++ = *source++) != 0) {
+            if (--count <= 0) {
+                dest[-1] = 0;
+                break;
+            }
+        }
+    }
+    *(int *)((unsigned char *)self->object + 0xD8) = *self->payload;
+    if (*self->payload < 0) {
+        char *source = &lbl_8055BD60;
+        int count = 0x20;
+        char *dest = self->name;
+        while ((signed char)(*dest++ = *source++) != 0) {
+            if (--count <= 0) {
+                dest[-1] = 0;
+                break;
+            }
+        }
+    } else {
+        char *source = (char *)fn_802E85B8(*self->payload);
+        int count = 0x20;
+        char *dest = self->name;
+        while ((signed char)(*dest++ = *source++) != 0) {
+            if (--count <= 0) {
+                dest[-1] = 0;
+                break;
+            }
+        }
+    }
+    {
+        void *item;
+        int selected;
+        int value;
+        register void **entry = (void **)self;
+        i = 0;
+        while (i < self->count) {
+            value = *self->payload;
+            selected = self->active != 0 && i == self->selected;
+            item = entry[6];
+            entry++;
+            i++;
+            *(u8 *)item = selected;
+            *(int *)((char *)item + 4) = value;
+        }
+    }
+    return self;
+}
+#pragma scheduling on
+#pragma cplusplus on
 extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void *arg4, void *arg5) {
     s32 index, result, i, n, wordA, wordB, count, j;
     void *item, *record, *ctx, *info, *vtable, *infoDst;
