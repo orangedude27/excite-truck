@@ -121,8 +121,11 @@ __declspec(section ".sdata") extern char lbl_8055A090[];
 extern char lbl_8032F470[];
 extern char lbl_8032F47C[];
 extern int strcmp(const char *, const char *);
-#pragma dont_inline fn_8015EC50
+#pragma scheduling invalid_target
 #pragma cplusplus on
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_8015EE14(void **collection, void *arg1) {
     class Collection {
     public:
@@ -151,18 +154,18 @@ extern "C" void fn_8015EE14(void **collection, void *arg1) {
         virtual void unused05(); virtual void unused06(); virtual void unused07();
         virtual f32 getFloat(const char *key);
     };
+    void *entry;
     if (collection != 0) {
         f32 threshold = lbl_805617D4;
-        s32 index = 0;
         void *node;
+        s32 index = 0;
         while ((node = ((Collection *)collection)->getAt(index)) != 0) {
             if (fn_8015ED18((void **)node) != 0) {
-                int *registry = (int *)lbl_8055E29C;
-                s32 count = registry[1];
-                void *array = (void *)registry[0];
-                void *entry = (char *)array + count * 0x10;
+                void *array = ((void **)lbl_8055E29C)[0];
+                s32 count = ((int *)lbl_8055E29C)[1];
                 union { u64 bits; f32 floats[2]; } packed;
-                registry[1] = count + 1;
+                ((int *)lbl_8055E29C)[1] = count + 1;
+                entry = (char *)array + count * 0x10;
                 packed.bits = ((Item *)node)->getPacked((const char *)lbl_8055A080);
                 *(f32 *)((char *)entry + 4) = packed.floats[0];
                 *(f32 *)((char *)entry + 8) = packed.floats[1];
@@ -185,6 +188,8 @@ extern "C" void fn_8015EE14(void **collection, void *arg1) {
         }
     }
 }
+#pragma pop
+#pragma scheduling on
 #pragma cplusplus reset
 
 #pragma cplusplus reset
@@ -194,52 +199,85 @@ extern int fn_8015ED54(void **);
 extern void fn_802E30C8(const char *, int, const char *);
 extern char lbl_8032F488[];
 extern char lbl_8055A080[], lbl_8055A090[], lbl_8055A08C[], lbl_8055A094[];
-void fn_8015EF84(void **arg0) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8015EF84(void **arg0) {
+    class Root {
+    public:
+        virtual void unused01(); virtual void unused02(); virtual void unused03(); virtual void unused04();
+        virtual void unused05(); virtual void unused06(); virtual void unused07(); virtual void unused08();
+        virtual void unused09(); virtual void unused10(); virtual void unused11(); virtual void unused12();
+        virtual void unused13(); virtual void unused14(); virtual void unused15(); virtual void unused16();
+        virtual void unused17(); virtual void unused18(); virtual void unused19(); virtual void unused20();
+        virtual void unused21(); virtual void unused22(); virtual void *getAt(int);
+    };
+    class Object {
+    public:
+        virtual void unused01(); virtual void unused02(); virtual void unused03(); virtual void unused04();
+        virtual void unused05(); virtual void unused06(); virtual void unused07(); virtual float getRadius(const char *);
+        virtual void unused08(); virtual void unused09(); virtual void unused10(); virtual void unused11();
+        virtual void unused12(); virtual u64 getPacked(const char *);
+    };
     int found = 0;
-    int index = 0;
-    void **obj;
-    if (arg0 != 0) {
-        while ((obj = ((void **(*)(void *, int))((void **)*arg0)[0x18])(arg0, index)) != 0) {
-            if (fn_8015ED54(obj)) {
-                double x = ((double (*)(void *, char *))((void **)*obj)[0xF])(obj, lbl_8055A080);
-                float radius = ((float (*)(void *, char *))((void **)*obj)[9])(obj, lbl_8055A090);
-                float y = (float)x;
-                float radius2 = radius * radius;
-                int i = 0;
-                int offset = 0;
-                found++;
-                while (i < *(int *)(lbl_8055E29C + 4)) {
-                    char *array = *(char **)lbl_8055E29C;
+    int index;
+    void *obj;
+    if (arg0 == 0)
+        goto report;
+    index = 0;
+    obj = ((Root *)arg0)->getAt(index);
+    while (obj != 0) {
+        if (fn_8015ED54((void **)obj)) {
+            union { u64 bits; f32 f[2]; } packed;
+            f32 radius;
+            f32 radius2;
+            int i;
+            int offset;
+            found++;
+            packed.bits = ((Object *)obj)->getPacked(lbl_8055A080);
+            radius = ((Object *)obj)->getRadius(lbl_8055A090);
+            radius2 = radius * radius;
+            i = 0;
+            offset = 0;
+        inner:
+            {
+                int **table = (int **)lbl_8055E29C;
+                if (i < table[1][0]) {
+                    char *array = (char *)table[0];
                     char *entry = array + offset;
-                    float dy = y - *(float *)(entry + 8);
-                    float dx = (float)(x - *(float *)(entry + 4));
+                    f32 dy = packed.f[1] - *(f32 *)(entry + 8);
+                    f32 dx = packed.f[0] - *(f32 *)(entry + 4);
                     if (dx * dx + dy * dy < radius2) {
-                        int count = *(int *)(lbl_8055E29C + 4);
-                        if (i >= 0 && i < count) {
+                        if (i >= 0 && i < table[1][0]) {
+                            int count = table[1][0];
                             int last = count - 1;
                             if (i != last) {
                                 char *from = array + last * 16;
-                                *(short *)(entry + 0) = *(short *)(from + 0);
-                                *(short *)(entry + 2) = *(short *)(from + 2);
+                                *(u16 *)(entry + 0) = *(u16 *)(from + 0);
+                                *(u16 *)(entry + 2) = *(u16 *)(from + 2);
                                 *(int *)(entry + 4) = *(int *)(from + 4);
                                 *(int *)(entry + 8) = *(int *)(from + 8);
-                                *(float *)(entry + 12) = *(float *)(from + 12);
+                                *(f32 *)(entry + 12) = *(f32 *)(from + 12);
                             }
-                            *(int *)(lbl_8055E29C + 4) = count - 1;
+                            table[1][0] = count - 1;
                         }
-                    } else {
-                        offset += 16;
-                        i++;
+                        goto inner;
                     }
+                    offset += 16;
+                    i++;
+                    goto inner;
                 }
             }
-            index++;
         }
+        index++;
+        obj = ((Root *)arg0)->getAt(index);
     }
+report:
     if (found > 0) {
         fn_802E30C8(lbl_8032F488, found, found == 1 ? lbl_8055A08C : lbl_8055A094);
     }
 }
+#pragma cplusplus reset
+#pragma pop
 
 #pragma push
 #pragma inline_depth 0
@@ -356,12 +394,6 @@ extern int fn_8015F3EC(unsigned short *, unsigned short *);
 extern char lbl_8032F4A0[];
 extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
 void fn_8015F3FC(void *arg0) {
-    struct EntryTable {
-        int *items;
-        int used;
-        int capacity;
-        int *end;
-    };
     register int max;
     register int offset;
     register int index;
@@ -369,19 +401,19 @@ void fn_8015F3FC(void *arg0) {
     register int i;
     register int outIndex;
     int count;
-    int *array, *items;
-    struct EntryTable *dst, *out;
+    int *dst, *array, *items;
+    volatile int *out;
     if (*(volatile int *)(lbl_8055E29C + 4) <= 0) return;
     fn_80265DCC(*(void **)lbl_8055E29C, *(volatile int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
     count = (int)(*(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16);
-    dst = (struct EntryTable *)fn_801284F8(0x10, lbl_8032F4A0);
+    dst = (int *)fn_801284F8(0x10, lbl_8032F4A0);
     if (!dst) return;
     array = (int *)fn_8012850C(count * 4, (int)&lbl_8055A098);
-    dst->items = array;
-    dst->capacity = count;
-    dst->used = 0;
-    dst->end = array;
-    *(struct EntryTable **)&lbl_8055E2A0 = dst;
+    dst[0] = (int)array;
+    dst[2] = count;
+    dst[1] = 0;
+    dst[3] = (int)array;
+    *(int *)&lbl_8055E2A0 = (int)dst;
     if (count <= 0) return;
     for (i = 0; i < count; i++) {
         index = 0;
@@ -395,17 +427,17 @@ void fn_8015F3FC(void *arg0) {
         max = *(volatile int *)(lbl_8055E29C + 4) - 1;
         if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
             src = (int *)*(int *)lbl_8055E29C;
-            out = *(struct EntryTable **)&lbl_8055E2A0;
-            items = out->items;
-            outIndex = out->used;
-            out->used = outIndex + 1;
+            out = (volatile int *)*(int *)&lbl_8055E2A0;
+            outIndex = out[1];
+            items = (int *)out[0];
+            out[1] = outIndex + 1;
             items[outIndex] = (int)src;
         } else {
             src = (int *)((char *)*(int *)lbl_8055E29C + offset);
-            out = *(struct EntryTable **)&lbl_8055E2A0;
-            items = out->items;
-            outIndex = out->used;
-            out->used = outIndex + 1;
+            out = (volatile int *)*(int *)&lbl_8055E2A0;
+            outIndex = out[1];
+            items = (int *)out[0];
+            out[1] = outIndex + 1;
             items[outIndex] = (int)src;
         }
     }
