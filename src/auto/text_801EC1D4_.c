@@ -562,7 +562,7 @@ void fn_802C7AE0(long, void*, long, float);
 void fn_801F13F4(long, float, float);
 #pragma push
 #pragma processor 750
-#pragma optimization_level 2
+#pragma optimization_level 3
 #pragma scheduling invalid_target
 void fn_801EDF18(void* arg0) {
     struct Settings {
