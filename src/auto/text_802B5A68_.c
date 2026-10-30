@@ -22,6 +22,7 @@ extern void *fn_802C86DC(void);
 __declspec(section ".data") extern s32 lbl_804BE7D8;
 extern void **lbl_8055FA48;
 extern char lbl_8034A598[];
+__declspec(section ".sdata") extern const char lbl_8055CEA8[];
 extern const char lbl_8055CE58[];
 extern const char lbl_8055CE60[];
 extern double lbl_80564C68;
@@ -1112,6 +1113,13 @@ extern "C" s32 fn_802B1C14(s32);
 extern "C" s32 fn_802B1C1C(s32, s32);
 __declspec(section ".sdata") extern const char lbl_8055CEB0[];
 s32 fn_802B7B08(void) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void *call(const char *);
+        virtual void v2();
+        virtual void *get(const char *);
+    };
     typedef struct {
         void *name;
         s32 value;
@@ -1123,6 +1131,7 @@ s32 fn_802B7B08(void) {
         s32 unk1C;
     } Record;
     char *base = lbl_8034A598;
+    Dummy *obj = (Dummy *)lbl_8055FA48;
     void *result;
     const u8 *source;
     f32 step;
@@ -1131,21 +1140,24 @@ s32 fn_802B7B08(void) {
     s32 index;
     s32 count;
     s32 i;
+    s32 unknown;
+    s32 value;
     Record record;
     char buf[0x20];
 
-    result = ((void *(*)(void *, void *))(*(void ***)lbl_8055FA48)[5])(
-        lbl_8055FA48, base + 0x2A0);
+    result = obj->get(base + 0x2A0);
     step = *(f32 *)((u8 *)result + 0x14);
-    result = ((void *(*)(void *, void *))(*(void ***)lbl_8055FA48)[3])(
-        lbl_8055FA48, base + 0xB8);
+    obj = (Dummy *)lbl_8055FA48;
+    result = obj->call(base + 0xB8);
     fn_802B6568(result, lbl_8055CEB0);
-    result = ((void *(*)(void *, void *))(*(void ***)lbl_8055FA48)[3])(
-        lbl_8055FA48, base + 0x2DC);
+    obj = (Dummy *)lbl_8055FA48;
+    result = obj->call(base + 0x2DC);
     source = (const u8 *)result;
     record.name = *(void **)(source + 0);
-    record.value = *(s32 *)(source + 4);
-    record.unk8 = *(s32 *)(source + 8);
+    unknown = *(s32 *)(source + 8);
+    value = *(s32 *)(source + 4);
+    record.value = value;
+    record.unk8 = unknown;
     record.unkC = *(s32 *)(source + 0xC);
     record.time = *(f32 *)(source + 0x10);
     record.unk14 = *(s32 *)(source + 0x14);
@@ -1161,15 +1173,15 @@ s32 fn_802B7B08(void) {
         count = fn_802B1C14(index);
         if (count > 0) {
             i = 0;
-            do {
-                fn_801345D8(buf, 0x20, base + 0x2E8, i);
+            while (i < fn_802B1C14(index)) {
+                ((void (*)(void *, s32, const char *, ...))fn_801345D8)(
+                    buf, 0x20, base + 0x2E8, i);
                 record.name = buf;
                 fn_802B6568(&record, lbl_8055CE70,
                             fn_802B1C1C(index, i));
-                record.time += step;
+                *(f32 *)((u8 *)&record + 8) += step;
                 i++;
-                count = fn_802B1C14(index);
-            } while (i < count);
+            }
         } else {
             fn_80147230(&record, base + 0x2F4);
         }
