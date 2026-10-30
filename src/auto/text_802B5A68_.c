@@ -328,6 +328,7 @@ extern "C" void fn_802B5F24(s32 arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma fp_contract on
+#pragma processor 750
 void fn_802B5F98(void) {
     register char *base = lbl_8034A598;
     s32 index, i, j;
@@ -591,6 +592,102 @@ void fn_802B67C8(s32 arg0) {
     void *(*method)(void *, s32) = (void *(*)(void *, s32))(*(void ***)lbl_8055FA48)[5];
     fn_80147FF0(*(s32 *)((char *)method(lbl_8055FA48, arg0) + 0x18));
 }
+
+__declspec(section ".sdata") extern const char lbl_8055CE74[];
+extern u8 lbl_8055FA30;
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_802B6804(void) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void *call(const char *);
+        virtual void v2();
+        virtual void *get(const char *);
+    };
+    typedef struct {
+        void *name;
+        s32 value;
+        s32 timeBits;
+        s32 unkC;
+        f32 time10;
+        s32 unk14;
+        s32 unk18;
+        s32 unk1C;
+    } Record;
+    typedef struct {
+        u8 pad[0x20];
+        void **currentPtr;
+        void *current;
+    } Item;
+
+    char *base = lbl_8034A598;
+    Dummy *obj = (Dummy *)lbl_8055FA48;
+    void *recordA;
+    void *recordB;
+    void *timing;
+    volatile const u8 *source;
+    f32 step;
+    s32 i;
+    s32 offset;
+    s32 count;
+    Item *item;
+    void *best;
+    Record first;
+    Record second;
+
+    fn_802B67C8((s32)(base + 0x208));
+    obj = (Dummy *)lbl_8055FA48;
+    recordA = obj->call(base + 0x218);
+    obj = (Dummy *)lbl_8055FA48;
+    recordB = obj->call(base + 0x228);
+    obj = (Dummy *)lbl_8055FA48;
+    timing = obj->get(base + 0x238);
+    step = *(f32 *)((u8 *)timing + 0x14);
+
+    i = 0;
+    offset = 0;
+    count = *(s32 *)((u8 *)&lbl_804BFA70 + 4);
+    while (i < count) {
+        item = (Item *)((u8 *)*(u32 *)&lbl_804BFA70 + offset);
+        best = *item->currentPtr;
+        if ((u32)item->current < (u32)best)
+            item->current = best;
+
+        source = (volatile const u8 *)recordA;
+        first.name = *(void * volatile *)(source + 0);
+        first.value = *(volatile const s32 *)(source + 4);
+        first.timeBits = *(volatile const s32 *)(source + 8);
+        first.unkC = *(volatile const s32 *)(source + 0xC);
+        first.time10 = *(volatile const f32 *)(source + 0x10);
+        first.unk14 = *(volatile const s32 *)(source + 0x14);
+        first.unk18 = *(volatile const s32 *)(source + 0x18);
+        first.unk1C = *(volatile const s32 *)(source + 0x1C);
+        *(f32 *)((u8 *)&first + 8) += step * (f32)i;
+
+        if (lbl_8055FA30 != 0)
+            fn_80147230(&first, lbl_8055CE74, item->current);
+        else
+            fn_80147230(&first, lbl_8055CE74, *item->currentPtr);
+
+        source = (volatile const u8 *)recordB;
+        second.name = *(void * volatile *)(source + 0);
+        second.value = *(volatile const s32 *)(source + 4);
+        second.timeBits = *(volatile const s32 *)(source + 8);
+        second.unkC = *(volatile const s32 *)(source + 0xC);
+        second.time10 = *(volatile const f32 *)(source + 0x10);
+        second.unk14 = *(volatile const s32 *)(source + 0x14);
+        second.unk18 = *(volatile const s32 *)(source + 0x18);
+        second.unk1C = *(volatile const s32 *)(source + 0x1C);
+        *(f32 *)((u8 *)&second + 8) += step * (f32)i;
+        fn_80147230(&second, lbl_8055CE70, item);
+
+        offset += 0x28;
+        i++;
+    }
+}
+#pragma use_lmw_stmw reset
+#pragma cplusplus reset
 
 #pragma cplusplus on
 extern "C" void fn_802B69FC(void) {
