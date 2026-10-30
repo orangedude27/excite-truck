@@ -278,6 +278,73 @@ void fn_80247174(void) {
     fn_80246CAC(lbl_80563898);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_80247210(void) {
+    typedef s32 (*FindMethod)(void *, const char *, s32);
+    s32 retry, code, foundIndex, resource, i, candidate;
+    void *root, *subobject;
+    void **vtable;
+    if (lbl_8055F268 == 0) {
+        lbl_8055F264 = fn_8020A5F0();
+        lbl_8055F268 = 1;
+    }
+    lbl_8055F260 = 1;
+    fn_8023D704(0);
+    fn_80129AFC();
+    fn_802E47E8();
+    fn_8023D7CC();
+    retry = 0;
+    for (;;) {
+        if (retry != 0) retry = 0;
+        else {
+            fn_80246DE8();
+            fn_80246DF4();
+            fn_80246E00();
+        }
+        code = ((s32 (*)(void))fn_80248668)();
+        if (code == -0xEA) {
+            if (fn_80278A1C(lbl_8034333C) == 0) retry = 1;
+            if (retry == 0) fn_80247174();
+            continue;
+        }
+        retry = fn_80246E4C();
+        if (retry < 0) {
+            retry = 1;
+            continue;
+        }
+        break;
+    }
+    fn_802E317C(lbl_8034397C);
+    foundIndex = -1;
+    resource = -1;
+    i = 0;
+loop_items:
+    root = fn_80012820(i);
+    subobject = *(void **)((char *)root + 0x80);
+    vtable = *(void ***)subobject;
+    candidate = ((FindMethod)vtable[8])(subobject, lbl_80343348, -1);
+    if (retry == candidate) {
+        foundIndex = i;
+        root = fn_80012820(i);
+        subobject = *(void **)((char *)root + 0x80);
+        vtable = *(void ***)subobject;
+        resource = ((FindMethod)vtable[8])(subobject, &lbl_8055BE98, -1);
+    } else {
+        i++;
+        if (i < fn_80012818()) goto loop_items;
+    }
+    fn_8020C91C(resource);
+    fn_8020A634();
+    fn_8023BFBC(foundIndex, 0);
+    fn_802483E0();
+    fn_8020C91C(-1);
+    lbl_8055F260 = 0;
+}
+#pragma pop
+
 #pragma dont_inline fn_80246DE8
 #pragma dont_inline fn_80246DF4
 #pragma dont_inline fn_80246E00
