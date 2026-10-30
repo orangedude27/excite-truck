@@ -162,7 +162,7 @@ void fn_802AA9D4(void *arg0, void *arg1, float delta) {
    v=*(float *)((char *)arg0+0xE0)-lbl_80564A08*delta;
    *(float *)((char *)arg0+0xE0)=v>lbl_805649F0?v:lbl_805649F0;
  }
- if ((float)fabs(delta)<=lbl_80558DC4) return;
+ if ((float)fabs(delta)<=*(float *)(void *)&lbl_80558DC4) return;
  if (fn_80287BC8(lbl_805649F0,lbl_805649FC)>=*(float *)((char *)arg0+0xE0)) return;
  angle=fn_80287BC8(lbl_80564A48,lbl_80564A4C);
  forward=*(Vec *)arg1;
