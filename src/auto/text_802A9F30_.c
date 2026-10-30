@@ -1,5 +1,13 @@
 #include "revolution/MTX/mtxtypes.h"
 #include "math.h"
+extern float lbl_80558DC4;
+extern float lbl_805649F4, lbl_80564A00, lbl_80564A34, lbl_80564A68, lbl_80564A8C, lbl_80564A98, lbl_80564A9C, lbl_80564AA8;
+extern const double lbl_80564A40;
+extern double lbl_80564AA0;
+extern unsigned char lbl_8055F92C;
+extern unsigned char fn_80129D90(int, int, int);
+extern float fn_80287BC8(float, float);
+extern double fn_8002EFB4(float, double);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -83,28 +91,44 @@ void fn_802AA0EC(void *arg0) {
 }
 
 extern float PSVECDotProduct(const void *, const void *);
+#pragma push
+#pragma processor 750
+#pragma opt_propagation off
 void fn_802AA100(void *arg0, void *arg1, void *arg2, void *arg3) {
-    float sp1C, sp18, sp14, sp10, spC, sp8;
-    float dot0, dot1, x1, x0, y1, x2, y0, y2;
-    dot0 = PSVECDotProduct(arg1, arg2);
-    dot1 = PSVECDotProduct(arg1, arg3);
-    x1 = ((float *)arg2)[1] * dot0;
-    x0 = ((float *)arg2)[0] * dot0;
-    y1 = ((float *)arg3)[1] * dot1;
-    x2 = ((float *)arg2)[2] * dot0;
-    y0 = ((float *)arg3)[0] * dot1;
-    sp14 = x0;
-    y2 = ((float *)arg3)[2] * dot1;
-    sp18 = x1;
-    sp1C = x2;
-    ((float *)arg0)[1] = x1 + y1;
-    ((float *)arg0)[0] = x0 + y0;
-    ((float *)arg0)[2] = x2 + y2;
-    sp8 = y0;
-    spC = y1;
-    sp10 = y2;
+    float sp1C;
+    float sp18;
+    float sp14;
+    float sp10;
+    float spC;
+    float sp8;
+    float temp_f1;
+    float temp_f31;
+    float temp_f3;
+    float temp_f4;
+    float temp_f5;
+    float temp_f6;
+    float temp_f7;
+    float temp_f8;
+    temp_f31 = PSVECDotProduct(arg1, arg2);
+    temp_f1 = PSVECDotProduct(arg1, arg3);
+    temp_f7 = ((float *)arg2)[1] * temp_f31;
+    temp_f8 = ((float *)arg2)[0] * temp_f31;
+    temp_f4 = ((float *)arg3)[1] * temp_f1;
+    temp_f6 = ((float *)arg2)[2] * temp_f31;
+    temp_f5 = ((float *)arg3)[0] * temp_f1;
+    sp14 = temp_f8;
+    temp_f3 = ((float *)arg3)[2] * temp_f1;
+    sp18 = temp_f7;
+    sp1C = temp_f6;
+    ((float *)arg0)[1] = temp_f7 + temp_f4;
+    ((float *)arg0)[0] = temp_f8 + temp_f5;
+    ((float *)arg0)[2] = temp_f6 + temp_f3;
+    sp8 = temp_f5;
+    spC = temp_f4;
+    sp10 = temp_f3;
 }
-
+#pragma opt_propagation reset
+#pragma pop
 void fn_802AA1D0(unsigned int arg0) {
     extern int lbl_8055F928;
     extern int lbl_80488648[];
@@ -160,35 +184,51 @@ void fn_802AA9D4(void *arg0, void *arg1, float delta) {
 }
 #pragma pop
 
+#pragma scheduling invalid_target
 void fn_802AAC80(void *arg0, void *arg1, float farg0) {
+    struct Object {
+        unsigned char pad0[0xEC];
+        unsigned char m_flag;
+        unsigned char pad1[3];
+        float m_value;
+    };
+    struct State {
+        unsigned char pad0[0x68];
+        unsigned int m_flags;
+        unsigned char pad1[0xAC];
+        unsigned char m_condition;
+    };
     extern void fn_801E86F8(int);
     extern float lbl_805649F0, lbl_805649FC, lbl_80564A04;
-    volatile float step = lbl_80564A04;
-    float current;
+    struct Object *object = (struct Object *)arg0;
+    struct State *state = (struct State *)arg1;
+    volatile unsigned char *flag = &object->m_flag;
+    volatile float *value = &object->m_value;
     fn_801E86F8(0);
-    if (*(unsigned char *)((char *)arg0 + 0xEC)) {
-        current = *(float *)((char *)arg0 + 0xF0);
-        *(unsigned char *)((char *)arg0 + 0xEC) = 0;
-        current = current + step * farg0;
-        if (current < lbl_805649FC) {
-            *(float *)((char *)arg0 + 0xF0) = current;
-        } else {
-            *(float *)((char *)arg0 + 0xF0) = lbl_805649FC;
-        }
-    } else if (*(unsigned char *)((char *)arg1 + 0x118)) {
-        *(float *)((char *)arg0 + 0xF0) = lbl_805649F0;
+    if (*flag) {
+        float limit, current, delta, step;
+        step = *(volatile float *)&lbl_80564A04;
+        current = *value;
+        delta = step * farg0;
+        limit = *(volatile float *)&lbl_805649FC;
+        *flag = 0;
+        current += delta;
+        object->m_value = current < limit ? current : limit;
+    } else if (state->m_condition) {
+        object->m_value = lbl_805649F0;
     } else {
-        current = *(float *)((char *)arg0 + 0xF0) - step * farg0;
-        if (current > lbl_805649F0) {
-            *(float *)((char *)arg0 + 0xF0) = current;
-        } else {
-            *(float *)((char *)arg0 + 0xF0) = lbl_805649F0;
-        }
+        float limit, current, delta, step;
+        step = *(volatile float *)&lbl_80564A04;
+        current = *value;
+        delta = step * farg0;
+        limit = *(volatile float *)&lbl_805649F0;
+        current -= delta;
+        object->m_value = current > limit ? current : limit;
     }
-    if (*(unsigned int *)((char *)arg1 + 0x68) & 8)
-        *(float *)((char *)arg0 + 0xF0) = lbl_805649F0;
+    if (state->m_flags & 8)
+        object->m_value = lbl_805649F0;
 }
-
+#pragma scheduling on
 void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern void fn_802C8BD0(int);
     extern void fn_801E866C(int);
