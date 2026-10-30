@@ -51,6 +51,7 @@ done:
 
 double cos(double);
 double sin(double);
+#pragma scheduling invalid_target
 void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
     struct Vector {
         float x;
@@ -64,34 +65,51 @@ void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
         struct Vector *value;
         float t;
     };
+    struct Result {
+        float z;
+        float w;
+        float x;
+        float y;
+    };
     struct Vector *p = ((struct Args *)arg1)->value;
     float t = ((struct Args *)arg1)->t;
-    float value[4];
+    float angle = farg1;
+    float offset = farg0;
+    double temp;
+    struct Result value;
 
-    value[2] = p->x + t * (p->next->x - p->x);
-    value[3] = p->y + t * (p->next->y - p->y);
-    value[0] = p->z + t * (p->next->z - p->z);
-    value[1] = p->w + t * (p->next->w - p->w);
+    value.x = p->x + t * (p->next->x - p->x);
+    value.y = p->y + t * (p->next->y - p->y);
+    value.z = p->z + t * (p->next->z - p->z);
+    value.w = p->w + t * (p->next->w - p->w);
     {
-        float length = (float)((double (*)(float))fn_8002F234)(value[0] * value[0] + value[1] * value[1]);
+        float length = fn_8002F234(value.z * value.z + value.w * value.w);
         float scale = lbl_80562704 / length;
-        value[0] *= scale;
-        value[1] *= scale;
+        float z;
+
+        value.z *= scale;
+        value.w *= scale;
+        temp = *(double *)&value.z;
+        z = value.z;
+        {
+            float normZ = ((float *)&temp)[0];
+            float normW = ((float *)&temp)[1];
+            float negZ = -normZ;
+            float offsetW = normW * offset;
+            value.x += offsetW;
+            value.y += negZ * offset;
+        }
+        offset = (float)cos(angle);
+        {
+            float sine = (float)sin(angle);
+            value.z = z * offset - value.w * sine;
+            value.w = z * sine + value.w * offset;
+        }
     }
-    value[2] += value[1] * farg0;
-    value[3] += -value[0] * farg0;
-    {
-        float cosine = cos(farg1);
-        float sine = sin(farg1);
-        float z = value[0];
-        float w = value[1];
-        value[0] = z * cosine - w * sine;
-        value[1] = z * sine + w * cosine;
-    }
-    fn_801B7C8C(arg0, &value[2], value);
+    fn_801B7C8C(arg0, &value.x, &value.z);
     *(int *)((char *)arg0 + 0x3C) = 0;
 }
-
+#pragma scheduling on
 extern void fn_80135B24(void *, float);
 extern void fn_80136468(void *, float);
 void fn_801B78EC(int arg0, int arg1, int arg2, float farg0, float farg1, float farg2) {
@@ -120,6 +138,7 @@ void fn_801B78EC(int arg0, int arg1, int arg2, float farg0, float farg1, float f
     fn_801B7760(arg0, (int)&slots[2], farg0, farg2);
 }
 
+#pragma dont_inline fn_801B79AC
 float fn_801B79AC(void) {
     return *(float *)((char *)fn_80137C54(-1) + 4);
 }
