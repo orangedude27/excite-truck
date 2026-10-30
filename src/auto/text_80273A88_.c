@@ -131,6 +131,63 @@ void fn_8027445C(void) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
+void fn_80274460(void *arg0) {
+    extern void fn_80015A20(void *, float *, float, float);
+    extern void fn_80015B20(void *, void *, void *);
+    extern float lbl_80563FB0, lbl_80563FE0, lbl_80563FE8;
+    struct Words { unsigned int value[12]; };
+    struct Object {
+        unsigned char pad0[0x58];
+        struct Words dst;
+        unsigned char pad1[0x20];
+        unsigned char pad2[0x18];
+        struct Words src;
+    };
+    float zero = lbl_80563FE0;
+    float one = lbl_80563FB0;
+    void *temp_r3;
+    struct {
+        float result[3];
+        float vector[3];
+        float callVec[3];
+        float matrix[9];
+    } work;
+    ((struct Object *)arg0)->dst = ((struct Object *)arg0)->src;
+    work.callVec[0] = one;
+    work.callVec[1] = zero;
+    work.callVec[2] = one;
+    ((void (*)(void *, float *))fn_80015A20)(work.matrix, work.callVec);
+    temp_r3 = (char *)arg0 + 0x58;
+    fn_80015B20(temp_r3, work.matrix, temp_r3);
+    work.vector[0] = lbl_80563FB0;
+    work.vector[1] = lbl_80563FE8;
+    work.vector[2] = lbl_80563FB0;
+    {
+        float *vector = work.vector;
+        float *result = work.result;
+        if (result == vector) {
+            float out0 = vector[0] * *(float *)((char *)arg0 + 0x58) + vector[1] * *(float *)((char *)arg0 + 0x64) + vector[2] * *(float *)((char *)arg0 + 0x70);
+            float out1 = vector[0] * *(float *)((char *)arg0 + 0x5C) + vector[1] * *(float *)((char *)arg0 + 0x68) + vector[2] * *(float *)((char *)arg0 + 0x74);
+            float out2 = vector[0] * *(float *)((char *)arg0 + 0x60) + vector[1] * *(float *)((char *)arg0 + 0x6C) + vector[2] * *(float *)((char *)arg0 + 0x78);
+            result[0] = out0;
+            result[1] = out1;
+            result[2] = out2;
+        } else {
+            result[0] = vector[0] * *(float *)((char *)arg0 + 0x58) + vector[1] * *(float *)((char *)arg0 + 0x64) + vector[2] * *(float *)((char *)arg0 + 0x70);
+            result[1] = vector[0] * *(float *)((char *)arg0 + 0x5C) + vector[1] * *(float *)((char *)arg0 + 0x68) + vector[2] * *(float *)((char *)arg0 + 0x74);
+            result[2] = vector[0] * *(float *)((char *)arg0 + 0x60) + vector[1] * *(float *)((char *)arg0 + 0x6C) + vector[2] * *(float *)((char *)arg0 + 0x78);
+        }
+    }
+    *(float *)((char *)arg0 + 0x7C) += work.result[0];
+    *(float *)((char *)arg0 + 0x80) += work.result[1];
+    *(float *)((char *)arg0 + 0x84) += work.result[2];
+}
+#pragma scheduling on
+#pragma pop
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_80274660(void *arg0, void *arg1) {
     extern void fn_80015A20(void *, float *, float, float);
     extern float lbl_80563FF0, lbl_80563FF4, lbl_80563FF8;
