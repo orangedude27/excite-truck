@@ -278,6 +278,13 @@ void fn_80247174(void) {
     fn_80246CAC(lbl_80563898);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma dont_inline fn_80246DE8
+#pragma dont_inline fn_80246DF4
+#pragma dont_inline fn_80246E00
+#pragma dont_inline fn_80247174
 s32 fn_8024739C(void) { return 0; }
 
 extern char lbl_8055F260, lbl_8055F269, lbl_8055F26A;
