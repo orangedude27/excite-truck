@@ -246,7 +246,7 @@ extern f32 lbl_80562578, lbl_80562588, lbl_80562598, lbl_8056259C;
 extern f32 lbl_805625A0, lbl_805625A4, lbl_805625A8, lbl_805625AC;
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801B02E0(void *arg0) {
     u8 *self = (u8 *)arg0;
     f32 velocityMag, speed, scale, factor;
