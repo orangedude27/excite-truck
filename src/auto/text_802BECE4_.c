@@ -536,7 +536,7 @@ unsigned char fn_802C0D3C(void *arg0) {
 
 extern int fn_801E85AC(void);
 extern int fn_802C00A4(void);
-extern int fn_8012C33C(int);
+extern int fn_8012C33C();
 extern int fn_802C6FC0(int, int, int);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034AD78[];
