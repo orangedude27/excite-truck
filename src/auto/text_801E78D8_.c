@@ -100,6 +100,7 @@ void fn_801E7C1C(void) {
 }
 
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_801E7C28(void *arg0) {
     class Dummy_801E7C28 {
     public:
@@ -680,6 +681,59 @@ void fn_801E89FC(void) {
     lbl_804881D8[2] = fn_80129DC4(0, lbl_80562DC0, lbl_80562DD4);
     PSVECNormalize(lbl_804881D8, lbl_804881D8);
     lbl_804881D8[3] = fn_80129DC4(0, lbl_80562DBC, lbl_80562DE0);
+}
+
+void fn_801E8A84(void) {
+    extern float lbl_80562DE4, lbl_80562DE8;
+    extern float lbl_80562DEC, lbl_80562DF0;
+    float amount;
+    float scale;
+    float factor;
+    float clamp;
+    float noise;
+
+    lbl_804881D8[0] = lbl_804881D8[0] +
+        fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
+    lbl_804881D8[1] = lbl_804881D8[1] +
+        fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
+    lbl_804881D8[2] = lbl_804881D8[2] +
+        fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
+
+    if (lbl_804881D8[1] > lbl_80562DDC) {
+        amount = lbl_804881D8[1] - lbl_80562DDC;
+        scale = amount * lbl_80562DB4;
+        factor = lbl_804881D8[0] > lbl_80562DBC ?
+            lbl_80562DD4 : lbl_80562DC0;
+        lbl_804881D8[0] = lbl_804881D8[0] + scale * factor;
+        lbl_804881D8[1] = lbl_80562DDC;
+        factor = lbl_804881D8[2] > lbl_80562DBC ?
+            lbl_80562DD4 : lbl_80562DC0;
+        lbl_804881D8[2] = lbl_804881D8[2] + scale * factor;
+    } else if (lbl_804881D8[1] < lbl_80562DD8) {
+        amount = lbl_80562DD8 - lbl_804881D8[1];
+        scale = amount * lbl_80562DB4;
+        factor = lbl_804881D8[0] > lbl_80562DBC ?
+            lbl_80562DD4 : lbl_80562DC0;
+        lbl_804881D8[0] = lbl_804881D8[0] + scale * factor;
+        lbl_804881D8[1] = lbl_80562DD8;
+        factor = lbl_804881D8[2] > lbl_80562DBC ?
+            lbl_80562DD4 : lbl_80562DC0;
+        lbl_804881D8[2] = lbl_804881D8[2] + scale * factor;
+    }
+
+    PSVECNormalize(lbl_804881D8, lbl_804881D8);
+    clamp = lbl_80562DE0;
+    noise = lbl_804881D8[3] +
+        fn_80129DC4(0, lbl_80562DEC, lbl_80562DF0);
+    if (clamp < noise) {
+    } else {
+        clamp = noise;
+    }
+    if (clamp > lbl_80562DBC) {
+    } else {
+        clamp = lbl_80562DBC;
+    }
+    lbl_804881D8[3] = clamp;
 }
 
 void fn_801E8C84(float *arg0) {
