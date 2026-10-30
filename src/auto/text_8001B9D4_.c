@@ -960,6 +960,7 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     return 0;
 }
 
+#pragma pop
 #pragma scheduling reset
 u32 fn_8001D220(u32 arg0, u32 arg1, u32 arg2) {
     u32 result = arg0 | (arg2 << 16);
