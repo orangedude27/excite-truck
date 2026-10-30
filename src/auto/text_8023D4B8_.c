@@ -198,6 +198,85 @@ loop_1:
     }
     return 0;
 }
+
+extern void *lbl_8055F198;
+extern int lbl_802FA26C[];
+extern int lbl_804987B8[];
+extern int lbl_8055BC88;
+extern int lbl_8055BC90;
+extern int lbl_8055B860;
+extern int fn_802146BC(int *, int, int, int, int, int, int, int);
+extern long fn_8022D850(void *, int, int, int *);
+extern void fn_801A7A08(const char *, int, int);
+extern void fn_801808DC(void);
+extern void *fn_8023E440(void *, void *);
+extern void fn_8023E504(void *, int *);
+int fn_8023DD80(void) {
+    volatile int local[0x31];
+    register int zero = 0;
+    register char **table = (char **)lbl_802FA190;
+    int result;
+
+    if (lbl_8055F194 >= 0x11) {
+        fn_8023DD4C();
+        return 0;
+    }
+
+    *(volatile int *)((char *)local + 0x14) = (int)lbl_8055F19C;
+    *(volatile char *)((char *)local + 0x1C) = zero;
+
+    fn_801A7974((char *)local + 0x10, (int)table[lbl_8055F194 * 2],
+        (int)((void *(*)(void *))(((void **)*(void **)lbl_8055F198)[28]))(lbl_8055F198));
+    fn_8023E440((char *)local + 0x38, (char *)local + 0x10);
+
+    *(volatile int *)((char *)local + 0x68) =
+        (int)fn_8022D850(lbl_8055F190, lbl_8055F194, 0, 0);
+
+    *(volatile int *)((char *)local + 0x60) = (int)lbl_8055BC88;
+    *(volatile int *)((char *)local + 0x64) = 3;
+    *(volatile int *)((char *)local + 0x6C) = zero;
+    *(volatile int *)((char *)local + 0x70) = zero;
+    *(volatile int *)((char *)local + 0x74) = (int)lbl_8055BC90;
+    *(volatile int *)((char *)local + 0x78) = 0x10;
+    *(volatile int *)((char *)local + 0x7C) = zero;
+    *(volatile int *)((char *)local + 0x80) = (int)((char *)local + 0x38);
+    *(volatile int *)((char *)local + 0x84) = zero;
+    *(volatile int *)((char *)local + 0x88) = (int)lbl_8055B860;
+    *(volatile int *)((char *)local + 0x8C) = 6;
+    *(volatile int *)((char *)local + 0x90) = zero;
+    *(volatile int *)((char *)local + 0x94) = -1;
+    *(volatile int *)((char *)local + 0x98) = 0x1B;
+    *(volatile int *)((char *)local + 0x9C) = (int)lbl_8055B860;
+    *(volatile int *)((char *)local + 0xA0) = 6;
+    *(volatile int *)((char *)local + 0xA4) = zero;
+    *(volatile int *)((char *)local + 0xA8) = -2;
+    *(volatile int *)((char *)local + 0xAC) = 0xD;
+    *(volatile int *)((char *)local + 0xB0) = lbl_804987B8[0];
+    *(volatile int *)((char *)local + 0xB4) = lbl_804987B8[1];
+    *(volatile int *)((char *)local + 0xB8) = lbl_804987B8[2];
+    *(volatile int *)((char *)local + 0xBC) = lbl_804987B8[3];
+    *(volatile int *)((char *)local + 0xC0) = lbl_804987B8[4];
+
+    *(volatile int *)((char *)local + 0x20) = lbl_802FA26C[0];
+    *(volatile int *)((char *)local + 0x24) = (int)((char *)local + 0x60);
+    *(volatile int *)((char *)local + 0x28) = lbl_802FA26C[2];
+    *(volatile int *)((char *)local + 0x2C) = lbl_802FA26C[3];
+    *(volatile int *)((char *)local + 0x30) = lbl_802FA26C[4];
+
+    result = fn_802146BC((int *)((char *)local + 0x20), -0x3E7, -0x3E7, 1,
+        lbl_802FA26C[4], lbl_802FA26C[3], lbl_802FA26C[2], lbl_802FA26C[0]);
+    if (result != -1) {
+        *(volatile char *)((char *)local + 0x0C) = zero;
+        *(volatile int *)((char *)local + 0x04) = (int)lbl_8055F19C;
+        fn_8023E504((char *)local + 0x38, (int *)local);
+        fn_801A7A08((char *)local, (int)table[lbl_8055F194 * 2],
+            (int)((void *(*)(void *))(((void **)*(void **)lbl_8055F198)[28]))(lbl_8055F198));
+        fn_8023E1FC(lbl_8055F190);
+        fn_801808DC();
+    }
+    return 0;
+}
+
 #pragma scheduling on
 int fn_8023DF70(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
@@ -319,7 +398,7 @@ extern "C" void fn_8023E1FC(void *arg0) {
         char string[0x14];
     } frame;
     register char *entry;
-    register int zero = 0;
+    register signed char zero = 0;
     int i;
     Interface *object;
 
