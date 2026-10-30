@@ -1,4 +1,5 @@
 #include "types.h"
+extern s32 fn_80014ADC(void);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -646,11 +647,11 @@ extern void fn_8000FF88(s32, s32, void *, s32, s32, f32, f32, f32, ...);
 extern f32 lbl_80560368, lbl_80560384, lbl_805603CC, lbl_805603D0;
 extern char lbl_80558BC4;
 void fn_800154B8(void) {
-    /* Fix note: retain the object pointer through edge-count setup, then keep the masked right count in r31. */
+    /* Fix note: keep the signed edge counters live in registers before applying the final right-edge mask. */
     s32 current;
-    register s32 *base;
-    s32 first, left, right, i;
-    f32 y, step;
+    s32 *base;
+    register s32 first, left, right, start, i, limit;
+    register f32 y, step;
     current = fn_801EA994();
     base = *(s32 **)((char *)lbl_8055D350 + 0x30);
     left = 2;
@@ -666,16 +667,17 @@ void fn_800154B8(void) {
         right = current - first;
     }
     y = lbl_805603CC;
-    i = 1;
-    if (first - (left & ~(left >> 31)) >= 1)
-        i = first - (left & ~(left >> 31));
+    start = first - (left & ~(left >> 31));
     right = right & ~(right >> 31);
+    i = 1;
+    if (start >= 1)
+        i = start;
     step = lbl_80560384;
-    for (; i < *(s32 *)(*(u8 **)((u8 *)lbl_8055D350 + 0x30) + 4); ++i) {
+    for (; i < (limit = *(s32 *)(*(u8 **)((u8 *)lbl_8055D350 + 0x30) + 4)); ++i) {
         fn_8000FF88(-1, 9, &lbl_80558BC4, i, fn_801EA9B0(i - 1) + 0x48, lbl_80560368, lbl_805603D0, y);
         y -= step;
     }
-    fn_8000FF88(-0x100, 9, &lbl_80558BC4, 0,
+    fn_8000FF88(-0x100, 9, &lbl_80558BC4, limit,
                 *(s32 *)((u8 *)lbl_8055D350 + 0x28) + 0x48,
                 lbl_80560368, lbl_805603D0, y);
     step = lbl_80560384;
