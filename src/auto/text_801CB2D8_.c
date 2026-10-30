@@ -386,13 +386,12 @@ void fn_801CC470(void) {
     lbl_8055E884 = (s32 *)object;
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801CC594(void *arg0) {
     u8 *base = (u8 *)arg0;
     register s32 offset;
     register s32 index;
-    register s32 minusOne;
-    register void *updates;
+    s32 minusOne;
     void *entry;
     void *object;
     f32 floatE4;
@@ -401,17 +400,15 @@ void fn_801CC594(void *arg0) {
 
     if (base[0x10] != 0)
         return;
-
     index = 0;
     offset = 0;
-loop:
-    entry = *(void **)((u8 *)*(void **)(base + 0x18) + offset);
-    if (entry != 0)
-        fn_8001BE70(*(void **)entry);
-    index++;
-    offset += 4;
-    if (index < *(volatile s32 *)(base + 0x1C))
-        goto loop;
+    do {
+        entry = *(void **)((u8 *)*(void **)(base + 0x18) + offset);
+        if (entry != 0)
+            fn_8001BE70(*(void **)entry);
+        offset += 4;
+        index = offset >> 2;
+    } while (index < *(s32 *)(base + 0x1C));
 
     *(void **)(base + 0x2A0) = base + 0x29C;
     offset = 0;
@@ -472,8 +469,7 @@ loop:
     *(f32 *)(base + 0x610) = floatFC;
     *(f32 *)(base + 0x614) = floatFC;
 
-    updates = *(void **)(base + 0x2C8);
-    if (updates != 0)
+    if (*(void **)(base + 0x2C8) != 0)
         fn_802AE0E0();
     object = *(void **)(base + 0x2CC);
     if (object != 0) {
