@@ -284,10 +284,10 @@ extern "C" void fn_801F7A14(void *arg0) {
 
 extern "C" void fn_801F7A14(void *);
 extern "C" s32 fn_801F7A88(void *, s32, void *, s32);
-extern const char lbl_8055B280[];
-extern const char lbl_8055B288[];
-extern const char lbl_8055B290[];
-extern const char lbl_8055B298[];
+__declspec(section ".sdata") extern const char lbl_8055B280[];
+__declspec(section ".sdata") extern const char lbl_8055B288[];
+__declspec(section ".sdata") extern const char lbl_8055B290[];
+__declspec(section ".sdata") extern const char lbl_8055B298[];
 extern "C" s32 fn_801F7A88(void *, s32, void *, s32);
 extern "C" void fn_801F7A14(void *);
 extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
