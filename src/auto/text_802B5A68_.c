@@ -325,30 +325,39 @@ extern "C" void fn_802B5F24(s32 arg0) {
 }
 #pragma cplusplus reset
 #pragma pop
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802B5F98(void) {
+    register char *base = lbl_8034A598;
     s32 index, i, j;
     s32 handle;
+    register float gridScale, uvScale;
     float height, x, z;
+    float u, v;
     float points[3];
-    handle = fn_802E3D68(lbl_8034A598 + 0x2c);
+
+    handle = fn_802E3D68(base + 0x2c);
     if (handle == -1) return;
     fn_802E3AD0(handle, lbl_8055CE58);
-    fn_802E3AD0(handle, lbl_8034A598 + 0x3c);
-    fn_802E3AD0(handle, lbl_8034A598 + 0x50);
+    fn_802E3AD0(handle, base + 0x3c);
+    fn_802E3AD0(handle, base + 0x50);
+
+    gridScale = lbl_80564C58;
+    uvScale = lbl_80564C60;
     index = 0;
     for (i = -0x200; i <= 0x200; i += 8) {
         for (j = -0x200; j <= 0x200; j += 8, index++) {
-            x = (float)i * lbl_80564C58;
-            z = (float)j * lbl_80564C58;
+            x = (float)i * gridScale;
+            z = (float)j * gridScale;
             height = fn_801DCF48(points, x, z);
-            fn_802E3AD0(handle, lbl_8034A598 + 0x60, x, height, z);
-            fn_802E3AD0(handle, lbl_8034A598 + 0x78,
-                        (float)(i + 0x200) * lbl_80564C60,
-                        (float)(j + 0x200) * lbl_80564C60);
-            fn_802E3AD0(handle, lbl_8034A598 + 0x8c, points[0], points[1], points[2]);
+            u = (float)(i + 0x200) * uvScale;
+            v = (float)(j + 0x200) * uvScale;
+            fn_802E3AD0(handle, base + 0x60, x, height, z);
+            fn_802E3AD0(handle, base + 0x78, u, v);
+            fn_802E3AD0(handle, base + 0x8c, points[0], points[1], points[2]);
             if (i > -0x200 && j > -0x200) {
-                fn_802E3AD0(handle, lbl_8034A598 + 0xa4, index, index - 1, index - 0x81);
-                fn_802E3AD0(handle, lbl_8034A598 + 0xa4, index - 0x81, index - 1, index - 0x82);
+                fn_802E3AD0(handle, base + 0xa4, index, index - 1, index - 0x81);
+                fn_802E3AD0(handle, base + 0xa4, index - 0x81, index - 1, index - 0x82);
             }
         }
     }
@@ -357,6 +366,7 @@ void fn_802B5F98(void) {
     fn_802E3AD0(handle, lbl_8055CE60);
     fn_802E3734(&handle);
 }
+#pragma pop
 
 #pragma push
 #pragma small_data off
@@ -1109,6 +1119,97 @@ extern "C" void fn_802B7884(void *arg0) {
     result = obj->call(base + 0x150);
     fn_802B6568(result, selection);
 }
+
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_802B7918(void) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void *call(const char *);
+        virtual void v2();
+        virtual void *get(const char *);
+    };
+    typedef struct {
+        void *name;
+        s32 value;
+        s32 unk8;
+        s32 unkC;
+        f32 time;
+        s32 unk14;
+        s32 unk18;
+        s32 unk1C;
+    } Record;
+    Dummy *obj = (Dummy *)lbl_8055FA48;
+    void *result;
+    volatile const u8 *source;
+    f32 step;
+    f32 elapsed;
+    s32 early;
+    s32 count;
+    s32 i;
+    s32 offset;
+    s32 unknown;
+    s32 value;
+    s32 index;
+    void *selected;
+    Record record;
+    char buf[0x20];
+
+    result = obj->get(lbl_8034A598 + 0x2A0);
+    step = *(f32 *)((u8 *)result + 0x14);
+    char *base = lbl_8034A598;
+    obj = (Dummy *)lbl_8055FA48;
+    result = obj->call(base + 0x2AC);
+    source = (const u8 *)result;
+    record.name = *(void * volatile *)(source + 0);
+    value = *(volatile const s32 *)(source + 4);
+    unknown = *(volatile const s32 *)(source + 8);
+    record.value = value;
+    record.unk8 = unknown;
+    record.unkC = *(volatile const s32 *)(source + 0xC);
+    record.time = *(volatile const f32 *)(source + 0x10);
+    record.unk14 = *(volatile const s32 *)(source + 0x14);
+    record.unk18 = *(volatile const s32 *)(source + 0x18);
+    record.unk1C = *(volatile const s32 *)(source + 0x1C);
+    obj = (Dummy *)lbl_8055FA48;
+    result = obj->call(base + 0xC8);
+    fn_802B6568(result, lbl_8055CEA8);
+
+    elapsed = (f32)fn_802E2C20() / lbl_80564C70 -
+              ((f32 *)&lbl_8055FA10)[1];
+    early = elapsed < lbl_8055FA10;
+    if (early != 0) {
+        fn_802B6AC0();
+        s32 *state = (s32 *)&lbl_804BE7D8;
+        count = state[1];
+        if (count > 0) {
+            i = 0;
+            offset = 0;
+            while (i < state[1]) {
+                ((void (*)(char *, s32, const char *, ...))fn_801345D8)(
+                    buf, 0x20, base + 0x2B8, i);
+                record.name = buf;
+                fn_802B6568(&record, lbl_8055CE70,
+                            (void *)(*(u32 *)&lbl_804BE7D8 + offset));
+                *(f32 *)((u8 *)&record + 8) += step;
+                offset += 0x128;
+                i++;
+            }
+        } else {
+            fn_80147230(&record, base + 0x2C4);
+        }
+    } else {
+        index = lbl_8055FA2C;
+        selected = base + 0x2D0;
+        if (index >= 0 && index < *(s32 *)((u8 *)&lbl_804BE7D8 + 4)) {
+            selected = (void *)(*(u32 *)&lbl_804BE7D8 + index * 0x128);
+        }
+        fn_80147230(&record, lbl_8055CE70, selected);
+    }
+}
+#pragma use_lmw_stmw reset
+#pragma cplusplus reset
 
 extern void fn_801345D8(void *, s32, const char *, ...);
 extern "C" s32 fn_802B1C14(s32);
