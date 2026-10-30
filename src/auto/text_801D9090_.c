@@ -264,8 +264,8 @@ extern "C" int fn_801D94DC(void *head, void *list, const char *name, int object)
 }
 
 #pragma cplusplus on
-extern void fn_801345D8(char *, int, const char *, ...);
-extern int fn_802C6FC0(int, int, int);
+extern "C" void fn_801345D8(char *, int, const char *, ...);
+extern "C" int fn_802C6FC0(int, int, int);
 extern "C" void fn_801D9654(void **head, DtbManager801D9394 *manager, const char *name) {
     struct DtbItem {
         virtual const char *getName();
