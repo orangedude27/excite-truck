@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned long u32;
 typedef signed long s32;
 typedef float f32;
+extern f32 lbl_80564860;
 extern s32 fn_801E85B4(void);
 extern int fn_802C86DC(void);
 extern void fn_802C744C(s32, f32 *);
