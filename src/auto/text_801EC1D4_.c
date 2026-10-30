@@ -489,11 +489,11 @@ void fn_801EDD7C(void *arg0, long arg1) {
     register long data = arg1;
     long offset, i;
     char *entry;
-    float v3, v2, v1, v0;
+    float v3, v2, v0, v1;
     float scale;
     float v4, v5, v6, v7, v8, v10, v9, v11;
 
-    /* Fix note: use direct byte offsets for the copy path and keep loop state declared in target order. */
+    /* Fix note: direct offsets keep the integer copy compact; swap leading float temporary order for target FPRs. */
     fn_801EABA8(object, *(void **)((char *)object + 0x3C));
     scale = *(float *)((char *)data + 0x2D0);
     *(float *)((char *)object + 0x4D0) = scale;
@@ -562,7 +562,7 @@ void fn_802C7AE0(long, void*, long, float);
 void fn_801F13F4(long, float, float);
 #pragma push
 #pragma processor 750
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_801EDF18(void* arg0) {
     struct Settings {
         long first;
