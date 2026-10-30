@@ -1459,10 +1459,11 @@ extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
         lbl_805647AC / (base + *(f32 *)(object + 0x48) * clampUpper),
         base, product);
     fn_802A4524(object);
-    return object;
-}
-
-extern "C" void fn_802A44B4(void) {
+          return object;
+  }
+#pragma pop
+  
+  extern "C" void fn_802A44B4(void) {
 }
 
 extern "C" void fn_802CAC54(s32);
