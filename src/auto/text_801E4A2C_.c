@@ -95,8 +95,8 @@ void fn_801E4BEC(s32 fontArg, s32 drawFlags, s32 alignFlags, s32 x, s32 y, const
     char text[0x1000];
     va_list args;
     s32 value;
-    s32 half;
-    register u8 *p;
+    long half;
+    u8 *p;
 
     va_start(args, format);
     vsprintf(text, format, args);
@@ -123,7 +123,7 @@ void fn_801E4BEC(s32 fontArg, s32 drawFlags, s32 alignFlags, s32 x, s32 y, const
     } else if (alignFlags & 0x40) {
         y -= fn_801E4B48((s32 *)fontArg);
     }
-    if (fontArg != 0) {
+    if (fontArg) {
         p = (u8 *)text;
         while (*p != 0) {
             register u8 *glyph;
@@ -143,7 +143,6 @@ void fn_801E4BEC(s32 fontArg, s32 drawFlags, s32 alignFlags, s32 x, s32 y, const
         fn_802C4F58(x, y, text, lbl_8055FBFC);
     }
 }
-#pragma pop
 extern s32 fn_801E4B00(s32 *);
 extern s32 fn_801E4B48(s32 *);
 extern s32 fn_802C4EFC(s32);
