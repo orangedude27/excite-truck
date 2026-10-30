@@ -223,7 +223,76 @@ void fn_802A4D08(void) {
         fn_802C9118();
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_802A4E08(void) {
+    register s32 alpha;
+    register u32 slot;
+    f32 value;
+    f32 absolute;
+    s32 scaled;
+    s32 nonnegative;
+    void *camera;
+    f32 matrix[12];
+    f32 angle;
+    f32 cosine;
+    f32 sine;
+    f32 maximum;
+    f32 clamp;
+
+    slot = fn_801E85B4() * 0xE0;
+    slot = (u32)fn_801E7E34() + slot;
+
+    value = *(f32 *)((u8 *)slot + 0xDC);
+    absolute = (f32)__fabs((double)value);
+    if (!(absolute <= *(f32 *)lbl_80558DC4)) {
+        alpha = 0xFF;
+        scaled = (s32)(lbl_80564854 * value);
+        nonnegative = scaled & ((-scaled & ~scaled) >> 31);
+        if (nonnegative < 0xFF)
+            alpha = nonnegative;
+
+        fn_802C90F0(lbl_8055F89C);
+        ((void (*)(f32, f32, f32, f32, s32, s32, s32, s32, s32))fn_802C9124)(
+            lbl_80564858, lbl_80564858, lbl_8056485C, lbl_8056485C,
+            0, 0, lbl_8055CFF0, lbl_8055CFF4,
+            (alpha << 24) | 0x00E6F0FF);
+        fn_802C9118();
+    }
+
+    absolute = (f32)__fabs((double)*(f32 *)((u8 *)slot + 0xD8));
+    if (!(absolute <= *(f32 *)lbl_80558DC4) && lbl_8055F898 != -1) {
+        camera = (void *)fn_802C86DC();
+        matrix[9] = *(f32 *)((u8 *)camera + 0x24);
+        matrix[10] = *(f32 *)((u8 *)camera + 0x28);
+        matrix[11] = *(f32 *)((u8 *)camera + 0x2C);
+
+        angle = *(f32 *)((u8 *)slot + 0xE0);
+        cosine = (f32)cos((double)angle);
+        sine = (f32)sin((double)angle);
+
+        matrix[0] = cosine;
+        matrix[1] = lbl_80564858;
+        matrix[2] = -sine;
+        matrix[3] = lbl_80564858;
+        matrix[4] = lbl_8056485C;
+        matrix[5] = lbl_80564858;
+        matrix[6] = sine;
+        matrix[7] = lbl_80564858;
+        matrix[8] = cosine;
+
+        maximum = lbl_8056485C;
+        clamp = lbl_80564860 * *(f32 *)((u8 *)slot + 0xD8);
+        maximum = (maximum < clamp) ? maximum : clamp;
+        fn_802C9900(maximum);
+        fn_802C744C(lbl_8055F898, matrix);
+        fn_802C9904();
+    }
+}
 #pragma scheduling on
+#pragma pop
 extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag(float *);
 extern void fn_802E317C(const char *, ...);
@@ -1298,3 +1367,9 @@ extern void fn_802C744C(s32, f32 *);
 extern void fn_802C9900(f32);
 extern void fn_802C9904(void);
 extern double cos(double), sin(double);
+extern f32 PSQUATMultiply(void *, void *);
+extern void fn_802C8BD0(s32);
+extern s32 fn_802CE860(s32);
+extern void fn_802CE868(void);
+extern void fn_802CE86C(void *, s32, f32, double, double, double);
+extern f32 lbl_805648D8;
