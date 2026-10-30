@@ -586,7 +586,7 @@ extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
 extern "C" void *fn_801E8718(int);
 extern "C" float PSVECDotProduct(const float *, const float *);
 extern "C" int fn_801E85A4(void);
-#pragma cplusplus reset
+#pragma cplusplus off
 void fn_802A042C(void *obj, Unk802A0794Params *pos) {
     struct Entry { unsigned int words[12]; };
     struct Entry copy;
