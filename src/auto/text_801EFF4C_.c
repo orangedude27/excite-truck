@@ -1,4 +1,8 @@
 #include "revolution/MTX/mtxtypes.h"
+extern int lbl_8055B0C8;
+extern int lbl_8055B0F0;
+extern int lbl_8055B0F8;
+extern float lbl_80562F28;
 extern float lbl_80562F1C;
 extern float lbl_80562F18;
 extern int __cntlzw(unsigned int);
