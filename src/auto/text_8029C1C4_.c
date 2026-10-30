@@ -803,6 +803,54 @@ void fn_8029D574(int arg0) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
+void fn_8029D644(void *arg0) {
+    register char *base = (char *)arg0;
+    register int total;
+    register int i;
+    register int offset;
+    register int mode;
+    char *buffers[2];
+    register char *source;
+    register char *other;
+
+    total = (*(int *)(base + 0x10) - 1) * (*(int *)(base + 0xC) * 2);
+    {
+        char *result = (char *)((void *(*)(int, int))fn_802C86DC)(
+            *(int *)(base + 0x10) - 1, *(int *)(base + 0x10));
+        *(float *)(base + 0x64) = *(float *)(result + 0x24);
+        *(float *)(base + 0x68) = *(float *)(result + 0x28);
+        *(float *)(base + 0x6C) = *(float *)(result + 0x2C);
+    }
+    fn_802C8BD0(*(int *)(base + 0x74));
+    if (fn_802C8DBC(total) != 0) {
+        buffers[0] = *(char **)(base + 0x70);
+        buffers[1] = buffers[0] + *(int *)(base + 0xC) * 0x18;
+        for (i = 0, offset = 0; i < *(int *)(base + 0xC); offset += 0x18, i++)
+            fn_8029DB78(arg0, buffers[0] + offset, i, 0);
+
+        for (mode = 1; mode < *(int *)(base + 0x10); mode++) {
+            source = buffers[mode & 1];
+            other = buffers[1 - (mode & 1)];
+            for (i = 0, offset = 0; i < *(int *)(base + 0xC); offset += 0x18, i++) {
+                fn_8029DB78(arg0, source + offset, i, mode);
+                fn_802C8E00(*(int *)(other + offset + 0xC), (unsigned int)(i > 0),
+                            *(float *)(other + offset + 0x0), *(float *)(other + offset + 0x4),
+                            *(float *)(other + offset + 0x8), *(float *)(other + offset + 0x10),
+                            *(float *)(other + offset + 0x14));
+                fn_802C8E00(*(int *)(source + offset + 0xC), (unsigned int)(i > 0),
+                            *(float *)(source + offset + 0x0), *(float *)(source + offset + 0x4),
+                            *(float *)(source + offset + 0x8), *(float *)(source + offset + 0x10),
+                            *(float *)(source + offset + 0x14));
+            }
+        }
+        fn_802C8E48();
+    }
+    fn_802C8D74();
+}
+
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_8029DA24(void *arg0, float *arg1, int x, int z) {
     extern float lbl_80564628, lbl_80564658, lbl_8056465C, lbl_8056468C;
