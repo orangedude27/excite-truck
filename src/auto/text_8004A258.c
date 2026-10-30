@@ -107,10 +107,18 @@ extern unsigned int OSGetArenaLo(void);
 extern void DCZeroRange(const void *, unsigned int);
 extern void DCFlushRange(unsigned int, unsigned int);
 extern unsigned int __OSRebootParams[];
+
+static inline void ClearMEM2Range(unsigned int base, unsigned int size) {
+    unsigned int flush = base;
+    if (size > 0x40000)
+        flush += size - 0x40000;
+    DCZeroRange((void *)base, size);
+    DCFlushRange(flush, 0x40000);
+}
 void ClearArena(void) {
     unsigned int reset = OSGetResetCode();
-    unsigned int size;
     unsigned int start;
+    unsigned int size;
 
     if ((reset >> 31) == 0) {
         size = OSGetArenaHi();
@@ -123,7 +131,7 @@ void ClearArena(void) {
         return;
     }
 
-    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) == 0) {
+    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) != 0) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
         start = OSGetArenaLo();
@@ -160,6 +168,68 @@ void ClearArena(void) {
     start = __OSRebootParams[4];
     if (OSGetArenaHi() > start) {
         size = OSGetArenaHi() - start;
+        if (size > 0x40000)
+            start += size - 0x40000;
+        DCZeroRange((void *)start, size);
+        DCFlushRange(start, 0x40000);
+    }
+}
+
+void ClearMEM2Arena(void) {
+    unsigned int reset = OSGetResetCode();
+    unsigned int start;
+    unsigned int size;
+
+    if ((reset >> 31) == 0) {
+        size = (unsigned int)OSGetMEM2ArenaHi();
+        size -= (unsigned int)OSGetMEM2ArenaLo();
+        start = (unsigned int)OSGetMEM2ArenaLo();
+        if (size > 0x40000)
+            start += size - 0x40000;
+        DCZeroRange((void *)start, size);
+        DCFlushRange(start, 0x40000);
+        return;
+    }
+
+    if (__OSRebootParams[3] == 0 ||
+        (__OSRebootParams[3] & 0x30000000) != 0x10000000) {
+        size = (unsigned int)OSGetMEM2ArenaHi();
+        size -= (unsigned int)OSGetMEM2ArenaLo();
+        start = (unsigned int)OSGetMEM2ArenaLo();
+        if (size > 0x40000)
+            start += size - 0x40000;
+        DCZeroRange((void *)start, size);
+        DCFlushRange(start, 0x40000);
+        return;
+    }
+
+    start = (unsigned int)OSGetMEM2ArenaLo();
+    if (start >= __OSRebootParams[3])
+        return;
+
+    if ((unsigned int)OSGetMEM2ArenaHi() <= __OSRebootParams[3]) {
+        size = (unsigned int)OSGetMEM2ArenaHi();
+        size -= (unsigned int)OSGetMEM2ArenaLo();
+        start = (unsigned int)OSGetMEM2ArenaLo();
+        if (size > 0x40000)
+            start += size - 0x40000;
+        DCZeroRange((void *)start, size);
+        DCFlushRange(start, 0x40000);
+        return;
+    }
+
+    start = (unsigned int)OSGetMEM2ArenaLo();
+    size = __OSRebootParams[3] - start;
+    start = (unsigned int)OSGetMEM2ArenaLo();
+    if (size > 0x40000)
+        start += size - 0x40000;
+    DCZeroRange((void *)start, size);
+    DCFlushRange(start, 0x40000);
+
+    start = __OSRebootParams[4];
+    if ((unsigned int)OSGetMEM2ArenaHi() > start) {
+        size = (unsigned int)OSGetMEM2ArenaHi();
+        size -= start;
         if (size > 0x40000)
             start += size - 0x40000;
         DCZeroRange((void *)start, size);
