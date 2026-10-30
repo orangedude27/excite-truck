@@ -532,34 +532,60 @@ extern "C" s32 fn_801F812C(const char *arg) {
 extern "C" const f32 lbl_80562FF0;
 extern "C" s32 fn_801F815C(const char *arg) { return stricmp(arg, lbl_8055B2C4) == 0; }
 
-__declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[];
-extern const char lbl_8055B2E4[], lbl_8055B2EC[];
-int sprintf(char *, const char *, ...);
-void *fn_801F83E4(void **arg0) {
-    u8 *obj = (u8 *)fn_801284F8(0x168, (void *)lbl_8055B2E4);
-    char name[0x20]; s32 i; void **vt;
+__declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[], lbl_8055B2E4[], lbl_8055B2EC[];
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" void *fn_801F83E4(void *arg0) {
+    class Manager {
+    public:
+        virtual void m8();
+        virtual int has(const char *);
+        virtual void m10();
+        virtual void *get(const char *);
+        virtual void *combine(const char *, void *);
+        virtual void m1C();
+        virtual void m20();
+        virtual void m24();
+        virtual void m28();
+        virtual void m2C();
+        virtual u8 flag(const char *, s32);
+    };
+    register const char *base = lbl_8033AF80;
+    register Manager *manager = (Manager *)arg0;
+    register u8 *obj = (u8 *)fn_801284F8(0x168, (void *)lbl_8055B2E4);
+    char name[0x20];
+    s32 i;
     if (obj != 0) {
-        vt = (void **)*arg0;
-        *(void **)(obj+0x108)=lbl_8033B468; *(s32 *)(obj+0x78)=0;
-        *(f32 *)(obj+0x7c)=lbl_80562FF0; *(f32 *)(obj+0x80)=lbl_80562FF0;
-        *(s32 *)(obj+0x104)=0; *(s32 *)(obj+0x24)=0; *(s32 *)(obj+0x20)=0;
-        *(f32 *)(obj+0x28)=lbl_80563000; obj[0x60]=1;
-        memset(obj,0x61,0x20); memset(obj+0x61,0x61,0x10);
-        *(s32 *)(obj+0x74)=-1; *(void **)(obj+0x108)=lbl_8033B418;
-        *(void **)(obj+0x13c)=((void *(*)(void *, const char *))vt[5])(arg0,lbl_8055B2A8);
-        *(void **)(obj+0x13c)=((void *(*)(void *, const char *, void *))vt[6])(arg0,lbl_8033AF80+0xc0,*(void **)(obj+0x13c));
-        *(void **)(obj+0x140)=((void *(*)(void *, const char *))vt[5])(arg0,lbl_8033AF80+0xcc);
-        *(s32 *)(obj+0x160)=1; i=1;
-        while(i<8) {
-            sprintf(name,lbl_8033AF80+0xd8,i+1);
-            if(((s32(*)(void *,const char *))vt[3])(arg0,name)!=0) {
-                *(void **)(obj+0x140+i*4)=((void *(*)(void *,const char *))vt[5])(arg0,name);
-                i++; *(s32 *)(obj+0x160)=i;
-            } else break;
+        *(void **)(obj + 0x108) = lbl_8033B468;
+        *(s32 *)(obj + 0x78) = 0;
+        *(f32 *)(obj + 0x7C) = lbl_80562FF0;
+        *(f32 *)(obj + 0x80) = lbl_80562FF0;
+        *(s32 *)(obj + 0x104) = 0;
+        *(s32 *)(obj + 0x24) = 0;
+        *(s32 *)(obj + 0x20) = 0;
+        *(f32 *)(obj + 0x28) = lbl_80563000;
+        obj[0x60] = 1;
+        memset(obj, 0x61, 0x20);
+        memset(obj + 0x61, 0x61, 0x10);
+        *(s32 *)(obj + 0x74) = -1;
+        *(void **)(obj + 0x108) = lbl_8033B418;
+        *(void **)(obj + 0x13C) = manager->get(lbl_8055B2A8);
+        *(void **)(obj + 0x13C) = manager->combine(base + 0xC0, *(void **)(obj + 0x13C));
+        *(void **)(obj + 0x140) = manager->get(base + 0xCC);
+        *(s32 *)(obj + 0x160) = 1;
+        i = 1;
+        while (i < 8) {
+            sprintf(name, base + 0xD8, i + 1);
+            if (manager->has(name) != 0) {
+                *(void **)(obj + 0x140 + i * 4) = manager->get(name);
+                i++;
+                *(s32 *)(obj + 0x160) = i;
+            } else {
+                break;
+            }
         }
-        obj[0x164]=((u8(*)(void *,const char *,s32))vt[12])(arg0,lbl_8055B2EC,1);
-        obj[0x165]=((u8(*)(void *,const char *,s32))vt[12])(arg0,lbl_8033AF80+0xe8,1);
-        ((void *(*)(void *,const char *))vt[5])(arg0,(const char *)lbl_8055B2DC);
+        obj[0x164] = manager->flag(lbl_8055B2EC, 1);
+        obj[0x165] = manager->flag(base + 0xE8, 1);
+        manager->get((const char *)lbl_8055B2DC);
     }
     return obj;
 }
