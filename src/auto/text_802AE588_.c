@@ -68,6 +68,14 @@ extern float lbl_80564B64;
 extern float lbl_80564B6C;
 extern double lbl_80564B70;
 extern unsigned char fn_8012C33C(void *);
+struct ETConfigName {
+    char text[0xC];
+};
+struct ETConfigPaths {
+    struct ETConfigName name;
+    char lookupKey[0xC];
+    char statusKey[8];
+};
 extern void fn_802BE7F8(void);
 extern void fn_802B40F8(void);
 extern void fn_802B0914(void);
