@@ -656,37 +656,48 @@ int fn_801DDA84(int *arg0, int arg1, float farg0, float farg1, float farg2) {
 #pragma push
 #pragma paired_single off
 #pragma opt_common_subs off
-#pragma scheduling on
+#pragma scheduling invalid_target
 float fn_801DDC8C(float farg0, float farg1) {
-    register int *state = (int *)lbl_8055E990;
-    register int cellX;
-    register int cellZ;
-    register int tileWorldX;
-    register int tileWorldZ;
-    register int tileX;
-    register int tileZ;
+    int *state = (int *)lbl_8055E990;
+    int cellX;
+    int cellZ;
+    int tileWorldX;
+    int tileWorldZ;
+    int tileX;
+    int tileZ;
     int remX;
     int remZ;
     unsigned short tile;
     char *node;
     int layerIndex;
+    unsigned short sample;
     int next;
-    register float x;
-    register float z;
+    float x;
+    float z;
+    float offsetX;
+    float offsetZ;
+    float scaleX;
+    float scaleZ;
     float roundX;
     float roundZ;
     float value;
     float result;
     char *layerBase;
     char *layer;
+    union {
+        double d;
+        struct { unsigned int high; unsigned int low; } words;
+    } sampleDouble;
 
     if (state[4] == 0)
         return lbl_80562B84;
 
-    x = farg0 + *(float *)((char *)state + 0);
-    z = farg1 + *(float *)((char *)state + 4);
-    x *= *(float *)((char *)state + 8);
-    z *= *(float *)((char *)state + 12);
+    offsetX = farg0 + *(float *)((char *)state + 0);
+    scaleX = *(float *)((char *)state + 8);
+    offsetZ = farg1 + *(float *)((char *)state + 4);
+    scaleZ = *(float *)((char *)state + 12);
+    x = scaleX * offsetX;
+    z = scaleZ * offsetZ;
 
     roundX = x < lbl_80562B84 ? x - lbl_80562B64 : lbl_80562B64 + x;
     cellX = (int)roundX;
@@ -720,18 +731,13 @@ float fn_801DDC8C(float farg0, float farg1) {
     layerBase = (char *)*(int *)((char *)state + 0x20);
     layer = layerBase + layerIndex * 0x810;
     do {
-        unsigned short sample = *(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8);
-        union {
-            double d;
-            struct { unsigned int high; unsigned int low; } words;
-        } sampleDouble;
-        int weightIndex = *(int *)(layer + 0x808);
         next = *(int *)(layer + 0x80C);
+        sample = *(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8);
         sampleDouble.words.high = 0x43300000;
         sampleDouble.words.low = (unsigned int)sample;
         value = *(float *)(layer + 0) +
                 *(float *)(layer + 4) * (float)(sampleDouble.d - lbl_80562B78);
-        result += value * lbl_804425DC[weightIndex];
+        result += value * lbl_804425DC[*(int *)(layer + 0x808)];
         if (next < 0)
             break;
         layer = layerBase + next * 0x810;
