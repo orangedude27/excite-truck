@@ -2,10 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <macros.h>
-extern void fn_802CBD30(void **, void **, void *);
-#pragma dont_inline fn_802CBD30
 extern char lbl_8034BA98[];
-#pragma dont_inline fn_802CB3F8
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B538[];
 extern void *jumptable_8034B794[];
