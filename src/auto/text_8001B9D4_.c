@@ -638,25 +638,24 @@ extern void *lbl_8055D5D4;
 extern void *lbl_8055E050;
 #pragma dont_inline on
 #pragma scheduling invalid_target
+#pragma cplusplus on
 s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
     s32 *archive;
     void *node;
     s32 index;
     char *strings;
-    void **vtable;
     f32 value;
-    /* Fix note: keep the string base live from entry and reload the manager for each node lookup. */
-    if (name == 0) return 0;
+    /* Fix note: load the string base before the null guard and copy the float result through its integer bits. */
     strings = lbl_802FD6D8;
+    if (name == 0) return 0;
     archive = fn_8001C4E0(flags);
     if (archive[1] == 0) return 0;
     index = 0;
     node = ((void *(*)(void *, s32))((void **)*(void **)lbl_8055D5D4)[3])(lbl_8055D5D4, index);
     while (node != 0) {
-        vtable = *(void ***)node;
-        if (stricmp(((const char *(*)(void *))vtable[2])(node), strings + 0x39C) == 0 &&
-            stricmp(((const char *(*)(void *, const char *, void *))vtable[6])(node, strings + 0x3AC, &lbl_80558CD8), name) == 0 &&
-            ((s32 (*)(void *, s32))vtable[3])(node, archive[1]) != 0) break;
+        if (stricmp(((const char *(*)(void *))((void **)*(void **)node)[2])(node), strings + 0x39C) == 0 &&
+            stricmp(((const char *(*)(void *, const char *, void *))((void **)*(void **)node)[6])(node, strings + 0x3AC, &lbl_80558CD8), name) == 0 &&
+            ((s32 (*)(void *, s32))((void **)*(void **)node)[3])(node, archive[1]) != 0) break;
         index++;
         node = ((void *(*)(void *, s32))((void **)*(void **)lbl_8055D5D4)[3])(lbl_8055D5D4, index);
     }
@@ -669,14 +668,15 @@ s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
             break;
         case 0x100:
             value = ((f32 (*)(void *, s32))((void **)*(void **)node)[9])(node, archive[1]);
-            if ((flags & 0x3F800) == 0x800)
+            if ((flags & 0x1FC00) == 0x800)
                 value /= *(f32 *)((char *)lbl_8055E050 + 0x10);
-            *(f32 *)out = value;
+            *(s32 *)out = *(s32 *)&value;
             break;
         }
     }
     return 1;
 }
+#pragma cplusplus reset
 #pragma scheduling on
 #pragma dont_inline reset
 void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
