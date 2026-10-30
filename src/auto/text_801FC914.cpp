@@ -667,16 +667,30 @@ extern "C" void* fn_801FE188(void* arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
-    register unsigned char a=p[0x2C], b=p[0x2D], c=p[0x2E], d=p[0x2F];
-    register unsigned char e=p[0x30], f=p[0x31], g=p[0x32], h=p[0x33];
-    p[0x2C]=p[0x3B]; p[0x3B]=a; p[0x2D]=p[0x3A]; p[0x3A]=b;
-    p[0x2E]=p[0x39]; p[0x39]=c; p[0x2F]=p[0x38]; p[0x38]=d;
-    p[0x30]=p[0x37]; p[0x37]=e; p[0x31]=p[0x36]; p[0x36]=f;
-    p[0x32]=p[0x35]; p[0x35]=g; p[0x33]=p[0x34]; p[0x34]=h;
-    register unsigned char* q=p+0x3C;
-    int i;
-    for (i=0; i<32; i++, q+=0x18) {
+    register unsigned char* q = p + 0x3C;
+    register unsigned char a = p[0x2C];
+    register unsigned char x0 = p[0x3B];
+    register unsigned char h = p[0x33];
+    register unsigned char x7 = p[0x34];
+    register unsigned char g = p[0x32];
+    register unsigned char x6 = p[0x35];
+    register unsigned char f = p[0x31];
+    register unsigned char x5 = p[0x36];
+    register unsigned char e = p[0x30];
+    register unsigned char x4 = p[0x37];
+    register unsigned char d = p[0x2F];
+    register unsigned char x3 = p[0x38];
+    register unsigned char c = p[0x2E];
+    register unsigned char x2 = p[0x39];
+    register unsigned char b = p[0x2D];
+    register unsigned char x1 = p[0x3A];
+    p[0x2C]=x0; p[0x3B]=a; p[0x2D]=x1; p[0x3A]=b;
+    p[0x2E]=x2; p[0x39]=c; p[0x2F]=x3; p[0x38]=d;
+    p[0x30]=x4; p[0x37]=e; p[0x31]=x5; p[0x36]=f;
+    p[0x32]=x6; p[0x35]=g; p[0x33]=x7; p[0x34]=h;
+    for (int i=0; i<32; i++, q+=0x18) {
       unsigned char x;
       x=q[0];q[0]=q[3];q[3]=x; x=q[1];q[1]=q[2];q[2]=x;
       x=q[4];q[4]=q[7];q[7]=x; x=q[5];q[5]=q[6];q[6]=x;
