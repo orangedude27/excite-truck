@@ -200,7 +200,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
 #pragma pop
 extern const char lbl_80320580[];
 extern void *__dt__Q36nw4hbm3lyt4PaneFv(void *, s32);
-extern void fn_8002F634(void *, void *, s32, s32);
+extern "C" void fn_8002F634(void *, void *, s32, s32);
 extern f32 lbl_80560ED0;
 extern char lbl_803208D4[];
 extern void fn_800D2DD4(void);
