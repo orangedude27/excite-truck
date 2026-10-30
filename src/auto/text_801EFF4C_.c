@@ -193,6 +193,7 @@ extern void fn_801345D8(void *, int, const char *, ...);
 extern "C" void fn_801345D8(void *, int, const char *, ...);
 #pragma push
 #pragma dont_inline on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801F06DC(void *arg0, void *arg1) {
     class Fn801F06DCResource {
@@ -208,43 +209,54 @@ extern "C" void fn_801F06DC(void *arg0, void *arg1) {
         virtual float getValueWithDefault(const char *, float);
     };
 
-    Fn801F06DCResource *resource = (Fn801F06DCResource *)arg1;
+    void *output = arg0;
+    char *strings = lbl_8033A3F0;
     char name[0x40];
     char valueName[0x20];
     int id;
     int current;
-    int index;
+    int next;
+    int countAfter;
+    int fallbackHandle;
+    int one;
     float value;
+    float fallbackValue;
 
-    if (resource->test((char *)&lbl_8033A3F0[0x90]) != 0) {
-        id = resource->find((char *)&lbl_8033A3F0[0x90]);
-        *(int *)((char *)arg0 + 0x40) = 0;
-        do {
-            current = *(int *)((char *)arg0 + 0x40);
-            fn_801345D8(name, 0x40, &lbl_8033A3F0[0x60], id, current + 1);
+    if (((Fn801F06DCResource *)arg1)->test(strings + 0x90) != 0) {
+        id = ((Fn801F06DCResource *)arg1)->find(strings + 0x90);
+        *(volatile int *)((char *)output + 0x40) = 0;
+        while ((current = *(volatile int *)((char *)output + 0x40)) < 8) {
+            next = current + 1;
+            fn_801345D8(name, 0x40, strings + 0x60, id, next);
             fn_801345D8(valueName, 0x20, (char *)&lbl_8055B0C8,
-                        *(int *)((char *)arg0 + 0x40));
-            if (fn_8012C33C(name) == 0) {
-                break;
-            }
-            index = *(int *)((char *)arg0 + 0x40);
-            *(void **)((char *)arg0 + index * 8) = (void *)fn_802C6FC0(name, 0, 0);
-            value = resource->getValue(valueName);
-            index = *(int *)((char *)arg0 + 0x40);
-            *(float *)((char *)arg0 + index * 8 + 4) = value * value;
-            index = *(int *)((char *)arg0 + 0x40);
-            *(int *)((char *)arg0 + 0x40) = index + 1;
-        } while (*(int *)((char *)arg0 + 0x40) < 8);
-
-        *(float *)((char *)arg0 + 0x44) = resource->getValue(&lbl_8033A3F0[0x9C]);
-        value = resource->getValueWithDefault(&lbl_8033A3F0[0xA8], lbl_80562F28);
-        *(float *)((char *)arg0 + 0x48) = value * value;
+                        *(volatile int *)((char *)output + 0x40));
+            if (fn_8012C33C(name) == 0) break;
+            *(void **)((char *)output +
+                (*(volatile int *)((char *)output + 0x40) << 3)) =
+                    (void *)fn_802C6FC0(name, 0, 0);
+            value = ((Fn801F06DCResource *)arg1)->getValue(valueName);
+            *(float *)((char *)output +
+                (*(volatile int *)((char *)output + 0x40) << 3) + 4) =
+                    value * value;
+            countAfter = *(volatile int *)((char *)output + 0x40) + 1;
+            *(volatile int *)((char *)output + 0x40) = countAfter;
+        }
+        *(float *)((char *)output + 0x44) =
+            ((Fn801F06DCResource *)arg1)->getValue(strings + 0x9C);
+        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(
+            strings + 0xA8, *(volatile float *)&lbl_80562F28);
+        *(float *)((char *)output + 0x48) = value * value;
     } else {
-        resource->find((char *)&lbl_8055B0F0);
-        *(int *)arg0 = fn_802C6FC0(0, 0, 0);
-        *(float *)((char *)arg0 + 4) = lbl_80562F1C;
-        *(int *)((char *)arg0 + 0x40) = 1;
-        *(float *)((char *)arg0 + 0x44) = resource->getValue((char *)&lbl_8055B0F8);
+        fallbackHandle = fn_802C6FC0(
+            (char *)((Fn801F06DCResource *)arg1)->find((char *)&lbl_8055B0F0),
+            0, 0);
+        fallbackValue = lbl_80562F1C;
+        one = 1;
+        *(int *)output = fallbackHandle;
+        *(float *)((char *)output + 4) = fallbackValue;
+        *(volatile int *)((char *)output + 0x40) = one;
+        *(float *)((char *)output + 0x44) =
+            ((Fn801F06DCResource *)arg1)->getValue((char *)&lbl_8055B0F8);
     }
 }
 #pragma pop
