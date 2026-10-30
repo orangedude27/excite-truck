@@ -203,7 +203,13 @@ extern "C" {
 __declspec(section ".sdata") extern char lbl_8055B178[];
 __declspec(section ".sdata") extern char lbl_8055B180[];
 __declspec(section ".sdata") extern char lbl_8055B184[];
-extern float lbl_80562FB0;
+ __declspec(section ".sdata") extern char lbl_8055B18C[];
+ __declspec(section ".sdata") extern char lbl_8055B190[];
+ __declspec(section ".sdata") extern char lbl_8055B194[];
+ __declspec(section ".sdata") extern char lbl_8055B198[];
+ extern float lbl_80562FB0;
+ extern float lbl_80562FB8;
+ extern void fn_801F4F9C(void *, void *, void *);
 extern float lbl_80562FB4;
 }
 #pragma cplusplus off
