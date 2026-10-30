@@ -136,10 +136,10 @@ extern int fn_8023512C(void *);
 extern int fn_80216CA8(int, int, int, int, void *, int, int, int);
 extern int fn_802146BC(int *, int, int, int);
 extern int strlen(const char *);
-extern void *lbl_803430CC;
-extern void *lbl_803430D8;
-extern void *lbl_8055BE70;
-extern void *lbl_8055BE78;
+extern char lbl_803430CC[];
+extern char lbl_803430D8[];
+__declspec(section ".sdata") extern void *lbl_8055BE70;
+__declspec(section ".sdata") extern void *lbl_8055BE78;
 extern int lbl_80498890[5];
 extern int lbl_802FA350[5];
 #pragma cplusplus on
