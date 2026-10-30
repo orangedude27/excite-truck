@@ -215,6 +215,7 @@ void fn_80131960(void *arg0, void *arg1) {
             *(u8 *)(base + *(u32 *)(entry + 4)) = 1;
     }
 }
+#pragma scheduling on
 #pragma use_lmw_stmw reset
 
 s32 fn_80131B10(s32 arg0, s32 arg1) {
