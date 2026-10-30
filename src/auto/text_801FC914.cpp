@@ -668,7 +668,8 @@ extern "C" void* fn_801FE188(void* arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling on
-extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
+#pragma cplusplus reset
+void fn_801FE1D8(void* arg0, unsigned char* p) {
     register unsigned char* q = p + 0x3C;
     register unsigned char a=p[0x2C];
     register unsigned char x0=p[0x3B];
@@ -714,6 +715,7 @@ extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     v[0x344]=i9; v[0x345]=i11;
     v[0x346]=i10;
 }
+#pragma cplusplus on
 #pragma pop
 
 extern "C" void fn_801FE3B8(void *arg0, void *arg1) {
