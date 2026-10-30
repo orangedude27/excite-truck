@@ -529,6 +529,7 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     *(float*)((char*)arg0 + 0x2C) = r2;
 }
 
+#pragma paired off
 extern "C" void fn_801FD3F0(void* arg0, float farg0) {
     char* obj = (char*)arg0;
     char** track_ref = *(char***)(obj + 4);
