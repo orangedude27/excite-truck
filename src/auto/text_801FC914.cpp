@@ -667,25 +667,25 @@ extern "C" void* fn_801FE188(void* arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     register unsigned char* q = p + 0x3C;
-    register unsigned char a = p[0x2C];
-    register unsigned char x0 = p[0x3B];
-    register unsigned char h = p[0x33];
-    register unsigned char x7 = p[0x34];
-    register unsigned char g = p[0x32];
-    register unsigned char x6 = p[0x35];
-    register unsigned char f = p[0x31];
-    register unsigned char x5 = p[0x36];
-    register unsigned char e = p[0x30];
-    register unsigned char x4 = p[0x37];
-    register unsigned char d = p[0x2F];
-    register unsigned char x3 = p[0x38];
-    register unsigned char c = p[0x2E];
-    register unsigned char x2 = p[0x39];
-    register unsigned char b = p[0x2D];
-    register unsigned char x1 = p[0x3A];
+    register unsigned char a=p[0x2C];
+    register unsigned char x0=p[0x3B];
+    register unsigned char b=p[0x2D];
+    register unsigned char x1=p[0x3A];
+    register unsigned char c=p[0x2E];
+    register unsigned char x2=p[0x39];
+    register unsigned char d=p[0x2F];
+    register unsigned char x3=p[0x38];
+    register unsigned char e=p[0x30];
+    register unsigned char x4=p[0x37];
+    register unsigned char f=p[0x31];
+    register unsigned char x5=p[0x36];
+    register unsigned char g=p[0x32];
+    register unsigned char x6=p[0x35];
+    register unsigned char h=p[0x33];
+    register unsigned char x7=p[0x34];
     p[0x2C]=x0; p[0x3B]=a; p[0x2D]=x1; p[0x3A]=b;
     p[0x2E]=x2; p[0x39]=c; p[0x2F]=x3; p[0x38]=d;
     p[0x30]=x4; p[0x37]=e; p[0x31]=x5; p[0x36]=f;
@@ -699,10 +699,20 @@ extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
       x=q[16];q[16]=q[19];q[19]=x; x=q[17];q[17]=q[18];q[18]=x;
       x=q[20];q[20]=q[23];q[23]=x; x=q[21];q[21]=q[22];q[22]=x;
     }
-    register unsigned char i0=p[0x33C],i1=p[0x33D],i2=p[0x340],i3=p[0x341],i4=p[0x344],i5=p[0x345];
-    p[0x33C]=p[0x33F];p[0x33F]=i0; p[0x33D]=p[0x33E];p[0x33E]=i1;
-    p[0x340]=p[0x343];p[0x343]=i2; p[0x341]=p[0x342];p[0x342]=i3;
-    p[0x344]=p[0x347];p[0x347]=i4; p[0x345]=p[0x346];p[0x346]=i5;
+    volatile unsigned char *v = p;
+    unsigned char i0=v[0x33C], i1=v[0x33F];
+    unsigned char i2=v[0x33D], i3=v[0x33E];
+    unsigned char i4=v[0x340], i5=v[0x343];
+    unsigned char i6=v[0x341], i7=v[0x342];
+    unsigned char i8=v[0x344], i9=v[0x347];
+    unsigned char i10=v[0x345], i11=v[0x346];
+    v[0x347]=i8;
+    v[0x33C]=i1; v[0x33F]=i0;
+    v[0x33D]=i3; v[0x33E]=i2;
+    v[0x340]=i5; v[0x343]=i4;
+    v[0x341]=i7; v[0x342]=i6;
+    v[0x344]=i9; v[0x345]=i11;
+    v[0x346]=i10;
 }
 #pragma pop
 
