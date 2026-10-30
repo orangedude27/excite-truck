@@ -5,7 +5,7 @@ extern void fn_80128668(void *);
 extern void fn_802BEDFC(void);
 extern int fn_801E85AC(void);
 extern int fn_802C00A4(void);
-extern int fn_8012C33C(int);
+extern int fn_8012C33C();
 extern int fn_802C6FC0(int, int, int);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034AD78[];
@@ -82,15 +82,15 @@ extern "C" void fn_802BEDFC(void) {
         virtual void unused7();
         virtual float setScale(const char *, float);
     };
-    Resource *resource;
     char *strings = lbl_8034ACA0;
+    Resource *resource;
     Resource *style;
-    lbl_8055FAE8 = 0xE0FFFFFF;
-    lbl_8055FAE4 = 0xE0005030;
-    lbl_8055FAEC = 0x202040;
+    lbl_8055FAE4 = (int)(0xE0000000u | 0x5030u);
+    lbl_8055FAEC = (int)((0x20u << 16) | 0x2040u);
     lbl_8055FAE0 = lbl_80564D84;
-    lbl_8055FAF0 = 0xE0001040;
-    resource = (Resource *)fn_80131808(strings + 0x2C, 0xE0FFFFFF, 0xE0000000);
+    lbl_8055FAE8 = (int)(0xE1000000u - 1);
+    lbl_8055FAF0 = (int)(0xE0000000u | 0x1040u);
+    resource = (Resource *)fn_80131808(strings + 0x2C, (int)(0xE1000000u - 1), (int)0xE0000000u);
     if (resource != 0) {
         if (resource->hasStyle(strings + 0x38) != 0)
             style = (Resource *)resource->getStyle(strings + 0x38);
