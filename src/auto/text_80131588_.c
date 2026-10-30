@@ -172,7 +172,7 @@ s32 fn_80131920(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern void *lbl_8032B5E0;
+extern char lbl_8032B5E0[];
 extern s32 fn_80131234(char *);
 void fn_80131960(void *arg0, void *arg1) {
     u8 *obj = (u8 *)arg0;
