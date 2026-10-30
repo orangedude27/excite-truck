@@ -278,6 +278,8 @@ extern double fn_8002EFB0(float, float);
 extern float fn_802E78A4(float);
 extern float lbl_80565160, lbl_8056517C, lbl_80565180, lbl_80565184, lbl_80565188;
 extern float lbl_8056518C, lbl_80565190, lbl_80565194, lbl_80565198;
+#pragma push
+#pragma dont_inline on
 void fn_802E7DDC(void *arg0, void *arg1) {
     float f0, f02, f1, f31, f4;
     double df1;
