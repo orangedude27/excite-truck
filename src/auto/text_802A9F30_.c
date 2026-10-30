@@ -627,13 +627,15 @@ void fn_802ABC2C(void) {
     lbl_8055F924 = 0;
 }
 
+#pragma push
+#pragma processor 750
 void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
     extern float lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_805649F0, lbl_805649FC;
     extern void *lbl_8055F924;
     extern double cos(double), sin(double);
-    Vec forward, side, pos, dir;
+    Vec pos, dir, callpos, calldir, side, forward;
     float angle, scale;
     angle=fn_80287BC8(lbl_80564A48,lbl_80564A4C);
     forward=*(Vec*)arg0; side=*(Vec*)((char*)arg0+0x18); pos=*(Vec*)((char*)arg0+0x24);
@@ -646,8 +648,10 @@ void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) 
     pos.y+=((float*)((char*)arg0+0xC))[1]*scale;
     pos.z+=((float*)((char*)arg0+0xC))[2]*scale;
     dir=*(Vec*)arg1;
-    fn_8028E590(*(int*)lbl_8055F924,&pos,&dir,lbl_805649FC);
+    callpos=pos; calldir=dir;
+    fn_8028E590(*(int*)lbl_8055F924,&callpos,&calldir,lbl_805649FC);
 }
+#pragma pop
 
 void fn_802ABE50(void) { fn_8028E240(0); }
 
@@ -655,13 +659,14 @@ void fn_802ABE50(void) { fn_8028E240(0); }
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
+void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float delta) {
     unsigned char red;
     unsigned char green;
     unsigned char blue;
     unsigned int color;
     unsigned int low;
     float angle;
+    float current;
     float magnitude;
     float wave;
     float angleValue;
@@ -674,22 +679,22 @@ void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
     red = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0x8C, 0xFF);
     green = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xFA, 0xFF);
     blue = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xF0, 0xFF);
-    color = (unsigned int)blue << 16;
+    color = ((unsigned int)blue & 0xFF) << 16;
     angle = lbl_80564A98;
-    low = (unsigned int)green << 8;
-    low |= red;
+    low = (((unsigned int)green & 0xFF) << 8) | ((unsigned int)red & 0xFF);
     color |= 0xFF000000;
     *arg2 = color | low;
 
     (void)*(volatile unsigned char *)&lbl_8055F92C;
-    if (*arg0 > lbl_805649F4)
+    current = *arg0;
+    if (current > lbl_805649F4)
         *arg0 = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
     else
-        *arg0 = *arg0 + lbl_80564A34 * delta;
+        *arg0 = current + lbl_80564A34 * delta;
 
     magnitude = (float)fabs(delta);
-    withinTolerance = magnitude <= *(float *)(void *)&lbl_80558DC4;
     wave = lbl_805649F0;
+    withinTolerance = magnitude <= *(float *)(void *)&lbl_80558DC4;
     if (withinTolerance == 0)
         wave = lbl_80564A9C * (float)(int)fn_80287BC8(lbl_805649F0, lbl_805649FC);
 
@@ -697,7 +702,7 @@ void fn_802ABE58(float *arg0, float *arg1, int *arg2, float delta) {
     active = 1;
     if (angleBelowLimit != 0) {
         angleValue = (float)fn_8002EFB4(angle, lbl_80564AA0);
-        angleWithinLimit = angleValue < lbl_80564A34;
+        angleWithinLimit = angleValue > lbl_80564A34;
         if (angleWithinLimit == 0)
             active = 0;
     }
