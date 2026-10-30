@@ -264,60 +264,79 @@ void fn_8029C664(void) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8029C73C(void) {
+    typedef struct { float x, y, z; } Vec;
+    typedef struct { float x, y; } Vec2;
+    typedef struct {
+        Vec pos;
+        Vec2 v1;
+        Vec2 v2;
+    } Params;
+    typedef struct {
+        Vec temp;
+        Params params;
+        unsigned char init[0x20];
+    } Frame;
     extern char lbl_80349560[];
     extern int lbl_804B5010[];
     extern int lbl_8055F7F0;
-    extern float lbl_80564628, lbl_80564630, lbl_8056464C, lbl_80564650;
     extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;
+    extern float lbl_80564628, lbl_80564630, lbl_8056464C, lbl_80564650;
     extern void *fn_80131810(void *);
     extern void fn_80131818(void *);
-    extern int fn_801284F8(int, void *, float);
+    extern void *fn_801284F8(int, void *);
     extern void *fn_8029D148(void *, void *, float *, int);
     extern void fn_802E317C(const char *, ...);
-    char init[0x20];
-    float vec[3], x, y;
-    void *owner, *item;
-    int i, id, result;
-    void *(*next)(void *, int);
-    int (*getid)(void *, void *);
-    void (*getvec)(void *, float *, int);
-    float (*getval)(void *, int);
+    extern void *memset(void *, int, unsigned int);
+    Vec2 t1;
+    Vec2 t2;
+    Frame frame;
+    char *base;
+    void *owner;
+    int i;
+    base = lbl_80349560;
     lbl_8055F7F0 = 0;
-    owner = fn_80131810(lbl_80349560 + 0xA4);
+    owner = fn_80131810(base + 0xA4);
     if (owner != 0) {
-        __builtin_memset(init, 0, 0x20);
-        *(float *)(init + 0) = lbl_8056464C;
-        *(float *)(init + 4) = lbl_80564628;
-        *(float *)(init + 8) = lbl_80564628;
-        *(float *)(init + 12) = lbl_80564650;
-        *(float *)(init + 16) = lbl_80564630;
-        *(float *)(init + 20) = lbl_80564630;
-        *(int *)(init + 24) = -1;
-        init[28] = 0x20;
-        init[29] = (char)0xE4;
-        i = 0;
-        for (;;) {
-            next = *(void *(**)(void *, int))(*(char **)owner + 0xC);
-            item = next(owner, i);
-            if (item == 0) break;
-            if (lbl_8055F7F0 >= 8) fn_802E317C(lbl_80349560 + 0xB0, 8);
-            getid = *(int (**)(void *, void *))(*(char **)item + 0x14);
-            id = getid(item, lbl_80349560 + 0xD0);
-            getvec = *(void (**)(void *, float *, int))(*(char **)item + 0x34);
-            getvec(item, vec, lbl_8055CAB4);
-            x = vec[0]; y = vec[1];
-            getval = *(float (**)(void *, int))(*(char **)item + 0x3C);
-            x = getval(item, lbl_8055CABC);
-            y = getval(item, lbl_8055CAC4);
-            result = fn_801284F8(0x78, lbl_80349560 + 0xE0, y);
-            if (result) result = (int)((void *(*)(void *, void *, float *, int))fn_8029D148)((void *)result, init, vec, id);
-            lbl_804B5010[lbl_8055F7F0++] = result;
-            ++i;
+        memset(frame.init, 0, 0x20);
+        *(float *)(frame.init + 0) = lbl_8056464C;
+        *(float *)(frame.init + 4) = lbl_80564628;
+        *(float *)(frame.init + 8) = lbl_80564628;
+        *(float *)(frame.init + 12) = lbl_80564650;
+        *(float *)(frame.init + 16) = lbl_80564630;
+        *(float *)(frame.init + 20) = lbl_80564630;
+        *(int *)(frame.init + 24) = -1;
+        frame.init[28] = 0x20;
+        frame.init[29] = 0xE4;
+        for (i = 0; (*(void *(**)(void *, int))(*(char **)owner + 0xC))(owner, i) != 0; i++) {
+            void *item;
+            int id;
+            void *res;
+            if (lbl_8055F7F0 >= 8)
+                fn_802E317C(base + 0xB0, 8);
+            item = (*(void *(**)(void *, int))(*(char **)owner + 0xC))(owner, i);
+            id = (*(int (**)(void *, void *))(*(char **)item + 0x14))(item, base + 0xD0);
+            frame.temp = (*(Vec (**)(void *, void *))(*(char **)item + 0x34))(item, &lbl_8055CAB4);
+            frame.params.pos.x = frame.temp.x;
+            frame.params.pos.y = frame.temp.y;
+            frame.params.pos.z = frame.temp.z;
+            t1 = (*(Vec2 (**)(void *, void *))(*(char **)item + 0x3C))(item, &lbl_8055CABC);
+            frame.params.v1.x = t1.x;
+            frame.params.v1.y = t1.y;
+            t2 = (*(Vec2 (**)(void *, void *))(*(char **)item + 0x3C))(item, &lbl_8055CAC4);
+            frame.params.v2.x = t2.x;
+            frame.params.v2.y = t2.y;
+            res = fn_801284F8(0x78, base + 0xE0);
+            if (res != 0)
+                res = fn_8029D148(res, frame.init, (float *)&frame.params, id);
+            lbl_804B5010[lbl_8055F7F0++] = (int)res;
         }
         fn_80131818(owner);
     }
 }
+#pragma pop
 
 #pragma pop
 
@@ -814,42 +833,59 @@ void fn_8029D574(int arg0) {
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8029D644(void *arg0) {
-    char *base = (char *)arg0;
     int i;
     int offset;
-    int mode;
-    char *buffers[2];
     char *source;
     char *other;
+    char *buffers[2];
+    char **bufferTable;
+    int mode;
+    GridRecord_8029D644 *rowOther;
+    GridRecord_8029D644 *rowSource;
 
-    i = (*(int *)(base + 0x10) - 1) * (*(int *)(base + 0xC) * 2);
+    i = (*(int *)((char *)arg0 + 0x10) - 1) * (*(int *)((char *)arg0 + 0xC) * 2);
     {
         char *result = (char *)((void *(*)(int, int))fn_802C86DC)(
-            *(int *)(base + 0x10) - 1, *(int *)(base + 0x10));
-        *(float *)(base + 0x64) = *(float *)(result + 0x24);
-        *(float *)(base + 0x68) = *(float *)(result + 0x28);
-        *(float *)(base + 0x6C) = *(float *)(result + 0x2C);
+            *(int *)((char *)arg0 + 0x10) - 1, *(int *)((char *)arg0 + 0x10));
+        *(float *)((char *)arg0 + 0x64) = *(float *)(result + 0x24);
+        *(float *)((char *)arg0 + 0x68) = *(float *)(result + 0x28);
+        *(float *)((char *)arg0 + 0x6C) = *(float *)(result + 0x2C);
     }
-    fn_802C8BD0(*(int *)(base + 0x74));
+    fn_802C8BD0(*(int *)((char *)arg0 + 0x74));
     if (fn_802C8DBC(i) != 0) {
-        buffers[0] = *(char **)(base + 0x70);
-        buffers[1] = buffers[0] + *(int *)(base + 0xC) * 0x18;
-        for (i = 0, offset = 0; i < *(int *)(base + 0xC); offset += 0x18, i++)
+        buffers[0] = *(char **)((char *)arg0 + 0x70);
+        buffers[1] = buffers[0] + *(int *)((char *)arg0 + 0xC) * 0x18;
+        for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++)
             fn_8029DB78(arg0, buffers[0] + offset, i, 0);
 
-        for (mode = 1; mode < *(int *)(base + 0x10); mode++) {
-            source = buffers[mode & 1];
-            other = buffers[1 - (mode & 1)];
-            for (i = 0, offset = 0; i < *(int *)(base + 0xC); offset += 0x18, i++) {
+        bufferTable = buffers;
+        for (mode = 1; mode < *(int *)((char *)arg0 + 0x10); mode++) {
+            source = bufferTable[mode & 1];
+            other = bufferTable[1 - (mode & 1)];
+            for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++) {
                 fn_8029DB78(arg0, source + offset, i, mode);
-                fn_802C8E00(*(int *)(other + offset + 0xC), (unsigned int)(i > 0),
-                            *(float *)(other + offset + 0x0), *(float *)(other + offset + 0x4),
-                            *(float *)(other + offset + 0x8), *(float *)(other + offset + 0x10),
-                            *(float *)(other + offset + 0x14));
-                fn_802C8E00(*(int *)(source + offset + 0xC), (unsigned int)(i > 0),
-                            *(float *)(source + offset + 0x0), *(float *)(source + offset + 0x4),
-                            *(float *)(source + offset + 0x8), *(float *)(source + offset + 0x10),
-                            *(float *)(source + offset + 0x14));
+                rowOther = (GridRecord_8029D644 *)(other + offset);
+                {
+                    float f1 = rowOther->f0;
+                    unsigned int flag = (unsigned int)(i > 0);
+                    float f5 = rowOther->f14;
+                    float f4 = rowOther->f10;
+                    float f2 = rowOther->f4;
+                    float f3 = rowOther->f8;
+                    int field = rowOther->fieldC;
+                    fn_802C8E00(field, flag, f1, f2, f3, f4, f5);
+                }
+                rowSource = (GridRecord_8029D644 *)(source + offset);
+                {
+                    float f1 = rowSource->f0;
+                    unsigned int flag = (unsigned int)(i > 0);
+                    float f5 = rowSource->f14;
+                    float f4 = rowSource->f10;
+                    float f2 = rowSource->f4;
+                    float f3 = rowSource->f8;
+                    int field = rowSource->fieldC;
+                    fn_802C8E00(field, flag, f1, f2, f3, f4, f5);
+                }
             }
         }
         fn_802C8E48();
@@ -912,6 +948,77 @@ calculate:
     }
 done:
     ;
+}
+
+extern float lbl_8056462C, lbl_80564634, lbl_80564640, lbl_80564658, lbl_80564694, lbl_80564698;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+void fn_8029DDB8(void *arg0) {
+    register unsigned char *base = (unsigned char *)arg0;
+    short *src;
+    short *dst;
+    short *cell;
+    int width;
+    int y;
+    int x;
+    int rowPlus;
+    int rowMinus;
+    int index;
+    int indexPlus;
+    int indexMinus;
+    int neighbors;
+    int converted;
+    int value;
+    float scale;
+    float wave;
+    float waveSquared;
+    float center;
+    float result;
+
+    scale = lbl_80564634 * *(float *)(base + 0x20);
+    center = lbl_8056462C + scale;
+    wave = ((float (*)(float, float))fn_801E7E24)(scale, lbl_80564634);
+    y = 1;
+    wave = lbl_80564694 * (lbl_80564658 - *(float *)(base + 0x1C)) * wave;
+    waveSquared = wave * wave;
+    wave = lbl_80564640 - lbl_80564698 * waveSquared;
+
+    while (y < *(volatile int *)(base + 0x10) - 1) {
+        rowPlus = y + 1;
+        rowMinus = y - 1;
+        x = 1;
+        while (x < *(volatile int *)(base + 0xC) - 1) {
+            width = *(volatile int *)(base + 0xC);
+            index = x + y * width;
+            indexPlus = x + rowPlus * width;
+            indexMinus = x + rowMinus * width;
+            src = *(short **)(base + 4);
+            dst = *(short **)(base + 8);
+            cell = src + index;
+            neighbors = cell[1] + cell[-1] +
+                        src[indexPlus] + src[indexMinus];
+            result = wave * (float)src[index];
+            result = result + waveSquared * (float)neighbors;
+            result = result - (float)dst[index];
+            result = center * result;
+            converted = (int)result;
+            value = -32768;
+            if (converted > -32768) {
+                value = 32767;
+                if (converted < 32767)
+                    value = converted;
+            }
+            dst[index] = (short)value;
+            ++x;
+        }
+        ++y;
+    }
+    src = *(short **)(base + 4);
+    dst = *(short **)(base + 8);
+    *(short **)(base + 8) = src;
+    *(short **)(base + 4) = dst;
 }
 #pragma pop
 
