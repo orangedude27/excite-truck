@@ -530,41 +530,58 @@ extern "C" void fn_801FD320(void* arg0, float t) {
 }
 
 #pragma paired off
+#pragma scheduling on
 extern "C" void fn_801FD3F0(void* arg0, float farg0) {
     char* obj = (char*)arg0;
-    char** track_ref = *(char***)(obj + 4);
-    char* track = *track_ref;
-    float one = lbl_80563030;
-    float old_pos = *(float*)(obj + 0x40);
-    float pos = old_pos + farg0;
-    int index = *(int*)(obj + 0x3C);
-    int count = *(int*)(track + 0x6D0);
-    char* node = track + 0x10 + ((count + index) % count) * 0x24;
+    char* volatile* slot = (char* volatile*)*(char***)(obj + 4);
+    register float one = lbl_80563030;
+    register float old_pos = *(float*)(obj + 0x40);
+    char* track = *slot;
+    register int index = *(int*)(obj + 0x3C);
+    register float pos = old_pos + farg0;
+    register int count = *(int*)(track + 0x6D0);
+    char* nodes = track + 0x10;
+    char* node = nodes + ((count + index) % count) * 0x24;
     float length = *(float*)(node + 0x20);
-    float step = length * pos;
+    register float step = length * pos;
     if (step < one) {
         *(float*)(obj + 0x40) = pos;
     } else {
+        float inv_length = one / length;
+        index = index + 1;
+        float old54 = *(volatile float*)(obj + 0x54);
+        float old58 = *(volatile float*)(obj + 0x58);
+        float old5c = *(volatile float*)(obj + 0x5C);
+        float delta = farg0 - inv_length;
+        float old60 = *(volatile float*)(obj + 0x60);
+        float old68 = *(volatile float*)(obj + 0x68);
         step -= one;
-        *(float*)(obj + 0x40) = old_pos + (farg0 - one / length);
-        index = (index + 1) % count;
+        *(float*)(obj + 0x40) = old_pos + delta;
+        int fresh_count = *(volatile int*)(track + 0x6D0);
+        index = index % fresh_count;
         *(int*)(obj + 0x3C) = index;
-        *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
-        *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
-        *(float*)(obj + 0x4C) = *(float*)(obj + 0x5C);
-        *(float*)(obj + 0x50) = *(float*)(obj + 0x60);
-        *(float*)(obj + 0x64) = *(float*)(obj + 0x68);
-        char* end_node = track + 0x10 + ((count + index + 1) % count) * 0x24;
+        *(float*)(obj + 0x44) = old54;
+        *(float*)(obj + 0x48) = old58;
+        *(float*)(obj + 0x4C) = old5c;
+        *(float*)(obj + 0x50) = old60;
+        *(float*)(obj + 0x64) = old68;
+        char* track_after = *slot;
+        char* end_nodes = track_after + 0x10;
+        char* end_node = end_nodes + ((fresh_count + index + 1) % fresh_count) * 0x24;
         *(float*)(obj + 0x54) = *(float*)(end_node + 0x1C);
         *(float*)(obj + 0x58) = *(float*)(end_node + 0x20);
         *(float*)(obj + 0x5C) = *(float*)(end_node + 0x24);
         *(float*)(obj + 0x60) = *(float*)(end_node + 0x28);
         *(float*)(obj + 0x68) = *(float*)(end_node + 0x2C);
     }
-    char* prev = track + 0x10 + ((count + index - 1) % count) * 0x24;
-    char* cur = track + 0x10 + ((count + index) % count) * 0x24;
-    char* next = track + 0x10 + ((count + index + 1) % count) * 0x24;
-    char* next2 = track + 0x10 + ((count + index + 2) % count) * 0x24;
+    char* call_track = *slot;
+    int call_count = *(int*)(call_track + 0x6D0);
+    char* call_nodes = call_track + 0x10;
+    int base = call_count + index;
+    char* prev = call_nodes + ((base - 1) % call_count) * 0x24;
+    char* cur = call_nodes + (base % call_count) * 0x24;
+    char* next = call_nodes + ((base + 1) % call_count) * 0x24;
+    char* next2 = call_nodes + ((base + 2) % call_count) * 0x24;
     fn_801FD144(arg0, prev, cur, next, next2, step);
     fn_801FD320(arg0, step);
     float a = *(float*)(obj + 0x64);
