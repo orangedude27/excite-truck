@@ -11,7 +11,7 @@ extern s32 fn_802C4FF8(const char *);
 extern s32 fn_802C4F2C(s32, s32 *, s32 *);
 extern s32 fn_802C501C(void);
 extern s32 fn_802C4EFC(s32);
-extern s32 fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
+extern void fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
 extern char lbl_8055AEF0[];
 extern char *strncpy(char *, const char *, unsigned long);
 void fn_801E4A2C(s32 *arg0) {
@@ -82,11 +82,72 @@ s32 fn_801E4BA8(s32 *arg0) {
     result += temp_r31;
     return result;
 }
-#pragma dont_inline off
+
+extern s32 fn_802C4C90(s32, s32, s32, s32, s32);
+extern void fn_802C4F58(s32, s32, const char *, s32);
+extern int vsprintf(char *, const char *, va_list);
+extern s32 lbl_8055FBC0;
+extern s32 lbl_8055FBFC;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_801E4BEC(s32 fontArg, s32 drawFlags, s32 alignFlags, s32 x, s32 y, const char *format, ...) {
+    char text[0x1000];
+    va_list args;
+    s32 value;
+    s32 half;
+    register u8 *p;
+
+    va_start(args, format);
+    vsprintf(text, format, args);
+    va_end(args);
+
+    value = fn_801E4A6C((s32 *)fontArg, (u8 *)text);
+    if (alignFlags & 2) {
+        x -= value;
+    } else if (alignFlags & 4) {
+        half = (unsigned int)value >> 31;
+        half += value;
+        half >>= 1;
+        x -= half;
+    }
+    if (alignFlags & 8) {
+        y += fn_801E4B00((s32 *)fontArg);
+    } else if (alignFlags & 0x10) {
+        value = fn_801E4B00((s32 *)fontArg);
+        half = fn_801E4B48((s32 *)fontArg);
+        half = value - half;
+        half = ((unsigned int)half >> 31) + half;
+        half >>= 1;
+        y += half;
+    } else if (alignFlags & 0x40) {
+        y -= fn_801E4B48((s32 *)fontArg);
+    }
+    if (fontArg != 0) {
+        p = (u8 *)text;
+        while (*p != 0) {
+            register u8 *glyph;
+            glyph = (u8 *)fontArg + ((unsigned int)*p << 1);
+            if (*(s16 *)(glyph + 4) >= 0) {
+                fn_802C4C90(*(s32 *)fontArg,
+                    x + *(s16 *)(glyph + 0x404),
+                    y,
+                    *(s16 *)(glyph + 4),
+                    drawFlags);
+            }
+            x += *(s16 *)((u8 *)fontArg + ((unsigned int)*p << 1) + 0x204);
+            ++p;
+        }
+    } else {
+        fn_802C4F58(x + 1, y + 1, text, lbl_8055FBC0);
+        fn_802C4F58(x, y, text, lbl_8055FBFC);
+    }
+}
+#pragma pop
 extern s32 fn_801E4B00(s32 *);
 extern s32 fn_801E4B48(s32 *);
 extern s32 fn_802C4EFC(s32);
-extern s32 fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
+extern void fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
 extern char lbl_8055AEF0[];
 extern char *strncpy(char *, const char *, unsigned long);
 #pragma push
