@@ -432,7 +432,7 @@ void fn_802E2E0C(int arg0, int arg1) {
     lbl_804DB7D0[index] = arg1;
 }
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802E2E38(int arg0) {
     extern char lbl_8034CCE0[];
     extern int lbl_804DB790[], lbl_804DB7D0[], lbl_8055FF00;
