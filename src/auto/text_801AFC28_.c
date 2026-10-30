@@ -244,14 +244,30 @@ extern void fn_8017B4AC(void *, void *);
 extern s32 fn_801E9E30(void *, void *);
 extern f32 lbl_80562578, lbl_80562588, lbl_80562598, lbl_8056259C;
 extern f32 lbl_805625A0, lbl_805625A4, lbl_805625A8, lbl_805625AC;
+#pragma push
+#pragma scheduling invalid_target
 void fn_801B02E0(void *arg0) {
     u8 *self = (u8 *)arg0;
     f32 velocityMag;
     f32 speed;
     f32 scale;
     f32 vec[3];
-    f32 axis[3];
     s32 result[3];
+    f32 axis[3];
+    f32 in124;
+    f32 in128;
+    f32 in12c;
+    f32 in118;
+    f32 in11c;
+    f32 in120;
+    f32 scale124;
+    f32 scale118;
+    f32 out124;
+    f32 out128;
+    f32 out12c;
+    f32 out118;
+    f32 out11c;
+    f32 out120;
     s32 active;
 
     if (*(u8 *)(self + 0x1F8) != 0) {
@@ -259,12 +275,27 @@ void fn_801B02E0(void *arg0) {
         if (*(f32 *)(self + 0x64) < lbl_80562598)
             *(f32 *)(self + 0x64) = lbl_80562598;
 
-        *(f32 *)(self + 0x124) *= lbl_8056259C;
-        *(f32 *)(self + 0x128) *= lbl_8056259C;
-        *(f32 *)(self + 0x12C) *= lbl_8056259C;
-        *(f32 *)(self + 0x118) *= lbl_805625A0;
-        *(f32 *)(self + 0x11C) *= lbl_805625A0;
-        *(f32 *)(self + 0x120) *= lbl_805625A0;
+        in124 = *(f32 *)(self + 0x124);
+        scale124 = lbl_8056259C;
+        in128 = *(f32 *)(self + 0x128);
+        out124 = in124 * scale124;
+        in12c = *(f32 *)(self + 0x12C);
+        out128 = in128 * scale124;
+        in118 = *(f32 *)(self + 0x118);
+        scale118 = lbl_805625A0;
+        in11c = *(f32 *)(self + 0x11C);
+        out12c = in12c * scale124;
+        in120 = *(f32 *)(self + 0x120);
+        out118 = in118 * scale118;
+        out11c = in11c * scale118;
+        out120 = in120 * scale118;
+        *(f32 *)(self + 0x124) = out124;
+        *(f32 *)(self + 0x128) = out128;
+        *(f32 *)(self + 0x12C) = out12c;
+        *(f32 *)(self + 0x118) = out118;
+        *(f32 *)(self + 0x11C) = out11c;
+        *(f32 *)(self + 0x120) = out120;
+
         velocityMag = PSVECMag(self + 0x124);
         active = 1;
         if (velocityMag > lbl_805625A4) {
@@ -299,6 +330,7 @@ void fn_801B02E0(void *arg0) {
         *(s32 *)(self + 0x1E4) = 0;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
