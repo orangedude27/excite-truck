@@ -36,8 +36,9 @@ extern void fn_8023F874(void);
 extern int lbl_8055F1B4, lbl_8055F1B8;
 extern unsigned char lbl_8055F1BC;
 extern unsigned char lbl_80341CE4[], lbl_80341CF0[];
+#pragma cplusplus on
 #pragma use_lmw_stmw off
-void fn_8023E5B4(void **arg0, int arg1) {
+extern "C" void fn_8023E5B4(void **arg0, int arg1) {
     int values[36];
     int now;
     int handle;
@@ -99,6 +100,8 @@ void fn_8023E5B4(void **arg0, int arg1) {
     fn_8022D2BC(handle, 1);
 }
 #pragma use_lmw_stmw on
+#pragma use_lmw_stmw on
+#pragma cplusplus reset
 
 extern unsigned char lbl_80341CC8[];
 extern unsigned char lbl_8055BCA8, lbl_8055BCB0, lbl_8055BCB8;
