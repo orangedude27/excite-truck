@@ -1384,6 +1384,7 @@ extern "C" void fn_80162A14(void *arg0) {
         firstOffset += 8;
         i++;
     }
+
     resetValue = lbl_80561848;
     *(s32 *)(self + 0x94) = 0;
     i = 0;
@@ -1412,6 +1413,7 @@ extern "C" void fn_80162A14(void *arg0) {
         secondOffset += 0x48;
         i++;
     }
+
     clearIndex = 0;
     clearOffset = 0;
     while (clearIndex < *(s32 *)(self + 0x574)) {
@@ -2243,6 +2245,11 @@ void fn_80164F50(void *arg0) {
     fn_801DF380((void *)second, first, (void (*)())fn_80161438, 0);
 }
 #pragma scheduling on
+typedef struct Work_80164D64 {
+    f32 vectorA[3];
+    f32 vectorB[3];
+    u32 data[12];
+} Work_80164D64;
 unsigned char fn_80165040(void *arg0) {
     return *((unsigned char *)arg0 + 5);
 }
