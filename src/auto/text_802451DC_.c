@@ -144,6 +144,7 @@ extern int lbl_80498890[5];
 extern int lbl_802FA350[5];
 #pragma cplusplus on
 #pragma small_data off
+#pragma scheduling invalid_target
 extern "C" void fn_802462A0(void *arg0, void *arg1) {
     struct Frame {
         int args[5];
@@ -157,32 +158,30 @@ extern "C" void fn_802462A0(void *arg0, void *arg1) {
         } state;
         int config[20];
     };
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+    };
     struct Frame frame;
-    char *a;
-    char *b;
-    void **obj;
 
     if (*(unsigned char *)((char *)arg0 + 0x1D) == 0) {
-        obj = (void **)((char *)arg0 + 4);
-        ((void (*)(void *))(*(void **)((char *)*obj + 0x14)))((char *)arg0 + 4);
+        ((Dummy *)((char *)arg0 + 4))->f3();
         return;
     }
-
     frame.state.value = *(float *)((char *)arg1 + 8);
     frame.state.object = &lbl_803430E8;
     frame.state.zero = 0;
     frame.state.result = fn_8023512C(&lbl_803430CC);
 
-    a = *(char **)arg1;
-    frame.config[3] = strlen(a);
-    frame.config[2] = (int)a;
+    frame.config[3] = strlen(*(char **)arg1);
+    frame.config[2] = *(int *)arg1;
     frame.config[0] = (int)&lbl_8055BE70;
     frame.config[1] = 3;
     frame.config[4] = 0;
-
-    b = *(char **)((char *)arg1 + 4);
-    frame.config[8] = strlen(b);
-    frame.config[7] = (int)b;
+    frame.config[8] = strlen(*(char **)((char *)arg1 + 4));
+    frame.config[7] = *(int *)((char *)arg1 + 4);
     frame.config[5] = (int)&lbl_8055BE78;
     frame.config[6] = 3;
     frame.config[9] = 0;
@@ -209,11 +208,12 @@ extern "C" void fn_802462A0(void *arg0, void *arg1) {
     fn_80216CA8(lbl_802FA350[4], lbl_802FA350[3], lbl_802FA350[2],
                 lbl_802FA350[0], lbl_802FA350, lbl_80498890[1],
                 lbl_80498890[0], 5);
-    fn_802146BC(frame.args, -999, -999, 1);
+    fn_802146BC(frame.args, -0x3E7, -0x3E7, 1);
     frame.state.object = &lbl_803430E8;
     if (frame.state.result != 0)
         fn_80235380(frame.state.result);
 }
+#pragma scheduling on
 #pragma small_data on
 #pragma cplusplus reset
 
