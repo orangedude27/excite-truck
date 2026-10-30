@@ -675,4 +675,5 @@ void KPADInit(void) {
     for (p = lbl_8037C808 + 0xC00; p >= lbl_8037C808; p -= 0x400) reset_kpad(p);
     OSRegisterVersion(lbl_80558E88);
 }
+#pragma pop
 
