@@ -665,60 +665,103 @@ s32 DVDClose(void) {
     return 1;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
 u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
-    u8 *fst = (u8 *)FstStart_8055D840;
-    u8 *strings = (u8 *)FstStringStart_8055D83C;
+    u32 *fst;
+    u32 *record;
+    u32 parentIndex;
+    u32 grandparentIndex;
     u32 pos;
-    u32 child;
-    u32 sibling;
-    u32 grandchild;
-    u32 n;
+    u32 start;
     u32 left;
+    u32 initialLeft;
+    u32 value;
+    u8 *strings;
     char *name;
-    char *parent;
-    char *ancestor;
-    if (entry == 0) return 0;
-    child = *(u32 *)(fst + entry * 12 + 4);
-    name = (char *)(strings + (*(u32 *)(fst + entry * 12) & 0xFFFFFF));
-    pos = 0;
-    if (child != 0) {
-        sibling = *(u32 *)(fst + child * 12 + 4);
-        parent = (char *)(strings + (*(u32 *)(fst + child * 12) & 0xFFFFFF));
-        if (sibling != 0) {
-            grandchild = *(u32 *)(fst + sibling * 12 + 4);
-            ancestor = (char *)(strings + (*(u32 *)(fst + sibling * 12) & 0xFFFFFF));
-            n = DVDConvertEntrynumToPath(grandchild, path, max);
-            pos = n;
-            if (n != max) {
-                left = max - n - 1;
-                path[n] = '/';
-                while (left != 0 && *ancestor != 0) {
-                    path[n + 1 + (max - n - 1 - left)] = *ancestor++;
-                    --left;
-                }
-                pos = n + 1 + (max - n - 1 - left);
-            }
-        }
-        if (pos != max) {
-            left = max - pos - 1;
-            path[pos] = '/';
-            while (left != 0 && *parent != 0) {
-                path[pos + 1 + (max - pos - 1 - left)] = *parent++;
-                --left;
-            }
-            pos = pos + 1 + (max - pos - 1 - left);
-        }
-    }
-    if (pos == max) return pos;
-    left = max - pos - 1;
-    path[pos] = '/';
-    while (left != 0 && *name != 0) {
-        path[pos + 1 + (max - pos - 1 - left)] = *name++;
-        --left;
-    }
-    return pos + 1 + (max - pos - 1 - left);
-}
+    char *parentName;
+    char *grandparentName;
+    char *src;
+    char *dst;
+    char ch;
 
+    if (entry == 0) return 0;
+    fst = (u32 *)FstStart_8055D840;
+    record = fst + entry * 3;
+    strings = (u8 *)FstStringStart_8055D83C;
+    parentIndex = record[1];
+    name = (char *)(strings + (record[0] & 0xFFFFFF));
+    pos = 0;
+
+    if (parentIndex != 0) {
+        record = fst + parentIndex * 3;
+        grandparentIndex = record[1];
+        parentName = (char *)(strings + (record[0] & 0xFFFFFF));
+
+        if (grandparentIndex != 0) {
+            record = fst + grandparentIndex * 3;
+            value = record[1];
+            grandparentName = (char *)(strings + (record[0] & 0xFFFFFF));
+            pos = DVDConvertEntrynumToPath(value, path, max);
+            if (pos != max) {
+                start = pos + 1;
+                path[pos] = '/';
+                initialLeft = max - start;
+                left = initialLeft;
+                dst = path + start;
+                src = grandparentName;
+                do {
+                    ch = *src;
+                    --left;
+                    ++src;
+                    *dst = ch;
+                    ++dst;
+                    if (left == 0) break;
+                } while (*src != 0);
+                pos = start + (initialLeft - left);
+            }
+        }
+
+        if (pos != max) {
+            start = pos + 1;
+            path[pos] = '/';
+            initialLeft = max - start;
+            left = initialLeft;
+            dst = path + start;
+            src = parentName;
+            do {
+                ch = *src;
+                --left;
+                ++src;
+                *dst = ch;
+                ++dst;
+                if (left == 0) break;
+            } while (*src != 0);
+            pos = start + (initialLeft - left);
+        }
+    }
+
+    if (pos != max) {
+        start = pos + 1;
+        path[pos] = '/';
+        initialLeft = max - start;
+        left = initialLeft;
+        dst = path + start;
+        src = name;
+        do {
+            ch = *src;
+            --left;
+            ++src;
+            *dst = ch;
+            ++dst;
+            if (left == 0) break;
+        } while (*src != 0);
+        pos = start + (initialLeft - left);
+    }
+    return pos;
+}
+#pragma pop
 extern void OSPanic(const char *, s32, const char *);
 extern s32 DVDReadAbsAsyncPrio(void *, void *, s32, s32, void *, s32);
 extern void cbForCancelSync(void);
@@ -1490,6 +1533,43 @@ void fn_8003773C(void) {
         fn_8003B380(1);
         fn_8003B38C(fn_800379A8);
         break;
+    }
+}
+
+void fn_80037800(void) {
+    s32 enabled;
+
+    if (*(u16 *)0x800030E6 == 0x8003) {
+        lbl_8055D8CC = (s32)fn_80037A8C;
+        fn_8003BCDC(0);
+
+        enabled = OSDisableInterrupts();
+        if (*(volatile u32 *)&lbl_8055D848 >= 5)
+            *(volatile u32 *)&lbl_8055D848 = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x25;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+        *(volatile u32 *)&lbl_8055D848 =
+            *(volatile u32 *)&lbl_8055D848 + 1;
+        OSRestoreInterrupts(enabled);
+        fn_8003B69C(0x20000, fn_80037B54);
+    } else {
+        DCInvalidateRange(lbl_80376B00, 0x20);
+        lbl_8055D8CC = (s32)fn_80037CEC;
+        fn_8003BCDC(0);
+
+        enabled = OSDisableInterrupts();
+        if (*(volatile u32 *)&lbl_8055D848 >= 5)
+            *(volatile u32 *)&lbl_8055D848 = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 5;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+        *(volatile u32 *)&lbl_8055D848 =
+            *(volatile u32 *)&lbl_8055D848 + 1;
+        OSRestoreInterrupts(enabled);
+        fn_8003A834(lbl_80376B00, fn_80037DBC);
     }
 }
 
