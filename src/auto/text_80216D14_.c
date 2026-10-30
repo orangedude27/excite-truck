@@ -316,13 +316,35 @@ void fn_80217834(void *arg0) {
     }
 }
 
-void fn_80217854(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 0x448);
-    if (obj != 0) {
-        ((void (*)(void *))(*(void ***)obj)[21])(obj);
-    }
+#pragma cplusplus on
+extern "C" void fn_80217854(void *arg0) {
+    class Dummy_80217854 {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual void m5();
+        virtual void m6();
+        virtual void m7();
+        virtual void m8();
+        virtual void m9();
+        virtual void m10();
+        virtual void m11();
+        virtual void m12();
+        virtual void m13();
+        virtual void m14();
+        virtual void m15();
+        virtual void m16();
+        virtual void m17();
+        virtual void m18();
+        virtual void call();
+    };
+    Dummy_80217854 *obj = *(Dummy_80217854 **)((char *)arg0 + 0x448);
+    if (obj != 0) obj->call();
 }
-
+#pragma cplusplus off
 void fn_80218E08(void *arg0, int arg1);
 #pragma scheduling invalid_target
 #pragma cplusplus on
@@ -516,7 +538,6 @@ void fn_80217C4C(void *arg0) {
     int matches;
     int i;
     float threshold;
-    float value;
     count = *(int *)(base + 0x494);
     if (count < 1) return;
     threshold = lbl_80563490;
@@ -526,6 +547,7 @@ void fn_80217C4C(void *arg0) {
     i = 0;
     for (; i < count; i++, entry += 8) {
         int eligible;
+        float value;
         if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
         item = *(char **)(entry + 0x4A4);
         eligible = 0;
@@ -546,6 +568,7 @@ void fn_80217C4C(void *arg0) {
             int idx = (last + step) % count;
             char *current = base + idx * 8;
             int eligible;
+            float value;
             item = *(char **)(current + 0x4A4);
             eligible = 0;
             if (*(unsigned char *)(item + 0x1A) != 0) goto second_yes;
@@ -567,39 +590,44 @@ void fn_80217C4C(void *arg0) {
 }
 #pragma pop
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_80217D84(void *arg0) {
     char *base = (char *)arg0;
+    char *entry, *item1, *e2;
     int count = *(int *)(base + 0x494);
-    int i, last, matches, step, found, idx, item_ok;
-    char *entry, *item, *e2;
+    int last, matches, i, found, step, idx, item_ok;
+    register char *item2;
     if (count < 1) return;
     i = count;
     entry = base + count * 8;
     last = -1;
     matches = 0;
-    do {
-        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
-        item = *(char **)(entry + 0x4A4);
-        item_ok = 0;
-        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) < lbl_80563490) item_ok = 1;
-        if (item_ok && *(unsigned char *)(item + 0x1B) != 0) matches++;
-        entry -= 8;
-    } while (i-- > 0);
-    step = 1;
+    goto first_test;
+first_body:
+    if (*(volatile int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
+    item1 = *(char **)(entry + 0x4A4);
+    item_ok = 0;
+    if (*(unsigned char *)(item1 + 0x1A) == 0 && *(float *)(item1 + 0x20) < lbl_80563490) item_ok = 1;
+    if (item_ok && *(unsigned char *)(item1 + 0x1B) != 0) matches++;
+first_test:
+    entry -= 8;
+    if (i-- > 0) goto first_body;
     found = -1;
+    step = 1;
     while (step < count) {
         idx = (last + count - step) % count;
         e2 = base + idx * 8;
-        item = *(char **)(e2 + 0x4A4);
+        item2 = *(char **)(e2 + 0x4A4);
         item_ok = 0;
-        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) < lbl_80563490) item_ok = 1;
-        if (item_ok && *(unsigned char *)(item + 0x1B) != 0) { found = idx; break; }
+        if (*(unsigned char *)(item2 + 0x1A) == 0 && *(float *)(item2 + 0x20) < lbl_80563490) item_ok = 1;
+        if (item_ok && *(unsigned char *)(item2 + 0x1B) != 0) { found = idx; break; }
         step++;
     }
     if (found >= 0 && (found < last || matches > 3))
         *(int *)(base + 0x498) = *(int *)(base + found * 8 + 0x4A0);
 }
-
+#pragma pop
 void fn_802180B0(void *arg0) { fn_80217EC0(arg0, 1, 0); }
 
 void fn_802180BC(void *arg0) { fn_80217EC0(arg0, 1, 1); }
