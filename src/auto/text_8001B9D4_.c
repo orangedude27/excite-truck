@@ -637,6 +637,7 @@ extern char lbl_80558CD8;
 extern void *lbl_8055D5D4;
 extern void *lbl_8055E050;
 #pragma dont_inline on
+#pragma scheduling invalid_target
 s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
     s32 *archive;
     void *node;
