@@ -614,11 +614,12 @@ void fn_801C0E60(float *arg0, float *arg1, float *arg2) {
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801C0E94(void *arg0, void *arg1) {
     extern float lbl_805628BC, lbl_8055E460;
     extern char lbl_80558DC4[];
     float baseValue = lbl_805628BC;
-    float alpha = lbl_8055E460;
+    register float alpha = lbl_8055E460;
     float diff = alpha - baseValue;
     unsigned int offset = *(unsigned int *)((char *)arg0 + 8);
     unsigned int *dst = (unsigned int *)((char *)arg1 + offset);
@@ -644,17 +645,19 @@ void fn_801C0E94(void *arg0, void *arg1) {
         v0 = *(unsigned int *)((char *)arg0 + 0x9C);
         dst[11] = v0;
     } else {
-        float *a = (float *)((char *)arg0 + 0x70);
-        float *b = (float *)((char *)arg0 + 0xA0);
         float temp[12];
         float *out = temp;
+        float *b = (float *)((char *)arg0 + 0xA0);
+        float *a = (float *)((char *)arg0 + 0x70);
         for (i = 0; i < 2; ++i) {
-            out[0] = b[0] + alpha * (a[0] - b[0]);
-            out[1] = b[1] + alpha * (a[1] - b[1]);
-            out[2] = b[2] + alpha * (a[2] - b[2]);
-            out[3] = b[3] + alpha * (a[3] - b[3]);
-            out[4] = b[4] + alpha * (a[4] - b[4]);
-            out[5] = b[5] + alpha * (a[5] - b[5]);
+            float r0 = b[0] + alpha * (a[0] - b[0]);
+            float r1 = b[1] + alpha * (a[1] - b[1]);
+            float r2 = b[2] + alpha * (a[2] - b[2]);
+            float r3 = b[3] + alpha * (a[3] - b[3]);
+            float r4 = b[4] + alpha * (a[4] - b[4]);
+            float r5 = b[5] + alpha * (a[5] - b[5]);
+            out[0] = r0; out[1] = r1; out[2] = r2;
+            out[3] = r3; out[4] = r4; out[5] = r5;
             a += 6; b += 6; out += 6;
         }
         {
