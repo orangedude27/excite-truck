@@ -396,5 +396,6 @@ extern "C" void fn_802C1A0C(void **arg0, int arg1) {
 done:
     ;
 }
+#pragma cplusplus reset
 
 typedef struct { int a, b; } Pair802C;
