@@ -193,6 +193,7 @@ extern void fn_801EF428(long, long);
 extern void fn_8020095C(long);
 extern void fn_802792EC(long);
 extern long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long, long);
+#pragma dont_inline on
 void fn_801EC9CC(void *arg0, int arg1) {
     int i;
     char *entry;
@@ -245,7 +246,7 @@ void fn_801EC9CC(void *arg0, int arg1) {
 
     if (arg1 > 0) fn_80128668(arg0);
 }
-
+#pragma pop
 float fn_802C88D4(void *);
 float fn_801E88F0(long);
 #pragma push
