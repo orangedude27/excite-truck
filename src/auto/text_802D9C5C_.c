@@ -304,6 +304,8 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
     *(int *)(ctx + 0x10) += size2 + 8;
     return rec2;
 }
+#pragma scheduling on
+#pragma use_lmw_stmw reset
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
