@@ -1159,5 +1159,5 @@ void fn_8001D7A4(void) {
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 
