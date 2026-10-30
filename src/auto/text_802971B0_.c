@@ -70,30 +70,42 @@ extern int fn_802E317C(char *, ...);
 extern void *fn_802972A4(void *);
 __declspec(section ".sdata") extern char lbl_8055CA48[];
 __declspec(section ".sdata") extern char lbl_8055CA50[];
+#pragma scheduling invalid_target
 s32 fn_80297354(void *arg0, void *arg1) {
-    void *obj;
-    float result[3];
-    float zeroes[3];
-    obj = fn_802972A4(arg1);
+    struct Vec3 {
+        float x;
+        float y;
+        float z;
+    };
+    void *obj = fn_802972A4(arg1);
     if (obj != 0) {
-        ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_8055CA48);
-        result[0] = lbl_80564578;
-        result[1] = lbl_80564578;
-        result[2] = lbl_80564578;
-        ((void (*)(float *, void *, char *, float *))(*(void **)((char *)*(void **)arg1 + 0x38)))(zeroes, arg1, lbl_8055CA50, result);
-        *(float *)arg0 = 0.0f;
-        *(float *)((char *)arg0 + 4) = zeroes[0];
-        *(float *)((char *)arg0 + 8) = zeroes[1];
-        *(float *)((char *)arg0 + 12) = zeroes[2];
+        struct Vec3 value;
+        struct Vec3 copy;
+        struct Vec3 defaults;
+        float initial;
+        float default_value;
+
+        initial = ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_8055CA48);
+        default_value = lbl_80564578;
+        *(float *)arg0 = initial;
+        defaults.x = default_value;
+        defaults.y = default_value;
+        defaults.z = default_value;
+        copy = defaults;
+        ((void (*)(struct Vec3 *, void *, char *, struct Vec3 *))(*(void **)((char *)*(void **)arg1 + 0x38)))(&value, arg1, lbl_8055CA50, &copy);
+        *(float *)((char *)arg0 + 4) = value.x;
+        *(float *)((char *)arg0 + 8) = value.y;
+        *(float *)((char *)arg0 + 12) = value.z;
         *(void **)((char *)arg0 + 16) = obj;
         *(float *)((char *)arg0 + 20) = *(float *)arg0 + ((float (*)(void *))(*(void **)((char *)*(void **)obj + 0x10)))(obj);
     }
     return obj != 0;
 }
-
+#pragma scheduling on
 __declspec(section ".sdata") extern char lbl_8055CA58[];
 #pragma push
 #pragma cplusplus on
+#pragma dont_inline fn_80297450
 extern "C" s32 fn_80297450(void *node) {
     class NameNode {
     public:
@@ -109,7 +121,7 @@ float fn_8029748C(void *arg0) {
     s32 offset = 0;
     while (count > 0) {
         float value = *(float *)(*(u8 **)arg0 + offset + 0x14);
-        if (max <= value) max = value;
+        if (value > max) max = value;
         offset += 0x18;
         count--;
     }
@@ -117,12 +129,15 @@ float fn_8029748C(void *arg0) {
 }
 
 void *fn_80297654(void *arg0, s32 arg1) {
+    struct Obj { void (**vtable)(void *, s32); };
     void *object;
+    volatile struct Obj *obj;
     if (arg0 != 0) {
         object = *(void **)((char *)arg0 + 0x10);
         if (object != 0) {
             if (*(void **)((char *)arg0 + 0x10) != 0) {
-                ((void (**)(void *, s32))(*(void ***)object))[2](object, 1);
+                obj = (volatile struct Obj *)object;
+                obj->vtable[2](object, 1);
             }
             *(void **)((char *)arg0 + 0x10) = 0;
         }
@@ -141,15 +156,22 @@ void fn_802976DC(s32 *arg0) {
     fn_80128668(arg0);
 }
 
-#pragma push
-#pragma use_lmw_stmw off
-s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
+#pragma ppc_psq_save on
+#pragma cplusplus on
+extern "C" s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
+    struct Dummy {
+        virtual void v0(int);
+        virtual int v1();
+        virtual void v2();
+        virtual void v3(float *, float);
+    };
     register s32 offset = 0;
     register s32 i = 0;
     u8 *entry;
     float result[3];
     float x, y, z;
     void *object;
+    s32 answer;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         entry = *(u8 **)arg0 + offset;
         if (arg2 >= *(float *)entry && arg2 <= *(float *)(entry + 0x14)) {
@@ -160,14 +182,16 @@ s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
             result[1] = y + *(float *)(entry + 8);
             result[2] = z + *(float *)(entry + 0xc);
             object = *(void **)(entry + 0x10);
-            ((void (*)(void *, float *, float))(*(void (***)(void))object)[5])(object, result, arg2 - *(float *)entry);
+            ((Dummy *)object)->v3(result, arg2 - *(float *)entry);
         }
         offset += 0x18;
         i++;
     }
-    return arg2 < *(float *)((u8 *)arg0 + 8);
+    answer = arg2 < *(float *)((u8 *)arg0 + 8);
+    return answer;
 }
-#pragma pop
+#pragma cplusplus reset
+#pragma ppc_psq_save reset
 void *fn_80297814(void *arg0, s32 arg1) {
     s32 value;
     if (arg0 != 0) {
