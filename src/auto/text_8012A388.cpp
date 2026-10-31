@@ -1966,10 +1966,10 @@ void fn_8012E67C(s32 arg0, s32 arg1) {
     s32 var_r31;
 
     var_r27 = obj;
-    var_r29 = fn_802E2C20() + 0x7D0;
 
 loop_21:
     if (var_r27 == NULL) {
+        var_r29 = fn_802E2C20() + 0x7D0;
         void *entry = fn_8012BD3C(lbl_8055E000, (const char *)arg1);
         if (entry != NULL) {
             *(u8 *)((u8 *)entry + 0xAD) = 0;
