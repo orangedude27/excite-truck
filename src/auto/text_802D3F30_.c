@@ -28,6 +28,18 @@ extern void fn_801282EC(s32);
 extern void *fn_8012850C(s32, void *);
 extern void DCInvalidateRange(void *, u32);
 extern void fn_802D6C68(void);
+
+typedef struct {
+    u8 unk00;
+    u8 pad[3];
+    u32 unk04;
+    u8 unk08;
+    u8 unk09;
+    u8 unk0A;
+    u8 unk0B;
+    u8 unk0C;
+    u8 unk0D;
+} UnkStruct_804C5700;
 extern void GXSetArray(u32, void *, u32);
 extern void GXLoadPosMtxImm(void *, u32);
 extern void PSMTXRotTrig(void *, void *, f32, f32, f32);
@@ -240,8 +252,264 @@ void fn_802D4458(void *arg0) {
     GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_802D45C0(void *arg0) {
+    extern s32 fn_802CFF64(s32);
+    extern u8 lbl_804CEC3C[];
+    extern f32 lbl_804C56F0[];
+    register void *object = arg0;
+    register f32 *src = *(f32 **)((u8 *)object + 0x20);
+    register s32 count = *(s32 *)((u8 *)object + 0x1C);
+    f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
+    s32 index;
+    s32 cached;
+
+    if (base == 0) return;
+    {
+        register u8 *cache = lbl_804CEC3C;
+        index = *(s32 *)(cache + 0x4000);
+        if (index < 0x400) {
+            *(s32 *)(cache + 0x4000) = index + 1;
+            *(s32 *)(cache + index * 0x10) = count;
+            *(f32 **)(cache + index * 0x10 + 4) = src;
+            *(f32 **)(cache + index * 0x10 + 8) = base;
+            *(s32 *)(cache + index * 0x10 + 0xC) = 0;
+            cached = 1;
+        } else {
+            cached = 0;
+        }
+        if (cached == 0) {
+            f32 *out = base;
+            if (count > 0) {
+                u32 pairs = (u32)count >> 1;
+                if (pairs != 0) {
+                    do {
+                        f32 scale = *(f32 *)((u8 *)src + 0xC);
+                        out[0] = src[0] + lbl_804C56F0[0] * scale;
+                        out[1] = src[1] + lbl_804C56F0[1] * scale;
+                        out[2] = src[2] + lbl_804C56F0[2] * scale;
+                        scale = *(f32 *)((u8 *)src + 0x1C);
+                        out[3] = src[4] + lbl_804C56F0[0] * scale;
+                        out[4] = src[5] + lbl_804C56F0[1] * scale;
+                        out[5] = src[6] + lbl_804C56F0[2] * scale;
+                        src += 8;
+                        out += 6;
+                    } while (--pairs != 0);
+                }
+                count &= 1;
+                if (count != 0) {
+                    do {
+                        f32 scale = *(f32 *)((u8 *)src + 0xC);
+                        out[0] = src[0] + lbl_804C56F0[0] * scale;
+                        out[1] = src[1] + lbl_804C56F0[1] * scale;
+                        out[2] = src[2] + lbl_804C56F0[2] * scale;
+                        src += 4;
+                        out += 3;
+                    } while (--count != 0);
+                }
+            }
+        }
+    }
+    GXSetArray(9, base, 0xC);
+    GXSetArray(0xB, *(void **)((u8 *)object + 0x24), 2);
+    GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
+    GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
+}
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_802D479C(void *arg0) {
+    register s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
+    register u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
+    register void *object = arg0;
+    f32 *base = (f32 *)fn_802CFF64(count * 12);
+    register f32 *out;
+    register s32 i;
+
+    if (base != 0) {
+        f32 factor = lbl_80564FF0;
+        register f32 *table = lbl_804CA308;
+        register u8 *vertex = src;
+        out = base;
+        i = count;
+        if (i > 0) {
+            for (; i > 0; i--) {
+                s16 h2 = *(s16 *)(vertex + 0x10);
+                u8 index0 = vertex[0x18];
+                s16 h0 = *(s16 *)(vertex + 0x0C);
+                s16 h1 = *(s16 *)(vertex + 0x0E);
+                f32 table0 = table[index0];
+                s16 h5 = *(s16 *)(vertex + 0x16);
+                s16 h3 = *(s16 *)(vertex + 0x12);
+                s16 h4 = *(s16 *)(vertex + 0x14);
+                u8 index1 = vertex[0x19];
+                f32 table1 = table[index1];
+                f32 w0 = factor * (f32)h0;
+                f32 w1 = factor * (f32)h1;
+                f32 w2 = factor * (f32)h2;
+                f32 w3 = factor * (f32)h3;
+                f32 w4 = factor * (f32)h4;
+                f32 w5 = factor * (f32)h5;
+                f32 x = *(f32 *)(src + 0x0) + w0 * table0;
+                f32 y = *(f32 *)(src + 0x4) + w1 * table0;
+                f32 z = *(f32 *)(src + 0x8) + w2 * table0;
+                out[0] = x;
+                out[1] = y;
+                out[2] = z;
+                x += w3 * table1;
+                y += w4 * table1;
+                z += w5 * table1;
+                out[0] = x;
+                out[1] = y;
+                out[2] = z;
+                vertex += 0x1C;
+                src += 0x1C;
+                out += 3;
+            }
+        }
+
+        GXSetArray(9, base, 0xC);
+        GXSetArray(0xB, *(void **)((u8 *)object + 0x24), 2);
+        GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
+        GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
+    }
+}
+#pragma pop
+
+#pragma scheduling on
+#pragma pop
+
 void fn_802D4C44(void *arg0) {}
 
+void fn_802D4ECC(void *arg0) {
+    extern s32 fn_802CFF64(s32);
+    extern f32 lbl_804DB068[];
+    extern f32 lbl_804CA308[];
+    extern f32 lbl_80564FF0;
+    register void *object = arg0;
+    register u8 *src = *(u8 **)((u8 *)object + 0x20);
+    register s32 count = *(s32 *)((u8 *)object + 0x1C);
+    f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
+    register f32 *out = base;
+    s32 i;
+    f32 factor = lbl_80564FF0;
+    volatile f32 sp8, spc, sp10;
+
+    if (base != 0) {
+        for (i = 0; i < count; i++) {
+            f32 *first = (f32 *)((u8 *)lbl_804DB068 + src[0xC] * 12);
+            f32 weightA = factor * (f32)src[0xE];
+            f32 y = *(f32 *)(src + 4) + first[1] * weightA;
+            f32 *second;
+            f32 weightB;
+            f32 x;
+            f32 z;
+            f32 y2;
+            f32 resultY;
+            f32 halfA;
+            f32 halfB;
+            u8 tableA;
+            u8 tableB;
+
+            second = (f32 *)((u8 *)lbl_804DB068 + src[0xD] * 12);
+            weightB = factor * (f32)src[0xF];
+            x = *(f32 *)(src + 0) + first[0] * weightA;
+            z = *(f32 *)(src + 8) + first[2] * weightA;
+            y2 = y + second[1] * weightB;
+            spc = y2;
+            halfA = (f32)*(s16 *)(src + 0x10);
+            tableA = src[0x14];
+            halfB = (f32)*(s16 *)(src + 0x12);
+            tableB = src[0x15];
+            resultY = y2 + factor * halfA * lbl_804CA308[tableA]
+                          + factor * halfB * lbl_804CA308[tableB];
+            sp8 = x;
+            sp10 = z;
+            out[0] = x + second[0] * weightB;
+            out[1] = resultY;
+            out[2] = z + second[2] * weightB;
+            src += 0x18;
+            out += 3;
+        }
+        GXSetArray(9, base, 0xC);
+        GXSetArray(0xB, *(void **)((u8 *)object + 0x24), 2);
+        GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
+        GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
+    }
+}
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_802D50B4(void *arg0) {
+    struct SourceVertex { f32 x; f32 y; f32 z; f32 scale; s16 half0; s16 half1; u8 index0; u8 index1; u16 pad; };
+    register u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
+    register s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
+    register void *object = arg0;
+    f32 *base = (f32 *)fn_802CFF64(count * 12);
+    s32 index;
+    s32 cached;
+    register s32 i;
+    register f32 *out;
+
+    if (base != 0) {
+        register u8 *cache = lbl_804D6C44;
+        index = *(s32 *)(cache + 0x4000);
+        if (index < 0x400) {
+            *(s32 *)(cache + 0x4000) = index + 1;
+            *(s32 *)(cache + index * 0x10) = count;
+            *(u8 **)(cache + index * 0x10 + 4) = src;
+            *(f32 **)(cache + index * 0x10 + 8) = base;
+            *(s32 *)(cache + index * 0x10 + 0xC) = 0;
+            cached = 1;
+        } else {
+            cached = 0;
+        }
+
+        if (cached == 0) {
+            f32 factor = lbl_80564FF0;
+            register struct SourceVertex *vertex = (struct SourceVertex *)src;
+            out = base;
+            i = count;
+            if (i > 0) {
+                for (; i > 0; i--) {
+                    f32 scale = vertex->scale;
+                    s16 half0 = vertex->half0;
+                    s16 half1 = vertex->half1;
+                    u8 index0 = vertex->index0;
+                    u8 index1 = vertex->index1;
+                    f32 y;
+                    f32 x;
+                    f32 first;
+                    f32 z;
+                    f32 second;
+                    y = vertex->y + lbl_804C56F0[1] * scale;
+                    x = vertex->x + lbl_804C56F0[0] * scale;
+                    first = factor * (f32)half0;
+                    y += first * lbl_804CA308[index0];
+                    z = vertex->z + lbl_804C56F0[2] * scale;
+                    second = factor * (f32)half1;
+                    y += second * lbl_804CA308[index1];
+                    out[0] = x;
+                    vertex = (struct SourceVertex *)((u8 *)vertex + 0x18);
+                    out[1] = y;
+                    out[2] = z;
+                    out += 3;
+                }
+            }
+        }
+
+        GXSetArray(9, base, 0xC);
+        GXSetArray(0xB, *(void **)((u8 *)object + 0x24), 2);
+        GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
+        GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
+    }
+}
+#pragma pop
 void fn_802D5270(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DAC48[];
