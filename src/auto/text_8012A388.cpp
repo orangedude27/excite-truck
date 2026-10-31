@@ -2032,7 +2032,8 @@ loop_21:
 
     var_r27 = *(void **)((u8 *)var_r27 + 4);
     goto loop_21;
-}
+  }
+  #pragma pop
 
 extern "C" const char lbl_8032AD2C[];
 extern "C" const char lbl_8032AD6C[];
