@@ -2562,5 +2562,6 @@ extern "C" f32 lbl_805614C4;
 extern "C" u8 lbl_8032C530[0x500];
 extern "C" void fn_80147BD0(s32, s32, s32, s32, s32, f32);
 
+extern "C" void fn_8013FAC4(void *arg0, void *arg2);
 // fn_80140B98 - quaternion-based vector transformation
 extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2);
