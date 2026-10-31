@@ -2100,6 +2100,7 @@ extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 extern unsigned char lbl_804C5700[12];
 extern unsigned char lbl_8055FD60;
+extern float lbl_80564F90;
 extern int GXSetDstAlpha(int, int);
 extern unsigned long lbl_8055D0B8;
 extern unsigned char lbl_804C5710[4];
