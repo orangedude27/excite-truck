@@ -730,49 +730,26 @@ void fn_801D628C(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" int fn_801D6320(void *out, void *object) {
-    struct Dummy {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual int check(const char *);
-        virtual void v5(); virtual void v6(); virtual void v7();
-        virtual float get_float1(const char *);
-        virtual float get_float2(const char *, float);
-        virtual void v11();
-        virtual signed char get_schar(const char *, int);
-        virtual void v13(); virtual void v14();
-        virtual int check2(const char *);
-    };
+int fn_801D6320(void *out, void *object) {
     extern char lbl_80338460;
     extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055ACC0, lbl_8055ACC8;
     extern float lbl_80562ADC, lbl_80562AE4, lbl_80562B0C;
     extern int fn_801399FC(void);
     extern void fn_802E30C8(const char *, const char *);
-    Dummy *obj = (Dummy *)object;
     char *messages = &lbl_80338460;
-    if (obj->check(&lbl_8055ACB0) != 0) goto skip_error1;
-    fn_802E30C8(messages + 0x210, 0);
-    return 0;
-skip_error1:
-    float a = obj->get_float1(&lbl_8055ACB0);
-    if (a >= lbl_80562ADC) goto skip_error2;
-    fn_802E30C8(messages + 0x254, 0);
-    return 0;
-skip_error2:
+    float a, b;
+    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0xC)))(object, &lbl_8055ACB0) == 0) { fn_802E30C8(messages + 0x210, 0); return 0; }
+    a = ((float (*)(void *, const char *))(*(void **)(*(void ***)object + 0x24)))(object, &lbl_8055ACB0);
+    if (a < lbl_80562ADC) { fn_802E30C8(messages + 0x254, 0); return 0; }
     *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
-    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * obj->get_float2(&lbl_8055ACB8, lbl_80562ADC));
-    if (obj->check2(&lbl_8055ACC0) != 0) goto skip_error3;
-    fn_802E30C8(messages + 0x2A4, 0);
-    return 0;
-skip_error3:
-    float b = obj->get_float2(&lbl_8055ACC0, lbl_80562AE4);
+    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * ((float (*)(void *, const char *, float))(*(void **)(*(void ***)object + 0x28)))(object, &lbl_8055ACB8, lbl_80562ADC));
+    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0xC)))(object, &lbl_8055ACC0) == 0) { fn_802E30C8(messages + 0x2A4, 0); return 0; }
+    b = ((float (*)(void *, const char *, float))(*(void **)(*(void ***)object + 0x28)))(object, &lbl_8055ACC0, lbl_80562AE4);
     *(float *)((char *)out + 0x10) = b;
-    if (b >= lbl_80562ADC) goto skip_error4;
-    fn_802E30C8(messages + 0x2E8, 0);
-    return 0;
-skip_error4:
+    if (b < lbl_80562ADC) { fn_802E30C8(messages + 0x2E8, 0); return 0; }
     *(int *)((char *)out + 0x14) = 0;
-    if (obj->check2(&lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
-    *(signed char *)((char *)out + 0x18) = obj->get_schar(messages + 0x338, 0);
+    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0x5C)))(object, &lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
+    *(signed char *)((char *)out + 0x18) = ((signed char (*)(void *, const char *, int))(*(void **)(*(void ***)object + 0x30)))(object, messages + 0x338, 0);
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
