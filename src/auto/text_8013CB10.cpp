@@ -1097,8 +1097,8 @@ extern "C" void fn_80140B98(void *, void *, s32);
 extern "C" void fn_80141558(void *, s32, s32, s32);
 // fn_80140D1C: processes array items, flushing buffer to fn_80141558 when item[0x1E] set, or stores to dst
 extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
+    f32 staging[16];  // Local staging buffer at r1+0x14 in target
     f32 *dst = (f32 *)arg2;
-    
     s32 count = *(s32 *)((u8 *)arg1 + 4) - 1;
     s32 idx = 0;
     s32 i, cap, head, end;
