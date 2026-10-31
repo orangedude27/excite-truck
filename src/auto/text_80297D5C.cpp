@@ -1967,6 +1967,7 @@ int fn_8029C190(void* arg0) {
     return 0x14;
 }
 #include <string.h>
+#include <math.h>
 #include "types.h"
 extern "C" float lbl_80564598;
 extern "C" float lbl_805645C8;
