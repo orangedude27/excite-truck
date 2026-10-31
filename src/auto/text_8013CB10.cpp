@@ -1095,47 +1095,69 @@ extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2) {
 extern "C" void fn_8013EB30(void);
 extern "C" void fn_80140B98(void *, void *, s32);
 extern "C" void fn_80141558(void *, s32, s32, s32);
+// fn_80140D1C: processes array items, flushing buffer to fn_80141558 when item[0x1E] set, or stores to dst
 extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
- f32 *dst = (f32 *)arg2;
- s32 count = *(s32 *)((u8 *)arg1 + 4) - 1;
- s32 idx = 0;
- s32 i, cap, head, end;
- u8 *item;
- fn_8013EB30();
- while (count >= 0) {
-     item = *(u8 **)((u8 *)arg1 + count * 8);
-     if (item[0x1E]) {
-         if (idx > 0) {
-             fn_80141558((u8 *)arg0 + 0x280, (s32)dst, idx, *(s32 *)((u8 *)arg0 + 0x288));
-             idx = 0;
-         }
-         fn_80140B98(arg0, *(void **)((u8 *)arg1 + count * 8), 2);
-     } else {
-         dst[idx * 3] = *(f32 *)item;
-         dst[idx * 3 + 1] = *(f32 *)(item + 4);
-         dst[idx * 3 + 2] = *(f32 *)(item + 8);
-         idx++;
-         dst[idx * 3] = *(f32 *)(item + 0xC);
-         dst[idx * 3 + 1] = *(f32 *)(item + 0x10);
-         dst[idx * 3 + 2] = *(f32 *)(item + 0x14);
-         idx++;
-     }
-     count--;
- }
- if (idx > 0) {
-     fn_80141558((u8 *)arg0 + 0x280, (s32)dst, idx, *(s32 *)((u8 *)arg0 + 0x288));
-     idx = 0;
- }
- i = 0;
- do {
-     cap = *(s32 *)((u8 *)arg0 + 0xC4);
-     head = *(s32 *)((u8 *)arg0 + 0xCC);
-     end = (cap + (*(s32 *)((u8 *)arg0 + 0xC8) - head)) % cap;
-     if (i >= end) break;
-     item = *(u8 **)((u8 *)arg0 + 0xC0);
-     fn_80140B98(arg0, *(void **)(item + ((i + cap + head) % cap) * 12 + 8), 4);
-     i++;
- } while (1);
+    // Stack layout (from target):
+    // r1+0x1b0: saved lr
+    // r1+0x54..0x64: saved r25-r29 (via _savegpr_26)
+    // r1+0x14: staging buffer (f32[16])
+    // r1+0x10: temp for stw
+    // r1+0xc: idx (s32*)
+    // r1+0x8: some pointer
+    // r1+0x4: saved r0 (from mflr)
+    
+    // Parameters mapped to preserved registers in target:
+    // r28 = arg0
+    // r29 = arg1
+    // arg2 = buffer pointer (used directly as dst)
+    
+    void *r28 = arg0;
+    void *r29 = arg1;
+    f32 *dst = (f32 *)arg2;
+    
+    s32 count = *(s32 *)((u8 *)arg1 + 4) - 1;
+    s32 idx = 0;
+    s32 i, cap, head, end;
+    u8 *item;
+    
+    fn_8013EB30();
+    
+    while (count >= 0) {
+        item = *(u8 **)((u8 *)arg1 + count * 8);
+        if (item[0x1E]) {
+            if (idx > 0) {
+                fn_80141558((u8 *)arg0 + 0x280, (s32)dst, idx, *(s32 *)((u8 *)arg0 + 0x288));
+                idx = 0;
+            }
+            fn_80140B98(arg0, *(void **)((u8 *)arg1 + count * 8), 2);
+        } else {
+            dst[idx * 3] = *(f32 *)item;
+            dst[idx * 3 + 1] = *(f32 *)(item + 4);
+            dst[idx * 3 + 2] = *(f32 *)(item + 8);
+            idx++;
+            dst[idx * 3] = *(f32 *)(item + 0xC);
+            dst[idx * 3 + 1] = *(f32 *)(item + 0x10);
+            dst[idx * 3 + 2] = *(f32 *)(item + 0x14);
+            idx++;
+        }
+        count--;
+    }
+    
+    if (idx > 0) {
+        fn_80141558((u8 *)arg0 + 0x280, (s32)dst, idx, *(s32 *)((u8 *)arg0 + 0x288));
+        idx = 0;
+    }
+    
+    i = 0;
+    do {
+        cap = *(s32 *)((u8 *)arg0 + 0xC4);
+        head = *(s32 *)((u8 *)arg0 + 0xCC);
+        end = (cap + (*(s32 *)((u8 *)arg0 + 0xC8) - head)) % cap;
+        if (i >= end) break;
+        item = *(u8 **)((u8 *)arg0 + 0xC0);
+        fn_80140B98(arg0, *(void **)(item + ((i + cap + head) % cap) * 12 + 8), 4);
+        i++;
+    } while (1);
 }
 
 extern "C" void fn_80141454(void) {
