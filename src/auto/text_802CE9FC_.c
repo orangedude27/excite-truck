@@ -942,9 +942,8 @@ void fn_802D050C(void* hi) {
 }
 
 int fn_802D0514(void *source) {
-    extern unsigned long lbl_8055FDAC;
-    extern void *lbl_8055FDB0;
-    int index;
+          extern unsigned long lbl_8055FDAC;
+      int index;
     unsigned long next;
     unsigned int *src;
     unsigned char *dst;
