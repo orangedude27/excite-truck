@@ -1025,32 +1025,32 @@ void fn_802D0610(int arg0) {
             
             lbl_8055FD70 = 1;
             
-            aux = (unsigned char *)&lbl_804C97D0;
+            aux = dst;
             
-            dst[48] = aux[0];
-            dst[49] = aux[1];
-            dst[50] = aux[2];
-            dst[51] = aux[3];
-            dst[52] = aux[4];
-            dst[53] = aux[5];
-            dst[54] = aux[6];
-            dst[55] = aux[7];
-            dst[56] = aux[8];
+            aux[48] = lbl_804C97D0;
+            aux[49] = lbl_804C97D1;
+            aux[50] = lbl_804C97D2;
+            aux[51] = lbl_804C97D3;
+            aux[52] = lbl_804C97D4;
+            aux[53] = lbl_804C97D5;
+            aux[54] = lbl_804C97D6;
+            aux[55] = lbl_804C97D7;
+            aux[56] = lbl_804C97D8;
             
-            dst[48+12] = src[48+12];
-            dst[48+13] = src[48+13];
-            dst[48+14] = src[48+14];
-            dst[48+15] = src[48+15];
-            dst[48+16] = src[48+16];
-            dst[48+17] = src[48+17];
-            dst[48+18] = src[48+18];
-            dst[48+19] = src[48+19];
-            dst[48+20] = src[48+20];
+            aux[48+12] = src[48+12];
+            aux[48+13] = src[48+13];
+            aux[48+14] = src[48+14];
+            aux[48+15] = src[48+15];
+            aux[48+16] = src[48+16];
+            aux[48+17] = src[48+17];
+            aux[48+18] = src[48+18];
+            aux[48+19] = src[48+19];
+            aux[48+20] = src[48+20];
             
-            *(int *)(dst + 60) = *(int *)(src + 60);
-            *(int *)(dst + 64) = *(int *)(src + 64);
-            *(int *)(dst + 68) = *(int *)(src + 68);
-            *(float *)(dst + 72) = *(float *)(src + 72);
+            *(int *)(aux + 60) = *(int *)(src + 60);
+            *(int *)(aux + 64) = *(int *)(src + 64);
+            *(int *)(aux + 68) = *(int *)(src + 68);
+            *(float *)(aux + 72) = *(float *)(src + 72);
             
             aux[92] = 1;
         } else {
