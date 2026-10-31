@@ -1096,7 +1096,6 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *arg0) {
 
 extern "C" void fn_800EE2E0(void *arg0, s32 arg1) {
     extern s32 Parse__Q46nw4hbm3snd6detail9MmlParserCFPQ46nw4hbm3snd6detail11MmlSeqTrackb(void *, void *, s32);
-    s16 ReadArg__Q46nw4hbm3snd6detail9MmlParserCFPPCUcPQ46nw4hbm3snd6detail9SeqPlayerPQ46nw4hbm3snd6detail8SeqTrackQ56nw4hbm3snd6detail9MmlParser10SeqArgType(const u8 **, nw4hbm::snd::detail::SeqPlayer *, nw4hbm::snd::detail::SeqTrack *, nw4hbm::snd::detail::MmlParser::SeqArgType);
     Parse__Q46nw4hbm3snd6detail9MmlParserCFPQ46nw4hbm3snd6detail11MmlSeqTrackb(*(void **)((u8 *)arg0 + 0xBC), arg0, arg1);
 }
 
