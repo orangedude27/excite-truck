@@ -2177,9 +2177,12 @@ extern "C" void fn_800F0728(void *this_, s32 a1, s32 a2) {
 }
 
 extern "C" void fn_800F0750(void) {
-    return;
-}
-extern u8 lbl_803231D8[];
+          return;
+  }
+
+  extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void* this_, s32 index);
+
+  extern u8 lbl_803231D8[];
 extern "C" s32 fn_800F283C(void *, u32, s32, s32 *);
 extern "C" s32 fn_800F2824(void *, s32, void *);
 extern "C" s32 fn_800F282C(void *, s32, s32, void *);
