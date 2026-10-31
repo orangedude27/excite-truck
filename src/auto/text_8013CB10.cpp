@@ -403,7 +403,9 @@ extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
 
 #pragma push
 #pragma scheduling invalid_target
+// Overload: used by fn_8013E19C for f32 return, fn_80140B98 uses the void version
 extern "C" f32 PSQUATMultiply(void *, void *);
+extern "C" void PSQUATMultiply_v(const Quaternion* a, const Quaternion* b, Quaternion* prod);
 extern "C" f32 lbl_80561498, lbl_805614A4;
 extern "C" void fn_8013E19C(void *arg0, f32 arg1) {
     f32 *p = (f32 *)arg0;
