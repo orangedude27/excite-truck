@@ -1441,7 +1441,7 @@ extern "C" void fn_8029B1B8(void* arg0) {
 }
 
 extern "C" void *fn_802C86DC(void);
-extern "C" void fn_8029B274(void *, float *, unsigned char, void *, void *, float, float);
+extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6);
 #pragma paired_single off
 extern "C" void fn_8029B6E4(void *arg0) {
     struct Vec3 {
