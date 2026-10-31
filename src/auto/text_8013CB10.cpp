@@ -755,6 +755,7 @@ extern "C" f32 lbl_80561524;
 extern "C" f32 lbl_80561528;
 extern "C" f32 lbl_8056152C;
 extern "C" f32 lbl_80561534;
+extern "C" f32 lbl_8056151C;
 extern "C" f32 lbl_80561544;
 extern "C" f32 lbl_80561548;
 extern "C" f32 lbl_80561550;
