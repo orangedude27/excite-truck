@@ -253,13 +253,10 @@ int fn_802AE7AC(void) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_802AE7F4(void) {
-    struct ETConfigName {
-        char text[0xC];
-    };
-      // Use global ETConfigPaths definition from top of file
+    // Use global ETConfigPaths definition from top of file
     float values[8];
     float total;
-          register struct ETConfigPaths *base = (struct ETConfigPaths *)lbl_8034A020;
+    register struct ETConfigPaths *base = (struct ETConfigPaths *)lbl_8034A020;
     int i;
 
           lbl_8055F980 = fn_8012C33C((void *)(base + 0));
