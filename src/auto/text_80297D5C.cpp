@@ -401,10 +401,12 @@ extern "C" void fn_8029B6E4(void *);
 extern "C" void fn_8029B824(void *);
 extern "C" float fn_802C9A4C(float);
 extern float lbl_80564618;
+/* empty function definition - referenced by address in fn_802988A4 */
 extern "C" void fn_80298A48(void) {
 }
 
-extern "C" void fn_80298A48(void); /* forward declaration to match symbol */
+/* forward declaration for use as function pointer */
+extern "C" void fn_80298A48(void);
 
 extern "C" void* fn_80298A4C(void* arg0, int arg1) {
     if (arg0 != 0) {
