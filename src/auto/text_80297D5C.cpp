@@ -1953,7 +1953,7 @@ extern "C" void fn_8029C084(void *arg0, int arg1) {
             }
             ((void (*)(void *, void *, int))fn_8029A208)(lbl_8055F7D0, obj, enabled2);
         }
-                  if (lbl_8055F7D4 != 0) {
+                            if (lbl_8055F7D4 != 0) {
               fn_8029A904(lbl_8055F7D4, (int)obj, data, temp_f31, *(float *)((char *)arg0 + 8));
           }
         arg0 = (char *)arg0 + 0x10;
