@@ -766,7 +766,7 @@ extern "C" void *fn_802997F4(void *arg0, int arg1) {
     return 0;
 }
 
-extern "C" void fn_802C8E00(int, unsigned int, float, float, float, float, float);
+extern "C" void fn_802C8E00(int arg0, int arg1, float farg0, float farg1, float farg2, float farg3, float farg4);
 extern float lbl_805645E0;
 extern float lbl_80564590, lbl_8056459C, lbl_805645E0;
 extern "C" void fn_80299830(void* arg0, int arg1) {
