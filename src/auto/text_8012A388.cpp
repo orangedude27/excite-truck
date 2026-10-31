@@ -57,6 +57,7 @@ extern "C" s32 fn_8012E9F0(s32, s32);
 extern "C" const char lbl_8032AD88[];
 extern "C" const char lbl_8032AD6C[];
 extern "C" const char lbl_8032AD2C[];
+extern "C" const char lbl_8032ADA0[];
 
 extern "C" void *fn_8012CB44(void *, s32);
 extern "C" void fn_8012CA40(void *);
