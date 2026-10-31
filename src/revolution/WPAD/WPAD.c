@@ -3181,72 +3181,65 @@ void fn_8005F248(s32 chan, s32 param_2) {
     s32 diff;
     u8 buf[0x60];
     f64 d4, d3, d2, d1, d0, d5;
-
+    
     if (param_2 != -3) {
         return;
     }
-
-    *(u16*)(buf + 0x08) = 0x38;
+    
     *(u32*)(buf + 0x0C) = 0x62;
+    *(u16*)(buf + 0x08) = 0x38;
     *(u32*)(buf + 0x10) = 0x17;
     *(u16*)(buf + 0x2A) = 0x6;
     *(void**)(buf + 0x3C) = fn_8005F248;
-
+    
     memcpy(buf + 0x14, buf + 0x0C, 4);
     memcpy(buf + 0x18, buf + 0x08, 2);
-
+    
     *(u16*)(buf + 0x30) = *(u16*)(buf + 0x08);
     *(u32*)(buf + 0x34) = *(u32*)(buf + 0x0C);
     *(u32*)(buf + 0x2C) = (u32)(p + 0x874);
-
+    
     d4 = *(f64*)(buf + 0x10);
     d3 = *(f64*)(buf + 0x18);
     d2 = *(f64*)(buf + 0x20);
     d1 = *(f64*)(buf + 0x28);
     d5 = *(f64*)(buf + 0x38);
     d0 = *(f64*)(buf + 0x30);
-
-    *(f64*)(buf + 0x08) = d4;
-    *(f64*)(buf + 0x10) = d3;
-    *(f64*)(buf + 0x18) = d2;
-    *(f64*)(buf + 0x20) = d1;
-    *(f64*)(buf + 0x28) = d0;
-    *(f64*)(buf + 0x30) = d5;
-
+    
+    *(f64*)(buf + 0x00) = d4;
+    *(f64*)(buf + 0x08) = d3;
+    *(f64*)(buf + 0x10) = d2;
+    *(f64*)(buf + 0x18) = d1;
+    *(f64*)(buf + 0x20) = d0;
+    *(f64*)(buf + 0x28) = d5;
+    
     enabled = OSDisableInterrupts();
     OSDisableInterrupts();
-
+    
     back = p->stdCmdQueue.back;
     front = p->stdCmdQueue.front;
     diff = front - back;
-
+    
     if (diff >= 0) {
         OSRestoreInterrupts(enabled);
         return;
     }
-
+    
     capacity = p->stdCmdQueue.capacity;
     diff = capacity + diff;
     status = diff;
     OSRestoreInterrupts(enabled);
-
+    
     if (capacity - 1 != status) {
         OSRestoreInterrupts(enabled);
         return;
     }
-
-    memset(p->stdCmdQueue.buffer + (s8)front * 0x30, 0, 0x30);
-    memcpy(p->stdCmdQueue.buffer + (s8)front * 0x30, buf + 0x08, 0x30);
-
-    {
-        s8 backVal = p->stdCmdQueue.back;
-        s8 frontVal = (s8)p->stdCmdQueue.front;
-        s8 index = frontVal;
-        s32 lastIndex = capacity - 1;
-        s32 wrapMask = ~((index - lastIndex) | (lastIndex - index)) >> 31;
-        p->stdCmdQueue.front = ((index + 1) & ~wrapMask) | (p->stdCmdQueue.front & wrapMask);
-    }
-
+    
+    memset(p->stdCmdQueue.buffer + front * 0x30, 0, 0x30);
+    memcpy(p->stdCmdQueue.buffer + front * 0x30, buf, 0x30);
+    
+    ((u8*)p)[0x161] = (u8)((u8)((s32)(capacity - 1 - status) >> 31) & ((u8)((s32)(status - capacity + 1 - 1) >> 31) ^ 0xFF));
+    
     OSRestoreInterrupts(enabled);
 }
 
@@ -5012,38 +5005,32 @@ void fn_80064F64(s32 chan, void* data) { /* stub */ }
 void fn_80065524(s32 chan, WPADStatusEx* pStatus)
 {
     WPADCB* pCB;
-    volatile u8* pBuf;
+    volatile u8* pBase;
     u32 enabled;
-    u32 i;
+    volatile u8* pBuf;
+    u8 i;
+    u8 j;
 
     enabled = OSDisableInterrupts();
     pCB = lbl_8038F4F0[(u8)chan];
-    pBuf = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
-    for (i = 0; i < 2; i++) {
-        pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
-        pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
-        pBuf[8] = 0; pBuf[9] = 0; pBuf[10] = 0; pBuf[11] = 0;
-        pBuf[12] = 0; pBuf[13] = 0; pBuf[14] = 0; pBuf[15] = 0;
-        pBuf[16] = 0; pBuf[17] = 0; pBuf[18] = 0; pBuf[19] = 0;
-        pBuf[20] = 0; pBuf[21] = 0; pBuf[22] = 0; pBuf[23] = 0;
-        pBuf[24] = 0; pBuf[25] = 0; pBuf[26] = 0; pBuf[27] = 0;
-        pBuf[28] = 0; pBuf[29] = 0; pBuf[30] = 0; pBuf[31] = 0;
-        pBuf[32] = 0; pBuf[33] = 0; pBuf[34] = 0; pBuf[35] = 0;
-        pBuf[36] = 0; pBuf[37] = 0; pBuf[38] = 0; pBuf[39] = 0;
-        pBuf[40] = 0; pBuf[41] = 0; pBuf[42] = 0; pBuf[43] = 0;
-        pBuf[44] = 0; pBuf[45] = 0; pBuf[46] = 0; pBuf[47] = 0;
-        pBuf += 48;
+    pBase = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
+    pBuf = pBase;
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 8; j++) {
+            pBuf[j] = 0;
+        }
+        pBuf += 8;
     }
-    *(u16*)pBuf = 0;
-    *(u16*)pBuf = ((pStatus->button & 0xFF) << 8) | ((pStatus->button >> 8) & 0xFF);
-    *(u16*)pBuf &= 0x9F1F;
+    *(u16*)pBase = 0;
+    *(u16*)pBase = ((pStatus->button & 0xFF) << 8) | ((pStatus->button >> 8) & 0xFF);
+    *(u16*)pBase &= 0x9F1F;
 
     if (*(s32*)((u8*)pCB + 0x7F8) == 0) {
         if (*(s32*)((u8*)pCB + 0x7FC) != 0) {
-            pBuf[0x29] = *(u8*)((u8*)pCB + 0x7FC);
+            pBase[0x29] = *(u8*)((u8*)pCB + 0x7FC);
         } else {
-            pBuf[0x29] = -4;
-            pBuf[0x28] = *(u8*)((u8*)pCB + 0x801);
+            pBase[0x29] = -4;
+            pBase[0x28] = *(u8*)((u8*)pCB + 0x801);
             *(u32*)((u8*)pCB + 0x788) = (pStatus->dev >> 1) & 1;
             *(u8*)((u8*)pCB + 0x806) = __cntlzw(*(u8*)((u8*)pCB + 0x806)) >> 24;
         }
