@@ -20,6 +20,15 @@ struct Entry {
     float f28;
 };
 
+struct XformData {
+    float m[9];
+    float t[3];
+    char pad30[0xE8 - 0x30];
+    float v0[3];
+    char padF4[0x124 - 0xF4];
+    float v1[3];
+};
+
 struct Locals {
     char pad0[0x58];  // sp8 at offset 0x58
     float sp8, spC, sp10, sp14, sp18, sp1C;
@@ -500,7 +509,57 @@ extern "C" void fn_80298BBC(void *arg0) {
     }
   }
   
-    void fn_80298DE0(void* arg0, void* arg1, int arg2) {}
+void fn_80298DE0(void* arg0, void* arg1, int arg2) {}
+
+void fn_80298FBC(void *arg0, void *arg1) {
+    void *base = *(void **)arg0;
+    s32 index = ((s32)arg1 - (s32)base) / 32;
+    void *matrix = (void *)fn_80287B24(index);
+    
+    float sp8, spC, sp10;
+    
+    if ((s32)&sp8 == (s32)arg1) {
+        float x = *(float *)arg1;
+        float y = *(float *)((char *)arg1 + 4);
+        float z = *(float *)((char *)arg1 + 8);
+        
+        sp8 = y * *(float *)((char *)matrix + 0xC) + x * *(float *)matrix + z * *(float *)((char *)matrix + 0x18);
+        spC = y * *(float *)((char *)matrix + 0x10) + x * *(float *)((char *)matrix + 4) + z * *(float *)((char *)matrix + 0x1C);
+        sp10 = y * *(float *)((char *)matrix + 0x14) + x * *(float *)((char *)matrix + 8) + z * *(float *)((char *)matrix + 0x20);
+    } else {
+        float x = *(float *)arg1;
+        float y = *(float *)((char *)arg1 + 4);
+        float z = *(float *)((char *)arg1 + 8);
+        
+        sp8 = y * *(float *)((char *)matrix + 0xC) + x * *(float *)matrix + z * *(float *)((char *)matrix + 0x18);
+        spC = y * *(float *)((char *)matrix + 0x10) + x * *(float *)((char *)matrix + 4) + z * *(float *)((char *)matrix + 0x1C);
+        sp10 = y * *(float *)((char *)matrix + 0x14) + x * *(float *)((char *)matrix + 8) + z * *(float *)((char *)matrix + 0x20);
+    }
+    
+    sp8 += *(float *)((char *)matrix + 0x24);
+    spC += *(float *)((char *)matrix + 0x28);
+    sp10 += *(float *)((char *)matrix + 0x2C);
+    
+    *(float *)arg1 = sp8;
+    *(float *)((char *)arg1 + 4) = spC;
+    *(float *)((char *)arg1 + 8) = sp10;
+    
+    float f1 = *(float *)((char *)arg1 + 0xC);
+    sp8 = sp8 + fn_80129DC4(0, -f1, f1);
+    
+    float f2 = *(float *)((char *)arg1 + 0x10);
+    spC = spC + fn_80129DC4(0, -f2, f2);
+    
+    float f3 = *(float *)((char *)arg1 + 0x14);
+    sp10 = sp10 + fn_80129DC4(0, -f3, f3);
+    
+    *(float *)arg1 = sp8;
+    *(float *)((char *)arg1 + 4) = spC;
+    *(float *)((char *)arg1 + 8) = sp10;
+    
+    fn_8028E584(*(void **)((char *)arg0 + 4), matrix, &sp8, *(float *)((char *)matrix + 0x34));
+}
+
   #pragma paired_single pop
 
 extern "C" char lbl_803494C4[];
@@ -1342,115 +1401,47 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
 }
 
 extern "C" void fn_8029AAE0(int arg0, int arg1, void* arg2) {
-    void* base = (char*)arg0 + (arg1 * 0x2C);
-    void* obj = fn_80288208(arg1);
-    float* data = (float*)arg2;
-    
-    if (base == (void*)((char*)arg2 + 0xE8)) {
-        float f0 = data[3] * data[0];
-        float f1 = data[2] * data[1];
-        float f2 = data[3] * data[2];
-        float f3 = data[2] * data[3];
-        float f4 = data[6] * data[4];
-        float f5 = data[5] * data[0];
-        float f6 = data[3] * data[5];
-        float f7 = data[6] * data[7];
-        float f8 = data[2] * data[4];
-        float f9 = data[5] * data[1];
-        float f10 = data[3] * data[4];
-        float f11 = data[6] * data[8];
-        float f12 = data[2] * data[7];
-        
-        float r0 = f0 + f1 + f2;
-        float r1 = f3 + f4 + f5;
-        float r2 = f6 + f7 + f8;
-        float r3 = f9 + f10 + f11;
-        float r4 = f12 + data[6] * data[8] + data[2] * data[7];
-        
-        ((float*)base)[0] = r0;
-        ((float*)base)[1] = r1;
-        ((float*)base)[2] = r2;
+    float *out = (float *)((char *)arg0 + arg1 * 0x2C);
+    float *m = (float *)arg2;
+    float *in;
+    fn_80288208(arg1);
+    in = m + 0xE8 / 4;
+    if (out == in) {
+        float x = in[0], y = in[1], z = in[2];
+        float rx = x * m[0] + y * m[3] + z * m[6];
+        float ry = x * m[1] + y * m[4] + z * m[7];
+        float rz = x * m[2] + y * m[5] + z * m[8];
+        out[0] = rx;
+        out[1] = ry;
+        out[2] = rz;
     } else {
-        float f0 = data[3] * data[0];
-        float f1 = data[2] * data[1];
-        float f2 = data[3] * data[2];
-        float f3 = data[6] * data[4];
-        float f4 = data[5] * data[0];
-        float f5 = data[3] * data[5];
-        float f6 = data[6] * data[7];
-        float f7 = data[2] * data[4];
-        float f8 = data[5] * data[1];
-        float f9 = data[3] * data[4];
-        float f10 = data[6] * data[8];
-        float f11 = data[2] * data[7];
-        
-        float r0 = f0 + f1 + f2;
-        float r1 = f3 + f4 + f5;
-        float r2 = f6 + f7 + f8;
-        float r3 = f9 + f10 + f11;
-        
-        ((float*)base)[0] = r0;
-        ((float*)base)[1] = r1;
-        ((float*)base)[2] = r2;
+        out[0] = in[0] * m[0] + in[1] * m[3] + in[2] * m[6];
+        out[1] = in[0] * m[1] + in[1] * m[4] + in[2] * m[7];
+        out[2] = in[0] * m[2] + in[1] * m[5] + in[2] * m[8];
     }
-    
-    ((float*)base)[0] += data[9];
-    float t1 = ((float*)base)[1] + data[10];
-    ((float*)base)[1] = t1;
-    ((float*)base)[2] += data[11];
-    ((float*)base)[1] = t1 + lbl_80564598;
-    
-    if ((char*)base + 0xC == (char*)arg2 + 0x124) {
-        float f0 = data[5] * data[0];
-        float f1 = data[4] * data[1];
-        float f2 = data[5] * data[2];
-        float f3 = data[8] * data[3];
-        float f4 = data[7] * data[4];
-        float f5 = data[5] * data[7];
-        float f6 = data[8] * data[9];
-        float f7 = data[4] * data[3];
-        float f8 = data[7] * data[1];
-        float f9 = data[5] * data[4];
-        float f10 = data[8] * data[10];
-        float f11 = data[4] * data[9];
-        
-        float r0 = f0 + f1 + f2;
-        float r1 = f3 + f4 + f5;
-        float r2 = f6 + f7 + f8;
-        float r3 = f9 + f10 + f11;
-        
-        ((float*)base)[3] = r0;
-        ((float*)base)[4] = r1;
-        ((float*)base)[5] = r2;
+    out[0] += m[9];
+    out[1] += m[10];
+    out[2] += m[11];
+    out[1] += lbl_80564598;
+    out += 3;
+    in = m + 0x124 / 4;
+    if (out == in) {
+        float x = in[0], y = in[1], z = in[2];
+        float rx = x * m[0] + y * m[3] + z * m[6];
+        float ry = x * m[1] + y * m[4] + z * m[7];
+        float rz = x * m[2] + y * m[5] + z * m[8];
+        out[0] = rx;
+        out[1] = ry;
+        out[2] = rz;
     } else {
-        float f0 = data[5] * data[0];
-        float f1 = data[4] * data[1];
-        float f2 = data[5] * data[2];
-        float f3 = data[8] * data[3];
-        float f4 = data[7] * data[4];
-        float f5 = data[5] * data[7];
-        float f6 = data[8] * data[9];
-        float f7 = data[4] * data[3];
-        float f8 = data[7] * data[1];
-        float f9 = data[5] * data[4];
-        float f10 = data[8] * data[10];
-        float f11 = data[4] * data[9];
-        
-        float r0 = f0 + f1 + f2;
-        float r1 = f3 + f4 + f5;
-        float r2 = f6 + f7 + f8;
-        float r3 = f9 + f10 + f11;
-        
-        ((float*)base)[3] = r0;
-        ((float*)base)[4] = r1;
-        ((float*)base)[5] = r2;
+        out[0] = in[0] * m[0] + in[1] * m[3] + in[2] * m[6];
+        out[1] = in[0] * m[1] + in[1] * m[4] + in[2] * m[7];
+        out[2] = in[0] * m[2] + in[1] * m[5] + in[2] * m[8];
     }
-    
-    ((float*)base)[3] += data[9];
-    float t2 = ((float*)base)[4] + data[10];
-    ((float*)base)[4] = t2;
-    ((float*)base)[5] += data[11];
-    ((float*)base)[4] = t2 + lbl_80564598;
+    out[0] += m[9];
+    out[1] += m[10];
+    out[2] += m[11];
+    out[1] += lbl_80564598;
 }
 
 extern "C" int fn_8029ADCC(void *arg0);
