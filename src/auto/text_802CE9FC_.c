@@ -1022,22 +1022,22 @@ void fn_802D0610(int arg0) {
             lbl_8055FD70 = 1;
             
             aux = (unsigned char *)&lbl_804C97D0;
-            dst[48] = aux[0];
-            dst[49] = aux[1];
-            dst[50] = aux[2];
-            dst[51] = aux[3];
-            dst[52] = aux[4];
-            dst[53] = aux[5];
-            dst[54] = aux[6];
-            dst[55] = aux[7];
-            dst[56] = aux[8];
-            
-            *(int *)(dst + 60) = *(int *)(src + 60);
-            *(int *)(dst + 64) = *(int *)(src + 64);
-            *(int *)(dst + 68) = *(int *)(src + 68);
-            *(float *)(dst + 72) = *(float *)(src + 72);
-            
-            aux[92] = 1;
+                          dst[48] = lbl_804C97D0;
+              dst[49] = lbl_804C97D1;
+              dst[50] = lbl_804C97D2;
+              dst[51] = lbl_804C97D3;
+              dst[52] = lbl_804C97D4;
+              dst[53] = lbl_804C97D5;
+              dst[54] = lbl_804C97D6;
+              dst[55] = lbl_804C97D7;
+              dst[56] = lbl_804C97D8;
+              
+              *(int *)(dst + 60) = *(int *)(src + 60);
+              *(int *)(dst + 64) = *(int *)(src + 64);
+              *(int *)(dst + 68) = *(int *)(src + 68);
+              *(float *)(dst + 72) = *(float *)(src + 72);
+              
+              ((unsigned char *)&lbl_804C97D0)[92] = 1;
         } else {
             ((float *)lbl_804C5690)[0] = lbl_80564F8C;
             ((float *)lbl_804C5690)[1] = lbl_80564F88;
