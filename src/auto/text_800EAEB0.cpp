@@ -2097,28 +2097,26 @@ extern "C" u8 lbl_80323E64[];
 extern "C" s16 lbl_80412A78[];
 extern "C" void fn_800F0360(void*);
 extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void*);
-extern "C" void* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void* this_, s32 varNo) {
+extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void* this_, s32 varNo) {
     s32 index = varNo;
     s32 valid = 0;
-    void* result;
 
     if (index >= 0 && index <= 0x20) {
         valid = 1;
     }
 
-    if (valid == 0) {
+    if (!valid) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x380,
                                      (const char*)lbl_80323DDC, index, 0, 0x20);
     }
 
     if (index < 0x10) {
-        return (u8*)this_ + 0xDC + index * 2;
+        return (s16*)((u8*)this_ + 0xDC + index * 2);
     }
-    result = NULL;
     if (index < 0x20) {
-        result = &lbl_80412A78[index - 0x10];
+        return &lbl_80412A78[index - 0x10];
     }
-    return result;
+    return NULL;
 }
 
 #pragma push
