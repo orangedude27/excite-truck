@@ -2562,6 +2562,9 @@ extern "C" f32 lbl_805614C4;
 extern "C" u8 lbl_8032C530[0x500];
 extern "C" void fn_80147BD0(s32, s32, s32, s32, s32, f32);
 
+#pragma processor 750
+#pragma push
+#pragma optimize level=4
 #pragma scheduling invalid_target
 extern "C" void fn_8013FAC4(void *arg0, void *arg2) {
     s32 enabled = *(s32 *)((u8 *)arg2 + 0x104);
