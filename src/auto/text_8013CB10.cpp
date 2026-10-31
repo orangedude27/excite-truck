@@ -413,7 +413,7 @@ extern "C" void fn_8013E19C(void *arg0, f32 arg1) {
     void *other = (char *)arg0 + 0xC;
     p[4] = unit;
     p[1] = unit;
-    f32 t = arg1 / PSQUATMultiply(arg0, other);
+          f32 t = arg1 / PSQUATMultiply(arg0, other);
     f32 d = p[1];
     f32 b = p[2];
     f32 g = p[0];
