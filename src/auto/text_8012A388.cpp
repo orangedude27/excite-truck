@@ -46,6 +46,7 @@ extern "C" void *fn_8012A570(u32, void *);
 
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" s32 fn_8012B85C(s32, s32, s32, s32, s32, s32);
+extern "C" s32 fn_8012B534(s32 *, s32);
 extern "C" void fn_80127464(void);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" void fn_802E317C(const char *, ...);
@@ -1563,6 +1564,135 @@ extern "C" void fn_8012D8A8(s32 arg0) {
         *(s32 *)((char *)arg0 + 0xB8) = 0;
         fn_8012CB44((void *)(arg0 + 4), -1);
         fn_8012CA40((void *)arg0);
+    }
+}
+
+extern "C" void fn_8012D908(s32 arg0) {
+    char sp10[128];
+    s32 spC;
+    u8 sp8;
+    s32 var_r5;
+    s32 var_r5_2;
+    u32 var_r24;
+    u32 var_r26;
+    char *var_r4;
+    char *var_r4_2;
+    char *var_r6;
+    char *var_r6_2;
+    u8 temp_r3;
+    u8 temp_r3_2;
+    u8 temp_r4;
+    u8 temp_r4_2;
+    u8 temp_r4_3;
+    u8 temp_r4_4;
+    u8 temp_r4_5;
+    u8 temp_r4_6;
+    u8 temp_r4_7;
+    u8 temp_r4_8;
+    u8 temp_r4_9;
+    u8 temp_r4_10;
+    u32 temp_r4_11;
+    u8 *current;
+    u8 *found;
+    u8 *temp_r3_3;
+    u8 *var_r25_2;
+
+    if (lbl_8055E014 == 0) return;
+    current = *(u8 **)((u8 *)lbl_8055E014 + 0xA18);
+    found = 0;
+    goto outer_test;
+
+outer_loop:
+    var_r4 = (char *)(current + 0xC);
+    var_r6 = sp10;
+    var_r5 = 0x80;
+    goto path_copy;
+path_limit:
+    var_r5 -= 1;
+    if (var_r5 > 0) goto path_copy;
+    var_r6[-1] = 0;
+    goto path_done;
+path_copy:
+    temp_r3 = *var_r4++;
+    *var_r6++ = temp_r3;
+    if ((s8)temp_r3 != 0) goto path_limit;
+path_done:
+    if ((s8)*fn_80029004(sp10, 0x2E) != 0) {
+        *fn_80029004(sp10, 0x2E) = 0;
+    }
+
+    var_r6_2 = sp10;
+    var_r5_2 = 0x80;
+    goto scan_test;
+scan_step:
+    var_r5_2 -= 1;
+    var_r6_2 += 1;
+scan_test:
+    if ((s8)*var_r6_2 != 0) goto scan_step;
+    if (var_r5_2 <= 0) goto path_all_done;
+    var_r4_2 = (char *)&lbl_805599E0;
+    goto suffix_copy;
+suffix_limit:
+    var_r5_2 -= 1;
+    if (var_r5_2 > 0) goto suffix_copy;
+    var_r6_2[-1] = 0;
+    goto path_all_done;
+suffix_copy:
+    temp_r3_2 = *var_r4_2++;
+    *var_r6_2++ = temp_r3_2;
+    if ((s8)temp_r3_2 != 0) goto suffix_limit;
+path_all_done:
+    fn_8002B0D8(sp10);
+    temp_r3_3 = (u8 *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
+    if (temp_r3_3 != 0 && sp8 != 0) {
+        temp_r4 = temp_r3_3[0]; temp_r3_3[0] = temp_r3_3[3]; temp_r3_3[3] = temp_r4;
+        temp_r4_2 = temp_r3_3[1]; temp_r3_3[1] = temp_r3_3[2]; temp_r3_3[2] = temp_r4_2;
+        temp_r4_3 = temp_r3_3[4]; temp_r3_3[4] = temp_r3_3[7]; temp_r3_3[7] = temp_r4_3;
+        temp_r4_4 = temp_r3_3[5]; temp_r3_3[5] = temp_r3_3[6]; temp_r3_3[6] = temp_r4_4;
+        temp_r4_5 = temp_r3_3[8]; temp_r3_3[8] = temp_r3_3[0xB]; temp_r3_3[0xB] = temp_r4_5;
+        temp_r4_6 = temp_r3_3[9]; temp_r3_3[9] = temp_r3_3[0xA]; temp_r3_3[0xA] = temp_r4_6;
+        temp_r4_7 = temp_r3_3[0xC]; temp_r3_3[0xC] = temp_r3_3[0xF]; temp_r3_3[0xF] = temp_r4_7;
+        temp_r4_8 = temp_r3_3[0xD]; temp_r3_3[0xD] = temp_r3_3[0xE]; temp_r3_3[0xE] = temp_r4_8;
+        temp_r4_9 = temp_r3_3[0x10]; temp_r3_3[0x10] = temp_r3_3[0x13]; temp_r3_3[0x13] = temp_r4_9;
+        temp_r4_10 = temp_r3_3[0x11]; temp_r3_3[0x11] = temp_r3_3[0x12]; temp_r3_3[0x12] = temp_r4_10;
+        temp_r4_11 = *(u32 *)temp_r3_3;
+        if (temp_r4_11 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14) {
+            fn_802E317C(lbl_8032AE60, temp_r4_11, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
+        }
+
+        var_r25_2 = temp_r3_3 + 0x14;
+        var_r26 = 0;
+        goto entries_test;
+entries_loop:
+        fn_8012A388(var_r25_2);
+        var_r25_2 += 0x44;
+        var_r26 += 1;
+entries_test:
+        if (var_r26 < *(u32 *)(temp_r3_3 + 0xC)) goto entries_loop;
+
+        var_r25_2 = temp_r3_3 + 0x14;
+        var_r26 = 0;
+        var_r24 = 0;
+        goto names_test;
+names_loop:
+        if (stricmp((const char *)var_r25_2, (const char *)arg0) == 0) {
+            var_r26 = 1;
+            goto names_done;
+        }
+        var_r25_2 += 0x44;
+        var_r24 += 1;
+names_test:
+        if (var_r24 < *(u32 *)(temp_r3_3 + 0xC)) goto names_loop;
+names_done:
+        if (var_r26 != 0) found = current;
+        fn_8012C4D8(temp_r3_3);
+    }
+    current = *(u8 **)(current + 4);
+outer_test:
+    if (current != 0 && found == 0) goto outer_loop;
+
+    if (found != 0) {
+        fn_802E317C(lbl_8032ADA0, (char *)(found + 0xC), (const char *)arg0);
     }
 }
 
