@@ -1903,8 +1903,69 @@ int fn_8029C190(void* arg0) {
 #include "types.h"
 extern "C" float lbl_805645C8;
 extern "C" float lbl_805645E8;
-extern "C" void* fn_802988A4(void*);
 extern "C" void* fn_8029A6F4(void*);
 extern "C" void* fn_801E87A8(void);
+
+extern "C" void* fn_802988A4(void* arg0) {
+    int count = fn_80287B14();
+    fn_8012850C((count << 5) + 0x10, &lbl_803494A4);
+    void** buffer = (void**)arg0;
+    *buffer = fn_8002F37C((void*)count, (void(*)())&fn_80298A48, 0, 0x20, count);
+    
+    float temp_f30 = lbl_8056459C;
+    float temp_f31 = lbl_805645B8;
+    int var_r28 = 0;
+    int var_r30 = 0;
+    
+    while (var_r28 < count) {
+        void* info = fn_80288208(var_r28);
+        if (fn_80287E20(info, (const char*)&lbl_8055CA90) != 0) {
+            float sp2C, sp30, sp34, sp20, sp24, sp28;
+            float sp14, sp18, sp1C;
+            float spC, sp8;
+            
+            sp2C = temp_f30;
+            sp30 = temp_f30;
+            sp34 = temp_f30;
+            sp20 = temp_f30;
+            sp24 = temp_f30;
+            sp28 = temp_f30;
+            
+            fn_80287ED0(&sp2C, var_r28, (const char*)&lbl_8055CA90, (const char*)&lbl_8055CA98);
+            
+            spC = temp_f30;
+            sp8 = temp_f30;
+            
+            sp14 = spC;
+            sp18 = spC;
+            sp1C = spC;
+            
+            fn_80287F90(&sp20, var_r28, (const char*)&lbl_8055CA90, (const char*)&lbl_8055CA9C,
+                       &sp14, spC, sp8, (void*)((char*)*buffer + var_r30));
+            
+            Entry* entry = (Entry*)((char*)*buffer + var_r30);
+            entry->f0 = sp2C;
+            entry->f4 = sp30;
+            entry->f8 = sp34;
+            entry->f12 = sp20;
+            entry->f16 = sp24;
+            entry->f20 = sp28;
+            entry->f24 = 1;
+            entry->f25 = 0;
+            entry->f28 = temp_f31;
+        } else {
+            Entry* entry = (Entry*)((char*)*buffer + var_r30);
+            entry->f24 = 0;
+            entry->f25 = 0;
+            entry->f28 = temp_f31;
+        }
+        var_r28 += 1;
+        var_r30 += 0x20;
+    }
+    
+    fn_802991BC(arg0);
+    *(void**)((char*)arg0 + 8) = fn_802974CC((char*)&lbl_803494B8);
+    return arg0;
+}
 extern "C" void fn_80287B38(void*);
 extern "C" char lbl_80349408[];
