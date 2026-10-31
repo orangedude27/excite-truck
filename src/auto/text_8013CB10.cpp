@@ -1486,30 +1486,30 @@ extern "C" void fn_80142650(void *arg0) {
                   *(f32 *)(base + 0xEC) = temp_f0 - temp_f1;
               } else {
                   f32 abs_diff = __fabsf(temp_f0 - temp_f1);
-                  if (abs_diff > lbl_80558DC4) {
-                    if (*(s32 *)(base + 0xE4) > 0) {
-                        *(s32 *)(base + 0xF4) = *(s32 *)(base + 0xE4);
-                        fn_8013CB3C();
-                        *(s32 *)(base + 0xF0) = 0;
-                        *(s32 *)(base + 0xE4) = 0;
-                    }
-                    if (*(s32 *)(base + 0x100) > 0) {
-                        temp_r6 = *(s32 *)(base + 0x100);
-                        *(f32 *)(base + 0xD4) = fn_8001DAE8(base + 0xD0);
-                        *(s32 *)(base + 0x100) = 0;
-                        *(f32 *)(base + 0xAC) = fn_8001DAE8(base + 0xA8);
-                    }
-                    if (lbl_8055E1BC == 0) {
-                        *(u8 *)(base + 0xF8) = 1;
-                    }
-                }
-            }
-        }
-    }
+                                    if (abs_diff > lbl_80558DC4) {
+                      if (*(s32 *)(base + 0xE4) > 0) {
+                          *(s32 *)(base + 0xF4) = *(s32 *)(base + 0xE4);
+                          fn_8013CB3C();
+                          *(s32 *)(base + 0xF0) = 0;
+                          *(s32 *)(base + 0xE4) = 0;
+                      }
+                      if (*(s32 *)(base + 0x100) > 0) {
+                          temp_r6 = *(s32 *)(base + 0x100);
+                          *(f32 *)(base + 0xD4) = fn_8001DAE8(base + 0xD0);
+                          *(s32 *)(base + 0x100) = 0;
+                          *(f32 *)(base + 0xAC) = fn_8001DAE8(base + 0xA8);
+                      }
+                      if (lbl_8055E1BC == 0) {
+                          *(u8 *)(base + 0xF8) = 1;
+                      }
+                  }
+              }
+          }
+      }
 
-    if ((*(s32 *)(base + 0xE4) % ((s32)&lbl_8042FB3C[0xC])) == 0) {
-        *(f32 *)(base + 0xBC) = fn_8001DAE8(base + 0xB8);
-    }
+      if ((*(s32 *)(base + 0xE4) % ((s32)&lbl_8042FB3C[0xC])) == 0) {
+          *(f32 *)(base + 0xBC) = fn_8001DAE8(base + 0xB8);
+      }
 }
   extern "C" f32 lbl_8042FB3C_arr[8];
 #pragma scheduling invalid_target
