@@ -1954,11 +1954,13 @@ extern "C" void fn_8012E630(void *arg0) {
     *((u8 *)arg0 + 0xC) = 0;
 }
 
-extern "C" s32 fn_8012E674(void *arg0) {
-    return *(s32*)((u8*)arg0 + 8);
-}
+  extern "C" s32 fn_8012E674(void *arg0) {
+      return *(s32*)((u8*)arg0 + 8);
+  }
 
-void fn_8012E67C(s32 arg0, s32 arg1) {
+  #pragma push
+  #pragma scheduling invalid_target
+  extern "C" void fn_8012E67C(s32 arg0, s32 arg1) {
     void **obj = *(void ***)(arg0 + 0xA18);
     void *var_r27;
     s32 var_r28;
