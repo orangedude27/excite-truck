@@ -247,16 +247,16 @@ int fn_802AE7AC(void) {
       fn_802C9994(0xFFF5D9);
   }
 
-  #pragma dont_inline on
+    #pragma dont_inline on
   #pragma cplusplus on
   #pragma push
   #pragma processor 750
   extern "C" void fn_802AE7F4(void) {
       struct ETConfigName {
-        char text[0xC];
-    };
-    struct ETConfigPaths {
-        struct ETConfigName name;
+          char text[0xC];
+      };
+      struct ETConfigPaths {
+          struct ETConfigName name;
         char lookupKey[0xC];
         char statusKey[8];
     };
