@@ -457,10 +457,9 @@ fetch:
 #pragma cplusplus reset
 #pragma pop
 
-      extern int lbl_804423A4[];
-  #pragma scheduling invalid_target
-            int fn_801D5650(void *alarm);
-      int fn_801D5650(void *alarm) {
+              extern int lbl_804423A4[];
+    #pragma scheduling invalid_target
+        int fn_801D5650(void *alarm) {
     int offset;
     int i;
     offset = 0;
