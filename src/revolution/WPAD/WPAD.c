@@ -3942,7 +3942,7 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     BOOL enabled;
     BOOL handshake;
     s32 status;
-    u8 buf[0x60] ALIGN(8);
+    u8 buf[0x68] ALIGN(8);
     s8 diff;
     s32 index;
 
