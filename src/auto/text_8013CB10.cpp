@@ -758,6 +758,8 @@ extern "C" void fn_80147F30(unsigned long, s32, s32, f32, f32, f32, f32, f32, f3
 extern "C" void *fn_80147C50(u32, s32, f32);
 extern "C" void fn_801476D8(void *, void *, s32);
 extern "C" void fn_80147EE0(void *, f32);
+extern "C" void fn_801476C4(void *arg0);
+extern "C" void fn_8013CB90(void *arg0);
 #pragma scheduling invalid_target
 extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
     struct VStringFloat { virtual void d0(); virtual void d1(); virtual u8 *v10(const char *, f32); };
@@ -1480,15 +1482,15 @@ extern "C" void fn_80142650(void *arg0) {
             if (var_f2 > lbl_805614A4) {
                 var_f2 = lbl_805614A4;
             }
-                          rounded_f2 = var_f2;
-              *(f32 *)(base + 0x94) = var_f2;
+            rounded_f2 = var_f2;
+            *(f32 *)(base + 0x94) = var_f2;
 
-              if (temp_f1 < rounded_f2) {
-                  *(f32 *)(base + 0xEC) = rounded_f2 - temp_f1;
-              } else {
-                  f32 diff = rounded_f2 - temp_f1;
-                  if (diff < 0.0f) diff = -diff;
-                  if (diff > lbl_80558DC4) {
+            if (temp_f1 < rounded_f2) {
+                *(f32 *)(base + 0xEC) = rounded_f2 - temp_f1;
+            } else {
+                f32 diff = rounded_f2 - temp_f1;
+                if (diff < 0.0f) diff = -diff;
+                if (diff > lbl_80558DC4) {
                     if (*(s32 *)(base + 0xE4) > 0) {
                         *(s32 *)(base + 0xF4) = *(s32 *)(base + 0xE4);
                         fn_8013CB3C();
