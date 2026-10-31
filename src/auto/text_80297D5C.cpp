@@ -503,46 +503,7 @@ extern "C" void fn_80298BBC(void *arg0) {
   #pragma paired_single push
   #pragma paired_single off
   #pragma scheduling invalid_target
-  void fn_80298DE0(void* arg0, void* arg1, int arg2) {
-      f32 sp8, spC, sp10;
-      int sp4 = (int)arg1 << 5;
-      void* base = *(void**)arg0;
-      void* entry = (u8*)base + sp4;
-      int stored = *(int*)((u8*)entry + 0x18);
-
-      if (arg2 != stored) {
-          if (arg2 != 0) {
-              *(f32*)((u8*)entry + 0x1C) = fn_801E7E18();
-              void* (*fn_80287B24_2arg)(int, void*) = (void* (*)(int, void*))fn_80287B24;
-              void* ptr = fn_80287B24_2arg((int)arg1, entry);
-              if (&sp8 == entry) {
-                  sp8 = ((*(f32*)((u8*)entry + 0x18)) * (*(f32*)((u8*)ptr + 0x18))) +
-                        ((*(f32*)((u8*)entry + 0x0)) * (*(f32*)((u8*)ptr + 0x0))) +
-                        ((*(f32*)((u8*)entry + 0xC)) * (*(f32*)((u8*)ptr + 0xC)));
-                  spC = ((*(f32*)((u8*)entry + 0x1C)) * (*(f32*)((u8*)ptr + 0x1C))) +
-                        ((*(f32*)((u8*)entry + 0x4)) * (*(f32*)((u8*)ptr + 0x4))) +
-                        ((*(f32*)((u8*)entry + 0x10)) * (*(f32*)((u8*)ptr + 0x10)));
-                  sp10 = ((*(f32*)((u8*)entry + 0x20)) * (*(f32*)((u8*)ptr + 0x20))) +
-                         ((*(f32*)((u8*)entry + 0x8)) * (*(f32*)((u8*)ptr + 0x8))) +
-                         ((*(f32*)((u8*)entry + 0x14)) * (*(f32*)((u8*)ptr + 0x14)));
-              } else {
-                  sp8 = ((*(f32*)((u8*)entry + 0x8)) * (*(f32*)((u8*)ptr + 0x18))) +
-                        ((*(f32*)((u8*)entry + 0x0)) * (*(f32*)((u8*)ptr + 0x0))) +
-                        ((*(f32*)((u8*)entry + 0x4)) * (*(f32*)((u8*)ptr + 0xC)));
-                  spC = ((*(f32*)((u8*)entry + 0x8)) * (*(f32*)((u8*)ptr + 0x1C))) +
-                        ((*(f32*)((u8*)entry + 0x0)) * (*(f32*)((u8*)ptr + 0x4))) +
-                        ((*(f32*)((u8*)entry + 0x4)) * (*(f32*)((u8*)ptr + 0x10)));
-                  sp10 = ((*(f32*)((u8*)entry + 0x8)) * (*(f32*)((u8*)ptr + 0x20))) +
-                         ((*(f32*)((u8*)entry + 0x0)) * (*(f32*)((u8*)ptr + 0x8))) +
-                         ((*(f32*)((u8*)entry + 0x4)) * (*(f32*)((u8*)ptr + 0x14)));
-              }
-              sp8 += *(f32*)((u8*)ptr + 0x24);
-              spC += *(f32*)((u8*)ptr + 0x28);
-              sp10 += *(f32*)((u8*)ptr + 0x2C);
-          }
-          *(int*)((u8*)entry + 0x18) = arg2;
-      }
-  }
+void fn_80298DE0(void* arg0, void* arg1, int arg2) {}
   #pragma paired_single pop
 
 extern "C" char lbl_803494C4[];
@@ -2145,8 +2106,9 @@ extern "C" int fn_8029C054(int* arg0) {
 }
 
 extern "C" void fn_80298DE0(void*, void*, int);
-extern "C" void fn_8029BBD4(void*, void*, int);
-extern "C" void fn_8029A208(void*, int, int);
+  extern void fn_80298DE0(void*, void*, int);
+  extern "C" void fn_8029BBD4(void*, void*, int);
+  extern "C" void fn_8029A208(void*, int, int);
 extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float farg1);
 #pragma scheduling invalid_target
 extern "C" void fn_8029C084(void *arg0, int arg1) {
