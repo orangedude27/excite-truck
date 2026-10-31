@@ -36,9 +36,9 @@ extern u8 lbl_8055DC08[WPAD_MAX_CONTROLLERS];
 extern u8 lbl_8055DC11;
 extern u8 lbl_8055DC1A;
 extern u8 lbl_80392900[];
-#include <revolution/OS/OSInterrupt.h>
-#include <MSL/internal/mem.h>
-#include <global.h>
+
+// Helper function declarations for fn_8005E09C
+static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs);
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
