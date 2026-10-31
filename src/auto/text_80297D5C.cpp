@@ -20,6 +20,7 @@ struct Entry {
 };
 
 struct Locals {
+    char pad0[0x8];  // sp8 at offset 0x8
     float sp8, spC, sp10, sp14, sp18, sp1C;
     float sp20, sp24, sp28, sp2C;
 };
