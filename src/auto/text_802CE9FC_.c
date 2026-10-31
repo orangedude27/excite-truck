@@ -1246,6 +1246,76 @@ int fn_802D0EC8(int arg0) {
     }
 }
 
+void fn_802D14D8(void)
+{
+    float mtx[4][4];
+    float sp8;
+    float sp16;
+    float sp20;
+    float sp28;
+    float sp32;
+    float temp_f1;
+    float temp_f2;
+    float temp_f3;
+    float temp_f4;
+    float temp_f31;
+    double temp_d1;
+    register unsigned char *r31;
+    int r0;
+    int r3;
+    int r4;
+    int r5;
+    int r6;
+    int r7;
+
+    if (lbl_804C9778[0] == 0) {
+        return;
+    }
+    lbl_804C9778[0] = 0;
+
+    if (lbl_8055FE24 != 0) {
+        temp_f3 = lbl_80564F8C;
+    } else {
+        temp_f3 = lbl_80564FC8;
+    }
+
+    r31 = lbl_804C9778;
+    temp_f31 = temp_f3 / *(float*)(r31 + 20);
+    temp_f1 = lbl_80564F94 * *(float*)(r31 + 12);
+    temp_f31 = *(float*)(r31 + 24) * temp_f31;
+    temp_d1 = fn_8002EF30((double)temp_f1);
+    temp_f4 = (float)atan((float)temp_d1 / temp_f31);
+    sp8 = lbl_80564FCC * temp_f4 / lbl_80564FD0;
+    sp16 = temp_f31;
+    sp20 = *(float*)(r31 + 4);
+    sp28 = *(float*)(r31 + 8);
+    C_MTXPerspective(mtx, sp8, sp16, sp20, sp28);
+
+    if (lbl_8055FE24 == 0 && (int)lbl_8055D0B8 >= 0 && lbl_8055D0B8 < (unsigned long)(lbl_8055D0BC * lbl_8055D0C0)) {
+        r6 = lbl_8055D0BC;
+        r7 = lbl_8055D0C0;
+        r5 = (int)lbl_8055D0B8;
+        r4 = r5 / r6;
+        r0 = r4 * r6;
+        r0 = r5 - r0;
+        r3 = r0 * 2;
+        r4 = r6 - r3 + 1;
+        r0 = r7 - (r4 * 2) + 1;
+        sp8 = mtx[0][0];
+        sp16 = mtx[0][2];
+        sp20 = mtx[0][3];
+        sp28 = mtx[1][0];
+        sp32 = mtx[1][2];
+        mtx[0][0] = sp8 / (lbl_80564F8C / (sp8 - lbl_80564FB0));
+        mtx[1][1] = r4 / (lbl_80564F8C / (sp28 - lbl_80564FB0));
+        mtx[0][2] = sp16 + (sp8 - lbl_80564FB0);
+        mtx[1][2] = sp32 - (sp28 - lbl_80564FB0);
+        GXSetProjection(mtx, 0);
+    } else {
+        GXSetProjection(mtx, 1);
+    }
+}
+
 extern void GXInitLightColor(void *, unsigned char *);
 extern void GXGetLightDir_Internal(void *, float, float, float, float, float, float);
 extern void GXInitLightAttn(void *, float, float, float, float, float, float);
@@ -1973,6 +2043,7 @@ __declspec(section ".data") extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 extern unsigned char lbl_804C5700[12];
+extern float lbl_80564F90;
 void fn_802D3E88(void) {
     unsigned char *p = &lbl_804C5700[0xD];
     *p = 0;
