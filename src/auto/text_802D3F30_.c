@@ -763,7 +763,7 @@ void fn_802D5FE4(void *arg0) {
 #pragma pop
 
 void fn_802D61BC(void *arg0) {
-    extern u8 lbl_804C5700[];
+    extern u8 lbl_804C5700[16];
     extern s32 lbl_8055FD20;
     extern u8 lbl_8055FD25;
     extern u32 lbl_8055FD28;
