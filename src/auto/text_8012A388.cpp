@@ -464,8 +464,8 @@ loop_37_done:
 }
 #pragma pop
 extern "C" s32 fn_8012B2C4(s32, s32, s32);
-extern "C" void fn_8012B314(s32 arg0, s32 arg1, s32 arg2) {
-    fn_8012B2C4(arg1, arg0, arg2);
+extern "C" void *fn_8012B314(s32 arg0, s32 arg1, s32 arg2) {
+    return (void *)fn_8012B2C4(arg1, arg0, arg2);
 }
 
 extern "C" void fn_8012B324(void) {
@@ -570,6 +570,7 @@ extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
 #pragma scheduling on
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     u8 *entry;
+    register u8 *header;
     void *object;
     s32 handle;
     s32 startTime;
@@ -577,7 +578,6 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     register s32 allocSize;
     u32 flags;
     register const char *strings;
-    register u8 *header;
 
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
