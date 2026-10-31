@@ -26,7 +26,7 @@ extern float lbl_80564F8C, lbl_80564F94, lbl_80564FCC, lbl_80564FDC;
 extern int lbl_8055FE24;
 extern unsigned char lbl_804C9778[];
 extern double lbl_80564FB0;
-extern float lbl_80564FC8, lbl_80564FD0;
+extern float lbl_80564F94, lbl_80564F9C, lbl_80564FC8, lbl_80564FD0;
 extern float lbl_80564FB8, lbl_80564FBC;
 extern int GXLoadPosMtxImm(void *, int);
 extern int GXSetDstAlpha(int, int);
