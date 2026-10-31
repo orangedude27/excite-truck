@@ -1025,32 +1025,34 @@ void fn_802D0610(int arg0) {
             
             lbl_8055FD70 = 1;
             
-            ((unsigned char *)&lbl_804C97D0)[0] = dst[48];
-            ((unsigned char *)&lbl_804C97D0)[1] = dst[49];
-            ((unsigned char *)&lbl_804C97D0)[2] = dst[50];
-            ((unsigned char *)&lbl_804C97D0)[3] = dst[51];
-            ((unsigned char *)&lbl_804C97D0)[4] = dst[52];
-            ((unsigned char *)&lbl_804C97D0)[5] = dst[53];
-            ((unsigned char *)&lbl_804C97D0)[6] = dst[54];
-            ((unsigned char *)&lbl_804C97D0)[7] = dst[55];
-            ((unsigned char *)&lbl_804C97D0)[8] = dst[56];
+            aux = (unsigned char *)&lbl_804C97D0;
             
-            ((unsigned char *)&lbl_804C97D0)[0+12] = src[0+12];
-            ((unsigned char *)&lbl_804C97D0)[1+12] = src[1+12];
-            ((unsigned char *)&lbl_804C97D0)[2+12] = src[2+12];
-            ((unsigned char *)&lbl_804C97D0)[3+12] = src[3+12];
-            ((unsigned char *)&lbl_804C97D0)[4+12] = src[4+12];
-            ((unsigned char *)&lbl_804C97D0)[5+12] = src[5+12];
-            ((unsigned char *)&lbl_804C97D0)[6+12] = src[6+12];
-            ((unsigned char *)&lbl_804C97D0)[7+12] = src[7+12];
-            ((unsigned char *)&lbl_804C97D0)[8+12] = src[8+12];
+            aux[0] = dst[48];
+            aux[1] = dst[49];
+            aux[2] = dst[50];
+            aux[3] = dst[51];
+            aux[4] = dst[52];
+            aux[5] = dst[53];
+            aux[6] = dst[54];
+            aux[7] = dst[55];
+            aux[8] = dst[56];
             
-            *(int *)((unsigned char *)&lbl_804C97D0 + 60) = *(int *)(src + 60);
-            *(int *)((unsigned char *)&lbl_804C97D0 + 64) = *(int *)(src + 64);
-            *(int *)((unsigned char *)&lbl_804C97D0 + 68) = *(int *)(src + 68);
-            *(float *)((unsigned char *)&lbl_804C97D0 + 72) = *(float *)(src + 72);
+            aux[12] = src[12];
+            aux[13] = src[13];
+            aux[14] = src[14];
+            aux[15] = src[15];
+            aux[16] = src[16];
+            aux[17] = src[17];
+            aux[18] = src[18];
+            aux[19] = src[19];
+            aux[20] = src[20];
             
-            ((unsigned char *)&lbl_804C97D0)[92] = 1;
+            *(int *)(aux + 60) = *(int *)(src + 60);
+            *(int *)(aux + 64) = *(int *)(src + 64);
+            *(int *)(aux + 68) = *(int *)(src + 68);
+            *(float *)(aux + 72) = *(float *)(src + 72);
+            
+            aux[92] = 1;
         } else {
             ((float *)lbl_804C5690)[0] = lbl_80564F8C;
             ((float *)lbl_804C5690)[1] = lbl_80564F88;
