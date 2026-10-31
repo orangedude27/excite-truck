@@ -3942,7 +3942,7 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     BOOL enabled;
     BOOL handshake;
     s32 status;
-    u8 buf[0x68] ALIGN(8);
+    u8 buf[0x60] ALIGN(8);
     s8 diff;
     s32 index;
 
@@ -3956,12 +3956,7 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     *(u16*)&buf[0x22] = 0x15;
     *(u32*)&buf[0x34] = 0;
     memcpy(&buf[0xD], pData, len);
-    *(double*)&buf[0x38] = *(double*)&buf[0x8];
-    *(double*)&buf[0x40] = *(double*)&buf[0x10];
-    *(double*)&buf[0x48] = *(double*)&buf[0x18];
-    *(double*)&buf[0x50] = *(double*)&buf[0x20];
-    *(double*)&buf[0x58] = *(double*)&buf[0x28];
-    *(double*)&buf[0x60] = *(double*)&buf[0x30];
+    memcpy(&buf[0x38], &buf[0x8], 0x28);
 
     enabled = OSDisableInterrupts();
     status = p->status;
