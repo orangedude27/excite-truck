@@ -47,6 +47,7 @@ extern "C" f32 lbl_80561584;
 extern "C" u8 lbl_8032CAC0;
 extern "C" s32 fn_8013D224(f32, f32);
 extern "C" u8 *fn_801B2EC0(s32);
+extern "C" f32 __fabsf(f32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
