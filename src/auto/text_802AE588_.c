@@ -242,17 +242,17 @@ int fn_802AE7AC(void) {
 }
 #pragma dont_inline reset
 
-void fn_802AE7C0(void) {
-    fn_802C9950(0x555766);
-    fn_802C9994(0xFFF5D9);
+  void fn_802AE7C0(void) {
+      fn_802C9950(0x555766);
+      fn_802C9994(0xFFF5D9);
   }
 
   #pragma dont_inline on
-      #pragma cplusplus on
-    #pragma push
-    #pragma processor 750
-    extern "C" void fn_802AE7F4(void) {
-    struct ETConfigName {
+  #pragma cplusplus on
+  #pragma push
+  #pragma processor 750
+  extern "C" void fn_802AE7F4(void) {
+      struct ETConfigName {
         char text[0xC];
     };
     struct ETConfigPaths {
