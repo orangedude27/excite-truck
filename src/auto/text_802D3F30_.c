@@ -28,9 +28,10 @@ extern void fn_801282EC(s32);
 extern void *fn_8012850C(s32, void *);
 extern void DCInvalidateRange(void *, u32);
 extern void fn_802D6C68(void);
+extern void fn_802D2614(void);
+extern void fn_802D2B0C(void);
 extern volatile u8 lbl_8055FD25;
 extern u8 lbl_804C5700[16];
-extern void fn_802D2614(void);
 
 typedef struct {
     u8 unk00;
