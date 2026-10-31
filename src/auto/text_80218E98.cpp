@@ -351,6 +351,11 @@ public:
           virtual s32 vf32();    // vtable 0x88
   };
 
+struct S_80229DC8 {
+    u8 pad_0x260[4];
+    u8 field_268;
+};
+
 class Vf14Apply {
 public:
     virtual void a();
@@ -7115,10 +7120,8 @@ extern "C" s32 fn_80229DC0(s32 arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80229DC8(void *arg0) {
-    register u32 one = 1;
-    register u32 zero = 0;
-    *(u32 *)((u8 *)arg0 + 0x260) = zero;
-    *(u8 *)((u8 *)arg0 + 0x268) = one;
+    *(u32 *)((u8 *)arg0 + 0x260) = 0;
+    *(u8 *)((u8 *)arg0 + 0x268) = 1;
     ((VfObj *)arg0)->vf17();
 }
 #pragma scheduling on
