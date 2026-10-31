@@ -252,17 +252,17 @@ int fn_802AE7AC(void) {
   #pragma cplusplus on
   #pragma push
   #pragma processor 750
-  extern "C" void fn_802AE7F4(void) {
-    // Use global ETConfigPaths definition from top of file
-    float values[8];
-    float total;
-          struct ETConfigPaths_local {
-          struct ETConfigName name;
-          char lookupKey[0xC];
-          char statusKey[8];
-      };
-      register struct ETConfigPaths_local *base = (struct ETConfigPaths_local *)lbl_8034A020;
-      int i;
+      extern "C" void fn_802AE7F4(void) {
+      // Use global ETConfigPaths definition from top of file
+      float values[8];
+      float total;
+        typedef struct {
+            struct ETConfigName name;
+            char lookupKey[0xC];
+            char statusKey[8];
+        } ETConfigPaths_local;
+        register ETConfigPaths_local *base = (ETConfigPaths_local *)lbl_8034A020;
+        int i;
 
             lbl_8055F980 = fn_8012C33C((void *)((char *)lbl_8034A020 + (char)0));
     fn_802AE5E0(0x400);
