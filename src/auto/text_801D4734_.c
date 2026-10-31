@@ -2574,6 +2574,14 @@ void fn_801D8FE0(int arg0) {
         ((int *)arg0)[1] = 1;
     }
 }
+
 extern char lbl_803385D0[];
 extern char lbl_803385D0[];
+
+extern void fn_80129DC4(int, float, float);
+extern void PSVECDotProduct(void *, void *, float, float, float, float, float, float, float, float, float, float, float);
+extern void PSVECNormalize(void *, void *, float, float, float, float, float, float, float, float, float, float, float);
+
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
