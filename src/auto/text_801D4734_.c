@@ -666,7 +666,7 @@ extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
         virtual void *get();
         virtual void v1();
         virtual void v2();
-        virtual void *transform(float, float, float);
+        virtual void *transform();
         virtual short index();
         virtual void v5();
         virtual int find(char *, int);
@@ -681,22 +681,24 @@ extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
     extern float PSVECDotProduct(float *, float *);
     extern void fn_801796CC(int, void *, int);
     Data data;
-    float dot, x, y, z;
-    int offset, count;
+    register float temp_f2, temp_f1, temp_f0;
+    register float dot;
+    int offset, count, valid;
     void *found;
     float *transformed;
     if (*(int *)((char *)arg0 + 0x14) <= 0) return;
     found = ((Dummy *)arg1)->get();
     if (*(int *)((char *)arg0 + 0xC) < 0) return;
     if (found == 0) return;
-    if (*(int *)((char *)arg0 + 0xC) != ((Dummy *)found)->find(lbl_803385D0, -1)) return;
-    x = *(float *)arg2;
-    y = *((float *)arg2 + 1);
-    z = *((float *)arg2 + 2);
-    data.input[0] = x;
-    data.input[1] = y;
-    data.input[2] = z;
-    transformed = (float *)((Dummy *)arg1)->transform(x, y, z);
+    valid = ((Dummy *)found)->find(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xC);
+    if (valid == 0) return;
+    temp_f2 = *(float *)arg2;
+    temp_f1 = *((float *)arg2 + 1);
+    temp_f0 = *((float *)arg2 + 2);
+    data.input[0] = temp_f2;
+    data.input[1] = temp_f1;
+    data.input[2] = temp_f0;
+    transformed = (float *)((Dummy *)arg1)->transform();
     data.output[0] = transformed[0];
     data.output[1] = transformed[1];
     data.output[2] = transformed[2];
@@ -727,29 +729,42 @@ void fn_801D628C(void *arg0) {
     *(int *)((char *)arg0 + 0x14) = 0;
 }
 
-int fn_801D6320(void *out, void *object) {
+#pragma cplusplus on
+extern "C" int fn_801D6320(void *out, void *object) {
+    struct Dummy {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual int check(const char *);
+        virtual void v5(); virtual void v6(); virtual void v7();
+        virtual float get_float1(const char *);
+        virtual float get_float2(const char *, float);
+        virtual void v11();
+        virtual signed char get_schar(const char *, int);
+        virtual void v13(); virtual void v14();
+        virtual int check2(const char *);
+    };
     extern char lbl_80338460;
     extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055ACC0, lbl_8055ACC8;
     extern float lbl_80562ADC, lbl_80562AE4, lbl_80562B0C;
     extern int fn_801399FC(void);
     extern void fn_802E30C8(const char *, const char *);
+    Dummy *obj = (Dummy *)object;
     char *messages = &lbl_80338460;
-    float a, b;
-    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0xC)))(object, &lbl_8055ACB0) == 0) { fn_802E30C8(messages + 0x210, 0); return 0; }
-    a = ((float (*)(void *, const char *))(*(void **)(*(void ***)object + 0x24)))(object, &lbl_8055ACB0);
+    if (obj->check(&lbl_8055ACB0) == 0) { fn_802E30C8(messages + 0x210, 0); return 0; }
+    float a = obj->get_float1(&lbl_8055ACB0);
     if (a < lbl_80562ADC) { fn_802E30C8(messages + 0x254, 0); return 0; }
     *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
-    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * ((float (*)(void *, const char *, float))(*(void **)(*(void ***)object + 0x28)))(object, &lbl_8055ACB8, lbl_80562ADC));
-    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0xC)))(object, &lbl_8055ACC0) == 0) { fn_802E30C8(messages + 0x2A4, 0); return 0; }
-    b = ((float (*)(void *, const char *, float))(*(void **)(*(void ***)object + 0x28)))(object, &lbl_8055ACC0, lbl_80562AE4);
+    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * obj->get_float2(&lbl_8055ACB8, lbl_80562ADC));
+    if (obj->check2(&lbl_8055ACC0) == 0) { fn_802E30C8(messages + 0x2A4, 0); return 0; }
+    float b = obj->get_float2(&lbl_8055ACC0, lbl_80562AE4);
     *(float *)((char *)out + 0x10) = b;
     if (b < lbl_80562ADC) { fn_802E30C8(messages + 0x2E8, 0); return 0; }
     *(int *)((char *)out + 0x14) = 0;
-    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0x5C)))(object, &lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
-    *(signed char *)((char *)out + 0x18) = ((signed char (*)(void *, const char *, int))(*(void **)(*(void ***)object + 0x30)))(object, messages + 0x338, 0);
+    if (obj->check2(&lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
+    *(signed char *)((char *)out + 0x18) = obj->get_schar(messages + 0x338, 0);
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
+#pragma cplusplus reset
 
 int *__AXFXGetLfoSinTable_801D64F4(void) {
     extern char lbl_803387A8[];
@@ -1666,29 +1681,71 @@ int fn_801D7F5C(int arg0, int arg1) {
     return arg0;
 }
 
-int fn_801D7F9C(void *arg0, void **arg1) {
-    extern void fn_802E30C8(char *); extern int fn_801399FC(void);
-    extern char lbl_80338460, lbl_8055AD20, lbl_8055AD28, lbl_8055AD30, lbl_8055ACB8;
+int fn_801D7F9C(void *arg0, void *arg1) {
+    extern void fn_802E30C8(char *);
+    extern int fn_801399FC(void);
+    extern char lbl_80338460;
+    extern char lbl_8055AD20, lbl_8055AD28, lbl_8055AD30, lbl_8055ACB8;
     extern float lbl_80562ADC, lbl_80562B0C;
-    void **vt; int ok,n,i; unsigned char *src,*dst,c; float v;
-    vt=*(void ***)arg1;
-    ok=((int (*)(void *,char *))vt[3])(arg1,&lbl_8055AD20);
-    if(!ok){fn_802E30C8(&lbl_80338460+0xB24);return 0;}
-    src=((unsigned char *(*)(void *,char *))vt[5])(arg1,&lbl_8055AD20);
-    dst=(unsigned char *)arg0+0x18; n=0x14;
-    while(n>0){c=*src++;*dst++=c;if((signed char)c==0)break;n--;}
-    if(n==0)dst[-1]=0;
-    src=((unsigned char *(*)(void *,char *,char *))vt[6])(arg1,&lbl_8055AD28,&lbl_8055AD30);
-    dst=(unsigned char *)arg0+4;n=0x14;
-    while(n>0){c=*src++;*dst++=c;if((signed char)c==0)break;n--;}
-    if(n==0)dst[-1]=0;
-    if(((int (*)(void *,char *))vt[23])(arg1,&lbl_80338460+0xB64)==0)
-        *(int *)((char *)arg0+0x3c)=0;
-    else *(int *)((char *)arg0+0x3c)=fn_801399FC();
-    v=((float (*)(void *,char *,float))vt[10])(arg1,&lbl_8055ACB8,lbl_80562ADC);
-    *(int *)((char *)arg0+0x38)=0; *(int *)((char *)arg0+0x2c)=0;
-    *(int *)((char *)arg0+0x40)=1; *(int *)((char *)arg0+0x30)=(int)(lbl_80562B0C*v);
-    fn_802E30C8(&lbl_80338460+0xB70); return 1;
+    
+    void **vt;
+    char *path;
+    int result;
+    unsigned char *src, *dst;
+    unsigned char c;
+    int n;
+    float v;
+    
+    vt = *(void ***)arg1;
+    
+    // First call: vt[3](arg1, &lbl_8055AD20)
+    path = ((char *(*)(void *, char *))vt[3])(arg1, &lbl_8055AD20);
+    if (path == 0) {
+        fn_802E30C8(&lbl_80338460 + 0xB24);
+        return 0;
+    }
+    
+    // Second call: vt[5](arg1, &lbl_8055AD20)
+    src = ((unsigned char *(*)(void *, char *))vt[5])(arg1, &lbl_8055AD20);
+    dst = (unsigned char *)arg0 + 0x18;
+    n = 0x14;
+    do {
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0) break;
+        n--;
+    } while (n > 0);
+    if (n == 0) dst[-1] = 0;
+    
+    // Third call: vt[6](arg1, &lbl_8055AD28, &lbl_8055AD30)
+    src = ((unsigned char *(*)(void *, char *, char *))vt[6])(arg1, &lbl_8055AD28, &lbl_8055AD30);
+    dst = (unsigned char *)arg0 + 4;
+    n = 0x14;
+    do {
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0) break;
+        n--;
+    } while (n > 0);
+    if (n == 0) dst[-1] = 0;
+    
+    // Fourth call: vt[23](arg1, &lbl_80338460 + 0xB64)
+    result = ((int (*)(void *, char *))vt[23])(arg1, &lbl_80338460 + 0xB64);
+    if (result == 0) {
+        *(int *)((char *)arg0 + 0x3C) = 0;
+    } else {
+        *(int *)((char *)arg0 + 0x3C) = fn_801399FC();
+    }
+    
+    // Fifth call: vt[10](arg1, &lbl_8055ACB8, lbl_80562ADC)
+    v = ((float (*)(void *, char *, float))vt[10])(arg1, &lbl_8055ACB8, lbl_80562ADC);
+    *(int *)((char *)arg0 + 0x38) = 0;
+    *(int *)((char *)arg0 + 0x2C) = 0;
+    *(int *)((char *)arg0 + 0x40) = 1;
+    *(int *)((char *)arg0 + 0x30) = (int)(lbl_80562B0C * v);
+    
+    fn_802E30C8(&lbl_80338460 + 0xB70);
+    return 1;
 }
 
 extern char lbl_80338928[];
