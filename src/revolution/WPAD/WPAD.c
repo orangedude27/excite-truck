@@ -3956,7 +3956,12 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     *(u16*)&buf[0x22] = 0x15;
     *(u32*)&buf[0x34] = 0;
     memcpy(&buf[0xD], pData, len);
-    memcpy(&buf[0x38], &buf[0x8], 0x30);
+    *(double*)&buf[0x38] = *(double*)&buf[0x8];
+    *(double*)&buf[0x40] = *(double*)&buf[0x10];
+    *(double*)&buf[0x48] = *(double*)&buf[0x18];
+    *(double*)&buf[0x50] = *(double*)&buf[0x20];
+    *(double*)&buf[0x58] = *(double*)&buf[0x28];
+    *(double*)&buf[0x60] = *(double*)&buf[0x30];
 
     enabled = OSDisableInterrupts();
     status = p->status;
