@@ -1044,9 +1044,9 @@ extern "C" void fn_800ED0E4(s32 arg0) {
     fn_800ED058(arg0 - 8);
 }
 
-extern "C" int InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(int);
-extern "C" void fn_800ED0EC(s32 arg0) {
-    InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(arg0 - 8);
+extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void* this_, const void* arg1, const void* arg2);
+extern "C" void fn_800ED0EC(void* player, const void* arg1, const void* arg2) {
+    InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv((u8*)player - 8, arg1, arg2);
 }
 
 extern "C" s32 fn_800ED0F4(s32 arg0, s32 arg1) {
