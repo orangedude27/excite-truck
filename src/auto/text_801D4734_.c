@@ -2,7 +2,12 @@
 
       __declspec(section ".rodata") extern char lbl_80338460;
     extern char lbl_803385D0[];
-      extern char lbl_803387C8[];
+        
+extern char lbl_803387C8[];
+
+extern int fn_8017960C(int);
+extern void *fn_801B2EC0(int);
+extern int fn_801B2F24(void);
   extern char lbl_80338C78[];
 extern char lbl_80338BD0[];
 extern int fn_80128668(void);
