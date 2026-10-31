@@ -997,7 +997,8 @@ int fn_802D0514(void *source) {
 
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
-    extern int lbl_8055D0BC, lbl_8055D0C0;
+extern int lbl_8055D0BC;
+extern int lbl_8055D0C0;
     extern signed char lbl_8055FD90;
     extern unsigned char lbl_804C9830[];
     extern int lbl_804C9760[];
