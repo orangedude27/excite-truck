@@ -1516,12 +1516,12 @@ extern "C" void fn_80142650(void *arg0) {
         }
     }
 
-    if ((ptr_e4[0] % ((s32)&lbl_8042FB3C[0xC])) == 0) {
-        ptr_bc[0] = fn_8001DAE8((u8 *)arg0 + 0xB8);
-    }
-}
+          if ((ptr_e4[0] % ((s32)&lbl_8042FB3C[0xC])) == 0) {
+          fn_8001DAE8_2((u8 *)arg0 + 0xB8, ptr_bc[0]);
+      }
+  }
 
-extern "C" f32 lbl_8042FB3C_arr[8];
+  extern "C" f32 lbl_8042FB3C_arr[8];
 #pragma scheduling invalid_target
 extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
     u8 *table = *(u8 **)((u8 *)arg0 + 0x64);
