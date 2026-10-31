@@ -3,9 +3,11 @@
       __declspec(section ".rodata") extern char lbl_80338460;
     extern char lbl_803385D0[];
         
-extern char lbl_803387C8[];
+    extern char lbl_803387C8[];
+  
+  #include <types.h>
 
-#include <types.h>
+  extern void fn_801D50B8(int);
 
 extern int fn_8017960C(int);
 extern void *fn_801B2EC0(int);
@@ -251,7 +253,7 @@ void fn_801D50B0(int arg0) {
   #pragma use_lmw_stmw off
       #pragma cplusplus on
 
-extern "C" void fn_801D50B8(int arg0) {
+void fn_801D50B8(int arg0) {
     int state = *(int *)((char *)arg0 + 4);
     int count = *(int *)((char *)arg0 + 0x34);
     void **items = *(void ***)((char *)arg0 + 0x30);
