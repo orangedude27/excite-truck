@@ -2114,4 +2114,5 @@ extern char lbl_8055D100;
 
 void fn_802D2D1C(void) {
     float *src = (float *)lbl_804C56C0;
+    float *dst = (float *)lbl_804CA2D8;
 }
