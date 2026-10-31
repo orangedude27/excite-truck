@@ -1097,22 +1097,6 @@ extern "C" void fn_80140B98(void *, void *, s32);
 extern "C" void fn_80141558(void *, s32, s32, s32);
 // fn_80140D1C: processes array items, flushing buffer to fn_80141558 when item[0x1E] set, or stores to dst
 extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
-    // Stack layout (from target):
-    // r1+0x1b0: saved lr
-    // r1+0x54..0x64: saved r25-r29 (via _savegpr_26)
-    // r1+0x14: staging buffer (f32[16])
-    // r1+0x10: temp for stw
-    // r1+0xc: idx (s32*)
-    // r1+0x8: some pointer
-    // r1+0x4: saved r0 (from mflr)
-    
-    // Parameters mapped to preserved registers in target:
-    // r28 = arg0
-    // r29 = arg1
-    // arg2 = buffer pointer (used directly as dst)
-    
-    void *r28 = arg0;
-    void *r29 = arg1;
     f32 *dst = (f32 *)arg2;
     
     s32 count = *(s32 *)((u8 *)arg1 + 4) - 1;
