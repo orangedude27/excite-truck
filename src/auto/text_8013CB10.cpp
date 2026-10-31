@@ -1481,31 +1481,31 @@ extern "C" void fn_80142650(void *arg0) {
                 var_f2 = lbl_805614A4;
             }
             *(f32 *)(base + 0x94) = var_f2;
-            temp_f0 = var_f2;
+                          rounded_f2 = var_f2;
 
-                          f32 rounded_f2 = (f32)(s32)(var_f2 * 2.0f) / 2.0f;
               if (temp_f1 < rounded_f2) {
                   *(f32 *)(base + 0xEC) = rounded_f2 - temp_f1;
               } else {
-                  f32 abs_diff = __fabsf(rounded_f2 - temp_f1);
-                  if (abs_diff > lbl_80558DC4) {
-                    if (*(s32 *)(base + 0xE4) > 0) {
-                        *(s32 *)(base + 0xF4) = *(s32 *)(base + 0xE4);
-                        fn_8013CB3C();
-                        *(s32 *)(base + 0xF0) = 0;
-                        *(s32 *)(base + 0xE4) = 0;
-                    }
-                    if (*(s32 *)(base + 0x100) > 0) {
-                        temp_r6 = *(s32 *)(base + 0x100);
-                        *(f32 *)(base + 0xD4) = fn_8001DAE8(base + 0xD0);
-                        *(s32 *)(base + 0x100) = 0;
-                        *(f32 *)(base + 0xAC) = fn_8001DAE8(base + 0xA8);
-                    }
-                    if (lbl_8055E1BC == 0) {
-                        *(u8 *)(base + 0xF8) = 1;
-                    }
-                }
-            }
+                  f32 diff = rounded_f2 - temp_f1;
+                  if (diff < 0.0f) diff = -diff;
+                  if (diff > lbl_80558DC4) {
+                      if (*(s32 *)(base + 0xE4) > 0) {
+                          *(s32 *)(base + 0xF4) = *(s32 *)(base + 0xE4);
+                          fn_8013CB3C();
+                          *(s32 *)(base + 0xF0) = 0;
+                          *(s32 *)(base + 0xE4) = 0;
+                      }
+                      if (*(s32 *)(base + 0x100) > 0) {
+                          temp_r6 = *(s32 *)(base + 0x100);
+                          *(f32 *)(base + 0xD4) = fn_8001DAE8(base + 0xD0);
+                          *(s32 *)(base + 0x100) = 0;
+                          *(f32 *)(base + 0xAC) = fn_8001DAE8(base + 0xA8);
+                      }
+                      if (lbl_8055E1BC == 0) {
+                          *(u8 *)(base + 0xF8) = 1;
+                      }
+                  }
+              }
         }
     }
 
