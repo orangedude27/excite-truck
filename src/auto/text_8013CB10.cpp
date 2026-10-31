@@ -2623,5 +2623,7 @@ extern "C" void fn_8013FAC4(void *arg0, void *arg2) {
         fn_801476C4(NULL);
     }
 }
+#pragma optimize reset
+#pragma pop
 // fn_80140B98 - quaternion-based vector transformation
 extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2);
