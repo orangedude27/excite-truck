@@ -19,6 +19,11 @@ struct Entry {
     float f28;
 };
 extern "C" void fn_8029C084(void*, int);
+extern "C" char lbl_8055CA90[];
+extern "C" char lbl_8055CA98[];
+extern "C" char lbl_8055CA9C[];
+extern "C" float lbl_8056459C;
+extern "C" float lbl_805645B8;
 extern "C" int fn_801EEFDC(void*, int);
 extern "C" int fn_8029AEE8(void*);
 extern "C" float lbl_805645C8;
