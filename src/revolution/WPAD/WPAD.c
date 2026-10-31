@@ -3066,11 +3066,8 @@ void fn_8005EEC4(s32 chan, s32 result) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* p = (u8*)cb;
     WPADCommandQueue* queue = (WPADCommandQueue*)(p + 0x160);
-    u8 cmd[0x68] ALIGN(8);
     u32 val32;
     u16 val16;
-    s32 negVal;
-    s32 signExt;
     BOOL enabled1;
     BOOL enabled2;
     s8 diff;
@@ -3089,35 +3086,27 @@ void fn_8005EEC4(s32 chan, s32 result) {
         return;
     }
 
-    memset(cmd, 0, sizeof(cmd));
     val32 = *(u32*)(p + 0x820);
     val16 = (val32 != 0) ? 0x14 : 0x2A;
-    *(u16*)&cmd[0] = val16;
-    negVal = -val32;
-    signExt = (negVal | val32) >> 31;  // sign extend
-    if ((signExt & 0x176C) != 0) {
-        val32 = 0x176C;
-    } else {
-        val32 = 0;
-    }
-    *(u32*)&cmd[4] = val32;
-    *(u32*)&cmd[8] = 0x17;
-    *(u16*)&cmd[0x22] = 6;
-    *(void**)&cmd[0x2C] = fn_8005EEC4;
-    memcpy(&cmd[0x2C], &cmd[4], 4);
-    memcpy(&cmd[0x18], &cmd[0], 2);
-    *(void**)&cmd[0x2C] = (void*)(p + 0x874);
+    *(u16*)&p[-0x78] = val16;  // cmd[0]
+    *(u32*)&p[-0x74] = val32;  // cmd[4]
+    *(u32*)&p[-0x70] = 0x17;   // cmd[8]
+    *(u16*)&p[-0x56] = 6;      // cmd[0x22]
+    *(void**)&p[-0x54] = fn_8005EEC4;  // cmd[0x2C]
+    memcpy(&p[-0x54], &p[-0x74], 4);
+    memcpy(&p[-0x68], &p[-0x78], 2);
+    *(void**)&p[-0x54] = (void*)(p + 0x874);
 
-    val16 = *(u16*)&cmd[0];
-    val32 = *(u32*)&cmd[4];
-    *(u32*)&cmd[0x30] = val16;
-    *(u32*)&cmd[0x34] = val32;
-    *(double*)&cmd[0x10] = *(double*)&cmd[8];
-    *(double*)&cmd[0x18] = *(double*)&cmd[0x18];
-    *(double*)&cmd[0x20] = *(double*)&cmd[0x20];
-    *(double*)&cmd[0x28] = *(double*)&cmd[0x28];
-    *(double*)&cmd[0x30] = *(double*)&cmd[0x30];
-    *(double*)&cmd[0x38] = *(double*)&cmd[0x38];
+    val16 = *(u16*)&p[-0x78];
+    val32 = *(u32*)&p[-0x74];
+    *(u32*)&p[-0x48] = val16;  // cmd[0x30]
+    *(u32*)&p[-0x44] = val32;  // cmd[0x34]
+    *(double*)&p[-0x60] = *(double*)&p[-0x70];  // cmd[0x10]
+    *(double*)&p[-0x58] = *(double*)&p[-0x68];  // cmd[0x18]
+    *(double*)&p[-0x50] = *(double*)&p[-0x60];  // cmd[0x20]
+    *(double*)&p[-0x48] = *(double*)&p[-0x58];  // cmd[0x28]
+    *(double*)&p[-0x48] = *(double*)&p[-0x48];  // cmd[0x30]
+    *(double*)&p[-0x40] = *(double*)&p[-0x48];  // cmd[0x38]
 
     enabled1 = OSDisableInterrupts();
     enabled2 = OSDisableInterrupts();
@@ -3134,7 +3123,7 @@ void fn_8005EEC4(s32 chan, s32 result) {
     }
 
     memset(queue->buffer + (s8)queue->back * 0x30, 0, 0x30);
-    memcpy(queue->buffer + (s8)queue->back * 0x30, &cmd[8], 0x30);
+    memcpy(queue->buffer + (s8)queue->back * 0x30, &p[-0x70], 0x30);
 
     index = queue->back;
     lastIndex = queue->capacity - 1;
