@@ -2537,9 +2537,8 @@ extern "C" void fn_8012C9C8(void) {
         count++;
         lbl_8055E00C = count;
     }
-}
-
-  extern "C" s32 stricmp(const char *, const char *);
+  }
+  
   extern "C" void fn_80127464(void);
   extern "C" const char lbl_8032AB78[];
   extern "C" u8 lbl_8055DFF9;
