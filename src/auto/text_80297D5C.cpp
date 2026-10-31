@@ -1925,36 +1925,34 @@ extern "C" void* fn_802988A4(void* arg0) {
     while (var_r28 < count) {
         void* info = fn_80288208(var_r28);
         if (fn_80287E20(info, (const char*)&lbl_8055CA90) != 0) {
-            float sp2C, sp30, sp34, sp20, sp24, sp28;
-            float sp14, sp18, sp1C;
-            float spC, sp8;
+            Locals locals;
             
-            sp2C = temp_f30;
-            sp30 = temp_f30;
-            sp34 = temp_f30;
-            sp20 = temp_f30;
-            sp24 = temp_f30;
-            sp28 = temp_f30;
+            locals.sp2C = temp_f30;
+            locals.sp30 = temp_f30;
+            locals.sp34 = temp_f30;
+            locals.sp20 = temp_f30;
+            locals.sp24 = temp_f30;
+            locals.sp28 = temp_f30;
             
-            fn_80287ED0(&sp2C, var_r28, (const char*)&lbl_8055CA90, (const char*)&lbl_8055CA98);
+            fn_80287ED0(&locals.sp2C, var_r28, (const char*)&lbl_8055CA90, (const char*)&lbl_8055CA98);
             
-            spC = temp_f30;
-            sp8 = temp_f30;
+            locals.spC = temp_f30;
+            locals.sp8 = temp_f30;
             
-            sp14 = spC;
-            sp18 = spC;
-            sp1C = spC;
+            locals.sp14 = locals.spC;
+            locals.sp18 = locals.spC;
+            locals.sp1C = locals.spC;
             
-            fn_80287F90(&sp20, var_r28, (const char*)&lbl_8055CA90, (const char*)&lbl_8055CA9C,
-                       &sp14, spC, sp8, (void*)((char*)*buffer + var_r30));
+            fn_80287F90(&locals.sp20, var_r28, (const char*)&lbl_8055CA90, (const char*)&lbl_8055CA9C,
+                       &locals.sp14, locals.spC, locals.sp8, (void*)((char*)*buffer + var_r30));
             
             Entry* entry = (Entry*)((char*)*buffer + var_r30);
-            entry->f0 = sp2C;
-            entry->f4 = sp30;
-            entry->f8 = sp34;
-            entry->f12 = sp20;
-            entry->f16 = sp24;
-            entry->f20 = sp28;
+            entry->f0 = locals.sp2C;
+            entry->f4 = locals.sp30;
+            entry->f8 = locals.sp34;
+            entry->f12 = locals.sp20;
+            entry->f16 = locals.sp24;
+            entry->f20 = locals.sp28;
             entry->f24 = 1;
             entry->f25 = 0;
             entry->f28 = temp_f31;
