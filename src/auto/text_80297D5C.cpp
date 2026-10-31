@@ -1440,6 +1440,67 @@ extern "C" void fn_8029B1B8(void* arg0) {
     *(int*)(p + 0x1F4) = 0x10 - (v << 1);
 }
 
+extern "C" void fn_8029B138(void* arg0, int arg1, float* arg2, float* arg3, float* arg4, float* arg5);
+extern "C" void fn_802C8E00(int, int, float, float, float, float, float);
+extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6) {
+    float sp44, sp40, sp3C, sp38, sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18;
+    float sp14, sp10, spC, sp8, sp4, sp0;
+
+    fn_8029B138(arg3, (int)arg2, &sp14, &sp10, &spC, &sp8);
+    
+    float neg_farg0 = -farg0;
+    float temp_f5 = ((float*)arg3)[0];
+    float temp_f9 = ((float*)arg3)[1];
+    float temp_f6 = ((float*)arg4)[0];
+    float temp_f7 = ((float*)arg4)[1];
+    
+    float temp_f27 = arg1[0] + (temp_f5 * neg_farg0);
+    float temp_f29 = arg1[1] + (temp_f9 * neg_farg0);
+    
+    float temp_f6_2 = temp_f6 * farg0;
+    float temp_f8 = temp_f7 * farg0;
+    
+    float temp_f1 = temp_f27 + temp_f6_2;
+    float temp_f2 = temp_f29 + temp_f8;
+    
+    sp18 = temp_f27;
+    sp1C = temp_f29;
+    
+    float temp_f13 = temp_f1 + (temp_f5 * farg0);
+    float temp_f12 = temp_f2 + (temp_f9 * farg0);
+    
+    sp24 = temp_f13;
+    sp28 = temp_f12;
+    
+    float temp_f7_2 = temp_f13 + temp_f6_2;
+    float temp_f9_2 = temp_f2 + temp_f8;
+    float temp_f6_3 = temp_f12 + temp_f8;
+    
+    float temp_f30 = ((float*)arg3)[2];
+    float temp_f31 = temp_f30 * neg_farg0;
+    float temp_f0 = ((float*)arg4)[2];
+    float temp_f0_2 = temp_f0 * farg0;
+    
+    float temp_f3_2 = arg1[2] + temp_f31 + temp_f0_2;
+    float temp_f0_3 = temp_f0 * temp_f8;
+    
+    float temp_f11 = temp_f3_2 + (temp_f30 * farg0);
+    
+    sp20 = temp_f3_2;
+    sp30 = temp_f1;
+    sp34 = temp_f9_2;
+    sp2C = temp_f11;
+    sp38 = temp_f7_2;
+    sp3C = temp_f6_3;
+    sp40 = temp_f11;
+    sp44 = temp_f11 + temp_f0_3;
+    
+    fn_802C8E00(0xC0FFFFFF, 0, temp_f1, temp_f2, temp_f3_2, sp14, spC);
+    fn_802C8E00(0xC0FFFFFF, 0, sp24, sp28, sp2C, sp10, spC);
+    fn_802C8E00(0xC0FFFFFF, 1, sp30, sp34, sp38, sp14, sp8);
+    fn_802C8E00(0xC0FFFFFF, 1, sp3C, sp40, sp44, sp10, sp8);
+}
+
 extern "C" void *fn_802C86DC(void);
 extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6);
 #pragma paired_single off
@@ -1860,7 +1921,7 @@ extern "C" int fn_8029C054(int* arg0) {
 extern "C" void fn_80298DE0(void*, void*, int);
 extern "C" void fn_8029BBD4(void*, void*, int);
 extern "C" void fn_8029A208(void*, int, int);
-extern "C" void fn_8029A904(void*, void*, float, float);
+extern "C" void fn_8029A904(void*, int, void*, float, float);
 #pragma scheduling invalid_target
 extern "C" void fn_8029C084(void *arg0, int arg1) {
     float temp_f31 = fn_801E7E24();
