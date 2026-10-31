@@ -256,10 +256,15 @@ extern "C" void fn_802AE7F4(void) {
     // Use global ETConfigPaths definition from top of file
     float values[8];
     float total;
-    register struct ETConfigPaths *base = (struct ETConfigPaths *)lbl_8034A020;
-    int i;
+          struct ETConfigPaths_local {
+          struct ETConfigName name;
+          char lookupKey[0xC];
+          char statusKey[8];
+      };
+      register struct ETConfigPaths_local *base = (struct ETConfigPaths_local *)lbl_8034A020;
+      int i;
 
-          lbl_8055F980 = fn_8012C33C((void *)(&lbl_8034A020[0]));
+            lbl_8055F980 = fn_8012C33C((void *)(&lbl_8034A020[0]));
     fn_802AE5E0(0x400);
     fn_802BE7F8();
     fn_802B40F8();
