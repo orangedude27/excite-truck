@@ -1968,6 +1968,7 @@ int fn_8029C190(void* arg0) {
 }
 #include <string.h>
 #include "types.h"
+extern "C" float lbl_80564598;
 extern "C" float lbl_805645C8;
 extern "C" float lbl_805645E8;
 extern "C" void* fn_8029A6F4(void*);
