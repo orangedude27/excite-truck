@@ -1012,17 +1012,15 @@ void fn_802D0610(int arg0) {
             void *record = (char *)lbl_8055FDB0 + (arg0 - 1) * 0x4C;
             unsigned char *dst = lbl_804C5690;
             unsigned char *src = (unsigned char *)record;
-            unsigned char *aux;
-            int i;
-            
-            for (i = 0; i < 12; i++) {
-                *(int *)(dst + i * 4) = *(int *)(src + i * 4);
-            }
-            
-            lbl_8055FD70 = 1;
-            
-            aux = (unsigned char *)&lbl_804C97D0;
-                          dst[48] = lbl_804C97D0;
+                          int i;
+              
+              for (i = 0; i < 12; i++) {
+                  *(int *)(dst + i * 4) = *(int *)(src + i * 4);
+              }
+              
+              lbl_8055FD70 = 1;
+              
+              dst[48] = lbl_804C97D0;
               dst[49] = lbl_804C97D1;
               dst[50] = lbl_804C97D2;
               dst[51] = lbl_804C97D3;
