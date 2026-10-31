@@ -259,7 +259,7 @@ int fn_802AE7AC(void) {
       // Use global ETConfigPaths definition from top of file
     float values[8];
     float total;
-    register ETConfigPaths *base = (ETConfigPaths *)lbl_8034A020;
+          register struct ETConfigPaths *base = (struct ETConfigPaths *)lbl_8034A020;
     int i;
 
     // Removed - declared after ETConfigPaths struct definition
