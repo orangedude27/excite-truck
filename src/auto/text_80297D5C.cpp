@@ -2105,9 +2105,8 @@ extern "C" int fn_8029C054(int* arg0) {
     return 4;
 }
 
-extern "C" void fn_80298DE0(void*, void*, int);
   extern void fn_80298DE0(void*, void*, int);
-  extern "C" void fn_8029BBD4(void*, void*, int);
+    extern "C" void fn_8029BBD4(void*, void*, int);
   extern "C" void fn_8029A208(void*, int, int);
 extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float farg1);
 #pragma scheduling invalid_target
