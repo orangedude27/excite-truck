@@ -3945,6 +3945,7 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     u8 buf[0x68] ALIGN(8);
     s8 diff;
     s32 index;
+    double* dptr;
 
     *(u32*)&buf[0x8] = 0x18;
     *(u32*)&buf[0x10] = 0x18;
@@ -3956,7 +3957,14 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     *(u16*)&buf[0x22] = 0x15;
     *(u32*)&buf[0x34] = 0;
     memcpy(&buf[0xD], pData, len);
-    memmove(&buf[0x38], &buf[0x8], 0x30);
+
+    dptr = (double*)&buf[0x8];
+    *(double*)&buf[0x38] = dptr[0];
+    *(double*)&buf[0x40] = dptr[1];
+    *(double*)&buf[0x48] = dptr[2];
+    *(double*)&buf[0x50] = dptr[3];
+    *(double*)&buf[0x58] = dptr[4];
+    *(double*)&buf[0x60] = dptr[5];
 
     enabled = OSDisableInterrupts();
     status = p->status;
