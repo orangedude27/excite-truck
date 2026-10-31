@@ -94,6 +94,7 @@ public:
 };
 class SeqPlayer;
 class SeqTrack;
+class MmlParser;
 }}}
 
 extern u8 lbl_80323E98[];
