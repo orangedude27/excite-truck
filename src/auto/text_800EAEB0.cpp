@@ -92,6 +92,8 @@ class SeqFileReader {
 public:
     void *GetBaseAddress() const;
 };
+class SeqPlayer;
+class SeqTrack;
 }}}
 
 extern u8 lbl_80323E98[];
