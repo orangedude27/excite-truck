@@ -749,20 +749,32 @@ extern "C" int fn_801D6320(void *out, void *object) {
     extern void fn_802E30C8(const char *, const char *);
     Dummy *obj = (Dummy *)object;
     char *messages = &lbl_80338460;
-    if (obj->check(&lbl_8055ACB0) == 0) { fn_802E30C8(messages + 0x210, 0); return 0; }
+    if (obj->check(&lbl_8055ACB0) == 0) goto error1;
     float a = obj->get_float1(&lbl_8055ACB0);
-    if (a < lbl_80562ADC) { fn_802E30C8(messages + 0x254, 0); return 0; }
+    if (a < lbl_80562ADC) goto error2;
     *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
     *(int *)((char *)out + 8) = (int)(lbl_80562B0C * obj->get_float2(&lbl_8055ACB8, lbl_80562ADC));
-    if (obj->check2(&lbl_8055ACC0) == 0) { fn_802E30C8(messages + 0x2A4, 0); return 0; }
+    if (obj->check2(&lbl_8055ACC0) == 0) goto error3;
     float b = obj->get_float2(&lbl_8055ACC0, lbl_80562AE4);
     *(float *)((char *)out + 0x10) = b;
-    if (b < lbl_80562ADC) { fn_802E30C8(messages + 0x2E8, 0); return 0; }
+    if (b < lbl_80562ADC) goto error4;
     *(int *)((char *)out + 0x14) = 0;
     if (obj->check2(&lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
     *(signed char *)((char *)out + 0x18) = obj->get_schar(messages + 0x338, 0);
     *(int *)((char *)out + 4) = 1;
     return 1;
+error1:
+    fn_802E30C8(messages + 0x210, 0);
+    return 0;
+error2:
+    fn_802E30C8(messages + 0x254, 0);
+    return 0;
+error3:
+    fn_802E30C8(messages + 0x2A4, 0);
+    return 0;
+error4:
+    fn_802E30C8(messages + 0x2E8, 0);
+    return 0;
 }
 #pragma cplusplus reset
 
