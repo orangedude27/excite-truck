@@ -2,6 +2,7 @@ extern "C" int fn_801284F8(int, const char*);
   #include <types.h>
     /* forward declarations for functions used by fn_802988A4 */
     extern "C" void fn_80298A48(void);
+    extern "C" void* fn_80288208(int);
     extern "C" void* fn_802988A4(void*);
     extern "C" void* fn_8029B938(void*);
 extern "C" int fn_8029BD14(int);
