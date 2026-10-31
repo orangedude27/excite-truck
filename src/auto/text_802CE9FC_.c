@@ -1107,6 +1107,7 @@ extern int lbl_8055D0BC;
 extern int lbl_8055D0C0;
 extern signed char lbl_8055FD90;
 extern unsigned char lbl_8055FD18;
+extern int lbl_8055D10C;
 extern int lbl_8055FDC0;
 extern int lbl_8055FDC4;
 extern float lbl_80564F80;
