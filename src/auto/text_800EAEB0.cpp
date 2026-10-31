@@ -1,5 +1,6 @@
 #include <types.h>
 extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
+extern "C" void* __dt__Q46nw4hbm3snd6detail9FrameHeapFv(void*, s32);
 extern u8 lbl_80323058[], lbl_80323070[];
 extern "C" void DVDClose(void *);
 extern "C" void fn_800F27AC(void *);
@@ -1943,6 +1944,89 @@ extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi(void *self,
     u32 level = OSDisableInterrupts();
     *((u8 *)self + 0x91) = priority;
     OSRestoreInterrupts(level);
+}
+
+extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void *player, const void *arg1, const void *arg2) {
+    extern u8 lbl_80323B28[], lbl_80323B3C[], lbl_80323B94[], lbl_80323BEC[];
+    extern u8 lbl_80324054[], lbl_80324030[];
+    extern u8 lbl_80412A6C[];
+    extern void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
+    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
+    extern void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
+    extern void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
+    extern u32 OSDisableInterrupts(void);
+    extern void OSRestoreInterrupts(u32);
+    
+    struct Manager {
+        virtual void unused0();
+        virtual void unused1();
+        virtual void RemoveTrack(void *);
+    };
+    
+    register u32 level = OSDisableInterrupts();
+    
+    if (*(u8*)((u8*)player + 0x15) == 0) {
+        OSRestoreInterrupts(level);
+        return;
+    }
+    
+    if (*(u8*)((u8*)player + 0x17) != 0) {
+        if (player == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
+        }
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void*)lbl_80412A6C, (u8*)player + 0x100);
+    }
+    
+    if (*(u8*)((u8*)player + 0x15) != 0) {
+        void *callbackObj = player;
+        if (player != NULL) {
+            callbackObj = (u8*)player + 8;
+        }
+        void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, callbackObj);
+    }
+    
+    OSRestoreInterrupts(level);
+    
+    register int i = 0;
+    register u8 *entry = (u8*)player;
+    register void *seq;
+    
+    do {
+        if (i >= 0 && i < 16) {
+            seq = *(void**)(entry + 0x9C);
+            if (seq != NULL) {
+                void **trackInfo = (void**)((u8*)seq + 0x50);
+                if (((const u8*)arg1 <= (u8*)trackInfo[0]) && ((u8*)trackInfo[0] < (u8*)arg2)) {
+                    level = OSDisableInterrupts();
+                    if (*(u8*)((u8*)player + 0x17) != 0) {
+                        if (player == NULL) {
+                            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
+                        }
+                        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void*)lbl_80412A6C, (u8*)player + 0x100);
+                    }
+                    if (*(u8*)((u8*)player + 0x15) != 0) {
+                        void *callbackObj2 = player;
+                        if (player != NULL) {
+                            callbackObj2 = (u8*)player + 8;
+                        }
+                        void *manager2 = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+                        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager2, callbackObj2);
+                    }
+                    OSRestoreInterrupts(level);
+                    
+                    Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
+                    void *manager = *(void**)((u8*)player + 0x98);
+                    ((Manager*)manager)->RemoveTrack(*(void**)(entry + 0x9C));
+                    *(void**)(entry + 0x9C) = NULL;
+                }
+            }
+        }
+        i++;
+        entry += 4;
+    } while (i < 16);
+    
+    *(u8*)((u8*)player + 0x15) = 0;
 }
 
 extern "C" s32 fn_800F016C(s32 array, s32 index) {
