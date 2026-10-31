@@ -406,6 +406,11 @@ extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
 // Overload: used by fn_8013E19C for f32 return, fn_80140B98 uses the void version
 extern "C" f32 PSQUATMultiply(void *, void *);
 extern "C" void PSQUATMultiply_v(const Quaternion* a, const Quaternion* b, Quaternion* prod);
+
+// Wrapper that matches the 2-arg call signature used in fn_80140B98 and fn_8013E19C
+static inline f32 PSQUATMultiply_f32(void *a, void *b) {
+    return PSQUATMultiply(a, b);
+}
 extern "C" f32 lbl_80561498, lbl_805614A4;
 extern "C" void fn_8013E19C(void *arg0, f32 arg1) {
     f32 *p = (f32 *)arg0;
