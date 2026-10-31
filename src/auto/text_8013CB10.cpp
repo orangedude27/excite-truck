@@ -35,7 +35,6 @@ extern "C" f32 lbl_80558DC4;
 extern "C" u8 lbl_8055E1BC;
 extern "C" f32 fn_8001DAE8(void *);
 extern "C" f32 fn_8013CB3C(void);
-extern "C" void fn_8001DAE8_2(void *, f32);
 extern "C" s32 fn_80176A1C(void);
 extern "C" int strcmp(const char *, const char *);
 
@@ -1448,6 +1447,13 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
 extern "C" f32 __fabsf(f32);
 #pragma dont_inline on
 extern "C" void fn_80142650(void *arg0) {
+    s32 temp_r5;
+    s32 temp_r6;
+    s32 temp_r0;
+    f32 temp_f0;
+    f32 temp_f1;
+    f32 var_f2;
+
     s32 *ptr_e4 = (s32 *)((u8 *)arg0 + 0xE4);
     s32 *ptr_e0 = (s32 *)((u8 *)arg0 + 0xE0);
     s32 *ptr_e8 = (s32 *)((u8 *)arg0 + 0xE8);
@@ -1462,13 +1468,6 @@ extern "C" void fn_80142650(void *arg0) {
     s32 *ptr_a8 = (s32 *)((u8 *)arg0 + 0xA8);
     u8 *ptr_f8 = (u8 *)arg0 + 0xF8;
     f32 *ptr_94 = (f32 *)((u8 *)arg0 + 0x94);
-
-    s32 temp_r5;
-    s32 temp_r6;
-    s32 temp_r0;
-    f32 temp_f1;
-    f32 temp_f0;
-    f32 var_f2;
 
     temp_r5 = ptr_e4[0] + 1;
     temp_r6 = ptr_e0[0];
@@ -1493,14 +1492,14 @@ extern "C" void fn_80142650(void *arg0) {
             if (var_f2 > lbl_805614A4) {
                 var_f2 = lbl_805614A4;
             }
-            temp_f0 = (f32)var_f2;
             ptr_94[0] = var_f2;
+            temp_f0 = var_f2;
 
             if (temp_f1 < temp_f0) {
                 ptr_ec[0] = temp_f0 - temp_f1;
             } else {
-                f32 abs_diff = __fabsf(temp_f0 - temp_f1);
-                if (((abs_diff <= lbl_80558DC4) || (abs_diff < lbl_80558DC4)) == 0) {
+                f32 temp_f2 = __fabsf(temp_f0 - temp_f1);
+                if (((temp_f2 <= lbl_80558DC4) || (temp_f2 < lbl_80558DC4)) == 0) {
                     if (ptr_e4[0] > 0) {
                         ptr_f4[0] = ptr_e4[0];
                         fn_8013CB3C();
@@ -1508,10 +1507,10 @@ extern "C" void fn_80142650(void *arg0) {
                         ptr_e4[0] = 0;
                     }
                     if (ptr_100[0] > 0) {
-                        ptr_d4[0] = fn_8001DAE8(ptr_d0);
+                        temp_r6 = ptr_100[0];
+                        *(f32 *)((u8 *)arg0 + 0xD4) = fn_8001DAE8((u8 *)arg0 + 0xD0);
                         ptr_100[0] = 0;
-                        ptr_ac[0] = fn_8001DAE8(ptr_a8);
-                        ptr_94[0] = 0;
+                        *(f32 *)((u8 *)arg0 + 0xAC) = fn_8001DAE8((u8 *)arg0 + 0xA8);
                     }
                     if (lbl_8055E1BC == 0) {
                         ptr_f8[0] = 1;
@@ -1521,11 +1520,10 @@ extern "C" void fn_80142650(void *arg0) {
         }
     }
 
-          if ((ptr_e4[0] % ((s32)&lbl_8042FB3C[0xC])) == 0) {
-          fn_8001DAE8_2((u8 *)arg0 + 0xB8, ptr_bc[0]);
-      }
-  }
-
+    if ((ptr_e4[0] % ((s32)&lbl_8042FB3C[0xC])) == 0) {
+        fn_8001DAE8_2((u8 *)arg0 + 0xB8, ptr_bc[0]);
+    }
+}
   extern "C" f32 lbl_8042FB3C_arr[8];
 #pragma scheduling invalid_target
 extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
