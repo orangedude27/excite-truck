@@ -259,7 +259,7 @@ extern "C" void fn_802AE7F4(void) {
     register struct ETConfigPaths *base = (struct ETConfigPaths *)lbl_8034A020;
     int i;
 
-          lbl_8055F980 = fn_8012C33C((void *)(base + 0));
+          lbl_8055F980 = fn_8012C33C((void *)(&lbl_8034A020[0]));
     fn_802AE5E0(0x400);
     fn_802BE7F8();
     fn_802B40F8();
