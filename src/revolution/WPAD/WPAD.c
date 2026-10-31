@@ -3069,6 +3069,8 @@ void fn_8005EEC4(s32 chan, s32 result) {
     u8 cmd[0x68] ALIGN(8);
     u32 val32;
     u16 val16;
+    s32 negVal;
+    s32 signExt;
     BOOL enabled1;
     BOOL enabled2;
     s8 diff;
@@ -3091,10 +3093,12 @@ void fn_8005EEC4(s32 chan, s32 result) {
     val32 = *(u32*)(p + 0x820);
     val16 = (val32 != 0) ? 0x14 : 0x2A;
     *(u16*)&cmd[0] = val16;
-    if (val32 == 0) {
-        val32 = 0;
-    } else {
+    negVal = -val32;
+    signExt = (negVal | val32) >> 31;  // sign extend
+    if ((signExt & 0x176C) != 0) {
         val32 = 0x176C;
+    } else {
+        val32 = 0;
     }
     *(u32*)&cmd[4] = val32;
     *(u32*)&cmd[8] = 0x17;
