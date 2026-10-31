@@ -20,7 +20,7 @@ struct Entry {
 };
 
 struct Locals {
-    char pad0[0x8];  // sp8 at offset 0x8
+    char pad0[0x58];  // sp8 at offset 0x58
     float sp8, spC, sp10, sp14, sp18, sp1C;
     float sp20, sp24, sp28, sp2C;
 };
@@ -1928,12 +1928,12 @@ extern "C" void* fn_802988A4(void* arg0) {
         if (fn_80287E20(info, (const char*)&lbl_8055CA90) != 0) {
             Locals locals;
             
-            locals.sp2C = temp_f30;
+            *(float*)((char*)&locals + 0x8) = temp_f30;
             locals.sp20 = temp_f30;
             locals.sp24 = temp_f30;
             locals.sp28 = temp_f30;
             
-            fn_80287ED0(&locals.sp2C, var_r28, (const char*)&lbl_8055CA90, (const char*)&lbl_8055CA98);
+            fn_80287ED0((float*)((char*)&locals + 0x2C), var_r28, (const char*)&lbl_8055CA90, (const char*)&lbl_8055CA98);
             
             locals.spC = temp_f30;
             locals.sp8 = temp_f30;
@@ -1946,7 +1946,7 @@ extern "C" void* fn_802988A4(void* arg0) {
                        &locals.sp14, locals.spC, locals.sp8, (void*)((char*)*buffer + var_r30));
             
             Entry* entry = (Entry*)((char*)*buffer + var_r30);
-            entry->f0 = locals.sp2C;
+            entry->f0 = *(float*)((char*)&locals + 0x2C);
             entry->f4 = temp_f30;
             entry->f8 = temp_f30;
             entry->f12 = locals.sp20;
