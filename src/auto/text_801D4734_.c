@@ -246,6 +246,94 @@ void fn_801D50A8(int arg0) {
 void fn_801D50B0(int arg0) {
     fn_801D5328(arg0, 0);
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+void fn_801D50B8(int arg0) {
+    int state = *(int *)((char *)arg0 + 4);
+    int count = *(int *)((char *)arg0 + 0x34);
+    void **items = *(void ***)((char *)arg0 + 0x30);
+    int result = 0;
+
+    if (state == 2) {
+        int i = 0;
+        int found = 0;
+
+        while (i < count) {
+            void **item = items + i;
+            void *obj = *item;
+            int (*func1)(void *) = *(int (**)(void *))((char *)obj + 0x18);
+            int res1 = func1(obj);
+
+            if (res1 == 2) {
+                found = 1;
+                int (*func2)(void *) = *(int (**)(void *))((char *)obj + 0x2C);
+                func2(obj);
+                func1(obj);
+            }
+
+            i += 1;
+        }
+
+        if (found == 0) {
+            u8 flag = *(u8 *)((char *)arg0 + 0x20);
+            if (flag != 0) {
+                int j = 0;
+                while (j < count) {
+                    void **item = items + j;
+                    void *obj = *item;
+                    int (*func3)(void *) = *(int (**)(void *))((char *)obj + 0x30);
+                    func3(obj);
+                    j += 1;
+                }
+                *(int *)((char *)arg0 + 4) = 1;
+                return;
+            }
+            *(int *)((char *)arg0 + 4) = 3;
+        }
+        return;
+    }
+
+    int maxVal = -1;
+    int idx = 0;
+    int total = fn_801B2F24();
+
+    while (idx < total) {
+        int actorIdx = fn_8017960C(idx);
+        void *actor = (void *)actorIdx;
+        if (*(int *)((char *)actor + 0x1F0) == 0x50) {
+            void *other = fn_801B2EC0(idx);
+            int val = *(int *)((char *)other + 0x10);
+            if (val > maxVal) {
+                maxVal = val;
+            }
+        }
+        idx += 1;
+        fn_801B2F24();
+    }
+
+    if (maxVal >= 0) {
+        switch (state) {
+        case 1:
+            if ((*(int *)((char *)arg0 + 0x24) >= 0 && maxVal < *(int *)((char *)arg0 + 0x24)) ||
+                ((*(int *)((char *)arg0 + 0x28) < 0 || maxVal > *(int *)((char *)arg0 + 0x28)))) {
+                *(int *)((char *)arg0 + 4) = 4;
+                return;
+            }
+            break;
+        case 4:
+            if ((*(int *)((char *)arg0 + 0x24) < 0 || maxVal >= *(int *)((char *)arg0 + 0x24)) &&
+                (*(int *)((char *)arg0 + 0x28) >= 0 && maxVal <= *(int *)((char *)arg0 + 0x28))) {
+                *(int *)((char *)arg0 + 4) = 1;
+            }
+            break;
+        }
+    }
+}
+#pragma cplusplus reset
+#pragma pop
+
 #pragma dont_inline reset
 
 #pragma push
@@ -369,7 +457,7 @@ fetch:
 #pragma pop
 
 extern int lbl_804423A4[];
-extern void fn_801D50B8(int);
+  void fn_801D50B8(int arg0);
 #pragma scheduling invalid_target
 int fn_801D5650(void *alarm) {
     int offset;
