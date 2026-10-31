@@ -2109,5 +2109,8 @@ extern unsigned char lbl_804C5700[12];
 extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
-  extern void fn_802E2E0C(void (*)(void), void *);
-  extern int lbl_804C9760[];
+      extern void fn_802E2E0C(void (*)(void), void *);
+    extern int lbl_804C9760[];
+
+void fn_802D2D1C(void) {
+}
