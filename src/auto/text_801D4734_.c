@@ -729,7 +729,6 @@ void fn_801D628C(void *arg0) {
     *(int *)((char *)arg0 + 0x14) = 0;
 }
 
-#pragma cplusplus on
 int fn_801D6320(void *out, void *object) {
     extern char lbl_80338460;
     extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055ACC0, lbl_8055ACC8;
