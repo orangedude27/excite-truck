@@ -514,6 +514,93 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #undef WPAD_ANALOG_CHANGED
 }
 
+void fn_8005E09C(s32 port) {
+    WPADCB* p;
+    s32 enabled;
+    void* src;
+    s32 changed;
+    s32 devType;
+    s32 devHandle;
+    u16 counter;
+    u8 devMode;
+    u16 filterDiff;
+    u16 filterSame;
+    s32 timeDiff;
+    s32 timeout;
+
+    _savegpr_25();
+
+    p = lbl_8038F4F0[port];
+
+    if (*(s32*)((u8*)p + 0x7FC) == -1) {
+        goto _end;
+    }
+
+    enabled = OSDisableInterrupts();
+    
+    devMode = *(u8*)((u8*)p + 0x806);
+    devType = devMode * 0x60;
+    src = (void*)((u8*)p + 0x40 + devType + 0x60);
+    
+    changed = IsControllerDataChanged(p, src, (void*)((u8*)p + 0x40));
+
+    if (changed != 0) {
+        memcpy((void*)((u8*)p + 0x40), src, 0x60);
+        
+        if (*(u8*)((u8*)p + 0x69) != 0) {
+            memset((void*)((u8*)p + 0x40), 0, 0x60);
+        }
+    }
+    
+    OSRestoreInterrupts(enabled);
+
+    enabled = OSDisableInterrupts();
+    counter = *(u16*)((u8*)p + 0x852);
+    counter++;
+    *(u16*)((u8*)p + 0x852) = counter;
+    OSRestoreInterrupts(enabled);
+
+    if (counter > 600) {
+        enabled = OSDisableInterrupts();
+        *(u8*)((u8*)p + 0x851) = 0;
+        OSRestoreInterrupts(enabled);
+    }
+
+    if (changed == 0) {
+        if (lbl_8055DC1A != 0) {
+            s64 currentTime = __OSGetSystemTime();
+            s64 lastTime = *(s64*)((u8*)p + 0x830);
+            timeDiff = (s32)(currentTime - lastTime);
+            timeout = lbl_8055DC1A * 60;
+
+            if (timeDiff > timeout) {
+                enabled = OSDisableInterrupts();
+                devHandle = *(s32*)((u8*)p + 0x7FC);
+                OSRestoreInterrupts(enabled);
+
+                if (devHandle != -1) {
+                    enabled = OSDisableInterrupts();
+                    if (*(u8*)((u8*)p + 0x8C6) == 0) {
+                        *(u8*)((u8*)p + 0x8C6) = 1;
+                        OSRestoreInterrupts(enabled);
+                        BTA_HhClose(*(u8*)((u8*)p + 0x803));
+                    } else {
+                        OSRestoreInterrupts(enabled);
+                    }
+                }
+            }
+        }
+    } else {
+        enabled = OSDisableInterrupts();
+        *(s64*)((u8*)p + 0x830) = __OSGetSystemTime();
+        OSRestoreInterrupts(enabled);
+        fn_8005B00C();
+    }
+
+_end:
+    _restgpr_25();
+}
+
 static void CheckButtonCombination(s32 chan) {
     WPADCB* p = _wpdcb[chan];
 
