@@ -459,8 +459,8 @@ fetch:
 
       extern int lbl_804423A4[];
   #pragma scheduling invalid_target
-  extern int fn_801D5650(void *alarm);
-  int fn_801D5650(void *alarm) {
+      int fn_801D5650(void *alarm);
+    int fn_801D5650(void *alarm) {
     int offset;
     int i;
     offset = 0;
