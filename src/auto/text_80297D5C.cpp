@@ -404,6 +404,8 @@ extern float lbl_80564618;
 extern "C" void fn_80298A48(void) {
 }
 
+extern "C" void fn_80298A48(void); /* forward declaration to match symbol */
+
 extern "C" void* fn_80298A4C(void* arg0, int arg1) {
     if (arg0 != 0) {
         void **p = (void **)arg0;
