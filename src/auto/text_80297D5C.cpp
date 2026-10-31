@@ -7,6 +7,8 @@ extern "C" void* fn_8029A6F4(void*);
 extern "C" void* fn_801E87A8(void);
 extern "C" void fn_80287B38(void*);
 extern "C" char lbl_80349408[];
+extern "C" char lbl_803494A4[];
+extern "C" char lbl_803494B8[];
 extern "C" void fn_8029C084(void*, int);
 extern "C" int fn_801EEFDC(void*, int);
 extern "C" int fn_8029AEE8(void*);
