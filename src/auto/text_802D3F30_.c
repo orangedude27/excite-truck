@@ -30,6 +30,7 @@ extern void DCInvalidateRange(void *, u32);
 extern void fn_802D6C68(void);
 extern volatile u8 lbl_8055FD25;
 extern u8 lbl_804C5700[16];
+extern void fn_802D2614(void);
 
 typedef struct {
     u8 unk00;
