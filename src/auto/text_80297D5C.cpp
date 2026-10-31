@@ -500,10 +500,7 @@ extern "C" void fn_80298BBC(void *arg0) {
     }
   }
   
-  #pragma paired_single push
-  #pragma paired_single off
-  #pragma scheduling invalid_target
-void fn_80298DE0(void* arg0, void* arg1, int arg2) {}
+    void fn_80298DE0(void* arg0, void* arg1, int arg2) {}
   #pragma paired_single pop
 
 extern "C" char lbl_803494C4[];
