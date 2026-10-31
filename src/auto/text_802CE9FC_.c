@@ -1027,15 +1027,15 @@ void fn_802D0610(int arg0) {
             
             aux = (unsigned char *)&lbl_804C97D0;
             
-            aux[0] = dst[48];
-            aux[1] = dst[49];
-            aux[2] = dst[50];
-            aux[3] = dst[51];
-            aux[4] = dst[52];
-            aux[5] = dst[53];
-            aux[6] = dst[54];
-            aux[7] = dst[55];
-            aux[8] = dst[56];
+            aux[0] = src[0];
+            aux[1] = src[1];
+            aux[2] = src[2];
+            aux[3] = src[3];
+            aux[4] = src[4];
+            aux[5] = src[5];
+            aux[6] = src[6];
+            aux[7] = src[7];
+            aux[8] = src[8];
             
             aux[12] = src[12];
             aux[13] = src[13];
