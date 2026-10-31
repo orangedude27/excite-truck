@@ -114,8 +114,10 @@ void fn_80217478(void) {
 extern int fn_802368B4(int);
 extern void fn_80216D28(void);
 void fn_8021747C(void *arg0, void *arg1, void *arg2) {
-    void (*callback)(void *, void *, void *) = *(void (**)(void *, void *, void *))((char *)arg0 + 0x440);
-    if (callback != 0) callback(arg0, arg1, arg2);
+    void (*callback)(void *, void *) = *(void (**)(void *, void *))((char *)arg0 + 0x440);
+    if (callback != 0) {
+        callback(arg1, arg2);
+    }
 }
 
 extern void fn_80218198(void *, void **);
