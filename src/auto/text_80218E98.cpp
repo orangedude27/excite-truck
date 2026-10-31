@@ -7084,9 +7084,13 @@ extern "C" void fn_80229D1C(void *arg0) {
 #pragma scheduling invalid_target
 extern "C" void fn_80229D3C(void *arg0, s32 arg1, s32 arg2) {
     register void *self = arg0;
-    register s32 value = *(s32 *)((u8 *)self + 4);
-    register void *target = *(void **)((u8 *)self + 0x250);
-    register s32 other = *(s32 *)((u8 *)self + 8);
+    register void *target;
+    register s32 value;
+    register s32 other;
+    
+    value = *(s32 *)((u8 *)self + 4);
+    target = *(void **)((u8 *)self + 0x250);
+    other = *(s32 *)((u8 *)self + 8);
     fn_802C5280(target, arg1 - value, arg2 - other, 0, value, self);
 }
 #pragma scheduling on
