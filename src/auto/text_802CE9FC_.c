@@ -23,6 +23,7 @@ extern int fn_80015B20(void *, void *, void *);
 extern int fn_802D0DD4(void *, void *);
 extern char lbl_8055FD70;
 extern float lbl_80564F8C, lbl_80564FCC, lbl_80564FDC;
+extern float lbl_80564F94;
 extern int lbl_8055FE24;
 extern unsigned char lbl_804C9778[];
 extern double lbl_80564FB0;
@@ -1843,10 +1844,11 @@ extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE
 #pragma scheduling invalid_target
 int fn_802D3A5C(void *arg0, float *arg1) {
     extern unsigned char lbl_804C9778[];
-    register float xValue = arg1[0];
-    register float yValue = lbl_80564FB8 * arg1[1] / lbl_80564FBC;
-    register int x = (int)xValue;
-    register int y = (int)yValue;
+    float scaledY = lbl_80564FB8 * arg1[1];
+    float xValue = arg1[0];
+    float yValue = scaledY / lbl_80564FBC;
+    int x = (int)xValue;
+    int y = (int)yValue;
     float target;
 
     if (*((unsigned char *)arg0 + 0xD))
