@@ -1027,32 +1027,25 @@ void fn_802D0610(int arg0) {
             
             aux = (unsigned char *)&lbl_804C97D0;
             
-            aux[0] = src[0x30];
-            aux[1] = src[0x31];
-            aux[2] = src[0x32];
-            aux[3] = src[0x33];
-            aux[4] = src[0x34];
-            aux[5] = src[0x35];
-            aux[6] = src[0x36];
-            aux[7] = src[0x37];
-            aux[8] = src[0x38];
+            aux[0] = src[0];
+            aux[1] = src[1];
+            aux[2] = src[2];
+            aux[3] = src[3];
+            aux[4] = src[4];
+            aux[5] = src[5];
+            aux[6] = src[6];
+            aux[7] = src[7];
+            aux[8] = src[8];
             
-            aux[12] = src[0x3C];
-            aux[13] = src[0x3D];
-            aux[14] = src[0x3E];
-            aux[15] = src[0x3F];
-            aux[16] = src[0x40];
-            aux[17] = src[0x41];
-            aux[18] = src[0x42];
-            aux[19] = src[0x43];
-            aux[20] = src[0x44];
-            
-            *(int *)(aux + 60) = *(int *)(src + 60);
-            *(int *)(aux + 64) = *(int *)(src + 64);
-            *(int *)(aux + 68) = *(int *)(src + 68);
-            *(float *)(aux + 72) = *(float *)(src + 72);
-            
-            aux[92] = 1;
+            aux[12] = src[12];
+            aux[13] = src[13];
+            aux[14] = src[14];
+            aux[15] = src[15];
+            aux[16] = src[16];
+            aux[17] = src[17];
+            aux[18] = src[18];
+            aux[19] = src[19];
+            aux[20] = src[20];
         } else {
             ((float *)lbl_804C5690)[0] = lbl_80564F8C;
             ((float *)lbl_804C5690)[1] = lbl_80564F88;
