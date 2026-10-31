@@ -5029,7 +5029,7 @@ void fn_80065524(s32 chan, WPADStatusEx* pStatus)
             pBase[0x29] = -4;
             pBase[0x28] = *(u8*)((u8*)pCB + 0x801);
                           *(u32*)((u8*)pCB + 0x788) = (pStatus->dev >> 1) & 1;
-              *(u8*)((u8*)pCB + 0x806) = __cntlzw(*(u8*)((u8*)pStatus + 1)) >> 24;
+              *(u8*)((u8*)pCB + 0x806) = __cntlzw(*(u8*)((u8*)pStatus + 1));
         }
     }
     OSRestoreInterrupts(enabled);
