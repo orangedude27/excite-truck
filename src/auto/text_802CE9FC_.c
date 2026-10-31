@@ -1467,6 +1467,7 @@ extern void GXGetLightDir_Internal(void *, float, float, float, float, float, fl
 extern void GXInitLightAttn(void *, float, float, float, float, float, float);
 extern float PSVECMag(float *);
 extern float lbl_80564F80, lbl_80564F88, lbl_80564F8C, lbl_80564F90, lbl_80564F94;
+extern double lbl_80564FA0;
 #pragma push
 #pragma paired off
 #pragma paired_single off
@@ -1494,6 +1495,87 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
         GXInitLightAttn(light,lbl_80564F88,lbl_80564F88,lbl_80564F8C,v,lbl_80564F88,lbl_80564F8C-v);
     }
 }
+
+extern int lbl_8055FDC8;
+extern int lbl_8055FDCC;
+extern float lbl_80564FD4;
+extern void GXLoadLightObjImm(void *, unsigned int);
+extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
+void fn_802D18E8(void) {
+    unsigned char *base = (unsigned char *)lbl_804C5650;
+    float *from = (float *)(base + 0x40);
+    float *to = (float *)(base + 0x70);
+    unsigned char color[4];
+    float direction[3];
+    float mag;
+    float scale;
+    unsigned char *var_r30;
+    unsigned char *var_r29;
+    int var_r28;
+    int var_r27;
+
+    direction[0] = from[9] - to[9];
+    direction[1] = from[10] - to[10];
+    direction[2] = from[11] - to[11];
+    mag = PSVECMag(direction);
+    mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
+    scale = lbl_80564F8C / mag;
+    lbl_8055FDCC = 0;
+    direction[0] *= scale;
+    direction[1] *= scale;
+    direction[2] *= scale;
+
+    if (lbl_8055FDC8 > 0) {
+        var_r30 = base + 0x4A38;
+        var_r29 = base + 0x4AC8;
+        var_r28 = 0;
+        goto loop_test;
+    loop_body:
+        color[0] = var_r30[0x0C];
+        color[1] = var_r30[0x0D];
+        color[2] = var_r30[0x0E];
+        color[3] = var_r30[0x0F];
+        fn_802D17BC(var_r29, direction, (float *)var_r30, color, *(float *)(var_r30 + 0x10));
+        var_r30 += 0x14;
+        var_r29 += 0x40;
+        var_r28 += 1;
+    loop_test:
+        if (var_r28 < lbl_8055FDC8) goto loop_body;
+        lbl_8055FDCC = lbl_8055FDC8;
+    } else {
+        unsigned char *entry = base + 0x4180;
+        unsigned int packed;
+        unsigned char rgba[4];
+        float strength = *(float *)(entry + 0x18);
+        rgba[0] = (unsigned char)(int)(strength * (float)entry[0]);
+        rgba[1] = (unsigned char)(int)(strength * (float)entry[1]);
+        rgba[2] = (unsigned char)(int)(strength * (float)entry[2]);
+        rgba[3] = entry[3];
+        packed = *(unsigned int *)rgba;
+        fn_802D17BC(base + 0x4AC8, direction, (float *)(entry + 0x0C), (unsigned char *)&packed, lbl_80564FD4);
+        lbl_8055FDCC++;
+    }
+
+    var_r30 = base + 0x4AC8;
+    var_r28 = 0;
+    var_r29 = (unsigned char *)0;
+    var_r27 = 2;
+    goto light_test;
+light_body:
+    {
+        int bits = var_r27 << (unsigned int)var_r29;
+        GXLoadLightObjImm(var_r30, bits);
+        var_r28 |= bits;
+        var_r30 += 0x40;
+        var_r29 = (unsigned char *)((unsigned int)var_r29 + 1);
+    }
+light_test:
+    if ((unsigned int)var_r29 < (unsigned int)lbl_8055FDCC) goto light_body;
+    GXSetNumChans(2);
+    GXSetChanCtrl(1, 1, 0, 0, var_r28, 0, 0);
+    GXSetChanCtrl(3, 0, 0, 0, 0, 0, 2);
+}
+
 #pragma scheduling on
 #pragma paired_single reset
 #pragma paired reset
