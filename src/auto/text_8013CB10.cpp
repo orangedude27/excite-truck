@@ -2562,6 +2562,62 @@ extern "C" f32 lbl_805614C4;
 extern "C" u8 lbl_8032C530[0x500];
 extern "C" void fn_80147BD0(s32, s32, s32, s32, s32, f32);
 
-extern "C" void fn_8013FAC4(void *arg0, void *arg2);
+extern "C" void fn_8013FAC4(void *arg0, void *arg2) {
+    s32 enabled = *(s32 *)((u8 *)arg2 + 0x104);
+    f32 temp_f1;
+    s32 var_r0;
+    f32 temp_f0;
+    f32 var_f3;
+    f32 var_f31;
+    s32 temp_r3_2;
+    s32 sp14, sp10, spC, sp8;
+    f32 sp18, sp1C, sp20, sp24, sp28, sp2C;
+    extern char lbl_8032C978[];
+    extern char lbl_8032C988[];
+    extern f32 fn_8001DAE8(void *);
+    extern f32 fn_8001DAF0(void *);
+    extern void fn_8013CB90(void *);
+    extern void fn_80147EE0(void *, f32);
+    extern void fn_801476D8(void *, void *, s32);
+    extern void fn_801476C4(void *);
+    if (enabled != 0) {
+        temp_r3_2 = ((s32 (*)(void *, void *))(*(void ***)arg0)[9])(arg0, &lbl_8032C978);
+        if (temp_r3_2 != 0) {
+            temp_f1 = fn_8001DAE8((u8 *)arg2 + 0xC8) - *(f32 *)((u8 *)arg2 + 0xCC);
+            var_r0 = 0;
+            if ((temp_f1 >= lbl_805614A4) && (temp_f1 < *(f32 *)((u8 *)arg2 + 0xC8))) {
+                var_r0 = 1;
+            }
+            if (var_r0 != 0) {
+                var_f3 = lbl_805614AC;
+                temp_f0 = (fn_8001DAF0((u8 *)arg2 + 0xC8) - lbl_80561498) / lbl_80561498;
+                if (var_f3 < temp_f0) {
+                    var_f3 = temp_f0;
+                }
+                if (var_f3 > lbl_805614A4) {
+                    var_f3 = lbl_805614A4;
+                }
+                var_f31 = lbl_805614A4 + (var_f3 * lbl_805614AC);
+            } else {
+                var_f31 = lbl_805614AC;
+            }
+            sp8 = *(s32 *)((u8 *)temp_r3_2 + 0);
+            sp10 = *(s32 *)((u8 *)temp_r3_2 + 4);
+            spC = *(s32 *)((u8 *)temp_r3_2 + 8);
+            sp14 = *(s32 *)((u8 *)temp_r3_2 + 0xC);
+            sp18 = *(f32 *)((u8 *)temp_r3_2 + 0x10);
+            sp1C = *(f32 *)((u8 *)temp_r3_2 + 0x14);
+            sp20 = *(f32 *)((u8 *)temp_r3_2 + 0x18);
+            sp24 = *(f32 *)((u8 *)temp_r3_2 + 0x1C);
+            sp28 = *(f32 *)((u8 *)temp_r3_2 + 0x20);
+            sp2C = *(f32 *)((u8 *)temp_r3_2 + 0x24);
+            fn_8013CB90(&sp8);
+            fn_80147EE0(&sp8, var_f31);
+            fn_801476D8(&sp8, fn_80147C50(0xFFFFFF, -1, lbl_805614AC + var_f3 * lbl_805614BC), *(s32 *)((u8 *)arg0 + 0xAC));
+        }
+        ((s32 (*)(void *, void *))(*(void ***)arg0)[3])(arg0, &lbl_8032C988);
+        fn_801476C4(NULL);
+    }
+}
 // fn_80140B98 - quaternion-based vector transformation
 extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2);
