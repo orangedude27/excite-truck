@@ -5,6 +5,8 @@
         
 extern char lbl_803387C8[];
 
+#include <types.h>
+
 extern int fn_8017960C(int);
 extern void *fn_801B2EC0(int);
 extern int fn_801B2F24(void);
