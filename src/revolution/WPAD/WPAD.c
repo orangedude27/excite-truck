@@ -3068,6 +3068,8 @@ void fn_8005EEC4(s32 chan, s32 result) {
     WPADCommandQueue* queue = (WPADCommandQueue*)(p + 0x160);
     u32 val32;
     u16 val16;
+    u32 negVal;
+    u32 signExt;
     BOOL enabled1;
     BOOL enabled2;
     s8 diff;
@@ -3087,9 +3089,12 @@ void fn_8005EEC4(s32 chan, s32 result) {
     }
 
     val32 = *(u32*)(p + 0x820);
+    negVal = -val32;
+    signExt = (negVal | val32);
+    signExt = signExt >> 31;  // sign extend
     val16 = (val32 != 0) ? 0x14 : 0x2A;
     *(u16*)&p[-0x78] = val16;  // cmd[0]
-    *(u32*)&p[-0x74] = val32;  // cmd[4]
+    *(u32*)&p[-0x74] = (signExt & 0x176C) ? 0x176C : 0;  // cmd[4]
     *(u32*)&p[-0x70] = 0x17;   // cmd[8]
     *(u16*)&p[-0x56] = 6;      // cmd[0x22]
     *(void**)&p[-0x54] = fn_8005EEC4;  // cmd[0x2C]
