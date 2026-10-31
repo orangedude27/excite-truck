@@ -12,6 +12,12 @@ extern "C" void fn_80287B38(void*);
 extern "C" char lbl_80349408[];
 extern "C" char lbl_803494A4[];
 extern "C" char lbl_803494B8[];
+
+struct Entry {
+    float f0, f4, f8, f12, f16, f20;
+    char f24, f25;
+    float f28;
+};
 extern "C" void fn_8029C084(void*, int);
 extern "C" int fn_801EEFDC(void*, int);
 extern "C" int fn_8029AEE8(void*);
