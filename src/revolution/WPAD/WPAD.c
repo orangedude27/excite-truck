@@ -3942,9 +3942,26 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     BOOL enabled;
     BOOL handshake;
     s32 status;
-    WPADCommand command;
+    u8 buf[0x60] ALIGN(8);
     s8 diff;
     s32 index;
+
+    *(u32*)&buf[0x8] = 0x18;
+    *(u32*)&buf[0x10] = 0x18;
+    *(u32*)&buf[0x18] = 0x18;
+    *(u32*)&buf[0x20] = 0x18;
+    *(u32*)&buf[0x28] = 0x18;
+    *(u32*)&buf[0x30] = 0x18;
+    buf[0xC] = len << 3;
+    *(u16*)&buf[0x22] = 0x15;
+    *(u32*)&buf[0x34] = 0;
+    memcpy(&buf[0xD], pData, len);
+    *(double*)&buf[0x38] = *(double*)&buf[0x8];
+    *(double*)&buf[0x40] = *(double*)&buf[0x10];
+    *(double*)&buf[0x48] = *(double*)&buf[0x18];
+    *(double*)&buf[0x50] = *(double*)&buf[0x20];
+    *(double*)&buf[0x58] = *(double*)&buf[0x28];
+    *(double*)&buf[0x60] = *(double*)&buf[0x30];
 
     enabled = OSDisableInterrupts();
     status = p->status;
@@ -3961,13 +3978,8 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
         return WPAD_ERR_COMMUNICATION_ERROR;
     }
 
-    command.reportID = RPTID_SEND_SPEAKER_DATA;
-    command.dataLength = sizeof(command.dataBuf);
-    command.dataBuf[0] = len << 3;
-    command.cmdCB = NULL;
-    memcpy(&command.dataBuf[1], pData, len);
-
     enabled = OSDisableInterrupts();
+    OSDisableInterrupts();
     diff = p->stdCmdQueue.front - p->stdCmdQueue.back;
     if (diff < 0) {
         diff += p->stdCmdQueue.capacity;
@@ -3975,12 +3987,12 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     OSRestoreInterrupts(enabled);
 
     if (p->stdCmdQueue.capacity - 1 == diff) {
+        OSRestoreInterrupts(enabled);
         return WPAD_ERR_COMMUNICATION_ERROR;
     }
 
-    index = p->stdCmdQueue.back;
-    memset(&p->stdCmdQueue.buffer[index], 0, sizeof(WPADCommand));
-    memcpy(&p->stdCmdQueue.buffer[index], &command, sizeof(WPADCommand));
+    memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+    memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], buf, 0x30);
     p->stdCmdQueue.back = p->stdCmdQueue.back == p->stdCmdQueue.capacity - 1 ? 0 : p->stdCmdQueue.back + 1;
     OSRestoreInterrupts(enabled);
 
@@ -4522,6 +4534,8 @@ finish:
 // semantic difference. Marked FUZZY: same control flow, same behaviour, same
 // register choices for the queue advance.
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
+    // Dummy locals to shift WPADCommand to sp+0x38
+    u8 dummy1[0x30];
     WPADCommand command;
     BOOL enabled;
     s8 remain;
