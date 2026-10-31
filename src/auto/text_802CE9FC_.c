@@ -998,6 +998,66 @@ int fn_802D0514(void *source) {
     return next;
 }
 
+void fn_802D0610(int arg0) {
+    extern void *lbl_8055FDB0;
+    extern unsigned char lbl_804C5690[];
+    extern char lbl_804C97D0;
+    extern char lbl_8055FD70;
+    extern int lbl_8055FD8C;
+    extern float lbl_80564F88;
+    extern float lbl_80564F8C;
+    
+    if (arg0 != lbl_8055FD8C) {
+        if (arg0 != 0) {
+            void *record = (char *)lbl_8055FDB0 + (arg0 - 1) * 0x4C;
+            unsigned char *dst = lbl_804C5690;
+            unsigned char *src = (unsigned char *)record;
+            unsigned char *aux;
+            int i;
+            
+            for (i = 0; i < 12; i++) {
+                *(int *)(dst + i * 4) = *(int *)(src + i * 4);
+            }
+            
+            lbl_8055FD70 = 1;
+            
+            aux = (unsigned char *)&lbl_804C97D0;
+            dst[48] = aux[0];
+            dst[49] = aux[1];
+            dst[50] = aux[2];
+            dst[51] = aux[3];
+            dst[52] = aux[4];
+            dst[53] = aux[5];
+            dst[54] = aux[6];
+            dst[55] = aux[7];
+            dst[56] = aux[8];
+            
+            *(int *)(dst + 60) = *(int *)(src + 60);
+            *(int *)(dst + 64) = *(int *)(src + 64);
+            *(int *)(dst + 68) = *(int *)(src + 68);
+            *(float *)(dst + 72) = *(float *)(src + 72);
+            
+            aux[92] = 1;
+        } else {
+            ((float *)lbl_804C5690)[0] = lbl_80564F8C;
+            ((float *)lbl_804C5690)[1] = lbl_80564F88;
+            ((float *)lbl_804C5690)[2] = lbl_80564F88;
+            ((float *)lbl_804C5690)[3] = lbl_80564F88;
+            ((float *)lbl_804C5690)[4] = lbl_80564F8C;
+            ((float *)lbl_804C5690)[5] = lbl_80564F88;
+            ((float *)lbl_804C5690)[6] = lbl_80564F88;
+            ((float *)lbl_804C5690)[7] = lbl_80564F88;
+            ((float *)lbl_804C5690)[8] = lbl_80564F8C;
+            ((float *)lbl_804C5690)[9] = lbl_80564F88;
+            ((float *)lbl_804C5690)[10] = lbl_80564F88;
+            ((float *)lbl_804C5690)[11] = lbl_80564F88;
+            
+            lbl_8055FD70 = 1;
+        }
+        lbl_8055FD8C = arg0;
+    }
+}
+
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
 extern int lbl_8055D0BC;
