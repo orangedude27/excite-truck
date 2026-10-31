@@ -11,6 +11,7 @@ extern "C" f32 lbl_80561598;
 extern "C" f32 lbl_8056159C;
 extern "C" f32 fn_8001DAF0(f32 *);
 extern "C" u8 lbl_8042FB3C[];
+extern "C" char lbl_8032C96C[];
 extern "C" void fn_802ADE60(int, int);
 extern "C" void fn_8001DAE0(void *, f32);
 extern "C" f32 lbl_805614FC;
