@@ -1797,7 +1797,6 @@ extern void fn_802D92B0(void);
 
 extern void GXSetTevOrder(int, int, int, int);
 extern void GXSetTevOp(int, int);
-extern void GXSetCurrentMtx(int);
 #pragma dont_inline on
 void fn_802D3360(void) {
     int var_r31;
