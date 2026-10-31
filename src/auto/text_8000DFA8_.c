@@ -1001,6 +1001,7 @@ void fn_80010EC8(void) {
 typedef struct Unk80350F88Entry {
     char name[0x28];
     u8 unk_0x28;
+    u8 pad_0x29[3];
     s32 unk_0x2C;
     s32 unk_0x30;
     s32 unk_0x34;
@@ -1011,6 +1012,7 @@ typedef struct Unk80350F88Entry {
 typedef struct Unk80350F88 {
     s32 unk_0x00;
     u8 unk_0x04;
+    u8 pad_0x05[3];
     Unk80350F88Entry entries[10];
     s32 unk_0x288;
 } Unk80350F88;
@@ -1080,8 +1082,84 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
     entry->unk_0x38 = a4;
     entry->unk_0x3C = f1;
 }
+
+#pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
+void fn_80010FDC(char *name, s32 id) {
+    extern f32 lbl_8055D4D8;
+    extern f32 fn_8000EDC0(s32);
+    extern f32 fn_800108C8(f32, s32);
+    extern void *memset(void *, s32, u32);
+    extern char *strncpy(char *, const char *, unsigned long);
+    char buf[0x200];
+    register char *dst;
+    register Unk80350F88 *root;
+    register char *bufp;
+    register volatile Unk80350F88Entry *entry;
+    register s32 zero;
+    register s32 len;
+    register s32 space;
+    register s32 idx;
+    register f32 temp_f31;
+    register f32 temp_f30;
+    register f32 temp_f29;
+
+    temp_f30 = lbl_8055D4D8;
+    temp_f29 = fn_8000EDC0(id);
+    if (fn_800108C8(temp_f29, (s32)name) > temp_f30) {
+        root = (Unk80350F88 *)&lbl_803514A0;
+        temp_f31 = lbl_80560264;
+        bufp = buf;
+        zero = 0;
+        while (*name != 0) {
+            memset(buf, zero, 0x200);
+            dst = buf;
+            len = 0;
+            space = -1;
+            while (*name != 0 && *name != '\n' &&
+                   fn_800108C8(temp_f29, (s32)buf) < temp_f30) {
+                if (*(volatile char *)name == ' ') {
+                    space = len;
+                }
+                *dst = *name;
+                dst++;
+                name++;
+                len++;
+            }
+            if (*name == '\n') {
+                name++;
+            } else if (*name != 0 && space >= 0) {
+                bufp[space] = (char)zero;
+                name -= (len - space) - 1;
+            }
+            idx = root->unk_0x288;
+            root->unk_0x288 = idx + 1;
+            entry = &root->entries[idx];
+            strncpy((char *)entry->name, buf, 0x28);
+            entry->unk_0x28 = (u8)zero;
+            entry->unk_0x2C = zero;
+            entry->unk_0x30 = zero;
+            entry->unk_0x34 = zero;
+            entry->unk_0x38 = id;
+            entry->unk_0x3C = temp_f31;
+        }
+    } else {
+        root = (Unk80350F88 *)&lbl_803514A0;
+        idx = root->unk_0x288;
+        root->unk_0x288 = idx + 1;
+        entry = &root->entries[idx];
+        strncpy((char *)entry->name, name, 0x28);
+        entry->unk_0x28 = 0;
+        entry->unk_0x2C = 0;
+        entry->unk_0x30 = 0;
+        entry->unk_0x34 = 0;
+        entry->unk_0x38 = id;
+        entry->unk_0x3C = lbl_80560264;
+    }
+}
+#pragma pop
 void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     s32 idx;
     Unk80350F88 *base;
