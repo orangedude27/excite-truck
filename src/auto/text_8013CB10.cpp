@@ -35,7 +35,6 @@ extern "C" f32 lbl_80558DC4;
 extern "C" u8 lbl_8055E1BC;
 extern "C" f32 fn_8001DAE8(void *);
 extern "C" f32 fn_8013CB3C(void);
-extern "C" void fn_8001DAE8_2(void *, f32);
 extern "C" s32 fn_80176A1C(void);
 extern "C" int strcmp(const char *, const char *);
 
