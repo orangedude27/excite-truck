@@ -54,7 +54,9 @@ extern "C" u8 lbl_8055DFF9;
 extern "C" void *lbl_8055E000;
 extern "C" s32 fn_8012BC50(void *, void *, s32);
 extern "C" s32 fn_8012E9F0(s32, s32);
-
+extern "C" const char lbl_8032AD88[];
+extern "C" const char lbl_8032AD6C[];
+extern "C" const char lbl_8032AD2C[];
 
 extern "C" void *fn_8012CB44(void *, s32);
 extern "C" void fn_8012CA40(void *);
@@ -1273,60 +1275,28 @@ extern "C" void fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-      extern "C" void fn_8012D1A8(s32 arg0) {
-        u8 *self = (u8 *)arg0;
-        s32 state = *(s32 *)(self + 0xB8);
-        s32 var_r28;
-        s32 var_r29;
-        
-        if (state == 3) {
-            fn_8012BA1C(self + 4);
-            fn_8012BC24((void **)&lbl_8055E000, self + 4);
-            var_r29 = 0;
-            var_r28 = 0;
-        loop_3:
-            if (var_r29 < *(s32 *)(self + 0x8C)) {
-                s32 *record = (s32 *)(*(s32 *)(self + 0x64) + var_r28);
-                if (record[0x34 / 4] & 4) {
-                    fn_802E317C(lbl_8032AE20);
-                }
-                var_r29++;
-                record = (s32 *)(*(s32 *)(self + 0x64) + var_r28);
-                s32 value = record[0x34 / 4];
-                var_r28 += 0x44;
-                record[0x34 / 4] = value & ~0xF;
-                goto loop_3;
-            }
-            if (*(s32 *)(self + 0x68) != 0) {
-                fn_8012C4D8((void *)*(s32 *)(self + 0x68));
-            }
-            if (*(s32 *)(self + 0xA4) != 0) {
-                fn_80128660(*(s32 *)(self + 0xA4));
-            }
-            *(u8 *)(self + 0xB0) = 0;
-            *(s32 *)(self + 0xB8) = 1;
-            return;
-        }
-        if (state != 2) return;
+extern "C" void fn_8012D1A8(s32 arg0) {
+    u8 *self = (u8 *)arg0;
+    s32 state = *(s32 *)(self + 0xB8);
+    
+    if (state == 2) {
         if (*(s32 *)(self + 0xB4) != -1) {
             fn_802E7548(*(s32 *)(self + 0xB4));
             *(s32 *)(self + 0xB4) = -1;
         }
-        var_r29 = 0;
-        var_r28 = 0;
-    loop_2:
-        if (var_r29 < *(s32 *)(self + 0x8C)) {
-            s32 *record = (s32 *)(*(s32 *)(self + 0x64) + var_r28);
+        s32 count = 0;
+        s32 index = 0;
+        do {
+            s32 *record = (s32 *)(*(s32 *)(self + 0x64) + index);
             if (record[0x34 / 4] & 4) {
                 fn_802E317C(lbl_8032AE20);
             }
-            var_r29++;
-            record = (s32 *)(*(s32 *)(self + 0x64) + var_r28);
+            count++;
+            record = (s32 *)(*(s32 *)(self + 0x64) + index);
             s32 value = record[0x34 / 4];
-            var_r28 += 0x44;
+            index += 0x44;
             record[0x34 / 4] = value & ~0xF;
-            goto loop_2;
-        }
+        } while (count < *(s32 *)(self + 0x8C));
         if (*(s32 *)(self + 0x68) != 0) {
             fn_8012C4D8((void *)*(s32 *)(self + 0x68));
         }
@@ -1334,7 +1304,32 @@ extern "C" void fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
             fn_80128660(*(s32 *)(self + 0xA4));
         }
         *(u8 *)(self + 0xB0) = 0;
+    } else if (state == 3) {
+        fn_8012BA1C(self + 4);
+        fn_8012BC24((void **)&lbl_8055E000, self + 4);
+        s32 count = 0;
+        s32 index = 0;
+        do {
+            s32 *record = (s32 *)(*(s32 *)(self + 0x64) + index);
+            if (record[0x34 / 4] & 4) {
+                fn_802E317C(lbl_8032AE20);
+            }
+            count++;
+            record = (s32 *)(*(s32 *)(self + 0x64) + index);
+            s32 value = record[0x34 / 4];
+            index += 0x44;
+            record[0x34 / 4] = value & ~0xF;
+        } while (count < *(s32 *)(self + 0x8C));
+        if (*(s32 *)(self + 0x68) != 0) {
+            fn_8012C4D8((void *)*(s32 *)(self + 0x68));
+        }
+        if (*(s32 *)(self + 0xA4) != 0) {
+            fn_80128660(*(s32 *)(self + 0xA4));
+        }
+        *(u8 *)(self + 0xB0) = 0;
+        *(s32 *)(self + 0xB8) = 1;
     }
+}
 
 #pragma pop
 
