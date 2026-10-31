@@ -3066,10 +3066,12 @@ void fn_8005EEC4(s32 chan, s32 result) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* p = (u8*)cb;
     WPADCommandQueue* queue = (WPADCommandQueue*)(p + 0x160);
-    u8 cmd[0x40] ALIGN(8);
+    u8 cmd[0x68] ALIGN(8);
     u8* buf = cmd;
     u32 val1;
     u16 val2;
+    u32 copiedWord;
+    u16 copiedHalfword;
     BOOL enabled1;
     BOOL enabled2;
     s8 diff;
@@ -3100,10 +3102,10 @@ void fn_8005EEC4(s32 chan, s32 result) {
     memcpy(&buf[0x18], &buf[0], 2);
     *(void**)&buf[0x2C] = (void*)(p + 0x874);
 
-    val2 = *(u16*)&buf[0];
-    val1 = *(u32*)&buf[4];
-    *(u32*)&buf[0x30] = val2;
-    *(u32*)&buf[0x34] = val1;
+    copiedHalfword = *(u16*)&buf[0];
+    copiedWord = *(u32*)&buf[4];
+    *(u32*)&buf[0x30] = copiedHalfword;
+    *(u32*)&buf[0x34] = copiedWord;
     *(double*)&buf[0x10] = *(double*)&buf[8];
     *(double*)&buf[0x18] = *(double*)&buf[0x18];
     *(double*)&buf[0x20] = *(double*)&buf[0x20];
