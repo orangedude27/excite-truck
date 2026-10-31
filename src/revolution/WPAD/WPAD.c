@@ -16,6 +16,7 @@
 #include <revolution/SC.h>
 #include <revolution/WPAD.h>
 #include <revolution/WUD.h>
+#include <revolution/WPAD/WPADHIDParser.h>
 
 #include <string.h>
 
