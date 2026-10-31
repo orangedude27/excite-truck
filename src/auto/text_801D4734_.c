@@ -752,7 +752,6 @@ int fn_801D6320(void *out, void *object) {
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
-#pragma cplusplus reset
 
 int *__AXFXGetLfoSinTable_801D64F4(void) {
     extern char lbl_803387A8[];
