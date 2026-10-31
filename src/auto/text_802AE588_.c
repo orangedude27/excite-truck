@@ -240,15 +240,14 @@ int fn_802AE7AC(void) {
     int val = *(int *)lbl_8055F984;
     unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
     return (int)(tmp >> 31);
-}
-#pragma dont_inline reset
-
+  }
+  #pragma dont_inline reset
+  
   void fn_802AE7C0(void) {
       fn_802C9950(0x555766);
       fn_802C9994(0xFFF5D9);
   }
-
-      
+  
   #pragma dont_inline on
   #pragma cplusplus on
   #pragma push
