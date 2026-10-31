@@ -1441,7 +1441,52 @@ extern "C" void fn_8029B1B8(void* arg0) {
 }
 
 extern "C" void *fn_802C86DC(void);
-extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6);
+extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6) {
+    float sp18, sp1C, sp20, sp24, sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44;
+    float sp10, sp14, sp8, spC;
+    float sp4, sp0;
+
+    fn_8029B138(arg3, (int)arg2, &sp14, &sp10, &spC, &sp8);
+    
+    float neg_farg0 = -farg0;
+    float temp_f5 = ((float*)arg3)[0];
+    float temp_f9 = ((float*)arg3)[1];
+    float temp_f6 = ((float*)arg4)[0];
+    float temp_f7 = ((float*)arg4)[1];
+    
+    sp18 = arg1[0] + (temp_f5 * neg_farg0);
+    sp1C = arg1[1] + (temp_f9 * neg_farg0);
+    
+    float temp_f1 = sp18 + (temp_f6 * farg0);
+    float temp_f2 = sp1C + (temp_f7 * farg0);
+    
+    sp18 = temp_f1;
+    sp1C = temp_f2;
+    
+    float temp_f6_2 = temp_f6 * farg0;
+    float temp_f8 = temp_f7 * farg0;
+    
+    sp24 = temp_f1 + (temp_f5 * farg0);
+    sp28 = temp_f2 + (temp_f9 * farg0);
+    
+    float temp_f10 = temp_f1 + temp_f6_2;
+    float temp_f7_2 = sp24 + temp_f6_2;
+    float temp_f9_2 = temp_f2 + temp_f8;
+    float temp_f6_3 = sp28 + temp_f8;
+    
+    sp30 = temp_f10;
+    sp34 = temp_f9_2;
+    sp2C = temp_f10;
+    sp38 = temp_f7_2;
+    sp3C = temp_f6_3;
+    sp40 = temp_f10;
+    sp44 = temp_f10 + temp_f6_2;
+    
+    fn_802C8E00(0, 0, temp_f1, temp_f2, temp_f10, sp14, spC);
+    fn_802C8E00(0, 0, sp24, sp28, sp2C, sp10, spC);
+    fn_802C8E00(0, 1, sp30, sp34, sp38, sp14, sp8);
+    fn_802C8E00(0, 1, sp3C, sp40, sp44, sp10, sp8);
+}
 #pragma paired_single off
 extern "C" void fn_8029B6E4(void *arg0) {
     struct Vec3 {
