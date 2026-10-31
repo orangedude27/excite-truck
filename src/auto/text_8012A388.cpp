@@ -1965,16 +1965,6 @@ void fn_8012E67C(s32 arg0, s32 arg1) {
     s32 var_r29;
     s32 var_r31;
 
-    if (obj == NULL) {
-        void *entry = fn_8012BD3C(lbl_8055E000, (const char *)arg1);
-        if (entry != NULL) {
-            *(u8 *)((u8 *)entry + 0xAD) = 0;
-        } else {
-            fn_802E30C8(lbl_8032AD2C, (const char *)arg1);
-        }
-        return;
-    }
-
     var_r27 = obj;
     var_r29 = fn_802E2C20() + 0x7D0;
 
