@@ -3958,14 +3958,6 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     *(u32*)&buf[0x34] = 0;
     memcpy(&buf[0xD], pData, len);
 
-    dptr = (double*)&buf[0x8];
-    *(double*)&buf[0x38] = dptr[0];
-    *(double*)&buf[0x40] = dptr[1];
-    *(double*)&buf[0x48] = dptr[2];
-    *(double*)&buf[0x50] = dptr[3];
-    *(double*)&buf[0x58] = dptr[4];
-    *(double*)&buf[0x60] = dptr[5];
-
     enabled = OSDisableInterrupts();
     status = p->status;
     handshake = p->handshakeFinished;
