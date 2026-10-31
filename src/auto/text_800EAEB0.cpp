@@ -94,7 +94,10 @@ public:
 };
 class SeqPlayer;
 class SeqTrack;
-class MmlParser;
+class MmlParser {
+public:
+    enum SeqArgType { ARG_BYTE = 0, ARG_WORD = 1, ARG_VLQ = 2, ARG_EXPR = 3, ARG_VAR = 4 };
+};
 }}}
 
 extern u8 lbl_80323E98[];
