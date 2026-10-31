@@ -5014,13 +5014,33 @@ void fn_80065524(s32 chan, WPADStatusEx* pStatus)
     enabled = OSDisableInterrupts();
     pCB = lbl_8038F4F0[(u8)chan];
     pBase = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
-    pBuf = pBase;
-    for (i = 0; i < 6; i++) {
-        for (j = 0; j < 8; j++) {
-            pBuf[j] = 0;
-        }
-        pBuf += 8;
-    }
+          pBuf = pBase;
+      for (i = 0; i < 2; i++) {
+          pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
+          pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
+          pBuf += 8;
+          pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
+          pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
+          pBuf += 8;
+          pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
+          pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
+          pBuf += 8;
+          pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
+          pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
+          pBuf += 8;
+          pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
+          pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
+          pBuf += 8;
+          pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
+          pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
+          pBuf += 8;
+          pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
+          pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
+          pBuf += 8;
+          pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
+          pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
+          pBuf += 8;
+      }
     *(u16*)pBase = 0;
     *(u16*)pBase = ((pStatus->button & 0xFF) << 8) | ((pStatus->button >> 8) & 0xFF);
     *(u16*)pBase &= 0x9F1F;
