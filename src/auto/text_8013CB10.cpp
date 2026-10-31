@@ -1461,10 +1461,7 @@ extern "C" void fn_80142650(void *arg0) {
     s32 *ptr_f0 = (s32 *)((u8 *)arg0 + 0xF0);
     s32 *ptr_100 = (s32 *)((u8 *)arg0 + 0x100);
     s32 *ptr_ec = (s32 *)((u8 *)arg0 + 0xEC);
-    s32 *ptr_bc = (s32 *)((u8 *)arg0 + 0xBC);
-    s32 *ptr_ac = (s32 *)((u8 *)arg0 + 0xAC);
     s32 *ptr_d4 = (s32 *)((u8 *)arg0 + 0xD4);
-    s32 *ptr_d0 = (s32 *)((u8 *)arg0 + 0xD0);
     s32 *ptr_a8 = (s32 *)((u8 *)arg0 + 0xA8);
     u8 *ptr_f8 = (u8 *)arg0 + 0xF8;
     f32 *ptr_94 = (f32 *)((u8 *)arg0 + 0x94);
