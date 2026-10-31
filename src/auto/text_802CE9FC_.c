@@ -507,12 +507,12 @@ void fn_802CFBA8(void) {
     extern void fn_802E30C8(const char *, ...);
     extern void fn_802DD5F4(void);
     extern void fn_802D3894(void);
-    extern void fn_802D6860(void);
-    extern void *lbl_8055FD68;
-    extern unsigned int lbl_8055FD98;
-    extern void *lbl_8055FDB0;
-    extern void fn_80128670();
-    extern void fn_802DA4C4(void);
+      extern void fn_802D6860(void);
+  extern void *lbl_8055FD68;
+  extern unsigned int lbl_8055FD98;
+  extern void *lbl_8055FDB0;
+  extern void fn_80128670();
+  extern void fn_802DA4C4(void);
     extern void fn_802D0C98(void);
     extern void fn_802DAE18(void);
     extern void fn_802D8DA0(void);
