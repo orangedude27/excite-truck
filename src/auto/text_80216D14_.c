@@ -1,3 +1,4 @@
+#include "include/MSL/stddef.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern float lbl_80563490;
 extern int fn_802182F0(void *, void *);
@@ -308,13 +309,35 @@ void fn_80217734(void *arg0, int arg1, int arg2) {
     if (obj) ((void (*)(void *, int, int))(*(void ***)obj)[0x4C / 4])(obj, x, y);
 }
 
-void fn_80217834(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 0x448);
-    if (obj != 0) {
-        void *vtable = *(void **)obj;
-        ((void (*)(void *))((void ***)vtable)[20])(obj);
-    }
+#pragma cplusplus on
+extern "C" void fn_80217834(void *arg0) {
+    class Dummy_80217834 {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual void m5();
+        virtual void m6();
+        virtual void m7();
+        virtual void m8();
+        virtual void m9();
+        virtual void m10();
+        virtual void m11();
+        virtual void m12();
+        virtual void m13();
+        virtual void m14();
+        virtual void m15();
+        virtual void m16();
+        virtual void m17();
+        virtual void m18();
+        virtual void call();
+    };
+    Dummy_80217834 *obj = *(Dummy_80217834 **)((char *)arg0 + 0x448);
+    if (obj != 0) obj->call();
 }
+#pragma cplusplus off
 
 #pragma cplusplus on
 extern "C" void fn_80217854(void *arg0) {
