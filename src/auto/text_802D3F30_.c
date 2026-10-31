@@ -765,7 +765,7 @@ void fn_802D5FE4(void *arg0) {
 void fn_802D61BC(void *arg0) {
     extern u8 lbl_804C5700[16];
     extern s32 lbl_8055FD20;
-    extern u8 lbl_8055FD25;
+    extern volatile u8 lbl_8055FD25;
     extern u32 lbl_8055FD28;
     extern u8 lbl_8055FDFC;
     extern void fn_802D2614(void);
