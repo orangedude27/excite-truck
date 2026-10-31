@@ -1256,8 +1256,9 @@ extern "C" void *fn_80288208(int);
 extern "C" int fn_80287E20(void *, const char *);
 extern "C" void *fn_80287E80(void *, const char *);
 extern "C" char lbl_80349508[];
-extern "C" int lbl_8055CA90;
-#pragma scheduling invalid_target
+/* lbl_8055CA90 is actually a char array "engine", declared as int elsewhere */
+extern "C" char lbl_8055CA90[];
+  #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" int fn_8029ADCC(void *arg0) {
