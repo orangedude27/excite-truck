@@ -635,6 +635,10 @@ void fn_801D5A1C(int arg0) {
     (void)fn_801D59C8(arg0, 1);
 }
 
+int fn_801D5A24(int arg0) {
+    return fn_801D59C8(arg0, 4);
+}
+
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_801D5A2C(void *arg0, int arg1, int arg2) {
