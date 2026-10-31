@@ -45,6 +45,10 @@ struct TVec2 { f32 x; f32 y; };
 typedef struct Vec { f32 x, y, z; } Vec;
 typedef struct Quaternion { f32 x, y, z, w; } Quaternion;
 
+// Forward declarations for vector/quaternion functions
+extern "C" void PSVECCrossProduct(const Vec *, const Vec *, Vec *);
+extern "C" void PSVECNormalize(const Vec* in, Vec* out);
+
 extern "C" void fn_801E9DC4(s16 *);
 
 extern "C" char lbl_80559D40[4];
