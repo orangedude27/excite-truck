@@ -1275,6 +1275,13 @@ extern "C" u8 fn_80141FA0(void *arg0) {
 
 extern "C" u8 lbl_8055E1BC;
 extern "C" f32 lbl_8056149C;
+extern "C" f32 lbl_805614A4;
+extern "C" f32 lbl_805614AC;
+extern "C" f32 lbl_80558DC4;
+extern "C" u8 lbl_8055E1BC;
+extern "C" f32 fn_8001DAE8(void *);
+extern "C" f32 fn_8013CB3C(void);
+extern "C" void fn_8001DAE8_2(void *, f32);
 #pragma small_data off
 extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
     s32 result = 1;
