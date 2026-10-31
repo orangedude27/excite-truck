@@ -76,7 +76,7 @@ extern void fn_8012CC24(void);
 extern "C" u32 fn_8012D3D0(void);
 /* fn_8012CC24: two args (object*, char* path list), returns s32. */
 extern "C" void fn_8012D33C(u32 *, u32 *);
-extern "C" void fn_8012D1A8(s32);
+extern "C" void fn_8012D1A8(s32 arg0);
 extern "C" void fn_8012D024(void *, s32, s32);
 
 #pragma use_lmw_stmw off
@@ -1170,7 +1170,109 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
 func_exit:
     return done;
 }
-#pragma dont_inline reset
+
+extern "C" void fn_8012AC28(s32 arg0, s32 arg1);
+extern "C" s32 fn_802E748C(s32 arg0, s32 arg1, void *arg2);
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
+    u8 sp80[0x80];
+    void *parser;
+    u8 sp8[8];
+    u8 *path;
+    s32 timestamp;
+    s32 value;
+    s32 result;
+    u8 *source;
+    u8 *destination;
+    s32 limit;
+    u8 byte;
+
+    // Call fn_8012B314 to get parser
+    parser = fn_8012B314(arg1, (s32)sp80, *(s32 *)((u8 *)arg0 + 0xBC));
+
+    if (parser == NULL) {
+        return;
+    }
+
+    // Call fn_8012AC28 to parse the record
+    fn_8012AC28((s32)parser, (s32)sp8);
+    result = *(s32 *)sp8;
+    if (result == -1) {
+        return;
+    }
+
+    // Load and store timestamp value
+    value = *(s32 *)((u8 *)arg0 + 0xCC);
+    *(s32 *)((u8 *)arg0 + 0xC0) = value;
+
+    // Load handle from fn_802E748C
+    result = fn_802E748C(result, *(s32 *)((u8 *)arg0 + 0xC8), NULL);
+    *(s32 *)((u8 *)arg0 + 0xB4) = result;
+
+    if (result != -1) {
+        // Copy name from arg1 (pointer) to arg0+4
+        source = (u8 *)arg1;
+        destination = (u8 *)arg0 + 4;
+        limit = 32;
+        do {
+            limit--;
+            if (limit > 0) {
+                byte = *source++;
+                *destination++ = byte;
+                if ((s8)byte == 0) {
+                    break;
+                }
+            } else {
+                destination[-1] = 0;
+                break;
+            }
+        } while (1);
+
+        // Copy path from parser to arg0+0x24
+        path = (u8 *)parser;
+        destination = (u8 *)arg0 + 0x24;
+        limit = 64;
+        do {
+            limit--;
+            if (limit > 0) {
+                byte = *path++;
+                *destination++ = byte;
+                if ((s8)byte == 0) {
+                    break;
+                }
+            } else {
+                destination[-1] = 0;
+                break;
+            }
+        } while (1);
+
+        // Clear memory with memset
+        memset((u8 *)arg0 + 0x6C, 0, 0x34);
+
+        // Calculate timestamp
+        timestamp = fn_802E2C20();
+        // timestamp += (0x57619f1 * value) >> 38 + sign correction
+        s32 scaled = ((s64)0x57619f1 * (s64)value) >> 38;
+        if (scaled < 0) {
+            scaled++;
+        }
+        timestamp += (s32)scaled;
+        timestamp += 0x1F4;
+
+        *(s32 *)((u8 *)arg0 + 0) = timestamp;
+
+        // Set some flags
+        *(s32 *)((u8 *)arg0 + 0xBC) = *(s32 *)((u8 *)arg0 + 0xBC) + 1;
+        *(s32 *)((u8 *)arg0 + 0xA0) = 1;
+        *(s32 *)((u8 *)arg0 + 0xA4) = 0;
+        *(s32 *)((u8 *)arg0 + 0xA8) = result;
+        *(u8 *)((u8 *)arg0 + 0xB0) = 1;
+        *(s32 *)((u8 *)arg0 + 0x68) = 0;
+        *(u8 *)((u8 *)arg0 + 0xB1) = 0;
+    }
+}
+#pragma pop
 
 extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
     u32 v4 = arg1[4];
