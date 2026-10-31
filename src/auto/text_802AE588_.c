@@ -256,11 +256,7 @@ int fn_802AE7AC(void) {
       struct ETConfigName {
           char text[0xC];
       };
-      struct ETConfigPaths {
-          struct ETConfigName name;
-        char lookupKey[0xC];
-        char statusKey[8];
-    };
+      // Use global ETConfigPaths definition from top of file
     float values[8];
     float total;
     register ETConfigPaths *base = (ETConfigPaths *)lbl_8034A020;
