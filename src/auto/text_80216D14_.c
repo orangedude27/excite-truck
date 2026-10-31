@@ -311,8 +311,8 @@ void fn_80217734(void *arg0, int arg1, int arg2) {
 void fn_80217834(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 0x448);
     if (obj != 0) {
-        void **vt = *(void ***)obj;
-        ((void (*)(void *))vt[20])(obj);
+        void *vtable = *(void **)obj;
+        ((void (*)(void *))((void ***)vtable)[20])(obj);
     }
 }
 
@@ -627,6 +627,97 @@ first_test:
     if (found >= 0 && (found < last || matches > 3))
         *(int *)(base + 0x498) = *(int *)(base + found * 8 + 0x4A0);
 }
+
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+int fn_80217EC0(void *arg0, int arg1, int arg2) {
+    register int count = *(int *)((char *)arg0 + 0x494);
+    register int last;
+    register int candidateIndex;
+    register char *entry;
+    register int currentX;
+    register int currentY;
+    register int bestIndex;
+    register int best;
+    register int deltaX;
+    register int deltaY;
+    register int keyIndex;
+    register char *item;
+    int direction;
+    int value;
+    int score;
+    int eligible;
+    float threshold;
+
+    if (count < 1) return;
+    last = -1;
+    keyIndex = 0;
+    entry = (char *)arg0;
+    for (; keyIndex < count; entry += 8, keyIndex++) {
+        if (*(int *)((char *)arg0 + 0x498) == *(int *)(entry + 0x4A0))
+            last = keyIndex;
+    }
+    threshold = lbl_80563490;
+    item = *(char **)((char *)arg0 + last * 8 + 0x4A4);
+    bestIndex = last;
+    currentX = *(int *)(item + 4);
+    entry = (char *)arg0;
+    currentY = *(int *)(item + 8);
+    best = 100000;
+    candidateIndex = 0;
+    goto loop_test;
+loop:
+    if (candidateIndex != last) {
+        item = *(char **)(entry + 0x4A4);
+        eligible = 0;
+        if (*(unsigned char *)(item + 0x1A) != 0) goto eligible_yes;
+        if (*(float *)(item + 0x20) >= threshold) goto eligible_yes;
+        goto eligible_check;
+eligible_yes:
+        eligible = 1;
+eligible_check:
+        if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) {
+            deltaX = currentX - *(int *)(item + 4);
+            deltaY = currentY - *(int *)(item + 8);
+            if (arg1 != 0) {
+                direction = arg2 != 0 ? -1 : 1;
+                if (deltaX * direction <= 10) goto next_candidate;
+            } else {
+                direction = arg2 != 0 ? -1 : 1;
+                if (deltaY * direction <= 10) goto next_candidate;
+            }
+            if (arg1 != 0) {
+                value = fn_800241CC(deltaY) - 10;
+                value &= ~(value >> 31);
+                direction = arg2 != 0 ? -1 : 1;
+                score = deltaX * direction;
+                score += value * 300;
+            } else {
+                value = fn_800241CC(deltaX) - 10;
+                value &= ~(value >> 31);
+                direction = arg2 != 0 ? -1 : 1;
+                score = deltaY * direction;
+                score += value * 300;
+            }
+            if (score < best) {
+                bestIndex = candidateIndex;
+                best = score;
+            }
+        }
+    }
+next_candidate:
+    entry += 8;
+    candidateIndex++;
+loop_test:
+    if (candidateIndex < count) goto loop;
+    if (bestIndex != -1)
+        *(int *)((char *)arg0 + 0x498) =
+            *(int *)((char *)arg0 + bestIndex * 8 + 0x4A0);
+}
+#pragma pop
+
 #pragma pop
 void fn_802180B0(void *arg0) { fn_80217EC0(arg0, 1, 0); }
 
