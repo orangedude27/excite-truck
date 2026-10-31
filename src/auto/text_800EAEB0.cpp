@@ -93,7 +93,10 @@ public:
     void *GetBaseAddress() const;
 };
 class SeqPlayer;
-class SeqTrack;
+class SeqTrack {
+public:
+    s16 field_0x94;
+};
 class MmlParser {
 public:
     enum SeqArgType { ARG_BYTE = 0, ARG_WORD = 1, ARG_VLQ = 2, ARG_EXPR = 3, ARG_VAR = 4 };
