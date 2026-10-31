@@ -501,15 +501,16 @@ extern "C" void fn_80298BBC(void *arg0) {
 }
 
   
-  #pragma paired_single push
+    #pragma paired_single push
   #pragma paired_single off
   #pragma scheduling invalid_target
-  void fn_80298DE0(void* arg0, void* arg1, u8 arg2) {
+  void fn_80298DE0(void* arg0, void* arg1, s32 arg2) {
       f32 sp8, spC, sp10;
       s32 sp4 = (s32)arg1 << 5;
       void* base = *(void**)arg0;
       void* entry = (u8*)base + sp4;
-      u8 stored = *(u8*)((u8*)entry + 0x19);
+      s32 stored = *(s32*)((u8*)entry + 0x18);
+      s32 stored8 = *(s32*)((u8*)entry + 0x1C);
 
       if (arg2 != stored) {
           if (arg2 != 0) {
@@ -541,7 +542,7 @@ extern "C" void fn_80298BBC(void *arg0) {
               spC += *(f32*)((u8*)ptr + 0x28);
               sp10 += *(f32*)((u8*)ptr + 0x2C);
           }
-          *(u8*)((u8*)entry + 0x19) = arg2;
+          *(s32*)((u8*)entry + 0x18) = arg2;
       }
   }
   #pragma paired_single pop
