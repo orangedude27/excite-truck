@@ -40,6 +40,9 @@ extern u8 lbl_80392900[];
 // BTA_HhClose from BTE
 extern void BTA_HhClose(u8 devHandle);
 
+// fn_8005B00C
+extern s32 fn_8005B00C(void);
+
 // Helper function declarations for fn_8005E09C
 static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs);
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
