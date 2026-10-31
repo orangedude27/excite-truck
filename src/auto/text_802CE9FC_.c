@@ -1032,8 +1032,8 @@ extern int lbl_8055D0C0;
 extern unsigned char lbl_8055FD18;
 void fn_802D08B4(int arg0, int arg1, unsigned char arg2) {
     lbl_8055FD18 = arg2;
-    lbl_8055D0BC = arg0;
-    lbl_8055D0C0 = arg1;
+    lbl_8055D0BC = (unsigned long)arg0;
+    lbl_8055D0C0 = (unsigned long)arg1;
 }
 
 void fn_802D08C4(unsigned char arg0) {
