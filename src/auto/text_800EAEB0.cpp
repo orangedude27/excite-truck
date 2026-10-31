@@ -1,5 +1,4 @@
 #include <types.h>
-#include <macros.h>
 extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
 extern u8 lbl_80323058[], lbl_80323070[];
 extern "C" void DVDClose(void *);
