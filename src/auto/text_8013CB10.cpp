@@ -760,6 +760,7 @@ extern "C" void fn_801476D8(void *, void *, s32);
 extern "C" void fn_80147EE0(void *, f32);
 extern "C" void fn_801476C4(void *arg0);
 extern "C" void fn_8013CB90(void *arg0);
+struct RenderData { u32 f0; f32 f4; f32 f8; u32 fC; f32 f10; f32 f14; f32 f18; f32 f1C; f32 f20; f32 f24; };
 #pragma scheduling invalid_target
 extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
     struct VStringFloat { virtual void d0(); virtual void d1(); virtual u8 *v10(const char *, f32); };
