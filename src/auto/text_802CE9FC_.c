@@ -92,6 +92,14 @@ extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
 extern float lbl_80564FAC, lbl_80564FA8, lbl_80564F88;
 #pragma small_data off
 extern char lbl_804C97D0;
+extern char lbl_804C97D1;
+extern char lbl_804C97D2;
+extern char lbl_804C97D3;
+extern char lbl_804C97D4;
+extern char lbl_804C97D5;
+extern char lbl_804C97D6;
+extern char lbl_804C97D7;
+extern char lbl_804C97D8;
 #pragma small_data on
 extern void GXSetTevColor(int, ...);
 extern unsigned long fn_802CE9FC(int, int, int, int);
@@ -999,14 +1007,6 @@ int fn_802D0514(void *source) {
 }
 
 void fn_802D0610(int arg0) {
-    extern void *lbl_8055FDB0;
-    extern unsigned char lbl_804C5690[];
-    extern char lbl_804C97D0;
-    extern char lbl_8055FD70;
-    extern int lbl_8055FD8C;
-    extern float lbl_80564F88;
-    extern float lbl_80564F8C;
-    
     if (arg0 != lbl_8055FD8C) {
         if (arg0 != 0) {
             void *record = (char *)lbl_8055FDB0 + (arg0 - 1) * 0x4C;
