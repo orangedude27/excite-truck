@@ -21,7 +21,6 @@ extern "C" void fn_8001DAE8_2(void *, f32);
 #pragma small_data on
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
-extern "C" u8 lbl_8055E1BC;
 extern "C" f32 lbl_805614BC;
 extern "C" s32 fn_80128670(s32);
 extern "C" void fn_80128668(void);
