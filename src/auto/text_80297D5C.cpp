@@ -18,6 +18,11 @@ struct Entry {
     char f24, f25;
     float f28;
 };
+
+struct Locals {
+    float sp8, spC, sp10, sp14, sp18, sp1C;
+    float sp20, sp24, sp28, sp2C, sp30, sp34;
+};
 extern "C" void fn_8029C084(void*, int);
 extern "C" char lbl_8055CA90[];
 extern "C" char lbl_8055CA98[];
