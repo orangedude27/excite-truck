@@ -331,7 +331,6 @@ extern "C" void fn_80217834(void *arg0) {
         virtual void m15();
         virtual void m16();
         virtual void m17();
-        virtual void m18();
         virtual void call();
     };
     Dummy_80217834 *obj = *(Dummy_80217834 **)((char *)arg0 + 0x448);
