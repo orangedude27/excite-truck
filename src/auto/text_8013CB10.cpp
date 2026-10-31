@@ -962,31 +962,31 @@ extern "C" void fn_80140614(void *arg0, void *arg1, void *arg2) {
     }
   }
   
-  extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2) {
-    f32 temp_f0 = ((f32 *)arg1)[5];  // 0x14/4
-    f32 temp_f8 = ((f32 *)arg1)[2];  // 0x8/4
-    f32 temp_f5 = ((f32 *)arg1)[4];  // 0x10/4
-    f32 temp_f7 = ((f32 *)arg1)[1];  // 0x4/4
-    f32 temp_f6 = ((f32 *)arg1)[3];  // 0xC/4
-    f32 temp_f5_2 = ((f32 *)arg1)[0];  // 0x0/4
+extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2) {
+    f32 temp_f0 = ((f32 *)arg1)[5];
+    f32 temp_f8 = ((f32 *)arg1)[2];
+    f32 temp_f5 = ((f32 *)arg1)[4];
+    f32 temp_f7 = ((f32 *)arg1)[1];
+    f32 temp_f6 = ((f32 *)arg1)[3];
+    f32 temp_f5_2 = ((f32 *)arg1)[0];
 
-    f32 temp_f1 = temp_f0 - temp_f8;  // fsubs f1, f0, f8
+    f32 temp_f1 = temp_f0 - temp_f8;
     f32 temp_f4 = lbl_80561498;
-    f32 temp_f2 = temp_f8 - temp_f0;  // fsubs f0, f8, f0
-    f32 temp_f3 = temp_f5 - temp_f7;  // fsubs f3, f5, f7
-    f32 temp_f5_3 = temp_f7 - temp_f5;  // fsubs f5, f7, f5
-    f32 temp_f1_2 = temp_f5_2 - temp_f6;  // fsubs f1, f5_2, f6
-    f32 temp_f2_2 = temp_f6 - temp_f5_2;  // fsubs f2, f6, f5_2
+    f32 temp_f2 = temp_f8 - temp_f0;
+    f32 temp_f3 = temp_f5 - temp_f7;
+    f32 temp_f5_3 = temp_f7 - temp_f5;
+    f32 temp_f1_2 = temp_f5_2 - temp_f6;
+    f32 temp_f2_2 = temp_f6 - temp_f5_2;
 
-    f32 temp_f8_2 = temp_f8 + (temp_f4 * temp_f1);  // fadds f8, f8, f2 (fmuls f2, f4, f1)
-    f32 temp_f3_2 = temp_f7 + (temp_f4 * temp_f3);  // fadds f3, f7, f3 (fmuls f3, f4, f3)
-    f32 temp_f2_3 = temp_f5_2 + (temp_f4 * temp_f1_2);  // fadds f2, f5_2, f2 (fmuls f2, f4, f1_2)
-    f32 temp_f3_3 = temp_f8 + (temp_f4 * temp_f2);  // fadds f3, f8, f2 (fmuls f2, f4, f2)
-    f32 temp_f5_4 = temp_f7 + (temp_f4 * temp_f5_3);  // fadds f5, f7, f3 (fmuls f3, f4, f5_3)
-    f32 temp_f2_4 = temp_f5_2 + (temp_f4 * temp_f2_2);  // fadds f2, f5_2, f2 (fmuls f2, f4, f2_2)
+    f32 sp18_0 = temp_f8 + (temp_f4 * temp_f1);
+    f32 sp18_1 = temp_f7 + (temp_f4 * temp_f3);
+    f32 sp18_2 = temp_f5_2 + (temp_f4 * temp_f1_2);
+    f32 sp24_0 = temp_f8 + (temp_f4 * temp_f2);
+    f32 sp24_1 = temp_f7 + (temp_f4 * temp_f5_3);
+    f32 sp24_2 = temp_f5_2 + (temp_f4 * temp_f2_2);
 
-    f32 sp18[3] = {temp_f8_2, temp_f3_2, temp_f2_3};
-    f32 sp24[3] = {temp_f3_3, temp_f5_4, temp_f2_4};
+    f32 sp18[3] = {sp18_0, sp18_1, sp18_2};
+    f32 sp24[3] = {sp24_0, sp24_1, sp24_2};
     f32 sp30[3] = {temp_f1_2, temp_f3, temp_f1};
 
     PSVECNormalize((Vec*)sp30, (Vec*)sp30);
@@ -1001,11 +1001,6 @@ extern "C" void fn_80140614(void *arg0, void *arg1, void *arg2) {
     f32 temp_f10 = PSQUATMultiply_f32(arg1, (char*)arg1 + 0xC) / temp_f31;
 
     f32 sp24_mul[3] = {sp18[0] * temp_f10, sp18[1] * temp_f10, sp18[2] * temp_f10};
-
-    f32 sp30_2[3] = {sp24_mul[0], sp24_mul[1], sp24_mul[2]};
-
-    f32 sp34_2[3] = {sp24_mul[0], sp24_mul[1], sp24_mul[2]};
-    f32 sp38[3] = {sp30_2[0], sp30_2[1], sp30_2[2]};
 
     s32 temp_r3 = ((s32*)arg0)[0xB4/4];
     fn_802C70AC(temp_r3, sp24_mul, -1, arg2);
