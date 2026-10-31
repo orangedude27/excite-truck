@@ -247,7 +247,7 @@ void fn_802AE7C0(void) {
     fn_802C9994(0xFFF5D9);
 }
 
-      #pragma dont_inline on
+        #pragma dont_inline on
   #pragma cplusplus on
   #pragma push
   #pragma processor 750
