@@ -264,7 +264,7 @@ int fn_802AE7AC(void) {
       register struct ETConfigPaths_local *base = (struct ETConfigPaths_local *)lbl_8034A020;
       int i;
 
-            lbl_8055F980 = fn_8012C33C((void *)(&lbl_8034A020[0]));
+            lbl_8055F980 = fn_8012C33C((void *)((char *)lbl_8034A020 + (char)0));
     fn_802AE5E0(0x400);
     fn_802BE7F8();
     fn_802B40F8();
