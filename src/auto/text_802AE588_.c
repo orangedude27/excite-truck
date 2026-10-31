@@ -248,11 +248,11 @@ int fn_802AE7AC(void) {
       fn_802C9994(0xFFF5D9);
   }
   
-  #pragma dont_inline on
-  #pragma cplusplus on
-  #pragma push
-  #pragma processor 750
-      extern "C" void fn_802AE7F4(void) {
+      #pragma dont_inline on
+    #pragma cplusplus on
+    #pragma push
+    #pragma processor 750
+    extern "C" void fn_802AE7F4(void) {
       // Use global ETConfigPaths definition from top of file
       float values[8];
       float total;
