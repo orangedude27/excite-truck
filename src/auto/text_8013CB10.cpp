@@ -2416,3 +2416,13 @@ struct S32_80140728 { s32 v[8]; f32 f[6]; };
 extern "C" f32 lbl_805614C4;
 extern "C" u8 lbl_8032C530[0x500];
 extern "C" void fn_80147BD0(s32, s32, s32, s32, s32, f32);
+
+// Function declarations for fn_80140B98
+extern "C" void PSVECCrossProduct(const Vec *, const Vec *, Vec *);
+extern "C" void PSVECNormalize(const Vec* in, Vec* out);
+
+// Wrapper for 2-arg PSQUATMultiply that returns float
+extern "C" f32 PSQUATMultiply_f32(void *a, void *b);
+
+// fn_80140B98 - quaternion-based vector transformation
+extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2);
