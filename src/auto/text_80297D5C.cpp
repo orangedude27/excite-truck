@@ -29,6 +29,22 @@ struct XformData {
     float v1[3];
 };
 
+static inline void Rot3Mul(float *dst, const float *m, const float *src) {
+    if (dst == src) {
+        float x = src[0], y = src[1], z = src[2];
+        float rx = x * m[0] + y * m[3] + z * m[6];
+        float ry = x * m[1] + y * m[4] + z * m[7];
+        float rz = x * m[2] + y * m[5] + z * m[8];
+        dst[0] = rx;
+        dst[1] = ry;
+        dst[2] = rz;
+    } else {
+        dst[0] = src[0] * m[0] + src[1] * m[3] + src[2] * m[6];
+        dst[1] = src[0] * m[1] + src[1] * m[4] + src[2] * m[7];
+        dst[2] = src[0] * m[2] + src[1] * m[5] + src[2] * m[8];
+    }
+}
+
 struct Locals {
     char pad0[0x58];  // sp8 at offset 0x58
     float sp8, spC, sp10, sp14, sp18, sp1C;
@@ -1402,45 +1418,40 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
 
 extern "C" void fn_8029AAE0(int arg0, int arg1, void* arg2) {
     float *out = (float *)((char *)arg0 + arg1 * 0x2C);
-    float *m = (float *)arg2;
-    float *in;
+    XformData *d = (XformData *)arg2;
     fn_80288208(arg1);
-    in = m + 0xE8 / 4;
-    if (out == in) {
-        float x = in[0], y = in[1], z = in[2];
-        float rx = x * m[0] + y * m[3] + z * m[6];
-        float ry = x * m[1] + y * m[4] + z * m[7];
-        float rz = x * m[2] + y * m[5] + z * m[8];
+    if (out == d->v0) {
+        float rx = d->v0[2] * d->m[6] + (d->v0[0] * d->m[0] + d->v0[1] * d->m[3]);
+        float ry = d->v0[2] * d->m[7] + (d->v0[0] * d->m[1] + d->v0[1] * d->m[4]);
+        float rz = d->v0[2] * d->m[8] + (d->v0[0] * d->m[2] + d->v0[1] * d->m[5]);
         out[0] = rx;
         out[1] = ry;
         out[2] = rz;
     } else {
-        out[0] = in[0] * m[0] + in[1] * m[3] + in[2] * m[6];
-        out[1] = in[0] * m[1] + in[1] * m[4] + in[2] * m[7];
-        out[2] = in[0] * m[2] + in[1] * m[5] + in[2] * m[8];
+        out[0] = d->v0[2] * d->m[6] + (d->v0[0] * d->m[0] + d->v0[1] * d->m[3]);
+        out[1] = d->v0[2] * d->m[7] + (d->v0[0] * d->m[1] + d->v0[1] * d->m[4]);
+        out[2] = d->v0[2] * d->m[8] + (d->v0[0] * d->m[2] + d->v0[1] * d->m[5]);
     }
-    out[0] += m[9];
-    out[1] += m[10];
-    out[2] += m[11];
+    out[0] += d->t[0];
+    out[1] += d->t[1];
+    out[2] += d->t[2];
     out[1] += lbl_80564598;
     out += 3;
-    in = m + 0x124 / 4;
-    if (out == in) {
-        float x = in[0], y = in[1], z = in[2];
-        float rx = x * m[0] + y * m[3] + z * m[6];
-        float ry = x * m[1] + y * m[4] + z * m[7];
-        float rz = x * m[2] + y * m[5] + z * m[8];
+    if (out == d->v1) {
+        float rx = d->v1[2] * d->m[6] + (d->v1[0] * d->m[0] + d->v1[1] * d->m[3]);
+        float ry = d->v1[2] * d->m[7] + (d->v1[0] * d->m[1] + d->v1[1] * d->m[4]);
+        float rz = d->v1[2] * d->m[8] + (d->v1[0] * d->m[2] + d->v1[1] * d->m[5]);
         out[0] = rx;
         out[1] = ry;
         out[2] = rz;
     } else {
-        out[0] = in[0] * m[0] + in[1] * m[3] + in[2] * m[6];
-        out[1] = in[0] * m[1] + in[1] * m[4] + in[2] * m[7];
-        out[2] = in[0] * m[2] + in[1] * m[5] + in[2] * m[8];
+        out[0] = d->v1[2] * d->m[6] + (d->v1[0] * d->m[0] + d->v1[1] * d->m[3]);
+        out[1] = d->v1[2] * d->m[7] + (d->v1[0] * d->m[1] + d->v1[1] * d->m[4]);
+        out[2] = d->v1[2] * d->m[8] + (d->v1[0] * d->m[2] + d->v1[1] * d->m[5]);
     }
-    out[0] += m[9];
-    out[1] += m[10];
-    out[2] += m[11];
+    out[0] += d->t[0];
+    out[1] += d->t[1];
+    out[2] += d->t[2];
     out[1] += lbl_80564598;
 }
 
