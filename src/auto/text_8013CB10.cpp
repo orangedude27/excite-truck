@@ -1453,6 +1453,7 @@ extern "C" void fn_80142650(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
     f32 var_f2;
+    f32 rounded_f2;
 
     u8 *base = (u8 *)arg0;
 
