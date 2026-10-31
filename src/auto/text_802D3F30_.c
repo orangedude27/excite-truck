@@ -62,6 +62,8 @@ extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
+typedef struct { f32 x, y, z; } FifoVec3;
+typedef struct { FifoVec3 pos; u32 color; f32 u, v; } FifoVtx;
 void fn_802D3F30(void) {
 }
 
