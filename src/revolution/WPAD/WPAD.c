@@ -5014,13 +5014,13 @@ void fn_80065524(s32 chan, WPADStatusEx* pStatus)
     pCB = lbl_8038F4F0[(u8)chan];
     pBase = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
     pBuf = pBase;
-          idx = 0;
-      while (idx < 96) {
-          pBuf[idx] = 0;
-          idx++;
-      }
-      *(u16*)pBase = 0;
-      *(u16*)pBase = ((*(u8*)((u8*)pStatus + 1)) | ((*(u8*)((u8*)pStatus + 2)) << 8)) & 0x9F1F;
+    idx = 0;
+    while (idx < 96) {
+        pBuf[idx] = 0;
+        idx++;
+    }
+    *(u16*)pBase = 0;
+    *(u16*)pBase = ((*(u8*)((u8*)pStatus + 1)) | ((*(u8*)((u8*)pStatus + 2)) << 8)) & 0x9F1F;
 
     if (*(s32*)((u8*)pCB + 0x7F8) == 0) {
         if (*(s32*)((u8*)pCB + 0x7FC) != 0) {
@@ -5028,8 +5028,8 @@ void fn_80065524(s32 chan, WPADStatusEx* pStatus)
         } else {
             pBase[0x29] = -4;
             pBase[0x28] = *(u8*)((u8*)pCB + 0x801);
-            *(u32*)((u8*)pCB + 0x788) = (pStatus->dev >> 1) & 1;
-            *(u8*)((u8*)pCB + 0x806) = __cntlzw(*(u8*)((u8*)pCB + 0x806)) >> 24;
+                          *(u32*)((u8*)pCB + 0x788) = (pStatus->dev >> 1) & 1;
+              *(u8*)((u8*)pCB + 0x806) = __cntlzw(*(u8*)((u8*)pStatus + 1)) >> 24;
         }
     }
     OSRestoreInterrupts(enabled);
