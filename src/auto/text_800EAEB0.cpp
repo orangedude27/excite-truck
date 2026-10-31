@@ -49,8 +49,10 @@ extern f64 lbl_80561028;
 #pragma pop
 
 extern f32 lbl_8056106C;
+extern u8 lbl_80323268[];
 extern u8 lbl_80323B28[];
 extern u8 lbl_80323B94[];
+extern "C" u16 fn_800FEB9C(u8, u8 *, u8, s16);
 extern u8 lbl_80323BEC[];
 extern u8 lbl_80323C14[];
 extern u8 lbl_80323C3C[];
