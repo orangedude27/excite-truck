@@ -960,9 +960,9 @@ extern "C" void fn_80140614(void *arg0, void *arg1, void *arg2) {
         f32 d = fn_8001DAF0((f32 *)&bounds->low0);
         fn_80147ABC(r1, r2, (const char *)*(s32 *)((char *)r1 + 0x1C), (f64)(d * d));
     }
-}
-
-extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2) {
+  }
+  
+  extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2) {
     f32 temp_f0 = ((f32 *)arg1)[5];  // 0x14/4
     f32 temp_f8 = ((f32 *)arg1)[2];  // 0x8/4
     f32 temp_f5 = ((f32 *)arg1)[4];  // 0x10/4
