@@ -25,6 +25,7 @@ extern "C" char lbl_8055CA9C[];
 extern "C" float lbl_8056459C;
 extern "C" float lbl_805645B8;
 extern "C" void fn_802991BC(void*);
+extern "C" void* fn_802974CC(char*);
 extern "C" int fn_801EEFDC(void*, int);
 extern "C" int fn_8029AEE8(void*);
 extern "C" float lbl_805645C8;
