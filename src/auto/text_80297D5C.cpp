@@ -1928,8 +1928,6 @@ extern "C" void* fn_802988A4(void* arg0) {
             Locals locals;
             
             locals.sp2C = temp_f30;
-            locals.sp30 = temp_f30;
-            locals.sp34 = temp_f30;
             locals.sp20 = temp_f30;
             locals.sp24 = temp_f30;
             locals.sp28 = temp_f30;
@@ -1948,8 +1946,8 @@ extern "C" void* fn_802988A4(void* arg0) {
             
             Entry* entry = (Entry*)((char*)*buffer + var_r30);
             entry->f0 = locals.sp2C;
-            entry->f4 = locals.sp30;
-            entry->f8 = locals.sp34;
+            entry->f4 = temp_f30;
+            entry->f8 = temp_f30;
             entry->f12 = locals.sp20;
             entry->f16 = locals.sp24;
             entry->f20 = locals.sp28;
