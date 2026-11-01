@@ -23,14 +23,17 @@ static inline Block* Pool_expand(Block** list, unsigned int size) {
     *(unsigned int*)((char*)b + total - 8) = total | 3;
     b->sb_link = (unsigned int)b | 1;
     b->sb_size = total - 0x18;
-    *(unsigned int*)((char*)b + total - 0xc) = total - 0x18;
+    sb = (char*)b + 0x10;
+    *(unsigned int*)(sb + total - 0x1c) = total - 0x18;
     b->max_size = total - 0x18;
-    *(unsigned int*)((char*)b + (b->size_flags & ~7) - 4) = 0;
-    Block_link(b, (char*)b + 0x10, 0, 0);
+    end = (char*)b + (b->size_flags & ~7);
+    *(unsigned int*)(end - 4) = 0;
+    Block_link(b, sb, (int)end, 0);
     if (*list) {
         Block* head = *list;
-        b->prev = head->prev;
-        head->prev->next = b;
+        Block* first = head->prev;
+        b->prev = first;
+        first->next = b;
         b->next = *list;
         (*list)->prev = b;
         *list = b;
