@@ -8465,7 +8465,8 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     var_r29 = (u16 *)&var_r31[0x1868 / 2];
     
     if (temp == 0 || btm_cb[0x1908] == 0) {
-        var_r27 = (((u16 *)var_r28)[0] & btm_cb[0x656]) & 7;
+        u16 supported = btm_cb[0x656];
+        var_r27 = (((u16 *)var_r28)[0] & supported) & 7;
         var_r29[3] = var_r27;
         
         if (btsnd_hcic_change_conn_type(var_r31[1], (var_r27 << 5) & 0xE0)) {
@@ -11287,6 +11288,29 @@ BOOLEAN btsnd_hcic_read_stored_key(BD_ADDR bd_addr, BOOLEAN read_all_flag) {
     p[17] = read_all_flag;
     btu_hcif_send_cmd(p);
     return TRUE;
+}
+
+BOOLEAN btsnd_hcic_write_stored_key(void *buffer, UINT8 num_keys, BD_ADDR *bd_addr, LINK_KEY *link_key) {
+    u16 len;
+    u8 *pp;
+    int i;
+
+    *(u16 *)((u8 *)buffer + 4) = 0;
+    len = (u16)(num_keys * 0x16 + 4);
+    *(u16 *)((u8 *)buffer + 2) = len;
+    ((u8 *)buffer)[8] = 0x11;
+    ((u8 *)buffer)[9] = 0x0C;
+    ((u8 *)buffer)[0xA] = (u8)(len - 3);
+    if (num_keys > 0xB)
+        num_keys = 0xB;
+    ((u8 *)buffer)[0xB] = num_keys;
+    pp = (u8 *)buffer + 0xC;
+
+    for (i = 0; i < num_keys; i++) {
+        BDADDR_TO_STREAM(pp, bd_addr[i]);
+        ARRAY16_TO_STREAM(pp, link_key[i]);
+    }
+    return btu_hcif_send_cmd();
 }
 
 s32 btsnd_hcic_switch_role_8008515C(BD_ADDR bd_addr, UINT8 role) {
