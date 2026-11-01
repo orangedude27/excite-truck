@@ -12,6 +12,9 @@ namespace nw4hbm {
 namespace math {
 struct VEC2 { f32 x, y; };
 }
+namespace ut {
+struct Color { u8 r, g, b, a; };
+}
 namespace lyt {
 namespace detail {
 struct Vec2 { f32 x, y; };
