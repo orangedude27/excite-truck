@@ -12506,13 +12506,19 @@ extern "C" void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
 }
 
 void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) {
+    s32 a, b, s, d;
     s32 i;
-    for (i = 0; i < 16; i++) {
-        s32 a = arg0[i];
-        s32 b = arg1[i];
-        s32 c = arg2[i];
-        arg0[i] = a + b;
-        arg1[i] = (s32)(((s64)(a - b) * c) >> 24);
+    for (i = 0; i < 2; i++) {
+        b = arg1[0]; a = arg0[0]; s = a + b; d = a - b; arg0[0] = s; arg1[0] = (s32)(((s64)d * arg2[0]) >> 24);
+        b = arg1[1]; a = arg0[1]; s = a + b; d = a - b; arg0[1] = s; arg1[1] = (s32)(((s64)d * arg2[1]) >> 24);
+        b = arg1[2]; a = arg0[2]; s = a + b; d = a - b; arg0[2] = s; arg1[2] = (s32)(((s64)d * arg2[2]) >> 24);
+        b = arg1[3]; a = arg0[3]; s = a + b; d = a - b; arg0[3] = s; arg1[3] = (s32)(((s64)d * arg2[3]) >> 24);
+        b = arg1[4]; a = arg0[4]; s = a + b; d = a - b; arg0[4] = s; arg1[4] = (s32)(((s64)d * arg2[4]) >> 24);
+        b = arg1[5]; a = arg0[5]; s = a + b; d = a - b; arg0[5] = s; arg1[5] = (s32)(((s64)d * arg2[5]) >> 24);
+        b = arg1[6]; a = arg0[6]; s = a + b; d = a - b; arg0[6] = s; arg1[6] = (s32)(((s64)d * arg2[6]) >> 24);
+        b = arg1[7]; a = arg0[7]; s = a + b; d = a - b; arg0[7] = s; arg1[7] = (s32)(((s64)d * arg2[7]) >> 24);
+        arg0 += 16;
+        arg1 += 16;
     }
 }
 
@@ -15268,6 +15274,9 @@ extern "C" const char lbl_8031EA40[];
 extern "C" const char lbl_8031EA4C[];
 extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern "C" void fn_800D24D4(void*, s32);
+extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597E0[]; }
+extern "C" void fn_8010DC74(s32, const char *, ...);
+extern "C" void fn_800D2FDC(void *arg0, void *arg1, s32 arg2, const char *fmt, ...);
 extern void* lbl_8055DDBC;
 extern "C" void fn_800D2098(const char *, s32, const char *, va_list);
 extern "C" void __VprintfThunk(const char*, va_list);
