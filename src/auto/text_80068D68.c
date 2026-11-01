@@ -19310,6 +19310,7 @@ void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
 }
 
 extern void process_service_search_attr_rsp(tCONN_CB *, u8 *, u16);
+extern UINT8 *save_attr_seq(tCONN_CB *, UINT8 *, UINT8 *);
 extern void sdp_snd_service_search_req(tCONN_CB *, u8, u8 *);
 void fn_8009757C(u8 *p_ccb) {
     if (p_ccb[0x475]) {
