@@ -7733,10 +7733,10 @@ void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) 
                     p1 = *(u16 *)((u8 *)params + 2);
                     *(u16 *)(cb + 0x24) = p0;
                     *(u16 *)(cb + 0x26) = p1;
-                    p2 = *(u16 *)((u8 *)params + 4);
-                    p3 = *(u16 *)((u8 *)params + 6);
-                    *(u16 *)(cb + 0x28) = p2;
-                    *(u16 *)(cb + 0x2A) = p3;
+                    p3 = *(u16 *)((u8 *)params + 4);
+                    p2 = *(u16 *)((u8 *)params + 6);
+                    *(u16 *)(cb + 0x28) = p3;
+                    *(u16 *)(cb + 0x2A) = p2;
                     p0 = *(u16 *)((u8 *)params + 8);
                     *(u16 *)(cb + 0x2C) = p0;
                     p0 = *(u16 *)((u8 *)params + 0xA);
@@ -8232,6 +8232,7 @@ void bta_dm_find_services(u8 *bd_addr) {
     register u32 zero = 0;
     register u8 last_index = 0x17;
     u8 *name;
+    u8 index;
     void *msg;
 
     attr_values[0] = lbl_80560D10;
@@ -8270,8 +8271,11 @@ service_loop:
 increment_index:
     state[0x70]++;
 service_check:
-    if (state[0x70] < last_index)
+    index = state[0x70];
+    if (index < last_index)
         goto service_loop;
+    if (index < last_index)
+        goto complete;
 
 complete:
     msg = GKI_getbuf(0x110);
