@@ -1360,9 +1360,6 @@ void fn_80195CA8(void *arg0) {
 extern int fn_801388F4(void *);
 extern void fn_801353C4(void *, float *);
 extern float lbl_805621C0;
-#pragma cplusplus on
-extern "C" int fn_801388F4(void *);
-extern "C" void fn_801353C4(void *, float *);
 struct Shape_80195D80 {
     unsigned char pad0[0x14];
     float f14;
@@ -1373,18 +1370,12 @@ struct Snap_80195D80 {
     void *w0;
     unsigned int w[8];
     unsigned char b;
-    Shape_80195D80 *shape;
+    struct Shape_80195D80 *shape;
     unsigned int w2;
 };
 struct Obj_80195D80 {
     unsigned int pad;
-    Snap_80195D80 snap;
-};
-class Vt_80195D80 {
-public:
-    virtual void v0(); virtual void v1(); virtual void v2();
-    virtual void v3(); virtual void v4();
-    virtual Obj_80195D80 *v5();
+    struct Snap_80195D80 snap;
 };
 struct Other_80195D80 {
     unsigned char p0[0x54];
@@ -1399,24 +1390,24 @@ struct Self_80195D80 {
     int f18;
     unsigned char p1[0x168 - 0x1C];
     unsigned char f168[4];
-    Snap_80195D80 prev;
+    struct Snap_80195D80 prev;
     unsigned char p2[4];
-    Snap_80195D80 cur;
+    struct Snap_80195D80 cur;
     float f1d0;
     unsigned char p3[0x28C - 0x1D4];
-    Vt_80195D80 *src;
+    void *src;
     unsigned char p4[4];
-    Other_80195D80 *other;
+    struct Other_80195D80 *other;
     unsigned char p5[0x2C8 - 0x298];
     int f2c8;
     float f2cc;
 };
-extern "C" void fn_80195D80(void *arg0, float arg1) {
-    Self_80195D80 *self = (Self_80195D80 *)arg0;
-    Obj_80195D80 *obj = self->src->v5();
+void fn_80195D80(void *arg0, float arg1) {
+    struct Self_80195D80 *self = (struct Self_80195D80 *)arg0;
+    struct Obj_80195D80 *obj = ((struct Obj_80195D80 *(*)(void *))(*(void **)(*(char **)self->src + 0x1C)))(self->src);
     int changed;
     float vec[5];
-    Other_80195D80 *o;
+    struct Other_80195D80 *o;
     self->f2cc = obj->snap.shape->f14;
     self->f2c8 = obj->snap.shape->f28;
     self->f18 = fn_801388F4(obj->snap.w0);
@@ -1440,18 +1431,7 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
         self->prev.w2 = self->cur.w2;
         self->f1d0 = lbl_8055E3C8;
     }
-    self->cur.w0 = obj->snap.w0;
-    self->cur.w[0] = obj->snap.w[0];
-    self->cur.w[1] = obj->snap.w[1];
-    self->cur.w[2] = obj->snap.w[2];
-    self->cur.w[3] = obj->snap.w[3];
-    self->cur.w[4] = obj->snap.w[4];
-    self->cur.w[5] = obj->snap.w[5];
-    self->cur.w[6] = obj->snap.w[6];
-    self->cur.w[7] = obj->snap.w[7];
-    self->cur.b = obj->snap.b;
-    self->cur.shape = obj->snap.shape;
-    self->cur.w2 = obj->snap.w2;
+    self->cur = obj->snap;
     if (arg1 - self->f1d0 < lbl_805621C0) {
         float s = o->a5bc;
         float x = o->a94 + o->a54 * s;
@@ -1465,7 +1445,6 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
         fn_801353C4(self->f168, vec);
     }
 }
-#pragma cplusplus reset
 
 void fn_801961F8(void) {
 
@@ -1735,6 +1714,75 @@ void fn_801967FC(void *arg0) {
       fn_8019684C();
   }
 
+extern float lbl_80562160, lbl_805621A4, lbl_80562258, lbl_8056225C;
+extern float lbl_80562250[];
+extern void fn_8017B3A8(void *, float *, void *, float);
+extern void fn_8018ADD4(void *, int);
+extern void fn_8018ADC4(int, float);
+void fn_80196AA0(void *arg0) {
+    int state = 0;
+    float difference;
+    void *object;
+    float vecA[3];
+    float vecB[3];
+    float low = lbl_80562140;
+    float high = lbl_80562144;
+    float value;
+
+    difference = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x218);
+    if (!(difference < lbl_80562250[0])) {
+        state = 1;
+        if (!(difference < lbl_80562250[1])) {
+            state = 2;
+        }
+    }
+    object = *(void **)((char *)arg0 + 0x298);
+    if (*(unsigned char *)((char *)object + 0x17C) != 0 &&
+        *(unsigned char *)((char *)object + 0x108) == 0) {
+        state = -1;
+    }
+    if (state == 0) {
+        float factor = lbl_80562258;
+        vecA[0] = *(float *)((char *)object + 0x88) * factor;
+        vecA[1] = *(float *)((char *)object + 0x8C) * factor;
+        vecA[2] = *(float *)((char *)object + 0x90) * factor;
+        fn_8017B3A8(object, vecA, (char *)object + 0x94, factor);
+    }
+    if (state < 0 || state >= 2) {
+        goto transition;
+    }
+    value = -((low * *(float *)((char *)arg0 + 0x40)) + (-high * *(float *)((char *)arg0 + 0x44)));
+    if (low < value) {
+        low = value;
+    }
+    if (low > lbl_805621A4) {
+        low = lbl_805621A4;
+    }
+    fn_8018ADAC(object, low);
+    fn_8018ADD4(object, -1);
+    fn_8018ADBC((int)object, high);
+    fn_8018ADC4((int)object, low);
+    if ((float)__fabs(*(float *)((char *)arg0 + 0x270)) < lbl_80562160) {
+        fn_8018ADB4((int)object, low);
+    }
+    if (*(float *)((char *)arg0 + 0x270) < lbl_80562160) {
+        fn_8018ADC4((int)object, high);
+        {
+            float factor = lbl_8056225C;
+            vecB[0] = *(float *)((char *)object + 0x88) * factor;
+            vecB[1] = *(float *)((char *)object + 0x8C) * factor;
+            vecB[2] = *(float *)((char *)object + 0x90) * factor;
+        }
+        fn_8017B3A8(object, vecB, (char *)object + 0x94, lbl_8056225C);
+    }
+    goto done;
+transition:
+    *(int *)((char *)arg0 + 0x210) = *(int *)((char *)arg0 + 0x214);
+    *(int *)((char *)arg0 + 0x214) = 2;
+done:
+    ;
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80196C90(void *arg0) {
@@ -1941,8 +1989,8 @@ void fn_8019724C(void *arg0, float *arg1) {
     float diff;
     float weight;
     float factor;
-    float flagThreshold;
     register float outputValue;
+    register float flagThreshold;
     int index;
     void *obj;
 
@@ -1974,7 +2022,7 @@ void fn_8019724C(void *arg0, float *arg1) {
             arg1[0] = outputValue;
             outputValue = projected[1];
             arg1[1] = outputValue;
-            if (*(float *)((char *)arg0 + 0x270) > flagThreshold) {
+            if (flagThreshold < *(float *)((char *)arg0 + 0x270)) {
                 *(volatile int *)((char *)arg0 + 0x2D0) |= 0x40;
                 *(volatile int *)((char *)arg0 + 0x2D0) |= 0x800;
             }
