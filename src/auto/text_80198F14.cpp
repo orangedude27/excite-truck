@@ -98,6 +98,7 @@ extern "C" s32 fn_8019DDFC(s32, s32, s32, s32, void*, void*, f32);
 extern "C" f64 fn_8002F234(f32);
 extern "C" void fn_8019ECC4(void);
 extern char lbl_80333B48[];
+extern f32 lbl_80562314;
 extern f32 lbl_80562370;
 extern f32 lbl_8056232C;
 extern "C" void** fn_801B83A0(void);
