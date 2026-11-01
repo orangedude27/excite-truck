@@ -41,8 +41,9 @@ typedef struct {
     u16 remote_cid;
 } tL2C_CONN_INFO;
 extern u8 fn_8006EB80(void);
-extern char lbl_80314128[];
-void rfc_send_buf_uih();
+  extern char lbl_80314128[];
+  extern char lbl_803187B0[];
+  void rfc_send_buf_uih();
 extern s32 lbl_805590A0;
 extern void fn_8006B330(void);
 extern void l2cu_release_ccb(void *);
@@ -648,21 +649,20 @@ void fn_80068F80(void) {
 
 extern u8 lbl_80393028[];
 u8 fn_80068F94(void) {
-    u8 *base = lbl_80392960;
-    u8 *scan_base;
-    u8 *record;
+    register u8 *base = lbl_80392960;
+    register u8 *scan_base;
+    register u8 *record;
     BOOL interrupts;
-    u8 state;
-    u8 state2;
-    s32 i;
-    s32 offset;
-    s32 interval;
+    register u8 state;
+    register u8 state2;
+    register s32 i;
+    register s32 offset;
+    register s32 interval;
     tBTM_PM_PWR_MD mode;
 
     if ((s8)base[0x668] == 0) {
         return 0xE;
     }
-
     interrupts = OSDisableInterrupts();
     state = base[0x665];
     OSRestoreInterrupts(interrupts);
@@ -670,23 +670,16 @@ u8 fn_80068F94(void) {
         interrupts = OSDisableInterrupts();
         state2 = base[0x664];
         OSRestoreInterrupts(interrupts);
-        if (state2 == 4) {
-            return 0xE;
-        }
+        if (state2 == 4) return 0xE;
     }
-
     if (base[0x667] != 0) {
         scan_base = lbl_80392960;
         i = 0;
         offset = 0;
     loop:
         interrupts = OSDisableInterrupts();
-        if (i < 0) {
-            goto high_record;
-        }
-        if (i >= 0xA) {
-            goto high_record;
-        }
+        if (i < 0) goto high_record;
+        if (i >= 0xA) goto high_record;
         record = scan_base + offset + 0x64;
         goto selected_record;
     high_record:
@@ -694,34 +687,26 @@ u8 fn_80068F94(void) {
     selected_record:
         OSRestoreInterrupts(interrupts);
         if (record[0x59] == 9) {
+            mode.mode = 0;
             mode.max = 0;
             mode.min = 0;
             mode.attempt = 1;
             mode.timeout = 0;
-            mode.mode = 0;
             BTM_SetPowerMode(base[0x68A], record + 0x40, &mode);
             return 1;
         }
         i++;
         offset += 0x60;
-        if (i < 0x10) {
-            goto loop;
-        }
+        if (i < 0x10) goto loop;
     }
-
-    if ((s8)base[0x668] > 0) {
-        base[0x668]--;
-    }
+    if ((s8)base[0x668] > 0) base[0x668]--;
     if ((s8)base[0x668] == -1) {
         base[0x668] = 0xFE;
         interrupts = OSDisableInterrupts();
         state = base[0x665];
         OSRestoreInterrupts(interrupts);
         interval = 2;
-        if (state == 3) {
-            interval = 4;
-        }
-
+        if (state == 3) interval = 4;
         interrupts = OSDisableInterrupts();
         state = base[0x665];
         OSRestoreInterrupts(interrupts);
@@ -729,13 +714,10 @@ u8 fn_80068F94(void) {
             interrupts = OSDisableInterrupts();
             state2 = base[0x664];
             OSRestoreInterrupts(interrupts);
-            if (state2 == 4) {
-                base[0xC] = 0xE;
-            }
+            if (state2 == 4) base[0xC] = 0xE;
         }
-
         OSCreateAlarm((OSAlarm *)lbl_80393028);
-        ((void (*)(OSAlarm *, s64, s64, OSAlarmHandler))OSSetAlarm)(
+        ((void (*)(OSAlarm *, s64, u32, OSAlarmHandler))OSSetAlarm)(
             (OSAlarm *)lbl_80393028, 0,
             interval * ((*(u32 *)0x800000F8) >> 2),
             (OSAlarmHandler)fn_80068F80);
