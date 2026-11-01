@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern f32 lbl_805634E0;
 extern "C" s32 lbl_80490920[];
 extern "C" s32 lbl_802F9EE0[];
 extern "C" char lbl_8033D9A4[];
@@ -2007,7 +2008,7 @@ extern "C" char lbl_80558DC4[];
 #pragma push
 #pragma ppc_psq_save off
 extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
-    register f32 first;
+    f32 first;
     s32 *check = *(s32 **)((u8 *)arg0 + 0x2A8);
     if (check == 0)
         return 0;
@@ -3192,22 +3193,54 @@ extern "C" s32 fn_8021F478(s32 *arg0) {
 extern "C" void fn_801A7A5C(void);
 extern "C" s32 fn_802146BC(void *, s32, s32, s32, void *, s32, s32, s32);
 extern "C" void fn_802194FC(void *);
-void fn_8021F4F0(void *arg0, void *) {
-    int args[4];
+extern "C" void fn_8021F4F0(void *arg0, void *) {
+    s32 args[30];
+
     fn_801A7A5C();
     strcpy((char *)lbl_80490934, (char *)arg0 + 0x254);
-    *(int *)((char *)lbl_80490934 + 0x18) = *(int *)((char *)arg0 + 0x270);
-    args[0] = *(int *)((char *)0x802F9EE0 + 4);
-    args[1] = *(int *)0x802F9EE0;
-    args[2] = *(int *)((char *)0x802F9EE0 + 8);
-    args[3] = *(int *)((char *)0x802F9EE0 + 12);
-    if (fn_802146BC(args, -999, -999, 1, (void *)0x8033D9A4, *(int *)((char *)0x802F9EE0+16), *(int *)((char *)0x802F9EE0+12), *(int *)((char *)0x802F9EE0+8)) == -2) {
+    *(s32 *)((char *)lbl_80490934 + 0x18) = *(s32 *)((char *)arg0 + 0x270);
+
+    args[0] = lbl_802F9EE0[0];
+    args[1] = lbl_802F9EE0[1];
+    args[2] = lbl_802F9EE0[2];
+    args[3] = (s32)lbl_8033D9A4;
+    args[4] = lbl_802F9EE0[4];
+    args[5] = (s32)&lbl_8055B890;
+    args[6] = 3;
+    args[7] = (s32)lbl_8033D9A4;
+    args[8] = 0x80;
+    args[9] = 0;
+    args[10] = (s32)&lbl_8055B898;
+    args[11] = 3;
+    args[12] = *(s32 *)((char *)arg0 + 0x26c);
+    args[13] = 0x80;
+    args[14] = 0;
+    args[15] = (s32)&lbl_8055B8A0;
+    args[16] = 0;
+    args[17] = 0;
+    args[18] = -1;
+    args[19] = 0;
+    args[20] = (s32)&lbl_8055B860;
+    args[21] = 6;
+    args[22] = 0;
+    args[23] = -1;
+    args[24] = 0x1b;
+    args[25] = lbl_80490920[0];
+    args[26] = lbl_80490920[1];
+    args[27] = lbl_80490920[2];
+    args[28] = lbl_80490920[3];
+    args[29] = lbl_80490920[4];
+    args[1] = (s32)&args[5];
+
+    if (fn_802146BC(args, -999, -999, 1,
+                    (void *)lbl_802F9EE0[4],
+                    lbl_802F9EE0[3], lbl_802F9EE0[2], lbl_802F9EE0[0]) == -2) {
         strcpy((char *)arg0 + 0x254, (char *)lbl_80490934);
         fn_80219718(arg0);
     }
     fn_802194FC(arg0);
-    if (*((unsigned char *)arg0 + 0x1a) != 0)
-        *((unsigned char *)arg0 + 0x234) = 1;
+    if (*((u8 *)arg0 + 0x1a) != 0)
+        *((u8 *)arg0 + 0x234) = 1;
 }
 
 extern "C" char lbl_8033D9B0[];
@@ -7299,12 +7332,16 @@ extern "C" void fn_802C5280(void *, s32, s32, s32, s32, void *);
 extern "C" f32 lbl_805634A8;
 #pragma scheduling invalid_target
 extern "C" void fn_80229CF8(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x18) = 1;
-    *(f32 *)((u8 *)arg0 + 0x248) = lbl_805634A8;
-    if (*(u8 *)((u8 *)arg0 + 0x1A) == 0) {
+    register u8 one = 1;
+    register u8 flag = *(u8 *)((u8 *)arg0 + 0x1A);
+    register f32 val = lbl_805634A8;
+    
+    *(u8 *)((u8 *)arg0 + 0x18) = one;
+    *(f32 *)((u8 *)arg0 + 0x248) = val;
+    if (flag == 0) {
         return;
     }
-    *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    *(u8 *)((u8 *)arg0 + 0x234) = one;
 }
 #pragma scheduling on
 extern "C" void fn_80229D1C(void *arg0) {
