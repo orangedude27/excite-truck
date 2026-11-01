@@ -1383,8 +1383,8 @@ struct Obj_80195D80 {
 class Vt_80195D80 {
 public:
     virtual void v0(); virtual void v1(); virtual void v2();
-    virtual void v3(); virtual void v4(); virtual void v5();
-    virtual Obj_80195D80 *v6();
+    virtual void v3(); virtual void v4();
+    virtual Obj_80195D80 *v5();
 };
 struct Other_80195D80 {
     unsigned char p0[0x54];
@@ -1944,10 +1944,11 @@ void fn_8019724C(void *arg0, float *arg1) {
         direction[0] = *(float *)((char *)obj + 0x70);
         direction[1] = *(float *)((char *)obj + 0x78);
         norm = (float)fn_8002F234(direction[0] * direction[0] + direction[1] * direction[1]);
-        if (lbl_80562148 < norm) {
-            length = norm;
-        } else {
+        length = lbl_80562148;
+        if (length > norm) {
             length = lbl_80562148;
+        } else {
+            length = norm;
         }
         scale = lbl_80562140 / length;
         direction[0] = direction[0] * scale;
