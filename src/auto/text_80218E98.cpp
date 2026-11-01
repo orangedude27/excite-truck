@@ -57,7 +57,7 @@ extern "C" void fn_8022A8E4(s32);
 extern "C" void *lbl_8033E1C4[];
 #pragma push
 #pragma small_data on
-extern "C" char lbl_8055B88C[];
+extern "C" char lbl_8055B88C;
 #pragma pop
 
 
