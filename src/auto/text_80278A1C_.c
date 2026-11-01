@@ -77,8 +77,8 @@ struct Res_80279004 {
     virtual Vec3_80279004 getVec(const char*);
 };
 struct File_80279004 {
-    virtual void slot0();
     virtual Res_80279004* getRes(const char*);
+    virtual void slot1();
     virtual int hasRes(const char*);
 };
 #pragma cplusplus reset
