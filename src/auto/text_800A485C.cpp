@@ -3545,6 +3545,85 @@ return_zero:
 done:
     return 0;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_800AD0B0(void *arg0, u32 arg1, u32 *arg2, u32 *arg3, void *arg4)
+{
+    volatile s32 end = -1;
+    s32 result;
+    u32 chunkSize;
+    u32 quotient;
+    u32 remaining;
+    u32 current;
+    u32 finalValue;
+    void *context;
+
+    *arg3 = 0;
+    if (*(u32 *)((u8 *)arg0 + 0x24) == 0) {
+        return 0;
+    }
+    if (*(u32 *)((u8 *)arg0 + 0x2C) < arg1) {
+        goto return_zero;
+    }
+
+    chunkSize = *(u16 *)((u8 *)arg0 + 0x20) + 1;
+    quotient = arg1 / chunkSize;
+    remaining = arg1 - quotient * chunkSize;
+    if (remaining == 0) {
+        *arg2 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
+        *arg3 = 1;
+        goto done;
+    }
+
+    current = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
+    goto check_remaining;
+loop_body:
+    context = *(void **)((u8 *)arg0 + 0x34);
+    switch (*(s32 *)((u8 *)context + 0x1C)) {
+    case 0:
+        result = ((s32 (*)(void *, u16, s32 *, void *))fn_800AFBA8)(context, (u16)current, (s32 *)&end, arg4);
+        break;
+    case 1:
+        result = fn_800B00E8(context, current, (u32 *)&end, arg4);
+        break;
+    case 2:
+        result = fn_800B05C8(context, current, (u32 *)&end, arg4);
+        break;
+    default:
+        result = 0xF;
+        break;
+    }
+    if (result != 0) {
+        return result;
+    }
+    current = end;
+    if (current == 0) {
+        return 0xD;
+    }
+    remaining--;
+check_remaining:
+    if (remaining != 0) {
+        goto loop_body;
+    }
+
+    finalValue = end;
+    if (finalValue == 0) {
+        return 0xD;
+    }
+    if (finalValue == lbl_802EEF40[*(s32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x1C) * 5 + 2]) {
+        return 0;
+    }
+    *arg2 = finalValue;
+    *arg3 = 1;
+    goto done;
+return_zero:
+    return 0;
+done:
+    return 0;
+}
+#pragma pop
+
 #pragma pop
 extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 extern "C" s32 fn_800ACBB0(void *, s32, s32, s32, u32 *, u32 *);
