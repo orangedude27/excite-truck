@@ -452,8 +452,9 @@ class HomeButtonEventHandler { public: char pad[4]; EventDispatchA *dispatch; co
   class HomeButton {
   public:
       s32 getPaneNo(const char *name);
-      void updateTrigPane();
-  };
+              void updateTrigPane();
+        void calc_battery(int);
+    };
 }
 extern "C" const char *lbl_8031D990[];
 extern "C" const char *lbl_8031E218[];
