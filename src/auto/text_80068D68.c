@@ -252,7 +252,6 @@ extern void port_release_port(void *);
 extern void rfc_check_mcb_active(void *);
 extern u8 lbl_803C3AF0[];
 extern char lbl_80317700[];
-extern void hidd_pm_set_now(void *);
 extern void fn_80086468(void *);
 extern u8 lbl_803C4040[];
 extern void l2c_init(void);
@@ -11953,10 +11952,10 @@ void hidd_proc_repage_timeout(void)
 }
 
 void hidd_pm_set_now(void *arg0) {
+    u8 mode = 0;
     tBTM_PM_PWR_MD spC = {0};
     u8 status = 0;
     u8 state_mode;
-    u32 mode = 0;
 
     if (lbl_803C3AF0[0x6E] == 0) {
         state_mode = lbl_803C3AF0[0x6A];
