@@ -10,9 +10,9 @@ extern int lbl_804BD8CC[3];
 void fn_802AE2E0(void) {
     int result = fn_80131810();
     if (result) {
-        int count = lbl_804BD8CC[1];
-        lbl_804BD8CC[1] = count + 1;
-        ((int *)lbl_804BD8CC[0])[count] = result;
+        int *items = (int *)lbl_804BD8CC[0];
+        int idx = lbl_804BD8CC[1]++;
+        items[idx] = result;
     }
 }
 int fn_802AE414(void *arg0) {
