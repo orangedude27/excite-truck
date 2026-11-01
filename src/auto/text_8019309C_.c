@@ -1117,7 +1117,7 @@ extern void fn_80195F6C(void *, void *);
 extern void fn_80194624(void *);
 extern float lbl_8055E3C8;
 extern float lbl_80562144;
-extern void fn_80195654(void *);
+extern void fn_80195654();
 extern void fn_801933FC(void *, void *);
 extern double fn_8002F234(float);
 extern float lbl_80562140;
