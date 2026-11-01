@@ -49,19 +49,6 @@ static s32 abs_val(s32 x) {
     return (x ^ sign) - sign;
 }
 
-// Jump table for fn_8021E620 dispatch
-typedef void (*JumpFunc)(void *);
-static void *jumptable_8033D94C[8] = {
-    (void *)0x8021E628, // case 0x121
-    (void *)0x8021E678, // case 0x122
-    (void *)0x8021E6C8, // case 0x123
-    (void *)0x8021E718, // case 0x124
-    (void *)0x8021E768, // case 0x125
-    (void *)0x8021E7B8, // case 0x126
-    (void *)0x8021E7E0, // case 0x127 - fallthrough
-    (void *)0x8021E7E0, // case 0x128 - fallthrough
-};
-
 extern "C" void fn_8021C12C(void *);
 extern "C" void fn_8021E7D4(void *);
 
