@@ -251,6 +251,9 @@ extern "C" void fn_800C4BD8(s32 *, s32, u32);
 extern "C" void fn_800C4B5C(s32, s32);
 extern "C" void *fn_800C4B8C(s32);
 extern "C" u32 lbl_802EEF40[];
+extern "C" s32 fn_800AF5A0(void *, s32, s32 *);
+extern "C" s32 fn_800AFE14(void *, s32, s32 *);
+extern "C" s32 fn_800B0258(void *, s32, s32 *);
 extern "C" void fn_800BEE64(void *, s32, s32);
 extern "C" void fn_800C3960(void *, s32, s32, s32);
 extern "C" void fn_800C3574(void *, void *, s32, s32, s32);
@@ -4228,6 +4231,63 @@ extern "C" s32 fn_800AF574(void *arg0) {
 extern "C" s32 fn_800AF584(void *arg0) {
     s32 idx = *(s32 *)((char *)arg0 + 0x1C);
     return *(s32 *)((char *)lbl_802EEF40 + idx * 0x14 + 8);
+}
+
+extern "C" s32 fn_800AF5A0(void *arg0, s32 arg1, s32 *arg2) {
+    u8 buf[2];
+    u16 index;
+    u16 offset;
+    s32 result;
+    u32 retry = 1;
+    s32 *output = arg2;
+    void *object = arg0;
+    s32 scaled = arg1 + (arg1 >> 1);
+    u16 flags = *(u16 *)((u8 *)object + 0x18);
+    u16 pos = (u16)scaled;
+
+    index = (u16)(*(u32 *)((u8 *)object + 0x28) +
+                  (pos >> *(u8 *)((u8 *)object + 0x20)));
+    if (flags & 0x80)
+        retry = flags & 7;
+    offset = (u16)(pos & (*(u16 *)object - 1));
+loop:
+    if ((s32)offset < (s32)(*(u16 *)object - 1)) {
+        result = fn_800B5260(object, buf, index, offset, 2);
+    } else {
+        result = fn_800B5260(object, buf, index, offset, 1);
+        if (result == 0)
+            result = fn_800B5260(object, buf + 1, index + 1, 0, 1);
+    }
+    if (result == 0x1000) {
+        s32 (*callback)(void *) =
+            *(s32 (**)(void *))((u8 *)object + 0x1FC0);
+        if (callback != 0) {
+            s32 callbackResult = callback(*(void **)((u8 *)object + 0x1F84));
+            if (callbackResult == 0)
+                goto retryCheck;
+            if (callbackResult == 1 &&
+                *(u8 *)((u8 *)object + 0x22) >= 2 &&
+                retry < *(u8 *)((u8 *)object + 0x22)) {
+                retry++;
+                index += *(u32 *)((u8 *)object + 0xC);
+                goto retryCheck;
+            }
+        }
+    }
+    if (result != 0) {
+        *output = -1;
+        return result;
+    }
+retryCheck:
+    if (result == 0) {
+        u32 v = (((u16 *)buf)[0] >> 8) | ((((u16 *)buf)[0] & 0xFF) << 8);
+        if (arg1 & 1)
+            *output = (v >> 4) & 0xFFF;
+        else
+            *output = v & 0xFFF;
+        return 0;
+    }
+    goto loop;
 }
 
 #pragma use_lmw_stmw off
