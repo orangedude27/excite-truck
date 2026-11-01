@@ -7405,10 +7405,10 @@ extern char lbl_803165FC[];
 extern char lbl_8031664C[];
 extern void btm_chg_all_acl_pkt_types(BOOLEAN);
 void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle) {
-    int i;
+    UINT32 i;
     UINT8 *entry;
     UINT16 acl_handle;
-    register UINT16 packet_types;
+    UINT16 packet_types;
     UINT16 supported;
     UINT16 requested;
     UINT8 status;
@@ -9973,12 +9973,14 @@ void fn_800826D4(void) {
 
 extern u8 lbl_80559078[],lbl_80317310[],lbl_80317354[];
 void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
- u8 *entry=lbl_803C3740+0xAC; u8 i=0;
- while(i<8){if(entry[0]==1&&*(u16 *)(entry+0x10)==psm&&(entry[8]==0||memcmp(addr,entry+9,6)==0))break;i++;entry+=0x60;}
+ u8 *entry=lbl_803C3740+0xAC;
+ register u8 i=0;
+ register u8 *entry_reg=entry;
+ while(i<8){if(entry_reg[0]==1&&*(u16 *)(entry_reg+0x10)==psm&&(entry_reg[8]==0||memcmp(addr,entry_reg+9,6)==0))break;i++;entry_reg+=0x60;}
  if(i==8){if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80317310);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);L2CA_DisconnectReq(cid);return;}
- entry[0]=3;memcpy(entry+9,addr,6);*(u16 *)(entry+6)=cid;L2CA_ConnectRsp(addr,status,cid,0,0);
- if(lbl_803C3740[0x28]>=4)fn_80070954(0xE0003,lbl_80317354,*(u16 *)(entry+6));
- L2CA_ConfigReq(cid,(tL2CAP_CFG_INFO *)(entry+0x24));
+ entry_reg[0]=3;memcpy(entry_reg+9,addr,6);*(u16 *)(entry_reg+6)=cid;L2CA_ConnectRsp(addr,status,cid,0,0);
+ if(lbl_803C3740[0x28]>=4)fn_80070954(0xE0003,lbl_80317354,*(u16 *)(entry_reg+6));
+ L2CA_ConfigReq(cid,(tL2CAP_CFG_INFO *)(entry_reg+0x24));
 }
 
 void gap_config_ind(u16 cid, void *p_cfg) {
