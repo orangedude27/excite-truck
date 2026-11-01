@@ -1500,10 +1500,10 @@ typedef struct LightPos_802D18E8 {
     unsigned char pad[0x24];
     float x, y, z;
 } LightPos_802D18E8;
-static inline void VecSub_802D18E8(float *dst, LightPos_802D18E8 *a, LightPos_802D18E8 *b) {
-    dst[0] = a->x - b->x;
-    dst[1] = a->y - b->y;
-    dst[2] = a->z - b->z;
+static inline void VecSub_802D18E8(float *dst, float *a, float *b) {
+    dst[0] = a[9] - b[9];
+    dst[1] = a[10] - b[10];
+    dst[2] = a[11] - b[11];
 }
 extern int lbl_8055FDC8;
 extern int lbl_8055FDCC;
