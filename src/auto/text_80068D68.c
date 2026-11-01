@@ -5005,6 +5005,55 @@ data_done:
     fn_800716F0(&buf);
 }
 
+extern void fn_8006CF90();
+void bta_hh_close_act(u8 *p_cb, u8 *p_data) {
+    u8 conn[8];
+    u8 status[2] = {0, 0};
+    u8 disc[2];
+    u8 evt = 3;
+    u32 reason;
+    int xx;
+
+    reason = *(u32 *)(p_data + 8);
+    if (p_cb[0x17] != 0) evt = 0xD;
+    status[1] = p_cb[0x16];
+    status[0] = *(u32 *)(p_data + 8);
+    if ((reason & 0x700) || reason == 0xF || reason == 0xE || p_cb[0x1A] == 0) {
+        u8 handle = p_cb[0x16];
+        u8 res;
+        conn[7] = handle;
+        res = (reason == 0xF) ? 0xC : 6;
+        conn[6] = res;
+        fn_80070FA4(conn, p_cb + 8);
+        HID_HostCloseDev(p_cb[0x16]);
+        (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(2, conn, lbl_803C0D48);
+        bta_hh_trace_dev_db();
+        return;
+    }
+    fn_8006CF90(p_cb[0x16], p_cb[0x15]);
+    bta_sys_conn_open_8007116C(0x17, p_cb[0x15], (s32)(p_cb + 8));
+    lbl_803C0D48[0x22D]--;
+    p_cb[0x1A] = 0;
+    if (status[0] != 0) status[0] = 6;
+    (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(evt, status, lbl_803C0D48);
+    if (p_cb[0x17] != 0) {
+        HID_HostRemoveDev(p_cb[0x16]);
+        bta_hh_clean_up_kdev(p_cb);
+    }
+    bta_hh_trace_dev_db();
+    p_cb[0x17] = 0;
+    *(u16 *)(p_cb + 0x10) = 0;
+    if (lbl_803C0D48[0x22D] == 0 && lbl_803C0D48[0x22E] != 0) {
+        disc[0] = 0;
+        if (HID_HostDeregister() != 0) disc[0] = 6;
+        for (xx = 0; (u8)xx < 0x10; xx++)
+            fn_800716F0(lbl_803C0D48 + ((u8)xx << 5) + 0x14);
+        fn_800716F0(lbl_803C0D48 + 0x228);
+        (*(void (**)(u32, void *))(lbl_803C0D48 + 0x224))(1, disc);
+        memset(lbl_803C0D48, 0, 0x230);
+    }
+}
+
 void fn_80075AA4(void *arg0) {
     (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, arg0);
 }
@@ -6021,11 +6070,11 @@ update:
 }
 
 void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
-    u8 *addr;
+    u32 i;
     u8 *entry;
     u8 *other;
     u8 *buffer;
-    u32 i;
+    u8 *addr;
     u32 j;
     u16 supervision_timeout;
     u32 (*callback)(void *);
