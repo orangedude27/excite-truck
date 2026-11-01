@@ -760,7 +760,6 @@ extern "C" void fn_8019A788(void* arg0, void* arg1, void* arg2,
     }
 }
 #pragma scheduling on
-extern "C" void fn_8019A820(void*, void*, s32, s32, s32, f32);
 extern "C" void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_8019A820(arg0, (u8*)arg0 + 0x34, arg1, arg2, arg3, *(f32*)((u8*)arg0 + 0x24));
 }
@@ -1225,7 +1224,6 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
         virtual void m9() = 0;
         virtual void m10() = 0;
         virtual void m11() = 0;
-        virtual void m12() = 0;
         virtual f32 getRadius() = 0;
     };
     struct Scratch {
