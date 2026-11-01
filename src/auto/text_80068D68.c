@@ -7004,11 +7004,11 @@ tBTM_STATUS BTM_CancelInquiry(void) {
     return result;
 }
 
-tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *complete_cb, tBTM_CMPL_CB *results_cb) {
+tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *results_cb, tBTM_CMPL_CB *complete_cb) {
     extern u8 lbl_803163EC[];
     u8 *state = lbl_803C0F78;
     u8 *p = (u8 *)params;
-    u8 b, a, d, c, f, e;
+    u32 b, a, d, c, f, e;
     s32 mode, filter;
     u8 status;
     if (state[0x27C0] >= 3)
@@ -7017,9 +7017,9 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *comple
     if (p[0] != 0 && p[0] != 1) return 5;
     if (fn_80079514() == 0) return 6;
     a=p[0]; b=p[1]; state[0x1834]=a; state[0x1835]=b;
-    c=p[3]; d=p[2]; state[0x1836]=d; state[0x1837]=c;
-    e=p[5]; f=p[4]; state[0x1838]=f; state[0x1839]=e;
-    a=p[7]; b=p[6]; state[0x183A]=b; state[0x183B]=a;
+    c=p[2]; d=p[3]; state[0x1836]=c; state[0x1837]=d;
+    e=p[4]; f=p[5]; state[0x1838]=e; state[0x1839]=f;
+    a=p[6]; b=p[7]; state[0x183A]=a; state[0x183B]=b;
     c=p[8]; state[0x183C]=c;
     c=p[9]; state[0x183D]=c;
     state[0x1847]=3;
@@ -7029,10 +7029,10 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *comple
     mode=p[0];
     state[0x1848]=((s32)~((mode-1)|(1-mode))>>31)+2;
     filter=p[3];
-    if (filter == 0) goto mode_two;
-    if (filter < 0) goto invalid_filter;
-    if (filter >= 3) goto invalid_filter;
-    goto mode_one;
+    if (filter==0) goto mode_two;
+    if (filter<0) goto invalid_filter;
+    if (filter<3) goto mode_one;
+    goto invalid_filter;
 invalid_filter:
     return 5;
 mode_two:
@@ -7043,7 +7043,7 @@ mode_one:
     p[3]=0;
 after_filter:
     status=btm_set_inq_event_filter(p[3],p+4);
-    if (status != 1) state[0x1847]=0;
+    if (status!=1) state[0x1847]=0;
     return status;
 }
 
@@ -8445,15 +8445,15 @@ void bta_sys_disable(void) {
 }
 
 tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) {
-    u8 *btm_cb = lbl_803C0F78;
-    u16 *sco_entry = (u16 *)(btm_cb + sco_inx * 0x34);
-    u16 *p_setup = (u16 *)(sco_entry + 0x1868 / 2);
+    tBTM_ESCO_PARAMS *p_setup;
     u16 temp_pkt_types;
+    u8 *btm_cb = lbl_803C0F78;
+    u16 *p_setup_ptr;
     u8 link_type;
     u8 hci_version;
     
     /* Make sure sco handle is valid and on an active link */
-    if (sco_inx >= 3 || sco_entry[0x185C / 2] != 4) {
+    if (sco_inx >= 3 || ((u16 *)(btm_cb + sco_inx * 0x34))[0x185C / 2] != 4) {
         return BTM_WRONG_MODE;
     }
     
@@ -8461,14 +8461,15 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     
     /* If SCO connection OR eSCO not supported just send change packet types */
     if (link_type == 1 || btm_cb[0x636] == 0) {
-        u16 supported = sco_entry[0x656 / 2];
+        u16 supported = ((u16 *)(btm_cb + sco_inx * 0x34))[0x656 / 2];
         temp_pkt_types = p_parms->packet_types & (supported & 0x6);
         
-        if (!btsnd_hcic_change_conn_type(sco_entry[1], BTM_ESCO_2_SCO(temp_pkt_types))) {
+        p_setup_ptr = (u16 *)(btm_cb + sco_inx * 0x34 + 0x1868);
+        if (!btsnd_hcic_change_conn_type(p_setup_ptr[1], BTM_ESCO_2_SCO(temp_pkt_types))) {
             return BTM_NO_RESOURCES;
         }
     } else {
-        u16 supported = sco_entry[0x656 / 2];
+        u16 supported = ((u16 *)(btm_cb + sco_inx * 0x34))[0x656 / 2];
         hci_version = btm_cb[0x27C0];
         
         temp_pkt_types = (p_parms->packet_types & 0x3F) & supported;
@@ -8478,8 +8479,9 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
             temp_pkt_types |= ((p_parms->packet_types & 0x1800) | (supported & 0x1800));
         }
         
-        if (!btsnd_hcic_setup_esco_conn(sco_entry[1], p_setup[0], p_setup[1], p_parms->max_latency,
-                                        p_setup[2], p_parms->retrans_effort, temp_pkt_types)) {
+        p_setup_ptr = (u16 *)(btm_cb + sco_inx * 0x34 + 0x1868);
+        if (!btsnd_hcic_setup_esco_conn(p_setup_ptr[1], p_setup_ptr[0], p_setup_ptr[1], p_parms->max_latency,
+                                        p_setup_ptr[2], p_parms->retrans_effort, temp_pkt_types)) {
             return BTM_NO_RESOURCES;
         } else {
             p_parms->packet_types = temp_pkt_types;
