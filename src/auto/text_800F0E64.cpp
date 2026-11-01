@@ -1349,7 +1349,7 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     detail = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(info[4], *(u32 *)(info + 8), base);
     if (detail == 0) return 0;
     base = *(void **)((u8 *)arg0 + 0x28);
-    if (detail[0x15] != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559890, 0x6F, lbl_80324C58);
+    if (detail[0x15] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559890, 0x6F, lbl_80324C58);
     player = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(detail[0x14], *(u32 *)(detail + 0x18), base);
     if (player == 0) return 0;
     *(u32 *)arg2 = *(u32 *)detail;
