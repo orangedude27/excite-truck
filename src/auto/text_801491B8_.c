@@ -1331,7 +1331,7 @@ extern double ceil(double);
 extern f32 lbl_80559EB0;
 extern f32 lbl_805616D0;
 extern s32 lbl_80559F48;
-extern char lbl_80559F4C[];
+extern s32 lbl_80559F4C;
 f32 fn_8014E7DC(s32 arg0, s32 arg1) {
     char sp8[0x104];
     void *file;
