@@ -146,6 +146,7 @@ extern "C" void fn_800D16A8(s32 *);
 extern "C" f32 lbl_80560DC8, lbl_80560DCC, lbl_80560DD8;
 extern "C" u8 lbl_8031D840[];
 extern "C" void fn_800CF554(s32, u8 *, f32, f32, f32, f32, f32);
+struct B240 { u32 w[144]; };
 extern "C" void GXClearVtxDesc(void);
 extern "C" void GXSetVtxDesc(u32, u32);
 extern "C" void GXSetVtxAttrFmt(u32, u32, u32, u32, u32);
