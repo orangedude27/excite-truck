@@ -3173,7 +3173,6 @@ done:
     return result;
 }
 
-extern "C" s32 fn_800AB378(void *, s32, ...);
 s32 fn_800AEBA0(void *, u32, u32 *);
 s32 fn_800B5324(void *, void *, u16, s32, u32 *, s32);
 s32 fn_800AC4AC(void *arg0, s32 arg1) {
