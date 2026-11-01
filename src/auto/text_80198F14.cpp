@@ -3263,10 +3263,6 @@ extern "C" void fn_801A3BE0(void* arg0, void* arg1) {
 #pragma small_data off
 extern s32 lbl_80333728;
 extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-#pragma push
-#pragma small_data off
-    extern s32 lbl_80333728;
-#pragma pop
     struct Vec { f32 x, y, z; };
     void *object;
     Vec *vectors;
