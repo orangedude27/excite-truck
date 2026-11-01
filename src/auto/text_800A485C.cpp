@@ -3830,8 +3830,6 @@ static inline s32 VFiPFFAT_FindCluster(void *arg0, u32 arg1, u32 arg2, u32 *arg3
 }
 extern "C" s32 VFiPFFAT_GetClusterSpecified(void *arg0, u32 arg1, u32 arg2, u32 *arg3) {
     u32 sp10;
-    s32 spC;
-    u32 sp8;
     u32 *temp_r7 = *(u32 **)((u8 *)arg0 + 8);
     u8 *temp_r8 = *(u8 **)((u8 *)arg0 + 0x34);
     u32 temp_r0 = *temp_r7;
@@ -3859,14 +3857,7 @@ extern "C" s32 VFiPFFAT_GetClusterSpecified(void *arg0, u32 arg1, u32 arg2, u32 
             return 0;
         }
     }
-    *arg3 = (u32)-1;
-    do {
-        res = fn_800ADD84(arg0, arg1, arg2 != 0, 0, &sp8, (s32 *)&spC);
-        if (res != 0) break;
-        if ((u32)spC >= 2 && (u32)spC < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x34) + 2)
-            *arg3 = spC;
-        res = 0;
-    } while (0);
+    res = VFiPFFAT_FindCluster(arg0, arg1, arg2, arg3);
     if (res != 0) return res;
     if (*arg3 == (u32)-1) return 0;
     temp_r31[2] = *(u32 *)arg0;
