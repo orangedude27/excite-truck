@@ -664,8 +664,8 @@ HCI_API extern BOOLEAN btsnd_hcic_read_stored_key (BD_ADDR bd_addr,
 
 #define MAX_WRITE_KEYS 10
                                                                 /* Write Stored Key */
-HCI_API extern BOOLEAN btsnd_hcic_write_stored_key (UINT8 num_keys, BD_ADDR *bd_addr,
-                                                    LINK_KEY *link_key);
+HCI_API extern BOOLEAN btsnd_hcic_write_stored_key (void *buffer, UINT8 num_keys,
+                                                     BD_ADDR *bd_addr, LINK_KEY *link_key);
 
 #define HCIC_PARAM_SIZE_WRITE_STORED_KEY  sizeof(btmsg_hcic_write_stored_key_t)
 
