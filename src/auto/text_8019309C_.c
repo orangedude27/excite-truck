@@ -1377,6 +1377,17 @@ struct Obj_80195D80 {
     unsigned int pad;
     struct Snap_80195D80 snap;
 };
+#pragma cplusplus on
+class Vt_80195D80 {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2();
+    virtual void v3(); virtual void v4();
+    virtual Obj_80195D80 *v5();
+};
+static inline Obj_80195D80 *GetObj_80195D80(void *p) {
+    return ((Vt_80195D80 *)p)->v5();
+}
+#pragma cplusplus reset
 struct Other_80195D80 {
     unsigned char p0[0x54];
     float a54, a58, a5c;
@@ -1722,65 +1733,74 @@ extern void fn_8018ADC4(int, float);
 void fn_80196AA0(void *arg0) {
     int state = 0;
     float difference;
-    void *object;
+    volatile float high;
+    volatile float low;
     float vecA[3];
     float vecB[3];
-    float low = lbl_80562140;
-    float high = lbl_80562144;
-    float value;
+    float *limits = lbl_80562250;
 
+    high = lbl_80562144;
+    low = lbl_80562140;
     difference = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x218);
-    if (!(difference < lbl_80562250[0])) {
+    if (!(difference < limits[0])) {
         state = 1;
-        if (!(difference < lbl_80562250[1])) {
+        if (!(difference < limits[1])) {
             state = 2;
         }
     }
-    object = *(void **)((char *)arg0 + 0x298);
-    if (*(unsigned char *)((char *)object + 0x17C) != 0 &&
-        *(unsigned char *)((char *)object + 0x108) == 0) {
-        state = -1;
+    {
+        void *flags = *(void **)((char *)arg0 + 0x298);
+        if (*(unsigned char *)((char *)flags + 0x17C) != 0 &&
+            *(unsigned char *)((char *)flags + 0x108) == 0) {
+            state = -1;
+        }
     }
-    if (state == 0) {
+    switch (state) {
+    case 0: {
+        void *object = *(void **)((char *)arg0 + 0x294);
         float factor = lbl_80562258;
         vecA[0] = *(float *)((char *)object + 0x88) * factor;
         vecA[1] = *(float *)((char *)object + 0x8C) * factor;
         vecA[2] = *(float *)((char *)object + 0x90) * factor;
         fn_8017B3A8(object, vecA, (char *)object + 0x94, factor);
     }
-    if (state < 0 || state >= 2) {
-        goto transition;
-    }
-    value = -((low * *(float *)((char *)arg0 + 0x40)) + (-high * *(float *)((char *)arg0 + 0x44)));
-    if (low < value) {
-        low = value;
-    }
-    if (low > lbl_805621A4) {
-        low = lbl_805621A4;
-    }
-    fn_8018ADAC(object, low);
-    fn_8018ADD4(object, -1);
-    fn_8018ADBC((int)object, high);
-    fn_8018ADC4((int)object, low);
-    if ((float)__fabs(*(float *)((char *)arg0 + 0x270)) < lbl_80562160) {
-        fn_8018ADB4((int)object, low);
-    }
-    if (*(float *)((char *)arg0 + 0x270) < lbl_80562160) {
-        fn_8018ADC4((int)object, high);
+    case 1:
         {
-            float factor = lbl_8056225C;
-            vecB[0] = *(float *)((char *)object + 0x88) * factor;
-            vecB[1] = *(float *)((char *)object + 0x8C) * factor;
-            vecB[2] = *(float *)((char *)object + 0x90) * factor;
+            float result = -((low * *(float *)((char *)arg0 + 0x40)) +
+                             (-high * *(float *)((char *)arg0 + 0x44)));
+            if (low < result) {
+                low = result;
+            }
+            if (low > lbl_805621A4) {
+                low = lbl_805621A4;
+            }
         }
-        fn_8017B3A8(object, vecB, (char *)object + 0x94, lbl_8056225C);
+        fn_8018ADAC(*(void **)((char *)arg0 + 0x294), low);
+        fn_8018ADD4(*(void **)((char *)arg0 + 0x294), -1);
+        fn_8018ADBC(*(int *)((char *)arg0 + 0x294), high);
+        fn_8018ADC4(*(int *)((char *)arg0 + 0x294), low);
+        if ((float)__fabs(*(float *)((char *)arg0 + 0x270)) < lbl_80562160) {
+            fn_8018ADB4(*(int *)((char *)arg0 + 0x294), low);
+        }
+        if (*(float *)((char *)arg0 + 0x270) < lbl_80562160) {
+            fn_8018ADC4(*(int *)((char *)arg0 + 0x294), high);
+            {
+                void *object = *(void **)((char *)arg0 + 0x294);
+                float factor = lbl_8056225C;
+                vecB[0] = *(float *)((char *)object + 0x88) * factor;
+                vecB[1] = *(float *)((char *)object + 0x8C) * factor;
+                vecB[2] = *(float *)((char *)object + 0x90) * factor;
+                fn_8017B3A8(object, vecB, (char *)object + 0x94, factor);
+            }
+        }
+        break;
+    case -1:
+    case 2:
+    default:
+        *(int *)((char *)arg0 + 0x210) = *(int *)((char *)arg0 + 0x214);
+        *(int *)((char *)arg0 + 0x214) = 2;
+        break;
     }
-    goto done;
-transition:
-    *(int *)((char *)arg0 + 0x210) = *(int *)((char *)arg0 + 0x214);
-    *(int *)((char *)arg0 + 0x214) = 2;
-done:
-    ;
 }
 
 #pragma push
@@ -1989,8 +2009,7 @@ void fn_8019724C(void *arg0, float *arg1) {
     float diff;
     float weight;
     float factor;
-    register float outputValue;
-    register float flagThreshold;
+    float flagThreshold;
     int index;
     void *obj;
 
@@ -2017,11 +2036,9 @@ void fn_8019724C(void *arg0, float *arg1) {
             current = current > lower ? current : lower;
             *(float *)((char *)arg0 + 0x1F8) = current;
             *(float *)((char *)arg0 + 0x20C) = fn_801973FC(direction, projected, arg1);
-            flagThreshold = *(volatile float *)&lbl_8056222C;
-            outputValue = projected[0];
-            arg1[0] = outputValue;
-            outputValue = projected[1];
-            arg1[1] = outputValue;
+            flagThreshold = lbl_8056222C;
+            arg1[0] = projected[0];
+            arg1[1] = projected[1];
             if (flagThreshold < *(float *)((char *)arg0 + 0x270)) {
                 *(volatile int *)((char *)arg0 + 0x2D0) |= 0x40;
                 *(volatile int *)((char *)arg0 + 0x2D0) |= 0x800;
