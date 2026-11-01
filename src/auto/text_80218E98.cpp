@@ -2481,7 +2481,7 @@ extern "C" void *fn_8021D300(void *arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void fn_8021D378(void *arg0, s32 arg1) {
     f32 x, y;
     s32 enabled;
