@@ -352,6 +352,7 @@ typedef struct {
 } AXFX_REVERBHI_EXP_FREE_VIEW;
 
 extern u8 lbl_803C0F78[];
+extern u8 lbl_80316570[];
 extern void fn_80072AE4(u8 *, u8 *, u8 *);
 extern void bta_dm_disc_remname_cback(u8 *);
 extern void bta_dm_find_services(u8 *);
@@ -884,6 +885,64 @@ u8 WUDiClearUnregisteredDevice(void) {
         return 3;
     }
     return 2;
+}
+
+void fn_80069FE8(void)
+{
+    extern u8 lbl_8055DC38;
+    extern u8 lbl_803135C0[];
+    extern u32 lbl_8055DC3C;
+    extern u32 lbl_8055DC44;
+    extern void fn_8006AED4(s32);
+    extern tBTM_STATUS fn_8007A2C8(u16 *);
+    u8 *base = lbl_80392960;
+    u8 *strings = lbl_803130C8;
+    u8 version[10];
+    u8 state;
+
+    switch (base[0xF]) {
+    case 1:
+        if (*(u32 *)(base + 0x6C0) == 1) {
+            base[0xE] = 1;
+            BTM_ReadStoredLinkKey(NULL, WUDStoredLinkKeyCallback);
+        }
+        base[0xF] = 2;
+        break;
+    case 2:
+        base[0xF] = WUDiClearUnregisteredDevice();
+        break;
+    case 3:
+        if (base[0xE] == 0) {
+            OSCancelAlarm((OSAlarm *)(base + 0x690));
+            fn_8007A2C8((u16 *)version);
+            DBPrintf_8006CFA8((const char *)(strings + 0x2C0), version[0]);
+            DBPrintf_8006CFA8((const char *)(strings + 0x2D8), *(u16 *)(version + 2));
+            DBPrintf_8006CFA8((const char *)(strings + 0x2F0), version[4]);
+            DBPrintf_8006CFA8((const char *)(strings + 0x308), *(u16 *)(version + 8));
+            DBPrintf_8006CFA8((const char *)(strings + 0x320), *(u16 *)(version + 6));
+            DBPrintf_8006CFA8((const char *)(strings + 0x338), *(u16 *)(version + 2) & 0xFFF);
+
+            if ((*(u16 *)(version + 2) & 0xFFF) == 0xA7) {
+                s32 temp_r7;
+                s32 temp_r8;
+                s32 temp_r9;
+                DBPrintf_8006CFA8((const char *)(strings + 0x360));
+                temp_r9 = (((lbl_803135C0[3] << 8) + lbl_803135C0[2]) << 8) + lbl_803135C0[1];
+                temp_r8 = (((lbl_803135C0[7] << 8) + lbl_803135C0[6]) << 8) + lbl_803135C0[5];
+                temp_r7 = (temp_r9 << 8) + lbl_803135C0[0];
+                lbl_8055DC3C = temp_r7;
+                lbl_8055DC44 = (temp_r8 << 8) + lbl_803135C0[4];
+                BTM_VendorSpecificCommand(0xFC4F, 1, &lbl_8055DC38, (tBTM_VSC_CMPL_CB *)fn_8006AED4);
+            } else {
+                fn_8006B330();
+            }
+            state = 4;
+        } else {
+            state = 2;
+        }
+        base[0xF] = state;
+        break;
+    }
 }
 
 extern u8 lbl_80392960[];
@@ -7594,11 +7653,14 @@ extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
-    UINT8 *p_features;
-    int ind, acl_ind;
+    int ind;
+    u32 acl_ind;
+    UINT8 acl_index;
+    UINT8 feature_offset, feature_mask;
     UINT8 *p_cb;
-    tBTM_PM_MODE mode;
     UINT8 *p_acl;
+    UINT8 *p_features;
+    tBTM_PM_MODE mode;
 
     if (pm_id >= 2)
         pm_id = BTM_PM_SET_ONLY_ID;
@@ -7620,15 +7682,17 @@ next:
     if (acl_ind < 4)
         goto loop;
 found:
-    if (acl_ind == 4)
+    acl_index = (UINT8)acl_ind;
+    if ((s32)acl_index == 4)
         return BTM_UNKNOWN_ADDR;
 
-    p_cb = lbl_803C0F78 + acl_ind * 0x22 + 0x4CC;
+    p_cb = lbl_803C0F78 + acl_index * 0x22 + 0x4CC;
     if (mode != BTM_PM_MD_ACTIVE) {
         ind = mode - BTM_PM_MD_HOLD;
         p_features = (UINT8 *)fn_8007A3A4();
-        if (!(p_features[((UINT8 *)&lbl_80560D38)[ind]] &
-              ((UINT8 *)&lbl_80560D3C)[ind]))
+        feature_offset = ((UINT8 *)&lbl_80560D38)[ind];
+        feature_mask = ((UINT8 *)&lbl_80560D3C)[ind];
+        if (!(p_features[feature_offset] & feature_mask))
             return BTM_MODE_UNSUPPORTED;
     }
 
@@ -7641,11 +7705,18 @@ found:
 
     if (pm_id != BTM_PM_SET_ONLY_ID &&
         ((lbl_803C0F78 + ((pm_id * 8) & 0x7F8))[0x558] & BTM_PM_REG_SET)) {
-        UINT16 *p_req = (UINT16 *)(p_cb + pm_id * 0xA);
-        p_req[0] = p_mode->max;
-        p_req[1] = p_mode->min;
-        p_req[2] = p_mode->attempt;
-        p_req[3] = p_mode->timeout;
+        UINT16 max = p_mode->max;
+        u32 offset = pm_id * 0xA;
+        UINT16 min = p_mode->min;
+        UINT16 *p_req = (UINT16 *)(p_cb + offset);
+        UINT16 attempt;
+        UINT16 timeout;
+        p_req[0] = max;
+        p_req[1] = min;
+        attempt = p_mode->attempt;
+        timeout = p_mode->timeout;
+        p_req[2] = attempt;
+        p_req[3] = timeout;
         p_req[4] = *(UINT16 *)&p_mode->mode;
         p_cb[0x21] = TRUE;
     }
@@ -7653,7 +7724,7 @@ found:
     if (p_cb[0x20] == 1 || p_cb[0x20] == 4 ||
         lbl_803C0F78[0x564] != 4)
         return 0xD;
-    return btm_pm_snd_md_req(pm_id, acl_ind, p_mode);
+    return btm_pm_snd_md_req(pm_id, acl_index, p_mode);
 }
 
 tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
@@ -13982,6 +14053,80 @@ void fn_8008C04C(s16 arg0) {
     *(s16 *)(lbl_803C4040 + 4) = arg0;
 }
 
+BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
+    extern char lbl_80318DE0[];
+    extern char lbl_80318E00[];
+    extern void fn_8007093C(u32, void *);
+    u8 *p;
+    u16 handle;
+    u16 hci_word;
+    u16 hci_len;
+    u16 pkt_type;
+    u8 *p_lcb;
+    BT_HDR *p_return_buf;
+
+    p = (u8 *)p_cur_buf + p_cur_buf->offset;
+    p_cur_buf->layer_specific = 0;
+    hci_word = p[8] + (p[9] << 8);
+    hci_len = p[10] + (p[11] << 8);
+    pkt_type = (hci_word >> 12) & 3;
+    handle = hci_word & 0x0FFF;
+    *(void **)(lbl_803C4040 + 0x7BC) = 0;
+    p_lcb = (u8 *)l2cu_find_lcb_by_handle(handle);
+    if (p_lcb == 0)
+        return p_cur_buf;
+
+    if (pkt_type == 2) {
+        if (*(void **)(p_lcb + 0x50) != 0) {
+            if (lbl_803C4040[0] >= 2)
+                fn_8007093C(0x80001, lbl_80318DE0);
+            GKI_freebuf(*(void **)(p_lcb + 0x50));
+        }
+        p_return_buf = p_cur_buf;
+        *(BT_HDR **)(p_lcb + 0x50) = p_return_buf;
+        *(void **)(lbl_803C4040 + 0x7BC) = p_lcb;
+    } else if (*(void **)(p_lcb + 0x50) != 0) {
+        u16 total_len;
+        BT_HDR *p_base_buf = *(BT_HDR **)(p_lcb + 0x50);
+        u8 *p_f = (u8 *)p_base_buf + p_base_buf->offset;
+
+        total_len = p_f[10] + (p_f[11] << 8);
+        if (total_len + hci_len <= 0x69F) {
+            p_return_buf = *(BT_HDR **)(p_lcb + 0x50);
+            *(void **)(lbl_803C4040 + 0x7BC) = p_lcb;
+            if (p_cur_buf->len > 4) {
+                u16 cur_len = p_cur_buf->len;
+                u16 base_offset = p_return_buf->offset;
+                s32 copy_len = cur_len - 4;
+                u16 cur_offset = p_cur_buf->offset;
+                u8 *p_dst = (u8 *)p_return_buf + base_offset;
+                u16 base_len = p_return_buf->len;
+                u8 *p_data = (u8 *)p_cur_buf + cur_offset;
+                p_dst += base_len + 8;
+                p_data += 0xC;
+                memcpy(p_dst, p_data, copy_len);
+                p_return_buf->len += p_cur_buf->len - 4;
+            }
+            GKI_freebuf(p_cur_buf);
+            total_len += hci_len;
+            p_f[10] = (u8)total_len;
+            p_f[11] = (u8)(total_len >> 8);
+        } else {
+            if (lbl_803C4040[0] >= 2)
+                fn_8007093C(0x80001, lbl_80318E00);
+            GKI_freebuf(*(void **)(p_lcb + 0x50));
+            *(void **)(p_lcb + 0x50) = 0;
+            p_return_buf = 0;
+        }
+    } else {
+        p_return_buf = 0;
+    }
+
+    if (p_return_buf == 0)
+        GKI_freebuf(p_cur_buf);
+    return p_return_buf;
+}
+
 BOOL l2cap_link_chk_pkt_end(void) {
     u8 *p_lcb = *(u8 **)(lbl_803C4040 + 0x7BC);
     u8 *p_buf;
@@ -19971,15 +20116,19 @@ void fn_80099F58(void *arg0) {
     *(u8 *)arg0 = 0;
 }
 
+#pragma unroll off
 UINT8 *sdpu_build_attrib_seq(UINT8 *out, UINT16 *attribs, UINT16 count) {
-    UINT16 i;
+    UINT32 i;
     UINT16 length;
+    UINT16 group_len;
+    UINT32 remaining;
+    UINT32 groups;
+    UINT32 loop;
 
-    if (attribs != NULL) {
+    if (attribs != NULL)
         length = count * 3;
-    } else {
+    else
         length = 5;
-    }
 
     if (length > 0xFF) {
         out[0] = 0x36;
@@ -20002,48 +20151,57 @@ UINT8 *sdpu_build_attrib_seq(UINT8 *out, UINT16 *attribs, UINT16 count) {
     } else {
         i = 0;
         if (count != 0) {
-            while (count - i > 8) {
-                out[0] = 9;
-                out[1] = attribs[0] >> 8;
-                out[2] = attribs[0];
-                out[3] = 9;
-                out[4] = attribs[1] >> 8;
-                out[5] = attribs[1];
-                out[6] = 9;
-                out[7] = attribs[2] >> 8;
-                out[8] = attribs[2];
-                out[9] = 9;
-                out[10] = attribs[3] >> 8;
-                out[11] = attribs[3];
-                out[12] = 9;
-                out[13] = attribs[4] >> 8;
-                out[14] = attribs[4];
-                out[15] = 9;
-                out[16] = attribs[5] >> 8;
-                out[17] = attribs[5];
-                out[18] = 9;
-                out[19] = attribs[6] >> 8;
-                out[20] = attribs[6];
-                out[21] = 9;
-                out[22] = attribs[7] >> 8;
-                out[23] = attribs[7];
-                attribs += 8;
-                out += 24;
-                i += 8;
+            remaining = (UINT32)count + 0x10000 - 8;
+            if (count > 8) {
+                group_len = (UINT16)remaining;
+                groups = ((UINT32)group_len + 7) >> 3;
+                {
+                    for (loop = 0; loop < groups; loop++) {
+                        out[0] = 9;
+                        out[1] = attribs[0] >> 8;
+                        out[2] = attribs[0];
+                        out[3] = 9;
+                        out[4] = attribs[1] >> 8;
+                        out[5] = attribs[1];
+                        out[6] = 9;
+                        out[7] = attribs[2] >> 8;
+                        out[8] = attribs[2];
+                        out[9] = 9;
+                        out[10] = attribs[3] >> 8;
+                        out[11] = attribs[3];
+                        out[12] = 9;
+                        out[13] = attribs[4] >> 8;
+                        out[14] = attribs[4];
+                        out[15] = 9;
+                        out[16] = attribs[5] >> 8;
+                        out[17] = attribs[5];
+                        out[18] = 9;
+                        out[19] = attribs[6] >> 8;
+                        out[20] = attribs[6];
+                        out[21] = 9;
+                        out[22] = attribs[7] >> 8;
+                        out[23] = attribs[7];
+                        attribs += 8;
+                        out += 24;
+                        i += 8;
+                    }
+                }
             }
-            while (i < count) {
-                out[0] = 9;
-                out[1] = attribs[0] >> 8;
-                out[2] = attribs[0];
-                attribs++;
-                out += 3;
-                i++;
+            if (i < count) {
+                do {
+                    out[0] = 9;
+                    out[1] = attribs[0] >> 8;
+                    out[2] = attribs[0];
+                    attribs++;
+                    out += 3;
+                    i++;
+                } while (i < count);
             }
         }
     }
     return out;
 }
-
+#pragma unroll reset
 UINT8 *sdpu_build_attrib_entry(UINT8 *p_out, tSDP_ATTRIBUTE *p_attr)
 {
     UINT8_TO_BE_STREAM(p_out, (UINT_DESC_TYPE << 3) | SIZE_TWO_BYTES);
