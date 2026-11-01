@@ -3816,6 +3816,54 @@ extern "C" s32 fn_800AE108(void *arg0, s32 arg1, s32 arg2, u32 arg3, s32 *arg4, 
     return 0;
 }
 
+extern "C" s32 fn_800ACF20(void *, u32, u32 *, u32 *);
+extern "C" s32 VFiPFFAT_GetClusterSpecified(void *arg0, u32 arg1, u32 arg2, u32 *arg3) {
+    u32 sp10;
+    s32 spC;
+    u32 sp8;
+    u32 *temp_r7 = *(u32 **)((u8 *)arg0 + 8);
+    u8 *temp_r8 = *(u8 **)((u8 *)arg0 + 0x34);
+    u32 temp_r0 = *temp_r7;
+    u32 count = *(u32 *)(temp_r8 + 0x1C);
+    u32 *temp_r31 = *(u32 **)((u8 *)arg0 + 0x30);
+    s32 res;
+    if (temp_r0 == 0 && arg2 == 0) {
+        *arg3 = (u32)-1;
+        return 0;
+    }
+    if (temp_r0 == 1) {
+        if (count <= 1) {
+            *arg3 = (u32)-1;
+            return 0;
+        }
+        *temp_r7 = *(u32 *)(temp_r8 + 0x10);
+    }
+    if (*(s32 *)((u8 *)arg0 + 0x1C) != 0 && arg2 == 0) {
+        res = fn_800ACF20(arg0, arg1, arg3, &sp10);
+        if (res != 0) return res;
+        if (sp10 == 1) {
+            temp_r31[2] = *(u32 *)arg0;
+            temp_r31[0] = arg1;
+            temp_r31[1] = *arg3;
+            return 0;
+        }
+    }
+    *arg3 = (u32)-1;
+    do {
+        res = fn_800ADD84(arg0, arg1, arg2 != 0, 0, &sp8, (s32 *)&spC);
+        if (res != 0) break;
+        if ((u32)spC >= 2 && (u32)spC < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x34) + 2)
+            *arg3 = spC;
+        res = 0;
+    } while (0);
+    if (res != 0) return res;
+    if (*arg3 == (u32)-1) return 0;
+    temp_r31[2] = *(u32 *)arg0;
+    temp_r31[0] = arg1;
+    temp_r31[1] = *arg3;
+    return 0;
+}
+
 extern "C" s32 fn_800ADD84(void *, s32, s32, s32, u32 *, s32 *);
 extern "C" s32 fn_800AE3A8(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
     s32 spC;
@@ -3851,6 +3899,17 @@ sentinel:
 }
 
 extern "C" s32 VFiPFFAT_GetClusterSpecified(void *, u32, u32, u32 *);
+static inline s32 VFiPFFAT_FindCluster(void *arg0, u32 arg1, u32 arg2, u32 *arg3) {
+    u32 sp8;
+    s32 spC;
+    s32 res;
+    *arg3 = (u32)-1;
+    res = fn_800ADD84(arg0, arg1, arg2 != 0, 0, &sp8, &spC);
+    if (res != 0) return res;
+    if ((u32)spC >= 2 && (u32)spC < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x34) + 2)
+        *arg3 = spC;
+    return 0;
+}
 extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
     s32 sp8;
     s32 status;
@@ -11702,21 +11761,26 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     *(s32 *)((u8 *)arg3 - 2048) = *(s32 *)((u8 *)arg1 + 36) + (s32)(((s64)arg0[8] * (s64)lbl_8031D670[17]) >> 20);
 }
 
-void fn_800C2A88(s32 *a, s32 *b, s32 *c, s32 *d) {
-    s32 i, t;
-    for (i=0;i<6;i++) {
-        c[i*0x100/4]=b[i];
-        d[-i*0x100/4]=b[0x44/4-i];
-    }
-    t=a[6];
-    c[0x600/4]=b[6]+(t*lbl_8031D700[0]>>20);
-    d[-0x600/4]=b[0x2C/4]+(t*lbl_8031D700[1]>>20);
-    t=a[7];
-    c[0x700/4]=b[7]+(t*lbl_8031D700[2]>>20);
-    d[-0x700/4]=b[0x28/4]+(t*lbl_8031D700[3]>>20);
-    t=a[8];
-    c[0x800/4]=b[8]+(t*lbl_8031D700[4]>>20);
-    d[-0x800/4]=b[0x24/4]+(t*lbl_8031D700[5]>>20);
+extern "C" void fn_800C2A88(s32 *a, s32 *b, s32 *c, s32 *d) {
+    c[0] = b[0];
+    d[0] = -a[0] + b[17];
+    c[64] = b[1];
+    d[-64] = -a[1] + b[16];
+    c[128] = b[2];
+    d[-128] = -a[2] + b[15];
+    c[192] = b[3];
+    d[-192] = -a[3] + b[14];
+    c[256] = b[4];
+    d[-256] = -a[4] + b[13];
+    c[320] = b[5];
+    d[-320] = -a[5] + b[12];
+
+    c[384] = b[6] + (s32)(((s64)a[6] * (s64)lbl_8031D700[0]) >> 20);
+    d[-384] = b[11] + (s32)(((s64)a[6] * (s64)lbl_8031D700[1]) >> 20);
+    c[448] = b[7] + (s32)(((s64)a[7] * (s64)lbl_8031D700[2]) >> 20);
+    d[-448] = b[10] + (s32)(((s64)a[7] * (s64)lbl_8031D700[3]) >> 20);
+    c[512] = b[8] + (s32)(((s64)a[8] * (s64)lbl_8031D700[4]) >> 20);
+    d[-512] = b[9] + (s32)(((s64)a[8] * (s64)lbl_8031D700[5]) >> 20);
 }
 
 extern "C" s32 lbl_8031D718[];
@@ -15649,7 +15713,7 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
 {
     u8 *self = (u8 *)this;
     const u8 *block = (const u8 *)resource;
-    const char (&file)[0x54] = *(const char (*)[0x54])lbl_8031EE58;
+    const char *const file = lbl_8031EE58;
     u8 *resourceNames;
     u32 *resourceOffsets;
     s32 outputOffset;
