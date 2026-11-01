@@ -138,6 +138,7 @@ void* fn_80279004(s32 name, s32 arg1) {
     lbl_8055F5F0 = object;
     return object;
 }
+#pragma cplusplus reset
 
 void* fn_80279254(s32 arg0, s32 arg1) {
     Node_80279254* var_r31 = lbl_8055F5F0;
