@@ -7008,40 +7008,31 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     extern u8 lbl_803163EC[];
     u8 *state = lbl_803C0F78;
     u8 *p = (u8 *)params;
-    u8 a, b, c, d, e, f;
+    u8 b, a, d, c, f, e;
     s32 mode;
     u8 status;
-
     if (state[0x27C0] >= 3)
         ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, lbl_803163EC, p[0], p[1], p[2], p[3]);
-    if (state[0x1848] != 0 || state[0x1844] != 0)
-        return 2;
-    if (p[0] != 0 && p[0] != 1)
-        return 5;
-    if (fn_80079514() == 0)
-        return 6;
+    if (state[0x1848] != 0 || state[0x1844] != 0) return 2;
+    if (p[0] != 0 && p[0] != 1) return 5;
+    if (fn_80079514() == 0) return 6;
     a = p[0]; b = p[1]; state[0x1834] = a; state[0x1835] = b;
-    c = p[2]; d = p[3]; state[0x1836] = c; state[0x1837] = d;
-    e = p[4]; f = p[5]; state[0x1838] = e; state[0x1839] = f;
-    a = p[6]; b = p[7]; state[0x183A] = a; state[0x183B] = b;
-    a = p[8]; b = p[9]; state[0x183C] = a; state[0x183D] = b;
+    d = p[2]; c = p[3]; state[0x1836] = d; state[0x1837] = c;
+    f = p[4]; e = p[5]; state[0x1838] = f; state[0x1839] = e;
+    b = p[6]; a = p[7]; state[0x183A] = b; state[0x183B] = a;
+    c = p[8]; state[0x183C] = c;
+    c = p[9]; state[0x183D] = c;
     state[0x1847] = 3;
     *(void **)(state + 0x16B0) = complete_cb;
     *(void **)(state + 0x16B4) = results_cb;
     state[0x183F] = 0;
     mode = p[0];
     state[0x1848] = ((s32)~((mode - 1) | (1 - mode)) >> 31) + 2;
-    if (p[3] == 0) {
-        state[0x1847] = 2;
-    } else if (p[3] > 0 && p[3] < 3) {
-        state[0x1847] = 1;
-        p[3] = 0;
-    } else {
-        return 5;
-    }
+    if (p[3] == 0) state[0x1847] = 2;
+    else if (p[3] > 0 && p[3] < 3) { state[0x1847] = 1; p[3] = 0; }
+    else return 5;
     status = btm_set_inq_event_filter(p[3], p + 4);
-    if (status != 1)
-        state[0x1847] = 0;
+    if (status != 1) state[0x1847] = 0;
     return status;
 }
 
@@ -8448,20 +8439,13 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     u16 *p_setup = (u16 *)(sco_entry + 0x1868 / 2);
     u16 temp_pkt_types;
     u8 link_type;
-    u8 hci_version;
     
-    /* Make sure sco handle is valid */
-    if (sco_inx >= 3) {
-        return BTM_WRONG_MODE;
-    }
-    
-    /* Check state - must be SCO_ST_CONNECTED (4) */
-    if (sco_entry[0x185C / 2] != 4) {
+    /* Make sure sco handle is valid and on an active link */
+    if (sco_inx >= 3 || sco_entry[0x185C / 2] != 4) {
         return BTM_WRONG_MODE;
     }
     
     link_type = btm_cb[0x1882 + sco_inx * 0x34];
-    hci_version = btm_cb[0x27C0];
     
     /* If SCO connection OR eSCO not supported just send change packet types */
     if (link_type == 1 || btm_cb[0x636] == 0) {
@@ -8473,6 +8457,7 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
         }
     } else {
         u16 supported = sco_entry[0x656 / 2];
+        u8 hci_version = btm_cb[0x27C0];
         
         temp_pkt_types = (p_parms->packet_types & 0x3F) & supported;
         
