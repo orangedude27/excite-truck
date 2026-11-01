@@ -816,7 +816,7 @@ void fn_801942F0(void *arg0, int arg1) {
 extern int fn_801B2F24(void);
 extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
 static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
-    return ax * bx + -ay * by;
+    return ax * bx + ay * by;
 }
 #pragma cplusplus on
 extern "C" int fn_800216D0(void);
@@ -839,11 +839,12 @@ extern "C" void fn_80194324(void *arg0) {
             float t = *(float *)(p + 0x26C) - *(float *)(p + 0x1D0);
             int lt = t < lbl_805621C0;
             if (lt) {
-                float a = *(float *)(p + 0x1B0) * *(float *)(p + 0x1B4) + -*(float *)(p + 0x1AC) * *(float *)(p + 0x1B8);
-                float b = *(float *)(p + 0x17C) * *(float *)(p + 0x180) + -*(float *)(p + 0x178) * *(float *)(p + 0x184);
-                v = b + (t / lbl_805621C0) * (a - b);
+                float k = t / lbl_805621C0;
+                float a = Cross2D_80194324(*(float *)(p + 0x1B0), *(float *)(p + 0x1AC), *(float *)(p + 0x1B4), *(float *)(p + 0x1B8));
+                float b = Cross2D_80194324(*(float *)(p + 0x17C), *(float *)(p + 0x178), *(float *)(p + 0x180), *(float *)(p + 0x184));
+                v = b + k * (a - b);
             } else {
-                v = *(float *)(p + 0x1B0) * *(float *)(p + 0x1B4) + -*(float *)(p + 0x1AC) * *(float *)(p + 0x1B8);
+                v = Cross2D_80194324(*(float *)(p + 0x1B0), *(float *)(p + 0x1AC), *(float *)(p + 0x1B4), *(float *)(p + 0x1B8));
             }
             flag = (float)__fabs(v) < thresh;
         }
