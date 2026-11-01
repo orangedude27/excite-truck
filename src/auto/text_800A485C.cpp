@@ -7,6 +7,7 @@ extern "C" void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
 extern "C" const char lbl_8031E7E8[];
 extern "C" const char lbl_8031E83C[];
 
+static inline s32 fn_800C2DBC_mul20(s32 a, s32 b) { return (s32)(((s64)a * b) >> 20); }
 struct VFiPFVol { u16 sectorSize; u8 pad[0x1e]; u8 shift; };
 struct VFiPFFile { u8 pad0[4]; u8 fat[0x260]; u32 size; VFiPFVol *vol; };
 struct VFiPFCursor { u8 pad0[8]; VFiPFFile *file; u8 pad1[0x10]; u32 pos; u32 cluster; u32 sector; u16 off; };
@@ -5302,42 +5303,41 @@ extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     extern s32 fn_800AE620(void *, u32, s32, void *);
     extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
-#define F8(o) (*(u8 **)((u8 *)arg0 + 8))
-#define W(p, o) (*(u32 *)((u8 *)(p) + (o)))
+    u32 *out = arg3;
+    VFiPFCursor *cur = (VFiPFCursor *)arg0;
     s32 sp8, result, sector;
     u32 length = arg2;
-    *arg3 = 0;
-    if (arg0 == 0) sector = 0;
-    else sector = W(F8(0), 0x268);
+    VFiPFVol *fat;
+    *out = 0;
+    if (cur == 0) sector = 0;
+    else sector = (s32)cur->file->vol;
     if (arg2 == 0) return 0;
-    if (W(arg0, 0x1c) + arg2 > W(F8(0), 0x264)) {
-        length = W(F8(0), 0x264) - W(arg0, 0x1c);
+    if (cur->pos + arg2 > cur->file->size) {
+        length = cur->file->size - cur->pos;
         if (length == 0) return 0;
     }
-    if (W(arg0, 0x20) == 0xFFFFFFFF) {
-        result = fn_800AE620(F8(0) + 4, W(arg0, 0x24), 0, (u8 *)arg0 + 0x20);
+    if (cur->cluster == 0xFFFFFFFF) {
+        result = fn_800AE620(cur->file->fat, cur->sector, 0, &cur->cluster);
         if (result != 0) return result;
-        if (W(arg0, 0x20) == 0xFFFFFFFF) {
-            u8 *fat;
-            W(arg0, 0x1c) = W(F8(0), 0x264);
-            fat = arg0 == 0 ? 0 : (u8 *)W(F8(0), 0x268);
-            W(arg0, 0x24) = W(arg0, 0x1c) >> fat[0x20];
-            *(u16 *)((u8 *)arg0 + 0x28) = W(arg0, 0x1c) & (*(u16 *)fat - 1);
+        if (cur->cluster == 0xFFFFFFFF) {
+            cur->pos = cur->file->size;
+            fat = cur == 0 ? 0 : cur->file->vol;
+            cur->sector = cur->pos >> fat->shift;
+            cur->off = cur->pos & (fat->sectorSize - 1);
             return 0x1c;
         }
-        if (W(arg0, 0x1c) + length > W(F8(0), 0x264)) {
-            u8 *fat;
-            W(arg0, 0x1c) = W(F8(0), 0x264);
-            fat = arg0 == 0 ? 0 : (u8 *)W(F8(0), 0x268);
-            W(arg0, 0x24) = W(arg0, 0x1c) >> fat[0x20];
-            *(u16 *)((u8 *)arg0 + 0x28) = W(arg0, 0x1c) & (*(u16 *)fat - 1);
+        if (cur->pos + length > cur->file->size) {
+            cur->pos = cur->file->size;
+            fat = cur == 0 ? 0 : cur->file->vol;
+            cur->sector = cur->pos >> fat->shift;
+            cur->off = cur->pos & (fat->sectorSize - 1);
             return 0x1b;
         }
     }
-    result = fn_800B5324(sector, arg1, *(u16 *)((u8 *)arg0 + 0x28), length, &sp8, 1);
+    result = fn_800B5324(sector, arg1, cur->off, length, &sp8, 1);
     if (result != 0 && sp8 == 0) return result;
-    *arg3 = sp8;
-    VFiPFFILE_Cursor_AdvanceToRead(arg0, sp8, W(arg0, 0x20));
+    *out = sp8;
+    VFiPFFILE_Cursor_AdvanceToRead(cur, sp8, cur->cluster);
     if ((u32)sp8 != length) return result;
     return 0;
 }
@@ -12760,42 +12760,9 @@ extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
 extern u32 lbl_8031D730[];
 extern "C" void fn_800C2DBC(s32 *arg0, s32 *arg1, s32 *arg2) {
     s32 *t = (s32 *)lbl_8031D730;
-    s64 p0=(s64)arg0[0]*t[0];
-    s64 q0=(s64)arg0[0]*t[1];
-    arg1[0]=(s32)(p0>>20);
-    arg2[-0]=(s32)(q0>>20);
-    s64 p1=(s64)arg0[1]*t[2];
-    s64 q1=(s64)arg0[1]*t[3];
-    arg1[1]=(s32)(p1>>20);
-    arg2[-1]=(s32)(q1>>20);
-    s64 p2=(s64)arg0[2]*t[4];
-    s64 q2=(s64)arg0[2]*t[5];
-    arg1[2]=(s32)(p2>>20);
-    arg2[-2]=(s32)(q2>>20);
-    s64 p3=(s64)arg0[3]*t[6];
-    s64 q3=(s64)arg0[3]*t[7];
-    arg1[3]=(s32)(p3>>20);
-    arg2[-3]=(s32)(q3>>20);
-    s64 p4=(s64)arg0[4]*t[8];
-    s64 q4=(s64)arg0[4]*t[9];
-    arg1[4]=(s32)(p4>>20);
-    arg2[-4]=(s32)(q4>>20);
-    s64 p5=(s64)arg0[5]*t[10];
-    s64 q5=(s64)arg0[5]*t[11];
-    arg1[5]=(s32)(p5>>20);
-    arg2[-5]=(s32)(q5>>20);
-    s64 p6=(s64)arg0[6]*t[12];
-    s64 q6=(s64)arg0[6]*t[13];
-    arg1[6]=(s32)(p6>>20);
-    arg2[-6]=(s32)(q6>>20);
-    s64 p7=(s64)arg0[7]*t[14];
-    s64 q7=(s64)arg0[7]*t[15];
-    arg1[7]=(s32)(p7>>20);
-    arg2[-7]=(s32)(q7>>20);
-    s64 p8=(s64)arg0[8]*t[16];
-    s64 q8=(s64)arg0[8]*t[17];
-    arg1[8]=(s32)(p8>>20);
-    arg2[-8]=(s32)(q8>>20);
+#define STEP(i) { s32 a = arg0[i]; s32 c0 = t[2 * (i)]; s32 c1 = t[2 * (i) + 1]; s64 p = (s64)a * c0; arg1[i] = (s32)(p >> 20); s64 q = (s64)a * c1; arg2[-(i)] = (s32)(q >> 20); }
+    STEP(0) STEP(1) STEP(2) STEP(3) STEP(4) STEP(5) STEP(6) STEP(7) STEP(8)
+#undef STEP
 }
 
 extern "C" s32 lbl_8031D778[];
