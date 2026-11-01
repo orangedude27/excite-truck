@@ -3743,6 +3743,63 @@ extern "C" s32 fn_800AD24C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4)
     return 0;
 }
 
+extern "C" s32 VFiPFFAT_ReadClusterPage(void *arg0, u32 arg1, s32 arg2, s32 *arg3, s32 *arg4, void *arg5) {
+    s32 result;
+    s32 val;
+    u8 *p = (u8 *)arg0;
+    *arg3 = -1;
+    if (*(s32 *)(p + 0x1C) != 0 && *(u32 *)arg4 == 1) {
+        result = fn_800AD0B0(arg0, arg2, (u32 *)arg3, (u32 *)arg4, arg5);
+        if (result != 0) {
+            return result;
+        }
+    }
+    if (*(s32 *)(p + 0x1C) == 0 || *arg4 == 0) {
+        switch (*(s32 *)(*(u8 **)(p + 0x34) + 0x1C)) {
+        case 0:
+            result = ((s32 (*)(void *, u16, s32 *, void *))fn_800AFBA8)(*(void **)(p + 0x34), (u16)arg1, arg3, arg5);
+            break;
+        case 1:
+            result = fn_800B00E8(*(void **)(p + 0x34), arg1, (u32 *)arg3, arg5);
+            break;
+        case 2:
+            result = fn_800B05C8(*(void **)(p + 0x34), arg1, (u32 *)arg3, arg5);
+            break;
+        default:
+            result = 0xF;
+            break;
+        }
+        if (result != 0) {
+            return result;
+        }
+        val = *arg3;
+        if (val == 0) {
+            return 0xD;
+        }
+        if ((u32)(val + 0x10000) == 0xFFFF) {
+            return 6;
+        }
+        if (*(s32 *)(p + 0x1C) != 0) {
+            u32 *tbl = lbl_802EEF40;
+            if ((u32)val != tbl[*(s32 *)(*(u8 **)(p + 0x34) + 0x1C) * 5 + 2]) {
+                u32 a = *(u32 *)(p + 0x24);
+                u32 b = *(u32 *)(p + 0x28);
+                if (b > a && b != 0) {
+                    if ((u32)arg2 == a * (*(u16 *)(p + 0x20) + 1)) {
+                        *(u16 *)(p + 0x22) = 0;
+                        *(s32 *)(*(u8 **)(p + 0x1C) + a * 4) = val;
+                        *(u32 *)(p + 0x24) = *(u32 *)(p + 0x24) + 1;
+                    } else {
+                        *(u16 *)(p + 0x22) = *(u16 *)(p + 0x22) + 1;
+                    }
+                    *(s32 *)(p + 0x2C) = arg2;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
 #pragma pop
 
 #pragma pop
@@ -14523,7 +14580,7 @@ extern "C" s32 fn_800CFBC0(void *arg0, s32 arg1) {
     return *(s32 *)((char *)entry + 4);
 }
 
-s32 homebutton::gui::Manager::update(s32 arg1, f32 farg0, f32 farg1, unsigned long arg2, unsigned long arg3, unsigned long arg4, void *arg5) {
+s32 homebutton::gui::Manager::update(int arg1, f32 farg0, f32 farg1, unsigned long arg2, unsigned long arg3, unsigned long arg4, void *arg5) {
     class ObjDispatch {
     public:
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
@@ -14539,29 +14596,28 @@ s32 homebutton::gui::Manager::update(s32 arg1, f32 farg0, f32 farg1, unsigned lo
         virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9();
         virtual void apply(s32, s32, void *);
     };
-    u32 sp14, sp8;
+    u32 sp14[3];
+    u32 sp8[3];
     s32 result = 0;
     ObjDispatch *last = 0;
-    void *list = (u8 *)this + 8;
-    s32 index = 0;
+    u32 index = 0;
     while (index < *(u16 *)((u8 *)this + 0x10)) {
         void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)this + 8, (u16)index);
-        ObjDispatch *obj = *(ObjDispatch **)((u8 *)item + 4);
-        if (obj->handle(arg1, farg0, farg1, arg2, arg3, arg4, arg5)) {
-            if (obj->check()) last = obj;
+        if ((*(ObjDispatch **)((u8 *)item + 4))->handle(arg1, farg0, farg1, arg2, arg3, arg4, arg5)) {
+            if ((*(ObjDispatch **)((u8 *)item + 4))->check()) last = *(ObjDispatch **)((u8 *)item + 4);
             result = 1;
         }
         index++;
-        if (list == 0)
+        if ((u32)this + 8 == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     }
     if (last) {
         if (arg2) {
-            last->prepare(arg2, &sp14);
+            last->prepare(arg2, sp14);
             ((MgrDispatch *)this)->apply(last->d6(), 0, arg5);
         }
         if (arg4) {
-            last->prepare(arg4, &sp8);
+            last->prepare(arg4, sp8);
             ((MgrDispatch *)this)->apply(last->d6(), 5, arg5);
         }
     }
