@@ -277,6 +277,9 @@ extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
 extern void l2cu_create_conn_after_switch(void *p_lcb);
 extern u8 lbl_803130C8[];
 extern u8 lbl_80392960[];
+extern u8 lbl_803934C0[];
+extern u8 lbl_8055DC48;
+extern u8 lbl_8055DC49;
 extern u8 lbl_80393058[];
 extern char lbl_80313238[];
 extern u8 lbl_803C0D48[];
@@ -648,21 +651,14 @@ void fn_80068F80(void) {
 }
 
 extern u8 lbl_80393028[];
+#pragma use_lmw_stmw off
 u8 fn_80068F94(void) {
-    register u8 *base = lbl_80392960;
-    register u8 *scan_base;
-    register u8 *record;
     BOOL interrupts;
     register u8 state;
     register u8 state2;
-    register s32 i;
-    register s32 offset;
-    register s32 interval;
-    tBTM_PM_PWR_MD mode;
+    register u8 *base = lbl_80392960;
 
-    if ((s8)base[0x668] == 0) {
-        return 0xE;
-    }
+    if ((s8)base[0x668] == 0) return 0xE;
     interrupts = OSDisableInterrupts();
     state = base[0x665];
     OSRestoreInterrupts(interrupts);
@@ -673,60 +669,65 @@ u8 fn_80068F94(void) {
         if (state2 == 4) return 0xE;
     }
     if (base[0x667] != 0) {
-        scan_base = lbl_80392960;
-        i = 0;
+        register u8 *scan_base;
+        register u8 *record;
+        register s32 i;
+        register s32 offset;
         offset = 0;
+        record = lbl_80392960;
+        i = 0;
     loop:
         interrupts = OSDisableInterrupts();
-        if (i < 0) goto high_record;
-        if (i >= 0xA) goto high_record;
-        record = scan_base + offset + 0x64;
+        if (offset < 0) goto high_record;
+        if (offset >= 0xA) goto high_record;
+        scan_base = record + i + 0x64;
         goto selected_record;
     high_record:
-        record = scan_base + ((i - 0xA) * 0x60) + 0x424;
+        scan_base = record + (((u8)offset - 0xA) * 0x60) + 0x424;
     selected_record:
         OSRestoreInterrupts(interrupts);
-        if (record[0x59] == 9) {
+        if (scan_base[0x59] == 9) {
+            tBTM_PM_PWR_MD mode;
             mode.mode = 0;
             mode.max = 0;
             mode.min = 0;
             mode.attempt = 1;
             mode.timeout = 0;
-            BTM_SetPowerMode(base[0x68A], record + 0x40, &mode);
+            BTM_SetPowerMode(lbl_80392960[0x68A], scan_base + 0x40, &mode);
             return 1;
         }
-        i++;
-        offset += 0x60;
-        if (i < 0x10) goto loop;
+        offset++;
+        i += 0x60;
+        if (offset < 0x10) goto loop;
     }
     if ((s8)base[0x668] > 0) base[0x668]--;
     if ((s8)base[0x668] == -1) {
-        base[0x668] = 0xFE;
+        register u8 timer_state;
+        register s32 interval;
+        ((s8 *)base)[0x668] = -2;
         interrupts = OSDisableInterrupts();
-        state = base[0x665];
+        timer_state = lbl_80392960[0x665];
         OSRestoreInterrupts(interrupts);
         interval = 2;
-        if (state == 3) interval = 4;
+        if (timer_state == 3) interval = 4;
         interrupts = OSDisableInterrupts();
-        state = base[0x665];
+        timer_state = lbl_80392960[0x665];
         OSRestoreInterrupts(interrupts);
-        if (state == 4) {
+        if (timer_state == 4) {
             interrupts = OSDisableInterrupts();
-            state2 = base[0x664];
+            state2 = lbl_80392960[0x664];
             OSRestoreInterrupts(interrupts);
-            if (state2 == 4) base[0xC] = 0xE;
+            if (state2 == 4) lbl_80392960[0xC] = 0xE;
         }
         OSCreateAlarm((OSAlarm *)lbl_80393028);
-        ((void (*)(OSAlarm *, s64, u32, OSAlarmHandler))OSSetAlarm)(
-            (OSAlarm *)lbl_80393028, 0,
-            interval * ((*(u32 *)0x800000F8) >> 2),
-            (OSAlarmHandler)fn_80068F80);
+        OSSetAlarm((OSAlarm *)lbl_80393028,
+                   (s64)(interval * ((*(u32 *)0x800000F8) >> 2)),
+                   (OSAlarmHandler)fn_80068F80);
         return 0x18;
     }
     return 2;
 }
-
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 s32 fn_80069178(void) {
     s32 status;
     BOOL interrupts;
@@ -11282,11 +11283,12 @@ BOOLEAN btsnd_hcic_pin_code_req_reply(BD_ADDR bd_addr, UINT8 pin_code_len, PIN_C
     UINT8 *p;
     UINT8 *src;
     UINT8 *dst;
-    UINT8 i;
+    s32 i;
 
     p_buf = (BT_HDR *)GKI_getpoolbuf(2);
     if (p_buf == NULL) return FALSE;
     p = (UINT8 *)p_buf;
+    i = 0;
     *(UINT16 *)(p + 2) = 0x1A;
     *(UINT16 *)(p + 4) = 0;
     p[8] = 0x0D;
@@ -11301,8 +11303,12 @@ BOOLEAN btsnd_hcic_pin_code_req_reply(BD_ADDR bd_addr, UINT8 pin_code_len, PIN_C
     p[17] = pin_code_len;
     src = pin_code;
     dst = p + 0x12;
-    for (i = 0; i < pin_code_len; i++) *dst++ = *src++;
-    while (i < 16) { *dst++ = 0; i++; }
+    for (; i < pin_code_len; i++)
+        *dst++ = *src++;
+    while (i < 16) {
+        *dst++ = 0;
+        i++;
+    }
     btu_hcif_send_cmd(p_buf);
     return TRUE;
 }
@@ -13846,6 +13852,60 @@ void l2c_csm_open(void *p_ccb, u16 event, void *p_data)
         btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
         break;
     }
+}
+
+void l2c_csm_w4_l2cap_disconnect_rsp(void *p_ccb, u16 event, void *p_data) {
+    char *p_str = (char *)jumptable_803183B0;
+    void *p_lcb = *(void **)((u8 *)p_ccb + 0x30);
+    void (*disc_cfm)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_lcb + 0x1C);
+    void (*disc_ind)(u16, u8) = *(void (**)(u16, u8))((u8 *)p_lcb + 0x18);
+    u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
+
+    if (lbl_803C4040[0] >= 4)
+        fn_80070954(0x80003, p_str + 0x6B0, event);
+
+    if ((u16)(event - 3) > 0x1B)
+        goto free_data;
+
+    switch (event) {
+    case 3:
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x40, local_cid);
+        l2cu_release_ccb(p_ccb);
+        disc_ind(local_cid, 0);
+        break;
+    case 4: case 5: case 6: case 7: case 8: case 9: case 10:
+    case 11: case 12: case 13: case 14: case 15: case 16:
+        goto free_data;
+    case 17:
+        l2cu_send_peer_disc_rsp(*(void **)((u8 *)p_ccb + 0x10),
+                                *((u8 *)p_ccb + 0x36),
+                                local_cid,
+                                *(u16 *)((u8 *)p_ccb + 0x16));
+    case 18:
+        l2cu_release_ccb(p_ccb);
+        if (disc_cfm != NULL) {
+            if (lbl_803C4040[0] >= 3)
+                fn_80070954(0x80002, p_str + 0x6D8, local_cid);
+            disc_cfm(local_cid, 0);
+        }
+        break;
+    case 19:
+        l2cu_release_ccb(p_ccb);
+        if (disc_cfm != NULL) {
+            if (lbl_803C4040[0] >= 3)
+                fn_80070954(0x80002, p_str + 0x6D8, local_cid);
+            disc_cfm(local_cid, 0xEEEE);
+        }
+        break;
+    case 20: case 21: case 22: case 23: case 24: case 25:
+    case 26: case 27: case 28: case 29: case 30:
+        goto free_data;
+    }
+    return;
+
+free_data:
+    GKI_freebuf(p_data);
 }
 
 extern char lbl_80318B28[];
