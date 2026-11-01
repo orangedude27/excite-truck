@@ -157,7 +157,7 @@ extern "C" void GXSetTevOrder(u32, u32, u32, u32);
 extern "C" void GXSetBlendMode(u32, u32, u32, u32);
 extern "C" void GXLoadPosMtxImm(const f32*, u32);
 extern "C" void GXSetTevOp(u32, u32);
-extern "C" void GXSetLineWidth(u8, u32);
+extern "C" void GXSetLineWidth(u32, u32);
 extern "C" void PSMTXRotRad(f32 (*)[4], f32, f32, f32);
 extern "C" void GXBegin(u8, u8, u16);
 extern "C" s32 lbl_8031D700[];
@@ -14352,6 +14352,35 @@ void homebutton::FrameController::calc() {
     default:
         return;
     }
+}
+
+extern "C" void fn_800CF554(s32 arg0, u8 *arg1, f32 x0, f32 y0, f32 x1, f32 y1, f32 z) {
+    f32 mtx[3][4];
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxDesc(0xB, 1);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+    GXSetCullMode(0);
+    GXSetNumChans(1);
+    GXSetChanCtrl(4, 0, 1, 1, 0, 0, 2);
+    GXSetNumTexGens(0);
+    GXSetNumTevStages(1);
+    GXSetTevOp(0, 4);
+    GXSetTevOrder(0, 0xFF, 0xFF, 4);
+    GXSetBlendMode(0, 0, 0, 5);
+    PSMTXRotRad(mtx, lbl_80560E28, lbl_80560E28, lbl_80560E28);
+    GXLoadPosMtxImm((const f32 *)mtx, 0);
+    GXSetLineWidth(arg0, 0);
+    GXBegin(0xA8, 0, 2);
+    *(volatile f32 *)0xCC008000 = x0;
+    *(volatile f32 *)0xCC008000 = y0;
+    *(volatile f32 *)0xCC008000 = z;
+    *(volatile u32 *)0xCC008000 = *(u32 *)arg1;
+    *(volatile f32 *)0xCC008000 = x1;
+    *(volatile f32 *)0xCC008000 = y1;
+    *(volatile f32 *)0xCC008000 = z;
+    *(volatile u32 *)0xCC008000 = *(u32 *)arg1;
 }
 
 extern "C" u32 fn_800CF91C(void) { return 1; }
