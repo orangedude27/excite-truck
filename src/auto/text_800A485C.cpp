@@ -7466,8 +7466,6 @@ extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC((s32)fn_800B224C(alarm, ctx));
 }
 
-struct FatCopyA { s32 w[4]; };
-struct FatCopyB { s32 w[3]; };
 extern "C" s32 fn_800B1EB8(s32, s32, s32, s32, s32 *);
 extern "C" s32 fn_800B75C4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 result;
