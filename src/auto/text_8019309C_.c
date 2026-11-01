@@ -1072,12 +1072,12 @@ extern float lbl_8055A488, lbl_8056215C;
 extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
 extern void fn_80194FD0(void);
-void fn_80194F70(void *arg0, float *a, float *b) {
-    float x, y, z;
-    x = a[0] - b[0];
-    y = a[1] - b[1];
-    z = a[2] - b[2];
-    PSVECDotProduct(arg0, &x);
+void fn_80194F70(void * __restrict arg0, float * __restrict a, float * __restrict b) {
+    float diff[3];
+    diff[0] = a[0] - b[0];
+    diff[1] = a[1] - b[1];
+    diff[2] = a[2] - b[2];
+    PSVECDotProduct(arg0, diff);
 }
 
 void fn_80194FC4(void) {
@@ -1641,61 +1641,66 @@ void fn_801965AC(void *arg0) {
     float position[3];
     int transform[3];
     float delta;
+    float diff;
+    float depth;
     float value;
-    float scale;
-    float factor;
+    float range;
+    float scalar;
+    float adjusted;
+    float product;
+    int doEffect;
+    int first;
+    int second;
     void *obj;
 
-    obj = *(void **)((char *)arg0 + 0x294);
-    if (*(int *)((char *)obj + 0x2620) != 0)
+    if (*(int *)((char *)*(void **)((char *)arg0 + 0x294) + 0x2620) != 0)
         return;
 
     position[0] = lbl_80562144;
     position[1] = lbl_80562140;
     position[2] = lbl_80562144;
-    transform[0] = *(int *)((char *)obj + 0x60);
-    transform[1] = *(int *)((char *)obj + 0x64);
+    obj = *(void **)((char *)arg0 + 0x294);
+    first = *(int *)((char *)obj + 0x60);
+    second = *(int *)((char *)obj + 0x64);
+    transform[0] = first;
+    transform[1] = second;
     transform[2] = *(int *)((char *)obj + 0x68);
     fn_801EA18C(transform, position, 0, transform[0], obj, lbl_80562144);
 
     obj = *(void **)((char *)arg0 + 0x294);
-    delta = *(float *)((char *)obj + 0x64) - *(float *)((char *)transform + 4);
-    if (delta < lbl_80562144)
-        delta = lbl_80562144;
-    value = *(float *)((char *)obj + 0x11C);
-    if (value < lbl_80562244)
-        value = lbl_80562244;
-    scale = -delta / value;
-    factor = lbl_80562140;
-    if (scale < factor) {
-        factor = lbl_80562184;
-        value = factor * PSVECDotProduct(position, (char *)obj + 0x54);
-        if (value < lbl_80562140)
-            value = lbl_80562140;
-        if (value > lbl_805621A4)
-            value = lbl_805621A4;
-        fn_8018AE2C(*(void **)((char *)arg0 + 0x294), value);
-        value = factor * PSVECDotProduct(position, (char *)*(void **)((char *)arg0 + 0x294) + 0x3C);
-        if (value < lbl_80562140)
-            value = lbl_80562140;
-        if (value > lbl_805621A4)
-            value = lbl_805621A4;
-        fn_8018AE34(*(void **)((char *)arg0 + 0x294), value);
+    delta = lbl_80562144;
+    diff = *(float *)((char *)obj + 0x64) - *(float *)((char *)transform + 4);
+    delta = delta > diff ? delta : diff;
+    depth = *(float *)((char *)obj + 0x11C);
+    depth = depth < lbl_80562244 ? lbl_80562244 : depth;
+    range = lbl_80562140;
+    doEffect = (-delta / depth) < range;
+    scalar = lbl_80562184;
+    if (doEffect) {
+        float output;
+        product = scalar * PSVECDotProduct(position, (char *)obj + 0x54);
+        output = lbl_80562140;
+        output = output < product ? output : product;
+        output = output > lbl_805621A4 ? output : lbl_805621A4;
+        fn_8018AE2C(*(void **)((char *)arg0 + 0x294), output);
+
+        product = scalar * PSVECDotProduct(position, (char *)*(void **)((char *)arg0 + 0x294) + 0x3C);
+        output = lbl_80562140;
+        output = output < product ? output : product;
+        output = output > lbl_805621A4 ? output : lbl_805621A4;
+        fn_8018AE34(*(void **)((char *)arg0 + 0x294), output);
         return;
     }
 
     value = __fabs(*(float *)((char *)arg0 + 0x23C));
-    value = (value - lbl_80562144) / scale;
-    if (scale < value)
-        scale = value;
-    if (scale > lbl_80562144)
-        scale = lbl_80562144;
-    factor = *(float *)((char *)obj + 0x58) - (lbl_805621EC + scale * lbl_80562248);
-    value = lbl_80562184 * factor;
-    if (value < lbl_80562140)
-        value = lbl_80562140;
-    if (value > lbl_805621A4)
-        value = lbl_805621A4;
+    value = (value - lbl_80562144) / range;
+    range = range < value ? value : range;
+    range = range > lbl_80562144 ? lbl_80562144 : range;
+    adjusted = *(float *)((char *)obj + 0x58) - (lbl_805621EC + range * lbl_80562248);
+    product = scalar * adjusted;
+    value = lbl_80562140;
+    value = value < product ? value : product;
+    value = value > lbl_805621A4 ? value : lbl_805621A4;
     fn_8018AE2C(obj, value);
     fn_8018AE34(*(void **)((char *)arg0 + 0x294), lbl_80562144);
 }
@@ -1743,59 +1748,59 @@ extern void fn_8018ADD4(void *, int);
 extern void fn_8018ADC4(int, float);
 void fn_80196AA0(void *arg0) {
     float *limits = lbl_80562250;
+    volatile float slots[2];
     int state = 0;
     float difference;
-    volatile float high;
-    volatile float low;
     float vecA[3];
     float vecB[3];
 
     difference = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x218);
     if (!(difference < limits[0])) {
         state = 1;
-        if (!(difference < limits[1])) {
-            state = 2;
-        }
+        if (!(difference < limits[1])) state = 2;
     }
     {
         void *flags = *(void **)((char *)arg0 + 0x298);
         if (*(unsigned char *)((char *)flags + 0x17C) != 0 &&
-            *(unsigned char *)((char *)flags + 0x108) == 0) {
-            state = -1;
-        }
+            *(unsigned char *)((char *)flags + 0x108) == 0) state = -1;
     }
-    switch (state) {
-    case 0: {
+    if (state == 0) goto case0;
+    if (state >= 0) goto nonnegative;
+    if (state >= -1) goto transition;
+    goto transition;
+nonnegative:
+    if (state >= 2) goto transition;
+    goto case1;
+case0: {
         void *object = *(void **)((char *)arg0 + 0x294);
+        void *outputBase;
+        void *inputBase;
         float factor = lbl_80562258;
         vecA[0] = *(float *)((char *)object + 0x88) * factor;
         vecA[1] = *(float *)((char *)object + 0x8C) * factor;
         vecA[2] = *(float *)((char *)object + 0x90) * factor;
-        fn_8017B3A8(*(void **)((char *)arg0 + 0x294), vecA,
-                    (char *)*(void **)((char *)arg0 + 0x294) + 0x94, factor);
+        outputBase = (void *)*(void * volatile *)((char *)arg0 + 0x294);
+        inputBase = (void *)*(void * volatile *)((char *)arg0 + 0x294);
+        fn_8017B3A8(inputBase, vecA, (char *)outputBase + 0x94, factor);
     }
-    case 1: {
-        volatile float high = lbl_80562144;
-        volatile float low = lbl_80562140;
-        {
-            float result = -((low * *(float *)((char *)arg0 + 0x40)) +
-                             (-high * *(float *)((char *)arg0 + 0x44)));
-            if (low < result) {
-                low = result;
-            }
-            if (low > lbl_805621A4) {
-                low = lbl_805621A4;
-            }
-        }
-        fn_8018ADAC(*(void **)((char *)arg0 + 0x294), low);
+case1: {
+        float high = lbl_80562144;
+        float low = lbl_80562140;
+        float value = low;
+        float result = -((low * *(float *)((char *)arg0 + 0x40)) +
+                         (-high * *(float *)((char *)arg0 + 0x44)));
+        slots[0] = high;
+        slots[1] = low;
+        value = result > value ? result : value;
+        value = value > lbl_805621A4 ? lbl_805621A4 : value;
+        fn_8018ADAC(*(void **)((char *)arg0 + 0x294), value);
         fn_8018ADD4(*(void **)((char *)arg0 + 0x294), -1);
-        fn_8018ADBC(*(int *)((char *)arg0 + 0x294), high);
-        fn_8018ADC4(*(int *)((char *)arg0 + 0x294), low);
-        if ((float)__fabs(*(float *)((char *)arg0 + 0x270)) < lbl_80562160) {
-            fn_8018ADB4(*(int *)((char *)arg0 + 0x294), low);
-        }
+        fn_8018ADBC(*(int *)((char *)arg0 + 0x294), lbl_80562144);
+        fn_8018ADC4(*(int *)((char *)arg0 + 0x294), lbl_80562140);
+        if ((float)__fabs(*(float *)((char *)arg0 + 0x270)) < lbl_80562160)
+            fn_8018ADB4(*(int *)((char *)arg0 + 0x294), lbl_80562140);
         if (*(float *)((char *)arg0 + 0x270) < lbl_80562160) {
-            fn_8018ADC4(*(int *)((char *)arg0 + 0x294), high);
+            fn_8018ADC4(*(int *)((char *)arg0 + 0x294), lbl_80562144);
             {
                 void *object = *(void **)((char *)arg0 + 0x294);
                 float factor = lbl_8056225C;
@@ -1805,15 +1810,13 @@ void fn_80196AA0(void *arg0) {
                 fn_8017B3A8(object, vecB, (char *)object + 0x94, factor);
             }
         }
-        break;
+        goto done;
     }
-    case -1:
-    case 2:
-    default:
-        *(int *)((char *)arg0 + 0x210) = *(int *)((char *)arg0 + 0x214);
-        *(int *)((char *)arg0 + 0x214) = 2;
-        break;
-    }
+transition:
+    *(int *)((char *)arg0 + 0x210) = *(int *)((char *)arg0 + 0x214);
+    *(int *)((char *)arg0 + 0x214) = 2;
+done:
+    ;
 }
 
 #pragma push
