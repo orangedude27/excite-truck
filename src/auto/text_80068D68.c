@@ -7698,11 +7698,12 @@ void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) 
     u16 state;
     u8 change = 0;
     u32 index = 0;
+    u16 p1, p0;
 
     *(u16 *)(lbl_803C0F78 + 0x18F6) = status;
     for (;;) {
         state = *(u16 *)(cb + 8);
-        if ((u16)(state - 1) <= 2 && cb[0xD] && (addr == 0 || memcmp(cb + 0x28, addr, 6) == 0)) {
+        if ((u16)(state + 0xFFFF) <= 2 && cb[0xD] && (addr == 0 || memcmp(cb + 0x28, addr, 6) == 0)) {
             if (status != 0) {
                 if (state == 3) {
                     if (status != 0x23) {
@@ -7721,14 +7722,14 @@ void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) 
                     tBTM_CHG_ESCO_PARAMS new_params;
                     cb[0x2E] = 0;
                     if (change) {
-                        new_params.max_latency = *(u16 *)(cb + 0x1C);
                         new_params.packet_types = *(u16 *)(cb + 0x20);
+                        new_params.max_latency = *(u16 *)(cb + 0x1C);
                         new_params.retrans_effort = cb[0x22];
                         BTM_ChangeEScoLinkParms(index, &new_params);
                     }
                 } else if (params != 0) {
-                    u16 p0 = *(u16 *)((u8 *)params + 0);
-                    u16 p1 = *(u16 *)((u8 *)params + 2);
+                    p0 = *(u16 *)((u8 *)params + 0);
+                    p1 = *(u16 *)((u8 *)params + 2);
                     *(u16 *)(cb + 0x24) = p0;
                     *(u16 *)(cb + 0x26) = p1;
                     p0 = *(u16 *)((u8 *)params + 4);
@@ -8260,15 +8261,15 @@ service_loop:
                 state[0x70] = last_index;
                 goto increment_a;
             }
-            state[0x70]++;
+            (*(volatile u8 *)(state + 0x70))++;
             goto increment_b;
         }
     }
 
 increment_a:
-    state[0x70]++;
+    (*(volatile u8 *)(state + 0x70))++;
 increment_b:
-    state[0x70]++;
+    (*(volatile u8 *)(state + 0x70))++;
 service_check:
     if (state[0x70] < last_index)
         goto service_loop;
