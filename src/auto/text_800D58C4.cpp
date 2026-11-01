@@ -5,6 +5,7 @@
 #include "revolution/GX/GXAttr.h"
 #include "revolution/GX/GXGeometry.h"
 #include "revolution/MTX/mtxtypes.h"
+#include "revolution/GX/GXGeometry.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
 
