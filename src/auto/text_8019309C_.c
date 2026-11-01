@@ -1390,7 +1390,6 @@ public:
 static inline Obj_80195D80 *GetObj_80195D80(void *p) {
     return ((Vt_80195D80 *)p)->v5();
 }
-#pragma cplusplus reset
 struct Other_80195D80 {
     unsigned char p0[0x54];
     float a54, a58, a5c;
@@ -1739,12 +1738,11 @@ void fn_80196AA0(void *arg0) {
     float difference;
     float vecA[3];
     float vecB[3];
-    float *limits = lbl_80562250;
 
     difference = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x218);
-    if (!(difference < limits[0])) {
+    if (!(difference < lbl_80562250[0])) {
         state = 1;
-        if (!(difference < limits[1])) {
+        if (!(difference < lbl_80562250[1])) {
             state = 2;
         }
     }
@@ -1762,7 +1760,8 @@ void fn_80196AA0(void *arg0) {
         vecA[0] = *(float *)((char *)object + 0x88) * factor;
         vecA[1] = *(float *)((char *)object + 0x8C) * factor;
         vecA[2] = *(float *)((char *)object + 0x90) * factor;
-        fn_8017B3A8(object, vecA, (char *)object + 0x94, factor);
+        fn_8017B3A8(*(void **)((char *)arg0 + 0x294), vecA,
+                    (char *)*(void **)((char *)arg0 + 0x294) + 0x94, factor);
     }
     case 1: {
         volatile float high = lbl_80562144;
