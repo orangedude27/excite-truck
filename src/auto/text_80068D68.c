@@ -7694,38 +7694,62 @@ void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
 }
 
 void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) {
-    u8 *cb=lbl_803C0F78+0x1854;
-    u8 change=0; u16 index=0;
-    *(u16*)(lbl_803C0F78+0x18F6)=status;
-    for(;;) {
-        u16 state=*(u16*)(cb+8);
-        if((u16)(state+0xFFFF)<=2 && cb[0xD] && (addr==0||memcmp(cb+0x28,addr,6)==0)) {
-            if(status) {
-                if(state==3) {
-                    if(status!=0x23) { *(u16*)(cb+8)=0; ((void(*)(u16))*(u32*)(cb+4))(index); }
-                } else *(u16*)(cb+8)=1;
-            } else {
-                if(state==1) change=1;
-                *(u16*)(cb+8)=4; *(u16*)(cb+0xA)=handle;
-                if(lbl_803C0F78[0x1908]==0) {
-                    u16 sp8, spa; u8 spc;
-                    cb[0x2E]=0;
-                    if(change) {
-                        spa=*(u16*)(cb+0x20); sp8=*(u16*)(cb+0x1C); spc=cb[0x22];
-                        BTM_ChangeEScoLinkParms(index,(tBTM_CHG_ESCO_PARAMS*)&sp8);
+    u8 *cb = lbl_803C0F78 + 0x1854;
+    u16 state;
+    u8 change = 0;
+    u32 index = 0;
+
+    *(u16 *)(lbl_803C0F78 + 0x18F6) = status;
+    for (;;) {
+        state = *(u16 *)(cb + 8);
+        if ((u16)(state - 1) <= 2 && cb[0xD] && (addr == 0 || memcmp(cb + 0x28, addr, 6) == 0)) {
+            if (status != 0) {
+                if (state == 3) {
+                    if (status != 0x23) {
+                        *(u16 *)(cb + 8) = 0;
+                        ((void (*)(u16))*(u32 *)(cb + 4))(index);
                     }
-                } else if(params) {
-                    u16 *p=(u16*)params;
-                    *(u16*)(cb+0x24)=p[0]; *(u16*)(cb+0x26)=p[1];
-                    *(u16*)(cb+0x28)=p[2]; *(u16*)(cb+0x2A)=p[3];
-                    *(u16*)(cb+0x2C)=p[4]; *(u16*)(cb+0x2E)=p[5];
-                    *(u16*)(cb+0x30)=p[6];
+                } else {
+                    *(u16 *)(cb + 8) = 1;
                 }
-                ((void(*)(u16))*(u32*)cb)(index);
+            } else {
+                if (state == 1)
+                    change = 1;
+                *(u16 *)(cb + 8) = 4;
+                *(u16 *)(cb + 0xA) = handle;
+                if (lbl_803C0F78[0x1908] == 0) {
+                    tBTM_CHG_ESCO_PARAMS new_params;
+                    cb[0x2E] = 0;
+                    if (change) {
+                        new_params.max_latency = *(u16 *)(cb + 0x1C);
+                        new_params.packet_types = *(u16 *)(cb + 0x20);
+                        new_params.retrans_effort = cb[0x22];
+                        BTM_ChangeEScoLinkParms(index, &new_params);
+                    }
+                } else if (params != 0) {
+                    u16 p0 = *(u16 *)((u8 *)params + 0);
+                    u16 p1 = *(u16 *)((u8 *)params + 2);
+                    *(u16 *)(cb + 0x24) = p0;
+                    *(u16 *)(cb + 0x26) = p1;
+                    p0 = *(u16 *)((u8 *)params + 4);
+                    p1 = *(u16 *)((u8 *)params + 6);
+                    *(u16 *)(cb + 0x28) = p0;
+                    *(u16 *)(cb + 0x2A) = p1;
+                    p0 = *(u16 *)((u8 *)params + 8);
+                    *(u16 *)(cb + 0x2C) = p0;
+                    p0 = *(u16 *)((u8 *)params + 0xA);
+                    *(u16 *)(cb + 0x2E) = p0;
+                    p0 = *(u16 *)((u8 *)params + 0xC);
+                    *(u16 *)(cb + 0x30) = p0;
+                }
+                ((void (*)(u16))*(u32 *)cb)(index);
             }
             return;
         }
-        index++; cb+=0x34; if(index>=3)return;
+        index++;
+        cb += 0x34;
+        if (index >= 3)
+            return;
     }
 }
 
@@ -8200,9 +8224,9 @@ void bta_dm_find_services(u8 *bd_addr) {
     volatile tSDP_UUID service_uuid;
     u16 service;
     u8 *state = lbl_803C0B98;
-    register s32 num_attr = 1;
+    register u16 num_attr = 1;
     register u32 bit_base = 1;
-    register s32 uuid_len = 2;
+    register u16 uuid_len = 2;
     register u32 zero = 0;
     register u8 last_index = 0x17;
     u8 *name;
@@ -8221,13 +8245,13 @@ service_loop:
             service = lbl_802EE990[state[0x70]];
             *(volatile u32 *)(state + 0xC) &=
                 ~(bit_base << state[0x70]);
-            service_uuid.len = (u16)uuid_len;
+            service_uuid.len = uuid_len;
             service_uuid.uu.uuid16 = service;
             if (service == 0x1200)
                 num_attr = 2;
             SDP_InitDiscoveryDb(*(tSDP_DISCOVERY_DB **)(state + 0x14),
                                 0xFA, 1, (tSDP_UUID *)&service_uuid,
-                                (u16)num_attr, attr_values);
+                                num_attr, attr_values);
             if (SDP_ServiceSearchAttributeRequest(
                     bd_addr, *(tSDP_DISCOVERY_DB **)(state + 0x14),
                     (tSDP_DISC_CMPL_CB *)fn_800729C0) == FALSE) {
@@ -8256,10 +8280,11 @@ service_check:
         fn_80070FA4((u8 *)msg + 8, state + 0x1A);
         name = state + 0x20;
         if ((s8)state[0x20] == 0) {
-            name = (u8 *)BTM_SecReadDevName(state + 0x1A);
-            if (name != 0)
-                strncpy((char *)msg + 0xE, (char *)name, 0x20);
+            u8 *read_name = (u8 *)BTM_SecReadDevName(state + 0x1A);
+            if (read_name != 0)
+                name = read_name;
         }
+        strncpy((char *)msg + 0xE, (char *)name, 0x20);
         fn_80071450(msg);
     }
 }
