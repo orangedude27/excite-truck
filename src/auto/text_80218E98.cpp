@@ -2513,6 +2513,7 @@ checked:
     fn_802C5320(b, enabled, x, y - ((f32)fn_802C5220(b) - value), base, (f32)fn_802C51C0(b), value);
 }
 #pragma scheduling on
+#pragma use_lmw_stmw on
 #pragma pop
 
 #pragma dont_inline on
@@ -5575,7 +5576,7 @@ extern "C" s32 fn_80224B0C(void *arg0, s32 arg1) {
     return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
 }
 
-extern "C" void *fn_80224B54(void *arg0, s32 arg1, void *arg2) {
+extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
     volatile u8 *self = (volatile u8 *)arg0;
     register s32 first;
     f32 sp10;
@@ -5600,7 +5601,7 @@ extern "C" void *fn_80224B54(void *arg0, s32 arg1, void *arg2) {
     }
 
     if (arg1 != 0) {
-        *(s32 *)(self + 0x244) = arg1;
+        *(s32 *)(self + 0x244) = (s32)arg1;
     } else {
         *(s32 *)(self + 0x244) = fn_80131234((u8 *)arg2 + 0x20);
     }
