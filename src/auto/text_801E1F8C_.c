@@ -21,37 +21,50 @@ void fn_802E30C8(const char *, ...);
 void fn_801A47C8(void);
 void fn_801A47FC(int);
 void fn_8015F670(int *, int);
-#pragma scheduling off
+#pragma use_lmw_stmw off
 void fn_801E1F8C(void *arg0, void *arg1) {
-    void *obj;
+    int count0 = *(int *)((char *)arg0 + 0x24);
+    int count1;
     void *item;
     int j;
+    void **entry1;
+    void **entry0;
     int i;
-    void **p1;
-    void **p0;
-    int count1;
-    int count0;
-    count0 = *(int *)((char *)arg0 + 0x24);
-    if (count0 == 0) return;
-    p0 = (count0 > 0) ? *(void ***)((char *)arg0 + 0x14) : 0;
-    if (*(int *)((char *)p0 + 0x20) != 0x72) return;
-    count1 = *(int *)((char *)arg1 + 0x24);
-    if (count1 == 0) return;
-    p1 = (count1 > 0) ? *(void ***)((char *)arg1 + 0x14) : 0;
-    if (*(int *)((char *)p1 + 0x20) != 0x72) return;
+    void *obj;
+
+    if (count0 != 0) {
+        obj = count0 > 0 ? ((void **)arg0)[5] : 0;
+        if (*(int *)((char *)obj + 0x20) == 0x72) {
+            count1 = *(int *)((char *)arg1 + 0x24);
+            if (count1 != 0) {
+                item = count1 > 0 ? ((void **)arg1)[5] : 0;
+                if (*(int *)((char *)item + 0x20) == 0x72)
+                    return;
+            }
+        }
+    }
+
+    entry1 = (void **)arg1;
     i = 0;
     while (i < *(int *)((char *)arg1 + 0x24)) {
-        item = p1[i];
+        if (i >= 0 && i < *(int *)((char *)arg1 + 0x24))
+            item = entry1[5];
+        else
+            item = 0;
+
+        entry0 = (void **)arg0;
         j = 0;
         while (j < *(int *)((char *)arg0 + 0x24)) {
-            obj = p0[j];
-            ((void (*)(void *, void *))(*(void ***)obj)[4])(obj, item);
+            obj = entry0[5];
+            (*(void (**)(void *, void *))((*(void ***)obj) + 4))(obj, item);
+            entry0++;
             j++;
         }
+        entry1++;
         i++;
     }
 }
-
+#pragma use_lmw_stmw reset
 void fn_801E2084(void *arg0, void *arg1) {
     int i = 0;
     void **entry = (void **)arg1;
@@ -119,25 +132,90 @@ void fn_801E2294(void) {
 }
 
 extern double __fabs(double);
-#pragma ppc_psq_save off
-#pragma scheduling off
-s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, void **arg5, void **arg6, s32 arg7, s32 (*arg_sp8)(s32)) {
-    f32 delta[3], normal[3], dot, mag, scale, clampMag;
-    f32 diffX, diffY, targetY, targetZ;
-    struct { E2640Query query; } queryStorage;
-    f32 rangeScale;
+#pragma scheduling invalid_target
+#pragma push
+#pragma cplusplus on
+#pragma processor 750
+#pragma use_lmw_stmw off
+class E2640Node {
+  public:
+    virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
+    virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
+    virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
+    virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
+};
+class E2640Item {
+  public:
+    virtual s32 m0(); virtual s32 m1(); virtual s32 m2(); virtual s32 m3();
+    virtual s32 m4(f32 *, f32 *, f32 *, s32);
+};
+static inline s32 E2640ScanObj(E2640Node *obj, f32 *pos, f32 *dir, f32 *dot, s32 mask,
+                               s32 (*filter)(s32), s32 *outValue, void **outObj, s32 found) {
+    if (obj && obj->v15()) {
+        void **slot = (void **)obj;
+        s32 j;
+        for (j = 0; j < *(s32 *)((char *)obj + 0x24); j++) {
+            E2640Item *item;
+            s32 value;
+            if (j >= 0 && j < *(s32 *)((char *)obj + 0x24))
+                item = (E2640Item *)slot[5];
+            else
+                item = 0;
+            value = *(s32 *)((char *)item + 0x20);
+            if ((!filter || filter(value)) && item->m4(pos, dir, dot, mask)) {
+                *outValue = value;
+                found = 1;
+                *outObj = obj;
+            }
+            slot++;
+        }
+    }
+    return found;
+}
+extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4, void **arg5, void **arg6, s32 arg7, s32 (*arg_sp8)(s32)) {
+    class Node {
+      public:
+        virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
+        virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
+        virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
+        virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
+    };
+    class Item {
+      public:
+        virtual s32 m0(); virtual s32 m1(); virtual s32 m2(); virtual s32 m3();
+        virtual s32 m4(f32 *, f32 *, f32 *, s32);
+    };
+    f32 dot;
+    s32 count;
+    s32 finalResult;
+    void *meshLists[2];
+    void *objLists[2];
+    f32 delta[3];
+    f32 normal[3];
     void *hits[5];
-    struct { u32 pad[2]; void *items[2]; } listStorage;
+    E2640Query queryStorage;
+    s32 xIndex;
+    s32 zIndex;
+    f32 rangeScale;
+    f32 mag, scale, clampMag;
+    f32 diffX, diffY, diffZ;
+    f32 threshold;
+    f32 posX, posY, posZ, dirX, dirY, dirZ;
     register s32 found;
-    s32 count, finalResult, i, j;
+    Item *item;
+    Node *obj;
+    void **node;
+    void **hitp;
+    void **slot;
+    s32 i, j;
+    s32 value;
     u32 meshIndex;
     diffX = arg1[0] - arg0[0];
-    targetY = arg1[1];
-    diffY = targetY - arg0[1];
-    targetZ = arg1[2];
+    diffY = arg1[1] - arg0[1];
+    diffZ = arg1[2] - arg0[2];
     delta[0] = diffX;
     delta[1] = diffY;
-    delta[2] = targetZ - arg0[2];
+    delta[2] = diffZ;
     mag = PSVECMag((Vec *)delta);
     clampMag = lbl_80562CDC;
     clampMag = (clampMag > mag) ? clampMag : mag;
@@ -146,56 +224,61 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
     normal[1] = delta[1] * scale;
     normal[2] = delta[2] * scale;
     dot = PSVECDotProduct((Vec *)normal, (Vec *)delta);
-    *arg5 = 0;
     found = 0;
-    if ((f32)__fabs((f64)normal[1]) > lbl_80562CE4) {
+    threshold = lbl_80562CE4;
+    *arg5 = 0;
+    if ((f32)__fabs((f64)normal[1]) > threshold) {
         count = 5;
         fn_801B619C(hits, &count, arg0);
-        for (i = 0; i < count; i++) {
-            void **node = *(void ***)hits[i];
-            while (node != 0) {
-                void *obj = *node;
-                if (obj && (*(s32 (**)(void *))(*(void ***)obj + 0x11))(obj)) {
-                    void *slot = obj;
+        hitp = hits;
+        for (i = 0; i < count; hitp++, i++) {
+            node = *(void ***)*hitp;
+            while (node) {
+                obj = (Node *)*node;
+                if (obj && obj->v15()) {
+                    slot = (void **)obj;
                     for (j = 0; j < *(s32 *)((char *)obj + 0x24); j++) {
-                        void *item;
-                        s32 value;
-                        if (j >= 0 && j < *(s32 *)((char *)obj + 0x24)) item = *(void **)((char *)slot + 0x14);
+                        if (j >= 0 && j < *(s32 *)((char *)obj + 0x24)) item = (Item *)slot[5];
                         else item = 0;
                         value = *(s32 *)((char *)item + 0x20);
                         if ((!arg_sp8 || arg_sp8(value)) &&
-                            (*(s32 (**)(void *, void *, f32 *, f32 *, s32))(*(void ***)item + 6))
-                            (item, arg0, normal, &dot, arg3)) {
+                            item->m4(arg0, normal, &dot, arg3)) {
                             *arg4 = value;
                             found = 1;
                             *arg5 = obj;
                         }
-                        slot = (void *)((char *)slot + 4);
+                        slot++;
                     }
                 }
                 node = *(void ***)((char *)node + 4);
             }
         }
-        listStorage.items[0] = lbl_8055EA3C;
-        listStorage.items[1] = lbl_8055EA40;
+        posX = arg0[0];
+        posY = arg0[1];
+        posZ = arg0[2];
+        dirX = normal[0];
+        dirY = normal[1];
+        dirZ = normal[2];
+        meshLists[0] = lbl_8055EA3C;
+        meshLists[1] = lbl_8055EA40;
         rangeScale = lbl_80562CD8;
-        queryStorage.query.position.x = arg0[0];
-        queryStorage.query.position.y = arg0[1];
-        queryStorage.query.position.z = arg0[2];
-        queryStorage.query.direction.x = normal[0];
-        queryStorage.query.direction.y = normal[1];
-        queryStorage.query.direction.z = normal[2];
-        queryStorage.query.dot = &dot;
-        queryStorage.query.found = found;
-        queryStorage.query.filter = arg_sp8;
-        for (meshIndex = 0; meshIndex < 2; meshIndex++) {
-            void *mesh = listStorage.items[meshIndex];
+        queryStorage.position.x = posX;
+        queryStorage.position.y = posY;
+        queryStorage.direction.x = dirX;
+        queryStorage.position.z = posZ;
+        queryStorage.direction.y = dirY;
+        queryStorage.direction.z = dirZ;
+        queryStorage.dot = &dot;
+        queryStorage.found = found;
+        queryStorage.filter = arg_sp8;
+        for (meshIndex = 0; meshIndex != 2; meshIndex++) {
+            void *mesh = meshLists[meshIndex];
             if (mesh) {
                 s32 minX = -0x2625A00, maxX = 0x2625A00;
                 s32 minZ = -0x2625A00, maxZ = 0x2625A00;
-                s32 x, z, index;
-                x = (s32)(rangeScale * arg0[0]);
-                z = (s32)(rangeScale * arg0[2]);
+                s32 index;
+                xIndex = (s32)(rangeScale * arg0[0]);
+                zIndex = (s32)(rangeScale * arg0[2]);
                 index = 0;
                 for (;;) {
                     u16 *range = (u16 *)((char *)*(void **)((char *)mesh + 0x10) + index * 8);
@@ -204,68 +287,62 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
                     end = range[1];
                     for (; k < end; k++) {
                         u16 tri = *(u16 *)((char *)*(void **)((char *)mesh + 0x0C) + k * 2);
-                        void *obj = *(void **)((char *)*(void **)((char *)mesh + 4) + tri * 4);
-                        if (*(u8 *)((char *)obj + 0x40))
-                            fn_801E2100(*(void **)((char *)obj + 0x3C), &queryStorage.query);
+                        void *tobj = *(void **)((char *)*(void **)((char *)mesh + 4) + tri * 4);
+                        if (*(u8 *)((char *)tobj + 0x40))
+                            fn_801E2100(*(void **)((char *)tobj + 0x3C), &queryStorage);
                     }
                     if (range[2] == 0) break;
                     {
                         index = range[2];
                         midX = (minX + maxX) >> 1;
                         midZ = (minZ + maxZ) >> 1;
-                        if (z <= midZ) {
+                        if (zIndex <= midZ) {
                             maxZ = midZ;
-                            if (x <= midX) maxX = midX;
-                            else { minX = midX; index++; }
+                            if (xIndex <= midX) maxX = midX;
+                            else { minX = midX; index += 1; }
                         } else {
                             minZ = midZ;
-                            if (x <= midX) { maxX = midX; index += 2; }
+                            if (xIndex <= midX) { maxX = midX; index += 2; }
                             else { minX = midX; index += 3; }
                         }
                     }
                 }
             }
         }
-        found = queryStorage.query.found;
+        found = queryStorage.found;
     } else {
         fn_802E30C8((const char *)&lbl_8033989C, lbl_8055E3C4);
         for (i = 0; i < arg7; i++) {
-            void *obj = arg6[i];
-            if (obj && (*(s32 (**)(void *))(*(void ***)obj + 0x11))(obj)) {
-                void *slot = obj;
+            obj = (Node *)arg6[i];
+            if (obj && obj->v15()) {
+                slot = (void **)obj;
                 for (j = 0; j < *(s32 *)((char *)obj + 0x24); j++) {
-                    void *item;
-                    s32 value;
                     if (j >= 0 && j < *(s32 *)((char *)obj + 0x24))
-                        item = *(void **)((char *)slot + 0x14);
+                        item = (Item *)slot[5];
                     else
                         item = 0;
                     value = *(s32 *)((char *)item + 0x20);
                     if ((!arg_sp8 || arg_sp8(value)) &&
-                        (*(s32 (**)(void *, void *, f32 *, f32 *, s32))(*(void ***)item + 6))
-                        (item, arg0, normal, &dot, arg3)) {
+                        item->m4(arg0, normal, &dot, arg3)) {
                         *arg4 = value;
                         found = 1;
                         *arg5 = obj;
                     }
-                    slot = (void *)((char *)slot + 4);
+                    slot++;
                 }
             }
         }
-        listStorage.items[0] = lbl_8055EA3C;
-        listStorage.items[1] = lbl_8055EA40;
-        for (i = 0; i < 2; i++) {
-            void *list = listStorage.items[i];
-            if (list) {
-                void **items = *(void ***)((char *)list + 4);
-                for (j = 0; j < *(s32 *)list; j++) {
-                    void *item = items[j];
+        objLists[0] = lbl_8055EA3C;
+        objLists[1] = lbl_8055EA40;
+        for (meshIndex = 0; meshIndex != 2; meshIndex++) {
+            if (objLists[meshIndex]) {
+                for (j = 0; j < *(s32 *)objLists[meshIndex]; j++) {
+                    item = *(Item **)(*(char **)((char *)objLists[meshIndex] + 4) + j * 4);
                     if (*(u8 *)((char *)item + 0x40)) {
-                        void *hit = *(void **)((char *)item + 0x3C);
-                        if ((*(s32 (**)(void *, void *, f32 *, f32 *, s32))(*(void ***)hit + 6))
-                            (hit, arg0, normal, &dot, arg3)) {
+                        void *sub = *(void **)((char *)item + 0x3C);
+                        if (((Item *)sub)->m4(arg0, normal, &dot, arg3)) {
                             found = 1;
-                            *arg4 = *(s32 *)((char *)hit + 0x20);
+                            *arg4 = *(s32 *)((char *)*(void **)((char *)item + 0x3C) + 0x20);
                             *arg5 = 0;
                         }
                     }
@@ -279,13 +356,12 @@ s32 fn_801E2640(f32 *arg0, f32 *arg1, register f32 *arg2, s32 arg3, s32 *arg4, v
         *arg5 = 0;
     }
     if (found) {
-        arg2[0] = arg0[0] + normal[0] * dot;
-        arg2[1] = arg0[1] + normal[1] * dot;
-        arg2[2] = arg0[2] + normal[2] * dot;
+        f32 tailScale = dot;
+        arg2[0] += normal[0] * tailScale;
+        arg2[1] += normal[1] * tailScale;
+        arg2[2] += normal[2] * tailScale;
     }
     return found;
 }
-#pragma scheduling on
-#pragma ppc_psq_save reset
 typedef struct VTable_801E2084 { void *unk0; void *unk4; void *unk8; void *unkC; void (*call)(void *, void *); } VTable_801E2084;
 typedef struct Obj_801E2084 { VTable_801E2084 *vtable; } Obj_801E2084;
