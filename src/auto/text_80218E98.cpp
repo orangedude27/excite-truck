@@ -271,6 +271,16 @@ struct Fn8021E8DCVTable {
     virtual void v27();
     virtual s32 Get();
 };
+
+struct Fn8021C4D4VTable {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual s32 At1C();
+    virtual s32 At20();
+};
 #pragma push
 #pragma small_data off
 extern "C" u8 lbl_8033F180[];
