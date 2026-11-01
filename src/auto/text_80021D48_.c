@@ -11,7 +11,7 @@ typedef struct Block {
     unsigned int sb_link;
 } Block;
 extern void Block_link(void*, void*, int, int);
-static Block* Pool_expand(Block** list, unsigned int size) {
+static inline Block* Pool_expand(Block** list, unsigned int size) {
     unsigned int total = (size + 0x1f) & ~7;
     Block* b;
     if (total < 0x10000) total = 0x10000;
