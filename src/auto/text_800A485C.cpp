@@ -9330,30 +9330,69 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
 extern "C" s32 fn_800BB4B0(s32,s32,s32,s32);
 extern "C" s32 fn_800BB4C8(s32,s32,s32,s32);
 extern "C" u8 lbl_80407360[];
-extern "C" s32 fn_800BA49C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    s32 temp_r9, var_r25, var_r30, var_r24, temp_r3;
-    var_r30=arg1;
-    if (!(*(u32 *)lbl_80407300&2)) {*arg4=0; return 0xF;}
-    temp_r9=arg0*arg3;
-    if (!temp_r9) {*arg4=0; return 1;}
-    var_r25=arg2*arg3; *arg4=-1;
-    if (!(arg1&0x1F)) {
-        if (*(s32 *)(lbl_80407300+0x10)==0) {*arg4=0; return 6;}
-        if (arg0==1) temp_r3=fn_800BB4B0(*(s32 *)(lbl_80407300+8),var_r25,var_r30,temp_r9);
-        else temp_r3=fn_800BB4C8(*(s32 *)(lbl_80407300+8),var_r25,var_r30,temp_r9);
-        if (temp_r3) {if(arg0==1) OSReport(lbl_8031B2B0+0x398,temp_r3); else OSReport(lbl_8031B2B0+0x3E0,temp_r3); *arg4=0; return 0x15;}
-        *arg4=arg0; return 0;
+extern "C" s32 fn_800BA49C(s32 countv, s32 addr, s32 lba, s32 size, s32 *out) {
+    const char *str = lbl_8031B2B0;
+    u32 count = (u32)countv;
+    s32 total, off, r;
+    u32 i;
+    if (!(*(u32 *)lbl_80407300 & 2)) {
+        *out = 0;
+        return 0xF;
     }
-    var_r24=0;
-    do {
-        if(var_r24>=arg0){*arg4=arg0;return 0;}
-        if(*(s32 *)(lbl_80407300+0x10)==0){if(var_r24){*arg4=var_r24;return 0;}*arg4=0;return 6;}
-        temp_r3=fn_800BB4B0(*(s32 *)(lbl_80407300+8),var_r25,(s32)lbl_80407360,arg3);
-        if(temp_r3){OSReport(lbl_8031B2B0+0x428,temp_r3);if(var_r24){*arg4=var_r24;return 0;}*arg4=0;return 0x15;}
-        VFipf_memcpy((void *)var_r30,lbl_80407360,arg3);
-        var_r30+=arg3;var_r25+=arg3;var_r24++;
-    } while(var_r24<arg0);
-    *arg4=arg0;return 0;
+    total = count * size;
+    if (total == 0) {
+        *out = 0;
+        return 1;
+    }
+    off = lba * size;
+    *out = -1;
+    if ((addr & 0x1F) == 0) {
+        if (*(s32 *)(lbl_80407300 + 0x10) == 0) {
+            *out = 0;
+            return 6;
+        }
+        if (count == 1) {
+            r = fn_800BB4B0(*(s32 *)(lbl_80407300 + 8), off, addr, total);
+            if (r != 0) {
+                OSReport(str + 0x398, r);
+                *out = 0;
+                return 0x15;
+            }
+        } else {
+            r = fn_800BB4C8(*(s32 *)(lbl_80407300 + 8), off, addr, total);
+            if (r != 0) {
+                OSReport(str + 0x3E0, r);
+                *out = 0;
+                return 0x15;
+            }
+        }
+    } else {
+        for (i = 0; i < count; i++) {
+            if (*(s32 *)(lbl_80407300 + 0x10) == 0) {
+                if (i != 0) {
+                    *out = i;
+                    return 0;
+                }
+                *out = 0;
+                return 6;
+            }
+            r = fn_800BB4B0(*(s32 *)(lbl_80407300 + 8), off, (s32)lbl_80407360, size);
+            if (r != 0) {
+                OSReport(str + 0x428, r);
+                if (i != 0) {
+                    *out = i;
+                    return 0;
+                }
+                *out = 0;
+                return 0x15;
+            }
+            VFipf_memcpy((void *)addr, lbl_80407360, size);
+            addr += size;
+            off += size;
+        }
+    }
+    *out = count;
+    return 0;
 }
 
 extern "C" s32 fn_800BB4BC(s32, s32, s32, s32);
