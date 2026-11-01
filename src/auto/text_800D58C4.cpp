@@ -5,7 +5,7 @@
 #include "revolution/GX/GXAttr.h"
 #include "revolution/GX/GXGeometry.h"
 
-// Note: The project uses u32 parameters for GX functions (not enum types from headers)
+// Project uses u32 for GX function parameters to match original source
 #include "revolution/MTX/mtxtypes.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
