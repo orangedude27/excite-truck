@@ -73,9 +73,9 @@ s32 fn_8023C3CC(void) {
 extern s32 lbl_802FA068[];
 extern s32 lbl_802FA07C[];
 extern char lbl_803413C0[];
-extern char lbl_8055BB50[];
-extern char lbl_8055BB58[];
-extern char lbl_8055BB60[];
+extern char lbl_8055BB50[4];
+extern char lbl_8055BB58[4];
+extern char lbl_8055BB60[4];
 extern s32 fn_802C83C4(void);
 extern s32 fn_802090CC(void);
 extern s32 fn_80131234(char *);
