@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma processor gekko
 #pragma paired off
 #pragma paired_single off
 extern double sin(double);
@@ -30,8 +31,8 @@ void fn_8012F57C(float *out, float *a, float *b, float t) {
         a[2] = a2;
         a[3] = a3;
     }
-    s = fn_8002F234(fabs(lbl_805612C0 - d * d));
-    if ((float)fabs(s) < lbl_80558DC4) {
+    s = fn_8002F234(__fabs(lbl_805612C0 - d * d));
+    if ((float)__fabs(s) < lbl_80558DC4) {
         out[0] = a[0];
         out[1] = a[1];
         out[2] = a[2];
@@ -55,7 +56,7 @@ void fn_8012F57C(float *out, float *a, float *b, float t) {
     out[2] = qa[2] + qb[2];
     out[3] = qa[3] + qb[3];
     s = out[3] * out[3] + out[2] * out[2] + out[1] * out[1] + out[0] * out[0];
-    if ((float)fabs(s) > lbl_80558DC4) {
+    if ((float)__fabs(s) > lbl_80558DC4) {
         s = lbl_805612C0 / fn_8002F234(s);
         out[0] = out[0] * s;
         out[1] = out[1] * s;
