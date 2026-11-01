@@ -2889,23 +2889,27 @@ probe:
 
 extern "C" void fn_8021E7D4(void *);
 extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
+    s32 offset = arg1 - 0x121;
+    if (offset > 7) return 0;
+    
     s32 *state = *(s32 **)((u8 *)arg0 + 0x25C);
     s32 value;
     
-    switch (arg1) {
-    case 0x121:
+    // Jump table dispatch simulation
+    if (offset == 0) {
         value = *state;
         if (value > 0) *state = value - 1;
         fn_8021E7D4(arg0);
         return 1;
-    case 0x122: {
+    }
+    if (offset == 1) {
         s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
         value = *state + 1;
         if (value < limit[2]) *state = value;
         fn_8021E7D4(arg0);
         return 1;
     }
-    case 0x123: {
+    if (offset == 2) {
         s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
         s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
         value = limit[2] - 1;
@@ -2917,7 +2921,7 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
         fn_8021E7D4(arg0);
         return 1;
     }
-    case 0x124: {
+    if (offset == 3) {
         s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
         value = *state - range[1];
         *state = abs_val(value);
@@ -2928,21 +2932,19 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
         fn_8021E7D4(arg0);
         return 1;
     }
-    case 0x125:
+    if (offset == 4) {
         *state = 0;
         fn_8021E7D4(arg0);
         return 1;
-    case 0x126: {
+    }
+    if (offset == 5) {
         s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
         *state = limit[2] - 1;
         fn_8021E7D4(arg0);
         return 1;
     }
-    case 0x127:
-    case 0x128:
-    default:
-        return 0;
-    }
+    // cases 6, 7 (0x127, 0x128) fall through to default
+    return 0;
 }
 
 extern "C" void fn_8021E7D4(void *arg0) {
@@ -5560,6 +5562,61 @@ extern "C" s32 fn_80224B0C(void *arg0, s32 arg1) {
     if (p != 0 && *(s32 *)((u8 *)arg0 + 0x254) != *(s32 *)p)
         return 0;
     return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
+}
+
+extern "C" void *fn_80224B54(void *arg0, s32 arg1, void *arg2) {
+    s32 type;
+    s32 first;
+    s32 ticks;
+    f32 numerator;
+    f32 sp10;
+    f32 spC;
+    f32 sp8;
+
+    ((void *(*)(void *, void *))fn_80218F80)(arg0, arg2);
+    *(void **)arg0 = lbl_8033E1C4;
+    strcpy((char *)arg0 + 0x259, &lbl_8055B88C);
+    *(u8 *)((u8 *)arg0 + 0x258) = 0;
+
+    type = *(s32 *)((u8 *)arg2 + 0xA0);
+    switch (type) {
+    case 0:
+        *(u8 *)((u8 *)arg0 + 0x258) = 1;
+        strcpy((char *)arg0 + 0x259, &lbl_8055B88C);
+        break;
+    case 1:
+        first = fn_80129D90(1, 1, 8);
+        sprintf((char *)arg0 + 0x259, lbl_8033DAD8,
+                fn_80129D90(1, 0x42, 0x45), first);
+        break;
+    }
+
+    if (arg1 != 0) {
+        *(s32 *)((u8 *)arg0 + 0x244) = arg1;
+    } else {
+        *(s32 *)((u8 *)arg0 + 0x244) = fn_80131234((u8 *)arg2 + 0x20);
+    }
+    *(s32 *)((u8 *)arg0 + 0x248) =
+        fn_80232578((s32)((u8 *)arg2 + 0x40));
+    *(s32 *)((u8 *)arg0 + 0x24C) = *(s32 *)((u8 *)arg2 + 0x90);
+    *(s32 *)((u8 *)arg0 + 0x250) = *(s32 *)((u8 *)arg2 + 4);
+
+    ticks = ((s32 (*)(void))fn_80232B70)();
+    numerator = *(f32 *)((u8 *)arg2 + 0x1C);
+    *(u8 *)((u8 *)arg0 + 0x299) = 0;
+    *(s32 *)((u8 *)arg0 + 0x29C) = 0;
+    *(f32 *)((u8 *)arg0 + 0x254) = numerator / (f32)ticks;
+
+    memcpy(&sp10, (u8 *)arg2 + 0xA4, 4);
+    memcpy(&spC, (u8 *)arg2 + 0xA8, 4);
+    memcpy(&sp8, (u8 *)arg2 + 0xAC, 4);
+
+    if ((f32)fabs((double)sp10) > *(f32 *)lbl_80558DC4 ||
+        (f32)fabs((double)spC) > *(f32 *)lbl_80558DC4 ||
+        (f32)fabs((double)sp8) > *(f32 *)lbl_80558DC4) {
+        fn_80224DDC(arg0, sp10, spC, sp8);
+    }
+    return arg0;
 }
 
 #pragma push
