@@ -1,6 +1,13 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern "C" void fn_8014AEC8(void*);
+extern "C" s32 fn_80141F7C(f32);
+extern "C" s32 fn_80158D04(void*);
+extern "C" void fn_80158D0C(void*);
+extern "C" f32 fn_80158D60(void*, void*);
+extern "C" void fn_80158E74(void*);
+extern "C" f32 fn_80158E80(void*);
 extern f32 lbl_802F9478[];
 extern "C" f32 fn_801429D0(f32, f32);
 extern "C" f64 lbl_80561780;
@@ -571,13 +578,15 @@ extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
     *(s32*)((u8*)arg0+0x10)=10; *(s32*)((u8*)arg0+0xC)=0;
     do { memset(ptr,0,4); ptr+=0x38; } while(ptr<(u8*)arg0+0x244);
     *(s32*)((u8*)arg0+4)=arg2; *(s32*)((u8*)arg0+0xC)=0;
+    *(void**)arg0=&lbl_8032EDD4;
     *(s32*)((u8*)arg0+0x244)=arg1; *(s32*)((u8*)arg0+0x248)=0;
-    *(void**)arg0=&lbl_8032EDD4; *(f32*)((u8*)arg0+0x24C)=lbl_80561754;
+    *(f32*)((u8*)arg0+0x24C)=lbl_80561754;
     f32* p=(f32*)((u8*)arg0+0x254); f32* end=(f32*)((u8*)arg0+0x28C);
     while(p<end){*p=0.0f;p+=2;}
     *(f32*)((u8*)arg0+0x28C)=0.0f; *(f32*)((u8*)arg0+0x290)=0.0f;
     *(u8*)((u8*)arg0+0x294)=0; *(s32*)((u8*)arg0+0x298)=arg2;
-    *(f32*)((u8*)arg0+0x24C)=lbl_80561754; return arg0;
+    *(f32*)((u8*)arg0+0x24C)=lbl_80561754;
+    return arg0;
 }
 #pragma small_data off
 #pragma scheduling invalid_target
@@ -608,15 +617,16 @@ extern "C" void *fn_80157DA0(void *self, void *arg1, void *arg2) {
     extern void *lbl_8032EF08;
     extern float lbl_80561760;
     unsigned char *p;
+    int *q;
     *(void **)((char *)self + 8) = (char *)self + 0x14;
     *(void **)self = &lbl_8032F2BC;
     *(int *)((char *)self + 0x10) = 10;
     *(int *)((char *)self + 0xC) = 0;
     p = (unsigned char *)self + 0x14;
-    while (p < (unsigned char *)self + 0x244) {
+    do {
         memset(p, 0, 4);
         p += 0x38;
-    }
+    } while (p < (unsigned char *)self + 0x244);
     *(void **)((char *)self + 4) = arg2;
     *(int *)((char *)self + 0xC) = 0;
     *(void **)((char *)self + 0x244) = arg1;
@@ -627,11 +637,11 @@ extern "C" void *fn_80157DA0(void *self, void *arg1, void *arg2) {
     *(void **)self = &lbl_8032EF08;
     *(int *)((char *)self + 0x270) = 0;
     *(int *)((char *)self + 0x274) = 0;
-    p = (unsigned char *)self + 0x280;
-    while (p < (unsigned char *)self + 0x2F0) {
-        *(int *)p = 0;
-        *(int *)(p + 4) = 0;
-        p += 0x10;
+    q = (int *)((char *)self + 0x280);
+    while (q < (int *)((char *)self + 0x2F0)) {
+        q[0] = 0;
+        q[1] = 0;
+        q += 4;
     }
     *(int *)((char *)self + 0x2F0) = 0;
     *(int *)((char *)self + 0x2F4) = 0;
@@ -1353,14 +1363,14 @@ extern "C" void fn_80159BB4(Unk801577F0* arg0) {
 
 extern f32 lbl_8056179C;
 extern "C" f32 fn_80159C34(Fn80159C34Obj* arg0, void* arg1) {
- f32 value=arg0->m254-lbl_8056177C, result=lbl_80561754; s32 done=0;
- if(result>value)value=result; arg0->m254=value;
+ s32 n; f32 value=arg0->m254-lbl_8056177C, result=lbl_80561754; s32 done;
+ value = (result > value) ? result : value; arg0->m254=value;
  if(*(s32*)((u8*)arg1+0x2620)==0 && ((Unk801577F0*)arg0)->v35()==0) { value=arg0->m254; if(value>lbl_8056179C)value=lbl_8056179C; arg0->m254=value; }
- result=lbl_80561754;
- if(arg0->v37()!=0 && arg0->v21()==*(s32*)((u8*)arg0+0xc)-1)done=1;
- if(__fabsf(arg0->m254)<=lbl_80558DC4[0] || done) {
+ result=lbl_80561754; done=0;
+ if(arg0->v37()!=0) { n=*(s32*)((u8*)arg0+0xc); if(arg0->v21()==n-1) done=1; }
+ if((f32)__fabs(arg0->m254)<=lbl_80558DC4[0] || done) {
   if(done || arg0->m264>0) {
-   if(arg0->m264>0){ f32 temp=arg0->m25c*arg0->v18(arg0->v21()); arg0->v33(&temp); arg0->v31(); arg0->m264=0; arg0->m25c=lbl_80561750; result=temp; }
+   if(arg0->m264>0){ f32 temp=arg0->m25c*arg0->v18(arg0->v21()); arg0->v33(&temp); arg0->v31(); arg0->m25c=lbl_80561750; arg0->m264=0; result=temp; }
    if(!done && arg0->m260>0){if(arg0->m258!=0)fn_801CB6E4((void*)arg0->m258,*(s32*)((u8*)arg0+4)); arg0->m260=0;}
   }
  } else if(arg0->m264>0)arg0->v32();
@@ -1504,20 +1514,72 @@ extern "C" void fn_8015A538(void* arg0, void* arg1) {
 extern f32 lbl_8055A02C;
 extern f32 lbl_80561788;
 extern f32 lbl_805617B4;
-void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
- if (*(f32*)((u8*)arg1+0x25d4) <= lbl_805617B4*lbl_8055A02C || arg2 != 0x3eb || *((u8*)arg0+0x2d1)) return;
- u8 *base=(u8*)arg0+0x26c, *p=base;
- s32 found=0;
- for(s32 i=0;i<8;i++,p+=0xc) {
-   f32 x=*(f32*)(p+4);
-   if (__fabsf(x-lbl_8055E3C8) <= lbl_80558DC4[0]) found=1;
-   if (*(u32*)p==arg3 && lbl_8055E3C8-x >= lbl_80561788) return;
- }
- p=0;
- for(s32 i=0;i<8;i++,base+=0xc) if(p==0 || *(f32*)(base+4)<*(f32*)(p+4)) p=base;
- *(f32*)(p+4)=lbl_8055E3C8;
- p[8]=found;
- *(u32*)p=arg3;
+extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
+    u8 *base;
+    u8 *p;
+    u8 *q;
+    s32 found;
+    s32 i;
+    f32 now;
+    f32 tol;
+    f32 lim;
+
+    if (!(*(f32 *)((u8 *)arg1 + 0x25d4) > lbl_805617B4 * lbl_8055A02C) || arg2 != 0x3eb || *((u8 *)arg0 + 0x2d1)) {
+        return;
+    }
+    now = lbl_8055E3C8;
+    tol = lbl_80558DC4[0];
+    lim = lbl_80561788;
+    base = (u8 *)arg0 + 0x26c;
+    found = 0;
+    p = base;
+    for (i = 0; i < 2; i++) {
+        if ((f32)__fabs(*(f32 *)(p + 0x4) - now) <= tol) {
+            found = 1;
+        }
+        if (*(u32 *)p == arg3 && now - *(f32 *)(p + 0x4) < lim) {
+            return;
+        }
+        if ((f32)__fabs(*(f32 *)(p + 0x10) - now) <= tol) {
+            found = 1;
+        }
+        if (*(u32 *)(p + 0xc) == arg3 && now - *(f32 *)(p + 0x10) < lim) {
+            return;
+        }
+        if ((f32)__fabs(*(f32 *)(p + 0x1c) - now) <= tol) {
+            found = 1;
+        }
+        if (*(u32 *)(p + 0x18) == arg3 && now - *(f32 *)(p + 0x1c) < lim) {
+            return;
+        }
+        if ((f32)__fabs(*(f32 *)(p + 0x28) - now) <= tol) {
+            found = 1;
+        }
+        if (*(u32 *)(p + 0x24) == arg3 && now - *(f32 *)(p + 0x28) < lim) {
+            return;
+        }
+        p += 0x30;
+    }
+    p = 0;
+    q = base;
+    for (i = 0; i < 2; i++) {
+        if (p == 0 || *(f32 *)(q + 0x4) < *(f32 *)(p + 0x4)) {
+            p = q;
+        }
+        if (p == 0 || *(f32 *)(q + 0x10) < *(f32 *)(p + 0x4)) {
+            p = q + 0xc;
+        }
+        if (p == 0 || *(f32 *)(q + 0x1c) < *(f32 *)(p + 0x4)) {
+            p = q + 0x18;
+        }
+        if (p == 0 || *(f32 *)(q + 0x28) < *(f32 *)(p + 0x4)) {
+            p = q + 0x24;
+        }
+        q += 0x30;
+    }
+    *(f32 *)(p + 0x4) = now;
+    p[8] = found;
+    *(u32 *)p = arg3;
 }
 
 extern "C" void fn_8015A7D8(void* arg0, void* arg1) {
@@ -2463,9 +2525,7 @@ extern "C" f32 fn_8015D5A4(void *arg0) {
         if (den > lbl_80561754)
             fraction = num / den;
     }
-    f32 result = (f32)idx;
-    result = result + fraction;
-    return result;
+    return (f32)idx + fraction;
 }
 #pragma scheduling on
 extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
@@ -2796,6 +2856,49 @@ extern "C" void fn_8015E2C8(Unk801577F0V* arg0) {
     for (off = 0; off < count; off++) {
         entries[off]->v18(0);
     }
+}
+
+extern "C" s32 fn_801B2F2C(s32);
+extern "C" s32 fn_801B8570(s32);
+extern "C" s32 fn_80161BB8(void);
+extern "C" s32 fn_80161C4C(void);
+extern "C" f32 fn_8015E338(void* arg0, void* arg1) {
+    f32 sum = lbl_80561754;
+    s32 off = 0;
+    s32 i = 0;
+    void* p;
+    void* q;
+    if (*(u8*)((u8*)arg0 + 0x54) != 0 && fn_801B2F2C(*(s32*)((u8*)arg1 + 0x1EC)) == 0 && fn_801B8570(*(s32*)((u8*)arg1 + 0x1EC)) != 0 && fn_80161BB8() == 0 && fn_80161C4C() != 0) {
+        for (i = 0, off = 0; i < *(s32*)((u8*)arg0 + 8); i++, off += 4) {
+            if ((f32)__fabs((f64)*(f32*)((u8*)arg1 + 0x2690)) <= lbl_80558DC4[0] ||
+                ((s32 (*)(void*))((*(u32**)(*(void**)(*(s32*)((u8*)arg0 + 4) + off)))[36]))(*(void**)(*(s32*)((u8*)arg0 + 4) + off)) != 0) {
+                void* item2 = *(void**)(*(s32*)((u8*)arg0 + 4) + off);
+                sum += ((f32 (*)(void*, void*))((*(u32**)item2)[5]))(item2, arg1);
+            }
+        }
+    }
+    p = *(void**)((u8*)arg0 + 0x50);
+    q = *(void**)p;
+    if (q != 0) {
+        if (*(s32*)((u8*)p + 8) == 0) {
+            *(u8*)((u8*)q + 0x4A) = 0;
+            *(u8*)((u8*)q + 0x4B) = 1;
+            *(u8*)((u8*)q + 0x49) = 1;
+        } else {
+            void* r = *(void**)((u8*)p + 4);
+            if (r != 0 && *(s32*)((u8*)p + 0xC) == 0) {
+                *(u8*)((u8*)r + 0x49) = 1;
+                *(u8*)((u8*)r + 0x4B) = 0;
+                *(u8*)((u8*)r + 0x4A) = 0;
+            }
+            q = *(void**)p;
+            *(u8*)((u8*)q + 0x4A) = 1;
+            *(u8*)((u8*)q + 0x4C) = 0;
+        }
+    }
+    *(s32*)((u8*)p + 0xC) = *(s32*)((u8*)p + 8);
+    *(s32*)((u8*)p + 8) = 1;
+    return sum;
 }
 
 extern "C" void fn_8015E4C4(Unk801577F0V* arg0, s8 arg1) {
