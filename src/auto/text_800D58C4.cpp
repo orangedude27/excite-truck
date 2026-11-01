@@ -38,7 +38,7 @@ extern "C" int GXLoadTexObj(s32 *, u32);                   /* extern */
 extern "C" int GXLoadTlut(int *, s32);                 /* extern */
 extern "C" int GXSetAlphaCompare(s32, u8, u8, s32, u8);    /* extern */
 extern "C" int GXSetBlendMode(u8, u8, u8, u8, void *, s32); /* extern */
-extern "C" int GXSetChanCtrl(int, int, int, u8, int, int, int); /* extern */
+extern "C" void GXSetChanCtrl(u32, u32, u32, u32, u32, u32, u32);
 extern "C" int GXSetChanMatColor_Internal(int, u8 *, u8, u8, u8); /* extern */
 extern "C" int GXSetIndTexCoordScale(u32, u8, u8);         /* extern */
 extern "C" int GXSetIndTexOrder(u32, u8, u8);              /* extern */
@@ -1071,7 +1071,12 @@ extern "C" void fn_800D7D5C(void* arg0, f32* m) {
             bb *= lbl_80560E98; cc *= lbl_80560E98; dd *= lbl_80560E98; ee *= lbl_80560E98; ff *= lbl_80560E98;
         } while (aa < lbl_80560E88 && bb < lbl_80560E88 && cc < lbl_80560E88 && dd < lbl_80560E88 && ee < lbl_80560E88 && ff < lbl_80560E88 && scale > -0x11);
     }
-    if (scale <= -0x11) GXSetIndTexMtx(&a, scale);
+    if (scale <= -0x11) {
+        f32 mtx[2][3];
+        mtx[0][0] = a; mtx[0][1] = b; mtx[0][2] = c;
+        mtx[1][0] = d; mtx[1][1] = e; mtx[1][2] = f;
+        ((void (*)(void *, f32 (*)[3], s8))GXSetIndTexMtx)(arg0, mtx, scale);
+    }
 }
 
 extern "C" f32 fn_800D7F58(f32 *arg0, const f32 *arg1) {
@@ -1584,8 +1589,9 @@ extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
         u32 fmt = *(u32*)(p + 0x4C);
         u32 count = (*(u32*)(p + 0x50) >> 15) & 7;
         u32 width = (fmt >> 24) & 15;
-        u8* base = (u8*)*(void**)(p + 0x58) + width * 0x14 + ((fmt >> 18) & 0x3C) + ((fmt >> 23) & 0x1E0);
+        u8* base = (u8*)(width * 0x14 + ((fmt >> 18) & 0x3C) + ((fmt >> 23) & 0x1E0));
         base += ((fmt >> 4) & 4) + ((fmt >> 6) & 4) + ((fmt >> 12) & 4) + ((fmt >> 5) & 4) + ((fmt >> 3) & 4);
+        base += (u32)*(void**)(p + 0x58);
         if (count < arg1) {
             u32 i = count;
             for (; i < arg1; i++) {
