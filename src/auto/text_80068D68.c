@@ -10030,7 +10030,7 @@ void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
  u8 *entry=lbl_803C3740+0xAC;
  register u8 i=0;
  register u8 *entry_reg=entry;
- while(i<8){if(entry_reg[0]==1&&*(u16 *)(entry_reg+0x10)==psm&&(entry_reg[8]==0||memcmp(addr,entry_reg+9,6)==0))break;i++;entry_reg+=0x60;}
+ do { if(entry_reg[0]==1&&*(u16 *)(entry_reg+0x10)==psm&&(entry_reg[8]==0||memcmp(addr,entry_reg+9,6)==0))break;i++;entry_reg+=0x60;} while(i<8);
  if(i==8){if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80317310);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);L2CA_DisconnectReq(cid);return;}
  entry_reg[0]=3;memcpy(entry_reg+9,addr,6);*(u16 *)(entry_reg+6)=cid;L2CA_ConnectRsp(addr,status,cid,0,0);
  if(lbl_803C3740[0x28]>=4)fn_80070954(0xE0003,lbl_80317354,*(u16 *)(entry_reg+6));
@@ -11495,47 +11495,60 @@ u8 HID_HostDeregister(void) {
 }
 
 u8 HID_HostAddDev(u8 *addr, u16 attr_mask, u8 *handle) {
-    u8 *entry;
     u8 *p;
-    s32 i;
+    u8 *entry;
+    s8 index;
     s32 count;
-    s32 offset;
+    u32 offset;
 
     p = lbl_803C3C38;
     if (p[0x400] == 0)
         return 1;
-    for (i = 0; i < 0x10; i++) {
-        if (memcmp(addr, p + 1, 6) == 0)
-            break;
+    index = 0;
+search:
+    if (memcmp(addr, p + 1, 6) != 0) {
+        index++;
         p += 0x34;
+        if (index < 0x10)
+            goto search;
     }
-    if (i == 0x10) {
+    if (index == 0x10) {
         p = lbl_803C3C38;
-        count = 0;
-        if (p[0] == 0) goto scan_done; count++;
-        if (p[0x34] == 0) goto scan_done; count++;
-        if (p[0x68] == 0) goto scan_done; count++;
-        if (p[0x9C] == 0) goto scan_done; count++;
-        if (p[0xD0] == 0) goto scan_done; count++;
-        if (p[0x104] == 0) goto scan_done; count++;
-        if (p[0x138] == 0) goto scan_done; count++;
-        if (p[0x16C] == 0) goto scan_done; count++;
-        p += 0x1A0;
-        count++;
-        if (p[0] == 0) goto scan_done; count++;
-        if (p[0x34] == 0) goto scan_done; count++;
-        if (p[0x68] == 0) goto scan_done; count++;
-        if (p[0x9C] == 0) goto scan_done; count++;
-        if (p[0xD0] == 0) goto scan_done; count++;
-        if (p[0x104] == 0) goto scan_done; count++;
-        if (p[0x138] == 0) goto scan_done; count++;
-        if (p[0x16C] == 0) goto scan_done; count++;
-scan_done:
-        i = count;
-        if (i == 0x10)
-            return 3;
+        index = 0;
+        count = 2;
+scan:
+        if (p[0] != 0) {
+            index++;
+            if (p[0x34] != 0) {
+                index++;
+                if (p[0x68] != 0) {
+                    index++;
+                    if (p[0x9C] != 0) {
+                        index++;
+                        if (p[0xD0] != 0) {
+                            index++;
+                            if (p[0x104] != 0) {
+                                index++;
+                                if (p[0x138] != 0) {
+                                    index++;
+                                    if (p[0x16C] != 0) {
+                                        p += 0x1A0;
+                                        index++;
+                                        count--;
+                                        if (count != 0)
+                                            goto scan;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-    offset = i * 0x34;
+    if (index == 0x10)
+        return 3;
+    offset = index * 0x34;
     entry = lbl_803C3C38 + offset;
     if (entry[0] == 0) {
         entry[0] = 1;
@@ -11544,7 +11557,7 @@ scan_done:
         entry[0xC] = 0;
     }
     *(u16 *)(entry + 8) = attr_mask;
-    *handle = i;
+    *handle = index;
     return 0;
 }
 
