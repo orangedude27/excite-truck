@@ -3,6 +3,7 @@
 
 #pragma paired off
 #pragma paired_single off
+typedef struct { float x, y, z; int color; float u, v; } Vtx;
 extern void fn_80129AFC(void);
 extern void fn_802C2B48(void);
 extern void fn_802C8530(void);
