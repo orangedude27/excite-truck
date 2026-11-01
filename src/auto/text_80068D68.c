@@ -6375,9 +6375,9 @@ void btm_reset_complete(void) {
     extern char lbl_803160F0[];
     extern void fn_8007093C(u32, void *);
     extern void fn_80085828();
-    register u8 *btm;
+    u8 *btm;
     void (*callback)(void *);
-    register void *buf;
+    void *buf;
 
     if (lbl_803C0F78[0x27C0] >= 4)
         fn_8007093C(0xD0003, lbl_803160F0);
@@ -6401,6 +6401,10 @@ void btm_reset_complete(void) {
     *(u16 *)(btm + 0x16A6) = 0;
     btm[0x64E] = 2;
     btm[0x64F] = 4;
+    btm[0x64E] = 0;
+    btm[0x64F] = 4;
+    btu_start_timer((void *)2, 0, 0x800);
+    btsnd_hcic_reset(2);
     btu_start_timer(btm + 0x574, 1, 1);
 
     buf = GKI_getpoolbuf(2);
@@ -7583,6 +7587,73 @@ tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_c
         }
     }
     return BTM_NO_RESOURCES;
+}
+
+extern u8 lbl_80560D38;
+extern u8 lbl_80560D3C;
+extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
+tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
+{
+    UINT8 *p_features;
+    int ind, acl_ind;
+    UINT8 *p_cb;
+    tBTM_PM_MODE mode;
+    UINT8 *p_acl;
+
+    if (pm_id >= 2)
+        pm_id = BTM_PM_SET_ONLY_ID;
+    if (p_mode == NULL)
+        return BTM_ILLEGAL_VALUE;
+
+    mode = p_mode->mode & ~BTM_PM_MD_FORCE;
+    acl_ind = 0;
+    p_acl = lbl_803C0F78 + 0x34;
+loop:
+    if (p_acl[0x119] == 0)
+        goto next;
+    if (memcmp(p_acl + 8, remote_bda, 6) != 0)
+        goto next;
+    goto found;
+next:
+    acl_ind++;
+    p_acl += 0x11C;
+    if (acl_ind < 4)
+        goto loop;
+found:
+    if (acl_ind == 4)
+        return BTM_UNKNOWN_ADDR;
+
+    p_cb = lbl_803C0F78 + acl_ind * 0x22 + 0x4CC;
+    if (mode != BTM_PM_MD_ACTIVE) {
+        ind = mode - BTM_PM_MD_HOLD;
+        p_features = (UINT8 *)fn_8007A3A4();
+        if (!(p_features[((UINT8 *)&lbl_80560D38)[ind]] &
+              ((UINT8 *)&lbl_80560D3C)[ind]))
+            return BTM_MODE_UNSUPPORTED;
+    }
+
+    if (mode == p_cb[0x20]) {
+        if (mode == BTM_PM_MD_ACTIVE ||
+            (p_mode->max >= *(UINT16 *)(p_cb + 0x1E) &&
+             p_mode->min <= *(UINT16 *)(p_cb + 0x1E)))
+            return BTM_SUCCESS;
+    }
+
+    if (pm_id != BTM_PM_SET_ONLY_ID &&
+        ((lbl_803C0F78 + ((pm_id * 8) & 0x7F8))[0x558] & BTM_PM_REG_SET)) {
+        UINT16 *p_req = (UINT16 *)(p_cb + pm_id * 0xA);
+        p_req[0] = p_mode->max;
+        p_req[1] = p_mode->min;
+        p_req[2] = p_mode->attempt;
+        p_req[3] = p_mode->timeout;
+        p_req[4] = *(UINT16 *)&p_mode->mode;
+        p_cb[0x21] = TRUE;
+    }
+
+    if (p_cb[0x20] == 1 || p_cb[0x20] == 4 ||
+        lbl_803C0F78[0x564] != 4)
+        return 0xD;
+    return btm_pm_snd_md_req(pm_id, acl_ind, p_mode);
 }
 
 tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
