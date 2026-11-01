@@ -6997,49 +6997,68 @@ tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
 }
 
 void btm_inq_db_reset(void) {
+    u8 *base = lbl_803C0F78;
+    u8 *loopBase;
+    u32 zero = 0;
     tBTM_REMOTE_DEV_NAME rem_name;
-    tBTM_INQUIRY_VAR_ST *p_inq = &btm_cb.btm_inq_vars;
-    UINT8 num_responses;
-    UINT8 temp_inq_active;
-    tBTM_STATUS status;
-    btu_stop_timer(&p_inq->inq_timer_ent);
-    if (p_inq->inq_active != BTM_INQUIRY_INACTIVE) {
-        temp_inq_active = p_inq->inq_active;
-        p_inq->inq_active = BTM_INQUIRY_INACTIVE;
-        if (temp_inq_active == BTM_LIMITED_INQUIRY_ACTIVE || temp_inq_active == BTM_GENERAL_INQUIRY_ACTIVE) {
-            if (p_inq->p_inq_cmpl_cb) {
-                num_responses = 0;
-                (*p_inq->p_inq_cmpl_cb)(&num_responses);
+    u8 num_responses[2];
+    u8 value;
+    u8 temp_inq_active;
+    u32 i;
+    u8 *entry;
+
+    fn_80070F90(base + 0x16C4);
+    if (base[0x1848] != 0) {
+        temp_inq_active = base[0x1848];
+        base[0x1848] = 0;
+        temp_inq_active += 0xFF;
+        if (temp_inq_active <= 1) {
+            if (*(void (**)(void *))(base + 0x16B0) != 0) {
+                num_responses[1] = 0;
+                (*(void (**)(void *))(base + 0x16B0))(&num_responses[1]);
             }
         }
     }
-    if (p_inq->remname_active) {
-        btu_stop_timer(&p_inq->rmt_name_timer_ent);
-        p_inq->remname_active = FALSE;
-        memset(p_inq->remname_bda, 0, BD_ADDR_LEN);
-        if (p_inq->p_remname_cmpl_cb) {
-            rem_name.status = BTM_DEV_RESET;
-            (*p_inq->p_remname_cmpl_cb)(&rem_name);
-            p_inq->p_remname_cmpl_cb = NULL;
+    if (base[0x16AE] & 1) {
+        fn_80070F90(base + 0x1680);
+        base[0x16AE] = zero;
+        memset(base + 0x16A8, 0, 6);
+        if (*(void (**)(void *))(base + 0x167C) != 0) {
+            rem_name.status = 0x000C;
+            (*(void (**)(void *))(base + 0x167C))(&rem_name);
+            *(void (**)(void *))(base + 0x167C) = 0;
         }
     }
-    if (p_inq->inqfilt_active) {
-        p_inq->inqfilt_active = FALSE;
-        if (p_inq->p_inqfilter_cmpl_cb) {
-            status = BTM_DEV_RESET;
-            (*p_inq->p_inqfilter_cmpl_cb)(&status);
+    if (base[0x1844] != 0) {
+        if (*(void (**)(void *))(base + 0x16B8) != 0) {
+            value = 0x0C;
+            (*(void (**)(void *))(base + 0x16B8))(&value);
+        }
+        base[0x1844] = zero;
+    }
+
+    base[0x1847] = zero;
+    base[0x1845] = zero;
+    *(u32 *)(base + 0x16B4) = zero;
+    loopBase = lbl_803C0F78;
+    entry = loopBase + 0x16E4;
+    for (i = 0; i < 12; i++, entry += 0x1C) {
+        if (entry[0x1A] != 0) {
+            entry[0x1A] = zero;
+            if (*(void (**)(void *, u32))(loopBase + 0x16BC) != 0)
+                (*(void (**)(void *, u32))(loopBase + 0x16BC))(entry + 8, 0);
         }
     }
-    p_inq->state = BTM_INQ_INACTIVE_STATE;
-    p_inq->pending_filt_complete_event = 0;
-    p_inq->p_inq_results_cb = NULL;
-    btm_clr_inq_db(NULL);
-    btm_clr_inq_result_flt();
-    p_inq->discoverable_mode = BTM_NON_DISCOVERABLE;
-    p_inq->connectable_mode = BTM_NON_CONNECTABLE;
-    p_inq->page_scan_type = BTM_SCAN_TYPE_STANDARD;
-    p_inq->inq_scan_type = BTM_SCAN_TYPE_STANDARD;
-    return;
+    if (*(void **)(loopBase + 0x16DC) != 0) {
+        GKI_freebuf(*(void **)(loopBase + 0x16DC));
+        *(void **)(loopBase + 0x16DC) = 0;
+    }
+    *(u16 *)(loopBase + 0x16E0) = 0;
+    *(u16 *)(loopBase + 0x16E2) = 0;
+    *(u16 *)(base + 0x1698) = 0;
+    *(u16 *)(base + 0x169A) = 0;
+    *(u16 *)(base + 0x16A6) = 0;
+    *(u16 *)(base + 0x16A4) = 0;
 }
 
 void fn_8007BC88(void) {
@@ -15364,7 +15383,6 @@ extern u8 lbl_80319514[],lbl_80319540[];
 void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
     void *mcb = *(void **)((u8 *)arg0 + 0x6C);
     s32 signals = 0;
-
     if (*((u8 *)arg0 + 2) == 1 && *((u8 *)arg0 + 0xC)) {
         if (lbl_803C4828[0x414] >= 4)
             fn_8007093C(0x90003, lbl_80319514);
@@ -20354,4 +20372,4 @@ void fn_80085E24(void *arg0, u8 arg1) {
     *(u8 *)((u8 *)arg0 + 11) = arg1;
     btu_hcif_send_cmd(arg0);
 }
-
+typedef struct tRFC_MCB tRFC_MCB;
