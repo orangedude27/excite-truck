@@ -9596,6 +9596,60 @@ s32 fn_8008128C(void *arg0) {
     return 0;
 }
 
+int btu_hcif_send_cmd(arg0)
+void *arg0;
+{
+    u8 *msg = (u8 *)arg0;
+    u8 *queueBase;
+    u8 *newMsg;
+    register u8 *payload;
+    u16 count;
+    u16 opcode;
+    u16 offset;
+    u8 highByte;
+    u8 lowByte;
+
+    if (msg != 0 && *(u16 *)(lbl_803C0A50 + 0x6C) != 0) {
+        GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
+        msg = 0;
+    }
+
+    if (*(u16 *)(lbl_803C0A50 + 0x80) == 0 && lbl_803C0F78[0x64E] == 0)
+        *(u16 *)(lbl_803C0A50 + 0x80) = *(u16 *)(lbl_803C0A50 + 0x6C) + 1;
+
+    queueBase = lbl_803C0A50;
+    while (*(u16 *)(queueBase + 0x80) != 0) {
+        if (msg == 0)
+            msg = (u8 *)GKI_dequeue((BUFFER_Q *)(queueBase + 0x64));
+        if (msg == 0)
+            break;
+
+        offset = *(u16 *)(msg + 4);
+        payload = msg + offset;
+        highByte = payload[9];
+        lowByte = payload[8];
+        opcode = (u16)(((u16)highByte << 8) + lowByte);
+        if (opcode != 0x0C03 && opcode != 0x0C35) {
+            newMsg = (u8 *)GKI_getpoolbuf(2);
+            if (newMsg != 0) {
+                memcpy(newMsg, msg, 8);
+                memcpy(newMsg + *(u16 *)(newMsg + 4) + 8,
+                       msg + *(u16 *)(msg + 4) + 8,
+                       *(u16 *)(msg + 2));
+                GKI_enqueue((BUFFER_Q *)(queueBase + 0x70), newMsg);
+                btu_start_timer((TIMER_LIST_ENT *)(queueBase + 0x4C), 0x3C, 8);
+            }
+        }
+        count = *(u16 *)(queueBase + 0x80);
+        *(u16 *)(queueBase + 0x80) = count - 1;
+        ((void (*)(void *, u16, u16))fn_8007079C)(msg, 0x2000, count);
+        msg = 0;
+    }
+
+    if (msg != 0)
+        GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
+}
+
 void btu_hcif_connection_comp_evt(u8 *p) {
     u8 status;
     u16 handle;
