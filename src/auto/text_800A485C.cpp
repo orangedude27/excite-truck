@@ -468,14 +468,10 @@ extern "C" s32 lbl_8031E370[];
 extern "C" s32 lbl_802F4588[];
 static inline s32 findEventSlot(s32 key, s32 val) {
     s32 *entry = lbl_802F4588;
-    s32 index = 0;
     s32 i;
-    for (i = 0; i < 0x25; ++i, entry += 4, ++index) {
+    for (i = 0; i < 0x4A; ++i, entry += 2) {
         if (key == entry[0] && entry[1] == val)
-            return index;
-        ++index;
-        if (key == entry[2] && entry[3] == val)
-            return index;
+            return i;
     }
     return -1;
 }
