@@ -2,6 +2,16 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" s32 lbl_80490920[];
+extern "C" s32 lbl_802F9EE0[];
+extern "C" char lbl_8033D9A4[];
+#pragma push
+#pragma small_data on
+extern "C" char lbl_8055B890;
+extern "C" char lbl_8055B898;
+extern "C" char lbl_8055B8A0;
+extern "C" char lbl_8055B860;
+#pragma pop
 extern "C" double fabs(double);
 extern "C" f32 fabsf(f32);
 #define FN8021C18C_ABS(x) __fabs(x)
@@ -1994,9 +2004,11 @@ extern "C" void fn_8021C12C(void *arg0) {
 }
 
 extern "C" char lbl_80558DC4[];
+#pragma push
+#pragma ppc_psq_save off
 extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
+    register f32 first;
     s32 *check = *(s32 **)((u8 *)arg0 + 0x2A8);
-    f32 first;
     if (check == 0)
         return 0;
     if (*(s32 *)((u8 *)arg0 + 0x2AC) != *check)
@@ -2018,15 +2030,17 @@ extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
             fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
             return 1;
         }
+        goto done;
     case 0x128:
         if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
             fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
             return 1;
         }
     }
+done:
     return 0;
 }
-
+#pragma pop
 extern "C" s32 fn_8021C318(void *arg0) {
     s32 *p = *(s32 **)((u8 *)arg0 + 0x2A8);
     if (p == 0) return 0;
