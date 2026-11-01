@@ -5,6 +5,7 @@
 extern int fn_80131810(void *);
 extern int lbl_804BD8CC[3];
 extern char lbl_80349FF0[];
+extern u8 lbl_8055F958;
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
