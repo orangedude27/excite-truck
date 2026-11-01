@@ -193,6 +193,77 @@ s32 __GXDefaultTlutRegionCallback(unsigned int region) {
     return (s32)((char *)__GXData + region * 0x10 + 0x3D8);
 }
 
+int __GXShutdown(int shutdown) {
+    signed long long now;
+    unsigned int oldLow;
+    unsigned int oldHigh;
+    unsigned long long previous;
+    unsigned int current;
+    unsigned int low;
+    unsigned int firstHigh;
+    unsigned int high;
+    volatile unsigned short *mem;
+
+    if (shutdown == 0) {
+        if (lbl_8055D940 == 0) {
+            mem = (volatile unsigned short *)__memReg;
+            for (;;) {
+                high = mem[0x4E / 2];
+                firstHigh = high;
+                low = mem[0x50 / 2];
+                high = mem[0x4E / 2];
+                if (firstHigh == high) break;
+            }
+            lbl_8055D930 = (high << 16) | low;
+            now = OSGetTime();
+            lbl_8055D938 = (unsigned int)(now >> 32);
+            lbl_8055D93C = (unsigned int)now;
+            lbl_8055D940 = 1;
+            return 0;
+        }
+
+        now = OSGetTime();
+        mem = (volatile unsigned short *)__memReg;
+        do {
+            high = mem[0x4E / 2];
+            firstHigh = high;
+            low = mem[0x50 / 2];
+            high = mem[0x4E / 2];
+        } while (high != firstHigh);
+        oldLow = *(volatile unsigned int *)&lbl_8055D93C;
+        oldHigh = *(volatile unsigned int *)&lbl_8055D938;
+        current = (high << 16) | low;
+        previous = ((unsigned long long)oldHigh << 32) | oldLow;
+        if ((signed long long)((unsigned long long)now - previous) < 10) {
+            return 0;
+        }
+        if (current != lbl_8055D930) {
+            lbl_8055D938 = (unsigned int)(now >> 32);
+            lbl_8055D930 = current;
+            lbl_8055D93C = (unsigned int)now;
+            return 0;
+        }
+    }
+
+    GXSetBreakPtCallback(0);
+    GXGetLightDir(0);
+    GXLoadLightObjIndx(0);
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    PPCSync();
+    __cpReg[1] = 0;
+    __cpReg[2] = 3;
+    *((volatile unsigned char *)__GXData + 0x5FA) = 1;
+    GXGetVtxAttrFmt();
+    return 1;
+}
+
 void __GXInitRevisionBits(void) {
     unsigned char eight = 8;
     volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
@@ -573,6 +644,73 @@ void GXDisableBreakPt(void) {
     OSRestoreInterrupts();
 }
 
+void __GXCleanGPFifo(void) {
+    int zero = 0;
+    unsigned int *gd;
+    unsigned int *fifo;
+    unsigned int *piFifo;
+    int intStatus;
+    unsigned int tmp;
+    int rdPtr;
+    int wrPtr;
+    int count;
+
+    if ((unsigned char)lbl_8055D949 == 0) {
+        return;
+    }
+    intStatus = OSDisableInterrupts();
+    gd = __GXData;
+    fifo = (unsigned int *)lbl_8037C0C0;
+
+    gd[2] &= ~1u;
+    __cpReg[1] = (unsigned short)gd[2];
+    gd[2] &= 0xFFFFFFF3u;
+    __cpReg[1] = (unsigned short)gd[2];
+
+    fifo[7] = zero;
+    fifo[5] = fifo[6];
+    __cpReg[0x30 / 2] = (unsigned short)zero;
+    __cpReg[0x34 / 2] = (unsigned short)fifo[6];
+    __cpReg[0x38 / 2] = (unsigned short)fifo[5];
+    __cpReg[0x32 / 2] = (unsigned short)((int)fifo[7] >> 16);
+    __cpReg[0x36 / 2] = (unsigned short)((fifo[6] >> 16) & 0x3FFF);
+    __cpReg[0x3A / 2] = (unsigned short)((fifo[5] >> 16) & 0x3FFF);
+    PPCSync();
+
+    if ((unsigned char)lbl_8055D960 != 0) {
+        wrPtr = fifo[6];
+        piFifo = (unsigned int *)lbl_8037C0E4;
+        rdPtr = fifo[5];
+        count = fifo[7];
+
+        piFifo[5] = (unsigned int)rdPtr;
+        piFifo[6] = (unsigned int)wrPtr;
+        piFifo[7] = (unsigned int)count;
+        __piReg[5] = ((unsigned int)zero & 0xE000001Fu) |
+                     ((unsigned int)wrPtr & 0x1FFFFFE0u);
+
+        tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+        tmp = gd[2] | 0x10u;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+    }
+
+    tmp = gd[2] & ~2u;
+    tmp &= ~0x20u;
+    gd[2] = tmp;
+    __cpReg[1] = (unsigned short)tmp;
+    lbl_8055D950 = zero;
+    tmp = __GXData[4] | 3u;
+    __GXData[4] = tmp;
+    __cpReg[2] = (unsigned short)tmp;
+    tmp = gd[2] | 1u;
+    gd[2] = tmp;
+    __cpReg[1] = (unsigned short)tmp;
+    ((void (*)(int))OSRestoreInterrupts)(intStatus);
+}
+
 extern void *lbl_8055D94C;
 void* GXGetCurrentGXThread(void) {
     return lbl_8055D94C;
@@ -840,85 +978,83 @@ static inline void SETVAT(unsigned int *vatA, unsigned int *vatB, unsigned int *
     }
 }
 
-void GXSetVtxAttrFmt(unsigned int fmt, unsigned int attr, unsigned int compCnt,
+void GXSetVtxAttrFmt(unsigned int fmt, unsigned int attr, int compCnt,
                      unsigned int compType, unsigned int shift)
 {
-    unsigned int *base = &__GXData[fmt << 2];
+    unsigned int *base = (unsigned int *)((unsigned char *)__GXData + (fmt << 2));
     unsigned int *vatA = &base[0x1C / 4];
     unsigned int *vatB = &base[0x3C / 4];
     unsigned int *vatC = &base[0x5C / 4];
 
-    if (fmt <= 0x10) {
-        switch (attr) {
-        case 0x8: // GX_VA_POS
-            *vatA = __rlwimi(*vatA, compCnt, 0, 31, 31);
-            *vatA = __rlwimi(*vatA, compType, 1, 28, 30);
-            *vatA = __rlwimi(*vatA, shift, 4, 23, 27);
-            break;
-        case 0x9: // GX_VA_NRM
-        case 0x1C: // GX_VA_NBT
-            *vatA = __rlwimi(*vatA, compType, 10, 19, 21);
-            if (compCnt == 2) {
-                *vatA = __rlwimi(*vatA, 1, 9, 22, 22);
-                *vatA = __rlwimi(*vatA, 1, 31, 0, 0);
-            } else {
-                *vatA = __rlwimi(*vatA, compCnt, 9, 22, 22);
-                *vatA = __rlwimi(*vatA, 0, 31, 0, 0);
-            }
-            break;
-        case 0xA: // GX_VA_CLR0
-            *vatA = __rlwimi(*vatA, compCnt, 13, 18, 18);
-            *vatA = __rlwimi(*vatA, compType, 14, 15, 17);
-            break;
-        case 0xB: // GX_VA_CLR1
-            *vatA = __rlwimi(*vatA, compCnt, 17, 14, 14);
-            *vatA = __rlwimi(*vatA, compType, 18, 11, 13);
-            break;
-        case 0xC: // GX_VA_TEX0
-            *vatA = __rlwimi(*vatA, compCnt, 21, 10, 10);
-            *vatA = __rlwimi(*vatA, compType, 22, 7, 9);
-            *vatA = __rlwimi(*vatA, shift, 25, 2, 6);
-            break;
-        case 0xD: // GX_VA_TEX1
-            *vatB = __rlwimi(*vatB, compCnt, 0, 31, 31);
-            *vatB = __rlwimi(*vatB, compType, 1, 28, 30);
-            *vatB = __rlwimi(*vatB, shift, 4, 23, 27);
-            break;
-        case 0xE: // GX_VA_TEX2
-            *vatB = __rlwimi(*vatB, compCnt, 9, 22, 22);
-            *vatB = __rlwimi(*vatB, compType, 10, 19, 21);
-            *vatB = __rlwimi(*vatB, shift, 13, 14, 18);
-            break;
-        case 0xF: // GX_VA_TEX3
-            *vatB = __rlwimi(*vatB, compCnt, 18, 13, 13);
-            *vatB = __rlwimi(*vatB, compType, 19, 10, 12);
-            *vatB = __rlwimi(*vatB, shift, 22, 5, 9);
-            break;
-        case 0x10: // GX_VA_TEX4
-            *vatB = __rlwimi(*vatB, compCnt, 27, 4, 4);
-            *vatB = __rlwimi(*vatB, compType, 28, 1, 3);
-            *vatC = __rlwimi(*vatC, shift, 0, 27, 31);
-            break;
-        case 0x11: // GX_VA_TEX5
-            *vatC = __rlwimi(*vatC, compCnt, 5, 26, 26);
-            *vatC = __rlwimi(*vatC, compType, 6, 23, 25);
-            *vatC = __rlwimi(*vatC, shift, 9, 18, 22);
-            break;
-        case 0x12: // GX_VA_TEX6
-            *vatC = __rlwimi(*vatC, compCnt, 14, 17, 17);
-            *vatC = __rlwimi(*vatC, compType, 15, 14, 16);
-            *vatC = __rlwimi(*vatC, shift, 18, 9, 13);
-            break;
-        case 0x13: // GX_VA_TEX7
-            *vatC = __rlwimi(*vatC, compCnt, 23, 8, 8);
-            *vatC = __rlwimi(*vatC, compType, 24, 5, 7);
-            *vatC = __rlwimi(*vatC, shift, 27, 0, 4);
-            break;
+    switch (attr) {
+    case 9:
+        *vatA = __rlwimi(*vatA, compCnt, 0, 31, 31);
+        *vatA = __rlwimi(*vatA, compType, 1, 28, 30);
+        *vatA = __rlwimi(*vatA, shift, 4, 23, 27);
+        break;
+    case 10:
+    case 25:
+        *vatA = __rlwimi(*vatA, compType, 10, 19, 21);
+        if (compCnt == 2) {
+            *vatA = __rlwimi(*vatA, 1, 9, 22, 22);
+            *vatA = __rlwimi(*vatA, 1, 31, 0, 0);
+        } else {
+            *vatA = __rlwimi(*vatA, compCnt, 9, 22, 22);
+            *vatA = __rlwimi(*vatA, 0, 31, 0, 0);
         }
+        break;
+    case 11:
+        *vatA = __rlwimi(*vatA, compCnt, 13, 18, 18);
+        *vatA = __rlwimi(*vatA, compType, 14, 15, 17);
+        break;
+    case 12:
+        *vatA = __rlwimi(*vatA, compCnt, 17, 14, 14);
+        *vatA = __rlwimi(*vatA, compType, 18, 11, 13);
+        break;
+    case 13:
+        *vatA = __rlwimi(*vatA, compCnt, 21, 10, 10);
+        *vatA = __rlwimi(*vatA, compType, 22, 7, 9);
+        *vatA = __rlwimi(*vatA, shift, 25, 2, 6);
+        break;
+    case 14:
+        *vatB = __rlwimi(*vatB, compCnt, 0, 31, 31);
+        *vatB = __rlwimi(*vatB, compType, 1, 28, 30);
+        *vatB = __rlwimi(*vatB, shift, 4, 23, 27);
+        break;
+    case 15:
+        *vatB = __rlwimi(*vatB, compCnt, 9, 22, 22);
+        *vatB = __rlwimi(*vatB, compType, 10, 19, 21);
+        *vatB = __rlwimi(*vatB, shift, 13, 14, 18);
+        break;
+    case 16:
+        *vatB = __rlwimi(*vatB, compCnt, 18, 13, 13);
+        *vatB = __rlwimi(*vatB, compType, 19, 10, 12);
+        *vatB = __rlwimi(*vatB, shift, 22, 5, 9);
+        break;
+    case 17:
+        *vatB = __rlwimi(*vatB, compCnt, 27, 4, 4);
+        *vatB = __rlwimi(*vatB, compType, 28, 1, 3);
+        *vatC = __rlwimi(*vatC, shift, 0, 27, 31);
+        break;
+    case 18:
+        *vatC = __rlwimi(*vatC, compCnt, 5, 26, 26);
+        *vatC = __rlwimi(*vatC, compType, 6, 23, 25);
+        *vatC = __rlwimi(*vatC, shift, 9, 18, 22);
+        break;
+    case 19:
+        *vatC = __rlwimi(*vatC, compCnt, 14, 17, 17);
+        *vatC = __rlwimi(*vatC, compType, 15, 14, 16);
+        *vatC = __rlwimi(*vatC, shift, 18, 9, 13);
+        break;
+    case 20:
+        *vatC = __rlwimi(*vatC, compCnt, 23, 8, 8);
+        *vatC = __rlwimi(*vatC, compType, 24, 5, 7);
+        *vatC = __rlwimi(*vatC, shift, 27, 0, 4);
+        break;
     }
 
     __GXData[0x5FC / 4] |= 0x10;
-    *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (fmt & 0x1F));
+    *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (fmt & 0xFF));
 }
 
 static inline void SETVAT_LIST(unsigned int *vatA, unsigned int *vatB, unsigned int *vatC,
@@ -2780,67 +2916,41 @@ int GXGetTexObjAll(void *obj) {
 extern unsigned char lbl_80558E48, lbl_80558E50, lbl_80558E58;
 extern unsigned char lbl_80558E60, lbl_80558E68, lbl_80558E70, lbl_80558E78;
 void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
-    struct TexObj {
-        unsigned int mode0;
-        unsigned int mode1;
-        unsigned int image0;
-        unsigned int image3;
-        void *userData;
-        unsigned int format;
-        unsigned int tlutName;
-        unsigned short loadCount;
-        unsigned char loadFormat;
-        unsigned char flags;
-    };
-    struct TexRegion {
-        unsigned int image1;
-        unsigned int image2;
-        unsigned short sizeEven;
-        unsigned short sizeOdd;
-        unsigned char isMipmap;
-        unsigned char isCached;
-    };
-    struct TlutRegion {
-        unsigned int loadTlut1;
-        unsigned int tlut;
-    };
-    struct TexObj *t = (struct TexObj *)obj;
-    struct TexRegion *r = (struct TexRegion *)region;
-    struct TlutRegion *tlr;
+    unsigned int *a = (unsigned int *)obj;
+    unsigned int *b = (unsigned int *)region;
     unsigned int *data;
-    unsigned int *out;
+    unsigned int *dst;
+    unsigned char opcode = 0x61;
 
-    t->mode0 = __rlwimi(t->mode0, (&lbl_80558E48)[map], 24, 0, 7);
-    t->mode1 = __rlwimi(t->mode1, (&lbl_80558E50)[map], 24, 0, 7);
-    t->image0 = __rlwimi(t->image0, (&lbl_80558E58)[map], 24, 0, 7);
-    r->image1 = __rlwimi(r->image1, (&lbl_80558E60)[map], 24, 0, 7);
-    r->image2 = __rlwimi(r->image2, (&lbl_80558E68)[map], 24, 0, 7);
-    t->image3 = __rlwimi(t->image3, (&lbl_80558E70)[map], 24, 0, 7);
-
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = t->mode0;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = t->mode1;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = t->image0;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = r->image1;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = r->image2;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = t->image3;
-
-    if ((t->flags & 2) == 0) {
+    a[0] = __rlwimi(a[0], (&lbl_80558E48)[map], 24, 0, 7);
+    a[1] = __rlwimi(a[1], (&lbl_80558E50)[map], 24, 0, 7);
+    a[2] = __rlwimi(a[2], (&lbl_80558E58)[map], 24, 0, 7);
+    b[0] = __rlwimi(b[0], (&lbl_80558E60)[map], 24, 0, 7);
+    b[1] = __rlwimi(b[1], (&lbl_80558E68)[map], 24, 0, 7);
+    a[3] = __rlwimi(a[3], (&lbl_80558E70)[map], 24, 0, 7);
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = a[0];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = a[1];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = a[2];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = b[0];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = b[1];
+    *(volatile unsigned char *)0xCC008000 = opcode;
+    *(volatile unsigned int *)0xCC008000 = a[3];
+    if ((*(unsigned char *)((char *)obj + 0x1F) & 2) == 0) {
         data = __GXData;
-        tlr = (struct TlutRegion *)((unsigned int *(*)(unsigned int))data[0x51C / 4])(t->tlutName);
-        tlr->tlut = __rlwimi(tlr->tlut, (&lbl_80558E78)[map], 24, 0, 7);
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = tlr->tlut;
+        dst = ((unsigned int *(*)(unsigned int))data[0x51C / 4])(*(unsigned int *)((char *)obj + 0x18));
+        dst[1] = __rlwimi(dst[1], (&lbl_80558E78)[map], 24, 0, 7);
+        *(volatile unsigned char *)0xCC008000 = opcode;
+        *(volatile unsigned int *)0xCC008000 = dst[1];
     }
     data = __GXData;
-    data[map * (0x564 / 4) / 0x159] = data[map * (0x564 / 4) / 0x159];
-    *(unsigned int *)((char *)data + map * 4 + 0x564) = t->image0;
-    *(unsigned int *)((char *)data + map * 4 + 0x584) = t->mode0;
+    dst = data + map;
+    dst[0x564 / 4] = a[2];
+    dst[0x584 / 4] = a[0];
     data[0x5FC / 4] |= 1;
     *(unsigned short *)((char *)data + 2) = 0;
 }
