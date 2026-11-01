@@ -16210,6 +16210,77 @@ void rfc_port_sm_state_closed(void *p_port, u16 event, void *p_data) {
         fn_80070954(0x90001, lbl_80319AE4, event);
 }
 
+void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
+    extern u8 lbl_803C4828[];
+    extern char lbl_80319AC4[];
+    extern char lbl_80319B44[];
+    extern void rfc_port_closed(void *);
+    extern void rfc_port_timer_stop(void *);
+    extern void rfc_send_disc();
+    extern void rfc_send_ua();
+    u8 *port = (u8 *)p_port;
+
+    switch (event) {
+    case 12:
+        rfc_port_timer_start(p_port, 3);
+        ((void (*)(void *, u8))rfc_send_disc)(*(void **)(port + 0x6C), port[0xD]);
+        port[0x69] = 0;
+        port[0x68] = 5;
+        return;
+    case 13:
+        rfc_port_closed(p_port);
+        return;
+    case 14:
+        GKI_freebuf(p_data);
+        goto log_event;
+    case 2:
+        rfc_port_timer_stop(p_port);
+        port[0x68] = 4;
+        PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
+                             *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 0);
+        return;
+    case 3:
+        PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
+                             *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 1);
+        rfc_port_closed(p_port);
+        return;
+    case 4:
+        ((void (*)(void *, u8))rfc_send_ua)(*(void **)(port + 0x6C), port[0xD]);
+        PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
+                             *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 1);
+        rfc_port_closed(p_port);
+        return;
+    case 5:
+        ((void (*)(void *, u8))rfc_send_ua)(*(void **)(port + 0x6C), port[0xD]);
+        return;
+    case 0:
+        port[0x68] = 0;
+        PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
+                             *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 1);
+        return;
+    case 1:
+        GKI_freebuf(p_data);
+        goto log_event;
+    case 6:
+    case 7:
+    case 8:
+    case 10:
+        GKI_freebuf(p_data);
+        return;
+    case 9:
+    case 11:
+        goto log_event;
+    default:
+        if (lbl_803C4828[0x414] >= 2)
+            fn_80070954(0x90001, lbl_80319B44, event);
+        return;
+    }
+
+log_event:
+    if (lbl_803C4828[0x414] >= 1)
+        fn_8007096C(0x90000, lbl_80319AC4, port[0x68], event);
+}
+
 void rfc_port_sm_orig_wait_sec_check(void *port, u16 event, void *data) {
     extern char lbl_80319AB0[];
     extern void rfc_send_sabme();
@@ -16811,8 +16882,6 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
         rfc_check_send_cmd(arg0, buf);
     }
 }
-
-typedef struct tRFC_MCB tRFC_MCB;
 
 void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
     BT_HDR *p_buf;
