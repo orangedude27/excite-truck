@@ -20381,4 +20381,3 @@ void fn_80085E24(void *arg0, u8 arg1) {
     *(u8 *)((u8 *)arg0 + 11) = arg1;
     btu_hcif_send_cmd(arg0);
 }
-typedef struct tRFC_MCB tRFC_MCB;
