@@ -18633,34 +18633,43 @@ void *add_record(void *ctx, void *data) {
 
 void sdp_init(void) {
     u8 *cb;
-    char *log=lbl_8031A188;
-    u32 zero=0;
-    memset(lbl_803C4C40,0,0x4634);
-    cb=lbl_803C4C40;
-    *(u16*)(cb+4)=0x100; cb[2]=1; cb[0x20]=1;
-    *(u16*)(cb+0x22)=0xFFFF;
-    *(u16*)(cb+0x462C)=0xF0; *(u16*)(cb+0x462E)=0x15;
-    if(!BTM_SetSecurityLevel(0,log,0,0,1,0,0)) {
-        if(cb[0x4630]>=1) fn_8007093C(0xA0000,log+0x14);
+    char *log = lbl_8031A188;
+    register u32 zero = 0;
+
+    memset(lbl_803C4C40, 0, 0x4634);
+    cb = lbl_803C4C40;
+    *(u16 *)(cb + 4) = 0x100;
+    cb[2] = 1;
+    cb[0x20] = 1;
+    *(u16 *)(cb + 0x22) = 0xFFFF;
+    *(u16 *)(cb + 0x462C) = 0xF0;
+    *(u16 *)(cb + 0x462E) = 0x15;
+
+    if (!BTM_SetSecurityLevel(0, log, 0, 0, 1, 0, 0)) {
+        if (cb[0x4630] >= 1)
+            fn_8007093C(0xA0000, log + 0x14);
         return;
     }
-    if(!BTM_SetSecurityLevel(1,log,0,0,1,0,0)) {
-        if(cb[0x4630]>=1) fn_8007093C(0xA0000,log+0x38);
+    if (!BTM_SetSecurityLevel(1, log, 0, 0, 1, 0, 0)) {
+        if (cb[0x4630] >= 1)
+            fn_8007093C(0xA0000, log + 0x38);
         return;
     }
-    cb[0x4630]=0;
-    *(u32*)(cb+0x4604)=(u32)sdp_connect_ind;
-    *(u32*)(cb+0x4608)=(u32)sdp_connect_cfm;
-    *(u32*)(cb+0x460C)=zero;
-    *(u32*)(cb+0x4610)=(u32)sdp_config_ind;
-    *(u32*)(cb+0x4614)=(u32)sdp_config_cfm;
-    *(u32*)(cb+0x4618)=(u32)sdp_disconnect_ind;
-    *(u32*)(cb+0x461C)=(u32)sdp_disconnect_cfm;
-    *(u32*)(cb+0x4620)=zero;
-    *(u32*)(cb+0x4624)=(u32)sdp_data_ind;
-    *(u32*)(cb+0x4628)=zero;
-    if(!L2CA_Register(1,(tL2CAP_APPL_INFO*)(cb+0x4604)) && cb[0x4630]>=1)
-        fn_8007093C(0xA0000,log+0x60);
+
+    cb[0x4630] = 0;
+    *(u32 *)(cb + 0x4604) = (u32)sdp_connect_ind;
+    *(u32 *)(cb + 0x4608) = (u32)sdp_connect_cfm;
+    *(u32 *)(cb + 0x460C) = zero;
+    *(u32 *)(cb + 0x4610) = (u32)sdp_config_ind;
+    *(u32 *)(cb + 0x4614) = (u32)sdp_config_cfm;
+    *(u32 *)(cb + 0x4618) = (u32)sdp_disconnect_ind;
+    *(u32 *)(cb + 0x461C) = (u32)sdp_disconnect_cfm;
+    *(u32 *)(cb + 0x4620) = zero;
+    *(u32 *)(cb + 0x4624) = (u32)sdp_data_ind;
+    *(u32 *)(cb + 0x4628) = zero;
+
+    if (!L2CA_Register(1, (tL2CAP_APPL_INFO *)(cb + 0x4604)) && cb[0x4630] >= 1)
+        fn_8007093C(0xA0000, log + 0x60);
 }
 
 void sdp_connect_ind(u8 *addr, u16 cid, u16 psm, u8 status) {
