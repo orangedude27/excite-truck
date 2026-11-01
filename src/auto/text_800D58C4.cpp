@@ -9,6 +9,9 @@
 struct GetVtxPosResult { f32 x; f32 y; };
 
 namespace nw4hbm {
+namespace math {
+struct VEC2 { f32 x, y; };
+}
 namespace lyt {
 namespace detail {
 struct Vec2 { f32 x, y; };
