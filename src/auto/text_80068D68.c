@@ -305,6 +305,7 @@ extern char lbl_80317A80[];
 extern void AXFXReverbHiExpShutdown(void*);
 extern s32 AXFXReverbHiExpInit(void*);
 extern void __FreeDelayLine(void*);
+extern void AXFXReverbHiExpCallback(void);
 extern s32 __CtrlMsgInt(s32,s32,s32,s32,s32,u32,void*,void*,void*,s32);
 extern f32 lbl_80560D50;
 extern f32 lbl_80560D54;
@@ -16907,11 +16908,11 @@ s32 dlci;
 BT_HDR *p_buf;
 {
     UINT8 *p_data;
-    s32 flag = 1;
+    UINT8 cr;
     UINT8 credits;
 
-    if (*(u8 *)((u8 *)p_mcb + 0x6D) == 0)
-        flag = 0;
+    cr = (UINT8)((((*(u8 *)((u8 *)p_mcb + 0x6D) && 1)
+        || (!*(u8 *)((u8 *)p_mcb + 0x6D) && !1)) << 1));
 
     p_buf->offset -= 3;
     if (p_buf->len > 127)
@@ -16924,7 +16925,7 @@ BT_HDR *p_buf;
         p_buf->offset--;
 
     p_data = (u8 *)(p_buf + 1) + p_buf->offset;
-    *p_data++ = (u8)((flag << 1) | 1 | ((dlci & 0xFF) << 2));
+    *p_data++ = (u8)(cr | 1 | ((dlci & 0xFF) << 2));
     *p_data++ = (u8)(0xEF | (credits ? 0x10 : 0));
     if (p_buf->len <= 127) {
         *p_data++ = (u8)(1 | (p_buf->len << 1));
