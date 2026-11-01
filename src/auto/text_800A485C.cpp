@@ -3899,17 +3899,7 @@ sentinel:
 }
 
 extern "C" s32 VFiPFFAT_GetClusterSpecified(void *, u32, u32, u32 *);
-static inline s32 VFiPFFAT_FindCluster(void *arg0, u32 arg1, u32 arg2, u32 *arg3) {
-    u32 sp8;
-    s32 spC;
-    s32 res;
-    *arg3 = (u32)-1;
-    res = fn_800ADD84(arg0, arg1, arg2 != 0, 0, &sp8, &spC);
-    if (res != 0) return res;
-    if ((u32)spC >= 2 && (u32)spC < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x34) + 2)
-        *arg3 = spC;
-    return 0;
-}
+
 extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
     s32 sp8;
     s32 status;
@@ -11761,26 +11751,48 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     *(s32 *)((u8 *)arg3 - 2048) = *(s32 *)((u8 *)arg1 + 36) + (s32)(((s64)arg0[8] * (s64)lbl_8031D670[17]) >> 20);
 }
 
-extern "C" void fn_800C2A88(s32 *a, s32 *b, s32 *c, s32 *d) {
-    c[0] = b[0];
-    d[0] = -a[0] + b[17];
-    c[64] = b[1];
-    d[-64] = -a[1] + b[16];
-    c[128] = b[2];
-    d[-128] = -a[2] + b[15];
-    c[192] = b[3];
-    d[-192] = -a[3] + b[14];
-    c[256] = b[4];
-    d[-256] = -a[4] + b[13];
-    c[320] = b[5];
-    d[-320] = -a[5] + b[12];
+extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, volatile s32 *d) {
+    s32 n0 = -a[0]; c[0] = b[0]; d[0] = n0 + b[17];
+    s32 n1 = -a[1]; c[64] = b[1]; d[-64] = n1 + b[16];
+    s32 n2 = -a[2]; c[128] = b[2]; d[-128] = n2 + b[15];
+    s32 n3 = -a[3]; c[192] = b[3]; d[-192] = n3 + b[14];
+    s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
+    s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
 
-    c[384] = b[6] + (s32)(((s64)a[6] * (s64)lbl_8031D700[0]) >> 20);
-    d[-384] = b[11] + (s32)(((s64)a[6] * (s64)lbl_8031D700[1]) >> 20);
-    c[448] = b[7] + (s32)(((s64)a[7] * (s64)lbl_8031D700[2]) >> 20);
-    d[-448] = b[10] + (s32)(((s64)a[7] * (s64)lbl_8031D700[3]) >> 20);
-    c[512] = b[8] + (s32)(((s64)a[8] * (s64)lbl_8031D700[4]) >> 20);
-    d[-512] = b[9] + (s32)(((s64)a[8] * (s64)lbl_8031D700[5]) >> 20);
+    const s32 *k = lbl_8031D700;
+    s32 value, coefficient;
+    s64 product, second;
+    s32 result, reverse;
+
+    value = a[6];
+    coefficient = *k++;
+    product = (s64)value * coefficient;
+    coefficient = *k++;
+    second = (s64)value * coefficient;
+    result = (s32)(product >> 20);
+    reverse = (s32)(second >> 20);
+    c[384] = b[6] + result;
+    d[-384] = b[11] + reverse;
+
+    value = a[7];
+    coefficient = *k++;
+    product = (s64)value * coefficient;
+    coefficient = *k++;
+    second = (s64)value * coefficient;
+    result = (s32)(product >> 20);
+    reverse = (s32)(second >> 20);
+    c[448] = b[7] + result;
+    d[-448] = b[10] + reverse;
+
+    value = a[8];
+    coefficient = *k++;
+    product = (s64)value * coefficient;
+    coefficient = *k++;
+    second = (s64)value * coefficient;
+    result = (s32)(product >> 20);
+    reverse = (s32)(second >> 20);
+    c[512] = b[8] + result;
+    d[-512] = b[9] + reverse;
 }
 
 extern "C" s32 lbl_8031D718[];
@@ -15713,7 +15725,7 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
 {
     u8 *self = (u8 *)this;
     const u8 *block = (const u8 *)resource;
-    const char *const file = lbl_8031EE58;
+    const char *file = lbl_8031EE58;
     u8 *resourceNames;
     u32 *resourceOffsets;
     s32 outputOffset;
@@ -15723,10 +15735,10 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     void **textureResources;
 
     if (*(void **)(self + 0x14) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A6, file + 0x14);
+        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A6, file + 0x14);
     }
     if (*(void **)(self + 0x18) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A7, file + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A7, file + 0x40);
     }
 
     *(const void **)(self + 0xC) = resource;
