@@ -468,6 +468,17 @@ extern "C" s32 lbl_8031E370[];
 extern "C" s32 lbl_802F4588[];
 struct BatteryRec { u8 b[0x18]; };
 struct NandFileSlot { u32 id; u8 pad[0xE8]; s32 err; };
+extern "C" u8 lbl_80405D58[];
+static inline s32 findNandSlot(u32 handle, NandFileSlot **out) {
+    u16 i;
+    for (i = 0; i < 0x17; i++) {
+        if (((NandFileSlot *)lbl_80405D58)[i].id == handle) {
+            *out = &((NandFileSlot *)lbl_80405D58)[i];
+            return 0;
+        }
+    }
+    return -0x16;
+}
 static inline s32 findEventSlot(s32 key, s32 val) {
     s32 *entry = lbl_802F4588;
     s32 i;
@@ -8761,8 +8772,9 @@ extern "C" s32 fn_800B8FE4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     return 0;
 }
 
-extern "C" s32 fn_800B90A8(s32 arg0) {
+extern "C" s32 fn_800B90A8(u32 arg0) {
     s32 result;
+    s32 tmp;
     u32 length;
     u16 i;
     u8 *entry;
@@ -8773,33 +8785,30 @@ extern "C" s32 fn_800B90A8(s32 arg0) {
         return -20;
     }
     for (i = 0; i < 0x17; i++) {
-        if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg0) {
-            *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = 0;
+        if (((NandFileSlot *)lbl_80405D58)[i].id == arg0) {
+            ((NandFileSlot *)lbl_80405D58)[i].err = 0;
             break;
         }
     }
     result = (i == 0x17) ? -0x16 : 0;
     if (result == 0) {
         for (i = 0; i < 0x17; i++) {
-            u8 *cur = lbl_80405D58 + i * 0xF0;
-            if (*(u32 *)cur == (u32)arg0) { entry = cur; break; }
+            if (((NandFileSlot *)lbl_80405D58)[i].id == arg0) { entry = (u8 *)&((NandFileSlot *)lbl_80405D58)[i]; break; }
         }
         if ((i == 0x17) ? -0x16 : 0) { fn_800B8048(lbl_8055DD30); return -20; }
         *(u32 *)(entry + 0xE4) &= ~2;
-        result = NANDGetLengthAsync(entry + 0x58, &length);
-        if (result == 0) {
-            result = NANDClose(entry + 0x58);
-            if (result >= 0) {
-                result = NANDOpen(entry + 4, entry + 0x58, 3);
-                if (result >= 0) {
-                    result = NANDSeek(entry + 0x58, length, 0);
-                    result &= result >> 31;
-                }
-            }
-        }
+        tmp = NANDGetLengthAsync(entry + 0x58, &length);
+        if (tmp != 0) { result = tmp; goto fail; }
+        tmp = NANDClose(entry + 0x58);
+        if (tmp < 0) { result = tmp; goto fail; }
+        tmp = NANDOpen(entry + 4, entry + 0x58, 3);
+        if (tmp < 0) { result = tmp; goto fail; }
+        tmp = NANDSeek(entry + 0x58, length, 0);
+        result = tmp & (tmp >> 31);
         if (result < 0) {
+        fail:
             for (i = 0; i < 0x17; i++) {
-                if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg0) { *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = result; break; }
+                if (((NandFileSlot *)lbl_80405D58)[i].id == arg0) { ((NandFileSlot *)lbl_80405D58)[i].err = result; break; }
             }
         }
     }
