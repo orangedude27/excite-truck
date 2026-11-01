@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" f64 lbl_805634B8;
 extern "C" char lbl_8033DAD8[];
 extern "C" s32 fn_80129D90(s32, s32, s32);
 extern "C" s32 fn_80131234(void *);
@@ -2483,16 +2484,21 @@ extern "C" void *fn_8021D300(void *arg0, s32 arg1) {
 #pragma ppc_psq_save off
 extern "C" void fn_8021D378(void *arg0, s32 arg1) {
     f32 x, y;
-    s32 enabled = 0;
+    s32 enabled;
     s32 *p;
     s32 a, b;
-    register f32 scale, value, base;
+    f32 scale, value, base;
     fn_80219660(arg0);
     if (*(s32 *)((u8 *)arg0 + 0x25C) == *(s32 *)((u8 *)arg0 + 0x260))
         return;
     p = *(s32 **)((u8 *)arg0 + 0x2BC);
-    if (p != 0 && *(s32 *)((u8 *)arg0 + 0x2C0) == *p)
-        enabled = 1;
+    enabled = 0;
+    if (p == 0)
+        goto checked;
+    if (*(s32 *)((u8 *)arg0 + 0x2C0) != *p)
+        goto checked;
+    enabled = 1;
+checked:
     a = fn_8021165C(0, 2);
     b = fn_8021165C(1, 2);
     scale = *(f32 *)((u8 *)fn_8022EDC4() + 0x34);
