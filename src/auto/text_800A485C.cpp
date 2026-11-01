@@ -16397,26 +16397,30 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
 }
 
 extern "C" s32 fn_800D51F4(long a0, long a1, long a2, long a3, long a4, long a5) {
-    ARCHandle *arc=(ARCHandle *)a0; const char *path=(const char *)a1; u32 selector=(u32)a2; const char *name=(const char *)a3; u32 *size=(u32 *)a4;
-    u8 p[5]; ARCFileInfo info; s32 entry=-1, result=0;
-    if (ARCConvertPathToEntrynum(arc,path)!=-1 && ARCChangeDir(arc,path)!=0) {
-        if(!selector) entry=fn_800D50A8(arc,name);
+    s32 entry=-1;
+    char p[5]; ARCFileInfo info;
+    #define ARC ((ARCHandle *)a0)
+    if (ARCConvertPathToEntrynum(ARC,(const char*)a1)!=-1 && ARCChangeDir(ARC,(const char*)a1)!=0) {
+        if(!a2) entry=fn_800D50A8(ARC,(const char*)a3);
         else {
-            p[0]=selector>>24; p[1]=selector>>16; p[2]=selector>>8; p[3]=selector; p[4]=0;
-            if(ARCConvertPathToEntrynum(arc,(char*)p)!=-1 && ARCChangeDir(arc,(char*)p)!=0) {
-                entry=ARCConvertPathToEntrynum(arc,name);
-                if(ARCChangeDir(arc,lbl_805597FC)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x75,lbl_8031F2E4);
+            p[0]=(u32)a2>>24; p[1]=(u32)a2>>16; p[2]=(u32)a2>>8; p[3]=a2; p[4]=0;
+            if(ARCConvertPathToEntrynum(ARC,p)!=-1 && ARCChangeDir(ARC,p)!=0) {
+                entry=ARCConvertPathToEntrynum(ARC,(const char*)a3);
+                if(ARCChangeDir(ARC,lbl_805597FC)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x75,lbl_8031F2E4);
             }
         }
-        if(ARCChangeDir(arc,lbl_805597FC)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x7B,lbl_8031F2E4);
+        if(ARCChangeDir(ARC,lbl_805597FC)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x7B,lbl_8031F2E4);
     }
     if(entry!=-1) {
-        if(ARCFastOpen(arc,entry,&info)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x83,lbl_8031F2E4);
+        s32 result;
+        if(ARCFastOpen(ARC,entry,&info)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x83,lbl_8031F2E4);
         result=(s32)ARCGetStartAddrInMem(&info);
-        if(size) *size=fn_80116A30(&info);
+        if(a4) *(u32*)a4=fn_80116A30(&info);
         fn_80116A38(&info);
+        return result;
     }
-    return result;
+    return 0;
+    #undef ARC
 }
 
 extern "C" void fn_800DCE50(void *arg0);
