@@ -96,7 +96,7 @@ extern "C" f32 lbl_80560EB0;
 
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
-extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(void*, void*, void*);
+extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt6detail4SizeQ36nw4hbm2ut5Color(const nw4hbm::math::VEC2 &start, const nw4hbm::lyt::detail::Size &size, const nw4hbm::ut::Color &color);
 extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 
 struct GroupNodeV { virtual ~GroupNodeV(); virtual void f(); };
