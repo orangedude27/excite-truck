@@ -7904,31 +7904,42 @@ extern "C" void fn_800B78F4(void *arg0, void *arg1) {
 extern "C" s32 lbl_80559238;
 extern "C" s32 fn_800BA404(void);
 extern "C" s32 fn_800B7968(u32 arg0, s32 arg1, s32 arg2, void* arg3) {
+    struct Req {
+        void *list[2];
+        u8 info[0x50];
+        s32 extra;
+    } __attribute__((aligned(8)));
     s32 sp8;
-    s32 sp10;
-    s8 temp;
+    Req req;
+    s32 r;
     if (arg0 >= 4) return -2;
     if (arg3 == 0) return -2;
     if (arg0 == 2 && arg1 == 0) return -2;
     if (arg0 == 3 && *(s32*)arg3 == 0) return -2;
     if (arg0 <= 2) {
-        if (((s32 (*)(void*, s32*, s32))fn_800A5958)((u8*)&lbl_80559238 + (arg0 << 3), &sp8, lbl_80559238)) return -1;
+        if (fn_800A5958((u8*)lbl_80559238 + ((arg0 & 0xFF) << 3), &sp8)) return -1;
         if (fn_800A5994((void*)sp8, 0, (s32*)arg3)) return -1;
     }
-    *(void**)(&sp10) = arg3;
+    req.list[0] = arg3;
+    req.list[1] = 0;
     if (arg0 == 2) {
-        memcpy((u8*)&sp10 + 8, (void*)arg1, 0x4e);
-        *(s32*)((u8*)&sp10 + 0x58) = arg2;
+        memcpy(req.info, (void*)arg1, 0x4e);
+        req.extra = arg2;
     }
-    if (((s32 (*)(volatile s32*, void*))fn_800B7408)((volatile s32*)&sp10, arg0 == 2 ? (u8*)&sp10 + 8 : 0)) return -1;
-    temp = *(s8*)((u8*)arg3 + 8);
-    if (arg0 <= 2) {
-        lbl_80405C30[(s32)temp - 0x41] = sp8;
-        lbl_80405C98[(s32)temp - 0x41] = *(s32*)arg3;
-        if (arg0 == 0 && fn_800BA404()) *((u8*)sp10 + 9) |= 0x10;
+    if (arg0 == 2) {
+        r = ((s32 (*)(void*, void*))fn_800B7408)(req.list, req.info);
     } else {
-        lbl_80405C30[(s32)temp - 0x41] = 0;
-        lbl_80405C98[(s32)temp - 0x41] = 0;
+        r = ((s32 (*)(void*, void*))fn_800B7408)(req.list, 0);
+    }
+    if (r) return -1;
+    s32 idx = *(s8*)((u8*)arg3 + 8) - 0x41;
+    if (arg0 <= 2) {
+        lbl_80405C30[idx] = sp8;
+        lbl_80405C98[idx] = *(s32*)arg3;
+        if (arg0 == 0 && fn_800BA404()) *((u8*)req.list[0] + 9) |= 0x10;
+    } else {
+        lbl_80405C30[idx] = 0;
+        lbl_80405C98[idx] = 0;
     }
     return 0;
 }
