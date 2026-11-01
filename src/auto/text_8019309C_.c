@@ -1411,52 +1411,58 @@ struct Self_80195D80 {
     int f2c8;
     float f2cc;
 };
-void fn_80195D80(void *arg0, float arg1) {
-    void *base = *(void **)((char *)arg0 + 0x28C);
-    void *(*get)(void *) = *(void *(**)(void *))(*(char **)base + 0x1C);
-    void *obj = get(base);
-    void *shape = *(void **)((char *)obj + 0x2C);
-    void *other = *(void **)((char *)arg0 + 0x294);
+extern "C" void fn_80195D80(void *arg0, float arg1) {
+    Self_80195D80 *self = (Self_80195D80 *)arg0;
+    Obj_80195D80 *obj = self->src->v5();
     int changed;
-    float values[8];
-    *(float *)((char *)arg0 + 0x2CC) = *(float *)((char *)shape + 0x14);
-    *(int *)((char *)arg0 + 0x2C8) = *(int *)((char *)shape + 0x28);
-    *(int *)((char *)arg0 + 0x18) = fn_801388F4(*(void **)((char *)obj + 4));
-    changed = *(int *)((char *)arg0 + 0x1C8) != 0 && *(int *)((char *)arg0 + 0x1C8) != *(int *)((char *)obj + 0x2C);
-    if (changed) {
-        *(int *)((char *)arg0 + 0x16C) = *(int *)((char *)arg0 + 0x1A0);
-        *(int *)((char *)arg0 + 0x170) = *(int *)((char *)arg0 + 0x1A4);
-        *(int *)((char *)arg0 + 0x174) = *(int *)((char *)arg0 + 0x1A8);
-        *(int *)((char *)arg0 + 0x178) = *(int *)((char *)arg0 + 0x1AC);
-        *(int *)((char *)arg0 + 0x17C) = *(int *)((char *)arg0 + 0x1B0);
-        *(int *)((char *)arg0 + 0x180) = *(int *)((char *)arg0 + 0x1B4);
-        *(int *)((char *)arg0 + 0x184) = *(int *)((char *)arg0 + 0x1B8);
-        *(int *)((char *)arg0 + 0x188) = *(int *)((char *)arg0 + 0x1BC);
-        *(int *)((char *)arg0 + 0x18C) = *(int *)((char *)arg0 + 0x1C0);
-        *(u8 *)((char *)arg0 + 0x190) = *(u8 *)((char *)arg0 + 0x1C4);
-        *(int *)((char *)arg0 + 0x194) = *(int *)((char *)arg0 + 0x1C8);
-        *(int *)((char *)arg0 + 0x198) = *(int *)((char *)arg0 + 0x1CC);
-        *(float *)((char *)arg0 + 0x1D0) = lbl_8055E3C8;
+    float vec[5];
+    Other_80195D80 *o;
+    self->f2cc = obj->snap.shape->f14;
+    self->f2c8 = obj->snap.shape->f28;
+    self->f18 = fn_801388F4(obj->snap.w0);
+    changed = 0;
+    o = self->other;
+    if (self->cur.shape != 0 && (unsigned int)self->cur.shape != (unsigned int)obj->snap.shape) {
+        changed = 1;
     }
-    *(int *)((char *)arg0 + 0x1A0) = *(int *)((char *)obj + 4);
-    *(int *)((char *)arg0 + 0x1A4) = *(int *)((char *)obj + 8);
-    *(int *)((char *)arg0 + 0x1A8) = *(int *)((char *)obj + 0xC);
-    *(int *)((char *)arg0 + 0x1AC) = *(int *)((char *)obj + 0x10);
-    *(int *)((char *)arg0 + 0x1B0) = *(int *)((char *)obj + 0x14);
-    *(int *)((char *)arg0 + 0x1B4) = *(int *)((char *)obj + 0x18);
-    *(int *)((char *)arg0 + 0x1B8) = *(int *)((char *)obj + 0x1C);
-    *(int *)((char *)arg0 + 0x1BC) = *(int *)((char *)obj + 0x20);
-    *(int *)((char *)arg0 + 0x1C0) = *(int *)((char *)obj + 0x24);
-    *(u8 *)((char *)arg0 + 0x1C4) = *(u8 *)((char *)obj + 0x28);
-    *(int *)((char *)arg0 + 0x1C8) = *(int *)((char *)obj + 0x2C);
-    *(int *)((char *)arg0 + 0x1CC) = *(int *)((char *)obj + 0x30);
-    if (arg1 - *(float *)((char *)arg0 + 0x1D0) < lbl_805621C0) {
-        float scale = *(float *)((char *)other + 0x5BC);
-        values[0] = *(float *)((char *)other + 0x94) + *(float *)((char *)other + 0x54) * scale;
-        values[1] = *(float *)((char *)other + 0x98) + *(float *)((char *)other + 0x58) * scale;
-        values[2] = *(float *)((char *)other + 0x9C) + *(float *)((char *)other + 0x5C) * scale;
-        values[3] = values[0]; values[4] = values[1]; values[5] = values[2];
-        fn_801353C4((char *)arg0 + 0x168, values);
+    if (changed) {
+        self->prev.w0 = self->cur.w0;
+        self->prev.w[0] = self->cur.w[0];
+        self->prev.w[1] = self->cur.w[1];
+        self->prev.w[2] = self->cur.w[2];
+        self->prev.w[3] = self->cur.w[3];
+        self->prev.w[4] = self->cur.w[4];
+        self->prev.w[5] = self->cur.w[5];
+        self->prev.w[6] = self->cur.w[6];
+        self->prev.w[7] = self->cur.w[7];
+        self->prev.b = self->cur.b;
+        self->prev.shape = self->cur.shape;
+        self->prev.w2 = self->cur.w2;
+        self->f1d0 = lbl_8055E3C8;
+    }
+    self->cur.w0 = obj->snap.w0;
+    self->cur.w[0] = obj->snap.w[0];
+    self->cur.w[1] = obj->snap.w[1];
+    self->cur.w[2] = obj->snap.w[2];
+    self->cur.w[3] = obj->snap.w[3];
+    self->cur.w[4] = obj->snap.w[4];
+    self->cur.w[5] = obj->snap.w[5];
+    self->cur.w[6] = obj->snap.w[6];
+    self->cur.w[7] = obj->snap.w[7];
+    self->cur.b = obj->snap.b;
+    self->cur.shape = obj->snap.shape;
+    self->cur.w2 = obj->snap.w2;
+    if (arg1 - self->f1d0 < lbl_805621C0) {
+        float s = o->a5bc;
+        float x = o->a94 + o->a54 * s;
+        float y = o->a98 + o->a58 * s;
+        float z = o->a9c + o->a5c * s;
+        vec[0] = x;
+        vec[1] = z;
+        vec[2] = x;
+        vec[3] = y;
+        vec[4] = z;
+        fn_801353C4(self->f168, vec);
     }
 }
 #pragma cplusplus reset
@@ -1693,6 +1699,7 @@ void fn_801965AC(void *arg0) {
     fn_8018AE34(*(void **)((char *)arg0 + 0x294), lbl_80562144);
 }
 
+extern void fn_80196AA0(void *);
   void fn_801967A4(void *arg0) {
       int value = *(int *)((char *)arg0 + 0x210);
       switch (value) {
@@ -1701,7 +1708,7 @@ void fn_801965AC(void *arg0) {
           fn_801965AC(arg0);
           return;
       case 1:
-          fn_80196AA0();
+          fn_80196AA0(arg0);
           return;
       }
   }
@@ -1935,6 +1942,7 @@ void fn_8019724C(void *arg0, float *arg1) {
     float weight;
     float factor;
     float flagThreshold;
+    register float outputValue;
     int index;
     void *obj;
 
@@ -1962,8 +1970,10 @@ void fn_8019724C(void *arg0, float *arg1) {
             *(float *)((char *)arg0 + 0x1F8) = current;
             *(float *)((char *)arg0 + 0x20C) = fn_801973FC(direction, projected, arg1);
             flagThreshold = *(volatile float *)&lbl_8056222C;
-            arg1[0] = projected[0];
-            arg1[1] = projected[1];
+            outputValue = projected[0];
+            arg1[0] = outputValue;
+            outputValue = projected[1];
+            arg1[1] = outputValue;
             if (*(float *)((char *)arg0 + 0x270) > flagThreshold) {
                 *(volatile int *)((char *)arg0 + 0x2D0) |= 0x40;
                 *(volatile int *)((char *)arg0 + 0x2D0) |= 0x800;
