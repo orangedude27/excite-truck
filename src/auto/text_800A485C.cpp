@@ -6770,19 +6770,21 @@ extern "C" s32 VFiPFPATH_transformInUnicode(s16 *dst, s32 src, s32 unused) {
     return count;
 }
 
-s32 VFiPFPATH_parseShortNameNumeric(char *name, u32 num) {
+extern "C" s32 VFiPFPATH_parseShortNameNumeric(char *name, u32 num) {
     char buf[8];
     char *p;
-    s32 i, j, k, k2, digits, end, n;
+    char c;
+    s32 i, digits, k, k2, j;
+    u32 end, n;
     if (num == 0) return 0;
     i = 1;
     p = name + 1;
     while (*p != '~') { i++; p++; }
     j = i + 1;
     p = name + j;
-    while (*p != '.' && *p != 0) { j++; p++; }
+    while ((c = *p) != '.' && c != 0) { j++; p++; }
     k = j + 1;
-    if (*p == '.' && name[k] != 0) {
+    if (c == '.' && name[k] != 0) {
         k2 = k + 1;
         p = name + k2;
         while (*p != 0) { k2++; p++; }
@@ -6791,20 +6793,28 @@ s32 VFiPFPATH_parseShortNameNumeric(char *name, u32 num) {
     }
     digits = 0;
     p = buf;
-    do {
+    while (num != 0) {
         *p++ = (char)(num % 10 + '0');
         num /= 10;
         digits++;
-    } while (num != 0);
+    }
     end = i + digits;
-    if (end >= k) {
+    if (end >= (u32)k) {
         n = end + 1;
-        if ((u32)n > 8) n = 8;
+        if (n > 8) n = 8;
         name[n + 4] = name[k2];
         name[n + 3] = name[k + 2];
         name[n + 2] = name[k + 1];
         name[n + 1] = name[k];
         name[n] = name[j];
+    }
+    if (end >= 8) i = 7 - digits;
+    name[i++] = '~';
+    p = buf + digits;
+    name += i;
+    while (digits != 0) {
+        *name++ = *--p;
+        digits--;
     }
     return 0;
 }
