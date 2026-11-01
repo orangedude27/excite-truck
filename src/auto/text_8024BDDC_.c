@@ -4,6 +4,7 @@
 #pragma paired off
 #pragma paired_single off
 typedef struct { float x, y, z; int color; float u, v; } Vtx;
+typedef struct { float x, y, z; } Vec3;
 extern void fn_80129AFC(void);
 extern void fn_802C2B48(void);
 extern void fn_802C8530(void);
@@ -58,7 +59,7 @@ void fn_8024BDFC(void* arg0) {
 
 void fn_8024BE04(void) {
     float m[12];
-    float v[24];
+    Vtx v[4];
     unsigned short idx[6];
     float one, zero, z;
     int h, i;
@@ -77,7 +78,10 @@ void fn_8024BE04(void) {
         fn_802C88BC(3);
         fn_802C974C(lbl_80563914, lbl_80563918, lbl_8056391C);
         fn_802C8638(m);
-        v[0] = zero; v[1] = zero; v[2] = zero;
+        v[0].x = zero; v[0].y = zero; v[0].z = zero; v[0].color = -1; v[0].u = zero; v[0].v = zero;
+        v[1].x = one; v[1].y = zero; v[1].z = zero; v[1].color = -1; v[1].u = one; v[1].v = zero;
+        v[2].x = zero; v[2].y = one; v[2].z = zero; v[2].color = -1; v[2].u = zero; v[2].v = one;
+        v[3].x = one; v[3].y = one; v[3].z = zero; v[3].color = -1; v[3].u = one; v[3].v = one;
         idx[0] = lbl_802FA510[0];
         idx[1] = lbl_802FA510[1];
         idx[2] = lbl_802FA510[2];
@@ -85,7 +89,7 @@ void fn_8024BE04(void) {
         idx[4] = lbl_802FA510[4];
         idx[5] = lbl_802FA510[5];
         fn_802C8BD0(h, idx[4], idx[3], idx[2], idx[1], idx[0], zero, zero);
-        fn_802C8DB8(v, 4, idx, 6);
+        fn_802C8DB8((float*)v, 4, idx, 6);
         fn_802C8D74();
         fn_802C855C();
         fn_802C2B48();
