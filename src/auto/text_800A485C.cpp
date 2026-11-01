@@ -106,7 +106,7 @@ extern "C" s32 fn_800B7F28(void *);
 extern "C" void fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
-namespace nw4hbm { namespace lyt { class Pane; class Material; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); }; } }
+namespace nw4hbm { namespace lyt { class Pane; class Material; namespace res { class AnimationBlock; } class ResourceAccessor; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); void SetResource(const res::AnimationBlock *, ResourceAccessor *); }; } }
 
 extern "C" const char lbl_8031EE58[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
@@ -4011,7 +4011,7 @@ dispatch:
         result = fn_800B00E8(object, arg1, &value, pageForRead);
         break;
     case 2:
-        result = ((s32 (*)(void *, s32, u32 *, void *))fn_800B05C8)(object, arg1, &value, pageForRead);
+        result = ((Fn800B05C8C *)fn_800B05C8)(object, arg1, &value);
         break;
     default:
         result = 0xF;
@@ -4525,6 +4525,75 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
     *(u32 *)(buffer + offset) = upper | lower;
     if (result != 0) saved = result;
     return saved;
+}
+
+extern "C" s32 fn_800B05C8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
+    s32 status;
+    void *object = arg0;
+    u32 *output = arg2;
+    void *context = arg3;
+    u16 flags = *(u16 *)((u8 *)object + 0x18);
+    u32 scaled = (u32)arg1 * 4;
+    u32 sector = (u16)(*(u32 *)((u8 *)object + 0x28) +
+                       (scaled >> *(u8 *)((u8 *)object + 0x20)));
+    u32 retry;
+    retry = 1;
+    if (flags & 0x80)
+        retry = flags & 7;
+
+    if (*(u32 *)((u8 *)context + 0x18) != sector) {
+        if (*(u16 *)((u8 *)context + 2) == 1) {
+            for (status = 0;
+                 (u16)status < *(u8 *)((u8 *)object + 0x22);
+                 status++) {
+                fn_800B5618(object,
+                            *(void **)((u8 *)context + 8),
+                            *(u32 *)((u8 *)context + 0x18) +
+                                (u32)(u16)status * *(u32 *)((u8 *)object + 0xC),
+                            0, *(u16 *)object);
+            }
+        }
+
+fetch:
+        status = fn_800B5260(object,
+                             *(void **)((u8 *)context + 8),
+                             sector, 0, *(u16 *)object);
+        if (status == 0x1000) {
+            s32 (*callback)(void *) =
+                *(s32 (**)(void *))((u8 *)object + 0x1FC0);
+            if (callback != 0) {
+                s32 callbackResult =
+                    callback(*(void **)((u8 *)object + 0x1F84));
+                if (callbackResult == 0)
+                    goto store_sector;
+                if (callbackResult == 1 &&
+                    *(u8 *)((u8 *)object + 0x22) >= 2 &&
+                    retry < *(u8 *)((u8 *)object + 0x22)) {
+                    retry++;
+                    sector += *(u32 *)((u8 *)object + 0xC);
+                    goto store_sector;
+                }
+            }
+        }
+        if (status == 0)
+            goto store_sector;
+        return status;
+    store_sector:
+        *(u32 *)((u8 *)context + 0x18) = sector;
+        if (status != 0)
+            goto fetch;
+    }
+
+    {
+        u32 value = *(u32 *)(*(u8 **)((u8 *)context + 8) +
+                             (scaled & (*(u16 *)object - 1)));
+        u32 upper = __rlwinm(value, 8, 8, 15);
+        u32 lower = __rlwinm(value, 24, 16, 23);
+        upper = __rlwimi(upper, value, 24, 0, 7);
+        lower = __rlwimi(lower, value, 8, 24, 31);
+        *output = (upper | lower) & 0x0FFFFFFF;
+    }
+    return 0;
 }
 
 extern "C" void fn_800B0748(void);
