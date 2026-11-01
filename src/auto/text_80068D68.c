@@ -16883,6 +16883,8 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
     }
 }
 
+typedef struct tRFC_MCB tRFC_MCB;
+
 void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
     BT_HDR *p_buf;
     u8 *p_data;
