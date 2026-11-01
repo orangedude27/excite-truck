@@ -8,6 +8,7 @@ extern f32 lbl_805640C4;
 extern f32 lbl_805640C8;
 extern void* lbl_8055F5F0;
 s32 stricmp(const char*, const char*);
+extern int sprintf(char*, const char*, ...);
 void* fn_80279004(s32, s32);
 
 typedef struct Node_80279254 {
@@ -58,54 +59,59 @@ extern const char lbl_8055C6D0[4];
 extern const char lbl_8055C6D8[4];
 extern const char lbl_8055C6E0[4];
 typedef struct Vec3_80279004 { f32 x, y, z; } Vec3_80279004;
-void* fn_80279004(s32 arg0, s32 arg1) {
-    char path[0xC0];
+void* fn_80279004(s32 name, s32 arg1) {
+    char path[0x80];
     char path2[0x80];
     char key[0x20];
-    f32 values[6];
-    void* object;
+    char* base = lbl_80347690;
+    char* arg0 = (char*)name;
+    char* object;
     void* file;
-    void* file2 = NULL;
+    void* file2;
     void* resource;
     s32 i;
     f32* dst;
+    Vec3_80279004 v;
+    Vec3_80279004 w;
 
-    object = fn_801284F8(0x2464, lbl_8055C6C8);
-    sprintf(path, lbl_80347690 + 0xF4, arg0);
-    *(void**)((u8*)object + 0x2438) = fn_80131808(path);
-    sprintf(path, lbl_80347690 + 0x108, arg0);
+    object = (char*)fn_801284F8(0x2464, lbl_8055C6C8);
+    sprintf(path, base + 0xF4, arg0);
+    *(void**)(object + 0x2438) = fn_80131808(path);
+    sprintf(path, base + 0x108, arg0);
     if (fn_8012C33C(path) == 0) {
-        sprintf(path, lbl_80347690 + 0x118, arg0);
+        sprintf(path, base + 0x118, arg0);
     }
     file = fn_80131808(path);
-    sprintf(path2, lbl_80347690 + 0x128, arg0);
+    sprintf(path2, base + 0x128, arg0);
     if (fn_8012C33C(path2) != 0) {
         file2 = fn_80131808(path2);
+    } else {
+        file2 = NULL;
     }
-    fn_80278A64(object, file, file2, arg0);
-    memset((u8*)object + 0x2138, 0, 0x300);
-    if (((s32 (**)(void*, const char*))(*(void**)file))[2](file, lbl_8055C6D0) != 0) {
-        resource = ((void* (**)(void*, const char*))(*(void**)file))[1](file, lbl_8055C6D0);
-        dst = (f32*)((u8*)object + 0x2138);
+    fn_80278A64(object, file, file2, (s32)arg0);
+    memset(object + 0x2138, 0, 0x300);
+    if (((s32 (**)(void*, const char*))(*(void**)file))[4](file, lbl_8055C6D0) != 0) {
+        resource = ((void* (**)(void*, const char*))(*(void**)file))[2](file, lbl_8055C6D0);
+        dst = (f32*)(object + 0x2138);
         for (i = 0; i < 0x20; i++) {
             sprintf(key, lbl_8055C6D8, i);
-            ((void (**)(void*, f32*, char*))(*(void**)resource))[6](resource, values, key);
-            dst[0] = values[0]; dst[1] = values[1]; dst[2] = values[2];
+            v = ((Vec3_80279004 (**)(void*, char*))(*(void**)resource))[13](resource, key);
+            dst[0] = v.x; dst[1] = v.y; dst[2] = v.z;
             sprintf(key, lbl_8055C6E0, i);
-            ((void (**)(void*, f32*, char*))(*(void**)resource))[6](resource, values + 3, key);
-            dst[3] = values[3]; dst[4] = values[4]; dst[5] = values[5];
+            w = ((Vec3_80279004 (**)(void*, char*))(*(void**)resource))[13](resource, key);
+            dst[3] = w.x; dst[4] = w.y; dst[5] = w.z;
             dst += 6;
         }
     } else {
-        fn_802E30C8(lbl_80347690 + 0x13C, arg0);
+        fn_802E30C8(base + 0x13C, (s32)arg0);
     }
     fn_80131818(file);
     if (file2 != NULL) fn_80131818(file2);
-    *(s32*)((u8*)object + 0x245C) = 1;
-    strncpy((char*)object + 0x243C, (char*)arg0, 0x20);
-    *((u8*)object + 0x245B) = 0;
-    *(void**)((u8*)object + 0x2134) = *(void**)((u8*)object + 0x2438);
-    *(void**)((u8*)object + 0x2460) = lbl_8055F5F0;
+    *(s32*)(object + 0x245C) = 1;
+    strncpy(object + 0x243C, arg0, 0x20);
+    *(u8*)(object + 0x245B) = 0;
+    *(void**)(object + 0x2134) = *(void**)(object + 0x2438);
+    *(void**)(object + 0x2460) = lbl_8055F5F0;
     lbl_8055F5F0 = object;
     return object;
 }
