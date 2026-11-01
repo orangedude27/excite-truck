@@ -816,7 +816,8 @@ void fn_801942F0(void *arg0, int arg1) {
 extern int fn_801B2F24(void);
 extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
 static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
-    return ax * bx + by * -ay;
+    float n = -ay;
+    return ax * bx + by * n;
 }
 #pragma cplusplus on
 extern "C" int fn_800216D0(void);
@@ -1772,6 +1773,66 @@ void fn_801971AC(void *arg0, void *arg1) {
     sp10 = *(double *)sp8;
     point[0] = *(float *)&sp10;
     point[1] = *((float *)&sp10 + 1);
+}
+
+extern int fn_801671AC(int);
+extern int fn_8015FBCC(void *, float *, int, int, float, float);
+extern float fn_801973FC(float *, float *, void *);
+extern float lbl_80562160, lbl_8056222C, lbl_80562268, lbl_8056226C;
+void fn_8019724C(void *arg0, float *arg1) {
+    float direction[2];
+    float projected[2];
+    float length;
+    float scale;
+    float current;
+    float upper;
+    float lower;
+    float diff;
+    float weight;
+    float factor;
+    int index;
+    void *obj;
+
+    if (*(float *)((char *)arg0 + 0x270) > lbl_80562160) {
+        index = fn_801671AC(*(int *)((char *)arg0 + 0x290));
+        obj = *(void **)((char *)arg0 + 0x294);
+        direction[0] = *(float *)((char *)obj + 0x70);
+        direction[1] = *(float *)((char *)obj + 0x78);
+        length = (float)fn_8002F234(direction[0] * direction[0] + direction[1] * direction[1]);
+        if (lbl_80562148 > length)
+            length = lbl_80562148;
+        scale = lbl_80562140 / length;
+        direction[0] = direction[0] * scale;
+        direction[1] = direction[1] * scale;
+        if (fn_8015FBCC(obj, projected, 0, index, direction[0], direction[1])) {
+            current = *(float *)((char *)arg0 + 0x26C);
+            upper = lbl_8056226C + *(float *)((char *)arg0 + 0x1F8);
+            lower = *(float *)((char *)arg0 + 0x26C) - lbl_80562268;
+            if (current < upper) {
+            } else {
+                current = upper;
+            }
+            if (current > lower) {
+                current = lower;
+            }
+            *(float *)((char *)arg0 + 0x1F8) = current;
+            *(float *)((char *)arg0 + 0x20C) = fn_801973FC(direction, projected, arg1);
+            arg1[0] = projected[0];
+            arg1[1] = projected[1];
+            if (*(float *)((char *)arg0 + 0x270) > lbl_8056222C) {
+                *(int *)((char *)arg0 + 0x2D0) |= 0x40;
+                *(int *)((char *)arg0 + 0x2D0) |= 0x800;
+            }
+        } else {
+            diff = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1F8);
+            if (diff < lbl_80562268) {
+                weight = lbl_80562140 - diff / lbl_80562268;
+                factor = *(float *)((char *)arg0 + 0x20C) * weight;
+                arg1[0] = arg1[0] + direction[0] * factor;
+                arg1[1] = arg1[1] + direction[1] * factor;
+            }
+        }
+    }
 }
 
 int fn_8019799C(void *arg0, void *arg1) {
