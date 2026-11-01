@@ -2124,58 +2124,67 @@ extern "C" void fn_8021C478(void *arg0) {
 }
 
 extern "C" void fn_8021C4D4(void *arg0) {
-    register u8 *self = (u8 *)arg0;
+    register void *self = arg0;
     s32 *statusPtr;
-    s32 state = 0;
-    s32 valid = 0;
+    s32 state;
+    s32 valid;
     s32 temp;
     s32 first;
     s32 second;
     f32 sp14;
     f32 sp10;
 
-    fn_80219660(arg0);
-    statusPtr = *(s32 **)(self + 0x2A8);
-    if (statusPtr != 0) {
-        state = *statusPtr;
-        if (state == *(s32 *)(self + 0x2AC)) {
-            valid = 1;
-            state = *(s32 *)(self + 0x2CC);
+    fn_80219660(self);
+    statusPtr = *(s32 **)((u8 *)self + 0x2A8);
+    valid = 0;
+    state = (s32)statusPtr;
+    if (statusPtr == 0)
+        goto mode_one;
+    state = *statusPtr;
+    if (state != *(s32 *)((u8 *)self + 0x2AC))
+        goto mode_one;
+    valid = 1;
+    state = *(s32 *)((u8 *)self + 0x2CC);
+    valid = (s32)((u32)(valid | -valid) >> 31);
+    if (state == 0) {
+        if (*(s32 *)((u8 *)self + 0x2C8) != 0) {
+            ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
+                *(s32 *)((u8 *)self + 0x2C4), *(s32 *)((u8 *)self + 0x2BC),
+                *(s32 *)((u8 *)self + 0x2B8) - 3, 0, 0, 0,
+                *(s32 *)((u8 *)self + 0x2C8), valid, lbl_805634A8, 1);
         }
+        goto after_modes;
     }
 
-    if (state == 0 && *(s32 *)(self + 0x2C8) != 0) {
+mode_one:
+    if (state == 1 && *(s32 *)((u8 *)self + 0x2C8) != 0) {
         ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
-            *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2BC),
-            *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
-            *(s32 *)(self + 0x2C8), valid, lbl_805634A8, 1);
-    } else if (state == 1 && *(s32 *)(self + 0x2C8) != 0) {
-        ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
-            *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2C0),
-            *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
-            *(s32 *)(self + 0x2C8), valid, lbl_805634A8, 1);
+            *(s32 *)((u8 *)self + 0x2C4), *(s32 *)((u8 *)self + 0x2C0),
+            *(s32 *)((u8 *)self + 0x2B8) - 3, 0, 0, 0,
+            *(s32 *)((u8 *)self + 0x2C8), valid, lbl_805634A8, 1);
     }
 
-    if (*(s32 *)(self + 0x2B0) != *(s32 *)(self + 0x2B4) &&
-        *(u8 *)(self + 0x2D0) != 0) {
+after_modes:
+    if (*(s32 *)((u8 *)self + 0x2B0) != *(s32 *)((u8 *)self + 0x2B4) &&
+        *(u8 *)((u8 *)self + 0x2D0) != 0) {
         temp = 0;
-        statusPtr = *(s32 **)(self + 0x2A8);
+        statusPtr = *(s32 **)((u8 *)self + 0x2A8);
         if (statusPtr != 0 &&
-            *(s32 *)(self + 0x2AC) == *statusPtr)
+            *(s32 *)((u8 *)self + 0x2AC) == *statusPtr)
             temp = 1;
-
         first = fn_8021165C(0, 2);
         second = fn_8021165C(1, 2);
         sp14 = lbl_805634A8;
         sp10 = lbl_805634A8;
         fn_80230C30(&sp14, &sp10,
-                    *(s32 *)(self + 0x2B0), *(s32 *)(self + 0x2B8));
-        if (((Fn8021C4D4VTable *)*(void **)(self + 0x2A4))->At20() != 0)
+                    *(s32 *)((u8 *)self + 0x2B0),
+                    *(s32 *)((u8 *)self + 0x2B8));
+        if (((Fn8021C4D4VTable *)*(void **)((u8 *)self + 0x2A4))->At20() != 0)
             fn_802C5310(first, temp, sp14, sp10, lbl_805634A8);
-
         fn_80230C30(&sp14, &sp10,
-                    *(s32 *)(self + 0x2B4), *(s32 *)(self + 0x2B8));
-        if (((Fn8021C4D4VTable *)*(void **)(self + 0x2A4))->At1C() != 0)
+                    *(s32 *)((u8 *)self + 0x2B4),
+                    *(s32 *)((u8 *)self + 0x2B8));
+        if (((Fn8021C4D4VTable *)*(void **)((u8 *)self + 0x2A4))->At1C() != 0)
             fn_802C5310(second, temp, sp14, sp10, lbl_805634A8);
     }
 }
@@ -2964,40 +2973,33 @@ extern "C" void fn_8021E7D4(void *);
 // Manual jump table dispatch to match target
 #pragma push
 #pragma optimization_level 4
+// Match jump table dispatch structure from target
 extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
-    s32 offset = arg1 - 0x121;
-    if (offset > 7) return 0;
-    
-    // Load state pointer
     s32 *state = *(s32 **)((u8 *)arg0 + 0x25C);
     s32 value;
     
-    // Dispatch based on offset
-    if (offset == 0) {
+    switch (arg1) {
+    case 0x121:
         value = *state;
         if (value > 0) *state = value - 1;
         fn_8021E7D4(arg0);
         return 1;
-    }
-    if (offset == 1) {
+    case 0x122:
         value = *state + 1;
         if (value < (*(s32 **)((u8 *)arg0 + 0x244))[2]) *state = value;
         fn_8021E7D4(arg0);
         return 1;
-    }
-    if (offset == 2) {
-        s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
-        s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
-        value = limit[2] - 1;
-        if (*state < value + range[1]) *state = value;
-        value = range[2] + range[1];
-        range[2] = value;
-        if (value > range[0] - range[1]) range[2] = range[0] - range[1];
-        if (range[2] < 0) range[2] = 0;
+    case 0x123:
+        value = (*(s32 **)((u8 *)arg0 + 0x244))[2] - 1;
+        if (*state < value + (*(s32 **)((u8 *)arg0 + 0x248))[1]) *state = value;
+        value = (*(s32 **)((u8 *)arg0 + 0x248))[2] + (*(s32 **)((u8 *)arg0 + 0x248))[1];
+        (*(s32 **)((u8 *)arg0 + 0x248))[2] = value;
+        if (value > (*(s32 **)((u8 *)arg0 + 0x248))[0] - (*(s32 **)((u8 *)arg0 + 0x248))[1])
+            (*(s32 **)((u8 *)arg0 + 0x248))[2] = (*(s32 **)((u8 *)arg0 + 0x248))[0] - (*(s32 **)((u8 *)arg0 + 0x248))[1];
+        if ((*(s32 **)((u8 *)arg0 + 0x248))[2] < 0) (*(s32 **)((u8 *)arg0 + 0x248))[2] = 0;
         fn_8021E7D4(arg0);
         return 1;
-    }
-    if (offset == 3) {
+    case 0x124: {
         s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
         value = *state - range[1];
         *state = abs_val(value);
@@ -3008,18 +3010,19 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
         fn_8021E7D4(arg0);
         return 1;
     }
-    if (offset == 4) {
+    case 0x125:
         *state = 0;
         fn_8021E7D4(arg0);
         return 1;
-    }
-    if (offset == 5) {
+    case 0x126:
         *state = (*(s32 **)((u8 *)arg0 + 0x244))[2] - 1;
         fn_8021E7D4(arg0);
         return 1;
+    case 0x127:
+    case 0x128:
+    default:
+        return 0;
     }
-    // cases 6, 7 (0x127, 0x128) fall through to default
-    return 0;
 }
 #pragma pop
 
