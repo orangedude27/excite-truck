@@ -1420,6 +1420,107 @@ extern "C" void fn_80214D50(s32 arg0) {
         *((u8 *)obj + 0x4A) = 0;
     }
 }
+
+#pragma push
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma small_data on
+extern "C" s32 fn_80214E10(s32 arg0, s32 arg1, s32 arg2) {
+    s32 stack[47];
+    s32 *ctx, *values, *stackBase;
+    s32 state, zero;
+    s32 context0, context2, context3, context4;
+    s32 value0, value1, value2, value3, value4;
+    s32 labelD3F8, labelD404, labelB820, labelB824, labelB830, labelB860;
+
+    stack[0] = 2;
+    labelD3F8 = (s32)lbl_8033D3F8;
+    state = fn_802168E4();
+    if (state != 0) {
+        fn_80214A9C(0x1F);
+    }
+
+    values = lbl_80490510;
+    value0 = values[0];
+    ctx = lbl_802F9EB8;
+    context0 = ctx[0];
+    zero = 0;
+    value1 = values[1];
+    value2 = values[2];
+    value3 = values[3];
+    value4 = values[4];
+    context2 = ctx[2];
+    context3 = ctx[3];
+    context4 = ctx[4];
+    labelD404 = (s32)lbl_8033D404;
+    labelB820 = (s32)&lbl_8055B820;
+    labelB824 = (s32)&lbl_8055B824;
+    labelB830 = (s32)&lbl_8055B830;
+    labelB860 = (s32)&lbl_8055B860;
+    stackBase = stack;
+
+    stack[28] = labelD3F8;
+    stack[6] = labelB820;
+    stack[7] = 2;
+    stack[8] = (s32)stackBase;
+    stack[9] = zero;
+    stack[10] = zero;
+    stack[11] = labelB820;
+    stack[12] = zero;
+    stack[13] = zero;
+    stack[14] = -2;
+    stack[15] = zero;
+    stack[16] = labelB860;
+    stack[17] = 6;
+    stack[18] = zero;
+    stack[19] = -1;
+    stack[20] = 0x1B;
+    stack[21] = labelB860;
+    stack[22] = 6;
+    stack[23] = zero;
+    stack[24] = -2;
+    stack[25] = 0xD;
+    stack[26] = labelD404;
+    stack[27] = 3;
+    stack[29] = 4;
+    stack[30] = zero;
+    stack[31] = labelB824;
+    stack[32] = 3;
+    stack[33] = arg0;
+    stack[34] = 0x20;
+    stack[35] = zero;
+    stack[36] = labelB830;
+    stack[37] = 3;
+    stack[38] = arg1;
+    stack[39] = 4;
+    stack[40] = zero;
+    stack[41] = value0;
+    stack[42] = value1;
+    stack[43] = value2;
+    stack[44] = value3;
+    stack[45] = value4;
+    stack[1] = context0;
+    stack[2] = (s32)(stackBase + 6);
+    stack[3] = context2;
+    stack[4] = context3;
+    stack[5] = context4;
+    if (arg2 == 0) {
+        stack[3] = (s32)fn_802152CC;
+    }
+
+    fn_802146BC(&stack[1], -0x3E7, -0x3E7, 1,
+                context2, context0, value4, value3);
+    if (state != 0) {
+        fn_80214AF0(0x1F);
+    }
+}
+#pragma small_data off
+#pragma scheduling on
+#pragma use_lmw_stmw reset
+#pragma dont_inline reset
+#pragma pop
+
 #pragma use_lmw_stmw reset
 extern "C" void fn_80214FD8(s32 arg0, s32 arg1) {
     ((s32 (*)(s32, s32, s32))fn_80214E10)(arg0, arg1, 0);
@@ -1939,12 +2040,12 @@ extern "C" void fn_80215A2C(void *arg0) {
 }
 
 extern "C" void fn_80215A48(void *arg0) {
-    u8 value = *((u8 *)arg0 + 0x1A);
-    *((u8 *)arg0 + 0x19) = 1;
-    if (value != 0) *((u8 *)arg0 + 0x234) = 1;
-    void *obj = *(void **)((u8 *)arg0 + 0x244);
-    void **vt = *(void ***)obj;
-    ((void (*)(void *))*(void **)((u8 *)vt + 0x4C))(obj);
+    register u32 one = 1;
+    *(u8 *)((u8 *)arg0 + 0x19) = one;
+    if (*(u8 *)((u8 *)arg0 + 0x1A)) {
+        *(u8 *)((u8 *)arg0 + 0x234) = one;
+    }
+    ((VfObj *)*(void **)((u8 *)arg0 + 0x244))->vf17();
 }
 
 #pragma dont_inline on
