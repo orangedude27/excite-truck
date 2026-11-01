@@ -14535,31 +14535,32 @@ void l2cu_send_peer_echo_req(void *p_lcb, u8 *p_data, s32 data_len)
     ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, p_buf);
 }
 
-void l2cu_send_peer_echo_rsp(void *arg0, s32 arg1, u8 *arg2, u32 arg3) {
-    extern void *l2cu_build_header(u16, u8, u8, s32);
-    extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
-    extern void fn_8007093C(u32, void *);
-    extern char lbl_80319174[];
-    u32 length = arg3;
+void l2cu_send_peer_echo_rsp(void *p_lcb, s32 cid, u8 *p_data, u32 arg3)
+{
+    BT_HDR *p_buf;
+    u8 *p;
     u16 limit;
-    void *packet;
-    u8 *dst;
-    u32 i;
+    s32 data_len = arg3;
+
     if (*(u16 *)(lbl_803C0A50 + 0x7E) < 0x294)
         limit = *(u16 *)(lbl_803C0A50 + 0x7C);
     else
         limit = 0x294;
-    if (length > (u16)(limit - 0xC))
-        length = 0;
-    packet = l2cu_build_header(*(u16 *)((char *)arg0 + 0x28), (u8)length, 9, arg1);
-    if (packet == 0) {
+
+    if (arg3 > (u16)(limit - 0xC))
+        data_len = 0;
+
+    if ((p_buf = (BT_HDR *)((BT_HDR *(*)(u16, s32, u8, s32))l2cu_build_header)(
+             *(u16 *)((u8 *)p_lcb + 0x28), data_len, 9, cid)) == 0) {
         if (lbl_803C4040[0] >= 2)
             fn_8007093C(0x80001, lbl_80319174);
-    } else {
-        dst = (u8 *)packet + 0x14;
-        for (i = 0; i < length; i++) dst[i] = arg2[i];
-        l2c_link_check_send_pkts(arg0, 0, packet, 0);
+        return;
     }
+
+    p = (u8 *)(p_buf + 1) + 0xC;
+    if (data_len)
+        ARRAY_TO_STREAM(p, p_data, data_len);
+    ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, p_buf);
 }
 
 extern void *l2cu_build_header(u16, u8, u8, s32);
