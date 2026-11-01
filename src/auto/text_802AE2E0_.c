@@ -4,7 +4,8 @@
 
 extern int fn_80131810(void *);
 extern int lbl_804BD8CC[3];
-extern char lbl_80349FF0[];
+typedef struct { char a[0xC]; char b[0x10]; char c[0x10]; } Lists802AE328;
+extern Lists802AE328 lbl_80349FF0;
 extern u8 lbl_8055F958;
 #pragma push
 #pragma scheduling invalid_target
@@ -18,6 +19,14 @@ void fn_802AE2E0(void *arg0) {
         items[idx] = result;
     }
 }
+
+void fn_802AE328(void) {
+    fn_802AE2E0(lbl_80349FF0.a);
+    fn_802AE2E0(lbl_80349FF0.b);
+    fn_802AE2E0(lbl_80349FF0.c);
+    lbl_8055F958 = 1;
+}
+
 #pragma dont_inline reset
 int fn_802AE414(void *arg0) {
     extern u8 lbl_8055F958;
