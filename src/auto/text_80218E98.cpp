@@ -2894,8 +2894,10 @@ probe:
 }
 
 extern "C" void fn_8021E7D4(void *);
+// Force jump table generation for switch
 #pragma push
 #pragma optimization_level 4
+#pragma inline_depth 8
 extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
     s32 *state = *(s32 **)((u8 *)arg0 + 0x25C);
     s32 value;
