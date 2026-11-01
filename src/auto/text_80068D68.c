@@ -351,6 +351,9 @@ typedef struct {
 } AXFX_REVERBHI_EXP_FREE_VIEW;
 
 extern u8 lbl_803C0F78[];
+static inline UINT8 *btm_sco_rsp_entry_base(UINT8 *base, UINT16 index) {
+    return base + ((UINT32)index * 0x34);
+}
 extern u8 lbl_80316570[];
 extern void fn_80072AE4(u8 *, u8 *, u8 *);
 extern void bta_dm_disc_remname_cback(u8 *);
@@ -8016,39 +8019,47 @@ void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle) {
 
 void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
 {
-    tSCO_CB *p_sco = &btm_cb.sco_cb;
-    tSCO_CONN *p = &p_sco->sco_db[0];
-    UINT16 xx;
-    tBTM_ESCO_CONN_REQ_EVT_DATA evt_data;
-    for (xx = 0; xx < BTM_MAX_SCO_LINKS; xx++, p++) {
-        if (((p->state == 1 && p->rem_bd_known) || p->state == 3) && !memcmp(p->esco.data.bd_addr, bda, BD_ADDR_LEN)) {
-            p->rem_bd_known = TRUE; p->esco.data.link_type = link_type; p->state = 2;
-            memcpy(p->esco.data.bd_addr, bda, BD_ADDR_LEN);
-            if (!p->esco.p_esco_cback) {
-                if ((link_type == BTM_LINK_TYPE_ESCO && !(p_sco->def_esco_parms.packet_types & BTM_ESCO_LINK_ONLY_MASK) &&
-                     ((p_sco->def_esco_parms.packet_types & BTM_SCO_EXCEPTION_PKTS_MASK) == BTM_SCO_EXCEPTION_PKTS_MASK)) ||
-                    (link_type == BTM_LINK_TYPE_SCO && !(p_sco->def_esco_parms.packet_types & BTM_SCO_LINK_ONLY_MASK)))
-                    btm_esco_conn_rsp(xx, HCI_ERR_HOST_REJECT_RESOURCES, bda, NULL);
-                else btm_esco_conn_rsp(xx, HCI_SUCCESS, bda, NULL);
-            } else {
-                memcpy(evt_data.bd_addr, bda, BD_ADDR_LEN); memcpy(evt_data.dev_class, dev_class, DEV_CLASS_LEN);
-                evt_data.link_type = link_type; evt_data.sco_inx = xx;
-                p->esco.p_esco_cback(BTM_ESCO_CONN_REQ_EVT, (tBTM_ESCO_EVT_DATA *)&evt_data);
+    UINT8 *entry = lbl_803C0F78 + 0x1854;
+    UINT16 i;
+    UINT8 event_data[0x0C];
+    for (i = 0; i < 3; i++, entry += 0x34) {
+        UINT16 state = *(UINT16 *)(entry + 8);
+        if (!((state == 1 && entry[0xD] != 0) || state == 3))
+            continue;
+        if (memcmp(entry + 0x28, bda, 6) != 0)
+            continue;
+        entry[0xD] = 1;
+        entry[0x2E] = link_type;
+        memcpy(entry + 0x28, bda, 6);
+        if (*(UINT32 *)(entry + 0x10) == 0) {
+            btm_esco_conn_rsp(i, 0, bda, NULL);
+        } else {
+            memcpy(event_data + 2, bda, 6);
+            memcpy(event_data + 8, dev_class, 3);
+            event_data[0xB] = link_type;
+            *(UINT16 *)event_data = i;
+            ((void (*)(UINT16, tBTM_ESCO_DATA *))*(UINT32 *)(entry + 0x10))(
+                2, (tBTM_ESCO_DATA *)event_data);
+        }
+        return;
+    }
+    if (*(UINT32 *)(lbl_803C0F78 + 0x1850) != 0) {
+        entry = lbl_803C0F78 + 0x1854;
+        for (i = 0; i < 3; i++, entry += 0x34) {
+            if (*(UINT16 *)(entry + 8) == 0) {
+                entry[0xC] = 0;
+                *(UINT16 *)(entry + 8) = 1;
+                entry[0x2E] = link_type;
+                memcpy(entry + 0x28, bda, 6);
+                entry[0xD] = 1;
+                ((void (*)(UINT16))*(UINT32 *)(lbl_803C0F78 + 0x1850))(i);
+                return;
             }
-            return;
         }
     }
-    if (p_sco->app_sco_ind_cb) {
-        for (xx = 0, p = &p_sco->sco_db[0]; xx < BTM_MAX_SCO_LINKS; xx++, p++) {
-            if (p->state == 0) {
-                p->is_orig = FALSE; p->state = 1; p->esco.data.link_type = link_type;
-                memcpy(p->esco.data.bd_addr, bda, BD_ADDR_LEN); p->rem_bd_known = TRUE; break;
-            }
-        }
-        if (xx < BTM_MAX_SCO_LINKS) { p_sco->app_sco_ind_cb(xx); return; }
-    }
-    if (lbl_803C0F78[0x27c0] >= 2) fn_8007093C(0xD0001, lbl_8031669C);
-    btm_esco_conn_rsp(BTM_MAX_SCO_LINKS, HCI_ERR_HOST_REJECT_RESOURCES, bda, NULL);
+    if (lbl_803C0F78[0x27C0] >= 2)
+        fn_8007093C(0xD0001, lbl_8031669C);
+    btm_esco_conn_rsp(3, 0x0D, bda, NULL);
 }
 
 void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) {
