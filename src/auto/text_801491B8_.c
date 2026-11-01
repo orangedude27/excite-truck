@@ -1014,7 +1014,8 @@ void fn_8014DB94(void *arg0) {
 
 void fn_8014DE4C(void) {
 
-}
+  }
+  // test
 
 extern s32 fn_801284F8(s32, void *);
 extern s32 fn_80145E70(void *);
