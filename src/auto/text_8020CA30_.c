@@ -24,7 +24,7 @@ extern f32 lbl_80563300;
 extern void* fn_801284F8(int, const char*);
 extern void* fn_80131808(const char*);
 extern void fn_80131818(void*);
-extern void* fn_802077A4(int, void*, void*);
+extern void* fn_802077A4(int, ...);
 extern int fn_802E30C8(const char*, ...);
 extern int strcmp(const char*, const char*);
 #pragma cplusplus on
@@ -55,6 +55,56 @@ void fn_8020CA34(void) {
 void fn_8020CA38(void) {
 
 }
+
+#pragma cplusplus on
+extern "C" void* fn_8020CA3C(void* arg0) {
+    char* p;
+    char* obj;
+    int idx;
+    Item_8020CA3C* item;
+    Dir_8020CA3C* dir;
+    char* ctx;
+    f32 scale;
+    int name;
+    void* r;
+    int n;
+
+    obj = (char*)fn_801284F8(0x12C, lbl_8055B5E0);
+    if (obj != 0) {
+        *(char**)obj = lbl_8033C650;
+        *(void**)(obj + 4) = arg0;
+        *(int*)(obj + 8) = 0;
+        dir = (Dir_8020CA3C*)fn_80131808(lbl_8033C660);
+        scale = lbl_80563300;
+        idx = 0;
+        while ((item = dir->getAt(idx)) != 0) {
+            if (strcmp(item->getName(), lbl_8055B5E8) == 0) {
+                n = *(int*)(obj + 8);
+                ctx = *(char**)(obj + 4);
+                *(int*)(obj + 8) = n + 1;
+                p = obj + n * 0x24;
+                name = item->getA(lbl_8055B628);
+                r = fn_802077A4(4, ctx + 0x118, ctx + 0x60);
+                *(void**)(p + 0xC) = r;
+                if (r == 0 && *(int*)(ctx + 0x1EC) == 0) {
+                    fn_802E30C8(lbl_8033C678, name);
+                }
+                *(int*)(p + 0x10) = item->getB(lbl_8033C66C);
+                *(f32*)(p + 0x14) = scale * item->getF(lbl_8055B620);
+                *(f32*)(p + 0x18) = scale * item->getF(lbl_8055B618);
+                *(f32*)(p + 0x1C) = scale * item->getF(lbl_8055B610);
+                *(f32*)(p + 0x20) = item->getF(lbl_8055B608);
+                *(f32*)(p + 0x24) = item->getF(lbl_8055B600);
+                *(f32*)(p + 0x28) = item->getF(lbl_8055B5F8);
+                *(f32*)(p + 0x2C) = item->getF(lbl_8055B5F0);
+            }
+            idx++;
+        }
+        fn_80131818(dir);
+    }
+    return obj;
+}
+#pragma cplusplus reset
 
 #pragma scheduling invalid_target
 void *fn_8020CC78(void *arg0, int arg1) {
