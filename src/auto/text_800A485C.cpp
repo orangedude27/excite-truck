@@ -17681,56 +17681,33 @@ extern "C" u8 fn_80062054(void);
 extern "C" void fn_80062088(s32);
 extern "C" f32 lbl_80560DDC,lbl_80560DE0,lbl_80560DE4;
 extern "C" f32 lbl_80560DD0,lbl_80560DE8;
-#pragma push
-#pragma dont_inline on
+#pragma dont_inline off
 extern "C" s32 fn_800C7C70(void *arg0) {
     u8 *p;
-    s32 i, j, index;
-    s32 *entry;
+    s32 i, index;
     void *obj;
-    f32 div;
     *(s32 *)((u8 *)arg0 + 0x80) = (s32)(lbl_80560DDC + lbl_80560DE0 * (f32)fn_80062054());
     fn_80062088(0x7f);
-    for (p = (u8 *)arg0, div = lbl_80560DE4, i = 0; i < 4; i++) {
-        fn_800D1204(*(void **)(p + 0x254), (f32)*(s32 *)((u8 *)arg0 + 0x80) / div);
-        fn_800D11F0(*(void **)(p + 0x254));
+    for (p = (u8 *)arg0, i = 0; i < 4; i++) {
+        ((void (*)(void *, f32))fn_800D1204)(*(void **)(p + 0x254), (f32)*(s32 *)((u8 *)arg0 + 0x80) / 10.0f);
+        ((void (*)(void *))fn_800D11F0)(*(void **)(p + 0x254));
         p += 4;
     }
     for (i = 0; i < 10; i++) {
         if (i < *(s32 *)((u8 *)arg0 + 0x80)) {
-            index = 0;
-            entry = lbl_802F4588;
-            for (j = 0; j < 0x25; ++j) {
-                if (i + 0x15 == entry[0]) { if (entry[1] == 10) goto f1; }
-                ++index;
-                if (i + 0x15 == entry[2]) { if (entry[3] == 10) goto f1; }
-                entry += 4;
-                ++index;
-            }
-            index = -1;
-        f1:;
+            index = findEventSlot(i + 0x15, 10);
             obj = ((void **)arg0)[index + 166];
-            fn_800CF3EC(obj);
+            ((void (*)(void *))fn_800CF3EC)(obj);
             *(s32 *)((u8 *)obj + 0x14) = 1;
         } else {
-            index = 0;
-            entry = lbl_802F4588;
-            for (j = 0; j < 0x25; ++j) {
-                if (i + 0x15 == entry[0]) { if (entry[1] == 9) goto f2; }
-                ++index;
-                if (i + 0x15 == entry[2]) { if (entry[3] == 9) goto f2; }
-                entry += 4;
-                ++index;
-            }
-            index = -1;
-        f2:;
+            index = findEventSlot(i + 0x15, 9);
             obj = ((void **)arg0)[index + 166];
-            fn_800CF3EC(obj);
+            ((void (*)(void *))fn_800CF3EC)(obj);
             *(s32 *)((u8 *)obj + 0x14) = 1;
         }
     }
 }
-#pragma pop
+#pragma dont_inline on
 extern "C" s16 fn_80031C74(void);
 extern "C" s16 fn_80031C7C(void);
 extern "C" s16 fn_80031C84(void);
@@ -18558,9 +18535,12 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
     void *obj;
-    s32 *ids = &lbl_8031E370[n * 4];
-    u8 *rec = &self[n * 0x18];
-    s32 i, index;
+    s32 *ids;
+    u8 *rec;
+    s32 i, index, off;
+    off = n * 0x18;
+    ids = lbl_8031E370 + n * 4;
+    rec = self + off;
     for (i = 0; i < 4; i++) {
         u8 *pane;
         if (i < rec[0x16C]) {
