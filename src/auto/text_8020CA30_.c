@@ -49,5 +49,84 @@ void *fn_8020CC78(void *arg0, int arg1) {
     }
     return arg0;
 }
-#pragma scheduling on
+
+void fn_8020CD28(char *arg0) {
+    char *ctx = *(char **)(arg0 + 4);
+    char *e;
+    int i;
+    int max = 0;
+    int v;
+    f32 hi, lo, cur, scale;
+
+    v = *(int *)(ctx + 0x2410);
+    if (v > max) max = v;
+    v = *(int *)(ctx + 0x2484);
+    if (v > max) max = v;
+    v = *(int *)(ctx + 0x24F8);
+    if (v > max) max = v;
+    v = *(int *)(ctx + 0x256C);
+    if (v > max) max = v;
+
+    e = arg0;
+    hi = lbl_80563308;
+    lo = lbl_8056330C;
+    cur = *(f32 *)(ctx + 0x25D4);
+    scale = lbl_80563304 * (f32)*(int *)(ctx + 0x2620);
+    for (i = 0; i < *(int *)(arg0 + 8); i++, e += 0x24) {
+        if (*(int *)((char *)fn_801D04A8(max) + 0x10) == *(int *)(e + 0x10)) {
+            char *obj = *(char **)(e + 0xC);
+            if (obj != 0) {
+                f32 a, b, t, t2;
+                f32 s = *(f32 *)(e + 0x18);
+                if (cur < s) {
+                    f32 base = *(f32 *)(e + 0x14);
+                    f32 d = *(f32 *)(e + 0x20);
+                    t = (cur - base) / (s - base);
+                    if (hi < t) t = hi;
+                    if (t > lo) { } else t = lo;
+                    a = lo + t * (d - lo);
+                } else {
+                    f32 base2 = *(f32 *)(e + 0x18);
+                    f32 d2 = *(f32 *)(e + 0x20);
+                    t = (cur - base2) / (*(f32 *)(e + 0x1C) - base2);
+                    if (hi < t) t = hi;
+                    if (t > lo) { } else t = lo;
+                    a = d2 + t * (*(f32 *)(e + 0x24) - d2);
+                }
+                {
+                    f32 base3 = *(f32 *)(e + 0x14);
+                    f32 d3 = *(f32 *)(e + 0x28);
+                    t2 = (cur - base3) / (*(f32 *)(e + 0x1C) - base3);
+                    if (hi < t2) t2 = hi;
+                    if (t2 > lo) { } else t2 = lo;
+                    b = d3 + t2 * (*(f32 *)(e + 0x2C) - d3);
+                }
+                *(char *)(obj + 0x4A) = 0;
+                *(char *)(obj + 0x4B) = 1;
+                *(char *)(obj + 0x49) = 1;
+                {
+                    f32 x = scale * a;
+                    obj = *(char **)(e + 0xC);
+                    if (x != *(f32 *)(obj + 8)) {
+                        *(char *)(obj + 0x4D) = 1;
+                        *(f32 *)(obj + 8) = x;
+                    }
+                    obj = *(char **)(e + 0xC);
+                    if (b != *(f32 *)(obj + 4)) {
+                        *(char *)(obj + 0x4E) = 1;
+                        *(f32 *)(obj + 4) = b;
+                    }
+                }
+            }
+        } else {
+            char *obj = *(char **)(e + 0xC);
+            if (obj != 0) {
+                *(char *)(obj + 0x4A) = 1;
+                *(char *)(obj + 0x4C) = 0;
+            }
+        }
+    }
+}
+
+#pragma scheduling reset
 
