@@ -40,6 +40,7 @@ extern char lbl_80313258[];
 extern char lbl_803191B4[];
 extern char lbl_80314110[];
 extern u32 lbl_803946C0[];
+extern u8 *lbl_80559030;
 extern void fn_8006EBF0();
 extern char lbl_80316EE0[];
 extern char lbl_80315F80[];
@@ -11499,24 +11500,18 @@ u8 HID_HostDeregister(void) {
 }
 
 u8 HID_HostAddDev(u8 *addr, u16 attr_mask, u8 *handle) {
-    u8 *saved_addr;
-    u16 saved_attr;
-    u8 *saved_handle;
     u32 offset;
     s32 index;
     u8 *p;
     s32 ctr;
     u8 value;
 
-    saved_addr = addr;
-    saved_attr = attr_mask;
-    saved_handle = handle;
     p = lbl_803C3C38;
     if (p[0x400] == 0)
         return 1;
     index = 0;
 search:
-    if (memcmp(saved_addr, p + 1, 6) != 0) {
+    if (memcmp(addr, p + 1, 6) != 0) {
         index++;
         p += 0x34;
         if (index < 0x10)
@@ -11570,12 +11565,12 @@ scan_done:
     p = lbl_803C3C38;
     if (p[offset] == 0) {
         p[offset] = 1;
-        memcpy(p + offset + 1, saved_addr, 6);
+        memcpy(p + offset + 1, addr, 6);
         p[offset + 0xA] = 0;
         p[offset + 0xC] = 0;
     }
-    *(u16 *)(p + offset + 8) = saved_attr;
-    *saved_handle = index;
+    *(u16 *)(p + offset + 8) = attr_mask;
+    *handle = index;
     return 0;
 }
 
