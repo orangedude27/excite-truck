@@ -207,6 +207,38 @@ struct Fn80229900VTable {
     virtual void v26();
     virtual void Call(s32, s32);
 };
+
+struct Fn8021E8DCVTable {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
+    virtual void v20();
+    virtual void v21();
+    virtual void v22();
+    virtual void v23();
+    virtual void v24();
+    virtual void v25();
+    virtual void v26();
+    virtual void v27();
+    virtual s32 Get();
+};
 #pragma push
 #pragma small_data off
 extern "C" u8 lbl_8033F180[];
@@ -2854,6 +2886,49 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *arg0, 
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" void fn_8021E8DC(void *self, s32 arg1) {
+    char buffer[0x58];
+    s32 height;
+    s32 width;
+    s32 x;
+    s32 y;
+    s32 left;
+    s32 right;
+    char *text;
+
+    if (*(u8 *)((u8 *)self + 0x268) != 0) {
+        ((Fn80219264VTable *)self)->Call(
+            *(s32 *)((u8 *)self + 4), *(s32 *)((u8 *)self + 0x10) + 3);
+        height = *(s32 *)((u8 *)self + 8);
+        width = *(s32 *)((u8 *)self + 0x10) - height;
+        left = ((s32 (*)(void *, s32))(*(void ***)self)[30])(self, height);
+        fn_80219284(self, *(s32 *)((u8 *)self + 0x26C),
+                    *(s32 *)((u8 *)self + 0x270));
+        fn_8021E3BC(self, arg1);
+        fn_80219284(self, left, width);
+        height = *(s32 *)((u8 *)self + 8);
+        ((Fn80219264VTable *)self)->Call(
+            *(s32 *)((u8 *)self + 4),
+            height * 2 - 3 - *(s32 *)((u8 *)self + 0x10));
+    }
+
+    fn_802C3034(arg1);
+    ((void (*)(void *, s32))fn_802192A0)(self, arg1);
+    x = *(s32 *)((u8 *)self + 4);
+    y = *(s32 *)((u8 *)self + 8);
+    height = ((s32 (*)(void *))(*(void ***)self)[30])(self);
+    right = x + height;
+    fn_802C3424(x, y, right, *(s32 *)((u8 *)self + 0x10), lbl_8055FBDC);
+    text = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
+        *(s32 *)((u8 *)self + 0x244),
+        **(s32 **)((u8 *)self + 0x25C), 0);
+    if (text == 0)
+        text = lbl_8055B88C;
+    sprintf(buffer, lbl_8055B884, *(s32 *)((u8 *)self + 0x250), text);
+    fn_802C4F58(*(s32 *)((u8 *)self + 4) + 1,
+                *(s32 *)((u8 *)self + 8) + 1, buffer, lbl_8055FBC0);
 }
 
 #pragma scheduling invalid_target
