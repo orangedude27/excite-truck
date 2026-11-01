@@ -1993,7 +1993,7 @@ extern "C" void fn_8021C12C(void *arg0) {
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
-extern "C" f32 lbl_80558DC4;
+extern "C" char lbl_80558DC4[];
 extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
     s32 *check = *(s32 **)((u8 *)arg0 + 0x2A8);
     f32 first;
@@ -2005,12 +2005,12 @@ extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
     switch (arg1) {
     case 0x127:
         ((V14x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
-        if ((f32)FN8021C18C_ABS((double)(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get())) <= lbl_80558DC4)
+        if ((f32)FN8021C18C_ABS((double)(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get())) <= *(f32 *)&lbl_80558DC4)
             fn_80216D28();
         return 1;
     case 0x125:
         ((V20x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
-        if ((f32)FN8021C18C_ABS((double)(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get())) <= lbl_80558DC4)
+        if ((f32)FN8021C18C_ABS((double)(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get())) <= *(f32 *)&lbl_80558DC4)
             fn_80216D28();
         return 1;
     case 0x126:
