@@ -17,7 +17,9 @@ namespace detail {
 struct Vec2 { f32 x, y; };
 struct Size { f32 x, y; };
 struct Color { u8 r, g, b, a; };
-}}}
+}
+}
+}
 struct GetTextureSizeStringBase_800D58C4 { char text[0x500]; };
 namespace nw4hbm { namespace lyt {
 class ResourceAccessor;
