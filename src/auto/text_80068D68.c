@@ -4928,27 +4928,27 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
 
 void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
     register u8 *cb = (u8 *)arg0;
-    register u8 *strings = lbl_803151D8;
     void *buf = *(void **)((u8 *)arg1 + 0x0C);
     u16 len = *(u16 *)((u8 *)buf + 4);
     register u8 *tail = (u8 *)buf + len;
+    register u8 *strings = lbl_803151D8;
     u8 cfm[10];
     register u8 *msg;
+    s32 event;
 
     if (lbl_8055DC80 >= 5) {
-        if (*(u16 *)(cb + 0x10) <= 9) {
-            switch (*(u16 *)(cb + 0x10)) {
-            case 4: msg = strings + 0x16C; break;
-            case 5: msg = strings + 0x180; break;
-            case 6: msg = strings + 0x194; break;
-            case 7: msg = strings + 0x1AC; break;
-            case 8: msg = strings + 0x1C4; break;
-            case 9: msg = strings + 0x1D8; break;
-            case 2: msg = strings + 0x1F0; break;
-            case 0:
-            case 1:
-            case 3: msg = strings + 0x200; break;
-            }
+        switch (*(u16 *)(cb + 0x10)) {
+        case 4: msg = strings + 0x16C; break;
+        case 5: msg = strings + 0x180; break;
+        case 6: msg = strings + 0x194; break;
+        case 7: msg = strings + 0x1AC; break;
+        case 8: msg = strings + 0x1C4; break;
+        case 9: msg = strings + 0x1D8; break;
+        case 2: msg = strings + 0x1F0; break;
+        case 0:
+        case 1:
+        case 3: msg = strings + 0x200; break;
+        default: break;
         }
         ((void (*)(u32, void *, void *))fn_80070954)(
             0x504, strings + 0x2A8, msg);
@@ -4956,52 +4956,51 @@ void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
 
     cfm[0] = 0;
     cfm[1] = cb[0x16];
+    event = *(u16 *)(cb + 0x10);
+    if (event == 7) goto second_trace;
+    if (event >= 7) goto event_high;
+    if (event == 5) goto second_trace;
+    if (event >= 5) goto byte6;
+    if (event >= 4) goto copy_eight;
+    goto second_trace;
 
-    {
-        s16 event = *(s16 *)(cb + 0x10);
-        if (event == 7) goto second_trace;
-        if (event < 7) {
-            if (event == 5) goto second_trace;
-            if (event > 5) {
-                cfm[2] = tail[8];
-                goto data_done;
-            }
-            if (event >= 4) {
-                memcpy(cfm + 2, buf, 8);
-                goto data_done;
-            }
-            goto second_trace;
-        }
-        if (event >= 9) goto second_trace;
-        cfm[2] = tail[8];
-        goto data_done;
+event_high:
+    if (event == 9) goto second_trace;
+    if (event >= 9) goto second_trace;
+    cfm[2] = tail[8];
+    goto data_done;
+
+copy_eight:
+    memcpy(cfm + 2, buf, 8);
+    goto data_done;
+
+byte6:
+    cfm[2] = tail[8];
+    goto data_done;
 
 second_trace:
-        if (lbl_8055DC80 >= 5) {
-            if (event <= 9) {
-                switch (event) {
-                case 4: msg = strings + 0x16C; break;
-                case 5: msg = strings + 0x180; break;
-                case 6: msg = strings + 0x194; break;
-                case 7: msg = strings + 0x1AC; break;
-                case 8: msg = strings + 0x1C4; break;
-                case 9: msg = strings + 0x1D8; break;
-                case 2: msg = strings + 0x1F0; break;
-                case 0:
-                case 1:
-                case 3: msg = strings + 0x200; break;
-                }
-            }
-            ((void (*)(u32, void *, void *))fn_80070954)(
-                0x504, strings + 0x2CC, msg);
+    if (lbl_8055DC80 >= 5) {
+        switch (event) {
+        case 4: msg = strings + 0x16C; break;
+        case 5: msg = strings + 0x180; break;
+        case 6: msg = strings + 0x194; break;
+        case 7: msg = strings + 0x1AC; break;
+        case 8: msg = strings + 0x1C4; break;
+        case 9: msg = strings + 0x1D8; break;
+        case 2: msg = strings + 0x1F0; break;
+        case 0:
+        case 1:
+        case 3: msg = strings + 0x200; break;
+        default: break;
         }
-data_done:
-        fn_80071298((void *)0x17, (void *)(u32)cb[0x15], cb + 8);
-        fn_80071264((void *)0x17, (void *)(u32)cb[0x15], cb + 8);
-        (*(void (**)(u16, void *))(lbl_803C0D48 + 0x224))(
-            *(u16 *)(cb + 0x10), cfm);
+        ((void (*)(u32, void *, void *))fn_80070954)(
+            0x504, strings + 0x2CC, msg);
     }
-
+data_done:
+    fn_80071298((void *)0x17, (void *)(u32)cb[0x15], cb + 8);
+    fn_80071264((void *)0x17, (void *)(u32)cb[0x15], cb + 8);
+    (*(void (**)(u16, void *))(lbl_803C0D48 + 0x224))(
+        *(u16 *)(cb + 0x10), cfm);
     *(u16 *)(cb + 0x10) = 0;
     fn_800716F0(&buf);
 }
@@ -16703,6 +16702,55 @@ void Port_TimeOutCloseMux(void *arg0) {
     if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319478);
     for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4)
         if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed((struct t_port_info *)entry, 0x12);
+}
+
+extern void port_flow_control_peer(void *, s32, u16);
+extern void RFCOMM_LineStatusReq(void *, u8, u8);
+extern char lbl_80319490[];
+extern char lbl_803194B4[];
+void PORT_DataInd(void *p_mcb, u8 dlci, BT_HDR *p_buf) {
+    u8 *p_port = (u8 *)port_find_mcb_dlci_port(p_mcb, dlci);
+    u8 rx_char1;
+    u32 events = 0;
+    u8 *p;
+    int i;
+    if (lbl_803C4828[0x414] >= 4) fn_80070954(0x90003, lbl_80319490, p_buf->len);
+    if (!p_port) {
+        GKI_freebuf(p_buf);
+        return;
+    }
+    if (*(void **)(p_port + 0x94)) {
+        port_flow_control_peer(p_port, 1, 1);
+        (*(void (**)(u8, u8 *, u16))(p_port + 0x94))(p_port[0], (u8 *)(p_buf + 1) + p_buf->offset, p_buf->len);
+        GKI_freebuf(p_buf);
+        return;
+    }
+    if (*(u32 *)(p_port + 0x40) + p_buf->len > 0x2EE0
+        || *(u16 *)(p_port + 0x38) + 1 > (s32)*(u16 *)(p_port + 0xA0)) {
+        if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_803194B4);
+        GKI_freebuf(p_buf);
+        RFCOMM_LineStatusReq(p_mcb, dlci, 2);
+        return;
+    }
+    if (((rx_char1 = p_port[0x4E]) != 0) && (*(u32 *)(p_port + 0x88) & 2)) {
+        for (i = 0, p = (u8 *)(p_buf + 1) + p_buf->offset; i < p_buf->len; i++) {
+            if (*p++ == rx_char1) {
+                events |= 2;
+                break;
+            }
+        }
+    }
+    GKI_enqueue((BUFFER_Q *)(p_port + 0x30), p_buf);
+    *(u32 *)(p_port + 0x40) += p_buf->len;
+    port_flow_control_peer(p_port, 0, 0);
+    if (p_port[0x3D]) {
+        if (events & 2) p_port[0x65] = 1;
+        return;
+    }
+    events |= 1;
+    events &= *(u32 *)(p_port + 0x88);
+    if (*(void **)(p_port + 0x8C) && events)
+        (*(void (**)(u32, u8))(p_port + 0x8C))(events, p_port[0]);
 }
 
 extern char lbl_803194E8[];
