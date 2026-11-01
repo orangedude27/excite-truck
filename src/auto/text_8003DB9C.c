@@ -389,6 +389,82 @@ int CPGPLinkCheck(void) {
     return 0;
 }
 
+#pragma use_lmw_stmw off
+void GXSetCPUFifo(void *arg0) {
+    union {
+        unsigned int word;
+        struct {
+            unsigned int pad0 : 3;
+            unsigned int payload : 24;
+            unsigned int pad1 : 5;
+        } bits;
+    } piWord;
+    GXFifoObjInternal *source;
+    GXFifoObjInternal *fifo;
+    register GXFifoObjInternal *fifoElse;
+    int intStatus;
+    register unsigned int *gd;
+    unsigned int tmp;
+
+    intStatus = OSDisableInterrupts();
+    if (arg0 == 0) {
+        lbl_8055D948 = 0;
+        lbl_8055D960 = 0;
+        ((unsigned char *)lbl_8037C0E4)[0x22] = 0;
+        ((unsigned char *)lbl_8037C0E4)[0x21] = 0;
+        ((void (*)(int))OSRestoreInterrupts)(intStatus);
+        return;
+    }
+
+    source = (GXFifoObjInternal *)arg0;
+    fifo = (GXFifoObjInternal *)lbl_8037C0E4;
+    *fifo = *source;
+    lbl_8055D948 = 1;
+    ((unsigned char *)fifo)[0x21] = 1;
+
+    if ((CPGPLinkCheck() & 0xFF) != 0) {
+        lbl_8055D960 = 1;
+        ((unsigned char *)fifo)[0x22] = 1;
+        __piReg[3] = (*(unsigned int *)lbl_8037C0E4) & 0x3FFFFFFFu;
+        __piReg[4] = (unsigned int)fifo->top & 0x3FFFFFFFu;
+        piWord.word = 0;
+        piWord.bits.payload = (unsigned int)fifo->wrPtr >> 5;
+        __piReg[5] = piWord.word;
+
+        gd = __GXData;
+        tmp = gd[4] | 3u;
+        gd[4] = tmp;
+        __cpReg[2] = (unsigned short)tmp;
+        tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+        tmp = gd[2] | 0x10u;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+    } else {
+        ((unsigned char *)fifo)[0x22] = 0;
+        if ((unsigned char)lbl_8055D960 != 0) {
+            gd = __GXData;
+            tmp = gd[2] & 0xFFFFFFEFu;
+            gd[2] = tmp;
+            __cpReg[1] = (unsigned short)tmp;
+            lbl_8055D960 = 0;
+        }
+        gd = __GXData;
+        tmp = gd[2] & 0xFFFFFFF3u;
+        gd[2] = tmp;
+        __cpReg[1] = (unsigned short)tmp;
+
+        fifoElse = (GXFifoObjInternal *)lbl_8037C0E4;
+        __piReg[3] = (*(unsigned int *)lbl_8037C0E4) & 0x3FFFFFFFu;
+        __piReg[4] = (unsigned int)fifoElse->top & 0x3FFFFFFFu;
+        piWord.word = 0;
+        piWord.bits.payload = (unsigned int)fifoElse->wrPtr >> 5;
+        __piReg[5] = piWord.word;
+    }
+    PPCSync();
+    ((void (*)(int))OSRestoreInterrupts)(intStatus);
+}
 void GXSetGPFifo(unsigned int *fifo) {
     int intStatus;
     unsigned int tmp;
@@ -509,9 +585,11 @@ void __GXSaveFifo(void) {
     ((void (*)(s32))OSRestoreInterrupts)(level);
 }
 
+#pragma dont_inline on
 char __GXIsGPFifoReady(void) {
     return lbl_8055D949;
 }
+#pragma dont_inline reset
 
 void GXGetGPStatus(char *a, char *b, char *c, char *d, char *e) {
     unsigned int *data = __GXData;
@@ -648,12 +726,8 @@ void __GXCleanGPFifo(void) {
     int zero = 0;
     unsigned int *gd;
     unsigned int *fifo;
-    unsigned int *piFifo;
     int intStatus;
     unsigned int tmp;
-    int rdPtr;
-    int wrPtr;
-    int count;
 
     if ((unsigned char)lbl_8055D949 == 0) {
         return;
@@ -678,16 +752,15 @@ void __GXCleanGPFifo(void) {
     PPCSync();
 
     if ((unsigned char)lbl_8055D960 != 0) {
-        wrPtr = fifo[6];
-        piFifo = (unsigned int *)lbl_8037C0E4;
-        rdPtr = fifo[5];
-        count = fifo[7];
+        unsigned int wrPtr = fifo[6];
+        unsigned int *piFifo = (unsigned int *)lbl_8037C0E4;
+        unsigned int rdPtr = fifo[5];
+        unsigned int count = fifo[7];
 
-        piFifo[5] = (unsigned int)rdPtr;
-        piFifo[6] = (unsigned int)wrPtr;
-        piFifo[7] = (unsigned int)count;
-        __piReg[5] = ((unsigned int)zero & 0xE000001Fu) |
-                     ((unsigned int)wrPtr & 0x1FFFFFE0u);
+        piFifo[5] = rdPtr;
+        piFifo[6] = wrPtr;
+        piFifo[7] = count;
+        __piReg[5] = wrPtr & 0x1FFFFFE0u;
 
         tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
         gd[2] = tmp;
@@ -1409,28 +1482,63 @@ void GXGetVtxAttrFmt(void) {
 }
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
+extern char __GXIsGPFifoReady(void) __attribute__((noinline));
 void GXGetVtxAttrFmtv(void) {
     unsigned int old;
     unsigned int value;
-    unsigned long long start;
+    signed long long start;
+    signed long long now;
     unsigned int *data = __GXData;
 
-    if (*(unsigned char *)((char *)data + 0x5FA) && __GXIsGPFifoReady()) {
+    if (*(unsigned char *)((char *)data + 0x5FA) &&
+        (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
+        unsigned int high;
+        unsigned int firstHigh;
+        unsigned int low;
+        unsigned int shiftedHigh;
+
         do {
-            old = ((unsigned int)*(unsigned short *)((char *)__memReg + 0x4E) << 16) |
-                  *(unsigned short *)((char *)__memReg + 0x50);
+            high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
+            firstHigh = high;
+            low = *(volatile unsigned short *)((char *)__memReg + 0x50);
+            high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
+        } while (high != firstHigh);
+        shiftedHigh = high << 16;
+        old = shiftedHigh | low;
+
+        for (;;) {
             start = OSGetTime();
-            while (OSGetTime() - start < 8) {}
-            value = ((unsigned int)*(unsigned short *)((char *)__memReg + 0x4E) << 16) |
-                    *(unsigned short *)((char *)__memReg + 0x50);
-        } while (value != old);
+            do {
+                now = OSGetTime();
+            } while (now - start < 8);
+            do {
+                high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
+                firstHigh = high;
+                low = *(volatile unsigned short *)((char *)__memReg + 0x50);
+                high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
+            } while (high != firstHigh);
+            shiftedHigh = high << 16;
+            value = shiftedHigh | low;
+            {
+                unsigned int previous = old;
+                old = value;
+                if (value != previous)
+                    continue;
+            }
+            break;
+        }
     }
+
     *(volatile unsigned int *)0xCC003018 = 1;
     start = OSGetTime();
-    while (OSGetTime() - start < 50) {}
+    do {
+        now = OSGetTime();
+    } while (now - start < 50);
     *(volatile unsigned int *)0xCC003018 = 0;
     start = OSGetTime();
-    while (OSGetTime() - start < 5) {}
+    do {
+        now = OSGetTime();
+    } while (now - start < 5);
     if (__GXIsGPFifoReady()) {
         __GXCleanGPFifo();
         __GXInitRevisionBits();
