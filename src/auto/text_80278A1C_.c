@@ -82,7 +82,8 @@ struct File_80279004 {
     virtual int hasRes(const char*);
 };
 #pragma cplusplus reset
-void* fn_80279004(s32 name, s32 arg1) {
+#pragma cplusplus on
+extern "C" void* fn_80279004(s32 name, s32 arg1) {
     char path[0x80];
     char path2[0x80];
     char key[0x20];
