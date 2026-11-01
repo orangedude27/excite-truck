@@ -542,12 +542,13 @@ extern "C" void fn_80218E98(void *arg0, void *arg1) {
 }
 
 extern "C" void fn_80218EBC(void *arg0, void *arg1) {
-    s32 *src = (s32 *)arg1;
+    s32 fourth, third, second, first;
+    volatile s32 *src = (volatile s32 *)arg1;
     s32 *dst = (s32 *)((u8 *)arg0 + 0x14);
-    register s32 first = src[0];
-    s32 third = src[2];
-    s32 second = src[1];
-    register s32 fourth = src[3];
+    first = src[0];
+    second = src[1];
+    third = src[2];
+    fourth = src[3];
     dst[0] = first;
     dst[1] = second;
     dst[2] = third;
