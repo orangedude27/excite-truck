@@ -14188,19 +14188,20 @@ extern "C" s32 fn_800D0814(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x24); }
 
 #pragma cplusplus on
 extern "C" void draw__Q310homebutton3gui13PaneComponentFv(void *arg0) {
-    f32 sp10, sp14, f31, f30;
+    struct { f32 x, y; } sz;
+    f32 f31, f30;
     u8 color[4];
-    void *pane = *(void **)((u8 *)arg0 + 0x2C);
     PaneDrawDispatch *dispatch = (PaneDrawDispatch *)*(void **)((u8 *)arg0 + 0x28);
     if (dispatch->isVisible() != 0) {
+        u8 *pane = *(u8 **)((u8 *)arg0 + 0x2C);
+        sz.x=*(f32 *)(pane+0x4C); sz.y=*(f32 *)(pane+0x50);
+        f31=*(f32 *)(pane+0x90); f30=*(f32 *)(pane+0xA0);
         color[0]=lbl_80560E2C; color[1]=lbl_80560E2D; color[2]=lbl_80560E2E; color[3]=lbl_80560E2F;
-        sp10=*(f32 *)((u8 *)pane+0x4C); sp14=*(f32 *)((u8 *)pane+0x50);
-        f31=*(f32 *)((u8 *)pane+0x90); f30=*(f32 *)((u8 *)pane+0xA0);
         if (*(u8 *)((u8 *)arg0+4)) { color[0]=0; color[2]=0xFF; }
-        fn_800CF554(8,color,f31-sp10*lbl_80560E30,f30-sp14*lbl_80560E30,f31+sp10*lbl_80560E30,f30-sp14*lbl_80560E30,lbl_80560E28);
-        fn_800CF554(8,color,f31+sp10*lbl_80560E30,f30-sp14*lbl_80560E30,f31+sp10*lbl_80560E30,f30+sp14*lbl_80560E30,lbl_80560E28);
-        fn_800CF554(8,color,f31+sp10*lbl_80560E30,f30+sp14*lbl_80560E30,f31-sp10*lbl_80560E30,f30+sp14*lbl_80560E30,lbl_80560E28);
-        fn_800CF554(8,color,f31-sp10*lbl_80560E30,f30+sp14*lbl_80560E30,f31-sp10*lbl_80560E30,f30-sp14*lbl_80560E30,lbl_80560E28);
+        fn_800CF554(8,color,f31-sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,f31+sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,lbl_80560E28);
+        fn_800CF554(8,color,f31+sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,f31+sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,lbl_80560E28);
+        fn_800CF554(8,color,f31+sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,f31-sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,lbl_80560E28);
+        fn_800CF554(8,color,f31-sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,f31-sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,lbl_80560E28);
     }
 }
 #pragma cplusplus reset
@@ -14993,37 +14994,36 @@ extern "C" s32 fn_800D2E14(void) {
 void fn_800D2E3C(s32 x, s32 y, s32 width, s32 height) {
     s32 right, bottom, startX, startY, row, col;
     u16 *dest;
-    u16 screenWidth;
-    u16 screenHeight;
-    u16 stride;
+    u32 w, h;
+    s32 endX, endY, stride;
     if (lbl_80407BD8[0] == 0)
         return;
-    screenWidth = *(u16 *)((u8 *)lbl_80407BD8 + 8);
-    if (screenWidth == 0x190) {
+    w = *(u16 *)((u8 *)lbl_80407BD8 + 8);
+    endX = w;
+    if (((w < 0x190) ? 1 : 2) == 2) {
         x *= 2;
         width *= 2;
     }
     right = x + width;
-    startX = x < 0 ? x : 0;
-    if (right <= screenWidth)
-        screenWidth = right;
-    screenHeight = *(u16 *)((u8 *)lbl_80407BD8 + 0xA);
-    width = screenWidth - startX;
-    if (screenHeight == 0x12C) {
+    startX = x & (((u32)x >> 31) - 1);
+    if (right <= endX)
+        endX = right;
+    h = *(u16 *)((u8 *)lbl_80407BD8 + 0xA);
+    endY = h;
+    if (((h < 0x12C) ? 1 : 2) == 2) {
         y *= 2;
         height *= 2;
     }
     bottom = y + height;
-    startY = y < 0 ? y : 0;
-    if (bottom <= screenHeight)
-        screenHeight = bottom;
-    height = screenHeight - startY;
+    startY = y & (((u32)y >> 31) - 1);
+    if (bottom <= endY)
+        endY = bottom;
     stride = *(u16 *)((u8 *)lbl_80407BD8 + 0xC);
-    dest = (u16 *)(lbl_80407BD8[0] + stride * startY * 2 + startX * 2);
-    for (row = 0; row < height; row++) {
-        for (col = 0; col < width; col++)
-            dest[col] = 0x1080;
-        dest += stride;
+    dest = (u16 *)(lbl_80407BD8[0] + (stride * startY + startX) * 2);
+    for (row = 0; row < endY - startY; row++) {
+        for (col = 0; col < endX - startX; col++)
+            *dest++ = 0x1080;
+        dest += stride - (endX - startX);
     }
 }
 
@@ -15649,43 +15649,59 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
 {
     u8 *self = (u8 *)this;
     const u8 *block = (const u8 *)resource;
-    u16 count;
-    u32 i;
+    const char (&file)[0x54] = *(const char (*)[0x54])lbl_8031EE58;
+    u8 *resourceNames;
+    u32 *resourceOffsets;
+    s32 outputOffset;
+    s32 i;
+    s32 allocationSize;
     u8 *records;
     void **textureResources;
 
     if (*(void **)(self + 0x14) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0x1A6, lbl_8031EE58 + 0x14);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A6, file + 0x14);
     }
     if (*(void **)(self + 0x18) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0x1A7, lbl_8031EE58 + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A7, file + 0x40);
     }
 
-    count = *(u16 *)(block + 0xC);
     *(const void **)(self + 0xC) = resource;
     *(void **)(self + 0x14) = 0;
-    if (count != 0) {
-        textureResources = (void **)MEMAllocFromAllocator((MEMAllocator *)lbl_8055DDF0, (u32)count * 4);
+    if (*(u16 *)(block + 0xC) != 0) {
+        allocationSize = (u32)*(u16 *)(block + 0xC) << 2;
+        textureResources = (void **)MEMAllocFromAllocator((MEMAllocator *)lbl_8055DDF0, allocationSize);
         *(void ***)(self + 0x14) = textureResources;
         if (textureResources != 0) {
             i = 0;
-            do {
-                u32 offset = *(u32 *)(block + 0x14 + i * 4);
-                textureResources[i] = accessor->GetResource(0x74696D67, (const char *)(block + 0x14 + offset), 0);
-                i++;
-            } while (i < *(u16 *)(block + 0xC));
+            outputOffset = 0;
+            resourceNames = (u8 *)*(const u8 **)(self + 0xC) + 0x14;
+            resourceOffsets = (u32 *)resourceNames;
+            goto texture_condition;
+        texture_body:
+            {
+                u32 offset = *resourceOffsets;
+                void *texture = accessor->GetResource(0x74696D67, (const char *)(resourceNames + offset), 0);
+                (resourceOffsets++, i++);
+                *(void **)((u8 *)*(void **)(self + 0x14) + outputOffset) = texture;
+                outputOffset += 4;
+            }
+        texture_condition:
+            if (i < *(u16 *)((u8 *)*(const u8 **)(self + 0xC) + 0xC)) goto texture_body;
         }
     }
 
-    count = *(u16 *)(block + 0xE);
-    records = (u8 *)MEMAllocFromAllocator((MEMAllocator *)lbl_8055DDF0, (u32)count * 0x10);
+    allocationSize = (u32)*(u16 *)(block + 0xE) << 4;
+    records = (u8 *)MEMAllocFromAllocator((MEMAllocator *)lbl_8055DDF0, allocationSize);
     *(u8 **)(self + 0x18) = records;
     if (records != 0) {
-        *(u16 *)(self + 0x1C) = count;
-        memset(records, 0, (u32)count * 0x10);
+        *(u16 *)(self + 0x1C) = *(u16 *)(block + 0xE);
+        memset(records, 0, (u32)*(u16 *)(block + 0xE) << 4);
         i = 0;
-        do {
-            u8 *record = *(u8 **)(self + 0x18) + i * 0x10;
+        goto record_condition;
+    record_body:
+        {
+            u8 *record = *(u8 **)(self + 0x18);
+            record += (u16)i << 4;
             if (record != 0) {
                 *(u32 *)(record + 0) = 0;
                 *(u32 *)(record + 4) = 0;
@@ -15694,7 +15710,9 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
                 *(u16 *)(record + 0xC) = 0;
             }
             i++;
-        } while ((u16)i < *(u16 *)(block + 0xE));
+        }
+    record_condition:
+        if ((u16)i < *(u16 *)(block + 0xE)) goto record_body;
     }
 }
 
