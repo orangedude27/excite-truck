@@ -8443,57 +8443,53 @@ void bta_sys_disable(void) {
 }
 
 tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) {
-    u16 *var_r28 = (u16 *)p_parms;
-    u16 *var_r30 = (u16 *)&lbl_80316570;
-    u16 *var_r31;
-    u16 *var_r29;
-    u16 var_r27;
-    u16 temp;
-    u8 *btm_cb;
+    u8 *btm_cb = lbl_803C0F78;
+    u16 *sco_entry = (u16 *)(btm_cb + sco_inx * 0x34);
+    u16 *p_setup = (u16 *)(sco_entry + 0x1868 / 2);
+    u16 temp_pkt_types;
+    u8 link_type;
+    u8 hci_version;
     
+    /* Make sure sco handle is valid */
     if (sco_inx >= 3) {
         return BTM_WRONG_MODE;
     }
     
-    btm_cb = lbl_803C0F78;
-    var_r31 = (u16 *)&btm_cb[sco_inx * 0x34];
-    
-    if (var_r31[0x185C / 2] == 4) {
+    /* Check state - must be SCO_ST_CONNECTED (4) */
+    if (sco_entry[0x185C / 2] != 4) {
         return BTM_WRONG_MODE;
     }
     
-    temp = btm_cb[0x1882 + sco_inx * 0x34];
-    var_r29 = (u16 *)&var_r31[0x1868 / 2];
+    link_type = btm_cb[0x1882 + sco_inx * 0x34];
+    hci_version = btm_cb[0x27C0];
     
-    if (temp != 0 && btm_cb[0x1908] != 0) {
-        if (btm_cb[0x636] >= 3) {
-            u16 pkt_mask = btm_cb[0x656];
-            var_r27 = (((u16 *)var_r28)[0] | pkt_mask) & 0x3C0;
+    /* If SCO connection OR eSCO not supported just send change packet types */
+    if (link_type == 1 || btm_cb[0x636] == 0) {
+        u16 supported = sco_entry[0x656 / 2];
+        temp_pkt_types = p_parms->packet_types & (supported & 0x6);
+        
+        if (!btsnd_hcic_change_conn_type(sco_entry[1], BTM_ESCO_2_SCO(temp_pkt_types))) {
+            return BTM_NO_RESOURCES;
+        }
+    } else {
+        u16 supported = sco_entry[0x656 / 2];
+        
+        temp_pkt_types = (p_parms->packet_types & 0x3F) & supported;
+        
+        /* OR in any exception packet types if at least 2.0 version of spec */
+        if (hci_version >= 4) {
+            temp_pkt_types |= ((p_parms->packet_types & 0x1800) | (supported & 0x1800));
+        }
+        
+        if (!btsnd_hcic_setup_esco_conn(sco_entry[1], p_setup[0], p_setup[1], p_parms->max_latency,
+                                        p_setup[2], p_parms->retrans_effort, temp_pkt_types)) {
+            return BTM_NO_RESOURCES;
         } else {
-            var_r27 = (((u16 *)var_r28)[0] & btm_cb[0x656]) & 0x3F;
+            p_parms->packet_types = temp_pkt_types;
         }
-        
-        if (btm_cb[0x27C0] >= 3) {
-            fn_80070954(0xD0002, &var_r30[0x28C], var_r31[1]);
-        }
-        
-        if (btsnd_hcic_setup_esco_conn(var_r31[1], var_r29[0], var_r29[1], ((u16 *)var_r28)[0], 0, ((u16 *)var_r28)[2], var_r27)) {
-            ((u16 *)var_r28)[0] = var_r27;
-            return BTM_CMD_STARTED;
-        }
-        return BTM_NO_RESOURCES;
     }
     
-    var_r27 = (((u16 *)var_r28)[0] & btm_cb[0x656]) & 7;
-    var_r29[3] = var_r27;
-    
-    if (btsnd_hcic_change_conn_type(var_r31[1], (var_r27 << 5) & 0xE0)) {
-        if (btm_cb[0x27C0] >= 3) {
-            fn_8007096C(0xD0002, &var_r30[0x248], var_r31[1], var_r27);
-        }
-        return BTM_CMD_STARTED;
-    }
-    return BTM_NO_RESOURCES;
+    return BTM_CMD_STARTED;
 }
 
 extern u8 lbl_80316834[];
