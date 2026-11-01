@@ -1321,6 +1321,88 @@ void fn_8014E7D8(void) {
 
 }
 
+#pragma processor 750
+extern void fn_8012E81C(void *);
+extern char *fn_80012820(s32);
+extern void *fn_80205268(void *, s32, s32);
+extern s32 fn_8012C33C(void *);
+extern void *fn_80131810(const char *);
+extern double ceil(double);
+extern f32 lbl_80559EB0;
+extern f32 lbl_805616D0;
+extern char lbl_80559F48[];
+extern char lbl_80559F4C[];
+f32 fn_8014E7DC(s32 arg0, s32 arg1) {
+    char sp8[0x104];
+    void *file;
+    char *text;
+    void *name;
+    void *obj;
+    void *resource;
+    void *resultObj;
+    void **vtable;
+    s32 temp;
+    f32 value;
+    f32 count;
+    f32 scaled;
+    f32 rate;
+
+    fn_8012E81C(lbl_8032D358 + 0x5A4);
+    file = fn_8001285C((void *)arg0);
+    text = fn_80012820(*(s32 *)((u8 *)file + 4));
+    name = fn_80205268(lbl_8032D358 + 0x5B8, arg1, arg0);
+
+    obj = *(void **)((u8 *)file + 0x20);
+    vtable = *(void ***)obj;
+    if (((s32 (*)(void *, void *))vtable[3])(obj, name) == 0) {
+        obj = *(void **)((u8 *)file + 0x20);
+        vtable = *(void ***)obj;
+        value = ((f32 (*)(void *, void *, f32))vtable[10])(
+            obj, lbl_8032D358 + 0x344, lbl_805616CC);
+
+        obj = *(void **)((u8 *)file + 0x20);
+        vtable = *(void ***)obj;
+        name = ((void *(*)(void *, void *, void *))vtable[6])(
+            obj, lbl_8032D358 + 0x5D0, &lbl_80559F48);
+
+        fn_8012E81C(lbl_8032D358 + 0x5A4);
+        ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(
+            sp8, 0x104, (char *)(lbl_8032D358 + 0x5DC), name, text + 8);
+        if (fn_8012C33C(sp8) == 0) {
+            ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(
+                sp8, 0x104, (char *)(lbl_8032D358 + 0x5E8), name, text + 8);
+        }
+
+        resource = fn_80131810(sp8);
+        if (resource != 0) {
+            obj = resource;
+            vtable = *(void ***)obj;
+            resultObj = ((void *(*)(void *, void *))vtable[2])(
+                obj, &lbl_80559F4C);
+            vtable = *(void ***)resultObj;
+            value = ((f32 (*)(void *, void *))vtable[9])(
+                resultObj, lbl_8032D358 + 0x5F4);
+            fn_80131818(resource);
+
+            temp = *(s32 *)((u8 *)file + 0xC);
+            count = (f32)temp;
+            scaled = value * count;
+            rate = lbl_80559EB0 * scaled;
+            rate = rate / lbl_805616D0;
+            value = lbl_805616D0 * (f32)ceil((double)rate);
+        } else {
+            fn_802E30C8(lbl_8032D358 + 0x600, sp8);
+        }
+        return value;
+    }
+
+    obj = *(void **)((u8 *)file + 0x20);
+    vtable = *(void ***)obj;
+    return ((f32 (*)(void *, void *))vtable[9])(
+        obj, name);
+}
+#pragma processor reset
+
 #pragma cplusplus on
 extern "C" void *fn_8014EF00(void *arg0, s32 arg1) {
     class VObj {
@@ -1739,6 +1821,66 @@ extern "C" void fn_80151B48(void *arg0) {
 done:
     fn_80167844();
     fn_8016A438();
+}
+
+#pragma cplusplus off
+extern f32 *GXInitLightAttnA_80144B44(void *, f32, f32, f32);
+extern s32 fn_802C9950(s32);
+extern s32 fn_802C9994(s32);
+extern void fn_801533E8(void *, f32 *);
+extern void fn_80151E60(void *, s32, s32);
+extern double cos(double);
+extern double sin(double);
+extern s32 lbl_80559ECC;
+extern f32 lbl_8056165C;
+extern f32 lbl_80561638;
+extern void fn_801537C8(s32 *);
+void fn_80151C98(void *arg0, s32 arg1) {
+    s32 mode = *(s32 *)((u8 *)arg0 + 0x38);
+    if (mode == 3) {
+        s32 value = arg1;
+        f32 light[6];
+        fn_801537C8(&value);
+        fn_801533E8(GXInitLightAttnA_80144B44(light,
+            *(f32 *)arg0, *(f32 *)((u8 *)arg0 + 4), *(f32 *)((u8 *)arg0 + 8)),
+            (f32 *)((u8 *)arg0 + 0xB8));
+        return;
+    }
+    if (mode == 4) {
+        f32 position[6];
+        f32 matrix[12];
+        f32 radians, angle, c, s;
+        s32 context = fn_802C9950(arg1);
+        s32 state = fn_802C9994(0);
+        f32 x = *(f32 *)arg0;
+        f32 y = lbl_8056165C + *(f32 *)((u8 *)arg0 + 4);
+        f32 z = *(f32 *)((u8 *)arg0 + 8);
+        position[0] = x; position[1] = y; position[2] = z;
+        position[3] = x; position[4] = y; position[5] = z;
+        radians = lbl_8056163C * fn_801E7E18();
+        angle = (f32)fn_8002EFB4(radians, lbl_805616A0);
+        angle = lbl_80561638 * angle;
+        c = (f32)cos(angle);
+        s = (f32)sin(angle);
+        matrix[0] = c; matrix[1] = lbl_80561648; matrix[2] = -s;
+        matrix[3] = lbl_80561648; matrix[4] = lbl_8056164C; matrix[5] = lbl_80561648;
+        matrix[6] = s; matrix[7] = lbl_80561648; matrix[8] = c;
+        matrix[9] = position[0]; matrix[10] = position[1]; matrix[11] = position[2];
+        fn_802C744C(lbl_80559ECC, matrix);
+        fn_802C9994(state);
+        fn_802C9950(context);
+        return;
+    }
+    {
+        f32 light[6];
+        s32 context = fn_802C9950(arg1);
+        s32 state = fn_802C9994(0);
+        void *result = GXInitLightAttnA_80144B44(light, *(f32 *)arg0,
+            lbl_8056165C + *(f32 *)((u8 *)arg0 + 4), *(f32 *)((u8 *)arg0 + 8));
+        fn_80151E60(result, 0, 0);
+        fn_802C9994(state);
+        fn_802C9950(context);
+    }
 }
 #pragma cplusplus reset
 extern double cos(double), sin(double), fn_8002EFB4(double,double);
