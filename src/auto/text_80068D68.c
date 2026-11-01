@@ -30,6 +30,16 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
+
+/* Forward declare tL2C_CONN_INFO for l2c_csm_w4_l2ca_connect_rsp */
+typedef struct {
+    u8 bd_addr[6];
+    u8 status;
+    u16 psm;
+    u16 l2cap_result;
+    u16 l2cap_status;
+    u16 remote_cid;
+} tL2C_CONN_INFO;
 extern u8 fn_8006EB80(void);
 extern char lbl_80314128[];
 void rfc_send_buf_uih();
@@ -7914,7 +7924,7 @@ static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBT
         return;
     }
     if (sco_inx < 3) {
-        p_sco = (UINT8 *)&((tSCO_CONN *)lbl_803C0F78)[sco_inx] + 0x1854;
+        p_sco = lbl_803C0F78 + (sco_inx * 0x34) + 0x1854;
     }
     if (hci_status != 0) {
         if (p_sco != 0) {
@@ -8019,33 +8029,37 @@ void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
     register UINT8 *p_bda = bda;
     register UINT8 *p_dev_class = dev_class;
     register UINT8 type = link_type;
-    UINT16 i = 0;
-    UINT8 event_data[0x0C];
-    UINT8 *entry = lbl_803C0F78 + 0x1854;
-    for (; i < 3; i++, entry += 0x34) {
-        UINT16 state = *(UINT16 *)(entry + 8);
-        if (!((state == 1 && entry[0xD] != 0) || state == 3))
-            continue;
-        if (memcmp(entry + 0x28, p_bda, 6) != 0)
-            continue;
-        entry[0xD] = 1;
-        entry[0x2E] = type;
-        memcpy(entry + 0x28, p_bda, 6);
-        if (*(UINT32 *)(entry + 0x10) == 0) {
-            btm_esco_conn_rsp(i, 0, p_bda, NULL);
-        } else {
-            memcpy(event_data + 2, p_bda, 6);
-            memcpy(event_data + 8, p_dev_class, 3);
-            event_data[0xB] = type;
-            *(UINT16 *)event_data = i;
-            ((void (*)(UINT16, tBTM_ESCO_DATA *))*(UINT32 *)(entry + 0x10))(
-                2, (tBTM_ESCO_DATA *)event_data);
+    {
+        UINT8 *entry = lbl_803C0F78 + 0x1854;
+        UINT16 i = 0;
+        UINT8 event_data[0x0C];
+        for (; i < 3; i++, entry += 0x34) {
+            UINT16 state = *(UINT16 *)(entry + 8);
+            if (!((state == 1 && entry[0xD] != 0) || state == 3))
+                continue;
+            if (memcmp(entry + 0x28, p_bda, 6) != 0)
+                continue;
+            entry[0xD] = 1;
+            entry[0x2E] = type;
+            memcpy(entry + 0x28, p_bda, 6);
+            if (*(UINT32 *)(entry + 0x10) == 0) {
+                btm_esco_conn_rsp(i, 0, p_bda, NULL);
+            } else {
+                memcpy(event_data + 2, p_bda, 6);
+                memcpy(event_data + 8, p_dev_class, 3);
+                event_data[0xB] = type;
+                *(UINT16 *)(entry + 8) = 2;
+                *(UINT16 *)event_data = i;
+                ((void (*)(UINT16, tBTM_ESCO_DATA *))*(UINT32 *)(entry + 0x10))(
+                    2, (tBTM_ESCO_DATA *)event_data);
+            }
+            return;
         }
-        return;
     }
     if (*(UINT32 *)(lbl_803C0F78 + 0x1850) != 0) {
-        entry = lbl_803C0F78 + 0x1854;
-        for (i = 0; i < 3; i++, entry += 0x34) {
+        UINT8 *entry = lbl_803C0F78 + 0x1854;
+        UINT16 i = 0;
+        for (; i < 3; i++, entry += 0x34) {
             if (*(UINT16 *)(entry + 8) == 0) {
                 entry[0xC] = 0;
                 *(UINT16 *)(entry + 8) = 1;
