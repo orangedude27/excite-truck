@@ -37,11 +37,7 @@ extern signed long fn_8020835C(void *);
 extern signed long fn_8020815C(void *);
 extern int __cntlzw(unsigned int);
 
-struct Data3 {
-    signed long a;
-    signed long b;
-    signed long c;
-};
+// Removed struct Data3 - it's causing register allocation issues
 
 typedef struct SoundMgrObj {
     char pad0[0x10];
