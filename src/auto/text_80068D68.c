@@ -7729,19 +7729,19 @@ void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) 
                         BTM_ChangeEScoLinkParms(index, &new_params);
                     }
                 } else if (params != 0) {
-                    p0 = *(u16 *)((u8 *)params + 0);
-                    p1 = *(u16 *)((u8 *)params + 2);
+                    p0 = *(volatile u16 *)((u8 *)params + 0);
+                    p1 = *(volatile u16 *)((u8 *)params + 2);
                     *(u16 *)(cb + 0x24) = p0;
                     *(u16 *)(cb + 0x26) = p1;
-                    p3 = *(u16 *)((u8 *)params + 4);
-                    p2 = *(u16 *)((u8 *)params + 6);
-                    *(u16 *)(cb + 0x28) = p3;
-                    *(u16 *)(cb + 0x2A) = p2;
-                    p0 = *(u16 *)((u8 *)params + 8);
+                    p2 = *(volatile u16 *)((u8 *)params + 4);
+                    p3 = *(volatile u16 *)((u8 *)params + 6);
+                    *(u16 *)(cb + 0x28) = p2;
+                    *(u16 *)(cb + 0x2A) = p3;
+                    p0 = *(volatile u16 *)((u8 *)params + 8);
                     *(u16 *)(cb + 0x2C) = p0;
-                    p0 = *(u16 *)((u8 *)params + 0xA);
+                    p0 = *(volatile u16 *)((u8 *)params + 0xA);
                     *(u16 *)(cb + 0x2E) = p0;
-                    p0 = *(u16 *)((u8 *)params + 0xC);
+                    p0 = *(volatile u16 *)((u8 *)params + 0xC);
                     *(u16 *)(cb + 0x30) = p0;
                 }
                 ((void (*)(u16))*(u32 *)cb)(index);
@@ -8226,13 +8226,13 @@ void bta_dm_find_services(u8 *bd_addr) {
     volatile tSDP_UUID service_uuid;
     u16 service;
     u8 *state = lbl_803C0B98;
+    u16 *service_table = lbl_802EE990;
     register u16 num_attr = 1;
     register u32 bit_base = 1;
     register u16 uuid_len = 2;
     register u32 zero = 0;
     register u8 last_index = 0x17;
     u8 *name;
-    u8 index;
     void *msg;
 
     attr_values[0] = lbl_80560D10;
@@ -8245,7 +8245,7 @@ service_loop:
         *(tSDP_DISCOVERY_DB **)(state + 0x14) =
             (tSDP_DISCOVERY_DB *)GKI_getbuf(0xFA);
         if (*(tSDP_DISCOVERY_DB **)(state + 0x14) != 0) {
-            service = lbl_802EE990[state[0x70]];
+            service = service_table[state[0x70]];
             *(volatile u32 *)(state + 0xC) &=
                 ~(bit_base << state[0x70]);
             service_uuid.len = uuid_len;
@@ -8271,11 +8271,8 @@ service_loop:
 increment_index:
     state[0x70]++;
 service_check:
-    index = state[0x70];
-    if (index < last_index)
+    if (state[0x70] < last_index)
         goto service_loop;
-    if (index < last_index)
-        goto complete;
 
 complete:
     msg = GKI_getbuf(0x110);
