@@ -9356,6 +9356,73 @@ extern "C" s32 fn_800BA49C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     *arg4=arg0;return 0;
 }
 
+extern "C" s32 fn_800BB4BC(s32, s32, s32, s32);
+extern "C" s32 fn_800BB4D4(s32, s32, s32, s32);
+extern "C" s32 fn_800BA688(void *countp, s32 addr, s32 lba, s32 size, s32 *out) {
+    const char *str = lbl_8031B2B0;
+    u32 count = (u32)countp;
+    s32 total, off, r;
+    u32 i;
+    if (!(*(u32 *)lbl_80407300 & 2)) {
+        *out = 0;
+        return 0xF;
+    }
+    total = count * size;
+    if (total == 0) {
+        *out = 0;
+        return 1;
+    }
+    off = lba * size;
+    *out = -1;
+    if ((addr & 0x1F) == 0) {
+        if (*(s32 *)(lbl_80407300 + 0x10) == 0) {
+            *out = 0;
+            return 6;
+        }
+        if (count == 1) {
+            r = fn_800BB4BC(*(s32 *)(lbl_80407300 + 8), off, addr, total);
+            if (r != 0) {
+                OSReport(str + 0x470, r);
+                *out = 0;
+                return 0x15;
+            }
+        } else {
+            r = fn_800BB4D4(*(s32 *)(lbl_80407300 + 8), off, addr, total);
+            if (r != 0) {
+                OSReport(str + 0x4B8, r);
+                *out = 0;
+                return 0x15;
+            }
+        }
+    } else {
+        for (i = 0; i < count; i++) {
+            if (*(s32 *)(lbl_80407300 + 0x10) == 0) {
+                if (i != 0) {
+                    *out = i;
+                    return 0;
+                }
+                *out = 0;
+                return 6;
+            }
+            VFipf_memcpy(lbl_80407360, (void *)addr, size);
+            r = fn_800BB4BC(*(s32 *)(lbl_80407300 + 8), off, (s32)lbl_80407360, size);
+            if (r != 0) {
+                OSReport(str + 0x500, r);
+                if (i != 0) {
+                    *out = i;
+                    return 0;
+                }
+                *out = 0;
+                return 0x15;
+            }
+            addr += size;
+            off += size;
+        }
+    }
+    *out = count;
+    return 0;
+}
+
 struct IosDevice;
 extern "C" s32 fn_800BBEA4(IosDevice *, s32, s32 *, s32);
 extern "C" const char lbl_8031B7F8[];
@@ -11001,34 +11068,41 @@ extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
 extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
 extern s16 lbl_802F3418[];
 extern s16 lbl_802F3478[];
-s32 fn_800BEE64(void *arg0, s32 arg1) {
+extern "C" s32 fn_800BEE64(void *arg0, s32 arg1, s32 arg2) {
+    VFiPFCard *card = (VFiPFCard *)arg0;
     s32 sp8 = 0;
+    s32 mode, one;
     s16 type, status;
-    s32 value, result;
-    if (fn_800BDD7C(0x400, arg1, &sp8) == 0) return 8;
-    type = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg1, 1, &sp8);
-    if (fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg1, 2, &sp8) != 1) return 0xD;
-    *(s32 *)((u8 *)arg0 + 4) = type == 0 ? 1 : 0;
-    fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg1, 1, &sp8);
-    result = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg1, 0x10, &sp8);
+    s32 value, q;
+    u32 result;
+    if (((s16 (*)(s32, s32, s32 *))fn_800BDD7C)(0x400, arg1, &sp8) == 0) return 8;
+    one = 1;
+    mode = (s16)fn_800BDE18(card->unk278, arg1, one, &sp8);
+    if (fn_800BDE18(card->unk278, arg1, 2, &sp8) != 1) return 0xD;
+    if (mode == 0) card->unk4 = one;
+    else card->unk4 = 0;
+    one = 1;
+    fn_800BDE18(card->unk278, arg1, one, &sp8);
+    result = ((u32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(card->unk278, arg1, 0x10, &sp8);
     type = (result >> 12) & 15;
     if (type == 0 || type == 15) return 0xE;
     status = (result >> 10) & 3;
-    *(s16 *)((u8 *)arg0 + 0x1c) = status;
+    card->unk1c = status;
     if (status == 3) return 0xF;
-    *(u8 *)arg0 = (((result >> 6) & 3) == 3) ? 1 : 2;
-    if (*(s32 *)((u8 *)arg0 + 4) == 0)
-        value = lbl_802F3418[(*(s16 *)((u8 *)arg0 + 0x1c) << 4) + type] * 8;
+    if ((s16)((result >> 6) & 3) == 3) card->unk0 = one;
+    else card->unk0 = 2;
+    if (card->unk4 == 0)
+        value = lbl_802F3418[(card->unk1c << 4) + type] * 8;
     else
-        value = lbl_802F3478[(*(s16 *)((u8 *)arg0 + 0x1c) << 4) + type] * 8;
+        value = lbl_802F3478[(card->unk1c << 4) + type] * 8;
     value += 8;
-    result = value / 8;
-    *(s32 *)((u8 *)arg0 + 0xed70) = result;
-    if (value & 7) *(s32 *)((u8 *)arg0 + 0xed70) = result + 1;
-    if (*(s32 *)((u8 *)arg0 + 4) == 0)
-        *(s32 *)((u8 *)arg0 + 0xed74) = *(s8 *)arg0 * 0x900;
+    q = value / 8;
+    card->unkED70 = q;
+    if (value & 7) card->unkED70 = q + 1;
+    if (card->unk4 == 0)
+        card->unkED74 = card->unk0 * 0x900;
     else
-        *(s32 *)((u8 *)arg0 + 0xed74) = *(s8 *)arg0 * 0x480;
+        card->unkED74 = card->unk0 * 0x480;
     return 0;
 }
 
