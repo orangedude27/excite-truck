@@ -351,9 +351,6 @@ typedef struct {
 } AXFX_REVERBHI_EXP_FREE_VIEW;
 
 extern u8 lbl_803C0F78[];
-static inline UINT8 *btm_sco_rsp_entry_base(UINT8 *base, UINT16 index) {
-    return base + ((UINT32)index * 0x34);
-}
 extern u8 lbl_80316570[];
 extern void fn_80072AE4(u8 *, u8 *, u8 *);
 extern void bta_dm_disc_remname_cback(u8 *);
@@ -8019,24 +8016,27 @@ void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle) {
 
 void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
 {
-    UINT8 *entry = lbl_803C0F78 + 0x1854;
-    UINT16 i;
+    register UINT8 *p_bda = bda;
+    register UINT8 *p_dev_class = dev_class;
+    register UINT8 type = link_type;
+    UINT16 i = 0;
     UINT8 event_data[0x0C];
-    for (i = 0; i < 3; i++, entry += 0x34) {
+    UINT8 *entry = lbl_803C0F78 + 0x1854;
+    for (; i < 3; i++, entry += 0x34) {
         UINT16 state = *(UINT16 *)(entry + 8);
         if (!((state == 1 && entry[0xD] != 0) || state == 3))
             continue;
-        if (memcmp(entry + 0x28, bda, 6) != 0)
+        if (memcmp(entry + 0x28, p_bda, 6) != 0)
             continue;
         entry[0xD] = 1;
-        entry[0x2E] = link_type;
-        memcpy(entry + 0x28, bda, 6);
+        entry[0x2E] = type;
+        memcpy(entry + 0x28, p_bda, 6);
         if (*(UINT32 *)(entry + 0x10) == 0) {
-            btm_esco_conn_rsp(i, 0, bda, NULL);
+            btm_esco_conn_rsp(i, 0, p_bda, NULL);
         } else {
-            memcpy(event_data + 2, bda, 6);
-            memcpy(event_data + 8, dev_class, 3);
-            event_data[0xB] = link_type;
+            memcpy(event_data + 2, p_bda, 6);
+            memcpy(event_data + 8, p_dev_class, 3);
+            event_data[0xB] = type;
             *(UINT16 *)event_data = i;
             ((void (*)(UINT16, tBTM_ESCO_DATA *))*(UINT32 *)(entry + 0x10))(
                 2, (tBTM_ESCO_DATA *)event_data);
@@ -8049,8 +8049,8 @@ void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
             if (*(UINT16 *)(entry + 8) == 0) {
                 entry[0xC] = 0;
                 *(UINT16 *)(entry + 8) = 1;
-                entry[0x2E] = link_type;
-                memcpy(entry + 0x28, bda, 6);
+                entry[0x2E] = type;
+                memcpy(entry + 0x28, p_bda, 6);
                 entry[0xD] = 1;
                 ((void (*)(UINT16))*(UINT32 *)(lbl_803C0F78 + 0x1850))(i);
                 return;
@@ -8059,7 +8059,7 @@ void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
     }
     if (lbl_803C0F78[0x27C0] >= 2)
         fn_8007093C(0xD0001, lbl_8031669C);
-    btm_esco_conn_rsp(3, 0x0D, bda, NULL);
+    btm_esco_conn_rsp(3, 0x0D, p_bda, NULL);
 }
 
 void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) {
