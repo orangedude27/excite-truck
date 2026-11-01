@@ -760,6 +760,46 @@ extern "C" void fn_8019A788(void* arg0, void* arg1, void* arg2,
                     farg0, farg2, savedFarg1);
     }
 }
+
+extern "C" s32 fn_8019A820(void* arg0, void* arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0) {
+    Vec d, dir, v20, delta, v8;
+    f32 mag, rem, var4, ret, k, dx, dy, dz;
+    s32 obj;
+    Vec* a = (Vec*)arg1;
+    Vec* b = (Vec*)arg2;
+    dx = a->x - b->x;
+    dy = a->y - b->y;
+    dz = a->z - b->z;
+    d.x = dx;
+    d.y = dy;
+    d.z = dz;
+    mag = PSVECMag(&d);
+    obj = *(s32*)((u8*)arg0 + 4);
+    if (mag > lbl_805622D4 && mag < farg0) {
+        rem = farg0 - mag;
+        dir.x = d.x * (lbl_805622E0 / mag);
+        dir.y = d.y * (lbl_805622E0 / mag);
+        dir.z = d.z * (lbl_805622E0 / mag);
+        fn_8017B6D4(obj, &v20, arg2);
+        k = rem * *(f32*)((u8*)arg0 + 0x10);
+        PSVECDotProduct(&v20, &dir);
+        delta.x = dir.x * k;
+        delta.y = dir.y * k;
+        delta.z = dir.z * k;
+        ((void (*)(void*, Vec*, s32, s32, s32))(*(void***)arg0)[7])(arg0, &delta, arg2, arg3, 0);
+        ret = fn_8019DF88((void*)(obj + 0x60), (f32*)&v20, (void*)(obj + 0x148), (f32*)arg2, (f32*)&dir, *(f32*)(obj + 0xD4), lbl_80562314);
+        if (ret > lbl_805622D0) {
+            v8.x = dir.x * ret; v8.y = dir.y * ret; v8.z = dir.z * ret;
+            var4 = lbl_805622D4;
+            if (var4 > rem) var4 = rem;
+            ((void (*)(void*, s32, Vec*, s32, s32, s32, s32, f32))(*(void***)arg0)[8])(arg0, arg4, &v8, arg2, arg3, 0, 0, var4);
+            fn_801B34DC(arg0, 0, (Vec*)arg2, &v8, &dir, arg3);
+        }
+        return 1;
+    }
+    return 0;
+}
+
 #pragma scheduling on
 extern "C" void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_8019A820(arg0, (u8*)arg0 + 0x34, arg1, arg2, arg3, *(f32*)((u8*)arg0 + 0x24));
@@ -1227,68 +1267,80 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
         virtual void m11() = 0;
         virtual f32 getRadius() = 0;
     };
-    struct Scratch {
-        u32 trans[3];
-        u32 axis[3];
-        u32 negative[3];
-        u32 positive[3];
-        u32 delta[3];
-    };
-    volatile Scratch local;
+    register void *object0 = arg0;
+    register void *object1 = arg1;
+    volatile u32 local[15];
 
-    void *shape1 = *(void **)((u8 *)arg1 + 0xC);
-    void *shape0 = *(void **)((u8 *)arg0 + 0xC);
-    *(volatile f32 *)&local.delta[0] = *(f32 *)((u8 *)shape0 + 0x24) - *(f32 *)((u8 *)shape1 + 0x24);
-    *(volatile f32 *)&local.delta[1] = *(f32 *)((u8 *)shape0 + 0x28) - *(f32 *)((u8 *)shape1 + 0x28);
-    *(volatile f32 *)&local.delta[2] = *(f32 *)((u8 *)shape0 + 0x2C) - *(f32 *)((u8 *)shape1 + 0x2C);
+    void *shape1 = *(void **)((u8 *)object1 + 0xC);
+    void *shape0 = *(void **)((u8 *)object0 + 0xC);
+    *(volatile f32 *)&local[12] = *(f32 *)((u8 *)shape0 + 0x24) - *(f32 *)((u8 *)shape1 + 0x24);
+    *(volatile f32 *)&local[13] = *(f32 *)((u8 *)shape0 + 0x28) - *(f32 *)((u8 *)shape1 + 0x28);
+    *(volatile f32 *)&local[14] = *(f32 *)((u8 *)shape0 + 0x2C) - *(f32 *)((u8 *)shape1 + 0x2C);
 
-    f32 radius1 = ((Interface *)arg1)->getRadius();
-    f32 radius0 = ((Interface *)arg0)->getRadius();
+    f32 radius1 = ((Interface *)object1)->getRadius();
+    f32 radius0 = ((Interface *)object0)->getRadius();
     f32 radius = radius0 + radius1;
     f32 radiusSquared = radius * radius;
-    if (PSVECDotProduct((Vec *)&local.delta[0], (Vec *)&local.delta[0]) < radiusSquared) {
-        s32 result = fn_8019DAB0(arg0, arg1);
-        u32 found = (u32)result;
-        found = (found | -found) >> 31;
+    if (PSVECDotProduct((Vec *)&local[12], (Vec *)&local[12]) < radiusSquared) {
+        s32 result = fn_8019DAB0(object0, object1);
+        u32 raw = (u32)result;
+        u32 found = ((u32)(-result) | raw) >> 31;
         if (found != 0) {
             return 1;
         }
 
-        void *matrix = *(void **)((u8 *)arg0 + 0xC);
-        f32 dim = *(f32 *)((u8 *)arg0 + 0x28);
-        f32 negDim = -dim;
-        f32 radiusArg = *(f32 *)((u8 *)arg0 + 0x24);
-        volatile u32 *words = (volatile u32 *)matrix;
+        void *mat = *(void **)((u8 *)object0 + 0xC);
+        f32 w = *(f32 *)((u8 *)object0 + 0x28);
+        f32 neg_w = -w;
+        volatile u32 *words = (volatile u32 *)mat;
+        u32 v14 = words[6];
+        u32 v18 = words[7];
+        local[3] = v14;
+        u32 v8 = words[9];
+        local[4] = v18;
+        u32 v1C = words[8];
+        f32 f0 = *(volatile f32 *)&local[3];
+        local[5] = v1C;
+        u32 vC = words[10];
+        f32 f2 = *(volatile f32 *)&local[4];
+        local[0] = v8;
+        u32 v10 = words[11];
+        f32 f5 = *(volatile f32 *)&local[5];
+        local[1] = vC;
+        f32 f3 = *(volatile f32 *)&local[0];
+        local[2] = v10;
+        f32 f8 = *(volatile f32 *)&local[1];
+        f32 f = *(f32 *)((u8 *)object0 + 0x24);
 
-        local.axis[0] = words[6];
-        local.axis[1] = words[7];
-        local.axis[2] = words[8];
-        f32 axisX = *(volatile f32 *)&local.axis[0];
-        f32 axisY = *(volatile f32 *)&local.axis[1];
-        f32 axisZ = *(volatile f32 *)&local.axis[2];
-        local.trans[0] = words[9];
-        local.trans[1] = words[10];
-        local.trans[2] = words[11];
-        f32 transX = *(volatile f32 *)&local.trans[0];
-        f32 transY = *(volatile f32 *)&local.trans[1];
-        f32 transZ = *(volatile f32 *)&local.trans[2];
+        f32 f10 = f0 * w;
+        f32 f7 = f2 * w;
+        f32 f6 = f5 * w;
+        f0 = f0 * neg_w;
+        f2 = f2 * neg_w;
+        f32 f9 = f3 + f10;
+        f3 = f3 + f0;
+        f32 f5trans = *(volatile f32 *)&local[2];
+        f5 = f5 * neg_w;
+        f32 fposY = f8 + f7;
+        *(volatile f32 *)&local[9] = f9;
+        f32 fnegY = f8 + f2;
+        f32 fposZ = f5trans + f6;
+        *(volatile f32 *)&local[6] = f3;
+        f32 fnegZ = f5trans + f5;
+        *(volatile f32 *)&local[10] = fposY;
+        *(volatile f32 *)&local[11] = fposZ;
+        *(volatile f32 *)&local[7] = fnegY;
+        *(volatile f32 *)&local[8] = fnegZ;
 
-        *(volatile f32 *)&local.positive[0] = transX + axisX * dim;
-        *(volatile f32 *)&local.negative[0] = transX + axisX * negDim;
-        *(volatile f32 *)&local.positive[1] = transY + axisY * dim;
-        *(volatile f32 *)&local.negative[1] = transY + axisY * negDim;
-        *(volatile f32 *)&local.positive[2] = transZ + axisZ * dim;
-        *(volatile f32 *)&local.negative[2] = transZ + axisZ * negDim;
-
-        s32 first = fn_8019CCCC(arg0, (Vec *)&local.positive[0], arg1, radiusArg);
-        found |= (u32)first;
-        found = (found | -found) >> 31;
+        s32 first = fn_8019CCCC(object0, (Vec *)&local[9], object1, f);
+        s32 combined = (s32)found | first;
+        found = ((u32)(-combined) | (u32)combined) >> 31;
         if (found != 0) {
             return 1;
         }
-        s32 second = fn_8019CCCC(arg0, (Vec *)&local.negative[0], arg1, radiusArg);
-        found |= (u32)second;
-        return (found | -found) >> 31;
+        s32 second = fn_8019CCCC(object0, (Vec *)&local[6], object1, f);
+        combined = (s32)found | second;
+        return ((u32)(-combined) | (u32)combined) >> 31;
     }
     return 0;
 }
@@ -3207,59 +3259,47 @@ extern "C" void fn_801A3BE0(void* arg0, void* arg1) {
     }
 }
 
+#pragma push
+#pragma small_data off
+extern s32 lbl_80333728;
 extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma push
 #pragma small_data off
     extern s32 lbl_80333728;
 #pragma pop
     struct Vec { f32 x, y, z; };
-    struct Object {
-        void *vtable;
-        s32 arg3;
-        s32 zero;
-        s32 arg1;
-        f32 initA;
-        f32 initB;
-        s32 tag;
-        s32 zero2;
-        s32 limit;
-        void *object;
-        f32 maxX, maxY, maxZ;
-        f32 minX, minY, minZ;
-    };
-    volatile Object *self = (volatile Object *)arg0;
-    register f32 init = lbl_805622E0;
     void *object;
     Vec *vectors;
     volatile Vec maxSpill, minSpill;
-    register s32 i;
+    register f32 init = lbl_805622E0;
     register s32 offset;
-    self->arg1 = arg1;
-    self->arg3 = arg3;
-    self->zero = 0;
-    self->tag = 0x504D5348;
-    self->initA = init;
-    self->initB = init;
-    self->limit = 100;
-    self->zero2 = 0;
-    self->vtable = &lbl_80333728;
+    register s32 i;
+    *(volatile s32 *)((u8 *)arg0 + 0x0C) = arg1;
+    *(volatile s32 *)((u8 *)arg0 + 0x04) = arg3;
+    *(volatile s32 *)((u8 *)arg0 + 0x08) = 0;
+    *(volatile s32 *)((u8 *)arg0 + 0x18) = 0x504D5348;
+    *(volatile f32 *)((u8 *)arg0 + 0x10) = init;
+    *(volatile f32 *)((u8 *)arg0 + 0x14) = init;
+    *(volatile s32 *)((u8 *)arg0 + 0x20) = 100;
+    *(volatile s32 *)((u8 *)arg0 + 0x1C) = 0;
+    *(volatile void **)arg0 = &lbl_80333728;
     object = (void *)fn_801CFEAC((void *)arg2);
-    self->object = object;
+    *(volatile void **)((u8 *)arg0 + 0x24) = object;
     vectors = (Vec *)*(void **)((u8 *)object + 0x08);
-    offset = 0x0C;
     i = 1;
+    offset = 0x0C;
     {
         register f32 x = vectors[0].x;
-        self->minX = x;
+        *(volatile f32 *)((u8 *)arg0 + 0x34) = x;
         register f32 y = vectors[0].y;
-        self->minY = y;
+        *(volatile f32 *)((u8 *)arg0 + 0x38) = y;
         register f32 z = vectors[0].z;
-        self->minZ = z;
-        self->maxX = x;
-        self->maxY = y;
-        self->maxZ = z;
+        *(volatile f32 *)((u8 *)arg0 + 0x3C) = z;
+        *(volatile f32 *)((u8 *)arg0 + 0x28) = x;
+        *(volatile f32 *)((u8 *)arg0 + 0x2C) = y;
+        *(volatile f32 *)((u8 *)arg0 + 0x30) = z;
     }
-    for (; i < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x24) + 0x0C); ++i, offset += 0x0C) {
+    while (i < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x24) + 0x0C)) {
         void *loopObject = *(void **)((u8 *)arg0 + 0x24);
         Vec *base = (Vec *)*(void **)((u8 *)loopObject + 0x08);
         Vec *point = (Vec *)((u8 *)base + offset);
@@ -3283,10 +3323,12 @@ extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         *(volatile f32 *)((u8 *)arg0 + 0x34) = minX;
         *(volatile f32 *)((u8 *)arg0 + 0x38) = minY;
         *(volatile f32 *)((u8 *)arg0 + 0x3C) = minZ;
+        offset += 0x0C;
+        ++i;
     }
     return arg0;
 }
-
+#pragma pop
 extern "C" void fn_8019ECC4(void);
 extern "C" void fn_801CFA48(void*);
 __declspec(section ".data") extern s32 lbl_80333728;
