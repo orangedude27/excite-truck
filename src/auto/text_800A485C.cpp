@@ -4268,63 +4268,64 @@ extern "C" void fn_800AF2B8(void *arg0) {
 }
 
 extern "C" s32 fn_800AF2CC(void *arg0, u32 arg1, s32 arg2, s32 *arg3, u32 *arg4, s32 arg5) {
-    s32 end;
-    s32 one = 1;
+    u32 end;
+    s32 one;
     s32 result;
-    s32 type;
-    s32 pageCount;
-    s32 pageSize;
-    s32 count;
     s32 page;
-    s32 i;
-    s32 pos;
-    u32 savedPos = (u32)arg1;
+    u32 count;
     void *context;
+    u32 pageSize;
+    u32 i;
+    u32 savedPos = arg1;
+    u32 first;
 
     *arg3 = 0;
     *arg4 = 0;
-    if (*(u32 *)*(u32 **)((u8 *)arg0 + 8) < 2)
+    first = **(u32 **)((u8 *)arg0 + 8);
+    if (first < 2)
         return 0;
     if (arg1 < 2)
         return 0;
     if (arg2 == 0)
         return 0;
     context = *(void **)((u8 *)arg0 + 0x34);
-    type = *(s32 *)((u8 *)context + 0x1C);
-    if (arg2 == -1 && *(s32 *)((u8 *)arg0 + 0xC) != 0) {
-        *arg3 = *(s32 *)((u8 *)arg0 + 0xC);
-        *arg4 = *(u32 *)((u8 *)lbl_802EEF40 + type * 0x14 + 8);
-        return 0;
+    if ((u32)(arg2 + 0x10000) == 0xFFFF) {
+        u32 v = *(u32 *)((u8 *)arg0 + 0xC);
+        if (v != 0) {
+            *arg3 = v;
+            *arg4 = *(u32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)context + 0x1C) * 0x14 + 8);
+            return 0;
+        }
     }
     pageSize = *(u16 *)context * *(u8 *)((u8 *)context + 6);
-    count = arg2 / pageSize;
-    if (arg2 % pageSize != 0)
+    count = (u32)arg2 / pageSize;
+    if ((u32)arg2 % pageSize != 0)
         count++;
-    if (*(u32 *)*(u32 **)((u8 *)arg0 + 8) == arg1) {
+    if (first == arg1) {
         page = 1;
     } else {
         page = **(s32 **)((u8 *)arg0 + 0x30) + 1;
     }
     end = -1;
+    one = 1;
     i = 0;
     while (i < count) {
-        result = fn_800AD24C(arg0, arg1, page, &end, &one);
+        result = fn_800AD24C(arg0, arg1, page, (s32 *)&end, &one);
         if (result != 0)
             return result;
         savedPos = arg1;
-        if ((u32)end == *(u32 *)((u8 *)lbl_802EEF40 + type * 0x14 + 8)) {
+        if (end == *(u32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)context + 0x1C) * 0x14 + 8)) {
             *(u32 *)((u8 *)arg0 + 0xC) = arg1;
             *(s32 *)((u8 *)arg0 + 0x10) = page - 1;
-            goto done;
+            break;
         }
-        arg1 = (u32)end;
+        arg1 = end;
         page++;
         i++;
     }
-done:
     **(s32 **)((u8 *)arg0 + 0x30) = page - 1;
     *arg3 = savedPos;
-    *arg4 = (u32)end;
+    *arg4 = end;
     return 0;
 }
 
@@ -6766,34 +6767,41 @@ finish:
 }
 
 extern "C" s32 fn_800B63FC(void) {
-    s32 key, result = 0, found = 0, i;
-    s32 *base = lbl_803D2140;
-    fn_800B77C0((u8 *)base + 0x64);
+    s32 result, found, i;
+    s32 *p;
+    s32 key, k;
+    fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
+    result = 0;
     ((void (*)(s32 *))fn_800B78F0)(&key);
-    for (i = 1; i < 4; i++) {
-        s32 *entry = (s32 *)((u8 *)base + 0xC + (i - 1) * 0xC);
-        if ((entry[0] & 1) && entry[1] == key) { result = entry[2]; found = 1; break; }
+    k = key;
+    p = lbl_803D2140 + 3;
+    for (i = 1; i < 4; i++, p += 3) {
+        if ((p[0] & 1) && p[1] == k) { result = lbl_803D2140[i * 3 + 2]; break; }
     }
-    if (!found) {
-        s32 *e = (s32 *)((u8 *)base + 0x88);
-        s32 flag = e[0] & 1; e[0] = flag;
-        if (flag && e[1] == key) found = 1;
+    if (i == 4) {
+        s32 *e = (s32 *)((u8 *)lbl_803D2140 + 0x88);
+        e[0] &= 1;
+        if (e[0] && e[1] == k) found = 1;
         else {
-            e = (s32 *)((u8 *)base + 0x90); flag = e[0] & 1; e[0] = flag;
-            if (flag && e[1] == key) found = 1;
+            e = (s32 *)((u8 *)e + 8); e[0] &= 1;
+            if (e[0] && e[1] == k) found = 1;
             else {
-                e = (s32 *)((u8 *)base + 0x98); flag = e[0] & 1; e[0] = flag;
-                if (flag && e[1] == key) found = 1;
+                e = (s32 *)((u8 *)e + 8); e[0] &= 1;
+                if (e[0] && e[1] == k) found = 1;
+                else found = 0;
             }
         }
         if (found) {
-            for (i = 1; i < 4; i++) {
-                s32 *entry = (s32 *)((u8 *)base + i * 0xC);
-                if (!(entry[0] & 1)) { entry[0] |= 1; entry[1] = key; result = entry[2]; break; }
+            p = lbl_803D2140 + 3;
+            for (i = 1; i < 4; i++, p += 3) {
+                if (!(p[0] & 1)) {
+                    s32 *q = lbl_803D2140 + i * 3;
+                    q[0] |= 1; q[1] = k; result = q[2]; break;
+                }
             }
-        } else result = base[2];
+        } else result = lbl_803D2140[2];
     }
-    fn_800B783C((u8 *)base + 0x64);
+    fn_800B783C(&lbl_803D2140[25]);
     return result;
 }
 
@@ -12111,18 +12119,23 @@ extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, v
 
 extern "C" s32 lbl_8031D718[];
 extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
-    o1[0]=b[0]; o2[0]= -(-a[0]+b[17]);
-    o1[64]=-b[1]; o2[-64]= -a[1]+b[16];
-    o1[128]=b[2]; o2[-128]= -(-a[2]+b[15]);
-    o1[192]=-b[3]; o2[-192]= -a[3]+b[14];
-    o1[256]=b[4]; o2[-256]= -(-a[4]+b[13]);
-    o1[320]=-b[5]; o2[-320]= -a[5]+b[12];
-    o1[384]=(s32)(((s64)a[6]*lbl_8031D718[0])>>12)+b[6];
-    o2[-384]= -((s32)(((s64)a[6]*lbl_8031D718[1])>>12)+b[11]);
-    o1[448]= -((s32)(((s64)a[7]*lbl_8031D718[3])>>12)+b[7]);
-    o2[-448]= -((s32)(((s64)a[7]*lbl_8031D718[2])>>12)+b[10]);
-    o1[512]=(s32)(((s64)a[8]*lbl_8031D718[4])>>12)+b[8];
-    o2[-512]= -((s32)(((s64)a[8]*lbl_8031D718[5])>>12)+b[9]);
+    s32 t;
+    s32 a6, a7, a8;
+    t = -a[0]; o1[0] = b[0]; o2[0] = -(t + b[17]);
+    t = -a[1]; o1[64] = -b[1]; o2[-64] = t + b[16];
+    t = -a[2]; o1[128] = b[2]; o2[-128] = -(t + b[15]);
+    t = -a[3]; o1[192] = -b[3]; o2[-192] = t + b[14];
+    t = -a[4]; o1[256] = b[4]; o2[-256] = -(t + b[13]);
+    t = -a[5]; o1[320] = -b[5]; o2[-320] = t + b[12];
+    a6 = a[6];
+    o1[384]=(s32)(((s64)a6*lbl_8031D718[0])>>20)+b[6];
+    o2[-384]= -((s32)(((s64)a6*lbl_8031D718[1])>>20)+b[11]);
+    a7 = a[7];
+    o1[448]= -((s32)(((s64)a7*lbl_8031D718[2])>>20)+b[7]);
+    o2[-448]= (s32)(((s64)a7*lbl_8031D718[3])>>20)+b[10];
+    a8 = a[8];
+    o1[512]=(s32)(((s64)a8*lbl_8031D718[4])>>20)+b[8];
+    o2[-512]= -((s32)(((s64)a8*lbl_8031D718[5])>>20)+b[9]);
 }
 
 extern u32 lbl_8031D730[];
