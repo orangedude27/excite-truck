@@ -119,6 +119,7 @@ extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800ACA5C(void *, void *, u32);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
 extern "C" s32 fn_800B05C8(void *, s32, u32 *, void *);
+extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
 class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
 class PaneDrawDispatch { public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
@@ -20295,6 +20296,61 @@ extern "C" void fn_800D2480(void) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA40, 0x1F1, lbl_8031EA4C);
     }
     ((u8 *)lbl_8055DDBC)[0x22] = 0;
+}
+
+extern "C" void fn_800D24D4(void *arg0, s32 arg1)
+{
+    u8 *p = (u8 *)arg0;
+    s32 avail;
+    u16 pos;
+    s32 n;
+    u16 count = 0;
+    u8 *entry;
+
+    avail = *(s32 *)(p + 0x18) - *(s32 *)(p + 0x14);
+    if (avail < 0) {
+        avail = 0;
+    } else {
+        if (arg0 == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x70, lbl_8031EA90);
+        }
+        n = *(u16 *)(p + 0xC) - *(u16 *)(p + 0x12);
+        if (n < 0) {
+            n += *(u16 *)(p + 6);
+        }
+        n = (u16)n;
+        if (*(u16 *)(p + 0x10) != 0) {
+            n = (u16)(n + 1);
+        }
+        if (avail > n) return;
+    }
+    pos = *(u16 *)(p + 0x12) + avail;
+    if (pos >= *(u16 *)(p + 6)) {
+        pos = pos - *(u16 *)(p + 6);
+    }
+    for (;;) {
+        if (pos == *(u16 *)(p + 0xC) && *(u16 *)(p + 0x10) == 0) break;
+        entry = *(u8 **)p + (*(u16 *)(p + 4) + 1) * (u16)pos;
+        if (arg1 != 0) {
+            fn_8010DC74(arg1, lbl_805597E0);
+        } else {
+            s32 y = *(s16 *)(p + 0x1E);
+            s32 off = (u16)count * 10;
+            fn_800D2FDC((void *)(s32)*(s16 *)(p + 0x1C), (void *)(y + off), 0,
+                        lbl_805597E0, entry);
+        }
+        count++;
+        if (pos == *(u16 *)(p + 0xC)) break;
+        pos++;
+        if (pos == *(u16 *)(p + 6)) {
+            if (!(*(u16 *)(p + 0xA) & 2)) {
+                pos = 0;
+            } else {
+                break;
+            }
+        }
+        if (count >= *(u16 *)(p + 0x20)) break;
+    }
 }
 
 extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *arg0, long arg1, int arg2, signed char arg3) {
