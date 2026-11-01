@@ -1,6 +1,24 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern char lbl_80342278[];
+extern unsigned int lbl_802FA2E8[];
+extern unsigned int lbl_804987F8[];
+__declspec(section ".sdata") extern char lbl_8055BD38[];
+__declspec(section ".sdata") extern char lbl_8055BD40[];
+__declspec(section ".sdata") extern char lbl_8055BAC0[];
+__declspec(section ".sdata") extern char lbl_8055BAB8[];
+__declspec(section ".sdata") extern char lbl_8055B860[];
+__declspec(section ".sdata") extern char lbl_8055BD3C[];
+extern void fn_80028E00(void *);
+extern void *fn_801284F8(int, void *);
+extern void *fn_802439E8(void *, char *, int);
+extern void fn_8022D228(void *, int, int);
+extern void fn_8022D350(void *, void *, int);
+extern void fn_8022D2BC(void *, int);
+extern int fn_802146BC(void *, int, int, int);
+extern void fn_8023FA9C(void);
+extern void fn_80236914(void);
 extern int fn_80214A9C(int);
 extern int fn_80214AF0(int);
 extern int fn_8024683C(void);
