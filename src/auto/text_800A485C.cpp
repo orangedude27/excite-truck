@@ -14751,6 +14751,7 @@ extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) 
     *(f32 *)((u8 *)arg0 + 0xC) = value;
 }
 
+#pragma dont_inline fn_800CF3EC
 extern "C" void fn_800CF3EC(void *arg0) {
     f32 val;
     if (*(s32 *)((u8 *)arg0 + 0x18) == 1)
@@ -18557,6 +18558,7 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
     }
 }
 
+#pragma dont_inline fn_800CF3EC
 void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
     s32 *ids = lbl_8031E370 + n * 4;
@@ -18588,7 +18590,6 @@ void homebutton::HomeButton::calc_battery(int n) {
     if (*(s32 *)(self + 0x78) < 0x64) *(s32 *)(self + 0x78) = 0;
     fn_800D16A8((s32 *)((void **)self)[0x254 / 4 + n]);
 }
-
 extern "C" void fn_800CA064(void) {
     typedef void (*SetAlarmCallback)(void);
     typedef void (*SetAlarmFn)(OSAlarm *, u32, u32, s32, SetAlarmCallback);
