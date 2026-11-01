@@ -923,15 +923,25 @@ void fn_80069FE8(void)
             DBPrintf_8006CFA8((const char *)(strings + 0x338), *(u16 *)(version + 2) & 0xFFF);
 
             if ((*(u16 *)(version + 2) & 0xFFF) == 0xA7) {
-                s32 temp_r7;
-                s32 temp_r8;
-                s32 temp_r9;
+                volatile u8 *addr = lbl_803135C0;
+                u32 first, second, byte;
                 DBPrintf_8006CFA8((const char *)(strings + 0x360));
-                temp_r9 = (((lbl_803135C0[3] << 8) + lbl_803135C0[2]) << 8) + lbl_803135C0[1];
-                temp_r8 = (((lbl_803135C0[7] << 8) + lbl_803135C0[6]) << 8) + lbl_803135C0[5];
-                temp_r7 = (temp_r9 << 8) + lbl_803135C0[0];
-                lbl_8055DC3C = temp_r7;
-                lbl_8055DC44 = (temp_r8 << 8) + lbl_803135C0[4];
+                first = addr[3];
+                second = addr[7];
+                byte = addr[2];
+                first = (first << 8) + byte;
+                byte = addr[6];
+                second = (second << 8) + byte;
+                byte = addr[1];
+                first = (first << 8) + byte;
+                byte = addr[5];
+                second = (second << 8) + byte;
+                byte = *(volatile u8 *)&lbl_803135C0[0];
+                first = (first << 8) + byte;
+                byte = addr[4];
+                second = (second << 8) + byte;
+                lbl_8055DC3C = first;
+                lbl_8055DC44 = second;
                 BTM_VendorSpecificCommand(0xFC4F, 1, &lbl_8055DC38, (tBTM_VSC_CMPL_CB *)fn_8006AED4);
             } else {
                 fn_8006B330();
@@ -8726,8 +8736,7 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     var_r29 = (u16 *)&var_r31[0x1868 / 2];
     
     if (temp == 0 || btm_cb[0x1908] == 0) {
-        u16 supported = ((u16 *)var_r29)[-0x656/2 + 0x1868/2];
-        var_r27 = (((u16 *)var_r28)[0] & supported) & 7;
+        var_r27 = (((u16 *)var_r28)[0] & btm_cb[0x656]) & 7;
         var_r29[3] = var_r27;
         
         if (btsnd_hcic_change_conn_type(var_r31[1], (var_r27 << 5) & 0xE0)) {
@@ -11944,38 +11953,53 @@ void hidd_proc_repage_timeout(void)
 }
 
 void hidd_pm_set_now(void *arg0) {
+    tBTM_PM_PWR_MD spC = {0};
     u8 status = 0;
-    u32 spC = 0;
-    u32 sp10 = 0;
-    u16 sp14 = 0;
-    u8 mode;
-    u8 *cb = lbl_803C3AF0;
+    u8 state_mode;
+    u32 mode = 0;
 
-    if (cb[0x6E] != 0) return;
-    mode = ((u8 *)arg0)[8];
-    if (mode == cb[0x6A] && (mode == 0 || (cb[0x6C] >= *(u16 *)((u8 *)arg0 + 2) && cb[0x6C] <= *(u16 *)arg0))) {
-        cb[0x78] = 0xFF;
-        return;
+    if (lbl_803C3AF0[0x6E] == 0) {
+        state_mode = lbl_803C3AF0[0x6A];
+        mode = ((u8 *)arg0)[8];
+        if (mode == state_mode && mode != 0 &&
+            *(u16 *)(lbl_803C3AF0 + 0x6C) >= *(u16 *)((u8 *)arg0 + 2) &&
+            *(u16 *)(lbl_803C3AF0 + 0x6C) <= *(u16 *)arg0) {
+            lbl_803C3AF0[0x78] = 0xFF;
+            return;
+        }
     }
+
     switch (mode) {
     case 0:
-        if (cb[0x6A] == 2 || cb[0x6A] == 3) {
-            status = BTM_SetPowerMode(0x80, cb, (void *)&spC);
-            cb[0x6E] = 1;
+        if (state_mode == 2) {
+            status = BTM_SetPowerMode(0x80, lbl_803C3AF0, &spC);
+            lbl_803C3AF0[0x6E] = 1;
+        } else if (state_mode == 3) {
+            status = BTM_SetPowerMode(0x80, lbl_803C3AF0, (void *)&spC);
+            lbl_803C3AF0[0x6E] = 1;
         }
         break;
     case 2:
-        if (cb[0x6A] != 0) hidd_pm_set_now(&spC);
-        else { status = BTM_SetPowerMode(0x80, cb, arg0); cb[0x6E] = 1; }
+        if (state_mode != 0) {
+            hidd_pm_set_now((void *)&spC);
+        } else {
+            status = BTM_SetPowerMode(0x80, lbl_803C3AF0, arg0);
+            lbl_803C3AF0[0x6E] = 1;
+        }
         break;
     case 3:
-        if (cb[0x6A] != 0) hidd_pm_set_now(&spC);
-        else { status = BTM_SetPowerMode(0x80, cb, arg0); cb[0x6E] = 1; }
+        if (state_mode != 0) {
+            hidd_pm_set_now((void *)&spC);
+        } else {
+            status = BTM_SetPowerMode(0x80, lbl_803C3AF0, arg0);
+            lbl_803C3AF0[0x6E] = 1;
+        }
         break;
     }
     if (status > 1) {
         status += 0x37;
-        if (*(void **)(cb + 0xC4) != 0) ((void (*)(int,u8,u8 *))*(void **)(cb + 0xC4))(4,cb[0x6F],&status);
+        if (*(void **)(lbl_803C3AF0 + 0xC4) != NULL)
+            ((void (*)(u8, u8, void *))*(void **)(lbl_803C3AF0 + 0xC4))(4, lbl_803C3AF0[0x6F], &status);
     }
 }
 
@@ -13386,6 +13410,7 @@ void fn_80089E3C(void) {
 extern void l2c_csm_closed(void *, u16, void *);
 extern void l2c_csm_orig_w4_sec_comp(void *, u16, void *);
 extern void l2c_csm_w4_l2ca_connect_rsp(void *, u16, void *);
+extern void *jumptable_803187D4[];
 extern void l2c_csm_config(void *, u16, void *);
 extern void l2c_csm_w4_l2cap_disconnect_rsp(void *, u16, void *);
 extern void *jumptable_803183B0[];
