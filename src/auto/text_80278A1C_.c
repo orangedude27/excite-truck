@@ -61,6 +61,27 @@ extern const char lbl_8055C6D0[4];
 extern const char lbl_8055C6D8[4];
 extern const char lbl_8055C6E0[4];
 typedef struct Vec3_80279004 { f32 x, y, z; } Vec3_80279004;
+#pragma cplusplus on
+struct Res_80279004 {
+    virtual void slot0();
+    virtual void slot1();
+    virtual void slot2();
+    virtual void slot3();
+    virtual void slot4();
+    virtual void slot5();
+    virtual void slot6();
+    virtual void slot7();
+    virtual void slot8();
+    virtual void slot9();
+    virtual void slot10();
+    virtual Vec3_80279004 getVec(const char*);
+};
+struct File_80279004 {
+    virtual void slot0();
+    virtual Res_80279004* getRes(const char*);
+    virtual int hasRes(const char*);
+};
+#pragma cplusplus reset
 void* fn_80279004(s32 name, s32 arg1) {
     char path[0x80];
     char path2[0x80];
