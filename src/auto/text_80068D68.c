@@ -16904,7 +16904,7 @@ void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
 
 void rfc_send_buf_uih(p_mcb, dlci, p_buf)
 tRFC_MCB *p_mcb;
-s32 dlci;
+UINT8 dlci;
 BT_HDR *p_buf;
 {
     UINT8 *p_data;
@@ -16925,7 +16925,7 @@ BT_HDR *p_buf;
         p_buf->offset--;
 
     p_data = (u8 *)(p_buf + 1) + p_buf->offset;
-    *p_data++ = (u8)(cr | 1 | ((dlci & 0xFF) << 2));
+    *p_data++ = (u8)(cr | 1 | (dlci << 2));
     *p_data++ = (u8)(0xEF | (credits ? 0x10 : 0));
     if (p_buf->len <= 127) {
         *p_data++ = (u8)(1 | (p_buf->len << 1));
@@ -16941,7 +16941,7 @@ BT_HDR *p_buf;
     }
 
     p_data = (u8 *)(p_buf + 1) + p_buf->offset + p_buf->len++;
-    *p_data = fn_8009504C(2, (u8 *)p_buf + p_buf->offset + 8);
+    *p_data = fn_8009504C(2, (u8 *)(p_buf + 1) + p_buf->offset);
 
     if (dlci == 0)
         rfc_check_send_cmd(p_mcb, p_buf);
