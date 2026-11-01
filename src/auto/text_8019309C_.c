@@ -1116,22 +1116,61 @@ void fn_801959AC(void *arg0) {
 }
 
 void fn_80195B28(void *arg0, float arg1) {
- float *p=(float*)arg0, *table; float value, scale; int index;
- if (p[0x234/4]>=p[0x26C/4] && lbl_80562144==arg1) {
-  table=(float*)__AXFXGetLfoSinTable_801769CC();
-  if (*(int*)((char*)table+4)!=0x180201) {
-   index=*(int*)((char*)arg0+0x268); table=lbl_80333308; if(index==1)table+=3;
-   p[0x22C/4]=p[0x26C/4]; p[0x234/4]=fn_80129DC4(3,table[0],table[1]);
-   if(index!=1)p[0x234/4]*=lbl_8055E56C;
-   p[0x228/4]=p[0x220/4]; p[0x234/4]+=p[0x26C/4]; p[0x230/4]=table[2];
-   if(index==1)p[0x224/4]=fn_80129DC4(3,lbl_8056220C,lbl_8056215C);
-   else p[0x224/4]=fn_80129DC4(3,lbl_805621A4,lbl_80562140);
-   if(lbl_80562144!=arg1){ value=fabsf(p[0x224/4]); if(arg1>lbl_80562144)scale=lbl_80562140;else scale=lbl_805621A4;p[0x224/4]=scale*value;}
-  } else { p[0x234/4]=p[0x26C/4];p[0x228/4]=lbl_80562144;p[0x224/4]=lbl_80562144;p[0x22C/4]=p[0x26C/4];p[0x230/4]=p[0x26C/4]; }
- }
+    float *p = (float *)arg0;
+    float *table;
+    float value;
+    float scale;
+    unsigned int tableValue;
+    int index;
+    unsigned int selected;
+
+    if (p[0x234 / 4] < p[0x26C / 4] || lbl_80562144 != arg1) {
+        table = (float *)__AXFXGetLfoSinTable_801769CC();
+        {
+            unsigned int expected = 0x180201;
+            tableValue = *(unsigned int *)((char *)table + 4);
+            if (((expected - tableValue) | (tableValue - expected)) >> 31) {
+                index = *(int *)((char *)arg0 + 0x268);
+                selected = (unsigned int)__cntlzw(index - 1) >> 5;
+                table = lbl_80333308;
+                if (selected)
+                    table += 3;
+                {
+                    volatile float *vp = (volatile float *)arg0;
+                    float base = vp[0x26C / 4];
+                    float first = table[0];
+                    p[0x22C / 4] = base;
+                    p[0x234 / 4] = fn_80129DC4(3, first, table[1]);
+                }
+                if (!selected)
+                    p[0x234 / 4] *= lbl_8055E56C;
+                p[0x228 / 4] = p[0x220 / 4];
+                p[0x234 / 4] += p[0x26C / 4];
+                p[0x230 / 4] = table[2];
+                if (selected)
+                    p[0x224 / 4] = fn_80129DC4(3, lbl_8056220C, lbl_8056215C);
+                else
+                    p[0x224 / 4] = fn_80129DC4(3, lbl_805621A4, lbl_80562140);
+                if (lbl_80562144 != arg1) {
+                    value = (float)__fabs((double)p[0x224 / 4]);
+                    if (arg1 > lbl_80562144)
+                        scale = lbl_80562140;
+                    else
+                        scale = lbl_805621A4;
+                    p[0x224 / 4] = scale * value;
+                }
+            } else {
+                p[0x234 / 4] = p[0x26C / 4];
+                p[0x228 / 4] = lbl_80562144;
+                p[0x224 / 4] = lbl_80562144;
+                p[0x22C / 4] = p[0x26C / 4];
+                p[0x230 / 4] = p[0x26C / 4];
+            }
+        }
+    }
 }
 
-extern void fn_80194324(void);
+extern void fn_80194324();
 extern void fn_801944C0(void *);
 extern float lbl_805621BC, lbl_80562210, lbl_80562214, lbl_80562218;
 void fn_80195CA8(void *arg0) {
