@@ -9,6 +9,8 @@ extern f32 lbl_805640C8;
 extern void* lbl_8055F5F0;
 s32 stricmp(const char*, const char*);
 extern int sprintf(char*, const char*, ...);
+extern void* memset(void*, int, unsigned long);
+extern char* strncpy(char*, const char*, unsigned long);
 void* fn_80279004(s32, s32);
 
 typedef struct Node_80279254 {
