@@ -2819,8 +2819,7 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
     u16 event = *(u16 *)arg1;
     u8 *msg = (u8 *)arg1;
     u8 *data, *base;
-    u8 header_hi;
-    u16 header;
+    u16 header_hi, header;
     u16 max_len, len;
     u8 channel;
 
@@ -10573,55 +10572,62 @@ extern char lbl_80317620[];
 extern void gap_find_addr_name_cb(void *);
 void gap_find_addr_inq_cb(u8 *param) {
     u8 *state = lbl_803C3740;
-    u16 *result = (u16 *)(state + 0x34);
+    u16 *out = (u16 *)(state + 0x34);
     u8 *event_data = param;
-    u8 event;
+    s16 result;
     void *info;
 
     if (state[0x7E] == 0) return;
     if (state[0x28] >= 4)
         fn_8007096C(0xE0003, &lbl_80317620, event_data[0], event_data[1]);
-    event = event_data[0];
-    if (event == 0) {
-        *result = 0x111;
+    if (event_data[0] == 0) {
+        *out = 0x111;
         info = BTM_InqDbFirst();
         *(void **)(state + 0x30) = info;
-        if (info == 0) {
-            *result = 0x102;
-        } else if (BTM_ReadRemoteDeviceName((u8 *)info + 2, gap_find_addr_name_cb) == 1) {
-            return;
+        if (info != 0) {
+            if (BTM_ReadRemoteDeviceName((u8 *)info + 2, gap_find_addr_name_cb) == 1)
+                goto done;
+        } else {
+            goto set_102;
         }
     }
-    if (event <= 8) {
-        switch (event) {
-        case 0: *result = 0; break;
-        case 1: *result = 0x10B; break;
-        case 2: *result = 0x103; break;
-        case 3: *result = 0x109; break;
-        case 4: *result = 0x10C; break;
-        case 5: *result = 0x10D; break;
-        case 6: *result = 0x115; break;
-        case 7: *result = 0x114; break;
-        default: *result = 0x114; break;
-        }
-    } else {
-        *result = 0x114;
+    switch (event_data[0]) {
+    case 0: result = 0; break;
+    case 1: result = 0x10B; break;
+    case 2: result = 0x103; break;
+    case 3: result = 0x109; break;
+    case 4: result = 0x10C; break;
+    case 5: result = 0x10D; break;
+    case 6: result = 0x115; break;
+    case 7: *out = 0x114; goto second_map;
+    case 8: goto set_102;
+    default: *out = 0x114; goto second_map;
     }
-    switch (*result) {
-    case 0: *result = 0; break;
-    case 1: *result = 0x10B; break;
-    case 2: *result = 0x103; break;
-    case 3: *result = 0x109; break;
-    case 4: *result = 0x10C; break;
-    case 5: *result = 0x10D; break;
-    case 6: *result = 0x115; break;
-    case 7: *result = 0x114; break;
-    default: break;
+    *out = result;
+    goto second_map;
+set_102:
+    *out = 0x102;
+second_map:
+    if ((u16)result <= 8) {
+        switch ((u16)result) {
+        case 0: result = 0; break;
+        case 1: result = 0x10B; break;
+        case 2: result = 0x103; break;
+        case 3: result = 0x109; break;
+        case 4: result = 0x10C; break;
+        case 5: result = 0x10D; break;
+        case 6: result = 0x115; break;
+        case 7: result = 0x114; break;
+        case 8: break;
+        }
+        *out = result;
     }
     if (*(void (**)(u32, u16 *))(state + 0x2C) != 0)
-        (*(void (**)(u32, u16 *))(state + 0x2C))(5, result);
+        (*(void (**)(u32, u16 *))(state + 0x2C))(5, out);
     state[0x7E] = 0;
     *(void **)(state + 0x2C) = 0;
+done:
+    return;
 }
 
 u16 gap_convert_btm_status(u16 status) {
@@ -14720,6 +14726,83 @@ void l2cu_send_peer_config_rsp(void *arg0, void *arg1)
         ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(
             *(void **)(ccb + 0x10), 0, packet);
     }
+}
+
+extern char lbl_80319194[];
+void l2cu_send_peer_config_rej(void *p_ccb, u8 *p_cfg_start, u16 cfg_len, u16 cfg_rej_len) {
+    u8 *p_msg;
+    u8 *out;
+    u8 *out_start;
+    u8 *p;
+    u8 *p_end;
+    u8 *lcb;
+    u8 option_len;
+    s32 option;
+    s32 option_type;
+    s32 total_len;
+    s32 flags;
+    u16 out_len;
+    p_msg = (u8 *)GKI_getpoolbuf(2);
+    if (p_msg == 0) {
+        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80319194);
+        return;
+    }
+    out = p_msg + 0xA;
+    *(u16 *)(p_msg + 4) = 0;
+    out_start = out;
+    p_end = p_cfg_start + cfg_len;
+    lcb = *(u8 **)((u8 *)p_ccb + 0x10);
+    flags = *(u16 *)(lcb + 0x28) | 0x2000;
+    p_msg[8] = flags;
+    lcb = *(u8 **)((u8 *)p_ccb + 0x10);
+    flags = *(u16 *)(lcb + 0x28) | 0x2000;
+    p_msg[9] = flags >> 8;
+    out[2] = cfg_rej_len + 0xA;
+    out[3] = (cfg_rej_len + 0xA) >> 8;
+    out[4] = 1;
+    out[5] = 0;
+    out[6] = 5;
+    out[7] = *((u8 *)p_ccb + 0x36);
+    out[8] = cfg_rej_len + 6;
+    out[9] = (cfg_rej_len + 6) >> 8;
+    out[0xA] = *(u16 *)((u8 *)p_ccb + 0x16);
+    out[0xB] = (*(u16 *)((u8 *)p_ccb + 0x16)) >> 8;
+    out[0xC] = 0;
+    out[0xD] = 0;
+    out[0xE] = 3;
+    out[0xF] = 0;
+    out += 0x10;
+    p = p_cfg_start;
+    goto check_options;
+copy_or_skip:
+    option = p[0];
+    option_len = p[1];
+    option_type = option & 0x7F;
+    switch (option_type) {
+    case 1:
+    case 2:
+    case 3:
+        p += option_len + 2;
+        goto check_options;
+    default:
+        break;
+    }
+    total_len = option_len + 2;
+    if (total_len <= cfg_len) {
+        if ((option & 0x80) == 0) {
+            memcpy(out, p, total_len);
+            out += total_len;
+        }
+        p += total_len;
+    } else p = p_end;
+check_options:
+    if (p < p_end) goto copy_or_skip;
+    out_len = (out - out_start) - 2;
+    out_start[0] = out_len;
+    out_start[1] = out_len >> 8;
+    *(u16 *)(p_msg + 2) = out_len + 4;
+    ((void (*)(void *, void *, void *))l2c_link_check_send_pkts)(
+        *(void **)((u8 *)p_ccb + 0x10), p_ccb, p_msg);
 }
 
 void l2cu_send_peer_disc_req(void *p_ccb) {
