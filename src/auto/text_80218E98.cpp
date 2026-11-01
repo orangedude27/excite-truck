@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
-extern "C" char lbl_8055B884[];
+extern "C" char lbl_8055B884;
 extern "C" void fn_802C4F58(s32, s32, const char *, s32);
 
 extern "C" s32 fn_802CAC28(void *, s32);
@@ -2249,6 +2249,64 @@ extern "C" void fn_8021CBBC(void *arg0) {
                 *(s32 *)((u8 *)arg0 + 8) + 3);
     fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), 0, a, b, lbl_805634A8);
 }
+
+extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
+    class CacheSource {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual f32 Get();
+    };
+    class BoundsSource {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual s32 GetWidth();
+    };
+    class CacheTarget {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void Set(f32);
+    };
+    u8 *self = (u8 *)arg0;
+    if (self[0x244] == 0) {
+        self[0x244] = 1;
+        CacheSource *source = *(CacheSource **)(self + 0x248);
+        *(f32 *)(self + 0x258) = source->Get();
+    }
+    s32 left = *(s32 *)(self + 4);
+    if (arg1 < left - 0x20 ||
+        arg2 < *(s32 *)(self + 8) - 0x20 ||
+        arg1 > left + ((BoundsSource *)arg0)->GetWidth() + 0x20 ||
+        arg2 > *(s32 *)(self + 0x10) + 0x20) {
+        CacheTarget *target = *(CacheTarget **)(self + 0x248);
+        target->Set(*(f32 *)(self + 0x258));
+        return;
+    }
+    left = *(s32 *)(self + 4);
+    s32 size = *(s32 *)(self + 0x254);
+    s32 width = ((BoundsSource *)arg0)->GetWidth();
+    f32 amount = (f32)(arg1 - left - size / 2) / (f32)(width - size);
+    f32 value = lbl_805634A4;
+    if (value < amount)
+        value = amount;
+    if (value > lbl_805634A8)
+        value = lbl_805634A8;
+    CacheTarget *target = *(CacheTarget **)(self + 0x248);
+    target->Set(value);
+}
+
 #pragma scheduling on
 #pragma pop
 extern "C" void fn_8021CE8C(void *arg0) {
@@ -2896,14 +2954,14 @@ extern "C" void fn_8021E8DC(void *self, s32 arg1) {
     s32 y;
     s32 left;
     s32 right;
-    char *text;
+    register char *text;
 
     if (*(u8 *)((u8 *)self + 0x268) != 0) {
         ((Fn80219264VTable *)self)->Call(
             *(s32 *)((u8 *)self + 4), *(s32 *)((u8 *)self + 0x10) + 3);
         height = *(s32 *)((u8 *)self + 8);
         width = *(s32 *)((u8 *)self + 0x10) - height;
-        left = ((s32 (*)(void *, s32))(*(void ***)self)[30])(self, height);
+        left = ((Fn8021E8DCVTable *)self)->Get();
         fn_80219284(self, *(s32 *)((u8 *)self + 0x26C),
                     *(s32 *)((u8 *)self + 0x270));
         fn_8021E3BC(self, arg1);
@@ -2918,15 +2976,14 @@ extern "C" void fn_8021E8DC(void *self, s32 arg1) {
     ((void (*)(void *, s32))fn_802192A0)(self, arg1);
     x = *(s32 *)((u8 *)self + 4);
     y = *(s32 *)((u8 *)self + 8);
-    height = ((s32 (*)(void *))(*(void ***)self)[30])(self);
+    height = ((Fn8021E8DCVTable *)self)->Get();
     right = x + height;
     fn_802C3424(x, y, right, *(s32 *)((u8 *)self + 0x10), lbl_8055FBDC);
     text = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
         *(s32 *)((u8 *)self + 0x244),
         **(s32 **)((u8 *)self + 0x25C), 0);
-    if (text == 0)
-        text = lbl_8055B88C;
-    sprintf(buffer, lbl_8055B884, *(s32 *)((u8 *)self + 0x250), text);
+    sprintf(buffer, (const char *)&lbl_8055B884, *(s32 *)((u8 *)self + 0x250),
+            text != 0 ? text : lbl_8055B88C);
     fn_802C4F58(*(s32 *)((u8 *)self + 4) + 1,
                 *(s32 *)((u8 *)self + 8) + 1, buffer, lbl_8055FBC0);
 }
@@ -3929,7 +3986,7 @@ extern "C" s32 lbl_8055FBE4;
 extern "C" void fn_802C4F58(s32, s32, const char *, s32);
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_80221F9C(s32 *arg0, s32 arg1) {
+extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     s32 temp_r18;
     s32 temp_r20;
     s32 temp_r23;
@@ -3937,24 +3994,25 @@ extern "C" void fn_80221F9C(s32 *arg0, s32 arg1) {
     s32 temp_r29;
     s32 temp_r30;
     s32 var_r18;
+    s32 var_r20;
     s32 var_r22;
     s32 var_r24;
     s32 var_r25;
     s32 var_r26;
     s32 var_r27;
     s32 var_r31;
-    s32 *temp_r21;
+    void *temp_r21;
     s32 *items;
 
     fn_802C3034(arg1);
-    temp_r18 = arg0[1];
-    temp_r20 = arg0[2];
+    temp_r18 = *(s32 *)((u8 *)arg0 + 4);
+    temp_r20 = *(s32 *)((u8 *)arg0 + 8);
     var_r18 = ((VfObj *)arg0)->vf28();
     fn_802C3424(temp_r18, temp_r20, temp_r18 + var_r18,
                 temp_r20 + 0xA, lbl_8055FBE4);
-    var_r24 = arg0[1];
+    var_r24 = *(s32 *)((u8 *)arg0 + 4);
     var_r22 = 0;
-    temp_r23 = arg0[2];
+    temp_r23 = *(s32 *)((u8 *)arg0 + 8);
     var_r31 = 0;
     temp_r30 = lbl_8055FBC0;
     temp_r29 = lbl_8055FBFC;
@@ -3962,37 +4020,38 @@ extern "C" void fn_80221F9C(s32 *arg0, s32 arg1) {
     goto outer_check;
 
 outer_body:
-    temp_r21 = *(s32 **)((u8 *)items + var_r31);
+    temp_r21 = *(void **)((u8 *)items + var_r31);
     fn_802C4F58(var_r24 + 2, temp_r23 + 2,
                 (const char *)((u8 *)items + var_r31 + 4), temp_r30);
-    if (var_r22 == arg0[0x24C / 4]) {
+    if (var_r22 == *(s32 *)((u8 *)arg0 + 0x24C)) {
+        temp_r20 = *(s32 *)((u8 *)temp_r21 + 8);
         fn_802C3424(var_r24, temp_r23 + 0xA, var_r24 + 0x32,
-                    temp_r23 + (temp_r21[2] + 1) * 0xA, temp_r29);
+                    temp_r23 + (temp_r20 + 1) * 0xA, temp_r29);
         var_r26 = temp_r23 + 0xB;
         var_r25 = temp_r23 + 0xC;
-        temp_r20 = 0;
+        var_r20 = 0;
         var_r27 = 0;
         do {
-            if (temp_r20 == arg0[0x250 / 4])
+            if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
                 fn_802C3424(var_r24 + 1, var_r26, var_r24 + 0x31,
                             temp_r23 + var_r27 + 0x13, temp_r30);
             temp_r18 = temp_r30;
-            if (temp_r20 == arg0[0x250 / 4])
+            if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
                 temp_r18 = temp_r28;
             fn_802C4F58(var_r24 + 2, var_r25,
                         (const char *)((s32 (*)(s32 *, s32))fn_8022D97C)(
-                            temp_r21, temp_r20), temp_r18);
+                            (s32 *)temp_r21, var_r20), temp_r18);
             var_r27 += 0xA;
             var_r26 += 0xA;
             var_r25 += 0xA;
-            temp_r20 += 1;
-        } while (temp_r20 < *(volatile s32 *)((u8 *)temp_r21 + 8));
+            var_r20 += 1;
+        } while (var_r20 < *(s32 *)((u8 *)temp_r21 + 8));
     }
     var_r24 += 0x32;
     var_r31 += 0x24;
     var_r22 += 1;
 outer_check:
-    items = (s32 *)arg0[0x244 / 4];
+    items = *(s32 **)((u8 *)arg0 + 0x244);
     if (var_r22 < items[0x120 / 4])
         goto outer_body;
 }
