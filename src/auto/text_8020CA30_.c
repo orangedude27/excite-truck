@@ -24,7 +24,7 @@ extern f32 lbl_80563300;
 extern void* fn_801284F8(int, const char*);
 extern void* fn_80131808(const char*);
 extern void fn_80131818(void*);
-extern void* fn_802077A4(int, ...);
+extern void* fn_802077A4(int, int, void*, void*);
 extern int fn_802E30C8(const char*, ...);
 extern int strcmp(const char*, const char*);
 #pragma cplusplus on
