@@ -456,7 +456,7 @@ extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3
 
 extern "C" void *fn_80128520(s32);
 extern "C" void List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
-namespace homebutton { namespace gui { class Manager; class Component { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void *first(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17(); virtual void d18(); virtual void second(Manager *); }; class Manager { public: s32 update(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *); void init(); void addComponent(Component *); }; } }
+namespace homebutton { namespace gui { class Manager; class Component { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void *first(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17(); virtual void d18(); virtual void second(Manager *); }; class Manager { public: s32 update(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *); s32 update(int, f32, f32, unsigned long, unsigned long, unsigned long, void *); void init(); void addComponent(Component *); }; } }
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -5213,24 +5213,48 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
 }
 
 extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
-    u8 *base=(u8*)arg0,*entry=base,*chosen=0; s32 chosenIndex=0,i;
-    for(i=0;i<5;i++){
-        u32 flags=*(u32*)(entry+0x40);
-        if((flags&1)==0 || (flags&0x40000000)==0){if(!chosen){chosen=entry+0x40;chosenIndex=i;}}
-        else if(*(u32*)((u8*)arg1+0x22C)==*(u32*)(entry+0x2A8)&&*(u32*)((u8*)arg1+0x238)==*(u32*)(entry+0x2B4)&&*(u16*)((u8*)arg1+0x23C)==*(u16*)(entry+0x2B8)) return base+i*0x29C+0x40;
-        entry+=0x29C;
+    u8 *base = (u8 *)arg0;
+    u8 *a1 = (u8 *)arg1;
+    u8 *chosen = 0;
+    s32 chosenIndex = 0;
+    s32 i;
+    u8 *entry = base;
+    for (i = 0; i < 5; i++) {
+        u32 flags = *(u32 *)(entry + 0x40);
+        if ((flags & 1) == 0 || ((__cntlzw(flags) >> 5) & 2) != 0) {
+            if (chosen == 0) {
+                chosen = entry + 0x40;
+                chosenIndex = i;
+            }
+        } else if (*(u32 *)(a1 + 0x22C) == *(u32 *)(entry + 0x2A8) && *(u32 *)(a1 + 0x238) == *(u32 *)(entry + 0x2B4) && *(u16 *)(a1 + 0x23C) == *(u16 *)(entry + 0x2B8)) {
+            return base + i * 0x29C + 0x40;
+        }
+        entry += 0x29C;
     }
-    if(!chosen)return 0;
-    *(u32*)chosen=3; *(u16*)(chosen+0x298)=0;
-    {u32 *src=(u32*)((u8*)arg1-4),*dst=(u32*)(chosen+0x38); for(i=0;i<0x48;i++){*++dst=*++src;}}
-    *(u16*)(chosen+0x27C)=0; *(u16*)(chosen+0x27E)=0; *(u32*)(chosen+0x280)=0; *(u32*)(chosen+0x284)=0; *(u32*)(chosen+0x288)=0;
-    fn_800AF530(chosen+4,0,*(u32*)((u8*)arg1+0x22C),(s32)(chosen+0x270));
-    if(*(u16*)(base+0x1FB0)&1){
-        u32 count=*(u32*)(base+0x1FB8);
-        *(u32*)(chosen+0x20)=*(u32*)(base+0x1FB4)+chosenIndex*count*4;
-        fn_800A499C((const char*)*(u32*)(chosen+0x20),0,(s32)(count*4));
-        *(u32*)(chosen+0x2C)=count; *(u16*)(chosen+0x24)=*(u16*)(base+0x1FB2); *(u16*)(chosen+0x26)=0; *(u32*)(chosen+0x28)=0; *(u32*)(chosen+0x30)=0;
-        if(*(u32*)((u8*)arg1+0x228)!=0&&*(u32*)(chosen+0x2C)!=0){**(u32**)(chosen+0x20)=*(u32*)((u8*)arg1+0x234); (*(u32*)(chosen+0x28))++;}
+    if (chosen == 0) {
+        return 0;
+    }
+    *(u32 *)chosen = 3;
+    *(u16 *)(chosen + 0x298) = 0;
+    *(B240 *)(chosen + 0x3C) = *(B240 *)a1;
+    *(u16 *)(chosen + 0x27C) = 0;
+    *(u16 *)(chosen + 0x27E) = 0;
+    *(u32 *)(chosen + 0x280) = 0;
+    *(u32 *)(chosen + 0x284) = 0;
+    *(u32 *)(chosen + 0x288) = 0;
+    fn_800AF530(chosen + 4, 0, *(u32 *)(a1 + 0x22C), (s32)(chosen + 0x270));
+    if (*(u16 *)(base + 0x1FB0) & 1) {
+        *(u32 *)(chosen + 0x20) = *(u32 *)(base + 0x1FB4) + chosenIndex * *(u32 *)(base + 0x1FB8) * 4;
+        fn_800A499C((const char *)*(u32 *)(chosen + 0x20), 0, *(u32 *)(base + 0x1FB8) * 4);
+        *(u32 *)(chosen + 0x2C) = *(u32 *)(base + 0x1FB8);
+        *(u16 *)(chosen + 0x24) = *(u16 *)(base + 0x1FB2);
+        *(u16 *)(chosen + 0x26) = 0;
+        *(u32 *)(chosen + 0x28) = 0;
+        *(u32 *)(chosen + 0x30) = 0;
+        if (*(u32 *)(a1 + 0x228) != 0 && *(u32 *)(chosen + 0x2C) != 0) {
+            **(u32 **)(chosen + 0x20) = *(u32 *)(a1 + 0x234);
+            *(u32 *)(chosen + 0x28) += 1;
+        }
     }
     return chosen;
 }
@@ -14500,35 +14524,45 @@ extern "C" s32 fn_800CFBC0(void *arg0, s32 arg1) {
 }
 
 s32 homebutton::gui::Manager::update(s32 arg1, f32 farg0, f32 farg1, unsigned long arg2, unsigned long arg3, unsigned long arg4, void *arg5) {
+    class ObjDispatch {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
+        virtual s32 d6(); virtual void d7(unsigned long, u32 *); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12();
+        virtual void prepare(unsigned long, u32 *);
+        virtual void d14(); virtual void d15();
+        virtual s32 handle(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *);
+        virtual s32 check();
+    };
+    class MgrDispatch {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
+        virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9();
+        virtual void apply(s32, s32, void *);
+    };
     u32 sp14, sp8;
     s32 result = 0;
-    void *last = 0;
-    u16 index = 0;
+    ObjDispatch *last = 0;
+    void *list = (u8 *)this + 8;
+    s32 index = 0;
     while (index < *(u16 *)((u8 *)this + 0x10)) {
-        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)this + 8, index);
-        void *obj = *(void **)((u8 *)item + 4);
-        typedef s32 (*UpdateFn)(void *, s32, f32, f32, unsigned long, unsigned long, unsigned long, void *);
-        typedef s32 (*CheckFn)(void *);
-        if (((UpdateFn)(*(void ***)obj)[9])(obj, arg1, farg0, farg1, arg2, arg3, arg4, arg5)) {
-            if (((CheckFn)(*(void ***)obj)[10])(obj)) last = obj;
+        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)this + 8, (u16)index);
+        ObjDispatch *obj = *(ObjDispatch **)((u8 *)item + 4);
+        if (obj->handle(arg1, farg0, farg1, arg2, arg3, arg4, arg5)) {
+            if (obj->check()) last = obj;
             result = 1;
         }
         index++;
+        if (list == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     }
     if (last) {
-        if (arg3) {
-            typedef void (*PrepareFn)(void *, unsigned long, u32 *);
-            typedef s32 (*GetFn)(void *);
-            typedef void (*ApplyFn)(void *, s32, s32, unsigned long);
-            ((PrepareFn)(*(void ***)last)[7])(last, arg3, &sp14);
-            ((ApplyFn)(*(void ***)this)[12])(this, ((GetFn)(*(void ***)last)[8])(last), 0, arg4);
+        if (arg2) {
+            last->prepare(arg2, &sp14);
+            ((MgrDispatch *)this)->apply(last->d6(), 0, arg5);
         }
-        if (arg5) {
-            typedef void (*PrepareFn)(void *, void *, u32 *);
-            typedef s32 (*GetFn)(void *);
-            typedef void (*ApplyFn)(void *, s32, s32, unsigned long);
-            ((PrepareFn)(*(void ***)last)[7])(last, arg5, &sp8);
-            ((ApplyFn)(*(void ***)this)[12])(this, ((GetFn)(*(void ***)last)[8])(last), 5, arg4);
+        if (arg4) {
+            last->prepare(arg4, &sp8);
+            ((MgrDispatch *)this)->apply(last->d6(), 5, arg5);
         }
     }
     return result;
