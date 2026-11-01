@@ -48,6 +48,20 @@ public:
     virtual void v10();
     virtual void v11();
 };
+class Vt_80194324 {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+    virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+    virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+    virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35();
+    virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
+    virtual void v40(); virtual void v41(void *);
+};
 #pragma cplusplus reset
 typedef unsigned char u8;
 extern void *lbl_804349C0[];
@@ -796,6 +810,56 @@ void fn_801942F0(void *arg0, int arg1) {
         *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x267C) = 1;
     } else {
         *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x267C) = 0;
+    }
+}
+
+extern int fn_800216D0(void);
+extern void *fn_801B83A0(void);
+extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
+void fn_80194324(void *arg0) {
+    char *p = (char *)arg0;
+    int flag;
+    float thresh;
+    float limit;
+    if (fn_800216D0()) {
+        *(int *)(p + 0x2D0) |= 0x10;
+    }
+    flag = 1;
+    thresh = lbl_80562198;
+    limit = lbl_805621B8;
+    if (!(*(int *)(p + 0x2D0) & 0x10)) {
+        flag = *(float *)(*(char **)(p + 0x294) + 0x25D4) > lbl_805621BC;
+        if (flag) {
+            float v;
+            float t = *(float *)(p + 0x26C) - *(float *)(p + 0x1D0);
+            int lt = t < lbl_805621C0;
+            if (lt) {
+                float a = *(float *)(p + 0x1B0) * *(float *)(p + 0x1B4) + -*(float *)(p + 0x1AC) * *(float *)(p + 0x1B8);
+                float b = *(float *)(p + 0x17C) * *(float *)(p + 0x180) + -*(float *)(p + 0x178) * *(float *)(p + 0x184);
+                v = b + (t / lbl_805621C0) * (a - b);
+            } else {
+                v = *(float *)(p + 0x1B0) * *(float *)(p + 0x1B4) + -*(float *)(p + 0x1AC) * *(float *)(p + 0x1B8);
+            }
+            flag = (float)__fabs(v) < thresh;
+        }
+        if (!flag) {
+            if (*(float *)(p + 0x1D8) >= limit) {
+                char *obj = (char *)fn_801B83A0();
+                void (*fn)(void *, void *) = *(void (**)(void *, void *))(*(char **)obj + 0xAC);
+                fn(obj, *(void **)(p + 0x290));
+                *(float *)(p + 0x1D8) = lbl_80562144;
+            }
+        }
+    }
+    if (!flag) {
+        *(float *)(p + 0x1D8) = *(float *)(p + 0x1D8) + lbl_805621C4;
+    } else {
+        float x = *(float *)(p + 0x1D8) - lbl_805621C4;
+        if (x > lbl_80562144) {
+        } else {
+            x = lbl_80562144;
+        }
+        *(float *)(p + 0x1D8) = x;
     }
 }
 
