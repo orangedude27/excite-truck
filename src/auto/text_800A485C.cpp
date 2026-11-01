@@ -106,7 +106,7 @@ extern "C" s32 fn_800B7F28(void *);
 extern "C" void fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
-namespace nw4hbm { namespace lyt { class Pane; class Material; namespace res { class AnimationBlock; } class ResourceAccessor { public: virtual ~ResourceAccessor(); virtual void dummy(); virtual void *GetResource(u32, const char *, u32); }; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); void SetResource(const res::AnimationBlock *, ResourceAccessor *); }; } }
+namespace nw4hbm { namespace lyt { class Pane; class Material; namespace res { class AnimationBlock; } class ResourceAccessor { public: virtual ~ResourceAccessor(); virtual void *GetResource(u32, const char *, u32); }; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); void SetResource(const res::AnimationBlock *, ResourceAccessor *); }; } }
 
 extern "C" const char lbl_8031EE58[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
@@ -8810,6 +8810,27 @@ extern "C" s32 fn_800BC134(void *arg0, s32 arg1, s32 arg2) {
     return result;
 }
 
+s32 fn_800BC2EC(void *arg0, s32 *arg1) {
+    const char *str = lbl_8031B838;
+    s32 sp18[4];
+    s32 res;
+    if (arg1 == 0) return (s32)0xC1000000;
+    OSReport(str + 0x688);
+    fn_800BB0A8(*(s32 *)arg0, 0x10, 3, 1, 4, 0, 0, 0, 0, (s32)sp18, 0, 0);
+    res = fn_800BB0A8(*(s32 *)arg0, 0x37, 3, 1, *(s32 *)((u8 *)arg0 + 0x10), 0, 0, 0, 0, (s32)sp18, 0, 0);
+    if (res != 0) {
+        OSReport(str + 0x6A0, res);
+        return res;
+    }
+    res = fn_800BB0A8(*(s32 *)arg0, 0x33, 3, 1, 0, (s32)arg1, 1, 4, 0, (s32)sp18, 0, 0);
+    if (res != 0) {
+        OSReport(str + 0x6C0, res);
+    } else {
+        OSReport(str + 0x6E0, arg1[0], arg1[1]);
+    }
+    return fn_800BB0A8(*(s32 *)arg0, 0x10, 3, 1, 0x200, 0, 0, 0, 0, (s32)sp18, 0, 0);
+}
+
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055DD78;
 extern "C" const char lbl_8031BF54[];
@@ -15620,6 +15641,59 @@ extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 delet
         }
     }
     return self;
+}
+
+void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::AnimationBlock *resource, nw4hbm::lyt::ResourceAccessor *accessor)
+{
+    u8 *self = (u8 *)this;
+    const u8 *block = (const u8 *)resource;
+    u16 count;
+    u32 i;
+    u8 *records;
+    void **textureResources;
+
+    if (*(void **)(self + 0x14) != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0x1A6, lbl_8031EE58 + 0x14);
+    }
+    if (*(void **)(self + 0x18) != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0x1A7, lbl_8031EE58 + 0x40);
+    }
+
+    count = *(u16 *)(block + 0xC);
+    *(const void **)(self + 0xC) = resource;
+    *(void **)(self + 0x14) = 0;
+    if (count != 0) {
+        textureResources = (void **)MEMAllocFromAllocator((MEMAllocator *)lbl_8055DDF0, (u32)count * 4);
+        *(void ***)(self + 0x14) = textureResources;
+        if (textureResources != 0) {
+            i = 0;
+            do {
+                u32 offset = *(u32 *)(block + 0x14 + i * 4);
+                textureResources[i] = accessor->GetResource(0x74696D67, (const char *)(block + 0x14 + offset), 0);
+                i++;
+            } while (i < *(u16 *)(block + 0xC));
+        }
+    }
+
+    count = *(u16 *)(block + 0xE);
+    records = (u8 *)MEMAllocFromAllocator((MEMAllocator *)lbl_8055DDF0, (u32)count * 0x10);
+    *(u8 **)(self + 0x18) = records;
+    if (records != 0) {
+        *(u16 *)(self + 0x1C) = count;
+        memset(records, 0, (u32)count * 0x10);
+        i = 0;
+        do {
+            u8 *record = *(u8 **)(self + 0x18) + i * 0x10;
+            if (record != 0) {
+                *(u32 *)(record + 0) = 0;
+                *(u32 *)(record + 4) = 0;
+                record[0xE] = 0;
+                *(u32 *)(record + 8) = 0;
+                *(u16 *)(record + 0xC) = 0;
+            }
+            i++;
+        } while ((u16)i < *(u16 *)(block + 0xE));
+    }
 }
 
 void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
