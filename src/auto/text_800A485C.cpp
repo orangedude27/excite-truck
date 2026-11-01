@@ -6273,37 +6273,41 @@ extern "C" void fn_800B3BEC(u8 *out, u8 *in, u8 flags) {
 }
 
 extern "C" void VFiPFPATH_getLongNameformShortName(void *arg0, void *arg1, s32 flags) {
-    u8 *src=(u8 *)arg0, *dst=(u8 *)arg1;
-    s32 lower=flags&8, i=0;
+    u8 *dst=(u8 *)arg1, *src=(u8 *)arg0;
+    s32 lower=flags&8;
+    u8 c0, c1, c2, c3;
+    s32 i=0;
     s32 n=2;
     while(n--) {
-        s8 c=(s8)src[0];
-        if(c==0||c=='.') goto extension;
-        if(lower&&c>='A'&&c<='Z') dst[0]=c+0x20; else dst[0]=c;
-        c=(s8)src[1]; i++;
-        if(c==0||c=='.') goto extension;
-        if(lower&&c>='A'&&c<='Z') dst[1]=c+0x20; else dst[1]=c;
-        c=(s8)src[2]; i++;
-        if(c==0||c=='.') goto extension;
-        if(lower&&c>='A'&&c<='Z') dst[2]=c+0x20; else dst[2]=c;
-        c=(s8)src[3]; i++;
-        if(c==0||c=='.') goto extension;
-        if(lower&&c>='A'&&c<='Z') dst[3]=c+0x20; else dst[3]=c;
-        i++; src+=4; dst+=4;
+        c0=src[0];
+        if((s8)c0==0||(s8)c0=='.') goto extension;
+        if(lower&&(s8)c0>='A'&&(s8)c0<='Z') dst[0]=c0+0x20; else dst[0]=c0;
+        c1=src[1]; i++;
+        if((s8)c1==0||(s8)c1=='.') goto extension;
+        if(lower&&(s8)c1>='A'&&(s8)c1<='Z') dst[1]=c1+0x20; else dst[1]=c1;
+        c2=src[2]; i++;
+        if((s8)c2==0||(s8)c2=='.') goto extension;
+        if(lower&&(s8)c2>='A'&&(s8)c2<='Z') dst[2]=c2+0x20; else dst[2]=c2;
+        c3=src[3]; i++;
+        if((s8)c3==0||(s8)c3=='.') goto extension;
+        if(lower&&(s8)c3>='A'&&(s8)c3<='Z') dst[3]=c3+0x20; else dst[3]=c3;
+        i++; dst+=4; src+=4;
     }
 extension:
-    if((s8)((u8 *)arg0)[i]=='.') { ((u8 *)arg1)[i]='.'; i++; }
+    if((s8)*(u8 *)((s32)arg0 + i)=='.') { *(u8 *)((s32)arg1 + i)='.'; i++; }
     {
-        s32 end=i+3;
-        u8 *p=(u8 *)arg0+i, *q=(u8 *)arg1+i;
+        u8 *q, *p;
         s32 lowerExt=flags&0x10;
-        for(;i<end;i++,p++,q++) {
-            s8 c=(s8)*p;
-            if(c==0) break;
-            if(lowerExt&&c>='A'&&c<='Z') *q=c+0x20; else *q=c;
+        u8 c;
+        s32 end=i+3;
+        p=(u8 *)arg0+i; q=(u8 *)arg1+i;
+        for(;i<end;i++,q++,p++) {
+            c=*p;
+            if((s8)c==0) break;
+            if(lowerExt&&(s8)c>='A'&&(s8)c<='Z') *q=c+0x20; else *q=c;
         }
     }
-    ((u8 *)arg1)[i]=0;
+    *(u8 *)((s32)arg1 + i)=0;
 }
 
 extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *arg0) {
