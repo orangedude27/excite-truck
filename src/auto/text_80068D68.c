@@ -2816,13 +2816,16 @@ for (;;) {
 #pragma push
 #pragma use_lmw_stmw off
 void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
-    u32 event = *(u16 *)arg1;
+    u16 event = *(u16 *)arg1;
     u8 *msg = (u8 *)arg1;
-    u8 *data = msg + *(u16 *)(msg + 4) + 8;
-    u8 *base;
-    u16 header_hi, header;
+    u8 *data, *base;
+    u8 header_hi;
+    u16 header;
     u16 max_len, len;
     u8 channel;
+
+    base = msg + *(u16 *)(msg + 4);
+    data = base + 8;
 
     if (event == 0x2100) {
         channel = 2;
@@ -2833,13 +2836,13 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
     }
 
     if (event == 0x2100 && *(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
-        header = (u16)(data[0] + (data[1] << 8));
+        header = (u16)(data[0] + (((u32)data[1] & 0xFF) << 8));
         header = (header & 0xCFFF) | 0x1000;
         header_hi = header >> 8;
         data += 2;
 
         do {
-            UUSB_Write(channel, data, *(u16 *)(msg + 2), (BT_HDR *)msg);
+            UUSB_Write(channel, data, event, (BT_HDR *)msg);
             len = *(u16 *)(msg + 2);
             *(u16 *)(msg + 4) += *(u16 *)(lbl_803C0A50 + 0x7C);
             base = msg + *(u16 *)(msg + 4);
@@ -2862,9 +2865,9 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
                 GKI_send_msg(((u8 *)&lbl_803BD1A0)[0x1F], 0, (BT_HDR *)msg);
                 return;
             }
-            max_len = *(u16 *)(lbl_803C0A50 + 0x7E);
+            event = *(u16 *)(lbl_803C0A50 + 0x7E);
             len = *(u16 *)(msg + 2);
-        } while (len > max_len);
+        } while (len > event);
     }
 
     UUSB_Write(channel, data, *(u16 *)(msg + 2), (BT_HDR *)msg);
@@ -10566,42 +10569,59 @@ void fn_800833E8(void *arg0) { btm_cback(0, arg0); }
 
 void fn_800833F4(void *arg0) { btm_cback(1, arg0); }
 
-extern u16 lbl_80317620;
+extern char lbl_80317620[];
 extern void gap_find_addr_name_cb(void *);
 void gap_find_addr_inq_cb(u8 *param) {
-    u16 result;
+    u8 *state = lbl_803C3740;
+    u16 *result = (u16 *)(state + 0x34);
+    u8 *event_data = param;
     u8 event;
     void *info;
 
-    if (lbl_803C3740[0x7E] == 0) return;
-    if (lbl_803C3740[0x28] >= 5)
-        fn_8007096C(0xE0003, &lbl_80317620, param[0], param[1]);
-    event = param[0];
+    if (state[0x7E] == 0) return;
+    if (state[0x28] >= 4)
+        fn_8007096C(0xE0003, &lbl_80317620, event_data[0], event_data[1]);
+    event = event_data[0];
     if (event == 0) {
-        result = 0x111;
+        *result = 0x111;
         info = BTM_InqDbFirst();
-        *(void **)(lbl_803C3740 + 0x30) = info;
-        if (info == 0) result = 0x102;
-        else if (BTM_ReadRemoteDeviceName((u8 *)info + 2, gap_find_addr_name_cb) == 1) return;
+        *(void **)(state + 0x30) = info;
+        if (info == 0) {
+            *result = 0x102;
+        } else if (BTM_ReadRemoteDeviceName((u8 *)info + 2, gap_find_addr_name_cb) == 1) {
+            return;
+        }
     }
     if (event <= 8) {
         switch (event) {
-        case 0: result = 0; break;
-        case 1: result = 0x10B; break;
-        case 2: result = 0x103; break;
-        case 3: result = 0x109; break;
-        case 4: result = 0x10C; break;
-        case 5: result = 0x10D; break;
-        case 6: result = 0x115; break;
-        case 7: result = 0x114; break;
-        default: break;
+        case 0: *result = 0; break;
+        case 1: *result = 0x10B; break;
+        case 2: *result = 0x103; break;
+        case 3: *result = 0x109; break;
+        case 4: *result = 0x10C; break;
+        case 5: *result = 0x10D; break;
+        case 6: *result = 0x115; break;
+        case 7: *result = 0x114; break;
+        default: *result = 0x114; break;
         }
-    } else result = 0x114;
-    *(u16 *)(lbl_803C3740 + 0x34) = result;
-    if (*(void **)(lbl_803C3740 + 0x2C) != 0)
-        ((void (*)(u32, u16 *))*(void **)(lbl_803C3740 + 0x2C))(5, &result);
-    lbl_803C3740[0x7E] = 0;
-    *(void **)(lbl_803C3740 + 0x2C) = 0;
+    } else {
+        *result = 0x114;
+    }
+    switch (*result) {
+    case 0: *result = 0; break;
+    case 1: *result = 0x10B; break;
+    case 2: *result = 0x103; break;
+    case 3: *result = 0x109; break;
+    case 4: *result = 0x10C; break;
+    case 5: *result = 0x10D; break;
+    case 6: *result = 0x115; break;
+    case 7: *result = 0x114; break;
+    default: break;
+    }
+    if (*(void (**)(u32, u16 *))(state + 0x2C) != 0)
+        (*(void (**)(u32, u16 *))(state + 0x2C))(5, result);
+    state[0x7E] = 0;
+    *(void **)(state + 0x2C) = 0;
 }
 
 u16 gap_convert_btm_status(u16 status) {
