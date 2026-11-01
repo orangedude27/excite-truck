@@ -127,13 +127,11 @@ public:
 };
 class Iter_8014E1D0 {
 public:
-    virtual void d0();
-    virtual void d1();
     virtual void *open(char *);
     virtual int has(char *);
+    virtual void d2();
+    virtual void d3();
     virtual void d4();
-    virtual void d5();
-    virtual void d6();
     virtual void *next(char *);
     virtual s32 get(char *, s32);
 };
@@ -1332,15 +1330,40 @@ extern f32 lbl_80559EB0;
 extern f32 lbl_805616D0;
 extern s32 lbl_80559F48;
 extern s32 lbl_80559F4C;
-f32 fn_8014E7DC(s32 arg0, s32 arg1) {
+#pragma processor 750
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" f32 fn_8014E7DC(s32 arg0, s32 arg1) {
+    class MainInterface {
+    public:
+        virtual void d0();
+        virtual s32 check(void *);
+        virtual void d2();
+        virtual void d3();
+        virtual void *lookup(void *, void *);
+        virtual void d5();
+        virtual void d6();
+        virtual f32 finish(void *);
+        virtual f32 evaluate(void *, f32);
+    };
+    class ResourceInterface {
+    public:
+        virtual void *next(char *);
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual void d6();
+        virtual f32 value(char *);
+    };
+
     char sp8[0x104];
     void *file;
     char *text;
     void *name;
-    void *obj;
     void *resource;
     void *resultObj;
-    void **vtable;
     s32 temp;
     f32 value;
     f32 count;
@@ -1351,37 +1374,27 @@ f32 fn_8014E7DC(s32 arg0, s32 arg1) {
     file = fn_8001285C((void *)arg0);
     text = fn_80012820(*(s32 *)((u8 *)file + 4));
     name = fn_80205268(lbl_8032D358 + 0x5B8, arg1, arg0);
+    register u8 *strings = lbl_8032D358;
 
-    obj = *(void **)((u8 *)file + 0x20);
-    vtable = *(void ***)obj;
-    if (((s32 (*)(void *, void *))vtable[3])(obj, name) == 0) {
-        obj = *(void **)((u8 *)file + 0x20);
-        vtable = *(void ***)obj;
-        value = ((f32 (*)(void *, void *, f32))vtable[10])(
-            obj, lbl_8032D358 + 0x344, lbl_805616CC);
+    if (((MainInterface *)*(void **)((u8 *)file + 0x20))->check(name) == 0) {
+        value = ((MainInterface *)*(void **)((u8 *)file + 0x20))->evaluate(
+            (char *)(strings + 0x344), lbl_805616CC);
+        name = ((MainInterface *)*(void **)((u8 *)file + 0x20))->lookup(
+            (char *)(strings + 0x5D0), &lbl_80559F48);
 
-        obj = *(void **)((u8 *)file + 0x20);
-        vtable = *(void ***)obj;
-        name = ((void *(*)(void *, void *, void *))vtable[6])(
-            obj, lbl_8032D358 + 0x5D0, &lbl_80559F48);
-
-        fn_8012E81C(lbl_8032D358 + 0x5A4);
+        fn_8012E81C(strings + 0x5A4);
         ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(
-            sp8, 0x104, (char *)(lbl_8032D358 + 0x5DC), name, text + 8);
+            sp8, 0x104, (char *)(strings + 0x5DC), name, text + 8);
         if (fn_8012C33C(sp8) == 0) {
             ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(
-                sp8, 0x104, (char *)(lbl_8032D358 + 0x5E8), name, text + 8);
+                sp8, 0x104, (char *)(strings + 0x5E8), name, text + 8);
         }
 
         resource = fn_80131810(sp8);
         if (resource != 0) {
-            obj = resource;
-            vtable = *(void ***)obj;
-            resultObj = ((void *(*)(void *, void *))vtable[2])(
-                obj, &lbl_80559F4C);
-            vtable = *(void ***)resultObj;
-            value = ((f32 (*)(void *, void *))vtable[9])(
-                resultObj, lbl_8032D358 + 0x5F4);
+            resultObj = ((ResourceInterface *)resource)->next((char *)&lbl_80559F4C);
+            value = ((ResourceInterface *)resultObj)->value(
+                (char *)(strings + 0x5F4));
             fn_80131818(resource);
 
             temp = *(s32 *)((u8 *)file + 0xC);
@@ -1391,16 +1404,16 @@ f32 fn_8014E7DC(s32 arg0, s32 arg1) {
             rate = rate / lbl_805616D0;
             value = lbl_805616D0 * (f32)ceil((double)rate);
         } else {
-            fn_802E30C8(lbl_8032D358 + 0x600, sp8);
+            ((void (*)(char *, ...))fn_802E30C8)(
+                (char *)(strings + 0x600), sp8);
         }
         return value;
     }
 
-    obj = *(void **)((u8 *)file + 0x20);
-    vtable = *(void ***)obj;
-    return ((f32 (*)(void *, void *))vtable[9])(
-        obj, name);
+    return ((MainInterface *)*(void **)((u8 *)file + 0x20))->finish(name);
 }
+#pragma cplusplus off
+#pragma dont_inline reset
 #pragma processor reset
 
 #pragma cplusplus on
@@ -1836,48 +1849,61 @@ extern f32 lbl_8056165C;
 extern f32 lbl_80561638;
 extern void fn_801537C8(s32 *);
 void fn_80151C98(void *arg0, s32 arg1) {
-    s32 mode = *(s32 *)((u8 *)arg0 + 0x38);
+    u8 scratch[0x68];
+    void *base = arg0;
+    s32 mode = *(s32 *)((u8 *)base + 0x38);
     if (mode == 3) {
-        s32 value = arg1;
-        f32 light[6];
-        fn_801537C8(&value);
-        fn_801533E8(GXInitLightAttnA_80144B44(light,
-            *(f32 *)arg0, *(f32 *)((u8 *)arg0 + 4), *(f32 *)((u8 *)arg0 + 8)),
-            (f32 *)((u8 *)arg0 + 0xB8));
+        *(s32 *)scratch = arg1;
+        fn_801537C8((s32 *)scratch);
+        fn_801533E8(GXInitLightAttnA_80144B44(scratch + 0x10,
+            *(f32 *)base, *(f32 *)((u8 *)base + 4), *(f32 *)((u8 *)base + 8)),
+            *(f32 **)((u8 *)base + 0xB8));
         return;
     }
     if (mode == 4) {
-        f32 position[6];
-        f32 matrix[12];
-        f32 radians, angle, c, s;
-        s32 context = fn_802C9950(arg1);
-        s32 state = fn_802C9994(0);
-        f32 x = *(f32 *)arg0;
-        f32 y = lbl_8056165C + *(f32 *)((u8 *)arg0 + 4);
-        f32 z = *(f32 *)((u8 *)arg0 + 8);
-        position[0] = x; position[1] = y; position[2] = z;
-        position[3] = x; position[4] = y; position[5] = z;
-        radians = lbl_8056163C * fn_801E7E18();
-        angle = (f32)fn_8002EFB4(radians, lbl_805616A0);
-        angle = lbl_80561638 * angle;
-        c = (f32)cos(angle);
-        s = (f32)sin(angle);
-        matrix[0] = c; matrix[1] = lbl_80561648; matrix[2] = -s;
-        matrix[3] = lbl_80561648; matrix[4] = lbl_8056164C; matrix[5] = lbl_80561648;
-        matrix[6] = s; matrix[7] = lbl_80561648; matrix[8] = c;
-        matrix[9] = position[0]; matrix[10] = position[1]; matrix[11] = position[2];
+        s32 state, context;
+        f32 y, z, x, angle, rotation, c, s;
+        f32 *matrix;
+        context = fn_802C9950(arg1);
+        state = fn_802C9994(0);
+        y = lbl_8056165C;
+        y += *(f32 *)((u8 *)base + 4);
+        z = *(f32 *)((u8 *)base + 8);
+        x = *(f32 *)base;
+        *(f32 *)(scratch + 0x30) = z;
+        *(f32 *)(scratch + 0x28) = x;
+        *(f32 *)(scratch + 0x2C) = y;
+        *(f32 *)(scratch + 0x1C) = x;
+        *(f32 *)(scratch + 0x20) = y;
+        *(f32 *)(scratch + 0x24) = z;
+        angle = (f32)fn_8002EFB4(lbl_8056163C * fn_801E7E18(), lbl_805616A0);
+        rotation = lbl_80561638 * angle;
+        matrix = (f32 *)(scratch + 0x38);
+        matrix[9] = *(f32 *)(scratch + 0x1C);
+        matrix[10] = *(f32 *)(scratch + 0x20);
+        matrix[11] = *(f32 *)(scratch + 0x24);
+        c = (f32)cos(rotation);
+        s = (f32)sin(rotation);
+        matrix[0] = c;
+        matrix[1] = lbl_80561648;
+        matrix[2] = -s;
+        matrix[3] = lbl_80561648;
+        matrix[4] = lbl_8056164C;
+        matrix[5] = lbl_80561648;
+        matrix[6] = s;
+        matrix[7] = lbl_80561648;
+        matrix[8] = c;
         fn_802C744C(lbl_80559ECC, matrix);
         fn_802C9994(state);
         fn_802C9950(context);
         return;
     }
     {
-        f32 light[6];
-        s32 context = fn_802C9950(arg1);
-        s32 state = fn_802C9994(0);
-        void *result = GXInitLightAttnA_80144B44(light, *(f32 *)arg0,
-            lbl_8056165C + *(f32 *)((u8 *)arg0 + 4), *(f32 *)((u8 *)arg0 + 8));
-        fn_80151E60(result, 0, 0);
+        s32 state, context;
+        context = fn_802C9950(arg1);
+        state = fn_802C9994(0);
+        fn_80151E60(GXInitLightAttnA_80144B44(scratch + 4, *(f32 *)base,
+            lbl_8056165C + *(f32 *)((u8 *)base + 4), *(f32 *)((u8 *)base + 8)), 0, 0);
         fn_802C9994(state);
         fn_802C9950(context);
     }
