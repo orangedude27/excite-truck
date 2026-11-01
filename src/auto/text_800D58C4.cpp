@@ -43,8 +43,8 @@ extern "C" void GXSetChanMatColor_Internal(u32, u8 *, u8, u8, u8);
 extern "C" void GXSetIndTexCoordScale(u32, u8, u8);
 extern "C" void GXSetIndTexOrder(u32, u8, u8);
 extern "C" void GXSetNumChans(u32);
-extern "C" int GXSetNumIndStages(s32);                     /* extern */
-extern "C" int GXSetNumTevStages(u8);                      /* extern */
+extern "C" void GXSetNumIndStages(u32);
+extern "C" void GXSetNumTevStages(u32);
 extern "C" int GXSetTevAlphaIn(u8, s32, s32, s32, s32);    /* extern */
 extern "C" int GXSetTevAlphaOp(u8, s32, s32, s32, s32, s32); /* extern */
 extern "C" int GXSetTevColorIn(u8, s32, s32, s32, s32);    /* extern */
