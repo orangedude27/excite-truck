@@ -4141,7 +4141,7 @@ extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return (result != 0) ? result : 0;
 }
 
-extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4, s32 arg5) {
+extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4) {
     void *context = *(void **)((u8 *)arg0 + 0x34);
     s32 offset = *arg3;
     s32 index = -1;
