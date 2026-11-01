@@ -5275,6 +5275,50 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
     return var_r31;
 }
 
+extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
+    extern s32 fn_800AE620(void *, u32, s32, void *);
+    extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
+    extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
+    VFiPFCursor *cur = (VFiPFCursor *)arg0;
+    s32 sp8, result;
+    VFiPFVol *vol, *fat;
+    u32 avail;
+    *arg3 = 0;
+    if (cur->off == 0) return 0;
+    if (cur == 0) vol = 0;
+    else vol = cur->file->vol;
+    avail = vol->sectorSize - cur->off;
+    if (arg2 > avail) arg2 = avail;
+    if (cur->pos + arg2 > cur->file->size) {
+        arg2 = cur->file->size - cur->pos;
+        if (arg2 < avail) return 0;
+    }
+    if (cur->cluster == 0xFFFFFFFF) {
+        result = fn_800AE620(cur->file->fat, cur->sector, 0, &cur->cluster);
+        if (result != 0) return result;
+        if (cur->cluster == 0xFFFFFFFF) {
+            cur->pos = cur->file->size;
+            fat = cur == 0 ? 0 : cur->file->vol;
+            cur->sector = cur->pos >> fat->shift;
+            cur->off = cur->pos & (fat->sectorSize - 1);
+            return 0x1c;
+        }
+        if (cur->pos + arg2 > cur->file->size) {
+            cur->pos = cur->file->size;
+            fat = cur == 0 ? 0 : cur->file->vol;
+            cur->sector = cur->pos >> fat->shift;
+            cur->off = cur->pos & (fat->sectorSize - 1);
+            return 0x1b;
+        }
+    }
+    result = fn_800B5324((s32)vol, arg1, cur->off, arg2, &sp8, 1);
+    if (result != 0 && sp8 == 0) return result;
+    *arg3 = sp8;
+    VFiPFFILE_Cursor_AdvanceToRead(cur, sp8, cur->cluster);
+    if ((u32)sp8 != arg2) return result;
+    return 0;
+}
+
 extern "C" s32 fn_800B0A60(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     s32 spC;
     u32 sp8;
@@ -16397,6 +16441,74 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 
+extern "C" s32 fn_800D3634(s32 arg0) {
+    u8 *mode = (u8 *)arg0;
+    u8 *fb;
+    s32 irq;
+    u32 frame;
+    volatile s32 w = 0x280;
+    volatile s32 h = 0x1E0;
+#define DST16(o) (*(u16 *)((u8 *)lbl_80407BD8 + (o)))
+#define COL8(o) (*(u8 *)((u8 *)lbl_80407BE8 + (o)))
+#define COL16(o) (*(u16 *)((u8 *)lbl_80407BE8 + (o)))
+    if (lbl_8055DDC8 == 0) {
+        DST16(8) = 0x280;
+        lbl_80407BD8[0] = 0;
+        DST16(10) = 0x1E0;
+        DST16(12) = 0x280;
+        lbl_80407BD8[1] = 0x280 * 0x1E0 * 2;
+        COL8(0) = 0xFF;
+        COL8(1) = 0xFF;
+        COL8(2) = 0xFF;
+        COL8(3) = 0xFF;
+        COL16(4) = 0xEB00;
+        COL16(6) = 0x7F;
+        COL16(8) = 0x3F;
+        COL16(10) = 0x1F;
+        COL16(12) = 0x7F;
+        COL16(14) = 0x3F;
+        COL16(16) = 0x1F;
+        lbl_8055DDC8 = 1;
+    }
+    fb = (u8 *)fn_8005AB88();
+    if (fb == 0) {
+        if (mode == 0) {
+            switch (VIGetTvFormat()) {
+            case 0: mode = lbl_803038D8; break;
+            case 1: mode = lbl_8030398C; break;
+            case 5: mode = lbl_803039C8; break;
+            case 2: mode = lbl_80303950; break;
+            }
+        }
+        fb = (u8 *)(((u32)OSGetArenaHi() - ((((*(u16 *)(mode + 4) + 0xF) & 0xFFF0) * *(u16 *)(mode + 8)) * 2)) & ~0x1F);
+        VIConfigure(mode);
+        VISetNextFrameBuffer(fb);
+    }
+    VISetBlack(0);
+    VIFlush();
+    irq = OSEnableInterrupts();
+    frame = fn_8005AC08();
+    while (frame == fn_8005AC08()) {
+    }
+    OSRestoreInterrupts(irq);
+    if (mode != 0) {
+        u16 w = *(u16 *)(mode + 4);
+        u16 h = *(u16 *)(mode + 8);
+        s16 stride = (w + 0xF) & 0xFFF0;
+        lbl_80407BD8[0] = (u32)fb;
+        DST16(8) = w;
+        DST16(10) = h;
+        DST16(12) = stride;
+        lbl_80407BD8[1] = stride * h * 2;
+    } else {
+        lbl_80407BD8[0] = (u32)fb;
+    }
+    return (s32)fb;
+#undef DST16
+#undef COL8
+#undef COL16
+}
+
 extern "C" s32 fn_800D3824(void) {
     s32 val = lbl_8055DDD4;
     u32 tmp = (u32)(-val) | (u32)val;
@@ -17542,18 +17654,70 @@ extern "C" u8 fn_80062054(void);
 extern "C" void fn_80062088(s32);
 extern "C" f32 lbl_80560DDC,lbl_80560DE0,lbl_80560DE4;
 extern "C" f32 lbl_80560DD0,lbl_80560DE8;
-extern "C" s32 fn_800C7C70(void *arg0) {
- s32 i,j,key,found,count; s32 *entry; void *obj; f32 f; u32 ticks;
- ticks=fn_80062054(); f=lbl_80560DE0*((f32)ticks-127.0f)+lbl_80560DDC;
- *(s32 *)((u8 *)arg0+0x80)=(s32)f; fn_80062088(0x7f);
- for(i=0;i<4;i++){u32 bits=*(u32 *)((u8 *)arg0+0x80)^0x80000000; f=((f32)(s32)bits-2147483648.0f)/lbl_80560DE4; obj=*(void **)((u8 *)arg0+0x254+i*4); fn_800D1204(obj,f); fn_800D11F0(obj);}
- count=*(s32 *)((u8 *)arg0+0x80);
- for(i=0;i<10;i++){key=i+0x15;entry=lbl_802F4588;found=0;
-  for(j=0;j<0x25;j++){if(key==entry[0]&&entry[1]==(i<count?10:9))break;found++;if(key==entry[2]&&entry[3]==(i<count?10:9))break;entry+=4;found++;}
-  if(j==0x25)found=-1;obj=*(void **)((u8 *)arg0+0x298+found*4);fn_800CF3EC(obj);*(s32 *)((u8 *)obj+0x14)=1;
- }
+static inline s32 fn_800C7C70_find(s32 key, s32 val) {
+    s32 index = 0;
+    s32 *entry = lbl_802F4588;
+    s32 i;
+    for (i = 0; i < 0x25; ++i, entry += 4) {
+        if (entry[0] == key && entry[1] == val)
+            return index;
+        ++index;
+        if (entry[2] == key && entry[3] == val)
+            return index;
+        ++index;
+    }
+    return -1;
 }
-
+#pragma push
+#pragma dont_inline on
+extern "C" s32 fn_800C7C70(void *arg0) {
+    u8 *p;
+    s32 i, j, index;
+    s32 *entry;
+    void *obj;
+    f32 div;
+    *(s32 *)((u8 *)arg0 + 0x80) = (s32)(lbl_80560DDC + lbl_80560DE0 * (f32)fn_80062054());
+    fn_80062088(0x7f);
+    for (p = (u8 *)arg0, div = lbl_80560DE4, i = 0; i < 4; i++) {
+        fn_800D1204(*(void **)(p + 0x254), (f32)*(s32 *)((u8 *)arg0 + 0x80) / div);
+        fn_800D11F0(*(void **)(p + 0x254));
+        p += 4;
+    }
+    for (i = 0; i < 10; i++) {
+        if (i < *(s32 *)((u8 *)arg0 + 0x80)) {
+            index = 0;
+            entry = lbl_802F4588;
+            for (j = 0; j < 0x25; ++j) {
+                if (i + 0x15 == entry[0]) { if (entry[1] == 10) goto f1; }
+                ++index;
+                if (i + 0x15 == entry[2]) { if (entry[3] == 10) goto f1; }
+                entry += 4;
+                ++index;
+            }
+            index = -1;
+        f1:;
+            obj = ((void **)arg0)[index + 166];
+            fn_800CF3EC(obj);
+            *(s32 *)((u8 *)obj + 0x14) = 1;
+        } else {
+            index = 0;
+            entry = lbl_802F4588;
+            for (j = 0; j < 0x25; ++j) {
+                if (i + 0x15 == entry[0]) { if (entry[1] == 9) goto f2; }
+                ++index;
+                if (i + 0x15 == entry[2]) { if (entry[3] == 9) goto f2; }
+                entry += 4;
+                ++index;
+            }
+            index = -1;
+        f2:;
+            obj = ((void **)arg0)[index + 166];
+            fn_800CF3EC(obj);
+            *(s32 *)((u8 *)obj + 0x14) = 1;
+        }
+    }
+}
+#pragma pop
 extern "C" s16 fn_80031C74(void);
 extern "C" s16 fn_80031C7C(void);
 extern "C" s16 fn_80031C84(void);
