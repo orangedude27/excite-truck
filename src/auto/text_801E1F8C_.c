@@ -137,39 +137,6 @@ extern double __fabs(double);
 #pragma cplusplus on
 #pragma processor 750
 #pragma use_lmw_stmw off
-class E2640Node {
-  public:
-    virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
-    virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
-    virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
-    virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
-};
-class E2640Item {
-  public:
-    virtual s32 m0(); virtual s32 m1(); virtual s32 m2(); virtual s32 m3();
-    virtual s32 m4(f32 *, f32 *, f32 *, s32);
-};
-static inline s32 E2640ScanObj(E2640Node *obj, f32 *pos, f32 *dir, f32 *dot, s32 mask,
-                               s32 (*filter)(s32), s32 *outValue, void **outObj, s32 found) {
-    void **slot = (void **)obj;
-    s32 j;
-    for (j = 0; j < *(s32 *)((char *)obj + 0x24); j++) {
-        E2640Item *item;
-        s32 value;
-        if (j >= 0 && j < *(s32 *)((char *)obj + 0x24))
-            item = (E2640Item *)slot[5];
-        else
-            item = 0;
-        value = *(s32 *)((char *)item + 0x20);
-        if ((!filter || filter(value)) && item->m4(pos, dir, dot, mask)) {
-            *outValue = value;
-            found = 1;
-            *outObj = obj;
-        }
-        slot++;
-    }
-    return found;
-}
 extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4, void **arg5, void **arg6, s32 arg7, s32 (*arg_sp8)(s32)) {
     class Node {
       public:
