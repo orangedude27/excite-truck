@@ -2691,7 +2691,7 @@ extern "C" s32 fn_800AC1B4(void *, s32);
 extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *);
 extern "C" s32 VFiPFENT_ITER_Advance(void *, s32);
 extern "C" s32 fn_800A9DC0(void *, void *, s32, s32, s32, s32 *);
-extern "C" u32 fn_800B5070(s32, s32 *);
+extern "C" s32 fn_800B5070(s32, s32 *);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
@@ -3465,6 +3465,74 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     return 0;
 }
 
+extern "C" s32 fn_800ACF20(void *arg0, u32 arg1, u32 *arg2, u32 *arg3)
+{
+    s32 end = -1;
+    s32 result;
+    s32 type;
+    u32 chunkSize;
+    u32 quotient;
+    u32 remaining;
+    u32 current;
+    u32 *table;
+    void *context;
+
+    *arg3 = 0;
+    if (*(u32 *)((u8 *)arg0 + 0x24) == 0) {
+        return 0;
+    }
+    if (*(u32 *)((u8 *)arg0 + 0x2C) < arg1) {
+        return 0;
+    }
+
+    chunkSize = *(u16 *)((u8 *)arg0 + 0x20) + 1;
+    quotient = arg1 / chunkSize;
+    remaining = arg1 - quotient * chunkSize;
+    table = *(u32 **)((u8 *)arg0 + 0x1C);
+    if (remaining == 0) {
+        *arg2 = table[quotient];
+        *arg3 = 1;
+        return 0;
+    }
+
+    current = table[quotient];
+    do {
+        context = *(void **)((u8 *)arg0 + 0x34);
+        type = *(s32 *)((u8 *)context + 0x1C);
+        switch (type) {
+        case 0:
+            result = fn_800AF5A0(context, (u16)current, &end);
+            break;
+        case 1:
+            result = fn_800AFE14(context, current, &end);
+            break;
+        case 2:
+            result = fn_800B0258(context, current, &end);
+            break;
+        default:
+            end = -1;
+            result = 0xF;
+            break;
+        }
+        if (result != 0) {
+            return result;
+        }
+        current = end;
+        if (current == 0) {
+            return 0xD;
+        }
+        remaining--;
+    } while (remaining != 0);
+
+    context = *(void **)((u8 *)arg0 + 0x34);
+    if (current == lbl_802EEF40[*(u32 *)((u8 *)context + 0x1C) * 5 + 2]) {
+        return 0;
+    }
+    *arg2 = current;
+    *arg3 = 1;
+    return 0;
+}
+
 extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 extern "C" s32 fn_800ACBB0(void *, s32, s32, s32, u32 *, u32 *);
 extern "C" s32 VFiPFFAT_WriteClusterPage(void *, u32, u32, u32, s32, void *);
@@ -4235,21 +4303,20 @@ extern "C" s32 fn_800AF584(void *arg0) {
 
 extern "C" s32 fn_800AF5A0(void *arg0, s32 arg1, s32 *arg2) {
     u8 buf[2];
-    u16 index;
+    u32 index;
     u16 offset;
     s32 result;
     u32 retry = 1;
     s32 *output = arg2;
     void *object = arg0;
-    s32 scaled = arg1 + (arg1 >> 1);
+    s32 scaled = (u16)(arg1 + (arg1 >> 1));
     u16 flags = *(u16 *)((u8 *)object + 0x18);
-    u16 pos = (u16)scaled;
 
     index = (u16)(*(u32 *)((u8 *)object + 0x28) +
-                  (pos >> *(u8 *)((u8 *)object + 0x20)));
+                  (scaled >> *(u8 *)((u8 *)object + 0x20)));
+    offset = (u16)(scaled & (*(u16 *)object - 1));
     if (flags & 0x80)
         retry = flags & 7;
-    offset = (u16)(pos & (*(u16 *)object - 1));
 loop:
     if ((s32)offset < (s32)(*(u16 *)object - 1)) {
         result = fn_800B5260(object, buf, index, offset, 2);
