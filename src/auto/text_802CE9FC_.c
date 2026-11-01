@@ -1496,6 +1496,15 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
     }
 }
 
+typedef struct LightPos_802D18E8 {
+    unsigned char pad[0x24];
+    float x, y, z;
+} LightPos_802D18E8;
+static inline void VecSub_802D18E8(float *dst, LightPos_802D18E8 *a, LightPos_802D18E8 *b) {
+    dst[0] = a->x - b->x;
+    dst[1] = a->y - b->y;
+    dst[2] = a->z - b->z;
+}
 extern int lbl_8055FDC8;
 extern int lbl_8055FDCC;
 extern float lbl_80564FD4;
@@ -1509,9 +1518,9 @@ void fn_802D18E8(void) {
     float direction[3];
     float mag;
     float scale;
-    unsigned char *var_r30;
-    unsigned char *var_r29;
     int var_r28;
+    unsigned char *var_r29;
+    unsigned char *var_r30;
     int var_r27;
 
     direction[0] = from[9] - to[9];
@@ -1543,7 +1552,7 @@ void fn_802D18E8(void) {
         if (var_r28 < lbl_8055FDC8) goto loop_body;
         lbl_8055FDCC = lbl_8055FDC8;
     } else {
-        unsigned char *entry = base + 0x4180;
+        register unsigned char *entry = base + 0x4180;
         unsigned int packed;
         unsigned char rgba[4];
         float strength = *(float *)(entry + 0x18);
@@ -1570,7 +1579,7 @@ light_body:
         var_r29 = (unsigned char *)((unsigned int)var_r29 + 1);
     }
 light_test:
-    if ((unsigned int)var_r29 < (unsigned int)lbl_8055FDCC) goto light_body;
+    if ((int)var_r29 < lbl_8055FDCC) goto light_body;
     GXSetNumChans(2);
     GXSetChanCtrl(1, 1, 0, 0, var_r28, 0, 0);
     GXSetChanCtrl(3, 0, 0, 0, 0, 0, 2);
