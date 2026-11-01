@@ -3053,7 +3053,7 @@ extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1) {
 }
 
 extern "C" s32 VFiPFENT_findEmptyTailSFN(void *, void *, u32 *);
-extern "C" s32 VFiPFPATH_parseShortNameNumeric(void *);
+extern "C" s32 VFiPFPATH_parseShortNameNumeric(char *, u32);
 extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
     u32 sp8;
     s8 *name = arg1;
@@ -3079,7 +3079,7 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
             if (sp8 == 1) {
                 return 0;
             }
-            VFiPFPATH_parseShortNameNumeric(name);
+            VFiPFPATH_parseShortNameNumeric((char *)name, sp8);
         }
     }
     return 0;
@@ -6770,37 +6770,41 @@ extern "C" s32 VFiPFPATH_transformInUnicode(s16 *dst, s32 src, s32 unused) {
     return count;
 }
 
-s32 VFiPFPATH_parseShortNameNumeric(char *arg0, s32 arg1) {
-    s8 temp[1];
-    s32 n=arg1, i, j, k, digits=0, value;
+s32 VFiPFPATH_parseShortNameNumeric(char *name, u32 num) {
+    char buf[8];
     char *p;
-    if(n==0)return 0;
-    i=1;p=arg0+1;
-    while(*p!='~'){i++;p++;}
-    j=i+1;p=arg0+j;
-    while(*p!='.'&&*p!=0){j++;p++;}
-    k=j+1;
-    if(*p=='.'&&arg0[k]!=0){k++;p=arg0+k;while(*p!=0){k++;p++;}}
-    p=(char*)(temp+1);
-    while(n!=0){value=n%10;n/=10;*p=(s8)(value+0x30);p++;digits++;}
-    value=i+digits;
-    if(value>=j){
-        s32 end=value+1;
-        if(end>8)end=8;
-        arg0[end+4]=arg0[k];
-        arg0[end+3]=arg0[j+2];
-        arg0[end+2]=arg0[j+1];
-        arg0[end+1]=arg0[j];
-        arg0[end]=arg0[i];
+    s32 i, j, k, k2, digits, end, n;
+    if (num == 0) return 0;
+    i = 1;
+    p = name + 1;
+    while (*p != '~') { i++; p++; }
+    j = i + 1;
+    p = name + j;
+    while (*p != '.' && *p != 0) { j++; p++; }
+    k = j + 1;
+    if (*p == '.' && name[k] != 0) {
+        k2 = k + 1;
+        p = name + k2;
+        while (*p != 0) { k2++; p++; }
+    } else {
+        k2 = k;
     }
-    if(value>=8)i=7-digits;
-    arg0[i]= '~';
-    p=(char*)(temp+1+digits);
-    arg0+=i+1;
-    if(digits!=0){s32 q=digits>>3,rem;
-        while(q--){arg0[0]=p[-1];arg0[1]=p[-2];arg0[2]=p[-3];arg0[3]=p[-4];arg0[4]=p[-5];arg0[5]=p[-6];arg0[6]=p[-7];arg0[7]=p[-8];p-=8;arg0+=8;}
-        rem=digits&7;
-        while(rem--){*arg0=p[-1];p--;arg0++;}
+    digits = 0;
+    p = buf;
+    do {
+        *p++ = (char)(num % 10 + '0');
+        num /= 10;
+        digits++;
+    } while (num != 0);
+    end = i + digits;
+    if (end >= k) {
+        n = end + 1;
+        if ((u32)n > 8) n = 8;
+        name[n + 4] = name[k2];
+        name[n + 3] = name[k + 2];
+        name[n + 2] = name[k + 1];
+        name[n + 1] = name[k];
+        name[n] = name[j];
     }
     return 0;
 }
@@ -12730,41 +12734,42 @@ extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
 }
 
 extern u32 lbl_8031D730[];
-void fn_800C2DBC(s32 *arg0, s32 *arg1, s32 *arg2) {
-    s64 p0=(s64)arg0[0]*lbl_8031D730[0];
-    s64 q0=(s64)arg0[0]*lbl_8031D730[1];
+extern "C" void fn_800C2DBC(s32 *arg0, s32 *arg1, s32 *arg2) {
+    s32 *t = (s32 *)lbl_8031D730;
+    s64 p0=(s64)arg0[0]*t[0];
+    s64 q0=(s64)arg0[0]*t[1];
     arg1[0]=(s32)(p0>>20);
     arg2[-0]=(s32)(q0>>20);
-    s64 p1=(s64)arg0[1]*lbl_8031D730[2];
-    s64 q1=(s64)arg0[1]*lbl_8031D730[3];
+    s64 p1=(s64)arg0[1]*t[2];
+    s64 q1=(s64)arg0[1]*t[3];
     arg1[1]=(s32)(p1>>20);
     arg2[-1]=(s32)(q1>>20);
-    s64 p2=(s64)arg0[2]*lbl_8031D730[4];
-    s64 q2=(s64)arg0[2]*lbl_8031D730[5];
+    s64 p2=(s64)arg0[2]*t[4];
+    s64 q2=(s64)arg0[2]*t[5];
     arg1[2]=(s32)(p2>>20);
     arg2[-2]=(s32)(q2>>20);
-    s64 p3=(s64)arg0[3]*lbl_8031D730[6];
-    s64 q3=(s64)arg0[3]*lbl_8031D730[7];
+    s64 p3=(s64)arg0[3]*t[6];
+    s64 q3=(s64)arg0[3]*t[7];
     arg1[3]=(s32)(p3>>20);
     arg2[-3]=(s32)(q3>>20);
-    s64 p4=(s64)arg0[4]*lbl_8031D730[8];
-    s64 q4=(s64)arg0[4]*lbl_8031D730[9];
+    s64 p4=(s64)arg0[4]*t[8];
+    s64 q4=(s64)arg0[4]*t[9];
     arg1[4]=(s32)(p4>>20);
     arg2[-4]=(s32)(q4>>20);
-    s64 p5=(s64)arg0[5]*lbl_8031D730[10];
-    s64 q5=(s64)arg0[5]*lbl_8031D730[11];
+    s64 p5=(s64)arg0[5]*t[10];
+    s64 q5=(s64)arg0[5]*t[11];
     arg1[5]=(s32)(p5>>20);
     arg2[-5]=(s32)(q5>>20);
-    s64 p6=(s64)arg0[6]*lbl_8031D730[12];
-    s64 q6=(s64)arg0[6]*lbl_8031D730[13];
+    s64 p6=(s64)arg0[6]*t[12];
+    s64 q6=(s64)arg0[6]*t[13];
     arg1[6]=(s32)(p6>>20);
     arg2[-6]=(s32)(q6>>20);
-    s64 p7=(s64)arg0[7]*lbl_8031D730[14];
-    s64 q7=(s64)arg0[7]*lbl_8031D730[15];
+    s64 p7=(s64)arg0[7]*t[14];
+    s64 q7=(s64)arg0[7]*t[15];
     arg1[7]=(s32)(p7>>20);
     arg2[-7]=(s32)(q7>>20);
-    s64 p8=(s64)arg0[8]*lbl_8031D730[16];
-    s64 q8=(s64)arg0[8]*lbl_8031D730[17];
+    s64 p8=(s64)arg0[8]*t[16];
+    s64 q8=(s64)arg0[8]*t[17];
     arg1[8]=(s32)(p8>>20);
     arg2[-8]=(s32)(q8>>20);
 }
