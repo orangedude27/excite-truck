@@ -1481,44 +1481,35 @@ void GXGetVtxAttrFmt(void) {
     } while (now - start < 5);
 }
 #pragma dont_inline reset
-#pragma use_lmw_stmw reset
+#pragma use_lmw_stmw off
 extern char __GXIsGPFifoReady(void) __attribute__((noinline));
 void GXGetVtxAttrFmtv(void) {
-    unsigned int old;
-    unsigned int value;
-    signed long long start;
-    signed long long now;
+    unsigned int old, value, high, firstHigh, low, shiftedHigh;
+    unsigned long long start, now;
     unsigned int *data = __GXData;
-
     if (*(unsigned char *)((char *)data + 0x5FA) &&
         (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
-        unsigned int high;
-        unsigned int firstHigh;
-        unsigned int low;
-        unsigned int shiftedHigh;
-
         do {
             high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
             firstHigh = high;
             low = *(volatile unsigned short *)((char *)__memReg + 0x50);
             high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
         } while (high != firstHigh);
-        shiftedHigh = high << 16;
-        old = shiftedHigh | low;
-
+        old = (high << 16) | low;
         for (;;) {
             start = OSGetTime();
             do {
                 now = OSGetTime();
-            } while (now - start < 8);
+                if ((signed long long)(now - start) >= 8)
+                    break;
+            } while (1);
             do {
                 high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
                 firstHigh = high;
                 low = *(volatile unsigned short *)((char *)__memReg + 0x50);
                 high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
             } while (high != firstHigh);
-            shiftedHigh = high << 16;
-            value = shiftedHigh | low;
+            value = (high << 16) | low;
             {
                 unsigned int previous = old;
                 old = value;
@@ -1528,18 +1519,21 @@ void GXGetVtxAttrFmtv(void) {
             break;
         }
     }
-
     *(volatile unsigned int *)0xCC003018 = 1;
     start = OSGetTime();
     do {
         now = OSGetTime();
-    } while (now - start < 50);
+        if ((signed long long)(now - start) >= 50)
+            break;
+    } while (1);
     *(volatile unsigned int *)0xCC003018 = 0;
     start = OSGetTime();
     do {
         now = OSGetTime();
-    } while (now - start < 5);
-    if (__GXIsGPFifoReady()) {
+        if ((signed long long)(now - start) >= 5)
+            break;
+    } while (1);
+    if (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0) {
         __GXCleanGPFifo();
         __GXInitRevisionBits();
         data[0x5FC / 4] = 0;
@@ -1556,6 +1550,7 @@ void GXGetVtxAttrFmtv(void) {
     *(volatile unsigned int *)0xCC008000 = 0;
     PPCSync();
 }
+#pragma use_lmw_stmw reset
 
 void GXMiscInit(s32 arg0) {
     union {
@@ -2327,38 +2322,88 @@ void GXSetCopyClear(unsigned char *color, s32 depth) {
 }
 
 void GXSetCopyFilter(s32 arg0, u8 *arg1, s32 arg2, u8 *arg3) {
-    u32 a, b, c, d;
-    u32 e, f;
-    volatile u8 *bp = (volatile u8 *)0xCC008000;
-    volatile u32 *wp = (volatile u32 *)0xCC008000;
+    u32 msLoc[4];
+    u32 coeff0;
+    u32 coeff1;
 
-    if (arg0) {
-        a = ((u32)(arg1[0] & 15) | ((u32)(arg1[1] & 15) << 4) | ((u32)(arg1[2] & 15) << 8) |
-             ((u32)(arg1[3] & 15) << 12) | ((u32)(arg1[4] & 15) << 16) | ((u32)(arg1[5] & 15) << 20) | 0x01000000);
-        b = ((u32)(arg1[6] & 15) | ((u32)(arg1[7] & 15) << 4) | ((u32)(arg1[8] & 15) << 8) |
-             ((u32)(arg1[9] & 15) << 12) | ((u32)(arg1[10] & 15) << 16) | ((u32)(arg1[11] & 15) << 20) | 0x02000000);
-        c = ((u32)(arg1[12] & 15) | ((u32)(arg1[13] & 15) << 4) | ((u32)(arg1[14] & 15) << 8) |
-             ((u32)(arg1[15] & 15) << 12) | ((u32)(arg1[16] & 15) << 16) | ((u32)(arg1[17] & 15) << 20) | 0x03000000);
-        d = ((u32)(arg1[18] & 15) | ((u32)(arg1[19] & 15) << 4) | ((u32)(arg1[20] & 15) << 8) |
-             ((u32)(arg1[21] & 15) << 12) | ((u32)(arg1[22] & 15) << 16) | ((u32)(arg1[23] & 15) << 20) | 0x04000000);
-    } else {
-        a = 0x01666666; b = 0x02666666; c = 0x03666666; d = 0x04666666;
-    }
-    *bp = 0x61; *wp = a;
-    e = 0x53000000;
-    *bp = 0x61;
-    f = 0x54000000;
-    *wp = b; *bp = 0x61; *wp = c; *bp = 0x61; *wp = d;
+    if (arg0 != 0) {
+        msLoc[0] = 0;
+        msLoc[0] = (msLoc[0] & 0xFFFFFFF0u) | ((u32)arg1[0] & 0xFu);
+        msLoc[0] = (msLoc[0] & 0xFFFFFF0Fu) | (((u32)arg1[1] & 0xFu) << 4);
+        msLoc[0] = (msLoc[0] & 0xFFFFF0FFu) | (((u32)arg1[2] & 0xFu) << 8);
+        msLoc[0] = (msLoc[0] & 0xFFFF0FFFu) | (((u32)arg1[3] & 0xFu) << 12);
+        msLoc[0] = (msLoc[0] & 0xFFF0FFFFu) | (((u32)arg1[4] & 0xFu) << 16);
+        msLoc[0] = (msLoc[0] & 0xFF0FFFFFu) | (((u32)arg1[5] & 0xFu) << 20);
+        msLoc[0] = (msLoc[0] & 0x00FFFFFFu) | 0x01000000u;
 
-    if (arg2) {
-        e |= (arg3[0] & 63) | ((u32)(arg3[1] & 63) << 6) | ((u32)(arg3[2] & 63) << 12) | ((u32)(arg3[3] & 63) << 18);
-        f |= (arg3[4] & 63) | ((u32)(arg3[5] & 63) << 6) | ((u32)(arg3[6] & 63) << 12);
+        msLoc[1] = 0;
+        msLoc[1] = (msLoc[1] & 0xFFFFFFF0u) | ((u32)arg1[6] & 0xFu);
+        msLoc[1] = (msLoc[1] & 0xFFFFFF0Fu) | (((u32)arg1[7] & 0xFu) << 4);
+        msLoc[1] = (msLoc[1] & 0xFFFFF0FFu) | (((u32)arg1[8] & 0xFu) << 8);
+        msLoc[1] = (msLoc[1] & 0xFFFF0FFFu) | (((u32)arg1[9] & 0xFu) << 12);
+        msLoc[1] = (msLoc[1] & 0xFFF0FFFFu) | (((u32)arg1[10] & 0xFu) << 16);
+        msLoc[1] = (msLoc[1] & 0xFF0FFFFFu) | (((u32)arg1[11] & 0xFu) << 20);
+        msLoc[1] = (msLoc[1] & 0x00FFFFFFu) | 0x02000000u;
+
+        msLoc[2] = 0;
+        msLoc[2] = (msLoc[2] & 0xFFFFFFF0u) | ((u32)arg1[12] & 0xFu);
+        msLoc[2] = (msLoc[2] & 0xFFFFFF0Fu) | (((u32)arg1[13] & 0xFu) << 4);
+        msLoc[2] = (msLoc[2] & 0xFFFFF0FFu) | (((u32)arg1[14] & 0xFu) << 8);
+        msLoc[2] = (msLoc[2] & 0xFFFF0FFFu) | (((u32)arg1[15] & 0xFu) << 12);
+        msLoc[2] = (msLoc[2] & 0xFFF0FFFFu) | (((u32)arg1[16] & 0xFu) << 16);
+        msLoc[2] = (msLoc[2] & 0xFF0FFFFFu) | (((u32)arg1[17] & 0xFu) << 20);
+        msLoc[2] = (msLoc[2] & 0x00FFFFFFu) | 0x03000000u;
+
+        msLoc[3] = 0;
+        msLoc[3] = (msLoc[3] & 0xFFFFFFF0u) | ((u32)arg1[18] & 0xFu);
+        msLoc[3] = (msLoc[3] & 0xFFFFFF0Fu) | (((u32)arg1[19] & 0xFu) << 4);
+        msLoc[3] = (msLoc[3] & 0xFFFFF0FFu) | (((u32)arg1[20] & 0xFu) << 8);
+        msLoc[3] = (msLoc[3] & 0xFFFF0FFFu) | (((u32)arg1[21] & 0xFu) << 12);
+        msLoc[3] = (msLoc[3] & 0xFFF0FFFFu) | (((u32)arg1[22] & 0xFu) << 16);
+        msLoc[3] = (msLoc[3] & 0xFF0FFFFFu) | (((u32)arg1[23] & 0xFu) << 20);
+        msLoc[3] = (msLoc[3] & 0x00FFFFFFu) | 0x04000000u;
     } else {
-        e |= 0x00595000;
-        f = (f & 0xFFFC003F) | 0x15;
+        msLoc[0] = 0x01666666u;
+        msLoc[1] = 0x02666666u;
+        msLoc[2] = 0x03666666u;
+        msLoc[3] = 0x04666666u;
     }
-    *bp = 0x61; *wp = e; *bp = 0x61; *wp = f;
-    __GXData[0] = (__GXData[0] & 0xFFFF0000) | (__GXData[0] & 0xFFFF);
+
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile u32 *)0xCC008000 = msLoc[0];
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile u32 *)0xCC008000 = msLoc[1];
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile u32 *)0xCC008000 = msLoc[2];
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile u32 *)0xCC008000 = msLoc[3];
+
+    coeff0 = 0;
+    coeff0 = (coeff0 & 0x00FFFFFFu) | 0x53000000u;
+    coeff1 = 0;
+    coeff1 = (coeff1 & 0x00FFFFFFu) | 0x54000000u;
+    if (arg2 != 0) {
+        coeff0 = (coeff0 & 0xFFFFFFC0u) | ((u32)arg3[0] & 0x3Fu);
+        coeff0 = (coeff0 & 0xFFFFF03Fu) | (((u32)arg3[1] & 0x3Fu) << 6);
+        coeff0 = (coeff0 & 0xFFFC0FFFu) | (((u32)arg3[2] & 0x3Fu) << 12);
+        coeff0 = (coeff0 & 0xF03FFFFFu) | (((u32)arg3[3] & 0x3Fu) << 18);
+        coeff1 = (coeff1 & 0xFFFFFFC0u) | ((u32)arg3[4] & 0x3Fu);
+        coeff1 = (coeff1 & 0xFFFFF03Fu) | (((u32)arg3[5] & 0x3Fu) << 6);
+        coeff1 = (coeff1 & 0xFFFC0FFFu) | (((u32)arg3[6] & 0x3Fu) << 12);
+    } else {
+        coeff0 = (coeff0 & 0xFFFFFFC0u);
+        coeff0 = (coeff0 & 0xFFFFF03Fu);
+        coeff0 = (coeff0 & 0xFFFC0FFFu) | (21u << 12);
+        coeff0 = (coeff0 & 0xF03FFFFFu) | (22u << 18);
+        coeff1 = (coeff1 & 0xFFFFFFC0u) | 21u;
+        coeff1 = (coeff1 & 0xFFFFF03Fu);
+        coeff1 = (coeff1 & 0xFFFC0FFFu);
+    }
+
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile u32 *)0xCC008000 = coeff0;
+    *(volatile u8 *)0xCC008000 = 0x61;
+    *(volatile u32 *)0xCC008000 = coeff1;
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
