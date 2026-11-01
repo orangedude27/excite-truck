@@ -466,6 +466,7 @@ public:
 };
 extern "C" s32 lbl_8031E370[];
 extern "C" s32 lbl_802F4588[];
+struct BatteryRec { u8 b[0x18]; };
 static inline s32 findEventSlot(s32 key, s32 val) {
     s32 *entry = lbl_802F4588;
     s32 i;
@@ -18556,10 +18557,10 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 #pragma dont_inline fn_800CF3EC
 void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
-    s32 *ids = lbl_8031E370 + n * 4;
-    u8 *rec = self + n * 0x18;
-    s32 i, index;
     void *obj;
+    s32 *ids = &lbl_8031E370[n * 4];
+    u8 *rec = &self[n * 0x18];
+    s32 i, index;
     for (i = 0; i < 4; i++) {
         u8 *pane;
         if (i < rec[0x16C]) {
@@ -18583,7 +18584,7 @@ void homebutton::HomeButton::calc_battery(int n) {
         *(s32 *)((u8 *)obj + 0x14) = 1;
     }
     if (*(s32 *)(self + 0x78) < 0x64) *(s32 *)(self + 0x78) = 0;
-    fn_800D16A8((s32 *)((void **)self)[0x254 / 4 + n]);
+    ((void (*)(s32 *))fn_800D16A8)(*(s32 **)((u8 *)((void **)self + n) + 0x254));
 }
 extern "C" void fn_800CA064(void) {
     typedef void (*SetAlarmCallback)(void);
