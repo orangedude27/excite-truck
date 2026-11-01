@@ -646,6 +646,104 @@ void fn_80068F80(void) {
     lbl_80392960[0xC] = 1;
 }
 
+extern u8 lbl_80393028[];
+u8 fn_80068F94(void) {
+    u8 *base = lbl_80392960;
+    u8 *scan_base;
+    u8 *record;
+    BOOL interrupts;
+    u8 state;
+    u8 state2;
+    s32 i;
+    s32 offset;
+    s32 interval;
+    tBTM_PM_PWR_MD mode;
+
+    if ((s8)base[0x668] == 0) {
+        return 0xE;
+    }
+
+    interrupts = OSDisableInterrupts();
+    state = base[0x665];
+    OSRestoreInterrupts(interrupts);
+    if (state == 4) {
+        interrupts = OSDisableInterrupts();
+        state2 = base[0x664];
+        OSRestoreInterrupts(interrupts);
+        if (state2 == 4) {
+            return 0xE;
+        }
+    }
+
+    if (base[0x667] != 0) {
+        scan_base = lbl_80392960;
+        i = 0;
+        offset = 0;
+    loop:
+        interrupts = OSDisableInterrupts();
+        if (i < 0) {
+            goto high_record;
+        }
+        if (i >= 0xA) {
+            goto high_record;
+        }
+        record = scan_base + offset + 0x64;
+        goto selected_record;
+    high_record:
+        record = scan_base + ((i - 0xA) * 0x60) + 0x424;
+    selected_record:
+        OSRestoreInterrupts(interrupts);
+        if (record[0x59] == 9) {
+            mode.max = 0;
+            mode.min = 0;
+            mode.attempt = 1;
+            mode.timeout = 0;
+            mode.mode = 0;
+            BTM_SetPowerMode(base[0x68A], record + 0x40, &mode);
+            return 1;
+        }
+        i++;
+        offset += 0x60;
+        if (i < 0x10) {
+            goto loop;
+        }
+    }
+
+    if ((s8)base[0x668] > 0) {
+        base[0x668]--;
+    }
+    if ((s8)base[0x668] == -1) {
+        base[0x668] = 0xFE;
+        interrupts = OSDisableInterrupts();
+        state = base[0x665];
+        OSRestoreInterrupts(interrupts);
+        interval = 2;
+        if (state == 3) {
+            interval = 4;
+        }
+
+        interrupts = OSDisableInterrupts();
+        state = base[0x665];
+        OSRestoreInterrupts(interrupts);
+        if (state == 4) {
+            interrupts = OSDisableInterrupts();
+            state2 = base[0x664];
+            OSRestoreInterrupts(interrupts);
+            if (state2 == 4) {
+                base[0xC] = 0xE;
+            }
+        }
+
+        OSCreateAlarm((OSAlarm *)lbl_80393028);
+        ((void (*)(OSAlarm *, s64, s64, OSAlarmHandler))OSSetAlarm)(
+            (OSAlarm *)lbl_80393028, 0,
+            interval * ((*(u32 *)0x800000F8) >> 2),
+            (OSAlarmHandler)fn_80068F80);
+        return 0x18;
+    }
+    return 2;
+}
+
 #pragma use_lmw_stmw off
 s32 fn_80069178(void) {
     s32 status;
@@ -8024,41 +8122,41 @@ void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle) {
     }
 }
 
-void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
+void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, tBTM_SCO_TYPE link_type)
 {
+    tBTM_ESCO_CONN_REQ_EVT_DATA event_data;
     register UINT8 *p_bda = bda;
     register UINT8 *p_dev_class = dev_class;
     register UINT8 type = link_type;
-    {
-        UINT8 *entry = lbl_803C0F78 + 0x1854;
-        UINT16 i = 0;
-        UINT8 event_data[0x0C];
-        for (; i < 3; i++, entry += 0x34) {
-            UINT16 state = *(UINT16 *)(entry + 8);
-            if (!((state == 1 && entry[0xD] != 0) || state == 3))
-                continue;
-            if (memcmp(entry + 0x28, p_bda, 6) != 0)
-                continue;
-            entry[0xD] = 1;
-            entry[0x2E] = type;
-            memcpy(entry + 0x28, p_bda, 6);
-            if (*(UINT32 *)(entry + 0x10) == 0) {
-                btm_esco_conn_rsp(i, 0, p_bda, NULL);
-            } else {
-                memcpy(event_data + 2, p_bda, 6);
-                memcpy(event_data + 8, p_dev_class, 3);
-                event_data[0xB] = type;
-                *(UINT16 *)(entry + 8) = 2;
-                *(UINT16 *)event_data = i;
-                ((void (*)(UINT16, tBTM_ESCO_DATA *))*(UINT32 *)(entry + 0x10))(
-                    2, (tBTM_ESCO_DATA *)event_data);
-            }
-            return;
+    UINT8 *entry;
+    UINT16 i;
+    entry = lbl_803C0F78 + 0x1854;
+    i = 0;
+    for (; i < 3; i++, entry += 0x34) {
+        UINT16 state = *(UINT16 *)(entry + 8);
+        if (!((state == 1 && entry[0xD] != 0) || state == 3))
+            continue;
+        if (memcmp(entry + 0x28, p_bda, 6) != 0)
+            continue;
+        entry[0xD] = 1;
+        entry[0x2E] = type;
+        memcpy(entry + 0x28, p_bda, 6);
+        if (*(UINT32 *)(entry + 0x10) == 0) {
+            btm_esco_conn_rsp(i, 0, p_bda, NULL);
+        } else {
+            memcpy(event_data.bd_addr, p_bda, 6);
+            memcpy(event_data.dev_class, p_dev_class, 3);
+            event_data.link_type = type;
+            *(UINT16 *)(entry + 8) = 2;
+            event_data.sco_inx = i;
+            ((tBTM_ESCO_CBACK *)*(UINT32 *)(entry + 0x10))(
+                2, (tBTM_ESCO_EVT_DATA *)&event_data);
         }
+        return;
     }
     if (*(UINT32 *)(lbl_803C0F78 + 0x1850) != 0) {
-        UINT8 *entry = lbl_803C0F78 + 0x1854;
-        UINT16 i = 0;
+        entry = lbl_803C0F78 + 0x1854;
+        i = 0;
         for (; i < 3; i++, entry += 0x34) {
             if (*(UINT16 *)(entry + 8) == 0) {
                 entry[0xC] = 0;
@@ -8066,9 +8164,12 @@ void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
                 entry[0x2E] = type;
                 memcpy(entry + 0x28, p_bda, 6);
                 entry[0xD] = 1;
-                ((void (*)(UINT16))*(UINT32 *)(lbl_803C0F78 + 0x1850))(i);
-                return;
+                break;
             }
+        }
+        if (i < 3) {
+            ((void (*)(UINT16))*(UINT32 *)(lbl_803C0F78 + 0x1850))(i);
+            return;
         }
     }
     if (lbl_803C0F78[0x27C0] >= 2)
