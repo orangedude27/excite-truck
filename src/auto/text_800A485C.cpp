@@ -5526,6 +5526,59 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return temp;
 }
 
+extern "C" void *fn_800B224C(void *arg0, void *arg1) {
+    s32 result;
+    s32 a, b, c, d, e, f, g;
+    void *file;
+    void *fs;
+    s32 flags;
+
+    file = arg0 == 0 ? 0 : *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+    fn_800B77C0((u8 *)file + 0x1F90);
+    result = fn_800B5E14(file);
+    if (result != 0) {
+        fn_800B783C((u8 *)file + 0x1F90);
+        lbl_803D2140[16] = result;
+        *(s32 *)(*(u8 **)((u8 *)*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = result;
+        *(s32 *)((u8 *)arg0 + 0x18) = result;
+        return (void *)result;
+    }
+    fs = *(void **)((u8 *)arg0 + 8);
+    flags = *(s32 *)fs;
+    if ((flags & 1) == 0 || (flags & 2) == 0) {
+        fn_800B783C((u8 *)file + 0x1F90);
+        lbl_803D2140[16] = 0x26;
+        *(s32 *)((u8 *)file + 0x1F80) = 0x26;
+        return (void *)0x26;
+    }
+    *(void **)((u8 *)file + 0x1644) = arg0;
+    a = *(s32 *)((u8 *)arg0 + 0x1C);
+    b = *(s32 *)((u8 *)arg0 + 0x20);
+    c = *(s32 *)((u8 *)arg0 + 0x24);
+    d = *(s32 *)((u8 *)arg0 + 0x28);
+    e = *(s32 *)((u8 *)arg0 + 0xC);
+    f = *(s32 *)((u8 *)arg0 + 0x10);
+    g = *(s32 *)((u8 *)arg0 + 0x14);
+    result = VFiPFFILE_p_finfo(arg0, arg1);
+    *(s32 *)((u8 *)arg0 + 0x1C) = a;
+    *(s32 *)((u8 *)arg0 + 0x20) = b;
+    *(s32 *)((u8 *)arg0 + 0x24) = c;
+    *(s32 *)((u8 *)arg0 + 0x28) = d;
+    *(s32 *)((u8 *)arg0 + 0xC) = e;
+    *(s32 *)((u8 *)arg0 + 0x10) = f;
+    *(s32 *)((u8 *)arg0 + 0x14) = g;
+    *(s32 *)((u8 *)file + 0x1644) = 0;
+    if (result != 0) {
+        lbl_803D2140[16] = result;
+        *(s32 *)(*(u8 **)((u8 *)*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = result;
+        *(s32 *)((u8 *)arg0 + 0x18) = result;
+        fn_800B783C((u8 *)file + 0x1F90);
+        return (void *)result;
+    }
+    fn_800B783C((u8 *)file + 0x1F90);
+    return 0;
+}
+
 extern "C" u8 lbl_802EEEE0[];
 u16 fn_800B25CC(void *arg0, s32 arg1) {
     u8 work[0x14];
@@ -7413,6 +7466,8 @@ extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC((s32)fn_800B224C(alarm, ctx));
 }
 
+struct FatCopyA { s32 w[4]; };
+struct FatCopyB { s32 w[3]; };
 extern "C" s32 fn_800B1EB8(s32, s32, s32, s32, s32 *);
 extern "C" s32 fn_800B75C4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 result;
