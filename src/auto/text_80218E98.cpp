@@ -2512,6 +2512,7 @@ checked:
     value = scale * (f32)fn_802C5220(b);
     fn_802C5320(b, enabled, x, y - ((f32)fn_802C5220(b) - value), base, (f32)fn_802C51C0(b), value);
 }
+#pragma scheduling on
 #pragma pop
 
 #pragma dont_inline on
