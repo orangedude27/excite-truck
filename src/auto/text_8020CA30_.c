@@ -19,6 +19,41 @@ extern f32 lbl_80563304;
 extern f32 lbl_80563308;
 extern f32 lbl_8056330C;
 extern void* fn_801D04A8(int);
+extern char lbl_8033C660[];
+extern char lbl_8033C66C[];
+extern char lbl_8033C678[];
+extern const char lbl_8055B5E0[4];
+extern const char lbl_8055B5E8[4];
+extern const char lbl_8055B5F0[4];
+extern const char lbl_8055B5F8[4];
+extern const char lbl_8055B600[4];
+extern const char lbl_8055B608[4];
+extern const char lbl_8055B610[4];
+extern const char lbl_8055B618[4];
+extern const char lbl_8055B620[4];
+extern const char lbl_8055B628[4];
+extern f32 lbl_80563300;
+extern void* fn_801284F8(int, const char*);
+extern void* fn_80131808(const char*);
+extern void fn_80131818(void*);
+extern void* fn_802077A4(int, void*, void*);
+extern int fn_802E30C8(const char*, ...);
+extern int strcmp(const char*, const char*);
+#pragma cplusplus on
+struct Item_8020CA3C {
+    virtual const char* getName();
+    virtual void slot1();
+    virtual int getA(const char*);
+    virtual void slot3();
+    virtual int getB(const char*);
+    virtual void slot5();
+    virtual f32 getF(const char*);
+};
+struct Dir_8020CA3C {
+    virtual void slot0();
+    virtual Item_8020CA3C* getAt(int);
+};
+#pragma cplusplus reset
 #pragma scheduling invalid_target
 void *fn_8020CC78(void *arg0, int arg1) {
     register void **vtable;
