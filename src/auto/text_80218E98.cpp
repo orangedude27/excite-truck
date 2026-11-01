@@ -2479,6 +2479,8 @@ extern "C" void *fn_8021D300(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma ppc_psq_save off
 extern "C" void fn_8021D378(void *arg0, s32 arg1) {
     f32 x, y;
     s32 enabled = 0;
@@ -2504,6 +2506,7 @@ extern "C" void fn_8021D378(void *arg0, s32 arg1) {
     value = scale * (f32)fn_802C5220(b);
     fn_802C5320(b, enabled, x, y - ((f32)fn_802C5220(b) - value), base, (f32)fn_802C51C0(b), value);
 }
+#pragma pop
 
 #pragma dont_inline on
 extern "C" void fn_8021D568(void *arg0, s32 arg1) {
