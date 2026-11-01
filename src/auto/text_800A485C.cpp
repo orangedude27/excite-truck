@@ -7328,46 +7328,49 @@ done:
     return -((flags >> 1) & 1) & 0xB;
 }
 
-struct CacheSlotData { u32 w[0x90]; };
+struct CachePair { u32 a, b; };
+struct CacheSlotData { CachePair w[0x48]; };
 struct CacheSlot { u32 flag; s32 key; CacheSlotData data; };
 struct CacheKey { u32 flag; s32 key; };
 extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
-    u32 key;
-    s32 i;
-    u32 *base = (u32 *)arg0, *out = (u32 *)arg1, *entry, *src, *dst;
+    s32 key;
+    s32 i, j, found;
+    CacheSlot *slots;
+    CacheKey *cache;
     if ((*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) == 0) return 9;
     fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
-    ((void (*)(u32 *))fn_800B78F0)(&key);
-    for (i = 1, entry = (u32 *)((u8 *)arg0 + 0x248); i < 4; i++, entry = (u32 *)((u8 *)entry + 0x248)) {
-        if ((entry[0x1654 / 4] & 1) && entry[0x1658 / 4] == key) {
-            src = entry + 0x165C / 4; dst = out;
-            for (i = 0; i < 0x48; i++) { *dst++ = *src++; *dst++ = *src++; }
-            goto finish;
+    ((void (*)(s32 *))fn_800B78F0)(&key);
+    slots = (CacheSlot *)((u8 *)arg0 + 0x1654);
+    for (i = 1; i < 4; i++) {
+        if ((slots[i].flag & 1) && slots[i].key == key) {
+            *(CacheSlotData *)arg1 = slots[i].data;
+            break;
         }
     }
-    if (((*(u32 *)((u8 *)lbl_803D2140 + 0x88) &= 1), *(u32 *)((u8 *)lbl_803D2140 + 0x88)) &&
-        *(u32 *)((u8 *)lbl_803D2140 + 0x8C) == key) goto copy_main;
-    if (((*(u32 *)((u8 *)lbl_803D2140 + 0x90) &= 1), *(u32 *)((u8 *)lbl_803D2140 + 0x90)) &&
-        *(u32 *)((u8 *)lbl_803D2140 + 0x94) == key) goto allocate;
-    if (((*(u32 *)((u8 *)lbl_803D2140 + 0x98) &= 1), *(u32 *)((u8 *)lbl_803D2140 + 0x98)) &&
-        *(u32 *)((u8 *)lbl_803D2140 + 0x9C) == key) goto allocate;
-copy_main:
-    src = base + 0x165C / 4;
-    goto copy;
-allocate:
-    for (i = 1, entry = (u32 *)((u8 *)arg0 + 0x248); i < 4; i++, entry = (u32 *)((u8 *)entry + 0x248)) {
-        if ((entry[0x1654 / 4] & 1) == 0) {
-            entry[0x1654 / 4] |= 1; entry[0x1658 / 4] = key;
-            src = entry + 0x165C / 4;
-            goto copy;
+    if (i == 4) {
+        cache = (CacheKey *)((u8 *)lbl_803D2140 + 0x88);
+        found = 0;
+        for (j = 0; j < 3; j++) {
+            cache[j].flag &= 1;
+            if (cache[j].flag && cache[j].key == key) {
+                found = 1;
+                break;
+            }
+        }
+        if (found) {
+            for (i = 1; i < 4; i++) {
+                if ((slots[i].flag & 1) == 0) {
+                    slots[i].flag |= 1;
+                    slots[i].key = key;
+                    *(CacheSlotData *)arg1 = slots[i].data;
+                    break;
+                }
+            }
+        } else {
+            *(CacheSlotData *)arg1 = slots[0].data;
         }
     }
-    goto finish;
-copy:
-    dst = out;
-    for (i = 0; i < 0x48; i++) { *dst++ = *src++; *dst++ = *src++; }
-finish:
-    ((void (*)(void *, void *))fn_800B783C)((u8 *)lbl_803D2140 + 0x64, arg1);
+    fn_800B783C((u8 *)lbl_803D2140 + 0x64);
     return 0;
 }
 
