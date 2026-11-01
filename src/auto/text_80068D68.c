@@ -16912,6 +16912,7 @@ BT_HDR *p_buf;
 
     if (*(u8 *)((u8 *)p_mcb + 0x6D) == 0)
         flag = 0;
+
     p_buf->offset -= 3;
     if (p_buf->len > 127)
         p_buf->offset--;
@@ -16923,7 +16924,7 @@ BT_HDR *p_buf;
         p_buf->offset--;
 
     p_data = (u8 *)(p_buf + 1) + p_buf->offset;
-    *p_data++ = (u8)((flag << 1) | 1 | (dlci << 2));
+    *p_data++ = (u8)((flag << 1) | 1 | ((dlci & 0xFF) << 2));
     *p_data++ = (u8)(0xEF | (credits ? 0x10 : 0));
     if (p_buf->len <= 127) {
         *p_data++ = (u8)(1 | (p_buf->len << 1));
