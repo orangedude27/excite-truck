@@ -8,6 +8,18 @@ extern "C" const char lbl_8031E7E8[];
 extern "C" const char lbl_8031E83C[];
 
 static inline s32 fn_800C2DBC_mul20(s32 a, s32 b) { return (s32)(((s64)a * b) >> 20); }
+struct VFiPFCard {
+    s8 unk0;
+    u8 pad1[3];
+    s32 unk4;
+    u8 pad8[0x14];
+    s16 unk1c;
+    u8 pad1e[0x278 - 0x1e];
+    s32 unk278;
+    u8 pad27c[0xed70 - 0x27c];
+    s32 unkED70;
+    s32 unkED74;
+};
 struct VFiPFVol { u16 sectorSize; u8 pad[0x1e]; u8 shift; };
 struct VFiPFFile { u8 pad0[4]; u8 fat[0x260]; u32 size; VFiPFVol *vol; };
 struct VFiPFCursor { u8 pad0[8]; VFiPFFile *file; u8 pad1[0x10]; u32 pos; u32 cluster; u32 sector; u16 off; };
