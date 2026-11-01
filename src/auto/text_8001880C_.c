@@ -17,7 +17,9 @@ typedef unsigned int u32;
 struct Item_8001880C {
     virtual const char* getName();
     virtual int hasKey(const char*);
+    virtual void slot2();
     virtual int getA(const char*);
+    virtual void slot4();
     virtual int getB(const char*);
 };
 struct Dir_8001880C {
