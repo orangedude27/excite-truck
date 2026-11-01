@@ -27,6 +27,7 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
+void rfc_send_buf_uih();
 extern s32 lbl_805590A0;
 extern void fn_8006B330(void);
 extern void l2cu_release_ccb(void *);
@@ -16221,6 +16222,12 @@ void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
     u8 *port = (u8 *)p_port;
 
     switch (event) {
+    case 9:
+    case 11:
+    log_event:
+        if (lbl_803C4828[0x414] >= 1)
+            fn_8007096C(0x90000, lbl_80319AC4, port[0x68], event);
+        return;
     case 12:
         rfc_port_timer_start(p_port, 3);
         ((void (*)(void *, u8))rfc_send_disc)(*(void **)(port + 0x6C), port[0xD]);
@@ -16253,32 +16260,25 @@ void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
     case 5:
         ((void (*)(void *, u8))rfc_send_ua)(*(void **)(port + 0x6C), port[0xD]);
         return;
+    case 1:
+        GKI_freebuf(p_data);
+        goto log_event;
     case 0:
         port[0x68] = 0;
         PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
                              *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 1);
         return;
-    case 1:
-        GKI_freebuf(p_data);
-        goto log_event;
     case 6:
     case 7:
     case 8:
     case 10:
         GKI_freebuf(p_data);
         return;
-    case 9:
-    case 11:
-        goto log_event;
     default:
         if (lbl_803C4828[0x414] >= 2)
             fn_80070954(0x90001, lbl_80319B44, event);
         return;
     }
-
-log_event:
-    if (lbl_803C4828[0x414] >= 1)
-        fn_8007096C(0x90000, lbl_80319AC4, port[0x68], event);
 }
 
 void rfc_port_sm_orig_wait_sec_check(void *port, u16 event, void *data) {
