@@ -9,6 +9,7 @@ extern u8 lbl_8055F958;
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
+#pragma dont_inline on
 void fn_802AE2E0(void *arg0) {
     int result = fn_80131810(arg0);
     if (result) {
@@ -17,6 +18,7 @@ void fn_802AE2E0(void *arg0) {
         items[idx] = result;
     }
 }
+#pragma dont_inline reset
 int fn_802AE414(void *arg0) {
     extern u8 lbl_8055F958;
     extern int lbl_804BD8CC[3];
