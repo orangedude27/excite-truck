@@ -12,7 +12,10 @@
 #define btsnd_hcic_exit_sniff_mode btsnd_hcic_exit_sniff_mode_api
 #define btsnd_hcic_sniff_mode btsnd_hcic_sniff_mode_api
 #define btsnd_hcic_accept_esco_conn btsnd_hcic_accept_esco_conn_api
+#define btsnd_hcic_set_event_filter btsnd_hcic_set_event_filter_4arg
 #include "revolution/BTE/stack/include/hcimsgs.h"
+#undef btsnd_hcic_set_event_filter
+extern BOOLEAN btsnd_hcic_set_event_filter(void *, UINT8, UINT8, UINT8 *, UINT8);
 #undef btsnd_hcic_accept_esco_conn
 #undef btsnd_hcic_sniff_mode
 #undef btsnd_hcic_exit_sniff_mode
@@ -2677,11 +2680,11 @@ s32 hcisu_h2_receive_msg(u16 arg0, u8 *arg1) {
     extern char lbl_80314294[];
     u8 sp8;
     register u8 *var_r15 = arg1;
-    register s32 var_r19 = 0;
+    register u32 var_r19 = 0;
     register u16 var_r16;
     register u8 *var_r22;
     register u32 var_r23;
-    register u8 *var_r21;
+    register u16 *var_r21;
     register u8 var_r17;
     register u8 var_r18;
     register u8 *buf;
@@ -2694,7 +2697,7 @@ s32 hcisu_h2_receive_msg(u16 arg0, u8 *arg1) {
     var_r16 = (u16)(arg0 + 1);
     var_r22 = arg1 + arg0;
     var_r23 = ((u32)arg0 << 2) & 0x3FFFC;
-    var_r21 = arg1 + (((u32)arg0 << 1) & 0x1FFFE);
+    var_r21 = (u16 *)(arg1 + (((u32)arg0 << 1) & 0x1FFFE));
 for (;;) {
     if ((u16)((u16 (*)(u8, u8 *, u16))fn_8007011C)((u8)var_r16, &sp8, 1) == 0)
         break;
@@ -2722,15 +2725,15 @@ for (;;) {
             fn_8007093C(0x70000, lbl_80314258);
             var_r22[0x1A] = 2;
         }
-        *(u16 *)(var_r21 + 0xC) = lbl_80560CF8[var_r22[0x14] - 1];
+        *(u16 *)(var_r21 + 6) = lbl_80560CF8[var_r22[0x14] - 1];
         /* fall through */
     case 1:
         buf = *(u8 **)(var_r15 + var_r23);
         offset = *(u16 *)(buf + 2);
         buf[offset + 8] = sp8;
         *(u16 *)(buf + 2) = offset + 1;
-        remaining = *(u16 *)(var_r21 + 0xC) - 1;
-        *(u16 *)(var_r21 + 0xC) = remaining;
+        remaining = *(u16 *)(var_r21 + 6) - 1;
+        *(u16 *)(var_r21 + 6) = remaining;
         if (remaining == 0) {
             var_r18 = sp8;
             if (var_r22[0x14] == 2) {
@@ -2738,13 +2741,13 @@ for (;;) {
                 buf = (u8 *)l2cap_link_chk_pkt_start((BT_HDR *)buf);
                 *(u8 **)(var_r15 + var_r23) = buf;
                 if (buf == 0) {
-                    *(u16 *)(var_r21 + 0xC) = var_r18;
+                    *(u16 *)(var_r21 + 6) = var_r18;
                     if (var_r18 == 0) var_r22[0x1A] = 0;
                     else var_r22[0x1A] = 4;
                     break;
                 }
             }
-            *(u16 *)(var_r21 + 0xC) = var_r18;
+            *(u16 *)(var_r21 + 6) = var_r18;
             if ((u32)var_r18 + lbl_80560CF8[var_r22[0x14] - 1] + 8 >
                 fn_8006D8D0((u32)buf)) {
                 GKI_freebuf(buf);
@@ -2762,13 +2765,13 @@ for (;;) {
         }
         break;
     case 2:
-        remaining = *(u16 *)(var_r21 + 0xC) - 1;
-        *(u16 *)(var_r21 + 0xC) = remaining;
+        remaining = *(u16 *)(var_r21 + 6) - 1;
+        *(u16 *)(var_r21 + 6) = remaining;
         if (remaining == 0) {
             var_r18 = sp8;
             if (var_r22[0x14] == 2)
                 var_r18 = (u8)(((u16)sp8 << 8) + var_r22[0x17]);
-            *(u16 *)(var_r21 + 0xC) = var_r18;
+            *(u16 *)(var_r21 + 6) = var_r18;
             var_r22[0x1A] = 4;
         } else {
             var_r22[0x17] = sp8;
@@ -2779,15 +2782,15 @@ for (;;) {
         offset = *(u16 *)(buf + 2);
         buf[offset + 8] = sp8;
         *(u16 *)(buf + 2) = offset + 1;
-        remaining = *(u16 *)(var_r21 + 0xC) - 1;
-        *(u16 *)(var_r21 + 0xC) = remaining;
+        remaining = *(u16 *)(var_r21 + 6) - 1;
+        *(u16 *)(var_r21 + 6) = remaining;
         got = ((u16 (*)(u8, u8 *, u16, u8, BT_HDR *))fn_8007011C)(
             (u8)var_r16, buf + *(u16 *)(buf + 2) + 8, remaining, sp8, (BT_HDR *)buf);
         var_r19 += got;
         buf = *(u8 **)(var_r15 + var_r23);
         *(u16 *)(buf + 2) = *(u16 *)(buf + 2) + got;
-        remaining = *(u16 *)(var_r21 + 0xC) - got;
-        *(u16 *)(var_r21 + 0xC) = remaining;
+        remaining = *(u16 *)(var_r21 + 6) - got;
+        *(u16 *)(var_r21 + 6) = remaining;
         if (remaining == 0) {
             if (var_r22[0x14] == 2 && (u8)l2cap_link_chk_pkt_end() == 0) {
                 var_r22[0x1A] = 0;
@@ -2798,8 +2801,8 @@ for (;;) {
         }
         break;
     case 4:
-        remaining = *(u16 *)(var_r21 + 0xC) - 1;
-        *(u16 *)(var_r21 + 0xC) = remaining;
+        remaining = *(u16 *)(var_r21 + 6) - 1;
+        *(u16 *)(var_r21 + 6) = remaining;
         if (remaining == 0) var_r22[0x1A] = 0;
         break;
     default:
@@ -7017,9 +7020,9 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     if (p[0] != 0 && p[0] != 1) return 5;
     if (fn_80079514() == 0) return 6;
     a=p[0]; b=p[1]; state[0x1834]=a; state[0x1835]=b;
-    c=p[2]; d=p[3]; state[0x1836]=c; state[0x1837]=d;
-    e=p[4]; f=p[5]; state[0x1838]=e; state[0x1839]=f;
-    a=p[6]; b=p[7]; state[0x183A]=a; state[0x183B]=b;
+    c=p[3]; d=p[2]; state[0x1836]=d; state[0x1837]=c;
+    e=p[5]; f=p[4]; state[0x1838]=f; state[0x1839]=e;
+    a=p[7]; b=p[6]; state[0x183A]=b; state[0x183B]=a;
     c=p[8]; state[0x183C]=c;
     c=p[9]; state[0x183D]=c;
     state[0x1847]=3;
@@ -7031,8 +7034,8 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     filter=p[3];
     if (filter==0) goto mode_two;
     if (filter<0) goto invalid_filter;
-    if (filter<3) goto mode_one;
-    goto invalid_filter;
+    if (filter>=3) goto invalid_filter;
+    goto mode_one;
 invalid_filter:
     return 5;
 mode_two:
