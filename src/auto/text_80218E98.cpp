@@ -2116,7 +2116,7 @@ extern "C" s32 fn_8021C730(void *arg0, s32 arg1) {
         if(*(u8*)((u8*)arg0+0x2d0)) { ((V18x*)obj)->get(); if(fabsf(base-((V24x*)obj)->get())<=*(f32 *)&lbl_80558DC4) fn_80216D28(); return 1; }
         if(*(s32*)((u8*)*(void**)((u8*)arg0+0x2c)+0x494)>1) { fn_802180B0(); return 1; } return 0;
     case 0x127:
-        if(*(u8*)((u8*)arg0+0x2d0)) { ((V14x*)obj)->get(); if(fabsf(base-((V24x*)obj)->get())<=lbl_80558DC4) fn_80216D28(); return 1; }
+        if(*(u8*)((u8*)arg0+0x2d0)) { ((V14x*)obj)->get(); if(fabsf(base-((V24x*)obj)->get())<=*(f32 *)&lbl_80558DC4) fn_80216D28(); return 1; }
         if(*(s32*)((u8*)*(void**)((u8*)arg0+0x2c)+0x494)>1) { fn_802180BC(); return 1; } return 0;
     case 0x126:
         if(!*(u8*)((u8*)arg0+0x2d0) && *(s32*)((u8*)*(void**)((u8*)arg0+0x2c)+0x494)>1) { fn_802180C8(); return 1; } return 0;
