@@ -3,6 +3,7 @@
 #include <types.h>
 #include "revolution/GX/GXTypes.h"
 #include "revolution/GX/GXAttr.h"
+#include "revolution/GX/GXGeometry.h"
 #include "revolution/MTX/mtxtypes.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
@@ -1574,13 +1575,14 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
 
 extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
     u8* p = (u8*)arg0;
-    u32 fmt = *(u32*)(p + 0x4C);
-    u32 count = (*(u32*)(p + 0x50) >> 15) & 7;
-    if (arg1 > ((fmt >> 15) & 7))
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3BE, lbl_8031F990 + 0x3F8);
+    const char *msg = lbl_8031F990;
+    if (arg1 > ((*(u32*)(p + 0x4C) >> 15) & 7))
+        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3BE, msg + 0x3F8);
     if (arg1 != 0) {
         if (*(void**)(p + 0x58) == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3C1, lbl_8031F990 + 0x360);
+            Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3C1, msg + 0x360);
+        u32 fmt = *(u32*)(p + 0x4C);
+        u32 count = (*(u32*)(p + 0x50) >> 15) & 7;
         u32 width = (fmt >> 24) & 15;
         u8* base = (u8*)*(void**)(p + 0x58) + width * 0x14 + ((fmt >> 18) & 0x3C) + ((fmt >> 23) & 0x1E0);
         base += ((fmt >> 4) & 4) + ((fmt >> 6) & 4) + ((fmt >> 12) & 4) + ((fmt >> 5) & 4) + ((fmt >> 3) & 4);
