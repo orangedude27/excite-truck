@@ -2,6 +2,7 @@
 
 #include <types.h>
 #include <stdarg.h>
+extern void fn_802C744C(s32, f32 *);
 extern int fn_801476C4();
 #include "revolution/MTX/mtxtypes.h"
 typedef struct { void *pad[3]; void *(*get)(void *, int); } IterFC;
@@ -365,37 +366,53 @@ void fn_80149D64(void *arg0, void *arg1, s32 arg2) {
     int count;
     void *object;
     f32 end;
-    if (*(u8 *)((char*)arg0+0x34) != 0) index = 0;
+    if (*(u8 *)((char *)arg0 + 0x34) != 0) index = 0;
     else {
-        f32 frame = *(f32*)((char*)arg1+0x14);
-        index = (int)(frame < lbl_80561648 ? frame-lbl_8056163C : lbl_8056163C+frame);
+        f32 frame = *(f32 *)((char *)arg1 + 0x14);
+        index = (int)(frame < lbl_80561648 ? frame - lbl_8056163C : lbl_8056163C + frame);
     }
-    *(int*)arg0 = index;
+    *(int *)arg0 = index;
     if (fn_80179650() > 1) {
-        rate = fn_80149F00(arg0,arg1);
-        value = *(int*)((char*)arg0+0x10) == 0
-            ? *(int*)((char*)arg0+0x14) + (int)((f32)*(int*)((char*)arg0+0x18) * rate)
+        rate = fn_80149F00(arg0, arg1);
+        value = *(int *)((char *)arg0 + 0x10) == 0
+            ? *(int *)((char *)arg0 + 0x14) + (int)((f32)*(int *)((char *)arg0 + 0x18) * rate)
             : 0;
-        if (value != *(int*)((char*)arg0+0x20)) {
-            object = *(void**)((char*)arg1+8);
-            if (object != 0 && *(void**)((char*)object+0x1258) != 0) {
-                char *p = *(char**)((char*)object+0x1258);
-                p[0x49]=1; p[0x4b]=0; p[0x4a]=0;
+        if (value != *(int *)((char *)arg0 + 0x20)) {
+            object = *(void **)((char *)arg1 + 8);
+            if (object != 0 && *(void **)((char *)object + 0x1258) != 0) {
+                char *p = *(char **)((char *)object + 0x1258);
+                p[0x49] = 1;
+                p[0x4B] = 0;
+                p[0x4A] = 0;
             }
         }
-        *(int*)((char*)arg0+0x20)=value;
+        *(int *)((char *)arg0 + 0x20) = value;
     } else {
-        count = *(int*)((char*)arg0+0x10);
-        value = count >= 0 && count < *(int*)((char*)arg0+0xc)
-            ? *(int*)(*(char**)((char*)arg0+8)+count*4) : 0;
-        *(int*)((char*)arg0+0x20)=value;
+        count = *(int *)((char *)arg0 + 0x10);
+        if (count < 0) goto no_frame;
+        if (count >= *(int *)((char *)arg0 + 0x0C)) goto no_frame;
+        value = *(int *)(*(char **)((char *)arg0 + 8) + count * 4);
+        goto frame_ready;
+    no_frame:
+        value = 0;
+    frame_ready:
+        *(int *)((char *)arg0 + 0x20) = value;
     }
-    object=*(void**)((char*)arg1+0x68);
-    end=*(f32*)((char*)object+0x8dc)-*(f32*)((char*)object+0x8d4);
-    if (end < lbl_80561648) end=lbl_80561648;
-    *(int*)((char*)arg0+0x24)=*(int*)arg0+*(int*)((char*)arg0+0x20);
-    *(int*)((char*)arg0+0x1c)=(int)end;
-    *(int*)((char*)arg0+0x30)=fn_801609C4(*(int*)((char*)arg0+0x24));
+
+    object = *(void **)((char *)arg1 + 0x68);
+    {
+        f32 threshold = lbl_80561648;
+        f32 top = *(f32 *)((char *)object + 0x8DC);
+        f32 bottom = *(f32 *)((char *)object + 0x8D4);
+        f32 difference = top - bottom;
+        if (threshold > difference) {
+            difference = threshold;
+        }
+        end = difference;
+    }
+    *(int *)((char *)arg0 + 0x24) = *(int *)arg0 + *(int *)((char *)arg0 + 0x20);
+    *(int *)((char *)arg0 + 0x1C) = (int)end;
+    *(int *)((char *)arg0 + 0x30) = fn_801609C4(*(int *)((char *)arg0 + 0x24));
 }
 
 f32 fn_80149F00(void *arg0, void *arg1) {
@@ -1454,6 +1471,92 @@ void fn_80151688(void) {
 
 }
 
+#pragma cplusplus on
+extern "C" void fn_8015168C(s32 arg0, void *arg1) {
+    class VNode {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+    };
+    struct Node {
+        u8 pad0[4];
+        u8 flag;
+        u8 pad1[0x117];
+        Node *prev;
+        Node *next;
+    };
+    struct Owner {
+        u8 pad[0x1244];
+        Node *first;
+        Node *tail;
+        Node *last;
+        Node *end;
+    };
+    u8 *entry;
+    Owner *owner;
+    Node *cur;
+    Node *next;
+    Node *link;
+    u8 *obj;
+    f32 factor;
+    f32 delta;
+    f32 zero;
+    s32 zeroInt;
+    s32 count;
+    s32 value;
+    entry = (u8 *)(arg0 + *(s32 *)((u8 *)arg1 + 0x1EC) * 0xC0 + 0x9E4);
+    if (entry != 0) {
+        delta = lbl_80561648;
+        zeroInt = 0;
+        factor = lbl_8056163C;
+        *(volatile f32 *)(entry + 0x3C) = delta;
+        *(f32 *)(entry + 0x1C) = factor * *(f32 *)(entry + 0x1C);
+        *(s32 *)(entry + 0xA4) = zeroInt;
+        owner = *(Owner **)(entry + 8);
+        cur = owner->last;
+        next = cur != 0 ? cur->prev : 0;
+        while (cur != 0) {
+            if (cur->flag != 0) {
+                link = cur->next;
+                if (link != 0)
+                    link->prev = cur->prev;
+                else
+                    owner->last = cur->prev;
+                link = cur->prev;
+                if (link != 0)
+                    link->next = cur->next;
+                else
+                    owner->end = cur->next;
+                cur->next = 0;
+                cur->prev = 0;
+                cur->next = owner->tail;
+                link = owner->tail;
+                if (link != 0)
+                    link->prev = cur;
+                owner->tail = cur;
+                if (owner->first == 0)
+                    owner->first = cur;
+            }
+            cur = next;
+            next = cur != 0 ? cur->prev : 0;
+        }
+        *(f32 *)(entry + 0x14) += delta;
+        obj = *(u8 **)(entry + 0x10);
+        ((VNode *)obj)->m2();
+        if (*(s32 *)(entry + 0x34) > 1)
+            *(f32 *)(entry + 0x40) = lbl_80561688;
+        count = *(s32 *)(entry + 0x34) - 1;
+        value = count > 1 ? count : 1;
+        *(s32 *)(entry + 0x34) = value;
+        zero = lbl_80561648;
+        *(f32 *)(entry + 0x50) = zero;
+        *(f32 *)(entry + 0x4C) = zero;
+        *(f32 *)(entry + 0x48) = zero;
+        *(f32 *)(entry + 0x44) = zero;
+    }
+}
+#pragma cplusplus off
 extern f32 PSVECMag(void *);
 #pragma cplusplus on
 extern "C" void fn_8015180C(void *ctx, void *a, void *b, void *unused, void *vec) {
@@ -1607,8 +1710,7 @@ extern "C" void fn_80151B48(void *arg0) {
     s32 addr;
     f32 f;
 
-    fn_801E85B4();
-    index = ((s32 (*)(void))fn_801E866C)();
+    index = fn_801E866C(fn_801E85B4());
     if (((struct Dummy *)self)->check(index) == 0) goto done;
     addr = (s32)self + index * 0xC0 + 0x9E4;
     if (addr == 0) goto done;
