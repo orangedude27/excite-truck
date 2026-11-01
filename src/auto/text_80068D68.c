@@ -307,6 +307,16 @@ BOOL AXFXReverbHiExpInit(void*);
 extern void __FreeDelayLine(void*);
 extern void AXFXReverbHiExpCallback(void);
 extern s32 __CtrlMsgInt(s32,s32,s32,s32,s32,u32,void*,void*,void*,s32);
+extern u8 lbl_8031ABD8[];
+extern f32 lbl_80560D58;
+extern f32 lbl_80560D5C;
+extern f32 lbl_80560D60;
+extern f32 lbl_80560D64;
+extern f32 lbl_80560D78;
+extern f64 lbl_80560D80;
+extern f32 lbl_80560D88;
+extern f64 lbl_80560D90;
+extern u8 lbl_8031AC98[];
 extern f32 lbl_80560D50;
 extern f32 lbl_80560D54;
 extern u32 lbl_80560D28;
@@ -5593,6 +5603,68 @@ void btm_acl_timeout(TIMER_LIST_ENT *p_tle) {
     }
 }
 
+UINT16 btm_get_max_packet_size(BD_ADDR addr) {
+    u32 i;
+    u8 *p;
+    u16 pkt_types;
+    u16 pkt_size;
+
+    i = 0;
+    p = lbl_803C0F78 + 0x34;
+loop:
+    if (p[0x119] == 0)
+        goto next;
+    if (memcmp(p + 8, addr, 6) != 0)
+        goto next;
+    goto found;
+next:
+    i++;
+    p += 0x11C;
+    if (i < 4)
+        goto loop;
+    p = 0;
+found:
+    pkt_types = 0;
+    pkt_size = 0;
+    if (p != 0) {
+        pkt_types = *(u16 *)(p + 2);
+    } else {
+        if (memcmp(lbl_803C0F78 + 0x630, addr, 6) == 0)
+            pkt_types = *(u16 *)(lbl_803C0F78 + 0x654);
+    }
+
+    if (pkt_types) {
+        if (!(pkt_types & 0x2000))
+            pkt_size = 0x3FD;
+        else if (!(pkt_types & 0x1000))
+            pkt_size = 0x2A7;
+        else if (!(pkt_types & 0x0200))
+            pkt_size = 0x228;
+        else if (pkt_types & 0x8000)
+            pkt_size = 0x153;
+        else if (!(pkt_types & 0x0100))
+            pkt_size = 0x16F;
+        else if (pkt_types & 0x4000)
+            pkt_size = 0xE0;
+        else if (pkt_types & 0x0800)
+            pkt_size = 0xB7;
+        else if (pkt_types & 0x0400)
+            pkt_size = 0x79;
+        else if (!(pkt_types & 0x0004))
+            pkt_size = 0x53;
+        else if (!(pkt_types & 0x0002))
+            pkt_size = 0x36;
+        else if (pkt_types & 0x0010)
+            pkt_size = 0x1B;
+        else if (pkt_types & 0x0008)
+            pkt_size = 0x11;
+    }
+
+    if (pkt_size == 0x3FD && *(u16 *)(lbl_803C0A50 + 0x7C) == 0x3F9)
+        pkt_size = 0x3F9;
+    return pkt_size;
+}
+
 s32 fn_80078310(s32 arg0)
 {
     if (arg0 == 0) {
@@ -8071,6 +8143,75 @@ void bta_dm_search_cancel_transac_cmpl(void) {
 
 void fn_80072728(void) {
     ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(4, 0);
+}
+
+extern u16 lbl_80560D10;
+extern u16 lbl_80560D12;
+extern u16 lbl_802EE990[];
+extern void fn_800729C0(s16);
+void bta_dm_find_services(u8 *bd_addr) {
+    u16 attr_values[2];
+    tSDP_UUID service_uuid;
+    u16 service;
+    u16 num_attr = 1;
+    register u32 bit_base = 1;
+    register u16 uuid_len = 2;
+    register u32 zero = 0;
+    register u8 last_index = 0x17;
+    u8 *name;
+    void *msg;
+
+    attr_values[0] = lbl_80560D10;
+    attr_values[1] = lbl_80560D12;
+
+service_loop:
+    if ((*(u32 *)(lbl_803C0B98 + 0xC) &
+         (bit_base << lbl_803C0B98[0x70])) != 0) {
+        *(tSDP_DISCOVERY_DB **)(lbl_803C0B98 + 0x14) =
+            (tSDP_DISCOVERY_DB *)GKI_getbuf(0xFA);
+        if (*(tSDP_DISCOVERY_DB **)(lbl_803C0B98 + 0x14) != 0) {
+            service = lbl_802EE990[lbl_803C0B98[0x70]];
+            *(u32 *)(lbl_803C0B98 + 0xC) &=
+                ~(bit_base << lbl_803C0B98[0x70]);
+            if (service == 0x1200)
+                num_attr = 2;
+            service_uuid.len = uuid_len;
+            service_uuid.uu.uuid16 = service;
+            SDP_InitDiscoveryDb(*(tSDP_DISCOVERY_DB **)(lbl_803C0B98 + 0x14),
+                                0xFA, 1, &service_uuid, num_attr, attr_values);
+            if (SDP_ServiceSearchAttributeRequest(
+                    bd_addr, *(tSDP_DISCOVERY_DB **)(lbl_803C0B98 + 0x14),
+                    (tSDP_DISC_CMPL_CB *)fn_800729C0) == FALSE) {
+                GKI_freebuf(*(void **)(lbl_803C0B98 + 0x14));
+                *(void **)(lbl_803C0B98 + 0x14) = (void *)zero;
+                lbl_803C0B98[0x70] = last_index;
+                goto advance_once;
+            }
+            lbl_803C0B98[0x70]++;
+            goto advance;
+        }
+    }
+
+advance_once:
+    lbl_803C0B98[0x70]++;
+advance:
+    lbl_803C0B98[0x70]++;
+    if (lbl_803C0B98[0x70] < last_index)
+        goto service_loop;
+
+    msg = GKI_getbuf(0x110);
+    if (msg != 0) {
+        *(u16 *)msg = 0x208;
+        *(u32 *)((u8 *)msg + 0x108) = *(u32 *)(lbl_803C0B98 + 0x10);
+        fn_80070FA4((u8 *)msg + 8, lbl_803C0B98 + 0x1A);
+        name = lbl_803C0B98 + 0x20;
+        if ((s8)lbl_803C0B98[0x20] == 0) {
+            name = (u8 *)BTM_SecReadDevName(lbl_803C0B98 + 0x1A);
+            if (name != 0)
+                strncpy((char *)msg + 0xE, (char *)name, 0x20);
+        }
+        fn_80071450(msg);
+    }
 }
 
 void bta_dm_discover_next_device(void) {
