@@ -2005,12 +2005,12 @@ extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
     switch (arg1) {
     case 0x127:
         ((V14x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
-        if (fabsf(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get()) <= lbl_80558DC4)
+        if ((f32)FN8021C18C_ABS((double)(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get())) <= lbl_80558DC4)
             fn_80216D28();
         return 1;
     case 0x125:
         ((V20x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
-        if (fabsf(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get()) <= lbl_80558DC4)
+        if ((f32)FN8021C18C_ABS((double)(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get())) <= lbl_80558DC4)
             fn_80216D28();
         return 1;
     case 0x126:
@@ -2018,7 +2018,6 @@ extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
             fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
             return 1;
         }
-        return 0;
     case 0x128:
         if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
             fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
@@ -2114,7 +2113,7 @@ extern "C" s32 fn_8021C730(void *arg0, s32 arg1) {
     void *obj=*(void**)((u8*)arg0+0x2a4); base=((V24x*)obj)->get();
     switch(arg1) {
     case 0x125:
-        if(*(u8*)((u8*)arg0+0x2d0)) { ((V18x*)obj)->get(); if(fabsf(base-((V24x*)obj)->get())<=lbl_80558DC4) fn_80216D28(); return 1; }
+        if(*(u8*)((u8*)arg0+0x2d0)) { ((V18x*)obj)->get(); if(fabsf(base-((V24x*)obj)->get())<=*(f32 *)&lbl_80558DC4) fn_80216D28(); return 1; }
         if(*(s32*)((u8*)*(void**)((u8*)arg0+0x2c)+0x494)>1) { fn_802180B0(); return 1; } return 0;
     case 0x127:
         if(*(u8*)((u8*)arg0+0x2d0)) { ((V14x*)obj)->get(); if(fabsf(base-((V24x*)obj)->get())<=lbl_80558DC4) fn_80216D28(); return 1; }
