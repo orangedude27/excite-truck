@@ -3817,6 +3817,17 @@ extern "C" s32 fn_800AE108(void *arg0, s32 arg1, s32 arg2, u32 arg3, s32 *arg4, 
 }
 
 extern "C" s32 fn_800ACF20(void *, u32, u32 *, u32 *);
+static inline s32 VFiPFFAT_FindCluster(void *arg0, u32 arg1, u32 arg2, u32 *arg3) {
+    u32 sp8;
+    s32 spC;
+    s32 res;
+    *arg3 = (u32)-1;
+    res = fn_800ADD84(arg0, arg1, arg2 != 0, 0, &sp8, (s32 *)&spC);
+    if (res != 0) return res;
+    if ((u32)spC >= 2 && (u32)spC < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x34) + 2)
+        *arg3 = spC;
+    return 0;
+}
 extern "C" s32 VFiPFFAT_GetClusterSpecified(void *arg0, u32 arg1, u32 arg2, u32 *arg3) {
     u32 sp10;
     s32 spC;
