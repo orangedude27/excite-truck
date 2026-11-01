@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" double fabs(double);
 extern "C" f32 fabsf(f32);
 extern "C" char lbl_8055B884;
 extern "C" void fn_802C4F58(s32, s32, const char *, s32);
@@ -1993,36 +1994,35 @@ extern "C" void fn_8021C12C(void *arg0) {
 
 extern "C" f32 lbl_80558DC4;
 extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
-    void *obj;
-    s32 *check;
+    s32 *check = *(s32 **)((u8 *)arg0 + 0x2A8);
     f32 first;
-    obj = *(void **)((u8 *)arg0 + 0x2A4);
-    check = *(s32 **)((u8 *)arg0 + 0x2A8);
-    if (check == 0) return 0;
-    if (*(s32 *)((u8 *)arg0 + 0x2AC) != *check) return 0;
-    first = ((V24x *)obj)->get();
+    if (check == 0)
+        return 0;
+    if (*(s32 *)((u8 *)arg0 + 0x2AC) != *check)
+        return 0;
+    first = ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
     switch (arg1) {
-    case 0x127: {
-        f32 diff;
-        ((V14x *)obj)->get();
-        diff = first - ((V24x *)obj)->get();
-        if (diff < 0.0f) diff = -diff;
-        if (diff > lbl_80558DC4) fn_80216D28();
+    case 0x127:
+        ((V14x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
+        if (fabsf(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get()) <= lbl_80558DC4)
+            fn_80216D28();
         return 1;
-    }
-    case 0x125: {
-        f32 diff;
-        ((V20x *)obj)->get();
-        diff = first - ((V24x *)obj)->get();
-        if (diff < 0.0f) diff = -diff;
-        if (diff > lbl_80558DC4) fn_80216D28();
+    case 0x125:
+        ((V20x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
+        if (fabsf(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get()) <= lbl_80558DC4)
+            fn_80216D28();
         return 1;
-    }
     case 0x126:
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) { fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C)); return 1; }
+        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
+            fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
+            return 1;
+        }
         return 0;
     case 0x128:
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) { fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C)); return 1; }
+        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
+            fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
+            return 1;
+        }
     }
     return 0;
 }
