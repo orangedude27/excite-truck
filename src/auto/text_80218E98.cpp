@@ -49,6 +49,8 @@ static s32 abs_val(s32 x) {
     return (x ^ sign) - sign;
 }
 
+extern "C" s32 fn_8021E620(void *, s32);
+
 extern "C" void fn_8021C12C(void *);
 extern "C" void fn_8021E684(void *);
 extern "C" void fn_8021E6D4(void *);
@@ -3212,76 +3214,45 @@ extern "C" void fn_801A7A5C(void);
 extern "C" s32 fn_802146BC(void *, s32, s32, s32, void *, s32, s32, s32);
 extern "C" void fn_802194FC(void *);
 extern "C" void fn_8021F4F0(void *arg0, void *) {
-    struct ArgBlock {
-        s32 a0;
-        char **a1;
-        s32 a2;
-        s32 a3;
-        s32 a4;
-        char *a5;
-        s32 a6;
-        char *a7;
-        s32 a8;
-        s32 a9;
-        char *a10;
-        s32 a11;
-        s32 a12;
-        s32 a13;
-        s32 a14;
-        char *a15;
-        s32 a16;
-        s32 a17;
-        s32 a18;
-        s32 a19;
-        char *a20;
-        s32 a21;
-        s32 a22;
-        s32 a23;
-        s32 a24;
-        s32 a25;
-        s32 a26;
-        s32 a27;
-        s32 a28;
-        s32 a29;
-    } args;
+    s32 args[30];
 
     fn_801A7A5C();
     strcpy((char *)lbl_80490934, (char *)arg0 + 0x254);
     *(s32 *)((char *)lbl_80490934 + 0x18) = *(s32 *)((char *)arg0 + 0x270);
 
-    ((volatile s32 *)&args.a1)[0] = lbl_802F9EE0[1];
-    args.a0 = lbl_802F9EE0[0];
-    args.a2 = lbl_802F9EE0[2];
-    args.a3 = lbl_802F9EE0[3];
-    args.a4 = lbl_802F9EE0[4];
-    args.a5 = &lbl_8055B890;
-    args.a6 = 3;
-    args.a7 = lbl_8033D9A4;
-    args.a8 = 0x80;
-    args.a9 = 0;
-    args.a10 = &lbl_8055B898;
-    args.a11 = 3;
-    args.a12 = *(s32 *)((char *)arg0 + 0x26c);
-    args.a13 = 0x80;
-    args.a14 = 0;
-    args.a15 = &lbl_8055B8A0;
-    args.a16 = 0;
-    args.a17 = 0;
-    args.a18 = -1;
-    args.a19 = 0;
-    args.a20 = &lbl_8055B860;
-    args.a21 = 6;
-    args.a22 = 0;
-    args.a23 = -1;
-    args.a24 = 0x1b;
-    args.a25 = lbl_80490920[0];
-    args.a26 = lbl_80490920[1];
-    args.a27 = lbl_80490920[2];
-    args.a28 = lbl_80490920[3];
-    args.a29 = lbl_80490920[4];
-    args.a1 = &args.a5;
+    ((volatile s32 *)args)[1] = *((volatile s32 *)&lbl_802F9EE0[1]);
+    args[0] = lbl_802F9EE0[0];
+    args[2] = lbl_802F9EE0[2];
+    args[3] = lbl_802F9EE0[3];
+    args[4] = lbl_802F9EE0[4];
+    args[5] = (s32)&lbl_8055B890;
+    args[6] = 3;
+    args[7] = (s32)lbl_8033D9A4;
+    args[8] = 0x80;
+    args[9] = 0;
+    args[10] = (s32)&lbl_8055B898;
+    args[11] = 3;
+    args[12] = *(s32 *)((char *)arg0 + 0x26c);
+    args[13] = 0x80;
+    args[14] = 0;
+    args[15] = (s32)&lbl_8055B8A0;
+    args[16] = 0;
+    args[17] = 0;
+    args[18] = -1;
+    args[19] = 0;
+    args[20] = (s32)&lbl_8055B860;
+    args[21] = 6;
+    args[22] = 0;
+    args[23] = -1;
+    args[24] = 0x1b;
+    args[25] = lbl_80490920[0];
+    args[26] = lbl_80490920[1];
+    args[27] = lbl_80490920[2];
+    args[28] = lbl_80490920[3];
+    args[29] = lbl_80490920[4];
+    args[1] = (s32)&args[5];
 
-    if (fn_802146BC(&args, -999, -999, 1,
+    if (fn_802146BC(args, -999, -999, 1,
                     (void *)lbl_802F9EE0[4],
                     lbl_802F9EE0[3], lbl_802F9EE0[2], lbl_802F9EE0[0]) == -2) {
         strcpy((char *)arg0 + 0x254, (char *)lbl_80490934);
@@ -3493,24 +3464,37 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
 
 extern "C" s32 fn_802C5334(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 void fn_8021FD68(void *arg0, s32 arg1) {
-    s32 index;
-    s32 active;
-    f32 x, y, z, progress;
+    VfObj *obj = (VfObj *)arg0;
+    s32 step;
+    s32 progress;
     s32 *mode;
-    VfObj *obj;
-    obj = (VfObj *)arg0;
-    index = obj->vf30() - 11;
+    s32 active;
+    s32 centerX;
+    s32 centerY;
+    s32 x;
+    s32 y;
+    s32 z;
+    s32 range;
+
+    step = obj->vf30() - 11;
+    progress = (s32)(((f32)step *
+        (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
+        (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
     mode = *(s32 **)((u8 *)arg0 + 0x274);
-    active = 0;
-    if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x278)) active = 1;
-    progress = (f32)index;
-    progress = (progress * (*(f32 *)*(s32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
-               (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248));
-    x = (f32)(*(s32 *)((u8 *)arg0 + 4) - ((lbl_8055FB9C + (lbl_8055FB9C >> 31)) >> 1));
-    y = (f32)(((lbl_8055FBA0 + (lbl_8055FBA0 >> 31)) >> 1) - *(s32 *)((u8 *)arg0 + 8));
-    z = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
-    fn_802C5320(*(s32 *)((u8 *)arg0 + 0x25C), active, x, y, lbl_805634A8, (f32)obj->vf30(), z);
-    fn_802C5334(*(s32 *)((u8 *)arg0 + 0x260), active, x, y, lbl_805634A8, progress, z, lbl_805634A8, lbl_805634A8, progress / (f32)obj->vf30());
+    if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x278)) {
+        active = 1;
+        range = obj->vf30();
+        centerX = (lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1;
+        centerY = (lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1;
+        x = *(s32 *)((u8 *)arg0 + 4) - centerX;
+        y = centerY - *(s32 *)((u8 *)arg0 + 8);
+        z = *(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8);
+        fn_802C5320(*(s32 *)((u8 *)arg0 + 0x25C), active,
+                    (f32)x, (f32)y, lbl_805634A8, (f32)range, (f32)z);
+        fn_802C5334(*(s32 *)((u8 *)arg0 + 0x260), active,
+                    (f32)x, (f32)y, lbl_805634A8, (f32)progress, (f32)z,
+                    lbl_805634A8, lbl_805634A8, (f32)progress / (f32)range);
+    }
 }
 
 #pragma push
