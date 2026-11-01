@@ -2250,17 +2250,13 @@ extern "C" void fn_8021CBBC(void *arg0) {
     fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), 0, a, b, lbl_805634A8);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
     class CacheSource {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual f32 Get();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual f32 Get();
     };
     class BoundsSource {
     public:
@@ -2306,8 +2302,6 @@ extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
     CacheTarget *target = *(CacheTarget **)(self + 0x248);
     target->Set(value);
 }
-
-#pragma scheduling on
 #pragma pop
 extern "C" void fn_8021CE8C(void *arg0) {
     struct Local {
@@ -2983,7 +2977,7 @@ extern "C" void fn_8021E8DC(void *self, s32 arg1) {
         *(s32 *)((u8 *)self + 0x244),
         **(s32 **)((u8 *)self + 0x25C), 0);
     sprintf(buffer, (const char *)&lbl_8055B884, *(s32 *)((u8 *)self + 0x250),
-            text != 0 ? text : lbl_8055B88C);
+            text != 0 ? text : (char *)&lbl_8055B88C);
     fn_802C4F58(*(s32 *)((u8 *)self + 4) + 1,
                 *(s32 *)((u8 *)self + 8) + 1, buffer, lbl_8055FBC0);
 }
