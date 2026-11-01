@@ -1496,6 +1496,7 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
     }
 }
 
+#pragma scheduling on
 typedef struct LightPos_802D18E8 {
     unsigned char pad[0x24];
     float x, y, z;
@@ -1512,8 +1513,7 @@ extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
 void fn_802D18E8(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
-    float *from = (float *)(base + 0x40);
-    float *to = (float *)(base + 0x70);
+    LightPos_802D18E8 *l = (LightPos_802D18E8 *)(base + 0x10);
     unsigned char color[4];
     float direction[3];
     float mag;
@@ -1523,9 +1523,9 @@ void fn_802D18E8(void) {
     unsigned char *var_r30;
     int var_r27;
 
-    direction[0] = from[9] - to[9];
-    direction[1] = from[10] - to[10];
-    direction[2] = from[11] - to[11];
+    direction[0] = l[1].x - l[2].x;
+    direction[1] = l[1].y - l[2].y;
+    direction[2] = l[1].z - l[2].z;
     mag = PSVECMag(direction);
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
     scale = lbl_80564F8C / mag;
