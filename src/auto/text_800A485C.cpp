@@ -3669,6 +3669,65 @@ return_zero:
 done:
     return 0;
 }
+
+extern "C" s32 fn_800AD24C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+    s32 result;
+    s32 val;
+    u8 *p = (u8 *)arg0;
+    *arg3 = -1;
+    if (*(s32 *)(p + 0x1C) != 0 && *(u32 *)arg4 == 1) {
+        result = fn_800ACF20(arg0, arg2, (u32 *)arg3, (u32 *)arg4);
+        if (result != 0) {
+            return result;
+        }
+    }
+    if (*(s32 *)(p + 0x1C) == 0 || *arg4 == 0) {
+        switch (*(s32 *)(*(u8 **)(p + 0x34) + 0x1C)) {
+        case 0:
+            result = fn_800AF5A0(*(void **)(p + 0x34), (u16)arg1, arg3);
+            break;
+        case 1:
+            result = fn_800AFE14(*(void **)(p + 0x34), arg1, arg3);
+            break;
+        case 2:
+            result = fn_800B0258(*(void **)(p + 0x34), arg1, arg3);
+            break;
+        default:
+            result = 0xF;
+            *arg3 = -1;
+            break;
+        }
+        if (result != 0) {
+            return result;
+        }
+        val = *arg3;
+        if (val == 0) {
+            return 0xD;
+        }
+        if ((u32)(val + 0x10000) == 0xFFFF) {
+            return 6;
+        }
+        if (*(s32 *)(p + 0x1C) != 0) {
+            u32 *tbl = lbl_802EEF40;
+            if ((u32)val != tbl[*(s32 *)(*(u8 **)(p + 0x34) + 0x1C) * 5 + 2]) {
+                u32 a = *(u32 *)(p + 0x24);
+                u32 b = *(u32 *)(p + 0x28);
+                if (b > a && b != 0) {
+                    if ((u32)arg2 == a * (*(u16 *)(p + 0x20) + 1)) {
+                        *(u16 *)(p + 0x22) = 0;
+                        *(s32 *)(*(u8 **)(p + 0x1C) + a * 4) = val;
+                        *(u32 *)(p + 0x24) = *(u32 *)(p + 0x24) + 1;
+                    } else {
+                        *(u16 *)(p + 0x22) = *(u16 *)(p + 0x22) + 1;
+                    }
+                    *(s32 *)(p + 0x2C) = arg2;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
 #pragma pop
 
 #pragma pop
@@ -7309,20 +7368,23 @@ block_31:
 extern "C" s32 fn_800A4BE8(s32, s32);
 extern "C" u16 lbl_802EEF80[];
 extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
-    u8 c = *(u8 *)arg0;
-    u8 trail = *((u8 *)arg0 + 1);
+    u32 c = *(u8 *)arg0;
+    u32 trail = *((u8 *)arg0 + 1);
     s32 row;
+    s32 t;
     u16 value;
     if (c < 0x80) {
         *arg1 = c;
         return fn_800A4BE8(1, 2);
     }
     if (c >= 0xa1 && c <= 0xdf) {
-        *arg1 = c - 0x140;
+        s32 w = c + 0x10000;
+        w -= 0x140;
+        *arg1 = w;
         return fn_800A4BE8(1, 2);
     }
     if (c == 0x80 || c == 0x85 || c == 0x86 || c == 0xa0 || c == 0xeb || c == 0xec ||
-        (c >= 0xef && c <= 0xf9) || c == 0xff) {
+        (c >= 0xef && c <= 0xf9) || (c >= 0xfd && c == 0xff)) {
         *arg1 = 0x5f;
         return fn_800A4BE8(1, 2);
     }
@@ -7339,12 +7401,12 @@ extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
         *arg1 = 0x5f;
         return fn_800A4BE8(1, 2);
     }
-    trail -= 0x40;
-    if (trail >= 0xbd) {
+    t = trail - 0x40;
+    if (t < 0 || t >= 0xbd) {
         *arg1 = 0x5f;
         return fn_800A4BE8(1, 2);
     }
-    value = lbl_802EEF80[row * 0xbd + trail];
+    value = *(u16 *)((u8 *)lbl_802EEF80 + row * 0x17a + t * 2);
     *arg1 = value;
     if (value == 0) {
         *arg1 = 0x5f;
@@ -16252,27 +16314,40 @@ extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
     s32 high = arg1 - 1;
     while (low != high - 1 && low != high) {
         s32 mid = (low + high) / 2;
-        if (farg0 < *(f32 *)(base + mid * 12)) high = mid;
+        if (farg0 <= *(f32 *)(base + mid * 12)) high = mid;
         else low = mid;
     }
     const u8 *right = base + high * 12;
     const u8 *left = base + low * 12;
     f32 delta = farg0 - *(f32 *)right;
-    if (delta > lbl_80560E48 && delta < lbl_80560E4C) {
-        if ((u32)high < arg1 - 1 && *(f32 *)right == *(f32 *)(base + (high + 1) * 12))
-            return *(f32 *)(base + (high + 1) * 12 + 4);
+    s32 found = 0;
+    if (lbl_80560E48 < delta && delta < lbl_80560E4C) found = 1;
+    if (found) {
+        if ((u32)high < arg1 - 1) {
+            const u8 *next = base + (high + 1) * 12;
+            if (*(f32 *)right == *(f32 *)next)
+                return *(f32 *)(next + 4);
+        }
         return *(f32 *)(right + 4);
     }
     f32 d = farg0 - *(f32 *)left;
-    f32 scale = lbl_80560E50 / (*(f32 *)right - *(f32 *)left);
+    f32 one = lbl_80560E50;
+    f32 scale = one / (*(f32 *)right - *(f32 *)left);
+    f32 k54 = lbl_80560E54;
+    f32 k58 = lbl_80560E58;
+    f32 k5c = lbl_80560E5C;
+    f32 ly = *(f32 *)(left + 4);
+    f32 ry = *(f32 *)(right + 4);
+    f32 lz = *(f32 *)(left + 8);
+    f32 rz = *(f32 *)(right + 8);
     f32 a = scale * (d * d);
     f32 b = a * scale;
     f32 c = d * b;
     f32 q = c * scale;
-    return *(f32 *)(right + 8) * (c - a) +
-        (*(f32 *)(left + 8) * (d + (c - lbl_80560E54 * a)) +
-        (*(f32 *)(left + 4) * (lbl_80560E50 + lbl_80560E54 * q - lbl_80560E58 * b) +
-        *(f32 *)(right + 4) * (lbl_80560E5C * q + lbl_80560E58 * b)));
+    return rz * (c - a) +
+        (lz * (d + (c - k54 * a)) +
+        (ly * (one + (k54 * q - k58 * b)) +
+        ry * (k5c * q + k58 * b)));
 }
 
 extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
