@@ -5,6 +5,12 @@ typedef int M2C_UNK;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
 extern "C" void TRKProcessInput(void *, unsigned int);
+namespace nw4r { namespace snd { namespace detail {
+class Voice {
+public:
+    void TransformDpl2Pan(float *, float *, float, float);
+};
+} } }
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -648,31 +654,32 @@ extern const char lbl_80322100[];
 extern const char lbl_803220F4[];
 extern const char lbl_803220D0[];
 extern "C" void fn_800E2F84(void *self) {
-    if (*((u8 *)self + 0x6C30) != 0) {
-        AIRegisterDMACallback(*(void **)((char *)self + 0x6C2C));
+    char *base = (char *)self;
+    if (*(u8 *)(base + 0x6C30) != 0) {
+        AIRegisterDMACallback(*(void **)(base + 0x6C2C));
         fn_800E4364(self, 0); fn_800E4364(self, 1); fn_800E4364(self, 2);
-        AXRegisterAuxACallback(*(int *)((char *)self + 0x6CF0), *(int *)((char *)self + 0x6CFC));
-        AXRegisterAuxBCallback(*(int *)((char *)self + 0x6CF4), *(int *)((char *)self + 0x6D00));
-        AXRegisterAuxCCallback(*(int *)((char *)self + 0x6CF8), *(int *)((char *)self + 0x6D04));
-        *(int *)((char *)self + 0x6CF0) = 0; *(int *)((char *)self + 0x6CFC) = 0;
-        *(int *)((char *)self + 0x6CF4) = 0; *(int *)((char *)self + 0x6D00) = 0;
-        *(int *)((char *)self + 0x6CF8) = 0; *(int *)((char *)self + 0x6D04) = 0;
-        *(int *)((char *)self + 4) = 0;
-        while (*(int *)((char *)self + 0x14) != 0) {
-            void *node = *(void **)((char *)self + 0x18);
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322124, 0x1F1, lbl_80322100);
+        AXRegisterAuxACallback(*(int *)(base + 0x6CF0), *(int *)(base + 0x6CFC));
+        AXRegisterAuxBCallback(*(int *)(base + 0x6CF4), *(int *)(base + 0x6D00));
+        AXRegisterAuxCCallback(*(int *)(base + 0x6CF8), *(int *)(base + 0x6D04));
+        *(int *)(base + 0x6CF0) = 0; *(int *)(base + 0x6CFC) = 0;
+        *(int *)(base + 0x6CF4) = 0; *(int *)(base + 0x6D00) = 0;
+        *(int *)(base + 0x6CF8) = 0; *(int *)(base + 0x6D04) = 0;
+        *(int *)(base + 4) = 0;
+        while (*(int *)(base + 0x14) != 0) {
+            void *node = *(void **)(base + 0x18);
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
             void *voice = (char *)node - 0x1A8;
-            if (voice == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+            if (voice == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220F4, 0x193, lbl_803220D0);
             Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
             Free__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
             void (*callback)(void *, int, void *) = *(void (**)(void *, int, void *))((char *)voice + 0x10C);
             if (callback != 0) callback(voice, 2, *(void **)((char *)voice + 0x110));
         }
-        while (*(int *)((char *)self + 0x20) != 0) {
-            void *it = *(void **)((char *)self + 0x24);
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((char *)self + 0x20, &it);
+        while (*(int *)(base + 0x20) != 0) {
+            void *it = *(void **)(base + 0x24);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(base + 0x20, &it);
         }
-        *(u8 *)((char *)self + 0x6C30) = 0;
+        *(u8 *)(base + 0x6C30) = 0;
     }
 }
 
@@ -1928,8 +1935,8 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
     address = *(unsigned int *)((char *)self + 0xc) + 0x138;
     if (address == 0) { OSRestoreInterrupts(irq); start = 0; }
     else { start = (*(unsigned short *)(address + 0x84) << 16) | *(unsigned short *)(address + 0x86); OSRestoreInterrupts(irq); }
-    Instance__15EmissionManagerFv();
-    buffer = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(0);
+    void *mgr = Instance__15EmissionManagerFv();
+    buffer = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(mgr);
     if (buffer != 0) buffer += 0x80000000;
     format = *(int *)((char *)self + 0x118);
     switch (format) {
@@ -1938,10 +1945,10 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
     case 25: end = buffer; break;
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); end = 0; break;
     }
-    switch (format) {
+    switch (*(int *)((char *)self + 0x118)) {
     case 0: address = end + 0x200; break;
-    case 10: address = end + 0x80; break;
     case 25: address = end + 0x100; break;
+    case 10: address = end + 0x80; break;
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x362, lbl_80322438); address = end; break;
     }
     if (end <= start && start < address) { OSRestoreInterrupts(irq); return 1; }
@@ -2203,23 +2210,24 @@ extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7
 #pragma use_lmw_stmw reset
 extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *arg0, int arg1) {
     unsigned char *self = (unsigned char *)arg0;
-    float scale = (float)(*(unsigned int *)(self + 0x114));
+    int mode = arg1;
+    float scale = (float)(*(int *)(self + 0x114));
     float ratio = (*(float *)(self + 0x184) * scale) / lbl_80560F40;
+    float gain = lbl_80560F58;
     float max = lbl_80560F38;
     float min = lbl_80560F3C;
-    float gain = lbl_80560F58;
     int i = 0, offset = 0, j;
     unsigned char *src = self;
-    short values[6];
+    short values[7];
     while (i < *(int *)(self + 0x108)) {
         float volume = *(float *)(src + 0x98);
         if (volume > max) volume = max;
         else if (volume < min) volume = min;
-        if (arg1) {
+        if (mode) {
             unsigned int sample = (unsigned int)(gain * ratio * volume);
             values[0] = (short)(sample >> 16);
             values[1] = (short)sample;
-            values[2] = values[3] = values[4] = values[5] = 0;
+            values[2] = values[3] = values[4] = values[5] = values[6] = 0;
             unsigned char *channel = self + offset;
             for (j = 0; j < *(int *)(self + 0x104); j++) {
                 fn_800339B0(*(void **)(channel + 0xc), values);
@@ -2632,32 +2640,30 @@ extern "C" void *NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10Note
 
 extern const char lbl_803224F0[];
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank) {
-    register void *result = self;
-    register const unsigned char *input = (const unsigned char *)bank;
     register const char *messages = lbl_803224F0;
-    *(void **)result = 0;
-    *(void **)((char *)result + 4) = 0;
-    *(void **)((char *)result + 8) = 0;
-    if (input == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
-    unsigned int magic = *(unsigned int *)input;
+    *(void **)self = 0;
+    *(void **)((char *)self + 4) = 0;
+    *(void **)((char *)self + 8) = 0;
+    if (bank == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
+    unsigned int magic = *(unsigned int *)bank;
     if (magic != 0x52424E4B) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x36, messages + 0x14);
-    magic = *(unsigned int *)input;
-    if (magic != 0x52424E4B) return result;
-    unsigned short version = *(unsigned short *)(input + 6);
+    magic = *(unsigned int *)bank;
+    if (magic != 0x52424E4B) return self;
+    unsigned short version = *(unsigned short *)((char *)bank + 6);
     if (version < 0x100) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x3E, messages + 0x60);
-    version = *(unsigned short *)(input + 6);
-    if (version < 0x100) return result;
+    version = *(unsigned short *)((char *)bank + 6);
+    if (version < 0x100) return self;
     if (version > 0x101) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x44, messages + 0x60);
-    unsigned short check = *(unsigned short *)(input + 6);
-    if (check < 0x100 || check > 0x101) return result;
-    *(const void **)result = input;
-    const char *data = (const char *)input + *(unsigned int *)(input + 0x10);
-    *(const char **)((char *)result + 4) = data;
+    version = *(unsigned short *)((char *)bank + 6);
+    if (version < 0x100 || version > 0x101) return self;
+    *(const void **)self = bank;
+    const char *data = (const char *)bank + *(unsigned int *)((char *)bank + 0x10);
+    *(const char **)((char *)self + 4) = data;
     if (*(unsigned int *)data != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x61, messages + 0xE4);
-    const char *wave = (const char *)input + *(unsigned int *)(input + 0x18);
-    *(const char **)((char *)result + 8) = wave;
+    const char *wave = (const char *)bank + *(unsigned int *)((char *)bank + 0x18);
+    *(const char **)((char *)self + 8) = wave;
     if (*(unsigned int *)wave != 0x57415645) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x65, messages + 0x13C);
-    return result;
+    return self;
 }
 
 extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(void *arg0, void *arg1, int arg2, int arg3, int arg4) {
@@ -2734,23 +2740,34 @@ extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3sn
 }
 
 extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
-    unsigned char type = *((unsigned char *)arg1 + 1);
+    int type = *((unsigned char *)arg1 + 1);
+    int i;
     unsigned char *data;
     unsigned int base, address;
-    int i;
-    if (type == 1) return arg1;
-    if (type == 0) return 0;
-    if (type == 2) {
+    switch (type) {
+    case 0:
+        return 0;
+    case 1:
+        return arg1;
+    case 2:
         base = *(unsigned int *)((char *)arg0 + 4) + 8;
         if (type != 2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559820, 0x71, lbl_80322708);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
         data = (unsigned char *)address;
         if (!data) return 0;
-        for (i = 0; i < data[0]; i++)
-            if (arg2 <= data[i + 1]) return (void *)((((unsigned int)data[0] + 4) & ~3) + (unsigned int)(data + i * 8));
+        i = 0;
+        goto body;
+    inc:
+        i++;
+        if (i < data[0]) goto body;
         return 0;
-    }
-    if (type == 3) {
+    body:
+        if (arg2 <= data[i + 1]) {
+            unsigned int off = (data[0] + 4) & ~3;
+            return (void *)(off + (unsigned int)(data + i * 8));
+        }
+        goto inc;
+    case 3:
         base = *(unsigned int *)((char *)arg0 + 4) + 8;
         if (type != 3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559828, 0x72, lbl_80322734);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
@@ -2758,8 +2775,9 @@ extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
         if (!data) return 0;
         if (arg2 < data[0] || arg2 > data[1]) return 0;
         return data + (arg2 - data[0]) * 8 + 4;
+    default:
+        return 0;
     }
-    return 0;
 }
 
 extern "C" unsigned int GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void *);
