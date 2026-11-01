@@ -16239,7 +16239,7 @@ void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
         return;
     case 14:
         GKI_freebuf(p_data);
-        goto log_event;
+        goto log_default;
     case 2:
         rfc_port_timer_stop(p_port);
         port[0x68] = 4;
@@ -16262,19 +16262,14 @@ void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
         return;
     case 1:
         GKI_freebuf(p_data);
-        goto log_event;
+        return;
     case 0:
         port[0x68] = 0;
         PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
                              *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 1);
         return;
-    case 6:
-    case 7:
-    case 8:
-    case 10:
-        GKI_freebuf(p_data);
-        return;
     default:
+    log_default:
         if (lbl_803C4828[0x414] >= 2)
             fn_80070954(0x90001, lbl_80319B44, event);
         return;
@@ -16904,6 +16899,52 @@ void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
     p_data[2] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9, 0x53);
     p_buf->len = 4;
     rfc_check_send_cmd(arg0, p_buf);
+}
+
+void rfc_send_buf_uih(p_mcb, dlci, p_buf)
+tRFC_MCB *p_mcb;
+s32 dlci;
+BT_HDR *p_buf;
+{
+    UINT8 *p_data;
+    s32 flag = 1;
+    UINT8 credits;
+
+    if (*(u8 *)((u8 *)p_mcb + 0x6D) == 0)
+        flag = 0;
+    p_buf->offset -= 3;
+    if (p_buf->len > 127)
+        p_buf->offset--;
+    if (dlci)
+        credits = (u8)p_buf->layer_specific;
+    else
+        credits = 0;
+    if (credits)
+        p_buf->offset--;
+
+    p_data = (u8 *)(p_buf + 1) + p_buf->offset;
+    *p_data++ = (u8)((flag << 1) | 1 | (dlci << 2));
+    *p_data++ = (u8)(0xEF | (credits ? 0x10 : 0));
+    if (p_buf->len <= 127) {
+        *p_data++ = (u8)(1 | (p_buf->len << 1));
+        p_buf->len += 3;
+    } else {
+        *p_data++ = (u8)((p_buf->len & 0x7F) << 1);
+        *p_data++ = (u8)(p_buf->len >> 7);
+        p_buf->len += 4;
+    }
+    if (credits) {
+        *p_data++ = credits;
+        p_buf->len++;
+    }
+
+    p_data = (u8 *)(p_buf + 1) + p_buf->offset + p_buf->len++;
+    *p_data = fn_8009504C(2, (u8 *)p_buf + p_buf->offset + 8);
+
+    if (dlci == 0)
+        rfc_check_send_cmd(p_mcb, p_buf);
+    else
+        L2CA_DataWrite(*(u16 *)((u8 *)p_mcb + 0x68), p_buf);
 }
 
 void rfc_send_pn(void *p_mcb, s32 dlci, s32 is_command, s32 mtu, s32 cl, s32 k) {
