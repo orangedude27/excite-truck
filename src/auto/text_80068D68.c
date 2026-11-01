@@ -4926,6 +4926,86 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
     fn_80071264((void *)0x17, (void *)(u32)p_cb[0x15], p_cb + 8);
 }
 
+void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
+    register u8 *cb = (u8 *)arg0;
+    register u8 *strings = lbl_803151D8;
+    void *buf = *(void **)((u8 *)arg1 + 0x0C);
+    u16 len = *(u16 *)((u8 *)buf + 4);
+    register u8 *tail = (u8 *)buf + len;
+    u8 cfm[10];
+    register u8 *msg;
+
+    if (lbl_8055DC80 >= 5) {
+        if (*(u16 *)(cb + 0x10) <= 9) {
+            switch (*(u16 *)(cb + 0x10)) {
+            case 4: msg = strings + 0x16C; break;
+            case 5: msg = strings + 0x180; break;
+            case 6: msg = strings + 0x194; break;
+            case 7: msg = strings + 0x1AC; break;
+            case 8: msg = strings + 0x1C4; break;
+            case 9: msg = strings + 0x1D8; break;
+            case 2: msg = strings + 0x1F0; break;
+            case 0:
+            case 1:
+            case 3: msg = strings + 0x200; break;
+            }
+        }
+        ((void (*)(u32, void *, void *))fn_80070954)(
+            0x504, strings + 0x2A8, msg);
+    }
+
+    cfm[0] = 0;
+    cfm[1] = cb[0x16];
+
+    {
+        s16 event = *(s16 *)(cb + 0x10);
+        if (event == 7) goto second_trace;
+        if (event < 7) {
+            if (event == 5) goto second_trace;
+            if (event > 5) {
+                cfm[2] = tail[8];
+                goto data_done;
+            }
+            if (event >= 4) {
+                memcpy(cfm + 2, buf, 8);
+                goto data_done;
+            }
+            goto second_trace;
+        }
+        if (event >= 9) goto second_trace;
+        cfm[2] = tail[8];
+        goto data_done;
+
+second_trace:
+        if (lbl_8055DC80 >= 5) {
+            if (event <= 9) {
+                switch (event) {
+                case 4: msg = strings + 0x16C; break;
+                case 5: msg = strings + 0x180; break;
+                case 6: msg = strings + 0x194; break;
+                case 7: msg = strings + 0x1AC; break;
+                case 8: msg = strings + 0x1C4; break;
+                case 9: msg = strings + 0x1D8; break;
+                case 2: msg = strings + 0x1F0; break;
+                case 0:
+                case 1:
+                case 3: msg = strings + 0x200; break;
+                }
+            }
+            ((void (*)(u32, void *, void *))fn_80070954)(
+                0x504, strings + 0x2CC, msg);
+        }
+data_done:
+        fn_80071298((void *)0x17, (void *)(u32)cb[0x15], cb + 8);
+        fn_80071264((void *)0x17, (void *)(u32)cb[0x15], cb + 8);
+        (*(void (**)(u16, void *))(lbl_803C0D48 + 0x224))(
+            *(u16 *)(cb + 0x10), cfm);
+    }
+
+    *(u16 *)(cb + 0x10) = 0;
+    fn_800716F0(&buf);
+}
+
 void fn_80075AA4(void *arg0) {
     (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, arg0);
 }
@@ -11076,6 +11156,59 @@ void gap_config_cfm(u32 cid, u16 *p_cfg) {
     L2CA_Deregister(psm);
 }
 
+extern char lbl_80317380[];
+void gap_disconnect_ind(u16 cid, BOOLEAN ack_needed)
+{
+    u8 *entry;
+    u8 *p;
+    u32 group;
+    u32 slot;
+    u32 i;
+    u16 psm;
+
+    if (lbl_803C3740[0x28] >= 4) {
+        fn_80070954(0xE0003, lbl_80317380, cid);
+    }
+
+    entry = lbl_803C3740 + 0xAC;
+    i = 0;
+    for (group = 0; group < 2; group++) {
+        for (slot = 0; slot < 4; slot++, entry += 0x60) {
+            if (entry[0] == 0) goto next_slot;
+            if (*(u16 *)(entry + 6) != cid) goto next_slot;
+            goto found;
+        next_slot:
+            i++;
+        }
+    }
+    if (i == 8) entry = NULL;
+found:
+    if (entry == NULL) return;
+
+    if (ack_needed) L2CA_DisconnectRsp(cid);
+    ((void (*)(u16, u16))*(void **)(entry + 0x20))(*(u16 *)(entry + 4), 0x101);
+    psm = *(u16 *)(entry + 0x10);
+    while (*(u32 *)(entry + 0x14) != 0) {
+        GKI_freebuf(GKI_dequeue((BUFFER_Q *)(entry + 0x14)));
+    }
+    entry[0] = 0;
+
+    p = lbl_803C3740 + 0xAC;
+    i = 0;
+    for (group = 0; group < 2; group++) {
+        for (slot = 0; slot < 4; slot++, p += 0x60) {
+            if (p[slot * 0x60] == 0) goto next_psm;
+            if (*(u16 *)(p + slot * 0x60 + 0x10) != psm) goto next_psm;
+            goto psm_found;
+        next_psm:
+            i++;
+        }
+    }
+    if (i == 8) L2CA_Deregister(psm);
+psm_found:
+    ;
+}
+
 void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
     u8 i = 0;
@@ -13243,26 +13376,25 @@ void hidh_l2cif_disconnect_cfm(u32 handle) {
 extern u8 lbl_80317B80[];
 extern u8 lbl_80317BB8[];
 void hidh_l2cif_cong_ind(u32 arg0, s32 arg1) {
-    u32 i;
-    u8 *entry;
-    u8 *found;
+    u8 dhandle;
+    u8 *found = 0;
 
-    found = 0;
-    for (i = 0; i < 16; i++) {
-        entry = (u8 *)lbl_803C3C38 + i * 0x34;
+    for (dhandle = 0; dhandle < 0x10; dhandle++) {
+        u8 *entry = (u8 *)lbl_803C3C38 + dhandle * 0x34;
         if (entry[0] != 0 && entry[0x10] != 0 &&
             (arg0 == *(u16 *)(entry + 0x14) ||
-             arg0 == *(u16 *)(entry + 0x16))) {
-            found = entry + 0x10;
+             arg0 == *(u16 *)(entry + 0x16)))
             break;
-        }
     }
+    if (dhandle != 0x10)
+        found = (u8 *)lbl_803C3C38 + dhandle * 0x34 + 0x10;
+
     if (found == 0) {
         if (*((u8 *)lbl_803C3C38 + 0x401) >= 2)
-            ((void (*)(u32, void *, u32, u32))fn_80070954)(0x1E0001, lbl_80317B80, arg0, 0x1E0000);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x1E0001, lbl_80317B80, arg0);
     } else {
         if (*((u8 *)lbl_803C3C38 + 0x401) >= 4)
-            ((void (*)(u32, void *, u32, s32, u32))fn_8007096C)(0x1E0003, lbl_80317BB8, arg0, arg1, 0x1E0000);
+            ((void (*)(u32, void *, u32, s32))fn_8007096C)(0x1E0003, lbl_80317BB8, arg0, arg1);
         if (arg1 != 0)
             found[1] |= 0x20;
         else
