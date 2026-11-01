@@ -33,9 +33,9 @@ extern "C" void *GXGetTexObjHeight(s32 *);                     /* extern */
 extern "C" s32 GXGetTexObjMipMap(s32 *, s32);                  /* extern */
 extern "C" int GXInitTexObjTlut(s32 *, s32);               /* extern */
 extern "C" int GXInitTlutObj(int *, s32, s32, u16);    /* extern */
-extern "C" int GXLoadTexMtxImm(int *, s32, int);   /* extern */
-extern "C" int GXLoadTexObj(s32 *, u32);                   /* extern */
-extern "C" int GXLoadTlut(int *, s32);                 /* extern */
+extern "C" int GXLoadTexMtxImm(int *, s32, int);
+extern "C" int GXLoadTexObj(s32 *, u32);
+extern "C" int GXLoadTlut(int *, s32);
 extern "C" int GXSetAlphaCompare(s32, u8, u8, s32, u8);    /* extern */
 extern "C" int GXSetBlendMode(u8, u8, u8, u8, void *, s32); /* extern */
 extern "C" void GXSetChanCtrl(u32, u32, u32, u32, u32, u32, u32);
