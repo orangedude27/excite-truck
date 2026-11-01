@@ -2,7 +2,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern u32 lbl_80498C30[];
+typedef struct { u32 a; u32 b; u32 c; u32 d; u32 e; } U;
+extern U lbl_80498C30;
 typedef struct { u32 a; u32 b; } E;
 typedef struct { s32 id; u8 flag; E e[8]; } T;
 extern T lbl_80498C48;
