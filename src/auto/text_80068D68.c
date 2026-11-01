@@ -13317,17 +13317,28 @@ void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
 extern char lbl_80318D98[];
 void l2c_link_adjust_allocation(void) {
     u8 *base = lbl_803C4040;
+    u16 divisor = *(u16 *)(base + 0x7B8);
+    u8 *loopBase;
+    u32 i;
     u8 *entry;
+    u16 allocation;
     s32 active = 0;
-    s32 i;
-    u16 allocation, value;
-    if (*(u16 *)(base + 0x7B8) == 0) return;
-    if (base[8] != 0 && base[0x62] == 1) active = 1;
-    if (base[0x64] != 0 && base[0xBE] == 1) active++;
-    if (base[0xC0] != 0 && base[0x11A] == 1) active++;
-    if (base[0x11C] != 0 && base[0x176] == 1) active++;
-    allocation = *(u16 *)(base + 2) / *(u16 *)(base + 0x7B8) + 1;
-    entry = base + 8;
+    u16 value;
+
+    if (divisor == 0)
+        return;
+    if (base[8] != 0 && base[0x62] == 1)
+        active = 1;
+    if (base[0x64] != 0 && base[0xBE] == 1)
+        active++;
+    if (base[0xC0] != 0 && base[0x11A] == 1)
+        active++;
+    if (base[0x11C] != 0 && base[0x176] == 1)
+        active++;
+
+    loopBase = lbl_803C4040;
+    allocation = *(u16 *)(loopBase + 2) / divisor + 1;
+    entry = loopBase + 8;
     for (i = 0; i < 4; i++, entry += 0x5C) {
         if (entry[0] != 0) {
             if (active == 0 || entry[0x5A] == 1) {
@@ -13339,12 +13350,13 @@ void l2c_link_adjust_allocation(void) {
             }
             value = *(u16 *)(entry + 0x34) * 120 / 100;
             *(u16 *)(entry + 0x3A) = value;
-            *(u16 *)(entry + 0x3C) = value < 3 ? 3 - value : 0;
+            *(u16 *)(entry + 0x3C) = value > 3 ? value - 3 : 0;
             *(u16 *)(entry + 0x3E) = value + 2;
-            if (base[0] >= 5)
-                fn_800709CC(0x80004, lbl_80318D98, i, entry[0x5A],
-                            *(u16 *)(entry + 0x36), value,
-                            *(u16 *)(entry + 0x3C), *(u16 *)(entry + 0x3E));
+            if (*(u8 *)lbl_803C4040 >= 5)
+                ((void (*)(u32, void *, u16, u8, u16, u16, u16, u16))fn_800709CC)(
+                    0x80004, lbl_80318D98, (u16)i, entry[0x5A],
+                    *(u16 *)(entry + 0x36), *(u16 *)(entry + 0x3A),
+                    *(u16 *)(entry + 0x3C), *(u16 *)(entry + 0x3E));
         }
     }
 }
@@ -15349,25 +15361,42 @@ flow:
 }
 
 extern u8 lbl_80319514[],lbl_80319540[];
-void port_rfc_closed(struct t_port_info *arg0,u8 arg1) {
- void *mcb=*(void **)((u8 *)arg0+0x6C); s32 signals=0;
- if(*((u8 *)arg0+2)==1&&*((u8 *)arg0+0xC)){
-  if(lbl_803C4828[0x414]>=4)fn_8007093C(0x90003,lbl_80319514);
-  rfc_port_timer_stop(arg0);*((u8 *)arg0+0x68)=0;
-  if(mcb){*((u8 *)mcb+*((u8 *)arg0+0xD)+0x24)=0;rfc_check_mcb_active(mcb);*(void **)((u8 *)arg0+0x6C)=0;}
-  *((u8 *)arg0+0xD)&=0xFE;return;
- }
- if(*((u8 *)arg0+2)!=3&&*((u8 *)arg0+2)!=0){
-  u32 mask=0xFFFFFFF4;
-  *((u8 *)arg0+0xF)|=0x10;
-  *((u8 *)arg0+0x5F)=*((u8 *)arg0+0x5F)&mask;
-  signals=port_get_signal_changes(arg0);
-  if(*(u32 *)((u8 *)arg0+0x88)&0x8000)signals|=0x8000;
- }
- if(lbl_803C4828[0x414]>=4)fn_8007096C(0x90003,lbl_80319540,*((u8 *)arg0+2),signals);
- if(*(void **)((u8 *)arg0+0x8C)&&signals)((void (*)(s32,u8))*(void **)((u8 *)arg0+0x8C))(signals,*((u8 *)arg0));
- if(*(void **)((u8 *)arg0+0x90))((void (*)(s32,u8))*(void **)((u8 *)arg0+0x90))(arg1,*((u8 *)arg0));
- *((u8 *)arg0+0x68)=0;port_release_port(arg0);
+void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
+    void *mcb = *(void **)((u8 *)arg0 + 0x6C);
+    s32 signals = 0;
+
+    if (*((u8 *)arg0 + 2) == 1 && *((u8 *)arg0 + 0xC)) {
+        if (lbl_803C4828[0x414] >= 4)
+            fn_8007093C(0x90003, lbl_80319514);
+        rfc_port_timer_stop(arg0);
+        *((u8 *)arg0 + 0x68) = 0;
+        if (mcb) {
+            *((u8 *)mcb + *((u8 *)arg0 + 0xD) + 0x24) = 0;
+            rfc_check_mcb_active(mcb);
+            *(void **)((u8 *)arg0 + 0x6C) = 0;
+        }
+        *((u8 *)arg0 + 0xD) &= 0xFE;
+        return;
+    }
+    if (*((u8 *)arg0 + 2) != 3 && *((u8 *)arg0 + 2) != 0) {
+        u32 mask = 0xFFFFFFF4;
+        *((u8 *)arg0 + 0xF) |= 0x10;
+        *((u8 *)arg0 + 0x5F) = *((u8 *)arg0 + 0x5F) & mask;
+        signals = port_get_signal_changes(arg0);
+        if (*(u32 *)((u8 *)arg0 + 0x88) & 0x8000)
+            signals |= 0x8000;
+    }
+    if (lbl_803C4828[0x414] >= 4)
+        ((void (*)(u32, const char *, u8, s32))fn_8007096C)(
+            0x90003, (const char *)lbl_80319540, *((u8 *)arg0 + 2), signals);
+    if (*(void **)((u8 *)arg0 + 0x8C) && signals)
+        ((void (*)(s32, u8))*(void **)((u8 *)arg0 + 0x8C))(
+            signals, *((u8 *)arg0));
+    if (*(void **)((u8 *)arg0 + 0x90))
+        ((void (*)(s32, u8))*(void **)((u8 *)arg0 + 0x90))(
+            arg1, *((u8 *)arg0));
+    *((u8 *)arg0 + 0x68) = 0;
+    port_release_port(arg0);
 }
 
 extern char lbl_80319570[];
