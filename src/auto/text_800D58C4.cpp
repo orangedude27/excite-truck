@@ -45,19 +45,19 @@ extern "C" void GXSetIndTexOrder(u32, u8, u8);
 extern "C" void GXSetNumChans(u32);
 extern "C" void GXSetNumIndStages(u32);
 extern "C" void GXSetNumTevStages(u32);
-extern "C" int GXSetTevAlphaIn(u8, s32, s32, s32, s32);    /* extern */
-extern "C" int GXSetTevAlphaOp(u8, s32, s32, s32, s32, s32); /* extern */
-extern "C" int GXSetTevColorIn(u8, s32, s32, s32, s32);    /* extern */
-extern "C" int GXSetTevColorOp(u8, s32, s32, s32, s32, s32); /* extern */
-extern "C" int GXSetTevColorS10(int, u16 *, u16);      /* extern */
-extern "C" int GXSetTevDirect(u8);                         /* extern */
-extern "C" int GXSetTevIndirect(u8, u8, s32, s32, s32, s32, s32, s32, s32, s32); /* extern */
-extern "C" int GXSetTevKAlphaSel(u8, s32);                 /* extern */
-extern "C" int GXSetTevKColor(int, u8 *);              /* extern */
-extern "C" int GXSetTevKColorSel(u8, s32);                 /* extern */
-extern "C" int GXSetTevOrder(u8, u8, u8, u8);              /* extern */
-extern "C" int GXSetTevSwapMode(u8, s32, s32);             /* extern */
-extern "C" int GXSetTevSwapModeTable(s32, s32, s32, s32, s32); /* extern */
+extern "C" void GXSetTevAlphaIn(u8, u32, u32, u32, u32);
+extern "C" void GXSetTevAlphaOp(u8, u32, u32, u32, u32, u32);
+extern "C" void GXSetTevColorIn(u8, u32, u32, u32, u32);
+extern "C" void GXSetTevColorOp(u8, u32, u32, u32, u32, u32);
+extern "C" void GXSetTevColorS10(int, u16 *, u16);
+extern "C" void GXSetTevDirect(u8);
+extern "C" void GXSetTevIndirect(u8, u8, u32, u32, u32, u32, u32, u32, u32, u32);
+extern "C" void GXSetTevKAlphaSel(u8, u32);
+extern "C" void GXSetTevKColor(int, u8 *);
+extern "C" void GXSetTevKColorSel(u8, u32);
+extern "C" void GXSetTevOrder(u8, u8, u8, u8);
+extern "C" void GXSetTevSwapMode(u8, u32, u32);
+extern "C" void GXSetTevSwapModeTable(u32, u32, u32, u32, u32);
 extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32);                   /* extern */
 
 extern "C" void fn_800D4F98(void *);
