@@ -60,6 +60,7 @@ extern u32 lbl_803946C0[];
 extern u8 *lbl_80559030;
 extern void fn_8006EBF0();
 extern char lbl_80316EE0[];
+extern char lbl_80315EBC[];
 extern char lbl_80315F80[];
 extern s32 btsnd_hcic_auth_request_800858B0(u16);
 extern void btm_sec_collision_timeout(void);
@@ -10892,33 +10893,61 @@ found:
 }
 
 void gap_config_cfm(u32 cid, u16 *p_cfg) {
-    u8 *ccb = (u8 *)&lbl_803C3740 + 0xAC;
-    s32 i;
+    register u8 *ccb = (u8 *)&lbl_803C3740 + 0xAC;
+    register u32 loops;
     u16 psm;
-    for (i = 0; i < 4; i++) {
-        if (ccb[0] && *(u16 *)(ccb + 6) == cid) break;
+    u8 *scan;
+
+    loops = 2;
+    do {
+        if (ccb[0] == 0) goto check_1;
+        if (*(u16 *)(ccb + 6) != cid) goto check_1;
+        goto found;
+    check_1:
+        if (*(ccb += 0x60) == 0) goto check_2;
+        if (*(u16 *)(ccb + 6) != cid) goto check_2;
+        goto found;
+    check_2:
+        if (*(ccb += 0x60) == 0) goto check_3;
+        if (*(u16 *)(ccb + 6) != cid) goto check_3;
+        goto found;
+    check_3:
+        if (*(ccb += 0x60) == 0) goto check_4;
+        if (*(u16 *)(ccb + 6) != cid) goto check_4;
+        goto found;
+    check_4:
         ccb += 0x60;
-    }
-    if (i == 4) return;
+    } while (--loops != 0);
+    ccb = NULL;
+    if (ccb == NULL) return;
+
+found:
     if (*p_cfg == 0) {
         ccb[1] |= 4;
         if (ccb[1] & 2) {
             ccb[0] = 4;
-            ((void (*)(u16, u16))*(u32 *)(ccb + 0x20))(*(u16 *)(ccb + 4), 0x100);
+            ((void (*)(u16, u16))*(u32 *)(ccb + 0x20))(
+                *(u16 *)(ccb + 4), 0x100);
         }
-    } else {
-        ((void (*)(u16, u16))*(u32 *)(ccb + 0x20))(*(u16 *)(ccb + 4), 0x101);
-        psm = *(u16 *)(ccb + 0x10);
-        while (*(u32 *)(ccb + 0x14) != 0)
-            GKI_freebuf(GKI_dequeue((BUFFER_Q *)(ccb + 0x14)));
-        ccb[0] = 0;
-        {
-            u8 *p = (u8 *)&lbl_803C3740 + 0xAC;
-            for (i = 0; i < 4; i++, p += 0x60)
-                if (p[0] && *(u16 *)(p + 0x10) == psm) return;
-        }
-        L2CA_Deregister(psm);
+        return;
     }
+
+    ((void (*)(u16, u16))*(u32 *)(ccb + 0x20))(*(u16 *)(ccb + 4), 0x101);
+    psm = *(u16 *)(ccb + 0x10);
+    while (*(u32 *)(ccb + 0x14) != 0)
+        GKI_freebuf(GKI_dequeue((BUFFER_Q *)(ccb + 0x14)));
+    ccb[0] = 0;
+
+    scan = (u8 *)&lbl_803C3740 + 0xAC;
+    loops = 2;
+    do {
+        if (scan[0] != 0 && *(u16 *)(scan + 0x10) == psm) return;
+        if (scan[0x60] != 0 && *(u16 *)(scan + 0x70) == psm) return;
+        if (scan[0xC0] != 0 && *(u16 *)(scan + 0xD0) == psm) return;
+        if (scan[0x120] != 0 && *(u16 *)(scan + 0x130) == psm) return;
+        scan += 0x180;
+    } while (--loops != 0);
+    L2CA_Deregister(psm);
 }
 
 void gap_data_ind(u16 cid, void *p_buf) {
