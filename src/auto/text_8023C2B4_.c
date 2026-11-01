@@ -70,6 +70,80 @@ s32 fn_8023C3CC(void) {
     return 0;
 }
 
+extern s32 lbl_802FA068[];
+extern s32 lbl_802FA07C[];
+extern char lbl_803413C0[];
+extern char lbl_8055BB50[];
+extern char lbl_8055BB58[];
+extern char lbl_8055BB60[];
+extern s32 fn_802C83C4(void);
+extern s32 fn_802090CC(void);
+extern s32 fn_80131234(char *);
+extern void *fn_8023C800(register void *arg0, register s32 arg1, register s32 arg2, ...);
+extern s32 lbl_80498788[];
+extern s32 lbl_8055B860;
+extern s32 lbl_8055BAB8;
+extern s32 lbl_8055BAC0;
+extern s32 fn_8023C2E4(void *);
+extern s32 fn_80236914(void *);
+extern void fn_8023C2B4(void);
+extern s32 fn_8023C3CC(void);
+extern void fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_8023C3D4(void) {
+    s32 data[46];
+    s32 *v = lbl_802FA068;
+
+    data[0] = v[0];
+    data[2] = v[2];
+    data[3] = v[3];
+    data[4] = v[4];
+    data[40] = 0;
+    data[41] = lbl_80498788[0];
+    data[42] = lbl_80498788[1];
+    data[43] = lbl_80498788[2];
+    data[44] = lbl_80498788[3];
+    data[45] = lbl_80498788[4];
+    data[1] = (s32)&data[6];
+    data[6] = (s32)&lbl_8055B860;
+    data[7] = 6;
+    data[8] = (s32)fn_8023C2E4;
+    data[9] = 0x1B;
+    data[10] = -1;
+    data[11] = (s32)&lbl_8055B860;
+    data[12] = 6;
+    data[13] = (s32)fn_8023C3CC;
+    data[14] = -10;
+    data[15] = (s32)&lbl_8055B860;
+    data[16] = 6;
+    data[17] = (s32)fn_8023C3CC;
+    data[18] = 10;
+    data[19] = 0x128;
+    data[20] = (s32)&lbl_8055B860;
+    data[21] = 6;
+    data[22] = (s32)fn_8023C3CC;
+    data[23] = -1;
+    data[24] = 0x125;
+    data[25] = (s32)&lbl_8055B860;
+    data[26] = 6;
+    data[27] = (s32)fn_8023C3CC;
+    data[28] = 1;
+    data[29] = 0x127;
+    data[30] = (s32)&lbl_8055BAB8;
+    data[31] = 8;
+    data[32] = (s32)fn_80236914;
+    data[33] = 2;
+    data[34] = 0;
+    data[35] = (s32)&lbl_8055BAC0;
+    data[36] = 8;
+    data[37] = (s32)fn_8023C2B4;
+    data[38] = 0;
+    data[39] = 0;
+    fn_802146BC(data, -0x3E7, -0x3E7, 1, v[3], v[2], v[0], lbl_80498788[4]);
+}
+#pragma pop
 extern s32 fn_80128668();
 extern s32 fn_80128670(s32);
 extern s32 lbl_80341448;
