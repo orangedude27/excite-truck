@@ -1096,6 +1096,96 @@ void fn_801955F0(void *arg0, float *arg1) {
     arg1[1] += *(float *)((unsigned char *)arg0 + 0x5C) * scale;
 }
 
+extern void fn_801971AC(void *, void *);
+extern void fn_801981A0(void *, void *);
+extern void fn_8019743C(void *, void *);
+extern void fn_80197BD0(void *, void *);
+extern void fn_8019724C(void *, float *);
+extern unsigned char fn_80167544(int);
+void fn_80195654(void *arg0, void *arg1) {
+    struct Scratch { int word0, word1; float value0, value1; } scratch;
+    float threshold = *(volatile float *)&lbl_805621C0;
+    float previous = *(volatile float *)((char *)arg0 + 0x1D0);
+    float current = *(volatile float *)((char *)arg0 + 0x26C);
+    float difference;
+    float interpolated;
+    float value;
+    int doInterpolate;
+    void *first;
+    void *second;
+    void *left;
+    void *right;
+    int firstWord;
+    int secondWord;
+    int flags;
+
+    *(volatile int *)((char *)arg0 + 0x2D0) = 0;
+    difference = current - previous;
+    doInterpolate = difference < threshold;
+    if (doInterpolate != 0) {
+        first = *(void **)((char *)arg0 + 0x1A0);
+        second = *(void **)((char *)arg0 + 0x16C);
+        left = *(void **)((char *)first + 0x14);
+        right = *(void **)((char *)second + 0x14);
+        {
+            float nextA = *(float *)((char *)left + 0x24);
+            float baseA = *(float *)((char *)first + 0x24);
+            float nextB = *(float *)((char *)right + 0x24);
+            float baseB = *(float *)((char *)second + 0x24);
+            float deltaA = nextA - baseA;
+            float scaleA = *(float *)((char *)arg0 + 0x1A4);
+            float deltaB = nextB - baseB;
+            float scaleB = *(float *)((char *)arg0 + 0x170);
+            float valueA = baseA + scaleA * deltaA;
+            float valueB = baseB + scaleB * deltaB;
+            float fraction = difference / threshold;
+            interpolated = valueB + fraction * (valueA - valueB);
+        }
+    } else {
+        first = *(void **)((char *)arg0 + 0x1A0);
+        value = *(float *)((char *)arg0 + 0x1A4);
+        left = *(void **)((char *)first + 0x14);
+        {
+            float base = *(float *)((char *)first + 0x24);
+            float next = *(float *)((char *)left + 0x24);
+            float delta = next - base;
+            interpolated = base + delta * value;
+        }
+    }
+    if (*(int *)((char *)arg0 + 0x268) == 1) {
+        ((void (*)(void *, void *, float))fn_80194C4C)(arg0, arg1, interpolated);
+    } else {
+        ((void (*)(void *, void *, float))fn_80194FD0)(arg0, arg1, interpolated);
+        if (*(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1E4) <
+            *(float *)((char *)arg0 + 0x2BC)) {
+            firstWord = ((int *)arg1)[0];
+            secondWord = ((int *)arg1)[1];
+            scratch.word0 = firstWord;
+            scratch.word1 = secondWord;
+            scratch.value0 = ((float *)arg1)[2];
+            scratch.value1 = ((float *)arg1)[3];
+            ((void (*)(void *, float *, float))fn_801955F0)(arg0, (float *)&scratch, interpolated);
+            {
+                float from = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1E4);
+                float to = *(float *)((char *)arg0 + 0x2BC);
+                float t = from / to;
+                t = t * t;
+                fn_80194AF4(arg0, (float *)arg1, (float *)&scratch, (float *)arg1, t);
+            }
+        }
+    }
+    fn_801971AC(arg0, arg1);
+    *(float *)((char *)arg0 + 0x1C) = ((float *)arg1)[2];
+    fn_801981A0(arg0, arg1);
+    fn_8019743C(arg0, arg1);
+    fn_80197BD0(arg0, arg1);
+    fn_8019724C(arg0, arg1);
+    flags = ((int (*)(int))fn_80167544)(*(int *)((char *)arg0 + 0x290));
+    if (flags != 0) {
+        *(int *)((char *)arg0 + 0x2D0) |= 0x50;
+    }
+}
+
 void fn_80195830(void *arg0) {
     struct Fields { unsigned char pad[0x20]; float x; float y; unsigned char mid[0x18]; float outX; float outY; };
     struct Fields* obj = (struct Fields*)arg0;
@@ -1318,6 +1408,7 @@ void fn_80195D80(void *arg0, float arg1) {
         fn_801353C4((char *)arg0 + 0x168, values);
     }
 }
+#pragma cplusplus reset
 
 void fn_801961F8(void) {
 
@@ -1779,11 +1870,12 @@ extern int fn_801671AC(int);
 extern int fn_8015FBCC(void *, float *, int, int, float, float);
 extern float fn_801973FC(float *, float *, void *);
 extern float lbl_80562160, lbl_8056222C, lbl_80562268, lbl_8056226C;
+#pragma processor 750
 void fn_8019724C(void *arg0, float *arg1) {
     float projected[2];
     float direction[2];
-    float length;
     float norm;
+    float length;
     float scale;
     float current;
     float upper;
@@ -1801,23 +1893,23 @@ void fn_8019724C(void *arg0, float *arg1) {
         direction[0] = *(float *)((char *)obj + 0x70);
         direction[1] = *(float *)((char *)obj + 0x78);
         norm = (float)fn_8002F234(direction[0] * direction[0] + direction[1] * direction[1]);
-        length = lbl_80562148;
-        if (length > norm)
+        if (lbl_80562148 < norm) {
             length = norm;
+        } else {
+            length = lbl_80562148;
+        }
         scale = lbl_80562140 / length;
         direction[0] = direction[0] * scale;
         direction[1] = direction[1] * scale;
-        if (fn_8015FBCC(*(void **)((char *)arg0 + 0x294), projected, 0, index, direction[0], direction[1])) {
+        if (((int (*)(void *, float *, int, int))fn_8015FBCC)(*(void **)((char *)arg0 + 0x294), projected, 0, index)) {
             current = *(float *)((char *)arg0 + 0x26C);
             upper = lbl_8056226C + *(float *)((char *)arg0 + 0x1F8);
             lower = current - lbl_80562268;
-            if (!(current < upper))
-                current = upper;
-            if (current > lower)
-                current = lower;
+            current = current < upper ? current : upper;
+            current = current > lower ? current : lower;
             *(float *)((char *)arg0 + 0x1F8) = current;
             *(float *)((char *)arg0 + 0x20C) = fn_801973FC(direction, projected, arg1);
-            flagThreshold = lbl_8056222C;
+            flagThreshold = *(volatile float *)&lbl_8056222C;
             arg1[0] = projected[0];
             arg1[1] = projected[1];
             if (*(float *)((char *)arg0 + 0x270) > flagThreshold) {
@@ -1835,7 +1927,7 @@ void fn_8019724C(void *arg0, float *arg1) {
         }
     }
 }
-
+#pragma processor reset
 int fn_8019799C(void *arg0, void *arg1) {
     int id;
     int result = 0;
