@@ -2657,17 +2657,65 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
 
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
-    u8 *dst=(u8*)arg0,*src=(u8*)arg1;
-    u8 raw=src[0], count=raw&0xBF, tag=src[0xD], index;
-    u8 *entry; s32 first;
-    if(count>0x14){dst[0x20B]=0;dst[0x20C]=0;dst[0x20A]=0;return 0x21;}
-    if(raw&0x40){index=count;dst[0x20A]=0;first=1;}
-    else{first=0;if(dst[0x20A]==0)return 0x21;if(raw!=(u8)(dst[0x20B]-1)||tag!=dst[0x20C]){dst[0x20B]=0;dst[0x20C]=0;dst[0x20A]=0;return 0x21;}index=raw;}
-    dst[0x20B]=index;dst[0x20C]=tag;entry=dst+(index-1)*0x1A;
-    VFipf_memcpy(entry,src+1,0xA);VFipf_memcpy(entry+0xA,src+0xE,0xC);VFipf_memcpy(entry+0x16,src+0x1C,4);
-    fn_800A4C14((u16*)entry,0xA);fn_800A4C14((u16*)(entry+0xA),0xC);fn_800A4C14((u16*)(entry+0x16),4);
-    if(first){u16 *end=(u16*)(entry+0x1A),*p;*(u16*)(entry+0x1A)=0;p=(u16*)entry;while(p<end){if(*p!=0)p++;else p++;}while(p<end){if(*p!=0xFFFF){dst[0x20A]=0;return 0x21;}p++;}}
-    dst[0x20A]++;return 0;
+    u8 *dst = (u8 *)arg0;
+    u8 *src = (u8 *)arg1;
+    u8 raw = src[0];
+    u32 count = raw & ~0x40;
+    u8 tag = src[0xD];
+    u32 index;
+    u8 *entry;
+    s32 first;
+    if (count > 0x14) {
+        dst[0x20B] = 0;
+        dst[0x20C] = 0;
+        dst[0x20A] = 0;
+        return 0x21;
+    }
+    if (raw & 0x40) {
+        dst[0x20A] = 0;
+        first = 1;
+        index = (u8)count;
+    } else {
+        first = 0;
+        if (dst[0x20A] == 0) return 0x21;
+        if ((s32)raw != (s32)dst[0x20B] - 1 || tag != dst[0x20C]) {
+            dst[0x20B] = 0;
+            dst[0x20C] = 0;
+            dst[0x20A] = 0;
+            return 0x21;
+        }
+        index = raw;
+    }
+    dst[0x20B] = index;
+    dst[0x20C] = tag;
+    entry = dst + ((u8)index - 1) * 0x1A;
+    VFipf_memcpy(entry, src + 1, 0xA);
+    VFipf_memcpy(entry + 0xA, src + 0xE, 0xC);
+    VFipf_memcpy(entry + 0x16, src + 0x1C, 4);
+    fn_800A4C14((u16 *)entry, 0xA);
+    fn_800A4C14((u16 *)(entry + 0xA), 0xC);
+    fn_800A4C14((u16 *)(entry + 0x16), 4);
+    if (first) {
+        u16 *end = (u16 *)(entry + 0x1A);
+        u16 *p;
+        *(u16 *)(entry + 0x1A) = 0;
+        p = (u16 *)entry;
+        for (; p < end; p++) {
+            if (*p == 0) {
+                p++;
+                break;
+            }
+        }
+        while (p < end) {
+            if (*p != 0xFFFF) {
+                dst[0x20A] = 0;
+                return 0x21;
+            }
+            p++;
+        }
+    }
+    dst[0x20A]++;
+    return 0;
 }
 
 extern "C" void fn_800A4C14(void *, s32);
@@ -4440,7 +4488,60 @@ checkMax:
 }
 
 s32 fn_800AEF6C(void *);
-extern "C" s32 fn_800AEF6C(void *arg0) { return 0; }
+extern "C" s32 fn_800AF734(void *arg0, s32 arg1, s32 arg2);
+extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2);
+extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2);
+extern "C" s32 fn_800AEF6C(void *arg0) {
+    typedef s32 (*Lookup)(void *, s32, void **, s32 *);
+    typedef s32 (*Chk1)(void *, s32, u32);
+    u32 sp10;
+    s32 spC;
+    void *sp8;
+    s32 result;
+    s32 base;
+    s32 i;
+    u32 limit;
+    s32 type = *(s32 *)((u8 *)arg0 + 0x1C);
+    s32 arg = *(s32 *)((u8 *)arg0 + 0x10);
+    limit = *(u32 *)((u8 *)lbl_802EEF40 + type * 0x14 + 8);
+    switch (type) {
+    case 0:
+        if (limit > 0xFFF) result = 0x10;
+        else result = fn_800AF734(arg0, (u16)arg, (u16)limit);
+        break;
+    case 1:
+        if (limit > 0xFFFF) result = 0x10;
+        else result = ((Chk1)fn_800AFF28)(arg0, arg, limit);
+        break;
+    case 2:
+        if (limit > 0xFFFFFFF) result = 0x10;
+        else result = fn_800B037C(arg0, arg, limit);
+        break;
+    default:
+        result = 0xF;
+        break;
+    }
+    if (result != 0) return result;
+    result = ((s32 (*)(void *))fn_800A9104)(arg0);
+    if (result != 0) return result;
+    result = ((Lookup)fn_800A8D08)(arg0, -1, &sp8, &spC);
+    if (result != 0) return result;
+    fn_800A499C((const char *)*(void **)((u8 *)sp8 + 8), 0, *(u16 *)arg0);
+    base = *(s32 *)((u8 *)arg0 + 0x30) + ((*(s32 *)((u8 *)arg0 + 0x10) - 2) << *(u8 *)((u8 *)arg0 + 0x21));
+    for (i = 0; (u32)i < *(u8 *)((u8 *)arg0 + 6); i++) {
+        result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)((s32)arg0, *(void **)((u8 *)sp8 + 8), base + i, 0, *(u16 *)arg0, &sp10, 0);
+        if (result != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp8);
+            return result;
+        }
+        if (sp10 != *(u16 *)arg0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp8);
+            return 0x11;
+        }
+    }
+    VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp8);
+    return 0;
+}
 
 extern "C" void fn_800AF2B8(void *);
 extern "C" void fn_800AF2B8(void *arg0) {
@@ -5871,6 +5972,57 @@ extern "C" void *fn_800B224C(void *arg0, void *arg1) {
         return (void *)result;
     }
     fn_800B783C((void *)((volatile u8 *)file + 0x1F90));
+    return 0;
+}
+
+extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    struct Tok { s32 w[4]; };
+    Tok cur;
+    Tok prev;
+    s32 var;
+    s32 userData;
+    s32 r;
+    userData = fn_800A4D44((void *)arg0);
+    NANDSetUserData((void *)arg1, userData);
+    NANDSetUserData((void *)arg2, userData);
+    ((s32 *)arg1)[0] = 0;
+    if (arg2 != 0) {
+        ((s32 *)arg2)[0] = 0;
+    }
+    if (VFiPFSTR_StrNCmp(arg0, &lbl_80559208, 1, 1, 1) == 0) {
+        ((void (*)(void *, s32))VFiPFSTR_MoveStrPos)((void *)arg0, 2);
+    }
+    var = ((s32 *)arg0)[0];
+    cur.w[0] = var;
+    cur.w[1] = var;
+    cur.w[3] = userData;
+    r = VFiPFPATH_GetNextTokenOfPath(&cur, arg3);
+    if (r != 0) return r;
+    if (cur.w[0] == 0 || (u16)fn_800A4F08(&cur) == 0) return 2;
+    if (((u32 *)arg0)[1] < (u32)cur.w[1]) return 2;
+    ((f64 *)&prev)[0] = ((f64 *)&cur)[0];
+    ((f64 *)&prev)[1] = ((f64 *)&cur)[1];
+    for (;;) {
+        if (VFiPFSTR_StrNCmp((s32)&cur, lbl_8055920C, 2, 0, 1) == 0) {
+            var = prev.w[1];
+            break;
+        }
+        r = VFiPFPATH_GetNextTokenOfPath(&cur, arg3);
+        if (r != 0) return r;
+        if ((u16)fn_800A4F08(&cur) == 0) return 2;
+        if (((u32 *)arg0)[1] >= (u32)cur.w[1] && cur.w[0] != 0) {
+            var = prev.w[1];
+            ((f64 *)&prev)[0] = ((f64 *)&cur)[0];
+            ((f64 *)&prev)[1] = ((f64 *)&cur)[1];
+            continue;
+        }
+        break;
+    }
+    ((s32 *)arg1)[0] = ((s32 *)arg0)[0];
+    ((s32 *)arg1)[1] = var;
+    if (arg2 != 0) {
+        *(Tok *)arg2 = prev;
+    }
     return 0;
 }
 
