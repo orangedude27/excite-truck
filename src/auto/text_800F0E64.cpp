@@ -1324,10 +1324,10 @@ extern "C" s32 GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(vo
  return *(s32*)p - 1;
 }
 
-extern "C" const char lbl_80559898[];
-extern "C" const char lbl_80559888[];
-extern "C" const char lbl_80559890[];
-extern "C" const char lbl_80559810[];
+extern "C" const char lbl_80559898;
+extern "C" const char lbl_80559888;
+extern "C" const char lbl_80559890;
+extern "C" const char lbl_80559810;
 extern "C" const char lbl_80324C84[];
 extern "C" const char lbl_80324C2C[];
 extern "C" const char lbl_80324C58[];
