@@ -47,21 +47,6 @@ extern "C" void *fn_8012A570(u32, void *);
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" s32 fn_8012B85C(s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_8012B534(s32 *, s32);
-static inline const char *FourCCToString(volatile u8 *buffer, u32 value) {
-    u32 first, second;
-    u8 third, fourth;
-    *(volatile u32 *)buffer = value;
-    first = buffer[0];
-    fourth = buffer[3];
-    second = buffer[1];
-    third = buffer[2];
-    buffer[0] = fourth;
-    buffer[3] = first;
-    buffer[1] = third;
-    buffer[2] = second;
-    buffer[4] = 0;
-    return (const char *)buffer;
-}
 extern "C" void fn_80127464(void);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" void fn_802E317C(const char *, ...);
