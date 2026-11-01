@@ -6,6 +6,14 @@
 #include "revolution/MTX/mtxtypes.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
+
+namespace nw4hbm {
+namespace lyt {
+namespace detail {
+struct Vec2 { f32 x, y; };
+struct Size { f32 x, y; };
+struct Color { u8 r, g, b, a; };
+}}}
 struct GetTextureSizeStringBase_800D58C4 { char text[0x500]; };
 namespace nw4hbm { namespace lyt {
 class ResourceAccessor;
@@ -526,28 +534,28 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     struct GroupContainerDispatch { virtual void Destroy(s32); };
     struct GroupContainerObject : GroupContainerDispatch, GroupListNode {};
     void* slot;
-    register void* current;
-    register void* node;
-    register void* end;
+    register u32 current;
+    register u32 node;
+    register u32 end;
     if (arg0 != 0) {
-        node = *(void**)((char*)arg0 + 4);
-        end = (char*)arg0 + 4;
+        node = *(u32*)((char*)arg0 + 4);
+        end = (u32)arg0 + 4;
         while (node != end) {
             current = node;
-            node = *(void**)node;
-            slot = current;
+            node = *(u32*)node;
+            slot = (void*)current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(arg0, &slot);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-            if (*(u8*)((char*)current + 0x24) == 0) {
+            if (*(u8*)(current + 0x24) == 0) {
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-                static_cast<GroupContainerObject&>(*(GroupListNode*)current).Destroy(-1);
+                static_cast<GroupContainerObject&>(*(GroupListNode*)(void*)current).Destroy(-1);
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-                if ((current = (char*)current - 4) == 0)
+                if ((current -= 4) == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F688, 0x193, lbl_8031F664);
-                MEMFreeToAllocator(lbl_8055DDF0, current);
+                MEMFreeToAllocator(lbl_8055DDF0, (void*)current);
             }
         }
         if (arg0 != 0)
@@ -613,6 +621,62 @@ extern "C" void fn_800D6EEC(void* arg0) {
     *(volatile f32*)(p + 0x1C) = f;
     *(volatile u8*)(p + 0x20) = zero;
 }
+
+extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
+    extern char lbl_8031F868[];
+    extern const char lbl_8031F920[];
+    extern const char lbl_8031F8FC[];
+    extern const char lbl_8031F8F0[];
+    extern const char lbl_8031F8CC[];
+    struct LayoutFields { u32 vtable; u32 link; };
+    struct ResourceDispatch { virtual void Destroy(s32); };
+    struct LayoutNodeDispatch { virtual void Destroy(s32); };
+    struct LayoutObject : LayoutNodeDispatch, GroupListNode {};
+
+    void *slot;
+    register GroupListNode *current;
+    register GroupListNode *node;
+    register void *end;
+    LayoutFields *layout = (LayoutFields *)self;
+    if (layout != 0) {
+        void *container = *(void **)((u8 *)layout + 0x14);
+        layout->vtable = (u32)lbl_8031F868;
+        if (container != 0) {
+            __dt__Q36nw4hbm3lyt14GroupContainerFv(container, -1);
+            MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)layout + 0x14));
+        }
+
+        void *resource = *(void **)((u8 *)layout + 0x10);
+        if (resource != 0 && *(u8 *)((u8 *)resource + 0xD0) == 0) {
+            ((ResourceDispatch *)resource)->Destroy(-1);
+            MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)layout + 0x10));
+        }
+
+        node = *(GroupListNode **)((u8 *)layout + 8);
+        end = (u8 *)layout + 8;
+        while (node != end) {
+            current = node;
+            node = node->next;
+            slot = current;
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&layout->link, &slot);
+            if (current == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F920, 0x23D, lbl_8031F8FC);
+            static_cast<LayoutObject &>(*(GroupListNode *)current).Destroy(-1);
+            if (current == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F920, 0x23D, lbl_8031F8FC);
+            if ((current = (GroupListNode *)((u8 *)current - 4)) == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8F0, 0x193, lbl_8031F8CC);
+            MEMFreeToAllocator(lbl_8055DDF0, current);
+        }
+
+        if (&layout->link != 0)
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&layout->link, 0);
+        if (shouldDelete > 0)
+            ((void (*)(void *))fn_80128668)(self);
+    }
+    return self;
+}
+
 #pragma pop
 extern "C" void *BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32, const void *, const ResBlockSetTmp *);
 extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void *, void *);
@@ -1449,39 +1513,35 @@ extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, u8 arg1) {
 }
 
 extern "C" const char lbl_8031F990[];
-extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void* self, unsigned char count) {
-    u32* p = (u32*)self;
-    unsigned int max = (p[0x4C / 4] >> 20) & 15;
-    if (count > max)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x39c, lbl_8031F990 + 0x38c);
+extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigned char count) {
+    u32 *p = (u32 *)self;
+    const char *msg = lbl_8031F990;
+    if (count > ((p[0x4C / 4] >> 20) & 15))
+        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x39c, msg + 0x38c);
     if (count != 0) {
         if (p[0x58 / 4] == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x39f, lbl_8031F990 + 0x360);
-        u32 raw = p[0x4c / 4];
-        u8* dst = (u8*)(p[0x58 / 4] + (((raw >> 23) & 0x1e0) + (((raw >> 24) & 15) * 20)));
-        unsigned int old = (p[0x50 / 4] >> 20) & 15;
+            Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x39f, msg + 0x360);
+        u32 raw = p[0x4C / 4];
+        u8 *base = (u8 *)p[0x58 / 4] + ((raw >> 23) & 0x1E0) + ((raw >> 24) & 15) * 20;
+        u32 old = (p[0x50 / 4] >> 20) & 15;
         if (old < count) {
+            u32 limit = count - 8;
             if (count - old > 8) {
-                unsigned int limit = count - 8;
                 while (old < limit) {
-                    for (int j = 0; j < 8; j++) {
-                        dst[old * 4 + j * 4] = 1;
-                        dst[old * 4 + j * 4 + 1] = 4;
-                        dst[old * 4 + j * 4 + 2] = 0x3c;
-                        dst[old * 4 + j * 4 + 3] = 0;
+                    u8 *q = base + old * 4;
+                    for (u32 j = 0; j < 8; j++) {
+                        q[j * 4] = 1; q[j * 4 + 1] = 4; q[j * 4 + 2] = 0x3C; q[j * 4 + 3] = 0;
                     }
                     old += 8;
                 }
             }
             while (old < count) {
-                dst[old * 4] = 1;
-                dst[old * 4 + 1] = 4;
-                dst[old * 4 + 2] = 0x3c;
-                dst[old * 4 + 3] = 0;
+                u8 *t = base + old * 4;
+                t[0] = 1; t[1] = 4; t[2] = 0x3C; t[3] = 0;
                 old++;
             }
         }
-        p[0x50 / 4] = (p[0x50 / 4] & ~0x00f00000) | ((u32)count << 20);
+        p[0x50 / 4] = (p[0x50 / 4] & ~0x00F00000) | ((u32)count << 20);
     }
 }
 
@@ -1526,8 +1586,9 @@ extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
         base += ((fmt >> 4) & 4) + ((fmt >> 6) & 4) + ((fmt >> 12) & 4) + ((fmt >> 5) & 4) + ((fmt >> 3) & 4);
         if (count < arg1) {
             u32 i = count;
-            for (; i < arg1; i++)
-                *(u32*)(base + i * 4) = 0;
+            for (; i < arg1; i++) {
+                base[i * 4] = 0; base[i * 4 + 1] = 0; base[i * 4 + 2] = 0; base[i * 4 + 3] = 0;
+            }
         }
         *(u32*)(p + 0x50) = (*(u32*)(p + 0x50) & ~0x38000) | ((arg1 << 15) & 0x38000);
     }
@@ -1578,29 +1639,17 @@ extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8
 extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1, s16 arg2) {
     u32 flags;
     u32 info;
-    u32 component;
     u32 index;
+    u32 component;
     u8 *base;
     if (arg1 < 0x10) {
-        if (arg1 >= 4) {
-            arg1 -= 4;
-            component = arg1 & 3;
-            index = (u32)arg1 >> 2;
-            switch (component) {
-            case 0: *(s16 *)((u8 *)arg0 + index * 8 + 0x24) = arg2; return;
-            case 1: *(s16 *)((u8 *)arg0 + index * 8 + 0x26) = arg2; return;
-            case 2: *(s16 *)((u8 *)arg0 + index * 8 + 0x28) = arg2; return;
-            case 3: *(s16 *)((u8 *)arg0 + index * 8 + 0x2A) = arg2; return;
-            }
-        }
-        if (arg1 < 0) return;
-        flags = *(u32 *)((u8 *)arg0 + 0x50);
-        if (((flags >> 7) & 1) < 1) return;
-        info = *(u32 *)((u8 *)arg0 + 0x4C);
-        base = (u8 *)*(s32 *)((u8 *)arg0 + 0x58)
-            + ((info >> 6) & 4) + ((info >> 24) & 0xF) * 0x14
-            + ((info >> 18) & 0x3C) + ((info >> 23) & 0x1E0);
-        {
+        if (arg1 < 4) {
+            if (arg1 < 0) return;
+            flags = *(u32 *)((u8 *)arg0 + 0x50);
+            if (((flags >> 7) & 1) < 1) return;
+            info = *(u32 *)((u8 *)arg0 + 0x4C);
+            base = (u8 *)*(s32 *)((u8 *)arg0 + 0x58) + ((info >> 18) & 0x3C) + ((info >> 23) & 0x1E0)
+                + ((info >> 6) & 4) + ((info >> 24) & 0xF) * 0x14;
             s32 value = arg2 & ~(arg2 >> 31);
             s32 byte = 0xFF;
             if (value <= 0xFF) byte = value;
@@ -1611,15 +1660,24 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
             case 2: base[2] = byte; return;
             case 3: base[3] = byte; return;
             }
+            return;
+        }
+        arg1 -= 4;
+        component = arg1 & 3;
+        index = (u32)arg1 >> 2;
+        switch (component) {
+        case 0: *(s16 *)((u8 *)arg0 + index * 8 + 0x24) = arg2; return;
+        case 1: *(s16 *)((u8 *)arg0 + index * 8 + 0x26) = arg2; return;
+        case 2: *(s16 *)((u8 *)arg0 + index * 8 + 0x28) = arg2; return;
+        case 3: *(s16 *)((u8 *)arg0 + index * 8 + 0x2A) = arg2; return;
         }
         return;
-    }
-    if (arg1 >= 0x20) return;
-    {
+    } else {
+        if (arg1 >= 0x20) return;
         s32 value = arg2 & ~(arg2 >> 31);
         s32 byte = 0xFF;
         if (value <= 0xFF) byte = value;
-        index = (arg1 - 0x10) >> 2;
+        index = (u32)(arg1 - 0x10) >> 2;
         component = (arg1 - 0x10) & 3;
         switch (component) {
         case 0: *((u8 *)arg0 + index * 4 + 0x3C) = byte; return;
@@ -2331,14 +2389,13 @@ extern "C" u16 GXGetTexObjWrapS(void *);
 extern "C" u16 GXGetTexObjWrapT(void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index) {
-    typedef const char FileBytes[0x500];
     u32 texObj[8];
     u32 count;
     u32 word7, word6, word5, word4, word3, word2, word1, word0;
     f32 defaultValue;
     f32 wrapT;
     u16 wrapS;
-    FileBytes *file = (FileBytes *)&lbl_8031F990;
+    GetTextureSizeStringBase_800D58C4 *file = (GetTextureSizeStringBase_800D58C4 *)&lbl_8031F990;
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
@@ -2349,12 +2406,12 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     }
 
     if ((void *)texObj == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((*file), 0x3DC, (*file) + 0x42C);
+        Panic__Q26nw4hbm2dbFPCciPCce(file->text, 0x3DC, file->text + 0x42C);
     }
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
-        Panic__Q26nw4hbm2dbFPCciPCce((*file), 0x3DD, (*file) + 0x458);
+        Panic__Q26nw4hbm2dbFPCciPCce(file->text, 0x3DD, file->text + 0x458);
     }
 
     u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
@@ -2431,6 +2488,43 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *((u8 *)dst + 0xCE) = *((const u8 *)src + 0xA);
     *((u8 *)dst + 0xCF) = *((const u8 *)src + 8);
     return dst;
+}
+
+extern "C" const char lbl_8031E908[];
+extern "C" const char lbl_8031E92C[];
+extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
+    if (self != 0) {
+        *(void **)self = lbl_8032012C;
+        void *cur = *(void **)((u8 *)self + 0x14);
+        void *it;
+        while (cur != (u8 *)self + 0x14) {
+            void *node = cur;
+            cur = *(void **)node;
+            it = node;
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)self + 0x10, &it);
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            if (*(u8 *)((u8 *)node + 0xCC) == 0) {
+                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+                void **vt = *(void ***)((u8 *)node - 4);
+                ((void (*)(void *, s32))vt[2])((u8 *)node - 4, -1);
+                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+                if ((node = (u8 *)node - 4) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+                MEMFreeToAllocator(lbl_8055DDF0, node);
+            }
+        }
+        void **vt0 = *(void ***)self;
+        ((void (*)(void *, s32))vt0[0x50 / 4])(self, 0);
+        void *child = *(void **)((u8 *)self + 0x28);
+        if (child != 0 && *(u8 *)((u8 *)child + 0x54) == 0) {
+            void **cvt = *(void ***)child;
+            ((void (*)(void *, s32))cvt[2])(child, -1);
+            MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)self + 0x28));
+        }
+        if ((u32)self + 0x1C != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x1C, 0);
+        if ((u32)self + 0x10 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x10, 0);
+    }
+    if (del > 0) ((void (*)(void *))fn_80128668)(self);
+    return self;
 }
 
 extern "C" const char lbl_8031FF90[];
