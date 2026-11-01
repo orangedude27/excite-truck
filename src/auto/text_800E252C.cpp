@@ -12,6 +12,14 @@ public:
 };
 } } }
 
+namespace nw4hbm { namespace snd { namespace detail {
+struct NoteOnInfo;
+class Bank {
+public:
+    void *NoteOn(const NoteOnInfo &) const;
+};
+} } }
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -231,26 +239,26 @@ extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
     float f3;
     float f4 = lbl_80560F04;
     int mode;
-    if (x == f4 && f1 == f4) return f4;
-    if (x <= f4) {
-        if (f1 <= f4) {
-            if (x <= f1) { f3=x; mode=0; }
-            else { f3=f1; f4=lbl_80560F0C; f1=x; mode=1; }
+    if (x == lbl_80560F04 && y == lbl_80560F04) return lbl_80560F04;
+    if (x <= lbl_80560F04) {
+        if (y <= lbl_80560F04) {
+            if (x <= y) { f3 = x; mode = 0; }
+            else { f3 = y; f4 = lbl_80560F0C; f1 = x; mode = 1; }
         } else {
-            f1 = -f1;
-            if (x <= f1) { f3=x; mode=1; }
-            else { f3=f1; f4=lbl_80560F10; f1=x; mode=0; }
+            f1 = -y;
+            if (x <= f1) { f3 = x; mode = 1; }
+            else { f3 = f1; f4 = lbl_80560F10; f1 = x; mode = 0; }
         }
     } else {
-        if (f1 <= f4) {
-            float f0=-x;
-            if (f0 <= f1) { f3=f0; f4=lbl_80560F14; mode=1; }
-            else { f3=f1; f4=lbl_80560F0C; f1=f0; mode=0; }
+        if (y <= lbl_80560F04) {
+            float f0 = -x;
+            if (f0 <= y) { f3 = f0; f4 = lbl_80560F14; mode = 1; }
+            else { f3 = y; f4 = lbl_80560F0C; f1 = f0; mode = 0; }
         } else {
-            float f0=-x;
-            f1=-f1;
-            if (f0 <= f1) { f3=f0; f4=lbl_80560F18; mode=0; }
-            else { f3=f1; f4=lbl_80560F10; f1=f0; mode=1; }
+            float f0 = -x;
+            f1 = -y;
+            if (f0 <= f1) { f3 = f0; f4 = lbl_80560F18; mode = 0; }
+            else { f3 = f1; f4 = lbl_80560F10; f1 = f0; mode = 1; }
         }
     }
     f1 = f1 / f3 * lbl_80560F08;
@@ -1958,36 +1966,64 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
 
 extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
     int level = OSDisableInterrupts();
-    int size = *(int *)((char *)self + 0x2C);
+    long size = *(long *)((char *)self + 0x2C);
     if (size == 0) {
         OSRestoreInterrupts(level);
         return 0;
     }
-    int finished = IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(self);
-    int inner = OSDisableInterrupts();
-    void *base = *(void **)((char *)self + 0xC);
-    unsigned char *pos = base ? (unsigned char *)base + 0x138 : 0;
-    int position = 0;
-    if (pos) {
-        if (finished) position = ((int)*(unsigned short *)(pos + 0x80) << 16) + *(unsigned short *)(pos + 0x82);
-        else position = ((int)*(unsigned short *)(pos + 0x84) << 16) + *(unsigned short *)(pos + 0x86);
+    if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(self)) {
+        int inner = OSDisableInterrupts();
+        unsigned char *pos = *(unsigned char **)((char *)self + 0xC) + 0x138;
+        int position;
+        if (pos == 0) {
+            OSRestoreInterrupts(inner);
+            position = 0;
+        } else {
+            position = ((int)*(unsigned short *)(pos + 0x80) << 16) + *(unsigned short *)(pos + 0x82);
+            OSRestoreInterrupts(inner);
+        }
+        int format = *(int *)((char *)self + 0x118);
+        if (size != 0) size += (int)0x80000000;
+        int result = 0;
+        switch (format) {
+        case 0: {
+            unsigned int rem = position - size * 2;
+            result = ((rem & 0xF) + ((rem >> 4) * 0xE)) - 2;
+            break;
+        }
+        case 25: result = position - size; break;
+        case 10: result = position - ((unsigned int)size >> 1); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
+        }
+        OSRestoreInterrupts(level);
+        return result + 1;
+    } else {
+        int inner = OSDisableInterrupts();
+        unsigned char *pos = *(unsigned char **)((char *)self + 0xC) + 0x138;
+        int position;
+        if (pos == 0) {
+            OSRestoreInterrupts(inner);
+            position = 0;
+        } else {
+            position = ((int)*(unsigned short *)(pos + 0x84) << 16) + *(unsigned short *)(pos + 0x86);
+            OSRestoreInterrupts(inner);
+        }
+        int format = *(int *)((char *)self + 0x118);
+        if (size != 0) size += (int)0x80000000;
+        int result = 0;
+        switch (format) {
+        case 0: {
+            unsigned int rem = position - size * 2;
+            result = ((rem & 0xF) + ((rem >> 4) * 0xE)) - 2;
+            break;
+        }
+        case 25: result = position - size; break;
+        case 10: result = position - ((unsigned int)size >> 1); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
+        }
+        OSRestoreInterrupts(level);
+        return result;
     }
-    OSRestoreInterrupts(inner);
-    int format = *(int *)((char *)self + 0x118);
-    if (size != 0) size += (int)0x80000000;
-    int result = 0;
-    switch (format) {
-    case 10: result = position - ((unsigned int)size >> 1); break;
-    case 0: {
-        unsigned int rem = position - size * 2;
-        result = ((rem & 0xF) + ((rem >> 4) * 0xE)) - 2;
-        break;
-    }
-    case 25: result = position - size; break;
-    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
-    }
-    OSRestoreInterrupts(level);
-    return result + (finished ? 1 : 0);
 }
 
 namespace nw4hbm { namespace snd { namespace detail {
@@ -2524,19 +2560,29 @@ extern "C" unsigned int GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hb
 }
 
 extern float lbl_80560F38, lbl_80560F3C, lbl_80560F54, lbl_80560F60, lbl_80560F64, lbl_80560F68, lbl_80560F6C, lbl_80560F70, lbl_80560F74, lbl_80560F78;
-void TransformDpl2Pan__Q44nw4r3snd6detail5VoiceFPfPfff(void *self, float *out0, float *out1, float a, float b) {
+void nw4r::snd::detail::Voice::TransformDpl2Pan(float *out0, float *out1, float a, float b) {
     float d = b - lbl_80560F38;
     float aa = a < 0.0f ? -a : a;
     float ad = d < 0.0f ? -d : d;
     if (aa == ad) {
-        if (d == lbl_80560F3C) { *out0 = a; *out1 = lbl_80560F60 + lbl_80560F64 * d; }
-        else { *out0 = lbl_80560F68 * a; *out1 = lbl_80560F60 + lbl_80560F6C * d; }
+        if (d == lbl_80560F3C) {
+            *out0 = a; *out1 = lbl_80560F60 + lbl_80560F64 * d;
+        } else { *out0 = lbl_80560F68 * a; *out1 = lbl_80560F60 + lbl_80560F6C * d; }
     } else if (a == lbl_80560F3C) {
-        if (d == lbl_80560F3C) { *out0 = (lbl_80560F70 + lbl_80560F74 * (-d / a)) * aa; *out1 = lbl_80560F60 + lbl_80560F54 * d + lbl_80560F64 * a; }
-        else { *out0 = (lbl_80560F70 + lbl_80560F78 * (-d / a)) * aa; *out1 = lbl_80560F60 + lbl_80560F6C * a; }
+        if (d == lbl_80560F3C) {
+            *out0 = (lbl_80560F70 + lbl_80560F74 * (-d / a)) * aa;
+            *out1 = lbl_80560F60 + lbl_80560F54 * d + lbl_80560F64 * a;
+        } else {
+            *out0 = (lbl_80560F70 + lbl_80560F78 * (-d / a)) * aa;
+            *out1 = lbl_80560F60 + lbl_80560F6C * a;
+        }
     } else if (d == lbl_80560F3C) {
-        *out0 = (lbl_80560F74 * (-d / a) - lbl_80560F70) * aa; *out1 = lbl_80560F60 + lbl_80560F54 * d - lbl_80560F6C * a;
-    } else { *out0 = (lbl_80560F78 * (-d / a) - lbl_80560F70) * aa; *out1 = lbl_80560F60 + lbl_80560F6C * -a; }
+        *out0 = (lbl_80560F74 * (-d / a) - lbl_80560F70) * aa;
+        *out1 = lbl_80560F60 + lbl_80560F54 * d - lbl_80560F6C * a;
+    } else {
+        *out0 = (lbl_80560F78 * (-d / a) - lbl_80560F70) * aa;
+        *out1 = lbl_80560F60 + lbl_80560F6C * -a;
+    }
     *out1 += lbl_80560F38;
 }
 
@@ -2609,29 +2655,29 @@ extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_8
 
 extern "C" void *NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10NoteOnInfo(void *self, const void *info) {
     unsigned char inst[0x10];
-    unsigned char wave[0xA0];
+    unsigned char wave[0x90];
     if (!ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(self, inst,
         *(int *)info, *(int *)((const char *)info + 4), *(int *)((const char *)info + 8))) return 0;
     if (!ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(self, wave,
-        *(int *)(inst + 8), *(void **)((char *)self + 0xC))) return 0;
+        *(int *)inst, *(void **)((char *)self + 0xC))) return 0;
     int voices = wave[2] <= 2 ? wave[2] : 2;
     void *channel = AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
         voices, *(int *)((char *)info + 0x18), *(int *)((char *)info + 0x14),
         *(int *)((char *)info + 0x1C), *(int *)((char *)info + 0x20));
     if (channel == 0) return 0;
     *(int *)((char *)channel + 0xCC) = *(int *)((char *)info + 4);
-    *(int *)((char *)channel + 0xD0) = *(int *)(wave + 0x10);
+    *(int *)((char *)channel + 0xD0) = inst[8];
     *(float *)((char *)channel + 0xB4) =
         ((float)*(int *)((char *)info + 8) / lbl_80560F88) *
         ((float)*(int *)((char *)info + 8) / lbl_80560F88) *
-        ((float)*(int *)(wave + 0x12) / lbl_80560F88);
-    *(float *)((char *)channel + 0xC0) = *(float *)(wave + 0x14);
-    SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, wave[0x0C]);
-    SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, wave[0x0D]);
-    SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, wave[0x0E]);
-    SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, wave[0x0F]);
+        ((float)inst[0xA] / lbl_80560F88);
+    *(float *)((char *)channel + 0xC0) = *(float *)(inst + 0xC);
+    SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[4]);
+    SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[5]);
+    SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[6]);
+    SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[7]);
     *(float *)((char *)channel + 0xB8) =
-        ((float)((int)wave[0x11] - 0x40) / lbl_80560F8C) +
+        ((float)((int)inst[9] - 0x40) / lbl_80560F8C) +
         ((float)*(int *)((char *)info + 0x10) / lbl_80560F8C);
     *(float *)((char *)channel + 0xBC) = lbl_80560F90;
     Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(channel, wave, *(int *)((char *)info + 0xC));
@@ -2976,8 +3022,8 @@ extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi(void *self, int target) {
     float start = fields->start;
     float end = fields->end;
     float current;
-    if (elapsed >= total) current = end;
-    else current = start + (float)elapsed * (end - start) / (float)total;
+    if (elapsed < total) current = start + (float)elapsed * (end - start) / (float)total;
+    else current = end;
     fields->start = current;
     fields->end = lbl_80560FB0;
     fields->total = (int)((float)target * current);
