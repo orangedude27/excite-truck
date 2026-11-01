@@ -5822,41 +5822,50 @@ void btm_chg_all_acl_pkt_types(BOOLEAN start) {
 }
 
 BOOLEAN BTM_SecAddDevice(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, BD_FEATURES features, UINT32 trusted_mask[], LINK_KEY link_key, UINT8 key_type, tBTM_IO_CAP io_cap) {
+    u32 id;
     s32 i = 0;
     u8 *entry = lbl_803C0F78 + 0x1F30;
 loop:
-    if ((entry[0x76] & 0x80) == 0) goto next;
-    if (memcmp(entry + 0x1C, bd_addr, 6) != 0) goto next;
+    if ((entry[0x76] & 0x80) == 0)
+        goto next;
+    if (memcmp(entry + 0x1C, bd_addr, 6) != 0)
+        goto next;
     goto found;
 next:
     i++;
     entry += 0x88;
-    if (i < 16) goto loop;
+    if (i < 16)
+        goto loop;
     entry = 0;
 found:
     if (entry == 0) {
         entry = (u8 *)btm_sec_alloc_dev(bd_addr);
-        if (entry == 0) return FALSE;
+        if (entry == 0)
+            return FALSE;
     }
-    {
-        u32 id = *(u32 *)(lbl_803C0F78 + 0x1974);
-        *(u32 *)(entry + 0xC) = id;
-        *(u32 *)(lbl_803C0F78 + 0x1974) = id + 1;
-    }
-    if (dev_class != 0) memcpy(entry + 0x22, dev_class, 3);
+    id = *(volatile u32 *)(lbl_803C0F78 + 0x1974);
+    *(u32 *)(entry + 0xC) = id;
+    *(volatile u32 *)(lbl_803C0F78 + 0x1974) = id + 1;
+    if (dev_class == 0)
+        goto after_class;
+    memcpy(entry + 0x22, dev_class, 3);
+after_class:
     memset(entry + 0x35, 0, 0x41);
     if (bd_name != 0 && bd_name[0] != 0) {
         entry[0x76] |= 8;
         strncpy((char *)entry + 0x35, (char *)bd_name, 0x40);
     }
-    if (features != 0) memcpy(entry + 0x77, features, 8);
-    else memset(entry + 0x77, 0, 8);
+    if (features != 0)
+        memcpy(entry + 0x77, features, 8);
+    else
+        memset(entry + 0x77, 0, 8);
     *(u32 *)(entry + 0x10) = trusted_mask[0];
     *(u32 *)(entry + 0x14) = trusted_mask[1];
-    if (link_key != 0) {
-        entry[0x76] |= 0x10;
-        memcpy(entry + 0x25, link_key, 0x10);
-    }
+    if (link_key == 0)
+        goto done;
+    entry[0x76] |= 0x10;
+    memcpy(entry + 0x25, link_key, 0x10);
+done:
     return TRUE;
 }
 
@@ -7390,6 +7399,66 @@ void fn_8007D4C4(void) {
     *(u32 *)(dst + 0x1900) = *src++;
     *(u32 *)(dst + 0x1904) = *src++;
     dst[0x1909] = 2;
+}
+
+extern char lbl_803165FC[];
+extern char lbl_8031664C[];
+extern void btm_chg_all_acl_pkt_types(BOOLEAN);
+void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle) {
+    int i;
+    UINT8 *entry;
+    UINT16 acl_handle;
+    register UINT16 packet_types;
+    UINT16 supported;
+    UINT16 requested;
+    UINT8 status;
+    i = 0;
+    entry = lbl_803C0F78 + 0x1854;
+    while (i < 3) {
+        if (*(UINT16 *)(entry + 8) != 6)
+            goto next;
+        if (hci_status != 0)
+            goto next;
+        acl_handle = BTM_GetHCIConnHandle(entry + 0x28);
+        if (hci_handle != acl_handle)
+            goto next;
+        if (lbl_803C0F78[0x27C0] >= 3)
+            fn_8007096C(0xD0002, lbl_8031664C, acl_handle, lbl_803C0F78[0x1909]);
+        btm_chg_all_acl_pkt_types(1);
+        if (lbl_803C0F78[0x1908] == 0) {
+            if (!btsnd_hcic_add_SCO_conn(acl_handle,
+                    (*(UINT16 *)(entry + 0x20) << 5) & 0xE0)) {
+                status = 3;
+                goto update_state;
+            }
+        } else {
+            supported = *(UINT16 *)(lbl_803C0F78 + 0x656);
+            requested = *(UINT16 *)(entry + 0x20);
+            packet_types = (requested & supported) & 0x3F;
+            if (lbl_803C0F78[0x636] >= 3)
+                packet_types |= (requested | supported) & 0x3C0;
+            if (lbl_803C0F78[0x27C0] >= 3)
+                fn_800709CC(0xD0002, lbl_803165FC,
+                    *(UINT32 *)(entry + 0x14), *(UINT32 *)(entry + 0x18),
+                    *(UINT16 *)(entry + 0x1C), *(UINT16 *)(entry + 0x1E),
+                    entry[0x22], packet_types);
+            if (!btsnd_hcic_setup_esco_conn(acl_handle,
+                    *(UINT32 *)(entry + 0x14), *(UINT32 *)(entry + 0x18),
+                    *(UINT16 *)(entry + 0x1C), *(UINT16 *)(entry + 0x1E),
+                    entry[0x22], packet_types)) {
+                status = 3;
+                goto update_state;
+            }
+            *(UINT16 *)(entry + 0x20) = packet_types;
+        }
+        status = 1;
+    update_state:
+        if (status == 1)
+            *(UINT16 *)(entry + 8) = 3;
+    next:
+        i++;
+        entry += 0x34;
+    }
 }
 
 void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
@@ -9887,7 +9956,8 @@ typedef struct {
     u8 disc_succ[0x28];
     u8 rem_name[1];
 } GapTraceStrings;
-extern void gap_connect_ind(BD_ADDR, UINT16, UINT16, UINT8), gap_connect_cfm(u32, s32), gap_config_ind(u16, void *), gap_config_cfm(u32, u16 *), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
+extern void gap_connect_cfm(u32, s32), gap_config_ind(u16, void *), gap_config_cfm(u32, u16 *), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
+void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status);
 void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0x84)=gap_connect_ind;
  *(void **)(lbl_803C3740+0x88)=gap_connect_cfm;
