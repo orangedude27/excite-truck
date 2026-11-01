@@ -84,7 +84,7 @@ extern "C" void* fn_8020CA3C(void* arg0) {
                 *(int*)(obj + 8) = n + 1;
                 p = obj + n * 0x24;
                 name = item->getA(lbl_8055B628);
-                r = fn_802077A4(4, ctx + 0x118, ctx + 0x60);
+                r = fn_802077A4(name, 4, ctx + 0x118, ctx + 0x60);
                 *(void**)(p + 0xC) = r;
                 if (r == 0 && *(int*)(ctx + 0x1EC) == 0) {
                     fn_802E30C8(lbl_8033C678, name);
