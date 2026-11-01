@@ -1390,6 +1390,14 @@ public:
 static inline Obj_80195D80 *GetObj_80195D80(void *p) {
     return ((Vt_80195D80 *)p)->v5();
 }
+struct VtObj_80195D80;
+struct VtTbl_80195D80 {
+    void *slots0[7];
+    struct Obj_80195D80 *(*get)(struct VtObj_80195D80 *);
+};
+struct VtObj_80195D80 {
+    struct VtTbl_80195D80 *vt;
+};
 struct Other_80195D80 {
     unsigned char p0[0x54];
     float a54, a58, a5c;
@@ -1415,12 +1423,12 @@ struct Self_80195D80 {
     int f2c8;
     float f2cc;
 };
-void fn_80195D80(void *arg0, float arg1) {
-    struct Self_80195D80 *self = (struct Self_80195D80 *)arg0;
-    struct Obj_80195D80 *obj = ((struct Obj_80195D80 *(*)(void *))(*(void **)(*(char **)self->src + 0x1C)))(self->src);
+extern "C" void fn_80195D80(void *arg0, float arg1) {
+    Self_80195D80 *self = (Self_80195D80 *)arg0;
+    Obj_80195D80 *obj = ((Vt_80195D80 *)self->src)->v5();
     int changed;
     float vec[5];
-    struct Other_80195D80 *o;
+    Other_80195D80 *o;
     self->f2cc = obj->snap.shape->f14;
     self->f2c8 = obj->snap.shape->f28;
     self->f18 = fn_801388F4(obj->snap.w0);
@@ -1444,7 +1452,7 @@ void fn_80195D80(void *arg0, float arg1) {
         self->prev.w2 = self->cur.w2;
         self->f1d0 = lbl_8055E3C8;
     }
-    self->cur = obj->snap;
+    CopySnap_80195D80(&self->cur, &obj->snap);
     if (arg1 - self->f1d0 < lbl_805621C0) {
         float s = o->a5bc;
         float x = o->a94 + o->a54 * s;
@@ -1455,9 +1463,9 @@ void fn_80195D80(void *arg0, float arg1) {
         vec[2] = x;
         vec[3] = y;
         vec[4] = z;
-                  fn_801353C4(self->f168, vec);
-      }
-  }
+        fn_801353C4(self->f168, vec);
+    }
+}
 #pragma cplusplus reset
 
   void fn_801961F8(void) {
@@ -1734,15 +1742,18 @@ extern void fn_8017B3A8(void *, float *, void *, float);
 extern void fn_8018ADD4(void *, int);
 extern void fn_8018ADC4(int, float);
 void fn_80196AA0(void *arg0) {
+    float *limits = lbl_80562250;
     int state = 0;
     float difference;
+    volatile float high;
+    volatile float low;
     float vecA[3];
     float vecB[3];
 
     difference = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x218);
-    if (!(difference < lbl_80562250[0])) {
+    if (!(difference < limits[0])) {
         state = 1;
-        if (!(difference < lbl_80562250[1])) {
+        if (!(difference < limits[1])) {
             state = 2;
         }
     }
