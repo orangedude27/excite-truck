@@ -7699,6 +7699,7 @@ void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) 
     u8 change = 0;
     u32 index = 0;
     u16 p1, p0;
+    u16 p3, p2;
 
     *(u16 *)(lbl_803C0F78 + 0x18F6) = status;
     for (;;) {
@@ -7732,10 +7733,10 @@ void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) 
                     p1 = *(u16 *)((u8 *)params + 2);
                     *(u16 *)(cb + 0x24) = p0;
                     *(u16 *)(cb + 0x26) = p1;
-                    p0 = *(u16 *)((u8 *)params + 4);
-                    p1 = *(u16 *)((u8 *)params + 6);
-                    *(u16 *)(cb + 0x28) = p0;
-                    *(u16 *)(cb + 0x2A) = p1;
+                    p2 = *(u16 *)((u8 *)params + 4);
+                    p3 = *(u16 *)((u8 *)params + 6);
+                    *(u16 *)(cb + 0x28) = p2;
+                    *(u16 *)(cb + 0x2A) = p3;
                     p0 = *(u16 *)((u8 *)params + 8);
                     *(u16 *)(cb + 0x2C) = p0;
                     p0 = *(u16 *)((u8 *)params + 0xA);
