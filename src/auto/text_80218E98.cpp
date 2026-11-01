@@ -49,8 +49,6 @@ static s32 abs_val(s32 x) {
     return (x ^ sign) - sign;
 }
 
-extern "C" s32 fn_8021E620(void *, s32);
-
 extern "C" void fn_8021C12C(void *);
 extern "C" void fn_8021E684(void *);
 extern "C" void fn_8021E6D4(void *);
@@ -3463,37 +3461,31 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_802C5334(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
-void fn_8021FD68(void *arg0, s32 arg1) {
+extern "C" void fn_8021FD68(void *arg0, s32 arg1) {
     VfObj *obj = (VfObj *)arg0;
-    s32 step;
+    s32 step = obj->vf28() - 11;
     s32 progress;
-    s32 *mode;
-    s32 active;
-    s32 centerX;
-    s32 centerY;
-    s32 x;
-    s32 y;
-    s32 z;
-    s32 range;
+    s32 active = 0;
+    s32 *mode = *(s32 **)((u8 *)arg0 + 0x274);
 
-    step = obj->vf30() - 11;
     progress = (s32)(((f32)step *
         (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
         (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
-    mode = *(s32 **)((u8 *)arg0 + 0x274);
+
     if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x278)) {
+        s32 range = obj->vf28();
+        s32 centerX = (lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1;
+        s32 centerY = (lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1;
+        f32 x = (f32)(*(s32 *)((u8 *)arg0 + 4) - centerX);
+        f32 y = (f32)(centerY - *(s32 *)((u8 *)arg0 + 8));
+        f32 z = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
+        f32 fRange = (f32)range;
         active = 1;
-        range = obj->vf30();
-        centerX = (lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1;
-        centerY = (lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1;
-        x = *(s32 *)((u8 *)arg0 + 4) - centerX;
-        y = centerY - *(s32 *)((u8 *)arg0 + 8);
-        z = *(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8);
         fn_802C5320(*(s32 *)((u8 *)arg0 + 0x25C), active,
-                    (f32)x, (f32)y, lbl_805634A8, (f32)range, (f32)z);
-        fn_802C5334(*(s32 *)((u8 *)arg0 + 0x260), active,
-                    (f32)x, (f32)y, lbl_805634A8, (f32)progress, (f32)z,
-                    lbl_805634A8, lbl_805634A8, (f32)progress / (f32)range);
+                    x, y, lbl_805634A8, fRange, z);
+        ((s32 (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32))fn_802C5334)(
+            *(s32 *)((u8 *)arg0 + 0x260), active, x, y, lbl_805634A8,
+            (f32)progress, z, lbl_805634A8, lbl_805634A8, (f32)progress / fRange, lbl_805634A4);
     }
 }
 
