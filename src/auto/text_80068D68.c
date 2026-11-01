@@ -21561,6 +21561,3 @@ void fn_80085E24(void *arg0, u8 arg1) {
     *(u8 *)((u8 *)arg0 + 11) = arg1;
     btu_hcif_send_cmd(arg0);
 }
-static inline UINT8 *btm_sco_rsp_entry_base(UINT8 *base, UINT16 index) {
-    return base + ((UINT32)index * 0x34);
-}
