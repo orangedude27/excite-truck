@@ -39,7 +39,7 @@ extern "C" int GXLoadTlut(int *, s32);
 extern "C" void GXSetAlphaCompare(u32, u8, u8, u32, u8);
 extern "C" void GXSetBlendMode(u8, u8, u8, u8);
 extern "C" void GXSetChanCtrl(u32, u32, u32, u32, u32, u32, u32);
-extern "C" int GXSetChanMatColor_Internal(int, u8 *, u8, u8, u8); /* extern */
+extern "C" void GXSetChanMatColor_Internal(u32, u8 *, u8, u8, u8);
 extern "C" int GXSetIndTexCoordScale(u32, u8, u8);         /* extern */
 extern "C" int GXSetIndTexOrder(u32, u8, u8);              /* extern */
 extern "C" void GXSetNumChans(u32);
