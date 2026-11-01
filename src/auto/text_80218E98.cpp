@@ -2906,13 +2906,11 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
         if (value > 0) *state = value - 1;
         fn_8021E7D4(arg0);
         return 1;
-    case 0x122: {
-        s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
+    case 0x122:
         value = *state + 1;
-        if (value < limit[2]) *state = value;
+        if (value < (*(s32 **)((u8 *)arg0 + 0x244))[2]) *state = value;
         fn_8021E7D4(arg0);
         return 1;
-    }
     case 0x123: {
         s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
         s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
@@ -2940,12 +2938,10 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
         *state = 0;
         fn_8021E7D4(arg0);
         return 1;
-    case 0x126: {
-        s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
-        *state = limit[2] - 1;
+    case 0x126:
+        *state = (*(s32 **)((u8 *)arg0 + 0x244))[2] - 1;
         fn_8021E7D4(arg0);
         return 1;
-    }
     case 0x127:
     case 0x128:
     default:
