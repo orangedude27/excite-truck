@@ -508,7 +508,7 @@ extern "C" void fn_80145B50(void *arg0, s32 arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-extern "C" void fn_80145B94(void *arg0, u32 arg1) {
+extern "C" void fn_80145B94(void * __restrict arg0, u32 arg1) {
     f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 input = *(f32 *)((u8 *)arg0 + 4);
     s32 id = *(s32 *)((u8 *)arg0 + 0xC);
@@ -644,10 +644,10 @@ extern "C" void fn_80145E70(s32 arg0) {
         lbl_8055E208 = 1;
         if (((Config *)*(void **)(object + 0x28))->has(lbl_80559E20) != 0) {
             void *properties = ((Config *)*(void **)(object + 0x28))->getObject(lbl_80559E20);
-            register s32 value = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
-            register s32 half = value >> 1;
-            value &= 1;
-            value = half - value;
+            s32 value = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
+            s32 half = value >> 1;
+            s32 low = value & 1;
+            value = half - low;
             lbl_8055E208 = (s8)((u32)value >> 31);
         }
         *(s32 *)(object + 0x2C) = (s32)((void *(*)(void *, const char *))fn_80145FEC)(*(void **)(object + 0x28), lbl_80559E30);
