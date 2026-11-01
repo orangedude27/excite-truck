@@ -2,16 +2,16 @@
     // split_file divides it into the game's real files (file_status shows its range).
 
                       extern void fn_801958D8(void);
-        extern void fn_8018A174(void *);
-        extern void fn_801961F8(void);
-        extern void fn_80195B28(void *, float);
-        extern void fn_8019416C(void);
-        extern void fn_801945F8(void *);
-      extern void fn_80196DC4(void *);
-    extern void fn_80195F6C(void *, void *);
-    extern void fn_80194624(void *);
-    extern void fn_80195654(void *);
-    extern void fn_801933FC(void *, void *);
+extern void fn_8018A174(void *);
+extern void fn_801961F8(void);
+extern void fn_80195B28(void *, float);
+extern void fn_8019416C(void);
+extern void fn_801945F8(void *);
+extern void fn_80196DC4(void *);
+extern void fn_80195F6C(void *, void *);
+extern void fn_80194624(void *);
+extern void fn_80195654();
+extern void fn_801933FC(void *, void *);
     extern double fn_8002F234(float);
     extern float lbl_8055E584, lbl_8055E588;
     extern float fn_80129DC4(int, float, float);
@@ -1780,9 +1780,10 @@ extern int fn_8015FBCC(void *, float *, int, int, float, float);
 extern float fn_801973FC(float *, float *, void *);
 extern float lbl_80562160, lbl_8056222C, lbl_80562268, lbl_8056226C;
 void fn_8019724C(void *arg0, float *arg1) {
-    float direction[2];
     float projected[2];
+    float direction[2];
     float length;
+    float norm;
     float scale;
     float current;
     float upper;
@@ -1790,6 +1791,7 @@ void fn_8019724C(void *arg0, float *arg1) {
     float diff;
     float weight;
     float factor;
+    float flagThreshold;
     int index;
     void *obj;
 
@@ -1798,30 +1800,29 @@ void fn_8019724C(void *arg0, float *arg1) {
         obj = *(void **)((char *)arg0 + 0x294);
         direction[0] = *(float *)((char *)obj + 0x70);
         direction[1] = *(float *)((char *)obj + 0x78);
-        length = (float)fn_8002F234(direction[0] * direction[0] + direction[1] * direction[1]);
-        if (lbl_80562148 > length)
-            length = lbl_80562148;
+        norm = (float)fn_8002F234(direction[0] * direction[0] + direction[1] * direction[1]);
+        length = lbl_80562148;
+        if (length > norm)
+            length = norm;
         scale = lbl_80562140 / length;
         direction[0] = direction[0] * scale;
         direction[1] = direction[1] * scale;
-        if (fn_8015FBCC(obj, projected, 0, index, direction[0], direction[1])) {
+        if (fn_8015FBCC(*(void **)((char *)arg0 + 0x294), projected, 0, index, direction[0], direction[1])) {
             current = *(float *)((char *)arg0 + 0x26C);
             upper = lbl_8056226C + *(float *)((char *)arg0 + 0x1F8);
-            lower = *(float *)((char *)arg0 + 0x26C) - lbl_80562268;
-            if (current < upper) {
-            } else {
+            lower = current - lbl_80562268;
+            if (!(current < upper))
                 current = upper;
-            }
-            if (current > lower) {
+            if (current > lower)
                 current = lower;
-            }
             *(float *)((char *)arg0 + 0x1F8) = current;
             *(float *)((char *)arg0 + 0x20C) = fn_801973FC(direction, projected, arg1);
+            flagThreshold = lbl_8056222C;
             arg1[0] = projected[0];
             arg1[1] = projected[1];
-            if (*(float *)((char *)arg0 + 0x270) > lbl_8056222C) {
-                *(int *)((char *)arg0 + 0x2D0) |= 0x40;
-                *(int *)((char *)arg0 + 0x2D0) |= 0x800;
+            if (*(float *)((char *)arg0 + 0x270) > flagThreshold) {
+                *(volatile int *)((char *)arg0 + 0x2D0) |= 0x40;
+                *(volatile int *)((char *)arg0 + 0x2D0) |= 0x800;
             }
         } else {
             diff = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1F8);
