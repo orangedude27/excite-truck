@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" f32 fabsf(f32);
 extern "C" char lbl_8055B884;
 extern "C" void fn_802C4F58(s32, s32, const char *, s32);
 
@@ -2255,8 +2256,14 @@ extern "C" void fn_8021CBBC(void *arg0) {
 extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
     class CacheSource {
     public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual f32 Get();
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual f32 Get();
     };
     class BoundsSource {
     public:
