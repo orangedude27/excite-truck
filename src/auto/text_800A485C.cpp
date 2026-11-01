@@ -7328,8 +7328,7 @@ done:
     return -((flags >> 1) & 1) & 0xB;
 }
 
-struct CachePair { u32 a, b; };
-struct CacheSlotData { CachePair w[0x48]; };
+struct CacheSlotData { u8 b[0x240]; };
 struct CacheSlot { u32 flag; s32 key; CacheSlotData data; };
 struct CacheKey { u32 flag; s32 key; };
 extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
