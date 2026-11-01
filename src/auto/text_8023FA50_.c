@@ -40,6 +40,77 @@ void fn_8023FA9C(void) {
     fn_80214AF0(0xC);
 }
 
+int fn_8023FAD4(char *arg0, int arg1) {
+    unsigned int l[35];
+    char buf[0x14];
+    unsigned int h[5];
+    void *obj;
+    int r;
+
+    fn_80028E00(lbl_8055BD38);
+    obj = fn_801284F8(0x38, lbl_80342278 + 0x10);
+    if (obj != 0) {
+        obj = fn_802439E8(obj, arg0, arg1);
+    }
+    *(void **)&lbl_8055F1E0 = obj;
+    fn_8022D228(buf, 10, 0x20);
+    {
+        int i = 0;
+        do {
+            fn_8022D350(buf, lbl_80342278 + 0x20, 0);
+            i++;
+        } while (i < 10);
+    }
+    l[0] = (unsigned int)lbl_8055BAC0;
+    l[1] = 8;
+    l[2] = (unsigned int)fn_8023FA9C;
+    l[3] = 0;
+    l[4] = 0;
+    l[5] = (unsigned int)lbl_8055BD40;
+    l[6] = 3;
+    l[7] = (unsigned int)lbl_8055BD3C;
+    l[8] = 4;
+    l[9] = 0;
+    l[10] = (unsigned int)(lbl_80342278 + 0x2c);
+    l[11] = 5;
+    l[12] = *(unsigned int *)&lbl_8055F1E0;
+    l[13] = 0;
+    l[14] = 0;
+    l[15] = (unsigned int)(lbl_80342278 + 0x38);
+    l[16] = 10;
+    l[17] = (unsigned int)buf;
+    l[18] = 0;
+    l[19] = 0;
+    l[20] = (unsigned int)lbl_8055BAB8;
+    l[21] = 8;
+    l[22] = (unsigned int)fn_80236914;
+    l[23] = 2;
+    l[24] = 0;
+    l[25] = (unsigned int)lbl_8055B860;
+    l[26] = 6;
+    l[27] = 0;
+    l[28] = -1;
+    l[29] = 0x1b;
+    l[30] = lbl_804987F8[0];
+    l[31] = lbl_804987F8[1];
+    l[32] = lbl_804987F8[2];
+    l[33] = lbl_804987F8[3];
+    l[34] = lbl_804987F8[4];
+    h[0] = lbl_802FA2E8[0];
+    h[1] = (unsigned int)l;
+    h[2] = lbl_802FA2E8[2];
+    h[3] = lbl_802FA2E8[3];
+    h[4] = lbl_802FA2E8[4];
+    r = fn_802146BC(h, -999, -999, 1) != -1;
+    if (*(void **)&lbl_8055F1E0 != 0) {
+        void *o = *(void **)&lbl_8055F1E0;
+        (*(void (**)(void *, int))(*(char **)o + 8))(o, 1);
+    }
+    *(void **)&lbl_8055F1E0 = 0;
+    fn_8022D2BC(buf, -1);
+    return r;
+}
+
 extern char *fn_8000DC70(int);
 extern void fn_8000DC28(char *, int);
 extern int fn_8023FAD4(char *, int);
@@ -48,23 +119,6 @@ extern char *strstr(const char *, const char *);
 extern int strcmp(const char *, const char *);
 __declspec(section ".sdata") extern char lbl_8055BD3C[];
 __declspec(section ".sdata") extern char lbl_8055BD48[];
-extern char lbl_80342278[];
-extern unsigned int lbl_802FA2E8[];
-extern unsigned int lbl_804987F8[];
-__declspec(section ".sdata") extern char lbl_8055BD38[];
-__declspec(section ".sdata") extern char lbl_8055BD40[];
-__declspec(section ".sdata") extern char lbl_8055BAC0[];
-__declspec(section ".sdata") extern char lbl_8055BAB8[];
-__declspec(section ".sdata") extern char lbl_8055B860[];
-extern void fn_80028E00(void *);
-extern void *fn_801284F8(int, void *);
-extern void *fn_802439E8(void *, char *, int);
-extern void fn_8022D228(void *, int, int);
-extern void fn_8022D350(void *, void *, int);
-extern void fn_8022D2BC(void *, int);
-extern int fn_802146BC(void *, int, int, int);
-extern void fn_8023FA9C(void);
-extern void fn_80236914(void);
 __declspec(section ".sdata") extern char lbl_8055BD50[];
 __declspec(section ".sdata") extern char lbl_8055BD58[];
 void fn_8023FCFC(int arg0) {
