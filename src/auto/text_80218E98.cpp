@@ -5465,7 +5465,7 @@ extern "C" void *fn_80224D40(void *arg0, s32 arg1) {
         fn_802328D4(*(void **)((u8 *)arg0 + 0x248));
         *(s32 *)((u8 *)arg0 + 0x248) = 0;
         char *dst = (char *)arg0 + 0x259;
-        char *src = &lbl_8055B88C[0];
+        char *src = (char *)&lbl_8055B88C;
         *(s32 *)((u8 *)arg0 + 0x244) = 0;
         strcpy(dst, src);
         fn_8021915C(arg0, 0);
