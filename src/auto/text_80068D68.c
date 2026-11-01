@@ -4860,6 +4860,66 @@ void bta_hh_get_acl_q_info(void) {
         0xF, info, *(u16 *)(lbl_803C4040 + 2), *(u16 *)(lbl_803C4040 + 4));
 }
 
+void bta_hh_write_dev_act(void *p_dev, void *p_msg) {
+    extern char lbl_80315540[];
+    extern char lbl_8031555C[];
+    u8 *dev = (u8 *)p_dev;
+    u8 *msg = (u8 *)p_msg;
+    u16 status = 0;
+    u8 saved_event = msg[8];
+    u8 result;
+    s32 state;
+
+    ((u8 *)&status)[1] = dev[0x16];
+    result = HID_HostWriteDev(dev[0x16], msg[8], msg[9], *(u16 *)(msg + 0xC), msg[0xA], *(BT_HDR **)(msg + 0x10));
+    if (result != 0) {
+        if (lbl_8055DC80 >= 1)
+            fn_80070954(0x500, lbl_80315540, result);
+        ((u8 *)&status)[0] = 6;
+        if (msg[8] != 1 && msg[8] != 0xA) {
+            (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(saved_event, &status, lbl_803C0D48);
+            return;
+        }
+        if (msg[9] == 5)
+            (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(0xD, &status, lbl_803C0D48);
+        return;
+    }
+
+    state = msg[8];
+    if (state == 0xA)
+        goto state_special;
+    if (state >= 0xA)
+        goto state_log;
+    if (state == 1)
+        goto state_special;
+    if (state < 1)
+        goto state_log;
+    if (state < 4)
+        goto state_log;
+    goto state_store;
+
+state_store:
+    *(u16 *)(dev + 0x10) = saved_event;
+    goto state_done;
+state_special:
+    if (msg[9] == 5)
+        dev[0x17] = 1;
+    goto state_done;
+state_log:
+    if (lbl_8055DC80 >= 5)
+        ((void (*)(u32, void *))fn_80070954)(0x504, lbl_8031555C);
+state_done:
+    if (msg[8] != 1) {
+        fn_80071298((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
+        fn_80071264((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
+        return;
+    }
+    if (msg[9] == 3)
+        fn_80071230((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
+    else if (msg[9] == 4)
+        fn_80071298((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
+}
+
 void BTA_HhEnable(u8 arg0, void *arg1) {
     u8 *buf;
     fn_8006EAD0();
@@ -6315,57 +6375,57 @@ void btm_reset_complete(void) {
     extern char lbl_803160F0[];
     extern void fn_8007093C(u32, void *);
     extern void fn_80085828();
-    u8 *btm = lbl_803C0F78;
-    u8 *name = btm + 0x648;
+    register u8 *btm;
     void (*callback)(void *);
-    void *buf;
+    register void *buf;
 
-    if (btm[0x27C0] >= 4)
+    if (lbl_803C0F78[0x27C0] >= 4)
         fn_8007093C(0xD0003, lbl_803160F0);
 
+    btm = lbl_803C0F78;
     callback = *(void (**)(void *))(btm + 0x620);
     if (callback != 0) {
         *(void (**)(void *))(btm + 0x620) = 0;
         callback(0);
         return;
     }
+    if (btm[0x64E] != 0)
+        return;
 
-    if (btm[0x64E] == 0) {
-        l2cu_device_reset();
-        *(u16 *)(btm + 0x16A0) = 0x12;
-        *(u16 *)(btm + 0x16A2) = 0x800;
-        *(u16 *)(btm + 0x16A4) = 0;
-        *(u16 *)(btm + 0x169C) = 0x12;
-        *(u16 *)(btm + 0x169E) = 0x800;
-        *(u16 *)(btm + 0x16A6) = 0;
-        btm[0x64E] = 2;
-        btm[0x64F] = 4;
-        btu_start_timer(btm + 0x574, 1, 1);
+    l2cu_device_reset();
+    *(u16 *)(btm + 0x16A0) = 0x12;
+    *(u16 *)(btm + 0x16A2) = 0x800;
+    *(u16 *)(btm + 0x16A4) = 0;
+    *(u16 *)(btm + 0x169C) = 0x12;
+    *(u16 *)(btm + 0x169E) = 0x800;
+    *(u16 *)(btm + 0x16A6) = 0;
+    btm[0x64E] = 2;
+    btm[0x64F] = 4;
+    btu_start_timer(btm + 0x574, 1, 1);
 
+    buf = GKI_getpoolbuf(2);
+    if (buf != 0)
+        ((void (*)(void *))fn_80085828)(buf);
+
+    memcpy(lbl_803C0F78 + 0x648, lbl_803C0F78 + 0x648, 3);
+
+    if (lbl_803C0F78[0x64E] != 0 && lbl_803C0F78[0x64E] != 1) {
         buf = GKI_getpoolbuf(2);
         if (buf != 0)
-            ((void (*)(void *))fn_80085828)(buf);
-
-        memcpy(name, name, 3);
-
-        if (btm[0x64E] != 0 && btm[0x64E] != 1) {
-            buf = GKI_getpoolbuf(2);
-            if (buf != 0)
-                fn_80085524(buf, name);
-        }
-
-        if (btm != 0 && btm[0x64E] != 0 && btm[0x64E] != 1) {
-            buf = GKI_getpoolbuf(2);
-            if (buf != 0) {
-                if (btm != lbl_803C0F78) {
-                    memset(name, 0, 0x20);
-                    strncpy((char *)name, (char *)name, 0x1F);
-                }
-                ((void (*)(void *, void *))btsnd_hcic_change_name)(buf, name);
-            }
-        }
-        ((void (*)(u8, void *, u8))BTM_SetPinType)(btm[0x20], btm + 0x22, btm[0x21]);
+            fn_80085524(buf, lbl_803C0F78 + 0x648);
     }
+
+    if (lbl_803C0F78 != 0 && lbl_803C0F78[0x64E] != 0 && lbl_803C0F78[0x64E] != 1) {
+        buf = GKI_getpoolbuf(2);
+        if (buf != 0) {
+            if (btm != lbl_803C0F78) {
+                memset(lbl_803C0F78, 0, 0x20);
+                strncpy((char *)lbl_803C0F78, (char *)lbl_803C0F78, 0x1F);
+            }
+            ((void (*)(void *, void *))btsnd_hcic_change_name)(buf, lbl_803C0F78);
+        }
+    }
+    ((void (*)(u8, void *, u8))BTM_SetPinType)(lbl_803C0F78[0x20], lbl_803C0F78 + 0x22, lbl_803C0F78[0x21]);
 }
 
 void fn_8008C04C(s16);
@@ -8524,7 +8584,7 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     var_r29 = (u16 *)&var_r31[0x1868 / 2];
     
     if (temp == 0 || btm_cb[0x1908] == 0) {
-        u16 supported = btm_cb[0x656];
+        u16 supported = ((u16 *)var_r29)[-0x656/2 + 0x1868/2];
         var_r27 = (((u16 *)var_r28)[0] & supported) & 7;
         var_r29[3] = var_r27;
         
