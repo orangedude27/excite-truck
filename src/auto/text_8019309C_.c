@@ -1360,6 +1360,57 @@ void fn_80195CA8(void *arg0) {
 extern int fn_801388F4(void *);
 extern void fn_801353C4(void *, float *);
 extern float lbl_805621C0;
+#pragma cplusplus on
+extern "C" int fn_801388F4(void *);
+extern "C" void fn_801353C4(void *, float *);
+struct Shape_80195D80 {
+    unsigned char pad0[0x14];
+    float f14;
+    unsigned char pad1[0x10];
+    int f28;
+};
+struct Snap_80195D80 {
+    void *w0;
+    unsigned int w[8];
+    unsigned char b;
+    Shape_80195D80 *shape;
+    unsigned int w2;
+};
+struct Obj_80195D80 {
+    unsigned int pad;
+    Snap_80195D80 snap;
+};
+class Vt_80195D80 {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2();
+    virtual void v3(); virtual void v4(); virtual void v5();
+    virtual Obj_80195D80 *v6();
+};
+struct Other_80195D80 {
+    unsigned char p0[0x54];
+    float a54, a58, a5c;
+    unsigned char p1[0x94 - 0x60];
+    float a94, a98, a9c;
+    unsigned char p2[0x5BC - 0xA0];
+    float a5bc;
+};
+struct Self_80195D80 {
+    unsigned char p0[0x18];
+    int f18;
+    unsigned char p1[0x168 - 0x1C];
+    unsigned char f168[4];
+    Snap_80195D80 prev;
+    unsigned char p2[4];
+    Snap_80195D80 cur;
+    float f1d0;
+    unsigned char p3[0x28C - 0x1D4];
+    Vt_80195D80 *src;
+    unsigned char p4[4];
+    Other_80195D80 *other;
+    unsigned char p5[0x2C8 - 0x298];
+    int f2c8;
+    float f2cc;
+};
 void fn_80195D80(void *arg0, float arg1) {
     void *base = *(void **)((char *)arg0 + 0x28C);
     void *(*get)(void *) = *(void *(**)(void *))(*(char **)base + 0x1C);
