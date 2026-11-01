@@ -13,7 +13,17 @@ public:
 } } }
 
 namespace nw4hbm { namespace snd { namespace detail {
-struct NoteOnInfo;
+struct NoteOnInfo {
+    int unk_0;
+    int unk_4;
+    int unk_8;
+    int unk_C;
+    int unk_10;
+    int unk_14;
+    int unk_18;
+    int unk_1C;
+    int unk_20;
+};
 class Bank {
 public:
     void *NoteOn(const NoteOnInfo &) const;
@@ -2653,24 +2663,26 @@ extern "C" void *fn_800E80B8(void *arg0) {
 
 extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
 
-extern "C" void *NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10NoteOnInfo(void *self, const void *info) {
+void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &noteInfo) const {
     unsigned char inst[0x10];
     unsigned char wave[0x90];
-    if (!ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(self, inst,
-        *(int *)info, *(int *)((const char *)info + 4), *(int *)((const char *)info + 8))) return 0;
-    if (!ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(self, wave,
-        *(int *)inst, *(void **)((char *)self + 0xC))) return 0;
+    void *bank = (void *)this;
+    void *channel;
+    if (!ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(bank, inst,
+        *(int *)&noteInfo, *(int *)((const char *)&noteInfo + 4), *(int *)((const char *)&noteInfo + 8))) return 0;
+    if (!ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(bank, wave,
+        *(int *)inst, *(void **)((char *)bank + 0xC))) return 0;
     int voices = wave[2] <= 2 ? wave[2] : 2;
-    void *channel = AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
-        voices, *(int *)((char *)info + 0x18), *(int *)((char *)info + 0x14),
-        *(int *)((char *)info + 0x1C), *(int *)((char *)info + 0x20));
+    channel = AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
+        voices, *(int *)((const char *)&noteInfo + 0x18), *(int *)((const char *)&noteInfo + 0x14),
+        *(int *)((const char *)&noteInfo + 0x1C), *(int *)((const char *)&noteInfo + 0x20));
     if (channel == 0) return 0;
-    *(int *)((char *)channel + 0xCC) = *(int *)((char *)info + 4);
+    *(int *)((char *)channel + 0xCC) = *(int *)((const char *)&noteInfo + 4);
     *(int *)((char *)channel + 0xD0) = inst[8];
-    *(float *)((char *)channel + 0xB4) =
-        ((float)*(int *)((char *)info + 8) / lbl_80560F88) *
-        ((float)*(int *)((char *)info + 8) / lbl_80560F88) *
-        ((float)inst[0xA] / lbl_80560F88);
+    float level = (float)*(int *)((const char *)&noteInfo + 8) / lbl_80560F88;
+    float multiplier = (float)inst[0xA] / lbl_80560F88;
+    float levelSquared = level * level;
+    *(float *)((char *)channel + 0xB4) = levelSquared * multiplier;
     *(float *)((char *)channel + 0xC0) = *(float *)(inst + 0xC);
     SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[4]);
     SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[5]);
@@ -2678,9 +2690,9 @@ extern "C" void *NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10Note
     SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[7]);
     *(float *)((char *)channel + 0xB8) =
         ((float)((int)inst[9] - 0x40) / lbl_80560F8C) +
-        ((float)*(int *)((char *)info + 0x10) / lbl_80560F8C);
+        ((float)*(int *)((const char *)&noteInfo + 0x10) / lbl_80560F8C);
     *(float *)((char *)channel + 0xBC) = lbl_80560F90;
-    Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(channel, wave, *(int *)((char *)info + 0xC));
+    Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(channel, wave, *(int *)((const char *)&noteInfo + 0xC));
     return channel;
 }
 
