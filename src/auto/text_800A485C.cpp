@@ -106,7 +106,7 @@ extern "C" s32 fn_800B7F28(void *);
 extern "C" void fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
-namespace nw4hbm { namespace lyt { class Pane; class Material; namespace res { class AnimationBlock; } class ResourceAccessor; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); void SetResource(const res::AnimationBlock *, ResourceAccessor *); }; } }
+namespace nw4hbm { namespace lyt { class Pane; class Material; namespace res { class AnimationBlock; } class ResourceAccessor { public: virtual ~ResourceAccessor(); virtual void dummy(); virtual void *GetResource(u32, const char *, u32); }; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); void SetResource(const res::AnimationBlock *, ResourceAccessor *); }; } }
 
 extern "C" const char lbl_8031EE58[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
