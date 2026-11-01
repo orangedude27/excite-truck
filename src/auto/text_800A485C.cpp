@@ -8813,22 +8813,24 @@ extern "C" s32 fn_800BC134(void *arg0, s32 arg1, s32 arg2) {
 s32 fn_800BC2EC(void *arg0, s32 *arg1) {
     const char *str = lbl_8031B838;
     s32 sp18[4];
-    s32 res;
-    if (arg1 == 0) return (s32)0xC1000000;
-    OSReport(str + 0x688);
-    fn_800BB0A8(*(s32 *)arg0, 0x10, 3, 1, 4, 0, 0, 0, 0, (s32)sp18, 0, 0);
-    res = fn_800BB0A8(*(s32 *)arg0, 0x37, 3, 1, *(s32 *)((u8 *)arg0 + 0x10), 0, 0, 0, 0, (s32)sp18, 0, 0);
-    if (res != 0) {
-        OSReport(str + 0x6A0, res);
-        return res;
+    s32 res = (s32)0xC1000000;
+    if (arg1 != 0) {
+        OSReport(str + 0x688);
+        fn_800BB0A8(*(s32 *)arg0, 0x10, 3, 1, 4, 0, 0, 0, 0, (s32)sp18, 0, 0);
+        res = fn_800BB0A8(*(s32 *)arg0, 0x37, 3, 1, *(s32 *)((u8 *)arg0 + 0x10), 0, 0, 0, 0, (s32)sp18, 0, 0);
+        if (res != 0) {
+            OSReport(str + 0x6A0, res);
+            return res;
+        }
+        res = fn_800BB0A8(*(s32 *)arg0, 0x33, 3, 1, 0, (s32)arg1, 1, 4, 0, (s32)sp18, 0, 0);
+        if (res != 0) {
+            OSReport(str + 0x6C0, res);
+        } else {
+            OSReport(str + 0x6E0, arg1[0], arg1[1]);
+        }
+        res = fn_800BB0A8(*(s32 *)arg0, 0x10, 3, 1, 0x200, 0, 0, 0, 0, (s32)sp18, 0, 0);
     }
-    res = fn_800BB0A8(*(s32 *)arg0, 0x33, 3, 1, 0, (s32)arg1, 1, 4, 0, (s32)sp18, 0, 0);
-    if (res != 0) {
-        OSReport(str + 0x6C0, res);
-    } else {
-        OSReport(str + 0x6E0, arg1[0], arg1[1]);
-    }
-    return fn_800BB0A8(*(s32 *)arg0, 0x10, 3, 1, 0x200, 0, 0, 0, 0, (s32)sp18, 0, 0);
+    return res;
 }
 
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
