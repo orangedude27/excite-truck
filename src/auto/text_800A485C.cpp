@@ -17654,20 +17654,6 @@ extern "C" u8 fn_80062054(void);
 extern "C" void fn_80062088(s32);
 extern "C" f32 lbl_80560DDC,lbl_80560DE0,lbl_80560DE4;
 extern "C" f32 lbl_80560DD0,lbl_80560DE8;
-static inline s32 fn_800C7C70_find(s32 key, s32 val) {
-    s32 index = 0;
-    s32 *entry = lbl_802F4588;
-    s32 i;
-    for (i = 0; i < 0x25; ++i, entry += 4) {
-        if (entry[0] == key && entry[1] == val)
-            return index;
-        ++index;
-        if (entry[2] == key && entry[3] == val)
-            return index;
-        ++index;
-    }
-    return -1;
-}
 #pragma push
 #pragma dont_inline on
 extern "C" s32 fn_800C7C70(void *arg0) {
