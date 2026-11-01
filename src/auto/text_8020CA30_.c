@@ -128,5 +128,5 @@ void fn_8020CD28(char *arg0) {
     }
 }
 
-#pragma scheduling reset
+
 
