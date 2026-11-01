@@ -12505,27 +12505,26 @@ UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
     extern void *l2cu_find_rcb_by_psm(UINT16);
     extern void *fn_8008EBE4(s16);
     struct Callback10 { u32 f[10]; };
-    u8 *messages = lbl_80317C20;
+    u8 (*messages)[0x100] = (u8 (*)[0x100])lbl_80317C20;
     void *entry;
 
-    if (lbl_803C4040[0] >= 3)
-        ((void (*)(u32, void *, u32))fn_80070954)(0x80002, messages, psm);
+    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, *messages, psm);
     if (*(u32 *)((u8 *)info + 0x10) == 0 ||
         *(u32 *)((u8 *)info + 0xC) == 0 ||
         *(u32 *)((u8 *)info + 0x20) == 0 ||
         *(u32 *)((u8 *)info + 0x14) == 0) {
-        if (lbl_803C4040[0] >= 1) fn_80070954(0x80000, messages + 0x30, psm);
+        if (lbl_803C4040[0] >= 1) fn_80070954(0x80000, (*messages) + 0x30, psm);
         return 0;
     }
     if ((psm & 0x101) != 1) {
-        if (lbl_803C4040[0] >= 1) fn_80070954(0x80000, messages + 0x58, psm);
+        if (lbl_803C4040[0] >= 1) fn_80070954(0x80000, (*messages) + 0x58, psm);
         return 0;
     }
     entry = l2cu_find_rcb_by_psm(psm);
     if (entry == 0) {
         entry = ((void *(*)(UINT16))fn_8008EBE4)(psm);
         if (entry == 0) {
-            if (lbl_803C4040[0] >= 2) fn_80070954(0x80001, messages + 0x80, psm);
+            if (lbl_803C4040[0] >= 2) fn_80070954(0x80001, (*messages) + 0x80, psm);
             return 0;
         }
     }
@@ -20006,6 +20005,7 @@ extern f32 lbl_80560D78;
 extern f64 lbl_80560D80;
 extern f32 lbl_80560D88;
 extern f64 lbl_80560D90;
+extern u8 lbl_8031AC98[];
 s32 __InitParams(void *arg0) {
     f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f0_5, temp_f0_6;
     f32 temp_f1, temp_f2, temp_f29, temp_f30, temp_f31, temp_f3, temp_f4;
