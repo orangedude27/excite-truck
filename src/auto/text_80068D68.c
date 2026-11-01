@@ -2680,13 +2680,13 @@ s32 hcisu_h2_receive_msg(u16 arg0, u8 *arg1) {
     extern char lbl_80314294[];
     u8 sp8;
     register u8 *var_r15 = arg1;
-    register u32 var_r19 = 0;
-    register u16 var_r16;
-    register u8 *var_r22;
-    register u32 var_r23;
     register u16 *var_r21;
+    register u16 var_r16;
+    register s32 var_r19 = 0;
+    register u32 var_r23;
+    register u8 *var_r22;
     register u8 var_r17;
-    register u8 var_r18;
+    register u16 var_r18;
     register u8 *buf;
     register u16 offset;
     register u16 remaining;
@@ -2732,9 +2732,7 @@ for (;;) {
         offset = *(u16 *)(buf + 2);
         buf[offset + 8] = sp8;
         *(u16 *)(buf + 2) = offset + 1;
-        remaining = *(u16 *)(var_r21 + 6) - 1;
-        *(u16 *)(var_r21 + 6) = remaining;
-        if (remaining == 0) {
+        if (--*(u16 *)(var_r21 + 6) == 0) {
             var_r18 = sp8;
             if (var_r22[0x14] == 2) {
                 var_r18 = (u8)(((u16)sp8 << 8) + var_r22[0x17]);
@@ -2765,9 +2763,7 @@ for (;;) {
         }
         break;
     case 2:
-        remaining = *(u16 *)(var_r21 + 6) - 1;
-        *(u16 *)(var_r21 + 6) = remaining;
-        if (remaining == 0) {
+        if ((*(u16 *)(var_r21 + 6) -= 1) == 0) {
             var_r18 = sp8;
             if (var_r22[0x14] == 2)
                 var_r18 = (u8)(((u16)sp8 << 8) + var_r22[0x17]);
@@ -2801,9 +2797,7 @@ for (;;) {
         }
         break;
     case 4:
-        remaining = *(u16 *)(var_r21 + 6) - 1;
-        *(u16 *)(var_r21 + 6) = remaining;
-        if (remaining == 0) var_r22[0x1A] = 0;
+        if ((*(u16 *)(var_r21 + 6) -= 1) == 0) var_r22[0x1A] = 0;
         break;
     default:
         var_r22[0x1A] = 0;
@@ -8448,50 +8442,57 @@ void bta_sys_disable(void) {
 }
 
 tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) {
-    tBTM_ESCO_PARAMS *p_setup;
-    u16 temp_pkt_types;
-    u8 *btm_cb = lbl_803C0F78;
-    u16 *p_setup_ptr;
-    u8 link_type;
-    u8 hci_version;
+    u16 *var_r30 = (u16 *)&lbl_80316570;
+    u16 *var_r28 = (u16 *)p_parms;
+    u16 *var_r31;
+    u16 *var_r29;
+    u16 var_r27;
+    u16 temp;
+    u8 *btm_cb;
     
-    /* Make sure sco handle is valid and on an active link */
-    if (sco_inx >= 3 || ((u16 *)(btm_cb + sco_inx * 0x34))[0x185C / 2] != 4) {
+    if (sco_inx >= 3) {
         return BTM_WRONG_MODE;
     }
     
-    link_type = btm_cb[0x1882 + sco_inx * 0x34];
+    btm_cb = lbl_803C0F78;
+    var_r31 = (u16 *)&btm_cb[sco_inx * 0x34];
     
-    /* If SCO connection OR eSCO not supported just send change packet types */
-    if (link_type == 1 || btm_cb[0x636] == 0) {
-        u16 supported = ((u16 *)(btm_cb + sco_inx * 0x34))[0x656 / 2];
-        temp_pkt_types = p_parms->packet_types & (supported & 0x6);
-        
-        p_setup_ptr = (u16 *)(btm_cb + sco_inx * 0x34 + 0x1868);
-        if (!btsnd_hcic_change_conn_type(p_setup_ptr[1], BTM_ESCO_2_SCO(temp_pkt_types))) {
-            return BTM_NO_RESOURCES;
-        }
-    } else {
-        u16 supported = ((u16 *)(btm_cb + sco_inx * 0x34))[0x656 / 2];
-        hci_version = btm_cb[0x27C0];
-        
-        temp_pkt_types = (p_parms->packet_types & 0x3F) & supported;
-        
-        /* OR in any exception packet types if at least 2.0 version of spec */
-        if (hci_version >= 4) {
-            temp_pkt_types |= ((p_parms->packet_types & 0x1800) | (supported & 0x1800));
-        }
-        
-        p_setup_ptr = (u16 *)(btm_cb + sco_inx * 0x34 + 0x1868);
-        if (!btsnd_hcic_setup_esco_conn(p_setup_ptr[1], p_setup_ptr[0], p_setup_ptr[1], p_parms->max_latency,
-                                        p_setup_ptr[2], p_parms->retrans_effort, temp_pkt_types)) {
-            return BTM_NO_RESOURCES;
-        } else {
-            p_parms->packet_types = temp_pkt_types;
-        }
+    if (var_r31[0x185C / 2] == 4) {
+        return BTM_WRONG_MODE;
     }
     
-    return BTM_CMD_STARTED;
+    temp = btm_cb[0x1882 + sco_inx * 0x34];
+    var_r29 = (u16 *)&var_r31[0x1868 / 2];
+    
+    if (temp == 0 || btm_cb[0x1908] == 0) {
+        var_r27 = (((u16 *)var_r28)[0] & btm_cb[0x656]) & 7;
+        var_r29[3] = var_r27;
+        
+        if (btsnd_hcic_change_conn_type(var_r31[1], (var_r27 << 5) & 0xE0)) {
+            if (btm_cb[0x27C0] >= 3) {
+                fn_8007096C(0xD0002, &var_r30[0x248], var_r31[1], var_r27);
+            }
+            return BTM_CMD_STARTED;
+        }
+        return BTM_NO_RESOURCES;
+    }
+    
+    if (btm_cb[0x636] >= 3) {
+        u16 pkt_mask = btm_cb[0x656];
+        var_r27 = (((u16 *)var_r28)[0] | pkt_mask) & 0x3C0;
+    } else {
+        var_r27 = (((u16 *)var_r28)[0] & btm_cb[0x656]) & 0x3F;
+    }
+    
+    if (btm_cb[0x27C0] >= 3) {
+        fn_80070954(0xD0002, &var_r30[0x28C], var_r31[1]);
+    }
+    
+    if (btsnd_hcic_setup_esco_conn(var_r31[1], var_r29[0], var_r29[1], ((u16 *)var_r28)[0], 0, ((u16 *)var_r28)[2], var_r27)) {
+        ((u16 *)var_r28)[0] = var_r27;
+        return BTM_CMD_STARTED;
+    }
+    return BTM_NO_RESOURCES;
 }
 
 extern u8 lbl_80316834[];
@@ -11190,6 +11191,79 @@ BOOLEAN btsnd_hcic_reset(UINT8 local_controller_id) {
     p[10] = 0;
     btu_hcif_send_cmd(p);
     return TRUE;
+}
+
+BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_type, UINT8 *p_cond, UINT8 cond_len) {
+    BT_HDR *p = (BT_HDR *)p_buf;
+    UINT8 *raw = (UINT8 *)p;
+    UINT8 *src = p_cond;
+    UINT8 *dst;
+    UINT8 *tail_src;
+    UINT8 value;
+    s32 len = cond_len;
+    s32 index;
+    s32 tail;
+    u32 count;
+    s32 safe;
+
+    p->offset = 0;
+    raw[8] = 5;
+    raw[9] = 0xC;
+    if (filt_type != 0) {
+        p->len = cond_len + 5;
+        raw[0xA] = cond_len + 2;
+        raw[0xB] = filt_type;
+        raw[0xC] = cond_type;
+        dst = raw + 0xD;
+        if (cond_type == 1) {
+            dst[0] = src[2]; len = (UINT8)(len - 6); src += 6;
+            dst[1] = p_cond[1]; dst[2] = p_cond[0]; dst[3] = p_cond[5];
+            dst[4] = p_cond[4]; dst[5] = p_cond[3]; dst += 6;
+        } else if (cond_type == 2) {
+            dst[0] = src[5]; len = (UINT8)(len - 6); src += 6;
+            dst[1] = p_cond[4]; dst[2] = p_cond[3]; dst[3] = p_cond[2];
+            dst[4] = p_cond[1]; dst[5] = p_cond[0]; dst += 6;
+        }
+        if (len != 0) {
+            index = 0;
+            if (len > 0) {
+                if (len > 8) {
+                    tail = len - 8;
+                    safe = 0;
+                    if (len >= 0 && len <= 0x7FFFFFFE) safe = 1;
+                    if (safe != 0) {
+                        count = (u32)(tail + 7) >> 3;
+                        if (tail > 0) {
+                            do {
+                                dst[0] = src[index];
+                                tail_src = src + index;
+                                index += 8;
+                                dst[1] = tail_src[1]; dst[2] = tail_src[2];
+                                dst[3] = tail_src[3]; dst[4] = tail_src[4];
+                                dst[5] = tail_src[5]; dst[6] = tail_src[6];
+                                dst[7] = tail_src[7];
+                                dst += 8;
+                            } while (--count != 0);
+                        }
+                    }
+                }
+                tail_src = src + index;
+                tail = len - index;
+                if (index < len) {
+                    do {
+                        value = *tail_src++;
+                        *dst++ = value;
+                        tail--;
+                    } while (tail != 0);
+                }
+            }
+        }
+    } else {
+        p->len = 4;
+        raw[0xA] = 1;
+        raw[0xB] = filt_type;
+    }
+    btu_hcif_send_cmd(p);
 }
 
 BOOLEAN btsnd_hcic_write_pin_type(UINT8 type) {
