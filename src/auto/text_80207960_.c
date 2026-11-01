@@ -12,6 +12,7 @@ extern float lbl_80563228;
 extern float lbl_8056322C;
 extern unsigned long lbl_802F9E4C[];
 // split_file divides it into the game's real files (file_status shows its range).
+typedef struct { int a, b, c; } W3;
 
 #pragma cplusplus on
 struct LoopItem_80207E70 {
@@ -243,16 +244,18 @@ void fn_80207C4C(void) {
 	return;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
-    signed long c = *((signed long*)arg1 + 2);
-    signed long b = *((signed long*)arg1 + 1);
-    signed long a = *(signed long*)arg1;
-    void* dst = (void*)((char*)arg0 + arg2 * 0xC);
-    *(signed long*)((char*)dst + 0x5C) = a;
-    *(signed long*)((char*)dst + 0x60) = b;
-    *(signed long*)((char*)dst + 0x64) = c;
+    signed long c = ((signed long*)arg1)[2];
+    signed long b = ((signed long*)arg1)[1];
+    signed long a = ((signed long*)arg1)[0];
+    signed long* dst = (signed long*)arg0 + arg2 * 3 + 23;
+    dst[0] = a;
+    dst[1] = b;
+    dst[2] = c;
 }
-
+#pragma pop
 void fn_80207C74(void* arg0, signed long arg1) {
     *(signed long*)((char*)arg0 + 0x8C) = arg1;
 }
