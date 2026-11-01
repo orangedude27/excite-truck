@@ -265,6 +265,8 @@ extern "C" s32 lbl_8055DD30;
 extern "C" s32 fn_800B8004(s32);
 extern "C" s32 fn_800B8048(s32);
 extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
+struct FatCopyA { s32 w[4]; };
+struct FatCopyB { s32 w[3]; };
 extern "C" s32 lbl_803D2140[];
 extern "C" s32 lbl_8031D7C0[];
 extern "C" void fn_800C51BC(s32 *, s32 *, s32 *);
