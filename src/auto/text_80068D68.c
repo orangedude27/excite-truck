@@ -6309,6 +6309,65 @@ success:
     return 0;
 }
 
+extern void l2cu_device_reset(void);
+void btm_reset_complete(void) {
+    extern u8 lbl_803C0F78[];
+    extern char lbl_803160F0[];
+    extern void fn_8007093C(u32, void *);
+    extern void fn_80085828();
+    u8 *btm = lbl_803C0F78;
+    u8 *name = btm + 0x648;
+    void (*callback)(void *);
+    void *buf;
+
+    if (btm[0x27C0] >= 4)
+        fn_8007093C(0xD0003, lbl_803160F0);
+
+    callback = *(void (**)(void *))(btm + 0x620);
+    if (callback != 0) {
+        *(void (**)(void *))(btm + 0x620) = 0;
+        callback(0);
+        return;
+    }
+
+    if (btm[0x64E] == 0) {
+        l2cu_device_reset();
+        *(u16 *)(btm + 0x16A0) = 0x12;
+        *(u16 *)(btm + 0x16A2) = 0x800;
+        *(u16 *)(btm + 0x16A4) = 0;
+        *(u16 *)(btm + 0x169C) = 0x12;
+        *(u16 *)(btm + 0x169E) = 0x800;
+        *(u16 *)(btm + 0x16A6) = 0;
+        btm[0x64E] = 2;
+        btm[0x64F] = 4;
+        btu_start_timer(btm + 0x574, 1, 1);
+
+        buf = GKI_getpoolbuf(2);
+        if (buf != 0)
+            ((void (*)(void *))fn_80085828)(buf);
+
+        memcpy(name, name, 3);
+
+        if (btm[0x64E] != 0 && btm[0x64E] != 1) {
+            buf = GKI_getpoolbuf(2);
+            if (buf != 0)
+                fn_80085524(buf, name);
+        }
+
+        if (btm != 0 && btm[0x64E] != 0 && btm[0x64E] != 1) {
+            buf = GKI_getpoolbuf(2);
+            if (buf != 0) {
+                if (btm != lbl_803C0F78) {
+                    memset(name, 0, 0x20);
+                    strncpy((char *)name, (char *)name, 0x1F);
+                }
+                ((void (*)(void *, void *))btsnd_hcic_change_name)(buf, name);
+            }
+        }
+        ((void (*)(u8, void *, u8))BTM_SetPinType)(btm[0x20], btm + 0x22, btm[0x21]);
+    }
+}
+
 void fn_8008C04C(s16);
 s32 btsnd_hcic_inq_cancel_8008576C(void);
 s32 btsnd_hcic_inq_cancel_80085850(void);
@@ -11291,16 +11350,19 @@ BOOLEAN btsnd_hcic_read_stored_key(BD_ADDR bd_addr, BOOLEAN read_all_flag) {
 }
 
 BOOLEAN btsnd_hcic_write_stored_key(void *buffer, UINT8 num_keys, BD_ADDR *bd_addr, LINK_KEY *link_key) {
-    u16 len;
+    u32 len;
+    u16 length;
     u8 *pp;
     int i;
 
     *(u16 *)((u8 *)buffer + 4) = 0;
-    len = (u16)(num_keys * 0x16 + 4);
-    *(u16 *)((u8 *)buffer + 2) = len;
+    len = num_keys * 0x16;
+    len += 4;
+    length = (u16)len;
+    *(u16 *)((u8 *)buffer + 2) = (u16)len;
     ((u8 *)buffer)[8] = 0x11;
     ((u8 *)buffer)[9] = 0x0C;
-    ((u8 *)buffer)[0xA] = (u8)(len - 3);
+    ((u8 *)buffer)[0xA] = (u8)(length - 3);
     if (num_keys > 0xB)
         num_keys = 0xB;
     ((u8 *)buffer)[0xB] = num_keys;
@@ -11310,7 +11372,7 @@ BOOLEAN btsnd_hcic_write_stored_key(void *buffer, UINT8 num_keys, BD_ADDR *bd_ad
         BDADDR_TO_STREAM(pp, bd_addr[i]);
         ARRAY16_TO_STREAM(pp, link_key[i]);
     }
-    return btu_hcif_send_cmd();
+    btu_hcif_send_cmd(buffer);
 }
 
 s32 btsnd_hcic_switch_role_8008515C(BD_ADDR bd_addr, UINT8 role) {
