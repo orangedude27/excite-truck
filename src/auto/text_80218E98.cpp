@@ -56,6 +56,13 @@ extern "C" void fn_8021E724(void *);
 extern "C" void fn_8021E774(void *);
 extern "C" void fn_8021E7C4(void *);
 extern "C" void fn_8021E7D4(void *);
+
+extern "C" s32 fn_8021E620(void *, s32);
+extern "C" void fn_8021E684(void *arg0);
+extern "C" void fn_8021E6D4(void *arg0);
+extern "C" void fn_8021E724(void *arg0);
+extern "C" void fn_8021E774(void *arg0);
+extern "C" void fn_8021E7C4(void *arg0);
 extern "C" s32 fn_8022B620(s32, const char *);
 extern "C" void *lbl_8033EA90[];
 #pragma push
