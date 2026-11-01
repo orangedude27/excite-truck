@@ -7719,6 +7719,7 @@ extern "C" s32 fn_800B73E4(s32 arg0) {
 
 extern "C" s32 fn_800B73BC(s32);
 
+#pragma dont_inline on
 extern "C" void fn_800B7408(volatile s32* arg0, void* arg1) {
  extern s32 fn_800B6628(void*, void*, s32);
  extern s32 fn_800B73BC(s32);
