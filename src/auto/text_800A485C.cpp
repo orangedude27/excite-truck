@@ -16056,7 +16056,7 @@ done:
 
 extern "C" void fn_800591AC(s32);
 extern "C" void AIRegisterDMACallback_800591F0(void *);
-extern "C" void fn_800D3634(s32);
+extern "C" s32 fn_800D3634(s32);
 extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(void *, const char *, ...);
 extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(void *);
 extern "C" void PPCHalt(void);
