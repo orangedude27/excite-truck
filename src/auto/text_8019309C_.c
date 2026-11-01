@@ -1377,6 +1377,9 @@ struct Obj_80195D80 {
     unsigned int pad;
     struct Snap_80195D80 snap;
 };
+static inline void CopySnap_80195D80(struct Snap_80195D80 *dst, struct Snap_80195D80 *src) {
+    *dst = *src;
+}
 #pragma cplusplus on
 class Vt_80195D80 {
 public:
@@ -1733,14 +1736,10 @@ extern void fn_8018ADC4(int, float);
 void fn_80196AA0(void *arg0) {
     int state = 0;
     float difference;
-    volatile float high;
-    volatile float low;
     float vecA[3];
     float vecB[3];
     float *limits = lbl_80562250;
 
-    high = lbl_80562144;
-    low = lbl_80562140;
     difference = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x218);
     if (!(difference < limits[0])) {
         state = 1;
@@ -1764,7 +1763,9 @@ void fn_80196AA0(void *arg0) {
         vecA[2] = *(float *)((char *)object + 0x90) * factor;
         fn_8017B3A8(object, vecA, (char *)object + 0x94, factor);
     }
-    case 1:
+    case 1: {
+        volatile float high = lbl_80562144;
+        volatile float low = lbl_80562140;
         {
             float result = -((low * *(float *)((char *)arg0 + 0x40)) +
                              (-high * *(float *)((char *)arg0 + 0x44)));
@@ -1794,6 +1795,7 @@ void fn_80196AA0(void *arg0) {
             }
         }
         break;
+    }
     case -1:
     case 2:
     default:
@@ -2036,7 +2038,7 @@ void fn_8019724C(void *arg0, float *arg1) {
             current = current > lower ? current : lower;
             *(float *)((char *)arg0 + 0x1F8) = current;
             *(float *)((char *)arg0 + 0x20C) = fn_801973FC(direction, projected, arg1);
-            flagThreshold = lbl_8056222C;
+            flagThreshold = *(volatile float *)&lbl_8056222C;
             arg1[0] = projected[0];
             arg1[1] = projected[1];
             if (flagThreshold < *(float *)((char *)arg0 + 0x270)) {
