@@ -1053,7 +1053,7 @@ extern "C" void *fn_8014DE50(void) {
         virtual s32 get(char *, s32);
     };
     u8 *strings = lbl_8032D358;
-    s32 raw = fn_801284F8(0xFE8, strings + 0x3D4);
+          void *raw = (void *)fn_801284F8(0xFE8, strings + 0x3D4);
     u8 *obj = (u8 *)raw;
     if (obj != 0) {
         register u8 *vtableBase = (u8 *)lbl_8032D970;
@@ -1137,12 +1137,12 @@ extern "C" void *fn_8014E1D0(void *arg0, s32 arg1) {
         s32 valueA;
         s32 valueB;
     };
+    register Obj *obj = (Obj *)arg0;
     register u8 *strings = lbl_8032D358;
-    Obj *obj = (Obj *)arg0;
     void *table;
+    s32 ok;
     Iter_8014E1D0 *iter;
     char name[0x64];
-    s32 ok;
     s32 i;
     void **items;
     obj->items = 0;
