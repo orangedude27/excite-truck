@@ -7743,8 +7743,9 @@ extern "C" void fn_800B7408(volatile s32* arg0, void* arg1) {
      entry = *(volatile s32*)((u8*)arg0);
    } while (entry != 0);
  }
- fn_800B73BC(result);
+   fn_800B73BC(result);
 }
+#pragma dont_inline reset
 
 #pragma dont_inline on
 extern "C" s32 fn_800B74B8(s8 arg0) {
