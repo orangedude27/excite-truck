@@ -1729,7 +1729,7 @@ void fn_801967FC(void *arg0) {
   }
 
 extern float lbl_80562160, lbl_805621A4, lbl_80562258, lbl_8056225C;
-extern float lbl_80562250[];
+extern float lbl_80562250[2];
 extern void fn_8017B3A8(void *, float *, void *, float);
 extern void fn_8018ADD4(void *, int);
 extern void fn_8018ADC4(int, float);
