@@ -7903,8 +7903,6 @@ void btm_chg_all_acl_pkt_types(UINT8);
 static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBTM_ESCO_PARAMS *p_parms) {
     UINT8 *p_sco;
     void *p_buf;
-    UINT8 *p_sco_base;
-    UINT16 local_pkt_types;
     UINT16 pkt_types;
 
     p_sco = 0;
@@ -7916,8 +7914,7 @@ static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBT
         return;
     }
     if (sco_inx < 3) {
-        p_sco_base = lbl_803C0F78 + (sco_inx * 0x34);
-        p_sco = p_sco_base + 0x1854;
+        p_sco = (UINT8 *)&((tSCO_CONN *)lbl_803C0F78)[sco_inx] + 0x1854;
     }
     if (hci_status != 0) {
         if (p_sco != 0) {
@@ -7937,15 +7934,15 @@ static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBT
         if (p_parms != 0) {
             *(tBTM_ESCO_PARAMS *)(p_sco + 0x14) = *p_parms;
         }
-        local_pkt_types = *(UINT16 *)(lbl_803C0F78 + 0x1904);
-        *(UINT16 *)(p_sco + 0x20) = local_pkt_types;
-        pkt_types = *(UINT16 *)(lbl_803C0F78 + 0x656) & local_pkt_types;
+        *(UINT16 *)(p_sco + 0x20) = *(UINT16 *)(lbl_803C0F78 + 0x1904);
+        pkt_types = *(UINT16 *)(p_sco + 0x20) & *(UINT16 *)(lbl_803C0F78 + 0x656);
         pkt_types &= 0x3F;
         if ((pkt_types & 0x38) == 0) {
             pkt_types |= 8;
         }
         if (lbl_803C0F78[0x636] >= 3) {
-            pkt_types |= (*(UINT16 *)(lbl_803C0F78 + 0x656) | local_pkt_types) & 0x3C0;
+            pkt_types |= (*(UINT16 *)(p_sco + 0x20) |
+                          *(UINT16 *)(lbl_803C0F78 + 0x656)) & 0x3C0;
         }
         btsnd_hcic_accept_esco_conn(
             p_buf, bda, *(UINT32 *)(p_sco + 0x14), *(UINT32 *)(p_sco + 0x18),
@@ -10696,6 +10693,41 @@ void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
  entry_reg[0]=3;memcpy(entry_reg+9,addr,6);*(u16 *)(entry_reg+6)=cid;L2CA_ConnectRsp(addr,status,cid,0,0);
  if(lbl_803C3740[0x28]>=4)fn_80070954(0xE0003,lbl_80317354,*(u16 *)(entry_reg+6));
  L2CA_ConfigReq(cid,(tL2CAP_CFG_INFO *)(entry_reg+0x24));
+}
+
+void gap_connect_cfm(u32 cid, s32 result) {
+    u8 *entry = lbl_803C3740 + 0xAC;
+    register u8 i = 0;
+    u16 psm;
+    while (i < 8) {
+        if (entry[0] != 0 && *(u16 *)(entry + 6) == cid)
+            break;
+        i++;
+        entry += 0x60;
+    }
+    if (i == 8)
+        entry = 0;
+    if (entry == 0)
+        return;
+    if (result == 0 && entry[0] == 2) {
+        entry[0] = 3;
+        L2CA_ConfigReq((u16)cid, (tL2CAP_CFG_INFO *)(entry + 0x24));
+        return;
+    }
+    if (*(void **)(entry + 0x20) != 0)
+        ((void (*)(u16, u16))*(void **)(entry + 0x20))(*(u16 *)(entry + 4), 0x101);
+    psm = *(u16 *)(entry + 0x10);
+    while (*(u32 *)(entry + 0x14) != 0)
+        GKI_freebuf(GKI_dequeue((BUFFER_Q *)(entry + 0x14)));
+    entry[0] = 0;
+    {
+        u8 *p = lbl_803C3740 + 0xAC;
+        for (i = 0; i < 8; i++, p += 0x60) {
+            if (p[0] != 0 && *(u16 *)(p + 0x10) == psm)
+                return;
+        }
+    }
+    L2CA_Deregister(psm);
 }
 
 void gap_config_ind(u16 cid, void *p_cfg) {
@@ -21528,4 +21560,7 @@ void fn_80085E24(void *arg0, u8 arg1) {
     *(u8 *)((u8 *)arg0 + 10) = 1;
     *(u8 *)((u8 *)arg0 + 11) = arg1;
     btu_hcif_send_cmd(arg0);
+}
+static inline UINT8 *btm_sco_rsp_entry_base(UINT8 *base, UINT16 index) {
+    return base + ((UINT32)index * 0x34);
 }
