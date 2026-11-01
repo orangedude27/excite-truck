@@ -43,6 +43,12 @@ extern "C" char lbl_8033EE50[];
 
 extern "C" u8 lbl_8033E7F4[];
 extern "C" char lbl_8033D9BC[];
+
+static s32 abs_val(s32 x) {
+    s32 sign = x >> 31;
+    return (x ^ sign) - sign;
+}
+
 extern "C" void fn_8021C12C(void *);
 extern "C" void fn_8021E684(void *);
 extern "C" void fn_8021E6D4(void *);
