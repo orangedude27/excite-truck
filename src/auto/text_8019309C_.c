@@ -813,10 +813,12 @@ void fn_801942F0(void *arg0, int arg1) {
     }
 }
 
-extern int fn_800216D0(void);
-extern void *fn_801B83A0(void);
+extern int fn_801B2F24(void);
 extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
-void fn_80194324(void *arg0) {
+#pragma cplusplus on
+extern "C" int fn_800216D0(void);
+extern "C" void *fn_801B83A0(void);
+extern "C" void fn_80194324(void *arg0) {
     char *p = (char *)arg0;
     int flag;
     float thresh;
@@ -844,9 +846,7 @@ void fn_80194324(void *arg0) {
         }
         if (!flag) {
             if (*(float *)(p + 0x1D8) >= limit) {
-                char *obj = (char *)fn_801B83A0();
-                void (*fn)(void *, void *) = *(void (**)(void *, void *))(*(char **)obj + 0xAC);
-                fn(obj, *(void **)(p + 0x290));
+                ((Vt_80194324 *)fn_801B83A0())->v41(*(void **)(p + 0x290));
                 *(float *)(p + 0x1D8) = lbl_80562144;
             }
         }
@@ -855,14 +855,10 @@ void fn_80194324(void *arg0) {
         *(float *)(p + 0x1D8) = *(float *)(p + 0x1D8) + lbl_805621C4;
     } else {
         float x = *(float *)(p + 0x1D8) - lbl_805621C4;
-        if (x > lbl_80562144) {
-        } else {
-            x = lbl_80562144;
-        }
-        *(float *)(p + 0x1D8) = x;
+        *(float *)(p + 0x1D8) = (x > lbl_80562144) ? x : lbl_80562144;
     }
 }
-
+#pragma cplusplus reset
 extern void fn_8018AF04(void *);
 extern void fn_80193CD4(void *);
 extern unsigned int lbl_8055E540;
