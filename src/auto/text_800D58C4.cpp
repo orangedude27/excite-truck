@@ -58,7 +58,7 @@ extern "C" void GXSetTevKColorSel(u8, u32);
 extern "C" void GXSetTevOrder(u8, u8, u8, u8);
 extern "C" void GXSetTevSwapMode(u8, u32, u32);
 extern "C" void GXSetTevSwapModeTable(u32, u32, u32, u32, u32);
-extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32);                   /* extern */
+extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32);
 
 extern "C" void fn_800D4F98(void *);
 extern "C" f32 lbl_80560E8C;
