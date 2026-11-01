@@ -16775,6 +16775,68 @@ void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
     }
 }
 
+void rfc_port_sm_term_wait_sec_check(void *p_port, u16 event, void *p_data) {
+    extern u8 lbl_803C4828[];
+    extern char lbl_80319AB0[];
+    extern void rfc_port_closed(void *);
+    extern void rfc_send_ua();
+    extern void fn_8007096C(u32, void *, u16, u16);
+    extern void fn_8007093C(u32, void *);
+    extern void fn_80070954(u32, void *, u16);
+    u8 *port = (u8 *)p_port;
+    u8 *data = (u8 *)p_data;
+    char *messages = lbl_80319AB0;
+
+    switch (event) {
+    case 15:
+        if (*data != 0) {
+            if (*(void **)(port + 0x6C) != 0) {
+                rfc_send_dm(*(void **)(port + 0x6C), port[0xD], 1);
+                ((void (*)(void *, u8))port_rfc_closed)(p_port, 15);
+            }
+        } else {
+            PORT_DlcEstablishInd((s32)*(void **)(port + 0x6C), (s32)port[0xD], (s32)*(u16 *)((u8 *)*(void **)(port + 0x6C) + 0x6A));
+        }
+        return;
+    case 9:
+    case 12:
+        if (lbl_803C4828[0x414] >= 1)
+            fn_8007096C(0x90000, messages + 0x14, port[0x68], event);
+        return;
+    case 13:
+        btm_sec_abort_access_req((u8 *)*(void **)(port + 0x6C) + 0x62);
+        rfc_port_closed(p_port);
+        return;
+    case 14:
+        if (lbl_803C4828[0x414] >= 1)
+            fn_8007093C(0x90000, messages + 0xFC);
+        GKI_freebuf(p_data);
+        return;
+    case 0:
+        return;
+    case 3:
+        btm_sec_abort_access_req((u8 *)*(void **)(port + 0x6C) + 0x62);
+        port[0x68] = 0;
+        ((void (*)(void *, u8))rfc_send_ua)(*(void **)(port + 0x6C), port[0xD]);
+        PORT_DlcReleaseInd(*(void **)(port + 0x6C), port[0xD]);
+        return;
+    case 4:
+        GKI_freebuf(p_data);
+        return;
+    case 11:
+        if (*data != 0) {
+            if (*(void **)(port + 0x6C) != 0)
+                rfc_send_dm(*(void **)(port + 0x6C), port[0xD], 1);
+        } else {
+            ((void (*)(void *, u8))rfc_send_ua)(*(void **)(port + 0x6C), port[0xD]);
+            port[0x68] = 4;
+        }
+        return;
+    }
+    if (lbl_803C4828[0x414] >= 2)
+        fn_80070954(0x90001, messages + 0x128, event);
+}
+
 void rfc_port_sm_orig_wait_sec_check(void *port, u16 event, void *data) {
     extern char lbl_80319AB0[];
     extern void rfc_send_sabme();
