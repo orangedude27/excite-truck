@@ -19601,6 +19601,63 @@ static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UIN
     sdp_disconnect(p_ccb, 0);
 }
 
+extern void *add_record(void *, void *);
+extern UINT8 *add_attr(UINT8 *, tSDP_DISCOVERY_DB *, tSDP_DISC_REC *, UINT16, tSDP_DISC_ATTR *, UINT8);
+UINT8 *save_attr_seq(tCONN_CB *p_ccb, UINT8 *p, UINT8 *p_msg_end) {
+    register char *log = lbl_8031A028;
+    UINT32 seq_len;
+    UINT32 attr_len;
+    UINT16 attr_id;
+    UINT8 type;
+    UINT8 *p_seq_end;
+    UINT8 *p_next;
+    tSDP_DISC_REC *p_rec;
+
+    type = *p;
+    p_next = p + 1;
+    if ((type >> 3) != 6) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_80070954(0xA0001, log + 0x50, type);
+        return NULL;
+    }
+
+    p = sdpu_get_len_from_type(p_next, type, &seq_len);
+    if (p + seq_len > p_msg_end) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            ((void (*)(u32, void *, u32))fn_80070954)(0xA0001, log + 0x78, seq_len);
+        return NULL;
+    }
+
+    p_rec = add_record(*(void **)((u8 *)p_ccb + 0x410), (u8 *)p_ccb + 2);
+    if (p_rec == NULL) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_8007093C(0xA0001, log + 0x98);
+        return NULL;
+    }
+
+    p_seq_end = p + seq_len;
+    while (p < p_seq_end) {
+        type = *p++;
+        p = sdpu_get_len_from_type(p, type, &attr_len);
+        if ((type >> 3) != 1 || attr_len != 2) {
+            if (lbl_803C4C40[0x4630] >= 2)
+                ((void (*)(u32, void *, u32, u32))fn_8007096C)(
+                    0xA0001, log + 0xA8, type, attr_len);
+            return NULL;
+        }
+
+        attr_id = ((UINT16)p[0] << 8) + p[1];
+        p += 2;
+        p = add_attr(p, *(tSDP_DISCOVERY_DB **)((u8 *)p_ccb + 0x410), p_rec, attr_id, NULL, 0);
+        if (p == NULL) {
+            if (lbl_803C4C40[0x4630] >= 2)
+                fn_8007093C(0xA0001, log + 0x98);
+            return NULL;
+        }
+    }
+    return p;
+}
+
 void *add_record(void *ctx, void *data) {
     u32 size = *(u32 *)((u8 *)ctx + 4);
     void *record;
@@ -21600,6 +21657,71 @@ void fn_8006BAA4(u32 arg0) {
         return;
     }
     DBPrintf_8006CFA8(lbl_80313794);
+}
+
+void fn_8006C00C(s32 event, void *arg) {
+    register char *strings = (char *)lbl_803130C8;
+    u8 *p = (u8 *)arg;
+    u16 timeout;
+    BOOL interrupts;
+    u8 state;
+    u8 count;
+    u8 field;
+    u32 value;
+
+    switch (event) {
+    case 0:
+        DBPrintf_8006CFA8(strings + 0x96C,
+                           p[0], p[1], p[2], p[3], p[4], p[5], p[6],
+                           p[7], p[8], (s8)p[9]);
+        field = p[9];
+        state = lbl_80392960[0x667];
+        lbl_8055DC48 = field;
+        if (state == 1)
+            goto high_timeout;
+        if (state == 0) {
+            interrupts = OSDisableInterrupts();
+            count = lbl_80392960[0x665];
+            OSRestoreInterrupts(interrupts);
+            if (count < 3) {
+                timeout = 0x12C0;
+                goto write_timeout;
+            }
+        }
+high_timeout:
+        timeout = 0x8000;
+write_timeout:
+        BTM_WritePageTimeout(timeout);
+        break;
+    case 1:
+        DBPrintf_8006CFA8(strings + 0x9B0);
+        break;
+    case 2:
+        memcpy(lbl_803934C0, p, 6);
+        memcpy(lbl_803934C0 + 6, p + 6, 0x40);
+        value = *(u32 *)(p + 0x100);
+        *(u32 *)(lbl_803934C0 + 0x100) = value;
+        lbl_8055DC49++;
+        DBPrintf_8006CFA8(strings + 0x9C4,
+                           lbl_803934C0[0], lbl_803934C0[1],
+                           lbl_803934C0[2], lbl_803934C0[3],
+                           lbl_803934C0[4], lbl_803934C0[5],
+                           lbl_803934C0 + 6, value);
+        break;
+    case 3:
+        DBPrintf_8006CFA8(strings + 0xA04);
+        lbl_80392960[0xC] = 4;
+        break;
+    case 4:
+        DBPrintf_8006CFA8(strings + 0xA18);
+        lbl_8055DC49 = 0;
+        memset(lbl_803934C0, 0, 0x108);
+        lbl_80392960[0xC] = 4;
+        break;
+    default:
+        DBPrintf_8006CFA8(strings + 0xA28);
+        break;
+    }
 }
 
 extern s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks);
