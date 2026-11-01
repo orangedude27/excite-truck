@@ -303,7 +303,7 @@ extern char lbl_80317A54[];
 extern char lbl_80317A80[];
 #include "revolution/BTE/stack/include/wbt_api.h"
 extern void AXFXReverbHiExpShutdown(void*);
-extern s32 AXFXReverbHiExpInit(void*);
+BOOL AXFXReverbHiExpInit(void*);
 extern void __FreeDelayLine(void*);
 extern void AXFXReverbHiExpCallback(void);
 extern s32 __CtrlMsgInt(s32,s32,s32,s32,s32,u32,void*,void*,void*,s32);
@@ -12504,13 +12504,12 @@ void fn_80089248(void)
 UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
     extern void *l2cu_find_rcb_by_psm(UINT16);
     extern void *fn_8008EBE4(s16);
+    struct Callback10 { u32 f[10]; };
     u8 *messages = lbl_80317C20;
     void *entry;
-    u32 *src = (u32 *)info;
-    u32 *dst;
-    u32 a, b;
 
-    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, messages, psm);
+    if (lbl_803C4040[0] >= 3)
+        ((void (*)(u32, void *, u32))fn_80070954)(0x80002, messages, psm);
     if (*(u32 *)((u8 *)info + 0x10) == 0 ||
         *(u32 *)((u8 *)info + 0xC) == 0 ||
         *(u32 *)((u8 *)info + 0x20) == 0 ||
@@ -12530,12 +12529,7 @@ UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
             return 0;
         }
     }
-    dst = (u32 *)entry;
-    a = src[1]; b = src[0]; dst[1] = b; dst[2] = a;
-    a = src[3]; b = src[2]; dst[3] = b; dst[4] = a;
-    a = src[5]; b = src[4]; dst[5] = b; dst[6] = a;
-    a = src[7]; b = src[6]; dst[7] = b; dst[8] = a;
-    a = src[9]; b = src[8]; dst[9] = b; dst[10] = a;
+    *(struct Callback10 *)((u8 *)entry + 4) = *(struct Callback10 *)info;
     return 1;
 }
 
