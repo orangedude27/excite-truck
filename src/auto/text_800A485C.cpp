@@ -467,16 +467,15 @@ public:
 extern "C" s32 lbl_8031E370[];
 extern "C" s32 lbl_802F4588[];
 static inline s32 findEventSlot(s32 key, s32 val) {
-    s32 index = 0;
     s32 *entry = lbl_802F4588;
+    s32 index = 0;
     s32 i;
-    for (i = 0; i < 0x25; ++i, entry += 4) {
+    for (i = 0; i < 0x25; ++i, entry += 4, ++index) {
         if (key == entry[0] && entry[1] == val)
             return index;
         ++index;
         if (key == entry[2] && entry[3] == val)
             return index;
-        ++index;
     }
     return -1;
 }
@@ -18579,12 +18578,12 @@ void homebutton::HomeButton::calc_battery(int n) {
     if (rec[0x16C] < 2) {
         index = findEventSlot(n + 0x1F, 0x15);
         obj = ((void **)self)[index + 166];
-        fn_800CF3EC(obj);
+        ((void (*)(void *))fn_800CF3EC)(obj);
         *(s32 *)((u8 *)obj + 0x14) = 1;
     } else {
         index = findEventSlot(n + 0x1F, 0x11);
         obj = ((void **)self)[index + 166];
-        fn_800CF3EC(obj);
+        ((void (*)(void *))fn_800CF3EC)(obj);
         *(s32 *)((u8 *)obj + 0x14) = 1;
     }
     if (*(s32 *)(self + 0x78) < 0x64) *(s32 *)(self + 0x78) = 0;
