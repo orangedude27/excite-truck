@@ -279,7 +279,7 @@ extern "C" u32 lbl_802EEF40[];
 extern "C" s32 fn_800AF5A0(void *, s32, s32 *);
 extern "C" s32 fn_800AFE14(void *, s32, s32 *);
 extern "C" s32 fn_800B0258(void *, s32, s32 *);
-extern "C" void fn_800BEE64(void *, s32, s32);
+extern "C" s32 fn_800BEE64(void *, s32, s32);
 extern "C" void fn_800C3960(void *, s32, s32, s32);
 extern "C" void fn_800C3574(void *, void *, s32, s32, s32);
 extern "C" u32 lbl_802F4088[];
@@ -10990,33 +10990,33 @@ extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
 extern s16 lbl_802F3418[];
 extern s16 lbl_802F3478[];
 s32 fn_800BEE64(void *arg0, s32 arg1) {
-    s32 sp8=0;
+    s32 sp8 = 0;
     s16 type, status;
     s32 value, result;
-    if(fn_800BDD7C(0x400,arg1,&sp8)==0)return 8;
-    type=fn_800BDE18(*(s32*)((u8*)arg0+0x278),arg1,1,&sp8);
-    if(fn_800BDE18(*(s32*)((u8*)arg0+0x278),arg1,2,&sp8)!=1)return 0xD;
-    *(s32*)((u8*)arg0+4)=type==0?1:0;
-    fn_800BDE18(*(s32*)((u8*)arg0+0x278),arg1,1,&sp8);
-    result=fn_800BDE18(*(s32*)((u8*)arg0+0x278),arg1,0x10,&sp8);
-    type=(result>>12)&15;
-    if(type==0||type==15)return 0xE;
-    status=(result>>10)&3;
-    *(s16*)((u8*)arg0+0x1c)=status;
-    if(status==3)return 0xF;
-    *(u8*)arg0=(((result>>6)&3)==3)?1:2;
-    if(*(s32*)((u8*)arg0+4)==0)
-        value=lbl_802F3418[(status<<4)+type]*8;
+    if (fn_800BDD7C(0x400, arg1, &sp8) == 0) return 8;
+    type = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg1, 1, &sp8);
+    if (fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg1, 2, &sp8) != 1) return 0xD;
+    *(s32 *)((u8 *)arg0 + 4) = type == 0 ? 1 : 0;
+    fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg1, 1, &sp8);
+    result = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg1, 0x10, &sp8);
+    type = (result >> 12) & 15;
+    if (type == 0 || type == 15) return 0xE;
+    status = (result >> 10) & 3;
+    *(s16 *)((u8 *)arg0 + 0x1c) = status;
+    if (status == 3) return 0xF;
+    *(u8 *)arg0 = (((result >> 6) & 3) == 3) ? 1 : 2;
+    if (*(s32 *)((u8 *)arg0 + 4) == 0)
+        value = lbl_802F3418[(*(s16 *)((u8 *)arg0 + 0x1c) << 4) + type] * 8;
     else
-        value=lbl_802F3478[(status<<4)+type]*8;
-    value+=8;
-    result=value/8;
-    *(s32*)((u8*)arg0+0xed70)=result;
-    if(value&7) *(s32*)((u8*)arg0+0xed70)=result+1;
-    if(*(s32*)((u8*)arg0+4)==0)
-        *(s32*)((u8*)arg0+0xed74)=(s8)*(u8*)arg0*0x900;
+        value = lbl_802F3478[(*(s16 *)((u8 *)arg0 + 0x1c) << 4) + type] * 8;
+    value += 8;
+    result = value / 8;
+    *(s32 *)((u8 *)arg0 + 0xed70) = result;
+    if (value & 7) *(s32 *)((u8 *)arg0 + 0xed70) = result + 1;
+    if (*(s32 *)((u8 *)arg0 + 4) == 0)
+        *(s32 *)((u8 *)arg0 + 0xed74) = *(s8 *)arg0 * 0x900;
     else
-        *(s32*)((u8*)arg0+0xed74)=(s8)*(u8*)arg0*0x480;
+        *(s32 *)((u8 *)arg0 + 0xed74) = *(s8 *)arg0 * 0x480;
     return 0;
 }
 
@@ -12760,7 +12760,7 @@ extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
 extern u32 lbl_8031D730[];
 extern "C" void fn_800C2DBC(s32 *arg0, s32 *arg1, s32 *arg2) {
     s32 *t = (s32 *)lbl_8031D730;
-#define STEP(i) { s32 a = arg0[i]; s32 c0 = t[2 * (i)]; s32 c1 = t[2 * (i) + 1]; s64 p = (s64)a * c0; arg1[i] = (s32)(p >> 20); s64 q = (s64)a * c1; arg2[-(i)] = (s32)(q >> 20); }
+#define STEP(i) { s32 a = arg0[i]; s32 c0 = t[2 * (i)]; s32 c1 = t[2 * (i) + 1]; arg1[i] = (s32)(((s64)a * c0) >> 20); arg2[-(i)] = (s32)(((s64)a * c1) >> 20); }
     STEP(0) STEP(1) STEP(2) STEP(3) STEP(4) STEP(5) STEP(6) STEP(7) STEP(8)
 #undef STEP
 }
