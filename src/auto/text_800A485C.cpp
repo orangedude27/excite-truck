@@ -465,6 +465,21 @@ public:
     virtual void *findPane(u32, s32);
 };
 extern "C" s32 lbl_8031E370[];
+extern "C" s32 lbl_802F4588[];
+static inline s32 findEventSlot(s32 key, s32 val) {
+    s32 index = 0;
+    s32 *entry = lbl_802F4588;
+    s32 i;
+    for (i = 0; i < 0x25; ++i, entry += 4) {
+        if (entry[0] == key && entry[1] == val)
+            return index;
+        ++index;
+        if (entry[2] == key && entry[3] == val)
+            return index;
+        ++index;
+    }
+    return -1;
+}
 extern "C" const char *lbl_8031D990[];
 extern "C" const char *lbl_8031E218[];
 extern "C" const char lbl_8031E770[];
@@ -18540,6 +18555,57 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
         if (j_03 == 0) result_03 = -1;
         *(s32 *)(self + 0x14) = result_03;
     }
+}
+
+void homebutton::HomeButton::calc_battery(int n) {
+    u8 *self = (u8 *)this;
+    s32 *ids = lbl_8031E370 + n * 4;
+    u8 *rec = self + n * 0x18;
+    s32 i, j, index;
+    s32 *entry;
+    void *obj;
+    for (i = 0; i < 4; i++) {
+        u8 *pane;
+        if (i < rec[0x16C]) {
+            pane = (u8 *)((BatteryLayoutDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->findPane(*ids, 1);
+            pane[0xCF] = (pane[0xCF] & 0xFE) | 1;
+        } else {
+            pane = (u8 *)((BatteryLayoutDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->findPane(*ids, 1);
+            pane[0xCF] = pane[0xCF] & 0xFE;
+        }
+        ids++;
+    }
+    if (rec[0x16C] < 2) {
+        index = 0;
+        entry = lbl_802F4588;
+        for (j = 0; j < 0x25; ++j, entry += 4) {
+            if (n + 0x1F == entry[0]) { if (entry[1] == 0x15) goto f1; }
+            ++index;
+            if (n + 0x1F == entry[2]) { if (entry[3] == 0x15) goto f1; }
+            ++index;
+        }
+        index = -1;
+    f1:;
+        obj = ((void **)self)[index + 166];
+        fn_800CF3EC(obj);
+        *(s32 *)((u8 *)obj + 0x14) = 1;
+    } else {
+        index = 0;
+        entry = lbl_802F4588;
+        for (j = 0; j < 0x25; ++j, entry += 4) {
+            if (n + 0x1F == entry[0]) { if (entry[1] == 0x11) goto f2; }
+            ++index;
+            if (n + 0x1F == entry[2]) { if (entry[3] == 0x11) goto f2; }
+            ++index;
+        }
+        index = -1;
+    f2:;
+        obj = ((void **)self)[index + 166];
+        fn_800CF3EC(obj);
+        *(s32 *)((u8 *)obj + 0x14) = 1;
+    }
+    if (*(s32 *)(self + 0x78) < 0x64) *(s32 *)(self + 0x78) = 0;
+    fn_800D16A8((s32 *)*(void **)(self + 0x254 + n * 4));
 }
 
 extern "C" void fn_800CA064(void) {
