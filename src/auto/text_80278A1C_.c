@@ -53,10 +53,11 @@ extern void fn_80131818(void*);
 extern void fn_80278A64(void*, void*, void*, s32);
 extern void fn_802E30C8(char*, s32);
 extern char lbl_80347690[];
-extern const char lbl_8055C6C8[];
-extern const char lbl_8055C6D0[];
-extern const char lbl_8055C6D8[];
-extern const char lbl_8055C6E0[];
+extern const char lbl_8055C6C8[4];
+extern const char lbl_8055C6D0[4];
+extern const char lbl_8055C6D8[4];
+extern const char lbl_8055C6E0[4];
+typedef struct Vec3_80279004 { f32 x, y, z; } Vec3_80279004;
 void* fn_80279004(s32 arg0, s32 arg1) {
     char path[0xC0];
     char path2[0x80];
