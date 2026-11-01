@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" char lbl_8055B884[];
+extern "C" void fn_802C4F58(s32, s32, const char *, s32);
 
 extern "C" s32 fn_802CAC28(void *, s32);
 extern "C" char lbl_8033DC20[];
@@ -452,25 +454,29 @@ extern "C" s32 lbl_8055FBDC;
 extern f32 lbl_80563500;
 
 extern "C" void fn_80218E98(void *arg0, void *arg1) {
-    s32 a = *(s32 *)((u8 *)arg0 + 0x14);
-    s32 b = *(s32 *)((u8 *)arg0 + 0x18);
-    s32 c = *(s32 *)((u8 *)arg0 + 0x1C);
-    s32 d = *(s32 *)((u8 *)arg0 + 0x20);
-    *(s32 *)((u8 *)arg1 + 0xC) = d;
-    *(s32 *)((u8 *)arg1 + 8) = c;
-    *(s32 *)((u8 *)arg1 + 4) = b;
-    *(s32 *)((u8 *)arg1 + 0) = a;
+    s32 *src = (s32 *)((u8 *)arg0 + 0x14);
+    s32 *dst = (s32 *)arg1;
+    s32 first = src[0];
+    s32 third = src[2];
+    s32 second = src[1];
+    s32 fourth = src[3];
+    dst[0] = first;
+    dst[1] = second;
+    dst[2] = third;
+    dst[3] = fourth;
 }
 
 extern "C" void fn_80218EBC(void *arg0, void *arg1) {
-    s32 a = *(s32 *)((u8 *)arg1 + 0);
-    s32 b = *(s32 *)((u8 *)arg1 + 4);
-    s32 c = *(s32 *)((u8 *)arg1 + 8);
-    s32 d = *(s32 *)((u8 *)arg1 + 12);
-    *(s32 *)((u8 *)arg0 + 0x14) = a;
-    *(s32 *)((u8 *)arg0 + 0x18) = b;
-    *(s32 *)((u8 *)arg0 + 0x1C) = c;
-    *(s32 *)((u8 *)arg0 + 0x20) = d;
+    s32 *src = (s32 *)arg1;
+    s32 *dst = (s32 *)((u8 *)arg0 + 0x14);
+    register s32 first = src[0];
+    s32 third = src[2];
+    s32 second = src[1];
+    register s32 fourth = src[3];
+    dst[0] = first;
+    dst[1] = second;
+    dst[2] = third;
+    dst[3] = fourth;
 }
 
 extern "C" void fn_80218EE0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -3844,6 +3850,79 @@ extern "C" void fn_80221F94(void *arg0, s32 arg1) {
     fn_802168BC((void *)arg1);
 }
 
+extern "C" s32 lbl_8055FBE4;
+extern "C" void fn_802C4F58(s32, s32, const char *, s32);
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_80221F9C(s32 *arg0, s32 arg1) {
+    s32 temp_r18;
+    s32 temp_r20;
+    s32 temp_r23;
+    s32 temp_r28;
+    s32 temp_r29;
+    s32 temp_r30;
+    s32 var_r18;
+    s32 var_r22;
+    s32 var_r24;
+    s32 var_r25;
+    s32 var_r26;
+    s32 var_r27;
+    s32 var_r31;
+    s32 *temp_r21;
+    s32 *items;
+
+    fn_802C3034(arg1);
+    temp_r18 = arg0[1];
+    temp_r20 = arg0[2];
+    var_r18 = ((VfObj *)arg0)->vf28();
+    fn_802C3424(temp_r18, temp_r20, temp_r18 + var_r18,
+                temp_r20 + 0xA, lbl_8055FBE4);
+    var_r24 = arg0[1];
+    var_r22 = 0;
+    temp_r23 = arg0[2];
+    var_r31 = 0;
+    temp_r30 = lbl_8055FBC0;
+    temp_r29 = lbl_8055FBFC;
+    temp_r28 = lbl_8055FBF8;
+    goto outer_check;
+
+outer_body:
+    temp_r21 = *(s32 **)((u8 *)items + var_r31);
+    fn_802C4F58(var_r24 + 2, temp_r23 + 2,
+                (const char *)((u8 *)items + var_r31 + 4), temp_r30);
+    if (var_r22 == arg0[0x24C / 4]) {
+        fn_802C3424(var_r24, temp_r23 + 0xA, var_r24 + 0x32,
+                    temp_r23 + (temp_r21[2] + 1) * 0xA, temp_r29);
+        var_r26 = temp_r23 + 0xB;
+        var_r25 = temp_r23 + 0xC;
+        temp_r20 = 0;
+        var_r27 = 0;
+        do {
+            if (temp_r20 == arg0[0x250 / 4])
+                fn_802C3424(var_r24 + 1, var_r26, var_r24 + 0x31,
+                            temp_r23 + var_r27 + 0x13, temp_r30);
+            temp_r18 = temp_r30;
+            if (temp_r20 == arg0[0x250 / 4])
+                temp_r18 = temp_r28;
+            fn_802C4F58(var_r24 + 2, var_r25,
+                        (const char *)((s32 (*)(s32 *, s32))fn_8022D97C)(
+                            temp_r21, temp_r20), temp_r18);
+            var_r27 += 0xA;
+            var_r26 += 0xA;
+            var_r25 += 0xA;
+            temp_r20 += 1;
+        } while (temp_r20 < *(volatile s32 *)((u8 *)temp_r21 + 8));
+    }
+    var_r24 += 0x32;
+    var_r31 += 0x24;
+    var_r22 += 1;
+outer_check:
+    items = (s32 *)arg0[0x244 / 4];
+    if (var_r22 < items[0x120 / 4])
+        goto outer_body;
+}
+#pragma scheduling on
+#pragma pop
 extern "C" void fn_80222120(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x248) = 1;
     ((VfObj *)arg0)->vf17();
@@ -7088,10 +7167,10 @@ extern "C" void fn_80229D1C(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80229D3C(void *arg0, s32 arg1, s32 arg2) {
-    register void *self = arg0;
-    register void *target = (void *)*(u32 *)((u8 *)self + 0x250);
-    register s32 value = *(s32 *)((u8 *)self + 4);
-    register s32 other = *(s32 *)((u8 *)self + 8);
+    register u32 *self = (u32 *)arg0;
+    register void *target = (void *)self[0x94];
+    register s32 value = self[1];
+    register s32 other = self[2];
     fn_802C5280(target, arg1 - value, arg2 - other, 0, value, self);
 }
 #pragma scheduling on
@@ -7120,8 +7199,10 @@ extern "C" s32 fn_80229DC0(s32 arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80229DC8(void *arg0) {
-    *(u32 *)((u8 *)arg0 + 0x260) = 0;
-    *(u8 *)((u8 *)arg0 + 0x268) = 1;
+    register u32 zero = 0;
+    register u32 one = 1;
+    *(u32 *)((u8 *)arg0 + 0x260) = zero;
+    *(u8 *)((u8 *)arg0 + 0x268) = one;
     ((VfObj *)arg0)->vf17();
 }
 #pragma scheduling on
