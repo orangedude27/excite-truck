@@ -1806,6 +1806,53 @@ void fn_8006D4C4(void *arg) {
     ((u16 *)arg)[4] = 0;
 }
 
+void *GKI_getbuf(UINT16 size) {
+    UINT8 i;
+    FREE_QUEUE_T *Q;
+    BUFFER_HDR_T *p_hdr;
+    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((UINT8 *)lbl_803946C0 + 0x54);
+
+    if (size == 0) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_BUF_SIZE_ZERO, lbl_80314110);
+        return NULL;
+    }
+
+    for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
+        if (size <= p_cb->freeq[p_cb->pool_list[i]].size)
+            break;
+    }
+
+    if (i == p_cb->curr_total_no_of_pools) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_BUF_SIZE_TOOBIG, lbl_80314128);
+        return NULL;
+    }
+
+    fn_8006EBAC();
+
+    for (; i < p_cb->curr_total_no_of_pools; i++) {
+        if (((UINT16)1 << p_cb->pool_list[i]) & *(volatile UINT16 *)((UINT8 *)p_cb + 0x28A7C))
+            continue;
+
+        Q = &p_cb->freeq[p_cb->pool_list[i]];
+        if (Q->cur_cnt < Q->total) {
+            p_hdr = Q->p_first;
+            Q->p_first = p_hdr->p_next;
+            if (!Q->p_first)
+                Q->p_last = NULL;
+            if (++Q->cur_cnt > Q->max_cnt)
+                Q->max_cnt = Q->cur_cnt;
+            fn_8006EB88();
+            p_hdr->task_id = fn_8006EB80();
+            p_hdr->status = BUF_STATUS_UNLINKED;
+            p_hdr->p_next = NULL;
+            p_hdr->Type = 0;
+            return (void *)((UINT8 *)p_hdr + BUFFER_HDR_SIZE);
+        }
+    }
+    fn_8006EB88();
+    return NULL;
+}
+
 void *GKI_getpoolbuf(UINT8 pool_id) {
     extern u32 lbl_803946C0[];
     extern void fn_8006EBAC(void);
@@ -8153,9 +8200,9 @@ void bta_dm_find_services(u8 *bd_addr) {
     volatile tSDP_UUID service_uuid;
     u16 service;
     u8 *state = lbl_803C0B98;
-    register u16 num_attr = 1;
+    register s32 num_attr = 1;
     register u32 bit_base = 1;
-    register u16 uuid_len = 2;
+    register s32 uuid_len = 2;
     register u32 zero = 0;
     register u8 last_index = 0x17;
     u8 *name;
@@ -8174,13 +8221,13 @@ service_loop:
             service = lbl_802EE990[state[0x70]];
             *(volatile u32 *)(state + 0xC) &=
                 ~(bit_base << state[0x70]);
-            service_uuid.len = uuid_len;
+            service_uuid.len = (u16)uuid_len;
             service_uuid.uu.uuid16 = service;
             if (service == 0x1200)
                 num_attr = 2;
             SDP_InitDiscoveryDb(*(tSDP_DISCOVERY_DB **)(state + 0x14),
                                 0xFA, 1, (tSDP_UUID *)&service_uuid,
-                                num_attr, attr_values);
+                                (u16)num_attr, attr_values);
             if (SDP_ServiceSearchAttributeRequest(
                     bd_addr, *(tSDP_DISCOVERY_DB **)(state + 0x14),
                     (tSDP_DISC_CMPL_CB *)fn_800729C0) == FALSE) {
