@@ -4498,6 +4498,54 @@ retryCheck:
     goto loop;
 }
 
+extern "C" s32 fn_800AF734(void *arg0, s32 arg1, s32 arg2) {
+    extern s32 fn_800B5618(void *, void *, u32, u16, s32);
+    u32 sector;
+    u8 *obj = (u8 *)arg0;
+    u8 sp8[2];
+    u16 bits = *(u16 *)obj;
+    u8 shift = obj[0x20];
+    u16 offset = arg1 + (arg1 >> 1);
+    u32 base = *(u32 *)(obj + 0x28);
+    u16 index = base + (offset >> shift);
+    u16 value;
+    u16 i;
+    s32 result;
+    s32 status;
+    sector = offset & (bits - 1);
+    if (arg1 & 1) {
+        status = fn_800B5260(arg0, sp8, index, (u16)sector, 1);
+        if (status != 0)
+            return status;
+        value = ((u16)arg2 << 4) + (sp8[0] & 0xF);
+    } else {
+        s32 next = offset + 1;
+        status = fn_800B5260(arg0, sp8, (u16)(base + (next >> shift)), (u16)(next & (bits - 1)), 1);
+        if (status != 0)
+            return status;
+        value = ((sp8[0] << 8) & 0xF000) + (arg2 & 0xFFF);
+    }
+    sector = (u16)sector;
+    __sthbrx(value, sp8, 0);
+    result = 0;
+    for (i = 0; i < obj[0x22]; i++) {
+        if ((s32)sector < *(u16 *)obj - 1) {
+            status = fn_800B5618(arg0, sp8, index, sector, 2);
+            if (status != 0 && result == 0)
+                result = status;
+        } else {
+            status = fn_800B5618(arg0, sp8, index, sector, 1);
+            if (status != 0 && result == 0)
+                result = status;
+            status = fn_800B5618(arg0, sp8 + 1, index + 1, 0, 1);
+            if (status != 0 && result == 0)
+                result = status;
+        }
+        index = index + *(u32 *)(obj + 0xC);
+    }
+    return result;
+}
+
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
     extern s32 fn_800B5260(void *, void *, u32, u32, s32);
@@ -8140,40 +8188,46 @@ extern "C" s32 fn_800B8BE8(s32 arg0) { if (!arg0) return -0x14; if (!lbl_8055DD2
 
 extern "C" s32 fn_800B808C(s32, void *, s32);
 extern "C" unsigned char lbl_80405D58[];
+#pragma dont_inline on
 extern "C" s32 fn_800B8C74(s32 arg0) {
-    unsigned char *entry;
-    unsigned char *found = 0;
-    s32 i;
+    u8 *found;
+    u16 i;
+    u8 *cur;
     s32 result;
+    u8 *entry;
     fn_800B8004(lbl_8055DD30);
     if (arg0 == 0) {
         fn_800B8048(lbl_8055DD30);
         return -20;
     }
     for (i = 0; i < 0x17; i++) {
-        entry = lbl_80405D58 + i * 0xF0;
-        if (*(s32 *)entry == arg0) break;
+        cur = lbl_80405D58 + i * 0xF0;
+        if (*(u32 *)cur == (u32)arg0) { entry = cur; break; }
     }
-    if (i < 0x17 && (*(s32 *)(entry + 0xE4) & 2)) {
-        fn_800B8048(lbl_8055DD30);
-        return -21;
+    if (((-0x16) & ((s32)~((i - 0x17) | (0x17 - i)) >> 31)) == 0) {
+        if (*(u32 *)(entry + 0xE4) & 2) {
+            fn_800B8048(lbl_8055DD30);
+            return -21;
+        }
     }
     for (i = 0; i < 0x17; i++) {
-        entry = lbl_80405D58 + i * 0xF0;
-        if (*(s32 *)entry == arg0 && !(*(s32 *)(entry + 0xE4) & 2)) { found = entry; break; }
+        cur = lbl_80405D58 + i * 0xF0;
+        if (*(u32 *)cur == (u32)arg0 && !(*(s32 *)(cur + 0xE4) & 2)) { found = cur; goto got; }
     }
-    if (!found) for (i = 0; i < 0x17; i++) {
-        entry = lbl_80405D58 + i * 0xF0;
-        if (*(s32 *)entry == 0 && *(signed char *)(entry + 4) != 0) { found = entry; break; }
+    for (i = 0; i < 0x17; i++) {
+        cur = lbl_80405D58 + i * 0xF0;
+        if (*(s32 *)cur == 0 && *(s8 *)(cur + 4) != 0) { found = cur; goto got; }
     }
-    if (!found) { fn_800B8048(lbl_8055DD30); return -22; }
+    found = 0;
+got:
+    if (found == 0) { fn_800B8048(lbl_8055DD30); return -22; }
     if (*(s32 *)found != 0) result = 0;
     else result = fn_800B808C(arg0, found, 0);
     if (result == 0) *(s32 *)(found + 0xE4) |= 2;
     fn_800B8048(lbl_8055DD30);
     return result;
 }
-
+#pragma dont_inline reset
 s32 fn_800B8E28(s32 arg0) {
     u32 temp;
     s32 temp_r30;
