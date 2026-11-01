@@ -42,7 +42,7 @@ extern "C" void GXSetChanCtrl(u32, u32, u32, u32, u32, u32, u32);
 extern "C" int GXSetChanMatColor_Internal(int, u8 *, u8, u8, u8); /* extern */
 extern "C" int GXSetIndTexCoordScale(u32, u8, u8);         /* extern */
 extern "C" int GXSetIndTexOrder(u32, u8, u8);              /* extern */
-extern "C" int GXSetNumChans(int);                     /* extern */
+extern "C" void GXSetNumChans(u32);
 extern "C" int GXSetNumIndStages(s32);                     /* extern */
 extern "C" int GXSetNumTevStages(u8);                      /* extern */
 extern "C" int GXSetTevAlphaIn(u8, s32, s32, s32, s32);    /* extern */
