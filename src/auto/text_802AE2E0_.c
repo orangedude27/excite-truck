@@ -2,13 +2,14 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
-extern int fn_80131810(void);
+extern int fn_80131810(void *);
 extern int lbl_804BD8CC[3];
+extern char lbl_80349FF0[];
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
-void fn_802AE2E0(void) {
-    int result = fn_80131810();
+void fn_802AE2E0(void *arg0) {
+    int result = fn_80131810(arg0);
     if (result) {
         int *items = (int *)lbl_804BD8CC[0];
         int idx = lbl_804BD8CC[1]++;
