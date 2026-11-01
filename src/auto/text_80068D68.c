@@ -8225,13 +8225,13 @@ void bta_dm_find_services(u8 *bd_addr) {
     u16 attr_values[2];
     volatile tSDP_UUID service_uuid;
     u16 service;
-    u8 *state = lbl_803C0B98;
-    u16 *service_table = lbl_802EE990;
     register u16 num_attr = 1;
     register u32 bit_base = 1;
     register u16 uuid_len = 2;
-    register u32 zero = 0;
-    register u8 last_index = 0x17;
+    register void *zero = 0;
+    register u32 last_index = 0x17;
+    u8 *state = lbl_803C0B98;
+    u16 *service_table = lbl_802EE990;
     u8 *name;
     void *msg;
 
@@ -8259,7 +8259,7 @@ service_loop:
                     bd_addr, *(tSDP_DISCOVERY_DB **)(state + 0x14),
                     (tSDP_DISC_CMPL_CB *)fn_800729C0) == FALSE) {
                 GKI_freebuf(*(void **)(state + 0x14));
-                *(void **)(state + 0x14) = (void *)zero;
+                *(void **)(state + 0x14) = zero;
                 state[0x70] = last_index;
                 goto increment_index;
             }
