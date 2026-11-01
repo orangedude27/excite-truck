@@ -6024,8 +6024,15 @@ tBTM_SEC_DEV_REC *btm_find_dev(BD_ADDR bd_addr) {
 }
 
 tBTM_SEC_DEV_REC *btm_find_oldest_dev(void) {
-    tBTM_SEC_DEV_REC *p_dev_rec = (tBTM_SEC_DEV_REC *)(lbl_803C0F78 + 0x1F30);
-    tBTM_SEC_DEV_REC *p_oldest = p_dev_rec;
+    struct RecView {
+        u8 pad0[0x0C];
+        u32 timestamp;
+        u8 pad1[0x66];
+        u8 sec_flags;
+        u8 pad2[0x11];
+    };
+    struct RecView *p_dev_rec = (struct RecView *)(lbl_803C0F78 + 0x1F30);
+    struct RecView *p_oldest = p_dev_rec;
     UINT32 ot = 0xFFFFFFFF;
     int i;
     for (i = 0; i < 16; i++, p_dev_rec++) {
@@ -6036,16 +6043,18 @@ tBTM_SEC_DEV_REC *btm_find_oldest_dev(void) {
             ot = p_dev_rec->timestamp;
         }
     }
-    if (ot != 0xFFFFFFFF) return p_oldest;
-    p_dev_rec = (tBTM_SEC_DEV_REC *)(lbl_803C0F78 + 0x1F30);
+    if (ot != 0xFFFFFFFF)
+        return (tBTM_SEC_DEV_REC *)p_oldest;
+    p_dev_rec = (struct RecView *)(lbl_803C0F78 + 0x1F30);
     for (i = 0; i < 16; i++, p_dev_rec++) {
-        if ((p_dev_rec->sec_flags & 0x80) == 0) continue;
+        if ((p_dev_rec->sec_flags & 0x80) == 0)
+            continue;
         if (p_dev_rec->timestamp < ot) {
             p_oldest = p_dev_rec;
             ot = p_dev_rec->timestamp;
         }
     }
-    return p_oldest;
+    return (tBTM_SEC_DEV_REC *)p_oldest;
 }
 
 #pragma small_data on
