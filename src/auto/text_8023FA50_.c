@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_80342278[];
+typedef struct { unsigned int w[5]; } W5;
 extern unsigned int lbl_802FA2E8[];
 extern unsigned int lbl_804987F8[];
 __declspec(section ".sdata") extern char lbl_8055BD38[];
