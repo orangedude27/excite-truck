@@ -3966,7 +3966,7 @@ cluster_result:
     return 0;
 }
 
-extern "C" s32 fn_800AF5A0(u16);
+extern "C" s32 fn_800AF5A0(void *, s32, s32 *);
 extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800B0258(void *, s32, s32 *);
@@ -11761,7 +11761,8 @@ extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, v
     s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
     s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
 
-    const s32 *k = lbl_8031D700;
+    register volatile s32 *last = b + 10;
+    register const s32 *k = lbl_8031D700;
     s32 value, coefficient;
     s64 product, second;
     s32 result, reverse;
@@ -11794,7 +11795,7 @@ extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, v
     result = (s32)(product >> 20);
     reverse = (s32)(second >> 20);
     c[512] = b[8] + result;
-    d[-512] = b[9] + reverse;
+    d[-512] = last[-1] + reverse;
 }
 
 extern "C" s32 lbl_8031D718[];
