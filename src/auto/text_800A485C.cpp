@@ -7,6 +7,10 @@ extern "C" void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
 extern "C" const char lbl_8031E7E8[];
 extern "C" const char lbl_8031E83C[];
 
+struct VFiPFVol { u16 sectorSize; u8 pad[0x1e]; u8 shift; };
+struct VFiPFFile { u8 pad0[4]; u8 fat[0x260]; u32 size; VFiPFVol *vol; };
+struct VFiPFCursor { u8 pad0[8]; VFiPFFile *file; u8 pad1[0x10]; u32 pos; u32 cluster; u32 sector; u16 off; };
+
 struct VFiPFENTIterLayout {
     volatile u32 position;
     void *stream;
@@ -5298,33 +5302,43 @@ extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     extern s32 fn_800AE620(void *, u32, s32, void *);
     extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
-    s32 sp8, result, sector, length=arg2;
-    void *file, *fat;
-    u32 cursor, limit;
-    *arg3=0;
-    if(arg0==0) sector=0;
-    else sector=*(s32*)((u8*)*(void**)((u8*)arg0+8)+0x268);
-    if(arg2==0)return 0;
-    file=*(void**)((u8*)arg0+8);cursor=*(u32*)((u8*)arg0+0x1c);limit=*(u32*)((u8*)file+0x264);
-    if(cursor+(u32)arg2>limit){length=limit-cursor;if(length==0)return 0;}
-    if(*(u32*)((u8*)arg0+0x20)==0xFFFFFFFF){
-        result=fn_800AE620((u8*)file+4,*(u32*)((u8*)arg0+0x24),0,(u8*)arg0+0x20);
-        if(result!=0)return result;
-        if(*(u32*)((u8*)arg0+0x20)==0xFFFFFFFF){
-            *(u32*)((u8*)arg0+0x1c)=*(u32*)((u8*)file+0x264);
-            fat=arg0==0?0:*(void**)((u8*)file+0x268);cursor=*(u32*)((u8*)arg0+0x1c);
-            *(u32*)((u8*)arg0+0x24)=cursor>>*((u8*)fat+0x20);*(u16*)((u8*)arg0+0x28)=cursor&(*(u16*)fat-1);return 0x1c;
+#define F8(o) (*(u8 **)((u8 *)arg0 + 8))
+#define W(p, o) (*(u32 *)((u8 *)(p) + (o)))
+    s32 sp8, result, sector;
+    u32 length = arg2;
+    *arg3 = 0;
+    if (arg0 == 0) sector = 0;
+    else sector = W(F8(0), 0x268);
+    if (arg2 == 0) return 0;
+    if (W(arg0, 0x1c) + arg2 > W(F8(0), 0x264)) {
+        length = W(F8(0), 0x264) - W(arg0, 0x1c);
+        if (length == 0) return 0;
+    }
+    if (W(arg0, 0x20) == 0xFFFFFFFF) {
+        result = fn_800AE620(F8(0) + 4, W(arg0, 0x24), 0, (u8 *)arg0 + 0x20);
+        if (result != 0) return result;
+        if (W(arg0, 0x20) == 0xFFFFFFFF) {
+            u8 *fat;
+            W(arg0, 0x1c) = W(F8(0), 0x264);
+            fat = arg0 == 0 ? 0 : (u8 *)W(F8(0), 0x268);
+            W(arg0, 0x24) = W(arg0, 0x1c) >> fat[0x20];
+            *(u16 *)((u8 *)arg0 + 0x28) = W(arg0, 0x1c) & (*(u16 *)fat - 1);
+            return 0x1c;
         }
-        limit=*(u32*)((u8*)file+0x264);cursor=*(u32*)((u8*)arg0+0x1c);
-        if(cursor+(u32)length>limit){
-            *(u32*)((u8*)arg0+0x1c)=limit;fat=arg0==0?0:*(void**)((u8*)file+0x268);cursor=*(u32*)((u8*)arg0+0x1c);
-            *(u32*)((u8*)arg0+0x24)=cursor>>*((u8*)fat+0x20);*(u16*)((u8*)arg0+0x28)=cursor&(*(u16*)fat-1);return 0x1b;
+        if (W(arg0, 0x1c) + length > W(F8(0), 0x264)) {
+            u8 *fat;
+            W(arg0, 0x1c) = W(F8(0), 0x264);
+            fat = arg0 == 0 ? 0 : (u8 *)W(F8(0), 0x268);
+            W(arg0, 0x24) = W(arg0, 0x1c) >> fat[0x20];
+            *(u16 *)((u8 *)arg0 + 0x28) = W(arg0, 0x1c) & (*(u16 *)fat - 1);
+            return 0x1b;
         }
     }
-    result=fn_800B5324(sector,arg1,*(u16*)((u8*)arg0+0x28),length,&sp8,1);
-    if(result!=0&&sp8==0)return result;
-    *arg3=sp8;VFiPFFILE_Cursor_AdvanceToRead(arg0,sp8,*(s32*)((u8*)arg0+0x20));
-    if((u32)sp8!=(u32)length)return result;
+    result = fn_800B5324(sector, arg1, *(u16 *)((u8 *)arg0 + 0x28), length, &sp8, 1);
+    if (result != 0 && sp8 == 0) return result;
+    *arg3 = sp8;
+    VFiPFFILE_Cursor_AdvanceToRead(arg0, sp8, W(arg0, 0x20));
+    if ((u32)sp8 != length) return result;
     return 0;
 }
 
