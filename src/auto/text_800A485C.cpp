@@ -307,6 +307,8 @@ extern "C" s32 lbl_80559248;
 extern "C" u32 lbl_8055DD68;
 extern "C" u8 lbl_80407300[];
 extern "C" s32 lbl_8055DD2C;
+struct IosDevice;
+extern "C" s32 fn_800BBEA4(IosDevice *, s32, s32 *, s32);
 extern "C" s32 NANDInit(void);
 extern "C" s32 NANDGetCurrentDir(char *);
 struct Fn800B94ECInitArgs { s32 initialized; s32 mode; void *callback; };
@@ -3467,14 +3469,14 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
 
 extern "C" s32 fn_800ACF20(void *arg0, u32 arg1, u32 *arg2, u32 *arg3)
 {
-    s32 end = -1;
+    volatile s32 end = -1;
     s32 result;
     s32 type;
     u32 chunkSize;
     u32 quotient;
     u32 remaining;
     u32 current;
-    u32 *table;
+    u32 finalValue;
     void *context;
 
     *arg3 = 0;
@@ -3482,54 +3484,66 @@ extern "C" s32 fn_800ACF20(void *arg0, u32 arg1, u32 *arg2, u32 *arg3)
         return 0;
     }
     if (*(u32 *)((u8 *)arg0 + 0x2C) < arg1) {
-        return 0;
+        goto return_zero;
     }
 
     chunkSize = *(u16 *)((u8 *)arg0 + 0x20) + 1;
     quotient = arg1 / chunkSize;
     remaining = arg1 - quotient * chunkSize;
-    table = *(u32 **)((u8 *)arg0 + 0x1C);
     if (remaining == 0) {
-        *arg2 = table[quotient];
+        *arg2 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
         *arg3 = 1;
-        return 0;
+        goto return_zero;
     }
 
-    current = table[quotient];
-    do {
-        context = *(void **)((u8 *)arg0 + 0x34);
-        type = *(s32 *)((u8 *)context + 0x1C);
-        switch (type) {
-        case 0:
-            result = fn_800AF5A0(context, (u16)current, &end);
-            break;
-        case 1:
-            result = fn_800AFE14(context, current, &end);
-            break;
-        case 2:
-            result = fn_800B0258(context, current, &end);
-            break;
-        default:
-            end = -1;
-            result = 0xF;
-            break;
-        }
-        if (result != 0) {
-            return result;
-        }
-        current = end;
-        if (current == 0) {
-            return 0xD;
-        }
-        remaining--;
-    } while (remaining != 0);
-
+    current = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
+    goto check_remaining;
+loop_body:
     context = *(void **)((u8 *)arg0 + 0x34);
-    if (current == lbl_802EEF40[*(u32 *)((u8 *)context + 0x1C) * 5 + 2]) {
-        return 0;
+    type = *(s32 *)((u8 *)context + 0x1C);
+    switch (type) {
+    case 0:
+        result = fn_800AF5A0(context, (u16)current, (s32 *)&end);
+        break;
+    case 1:
+        result = fn_800AFE14(context, current, (s32 *)&end);
+        break;
+    case 2:
+        result = fn_800B0258(context, current, (s32 *)&end);
+        break;
+    default:
+        end = -1;
+        result = 0xF;
+        break;
     }
-    *arg2 = current;
+    if (result != 0) {
+        return result;
+    }
+    current = end;
+    if (current == 0) {
+        return 0xD;
+    }
+    remaining--;
+check_remaining:
+    if (remaining != 0) {
+        goto loop_body;
+    }
+
+    finalValue = end;
+    if (finalValue == 0) {
+        return 0xD;
+    }
+    context = *(void **)((u8 *)arg0 + 0x34);
+    if (finalValue != *(u32 *)((u8 *)lbl_802EEF40 +
+                               *(u32 *)((u8 *)context + 0x1C) * 0x14 + 8)) {
+        goto value_differs;
+    }
+    return 0;
+value_differs:
+    *arg2 = finalValue;
     *arg3 = 1;
+    return 0;
+return_zero:
     return 0;
 }
 
@@ -4307,9 +4321,10 @@ extern "C" s32 fn_800AF5A0(void *arg0, s32 arg1, s32 *arg2) {
     u16 offset;
     s32 result;
     u32 retry = 1;
-    s32 *output = arg2;
     void *object = arg0;
-    s32 scaled = (u16)(arg1 + (arg1 >> 1));
+    s32 cluster = arg1;
+    s32 *output = arg2;
+    s32 scaled = (u16)(cluster + (cluster >> 1));
     u16 flags = *(u16 *)((u8 *)object + 0x18);
 
     index = (u16)(*(u32 *)((u8 *)object + 0x28) +
@@ -4319,11 +4334,11 @@ extern "C" s32 fn_800AF5A0(void *arg0, s32 arg1, s32 *arg2) {
         retry = flags & 7;
 loop:
     if ((s32)offset < (s32)(*(u16 *)object - 1)) {
-        result = fn_800B5260(object, buf, index, offset, 2);
+        result = fn_800B5260(object, buf, (u16)index, offset, 2);
     } else {
-        result = fn_800B5260(object, buf, index, offset, 1);
+        result = fn_800B5260(object, buf, (u16)index, offset, 1);
         if (result == 0)
-            result = fn_800B5260(object, buf + 1, index + 1, 0, 1);
+            result = fn_800B5260(object, buf + 1, (u16)index + 1, 0, 1);
     }
     if (result == 0x1000) {
         s32 (*callback)(void *) =
@@ -4348,7 +4363,7 @@ loop:
 retryCheck:
     if (result == 0) {
         u32 v = (((u16 *)buf)[0] >> 8) | ((((u16 *)buf)[0] & 0xFF) << 8);
-        if (arg1 & 1)
+        if (cluster & 1)
             *output = (v >> 4) & 0xFFF;
         else
             *output = v & 0xFFF;
@@ -11880,7 +11895,7 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     *(s32 *)((u8 *)arg3 - 2048) = *(s32 *)((u8 *)arg1 + 36) + (s32)(((s64)arg0[8] * (s64)lbl_8031D670[17]) >> 20);
 }
 
-extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, volatile s32 *d) {
+extern "C" void fn_800C2A88(volatile s32 *a, s32 *b, volatile s32 *c, volatile s32 *d) {
     s32 n0 = -a[0]; c[0] = b[0]; d[0] = n0 + b[17];
     s32 n1 = -a[1]; c[64] = b[1]; d[-64] = n1 + b[16];
     s32 n2 = -a[2]; c[128] = b[2]; d[-128] = n2 + b[15];
@@ -11888,41 +11903,40 @@ extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, v
     s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
     s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
 
-    register volatile s32 *last = b + 10;
-    register const s32 *k = lbl_8031D700;
-    s32 value, coefficient;
-    s64 product, second;
+    volatile const s32 *k = lbl_8031D700;
+    s32 value, coefficient0, coefficient1;
     s32 result, reverse;
+    s64 product;
 
+    coefficient0 = *k++;
     value = a[6];
-    coefficient = *k++;
-    product = (s64)value * coefficient;
-    coefficient = *k++;
-    second = (s64)value * coefficient;
+    coefficient1 = *k++;
+    product = (s64)value * coefficient0;
     result = (s32)(product >> 20);
-    reverse = (s32)(second >> 20);
     c[384] = b[6] + result;
+    product = (s64)value * coefficient1;
+    reverse = (s32)(product >> 20);
     d[-384] = b[11] + reverse;
 
     value = a[7];
-    coefficient = *k++;
-    product = (s64)value * coefficient;
-    coefficient = *k++;
-    second = (s64)value * coefficient;
+    coefficient0 = *k++;
+    coefficient1 = *k++;
+    product = (s64)value * coefficient0;
     result = (s32)(product >> 20);
-    reverse = (s32)(second >> 20);
     c[448] = b[7] + result;
+    product = (s64)value * coefficient1;
+    reverse = (s32)(product >> 20);
     d[-448] = b[10] + reverse;
 
     value = a[8];
-    coefficient = *k++;
-    product = (s64)value * coefficient;
-    coefficient = *k++;
-    second = (s64)value * coefficient;
+    coefficient0 = *k++;
+    coefficient1 = *k++;
+    product = (s64)value * coefficient0;
     result = (s32)(product >> 20);
-    reverse = (s32)(second >> 20);
     c[512] = b[8] + result;
-    d[-512] = last[-1] + reverse;
+    product = (s64)value * coefficient1;
+    reverse = (s32)(product >> 20);
+    d[-512] = b[9] + reverse;
 }
 
 extern "C" s32 lbl_8031D718[];
