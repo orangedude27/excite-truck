@@ -5,8 +5,8 @@
 #pragma paired_single off
 extern double sin(double);
 extern double fabs(double);
-extern double fn_8002F234(double);
-extern double fn_8002EFB0(double, double);
+extern double fn_8002F234(float);
+extern double fn_8002EFB0(float, float);
 extern float lbl_805612B8;
 extern float lbl_805612BC;
 extern float lbl_805612C0;
