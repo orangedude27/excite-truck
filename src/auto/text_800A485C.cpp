@@ -3467,11 +3467,12 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     return 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" s32 fn_800ACF20(void *arg0, u32 arg1, u32 *arg2, u32 *arg3)
 {
     volatile s32 end = -1;
     s32 result;
-    s32 type;
     u32 chunkSize;
     u32 quotient;
     u32 remaining;
@@ -3493,15 +3494,14 @@ extern "C" s32 fn_800ACF20(void *arg0, u32 arg1, u32 *arg2, u32 *arg3)
     if (remaining == 0) {
         *arg2 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
         *arg3 = 1;
-        goto return_zero;
+        goto done;
     }
 
     current = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
     goto check_remaining;
 loop_body:
     context = *(void **)((u8 *)arg0 + 0x34);
-    type = *(s32 *)((u8 *)context + 0x1C);
-    switch (type) {
+    switch (*(s32 *)((u8 *)context + 0x1C)) {
     case 0:
         result = fn_800AF5A0(context, (u16)current, (s32 *)&end);
         break;
@@ -3533,20 +3533,18 @@ check_remaining:
     if (finalValue == 0) {
         return 0xD;
     }
-    context = *(void **)((u8 *)arg0 + 0x34);
-    if (finalValue != *(u32 *)((u8 *)lbl_802EEF40 +
-                               *(u32 *)((u8 *)context + 0x1C) * 0x14 + 8)) {
-        goto value_differs;
+    if (finalValue == lbl_802EEF40[*(s32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x1C) * 5 + 2]) {
+        return 0;
     }
-    return 0;
-value_differs:
     *arg2 = finalValue;
     *arg3 = 1;
-    return 0;
+    goto done;
 return_zero:
     return 0;
+done:
+    return 0;
 }
-
+#pragma pop
 extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 extern "C" s32 fn_800ACBB0(void *, s32, s32, s32, u32 *, u32 *);
 extern "C" s32 VFiPFFAT_WriteClusterPage(void *, u32, u32, u32, s32, void *);
@@ -6358,6 +6356,51 @@ result = index;
 }
 return_result:
 return result;
+}
+
+extern "C" const u8 lbl_80560D9C;
+extern "C" const u8 lbl_80560D9D;
+#pragma push
+#pragma scheduling on
+extern "C" s32 fn_800B5070(s32 arg0, s32 *out) {
+    volatile u8 sp9;
+    volatile u8 sp8;
+    s32 result;
+    s32 index;
+    s32 acc;
+    s32 offset;
+    s16 value;
+    s32 special;
+    sp8 = lbl_80560D9C;
+    sp9 = lbl_80560D9D;
+    result = 0;
+    if (VFiPFSTR_StrNCmp(arg0, (const void *)&sp8, 1, 0, 2) == 0) {
+        acc = 0;
+        index = 2;
+        offset = 4;
+        while ((s16)index < 8 || VFiPFSTR_StrNCmp(arg0, lbl_8055920C, 1, (s16)index, 1) != 0) {
+            if (fn_800A4D44((void *)arg0) == 1U)
+                value = (s8)((u8 *)(u32)fn_800A4D74((void *)arg0, 1))[(s16)index] - 0x30;
+            else
+                value = ((u16 *)(u32)fn_800A4D74((void *)arg0, 1))[offset / 2] - 0x30;
+            if (value < 0 || value > 9) break;
+            acc *= 10;
+            index++;
+            acc += value;
+            offset += 2;
+        }
+        if ((s16)index == 8) {
+            special = 0;
+            if (VFiPFSTR_StrNCmp(arg0, lbl_8055921C, 1, (s16)index, 1) == 0 ||
+                VFiPFSTR_StrNCmp(arg0, lbl_80559220, 1, (s16)index, 1) == 0)
+                special = 1;
+            if (special == 0 || VFiPFSTR_StrNCmp(arg0, 0, 1, (s16)index, 1) == 0) {
+                *out = acc;
+                result = 1;
+            }
+        }
+    }
+    return result;
 }
 #pragma pop
 extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
@@ -11941,7 +11984,7 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     *(s32 *)((u8 *)arg3 - 2048) = *(s32 *)((u8 *)arg1 + 36) + (s32)(((s64)arg0[8] * (s64)lbl_8031D670[17]) >> 20);
 }
 
-extern "C" void fn_800C2A88(volatile s32 *a, s32 *b, volatile s32 *c, volatile s32 *d) {
+extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, volatile s32 *d) {
     s32 n0 = -a[0]; c[0] = b[0]; d[0] = n0 + b[17];
     s32 n1 = -a[1]; c[64] = b[1]; d[-64] = n1 + b[16];
     s32 n2 = -a[2]; c[128] = b[2]; d[-128] = n2 + b[15];
@@ -11949,6 +11992,7 @@ extern "C" void fn_800C2A88(volatile s32 *a, s32 *b, volatile s32 *c, volatile s
     s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
     s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
 
+    register volatile s32 *last = b + 10;
     volatile const s32 *k = lbl_8031D700;
     s32 value, coefficient0, coefficient1;
     s32 result, reverse;
@@ -11962,7 +12006,7 @@ extern "C" void fn_800C2A88(volatile s32 *a, s32 *b, volatile s32 *c, volatile s
     c[384] = b[6] + result;
     product = (s64)value * coefficient1;
     reverse = (s32)(product >> 20);
-    d[-384] = b[11] + reverse;
+    d[-384] = last[1] + reverse;
 
     value = a[7];
     coefficient0 = *k++;
@@ -11972,7 +12016,7 @@ extern "C" void fn_800C2A88(volatile s32 *a, s32 *b, volatile s32 *c, volatile s
     c[448] = b[7] + result;
     product = (s64)value * coefficient1;
     reverse = (s32)(product >> 20);
-    d[-448] = b[10] + reverse;
+    d[-448] = last[0] + reverse;
 
     value = a[8];
     coefficient0 = *k++;
@@ -11982,7 +12026,7 @@ extern "C" void fn_800C2A88(volatile s32 *a, s32 *b, volatile s32 *c, volatile s
     c[512] = b[8] + result;
     product = (s64)value * coefficient1;
     reverse = (s32)(product >> 20);
-    d[-512] = b[9] + reverse;
+    d[-512] = last[-1] + reverse;
 }
 
 extern "C" s32 lbl_8031D718[];
@@ -16387,6 +16431,59 @@ extern "C" void fn_800C7764(void *arg0, s8 arg1) {
 
 extern "C" void fn_800C776C(void *arg0, s32 arg1) {
     ((u32 *)arg0)[0x24 / 4] = (u32)arg1;
+}
+
+extern "C" void fn_800C7774(u8 *self)
+{
+    const char *file = (const char *)lbl_8031D840;
+    char *start = *(char **)(*(u8 **)(self + 4) + 0xC);
+    char *p;
+    s32 len1 = 0;
+    s32 len2;
+    s32 count;
+    s32 i;
+    u8 *q;
+    void *buf;
+
+    p = start;
+    while (*p != 0) {
+        if (*p == ',') break;
+        len1++;
+        p++;
+    }
+    buf = MEMAllocFromAllocator(lbl_80559708, len1 + 1);
+    *(void **)(self + 0xA4) = buf;
+    if (buf == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x318, file + 0xCE0);
+    strncpy(*(char **)(self + 0xA4), start, len1);
+    start = start + len1 + 1;
+    (*(char **)(self + 0xA4))[len1] = 0;
+
+    len2 = 0;
+    p = start;
+    while (*p != 0) {
+        if (*p == ',') break;
+        len2++;
+        p++;
+    }
+    buf = MEMAllocFromAllocator(lbl_80559708, len2 + 1);
+    *(void **)(self + 0xA8) = buf;
+    if (buf == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x322, file + 0xD08);
+    strncpy(*(char **)(self + 0xA8), start, len2);
+    (*(char **)(self + 0xA8))[len2] = 0;
+    start += len2;
+
+    count = 0;
+    q = self;
+    for (i = 0; start[i] != 0; i++) {
+        if (start[i] == ',') {
+            if (start[i + 1] == '1') *(s32 *)(q + 0x94) = 1;
+            else *(s32 *)(q + 0x94) = 0;
+            q += 4;
+            count++;
+        }
+    }
+    *(s32 *)(self + 8) = count;
+    *(s32 *)(self + 0xC) = count * 3;
 }
 
 extern "C" void fn_800C790C(void *arg0) {
