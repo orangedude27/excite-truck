@@ -151,24 +151,22 @@ class E2640Item {
 };
 static inline s32 E2640ScanObj(E2640Node *obj, f32 *pos, f32 *dir, f32 *dot, s32 mask,
                                s32 (*filter)(s32), s32 *outValue, void **outObj, s32 found) {
-    if (obj && obj->v15()) {
-        void **slot = (void **)obj;
-        s32 j;
-        for (j = 0; j < *(s32 *)((char *)obj + 0x24); j++) {
-            E2640Item *item;
-            s32 value;
-            if (j >= 0 && j < *(s32 *)((char *)obj + 0x24))
-                item = (E2640Item *)slot[5];
-            else
-                item = 0;
-            value = *(s32 *)((char *)item + 0x20);
-            if ((!filter || filter(value)) && item->m4(pos, dir, dot, mask)) {
-                *outValue = value;
-                found = 1;
-                *outObj = obj;
-            }
-            slot++;
+    void **slot = (void **)obj;
+    s32 j;
+    for (j = 0; j < *(s32 *)((char *)obj + 0x24); j++) {
+        E2640Item *item;
+        s32 value;
+        if (j >= 0 && j < *(s32 *)((char *)obj + 0x24))
+            item = (E2640Item *)slot[5];
+        else
+            item = 0;
+        value = *(s32 *)((char *)item + 0x20);
+        if ((!filter || filter(value)) && item->m4(pos, dir, dot, mask)) {
+            *outValue = value;
+            found = 1;
+            *outObj = obj;
         }
+        slot++;
     }
     return found;
 }
