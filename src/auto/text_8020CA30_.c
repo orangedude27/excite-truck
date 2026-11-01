@@ -43,10 +43,11 @@ extern int strcmp(const char*, const char*);
 struct Item_8020CA3C {
     virtual const char* getName();
     virtual void slot1();
+    virtual void slot2();
     virtual int getA(const char*);
-    virtual void slot3();
+    virtual void slot4();
     virtual int getB(const char*);
-    virtual void slot5();
+    virtual void slot6();
     virtual f32 getF(const char*);
 };
 struct Dir_8020CA3C {
