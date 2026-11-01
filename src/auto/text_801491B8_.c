@@ -1127,46 +1127,65 @@ extern "C" void *fn_8014DE50(void) {
 #pragma scheduling on
 
 #pragma cplusplus on
+#pragma use_lmw_stmw off
 extern "C" void *fn_8014E1D0(void *arg0, s32 arg1) {
+    struct Obj {
+        char pad[0x74];
+        void **items;
+        s32 count;
+        s32 unk7c;
+        s32 valueA;
+        s32 valueB;
+    };
+    register u8 *strings = lbl_8032D358;
+    Obj *obj = (Obj *)arg0;
     void *table;
     Iter_8014E1D0 *iter;
     char name[0x64];
-    s32 count;
+    s32 ok;
     s32 i;
     void **items;
-    *(void **)((u8 *)arg0 + 0x74) = 0;
-    *(s32 *)((u8 *)arg0 + 0x78) = 0;
-    *(s32 *)((u8 *)arg0 + 0x7c) = -1;
-    *(s32 *)((u8 *)arg0 + 0x80) = 1;
-    *(s32 *)((u8 *)arg0 + 0x84) = 1;
-    table = fn_80131808(lbl_8032D358 + 0x4c8, -1, 0);
+    obj->items = 0;
+    obj->count = 0;
+    obj->unk7c = -1;
+    obj->valueA = 1;
+    obj->valueB = 1;
+    table = fn_80131808(strings + 0x4c8, -1, 0);
     if (table != 0) {
-        iter = (Iter_8014E1D0 *)((Iter_8014E1D0 *)table)->open((char *)(lbl_8032D358 + 0x4d8));
+        ok = 0;
+        iter = (Iter_8014E1D0 *)((Iter_8014E1D0 *)table)->open((char *)(strings + 0x4d8));
         if (iter != 0) {
-            *(s32 *)((u8 *)arg0 + 0x78) = 1;
-            do { fn_801345D8(name, 0x64, (char *)(lbl_8032D358 + 0x4e4), *(s32 *)((u8 *)arg0 + 0x78)); }
-            while (iter->has(name) != 0 && ++*(s32 *)((u8 *)arg0 + 0x78));
-            count = *(s32 *)((u8 *)arg0 + 0x78);
-            items = (void **)fn_8012850C((count + 1) * 4, lbl_8032D358 + 0x4f0);
-            *(void ***)((u8 *)arg0 + 0x74) = items;
-            for (i = 0; i < count - 1; i++) {
-                fn_801345D8(name, 0x64, (char *)(lbl_8032D358 + 0x4e4), i + 1);
-                items[i] = iter->next(name);
+            ok = 1;
+            obj->count = 1;
+            for (;;) {
+                ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(name, 0x64, (char *)(strings + 0x4e4), obj->count);
+                if (iter->has(name) == 0)
+                    break;
+                obj->count++;
             }
-            items[count - 1] = 0;
-            *(s32 *)((u8 *)arg0 + 0x80) = iter->get((char *)(lbl_8032D358 + 0x500), *(s32 *)((u8 *)arg0 + 0x80));
-            *(s32 *)((u8 *)arg0 + 0x84) = iter->get((char *)(lbl_8032D358 + 0x50c), *(s32 *)((u8 *)arg0 + 0x84));
+            obj->items = (void **)fn_8012850C((obj->count + 1) * 4, strings + 0x4f0);
+            for (i = 0; i < obj->count - 1; i++) {
+                ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(name, 0x64, (char *)(strings + 0x4e4), i + 1);
+                obj->items[i] = iter->next(name);
+            }
+            obj->items[obj->count - 1] = 0;
+            obj->valueA = iter->get((char *)(strings + 0x500), obj->valueA);
+            obj->valueB = iter->get((char *)(strings + 0x50c), obj->valueB);
         }
+        if (ok)
+            ((void (*)(char *, ...))fn_802E30C8)((char *)(strings + 0x518));
         fn_80131818(table);
     }
-    if (*(void **)((u8 *)arg0 + 0x74) == 0) {
-        fn_802E30C8();
-        items = (void **)fn_8012850C(4, lbl_8032D358 + 0x4f0);
-        *(void ***)((u8 *)arg0 + 0x74) = items; *items = 0;
-        *(s32 *)((u8 *)arg0 + 0x78) = 1;
+    if (obj->items == 0) {
+        ((void (*)(char *, ...))fn_802E30C8)((char *)(strings + 0x54c));
+        items = (void **)fn_8012850C(4, strings + 0x4f0);
+        obj->items = items;
+        *items = 0;
+        obj->count = 1;
     }
     return arg0;
 }
+#pragma use_lmw_stmw reset
 #pragma cplusplus off
 
 #pragma cplusplus on
@@ -1331,7 +1350,7 @@ extern f32 lbl_805616D0;
 extern s32 lbl_80559F48;
 extern s32 lbl_80559F4C;
 #pragma processor 750
-#pragma dont_inline on
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" f32 fn_8014E7DC(s32 arg0, s32 arg1) {
     class MainInterface {
@@ -1413,8 +1432,8 @@ extern "C" f32 fn_8014E7DC(s32 arg0, s32 arg1) {
     return ((MainInterface *)*(void **)((u8 *)file + 0x20))->finish(name);
 }
 #pragma cplusplus off
-#pragma dont_inline reset
 #pragma processor reset
+#pragma use_lmw_stmw reset
 
 #pragma cplusplus on
 extern "C" void *fn_8014EF00(void *arg0, s32 arg1) {
