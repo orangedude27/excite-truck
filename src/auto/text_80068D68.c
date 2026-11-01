@@ -9602,20 +9602,26 @@ void *arg0;
     u8 *msg = (u8 *)arg0;
     u8 *queueBase;
     u8 *newMsg;
-    register u8 *payload;
+    u8 *payload;
     u16 count;
     u16 opcode;
     u16 offset;
-    u8 highByte;
-    u8 lowByte;
 
-    if (msg != 0 && *(u16 *)(lbl_803C0A50 + 0x6C) != 0) {
-        GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
-        msg = 0;
+    if (msg != 0) {
+        register u8 *firstBase = lbl_803C0A50;
+        if (*(u16 *)(firstBase + 0x6C) != 0) {
+            GKI_enqueue((BUFFER_Q *)(firstBase + 0x64), msg);
+            msg = 0;
+        }
     }
 
-    if (*(u16 *)(lbl_803C0A50 + 0x80) == 0 && lbl_803C0F78[0x64E] == 0)
-        *(u16 *)(lbl_803C0A50 + 0x80) = *(u16 *)(lbl_803C0A50 + 0x6C) + 1;
+    {
+        register u8 *secondBase = lbl_803C0A50;
+        if (*(u16 *)(secondBase + 0x80) == 0 &&
+            lbl_803C0F78[0x64E] == 0)
+            *(u16 *)(secondBase + 0x80) =
+                *(u16 *)(secondBase + 0x6C) + 1;
+    }
 
     queueBase = lbl_803C0A50;
     while (*(u16 *)(queueBase + 0x80) != 0) {
@@ -9626,9 +9632,7 @@ void *arg0;
 
         offset = *(u16 *)(msg + 4);
         payload = msg + offset;
-        highByte = payload[9];
-        lowByte = payload[8];
-        opcode = (u16)(((u16)highByte << 8) + lowByte);
+        opcode = (u16)(((u16)payload[9] << 8) + payload[8]);
         if (opcode != 0x0C03 && opcode != 0x0C35) {
             newMsg = (u8 *)GKI_getpoolbuf(2);
             if (newMsg != 0) {
@@ -11495,19 +11499,24 @@ u8 HID_HostDeregister(void) {
 }
 
 u8 HID_HostAddDev(u8 *addr, u16 attr_mask, u8 *handle) {
-    register u8 *p;
-    u8 *entry;
-    register s32 index;
-    register s32 ctr;
-    register s32 offset;
+    u8 *saved_addr;
+    u16 saved_attr;
+    u8 *saved_handle;
+    u32 offset;
+    s32 index;
+    u8 *p;
+    s32 ctr;
     u8 value;
 
+    saved_addr = addr;
+    saved_attr = attr_mask;
+    saved_handle = handle;
     p = lbl_803C3C38;
     if (p[0x400] == 0)
         return 1;
     index = 0;
 search:
-    if (memcmp(addr, p + 1, 6) != 0) {
+    if (memcmp(saved_addr, p + 1, 6) != 0) {
         index++;
         p += 0x34;
         if (index < 0x10)
@@ -11558,15 +11567,15 @@ scan_done:
     if (index == 0x10)
         return 3;
     offset = index * 0x34;
-    entry = lbl_803C3C38 + offset;
-    if (entry[0] == 0) {
-        entry[0] = 1;
-        memcpy(entry + 1, addr, 6);
-        entry[0xA] = 0;
-        entry[0xC] = 0;
+    p = lbl_803C3C38;
+    if (p[offset] == 0) {
+        p[offset] = 1;
+        memcpy(p + offset + 1, saved_addr, 6);
+        p[offset + 0xA] = 0;
+        p[offset + 0xC] = 0;
     }
-    *(u16 *)(entry + 8) = attr_mask;
-    *handle = index;
+    *(u16 *)(p + offset + 8) = saved_attr;
+    *saved_handle = index;
     return 0;
 }
 
@@ -12477,17 +12486,54 @@ void L2CA_Deregister(UINT16 psm) {
 }
 
 BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT16 status) {
- void *lcb,*ccb; s16 info[2];
- if(lbl_803C4040[0]>=3)fn_80070984(0x80002,lbl_80317C20+0x26C);
- if(lbl_803C4040[0]>=3)fn_800709CC(0x80002,lbl_80317C20+0x2A4,addr[0],addr[1],addr[2],addr[3],addr[4],addr[5]);
- lcb=l2cu_find_lcb_by_bd_addr(addr);
- if(!lcb){if(lbl_803C4040[0]>=2)fn_8007093C(0x80001,lbl_80317C20+0x2DC);return 0;}
- ccb=l2cu_find_ccb_by_cid(lcb,lcid);
- if(!ccb){if(lbl_803C4040[0]>=2)fn_8007093C(0x80001,lbl_80317C20+0x300);return 0;}
- if(*(u8 *)((u8 *)ccb+0x36)!=id){if(lbl_803C4040[0]>=2)fn_8007096C(0x80001,lbl_80317C20+0x324,0,id);return 0;}
- if(result==0)fn_80089E40(ccb,0x15,NULL);
- else{info[0]=result;info[1]=status;if(result==1)fn_80089E40(ccb,0x15,info);else fn_80089E40(ccb,0x16,info);}
- return 1;
+    register u8 *logBase = lbl_80317C20;
+    void *lcb;
+    void *ccb;
+    struct {
+        u8 pad[0xA];
+        s16 info[2];
+    } resultData;
+    u8 ccbId;
+
+    if (lbl_803C4040[0] >= 3)
+        fn_80070984(0x80002, logBase + 0x26C);
+
+    if (lbl_803C4040[0] >= 3)
+        fn_800709CC(0x80002, logBase + 0x2A4,
+                    addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
+
+    lcb = l2cu_find_lcb_by_bd_addr(addr);
+    if (lcb == 0) {
+        if (lbl_803C4040[0] >= 2)
+            fn_8007093C(0x80001, logBase + 0x2DC);
+        return 0;
+    }
+
+    ccb = l2cu_find_ccb_by_cid(lcb, lcid);
+    if (ccb == 0) {
+        if (lbl_803C4040[0] >= 2)
+            fn_8007093C(0x80001, logBase + 0x300);
+        return 0;
+    }
+
+    ccbId = *(u8 *)((u8 *)ccb + 0x36);
+    if (ccbId != id) {
+        if (lbl_803C4040[0] >= 2)
+            fn_8007096C(0x80001, logBase + 0x324, ccbId, id);
+        return 0;
+    }
+
+    if (result == 0) {
+        fn_80089E40(ccb, 0x15, 0);
+    } else {
+        resultData.info[0] = result;
+        resultData.info[1] = status;
+        if (result == 1)
+            fn_80089E40(ccb, 0x15, &resultData);
+        else
+            fn_80089E40(ccb, 0x16, &resultData);
+    }
+    return 1;
 }
 
 BOOLEAN L2CA_ConfigRsp(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
