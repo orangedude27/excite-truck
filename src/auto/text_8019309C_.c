@@ -2156,7 +2156,7 @@ void fn_80198E7C(int index) {
 extern void fn_801958D8(void);
 extern void fn_80195F6C(void *, void *);
 extern void fn_80194624(void *);
-extern void fn_80195654();
+extern void fn_80195654(void *, void *);
 extern void fn_801933FC(void *, void *);
 extern double fn_8002F234(float);
 extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204;
