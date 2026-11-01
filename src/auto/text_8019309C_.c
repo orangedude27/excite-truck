@@ -817,7 +817,8 @@ extern int fn_801B2F24(void);
 extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
 static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
     float n = -ay;
-    return ax * bx + by * n;
+    float m = by * n;
+    return ax * bx + m;
 }
 #pragma cplusplus on
 extern "C" int fn_800216D0(void);
