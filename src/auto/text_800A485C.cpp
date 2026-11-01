@@ -3030,6 +3030,52 @@ extern "C" u8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
     return (u8)*(s32 *)(scratch + 0xC);
 }
 
+extern "C" s32 fn_800AB378(void *arg0, s32 arg1) {
+    typedef s32 (*LookupPage)(void *, s32, void **, s32 *);
+    typedef s32 (*ReadData)(void *, s32, s32, s32, u16, u32 *, s32);
+    typedef s32 (*FatFn)(void *, u32, s32, void *);
+    void *sp10;
+    u32 spC;
+    s32 sp8;
+    s32 result;
+    u32 i;
+    u32 prev = *(u32 *)((u8 *)arg0 + 0x40);
+    u32 cur = *(u32 *)arg0 >> *((u8 *)arg0 + 0x6C);
+
+    if (cur != prev) {
+        *(u32 *)((u8 *)arg0 + 0x40) = cur;
+        result = ((FatFn)fn_800AE620)((u8 *)arg0 + 8, cur, 0, (u8 *)arg0 + 0x44);
+        if (result != 0)
+            return result;
+        if ((u32)(((s32 *)arg0)[0x11] + 0x10000) == 0xFFFF && arg1 != 0) {
+            result = ((FatFn)fn_800AE620)((void *)((s32)arg0 + 8), cur, 1, (void *)((s32)arg0 + 0x44));
+            if (result != 0)
+                return result;
+            if ((u32)(((s32 *)arg0)[0x11] + 0x10000) != 0xFFFF && (u32)(prev + 0x10000) != 0xFFFF) {
+                result = ((LookupPage)fn_800A8D08)(*(void **)((u8 *)arg0 + 4), -1, &sp10, &sp8);
+                if (result != 0)
+                    return result;
+                fn_800A499C((const char *)*(void **)((u8 *)sp10 + 8), 0, **(u16 **)((u8 *)arg0 + 4));
+                for (i = 0; i < *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 6); i++) {
+                    void *ctx = *(void **)((u8 *)arg0 + 4);
+                    result = ((ReadData)fn_800B5700)(ctx, *(s32 *)((u8 *)sp10 + 8), ((s32 *)arg0)[0x11] + i, 0, *(u16 *)ctx, &spC, 0);
+                    if (result != 0) {
+                        VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 4), sp10);
+                        return result;
+                    }
+                    if (spC != **(u16 **)((u8 *)arg0 + 4)) {
+                        VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 4), sp10);
+                        return 0x11;
+                    }
+                }
+                VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 4), sp10);
+            }
+        }
+    }
+    *(u16 *)((u8 *)arg0 + 0x48) = ((*(u32 *)arg0 & *(u16 *)((u8 *)arg0 + 0x4A)) << 5) & 0xFFE0;
+    return 0;
+}
+
 extern "C" s32 fn_800AB378(void *, s32);
 extern s32 fn_800B5324(void *, void *, u32, u32, u32 *, u32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
@@ -9158,6 +9204,68 @@ extern "C" void fn_800BBCB4(void* context) {
     *(s32*)((u8*)context + 0x24) = 0;
     IOS_Close(*(s32*)context);
     *(s32*)context = -1;
+}
+
+extern "C" void *IPCGetBufferLo(void);
+extern "C" void *IPCGetBufferHi(void);
+extern "C" void IPCSetBufferLo(void *);
+extern "C" s32 iosCreateHeap(void *, s32);
+extern "C" void OSInitMutex(void *);
+extern "C" void *lbl_8055DD84;
+extern "C" s32 fn_800BBCF4(void) {
+    const char *str = lbl_8031B838;
+    s32 result = 0;
+    s32 ints = OSDisableInterrupts();
+
+    if (lbl_80559248 >= 0) {
+        OSRestoreInterrupts(ints);
+    } else {
+        OSRestoreInterrupts(ints);
+        lbl_8055DD6C = 0;
+        OSInitMutex(lbl_80407560);
+        lbl_8055DD84 = IPCGetBufferLo();
+        IPCGetBufferHi();
+        lbl_80559248 = iosCreateHeap(lbl_8055DD84, 0x800);
+        if (lbl_80559248 < 0) {
+            result = -22;
+        } else {
+            lbl_8055DD70 = (s32 *)iosAlloc(lbl_80559248, 0x20);
+            if (lbl_8055DD70 == 0) {
+                OSReport(str + 0x4F8);
+                result = -22;
+            } else {
+                lbl_8055DD74 = iosAlloc(lbl_80559248, 0x20);
+                if (lbl_8055DD74 == 0) {
+                    OSReport(str + 0x510);
+                    result = -22;
+                } else {
+                    lbl_8055DD78 = (s32)iosAlloc(lbl_80559248, 0x20);
+                    if (lbl_8055DD78 == 0) {
+                        OSReport(str + 0x528);
+                        result = -22;
+                    } else {
+                        lbl_8055DD7C = iosAlloc(lbl_80559248, 0x20);
+                        if (lbl_8055DD7C == 0) {
+                            OSReport(str + 0x540);
+                            result = -22;
+                        } else {
+                            lbl_8055DD80 = iosAlloc(lbl_80559248, 0x60);
+                            if (lbl_8055DD80 == 0) {
+                                OSReport(str + 0x558);
+                                result = -22;
+                            } else {
+                                IPCSetBufferLo((u8 *)lbl_8055DD84 + 0x800);
+                                strcpy((char *)lbl_80407580, str + 0x570);
+                                strcpy((char *)lbl_80407580 + 0x20, str + 0x580);
+                                strcpy((char *)lbl_80407580 + 0x40, str + 0x590);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result;
 }
 
 extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
