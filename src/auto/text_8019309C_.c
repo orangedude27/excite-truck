@@ -1456,11 +1456,12 @@ void fn_80195D80(void *arg0, float arg1) {
         vec[2] = x;
         vec[3] = y;
         vec[4] = z;
-        fn_801353C4(self->f168, vec);
-    }
-}
+                  fn_801353C4(self->f168, vec);
+      }
+  }
+#pragma cplusplus reset
 
-void fn_801961F8(void) {
+  void fn_801961F8(void) {
 
 }
 
