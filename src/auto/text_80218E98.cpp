@@ -3274,7 +3274,7 @@ extern "C" s32 fn_8021F848(void *arg0, s32 arg1) {
         if (t < min) t = min;
         if (t > max) t = max;
         *value = t;
-        if (fabsf(*value - old) <= lbl_80558DC4) fn_80216D28();
+        if (fabsf(*value - old) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
         return 1;
     case 0x126:
         obj = *(void **)((u8 *)arg0 + 0x2C);
