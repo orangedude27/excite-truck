@@ -8259,21 +8259,20 @@ service_loop:
                 GKI_freebuf(*(void **)(state + 0x14));
                 *(void **)(state + 0x14) = (void *)zero;
                 state[0x70] = last_index;
-                goto increment_a;
+                goto increment_index;
             }
-            (*(volatile u8 *)(state + 0x70))++;
-            goto increment_b;
+            state[0x70]++;
+            goto complete;
         }
     }
 
-increment_a:
-    (*(volatile u8 *)(state + 0x70))++;
-increment_b:
-    (*(volatile u8 *)(state + 0x70))++;
+increment_index:
+    state[0x70]++;
 service_check:
     if (state[0x70] < last_index)
         goto service_loop;
 
+complete:
     msg = GKI_getbuf(0x110);
     if (msg != 0) {
         *(u16 *)msg = 0x208;
