@@ -2001,7 +2001,7 @@ void fn_801533E8(void *arg0, f32 *arg1) {
 }
 
 #pragma pop
-void fn_801537C8(void) {
+void fn_801537C8(s32 *arg0) {
 
 }
 
