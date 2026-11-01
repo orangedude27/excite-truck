@@ -467,6 +467,7 @@ public:
 extern "C" s32 lbl_8031E370[];
 extern "C" s32 lbl_802F4588[];
 struct BatteryRec { u8 b[0x18]; };
+struct NandFileSlot { u32 id; u8 pad[0xE8]; s32 err; };
 static inline s32 findEventSlot(s32 key, s32 val) {
     s32 *entry = lbl_802F4588;
     s32 i;
@@ -8763,7 +8764,7 @@ extern "C" s32 fn_800B8FE4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
 extern "C" s32 fn_800B90A8(s32 arg0) {
     s32 result;
     u32 length;
-    u32 i;
+    u16 i;
     u8 *entry;
     entry = 0;
     fn_800B8004(lbl_8055DD30);
@@ -8772,19 +8773,18 @@ extern "C" s32 fn_800B90A8(s32 arg0) {
         return -20;
     }
     for (i = 0; i < 0x17; i++) {
-        u8 *cur = lbl_80405D58 + i * 0xF0;
-        if (*(u32 *)cur == (u32)arg0) {
-            *(s32 *)(cur + 0xEC) = 0;
+        if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg0) {
+            *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = 0;
             break;
         }
     }
-    result = (i == 0x17) ? 0 : -0x16;
+    result = (i == 0x17) ? -0x16 : 0;
     if (result == 0) {
         for (i = 0; i < 0x17; i++) {
             u8 *cur = lbl_80405D58 + i * 0xF0;
             if (*(u32 *)cur == (u32)arg0) { entry = cur; break; }
         }
-        if (i == 0x17) { fn_800B8048(lbl_8055DD30); return -20; }
+        if ((i == 0x17) ? -0x16 : 0) { fn_800B8048(lbl_8055DD30); return -20; }
         *(u32 *)(entry + 0xE4) &= ~2;
         result = NANDGetLengthAsync(entry + 0x58, &length);
         if (result == 0) {
@@ -8799,11 +8799,8 @@ extern "C" s32 fn_800B90A8(s32 arg0) {
         }
         if (result < 0) {
             for (i = 0; i < 0x17; i++) {
-                u8 *cur = lbl_80405D58 + i * 0xF0;
-                if (*(u32 *)cur == (u32)arg0) { *(s32 *)(cur + 0xEC) = result; break; }
+                if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg0) { *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = result; break; }
             }
-            fn_800B8048(lbl_8055DD30);
-            return result;
         }
     }
     fn_800B8048(lbl_8055DD30);
@@ -9184,6 +9181,66 @@ extern "C" s32 fn_800B9CC4(s32 arg0) {
             ((void (*)(s8))lbl_8055DD44)(*(volatile s8 *)(lbl_80407300 + 0x14));
     }
     return 0;
+}
+
+extern "C" u8 lbl_80407320[];
+extern "C" s32 fn_800BBCF4(void);
+extern "C" void fn_800BBCB4(void *);
+extern "C" s32 fn_800BB3F4(s32);
+extern "C" s32 fn_800B9DCC(void *arg0) {
+    void *sp8;
+    s32 r;
+    s32 ret;
+    const char *str = lbl_8031B2B0;
+    if (arg0 == (void *)0) {
+        ret = 1;
+    } else if (*(volatile u32 *)lbl_80407300 & 1) {
+        OSReport(str + 0x7C);
+        if (arg0 != *(void * volatile *)(lbl_80407300 + 0xC)) {
+            ret = 0xB;
+        } else {
+            ret = 0;
+        }
+    } else {
+        if (!(*(volatile u32 *)lbl_80407300 & 4)) {
+            *(s32 *)(lbl_80407300 + 4) = 0x200;
+            fn_800A499C((const char *)lbl_80407320, 0, 0x28);
+            if (fn_800BBCF4() != 0) {
+                OSReport(str + 0xBC);
+                return 0x15;
+            }
+            if (fn_800BB3F4(0) == 0) *(s32 *)(lbl_80407300 + 0x10) = 1;
+            sp8 = lbl_80407320;
+            r = fn_800BBB58(0, &sp8);
+            if (r != 0) {
+                OSReport(str + 0xF4, r);
+                return 0x15;
+            }
+            if (*(s32 *)(lbl_80407300 + 0x10) != 0) {
+                lbl_8055DD60 = 2;
+                r = fn_800BC474((s32 *)sp8, (s32)fn_800B9CC4, &lbl_8055DD60);
+                if (r != 0) {
+                    OSReport(str + 0x130, r);
+                    fn_800BBCB4(sp8);
+                    return 0x15;
+                }
+            } else {
+                lbl_8055DD60 = 1;
+                r = fn_800BC474((s32 *)sp8, (s32)fn_800B9BB4, &lbl_8055DD60);
+                if (r != 0) {
+                    OSReport(str + 0x130, r);
+                    fn_800BBCB4(sp8);
+                    return 0x15;
+                }
+            }
+            *(void * volatile *)(lbl_80407300 + 8) = sp8;
+            *(volatile u32 *)lbl_80407300 |= 4;
+        }
+        *(void * volatile *)(lbl_80407300 + 0xC) = arg0;
+        *(volatile u32 *)lbl_80407300 |= 1;
+        ret = 0;
+    }
+    return ret;
 }
 
 extern "C" s32 fn_800B9FCC(s32 arg0) {
