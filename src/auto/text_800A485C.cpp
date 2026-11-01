@@ -4524,7 +4524,7 @@ extern "C" s32 fn_800AEF6C(void *arg0) {
     if (result != 0) return result;
     result = ((s32 (*)(void *))fn_800A9104)(arg0);
     if (result != 0) return result;
-    result = ((Lookup)fn_800A8D08)(arg0, -1, &sp8, &spC);
+    result = ((Lookup)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(arg0, -1, &sp8, &spC);
     if (result != 0) return result;
     fn_800A499C((const char *)*(void **)((u8 *)sp8 + 8), 0, *(u16 *)arg0);
     base = *(s32 *)((u8 *)arg0 + 0x30) + ((*(s32 *)((u8 *)arg0 + 0x10) - 2) << *(u8 *)((u8 *)arg0 + 0x21));
