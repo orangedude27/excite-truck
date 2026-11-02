@@ -241,6 +241,7 @@ extern int fn_8012C33C(void *);
 extern void *fn_8002F37C(void *, void *, void *, int, int);
 extern char *strncpy(char *, const char *, unsigned int);
 extern char lbl_80349348[], lbl_80349354[];
+extern void fn_80296D24(void);
 #pragma use_lmw_stmw off
 void fn_80296838(void *arg0) {
     int offset;
