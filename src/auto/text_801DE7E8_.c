@@ -4,6 +4,17 @@
 __declspec(section ".data") extern int lbl_80339570;
 extern int fn_8000DA10(void);
 extern void fn_801332D0(int, int*, int*);
+extern int lbl_8055E9F4;
+extern void *fn_80131810(void *);
+extern void fn_802E30C8(const char *, ...);
+extern int fn_802090D4(void *);
+extern void *fn_80207848(void *, int);
+extern int stricmp(const char *, const char *);
+__declspec(section ".sdata") extern char lbl_8055AE00[];
+__declspec(section ".sdata") extern char lbl_8055AE08[];
+__declspec(section ".sdata") extern char lbl_8055AE10[];
+__declspec(section ".sdata") extern char lbl_8055AE18[];
+__declspec(section ".sdata") extern char lbl_8055AE20[];
 extern int fn_80133348(int, int, int);
 extern int lbl_8055E9DC;
 extern int lbl_8055E9E0;
