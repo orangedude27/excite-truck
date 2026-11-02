@@ -798,38 +798,35 @@ handled:
     return 1;
 }
 #pragma scheduling on
-extern void fn_80234AFC(void *, const char *, int, float, float, int);
+extern void fn_80234AFC(void *, const char *, float, float, ...);
 extern float lbl_80563940, lbl_80563944, lbl_80563948, lbl_80563950, lbl_80563954;
 extern double lbl_80563938;
 extern signed char lbl_80344120[], lbl_80344148[];
-extern char lbl_8055C098[], lbl_8055C0A0[], lbl_8055C0A8[];
+extern char lbl_8055C098[1], lbl_8055C0A0[1], lbl_8055C0A8[1];
 void fn_8024D810(void *arg0) {
     float x, y;
-    float dx, dy, width, height, right, bottom;
+    float dx, dy, cx, cy;
     int row, col, base;
     fn_80230C30(&x, &y, *(int *)((char *)arg0 + 4), *(int *)((char *)arg0 + 8));
     dx = (float)*(int *)((char *)arg0 + 0xC) / lbl_80563948;
     dy = (float)*(int *)((char *)arg0 + 0x10) * lbl_80563944;
-    width = (float)*(int *)((char *)arg0 + 0x64);
-    height = (float)*(int *)((char *)arg0 + 0x68);
-    x += dx * width;
-    y -= dy * height;
-    fn_80230924((void *)0xFFAF7F00, x, y, x + dx, y - lbl_80563950, lbl_80563940);
-    fn_80230924((void *)0xFFAF7F00, x, y, x + dx, lbl_80563950 + y - dy, lbl_80563940);
-    fn_80230924((void *)0xFFAF7F00, x, y, x + lbl_80563950, y - dy, lbl_80563940);
-    fn_80230924((void *)0xFFAF7F00, x + dx, y, x + dx - lbl_80563950, y - dy, lbl_80563940);
+    cx = x + dx * (float)(*(int *)((char *)arg0 + 0x64) + 1);
+    cy = y - dy * (float)(*(int *)((char *)arg0 + 0x68) + 1);
+    fn_80230924((void *)0xFFAF7F00, cx, cy, cx + dx, cy - lbl_80563950, lbl_80563940);
+    fn_80230924((void *)0xFFAF7F00, cx, cy, cx + dx, lbl_80563950 + (cy - dy), lbl_80563940);
+    fn_80230924((void *)0xFFAF7F00, cx, cy, cx + lbl_80563950, cy - dy, lbl_80563940);
+    fn_80230924((void *)0xFFAF7F00, cx + dx, cy, cx + dx - lbl_80563950, cy - dy, lbl_80563940);
     x += dx * lbl_80563954;
     y -= dy * lbl_80563954;
     for (row = 0, base = 0; row < 4; row++, base += 10, y -= dy) {
-        float cur = x;
-        for (col = 0; col < 10; col++, cur += dx) {
+        for (col = 0; col < 10; col++, x += dx) {
             if (row == 3 && col == 9)
-                fn_80234AFC((char *)arg0 + 0x78, lbl_8055C098, 1, cur, y, 0);
+                fn_80234AFC((char *)arg0 + 0x78, lbl_8055C098, 1, x, y, 0);
             else if (row == 3 && col == 8)
-                fn_80234AFC((char *)arg0 + 0x78, lbl_8055C0A0, 1, cur, y, 0);
+                fn_80234AFC((char *)arg0 + 0x78, lbl_8055C0A0, 1, x, y, 0);
             else {
                 signed char *letters = *(unsigned char *)((char *)arg0 + 0x6C) ? lbl_80344120 : lbl_80344148;
-                fn_80234AFC((char *)arg0 + 0x78, lbl_8055C0A8, 1, cur, y, letters[base + col]);
+                fn_80234AFC((char *)arg0 + 0x78, lbl_8055C0A8, 1, x, y, letters[base + col]);
             }
         }
     }
