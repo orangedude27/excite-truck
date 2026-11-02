@@ -9,6 +9,16 @@ extern void fn_8026B11C(void **, void *);
 extern unsigned char lbl_80346988[];
 extern int lbl_8055F4D0, lbl_8055F4CC, lbl_8055F4C8;
 extern float lbl_80563D68;
+extern float lbl_80563D6C, lbl_80563D70, lbl_80563D74, lbl_8055E3C8;
+extern unsigned char lbl_8049A0E8[];
+extern void *fn_8017960C(void);
+extern int fn_80178CA4(void);
+extern void fn_8020C900(int);
+extern void fn_80206444(void);
+extern void fn_80206454(void);
+extern void fn_802C2C68(int, int);
+extern void fn_80176A00(int);
+extern float fn_801E9FDC(void *, float, float);
 extern int lbl_8055C4FC, lbl_8055C500;
 extern unsigned char lbl_8049A028[];
 void fn_8026B118(void) {}
@@ -111,6 +121,7 @@ extern "C" void fn_8026B260(void) {
     public:
         virtual const char *getName();
     };
+    struct StringBase { char first; };
     char name[12];
     char *base = (char *)lbl_80346988;
     register int iteratorOrZero = 0;
@@ -123,7 +134,7 @@ extern "C" void fn_8026B260(void) {
     lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     nameObj = *(FileName **)((char *)obj + 0x20);
-    dot = nameObj->getFileName(base, 0);
+    dot = nameObj->getFileName(&((StringBase *)base)->first, 0);
     if (dot != 0) {
         strncpy(name, dot, 11);
         dot = strchr(name, '.');
