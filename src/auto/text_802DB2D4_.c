@@ -8,6 +8,14 @@ extern void GXSetZMode(int, int, int);
 extern void GXSetNumChans(int);
 extern void GXSetChanCtrl(int, int, int, int, int, int, int);
 extern unsigned char lbl_8055FEB8;
+extern double lbl_80565058, lbl_80565070;
+extern float lbl_80565050, lbl_80565060, lbl_80565064, lbl_80565068, lbl_80565078;
+extern void GXSetNumTexGens(unsigned char);
+extern double fn_8002F208(double);
+extern double fn_8002EFBC(double, double);
+extern double ceil(double);
+extern double fabs(double);
+extern void fn_802D3DF8(int, signed char, float, float);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -610,6 +618,83 @@ void fn_802DC71C(int arg0, int arg1) {
     *(unsigned char *)(lbl_804DB480 + 0x218) = 1;
     GXSetBlendMode(1, 4, 5, 5);
 }
+
+#pragma push
+#pragma processor 750
+void fn_802DC8B4(void) {
+    unsigned int *colorOut;
+    int byteOffset;
+    float *coordOut;
+    void *data;
+    unsigned char *g;
+    int i;
+    int n;
+    float *coords;
+    unsigned int *colors;
+    float matrix[3][4];
+    float temp_f31;
+    float temp_f30;
+    float temp_f29;
+
+    g = lbl_804DB480;
+    if (*(int *)(g + 4) > 0) {
+        colors = (unsigned int *)fn_802CFF64(0x28);
+        coords = (float *)fn_802CFF64(0x50);
+        if (colors != 0 && coords != 0) {
+            if (*(unsigned char *)(g + 0x218) != 0)
+                fn_802D6B54(*(void **)(g + 0x214));
+            data = ((void *(*)(void *))fn_802DC628)(*(void **)(lbl_804DB480 + 0x214));
+            n = *(int *)(lbl_804DB480 + 4);
+            temp_f29 = lbl_80565040;
+            colorOut = colors;
+            temp_f30 = lbl_8056504C;
+            temp_f31 = lbl_80565044;
+            coordOut = coords;
+            i = 0;
+            byteOffset = 0;
+            while (i < n) {
+                unsigned char *r = *(unsigned char **)lbl_804DB480 + byteOffset;
+                int v = (int)(temp_f29 * *(float *)(r + 0x30));
+                int c = 0xFF;
+                v = (unsigned char)v;
+                v = v & ((-v & ~v) >> 31);
+                if (v < 0xFF) c = v;
+                *colorOut = 0xFFFFFF00U | (unsigned char)c;
+                coordOut[0] = temp_f31 + *(float *)(r + 0x24) / temp_f30;
+                coordOut[1] = temp_f31 + *(float *)(r + 0x2C) / temp_f30;
+                fn_802D2ED8((int)r, i);
+                byteOffset += 0x34;
+                colorOut++;
+                coordOut += 2;
+                i++;
+            }
+            if (i < 10) {
+                int mtxId;
+                PSMTXScale(matrix, lbl_80565048, lbl_80565048, lbl_80565048);
+                mtxId = i * 3;
+                while (i < 10) {
+                    GXLoadPosMtxImm(matrix, mtxId);
+                    mtxId += 3;
+                    i++;
+                }
+            }
+            if (*(unsigned char *)(lbl_804DB480 + 0x218) != 0) {
+                GXSetArray(9, *(void **)((unsigned char *)data + 0x20), 0xC);
+                GXSetArray(0xD, *(void **)((unsigned char *)data + 0x28), 4);
+            }
+            GXSetArray(0xB, colors, 4);
+            GXSetArray(0xE, coords, 8);
+            GXCallDisplayList(*(void **)((unsigned char *)data + 0x30), *(unsigned int *)((unsigned char *)data + 0x2C));
+            *(unsigned char *)(lbl_804DB480 + 0x218) = 0;
+        }
+        *(int *)(lbl_804DB480 + 4) = 0;
+        *(void **)(lbl_804DB480 + 0x214) = 0;
+    }
+    fn_802CADD0(-1, 1);
+    fn_802DBDD8();
+}
+#pragma pop
+
 #pragma scheduling on
 extern unsigned char lbl_8055FEB0, lbl_8055FEB9, lbl_8055FEBB;
 extern void *lbl_8055FEB4;
