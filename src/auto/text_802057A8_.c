@@ -201,11 +201,13 @@ typedef struct { float m[12]; } Mtx48;
 typedef struct { int w[8]; } Blk32;
 typedef struct { int w[3]; } Blk12;
 typedef struct { Blk32 a; int b; Blk12 c; } Cam48;
+#pragma ppc_psq_save off
+#pragma ppc_psq_save off
 void fn_80205FCC(void) {
+    Cam48 cam;
     Mtx48 buf;
-    Mtx48 cam;
     float f31;
-    cam = *(Mtx48 *)fn_802C86DC();
+    cam = *(Cam48 *)fn_802C86DC();
     fn_802C88FC(&buf);
     buf.m[3] *= lbl_80563194;
     buf.m[4] *= lbl_80563194;
@@ -226,7 +228,7 @@ void fn_80205FCC(void) {
     fn_80010188(-1, 0x24, *(int *)(lbl_804891D0 + 4), lbl_805631F0, lbl_80563198 * (float)lbl_8055CFF0, f31);
     fn_802C8638(&cam);
 }
-
+#pragma ppc_psq_save reset
 void fn_802061F8(void) {
     lbl_8055ED6C = fn_802CAC28(lbl_8033BC40, 0);
 }
