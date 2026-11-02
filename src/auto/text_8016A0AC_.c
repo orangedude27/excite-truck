@@ -41,6 +41,7 @@ extern char lbl_80330528[];
 extern char lbl_80330688[];
 extern char lbl_803306A0[];
 extern char lbl_803306B4[];
+typedef struct { f32 f[9]; s32 w[3]; } Blk8016A438;
 extern f32 fn_801E7E18(void);
 extern void fn_802C9900(f32);
 extern void fn_802C9904(void);
