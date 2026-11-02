@@ -272,15 +272,21 @@ void fn_80235AFC(void *arg0, int arg1, int arg2,
     fn_802C8DB8(frame.vertices, 4, frame.indices, 6);
     fn_802C8D74();
 }
-extern void fn_80230A68(void *, int, float, float, float, float, float);
-extern int fn_80230B9C(void *);
+typedef struct Vtx_80235CBC { double a; int b, c; float d, e; } Vtx_80235CBC;
+typedef struct Idx_80235CBC { unsigned short i[6]; } Idx_80235CBC;
+extern Vtx_80235CBC fn_80230A68(int, float, float, float, float, float);
+extern int fn_80230B9C(int);
 extern void fn_802C8C04(int);
-extern const char lbl_802FA020[];
-void fn_80235CBC(void *arg0, int arg1, float x, float y, float z, float dx, float dy) {
+extern Idx_80235CBC lbl_802FA020;
+void fn_80235CBC(void *arg0, int arg1, int arg2, float x, float y, float z, float dx, float dy) {
     void *node;
     int index;
-    struct V { double a; int b, c; float d, e; } v0, v1, v2, v3;
-    unsigned short ids[6];
+    struct Frame {
+        Idx_80235CBC ids;
+        unsigned char pad[4];
+        Vtx_80235CBC t[4];
+        Vtx_80235CBC v[4];
+    } __attribute__((aligned(16))) frame;
     if (arg1 < 0)
         return;
     node = fn_8023505C(arg0, arg1);
@@ -289,12 +295,13 @@ void fn_80235CBC(void *arg0, int arg1, float x, float y, float z, float dx, floa
         return;
     }
     fn_802C8C04(*(int *)((char *)arg0 + 0x84));
-    index = fn_80230B9C(*(void **)((char *)arg0 + 0x88));
-    fn_80230A68(&v0, index, x, y, z, *(float *)node, *((float *)node + 1));
-    fn_80230A68(&v1, index, x + dx, y, z, *((float *)node + 2), *((float *)node + 1));
-    fn_80230A68(&v2, index, x, y - dy, z, *(float *)node + 0, *((float *)node + 3));
-    fn_80230A68(&v3, index, x + dx, y - dy, z, *((float *)node + 2), *((float *)node + 3));
-    ((void (*)(void *, int, unsigned short *, int, unsigned short, unsigned short, unsigned short, unsigned short, float, double))fn_802C8DB8)(&v0, 4, ids, 6, *(unsigned short *)(lbl_802FA020 + 8), *(unsigned short *)(lbl_802FA020 + 6), *(unsigned short *)(lbl_802FA020 + 4), *(unsigned short *)(lbl_802FA020 + 2), *(float *)((char *)&v3 + 0x10), v3.a);
+    index = fn_80230B9C(arg2);
+    frame.v[0] = fn_80230A68(index, x, y, z, *(float *)node, *((float *)node + 1));
+    frame.v[1] = fn_80230A68(index, x + dx, y, z, *((float *)node + 2), *((float *)node + 1));
+    frame.v[2] = fn_80230A68(index, x, y - dy, z, *(float *)node, *((float *)node + 3));
+    frame.v[3] = fn_80230A68(index, x + dx, y - dy, z, *((float *)node + 2), *((float *)node + 3));
+    frame.ids = lbl_802FA020;
+    fn_802C8DB8(frame.v, 4, frame.ids.i, 6);
     fn_802C8D74();
 }
 
