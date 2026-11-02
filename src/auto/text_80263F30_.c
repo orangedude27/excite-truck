@@ -11,6 +11,10 @@ extern float fn_80235EF0(void *, int);
 extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
 extern float lbl_80563C00;
 extern float lbl_80563BF0;
+extern float lbl_80563BF8, lbl_80563C18, lbl_80563C1C;
+extern void fn_8022ACFC(int, void *, float *, float *, float *, float *, float, float);
+extern int fn_8022AA84(int);
+extern void fn_8022BD40(int, void *, int, int, float, float, float, float, float, float);
 extern int fn_80265B5C(void);
 extern void fn_80216D28(void);
 extern void *lbl_8055F444;
@@ -429,9 +433,10 @@ extern "C" void fn_80264FD4(void *arg0) {
 #pragma use_lmw_stmw off
 extern "C" void fn_80264FE4(void *arg0) {
     char *p = (char *)arg0;
-    int i, offset, alpha, a, id;
+    float base, intensity, value, limit, zero;
+    int id, offset;
     char *item;
-    float limit, zero, value, base, intensity;
+    int i, alpha, a;
 
     limit = lbl_80563C00;
     zero = lbl_80563BF0;
@@ -441,10 +446,10 @@ extern "C" void fn_80264FE4(void *arg0) {
         item = *(char **)(p + 0xB8) + offset;
         value = *(float *)(p + 0xD0) * (*(float *)(p + 0xA4) - *(float *)(item + 0x18));
         if (limit < value) value = limit;
-        if (value <= zero) value = zero;
+        value = (value > zero) ? value : zero;
         alpha = 0xFF;
         a = (int)(value * (*(float *)(item + 0x18) * *(float *)(p + 0xCC)));
-        if (a < 0) a = 0;
+        a = (a > 0) ? a : 0;
         if (a < 0xFF) alpha = a;
         id = *(int *)(item + 0x1C);
         base = *(float *)(p + 0xAC) + *(float *)(p + 0xB0) * (limit - *(float *)(item + 0x18) * *(float *)(p + 0xC8));
@@ -455,27 +460,29 @@ extern "C" void fn_80264FE4(void *arg0) {
         offset += 0x20;
         i++;
     }
-    limit = lbl_80563C00;
-    zero = lbl_80563BF0;
-    i = 0;
-    offset = 0;
-    while (i < *(int *)(p + 0x5C)) {
-        item = *(char **)(p + 0x58) + offset;
-        value = *(float *)(p + 0x70) * (*(float *)(p + 0x44) - *(float *)(item + 0x18));
-        if (limit < value) value = limit;
-        if (value <= zero) value = zero;
-        alpha = 0xFF;
-        a = (int)(value * (*(float *)(item + 0x18) * *(float *)(p + 0x6C)));
-        if (a < 0) a = 0;
-        if (a < 0xFF) alpha = a;
-        id = *(int *)(item + 0x1C);
-        base = *(float *)(p + 0x4C) + *(float *)(p + 0x50) * (limit - *(float *)(item + 0x18) * *(float *)(p + 0x68));
-        intensity = base * fn_80235F64(*(void **)(p + 0x54), id);
-        fn_80235AFC(*(void **)(p + 0x54), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
-                    *(float *)item, *(float *)(item + 4), lbl_80563BF0,
-                    base * fn_80235EF0(*(void **)(p + 0x54), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
-        offset += 0x20;
-        i++;
+    {
+        float limit2 = lbl_80563C00;
+        zero = lbl_80563BF0;
+        i = 0;
+        offset = 0;
+        while (i < *(int *)(p + 0x5C)) {
+            item = *(char **)(p + 0x58) + offset;
+            value = *(float *)(p + 0x70) * (*(float *)(p + 0x44) - *(float *)(item + 0x18));
+            if (limit2 < value) value = limit2;
+            value = (value > zero) ? value : zero;
+            alpha = 0xFF;
+            a = (int)(value * (*(float *)(item + 0x18) * *(float *)(p + 0x6C)));
+            a = (a > 0) ? a : 0;
+            if (a < 0xFF) alpha = a;
+            id = *(int *)(item + 0x1C);
+            base = *(float *)(p + 0x4C) + *(float *)(p + 0x50) * (limit2 - *(float *)(item + 0x18) * *(float *)(p + 0x68));
+            intensity = base * fn_80235F64(*(void **)(p + 0x54), id);
+            fn_80235AFC(*(void **)(p + 0x54), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
+                        *(float *)item, *(float *)(item + 4), lbl_80563BF0,
+                        base * fn_80235EF0(*(void **)(p + 0x54), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
+            offset += 0x20;
+            i++;
+        }
     }
 }
 
