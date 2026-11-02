@@ -4,6 +4,10 @@
 typedef signed int s32;
 typedef unsigned int u32;
 
+extern double fabs(double);
+extern float lbl_80558DC4, lbl_805646E8, lbl_805646EC, lbl_805646F4;
+extern void fn_801E9E30(s32, float *);
+extern void fn_802CA09C(s32, u32, u32, float, float, float, float, float);
 extern void fn_802A9428(void);
 extern s32 lbl_8055F840;
 extern s32 lbl_8055F844;
