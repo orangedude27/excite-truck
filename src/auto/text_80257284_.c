@@ -3,7 +3,7 @@
 
 void fn_80257A8C();
 void *fn_80257470(void *);
-void *fn_8022D850(void *, int, int, int);
+void *fn_8022D850(void *, int, int, void *);
 void fn_8022D894(void *, int, int, void *, int);
 void fn_80257A6C(int *, int, int);
 void fn_8022D458(int, int, int *);
@@ -213,13 +213,12 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
 #pragma cplusplus on
 extern "C" void fn_802576EC(void *arg0) {
     char *self = (char *)arg0;
-    char *entry;
+    int mode;
     int pos;
+    char *entry;
     char *key;
     int i;
-    int mode;
     char *name;
-    MatchDispatch *obj;
 
     if (*(unsigned char *)(self + 0x50) != 0) {
         key = (char *)fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 1, 0);
@@ -227,8 +226,7 @@ extern "C" void fn_802576EC(void *arg0) {
         i = 0;
         while (i < fn_80012854()) {
             entry = (char *)fn_8001285C(i);
-            obj = *(MatchDispatch **)(entry + 0x20);
-            if (obj->matches(lbl_8055C1F8) != 0) {
+            if ((*(MatchDispatch **)(entry + 0x20))->matches(lbl_8055C1F8) != 0) {
                 name = fn_800081BC((*(MatchDispatch **)(entry + 0x20))->fetch((const char *)&lbl_8055C1D8, (char *)fn_80012820(*(int *)(entry + 4)) + 8));
                 if (stricmp(name, key) == 0) {
                     pos = *(int *)(self + 0x5C);
