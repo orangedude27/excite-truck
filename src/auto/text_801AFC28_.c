@@ -3,6 +3,11 @@
 
 #include <types.h>
 #include <stddef.h>
+#include <math.h>
+
+typedef struct { f32 v[12]; } Blend12;
+extern f32 lbl_8055E460, lbl_80558DC4;
+extern f32 PSVECDotProduct(void *, void *);
 
 extern void *lbl_8055E650;
 extern void *lbl_8055E654;
