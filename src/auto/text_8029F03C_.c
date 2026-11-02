@@ -8,6 +8,7 @@ __declspec(section ".sdata") extern char lbl_8055CB50[];
 __declspec(section ".sdata") extern char lbl_8055CB58[];
 __declspec(section ".sdata") extern char lbl_8055CB5C[];
 extern int strcmp(const char *, const char *);
+extern int fn_8029FE6C(const char *);
 typedef struct Unk802A0794Params {
     float values[6];
     short unk_0x18;
