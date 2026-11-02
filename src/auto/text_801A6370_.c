@@ -28,9 +28,11 @@ extern double lbl_80562420;
 extern float lbl_80562428;
 extern float *fn_80265D98(void);
 extern void fn_8012F57C(int, void *, void *, float);
+#pragma dont_inline on
 float fn_801A6370(float arg0, float arg1, float arg2, float arg3) {
     return arg0 + arg1 * arg3 + arg3 * (arg3 * (lbl_80562418 * arg2));
 }
+#pragma dont_inline reset
 
 float fn_801A6390(int arg0, int arg1) {
     return (float)(arg0 - arg1) * lbl_8056241C;
@@ -98,29 +100,32 @@ void fn_801A6524(void *arg0) {
     fn_801A6558(arg0);
 }
 
+#pragma scheduling invalid_target
 void fn_801A6558(void *arg0) {
+    float zero = lbl_80562430;
+    float one = lbl_8056242C;
     *(int *)((char *)arg0 + 0x2778) = 4;
     *(void **)((char *)arg0 + 0x277C) = fn_802E2C20();
-    *(float *)((char *)arg0 + 0x273C) = lbl_8056242C;
-    *(float *)((char *)arg0 + 0x2738) = lbl_8056242C;
+    *(float *)((char *)arg0 + 0x273C) = one;
+    *(float *)((char *)arg0 + 0x2738) = one;
     *(int *)((char *)arg0 + 0x2704) = 0;
-    *(float *)((char *)arg0 + 0x272C) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x2730) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x2734) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x2708) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x270C) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x2710) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x2714) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x2718) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x271C) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x2720) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x2724) = lbl_80562430;
-    *(float *)((char *)arg0 + 0x2728) = lbl_80562430;
+    *(float *)((char *)arg0 + 0x272C) = zero;
+    *(float *)((char *)arg0 + 0x2730) = zero;
+    *(float *)((char *)arg0 + 0x2734) = zero;
+    *(float *)((char *)arg0 + 0x2708) = zero;
+    *(float *)((char *)arg0 + 0x270C) = zero;
+    *(float *)((char *)arg0 + 0x2710) = zero;
+    *(float *)((char *)arg0 + 0x2714) = zero;
+    *(float *)((char *)arg0 + 0x2718) = zero;
+    *(float *)((char *)arg0 + 0x271C) = zero;
+    *(float *)((char *)arg0 + 0x2720) = zero;
+    *(float *)((char *)arg0 + 0x2724) = zero;
+    *(float *)((char *)arg0 + 0x2728) = zero;
     memset(*(void **)((char *)arg0 + 0x2700), 0, 0xE7);
     if (*(unsigned char *)((char *)arg0 + 0x2740))
         fn_801A67B0(arg0);
 }
-
+#pragma scheduling on
 extern void fn_80182074(void);
 extern void *fn_801B2EC0(int);
 extern void fn_80265D40(void *, int, float);
