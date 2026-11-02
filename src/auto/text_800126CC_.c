@@ -27,6 +27,8 @@ extern void fn_80013724(void);
 extern int fn_80007F90(int);
 extern int fn_801345D8(void *, int, const char *, ...);
 void fn_80012984();
+typedef void *(*Vfn_8001335C)(void *, ...);
+#define VCALL_8001335C(o, slot) ((Vfn_8001335C)((*(void ***)(o))[slot]))
 #pragma scheduling invalid_target
 void *fn_800126CC(int arg0) DECOMP_DONT_INLINE {
     volatile int *table = (volatile int *)lbl_802FC638;
@@ -239,6 +241,7 @@ int fn_800136FC(void *arg0, void *arg1) {
 }
 
 extern int lbl_8055D518;
+#pragma scheduling invalid_target
 void fn_80013A34(void) {
     int count = lbl_8055D518;
     char *p = lbl_803551E0;
@@ -266,15 +269,16 @@ void fn_80013A34(void) {
         char *entry = lbl_80352AD0;
         int x;
         for (x = 0; x < lbl_8055D508; x++, entry += 0x28) {
+            char *q = lbl_803551E0;
             int y;
-            for (y = 0; y < lbl_8055D518; y++) {
-                if (*(int *)(entry + 4) == *(int *)(lbl_803551E0 + y * 0x88))
+            for (y = 0; y < count; y++, q += 0x88) {
+                if (*(int *)(entry + 4) == *(int *)q)
                     entry[0x24] = 0;
             }
         }
     }
 }
-
+#pragma scheduling reset
 extern char lbl_802FCB74[];
 extern int fn_8012C33C(void);
 extern int fn_80131808(int);
