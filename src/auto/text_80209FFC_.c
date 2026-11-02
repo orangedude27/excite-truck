@@ -53,7 +53,7 @@ s32 fn_80127D58(void*);
 s32 fn_8012E498(void*);
 void fn_80207924();
 int sprintf(char*, const char*, ...);
-extern u8 fn_8020A100[];
+void fn_8020A100(void);
 extern s8 lbl_8055EDD0;
 extern s8 lbl_8055EDD4;
 extern s32 lbl_804892C0[];
