@@ -73,6 +73,7 @@ void fn_802022A0(int *arg0) {
 #pragma push
 #pragma paired_single off
 #pragma paired off
+#pragma dont_inline on
 int fn_802022E4(const Vec *arg0) {
     f32 temp_f1;
     f32 var_f31;
