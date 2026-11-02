@@ -603,7 +603,6 @@ init_samples:
 #pragma scheduling invalid_target
 extern void fn_8005EB44(void);
 extern s32 fn_8005EE7C(void);
-extern void read_kpad_stick(s32, void *);
 extern void KPADSetSensorHeight(void *, s32);
 extern u8 fn_80062458(void);
 extern void OSRegisterVersion(const char *);
