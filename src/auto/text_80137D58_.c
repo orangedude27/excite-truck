@@ -1,40 +1,59 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-void fn_80137D58(void *arg0, int arg_sp0) {
-    int sp18, sp14, sp10, spC, sp8;
-    unsigned char *p = (unsigned char *)arg0;
-    unsigned char temp_r0, temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5;
-    unsigned char temp_r15, temp_r16, temp_r17, temp_r18, temp_r19, temp_r20, temp_r21, temp_r22, temp_r23, temp_r24, temp_r25, temp_r26, temp_r27, temp_r28, temp_r29, temp_r30;
-    unsigned char temp_r4, temp_r4_2, temp_r4_3, temp_r4_4, temp_r4_5, temp_r4_6, temp_r4_7, temp_r4_8;
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_80137D58(void *arg0, int arg_sp0) {
+    volatile int sp18, sp14, sp10, spC, sp8;
+    volatile unsigned char *p = (volatile unsigned char *)arg0;
+    register unsigned char temp_r0 asm("r0"), temp_r0_2 asm("r0"), temp_r0_4 asm("r0"), temp_r0_5 asm("r0"); register unsigned int temp_r0_3 asm("r0");
+    register unsigned char temp_r12 asm("r12"), temp_r11 asm("r11"), temp_r10 asm("r10"), temp_r9 asm("r9"), temp_r8 asm("r8"), temp_r7 asm("r7"), temp_r6 asm("r6"), temp_r5 asm("r5"), temp_r4 asm("r4");
+    register unsigned char temp_r31 asm("r31"), temp_r30 asm("r30"), temp_r29 asm("r29"), temp_r28 asm("r28"), temp_r27 asm("r27"), temp_r26 asm("r26"), temp_r25 asm("r25"), temp_r24 asm("r24"), temp_r23 asm("r23"), temp_r22 asm("r22"), temp_r21 asm("r21"), temp_r20 asm("r20"), temp_r19 asm("r19"), temp_r18 asm("r18"), temp_r17 asm("r17"), temp_r16 asm("r16"), temp_r15 asm("r15"), temp_r14 asm("r14");
     temp_r4=p[0]; p[0]=p[3]; p[3]=temp_r4;
-    temp_r4_2=p[1]; p[1]=p[2]; p[2]=temp_r4_2;
-    temp_r4_3=p[4]; p[4]=p[7]; p[7]=temp_r4_3;
-    temp_r4_4=p[5]; p[5]=p[6]; p[6]=temp_r4_4;
-    temp_r4_5=p[8]; p[8]=p[11]; p[11]=temp_r4_5;
-    temp_r4_6=p[9]; p[9]=p[10]; p[10]=temp_r4_6;
-    temp_r4_7=p[12]; p[12]=p[15]; p[15]=temp_r4_7;
-    temp_r4_8=p[13]; p[13]=p[14]; p[14]=temp_r4_8;
+    temp_r4=p[1]; p[1]=p[2]; p[2]=temp_r4;
+    temp_r4=p[4]; p[4]=p[7]; p[7]=temp_r4;
+    temp_r4=p[5]; p[5]=p[6]; p[6]=temp_r4;
+    temp_r4=p[8]; p[8]=p[11]; p[11]=temp_r4;
+    temp_r4=p[9]; p[9]=p[10]; p[10]=temp_r4;
+    temp_r4=p[12]; p[12]=p[15]; p[15]=temp_r4;
+    temp_r4=p[13]; p[13]=p[14]; p[14]=temp_r4;
     temp_r0=p[0x2a]; temp_r17=p[0x29]; sp18=temp_r0;
     temp_r0_2=p[0x2f]; temp_r24=p[0x2c]; sp8=temp_r0_2;
     temp_r0_3=p[0x2e]; temp_r16=p[0x2d]; spC=temp_r0_3;
     temp_r0_4=p[0x33]; temp_r23=p[0x30]; sp10=temp_r0_4;
     temp_r0_5=p[0x32]; temp_r15=p[0x31]; sp14=temp_r0_5;
-    temp_r30=p[0x10]; p[0x29]=temp_r0;
-    temp_r22=p[0x11]; p[0x2c]=temp_r0_2;
-    temp_r29=p[0x18]; p[0x2d]=temp_r0_3;
-    temp_r21=p[0x19]; p[0x30]=temp_r0_4;
-    temp_r28=p[0x1c]; temp_r20=p[0x1d]; temp_r27=p[0x20]; temp_r19=p[0x21];
-    temp_r26=p[0x24]; temp_r18=p[0x25]; temp_r25=p[0x28];
-    p[0x10]=p[0x13]; p[0x13]=temp_r30; p[0x11]=p[0x12]; p[0x12]=temp_r22;
-    p[0x18]=p[0x1b]; p[0x1b]=temp_r29; p[0x19]=p[0x1a]; p[0x1a]=temp_r21;
-    p[0x1c]=p[0x1f]; p[0x1f]=temp_r28; p[0x1d]=p[0x1e]; p[0x1e]=temp_r20;
-    p[0x20]=p[0x23]; p[0x23]=temp_r27; p[0x21]=p[0x22]; p[0x22]=temp_r19;
-    p[0x24]=p[0x27]; p[0x27]=temp_r26; p[0x25]=p[0x26]; p[0x26]=temp_r18;
-    p[0x28]=p[0x2b]; p[0x2b]=temp_r25; p[0x2a]=temp_r17; p[0x2f]=temp_r24;
-    p[0x2e]=temp_r16; p[0x33]=temp_r23; p[0x31]=temp_r0_5; p[0x32]=temp_r15;
+    temp_r0=sp18;
+    temp_r30=p[0x10]; temp_r31=p[0x13]; p[0x29]=temp_r0;
+    temp_r0_2=sp8;
+    temp_r22=p[0x11]; temp_r12=p[0x12]; p[0x2c]=temp_r0_2;
+    temp_r0_3=spC;
+    temp_r29=p[0x18]; temp_r11=p[0x1b]; p[0x2d]=temp_r0_3;
+    temp_r0_4=sp10;
+    temp_r21=p[0x19]; temp_r10=p[0x1a]; p[0x30]=temp_r0_4;
+    temp_r0_5=sp14;
+    temp_r28=p[0x1c]; temp_r9=p[0x1f]; temp_r20=p[0x1d]; temp_r8=p[0x1e];
+    temp_r27=p[0x20]; temp_r7=p[0x23]; temp_r19=p[0x21]; temp_r6=p[0x22];
+    temp_r26=p[0x24]; temp_r5=p[0x27]; temp_r18=p[0x25]; temp_r4=p[0x26];
+    temp_r25=p[0x28]; temp_r14=p[0x2b];
+    p[0x10]=temp_r31; p[0x13]=temp_r30;
+    p[0x11]=temp_r12; p[0x12]=temp_r22;
+    p[0x18]=temp_r11; p[0x1b]=temp_r29;
+    p[0x19]=temp_r10; p[0x1a]=temp_r21;
+    p[0x1c]=temp_r9; p[0x1f]=temp_r28;
+    p[0x1d]=temp_r8; p[0x1e]=temp_r20;
+    p[0x20]=temp_r7; p[0x23]=temp_r27;
+    p[0x21]=temp_r6; p[0x22]=temp_r19;
+    p[0x24]=temp_r5; p[0x27]=temp_r26;
+    p[0x25]=temp_r4; p[0x26]=temp_r18;
+    p[0x28]=temp_r14; p[0x2b]=temp_r25;
+    p[0x2a]=temp_r17; p[0x2f]=temp_r24;
+    p[0x2e]=temp_r16; p[0x33]=temp_r23;
+    p[0x31]=temp_r0_5; p[0x32]=temp_r15;
 }
-
+#pragma cplusplus reset
+#pragma scheduling on
+#pragma use_lmw_stmw on
 void fn_80137F2C(void) {
 
 }
@@ -251,7 +270,7 @@ void fn_801384A0(void *arg0, int arg1) {
 #pragma dont_inline reset
 #pragma scheduling on
 void fn_801384A0();
-void fn_801386D0(float, float, float);
+void fn_801386D0();
 void fn_80138958(void *, float *);
 #pragma dont_inline fn_80138594
 void fn_80138594(void *arg0) {
@@ -324,39 +343,58 @@ extern char lbl_8032BF20[];
 extern char lbl_8032BF70[];
 #pragma dont_inline on
 void *fn_80138968(int arg0) {
-    unsigned char storage[8];
-    int valid;
-    unsigned int size;
+    struct {
+        void *data;
+        union {
+            struct {
+                unsigned char padding[8];
+                int valid;
+                unsigned int size;
+            } output;
+            struct {
+                unsigned int b;
+                unsigned int a;
+            } words;
+        } scratch;
+    } local;
+    void *obj;
     int ok;
-    void *obj = fn_8012C370(arg0, 0x494C494E, &size, &valid, (void **)storage, storage + 1);
+    obj = fn_8012C370(arg0, 0x494C494E, &local.scratch.output.size,
+                      &local.scratch.output.valid, &local.data,
+                      ((unsigned char *)&local.data) + 1);
     if (obj != 0) {
         ok = 0;
-        if (valid != 0) {
-            if (size == 0x1E) {
+        if (local.scratch.output.valid != 0) {
+            if (local.scratch.output.size == 0x1E) {
                 unsigned int *words = (unsigned int *)obj;
+                unsigned char swap = ((unsigned char *)&local.data)[1];
                 unsigned int a = words[1];
                 unsigned int b = words[0];
-                if (storage[1]) {
-                    unsigned char *p = (unsigned char *)&a;
-                    unsigned char *q = (unsigned char *)&b;
+                local.scratch.words.a = a;
+                local.scratch.words.b = b;
+                if (swap) {
+                    unsigned char *p = (unsigned char *)&local.scratch.words.a;
+                    unsigned char *q = (unsigned char *)&local.scratch.words.b;
                     unsigned char t;
                     t = p[0]; p[0] = p[3]; p[3] = t;
                     t = p[1]; p[1] = p[2]; p[2] = t;
                     t = q[0]; q[0] = q[3]; q[3] = t;
                     t = q[1]; q[1] = q[2]; q[2] = t;
                 }
-                if (a == 0x3C && b == 0x30) {
-                    if (storage[1]) {
+                if (local.scratch.words.a == 0x3C && local.scratch.words.b == 0x30) {
+                    if (((unsigned char *)&local.data)[1]) {
                         fn_801381B4(obj);
                         fn_80138594(obj);
                     }
                     *(int *)((char *)obj + 0x28) = fn_8013BFE8(arg0);
                     ok = 1;
                 } else {
-                    fn_802E30C8(lbl_8032BF20, 0x3C, b, 0x30, storage[1]);
+                    fn_802E30C8(lbl_8032BF20, local.scratch.words.a, 0x3C,
+                                local.scratch.words.b, 0x30,
+                                ((unsigned char *)&local.data)[1]);
                 }
             } else {
-                fn_802E30C8(lbl_8032BF70, 0x1E);
+                fn_802E30C8(lbl_8032BF70, local.scratch.output.size, 0x1E);
             }
         }
         if (!ok) {
