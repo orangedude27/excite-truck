@@ -9,6 +9,40 @@ extern void fn_802168BC(int);
 extern float fn_80235F64(void *, int);
 extern float fn_80235EF0(void *, int);
 extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
+typedef struct SparkParticle {
+    float x, y, vx, vy, a10, a14, life;
+    int id;
+} SparkParticle;
+typedef struct SparkList {
+    char pad0[0x2c];
+    float gx, gy;
+    char pad1[0x58 - 0x34];
+    SparkParticle *items;
+    int count;
+} SparkList;
+extern float fn_80214D48(void);
+extern float lbl_80558DC4[];
+static inline void fn_80264D5C_update(SparkList *l, float dt) {
+    int i = 0;
+    while (i < l->count) {
+        SparkParticle *p = &l->items[i];
+        p->life -= dt;
+        if (p->life < lbl_80558DC4[0]) {
+            int count = l->count;
+            if (i >= 0 && i < count) {
+                if (i != count - 1) {
+                    *p = l->items[count - 1];
+                }
+                l->count = count - 1;
+            }
+        } else {
+            i++;
+            p->x += (p->vx += l->gx * dt) * dt;
+            p->y += (p->vy += l->gy * dt) * dt;
+            p->a10 += p->a14 * dt;
+        }
+    }
+}
 extern float lbl_80563C00;
 extern float lbl_80563BF0;
 extern float lbl_80563BF8, lbl_80563C18, lbl_80563C1C;
