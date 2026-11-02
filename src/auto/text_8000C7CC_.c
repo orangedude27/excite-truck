@@ -4,6 +4,7 @@
 #include <types.h>
 
 extern void fn_80012158(void);
+extern s32 fn_80161C38(void);
 
 extern void fn_8000C964(void);
 extern void fn_8000CD24(void);
@@ -526,7 +527,7 @@ extern s32 lbl_80560240;
 extern s32 lbl_80560244;
 extern const char lbl_80558A70[];
 #pragma cplusplus on
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8000CD24(void) {
     struct ConfigService {
         virtual void slot0();
@@ -541,7 +542,7 @@ extern "C" void fn_8000CD24(void) {
     void *temp;
     f32 out0;
     f32 out1;
-    volatile s32 names[2];
+    s32 names[2];
 
     service = (ConfigService *)lbl_8055D414;
     if (service == 0) return;
