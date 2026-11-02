@@ -7,6 +7,10 @@ extern int fn_802C7A34(int, void *, int, float);
 extern float *fn_802C86DC();
 extern float lbl_80562E98;
 extern float lbl_80562E90;
+void fn_801ECF58(void *);
+void fn_801ECFE0(void *);
+void fn_801ED2D0(void *);
+void fn_801ED354(void *);
 #pragma cplusplus on
 struct Unk_801EEA64Iface {
     virtual Unk_801EEA64Iface *m8(char *);
