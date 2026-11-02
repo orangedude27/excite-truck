@@ -97,6 +97,12 @@ extern float lbl_80562430;
 extern void fn_801A6520(void);
 extern void fn_801BE168(void *, void *, void *, void *);
 extern void fn_801A7444(void *);
+#pragma cplusplus on
+struct Fn801A67C4Vt {
+    virtual void d0(); virtual void d1(); virtual char *d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+};
+#pragma cplusplus reset
 void fn_801A6524(void *arg0) {
     fn_8018381C();
     fn_801A6558(arg0);
@@ -184,6 +190,90 @@ void fn_801A67B0(void *arg0) {
     float value = lbl_80562438;
     *(int *)((char *)arg0 + 0x2704) = 1;
     *(float *)((char *)arg0 + 0x11C) = value;
+}
+
+extern void fn_8017A580(void *);
+extern int fn_801A6724(void *);
+extern void fn_8018ADA4(void *, float);
+extern void fn_8018ADB4(void *, float);
+extern void fn_8018ADBC(void *, float);
+extern void fn_8018ADC4(void *, float);
+extern void fn_8018ADCC(void *, float);
+extern void fn_8018ADD4(void *, int);
+extern void fn_80136EA4(int, int);
+extern int lbl_8055E0D0;
+void fn_801A67C4(void *arg0) {
+    char *p = (char *)arg0;
+    int state = *(int *)(p + 0x2610);
+    *(char *)(p + 0x1e9) = 0;
+    if (state != *(int *)(p + 0x2778))
+        *(void **)(p + 0x277C) = fn_802E2C20();
+    if (fn_801A6724(arg0) == 0) {
+        if (*(unsigned char *)(p + 0x2740) != 0) {
+            char *r = ((char *(*)(void *))(*(void ***)*(void **)(p + 0x2774))[4])(*(void **)(p + 0x2774));
+            if (*(int *)(r + 0x24) == 0) {
+                *(unsigned char *)(p + 0x2740) = 0;
+                *(char *)(p + 0x2741) = 1;
+            }
+        }
+    } else {
+        int zero = 0;
+        int one = 1;
+        int v0 = *(int *)(p + 0x2744);
+        int v1 = *(int *)(p + 0x2748);
+        int v2 = *(int *)(p + 0x274C);
+        int v3 = *(int *)(p + 0x2750);
+        int v4 = *(int *)(p + 0x2754);
+        int v5 = *(int *)(p + 0x2758);
+        int v6 = *(int *)(p + 0x275C);
+        int v7 = *(int *)(p + 0x2760);
+        int v8 = *(int *)(p + 0x2764);
+        int v9 = *(int *)(p + 0x2768);
+        int v10 = *(int *)(p + 0x276C);
+        int v11 = *(int *)(p + 0x2770);
+        float f = lbl_80562430;
+        *(int *)(p + 0x2704) = zero;
+        *(unsigned char *)(p + 0x2740) = one;
+        *(int *)(p + 0x3C) = v0;
+        *(int *)(p + 0x40) = v1;
+        *(int *)(p + 0x44) = v2;
+        *(int *)(p + 0x48) = v3;
+        *(int *)(p + 0x4C) = v4;
+        *(int *)(p + 0x50) = v5;
+        *(int *)(p + 0x54) = v6;
+        *(int *)(p + 0x58) = v7;
+        *(int *)(p + 0x5C) = v8;
+        *(int *)(p + 0x60) = v9;
+        *(int *)(p + 0x64) = v10;
+        *(int *)(p + 0x68) = v11;
+        fn_8017A580(arg0);
+        f = lbl_80562430;
+        *(float *)(p + 0x118) = f;
+        *(float *)(p + 0x11C) = f;
+        *(float *)(p + 0x120) = f;
+        *(float *)(p + 0x124) = f;
+        *(float *)(p + 0x128) = f;
+        *(float *)(p + 0x12C) = f;
+        fn_8018ADBC(arg0, f);
+        fn_8018ADB4(arg0, lbl_80562430);
+        fn_8018ADC4(arg0, lbl_80562430);
+        ((void (*)(void *))(*(void ***)*(void **)(p + 0x2774))[9])(*(void **)(p + 0x2774));
+        fn_801BE168(*(void **)(p + 0x1EC), p + 0x3C, p + 0x118, p + 0x124);
+    }
+    if (*(unsigned char *)(p + 0x2740) == 0 && *(int *)(p + 0x2704) == 3) {
+        fn_8018ADA4(arg0, *(float *)(*(char **)(p + 0x2700) + 0xD));
+        fn_8018ADCC(arg0, lbl_80562430);
+        if (*(int *)(*(char **)(p + 0x2700) + 0x15) != -1)
+            fn_8018ADD4(arg0, *(int *)(*(char **)(p + 0x2700) + 0x15));
+        fn_8018ADC4(arg0, lbl_80562430);
+        fn_8018ADBC(arg0, *(float *)(*(char **)(p + 0x2700) + 0x9));
+        fn_8018ADB4(arg0, *(float *)(*(char **)(p + 0x2700) + 0x11));
+        fn_80136EA4(lbl_8055E0D0, *(int *)(p + 0x1EC));
+        if ((state != 2 || *(int *)(p + 0x2778) != 0) && state != 0)
+            fn_801A7444(arg0);
+        *(char *)(p + 0x2741) = 0;
+    }
+    *(int *)(p + 0x2778) = state;
 }
 
 extern int lbl_8055E3C4;
