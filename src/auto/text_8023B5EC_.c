@@ -8,6 +8,14 @@ int fn_802E6CA8(void);
 void fn_8023B5EC(void);
 void fn_8023D7CC(void);
 void fn_8023D70C(void);
+#pragma dont_inline on
+void fn_8023B5EC(void) {
+    fn_802E712C();
+    fn_802E6CA4(1);
+    fn_802E6CA8();
+}
+#pragma dont_inline reset
+
 void fn_8023B618(void) {
     fn_8023B5EC();
     fn_8023D7CC();
