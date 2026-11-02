@@ -182,10 +182,13 @@ extern "C" void fn_801F0488(void *arg0, void *arg1) {
     };
 
     const char *strings = lbl_8033A3F0;
-    int id;
     char *entry;
+    int *pLabel;
+    char *curr;
+    int id;
     int found;
     int count;
+    int i;
     char name[0x40];
     float bounds[6];
     int labels[2];
@@ -194,12 +197,11 @@ extern "C" void fn_801F0488(void *arg0, void *arg1) {
     entry = (char *)arg0;
     found = 0;
 
-    for (count = 0; count < *(int *)((char *)arg0 + 0xE8); count++, entry += 0x18) {
-        char *curr = entry;
-        int *pLabel = labels;
-        int i;
+    for (count = 0; count < *(int *)((char *)arg0 + 0xE8); entry += 0x18, count++) {
+        curr = entry;
+        pLabel = labels;
 
-        for (i = 0; i < 2; i++, curr += 4, pLabel++) {
+        for (i = 0; i < 2; i++, pLabel++, curr += 4) {
             labels[0] = lbl_80562F20;
             labels[1] = lbl_80562F24;
             sprintf(name, strings + 0x54, id, count, *pLabel);
@@ -230,7 +232,7 @@ extern "C" void fn_801F0488(void *arg0, void *arg1) {
         }
     }
 
-    if (!((float)__fabs(*(float *)((char *)arg0 + 0x20)) <= *(float *)&lbl_80558DC4)) {
+    if (!((float)__fabs(*(float *)((char *)arg0 + 0x20)) <= lbl_80558DC4)) {
         fn_802C77F0(*(int *)((char *)arg0 + 0x28), bounds);
         *(float *)((char *)arg0 + 0x24) = *(float *)((char *)arg0 + 0x20) / (bounds[1] - bounds[0]);
     }
