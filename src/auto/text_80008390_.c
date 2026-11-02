@@ -16,8 +16,8 @@ extern s32 lbl_8055D370;
 extern s32 lbl_805601B0;
 #define ID_LIST (&lbl_8034F3D0)
 static inline void IdList_Add(s32 *src) {
-    s32 n = lbl_8034F3D0.count;
     s32 *data = lbl_8034F3D0.data;
+    s32 n = lbl_8034F3D0.count;
     lbl_8034F3D0.count = n + 1;
     data[n] = *src;
 }
@@ -27,18 +27,18 @@ void fn_80008390(void) {
     s32 *p;
     s32 i;
     ID_LIST->count = 0;
-    if (fn_800167F4() > 1) ID_PUSH(lbl_805601B0);
+    if (fn_800167F4() > 1) IdList_Add(&lbl_805601B0);
     if (lbl_8055D370 == 0) {
         p = base;
-        ID_PUSH(p[0]); ID_PUSH(p[1]); ID_PUSH(p[2]); ID_PUSH(p[3]);
+        IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
     } else {
         p = base + 4;
-        ID_PUSH(p[0]); ID_PUSH(p[1]); ID_PUSH(p[2]); ID_PUSH(p[3]); ID_PUSH(p[4]);
+        IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3); IdList_Add(p + 4);
     }
     for (i = 0; i < ID_LIST->count; i++) {
         if (ID_LIST->data[i] == 1) {
             p = base + 10;
-            ID_PUSH(p[0]); ID_PUSH(p[1]); ID_PUSH(p[2]); ID_PUSH(p[3]);
+            IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
             break;
         }
     }
