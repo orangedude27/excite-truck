@@ -187,6 +187,59 @@ void ConfigureVideo(short arg0, short arg1) {
     VIConfigurePan(0,0,0x280,0x1E0);
 }
 
+void OSFatal(unsigned char *arg0, unsigned char *arg1, int arg2) {
+    int start;
+    unsigned long long t0;
+    unsigned char *dst;
+    OSDisableInterrupts();
+    OSDisableScheduler();
+    OSClearContext(&lbl_8038E060);
+    OSSetCurrentContext(&lbl_8038E060);
+    __OSStopAudioSystem();
+    fn_8005954C();
+    __OSUnmaskInterrupts(0x80);
+    VISetBlack(1);
+    VIFlush();
+    fn_800591AC(0);
+    AIRegisterDMACallback_800591F0(0);
+    OSEnableInterrupts();
+    start = fn_8005AC08();
+    while (fn_8005AC08() - start < 1) {
+    }
+    t0 = OSGetTime();
+    do {
+        if (__OSCallShutdownFunctions(0, 0) != 0)
+            break;
+    } while ((long long)(OSGetTime() - t0) < (long long)((*(unsigned int *)0x800000F8 / 4 / 1000) * 1000));
+    OSDisableInterrupts();
+    __OSCallShutdownFunctions(1, 0);
+    EXISetExiCallback(0, 0);
+    EXISetExiCallback(2, 0);
+    while (EXILock(0, 1, 0) == 0) {
+        EXISync(0);
+        EXIDeselect(0);
+        EXIUnlock(0);
+    }
+    EXIUnlock(0);
+    while ((*(volatile unsigned int *)0xCD00680C & 1) == 1) {
+    }
+    __OSSetExceptionHandler(8, &OSDefaultExceptionHandler);
+    GXGetVtxAttrFmtv();
+    OSSetArenaLo((void *)0x81400000);
+    OSSetArenaHi(*(void **)0x80000038);
+    dst = (unsigned char *)&lbl_8038E328;
+    dst[0] = arg0[0];
+    dst[1] = arg0[1];
+    dst[2] = arg0[2];
+    dst[3] = arg0[3];
+    dst[4] = arg1[0];
+    dst[5] = arg1[1];
+    dst[6] = arg1[2];
+    dst[7] = arg1[3];
+    *(int *)(dst + 8) = arg2;
+    OSSwitchFiber(&Halt, OSGetArenaHi(), &Halt);
+}
+
 static inline BOOL IsSjisTrailByte(u8 ch) {
     return (0x40 <= ch && ch <= 0xFC) && (ch != 0x7F);
 }
@@ -695,30 +748,3 @@ void OSGetFontWidth(int ch,int *out) {
  ((int(*)(unsigned short,int,void**,int*))lbl_8055DA48)(e,ch,&p,&n);
  if(out) *out=(unsigned char)*((char*)p+*(unsigned short*)((char*)p+0x22)+n);
 }
-extern void OSDisableInterrupts(void);
-extern void OSDisableScheduler(void);
-extern void OSClearContext(void *);
-extern void OSSetCurrentContext(void *);
-extern void __OSStopAudioSystem(void);
-extern void fn_8005954C(void);
-extern void __OSUnmaskInterrupts(int);
-extern void VISetBlack(int);
-extern void VIFlush(void);
-extern void fn_800591AC(int);
-extern void AIRegisterDMACallback_800591F0(void *);
-extern void OSEnableInterrupts(void);
-extern int fn_8005AC08(void);
-extern unsigned long long OSGetTime(void);
-extern int __OSCallShutdownFunctions(int,int);
-extern void EXISetExiCallback(int,void *);
-extern int EXILock(int,int,void *);
-extern void EXISync(int);
-extern void EXIDeselect(int);
-extern void EXIUnlock(int);
-extern void __OSSetExceptionHandler(int,void *);
-extern void GXGetVtxAttrFmtv(void);
-extern void OSSetArenaLo(void *);
-extern void OSSetArenaHi(void *);
-extern void *OSGetArenaHi(void);
-extern void OSSwitchFiber(void *,void *,void *);
-extern char Halt, OSDefaultExceptionHandler, lbl_8038E060, lbl_8038E328;
