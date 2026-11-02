@@ -835,15 +835,13 @@ int fn_8025BBFC(void *arg0, int arg1) {
             }
             break;
         }
-        if (*(int *)(o + 0xC8) <= 1 && fn_8025921C() == 0) {
-            goto cancel;
+        if (*(int *)(o + 0xC8) > 1 || fn_8025921C() != 0) {
+            if (IsLowAndFlagged_(o) == 0) {
+                *(int *)(o + 0x5C) = 3;
+                *(unsigned char *)(o + 0x59) = 1;
+                break;
+            }
         }
-        if (IsLowAndFlagged_(o) == 0) {
-            *(int *)(o + 0x5C) = 3;
-            *(unsigned char *)(o + 0x59) = 1;
-            break;
-        }
-cancel:
         fn_80214D50(1);
         return 0;
     case 0x1B:
