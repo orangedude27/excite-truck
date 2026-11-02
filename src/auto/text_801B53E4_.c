@@ -255,7 +255,7 @@ extern s32 lbl_8055E6F0;
 extern void *lbl_8055E6F4;
 extern u8 lbl_80335EC8[];
 extern u8 lbl_80335ED4[];
-extern u8 lbl_8055A8C8[];
+extern u8 lbl_8055A8C8[1];
 extern void *fn_8012850C(s32, void *);
 extern void *fn_801284E8(void *, s32);
 extern void fn_80128670(void *);
