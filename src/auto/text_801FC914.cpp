@@ -450,6 +450,13 @@ static inline char* GetTrackNode(char* track, int idx) {
     return track + 0x10 + (-idx) * 0x24;
 }
 
+static inline char* GetTrackNodeLinear(char* track, int idx) {
+    if (idx >= 0 && idx < *(int*)(track + 0x6D0)) {
+        return track + 0x10 + idx * 0x24;
+    }
+    return 0;
+}
+
 static inline void MatrixMul801FD5E8(float* dst, const float* left, const float* right) {
     if (dst == right || dst == left) {
         float t0 = fn_80144514(left[0], right[0], left[3], right[1], left[6], right[2]);
@@ -584,8 +591,11 @@ extern "C" void fn_801FD3F0(void* arg0, float farg0) {
     char* next2 = call_nodes + ((base + 2) % call_count) * 0x24;
     fn_801FD144(arg0, prev, node, next, next2, step);
     fn_801FD320(arg0, step);
-    float a = *(float*)(obj + 0x64);
-    *(float*)(obj + 0x6C) = a + step * (*(float*)(obj + 0x68) - a);
+    float end = *(float*)(obj + 0x68);
+    float begin = *(float*)(obj + 0x64);
+    float difference = end - begin;
+    float result = begin + step * difference;
+    *(float*)(obj + 0x6C) = result;
 }
 #pragma paired on
 
