@@ -383,6 +383,7 @@ void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
 
 #pragma pop
 extern const char lbl_8034B094[];
+extern const char lbl_8034B124[];
 extern void fn_802C4108();
 extern void fn_802C4610();
 extern void fn_802C4388();
@@ -951,6 +952,76 @@ void fn_802C4C80(void* arg0) {
     fn_8012C4D8();
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802C4C90(void *obj, s32 arg1, s32 arg2, s32 arg3, void *tab) {
+    u8 *g = (u8 *)lbl_8055FC00;
+    if (!(g[1] & 4) && obj != 0 && arg3 < *(s32 *)((u8 *)obj + 0x10)) {
+        s32 x, startX, col, y, startY;
+        u16 *pal;
+        s32 row;
+        u8 *src;
+        s32 w, h, t;
+        u16 *d;
+        y = arg2 - *(s32 *)((u8 *)obj + 0xC);
+        x = *(s32 *)(g + 0x20) - y;
+        h = *(s32 *)((u8 *)obj + 4);
+        t = *(s32 *)(g + 0x18) - y;
+        col = arg1 - *(s32 *)((u8 *)obj + 8);
+        row = t & ~(t >> 31);
+        if (h < x) x = h;
+        w = *(s32 *)((u8 *)obj + 0);
+        startX = *(s32 *)(g + 0x1C) - col;
+        t = *(s32 *)(g + 0x14) - col;
+        startY = t & ~(t >> 31);
+        if (w < startX) startX = w;
+        if (tab != 0) {
+            if ((s8)*g == 3) pal = (u16 *)tab;
+            else pal = (u16 *)((u8 *)tab + 0x200);
+        } else if ((s8)*g == 3) {
+            pal = (u16 *)((u8 *)obj + 0x14);
+        } else {
+            pal = (u16 *)((u8 *)obj + 0x214);
+        }
+        for (; row < x; row++) {
+            s32 skip, len, flag, pos;
+            src = *(u8 **)(*(s32 *)((u8 *)obj + 0x814) + (row + *(s32 *)((u8 *)obj + 4) * arg3) * 4);
+            d = (u16 *)fn_802C3044((void *)lbl_8055FC00, col, row + y);
+            for (pos = 0; pos < startX;) {
+                len = *src++;
+                if (len & 0x80) {
+                    len &= ~0x80;
+                    flag = 1;
+                } else {
+                    flag = 0;
+                }
+                if (startX - pos < len) len = startX - pos;
+                if (flag != 0 && pos < startY) {
+                    skip = startY - pos;
+                    if (len < skip) skip = len;
+                    len -= skip;
+                    src += skip;
+                    d += skip;
+                    pos += skip;
+                }
+                if (flag != 0) {
+                    u8 n = len;
+                    while (n != 0) {
+                        *d = pal[*src];
+                        pos++;
+                        src++;
+                        d++;
+                        n--;
+                    }
+                } else {
+                    pos += len;
+                    d += len;
+                }
+            }
+        }
+    }
+}
+#pragma pop
 s32 fn_802C4EE4(s32* arg0) {
     if (arg0 != NULL) {
         return *arg0;
