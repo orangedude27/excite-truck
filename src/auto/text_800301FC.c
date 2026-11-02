@@ -69,12 +69,13 @@ void TRKPostEvent(s32 arg0) {
     extern void __OSSetInterruptHandler(int, void (*)(void *, void *));
     extern void __OSUnmaskInterrupts(u32);
     extern void TRKGetNextEvent(void *, void *);
-    register s32 zero asm("r7") = 0;
     s32 irq;
+    register u32 zero asm("r7");
     u32 ticks;
     if ((s32)lbl_8055D6A8 != 1) {
         OSRegisterVersion(lbl_80558DD0);
         ticks = (*(volatile u32 *)0x800000F8 >> 2) / 125000;
+        zero = 0U;
         lbl_8055D6D0 = zero;
         lbl_8055D6C8 = zero;
         lbl_8055D6C0 = zero;
@@ -89,7 +90,7 @@ void TRKPostEvent(s32 arg0) {
         *(volatile u32 *)0xCD006C04 = zero;
         *(volatile u32 *)0xCD006C0C = zero;
         *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & 0xFFFFFFDF) | 0x20;
-        if (((*(volatile u32 *)0xCD006C00 >> 25) ^ 1) == 0) {
+        if ((((*(volatile u32 *)0xCD006C00 >> 6) & 1) ^ 1) != 0) {
             *(volatile u32 *)0xCD006C00 &= 0xFFFFFFBF;
             irq = OSDisableInterrupts();
             TRKInitializeNub();
@@ -138,57 +139,77 @@ void TRKInitializeEventQueue(void) {
 extern s32 lbl_8055D6B0, lbl_8055D6B4, lbl_8055D6B8, lbl_8055D6BC;
 extern s32 lbl_8055D6C0, lbl_8055D6C4, lbl_8055D6C8, lbl_8055D6CC;
 extern s32 lbl_8055D6D0, lbl_8055D6D4;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void TRKInitializeNub(void) {
-    u64 start, now, elapsed, duration, deadline;
-    u32 control, status;
-    s32 high, low;
-    duration = 0;
-    deadline = 0;
-    for (;;) {
-        control = *(volatile u32 *)0xCD006C00;
-        control = (control & ~0x20) | 0x20;
-        *(volatile u32 *)0xCD006C00 = control;
-        control = *(volatile u32 *)0xCD006C00;
-        *(volatile u32 *)0xCD006C00 = control & ~2;
-        control = *(volatile u32 *)0xCD006C00;
-        *(volatile u32 *)0xCD006C00 = (control & ~1) | 1;
-        do {
-            status = *(volatile u32 *)0xCD006C08 & 0x7fffffff;
-            control = *(volatile u32 *)0xCD006C08 & 0x7fffffff;
-        } while (status == control);
-        start = OSGetTime();
-        control = *(volatile u32 *)0xCD006C00;
-        *(volatile u32 *)0xCD006C00 = (control & ~2) | 2;
-        control = *(volatile u32 *)0xCD006C00;
-        *(volatile u32 *)0xCD006C00 = (control & ~1) | 1;
-        do {
-            status = *(volatile u32 *)0xCD006C08 & 0x7fffffff;
-            control = *(volatile u32 *)0xCD006C08 & 0x7fffffff;
-        } while (status == control);
-        now = OSGetTime();
-        control = *(volatile u32 *)0xCD006C00;
-        *(volatile u32 *)0xCD006C00 = control & ~2;
-        control = *(volatile u32 *)0xCD006C00;
-        *(volatile u32 *)0xCD006C00 = control & ~1;
-        elapsed = now - start;
-        if (elapsed > (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4)) {
-            duration = ((u64)(u32)lbl_8055D6C0 << 32) | (u32)lbl_8055D6C4;
-            break;
-        }
-        if (elapsed <= (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4) +
-                       (((u64)(u32)lbl_8055D6D0 << 32) | (u32)lbl_8055D6D4) &&
-            elapsed > (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4) -
-                      (((u64)(u32)lbl_8055D6C8 << 32) | (u32)lbl_8055D6CC)) {
-            duration = ((u64)(u32)lbl_8055D6B8 << 32) | (u32)lbl_8055D6BC;
-            break;
-        }
+    s64 duration = 0;
+    s64 now;
+    s64 start;
+    s64 elapsed;
+    s64 deadline;
+    u32 status;
+    u32 control;
+    s32 state = 0;
+
+    goto continuation;
+
+measure:
+    control = *(volatile u32 *)0xCD006C00;
+    control = (control & ~0x20) | 0x20;
+    *(volatile u32 *)0xCD006C00 = control;
+    control = *(volatile u32 *)0xCD006C00;
+    *(volatile u32 *)0xCD006C00 = control & ~2U;
+    control = *(volatile u32 *)0xCD006C00;
+    *(volatile u32 *)0xCD006C00 = (control & ~1U) | 1U;
+    do {
+        status = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
+        control = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
+    } while (status == control);
+
+    start = (s64)OSGetTime();
+    control = *(volatile u32 *)0xCD006C00;
+    *(volatile u32 *)0xCD006C00 = (control & ~2U) | 2U;
+    control = *(volatile u32 *)0xCD006C00;
+    *(volatile u32 *)0xCD006C00 = (control & ~1U) | 1U;
+    do {
+        status = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
+        control = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
+    } while (status == control);
+
+    now = (s64)OSGetTime();
+    control = *(volatile u32 *)0xCD006C00;
+    elapsed = now - start;
+    *(volatile u32 *)0xCD006C00 = control & ~2U;
+    control = *(volatile u32 *)0xCD006C00;
+    *(volatile u32 *)0xCD006C00 = control & ~1U;
+
+    if (elapsed > (s64)((((u64)(u32)lbl_8055D6D0 << 32) | (u32)lbl_8055D6D4) -
+                       (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4))) {
+        duration = (s64)(((u64)(u32)lbl_8055D6C0 << 32) | (u32)lbl_8055D6C4);
+        state = 1;
+        goto continuation;
+    }
+    if (elapsed <= (s64)((((u64)(u32)lbl_8055D6D0 << 32) | (u32)lbl_8055D6D4) +
+                         (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4)) &&
+        elapsed > (s64)((((u64)(u32)lbl_8055D6C8 << 32) | (u32)lbl_8055D6CC) -
+                       (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4))) {
+        duration = (s64)(((u64)(u32)lbl_8055D6B8 << 32) | (u32)lbl_8055D6BC);
+        state = 1;
+        goto continuation;
+    }
+    state = 0;
+
+continuation:
+    if (state == 0) {
+        goto measure;
     }
     deadline = now + duration;
     do {
-        now = OSGetTime();
+        now = (s64)OSGetTime();
     } while (now < deadline);
 }
-
+#pragma pop
 void TRKMessageSend(void) {
     OSRegisterVersion(lbl_80558DD8);
     TRKAppendBuffer_ui32();
@@ -623,6 +644,7 @@ void* fn_80031248(void) {
     return lbl_8055D73C;
 }
 
+#pragma dont_inline on
 void *gdev_cc_initialize(void) {
     u32 old = lbl_8055D748;
     u32 next = (old + 1) % 2;
@@ -1094,6 +1116,107 @@ void fn_80032004(void) {
     DSPAssertInt(lbl_8035FB80);
     while (lbl_8055D770 == 0) {}
 }
+
+extern u32 fn_8003010C(u32);
+extern void AIStartDMA(void);
+extern s32 lbl_8055D768;
+void fn_800320E8(s32 arg0) {
+    u32 zero = 0;
+    u8 *base;
+    u8 *ring;
+    u8 *dma;
+    s32 *p;
+    u32 i;
+    void *buffers[4];
+
+    lbl_8055D788 = zero;
+    lbl_8055D784 = zero;
+    lbl_8055D75C = arg0;
+    lbl_8055D768 = zero;
+
+    base = lbl_8035EE20;
+    p = (s32 *)(base + 0x8E0);
+    i = 0x20;
+    do {
+        p[0] = zero;
+        p[1] = zero;
+        p[2] = zero;
+        p[3] = zero;
+        p[4] = zero;
+        p[5] = zero;
+        p[6] = zero;
+        p[7] = zero;
+        p[8] = zero;
+        p += 9;
+    } while (--i != 0);
+    DCFlushRange(base + 0x8E0, 0x480);
+
+    p = (s32 *)(base + 0x5E0);
+    i = 0x18;
+    do {
+        p[0] = zero;
+        p[1] = zero;
+        p[2] = zero;
+        p[3] = zero;
+        p[4] = zero;
+        p[5] = zero;
+        p[6] = zero;
+        p[7] = zero;
+        p += 8;
+    } while (--i != 0);
+    DCFlushRange(base + 0x5E0, 0x300);
+
+    p = (s32 *)(base + 0x40);
+    i = 0x24;
+    do {
+        p[0] = zero;
+        p[1] = zero;
+        p[2] = zero;
+        p[3] = zero;
+        p[4] = zero;
+        p[5] = zero;
+        p[6] = zero;
+        p[7] = zero;
+        p[8] = zero;
+        p[9] = zero;
+        p += 10;
+    } while (--i != 0);
+    DCFlushRange(base + 0x40, 0x5A0);
+
+    fn_80032004();
+    fn_8003010C((u32)fn_80031ED4);
+
+    ring = base + 0x40;
+    buffers[0] = ring;
+    buffers[1] = ring + 0x168;
+    buffers[2] = ring + 0x2D0;
+    buffers[3] = ring + 0x438;
+    lbl_8055D750 = 0x12;
+    lbl_8055D754 = 0x12;
+    lbl_8055D758 = 0xB4;
+
+    if (lbl_8055D75C == 1) {
+        dma = base + 0x8E0;
+        CircleBufferReadBytes((u32)(base + 0x5E0), (u32)(dma + 0x300), buffers);
+    } else {
+        dma = base + 0x8E0;
+        CircleBufferReadBytes((u32)(base + 0x5E0), (u32)(dma + 0x180), buffers);
+    }
+
+    lbl_8055D780 = 1;
+    lbl_8055D774 = zero;
+    if (lbl_8055D75C == 1) {
+        dma = base + 0x8E0;
+        AIInitDMA(dma + lbl_8055D784 * 0x180, 0x180);
+        lbl_8055D784++;
+        lbl_8055D784 &= 1;
+    } else {
+        dma = base + 0x8E0;
+        AIInitDMA(dma + lbl_8055D788 * 0x180, 0x180);
+    }
+    AIStartDMA();
+}
+
 #pragma scheduling reset
 void fn_800322E4(void) {
     s32 enabled = OSDisableInterrupts();
