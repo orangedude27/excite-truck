@@ -147,7 +147,45 @@ extern "C" void fn_801F0148(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + 0x24) = lbl_80562F18;
     *(float *)((char *)arg0 + 0x20) = value;
 }
-#pragma scheduling on
+
+#pragma push
+#pragma processor 750
+extern "C" void fn_801F0208(void *arg0, void *arg1, char *arg2) {
+    class Fn801F0208Resource {
+    public:
+        virtual void v0();
+        virtual int test(const char *);
+        virtual void v2();
+        virtual const char *find(const char *);
+    };
+
+    char *entry = (char *)arg0 + 0x28;
+    int i;
+    Fn801F0208Resource *res = (Fn801F0208Resource *)arg1;
+    float zero = lbl_80562F1C;
+
+    for (i = 0; i < 8; i++, entry += 0x18) {
+        char name[32];
+        sprintf(name, (const char *)&lbl_8055B0C8, i);
+
+        if (!res->test(name)) {
+            break;
+        }
+
+        float value = zero;
+        char buffer[32] = "n";
+
+        if (sscanf(res->find(name), (const char *)&lbl_8055B0D0, &value, buffer) != 2) {
+            fn_802E317C(lbl_8033A420, arg2, res->find(name));
+        }
+
+        *(float *)(entry + 0x10) = value * value;
+        *(char *)(entry + 0x14) = (strchr(buffer, 'y') != 0);
+    }
+
+    *(int *)((char *)arg0 + 0xE8) = i;
+}
+#pragma pop
 
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int sscanf(const char *, const char *, ...);
