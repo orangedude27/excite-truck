@@ -867,13 +867,18 @@ void fn_802113D8(void) {
 extern float lbl_80563404;
 extern void fn_80206454(void);
 extern void fn_801769EC(void);
-#pragma scheduling invalid_target
+static inline void fn_802114C4_call(float val) {
+    fn_80209190(lbl_8055EEF0, val);
+}
+#pragma push
+#pragma processor 750
 void fn_802114C4(void) {
-    ((void (*)(float, long))fn_80209190)(lbl_80563404, lbl_8055EEF0);
+    float value = lbl_80563404;
+    fn_80209190(lbl_8055EEF0, value);
     fn_80206454();
     fn_801769EC();
 }
-#pragma scheduling on
+#pragma pop
 extern void fn_801345D8(void *, ...);
 extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
