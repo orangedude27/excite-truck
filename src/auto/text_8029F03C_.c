@@ -1,6 +1,13 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+struct Vec3_8029FB00 { float x, y, z; };
+extern void fn_801E9DC4(void *);
+extern char lbl_80349890[];
+__declspec(section ".sdata") extern char lbl_8055CB50[];
+__declspec(section ".sdata") extern char lbl_8055CB58[];
+__declspec(section ".sdata") extern char lbl_8055CB5C[];
+extern int strcmp(const char *, const char *);
 typedef struct Unk802A0794Params {
     float values[6];
     short unk_0x18;
@@ -606,7 +613,6 @@ void fn_802A042C(void *arg0, Unk802A0794Params *arg1) {
     bias = lbl_805646C8;
     i = 0;
     offset = 0;
-
     goto test;
 body:
     {
@@ -634,6 +640,7 @@ body:
             float base;
             float next;
             int alpha;
+            unsigned int clamped;
             unsigned int *colors;
             unsigned int old;
             unsigned int objectColor;
@@ -647,18 +654,18 @@ body:
             colors = (unsigned int *)lbl_8055F820;
             old = colors[offset / 4];
             alpha = (int)next + (int)(old >> 24);
-            alpha &= ~(alpha >> 31);
-            if (alpha >= 255) alpha = 255;
+            alpha = alpha & ((-alpha & ~alpha) >> 31);
+            clamped = 255U;
+            if (alpha < 255) clamped = (unsigned int)alpha;
             objectColor = *(unsigned int *)((char *)obj + 0x4C);
-            output = (objectColor & 0x00FF0000) | ((unsigned int)alpha << 24) | (objectColor & 0x0000FFFF);
+            output = (objectColor & 0x00FF0000) | (clamped << 24) | (objectColor & 0x0000FFFF);
             colors[offset / 4] = output;
         }
         offset += 4;
         i++;
     }
 test:
-    if (i < fn_801E85A4())
-        goto body;
+    if (i < fn_801E85A4()) goto body;
 }
 #pragma pop
 
