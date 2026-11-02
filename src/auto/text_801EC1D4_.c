@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma ppc_psq_save off
 typedef struct { float values[12]; } Unk_801ECFE0;
 extern void fn_802C70AC(int, void *, int, int);
 extern int fn_802C7A34(int, void *, int, float);
