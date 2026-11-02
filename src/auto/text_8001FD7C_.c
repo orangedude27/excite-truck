@@ -333,20 +333,21 @@ int fn_80020184(void) {
 }
 
 #pragma cplusplus on
+#pragma use_lmw_stmw off
 extern "C" void fn_800201F0(void) {
+    int var;
     char *base = lbl_802FE138;
-    VObj_800201F0 *o;
+    VList_800201F0 *o;
     VObj_800201F0 *list;
     VObj_800201F0 *item;
     int i;
-    int var;
     fn_8001FEE8();
     lbl_8055D630 = 0;
     lbl_8055D634 = 0;
-    o = (VObj_800201F0 *)fn_80131810(base + 0xE4);
+    o = (VList_800201F0 *)fn_80131810(base + 0xE4);
     if (o != 0) {
         if (o->f10(base + 0xF0) != 0) {
-            list = (VObj_800201F0 *)o->f8();
+            list = (VObj_800201F0 *)o->f8(base + 0xF0);
             fn_802E30C8(base + 0x100);
             for (i = 0; (item = list->f60(i)) != 0; i++) {
                 if (strcmp(item->f8(), &lbl_80558D90) == 0) {
@@ -374,7 +375,7 @@ extern "C" void fn_800201F0(void) {
     if (fn_80019B84() != 0 || fn_80019B90() != 0 || fn_80019B3C() != 0) {
         var = 1;
     }
-    lbl_8055D644 = (var == 0);
+    *(signed char *)&lbl_8055D644 = (unsigned int)__cntlzw(var) >> 5;
     if (lbl_8055D646 != 0) {
         lbl_8055D644 = 0;
         lbl_8055D648 = 1;
