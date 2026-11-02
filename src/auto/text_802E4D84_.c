@@ -349,7 +349,7 @@ void fn_802E5828(void) {
 #pragma scheduling invalid_target
 int fn_802E582C(void) {
     if (lbl_8055FFA0 < 0x100) {
-        lbl_8055FF9C[lbl_8055FFA0] = fn_802E5AE8();
+        lbl_8055FF9C[lbl_8055FFA0] = (int)fn_802E5AE8();
         if (lbl_8055FF9C[lbl_8055FFA0] == 0)
             return 0;
         lbl_8055FFA0 = lbl_8055FFA0 + 1;
