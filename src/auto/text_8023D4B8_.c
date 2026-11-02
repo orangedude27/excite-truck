@@ -51,6 +51,7 @@ extern int fn_8023E028(void);
 extern void *fn_8023E078(void *, int);
 extern void *lbl_8055F198;
 extern int lbl_804987B8[];
+extern int lbl_8055B860;
 extern int fn_8018108C(void);
 extern int fn_80137C98(int);
 extern int fn_802146BC(int *, int, int, int, int, int, int, int);
