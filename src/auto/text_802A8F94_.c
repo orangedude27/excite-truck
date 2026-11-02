@@ -9,6 +9,11 @@ extern f32 lbl_80564978;
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern u8 lbl_8055F8F1;
+extern char lbl_804BD6F8[];
+extern f32 lbl_80564970, lbl_80564974, lbl_8056497C, lbl_80564980;
+extern void fn_802C77F0(void *, f32 *);
+extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
+extern void PSVECNormalize(f32 *, f32 *);
 extern void fn_80128668(void*);
 void* fn_802A8F94(void* arg0, s32 arg1) {
     if (arg0 != 0) {
@@ -126,26 +131,32 @@ extern f32 fn_801E7E24(void);
 extern void *fn_801E7E3C(void *);
 extern void fn_802C744C(s32, void *);
 void fn_802A9428(void) {
-    s32 index;
-    s32 kind;
+    volatile u8 enabled = lbl_8055F8F0;
+    register char *base = lbl_804BD6F8;
+    char *entries;
+    register s32 index;
+    register s32 kind;
     s32 value;
     s32 *entry;
     s32 *current;
-    s32 selected;
+    register s32 selected;
     f32 elapsed;
-    if (lbl_8055F8F0 == 0)
+
+    entries = base + 0x98;
+    if (enabled == 0)
         return;
+
     selected = -1;
     index = fn_801E85B4();
     kind = fn_801E866C(-1);
     value = *(s32 *)((u8 *)fn_801EA9A0() + 0x1C);
-    entry = (s32 *)((u8 *)&lbl_804BD6F8 + 0x98 + index * 16);
-    if (kind != entry[0] || value < entry[2]) {
+    entry = (s32 *)(entries + index * 16);
+    if (kind != ((s32 *)entries)[index * 4] || value < ((s32 *)entries)[index * 4 + 2]) {
         entry[0] = kind;
         entry[1] = value;
         entry[2] = value;
         *(f32 *)(entry + 3) = lbl_80564978;
-    } else if (value != entry[2]) {
+    } else if (value != ((s32 *)entries)[index * 4 + 2]) {
         entry[1] = entry[2];
         entry[2] = value;
         *(f32 *)(entry + 3) = lbl_80564984;
@@ -155,17 +166,18 @@ void fn_802A9428(void) {
         elapsed = fn_801E7E24();
         *(f32 *)(entry + 3) -= elapsed;
     }
-    current = entry;
-    selected = current[1];
-    selected = ((s32 *)fn_801E7E3C(current))[2] <= selected ? 3 : selected;
-    if (lbl_8055F8F1 != 0)
+
+    current = (s32 *)fn_801E7E3C(entry);
+    index = entry[1];
+    if (lbl_8055F8F1 == 0 && index >= current[2])
         selected = 3;
-    else if ((u32)(current[1] + 1) < 4)
-        selected = current[1];
+    else if ((u32)(index + 1) < 4)
+        selected = index;
+
     if (selected >= 0) {
-        s32 *slot = (s32 *)((u8 *)&lbl_804BD6F8 + 0x48 + selected * 8);
+        s32 *slot = (s32 *)(base + 0x48 + selected * 8);
         if (slot[1] != -1)
-            fn_802C744C(slot[1], (u8 *)&lbl_804BD6F8 + 0x68);
+            fn_802C744C(slot[1], base + 0x68);
     }
 }
 
