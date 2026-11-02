@@ -173,24 +173,33 @@ int fn_8022D97C(int *arg0, int arg1) {
     return *arg0 + arg1 * 0x28;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float arg5, float arg6) {
+    float value = arg4;
+    volatile int *count = (volatile int *)((char *)arg0 + 0x1C);
+    int n;
+
     *(int *)((char *)arg0 + 0x18) = arg1;
-    *(int **)arg0 = (int *)lbl_803401A0;
+    *(void **)arg0 = lbl_803401A0;
     *(float *)((char *)arg0 + 4) = arg2;
     *(float *)((char *)arg0 + 8) = arg3;
     *(float *)((char *)arg0 + 0xC) = arg5;
     *(float *)((char *)arg0 + 0x10) = arg6;
-    *(int *)((char *)arg0 + 0x1C) = 0;
+    *count = 0;
     do {
-        float f = arg4 * lbl_805635C0;
-        int n = *(int *)((char *)arg0 + 0x1C);
-        *(int *)((char *)arg0 + 0x1C) = n + 1;
-        if (f - (float)(int)f >= lbl_805635C4) break;
-        if (n + 1 >= 4) break;
+        n = *count;
+        value *= lbl_805635C0;
+        *count = n + 1;
+        if (value - (float)(int)value > lbl_805635C4)
+            break;
+        if (*count < 4)
+            continue;
+        break;
     } while (1);
     *(float *)((char *)arg0 + 0x14) = arg4 / (arg3 - arg2);
 }
-
+#pragma pop
 int fn_8022DA34(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
@@ -403,21 +412,24 @@ void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
 }
 
 void fn_8022DF14(void *arg0) {
-    int *temp_r6;
-    int temp_r5;
-    int var_r0;
-    int var_r3;
-    temp_r6 = *(int **)((char *)arg0 + 4);
-    temp_r5 = *(int *)((char *)arg0 + 0xC);
-    var_r0 = *temp_r6 + 1;
-    if (temp_r5 < var_r0) {
-        var_r0 = temp_r5;
+    int cur;
+    int hi;
+    int *p;
+    int v;
+    int lo;
+    p = *(int **)((char *)arg0 + 4);
+    hi = *(int *)((char *)arg0 + 0xC);
+    cur = *p;
+    if (hi < cur + 1) {
+        v = hi;
+    } else {
+        v = cur + 1;
     }
-    var_r3 = *(int *)((char *)arg0 + 8);
-    if (var_r0 > var_r3) {
-        var_r3 = var_r0;
+    lo = *(int *)((char *)arg0 + 8);
+    if (v > lo) {
+        lo = v;
     }
-    *temp_r6 = var_r3;
+    *p = lo;
 }
 
 void fn_8022DF48(void *arg0) {
