@@ -2,10 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned char lbl_802FE850[];
-void fn_80024BD4(void) {
-    (*(void (**)(void))(*(unsigned int *)(lbl_802FE850 + 0x38) + 0x20))();
+#pragma scheduling invalid_target
+int fn_80024BD4(short *pwc, const char *s, int n) {
+    return (*(int (**)(short *, const char *, int))(*(unsigned int *)(lbl_802FE850 + 0x38) + 0x20))(pwc, s, n);
 }
-
+#pragma scheduling on
 int fn_80024BEC(short *arg0, unsigned char *arg1, int arg2) {
     if (arg1 == 0) return 0;
     if (arg2 == 0) return -1;
