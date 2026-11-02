@@ -24,8 +24,8 @@ struct Unk_801EEA64Iface {
 extern long lbl_80488648[];
 extern char lbl_8033A300[];
 extern char lbl_8033A0B0[];
-extern char lbl_8055AFEC[];
-extern char lbl_8055AFF4[];
+__declspec(section ".sdata") extern char lbl_8055AFEC[];
+__declspec(section ".sdata") extern char lbl_8055AFF4[];
 void fn_801EE974(void *, void *);
 void fn_801EEA64(void *, void *, int, int);
 void *fn_801E87A8(void);
@@ -237,6 +237,105 @@ void fn_801EC714(void *arg0, float *arg1, float *arg2) {
     *arg2 = *(float *)((char *)arg0 + 0x10) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 0xC));
 }
 
+extern void *fn_801EAB2C(void);
+extern void fn_8012E81C(char *);
+extern int fn_802792E4(char *);
+extern void fn_801EA59C(int, int, void *);
+extern void fn_801EAB80(void *, void *);
+extern void *fn_80016474(int, long *);
+extern void fn_801333E8(int, void *, void *);
+extern void fn_801EE0E0(void *, char *, int, int, char *);
+#pragma push
+#pragma dont_inline on
+void *fn_801EC750(char *a0, char *a1, char *a2) {
+    char sp8[0x40];
+    char sp48[0x40];
+    char *src;
+    char *dst;
+    int n;
+    int c;
+    int var;
+    int t;
+
+    fn_801EAB2C();
+    *(int *)(a0 + 0x18C) = 0;
+    *(void **)a0 = lbl_8033A300;
+    *(int *)(a0 + 0x1DC) = 0;
+    *(int *)(a0 + 0x1E0) = 0;
+    *(int *)(a0 + 0x230) = 0;
+    *(int *)(a0 + 0x234) = 0;
+    *(int *)(a0 + 0x284) = 0;
+    *(int *)(a0 + 0x288) = 0;
+    *(int *)(a0 + 0x2D8) = 0;
+    *(int *)(a0 + 0x2DC) = 0;
+    *(int *)(a0 + 0x32C) = 0;
+    *(int *)(a0 + 0x330) = 0;
+    *(int *)(a0 + 0x380) = 0;
+    *(int *)(a0 + 0x384) = 0;
+    *(int *)(a0 + 0x3D4) = 0;
+    *(int *)(a0 + 0x3C) = 0;
+    t = *(int *)(a1 + 0xE0);
+    *(int *)(a0 + 0x40) = t;
+    if (t == 0)
+        fn_801EC1D4();
+
+    src = a2 + 0x44;
+    dst = sp48;
+    n = 0x40;
+    while (--n > 0) {
+        c = *src++;
+        *dst++ = c;
+        if ((char)c == 0)
+            goto done1;
+    }
+    dst[-1] = 0;
+done1:
+    dst = sp48;
+    n = 0x40;
+    src = lbl_8055AFEC;
+    while (*dst != 0) {
+        n--;
+        dst++;
+    }
+    if (n > 0) {
+        while (--n > 0) {
+            c = *src++;
+            *dst++ = c;
+            if ((char)c == 0)
+                goto done2;
+        }
+        dst[-1] = 0;
+    }
+done2:
+    fn_8012E81C(sp48);
+    *(int *)(a0 + 0x188) = fn_802792E4(a2 + 0x44);
+    fn_801EA59C(*(int *)(a1 + 0xE0), 0, a2);
+    *(void **)(a0 + 0x16C) = a0 + 0x84;
+    *(void **)(a0 + 0x170) = a0 + 0xC8;
+    *(void **)(a0 + 0x174) = a0 + 0x148;
+    if (*(int *)(a2 + 0x68) >= 0)
+        var = *(int *)(a1 + 0xE0);
+    else
+        var = 0;
+    fn_801345D8(sp8, 0x40, lbl_8055AFF4, a2 + 0x44);
+    fn_801EE0E0(a0, a2 + 0x44, *(int *)(a2 + 0x6C), var, sp8);
+    fn_801EE974(a0, a1);
+    fn_801EEA64(a0, a1, (int)(a2 + 0x44), (int)sp8);
+    lbl_80488648[*(int *)(a0 + 0x40)] = (long)a0;
+    *(int *)(a1 + 0xE4) = *(int *)(a0 + 0x48);
+    t = *(int *)((char *)fn_80016474(*(int *)(a2 + 0x68), lbl_80488648) + 0x50);
+    *(int *)(a0 + 0x3EC) = t;
+    *(int *)(a1 + 0xE8) = t;
+    fn_801EAB80(a0, a1);
+    *(char *)(a0 + 0x3F4) = 1;
+    if ((unsigned)(*(int *)a1 - 0x50430000) == 0x4152)
+        fn_801333E8(1, lbl_8033A0B0, a0 + 0x3F4);
+    if ((unsigned)(*(int *)a1 - 0x50430000) == 0x4152 &&
+        (unsigned)(*(int *)((char *)fn_801E87A8() + 4) - 0x180000) == 0x304)
+        lbl_8055EBC8 = (unsigned int)a0;
+    return a0;
+}
+#pragma pop
 extern char lbl_8033A300[];
 extern void fn_801EEC68(void *);
 extern void fn_801EFFF8(long);
