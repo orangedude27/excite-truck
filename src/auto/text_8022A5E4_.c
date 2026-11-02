@@ -86,71 +86,65 @@ void fn_8022A5E4(void) {
     };
     struct Record *src;
     struct Record *out;
+    unsigned char b0;
+    unsigned int v4, v8, vC, v10, v14, v18, v1C, v20, v24, v28, v2C, v30;
+    float v34;
+    unsigned int v3C, v40, v44, v48, v4C, v50, v54, v58;
+    float v5C, v60;
+    unsigned int v64, v68, v6C, v70;
     unsigned int i;
 
     memset(lbl_80497D68, 0, 0x74);
     src = (struct Record *)lbl_80497D68;
     src->w38 = 9;
+    b0 = src->b0;
+    vC = src->wC;
+    v10 = src->w10;
+    v14 = src->w14;
+    v18 = src->w18;
+    v1C = src->w1C;
+    v20 = src->w20;
+    v24 = src->w24;
+    v28 = src->w28;
+    v2C = src->w2C;
+    v30 = src->w30;
+    v4 = src->w4;
+    v8 = src->w8;
+    v34 = src->f34;
+    v3C = src->w3C;
+    v40 = src->w40;
+    v44 = src->w44;
+    v48 = src->w48;
+    v4C = src->w4C;
+    v50 = src->w50;
+    v54 = src->w54;
+    v58 = src->w58;
+    v5C = src->f5C;
+    v60 = src->f60;
+    v64 = src->w64;
+    v68 = src->w68;
+    v6C = src->w6C;
+    v70 = src->w70;
     out = (struct Record *)lbl_80490968;
     for (i = 0; i < 0x80; ++i) {
-        out[0].b0 = src->b0;
-        out[1].b0 = src->b0;
-        out[0].w4 = src->w4;
-        out[1].w4 = src->w4;
-        out[0].w8 = src->w8;
-        out[1].w8 = src->w8;
-        out[0].wC = src->wC;
-        out[1].wC = src->wC;
-        out[0].w10 = src->w10;
-        out[1].w10 = src->w10;
-        out[0].w14 = src->w14;
-        out[1].w14 = src->w14;
-        out[0].w18 = src->w18;
-        out[1].w18 = src->w18;
-        out[0].w1C = src->w1C;
-        out[1].w1C = src->w1C;
-        out[0].w20 = src->w20;
-        out[1].w20 = src->w20;
-        out[0].w24 = src->w24;
-        out[1].w24 = src->w24;
-        out[0].w28 = src->w28;
-        out[1].w28 = src->w28;
-        out[0].w2C = src->w2C;
-        out[1].w2C = src->w2C;
-        out[0].w30 = src->w30;
-        out[1].w30 = src->w30;
-        out[0].f34 = src->f34;
-        out[1].f34 = src->f34;
-        out[0].w3C = src->w3C;
-        out[1].w3C = src->w3C;
-        out[0].w40 = src->w40;
-        out[1].w40 = src->w40;
-        out[0].w44 = src->w44;
-        out[1].w44 = src->w44;
-        out[0].w48 = src->w48;
-        out[1].w48 = src->w48;
-        out[0].w4C = src->w4C;
-        out[1].w4C = src->w4C;
-        out[0].w50 = src->w50;
-        out[1].w50 = src->w50;
-        out[0].w54 = src->w54;
-        out[1].w54 = src->w54;
-        out[0].w58 = src->w58;
-        out[1].w58 = src->w58;
-        out[0].f5C = src->f5C;
-        out[1].f5C = src->f5C;
-        out[0].f60 = src->f60;
-        out[1].f60 = src->f60;
-        out[0].w64 = src->w64;
-        out[1].w64 = src->w64;
-        out[0].w68 = src->w68;
-        out[1].w68 = src->w68;
-        out[0].w6C = src->w6C;
-        out[1].w6C = src->w6C;
-        out[0].w70 = src->w70;
-        out[1].w70 = src->w70;
-        out[0].w38 = 9;
-        out[1].w38 = 9;
+        out[0].b0 = b0;
+        out[0].w4 = v4; out[0].w8 = v8; out[0].wC = vC; out[0].w10 = v10;
+        out[0].w14 = v14; out[0].w18 = v18; out[0].w1C = v1C; out[0].w20 = v20;
+        out[0].w24 = v24; out[0].w28 = v28; out[0].w2C = v2C; out[0].w30 = v30;
+        out[0].f34 = v34; out[0].w38 = 9;
+        out[0].w3C = v3C; out[0].w40 = v40; out[0].w44 = v44; out[0].w48 = v48;
+        out[0].w4C = v4C; out[0].w50 = v50; out[0].w54 = v54; out[0].w58 = v58;
+        out[0].f5C = v5C; out[0].f60 = v60;
+        out[0].w64 = v64; out[0].w68 = v68; out[0].w6C = v6C; out[0].w70 = v70;
+        out[1].b0 = b0;
+        out[1].w4 = v4; out[1].w8 = v8; out[1].wC = vC; out[1].w10 = v10;
+        out[1].w14 = v14; out[1].w18 = v18; out[1].w1C = v1C; out[1].w20 = v20;
+        out[1].w24 = v24; out[1].w28 = v28; out[1].w2C = v2C; out[1].w30 = v30;
+        out[1].f34 = v34; out[1].w38 = 9;
+        out[1].w3C = v3C; out[1].w40 = v40; out[1].w44 = v44; out[1].w48 = v48;
+        out[1].w4C = v4C; out[1].w50 = v50; out[1].w54 = v54; out[1].w58 = v58;
+        out[1].f5C = v5C; out[1].f60 = v60;
+        out[1].w64 = v64; out[1].w68 = v68; out[1].w6C = v6C; out[1].w70 = v70;
         out += 2;
     }
     fn_8022C520();
@@ -173,13 +167,13 @@ int fn_8022A804(const char *arg0) {
 
 #pragma push
 #pragma dont_inline on
+extern int __rlwimi(int, int, int, int, int);
 unsigned int fn_8022A834(unsigned int arg0) {
-    unsigned int byte = arg0 >> 24;
-    if (byte >= 0x20 || byte == 0) {
-    } else {
-        arg0 = (arg0 & 0x00FFFFFF) | 0xFF000000;
+    unsigned int var_r0 = arg0 >> 24;
+    if (var_r0 < 0x20 && (int)var_r0 != 0) {
+        var_r0 = 0xFF;
     }
-    return arg0;
+    return __rlwimi(arg0 & 0xFFFFFF, var_r0, 24, 0, 7);
 }
 #pragma pop
 
