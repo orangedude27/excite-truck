@@ -79,6 +79,37 @@ static inline void fn_801E1048_xh(const f32 *m, const f32 *src, f32 *dst) {
     }
 }
 
+static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
+    f32 x, y, z;
+    if (src == dst) {
+        f32 a, b, c, d, e, f, nx, ny, nz;
+        y = src[1];
+        x = src[0];
+        z = src[2];
+        a = y * m[3];
+        b = y * m[4];
+        c = x * m[0];
+        d = x * m[1];
+        e = x * m[2];
+        f = y * m[5];
+        nx = z * m[6] + (c + a);
+        ny = z * m[7] + (d + b);
+        nz = z * m[8] + (e + f);
+        dst[0] = nx;
+        dst[1] = ny;
+        dst[2] = nz;
+    } else {
+        x = src[0];
+        y = src[1];
+        z = src[2];
+        x = z * m[6] + (x * m[0] + y * m[3]);
+        dst[0] = x;
+        y = z * m[7] + (x * m[1] + y * m[4]);
+        dst[1] = y;
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+    }
+}
+
 static inline void fn_801E1048_xv(f32 *m, Vec_801E1048 *src, Vec_801E1048 *dst, f32 x, f32 y, f32 z) {
     if (src == dst) {
         f32 nx = z * m[6] + (x * m[0] + y * m[3]);
