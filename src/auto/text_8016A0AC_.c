@@ -208,6 +208,7 @@ void fn_8016A438(void) {
         }
     }
 }
+#pragma ppc_psq_save reset
 
 void fn_8016B634(s32 arg0);
 
