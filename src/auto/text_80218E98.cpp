@@ -7544,15 +7544,17 @@ extern "C" void fn_80229D1C(void *arg0) {
     }
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling reset
 extern "C" void fn_80229D3C(void *arg0, s32 arg1, s32 arg2) {
-    u32 *self = (u32 *)arg0;
-    void *target = (void *)self[0x94];
-    arg1 -= self[1];
-    arg2 -= self[2];
-    fn_802C5280(target, arg1, arg2, 0, self[1], self);
+    void *self = arg0;
+    arg0 = *(void **)((u8 *)arg0 + 0x250);
+    fn_802C5280(arg0,
+                arg1 - *(s32 *)((u8 *)self + 4),
+                arg2 - *(s32 *)((u8 *)self + 8),
+                0,
+                *(s32 *)((u8 *)self + 4),
+                self);
 }
-#pragma scheduling on
 extern "C" s32 fn_80229D5C(s32);
 extern "C" s32 fn_80229D5C(s32 arg0) {
     return arg0 + 0x264;
