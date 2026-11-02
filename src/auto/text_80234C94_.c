@@ -10,7 +10,7 @@ extern int fn_802CAC28(const char *, int);
 
 extern void fn_80128668(void *);
 static inline void CopyStr_8023512C(char *dst, const char *src, int n) {
-    char c;
+    unsigned char c;
     goto body;
 dec:
     if (--n > 0) goto body;
@@ -198,7 +198,7 @@ void *fn_8023512C(const char *arg0) {
         fn_802E30C8((char *)lbl_80340670 + 0x120, arg0);
         CopyStr_8023512C(full, (char *)lbl_80340670 + 0x140, 0x80);
     }
-    obj = fn_80234E88(full);
+    obj = ((void *(*)(char *))fn_80234E88)(full);
     if (obj != 0) {
         obj[0x80 / 4] += 1;
         return obj;
