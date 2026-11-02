@@ -5,6 +5,7 @@
 
 #include <math.h>
 extern float PSVECDotProduct(const float *, const float *);
+typedef struct { f32 x, y, z; } Vec801CF;
 extern f32 lbl_80558DC4[];
 extern f32 lbl_80562A38, lbl_80562A3C;
 #pragma dont_inline on
@@ -24,29 +25,41 @@ f32 fn_801CF778(const float *arg0, const float *arg1, const float *arg2) {
 }
 #pragma dont_inline reset
 
+#pragma ppc_psq_save off
 s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
+    f32 *nrm;
+    s32 n;
+    s32 toff;
+    f32 *edge;
+    s32 hit;
+    s32 off;
+    u8 *node;
+    s32 t;
+    s32 k;
+    s32 inside;
+    u8 *tri;
     f32 zero = lbl_80562A38;
     f32 eps = lbl_80562A3C;
-    s32 hit = 0;
-    s32 n;
-    s32 off = 0;
+    hit = 0;
+    off = 0;
     for (n = 0; n < *(s32 *)(arg0 + 4); n++, off += 0x18) {
-        u8 *node = *(u8 **)arg0 + off;
-        f32 r2 = *(f32 *)(node + 0xC) * *(f32 *)(node + 0xC);
-        s32 t;
-        s32 toff;
+        f32 r2;
+        node = *(u8 **)arg0 + off;
+        r2 = *(f32 *)(node + 0xC) * *(f32 *)(node + 0xC);
         if (fn_801CF778((f32 *)node, origin, dir) > r2) {
             continue;
         }
         t = *(s32 *)(node + 0x10);
         toff = t * 0x3C;
         for (; t < *(s32 *)(node + 0x14); t++, toff += 0x3C) {
-            u8 *tri = *(u8 **)(arg0 + 0x10) + toff;
-            f32 *nrm = (f32 *)(tri + 8);
-            f32 d = *(f32 *)(tri + 0x14);
-            f32 den = PSVECDotProduct(dir, nrm);
+            f32 d;
+            f32 den;
             f32 u;
-            if (fabs(den) < eps) {
+            tri = *(u8 **)(arg0 + 0x10) + toff;
+            nrm = (f32 *)(tri + 8);
+            d = *(f32 *)(tri + 0x14);
+            den = PSVECDotProduct(dir, nrm);
+            if ((f32)fabs(den) < eps) {
                 continue;
             }
             u = (d - PSVECDotProduct(origin, nrm)) / den;
@@ -54,9 +67,8 @@ s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
                 f32 pt[3];
                 f32 diff[3];
                 s16 *ip = (s16 *)tri;
-                f32 *edge = (f32 *)(tri + 0x18);
-                s32 inside = 1;
-                s32 k;
+                edge = (f32 *)(tri + 0x18);
+                inside = 1;
                 pt[0] = origin[0] + dir[0] * u;
                 pt[1] = origin[1] + dir[1] * u;
                 pt[2] = origin[2] + dir[2] * u;
@@ -83,7 +95,6 @@ s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
     }
     return hit;
 }
-
 void fn_801CFA48(void *arg0) {
  typedef struct { unsigned char *ptr1; int count1; unsigned char *ptr2; int count2; unsigned char *ptr3; int count3; } tFA48View;
  volatile tFA48View *p=(volatile tFA48View *)arg0;
