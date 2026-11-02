@@ -42,7 +42,7 @@ int fn_802E30C8(const char *, int);
 int fn_802C6B44(int);
 int fn_802C6DC4(int, int, int, int);
 void fn_802C6C38(int);
-extern float *fn_802C9A40(float, float, float, float);
+extern float *fn_802C9A40(void);
 extern float lbl_80564EF4;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -1158,7 +1158,7 @@ void fn_802C7458(int arg0, int arg1) {
 void fn_802C74D8(int arg0, void *arg1, int arg2) {
     int i;
     struct LocalResult {
-        signed char status;
+        unsigned char status;
         unsigned char padding[3];
         float scalar;
         float vector[3];
@@ -1191,11 +1191,11 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
         out[1] = (x1 + y1) + z1;
         out[2] = (x2 + y2) + z2;
     } else {
-        out[0] = (rot[1] * input[3] + rot[0] * input[0]) +
+        out[0] = (rot[0] * input[0] + rot[1] * input[3]) +
                  rot[2] * input[6];
-        out[1] = (rot[1] * input[4] + rot[0] * input[1]) +
+        out[1] = (rot[0] * input[1] + rot[1] * input[4]) +
                  rot[2] * input[7];
-        out[2] = (rot[1] * input[5] + rot[0] * input[2]) +
+        out[2] = (rot[0] * input[2] + rot[1] * input[5]) +
                  rot[2] * input[8];
     }
     {
@@ -1206,7 +1206,7 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
         out[1] = ty;
         out[2] = tz;
     }
-    if (fn_802C94A0(out, (unsigned char *)&local.status, &local.scalar, rot[-1])) {
+    if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1])) {
         if ((u8)lbl_8055FC20 != 0) {
             node = fn_802C5EFC(arg2);
             arg1 = (void *)fn_802D0514(arg1);
