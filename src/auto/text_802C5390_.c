@@ -61,7 +61,7 @@ int arg0;
 }
 
 #pragma scheduling invalid_target
-void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
+void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     register int count = lbl_804C1338[0];
     register int limit = lbl_804C1338[1];
     unsigned char *entry;
@@ -76,7 +76,7 @@ void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
     if (entry == 0)
         return;
     *(int *)(entry + 0) = *(int *)((char *)a + 12);
-    *(signed char *)(entry + 4) = z;
+    *(unsigned char *)(entry + 4) = z;
     *(int *)(entry + 8) = x;
     if ((*(unsigned int *)((char *)a + 4) & 1) != 0)
         *(int *)(entry + 12) = y;
