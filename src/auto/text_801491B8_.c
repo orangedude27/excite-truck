@@ -761,7 +761,7 @@ s32 fn_8014C88C(f32 arg0, f32 arg1) {
 f32 fn_8014C8B4(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     f32 t = (farg4 - farg0) / (farg1 - farg0);
     t = (lbl_8056164C < t) ? lbl_8056164C : t;
-    t = (t < lbl_80561648) ? t : lbl_80561648;
+    t = (t > lbl_80561648) ? t : lbl_80561648;
     return farg2 + t * (farg3 - farg2);
 }
 
