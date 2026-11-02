@@ -1319,14 +1319,14 @@ void fn_801AC454(void *arg0, void *arg1) {
         }
     }
 }
-#pragma scheduling on
+extern int fn_801C1BA4(int, int, int);
+#pragma dont_inline on
 void fn_801AC508(void) {
     s32 value = lbl_8055E5EC;
     if (value > 0) {
-        lbl_8055E5F0 = fn_801C1BA4(value * 5, value * 5 - 1);
+        lbl_8055E5F0 = fn_801C1BA4(value * 5, value * 5 - 1, value);
     }
 }
-#pragma scheduling on
 #pragma dont_inline reset
 
 #pragma push
@@ -1424,11 +1424,10 @@ void fn_801ACF94(void) {
     char sp8[0x34];
     char sp3c[0x54];
     char sp90[0xED0];
-    Obj_801ACF94 **obj;
+    void **obj;
     int i, j, zero, first;
-    Obj_801ACF94 *o;
-    Mesh_801ACF94 *a;
-    void *root;
+    void *root, *a;
+    register void *o;
     float *src, *dst;
     float fill, special, tail, x, y, z;
 
@@ -1448,18 +1447,19 @@ void fn_801ACF94(void) {
                     (float *)(sp8 + 0x28), (float *)(sp8 + 0x1C),
                     (float *)(sp8 + 0x10), (float *)(sp8 + 4),
                     special, fill);
-        obj = (Obj_801ACF94 **)lbl_80435628;
+        obj = (void **)lbl_80435628;
         j = 0;
         zero = 0;
         while (j < lbl_8055E5EC) {
             o = *obj;
-            a = (Mesh_801ACF94 *)o->unk_0x23C;
+            a = *(void **)((char *)o + 0x23C);
             if (a != 0) {
-                first = a->unk_0x254;
+                first = *(int *)((char *)a + 0x254);
                 src = (float *)(sp90 + first * 12);
                 dst = (float *)sp3c;
                 *(int *)sp3c = zero;
-                *(int *)(sp3c + 8) = o->unk_0x254 - first + 1;
+                *(int *)(sp3c + 8) =
+                    *(int *)((char *)o + 0x254) - first + 1;
                 *(int *)(sp3c + 4) = j;
                 i = 0;
                 while (i < *(int *)(sp3c + 8)) {
