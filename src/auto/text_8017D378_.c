@@ -1,4 +1,3 @@
-#pragma ppc_psq_save off
 #pragma cplusplus on
 struct VObj_8017D93C { virtual void d0(int); };
 #pragma cplusplus reset
@@ -75,7 +74,6 @@ void *fn_8017D688(void) {
     return p;
 }
 
-#pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
     char *a = (char *)arg0;
