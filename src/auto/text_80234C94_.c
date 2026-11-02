@@ -26,6 +26,23 @@ static inline void CatStr_8023512C(char *dst, const char *src, int n) {
     while (*dst != 0) { n--; dst++; }
     if (n > 0) CopyStr_8023512C(dst, src, n);
 }
+static inline void CopyStrB_8023512C(const char *src, int n, char *dst) {
+    unsigned char c;
+    goto body;
+dec:
+    if (--n > 0) goto body;
+    dst[-1] = 0;
+    goto end;
+body:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto dec;
+end:;
+}
+static inline void CatStrB_8023512C(const char *src, int n, char *dst) {
+    while (*dst != 0) { n--; dst++; }
+    if (n > 0) CopyStrB_8023512C(src, n, dst);
+}
 extern void *fn_801284F8(int, const char *);
 extern void fn_802E317C(const char *, ...);
 extern unsigned char lbl_80340670[];
@@ -189,14 +206,15 @@ extern char lbl_8055B9E8[4];
 extern char lbl_8055B9F0[4];
 extern char *fn_80029004(char *, int);
 void *fn_8023512C(const char *arg0) {
+    char *tbl = (char *)lbl_80340670;
     char full[0x80];
     char name[0x80];
     int *obj;
     char *dot;
     CopyStr_8023512C(full, arg0, 0x80);
     if (fn_8012C33C(arg0) == 0) {
-        fn_802E30C8((char *)lbl_80340670 + 0x120, arg0);
-        CopyStr_8023512C(full, (char *)lbl_80340670 + 0x140, 0x80);
+        fn_802E30C8(tbl + 0x120, arg0);
+        CopyStr_8023512C(full, tbl + 0x140, 0x80);
     }
     obj = ((void *(*)(char *))fn_80234E88)(full);
     if (obj != 0) {
@@ -206,7 +224,7 @@ void *fn_8023512C(const char *arg0) {
     obj = fn_801284F8(0x8C, lbl_8055B9E8);
     obj[0x84 / 4] = fn_802CAC28(full, 0);
     if (obj[0x84 / 4] == -1)
-        fn_802E317C((char *)lbl_80340670 + 0x14C, full);
+        fn_802E317C(tbl + 0x14C, full);
     obj[0x80 / 4] = 1;
     obj[0x88 / 4] = 0;
     CopyStr_8023512C((char *)obj, full, 0x80);
@@ -215,7 +233,7 @@ void *fn_8023512C(const char *arg0) {
     if (dot != 0)
         *dot = 0;
     else
-        fn_802E317C((char *)lbl_80340670 + 0x168, name);
+        fn_802E317C(tbl + 0x168, name);
     CatStr_8023512C(name, lbl_8055B9F0, 0x80);
     fn_80234EF4(obj, name);
     fn_80234D44((int)obj);
