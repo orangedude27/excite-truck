@@ -198,24 +198,28 @@ long fn_8020F6FC(void) {
 }
 #pragma dont_inline reset
 
+#pragma use_lmw_stmw off
 void fn_8020F730(void) {
-    long i;
     long count = lbl_804900AC.m_count;
-    long *entries = lbl_804902C4.m_entries;
+    long i;
     lbl_804902C4.m_count = 0;
-    for (i = 0; i < count; i++) {
-        entries[lbl_804902C4.m_count++] = i;
-    }
-    for (i = 0; i < lbl_804902C4.m_count; i++) {
-        long index = fn_80129D18(6);
-        long temp = entries[i];
-        entries[i] = entries[index];
-        entries[index] = temp;
+    if (count != 0) {
+        for (i = 0; i < count; i++) {
+            long index = lbl_804902C4.m_count;
+            lbl_804902C4.m_count = index + 1;
+            lbl_804902C4.m_entries[index] = i;
+        }
+        for (i = 0; i < lbl_804902C4.m_count; i++) {
+            long index = fn_80129D18(6);
+            long *e = lbl_804902C4.m_entries;
+            long temp = e[i];
+            e[i] = e[index];
+            e[index] = temp;
+        }
     }
     lbl_8055EEC4 = 0;
 }
-
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw reset
 void fn_8020F950(void) {
     long capacity;
     long limit;
@@ -624,16 +628,16 @@ void fn_802103BC(void) {
     lbl_8055EED0 = 0;
 }
 #pragma dont_inline reset
-extern long fn_80009C84(long);
+extern long fn_80009C84(void);
 extern unsigned char lbl_8055EEC0;
 extern signed char lbl_8055EEC8, lbl_8055B660;
 extern long lbl_8055EECC, lbl_8055B658;
 void fn_80210444(void) {
-    register lbl_8055B660 = 1;
+    lbl_8055B660 = 1;
     lbl_8055EEC0 = 0;
     lbl_8055EEC8 = 0;
     lbl_8055EECC = 0;
-    if (fn_80009C84(1) == 0 && fn_801B85CC() == 0 &&
+    if (fn_80009C84() == 0 && fn_801B85CC() == 0 &&
         lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
         lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(0);
         fn_802EC12C();
