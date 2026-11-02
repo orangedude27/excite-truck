@@ -25,6 +25,15 @@ namespace nw4hbm { namespace lyt {
         void* FindMaterialByName(const char*, bool);
     };
 } }
+namespace nw4hbm { namespace lyt {
+    namespace res { struct Material; }
+    struct ResBlockSet { u32 a, b, c, d; };
+    class Material {
+    public:
+        Material(const res::Material *, const ResBlockSet &);
+        u8 pad[0x5C];
+    };
+} }
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -47,6 +56,103 @@ extern "C" void fn_8002F634(void*, void*, int, int);
 extern "C" void fn_800D2DD4(void);
 extern "C" void __dt__Q36nw4hbm3lyt4PaneFv(void*, int);
 extern "C" void fn_80128668(void*);
+extern "C" void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *, void *);
+extern "C" void fn_8002F53C(void *, void *, void *, int, int);
+extern "C" void fn_800D5978(void *);
+extern "C" void fn_800D7F6C(void);
+extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *, u8);
+extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void *, void *, u8);
+extern "C" void *MEMAllocFromAllocator(int, int);
+extern "C" void *__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(void *, void *, void *);
+extern "C" const char lbl_80320C24[];
+extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(u8 *self, u8 *res, u8 *set) {
+    u8 *table;
+    u8 *data;
+    u8 *arr;
+    u8 *m;
+    u8 n;
+    u8 cnt;
+    int i;
+    int off;
+    int *p;
+    u8 *entry;
+    f32 f0, f1, f2, f3;
+    int w0, w1, w2, w3;
+
+    __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(self, res);
+    *(const char **)self = lbl_80320CFC;
+    arr = self + 0xE4;
+    fn_8002F53C(arr, (void *)fn_800D7F6C, (void *)fn_800D2DD4, 4, 4);
+    fn_800D5978(arr + 0x10);
+    f0 = *(f32 *)(res + 0x4C);
+    f1 = *(f32 *)(res + 0x50);
+    f2 = *(f32 *)(res + 0x54);
+    f3 = *(f32 *)(res + 0x58);
+    *(f32 *)(self + 0xD4) = f0;
+    *(f32 *)(self + 0xD8) = f1;
+    *(f32 *)(self + 0xDC) = f2;
+    *(f32 *)(self + 0xE0) = f3;
+    if (*(int *)(set + 8) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0xC1, lbl_80320C24);
+    }
+    data = res + *(int *)(res + 0x60);
+    table = (u8 *)(*(int *)(set + 8) + 0xC);
+    n = data[0x12];
+    w0 = *(int *)data;
+    w1 = *(int *)(data + 4);
+    w2 = *(int *)(data + 8);
+    w3 = *(int *)(data + 0xC);
+    *(int *)(self + 0xE4) = w0;
+    *(int *)(self + 0xE8) = w1;
+    *(int *)(self + 0xEC) = w2;
+    *(int *)(self + 0xF0) = w3;
+    if (n != 0) {
+        cnt = 8;
+        if (n <= 8) cnt = n;
+        Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(self + 0xF4, cnt);
+        if (*(u8 *)(self + 0xF4) != 0) {
+            Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(self + 0xF4, data + 0x14, cnt);
+        }
+    }
+    m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
+    if (m != 0) {
+        if (m != 0) {
+            m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(
+                m, (void *)(*(int *)(set + 8) + *(int *)(table + *(u16 *)(data + 0x10) * 4)), set);
+        }
+        *(u8 **)(self + 0x28) = m;
+    }
+    *(u8 *)(self + 0x100) = 0;
+    *(int *)(self + 0xFC) = 0;
+    if (res[0x5C] != 0) {
+        u8 *a = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, (u8)(res[0x5C]) << 3);
+        *(u8 **)(self + 0xFC) = a;
+        if (a != 0) {
+            i = 0;
+            off = 0;
+            *(u8 *)(self + 0x100) = res[0x5C];
+            p = (int *)(res + *(int *)(res + 0x64));
+            while (i < *(u8 *)(self + 0x100)) {
+                entry = res + *p;
+                *(u8 *)(*(u8 **)(self + 0xFC) + off) = entry[2];
+                *(int *)(*(u8 **)(self + 0xFC) + off + 4) = 0;
+                m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
+                if (m != 0) {
+                    if (m != 0) {
+                        m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(
+                            m, (void *)(*(int *)(set + 8) + *(int *)(table + *(u16 *)entry * 4)), set);
+                    }
+                    *(u8 **)(*(u8 **)(self + 0xFC) + off + 4) = m;
+                }
+                p++;
+                off += 8;
+                i++;
+            }
+        }
+    }
+    return self;
+}
+
 extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* arg0, int arg1) {
     struct LocalObj { virtual void destroy(int); };
     int offset;
