@@ -1094,17 +1094,18 @@ void fn_80010FDC(char *name, s32 id) {
     extern void *memset(void *, s32, u32);
     extern char *strncpy(char *, const char *, unsigned long);
     char buf[0x200];
-    register char *dst;
-    register Unk80350F88 *root;
-    register char *bufp;
-    register volatile Unk80350F88Entry *entry;
-    register s32 zero;
-    register s32 len;
-    register s32 space;
-    register s32 idx;
-    register f32 temp_f31;
-    register f32 temp_f30;
-    register f32 temp_f29;
+    Unk80350F88 *root;
+    volatile Unk80350F88Entry *entry;
+    char *bufp;
+    char *namep;
+    s32 zero;
+    s32 len;
+    s32 space;
+    s32 idx;
+    s32 i;
+    f32 temp_f31;
+    f32 temp_f30;
+    f32 temp_f29;
 
     temp_f30 = lbl_8055D4D8;
     temp_f29 = fn_8000EDC0(id);
@@ -1113,26 +1114,24 @@ void fn_80010FDC(char *name, s32 id) {
         temp_f31 = lbl_80560264;
         bufp = buf;
         zero = 0;
-        while (*name != 0) {
+        namep = name;
+        while (*namep != 0) {
             memset(buf, zero, 0x200);
-            dst = buf;
             len = 0;
             space = -1;
-            while (*name != 0 && *name != '\n' &&
-                   fn_800108C8(temp_f29, (s32)buf) < temp_f30) {
-                if (*(volatile char *)name == ' ') {
+            while (*namep != 0 && *namep != '\n' && fn_800108C8(temp_f29, (s32)buf) < temp_f30) {
+                if (*(volatile char *)namep == ' ') {
                     space = len;
                 }
-                *dst = *name;
-                dst++;
-                name++;
+                buf[len] = *namep;
+                namep++;
                 len++;
             }
-            if (*name == '\n') {
-                name++;
-            } else if (*name != 0 && space >= 0) {
-                bufp[space] = (char)zero;
-                name -= (len - space) - 1;
+            if (*namep == '\n') {
+                namep++;
+            } else if (*namep != 0 && space >= 0) {
+                buf[space] = (char)zero;
+                namep -= (len - space) - 1;
             }
             idx = root->unk_0x288;
             root->unk_0x288 = idx + 1;
@@ -1932,15 +1931,15 @@ f32 fn_8000EDC0(s32 arg0) {
 
 s32 fn_8000EE54(s32 arg0) {
     switch (arg0) {
-    case 13:
-        return -0x5400;
-    case 11:
-        return -1;
     case 12:
+        return -0x5400;
+    case 13:
+        return -1;
     case 14:
         return -0x5400;
     default:
         fn_802E317C(lbl_802FC3DC, arg0);
+    case 11:
         return -1;
     }
 }
