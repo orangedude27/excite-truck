@@ -375,15 +375,18 @@ void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, fl
         *(float *)arg3 = startValue + fraction * (endValue - startValue);
     }
 }
-#pragma scheduling reset
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 s32 fn_80135D60(Unk_80135278 *arg0, s32 arg1) {
     if ((unsigned long)arg1 != (unsigned long)arg0->unk_2c) {
         fn_80135354(arg0);
         arg0->unk_2c = arg1;
-        if (arg1 == 0) {
+        switch (arg1) {
+        default:
+            return 1;
+        case 0:
             return 0;
         }
-        return 1;
     }
     return 2;
 }
