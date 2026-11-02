@@ -12,6 +12,27 @@ extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 
 extern void *lbl_8055EA10;
+extern void *fn_8017960C();
+extern s32 fn_80139B70(s32, f32, f32);
+typedef struct Vec_801E1048 { f32 x, y, z; } Vec_801E1048;
+
+static inline void fn_801E1048_xform(f32 *m, Vec_801E1048 *src, Vec_801E1048 *dst) {
+    f32 x, y;
+    if (src == dst) {
+        f32 nx = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        f32 ny = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        f32 nz = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+        dst->x = nx;
+        dst->y = ny;
+        dst->z = nz;
+    } else {
+        x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        dst->x = x;
+        y = src->z * m[7] + (x * m[1] + src->y * m[4]);
+        dst->y = y;
+        dst->z = src->z * m[8] + (x * m[2] + y * m[5]);
+    }
+}
 
 #pragma cplusplus on
 class Dummy801E1520 {
@@ -205,6 +226,82 @@ void fn_801E12A4(void) {
 }
 #pragma scheduling on
 s32 fn_801E137C(void *arg0) { return ((s32 *)arg0)[1]; }
+
+void fn_801E1384(s32 arg0, s32 arg1) {
+    register s32 *desc = (s32 *)arg0;
+    register s32 x;
+    register s32 y;
+    register s32 left = arg1;
+    register s32 color;
+    char *record;
+    f32 xval, yval, zval, uval, vval;
+
+    if (*(volatile s32 *)desc != 0) {
+        {
+            s32 width = *(volatile s32 *)((char *)desc + 8);
+            s32 height = *(volatile s32 *)((char *)desc + 0xC);
+            fn_802C8DBC(height * ((width - 1) << 1));
+        }
+        for (x = 1; x < *(volatile s32 *)((char *)desc + 8); x++) {
+            color = x - 1;
+            {
+                s32 height = *(volatile s32 *)((char *)desc + 0xC);
+                char *base = (char *)*(volatile s32 *)((char *)desc + 4);
+                s32 row = color * height;
+                record = base + row * 0x18;
+            }
+            *(volatile s32 *)(record + 0xC) = left;
+            vval = *(f32 *)(record + 0x14);
+            uval = *(f32 *)(record + 0x10);
+            xval = *(f32 *)(record + 0);
+            yval = *(f32 *)(record + 4);
+            zval = *(f32 *)(record + 8);
+            fn_802C8E00(left, 0, xval, yval, zval, uval, vval);
+            {
+                s32 height = *(volatile s32 *)((char *)desc + 0xC);
+                char *base = (char *)*(volatile s32 *)((char *)desc + 4);
+                record = base + (x * height * 0x18);
+            }
+            *(volatile s32 *)(record + 0xC) = left;
+            vval = *(f32 *)(record + 0x14);
+            uval = *(f32 *)(record + 0x10);
+            xval = *(f32 *)(record + 0);
+            yval = *(f32 *)(record + 4);
+            zval = *(f32 *)(record + 8);
+            fn_802C8E00(left, 0, xval, yval, zval, uval, vval);
+            for (y = 1; y < *(volatile s32 *)((char *)desc + 0xC); y++) {
+                {
+                    s32 height = *(volatile s32 *)((char *)desc + 0xC);
+                    char *base = (char *)*(volatile s32 *)((char *)desc + 4);
+                    record = base + ((y + color * height) * 0x18);
+                }
+                *(volatile s32 *)(record + 0xC) = left;
+                {
+                    s32 recordColor = *(volatile s32 *)(record + 0xC);
+                    vval = *(f32 *)(record + 0x14);
+                    uval = *(f32 *)(record + 0x10);
+                    xval = *(f32 *)(record + 0);
+                    yval = *(f32 *)(record + 4);
+                    zval = *(f32 *)(record + 8);
+                    fn_802C8E00(recordColor, 1, xval, yval, zval, uval, vval);
+                }
+                {
+                    s32 height = *(volatile s32 *)((char *)desc + 0xC);
+                    char *base = (char *)*(volatile s32 *)((char *)desc + 4);
+                    record = base + ((y + x * height) * 0x18);
+                }
+                *(volatile s32 *)(record + 0xC) = left;
+                vval = *(f32 *)(record + 0x14);
+                uval = *(f32 *)(record + 0x10);
+                xval = *(f32 *)(record + 0);
+                yval = *(f32 *)(record + 4);
+                zval = *(f32 *)(record + 8);
+                fn_802C8E00(left, 1, xval, yval, zval, uval, vval);
+            }
+        }
+        fn_802C8E48();
+    }
+}
 
 s32 fn_801E1510(s32 *arg0, s32 arg1) { return *arg0 + arg1 * 0x1C; }
 
