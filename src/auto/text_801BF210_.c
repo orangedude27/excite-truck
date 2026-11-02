@@ -2,6 +2,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void PSVECCrossProduct(void *, void *, void *);
+typedef struct { float x, y, z; } FV3;
 extern float PSVECDotProduct(void *, void *);
 extern void PSVECNormalize(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
@@ -111,6 +112,50 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
     arg0[10] = dz * arg2[5] + (dx * arg2[3] + dy * arg2[4]);
     arg0[11] = dz * arg2[8] + (dx * arg2[6] + dy * arg2[7]);
 }
+
+void fn_801BFD34(float *, float *, const float *);
+void fn_801BFB2C(char *arg0, float *arg1, float *arg2) {
+    float p0[3];
+    float m[9];
+    float tmp[3];
+    float *a, *b;
+    float q0[3], q1[3];
+    float n[3];
+
+    a = arg2 + *(int *)(arg0 + 0x21C) * 3;
+    p0[0] = a[0]; p0[1] = a[1]; p0[2] = a[2];
+    a = arg2 + *(int *)(arg0 + 0x220) * 3;
+    b = arg2 + *(int *)(arg0 + 0x224) * 3;
+    m[0] = b[0] - a[0]; m[1] = b[1] - a[1]; m[2] = b[2] - a[2];
+    a = arg2 + *(int *)(arg0 + 0x228) * 3;
+    b = arg2 + *(int *)(arg0 + 0x22C) * 3;
+    m[3] = b[0] - a[0]; m[4] = b[1] - a[1]; m[5] = b[2] - a[2];
+    PSVECCrossProduct(&m[0], &m[3], &m[6]);
+    if (PSVECDotProduct(&m[6], &m[6]) > lbl_805628CC) {
+        q0[0] = m[0]; q0[1] = m[1]; q0[2] = m[2];
+        n[0] = m[6]; n[1] = m[7]; n[2] = m[8];
+        PSVECCrossProduct(n, q0, q1);
+        PSVECNormalize(q0, q0);
+        PSVECNormalize(q1, q1);
+        PSVECCrossProduct(q0, q1, n);
+        m[0] = q0[0]; m[1] = q0[1]; m[2] = q0[2];
+        m[3] = q1[0]; m[4] = q1[1]; m[5] = q1[2];
+        m[6] = n[0]; m[7] = n[1]; m[8] = n[2];
+    } else {
+        m[1] = lbl_805628B8;
+        m[0] = lbl_805628BC;
+        m[2] = lbl_805628B8;
+        m[3] = lbl_805628B8;
+        m[4] = lbl_805628BC;
+        m[5] = lbl_805628B8;
+        m[6] = lbl_805628B8;
+        m[7] = lbl_805628B8;
+        m[8] = lbl_805628BC;
+    }
+    fn_801BFD34(arg1 + 9, (float *)(arg0 + 0x254), m);
+    fn_80015B20(arg1, arg0 + 0x230, m);
+}
+
 #pragma dont_inline off
 #pragma opt_propagation reset
 
