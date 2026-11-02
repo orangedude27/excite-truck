@@ -834,6 +834,10 @@ void fn_801D628C(void *arg0) {
     *(int *)((char *)arg0 + 0x14) = 0;
 }
 
+void *fn_801D62A8(void *arg0, int arg1) {
+    return arg0;
+}
+
 int fn_801D6320(void *out, void *object) {
     extern char lbl_80338460;
     extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055ACC0, lbl_8055ACC8;
