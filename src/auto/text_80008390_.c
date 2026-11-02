@@ -7,22 +7,14 @@ extern void *fn_801E87A8(void);
 extern s32 fn_8026E20C(void);
 extern void fn_8026E204(s32);
 #pragma small_data off
-typedef struct { s32 *data; s32 count; } IdList;
-extern s32 *lbl_8034F3D0[];
+typedef struct { s32 *data; s32 count; char pad[0x40]; } IdList;
+extern IdList lbl_8034F3D0;
 #pragma small_data on
 extern s32 fn_800167F4(void);
 extern s32 lbl_802ED6D8[];
 extern s32 lbl_8055D370;
 extern s32 lbl_805601B0;
-#define ID_LIST ((IdList *)lbl_8034F3D0)
-static inline void IdList_Add(s32 *src) {
-    s32 *data = lbl_8034F3D0[0];
-    s32 n = *(s32 *)&lbl_8034F3D0[1];
-    *(s32 *)&lbl_8034F3D0[1] = n + 1;
-    data[n] = *src;
-}
-#define ID_DATA (lbl_8034F3D0[0])
-#define ID_COUNT (*(s32 *)&lbl_8034F3D0[1])
+#define ID_LIST (&lbl_8034F3D0)
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 void fn_80008390(void) {
     s32 *base = lbl_802ED6D8;
