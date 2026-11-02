@@ -280,10 +280,7 @@ extern int fn_80230B9C(int);
 extern void fn_802C8C04(int);
 extern Idx_80235CBC lbl_802FA020;
 #pragma push
-#pragma paired_single on
-#pragma ppc_psq_save off
-#pragma paired_single reset
-#pragma ppc_psq_save off
+#pragma paired_single off
 void fn_80235CBC(void *arg0, int arg1, int arg2, float x, float y, float z, float dx, float dy) {
     void *node;
     int index;
