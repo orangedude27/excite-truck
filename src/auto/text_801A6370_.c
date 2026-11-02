@@ -99,7 +99,7 @@ extern void fn_801BE168(void *, void *, void *, void *);
 extern void fn_801A7444(void *);
 #pragma cplusplus on
 struct Fn801A67C4Vt {
-    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d0(); virtual void d1(); virtual char *d2(); virtual void d3();
     virtual char *d4(); virtual void d5(); virtual void d6(); virtual void d7();
     virtual void d8(); virtual void d9();
 };
@@ -203,7 +203,8 @@ extern void fn_8018ADCC(void *, float);
 extern void fn_8018ADD4(void *, int);
 extern void fn_80136EA4(int, int);
 extern int lbl_8055E0D0;
-void fn_801A67C4(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_801A67C4(void *arg0) {
     char *p = (char *)arg0;
     int state = *(int *)(p + 0x2610);
     *(char *)(p + 0x1e9) = 0;
@@ -211,7 +212,7 @@ void fn_801A67C4(void *arg0) {
         *(void **)(p + 0x277C) = fn_802E2C20();
     if (fn_801A6724(arg0) == 0) {
         if (*(unsigned char *)(p + 0x2740) != 0) {
-            char *r = ((char *(*)(void *))(*(void ***)*(void **)(p + 0x2774))[4])(*(void **)(p + 0x2774));
+            char *r = (*(Fn801A67C4Vt **)(p + 0x2774))->d4();
             if (*(int *)(r + 0x24) == 0) {
                 *(unsigned char *)(p + 0x2740) = 0;
                 *(char *)(p + 0x2741) = 1;
@@ -232,7 +233,7 @@ void fn_801A67C4(void *arg0) {
         int v9 = *(int *)(p + 0x2768);
         int v10 = *(int *)(p + 0x276C);
         int v11 = *(int *)(p + 0x2770);
-        float f = lbl_80562430;
+        float f;
         *(int *)(p + 0x2704) = zero;
         *(unsigned char *)(p + 0x2740) = one;
         *(int *)(p + 0x3C) = v0;
@@ -258,7 +259,7 @@ void fn_801A67C4(void *arg0) {
         fn_8018ADBC(arg0, f);
         fn_8018ADB4(arg0, lbl_80562430);
         fn_8018ADC4(arg0, lbl_80562430);
-        ((void (*)(void *))(*(void ***)*(void **)(p + 0x2774))[9])(*(void **)(p + 0x2774));
+        (*(Fn801A67C4Vt **)(p + 0x2774))->d9();
         fn_801BE168(*(void **)(p + 0x1EC), p + 0x3C, p + 0x118, p + 0x124);
     }
     if (*(unsigned char *)(p + 0x2740) == 0 && *(int *)(p + 0x2704) == 3) {
@@ -276,7 +277,7 @@ void fn_801A67C4(void *arg0) {
     }
     *(int *)(p + 0x2778) = state;
 }
-
+#pragma cplusplus reset
 extern int lbl_8055E3C4;
 extern double lbl_80562440;
 #pragma ppc_psq_save off
