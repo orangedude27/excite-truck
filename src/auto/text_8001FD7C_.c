@@ -140,6 +140,33 @@ typedef int (*VF_ip)(void *, void *);
 typedef float (*VF_fp)(void *, void *);
 typedef char (*VF_cpi)(void *, void *, int);
 #define VSLOT(o, off, T) ((T)(*(void ***)(o))[(off) / 4])
+#pragma cplusplus on
+struct VObj_800201F0 {
+    virtual const char *f8();
+    virtual void *fC();
+    virtual int f10(const char *);
+    virtual void *f14(const char *);
+    virtual void *f18();
+    virtual void *f1C();
+    virtual void *f20();
+    virtual float f24(const char *);
+    virtual void *f28();
+    virtual void *f2C();
+    virtual char f30(const char *, int);
+    virtual void *f34();
+    virtual void *f38();
+    virtual void *f3C();
+    virtual void *f40();
+    virtual void *f44();
+    virtual void *f48();
+    virtual void *f4C();
+    virtual void *f50();
+    virtual void *f54();
+    virtual void *f58();
+    virtual void *f5C();
+    virtual VObj_800201F0 *f60(int);
+};
+#pragma cplusplus reset
 extern void fn_8001FEE8(void);
 
 #pragma scheduling invalid_target
