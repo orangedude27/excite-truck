@@ -86,33 +86,63 @@ void fn_801B5984(void *arg0) {
 }
 
 void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
-    s32 *state = (s32 *)lbl_80435EC8;
-    u8 *record;
-    void *node;
-    s32 i, offset;
-    if (arg2 >= state[1]) state[1] = arg2 + 1;
-    record = (u8 *)state[3] + arg2 * 8;
-    *(u16 *)record = (u16)state[0];
-    *(u16 *)(record + 2) = (u16)(state[0] + (u16)*(s32 *)((u8 *)arg0 + 4));
-    *(u16 *)(record + 6) = 0;
-    if (*(s32 *)((u8 *)arg0 + 8) != 0) *(u16 *)(record + 4) = (u16)state[1];
-    else *(u16 *)(record + 4) = 0;
-    node = *(void **)arg0;
-    while (node != NULL) {
-        *(u16 *)(*(u8 **)(lbl_80435EC8 + 0x18) + state[4] * 2) = (u16)*(s32 *)((u8 *)node + 4);
-        state[4]++;
-        node = *(void **)((u8 *)node + 8);
+    struct State {
+        s32 total;
+        s32 max;
+        s32 unk8;
+        u16 *records;
+        s32 used;
+        s32 unk14;
+        u16 *values;
+    } *state = (struct State *)lbl_80435EC8;
+    struct Entry {
+        struct Entry *nodes;
+        s32 count;
+        struct Entry *children;
+    } *entry = (struct Entry *)arg0;
+    volatile u16 *record;
+    struct Entry *node;
+    s32 childStart;
+    s32 i;
+    s32 offset;
+
+    if (arg2 >= state->max) {
+        state->max = arg2 + 1;
     }
-    state[0] += *(s32 *)((u8 *)arg0 + 4);
-    if (*(s32 *)((u8 *)arg0 + 8) != 0) {
-        state[1] += 4; i = 0; offset = 0;
+
+    record = state->records + arg2 * 4;
+    record[0] = (u16)state->total;
+    record[1] = (u16)(state->total + (u16)entry->count);
+    record[3] = 0;
+    if (entry->children != NULL) {
+        record[2] = (u16)state->max;
+    } else {
+        record[2] = 0;
+    }
+
+    node = entry->nodes;
+    while (node != NULL) {
+        state->values[state->used] = (u16)node->count;
+        state->used++;
+        node = *(struct Entry **)((u8 *)node + 8);
+    }
+
+    *(s32 *)lbl_80435EC8 = *(s32 *)lbl_80435EC8 + entry->count;
+    if (entry->children != NULL) {
+        state->max += 4;
+        childStart = record[2];
+        i = 0;
+        offset = 0;
         do {
-            fn_801B59A4((u8 *)*(void **)((u8 *)arg0 + 8) + offset, arg1 + 1, (u16)*(u16 *)(record + 4) + i);
-            i++; offset += 0xC;
+            fn_801B59A4((u8 *)entry->children + offset, arg1 + 1, childStart);
+            childStart++;
+            i++;
+            offset += 0xC;
         } while (i < 4);
     }
 }
 
+#pragma dont_inline on
 void fn_801B5AE4(void) {
     u8 *buffer;
     lbl_8055E6E8 = 0;
@@ -120,6 +150,34 @@ void fn_801B5AE4(void) {
     lbl_8055E6EC = 0;
     memset(buffer, 0, 0x1C);
 }
+#pragma dont_inline reset
+
+void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
+    f32 out[3];
+    f32 base;
+    s32 i;
+    void **item;
+    void *obj;
+    void **vtbl;
+
+    base = lbl_805626A0;
+    item = arg1;
+    i = 0;
+    do {
+        obj = *item;
+        obj = *(void **)((u8 *)obj + 0x3C);
+        vtbl = *(void ***)obj;
+        ((void (*)(void *, f32 *, f32 *))vtbl[14])(obj, &out[1], &out[0]);
+        lbl_80435EB8[0] = out[1] - base;
+        lbl_80435EB8[1] = out[2] - base;
+        lbl_80435EB8[2] = base + out[0];
+        lbl_80435EB8[3] = base + out[2];
+        fn_801B561C(*item, i, arg0, 0, lbl_805626A4, lbl_805626A4, lbl_805626A8, lbl_805626A8, base + out[0], out[2] - base);
+        item = (void **)((u8 *)item + 4);
+        i++;
+    } while (i < arg2);
+}
+
 #pragma scheduling on
 void fn_801B5BDC(void **arg0, s32 arg1, void *arg2) {
     s32 n;
@@ -190,5 +248,75 @@ loop:
 check:
     if (arg0 != NULL) goto loop;
     return count;
+}
+
+extern s32 lbl_8055E6F0;
+extern void *lbl_8055E6F4;
+extern u8 lbl_80335EC8[];
+extern u8 lbl_80335ED4[];
+extern u8 lbl_8055A8C8[];
+extern void *fn_8012850C(s32, void *);
+extern void *fn_801284E8(void *, s32);
+extern void fn_80128670(void *);
+void *fn_801B5D30(s32 *arg0) {
+    s32 tmp1[3];
+    s32 tmp2[3];
+    s32 count;
+    s32 size;
+    void *buf;
+    s32 *obj;
+    void *p;
+    void *q;
+
+    fn_801B5AE4();
+    fn_801B54B0(*arg0);
+    count = fn_801B5D10((void *)*arg0);
+    size = count * 4;
+    buf = fn_8012850C(size, lbl_80335EC8);
+    fn_801B5BDC(buf, count, (void *)*arg0);
+    tmp1[1] = 0;
+    tmp1[2] = 0;
+    tmp1[0] = 0;
+    lbl_8055E6E8++;
+    lbl_8055E6F0 = 0;
+    lbl_8055E6F4 = fn_8012850C(0x60000, lbl_80335ED4);
+    fn_801B5B04(tmp1, buf, count);
+    fn_80128670(buf);
+    fn_80128670(lbl_8055E6F4);
+    lbl_8055E6F4 = NULL;
+    if (tmp1[2] != 0) {
+        fn_8002F6AC((void *)fn_801B591C);
+    }
+    obj = (s32 *)fn_801284E8(lbl_8055A8C8, size + lbl_8055E6EC * 2 + lbl_8055E6E8 * 8 + 0x18);
+    obj[0] = count;
+    p = (u8 *)obj + 0x18;
+    q = (u8 *)p + count * 4;
+    obj[2] = lbl_8055E6EC;
+    obj[1] = (s32)p;
+    obj[3] = (s32)q;
+    obj[4] = (s32)((u8 *)q + lbl_8055E6EC * 2);
+    obj[5] = (s32)fn_801B5C58;
+    fn_801B5BDC(p, count, (void *)*arg0);
+    tmp2[1] = 0;
+    tmp2[2] = 0;
+    tmp2[0] = 0;
+    lbl_8055E6E8++;
+    lbl_8055E6F0 = 0;
+    lbl_8055E6F4 = fn_8012850C(0x60000, lbl_80335ED4);
+    fn_801B5B04(tmp2, (void **)obj[1], obj[0]);
+    memset(lbl_80435EC8, 0, 0x1C);
+    *(s32 *)lbl_80435EC8 = 0;
+    *(s32 *)(lbl_80435EC8 + 8) = lbl_8055E6E8;
+    *(s32 *)(lbl_80435EC8 + 0xC) = obj[4];
+    *(s32 *)(lbl_80435EC8 + 0x14) = obj[2];
+    *(s32 *)(lbl_80435EC8 + 0x18) = obj[3];
+    fn_801B59A4(tmp2, 0, 0);
+    fn_80128670(lbl_8055E6F4);
+    lbl_8055E6F4 = NULL;
+    *arg0 = 0;
+    if (tmp2[2] != 0) {
+        fn_8002F6AC((void *)fn_801B591C);
+    }
+    return obj;
 }
 
