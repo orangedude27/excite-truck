@@ -109,6 +109,8 @@ extern f32 lbl_8055E3D0;
 extern f32 lbl_80561B30;
 extern f32 lbl_80561B34;
 extern f32 lbl_80561B40;
+extern void *fn_80176A1C(void);
+extern f32 fn_80176A2C(void);
 extern f32 lbl_80561B44;
 extern void fn_80209190(s32, f32);
 extern s32 fn_802ECC10(void);
