@@ -1860,6 +1860,7 @@ copy_c128_continue: ;
 extern f32 lbl_80563960;
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern f32 fn_80216CB4(void);
+extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -2016,6 +2017,150 @@ s32 fn_8025157C(char *arg0, s32 arg1) {
         return 0;
     }
 }
+
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_80251934(void *arg0) {
+    extern f32 fn_80214D48(void);
+    extern f32 lbl_80563960;
+    extern const f32 lbl_80563964, lbl_80563968, lbl_8056396C, lbl_80563970;
+    extern double __fabs(double);
+    extern void fn_80214A9C(s32, f32);
+    extern void fn_80214AF0(s32);
+    class Selector {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual s32 check(s32);
+    };
+    register s32 active;
+    register s32 inputOffset;
+    register s32 outputOffset;
+    register s32 i;
+    u8 *entry;
+    u8 *result;
+
+    i = 0;
+    *(s32 *)((u8 *)arg0 + 0xC0) =
+        *(u8 *)(*(u8 **)((u8 *)arg0 + 0x4C) + 0xDC) == 0;
+    inputOffset = 0;
+    outputOffset = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 0x1C)) {
+        active = 0;
+        entry = *(u8 **)((u8 *)arg0 + 0xCC) + inputOffset;
+        result = ((u8 *(*)(s32, s32))fn_80016BC8)(*(s32 *)(entry + 8), 0);
+        if (result[8] != 0 && entry[0xC] != 0)
+            active = 1;
+        entry = *(u8 **)((u8 *)arg0 + 0x18) + outputOffset;
+        if (active != *(s32 *)(entry + 4)) {
+            *(s32 *)(entry + 4) = active;
+            *(f32 *)(entry + 8) =
+                (f32)__fabs((double)*(f32 *)(entry + 8));
+        }
+        inputOffset += 0x14;
+        outputOffset += 0xC;
+        ++i;
+    }
+    {
+        f32 limit;
+        f32 speed;
+        f32 subtract;
+        f32 threshold;
+        f32 dt = fn_80214D48();
+        register u8 *item;
+        register s32 j;
+        register s32 offset;
+        f32 current;
+        f32 scale;
+        f32 diff;
+        j = 0;
+        offset = 0;
+        limit = lbl_80563960;
+        current = *(f32 *)((u8 *)arg0 + 0x28);
+        diff = (f32)*(s32 *)((u8 *)arg0 + 0x2C) - current;
+        scale = lbl_80563968;
+        *(f32 *)((u8 *)arg0 + 0x28) = current + scale * diff;
+        speed = lbl_8056396C;
+        subtract = lbl_80563970;
+        threshold = lbl_80563964;
+        for (; j < *(s32 *)((u8 *)arg0 + 0x1C); offset += 12, j++) {
+            item = *(u8 **)((u8 *)arg0 + 0x18) + offset;
+            if (*(s32 *)(item + 4) != *(s32 *)item) {
+                *(f32 *)(item + 8) += speed * dt;
+                if (*(f32 *)(item + 8) >= threshold) {
+                    *(s32 *)item = *(s32 *)(item + 4);
+                    *(f32 *)(item + 8) -= subtract;
+                }
+            } else {
+                f32 value = *(f32 *)(item + 8) + speed * dt;
+                if (limit < value)
+                    value = limit;
+                *(f32 *)(item + 8) = value;
+            }
+        }
+    }
+    {
+        Selector *selector = *(Selector **)((u8 *)arg0 + 0xD0);
+        if (selector->check(*(s32 *)((u8 *)arg0 + 0x2C)) == 0)
+            ((void (*)(s32))fn_80214A9C)(2);
+        else
+            fn_80214AF0(2);
+    }
+}
+
+extern s32 lbl_8055CFF0;
+extern u32 lbl_8055CFF4;
+extern const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
+extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" s32 lbl_8055CFF0;
+extern "C" u32 lbl_8055CFF4;
+extern "C" const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
+extern "C" void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" double __fabs(double);
+extern "C" void fn_80251B04(void *arg0) {
+    extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
+    extern s32 lbl_8055CFF0;
+    extern u32 lbl_8055CFF4;
+    extern const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
+    extern double __fabs(double);
+    f32 temp_f3, temp_f10, f27, f26, f28, f29, f31, f21, f22, f23, f24, f25;
+    s32 i;
+    s32 off;
+    temp_f3 = (lbl_80563990 * (f32)lbl_8055CFF0) / lbl_80563994;
+    temp_f10 = (f32)((s32)(((u32)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1);
+    f27 = temp_f10 - lbl_8056398C;
+    fn_80231220(*(s32 *)((char *)arg0 + 0x20), -1, lbl_8055CFF4, lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0, lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964, lbl_8056398C, temp_f10);
+    f26 = fn_80216CB4();
+    f28 = lbl_80563964;
+    f29 = lbl_805639A8;
+    i = 0;
+    f31 = lbl_805639AC;
+    off = 0;
+    f21 = lbl_805639B0;
+    f22 = lbl_80563980;
+    f23 = lbl_80563960;
+    f24 = lbl_805639B4;
+    f25 = lbl_805639A4;
+    for (; i < *(s32 *)((char *)arg0 + 0x1C); i++, off += 0xC) {
+        char *p = *(char **)((char *)arg0 + 0x18) + off;
+        f32 a, b;
+        a = f28 - (f32)__fabs(*(f32 *)(p + 8));
+        if (!(a < f26)) a = f26;
+        b = (f32)__fabs(*(f32 *)((char *)arg0 + 0x28) - (f32)i);
+        if (f28 < b) b = f28;
+        if (!(b > f23)) b = f23;
+        (*(void (**)(void *, s32, s32, f32, f32, f32, f32, f32))(*(char **)arg0 + 0x60))(arg0, i, *(s32 *)p, f31 * ((f32)i - b) - f21, (f27 - f22 * (f29 * (f28 - a))) + f24 * a, lbl_805639AC, f29 * a + f25 * a, f28 - b);
+    }
+    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
+}
+
+#pragma scheduling on
+#pragma pop
+
 #pragma scheduling on
 #pragma optimize_for_size reset
 extern void fn_80255904(s32);
