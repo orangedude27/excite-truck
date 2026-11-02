@@ -248,7 +248,6 @@ void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
     extern s8 lbl_8055FC20;
     extern void fn_802C543C(void);
     extern void fn_802C5720(int);
-    extern void fn_802C53C4(void *, void *, int, int, signed char);
     extern void fn_802C57B0(void);
     extern void fn_802CC550(int, void *, float, float);
     extern int fn_802C9638(void *, unsigned char *, float);
@@ -1153,6 +1152,77 @@ void fn_802C7458(int arg0, int arg1) {
             fn_802C57B4(arg0, 0, -1, sp8, spC);
         }
         lbl_8055D008 = temp_r31;
+    }
+}
+
+void fn_802C74D8(int arg0, void *arg1, int arg2) {
+    int i;
+    struct LocalResult {
+        signed char status;
+        unsigned char padding[3];
+        float scalar;
+        float vector[3];
+    } local;
+    void *entry;
+    void *node;
+    float *rot;
+    float *out;
+    float *input;
+
+    rot = (float *)((char *)*(void **)((char *)fn_802C5390(arg0) + 4) + 0x20);
+    out = local.vector;
+    entry = *(void **)((char *)rot - 0x20);
+    input = (float *)arg1;
+    if (local.vector == rot) {
+        float y = input[3];
+        float y0 = y * rot[1];
+        float y1 = input[4] * rot[1];
+        float y2 = input[5] * rot[1];
+        float x = input[0];
+        float x0 = x * rot[0];
+        float x1 = input[1] * rot[0];
+        float x2 = input[2] * rot[0];
+        float z = input[6];
+        float z0 = z * rot[2];
+        float z1 = input[7] * rot[2];
+        float z2 = input[8] * rot[2];
+
+        out[0] = (x0 + y0) + z0;
+        out[1] = (x1 + y1) + z1;
+        out[2] = (x2 + y2) + z2;
+    } else {
+        out[0] = (rot[1] * input[3] + rot[0] * input[0]) +
+                 rot[2] * input[6];
+        out[1] = (rot[1] * input[4] + rot[0] * input[1]) +
+                 rot[2] * input[7];
+        out[2] = (rot[1] * input[5] + rot[0] * input[2]) +
+                 rot[2] * input[8];
+    }
+    {
+        float tx = out[0] + input[9];
+        float ty = out[1] + input[10];
+        float tz = out[2] + input[11];
+        out[0] = tx;
+        out[1] = ty;
+        out[2] = tz;
+    }
+    if (fn_802C94A0(out, (unsigned char *)&local.status, &local.scalar, rot[-1])) {
+        if ((u8)lbl_8055FC20 != 0) {
+            node = fn_802C5EFC(arg2);
+            arg1 = (void *)fn_802D0514(arg1);
+            for (i = 0; i < *(int *)entry; i++) {
+                char *item = *(char **)((char *)entry + 4) + i * 0x10;
+                fn_802C53C4(item, node, (int)arg1, -1, local.status);
+            }
+        } else {
+            fn_802C8B98(arg2, arg1);
+            fn_802DB2BC(local.status);
+            for (i = 0; i < *(int *)entry; i++) {
+                char *item = *(char **)((char *)entry + 4) + i * 0x10;
+                fn_802D6B08(*(int *)(item + 0xC));
+            }
+            fn_802C8D74();
+        }
     }
 }
 
