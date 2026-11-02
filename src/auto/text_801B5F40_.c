@@ -81,7 +81,6 @@ s32 fn_801B60F4(f32 *arg0, f32 arg1) {
 }
 
 extern float lbl_805626B8;
-#pragma scheduling invalid_target
 void fn_801B619C(void *arg0, int *arg1, float *arg2) {
     int x0, x1, y0, y1, count;
     float t;
