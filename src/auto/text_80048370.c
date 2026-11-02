@@ -172,6 +172,59 @@ void *FindContainHeap_(MEMList *list, u32 addr) {
     return 0;
 }
 
+void MEMiInitHeapHead(MEMiHeapHead *heap, u32 magic, void *start, void *end, u16 opt) {
+    MEMList *list;
+    MEMiHeapHead *outer;
+    MEMiHeapHead *child;
+    MEMiHeapHead *block;
+    MEMiHeapHead *result;
+
+    heap->magic = magic;
+    heap->start = start;
+    heap->end = end;
+    heap->attribute = 0;
+    SetOptForHeap(heap, opt);
+    MEMInitList(&heap->list, 4);
+    if (lbl_8055D9B8 == 0) {
+        MEMInitList((MEMList *)lbl_8037D808, 4);
+        OSInitMutex((OSMutex *)lbl_8037D818);
+        lbl_8055D9B8 = 1;
+    }
+    OSInitMutex(&heap->mutex);
+    OSLockMutex((OSMutex *)lbl_8037D818);
+    list = (MEMList *)lbl_8037D808;
+    result = 0;
+    outer = 0;
+    while ((outer = (MEMiHeapHead *)MEMGetNextListObject(list, outer)) != 0) {
+        if ((u32)outer->start <= (u32)heap && (u32)heap < (u32)outer->end) {
+            child = 0;
+            while ((child = (MEMiHeapHead *)MEMGetNextListObject(&outer->list, child)) != 0) {
+                if ((u32)child->start <= (u32)heap && (u32)heap < (u32)child->end) {
+                    block = 0;
+                    while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
+                        if ((u32)block->start <= (u32)heap && (u32)heap < (u32)block->end) {
+                            result = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
+                            if (result == 0)
+                                result = block;
+                            break;
+                        }
+                    }
+                    if (result == 0)
+                        result = child;
+                    break;
+                }
+            }
+            if (result == 0)
+                result = outer;
+            break;
+        }
+    }
+    if (result != 0)
+        list = &result->list;
+    MEMAppendListObject(list, heap);
+    OSUnlockMutex((OSMutex *)lbl_8037D818);
+}
+
 extern char lbl_8037D808[];
 extern char lbl_8037D818[];
 void MEMiFinalizeHeap(MEMiHeapHead *heap) {
@@ -217,6 +270,25 @@ void MEMiFinalizeHeap(MEMiHeapHead *heap) {
 }
 
 #pragma pop
+
+static inline MEMiExpHeapMBlock *InsertAfterMBlock_(MEMiExpHeapMBlockList *list, MEMiExpHeapMBlock *prev, MEMiExpHeapMBlock *mblock) {
+    MEMiExpHeapMBlock *next;
+    mblock->prev = prev;
+    if (prev != 0) {
+        next = prev->next;
+        prev->next = mblock;
+    } else {
+        next = list->head;
+        list->head = mblock;
+    }
+    mblock->next = next;
+    if (next != 0) {
+        next->prev = mblock;
+    } else {
+        list->tail = mblock;
+    }
+    return mblock;
+}
 
 void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 align) {
 MEMiExpHeapMBlock *prev=blk->prev,*next=blk->next,*first,*last,*p; u32 alloc=(u32)mem,before=alloc-(align&0x7F),end=(u32)blk+blk->size+0x10,after=alloc+size;
