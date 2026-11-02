@@ -1,5 +1,23 @@
 #include <types.h>
 extern int lbl_8055D668, lbl_8055D66C;
+extern int lbl_80558DA4, lbl_8055D65C, lbl_8055D660, lbl_8055D664;
+extern unsigned char lbl_8055D646;
+extern signed char lbl_8055D647;
+extern struct lbl_8035BAD8_t { float f0; int f4; int f8; } lbl_8035BAD8;
+extern char lbl_8035BB18[];
+extern int fn_80012820(int);
+extern void fn_800081BC(int);
+extern int fn_80008188(void);
+extern int fn_80012910(int);
+extern void *fn_8001285C(int);
+extern int fn_80131234(void *);
+extern int fn_80131264(void *);
+extern int fn_80205268(void *, int, int);
+extern void fn_8001D884(void *, int);
+extern int fn_8027DED0(void);
+extern int fn_8001DA48(void *, int);
+extern float fn_8014E7DC(int, int);
+extern int fn_80129D18(int, int);
 extern char *lbl_80558D8C;
 extern int fn_8000DA10(void);
 extern int fn_8001BA90(int, int, int, int, int);
@@ -450,23 +468,34 @@ extern unsigned char lbl_8055D672, lbl_8055D673;
 extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
 #pragma dont_inline on
 int fn_80021258(void) {
- int count;
- float rate;
- if (!lbl_8055D644) return 0;
- count=fn_80020184();
- if(count>0) fn_80020860(count);
- if(count>0) rate=lbl_805604B4;
- else rate=((float)fn_801E8838()-lbl_805604E8)/lbl_80560554;
- fn_800209A0(255,rate);
- if(fn_8020DE1C()==0) {
- if((signed char)lbl_8055D672==0) { fn_801312EC(&lbl_8035BAFC,&lbl_802FE374); lbl_8055D672=1; }
- if((signed char)lbl_8055D673==0) { fn_801312EC(&lbl_8035BB08,&lbl_802FE398); lbl_8055D673=1; }
- if(*(unsigned int *)((char *)&lbl_8035BB08+8)!=(unsigned int)lbl_8055E044) fn_80131318();
- fn_80232BA4(*(int *)((char *)&lbl_8035BB08+4),lbl_8055D64C,-1,20,lbl_80560500,lbl_80560558,lbl_805604B0,lbl_805604B4,lbl_805604B8);
- if(*(unsigned int *)((char *)&lbl_8035BAFC+8)!=(unsigned int)lbl_8055E044) fn_80131318();
- fn_80232BA4(*(int *)((char *)&lbl_8035BAFC+4),lbl_8055D64C,-1,20,lbl_8056055C,lbl_80560558,lbl_805604B0,lbl_805604B4,lbl_805604B8);
- }
- return 1;
+    int count;
+    float rate;
+    unsigned int currentID;
+    if (!lbl_8055D644) return 0;
+    count = fn_80020184();
+    if (count > 0) fn_80020860(count);
+    if (count > 0) rate = lbl_805604B4;
+    else rate = (float)fn_801E8838() / lbl_80560554;
+    fn_800209A0(255, rate);
+    if (fn_8020DE1C() == 0) {
+        if ((signed char)lbl_8055D672 == 0) {
+            fn_801312EC(&lbl_8035BAFC, &lbl_802FE374);
+            lbl_8055D672 = 1;
+        }
+        if ((signed char)lbl_8055D673 == 0) {
+            fn_801312EC(&lbl_8035BB08, &lbl_802FE398);
+            lbl_8055D673 = 1;
+        }
+        currentID = *(unsigned int *)((char *)&lbl_8035BB08 + 8);
+        if (currentID != lbl_8055E044) fn_80131318();
+        fn_80232BA4(*(int *)((char *)&lbl_8035BB08 + 4), lbl_8055D64C, -1, 20,
+                    lbl_80560500, lbl_80560558, lbl_805604B0, lbl_805604B4, lbl_805604B8);
+        currentID = *(unsigned int *)((char *)&lbl_8035BAFC + 8);
+        if (currentID != lbl_8055E044) fn_80131318();
+        fn_80232BA4(*(int *)((char *)&lbl_8035BAFC + 4), lbl_8055D64C, -1, 20,
+                    lbl_8056055C, lbl_80560558, lbl_805604B0, lbl_805604B4, lbl_805604B8);
+    }
+    return 1;
 }
 #pragma push
 #pragma scheduling invalid_target
