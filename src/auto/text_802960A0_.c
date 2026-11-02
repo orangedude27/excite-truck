@@ -445,7 +445,7 @@ void fn_80296D24(void) {}
 
 void fn_80296D28(void) { fn_8029690C(); }
 
-extern int fn_802960A0(float *, unsigned int, int, float, float, float, float, float);
+extern void fn_802960A0(float *, unsigned int, int, float, double, double, double, double);
 extern int fn_80296A10(unsigned int, unsigned int, float);
 extern int fn_802969B4(unsigned int, unsigned int, float);
 extern float lbl_80564548, lbl_80564560, lbl_8056456C, lbl_80564570, lbl_80564574;
