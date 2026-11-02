@@ -176,6 +176,55 @@ int fn_802DB69C(void **arg0, int arg1) {
     return stage;
 }
 
+void fn_802DB778(int arg0) {
+    void *sp8;
+    int temp_r31;
+
+    if ((unsigned char)lbl_8055FE9E != 0) {
+        lbl_8055FE9E = 0;
+        fn_802DB2D4();
+        fn_802DB304(&sp8, arg0);
+        temp_r31 = fn_802DB69C(&sp8, arg0);
+        switch (arg0) {
+        case 0:
+            fn_802DB394();
+            break;
+        case 1:
+            fn_802DB3FC();
+            break;
+        case 2:
+            GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+            GXSetTevColorIn(0, 0xF, 0xA, 8, 0xF);
+            GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+            GXSetTevAlphaIn(0, 5, 7, 7, 7);
+            if (temp_r31 >= 2) {
+                GXSetTevColorOp(1, 8, 0, 0, 1, 0);
+                GXSetTevColorIn(1, 4, 8, 5, 0);
+                GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
+                GXSetTevAlphaIn(1, 0, 7, 7, 7);
+            }
+            break;
+        }
+        GXSetNumTevStages((unsigned char)temp_r31);
+        switch (arg0) {
+        case 0:
+            GXSetTexCoordGen2(0, 1, 0, 0x1E, 0, 0x7D);
+            break;
+        case 1:
+            GXSetTexCoordGen2(0, 1, 0, 0x24, 0, 0x7D);
+            GXSetTexCoordGen2(1, 1, 0, 0x1E, 0, 0x7D);
+            GXSetTexCoordGen2(2, 1, 0, 0x24, 0, 0x7D);
+            break;
+        case 2:
+            fn_802DB620();
+            GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+            GXSetTexCoordGen2(1, 1, 0, 0x1E, 0, 0x7D);
+            break;
+        }
+        GXSetBlendMode(1, 4, 5, 5);
+    }
+}
+
 void fn_802DB9DC(int arg0) {
     if (lbl_8055FEBA != 0)
         return;
