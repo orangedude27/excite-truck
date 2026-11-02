@@ -176,6 +176,7 @@ void* fn_80264580(void) {
     return lbl_8055F444;
 }
 
+#pragma dont_inline on
 float fn_80264588(void) {
     extern int fn_802645C0(void);
     extern float lbl_80563BF4;
@@ -521,6 +522,49 @@ copy:
 done:
     *(int *)((char *)arg0 + 0xB4) = strlen((char *)arg0 + 0x1C);
     *(float *)((char *)arg0 + 0xB8) = farg0;
+}
+
+void fn_802652E8(void *arg0) {
+    char *p = (char *)arg0;
+    float s8, sC, s10, s14, s18, s1C, s20, s24;
+    float f31, f30, f29;
+    int v, max, flag;
+    char saved;
+    float t;
+
+    t = fn_80264588();
+    if (t < *(float *)(p + 0xB8)) return;
+    f31 = lbl_80563C18 * (t - *(float *)(p + 0xB8));
+    fn_8022ACFC(*(int *)(p + 0x18), p + 0x1C, &s18, &s1C, &s20, &s24, (float)*(int *)(p + 4), (float)*(int *)(p + 8));
+    v = (int)f31;
+    max = *(int *)(p + 0xB4);
+    flag = v > max;
+    if (flag) {
+        v = max;
+    } else {
+        fn_802645EC();
+    }
+    saved = p[v + 0x1C];
+    p[v + 0x1C] = 0;
+    fn_8022ACFC(*(int *)(p + 0x18), p + 0x1C, &s8, &sC, &s10, &s14, (float)*(int *)(p + 4), (float)*(int *)(p + 8));
+    f30 = (s20 - s18) - (s10 - s8);
+    f29 = (float)*(int *)(p + 4);
+    {
+        int r = fn_8022AA84(*(int *)(p + 0x18));
+        if (r & 2) {
+            f29 = f29 - f30;
+        } else if (r & 4) {
+            f29 = f29 - lbl_80563BF8 * f30;
+        }
+    }
+    fn_8022BD40(*(int *)(p + 0x18), p + 0x1C, 0, 0, f29, (float)*(int *)(p + 8), lbl_80563BF0, s20 - s18, s24 - s1C, lbl_80563C00);
+    p[v + 0x1C] = saved;
+    if (!flag) {
+        float f5 = f31 - (float)v;
+        float f3 = (s18 + s10) - s8;
+        float f4 = lbl_80563C1C * f5;
+        fn_80264A5C((float)(int)f4 + f3, (s24 + s1C) * lbl_80563BF8);
+    }
 }
 
 void fn_80265558(void *arg0) {
