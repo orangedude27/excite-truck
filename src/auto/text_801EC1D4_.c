@@ -60,26 +60,47 @@ extern void fn_801345D8(void *,int,const char *,...);
 extern int fn_801E3004(int,const char *,int);
 extern void fn_802E317C(const char *,const char *);
 extern float lbl_80562E88;
-extern char lbl_8033A060[], lbl_8055AFCC[], lbl_8055AFD4[];
+extern char lbl_8033A060[];
+__declspec(section ".sdata") extern char lbl_8055AFCC[];
+__declspec(section ".sdata") extern char lbl_8055AFD4[];
 extern int sscanf(const char *,...);
 void fn_801EC214(void *out, void *obj, int arg2, const char *name, int arg4, float f1, float f2) {
- int count=0; float a=lbl_80562E88,b=lbl_80562E88,c,d; char buf[0x20]; float *entry;
- *(int *)((char *)out+0x50)=arg4;
- if(!((int (*)(void *,const char *))((int (**)(void))*(void **)obj)[3])(obj,name)){*(int *)out=0;return;}
- ((void (*)(void *,const char *))((void (**)(void))*(void **)obj)[5])(obj,name);
- if(sscanf(lbl_8055AFCC,&a,&b)!=2) fn_802E317C(lbl_8033A060,name);
- *(int *)out=fn_801E3004(arg2,name,-1); f1=f1-f2; f2=lbl_80562E88; *(int *)((char *)out+0x4c)=0;
- while(count<8 && ((int (*)(void *,const char *))((int (**)(void))*(void **)obj)[3])(obj,buf)) {
-  fn_801345D8(buf,0x20,lbl_8055AFD4,name,count+1);
-  entry=(float *)((char *)out+count*8+0xc); c=f2; d=f2;
-  ((void (*)(void *,const char *))((void (**)(void))*(void **)obj)[5])(obj,buf);
-  if(sscanf(lbl_8033A060+0x10,entry,&c,&d)!=3) fn_802E317C(lbl_8033A060+0x1c,buf);
-  entry[1]=(float)fn_8002EFB0(c-a,-(d-b)); entry[0]=entry[0]*f1+f2;
-  count++; *(int *)((char *)out+0x4c)=count;
- }
- if(count<2) fn_802E317C(lbl_8033A060+0x34,name);
- *(float *)((char *)out+4)=*(float *)((char *)out+0xc);
- *(float *)((char *)out+8)=*(float *)((char *)out+(count-1)*8+0xc);
+    char *base = lbl_8033A060;
+    int count = 0;
+    float a, b, c, d;
+    char buf[0x20];
+    float *entry;
+    float scale;
+    float zero;
+    *(int *)((char *)out + 0x50) = arg4;
+    if (!((int (*)(void *, const char *))((int (**)(void))*(void **)obj)[3])(obj, name)) {
+        *(int *)out = 0;
+        return;
+    }
+    a = lbl_80562E88;
+    b = lbl_80562E88;
+    if (sscanf(((const char *(*)(void *, const char *))((int (**)(void))*(void **)obj)[5])(obj, name), lbl_8055AFCC, &a, &b) != 2)
+        fn_802E317C(base, name);
+    *(int *)out = fn_801E3004(arg2, name, -1);
+    scale = f1 - f2;
+    zero = lbl_80562E88;
+    *(int *)((char *)out + 0x4C) = 0;
+    while (count < 8 && ((int (*)(void *, const char *))((int (**)(void))*(void **)obj)[3])(obj, buf)) {
+        fn_801345D8(buf, 0x20, lbl_8055AFD4, name, count + 1);
+        entry = (float *)((char *)out + count * 8 + 0xC);
+        c = zero;
+        d = zero;
+        if (sscanf(((const char *(*)(void *, const char *))((int (**)(void))*(void **)obj)[5])(obj, buf), base + 0x10, entry, &c, &d) != 3)
+            fn_802E317C(base + 0x1C, buf);
+        entry[1] = (float)fn_8002EFB0(c - a, -(d - b));
+        entry[0] = entry[0] * scale + f2;
+        count++;
+        *(int *)((char *)out + 0x4C) = count;
+    }
+    if (*(int *)((char *)out + 0x4C) < 2)
+        fn_802E317C(base + 0x34, name);
+    *(float *)((char *)out + 4) = *(float *)((char *)out + 0xC);
+    *(float *)((char *)out + 8) = *(float *)((char *)out + (*(int *)((char *)out + 0x4C) - 1) * 8 + 0xC);
 }
 
 #pragma push
@@ -463,6 +484,47 @@ void fn_801ED354(void *arg0) {
             } while (i < 4);
         }
         fn_801EDD68(arg0);
+    }
+}
+
+#pragma push
+#pragma scheduling invalid_target
+void fn_801ED46C(void *arg0) {
+    float v[3];
+    float *m;
+    float *mat;
+    char *p;
+    if (*(int *)((char *)arg0 + 0x488) != -1 && *(int *)((char *)arg0 + 0x3F8) <= 2) {
+        mat = *(float **)((char *)arg0 + 0x3C);
+        m = fn_802C86DC();
+        if (v == m) {
+            float t0 = mat[2] * m[2] + (mat[1] * m[1] + mat[0] * m[0]);
+            float t1 = mat[5] * m[2] + (mat[4] * m[1] + mat[3] * m[0]);
+            float t2 = mat[8] * m[2] + (mat[7] * m[1] + mat[6] * m[0]);
+            v[0] = t0;
+            v[1] = t1;
+            v[2] = t2;
+        } else {
+            v[0] = mat[2] * m[2] + (mat[1] * m[1] + mat[0] * m[0]);
+            v[1] = mat[5] * m[2] + (mat[4] * m[1] + mat[3] * m[0]);
+            v[2] = mat[8] * m[2] + (mat[7] * m[1] + mat[6] * m[0]);
+        }
+        p = *(char **)((char *)arg0 + 0x3C) + *(int *)((char *)arg0 + 0x48C) * 0xC;
+        *(float *)(p + 0xE24) = v[0];
+        *(float *)(p + 0xE28) = v[1];
+        *(float *)(p + 0xE2C) = v[2];
+        p = *(char **)((char *)arg0 + 0x3C) + *(int *)((char *)arg0 + 0x490) * 0xC;
+        *(float *)(p + 0xE24) = v[0] * lbl_80562E98;
+        *(float *)(p + 0xE28) = v[1] * lbl_80562E98;
+        *(float *)(p + 0xE2C) = v[2] * lbl_80562E98;
+        {
+            int r = fn_802C7A34(1, *(char **)((char *)arg0 + 0x3C) + 0xE30, *(int *)((char *)arg0 + 0x494), lbl_80562E98);
+            if (*(int *)((char *)arg0 + 0x3F8) <= 1 && !(*(unsigned short *)(*(char **)((char *)arg0 + 0x3C) + 0x6E) & 0x20)) {
+                fn_802C70AC(*(int *)((char *)arg0 + 0x488), (char *)arg0 + 0x4A0, r, *(int *)((char *)arg0 + 0x498));
+                return;
+            }
+            fn_802C70AC(*(int *)((char *)arg0 + 0x488), (char *)arg0 + 4, r, *(int *)((char *)arg0 + 0x49C));
+        }
     }
 }
 #pragma pop
