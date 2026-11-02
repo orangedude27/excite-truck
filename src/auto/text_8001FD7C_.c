@@ -141,6 +141,11 @@ typedef float (*VF_fp)(void *, void *);
 typedef char (*VF_cpi)(void *, void *, int);
 #define VSLOT(o, off, T) ((T)(*(void ***)(o))[(off) / 4])
 #pragma cplusplus on
+struct VList_800201F0 {
+    virtual VList_800201F0 *f8(const char *);
+    virtual void *fC();
+    virtual int f10(const char *);
+};
 struct VObj_800201F0 {
     virtual const char *f8();
     virtual void *fC();
@@ -327,25 +332,26 @@ int fn_80020184(void) {
     return 0xFF - temp_r3;
 }
 
-void fn_800201F0(void) {
+#pragma cplusplus on
+extern "C" void fn_800201F0(void) {
     char *base = lbl_802FE138;
-    void *o;
-    void *list;
-    void *item;
+    VObj_800201F0 *o;
+    VObj_800201F0 *list;
+    VObj_800201F0 *item;
     int i;
     int var;
     fn_8001FEE8();
     lbl_8055D630 = 0;
     lbl_8055D634 = 0;
-    o = fn_80131810(base + 0xE4);
+    o = (VObj_800201F0 *)fn_80131810(base + 0xE4);
     if (o != 0) {
-        if (VSLOT(o, 0x10, VF_ip)(o, base + 0xF0) != 0) {
-            list = VSLOT(o, 0x8, VF_pp)(o, base + 0xF0);
+        if (o->f10(base + 0xF0) != 0) {
+            list = (VObj_800201F0 *)o->f8();
             fn_802E30C8(base + 0x100);
-            for (i = 0; (item = VSLOT(list, 0x60, VF_pi)(list, i)) != 0; i++) {
-                if (strcmp((const char *)VSLOT(item, 0x8, VF_p)(item), (const char *)&lbl_80558D90) == 0) {
-                    void *a = VSLOT(item, 0x14, VF_pp)(item, base + 0x118);
-                    void *b = VSLOT(item, 0x14, VF_pp)(item, base + 0x128);
+            for (i = 0; (item = list->f60(i)) != 0; i++) {
+                if (strcmp(item->f8(), &lbl_80558D90) == 0) {
+                    void *a = item->f14(base + 0x118);
+                    void *b = item->f14(base + 0x128);
                     char *e = lbl_8035B758 + lbl_8055D630 * 0x70;
                     lbl_8055D630 += 1;
                     if (fn_80277960(a, e, e + 0x60) == 0) {
@@ -354,8 +360,8 @@ void fn_800201F0(void) {
                     if (fn_80277960(b, e + 0x30, e + 0x64) == 0) {
                         fn_802E317C(base + 0x150, a);
                     }
-                    *(float *)(e + 0x68) = VSLOT(item, 0x24, VF_fp)(item, base + 0x16C);
-                    e[0x6C] = VSLOT(item, 0x30, VF_cpi)(item, &lbl_80558D98, 0);
+                    *(float *)(e + 0x68) = item->f24(base + 0x16C);
+                    e[0x6C] = item->f30(&lbl_80558D98, 0);
                 }
             }
         } else {
@@ -374,7 +380,7 @@ void fn_800201F0(void) {
         lbl_8055D648 = 1;
     }
 }
-
+#pragma cplusplus reset
 void fn_80020430(void) {
     fn_8001FF24();
 }
