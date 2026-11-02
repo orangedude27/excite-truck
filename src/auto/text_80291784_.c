@@ -399,7 +399,7 @@ void fn_8029227C(void) {
     old=fn_802C2C00(0); settings=(int *)&lbl_804B4010;
     if (*((unsigned char *)settings+0x14)) fn_802D3BB0(settings[4]);
     if (*((unsigned char *)settings+0x14)) fn_802920D0();
-    if (*((unsigned char *)&lbl_804B3EC0+0x148)) fn_80291E64();
+    if (*((unsigned char *)&lbl_804B3EC0+0x148)) fn_80291E64(&lbl_804B3EC0);
     fn_802C2C00(old);
 done: ;
 }
