@@ -172,7 +172,7 @@ extern "C" s32 fn_80211678(u8 *arg0) {
 }
 
 extern "C" int fn_80211690(int);
-extern "C" int fn_80211D24(int);
+extern "C" void fn_80211D24(int);
 extern "C" int fn_802E2C20(void);
 extern "C" int fn_802ECC10(void);
 extern "C" int lbl_8055EF14;
@@ -2054,14 +2054,12 @@ extern "C" s32 fn_80215AA4(void *, s32);
 #pragma scheduling invalid_target
 extern "C" s32 fn_80215A74(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
-    u8 enabled = self[0x1A];
     self[0x19] = 0;
-    if (enabled != 0) {
-        self[0x234] = 1;
-        ((VfObj *)*(void **)(self + 0x244))->vf18();
-    } else {
+    if (self[0x1A] == 0) {
         return fn_80215AA4(arg0, arg1);
     }
+    self[0x234] = 1;
+    ((VfObj *)*(void **)(self + 0x244))->vf18();
 }
 #pragma scheduling on
 extern "C" s32 fn_80215AA4(void *arg0, s32 arg1) {
