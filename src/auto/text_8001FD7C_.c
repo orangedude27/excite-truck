@@ -142,7 +142,7 @@ typedef char (*VF_cpi)(void *, void *, int);
 #define VSLOT(o, off, T) ((T)(*(void ***)(o))[(off) / 4])
 #pragma cplusplus on
 struct VList_800201F0 {
-    virtual VList_800201F0 *f8(const char *);
+    virtual void *f8(const char *);
     virtual void *fC();
     virtual int f10(const char *);
 };
