@@ -3,7 +3,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <math.h>
 extern float PSVECDotProduct(const float *, const float *);
+extern f32 lbl_80558DC4[];
+extern f32 lbl_80562A38, lbl_80562A3C;
 #pragma scheduling invalid_target
 f32 fn_801CF778(const float *arg0, const float *arg1, const float *arg2) {
     float delta[3];
