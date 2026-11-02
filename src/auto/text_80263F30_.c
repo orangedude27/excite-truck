@@ -197,6 +197,7 @@ void fn_802645EC(void) {
     extern float lbl_8055C454;
     *(float *)((char *)lbl_8055F444 + 0x1C) = lbl_8055C454;
 }
+#pragma dont_inline off
 
 #pragma scheduling invalid_target
 void fn_802645FC(void *arg0) {
