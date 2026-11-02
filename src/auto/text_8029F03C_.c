@@ -323,6 +323,90 @@ extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
         *(int *)((char *)arg0 + 4) = 0;
     }
 }
+
+#pragma cplusplus on
+extern "C" void fn_8029FB00(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual const char *name(const char *);
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual unsigned char getBool(const char *, int);
+        virtual Vec3_8029FB00 getVec(const char *);
+    };
+    Vec3_8029FB00 v, w;
+    unsigned char *entry;
+    char *a;
+    char *b;
+    int found;
+    int i;
+    int *t;
+    Obj *obj = (Obj *)arg0;
+    found = lbl_8055F818;
+    a = (char *)lbl_804B7770;
+    t = lbl_804B9B7C;
+    entry = *(unsigned char **)t + t[1]++ * 0x34;
+    b = a;
+    for (i = 0; i < lbl_8055F818; i++) {
+        if (strcmp(a, obj->name(lbl_8055CB50)) == 0)
+            found = *(int *)(b + 0x20);
+        a += 0x24;
+        b += 0x24;
+    }
+    *(int *)entry = found;
+    *(unsigned char *)(entry + 0x2e) = obj->getBool(lbl_80349890, 0);
+    *(int *)(entry + 0x28) = fn_8029FE6C(obj->name(lbl_8034983C));
+    v = obj->getVec(lbl_8055CB58);
+    *(float *)(entry + 4) = v.x;
+    *(float *)(entry + 8) = v.y;
+    *(float *)(entry + 0xc) = v.z;
+    w = obj->getVec(lbl_8055CB5C);
+    {
+        float z, y, x;
+        x = w.x;
+        *(float *)(entry + 0x1c) = x;
+        y = w.y;
+        *(float *)(entry + 0x20) = y;
+        z = w.z;
+        *(float *)(entry + 0x24) = z;
+        *(int *)(entry + 0x30) = 0;
+        *(float *)(entry + 0x10) = x;
+        *(float *)(entry + 0x14) = y;
+        *(float *)(entry + 0x18) = z;
+    }
+    fn_801E9DC4(entry + 0x2c);
+    if (found == lbl_8055F818) {
+        const char *s;
+        int n;
+        char *d;
+        unsigned char c;
+        *(int *)(lbl_804B7770 + lbl_8055F818 * 0x24 + 0x20) = found;
+        s = obj->name(lbl_8055CB50);
+        d = (char *)lbl_804B7770 + lbl_8055F818 * 0x24;
+        n = 0x20;
+        goto copy;
+    dec:
+        n--;
+        if (n > 0) goto copy;
+        d[-1] = 0;
+        goto done;
+    copy:
+        c = *s++;
+        *d++ = c;
+        if ((signed char)c != 0) goto dec;
+    done:
+        lbl_8055F818++;
+    }
+}
+#pragma cplusplus off
+
 #pragma scheduling on
 #pragma cplusplus off
 #pragma pop
