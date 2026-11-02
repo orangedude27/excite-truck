@@ -83,7 +83,7 @@ extern "C" void fn_8029AAE0(int, int, void*);
     extern "C" void fn_80298B48(void*);
     extern "C" void fn_802976DC(void);
     extern "C" void fn_80128670(int);
-    extern "C" void fn_80298FBC(void*);
+  extern "C" void fn_80298FBC(void*, void* = 0);
   extern "C" void fn_802CAC54(int);
   extern "C" void fn_8029BDC4(void*);
   extern "C" void fn_80299544(void* = 0);
@@ -1400,47 +1400,59 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
     }
 }
 
+#pragma push
+#pragma scheduling reset
 extern "C" void fn_8029AAE0(int arg0, int arg1, void* arg2) {
     float *out = (float *)((char *)arg0 + arg1 * 0x2C);
     XformData *d = (XformData *)arg2;
     fn_80288208(arg1);
     if (out == d->v0) {
-        float x = d->v0[0], y = d->v0[1], z = d->v0[2];
-        float rx = d->m[3] * y + d->m[0] * x + d->m[6] * z;
-        float ry = d->m[4] * y + d->m[1] * x + d->m[7] * z;
-        float rz = d->m[5] * y + d->m[2] * x + d->m[8] * z;
-        out[0] = rx;
-        out[1] = ry;
-        out[2] = rz;
+        float p0 = d->m[3] * d->v0[1];
+        float p1 = d->m[0] * d->v0[0];
+        float p2 = d->m[6] * d->v0[2];
+        float p3 = d->m[4] * d->v0[1];
+        float p4 = d->m[1] * d->v0[0];
+        float p5 = d->m[7] * d->v0[2];
+        float p6 = d->m[5] * d->v0[1];
+        float p7 = d->m[2] * d->v0[0];
+        float p8 = d->m[8] * d->v0[2];
+        out[0] = (p0 + p1) + p2;
+        out[1] = (p3 + p4) + p5;
+        out[2] = (p6 + p7) + p8;
     } else {
         out[0] = d->m[3] * d->v0[1] + d->m[0] * d->v0[0] + d->m[6] * d->v0[2];
         out[1] = d->m[4] * d->v0[1] + d->m[1] * d->v0[0] + d->m[7] * d->v0[2];
         out[2] = d->m[5] * d->v0[1] + d->m[2] * d->v0[0] + d->m[8] * d->v0[2];
     }
     out[0] += d->t[0];
-    out[1] += d->t[1];
     out[2] += d->t[2];
+    out[1] += d->t[1];
     out[1] += lbl_80564598;
     out += 3;
     if (out == d->v1) {
-        float x = d->v1[0], y = d->v1[1], z = d->v1[2];
-        float rx = d->m[3] * y + d->m[0] * x + d->m[6] * z;
-        float ry = d->m[4] * y + d->m[1] * x + d->m[7] * z;
-        float rz = d->m[5] * y + d->m[2] * x + d->m[8] * z;
-        out[0] = rx;
-        out[1] = ry;
-        out[2] = rz;
+        float p0 = d->m[3] * d->v1[1];
+        float p1 = d->m[0] * d->v1[0];
+        float p2 = d->m[6] * d->v1[2];
+        float p3 = d->m[4] * d->v1[1];
+        float p4 = d->m[1] * d->v1[0];
+        float p5 = d->m[7] * d->v1[2];
+        float p6 = d->m[5] * d->v1[1];
+        float p7 = d->m[2] * d->v1[0];
+        float p8 = d->m[8] * d->v1[2];
+        out[0] = (p0 + p1) + p2;
+        out[1] = (p3 + p4) + p5;
+        out[2] = (p6 + p7) + p8;
     } else {
         out[0] = d->m[3] * d->v1[1] + d->m[0] * d->v1[0] + d->m[6] * d->v1[2];
         out[1] = d->m[4] * d->v1[1] + d->m[1] * d->v1[0] + d->m[7] * d->v1[2];
         out[2] = d->m[5] * d->v1[1] + d->m[2] * d->v1[0] + d->m[8] * d->v1[2];
     }
     out[0] += d->t[0];
-    out[1] += d->t[1];
     out[2] += d->t[2];
+    out[1] += d->t[1];
     out[1] += lbl_80564598;
 }
-
+#pragma pop
 extern "C" int fn_8029ADCC(void *arg0);
 extern "C" void fn_8029B1B8(void *);
 extern "C" void *fn_80288208(int);
