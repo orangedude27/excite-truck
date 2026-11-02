@@ -1,4 +1,5 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+#pragma ppc_psq_save off
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
 extern const char lbl_80340834[];
