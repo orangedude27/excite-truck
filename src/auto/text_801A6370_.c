@@ -227,6 +227,7 @@ extern "C" void fn_801A69F4(void *arg0, float *arg1) {
     *(float *)(p + 0x11c) = outB[1];
     *(float *)(p + 0x120) = outB[2];
 }
+#pragma ppc_psq_save reset
 #pragma cplusplus reset
 extern void fn_801E9DC4(void *);
 #pragma scheduling on
