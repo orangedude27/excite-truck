@@ -642,8 +642,7 @@ void fn_801F34C4(void *arg0, int arg1) {
 }
 
 #pragma push
-#pragma processor 750
-#pragma scheduling on
+#pragma ppc_psq_save off
 void fn_801F3514(void *arg0) {
     extern float lbl_80562F74, lbl_80562F78, lbl_80562F7C, lbl_80562F80, lbl_80562F84, lbl_80562F88, lbl_80562F8C, lbl_80562F64, lbl_8055EC04, lbl_80562F48;
     extern char lbl_8033ABC4[], lbl_8033ABF0[], lbl_8033AC18[];
