@@ -159,6 +159,40 @@ void fn_801AFDCC(void *arg0, void *arg1) {
         }
     }
 }
+
+void fn_801AFF64(u8 *arg0, u8 *arg1) {
+    u8 *dst = arg1 + *(s32 *)(arg0 + 8);
+    f32 t = lbl_8055E460;
+    Blend12 tmp;
+    f32 *a;
+    f32 *b;
+    f32 *o;
+    int i;
+    if ((f32)fabs(t - lbl_80562588) <= *(f32 *)&lbl_80558DC4) {
+        *(Blend12 *)dst = *(Blend12 *)(arg0 + 0x70);
+    } else {
+        a = (f32 *)(arg0 + 0x70);
+        b = (f32 *)(arg0 + 0xA0);
+        o = tmp.v;
+        for (i = 0; i < 2; i++) {
+            o[0] = b[0] + t * (a[0] - b[0]);
+            o[1] = b[1] + t * (a[1] - b[1]);
+            o[2] = b[2] + t * (a[2] - b[2]);
+            o[3] = b[3] + t * (a[3] - b[3]);
+            o[4] = b[4] + t * (a[4] - b[4]);
+            o[5] = b[5] + t * (a[5] - b[5]);
+            a += 6; b += 6; o += 6;
+        }
+        *(Blend12 *)dst = tmp;
+    }
+    *(s16 *)(dst + 0x30) = *(s16 *)(arg0 + 0x6C);
+    dst = arg1 + *(s32 *)(arg0 + 8);
+    *(s32 *)(dst + 0x34) = *(s32 *)(arg0 + 0x1F0);
+    *(s32 *)(dst + 0x38) = *(s32 *)(arg0 + 0x1F4);
+    *(f32 *)(dst + 0x3C) = PSVECDotProduct(arg0 + 0x124, arg0 + 0x3C);
+    *(u8 *)(dst + 0x40) = *(u8 *)(arg0 + 0x1F8);
+}
+
 #pragma pop
 
 void fn_801B0174(void *this_) {
