@@ -195,7 +195,6 @@ void fn_80171A4C(void *arg0) {
 
 #pragma push
 #pragma cplusplus on
-#pragma ppc_psq_save off
 extern "C" s32 *__AXFXGetLfoSinTable_801769CC(void);
 extern "C" void *fn_8001285C(s32);
 extern "C" void *fn_801399FC(void);
@@ -263,19 +262,20 @@ extern "C" void fn_80171A80(void *arg0) {
         virtual void m21();
         virtual Node *get(int);
     };
+    char sp8[8];
+    f32 v[4];
+    int n;
+    char *e;
+    f32 *p;
+    int k, j;
+    f32 d1, d2;
     Mgr *mgr = *(Mgr **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
     int i = 0;
     f32 y = lbl_80561A34;
     Node *node;
     while ((node = mgr->get(i)) != 0) {
         if (strcmp(node->m0(), lbl_8055A280) == 0) {
-            int n = *(int *)((char *)arg0 + 0xC);
-            char *e;
-            f32 *p;
-            f32 v[4];
-            char sp8[8];
-            int k, j;
-            f32 d1, d2;
+            n = *(int *)((char *)arg0 + 0xC);
             *(int *)((char *)arg0 + 0xC) = n + 1;
             e = *(char **)((char *)arg0 + 8) + n * 0x28;
             node->m3(lbl_8055A288);
