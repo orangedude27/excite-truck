@@ -239,6 +239,7 @@ void fn_801B5C58(void *arg0) {
     fn_80128658(arg0);
 }
 
+#pragma dont_inline on
 s32 fn_801B5D10(void *arg0) {
     s32 count = 0;
     goto check;
