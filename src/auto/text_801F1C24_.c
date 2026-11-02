@@ -566,22 +566,47 @@ extern float lbl_80562F64, lbl_80562F70;
 extern double cos(double);
 extern float fn_801E8738(int);
 extern void fn_802C70AC(int, void *, int, int);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801F3288(void *arg0) {
- float f30,f31; int mask; unsigned int i; void *camera,*planes,*plane;
- *(int *)((char *)arg0+4)=0;
- if (*(void **)((char *)arg0+0x3C)!=0 && *(int *)((char *)arg0+8)!=0) {
- camera=fn_802C86DC(); *(float *)((char *)arg0+0x30)=*(float *)((char *)camera+0x24);
- planes=*(void **)((char *)arg0+0x3C); *(float *)((char *)arg0+0x34)=*(float *)((char *)camera+0x28); planes=(char *)planes+0x2C;
- *(float *)((char *)arg0+0x38)=*(float *)((char *)camera+0x2C);
- if (*(int *)((char *)arg0+8)==1) { mask=1;i=0; f30=lbl_80562F64*(lbl_80562F70*fn_801E8738(-1));plane=planes;
- do { f31=PSVECDotProduct((float *)((char *)camera+0x18),(float *)planes);
- if(f31>cos(f30+*(float *)((char *)plane+0xC))){mask|=1<<i;*(int *)((char *)arg0+4)=*(int *)((char *)arg0+4)+1;}
- i++;planes=(char *)planes+0x10;plane=(char *)plane+0x10;}while(i<0x20);
- } else {*(int *)((char *)arg0+4)=0x20;mask=-1;}
- fn_802C70AC(*(int *)((char *)*(void **)((char *)arg0+0x3C)+4),(char *)arg0+0xC,-1,mask);
- }
+    float f30, f31;
+    void *planes;
+    void *plane;
+    void *camera;
+    int mask;
+    unsigned int i;
+    *(int *)((char *)arg0 + 4) = 0;
+    if (*(void **)((char *)arg0 + 0x3C) != 0 && *(int *)((char *)arg0 + 8) != 0) {
+        camera = fn_802C86DC();
+        *(float *)((char *)arg0 + 0x30) = *(float *)((char *)camera + 0x24);
+        planes = *(void **)((char *)arg0 + 0x3C);
+        *(float *)((char *)arg0 + 0x34) = *(float *)((char *)camera + 0x28);
+        planes = (char *)planes + 0x2C;
+        *(float *)((char *)arg0 + 0x38) = *(float *)((char *)camera + 0x2C);
+        if (*(int *)((char *)arg0 + 8) == 1) {
+            mask = 1;
+            i = 0;
+            f30 = lbl_80562F64 * (lbl_80562F70 * fn_801E8738(-1));
+            plane = planes;
+            do {
+                f31 = PSVECDotProduct((float *)((char *)camera + 0x18), (float *)plane);
+                if (f31 > (float)cos(f30 + *(float *)((char *)planes + 0xC))) {
+                    mask |= 1 << i;
+                    *(int *)((char *)arg0 + 4) = *(int *)((char *)arg0 + 4) + 1;
+                }
+                i++;
+                plane = (char *)plane + 0x10;
+                planes = (char *)planes + 0x10;
+            } while (i < 0x20);
+        } else {
+            *(int *)((char *)arg0 + 4) = 0x20;
+            mask = -1;
+        }
+        fn_802C70AC(*(int *)((char *)*(void **)((char *)arg0 + 0x3C) + 4), (char *)arg0 + 0xC, -1, mask);
+    }
 }
-
+#pragma pop
 void fn_801F33BC(void *unused, int arg1) {
     extern int *fn_801F1CE8(int);
     unsigned char *p = (unsigned char *)fn_801F1CE8(arg1);
@@ -616,6 +641,56 @@ void fn_801F34C4(void *arg0, int arg1) {
     *(float *)((char *)arg0 + 0xC) = ((float *)p)[3];
 }
 
+#pragma push
+#pragma scheduling on
+#pragma ppc_psq_save off
+void fn_801F3514(void *arg0) {
+    extern float lbl_80562F74, lbl_80562F78, lbl_80562F7C, lbl_80562F80, lbl_80562F84, lbl_80562F88, lbl_80562F8C, lbl_80562F64, lbl_8055EC04, lbl_80562F48;
+    extern char lbl_8033ABC4[], lbl_8033ABF0[], lbl_8033AC18[];
+    extern int *fn_801E1F44(void);
+    extern int fn_802C9994();
+    extern int fn_802923C4();
+    extern int fn_802C9A1C();
+    extern void fn_802E30C8(const char *, ...);
+    extern double fn_8002F234(float);
+    extern double atan(double);
+    extern double sin(double);
+    extern double cos(double);
+    float v[3];
+    float f30, f31, t;
+    char *p = (char *)arg0;
+
+    if (*(int *)(p + 0x10) == 0) {
+        *(int *)(p + 0x10) = 0xFDFEE7;
+        *(float *)(p + 4) = lbl_80562F40;
+        *(float *)(p + 8) = lbl_80562F74;
+        *(float *)(p + 0xC) = lbl_80562F78;
+        fn_802E30C8(lbl_8033ABC4);
+    }
+    if (*fn_801E1F44() == 1) {
+        *(int *)(p + 0x10) = 0x75889B;
+        *(float *)(p + 4) = lbl_80562F40;
+        *(float *)(p + 8) = lbl_80562F7C;
+        *(float *)(p + 0xC) = lbl_80562F80;
+    }
+    fn_802C9994(*(int *)(p + 0x10));
+    fn_802923C4(*(int *)(p + 0x10));
+    v[0] = *(float *)(p + 4) * lbl_80562F48;
+    v[1] = *(float *)(p + 8) * lbl_80562F48;
+    v[2] = *(float *)(p + 0xC) * lbl_80562F48;
+    PSVECNormalize(v, v);
+    f30 = (float)fn_8002F234(v[0] * v[0] + v[2] * v[2]);
+    f31 = -v[1];
+    if ((float)atan(f31 / f30) < lbl_8055EC04) {
+        fn_802E30C8(lbl_8033AC18, (lbl_80562F84 * (float)atan(f31 / f30)) / lbl_80562F88, (lbl_80562F84 * lbl_8055EC04) / lbl_80562F88);
+        v[0] = v[0] * ((float)cos(lbl_8055EC04) / f30);
+        v[1] = -(float)sin(lbl_8055EC04);
+        v[2] = v[2] * ((float)cos(lbl_8055EC04) / f30);
+    }
+    t = lbl_80562F44 + -v[1];
+    fn_802E30C8(lbl_8033ABF0, lbl_80562F64 + (lbl_80562F8C * -v[0]) / t, lbl_80562F64 + (lbl_80562F8C * -v[2]) / t);
+    fn_802C9A1C(v);
+}
 #pragma pop
 void fn_801F371C(int arg0) {
     fn_8029231C(arg0 + 4);
@@ -826,11 +901,14 @@ __declspec(section ".data") extern int lbl_8033AA90, lbl_8033AA18, lbl_8033AA24;
 #pragma small_data off
 #pragma pop
 #pragma scheduling invalid_target
-void fn_801F3D34(void *arg0, void *arg1, void *arg2) {
+void fn_801F3D34(void *arg0, int arg1, void *arg2) {
     float temp_f31;
-    int temp_r30;
     void *temp_r31;
+    int temp_r30;
     void *temp_r3;
+    register float temp_f2;
+    register float temp_f1;
+    register float temp_f0;
 
     if (*(void **)((char *)arg0 + 4) == 0) {
         temp_r31 = fn_801284F8(0xC, &lbl_8055B158);
@@ -842,7 +920,7 @@ void fn_801F3D34(void *arg0, void *arg1, void *arg2) {
             *(int *)((char *)temp_r31 + 8) = 0;
         }
         *(void **)((char *)arg0 + 4) = temp_r31;
-        fn_802CD320((int)arg1, temp_r31);
+        fn_802CD320(arg1, temp_r31);
     }
     temp_r31 = *(void **)((char *)arg0 + 4);
     temp_f31 = *(float *)((char *)arg2 + 0x30);
@@ -852,10 +930,13 @@ void fn_801F3D34(void *arg0, void *arg1, void *arg2) {
     }
     temp_r3 = *(void **)((char *)temp_r31 + 4);
     temp_r3 = (char *)temp_r3 + *(int *)((char *)temp_r31 + 8) * 0x18;
+    temp_f2 = *(float *)((char *)arg2 + 0x20);
     *(int *)temp_r3 = temp_r30;
-    *(float *)((char *)temp_r3 + 4) = *(float *)((char *)arg2 + 0x20);
-    *(float *)((char *)temp_r3 + 8) = *(float *)((char *)arg2 + 0x24);
-    *(float *)((char *)temp_r3 + 0xC) = *(float *)((char *)arg2 + 0x28);
+    temp_f1 = *(float *)((char *)arg2 + 0x24);
+    *(float *)((char *)temp_r3 + 4) = temp_f2;
+    temp_f0 = *(float *)((char *)arg2 + 0x28);
+    *(float *)((char *)temp_r3 + 8) = temp_f1;
+    *(float *)((char *)temp_r3 + 0xC) = temp_f0;
     *(void **)((char *)temp_r3 + 0x10) = (char *)arg2 + 0x34;
     *(float *)((char *)temp_r3 + 0x14) = temp_f31;
     (*(int *)((char *)temp_r31 + 8))++;
@@ -944,42 +1025,79 @@ void fn_801F3F8C(void *arg0, void *arg1) {
     } while (node != 0);
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     extern void *fn_801284F8(int, void *);
-    extern int fn_802CD320(int, void *);
     extern int fn_802E317C(const void *, ...);
     extern void fn_802C77F0(int, float *);
     extern const char lbl_8033AB0C[], lbl_8033AB18[];
-    extern int lbl_8033AA78;
+    extern char lbl_8033AA78[];
     extern float lbl_80562F44, lbl_80562F64;
-    void *pool = *(void **)((char *)arg0 + 8);
-    int count;
-    void *entry;
-    float v[8];
-    if (pool == 0) {
-        pool = fn_801284F8(0x548, (void *)lbl_8033AB0C);
-        if (pool != 0) {
-            *(int **)pool = &lbl_8033AA78;
-            *(int *)((char *)pool + 0x544) = 0;
+    struct Pool { char pad[0x544]; int count; };
+    struct Owner { char pad[8]; struct Pool *pool; };
+    struct Config { int unused; int kind; char pad0[0x18]; float x, y, z; float start, end; };
+    struct Record { int unused; float x, y, z; int kind; float rate, end; int id; };
+    struct Owner *owner = (struct Owner *)arg0;
+    volatile struct Config *config = (volatile struct Config *)arg2;
+    struct Pool *pool;
+    volatile struct Record *entry;
+    volatile float v[6];
+    int count, kind;
+    float hi, start, end, scaled, baseY, baseX, factor, lo;
+    if (owner->pool == 0) {
+        void *allocated = fn_801284F8(0x548, (void *)lbl_8033AB0C);
+        if (allocated != 0) {
+            *(char **)allocated = lbl_8033AA78;
+            *(int *)((char *)allocated + 0x544) = 0;
         }
-        *(void **)((char *)arg0 + 8) = pool;
-        fn_802CD320((int)arg1, pool);
+        owner->pool = (struct Pool *)allocated;
+        fn_802CD320((int)arg1, allocated);
     }
-    count = *(int *)((char *)pool + 0x544);
+    pool = owner->pool;
+    count = pool->count;
     if (count >= 0x30) fn_802E317C(lbl_8033AB18);
-    entry = (char *)pool + count * 0x1c;
-    fn_802C77F0(*(int *)((char *)arg2 + 4), v);
-    *(float *)((char *)entry + 4) = *(float *)((char *)arg2 + 0x20) + (v[0] + (v[1] - v[0]) * lbl_80562F64);
-    *(float *)((char *)entry + 8) = *(float *)((char *)arg2 + 0x24) + (v[2] + (v[3] - v[2]) * lbl_80562F64);
-    *(float *)((char *)entry + 0xc) = *(float *)((char *)arg2 + 0x28) + (v[4] + (v[5] - v[4]) * lbl_80562F64);
-    *(int *)((char *)entry + 0x10) = *(int *)((char *)arg2 + 4);
-    *(float *)((char *)entry + 0x14) = lbl_80562F44 / (*(float *)((char *)arg2 + 0x2c) - *(float *)((char *)arg2 + 0x30));
-    *(float *)((char *)entry + 0x18) = *(float *)((char *)arg2 + 0x30);
-    *(int *)((char *)entry + 0x1c) = arg3;
-    *(int *)((char *)pool + 0x544) = count + 1;
+    count = pool->count;
+    entry = (volatile struct Record *)((char *)pool + count * 0x1C);
+    fn_802C77F0(config->kind, (float *)v);
+    hi = v[1];
+    lo = v[0];
+    factor = lbl_80562F64;
+    hi = hi - lo;
+    baseX = config->x;
+    start = config->start;
+    end = config->end;
+    scaled = hi * factor;
+    start = start - end;
+    hi = lbl_80562F44;
+    baseY = config->y;
+    lo = lo + scaled;
+    hi = hi / start;
+    scaled = config->z;
+    kind = config->kind;
+    baseX = baseX + lo;
+    entry->x = baseX;
+    start = v[3];
+    baseX = v[2];
+    start = start - baseX;
+    start = start * factor;
+    start = baseX + start;
+    start = baseY + start;
+    entry->y = start;
+    start = v[5];
+    baseY = v[4];
+    start = start - baseY;
+    start = start * factor;
+    start = baseY + start;
+    start = scaled + start;
+    entry->z = start;
+    entry->kind = kind;
+    entry->rate = hi;
+    entry->end = end;
+    ((volatile int *)((char *)pool + pool->count * 0x1C))[7] = arg3;
+    pool->count = pool->count + 1;
 }
-
-#pragma pop
 void fn_801F41CC(int unused, volatile unsigned char *arg0) {
     unsigned char t;
     t = arg0[0x2c]; arg0[0x2c] = arg0[0x2f]; arg0[0x2f] = t;
@@ -1294,14 +1412,14 @@ void fn_801F4B18(void *arg0, int arg1) {
         float scaledHigh;
         float values[12];
     } local;
-    register float scale;
-    register float first;
+    float scale;
     float low;
     float high;
+    float first;
     float value10;
     float value0C;
     int result;
-    char *entry;
+    int *entry;
     int index;
 
     scale = fn_801E7E18();
@@ -1320,20 +1438,20 @@ void fn_801F4B18(void *arg0, int arg1) {
     local.values[10] = low;
     local.values[11] = low;
 
-    entry = (char *)arg0;
+    entry = (int *)arg0;
     index = 0;
     while (index < *(int *)((char *)arg0 + 0x104)) {
-        if (fn_802CDB20(arg1, *(int *)(entry + 8)) != 0) {
-            value10 = *(float *)(entry + 0x10);
-            value0C = *(float *)(entry + 0x0C);
+        if (fn_802CDB20(arg1, entry[2]) != 0) {
+            value10 = ((float *)entry)[4];
+            value0C = ((float *)entry)[3];
             local.scaledHigh = value10 * scale;
             local.scaledLow = value0C * scale;
             first = (float)fn_8002EFB4(local.scaledHigh, lbl_80562FA0);
             result = fn_802C7A3C((float)fn_8002EFB4(local.scaledLow, lbl_80562FA0),
                                  first, lbl_80562FA8);
-            fn_802C70AC(*(int *)(entry + 4), local.values, result, -1);
+            fn_802C70AC(entry[1], local.values, result, -1);
         }
-        entry += 0x10;
+        entry += 4;
         index++;
     }
 }
