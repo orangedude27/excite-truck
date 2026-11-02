@@ -28,7 +28,7 @@ extern void OSSetArenaLo(void *);
 extern void OSSetArenaHi(void *);
 extern void *OSGetArenaHi(void);
 extern void OSSwitchFiber(void *,void *,void *);
-extern char Halt, OSDefaultExceptionHandler, lbl_8038E060, lbl_8038E328;
+extern char Halt[], OSDefaultExceptionHandler[], lbl_8038E060[], lbl_8038E328[];
 extern unsigned short lbl_80558F58;
 extern void *lbl_8055DA48;
 extern int *lbl_8055DA50;
