@@ -446,7 +446,7 @@ void fn_80264D5C(void *arg0) {
     float dt;
     int i, count;
 
-    l = (SparkList *)((char *)arg0 + 0x40);
+    l = (SparkList *)arg0;
     dt = fn_80214D48();
     i = 0;
     while (i < l->count) {
