@@ -14,6 +14,51 @@ __declspec(section ".sdata") extern char lbl_8055C9B8[];
 __declspec(section ".sdata") extern char lbl_8055C9C0[];
 #pragma push
 #pragma cplusplus on
+extern float lbl_80564548, lbl_8056454C;
+extern unsigned short lbl_802FA9C0[6];
+extern "C" void *fn_802C86DC(void);
+extern "C" void fn_802C8BD0(int, float, float, float, float, float, float, float, float, float, float, float, float, float);
+extern "C" void fn_802C8D74(void);
+extern "C" void fn_802C8DB8(void *, int, void *, int, unsigned short, unsigned short, unsigned short, unsigned short);
+extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, double u0, double u1, double v0, double v1) {
+    float *m = (float *)fn_802C86DC();
+    float v[3];
+    float uv[8];
+    float vtx[4][6];
+    unsigned short idx[6];
+    float ns = -s;
+    float t9 = m[0] * ns, t12 = m[1] * ns, t25 = m[2] * ns;
+    float f5, f4, f6, px, py, pz, k, f13, f12, f11;
+    float a0, a1, a2, b0, b1, b2, c0, c1, c2, d0;
+    v[0] = t9; v[1] = t12; v[2] = t25;
+    f5 = t12 + m[4] * s;
+    f4 = t25 + m[5] * s;
+    f6 = t9 + m[3] * s;
+    px = pos[0]; py = pos[1]; pz = pos[2];
+    vtx[0][0] = px + f6; vtx[0][1] = py + f5; vtx[0][2] = pz + f4;
+    k = lbl_8056454C * s;
+    vtx[2][0] = px + f6 * lbl_80564548; vtx[2][1] = py + f5 * lbl_80564548; vtx[2][2] = pz + f4 * lbl_80564548;
+    uv[0] = u0; uv[1] = v0; uv[2] = u1; uv[3] = v0; uv[4] = u1; uv[5] = v1; uv[6] = u0; uv[7] = v1;
+    f13 = f6 + m[0] * k; f12 = f5 + m[1] * k; f11 = f4 + m[2] * k;
+    a0 = px + f13; a1 = py + f12; a2 = pz + f11;
+    b0 = f13 * lbl_80564548; b1 = f12 * lbl_80564548; b2 = f11 * lbl_80564548;
+    c0 = px + b0; c1 = py + b1; c2 = pz + b2;
+    d0 = pz + f11 * lbl_80564548;
+    vtx[1][0] = a0; vtx[1][1] = a1; vtx[1][2] = a2;
+    vtx[3][0] = c0; vtx[3][1] = c1; vtx[3][2] = c2;
+    v[0] = f13; v[1] = f12; v[2] = f11;
+    vtx[0][4] = u0; vtx[0][5] = v0;
+    vtx[1][4] = u1; vtx[1][5] = v0;
+    vtx[2][4] = u1; vtx[2][5] = v1;
+    vtx[3][4] = u0; vtx[3][5] = v1;
+    ((int *)vtx[0])[3] = color; ((int *)vtx[1])[3] = color; ((int *)vtx[2])[3] = color; ((int *)vtx[3])[3] = color;
+    fn_802C8BD0(tex, pz, c1, c0, b1, b0, c2, u1, v1, a1, a0, f11, f12, f13);
+    idx[0] = lbl_802FA9C0[0]; idx[1] = lbl_802FA9C0[1]; idx[2] = lbl_802FA9C0[2];
+    idx[3] = lbl_802FA9C0[3]; idx[4] = lbl_802FA9C0[4]; idx[5] = lbl_802FA9C0[5];
+    fn_802C8DB8(vtx, 4, idx, 6, lbl_802FA9C0[4], lbl_802FA9C0[3], lbl_802FA9C0[2], lbl_802FA9C0[1]);
+    fn_802C8D74();
+}
+
 extern "C" int fn_802962CC(void *node) {
     class NameNode {
     public:
