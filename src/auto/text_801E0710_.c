@@ -83,18 +83,15 @@ static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
     f32 x, y, z;
     if (src == dst) {
         f32 a, b, c, d, e, f, nx, ny, nz;
-        y = src[1];
-        x = src[0];
-        z = src[2];
-        a = y * m[3];
-        b = y * m[4];
-        c = x * m[0];
-        d = x * m[1];
-        e = x * m[2];
-        f = y * m[5];
-        nx = z * m[6] + (c + a);
-        ny = z * m[7] + (d + b);
-        nz = z * m[8] + (e + f);
+        a = src[1] * m[3];
+        b = src[1] * m[4];
+        c = src[0] * m[0];
+        d = src[0] * m[1];
+        e = src[0] * m[2];
+        f = src[1] * m[5];
+        nx = src[2] * m[6] + (c + a);
+        ny = src[2] * m[7] + (d + b);
+        nz = src[2] * m[8] + (e + f);
         dst[0] = nx;
         dst[1] = ny;
         dst[2] = nz;
@@ -292,22 +289,27 @@ void fn_801E1038(void **arg0) {
 }
 
 s32 fn_801E1048(void) {
-    u8 *obj = (u8 *)lbl_8055EA10;
-    u8 *player;
-    u8 *vec;
-    s32 i, j, offset, found;
     Vec_801E1048 v;
-    s32 valid = obj != 0;
-    if (valid) {
+    u8 *player;
+    s32 j;
+    s32 i;
+    u8 *vec;
+    s32 found;
+    s32 offset;
+    u8 *p;
+    u8 *obj = (u8 *)lbl_8055EA10;
+    u32 valid = (u32)(-(s32)obj | (s32)obj) >> 31;
+    if (valid != 0) {
         player = (u8 *)fn_8017960C();
         vec = player + 0x23AC;
+        i = 0;
         offset = 0;
-        for (i = 0; i < *(s32 *)(obj + 0x80); i++, offset += 0x1C) {
-            u8 *p = vec;
+        for (; i < *(s32 *)(obj + 0x80); i++, offset += 0x1C) {
+            p = vec;
             for (j = 0; j < 4; j++, p += 0x74) {
                 f32 *m = (f32 *)(player + 0x3C);
                 v = *(Vec_801E1048 *)(p + 0x30);
-                fn_801E1048_xg(m, (f32 *)&v, (f32 *)&v);
+                fn_801E1048_xi(m, (f32 *)&v, (f32 *)&v);
                 v.x += m[9];
                 v.y += m[10];
                 v.z += m[11];
