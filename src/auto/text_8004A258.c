@@ -66,39 +66,99 @@ void __OSGetIOSRev(void *arg_rev) {
 
 u32 OSGetConsoleType(void) {
     extern void *BootInfo_8055D9F8;
-    u32 *boot=(u32*)BootInfo_8055D9F8;
-    u32 mem; u32 console; u16 rev;
-    if (boot==0 || boot[11]==0) return 0x10000002;
-    console=*(u32*)0x80003138;
-    rev=*(u16*)0x800030E6;
-    if (rev&0x8000) {
-        rev&=0x7FFF;
-        if (rev<0x201 && rev<4 && rev>=2 || rev==0x203) {
-            if(console==0) return 0x10;
-            if(console==2) return 0x12;
-            if(console==16) return 0x20;
-            if(console==17) return 0x21;
-            if(console==1) return 0x11;
-            return 0x21;
-        }
-        if (rev>=0x201 && rev!=0x203 || rev>=4 || rev<2) {
-            if(console==0) return 0x10000010;
-            if(console==1) return 0x10000011;
-            if(console==2) return 0x10000012;
-            if(console==16) return 0x10000020;
-            if(console==17) return 0x10000021;
-            if(console<=0x11) return 0x10000021;
-            return 0x10000021;
+    extern u32 OSGetPhysicalMem2Size(void);
+    u32 hollywood;
+    u32 mem2size;
+    u32 code;
+
+    if (BootInfo_8055D9F8 == 0 || *(u32 *)((u8 *)BootInfo_8055D9F8 + 0x2C) == 0) {
+        return 0x10000002;
+    }
+
+    code = *(volatile u16 *)0x800030E6;
+    hollywood = *(volatile u32 *)0x80003138;
+
+    if (code & 0x8000) {
+        switch (*(volatile u16 *)0x800030E6 & ~0x8000) {
+        case 0x0002:
+        case 0x0003:
+        case 0x0203:
+            switch (hollywood) {
+            case 0x00000000:
+                return 0x00000010;
+            case 0x00000001:
+                return 0x00000011;
+            case 0x00000002:
+                return 0x00000012;
+            case 0x00000010:
+                return 0x00000020;
+            case 0x00000011:
+                return 0x00000021;
+            }
+
+            if (hollywood > 0x00000011) {
+                return 0x00000021;
+            }
+
+        case 0x0202:
+        case 0x0201:
+            switch (hollywood) {
+            case 0x00000000:
+                return 0x10000010;
+            case 0x00000001:
+                return 0x10000011;
+            case 0x00000002:
+                return 0x10000012;
+            case 0x00000010:
+                return 0x10000020;
+            case 0x00000011:
+                return 0x10000021;
+            }
+
+            if (hollywood > 0x00000011) {
+                return 0x10000021;
+            }
         }
     }
-    mem=OSGetPhysicalMem2Size();
-    if(console==0) return mem==0x40000000 ? 0x10 : 0x10000010;
-    if(console==1) return mem==0x40000000 ? 0x11 : 0x10000011;
-    if(console==2) return mem==0x40000000 ? 0x12 : 0x10000012;
-    if(console==16) return mem==0x40000000 ? 0x20 : 0x10000020;
-    if(console==17) return mem==0x40000000 ? 0x21 : 0x10000021;
-    if(console<=0x11) return mem==0x40000000 ? 0x21 : 0x10000021;
-    return 0x10000002;
+
+    mem2size = OSGetPhysicalMem2Size();
+
+    switch (hollywood) {
+    case 0x00000000:
+        if (mem2size == 0x4000000) {
+            return 0x00000010;
+        }
+        return 0x10000010;
+    case 0x00000001:
+        if (mem2size == 0x4000000) {
+            return 0x00000011;
+        }
+        return 0x10000011;
+    case 0x00000002:
+        if (mem2size == 0x4000000) {
+            return 0x00000012;
+        }
+        return 0x10000012;
+    case 0x00000010:
+        if (mem2size == 0x4000000) {
+            return 0x00000020;
+        }
+        return 0x10000020;
+    case 0x00000011:
+        if (mem2size == 0x4000000) {
+            return 0x00000021;
+        }
+        return 0x10000021;
+    }
+
+    if (hollywood > 0x00000011) {
+        if (mem2size == 0x4000000) {
+            return 0x00000021;
+        }
+        return 0x10000021;
+    }
+
+    return *(u32 *)((u8 *)BootInfo_8055D9F8 + 0x2C);
 }
 
 extern unsigned int OSGetResetCode(void);
@@ -178,20 +238,24 @@ void ClearArena(void) {
 #pragma scheduling invalid_target
 void ClearMEM2Arena(void) {
     unsigned int reset = OSGetResetCode();
-    char *base;
-    char *flush;
+    unsigned int base;
+    unsigned int flush;
     unsigned int size;
 
     if ((reset >> 31) == 0) {
         size = (unsigned int)OSGetMEM2ArenaHi();
         size -= (unsigned int)OSGetMEM2ArenaLo();
-        base = (char *)OSGetMEM2ArenaLo();
-        if (size > 0x40000)
-            flush = base + (size - 0x40000);
-        else
-            flush = base;
-        DCZeroRange(base, size);
-        DCFlushRange((unsigned int)flush, 0x40000);
+        base = (unsigned int)OSGetMEM2ArenaLo();
+        if (size <= 0x40000)
+            goto clear0_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear0_join;
+    clear0_small:
+        flush = base;
+    clear0_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
         return;
     }
 
@@ -199,13 +263,17 @@ void ClearMEM2Arena(void) {
         (__OSRebootParams[3] & 0x30000000) != 0x10000000) {
         size = (unsigned int)OSGetMEM2ArenaHi();
         size -= (unsigned int)OSGetMEM2ArenaLo();
-        base = (char *)OSGetMEM2ArenaLo();
-        if (size > 0x40000)
-            flush = base + (size - 0x40000);
-        else
-            flush = base;
-        DCZeroRange(base, size);
-        DCFlushRange((unsigned int)flush, 0x40000);
+        base = (unsigned int)OSGetMEM2ArenaLo();
+        if (size <= 0x40000)
+            goto clear1_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear1_join;
+    clear1_small:
+        flush = base;
+    clear1_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
         return;
     }
 
@@ -215,34 +283,47 @@ void ClearMEM2Arena(void) {
     if ((unsigned int)OSGetMEM2ArenaHi() <= __OSRebootParams[3]) {
         size = (unsigned int)OSGetMEM2ArenaHi();
         size -= (unsigned int)OSGetMEM2ArenaLo();
-        base = (char *)OSGetMEM2ArenaLo();
-        if (size > 0x40000)
-            flush = base + (size - 0x40000);
-        else
-            flush = base;
-        DCZeroRange(base, size);
-        DCFlushRange((unsigned int)flush, 0x40000);
+        base = (unsigned int)OSGetMEM2ArenaLo();
+        if (size <= 0x40000)
+            goto clear2_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear2_join;
+    clear2_small:
+        flush = base;
+    clear2_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
         return;
     }
 
     size = __OSRebootParams[3] - (unsigned int)OSGetMEM2ArenaLo();
-    base = (char *)OSGetMEM2ArenaLo();
-    if (size > 0x40000)
-        flush = base + (size - 0x40000);
-    else
-        flush = base;
-    DCZeroRange(base, size);
-    DCFlushRange((unsigned int)flush, 0x40000);
+    base = (unsigned int)OSGetMEM2ArenaLo();
+    if (size <= 0x40000)
+        goto clear3_small;
+    flush = size - 0x40000;
+    flush = base + flush;
+    goto clear3_join;
+clear3_small:
+    flush = base;
+clear3_join:
+    DCZeroRange((void *)base, size);
+    DCFlushRange(flush, 0x40000);
 
-    base = (char *)__OSRebootParams[4];
-    if ((unsigned int)OSGetMEM2ArenaHi() > (unsigned int)base) {
-        size = (unsigned int)OSGetMEM2ArenaHi() - (unsigned int)base;
-        if (size > 0x40000)
-            flush = base + (size - 0x40000);
-        else
-            flush = base;
-        DCZeroRange(base, size);
-        DCFlushRange((unsigned int)flush, 0x40000);
+    base = __OSRebootParams[4];
+    if ((unsigned int)OSGetMEM2ArenaHi() > base) {
+        size = (unsigned int)OSGetMEM2ArenaHi();
+        size -= base;
+        if (size <= 0x40000)
+            goto clear4_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear4_join;
+    clear4_small:
+        flush = base;
+    clear4_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
     }
 }
 #pragma pop
