@@ -168,6 +168,87 @@ unsigned int fn_801DEB6C(const char *arg0) {
     return 0;
 }
 
+#pragma push
+#pragma cplusplus on
+#pragma dont_inline on
+extern "C" void fn_801DEC18(void) {
+    class Node {
+    public:
+        virtual const char *m0();
+        virtual void m1();
+        virtual void m2();
+        virtual int m3(const char *);
+        virtual void m4();
+        virtual void m5();
+        virtual void m6();
+        virtual void m7();
+        virtual void m8();
+        virtual void m9();
+        virtual char m10(const char *, int);
+    };
+    class Handle {
+    public:
+        virtual void m0();
+        virtual Node *get(int);
+    };
+    float sp8;
+    char *base = lbl_803394B0;
+    char *name;
+    Handle *h;
+    Node *node;
+    int n;
+    int j;
+    int *tab;
+    void *obj;
+
+    fn_801332D0(fn_8000DA10() + 0xC, (int *)(base + 0xC0), &lbl_8055E9DC);
+    name = base + 0xCC;
+    h = (Handle *)fn_80131810(name);
+    lbl_8055E9E4 = (int)h;
+    if (h != 0) {
+        n = 0;
+        node = h->get(0);
+        while (node != 0) {
+            if (stricmp(node->m0(), lbl_8055AE00) == 0) {
+                char *e;
+                e = lbl_804872B0 + fn_801DEB6C((const char *)node->m3(lbl_8055AE08)) * 0x1C;
+                *(int *)(e + 4) = node->m3(lbl_8055AE10);
+                *(char *)e = node->m10(lbl_8055AE18, 0);
+            }
+            n++;
+            node = ((Handle *)lbl_8055E9E4)->get(n);
+        }
+    } else {
+        fn_802E30C8(base + 0xD8, name);
+    }
+    lbl_8055E9EC = fn_802090D4(lbl_8055AE20);
+    lbl_8055E9F0 = fn_80207848(base + 0xF8, 0);
+    sp8 = lbl_80562BF4;
+    fn_801331C4(4, (int *)(base + 0x4C), &sp8);
+    obj = lbl_8055E9F0;
+    if (obj != 0 && sp8 != *(float *)((char *)obj + 8)) {
+        *((unsigned char *)obj + 0x4D) = 1;
+        *(float *)((char *)obj + 8) = sp8;
+    }
+    tab = lbl_804874A8;
+    for (j = 0; j < 4; j++) {
+        obj = fn_80207848(base + 0x104, 0);
+        *(void **)tab = obj;
+        if (obj != 0 && sp8 != *(float *)((char *)obj + 8)) {
+            *((unsigned char *)obj + 0x4D) = 1;
+            *(float *)((char *)obj + 8) = sp8;
+        }
+        tab++;
+    }
+    lbl_8055E9F4 = 0;
+    lbl_8055E9E8 = 0;
+    lbl_8055ADF4 = -1;
+    lbl_8055ADF0 = -1;
+    for (j = 0; j < 9; j++)
+        fn_801DE7E8(j);
+}
+#pragma pop
+
 #pragma cplusplus on
 extern "C" void fn_801DEE3C(void) {
     struct Dummy {
