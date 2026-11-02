@@ -965,60 +965,58 @@ extern s32 fn_800328E8(void);
 extern void CircleBufferReadBytes(u32, u32, void *);
 extern void *__AXGetCurrentProfile(void);
 void CircleBufferInitialize(u32 arg0) {
-    u64 time;
-    s32 mail;
+    u8 *base = (u8 *)lbl_8035EE20;
     s32 start;
     s32 ring;
     s32 i;
     u8 *profile;
-    time = OSGetTime();
-    *(u64 *)lbl_8035EE20 = time;
-    fn_80032EAC(arg0, lbl_8035EE20);
+    void *ptrs[4];
+    *(u64 *)base = OSGetTime();
+    fn_80032EAC(arg0, base);
     __AXPrintStudio();
-    mail = (s32)gdev_cc_initialize();
+    arg0 = (u32)gdev_cc_initialize();
     DSPSendMailToDSP(0xBABE0080);
     while (DSPCheckMailToDSP() != 0) { }
-    DSPSendMailToDSP(mail);
+    DSPSendMailToDSP(arg0);
     while (DSPCheckMailToDSP() != 0) { }
     TRKReadBuffer1_ui64();
-    time = OSGetTime();
-    *(u64 *)(lbl_8035EE20 + 8) = time;
+    *(u64 *)(base + 8) = OSGetTime();
     InitMetroTRKCommTable();
-    time = OSGetTime();
-    *(u64 *)(lbl_8035EE20 + 0x10) = time;
-    time = OSGetTime();
-    *(u64 *)(lbl_8035EE20 + 0x18) = time;
+    *(u64 *)(base + 0x10) = OSGetTime();
+    *(u64 *)(base + 0x18) = OSGetTime();
     if (lbl_8055D774 != 0) ((void (*)(void))lbl_8055D774)();
-    time = OSGetTime();
-    *(u64 *)(lbl_8035EE20 + 0x20) = time;
+    *(u64 *)(base + 0x20) = OSGetTime();
     start = lbl_8055D754;
+    ptrs[0] = base + 0x40 + start * 2;
+    ptrs[1] = base + 0x40 + start * 2 + 0x168;
+    ptrs[2] = base + 0x40 + start * 2 + 0x2D0;
+    ptrs[3] = base + 0x40 + start * 2 + 0x438;
     ring = start + 0x12;
-    if (ring < lbl_8055D758) ring = 0;
+    if (ring >= lbl_8055D758) ring = 0;
     if (lbl_8055D750 >= start && lbl_8055D750 < start + 0x12) lbl_8055D750 = ring;
     lbl_8055D754 = ring;
-    CircleBufferReadBytes((u32)(lbl_8035EE20 + 0x5E0),
-        (u32)(lbl_8035EE20 + 0x8E0 + lbl_8055D788 * 0x180),
-        lbl_8035EE20 + 0x40 + start * 2);
+    CircleBufferReadBytes((u32)(base + 0x5E0),
+        (u32)(base + 0x8E0 + lbl_8055D788 * 0x180),
+        ptrs);
     lbl_8055D788++;
     if (lbl_8055D75C == 1) lbl_8055D788 %= 3;
     else {
         lbl_8055D788 &= 1;
-        AIInitDMA(lbl_8035EE20 + 0x8E0 + lbl_8055D788 * 0x180, 0x180);
+        AIInitDMA(base + 0x8E0 + lbl_8055D788 * 0x180, 0x180);
     }
-    time = OSGetTime();
-    *(u64 *)(lbl_8035EE20 + 0x28) = time;
-    *(s32 *)(lbl_8035EE20 + 0x30) = fn_800328E8();
+    *(u64 *)(base + 0x28) = OSGetTime();
+    *(s32 *)(base + 0x30) = fn_800328E8();
     profile = __AXGetCurrentProfile();
     if (profile != 0) {
         for (i = 0; i < 7; i++) {
-            profile[0] = lbl_8035EE20[i * 8];
-            profile[1] = lbl_8035EE20[i * 8 + 1];
-            profile[2] = lbl_8035EE20[i * 8 + 2];
-            profile[3] = lbl_8035EE20[i * 8 + 3];
-            profile[4] = lbl_8035EE20[i * 8 + 4];
-            profile[5] = lbl_8035EE20[i * 8 + 5];
-            profile[6] = lbl_8035EE20[i * 8 + 6];
-            profile[7] = lbl_8035EE20[i * 8 + 7];
+            profile[0] = base[i * 8];
+            profile[1] = base[i * 8 + 1];
+            profile[2] = base[i * 8 + 2];
+            profile[3] = base[i * 8 + 3];
+            profile[4] = base[i * 8 + 4];
+            profile[5] = base[i * 8 + 5];
+            profile[6] = base[i * 8 + 6];
+            profile[7] = base[i * 8 + 7];
             profile += 8;
         }
     }
