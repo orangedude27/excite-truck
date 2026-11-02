@@ -725,6 +725,66 @@ extern "C" void fn_801FD5E8(void* arg0, float farg0) {
     *(float*)(obj + 0x6C) = f64_val + step * (*(float*)(obj + 0x68) - f64_val);
 }
 
+#pragma ppc_psq_save off
+extern "C" void fn_801FDF18(void* arg0, float farg0) {
+    char* obj = (char*)arg0;
+    int idx = *(int*)(obj + 0x3C);
+    char* track = *(char**)(*(char**)(obj + 4));
+    char* node = GetTrackNodeLinear(track, idx);
+
+    float old_pos = *(float*)(obj + 0x40);
+    float speed = *(float*)(node + 0x20);
+    float t_step = old_pos + farg0;
+    register float one = lbl_80563030;
+    float step = speed * t_step;
+
+    if (step < one) {
+        *(float*)(obj + 0x40) = t_step;
+    } else if (idx + 2 < *(int*)(track + 0x6D0)) {
+        float inv_speed = one / speed;
+        int next_idx = *(int*)(obj + 0x3C) + 1;
+        *(int*)(obj + 0x3C) = next_idx;
+        float delta = farg0 - inv_speed;
+        step -= one;
+        *(float*)(obj + 0x40) = old_pos + delta;
+
+        node = GetTrackNodeLinear(*(char**)(*(char**)(obj + 4)), next_idx);
+
+        *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
+        *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
+        *(float*)(obj + 0x4C) = *(float*)(obj + 0x5C);
+        *(float*)(obj + 0x50) = *(float*)(obj + 0x60);
+        *(float*)(obj + 0x64) = *(float*)(obj + 0x68);
+
+        char* next_node = GetTrackNodeLinear(*(char**)(*(char**)(obj + 4)), *(int*)(obj + 0x3C) + 1);
+        *(float*)(obj + 0x54) = *(float*)(next_node + 0xC);
+        *(float*)(obj + 0x58) = *(float*)(next_node + 0x10);
+        *(float*)(obj + 0x5C) = *(float*)(next_node + 0x14);
+        *(float*)(obj + 0x60) = *(float*)(next_node + 0x18);
+
+        char* next2_node = GetTrackNodeLinear(*(char**)(*(char**)(obj + 4)), *(int*)(obj + 0x3C) + 1);
+        *(float*)(obj + 0x68) = *(float*)(next2_node + 0x1C);
+    } else {
+        fn_801FEC74(obj);
+        *(void**)(obj + 4) = 0;
+        *(int*)(obj + 0x3C) = -1;
+        return;
+    }
+
+    int cur_idx = *(int*)(obj + 0x3C);
+    char* call_track = *(char**)(*(char**)(obj + 4));
+    char* prev = GetTrackNodeLinear(call_track, cur_idx - 1);
+    char* next = GetTrackNodeLinear(call_track, cur_idx + 1);
+    char* next2 = GetTrackNodeLinear(call_track, cur_idx + 2);
+
+    fn_801FD144(obj, prev, node, next, next2, step);
+    fn_801FD320(obj, step);
+
+    float f64_val = *(float*)(obj + 0x64);
+    float f68_val = *(float*)(obj + 0x68);
+    *(float*)(obj + 0x6C) = f64_val + step * (f68_val - f64_val);
+}
+#pragma paired on
 extern "C" void fn_801FEDA4(void*);
 extern "C" float fn_80129DC4(int, void*, float, float);
 extern "C" float fn_801E7E24(void);
