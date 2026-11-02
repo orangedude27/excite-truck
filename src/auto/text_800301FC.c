@@ -1132,7 +1132,7 @@ void fn_800320E8(s32 arg0) {
     lbl_8055D75C = arg0;
     lbl_8055D768 = zero;
 
-    base = lbl_8035EE20;
+    base = (u8 *)lbl_8035EE20;
     p = (s32 *)(base + 0x8E0);
     i = 0x20;
     do {
