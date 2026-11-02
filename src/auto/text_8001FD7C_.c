@@ -133,6 +133,14 @@ extern int fn_80019B3C(void);
 extern int strcmp(const char *, const char *);
 extern char lbl_80558D90[];
 extern char lbl_80558D98[];
+typedef void *(*VF_pp)(void *, void *);
+typedef void *(*VF_pi)(void *, int);
+typedef void *(*VF_p)(void *);
+typedef int (*VF_ip)(void *, void *);
+typedef float (*VF_fp)(void *, void *);
+typedef char (*VF_cpi)(void *, void *, int);
+#define VSLOT(o, off, T) ((T)(*(void ***)(o))[(off) / 4])
+extern void fn_8001FEE8(void);
 
 #pragma scheduling invalid_target
 void fn_8001FD7C(void) {
