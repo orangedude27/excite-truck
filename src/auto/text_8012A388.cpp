@@ -46,6 +46,7 @@ extern "C" void *fn_8012A570(u32, void *);
 
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" s32 fn_8012B85C(s32, s32, s32, s32, s32, s32);
+extern "C" const char lbl_805599A4[1];
 extern "C" s32 fn_8012B534(s32 *, s32);
 extern "C" void fn_80127464(void);
 extern "C" void fn_802E30C8(const char *, ...);
@@ -625,7 +626,7 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 sp8;
     volatile u8 requestName[5];
@@ -638,20 +639,16 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
         if (fn_8012B6FC(manager, sp8) != 0) {
             u8 *entry = *(u8 **)(manager + 0x60) + sp8 * 0x44;
             if ((u32)arg1 == *(u32 *)(entry + 0x20)) {
-                s32 flags;
+                u32 flags;
                 s32 count;
                 *(u32 *)(entry + 0x34) |= 2;
                 if ((s8 *)arg5 != 0) {
-                    flags = *(s32 *)(entry + 0x34);
-                    *(s32 *)(entry + 0x34) = flags | 1;
+                    flags = *(u32 *)(entry + 0x34);
+                    *(u32 *)(entry + 0x34) = flags | 1;
                     *(s8 *)arg5 = !(flags & 1);
                 }
-                if ((s32 *)arg3 != 0) {
-                    *(s32 *)arg3 = *(s32 *)(entry + 0x28);
-                }
-                if ((s8 *)arg4 != 0) {
-                    *(s8 *)arg4 = *(s32 *)(entry + 0x38) == 0;
-                }
+                if ((s32 *)arg3 != 0) *(s32 *)arg3 = *(s32 *)(entry + 0x28);
+                if ((s8 *)arg4 != 0) *(s8 *)arg4 = *(s32 *)(entry + 0x38) == 0;
                 count = *(s32 *)(entry + 0x38);
                 *(s32 *)(entry + 0x38) = count + 1;
                 if (count == 0) {
@@ -662,18 +659,21 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
                 result = *(u8 **)(entry + 0x3C) + 8;
                 ((void (*)(void *, const char *))fn_8012A46C)(result, strings + 0x408);
             } else {
-                u32 first, second;
-                u8 third, fourth;
-                *(volatile u32 *)requestName = arg1;
-                first = requestName[0];
-                fourth = requestName[3];
-                second = requestName[1];
-                third = requestName[2];
-                requestName[0] = fourth;
-                requestName[3] = first;
-                requestName[1] = third;
-                requestName[2] = second;
-                requestName[4] = 0;
+                u8 *request = (u8 *)requestName;
+                u32 first;
+                u8 fourth;
+                u32 second;
+                u8 third;
+                *(volatile u32 *)request = arg1;
+                first = request[0];
+                fourth = request[3];
+                second = request[1];
+                third = request[2];
+                request[0] = fourth;
+                request[3] = first;
+                request[1] = third;
+                request[2] = second;
+                request[4] = 0;
                 *(volatile u32 *)entryName = *(u32 *)(entry + 0x20);
                 first = entryName[0];
                 fourth = entryName[3];
@@ -684,7 +684,7 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
                 entryName[1] = third;
                 entryName[2] = second;
                 entryName[4] = 0;
-                fn_802E30C8(strings + 0x414, arg0, (const char *)requestName, (const char *)entryName);
+                fn_802E30C8(strings + 0x414, arg0, (const char *)request, (const char *)entryName);
             }
         } else {
             fn_802E30C8(strings + 0x450, arg0);
@@ -1648,25 +1648,16 @@ extern "C" void fn_8012D908(s32 arg0) {
     char *var_r4_2;
     s32 var_r5_2;
     char *var_r6_2;
-    u8 temp_r3;
-    u8 temp_r3_2;
-    u8 temp_r4;
-    u8 temp_r4_2;
-    u8 temp_r4_3;
-    u8 temp_r4_4;
-    u8 temp_r4_5;
-    u8 temp_r4_6;
-    u8 temp_r4_7;
-    u8 temp_r4_8;
-    u8 temp_r4_9;
-    u8 temp_r4_10;
+    u8 temp_r3, temp_r3_2;
+    u8 temp_r4, temp_r4_2, temp_r4_3, temp_r4_4, temp_r4_5;
+    u8 temp_r4_6, temp_r4_7, temp_r4_8, temp_r4_9, temp_r4_10;
     u32 temp_r4_11;
     u8 *current;
     u8 *found;
     u8 *temp_r3_3;
-    register u8 *var_r25_2;
-    register u32 var_r26;
-    register u32 var_r24;
+    u32 var_r23;
+    s32 var_r24;
+    u8 *entry;
 
     if (lbl_8055E014 == 0) return;
     current = *(u8 **)((u8 *)lbl_8055E014 + 0xA18);
@@ -1719,23 +1710,24 @@ path_all_done:
         temp_r4_11 = *(u32 *)temp_r3_3;
         if (temp_r4_11 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14)
             fn_802E317C(lbl_8032AE60, temp_r4_11, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
-        var_r25_2 = temp_r3_3 + 0x14; var_r26 = 0;
+
+        entry = temp_r3_3 + 0x14; var_r23 = 0;
         goto entries_test;
 entries_loop:
-        fn_8012A388(var_r25_2); var_r25_2 += 0x44; var_r26 += 1;
+        fn_8012A388(entry); entry += 0x44; var_r23 += 1;
 entries_test:
-        if (var_r26 < *(u32 *)(temp_r3_3 + 0xC)) goto entries_loop;
-        var_r25_2 = temp_r3_3 + 0x14; var_r26 = 0; var_r24 = 0;
+        if (var_r23 < *(u32 *)(temp_r3_3 + 0xC)) goto entries_loop;
+        entry = temp_r3_3 + 0x14; var_r23 = 0; var_r24 = 0;
         goto names_test;
 names_loop:
-        if (stricmp((const char *)var_r25_2, (const char *)arg0) == 0) {
-            var_r26 = 1; goto names_done;
+        if (stricmp((const char *)entry, (const char *)arg0) == 0) {
+            var_r23 = 1; goto names_done;
         }
-        var_r25_2 += 0x44; var_r24 += 1;
+        var_r24 += 1; entry += 0x44;
 names_test:
-        if (var_r24 < *(u32 *)(temp_r3_3 + 0xC)) goto names_loop;
+        if ((u32)var_r24 < *(u32 *)(temp_r3_3 + 0xC)) goto names_loop;
 names_done:
-        if (var_r26 != 0) found = current;
+        if (var_r23 != 0) found = current;
         fn_8012C4D8(temp_r3_3);
     }
     current = *(u8 **)(current + 4);
