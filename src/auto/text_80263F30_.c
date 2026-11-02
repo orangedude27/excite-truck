@@ -440,17 +440,72 @@ void fn_80264A5C(float farg0, float farg1) {
     }
 }
 
-void fn_80264D5C_old(void *arg0) {
- extern float fn_80214D48(void); extern float lbl_80558DC4[];
- int i,off,count; float dt,x,y; unsigned char *p,*last;
- dt=fn_80214D48(); i=0; off=0;
- while(i<*(int*)((char*)arg0+0x5C)){p=*(unsigned char**)((char*)arg0+0x58)+off; *(float*)(p+0x18)-=dt;
- if(*(float*)(p+0x18)<lbl_80558DC4[0]){count=*(int*)((char*)arg0+0x5C);if(i>=0&&i<count){last=*(unsigned char**)((char*)arg0+0x58)+(count-1)*32;if(i!=count-1){*(int*)p=*(int*)last;*(int*)(p+4)=*(int*)(last+4);*(int*)(p+8)=*(int*)(last+8);*(int*)(p+12)=*(int*)(last+12);*(float*)(p+16)=*(float*)(last+16);*(float*)(p+20)=*(float*)(last+20);*(float*)(p+24)=*(float*)(last+24);*(int*)(p+28)=*(int*)(last+28);}*(int*)((char*)arg0+0x5C)=count-1;}}
- else{off+=32;i++;x=*(float*)(p+8)+*(float*)((char*)arg0+0x2C)*dt;*(float*)(p+8)=x;y=*(float*)(p+12)+*(float*)((char*)arg0+0x30)*dt;*(float*)(p+12)=y;*(float*)p+=x*dt;*(float*)(p+4)+=y*dt;*(float*)(p+16)+=*(float*)(p+20)*dt;}}
- dt=fn_80214D48();i=0;off=0;
- while(i<*(int*)((char*)arg0+0xBC)){p=*(unsigned char**)((char*)arg0+0xB8)+off;*(float*)(p+0x18)-=dt;
- if(*(float*)(p+0x18)<lbl_80558DC4[0]){count=*(int*)((char*)arg0+0xBC);if(i>=0&&i<count){last=*(unsigned char**)((char*)arg0+0xB8)+(count-1)*32;if(i!=count-1){*(int*)p=*(int*)last;*(int*)(p+4)=*(int*)(last+4);*(int*)(p+8)=*(int*)(last+8);*(int*)(p+12)=*(int*)(last+12);*(float*)(p+16)=*(float*)(last+16);*(float*)(p+20)=*(float*)(last+20);*(float*)(p+24)=*(float*)(last+24);*(int*)(p+28)=*(int*)(last+28);}*(int*)((char*)arg0+0xBC)=count-1;}}
- else{off+=32;i++;x=*(float*)(p+8)+*(float*)((char*)arg0+0x8C)*dt;*(float*)(p+8)=x;y=*(float*)(p+12)+*(float*)((char*)arg0+0x90)*dt;*(float*)(p+12)=y;*(float*)p+=x*dt;*(float*)(p+4)+=y*dt;*(float*)(p+16)+=*(float*)(p+20)*dt;}}
+void fn_80264D5C(void *arg0) {
+    SparkList *l;
+    SparkParticle *p, *last;
+    float dt;
+    int i, count;
+
+    l = (SparkList *)((char *)arg0 + 0x40);
+    dt = fn_80214D48();
+    i = 0;
+    while (i < l->count) {
+        p = &l->items[i];
+        p->life -= dt;
+        if (p->life < lbl_80558DC4[0]) {
+            if (i >= 0 && i < l->count) {
+                last = &l->items[l->count - 1];
+                if (i != l->count - 1) {
+                    *(int *)&p->x = *(int *)&last->x;
+                    *(int *)&p->y = *(int *)&last->y;
+                    *(int *)&p->vx = *(int *)&last->vx;
+                    *(int *)&p->vy = *(int *)&last->vy;
+                    p->a10 = last->a10;
+                    p->a14 = last->a14;
+                    p->life = last->life;
+                    p->id = last->id;
+                }
+                l->count = l->count - 1;
+            }
+        } else {
+            i++;
+            p->vx += l->gx * dt;
+            p->vy += l->gy * dt;
+            p->x += p->vx * dt;
+            p->y += p->vy * dt;
+            p->a10 += p->a14 * dt;
+        }
+    }
+    l = (SparkList *)((char *)arg0 + 0xA0);
+    dt = fn_80214D48();
+    i = 0;
+    while (i < l->count) {
+        p = &l->items[i];
+        p->life -= dt;
+        if (p->life < lbl_80558DC4[0]) {
+            if (i >= 0 && i < l->count) {
+                last = &l->items[l->count - 1];
+                if (i != l->count - 1) {
+                    *(int *)&p->x = *(int *)&last->x;
+                    *(int *)&p->y = *(int *)&last->y;
+                    *(int *)&p->vx = *(int *)&last->vx;
+                    *(int *)&p->vy = *(int *)&last->vy;
+                    p->a10 = last->a10;
+                    p->a14 = last->a14;
+                    p->life = last->life;
+                    p->id = last->id;
+                }
+                l->count = l->count - 1;
+            }
+        } else {
+            i++;
+            p->vx += l->gx * dt;
+            p->vy += l->gy * dt;
+            p->x += p->vx * dt;
+            p->y += p->vy * dt;
+            p->a10 += p->a14 * dt;
+        }
+    }
 }
 
 #pragma cplusplus on
