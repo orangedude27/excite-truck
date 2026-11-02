@@ -27,7 +27,7 @@ extern void fn_80013724(void);
 extern int fn_80007F90(int);
 extern int fn_801345D8(void *, int, const char *, ...);
 void fn_80012984();
-typedef void *(*Vfn_8001335C)(void *, ...);
+typedef void *(*Vfn_8001335C)();
 #define VCALL_8001335C(o, slot) ((Vfn_8001335C)((*(void ***)(o))[slot]))
 #pragma scheduling invalid_target
 void *fn_800126CC(int arg0) DECOMP_DONT_INLINE {
