@@ -193,6 +193,7 @@ void fn_80171A4C(void *arg0) {
     }
 }
 
+#pragma ppc_psq_save off
 #pragma push
 #pragma cplusplus on
 extern "C" s32 *__AXFXGetLfoSinTable_801769CC(void);
