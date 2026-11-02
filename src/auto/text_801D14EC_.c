@@ -47,24 +47,6 @@ void fn_801D1B44(void) {
 
 }
 
-typedef struct { float a, b, c, d; } Rec801D;
-typedef struct {
-    float out;
-    float f4;
-    int in;
-    int cur;
-    int prev;
-    int target;
-    float timer1;
-    float timer2;
-    int max;
-    float div;
-    float mul;
-    Rec801D rec[8];
-} Obj801D;
-extern unsigned char *lbl_804348E8[];
-extern float lbl_80562A6C, lbl_80562A70, lbl_80562A74, lbl_80562A78, lbl_80562A7C, lbl_80562A80, lbl_80562A84, lbl_80562A88, lbl_80562A8C;
-extern int fn_800241CC(int);
 extern int lbl_8055E8F8;
 extern int lbl_8055ABD8;
 extern float lbl_80562A58;
