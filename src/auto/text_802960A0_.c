@@ -91,6 +91,53 @@ fallback:
 done:
     return result;
 }
+
+#pragma cplusplus on
+extern int lbl_802FA9D0[];
+__declspec(section ".sdata") extern char lbl_8055C9E4[];
+extern "C" char *strstr(const char *, const char *);
+#pragma cplusplus on
+extern "C" int fn_802963F0(void *arg0, int arg1) {
+    class Node {
+    public:
+        virtual void f0();
+        virtual int has(const char *);
+        virtual void f2();
+        virtual char *getText(const char *);
+    };
+    typedef char *(*GetText)(void *, const char *);
+    int result = arg1;
+    int values[8];
+    register int *table;
+    register void **vtable;
+    GetText getText;
+    char *text;
+    unsigned int i;
+
+    if (((Node *)arg0)->has(lbl_8055C9E4) != 0) {
+        vtable = *(void ***)arg0;
+        table = lbl_802FA9D0;
+        values[0] = *table++;
+        getText = (GetText)vtable[5];
+        values[1] = *table++;
+        values[2] = *table++;
+        values[3] = *table++;
+        values[4] = *table++;
+        values[5] = *table++;
+        values[6] = *table++;
+        values[7] = *table++;
+        text = getText(arg0, lbl_8055C9E4);
+        result = 0;
+        table = values;
+        for (i = 0; i < 4; i++, table += 2) {
+            if (strstr(text, (char *)table[1]) != 0)
+                result |= table[0];
+        }
+    }
+    return result;
+}
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 #pragma scheduling on
 
@@ -186,6 +233,14 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
 extern void fn_802CAC54(int);
 extern void fn_80128670(void *);
 extern void fn_80128668(void *);
+extern void *fn_801284F8(int, void *);
+extern void *fn_8012850C(int, void *, int);
+extern void *fn_80131808(void *);
+extern void fn_80131818(void *);
+extern int fn_8012C33C(void *);
+extern void *fn_8002F37C(void *, void *, void *, int, int);
+extern char *strncpy(char *, const char *, unsigned int);
+extern char lbl_80349348[], lbl_80349354[];
 #pragma use_lmw_stmw off
 void fn_80296838(void *arg0) {
     int offset;
