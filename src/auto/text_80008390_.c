@@ -15,6 +15,12 @@ extern s32 lbl_802ED6D8[];
 extern s32 lbl_8055D370;
 extern s32 lbl_805601B0;
 #define ID_LIST (&lbl_8034F3D0)
+static inline void IdList_Add(s32 *src) {
+    s32 n = lbl_8034F3D0.count;
+    s32 *data = lbl_8034F3D0.data;
+    lbl_8034F3D0.count = n + 1;
+    data[n] = *src;
+}
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 void fn_80008390(void) {
     s32 *base = lbl_802ED6D8;
