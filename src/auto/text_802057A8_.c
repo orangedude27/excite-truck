@@ -111,7 +111,7 @@ extern void *fn_801E7E3C(void);
 extern void *fn_801EA9A0(int);
 extern float lbl_80563194,lbl_805631A8,lbl_805631B8,lbl_805631C4,lbl_805631C8,lbl_805631CC,lbl_805631D0,lbl_805631D4,lbl_805631D8,lbl_805631DC,lbl_805631E0,lbl_805631E4,lbl_805631E8;
 extern double lbl_805631B0;
-#pragma ppc_psq_save on
+#pragma ppc_psq_save off
 #pragma scheduling invalid_target
 void fn_802059C0(void) {
     double sp18,sp20,bias2;
