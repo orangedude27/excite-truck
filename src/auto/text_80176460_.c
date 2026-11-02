@@ -108,7 +108,85 @@ extern void fn_801C6AD0(s32 *);
 extern f32 lbl_8055E3D0;
 extern f32 lbl_80561B30;
 extern f32 lbl_80561B34;
+extern f32 lbl_80561B40;
+extern f32 lbl_80561B44;
+extern void fn_80209190(s32, f32);
+extern s32 fn_802ECC10(void);
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_80176460(void *arg0, const char *arg1, s32 *arg2) {
+    s32 temp_r10;
+    s32 temp_r9;
+    s32 temp_r8;
+    s32 temp_r6;
+    s32 temp_r5;
+    s32 temp_r0;
+    s32 *temp_r7;
+    s32 *temp_r3;
+    s32 zero;
+    s32 one;
+
+    temp_r10 = arg2[0];
+    temp_r9 = *(s32 *)((u8 *)arg0 + 0);
+    temp_r8 = *(s32 *)((u8 *)arg0 + 4);
+    temp_r7 = (s32 *)((u8 *)&lbl_804303C8 + 0x18);
+    temp_r6 = *(s32 *)((u8 *)arg0 + 8);
+    temp_r5 = *(s32 *)((u8 *)arg0 + 0xC);
+    temp_r0 = *(s32 *)((u8 *)arg0 + 0x10);
+    temp_r3 = (s32 *)arg0;
+    one = 1;
+
+    lbl_8055E3BC = one;
+    lbl_8055E3F8 = temp_r10;
+    *(s32 *)((u8 *)&lbl_804303C8 + 0x18) = temp_r9;
+    temp_r7[1] = temp_r8;
+    temp_r7[2] = temp_r6;
+    temp_r7[3] = temp_r5;
+    temp_r7[4] = temp_r0;
+    strcpy((char *)&lbl_804303C8 + 0x30, arg1);
+
+    zero = 0;
+    lbl_8055E3F4 = zero;
+    lbl_8055E3BD = one;
+    lbl_8055E3C0 = zero;
+    lbl_8055E3D4 = zero;
+    lbl_8055E3EC = zero;
+    lbl_8055E3E8 = 0;
+    lbl_8055E3D8 = one;
+    lbl_8055A2F0 = (void *)one;
+    lbl_8055A2F4 = lbl_80561B18;
+    fn_80176A34(0);
+    fn_801E1D20();
+    fn_80178DD0();
+
+    temp_r7 = (s32 *)&lbl_804303C8;
+    temp_r7[1] = zero;
+    memset((u8 *)temp_r7 + 8, zero, 1);
+    temp_r7[0] = 4;
+    temp_r3 = (s32 *)((u8 *)&lbl_804303C8 + 0xC);
+    temp_r3[0] = 4;
+    temp_r3[1] = zero;
+    memset((u8 *)temp_r3 + 8, zero, 1);
+    temp_r7[0] = zero;
+    temp_r7[1] = 0x2800;
+    if ((*(s32 *)((u8 *)arg0 + 0x10) & 1) == 0) {
+        temp_r7[1] |= 0x400;
+    }
+
+    lbl_8055E3E4 = 1;
+    lbl_8055A3A0 = lbl_80561B1C;
+    lbl_8055E3CC = zero;
+    lbl_8055E3DC = fn_8012F31C(0x10000);
+    lbl_8055E3E0 = fn_8012F3CC();
+    fn_8012F43C();
+    fn_8017EBE0();
+    fn_801AE5A8();
+    fn_801B6604();
+    fn_801D0BE4();
+    fn_80177790();
+}
+#pragma pop
 void fn_801765B8(void) {
     fn_801777C0();
     lbl_8055E3F4 = 0;
