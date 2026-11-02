@@ -192,7 +192,7 @@ extern int lbl_8055CFF0, lbl_8055CFF4;
 extern unsigned int lbl_8055E044;
 extern unsigned char lbl_8055ED70, lbl_8055ED71;
 extern void *fn_802C86DC(void);
-extern void fn_802C88FC(void *, int);
+extern void fn_802C88FC();
 extern void fn_802C8638(void *);
 extern void fn_801312EC(void *, void *);
 extern void fn_80131318(void);
