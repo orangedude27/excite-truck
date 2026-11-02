@@ -476,7 +476,7 @@ void fn_80264D5C(void *arg0) {
             p->a10 += p->a14 * dt;
         }
     }
-    l = (SparkList *)((char *)arg0 + 0xA0);
+    l = (SparkList *)((char *)arg0 + 0x60);
     dt = fn_80214D48();
     i = 0;
     while (i < l->count) {
