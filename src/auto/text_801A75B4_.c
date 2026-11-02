@@ -14,6 +14,13 @@ extern void *fn_801A9234(const char *);
 extern int lbl_80435050[];
 typedef struct Rec_801A7A5C { float f[8]; unsigned char b[0x20]; int w[8]; unsigned char c; } Rec_801A7A5C;
 #define CB4_801A7A5C(n) dst->b[n] = src->b[n]; dst->b[n+1] = src->b[n+1]; dst->b[n+2] = src->b[n+2]; dst->b[n+3] = src->b[n+3];
+typedef struct Rec2_801A7A5C {
+    float f0, f1, f2, f3, f4, f5, f6, f7;
+    unsigned char b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15;
+    unsigned char b16, b17, b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31;
+    int w0, w1, w2, w3, w4, w5, w6, w7;
+    unsigned char c;
+} Rec2_801A7A5C;
 typedef struct Tail_801A7A5C { float x, y; unsigned char a, b, c; } Tail_801A7A5C;
 extern unsigned char lbl_80435370[];
 extern int lbl_8055CFF0;
@@ -163,30 +170,39 @@ void fn_801A7A08(const char *arg0, int arg1, int arg2) {
 #pragma pop
 extern float lbl_80562458;
 void fn_801A7A5C(void) {
-    char *base = (char *)lbl_80435050;
-    char *src = base;
-    char *dst = base + 0x190;
-    int i;
-    *(float *)(base + 0x320) = lbl_80562458;
-    *(float *)(base + 0x324) = lbl_80562458;
-    base[0x328] = 0;
-    base[0x329] = 0;
-    base[0x32a] = 0;
-    ((void (*)(int, void *))fn_801A7844)(1, base + 0x320);
-    fn_801A7844(1);
-    for (i = 0; i < 4; i++) {
-        float *sf = (float *)src;
-        float *df = (float *)dst;
-        int j;
-        for (j = 0; j < 8; j++) df[j] = sf[j];
-        for (j = 0x20; j < 0x40; j++) dst[j] = src[j];
-        for (j = 0x40; j < 0x60; j += 4) *(int *)(dst + j) = *(int *)(src + j);
-        dst[0x60] = src[0x60];
-        src += 0x64; dst += 0x64;
+    int i, j;
+    {
+        Tail_801A7A5C* t = (Tail_801A7A5C*)(lbl_80435050 + 0xC8);
+        t->x = lbl_80562458;
+        t->y = lbl_80562458;
+        t->c = 0;
+        t->b = 0;
+        t->a = 0;
+        ((void (*)(int, void *))fn_801A7844)(1, t);
     }
-    *(float *)(base + 0x32c) = *(float *)(base + 0x320);
-    *(float *)(base + 0x330) = *(float *)(base + 0x324);
-    base[0x334] = base[0x328]; base[0x335] = base[0x329]; base[0x336] = base[0x32a];
+    fn_801A7844(1);
+    {
+        Rec_801A7A5C* src = (Rec_801A7A5C*)lbl_80435050;
+        Rec_801A7A5C* dst = src + 4;
+        for (i = 0; i < 4; i++, src++, dst++) {
+            for (j = 0; j < 8; j++) dst->f[j] = src->f[j];
+            for (j = 0; j < 8; j++) dst->b[j] = src->b[j];
+            for (j = 0; j < 8; j++) dst->b[8 + j] = src->b[8 + j];
+            for (j = 0; j < 8; j++) dst->b[16 + j] = src->b[16 + j];
+            for (j = 0; j < 8; j++) dst->b[24 + j] = src->b[24 + j];
+            for (j = 0; j < 8; j++) dst->w[j] = src->w[j];
+            dst->c = src->c;
+        }
+    }
+    {
+        Tail_801A7A5C* u = (Tail_801A7A5C*)(lbl_80435050 + 0xC8);
+        Tail_801A7A5C* v = (Tail_801A7A5C*)(lbl_80435050 + 0xCB);
+        v->x = u->x;
+        v->y = u->y;
+        v->a = u->a;
+        v->b = u->b;
+        v->c = u->c;
+    }
 }
 
 #pragma push
