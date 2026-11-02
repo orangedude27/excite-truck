@@ -6,6 +6,10 @@
 extern int fn_8023695C(void *);
 extern void fn_80216CA8(void);
 extern void fn_802168BC(int);
+extern float fn_80235F64(void *, int);
+extern float fn_80235EF0(void *, int);
+extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
+extern float lbl_80563C00;
 extern int fn_80265B5C(void);
 extern void fn_80216D28(void);
 extern void *lbl_8055F444;
@@ -581,7 +585,69 @@ int fn_80265688(void) {
     return 0;
 }
 
-#pragma dont_inline reset
+extern void *fn_8012850C(int, void *);
+extern void *fn_8002F37C(void *, int, int, int);
+extern void fn_802640C4(void *, void *);
+extern void fn_80236910(void *);
+extern char lbl_803464B4[], lbl_803464C8[];
+__declspec(section ".sdata") extern char lbl_8055C498[];
+__declspec(section ".sdata") extern char lbl_8055C4A0[];
+#pragma push
+#pragma use_lmw_stmw off
+int fn_802656C8(void *arg0) {
+    extern unsigned char lbl_80498F78[];
+    int sp[5];
+    int count = 0;
+    int i = 0;
+    int j, k;
+    int result;
+    void *item;
+    void *list;
+    int n, idx;
+
+    while ((item = (*(void *(**)(void *, int))(*(char **)arg0 + 0x60))(arg0, i)) != 0) {
+        if (stricmp((*(char *(**)(void *))(*(char **)item + 8))(item), lbl_8055C498) == 0) {
+            count++;
+        }
+        i++;
+    }
+    n = count + 5;
+    fn_8012850C(n * 0x14 + 0x10, lbl_803464B4);
+    list = fn_8002F37C(fn_802640A0, 0, 0x14, n);
+    idx = 0;
+    k = 0;
+    while ((item = (*(void *(**)(void *, int))(*(char **)arg0 + 0x60))(arg0, k)) != 0) {
+        if (stricmp((*(char *(**)(void *))(*(char **)item + 8))(item), lbl_8055C498) == 0) {
+            void *dst = (char *)list + idx * 0x14;
+            idx++;
+            fn_802640C4(dst, item);
+        }
+        k++;
+    }
+    fn_802643B8((char *)list + idx++ * 0x14);
+    fn_80264404((char *)list + idx++ * 0x14);
+    fn_80264444((char *)list + idx++ * 0x14);
+    fn_80264484((char *)list + idx * 0x14);
+    sp[0] = 0; sp[1] = 0; sp[2] = 0; sp[3] = 0; sp[4] = 0;
+    sp[0] = (*(int (**)(void *, char *))(*(char **)arg0 + 0x14))(arg0, lbl_8055C4A0);
+    sp[1] = (int)list;
+    fn_80236910(lbl_803464C8);
+    result = fn_802146BC(sp, -999, -999, 1);
+    if (list != 0) {
+        fn_80128670((char *)list - 0x10);
+    }
+    j = 0;
+    while (j < *(int *)(lbl_80498F78 + 4)) {
+        void *p = (*(void ***)lbl_80498F78)[j];
+        if (p != 0) {
+            (*(void (**)(void *, int))(*(char **)p + 8))(p, 1);
+        }
+        j++;
+    }
+    *(int *)(lbl_80498F78 + 4) = 0;
+    return (unsigned)((-1 - result) | (result + 1)) >> 31;
+}
+#pragma pop
 extern char lbl_8055C4A8[4];
 extern void fn_80236954(void *queue);
 void fn_802658FC(void) {
