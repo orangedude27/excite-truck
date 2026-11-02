@@ -15,7 +15,7 @@ extern char lbl_8033BC68[];
 
 struct Rec80207490 { int v; int pad[2]; };
 struct Obj80207490 {
-    char pad0[0x10]; int key; char pad1[4]; bool flag18; char pad2[0x55]; bool flag6e;
+    char pad0[0x10]; int key; char pad1[4]; unsigned char flag18; char pad2[0x55]; unsigned char flag6e;
 };
 
 class Obj80206518 {
@@ -662,14 +662,14 @@ extern "C" void *fn_80207428(void *arg0, int arg1, int arg2, int arg3, int arg4)
     return self;
 }
 
-extern "C" void fn_80207490(void *arg0, void *arg1, int arg2) {
-    bool *flag = (bool *)((char *)arg0 + 0x6E);
-    *flag = false;
-    for (int i = 0; i < arg2; i++) {
-        *flag |= (*(int *)((char *)arg0 + 0x10) == *(int *)((char *)arg1 + i * 12));
+extern "C" void fn_80207490(Obj80207490 *obj, Rec80207490 *arr, int n) {
+    obj->flag6e = false;
+    for (int i = 0; i < n; i++) {
+        bool f = obj->flag6e;
+        f |= (obj->key == arr[i].v);
+        obj->flag6e = f;
     }
-    bool *f18 = (bool *)((char *)arg0 + 0x18);
-    *f18 &= *flag;
+    obj->flag18 &= obj->flag6e;
 }
 
 #pragma dont_inline reset
