@@ -25,6 +25,7 @@ struct Color { u8 r, g, b, a; };
 }
 }
 }
+struct Data_800D8840 { s32 a; s32 b; f32 c; s32 d; s32 e; };
 struct GetTextureSizeStringBase_800D58C4 { char text[0x500]; };
 namespace nw4hbm { namespace lyt {
 class ResourceAccessor;
