@@ -66,7 +66,7 @@ extern f32 lbl_80563298;
 extern f32 lbl_8056329C;
 extern f32 lbl_805632A0;
 extern f32 lbl_80563290;
-extern s8 lbl_8055EDD0;
+extern u8 lbl_8055EDD0;
 extern s8 lbl_8055EDD4;
 extern s32 lbl_804892C0[];
 extern s32 lbl_8055B560;
@@ -130,6 +130,86 @@ void fn_80209FFC(void) {
     fn_801331C4(4, (void *)lbl_8033C278, &value);
     fn_8020A5F8(value);
 }
+
+void fn_8020A100(void) {
+    char buf[0x80];
+    u8 *obj;
+    s32 *name;
+    s8 *flag;
+    s32 *slot;
+    s32 i;
+    s32 diff;
+    s32 zero;
+    f32 scale;
+    f32 one;
+    f32 t;
+    if (lbl_8055EDD0 != 0) {
+        scale = lbl_80563294;
+        diff = fn_802E2C20() - lbl_8055EDE8;
+        if ((s32)lbl_8055EDE0 != lbl_8055EDE4) {
+            if (diff >= 0x190 || diff < 0 || (s32)lbl_8055EDE0 == -1) {
+                lbl_8055EDE0 = (void *)lbl_8055EDE4;
+            } else {
+                t = ((f32)diff / lbl_80563298 - lbl_8056329C) / lbl_80563290;
+                if (lbl_80563294 < t) {
+                } else {
+                    t = lbl_80563294;
+                }
+                if (t > lbl_8056329C) {
+                    t = lbl_8056329C;
+                }
+                scale = lbl_80563294 + t * lbl_805632A0;
+            }
+        }
+        one = lbl_8056329C;
+        slot = lbl_804892C0;
+        i = 0;
+        flag = &lbl_8055EDD4;
+        name = &lbl_8055B560;
+        zero = 0;
+        do {
+            if (*flag == 0) {
+                sprintf(buf, &lbl_8055B568, *name);
+                if (fn_8012E938(buf) != 0) {
+                    fn_8012E81C(buf);
+                    sprintf(buf, lbl_8033C2A8, *name, zero == 1 ? &lbl_8055B570 : &lbl_8055B574);
+                    slot[0] = (s32)fn_802078CC(buf, 0, slot[1], 0x70);
+                    fn_802E30C8(lbl_8033C2B4, i, 0, buf, slot[0]);
+                    *flag = 1;
+                }
+            }
+            obj = (u8 *)slot[0];
+            if (obj != 0) {
+                f32 v = lbl_8055EDD8 * scale;
+                if (v != *(f32 *)(obj + 8)) {
+                    obj[0x4D] = 1;
+                    *(f32 *)(obj + 8) = v;
+                }
+                if (one != *(f32 *)(obj + 0x64)) {
+                    obj[0x6C] = 1;
+                    *(f32 *)(obj + 0x64) = one;
+                }
+                if (one != *(f32 *)(obj + 0x68)) {
+                    obj[0x6D] = 1;
+                    *(f32 *)(obj + 0x68) = one;
+                }
+                if (i == (s32)lbl_8055EDE0 && lbl_8055EDDC != 0) {
+                    obj[0x4A] = 0;
+                    obj[0x4B] = 1;
+                    obj[0x49] = 1;
+                } else {
+                    obj[0x4A] = 1;
+                    obj[0x4C] = 0;
+                }
+            }
+            i++;
+            slot += 2;
+            flag++;
+            name++;
+        } while (i < 2);
+    }
+}
+
 #pragma dont_inline off
 void fn_8020A368(void) {
     s32* var_r31;
