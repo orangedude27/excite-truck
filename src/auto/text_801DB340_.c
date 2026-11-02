@@ -233,7 +233,7 @@ float fn_801DB398(float grid[4][4], float t, float u) {
 }
 #pragma pop
 
-static inline float eval_spline(float p0, float p1, float p2, float p3, float t, float *out_deriv) {
+static inline float eval_spline(float p0, float p1, float p2, float p3, float t, float t2, float t3, float *out_deriv) {
     float dp20 = p2 - p0;
     float dp21 = p2 - p1;
     float dp31 = p3 - p1;
@@ -250,53 +250,46 @@ static inline float eval_spline(float p0, float p1, float p2, float p3, float t,
     coeff3 = coeff3 - half31;
 
     if (out_deriv != 0) {
-        *out_deriv = half20 + (lbl_80562B6C * coeff2 * (t * t) + lbl_80562B68 * coeff3 * t);
+        *out_deriv = half20 + (lbl_80562B6C * coeff2 * t2 + lbl_80562B68 * coeff3 * t);
     }
-    return p1 + (coeff2 * (t * t * t) + coeff3 * (t * t) + half20 * t);
+    return p1 + (coeff2 * t3 + coeff3 * t2 + half20 * t);
 }
 
+#pragma push
+#pragma processor 750
 float fn_801DB514(float grid[4][4], void *out, float t, float u) {
-    float a[4], b[4];
-    float q = t * t;
-    float c = q * t;
-    float *src = &grid[0][0];
+    float b[4];
+    float a[4];
+    float normal[3];
+    float deriv_u;
     float *pa = a;
     float *pb = b;
     int i;
-    for (i = 0; i < 4; i++) {
-        float x = src[8] - src[0];
-        float y = src[4] - src[0];
-        float z = src[12] - src[4];
-        float p = lbl_80562B64 * x;
-        float r = lbl_80562B64 * z;
-        float s = lbl_80562B6C * y;
-        float v = (p + r) - lbl_80562B68 * y;
-        float w = (s - lbl_80562B68 * p) - r;
-        *pa++ = p + lbl_80562B6C * v * q + lbl_80562B68 * w * t;
-        *pb++ = src[4] + p * t + v * c + w * q;
-        src++;
-    }
-    {
-        float x = b[2] - b[0];
-        float y = b[3] - b[1];
-        float p = lbl_80562B64 * x;
-        float r = lbl_80562B64 * y;
-        float v = (p + r) - lbl_80562B68 * (b[2] - b[1]);
-        float w = (lbl_80562B6C * (b[2] - b[1]) - lbl_80562B68 * p) - r;
-        float h = p + lbl_80562B6C * v * (u * u) + lbl_80562B68 * w * u;
-        float dx = a[2] - a[0];
-        float dy = a[3] - a[1];
-        float factor = lbl_80562B70 / *(float *)((char *)lbl_8055E990 + 8);
-        float z = -(h);
-        ((float *)out)[0] = z;
-        ((float *)out)[1] = factor;
-        ((float *)out)[2] = -z;
-        PSVECNormalize(out, out);
-        return a[1] + dx * u + dy * (u * u);
-    }
-}
+    float height;
+    float t2 = t * t;
+    float t3 = t2 * t;
+    float u2 = u * u;
+    float u3 = u2 * u;
 
-#pragma paired_single off
+    for (i = 0; i < 4; i++) {
+        *pb++ = eval_spline(grid[0][i], grid[1][i], grid[2][i], grid[3][i], t, t2, t3, pa);
+        pa++;
+    }
+
+    height = eval_spline(b[0], b[1], b[2], b[3], u, u2, u3, &deriv_u);
+    normal[1] = lbl_80562B70 / *(float *)((char *)lbl_8055E990 + 8);
+    normal[2] = -deriv_u;
+    normal[0] = -eval_spline(a[0], a[1], a[2], a[3], u, u2, u3, 0);
+
+    PSVECNormalize(normal, normal);
+
+    ((float *)out)[0] = normal[0];
+    ((float *)out)[1] = normal[1];
+    ((float *)out)[2] = normal[2];
+
+    return height;
+}
+#pragma pop
 int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
     float grid[4][4];
     float sp8;
