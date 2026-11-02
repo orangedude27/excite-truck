@@ -259,6 +259,8 @@ extern u8 lbl_8055A8C8[1];
 extern void *fn_8012850C(s32, void *);
 extern void *fn_801284E8(void *, s32);
 extern void fn_80128670(void *);
+#pragma optimize_for_size on
+#pragma optimize_for_size on
 void *fn_801B5D30(s32 *arg0) {
     s32 tmp1[3];
     s32 tmp2[3];
@@ -320,4 +322,4 @@ void *fn_801B5D30(s32 *arg0) {
     }
     return obj;
 }
-
+#pragma optimize_for_size reset
