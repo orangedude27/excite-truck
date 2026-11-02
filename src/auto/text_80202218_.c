@@ -101,6 +101,8 @@ test:
 }
 #pragma pop
 
+#pragma push
+#pragma dont_inline on
 int fn_80202378(int arg0, int arg1, int arg2, int arg3) {
     if (arg3 >= lbl_8055ECC0) return -1;
     if (arg3 >= (arg1 * 2) + 1) return -1;
