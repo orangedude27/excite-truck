@@ -44,6 +44,9 @@ void* fn_801B3B70(void*);
 extern void* memset(void*, s32, u32);
 extern u8 lbl_80435C50[0x20];
 
+typedef struct Ent801B3FD8 { s32 a; s32 group; f32 c; } Ent801B3FD8;
+typedef struct Out801B3FD8 { Ent801B3FD8* p; s32 n; s32 z; } Out801B3FD8;
+
 void fn_801B435C(void*);
 void fn_801B3DBC(void*);
 
@@ -77,18 +80,35 @@ typedef struct Unk801B3398 {
     s32 unk_0x34;
 } Unk801B3398;
 
-s32 fn_801B32C8(void* arg0,s32 arg1) {
- s32 vals[2];
- s32 index=-1;
- s32 result=0;
- vals[0]=*(s32*)((char*)arg0+0x20);
- vals[1]=arg1;
- if(vals[0]==0x6d) index=0;
- else if(vals[1]==0x6d) index=1;
- if(index!=-1 && (vals[!index]==0x6e || vals[!index]==1)) result=1;
- return result;
-}
+#pragma scheduling invalid_target
+s32 fn_801B32C8(void* arg0, s32 arg1) {
+    s32 vals[2];
+    s32 first = *(s32*)((char*)arg0 + 0x20);
+    register s32 idx;
+    s32 result = 0;
+    s32 isMagic = (first == 0x6D);
 
+    *(volatile s32*)&vals[0] = first;
+    idx = -1;
+    *(volatile s32*)&vals[1] = arg1;
+    if (isMagic) {
+        idx = 0;
+    } else if (arg1 == 0x6D) {
+        idx = 1;
+    }
+    if (idx != -1) {
+        switch (vals[!idx]) {
+        case 0x6E:
+        case 1:
+            result = 1;
+            break;
+        default:
+            break;
+        }
+    }
+    return result;
+}
+#pragma scheduling on
 void* fn_801B3338(void* arg0) {
  s32* obj=*(s32**)((char*)arg0+4);
  if(obj!=NULL) {
@@ -244,8 +264,128 @@ s32 fn_801B3DC0(void* arg0, u32 arg1, u32 arg2) {
     return found;
 }
 
+extern void* fn_801B4570(void*, u32);
+extern f32 lbl_8056264C;
+#pragma cplusplus on
+extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, f32 farg0) {
+    class Item {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual s32 compare(s32);
+        virtual void f4();
+        virtual void f5();
+        virtual void reset();
+        virtual s32 getMode();
+    };
+    s32 first = *(s32 *)((u8 *)arg2 + 0x20);
+    u32 packed;
+    void *row;
+    void *item;
+    Item *object;
+    void *selected;
+    s32 selectedKey;
+    f32 z;
+    f32 y;
+    f32 x;
+    f32 zero;
+    f32 candidate;
+    f32 maximum;
+    s32 index;
+    volatile f32 unused[3];
+
+    if (first < 0 || arg4 < 0) {
+        packed = 0xFFFFFFFF;
+    } else if (first >= arg4) {
+        packed = ((u32)first & 0xFFFF) | ((u32)arg4 << 16);
+    } else {
+        packed = ((u32)arg4 & 0xFFFF) | ((u32)first << 16);
+    }
+    selected = fn_801B4570(arg0, packed);
+    selectedKey = *(s32 *)selected;
+    index = *(s32 *)((u8 *)arg0 + 0x5BC);
+    row = (u8 *)arg0 + index * 0x2C;
+    item = *(void **)((u8 *)row + 0x318);
+    object = *(Item **)((u8 *)item + 0xC);
+    if (object->getMode() != 3)
+        object->reset();
+    if (object->compare(selectedKey) != 0) {
+        *(volatile void **)((u8 *)row + 0x31C) = arg2;
+        maximum = lbl_8056264C;
+        *(volatile s32 *)((u8 *)row + 0x320) = arg3;
+        *(volatile f32 *)((u8 *)row + 0x324) = lbl_8055E3C8;
+        candidate = farg0 * *(f32 *)((u8 *)selected + 4);
+        if (maximum > candidate)
+            maximum = candidate;
+        zero = lbl_80562624;
+        x = *(f32 *)arg1;
+        *(volatile f32 *)((u8 *)row + 0x30C) = zero;
+        y = *(f32 *)((u8 *)arg1 + 4);
+        *(volatile f32 *)((u8 *)row + 0x310) = zero;
+        z = *(f32 *)((u8 *)arg1 + 8);
+        *(volatile f32 *)((u8 *)row + 0x314) = zero;
+        *(f32 *)((u8 *)row + 0x300) = x;
+        *(f32 *)((u8 *)row + 0x304) = y;
+        *(f32 *)((u8 *)row + 0x308) = z;
+        item = *(void **)((u8 *)row + 0x318);
+        unused[0] = zero;
+        unused[1] = zero;
+        unused[2] = zero;
+        if (item != 0) {
+            if (maximum != *(f32 *)((u8 *)item + 8)) {
+                *((u8 *)item + 0x4D) = 1;
+                *(f32 *)((u8 *)item + 8) = maximum;
+            }
+            item = *(void **)((u8 *)row + 0x318);
+            *((u8 *)item + 0x49) = 1;
+            *((u8 *)item + 0x4B) = 0;
+            *((u8 *)item + 0x4A) = 0;
+        }
+        index = (*(s32 *)((u8 *)arg0 + 0x5BC) + 1) % 16;
+        *(s32 *)((u8 *)arg0 + 0x5BC) = index;
+    }
+}
+#pragma cplusplus reset
 s32 fn_801B3FD0(void) {
     return 0;
+}
+
+extern s32 lbl_802F96CC[];
+extern s32 fn_801B4428(u32 *, u32 *);
+extern void *fn_801B447C(void *, void *, s32);
+extern void qsort(void *, u32, u32, s32 (*)(u32 *, u32 *));
+void fn_801B4204(void *arg0) {
+    s32 i;
+    s32 *src;
+    u8 *dst;
+    s32 a;
+    s32 b;
+    s32 key;
+    s32 n;
+
+    src = lbl_802F96CC;
+    dst = (u8 *)arg0 + 0x48;
+    for (i = 0; i < 0x2B; i++) {
+        a = src[1];
+        b = src[2];
+        if (a < 0 || b < 0) {
+            key = -1;
+        } else if (a >= b) {
+            key = (a & 0xFFFF) | (b << 16);
+        } else {
+            key = (b & 0xFFFF) | (a << 16);
+        }
+        n = src[0];
+        *(s32 *)(dst + 0) = key;
+        *(s32 *)(dst + 4) = (s32)arg0 + n * 0xC;
+        *(s32 *)(dst + 8) = 0;
+        *(s32 *)(dst + 0xC) = 0;
+        src += 3;
+        dst += 0x10;
+    }
+    qsort((u8 *)arg0 + 0x48, 0x2B, 0x10, fn_801B4428);
+    *(void **)((u8 *)arg0 + 0x2F8) = fn_801B447C(arg0, (u8 *)arg0 + 0x48, 0x2B);
 }
 
 #pragma scheduling off
@@ -269,9 +409,9 @@ void fn_801B42D0(void* arg0) {
 
 #pragma scheduling off
 void fn_801B435C(void *arg0) {
-    register s32 zero = 0;
-    register f32 value = lbl_80562650;
-    register s32 *p = (s32 *)arg0;
+    register u32 zero = 0;
+    f32 value = lbl_80562650;
+    register u32 *p = (u32 *)arg0;
     p[0x31C / 4] = zero; p[0x320 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x324) = value;
     p[0x348 / 4] = zero; p[0x34C / 4] = zero; *(f32 *)((u8 *)arg0 + 0x350) = value;
     p[0x374 / 4] = zero; p[0x378 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x37C) = value;
@@ -300,7 +440,7 @@ s32 fn_801B4428(u32 *arg0, u32 *arg1) {
     fn_802E317C((const char *)lbl_80335D80);
     return 0;
 }
-#pragma scheduling on
+#pragma dont_inline on
 void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
     s32 half;
     s32 right;
@@ -311,7 +451,6 @@ void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
     if (right > 0) *(void**)((u8*)arg1 + half * 16 + 12) = fn_801B447C(arg0, (u8*)arg1 + half * 16 + 16, right);
     return (u8*)arg1 + half * 16;
 }
-#pragma dont_inline on
 void *fn_801B4528(void *arg0, u32 *arg1, u32 arg2) {
     if (arg2 < *arg1) {
         arg1 = (u32 *)arg1[2];
