@@ -13,6 +13,11 @@ extern "C" void fn_802E30C8(const char *, ...);
 extern char lbl_8033BC50[];
 extern char lbl_8033BC68[];
 
+struct Rec80207490 { int v; int pad[2]; };
+struct Obj80207490 {
+    char pad0[0x10]; int key; char pad1[4]; bool flag18; char pad2[0x55]; bool flag6e;
+};
+
 class Obj80206518 {
 public:
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
@@ -493,36 +498,59 @@ extern "C" float fn_80206CD0(void* arg0, float arg1) {
 #pragma scheduling on
 extern "C" float PSVECDotProduct(const void*, const void*);
 extern float lbl_805631F8, lbl_805631FC, lbl_80563208;
-void fn_80206D3C(void* self, void* list, int count) {
-    unsigned char* p=(unsigned char*)self;
-    unsigned char* it=(unsigned char*)list;
+#pragma scheduling invalid_target
+#pragma dont_inline on
+extern "C" void fn_80206D3C(void *self, void *list, int count) {
+    register unsigned char *p = (unsigned char *)self;
     float vec[3];
-    int i;
-    p[0x64]=0; *(float*)(p+0x68)=lbl_805631FC;
+    register int i;
+    register unsigned char *it;
+
+    p[0x64] = 0;
+    *(float *)(p + 0x68) = lbl_805631FC;
     if (p[0x18]) {
-        float threshold=lbl_805631F8, margin=lbl_80563208;
-        for(i=0;i<count;i++,it+=0xC) {
-            unsigned char* item=*(unsigned char**)(it+4);
-            float* pos=*(float**)(p+0x74);
-            float x=pos[0]-*(float*)(item+0x24);
-            float y=pos[1]-*(float*)(item+0x28);
-            float z=pos[2]-*(float*)(item+0x2C);
-            vec[0]=x**(float*)(item)+y**(float*)(item+4)+z**(float*)(item+8);
-            vec[1]=x**(float*)(item+0xC)+y**(float*)(item+0x10)+z**(float*)(item+0x14);
-            vec[2]=x**(float*)(item+0x18)+y**(float*)(item+0x1C)+z**(float*)(item+0x20);
-            float radius=*(float*)(p+0x6C)+margin;
-            if(PSVECDotProduct(vec,vec)<radius*radius) {
-                float value=*(float*)(p+8);
-                p[0x64]=1;
-                if(value>=threshold)value=threshold;
-                value*=fn_80206CD0(vec,*(float*)(p+0x6C));
-                if(*(float*)(p+0x68)<=value)*(float*)(p+0x68)=value;
+        register float threshold = lbl_805631F8;
+        register float margin = lbl_80563208;
+        it = (unsigned char *)list;
+        for (i = 0; i < count; ++i, it += 0xC) {
+            register float *pos = *(float **)(p + 0x74);
+            register unsigned char *item = *(unsigned char **)(it + 4);
+            float dx = pos[0] - *(float *)(item + 0x24);
+            vec[0] = dx;
+            float dy = pos[1] - *(float *)(item + 0x28);
+            vec[1] = dy;
+            float dz = pos[2] - *(float *)(item + 0x2C);
+            vec[2] = dz;
+            float outX = dx * *(float *)item +
+                         dy * *(float *)(item + 4) +
+                         dz * *(float *)(item + 8);
+            float outY = dx * *(float *)(item + 0xC) +
+                         dy * *(float *)(item + 0x10) +
+                         dz * *(float *)(item + 0x14);
+            float outZ = dx * *(float *)(item + 0x18) +
+                         dy * *(float *)(item + 0x1C) +
+                         dz * *(float *)(item + 0x20);
+            vec[0] = outX;
+            vec[1] = outY;
+            vec[2] = outZ;
+            float dot = PSVECDotProduct(vec, vec);
+            float radius = margin + *(float *)(p + 0x6C);
+            if (dot < radius * radius) {
+                float value = *(float *)(p + 8);
+                p[0x64] = 1;
+                if (value >= threshold) value = threshold;
+                value *= fn_80206CD0(vec, *(float *)(p + 0x6C));
+                if (*(float *)(p + 0x68) > value) {
+                } else {
+                    *(float *)(p + 0x68) = value;
+                }
             }
         }
-        if(!p[0x64])p[0x18]=0;
+        if (!p[0x64]) p[0x18] = 0;
     }
 }
-
+#pragma scheduling on
+#pragma dont_inline reset
 extern "C" void *fn_802065F8(void *, int, int);
 #define fn_802065F8() fn_802065F8(arg0, arg1, arg2)
 extern "C" void *fn_80208998(int, int, int, float);
@@ -635,30 +663,13 @@ extern "C" void *fn_80207428(void *arg0, int arg1, int arg2, int arg3, int arg4)
 }
 
 extern "C" void fn_80207490(void *arg0, void *arg1, int arg2) {
-    int i = 0;
-    *(unsigned char *)((char *)arg0 + 0x6E) = 0;
-    if (arg2 > 0 && (unsigned)arg2 < 0x7fffffffU) {
-        if (arg2 > 8) {
-            int n = arg2 - 8;
-            int blocks = (n + 7) >> 3;
-            int *p = (int *)arg1;
-            do {
-                int key = *(int *)((char *)arg0 + 0x10);
-                unsigned int found = (key == p[0]) | (key == p[3]) | (key == p[6]) | (key == p[9]) |
-                                     (key == p[12]) | (key == p[15]) | (key == p[18]) | (key == p[21]);
-                *(unsigned char *)((char *)arg0 + 0x6E) |= found;
-                p += 24;
-                i += 8;
-            } while (--blocks);
-        }
-        for (; i < arg2; i++) {
-            int key = *(int *)((char *)arg0 + 0x10);
-            int value = *(int *)((char *)arg1 + i * 12);
-            *(unsigned char *)((char *)arg0 + 0x6E) |= key == value;
-        }
+    bool *flag = (bool *)((char *)arg0 + 0x6E);
+    *flag = false;
+    for (int i = 0; i < arg2; i++) {
+        *flag |= (*(int *)((char *)arg0 + 0x10) == *(int *)((char *)arg1 + i * 12));
     }
-    *(unsigned char *)((char *)arg0 + 0x18) =
-        ((*(unsigned char *)((char *)arg0 + 0x18) & *(unsigned char *)((char *)arg0 + 0x6E)) != 0);
+    bool *f18 = (bool *)((char *)arg0 + 0x18);
+    *f18 &= *flag;
 }
 
 #pragma dont_inline reset
