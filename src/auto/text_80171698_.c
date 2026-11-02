@@ -195,6 +195,8 @@ void fn_80171A4C(void *arg0) {
 
 #pragma push
 #pragma cplusplus on
+#pragma paired off
+#pragma paired_single off
 extern "C" s32 *__AXFXGetLfoSinTable_801769CC(void);
 extern "C" void *fn_8001285C(s32);
 extern "C" void *fn_801399FC(void);
