@@ -14,6 +14,8 @@ extern char lbl_80331D18[];
 #pragma small_data on
 void fn_802066C8(void*, unsigned int);
 void fn_80206C70(void*);
+#pragma push
+#pragma dont_inline on
 float fn_8017D378(void) {
     extern float lbl_8055E3C8;
     return lbl_8055E3C8;
