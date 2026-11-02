@@ -4432,7 +4432,7 @@ extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
 }
 
 extern "C" void fn_802336AC(s32, s32, s32, const char *, f32, f32, f32, ...);
-extern "C" char lbl_8055B8A4[];
+extern "C" char lbl_8055B8A4[4];
 void fn_802225E8(void *arg0, s32 arg1, s32 arg2) {
     f32 spC;
     f32 sp8;
@@ -7525,14 +7525,15 @@ extern "C" void fn_802C5280(void *, s32, s32, s32, s32, void *);
 extern "C" f32 lbl_805634A8;
 #pragma scheduling invalid_target
 extern "C" void fn_80229CF8(void *arg0) {
-    register u32 flag = *(u8 *)((u8 *)arg0 + 0x1A);
-    register u32 one = 1;
-    register f32 val = lbl_805634A8;
-    *(u8 *)((u8 *)arg0 + 0x18) = (u8)one;
-    *(f32 *)((u8 *)arg0 + 0x248) = val;
-    if (flag == 0)
-        return;
-    *(u8 *)((u8 *)arg0 + 0x234) = (u8)one;
+    u8 *p = (u8 *)arg0;
+    u8 flag = p[0x1A];
+    u8 one = 1;
+    f32 val = lbl_805634A8;
+    p[0x18] = one;
+    *(f32 *)(p + 0x248) = val;
+    if (flag != 0) {
+        p[0x234] = one;
+    }
 }
 #pragma scheduling on
 extern "C" void fn_80229D1C(void *arg0) {
@@ -7544,11 +7545,11 @@ extern "C" void fn_80229D1C(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80229D3C(void *arg0, s32 arg1, s32 arg2) {
-    register u32 *self = (u32 *)arg0;
-    register void *target = (void *)self[0x94];
-    register s32 value = self[1];
-    register s32 other = self[2];
-    fn_802C5280(target, arg1 - value, arg2 - other, 0, value, self);
+    u32 *self = (u32 *)arg0;
+    void *target = (void *)self[0x94];
+    arg1 -= self[1];
+    arg2 -= self[2];
+    fn_802C5280(target, arg1, arg2, 0, self[1], self);
 }
 #pragma scheduling on
 extern "C" s32 fn_80229D5C(s32);
@@ -7574,7 +7575,7 @@ extern "C" s32 fn_80229DC0(s32 arg0) {
     return arg0 + 0x268;
 }
 
-#pragma scheduling invalid_target
+#pragma peephole off
 extern "C" void fn_80229DC8(void *arg0) {
     register u32 zero = 0;
     register u32 one = 1;
@@ -7582,7 +7583,7 @@ extern "C" void fn_80229DC8(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x268) = one;
     ((VfObj *)arg0)->vf17();
 }
-#pragma scheduling on
+#pragma peephole reset
 extern "C" void fn_80229DE8(void *arg0, s32 unused, s32 arg2) {
     register u32 zero = 0;
     register u32 one = 1;
