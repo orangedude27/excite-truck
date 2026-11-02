@@ -28,7 +28,7 @@ void *fn_80012870(int, int);
 char *fn_800081BC(void *);
 char *fn_80008188(void *);
 extern int stricmp(const char *, const char *);
-extern char lbl_8055C1F8[];
+extern char lbl_8055C1F8[4];
 int fn_80012854(void);
 void *fn_8001285C(int);
 void *fn_80007FF0(void *);
@@ -208,6 +208,58 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
                 fn_8022D850((char *)arg0 + 0x1C, 0, 0, 0), 1);
     *(char *)((char *)arg0 + 0x50) = 1;
 }
+
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_802576EC(void *arg0) {
+    char *self = (char *)arg0;
+    char *entry;
+    int pos;
+    char *key;
+    int i;
+    int mode;
+    char *name;
+    MatchDispatch *obj;
+
+    if (*(unsigned char *)(self + 0x50) != 0) {
+        key = (char *)fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 1, 0);
+        ((void (*)(void *))fn_8022D76C)(self + 0x54);
+        i = 0;
+        while (i < fn_80012854()) {
+            entry = (char *)fn_8001285C(i);
+            obj = *(MatchDispatch **)(entry + 0x20);
+            if (obj->matches(lbl_8055C1F8) != 0) {
+                name = fn_800081BC((*(MatchDispatch **)(entry + 0x20))->fetch((const char *)&lbl_8055C1D8, (char *)fn_80012820(*(int *)(entry + 4)) + 8));
+                if (stricmp(name, key) == 0) {
+                    pos = *(int *)(self + 0x5C);
+                    fn_8022D894(self + 0x54, pos, 0, fn_80007FF0(*(void **)(entry + 8)), 0);
+                    fn_8022D894(self + 0x54, pos, 1, fn_80007F90(*(void **)(entry + 8)), 0);
+                    *(int *)(self + pos * 4 + 0x8C) = *(int *)entry;
+                }
+            }
+            i++;
+        }
+        *(int *)(self + 0x84) = 0;
+        *(unsigned char *)(self + 0x88) = 1;
+        *(unsigned char *)(self + 0x50) = 0;
+    }
+    if (*(unsigned char *)(self + 0x88) != 0) {
+        if (*(int *)(self + 0x5C) > 0) {
+            fn_80257BB8(self + 0x18C, *(int *)(self + *(int *)(self + 0x84) * 4 + 0x8C));
+        } else {
+            ((void (*)(void *))fn_8022D76C)(self + 0x18C);
+        }
+        *(unsigned char *)(self + 0x88) = 0;
+    }
+    mode = *(int *)(self + 0x18) == 0 ? 1 : 2;
+    fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0, fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0), mode);
+    if (*(int *)(self + 0x5C) > 0) {
+        mode = *(int *)(self + 0x18) == 1 ? 1 : 2;
+        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0, fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0), mode);
+    }
+}
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 
 int fn_80257904(void *arg0, int arg1) {
