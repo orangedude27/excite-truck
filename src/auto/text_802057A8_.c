@@ -184,8 +184,7 @@ loop_condition:
 
 extern int lbl_802F9D90[4];
 extern float lbl_805631D4, lbl_805631EC;
-#pragma ppc_psq_save off
-#pragma scheduling on
+#pragma ppc_psq_save reset
 void fn_80205D5C(void) {
     int rawr[4];
     float off[4];
