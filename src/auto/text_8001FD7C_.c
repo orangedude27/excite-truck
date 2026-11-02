@@ -343,7 +343,7 @@ void fn_800201F0(void) {
             list = VSLOT(o, 0x8, VF_pp)(o, base + 0xF0);
             fn_802E30C8(base + 0x100);
             for (i = 0; (item = VSLOT(list, 0x60, VF_pi)(list, i)) != 0; i++) {
-                if (strcmp((const char *)VSLOT(item, 0x8, VF_p)(item), lbl_80558D90) == 0) {
+                if (strcmp((const char *)VSLOT(item, 0x8, VF_p)(item), (const char *)&lbl_80558D90) == 0) {
                     void *a = VSLOT(item, 0x14, VF_pp)(item, base + 0x118);
                     void *b = VSLOT(item, 0x14, VF_pp)(item, base + 0x128);
                     char *e = lbl_8035B758 + lbl_8055D630 * 0x70;
