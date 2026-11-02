@@ -73,7 +73,7 @@ extern unsigned char lbl_8055C920;
 extern int fn_802C2C00(int);
 extern void fn_802D3BB0(int);
 extern void fn_802920D0(void);
-extern void fn_80291E64(void);
+extern void fn_80291E64();
 #pragma dont_inline on
 extern float lbl_80564480;
 extern float lbl_805644A0;
@@ -151,7 +151,7 @@ loop:
     entry->color = ((int)(scale * result2) << 24) | 0x00FFFFFF;
     entry->value1 = query_object->getFloat((char *)&lbl_8055C938, result1);
     entry->value2 = query_object->getFloat((char *)&lbl_8055C940, result3);
-    if (best <= entry->value1) best = entry->value1;
+    if (best > entry->value1) best = entry->value1;
     *(int *)((char *)base + 0x120) = *(int *)((char *)base + 0x120) + 1;
 
 check_count:
