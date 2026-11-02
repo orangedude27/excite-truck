@@ -596,7 +596,7 @@ void fn_80265904(void) {
     }
 }
 
-extern int fn_802146BC(int *, int, int, int, int, int, int, int);
+extern int fn_802146BC();
 extern int lbl_80498F58[5];
 extern int lbl_802FA73C[5];
 __declspec(section ".sdata") extern char lbl_8055BAC0[];
