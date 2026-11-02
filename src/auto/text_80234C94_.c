@@ -126,6 +126,7 @@ void fn_80234EF4(void *arg0, const char *arg1) {
     }
 }
 #pragma scheduling on
+#pragma dont_inline on
 void *fn_8023505C(void *arg0, int arg1) {
     void *node;
     int i;
@@ -202,8 +203,75 @@ void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
                 *(float *)((char *)node + 0x14),
                 *(float *)((char *)node + 0x10));
 }
-#pragma paired_single on
-#pragma paired on
+
+extern double cos(float);
+extern double sin(float);
+extern void fn_80231380(void *, int, float, float, float, float, float);
+extern void fn_802C8B98(int, int);
+extern float lbl_805636B0;
+extern float lbl_805636B4;
+extern unsigned short lbl_802FA014[];
+#pragma paired_single off
+void fn_80235AFC(void *arg0, int arg1, int arg2,
+                 float x, float y, float z,
+                 float width, float height, float angle) {
+    struct Frame {
+        unsigned short indices[6];
+        unsigned char pad1[4];
+        float matrix[12];
+        float vertices[4][6];
+    } __attribute__((aligned(16))) frame;
+    void *node;
+    float *matrix;
+    unsigned short *p;
+    register int render;
+    float c;
+    float s;
+    float zero;
+    float w;
+    float h;
+
+    matrix = frame.matrix;
+    matrix[9] = x;
+    matrix[10] = y;
+    matrix[11] = z;
+    c = (float)cos(angle);
+    s = (float)sin(angle);
+    zero = lbl_805636B8;
+    matrix[0] = c;
+    matrix[1] = s;
+    matrix[2] = zero;
+    matrix[3] = -s;
+    matrix[4] = c;
+    matrix[5] = zero;
+    matrix[6] = zero;
+    matrix[7] = zero;
+    matrix[8] = lbl_805636B0;
+
+    node = ((void *(*)(void *, int))fn_8023505C)(arg0, arg1);
+    w = width * lbl_805636B4;
+    h = height * lbl_805636B4;
+    fn_80231380(frame.vertices[0], arg2, -w, h, zero,
+                *(float *)node, *((float *)node + 1));
+    fn_80231380(frame.vertices[1], arg2, w, h, zero,
+                *((float *)node + 2), *((float *)node + 1));
+    fn_80231380(frame.vertices[2], arg2, -w, -h, zero,
+                *(float *)node, *((float *)node + 3));
+    fn_80231380(frame.vertices[3], arg2, w, -h, zero,
+                *((float *)node + 2), *((float *)node + 3));
+
+    render = *(volatile int *)((char *)arg0 + 0x84);
+    p = lbl_802FA014;
+    frame.indices[0] = *p++;
+    frame.indices[1] = *p++;
+    frame.indices[2] = *p++;
+    frame.indices[3] = *p++;
+    frame.indices[4] = *p++;
+    frame.indices[5] = *p++;
+    fn_802C8B98(render, (int)matrix);
+    fn_802C8DB8(frame.vertices, 4, frame.indices, 6);
+    fn_802C8D74();
+}
 extern void fn_80230A68(void *, int, float, float, float, float, float);
 extern int fn_80230B9C(void *);
 extern void fn_802C8C04(int);
