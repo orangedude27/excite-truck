@@ -22,6 +22,7 @@ f32 fn_801CF778(const float *arg0, const float *arg1, const float *arg2) {
     delta[2] += arg2[2] * dot;
     return PSVECDotProduct(delta, delta);
 }
+#pragma dont_inline reset
 
 s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
     f32 zero = lbl_80562A38;
