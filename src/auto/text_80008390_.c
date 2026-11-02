@@ -13,6 +13,9 @@ extern s32 fn_800167F4(void);
 extern s32 lbl_802ED6D8[];
 extern s32 lbl_8055D370;
 extern s32 lbl_805601B0;
+typedef struct { s32 *data; s32 count; } IdList;
+#define ID_LIST ((IdList *)lbl_8034F3D0)
+#define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 void fn_80008390(void) {
  int *array=*(int **)&lbl_8034F3D0;
  int *count=(int *)((char *)&lbl_8034F3D0+4);
@@ -119,7 +122,7 @@ s32 fn_8000865C(void) {
     return (*(u32 *)((char *)fn_801E87A8() + 0x10) >> 1) & 1;
 }
 
-int fn_80008DBC(int arg0) {
+s32 fn_80008DBC(s32 arg0) {
     switch (arg0) {
     case 0x113: return 0x15;
     case 0x2C: return 0;
@@ -127,10 +130,10 @@ int fn_80008DBC(int arg0) {
     case 0xD: return 0x13;
     case 0x20: return 0xF;
     case 0x2B: return 0x1B;
+    case 0x2D: return 0x1A;
+    case 0x2E: return 0;
     case 0x32: return 0x18;
     case 0x30: return 0x19;
-    case 0x2E: return 0;
-    case 0x2D: return 0x1A;
     case 0x6F: return 0xE;
     case 0x170: return 0;
     case 0x125: return 2;
