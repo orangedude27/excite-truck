@@ -16,6 +16,23 @@ extern void *fn_8017960C();
 extern s32 fn_80139B70(s32, f32, f32);
 typedef struct Vec_801E1048 { f32 x, y, z; } Vec_801E1048;
 
+static inline void fn_801E1048_xv(f32 *m, Vec_801E1048 *src, Vec_801E1048 *dst, f32 x, f32 y, f32 z) {
+    if (src == dst) {
+        f32 nx = z * m[6] + (x * m[0] + y * m[3]);
+        f32 ny = z * m[7] + (x * m[1] + y * m[4]);
+        f32 nz = z * m[8] + (x * m[2] + y * m[5]);
+        dst->x = nx;
+        dst->y = ny;
+        dst->z = nz;
+    } else {
+        x = z * m[6] + (x * m[0] + y * m[3]);
+        dst->x = x;
+        y = z * m[7] + (x * m[1] + y * m[4]);
+        dst->y = y;
+        dst->z = z * m[8] + (x * m[2] + y * m[5]);
+    }
+}
+
 static inline void fn_801E1048_xform(f32 *m, Vec_801E1048 *src, Vec_801E1048 *dst) {
     f32 x, y;
     if (src == dst) {
@@ -178,6 +195,42 @@ void NWC24Data_Init_801E1028(void *arg0) {
 extern void lbl_8032CE98(void);
 void fn_801E1038(void **arg0) {
     *arg0 = (void *)&lbl_8032CE98;
+}
+
+s32 fn_801E1048(void) {
+    u8 *obj = (u8 *)lbl_8055EA10;
+    u8 *player;
+    u8 *vec;
+    s32 i, j, offset, found;
+    Vec_801E1048 v;
+    Vec_801E1048 *vp = &v;
+    s32 valid = obj != 0;
+    if (valid) {
+        player = (u8 *)fn_8017960C();
+        vec = player + 0x23AC;
+        offset = 0;
+        for (i = 0; i < *(s32 *)(obj + 0x80); i++, offset += 0x1C) {
+            u8 *p = vec;
+            for (j = 0; j < 4; j++, p += 0x74) {
+                f32 *m = (f32 *)(player + 0x3C);
+                v = *(Vec_801E1048 *)(p + 0x30);
+                fn_801E1048_xform(m, vp, vp);
+                v.x += m[9];
+                v.y += m[10];
+                v.z += m[11];
+                found = 0;
+                {
+                    s32 id = *(s32 *)(*(u8 **)(obj + 0x7C) + offset);
+                    if (id != 0 && fn_80139B70(id, v.x, v.z) != 0)
+                        found = 1;
+                }
+                if (found != 0)
+                    return 1;
+            }
+        }
+        return 0;
+    }
+    return 0;
 }
 
 void fn_801E1250(s32 arg0, s8 arg1) {
