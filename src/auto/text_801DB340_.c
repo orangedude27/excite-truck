@@ -233,7 +233,7 @@ float fn_801DB398(float grid[4][4], float t, float u) {
 }
 #pragma pop
 
-static inline float eval_spline(float p0, float p1, float p2, float p3, float t, float t2, float t3, float *out_deriv) {
+static inline float eval_spline(float p0, float p1, float p2, float p3, float t, float *out_deriv) {
     float dp20 = p2 - p0;
     float dp21 = p2 - p1;
     float dp31 = p3 - p1;
@@ -244,6 +244,8 @@ static inline float eval_spline(float p0, float p1, float p2, float p3, float t,
     float twice21 = lbl_80562B68 * dp21;
     float coeff3 = lbl_80562B6C * dp21;
     float coeff2;
+    float t2 = t * t;
+    float t3 = t2 * t;
 
     coeff3 = coeff3 - twice20;
     coeff2 = sum - twice21;
@@ -266,20 +268,16 @@ float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     float *pb = b;
     int i;
     float height;
-    float t2 = t * t;
-    float t3 = t2 * t;
-    float u2 = u * u;
-    float u3 = u2 * u;
 
     for (i = 0; i < 4; i++) {
-        *pb++ = eval_spline(grid[0][i], grid[1][i], grid[2][i], grid[3][i], t, t2, t3, pa);
+        *pb++ = eval_spline(grid[0][i], grid[1][i], grid[2][i], grid[3][i], t, pa);
         pa++;
     }
 
-    height = eval_spline(b[0], b[1], b[2], b[3], u, u2, u3, &deriv_u);
+    height = eval_spline(b[0], b[1], b[2], b[3], u, &deriv_u);
     normal[1] = lbl_80562B70 / *(float *)((char *)lbl_8055E990 + 8);
     normal[2] = -deriv_u;
-    normal[0] = -eval_spline(a[0], a[1], a[2], a[3], u, u2, u3, 0);
+    normal[0] = -eval_spline(a[0], a[1], a[2], a[3], u, 0);
 
     PSVECNormalize(normal, normal);
 
