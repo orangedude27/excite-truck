@@ -11,15 +11,16 @@ extern int fn_802CAC28(const char *, int);
 extern void fn_80128668(void *);
 static inline void CopyStr_8023512C(char *dst, const char *src, int n) {
     char c;
-    for (;;) {
-        c = *src++;
-        *dst++ = c;
-        if (c != 0) {
-            if (--n > 0) continue;
-            dst[-1] = 0;
-        }
-        break;
-    }
+    goto body;
+dec:
+    if (--n > 0) goto body;
+    dst[-1] = 0;
+    goto end;
+body:
+    c = *src++;
+    *dst++ = c;
+    if (c != 0) goto dec;
+end:;
 }
 static inline void CatStr_8023512C(char *dst, const char *src, int n) {
     while (*dst != 0) { n--; dst++; }
