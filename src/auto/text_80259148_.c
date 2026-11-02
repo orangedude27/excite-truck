@@ -83,7 +83,10 @@ struct Loc_8025AA90 {
     unsigned char info[0x60];
 };
 
+#pragma push
+#pragma dont_inline on
 int fn_8025921C(void) { return 0; }
+#pragma pop
 
 extern void *fn_801284F8(int, const char *);
 extern int fn_8001EF9C(int, int, int, const void *, const void *);
@@ -814,6 +817,62 @@ void fn_8025B22C(void *arg0) {
 }
 
 void fn_8025B784(void) {
+}
+
+int fn_8025BBFC(void *arg0, int arg1) {
+    char *o = (char *)arg0;
+    if (*(unsigned char *)(o + 0x58) != 0 || IsLowAndFlagged_(o) != 0) {
+        fn_80216D28();
+    }
+    switch (arg1) {
+    case 0xD:
+        if (*(unsigned char *)(o + 0xC4) != 0) {
+            if (*(unsigned char *)(o + 0x58) != 0) {
+                *(float *)(o + 0x28) = (float)*(int *)(o + 0x20);
+            } else if (IsLowAndFlagged_(o) == 0) {
+                *(unsigned char *)(o + 0x59) = 1;
+                *(int *)(o + 0x5C) = -2;
+            }
+            break;
+        }
+        if (*(int *)(o + 0xC8) <= 1 && fn_8025921C() == 0) {
+            goto cancel;
+        }
+        if (IsLowAndFlagged_(o) == 0) {
+            *(int *)(o + 0x5C) = 3;
+            *(unsigned char *)(o + 0x59) = 1;
+            break;
+        }
+cancel:
+        fn_80214D50(1);
+        return 0;
+    case 0x1B:
+        if (*(unsigned char *)(o + 0xC4) == 0) {
+            *(unsigned char *)(o + 0x59) = 1;
+            *(int *)(o + 0x5C) = -1;
+            break;
+        }
+        return 0;
+    case 0x126:
+        if (*(unsigned char *)(o + 0xC4) == 0) {
+            *(unsigned char *)(o + 0x59) = 1;
+            *(int *)(o + 0x5C) = 1;
+            fn_80216CA8();
+            break;
+        }
+        return 0;
+    case 0x128:
+        if (*(unsigned char *)(o + 0xC4) == 0) {
+            *(unsigned char *)(o + 0x59) = 1;
+            *(int *)(o + 0x5C) = 2;
+            fn_80216CA8();
+            break;
+        }
+        return 0;
+    default:
+        return 0;
+    }
+    return 1;
 }
 
 extern unsigned char *fn_8001EFAC(int, int);
