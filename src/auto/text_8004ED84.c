@@ -29,6 +29,8 @@ extern void OSSetArenaHi(void *);
 extern void *OSGetArenaHi(void);
 extern void OSSwitchFiber(void *,void *,void *);
 extern char Halt[], OSDefaultExceptionHandler[], lbl_8038E060[], lbl_8038E328[];
+typedef struct FatalBytes4 { unsigned char b[4]; } FatalBytes4;
+typedef struct FatalInfo { FatalBytes4 a; FatalBytes4 b; int c; } FatalInfo;
 extern unsigned short lbl_80558F58;
 extern void *lbl_8055DA48;
 extern int *lbl_8055DA50;
@@ -187,14 +189,16 @@ void ConfigureVideo(short arg0, short arg1) {
     VIConfigurePan(0,0,0x280,0x1E0);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void OSFatal(unsigned char *arg0, unsigned char *arg1, int arg2) {
     int start;
     unsigned long long t0;
-    unsigned char *dst;
+    unsigned char b7, b6, b5, b4, b3, b2, b1, b0;
     OSDisableInterrupts();
     OSDisableScheduler();
-    OSClearContext(&lbl_8038E060);
-    OSSetCurrentContext(&lbl_8038E060);
+    OSClearContext(lbl_8038E060);
+    OSSetCurrentContext(lbl_8038E060);
     __OSStopAudioSystem();
     fn_8005954C();
     __OSUnmaskInterrupts(0x80);
@@ -223,23 +227,30 @@ void OSFatal(unsigned char *arg0, unsigned char *arg1, int arg2) {
     EXIUnlock(0);
     while ((*(volatile unsigned int *)0xCD00680C & 1) == 1) {
     }
-    __OSSetExceptionHandler(8, &OSDefaultExceptionHandler);
+    __OSSetExceptionHandler(8, OSDefaultExceptionHandler);
     GXGetVtxAttrFmtv();
     OSSetArenaLo((void *)0x81400000);
     OSSetArenaHi(*(void **)0x80000038);
-    dst = (unsigned char *)&lbl_8038E328;
-    dst[0] = arg0[0];
-    dst[1] = arg0[1];
-    dst[2] = arg0[2];
-    dst[3] = arg0[3];
-    dst[4] = arg1[0];
-    dst[5] = arg1[1];
-    dst[6] = arg1[2];
-    dst[7] = arg1[3];
-    *(int *)(dst + 8) = arg2;
-    OSSwitchFiber(&Halt, OSGetArenaHi(), &Halt);
+    b0 = arg0[0];
+    b1 = arg0[1];
+    b2 = arg0[2];
+    b3 = arg0[3];
+    b4 = arg1[0];
+    b5 = arg1[1];
+    b6 = arg1[2];
+    b7 = arg1[3];
+    lbl_8038E328[0] = b0;
+    lbl_8038E328[1] = b1;
+    lbl_8038E328[2] = b2;
+    lbl_8038E328[3] = b3;
+    lbl_8038E328[4] = b4;
+    lbl_8038E328[5] = b5;
+    lbl_8038E328[6] = b6;
+    lbl_8038E328[7] = b7;
+    *(int *)(lbl_8038E328 + 8) = arg2;
+    ((void (*)(void *, void *))OSSwitchFiber)(Halt, OSGetArenaHi());
 }
-
+#pragma pop
 static inline BOOL IsSjisTrailByte(u8 ch) {
     return (0x40 <= ch && ch <= 0xFC) && (ch != 0x7F);
 }
