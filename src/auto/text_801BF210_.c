@@ -3,6 +3,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 extern void PSVECCrossProduct(void *, void *, void *);
 typedef struct { float x, y, z; } FV3;
+static inline void fv3_sub(const FV3 *a, const FV3 *b, FV3 *out) {
+    float x = a->x - b->x, y = a->y - b->y, z = a->z - b->z;
+    out->x = x; out->y = y; out->z = z;
+}
 extern float PSVECDotProduct(void *, void *);
 extern void PSVECNormalize(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
