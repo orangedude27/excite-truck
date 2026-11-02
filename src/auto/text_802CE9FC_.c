@@ -1511,9 +1511,9 @@ extern float lbl_80564FD4;
 extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
 void fn_802D18E8(void) {
-    unsigned char *base = (unsigned char *)lbl_804C5650;
-    LightPos_802D18E8 *a = (LightPos_802D18E8 *)(base + 0x40);
-    LightPos_802D18E8 *b = (LightPos_802D18E8 *)(base + 0x70);
+    volatile unsigned char *base = (volatile unsigned char *)lbl_804C5650;
+    volatile float *from = (volatile float *)(base + 0x40);
+    volatile float *to = (volatile float *)(base + 0x70);
     unsigned char color[4];
     float direction[3];
     float mag;
@@ -1523,9 +1523,9 @@ void fn_802D18E8(void) {
     unsigned char *var_r30;
     int var_r27;
 
-    direction[0] = a->x - b->x;
-    direction[1] = a->y - b->y;
-    direction[2] = a->z - b->z;
+    direction[0] = from[9] - to[9];
+    direction[1] = from[10] - to[10];
+    direction[2] = from[11] - to[11];
     mag = PSVECMag(direction);
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
     scale = lbl_80564F8C / mag;
@@ -1535,8 +1535,8 @@ void fn_802D18E8(void) {
     direction[2] *= scale;
 
     if (lbl_8055FDC8 > 0) {
-        var_r30 = base + 0x4A38;
-        var_r29 = base + 0x4AC8;
+        var_r30 = (unsigned char *)base + 0x4A38;
+        var_r29 = (unsigned char *)base + 0x4AC8;
         var_r28 = 0;
         goto loop_test;
     loop_body:
@@ -1552,7 +1552,7 @@ void fn_802D18E8(void) {
         if (var_r28 < lbl_8055FDC8) goto loop_body;
         lbl_8055FDCC = lbl_8055FDC8;
     } else {
-        unsigned char *entry = base + 0x4180;
+        unsigned char *entry = (unsigned char *)base + 0x4180;
         unsigned int packed;
         unsigned char rgba[4];
         float strength = *(float *)(entry + 0x18);
@@ -1561,11 +1561,11 @@ void fn_802D18E8(void) {
         rgba[2] = (unsigned char)(int)(strength * (float)entry[2]);
         rgba[3] = entry[3];
         packed = *(unsigned int *)rgba;
-        fn_802D17BC(base + 0x4AC8, direction, (float *)(entry + 0x0C), (unsigned char *)&packed, lbl_80564FD4);
+        fn_802D17BC((unsigned char *)base + 0x4AC8, direction, (float *)(entry + 0x0C), (unsigned char *)&packed, lbl_80564FD4);
         lbl_8055FDCC++;
     }
 
-    var_r30 = base + 0x4AC8;
+    var_r30 = (unsigned char *)base + 0x4AC8;
     var_r28 = 0;
     var_r29 = (unsigned char *)0;
     var_r27 = 2;
@@ -2200,25 +2200,48 @@ void fn_802D3BB0(void) {}
 
 extern float lbl_80564F88, lbl_80564F8C;
 extern unsigned short lbl_802FACC8[];
-extern void fn_802D68C4(float *, int, unsigned short *, int, unsigned short, unsigned short, unsigned short, unsigned short *, float, float, float, float, float, float, float, float, float, float, float, float, float);
+typedef struct { float x, y, z; } FifoVec3;
+typedef struct { FifoVec3 pos; unsigned int color; float u, v; } FifoVtx;
+extern void fn_802D68C4(FifoVtx *, int, unsigned short *, int);
 void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned int arg4, float scale, unsigned int arg_sp0) {
-    float result[24];
-    unsigned short colors[6];
+    FifoVtx verts[4];
+    unsigned short indices[6];
     float neg = -scale;
-    float a0=arg2[0],a1=arg2[1],a2=arg2[2],b0=arg3[0],b1=arg3[1],b2=arg3[2];
-    float p0=arg1[0],p1=arg1[1],p2=arg1[2];
-    unsigned int alpha = (unsigned int)(arg0[5] * (float)(arg4 >> 24)) << 24 | (arg4 & 0xFFFFFF);
-    colors[0]=lbl_802FACC8[0]; colors[1]=lbl_802FACC8[2]; colors[2]=lbl_802FACC8[4];
-    colors[3]=lbl_802FACC8[6]; colors[4]=lbl_802FACC8[8]; colors[5]=lbl_802FACC8[5];
-    result[0]=p0+a0*scale; result[1]=p1+a1*scale; result[2]=p2+b2*scale;
-    result[3]=p0+b0*scale; result[4]=p1+b1*scale; result[5]=p2+b2*scale;
-    result[6]=p0+b0*neg; result[7]=p1+b1*neg; result[8]=p2+b2*neg;
-    result[9]=p0+a0*neg; result[10]=p1+a1*neg; result[11]=p2+a2*neg;
-    result[12]=p0+b0*neg; result[13]=p1+b1*neg; result[14]=p2+b2*neg;
-    result[15]=p0+a0*scale; result[16]=p1+a1*scale; result[17]=p2+b2*scale;
-    result[18]=p0+a0*neg; result[19]=p1+a1*neg; result[20]=p2+a2*neg;
-    result[21]=p0+b0*scale; result[22]=p1+b1*scale; result[23]=p2+b2*scale;
-    fn_802D68C4(result,4,colors,6,colors[5],colors[4],colors[0],lbl_802FACC8,result[20],lbl_80564F88,result[13],result[18],result[14],result[10],result[6],result[8],result[2],result[4],result[3],result[0],p2);
+    float p0 = arg1[0], p1 = arg1[1], p2 = arg1[2];
+    float a0 = arg2[0], a1 = arg2[1], a2 = arg2[2];
+    float b0 = arg3[0], b1 = arg3[1], b2 = arg3[2];
+    unsigned int alpha = (arg4 & 0xFFFFFF) | ((unsigned int)(int)(arg0[5] * (float)(arg4 >> 24)) << 24);
+    indices[0] = lbl_802FACC8[0];
+    indices[1] = lbl_802FACC8[1];
+    indices[2] = lbl_802FACC8[2];
+    indices[3] = lbl_802FACC8[3];
+    indices[4] = lbl_802FACC8[4];
+    indices[5] = lbl_802FACC8[5];
+    verts[0].pos.x = p0 + a0 * scale;
+    verts[0].pos.y = p1 + a1 * scale;
+    verts[0].pos.z = p2 + a2 * scale;
+    verts[0].color = alpha;
+    verts[0].u = lbl_80564F88;
+    verts[0].v = lbl_80564F88;
+    verts[1].pos.x = p0 + b0 * scale;
+    verts[1].pos.y = p1 + b1 * scale;
+    verts[1].pos.z = p2 + b2 * scale;
+    verts[1].color = alpha;
+    verts[1].u = lbl_80564F8C;
+    verts[1].v = lbl_80564F88;
+    verts[2].pos.x = p0 + b0 * neg;
+    verts[2].pos.y = p1 + b1 * neg;
+    verts[2].pos.z = p2 + b2 * neg;
+    verts[2].color = alpha;
+    verts[2].u = lbl_80564F88;
+    verts[2].v = lbl_80564F8C;
+    verts[3].pos.x = p0 + a0 * neg;
+    verts[3].pos.y = p1 + a1 * neg;
+    verts[3].pos.z = p2 + a2 * neg;
+    verts[3].color = alpha;
+    verts[3].u = lbl_80564F8C;
+    verts[3].v = lbl_80564F8C;
+    fn_802D68C4(verts, 4, indices, 6);
 }
 
 void fn_802D3D50(void) {
