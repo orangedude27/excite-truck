@@ -1342,8 +1342,7 @@ extern "C" s32 fn_80214934(const void* arg0, s32 arg1, void* arg2, s32 arg3) {
 #pragma dont_inline on
 extern "C" void fn_802149C4(s32 arg0) {
     char sp8[0x64];
-    register char *buf = sp8;
-    fn_80214934(lbl_8055B810, arg0, buf, 0x64);
+    fn_80214934(&lbl_8055B810, arg0, sp8, 0x64);
     fn_8021481C(sp8);
 }
 #pragma dont_inline reset
