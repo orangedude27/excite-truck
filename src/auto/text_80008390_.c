@@ -17,25 +17,30 @@ typedef struct { s32 *data; s32 count; } IdList;
 #define ID_LIST ((IdList *)lbl_8034F3D0)
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 void fn_80008390(void) {
- int *array=*(int **)&lbl_8034F3D0;
- int *count=(int *)((char *)&lbl_8034F3D0+4);
- int *src;
- int n,i;
- *count=0;
- if(fn_800167F4()>1){n=*count;*count=n+1;array[n]=lbl_805601B0;}
- if(lbl_8055D370==0) src=lbl_802ED6D8;
- else src=lbl_802ED6D8+4;
- for(i=0;i<(lbl_8055D370==0?4:5);i++){n=*count;*count=n+1;array[n]=src[i];}
- for(i=0;i<*count;i++) if(array[i]==1){
-  src=lbl_802ED6D8+10;
-  for(n=0;n<4;n++){int k=*count;*count=k+1;array[k]=src[n];}
-  break;
- }
+    s32 *base = lbl_802ED6D8;
+    s32 *p;
+    s32 i;
+    ID_LIST->count = 0;
+    if (fn_800167F4() > 1) ID_PUSH(lbl_805601B0);
+    if (lbl_8055D370 == 0) {
+        p = base;
+        ID_PUSH(p[0]); ID_PUSH(p[1]); ID_PUSH(p[2]); ID_PUSH(p[3]);
+    } else {
+        p = base + 4;
+        ID_PUSH(p[0]); ID_PUSH(p[1]); ID_PUSH(p[2]); ID_PUSH(p[3]); ID_PUSH(p[4]);
+    }
+    for (i = 0; i < ID_LIST->count; i++) {
+        if (ID_LIST->data[i] == 1) {
+            p = base + 10;
+            ID_PUSH(p[0]); ID_PUSH(p[1]); ID_PUSH(p[2]); ID_PUSH(p[3]);
+            break;
+        }
+    }
 }
 
 s32 fn_800085D8(s32 arg0) {
-    s32 *entry = *(s32 **)lbl_8034F3D0;
-    s32 count = *(s32 *)(lbl_8034F3D0 + 4);
+    s32 *entry = *(s32 **)&lbl_8034F3D0;
+    s32 count = *(s32 *)((char *)&lbl_8034F3D0 + 4);
     s32 i;
 
     if (count > 0) {
