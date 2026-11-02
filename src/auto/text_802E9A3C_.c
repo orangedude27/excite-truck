@@ -213,8 +213,66 @@ check:
 done:
     *dst = 0;
 }
-#pragma scheduling on
-#pragma pop
+
+#pragma use_lmw_stmw off
+int fn_802EA5D4(void *arg0, int arg1) {
+    extern void fn_801345D8(char *, long, const char *, ...);
+    extern int fn_800B7C90(char *, int, char *);
+    extern int fn_800B7CBC(char *);
+    extern char *fn_80029004(char *, int);
+    extern int strcmp(const char *, const char *);
+    extern int stricmp(const char *, const char *);
+    extern unsigned long strlen(const char *);
+    extern char *strncpy(char *, const char *, unsigned long);
+    extern char lbl_8055D284, lbl_8055D28C, lbl_8055D290, lbl_8055D294, lbl_8055D29C;
+    extern char lbl_80508818[];
+    char buf[0x100];
+    char path[0x200];
+    char it[0x448];
+    char *strings = (char *)&lbl_8034E260;
+    char *name;
+    char *cur;
+    char *ext;
+    char *entry;
+    int r;
+
+    fn_801345D8(buf, 0x100, &lbl_8055D284, (char *)arg0);
+    r = fn_800B7C90(buf, 0x71, it);
+    if (r == 0) {
+        name = it + 0x22D;
+        do {
+            if (lbl_8056007C < 100) {
+                cur = it + 0x22D;
+                if (it[0x23A] != 0) cur = it + 0x23A;
+                if ((it[0x22C] & 0x10) && arg1 > 0) {
+                    if (*cur != 0 && strcmp(cur, &lbl_8055D28C) != 0 && strcmp(cur, &lbl_8055D290) != 0) {
+                        if (strlen(name) + strlen((char *)arg0) + 1 < 0x200) {
+                            fn_801345D8(path, 0x200, &lbl_8055D294, (char *)arg0, name);
+                            fn_802EA5D4(path, arg1 - 1);
+                        } else {
+                            ((long (*)(char *, ...))fn_802E30C8)(strings + 0x230);
+                        }
+                    }
+                } else if ((ext = fn_80029004(cur, 0x2E)) != 0 && stricmp(ext, &lbl_8055D29C) == 0) {
+                    entry = lbl_80508818 + lbl_8056007C * 0x610;
+                    if (strlen(it + 0x22D) < 0x208 && strlen((char *)arg0) < 0x200) {
+                        strncpy(entry + 0x200, it + 0x22D, 0x207);
+                        entry[0x407] = 0;
+                        fn_802E9E54((unsigned char *)(entry + 0x408), (unsigned char *)cur, 0x208);
+                        strncpy(entry, (char *)arg0, 0x1FF);
+                        entry[0x1FF] = 0;
+                        lbl_8056007C++;
+                    } else {
+                        ((long (*)(char *, ...))fn_802E30C8)(strings + 0x250);
+                    }
+                }
+            } else {
+                return OSReport(strings + 0x268);
+            }
+        } while ((r = fn_800B7CBC(it)) == 0);
+    }
+    return r;
+}
 void fn_802EA7E0(void) {
     lbl_8056007C = 0;
     if ((unsigned char)lbl_80560061 != 0) {
@@ -240,17 +298,20 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
         virtual void d1();
         virtual long callback();
     };
+    struct Entry {
+        long first;
+        long second;
+    };
     char buffer[0x410];
     register long *result;
     register char *messageBase;
     register char *globalBase;
     long selector = arg0;
     long index;
-    long tableIndex;
-    long *table;
+    struct Entry *table;
     char *base;
     register char *copy;
-    register unsigned int tick;
+    register char *destination;
 
     result = 0;
     globalBase = (char *)lbl_80507600;
@@ -258,16 +319,14 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
     if (selector <= -2) {
         index = -2 - selector;
         if ((index >= 0) && (index < 3)) {
-            tableIndex = index * 2;
-            table = (long *)(globalBase + 0xA0);
-            if (table[tableIndex] != 0) {
-                result = fn_802E9A3C(table[tableIndex], table[tableIndex + 1]);
+            table = (struct Entry *)(globalBase + 0xA0);
+            if (table[index].first != 0) {
+                result = fn_802E9A3C(table[index].first, table[index].second);
             }
         }
         if (result != 0) {
-            strncpy(globalBase + 0x40, &lbl_8055D2A4, 0x1F);
-            base = globalBase + 0x40;
-            base[0x1F] = 0;
+            destination = strncpy(globalBase + 0x40, &lbl_8055D2A4, 0x1F);
+            destination[0x1F] = 0;
         }
     } else {
         arg0 *= 0x610;
@@ -280,9 +339,8 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
         ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x290, buffer, result);
         if (result != 0) {
             ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2A0, buffer, ((Obj *)result)->callback());
-            strncpy(globalBase + 0x40, copy, 0x1F);
-            base = globalBase + 0x40;
-            base[0x1F] = 0;
+            destination = strncpy(globalBase + 0x40, copy, 0x1F);
+            destination[0x1F] = 0;
         } else {
             ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2BC, buffer);
         }
@@ -292,8 +350,8 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
     } else {
         ((long (*)(char *, ...))fn_802E30C8)(messageBase + 0x2D8, selector);
         if ((unsigned char)lbl_80560062 != 0) {
-            tick = *(volatile unsigned int *)0x800000F8 >> 2;
-            ((void (*)(int, int))OSSleepTicks)(0, (tick / 1000) * 1000);
+            ((void (*)(int, int))OSSleepTicks)(0,
+                (((*(volatile unsigned int *)0x800000F8) >> 2) / 1000) * 1000);
         }
     }
     return result;
@@ -377,6 +435,73 @@ int fn_802EBD40(void) {
 int fn_802EBE00(int arg0) {
     if (arg0 == 1) fn_802EBD40();
     return 0;
+}
+
+void fn_802EBE2C(void) {
+    extern int lbl_8055D25C, lbl_8055D260, lbl_8055D264, lbl_80560088, lbl_8056009C, lbl_805600A8, lbl_805600AC, lbl_805600B0;
+    extern char lbl_8055D2D8, lbl_8055D2E0, lbl_8055D2E8, lbl_805584A0, lbl_805584B8, lbl_805544A0;
+    extern float lbl_805651C0, lbl_805651CC;
+    extern void *fn_8012850C(int, void *);
+    extern int fn_802E5DD8();
+    extern int fn_802E6058();
+    extern void fn_802E61EC(int, float);
+    extern void fn_802E61BC(int);
+    extern void OSInitMutex(void *);
+    extern void fn_802E3DCC(void);
+    extern int OSCreateThread();
+    extern void fn_802E2E0C();
+    extern void OSResumeThread(void *);
+    extern void fn_80127C90();
+    extern void fn_802EB7D4(void);
+    extern void fn_802EAB28(void);
+    extern void fn_802E9EB8(void);
+    int i, off, h;
+    float f;
+
+    lbl_8055D260 = -1;
+    lbl_8055D264 = 0xAC44;
+    lbl_80560078 = (void *)-1;
+    lbl_8055D25C = lbl_8055D264;
+    lbl_8056009C = (int)fn_8012850C(0xED80, (char *)&lbl_8034E260 + 0x6BC);
+    lbl_805600A4 = 0x47FC0;
+    fn_802E30C8((char *)&lbl_8034E260 + 0x6C8, lbl_805600A4 / 1024);
+    lbl_805600A0 = (int)fn_8012850C((lbl_805600A4 + 0x1200) * 2 - (lbl_805600A4 + 0x1200), &lbl_8055D2D8);
+    lbl_805600AC = 0x1E000;
+    lbl_805600A8 = (int)fn_8012850C(lbl_805600AC * 2 - lbl_805600AC, &lbl_8055D2E0);
+    lbl_805600B8 = 0x2400;
+    i = 0;
+    off = 0;
+    do {
+        *(int *)((char *)&lbl_805600B0 + off) = 0;
+        *(int *)((char *)&lbl_80560088 + off) = fn_802E5DD8(&lbl_8055D2E8, 0x7FF8, 0, fn_802EB7D4, i);
+        *(int *)((char *)&lbl_80560090 + off) = fn_802E6058();
+        if (i == 0) f = lbl_805651CC; else f = lbl_805651C0;
+        fn_802E61EC(*(int *)((char *)&lbl_80560090 + off), f);
+        i++;
+        off += 4;
+    } while (i < 2);
+    i = 0;
+    off = 0;
+    do {
+        fn_802E61E4(*(int *)((char *)&lbl_80560090 + off), lbl_805651C4);
+        fn_802E622C(*(int *)((char *)&lbl_80560090 + off), lbl_805651C4);
+        fn_802E61BC(*(int *)((char *)&lbl_80560090 + off));
+        i++;
+        off += 4;
+    } while (i < 2);
+    off = 0;
+    lbl_805600D0 = 0;
+    OSInitMutex(&lbl_805584A0);
+    fn_802E9CF0();
+    fn_802E3DCC();
+    lbl_80560062 = 1;
+    lbl_80560063 = off;
+    if (OSCreateThread(&lbl_805584B8, fn_802EAB28, 0, &lbl_805544A0 + 0x3FE0, 0x3FE0, 14, 1) == 0) {
+        fn_802E317C((char *)&lbl_8034E260 + 0x6E0);
+    }
+    fn_802E2E0C(fn_802EBE00, &lbl_8055D2E8);
+    OSResumeThread(&lbl_805584B8);
+    fn_80127C90(fn_802E9EB8, &lbl_8055D2E8);
 }
 
 extern int lbl_80560088, lbl_8056009C, lbl_805600A8;
