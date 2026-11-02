@@ -202,7 +202,6 @@ typedef struct { int w[8]; } Blk32;
 typedef struct { int w[3]; } Blk12;
 typedef struct { Blk32 a; int b; Blk12 c; } Cam48;
 #pragma ppc_psq_save off
-#pragma ppc_psq_save off
 void fn_80205FCC(void) {
     Cam48 cam;
     Mtx48 buf;
