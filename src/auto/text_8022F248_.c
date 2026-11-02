@@ -269,7 +269,57 @@ void fn_8022F868(void *arg0, void *arg1) {
     fn_80015B20(arg0, arg1, (void *)temp);
 }
 
-
+extern float lbl_80563608;
+int fn_80129D90(int, int, int);
+#pragma push
+#pragma processor 750
+void fn_8022FB6C(void *arg0) {
+    char *p = (char *)arg0;
+    float s, v;
+    int r;
+    if (*(unsigned char *)(p + 0x9c) != 0) {
+        s = lbl_80563608;
+        r = (int)(*(float *)(p + 0xa4) * s);
+        v = *(float *)(p + 0x8c) + (float)fn_80129D90(2, -r, r + 1) / s;
+        *(float *)(p + 0x8c) = v;
+        if (v > *(float *)(p + 0xa8)) {
+            *(float *)(p + 0x8c) = *(float *)(p + 0xa8);
+        } else if (v < -*(float *)(p + 0xa8)) {
+            *(float *)(p + 0x8c) = -*(float *)(p + 0xa8);
+        }
+    }
+    if (*(unsigned char *)(p + 0x9d) != 0) {
+        if (*(float *)(p + 0x24) > *(float *)(p + 0xa0)) {
+            *(float *)(p + 0x94) = *(float *)(p + 0x94) - *(float *)(p + 0xac);
+        } else if (*(float *)(p + 0x24) < -*(float *)(p + 0xa0)) {
+            *(float *)(p + 0x94) = *(float *)(p + 0x94) + *(float *)(p + 0xac);
+        }
+        if (*(float *)(p + 0x28) > *(float *)(p + 0xa0)) {
+            *(float *)(p + 0x98) = *(float *)(p + 0x98) - *(float *)(p + 0xac);
+        } else if (*(float *)(p + 0x28) < -*(float *)(p + 0xa0)) {
+            *(float *)(p + 0x98) = *(float *)(p + 0x98) + *(float *)(p + 0xac);
+        }
+        r = (int)(*(float *)(p + 0xac) * lbl_80563608);
+        s = lbl_80563608;
+        v = *(float *)(p + 0x94) + (float)fn_80129D90(2, -r, r + 1) / s;
+        *(float *)(p + 0x94) = v;
+        if (v > *(float *)(p + 0xb0)) {
+            *(float *)(p + 0x94) = *(float *)(p + 0xb0);
+        } else if (v < -*(float *)(p + 0xb0)) {
+            *(float *)(p + 0x94) = -*(float *)(p + 0xb0);
+        }
+        r = (int)(*(float *)(p + 0xac) * lbl_80563608);
+        s = lbl_80563608;
+        v = *(float *)(p + 0x98) + (float)fn_80129D90(2, -r, r + 1) / s;
+        *(float *)(p + 0x98) = v;
+        if (v > *(float *)(p + 0xb0)) {
+            *(float *)(p + 0x98) = *(float *)(p + 0xb0);
+        } else if (v < -*(float *)(p + 0xb0)) {
+            *(float *)(p + 0x98) = -*(float *)(p + 0xb0);
+        }
+    }
+}
+#pragma pop
 void fn_8022FF10(void *arg0, void *arg1) {
     int sp8;
     float temp_f31 = *(float *)((char *)arg1 + 0);
