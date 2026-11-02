@@ -205,6 +205,7 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
         dst[2] = flags;
     }
 }
+#pragma dont_inline fn_802CA4E0
 #pragma use_lmw_stmw on
 int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
     char sp8[0x34];
@@ -642,11 +643,8 @@ extern int lbl_8055D078;
 #pragma scheduling invalid_target
 #pragma dont_inline fn_802CB38C
 int fn_802CB38C(void *arg0, void *arg1, void *arg2) {
-    register void *saved0 = arg0;
-    register void *saved2 = arg2;
-    register void *saved1 = arg1;
-    ((void (*)(void *, int, int, void *))fn_802CA57C)(saved0, (int)&lbl_8055D078, 0, saved2);
-    return fn_802CA4E0((int)saved0, lbl_8055D058, 0, (int)saved1, (int)saved2);
+    ((void (*)(void *, int, int, void *))fn_802CA57C)(arg0, (int)&lbl_8055D078, 0, arg2);
+    return ((int (*)(void *, int, int, void *, void *))fn_802CA4E0)(arg0, lbl_8055D058, 0, arg1, arg2);
 }
 #pragma scheduling on
 void fn_802CB3F4(void) {
