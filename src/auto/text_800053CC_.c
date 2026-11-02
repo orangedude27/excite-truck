@@ -53,45 +53,61 @@ void fn_80005460(void) {
 extern s32 fn_801769B8(void);
 extern s32 fn_801EA994(void);
 extern u8 lbl_8034EE84[];
+#pragma scheduling invalid_target
 void fn_80005464(void) {
     s32 mode = fn_801769B8();
-    *(s32 *)(lbl_8034EE84 + 4) = mode;
-    lbl_8034EE84[0] = 0;
+    u8 *base = lbl_8034EE84;
+    *(s32 *)(base + 4) = mode;
+    base[0] = 0;
     if (mode == 2 && fn_801EA994() > 1) {
-        lbl_8034EE84[0] = 1;
+        base[0] = 1;
     }
-    lbl_8034EE84[1] = 1;
+    base[1] = 1;
     if (*(s32 *)(lbl_8034EE84 + 4) == 0) {
-        lbl_8034EE84[1] = 0;
+        base[1] = 0;
     }
 }
-
+#pragma unroll off
 void fn_800054E0(void) {
     volatile f32 *p = (volatile f32 *)lbl_8034EC78;
-    s32 i;
-    for (i = 0; i < 16; i++) {
+    s32 i = 16;
+    do {
         p[0] = lbl_8056011C; p[1] = lbl_8056011C;
         p[2] = lbl_8056011C; p[3] = lbl_8056011C;
         p[4] = lbl_8056011C; p[5] = lbl_8056011C;
         p[6] = lbl_8056011C; p[7] = lbl_8056011C;
         p += 8;
-    }
+    } while (--i != 0);
     *(s32 *)(lbl_8034EC78 + 0x200) = 0;
     *(s32 *)(lbl_8034EC78 + 0x204) = fn_802E2C20();
     *(s32 *)(lbl_8034EC78 + 0x208) = 0;
 }
-
+#pragma unroll reset
 s32 fn_80005564(void) { return lbl_8034EEB8[0x50 / 4] != 0; }
 
 #pragma dont_inline on
 s32 fn_80005580(s32 arg0) {
-    u32 flags = ((u32 *)fn_801E87A8())[1];
+    s32 flags = ((s32 *)fn_801E87A8())[1];
     s32 obj = fn_801E86F8(arg0);
     u8 *state = (u8 *)fn_801EA9CC();
-    if (fn_801B8570(obj) == 0) return 1;
-    if (!(flags & 0x100)) return 0;
-    if (*(u32 *)(state + 0x30) == 3) return 0;
-    return state[0x34] != 0;
+
+    if (fn_801B8570(obj) == 0) {
+        return 1;
+    }
+    if (flags & 0x100) {
+        s32 result = 0;
+        switch (*(s32 *)(state + 0x30)) {
+        case 3:
+            break;
+        default:
+            if (state[0x34] != 0) {
+                result = 1;
+            }
+            break;
+        }
+        return result;
+    }
+    return 0;
 }
 
 extern u32 lbl_8034EEB8[];
@@ -114,3 +130,18 @@ s32 fn_8000561C(void) {
     return 1;
 }
 
+#pragma cplusplus on
+extern "C" void fn_80005678(void) {
+    struct TargetIface {
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void call();
+    };
+    struct Container {
+        char pad[0x58];
+        TargetIface *obj;
+    };
+    ((Container *)lbl_8034EEB8)->obj->call();
+}
+#pragma cplusplus reset
