@@ -58,6 +58,47 @@ extern int fn_802146BC(int *, int, int, int, int, int, int, int);
 extern void fn_8023DB68(void);
 extern void fn_8023DBCC(void);
 extern void fn_8022D894(void *, int, int, long, int);
+#pragma use_lmw_stmw off
+void fn_8023D4B8(int arg0) {
+    int ctx[14];
+    Rec_8023D4B8 recs[10];
+    int tbl[5];
+    int i;
+    int r7;
+    lbl_8055F19C = (void *)arg0;
+    fn_8023DB68();
+    fn_80137C78(1);
+    fn_80137C84(arg0, 0);
+    fn_8017EBE0();
+    fn_80137C98(arg0);
+    lbl_8055F198 = (void *)fn_8018108C();
+    fn_8023E078(ctx, arg0);
+    lbl_8055F190 = ctx;
+    recs[0].name = &lbl_8055BC58; recs[0].type = 0xD; recs[0].arg = ctx; recs[0].x = 0; recs[0].id = 0;
+    recs[1].name = &lbl_8055BC60; recs[1].type = 0xD; recs[1].arg = ctx; recs[1].x = 1; recs[1].id = 0;
+    recs[2].name = &lbl_8055B860; recs[2].type = 6; recs[2].arg = (void *)fn_8023E028; recs[2].x = 0; recs[2].id = 0x128;
+    recs[3].name = &lbl_8055B860; recs[3].type = 6; recs[3].arg = (void *)fn_8023DFD4; recs[3].x = 0; recs[3].id = 0x126;
+    recs[4].name = &lbl_8055B860; recs[4].type = 6; recs[4].arg = (void *)fn_8023DD80; recs[4].x = 0; recs[4].id = 0xD;
+    recs[5].name = &lbl_8055B860; recs[5].type = 6; recs[5].arg = 0; recs[5].x = -1; recs[5].id = 0x1B;
+    recs[6].name = &lbl_8055B860; recs[6].type = 6; recs[6].arg = (void *)fn_8023DFB0; recs[6].x = 0; recs[6].id = 0x6F;
+    r7 = fn_802E85B8(arg0, (void *)fn_8023DFB0, 0x1B, -1, (void *)fn_8023DD80, 0x126, (void *)fn_8023DFD4, 0x128);
+    recs[7].name = lbl_803419EC; recs[7].type = 3; recs[7].arg = (void *)r7; recs[7].x = 0; recs[7].id = 0;
+    fn_8000DA10();
+    recs[8].name = lbl_80341A00; recs[8].type = 3; recs[8].arg = (void *)fn_8000DB34(); recs[8].x = 0; recs[8].id = 0;
+    recs[9] = *(Rec_8023D4B8 *)lbl_804987B8;
+    tbl[0] = lbl_802FA258[0];
+    tbl[1] = lbl_802FA258[1];
+    tbl[2] = lbl_802FA258[2];
+    tbl[3] = lbl_802FA258[3];
+    tbl[4] = lbl_802FA258[4];
+    tbl[1] = (int)recs;
+    lbl_8055F194 = 0;
+    ((void (*)(void *, int, int, int, int, int, int, int))fn_8023E0DC)(lbl_8055F190, 0, tbl[4], tbl[3], tbl[2], tbl[0], lbl_804987B8[4], lbl_804987B8[3]);
+    ((int (*)(int *, int, int, int))fn_802146BC)(tbl, -0x3E7, -0x3E7, 1);
+    fn_8017EC30();
+    fn_8023DBCC();
+    fn_8022D7C4(ctx, 0);
+}
 void* fn_8023D6FC(void) {
     return lbl_8055F18C;
 }
@@ -228,6 +269,11 @@ loop_1:
         goto loop_1;
     }
     return 0;
+}
+
+int fn_8023DD4C() {
+    fn_8023DA64(lbl_8055F19C, 1, 1);
+    fn_8023E1FC(lbl_8055F190);
 }
 
 extern void *lbl_8055F198;
