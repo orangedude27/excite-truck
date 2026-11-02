@@ -11,10 +11,10 @@ extern void *fn_801E31D8(void *, const char *, int);
 extern void fn_801E3534(void *);
 extern float fn_801EF190(void);
 extern char lbl_8033A380[];
-extern char lbl_8055B098[];
-extern char lbl_8055B0A0[];
-extern char lbl_8055B0A8[];
-extern char lbl_8055B0B0[];
+extern char lbl_8055B098[4];
+extern char lbl_8055B0A0[4];
+extern char lbl_8055B0A8[4];
+extern char lbl_8055B0B0[4];
 extern float lbl_80562EE8;
 extern float lbl_80562EEC;
 void **fn_801EF1F0(void **arg0, void *arg1) {
