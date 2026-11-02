@@ -29,6 +29,12 @@ char *fn_800081BC(void *);
 char *fn_80008188(void *);
 extern int stricmp(const char *, const char *);
 extern char lbl_8055C1F8[];
+int fn_80012854(void);
+void *fn_8001285C(int);
+void *fn_80007FF0(void *);
+void *fn_80007F90(void *);
+void fn_80257BB8(void *, int);
+extern char lbl_8055C1D8_[];
 
 #pragma cplusplus on
 class MatchDispatch {
