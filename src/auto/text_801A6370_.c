@@ -212,42 +212,28 @@ extern "C" void fn_801A67C4(void *arg0) {
         *(void **)(p + 0x277C) = fn_802E2C20();
     if (fn_801A6724(arg0) == 0) {
         if (*(unsigned char *)(p + 0x2740) != 0) {
-            char *r = (*(Fn801A67C4Vt **)(p + 0x2774))->d4();
+            char *r = (*(Fn801A67C4Vt **)(p + 0x2774))->d2();
             if (*(int *)(r + 0x24) == 0) {
                 *(unsigned char *)(p + 0x2740) = 0;
                 *(char *)(p + 0x2741) = 1;
             }
         }
     } else {
-        int zero = 0;
-        int one = 1;
-        int v0 = *(int *)(p + 0x2744);
-        int v1 = *(int *)(p + 0x2748);
-        int v2 = *(int *)(p + 0x274C);
-        int v3 = *(int *)(p + 0x2750);
-        int v4 = *(int *)(p + 0x2754);
-        int v5 = *(int *)(p + 0x2758);
-        int v6 = *(int *)(p + 0x275C);
-        int v7 = *(int *)(p + 0x2760);
-        int v8 = *(int *)(p + 0x2764);
-        int v9 = *(int *)(p + 0x2768);
-        int v10 = *(int *)(p + 0x276C);
-        int v11 = *(int *)(p + 0x2770);
         float f;
-        *(int *)(p + 0x2704) = zero;
-        *(unsigned char *)(p + 0x2740) = one;
-        *(int *)(p + 0x3C) = v0;
-        *(int *)(p + 0x40) = v1;
-        *(int *)(p + 0x44) = v2;
-        *(int *)(p + 0x48) = v3;
-        *(int *)(p + 0x4C) = v4;
-        *(int *)(p + 0x50) = v5;
-        *(int *)(p + 0x54) = v6;
-        *(int *)(p + 0x58) = v7;
-        *(int *)(p + 0x5C) = v8;
-        *(int *)(p + 0x60) = v9;
-        *(int *)(p + 0x64) = v10;
-        *(int *)(p + 0x68) = v11;
+        *(int *)(p + 0x2704) = 0;
+        *(unsigned char *)(p + 0x2740) = 1;
+        *(int *)(p + 0x3C) = *(int *)(p + 0x2744);
+        *(int *)(p + 0x40) = *(int *)(p + 0x2748);
+        *(int *)(p + 0x44) = *(int *)(p + 0x274C);
+        *(int *)(p + 0x48) = *(int *)(p + 0x2750);
+        *(int *)(p + 0x4C) = *(int *)(p + 0x2754);
+        *(int *)(p + 0x50) = *(int *)(p + 0x2758);
+        *(int *)(p + 0x54) = *(int *)(p + 0x275C);
+        *(int *)(p + 0x58) = *(int *)(p + 0x2760);
+        *(int *)(p + 0x5C) = *(int *)(p + 0x2764);
+        *(int *)(p + 0x60) = *(int *)(p + 0x2768);
+        *(int *)(p + 0x64) = *(int *)(p + 0x276C);
+        *(int *)(p + 0x68) = *(int *)(p + 0x2770);
         fn_8017A580(arg0);
         f = lbl_80562430;
         *(float *)(p + 0x118) = f;
@@ -259,7 +245,7 @@ extern "C" void fn_801A67C4(void *arg0) {
         fn_8018ADBC(arg0, f);
         fn_8018ADB4(arg0, lbl_80562430);
         fn_8018ADC4(arg0, lbl_80562430);
-        (*(Fn801A67C4Vt **)(p + 0x2774))->d9();
+        (*(Fn801A67C4Vt **)(p + 0x2774))->d7();
         fn_801BE168(*(void **)(p + 0x1EC), p + 0x3C, p + 0x118, p + 0x124);
     }
     if (*(unsigned char *)(p + 0x2740) == 0 && *(int *)(p + 0x2704) == 3) {
