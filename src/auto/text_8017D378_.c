@@ -203,6 +203,7 @@ done:
     fn_8017D2C8(arg0, arg1, arg2, arg3, arg4);
 }
 
+#pragma ppc_psq_save off
 void fn_8017DCB4(void *arg0) {
  unsigned char *p=(unsigned char*)arg0; float v[3],a[4],b[4],c[4],d[4]; int mode;
  extern void fn_8017B164(void); extern void fn_8017D380(float*,int); extern void fn_8017A580(void*);
@@ -214,9 +215,9 @@ void fn_8017DCB4(void *arg0) {
  extern void fn_8017DEE0(void*,long,long,short,float); extern int fn_801E9E30(void*,float*);
  extern void fn_8017B81C(void*);
  if(p[0x1FC]) { fn_8017B164(); fn_8017D380(v,*(int*)(p+0x1F8)); *(float*)(p+0x60)=v[0]; *(float*)(p+0x64)=v[1]; *(float*)(p+0x68)=v[2]; fn_8017A580(arg0); p[0x1E9]=0; p[0x1FC]=0; }
- if(*(int*)(p+0x1F0)==0 && *(float*)(p+0x1F4)<fn_8017D378()) { mode=1; if(*(unsigned int*)((char*)fn_8017960C(*(int*)(p+0x1F8))+0x10)==0x41524352) mode=2; *(int*)(p+0x1F0)=mode; }
+ if(*(int*)(p+0x1F0)==0 && *(float*)(p+0x1F4)<fn_8017D378()) { mode=1; if(*(unsigned int*)((char*)fn_8017960C(*(int*)(p+0x1F8))+0x10)==0x41434152) mode=2; *(int*)(p+0x1F0)=mode; }
  if(!((lbl_8055D430&1)&&(lbl_8055D430&0x88))) { fn_8017D380(v,*(int*)(p+0x1F8)); *(float*)(p+0x60)=v[0]; *(float*)(p+0x64)=v[1]; *(float*)(p+0x68)=v[2]; fn_8017A580(arg0); *(float*)(p+0x118)=lbl_80561BE0; *(float*)(p+0x11C)=lbl_80561BE0; *(float*)(p+0x120)=lbl_80561BE0; }
- if(!p[0x1FE]&&(lbl_8055D430&1)&&(lbl_8055D430&0x80)) { void*obj=fn_801B2EC0(*(int*)(p+0x1F8)); void**vt=*(void***)obj; ((void(*)(void*))vt[4])(obj); if(*(int*)((char*)obj+0x24)==0) { short angle; fn_801602B0(a); fn_8017E3C4(arg0,a,&angle); fn_80144DC8(b); fn_8017E388(b); fn_80160230(c,a); fn_8017E380(); fn_8017960C(*(int*)(p+0x1F8)); GXInitLightAttnA_80144B44(d,lbl_80561BE0,lbl_80561BE0,lbl_80561BE0); fn_8017DEE0(arg0,(long)b,(long)d,angle,lbl_80561BE0); } }
+ if(!p[0x1FE]&&(lbl_8055D430&1)&&(lbl_8055D430&0x80)) { void*obj=fn_801B2EC0(*(int*)(p+0x1F8)); void**vt=*(void***)obj; ((void(*)(void*))vt[4])(obj); if(*(int*)((char*)obj+0x24)==0) { short angle; float f31; fn_801602B0(a); fn_8017E3C4(arg0,a,&angle); fn_80144DC8(b); fn_8017E388(b); fn_80160230(c,a); f31=fn_8017E380(); c[1]=*(float*)((char*)fn_801602B4()+0x28)+f31; (void)fn_8017960C(*(int*)(p+0x1F8)); GXInitLightAttnA_80144B44(d,lbl_80561BE0,lbl_80561BE0,lbl_80561BE0); fn_8017DEE0(arg0,(long)b,(long)d,angle,lbl_80561BE0); } }
  v[0]=*(float*)(p+0x60);v[1]=*(float*)(p+0x64);v[2]=*(float*)(p+0x68); if(fn_801E9E30(p+0x6C,v)==0)p[0x1FC]=1; fn_8017B81C(arg0);
 }
 
