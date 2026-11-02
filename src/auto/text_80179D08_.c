@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+typedef struct { s32 w[12]; } Blk12;
+typedef struct { s32 w[9]; } Blk9;
 
 extern void fn_80128668(void *);
 extern void fn_801E9DC4(void *);
@@ -401,30 +403,76 @@ void fn_8017AD08(void *dst, void *src) {
 
 extern void PSVECCrossProduct(float *, float *, float *);
 extern void PSVECNormalize(float *, float *);
+#pragma optimize_for_size on
+#pragma unroll off
 void fn_8017AE94(void *arg0, float *arg1, float *arg2, float farg0) {
     float *base = (float *)arg0;
     float *out = base;
-    float *a = arg1, *b = arg2;
-    float sp8[3], sp14[3], sp20[3];
-    int i;
+    float *a = arg1;
+    float *b = arg2;
+    struct Temps { float sp8[3]; float sp14[3]; float sp20[3]; } temp;
+    register int i;
     for (i = 0; i < 2; i++) {
-        out[0] = a[0] + farg0 * (b[0] - a[0]);
-        out[1] = a[1] + farg0 * (b[1] - a[1]);
-        out[2] = a[2] + farg0 * (b[2] - a[2]);
-        out[3] = a[3] + farg0 * (b[3] - a[3]);
-        out[4] = a[4] + farg0 * (b[4] - a[4]);
-        out[5] = a[5] + farg0 * (b[5] - a[5]);
-        out += 6; a += 6; b += 6;
+        float vb0, va0, vb1, d0, va1, vb2, d1, va2, p0, vb3;
+        float p1, d2, va3, v0, vb4, d3, p2, va4, d4, vb5;
+        float va5, p3, v1, d5, p4, p5, v2, v3, v4, v5;
+        vb0 = b[0];
+        va0 = a[0];
+        vb1 = b[1];
+        d0 = vb0 - va0;
+        va1 = a[1];
+        vb2 = b[2];
+        d1 = vb1 - va1;
+        va2 = a[2];
+        p0 = farg0 * d0;
+        vb3 = b[3];
+        p1 = farg0 * d1;
+        d2 = vb2 - va2;
+        va3 = a[3];
+        v0 = va0 + p0;
+        vb4 = b[4];
+        d3 = vb3 - va3;
+        p2 = farg0 * d2;
+        va4 = a[4];
+        d4 = vb4 - va4;
+        vb5 = b[5];
+        va5 = a[5];
+        p3 = farg0 * d3;
+        out[0] = v0;
+        v1 = va1 + p1;
+        a += 6;
+        d5 = vb5 - va5;
+        p4 = farg0 * d4;
+        b += 6;
+        p5 = farg0 * d5;
+        out[1] = v1;
+        v2 = va2 + p2;
+        v3 = va3 + p3;
+        v4 = va4 + p4;
+        out[2] = v2;
+        v5 = va5 + p5;
+        out[3] = v3;
+        out[4] = v4;
+        out[5] = v5;
+        out += 6;
     }
-    PSVECNormalize(base, base); PSVECNormalize(base + 3, base + 3); PSVECNormalize(base + 6, base + 6);
-    sp8[0]=base[0]; sp8[1]=base[1]; sp8[2]=base[2];
-    sp20[0]=base[6]; sp20[1]=base[7]; sp20[2]=base[8];
-    PSVECCrossProduct(sp20, sp8, sp14);
-    PSVECNormalize(sp8, sp8); PSVECNormalize(sp14, sp14);
-    PSVECCrossProduct(sp8, sp14, sp20);
-    base[0]=sp8[0]; base[1]=sp8[1]; base[2]=sp8[2];
-    base[3]=sp14[0]; base[4]=sp14[1]; base[5]=sp14[2];
-    base[6]=sp20[0]; base[7]=sp20[1]; base[8]=sp20[2];
+    PSVECNormalize(base, base);
+    PSVECNormalize(base + 3, base + 3);
+    PSVECNormalize(base + 6, base + 6);
+    {
+        float x, y, z;
+        z = base[2]; y = base[1]; x = base[0];
+        temp.sp8[0] = x; temp.sp8[1] = y; temp.sp8[2] = z;
+        z = base[8]; y = base[7]; x = base[6];
+        temp.sp20[0] = x; temp.sp20[1] = y; temp.sp20[2] = z;
+    }
+    PSVECCrossProduct(temp.sp20, temp.sp8, temp.sp14);
+    PSVECNormalize(temp.sp8, temp.sp8);
+    PSVECNormalize(temp.sp14, temp.sp14);
+    PSVECCrossProduct(temp.sp8, temp.sp14, temp.sp20);
+    base[0] = temp.sp8[0]; base[1] = temp.sp8[1]; base[2] = temp.sp8[2];
+    base[3] = temp.sp14[0]; base[4] = temp.sp14[1]; base[5] = temp.sp14[2];
+    base[6] = temp.sp20[0]; base[7] = temp.sp20[1]; base[8] = temp.sp20[2];
 }
-
-#pragma scheduling on
+#pragma unroll reset
+#pragma optimize_for_size reset
