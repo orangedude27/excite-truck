@@ -355,7 +355,7 @@ void fn_800201F0(void) {
                         fn_802E317C(base + 0x150, a);
                     }
                     *(float *)(e + 0x68) = VSLOT(item, 0x24, VF_fp)(item, base + 0x16C);
-                    e[0x6C] = VSLOT(item, 0x30, VF_cpi)(item, lbl_80558D98, 0);
+                    e[0x6C] = VSLOT(item, 0x30, VF_cpi)(item, &lbl_80558D98, 0);
                 }
             }
         } else {
