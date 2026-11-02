@@ -2,6 +2,32 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 
 extern char lbl_80342ED8[];
+extern char lbl_80342E38[];
+extern char lbl_802FA338[];
+extern char lbl_80498878[];
+extern char lbl_8055BE20, lbl_8055B860, lbl_8055BAB8;
+extern void fn_80236914(void);
+extern int fn_80232578(void *);
+extern int fn_802C5130(void *);
+extern int fn_80019088(void);
+extern int fn_80019888(void);
+extern int *fn_80019054(int);
+extern int fn_802146BC(void *, int, int, int);
+extern int sprintf(char *, const char *, ...);
+extern void fn_802E30C8(const char *, ...);
+typedef struct { int label, type, value, flags, id; } Ent2449;
+typedef struct {
+    int one;
+    int hdr[5];
+    Ent2449 e[6];
+    char *p98;
+    int pad9c[4];
+    int spAC, spB0, spB4;
+    char buf[0x84];
+    int sp138, sp13C;
+    int pad140[2];
+    int sp148, sp14C;
+} Frame2449;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -31,27 +57,28 @@ void fn_80244C50(void) { fn_8013C804(); }
 void fn_80244C54(void) { fn_8013C8B8(); }
 
 s32 fn_80244C58(void *arg0, s32 arg1) {
-    s32 temp_r0;
-    s32 temp_r4;
-    s32 var_r3;
+    s32 *f1c = (s32 *)((char *)arg0 + 0x1C);
+    s32 v;
+    s32 limit;
+    s32 r;
     switch (arg1) {
     case 0x126:
         *(s32 *)((char *)arg0 + 0xA8) = fn_802E2C20();
-        *(s32 *)((char *)arg0 + 0x1C) = *(s32 *)((char *)arg0 + 0x1C) - 1;
-        goto update;
+        *f1c = *f1c - 1;
+        break;
     case 0x128:
         *(s32 *)((char *)arg0 + 0xAC) = fn_802E2C20();
-        *(s32 *)((char *)arg0 + 0x1C) = *(s32 *)((char *)arg0 + 0x1C) + 1;
-    update:
-        temp_r4 = *(s32 *)((char *)arg0 + 0x1C);
-        var_r3 = *(s32 *)((char *)arg0 + 0x18) - 3;
-        temp_r0 = temp_r4 & ((-temp_r4 & ~temp_r4) >> 31);
-        if (temp_r0 < var_r3) var_r3 = temp_r0;
-        *(s32 *)((char *)arg0 + 0x1C) = var_r3;
-        return 1;
+        *f1c = *f1c + 1;
+        break;
     default:
         return 0;
     }
+    v = *f1c;
+    limit = *(s32 *)((char *)arg0 + 0x18);
+    r = v & ((-v & ~v) >> 31);
+    if (r < limit - 3) limit = r;
+    *f1c = limit;
+    return 1;
 }
 
 void fn_80244D0C(void *arg0) {
