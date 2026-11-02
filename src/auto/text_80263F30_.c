@@ -406,7 +406,41 @@ void fn_80264A5C(float farg0, float farg1) {
     }
 }
 
-void fn_80264D5C(void *arg0) {
+typedef struct SparkParticle {
+    float x, y, vx, vy, a10, a14, life;
+    int id;
+} SparkParticle;
+typedef struct SparkList {
+    char pad0[0x2c];
+    float gx, gy;
+    char pad1[0x58 - 0x34];
+    SparkParticle *items;
+    int count;
+} SparkList;
+extern float fn_80214D48(void);
+extern float lbl_80558DC4[];
+static inline void fn_80264D5C_update(SparkList *l, float dt) {
+    int i = 0;
+    while (i < l->count) {
+        SparkParticle *p = &l->items[i];
+        p->life -= dt;
+        if (p->life < lbl_80558DC4[0]) {
+            int count = l->count;
+            if (i >= 0 && i < count) {
+                if (i != count - 1) {
+                    *p = l->items[count - 1];
+                }
+                l->count = count - 1;
+            }
+        } else {
+            i++;
+            p->x += (p->vx += l->gx * dt) * dt;
+            p->y += (p->vy += l->gy * dt) * dt;
+            p->a10 += p->a14 * dt;
+        }
+    }
+}
+void fn_80264D5C_old(void *arg0) {
  extern float fn_80214D48(void); extern float lbl_80558DC4[];
  int i,off,count; float dt,x,y; unsigned char *p,*last;
  dt=fn_80214D48(); i=0; off=0;
@@ -527,16 +561,17 @@ done:
 
 void fn_802652E8(void *arg0) {
     char *p = (char *)arg0;
-    float s8, sC, s10, s14, s18, s1C, s20, s24;
+    char *q;
+    float s[8];
     float f31, f30, f29;
     int v, max, flag;
-    char saved;
+    signed char saved;
     float t;
 
     t = fn_80264588();
     if (t < *(float *)(p + 0xB8)) return;
     f31 = lbl_80563C18 * (t - *(float *)(p + 0xB8));
-    fn_8022ACFC(*(int *)(p + 0x18), p + 0x1C, &s18, &s1C, &s20, &s24, (float)*(int *)(p + 4), (float)*(int *)(p + 8));
+    fn_8022ACFC(*(int *)(p + 0x18), p + 0x1C, &s[4], &s[5], &s[6], &s[7], (float)*(int *)(p + 4), (float)*(int *)(p + 8));
     v = (int)f31;
     max = *(int *)(p + 0xB4);
     flag = v > max;
@@ -545,10 +580,11 @@ void fn_802652E8(void *arg0) {
     } else {
         fn_802645EC();
     }
-    saved = p[v + 0x1C];
-    p[v + 0x1C] = 0;
-    fn_8022ACFC(*(int *)(p + 0x18), p + 0x1C, &s8, &sC, &s10, &s14, (float)*(int *)(p + 4), (float)*(int *)(p + 8));
-    f30 = (s20 - s18) - (s10 - s8);
+    q = p + v;
+    saved = q[0x1C];
+    q[0x1C] = 0;
+    fn_8022ACFC(*(int *)(p + 0x18), p + 0x1C, &s[0], &s[1], &s[2], &s[3], (float)*(int *)(p + 4), (float)*(int *)(p + 8));
+    f30 = (s[6] - s[4]) - (s[2] - s[0]);
     f29 = (float)*(int *)(p + 4);
     {
         int r = fn_8022AA84(*(int *)(p + 0x18));
@@ -558,13 +594,12 @@ void fn_802652E8(void *arg0) {
             f29 = f29 - lbl_80563BF8 * f30;
         }
     }
-    fn_8022BD40(*(int *)(p + 0x18), p + 0x1C, 0, 0, f29, (float)*(int *)(p + 8), lbl_80563BF0, s20 - s18, s24 - s1C, lbl_80563C00);
-    p[v + 0x1C] = saved;
+    fn_8022BD40(*(int *)(p + 0x18), p + 0x1C, 0, 0, f29, (float)*(int *)(p + 8), lbl_80563BF0, s[6] - s[4], s[7] - s[5], lbl_80563C00);
+    q[0x1C] = saved;
     if (!flag) {
         float f5 = f31 - (float)v;
-        float f3 = (s18 + s10) - s8;
         float f4 = lbl_80563C1C * f5;
-        fn_80264A5C((float)(int)f4 + f3, (s24 + s1C) * lbl_80563BF8);
+        fn_80264A5C((float)(int)f4 + ((s[4] + s[2]) - s[0]), (s[7] + s[5]) * lbl_80563BF8 * 1.0f);
     }
 }
 
