@@ -163,6 +163,8 @@ extern "C" void fn_8026B260(void) {
 
 #pragma cplusplus reset
 #pragma ppc_psq_save off
+#pragma paired off
+#pragma paired_single off
 void fn_8026B3D4(int arg0) {
     float t = lbl_8055E3C8;
     unsigned char *p = (unsigned char *)fn_8017960C();
