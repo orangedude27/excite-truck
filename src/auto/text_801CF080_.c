@@ -7,6 +7,7 @@
 extern float PSVECDotProduct(const float *, const float *);
 extern f32 lbl_80558DC4[];
 extern f32 lbl_80562A38, lbl_80562A3C;
+#pragma dont_inline on
 #pragma scheduling invalid_target
 f32 fn_801CF778(const float *arg0, const float *arg1, const float *arg2) {
     float delta[3];
@@ -20,6 +21,66 @@ f32 fn_801CF778(const float *arg0, const float *arg1, const float *arg2) {
     delta[1] += arg2[1] * dot;
     delta[2] += arg2[2] * dot;
     return PSVECDotProduct(delta, delta);
+}
+
+s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
+    f32 zero = lbl_80562A38;
+    f32 eps = lbl_80562A3C;
+    s32 hit = 0;
+    s32 n;
+    s32 off = 0;
+    for (n = 0; n < *(s32 *)(arg0 + 4); n++, off += 0x18) {
+        u8 *node = *(u8 **)arg0 + off;
+        f32 r2 = *(f32 *)(node + 0xC) * *(f32 *)(node + 0xC);
+        s32 t;
+        s32 toff;
+        if (fn_801CF778((f32 *)node, origin, dir) > r2) {
+            continue;
+        }
+        t = *(s32 *)(node + 0x10);
+        toff = t * 0x3C;
+        for (; t < *(s32 *)(node + 0x14); t++, toff += 0x3C) {
+            u8 *tri = *(u8 **)(arg0 + 0x10) + toff;
+            f32 *nrm = (f32 *)(tri + 8);
+            f32 d = *(f32 *)(tri + 0x14);
+            f32 den = PSVECDotProduct(dir, nrm);
+            f32 u;
+            if (fabs(den) < eps) {
+                continue;
+            }
+            u = (d - PSVECDotProduct(origin, nrm)) / den;
+            if (u >= zero && u < *dist) {
+                f32 pt[3];
+                f32 diff[3];
+                s16 *ip = (s16 *)tri;
+                f32 *edge = (f32 *)(tri + 0x18);
+                s32 inside = 1;
+                s32 k;
+                pt[0] = origin[0] + dir[0] * u;
+                pt[1] = origin[1] + dir[1] * u;
+                pt[2] = origin[2] + dir[2] * u;
+                for (k = 0; k < 3; k++) {
+                    f32 *v = (f32 *)(*(u8 **)(arg0 + 8) + ip[1] * 0xC);
+                    diff[0] = pt[0] - v[0];
+                    diff[1] = pt[1] - v[1];
+                    diff[2] = pt[2] - v[2];
+                    if (PSVECDotProduct(diff, edge) > lbl_80558DC4[0]) {
+                        inside = 0;
+                    }
+                    ip++;
+                    edge += 3;
+                }
+                if (inside) {
+                    *dist = u;
+                    hit = 1;
+                    out[0] = nrm[0];
+                    out[1] = nrm[1];
+                    out[2] = nrm[2];
+                }
+            }
+        }
+    }
+    return hit;
 }
 
 void fn_801CFA48(void *arg0) {
