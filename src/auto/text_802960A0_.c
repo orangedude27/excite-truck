@@ -358,6 +358,88 @@ void fn_80296AAC(void *arg0) {
     *(int *)((char *)arg0 + 0x2C) = 10;
     *(int *)((char *)arg0 + 0x14) = -1;
 }
+
+#pragma inline_depth(0)
+#pragma use_lmw_stmw off
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_80296B10(char *arg0, void *arg1) {
+    class Iterator {
+    public:
+        virtual void v0();
+        virtual void *get(int);
+    };
+    int close, open;
+    void *result;
+    int ok;
+    Iterator *it;
+    void *entry;
+    int idx, off, back;
+    char sp8[0x30];
+
+    result = fn_80296950(arg0);
+    if (result == 0) {
+        ok = 0;
+        if (fn_8012C33C(arg0) != 0) {
+            it = (Iterator *)fn_80131808(arg0);
+            open = 0;
+            fn_80296AAC(sp8);
+            close = 0;
+            for (;;) {
+                entry = it->get(open + close);
+                if (entry == 0) break;
+                if (fn_802962CC(entry) != 0) {
+                    open++;
+                } else {
+                    if (fn_80296308(entry) != 0) {
+                        fn_802964EC(sp8, entry, sp8);
+                    }
+                    close++;
+                }
+            }
+            if (arg1 != 0) {
+                fn_802964EC(sp8, arg1, sp8);
+            }
+            if (open != 0) {
+                ok = 1;
+                result = fn_801284F8(0x30, lbl_80349348);
+                *(void **)((char *)result + 0x24) = fn_8002F37C(fn_8012850C(open * 0x30 + 0x10, lbl_80349354, open * 0x30), (void *)fn_80296D24, 0, 0x30, open);
+                *(int *)((char *)result + 0x2C) = open;
+                *(int *)((char *)result + 0x28) = 0;
+                if (arg1 != 0) {
+                    *(char *)result = 0;
+                } else {
+                    strncpy((char *)result, arg0, 0x20);
+                }
+                idx = 0;
+                back = 0;
+                off = 0;
+                while (ok != 0) {
+                    void *item = it->get(idx);
+                    if (item == 0) break;
+                    if (fn_802962CC(item) != 0) {
+                        if (fn_802964EC((char *)*(void **)((char *)result + 0x24) + off - back, item, sp8) == 0) {
+                            ok = 0;
+                        }
+                    } else {
+                        back += 0x30;
+                    }
+                    off += 0x30;
+                    idx++;
+                }
+            }
+            fn_80131818(it);
+        }
+        if (ok == 0) {
+            fn_80296838(result);
+            result = 0;
+        }
+    }
+    if (result != 0) {
+        fn_802968E8(result);
+    }
+    return result;
+}
 #pragma pop
 void fn_80296D24(void) {}
 
