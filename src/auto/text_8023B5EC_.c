@@ -41,7 +41,9 @@ extern void fn_802ECEC0(void);
 extern char lbl_803412D8[];
 extern char lbl_803412EC[];
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_8023B640(void) { fn_802E30C8(lbl_803412D8); fn_802473A4(); }
+#pragma scheduling on
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
