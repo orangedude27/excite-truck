@@ -331,7 +331,7 @@ done:
     return 0;
 }
 
-void fn_80138958(void *arg0, float *arg1) { fn_801386D0(arg1[0], arg1[1], arg1[2]); }
+void fn_80138958(void *arg0, float *arg1) { fn_801386D0(arg0, arg1[0], arg1[1], arg1[2]); }
 
 extern void *fn_8012C370(int, int, unsigned int *, int *, void **, unsigned char *);
 extern void fn_8012C4D8(void *);
