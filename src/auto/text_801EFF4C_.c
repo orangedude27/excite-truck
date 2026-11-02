@@ -142,6 +142,13 @@ extern "C" void fn_801F0148(void *arg0, void *arg1) {
 }
 #pragma scheduling on
 
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" int sscanf(const char *, const char *, ...);
+extern "C" char *strchr(const char *, int);
+extern int lbl_8055B0D0;
+extern float lbl_80562F1C;
+extern char lbl_8033A420[];
+
 extern int lbl_8055B0E0;
 extern int lbl_8055B0E8;
 extern int lbl_80562F20;
