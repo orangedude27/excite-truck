@@ -32,6 +32,7 @@ extern void *lbl_8055FEAC;
 extern void GXLoadTexMtxImm(float *, unsigned int, unsigned char);
 extern void GXLoadTexObj(void *, int);
 extern float lbl_8055D148;
+extern float lbl_80565040, lbl_80565044, lbl_80565048, lbl_8056504C;
 extern unsigned char lbl_804DB068[];
 extern unsigned char lbl_802FACF8[];
 extern unsigned char lbl_802FACD8[];
