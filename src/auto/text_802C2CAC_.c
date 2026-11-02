@@ -814,6 +814,67 @@ loop_3:
     }
 }
 
+extern int fn_800241CC(int);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
+    s32 dx, dy, a, inc, end, dir, x, y;
+    dx = x1 - x0;
+    x = x0;
+    y = y0;
+    dy = y1 - y0;
+    if (dx == 0) {
+        if (dy != 0) {
+            dir = -1;
+            if (y0 < y1) dir = 1;
+            a = y0 * dir;
+            inc = dir * dir;
+            end = dir * y1;
+            for (; a < end; a += inc, y += dir)
+                fn_802C32B8(x, y, color);
+        }
+        return;
+    }
+    if (dy == 0) {
+        dir = -1;
+        if (x0 < x1) dir = 1;
+        a = x0 * dir;
+        inc = dir * dir;
+        end = dir * x1;
+        for (; a < end; a += inc, x += dir)
+            fn_802C32B8(x, y, color);
+        return;
+    }
+    {
+        s32 ady = fn_800241CC(dy);
+        if (fn_800241CC(dx) < ady) {
+            f32 step;
+            f32 fx;
+            dir = -1;
+            if (y < y1) dir = 1;
+            step = ((f32)dir * (f32)dx) / (f32)dy;
+            fx = (f32)x;
+            for (; y != y1; y += dir) {
+                fn_802C32B8((s32)fx, y, color);
+                fx += step;
+            }
+            return;
+        }
+    }
+    {
+        f32 step;
+        f32 fy;
+        dir = -1;
+        if (x < x1) dir = 1;
+        step = ((f32)dir * (f32)dy) / (f32)dx;
+        fy = (f32)y;
+        for (; x != x1; x += dir, fy += step) {
+            fn_802C32B8(x, (s32)fy, color);
+        }
+    }
+}
+#pragma pop
 extern void *fn_8012C370(s32, u32 *, s32 *, s32, u8 *);
 extern const char lbl_8034B144[];
 void *fn_802C49E8(s32 arg0) {
