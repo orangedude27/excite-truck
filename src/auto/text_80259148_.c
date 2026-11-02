@@ -16,6 +16,10 @@ extern unsigned char lbl_8055F67C;
 extern float lbl_80563AE8;
 extern void fn_80216D28(void);
 extern void fn_80214D50(int);
+extern unsigned char *fn_8001EFAC(int, int);
+extern int fn_801345D8(char *, int, const char *, int);
+extern const char lbl_80344F08[];
+extern char lbl_8055C38C;
 static inline int IsLowAndFlagged_(void *obj) {
     int result = 0;
     if (*(float *)((char *)obj + 0xCC) < lbl_80563AE8 && *(unsigned char *)((char *)obj + 0xC5) != 0) {
