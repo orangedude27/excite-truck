@@ -184,7 +184,7 @@ loop_condition:
 
 extern int lbl_802F9D90[4];
 extern float lbl_805631D4, lbl_805631EC;
-#pragma ppc_psq_save reset
+#pragma ppc_psq_save off
 void fn_80205D5C(void) {
     int rawr[4];
     float off[4];
@@ -229,6 +229,7 @@ void fn_80205D5C(void) {
     fn_802C8E48();
     fn_802C8D74();
 }
+#pragma ppc_psq_save reset
 extern float lbl_80563198, lbl_805631A0, lbl_805631CC, lbl_805631E4, lbl_805631F0, lbl_805631F4;
 extern double lbl_805631B0;
 extern char lbl_804891D0[];
