@@ -64,8 +64,9 @@ extern char lbl_8033A060[];
 __declspec(section ".sdata") extern char lbl_8055AFCC[];
 __declspec(section ".sdata") extern char lbl_8055AFD4[];
 extern int sscanf(const char *,...);
-#pragma push
+#pragma pop
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801EC214(void *out, void *obj, int arg2, const char *name, int arg4, float f1, float f2) {
     char *base = lbl_8033A060;
     int count = 0;
