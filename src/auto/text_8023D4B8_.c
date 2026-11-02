@@ -49,6 +49,13 @@ extern int fn_8023DFB0(void);
 extern int fn_8023DFD4(void);
 extern int fn_8023E028(void);
 extern void *fn_8023E078(void *, int);
+extern void *lbl_8055F198;
+extern int lbl_804987B8[];
+extern int fn_8018108C(void);
+extern int fn_80137C98(int);
+extern int fn_802146BC(int *, int, int, int, int, int, int, int);
+extern void fn_8023DB68(void);
+extern void fn_8023DBCC(void);
 extern void fn_8022D894(void *, int, int, long, int);
 void* fn_8023D6FC(void) {
     return lbl_8055F18C;
