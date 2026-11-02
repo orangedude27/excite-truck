@@ -22,6 +22,12 @@ struct Unk_801EEA64Iface {
 };
 #pragma cplusplus reset
 extern long lbl_80488648[];
+extern char lbl_8033A300[];
+extern char lbl_8033A0B0[];
+extern char lbl_8055AFEC[];
+extern char lbl_8055AFF4[];
+void fn_801EE974(void *, void *);
+void *fn_801E87A8(void);
 void fn_801EDD7C(void *, long);
 long fn_80179CB0(void);
 void fn_801EECAC(long, long);
@@ -338,7 +344,71 @@ long fn_801ECC8C(unsigned int arg0) {
         result = 1;
     return result;
 }
-#pragma scheduling on
+
+#pragma dont_inline on
+void fn_801ECCE0(long arg0, long arg1) {
+    void *list[8];
+    void *item;
+    void *sel;
+    unsigned idx;
+    int i, j, n;
+    int s50, s94;
+    unsigned who;
+    if (*(int *)(arg0 + 0x40) != 0) return;
+    for (i = 0; lbl_80488648[i] != 0 && i < 8; i++) {
+        if ((unsigned)arg1 != fn_801ECC8C(lbl_80488648[i])) fn_801ECB80((void *)lbl_80488648[i]);
+    }
+    idx = fn_801E866C(-1);
+    if (idx < 8) sel = (void *)lbl_80488648[idx];
+    else sel = 0;
+    n = 0;
+    for (i = 0; lbl_80488648[i] != 0 && i < 8; i++) {
+        if ((void *)lbl_80488648[i] != sel) {
+            list[n] = (void *)lbl_80488648[i];
+            n++;
+        }
+    }
+    lbl_80488668[2] = ((float (*)(float))fn_802C99E8)(lbl_80562E90);
+    s50 = fn_802C9950(((int *)lbl_80488668)[0]);
+    s94 = fn_802C9994(((int *)lbl_80488668)[1]);
+    for (j = 0; j < n; j++) {
+        item = list[j];
+        who = fn_801ECC8C((long)item);
+        if (who != (unsigned)arg1) {
+            if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
+            fn_801ECF58(item);
+            if (who != 0) fn_802AB994();
+        }
+    }
+    for (j = 0; j < n; j++) {
+        item = list[j];
+        who = fn_801ECC8C((long)item);
+        if (who != (unsigned)arg1) {
+            if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
+            fn_801ECFE0(item);
+            if (who != 0) fn_802AB994();
+        }
+    }
+    for (j = 0; j < n; j++) {
+        item = list[j];
+        who = fn_801ECC8C((long)item);
+        if (who != (unsigned)arg1) {
+            if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
+            fn_801ED2D0(item);
+            if (who != 0) fn_802AB994();
+        }
+    }
+    who = fn_801ECC8C((long)sel);
+    if (who != (unsigned)arg1) {
+        if (who != 0) fn_802AB770(*(int *)((char *)sel + 0x40));
+        fn_801ED354(sel);
+        if (who != 0) fn_802AB994();
+    }
+    ((float (*)(float))fn_802C99E8)(lbl_80488668[2]);
+    fn_802C9994(s94);
+    fn_802C9950(s50);
+}
+#pragma dont_inline reset
 void fn_801ECF58(void *arg0) {
     long flag;
     long entry;
