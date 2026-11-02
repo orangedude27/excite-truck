@@ -10,7 +10,7 @@ void fn_802E30C8(void *);
 extern void *lbl_8055F014;
 extern float lbl_805635FC;
 extern float lbl_8056360C;
-void fn_8022FB6C(void);
+void fn_8022FB6C();
 float fn_80214D48(void);
 void fn_8022FD9C(void *, float);
 void fn_80015EB0(float);
@@ -192,7 +192,7 @@ extern int fn_802CAC28(void *, int);
 void fn_8022FF90(void *);
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma use_lmw_stmw off
 #pragma dont_inline fn_8022F2FC
 void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, float farg0) {
