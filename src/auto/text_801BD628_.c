@@ -2,6 +2,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct { float x, y, z; } Vec801BD;
+static inline void Vec801BD_Copy(Vec801BD *dst, const Vec801BD *src) {
+    float x = src->x, y = src->y, z = src->z;
+    dst->x = x; dst->y = y; dst->z = z;
+}
 extern float lbl_80562844;
 __declspec(section ".sdata") extern char lbl_8055A924[];
 __declspec(section ".sdata") extern char lbl_8055A92C[];
