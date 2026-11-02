@@ -2,6 +2,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void PSVECCrossProduct(void *, void *, void *);
+extern float PSVECDotProduct(void *, void *);
+extern void PSVECNormalize(void *, void *);
+extern void fn_80015B20(void *, void *, void *);
+extern float lbl_805628B8, lbl_805628BC, lbl_805628CC;
 extern void fn_8019EECC(void *, void *);
 extern void fn_8017A580(int, int, int, int, int, int);
 extern void fn_8017A57C(float, float);
