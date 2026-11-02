@@ -51,6 +51,34 @@ static inline void fn_801E1048_xg(const f32 *m, const f32 *src, f32 *dst) {
     }
 }
 
+static inline void fn_801E1048_xh(const f32 *m, const f32 *src, f32 *dst) {
+    f32 x, y, z;
+    if (src == dst) {
+        f32 xy3, xx0, xx1, yy4, xx2, yy5;
+        x = src[0];
+        y = src[1];
+        z = src[2];
+        xy3 = y * m[3];
+        xx0 = x * m[0];
+        xx1 = x * m[1];
+        yy4 = y * m[4];
+        xx2 = x * m[2];
+        yy5 = y * m[5];
+        dst[0] = z * m[6] + (xx0 + xy3);
+        dst[1] = z * m[7] + (xx1 + yy4);
+        dst[2] = z * m[8] + (xx2 + yy5);
+    } else {
+        x = src[0];
+        y = src[1];
+        z = src[2];
+        x = z * m[6] + (x * m[0] + y * m[3]);
+        dst[0] = x;
+        y = z * m[7] + (x * m[1] + y * m[4]);
+        dst[1] = y;
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+    }
+}
+
 static inline void fn_801E1048_xv(f32 *m, Vec_801E1048 *src, Vec_801E1048 *dst, f32 x, f32 y, f32 z) {
     if (src == dst) {
         f32 nx = z * m[6] + (x * m[0] + y * m[3]);
@@ -248,7 +276,7 @@ s32 fn_801E1048(void) {
             for (j = 0; j < 4; j++, p += 0x74) {
                 f32 *m = (f32 *)(player + 0x3C);
                 v = *(Vec_801E1048 *)(p + 0x30);
-                fn_801E1048_xf(m, (f32 *)&v, (f32 *)&v, v.x, v.y, v.z);
+                fn_801E1048_xg(m, (f32 *)&v, (f32 *)&v);
                 v.x += m[9];
                 v.y += m[10];
                 v.z += m[11];
