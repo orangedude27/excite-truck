@@ -318,6 +318,65 @@ void fn_80291C7C(void *arg0, int arg1) {
     fn_802D3BB4(*(int *)((char *)&lbl_804B4010 + 0x10), (float *)&pos, a, b, color, p[7]);
 }
 
+extern double lbl_805644C0;
+#pragma ppc_psq_save off
+void fn_80291E64(void *arg0) {
+    float v[3];
+    float e[3];
+    float s[3];
+    float d[3];
+    float o[3];
+    float *p;
+    char *ctx = (char *)arg0;
+    char *ent;
+    int i;
+    float t, w, negd, one, zero, step, scale, k;
+    float sx, sy, sz;
+    p = (float *)fn_802C86DC();
+    t = *(float *)(ctx + 0x124);
+    o[0] = p[0x24 / 4] + p[0x18 / 4] * t;
+    o[1] = p[0x28 / 4] + p[0x1C / 4] * t;
+    o[2] = p[0x2C / 4] + p[0x20 / 4] * t;
+    d[0] = o[0] - *(float *)(ctx + 0x130);
+    d[1] = o[1] - *(float *)(ctx + 0x134);
+    d[2] = o[2] - *(float *)(ctx + 0x138);
+    PSVECNormalize(d, d);
+    w = *(float *)(ctx + 0x128);
+    negd = -(w - *(float *)(ctx + 0x124));
+    one = lbl_80564480;
+    k = *(float *)(ctx + 0x13C) / (float)lbl_8055CFF0;
+    zero = lbl_80564484;
+    step = one / (float)*(int *)(ctx + 0x120);
+    s[0] = o[0] + d[0] * negd;
+    s[1] = o[1] + d[1] * negd;
+    s[2] = o[2] + d[2] * negd;
+    e[0] = s[0] + d[0] * w;
+    e[1] = s[1] + d[1] * w;
+    e[2] = s[2] + d[2] * w;
+    sx = e[0] - s[0];
+    sy = e[1] - s[1];
+    sz = e[2] - s[2];
+    ent = ctx;
+    for (i = 0; i < *(int *)(ctx + 0x120); i++, ent += 0x24) {
+        scale = (float)i * step + *(float *)(ent + 0x20) * k;
+        if (one < scale)
+            scale = one;
+        if (scale > zero) {
+        } else {
+            scale = zero;
+        }
+        v[0] = s[0] + scale * sx;
+        v[1] = s[1] + scale * sy;
+        v[2] = s[2] + scale * sz;
+        fn_802C8E70(v, ent);
+        if (*(unsigned char *)(ent + 0x14) != 0 && fn_802C8FF4(ent, zero) != 0) {
+            fn_802C8C04(*(int *)(ent + 0xC));
+            fn_80291C7C(ent, 0);
+            fn_802C8D74();
+        }
+    }
+}
+
 #pragma dont_inline off
 void fn_802920D0(void) {
     int *settings = (int *)&lbl_804B4010;
