@@ -2,6 +2,33 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void OSDisableInterrupts(void);
+extern void OSDisableScheduler(void);
+extern void OSClearContext(void *);
+extern void OSSetCurrentContext(void *);
+extern void __OSStopAudioSystem(void);
+extern void fn_8005954C(void);
+extern void __OSUnmaskInterrupts(int);
+extern void VISetBlack(int);
+extern void VIFlush(void);
+extern void fn_800591AC(int);
+extern void AIRegisterDMACallback_800591F0(void *);
+extern void OSEnableInterrupts(void);
+extern int fn_8005AC08(void);
+extern unsigned long long OSGetTime(void);
+extern int __OSCallShutdownFunctions(int,int);
+extern void EXISetExiCallback(int,void *);
+extern int EXILock(int,int,void *);
+extern void EXISync(int);
+extern void EXIDeselect(int);
+extern void EXIUnlock(int);
+extern void __OSSetExceptionHandler(int,void *);
+extern void GXGetVtxAttrFmtv(void);
+extern void OSSetArenaLo(void *);
+extern void OSSetArenaHi(void *);
+extern void *OSGetArenaHi(void);
+extern void OSSwitchFiber(void *,void *,void *);
+extern char Halt, OSDefaultExceptionHandler, lbl_8038E060, lbl_8038E328;
 extern unsigned short lbl_80558F58;
 extern void *lbl_8055DA48;
 extern int *lbl_8055DA50;
@@ -207,46 +234,51 @@ u32 GetFontCode(u16 encode, u16 code) {
     return 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void Decode(unsigned char *src, unsigned char *dst) {
-    unsigned char *out = dst;
-    unsigned char *literal = src + *(unsigned int *)(src + 0xC);
-    unsigned char *cmd = src + 0x10;
+    unsigned int literalOffset = *(unsigned int *)(src + 0xC);
+    unsigned char *commands = src + 0x10;
     unsigned int outputSize = *(unsigned int *)(src + 4);
-    unsigned int in = *(unsigned int *)(src + 8);
+    unsigned int output = 0;
+    unsigned char *literal = src + literalOffset;
+    unsigned int input = *(unsigned int *)(src + 8);
+    int bitCount = 0;
     unsigned int bits = 0;
-    int count = 0;
 
-    while ((unsigned int)(out - dst) < outputSize) {
-        if (count == 0) {
-            bits = *(unsigned int *)cmd;
-            cmd += 4;
-            count = 32;
+    while (output < outputSize) {
+        if (bitCount == 0) {
+            bits = *(unsigned int *)commands;
+            commands += 4;
+            bitCount = 32;
         }
-        if ((bits & 0x80000000) != 0) {
-            *out++ = *literal++;
+        if (bits & 0x80000000) {
+            dst[output++] = *literal++;
         } else {
-            unsigned char a = src[in++];
-            unsigned char b = src[in++];
-            unsigned int pair = (a << 8) | b;
-            int length = pair >> 12;
-            int distance = pair & 0xFFF;
-            unsigned char extra;
-            int i;
-            if (length == 0) {
-                extra = *literal++;
-                length = extra + 0x12;
-            } else {
+            unsigned int pair = ((unsigned int)src[input] << 8) | src[input + 1];
+            int length = (int)pair >> 12;
+            unsigned int distance = pair & 0xFFF;
+            unsigned int from;
+            int j;
+            input += 2;
+            if (length == 0)
+                length = *literal++ + 0x12;
+            else
                 length += 2;
+            if (length > 0) {
+                from = output - distance;
+                for (j = 0; j < length; ++j) {
+                    dst[output] = dst[from - 1];
+                    ++output;
+                    ++from;
+                }
             }
-            for (i = 0; i < length; ++i)
-                out[i] = out[i - distance];
-            out += length;
         }
         bits <<= 1;
-        --count;
+        --bitCount;
     }
 }
-
+#pragma pop
 extern int IOS_IoctlvReboot(int,int,int,int,void*,int);
 #pragma opt_propagation off
 unsigned short OSGetFontEncode(void) {
@@ -366,34 +398,75 @@ extern void *OSUTF16to32(void *, int *);
 extern int OSUTF32toANSI(void);
 extern unsigned short OSUTF32toSJIS(int);
 extern int lbl_8055DA4C;
+#pragma push
+#pragma use_lmw_stmw off
 void *ParseStringW(int format, void *input, int *outFont, int *outCode, int unused) {
-    int code=0, mode=format;
-    unsigned short ch=0;
-    void *next=input;
-    switch(format) {
-    case 0: ch=*(unsigned char*)input; mode=(int)lbl_8055DA54; if(ch) next=(char*)input+1; break;
+    int mode;
+    unsigned short ch = 0;
+    int code = 0;
+
+    switch (format) {
+    case 0:
+        ch = *(unsigned char *)input;
+        mode = (int)lbl_8055DA54;
+        if (ch != 0)
+            input = (char *)input + 1;
+        break;
     case 1:
-        ch=*(unsigned char*)input; mode=(int)lbl_8055DA50;
-        if(ch) { next=(char*)input+1;
-            if((ch>=0x81&&ch<=0x9f)||(ch>=0xe0&&ch<=0xfc)) {
-                unsigned char trail=*(unsigned char*)next;
-                if(trail>=0x40&&trail<=0xfc&&trail!=0x7f) { ch=(ch<<8)|trail; next=(char*)next+1; }
+        ch = *(unsigned char *)input;
+        mode = (int)lbl_8055DA50;
+        if (ch != 0) {
+            int valid = 0;
+            unsigned char trail;
+            input = (char *)input + 1;
+            if ((ch >= 0x81 && ch <= 0x9F) || (ch >= 0xE0 && ch <= 0xFC))
+                valid = 1;
+            if (valid != 0) {
+                valid = 0;
+                trail = *(unsigned char *)input;
+                if (trail >= 0x40 && trail <= 0xFC && trail != 0x7F)
+                    valid = 1;
+                if (valid != 0) {
+                    ch = (ch << 8) | *(volatile unsigned char *)input;
+                    input = (char *)input + 1;
+                }
             }
-        } break;
-    case 3: next=OSUTF8to32(input,&code); break;
-    case 4: next=OSUTF16to32(input,&code); break;
-    case 5: code=*(int*)input; if(code) next=(char*)input+4; break;
+        }
+        break;
+    case 3:
+        input = OSUTF8to32(input, &code);
+        break;
+    case 4:
+        input = OSUTF16to32(input, &code);
+        break;
+    case 5:
+        code = *(int *)input;
+        if (code != 0)
+            input = (char *)input + 4;
+        break;
     }
-    if(code) {
-        mode=(int)lbl_8055DA54;
-        if(!((int(*)(int))OSUTF32toANSI)(code) && lbl_8055DA4C && (unsigned int)code<=0x7f) {
-            ch=OSUTF32toSJIS(code);
-            if(ch) mode=(int)lbl_8055DA50;
+
+    if (code != 0) {
+        mode = (int)lbl_8055DA54;
+        format = 0;
+        ch = ((unsigned char (*)(int))OSUTF32toANSI)(code);
+        if (ch == 0)
+            goto output;
+        if (lbl_8055DA4C != 0 &&
+            (unsigned int)*(volatile int *)&code <= 0x7F) {
+            ch = OSUTF32toSJIS(*(volatile int *)&code);
+            if (ch != 0) {
+                format = 1;
+                mode = (int)lbl_8055DA50;
+            }
         }
     }
-    *outFont=mode; *outCode=GetFontCode(mode,ch); return next;
+output:
+    *outFont = mode;
+    *outCode = ((unsigned int (*)(int, unsigned short))GetFontCode)(format, ch);
+    return input;
 }
-
+#pragma pop
 void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *arg4) {
     void *spC;
     int sp8;
@@ -467,102 +540,153 @@ int ExpandFontSheet(void *arg0, void *src0, void *dst0) {
 
 extern int ExpandFontSheet(void *, void *, void *);
 int OSInitFont(void *arg0) {
-    unsigned short mode=lbl_80558F58;
-    int result;
-    int size, aligned;
-    void *font, *cursor;
-    if(mode==(unsigned short)-1) {
-        int console=*(volatile int*)0x800000CC;
-        if(console==0) mode=(*(volatile unsigned short*)0xCC00206E>>1)&1;
-        else mode=0;
-        lbl_80558F58=mode;
-        lbl_8055DA48=(void*)ParseStringS;
+    register unsigned short mode = lbl_80558F58;
+    int dispatch, result, aligned, finalSize, console;
+    void *font, *source, *base, *expandBase;
+
+    if (mode == 0xFFFF) goto initialize;
+    goto initialized;
+initialize:
+    console = *(volatile int *)0x800000CC;
+    if (console == 0) goto read_mode;
+    if (console < 0) goto zero_mode;
+    goto zero_mode;
+read_mode:
+    mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
+    lbl_80558F58 = mode;
+    goto parse_mode;
+zero_mode:
+    mode = 0;
+    lbl_80558F58 = mode;
+parse_mode:
+    lbl_8055DA48 = (void *)ParseStringS;
+initialized:
+    dispatch = (int)mode;
+    switch (dispatch) {
+    case 0: goto mode0;
+    case 1: goto mode1;
+    case 2: goto done;
+    case 3:
+    case 4:
+    case 5: goto mode35;
+    default: goto done;
     }
-    if(mode==2) return 1;
-    if(mode==0) {
-        lbl_8055DA54=arg0;
-        font=(char*)arg0+0x1D120;
-        result=ReadFont((int)font,0,(int)arg0);
-        if(!result)return 0;
-        size=*(int*)((char*)arg0+0x24);
-        aligned=(size+0x1f)&~0x1f;
-        *(int*)((char*)arg0+0x24)=aligned;
-        ExpandFontSheet(arg0,(char*)arg0+size,(char*)arg0+aligned);
-    } else if(mode==1) {
-        lbl_8055DA50=arg0;
-        font=(char*)arg0+0xD3F00;
-        result=ReadFont((int)font,1,(int)arg0);
-        if(!result)return 0;
-        size=*(int*)((char*)arg0+0x24);
-        aligned=(size+0x1f)&~0x1f;
-        *(int*)((char*)arg0+0x24)=aligned;
-        ExpandFontSheet(arg0,(char*)arg0+size,(char*)arg0+aligned);
-    } else if(mode<6) {
-        lbl_8055DA54=arg0;
-        font=(char*)arg0+0xF4020;
-        result=ReadFont((int)font,0,(int)arg0);
-        if(!result)return 0;
-        size=*(int*)((char*)arg0+0x24);
-        aligned=(size+0x1f)&~0x1f;
-        *(int*)((char*)arg0+0x24)=aligned;
-        ExpandFontSheet(arg0,(char*)arg0+size,(char*)arg0+aligned);
-        cursor=(char*)arg0+0x20120;
-        lbl_8055DA50=cursor;
-        result=ReadFont((int)font,1,(int)cursor);
-        if(!result)return 0;
-        size=*(int*)((char*)cursor+0x24);
-        aligned=(size+0x1f)&~0x1f;
-        *(int*)((char*)cursor+0x24)=aligned;
-        ExpandFontSheet(cursor,(char*)cursor+size,(char*)cursor+aligned);
-    } else return 1;
+
+mode0:
+    lbl_8055DA54 = arg0;
+    font = (char *)arg0 + 0x1D120;
+    result = ReadFont((int)font, 0, (int)arg0);
+    if (result != 0) goto mode0_read;
+    return 0;
+mode0_read:
+    base = lbl_8055DA54;
+    result = *(int *)((char *)base + 0x24);
+    source = (char *)base + result;
+    *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
+    expandBase = lbl_8055DA54;
+    finalSize = *(int *)((char *)expandBase + 0x24);
+    ExpandFontSheet(expandBase, source, (char *)expandBase + finalSize);
+    goto done;
+
+mode1:
+    {
+        int finalSize1;
+        void *source1, *base1, *expandBase1;
+        lbl_8055DA50 = arg0;
+        font = (char *)arg0 + 0xD3F00;
+        result = ReadFont((int)font, 1, (int)arg0);
+        if (result != 0) goto mode1_read;
+        return 0;
+mode1_read:
+        base1 = lbl_8055DA50;
+        result = *(int *)((char *)base1 + 0x24);
+        source1 = (char *)base1 + result;
+        *(int *)((char *)base1 + 0x24) = (result + 0x1F) & ~0x1F;
+        expandBase1 = lbl_8055DA50;
+        finalSize1 = *(int *)((char *)expandBase1 + 0x24);
+        ExpandFontSheet(expandBase1, source1, (char *)expandBase1 + finalSize1);
+        goto done;
+    }
+
+mode35:
+    {
+        int size35, aligned35, finalSize35;
+        void *source35, *base35, *expandBase35, *font35;
+        font35 = (char *)arg0 + 0xF4020;
+        lbl_8055DA54 = arg0;
+        result = ReadFont((int)font35, 0, (int)arg0);
+        if (result != 0) goto mode35_first_read;
+        return 0;
+mode35_first_read:
+        base35 = lbl_8055DA54;
+        size35 = *(int *)((char *)base35 + 0x24);
+        source35 = (char *)base35 + size35;
+        aligned35 = (size35 + 0x1F) & ~0x1F;
+        *(int *)((char *)base35 + 0x24) = aligned35;
+        expandBase35 = lbl_8055DA54;
+        finalSize35 = *(int *)((char *)expandBase35 + 0x24);
+        ExpandFontSheet(expandBase35, source35, (char *)expandBase35 + finalSize35);
+        expandBase35 = (char *)lbl_8055DA54 + 0x20120;
+        lbl_8055DA50 = expandBase35;
+        result = ReadFont((int)font35, 1, (int)expandBase35);
+        if (result != 0) goto mode35_second_read;
+        return 0;
+mode35_second_read:
+        base35 = lbl_8055DA50;
+        result = *(int *)((char *)base35 + 0x24);
+        source35 = (char *)base35 + result;
+        aligned35 = (result + 0x1F) & ~0x1F;
+        *(int *)((char *)base35 + 0x24) = aligned35;
+        expandBase35 = lbl_8055DA50;
+        finalSize35 = *(int *)((char *)expandBase35 + 0x24);
+        ExpandFontSheet(expandBase35, source35, (char *)expandBase35 + finalSize35);
+        goto done;
+    }
+done:
     return 1;
 }
 
-void OSGetFontTexture(int arg0, void **arg1, int *arg2, int *arg3, int *arg4) {
+char *OSGetFontTexture(char *arg0, void **arg1, int *arg2, int *arg3, int *arg4) {
+    typedef struct {
+        unsigned char pad0[0x10];
+        volatile unsigned short width;
+        volatile unsigned short height;
+        volatile int dataStride;
+        unsigned char pad1[2];
+        volatile unsigned short tilesWide;
+        volatile unsigned short tilesHigh;
+        unsigned char pad2[4];
+        volatile unsigned short glyphOffset;
+        volatile int bitmapOffset;
+    } FontTexture;
     unsigned short encode;
-    int console;
-    void *texture;
-    int index;
+    FontTexture *texture;
+    register int index;
+    int indexOut;
     int tile;
     int remainder;
+    unsigned short tilesWide;
+    unsigned short tilesHigh;
     int column;
     int row;
     char *(*parse)(int, char *, int **, int *);
-    encode = lbl_80558F58;
-    if (encode == 0xFFFF)
-        goto initialize;
-    goto ready;
-initialize:
-    console = *(volatile int *)0x800000CC;
-    if (console != 0) {
-        if (console < 0)
-            goto zero;
-        goto zero;
-    }
-    encode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
-    lbl_80558F58 = encode;
-    goto store_parser;
-zero:
-    encode = 0;
-    lbl_80558F58 = encode;
-store_parser:
-    lbl_8055DA48 = (void *)ParseStringS;
-ready:
+    char *next;
+    encode = OSGetFontEncode();
     parse = (char *(*)(int, char *, int **, int *))lbl_8055DA48;
-    parse(encode, (char *)arg0, (int **)&texture, &index);
-    tile = index / (*(volatile unsigned short *)((char *)texture + 0x1A) *
-                    *(volatile unsigned short *)((char *)texture + 0x1C));
-    *arg1 = (char *)texture + *(int *)((char *)texture + 0x24) +
-        *(int *)((char *)texture + 0x14) * tile;
-    remainder = index - tile *
-        *(volatile unsigned short *)((char *)texture + 0x1A) *
-        *(volatile unsigned short *)((char *)texture + 0x1C);
-    column = remainder / *(volatile unsigned short *)((char *)texture + 0x1A);
-    row = remainder - column * *(volatile unsigned short *)((char *)texture + 0x1A);
-    *arg2 = row * *(volatile unsigned short *)((char *)texture + 0x10);
-    *arg3 = column * *(volatile unsigned short *)((char *)texture + 0x12);
+    next = parse(encode, arg0, (int **)&texture, &indexOut);
+    index = indexOut;
+    tile = index / (texture->tilesWide * texture->tilesHigh);
+    *arg1 = (char *)texture + texture->bitmapOffset + texture->dataStride * tile;
+    tilesWide = texture->tilesWide;
+    tilesHigh = texture->tilesHigh;
+    remainder = indexOut - tile * tilesWide * tilesHigh;
+    column = remainder / tilesWide;
+    row = remainder - column * tilesWide;
+    *arg2 = row * texture->width;
+    *arg3 = column * texture->height;
     if (arg4 != 0)
-        *arg4 = *(unsigned char *)(index + (char *)texture + *(volatile unsigned short *)((char *)texture + 0x22));
+        *arg4 = *(unsigned char *)((char *)texture + texture->glyphOffset + indexOut);
+    return next;
 }
 
 void OSGetFontWidth(int ch,int *out) {
