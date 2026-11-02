@@ -2119,7 +2119,6 @@ extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32, f
 extern "C" s32 lbl_8055CFF0;
 extern "C" u32 lbl_8055CFF4;
 extern "C" const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
-extern "C" void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" double __fabs(double);
 extern "C" void fn_80251B04(void *arg0) {
     extern s32 lbl_8055CFF0;
