@@ -867,18 +867,13 @@ void fn_802113D8(void) {
 extern float lbl_80563404;
 extern void fn_80206454(void);
 extern void fn_801769EC(void);
-static inline void fn_802114C4_call(float val) {
-    fn_80209190(lbl_8055EEF0, val);
-}
-#pragma push
-#pragma processor 750
+#pragma processor gekko
 void fn_802114C4(void) {
     float value = lbl_80563404;
     fn_80209190(lbl_8055EEF0, value);
     fn_80206454();
     fn_801769EC();
 }
-#pragma pop
 extern void fn_801345D8(void *, ...);
 extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
