@@ -472,8 +472,9 @@ extern "C" void fn_80298B48(void* arg0) {
     int offset = 0;
     int i = 0;
     while (i < fn_80287B14()) {
-        if (*(volatile unsigned char*)((char*)*(void**)arg0 + offset + 0x19) != 0) {
-            fn_80298FBC(arg0);
+        char* entry = (char*)*(void**)arg0 + offset;
+        if ((unsigned char)entry[0x19] != 0) {
+            fn_80298FBC(arg0, entry);
         }
         offset += 0x20;
         i++;
