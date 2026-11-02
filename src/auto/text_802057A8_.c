@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+#pragma ppc_psq_save off
 
 extern int lbl_8055ED6C;
 extern void fn_802CAC54(void);
