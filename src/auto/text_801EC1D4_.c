@@ -58,7 +58,7 @@ void *fn_801EC204(void) {
 extern double fn_8002EFB0(float,float);
 extern void fn_801345D8(void *,int,const char *,...);
 extern int fn_801E3004(int,const char *,int);
-extern void fn_802E317C(const char *,const char *);
+extern void fn_802E317C(const char *,...);
 extern float lbl_80562E88;
 extern char lbl_8033A060[];
 __declspec(section ".sdata") extern char lbl_8055AFCC[];
