@@ -2353,17 +2353,15 @@ void fn_801C98F0(void) {
     fn_801C9444();
 }
 
-#pragma push
-#pragma scheduling off
-void fn_801C98F4(u8 *p, s32 n) {
+#pragma scheduling on
+char *fn_801C98F4(char *p, s32 n) {
     s32 i;
-    if (n <= 0) return;
     for (i = 0; i < n; i++) {
-        while ((s8)*p != 0) p++;
+        while (*p != 0) p++;
         p++;
     }
+    return p;
 }
-
 extern char lbl_80336B00[];
 extern s32 lbl_8055E814;
 extern s32 fn_802E367C(void);
@@ -2380,22 +2378,25 @@ extern "C" s32 fn_801CA070(s32 *arg0) {
   virtual void v2();
   virtual s32 v3(char *);
  };
+ s32 value;
  char *base=lbl_80336B00;
  s32 handle;
  s32 offset, i;
- s32 value;
  Dummy *obj;
  handle=fn_802E367C();
  if(handle!=-1) {
   value=lbl_8055E814;
-  if(value==0) goto init;
-  goto common;
-init:
-  obj=(Dummy*)fn_801C3D5C();
-  if(obj->v1(base+0x130)!=0) {
+  switch(value) {
+  case 0:
    obj=(Dummy*)fn_801C3D5C();
-   value=obj->v3(base+0x130);
-  } else value=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
+   if(obj->v1(base+0x130)!=0) {
+    obj=(Dummy*)fn_801C3D5C();
+    value=obj->v3(base+0x130);
+   } else value=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
+   break;
+  default:
+   goto common;
+  }
 common:
   fn_802E3AD0(handle,base+0xD04,value);
   fn_802E3AD0(handle,base+0xD10,lbl_8055A958);
