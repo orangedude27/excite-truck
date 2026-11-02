@@ -1202,17 +1202,8 @@ extern "C" void fn_800D8834(u8 *arg0, u8 *arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_800D8840(void *arg0, void *arg1) {
-    register s32 v3 = *(s32 *)((u8 *)arg1 + 0xC);
-    register s32 v4 = *(s32 *)((u8 *)arg1 + 4);
-    f32 v2 = *(f32 *)((u8 *)arg1 + 8);
-    register s32 v1 = *(s32 *)arg1;
-    register s32 v0 = *(s32 *)((u8 *)arg1 + 0x10);
-    *(s32 *)arg0 = v1;
-    *(s32 *)((u8 *)arg0 + 4) = v4;
-    *(f32 *)((u8 *)arg0 + 8) = v2;
-    *(s32 *)((u8 *)arg0 + 0xC) = v3;
-    *(s32 *)((u8 *)arg0 + 0x10) = v0;
+extern "C" void fn_800D8840(Data_800D8840 *arg0, const Data_800D8840 *arg1) {
+    *arg0 = *arg1;
 }
 #pragma pop
 extern "C" void fn_800D886C(GXColor *arg0, const GXColor *arg1) {
