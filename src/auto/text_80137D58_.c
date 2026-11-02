@@ -54,6 +54,14 @@ extern "C" void fn_80137D58(void *arg0, int arg_sp0) {
 #pragma cplusplus reset
 #pragma scheduling on
 #pragma use_lmw_stmw on
+static inline void Swap32_801381B4(unsigned char *p) {
+    unsigned char a = p[0];
+    unsigned char b = p[1];
+    p[0] = p[3];
+    p[3] = a;
+    p[1] = p[2];
+    p[2] = b;
+}
 void fn_80137F2C(void) {
 
 }
@@ -202,6 +210,73 @@ void fn_80138144(void *arg0) {
     }
 }
 
+extern void fn_80138434();
+void fn_801381B4(void *arg0) {
+    unsigned char *base = (unsigned char *)arg0;
+    unsigned char *p = base + 0x30;
+    unsigned char *r;
+    unsigned char a;
+    unsigned char *node;
+    int i, mode, found;
+    a = base[0]; base[0] = base[3]; base[3] = a;
+    a = base[1]; base[1] = base[2]; base[2] = a;
+    a = base[4]; base[4] = base[7]; base[7] = a;
+    a = base[5]; base[5] = base[6]; base[6] = a;
+    a = base[8]; base[8] = base[11]; base[11] = a;
+    a = base[9]; base[9] = base[10]; base[10] = a;
+    a = base[12]; base[12] = base[15]; base[15] = a;
+    a = base[13]; base[13] = base[14]; base[14] = a;
+    a = base[16]; base[16] = base[19]; base[19] = a;
+    a = base[17]; base[17] = base[18]; base[18] = a;
+    a = base[20]; base[20] = base[23]; base[23] = a;
+    a = base[21]; base[21] = base[22]; base[22] = a;
+    a = base[24]; base[24] = base[27]; base[27] = a;
+    a = base[25]; base[25] = base[26]; base[26] = a;
+    a = base[0x2c]; base[0x2c] = base[0x2f]; base[0x2f] = a;
+    a = base[0x2d]; base[0x2d] = base[0x2e]; base[0x2e] = a;
+    for (i = 0; i < *(int *)(base + 0x2c); i++) {
+        a = p[0]; p[0] = p[3]; p[3] = a;
+        a = p[1]; p[1] = p[2]; p[2] = a;
+        p += 4;
+    }
+    r = base;
+    for (i = 0; i < *(int *)(base + 0x2c); i++) {
+        unsigned char *t = base + *(int *)(r + 0x30);
+        r += 4;
+        a = t[0]; t[0] = t[3]; t[3] = a;
+        a = t[1]; t[1] = t[2]; t[2] = a;
+        *(int *)t = *(int *)t + (int)base;
+    }
+    fn_80138434(base + 0x1C);
+    fn_80138434(base + 0x20);
+    fn_80137D58(*(void **)(base + 0x1C), (int)base);
+    for (mode = 0; mode < 3; mode++) {
+        found = 0;
+        node = *(unsigned char **)(*(unsigned char **)(base + 0x1C) + 0x14);
+        while (node != *(unsigned char **)(base + 0x1C)) {
+            if (node[0x34] == mode) {
+                found = 1;
+                fn_80137D58(node, (int)base);
+            } else if (found != 0) {
+                break;
+            }
+            node = *(unsigned char **)(node + 0x14);
+        }
+    }
+    node = *(unsigned char **)(base + 0x20);
+    if (node != 0) {
+        do {
+            fn_80137D58(node, (int)base);
+            node = *(unsigned char **)(node + 0x14);
+        } while (node[0x34] == 3);
+    }
+    node = *(unsigned char **)(base + 0x24);
+    while (node != 0) {
+        fn_80138144(node);
+        node = *(unsigned char **)(node + 4);
+    }
+}
+
 #pragma dont_inline on
 void fn_80138434(void) {
     fn_80137F2C();
@@ -307,6 +382,76 @@ float fn_801385F0(float arg0, float arg1, float arg2, float arg3) {
         return lbl_805613A8 * value * value * value + lbl_805613AC * value * value;
     }
     return lbl_805613A8 * value * value * value - lbl_805613AC * value * value;
+}
+
+extern float lbl_805613B0, lbl_805613B4;
+extern double fn_8002F234(double);
+int fn_801386D0(void *arg0, float farg0, float farg1, float farg2) {
+    char *ctx = (char *)arg0;
+    char *a, *b, *n;
+    float step, d, f24, f25, one, half, zero, big, minLen, len, inv;
+    float tmp[2];
+    float p[2];
+    int hit = 0;
+    f25 = lbl_805613A4;
+    half = lbl_80561398;
+    zero = f25;
+    minLen = lbl_805613B4;
+    one = lbl_8056139C;
+    big = lbl_805613B0;
+    do {
+        step = farg0 - f25;
+        if (step < big) {
+        } else {
+            step = big;
+        }
+        a = *(char **)(ctx + 0x1C);
+        f24 = *(float *)(ctx + 8);
+        n = *(char **)(a + 0x14);
+        do {
+            float v = fn_801385F0(*(float *)(n + 0x1C), f24, farg1, farg2);
+            if (v > zero) {
+                float k = v * step;
+                float y1 = *(float *)(a + 0xC);
+                float x1 = *(float *)(a + 8);
+                *(float *)(n + 0x2C) = *(float *)(n + 0x2C) + k;
+                p[1] = y1 + half * (*(float *)(n + 0xC) - y1);
+                p[0] = x1 + half * (*(float *)(n + 8) - x1);
+                tmp[0] = p[0];
+                tmp[1] = -p[1];
+                *(float *)n = *(float *)n + p[1] * k;
+                *(float *)(n + 4) = *(float *)(n + 4) + tmp[1] * k;
+            }
+            b = *(char **)(ctx + 0x1C);
+            a = n;
+            n = *(char **)(n + 0x14);
+        } while (a != b);
+        f24 = lbl_805613A4;
+        do {
+            char *nx = *(char **)(b + 0x14);
+            *(float *)(b + 8) = *(float *)nx - *(float *)b;
+            d = *(float *)(nx + 4) - *(float *)(b + 4);
+            *(float *)(b + 0xC) = d;
+            len = fn_8002F234(*(float *)(b + 8) * *(float *)(b + 8) + d * d);
+            if (minLen > len)
+                len = minLen;
+            inv = one / len;
+            *(float *)(b + 8) = *(float *)(b + 8) * inv;
+            *(float *)(b + 0xC) = *(float *)(b + 0xC) * inv;
+            *(float *)(b + 0x1C) = f24;
+            nx = *(char **)(b + 0x14);
+            p[1] = *(float *)(b + 4) - *(float *)(nx + 4);
+            p[0] = *(float *)b - *(float *)nx;
+            *(float *)(b + 0x18) = fn_8002F234(p[0] * p[0] + p[1] * p[1]);
+            if (*(float *)(b + 0x18) < half)
+                hit = 1;
+            len = *(float *)(b + 0x18);
+            b = *(char **)(b + 0x14);
+            f24 += len;
+        } while (b != *(char **)(ctx + 0x1C) && hit == 0);
+        f25 += step;
+    } while (f25 < farg0 && hit == 0);
+    return hit == 0;
 }
 
 extern float lbl_805613A4;
