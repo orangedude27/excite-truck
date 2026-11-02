@@ -12,6 +12,7 @@ extern float lbl_80558DC4;
 #pragma small_data off
 extern char lbl_80331D18[];
 #pragma small_data on
+extern void *fn_801284F8(int, void *);
 extern void fn_8017B0F8(void);
 extern void fn_8017A580(void *);
 extern void fn_8019EECC(void *, void *);
