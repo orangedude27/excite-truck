@@ -7579,12 +7579,10 @@ extern "C" s32 fn_80229DC0(s32 arg0) {
 }
 
 #pragma peephole off
-extern "C" void fn_80229DC8(void *arg0) {
-    register u32 zero = 0;
-    register u32 one = 1;
-    *(u32 *)((u8 *)arg0 + 0x260) = zero;
-    *(u8 *)((u8 *)arg0 + 0x268) = one;
-    ((VfObj *)arg0)->vf17();
+extern "C" void fn_80229DC8(void *arg0, s32 unused, s32 arg2) {
+    *(u32 *)((u8 *)arg0 + 0x260) = 0;
+    *(u8 *)((u8 *)arg0 + 0x268) = 1;
+    ((Fn80229DE8Dispatch2 *)arg0)->Call(unused, arg2);
 }
 #pragma peephole reset
 extern "C" void fn_80229DE8(void *arg0, s32 unused, s32 arg2) {
