@@ -1192,13 +1192,19 @@ void fn_802D68C4(FifoVtx *__restrict vertices, void *unused, u16 *__restrict ind
     for (i = 0; i < count; i++) {
         register FifoVtx *v = &vertices[indices[i]];
         FifoVtx t;
+        f32 x;
+        f32 y;
+        f32 z;
         t.pos = v->pos;
         t.color = v->color;
         t.u = v->u;
         t.v = v->v;
-        *(volatile f32 *)0xCC008000 = t.pos.x;
-        *(volatile f32 *)0xCC008000 = t.pos.y;
-        *(volatile f32 *)0xCC008000 = t.pos.z;
+        x = t.pos.x;
+        y = t.pos.y;
+        z = t.pos.z;
+        *(volatile f32 *)0xCC008000 = x;
+        *(volatile f32 *)0xCC008000 = y;
+        *(volatile f32 *)0xCC008000 = z;
         *(volatile u32 *)0xCC008000 = (t.color << 8) | (t.color >> 24);
         *(volatile f32 *)0xCC008000 = t.u;
         *(volatile f32 *)0xCC008000 = t.v;
