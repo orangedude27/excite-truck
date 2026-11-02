@@ -34,6 +34,7 @@ void *fn_8001285C(int);
 void *fn_80007FF0(void *);
 void *fn_80007F90(void *);
 void fn_80257BB8(void *, int);
+void fn_8022D76C(void);
 
 #pragma cplusplus on
 class MatchDispatch {
