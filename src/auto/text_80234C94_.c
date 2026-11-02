@@ -19,7 +19,7 @@ dec:
 body:
     c = *src++;
     *dst++ = c;
-    if (c != 0) goto dec;
+    if ((signed char)c != 0) goto dec;
 end:;
 }
 static inline void CatStr_8023512C(char *dst, const char *src, int n) {
