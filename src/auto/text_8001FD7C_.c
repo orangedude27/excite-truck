@@ -183,6 +183,7 @@ void fn_8001FEB8(void) {
     fn_80176734();
 }
 
+#pragma dont_inline on
 void fn_8001FEE8(void) {
     int temp_r3;
     temp_r3 = fn_802E2C20();
@@ -191,6 +192,7 @@ void fn_8001FEE8(void) {
     lbl_8055D640 = 0;
     lbl_8055D645 = 0;
 }
+#pragma dont_inline off
 
 #pragma dont_inline on
 void fn_8001FF24(void) {
@@ -296,6 +298,54 @@ int fn_80020184(void) {
     temp_r3 = temp_r3_2 & ((s32) (-(s32) temp_r3_2 & ~temp_r3_2) >> 0x1F);
     temp_r3 = (temp_r3 < 0xFF) ? temp_r3 : 0xFF;
     return 0xFF - temp_r3;
+}
+
+void fn_800201F0(void) {
+    char *base = lbl_802FE138;
+    void *o;
+    void *list;
+    void *item;
+    int i;
+    int var;
+    fn_8001FEE8();
+    lbl_8055D630 = 0;
+    lbl_8055D634 = 0;
+    o = fn_80131810(base + 0xE4);
+    if (o != 0) {
+        if (VSLOT(o, 0x10, VF_ip)(o, base + 0xF0) != 0) {
+            list = VSLOT(o, 0x8, VF_pp)(o, base + 0xF0);
+            fn_802E30C8(base + 0x100);
+            for (i = 0; (item = VSLOT(list, 0x60, VF_pi)(list, i)) != 0; i++) {
+                if (strcmp((const char *)VSLOT(item, 0x8, VF_p)(item), lbl_80558D90) == 0) {
+                    void *a = VSLOT(item, 0x14, VF_pp)(item, base + 0x118);
+                    void *b = VSLOT(item, 0x14, VF_pp)(item, base + 0x128);
+                    char *e = lbl_8035B758 + lbl_8055D630 * 0x70;
+                    lbl_8055D630 += 1;
+                    if (fn_80277960(a, e, e + 0x60) == 0) {
+                        fn_802E317C(base + 0x134, a);
+                    }
+                    if (fn_80277960(b, e + 0x30, e + 0x64) == 0) {
+                        fn_802E317C(base + 0x150, a);
+                    }
+                    *(float *)(e + 0x68) = VSLOT(item, 0x24, VF_fp)(item, base + 0x16C);
+                    e[0x6C] = VSLOT(item, 0x30, VF_cpi)(item, lbl_80558D98, 0);
+                }
+            }
+        } else {
+            fn_802E30C8(base + 0x178);
+        }
+        fn_80131818(o);
+    }
+    var = 0;
+    lbl_8055D648 = 0;
+    if (fn_80019B84() != 0 || fn_80019B90() != 0 || fn_80019B3C() != 0) {
+        var = 1;
+    }
+    lbl_8055D644 = (var == 0);
+    if (lbl_8055D646 != 0) {
+        lbl_8055D644 = 0;
+        lbl_8055D648 = 1;
+    }
 }
 
 void fn_80020430(void) {
