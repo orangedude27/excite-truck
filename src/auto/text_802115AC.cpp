@@ -60,7 +60,7 @@ extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
 extern "C" s32 fn_8021481C(void *);
 extern "C" char lbl_8033D388[];
 extern "C" char lbl_8033D268[];
-extern "C" char lbl_8055B810[];
+extern "C" char lbl_8055B810;
 
 extern "C" s32 fn_802168E4(void);
 extern "C" s32 fn_802168DC(s32, s32);
