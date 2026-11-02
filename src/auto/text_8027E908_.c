@@ -13,7 +13,7 @@ public:
     virtual void v5();
     virtual void v6();
     virtual void v7();
-    virtual void v8();
+    virtual int v8();
     virtual void v9();
     virtual void v10();
     virtual void v11();
@@ -22,7 +22,7 @@ public:
     virtual void v14();
     virtual void v15();
     virtual void v16();
-    virtual void v17();
+    virtual int v17();
     virtual void v18();
     virtual void v19();
     virtual void v20();
