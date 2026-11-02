@@ -196,6 +196,61 @@ extern "C" s32 fn_80211678(u8 *arg0) {
     return ((s8) *arg0 - 0x24) == 0;
 }
 
+#pragma use_lmw_stmw off
+extern "C" void fn_80211D24(int arg0) {
+    struct Obj { virtual ~Obj(); };
+    int v;
+    s32 *pp, *p;
+    int j;
+    Obj **q;
+    unsigned char *row;
+    int flag;
+    int i;
+    fn_802ECC18(0);
+    flag = (arg0 == 0);
+    row = lbl_80490558;
+    for (i = 0; i < 8; i++, row += 0x18) {
+        q = (Obj **)row;
+        for (j = 0; j < 4; j++, q++) {
+            Obj *o = q[2];
+            if (o != 0) delete o;
+        }
+    }
+    memset(lbl_80490558, 0, 0xC0);
+    if (lbl_8055EF24 != 0) { fn_8022D2BC(lbl_8055EF24, 1); lbl_8055EF24 = 0; }
+    if (lbl_8055EF28 != 0) { fn_8022D2BC(lbl_8055EF28, 1); lbl_8055EF28 = 0; }
+    if (lbl_8055EF2C != 0) { fn_8022D7C4(lbl_8055EF2C, 1); lbl_8055EF2C = 0; }
+    if (lbl_8055EF30 != 0) { fn_8022DB94(lbl_8055EF30, 1); lbl_8055EF30 = 0; }
+    if (lbl_8055EF34 != 0) { fn_8022DD38(lbl_8055EF34, 1); lbl_8055EF34 = 0; }
+    fn_8021676C();
+    fn_8022A7D0();
+    fn_8020A550();
+    if (flag == 0) {
+        if (lbl_8055EF1C != 0) fn_80235380(lbl_8055EF1C);
+        lbl_8055EF1C = 0;
+        if (lbl_8055EF20 != 0) fn_80235380(lbl_8055EF20);
+        lbl_8055EF20 = 0;
+        p = lbl_80490528;
+        for (i = 0; i < 3; i++, p += 4) {
+            pp = p;
+            for (j = 0; j < 4; j++, pp++) {
+                fn_802C519C(*pp);
+                *pp = 0;
+            }
+        }
+        fn_80238920();
+        fn_8012BF24(lbl_8033CC10);
+    } else {
+        fn_802C519C(lbl_80490528[8]);
+        lbl_80490528[8] = 0;
+        fn_802C519C(lbl_80490528[9]);
+        lbl_80490528[9] = 0;
+    }
+    v = fn_80128314(0);
+    if (v != lbl_8055EF18) fn_802E30C8(lbl_8033CD88, v);
+    fn_802E1058();
+}
+#pragma use_lmw_stmw reset
 extern "C" int fn_80211690(int);
 extern "C" void fn_80211D24(int);
 extern "C" int fn_802E2C20(void);
@@ -1298,7 +1353,6 @@ extern "C" s32 fn_80214934(const void*, s32, void*, s32);
 extern "C" s32 fn_8021481C(void*);
 extern "C" char lbl_8033D388[];
 extern "C" char lbl_8033D268[];
-extern "C" char lbl_8055B810[];
 extern "C" void fn_802149FC(s32 arg0) {
     char sp8[0x64];
     fn_80214934(lbl_8033D268, arg0, sp8, 0x64);
