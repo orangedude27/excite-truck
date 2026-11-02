@@ -270,7 +270,7 @@ void fn_801384A0(void *arg0, int arg1) {
 #pragma dont_inline reset
 #pragma scheduling on
 void fn_801384A0();
-void fn_801386D0();
+int fn_801386D0(void *, float, float, float);
 void fn_80138958(void *, float *);
 #pragma dont_inline fn_80138594
 void fn_80138594(void *arg0) {
