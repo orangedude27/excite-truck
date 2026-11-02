@@ -16,6 +16,23 @@ extern void *fn_8017960C();
 extern s32 fn_80139B70(s32, f32, f32);
 typedef struct Vec_801E1048 { f32 x, y, z; } Vec_801E1048;
 
+static inline void fn_801E1048_xf(const f32 *m, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
+    if (src == dst) {
+        f32 nx = z * m[6] + (x * m[0] + y * m[3]);
+        f32 ny = z * m[7] + (x * m[1] + y * m[4]);
+        f32 nz = z * m[8] + (x * m[2] + y * m[5]);
+        dst[0] = nx;
+        dst[1] = ny;
+        dst[2] = nz;
+    } else {
+        x = z * m[6] + (x * m[0] + y * m[3]);
+        dst[0] = x;
+        y = z * m[7] + (x * m[1] + y * m[4]);
+        dst[1] = y;
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+    }
+}
+
 static inline void fn_801E1048_xv(f32 *m, Vec_801E1048 *src, Vec_801E1048 *dst, f32 x, f32 y, f32 z) {
     if (src == dst) {
         f32 nx = z * m[6] + (x * m[0] + y * m[3]);
