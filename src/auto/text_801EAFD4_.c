@@ -13,6 +13,11 @@ public:
     virtual void unused1();
     virtual void dispatch(s32 *, s32, s32);
 };
+class EBF00Widget {
+public:
+    virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3();
+    virtual void p4(); virtual void p5(); virtual void setVisible(s32);
+};
 #pragma cplusplus reset
 extern char lbl_8033A048[];
 extern char lbl_80339E88[];
@@ -113,34 +118,46 @@ void fn_801EB128(void) {
 
 extern void fn_802C61BC(void *, void *, u8, u8, u8, u8, u8, u8);
 extern char lbl_80339F6C[];
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_801EB13C(void *arg0, s32 arg1) {
-    u8 *p = (u8 *)arg0;
-    u8 a, b, c, d;
-    a = p[8]; b = p[9]; c = p[10]; d = p[11];
-    p[8] = d; p[9] = c; p[10] = b; p[11] = a;
-    a = p[4]; b = p[5]; c = p[6]; d = p[7];
-    p[4] = d; p[5] = c; p[6] = b; p[7] = a;
-    a = p[12]; b = p[13]; c = p[14]; d = p[15];
-    p[12] = d; p[13] = c; p[14] = b; p[15] = a;
-    fn_802C61BC((void *)(p + *(u32 *)(p + 8)), lbl_80339F6C, p[14], p[15], p[6], p[7], p[4], p[12]);
-    if (*(s32 *)p == 1) {
-        a = p[0x10]; b = p[0x11]; c = p[0x12]; d = p[0x13];
-        p[0x10] = d; p[0x11] = c; p[0x12] = b; p[0x13] = a;
-        a = p[0x14]; b = p[0x15]; c = p[0x16]; d = p[0x17];
-        p[0x14] = d; p[0x15] = c; p[0x16] = b; p[0x17] = a;
-        a = p[0x18]; b = p[0x19]; c = p[0x1A]; d = p[0x1B];
-        p[0x18] = d; p[0x19] = c; p[0x1A] = b; p[0x1B] = a;
-        a = p[0x1C]; b = p[0x1D]; c = p[0x1E]; d = p[0x1F];
-        p[0x1C] = d; p[0x1D] = c; p[0x1E] = b; p[0x1F] = a;
-        a = p[0x20]; b = p[0x21]; c = p[0x22]; d = p[0x23];
-        p[0x20] = d; p[0x21] = c; p[0x22] = b; p[0x23] = a;
-        a = p[0x24]; b = p[0x25]; c = p[0x26]; d = p[0x27];
-        p[0x24] = d; p[0x25] = c; p[0x26] = b; p[0x27] = a;
-        a = p[0x28]; b = p[0x29]; c = p[0x2A]; d = p[0x2B];
-        p[0x28] = d; p[0x29] = c; p[0x2A] = b; p[0x2B] = a;
+    register volatile u8 *v = (volatile u8 *)arg0;
+    register u8 b8,bB,b9,bA,b4,b7,b5,b6,bC;
+    register char *name = lbl_80339F6C;
+    u32 offset,address;
+
+    b8=v[8]; name=lbl_80339F6C;
+    bB=v[11]; b9=v[9]; bA=v[10]; v[8]=bB;
+    b4=v[4]; b7=v[7]; v[11]=b8; b5=v[5]; b6=v[6]; v[10]=b9;
+    bC=v[12]; b8=v[15]; v[9]=bA; b9=v[13]; bB=v[14];
+    offset=*(volatile u32 *)(v+8);
+    v[4]=b7; address=(u32)v+offset; v[7]=b4; v[5]=b6; v[6]=b5;
+    v[12]=b8; v[15]=bC; v[13]=bB; v[14]=b9;
+    *(volatile u32 *)(v+8)=address;
+    ((void (*)(void *, void *))fn_802C61BC)((void *)address,name);
+
+    if (*(volatile s32 *)v == 1) {
+        register u8 a10,a13,a11,a12,a14,a17,a15,a16;
+        register u8 a18,a1B,a19,a1A,a1C,a1F,a1D,a1E;
+        register u8 t0,t1;
+        a10=v[0x10]; a13=v[0x13]; a11=v[0x11]; a12=v[0x12];
+        a14=v[0x14]; a17=v[0x17]; a15=v[0x15]; a16=v[0x16];
+        a18=v[0x18]; a1B=v[0x1B]; a19=v[0x19]; a1A=v[0x1A];
+        a1C=v[0x1C]; a1F=v[0x1F]; a1D=v[0x1D]; a1E=v[0x1E];
+        v[0x10]=a13; v[0x13]=a10; v[0x11]=a12; v[0x12]=a11;
+        v[0x14]=a17; v[0x17]=a14; v[0x15]=a16; v[0x16]=a15;
+        v[0x18]=a1B; v[0x1B]=a18; v[0x19]=a1A; v[0x1A]=a19;
+        v[0x1C]=a1F; v[0x1F]=a1C; v[0x1D]=a1E; v[0x1E]=a1D;
+        t0=v[0x20]; t1=v[0x23]; v[0x20]=t1; v[0x23]=t0;
+        t0=v[0x21]; t1=v[0x22]; v[0x21]=t1; v[0x22]=t0;
+        t0=v[0x24]; t1=v[0x27]; v[0x24]=t1; v[0x27]=t0;
+        t0=v[0x25]; t1=v[0x26]; v[0x25]=t1; v[0x26]=t0;
+        t0=v[0x28]; t1=v[0x2B]; v[0x28]=t1; v[0x2B]=t0;
+        t0=v[0x29]; t1=v[0x2A]; v[0x29]=t1; v[0x2A]=t0;
     }
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw on
 #pragma cplusplus on
 extern "C" void fn_801EB634(void *, s32);
 extern "C" void fn_801EB66C(void *, s32);
@@ -692,6 +709,87 @@ extern void fn_802B0144(void);
 void fn_801EB634_keep(void);
 void fn_801EBEF4(f32 farg0) {
     lbl_8055EB98[0] = farg0 * farg0;
+}
+
+extern f32 lbl_80558DC4[];
+extern f32 lbl_80562E74;
+extern f32 lbl_80562E78;
+extern f32 lbl_80562E7C;
+extern double cos(double);
+extern double sin(double);
+extern double fabs(double);
+extern void fn_802C8B08(f32 *);
+extern void fn_802C744C(s32, f32 *);
+extern void fn_802C9474(u32);
+extern f32 *fn_802C86DC(void);
+extern void fn_802C9900(f32);
+extern void fn_802C9904(void);
+extern void fn_802B05D8(void);
+extern s32 fn_801E85B4(void);
+extern char *fn_801E7E34(void);
+void fn_801EBF00(void) {
+    f32 m[12];
+    f32 r[9];
+    f32 pos[3];
+    char *item;
+    f32 *p;
+    f32 a, scale, c, s, t;
+    s32 v, clamped;
+    void *obj;
+
+    if (lbl_8055EBA0 != 0) {
+        obj = (void *)lbl_804885E8[3];
+        ((void (*)(void *, s32))(*(void ***)obj)[8])(obj, 0);
+        if (lbl_8055AFB8 != -1) {
+            fn_802C8B08(m);
+            scale = lbl_80562E68 - lbl_8055EBA4;
+            m[9] = m[9] * scale;
+            m[10] = m[10] * scale;
+            m[11] = m[11] * scale;
+            m[0] = lbl_80562E68;
+            m[1] = lbl_80562E74;
+            m[2] = lbl_80562E74;
+            m[3] = lbl_80562E74;
+            m[4] = lbl_80562E68;
+            m[5] = lbl_80562E74;
+            m[6] = lbl_80562E74;
+            m[7] = lbl_80562E74;
+            m[8] = lbl_80562E68;
+            fn_802C744C(lbl_8055AFB8, m);
+        }
+        obj = (void *)lbl_804885E8[6];
+        ((void (*)(void *, s32))(*(void ***)obj)[8])(obj, 0);
+        item = fn_801E7E34() + fn_801E85B4() * 0xE0;
+        a = *(f32 *)(item + 0xD8);
+        if ((f32)fabs(a) > lbl_80558DC4[0]) {
+            v = (s32)(lbl_80562E78 * a);
+            clamped = v & ~(v >> 31);
+            if (clamped > 0xFF) clamped = 0xFF;
+            fn_802C9474((clamped << 16) | (clamped << 8) | clamped | 0xFF000000);
+            p = fn_802C86DC();
+            pos[0] = p[9];
+            pos[1] = p[10];
+            pos[2] = p[11];
+            t = *(f32 *)(item + 0xE0);
+            c = (f32)cos(t);
+            s = (f32)sin(t);
+            r[0] = c;
+            r[1] = lbl_80562E74;
+            r[2] = -s;
+            r[3] = lbl_80562E74;
+            r[4] = lbl_80562E68;
+            r[5] = lbl_80562E74;
+            r[6] = s;
+            r[7] = lbl_80562E74;
+            r[8] = c;
+            t = lbl_80562E7C * *(f32 *)(item + 0xD8);
+            fn_802C9900(lbl_80562E68 < t ? lbl_80562E68 : t);
+            fn_802C744C(lbl_8055AFBC, r);
+            fn_802C9904();
+        }
+    } else {
+        fn_802B05D8();
+    }
 }
 
 extern f32 lbl_8055EBA4;
