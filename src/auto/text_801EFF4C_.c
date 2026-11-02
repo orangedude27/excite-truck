@@ -243,8 +243,9 @@ extern "C" void fn_801F06DC(void *arg0, void *arg1) {
         }
         *(float *)((char *)output + 0x44) =
             ((Fn801F06DCResource *)arg1)->getValue(strings + 0x9C);
+        fallbackValue = *(volatile float *)&lbl_80562F28;
         value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(
-            strings + 0xA8, *(volatile float *)&lbl_80562F28);
+            strings + 0xA8, fallbackValue);
         *(float *)((char *)output + 0x48) = value * value;
     } else {
         fallbackHandle = fn_802C6FC0(
@@ -337,42 +338,69 @@ int fn_801F09FC(const char *arg0) {
 }
 #pragma scheduling on
 extern int fn_8012850C(int, void *);
-extern int lbl_8033A4D4;
+extern char lbl_8033A4D4[];
 extern float lbl_80562F2C;
 int fn_801F0AA0(void *unused) {
-    int i = 0;
+    int i;
     int offset = 0;
-    int base = fn_8012850C(0x9C0, &lbl_8033A4D4);
-    float value = lbl_80562F2C;
-    lbl_8055EBEC = base;
+    int count = 0;
+    float value;
+
+    lbl_8055EBEC = fn_8012850C(0x9C0, &lbl_8033A4D4);
+    value = lbl_80562F2C;
     lbl_8055EBF0 = 0;
-    do {
-        int *p = (int *)(base + offset);
-        *(char *)p = 0;
-        p[4] = i;
-        p[5] = i + 1;
-        p[10] = -1; p[12] = -1; p[11] = -1; p[13] = -1;
-        *(float *)((char *)p + 0x38) = value; *(char *)((char *)p + 0x3C) = 0;
-        p[16] = -1; p[18] = -1; p[17] = -1; p[19] = -1;
-        *(float *)((char *)p + 0x50) = value; *(char *)((char *)p + 0x54) = 0;
-        p[22] = -1; p[24] = -1; p[23] = -1; p[25] = -1;
-        *(float *)((char *)p + 0x68) = value; *(char *)((char *)p + 0x6C) = 0;
-        p[28] = -1; p[30] = -1; p[29] = -1; p[31] = -1;
-        *(float *)((char *)p + 0x80) = value; *(char *)((char *)p + 0x84) = 0;
-        p[34] = -1; p[36] = -1; p[35] = -1; p[37] = -1;
-        *(float *)((char *)p + 0x98) = value; *(char *)((char *)p + 0x9C) = 0;
-        p[40] = -1; p[42] = -1; p[41] = -1; p[43] = -1;
-        *(float *)((char *)p + 0xB0) = value; *(char *)((char *)p + 0xB4) = 0;
-        p[46] = -1; p[48] = -1; p[47] = -1; p[49] = -1;
-        *(float *)((char *)p + 0xC8) = value; *(char *)((char *)p + 0xCC) = 0;
-        p[52] = -1; p[54] = -1; p[53] = -1; p[55] = -1;
-        *(float *)((char *)p + 0xE0) = value; *(char *)((char *)p + 0xE4) = 0;
-        p[58] = 0;
-        p[75] = 0;
+
+    for (i = 0; i < 4; i++) {
+        int *p1 = (int *)(lbl_8055EBEC + offset);
+        *(char *)p1 = 0;
         offset += 0x138;
-        i += 2;
-    } while (i < 10);
-    return base;
+        p1[4] = count;
+        p1[5] = count + 1;
+        count += 2;
+        p1[10] = -1; p1[12] = -1; p1[11] = -1; p1[13] = -1;
+        *(float *)((char *)p1 + 0x38) = value; *(char *)((char *)p1 + 0x3C) = 0;
+        p1[16] = -1; p1[18] = -1; p1[17] = -1; p1[19] = -1;
+        *(float *)((char *)p1 + 0x50) = value; *(char *)((char *)p1 + 0x54) = 0;
+        p1[22] = -1; p1[24] = -1; p1[23] = -1; p1[25] = -1;
+        *(float *)((char *)p1 + 0x68) = value; *(char *)((char *)p1 + 0x6C) = 0;
+        p1[28] = -1; p1[30] = -1; p1[29] = -1; p1[31] = -1;
+        *(float *)((char *)p1 + 0x80) = value; *(char *)((char *)p1 + 0x84) = 0;
+        p1[34] = -1; p1[36] = -1; p1[35] = -1; p1[37] = -1;
+        *(float *)((char *)p1 + 0x98) = value; *(char *)((char *)p1 + 0x9C) = 0;
+        p1[40] = -1; p1[42] = -1; p1[41] = -1; p1[43] = -1;
+        *(float *)((char *)p1 + 0xB0) = value; *(char *)((char *)p1 + 0xB4) = 0;
+        p1[46] = -1; p1[48] = -1; p1[47] = -1; p1[49] = -1;
+        *(float *)((char *)p1 + 0xC8) = value; *(char *)((char *)p1 + 0xCC) = 0;
+        p1[52] = -1; p1[54] = -1; p1[53] = -1; p1[55] = -1;
+        *(float *)((char *)p1 + 0xE0) = value; *(char *)((char *)p1 + 0xE4) = 0;
+        p1[58] = 0;
+        p1[75] = 0;
+
+        p1 = (int *)(lbl_8055EBEC + offset);
+        *(char *)p1 = 0;
+        offset += 0x138;
+        p1[4] = count;
+        p1[5] = count + 1;
+        count += 2;
+        p1[10] = -1; p1[12] = -1; p1[11] = -1; p1[13] = -1;
+        *(float *)((char *)p1 + 0x38) = value; *(char *)((char *)p1 + 0x3C) = 0;
+        p1[16] = -1; p1[18] = -1; p1[17] = -1; p1[19] = -1;
+        *(float *)((char *)p1 + 0x50) = value; *(char *)((char *)p1 + 0x54) = 0;
+        p1[22] = -1; p1[24] = -1; p1[23] = -1; p1[25] = -1;
+        *(float *)((char *)p1 + 0x68) = value; *(char *)((char *)p1 + 0x6C) = 0;
+        p1[28] = -1; p1[30] = -1; p1[29] = -1; p1[31] = -1;
+        *(float *)((char *)p1 + 0x80) = value; *(char *)((char *)p1 + 0x84) = 0;
+        p1[34] = -1; p1[36] = -1; p1[35] = -1; p1[37] = -1;
+        *(float *)((char *)p1 + 0x98) = value; *(char *)((char *)p1 + 0x9C) = 0;
+        p1[40] = -1; p1[42] = -1; p1[41] = -1; p1[43] = -1;
+        *(float *)((char *)p1 + 0xB0) = value; *(char *)((char *)p1 + 0xB4) = 0;
+        p1[46] = -1; p1[48] = -1; p1[47] = -1; p1[49] = -1;
+        *(float *)((char *)p1 + 0xC8) = value; *(char *)((char *)p1 + 0xCC) = 0;
+        p1[52] = -1; p1[54] = -1; p1[53] = -1; p1[55] = -1;
+        *(float *)((char *)p1 + 0xE0) = value; *(char *)((char *)p1 + 0xE4) = 0;
+        p1[58] = 0;
+        p1[75] = 0;
+    }
 }
 
 int fn_80128670(int);
