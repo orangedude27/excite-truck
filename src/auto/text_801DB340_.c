@@ -233,6 +233,28 @@ float fn_801DB398(float grid[4][4], float t, float u) {
 }
 #pragma pop
 
+static inline float eval_spline(float p0, float p1, float p2, float p3, float t, float *out_deriv) {
+    float dp20 = p2 - p0;
+    float dp21 = p2 - p1;
+    float dp31 = p3 - p1;
+    float half20 = lbl_80562B64 * dp20;
+    float half31 = lbl_80562B64 * dp31;
+    float twice20 = lbl_80562B68 * half20;
+    float sum = half20 + half31;
+    float twice21 = lbl_80562B68 * dp21;
+    float coeff3 = lbl_80562B6C * dp21;
+    float coeff2;
+
+    coeff3 = coeff3 - twice20;
+    coeff2 = sum - twice21;
+    coeff3 = coeff3 - half31;
+
+    if (out_deriv != 0) {
+        *out_deriv = half20 + (lbl_80562B6C * coeff2 * (t * t) + lbl_80562B68 * coeff3 * t);
+    }
+    return p1 + (coeff2 * (t * t * t) + coeff3 * (t * t) + half20 * t);
+}
+
 float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     float a[4], b[4];
     float q = t * t;
@@ -656,52 +678,50 @@ extern int lbl_8055E9A0;
 extern unsigned short lbl_80442708[];
 extern float lbl_80562B64, lbl_80562B84;
 extern double lbl_80562B78;
-int fn_801DDA84(int *arg0, int arg1, float farg0, float farg1, float farg2) {
+int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr) {
     int *state = (int *)lbl_8055E990;
-    int ix, iz, tileX, tileZ, remX, remZ;
-    int tile, node, count = 0, offset = 0;
-    float x, z;
-    float roundX, roundZ;
-    float *map;
+    int ix, iz, qx, qz, tileX, tileZ, remX, remZ;
+    int tile, count, idx;
+    char *node, *map;
 
     if (state[4] == 0)
         return 0;
-    x = farg0 + *(float *)((char *)state + 0);
-    z = farg1 + *(float *)((char *)state + 4);
-    x *= *(float *)((char *)state + 8);
-    z *= *(float *)((char *)state + 12);
-    roundX = x < lbl_80562B84 ? x - lbl_80562B64 : lbl_80562B64 + x;
-    roundZ = z < lbl_80562B84 ? z - lbl_80562B64 : lbl_80562B64 + z;
-    ix = (int)roundX;
-    iz = (int)roundZ;
+    x = (x + *(float *)((char *)state + 0)) * *(float *)((char *)state + 8);
+    z = (z + *(float *)((char *)state + 4)) * *(float *)((char *)state + 12);
+    ix = (int)(x < lbl_80562B84 ? x - lbl_80562B64 : lbl_80562B64 + x);
+    iz = (int)(z < lbl_80562B84 ? z - lbl_80562B64 : lbl_80562B64 + z);
     if (ix < 0 || iz < 0)
         return 0;
-    tileX = (ix >> 5) - lbl_8055E99C;
-    tileZ = (iz >> 5) - lbl_8055E9A0;
-    remX = ix - (tileX + lbl_8055E99C) * 32;
-    remZ = iz - (tileZ + lbl_8055E9A0) * 32;
+    qx = ix / 32;
+    qz = iz / 32;
+    tileX = qx - lbl_8055E99C;
+    tileZ = qz - lbl_8055E9A0;
+    remX = ix - qx * 32;
+    remZ = iz - qz * 32;
     if (tileX < 0 || tileZ < 0 || tileX >= 0x60 || tileZ >= 0x60)
         return 0;
-    tile = lbl_80442708[tileX * 0x60 + tileZ];
+    tile = ((unsigned short (*)[0x60])lbl_80442708)[tileX][tileZ];
     if (tile == 0xFFFF)
         return 0;
-    node = *(int *)(*(int *)((char *)state + 0x18) + tile * 0x894);
+    node = *(char **)((char *)state + 0x18) + tile * 0x894;
     if (node == 0)
         return 0;
-    if (*(int *)((char *)node + 0x890) < 0)
+    idx = *(int *)(node + 0x890);
+    count = 0;
+    if (idx < 0)
         return 0;
-    map = (float *)(*(int *)((char *)state + 0x20) + *(int *)((char *)node + 0x890) * 0x810);
-    do {
-        unsigned short value = *(unsigned short *)((char *)map + (remX * 64 + remZ * 2) + 8);
-        float h = fabsf(map[1] * ((float)value - lbl_80562B78) + map[0]);
-        if (h < farg2 && count < arg1) {
-            arg0[count++] = *(int *)((char *)map + 0x808);
+    map = *(char **)((char *)state + 0x20) + idx * 0x810;
+    while (1) {
+        float h = (float)fabs(*(float *)map + *(float *)(map + 4) * ((float)*(unsigned short *)(map + remX * 64 + remZ * 2 + 8) - lbl_80562B78));
+        if (h < thr && count < max) {
+            out[count] = *(int *)(map + 0x808);
+            count++;
         }
-        node = *(int *)((char *)map + 0x80C);
-        if (node < 0)
+        idx = *(int *)(map + 0x80C);
+        if (idx < 0)
             break;
-        map = (float *)(*(int *)((char *)lbl_8055E990 + 0x20) + node * 0x810);
-    } while (1);
+        map = *(char **)((char *)lbl_8055E990 + 0x20) + idx * 0x810;
+    }
     return count;
 }
 
