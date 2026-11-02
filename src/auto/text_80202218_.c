@@ -41,6 +41,8 @@ extern int lbl_8055ECD4;
 extern int fn_801E85A4(void);
 extern int fn_8012C33C(void);
 extern int fn_802C6FC0(int, int, int);
+#pragma push
+#pragma dont_inline on
 int fn_80202218(void) {
     if (fn_801E85A4() == 1) {
         return lbl_8055ECD4;
@@ -110,16 +112,14 @@ void *fn_802023C8(void) { return lbl_80488964; }
 #pragma cplusplus on
 #pragma dont_inline on
 extern "C" void fn_802023D4(void) {
-    struct Manager {
-        virtual void *get(void *);
-    };
+    struct Manager { virtual void *get(void *); };
+    struct Position { f32 x, y, z; };
     struct Interface {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual s32 getCount(void *);
+        virtual void f0(); virtual void f1(); virtual void f2();
+        virtual void f3(); virtual void f4(); virtual s32 getCount(void *);
+        virtual void f6(); virtual void f7(); virtual void f8();
+        virtual void f9(); virtual void f10();
+        virtual Position getPosition(const char *);
     };
     register char *config;
     register char *state;
@@ -128,10 +128,13 @@ extern "C" void fn_802023D4(void) {
     register void *interface;
     register s32 count;
     register s32 i;
+    register s32 size;
+    register f32 *position_defaults;
+    register s32 *flags;
+    register s32 *last_flag;
     s32 *entry;
     char name1[32];
     char name2[32];
-    f32 position[3];
     void *buffer;
 
     config = lbl_8033B9F8;
@@ -142,18 +145,19 @@ extern "C" void fn_802023D4(void) {
     count = ((Interface *)interface)->getCount(&lbl_8055B418);
     lbl_8055ECC0 = count;
     if (count > 0) {
-        buffer = fn_8012850C((count << 4) + 0x10, config + 0x1C);
-        lbl_8055ECC4 = (s32)fn_8002F37C(buffer, fn_802025D4, NULL, 0x10, count);
+        size = count << 4;
+        buffer = fn_8012850C(size + 0x10, config + 0x1C);
+        lbl_8055ECC4 = (s32)fn_8002F37C(buffer, fn_802025D4, NULL, 0x10, lbl_8055ECC0);
         lbl_8055ECC8 = (s32)fn_802CE3A4(lbl_8055ECC0, 0x20, 0x20000);
-        offset = 0;
         i = 0;
+        offset = 0;
         while (i < lbl_8055ECC0) {
             entry = (s32 *)((char *)lbl_8055ECC4 + offset);
             sprintf(name1, (const char *)&lbl_8055B420, i);
-            ((void (*)(void *, void *, void *))(*(void ***)interface)[13])(position, interface, name1);
-            ((f32 *)entry)[0] = position[0];
-            ((f32 *)entry)[1] = position[1];
-            ((f32 *)entry)[2] = position[2];
+            const Position &position = ((Interface *)interface)->getPosition(name1);
+            ((f32 *)entry)[0] = position.x;
+            ((f32 *)entry)[1] = position.y;
+            ((f32 *)entry)[2] = position.z;
             sprintf(name2, config + 0x28, i);
             entry[3] = fn_802CE630((void *)lbl_8055ECC8, name2, 0);
             offset += 0x10;
@@ -165,29 +169,23 @@ extern "C" void fn_802023D4(void) {
     }
     fn_80131818(manager);
     lbl_8055ECCC = fn_80202248((int)(config + 0x34));
-    if (lbl_8055ECCC != -1) {
-        fn_802E30C8(config + 0x44);
-    }
+    if (lbl_8055ECCC != -1) fn_802E30C8(config + 0x44);
     lbl_8055ECD0 = fn_80202248((int)(config + 0x5C));
-    if (lbl_8055ECD0 != -1) {
-        fn_802E30C8(config + 0x6C);
-    }
-    {
-        f32 *position_defaults = (f32 *)(state + 0xAC);
-        s32 *flags = (s32 *)(state + 0x18);
-        s32 *last_flag = (s32 *)(state + 0x28);
-        lbl_8055B414 = -1;
-        position_defaults[0] = lbl_805630A4;
-        position_defaults[1] = lbl_805630A4;
-        position_defaults[2] = lbl_805630A4;
-        lbl_8055ECE0 = 0;
-        lbl_8055ECDC = -1;
-        flags[0] = -1;
-        flags[1] = -1;
-        flags[2] = -1;
-        flags[3] = -1;
-        last_flag[0x20] = 0;
-    }
+    if (lbl_8055ECD0 != -1) fn_802E30C8(config + 0x6C);
+    position_defaults = (f32 *)(state + 0xAC);
+    flags = (s32 *)(state + 0x18);
+    last_flag = (s32 *)(state + 0x28);
+    lbl_8055B414 = -1;
+    position_defaults[0] = lbl_805630A4;
+    position_defaults[1] = lbl_805630A4;
+    position_defaults[2] = lbl_805630A4;
+    lbl_8055ECE0 = 0;
+    lbl_8055ECDC = -1;
+    flags[0] = -1;
+    flags[1] = -1;
+    flags[2] = -1;
+    flags[3] = -1;
+    last_flag[0x20] = 0;
 }
 #pragma cplusplus reset
 #pragma pop
