@@ -13,6 +13,16 @@ __declspec(section ".rodata") extern float lbl_80558DC4;
 __declspec(section ".sdata") extern unsigned char lbl_8055C380[];
 extern unsigned char lbl_8055F67C;
 
+extern float lbl_80563AE8;
+extern void fn_80216D28(void);
+extern void fn_80214D50(int);
+static inline int IsLowAndFlagged_(void *obj) {
+    int result = 0;
+    if (*(float *)((char *)obj + 0xCC) < lbl_80563AE8 && *(unsigned char *)((char *)obj + 0xC5) != 0) {
+        result = 1;
+    }
+    return result;
+}
 extern void *fn_80258354(void);
 extern int lbl_80344DE0[];
 extern void *lbl_8055F394;
@@ -491,11 +501,13 @@ void fn_8025A8B8(void *arg0, char *arg1) {
     char name[0x40];
     register char *input = arg1;
     register void *obj = arg0;
-    char *src;
-    char *dst;
-    int id;
-    int count;
+    register char *dst;
+    register char *src;
+    register int count;
     signed char c;
+    int id;
+    float one;
+    float zero;
 
     id = *(int *)((char *)obj + 0x50);
     if (id != -1) {
@@ -522,13 +534,10 @@ prefix_char:
 prefix_done:
         dst = name;
         count = 0x40;
-input_scan:
-        if ((signed char)*dst != 0) {
+        do {
             --count;
             ++dst;
-            if (count > 0)
-                goto input_scan;
-        }
+        } while ((signed char)*dst != 0);
         if (count > 0) {
             goto input_char;
         }
@@ -552,15 +561,12 @@ input_done:
 
         dst = name;
         count = 0x40;
-suffix_scan:
-        if ((signed char)*dst != 0) {
+        src = lbl_8055C384;
+        do {
             --count;
             ++dst;
-            if (count > 0)
-                goto suffix_scan;
-        }
+        } while ((signed char)*dst != 0);
         if (count > 0) {
-            src = lbl_8055C384;
             goto suffix_char;
         }
         goto suffix_done;
@@ -579,15 +585,18 @@ suffix_done:
         if (fn_8012C33C(name))
             *(int *)((char *)obj + 0x50) = fn_802C6FC0(name, 0, 0);
     }
-    *(float *)((char *)obj + 0x88) = lbl_80563AE4;
-    *(float *)((char *)obj + 0x84) = lbl_80563AE0;
-    *(float *)((char *)obj + 0x8C) = lbl_80563AE4;
-    *(float *)((char *)obj + 0x90) = lbl_80563AE4;
-    *(float *)((char *)obj + 0x94) = lbl_80563AE0;
-    *(float *)((char *)obj + 0x98) = lbl_80563AE4;
-    *(float *)((char *)obj + 0x9C) = lbl_80563AE4;
-    *(float *)((char *)obj + 0xA0) = lbl_80563AE4;
-    *(float *)((char *)obj + 0xA4) = lbl_80563AE0;
+
+    one = lbl_80563AE4;
+    zero = lbl_80563AE0;
+    *(float *)((char *)obj + 0x88) = one;
+    *(float *)((char *)obj + 0x84) = zero;
+    *(float *)((char *)obj + 0x8C) = one;
+    *(float *)((char *)obj + 0x90) = one;
+    *(float *)((char *)obj + 0x94) = zero;
+    *(float *)((char *)obj + 0x98) = one;
+    *(float *)((char *)obj + 0x9C) = one;
+    *(float *)((char *)obj + 0xA0) = one;
+    *(float *)((char *)obj + 0xA4) = zero;
 }
 
 extern int fn_801298E8(void *, int);
