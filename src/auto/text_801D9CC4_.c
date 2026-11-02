@@ -3,6 +3,15 @@
 
 extern float lbl_80562B38;
 extern float lbl_80562B3C;
+typedef unsigned char u8;
+typedef unsigned int u32;
+typedef int s32;
+extern void *fn_8012C370(void *, int, int *, int, int, u8 *);
+extern void fn_802E317C(const char *, ...);
+extern char lbl_80339200[];
+extern char lbl_80339218[];
+#define SWAP2(q, a, b) do { u8 t = (q)[a]; (q)[a] = (q)[b]; (q)[b] = t; } while (0)
+#define SWAP4(q, o) do { SWAP2(q, (o), (o) + 3); SWAP2(q, (o) + 1, (o) + 2); } while (0)
 
 void fn_801D9F24(void) {
     fn_8012C4D8();
@@ -87,6 +96,35 @@ int fn_801DA064(void *arg0, const char *arg1, int arg2) {
     }
     return 0;
 }
+
+void fn_801DA0EC(void *arg0, float farg0) {
+    void *obj = *(void **)((char *)arg0 + 4);
+    int index;
+    float *values;
+
+    if (obj == 0) return;
+    *(float *)((char *)arg0 + 0xC) = *(float *)((char *)arg0 + 0xC) + farg0;
+    if (farg0 >= 0.0f) {
+        do {
+            index = *(int *)((char *)arg0 + 8) + 1;
+            *(int *)((char *)arg0 + 8) = index;
+            obj = *(void **)((char *)arg0 + 4);
+            index = *(int *)((char *)arg0 + 8);
+            if (index + 1 >= *(int *)((char *)obj + 0x10)) return;
+            values = *(float **)((char *)obj + 0x14);
+        } while (*(float *)((char *)arg0 + 0xC) > values[index * 8 + 8]);
+    } else {
+        do {
+            index = *(int *)((char *)arg0 + 8) - 1;
+            *(int *)((char *)arg0 + 8) = index;
+            index = *(int *)((char *)arg0 + 8);
+            if (index <= 0) return;
+            obj = *(void **)((char *)arg0 + 4);
+            values = *(float **)((char *)obj + 0x14);
+        } while (values[index * 8] > *(float *)((char *)arg0 + 0xC));
+    }
+}
+
 #pragma use_lmw_stmw reset
 
 void fn_801DA198(void *arg0, float farg0) {
@@ -104,6 +142,45 @@ void fn_801DA198(void *arg0, float farg0) {
         *(int *)((char *)arg0 + 8) = index + 1;
         if (index + 2 >= *(int *)((char *)obj + 0x10)) return;
     }
+}
+
+int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
+    register int index;
+    register void *obj;
+    register int max;
+    register float *values;
+    register float *next;
+    register float *current;
+    register float nextValue;
+    register float value;
+    register float difference;
+    register float numerator;
+
+    obj = *(void **)((char *)arg0 + 4);
+    if (obj != 0) {
+        max = *(int *)((char *)obj + 0x10) - 2;
+        index = *(int *)((char *)arg0 + 8);
+        if (max >= index) {
+        } else {
+            index = max;
+        }
+
+        values = *(float **)((char *)obj + 0x14);
+        next = values + (index + 1) * 8;
+        current = values + index * 8;
+        nextValue = *next;
+        value = *(float *)((char *)arg0 + 0xC);
+        value = (value < nextValue) ? nextValue : value;
+        difference = *next - *current;
+        difference = (difference > lbl_80562B3C) ? difference : lbl_80562B3C;
+        numerator = value - *current;
+
+        *(float **)arg1 = current;
+        *(float **)arg2 = next;
+        *arg3 = numerator / difference;
+        return 1;
+    }
+    return 0;
 }
 
 extern float lbl_80562B40, lbl_80562B44, lbl_80562B48, lbl_80562B4C, lbl_80558DC4;
