@@ -30,6 +30,7 @@ extern void fn_802D050C_var(void);
 extern u32 fn_80202BE4(void);
 extern f32 lbl_805630DC;
 extern f32 lbl_805630E0;
+extern double lbl_805630E8;
 extern double fn_8002EFAC(double);
 extern void fn_802D94E4(f32, s32, s32);
 typedef struct { s32 w0; s32 w1; } lbl_8048897C_entry;
@@ -140,6 +141,51 @@ void fn_80202BFC(s32 arg0) {
         i++; p1++; p2++;
     } while (i < 2);
 }
+
+void fn_80202D50(f32 *arg0) {
+    f32 mag, inv, y, ny, lo, t, th;
+    s32 i, n, r;
+    lbl_8048897C_entry *e;
+    lbl_8048897C_entry *a;
+    lbl_8048897C_entry *b;
+    s32 ha, hb;
+    mag = PSVECMag(arg0);
+    mag = (mag > lbl_805630D8) ? mag : lbl_805630D8;
+    inv = lbl_805630D4 / mag;
+    lo = lbl_805630CC;
+    y = arg0[1] * inv;
+    arg0[0] = arg0[0] * inv;
+    ny = -y;
+    arg0[1] = y;
+    arg0[2] = arg0[2] * inv;
+    ny = (lo > ny) ? lo : ny;
+    th = (lbl_805630DC * (f32)fn_8002EFAC(ny)) / lbl_805630E0;
+    e = lbl_8048897C.ptr + 1;
+    n = lbl_8048897C.count;
+    r = 0;
+    for (i = 1; i < n; i++, e++) {
+        if ((f32)e->w1 > th) {
+            f32 u = lbl_805630D4;
+            a = lbl_8048897C.ptr + i;
+            b = lbl_8048897C.ptr + (i - 1);
+            t = ((th - (f32)b->w1) / ((f32)a->w1 - (f32)b->w1));
+            u = (u < t) ? u : t;
+            u = (u > lbl_805630CC) ? u : lbl_805630CC;
+            t = lbl_805630CC + u * lbl_805630D4;
+            ha = ((s32 (*)(s32))fn_802CA294)(a->w0);
+            hb = ((s32 (*)(s32))fn_802CA294)(b->w0);
+            fn_802CA294(lbl_8055ED0C);
+            fn_802D94E4(t, hb, ha);
+            r = ((s32 (*)(s32))fn_802CA294)(lbl_8055ED0C);
+            break;
+        }
+    }
+    if (r == 0) {
+        r = ((s32 (*)(s32))fn_802CA294)(lbl_8048897C.ptr[lbl_8048897C.count - 1].w0);
+    }
+    fn_802D30DC(r);
+}
+
 #pragma pop
 
 #pragma paired_single off
