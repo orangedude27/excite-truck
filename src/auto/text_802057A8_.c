@@ -23,6 +23,63 @@ extern void fn_802057A8(int, int, float, float, float, float);
 #pragma dont_inline fn_802057A8
 extern float lbl_80563194, lbl_805631A8, lbl_805631B8, lbl_805631BC, lbl_805631C0;
 #pragma dont_inline on
+extern void fn_802C8E00(float, float, float, float, float, float, float);
+extern int lbl_8055CFF0;
+extern int lbl_8055CFF4;
+extern float lbl_80563190, lbl_80563194, lbl_80563198, lbl_8056319C;
+extern float lbl_805631A0, lbl_805631A4, lbl_805631A8;
+#pragma scheduling invalid_target
+void fn_802057A8(int arg0, int arg1, float arg2, float arg3, float arg4, float arg5) {
+    extern double lbl_805631B0;
+    register unsigned int high asm("r5");
+    register unsigned int raw asm("r0");
+    register unsigned int converted asm("r6");
+    float temp_f1;
+    float temp_f6;
+    float temp_f7;
+    struct {
+        float coords[3];
+        unsigned int pad;
+        union {
+            struct {
+                unsigned int hi;
+                unsigned int lo;
+            } words;
+            double d;
+        } conv1;
+        union {
+            struct {
+                unsigned int hi;
+                unsigned int lo;
+            } words;
+            double d;
+        } conv2;
+    } local;
+
+    temp_f1 = arg2 - lbl_80563194;
+    temp_f6 = temp_f1 * lbl_80563198;
+    high = 0x43300000;
+    raw = (unsigned int)lbl_8055CFF0;
+    converted = raw ^ 0x80000000U;
+    local.conv1.words.lo = converted;
+    local.conv1.words.hi = high;
+    raw = (unsigned int)lbl_8055CFF4;
+    raw ^= 0x80000000U;
+    local.conv2.words.lo = raw;
+    local.conv2.words.hi = high;
+    temp_f6 = temp_f6 * lbl_8056319C;
+    temp_f1 = arg3 * lbl_805631A4;
+    temp_f7 = lbl_805631A0 + temp_f1;
+    temp_f6 = lbl_80563190 + temp_f6;
+    local.coords[2] = lbl_805631A8;
+    local.coords[0] = (float)(local.conv1.d - lbl_805631B0);
+    local.coords[0] *= temp_f6;
+    local.coords[1] = (float)(local.conv2.d - lbl_805631B0);
+    local.coords[1] *= temp_f7;
+    ((void (*)(int, int, float, float, float, float, float, float, float))fn_802C8E00)(
+        arg0, arg1, local.coords[0], local.coords[1], local.coords[2], arg4, arg5, temp_f6, temp_f7);
+}
+#pragma scheduling on
 void fn_80205850(void) {
     fn_802C8CBC(-1);
     fn_802C8DBC(0x20);
@@ -127,10 +184,10 @@ loop_condition:
 #pragma scheduling on
 extern float lbl_80563198, lbl_805631A0, lbl_805631CC, lbl_805631E4, lbl_805631F0, lbl_805631F4;
 extern double lbl_805631B0;
-extern void *lbl_804891D0;
-extern void *lbl_804891DC;
-extern void *lbl_8033BC18;
-extern void *lbl_8033BC2C;
+extern char lbl_804891D0[];
+extern char lbl_804891DC[];
+extern char lbl_8033BC18[];
+extern char lbl_8033BC2C[];
 extern int lbl_8055CFF0, lbl_8055CFF4;
 extern unsigned int lbl_8055E044;
 extern unsigned char lbl_8055ED70, lbl_8055ED71;
