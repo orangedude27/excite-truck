@@ -196,7 +196,8 @@ extern void fn_802C88FC(void *, int);
 extern void fn_802C8638(void *);
 extern void fn_801312EC(void *, void *);
 extern void fn_80131318(void);
-extern void fn_80010188(int, int, int, float, float, float, float, float);
+extern void fn_80010188(int, int, int, ...);
+typedef struct { float m[12]; } Mtx48;
 void fn_80205FCC(void) {
     int sp64, sp60, sp5C, sp58, sp54, sp50, sp4C, sp48, sp44, sp40, sp3C, sp38;
     float sp1C, sp18, sp14;
