@@ -1,3 +1,4 @@
+#pragma ppc_psq_save off
 #pragma cplusplus on
 struct VObj_8017D93C { virtual void d0(int); };
 #pragma cplusplus reset
@@ -73,6 +74,86 @@ void *fn_8017D688(void) {
     }
     return p;
 }
+
+#pragma ppc_psq_save off
+#pragma cplusplus on
+extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
+    char *a = (char *)arg0;
+    char *b = (char *)arg1;
+    float v[3];
+    float pos[3];
+    float f31, f30, f29, f5, sq;
+    char *obj;
+    void *sub;
+    fn_8017B0F8();
+    f5 = lbl_80561C08 * *(float *)(b + 0x24) / lbl_80561C04;
+    f31 = *(float *)(b + 0x2C);
+    v[0] = lbl_80561BE0;
+    v[1] = lbl_80561BE0;
+    v[2] = lbl_80561BE0;
+    sq = *(float *)(b + 0x28) * *(float *)(b + 0x28);
+    f30 = lbl_80561C04 * *(float *)(b + 0x20);
+    *(int *)(a + 0x1F8) = *(int *)(b + 0x18);
+    f29 = f5 * sq;
+    fn_8017D380(pos, *(int *)(a + 0x1F8));
+    *(float *)(a + 0x60) = pos[0];
+    *(float *)(a + 0x64) = pos[1];
+    *(float *)(a + 0x68) = pos[2];
+    fn_8017A580(arg0);
+    *(unsigned char *)(a + 0x1FD) = *(unsigned char *)(b + 0x30);
+    *(float *)(a + 0x224) = *(float *)(b + 0x34);
+    *(float *)(a + 0x228) = *(float *)(b + 0x38);
+    *(float *)(a + 0x22C) = *(float *)(b + 0x3C);
+    obj = (char *)fn_801284F8(0x54, lbl_80331DB4);
+    if (obj != 0) {
+        *(void **)(obj + 0xC) = a + 0x3C;
+        *(void **)(obj + 4) = arg0;
+        *(int *)(obj + 8) = 0;
+        *(int *)(obj + 0x18) = 0x53504852;
+        *(float *)(obj + 0x10) = f29;
+        *(float *)(obj + 0x14) = f31;
+        *(int *)(obj + 0x20) = 0x64;
+        *(int *)(obj + 0x1C) = 0;
+        *(void **)obj = lbl_80333B48;
+        *(float *)(obj + 0x24) = f30;
+        *(float *)(obj + 0x34) = lbl_80561BE0;
+        *(float *)(obj + 0x38) = lbl_80561BE0;
+        *(float *)(obj + 0x3C) = lbl_80561BE0;
+        *(float *)(obj + 0x40) = lbl_80561BE0;
+        *(float *)(obj + 0x44) = lbl_80561BE0;
+        *(float *)(obj + 0x48) = lbl_80561BE0;
+        *(char *)(obj + 0x4C) = 0;
+        *(float *)(obj + 0x50) = lbl_80561BE0;
+        *(float *)(obj + 0x28) = v[0];
+        *(float *)(obj + 0x2C) = v[1];
+        *(float *)(obj + 0x30) = v[2];
+        if (arg0 != 0) fn_8019EECC(arg0, obj + 0x28);
+    }
+    ((VObj_8017D6E0 *)obj)->f40(0x3E9);
+    fn_80179F94(arg0, obj);
+    *(char *)(a + 0x1E8) = 1;
+    *(char *)(a + 0x1E9) = 0;
+    sub = arg0;
+    *(char *)(a + 0x1FC) = 1;
+    *(char *)(a + 0x1FE) = 0;
+    if (arg0 != 0) sub = a + 0x1EC;
+    fn_801D0C58(sub, *(int *)(a + 0x1F8), 0);
+    {
+        float x = *(float *)(a + 0x60);
+        float y = *(float *)(a + 0x64);
+        float z = *(float *)(a + 0x68);
+        *(float *)(a + 0x200) = x;
+        *(float *)(a + 0x204) = y;
+        *(float *)(a + 0x208) = z;
+        *(float *)(a + 0x20C) = x;
+        *(float *)(a + 0x210) = y;
+        *(float *)(a + 0x214) = z;
+    }
+    *(int *)(a + 0x218) = fn_802077A4(lbl_80331DA4, 5, a + 0x118, a + 0x200);
+    *(int *)(a + 0x21C) = fn_802077A4(lbl_80331D98, 8, a + 0x118, a + 0x60);
+    *(int *)(a + 0x220) = fn_802077A4(lbl_80331D8C, 5, a + 0x118, a + 0x20C);
+}
+#pragma cplusplus reset
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
