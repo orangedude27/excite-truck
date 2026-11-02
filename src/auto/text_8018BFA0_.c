@@ -32,12 +32,8 @@ extern float lbl_80562038;
 extern float lbl_8056203C;
 extern float lbl_80562040;
 static inline float Chan_8018F2C0(unsigned char v) {
-    float t = ((float)v - lbl_80561F74) / lbl_80562038;
-    if (lbl_80561F88 < t) t = lbl_80561F88;
-    if (t > lbl_80561F74) {
-    } else {
-        t = lbl_80561F74;
-    }
+    float t = (lbl_80561F88 < (((float)v - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)v - lbl_80561F74) / lbl_80562038);
+    t = (t > lbl_80561F74) ? t : lbl_80561F74;
     return lbl_8056203C + t * lbl_80562040;
 }
 #pragma scheduling invalid_target
@@ -1365,6 +1361,7 @@ loop_80:
 
 void fn_8018F2C0(void *arg0, void *arg1) {
     char *d = (char *)arg0;
+    unsigned char *p = (unsigned char *)arg1;
     char *s = (char *)arg1;
     int i;
     float f = *(float *)(s + 0x290);
@@ -1374,15 +1371,16 @@ void fn_8018F2C0(void *arg0, void *arg1) {
     *(int *)(d + 0x268C) = *(int *)(s + 0x298);
     for (i = 0; i < *(int *)((char *)arg0 + 0x5F8); i++) {
         float r, g, b;
-        r = Chan_8018F2C0(((unsigned char *)s)[i * 4]);
+        r = Chan_8018F2C0(p[0]);
         *(float *)(d + 0x5FC) = r;
-        g = Chan_8018F2C0(((unsigned char *)s)[i * 4 + 1]);
+        g = Chan_8018F2C0(p[1]);
         *(float *)(d + 0x600) = g;
-        b = Chan_8018F2C0(((unsigned char *)s)[i * 4 + 2]);
+        b = Chan_8018F2C0(p[2]);
         *(float *)(d + 0x604) = b;
         *(float *)(d + 0xD94) = *(float *)(d + 0x5FC);
         *(float *)(d + 0xD98) = *(float *)(d + 0x600);
         *(float *)(d + 0xD9C) = b;
+        p += 4;
         d += 0xC;
     }
     d = (char *)arg0;
