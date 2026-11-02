@@ -27,6 +27,7 @@ extern char lbl_8033A0B0[];
 extern char lbl_8055AFEC[];
 extern char lbl_8055AFF4[];
 void fn_801EE974(void *, void *);
+void fn_801EEA64(void *, void *, int, int);
 void *fn_801E87A8(void);
 void fn_801EDD7C(void *, long);
 long fn_80179CB0(void);
