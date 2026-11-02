@@ -41,6 +41,15 @@ extern char lbl_80330528[];
 extern char lbl_80330688[];
 extern char lbl_803306A0[];
 extern char lbl_803306B4[];
+extern f32 fn_801E7E18(void);
+extern void fn_802C9900(f32);
+extern void fn_802C9904(void);
+extern void fn_802C70AC(s32, f32*, s32, s32);
+extern f32 lbl_80561960;
+extern f32 lbl_80561970;
+extern f32 lbl_80561974;
+extern f32 lbl_80561978;
+extern f32 lbl_8056197C;
 
 void fn_8016A0AC(void) {
 }
