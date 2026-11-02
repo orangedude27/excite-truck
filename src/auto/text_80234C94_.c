@@ -11,12 +11,15 @@ extern int fn_802CAC28(const char *, int);
 extern void fn_80128668(void *);
 static inline void CopyStr_8023512C(char *dst, const char *src, int n) {
     char c;
-    do {
+    for (;;) {
         c = *src++;
         *dst++ = c;
-        if (c == 0) break;
-        if (--n <= 0) { dst[-1] = 0; break; }
-    } while (1);
+        if (c != 0) {
+            if (--n > 0) continue;
+            dst[-1] = 0;
+        }
+        break;
+    }
 }
 static inline void CatStr_8023512C(char *dst, const char *src, int n) {
     while (*dst != 0) { n--; dst++; }
@@ -179,6 +182,43 @@ void fn_802350BC(void) {
         fn_802E30C8(lbl_80340760, *(unsigned int *)lbl_8055F084);
         fn_80235380(*(void **)lbl_8055F084);
     }
+}
+
+extern char lbl_8055B9E8[4];
+extern char lbl_8055B9F0[4];
+extern char *fn_80029004(char *, int);
+void *fn_8023512C(const char *arg0) {
+    char full[0x80];
+    char name[0x80];
+    int *obj;
+    char *dot;
+    CopyStr_8023512C(full, arg0, 0x80);
+    if (fn_8012C33C(arg0) == 0) {
+        fn_802E30C8((char *)lbl_80340670 + 0x120, arg0);
+        CopyStr_8023512C(full, (char *)lbl_80340670 + 0x140, 0x80);
+    }
+    obj = fn_80234E88(full);
+    if (obj != 0) {
+        obj[0x80 / 4] += 1;
+        return obj;
+    }
+    obj = fn_801284F8(0x8C, lbl_8055B9E8);
+    obj[0x84 / 4] = fn_802CAC28(full, 0);
+    if (obj[0x84 / 4] == -1)
+        fn_802E317C((char *)lbl_80340670 + 0x14C, full);
+    obj[0x80 / 4] = 1;
+    obj[0x88 / 4] = 0;
+    CopyStr_8023512C((char *)obj, full, 0x80);
+    CopyStr_8023512C(name, full, 0x80);
+    dot = fn_80029004(name, 0x2E);
+    if (dot != 0)
+        *dot = 0;
+    else
+        fn_802E317C((char *)lbl_80340670 + 0x168, name);
+    CatStr_8023512C(name, lbl_8055B9F0, 0x80);
+    fn_80234EF4(obj, name);
+    fn_80234D44((int)obj);
+    return obj;
 }
 
 void fn_80235380(void *arg0) {
