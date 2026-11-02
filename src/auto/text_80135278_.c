@@ -436,17 +436,17 @@ void fn_80135EA8(void *arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma scheduling invalid_target
-void fn_80135EF0(void *arg0, s32 arg1) {
-    register s32 zero = 0;
-    register Unk_80135278 *obj = (Unk_80135278 *)arg0;
-    if (fn_80135D60(obj, arg1) == 1) {
-        obj->unk_34 = zero;
-        obj->unk_5c = zero;
+s32 fn_80135EF0(void *arg0, s32 arg1) {
+    Unk_80135278 *obj = (Unk_80135278 *)arg0;
+    s32 res = fn_80135D60(obj, arg1);
+    if (res == 1) {
+        obj->unk_34 = 0;
+        obj->unk_5c = 0;
         if (obj->unk_50 != 0) {
-            register s32 value = *(s32 *)((u8 *)obj->unk_2c + 0x18);
-            obj->unk_54 = value >> 16;
+            obj->unk_54 = *(s32 *)((u8 *)obj->unk_2c + 0x18) >> 16;
         }
     }
+    return res;
 }
 #pragma scheduling reset
 void fn_80135F4C(void *arg0) {
