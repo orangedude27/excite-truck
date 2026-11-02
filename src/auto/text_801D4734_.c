@@ -15,6 +15,7 @@ extern int fn_801B2F24(void);
   extern char lbl_80338C78[];
 extern char lbl_80338BD0[];
 extern int fn_80128668(void);
+extern void fn_80128658(int);
 typedef struct { char *name; int state; } UnkStruct_801D701C;
 extern char lbl_80339038[];
 extern char lbl_8033905C[];
