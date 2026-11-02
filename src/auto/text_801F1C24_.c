@@ -642,7 +642,7 @@ void fn_801F34C4(void *arg0, int arg1) {
 }
 
 #pragma push
-#pragma ppc_psq_save off
+#pragma processor 750
 void fn_801F3514(void *arg0) {
     extern float lbl_80562F74, lbl_80562F78, lbl_80562F7C, lbl_80562F80, lbl_80562F84, lbl_80562F88, lbl_80562F8C, lbl_80562F64, lbl_8055EC04, lbl_80562F48;
     extern char lbl_8033ABC4[], lbl_8033ABF0[], lbl_8033AC18[];
@@ -660,17 +660,19 @@ void fn_801F3514(void *arg0) {
     char *p = (char *)arg0;
 
     if (*(int *)(p + 0x10) == 0) {
+        float a = lbl_80562F40, b = lbl_80562F74, c = lbl_80562F78;
         *(int *)(p + 0x10) = 0xFDFEE7;
-        *(float *)(p + 4) = lbl_80562F40;
-        *(float *)(p + 8) = lbl_80562F74;
-        *(float *)(p + 0xC) = lbl_80562F78;
+        *(float *)(p + 4) = a;
+        *(float *)(p + 8) = b;
+        *(float *)(p + 0xC) = c;
         fn_802E30C8(lbl_8033ABC4);
     }
     if (*fn_801E1F44() == 1) {
+        float a = lbl_80562F40, b = lbl_80562F7C, c = lbl_80562F80;
         *(int *)(p + 0x10) = 0x75889B;
-        *(float *)(p + 4) = lbl_80562F40;
-        *(float *)(p + 8) = lbl_80562F7C;
-        *(float *)(p + 0xC) = lbl_80562F80;
+        *(float *)(p + 4) = a;
+        *(float *)(p + 8) = b;
+        *(float *)(p + 0xC) = c;
     }
     fn_802C9994(*(int *)(p + 0x10));
     fn_802923C4(*(int *)(p + 0x10));
