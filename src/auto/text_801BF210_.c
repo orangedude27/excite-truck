@@ -118,26 +118,29 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
 }
 
 void fn_801BFD34(float *, float *, const float *);
-void fn_801BFB2C(char *arg0, float *arg1, float *arg2) {
-    float p0[3];
-    float m[9];
-    float tmp[3];
-    float *a, *b;
-    float q0[3], q1[3];
-    float n[3];
+void fn_801BFB2C(char *arg0, float *arg1, FV3 *arg2) {
+    float n[3], q1[3], q0[3];
+    float m[12];
+    FV3 *a, *b;
+    float z, y, x;
 
-    a = arg2 + *(int *)(arg0 + 0x21C) * 3;
-    p0[0] = a[0]; p0[1] = a[1]; p0[2] = a[2];
-    a = arg2 + *(int *)(arg0 + 0x220) * 3;
-    b = arg2 + *(int *)(arg0 + 0x224) * 3;
-    m[0] = b[0] - a[0]; m[1] = b[1] - a[1]; m[2] = b[2] - a[2];
-    a = arg2 + *(int *)(arg0 + 0x228) * 3;
-    b = arg2 + *(int *)(arg0 + 0x22C) * 3;
-    m[3] = b[0] - a[0]; m[4] = b[1] - a[1]; m[5] = b[2] - a[2];
+    a = &arg2[*(int *)(arg0 + 0x21C)];
+    x = a->x; y = a->y; z = a->z;
+    m[9] = x; m[10] = y; m[11] = z;
+    a = &arg2[*(int *)(arg0 + 0x220)];
+    b = &arg2[*(int *)(arg0 + 0x224)];
+    x = b->x - a->x; y = b->y - a->y; z = b->z - a->z;
+    m[0] = x; m[1] = y; m[2] = z;
+    a = &arg2[*(int *)(arg0 + 0x228)];
+    b = &arg2[*(int *)(arg0 + 0x22C)];
+    x = b->x - a->x; y = b->y - a->y; z = b->z - a->z;
+    m[3] = x; m[4] = y; m[5] = z;
     PSVECCrossProduct(&m[0], &m[3], &m[6]);
     if (PSVECDotProduct(&m[6], &m[6]) > lbl_805628CC) {
-        q0[0] = m[0]; q0[1] = m[1]; q0[2] = m[2];
-        n[0] = m[6]; n[1] = m[7]; n[2] = m[8];
+        float a0, a1, a2, b0, b1, b2;
+        a2 = m[2]; a1 = m[1]; a0 = m[0]; b2 = m[8]; b1 = m[7]; b0 = m[6];
+        q0[0] = a0; q0[1] = a1; q0[2] = a2;
+        n[0] = b0; n[1] = b1; n[2] = b2;
         PSVECCrossProduct(n, q0, q1);
         PSVECNormalize(q0, q0);
         PSVECNormalize(q1, q1);
@@ -146,15 +149,16 @@ void fn_801BFB2C(char *arg0, float *arg1, float *arg2) {
         m[3] = q1[0]; m[4] = q1[1]; m[5] = q1[2];
         m[6] = n[0]; m[7] = n[1]; m[8] = n[2];
     } else {
-        m[1] = lbl_805628B8;
-        m[0] = lbl_805628BC;
-        m[2] = lbl_805628B8;
-        m[3] = lbl_805628B8;
-        m[4] = lbl_805628BC;
-        m[5] = lbl_805628B8;
-        m[6] = lbl_805628B8;
-        m[7] = lbl_805628B8;
-        m[8] = lbl_805628BC;
+        float zero = lbl_805628B8, one = lbl_805628BC;
+        m[1] = zero;
+        m[0] = one;
+        m[2] = zero;
+        m[3] = zero;
+        m[4] = one;
+        m[5] = zero;
+        m[6] = zero;
+        m[7] = zero;
+        m[8] = one;
     }
     fn_801BFD34(arg1 + 9, (float *)(arg0 + 0x254), m);
     fn_80015B20(arg1, arg0 + 0x230, m);
