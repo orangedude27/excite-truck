@@ -2759,12 +2759,11 @@ extern "C" void fn_8028693C(void* arg0) {
 #pragma cplusplus off
 typedef unsigned int (*GetFn)(void *);
 typedef int (*CmpFn)(void *);
-int fn_80286950(void **arg0) {
-    unsigned int a = ((GetFn *)*arg0)[19](arg0);
-    return (int)a <= ((CmpFn *)*arg0)[10](arg0);
-}
-
 #pragma cplusplus on
+extern "C" int fn_80286950(ebi::title::TPlaneSub* arg0) {
+    int a = arg0->v17();
+    return a <= arg0->v8();
+}
 extern "C" void fn_802869B8(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v17();
 }
