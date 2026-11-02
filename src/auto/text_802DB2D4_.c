@@ -611,17 +611,6 @@ void fn_802DC71C(int arg0, int arg1) {
     GXSetBlendMode(1, 4, 5, 5);
 }
 #pragma scheduling on
-extern void GXLoadPosMtxImm(float (*)[4], unsigned int);
-extern void GXCallDisplayList(void *, unsigned int);
-extern void PSMTXScale(float (*)[4], float, float, float);
-extern int fn_802CFF64();
-extern void fn_802D0E48(int);
-extern void fn_802D2ED8(int, int);
-extern void fn_802D2F70(int);
-extern void fn_802D3D94(void *, int);
-extern void fn_802D6B54(void *);
-extern void fn_802D6B78(void *);
-extern void fn_802D6B7C(void *);
 extern unsigned char lbl_8055FEB0, lbl_8055FEB9, lbl_8055FEBB;
 extern void *lbl_8055FEB4;
 extern float lbl_80565040, lbl_80565044, lbl_80565048, lbl_8056504C;
