@@ -2893,23 +2893,21 @@ void fn_8011BC48(void) {
 }
 
 s32 fn_8011BC4C(void *arg0, void *arg1) {
+    void *cur;
     void *next;
-    void *prev;
     if (arg0 == NULL) return 0;
-    prev = *(void **)((u8 *)arg0 + 0x30);
-    if (prev == arg1) {
-        *(void **)((u8 *)arg0 + 0x30) = *(void **)prev;
+    cur = *(void **)((u8 *)arg0 + 0x30);
+    if (cur == arg1) {
+        *(void **)((u8 *)arg0 + 0x30) = *(void **)cur;
         return 1;
     }
-    next = *(void **)prev;
-    do {
+    while ((next = *(void **)cur) != NULL) {
         if (next == arg1) {
-            *(void **)prev = *(void **)arg1;
+            *(void **)cur = *(void **)arg1;
             return 1;
         }
-        prev = next;
-        next = *(void **)prev;
-    } while (next != NULL);
+        cur = next;
+    }
     return 0;
 }
 
@@ -3860,6 +3858,98 @@ if(bits < -22) memset(*(u8**)((u8*)arg0+0x2c), **(u8**)((u8*)arg0+0x2c), -bits-2
 *(u32*)((u8*)arg1+4)=(u32)src;*(u32*)arg1=bits;*(u32*)((u8*)arg1+8)=remain;
 }
 
+void fn_8011D7F8(void *arg0, void *arg1) {
+    u32 sh;
+    u32 w;
+    u32 cnt;
+    u32 bits;
+    s8 *out;
+    u32 *in;
+    s32 n;
+    u32 mask;
+    u32 b;
+    u32 sym;
+    u32 lo;
+    void *tab;
+    void *ntab;
+
+    if (*(s8 **)((u8 *)arg0 + 0) == *(s8 **)((u8 *)arg0 + 4)) {
+        cnt = *(u32 *)((u8 *)arg1 + 8);
+        sh = *(u32 *)((u8 *)arg0 + 0x28);
+        in = *(u32 **)((u8 *)arg1 + 4);
+        bits = *(u32 *)((u8 *)arg1 + 0);
+        if (cnt < sh) {
+            w = *in;
+            n = bits | (w << cnt);
+            in += 4;
+            bits = w >> (sh - cnt);
+            cnt = (cnt + 0x20) - sh;
+            mask = (-1U >> (0x20 - sh)) & n;
+        } else {
+            cnt = cnt - sh;
+            mask = bits & (-1U >> (0x20 - sh));
+            bits = bits >> sh;
+        }
+        if (mask != 0) {
+            out = *(s8 **)((u8 *)arg0 + 0x2C);
+            *(s8 **)((u8 *)arg0 + 0) = out;
+            *(s8 **)((u8 *)arg0 + 4) = (s8 *)(out + mask);
+            tab = *(void **)((u8 *)arg0 + 0x24);
+            ntab = (u8 *)arg0 + 0x10;
+            w = *(u32 *)((u8 *)arg0 + 0x20);
+            sh = -1U >> (0x20 - w);
+            do {
+                mask -= 1;
+                if (cnt >= w) {
+                    b = *(u8 *)((u8 *)tab + (bits & sh));
+                    lo = *(u8 *)((u8 *)ntab + (b & 0xF));
+                    bits = bits >> (b >> 4U);
+                    cnt = cnt - (b >> 4U);
+                } else {
+                    w = *in;
+                    b = *(u8 *)((u8 *)tab + (sh & (bits | (w << cnt))));
+                    lo = *(u8 *)((u8 *)ntab + (b & 0xF));
+                    if (cnt >= (b >> 4U)) {
+                        bits = bits >> (b >> 4U);
+                        cnt = cnt - (b >> 4U);
+                    } else {
+                        bits = w >> ((b >> 4U) - cnt);
+                        in += 4;
+                        cnt = (cnt + 0x20) - (b >> 4U);
+                    }
+                }
+                if (cnt >= w) {
+                    b = *(u8 *)((u8 *)tab + (bits & sh));
+                    sym = *(u8 *)((u8 *)ntab + (b & 0xF));
+                    bits = bits >> (b >> 4U);
+                    cnt = cnt - (b >> 4U);
+                } else {
+                    w = *in;
+                    b = *(u8 *)((u8 *)tab + (sh & (bits | (w << cnt))));
+                    sym = *(u8 *)((u8 *)ntab + (b & 0xF));
+                    if (cnt >= (b >> 4U)) {
+                        bits = bits >> (b >> 4U);
+                        cnt = cnt - (b >> 4U);
+                    } else {
+                        bits = w >> ((b >> 4U) - cnt);
+                        in += 4;
+                        cnt = (cnt + 0x20) - (b >> 4U);
+                    }
+                }
+                *out = lo | (sym * 0x10);
+                out += 1;
+            } while (mask != 0);
+        } else {
+            out = *(s8 **)((u8 *)arg0 + 0x2C);
+            *(s8 **)((u8 *)arg0 + 4) = out;
+            *(s8 **)((u8 *)arg0 + 0) = out + 4;
+        }
+        *(u32 **)((u8 *)arg1 + 4) = in;
+        *(u32 *)((u8 *)arg1 + 0) = bits;
+        *(u32 *)((u8 *)arg1 + 8) = cnt;
+    }
+}
+
 void fn_8011D9E4(void *arg0, void *arg1) {
     u32 *bits;
     u32 value, bitCount, available, mask, count, i, code, len;
@@ -4107,42 +4197,72 @@ s32 *fn_8011E0B4(s32 arg0, s32 arg1, s32 width, s32 height, s32 format, s32 *buf
 }
 
 extern s32* fn_8011E0B4(s32, s32, s32, s32, s32, s32*, s32, s32);
-u32 fn_8011FC2C(void* arg0, s32 arg1, s32 arg2, s32* arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    u32 result = 0;
-    s32* ptr = arg3;
-    s32 old = *(s32*)((u8*)arg0 + 0x14);
-    s32 next = old ^ 1;
+u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    extern s32 *fn_8011E0B4();
+    u32 result;
     s32 cur;
-    s32 flag;
-    s32* ret;
-    s32 tmp;
-    if (*(s32*)((u8*)arg0 + next * 0x30 + 0x1C))
-        *(s32*)((u8*)arg0 + 0x14) = next;
-    cur = *(s32*)((u8*)arg0 + 0x14);
-    if ((arg7 & 0x100000) && (arg6 & 0x100000)) {
-        tmp = 1;
-        fn_8011E0B4(*(s32*)((u8*)arg0 + cur * 0x30 + 0x40), *(s32*)((u8*)arg0 + old * 0x30 + 0x40),
-            *(s32*)((u8*)arg0 + 4), *(s32*)((u8*)arg0 + 8), *(s32*)((u8*)arg0 + old * 0x30 + 0x44),
-            ptr + 1, arg4, arg1);
-        ptr = (s32*)((u8*)ptr + *ptr);
+    s32 next;
+    s32 *ptr;
+    s32 *ret;
+    s32 old;
+    s32 curOffset;
+    s32 oldOffset;
+    s32 *curBase;
+    s32 *oldBase;
+    old = *(s32 *)((u8 *)arg0 + 0x14);
+    next = old ^ 1;
+    if (*(s32 *)((u8 *)arg0 + next * 0x30 + 0x1C) != 0) {
+        *(s32 *)((u8 *)arg0 + 0x14) = next;
     }
-    flag = arg6 & 0x8000;
+    cur = *(s32 *)((u8 *)arg0 + 0x14);
     result = 0;
-    if (flag == 0) ptr++;
-    ret = fn_8011E0B4(*(s32*)((u8*)arg0 + cur * 0x30 + 0x1C), *(s32*)((u8*)arg0 + old * 0x30 + 0x1C),
-        *(s32*)((u8*)arg0 + 4), *(s32*)((u8*)arg0 + 8), *(s32*)((u8*)arg0 + old * 0x30 + 0x20),
-        ptr, arg4, arg1);
-    if (flag == 0) ret = (s32*)((u8*)ptr + *(s32*)((u8*)ptr - 4) - 4);
+    ptr = arg3;
+    if ((arg7 & 0x100000) != 0) {
+        if ((arg6 & 0x100000) != 0) {
+            fn_8011E0B4(*(s32 *)((u8 *)arg0 + cur * 0x30 + 0x40),
+                        *(s32 *)((u8 *)arg0 + old * 0x30 + 0x40),
+                        *(s32 *)((u8 *)arg0 + 4),
+                        *(s32 *)((u8 *)arg0 + 8),
+                        *(s32 *)((u8 *)arg0 + old * 0x30 + 0x44),
+                        arg3 + 1, arg4, arg1, arg2, 1, arg5, arg6, &result);
+        }
+        ptr = (s32 *)((u8 *)ptr + *ptr);
+    }
+    result = 0;
+    if ((arg6 & 0x8000) == 0) ptr++;
+    curOffset = cur * 0x30;
+    oldOffset = old * 0x30;
+    curBase = (s32 *)((u8 *)arg0 + curOffset);
+    oldBase = (s32 *)((u8 *)arg0 + oldOffset);
+    ret = fn_8011E0B4(curBase[7], oldBase[7],
+                      *(s32 *)((u8 *)arg0 + 4),
+                      *(s32 *)((u8 *)arg0 + 8),
+                      oldBase[8],
+                      ptr, arg4, arg1, arg2, 1, arg5, arg6, &result);
+    if ((arg6 & 0x8000) == 0) {
+        ret = (s32 *)((u8 *)ptr + *(volatile s32 *)((u8 *)ptr - 4) - 4);
+    }
     result >>= 2;
-    if (!(arg6 & 0x20000)) {
-        tmp = 2;
-        ret = fn_8011E0B4(*(s32*)((u8*)arg0 + cur * 0x30 + 0x28), *(s32*)((u8*)arg0 + old * 0x30 + 0x28),
-            *(s32*)((u8*)arg0 + 0xC), *(s32*)((u8*)arg0 + 0x10), *(s32*)((u8*)arg0 + old * 0x30 + 0x2C),
-            ret, arg4, arg1);
+    if ((arg6 & 0x20000) == 0) {
+        curOffset = cur * 0x30;
+        oldOffset = old * 0x30;
+        curBase = (s32 *)((u8 *)arg0 + curOffset);
+        oldBase = (s32 *)((u8 *)arg0 + oldOffset);
+        ret = fn_8011E0B4(curBase[10], oldBase[10],
+                          *(s32 *)((u8 *)arg0 + 0xC),
+                          *(s32 *)((u8 *)arg0 + 0x10),
+                          oldBase[11],
+                          ret, arg4, arg1, arg2, 2, arg5, arg6, &result);
         result = 0;
-        fn_8011E0B4(*(s32*)((u8*)arg0 + cur * 0x30 + 0x34), *(s32*)((u8*)arg0 + old * 0x30 + 0x34),
-            *(s32*)((u8*)arg0 + 0xC), *(s32*)((u8*)arg0 + 0x10), *(s32*)((u8*)arg0 + old * 0x30 + 0x38),
-            ret, arg4, arg1);
+        curOffset = cur * 0x30;
+        oldOffset = old * 0x30;
+        curBase = (s32 *)((u8 *)arg0 + curOffset);
+        oldBase = (s32 *)((u8 *)arg0 + oldOffset);
+        fn_8011E0B4(curBase[13], oldBase[13],
+                    *(s32 *)((u8 *)arg0 + 0xC),
+                    *(s32 *)((u8 *)arg0 + 0x10),
+                    oldBase[14],
+                    ret, arg4, arg1, arg2, 2, arg5, arg6, &result);
     }
     return result;
 }
