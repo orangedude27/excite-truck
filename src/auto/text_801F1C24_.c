@@ -642,8 +642,7 @@ void fn_801F34C4(void *arg0, int arg1) {
 }
 
 #pragma push
-#pragma scheduling on
-#pragma ppc_psq_save off
+#pragma processor 750
 void fn_801F3514(void *arg0) {
     extern float lbl_80562F74, lbl_80562F78, lbl_80562F7C, lbl_80562F80, lbl_80562F84, lbl_80562F88, lbl_80562F8C, lbl_80562F64, lbl_8055EC04, lbl_80562F48;
     extern char lbl_8033ABC4[], lbl_8033ABF0[], lbl_8033AC18[];
@@ -657,7 +656,7 @@ void fn_801F3514(void *arg0) {
     extern double sin(double);
     extern double cos(double);
     float v[3];
-    float f30, f31, t;
+    float f31, f30, t;
     char *p = (char *)arg0;
 
     if (*(int *)(p + 0x10) == 0) {
