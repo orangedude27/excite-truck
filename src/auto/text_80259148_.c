@@ -820,6 +820,122 @@ void fn_8025B22C(void *arg0) {
     }
 }
 
+int fn_8025B2BC(void *arg0, int arg1) {
+    typedef void (*Fmt)(char *, int, const char *, ...);
+    char *o = (char *)arg0;
+    char *obj;
+    int idx;
+    unsigned char *src;
+    unsigned char c;
+    int count;
+    unsigned char *dst;
+    int v;
+    int n;
+    int old;
+    int res;
+    int idx2;
+    char *obj2;
+    unsigned char *src2;
+    unsigned char c2;
+    int count2;
+    unsigned char *dst2;
+    int v2;
+    int n2;
+    int old2;
+    int res2;
+
+    switch (arg1) {
+    case 0x128:
+        old = *(int *)(o + 0x74);
+        idx = *(int *)(o + 0x1C);
+        n = old - 1;
+        *(int *)(o + 0x74) = n;
+        v = 1;
+        if (n > 1) v = n;
+        if (v < idx) idx = v;
+        *(int *)(o + 0x74) = idx;
+        if (old != idx) {
+            res = *(int *)(o + 0x70);
+            obj = *(char **)(o + 0x18);
+            *(int *)(obj + 0x4C) = idx;
+            src = fn_8001EFAC(res, idx);
+            if (src == 0) goto dn_else;
+            dst = (unsigned char *)obj + 4;
+            count = 0x32;
+            goto dn_copy;
+dn_next:
+            count--;
+            if (count > 0) goto dn_copy;
+            dst[-1] = 0;
+            goto dn_done;
+dn_copy:
+            c = *src++;
+            *dst++ = c;
+            if ((signed char)c == 0) goto dn_done;
+            goto dn_next;
+dn_else:
+            obj[4] = 0;
+dn_done:
+            if (idx > 0) {
+                ((Fmt)fn_801345D8)(obj + 0x36, 0x14, lbl_80344F08, idx);
+            } else {
+                obj[0x36] = 0;
+            }
+            ((Fmt)fn_801345D8)(o + 0x20, 0x50, &lbl_8055C38C,
+                        fn_8001EFAC(*(int *)(o + 0x70), *(int *)(o + 0x74)));
+        } else {
+            fn_80216D28();
+            fn_80214D50(1);
+        }
+        return 1;
+    case 0x126:
+        old2 = *(int *)(o + 0x74);
+        idx2 = *(int *)(o + 0x1C);
+        n2 = old2 + 1;
+        *(int *)(o + 0x74) = n2;
+        v2 = 1;
+        if (n2 > 1) v2 = n2;
+        if (v2 < idx2) idx2 = v2;
+        *(int *)(o + 0x74) = idx2;
+        if (old2 != idx2) {
+            res2 = *(int *)(o + 0x70);
+            obj2 = *(char **)(o + 0x18);
+            *(int *)(obj2 + 0x4C) = idx2;
+            src2 = fn_8001EFAC(res2, idx2);
+            if (src2 == 0) goto up_else;
+            dst2 = (unsigned char *)obj2 + 4;
+            count2 = 0x32;
+            goto up_copy;
+up_next:
+            count2--;
+            if (count2 > 0) goto up_copy;
+            dst2[-1] = 0;
+            goto up_done;
+up_copy:
+            c2 = *src2++;
+            *dst2++ = c2;
+            if ((signed char)c2 == 0) goto up_done;
+            goto up_next;
+up_else:
+            obj2[4] = 0;
+up_done:
+            if (idx2 > 0) {
+                ((Fmt)fn_801345D8)(obj2 + 0x36, 0x14, lbl_80344F08, idx2);
+            } else {
+                obj2[0x36] = 0;
+            }
+            ((Fmt)fn_801345D8)(o + 0x20, 0x50, &lbl_8055C38C,
+                        fn_8001EFAC(*(int *)(o + 0x70), *(int *)(o + 0x74)));
+        } else {
+            fn_80216D28();
+            fn_80214D50(1);
+        }
+        return 1;
+    default:
+        return 0;
+    }
+}
+
 void fn_8025B784(void) {
 }
 
