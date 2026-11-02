@@ -5,6 +5,7 @@
 
 extern void fn_80012158(void);
 extern s32 fn_80161C38(void);
+extern s32 fn_8000C848(s32);
 
 extern void fn_8000C964(void);
 extern void fn_8000CD24(void);
