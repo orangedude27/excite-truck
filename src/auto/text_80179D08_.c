@@ -3,6 +3,20 @@
 #include <types.h>
 typedef struct { s32 w[12]; } Blk12;
 typedef struct { s32 w[9]; } Blk9;
+static inline void MtxMulVec3(f32 *m, f32 *src, f32 *dst) {
+    f32 x, y, z;
+    if (dst == src) {
+        x = src[0]; y = src[1]; z = src[2];
+        dst[0] = (x * m[0] + y * m[3]) + z * m[6];
+        dst[1] = (x * m[1] + y * m[4]) + z * m[7];
+        dst[2] = (x * m[2] + y * m[5]) + z * m[8];
+    } else {
+        x = src[0]; y = src[1]; z = src[2];
+        dst[0] = (x * m[0] + y * m[3]) + z * m[6];
+        dst[1] = (x * m[1] + y * m[4]) + z * m[7];
+        dst[2] = (x * m[2] + y * m[5]) + z * m[8];
+    }
+}
 
 extern void fn_80128668(void *);
 extern void fn_801E9DC4(void *);
