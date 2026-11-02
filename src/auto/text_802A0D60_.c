@@ -6,7 +6,9 @@ typedef unsigned int u32;
 
 extern double fabs(double);
 extern float lbl_805646F0;
-extern float lbl_80558DC4, lbl_805646E8, lbl_805646EC, lbl_805646F4;
+extern double __fabs(double);
+extern float lbl_80558DC4[];
+extern float lbl_805646E8, lbl_805646EC, lbl_805646F4;
 extern void fn_801E9E30(s32, float *);
 extern void fn_802CA09C(s32, u32, u32, float, float, float, float, float);
 extern void fn_802A9428(void);
@@ -22,6 +24,45 @@ extern void *fn_8000AC38(void);
 extern s32 fn_80161C38(void);
 extern char lbl_80349900[];
 #pragma scheduling off
+void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, float farg0, float farg1) {
+    float sp10[3];
+    float v;
+    s32 i, c;
+    u32 color;
+    s32 n;
+    float zero;
+    if (arg4 != 0 && !((float)fabs(farg1) <= *(float *)&lbl_80558DC4)) {
+        v = lbl_805646E8 * farg1;
+        if (v < lbl_805646F0)
+            v = v - lbl_805646EC;
+        else
+            v = lbl_805646EC + v;
+        i = (s32)v;
+        c = 0xFF;
+        if (i < 0)
+            i = 0;
+        if (i < 0xFF)
+            c = i;
+        n = -arg4;
+        color = (n & 0xFF) | ((n << 8) & 0xFF00) | ((n << 16) & 0xFF0000) | (c << 24);
+        zero = lbl_805646F0;
+        for (i = 0; i < 4; i++) {
+            s32 a = i & 1;
+            s32 b = i & 2;
+            float x, y, u, w;
+            x = arg1[0] + arg2[0] * (farg0 * (float)(a ^ 1)) + arg3[0] * (farg0 * (float)(((i >> 1) & 1) ^ 1));
+            y = arg1[1] + arg2[1] * (farg0 * (float)(a == 0)) + arg3[1] * (farg0 * (float)(b == 0));
+            sp10[0] = x;
+            sp10[1] = zero;
+            sp10[2] = y;
+            fn_801E9E30(arg0, sp10);
+            u = a != 0 ? lbl_805646F4 : lbl_805646F0;
+            w = b != 0 ? lbl_805646F4 : lbl_805646F0;
+            fn_802CA09C(lbl_8055F840, color, (u32)(((i ^ 1) >> 1) - ((i ^ 1) & i)) >> 31, sp10[0], sp10[1], sp10[2], u, w);
+        }
+    }
+}
+
 s32 fn_802A0FBC(void) {
     struct CallbackVTable {
         void *reserved[12];
