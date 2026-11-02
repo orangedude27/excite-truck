@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct { float x, y, z; } Vec801BD;
 extern float lbl_80562844;
 __declspec(section ".sdata") extern char lbl_8055A924[];
 __declspec(section ".sdata") extern char lbl_8055A92C[];
@@ -137,28 +138,33 @@ extern float lbl_80562838, lbl_8056283C, lbl_805628A8, lbl_805628AC, lbl_805628B
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
 void fn_801BEB44(int i, int j, float *target, float *velocity) {
-    unsigned char *base = (unsigned char *)lbl_8055E798 + i * 0x1F0;
-    unsigned char *p = base + j * 16;
-    float old[3], next[3], delta[3], t;
-    float d0, d1;
-    int k;
-    for (k=0;k<3;k++) { old[k]=*(float *)(p+0x40+k*4); next[k]=*(float *)(p+0x150+k*4); delta[k]=next[k]-old[k]; }
-    d0=PSVECDotProduct(delta, p+0x110);
-    for (k=0;k<3;k++) delta[k]=old[k]-target[k];
-    d1=PSVECDotProduct(delta, velocity)-d0;
+    unsigned char *p = (unsigned char *)lbl_8055E798 + i * 0x1F0 + j * 16;
+    float diff[3], n[3], a[3], b[3], tmp[3], lerp[3];
+    float d0, d1, t;
+    a[0] = *(float *)(p + 0x40); a[1] = *(float *)(p + 0x44); a[2] = *(float *)(p + 0x48);
+    b[0] = *(float *)(p + 0x150); b[1] = *(float *)(p + 0x154); b[2] = *(float *)(p + 0x158);
+    diff[0] = a[0] - b[0]; diff[1] = a[1] - b[1]; diff[2] = a[2] - b[2];
+    n[0] = *(float *)(p + 0x110); n[1] = *(float *)(p + 0x114); n[2] = *(float *)(p + 0x118);
+    d0 = PSVECDotProduct(diff, n);
+    tmp[0] = a[0] - target[0]; tmp[1] = a[1] - target[1]; tmp[2] = a[2] - target[2];
+    d1 = PSVECDotProduct(tmp, velocity) - d0;
     if (d1 > lbl_805628A8) return;
-    if (PSVECDotProduct(velocity,p+0x110) < lbl_805628AC) return;
-    t=lbl_805628B0*(lbl_805628A8+d1);
-    if (t < lbl_8056283C) t=lbl_8056283C;
-    if (t > lbl_80562838) t=lbl_80562838;
-    for(k=0;k<3;k++) delta[k]=old[k]+t*(next[k]-old[k]);
-    PSVECNormalize(delta,delta);
-    for(k=0;k<3;k++) {
-      *(float *)(p+0x150+k*4)=target[k]+t*( *(float *)(p+0x40+k*4)-target[k]);
-      *(float *)(p+0x110+k*4)=delta[k];
-    }
-    *(float *)(p+0x15C)=*(float *)(p+0x24);
-    *(float *)(p+0x11C)=*(float *)(p+0x14);
+    if (PSVECDotProduct(velocity, n) < lbl_805628AC) return;
+    t = lbl_805628B0 * (lbl_805628A8 + d1);
+    t = (lbl_8056283C < t) ? lbl_8056283C : t;
+    t = (t > lbl_80562838) ? t : lbl_80562838;
+    lerp[0] = velocity[0] + t * (n[0] - velocity[0]);
+    lerp[1] = velocity[1] + t * (n[1] - velocity[1]);
+    lerp[2] = velocity[2] + t * (n[2] - velocity[2]);
+    n[0] = lerp[0]; n[1] = lerp[1]; n[2] = lerp[2];
+    PSVECNormalize(n, n);
+    b[0] = target[0] + t * (b[0] - target[0]);
+    b[1] = target[1] + t * (b[1] - target[1]);
+    b[2] = target[2] + t * (b[2] - target[2]);
+    *(float *)(p + 0x150) = b[0]; *(float *)(p + 0x154) = b[1]; *(float *)(p + 0x158) = b[2];
+    *(float *)(p + 0x15C) = *(float *)(p + 0x24);
+    *(float *)(p + 0x110) = n[0]; *(float *)(p + 0x114) = n[1]; *(float *)(p + 0x118) = n[2];
+    *(float *)(p + 0x11C) = *(float *)(p + 0x14);
 }
 
 extern float lbl_80562838;
