@@ -185,23 +185,22 @@ loop_condition:
 extern int lbl_802F9D90[4];
 extern float lbl_805631D4, lbl_805631EC;
 #pragma ppc_psq_save off
+#pragma scheduling on
 void fn_80205D5C(void) {
     int rawr[4];
     float off[4];
     float a[3], b[3], c[3], d[3];
     float f3, f0, f31, f29, f30;
-    float *rect = (float *)rawr;
-    int *src = (int *)lbl_802F9D90;
     int i;
     fn_802C8CBC(-1);
     fn_802C8DBC(0x10);
     f3 = lbl_80563198 * (lbl_805631D4 * (float)lbl_8055CFF0);
-    f31 = (float)lbl_8055CFF4 * lbl_80563198;
+    f31 = (float)lbl_8055CFF0 * lbl_80563198;
     f29 = lbl_805631A8;
-    rawr[0] = src[0];
-    rawr[1] = src[1];
-    rawr[2] = src[2];
-    rawr[3] = src[3];
+    rawr[0] = lbl_802F9D90[0];
+    rawr[1] = lbl_802F9D90[1];
+    rawr[2] = lbl_802F9D90[2];
+    rawr[3] = lbl_802F9D90[3];
     f0 = lbl_805631EC * f3;
     off[0] = f0;
     off[1] = f3;
@@ -209,22 +208,22 @@ void fn_80205D5C(void) {
     off[3] = f0;
     for (i = 0; i < 4; i++) {
         a[0] = f31 + off[i];
-        a[1] = (float)lbl_8055CFF4 * rect[i];
+        a[1] = (float)lbl_8055CFF4 * *(float *)&rawr[i];
         a[2] = f29;
         ((void (*)(int, int, float, float, float, float, float))fn_802C8E00)(0x404040, i > 0, a[0], a[1], a[2], f29, f29);
         b[0] = f31;
-        b[1] = (float)lbl_8055CFF4 * rect[i];
+        b[1] = (float)lbl_8055CFF4 * *(float *)&rawr[i];
         b[2] = f29;
         ((void (*)(int, int, float, float, float, float, float))fn_802C8E00)(0xFF404040, i > 0, f31, b[1], f29, f29, f29);
     }
     f30 = lbl_805631A8;
     for (i = 0; i < 4; i++) {
         c[0] = f31 - off[i];
-        c[1] = (float)lbl_8055CFF4 * rect[i];
+        c[1] = (float)lbl_8055CFF4 * *(float *)&rawr[i];
         c[2] = f30;
         ((void (*)(int, int, float, float, float, float, float))fn_802C8E00)(0x404040, i > 0, c[0], c[1], c[2], f30, f30);
         d[0] = f31;
-        d[1] = (float)lbl_8055CFF4 * rect[i];
+        d[1] = (float)lbl_8055CFF4 * *(float *)&rawr[i];
         d[2] = f30;
         ((void (*)(int, int, float, float, float, float, float))fn_802C8E00)(0xFF404040, i > 0, f31, d[1], f30, f30, f30);
     }
