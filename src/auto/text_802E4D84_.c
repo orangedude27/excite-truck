@@ -32,7 +32,7 @@ extern int lbl_8055FFA0;
 extern int *lbl_8055FF9C;
 extern unsigned char *lbl_8055FF94;
 extern void *lbl_8055FF90;
-extern int fn_802E5AE8(void);
+extern void *fn_802E5AE8();
 extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern void fn_802E589C(void);
