@@ -799,7 +799,7 @@ int fn_802C6C20(int arg0) {
 
 void fn_802C6C30(void) {}
 
-void fn_802C6C34(void) { fn_802C53A8(); }
+void *fn_802C6C34(int arg0) { return (void *)fn_802C53A8(arg0); }
 
 void fn_802C6C38(int arg0) {
     void *manager = fn_802C5390(arg0);
