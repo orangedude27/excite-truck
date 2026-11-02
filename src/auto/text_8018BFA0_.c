@@ -34,7 +34,10 @@ extern float lbl_80562040;
 static inline float Chan_8018F2C0(unsigned char v) {
     float t = ((float)v - lbl_80561F74) / lbl_80562038;
     if (lbl_80561F88 < t) t = lbl_80561F88;
-    if (!(t > lbl_80561F74)) t = lbl_80561F74;
+    if (t > lbl_80561F74) {
+    } else {
+        t = lbl_80561F74;
+    }
     return lbl_8056203C + t * lbl_80562040;
 }
 #pragma scheduling invalid_target
@@ -1359,6 +1362,50 @@ loop_80:
         }
     }
 }
+
+void fn_8018F2C0(void *arg0, void *arg1) {
+    char *d = (char *)arg0;
+    char *s = (char *)arg1;
+    int i;
+    float f = *(float *)(s + 0x290);
+    *(float *)(d + 0x2690) = f;
+    *(float *)(d + 0x2694) = f;
+    *(float *)(d + 0x2698) = *(float *)(s + 0x294);
+    *(int *)(d + 0x268C) = *(int *)(s + 0x298);
+    for (i = 0; i < *(int *)((char *)arg0 + 0x5F8); i++) {
+        float r, g, b;
+        r = Chan_8018F2C0(((unsigned char *)s)[i * 4]);
+        *(float *)(d + 0x5FC) = r;
+        g = Chan_8018F2C0(((unsigned char *)s)[i * 4 + 1]);
+        *(float *)(d + 0x600) = g;
+        b = Chan_8018F2C0(((unsigned char *)s)[i * 4 + 2]);
+        *(float *)(d + 0x604) = b;
+        *(float *)(d + 0xD94) = *(float *)(d + 0x5FC);
+        *(float *)(d + 0xD98) = *(float *)(d + 0x600);
+        *(float *)(d + 0xD9C) = b;
+        d += 0xC;
+    }
+    d = (char *)arg0;
+    *(int *)(d + 0x15A8) = ((unsigned char *)s)[0x2A0]; *(char *)(d + 0x15A4) = 0;
+    *(int *)(d + 0x1628) = ((unsigned char *)s)[0x2A1]; *(char *)(d + 0x1624) = 0;
+    *(int *)(d + 0x16A8) = ((unsigned char *)s)[0x2A2]; *(char *)(d + 0x16A4) = 0;
+    *(int *)(d + 0x1728) = ((unsigned char *)s)[0x2A3]; *(char *)(d + 0x1724) = 0;
+    *(int *)(d + 0x17A8) = ((unsigned char *)s)[0x2A4]; *(char *)(d + 0x17A4) = 0;
+    *(int *)(d + 0x1828) = ((unsigned char *)s)[0x2A5]; *(char *)(d + 0x1824) = 0;
+    *(int *)(d + 0x18A8) = ((unsigned char *)s)[0x2A6]; *(char *)(d + 0x18A4) = 0;
+    *(int *)(d + 0x1928) = ((unsigned char *)s)[0x2A7]; *(char *)(d + 0x1924) = 0;
+    *(int *)(d + 0x19A8) = ((unsigned char *)s)[0x2A8]; *(char *)(d + 0x19A4) = 0;
+    *(int *)(d + 0x1A28) = ((unsigned char *)s)[0x2A9]; *(char *)(d + 0x1A24) = 0;
+    *(int *)(d + 0x1AA8) = ((unsigned char *)s)[0x2AA]; *(char *)(d + 0x1AA4) = 0;
+    *(int *)(d + 0x1B28) = ((unsigned char *)s)[0x2AB]; *(char *)(d + 0x1B24) = 0;
+    *(int *)(d + 0x1BA8) = ((unsigned char *)s)[0x2AC]; *(char *)(d + 0x1BA4) = 0;
+    *(int *)(d + 0x1C28) = ((unsigned char *)s)[0x2AD]; *(char *)(d + 0x1C24) = 0;
+    *(int *)(d + 0x1CA8) = ((unsigned char *)s)[0x2AE]; *(char *)(d + 0x1CA4) = 0;
+    *(int *)(d + 0x1D28) = ((unsigned char *)s)[0x2AF]; *(char *)(d + 0x1D24) = 0;
+    *(int *)(d + 0x1DA8) = ((unsigned char *)s)[0x2B0]; *(char *)(d + 0x1DA4) = 0;
+    *(int *)(d + 0x1E3C) = *(int *)(s + 0x29C);
+}
+
 #pragma pop
 extern float lbl_80561F88;
 extern float lbl_80562038;
