@@ -49,6 +49,7 @@ int fn_80202218(void) {
     }
     return lbl_8055B410;
 }
+#pragma pop
 
 int fn_80202248(int arg0) {
     int result = -1;
