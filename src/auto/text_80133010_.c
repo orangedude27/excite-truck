@@ -363,7 +363,80 @@ int fn_80133AD8(int arg0) {
     dst[1] = src[1];
     return values[arg0];
 }
-#pragma pop
+
+#pragma use_lmw_stmw off
+int fn_80133BA0(int arg0, int arg1, int arg2) {
+    int sp18;
+    int sp14;
+    int sp10;
+    char *spC;
+    void *sp8;
+    union { char c[256]; double align; } bufu;
+    char *base = lbl_8032B868;
+    void *data;
+    int ok;
+    int type;
+    int inSection;
+    char *p;
+    int v;
+    int c;
+#define buf bufu.c
+
+    sp18 = 0;
+    data = fn_8012C370(arg0, 0x424F5054, &sp14, &sp18, 0, 0);
+    ok = 0;
+    if (data != 0) {
+        spC = (char *)data;
+        inSection = 0;
+        ok = 1;
+        type = 0;
+        while (ok != 0 && fn_80133A08(&spC, sp18 - (spC - (char *)data), buf, 0x100) != 0) {
+            c = (signed char)buf[0];
+            if (c == 0x5B) {
+                p = strchr(buf, 0x5D);
+                v = 0x12;
+                if (p != 0) {
+                    *p = 0;
+                    v = fn_80133B24(buf + 1);
+                }
+                if (v != 0x12) {
+                    type = v;
+                } else {
+                    fn_802E30C8(base + 0x1B0, spC);
+                }
+            } else if (c == 0x3B || c == 0 || c == 0x23) {
+            } else {
+                if (inSection != 0) {
+                    if (*(int *)((char *)lbl_8055E07C + 4) < 0x1F4) {
+                        p = strchr(buf, 0x20);
+                        if (p != 0 && (signed char)*p != 0) {
+                            *p = 0;
+                            if (arg2 == 0x12 || arg2 == type) {
+                                fn_80133E10(&sp8, type, (int)buf);
+                                strcpy((char *)sp8 + 0x14, p + 1);
+                                *(int *)((char *)sp8 + 0xC) = fn_801338D8((char *)sp8 + 0x14);
+                                *(float *)((char *)sp8 + 0x10) = fn_80133960((char *)sp8 + 0x14);
+                                *(char *)((char *)sp8 + 8) = fn_80133844((char *)sp8 + 0x14);
+                                *(int *)sp8 = 0;
+                            }
+                        } else {
+                            fn_802E30C8(base + 0x1D0, fn_80133AD8(type), buf);
+                        }
+                    }
+                } else if ((sscanf(buf, base + 0x1E8, &sp10) == 1 && sp10 == 2) || arg1 != 0) {
+                    inSection = 1;
+                } else {
+                    fn_802E30C8(base + 0x1F4, arg0);
+                    ok = 0;
+                }
+            }
+        }
+        fn_8012C4D8(data);
+    } else {
+        fn_802E30C8(base + 0x208, arg0);
+    }
+    return ok;
+}
 int fn_80133E10(void **arg0, int arg1, int arg2) {
     register int count;
     register int offset;
