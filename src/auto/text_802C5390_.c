@@ -28,7 +28,9 @@ extern int lbl_804C139C[];
 extern int lbl_804C13A8[];
 extern int lbl_804C13B4[];
 extern const char lbl_8034B1D8[];
+extern s8 lbl_8055FC20;
 extern s8 lbl_8055FC21;
+extern void fn_802C8B98(int, void *);
 char *fn_802CAE34(char *);
 int stricmp(const char *, const char *);
 extern const char lbl_8034B3DC[];
@@ -109,30 +111,28 @@ void fn_802C54D4(void) {
     extern int lbl_804C13A8[];
     extern s8 lbl_8055FC21;
     extern void qsort(void *, unsigned int, unsigned int, int (*)(void *, void *));
-    register int level;
-    register int sourceIndex;
-    register int sourceOffset;
-    register int itemOffset;
-    register int itemIndex;
-    register int count;
-    register int oldCount;
-    register void *table;
-    register void *start;
-    register void **items;
-    int zero;
+    int level;
+    int sourceIndex;
+    int sourceOffset;
+    int itemOffset;
+    int itemIndex;
+    int count;
+    int oldCount;
+    void **items;
+    void *table;
 
     if (*(volatile unsigned char *)&lbl_8055FC21 == 0)
         return;
     {
-        register int *listData = lbl_804C1390;
-        register int *sourceData = lbl_804C13A8;
-        register void **slot;
+        int *listData = lbl_804C1390;
+        int *sourceData = lbl_804C13A8;
+        void **slot;
         listData[0] = 0;
         for (sourceIndex = 0, sourceOffset = 0;
              sourceIndex < *(volatile int *)sourceData;
              sourceIndex++, sourceOffset += 0x10) {
-            register void *base = (void *)(unsigned long)*(volatile u32 *)((char *)sourceData + 8);
-            register void *entry = (char *)base + sourceOffset;
+            void *base = (void *)(unsigned long)*(volatile u32 *)((char *)sourceData + 8);
+            void *entry = (char *)base + sourceOffset;
             if (*(unsigned short *)((char *)entry + 4) != 0) {
                 oldCount = *(volatile int *)listData;
                 if (oldCount < *(volatile int *)((char *)listData + 4)) {
@@ -157,7 +157,7 @@ void fn_802C54D4(void) {
     for (itemIndex = 0, itemOffset = 0;
          itemIndex < lbl_804C1390[0];
          itemIndex++, itemOffset += 4) {
-        register void *entry = *(void **)((char *)*(void ***)((char *)lbl_804C1390 + 8) + itemOffset);
+        void *entry = *(void **)((char *)*(void ***)((char *)lbl_804C1390 + 8) + itemOffset);
         goto inner_check;
 inner_loop:
         level++;
@@ -173,14 +173,12 @@ inner_check:
                 goto inner_loop;
         }
     }
-    start = *(void **)table;
     count = (int)((char *)*(void ***)((char *)lbl_804C1390 + 8) +
-                  lbl_804C1390[0] * 4 - (char *)start) / 4;
+                  lbl_804C1390[0] * 4 - (char *)*(void **)table) / 4;
     *(int *)((char *)table + 4) = count;
-    zero = 0;
     while (++level <= 9) {
         table = fn_802C54B4(level);
-        *(int *)((char *)table + 4) = zero;
+        *(int *)((char *)table + 4) = 0;
     }
     *(volatile unsigned char *)&lbl_8055FC21 = 0;
 }
@@ -865,6 +863,84 @@ s32 fn_802C6D5C(void *arg0) {
     return 0;
 }
 
+extern const char lbl_8034B378[];
+extern const char lbl_8034B3A4[];
+int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
+    int count = lbl_804C139C[0];
+    char *scan = (char *)(unsigned long)lbl_804C139C[2];
+    char *found = 0;
+    char *empty = 0;
+    register int userArg = arg3;
+    int i;
+
+    for (i = 0; i < count; i++) {
+        if (*(int *)scan > 0) {
+            if (*(int *)(scan + 8) == arg2) {
+                if ((u32)*(int *)(scan + 4) == (u32)arg1) {
+                    found = scan;
+                    break;
+                }
+            }
+        } else {
+            empty = scan;
+        }
+        scan += 0x10;
+    }
+
+    if (found == 0) {
+        if (empty == 0) {
+            int *context = lbl_804C139C;
+            if (count < context[1]) {
+                int next = lbl_804C139C[0];
+                char *base = (char *)(unsigned long)context[2];
+                lbl_804C139C[0] = next + 1;
+                empty = base + next * 0x10;
+            } else {
+                empty = 0;
+            }
+            if (empty == 0) {
+                fn_802E317C(lbl_8034B378);
+            }
+        }
+
+        *(int *)empty = 0;
+        *(int *)(empty + 4) = arg1;
+        *(int *)(empty + 8) = arg2;
+        *(int *)(empty + 0xC) = fn_802C5E7C((void *)(unsigned long)arg1);
+        {
+            int limit = *(int *)((char *)(unsigned long)arg1 + 0x18);
+            if (arg2 >= limit) {
+                fn_802E317C(lbl_8034B3A4, arg2, limit, arg0);
+            }
+        }
+
+        {
+            register int temp = fn_802C6D5C((void *)(unsigned long)arg1);
+            register int outer = 0;
+            arg0 = 0;
+            for (; outer < *(int *)((char *)(unsigned long)arg1 + 8); outer++, arg0 += 4) {
+                void **list = *(void ***)((char *)(unsigned long)arg1 + 0xC);
+                char *sub = *(char **)((char *)list + arg0);
+                register int inner = 0;
+                arg2 = 0;
+                for (; inner < *(int *)sub; inner++, arg2 += 4) {
+                    void **items = *(void ***)(sub + 4);
+                    void *item = *(void **)((char *)items + arg2);
+                    if (*(u32 *)item == 7) {
+                        fn_802C5C40((int *)item, *(int *)(empty + 8), *(int *)items);
+                    } else {
+                        fn_802C5CC4(item, *(int *)(empty + 8), temp, userArg);
+                    }
+                }
+            }
+        }
+        found = empty;
+    }
+
+    (*(int *)found)++;
+    return (int)(found - (char *)(unsigned long)lbl_804C139C[2]) / 0x10;
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -909,6 +985,66 @@ void fn_802C7040(int arg0) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
+    extern int fn_802D0514(void *);
+    struct LocalResult {
+        unsigned char status;
+        unsigned char padding[3];
+        float scalar;
+        float vector[3];
+    } local;
+    float *rot;
+    float *out;
+    float *input;
+    int previousMask;
+    int ok;
+
+    if (arg0 == -1)
+        return;
+    previousMask = lbl_8055D008;
+    lbl_8055D008 = arg3;
+    rot = (float *)((char *)*(void **)((char *)fn_802C5390(arg0) + 4) + 0x20);
+    out = local.vector;
+    input = (float *)arg1;
+    if (local.vector == rot) {
+        float y = input[3];
+        float y0 = y * rot[1];
+        float y1 = input[4] * rot[1];
+        float y2 = input[5] * rot[1];
+        float x = input[0];
+        float x0 = x * rot[0];
+        float x1 = input[1] * rot[0];
+        float x2 = input[2] * rot[0];
+        float z = input[6];
+        float z0 = z * rot[2];
+        float z1 = input[7] * rot[2];
+        float z2 = input[8] * rot[2];
+
+        out[0] = (x0 + y0) + z0;
+        out[1] = (x1 + y1) + z1;
+        out[2] = (x2 + y2) + z2;
+    } else {
+        out[0] = (rot[1] * input[3] + rot[0] * input[0]) +
+                 rot[2] * input[6];
+        out[1] = (rot[1] * input[4] + rot[0] * input[1]) +
+                 rot[2] * input[7];
+        out[2] = (rot[1] * input[5] + rot[0] * input[2]) +
+                 rot[2] * input[8];
+    }
+    {
+        float tx = out[0] + input[9];
+        float ty = out[1] + input[10];
+        float tz = out[2] + input[11];
+        out[0] = tx;
+        out[1] = ty;
+        out[2] = tz;
+    }
+    ok = fn_802C94A0(out, &local.status, &local.scalar, rot[-1]);
+    if (ok != 0)
+        fn_802C57B4(arg0, fn_802D0514(arg1), arg2, local.status, local.scalar);
+    lbl_8055D008 = previousMask;
+}
 extern unsigned char lbl_804C13C0[];
 extern float lbl_80564EF0;
 extern float PSVECSquareDistance(const float *, const float *);
