@@ -593,7 +593,7 @@ void fn_801C0D6C(void *arg0) {
     input[8] = vec1[2];
 }
 #pragma scheduling on
-extern void PSVECDotProduct(void *, void *);
+extern float PSVECDotProduct(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern float lbl_805628B8;
 extern float lbl_805628BC;
