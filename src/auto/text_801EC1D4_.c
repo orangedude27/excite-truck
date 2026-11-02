@@ -6,6 +6,7 @@ extern void fn_802C70AC(int, void *, int, int);
 extern int fn_802C7A34(int, void *, int, float);
 extern float *fn_802C86DC();
 extern float lbl_80562E98;
+extern float lbl_80562E90;
 #pragma cplusplus on
 struct Unk_801EEA64Iface {
     virtual Unk_801EEA64Iface *m8(char *);
@@ -64,52 +65,49 @@ extern char lbl_8033A060[];
 __declspec(section ".sdata") extern char lbl_8055AFCC[];
 __declspec(section ".sdata") extern char lbl_8055AFD4[];
 extern int sscanf(const char *,...);
-#pragma pop
+#pragma cplusplus on
 #pragma processor 750
-#pragma use_lmw_stmw off
-void fn_801EC214(void *out, void *obj, int arg2, const char *name, int arg4, float f1, float f2) {
+extern "C" void fn_801EC214(void *out, void *obj, int arg2, char *name, int arg4, float f1, float f2) {
     char *base = lbl_8033A060;
-    int count = 0;
     float a, b, c, d;
     char buf[0x20];
     float *entry;
     float scale;
     float zero;
+    float nd;
     *(int *)((char *)out + 0x50) = arg4;
-    if (!((int (*)(void *, const char *))((int (**)(void))*(void **)obj)[3])(obj, name)) {
+    if (!((Unk_801EEA64Iface *)obj)->mC(name)) {
         *(int *)out = 0;
         return;
     }
     a = lbl_80562E88;
     b = lbl_80562E88;
-    if (sscanf(((const char *(*)(void *, const char *))((int (**)(void))*(void **)obj)[5])(obj, name), lbl_8055AFCC, &a, &b) != 2)
-        fn_802E317C(base, name);
+    if (sscanf((char *)((Unk_801EEA64Iface *)obj)->m14(name), lbl_8055AFCC, &a, &b) != 2)
+        fn_802E317C(&base[0], name);
     *(int *)out = fn_801E3004(arg2, name, -1);
     scale = f1 - f2;
     zero = lbl_80562E88;
     *(int *)((char *)out + 0x4C) = 0;
-    while (count < 8 && ((int (*)(void *, const char *))((int (**)(void))*(void **)obj)[3])(obj, buf)) {
-        fn_801345D8(buf, 0x20, lbl_8055AFD4, name, count + 1);
-        entry = (float *)((char *)out + count * 8 + 0xC);
+    while (*(int *)((char *)out + 0x4C) < 8) {
+        fn_801345D8(buf, 0x20, lbl_8055AFD4, name, *(int *)((char *)out + 0x4C) + 1);
+        if (!((Unk_801EEA64Iface *)obj)->mC(buf))
+            break;
+        entry = (float *)((char *)out + *(int *)((char *)out + 0x4C) * 8) + 3;
         c = zero;
         d = zero;
-        if (sscanf(((const char *(*)(void *, const char *))((int (**)(void))*(void **)obj)[5])(obj, buf), base + 0x10, entry, &c, &d) != 3)
+        if (sscanf((char *)((Unk_801EEA64Iface *)obj)->m14(buf), base + 0x10, entry, &c, &d) != 3)
             fn_802E317C(base + 0x1C, buf);
-        entry[1] = (float)fn_8002EFB0(c - a, -(d - b));
+        nd = -(d - b);
+        entry[1] = (float)fn_8002EFB0(c - a, nd);
         entry[0] = entry[0] * scale + f2;
-        count++;
-        *(int *)((char *)out + 0x4C) = count;
+        *(int *)((char *)out + 0x4C) = *(int *)((char *)out + 0x4C) + 1;
     }
     if (*(int *)((char *)out + 0x4C) < 2)
         fn_802E317C(base + 0x34, name);
     *(float *)((char *)out + 4) = *(float *)((char *)out + 0xC);
     *(float *)((char *)out + 8) = *(float *)((char *)out + (*(int *)((char *)out + 0x4C) - 1) * 8 + 0xC);
 }
-#pragma processor gekko
-#pragma use_lmw_stmw on
-#pragma push
-#pragma scheduling invalid_target
-#pragma use_lmw_stmw off
+#pragma cplusplus reset
 
 #pragma push
 #pragma scheduling invalid_target
