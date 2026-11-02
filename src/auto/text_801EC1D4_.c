@@ -958,7 +958,7 @@ check:
     return value;
 }
 #pragma scheduling on
-extern void fn_801EC750(void *);
+extern void *fn_801EC750();
 extern int lbl_8033A2D4[64];
 #pragma scheduling off
 void **fn_801EEEB0(void **arg0) {
