@@ -1,5 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern void *fn_8012C370(int, int, int *, int *, int, int);
+extern void fn_8012C4D8(void *);
+extern int fn_80133B24(char *);
+extern char *strchr(const char *, int);
+extern char *strcpy(char *, const char *);
+extern int sscanf(const char *, const char *, ...);
+extern char lbl_8032B868[];
 extern int fn_802E30C8(const char *, ...);
 extern int fn_801338D8(const char *);
 extern float fn_80133960(const char *);
@@ -457,20 +464,20 @@ void fn_80133FCC(long arg0, long arg_sp0) {
                     *(long *)(dst + 0x08) = *(long *)(src + 0x00);
                     *(long *)(dst + 0x0C) = *(long *)(src + 0x04);
                     w2 = *(long *)(src + 0x08); w3 = *(long *)(src + 0x0C);
-                    *(long *)(dst + 0x10) = w2; *(long *)(dst + 0x14) = w3;
+                    *(long *)(dst + 0x14) = w3; *(long *)(dst + 0x10) = w2;
                     w4 = *(long *)(src + 0x10); w5 = *(long *)(src + 0x14);
-                    *(long *)(dst + 0x18) = w4; *(long *)(dst + 0x1C) = w5;
+                    *(long *)(dst + 0x1C) = w5; *(long *)(dst + 0x18) = w4;
                     w6 = *(long *)(src + 0x18); w7 = *(long *)(src + 0x1C);
-                    *(long *)(dst + 0x20) = w6; *(long *)(dst + 0x24) = w7;
+                    *(long *)(dst + 0x24) = w7; *(long *)(dst + 0x20) = w6;
                     *(long *)(dst + 0x28) = *(long *)(src + 0x20);
-                    b0 = src[0x24]; b1 = src[0x25]; dst[0x2C] = b0; dst[0x2D] = b1;
-                    b2 = src[0x26]; b3 = src[0x27]; dst[0x2E] = b2; dst[0x2F] = b3;
-                    b4 = src[0x28]; b5 = src[0x29]; dst[0x30] = b4; dst[0x31] = b5;
-                    b6 = src[0x2A]; b7 = src[0x2B]; dst[0x32] = b6; dst[0x33] = b7;
-                    b8 = src[0x2C]; b9 = src[0x2D]; dst[0x34] = b8; dst[0x35] = b9;
-                    b10 = src[0x2E]; b11 = src[0x2F]; dst[0x36] = b10; dst[0x37] = b11;
-                    b12 = src[0x30]; b13 = src[0x31]; dst[0x38] = b12; dst[0x39] = b13;
-                    b14 = src[0x32]; b15 = src[0x33]; dst[0x3A] = b14; dst[0x3B] = b15;
+                    b0 = src[0x24]; b1 = src[0x25]; dst[0x2D] = b1; dst[0x2C] = b0;
+                    b2 = src[0x26]; b3 = src[0x27]; dst[0x2F] = b3; dst[0x2E] = b2;
+                    b4 = src[0x28]; b5 = src[0x29]; dst[0x31] = b5; dst[0x30] = b4;
+                    b6 = src[0x2A]; b7 = src[0x2B]; dst[0x33] = b7; dst[0x32] = b6;
+                    b8 = src[0x2C]; b9 = src[0x2D]; dst[0x35] = b9; dst[0x34] = b8;
+                    b10 = src[0x2E]; b11 = src[0x2F]; dst[0x37] = b11; dst[0x36] = b10;
+                    b12 = src[0x30]; b13 = src[0x31]; dst[0x39] = b13; dst[0x38] = b12;
+                    b14 = src[0x32]; b15 = src[0x33]; dst[0x3B] = b15; dst[0x3A] = b14;
                     dst[0x3C] = src[0x34]; dst[0x3D] = src[0x35];
                     dst[0x3E] = src[0x36]; dst[0x3F] = src[0x37];
                 }
