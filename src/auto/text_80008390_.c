@@ -15,11 +15,11 @@ extern s32 lbl_802ED6D8[];
 extern s32 lbl_8055D370;
 extern s32 lbl_805601B0;
 #define ID_LIST ((IdList *)lbl_8034F3D0)
-static inline void IdList_Add(s32 v) {
+static inline void IdList_Add(s32 *src) {
     s32 *data = lbl_8034F3D0[0];
     s32 n = *(s32 *)&lbl_8034F3D0[1];
     *(s32 *)&lbl_8034F3D0[1] = n + 1;
-    data[n] = v;
+    data[n] = *src;
 }
 #define ID_DATA (lbl_8034F3D0[0])
 #define ID_COUNT (*(s32 *)&lbl_8034F3D0[1])
