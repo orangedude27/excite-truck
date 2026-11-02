@@ -2,6 +2,18 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct { float values[12]; } Unk_801ECFE0;
+#pragma cplusplus on
+struct Unk_801EEA64Iface {
+    virtual void slot0();
+    virtual void slot4();
+    virtual Unk_801EEA64Iface *m8(char *);
+    virtual int mC(char *);
+    virtual int m10(char *);
+    virtual int m14(char *);
+    virtual int m18(char *);
+    virtual int m1C(char *);
+};
+#pragma cplusplus reset
 extern long lbl_80488648[];
 void fn_801EDD7C(void *, long);
 long fn_80179CB0(void);
@@ -489,11 +501,11 @@ void fn_801EDD7C(void *arg0, long arg1) {
     register long data = arg1;
     long offset, i;
     char *entry;
-    float v3, v2, v0, v1;
+    float v3, v2, v1, v0;
     float scale;
     float v4, v5, v6, v7, v8, v10, v9, v11;
 
-    /* Fix note: direct offsets keep the integer copy compact; swap leading float temporary order for target FPRs. */
+    /* Fix note: use direct byte offsets for the copy path and keep loop state declared in target order. */
     fn_801EABA8(object, *(void **)((char *)object + 0x3C));
     scale = *(float *)((char *)data + 0x2D0);
     *(float *)((char *)object + 0x4D0) = scale;
@@ -565,11 +577,7 @@ void fn_801F13F4(long, float, float);
 #pragma optimization_level 3
 #pragma scheduling invalid_target
 void fn_801EDF18(void* arg0) {
-    struct Settings {
-        long first;
-        union { long bits; float value; } second;
-        long third;
-    } settings;
+    struct Settings { long first; union { long bits; float value; } second; long third; } settings;
     float temp_f31, var_f30, var_f29, limit, dot, factor;
     float vector[3];
     long index, result, firstValue, secondValue;
@@ -580,22 +588,12 @@ void fn_801EDF18(void* arg0) {
     temp_f31 *= temp_f31;
     factor = fn_802C88E8((void*)((long)arg0 + 0x28));
     temp_f31 = factor * temp_f31;
-
     index = *(long*)((char*)arg0 + 0x480) - 1;
-    while (index >= 0 &&
-           temp_f31 < (*(float*)((char*)arg0 + index * 8 + 0x404) *
-                       *(float*)((char*)arg0 + index * 8 + 0x404))) {
-        index--;
-    }
-    if (index < 0) goto done;
-
+    while (index >= 0 && temp_f31 < (*(float*)((char*)arg0 + index * 8 + 0x404) * *(float*)((char*)arg0 + index * 8 + 0x404))) index--;
+    if (index < 0) return;
     if (*(long*)((char*)arg0 + 0x40) != fn_801E866C(-1)) goto process;
-    switch (fn_801E89A4(-1)) {
-    case 0:
-        goto done;
-    default:
-        goto process;
-    }
+    if (fn_801E89A4(-1) != 0) goto process;
+    return;
 
 process:
     firstValue = *(volatile long*)((char*)arg0 + 0x28);
@@ -628,8 +626,6 @@ process:
         i++;
         arg0 = (char*)arg0 + 4;
     } while (i < 4);
-done:
-    return;
 }
 #pragma pop
 
@@ -692,24 +688,24 @@ extern int fn_802C7830(void);
 extern char lbl_8033A060[];
 extern char lbl_8055B080;
 void fn_801EEA64(void *arg0, void *arg1, int arg2, int arg3) {
- char sp108[0x100]; char sp8[0x100]; void *iter; void *obj; int value, shift;
+ char sp108[0x100]; char sp8[0x100]; void *iter; void *obj; void *obj2; int value, shift;
  fn_801345D8(sp108,0x100,lbl_8033A060+0x174,arg2);
  iter=fn_80131810(sp108);
- if(iter != 0 && ((int (**)(void *,char *))*(void **)iter)[4](iter,&lbl_8055B080) != 0) {
-  obj=((void *(*)(void *,char *))((int (**)(void *,char *))*(void **)iter)[2])(iter,&lbl_8055B080);
-  obj=((void *(*)(void *,char *))((int (**)(void *,char *))*(void **)obj)[5])(obj,lbl_8033A060+0x194);
-  fn_801345D8(sp8,0x100,lbl_8033A060+0x188,arg2,obj);
+ if(iter != 0 && ((int (*)(void *,char *))((int (**)(void))*(void **)iter)[4])(iter,&lbl_8055B080) != 0) {
+  obj=((void *(*)(void *,char *))((int (**)(void))*(void **)iter)[2])(iter,&lbl_8055B080);
+  obj2=((void *(*)(void *,char *))((int (**)(void))*(void **)obj)[5])(obj,lbl_8033A060+0x194);
+  fn_801345D8(sp8,0x100,lbl_8033A060+0x188,arg2,obj2);
   *(int *)((char *)arg0+0x488)=fn_802C6FC0(sp8,0,arg3);
-  *(int *)((char *)arg0+0x48C)=((int (*)(void *,char *))((int (**)(void *,char *))*(void **)obj)[7])(obj,lbl_8033A060+0x1A0);
-  *(int *)((char *)arg0+0x490)=((int (*)(void *,char *))((int (**)(void *,char *))*(void **)obj)[7])(obj,lbl_8033A060+0x1AC);
-  *(int *)((char *)arg0+0x494)=((int (*)(void *,char *))((int (**)(void *,char *))*(void **)obj)[7])(obj,lbl_8033A060+0x1B8);
-  if(((int (*)(void *,char *))((int (**)(void *,char *))*(void **)obj)[3])(obj,lbl_8033A060+0x15C)!=0) {
-   ((int (*)(void *,char *))((int (**)(void *,char *))*(void **)obj)[5])(obj,lbl_8033A060+0x15C);
+  *(int *)((char *)arg0+0x48C)=((int (*)(void *,char *))((int (**)(void))*(void **)obj)[7])(obj,lbl_8033A060+0x1A0);
+  *(int *)((char *)arg0+0x490)=((int (*)(void *,char *))((int (**)(void))*(void **)obj)[7])(obj,lbl_8033A060+0x1AC);
+  *(int *)((char *)arg0+0x494)=((int (*)(void *,char *))((int (**)(void))*(void **)obj)[7])(obj,lbl_8033A060+0x1B8);
+  if(((int (*)(void *,char *))((int (**)(void))*(void **)obj)[3])(obj,lbl_8033A060+0x15C)!=0) {
+   ((int (*)(void *,char *))((int (**)(void))*(void **)obj)[5])(obj,lbl_8033A060+0x15C);
    *(int *)((char *)arg0+0x498)=fn_802C7830();
   } else *(int *)((char *)arg0+0x498)=-1;
-  shift=((int (*)(void *,char *))((int (**)(void *,char *))*(void **)obj)[7])(obj,lbl_8033A060+0x1C4);
+  shift=((int (*)(void *,char *))((int (**)(void))*(void **)obj)[7])(obj,lbl_8033A060+0x1C4);
   *(int *)((char *)arg0+0x49C)=1<<shift;
-  value=((int (*)(void *,char *))((int (**)(void *,char *))*(void **)obj)[5])(obj,lbl_8033A060+0x1D8);
+  value=((int (*)(void *,char *))((int (**)(void))*(void **)obj)[5])(obj,lbl_8033A060+0x1D8);
   fn_801345D8((char *)arg1+0xEC,0x20,lbl_8033A060+0x188,arg2,value);
   fn_80131818(iter); return;
  }
