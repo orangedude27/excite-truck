@@ -104,7 +104,11 @@ void fn_801EC214(void *out, void *obj, int arg2, const char *name, int arg4, flo
     *(float *)((char *)out + 4) = *(float *)((char *)out + 0xC);
     *(float *)((char *)out + 8) = *(float *)((char *)out + (*(int *)((char *)out + 0x4C) - 1) * 8 + 0xC);
 }
-#pragma pop
+#pragma processor gekko
+#pragma use_lmw_stmw on
+#pragma push
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 
 #pragma push
 #pragma scheduling invalid_target
